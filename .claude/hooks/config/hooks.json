@@ -1,0 +1,30 @@
+{
+  "_doc": "Settings for the team's hooks. Paths are relative to the project root unless they start with ~.",
+  "builder_role": "Builder",
+  "state_dir": ".claude/state",
+  "key_file": "~/.claude/team-hooks/hmac.key",
+  "drift_guard": {
+    "always": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ],
+    "briefs": {
+      "Assets": [
+        "docs/briefs/asset-maker.md"
+      ],
+      "QA": [
+        "docs/briefs/qa.md"
+      ],
+      "Research": [
+        "docs/briefs/research.md"
+      ]
+    },
+    "start": {
+      "Builder": "CLAUDE.md",
+      "Assets": "docs/briefs/asset-maker.md",
+      "QA": "docs/briefs/qa.md",
+      "Research": "docs/briefs/research.md"
+    },
+    "max_sections_named": 6
+  }
+}

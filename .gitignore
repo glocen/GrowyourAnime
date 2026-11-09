@@ -1,0 +1,24 @@
+# Place files: they hold the world, and they're large. Keep them outside git.
+*.rbxl
+*.rbxlx
+*.lock
+
+# Generated
+sourcemap.json
+__pycache__/
+
+# The import channel: Imports.txt keeps the folder in every clone, because Rojo needs each mapped folder to exist.
+build/import/*
+!build/import/Imports.txt
+
+# Working files
+build/scratch/
+build/captures/
+build/upload/
+
+# The studio handbook: its own repo, cloned here so teammates can read it inside the project.
+handbook/
+
+# Hook state
+.claude/state/
+build/locks/

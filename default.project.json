@@ -1,0 +1,34 @@
+{
+  "name": "GrowAAnime",
+  "servePort": 34876,
+  "globIgnorePaths": ["**/*.md"],
+  "syncbackRules": {
+    "ignoreProperties": {
+      "Instance": ["SerializedOverrides", "SourceAssetId"]
+    }
+  },
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedFirst": {
+      "First": { "$path": "src/first" }
+    },
+    "ReplicatedStorage": {
+      "Shared": { "$path": "src/shared" },
+      "Libraries": { "$path": "src/libraries/shared" }
+    },
+    "ServerScriptService": {
+      "Server": { "$path": "src/server" },
+      "Libraries": { "$path": "src/libraries/server" }
+    },
+    "ServerStorage": {
+      "Templates": { "$path": "src/storage" },
+      "NL_Import": { "$path": "build/import" },
+      "NL_Tools": { "$path": "tools/studio" }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": { "$path": "src/client" }
+      }
+    }
+  }
+}

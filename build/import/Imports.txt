@@ -1,0 +1,1 @@
+The import channel: generated files land here, Rojo carries them into ServerStorage, an Edit-mode tool publishes them, and this folder is emptied after use. Keep this one file, because Rojo needs the folder to exist.

@@ -1,0 +1,29 @@
+{
+  "_doc": "Session title to role, for the hooks. Each pattern is a case-insensitive regex on the session's title.",
+  "roles": {
+    "Builder": {
+      "who": "the builder",
+      "titles": [
+        "^Faber\\b"
+      ]
+    },
+    "Assets": {
+      "who": "the asset maker",
+      "titles": [
+        "^Modulo\\b"
+      ]
+    },
+    "Research": {
+      "who": "research",
+      "titles": [
+        "^Quaestor\\b"
+      ]
+    },
+    "QA": {
+      "who": "QA",
+      "titles": [
+        "^Probator\\b"
+      ]
+    }
+  }
+}

@@ -11,7 +11,7 @@ Nothing yet.
 1. **Content is rows.** A fighter, a shard, a machine, a trait, a mutation, a rarity and a skill are each a row in `src/shared/Definitions/`, with a stable id that never changes and never shows to players.
 2. **A player owns instances, not definitions.** An owned fighter is a small record that points at its definition and carries what's its own.
 3. **Rules are pure Luau.** What needs no engine lives in `src/shared/Rules/` and touches no Roblox API, so it runs with Studio closed.
-4. **The server keeps time as stamps, not loops.** Processing and training store when they started, and the result is computed when someone looks. Offline progress comes free, and nothing ticks per fighter.
+4. **The server keeps time as stamps, not loops.** A machine slows when the Grid is short, so a start stamp alone can't give its finish. Each machine stores its progress and the time of that reading, and one pure function advances a base from one time to another. It runs on every change to the Grid and on a return from time away, so live play and absence share one rule and a rejoin can't gain on it. Nothing ticks per fighter.
 5. **A battle is a log.** The server resolves a whole fight at once from the two teams and a seed, pays the rewards, and sends the log. The client plays it back as a show and decides nothing.
 
 ## Data contracts (a sketch)
@@ -39,9 +39,10 @@ Nothing yet.
 | State | Owner | The client's part |
 |---|---|---|
 | The profile, every currency and count | server | reads a copy |
-| The shop's stock | server, from the clock and a seed, the same in every server | shows it, asks to buy |
-| Processing and training | server, as start stamps | shows progress from the same stamps |
-| Which fighter a shard gives | server, at the moment processing ends | plays the reveal |
+| The shop's stock | server, from the clock and a seed, the same in every server. The seed never sits in `src/shared`, which reaches every client. What a player bought is saved against the rotation's number | shows it, asks to buy |
+| Processing and training | server, as progress and the time it was read | shows progress from the same values |
+| What a break gives, its mutation included | server, at the moment the break finishes, before the owner opens it | plays the reveal |
+| A Tower floor's holder | server: drawn once, kept in the profile until beaten. Other players' teams are read, never written, at launch | shows who holds it |
 | A battle's outcome and rewards | server, in one step | plays the log |
 | Fusion | server, in one step | previews from the same pure rule |
 | Bases: who owns which | server | walks around |

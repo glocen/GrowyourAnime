@@ -16,7 +16,7 @@ You run a small electric base where Void Shards are broken open and grow into an
 - **In a session:** a rarer shard caught at the shop, a higher floor of the Tower, a Grid that makes more.
 - **Over weeks:** a full Index, a fighter built beyond its rarity, the tallest Tower on the server.
 
-**Why they come back tomorrow:** the base worked all night, the shop has turned for everyone, their team won fights on other players' Towers while they were away, and something is new each week.
+**Why they come back tomorrow:** the base worked all night, the shop has turned for everyone, a row of finished Breakers waits to be opened, their team held floors on other players' Towers, and something is new each week.
 
 ## What's ours
 
@@ -44,13 +44,15 @@ The director, 2026-11-09: "the game 20 first seconds isn't a rule for every game
 | 0 | spawns in their own base, facing a Void Breaker with a shard already in it and a handle that glows | neighbours' fighters at work, a beam over the shop, Towers behind |
 | 0 to 4 | one input: holds the handle | their own power runs down the cable, and a body grows in the Breaker for as long as they hold |
 | 4 to 8 | lets go | the Breaker opens, the fighter steps out and strikes its pose, its name and rarity land, and the Index pays the first credits |
-| 8 to 14 | watches | the fighter walks to the dynamo and starts. The cables light without the player, the second Breaker wakes, and credits begin to tick |
-| 14 to 40 | runs to the shop and buys two shards | the shelf, the rarity ladder on it, the countdown. Back home, both Breakers grow with no hand on the handle |
-| 40 to 60 | sends the fighter up the Tower's first floor | the first Void Clash, won, and a mystery shard for it |
+| 8 to 14 | watches | the fighter walks to the dynamo and starts. The cables light without the player, credits begin to tick, and the second Breaker, which came with its own shard, wakes and grows with no hand on it |
+| about 25 | opens the second Breaker, which glows when it's done | a second, different fighter, its pose, a second payout from the Index. One fighter now powers the base and one is free |
+| 25 to 60 | runs to the shop and buys | the shelf, the rarity ladder on it, the countdown. Back home, the shards go into the Breakers |
+| 60 to 120 | sends the free fighter up the Tower's first floor | the first Void Clash, won, and a mystery shard for it. The base keeps running behind |
+| 120 to 180 | opens the mystery shard's Breaker, looks at what's next | the next shelf's hint, the second floor's holder, a third fighter growing |
 
-The first verb is the title's: you grow it, by hand. The first payout is at about second 8. Income is passive by second 14. No text to read before the first input.
+The first verb is the title's: you grow it, by hand. The first payout is at about second 8. Income is passive by second 14. No text to read before the first input. The table runs to 180 because Roblox counts a first play that ends before then, and the fight comes after the second fighter so the base never goes dark for it.
 
-The measures at the blockout: seconds to the first input, to the pose, to the first credits, to the second purchase, and to the first Clash.
+The measures at the blockout: seconds to the first input, to the pose, to the first credits, to the second reveal, to the first purchase, and to the first Clash.
 
 ## The bar
 

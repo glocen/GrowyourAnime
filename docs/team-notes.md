@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-09: the folder and the foundation are written, at the director's ask: `docs/north-star.md`, `docs/design.md`, `docs/decisions.md`, `docs/risks.md`, `docs/roblox-rules.md`, `docs/production-plan.md`, `docs/engineering-plan.md`, and four reads under `docs/research/` (the first seconds, games near this one, the tower, the long grind). Nothing is built, tested, reviewed or accepted. Before Wednesday 2026-11-11: a cold read of the design by a reader who hasn't seen it, and the director's answers. Then verdicts on TR2 and AR1.
+**Quaestor (research).** 2026-11-09: the folder and the foundation are written, at the director's ask: `docs/north-star.md`, `docs/design.md`, `docs/decisions.md`, `docs/risks.md`, `docs/roblox-rules.md`, `docs/production-plan.md`, `docs/engineering-plan.md`, and four reads under `docs/research/` (the first seconds, games near this one, the tower, the long grind). Nothing is built, tested, reviewed or accepted. The cold read is folded in (`docs/research/cold-read.md`): TR2 now covers three minutes, every break rolls, the Tower's pay and its guards changed. Before Wednesday 2026-11-11: the director's answers. Then verdicts on TR2 and AR1.
 
 **Faber (builder).** Not started here. First: TR1, then TR2 (`docs/test-requests.md`). Yours to call in TR1: the save library, Roblox's Server Authority mode, the headless runner.
 

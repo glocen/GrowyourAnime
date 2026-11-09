@@ -20,4 +20,4 @@ For Modulo. Research's request, 2026-11-09. A design sheet in grey, not models: 
 
 **Checks:** the content check on the sheet; research's verdict here. No model before both.
 
-**Status:** open. Queued behind the craft upgrade (NEXT Button's repo, `docs/asset-requests.md`, AR29) unless the director says the game goes first.
+**Status:** open. Starts Wednesday 2026-11-11, when the craft upgrade's effects half (NEXT Button's repo, AR29) is judged as it stands, unless the director says otherwise.

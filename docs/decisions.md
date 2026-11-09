@@ -61,7 +61,9 @@ Research's recommendations, 2026-11-09. Each names the simplest option that coul
 | 4 | **The shop's own marks:** stock in the world with a beam, the next shelf hinted, a charged shelf | a list on a panel | more to build, for a shop seen from every base | step 4's blockout |
 | 5 | **Away, the base runs as usual,** and batteries bank the hours | finish Breakers only | the full promise of the director's words, against an income to cap | a balance run |
 | 6 | **A fight is a list of events** settled by the server and played back | live simulated combat | testable without Studio, replayable and cheat-proof, against less room for live surprises | the builder agrees (`docs/engineering-plan.md`) |
-| 7 | **The Tower:** a climb with health that carries, floors held by real players' saved teams, yours holding floors while you're away, and a lift and recharges that run on stored energy ("Where fights happen") | written teams only, as in the director's reference (`docs/research/tower.md`) | the director's own idea in full with nobody online, against a store shared between servers | the builder's cost; step 4's blockout |
+| 18 | **Every break rolls a mutation, and a finished Breaker waits for its owner** ("Shards and Breakers") | no roll; Breakers open by themselves | a roll on the basic action and every reveal watched, against one more tap and mutations' balance at launch | TR2 |
+| 19 | **Fights pay essence and experience; only a first clear pays credits** ("Where fights happen") | credits on every floor | the spine stays clean and the lift can't be farmed, against a Tower that pays less cash | a balance run; step 4 |
+| 7 | **The Tower:** a climb with health that carries, floors held by real players' saved teams (read only at launch, the gift for holding later and capped), each holder pinned until beaten, and a lift and recharges that run on stored energy ("Where fights happen") | written teams only, as in the director's reference (`docs/research/tower.md`) | the director's own idea in full with nobody online, against a store shared between servers | the builder's cost; step 4's blockout |
 | 8 | **Teams of three,** the slice one against one | one against one for good | team-building, against harder reading on a phone | step 4 |
 | 9 | **Stars:** copies fuse into a fixed, previewed result, five at most | no fusion at launch | a use for every copy with nothing to lose, against the thrill of a random fuse | after the slice |
 | 10 | **About twelve traits, five or six mutations,** mutations from the Void weather | none at launch | the variable roll on every break, against balance work | after the slice |
@@ -70,7 +72,7 @@ Research's recommendations, 2026-11-09. Each names the simplest option that coul
 | 17 | **The long game's five rules:** tracks side by side, a token from every action, counters, luck as one number, tracks opened one at a time | add tracks as they come to mind | a grind with a structure, against holding back tracks the director wants early | each update |
 | 13 | **Calamity's minimum is measured against a player's own strength** | the sketch's share of the total | newcomers can earn beside a strong player, against a rule that's a little harder to state | the director; under "Challenged", item 4 |
 | 14 | **Every roll shows its odds and has a floor.** Nothing random, no reroll and no luck is sold at launch | sell rerolls with odds shown | no rule to trip and a fair game, against the most common income of the genre | the director, before any product |
-| 15 | **Launch holds** the base, the Grid's first layers, the shop, 12 to 16 fighters, the Tower, the Index and stars. The arena and Calamity are the first updates | everything in the sketch at launch | a date that can be met at the bar, against a thinner first week | the slice's verdict |
+| 15 | **Launch holds** the base, the Grid's first layers, the shop, 12 to 16 fighters, the first mutations, the Tower, the Index and stars. The arena and Calamity are the first updates | everything in the sketch at launch | a date that can be met at the bar, against a thinner first week | the slice's verdict |
 | 16 | **NEXT isn't shown to players** until a licence exists | show it locked | no promise we can't keep, against a mystery at the top of the ladder | the director |
 
 ## Open
@@ -82,13 +84,13 @@ The directive's twelve areas (section 21), and what settles each.
 | Void Shard shop | `docs/design.md`, "The Void Shop" | a balance run for chances, quantities and prices |
 | Electricity | "The Grid" | TR2; the director's lock on proposal 1 |
 | Processing | "Shards and Breakers" | TR2 |
-| Initial roster | 12 to 16, one of each rarity below NEXT at least | the first fighter's timed cost (step 3) |
+| Initial roster | 12 to 16; the top rarities may fill through updates | the first fighter's timed cost (step 3) |
 | Training | stations that work by themselves; a short burst by hand as a bonus | TR2 |
 | Void Clash | teams of three; the Tower first, the arena later | step 4 |
 | Combat | one basic attack and one signature skill; 15 to 25 seconds shown | the first fighter (step 3) |
 | Fusion | stars | after the slice |
 | Traits and mutations | proposal 10 | a balance run, after the slice |
-| Economy | "What you own and spend" | a balance run before any price is built |
+| Economy | "What you own and spend"; a fighter's work stays bounded and the steep growth sits in stations and Grid upgrades ("The Grid") | a balance run before any price is built |
 | Monetization | nothing sold in the slice. First candidates, all certain: slots, battery hours, an automation step early, the lift at half price, looks. The director's reference sells four passes and none is random (`docs/research/tower.md`) | the director, before any product |
 | Release scope | proposal 15 | the slice's verdict |
 

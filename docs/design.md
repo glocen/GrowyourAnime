@@ -70,7 +70,7 @@ The director, 2026-11-09: "the electricity thing features need to be amazing and
 1. **Three numbers, no more:** MAKE (kW), USE (kW), STORED (kWh). They are the only electricity the screen shows.
 2. **Spare power sells itself.** MAKE minus USE becomes credits every second. Nothing is wasted, so every upgrade to the Grid pays.
 3. **Everything else is seen in the world.** Cables pulse with what flows through them and thicken under load. A machine that's short dims and slows. A full battery glows.
-4. **Short power never destroys anything.** Machines slow in proportion, in the order the Board sets.
+4. **Short power never destroys anything.** When USE passes MAKE, every machine slows by the same share. Any machine can be paused with its progress kept, so one big shard never freezes a base. Choosing which machines keep full power is a later layer (priorities, below).
 5. **The choice is where the power goes:** into Breakers (more fighters), into training (stronger ones), into research (permanent upgrades), or out as credits.
 
 **Where power comes from** [P]. Each source has its own rhythm:
@@ -84,7 +84,7 @@ The director, 2026-11-09: "the electricity thing features need to be amazing and
 | A reactor that burns void essence | steady and costly | later |
 | A Calamity's core, as a trophy | a small permanent source | later |
 
-**By hand first** (the director: "it could start by players manually producing electricity (maybe it an bad idea)"). [P] It's a good idea in one place and a bad one everywhere else. Good: the first shard is grown by the player's own held input, the game's first verb. Then the first fighter steps onto the dynamo, the cables light without the player, and the handle is never needed again: the first automation, inside the first 15 seconds. Kept after that only as a short bonus burst the player may choose. Bad: as the routine way to make power. The directive, section 6, rules out "constant tedious manual interaction".
+**By hand first** (the director: "it could start by players manually producing electricity (maybe it an bad idea)"). [P] It's a good idea in one place and a bad one everywhere else. Good: the first shard is grown by the player's own held input, the game's first verb. Then the first fighter steps onto the dynamo, the cables light without the player, and the handle is never needed again: the first automation, inside the first 15 seconds. Kept after that only as a short burst on a charge that refills, which the player may choose: something for the hands between shelves, never a duty. Bad: as the routine way to make power. The directive, section 6, rules out "constant tedious manual interaction".
 
 **Automation comes in steps** [P], each one a thing the player did by hand until then: growing by hand, then fighter-powered; loading each shard, then a queue that feeds the Breakers; placing each new fighter, then fighters that walk to the best free station; and so on up. Each step is an unlock the player feels.
 
@@ -95,7 +95,9 @@ The director, 2026-11-09: "the electricity thing features need to be amazing and
 - **Neighbours on the floor:** some machines lift the ones beside them, so where a machine stands matters. This is the cheapest true factory depth, and it needs no wiring.
 - **Priorities on the Board:** which machines keep full power when the Grid is short.
 
-**Away from the game.** [D] The director, 2026-11-09: the game "need to play even when the players left". [P] The base is a factory that runs itself, so it runs as usual while its owner is away: Breakers finish, fighters train, spare power sells. The batteries set how many hours of that are banked for the return. One rule covers every machine, bigger batteries mean a longer night's work, and nothing is ever lost by being away.
+**Away from the game.** [D] The director, 2026-11-09: the game "need to play even when the players left". [P] The base is a factory that runs itself, so it runs as usual while its owner is away: Breakers finish, fighters train, spare power sells. The batteries set how many hours of that are banked for the return. One rule covers every machine, bigger batteries mean a longer night's work, and nothing is ever lost by being away. A Breaker that finishes while its owner is away holds its fighter, so the return opens on a row of reveals, and a base makes at most one fighter per Breaker in an absence.
+
+**One fighter number can't carry both fights and income** (the cold read, `docs/research/cold-read.md`, 4). [P] A fighter's work on a dynamo stays in the same bounded range as its strength. The steep growth lives in the stations and the Grid's upgrades, which multiply it. So the factory is what scales, and no rarity makes the fighters below it useless. A balance run first.
 
 **What the Grid never has:** voltage, phases, wiring puzzles, anything that breaks, or a number a ten-year-old can't read off the screen.
 
@@ -106,7 +108,9 @@ The director, 2026-11-09: "the electricity thing features need to be amazing and
 - [P] **A shard's type names its fighter, as a seed names its plant.** Each type has its own look, rarity, price, break time and power draw. What the player buys is known. What stays a surprise: which shards the shop holds, who is inside a type the first time it's grown, and the mutation and trait each break rolls.
 - [P] **Bought shards are certain, earned shards are mystery.** A second kind of shard, never sold, comes from the Tower, Calamities and Index milestones, and grows one fighter from a pool, with its odds shown. So the roll on who you get exists, and money never touches it (`docs/roblox-rules.md`, "Paid random items").
 - [P] A shard's rarity sets how long it takes to break and how much power it draws: seconds for the first, minutes in the middle, hours at the top. Luck finds a top shard, and the Grid earns it: on a weak Grid it still breaks, slowly. The fighter grows in view the whole time.
-- [P] **Overcharge:** spend stored energy on a break to finish it faster. Whether it may also lift a break's odds is [O]: it would be a luck item, and the rule on those is in "Luck".
+- [P] **Every break rolls,** from the slice on: a mutation, at a base chance that a Void weather multiplies. The grow is the game's basic action, and it must carry a roll (`docs/research/first-seconds.md`, item 6). The roll is made by the server when the break finishes, never when it's loaded or opened, so holding a finished Breaker for a weather gains nothing.
+- [P] **A finished Breaker waits for its owner's hand.** It glows, and the owner opens it, so every reveal is watched.
+- [P] **Overcharge:** spend stored energy on a break to finish it faster, for instance inside a weather. Whether it may also lift a break's odds is [O]: it would be a luck item, and the rule on those is in "Luck".
 - [O] Prices, how many types at launch (one per fighter), how many Breakers a base starts with (the blockout tries two).
 
 ## The Void Shop
@@ -124,6 +128,7 @@ The director, 2026-11-09: "the electricity thing features need to be amazing and
 3. **A charged shelf.** Now and then one shelf comes charged by the Void weather, and what those shards grow is sure to carry its mutation. It's the same on every server, so it's the moment players tell each other about.
 4. **Luck finds it, the Grid earns it.** A top shard is only as good as the base that breaks it.
 
+- [P] What a player bought is saved against the rotation's number, so changing server never refills a limit. No client can read the coming shelves ahead: only the hint shows.
 - [P] No paid restock at launch. A paid reroll of a random shelf is a question Roblox hasn't answered (`docs/roblox-rules.md`).
 - [O] Each shard's chance, quantity and price. A balance run first, then live numbers.
 - [O] Whether the Void weather and Calamities run from the same clock, so every server lives the same moment. Research's start: yes.
@@ -136,12 +141,13 @@ The director, 2026-11-09: "the electricity thing features need to be amazing and
 - [P] The targets to test in a balance run before any formula is built: one rarity step is worth about a third more strength; a full build (level, stars, a fitting trait) is worth about 60 percent, bounded. Neither is a measurement.
 - [P] Three types to start: close, blade, ranged. One basic attack and one signature skill each.
 - [P] A fighter grows in view: in the Breaker, then in stages as it levels, shown by size, aura and gear that every fighter shares, so no fighter needs extra art per stage.
-- [O] How many fighters at launch. Research's range is 12 to 16, with at least one in every rarity below NEXT. Decided once the first fighter's cost is timed (`docs/production-plan.md`, step 3).
+- [O] How many fighters at launch. Research's range is 12 to 16. The top rarities may stay empty at launch and fill through updates: the directive lists the ladder and doesn't ask for every step on day one. Decided once the first fighter's cost is timed (`docs/production-plan.md`, step 3).
 
 **Mutations and traits** (section 7: few, distinctive, each one changes how a fight or a base plays):
 
 - [P] About twelve traits, rolled when a fighter is grown. Some are for fights, some for the Grid.
-- [P] Five or six mutations. Each is a look and one effect, and each comes from the Void weather at the moment of the break.
+- [P] Five or six mutations, the first two or three at launch. Each is a look every fighter can wear and one effect. Each has a base chance on every break, and its Void weather multiplies it.
+- [P] The Void weather runs from the clock from launch, the same on every server. A beaten Calamity adds its own later.
 - [P] The Index records each fighter in each mutation, which is the long collection.
 
 **Fusion** (section 7):
@@ -176,11 +182,13 @@ Three places, three kinds of play. Only the first is in the slice.
 The reference was read on 2026-11-09 (`docs/research/tower.md`, SOURCED). Its tower is a solo climb against the game's own opponents, with health that carries between floors, a record, a lift to floors already reached, and no tickets. Nothing found puts another player's team on a floor, and no mode called "rush" was found. So floors held by other players' fighters is the director's own idea, and the part that makes this Tower ours.
 
 - [P] **A run is a climb.** The team goes up floor by floor, and each floor is one Void Clash. Health carries from one floor to the next. A run ends when the team falls, and nothing is lost by falling: every floor cleared has already paid, and the best floor is the record.
-- [P] **Each floor shows who holds it** before the fight. The first floors hold teams we wrote. Above them, each floor holds the saved team of a real player of about that strength, with their name over it. Every tenth floor is a Void boss of ours.
-- [P] **Your team holds floors too,** on other players' Towers, while you're away. What it won comes back as a gift on your return. Nothing is ever taken from a loser.
+- [P] **Each floor shows who holds it** before the fight. The first floors hold teams we wrote. Above them, each floor holds the saved team of a real player, with their name over it. Every tenth floor is a Void boss of ours.
+- [P] **How a holder is picked:** each floor has a band of team strength (the sum the fight rules compute). The first time a player reaches a floor, a saved team in that band is drawn and stays that floor's holder until beaten, so rejoining never swaps a hard one for an easy one. With no saved team in the band, one of ours stands in.
+- [P] **Your team holds floors too,** on other players' Towers, while you're away. At launch it's there to be fought, and nothing is written back. A gift for what it won comes later, capped per day: uncapped, a second account could feed its owner without end. Nothing is ever taken from a loser.
 - [P] **The Tower runs on the Grid.** Between floors, stored energy can recharge the team. A lift, also on stored energy, starts a run from any floor already held. A stronger base climbs higher, and there are no tickets and no daily limit.
-- [P] **What it pays:** credits and void essence on every floor, more with height, so playing pays more than waiting. A first clear pays what opens the game: new shard types on the shop's shelf, machines, slots, and a line in ascension's lists.
-- [P] **The skyline:** a Tower is lit up to its best floor, with the number on top.
+- [P] **What it pays:** every clear pays void essence and experience for the team, more with height (the directive, section 3: fighters level "through both base training and participating in battles"). Only a first clear pays credits and what opens the game: new shard types on the shop's shelf, machines, slots, a mystery shard on set floors, and a line in ascension's lists. So a lift used over and over never turns stored energy into credits, and the spine holds: fights pay what power can't.
+- [P] A floor already cleared plays at double speed, or goes straight to its card.
+- [P] **The skyline:** a Tower is lit up to its best floor, with the number on top. It's a show and carries no reward, since a quiet server would hand it out.
 - [O] The player's hand during a fight. The reference lets the player cheer and retreat. Ours settles each fight at once, so the choices come between floors. Whether one input during a fight earns its place (a surge from the batteries) is for a blockout after the slice.
 
 **The Void Clash arena,** on the Strip:
@@ -199,7 +207,7 @@ The reference was read on 2026-11-09 (`docs/research/tower.md`, SOURCED). Its to
 The director: "we should add a lot of upgrade features and luck".
 
 - [P] Luck lives in five places: what the shop's shelf holds, the mutation a break may add, the trait a fighter is born with, who comes out of a mystery shard, and one roll on the player (below).
-- [P] **Luck is one number the player owns,** shown on screen. The Index, research, ascension and the Void weather feed it, and the odds a player sees move with it.
+- [P] **Luck is one number the player owns,** shown on screen. The Index, research, ascension and the Void weather feed it, and the odds a player sees move with it. The shop's shelf is the one exception: it's the same for everyone, so no player's luck or counter touches it.
 - [P] Every roll shows its odds. Every roll has a counter that guarantees the better result after a fixed number of tries, so bad luck is a goal with an end.
 - [D] No roll, reroll or luck item is sold for Robux, or for anything Robux buys, until Roblox's rules for it are built in and the director has approved the design (sections 7 and 15; `docs/roblox-rules.md`).
 
@@ -220,14 +228,14 @@ The director's reference for a grind that doesn't end was read on 2026-11-09 (`d
 | Track | Its ladder | It changes |
 |---|---|---|
 | The Index | every fighter, then every fighter in every mutation | luck and credits per page; the Index wall in the base |
-| A fighter | level by training, stars by copies, a trait by reroll | its strength, its power, its look by stage |
+| A fighter | level by training and by fights, stars by copies, a trait by reroll | its strength, its power, its look by stage |
 | The Grid | research, machine levels, modules | what the base makes, and how it looks and sounds |
 | The Tower | floors without an end | what the shop and the machines open to; the skyline |
 | The clan | one roll on the player | one bent for the whole base |
 | Ascension | a checklist across the whole game, tier by tier | the base's power, credits and luck, and its look |
 
 - [P] **Ascension is the sketch's "prestige", without a wipe.** Each tier is a list that sends the player through every part of the game (break this many, reach this floor, fill this page, make this much power). Fighters are valuables, so nothing the player owns is ever reset to climb.
-- [P] Launch holds the Index, the fighter's level and stars, the Grid's first layers and the Tower. The others follow, one per update.
+- [P] Launch holds the Index, the fighter's level and stars, the first mutations, the Grid's first layers and the Tower. The others follow, one per update.
 - [P] **The warning, built in:** content is rows, so a weekly update is a new shard, a new weather, a new floor set or a new Calamity, made without new code.
 
 ## The player
@@ -250,8 +258,14 @@ The sketch: "level, prestige, Clan rolling systems, traits, aura, race..".
 | Research data | the research machine, which runs on power; Calamities; Index milestones | permanent upgrades to the base |
 
 - [P] The slice has power and credits only. Each of the other two arrives with the system that spends it.
-- [P] The first time a fighter is found, the Index pays credits. So the very first reveal pays, nine seconds in.
+- [P] The first time a fighter is found, the Index pays credits. So the very first reveal pays, at about second 8.
 
 ## What's built when
 
 `docs/production-plan.md`, "The slice", is the order. In short: the slice proves grow, power and one fight. Launch adds the Tower, the Index, stars and the Grid's first layers. The arena, Calamity and each deeper layer follow as updates, chosen by what was measured.
+
+**Stated, so nobody guesses** [P]:
+
+- **Trading and gifting:** not at launch. Fighters are valuables, and a trade is the hardest transaction to keep safe. Looked at again once step 2's transactions have held in public.
+- **Codes, daily rewards, a global board of best floors:** cheap and usual for the genre, each a small piece after the slice. None is in the slice.
+- **The gift for floors your team held:** after launch ("Where fights happen").

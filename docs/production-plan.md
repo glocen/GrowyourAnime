@@ -21,7 +21,7 @@ Research's recommendation, 2026-11-09, on the director's "think how much of the 
 |---|---|---|---|
 | Design, research, quality | Quaestor | now | the decisions, the numbers, the verdicts |
 | Code | Faber | now | the data, the rules, the base, the fights, the screens |
-| Fighters | Modulo | now | each fighter's model, clips and the look of its skill: the game's main content |
+| Fighters | Modulo | Wednesday 2026-11-11 (AR1) | each fighter's model, clips and the look of its skill: the game's main content |
 | QA | Probator | the slice's first playable (step 2) | fighters are valuables: someone must try to duplicate, lose and break them, and run two players. Before a build there's nothing to test |
 | World and screens' art | Tessera | once the grey slice is proven (after step 3) | the base kit, the pods, the plaza, the arena and the screens' art kit, so Modulo stays on fighters |
 
@@ -36,7 +36,7 @@ The smallest loop that proves the game (the directive, section 17). Grey boxes u
 | Step | What exists at its end | Who | It's proven when |
 |---|---|---|---|
 | 0. Day one | the kit, the place, the boot, the type check, the choice of save library (TR1) | Faber; the director's two hands below | Studio boots clean on both sides; the self-test runs |
-| 1. The grey loop | a base, two Void Breakers, a shard grown by hand, a grey fighter that steps out and powers the base, credits ticking from the spare, a stall that sells the next shards, and one fight (TR2) | Faber, to research's feel line | the first 20 seconds are timed against `docs/north-star.md`, and research's verdict says the loop wants a second go |
+| 1. The grey loop | a base, two Void Breakers, a shard grown by hand, two grey fighters, one that powers the base, credits ticking from the spare, a roll on each break, a stall that sells the next shards, and three floors (TR2) | Faber, to research's feel line | the first three minutes are timed against `docs/north-star.md`, and research's verdict says they want a fourth |
 | 2. Keeping it | saving, a fighter's unique id, each transaction safe to repeat and to interrupt; leave, rejoin, the same state | Faber; QA joins | the logic cases on repeats and interruptions pass, and a real leave and rejoin holds |
 | 3. The first fighter | one original fighter at the bar: model, pose, idle, training loop, attack, one skill with its effect; the reveal as the signature moment | Modulo, Faber | research's verdict and a blind read on the reveal; the director's eye |
 | 4. A small game | three fighters, the Tower's first floors, the shop's real rotation from the clock, batteries and the hours away, the Index's first page, the first screens on one kit | all | a session of ten minutes has something to do in every minute, and a night away comes back to a base that worked |
@@ -44,7 +44,7 @@ The smallest loop that proves the game (the directive, section 17). Grey boxes u
 
 After step 5 the slice gets a whole-game verdict, and what comes next is chosen from what was measured: traits, mutations, stars, the Grid's deeper layers, the arena, Calamity, the player's own progress (`docs/design.md`). None of those is a commitment yet, and each enters through its own blockout.
 
-**The date:** the director, 2026-11-09, wants the team at work on Wednesday 2026-11-11 "with a clear vision". Until then research closes the foundation: a cold read of `docs/design.md` by a reader who hasn't seen it, and the director's answers. Step 0 starts that Wednesday.
+**The date:** the director, 2026-11-09, wants the team at work on Wednesday 2026-11-11 "with a clear vision". Until then research closes the foundation: the cold read is in (`docs/research/cold-read.md`), and the director's answers are still to come. Step 0 starts that Wednesday.
 
 ## Content
 

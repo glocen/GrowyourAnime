@@ -49,6 +49,7 @@ On 2026-08-25 Roblox restricted feeds that reward players for watching, for its 
 
 - The maturity label a game of fights without blood gets. Before the game page.
 - Whether a shard that names its fighter, but whose mutation and trait are rolled, counts as a random item when sold for Robux. Before anything is sold.
+- Whether a pass that raises credit income counts as paying for a roll, once every break rolls a mutation and credits buy shards. Before anything is sold.
 - The strike count, and what a strike does to a group.
 
 ## Links

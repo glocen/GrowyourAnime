@@ -75,7 +75,9 @@ Phase 1. A blockout of the whole loop: grey boxes and stand-ins, no art, placeho
 - **Eight plots means eight players per server.** Max Players must be 8: a director's click in Game Settings.
 - **The package's changes: nothing I'd change.** For the data: a preset holds item ids, so one item may sit in several presets and nothing moves between them. Whether a Tower line-up of three may wear one item twice is a phase 3 question. Chambers, bays and the battery all progress over time, so TR2 builds that as one module.
 
-**Status:** started 2026-11-12. The data contract and the save layer first; the world once research has answered the two tier 2 points.
+**Research's answer, 2026-11-12:** yes to both: a pack belongs to everyone, full drops to every hitter, back after a wait; the street's length follows the spacing. Both are written in `docs/design.md`, "The world, in grey". The plot depth and the Shade numbers are fine as read. When the seeds are in Config, run the sim on one player's kills a minute at a crowded pack against a lone player's, and bring it to research if the crowd earns more than half again. Max Players at 8 goes to the director.
+
+**Status:** started 2026-11-12. The data contract and the save layer first; the world next, its two tier 2 points answered.
 
 ## Next, not yet written
 

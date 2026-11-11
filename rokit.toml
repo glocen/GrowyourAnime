@@ -5,3 +5,5 @@
 rojo = "rojo-rbx/rojo@7.7.1"
 # The type check's tool (the handbook's studio/lynx.md). Trust it once before the first install: rokit trust JohnnyMorganz/luau-lsp
 luau-lsp = "JohnnyMorganz/luau-lsp@1.70.1"
+# The runner for pure rule cases with Studio closed (tools/checks/logic_offline.luau). Free, MPL-2.0.
+lune = "lune-org/lune@0.11.1"

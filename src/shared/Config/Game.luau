@@ -1,13 +1,12 @@
 --!strict
--- Game-wide settings.
+-- Game-wide settings (shared).
 
 return {
 	Version = "0.1.0",
-	-- Each place sets the Workspace attribute "PlaceRole" to one of these, which chooses the role-specific services
-	-- and controllers that boot (Services/<role>, Controllers/<role>). Read it through Util.PlaceRole.
+	-- A place sets the Workspace attribute "PlaceRole" to one of these, which chooses the role's services and controllers
+	-- (Services/<role>, Controllers/<role>) beside Core. Read it through Util.PlaceRole. The game is one place today.
 	PlaceRoles = {
-		Hub = "Hub",
-		Match = "Match",
-	},
-	DefaultPlaceRole = "Hub", -- the fallback when a place doesn't set the attribute
+		Main = "Main",
+	} :: { [string]: string },
+	DefaultPlaceRole = "Main", -- the fallback when a place doesn't set the attribute
 }

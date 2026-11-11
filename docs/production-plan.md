@@ -2,7 +2,7 @@
 
 What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-11:** production starts. The design, the balance model, the roster and the first requests are written. Nothing is built. The repo and the place exist; the builder joins them in TR1.
+**Status, 2026-11-12:** phase 0 done (TR1): the repo is joined and pushed, the kit and both guards run, the builder's three calls are made. Phase 1 starts with TR2, the circuit in grey. Nothing players see is built yet.
 
 **The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
 

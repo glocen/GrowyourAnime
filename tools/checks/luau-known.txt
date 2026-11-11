@@ -1,0 +1,2 @@
+# Findings luau_check.py already knows, one per line: file, kind, message. Written by --freeze, never by hand.
+# A finding listed here isn't reported. Fix some, freeze again, and this list only shrinks.

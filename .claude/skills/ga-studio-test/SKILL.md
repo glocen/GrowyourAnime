@@ -5,7 +5,7 @@ description: Test and inspect Grow your Anime in Roblox Studio through the Studi
 
 # Testing in Studio (shared by the team)
 
-Carried from NEXT Button on 2026-11-09. The kit it names (the self-test, the debug bridge, the type check) arrives with the builder's day one (`docs/test-requests.md`, TR1), and the builder corrects this page then.
+Carried from NEXT Button on 2026-11-09. The kit it names (the self-test, the debug bridge, the logic tests, the type check) came in with TR1 on 2026-11-12 (`docs/test-requests.md`).
 
 ## Before you trust a result
 
@@ -27,13 +27,16 @@ Carried from NEXT Button on 2026-11-09. The kit it names (the self-test, the deb
 - **Debug bridge** (Server context, Studio only): `NL_Debug:Invoke("Commands")`. `Commands` lists every command.
 - **Live numbers:** `NL_Debug:Invoke("Tune", path, value)`, never a required Config, since a snippet's `require` is its own copy.
 - **Logic tests:** `NL_Debug:Invoke("LogicTests")` check the rule math. **World report:** `none yet` checks the place's tagged markers. Run both with the self-test after a change.
+- **Pure rules with Studio closed:** `lune run tools/checks/logic_offline.luau src/server/Services/Core/LogicTestService/Cases` runs the same case files as `LogicTests`, in about a second. Exit 0 is a pass. A case that needs the engine reports `STUDIO`, never a pass.
+- **Presets:** `NL_Debug:Invoke("Preset")` reads the one being played, `("Preset", name)` switches every side. The self-test and the logic tests run on `Baseline` and put the played one back.
+- `t.Press` and `t.Hold` need the game's Scriptable bindings (`TestInput.ContextName`). The game has none yet, so a case that presses waits until a piece adds them.
 - **Test input in a Run:** see `handbook/testing/studio-testing.md`.
 - `TeleportService` doesn't work in Studio: teleports are tested in a published dev copy. Teleport error 773 means the target place isn't published.
 
 ## MCP limits
 
 - `execute_luau` runs as a plugin with its own module instances, so it can't see live game state through `require`. Use the debug bridge from the Server context. Cold-require a module (`:Clone()`) after editing it.
-- `Workspace.AuthorityMode` can't be read or set from MCP. Ask the director to set it in the Properties panel.
+- `Workspace.AuthorityMode` reads and sets from MCP in Edit (tested 2026-11-12). This game runs it Automatic (`docs/engineering-plan.md`, "The builder's calls"). A change in the open place lasts only once the place is saved.
 - `HttpService` is disabled for MCP plugin code too.
 - `user_mouse_input` and `user_keyboard_input` add about 0.3 s per action, too slow for combo timing. For exact timing, fire Scriptable test bindings from the Client context. Input-to-server delay varies between sessions, so timed tests measure it rather than assume it.
 - To place a player for a test, set the root CFrame or use `character:PivotTo` from the Server context. Client placement doesn't hold under Server Authority.

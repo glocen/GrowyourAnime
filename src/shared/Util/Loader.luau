@@ -24,6 +24,11 @@ type Entry = {
 
 local Loader = {}
 
+-- xpcall's handler: the error with its stack.
+local function traceback(message: any): string
+	return debug.traceback(tostring(message), 2)
+end
+
 local function collect(folder: Instance, into: { ModuleScript })
 	for _, child in folder:GetChildren() do
 		if child:IsA("ModuleScript") then
@@ -56,7 +61,7 @@ function Loader.Boot(label: string, folders: { Instance? }): ({ [string]: Module
 		end
 	end
 
-	table.sort(entries, function(a, b)
+	table.sort(entries, function(a: Entry, b: Entry): boolean
 		local priorityA, priorityB = a.Module.Priority or 100, b.Module.Priority or 100
 		if priorityA ~= priorityB then
 			return priorityA < priorityB
@@ -76,7 +81,7 @@ function Loader.Boot(label: string, folders: { Instance? }): ({ [string]: Module
 	for _, entry in entries do
 		local init = entry.Module.Init
 		if init then
-			local ok, err = xpcall(init, debug.traceback, entry.Module)
+			local ok, err = xpcall(init :: (any) -> any, traceback, entry.Module)
 			if not ok then
 				errors += 1
 				Log.Error(label, `{entry.Name}.Init failed: {err}`)
@@ -96,7 +101,7 @@ function Loader.Boot(label: string, folders: { Instance? }): ({ [string]: Module
 		local start = entry.Module.Start
 		if start then
 			task.spawn(function()
-				local ok, err = xpcall(start, debug.traceback, entry.Module)
+				local ok, err = xpcall(start :: (any) -> any, traceback, entry.Module)
 				if not ok then
 					startErrors += 1
 					Log.Error(label, `{entry.Name}.Start failed ({startErrors} Start failure(s) so far): {err}`)

@@ -81,6 +81,19 @@
             "timeout": 15
           }
         ]
+      },
+      {
+        "matcher": "startup|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/instruction_lint.py"
+            ],
+            "timeout": 30
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -106,6 +119,33 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "^mcp__",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/tool_guard.py"
+            ],
+            "timeout": 15,
+            "onFailure": "block"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/tool_guard.py"
+            ],
+            "timeout": 15
+          }
+        ]
+      },
       {
         "matcher": "^mcp__.*Roblox.*__open_cloud_invoke$",
         "hooks": [

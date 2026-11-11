@@ -1,6 +1,6 @@
 # Engineering plan
 
-The contracts the design asks of the code, and how the code is tested. Research's sketch of 2026-11-11, from the package's shared contracts (`docs/archive/package-v13/03_SHARED_DATA_AND_BEHAVIOR_CONTRACTS.md`) and the design in `docs/design.md`. Nothing here is built. **The builder owns this file from its first session** and corrects it freely: research wrote what the design needs, not how to code it.
+The contracts the design asks of the code, and how the code is tested. Research's sketch of 2026-11-11, from the package's shared contracts (`docs/archive/package-v13/03_SHARED_DATA_AND_BEHAVIOR_CONTRACTS.md`) and the design in `docs/design.md`. **The builder's from 2026-11-12** (TR1), corrected where the code taught something.
 
 ## Locked
 
@@ -14,6 +14,31 @@ Nothing yet. A line moves here when the builder and research agree it's settled,
 4. **The server keeps time as stamps, not loops.** A machine stores its progress and when that was read. One pure function advances a base from one time to another, online or away.
 5. **One owner per change.** Every change to something a player owns goes through one server function for that kind of change.
 6. **One resolver.** Every stat anyone reads, and every hit, comes from one function each.
+
+## The builder's calls
+
+Made in TR1, 2026-11-12. Each is the builder's technical call (`AGENTS.md`, "Design changes"), and each says what would reopen it.
+
+**The save layer: ProfileStore kept, everything above it ours.**
+
+- **ProfileStore stays,** unedited, in `src/libraries/server/`, fetched from its source (Mad Studio's ProfileStore, a pinned release) when TR2 builds saving, and called through one wrapper of ours. Its session lock is what keeps two servers from writing one profile, the classic way a game duplicates items, and the directive says it plainly: "do not rewrite a proven persistence library just to create a new system" (section 9).
+- **`PlayerHandlerData` and `ProductManager` are replaced,** with a layer written fresh for this game. NEXT Button's (`src/owner/`, read 2026-11-12 on the director's OK) holds pets as counts by kind, where section 9 wants a unique id per owned Voidkin with its own level, stars and history. It changes a profile through about thirty-five one-field setters with game rules inside them, and syncs the client with one remote event per field. Only its store receipts are safe from a repeat. The director, 2026-11-12, on reading it: "sure but i think we should redo everything so we make it perfect, next button was kinda.. rushed". That word covers NEXT Button's data system.
+- **Kept as lessons, rewritten in our code:** a receipt is granted only once its purchase id is saved (ProfileStore's documented way); `AddUserId` on every profile, for data deletion requests; a profile whose session ends kicks its player; Studio and live servers use different stores.
+- **Reopen it** if ProfileStore's lock fails a test we write for it, or Roblox ships a save service that locks sessions itself.
+
+**Server Authority: off** (`Workspace.AuthorityMode` Automatic).
+
+- The player's avatar is never a target and never deals damage (`docs/design.md`, "Combat"): the server runs every Voidkin, Shade and keeper. Server Authority's prediction protects movement and hits that the player times, and this game has none.
+- What it would cost: more server load, the step's rules on every system ([server authority](../handbook/engineering/server-authority-and-netcode.md#the-rules-of-the-step)), and animation ids that play only once published, which slows Modulo's iteration.
+- Where the avatar's position earns something (the lead's leash, a pickup), the server checks the avatar's speed.
+- **Reopen it** if a player-timed action or movement against another player is designed.
+
+**Pure rules run with Studio closed,** under Lune (`rokit.toml`), through `tools/checks/logic_offline.luau`.
+
+- A rule's cases live in `src/server/Services/Core/LogicTestService/Cases/`, one file per rule module, and require their rules through `game:GetService("ReplicatedStorage")`. The same file runs in Studio's `LogicTests` and offline:
+  `lune run tools/checks/logic_offline.luau src/server/Services/Core/LogicTestService/Cases`
+- Tried on `Shared.Rules.OpLedger`: every case passes offline, and a planted bug (a repeat overwriting the first answer) fails it.
+- The runner never proves the engine does what a rule assumes: cases about players, attributes, remotes and saves stay in Studio.
 
 ## The resolver
 
@@ -35,7 +60,7 @@ The package's D04, and the heart of `docs/balance.md`.
 - The profile holds ids and numbers only: no model, part or display name.
 - `Version` and one migration per step, from the first save.
 - A nickname is stored raw and filtered for each viewer when shown (`docs/roblox-rules.md`).
-- Whether this sits on the director's data system (ProfileStore, `PlayerHandlerData`, `ProductManager`) as in NEXT Button is the builder's first call (`AGENTS.md`, "Data and code").
+- It sits on ProfileStore, under a layer of our own: see [the builder's calls](#the-builders-calls).
 
 ## Who owns what
 
@@ -54,7 +79,7 @@ The package's D04, and the heart of `docs/balance.md`.
 ## Transactions
 
 - Each change to a valuable is one server function: check, then apply everything to the profile, with no yield between.
-- The client sends an operation id with each request. The server remembers recent ones and answers a repeat with the first result, so a retry can't buy, break or forge twice.
+- The client sends an operation id with each request. The profile holds the recent ones with their first answers (`Shared.Rules.OpLedger`), written in the same change as the operation, so a retry can't buy, break or forge twice, even after a crash or a server hop.
 - A break's inputs (the shard, its ground, the luck applied) are fixed when it enters a chamber and can't change after.
 - A reward is granted before its animation, never by it.
 - Nothing above Mythical, and nothing Limited, can come from any roll at launch: refused in the rules themselves.
@@ -80,7 +105,8 @@ A module is worth it when its second user exists in the design. Building for one
 
 | System | First check | Then |
 |---|---|---|
-| Any code | the type check with Studio closed | |
+| Any code | the type check with Studio closed: `py tools/checks/luau_check.py` prints `0 new` | |
+| Pure rules | their logic cases with Studio closed, under Lune | the same cases in Studio's `LogicTests` |
 | Definitions | a logic case: ids unique, every row complete, rarity order exact, nothing above Mythical obtainable | |
 | Stats and the hit | pure-rule cases: each source alone, all together, each ceiling, the breakdown summing to the total, no source multiplying another | the game's rows run through `tools/balance/sim.py`, so the simulation and the game read one set of numbers |
 | The Breaker, bays, battery | pure-rule cases over time: shortage, overflow, away and back, a chamber emptied mid-work | a real leave and rejoin |

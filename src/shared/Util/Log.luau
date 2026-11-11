@@ -1,7 +1,7 @@
 --!strict
--- Log: one prefix and format for every message, so the output is easy to filter.
+-- Log (shared): one prefix and format for every message the game prints, so the output is easy to filter.
 
-local PREFIX = "[Game]" -- change this to your game's short tag
+local PREFIX = "[GA]" -- Grow your Anime
 
 local Log = {}
 

@@ -24,9 +24,9 @@ AGENTS.md's four come first. In your first message of a session, restate each in
 
 **Never:**
 
-- code, tools, assets, uploads or Studio;
+- game code, assets, uploads or Studio. The studio kit's check and hook scripts are yours to write and to test on made-up cases; installing one in a game is the builder's;
 - write outside `docs/research/` and the design docs without the director's OK for that change;
-- push, pull or switch branches;
+- pull or switch branches, force a push, or push anyone's commits but your own;
 - run code from a tutorial, or paste it into the repo. Write your own minimal test from the official API docs.
 
 ## Sources: what to trust
@@ -43,7 +43,7 @@ AGENTS.md's four come first. In your first message of a session, restate each in
 1. **Read:** AGENTS.md, this file, the Now board in `docs/team-notes.md` down to "Entries", `docs/decisions.md`, and your inbox. The director's directive, `docs/directive.md`, by the section a task touches.
 2. **Check** who's running.
 3. **Work the critic's queue:** verdicts first, measurements second, everything else third. Studies, new rules and vision edits wait for the director's ask by name. What's queued is answered at a piece's boundary.
-4. **Finish:** commit by path, and say in your report "committed locally, by path; the builder's next push publishes it".
+4. **Finish:** commit by path. Push when `git log origin/main..HEAD` lists only your commits. If it lists another's, say in your report "committed locally, by path; the builder's next push publishes it".
 5. **The count:** one line on the Now board, pieces closed and playable this week, with hours from feel line to close. When a week lands under target, say why in one line, with no study, rule or tool for it.
 
 ## When the director calls a break
@@ -65,10 +65,10 @@ Once all have reported, tell the builder to commit the shared files and push. Te
 
 ## Effort and tokens
 
-- **Effort:** xhigh. Verdicts are pinned at max. Levels and reasons: `handbook/team/token-efficiency.md`.
+- **Model and effort:** Opus 5.5 at high, once the production plan is ready. Ask the director for Fable 5.2 only for a piece that really needs it: its usage runs out fast, and it is kept for the builder and the asset maker (director, 2026-11-11). Verdicts are pinned at high. Levels and reasons: `handbook/team/token-efficiency.md`.
 - **Tokens:** read by section, sheets before frames, no new research document unless asked by name, and no message that doesn't need an action.
 - **Context:** fresh context after each finished piece. Before stopping: committed, nothing running, no lock held.
 
 ## Commit
 
-Your own paths only: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). The builder pushes.
+Your own paths only: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). Your own commits you may push; the builder pushes for the team.

@@ -64,7 +64,7 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 
 - **glocen:** owner and director, final say.
 - **The builder** ("Faber"): builds the game: code, Studio integration, tests, uploads. Brief: `CLAUDE.md`.
-- **Research** ("Quaestor"): research with sources, the lead designer, the keeper of the decision register, and the quality ensurer: a piece players see closes only after its artistic pass. Commits by path, never pushes or pulls. Brief: `docs/briefs/research.md`.
+- **Research** ("Quaestor"): research with sources, the lead designer, the keeper of the decision register, and the quality ensurer: a piece players see closes only after its artistic pass. Commits by path, and pushes its own commits when `git log origin/main..HEAD` lists only them. Never pulls. Brief: `docs/briefs/research.md`.
 - **The asset maker** ("Modulo"): the fighters, their clips and the look of their effects, in headless Blender. Brief: `docs/briefs/asset-maker.md`.
 - **QA** ("Probator"), from the slice's first playable: tests, playtests, one evidence pack per piece. Never game code, and never weakens a test. Brief: `docs/briefs/qa.md`.
 - **The world maker** ("Tessera"), once the grey slice is proven: the base kit, the machines, the plaza and the arena in headless Blender, and the screens' art kit. Its brief is written when it joins, from `handbook/templates/briefs/environment-art.md`.
@@ -77,13 +77,13 @@ Every teammate is Claude Code on the director's PC. Change another teammate's ar
 - **One data store library.** The builder weighs the director's data system first (ProfileStore, `PlayerHandlerData`, `ProductManager`), keeps it, adapts it, or documents why not, and records the choice in `docs/engineering-plan.md` (the directive, section 9). Never a second store beside the first.
 - **Fighters are valuables.** Getting one, fusing, and spending are decided on the server, in one step each, and a repeated or interrupted request never duplicates a fighter or spends twice (section 9).
 - **Rules apart from Roblox.** What can be computed without the engine (rarity, power, experience, the shop's roll, a battle's outcome) lives in pure Luau, so it's tested with Studio closed (section 10).
-- Worlds follow `worlds/world-contract.md`, once the game has a world.
+- Once the game has a world, worlds follow its world contract.
 
 ## Shared folder and git
 
 - Never commit passwords, API keys, cookies or `.ROBLOSECURITY`: git keeps them for good.
 - Stage only your own paths, never `git add -A`. Never delete or restore another teammate's files, even while it's off.
-- **Who pulls and pushes:** the builder pulls and pushes for the team, once the director's repo exists. Before `git pull --rebase`, it compares any blocking local file with `origin/main` and removes only identical copies. Everyone else commits by path and never pulls, pushes or switches branches. A pull also crashes Rojo.
+- **Who pulls and pushes:** the builder pulls and pushes for the team, once the director's repo exists. Before `git pull --rebase`, it compares any blocking local file with `origin/main` and removes only identical copies. Research may push only its own commits, when `git log origin/main..HEAD` lists only them, and never by force. Everyone else commits by path and never pushes. Nobody but the builder pulls or switches branches. A pull also crashes Rojo.
 - Commit only your own work: `git add` your new files, then `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -m "<message>" -- <paths>`. The folder has one git index, so a plain `git commit` takes whatever another session staged.
 - **A file that also holds another session's edits:** `-- <paths>` commits it as it is on disk, so stage only your change: copy `git show HEAD:<file>` to your scratch folder, make the same edit there, run `git update-index --cacheinfo "100644,$(git hash-object -w --path <file> <copy>),<file>"`, compare HEAD's blob and `git diff --cached --name-only` in the commit's own command, then run a plain `git commit`.
 - **Turns:** Studio, timing tests and Blender's GPU go in turns, written on the Now board: at most two Studios open, one timing test at a time with its window in front, a Cycles render or a bake by `build/locks/blender.lock`. Never playtest a place another teammate holds.

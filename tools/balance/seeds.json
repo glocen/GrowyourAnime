@@ -1,0 +1,105 @@
+{
+  "_about": "Seed numbers for the balance model in docs/balance.md. Every value is a starting guess, tuned by play. tools/balance/sim.py reads this file. When the game has its own Definitions, they become the home and this file goes.",
+
+  "growth": { "a": 0.12, "b": 0.004, "maxLevel": 60 },
+
+  "grounds": [
+    { "id": 1, "name": "Lantern Row",     "from": 1,  "to": 9,  "paceHours": 1 },
+    { "id": 2, "name": "Drum Court",      "from": 10, "to": 19, "paceHours": 3 },
+    { "id": 3, "name": "Mask Parade",     "from": 20, "to": 29, "paceHours": 6 },
+    { "id": 4, "name": "Kite Heights",    "from": 30, "to": 39, "paceHours": 10 },
+    { "id": 5, "name": "Ember Stalls",    "from": 40, "to": 49, "paceHours": 15 },
+    { "id": 6, "name": "Mirror Pavilion", "from": 50, "to": 60, "paceHours": 22 }
+  ],
+
+  "base": { "hp": 800, "atk": 100, "def": 50 },
+  "rarityBase": { "Common": 1.00, "Uncommon": 1.08, "Rare": 1.16, "Epic": 1.26, "Legendary": 1.38, "Mythical": 1.50 },
+  "classMult": {
+    "Warrior":  { "hp": 1.00, "atk": 1.00, "def": 1.00 },
+    "Tank":     { "hp": 1.30, "atk": 0.80, "def": 1.25 },
+    "Assassin": { "hp": 0.85, "atk": 1.20, "def": 0.85 },
+    "Mage":     { "hp": 0.90, "atk": 1.15, "def": 0.85 },
+    "Healer":   { "hp": 1.00, "atk": 0.80, "def": 0.95 }
+  },
+  "healerSelfHealPer10s": 0.04,
+
+  "shares": { "base": 35, "stars": 3.5, "gear": 27, "forge": 13.5, "emblems": 11, "jewels": 7, "research": 3 },
+  "starPctOfBase": 0.02,
+  "maxStars": 5,
+  "gearRarity": { "Common": 0.55, "Uncommon": 0.65, "Rare": 0.76, "Epic": 0.88, "Legendary": 1.00 },
+  "forge": { "maxRank": 30, "ranksPerGround": 5, "fullBonusOfGearBase": 0.50 },
+  "choosable": { "singleStatFactor": 3, "defFactor": 2.3, "elemFactor": 0.8 },
+
+  "available": [
+    { "gear": "Uncommon",  "forge": 5,  "emblems": 0.15, "jewels": 0.00, "research": 0.10, "stars": 1 },
+    { "gear": "Rare",      "forge": 10, "emblems": 0.30, "jewels": 0.10, "research": 0.25, "stars": 2 },
+    { "gear": "Rare",      "forge": 15, "emblems": 0.50, "jewels": 0.30, "research": 0.45, "stars": 2 },
+    { "gear": "Epic",      "forge": 20, "emblems": 0.70, "jewels": 0.50, "research": 0.65, "stars": 3 },
+    { "gear": "Epic",      "forge": 25, "emblems": 0.85, "jewels": 0.75, "research": 0.85, "stars": 4 },
+    { "gear": "Legendary", "forge": 30, "emblems": 1.00, "jewels": 1.00, "research": 1.00, "stars": 5 }
+  ],
+  "onBudget": 0.70,
+
+  "ratings": {
+    "list": ["hit", "dodge", "crit", "critres", "block", "pen", "eres"],
+    "fullBuildPointsPerG": 350,
+    "K": 100,
+    "caps": { "dodge": 0.40, "crit": 0.60, "critFloor": 0.05, "critSpan": 0.55, "block": 0.50, "pen": 0.40, "eres": 0.75 }
+  },
+  "defense": { "K": 150, "cap": 0.75 },
+  "crit": { "baseDamage": 0.50, "maxFromItems": 0.50, "guardMaxFromItems": 0.50 },
+  "buckets": { "bonusCap": 2.00, "reduceCap": 0.70, "typeAdvantage": 0.25, "typeDisadvantage": 0.15, "blockReduce": 0.50 },
+  "lifesteal": { "typical": 0.03, "cap": 0.10, "perSecondCapOfMaxHp": 0.008 },
+
+  "attack": { "comboCoefs": [0.9, 0.9, 1.4], "comboSeconds": 1.8, "signatureCoef": 4.0, "signatureEvery": 10 },
+
+  "enemy": {
+    "ttk": { "ordinary": 5, "elite": 18, "keeperByGround": [45, 50, 60, 65, 70, 75] },
+    "def": 40,
+    "ordinaryHpLossPerKill": 0.12,
+    "eliteHpLoss": 0.35,
+    "keeperHpLoss": 0.70,
+    "keeperRatingsPerG": { "dodge": 20, "critres": 30, "block": 30, "eres": 30 }
+  },
+
+  "clash": { "hpFactor": 3.0, "ratioMin": 0.2, "ratioMax": 2.0 },
+
+  "earnBucketCaps": { "credits": 1.50, "xp": 1.50, "electricity": 1.00 },
+
+  "pace": { "killsPerHour": 450, "creditsPerKillPerG": 10, "forgeShareOfIncome": 0.45 },
+
+  "profiles": {
+    "casual": { "hoursPerDay": 0.5, "sessions": 1, "prismaticPerDay": 0.5 },
+    "active": { "hoursPerDay": 1.5, "sessions": 2, "prismaticPerDay": 1.0 },
+    "heavy":  { "hoursPerDay": 4.0, "sessions": 3, "prismaticPerDay": 2.0 }
+  },
+
+  "shards": {
+    "perHour": { "Standard": 18, "Enriched": 3 },
+    "enrichedFromGround": 2,
+    "prismaticFromGround": 3,
+    "pools": {
+      "Standard":  { "Common": 60, "Uncommon": 30, "Rare": 9,  "Epic": 1,  "Legendary": 0,  "Mythical": 0 },
+      "Enriched":  { "Common": 0,  "Uncommon": 45, "Rare": 35, "Epic": 16, "Legendary": 4,  "Mythical": 0 },
+      "Prismatic": { "Common": 0,  "Uncommon": 0,  "Rare": 40, "Epic": 38, "Legendary": 18, "Mythical": 4 }
+    },
+    "featuredWeight": 3,
+    "breakSeconds": { "Standard": 30, "Enriched": 900, "Prismatic": 10800 },
+    "energy": { "Standard": 20, "Enriched": 200, "Prismatic": 1500 },
+    "regionFactor": [1, 1.5, 2, 4, 6, 7],
+    "starCopies": { "Common": [2, 4, 8, 12, 20], "Uncommon": [2, 3, 6, 10, 15], "Rare": [1, 2, 4, 6, 10], "Epic": [1, 2, 3, 4, 6], "Legendary": [1, 1, 2, 3, 4], "Mythical": [1, 1, 1, 2, 2] },
+    "value": { "Common": 1, "Uncommon": 3, "Rare": 10, "Epic": 40, "Legendary": 200, "Mythical": 1000 }
+  },
+
+  "luck": { "cap": 0.40, "breakerTuningMax": 0.15, "infusion": [ { "lift": 0.10, "energy": 300 }, { "lift": 0.25, "energy": 900 } ] },
+
+  "rift": { "everyMinutes": 30, "seconds": 60, "speed": 20 },
+
+  "bays": {
+    "workersByGround": [2, 3, 4, 5, 6, 6],
+    "perMinutePerAptitude": 1.0,
+    "perLevel": 0.02,
+    "batteryHoursByGround": [2, 3, 4, 6, 8, 8],
+    "chambersByGround": [2, 2, 3, 3, 4, 4]
+  }
+}

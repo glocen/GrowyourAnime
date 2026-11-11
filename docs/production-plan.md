@@ -1,64 +1,85 @@
 # Production plan
 
-What's next, in order. The design is in `docs/north-star.md` and `docs/decisions.md`. A status changes here and nowhere else.
+What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-09:** preproduction. The folder and the foundation exist. Nothing is built, and no place exists.
+**Status, 2026-11-11:** production starts. The design, the balance model, the roster and the first requests are written. Nothing is built. The repo and the place exist; the builder joins them in TR1.
 
-**The aim** (the director, `docs/directive.md`, sections 1 and 17): "Build an excellent small experience first. Design its foundations intelligently. Expand through justified systems." Every estimate here is a guess until a piece has closed.
+**The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
 
 ## How we run here
 
-- The rules: `AGENTS.md`. The process stays light: this repo keeps the vision, the design, the decisions, the contracts, the backlog, the risks, the asset log, the tests and the current state. Everything about how the studio works is in `handbook/`, linked and never copied.
-- The director, 2026-11-09: "dont bother with what was said about project lynx framework ... we will use our brand new one". So where the directive describes LYNX (section 16, and item G of section 22), the studio's own LYNX in the handbook is what holds.
-- LYNX runs one experiment at a time, between pieces: `handbook/studio/lynx.md`. This game's three: `docs/engineering-plan.md`, "New experiments".
-- A piece is a request entry: `docs/test-requests.md` for the builder and QA, `docs/asset-requests.md` for the makers.
+- The rules: `AGENTS.md`. A piece is a request entry: `docs/test-requests.md` for the builder and QA, `docs/asset-requests.md` for the asset maker.
+- **Lighter:** one write per piece, one home per fact, no document that isn't a rule, a design, a request or the board.
+- **Quality:** every piece players see goes feel line, blockout, build, review from the player's camera. Research's verdict closes it.
+- **Numbers** live in the seeds, then in the game's Definitions, and are tuned by playing with them exposed at runtime.
+- LYNX runs one experiment at a time, between pieces: `handbook/studio/lynx.md`.
+
+## Who makes what
+
+The director asked, 2026-11-11, whether Modulo should make all the HUD design, the UI textures and effects, textures and the map. **Yes for everything that's a look, with an order, and with two things split off.**
+
+| Work | Who | Note |
+|---|---|---|
+| Voidkin and Shades: models, textures, clips, the look of each signature | Modulo | the game's main content, and always first in Modulo's queue |
+| The UI kit: frames, icons, bars, the two themes, the look of interface effects | Modulo, from `docs/ui.md` | one kit, made once |
+| Where things sit on a screen, what shows when, the hierarchy | Quaestor | `docs/ui.md` |
+| Building the screens and making them behave | Faber | from one component library |
+| The world kit: stalls, lanterns, gates, the base's machines | Modulo | after the first three fighters |
+| The map's layout: where grounds, gates and bases sit | Quaestor lays it out in grey, Faber installs it | a level designer isn't opened |
+| Effects in the engine: timing, hit-stop, camera | Faber, to Modulo's look, in the same session | `/ga-action` |
+| Sounds | Faber picks from Roblox's library to research's cue list | `AGENTS.md`, rule 2 |
+
+One maker is one queue. If the board's count shows the team waiting on Modulo for more than a piece at a time, research proposes a second art seat (environment art) to the director. Not before.
 
 ## The team
 
-Research's recommendation, 2026-11-09, on the director's "think how much of the Teammates we need": **five seats at most, three to start.**
+| Seat | Who | From |
+|---|---|---|
+| Design, research, quality | Quaestor | now |
+| Code | Faber | now |
+| Art | Modulo | now |
+| QA | Probator | the first playable with saving (phase 1's end) |
 
-| Seat | Who | From | Why |
-|---|---|---|---|
-| Design, research, quality | Quaestor | now | the decisions, the numbers, the verdicts |
-| Code | Faber | now | the data, the rules, the base, the fights, the screens |
-| Fighters | Modulo | Wednesday 2026-11-11 (AR1) | each fighter's model, clips and the look of its skill: the game's main content |
-| QA | Probator | the slice's first playable (step 2) | fighters are valuables: someone must try to duplicate, lose and break them, and run two players. Before a build there's nothing to test |
-| World and screens' art | Tessera | once the grey slice is proven (after step 3) | the base kit, the pods, the plaza, the arena and the screens' art kit, so Modulo stays on fighters |
+The PC's limits hold: two Studios at most, one render at a time. A seat opens when work waits for it.
 
-- **Not opened:** a level designer (the map is one small ring: research lays it out, and Tessera builds it); a second fighter artist, unless the count shows fighters are what the team waits on.
-- **The limits are the PC's:** 15.5 GB of memory, two Studios at most, one Cycles render at a time. Every open tab spends tokens while it works, so a seat opens when work waits for it.
-- The launcher, `tools/team-terminal.cmd`, calls everyone with one key. A seat joins it by taking `rem` off its line.
+## Models
 
-## The slice
+The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high; Quaestor and Faber on Opus 5.5; a Fable pass later on whatever needs it.
 
-The smallest loop that proves the game (the directive, section 17). Grey boxes until step 3. One step at a time, each judged before the next.
+- **Quaestor: Opus 5.5 high** from the next session. Research asks the director for Fable only for: the store's design, the retune after the first real play data, or a verdict the team disputes.
+- **Faber: Opus 5.5 xhigh.** Good for this work when each piece has a tight request and its tests. What gets a Fable read first when the reset comes: `docs/engineering-plan.md`, "For the Fable pass". A read, not a rewrite, unless the read finds one is needed.
+- **Modulo: Fable 5.2 high.** The look is where the bar is won.
 
-| Step | What exists at its end | Who | It's proven when |
-|---|---|---|---|
-| 0. Day one | the kit, the place, the boot, the type check, the choice of save library (TR1) | Faber; the director's two hands below | Studio boots clean on both sides; the self-test runs |
-| 1. The grey loop | a base, two Void Breakers, a shard grown by hand, two grey fighters, one that powers the base, credits ticking from the spare, a roll on each break, a stall that sells the next shards, and three floors (TR2) | Faber, to research's feel line | the first three minutes are timed against `docs/north-star.md`, and research's verdict says they want a fourth |
-| 2. Keeping it | saving, a fighter's unique id, each transaction safe to repeat and to interrupt; leave, rejoin, the same state | Faber; QA joins | the logic cases on repeats and interruptions pass, and a real leave and rejoin holds |
-| 3. The first fighter | one original fighter at the bar: model, pose, idle, training loop, attack, one skill with its effect; the reveal as the signature moment | Modulo, Faber | research's verdict and a blind read on the reveal; the director's eye |
-| 4. A small game | three fighters, the Tower's first floors, the shop's real rotation from the clock, batteries and the hours away, the Index's first page, the first screens on one kit | all | a session of ten minutes has something to do in every minute, and a night away comes back to a base that worked |
-| 5. Neighbours | several bases round the plaza, joins and leaves, two real players, a phone | all; the director | two players see each other's reveals; the phone holds its frame rate |
+## Phases
 
-After step 5 the slice gets a whole-game verdict, and what comes next is chosen from what was measured: traits, mutations, stars, the Grid's deeper layers, the arena, Calamity, the player's own progress (`docs/design.md`). None of those is a commitment yet, and each enters through its own blockout.
+Each ends on something playable. No dates are promised past phase 1: see "The date".
 
-**The date:** the director, 2026-11-09, wants the team at work on Wednesday 2026-11-11 "with a clear vision". Until then research closes the foundation: the cold read is in (`docs/research/cold-read.md`), and the director's answers are still to come. Step 0 starts that Wednesday.
+**Phase 0. Day one** (TR1). The repo joined and pushed, the ids checked, the kit and Rojo running, the builder's three calls made.
 
-## Content
+**Phase 1. The circuit, in grey** (TR2, AR1, AR2). The whole loop with stand-ins: a base, the Breaker with chambers, three starter shards, a lead that fights by the real rules, Shades as boxes, Lantern Row as a grey street, a Named shard, a bay, electricity, saving. It answers: is the loop worth playing before any art? Meanwhile Modulo makes Rook and one Shade to the bar, and times them.
 
-- **Fighters.** A design sheet first: silhouette, stance, one signature move, palette, in grey. Then the model on the R6 rig, the clips, the effect's look. Three for the slice, one of each type (close, blade, ranged). The launch count is open (`docs/decisions.md`).
-- **The world.** The director's map: eight bases in two rows across a Strip that holds the shop, the arena and the Calamity ground, with a Tower behind each base (`docs/design.md`, "The map"). A base is a kit of pieces on slots, so a theme or a layout is data later.
-- **Screens.** One kit before any panel: the type, the colours, a card, a button, a rarity treatment. First three screens: the stall, the fighter's card, the fight's HUD. Phone first.
-- **Effects** go through the studio's effect player, once the craft upgrade delivers it (NEXT Button's repo, `docs/test-requests.md`, TR43).
-- **Sound** from Roblox's audio library, each cue heard in the game and logged (`AGENTS.md`, rule 2).
+**Phase 2. One ground at the bar.** Rook, Pip and Lyric finished and timed. Lantern Row dressed. The HUD, the reveal and the Breaker screen on the real kit. The Lamplighter. The first session reviewed whole, from a phone. This is the game's proof and its advert.
 
-## The director's hands
+**Phase 3. The build.** Regalia with presets, the Forge, emblems, jewels, research. Grounds 2 and 3. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
 
-What only the director can do, when the step needs it:
+**Phase 4. Breadth.** Grounds 4 to 6, the rest of the roster as each reaches the bar, the Void Shop, the Rift, the Stone Condenser.
 
-1. **An empty private GitHub repo** for this game. Until it exists, commits stay on this PC.
-2. **A new experience under the studio's group,** and its place opened in Studio with Rojo connected on port 34876 (step 0).
-3. **A real second player and a real phone** (step 5).
-4. **The answers research asks for** under "Waiting on the director" on the Now board. Few, and only what changes the game's identity, economy, scope or risk.
+**Phase 5. The Strip.** The Clash Grounds, the Calamity.
+
+**Phase 6. Launch.** The store's design and the director's approval, the game page, a real phone, a soft opening, then public on the director's go.
+
+## The cut line
+
+The director's, set once phase 2 is judged. Research's recommendation until then: launch needs phases 0 to 4 and the Tower. The Clash Grounds and the Calamity launch if they're at the bar, and are the first update if they aren't. A Voidkin below the bar waits for an update: the count at launch is what's finished.
+
+## The date
+
+Sunday 2026-11-15 was the hope. For this game at this bar it isn't reachable, and saying otherwise would cost the bar. What's honest today:
+
+- **Phase 1** is days of the builder's work. It's the first thing the director can play.
+- **Everything after** depends on what one Voidkin costs to make. Nobody knows until Rook, Pip and Lyric are timed (AR1, AR4). Thirty-one of them is the long pole.
+- Research gives a dated estimate when phase 1 closes and three fighters are timed, and updates it on the board each week.
+
+## The count
+
+Pieces closed and playable this week, with hours: on the board (`docs/team-notes.md`).

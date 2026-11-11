@@ -1,14 +1,14 @@
 # Decisions
 
-The register: what's confirmed, what's proposed, what's open, what's set aside, and what research challenges. One line each, with its home. The design itself is in `docs/design.md`, where every line carries [D], [P] or [O]. A status changes here and there together, on the director's word or by the tier the change calls for (`AGENTS.md`, "Design changes").
+The register: the director's words with their dates and what they cover, research's answers to what the package left open, and what research changed. The design itself is in `docs/design.md`. A status changes on the director's word, or by the tier the change calls for (`AGENTS.md`, "Design changes").
 
 ## The director's words
 
-Each covers exactly what it names.
+Each covers exactly what it names. The directive of 2026-11-09 is in `docs/archive/directive-2026-11-09.md`, and the package of 2026-11-11 replaces it where they differ.
 
 | Date | The words | They cover |
 |---|---|---|
-| 2026-11-09 | the directive, word for word in `docs/directive.md` | what each section says. Its candidates stay candidates (sections 6, 7 and 21) |
+| 2026-11-09 | the directive, word for word in `docs/archive/directive-2026-11-09.md` | what each section says. Its candidates stay candidates (sections 6, 7 and 21) |
 | 2026-11-09 | "our next game named "Grow a Anime"" | the title, in their spelling |
 | 2026-11-09 | "This is a inspiration of 2 games: Grow a Garden and grow a chicken fighter (dont even think about worrying of IP)" | taking those two games' genre and general mechanics as inspiration |
 | 2026-11-09 | "(it is written custom audio but obv we can do it so exclude it we will take from roblox audio free library and in some case mix if needed)" | the directive's section 14: sounds come from Roblox's audio library, mixed where needed (`AGENTS.md`, rule 2) |
@@ -20,124 +20,73 @@ Each covers exactly what it names.
 | 2026-11-09 | "the electricity thing features need to be amazing and almost factory simulation like ... if we set on 1 design locked that is geniune with our game vision it could be extremely huge ... it could start by players manually producing electricity (maybe it an bad idea)" | the ambition for electricity, and one design to lock. The manual start is offered as an idea |
 | 2026-11-09 | "let make sure we have a geniune bullet proof design foundation ... so that wednesday the team can work with a clear vision" | the foundation closes before Wednesday 2026-11-11, when the team starts |
 | 2026-11-09 | "the game just like grow an garden need different type of void shard (like plants) / need to play even when the players left / need a Sync between all server 5 minutes shops that is as exciting if not more with the limits" | types of shard; the game runs while the player is away; the synced five-minute shop with limits |
-| 2026-11-09 | "dont bother with what was said about project lynx framework ... we will use our brand new one" | the directive's text on LYNX (section 16; section 22, item G) gives way to the studio's own LYNX in `handbook/` |
+| 2026-11-11 | the production package, `docs/archive/package-v13/`, with: "do not forget you are 100% in the right to think twice, debate, change/add/remove/edit stuff u dont think it good as long as it help with our vision for this game" | the package as the director's brief, and research's freedom to change it for the vision. What research changed is listed below |
+| 2026-11-11 | "i want to take some inspiration from that game taichi panda dragon hunter (only what was put in the files not more) ... we just take inspiration from it damage, healing and some UI + features concepts as well as stats" | that game as a reference for damage, healing, stats and some interface and feature ideas, limited to what the package holds |
+| 2026-11-11 | "for the voidskin, we take inspiration from anime, manga manhwa, video games, ip-free character that make sense, fully OC concept, mecha never break anthropic or roblox TOS never EVER nor infringe IP" | where Voidkin designs come from, and rules 3 and 4 confirmed for this game |
+| 2026-11-11 | "avoid compounding ... all the multipliers led to me in 1 session having over 2296x in clicker which was not what i intented ... i was thinking of a x + x + x" | balance adds and doesn't compound: `docs/balance.md` |
+| 2026-11-11 | "now it your call to decide whether it better to this now or wait we build the game" | research's call on when to balance. Taken: structure now, values by play |
+| 2026-11-11 | "i think you overexagerated my 20 seconds is important for game, it is not a rule nor THAT important, let just deliver a premium game experience ... we need to be even thoughtfull with the HUD ... improving by being lighter, organized, efficient and improve in quality!" | the first 20 seconds is no longer a need of this game: it replaces the line of 2026-11-09 above. The bar is premium. The HUD gets its own care: `docs/ui.md` |
+| 2026-11-11 | "the universe ID is 9093907961 and main place 78052287756826 ID" | the game's ids: `CLAUDE.md` |
+| 2026-11-11 | "You can start pushing on the github of grow your anime" | pushing to `github.com/glocen/GrowyourAnime` |
+| 2026-11-11 | "faber should maybe code while thinking long term to save time and be more efficient like make whole systems in module so he can re use them etc.. now this is just a proposal and i want to be perfectly clear, he should solely code in a way that benefits him not me nor my idea if it negative" | a proposal to the builder, not an instruction: `docs/engineering-plan.md`, "Reusable modules" |
+| 2026-11-11 | "should modulo make all the HUD design, UI texture, UI effects, texture, map etc? it what he does anyways doesnt it?" | a question. Research's answer: `docs/production-plan.md`, "Who makes what" |
+| 2026-11-11 | "it is fine if faber also work on opus 5.5 xhigh ... we will likely only keep modulo at fable 5.2 high and run you both on opus 5.5 ... if there is some things that is very bad or need reworks ... we could run it back when he is on fable" | the models, and a Fable pass later on what needs it: `docs/production-plan.md`, "Models" |
+| 2026-11-11 | "the grow-a-anime folder (it should be renamed to grow-your-anime btw)" | the title, Grow your Anime, and the folder's name. It replaces the title of 2026-11-09 above |
+| 2026-11-11 | "for aegir i was thinking of a white glint meccha -like design so we put him on mythical and add a new legendary" and "not sea motif more like wind like white glint" | Aegir: a white wind mech, Mythical. A new Legendary takes his old place: `docs/roster.md` |
+| 2026-11-11 | "dont be shy with the name by the way we can use some japanese etc name even if it end up being the name of a MC in a famous anime as long as it doesnt have the same similarities" | names in any language. A shared name is fine when the character shares nothing else: `docs/ip-list.md` |
+| 2026-11-11 | "i dont mind for some fight at same ish power to last long by the way (>3 minutes)", "for endgame", then: "end game wont run past three minute it simply can happen and defend on the build, this is the beauty of the complex stats we are doing" | long fights between hard-to-kill builds are allowed to happen. Not a target, and no rule cuts a fight short |
+| 2026-11-11 | "obviously we need to think about the height of some units, humanoid like units will be the same height as R6-players but meccha etc will be custom rig so bigger" | humanoid Voidkin at the R6 player's height; machines on a custom rig, larger: `docs/design.md`, "Voidkin" |
 
-## Confirmed
+Earlier words that still shape the design, from research's notes of 2026-11-09 and 2026-11-10: Void Clash is to be "a full battleground zone for players to send their strongest voidkins and they get rewards or some stuff when their voidkin kill another voidkin"; each Voidkin has a class (warrior, mage, assassin, healer, tank); systems may be basic at launch and reworked later, "but not the core concept and concept that will make players addict".
 
-The director's, each in its home. They change only on the director's word.
+## The package's open questions, answered
 
-- **The identity** (the directive, section 3): a compact base, electricity-powered machines, Void Shards, never seeds or planting; a small social neighbourhood; original fighters on R6; the fight is VOID CLASH, never "Void Pit"; a permanent Index; fusion, traits and mutations planned.
-- **The rarities,** their order and spelling, and NEXT's rule (section 4).
-- **Rarity isn't victory** (section 5).
-- **Server authority, saved state and safe transactions** (sections 8 to 10): `docs/engineering-plan.md`.
-- **No paid randomness** until its rules are built in and the design approved (sections 7 and 15): `docs/roblox-rules.md`.
-- **A small excellent game first** (sections 1 and 17).
-- **The map's shape, the synced five-minute shop with limits, types of shard, the Tower behind each base, Calamity, base visiting, the game running while away** (the sketch and words above): `docs/design.md`.
-- **Sounds** from Roblox's audio library.
-- **The first 20 seconds** as this game's need: `docs/north-star.md`.
+The package left eighteen decisions open (its files 01 and 06). Research's answers, each open to the director's word. The detail is in `docs/design.md` and `docs/balance.md`.
 
-## Fighters
-
-The directive, section 3: fighters have original silhouettes, outfits, hair, weapons, animations, effects, names and abilities; a published character "must not be recreated through recognizable combinations of appearance, signature skills, and other protected expression. Renaming a recognizable character is not sufficient."
-
-**The test,** asked of every design sheet before anything is built:
-
-1. Would a fan name a published character at a glance, from the silhouette, the colours or the pose?
-2. Does the design take more than one mark from any single character: a hair, an eye cover, an outfit, a weapon, a move, the sound of a name?
-
-A yes to either changes the design, not the name. A fighter starts from a type the whole genre shares (the masked prodigy, the cursed swordsman, the brawler who never quits), and its silhouette, palette, move and name are ours.
-
-The director's words in chat ask for more likeness than this. They're under "Challenged", item 1, and the folder follows the directive until the director answers.
-
-## Proposed
-
-Research's recommendations, 2026-11-09. Each names the simplest option that could work and what the choice costs. None is the design until it passes its tier. Trying one in a blockout is tier 1.
-
-| # | The proposal (`docs/design.md`) | The simplest option | The trade-off | Settled by |
-|---|---|---|---|---|
-| 1 | **Power is the money:** fighters make power, spare power sells each second | fighters pay credits directly, and power is only a cap | one stream to balance and a payoff for every Grid upgrade, against one curve that everything hangs on | TR2's blockout; a balance run; the director's yes to lock it |
-| 2 | **By hand first:** the player's held input grows the first fighter, who then takes over | the Breaker runs by itself from second 0 | a first verb the player performs and an automation they feel, against one more beat in the first seconds | TR2's timing |
-| 3 | **A shard's type names its fighter; mystery shards are only earned** | shards as tiers with pools, like eggs | the shop works as in the director's reference and nothing sold is a loot box, against losing "who is it?" on a bought shard after the first time | the director |
-| 4 | **The shop's own marks:** stock in the world with a beam, the next shelf hinted, a charged shelf | a list on a panel | more to build, for a shop seen from every base | step 4's blockout |
-| 5 | **Away, the base runs as usual,** and batteries bank the hours | finish Breakers only | the full promise of the director's words, against an income to cap | a balance run |
-| 6 | **A fight is a list of events** settled by the server and played back | live simulated combat | testable without Studio, replayable and cheat-proof, against less room for live surprises | the builder agrees (`docs/engineering-plan.md`) |
-| 18 | **Every break rolls a mutation, and a finished Breaker waits for its owner** ("Shards and Breakers") | no roll; Breakers open by themselves | a roll on the basic action and every reveal watched, against one more tap and mutations' balance at launch | TR2 |
-| 19 | **Fights pay essence and experience; only a first clear pays credits** ("Where fights happen") | credits on every floor | the spine stays clean and the lift can't be farmed, against a Tower that pays less cash | a balance run; step 4 |
-| 7 | **The Tower:** a climb with health that carries, floors held by real players' saved teams (read only at launch, the gift for holding later and capped), each holder pinned until beaten, and a lift and recharges that run on stored energy ("Where fights happen") | written teams only, as in the director's reference (`docs/research/tower.md`) | the director's own idea in full with nobody online, against a store shared between servers | the builder's cost; step 4's blockout |
-| 8 | **Teams of three,** the slice one against one | one against one for good | team-building, against harder reading on a phone | step 4 |
-| 9 | **Stars:** copies fuse into a fixed, previewed result, five at most | no fusion at launch | a use for every copy with nothing to lose, against the thrill of a random fuse | after the slice |
-| 10 | **About twelve traits, five or six mutations,** mutations from the Void weather | none at launch | the variable roll on every break, against balance work | after the slice |
-| 11 | **Three things to spend,** each from its own source; the slice has credits only | one currency | each activity pays its own reward, against more to read | each system's blockout |
-| 12 | **The player:** a level, one clan roll, an aura; and **ascension as the sketch's "prestige", a checklist with no wipe** ("The long game") | a level only | one identity roll and a climb that sends the player through every mode, against the four rolls in the sketch and the reset players of the genre know | the director, for the wipe; each track's blockout |
-| 17 | **The long game's five rules:** tracks side by side, a token from every action, counters, luck as one number, tracks opened one at a time | add tracks as they come to mind | a grind with a structure, against holding back tracks the director wants early | each update |
-| 13 | **Calamity's minimum is measured against a player's own strength** | the sketch's share of the total | newcomers can earn beside a strong player, against a rule that's a little harder to state | the director; under "Challenged", item 4 |
-| 14 | **Every roll shows its odds and has a floor.** Nothing random, no reroll and no luck is sold at launch | sell rerolls with odds shown | no rule to trip and a fair game, against the most common income of the genre | the director, before any product |
-| 15 | **Launch holds** the base, the Grid's first layers, the shop, 12 to 16 fighters, the first mutations, the Tower, the Index and stars. The arena and Calamity are the first updates | everything in the sketch at launch | a date that can be met at the bar, against a thinner first week | the slice's verdict |
-| 16 | **NEXT isn't shown to players** until a licence exists | show it locked | no promise we can't keep, against a mystery at the top of the ladder | the director |
-
-## Open
-
-The directive's twelve areas (section 21), and what settles each.
-
-| Area | Research's recommendation | Settled by |
+| # | The question | The answer |
 |---|---|---|
-| Void Shard shop | `docs/design.md`, "The Void Shop" | a balance run for chances, quantities and prices |
-| Electricity | "The Grid" | TR2; the director's lock on proposal 1 |
-| Processing | "Shards and Breakers" | TR2 |
-| Initial roster | 12 to 16; the top rarities may fill through updates | the first fighter's timed cost (step 3) |
-| Training | stations that work by themselves; a short burst by hand as a bonus | TR2 |
-| Void Clash | teams of three; the Tower first, the arena later | step 4 |
-| Combat | one basic attack and one signature skill; 15 to 25 seconds shown | the first fighter (step 3) |
-| Fusion | stars | after the slice |
-| Traits and mutations | proposal 10 | a balance run, after the slice |
-| Economy | "What you own and spend"; a fighter's work stays bounded and the steep growth sits in stations and Grid upgrades ("The Grid") | a balance run before any price is built |
-| Monetization | nothing sold in the slice. First candidates, all certain: slots, battery hours, an automation step early, the lift at half price, looks. The director's reference sells four passes and none is random (`docs/research/tower.md`) | the director, before any product |
-| Release scope | proposal 15 | the slice's verdict |
+| D01 | how the first Voidkin and the first worker arrive | the player picks one of three starter shards (Rook, Kirra, Pip), free and fast. The first enemy drops a Named shard holding Watt, the first worker |
+| D02 | who owns health, the leash, defeat | the lead owns health and the hurtbox, the avatar is never a target; a leash near the avatar; a fallen lead returns in seconds with nothing lost; keepers are an intentional try; watching while connected is allowed |
+| D03 | fights alone or together | keepers alone, each player their own. Together at elites and the Calamity. Parties later |
+| D04 | who computes stats and applies changes | one server resolver and one owner of every change: `docs/engineering-plan.md` |
+| D05 | the top rarity at launch | Mythical. Thirty-one Voidkin: 7, 7, 6, 5, 3, 3. Limited and the higher tiers in updates |
+| D06 | the Breaker's queue | chambers in parallel, two growing to four, with a waiting line behind |
+| D07 | electricity's math | workers' outputs add; a battery with a cap; work costs power as it's done; shortage slows in proportion; overflow sells itself |
+| D08 | luck | one number, added from Breaker tuning and infusion, one ceiling, on a shard's top two tiers. Never on Named shards, never from the Rift |
+| D09 | clocks | the Shop, the Rift and the Calamity on world time, the same in every server |
+| D10 | changing gear in a fight | blocked in combat, frozen for a keeper or a Tower floor, health kept as a share |
+| D11 | sockets and forge | sockets by an item's rarity, four at most; one jewel socket from Rare; forge ranks on the slot, not the item |
+| D12 | what launches | the Tower with authored floors. The Clash Grounds and the Calamity before launch if they reach the bar: `docs/production-plan.md`, "The cut line" |
+| D13 | evolution | one at launch, Rook's |
+| D14 | the production spec: roster, rewards by ground, where Dawn comes from, who earns experience, aptitude | the roster, grounds and aptitude in `docs/roster.md`; Dawn from the last ground and the Tower; each role earns its own experience, with a catch-up for leads far behind; duplicates become stars, then Credits; four currencies, Void Essence out of launch |
+| D15 | premium quality on a real phone | `docs/ui.md`: phone first, in landscape, with its sizes and states; every screen judged from a phone-sized capture, and on a real device before launch |
+| D16 | rights, paid randomness, receipts, devices, the release gate | every asset is ours (`AGENTS.md`, rules 2 and 3); nothing random is sold at launch (`docs/roblox-rules.md`); the store is its own approved piece; the public release is the director's go |
+| D17 | the Void Shop | a rotating stock with a limit per player, for Credits |
+| D18 | bases | a plot at join, the base saved on the account |
 
-Also open: the fighters' own word (research's pick is Voidkin: `docs/design.md`, "Words"); the machine's full name (`docs/ip-list.md`); the maturity label (`docs/roblox-rules.md`, "Not verified yet"); race and the player's own traits.
+Astra's nine audit findings and the six gates (the package's files 02 and 06) are carried as acceptance checks in `docs/test-requests.md`.
 
-## Set aside
+## What changed from the package
 
-- Seeds, soil, planting (the director: section 3).
-- "Void Pit" as the arena's name (the director: section 3).
-- Original fighters in NEXT (the director: section 4).
-- A text tutorial before the first input (research: `docs/research/first-seconds.md`).
-- Wiring, voltage, anything that breaks when power is short (research: "The Grid").
-- One shop stock raced for by the whole server (research: it punishes the far base and the phone).
-- Taking anything from another player, at launch (research: a challenge gives the contest without the loss).
-- A paid restock at launch (research: `docs/roblox-rules.md`).
+Research's changes, under the director's words of 2026-11-11 above. Each is reversible by the director's word; the first is cheap to reverse only until gear is built.
 
-## Challenged
+| Change | The package had | Why |
+|---|---|---|
+| **Gear belongs to the account,** in presets linked to Voidkin | gear worn by each Voidkin | a counter system needs cheap lead swaps; per-Voidkin gear multiplies fourteen slots and their sockets by every fighter, and buries each new Voidkin under the cost of dressing it |
+| **Forge ranks sit on the slot** | ranks on the item | replacing an item never loses the work, so players use what drops |
+| **Void Clash is an arena of champions,** in the open, all day | a 3 against 3 the director called nonsense | the director's own description of it |
+| **Class is separate from type** | classes tied loosely to types | tied, the counter ring would dictate roles and a group would collapse to one class |
+| **Balance adds** | several stacked percent bonuses | the director's words on compounding |
+| **Chambers** in the Breaker | one queue | a 30-second shard shouldn't wait behind a three-hour one |
+| **Sockets by rarity,** four at most | four on everything | a Common item isn't an evening of socketing |
+| **Four currencies** | five | Void Essence had no job the others didn't do |
+| **The first session,** not the first 20 seconds | a 20-second table | the director's words |
+| **Roster, enemies and grounds authored** | counts and placeholders | the team needs names and looks to start |
 
-The directive, section 2, asks for disagreement out loud, in this form: what's wrong, why it matters, the evidence, the alternative, the trade-off.
+## Waiting on the director
 
-**1. Fighters that look like someone. The director's to decide.**
+Nothing blocks the team's start. These are the director's when they want them:
 
-- **What's wrong:** two of the director's words pull apart. In chat: "visual very very similar but not 1:1 for example gojo would be named rojo with white hair a diff purple ish clothes but similar blue eyes blindfold". In the directive, the same day: "Renaming a recognizable character is not sufficient", and no character recreated "through recognizable combinations of appearance, signature skills, and other protected expression". The example is such a combination.
-- **Why it matters:** Roblox acts on an owner's claim without judging likeness. A valid claim takes the whole game down and puts a warning on the director's account. Owners can now search games by keyword and by image.
-- **The evidence** (`docs/roblox-rules.md`): no case found of a game removed for renamed lookalikes as such. Every removal on record followed a claim tied to one property, and the largest took down three anime games at once. So it isn't certain to happen, and what it costs when it does is the game.
-- **The alternative:** the test under "Fighters". The real characters come in through NEXT, by licence, a route that exists today.
-- **The trade-off:** less recognition at first glance. In return nothing can be claimed, and the fighters are ours to grow, which is also what a licence holder looks for.
-- **Status:** the folder follows the directive. It changes only on the director's yes to this, restated: "fighters may be close lookalikes of published characters under new names".
-
-**2. "there is 0 roblox games like this".**
-
-- **What's wrong:** four games with this name's shape exist, and two of them are the chicken game's loop with anime fighters, made in October 2026. All four have zero players (`docs/research/similar-games.md`).
-- **Why it matters:** the theme on that loop hasn't drawn players by itself. The gap is real for the whole of what we plan (shop, base, power, fights), and what fills it is how well it's made, from the first minute.
-- **The alternative:** nothing to change in the plan. The first 20 seconds and the first fighter carry more weight than the idea.
-
-**3. Everything the first day added.**
-
-- **What's wrong:** on top of the directive's loop, the sketch and the words add a Tower, Calamity, base visiting, deep electricity, five progress tracks on the player and "a lot of upgrade features and luck". The directive, sections 1 and 17: a small excellent game first.
-- **The alternative:** all of it has its place in `docs/design.md`, and the order is the plan's: the slice proves grow, power and one fight; launch is proposal 15; the rest are updates, each through its own blockout.
-- **The trade-off:** a first release with less in it, on a date that can be met at the bar.
-
-**4. Calamity's rule.** Proposal 13. The evidence: the director's own reference for long grinds pays a boss's rewards only above a share of its health, and its guides send players to private servers to get them (`docs/research/long-grind.md`). On our servers of eight that would empty the Strip.
-
-**5. The reference's grind didn't hold its players.** It fell from 745,280 at once to about 1,000 in seven months, once updates stopped landing weekly, and its income was rerolls sold for Robux, the part Roblox's rules now bind. We take its structure (`docs/design.md`, "The long game") and leave both of those: updates are rows, so one a week is affordable, and no roll is sold.
-
-**6. Studio conventions.**
-
-- **The craft upgrade's animation half** (NEXT Button's repo, TR43 and AR29) is aimed at R15 and a creature. This game's fighters are R6, and the directive, section 11, asks that R6 be verified first. Research re-aims that half at R6, on this game's first fighter.
-- **Balance runs.** The directive, sections 5 and 19, asks for relationships simulated before formulas. Research's brief says research never writes code. Proposal: research writes balance runs as scripts in its scratch folder, over rows the builder owns, and the builder reviews any that enter the repo. A change to the brief, for the director.
-- **Roblox's Server Authority mode** is on in NEXT Button and cost days. This game's fights are settled by our own rules on the server, which gives the authority without the mode. The builder's call (`docs/engineering-plan.md`).
+1. **The cut line** for launch, once the first ground is at the bar (`docs/production-plan.md`).
+2. **The store's design,** before anything is sold.
+3. **Gear as the account's** is the one change worth a second look before phase 3 builds it.

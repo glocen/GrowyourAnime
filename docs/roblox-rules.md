@@ -45,6 +45,10 @@ Tightened on 2026-05-26: for a game that doesn't comply, "your game will be remo
 
 On 2026-08-25 Roblox restricted feeds that reward players for watching, for its Kids and Select programs (official: `docs/research/first-seconds.md`, [O4]). One of the director's four reference games was pulled over it and came back without the feed. We have no such feed, and none is planned.
 
+## Text players write
+
+Nicknames (`docs/ui.md`). Roblox requires any text a player writes to pass its text filter before another player can see it, filtered for the viewer, and a game that shows unfiltered text can be moderated. The builder reads the current page before building it: <https://create.roblox.com/docs/ui/text-filtering>. A nickname that fails the filter is refused with a plain reason, and the Voidkin keeps its own name. (official page, from memory: reread at build)
+
 ## Not verified yet
 
 - The maturity label a game of fights without blood gets. Before the game page.

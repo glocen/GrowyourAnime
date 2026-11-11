@@ -116,6 +116,30 @@ Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of o
 
 Behind each base [D]. Floor after floor of authored opponents at launch, fought with a line-up of three, where class finally matters to a solo player: a Tank to hold, a Healer to keep, a third to finish. First clears pay. Other players' saved teams as floor holders [D] follow in an update, on the same contract.
 
+## The world, in grey
+
+Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it looks comes later with the festival kit (AR5). Times are the design. Studs are worked out at Roblox's default walk of 16 studs a second (R6 stands 5), so if Config changes the walk, the studs move and the times hold. Once the numbers are in Config, Config is their home.
+
+```
+              [Tower][Tower]    gate    [Tower][Tower]
+              [ P1 ] [ P2 ]      ||      [ P3 ] [ P4 ]
+   Calamity ═══════════════ the Strip ═══╬═══════════════ Clash Grounds
+              [ P5 ] [ P6 ]     Shop     [ P7 ] [ P8 ]
+              [Tower][Tower]            [Tower][Tower]
+```
+
+- **Eight plots, two rows of four, facing each other across the Strip** [D: eight bases, a Tower behind each]. A plot is 5 s across (80 studs) and opens onto the Strip. The Breaker stands at its front, so a passer-by sees the shards cracking. The bays line its sides, and the battery sits between them. Its back is kept for the Forge, the Lab and the Condenser, with the Tower behind that (phase 3; TR2 leaves the space). Neighbours stand a path apart (12 studs).
+- **The Strip** is 3 s wide (48 studs). It breaks at its middle into a crossing one plot wide. North of the crossing a side street runs out between the Towers to the **festival gate**. South of it stands **the Shop**: every trip out and back passes the clock. The Strip's two ends are kept for the Calamity and the Clash Grounds (phase 5).
+- **From the front of any plot to the first Shade: 20 s at most,** about 14 s from the nearest. That's 10 s at most to the crossing, 8 s up the side street past the plots and Towers to the gate, and 2 s past it to the first pack, which can be seen from the gate.
+- **Lantern Row** is one street, about 40 s end to end on foot (640 studs), 2 s wide between the stall fronts (32 studs).
+  - **Six packs** of three Brawler Shades, 80 studs apart, past the lead's 30-stud leash, so the lead takes one pack at a time and the player chooses when to step on.
+  - **The elite** stands in a square at the street's middle, 4 s across (64 studs), so anyone near can join (design, "The Festival of Battles").
+  - **At the far end, the keeper's gate,** and behind it **the Lamplighter's ring** (80 studs across). Every player gets their own fight; how is the builder's call.
+  - **Beyond the ring:** Drum Court's gate, shut, in view. Beside it, the **shortcut home**, opened by the first win: in grey, a pad that sets the player down at their own plot.
+- **Arrival:** the player's spawn is on their own plot, facing the Breaker and the three shards ("The first session").
+- **What the world marks** for code to read (the names and the contract are the builder's, `docs/engineering-plan.md`): each plot and its spawn, the Breaker, each bay, the battery, the festival gate, each pack's spawn, the elite's, the keeper's gate, the ring, the shortcut and its landing, the shut gate.
+- **Tuned by walking, not on paper:** the walk times, pack spacing and the street's length are first guesses, judged at TR2's verdict from the player's camera.
+
 ## What the player holds
 
 | Currency | Comes from | Goes to |

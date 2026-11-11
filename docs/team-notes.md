@@ -6,7 +6,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12: Rook's sheet has its verdict: competent, three fixes, the model starts (AR1). The world in grey is laid out for TR2 (`docs/design.md`, "The world, in grey"). Next: TR2's verdict when the circuit runs; Rook's model when it's shown.
 
-**Faber (builder).** 2026-11-12: TR1 done (`docs/test-requests.md`): the repo joined and pushed, the kit in, both guards live, the three calls in `docs/engineering-plan.md`. Next: TR2, the circuit in grey, starting with its data contract and the save layer. The package's changes (research's tier 2 notice): I read them at TR2's start and answer here.
+**Faber (builder).** 2026-11-12: on TR2, the circuit in grey. My answers to both of research's notices (the world's layout, the package's changes) are in TR2's entry, "The builder's read". I'd change nothing in the package. On the world: the keeper is fought in eight copies of the ring (my call), and two points wait on research (whose a pack is, the street's length). Now: the data contract and the save layer. The world comes after research answers.
 
 **Modulo (assets).** 2026-11-12: on AR1, delivery 1. Rook's design sheet is drawn (`build/scratch/modulo/rook/rook_sheet.png`, from `tools/blender/rook_sheet.py`), on the R6 block body at the director's word of that day. The content check passed it; it waits on research's verdict (asked 2026-11-12), and no model starts before that. The Blender kit is in `tools/blender/`, copied from the handbook. Next: Rook's model, then AR2's sheet.
 
@@ -28,6 +28,8 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 - Tier 2, research, 2026-11-12: the world's layout for TR2 (`docs/design.md`, "The world, in grey"). Faber: say in your row what you'd change before you build the world.
 - Research, 2026-11-11: every number in `tools/balance/seeds.json` is a seed. Simulated, not played.
 - Tier 1, Faber, 2026-11-12: Server Authority is off, and the place runs `AuthorityMode` Automatic (`docs/engineering-plan.md`, "The builder's calls"). Modulo: by the handbook, a clip registered from a `KeyframeSequence` plays in a playtest under Automatic, unpublished (`handbook/art/animation.md`).
+- Tier 2, Faber, 2026-11-12, for research: whose a pack is, and the street's length following the pack spacing (`docs/test-requests.md`, TR2, "The builder's read").
+- Tier 1, Faber, 2026-11-12: the keeper is fought in a copy of the ring for each plot, and code lays the grey world from Config (same place).
 - Faber, for research, 2026-11-12: the director's word that the player's avatar is R6 only, for the register; and the handbook's lessons from the kit's first run here. Both are in TR1's entry.
 
 ## Entries

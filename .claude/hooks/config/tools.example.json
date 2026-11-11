@@ -1,0 +1,73 @@
+{
+  "_doc": "What tool_guard.py lets through. Copy to .claude/hooks/config/tools.json, then check it against the tools your sessions really have: `py .claude/hooks/tool_guard.py --explain Builder <tool name> ...`. A tool of a named server passes only when it's named here. Names take * and ?. Roles are the names in roles.json. A shell command passes only when every pattern it matches allows the session's role, so a pattern for nobody (roles []) is checked whatever else the command holds. Each git pattern is tied to git's own subcommand, after git's options, so a word in a commit message isn't taken for a command.",
+
+  "unlisted_servers": "pass",
+
+  "servers": [
+    {
+      "name": "Studio MCP",
+      "match": "^mcp__.*Roblox.*__",
+      "read": [
+        "list_roblox_studios", "get_studio_state", "get_console_output", "screen_capture", "inspect_instance",
+        "script_read", "script_grep", "script_search", "search_game_tree", "wait_job_finished", "list_skills", "skill"
+      ],
+      "roles": {
+        "start_stop_play": ["Builder", "QA", "LevelDesign"],
+        "execute_luau": ["Builder", "QA", "LevelDesign"],
+        "multi_edit": ["Builder", "LevelDesign"],
+        "user_keyboard_input": ["Builder", "QA", "LevelDesign"],
+        "user_mouse_input": ["Builder", "QA", "LevelDesign"],
+        "character_navigation": ["Builder", "QA", "LevelDesign"],
+        "open_cloud_invoke": ["Builder", "LevelDesign", "QA", "Assets", "Research"],
+        "upload_image": ["Builder"],
+        "store_image": ["Builder"],
+        "insert_asset": ["Builder", "LevelDesign"]
+      },
+      "never": {
+        "generate_*": "we make every asset ourselves, and a generator can cost credits",
+        "search_asset": "it searches the marketplace, and we use no marketplace asset",
+        "auto_setup_avatar": "it builds a rig for us, and our rigs are our own",
+        "segment_mesh": "it's an AI mesh tool"
+      }
+    },
+    {
+      "name": "session tools",
+      "match": "^mcp__ccd_session_mgmt__",
+      "read": ["get_session", "list_sessions"],
+      "roles": {
+        "start_session": ["Builder", "Research"],
+        "set_session_title": ["Builder", "Research"]
+      },
+      "never": {
+        "set_session_fast_mode": "fast mode is billed at a premium"
+      }
+    }
+  ],
+
+  "shell": [
+    {"id": "git-discards-work", "roles": [],
+     "regex": "\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+(?:stash|clean)(?![\\w-])|\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+reset(?![\\w-])[^|;&\\n]*--hard|\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+checkout(?![\\w-])[^|;&\\n]*(?:\\s--\\s|\\s(?:\\./?|\\*)(?:\\s|$))|\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+restore(?![\\w-])(?![^|;&\\n]*--staged)",
+     "why": "it throws away uncommitted work, and this folder holds every teammate's. Nobody runs it; a blocking file is compared and handled one by one"},
+    {"id": "git-stages-everything", "roles": [],
+     "regex": "\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+add(?![\\w-])[^|;&\\n]*(?:\\s-[a-z]*[au][a-z]*\\b|\\s--all\\b|\\s--update\\b|\\s(?:\\./?|\\*)(?:\\s|$))",
+     "why": "this folder has one index, so it stages every teammate's files. Stage your own paths by name"},
+    {"id": "git-commits-everything", "roles": [],
+     "regex": "\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+commit(?![\\w-])(?:[^|;&\\n\"']|\"[^\"]*\"|'[^']*')*(?:\\s-[a-z]*a[a-z]*\\b|\\s--all\\b)",
+     "why": "it commits every teammate's uncommitted edits as yours. Commit by path"},
+    {"id": "git-forces-a-push", "roles": [],
+     "regex": "\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+push(?![\\w-])(?:[^|;&\\n\"']|\"[^\"]*\"|'[^']*')*(?:\\s--force(?:-with-lease)?(?![\\w-])|\\s-[a-z]*f[a-z]*\\b|\\s\\+[\\w./-]+)",
+     "why": "a forced push rewrites what the others already hold. Nobody forces one"},
+    {"id": "git-moves-the-tree", "roles": ["Builder"],
+     "regex": "\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+(?:pull|rebase|merge|switch)(?![\\w-])|\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+checkout\\s+(?:-b\\s+)?[A-Za-z]",
+     "why": "a pull, a rebase or a branch switch changes files under every session, and crashes Rojo"},
+    {"id": "git-push", "roles": ["Builder", "Assets", "Research"],
+     "regex": "\\bgit(?:\\.exe)?(?:\\s+-[cC]\\s+\\S+|\\s+-{1,2}[\\w-]+(?:=\\S+)?)*\\s+push(?![\\w-])",
+     "why": "who pushes is written in AGENTS.md"},
+    {"id": "rojo-upload", "regex": "\\brojo(\\.exe)?\\s+upload\\b", "roles": [],
+     "why": "it publishes a place from the shell, and publishing is the director's hand"},
+    {"id": "open-cloud", "regex": "apis\\.roblox\\.com|\\brbxcloud\\b", "roles": ["Builder"],
+     "why": "an Open Cloud call from the shell goes round the Open Cloud guard"},
+    {"id": "roblox-cookie", "regex": "ROBLOSECURITY", "roles": [],
+     "why": "no session handles the account's cookie"}
+  ]
+}

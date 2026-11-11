@@ -1,0 +1,10 @@
+{
+  "_doc": "Session title to role, for the hooks. Each pattern is a case-insensitive regex on the session's title. Copy to .claude/hooks/config/roles.json.",
+  "roles": {
+    "Builder":     {"who": "the builder", "titles": ["^Builder\\b"]},
+    "Assets":      {"who": "the asset maker", "titles": ["^Assets\\b"]},
+    "Research":    {"who": "research", "titles": ["^Research\\b"]},
+    "LevelDesign": {"who": "level design", "titles": ["^LevelDesign\\b"]},
+    "QA":          {"who": "QA", "titles": ["^QA\\b"]}
+  }
+}

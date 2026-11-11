@@ -1,6 +1,6 @@
-# Grow a Anime
+# Grow your Anime
 
-A Roblox game by NEXT LUDUS: you run a small electric base where Void Shards grow into anime fighters.
+A Roblox game by NEXT LUDUS: a stylish anime-inspired collection and action RPG. You break Void Shards into original fighters called Voidkin, lead one in automatic combat through festival grounds, put up to six to work making electricity, and build a gear loadout. Working name: `GrowyourAnime`.
 
 - The rules for every teammate: `AGENTS.md`. The builder's brief: `CLAUDE.md`.
 - The game in one page: `docs/north-star.md`. How it works: `docs/design.md`.

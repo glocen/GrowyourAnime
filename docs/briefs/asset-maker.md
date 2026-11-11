@@ -38,14 +38,14 @@ AGENTS.md's four come first. They load into your session automatically.
    - [ ] the game's own dump of the pose matches the export
 5. **Deliver** to `build/handoff/<Name>/`, once the final sheet passes the content check and research's artistic review. If research is off, deliver, note it in the request, and research reviews on its return. Set the request to "Delivered", with the paths and what the builder should check.
 6. **Record:** a row in `docs/asset-log.md`, a short team-notes entry for a finished piece, and a test request for QA in `docs/test-requests.md`.
-7. **Commit** only your own paths: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). Push only if `git log origin/main..HEAD` lists only your commits. Otherwise the builder pushes. Never pull or rebase. If `index.lock` blocks, wait and retry.
+7. **Commit** only your own paths: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). The builder pushes (AGENTS.md, "Shared folder and git"). Never pull or rebase. If `index.lock` blocks, wait and retry.
 
 ## The PC and the tokens
 
 - **GPU:** shared through `build/locks/blender.lock`. Before a Cycles render or a bake, check it. If someone holds it and it's younger than 30 minutes, wait. Otherwise write your name and the time into it, and delete it when you're done. Workbench and Eevee previews don't need it. Ask the director before any long bake or render batch.
 - **Tokens:** read big files by section, contact sheets before single images, renders downscaled to about 1280 px, stop when the critique passes, and don't re-read docs you've read this session.
 - **Iteration sheets:** an image costs ⌈width/28⌉ × ⌈height/28⌉ tokens. Check the numbers first (contacts, clearances, speeds), then read a small sheet: the key beats only, one view from the game's camera, at about 960×540. The full sheet is for the final review.
-- **Effort:** xhigh (`handbook/team/token-efficiency.md`). Never medium or low on art.
+- **Model and effort:** Fable 5.2 at high (`handbook/team/token-efficiency.md`). Never medium or low on art.
 
 ## Talk
 

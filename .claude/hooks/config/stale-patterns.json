@@ -1,0 +1,4 @@
+{
+  "_doc": "Wording that went stale in this game, for instruction_lint.py. Add a pattern only when a decision really replaced the wording, and make it exact: id, regex, why.",
+  "patterns": []
+}

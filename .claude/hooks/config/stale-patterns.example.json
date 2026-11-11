@@ -1,0 +1,10 @@
+{
+  "_doc": "Wording that went stale in THIS game, for instruction_lint.py. Copy to .claude/hooks/config/stale-patterns.json and start with an empty list. Add a pattern only when a decision really replaced the wording, and make it exact: a name, a path, a number. A broad pattern that fires on history gets the whole list ignored. Each pattern: id, regex, why; optional `and` (a second regex the line must match), `except_line` (a regex that clears the line), `except_paths` (file globs it skips). Never copy another game's list.",
+
+  "patterns": [],
+
+  "_example": [
+    {"id": "old-port", "regex": "\\b34872\\b", "why": "Rojo serves on 34874 since 2026-11-07",
+     "except_paths": ["docs/archive/*"]}
+  ]
+}

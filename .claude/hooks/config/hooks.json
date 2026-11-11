@@ -25,6 +25,34 @@
       "QA": "docs/briefs/qa.md",
       "Research": "docs/briefs/research.md"
     },
-    "max_sections_named": 6
+    "max_sections_named": 6,
+    "board": {
+      "file": "docs/team-notes.md",
+      "section": "Now",
+      "away_hours": 6
+    }
+  },
+  "_paused_doc": "To pause the project, the director's word goes here as \"paused\": {\"since\": \"YYYY-MM-DD\", \"words\": \"...\"}. Every session is then told at its start, and tool_guard.py lets only read tools through. Take the key out to reopen.",
+  "instruction_lint": {
+    "files": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      ".claude/rules/*.md",
+      ".claude/skills/**/*.md"
+    ],
+    "stale_patterns_file": "stale-patterns.json",
+    "may_be_absent": [
+      "build/",
+      ".claude/state/",
+      ".claude/settings.local.json"
+    ],
+    "ignore_paths": [],
+    "size_caps": [
+      {
+        "file": "AGENTS.md",
+        "max_bytes": 25600
+      }
+    ],
+    "max_findings": 25
   }
 }

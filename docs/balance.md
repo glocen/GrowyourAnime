@@ -122,7 +122,7 @@ Run it with `py tools/balance/sim.py`. It reads the seeds and `docs/roster.md`.
 
 Balanced is the safe build and the others are matchup builds. Two defence builds make the longest fight, as the director expects.
 
-**Fights against the game.** Enemy health and attack are derived so an on-budget Common Warrior meets the targets: an ordinary Shade in 5 s, an elite in 18 s, a keeper in 45 to 75 s by ground, ending with about 30% health.
+**Fights against the game.** Enemy health and attack are derived so an on-budget Common Warrior meets the targets: an ordinary Shade in 5 s, an elite in 18 s, a keeper in 45 to 75 s by ground, ending with about 30% health when a typical 2% of lifesteal is counted. Without any lifesteal the same Warrior ends near 10% at ground 1 and falls just short at ground 6.
 - A bare Voidkin takes 9 to 14 s on an ordinary Shade and can't beat a keeper.
 - Half a build loses to the keeper, narrowly at ground 1 and clearly at ground 6.
 - On budget with the type advantage: wins with about 60% left. Against the type: loses. Bringing the right lead is worth as much as a third of a build.

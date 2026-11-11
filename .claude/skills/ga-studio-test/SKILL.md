@@ -1,6 +1,6 @@
 ---
 name: "ga-studio-test"
-description: Test and inspect Grow a Anime in Roblox Studio through the Studio MCP. Playtests, self-test, debug commands, logic tests, world report, timed input tests and screen captures. Load before any playtest, capture or debug-bridge call.
+description: Test and inspect Grow your Anime in Roblox Studio through the Studio MCP. Playtests, self-test, debug commands, logic tests, world report, timed input tests and screen captures. Load before any playtest, capture or debug-bridge call.
 ---
 
 # Testing in Studio (shared by the team)

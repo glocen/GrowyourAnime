@@ -1,5 +1,5 @@
 {
-  "name": "GrowAAnime",
+  "name": "GrowyourAnime",
   "servePort": 34876,
   "globIgnorePaths": ["**/*.md"],
   "syncbackRules": {

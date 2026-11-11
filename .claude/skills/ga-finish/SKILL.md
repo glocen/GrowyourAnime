@@ -1,6 +1,6 @@
 ---
 name: "ga-finish"
-description: Close the builder's finished Grow a Anime piece. Run the checks, review what players see, update the one status home and the team notes, log assets, commit only our paths, push. Builder only; the other teammates close pieces as their briefs say. Use when a piece of work is done or the director says to wrap up.
+description: Close the builder's finished Grow your Anime piece. Run the checks, review what players see, update the one status home and the team notes, log assets, commit only our paths, push. Builder only; the other teammates close pieces as their briefs say. Use when a piece of work is done or the director says to wrap up.
 ---
 
 # Finish a piece (builder only)
@@ -8,9 +8,9 @@ description: Close the builder's finished Grow a Anime piece. Run the checks, re
 The other teammates close their pieces as their briefs say. Step 7 pushes, and only the builder pushes for the team.
 
 1. **Checks, all passing.**
-   - the logic tests and the self-test, once they exist (for example the self-test and the logic tests, in each place that has them).
+   - the type check, the logic tests and the self-test, once they exist (for example the type check, the self-test and the logic tests, in each place that has them).
    - The world report if markers or world code changed.
-   - a purchase in the published game, if the store changed (for example a match smoke test if the match lifecycle changed).
+   - a purchase in the published game, if the store changed (for example a match smoke test if the match lifecycle changed, or the first session played from a new save if anything a new player meets changed: the aim is a premium first session).
    - Add a self-test or logic case for every new mechanic or rule.
 2. **What players see goes through "The checks, in order"** (AGENTS.md):
    - **Your own review:** player-camera captures at 1920×1080 and 1366×768, in the place's real lighting, then a harsh self-critique against the bar. World pieces are also seen at the player's distance, in the place's real lighting, with a backup of what they replaced.
@@ -29,5 +29,5 @@ The other teammates close their pieces as their briefs say. Step 7 pushes, and o
 6. **Tidy.** Delete the temp files, unused parts and dead code you created, and empty `build/import`.
 7. **Commit by path, then push.**
    - `git add` only the paths you changed (never `-A`), then commit exactly those: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -m "<message>" -- <paths>`. For a file that also holds another session's edits, see AGENTS.md, "Shared folder and git".
-   - Push once the director's repo exists. The go to push without asking was given for NEXT Button: ask once for this game, and record the answer here. Pushing carries the teammates' local commits too.
+   - Then push, never by force. The director, 2026-11-11: "You can start pushing on the github of grow your anime". Pushing carries the teammates' local commits too.
 8. **Report** to the director, each stated separately: implemented, tested, visually reviewed, director-accepted. Then suggest `/clear` before an unrelated piece.

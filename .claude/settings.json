@@ -5,6 +5,7 @@
   },
   "permissions": {
     "deny": [
+      "mcp__Roblox_Studio__generate_*",
       "mcp__Roblox_Studio__generate_mesh",
       "mcp__Roblox_Studio__generate_material",
       "mcp__Roblox_Studio__generate_procedural_model",
@@ -55,7 +56,8 @@
       "mcp__Roblox_Studio__auto_setup_avatar",
       "mcp__Roblox_Studio__segment_mesh",
       "Edit(/.claude/hooks/**)",
-      "Edit(/.claude/settings.json)"
+      "Edit(/.claude/settings.json)",
+      "Edit(/.claude/settings.local.json)"
     ]
   },
   "hooks": {

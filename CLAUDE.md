@@ -2,7 +2,7 @@
 
 # Claude: you build the game
 
-Code, Studio integration, tests and tooling. Folder: `C:\Users\gloce\Grow a Anime`. No remote yet: the director makes the GitHub repo, and its address goes here.
+Code, Studio integration, tests and tooling. Repo: github.com/glocen/GrowyourAnime, cloned at `C:\Users\gloce\GrowyourAnime`.
 
 **Not the builder?** Your brief in `docs/briefs/` sets your role and overrides this line. Don't run `/ga-start` or `/ga-finish`.
 
@@ -12,7 +12,7 @@ You are also this game's engineer of record (the directive, sections 8 to 10 and
 
 ## Places
 
-- None yet. The director creates the experience under the studio's group (group 35516567), and the ids are written here once it exists.
+- One place, under the studio's group (group 35516567): universe `9093907961`, main place `78052287756826`. The director gave these ids on 2026-11-11, and the builder verifies them at its first start. No other place yet: the director writes ids here as they're published. The rollback experience, if any: none.
 - Every place runs the same code. A workspace attribute splits role services, read through one util only (`src/shared/Util/PlaceRole.luau`).
 
 ## Rojo and Studio, every session
@@ -27,8 +27,7 @@ You are also this game's engineer of record (the directive, sections 8 to 10 and
 
 ## This Windows machine
 
-- The PC has 15.5 GB of memory, so keep Studios few. Git and Rojo need the Bash sandbox off.
-- The folder's name holds spaces: quote the path in every command and script.
+- The PC has 15.5 GB of memory, so keep Studios few. Git and Rojo need the Bash sandbox off. This project lives at `C:\Users\gloce\GrowyourAnime`.
 - Windows Controlled Folder Access: if it's on, don't change it, and keep the project outside Documents, or git, Rojo and Python can't write there.
 - Use `py`, not `python` (the Store shim). Draw generated assets into `build/scratch/<teammate>/`.
 - Blender isn't on PATH: it's the Steam install, `C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe`.
@@ -36,7 +35,12 @@ You are also this game's engineer of record (the directive, sections 8 to 10 and
 
 ## Day one
 
-The folder came from the handbook's starter and NEXT Button's team files on 2026-11-09, by research, at the director's ask. It holds no game code. Your first piece is `docs/test-requests.md`, TR1.
+The folder came from the handbook's starter and NEXT Button's team files on 2026-11-09, by research, at the director's ask. Its kit was brought up to the corrected templates on 2026-11-12. It holds no game code. Your first piece is `docs/test-requests.md`, TR1.
+
+At your first start:
+
+- Verify the ids under "Places".
+- The instruction lint and the tool guard are in `.claude/hooks/`, with their config, and `.claude/settings.json` doesn't name them yet. Installing them is yours, on the director's yes: `handbook/tech/README.md`, "Setting it up", step 5. `py .claude/hooks/selftest.py` passes as they are.
 
 ## Done means
 
@@ -49,7 +53,7 @@ The folder came from the handbook's starter and NEXT Button's team files on 2026
 - **Fresh context at piece boundaries:** a new session under your exact name, or `/clear`, after each finished piece, and before a new one when `/context` passes about 300k. `/compact` only mid-piece at a pause, your Now row written first. A session can't clear itself: when the director is talking with you, end the turn with `Ready for /clear`. Otherwise carry on to your row's next piece.
 - Before stopping: committed, nothing running, no lock held.
 - Topic chapters are in `handbook/`: load the one you touch, by section.
-- Skills: `/ga-start`, `/ga-finish`, `/ga-action`, `/ga-review`, `/ga-studio-test`.
+- Skills: `/ga-start`, `/ga-finish`, `/ga-action`, `/ga-review`, `/ga-studio-test`, `/ga-reference-study`.
 - Read big files by section, never whole: search for the heading, then read that range. Libraries only by search.
 - Use a read-only subagent for broad searches and log digging, so only the conclusion lands in the main context.
 - A research question that needs more than a few searches goes to research's inbox, or to it directly by message.

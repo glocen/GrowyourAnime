@@ -15,6 +15,7 @@ build/import/*
 build/scratch/
 build/captures/
 build/upload/
+build/reference/
 
 # The studio handbook: its own repo, cloned here so teammates can read it inside the project.
 handbook/
@@ -22,3 +23,6 @@ handbook/
 # Hook state
 .claude/state/
 build/locks/
+
+# The production package of 2026-11-11, kept for reference. Its live content is in docs/. Large, and partly superseded.
+docs/archive/package-v13/

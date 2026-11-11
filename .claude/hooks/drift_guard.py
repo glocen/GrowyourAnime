@@ -15,14 +15,63 @@ A title can be missing from an input. An input without a title keeps the role th
 title yet is told to read its own before it asks. The record keeps where the last eight titles came from ("title_log":
 input, transcript, kept or none), so the next miss can be traced.
 
+Three more things, each said once:
+  - a session that keeps its old context (SessionStart with source resume or compact) is told what changed in those files
+    while it was away, where a fresh one (startup, clear) just takes a new baseline;
+  - the status board: with config "drift_guard"."board" {"file", "section", "away_hours"}, a session that comes back after
+    that many hours, or resumes, is told when the board's section changed meanwhile, since the task in its context may be
+    stale. A session at work is never told: its own row changes all day;
+  - the pause: with config "paused" {"since", "words"} at the top of hooks.json, every session is told the project is
+    paused, and told again when that flag appears or goes. tool_guard.py does the refusing.
+
 Fails open: on any error it prints one warning line and the prompt goes through untouched.
 """
 
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import sys
+
+
+def pause_note(lib) -> str | None:
+    paused = lib.load_config().get("paused")
+    if not isinstance(paused, dict):
+        return None
+    return (f"This project is paused since {paused.get('since', '?')}: \"{str(paused.get('words', ''))[:120]}\". "
+            f"Read and research only. No Studio, upload or publish call passes, and nothing on its board is a task to "
+            f"pick up, until the director reopens it.")
+
+
+def board_sha(lib, conf: dict) -> str | None:
+    board = conf.get("board") or {}
+    if not board.get("file"):
+        return None
+    try:
+        text = lib.in_root(board["file"]).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    part = lib.section_text(text, board["section"]) if board.get("section") else text
+    return lib.sha256_text(part if part is not None else text)
+
+
+def away_notes(lib, conf: dict, saved: dict | None, board: str | None, resumed: bool) -> list:
+    """What a returning session should re-read: the board, when it changed while the session was away."""
+    if not saved or not saved.get("board") or not board or saved["board"] == board:
+        return []
+    spec = conf.get("board") or {}
+    try:
+        gone = lib.now() - lib.parse_time(saved["seen"])
+    except (KeyError, ValueError, TypeError):
+        return []
+    if not resumed and gone < datetime.timedelta(hours=float(spec.get("away_hours", 6))):
+        return []
+    hours = gone.total_seconds() / 3600
+    span = f"{hours / 24:.0f} days" if hours >= 48 else f"{hours:.0f} hours"
+    where = f"{spec['file']}" + (f", \"{spec['section']}\"" if spec.get("section") else "")
+    return [f"The status board changed while this session was away ({where}; last seen {span} ago). The task in this "
+            f"context may be stale: re-read your row and what waits on the director before any write."]
 
 
 def tracked(lib, conf: dict, role: str) -> list:
@@ -118,23 +167,43 @@ def main() -> int:
             {"at": lib.iso(lib.now()), "event": f"{event}:{inp.get('source', '')}".rstrip(":"), "from": source}]
         files = tracked(lib, conf, role)
         cur = snapshot(lib, files)
+        limit = int(conf.get("max_sections_named", 6))
+        board, pause = board_sha(lib, conf), pause_note(lib)
+        seen = {"board": board, "seen": lib.iso(lib.now()), "paused": bool(pause)}
+        changed = "Instructions changed since this session read them: {}. Re-read those sections before relying on " \
+                  "them (search for the heading)."
         if event == "SessionStart":
-            told = None  # no title yet: the app may write it before the first prompt, which then tells it
+            texts, told = [], None  # no title yet: the app may write it before the first prompt, which then tells it
             if role != "unknown":
-                lib.add_context("SessionStart", identity(lib, conf, role, title))
+                texts.append(identity(lib, conf, role, title))
                 told = role
-            lib.atomic_write(state, json.dumps({"role": role, "told": told, "files": cur, "title_log": log}))
+            if pause:
+                texts.append(pause)
+            if saved and inp.get("source") in ("resume", "compact"):  # the old context is still there
+                notes = diff(saved.get("files", {}), cur, limit)
+                if notes:
+                    texts.append(changed.format("; ".join(notes)))
+                texts += away_notes(lib, conf, saved, board, True)
+            if texts:
+                lib.add_context("SessionStart", " ".join(texts))
+            lib.atomic_write(state, json.dumps({"role": role, "told": told, "files": cur, "title_log": log, **seen}))
             return 0
         base = saved.get("files", {}) if saved else cur  # a session that started before the hooks: no drift note
         told = saved.get("told") if saved else None
         texts = [identity(lib, conf, role, title)] if told != role else []
-        notes = diff(base, cur, int(conf.get("max_sections_named", 6)))
+        was_paused = saved.get("paused") if saved else None
+        if pause and (told != role or was_paused is False):
+            texts.append(pause)
+        elif not pause and was_paused:
+            texts.append("This project's pause is lifted: config/hooks.json no longer holds it.")
+        notes = diff(base, cur, limit)
         if notes:
-            texts.append("Instructions changed since this session read them: " + "; ".join(notes) +
-                         ". Re-read those sections before relying on them (search for the heading).")
+            texts.append(changed.format("; ".join(notes)))
+        texts += away_notes(lib, conf, saved, board, False)
         if texts:
             lib.add_context("UserPromptSubmit", " ".join(texts))
-        lib.atomic_write(state, json.dumps({"role": role, "told": role, "files": {**base, **cur}, "title_log": log}))
+        lib.atomic_write(state, json.dumps({"role": role, "told": role, "files": {**base, **cur}, "title_log": log,
+                                            **seen}))
         return 0
     except Exception as e:
         sys.stdout.write(json.dumps({"systemMessage": f"drift guard skipped ({type(e).__name__}: {e})."[:300]}))

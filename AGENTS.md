@@ -1,8 +1,8 @@
-# Grow a Anime: rules for every AI teammate
+# Grow your Anime: rules for every AI teammate
 
-**Grow a Anime** (working name GrowAAnime): a Roblox game where you run a compact electric base whose Void Breakers grow original anime-style fighters from Void Shards. Your fighters power the base, and you collect them, train them and send them into Void Clash, the automatic fight. Every title players see uses Grow a Anime; the repo, files and code keep the working name. Owner and director: **glocen**, final say on everything.
+**Grow your Anime** (working name GrowyourAnime): a stylish, slightly mature anime-inspired Roblox collection and action RPG. You break Void Shards into original fighters called Voidkin, lead one in automatic combat through festival grounds, put up to six to work in extraction bays making electricity, and build an account-wide gear loadout. Every title players see uses Grow your Anime; the repo, folders, files and code keep the working name. Owner and director: **glocen**, final say on everything.
 
-Claude Code loads this through `CLAUDE.md`. Rules live here, details in the files linked below. The director's founding word for this game is the directive of 2026-11-09, kept word for word in `docs/directive.md`. What it decides is in `docs/decisions.md`.
+Claude Code loads this through `CLAUDE.md`. Rules live here, details in the files linked below. The director's founding word for this game is the directive of 2026-11-09, kept word for word in `docs/archive/directive-2026-11-09.md`. The package of 2026-11-11 and the words since are answered in `docs/decisions.md`, the current brief.
 
 ## Supreme rules (above quality and everything else)
 
@@ -66,8 +66,9 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **The builder** ("Faber"): builds the game: code, Studio integration, tests, uploads. Brief: `CLAUDE.md`.
 - **Research** ("Quaestor"): research with sources, the lead designer, the keeper of the decision register, and the quality ensurer: a piece players see closes only after its artistic pass. Commits by path, and pushes its own commits when `git log origin/main..HEAD` lists only them. Never pulls. Brief: `docs/briefs/research.md`.
 - **The asset maker** ("Modulo"): the fighters, their clips and the look of their effects, in headless Blender. Brief: `docs/briefs/asset-maker.md`.
-- **QA** ("Probator"), from the slice's first playable: tests, playtests, one evidence pack per piece. Never game code, and never weakens a test. Brief: `docs/briefs/qa.md`.
-- **The world maker** ("Tessera"), once the grey slice is proven: the base kit, the machines, the plaza and the arena in headless Blender, and the screens' art kit. Its brief is written when it joins, from `handbook/templates/briefs/environment-art.md`.
+- **QA** ("Probator"), when review load calls for it: tests, playtests, one evidence pack per piece. Never game code, and never weakens a test. Brief: `docs/briefs/qa.md`.
+- **Level design** ("Locus"), not open yet: maps from layout to install, in its own workshop place. Its brief is written when it joins, from `handbook/templates/briefs/level-design.md`.
+- **Environment art** ("Tessera"), not open yet: the world kit in headless Blender, handed to level design. Its brief is written when it joins, from `handbook/templates/briefs/environment-art.md`.
 
 Every teammate is Claude Code on the director's PC. Change another teammate's area only when the director asks, and say so in the team notes. Who joins when, and why: `docs/production-plan.md`, "The team".
 
@@ -83,7 +84,7 @@ Every teammate is Claude Code on the director's PC. Change another teammate's ar
 
 - Never commit passwords, API keys, cookies or `.ROBLOSECURITY`: git keeps them for good.
 - Stage only your own paths, never `git add -A`. Never delete or restore another teammate's files, even while it's off.
-- **Who pulls and pushes:** the builder pulls and pushes for the team, once the director's repo exists. Before `git pull --rebase`, it compares any blocking local file with `origin/main` and removes only identical copies. Research may push only its own commits, when `git log origin/main..HEAD` lists only them, and never by force. Everyone else commits by path and never pushes. Nobody but the builder pulls or switches branches. A pull also crashes Rojo.
+- **Who pulls and pushes:** the builder pulls and pushes for the team. Before `git pull --rebase`, it compares any blocking local file with `origin/main` and removes only identical copies. Research may push only its own commits, when `git log origin/main..HEAD` lists only them, and never by force. Everyone else commits by path and never pushes. Nobody but the builder pulls or switches branches. A pull also crashes Rojo.
 - Commit only your own work: `git add` your new files, then `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -m "<message>" -- <paths>`. The folder has one git index, so a plain `git commit` takes whatever another session staged.
 - **A file that also holds another session's edits:** `-- <paths>` commits it as it is on disk, so stage only your change: copy `git show HEAD:<file>` to your scratch folder, make the same edit there, run `git update-index --cacheinfo "100644,$(git hash-object -w --path <file> <copy>),<file>"`, compare HEAD's blob and `git diff --cached --name-only` in the commit's own command, then run a plain `git commit`.
 - **Turns:** Studio, timing tests and Blender's GPU go in turns, written on the Now board: at most two Studios open, one timing test at a time with its window in front, a Cycles render or a bake by `build/locks/blender.lock`. Never playtest a place another teammate holds.
@@ -94,10 +95,13 @@ Every teammate is Claude Code on the director's PC. Change another teammate's ar
 | Fact | Home | Read it |
 |---|---|---|
 | Rules | this file, `CLAUDE.md` | automatic |
-| The director's founding word | `docs/directive.md` | the section a task touches |
+| The director's founding word | `docs/archive/directive-2026-11-09.md` | the section a task touches |
 | Decisions: confirmed, proposed, open, rejected | `docs/decisions.md` | before designing or building anything |
-| The vision: the game, the loop, the first 20 seconds, the bar | `docs/north-star.md` | before any piece players see |
+| The vision: the game, the loop, a premium first session, the bar | `docs/north-star.md` | before any piece players see |
 | How each system works, the game's own words | `docs/design.md` | the section a piece touches |
+| Who the Voidkin, the Shades and the grounds are | `docs/roster.md` | before designing or building one |
+| How numbers are put together, the seeds, the simulation | `docs/balance.md`, `tools/balance/` | before any number that changes strength or pace |
+| The HUD and the screens | `docs/ui.md` | before any screen |
 | What was read, with its sources | `docs/research/` | when a design line cites it |
 | Next work, the slice, the team | `docs/production-plan.md` | when picking work |
 | Current state, open asks | `docs/team-notes.md`, "Now" | at session start |

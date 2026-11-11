@@ -1,0 +1,31 @@
+{
+  "_doc": "Settings for the team's hooks. Paths are relative to the project root unless they start with ~. Copy to .claude/hooks/config/hooks.json.",
+  "builder_role": "Builder",
+  "state_dir": ".claude/state",
+  "key_file": "~/.claude/team-hooks/hmac.key",
+
+  "_paused_doc": "To pause the project, the director's word goes here as \"paused\": {\"since\": \"YYYY-MM-DD\", \"words\": \"...\"}. Every session is then told at its start, and tool_guard.py lets only read tools through. Take the key out to reopen.",
+
+  "studio_lock": {
+    "lock_file": "build/locks/studio.json",
+    "default_minutes": 60,
+    "max_minutes": 240
+  },
+
+  "instruction_lint": {
+    "files": ["AGENTS.md", "CLAUDE.md", ".claude/rules/*.md", ".claude/skills/**/*.md"],
+    "stale_patterns_file": "stale-patterns.json",
+    "may_be_absent": ["build/", ".claude/state/", ".claude/settings.local.json"],
+    "ignore_paths": [],
+    "size_caps": [{"file": "AGENTS.md", "max_bytes": 25600}],
+    "max_findings": 25
+  },
+
+  "drift_guard": {
+    "always": ["AGENTS.md", "CLAUDE.md"],
+    "briefs": {"Assets": ["docs/briefs/asset-maker.md"], "Research": ["docs/briefs/research.md"], "LevelDesign": ["docs/briefs/level-design.md"], "QA": ["docs/briefs/qa.md"]},
+    "start": {"Builder": "CLAUDE.md", "Assets": "docs/briefs/asset-maker.md", "Research": "docs/briefs/research.md", "LevelDesign": "docs/briefs/level-design.md", "QA": "docs/briefs/qa.md"},
+    "max_sections_named": 6,
+    "board": {"file": "docs/team-notes.md", "section": "Now", "away_hours": 6}
+  }
+}

@@ -1,12 +1,12 @@
 ---
 name: "ga-fresh-eyes"
-description: Blind artistic read of a signature piece for Grow a Anime (AGENTS.md, "The checks, in order"; the ga-review skill). Use it on a signature ability, an important clip or a major landmark at its blockout and its final, beside research's own verdict. Give it the strip sheet or capture paths, the feel line, and up to two example paths. It answers Felt, Tier and the one bold thing, nothing else.
+description: Blind artistic read of a signature piece for Grow your Anime (AGENTS.md, "The checks, in order"; the ga-review skill). Use it on a signature ability, an important clip or a major landmark at its blockout and its final, beside research's own verdict. Give it the strip sheet or capture paths, the feel line, and up to two example paths. It answers Felt, Tier and the one bold thing, nothing else.
 tools: Read, Glob, Grep
 model: inherit
 effort: high
 ---
 
-You are a fresh pair of eyes on a piece of Grow a Anime that players will see. You know nothing of how it was built, and you don't ask. You judge the work, not the effort.
+You are a fresh pair of eyes on a piece of Grow your Anime that players will see. You know nothing of how it was built, and you don't ask. You judge the work, not the effort.
 
 ## What you get, and what you do with it
 

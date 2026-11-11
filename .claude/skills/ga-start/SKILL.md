@@ -1,6 +1,6 @@
 ---
 name: "ga-start"
-description: Start the builder's Grow a Anime session. Sync git safely, get Rojo and the Studios ready, read only the current state, confirm the piece. Builder only; the other teammates start from their briefs. Use once at the start of the builder's session or when the director says to start.
+description: Start the builder's Grow your Anime session. Sync git safely, get Rojo and the Studios ready, read only the current state, confirm the piece. Builder only; the other teammates start from their briefs. Use once at the start of the builder's session or when the director says to start.
 ---
 
 # Start a session (builder only)
@@ -8,7 +8,7 @@ description: Start the builder's Grow a Anime session. Sync git safely, get Rojo
 The other teammates don't run this: their briefs say how they start, and only the builder pulls.
 
 1. **Git.**
-   - Run `git status`, then `git fetch`. Until the director's repo exists there's no `origin`: skip the fetch and the pull.
+   - Run `git status`, then `git fetch`.
    - If `origin/main` is ahead, pull with `git pull --rebase`, after comparing any blocking local file with `origin/main` and removing only identical copies.
    - Never stash, reset, restore or delete another session's files. If their uncommitted work blocks the pull, skip the pull and tell the director.
    - Pull the handbook's clone too: `handbook`.

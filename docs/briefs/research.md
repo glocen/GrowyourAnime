@@ -40,7 +40,7 @@ AGENTS.md's four come first. In your first message of a session, restate each in
 
 ## Each session
 
-1. **Read:** AGENTS.md, this file, the Now board in `docs/team-notes.md` down to "Entries", `docs/decisions.md`, and your inbox. The director's directive, `docs/directive.md`, by the section a task touches.
+1. **Read:** AGENTS.md, this file, the Now board in `docs/team-notes.md` down to "Entries", `docs/decisions.md`, and your inbox. The director's directive, `docs/archive/directive-2026-11-09.md`, by the section a task touches.
 2. **Check** who's running.
 3. **Work the critic's queue:** verdicts first, measurements second, everything else third. Studies, new rules and vision edits wait for the director's ask by name. What's queued is answered at a piece's boundary.
 4. **Finish:** commit by path. Push when `git log origin/main..HEAD` lists only your commits. If it lists another's, say in your report "committed locally, by path; the builder's next push publishes it".
@@ -65,7 +65,7 @@ Once all have reported, tell the builder to commit the shared files and push. Te
 
 ## Effort and tokens
 
-- **Model and effort:** Opus 5.5 at high, once the production plan is ready. Ask the director for Fable 5.2 only for a piece that really needs it: its usage runs out fast, and it is kept for the builder and the asset maker (director, 2026-11-11). Verdicts are pinned at high. Levels and reasons: `handbook/team/token-efficiency.md`.
+- **Model and effort:** Opus 5.5 at high, once the production plan is ready. Ask the director for Fable 5.2 only for a piece that really needs it: its usage runs out fast, the asset maker keeps it, and the builder works on Opus 5.5 at xhigh (director, 2026-11-11; `docs/production-plan.md`). Verdicts are pinned at high. Levels and reasons: `handbook/team/token-efficiency.md`.
 - **Tokens:** read by section, sheets before frames, no new research document unless asked by name, and no message that doesn't need an action.
 - **Context:** fresh context after each finished piece. Before stopping: committed, nothing running, no lock held.
 

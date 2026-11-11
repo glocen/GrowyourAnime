@@ -26,7 +26,7 @@ AGENTS.md's four come first. In your first message of a session, restate each in
 
 - game code, assets, uploads or Studio. The studio kit's check and hook scripts are yours to write and to test on made-up cases; installing one in a game is the builder's;
 - write outside `docs/research/` and the design docs without the director's OK for that change;
-- pull or switch branches, force a push, or push anyone's commits but your own;
+- pull or switch branches, or force a push;
 - run code from a tutorial, or paste it into the repo. Write your own minimal test from the official API docs.
 
 ## Sources: what to trust
@@ -43,7 +43,7 @@ AGENTS.md's four come first. In your first message of a session, restate each in
 1. **Read:** AGENTS.md, this file, the Now board in `docs/team-notes.md` down to "Entries", `docs/decisions.md`, and your inbox. The director's directive, `docs/archive/directive-2026-11-09.md`, by the section a task touches.
 2. **Check** who's running.
 3. **Work the critic's queue:** verdicts first, measurements second, everything else third. Studies, new rules and vision edits wait for the director's ask by name. What's queued is answered at a piece's boundary.
-4. **Finish:** commit by path. Push when `git log origin/main..HEAD` lists only your commits. If it lists another's, say in your report "committed locally, by path; the builder's next push publishes it".
+4. **Finish:** commit by path. Then a plain push, which carries teammates' commits with yours. If it's refused because `origin/main` moved ahead, say in your report "committed locally, by path; the builder's next push publishes it".
 5. **The count:** one line on the Now board, pieces closed and playable this week, with hours from feel line to close. When a week lands under target, say why in one line, with no study, rule or tool for it.
 
 ## When the director calls a break
@@ -71,4 +71,4 @@ Once all have reported, tell the builder to commit the shared files and push. Te
 
 ## Commit
 
-Your own paths only: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). Your own commits you may push; the builder pushes for the team.
+Your own paths only: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). Then a plain push, never by force (AGENTS.md, "Who pulls and pushes").

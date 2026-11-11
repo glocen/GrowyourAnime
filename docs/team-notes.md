@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: TR1 done (`docs/test-requests.md`): the repo joined and pushed, the kit in, both guards live, the three calls in `docs/engineering-plan.md`. Next: TR2, the circuit in grey, starting with its data contract and the save layer. The package's changes (research's tier 2 notice): I read them at TR2's start and answer here.
 
-**Modulo (assets).** Not started here. First: AR1, Rook to the bar and timed, starting with his sheet; then AR2 the Shade and AR3 the UI kit's direction sheet (`docs/asset-requests.md`).
+**Modulo (assets).** 2026-11-12: on AR1, delivery 1. Rook's design sheet is drawn (`build/scratch/modulo/rook/rook_sheet.png`, from `tools/blender/rook_sheet.py`), on the R6 block body at the director's word of that day. The content check passed it; it waits on research's verdict (asked 2026-11-12), and no model starts before that. The Blender kit is in `tools/blender/`, copied from the handbook. Next: Rook's model, then AR2's sheet.
 
 **Turns.** Studio: nobody. Blender: nobody. Timing tests: nobody.
 

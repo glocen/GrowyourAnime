@@ -244,7 +244,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check, for the builder to upload and look at again (section 7). Open: the burst's light and paper, an effect built with the builder.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check, for the builder to upload and look at again (section 7). Open: the burst's light and paper, an effect built with the builder. Its block-in waits on research's verdict (section 8).
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -553,6 +553,48 @@ This is the fix for section 6's BLOCK on condition 3, by section 6's second way:
   - `tools/blender/shade_elite_bare.py` is new: it cuts the copy, places it as the game does, and draws the look.
   - `tools/blender/shade_elite.py`'s `write` now names each elite's mesh and centres the copy.
 - **Hours:** about 0.7.
+
+### 8. The burst into light and paper: the block-in (Modulo, 2026-11-12)
+
+Grey boxes on the delivered Burst clip: timing and size only, no art. Made on Opus 5.5 xhigh.
+
+- **Where:** `build/scratch/modulo/shade/burst/`.
+  - `burst_A.png`, `burst_B.png` and `burst_C.png`: twelve frames each from the player's assumed camera, behind a grey stand-in for the lead 7 studs in front of the Shade.
+  - `burst_side.png`, `burst_bright.png` and `burst_64.png`: the three variants side by side.
+  - `tools/blender/shade_burst_fx.py` rebuilds them in about a minute.
+- **Feel line, proposed for research to sign:** the last hit lands and the Shade lets go: the light inside it leaps out of the empty collar into the sky, and the coat it lit comes apart into paper carried up after it, seen from behind the fighter.
+- **Job and rank:** the payoff of every fight, seen many times a minute. So it's short, gone 0.4 s after the `Burst` marker, and it leaves the ground clear for the next pack. Not a signature.
+- **The hero shape:** the light, one tall shape leaving the collar where the face was.
+  - Direction: up, leaning 8° away from the fighter.
+  - Acceleration: it leaps and settles, 7 studs in 8 frames, most of it in the first 3. Then it still climbs, thinning, and it's out 14 frames after the Burst. It's stretched along its travel while it's fast.
+- **One idea, three times:**
+  - The charge: light spills up out of the collar as the mask tips off it, 18 to 26, from 0.2 to 1.8 studs tall.
+  - The punctuation: on the Burst frame (27), the coat is lit whole, one box in its outline. The body, the mask and the ties are hidden on that frame, as the content check holds (section 3).
+  - The release: from 28, by variant.
+- **Variants:**
+  - A, the flame let go: the flame, and the coat in ten scraps, thrown out and tumbling down, gone before the floor.
+  - B, the lantern bursts: a ball of light swells round the body to 5.5 studs and shrinks back by 14 frames, and the scraps fly out of it every way. The nearest to the white ball the game plays now.
+  - C, the sky lantern: the flame, and the scraps drawn after it in a loose turning column, smaller as they climb, each gone 18 frames after it lifts. Nothing falls.
+- **My pick: C.**
+  - Everything goes one way: the light leads and the paper follows.
+  - The ground stays clear, and by construction nothing can lie on the floor.
+  - From behind the fighter, the release rises out from behind the lead.
+  - B's ball sits on the line of sight and swallows the lead for ten frames. A's falling scraps read as debris at the fighter's feet.
+- **On the clip's markers:** the charge from 18 to the Burst; the punctuation on the Burst (27); the flame from 28 to 41; the scraps from 28, all gone by 51.
+- **Stand-ins, not decided here:** the lead's place (7 studs out), the camera (24° to the Shade's left of its front, 20 studs away), the rise (7 studs), the ten scraps, the two greys. Colour, texture and the light's own glow wait for the art sheet.
+- **What I see wrong:**
+  - At 64 px only the flare (27) and the flame's first frame (28) read. After 29 the flame and the scraps are a few pixels. That's the art sheet's first job: a larger, brighter flame, and scraps that catch the light. Bloom will help the flame in the engine, but the content check's "no red haze on the ground" limits how much it can carry.
+  - On the bright floor the flare is pale grey on pale grey. It needs a rim or a darker edge, as Haymaker's bar did.
+  - The charge is faint from the player's camera: the tipping mask covers most of the collar until 25.
+  - From 31 to 34 the flame's box reads as a floating block. The art's shape, a tapering flame, has to carry the sense of something going up and out.
+  - The scraps tumble edge-on half the time and read thin. In C they drift right of the flame's line, from the camera.
+  - The 64 px sheet's labels cover a third of each tile, as on Haymaker's.
+- **Not done:**
+  - The art sheet: the flame's shape and colour, the scraps' paper and how they burn out, the rim.
+  - Then the builder's build.
+  - The beats aren't in a Definition.
+  - The light and the paper get their own content check (section 3).
+- **Hours:** about 0.6.
 
 ## AR3. The UI kit
 

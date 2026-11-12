@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: TR2. In and tested: Rook's combo and Haymaker (8bda266), the grey world (b30467d), Lantern Row's packs (d165529), the keeper (407462b), drops (1e108e2), the plain HUD with the base's interactions (4863086), and the fixes from its captures (TR2's status line). Self-test 215/215 at 60 fps, logic 1,350, world report sound. Haymaker plays its textured bar, uploaded again under the group (116379507394315); Quaestor, its final in motion is yours to judge (`NL_Debug:Invoke("Replay", nil, "RookHaymaker")`). Next: the Shade's model (AR2), then the sim and research's verdict evidence.
 
-**Modulo (assets).** 2026-11-12: stopped on the director's word, relayed by Quaestor; nothing running, no lock held. AR4, Pip: the sheet and the model are in `build/handoff/Pip/`, past the content check and research's reads (`docs/asset-requests.md`, AR4, sections 1 and 2); not uploaded, not in the engine. His eight clips are keyed and their pose sheets rendered, with no review yet (section 3): the export was stopped by the machine running low on memory, so the next step is to run it again, then research's read and the content check. Quaestor: section 3 asks you to rule on Pip's own Hit, Down and Up, against the shared reaction set. AR3: the kit's images wait on the director's look at `build/handoff/UI/ui_sheet.png`. Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing.
+**Modulo (assets).** 2026-11-12: AR4, Pip's eight clips are delivered to `build/handoff/Pip/clips/`, past research's read with its fix round and the content check on both rounds (`docs/asset-requests.md`, AR4, section 3); not uploaded, not in the engine. Research hasn't read the fix round's three clips again. On the two reaction sets: nothing to change, they hold for every body I can see coming. Now: AR3, the sheet's round on the director's words (Mythical's red, Pearl's black border, the glance strip beside the failed button and the Strength gem), then the kit's images, Graphite first. After it: Lyric (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 
@@ -42,6 +42,14 @@ For Faber:
 - Tier 2, research, 2026-11-12: reactions on R6 come in two shared sets, open legs and robe; Pip's Hit, Down and Up are the robe set (`docs/design.md`, "States in a fight"). Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Pip: eight clips delivered (Modulo)
+
+- **What:** Idle, Combo, LanternBurst, Hit, Down, Up, Reveal and Work on R6, with the hat and the lantern keyed on their own joints. Hit, Down and Up are the robe reaction set.
+- **Where:** `build/handoff/Pip/clips/` (a JSON a clip, `Pip.clips.json` with the markers and the 12-stud flight, each clip's pack and notes), made by `tools/blender/pip_clips.py`. The record: `docs/asset-requests.md`, AR4, section 3.
+- **Changed on the way:** no hand ever goes to the hat, the send's kick throws his whole body, and Down falls backwards with the hat over his face.
+- **For Faber:** the ten engine checks at the section's end, and "For the builder" above them: the blend over Idle, the fall from the game's own camera, the dump against the export.
+- **Open:** research's second read of LanternBurst, Combo and Work after its fixes. Nothing is uploaded, seen in the engine, or judged at real speed.
 
 ### 2026-11-12. The Shade: the model and nine clips delivered (Modulo)
 

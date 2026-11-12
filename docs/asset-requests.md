@@ -480,7 +480,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His clips are keyed and their pose sheets rendered (section 3), not yet exported or reviewed: stopped there on the director's word, 2026-11-12.
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are past research's read, with its one fix round made, and the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric is next in this request.
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -612,48 +612,107 @@ Also: a hand shows inside each sleeve's end. The lantern floats a little lower a
 
 ### 3. Pip's clips: the poses (Modulo, 2026-11-12)
 
-**Stopped here on the director's word, mid-delivery.** Keyed and pose sheets rendered; no review yet, nothing delivered. To pick up: run the export, read the packs, then research's read and the content check.
+**Delivered** to `build/handoff/Pip/clips/` (2026-11-12): the eight `Pip_<Clip>.json`, `Pip.clips.json`, and each clip's pack with its notes. The audit passes on all eight; research's read, its fix round and both content checks are at the section's end. Not uploaded, and not seen in the engine.
 
-- **Where:** `build/scratch/modulo/pip/clips/poses_<Clip>.png`, eight sheets: each named pose from the player's camera, the side, and the front (Lantern Burst from far, to hold the flight). Made by `tools/blender/pip_clips.py` on the kit Rook's clips use: `blender -b --factory-startup --python tools/blender/pip_clips.py -- <out dir> [poses|export|audit] [clip ...]`.
-- **The export isn't done.** Its one run was stopped by the machine running low on memory, after Idle and part of Combo. What it left (`Pip_Idle.json`, `Pip_Combo.json`, their arcs and bare sheets, `pack_Idle.png`) is a partial set: run the whole export again before anything is read or delivered.
-- **How he moves, in one line:** a kid in a coat that's too big, a beat behind his own sleeves, and the hat says what he feels. The lantern is the one that's good at this.
+- **Where the working set is:** `build/scratch/modulo/pip/clips/`. For each of the eight clips: `Pip_<Clip>.json`; `pack_<Clip>.png` (the named poses from the clip's camera, the bare rig from the side, a strip of twelve) with `pack_<Clip>.txt` (its numbers and the audit's lines); `poses_<Clip>.png` (each named pose from three sides); `arcs_<Clip>.png`; `bare_<Clip>.png` (the bare rig stepped through the clip, from the side and the three-quarter). Then `headings_LanternBurst.png` (the wind-up, the send and the recoil at 64 px on eight headings, over a bright ground and over dusk) and `Pip.clips.json` (frames, markers, the flight). Made by `tools/blender/pip_clips.py` on the kit Rook's clips use: `blender -b --factory-startup --python tools/blender/pip_clips.py -- <out dir> [poses|export|audit] [clip ...]`.
+- **Export one clip a run.** All eight in one export ran the machine out of memory. `audit` with no clip named runs all eight without rendering, and writes `Pip.clips.json`.
+- **How he moves, in one line:** a kid in a coat that's too big, a beat behind his own sleeves, and the hat says what he feels. His hands never go to it. The lantern is the one that's good at this.
 - **The eight,** at 60 frames a second, each with its markers:
   - **Idle** (a loop of 192): rocking a hair on his heels. At 120 he turns to check the lantern's still there, and it perks up and turns to him.
-  - **Combo** (100; `Shot1` at 10, `Shot2` at 26, `Shot3` at 62): two flicks off the end of his sleeve, the lantern spitting and hopping back each time. For the third he sets his feet and ducks under his brim (44 to 57), then jabs the whole sleeve: the lantern kicks clean over (a full turn, 62 to 93) and the hat jumps.
-  - **LanternBurst** (132; `Heat` at 8, `Send` at 51, `Burst` at 66, `Return` at 98): he reels the lantern round to his sleeve's end, winds up (30 to 45), and lets go with the sleeve level down its line. The lantern goes end over end, two turns, 12 studs out. The throw tips him back on his heels all of a piece, the hat off his head (57 to 62); he claps it back on too far (68) and has to nod it up (106). The lantern comes home the long way.
-  - **Hit** (20): struck (3), both sleeves thrown forward; the hat follows by its own lag, and the lantern shies.
-  - **Down** (66; `Land` at 29): the blow stands him up straight (6), then he goes over forwards like a plank in a robe. The hat stays upright as he leaves it behind and comes down a moment after (41). The lantern comes down to look.
-  - **Up** (58): the hat gets up first (10). He stands himself up the way you'd walk a ladder upright (22 to 36), and the lantern's back at his shoulder before he looks for it.
-  - **Reveal** (96; `Kindle` at 24, `Flourish` at 58): a hat on a bundle of robe. The lantern comes round from behind him and lights, the brim tips up, and there's a boy under it (41). He tries a flourish: the lantern loops the loop and nearly takes the hat with it (70). He claps it back on and looks up from under it for his name.
-  - **Work** (a loop of 120; `Pump` at 27): a sleeve held over the post like warming a hand at a stove. The lantern rears, ducks in and gives it a go; while it gets its breath he knocks his hat back up (76) and reads the dial.
-- **The hat and the lantern** are keyed on their own joints, every frame. The hat lags the head by a spring (it tips against a turn or a shove, at most 18 degrees back, 14 round, 9 to a side), and the clip takes it over where it acts: the send, the fall, the reveal. The lantern is placed in the stage's space, so it stays put while he moves.
-- **The checks, as numbers, from the last pose run:**
-  - A leg's widest swing in the robe, of the recipe's 25 degrees: Idle 6, Combo 14, LanternBurst 22, Hit 11, Down 10, Up 9, Reveal 22, Work 15.
-  - The longest an arm is nearly still at 20 to 70 degrees over level: 0 frames in all eight, both arms, whatever the lean.
-  - The lantern's nearest to his torso: 0.42 studs (LanternBurst, 18). To his head: 1.05 (Work). To the hat: 0.18 (Work, 51). Over the floor: 0.23 (Reveal's start).
-- **My calls (tier 1), for research to rule on where marked:**
-  - **Pip has his own Hit, Down and Up. For research, tier 2:** `docs/design.md` ("States in a fight") says reactions are one shared set per rig. Rook's Down sits with his legs at 108 degrees, which comes out of the robe, and Pip's hat and lantern have to act in a reaction or they hang dead. These three are a proposal.
-  - **The robe makes his rules.** A leg stays within 25 degrees of the torso, so he tips back like a plank over his heels, crouches where another would bow (the robe hides his legs going up inside it), and never twists far over planted feet.
-  - **A hand goes to the brim and comes away in one move.** An R6 arm is straight, so it's a clap and a pull down, never held, and no clip ends with a hand up there (the content check's condition 6, applied to both arms).
+  - **Combo** (100; `Shot1` at 10, `Shot2` at 26, `Shot3` at 62): two flicks off the end of his sleeve, the lantern spitting and kicked back over a stud each time, askew. For the third he sets his feet and ducks under his brim (44 to 57), then jabs the whole sleeve: the lantern kicks clean over (a full turn, 62 to 93) and the hat jumps.
+  - **LanternBurst** (132; `Heat` at 8, `Send` at 51, `Burst` at 66, `Return` at 98): he reels the lantern round to his sleeve's end, winds up with the sleeve behind him (30 to 45), and lets go with it level down the lantern's line. The lantern goes end over end, two turns, 12 studs out. The kick throws him: he rocks back over his heels all of a piece, toes up, the free sleeve wheeling out behind him and the hat off his head (57), and it has him off the floor (62). He comes down half a stud behind where he stood, and the hat comes down on him, too far (68). He has to tip his chin up to see whether it worked (86), then nod it back (106). The lantern comes home the long way.
+  - **Hit** (20): struck (3), he folds round it, both sleeves thrown forward; the hat follows by its own lag, and the lantern shies.
+  - **Down** (66; `Land` at 29): the blow takes him in the chest (6) and he goes over backwards like a plank in a robe, the sleeves reaching forward for something to hold. He falls out from under his hat: it hangs over him (29) and comes down over his face (39). His boots bounce once (34). The lantern comes down to look.
+  - **Up** (58): the hat gets up first (10). He stands himself up the way you'd walk a ladder upright (22 to 36), goes a little too far (44), and the lantern's back at his shoulder before he looks for it.
+  - **Reveal** (96; `Kindle` at 24, `Flourish` at 58): a hat on a bundle of robe. The lantern comes round from behind him and lights, the brim tips up, and there's a boy under it (41). He tries a flourish: the lantern loops the loop, and its wind has the hat right off his head (67). He ducks (70), it lands back on him, and he looks up from under it for his name.
+  - **Work** (a loop of 120; `Pump` at 27): right shoulder to the post, a sleeve held over it like warming a hand at a stove. The lantern rears, ducks in and gives it a go. While it gets its breath he drops his chin and nods his hat back up (70 to 76), and looks up to read the dial over his head (83 to 92).
+- **The hat and the lantern** are keyed on their own joints, every frame. The hat lags the head by a spring (at its widest here 18 degrees back, 14 round, 5 to a side), and the clip takes it over where it acts: the send, the fall, the reveal. The lantern is placed in the stage's space, so it stays put while he moves.
+- **What changed since the pose sheets, and why:**
+  1. **The left arm was keyed backwards.** On this rig a left arm's roll is positive toward the body, and every standing pose had it positive: the first export failed all eight clips with the left arm 0.26 to 0.36 studs inside the torso. Every left-arm roll is now zero or outward, and the rule is written over the clips in the script.
+  2. **No hand goes to the hat.** With the arm out of the chest, a hand at the brim is a straight arm raised beside an upright body: the audit's salute check read it held for 0.22 s in LanternBurst and 0.15 s in the Reveal, over its 0.1 s line, and it's the content check's condition 6. The lifted hat is also out of an R6 arm's reach. So the hat is moved by the kick, the lantern's wind and his own nod, and never by a hand. This drops the sheet's "other hand clamping the brim" from the send: for research, below.
+  3. **Work stands side-on.** His right shoulder is to the post, so the sleeve reaches it without crossing his chest.
+  4. **Down falls backwards, and Up starts there.** Falling forward he lay feet toward the player's camera: it looked up the robe and into the cuffs. Now his head comes down toward the camera with the hat over his face and the sleeves out at his sides. The hat lies on its brim, 0.03 studs over the floor, turned about the middle of his head.
+  5. **The Reveal starts lower** (crouched low inside the robe, the hat tipped 27 degrees over him), and at the flourish the hat leaves his head by 0.3 studs and he ducks under it.
+  6. **Two measures added** to each clip's numbers: a hand's nearest to the hat, and the brim's rim at its lowest over the floor.
+  7. **Each pack is taken from the camera its clip is seen from:** the player's for the fight; the front for the Reveal and for Work; for Down and Up the player's heading from 14 studs, because laid out he's five studs long before the hat.
+- **The checks, as numbers, from the last run of all eight:**
+  - The audit: PASS on every clip. At their worst: an arm 0.039 studs into the body (Work; the line is 0.05), the legs crossed by 0.080 (Combo; 0.10), a pop of 1.65x (LanternBurst's head; 3.0), a nod of 28 degrees (the Reveal's start; 30), nothing under the floor, and both loops' seams at 0.
+  - A raised straight arm beside an upright body: held 0.00 s in seven clips. In Down the left arm passes through 21 degrees up for 0.05 s as he's struck (the line is 0.1 s), on its way forward. Two more lines are excused by the body's tilt, past 30 degrees: Down's right arm, 30 up for 0.067 s (16 to 19), and Up's left arm, 26 up for 0.15 s (17 to 25), while he's levered up off the floor.
+  - A leg's widest swing in the robe, of the recipe's 25 degrees: Idle 6, Combo 14, LanternBurst 12, Hit 11, Down 18, Up 12, Reveal 22, Work 14.
+  - The lantern's nearest to his torso: 0.38 studs (Work, 27). To his head: 1.16 (Work). To the hat: 0.20 (Work, 51). Over the floor: 0.23 (the Reveal's start, behind him).
+  - A hand's nearest to the hat: 0.22 studs (Work, 20, the sleeve over the post under the brim). Next nearest 0.44 (Down, 22).
+  - His eyes, the face's pitch: Idle +4 to +7; Combo -3 to +5; LanternBurst +3 to +37, thrown back; Hit -3 to +13; Down to +78, on his back; Reveal -46 under the hat to +19; Work -29 at the post to +24 at the dial.
+- **The clip pass, ticked one by one:**
+  - [x] Key poses from the clip's camera: read on all eight packs. The exception is in "What I see wrong", first line.
+  - [x] The eyes are measured (above).
+  - [x] The audit passes on every export.
+  - [x] Feet are planted by the kit except where a clip lifts them (the fall, the boots' bounce), and both loops close with a seam of 0.
+  - [x] The lantern is keyed with the body at each beat, clear of him and the floor (above).
+  - [ ] Blended over the loops the way the game blends it: not done here. Combo, LanternBurst, Hit and Up end on Idle's first pose; the blend itself is the builder's to show.
+  - [x] Arcs and spacing are on `arcs_<Clip>.png`, a dot a frame. The lantern's flight is one clean arc out to 12 studs and home the long way, its spacing widest at the send.
+  - [ ] Judged moving at real speed: no. Blender runs headless here, so motion is read from the strips, the bare-rig steps and the arcs. The hat's lag and the lantern's tumble want eyes on them in the engine.
+  - [x] Markers sit on every beat (`Pip.clips.json`).
+  - [ ] The game's own dump matches the export: the builder's, when Pip goes in.
+- **The send at 64 px** (`headings_LanternBurst.png`): on all eight headings, over both grounds, he holds as the hat and its chalk ring. At the send the level sleeve shows with the lantern at its end on six headings; from straight behind and the next heading round, the hat and the robe cover both (the content check's eyes, and it's right). By the recoil the flown lantern is a dot of a few pixels. At that size the effect's light has to carry the send, not the lantern's body.
+- **The robe set** (research's ruling, below): `bare_Hit.png`, `bare_Down.png` and `bare_Up.png` are the body without the hat and the lantern. Struck, tipped back over the heels in one piece, flat with the arms out; then up like a ladder. They read as a hit and a fall without the props.
+- **My calls (tier 1):**
+  - **The robe makes his rules.** A leg stays within 25 degrees of the torso, so he tips back like a plank over his heels, crouches where another would bow, and never twists far over planted feet.
+  - **His hands never go to the hat** (change 2).
   - **The beats and the flight are the clip's proposal** for the builder's Action rows: the markers above, and 12 studs to the burst (`Flight` in `Pip.clips.json`).
   - **Kindle is a marker.** The lantern is cold until `Kindle` in the Reveal; the glow is the builder's, from the recipe.
 - **What I see wrong:**
-  - On the send's recoil (57 to 62) the hat's crown faces the player's camera and covers him: for five frames he's a hat and a level sleeve.
-  - In Work his face is under the brim from the front for most of the loop. It shows at 76.
-  - Laid out in Down, the hat stands on its brim's edge with the crown up. It "covers what's left" only from the front.
-  - Reveal's first pose isn't only a hat: the robe and both cuffs show under it.
-  - A straight arm's hand passes by the brim more than it lands on it.
-  - The flicks' recoil on the lantern is half a stud, and may not read at 64 px.
-  - All of this is from stills. The hat's lag and the lantern's tumble are motion, and aren't judged yet.
-- **Still to do:** the export (a JSON a clip, the packs, the arcs, the bare-rig sheets from the side and the three-quarter, the send at 64 px on eight headings); research's read, which also reads the model's fixes 1 and 2; the content check on the packs and the bare sheets; the delivery to `build/handoff/Pip/clips/`.
+  - On the send's recoil (57 to 62) the hat's crown faces the player's camera and covers him: for five frames he's a hat, a level sleeve and a wheeling one. Research keeps it: it's the clip's bold thing.
+  - In Work his face shows from the front only from the nod to the dial (76 to about 95). From behind he's a hat and a book for the whole loop: nobody has drawn the bay yet, so which side a player sees isn't known.
+  - Laid out, he's a hat lying on a robe. That's the idea, but the next robed Voidkin has no hat, and its Down is a flat body with its arms out and nothing more.
+  - The fall carries his head three to four studs toward the player's camera. The wide camera I read it from isn't the game's: at the game's distance he may leave the frame's bottom edge.
+  - The Reveal's first pose is a hat on a bundle of robe, not a hat alone.
+  - Without a hand, the hat coming back down "by itself" is a cheat the eye may or may not forgive at speed.
+- **For research:**
+  1. **The clamping hand is gone from the send** (change 2). The sheet's approved key pose had it. The recoil is carried by the plank, the wheeling sleeve and the hat instead. If the hand has to come back, it needs a pose the salute check and condition 6 both pass, and I haven't found one on a straight arm.
+  2. **The read of the eight packs,** with the model's fixes 1 and 2 (section 2) in the same look.
+- **For the builder, when Pip goes in:** the content check's engine checks (sections 1 and 2); the blend over Idle; the fall from the game's own camera; the dump against the export; `Hit`, `Down` and `Up` as the `robe` reaction set, with the hat's and the lantern's tracks dropped on a body that has neither joint.
 
-**Hours:** the clips so far, between 2 and 3 by my own estimate, not timed.
+**Hours:** the clips, about 6 by my own estimate, not timed: 2 to 3 to the pose sheets, the rest on the left arm, the hat and the fall.
 
 - **Research's ruling on Hit, Down and Up** (Quaestor, 2026-11-12, tier 2, on the section's numbers; the poses themselves are read after the export):
   - **Yes, as a second shared set, not as Pip's own.** One set per Voidkin would put three clips on each of 31; one set per body costs three clips once. Five of the 31 wear a long robe or gown (Pip, Cinder, Halcyon, Crane, Umbriel), and Rook's Down at 108 degrees comes out of every one of them. So R6 gets two sets, open legs and robe, and these three are the robe set. Recorded in `docs/design.md`, "States in a fight", "When".
   - **What that asks of the clips:** the body has to read as a fall without the hat and the lantern, because the next robed Voidkin has neither. The props keep their keys on their own joints. A body without those joints has no track for them, so nothing changes for it.
   - **For Faber, when Pip goes in:** a Voidkin's definition names its reaction set, `open` or `robe`. Rook and the Shade's rig stay as they are.
   - **Modulo:** say in your row if two sets don't hold for a body you can see coming (a long tail, a mech's custom rig is already its own).
+
+- **Research's read of the eight** (Quaestor, 2026-11-12, on the eight packs, `headings_LanternBurst.png` and `bare_Down.png`; a blind fresh-eyes read of LanternBurst beside it): one fix round on LanternBurst, Combo and Work. The other five are accepted as they are.
+  - **Felt:** he's a small boy losing an argument with his own hat. The flicks spit, the send flips the hat into a full disc and the lantern streaks off. But in the side view his body hardly leaves its feet, so the hat is thrown back and he isn't. The fresh eyes read the same thing on its own: "the hat shows the throw-back while his body doesn't."
+  - **Tier:** competent. LanternBurst is a starter's signature, so it aims at exceptional and isn't there yet. The Reveal is the best of the eight: a hat on a bundle, a boy under it, and the hat blown off at the flourish.
+  - **The one bold thing:** the brim swinging up into a tilted disc at 57 to 62, bigger than he is. Both reads picked it. Five frames covered by the hat is the right trade, so keep it.
+  - **Fixes:**
+    1. **LanternBurst: the kick throws him, not only his hat.** From 51 to 62 he rocks back well past the sheet's 15 degrees onto his heels, toes up, and skids or hops back about half a stud, still inside the robe's 25 degrees. The sheet's clamping hand showed the kick, so now the body has to (serves: the feel line's "it's him that gets thrown back").
+    2. **Combo: each flick kicks the lantern back at least a stud, with a tilt,** so Shot1 and Shot2 each show a beat at 64 px (serves: the hits' impact, which half a stud doesn't carry).
+    3. **Work: at the dial read, give the eyes one beat under the brim from the loop's camera.** At the post and through the nod he's all hat from the front (serves: the face, and the content check's condition 1).
+  - **Your two questions:**
+    1. **The hand gone from the hat:** accepted. Sleeves too long to reach his own hat is truer to him than a clamp, and a held salute isn't worth a pose. Fix 1 does the clamp's old job.
+    2. **Down falls backwards, and Up starts there:** accepted. Laid out, it's a hat over a sleeve, and that's the joke. Bare, it reads as a plank fall. Whether the fall stays in frame from the game's own camera is the builder's check.
+  - **The model's fixes 1 and 2:** both read in the Reveal at 41 and 96: the folds are lighter on their tops, and the cheek locks are hair. Accepted.
+- **Round 1, research's three fixes made** (Modulo, 2026-11-12; the three clips exported again, their packs, pose sheets, arcs and bare sheets with them, and `headings_LanternBurst.png`):
+  1. **LanternBurst: the kick throws him.** At 57 he's rocked 21 degrees back over his heels all of a piece, toes up, his chest 1.1 studs behind his feet. At 62 he's at 27 degrees and off the floor by 0.14. At 68 he lands half a stud behind where he stood, sinking a little, and the hat comes down on him as he does. He walks it back by 132. A leg's widest swing is 12 of the robe's 25 degrees, and his face tips to +37. The sleeve stays level down the lantern's line. On the bare rig from the side it's a plank going over, where before only the hat went.
+  2. **Combo: each flick kicks the lantern back over a stud,** 1.15 on the first and 1.25 on the second, tilted 36 and 42 degrees and rolled to opposite sides, and home again in ten frames. It stays outside his brim: nearest to the hat 0.28 studs, at the third shot as before.
+  3. **Work: the dial is over his head.** From 83 to 92 he looks up at it, his face at +24, the hat staying tipped back 12 degrees from the nod. From the front three-quarter his eyes show under the brim from 76 to about 95. Work's pack is taken from that side now. From behind there's no pose that shows a face, and the bay that would say which side a player sees isn't drawn yet.
+  - The audit passes on the three again, with no raised-arm line on any of them. Not read again by research: its read above is of the round before.
+- **Content check, 2026-11-12: PASS** on rules 2, 3 and 4, twice: on the eight clips before the fix round, and on LanternBurst, Combo and Work after it.
+  - **Condition 6 holds.** No sleeve is held raised beside an upright body. The check corrected my numbers on two lines the audit excuses by the body's tilt (Down's right arm, Up's left), and they're in "The checks, as numbers" now. LanternBurst's pass rests on the sleeve staying level in the world while he tips back: against his own torso it's 21 to 27 degrees up for a fifth of a second.
+  - **The lantern** is never onto or into his head or torso. It isn't a creature: no face, limbs, wings, voice or name, and giving it one breaks the sheet's condition 3.
+  - **Down** is a comic knockdown that Up follows: a hat lying on a robe, a lantern looking on.
+  - **Not seen by the check:** Combo's frames 12 and 28 with the lantern in the picture. They were judged from the arcs and the clip's nearest distances.
+  - **For the builder, in the engine and at upload:**
+    1. Upload exactly these exports. A clip keyed again is checked again, and so is a "Salute held" over 0.1 s or a "Salute tilted" line that grows or loses its tilt (Up 17 to 25, Down 16 to 19).
+    2. The audit never saw a cross-fade. Step the bare rig through Up into Idle, and through any interrupt of Up or Down: Up's raised left arm must not land on an upright torso for over 0.1 s. Don't freeze or slow Down inside 13 to 19: hitstop belongs at the blow (6), where the arms are low.
+    3. A Hit, a Down or a stagger that breaks LanternBurst's wind-up (8 to 45), the Reveal's loop or Work's duck-in cross-fades the lantern's joint: check that its path doesn't cut through his head, hat or torso.
+    4. Down 41 to 66 and Up 0 to 10, with bloom and the light on, at 64 px from every heading: the flame is 0.6 studs over the floor beside the hat, and has to read as a hovering lantern, not a warm pool on the ground by a downed head. If it doesn't, the lantern is lifted in the hold. The tint stays `#FF8A3D`.
+    5. Down held as a defeat, with the body left lying, goes back to the check before it's built.
+    6. The robe set on a Voidkin with no hat leaves its face uncovered when it's down: that fighter's own check looks at its Down.
+    7. Work's sleeve and the send's sleeve stay at or under level in any retune.
+    8. The face and the eyes, read in the engine at Work 83 to 92 from the front, with the lit lantern a stud from his head, and at LanternBurst 57 to 63 from the front, where the thrown hat shades his face in Blender (CastShadow off on the hat should clear it).
+    9. The glow at 64 px from every heading, with Combo 12 and 28 from the side and Work 76 to 92 from the front among the frames.
+    10. Sections 1 and 2 still apply.
 
 ## AR5. The festival kit and the base's machines
 

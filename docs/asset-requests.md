@@ -657,6 +657,7 @@ Section 5's condition 9, with the ordinary Shade beside it for section 6's 16/6 
     - Bloom hazing red onto the ground. It needs the builder's engine capture: ordinary and elite, HitLeft and Burst up to the marker, at 64 px on dark and bright, under the game's lighting.
     - Red reaching the paper scraps. It closes at the burst's art sheet and its own check (section 8).
 - **Hours:** about 1.5.
+- **Research's pick, 2026-11-12: (a).** The elite swings Attack every time; the ordinary Shade keeps alternating. An elite is the heavy of the pack, and the same arm again and again reads as weight, not as a missing clip. Nothing that passed is touched, and the ordinary Shade's clips aren't reopened for one figure. Faber builds it in `FighterController`; Modulo redraws the AttackLeft columns as the elite's Attack. **HitLeft 3's pale cluster: accepted.** It's one hit-reaction frame, and the masks part on the next.
 
 ## AR3. The UI kit
 

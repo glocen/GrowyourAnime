@@ -13,6 +13,7 @@ local PhysicsService = game:GetService("PhysicsService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
@@ -21,6 +22,7 @@ local Parts = require(Shared.Util.Parts)
 local Actions = require(Shared.Definitions.Actions)
 local Enemies = require(Shared.Definitions.Enemies)
 local Combat = require(Shared.Config.Combat)
+local Shades = require(Shared.Config.Shades)
 local Stats = require(Shared.Rules.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
@@ -73,6 +75,7 @@ local GROUP_AVATARS = "Avatars"
 local GREY = Color3.fromRGB(163, 162, 165)
 local SHADE_BODY = Color3.fromRGB(46, 46, 52)
 local SHADE_MASK = Color3.fromRGB(214, 214, 214)
+local SHADE_ROOT_HEIGHT = 3 -- the Shade rig's root above its feet, at scale 1 (the recipe's frame)
 
 local rng = Random.new()
 local fighters: { [string]: Fighter } = {}
@@ -216,7 +219,8 @@ end
 -- A Shade in grey: a dark box on an unseen root, joined by a Motor6D the client leans for its stand-in motion, and a
 -- mask on its face. An elite carries a second mask on its shoulder; a keeper, a hat.
 local function buildBox(row: Enemies.Row, name: string): Model
-	local width, height, depth = row.Size[1], row.Size[2], row.Size[3]
+	local size = assert(row.Size, `{row.Id}: a box needs a Size`)
+	local width, height, depth = size[1], size[2], size[3]
 	local model = Instance.new("Model")
 	model.Name = name
 	local root = Instance.new("Part")
@@ -280,7 +284,35 @@ local function buildBox(row: Enemies.Row, name: string): Model
 	return model
 end
 
-local function register(model: Model, side: "Lead" | "Shade", kind: string, def: string, block: Stats.Block, kit: { Actions.Action }, title: string, owner: Player?): Fighter
+-- A Shade in AR2's rig (ServerStorage.Templates.Shade, tools/studio/Models/Shade.luau): the row's mask kept and the
+-- others dropped, the body's lit edges in its type's colour and the mask in its own (Config.Shades), at the row's scale.
+local function buildShade(row: Enemies.Row, name: string, type: string): Model
+	local templates = ServerStorage:WaitForChild("Templates")
+	local model = (templates:WaitForChild("Shade") :: Model):Clone()
+	model.Name = name
+	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
+	local keep = `Mask_{row.Mask}`
+	assert(model:FindFirstChild(keep), `{row.Id}: the rig has no {keep}`)
+	for _, part in model:GetChildren() do
+		if part:IsA("BasePart") and string.sub(part.Name, 1, 5) == "Mask_" and part.Name ~= keep then
+			part:Destroy()
+		end
+	end
+	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
+	for _, look in model:GetDescendants() do
+		if look:IsA("SurfaceAppearance") then
+			local onMask = (look.Parent :: Instance).Name == keep
+			look.EmissiveTint = if onMask then Shades.MaskTint else tint
+			look.EmissiveStrength = Shades.Emissive
+		end
+	end
+	if row.Scale and row.Scale ~= 1 then
+		model:ScaleTo(row.Scale)
+	end
+	return model
+end
+
+local function register(model: Model, side: "Lead" | "Shade", kind: string, def: string, block: Stats.Block, kit: { Actions.Action }, title: string, owner: Player?, rig: string?): Fighter
 	nextId += 1
 	local id = `f{nextId}`
 	local root = assert(Parts.Root(model), "a fighter needs a root")
@@ -332,7 +364,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 	model:SetAttribute("Side", side)
 	model:SetAttribute("Kind", kind)
 	model:SetAttribute("Def", def)
-	model:SetAttribute("Rig", if side == "Lead" then "R6" else "Box")
+	model:SetAttribute("Rig", if side == "Lead" then "R6" else rig or "Box")
 	model:SetAttribute("Title", title)
 	model:SetAttribute("Level", block.Level)
 	model:SetAttribute("Owner", if owner then owner.UserId else 0)
@@ -755,9 +787,17 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	local row = assert(Enemies.ById[def], `no enemy {def}`)
 	local block = Stats.Enemy(def, level, if options then options.Type else nil)
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
-	local model = buildBox(row, `{row.Id}_{level}`)
-	model:PivotTo(at + Vector3.new(0, row.Size[2] / 2 + 0.1, 0))
-	local f = register(model, "Shade", row.Kind, def, block, kit, row.Name)
+	local name = `{row.Id}_{level}`
+	local model, up
+	if row.Rig == "Shade" then
+		model = buildShade(row, name, block.Type)
+		up = SHADE_ROOT_HEIGHT * (row.Scale or 1) + 0.05 -- the rig's feet on the floor
+	else
+		model = buildBox(row, name)
+		up = (row.Size :: { number })[2] / 2 + 0.1
+	end
+	model:PivotTo(at + Vector3.new(0, up, 0))
+	local f = register(model, "Shade", row.Kind, def, block, kit, row.Name, nil, row.Rig)
 	f.Home = model:GetPivot()
 	f.Pack = if options then options.Pack else nil
 	f.Ground = if options then options.Ground else nil

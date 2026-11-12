@@ -6,7 +6,7 @@
 --             lines it scores on the floor. One bar picture for all of it, or grey parts until it's uploaded
 --             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5).
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
---   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore).
+--   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore), on its clip's marker.
 --   Number    a damage number over the target.
 --   Shake     the camera, on the player's own heavy hit or a hard hit taken.
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
@@ -423,9 +423,10 @@ function Effects.BoxFlinch(age: number, seconds: number, height: number): CFrame
 	return CFrame.new(0, -height / 2, 0) * CFrame.Angles(math.rad(lean), 0, 0) * CFrame.new(0, height / 2, 0)
 end
 
--- A Shade falls: a flash and a scatter of paper, and the box is gone.
-function Effects.Burst(model: Model)
-	local pivot = model:GetPivot()
+-- A Shade falls: its whole body hidden on one frame, a flash and a scatter of paper from `at` (a Shade's collar, else its
+-- pivot). The stand-in until AR2's burst of light and paper.
+function Effects.Burst(model: Model, at: CFrame?)
+	local pivot = at or model:GetPivot()
 	for _, p in model:GetDescendants() do
 		if p:IsA("BasePart") then
 			p.LocalTransparencyModifier = 1

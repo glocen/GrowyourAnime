@@ -64,6 +64,14 @@ return {
 			for _, row in Enemies.List do
 				t.Check(`{row.Id}'s numbers exist`, (EnemiesConfig :: any)[row.Kind] ~= nil)
 				t.Check(`{row.Id}'s action exists`, row.Action == nil or Actions.ById[row.Action] ~= nil)
+				if row.Rig == "Shade" then
+					-- AR2's rig carries the four masks by role (tools/studio/Models/Shade.luau)
+					local masks = { Brawler = true, Guard = true, Dasher = true, Support = true }
+					t.Check(`{row.Id} wears one of the rig's masks`, masks[row.Mask] == true)
+					t.Check(`{row.Id}'s scale is a size`, row.Scale == nil or (row.Scale :: number) > 0)
+				else
+					t.Check(`{row.Id}'s box has a size`, row.Size ~= nil and #(row.Size :: { number }) == 3)
+				end
 			end
 		end,
 	},
@@ -81,7 +89,11 @@ return {
 			t.Check("the enemies' coefficient a second is the lead's", near(Actions.EnemyPerSecond, lead))
 			for _, id in { "ShadeSwipe", "KeeperSwing" } do
 				local action = Actions.ById[id]
-				t.Check(`{id} hits the same a second`, near(action.Hits.Strike.Coefficient / action.CancelFrom, lead))
+				local total = 0
+				for _, hit in action.Hits do
+					total += hit.Coefficient
+				end
+				t.Check(`{id} hits the same a second`, near(total / action.CancelFrom, lead))
 			end
 			-- The chain's rhythm (handbook/feel/combat.md): every hit to the next, the last into the next combo's first, near 0.6 s.
 			local beats = combo.Beats
@@ -159,9 +171,9 @@ return {
 				from = to
 			end
 			t.Equal("frame by frame, once each", count, 3)
-			local swipe = Actions.ById.ShadeSwipe
-			t.Check("a beat at 0 comes from below 0", Fight.BeatsBetween(swipe, -1, 0)[1] == "Wind")
-			t.Equal("and not from 0", #Fight.BeatsBetween(swipe, 0, 0.1), 0)
+			local swing = Actions.ById.KeeperSwing
+			t.Check("a beat at 0 comes from below 0", Fight.BeatsBetween(swing, -1, 0)[1] == "Wind")
+			t.Equal("and not from 0", #Fight.BeatsBetween(swing, 0, 0.1), 0)
 		end,
 	},
 	{

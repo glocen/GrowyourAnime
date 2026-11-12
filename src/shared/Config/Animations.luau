@@ -5,7 +5,7 @@
 -- (ServerStorage.RBX_ANIMSAVES.R6.NL_<Clip>, which the server hands each client to register), and not at all live:
 -- every clip is published before a public build (handbook/art/animation.md, "Importing and publishing").
 -- Rigs: each rig's shared reactions, one clip set per rig, not per Voidkin (docs/design.md, "States in a fight"). TR2's
--- R6 stand-in uses Rook's.
+-- R6 stand-in uses Rook's. The Shade's (AR2) is every Shade's: its Down bursts on the clip's `Burst` marker.
 
 return {
 	Fades = {
@@ -15,11 +15,26 @@ return {
 		Hit = { In = 0.03, Out = 0.1 },
 		Down = { In = 0.05, Out = 0.05 },
 		Up = { In = 0.05, Out = 0.2 },
+		Walk = { In = 0.15, Out = 0.15 },
+		Swipe = { In = 0.06, Out = 0.15 },
+		Burst = { In = 0.03, Out = 0.05 },
 	},
 	Ids = {} :: { [string]: number },
 	Rigs = {
 		R6 = { Idle = "RookIdle", Hit = "RookHit", Down = "RookDown", Up = "RookUp" },
+		Shade = { Idle = "ShadeIdle", Walk = "ShadeWalk", Hit = "ShadeHit", Down = "ShadeBurst" },
 	} :: { [string]: { [string]: string } },
+	-- A clip's mirror, picked at random each time it plays, so a pack doesn't swing or reel in step (AR2).
+	Mirrors = {
+		ShadeAttack = "ShadeAttackLeft",
+		ShadeHit = "ShadeHitLeft",
+	} :: { [string]: string },
+	-- A walk's ground speed at rate 1, in studs a second (its stride over its loop: Shade.clips.json). The clip plays at the
+	-- body's own speed over this, so its feet keep to the ground, up to MaxRate (AR2: "walk speed comes from the stride").
+	Strides = {
+		ShadeWalk = 4.11,
+	} :: { [string]: number },
+	Walk = { MinSpeed = 0.6, MaxRate = 3 }, -- studs a second below which it stands; the fastest it plays
 	-- The game's name for each clip, for its fades.
 	Roles = {
 		RookIdle = "Idle",
@@ -28,5 +43,12 @@ return {
 		RookHit = "Hit",
 		RookDown = "Down",
 		RookUp = "Up",
+		ShadeIdle = "Idle",
+		ShadeWalk = "Walk",
+		ShadeAttack = "Swipe",
+		ShadeAttackLeft = "Swipe",
+		ShadeHit = "Hit",
+		ShadeHitLeft = "Hit",
+		ShadeBurst = "Burst",
 	} :: { [string]: string },
 }

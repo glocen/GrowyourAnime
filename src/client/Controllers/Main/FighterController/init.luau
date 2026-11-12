@@ -26,6 +26,8 @@ local player = Players.LocalPlayer
 
 -- The late start's catch-up (handbook/feel/combat.md, "Hit confirmation"): own pace first, then faster until in step.
 local CATCH = { OwnPace = 0.08, Over = 0.12, Limit = 0.25 }
+local BURST_MARKER = "Burst" -- AR2's Burst clip: the body hides here and the effect takes over
+local WALK_SMOOTHING = 10 -- a second's share the walk's speed follows the body by: about a tenth of a second
 
 -- The effects that hang on an action's beats, by its id. A landed hit's spark is every action's.
 local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target: () -> BasePart?) -> Effects.Running } = {
@@ -42,7 +44,13 @@ type View = {
 	Animator: Animator?,
 	Tracks: { [string]: { AnimationTrack } }, -- two per clip, so a clip can cross into itself
 	Flip: { [string]: number },
+	Mirrored: { [string]: boolean }, -- which side a clip with a mirror played last
 	Idle: AnimationTrack?,
+	Walk: AnimationTrack?, -- a rig's walk, at the body's own speed
+	Last: Vector3, -- the root's last position, for that speed
+	Speed: number, -- studs a second over the ground, smoothed
+	Chest: Attachment?, -- where a hit lands, on a rig that marks it
+	Collar: Attachment?, -- where a Shade's burst starts
 	Current: AnimationTrack?, -- the action's
 	Reaction: AnimationTrack?, -- Hit, Down or Up
 	Action: Actions.Action?,
@@ -87,6 +95,19 @@ local function track(view: View, clip: string): AnimationTrack?
 	return pair[index]
 end
 
+-- A clip and its mirror in turn (Config.Animations.Mirrors), each body starting on a side of its own, so a pack doesn't
+-- move in step.
+local function pick(view: View, clip: string): string
+	local mirror = Animations.Mirrors[clip]
+	if mirror == nil then
+		return clip
+	end
+	local last = view.Mirrored[clip]
+	local now = if last == nil then math.random() < 0.5 else not last
+	view.Mirrored[clip] = now
+	return if now then mirror else clip
+end
+
 local function setRate(view: View, rate: number)
 	if view.Rate == rate then
 		return
@@ -123,6 +144,9 @@ local function freeze(view: View?, hold: number)
 end
 
 local function chest(view: View): Vector3
+	if view.Chest then
+		return view.Chest.WorldPosition
+	end
 	return view.Root.Position + Vector3.new(0, if view.Rig == "R6" then 0.6 else view.Height * 0.15, 0)
 end
 
@@ -153,7 +177,7 @@ local function show(attacker: View, target: View?, heavy: boolean, key: string)
 		local at = chest(target)
 		local from = attacker.Root.Position
 		local toward = Vector3.new(from.X - at.X, 0, from.Z - at.Z)
-		local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "R6" then 0.6 else target.Root.Size.Z / 2) else at
+		local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "Box" then target.Root.Size.Z / 2 else 0.6) else at
 		Effects.Spark(surface, from, heavy)
 	end
 	if heavy and isMine(attacker) then
@@ -181,7 +205,7 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 	view.Rate = 1
 	local clip = action.Clip
 	if clip then
-		local t = track(view, clip)
+		local t = track(view, pick(view, clip))
 		if t then
 			local fadeIn = Clips.Fades(clip)
 			t.Priority = Enum.AnimationPriority.Action
@@ -206,23 +230,43 @@ local function endAction(view: View)
 	view.Action = nil
 end
 
-local function playReaction(view: View, role: string)
+local function playReaction(view: View, role: string): AnimationTrack?
 	local rig = Animations.Rigs[view.Rig]
 	local clip = if rig then rig[role] else nil
 	if clip == nil then
-		return
+		return nil
 	end
 	if view.Reaction then
 		view.Reaction:Stop(0.05)
 	end
-	local t = track(view, clip)
+	local chosen = pick(view, clip)
+	local t = track(view, chosen)
 	if t then
-		local fadeIn = Clips.Fades(clip)
+		local fadeIn = Clips.Fades(chosen)
 		t.Priority = Enum.AnimationPriority.Action2
 		t.Looped = false
 		t:Play(fadeIn, 1, 1)
 		view.Reaction = t
 	end
+	return t
+end
+
+-- A Shade bursts into light and paper on its Down clip's `Burst` marker (AR2: the whole body hides on that frame and the
+-- effect starts from the collar), or at once when it has no clip.
+local function burst(view: View, down: AnimationTrack?)
+	local function go()
+		Effects.Burst(view.Model, if view.Collar then view.Collar.WorldCFrame else nil)
+	end
+	if down == nil then
+		go()
+		return
+	end
+	local connection: RBXScriptConnection
+	connection = down:GetMarkerReachedSignal(BURST_MARKER):Connect(function()
+		connection:Disconnect()
+		go()
+	end)
+	table.insert(view.Connections, connection)
 end
 
 local function onState(view: View)
@@ -234,7 +278,7 @@ local function onState(view: View)
 	view.State = state
 	if state == "Flinch" then
 		local wait = math.max(0, view.FrozenUntil - os.clock())
-		if view.Rig == "R6" then
+		if Animations.Rigs[view.Rig] then
 			task.delay(wait, function()
 				if view.State == "Flinch" then
 					playReaction(view, "Hit")
@@ -249,10 +293,9 @@ local function onState(view: View)
 			running.Effect.Destroy()
 		end
 		table.clear(view.Running)
-		if view.Rig == "R6" then
-			playReaction(view, "Down")
-		else
-			Effects.Burst(view.Model)
+		local down = playReaction(view, "Down")
+		if view.Model:GetAttribute("Side") == "Shade" then
+			burst(view, down)
 		end
 	elseif state == "Idle" and was == "Down" and view.Rig == "R6" then
 		playReaction(view, "Up")
@@ -293,7 +336,13 @@ local function add(model: Instance)
 		Animator = (humanoid :: Humanoid):FindFirstChildOfClass("Animator") or (humanoid :: Humanoid):WaitForChild("Animator", 5) :: Animator?,
 		Tracks = {},
 		Flip = {},
+		Mirrored = {},
 		Idle = nil,
+		Walk = nil,
+		Last = root.Position,
+		Speed = 0,
+		Chest = model:FindFirstChild("Chest", true) :: Attachment?,
+		Collar = model:FindFirstChild("Collar", true) :: Attachment?,
 		Current = nil,
 		Reaction = nil,
 		Action = nil,
@@ -313,13 +362,14 @@ local function add(model: Instance)
 	}
 	views[model] = view
 	byId[view.Id] = view
-	if view.Rig == "R6" then
-		local reactions = Animations.Rigs.R6
-		local idle = track(view, reactions.Idle)
+	local reactions = Animations.Rigs[view.Rig]
+	local idleClip = if reactions then reactions.Idle else nil
+	if idleClip then
+		local idle = track(view, idleClip)
 		if idle then
 			idle.Priority = Enum.AnimationPriority.Idle
 			idle.Looped = true
-			local fadeIn = Clips.Fades(reactions.Idle)
+			local fadeIn = Clips.Fades(idleClip)
 			idle:Play(fadeIn, 1, 1)
 			view.Idle = idle
 		end
@@ -413,6 +463,39 @@ local function stepView(view: View, dt: number, now: number): boolean
 			joint.C0 = Effects.BoxFlinch(now - view.FlinchAt, Combat.Flinch.Seconds, view.Height)
 		else
 			joint.C0 = CFrame.identity
+		end
+	end
+	-- A rig's walk, at the body's own ground speed over the clip's (Config.Animations.Strides), so its feet keep to the
+	-- ground; it stands while it acts or lies down.
+	local rig = Animations.Rigs[view.Rig]
+	local walkClip = if rig then rig.Walk else nil
+	if walkClip and dt > 0 then
+		local position = view.Root.Position
+		local moved = Vector3.new(position.X - view.Last.X, 0, position.Z - view.Last.Z).Magnitude
+		view.Last = position
+		view.Speed += (moved / dt - view.Speed) * math.min(1, dt * WALK_SMOOTHING)
+		local walking = view.Speed > Animations.Walk.MinSpeed and view.Action == nil and view.State ~= "Down" and rate > 0
+		local walk = view.Walk
+		if walking and walk == nil then
+			walk = track(view, walkClip)
+			if walk then
+				walk.Priority = Enum.AnimationPriority.Movement
+				walk.Looped = true
+			end
+			view.Walk = walk
+		end
+		if walk then
+			if walking then
+				local speed = math.min(view.Speed / (Animations.Strides[walkClip] or 1), Animations.Walk.MaxRate)
+				if not walk.IsPlaying then
+					walk:Play((Clips.Fades(walkClip)), 1, speed)
+				elseif math.abs(walk.Speed - speed) > 0.02 then
+					walk:AdjustSpeed(speed)
+				end
+			elseif walk.IsPlaying then
+				local _, out = Clips.Fades(walkClip)
+				walk:Stop(out)
+			end
 		end
 	end
 	-- Down holds its last frame until the fighter rises.

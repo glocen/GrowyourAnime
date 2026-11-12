@@ -80,20 +80,22 @@ local rows: { Action } = {
 		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR1, delivery 4)",
 	},
 	{
-		-- A Brawler Shade's swing, on the box's stand-in motion: it leans back, then lunges.
+		-- A Brawler Shade's swing, AR2's Attack: the coat turns away and the sleeve is flung round after it, landing on `Hit`
+		-- (frame 30). Its length is the clip's, and its hit is a second's worth of the lead's, as before. A client plays the
+		-- clip or its mirror at random (Config.Animations.Mirrors).
 		Id = "ShadeSwipe",
-		Clip = nil,
-		Length = 1.3,
-		CancelFrom = 1.3,
+		Clip = "ShadeAttack",
+		Length = 1.1,
+		CancelFrom = 1.1,
 		Cooldown = 0,
-		Beats = { Wind = 0, Strike = 0.55, Recover = 0.75 },
+		Beats = { Hit = 0.5 },
 		Hits = {
-			Strike = { Coefficient = ENEMY_PER_SECOND * 1.3, Heavy = false, Reach = 5.5, Push = 0.5 },
+			Hit = { Coefficient = ENEMY_PER_SECOND * 1.1, Heavy = false, Reach = 5.5, Push = 0.5 },
 		},
 		Range = 4,
 		Heavy = false,
 		State = nil,
-		Levers = { "anticipation (the lean back)", "hitstop (light)", "knockback" },
+		Levers = { "anticipation (the coat turns away)", "hitstop (light)", "knockback" },
 		Signed = nil,
 	},
 	{

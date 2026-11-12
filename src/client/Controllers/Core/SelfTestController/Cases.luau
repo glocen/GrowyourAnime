@@ -13,6 +13,7 @@ local TestInput = require(Shared.Util.TestInput)
 local Actions = require(Shared.Definitions.Actions)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
+local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
@@ -40,6 +41,8 @@ local LEAD_SETTLE = 1.5 -- seconds for the lead to catch up after the reset's te
 local REPLAY_PAUSE = 5 -- seconds past the action before a second press, longer than the case waits
 local SHADE_AHEAD = 12 -- studs ahead of the avatar a test Shade spawns: inside its notice and the lead's leash
 local SHADE_TIMEOUT = 20 -- seconds a level-matched ordinary may take to fall (the seed is 5 s of fighting, Config.Enemies)
+local SHADE_TOUGHER = 10 -- levels over the lead's a Shade spawns at to swing and flinch several times before it falls
+local SHADE_WATCH = 12 -- seconds the alternation case watches for three swings and three flinches
 local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
 local SQUARE = 4 -- bars in a square
 local BRACKET = 3 -- bars in a bracket: two posts and a lintel
@@ -108,6 +111,30 @@ local function lintClean(t: any, where: string)
 	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))
 	t.Check(`{where}: every label is on screen`, #report.Screen == 0, UiLint.Detail(report.Screen, report.Checked))
 	t.Check(`{where}: no label shows Roblox's default`, #report.Placeholder == 0, UiLint.Detail(report.Placeholder, report.Checked))
+end
+
+-- The fighter model with id `id`, or nil.
+local function fighterModel(id: string): Model?
+	local fighters = workspace:FindFirstChild("Fighters")
+	for _, model in (if fighters then fighters:GetChildren() else {}) do
+		if model:IsA("Model") and model:GetAttribute("Fighter") == id then
+			return model
+		end
+	end
+	return nil
+end
+
+-- The name of every clip `model` plays now.
+local function playing(model: Model): { [string]: boolean }
+	local names = {}
+	local humanoid = model:FindFirstChildOfClass("Humanoid")
+	local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+	for _, track in (if animator then animator:GetPlayingAnimationTracks() else {}) do
+		if track.Animation then
+			names[track.Animation.Name] = true
+		end
+	end
+	return names
 end
 
 -- The player's own lead's model, or nil.
@@ -446,39 +473,59 @@ return {
 		Run = function(t: any)
 			-- The ga-action skill: the effect, the hit and the camera hang on the beat names, so the clip must carry them.
 			for _, action in Actions.List do
-				local clip = action.Clip
-				if clip == nil then
+				local base = action.Clip
+				if base == nil then
 					continue
 				end
-				local sequence = Clips.Sequence(clip)
-				t.Check(`{action.Id}: the clip {clip} is baked`, sequence ~= nil)
-				if sequence == nil then
-					continue
-				end
-				local markers: { [string]: number } = {}
-				local length = 0
-				for _, keyframe in sequence:GetKeyframes() do
-					local frame = keyframe :: Keyframe
-					length = math.max(length, frame.Time)
-					for _, marker in frame:GetMarkers() do
-						markers[marker.Name] = frame.Time
+				-- a mirror plays in its clip's place (Config.Animations.Mirrors), so it carries the same beats
+				for _, clip in { base, Animations.Mirrors[base] } do
+					local sequence = Clips.Sequence(clip)
+					t.Check(`{action.Id}: the clip {clip} is baked`, sequence ~= nil)
+					if sequence == nil then
+						continue
+					end
+					local markers: { [string]: number } = {}
+					local length = 0
+					for _, keyframe in sequence:GetKeyframes() do
+						local frame = keyframe :: Keyframe
+						length = math.max(length, frame.Time)
+						for _, marker in frame:GetMarkers() do
+							markers[marker.Name] = frame.Time
+						end
+					end
+					t.Near(`{clip}: the clip's length is {action.Id}'s`, length, action.Length, BEAT_TOLERANCE)
+					for beat, at in action.Beats do
+						local marked = markers[beat]
+						t.Check(`{clip}: the clip marks {beat}`, marked ~= nil)
+						if marked then
+							t.Near(`{clip}: {beat} on its beat`, marked, at, BEAT_TOLERANCE)
+						end
+					end
+					for name in markers do
+						t.Check(`{clip}: the marker {name} is a beat`, action.Beats[name] ~= nil)
 					end
 				end
-				t.Near(`{action.Id}: the clip's length is the action's`, length, action.Length, BEAT_TOLERANCE)
-				for beat, at in action.Beats do
-					local marked = markers[beat]
-					t.Check(`{action.Id}: the clip marks {beat}`, marked ~= nil)
-					if marked then
-						t.Near(`{action.Id}: {beat} on its beat`, marked, at, BEAT_TOLERANCE)
+			end
+			for rig, clips in Animations.Rigs do
+				for role, clip in clips do
+					t.Check(`the {rig} rig's {role} clip {clip} is baked`, Clips.Sequence(clip) ~= nil)
+					local mirror = Animations.Mirrors[clip]
+					if mirror then
+						t.Check(`and its mirror {mirror}`, Clips.Sequence(mirror) ~= nil)
 					end
 				end
-				for name in markers do
-					t.Check(`{action.Id}: the marker {name} is a beat`, action.Beats[name] ~= nil)
+			end
+			-- the Shade's Down hides the body on its Burst marker (AR2, the content check: frame 27)
+			local down = Clips.Sequence(Animations.Rigs.Shade.Down)
+			local burstAt: number? = nil
+			for _, keyframe in if down then down:GetKeyframes() else {} do
+				for _, marker in (keyframe :: Keyframe):GetMarkers() do
+					if marker.Name == "Burst" then
+						burstAt = (keyframe :: Keyframe).Time
+					end
 				end
 			end
-			for role, clip in Animations.Rigs.R6 do
-				t.Check(`the R6 rig's {role} clip {clip} is baked`, Clips.Sequence(clip) ~= nil)
-			end
+			t.Near("the Shade's Down bursts on frame 27", burstAt or -1, 27 / 60, BEAT_TOLERANCE)
 		end,
 	},
 	{
@@ -552,6 +599,217 @@ return {
 			t.Check("the Shade hits the lead", hurt)
 			t.Check("the Shade falls", fell, string.format("after %.1f s", seconds))
 			t.Row("seconds from its spawn to its fall, walk-in included", nil, nil, seconds, "s")
+		end,
+	},
+	{
+		Name = "Fight: a Shade wears AR2's rig, swings its clip and bursts on its marker",
+		Run = function(t: any)
+			-- docs/asset-requests.md, AR2, "For the builder": the mask's own light, the type's on the body, the mirrored
+			-- swing, and the whole body hidden on the Burst marker (frame 27), where the effect starts.
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if type(level) ~= "number" then
+				return
+			end
+			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
+			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true, tostring(type(spawned) == "table" and spawned.Error))
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			local model: Model? = nil
+			waitFor(t, 5, function(): boolean
+				model = fighterModel(spawned.Id)
+				return model ~= nil and model:FindFirstChild("Shade_Torso") ~= nil
+			end)
+			local shade = model :: Model
+			t.Check("its model reaches this client", shade ~= nil)
+			if shade == nil then
+				t.Server("FightSpawn")
+				return
+			end
+			t.Check("it's the Shade rig", shade:GetAttribute("Rig") == "Shade", tostring(shade:GetAttribute("Rig")))
+			local masks = {}
+			for _, part in shade:GetChildren() do
+				if string.sub(part.Name, 1, 5) == "Mask_" then
+					table.insert(masks, part.Name)
+				end
+			end
+			t.Check("it wears its row's mask and no other", #masks == 1 and masks[1] == "Mask_Brawler", table.concat(masks, ", "))
+			local torso = shade:FindFirstChild("Shade_Torso")
+			local mask = shade:FindFirstChild("Mask_Brawler")
+			local bodyLook = if torso then torso:FindFirstChildOfClass("SurfaceAppearance") else nil
+			local maskLook = if mask then mask:FindFirstChildOfClass("SurfaceAppearance") else nil
+			local kind = tostring(shade:GetAttribute("Type"))
+			t.Check("its body is lit in its type's colour", bodyLook ~= nil and bodyLook.EmissiveTint == Shades.Tint[kind], kind)
+			t.Check("its mask in the mask's own", maskLook ~= nil and maskLook.EmissiveTint == Shades.MaskTint)
+			local root = shade:FindFirstChild("HumanoidRootPart") :: BasePart?
+			if root then
+				local params = RaycastParams.new()
+				params.FilterDescendantsInstances = { shade, workspace:FindFirstChild("Fighters") :: Instance, Players.LocalPlayer.Character :: Instance }
+				params.FilterType = Enum.RaycastFilterType.Exclude
+				local hit = workspace:Raycast(root.Position, Vector3.new(0, -20, 0), params)
+				t.Near("its feet on the floor (the root 3 studs up)", if hit then root.Position.Y - hit.Position.Y else -1, 3, 0.35)
+			end
+			t.Check("its idle plays", waitFor(t, 2, function(): boolean
+				return playing(shade)[Animations.Rigs.Shade.Idle] == true
+			end))
+			local swung = waitFor(t, SHADE_TIMEOUT, function(): boolean
+				local now = playing(shade)
+				return now.ShadeAttack == true or now.ShadeAttackLeft == true or shade:GetAttribute("State") == "Down"
+			end)
+			t.Check("it swings its Attack or the mirror", swung and shade:GetAttribute("State") ~= "Down")
+			-- frame by frame from here: the hide is timed against the marker, so a poll's tenth would hide a late frame
+			local downAt: number? = nil
+			local until_ = os.clock() + SHADE_TIMEOUT
+			while os.clock() < until_ and shade.Parent ~= nil do
+				if shade:GetAttribute("State") == "Down" then
+					downAt = os.clock()
+					break
+				end
+				task.wait()
+			end
+			t.Check("the lead beats it", downAt ~= nil)
+			if downAt then
+				local function hidden(): boolean
+					for _, part in shade:GetDescendants() do
+						if part:IsA("BasePart") and part.Transparency < 1 and part.LocalTransparencyModifier < 1 then
+							return false
+						end
+					end
+					return true
+				end
+				-- the Burst clip's own clock: the killing hit's hold (Config.Combat.Hitstop) stops it a beat, so the
+				-- wall clock runs ahead of the clip by that hold
+				local function clipTime(): number?
+					local humanoid = shade:FindFirstChildOfClass("Humanoid")
+					local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+					for _, track in (if animator then animator:GetPlayingAnimationTracks() else {}) do
+						if track.Animation and track.Animation.Name == Animations.Rigs.Shade.Down then
+							return track.TimePosition
+						end
+					end
+					return nil
+				end
+				local hideAt: number? = nil
+				local hideClip: number? = nil
+				local shownBefore = not hidden()
+				while os.clock() - (downAt :: number) < 1 do
+					if hidden() then
+						hideAt, hideClip = os.clock(), clipTime()
+						break
+					end
+					task.wait()
+				end
+				t.Check("its burst plays", playing(shade)[Animations.Rigs.Shade.Down] == true or hideAt ~= nil)
+				t.Check("whole until the marker", shownBefore)
+				t.Check("then the whole body, mask too, hides at once", hideAt ~= nil)
+				if hideAt then
+					t.Near("on the marker, frame 27 of the clip", hideClip or -1, 27 / 60, 2 * FRAME)
+					t.Row("seconds from the fall to the burst, the hold included", nil, nil, (hideAt :: number) - (downAt :: number), "s")
+				end
+			end
+			t.Server("FightSpawn") -- clears it
+		end,
+	},
+	{
+		Name = "Fight: a Shade swings and flinches on alternate sides",
+		Run = function(t: any)
+			-- research's ask for the Shade (docs/team-notes.md, Now, 2026-11-12): Attack and AttackLeft in turn, Hit and
+			-- HitLeft too (Config.Animations.Mirrors). A start is a track that wasn't playing a frame ago, or went back.
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			if type(level) ~= "number" then
+				t.Check("the lead is in the world", false)
+				return
+			end
+			local spawned = t.Server("FightSpawn", "brawler", level + SHADE_TOUGHER, SHADE_AHEAD)
+			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			local model: Model? = nil
+			waitFor(t, 5, function(): boolean
+				model = fighterModel(spawned.Id)
+				return model ~= nil and model:FindFirstChild("Shade_Torso") ~= nil
+			end)
+			local humanoid = if model then model:FindFirstChildOfClass("Humanoid") else nil
+			local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+			t.Check("its model reaches this client", animator ~= nil)
+			if model == nil or animator == nil then
+				t.Server("FightSpawn")
+				return
+			end
+			local swings: { string }, flinches: { string } = {}, {}
+			local seen: { [AnimationTrack]: number } = {}
+			local until_ = os.clock() + SHADE_WATCH
+			while os.clock() < until_ and model.Parent ~= nil and (#swings < 3 or #flinches < 3) do
+				local now: { [AnimationTrack]: number } = {}
+				for _, track in animator:GetPlayingAnimationTracks() do
+					local before = seen[track]
+					local name = if track.Animation then track.Animation.Name else ""
+					if before == nil or track.TimePosition < before then
+						if name == "ShadeAttack" or name == "ShadeAttackLeft" then
+							table.insert(swings, name)
+						elseif name == "ShadeHit" or name == "ShadeHitLeft" then
+							table.insert(flinches, name)
+						end
+					end
+					now[track] = track.TimePosition
+				end
+				seen = now
+				task.wait()
+			end
+			t.Server("FightSpawn") -- clears it
+			local function alternates(list: { string }): boolean
+				for i = 2, #list do
+					if list[i] == list[i - 1] then
+						return false
+					end
+				end
+				return #list >= 2
+			end
+			t.Check("its swings alternate", alternates(swings), table.concat(swings, ", "))
+			-- an ordinary flinches only between actions (FightService), and a Shade in reach swings back to back, so its
+			-- flinches come on the walk-in or not at all; the swing proved the turn they share
+			if #flinches >= 2 then
+				t.Check("its flinches alternate", alternates(flinches), table.concat(flinches, ", "))
+			end
+			t.Row("flinches seen", nil, nil, #flinches, "")
+		end,
+	},
+	{
+		Name = "Fight: the elite is the Shade rig, larger",
+		Run = function(t: any)
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			if type(level) ~= "number" then
+				t.Check("the lead is in the world", false)
+				return
+			end
+			local spawned = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
+			t.Check("the elite spawns", type(spawned) == "table" and spawned.Ok == true)
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			local model: Model? = nil
+			waitFor(t, 5, function(): boolean
+				model = fighterModel(spawned.Id)
+				return model ~= nil and model:FindFirstChild("Shade_Torso") ~= nil
+			end)
+			local elite = model
+			local root = if elite then elite:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			t.Check("its model reaches this client", root ~= nil)
+			if elite and root then
+				local params = RaycastParams.new()
+				params.FilterDescendantsInstances = { workspace:FindFirstChild("Fighters") :: Instance, Players.LocalPlayer.Character :: Instance }
+				params.FilterType = Enum.RaycastFilterType.Exclude
+				local hit = workspace:Raycast(root.Position, Vector3.new(0, -20, 0), params)
+				local scale = Enemies.ById.brawler_elite.Scale or 1
+				t.Near("its feet on the floor, at its scale", if hit then root.Position.Y - hit.Position.Y else -1, 3 * scale, 0.45)
+				t.Near("its scale", elite:GetScale(), scale, 0.01)
+			end
+			t.Server("FightSpawn")
 		end,
 	},
 	{

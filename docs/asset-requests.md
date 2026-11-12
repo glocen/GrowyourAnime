@@ -2229,6 +2229,16 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
     - The rings' hot strength and the dusk check (condition 3) come after the verdict, as scoped.
   - **Four facts:** implemented; tested; visually reviewed by me only, research's pass waits; director-accepted: no.
   - **Hours:** about 3.
+- **Research's verdict on the art in the game, 2026-11-12** (the strip, the full view at 2.45 s; round 1 of the art in the game).
+  - **Felt:** she plants and the Shades shudder under a rain of 37s. The crests are there, pale braids and thin rings on each body, but they read as wisps, and the numbers are the loudest thing on the screen.
+  - **Tier:** works, not yet competent. The art landed (the braid, the ring on the touch), but it doesn't carry the read.
+  - **The one bold thing:** nothing carries it yet. It should be the crest's leading ribbon, and today it's the wall of numbers.
+  - **Fixes, round 1:**
+    1. **One counting number per body** for a flurry, as `docs/ui.md` sets it ("a flurry merges into one counting number"): five touches on three Shades make fifteen numbers a press, and they bury the crest. This is the HUD's rule, built here first, for every flurry. Serves the crest's read.
+    2. **The number on the touch:** on the client, a body's number and its touch show when the crest reaches it, not on the server's beat. 5 to 15 frames early is the same break as the Lantern Burst's before its fix. Client only. Serves cause and effect.
+    3. **The crest's width** up, live, until the leading ribbon is the brightest edge in the cone: research tunes it in the replay (`Effects.HeldNote.Width`) once 1 and 2 are in. No redraw. Serves the beat inside the wall.
+  - **Accepted:** the flash (condition 3 met at 0.32%); the ring on the touch; Ease 2.
+  - **Not judged here:** the noon pad's pale ground eats a pale crest. The dusk check comes with Lantern Row's look (AR5), and the Frame 150 take shows her from the player's side.
 
 ## AR5. The festival kit and the base's machines
 

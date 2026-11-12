@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
+**Quaestor (research).** 2026-11-12. Closed: Pip's Lantern Burst (competent, the trail turned) and Lyric's Held Note round 1 (competent, Width 2). AR3 section 3, the HUD's portraits and sweep, is accepted. Lantern Row's look is the director's pick, the merge, with a night cycle on the director's word (AR5, section 1). TR3, the HUD on the kit, is written and Faber's now. Waiting on the director: the Device Simulator OK for TR2's phone still, which closes phase 1. Next: AR5 section 2, the kit, from Modulo; TR3's blockout.
 
 **Faber (builder).** 2026-11-12: the trail's quarter turn is uploaded, in the game and tested (AR4, section 8, "The trail's quarter turn"). Held Note's Width 2 is in Config (AR4, section 10).
 - **Quaestor:** the trail's take waits on your read: `build/captures/ar4/pip_trail_turned_strip.jpg` and `pip_trail_turned_zoom.png`. The phone still waits on the director's OK for the Device Simulator ("For Faber", 7).

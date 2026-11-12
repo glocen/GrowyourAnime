@@ -8,7 +8,7 @@
   "Metalness": "Lyric_Metalness.png",
   "Emissive": "Lyric_Emissive.png"
  },
- "texels_per_stud": 77,
+ "texels_per_stud": 79,
  "emissive": {
   "tint": "#FFFFFF",
   "cold": 1.0,
@@ -46,14 +46,14 @@
    "centre": [
     0.0,
     4.61965,
-    0.11732
+    0.09467
    ],
    "size": [
     2.15,
     1.511,
-    1.795
+    1.84
    ],
-   "tris": 1544
+   "tris": 1884
   },
   {
    "name": "Lyric_RightArm",
@@ -192,12 +192,12 @@
    "centre": [
     0.00082,
     4.53566,
-    0.11475
+    0.11699
    ],
    "size": [
     1.91,
     1.395,
-    1.857
+    1.853
    ],
    "tris": 696,
    "edge": true
@@ -299,5 +299,5 @@
    "note": "where a hit lands"
   }
  ],
- "tris": 8272
+ "tris": 8612
 }

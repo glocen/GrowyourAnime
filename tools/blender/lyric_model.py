@@ -65,6 +65,7 @@ BEVELS = {"Clip": 0.015, "Clutch": 0.02, "Frame": 0.02, "Handle": 0.015, "Handle
           "Pack": 0.03}
 EDGE = 0.035          # studs: how far the dark shell stands out from the pale parts
 COLD, HOT = 1.0, 2.5  # the glow's EmissiveStrength: as she stands, and through the note
+CROWN = (4.85, 5.22)  # studs: the crown's cooler tone starts at the fringe's highest edge and is whole at the top
 SPAN, PX = 10.0, 640
 
 
@@ -79,6 +80,21 @@ def surfaces():
         bsdf.inputs["Base Color"].default_value = tuple(m.diffuse_color)
         bsdf.inputs["Roughness"].default_value = rough
         bsdf.inputs["Metallic"].default_value = metal
+
+
+def crown():
+    """Research's model fix 1: the crown a step cooler than Ash, rising into it over the top of her head, so sun
+    doesn't flatten the bob to white. A blend by height, never a seam, which would read as a helmet's rim. Only the
+    colour bake reads it, and no Ash but her hair stands that high."""
+    m = bpy.data.materials["Ash"]
+    nodes, links = m.node_tree.nodes, m.node_tree.links
+    height = nodes.new("ShaderNodeSeparateXYZ")
+    links.new(nodes.new("ShaderNodeNewGeometry").outputs["Position"], height.inputs["Vector"])
+    rise = nodes.new("ShaderNodeMapRange")
+    rise.inputs["From Min"].default_value, rise.inputs["From Max"].default_value = CROWN
+    links.new(height.outputs["Z"], rise.inputs["Value"])
+    tone = bl._mix_colour(nodes, links, rise.outputs["Result"], rs.srgb(ls.PALETTE["Ash"]), rs.srgb(ls.PALETTE["AshCool"]))
+    links.new(tone, nodes["Principled BSDF"].inputs["Base Color"])
 
 
 def take_pieces(joints):
@@ -99,7 +115,9 @@ def take_pieces(joints):
 
 def edges(obj, surfaces=None):
     """Research's fix 3: every Ash face again, pushed out along its corners' normals, turned inside out, dark, and
-    made a piece of its own (the edge of the piece it wraps). With `surfaces`, its UVs go on the Backstage swatch."""
+    made a piece of its own (the edge of the piece it wraps). With `surfaces`, its UVs go on the Backstage swatch.
+    Not the fringe's tips (`bare`): they sit inside her outline, and each boxed in its own dark rim, in a row over her
+    eyes, they read as teeth."""
     mesh = obj.data
     names = [m.name for m in mesh.materials]
     pale, dark = names.index("Ash"), names.index("Backstage")
@@ -107,7 +125,8 @@ def edges(obj, surfaces=None):
     bm.from_mesh(mesh)
     piece = bm.faces.layers.int["piece"]
     unseen = bm.faces.layers.int["unseen"]
-    made = bmesh.ops.duplicate(bm, geom=[f for f in bm.faces if f.material_index == pale])
+    bare = bm.faces.layers.int["bare"]
+    made = bmesh.ops.duplicate(bm, geom=[f for f in bm.faces if f.material_index == pale and not f[bare]])
     faces = [g for g in made["geom"] if isinstance(g, bmesh.types.BMFace)]
     verts = [g for g in made["geom"] if isinstance(g, bmesh.types.BMVert)]
     bm.normal_update()
@@ -361,14 +380,14 @@ def look(joints, made, out):
     views = (("back", "square", (0, 4), MID, SPAN), ("game", "idle", ls.GAME, MID, SPAN),
              ("front", "square", (180, 4), MID, SPAN), ("met", "note", ls.MET, FAR, 11.5),
              ("bob", "square", BOB, (0, 0, 4.55), 3.0), ("bobgame", "idle", ls.GAME, (0.1, 0, 4.5), 3.0),
-             ("speaker", "square", (20, 8), ls.REST["dr"][0], 2.4))
+             ("face", "idle", FACE, HEAD, 3.0))
     for name, pose, view, at, across in views:
         take(name, pose, view, at=at, across=across, clay=True)
     W, H = 2100, 760
     page = rs.canvas(W, H, rs.PAPER)
     for i, name in enumerate(("back", "game", "front", "met")):
         rs.stand(page, rs.shrink(shots[name], 0.6), 10 + i * 400, 400, 400)
-    for i, name in enumerate(("bob", "bobgame", "speaker")):
+    for i, name in enumerate(("bob", "bobgame", "face")):
         rs.paste(page, rs.shrink(shots[name], 340 / PX), 10 + i * 350, 410)
     small = 64 / (5 * PX / SPAN)
     rs.fill(page, 1100, 420, 400, 110, rs.DAY)
@@ -406,6 +425,7 @@ def main():
     scene = bl.reset_scene()
     joints = ls.build(scene, model=True)
     surfaces()
+    crown()
     groups = take_pieces(joints)
     hidden = total = 0
     for index, piece in enumerate(JOINTS.values()):
@@ -417,6 +437,8 @@ def main():
             # the colour map, and the content check blocked one (AR4, section 5). Rose stays straight-edged or flat.
             if o.data.materials[0].name in (*LIT, "Rose"):
                 o.data.attributes["unseen"].data.foreach_set("value", [1] * len(o.data.polygons))
+            bare = o.data.attributes.new("bare", "INT", "FACE")  # no dark edge: the fringe's tips
+            bare.data.foreach_set("value", [int(rm.base(o) == "Fringe")] * len(o.data.polygons))
             o.data.transform(Matrix.Translation((APART * index, 0, 0)))
     whole = bl.join([o for piece in JOINTS.values() for o in groups[piece]], "Lyric")
     if looking:

@@ -31,6 +31,7 @@ PALETTE = {
     "Limelight": "#34A866", "LimelightDeep": "#1F7045", "Backstage": "#1B2A25", "BackstageLift": "#30463D",
     "Ash": "#EAE4D6", "AshShade": "#C9C1AE", "Chalk": "#F1ECDF", "Storm": "#FF6FD8", "Rose": "#D94FB4",
     "Chrome": "#B8C0C4", "ChromeDeep": "#7C858B", "Skin": "#E9B995", "Ink": "#1E1B22",
+    "AshCool": "#D4D5E0",  # the model's crown, a step cooler than Ash, so sun doesn't flatten the bob to white
 }
 CHIPS = (("Limelight", "the jacket"), ("Ash", "hair and boots"), ("Storm", "what's lit"))
 NEUTRALS = ("Backstage", "Rose", "Chrome", "Skin")
@@ -41,6 +42,7 @@ HAND = 1.35                      # from a shoulder's pivot down to the middle of
 REST = {"dr": ((2.62, -0.55, 5.0), 12), "dl": ((-2.62, -0.55, 5.0), -12)}  # each speaker: its middle, its turn inward
 SPEAKER = 0.9                    # a speaker's scale: its cabinet is drawn 1 by 1.3 studs
 RAIL = 24                        # degrees: the model's chalk rail across her back, high at her right
+LIFT = 0.14                      # studs: how far the model lifts the fringe's edge, for the tips that hang under it
 B = rs.B
 loft, slab = rs.loft, rs.slab
 Z = Vector((0, 0, 1))
@@ -222,9 +224,9 @@ def build(scene, hot=False, model=False):
         u = min(1.0, (4.86 - z) / 0.3)
         return 0.83 + 0.04 * u, 0.78 + 0.03 * u
 
-    def lock(name, t, tip, width=0.36, stand=0.1, top=5.0, thick=0.08, stations=6):
+    def lock(name, t, tip, width=0.36, stand=0.1, top=5.0, thick=0.08, stations=6, end=0.5):
         """A lock of the top layer at the angle t round her head: from under the crown, sunk in the bob, down past
-        its edge to a blunt tip that stands `stand` off it. Lens-shaped across, narrowing to half at the tip."""
+        its edge to a blunt tip that stands `stand` off it. Lens-shaped across, narrowing to `end` at the tip."""
         bm = bmesh.new()
         rings = []
         for k in range(stations):
@@ -235,7 +237,7 @@ def build(scene, hot=False, model=False):
             out = Vector((b * math.cos(t), a * math.sin(t), 0)).normalized()
             along = Vector((-a * math.sin(t), b * math.cos(t), 0)).normalized()
             centre = at + out * (-thick + (1.5 * thick + stand) * u ** 1.6)
-            half = 0.5 * width * (1 - 0.5 * u)
+            half = 0.5 * width * (1 - (1 - end) * u)
             rings.append([bm.verts.new(centre + along * (half * math.cos(f)) + out * (0.5 * thick * math.sin(f)))
                           for f in (math.radians(d) for d in range(0, 360, 60))])
         for r0, r1 in zip(rings, rings[1:]):
@@ -251,17 +253,41 @@ def build(scene, hot=False, model=False):
     locks = [lock("Lock", math.radians(d), cut(math.radians(d)) - drop)
              for d, drop in zip(range(-30, -151, -20), (0.08, 0.18, 0.11, 0.2, 0.1, 0.17, 0.09))] if model else []
 
+    # the model's front (research's model fix 1): across her face the top layer's edge is lifted, and five short
+    # blunt locks hang from under it, overlapping to their ends, long and short by turns along the sheet's slanted
+    # line: a choppy cut, so the fringe ends in hair, not a rim. No gaps between them: through a gap the shaded
+    # forehead shows dark, and white points over dark read as teeth. Only the long one over her right brow passes
+    # the line; the two over her left eye end at it or short of it, so none comes nearer her eyes than the fringe did.
+    def lifted(t):
+        if math.sin(t) <= 0:
+            return cut(t)
+        u = min(1.0, max(0.0, (abs(math.cos(t)) - 0.5) / 0.1))
+        return max(cut(t), min(cut(t) + LIFT * (1 - u * u * (3 - 2 * u)), 4.97))
+
+    def tip(d, drop):
+        t = math.radians(d)
+        rim = lifted(t)
+        end = min(cut(t) - drop, rim - 0.12)
+        return lock("Fringe", t, end, width=0.28, stand=0.0, thick=0.07, top=min(rim + (rim - end), 5.05), end=0.85)
+
+    edge = lifted if model else cut
+    fringe = [tip(d, drop) for d, drop in zip((63, 76.5, 90, 103.5, 117), (0.01, 0.07, -0.04, 0.0, -0.03))] if model else []
+
     band = [(0.9, 4.45), (0.9, 4.8), (0.8, 5.06), (0.62, 5.21), (0.3, 5.3), (0, 5.32),
             (-0.3, 5.3), (-0.62, 5.21), (-0.8, 5.06), (-0.9, 4.8), (-0.9, 4.45)]
     mouth = face("Mouth", 0.0, 4.21, 0.2, 0.2, m["Ink"], proud=0.006) if hot else face("Mouth", 0.02, 4.24, 0.22, 0.045, m["Ink"], tilt=-6, proud=0.006)
     on("neck",
        loft("Head", [(3.875, 0, 0, 0.95, 0.95), (3.92, 0, 0, 1.14, 1.14), (4.02, 0, 0, 1.25, 1.25), (4.98, 0, 0, 1.25, 1.25),
                      (5.08, 0, 0, 1.14, 1.14), (5.125, 0, 0, 0.95, 0.95)], m["Skin"], n=2),
-       loft("Hair", [(cut, 0, -0.03, 1.74, 1.62), (lambda t: max(cut(t) + 0.05, 4.86), 0, -0.03, 1.66, 1.56),
+       loft("Hair", [(edge, 0, -0.03, 1.74, 1.62), (lambda t: max(edge(t) + 0.05, 4.86), 0, -0.03, 1.66, 1.56),
                      (5.06, 0, -0.02, 1.42, 1.44)], m["Ash"], n=2, caps=False),
        loft("HairTop", [(5.06, 0, -0.02, 1.42, 1.44), (5.2, 0, 0, 1.08, 1.1)], m["Ash"], n=2),
-       loft("HairUnder", [(under, 0, -0.03, 1.6, 1.48), (4.84, 0, -0.03, 1.54, 1.44)], m["Rose"], n=2, caps=False),
+       # on the model the rose layer's front rises with the lifted edge, so it stays hidden between the tips
+       loft("HairUnder", [(lambda t: under(t) + edge(t) - cut(t), 0, -0.03, 1.6, 1.48),
+                          (lambda t: max(4.84, under(t) + edge(t) - cut(t) + 0.04), 0, -0.03, 1.54, 1.44)],
+            m["Rose"], n=2, caps=False),
        *locks,
+       *fringe,
        face("BrowR", 0.27, 4.71, 0.24, 0.045, m["Ink"], tilt=-3, proud=0.03),
        face("BrowL", -0.27, 4.71, 0.24, 0.045, m["Ink"], tilt=3, proud=0.03),
        face("EyeR", 0.26, 4.5, 0.2, 0.22, m["Ink"]),
@@ -273,11 +299,13 @@ def build(scene, hot=False, model=False):
        bl.tube_along("Headband", [Vector((x, -0.05, z)) for x, z in band], [0.055] * len(band), sides=8, material=m["Backstage"]),
        *[bl.place(bl.cylinder("Cup", 0.22, 0.3, 12, m["Backstage"]), location=(e * 0.9, -0.03, 4.5), rotation=(0, 90, 0)) for e in (-1, 1)],
        *[bl.place(bl.cylinder("CupFace", 0.12, 0.03, 10, m["Chrome"]), location=(e * 1.06, -0.03, 4.5), rotation=(0, 90, 0)) for e in (-1, 1)],
-       # on the model the boom hugs her cheek, so in sunlight its tip's shadow stays under the tip, not on her face
-       bl.tube_along("Boom", [Vector(p) for p in (((0.98, 0.05, 4.42), (0.8, 0.42, 4.3), (0.42, 0.58, 4.22)) if model else
+       # on the model the boom hugs her cheek, so in sunlight its tip's shadow stays under the tip, not on her face,
+       # and ends at the middle of the cheek, a mouth's width clear of its corner (research's model fix 2)
+       bl.tube_along("Boom", [Vector(p) for p in (((0.98, 0.05, 4.42), (0.7, 0.38, 4.33), (0.5, 0.5, 4.27)) if model else
                                                   ((0.98, 0.05, 4.42), (0.86, 0.46, 4.3), (0.5, 0.7, 4.24)))],
                      [0.035] * 3, sides=6, material=m["Backstage"]),
-       slab("BoomTip", (0.34, 0.6, 4.22) if model else (0.42, 0.71, 4.24), (0.13, 0.1, 0.1), m["Glow"]))
+       slab("BoomTip", (0.45, 0.536, 4.27), (0.13, 0.1, 0.1), m["Glow"], rot=(0, 0, -40)) if model else
+       slab("BoomTip", (0.42, 0.71, 4.24), (0.13, 0.1, 0.1), m["Glow"]))
 
     # the legs: dark leggings into pale boots on thick soles; the right leg, which the short side bares, has a stripe
     for part, s in (("rh", 1), ("lh", -1)):

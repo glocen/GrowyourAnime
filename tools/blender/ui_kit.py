@@ -38,10 +38,13 @@ DEEP = {"#B3122E": "#C2102E", "#D8A23C": "#C98A1E"}  # a coloured rarity's light
 # (the director, 2026-11-12: some screens get a palette of their own, chosen here, so long as the whole holds
 # together). What a palette may change: a panel's body, its edge and glint, the ink, and `accent`, the light a button
 # and a selection burn with. What it never changes: the cut, the frames, the gems and marks, health's ivory light,
-# green and red, the numbers.
+# green and red, the numbers. The accent lights buttons and selections only: it never rings a portrait's frame, where
+# Dynamo's yellow would be taken for Legendary's gold (research, 2026-11-12).
 PALETTES = {
     "Graphite Dark": dict(ui.THEMES["Graphite Dark"], accent=ui.LIGHT, core=0.5),
-    "Pearl Light": dict(ui.THEMES["Pearl Light"], accent=ui.LIGHT, core=0.9),
+    # a pale button can't be lit by a ring of ivory, so Pearl's selected one fills with ink and its label goes pale
+    "Pearl Light": dict(ui.THEMES["Pearl Light"], accent=ui.LIGHT, core=0.9, selected=("#2A2E38", "#14161B"),
+                        selectedText="#FAF7F0"),
     # the machine room: warm iron, and the light is the charge the bays make
     "Dynamo": dict(panel=("#2C261C", "#17130E"), alpha=0.94, edge="#62563F", facet="#B09F78", glint="#EBDCA6",
                    text="#F3EFE6", soft="#B8AD95", faint="#7F7660", channel="#080705", well="#0E0C09",
@@ -77,15 +80,18 @@ def keep(name, t, tint=None, cut=None, pad=0.0, use="", ship=True):
 
 # --- the slices -----------------------------------------------------------------------------------------------------
 
-def boxes(prefix, cuts, inset, shadow):
-    """A cut box's layers: its body, its edge at two weights, its shadow."""
+def boxes(prefix, cuts, inset, shadow, bold=1.6, lip=0.0):
+    """A cut box's layers: its body, its edge at two weights, its shadow. The bold edge is a bordered palette's black
+    border. With `lip` it's a rule set that far in from the box's edge, so a lip of the pale body stands outside it:
+    a black line at the very edge of a pale panel is lost against a dark world."""
     size, pad = inset * 2 + 8, 16.0
-    for name, tint, draw in (("Fill", "body", lambda t, d: t.paint(d, WHITE)),
-                             ("Edge", "edge", lambda t, d: t.line(d, 1.0, WHITE)),
-                             ("EdgeBold", "edge", lambda t, d: t.line(d, 1.6, WHITE))):
+    ruled = "a bordered palette's edge" + (f": a rule {bold} wide, set {lip} in from the edge" if lip else "")
+    for name, tint, draw, use in (("Fill", "body", lambda t, d: t.paint(d, WHITE), ""),
+                                  ("Edge", "edge", lambda t, d: t.line(d, 1.0, WHITE), ""),
+                                  ("EdgeBold", "edge", lambda t, d: t.line(d + lip, bold, WHITE), ruled)):
         t = blank(size, size)
         draw(t, t.poly(cut_box(0, 0, size, size, *cuts)))
-        keep(prefix + name, t, tint, (inset,) * 4)
+        keep(prefix + name, t, tint, (inset,) * 4, use=use)
     t = blank(size + 2 * pad, size + 2 * pad)
     t.glow(t.poly(cut_box(pad, pad, pad + size, pad + size, *cuts)), shadow[0], BLACK, shadow[1])
     keep(prefix + "Shadow", t, None, (inset + pad,) * 4, pad, "under the body")
@@ -95,7 +101,7 @@ def boxes(prefix, cuts, inset, shadow):
 def panels():
     cut = 10.0
     cuts = (cut, cut * 0.3, cut, cut * 0.3)
-    size = boxes("Panel", cuts, 12.0, (6.0, 0.3))
+    size = boxes("Panel", cuts, 12.0, (6.0, 0.3), bold=2.0, lip=1.5)
     t = blank(size, size)
     t.paint(ui.sd_segment(t.x, t.y, (0.5, cut), (cut, 0.5)) - 0.6, WHITE, 0.85)
     t.paint(ui.sd_segment(t.x, t.y, (size - cut, size - 0.5), (size - 0.5, size - cut)) - 0.5, WHITE, 0.35)
@@ -123,7 +129,8 @@ def buttons():
     keep("ButtonBaseGlow", t, "accent", (inset[0] + pad,) * 4, pad, "at 45 in 100 at rest, whole when pressed")
     t = blank(size, size)
     t.lit(shape(t), 1.4, WHITE, c(DARK))
-    keep("ButtonRing", t, "accent, green or red", inset, use="selected, succeeded, failed; waiting, with a window run round it")
+    keep("ButtonRing", t, "accent, green or red", inset,
+         use="selected, succeeded, failed; waiting, with a window run round it; never round a portrait's frame")
     t = blank(size + 2 * pad, size + 2 * pad)
     t.glow(shape(t, pad), 5.0, WHITE, 0.5)
     keep("ButtonRingGlow", t, "accent, green or red", (inset[0] + pad,) * 4, pad, "under the body")
@@ -242,6 +249,7 @@ GEMS = {
     "Technique": [(-0.55, -0.82), (0.55, -0.82), (0.98, -0.3), (0, 0.96), (-0.98, -0.3)],
 }
 CLASSES = ("Warrior", "Tank", "Assassin", "Mage", "Healer")
+VOID_BODY = ("#3A2670", "#1C1238")  # Void's mark, top to bottom
 
 
 def stone(t, cx, cy, r, colour, pts, seat=0.0):
@@ -270,7 +278,8 @@ def stone(t, cx, cy, r, colour, pts, seat=0.0):
 
 def glyph(name, t, cx, cy, r):
     """A class's mark, as the distance from its outline. Warrior: a blade on the slant, with its taper and guard.
-    Tank: a shield with its boss. Assassin: one curved fang. Mage: a broken ring round a core. Healer: a cut heart."""
+    Tank: a shield with its boss. Assassin: a cowl with a leaning peak and one narrowed slit for the eyes. Mage: a
+    broken ring round a core. Healer: a cut heart."""
     u, v = (t.x - cx) / r, (t.y - cy) / r
 
     def poly(pts):
@@ -288,8 +297,11 @@ def glyph(name, t, cx, cy, r):
         shield = poly([(-0.5, -0.88), (0.78, -0.88), (0.78, 0.08), (0, 0.95), (-0.78, 0.08), (-0.78, -0.56)])
         return np.maximum(shield, -(np.abs(shield + 0.26 * r) - 0.07 * r))
     if name == "Assassin":
-        return poly([(-0.85, -0.6), (-0.45, -0.95), (0.15, -0.8), (0.6, -0.4), (0.85, 0.15), (0.9, 0.95),
-                     (0.55, 0.3), (0.2, -0.1), (-0.25, -0.35), (-0.6, -0.4)])
+        # Shaped like a head, widest at the cheek and narrowing to the jaw, its peak leaning like cloth. The slit sits
+        # high and narrows to the bridge of the nose: lower, or dipping in the middle, it reads as a smile at 16 px.
+        cowl = poly([(-0.22, -1.04), (0.6, -0.46), (0.8, 0.3), (0.46, 0.96), (-0.5, 0.96), (-0.86, 0.3), (-0.74, -0.4)])
+        slit = poly([(-0.62, -0.34), (-0.02, -0.14), (0.56, -0.34), (0.56, 0.14), (-0.02, 0.04), (-0.62, 0.14)])
+        return np.maximum(cowl, -slit)
     if name == "Mage":
         def ring(radius):
             return poly([(radius * math.cos(math.radians(22.5 + 45 * i)), radius * math.sin(math.radians(22.5 + 45 * i)))
@@ -301,7 +313,7 @@ def glyph(name, t, cx, cy, r):
 
 def element(name, t, cx, cy, r):
     """An element's mark and the lighter part inside it, as distances. Fire: a flame of three straight tongues.
-    Frost: three bars crossed. Storm: a cloud and its one bolt. Void: a shard, cracked through."""
+    Frost: three bars crossed. Storm: a cloud and its one bolt. Void: a dark shard, and the white crack through it."""
     u, v = (t.x - cx) / r, (t.y - cy) / r
 
     def poly(pts):
@@ -320,9 +332,13 @@ def element(name, t, cx, cy, r):
         cloud = poly([(-0.92, 0.02), (-0.92, -0.3), (-0.6, -0.62), (-0.25, -0.62), (-0.02, -0.92), (0.5, -0.92),
                       (0.78, -0.64), (0.78, -0.34), (0.95, -0.34), (0.95, 0.02)])
         return (np.minimum(cloud, bolt), np.maximum(bolt, 0.02 * r - (t.y - cy)))
-    line = [(0.3, -1.2), (-0.1, -0.25), (0.16, 0.12), (-0.22, 1.2)]
-    crack = np.minimum.reduce([ui.sd_segment(u, v, a, b) for a, b in zip(line, line[1:])]) * r - 0.09 * r
-    return (np.maximum(poly([(0, -1), (0.72, 0), (0, 1), (-0.72, 0)]), -crack), None)
+    # A fracture across the shard, corner to corner: five uneven runs and one short spur that ends inside it. Never
+    # three strokes upright, which in white on dark is a rune's shape (the content check, 2026-11-12), and never a
+    # second spur, which would make a fork.
+    line = [(0.52, -0.78), (0.2, -0.42), (0.3, -0.18), (-0.08, 0.08), (-0.02, 0.36), (-0.5, 0.78)]
+    crack = np.minimum.reduce([ui.sd_segment(u, v, a, b) for a, b in zip(line, line[1:])]) * r - 0.1 * r
+    spur = ui.sd_segment(u, v, (-0.08, 0.08), (-0.38, -0.08)) * r - 0.065 * r
+    return (poly([(0, -1), (0.72, 0), (0, 1), (-0.72, 0)]), np.minimum(crack, spur))
 
 
 def icons():
@@ -347,11 +363,17 @@ def icons():
         t = blank(BOX, BOX)
         d, inner = element(name, t, m, m, 11.0)
         t.paint(d - 11.0 / 6, c(ui.STROKE))
-        t.paint(d, c(code))
         slope = (t.y - m) + (t.x - m) * 0.55
-        t.paint(np.maximum(d, slope + 2.0), WHITE, 0.3)
-        t.paint(np.maximum(d, -slope + 3.0), BLACK, 0.22)
-        if inner is not None:
+        if name == "Void":  # dark, its element's colour kept to a rim and the crack's halo: Intelligence's gem is violet too
+            t.paint(d, t.ramp(VOID_BODY[0], VOID_BODY[1], (t.y - m + 11.0) / 22.0))
+            t.paint(np.maximum(d, slope + 2.0), WHITE, 0.1)
+            t.line(d, 1.3, c(code))
+            t.paint(np.maximum(d, inner - 1.1), c(code), 0.7)
+            t.paint(np.maximum(d, inner), WHITE)
+        else:
+            t.paint(d, c(code))
+            t.paint(np.maximum(d, slope + 2.0), WHITE, 0.3)
+            t.paint(np.maximum(d, -slope + 3.0), BLACK, 0.22)
             t.paint(np.maximum(d, inner), WHITE, 0.6)
         keep("Element" + name, t)
     t = blank(BOX, BOX)
@@ -458,7 +480,8 @@ def button(st, x, y, w, h, label, p, state="rest", reason=None):
         st.lay("ButtonShadow", x, y, w, h)
     if lit:
         st.lay("ButtonRingGlow", x, y, w, h, tint=lit)
-    st.lay("ButtonFill", x, y, w, h, tint=p["pressed"] if state == "pressed" else p["button"])
+    inked = state == "selected" and "selected" in p  # a palette whose selected button fills with ink
+    st.lay("ButtonFill", x, y, w, h, tint=p["pressed"] if state == "pressed" else p["selected"] if inked else p["button"])
     if state == "disabled":
         st.lay("ButtonFill", x, y, w, h, tint=p["ground"], alpha=0.55)
     st.lay("ButtonEdge" + bold, x, y, w, h, tint=p["edge"], alpha=0.45 if state == "disabled" else 1.0)
@@ -477,7 +500,7 @@ def button(st, x, y, w, h, label, p, state="rest", reason=None):
         st.lay("DotsWell", x + w / 2 - 26, y + h / 2 - 7)
         for i in range(3):
             st.icon("Dot", x + w / 2 - 13 + 13 * i, y + h / 2, 12.0 * (1 - 0.17 * i), tint=p["accent"], alpha=1.0 - 0.3 * i)
-    ink = p["faint"] if state == "disabled" else p["text"]
+    ink = p["faint"] if state == "disabled" else p["selectedText"] if inked else p["text"]
     ty = y + (h - 14 * ui.CAP) / 2
     if state == "succeeded":
         st.icon("Tick", x + 29, y + h / 2, 20.0, tint=ui.GOOD)
@@ -740,7 +763,9 @@ def manifest(out):
         pixelsPerPoint=K, sliceScale=1 / K,
         note="A white slice takes its palette's colour. `cut` is left, top, right, bottom in points, `pad` how far the "
              "image reaches past the piece's box. The layer order of a panel, a button, a bar and a frame is "
-             "tools/blender/ui_kit.py's `panel`, `button`, `bar` and `frame`.",
+             "tools/blender/ui_kit.py's `panel`, `button`, `bar` and `frame`. A palette with `selected` fills its "
+             "selected button with those two colours and writes its label in `selectedText`. A palette's accent never "
+             "rings a portrait's frame.",
         bar=dict(slant="0.6 x height", rim="min(palette rim or 1, 0.2 x height)",
                  light="x + 1.77 rim, y + rim, height - 2 rim; width min(slant + (width - slant) x fill - 2.37 rim, "
                        "width - 3.53 rim); SliceScale (height - 2 rim) / 8 / pixelsPerPoint"),

@@ -1,7 +1,7 @@
 {
  "pixelsPerPoint": 4,
  "sliceScale": 0.25,
- "note": "A white slice takes its palette's colour. `cut` is left, top, right, bottom in points, `pad` how far the image reaches past the piece's box. The layer order of a panel, a button, a bar and a frame is tools/blender/ui_kit.py's `panel`, `button`, `bar` and `frame`.",
+ "note": "A white slice takes its palette's colour. `cut` is left, top, right, bottom in points, `pad` how far the image reaches past the piece's box. The layer order of a panel, a button, a bar and a frame is tools/blender/ui_kit.py's `panel`, `button`, `bar` and `frame`. A palette with `selected` fills its selected button with those two colours and writes its label in `selectedText`. A palette's accent never rings a portrait's frame.",
  "bar": {
   "slant": "0.6 x height",
   "rim": "min(palette rim or 1, 0.2 x height)",
@@ -66,7 +66,12 @@
     0.3
    ],
    "accent": "#FFF4D6",
-   "core": 0.9
+   "core": 0.9,
+   "selected": [
+    "#2A2E38",
+    "#14161B"
+   ],
+   "selectedText": "#FAF7F0"
   },
   "Dynamo": {
    "panel": [
@@ -196,7 +201,8 @@
     12.0,
     12.0,
     12.0
-   ]
+   ],
+   "use": "a bordered palette's edge: a rule 2.0 wide, set 1.5 in from the edge"
   },
   "PanelShadow": {
    "file": "images/PanelShadow.png",
@@ -307,7 +313,8 @@
     10.0,
     10.0,
     10.0
-   ]
+   ],
+   "use": "a bordered palette's edge"
   },
   "ButtonShadow": {
    "file": "images/ButtonShadow.png",
@@ -384,7 +391,7 @@
     10.0,
     10.0
    ],
-   "use": "selected, succeeded, failed; waiting, with a window run round it"
+   "use": "selected, succeeded, failed; waiting, with a window run round it; never round a portrait's frame"
   },
   "ButtonRingGlow": {
    "file": "images/ButtonRingGlow.png",

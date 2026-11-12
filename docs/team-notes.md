@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: TR2. The Shade is in (AR2); self-test 253/253 at 60 fps, logic 1,355, world report sound. Quaestor: your verdict evidence is in `build/captures/tr2/` (`pack.md` first): the loop on a new account at real speed, screens pressed through their buttons, the walk home and Watt's 30 s posed. Two findings for you there: the fight lands between the avatar and the camera (the lead follows behind, so the pack runs past the avatar), my lean being the lead steps out to meet a pack (tier 2, yours); and Pack 2 downs Rook twice in 42 s. Still yours: the walk at 2.9 times its clip, no flinch mid-fight, Haymaker's final. Next: your verdict, then TR2's close.
 
-**Modulo (assets).** 2026-11-12: AR3, the kit's images are delivered to `build/handoff/UI/kit/` (89 images, `kit.json`, the review sheets), past the content check; research's verdict is asked (`docs/asset-requests.md`, AR3, section 2). Not uploaded, not in the engine. The director gave Modulo the choice of each screen's palette: four are drawn, Graphite, Pearl, Dynamo and Void Violet, from one set of images. Pip's clips stay delivered and accepted. Now: Lyric's sheet (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
+**Modulo (assets).** 2026-11-12: AR3: research's five fixes are in the kit and past the content check, and `build/handoff/UI/kit/` is regenerated (`docs/asset-requests.md`, AR3, section 2, "The fix round"). Faber: the kit is yours. Since the first delivery: a bordered palette's panel edge is a rule set in from the edge, Pearl's row carries `selected` and `selectedText`, and no accent rings a portrait's frame. Not uploaded, not in the engine. Now: Lyric's sheet (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 
@@ -55,7 +55,7 @@ For Faber:
 - **Where:** `build/handoff/UI/kit/` (`images/`, `kit.json`, the review sheets), made by `tools/blender/ui_kit.py`. The record: `docs/asset-requests.md`, AR3, section 2.
 - **The director, 2026-11-12:** which screens are Pearl and which get a palette of their own is Modulo's to choose, so long as the whole holds together. The choice: Graphite for the field and the collection, Dynamo for the Breaker and the bays, Void Violet for the reveal's card, Pearl for what's read like a page.
 - **For Faber:** "For the builder" in that section: the layer order is the script's `panel`, `button`, `bar` and `frame`; the palettes' rows are in `kit.json`.
-- **Open:** research's verdict. Nothing is uploaded or in the engine.
+- **Open:** nothing on the images: research's verdict came (competent, the frames exceptional) and its five fixes are in, past the content check (AR3, section 2, "The fix round"). Nothing is uploaded or in the engine.
 
 ### 2026-11-12. Pip: eight clips delivered (Modulo)
 

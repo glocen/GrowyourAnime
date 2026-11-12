@@ -402,7 +402,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2); research's verdict on them is next. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2).
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2).
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -519,8 +519,8 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 - **A bar** and a **thread** (channel, edge), with one light for both (the light, its white core, its head, its glow), placed by `kit.json`'s measures.
 - **The six frames, each in two cuts:** the full one, 80 by 96 points, for 64 points wide and up, and the small one, 40 by 48, with the crest alone, for the lead's card. Each is three images: its light and well under the portrait, the frame over it, and the dark seat a pale panel gives it. `masks/` holds each frame's shape, to cut a portrait to it before upload; the masks aren't shipped.
 - **The five type gems,** each its own cut as well as its colour, so they're told apart without colour: Strength a six-sided stone, Endurance a square one, Agility a tall kite, Intelligence a triangle, Technique a brilliant seen from the side. Each comes bare and in its dark seat.
-- **The five class marks:** Warrior a blade on the slant with its taper and guard, Tank a shield with its boss, Assassin a curved fang, Mage a broken ring round a core, Healer a cut heart. Each comes in its dark seat and as a bare white glyph.
-- **The four element marks:** Fire a flame of three straight tongues, Frost three crossed bars, Storm a cloud with one bolt, Void a cracked shard.
+- **The five class marks:** Warrior a blade on the slant with its taper and guard, Tank a shield with its boss, Assassin a cowl with a leaning peak and one narrowed slit for the eyes, Mage a broken ring round a core, Healer a cut heart. Each comes in its dark seat and as a bare white glyph.
+- **The four element marks:** Fire a flame of three straight tongues, Frost three crossed bars, Storm a cloud with one bolt, Void a dark shard with a white crack through it.
 - **The coin, the bolt, the critical's spark.**
 
 **The director's word on the palettes** (2026-11-12, to Modulo, answering "I chose nothing about which screens are Pearl or get their own palette"): "You will and should i give you creativity for it, some ui have their own palette if u think it would look better it just need to be all compose". It covers which screens are Pearl and which get a palette of their own: that's Modulo's to choose, and the whole has to hold together.
@@ -572,6 +572,7 @@ For the builder, in use:
 1. Never two `Bolt` icons side by side as a pair.
 2. Red on a button's ring and its glow only with words, never on a bar or across a portrait.
 3. Any motion on a frame, and each cut portrait, gets its own check.
+4. A palette's accent lights buttons and selections, never a ring round a portrait's frame: Dynamo's yellow there would be taken for Legendary's gold (research's fix 5). How a selected portrait is marked is settled with its screen.
 
 **Hours:** the kit's images, about 1.6.
 
@@ -584,6 +585,20 @@ For the builder, in use:
 5. Dynamo's charge-yellow stays on buttons and selections, never as a ring round a portrait frame, so it's never taken for Legendary's gold on the Breaker. Serves rarity's read.
 
 Accepted as they are: the gems read by colour first at 16 px (the cut follows at 32); Void Violet's calmer body for the shop and the reveal's larger frame wait for their pieces. For later: every weapon icon will carry its class mark on its frame (`docs/design.md`, "Regalia: gear"), so the marks also work at an icon's corner. Fixes 1 to 5 are one round; the kit goes to the builder once they're in.
+
+**The fix round (Modulo, 2026-11-12).** The five are in and `build/handoff/UI/kit/` is regenerated: `PanelEdgeBold`, `ClassAssassin`, `ClassAssassinGlyph`, `ElementVoid`, `kit.json` and four of the sheets changed. Still 89 images, none uploaded or in the engine.
+
+1. **Pearl's panels.** The black border was there, 1.6 points at the very edge, and a dark world swallowed it: only the pale body's end was left to see. `PanelEdgeBold` is now a rule 2 points wide set 1.5 in from the edge, so a lip of the pale body stands outside it and it reads on any ground. A pill wears it too. A button keeps its border at the edge, since it sits on the pale panel.
+2. **Pearl's selected button** fills with ink, its label pale, the ring's ivory thread inside it. No new image: Pearl's row in `kit.json` carries `selected` (the fill's two colours) and `selectedText`, and `button` in the script shows the order.
+3. **The Assassin's mark** is a cowl with a leaning peak and one narrowed slit for the eyes. Eight cuts were tried at 16 px beside the other four marks. A slit that sits low or dips in the middle reads as a smile at that size, so it sits high and narrows to the bridge of the nose; the peak leans so it's cloth, not a helm.
+4. **Void's mark** is a dark shard with a violet rim and a white crack: a fracture on the slant, five uneven runs and one short spur. Beside Intelligence's gem at 16 px it parts by its dark body, its shape and the white.
+5. **Dynamo's yellow.** No image changes. The rule is in `kit.json`'s note, on `ButtonRing`'s use, and in "in use" above, 4.
+
+**Content check, 2026-11-12: PASS** on the round, rules 2, 3 and 4, on the regenerated files. Void's mark passed at its second look: the first draft's crack was three upright strokes, which in white on a dark shard read as a rune at 32 px and under, and it was redrawn. To hold, each needing a new check if it changes: the cowl's peak stays short and leaning and its eyes stay one band, never two holes; Void's crack keeps one spur, one-sided and ending inside the shard, its runs uneven and on the slant, never upright and never crossed.
+
+**What I see wrong:** at 14 px the cowl is a capped head with a dark band: it's told from the Tank's shield by pointing up, and from the heart by the band, no more. Void's crack carries a violet halo, so on a dark panel the mark still reads violet first.
+
+**Hours:** the round, about 0.6.
 
 
 ## AR4. Pip and Lyric

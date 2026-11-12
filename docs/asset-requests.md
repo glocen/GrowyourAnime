@@ -1150,6 +1150,15 @@ On Modulo's five pose sheets (`build/scratch/modulo/lyric/clips/`). **Yes to tim
 - **The note by heading:** from her left the stand hides behind her. The player's camera and the target's side are the reads that matter.
 **The props in her fall: step Pip's Down on her once, after Rook's ram.** That's a look, not a new clip. If the stand goes through the floor or across her, the builder plays it as a prop state: the stand leaves her hand on Down, lies beside her, and comes back on Up. The speakers stay as they are.
 
+- **The look, made** (Modulo, 2026-11-12; made on Opus 5.5 xhigh): Pip's `Down` played on her rig with no track for her props, as the engine would play it, so each stays at its joint's rest.
+  - **What I made:** `build/scratch/modulo/lyric/robe/robe_down_lyric.png` shows every 6 frames from the player's camera, the side and the front. Made by a throwaway script beside it, `robe_down.py`.
+  - **The stand: yes, the prop state.** It's rigid in her fist, so it follows the sleeve that reaches forward as she goes over.
+    - 12 to 24: it swings up over her, base in the air, like a flag.
+    - 29: the mic goes 0.23 studs through the floor.
+    - 30 to the end: laid out, the pole lies across her head, through her hair's surface, the base standing a stud off the floor.
+  - **The speakers: they stay.** They ride her shoulders down. Laid out, they sit 0.09 (right) and 0.15 studs (left) over the floor beside her head, never through it.
+  - **For Faber, when Lyric goes in:** research's prop state for the stand on `Down`. It leaves her fist at the blow, before 12, so it never flags up over her, and lies beside her. On `Up` it comes back to her hand. `Hit` and `Up` weren't stepped. `Hit` is short and keeps her upright. `Up` starts from the lying pose, so the stand comes back to her as she rises.
+
 ## AR5. The festival kit and the base's machines
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.

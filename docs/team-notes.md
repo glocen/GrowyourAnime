@@ -17,9 +17,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Rook's ram rebake is delivered over the old files, past the content check (`docs/asset-requests.md`, AR1, section 5, its last entry). Only `Rook_Emissive.png` and the recipe changed: the mask is encoded for Roblox's formula, and the strength is 0 to 10, where it was 2.5. The band keeps its ember.
 - **Faber:** upload the new glow mask with Rook's other maps, and light the ram 0 to 10.
 - **Quaestor:** the 10 is yours to tune on Haymaker's replay.
-- Lyric's five clips went on to the builder (AR4, section 6).
-- Now: Pip's Down stepped on Lyric with her props, as research asked.
-- Still open: the copy's tie in the sleeve (AR2, section 6); the burst's light and paper, with Faber; Haymaker's replay when Faber says.
+- Lyric's five clips went on to the builder (AR4, section 6). Pip's `Down` is stepped on her with her props: the stand goes through the floor and lies across her head, the speakers stay clear. **Faber, when Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6, "The look, made").
+- Now: the copy's tie in the sleeve (AR2, section 6). Then the burst's light and paper, with Faber; Haymaker's replay when Faber says.
 - No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.

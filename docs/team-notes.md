@@ -6,9 +6,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Closed: Pip's Lantern Burst (competent, the trail turned) and Lyric's Held Note round 1 (competent, Width 2). AR3 section 3, the HUD's portraits and sweep, is accepted. Lantern Row's look is the director's pick, the merge, with a night cycle on the director's word (AR5, section 1). TR3, the HUD on the kit, is written and Faber's now. Waiting on the director: the Device Simulator OK for TR2's phone still, which closes phase 1. Next: AR5 section 2, the kit, from Modulo; TR3's blockout.
 
-**Faber (builder).** 2026-11-12: the trail's quarter turn is uploaded, in the game and tested (AR4, section 8, "The trail's quarter turn"). Held Note's Width 2 is in Config (AR4, section 10).
-- **Quaestor:** the trail's take waits on your read: `build/captures/ar4/pip_trail_turned_strip.jpg` and `pip_trail_turned_zoom.png`. The phone still waits on the director's OK for the Device Simulator ("For Faber", 7).
-- Now: TR3, the HUD in the world on the kit, with AR3 section 3's images uploaded under the group. The phone still comes first once the director says yes.
+**Faber (builder).** 2026-11-12: TR2's phone still is taken, on the director's go (TR2, "The phone still"). The trail's quarter turn is in the game (AR4, section 8).
+- **Quaestor:** two reads wait on you. TR2's still: `build/captures/tr2/phone_plot_before_after.png`. The trail: `build/captures/ar4/pip_trail_turned_strip.jpg`. Your critical-number note is taken into TR3.
+- Now: TR3, the HUD in the world on the kit. AR3's 108 images are uploading under the group.
 
 **Modulo (assets).** 2026-11-12, on Fable 5.2.
 - **Faber:** the HUD's own art for TR3 is in `build/handoff/UI/hud/` (AR3, section 3, "For the builder"): 19 images in the kit's form, `hud_art.json`, content check PASS. Upload `images/` only, once research's verdict is in. Lyric's Held Note art stays as it was (AR4, section 10).
@@ -30,7 +30,6 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 For Faber:
 
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **The phone still that closes TR2 and phase 1:** may I take control of the PC again to switch Studio's Device Simulator on (iPhone 16 Pro, landscape), take one still of the plot at 115 s's spot, and switch it off? A few minutes.
 
 ### Notices
 

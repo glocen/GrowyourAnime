@@ -4,6 +4,7 @@
 -- reviewed). A plate hides while its point is behind the camera, farther than its reach, or gone. The whole layer steps
 -- back while a screen is open: the screen has the player's attention, and the world's labels would crowd its edges.
 --   World.Plate(name, size, where, reach?)   a frame over where() (a world position, or nil to hide); size authored
+--   World.Shift(plate, offset)                moved off its point by `offset`, authored pixels (a number clear of another)
 --   World.Remove(plate)
 
 local RunService = game:GetService("RunService")
@@ -13,7 +14,7 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2 }
 
 local plates: { [Frame]: Plate } = {}
 
@@ -25,8 +26,15 @@ function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: 
 	frame.Size = UDim2.fromOffset(size.X, size.Y)
 	frame.Visible = false
 	frame.Parent = Layers.Get("World")
-	plates[frame] = { Frame = frame, Where = where, Reach = reach or math.huge }
+	plates[frame] = { Frame = frame, Where = where, Reach = reach or math.huge, Shift = Vector2.zero }
 	return frame
+end
+
+function World.Shift(frame: Frame, offset: Vector2)
+	local plate = plates[frame]
+	if plate then
+		plate.Shift = offset
+	end
 end
 
 function World.Remove(frame: Frame)
@@ -60,7 +68,7 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			continue
 		end
 		-- By scale, so the layer's UIScale sizes the plate and never moves it.
-		frame.Position = UDim2.fromScale(screen.X / viewport.X, screen.Y / viewport.Y)
+		frame.Position = UDim2.new(screen.X / viewport.X, plate.Shift.X, screen.Y / viewport.Y, plate.Shift.Y)
 		frame.Visible = true
 	end
 end)

@@ -194,7 +194,64 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 - **A warm trim** round the bars and the frame, as the reference's gold rims. Ours can take the rarity's colour.
 - **More colour across the HUD** comes from colours that mean something: health red, experience its own colour, the rarity's trim, the gems', the pills' icons (Credits warm, Electricity cyan). The panels may take colour too: not every panel stays Graphite or Pearl, as long as the whole is well composed (the director, 2026-11-13: "not all panels should stay dark or pearly light it just need to be all well composed"). Which panel takes which palette is Modulo's choice, as the director said on 2026-11-12 (`docs/ui.md`, "One look, ours").
 
-**Status:** started 2026-11-12 (Faber), TR2 being closed.
+**The take, 2026-11-13 (Faber), for research's verdict.** All eight parts are in the game, in Graphite as the kit made them. The director's notes above wait for the fix round.
+- **Part 1, the kit:**
+  - 109 images are under the group, all Approved, read back by `tools/upload/read_back.py`.
+  - `src/shared/Config/UIKit.luau` is written from the handoff by `tools/ui/kit_config.py`.
+  - `src/client/UI/Kit` holds Skin (slices, pads, tints), Panel, Button (seven states; a disabled one says why), Bar (the conduit), Portrait and Digits.
+- **Parts 2 to 4 and 6, `HudController`:**
+  - The lead's card. Fallen, the portrait dims and the conduit says "Back in 3 s".
+  - The target's card, shown only in a fight, with its gem and the type edge's chevron (`Rules.Hud.Arrow`).
+  - The Credits pill, and the Electricity pill with its thread and "full".
+  - The dock, a button selected while its screen is open.
+- **Part 5, the ring's feel line** (the builder's, for this verdict): low on the right edge, the lead's signature is a ring round its class's glyph. It empties with a flash the moment the move fires, refills visibly over the cooldown, and swells once when it's ready, so a glance says when the big move comes.
+  - The server says when it's ready (`FightService`, the `Ready` attribute).
+  - Its numbers are in `Config.Hud.Ring`.
+- **Part 7, the numbers** (`FighterController/Effects` with `Kit/Digits`):
+  - The five styles and the grey word, in Builder Sans with a stroke.
+  - The flurry is one counting number.
+  - A number is placed clear of its neighbours (`Rules.Hud.Place`).
+  - The critical sits on its swept stroke. Live in `Config.Hud.Numbers`.
+- **Part 8:** the chip and the world's plates are on the kit.
+- **Live for the fix round** (research's ask), all in `Config.Hud`:
+  - `Card.Health`, `Card.TargetHealth`, `Card.Xp` and `Card.Trim` (the lead card's edge), read every frame.
+  - `Bar.GlowReach`.
+  - For example, `NL_Debug:Invoke("Tune", nil, "Hud.Card.Health", Color3.fromHex("#E2463F"))`.
+  - Each was tried in a playtest and showed at once. The seeds are the take's look.
+  - For the fix round: `Bar.luau` and AR3's in-use rules say red is never a bar's colour, and the director's note makes health red.
+- **Fixed during the take:**
+  - The bar's glow ran past both cards. It now reaches at most 8 px past its light.
+  - A card read "882 / 881". `Rules.Hud.Health` now gives whole points on both sides, with its case.
+  - The Breaker plate's text sat on its edge. It now has 10 px at the sides.
+  - Text, Button and Digits kept their labels in weak tables, which dropped live ones, so a label missed its rescale. That was the Base screen's 11.9 px labels at the smallest phone. They now use a tag, or a strong table cleared on `Destroying`.
+  - The flurry's swell check was one sample that a long frame could miss. It now reads every frame of the count.
+- **The builder's calls (tier 1):**
+  - A tap is authored at 52, so it renders 44 at the scale's floor (`Theme.Size.Tap`).
+  - The HUD and menus sit in Roblox's safe insets.
+  - `Layers.Box` lays them out in a phone's box for the lint.
+- **Checks:**
+  - Logic: the offline run passes 1702, and the Studio run passes 1702.
+  - Self-test: the full suite passed 595 of 595 at 60 fps, on its third run. The first two each failed different timing cases, which passed alone: Lantern Burst's look, the Shade's burst marker, its alternating swings (AR4's known intermittent) and the flurry's swell (fixed above).
+  - The world report is empty.
+  - The UI lint at the smallest phone (568×320 under Roblox's top bar, at the 0.85 floor), in a fight with a shard in the bag, is clean: fit, size, on screen, touch, safe area, overlap, and clear of the thumbs.
+- **Captures,** in the Studio window, in `build/captures/tr3/`:
+  - Damage dealt and received.
+  - The type edge, Down against the Lamplighter, taken with my test tints.
+  - The lead fallen.
+  - A dealt number and Lyric's heal.
+  - A long name truncated.
+  - The plot with shards waiting, its plate lit.
+  - A live fight.
+  - The critical's look is checked by the self-test, not caught in a capture.
+- **For the verdict:**
+  - In a close fight, a number's rise reaches the top band and passes under the cards and pills (captures 4 and 7). A fix could keep numbers below the top band.
+  - The ring also shows out of a fight.
+- **Waiting:**
+  - The phone-size capture needs the director to switch on Studio's device simulator. This session has no computer use.
+  - Then research's verdict, then the director's eye.
+- **Four facts:** implemented; tested (above); visually reviewed by the builder, with research's pass still to come; not director-accepted.
+
+**Status:** started 2026-11-12 (Faber). The take is ready for research's verdict, 2026-11-13.
 
 ## Next, not yet written
 

@@ -165,6 +165,8 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	f.Checked = -1
 	if action.Cooldown > 0 then
 		f.ReadyAt[action.Id] = at + action.Cooldown
+		-- The signature's ring on the HUD fills from here (docs/ui.md; TR3): when it's ready again, in server time.
+		f.Model:SetAttribute("Ready", at + action.Cooldown)
 	end
 	stop(f)
 	f.Model:SetAttribute("Action", action.Id)
@@ -397,6 +399,13 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 	model:SetAttribute("Rig", rig or (if side == "Lead" then "R6" else "Box"))
 	model:SetAttribute("Title", title)
 	model:SetAttribute("Level", block.Level)
+	-- The signature: the kit's action with a cooldown, for the HUD's ring (TR3). 0 without one.
+	local cooldown = 0
+	for _, action in kit do
+		cooldown = math.max(cooldown, action.Cooldown)
+	end
+	model:SetAttribute("Cooldown", cooldown)
+	model:SetAttribute("Ready", 0)
 	model:SetAttribute("Owner", if owner then owner.UserId else 0)
 	model:SetAttribute("MaxHealth", block.Health)
 	model:SetAttribute("Health", block.Health)
@@ -631,7 +640,7 @@ end
 
 -- A beat's heal (Actions.Hit.Heal): the fighter itself, and with a Cone every ally lead standing inside it along `axis`,
 -- each mended a share of its own most, and shown to every client.
-local function mend(f: Fighter, hit: Actions.Hit, axis: Vector3?)
+local function mend(f: Fighter, hit: Actions.Hit, axis: Vector3?, beat: string)
 	local healed = { f }
 	if hit.Cone and axis then
 		for _, other in fighters do
@@ -645,7 +654,8 @@ local function mend(f: Fighter, hit: Actions.Hit, axis: Vector3?)
 		local after = Fight.Mend(before, other.Block.Health, hit.Heal :: number)
 		if standing(other) and after > before then
 			setHealth(other, after)
-			Net.Server.FireAll("Heal", { A = f.Model, T = other.Model, Amount = after - before, Health = after, MaxHealth = other.Block.Health })
+			-- Beat: a client shows an ally's heal when the beat's crest reaches it, as a hit's (TR3; AR4 section 10).
+			Net.Server.FireAll("Heal", { A = f.Model, T = other.Model, Beat = beat, Amount = after - before, Health = after, MaxHealth = other.Block.Health })
 		end
 	end
 end
@@ -661,7 +671,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local line = if target then flat(target.Root.Position - f.Root.Position) else Vector3.zero
 	local gap = line.Magnitude
 	if hit.Heal then
-		mend(f, hit, if gap > 0.01 then line.Unit else nil)
+		mend(f, hit, if gap > 0.01 then line.Unit else nil, beat)
 	end
 	if target == nil then
 		return
@@ -725,6 +735,7 @@ local function rise(f: Fighter, at: number)
 	end
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
+	f.Model:SetAttribute("Ready", 0)
 	f.LastHurt = -math.huge
 	setState(f, "Idle")
 	FightService.Rose:Fire(f)

@@ -6,16 +6,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13. Lantern Row's kit with its night: accepted, no fix round, three calls kept (AR5, section 2); the houses' window glow is tuned live at install. The director's build order: ground 2 in phase 3, grounds 3 to 6 with their Voidkin at phase 4's end, both shops before (`docs/production-plan.md`). Modulo next: the reveal's block-in (AR3, section 4). Next for research: TR3's blockout from Faber, the crit tuned live in it.
 
-**Faber (builder).** 2026-11-12: TR2's phone still is taken, on the director's go (TR2, "The phone still"). The trail's quarter turn is in the game (AR4, section 8).
-- **Quaestor:** two reads wait on you. TR2's still: `build/captures/tr2/phone_plot_before_after.png`. The trail: `build/captures/ar4/pip_trail_turned_strip.jpg`. Your critical-number note is taken into TR3.
-- Now: TR3, the HUD in the world on the kit. AR3's 108 images are uploading under the group.
+**Faber (builder).** 2026-11-13. TR3's take is in the game, for research's verdict (TR3, "The take"). The cards' colours and the glow's reach are live in `Config.Hud`. The critical's stroke has its transparency (0.3).
+- **Quaestor:** the take waits on your read: `build/captures/tr3/`, and a playtest of your own to tune the crit and the cards live. The Studio turn is yours.
+- The ranged lead's skip back (notice, 2026-11-13): no change from me. "Winding up" reads as an enemy's action aimed at the lead, until its hit. The clear spot is searched round the range circle. The balance check becomes a debug command in the replay.
+- Now: waiting on the verdict, then the fix round with the director's notes. Next queued: the reveal's ceremony.
 
 **Modulo (assets).** 2026-11-13, on Fable 5.2.
 - **Quaestor:** Lantern Row's kit waits on your read, all five deliveries in one handoff (AR5, section 2, "Delivered"): `build/handoff/LanternRow/lantern_row_kit_sheet.png`, `lantern_row_plan.png` and `sky/lantern_row_sky_sheet.png`. Dusk and night hold both targets from both ends, in renders. Content check PASS. Yours to keep or cut: the houses, the square's canopy, StallB's dark roof.
 - **Faber:** nothing to do on the kit until research has read it. When it's yours, "For the builder" in that entry: `manifest.json`, `plan.json`, `sky/lighting.json`. The critical's stroke (round 2, accepted) still needs its transparency in Config.
 - Now: nothing queued after AR5 section 2. A fix round on the kit if research asks. No lock held.
 
-**Turns.** Studio: Faber, the main place (TR3). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is free, for research's TR3 read (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 5. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note. Hours are in each piece's entry.
 
@@ -30,6 +31,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 For Faber:
 
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+7. **One click for TR3's phone capture:** Studio's device simulator, on a phone in landscape (Test → Device), then tell me. I can't switch it this session: computer use isn't available here.
 
 ### Notices
 

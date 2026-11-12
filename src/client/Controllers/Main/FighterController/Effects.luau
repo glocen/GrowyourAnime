@@ -32,7 +32,12 @@ local Sounds = require(script.Parent.Sounds)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local World = require(UI.World)
+local Layers = require(UI.Layers)
 local Text = require(UI.Kit.Text)
+local Digits = require(UI.Kit.Digits)
+local Hud = require(ReplicatedStorage.Shared.Rules.Hud)
+local HudConfig = require(ReplicatedStorage.Shared.Config.Hud)
+local UIKit = require(ReplicatedStorage.Shared.Config.UIKit)
 
 local Effects = {}
 Effects.TimeScale = 1
@@ -1360,87 +1365,216 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 	end)
 end
 
--- A number over a body: one for each `key` on it, so a flurry (one press's hits) is one counting number and never a wall
--- (docs/ui.md, "Damage numbers"; Config.Combat.Numbers). The first rises over `root`: `prefix` and `amount` in `color`,
--- larger when `big`. Each one after it, while it shows, adds its amount: the number counts up to the new total over
--- Count seconds, swelling Pop times and settling, and its fade starts over. A big one after makes it big from there, in
--- its colour. With `amount` nil it's the word `prefix` (Miss), popped again on a repeat. Drawn on the World layer
--- (UI.World), so a capture shows it; its size is authored at the phone's (UI.Theme.Author) and scales with the layer.
+-- A number over a body (docs/ui.md, "The HUD, in the world"; TR3): one for each `key` on it, so a flurry (one press's
+-- hits) is one counting number and never a wall (Rules.Hud's Count; AR4 section 10, fix 1). Its look is a style of
+-- Config.Hud.Numbers: Dealt, Element (in `colour`), Received, Heal, Critical, or Word (`word`, grey, on a pointer).
+-- Each amount after the first, while it shows, joins it: it counts up to the new total over Combat.Numbers.Count,
+-- swells Pop times and settles, and its fade starts over. A critical after makes it a critical from there. It rises
+-- from the body and is placed clear of the numbers already up (Rules.Hud.Place). Drawn on the World layer (UI.World),
+-- so a capture shows it; sizes are authored at the phone's (UI.Theme.Author) and scale with the layer.
 type Numbers = { Rise: number, Seconds: number, Size: number, Count: number, Pop: number }
+export type NumberLook = { Style: string, Colour: Color3?, Word: string? }
 type Counting = {
 	Age: number,
-	Total: number,
-	From: number, -- what it showed when the last amount came
-	Changed: number, -- its age then, or -inf before any
-	Label: TextLabel,
+	Count: Hud.Count,
+	Plate: Frame,
+	Row: Frame,
+	Sweep: ImageLabel?,
+	Pointer: Frame?,
 	Scale: UIScale,
-	Grown: number, -- 1, or the big size's share once a big one came after it
-	Big: boolean,
+	Style: string,
+	Colour: Color3?,
 	Prefix: string,
-	Word: boolean,
+	Word: string?,
+	Text: string, -- what it shows now
+	Fade: number, -- its transparency now
+	Big: boolean, -- a critical
+	Where: () -> Vector3?,
+	Shift: Vector2,
+	W: number,
+	H: number,
 }
 local counting: { [BasePart]: { [string]: Counting } } = {}
 Effects.Counting = counting -- for the self-test
 
-local BIG = 1.35 -- a critical's or a heavy hit's number, against a plain one
+local GLYPH = 0.72 -- a digit's height, of its text size: the critical's stroke is as tall
 
-local function counted(c: Counting, numbers: Numbers): number
-	local u = if numbers.Count > 0 then easeOut((c.Age - c.Changed) / numbers.Count) else 1
-	return c.From + (c.Total - c.From) * u
+-- A style's look and its size, read from Config at the number's birth, so a Tune shows on the next number.
+local function lookOf(style: string, colour: Color3?): (Digits.Look, number)
+	local config = HudConfig.Numbers
+	if style == "Critical" then
+		local c = config.Critical
+		return { Top = c.Top, Foot = c.Foot, Outline = c.Outline, Weight = c.Weight, Gap = c.Gap, Italic = c.Italic }, c.Size
+	end
+	local s = config.Styles[style] or config.Styles.Dealt
+	return { Colour = colour or s.Colour, Outline = s.Outline, Weight = s.Weight, Gap = s.Gap, Italic = s.Italic }, s.Size
 end
 
-function Effects.Number(root: BasePart, key: string, amount: number?, prefix: string, color: Color3, big: boolean, numbers: Numbers)
+local function textOf(c: Counting, numbers: Numbers): string
+	if c.Word then
+		return c.Word
+	end
+	return c.Prefix .. Hud.Digits(Hud.Shown(c.Count, c.Age, numbers.Count))
+end
+
+-- The critical's stroke behind its digits (CritSweep, round 2; Config.Hud.Numbers.Critical.Sweep).
+local function sweep(c: Counting, size: number, look: Digits.Look)
+	local config = HudConfig.Numbers.Critical.Sweep
+	local w = Digits.Width(c.Text, size, look)
+	local h = config.Height * GLYPH * size
+	local digit = HudConfig.Numbers.Digit * size
+	local image = c.Sweep
+	if image == nil then
+		local made = Instance.new("ImageLabel")
+		made.Name = "Sweep"
+		made.BackgroundTransparency = 1
+		made.Image = UIKit.Images.CritSweep.Id
+		made.ScaleType = Enum.ScaleType.Stretch
+		made.AnchorPoint = Vector2.new(0, 0.5)
+		made.ZIndex = 1
+		made.Parent = c.Plate
+		image = made
+		c.Sweep = made
+	end
+	local s = image :: ImageLabel
+	s.ImageColor3 = config.Tint
+	s.Size = UDim2.fromOffset(math.max(config.Width * w, config.Least * h), h)
+	s.Position = UDim2.new(0.5, -w / 2 - config.Left * digit, 0.5, 0)
+end
+
+local function restyle(c: Counting, numbers: Numbers)
+	local look, share = lookOf(c.Style, c.Colour)
+	local size = numbers.Size * share
+	Digits.Restyle(c.Row, size, look)
+	c.W, c.H = Digits.Width(c.Text, size, look), size * 1.2
+	c.Plate.Size = UDim2.fromOffset(c.W + size, c.H)
+	if c.Style == "Critical" then
+		sweep(c, size, look)
+	end
+end
+
+-- Clear of the numbers already up: each one's box where it stands now, in authored pixels.
+local function place(c: Counting)
+	local camera = workspace.CurrentCamera
+	local scale = Layers.Scale()
+	local at = c.Where()
+	if camera == nil or at == nil or scale <= 0 then
+		return
+	end
+	local function box(other: Counting, point: Vector3): Hud.Box?
+		local v = camera:WorldToViewportPoint(point)
+		if v.Z <= 0 then
+			return nil
+		end
+		return { X = v.X / scale + other.Shift.X, Y = v.Y / scale + other.Shift.Y - other.H / 2, W = other.W, H = other.H }
+	end
+	local want = box(c, at)
+	if want == nil then
+		return
+	end
+	local taken: { Hud.Box } = {}
+	for _, onBody in counting do
+		for _, other in onBody do
+			local point = if other ~= c then other.Where() else nil
+			local b = if point then box(other, point) else nil
+			if b then
+				table.insert(taken, b)
+			end
+		end
+	end
+	local dx, dy = Hud.Place(want, taken, HudConfig.Numbers.Slots)
+	c.Shift = Vector2.new(dx, dy)
+	World.Shift(c.Plate, c.Shift)
+end
+
+function Effects.Number(root: BasePart, key: string, amount: number?, look: NumberLook, numbers: Numbers)
 	local onBody = counting[root] or {}
 	counting[root] = onBody
 	local live = onBody[key]
 	if live then
-		if amount then
-			live.From = counted(live, numbers)
-			live.Total += amount
-		end
-		live.Changed = live.Age
-		if big and not live.Big then
-			live.Big, live.Grown = true, BIG
-			live.Label.TextColor3 = color
+		Hud.Add(live.Count, amount or 0, live.Age, numbers.Count)
+		if look.Style == "Critical" and not live.Big then
+			live.Big, live.Style = true, "Critical"
+			restyle(live, numbers)
 		end
 		return
 	end
-	local spread = (math.random() - 0.5) * 1.2
 	local rise = 0
-	local size = if big then numbers.Size * BIG else numbers.Size
-	local plate = World.Plate("Number", Vector2.new(size * 5, size * 1.6), function(): Vector3?
-		return if root.Parent then root.Position + Vector3.new(spread, 3 + rise, 0) else nil
-	end)
-	local label = Text.new({ Name = "Number", Size = size, Font = Theme.Font.Number, Colour = color, Align = Enum.TextXAlignment.Center, Parent = plate })
-	label.TextStrokeTransparency = 0.2
+	local where = function(): Vector3?
+		return if root.Parent then root.Position + Vector3.new(0, 3 + rise, 0) else nil
+	end
+	local plate = World.Plate("Number", Vector2.new(numbers.Size * 4, numbers.Size * 1.2), where)
 	local scale = Instance.new("UIScale")
 	scale.Parent = plate
+	local first, share = lookOf(look.Style, look.Colour)
 	local c: Counting = {
 		Age = 0,
-		Total = amount or 0,
-		From = amount or 0,
-		Changed = -math.huge,
-		Label = label,
+		Count = Hud.Count(amount or 0),
+		Plate = plate,
+		Row = Digits.new(plate, numbers.Size * share, first),
+		Sweep = nil,
+		Pointer = nil,
 		Scale = scale,
-		Grown = 1,
-		Big = big,
-		Prefix = prefix,
-		Word = amount == nil,
+		Style = look.Style,
+		Colour = look.Colour,
+		Prefix = if look.Style == "Heal" then "+" else "",
+		Word = if amount == nil then (look.Word or "Dodge") else nil,
+		Text = "",
+		Fade = 0,
+		Big = look.Style == "Critical",
+		Where = where,
+		Shift = Vector2.zero,
+		W = 0,
+		H = 0,
 	}
+	c.Text = textOf(c, numbers)
+	Digits.Set(c.Row, c.Text)
+	restyle(c, numbers)
+	if c.Word then
+		-- The word's pointer: a small grey diamond under it, pointing at the body.
+		local pointer = Instance.new("Frame")
+		pointer.Name = "Pointer"
+		local side = HudConfig.Numbers.Pointer
+		pointer.Size = UDim2.fromOffset(side, side)
+		pointer.AnchorPoint = Vector2.new(0.5, 0.5)
+		pointer.Position = UDim2.new(0.5, 0, 1, side * 0.2)
+		pointer.Rotation = 45
+		pointer.BackgroundColor3 = first.Colour or Color3.new(1, 1, 1)
+		pointer.BorderSizePixel = 0
+		pointer.ZIndex = 1
+		pointer.Parent = plate
+		c.Pointer = pointer
+	end
 	onBody[key] = c
+	place(c)
 	local function lay(age: number): boolean
 		c.Age = age
-		local since = age - (if c.Changed > -math.huge then c.Changed else 0) -- its fade runs from the last amount
-		local t = since / numbers.Seconds
-		if t >= 1 then
+		if not Hud.Live(c.Count, age, numbers.Seconds) then
 			return false
 		end
+		local since = age - (if c.Count.Changed > -math.huge then c.Count.Changed else 0)
+		local t = since / numbers.Seconds
 		rise = numbers.Rise * easeOut(age / numbers.Seconds)
-		label.Text = if c.Word then c.Prefix else `{c.Prefix}{math.floor(counted(c, numbers) + 0.5)}`
-		local pop = if numbers.Count > 0 then 1 - easeOut((age - c.Changed) / numbers.Count) else 0
-		scale.Scale = c.Grown * (1 + (numbers.Pop - 1) * pop)
-		label.TextTransparency = math.clamp((t - 0.6) / 0.4, 0, 1)
-		label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
+		local text = textOf(c, numbers)
+		if text ~= c.Text then
+			c.Text = text
+			Digits.Set(c.Row, text)
+			if c.Style == "Critical" then
+				restyle(c, numbers)
+			end
+		end
+		scale.Scale = 1 + (numbers.Pop - 1) * Hud.Swell(c.Count, age, numbers.Count)
+		c.Fade = math.clamp((t - 0.6) / 0.4, 0, 1)
+		Digits.Fade(c.Row, c.Fade)
+		local s = c.Sweep
+		if s then
+			local floor = HudConfig.Numbers.Critical.Sweep.Transparency
+			s.ImageTransparency = floor + (1 - floor) * c.Fade
+		end
+		local pointer = c.Pointer
+		if pointer then
+			pointer.BackgroundTransparency = c.Fade
+		end
 		return true
 	end
 	lay(0)

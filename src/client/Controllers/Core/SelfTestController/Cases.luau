@@ -17,6 +17,8 @@ local TestInput = require(Shared.Util.TestInput)
 local Actions = require(Shared.Definitions.Actions)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
+local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
 local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
@@ -25,6 +27,7 @@ local BaseConfig = require(Shared.Config.Base)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local Drops = require(Shared.Rules.Drops)
+local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
@@ -141,6 +144,10 @@ local function lintClean(t: any, where: string)
 	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))
 	t.Check(`{where}: every label is on screen`, #report.Screen == 0, UiLint.Detail(report.Screen, report.Checked))
 	t.Check(`{where}: no label shows Roblox's default`, #report.Placeholder == 0, UiLint.Detail(report.Placeholder, report.Checked))
+	t.Check(`{where}: every tap is {Theme.Size.Touch} px or more`, #report.Touch == 0, UiLint.Detail(report.Touch, report.Checked))
+	t.Check(`{where}: every piece sits in the safe area`, #report.Safe == 0, UiLint.Detail(report.Safe, report.Checked))
+	t.Check(`{where}: no two pieces of the HUD overlap`, #report.Overlap == 0, UiLint.Detail(report.Overlap, report.Checked))
+	t.Check(`{where}: nothing sits under the thumbs' controls`, #report.Thumbs == 0, UiLint.Detail(report.Thumbs, report.Checked))
 end
 
 -- Walks the avatar into a Festival Door's way from the side it stands on (DOOR_RUN studs out when `close`, else wherever it
@@ -1952,10 +1959,13 @@ return {
 	{
 		Name = "Fight: a flurry is one counting number on each body; it counts up, pops, and fades from its last hit",
 		Run = function(t: any)
-			-- docs/ui.md, "Damage numbers": a flurry merges into one counting number (AR4, section 10, fix 1). On a stand-in body:
-			-- one press's three hits make one number that counts to their whole, swells on each and settles, and fades from the
-			-- last; another press's is its own; a critical after makes it gold and larger; a Miss is one word, popped again.
+			-- docs/ui.md, "Damage numbers"; TR3: a flurry merges into one counting number (AR4, section 10, fix 1). On a stand-in
+			-- body: one press's three hits make one number that counts to their whole, swells on each and settles, and fades from
+			-- the last; another press's is its own; a critical after makes it the critical (larger, cream to gold, in the face's
+			-- italic, its stroke behind it); a dodge is one grey word on its pointer; a heal says its plus; an element's number
+			-- is in the element's colour, a received one in its own; every outline grows with the layer.
 			local numbers = Combat.Numbers
+			local styles = HudConfig.Numbers.Styles
 			local root = Instance.new("Part")
 			root.Name = "HumanoidRootPart"
 			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
@@ -1969,34 +1979,71 @@ return {
 				end
 				return n
 			end
-			Effects.Number(root, "SelfTest@1", 37, "", Theme.Colour.Hit, false, numbers)
-			local one = if counting[root] then counting[root]["SelfTest@1"] else nil
-			t.Check("the first hit's number", one ~= nil and one.Label.Text == "37", if one then one.Label.Text else "none")
+			local function of(key: string)
+				return if counting[root] then counting[root][key] else nil
+			end
+			local function first(key: string): TextLabel?
+				local c = of(key)
+				return if c then c.Row:FindFirstChild("C1") :: TextLabel? else nil
+			end
+			Effects.Number(root, "SelfTest@1", 37, { Style = "Dealt" }, numbers)
+			local one = of("SelfTest@1")
+			t.Check("the first hit's number", one ~= nil and one.Text == "37" and one.Row:GetAttribute("Text") == "37", if one then one.Text else "none")
 			if one == nil then
 				root:Destroy()
 				return
 			end
+			local c1 = first("SelfTest@1")
+			local stroke = if c1 then c1:FindFirstChildOfClass("UIStroke") else nil
+			t.Check("in the plain hit's colour", c1 ~= nil and c1.TextColor3 == styles.Dealt.Colour, if c1 then tostring(c1.TextColor3) else "no digit")
+			t.Near("its outline grows with the layer", if stroke then stroke.Thickness else 0, styles.Dealt.Weight * Layers.Scale(), 0.01)
 			t.Near("unswollen", one.Scale.Scale, 1, 0.001)
 			t.Wait(numbers.Seconds * 0.5)
-			Effects.Number(root, "SelfTest@1", 37, "", Theme.Colour.Hit, false, numbers)
-			Effects.Number(root, "SelfTest@1", 40, "", Theme.Colour.Hit, false, numbers)
-			t.Check("the press's next hits join it", keys() == 1 and one.Total == 114, `{keys()} numbers, {one.Total}`)
-			t.Wait(1 / 30)
-			t.Check("it swells as it counts", one.Scale.Scale > 1.02, string.format("%.3f", one.Scale.Scale))
+			-- The swell lasts the count, so it's read off every frame drawn over it: one sample could land past it after a
+			-- long frame in the full suite.
+			local swell = 1
+			local watch = RunService.RenderStepped:Connect(function()
+				swell = math.max(swell, one.Scale.Scale)
+			end)
+			Effects.Number(root, "SelfTest@1", 37, { Style = "Dealt" }, numbers)
+			Effects.Number(root, "SelfTest@1", 40, { Style = "Dealt" }, numbers)
+			t.Check("the press's next hits join it", keys() == 1 and one.Count.Total == 114, `{keys()} numbers, {one.Count.Total}`)
 			t.Wait(numbers.Count + 0.05)
-			t.Check("counted up to the whole", one.Label.Text == "114", one.Label.Text)
+			watch:Disconnect()
+			t.Check("it swells as it counts", swell > 1.02, string.format("%.3f at most", swell))
+			t.Check("counted up to the whole", one.Text == "114" and one.Row:GetAttribute("Text") == "114", one.Text)
 			t.Near("and settled", one.Scale.Scale, 1, 0.001)
-			t.Check("its fade starts over from the last hit", one.Label.TextTransparency < 0.05, string.format("%.2f", one.Label.TextTransparency))
-			Effects.Number(root, "SelfTest@2", 9, "", Theme.Colour.Hit, false, numbers)
+			t.Check("its fade starts over from the last hit", one.Fade < 0.05, string.format("%.2f", one.Fade))
+			Effects.Number(root, "SelfTest@2", 9, { Style = "Dealt" }, numbers)
 			t.Check("another press is its own number", keys() == 2)
-			Effects.Number(root, "SelfTest@1", 50, "", Theme.Colour.Critical, true, numbers)
-			t.Check("a critical after turns it gold and larger", one.Big and one.Label.TextColor3 == Theme.Colour.Critical)
+			Effects.Number(root, "SelfTest@1", 50, { Style = "Critical" }, numbers)
+			local critical = HudConfig.Numbers.Critical
+			c1 = first("SelfTest@1")
+			local gradient = if c1 then c1:FindFirstChildOfClass("UIGradient") else nil
+			t.Check("a critical after makes it the critical, its stroke behind", one.Style == "Critical" and one.Big and one.Sweep ~= nil, `{one.Style}, sweep {one.Sweep ~= nil}`)
+			t.Near("larger by the critical's size", one.Row:GetAttribute("Size") :: number, numbers.Size * critical.Size, 0.01)
+			t.Check("cream to gold, head to foot", gradient ~= nil and gradient.Color.Keypoints[1].Value == critical.Top and gradient.Color.Keypoints[#gradient.Color.Keypoints].Value == critical.Foot)
+			t.Check("in the face's italic, or upright as Config says", c1 ~= nil and (c1.FontFace.Style == Enum.FontStyle.Italic) == critical.Italic)
 			t.Wait(numbers.Count + 0.05)
-			t.Near("larger, settled", one.Scale.Scale, 1.35, 0.001)
-			Effects.Number(root, "SelfTest:miss", nil, "Miss", Theme.Colour.Dodge, false, numbers)
-			Effects.Number(root, "SelfTest:miss", nil, "Miss", Theme.Colour.Dodge, false, numbers)
-			local miss = if counting[root] then counting[root]["SelfTest:miss"] else nil
-			t.Check("a Miss is one word", keys() == 3 and miss ~= nil and miss.Label.Text == "Miss")
+			t.Near("settled", one.Scale.Scale, 1, 0.001)
+			local sweep = one.Sweep
+			t.Near("its stroke as clear as Config says", if sweep then sweep.ImageTransparency else 1, critical.Sweep.Transparency, 0.02)
+			t.Check("in Config's tint", sweep ~= nil and sweep.ImageColor3 == critical.Sweep.Tint)
+			Effects.Number(root, "SelfTest:word", nil, { Style = "Word", Word = "Dodge" }, numbers)
+			Effects.Number(root, "SelfTest:word", nil, { Style = "Word", Word = "Dodge" }, numbers)
+			local word = of("SelfTest:word")
+			t.Check("a dodge is one grey word on its pointer", keys() == 3 and word ~= nil and word.Text == "Dodge" and word.Pointer ~= nil, if word then word.Text else "none")
+			Effects.Number(root, "SelfTest:heal", 12, { Style = "Heal" }, numbers)
+			local heal = of("SelfTest:heal")
+			t.Check("a heal says its plus", heal ~= nil and heal.Text == "+12", if heal then heal.Text else "none")
+			local element, colour = "Fire", UIKit.Elements.Fire
+			Effects.Number(root, "SelfTest@1:element", 8, { Style = "Element", Colour = colour }, numbers)
+			local tinted = first("SelfTest@1:element")
+			t.Check(`an element's number in its colour ({element})`, tinted ~= nil and tinted.TextColor3 == colour)
+			Effects.Number(root, "SelfTest:mine", 20, { Style = "Received" }, numbers)
+			local mine = first("SelfTest:mine")
+			t.Check("a received number in its own colour", mine ~= nil and mine.TextColor3 == styles.Received.Colour)
+			t.Check("six numbers up at once", keys() == 6, `{keys()}`)
 			t.Wait(numbers.Seconds + 0.1)
 			t.Check("all gone a fade after their last", counting[root] == nil, `{keys()} left`)
 			root:Destroy()
@@ -2054,19 +2101,21 @@ return {
 			local healed = 0
 			local watch = RunService.RenderStepped:Connect(function()
 				for root, keyed in Effects.Counting do
-					local here, healsHere = 0, 0
+					local here, healsHere, whole = 0, 0, 0
 					for key, number in keyed do
 						if string.sub(key, 1, #prefix) == prefix then
-							here += 1
-							counted[root] = math.max(counted[root] or 0, number.Total)
+							-- the press's number, and its element's a beat behind it: together the hits' whole (TR3)
+							here += if string.find(key, ":", #prefix, true) then 0 else 1
+							whole += number.Count.Total
 							if came[root] == nil then
 								came[root] = root:FindFirstChild("NL_Effect") ~= nil
 							end
 						elseif string.sub(key, 1, #healPrefix) == healPrefix then
 							healsHere += 1
-							healed = math.max(healed, number.Total)
+							healed = math.max(healed, number.Count.Total)
 						end
 					end
+					counted[root] = math.max(counted[root] or 0, whole)
 					mostAtOnce = math.max(mostAtOnce, here)
 					mostHealsAtOnce = math.max(mostHealsAtOnce, healsHere)
 				end
@@ -2251,6 +2300,67 @@ return {
 		end,
 	},
 	{
+		Name = "Kit: a button shows its states, says why it's disabled, and refuses a second press while it waits",
+		Run = function(t: any)
+			-- docs/ui.md, "Components"; TR3, part 1: rest, selected, disabled with its reason (never a bare grey), waiting on the
+			-- server (its light running round, three dots, a second press refused), succeeded with its tick or failed on the
+			-- answer, then back; a press that answers nothing goes back to rest. Pressed is a held touch: the capture shows it.
+			local answer: boolean? = nil
+			local release = Instance.new("BindableEvent")
+			local presses = 0
+			local button = Button.new({
+				Name = "SelfTestButton",
+				Text = "Lead",
+				Size = UDim2.fromOffset(120, Theme.Size.Tap),
+				Parent = Layers.Get("Hud"),
+				OnPress = function()
+					presses += 1
+					release.Event:Wait()
+					return answer
+				end,
+			})
+			local label = button:FindFirstChild("Label", true) :: TextLabel?
+			local tick = button:FindFirstChild("Tick", true) :: GuiObject?
+			local function now(want: string): boolean
+				return waitFor(t, 0.5, function(): boolean
+					return Button.State(button) == want
+				end)
+			end
+			t.Check("at rest", Button.State(button) == "Rest", Button.State(button))
+			Button.Set(button, { Selected = true })
+			t.Check("selected", Button.State(button) == "Selected", Button.State(button))
+			Button.Set(button, { Selected = false, Disabled = "Leading" })
+			t.Check("disabled", Button.State(button) == "Disabled", Button.State(button))
+			t.Check("saying why", label ~= nil and label.Text == Hud.Says("Lead", "Leading", false), if label then label.Text else "no label")
+			t.Check("and a press is refused", not Button.Press(button) and presses == 0)
+			Button.Set(button, { Disabled = false })
+			t.Check("enabled again, its label back", Button.State(button) == "Rest" and label ~= nil and label.Text == "Lead")
+			answer = true
+			t.Check("a press is taken", Button.Press(button))
+			t.Check("waiting on the answer, its dots for its label", now("Waiting") and label ~= nil and not label.Visible)
+			t.Check("a second press is refused while it waits", not Button.Press(button) and presses == 1, `{presses} presses`)
+			release:Fire()
+			t.Check("succeeded on a yes, with its tick", now("Succeeded") and tick ~= nil and tick.Visible)
+			t.Check("then back at rest", waitFor(t, Button.FlashSeconds + 0.3, function(): boolean
+				return Button.State(button) == "Rest"
+			end))
+			answer = false
+			Button.Press(button)
+			t.Wait(0.05)
+			release:Fire()
+			t.Check("failed on a no", now("Failed"), Button.State(button))
+			t.Wait(Button.FlashSeconds + 0.1)
+			answer = nil
+			Button.Press(button)
+			t.Wait(0.05)
+			release:Fire()
+			t.Wait(0.05)
+			t.Check("a press that answers nothing goes back to rest, no flash", Button.State(button) == "Rest", Button.State(button))
+			button:Destroy()
+			release:Destroy()
+		end,
+	},
+	{
 		Name = "HUD: the lead's card reads the lead in the fight, the pills read the save",
 		Run = function(t: any)
 			t.Wait(LEAD_SETTLE)
@@ -2264,11 +2374,16 @@ return {
 			t.Check("the lead's card shows", parts.Lead.Visible)
 			local name, level = (parts.LeadName :: TextLabel).Text, (parts.LeadLevel :: TextLabel).Text
 			t.Check("with the lead's name", name == lead:GetAttribute("Title"), name)
-			t.Check("and its level", level == `Lv {lead:GetAttribute("Level")}`, level)
+			t.Check("and its level, on the badge", level == tostring(lead:GetAttribute("Level")), level)
 			local health, most = lead:GetAttribute("Health") :: number, lead:GetAttribute("MaxHealth") :: number
 			t.Near("its health bar is its share of health", parts.LeadHealth:GetAttribute("Share") :: number, health / most, 0.01)
+			local inside = (parts.LeadHealthText :: TextLabel).Text
+			t.Check("with its health and its most inside", inside == Hud.Health(health, most), inside)
+			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
+			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
+			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)
 			local credits = (parts.Credits :: TextLabel).Text
-			t.Check("the Credits pill shows the save's", credits == `Credits {Read.Number(view.Currency.Credits)}`, credits)
+			t.Check("the Credits pill shows the save's", credits == Read.Number(view.Currency.Credits), credits)
 			t.Wait(PLATE_TICK)
 			local shown = (parts.Electricity :: TextLabel).Text
 			local digits = string.gsub(shown:match("^([%d,%.]+) /") or "", ",", "")
@@ -2330,10 +2445,104 @@ return {
 			t.Check("the target's card shows when the lead takes the Shade on", met)
 			local foe = (parts.TargetName :: TextLabel).Text
 			t.Check("with the Shade's name", foe == Enemies.ById.brawler.Name, foe)
+			-- TR3, part 3: its type's gem, and the type edge's arrow up or down before the first hit (Rules.Hud.Arrow).
+			local theirs = Enemies.ById.brawler.Type
+			local mine = Voidkin.ById[lead:GetAttribute("Def") :: string]
+			local way = Hud.Arrow(if mine then mine.Type else "", theirs)
+			local arrow = parts.TargetArrow
+			t.Check("its type's gem", parts.TargetGem:GetAttribute("Kit") == `Gem{theirs}`, `{parts.TargetGem:GetAttribute("Kit")}`)
+			t.Check(`the type edge's arrow ({if way == "" then "even: none" else way})`, arrow:GetAttribute("Way") == way and arrow.Visible == (way ~= ""), `{arrow:GetAttribute("Way")}, shown {arrow.Visible}`)
 			t.Server("FightSpawn") -- clears it
 			t.Check("and hides once it's gone", waitFor(t, 2, function(): boolean
 				return not parts.Target.Visible
 			end))
+		end,
+	},
+	{
+		Name = "HUD: in a fight with a shard in the bag, on the smallest phone, every piece fits, apart and in the safe area",
+		Run = function(t: any)
+			-- TR3's check: the UI lint at the smallest phone's scale (docs/ui.md, rule 1). The lead's card, the target's, both
+			-- pills, the ring, the chip and the dock all showing at once, laid out in this window's safe area and then in the
+			-- smallest phone's (Theme.Smallest under Roblox's top bar, at the scale's floor).
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if lead == nil or type(level) ~= "number" then
+				return
+			end
+			local parts = HudController.Parts()
+			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
+			local gave = t.Server("BaseGive", "named_watt", 1)
+			local shown = waitFor(t, SHADE_TIMEOUT, function(): boolean
+				return parts.Target.Visible and parts.Chip.Visible
+			end)
+			t.Check("a fight, and a shard in the bag", type(spawned) == "table" and spawned.Ok == true and shown)
+			local top = GuiService.TopbarInset.Height
+			local sizes = {
+				{ Name = "this window", Scale = nil :: number?, Box = nil :: Vector2? },
+				{ Name = "the smallest phone", Scale = Theme.Scale.Floor, Box = Theme.Smallest - Vector2.new(0, top) },
+			}
+			for _, at in sizes do
+				Layers.Force(at.Scale)
+				Layers.Box(at.Box)
+				t.Wait(0.1) -- laid out again
+				lintClean(t, `the HUD in a fight, in {at.Name}`)
+			end
+			Layers.Box(nil)
+			Layers.Force(nil)
+			t.Server("FightSpawn") -- clears it
+			if type(gave) == "table" and gave.Ok == true then
+				t.Server("BaseGive", "named_watt", -1)
+			end
+		end,
+	},
+	{
+		Name = "HUD: the signature's ring empties and flashes when it fires, and fills over its cooldown",
+		Run = function(t: any)
+			-- TR3, part 5: at the right edge, low. The server says when the signature is ready again (FightService, Ready);
+			-- the ring flashes the moment it fires, then fills with the cooldown, the class's glyph in its middle.
+			t.Wait(LEAD_SETTLE)
+			local lead = myLead()
+			local def = if lead then lead:GetAttribute("Def") else nil
+			local signature: Actions.Action? = nil
+			for _, action in Actions.KitOf(if type(def) == "string" then def else "") do
+				if action.Cooldown > 0 then
+					signature = action
+				end
+			end
+			local ring = HudController.Parts().Signature
+			if lead == nil or signature == nil then
+				t.Check("a lead without a signature has no ring", lead ~= nil and not ring.Visible)
+				return
+			end
+			local action = signature :: Actions.Action
+			t.Check("the ring shows for a lead with a signature", ring.Visible)
+			local row = Voidkin.ById[def :: string]
+			local glyph = ring:FindFirstChild("Glyph")
+			t.Check("with its class's glyph", row ~= nil and glyph ~= nil and glyph:GetAttribute("Kit") == `Class{row.Class}Glyph`, if glyph then `{glyph:GetAttribute("Kit")}` else "no glyph")
+			local flash = 0
+			local watch = RunService.RenderStepped:Connect(function()
+				flash = math.max(flash, (ring:GetAttribute("Flash") :: number?) or 0)
+			end)
+			local ready = (lead:GetAttribute("Ready") :: number?) or 0
+			local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE)
+			t.Check("the replay starts", type(started) == "table" and started.Ok == true)
+			local fired = waitFor(t, 3, function(): boolean
+				local now = lead:GetAttribute("Ready")
+				return type(now) == "number" and now > ready + 1e-3
+			end)
+			t.Check("the server says when it's ready again", fired)
+			t.Wait(2 / 60)
+			local first = (ring:GetAttribute("Share") :: number?) or 1
+			local at = os.clock()
+			t.Check("it empties as it fires", first < 0.1, string.format("%.3f", first))
+			t.Wait(2)
+			local second = (ring:GetAttribute("Share") :: number?) or 0
+			watch:Disconnect()
+			t.Check("it flashed when it fired", flash > 0.5, string.format("%.2f", flash))
+			t.Near("it fills with the cooldown", second - first, (os.clock() - at) / action.Cooldown, 0.03)
+			t.Server("Replay")
+			t.Wait(0.3)
 		end,
 	},
 	{
@@ -2343,15 +2552,14 @@ return {
 			-- Home is the server's respawn and the field is the test pad: a far marker isn't streamed in to this client.
 			local hud = HudController.Parts()
 			-- The plates are laid again with the world, so the Breaker's may be on its way back.
-			local plate, panel, stroke = nil :: Instance?, nil :: Instance?, nil :: UIStroke?
+			local plate, panel = nil :: Instance?, nil :: Instance?
 			waitFor(t, ANSWER, function(): boolean
 				plate = BaseController.Parts().BreakerPlate
 				panel = if plate then plate:FindFirstChild("Panel") else nil
-				stroke = if panel then panel:FindFirstChildOfClass("UIStroke") else nil
-				return stroke ~= nil
+				return panel ~= nil
 			end)
-			t.Check("the Breaker's plate", stroke ~= nil, `plate {plate ~= nil}, panel {panel ~= nil}, edge {stroke ~= nil}`)
-			if not stroke then
+			t.Check("the Breaker's plate", panel ~= nil, `plate {plate ~= nil}, panel {panel ~= nil}`)
+			if not panel then
 				return
 			end
 			local function held(): number
@@ -2377,7 +2585,7 @@ return {
 			end))
 			t.Wait(PLATE_TICK * 2)
 			t.Check("at home, the chip says into the Breaker", hud.Chip.Visible and string.find(text.Text, "into the Breaker", 1, true) ~= nil, text.Text)
-			t.Check("and the Breaker's plate is lit", stroke.Color == Theme.Colour.Ready, tostring(stroke.Color))
+			t.Check("and the Breaker's plate is lit", panel:GetAttribute("Lit") == true) -- its edge bold in the accent (Panel.Lit)
 			t.Reset() -- the test pad, off the plot
 			t.Wait(PLATE_TICK * 2)
 			t.Check("in the field, break it at home", hud.Chip.Visible and string.find(text.Text, "at home", 1, true) ~= nil and string.find(text.Text, "Breaker", 1, true) == nil, text.Text)
@@ -2390,7 +2598,7 @@ return {
 				t.Check("an empty bag: no chip", not hud.Chip.Visible, text.Text)
 				local view = ProfileController.Get()
 				if view and #view.Base.Ready == 0 then -- a shard waiting to open lights it too
-					t.Check("and the plate unlit", stroke.Color == Theme.Colour.Line, tostring(stroke.Color))
+					t.Check("and the plate unlit", panel:GetAttribute("Lit") ~= true)
 				end
 			end
 		end,
@@ -2493,8 +2701,7 @@ return {
 			end
 			local function lit(name: string): boolean
 				local panel = plateOf(name):FindFirstChild("Panel")
-				local stroke = if panel then panel:FindFirstChildOfClass("UIStroke") else nil
-				return stroke ~= nil and stroke.Color == Theme.Colour.Ready
+				return panel ~= nil and panel:GetAttribute("Lit") == true -- its edge bold in the accent (Panel.Lit)
 			end
 			-- What the save says each spot has to do: a shard to put in or open, a bay a free Voidkin could take.
 			local function news(): { [string]: boolean }
@@ -2742,10 +2949,16 @@ return {
 				t.Check(`the world's layer hides while {name} is open`, waitFor(t, 0.5, function(): boolean
 					return not layer.Visible
 				end))
+				t.Check(`the dock's {name} is selected while it's open`, waitFor(t, 0.5, function(): boolean
+					return Button.State(hud[name] :: TextButton) == "Selected"
+				end), Button.State(hud[name] :: TextButton))
 				Screen.Close()
 				t.Check(`and shows again once {name} closes`, waitFor(t, 0.5, function(): boolean
 					return layer.Visible
 				end))
+				t.Check(`and the dock's {name} is back at rest`, waitFor(t, 0.5, function(): boolean
+					return Button.State(hud[name] :: TextButton) == "Rest"
+				end), Button.State(hud[name] :: TextButton))
 			end
 		end,
 	},

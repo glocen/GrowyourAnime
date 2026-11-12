@@ -154,7 +154,7 @@ local function plate(name: string, anchor: Part, lines: number, width: number, s
 	end, REACH)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
 	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
-	Panel.Pad(panel, 4)
+	Panel.Pad(panel, 4, 10) -- clear of the panel's cut corner and its lit edge at the sides (TR3's take)
 	Panel.List(panel, nil, 0)
 	for index = 1, lines do
 		local label = Text.new({ Name = `Line{index}`, Size = Theme.Text.Caption, Truncate = true, Box = UDim2.new(1, 0, 0, PLATE_LINE), Parent = panel })

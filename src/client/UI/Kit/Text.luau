@@ -3,6 +3,8 @@
 -- at its authored size, or larger when the layer's scale would take it under Theme.Text.Minimum rendered
 -- (handbook/visuals/ui.md, "Scale across devices"). The UI lint reads Text.Legible to check it.
 
+local CollectionService = game:GetService("CollectionService")
+
 local Theme = require(script.Parent.Parent.Theme)
 local Layers = require(script.Parent.Parent.Layers)
 
@@ -24,7 +26,9 @@ local Text = {}
 
 local AUTHORED = "NL_TextSize" -- the attribute holding a label's authored size
 
-local labels: { [TextLabel]: boolean } = setmetatable({}, { __mode = "k" }) :: any
+-- Every label the kit made, by a tag: a weak table keyed by an instance loses it once no script holds its wrapper, though
+-- the label lives on, and a row's second line then missed a rescale (TR3's lint at the smallest phone).
+local TAG = "NL_Text"
 
 -- The size a label authored at `authored` draws at, at `scale`.
 function Text.Legible(authored: number, scale: number): number
@@ -54,7 +58,7 @@ function Text.new(props: Props): TextLabel
 	label.AnchorPoint = props.AnchorPoint or Vector2.zero
 	label:SetAttribute(AUTHORED, props.Size or Theme.Text.Body)
 	apply(label, Layers.Scale())
-	labels[label] = true
+	CollectionService:AddTag(label, TAG)
 	label.Parent = props.Parent
 	return label
 end
@@ -66,8 +70,10 @@ function Text.Authored(label: TextLabel): number?
 end
 
 Layers.Changed:Connect(function(scale: number)
-	for label in labels do
-		apply(label, scale)
+	for _, label in CollectionService:GetTagged(TAG) do
+		if label:IsA("TextLabel") then
+			apply(label, scale)
+		end
 	end
 end)
 

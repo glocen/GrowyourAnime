@@ -12,18 +12,12 @@ local Shards = require(Shared.Definitions.Shards)
 local Grounds = require(Shared.Definitions.Grounds)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
+local Hud = require(Shared.Rules.Hud)
 
 local Read = {}
 
--- "2,357"
-function Read.Number(n: number): string
-	local whole = tostring(math.floor(math.abs(n) + 0.5))
-	local grouped = whole:reverse():gsub("(%d%d%d)", "%1,"):reverse()
-	if grouped:sub(1, 1) == "," then
-		grouped = grouped:sub(2)
-	end
-	return if n < 0 then "-" .. grouped else grouped
-end
+-- "2,357" (Shared.Rules.Hud: one home for how the HUD writes a number)
+Read.Number = Hud.Digits
 
 -- Electricity stored: a tenth shown below 100, so a new battery visibly counts up (research's verdict on TR2,
 -- 2026-11-12: "it must visibly count up"; at a bay's +3.0/min the tenth turns every 2 s): "0.4", "86.2", "2,357".

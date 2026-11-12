@@ -7,6 +7,7 @@
 --   Layers.Get("Hud")      the layer's root frame, made on first use
 --   Layers.Scale()         the scale every layer draws at now
 --   Layers.Changed         (scale) after a refit
+--   Layers.Force(scale?), Layers.Box(size?)   for tests: a phone's scale and its box
 
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
@@ -32,6 +33,14 @@ local roots: { [string]: Frame } = {}
 local scales: { UIScale } = {}
 local scale = 1
 local forced: number? = nil -- a test's scale, in place of the screen's
+local boxed: Vector2? = nil -- a test's phone, in rendered pixels: the inset layers laid out in it
+local INSET: { [string]: boolean } = { Hud = true, Menus = true } -- kept clear of Roblox's top bar and the notch
+
+-- An inset layer's root fills its safe area, or a test's phone box from the safe area's top left.
+local function size(name: string, root: Frame)
+	local box = if INSET[name] then boxed else nil
+	root.Size = if box then UDim2.fromOffset(box.X / scale, box.Y / scale) else UDim2.fromScale(1, 1)
+end
 
 local function fit(): number
 	if forced then
@@ -52,6 +61,9 @@ local function refit()
 	for _, s in scales do
 		s.Scale = scale
 	end
+	for name, root in roots do
+		size(name, root)
+	end
 	Layers.Changed:Fire(scale)
 end
 
@@ -65,6 +77,15 @@ function Layers.Force(value: number?)
 	refit()
 end
 
+-- For tests: the HUD and the screens laid out in a phone's safe area of `box` rendered pixels, from the window's safe top
+-- left, or in the whole window again (nil). With Force(Theme.Scale.Floor) and Theme.Smallest, the smallest phone.
+function Layers.Box(box: Vector2?)
+	boxed = box
+	for name, root in roots do
+		size(name, root)
+	end
+end
+
 function Layers.Get(name: Name): Frame
 	local root = roots[name]
 	if root then
@@ -75,7 +96,7 @@ function Layers.Get(name: Name): Frame
 	gui.ResetOnSpawn = false
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	gui.DisplayOrder = ORDER[name]
-	local inset = name == "Hud" or name == "Menus"
+	local inset = INSET[name] == true
 	gui.IgnoreGuiInset = not inset
 	gui.ScreenInsets = if inset then Enum.ScreenInsets.CoreUISafeInsets else Enum.ScreenInsets.None
 	local uiScale = Instance.new("UIScale")
@@ -85,7 +106,7 @@ function Layers.Get(name: Name): Frame
 	local frame = Instance.new("Frame")
 	frame.Name = "Root"
 	frame.BackgroundTransparency = 1
-	frame.Size = UDim2.fromScale(1, 1)
+	size(name, frame)
 	frame.Parent = gui
 	gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 	roots[name] = frame

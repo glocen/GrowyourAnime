@@ -17,7 +17,8 @@ local Signal = require(game:GetService("ReplicatedStorage").Shared.Util.Signal)
 local Screen = {}
 Screen.Closed = Signal.new() -- (name)
 
-local TITLE = 32 -- authored height of the title row
+local TITLE = 32 -- authored height of the title's line
+local HEAD = Theme.Size.Tap + Theme.Size.Pad -- the head row: the close button, a tap high, and half a pad over and under
 local MARGIN = 8 -- authored pixels kept between a screen and the edge of its room
 
 -- As large as authored, or as the room allows.
@@ -74,7 +75,7 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 		Size = Theme.Text.Title,
 		Font = Theme.Font.Strong,
 		Box = UDim2.new(1, -(Theme.Size.Pad * 3 + 72), 0, TITLE),
-		Position = UDim2.fromOffset(Theme.Size.Pad * 2, Theme.Size.Pad),
+		Position = UDim2.fromOffset(Theme.Size.Pad * 2, (HEAD - TITLE) / 2),
 		Parent = frame,
 	})
 	heading.Text = title
@@ -90,8 +91,8 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 	local body = Instance.new("Frame")
 	body.Name = "Body"
 	body.BackgroundTransparency = 1
-	body.Position = UDim2.fromOffset(Theme.Size.Pad * 2, TITLE + Theme.Size.Pad * 2)
-	body.Size = UDim2.new(1, -Theme.Size.Pad * 4, 1, -(TITLE + Theme.Size.Pad * 3))
+	body.Position = UDim2.fromOffset(Theme.Size.Pad * 2, HEAD)
+	body.Size = UDim2.new(1, -Theme.Size.Pad * 4, 1, -(HEAD + Theme.Size.Pad))
 	body.Parent = frame
 	open = { Name = name, Frame = frame }
 	return body

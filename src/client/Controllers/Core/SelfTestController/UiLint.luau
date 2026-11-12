@@ -8,6 +8,12 @@
 --     a label a scrolling list (or any clipping frame) hides entirely isn't drawn, so isn't checked, and one it cuts
 --     is checked by the part it shows;
 --   it doesn't show Roblox's default "Label".
+-- And for what the player touches and reads around the world (docs/ui.md, rule 1; TR3):
+--   every button that takes a tap is Theme.Size.Touch or more on its least side, rendered;
+--   each piece of the HUD and of an open screen lies inside its layer's safe area (Layers: clear of Roblox's top bar and
+--     the notch; a test's phone box when one is set);
+--   no two pieces of the HUD overlap;
+--   none sits under the thumbs' controls (Roblox's jump button and fixed thumbstick, on a touch screen).
 
 local Players = game:GetService("Players")
 
@@ -16,13 +22,51 @@ local Theme = require(UI.Theme)
 
 local OURS = "NL_"
 local WORLD = "NL_World"
+local HUD = "NL_Hud"
+local INSET: { [string]: boolean } = { NL_Hud = true, NL_Menus = true } -- laid out inside the safe area (Layers)
+local THUMBS: { [string]: boolean } = { JumpButton = true, ThumbstickFrame = true } -- Roblox's touch controls, by name
 local TOLERANCE = 1 -- pixels
 local FIT_TOLERANCE = 2 -- pixels a line box may overrun its frame
 local PLACEHOLDER = "Label"
 
 local UiLint = {}
 
-export type Report = { Checked: number, Fit: { string }, Size: { string }, Screen: { string }, Placeholder: { string } }
+export type Report = {
+	Checked: number,
+	Fit: { string },
+	Size: { string },
+	Screen: { string },
+	Placeholder: { string },
+	Touch: { string },
+	Safe: { string },
+	Overlap: { string },
+	Thumbs: { string },
+}
+
+-- Whether a piece draws: visible all the way up to its container, and that container enabled.
+local function up(object: GuiObject): boolean
+	local node: Instance? = object
+	while node and not node:IsA("LayerCollector") do
+		if node:IsA("GuiObject") and not node.Visible then
+			return false
+		end
+		node = node.Parent
+	end
+	return node ~= nil and (node :: LayerCollector).Enabled
+end
+
+local function overlaps(a: GuiObject, b: GuiObject): boolean
+	local aLow, aHigh = a.AbsolutePosition, a.AbsolutePosition + a.AbsoluteSize
+	local bLow, bHigh = b.AbsolutePosition, b.AbsolutePosition + b.AbsoluteSize
+	return math.min(aHigh.X, bHigh.X) - math.max(aLow.X, bLow.X) > TOLERANCE
+		and math.min(aHigh.Y, bHigh.Y) - math.max(aLow.Y, bLow.Y) > TOLERANCE
+end
+
+local function inside(piece: GuiObject, area: GuiObject): boolean
+	local low, high = piece.AbsolutePosition, piece.AbsolutePosition + piece.AbsoluteSize
+	local top, bottom = area.AbsolutePosition, area.AbsolutePosition + area.AbsoluteSize
+	return low.X >= top.X - TOLERANCE and low.Y >= top.Y - TOLERANCE and high.X <= bottom.X + TOLERANCE and high.Y <= bottom.Y + TOLERANCE
+end
 
 -- Whether a label actually draws: visible all the way up, in an enabled container of ours, not faded out.
 local function shown(object: TextLabel): boolean
@@ -87,8 +131,59 @@ local function short(object: Instance): string
 end
 
 function UiLint.Run(): Report
-	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {} }
+	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {} }
 	local gui = Players.LocalPlayer:WaitForChild("PlayerGui")
+	-- The taps: every button the player can press now.
+	for _, object in gui:GetDescendants() do
+		if object:IsA("GuiButton") and object.Active and up(object) then
+			local screen = object:FindFirstAncestorOfClass("ScreenGui")
+			if screen and screen.Name ~= WORLD and string.sub(screen.Name, 1, #OURS) == OURS then
+				local side = math.min(object.AbsoluteSize.X, object.AbsoluteSize.Y)
+				if side < Theme.Size.Touch - 0.5 then
+					table.insert(report.Touch, `{short(object)} ({math.floor(object.AbsoluteSize.X)}x{math.floor(object.AbsoluteSize.Y)} < {Theme.Size.Touch})`)
+				end
+			end
+		end
+	end
+	-- The pieces: each top-level piece of an inset layer, inside its safe area; the HUD's apart and clear of the thumbs.
+	local thumbs: { GuiObject } = {}
+	local touch = gui:FindFirstChild("TouchGui")
+	if touch and touch:IsA("ScreenGui") and touch.Enabled then
+		for _, control in touch:GetDescendants() do
+			if control:IsA("GuiObject") and THUMBS[control.Name] and up(control) then
+				table.insert(thumbs, control)
+			end
+		end
+	end
+	for _, screen in gui:GetChildren() do
+		local root = if INSET[screen.Name] and screen:IsA("ScreenGui") and screen.Enabled then screen:FindFirstChild("Root") else nil
+		if root == nil or not root:IsA("GuiObject") then
+			continue
+		end
+		local pieces: { GuiObject } = {}
+		for _, piece in root:GetChildren() do
+			if piece:IsA("GuiObject") and piece.Visible then
+				table.insert(pieces, piece)
+				if not inside(piece, root) then
+					table.insert(report.Safe, short(piece))
+				end
+			end
+		end
+		if screen.Name == HUD then
+			for i = 1, #pieces do
+				for j = i + 1, #pieces do
+					if overlaps(pieces[i], pieces[j]) then
+						table.insert(report.Overlap, `{pieces[i].Name} and {pieces[j].Name}`)
+					end
+				end
+				for _, control in thumbs do
+					if overlaps(pieces[i], control) then
+						table.insert(report.Thumbs, `{pieces[i].Name} under {control.Name}`)
+					end
+				end
+			end
+		end
+	end
 	for _, object in gui:GetDescendants() do
 		if not object:IsA("TextLabel") or not shown(object) then
 			continue
@@ -115,9 +210,11 @@ function UiLint.Run(): Report
 				table.insert(report.Size, `{name} ({string.format("%.1f", rendered)} px < {Theme.Text.Minimum})`)
 			end
 			if screen.Name ~= WORLD then
-				-- from the screen's own origin: layers that ignore the GUI inset start above y = 0
-				local position, far = low - screen.AbsolutePosition, high - screen.AbsolutePosition
-				local limit = screen.AbsoluteSize
+				-- from the layer's root (its safe area, or a test's phone box): layers that ignore the GUI inset start above y = 0
+				local root = screen:FindFirstChild("Root")
+				local area: GuiObject = if root and root:IsA("GuiObject") then root else screen :: any
+				local position, far = low - area.AbsolutePosition, high - area.AbsolutePosition
+				local limit = area.AbsoluteSize
 				if position.X < -TOLERANCE or position.Y < -TOLERANCE or far.X > limit.X + TOLERANCE or far.Y > limit.Y + TOLERANCE then
 					table.insert(report.Screen, name)
 				end

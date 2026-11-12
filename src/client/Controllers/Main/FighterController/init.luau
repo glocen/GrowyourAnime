@@ -17,9 +17,11 @@ local Net = require(Shared.Net)
 local Actions = require(Shared.Definitions.Actions)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
+local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
+local Voidkin = require(Shared.Definitions.Voidkin)
 local Fight = require(Shared.Rules.Fight)
 local Clips = require(script.Clips)
-local Theme = require(script.Parent.Parent.Parent.UI.Theme)
 local Effects = require(script.Effects)
 local Sounds = require(script.Sounds)
 
@@ -771,13 +773,34 @@ local function onHit(hit: any)
 		if not (mine or onMine) then
 			return
 		end
+		-- The five styles and the grey word (docs/ui.md; Config.Hud.Numbers): a dodge or a block says so on a pointer;
+		-- damage on the player's own lead is received; the player's own hit is dealt, or a critical, and its element's share
+		-- is its own number in the element's colour, a beat behind.
 		local numbers = Combat.Numbers
 		if hit.Dodged then
-			Effects.Number(struck.Root, `{press}:miss`, nil, "Miss", Theme.Colour.Dodge, false, numbers)
+			Effects.Number(struck.Root, `{press}:word`, nil, { Style = "Word", Word = "Dodge" }, numbers)
 			return
 		end
-		local color = if onMine then Theme.Colour.Hurt elseif hit.Critical then Theme.Colour.Critical else Theme.Colour.Hit
-		Effects.Number(struck.Root, press, hit.Total, "", color, hit.Critical == true or hit.Heavy == true, numbers)
+		if hit.Blocked then
+			Effects.Number(struck.Root, `{press}:word`, nil, { Style = "Word", Word = "Block" }, numbers)
+		end
+		if onMine then
+			Effects.Number(struck.Root, press, hit.Total, { Style = "Received" }, numbers)
+		else
+			local elemental = if type(hit.Elemental) == "number" then hit.Elemental else 0
+			local physical = hit.Total - elemental
+			if physical >= 0.5 or elemental < 0.5 then
+				Effects.Number(struck.Root, press, physical, { Style = if hit.Critical then "Critical" else "Dealt" }, numbers)
+			end
+			local def = if attacker then Voidkin.ById[tostring(attacker.Model:GetAttribute("Def"))] else nil
+			local colour = if def then UIKit.Elements[def.Element] else nil
+			if elemental >= 0.5 and colour then
+				local root = struck.Root
+				task.delay(HudConfig.Numbers.Element.Delay, function()
+					Effects.Number(root, `{press}:element`, elemental, { Style = "Element", Colour = colour }, numbers)
+				end)
+			end
+		end
 		if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
 			Effects.Shake(Combat.Shake.Hurt)
 		end
@@ -798,15 +821,22 @@ local function onHeal(heal: any)
 		return
 	end
 	local look = if healer and healer.Action then HEALS[healer.Action.Id] else nil
-	if look then
-		look(healed.Root)
+	local press = `heal:{pressOf(heal.A)}`
+	local function land()
+		if look then
+			look(healed.Root)
+		end
+		if (isMine(healer) or isMine(healed)) and heal.Amount >= 0.5 then
+			Effects.Number(healed.Root, press, heal.Amount, { Style = "Heal" }, Combat.Numbers)
+		end
 	end
-	if not (isMine(healer) or isMine(healed)) then
-		return
+	-- An ally's heal shows when the beat's crest reaches it, as a hit does (TR3; AR4 section 10). The healer's own, at once.
+	if healer and healer ~= healed and type(heal.Beat) == "string" then
+		if drawnBy(healer, heal.Beat, healer.Model:GetAttribute("ActionAt"), healed, land, false) then
+			return
+		end
 	end
-	if heal.Amount >= 0.5 then
-		Effects.Number(healed.Root, `heal:{pressOf(heal.A)}`, heal.Amount, "+", Theme.Colour.Heal, false, Combat.Numbers)
-	end
+	land()
 end
 
 -- The replay (ReplayService) sets "Replay" on the player: the camera turns to look down the pad, pitched over the avatar

@@ -11,10 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - The ranged lead's skip back (notice, 2026-11-13): no change from me. "Winding up" reads as an enemy's action aimed at the lead, until its hit. The clear spot is searched round the range circle. The balance check becomes a debug command in the replay.
 - Now: waiting on the verdict, then the fix round with the director's notes. Next queued: the reveal's ceremony.
 
-**Modulo (assets).** 2026-11-13, on Fable 5.2.
-- **Quaestor:** Lantern Row's kit waits on your read, all five deliveries in one handoff (AR5, section 2, "Delivered"): `build/handoff/LanternRow/lantern_row_kit_sheet.png`, `lantern_row_plan.png` and `sky/lantern_row_sky_sheet.png`. Dusk and night hold both targets from both ends, in renders. Content check PASS. Yours to keep or cut: the houses, the square's canopy, StallB's dark roof.
-- **Faber:** nothing to do on the kit until research has read it. When it's yours, "For the builder" in that entry: `manifest.json`, `plan.json`, `sky/lighting.json`. The critical's stroke (round 2, accepted) still needs its transparency in Config.
-- Now: nothing queued after AR5 section 2. A fix round on the kit if research asks. No lock held.
+**Modulo (assets).** 2026-11-13, on Opus 5.5.
+- **Quaestor:** the reveal's block-in waits on your verdict, fresh eyes beside it (AR3, section 4, "Delivered"): `build/handoff/Reveal/`, the two movies and the two strips first. My pick is layout B. Content check PASS. The director's word on the rarities' colours (Uncommon green, Rare blue, Epic purple) is in the block-in, and in that entry for your register, with its costs to the kit.
+- **Faber:** Lantern Row's kit is accepted; "For the builder" in AR5, section 2 is yours at its install. The ranged lead's distance (notice): no change from me.
+- Now: nothing queued. Next: the reveal's art sheet after the verdict; the kit's rarity colours if research rules them in. No lock held.
 
 **Turns.** Studio: the main place is free, for research's TR3 read (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
@@ -60,6 +60,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. The reveal's block-in delivered (Modulo)
+
+- **What:** the Void Shard's one form for three grades, its four seams and four sizes; the reveal's beats for a Common and a Legendary, as strips and movies at phone size on Void Violet; the six rarities' read before the name; the larger frame's cut; layouts A and B, B picked.
+- **Where:** `build/handoff/Reveal/`, made by `tools/blender/reveal_blockin.py`. The record: `docs/asset-requests.md`, AR3, section 4, "Delivered".
+- **Times:** a Common splits at 0.55 s, its name at 1.57, its card at 2.15; a Legendary at 1.30, 2.32 and 3.40. The skip is open from 1.0 s on every rarity.
+- **The director's word:** Uncommon green, Rare blue, Epic purple, used in the block-in; its costs to the kit are in the record.
+- **For Quaestor:** the verdict and the register. **Open:** grey and stand-ins; nothing is in the engine. Made on Opus 5.5, from the shard's reshape on (Fable 5.2 before).
 
 ### 2026-11-13. Lantern Row's kit delivered, with its night (Modulo)
 

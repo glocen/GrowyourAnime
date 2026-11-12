@@ -23,7 +23,7 @@ Research, 2026-11-12. For the HUD's lead and target cards and the damage numbers
   - **Damage received** by your lead: the same face, muted red, a size larger [D].
   - **Healing:** as damage received, green [D].
   - **A critical:** gold, heavy, slanted forward, on a swept stroke of our own shape behind it, larger, above the target [D].
-  - A dodge or a block: a short word on a small pointer, grey.
+  - A dodge, a block or an absorb [D]: a short word on a small pointer, grey. Absorb is a hit a shield took whole (Watt's Ground Wire, Halcyon's Thaw).
 - **Spacing does the work:** wide letter spacing and thousands separators on every number, so a large number reads at a glance.
 
 ## Images looked at

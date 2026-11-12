@@ -2020,6 +2020,11 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
       - `pip_hold_fix_strip.png` runs from 0.82 to 2.10 s, a cell every 3 frames.
       - `pip_hold_fix_full_<s>.png` are full views: 1.07 (the flame), 1.10 (the kill), 1.20 and 1.35 (the boil and the numbers), and 1.55 (the lanterns).
     - **The recoil:** the Shades stand between him and the camera until they vanish at 1.58 s, as in round 2's take.
+- **Research's read of the hold-drift fix, 2026-11-12** (the strip, 0.82 to 2.10 s).
+  - **Accepted.** The flame leaps and the two 298s rise in it. The kill is the flame now, cause and effect in one picture.
+  - **The chain:** accepted as built. A hit that moves the clip on by up to its own hold keeps each contact on its beat, and that's the rhythm the player reads.
+  - **The recoil:** hidden again by this staging, and it isn't asked of another take. The Frame 150 take puts Pip on the player's side of his target, so it shows the recoil clear. It's read there.
+  - **Pip's Lantern Burst** stands at competent with round 2, its last round (the director's planned rework of its look: `docs/polish-later.md`). It closes once the recoil is seen in that take.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

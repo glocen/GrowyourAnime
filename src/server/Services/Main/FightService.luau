@@ -503,7 +503,13 @@ local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, n
 	return center + Vector3.new(math.cos(heading), 0, math.sin(heading)) * radius, math.abs(Fight.Wrap(place - here))
 end
 
--- The hit's push, once the hold is over: the body jumps on the frame it lets go (handbook/feel/combat.md).
+-- The hit's push, once the hold is over: the body jumps on the frame it lets go (handbook/feel/combat.md). It goes its
+-- distance at a steady pace over Combat.Push.Seconds and stops there, with no slide: each frame's speed is what's left
+-- over that frame, so a late timer never carries it on. Each screen draws that same push from its own hold's end
+-- (FighterController, Combat.Push.Shown). A newer push takes over from one still running; a wall ends it after
+-- Seconds × PUSH_GIVE_UP.
+local PUSH_GIVE_UP = 3
+local pushing: { [Fighter]: number } = {}
 local function push(f: Fighter, direction: Vector3, studs: number, hold: number)
 	local weight = (Combat.Weight :: any)[f.Kind] or 1
 	local amount = studs * weight
@@ -515,12 +521,35 @@ local function push(f: Fighter, direction: Vector3, studs: number, hold: number)
 		if fighters[f.Id] ~= f then
 			return
 		end
-		f.Push.VectorVelocity = direction.Unit * (amount / seconds)
+		local token = (pushing[f] or 0) + 1
+		pushing[f] = token
+		local unit = direction.Unit
+		local from = f.Root.Position
+		local speed = amount / seconds
+		local started = os.clock()
+		f.Push.VectorVelocity = unit * speed
 		f.Push.Enabled = true
-		task.delay(seconds, function()
-			if fighters[f.Id] == f then
-				f.Push.Enabled = false
+		local connection: RBXScriptConnection
+		connection = RunService.Heartbeat:Connect(function(dt: number)
+			if pushing[f] ~= token then
+				connection:Disconnect() -- a newer push has it
+				return
 			end
+			if fighters[f.Id] ~= f then
+				connection:Disconnect()
+				pushing[f] = nil
+				return
+			end
+			local left = amount - (f.Root.Position - from):Dot(unit)
+			if left <= 0.02 or os.clock() - started > seconds * PUSH_GIVE_UP then
+				connection:Disconnect()
+				pushing[f] = nil
+				f.Push.Enabled = false
+				local v = f.Root.AssemblyLinearVelocity
+				f.Root.AssemblyLinearVelocity = Vector3.new(0, v.Y, 0)
+				return
+			end
+			f.Push.VectorVelocity = unit * math.min(speed, left / math.max(dt, 1 / 240))
 		end)
 	end)
 end

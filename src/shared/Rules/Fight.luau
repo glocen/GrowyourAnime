@@ -238,4 +238,27 @@ function Fight.PackRing(count: number, spacing: number): { { number } }
 	return out
 end
 
+-- The push a client draws ahead of the server's (FighterController; AR1, section 8): `t` seconds after the hold ended,
+-- a body pushed `studs` whose replica has brought `shown` of it is drawn this much further on, never back. The server's
+-- push runs over push.Seconds; what the replica still hasn't brought by push.Wait after it is let go over push.HandBack.
+-- nil once it's over: handed back, or let go.
+function Fight.KnockAhead(studs: number, t: number, shown: number, push: { Seconds: number, Wait: number, HandBack: number }): number?
+	if t < 0 then
+		return 0 -- the hold
+	end
+	if t > push.Seconds + push.Wait + push.HandBack then
+		return nil
+	end
+	local done = math.max(studs, 0) * (if push.Seconds > 0 then math.clamp(t / push.Seconds, 0, 1) else 1)
+	local ahead = math.clamp(done - shown, 0, done)
+	local late = t - push.Seconds - push.Wait -- a wall, a lighter push: the replica never brings it all
+	if late > 0 then
+		ahead *= 1 - (if push.HandBack > 0 then math.clamp(late / push.HandBack, 0, 1) else 1)
+	end
+	if t >= push.Seconds and ahead < 0.01 then
+		return nil
+	end
+	return ahead
+end
+
 return Fight

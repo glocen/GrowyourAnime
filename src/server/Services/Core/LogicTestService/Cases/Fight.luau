@@ -332,6 +332,27 @@ return {
 		end,
 	},
 	{
+		-- AR1, section 8: a server-moved body reaches a client's screen late, so the client draws the push itself.
+		Name = "Fight: the drawn push reaches the hit's push by the end of the server's, and hands it back",
+		Run = function(t: any)
+			local push = Combat.Push
+			for _, kind in { "Dummy", "Elite" } do
+				local studs = Actions.ById.RookHaymaker.Hits.Strike.Push * (Combat.Weight :: { [string]: number })[kind]
+				t.Equal(`{kind}: nothing drawn through the hold`, Fight.KnockAhead(studs, -0.05, 0, push), 0)
+				t.Check(`{kind}: half the server's push, half the studs`, near(Fight.KnockAhead(studs, push.Seconds / 2, 0, push) :: number, studs / 2))
+				t.Check(`{kind}: by its end, all of Push × weight`, near(Fight.KnockAhead(studs, push.Seconds, 0, push) :: number, studs))
+				t.Check(`{kind}: only what the replica hasn't brought`, near(Fight.KnockAhead(studs, push.Seconds, studs * 0.3, push) :: number, studs * 0.7))
+				t.Equal(`{kind}: never drawn back past the replica`, Fight.KnockAhead(studs, push.Seconds / 2, studs, push), 0)
+				t.Equal(`{kind}: handed back once the replica has it all`, Fight.KnockAhead(studs, push.Seconds, studs, push), nil)
+				local midway = push.Seconds + push.Wait + push.HandBack / 2
+				t.Check(`{kind}: what never came is let go over HandBack`, near(Fight.KnockAhead(studs, midway, 0, push) :: number, studs / 2))
+				t.Equal(`{kind}: and then over`, Fight.KnockAhead(studs, push.Seconds + push.Wait + push.HandBack + 0.01, 0, push), nil)
+			end
+			t.Equal("no push, nothing drawn", Fight.KnockAhead(0, push.Seconds, 0, push), nil)
+			t.Check("an instant push is all there at once", near(Fight.KnockAhead(4, 0, 0, { Seconds = 0, Wait = 0.4, HandBack = 0.1 }) :: number, 4))
+		end,
+	},
+	{
 		Name = "Fight: a pack stands round its spawn, its Shades a spacing apart",
 		Run = function(t: any)
 			local one = Fight.PackRing(1, 7)

@@ -62,7 +62,10 @@ return {
 	-- The hit's four moments (handbook/feel/combat.md, "Hit reactions and knockback"). The hold is the client's, presentation
 	-- only; the server pushes once the hold is over, so the body jumps on the frame it lets go.
 	Hitstop = { Light = 0.09, Heavy = 0.13 },
-	Push = { Seconds = 0.1 },
+	-- The push: Seconds at a steady pace, on the server. Shown: each screen draws it from its own hold's end instead of
+	-- waiting for the body's replica, which comes a replication delay late (AR1, section 8); Wait is the longest it waits
+	-- for the replica to catch up, then it hands the body back over HandBack seconds.
+	Push = { Seconds = 0.1, Shown = true, Wait = 0.4, HandBack = 0.1 },
 	-- The camera, the client's: magnitude in studs, roughness a second, fade in seconds (handbook/feel/game-feel.md).
 	Shake = {
 		Heavy = { Magnitude = 1.6, Roughness = 14, Fade = 0.15 }, -- the player's own lead lands a heavy hit

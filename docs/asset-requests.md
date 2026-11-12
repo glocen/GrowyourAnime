@@ -397,6 +397,36 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - **For the builder:** upload it under the group (`tools/upload/upload_asset.py`), then swap `Config.Effects.Haymaker.Picture`. Nothing else changes.
   - **Round 2's levers** are the hit's, and I agree with both. The bar holds at the new depth.
   - **Hours:** about 0.5. Made on Opus 5.5 xhigh.
+- **Fix round 2, Faber, 2026-11-12.** Both fixes in, then the two takes and two blind reads.
+  - **Fix 1, the push rides the bracket:**
+    - Found: the server already pushed on Shock, where the hold ends. What the screen lacked was time: a body the server moves reaches a client a replication delay later, measured at about 0.2 s in Studio and longer with ping. So the dummy turned after the bracket had gone.
+    - Now each client draws every hit's push itself, from its own hold's end, at the server's pace (`Combat.Push.Seconds`, 0.1). It draws only what the replica hasn't brought yet, and hands the body back once that catches up. A push that never fully arrives (a wall) is let go over `HandBack`, `Wait` after the push ends. Lever: `Combat.Push.Shown`, on. The math is a pure rule, `Fight.KnockAhead`.
+    - The server's push is now exact. It's steered each frame by what's left, and it stops dead. Before, it slid on and ended 3.6 to 5.6 studs for a push of 4. Now it ends at 4.02 to 4.10.
+    - Measured on the replay: the dummy goes 0 to 4 studs over 6 frames from the bracket's second frame, all inside its flight (`Fly`, 10).
+  - **Fix 2, the travel:**
+    - `Hero.Past` was tuned live at 2, 2.5 and 3, and set at 2.5.
+    - At every value, the frame's near post passes behind the avatar's head at its peak, least at 2. Past can't put it clear of the avatar.
+    - The cause is TR2's Frame. The push runs from the lead, through the target, toward the avatar, so wherever the bracket ends, the dummy ends behind the avatar's head.
+  - **Fix 3, Modulo's rims:** uploaded under the group as 82029716338204 (Approved), and `Picture` swapped (`docs/asset-log.md`, row 9).
+  - **The takes,** in `build/captures/ar1/`, cut the same way as the retake: `haymaker_round2_press.mkv`, its `_strip.png` and `_full_<s>.png`, and `haymaker_round2_beside_*`.
+    - The Beside take tuned `Combat.Lead.Frame` to 90 live for the take, then put it back at 45. The replay places the lead by `Frame`, so 90 there is the Beside spot. Nothing in the game changed.
+  - **`ga-fresh-eyes`, blind, one read per take:**
+    - **Staged.**
+      - **Felt:** "a gold inverted-U frame swings up out of the target, widens toward my side until it arches over the dummy and the top of my avatar's head, holds for about four frames, and crumbles into chips. The dummy never flinches… it plays as a gold gate that blooms and dissolves, not a face driven along the ground like a pile driver."
+      - **Tier:** works.
+      - **The one bold thing:** the full-width bracket at 1.10 to 1.17 s, "an arch standing up on the near side of the slab, not a square face driven flat through it. At 1.27 s its left leg also hides behind the avatar's head."
+    - **Beside.**
+      - **Felt:** "the 'square face' breaks into a dim tilted slab, a thin gold needle flicking up behind the avatar's head and a dark hairline on the ground… none of it is thrown along the ground."
+      - **Tier:** works.
+      - **The one bold thing:** none. The strongest shape is the charge's square behind Rook, before the hit.
+  - **What I see, for research:** both takes still read "works", so by your line the options go to the director. Three facts for that:
+    - **Staged, the knock can't be seen at any timing.** The dummy is now carried through the lit frame on time, but it slides toward the avatar and behind it. "Never flinches" is the dummy hidden, not still.
+    - **Beside, the bracket is edge-on.** It stands square to the hit's line, and from the avatar's place that line runs across the screen.
+    - **So the upright thrown frame reads only when the hit runs away from the camera,** and the game frames none of its fights that way. That counts for the new blockout, the stamp driven down from above.
+  - **Checks:**
+    - Type check: 0 new. Logic offline: 1400 pass, 18 of them new (the drawn push: the hold, its pace, Push × weight by the push's end, never drawn back, the hand-back, the let-go).
+    - Self-test "Fight": 137 of 137 on the second full run. The first had one fail, "a Shade swings and flinches on alternate sides": two AttackLefts in a row in 11 swings. It passed 3 of 3 alone and on the rerun. It's an intermittent, queued with the HUD and Base ones.
+  - **Hours:** about 3.
 
 ## AR2. The Shade, one rig for every enemy
 

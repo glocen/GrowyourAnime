@@ -37,6 +37,10 @@ local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target
 
 type Running = { Effect: Effects.Running, Clock: number }
 
+-- A hit's push as this screen draws it (Config.Combat.Push.Shown): from the hold's end, along the hit's line, at the
+-- server's pace.
+type Knock = { Home: Vector3, Direction: Vector3, Studs: number, From: number }
+
 type View = {
 	Model: Model,
 	Id: string,
@@ -68,6 +72,7 @@ type View = {
 	FlinchAt: number?,
 	State: string,
 	Connections: { RBXScriptConnection },
+	Knock: Knock?,
 }
 
 local views: { [Model]: View } = {}
@@ -519,6 +524,43 @@ local function stepView(view: View, dt: number, now: number): boolean
 	return frozen
 end
 
+-- The server pushes a hit's target as the hold ends, and a body the server moves reaches this screen a replication delay
+-- later: about 0.2 s in Studio, more with ping, so the knock landed after Haymaker's bracket had gone (AR1, section 8).
+-- So this screen draws the push itself, from its own hold's end at the server's pace (Combat.Push.Seconds), ahead of the
+-- body's replicated place by what the replication hasn't brought yet, and hands it back once that has caught up.
+local function knockOf(attacker: View, target: View, hit: any)
+	local action = Actions.ById[hit.Action]
+	local beat = if action and action.Hits then (action.Hits :: any)[hit.Beat] else nil
+	local weight = (Combat.Weight :: any)[target.Model:GetAttribute("Kind")] or 1
+	local studs = (if beat and type(beat.Push) == "number" then beat.Push else 0) * weight
+	local line = target.Root.Position - attacker.Root.Position
+	line = Vector3.new(line.X, 0, line.Z)
+	if not Combat.Push.Shown or studs <= 0 or line.Magnitude < 0.01 then
+		return
+	end
+	target.Knock = {
+		Home = target.Root.Position,
+		Direction = line.Unit,
+		Studs = studs,
+		From = os.clock() + (if type(hit.Hold) == "number" then hit.Hold else 0),
+	}
+end
+
+-- One frame of a drawn push: the body moved on by what the server's push has done by now and its replica hasn't shown.
+local function stepKnock(view: View, now: number)
+	local knock = view.Knock
+	if knock == nil then
+		return
+	end
+	local shown = (view.Root.Position - knock.Home):Dot(knock.Direction)
+	local ahead = Fight.KnockAhead(knock.Studs, now - knock.From, shown, Combat.Push)
+	if ahead == nil or view.Root.Parent == nil then
+		view.Knock = nil
+	elseif ahead > 0 then
+		view.Root.CFrame += knock.Direction * ahead
+	end
+end
+
 local function onHit(hit: any)
 	if type(hit) ~= "table" then
 		return
@@ -528,6 +570,9 @@ local function onHit(hit: any)
 	if attacker and not hit.Dodged then
 		local at = hit.A:GetAttribute("ActionAt")
 		show(attacker, target, hit.Heavy == true, `{hit.Beat}@{at}`)
+		if target then
+			knockOf(attacker, target, hit)
+		end
 	end
 	if target == nil then
 		return
@@ -588,6 +633,13 @@ function FighterController.Start()
 				warn(`FighterController: {view.Model.Name}: {result}`)
 			elseif result then
 				frozen = true
+			end
+			if view.Knock then
+				local knocked, problem = pcall(stepKnock, view, now)
+				if not knocked then
+					view.Knock = nil
+					warn(`FighterController: {view.Model.Name}'s knock: {problem}`)
+				end
 			end
 		end
 		Effects.TimeScale = if frozen then 0 else 1 -- the replay's freeze holds the sparks and numbers with the lead

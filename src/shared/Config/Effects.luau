@@ -8,7 +8,7 @@ return {
 	-- the charge's square, the strike's square, the thrown bracket and the floor's two lines, eaten as it cools.
 	Haymaker = {
 		-- The bar's eight frames, one under another: the group's upload (docs/asset-log.md); "" plays the grey stand-in.
-		Picture = "rbxassetid://116379507394315",
+		Picture = "rbxassetid://82029716338204",
 		FrameWidth = 512, -- pixels
 		FrameHeight = 128,
 		Body = 0.6, -- the share of a frame's height the stroke fills
@@ -25,7 +25,7 @@ return {
 		-- (it never quite stops), then is eaten over Leaves frames as it opens and its feet lift.
 		-- The line ends Past the target, so the bracket is eaten round what it hit, at the fight's depth (section 8).
 		Hero = {
-			Past = 1, -- studs past the target's centre the line ends
+			Past = 2.5, -- studs past the target's centre the line ends: the frame seen out its near side as the knock carries it
 			Reach = 8, -- studs down the line it flies when there's no target
 			Fly = 10,
 			Drift = 0.004, -- the line's share a frame it drifts once it has flown

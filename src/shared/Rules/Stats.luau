@@ -5,6 +5,7 @@
 --   Stars    a share of that own base per star, linear, never of the total
 --   Item     each line of the item in each of the preset's slots, as it is
 -- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
+-- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
 -- Both the server (for truth) and the client (for previews) call it; nothing else adds stats.
 -- No Roblox API: it runs with Studio closed.
 
@@ -13,6 +14,8 @@ local StatsConfig = require(Shared.Config.Stats)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local GrowthConfig = require(Shared.Config.Growth)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Enemies = require(Shared.Definitions.Enemies)
+local EnemiesConfig = require(Shared.Config.Enemies)
 local Profile = require(Shared.Data.Profile)
 local Growth = require(Shared.Rules.Growth)
 
@@ -131,6 +134,25 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 		end
 	end
 	return block, lines
+end
+
+-- An enemy's stat block at `level`: its Kind's numbers in Config.Enemies times G, nothing else. `type` is the spawn's,
+-- else the row's. An unknown id gives an empty block at that level.
+function Stats.Enemy(def: string, level: number, type: string?): Block
+	local row = Enemies.ById[def]
+	local clamped = math.clamp(level, 1, GrowthConfig.MaxLevel)
+	local block = Stats.Empty(clamped)
+	if row == nil then
+		return block
+	end
+	local g = Growth.G(clamped)
+	for stat, value in (EnemiesConfig :: any)[row.Kind] :: { [string]: number } do
+		if KNOWN[stat] then
+			(block :: any)[stat] = value * g
+		end
+	end
+	block.Def, block.Type = row.Id, type or row.Type
+	return block
 end
 
 -- The preset an owned Voidkin is linked to, or nil.

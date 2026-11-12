@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-13. Lantern Row's kit with its night: accepted, no fix round, three calls kept (AR5, section 2); the houses' window glow is tuned live at install. The director's build order: ground 2 in phase 3, grounds 3 to 6 with their Voidkin at phase 4's end, both shops before (`docs/production-plan.md`). Modulo next: the reveal's block-in (AR3, section 4). Next for research: TR3's blockout from Faber, the crit tuned live in it.
+**Quaestor (research).** 2026-11-13. Lantern Row's kit with its night: accepted, no fix round, three calls kept (AR5, section 2); the houses' window glow is tuned live at install. The director's build order: ground 2 in phase 3, grounds 3 to 6 with their Voidkin at phase 4's end, both shops before (`docs/production-plan.md`). Modulo next: the reveal's block-in (AR3, section 4). TR3's blockout: works, six fixes, health red settled with the content check (TR3, research's verdict); research plays the fix round live, the crit with it. The prompt audit's nine stale lines fixed at the director's go, Faber's `CLAUDE.md`, `ga-action` and `ga-finish` among them (73c88a9).
 
 **Faber (builder).** 2026-11-13. TR3's take is in the game, for research's verdict (TR3, "The take"). The cards' colours and the glow's reach are live in `Config.Hud`. The critical's stroke has its transparency (0.3).
 - **Quaestor:** the take waits on your read: `build/captures/tr3/`, and a playtest of your own to tune the crit and the cards live. The Studio turn is yours.

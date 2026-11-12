@@ -1213,7 +1213,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 | Void Violet | the reveal's card; later the Void Shop | where a shard opens: the darkest room, so the rarity's own light is the brightest thing in it |
 | Pearl Light | the map, a shard's odds, where a stat's points come from | what's read like a printed page |
 
-What a palette may change: a panel's body, its edge and glint, the ink, and the accent a button and a selection burn with. What it never changes: the cut, the frames, the gems and marks, health's ivory light, green and red, the numbers. That's what holds the four together. A later screen takes one of these four unless its own piece argues for a fifth.
+What a palette may change: a panel's body, its edge and glint, the ink, and the accent a button and a selection burn with. What it never changes: the cut, the frames, the gems and marks, health's red (ivory until the director's word of 2026-11-13), green and red, the numbers. That's what holds the four together. A later screen takes one of these four unless its own piece argues for a fifth.
 
 **Calls, mine (tier 1):**
 
@@ -1249,7 +1249,7 @@ Before upload: the kit's row in `docs/asset-log.md` and the script in git, both 
 For the builder, in use:
 
 1. Never two `Bolt` icons side by side as a pair.
-2. Red on a button's ring and its glow only with words, never on a bar or across a portrait.
+2. Red on a button's ring and its glow only with words, never across a portrait, and never on a bar except health's fill (the director, 2026-11-13; its conditions are in TR3's verdict).
 3. Any motion on a frame, and each cut portrait, gets its own check.
 4. A palette's accent lights buttons and selections, never a ring round a portrait's frame: Dynamo's yellow there would be taken for Legendary's gold (research's fix 5). How a selected portrait is marked is settled with its screen.
 

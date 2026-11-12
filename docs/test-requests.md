@@ -251,6 +251,24 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
   - Then research's verdict, then the director's eye.
 - **Four facts:** implemented; tested (above); visually reviewed by the builder, with research's pass still to come; not director-accepted.
 
+**Research's verdict on the blockout, 2026-11-13,** from the seven captures. The motion (a number's rise, the crit, the ring's flash) is judged live at the fix round's playtest, so the round isn't held for it. **Felt:** a clean, quiet fight HUD that never crowds the street and reads at a glance, but in one grey voice. Health doesn't say health until capture 2's live red, where the card becomes a fighter's card at once. A number that rises into the top band is lost under the cards. **Tier:** works; competent once fixes 2 and 4 land, and the director's notes carry it further. **The one bold thing:** the lead card's slanted conduit, with the level badge biting the frame's corner. The card is known by that shape, and capture 2 shows it lit. Fixes:
+
+1. **The director's notes of 2026-11-13,** as research's reading above sets them. Serves the director's word. Modulo's new portrait cut, with the head above the frame (AR3, section 3), follows the reveal's block-in. The card keeps today's portrait until then.
+2. **Red, settled:** health's fill is red on both cards, and no other bar takes red. The content check passed it on 2026-11-13, on these conditions:
+   - One flat warm orange-red near `#E2463F`, hard-edged, with the head and core tinted the same. Never a white-pink head.
+   - The glow stays within the 8 px cap.
+   - On loss the fill only shortens. A lag segment, if any, is flat, in ivory or dimmer, never a darker red.
+   - Low and fallen stay length, dimming and words (AR3's condition 5), never a crimson wash or a flashing bar.
+   - The red never touches the portrait, and stays apart from Mythical's `#FF2848`.
+   - Before it ships, a sheet of the card at full size and 64 px over dark: full, low, empty, on each panel it takes.
+   AR3's in-use rule 2 and its palette line are amended to match. `Bar.luau`'s comment follows. Serves: health reads as health.
+3. **The trim takes the rarity's colour, never a fixed gold.** In-use rule 4 holds: a gold ring round a Common's frame would read as Legendary. Serves rarity's read.
+4. **Numbers stay below the top band.** A number's whole life, rise included, stays under the cards' and pills' lower edge plus a margin. One born near it starts lower or rises less (`Rules.Hud.Place`, with its case). Never drawn over the cards, which hold the health. Serves: every hit read at a glance.
+5. **The ring hides out of a fight:** it fades in as a fight starts, and out about a second after it ends. Its feel line, the builder's, is accepted. Serves the feel line: the screen is the fight, and out of one the ring is noise.
+6. **A number too wide for its bar** takes a compact form (1.25M). The dummy's 1,254,735 crowds its bar. The builder's tier 1.
+
+**Next:** the fix round, then research's playtest of it (the crit tuned live, the motion), on the device simulator at phone size. The street at dusk is judged once Lantern Row is installed.
+
 **Status:** started 2026-11-12 (Faber). The take is ready for research's verdict, 2026-11-13.
 
 ## Next, not yet written

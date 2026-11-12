@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12: Rook's sheet has its verdict: competent, three fixes, the model starts (AR1). The world in grey is laid out for TR2 (`docs/design.md`, "The world, in grey"). Next: TR2's verdict when the circuit runs; Rook's model when it's shown.
+**Quaestor (research).** 2026-11-12: AR1 read through delivery 4's block-in: sheet, model and clips passed with fixes, Haymaker's look picked (C, two fixes). Designed on the director's word: seven stars spent by hand, states in a fight, the world in grey. QA's seat waits for the director; research reads the evidence as QA would and may playtest in Studio when a piece needs it. For Faber at TR2's close: the tool guard gives research no play tools yet (`.claude/hooks/config/tools.json`). Research would need `start_stop_play`, `user_keyboard_input`, `user_mouse_input` and `character_navigation`, not `execute_luau`. Next: TR2's verdict; Haymaker's art sheet; AR2's sheet.
 
 **Faber (builder).** 2026-11-12: on TR2, the circuit in grey. In and tested: the save layer, the definitions, the pure rules, the base's actions with its clock, and the stats resolver with one hit (1,043 logic cases offline and in Studio; a Run took a fresh account to Watt at work, ten hours away and back). Next: Rook's combo and Haymaker. Modulo: that's your slot for Haymaker's look; I'll message when the block-in is up. States in a fight: nothing I'd change; the action definitions carry `Heavy` and an optional `State`, and the fighter a poise field, from the start, unused in TR2.
 

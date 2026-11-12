@@ -168,8 +168,9 @@ local function lay()
 			local across = if offset.X ~= 0 then Vector3.new(1, FENCE_HIGH, side) else Vector3.new(side, FENCE_HIGH, 1)
 			wall(copy, across, CFrame.new(centre.Position + offset * (side / 2) + Vector3.new(0, FENCE_HIGH / 2, 0)))
 		end
-		local entry = centre.Position + toGate * (radius - Combat.Keeper.Entry)
-		copies[plot] = { Centre = centre, Entry = CFrame.lookAt(entry, centre.Position) }
+		local entry = centre.Position + toGate * math.min(Combat.Keeper.Arrive, radius - 1)
+		local facing = CFrame.lookAt(entry, centre.Position) * CFrame.Angles(0, math.rad(Combat.Keeper.Turn), 0) -- turned left
+		copies[plot] = { Centre = centre, Entry = facing }
 	end
 
 	-- The gate's Challenge, on a part of our own at its foot, so an authored gate needs no named part.
@@ -239,6 +240,12 @@ function KeeperService.Try(player: Player): { [string]: any }
 		})
 	end)
 	return { Ok = true }
+end
+
+-- `v` on the ground, of length 1; the zero vector stays zero.
+local function flatLook(v: Vector3): Vector3
+	local flat = Vector3.new(v.X, 0, v.Z)
+	return if flat.Magnitude > 1e-3 then flat.Unit else Vector3.zero
 end
 
 local function won(player: Player, try: Try)
@@ -318,6 +325,8 @@ local function state(who: any): any
 		KeeperTarget = if keeper and keeper.Target then keeper.Target.Id else "",
 		LeadTarget = if lead and lead.Target then lead.Target.Id else "",
 		FromCopy = if copy and root then (root.Position - copy.Centre.Position).Magnitude else -1,
+		-- Degrees the avatar faces off its copy's middle, where the keeper starts.
+		OffCentre = if copy and root then math.deg(math.acos(math.clamp(flatLook(root.CFrame.LookVector):Dot(flatLook(copy.Centre.Position - root.Position)), -1, 1))) else -1,
 		FromEntry = from(if copy then copy.Entry else nil),
 		FromExit = from(if exit then Markers.At(exit) else nil),
 		FromBefore = from(before),

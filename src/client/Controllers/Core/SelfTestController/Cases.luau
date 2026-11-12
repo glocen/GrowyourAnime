@@ -28,6 +28,7 @@ local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -58,7 +59,9 @@ local RESPAWN_PATH = "World.Row.Respawn"
 local PACK_BACK = 1 -- seconds a felled pack takes to come back while the case runs; the case puts the seed back
 local MOVE_SLACK = 0.5 -- seconds past a fade's move before the case reads where the avatar stands
 local SET_DOWN = 2 -- studs from its spot a set-down avatar may stand once physics settles it
-local KEEPER_MEETS = 3 -- seconds after arriving by which the lead fights the keeper (it walks 4 studs into Lead.Leash)
+local KEEPER_MEETS = 3 -- seconds after arriving by which the lead fights the keeper (it arrives inside Lead.Leash of it)
+local KEEPER_BESIDE = 4 -- seconds after they trade hits by which the lead stands at the keeper's side
+local BESIDE_TOLERANCE = 25 -- degrees off square to the avatar's facing that still read as side by side
 local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
 local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
 local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: inside its notice and the lead's leash
@@ -80,6 +83,9 @@ local TAKE_KEEPER_LEVEL = 14 -- the lead's level in the keeper's take: it wins b
 local KEEPER_SHORT = 55 -- studs past Pack 6 the keeper's take starts: out of its notice and the lead's leash, 25 short of the gate
 local KEEPER_ASK = 5 -- studs from the Challenge the avatar stops to hold it, inside Combat.Keeper.Reach
 local KEEPER_SHOWS = 3 -- seconds after the walk by which the Challenge shows, the gate in view
+local KEEPER_FRAME = { Low = 0.28, High = 0.4 } -- the keeper's height in the take, a share of the frame's: "about a third"
+local HIDDEN = 1 / 3 -- of a fighter the camera can't see for a nearer one that still counts as clear of it
+local CLEAR_SHARE = 0.7 -- the share of the fight's samples with a fighter clear: "most"
 local REJOIN_SHARD = "lanternrow_standard" -- the shard the rejoin's takes leave breaking: Lantern Row's packs drop it
 
 -- The angle in degrees between two directions, flat on the ground.
@@ -155,6 +161,49 @@ local function walkThrough(t: any, door: Instance, close: boolean): boolean
 	end)
 	humanoid:MoveTo(t.Root().Position)
 	return moved
+end
+
+-- Where `model` stands on screen: its box's corners in viewport pixels, low and high, and its distance from the camera; nil
+-- when any of it is behind the camera.
+local function screenBox(model: Model): (Vector2?, Vector2?, number?)
+	local camera = workspace.CurrentCamera
+	local at, size = model:GetBoundingBox()
+	local low, high = Vector2.new(math.huge, math.huge), Vector2.new(-math.huge, -math.huge)
+	for _, x in { -0.5, 0.5 } do
+		for _, y in { -0.5, 0.5 } do
+			for _, z in { -0.5, 0.5 } do
+				local point = camera:WorldToViewportPoint((at * CFrame.new(size.X * x, size.Y * y, size.Z * z)).Position)
+				if point.Z <= 0 then
+					return nil, nil, nil
+				end
+				low = Vector2.new(math.min(low.X, point.X), math.min(low.Y, point.Y))
+				high = Vector2.new(math.max(high.X, point.X), math.max(high.Y, point.Y))
+			end
+		end
+	end
+	return low, high, (camera.CFrame.Position - at.Position).Magnitude
+end
+
+-- How much of `back` the camera can't see for `front`: rays from the camera to five points on each of its parts (the
+-- middle and four toward its corners), a share of them that `front` stops first. Silhouettes, not boxes: a leaning
+-- keeper's box covers empty corners. Nil when `back` has no parts.
+local function covered(front: Model, back: Model): number?
+	local camera = workspace.CurrentCamera.CFrame.Position
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { front }
+	local hidden, rays = 0, 0
+	for _, part in back:GetDescendants() do
+		if not part:IsA("BasePart") or part.Transparency >= 1 then
+			continue
+		end
+		for _, at in { Vector2.zero, Vector2.new(-0.35, -0.35), Vector2.new(0.35, -0.35), Vector2.new(-0.35, 0.35), Vector2.new(0.35, 0.35) } do
+			local point = (part.CFrame * CFrame.new(part.Size.X * at.X, part.Size.Y * at.Y, 0)).Position
+			rays += 1
+			hidden += if workspace:Raycast(camera, point - camera, params) then 1 else 0
+		end
+	end
+	return if rays > 0 then hidden / rays else nil
 end
 
 -- A take (TR2's evidence and its close): a stretch of play at real speed from the player's camera. `body` gets the take's
@@ -458,6 +507,7 @@ return {
 			t.Near("the avatar stands at its copy's entrance (studs off)", inside.FromEntry, 0, SET_DOWN)
 			t.Check("the copy is its plot's, out of sight of the street", inside.FromCopy > 0 and inside.FromCopy < inside.Radius)
 			t.Check("a fresh keeper stands in it", inside.Keeper ~= "" and inside.KeeperHealth > 0)
+			t.Near("the avatar faces past the ring's middle, so its own body hides none of the keeper (degrees)", inside.OffCentre, Combat.Keeper.Turn, 2)
 			-- The fight is joined with nobody pressing anything: the keeper comes for the lead from the middle of the ring, and the
 			-- lead meets it once it's inside Lead.Leash of the avatar.
 			t.Check("the keeper comes for the lead at once", inside.KeeperTarget ~= "" and inside.KeeperTarget == inside.Lead, `target {inside.KeeperTarget}, lead {inside.Lead}`)
@@ -477,6 +527,16 @@ return {
 			end
 			t.Check("the lead lands hits on the keeper", traded.KeeperHealth < joined.KeeperHealth, `{traded.KeeperHealth} of {joined.KeeperHealth}`)
 			t.Check("and the keeper on the lead", traded.LeadHealth < joined.LeadHealth, `{traded.LeadHealth} of {joined.LeadHealth}`)
+			-- Against a keeper the lead takes its side, so both read side by side from the avatar's place (Combat.Lead.Beside).
+			local beside = (Combat.Lead.Beside :: { [string]: number }).Keeper
+			local off = 180
+			t.Check("the lead stands at the keeper's side", waitFor(t, KEEPER_BESIDE, function(): boolean
+				local them, ours = fighterModel(joined.Keeper), myLead()
+				if them and ours then
+					off = flatAngle(ours:GetPivot().Position - them:GetPivot().Position, t.Root().CFrame.LookVector)
+				end
+				return math.abs(off - beside) <= BESIDE_TOLERANCE
+			end), `{math.floor(off + 0.5)} degrees off the avatar's facing, want {beside} ±{BESIDE_TOLERANCE}`)
 			t.Check("the keeper falls", t.Server("KeeperEnd", "Win").Ok == true)
 			t.Wait(0.3)
 			local saved = t.Server("Keeper").Wins
@@ -1162,6 +1222,9 @@ return {
 				end
 			end
 			t.Check("no plate shows empty", #blank == 0, table.concat(blank, ", "))
+			-- Whole or not at all: the join's black lifted once the HUD was whole, not by running out of time.
+			local opened = FadeController.Opened()
+			t.Check("the join's black lifted on a whole screen", opened ~= nil and opened.Whole, if opened then `{math.floor(opened.At * 100 + 0.5) / 100} s after the client started` else "not lifted")
 			lintClean(t, "the HUD")
 		end,
 	},
@@ -1799,9 +1862,36 @@ return {
 				moment("in the ring, the Lamplighter at its middle")
 				local full, leadFull = seen.KeeperHealth, seen.LeadHealth
 				local struck, hurt, half, outcome = false, false, false, nil
+				-- The framing, measured as the camera sees it (research's read of the closing takes): the Lamplighter's height
+				-- as a share of the frame's, and whether Rook stands clear of it, once a second.
+				local heights: { number } = {}
+				local clear, samples = 0, 0
+				local seenWhole, looks = 0, 0
+				local sampleAt = os.clock() + 1
 				local deadline = os.clock() + TAKE_KEEPER
 				while os.clock() < deadline do
 					local now = t.Server("Keeper")
+					if os.clock() >= sampleAt then
+						sampleAt += 1
+						local them, ours, avatar = fighterModel(seen.Keeper), myLead(), Players.LocalPlayer.Character
+						local low, high = nil, nil
+						if them then
+							low, high = screenBox(them) -- an if-expression would keep only the first of its values
+						end
+						if low and high then
+							table.insert(heights, (high.Y - low.Y) / workspace.CurrentCamera.ViewportSize.Y)
+						end
+						local rook = if them and ours then covered(them, ours) else nil
+						if rook then
+							samples += 1
+							clear += if rook <= HIDDEN then 1 else 0
+						end
+						local keeperHidden = if them and avatar then covered(avatar, them) else nil
+						if keeperHidden then
+							seenWhole += if keeperHidden <= HIDDEN then 1 else 0
+							looks += 1
+						end
+					end
 					if not struck and now.KeeperHealth < full then
 						struck = true
 						moment("Rook's first hit on the Lamplighter")
@@ -1827,6 +1917,11 @@ return {
 					t.Wait(0.1)
 				end
 				t.Check("the Lamplighter falls", outcome == "Win", tostring(outcome))
+				table.sort(heights)
+				local median = if #heights > 0 then heights[math.ceil(#heights / 2)] else nil
+				t.Row("the Lamplighter's height, a share of the frame's (the fight's median)", KEEPER_FRAME.Low, KEEPER_FRAME.High, median, "")
+				t.Row("of the fight's samples, the share with Rook clear of the Lamplighter", CLEAR_SHARE, 1, if samples > 0 then clear / samples else nil, `of {samples}`)
+				t.Row("and with the Lamplighter clear of the avatar", CLEAR_SHARE, 1, if looks > 0 then seenWhole / looks else nil, `of {looks}`)
 				if outcome == "Win" then
 					t.Check("the try ends", waitFor(t, keeper.WinPause + moved + 2, function(): boolean
 						return t.Server("Keeper").InTry == false

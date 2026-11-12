@@ -23,6 +23,12 @@ return {
 		-- Engaged, it stands beyond its target along the avatar's facing, turned this many degrees round toward the side it's
 		-- on, so the camera frames the fight and the target doesn't hide it (research's verdict on TR2, 2026-11-12). A seed.
 		Frame = 45,
+		-- Against a target wider than itself it'd stand hidden behind it, so against these kinds it takes the target's side,
+		-- and both read side by side from the avatar's place (research's read of TR2's closing takes, 2026-11-12).
+		Beside = { Elite = 90, Keeper = 90 },
+		-- Degrees off the avatar's facing within which such a target reads straight ahead: there the lead keeps the side it's
+		-- nearer; past it, the side away from the avatar's line of sight, so the avatar's own body hides neither.
+		Straight = 5,
 		WalkSpeed = 16,
 		CatchUpSpeed = 26, -- once it's CatchUpFrom away, so it keeps up with a running avatar
 		CatchUpFrom = 18,
@@ -71,7 +77,12 @@ return {
 		Hold = 0.5, -- seconds the gate's Challenge is held: a try is a decision
 		Reach = 10, -- studs from the gate it can be asked
 		Fade = { Out = 0.25, Hold = 0.2, Back = 0.35 }, -- the fade around each move; the move is in the middle of Hold
-		Entry = 6, -- studs inside the copy's rim the avatar arrives, facing the keeper at its middle
+		-- Studs from the keeper, at the ring's middle, the avatar arrives facing it: near enough that the fight fills about a
+		-- third of the frame's height (research's read of TR2's closing takes, 2026-11-12; at 34 it was a fifth).
+		Arrive = 14,
+		-- Degrees the avatar's facing turns off the keeper there, so its own body, near the camera, hides none of the keeper:
+		-- the fight sits right of the frame's middle (the avatar 4 studs wide 12.5 from the camera, the keeper 4.2 wide).
+		Turn = 26,
 		WinPause = 2, -- seconds after the keeper's fall before the fade out: the fall is seen
 		LossPause = 1, -- seconds after the lead's fall
 		Before = 10, -- studs before the keeper's gate a loss sets the avatar down

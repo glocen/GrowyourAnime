@@ -29,6 +29,7 @@ local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local Effects = require(script.Parent.FighterController.Effects)
+local FadeController = require(script.Parent.FadeController)
 
 local HudController = {}
 
@@ -38,6 +39,7 @@ local CARD = Vector2.new(210, 58)
 local TARGET = Vector2.new(220, 46)
 local PILL = Vector2.new(170, 28)
 local BASE_EVERY = 0.25 -- seconds between reads of the base as it stands now: each copies the save
+local SMOOTH = 12 -- frames in a row under 1/30 s before the join's black lifts: a join's stall leaves text undrawn a moment
 local DOCK = Vector2.new(96, Theme.Size.Tap)
 
 type Card = { Frame: Frame, Name: TextLabel, Level: TextLabel, Health: Frame, Xp: Frame? }
@@ -319,6 +321,21 @@ function HudController.Start()
 		showView(view)
 	end
 	RunService.RenderStepped:Connect(step)
+	-- Whole or not at all (FadeController): the join's black lifts once both pills have their numbers, the lead's card its
+	-- name when the save names a lead, and the frames have run smooth a moment, so all of it has drawn beneath the black.
+	task.spawn(function()
+		local smooth = 0
+		while true do
+			local dt = RunService.RenderStepped:Wait()
+			smooth = if dt < 1 / 30 then smooth + 1 else 0
+			local view = ProfileController.Get()
+			local leadDrawn = lead.Frame.Visible or (view ~= nil and view.Roles.Lead == "")
+			if credits.Text ~= "" and electricity.Text ~= "" and leadDrawn and smooth >= SMOOTH then
+				FadeController.Whole()
+				return
+			end
+		end
+	end)
 end
 
 -- For tests: the HUD's parts by name.

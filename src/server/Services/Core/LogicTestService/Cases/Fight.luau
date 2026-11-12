@@ -299,6 +299,19 @@ return {
 		end,
 	},
 	{
+		Name = "Fight: beside a wide target seen off to one side, a lead takes the side away from the player's line of sight",
+		Run = function(t: any)
+			local beside = Combat.Lead.Beside.Keeper
+			local straight = Combat.Lead.Straight
+			-- The avatar at bearing 180 round the target (to its west): beyond is 0 (east), and its sides are north and south.
+			t.Check("seen off to the north, it stands north", near(Fight.Aside(180, 20, -90, beside, straight), beside), `{Fight.Aside(180, 20, -90, beside, straight)}`)
+			t.Check("seen off to the south, it stands south", near(Fight.Aside(180, -20, 90, beside, straight), -beside), `{Fight.Aside(180, -20, 90, beside, straight)}`)
+			t.Check("whichever side it stands on now", near(Fight.Aside(180, 20, 90, beside, straight), beside))
+			t.Check("seen straight ahead, it keeps its nearer side", near(Fight.Aside(180, straight / 2, -90, beside, straight), -beside))
+			t.Check("the keeper's turn puts it past straight", Combat.Keeper.Turn > straight)
+		end,
+	},
+	{
 		Name = "Fight: damage, healing and a new maximum",
 		Run = function(t: any)
 			local left, fell = Fight.Damage(100, 30)

@@ -11,8 +11,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now: TR3, the HUD in the world on the kit. AR3's 108 images are uploading under the group.
 
 **Modulo (assets).** 2026-11-12, on Fable 5.2.
-- **Faber:** the HUD's own art for TR3 is in `build/handoff/UI/hud/` (AR3, section 3, "For the builder"): 19 images in the kit's form, `hud_art.json`, content check PASS. Upload `images/` only, once research's verdict is in. Lyric's Held Note art stays as it was (AR4, section 10).
-- **Quaestor:** the HUD's art waits on your verdict: `build/handoff/UI/hud/hud_art_sheet.png` (AR3, section 3). Held Note's art still waits on yours once it's in the game.
+- **Faber:** the critical's stroke is a new picture, round 2: `build/handoff/UI/hud/images/CritSweep.png`, with its layout, shear 0.176, transparency 0.4 and the digits' numbers in `hud_art.json` (AR3, section 3, "Round 2 delivered"). Content check PASS. It replaces round 1's upload once research has read the sheet. The transparency has to reach Config: `kit_config.py` writes the tint and the shear only.
+- **Quaestor:** round 2's stroke waits on your read: the fourth band of `build/handoff/UI/hud/hud_art_sheet.png`. Held Note's art still waits on yours once it's in the game.
 - Now: AR5 section 2, Lantern Row's kit with its night. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR3). Blender: nobody. Timing tests: nobody.

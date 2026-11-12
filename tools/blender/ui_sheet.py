@@ -476,6 +476,7 @@ def text_layers(width, height, items):
             curve = bpy.data.curves.new("Text", "FONT")
             curve.body, curve.size, curve.align_x = i["text"], i["size"] * K, i["align"]
             curve.shear, curve.offset = i["shear"], i["bold"]
+            curve.space_character = i.get("space", 1.0)
             obj = bpy.data.objects.new("Text", curve)
             scene.collection.objects.link(obj)
             obj.location = (i["x"] * K, height - i["y"] * K - i["size"] * K * CAP, 0)

@@ -238,17 +238,26 @@
   "CritSweep": {
    "file": "images/CritSweep.png",
    "pixels": [
-    448,
-    224
+    288,
+    96
    ],
    "points": [
-    112.0,
-    56.0
+    72.0,
+    24.0
    ],
    "pad": 0.0,
-   "tint": "#E8862A",
-   "shear": 0.22,
-   "use": "behind a critical number, under its stroke: centred on the number, its height twice the number's size, its width the number's width and a half; it stretches along, never up"
+   "tint": "#CC661F",
+   "shear": 0.176,
+   "transparency": 0.4,
+   "number": {
+    "gap": 0.4,
+    "top": "#FFF4D6",
+    "foot": "#F2B43C",
+    "outline": "#4E2C16",
+    "outlinePoints": 1.0,
+    "slantDegrees": 10
+   },
+   "use": "behind a critical number, under its outline, under its leading half: its height the digits' own, its left edge a third of a digit before the first digit, its width 0.6 of the number's and never under three times its height; it stretches along, never up"
   }
  }
 }

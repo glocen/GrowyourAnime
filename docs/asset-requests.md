@@ -1342,6 +1342,28 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
 
 **Round 2, Modulo:** the stroke redrawn as one dry-brush sweep of our own shape, as in the table. It's a new picture, so its own content check. The sheet shows it under a critical with round 2's digits, over Lantern Row's dark and bright frames, at 2 pixels a point and at 1. **The builder:** the digits' spacing, gradient, slant and outline as in the table, in Config, tuned live in TR3.
 
+**Round 2 delivered (Modulo, 2026-11-12):** `CritSweep.png` is a new picture under the same name, with `hud_art.json` and the sheet's fourth band (`build/handoff/UI/hud/`). The other 18 images are byte for byte round 1's. Nothing of round 2 is uploaded or in the engine.
+
+- **The stroke:** one pull of a dry brush, level, leaning 10 degrees with the number. The brush lands loaded at the first digit, a square press with a ragged edge, and runs dry along the pull: the bristles part into long streaks and give out one by one, the middle ones last. Drawn from numbers by `sweep` in `tools/blender/hud_art.py`, on a fixed seed.
+- **In the file:** a grey slice, 72 by 24 points (288 by 96 px), white where the paint is thick and darker toward the tail. The game tints it burnt orange `#CC661F`, so the tail goes brown, and draws it 60% opaque. The tint stays live in Config.
+- **The digits on the sheet** are the table's: 0.4 of a digit between digits, cream `#FFF4D6` at the head to gold `#F2B43C` at the foot, 10 degrees, a warm-brown outline `#4E2C16` one point wide at a 28 point number. They're in `hud_art.json` under `CritSweep.number`. The face is Blender's, standing in for the game's.
+- **For the builder,** replacing step 3 above:
+  - The stroke sits behind the number and under its outline, its height the digits' own.
+  - Its left edge is a third of a digit before the first digit.
+  - Its width is 0.6 of the number's, and never under three times its height. It stretches along, never up.
+  - `Shear` is 0.176 now, and `transparency` 0.4 is new: the check holds it, so it has to reach Config. `tools/ui/kit_config.py` writes the tint and the shear only.
+  - Round 1's uploaded sweep is replaced: upload this `CritSweep.png` once research has read the sheet.
+- **Read at phone size:** over the street's dark side the digits come first and the stroke is a rust-orange mark under "1,2". Over the bright pink end it's faint, an orange-brown patch. At 1 pixel a point it's a smudge of colour under the first two digits, nothing more.
+- **Content check, 2026-11-12: PASS** on rules 2, 3 and 4. It read the slice, the sheet, the listing, the script, and the reference's screenshot beside ours. Its limits: the slice alone at 64 px over dark only; likeness judged against the one screenshot. Round 1's conditions 1 and 3 are replaced, 2 holds whole. To hold, each change coming back to the check:
+  1. Tint: `#CC661F` is the red and dark limit; yellower or lighter is free; green stays at least half of red. The slice stays neutral grey, its tail no darker than now. Never red, crimson, maroon, magenta, plum or black. Only under a dealt critical.
+  2. Opacity: transparency 0.4 or more solid; more see-through needs a look over the pink end first.
+  3. Shape: one mark, a square landing at the first digit, bristles level and parallel, a taper at the dry tail only. No curl, hook, rising tail or rounded blob; no drop, bead, run, spatter, fleck, gloss or halo. A redraw, a new seed included, is a new picture.
+  4. Layout as the listing says. It appears and leaves with its number, with no afterimage.
+  5. The digits stay in the kit's own face.
+  6. In TR3, at the player's camera and phone size, the mark stays orange-brown over the dark side and the pink end. If it goes rose, wine or maroon there, or lies across a fighter, it's yellowed or made more solid, and comes back.
+- **What I see wrong:** over the bright end the stroke nearly disappears, which serves "the digits first" and may be too little. The landing's upper and lower edges run straight for a third of its length, so close up it's a rounded bar with a frayed end more than a brush's press. Blender's "1" reads as a capital I at this slant: the game's face decides that.
+- **Not done:** research's read of the sheet; the upload and Config (the builder's, TR3); seen in the engine or moving. **Hours:** about 0.7, an estimate.
+
 **What I see wrong:**
 
 - The portraits wear the models' one face each (`docs/polish-later.md` has a face of its own for each Voidkin): the pose and the head's turn carry the character here, not the expression.

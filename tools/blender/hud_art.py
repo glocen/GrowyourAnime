@@ -1,6 +1,6 @@
 """AR3 section 3, the HUD's own art (docs/asset-requests.md; docs/ui.md, "The HUD, in the world"): each launch
 Voidkin's portrait for the lead's card, cut to its rarity frame's mask; one silhouette for a Voidkin that isn't made
-yet; and the swept stroke behind a critical number.
+yet; and the brush stroke under a critical number.
 
 A portrait is the Voidkin's own model, head and shoulders, the body three-quarter on and the head turned back to the
 player, so the eyes meet whoever holds the phone. The engine can't clip a picture to a cut corner, so each is cut here
@@ -160,39 +160,52 @@ def cut(shot, rarity, small, kit):
 
 # --- the critical's sweep -----------------------------------------------------------------------------------------
 
-SWEEP = (112.0, 56.0)   # points: drawn for a 28 point number of five characters; it stretches along with a longer one
-SHEAR = 0.22            # the numbers' own slant (ui_sheet.numbers)
-# Each streak: its middle line (points down the canvas), half its thickness, where it starts and ends along the canvas.
-STREAKS = ((30.0, 11.0, 0.08, 0.90), (11.5, 3.2, 0.34, 0.99), (47.5, 2.6, 0.02, 0.70), (18.6, 1.0, 0.12, 0.60),
-           (43.0, 0.9, 0.40, 0.95))
-SLITS = ((-4.2, 0.75), (2.4, 0.55), (6.6, 0.85))  # dry-brush gaps in the wide streak: offset from its middle, how far along
+SWEEP = (72.0, 24.0)    # points: drawn for a 28 point number, whose digits stand 20 high
+SHEAR = 0.176           # the critical's slant, 10 degrees (research's table, round 2)
+SWEEP_TINT = "#CC661F"  # burnt orange: the slice's white. Its tail is drawn darker, so the tint goes brown there
+SWEEP_SEE = 0.4         # how see-through the game draws it (ImageTransparency): about 60% opaque
+# Round 2's digits, for the sheet and the builder's Config: the gap between digits as a part of a digit's width, the
+# gradient from the digits' head to their foot, the outline and its width in points at a 28 point number.
+DIGITS = dict(gap=0.4, top="#FFF4D6", foot="#F2B43C", outline="#4E2C16", outlinePoints=1.0, slantDegrees=10)
+SPACE = 1.24            # Blender's letter spacing that gives that gap in its own face
 
 
 def sweep():
-    """The stroke behind a critical number: speed lines, not a cut. Five straight, level, parallel streaks leaning with
-    the number, each thin and faint at its tail and square at its head, the wide one split at the tail by dry gaps.
-    Nothing curved, nothing tapered to a point at the head, no drop, no spatter. A grey slice the game tints."""
+    """The mark under a critical number: one pull of a dry brush, level, leaning with the number. The brush lands
+    loaded at the number's first digit, a square press with a ragged edge, and runs dry along the pull: its bristles
+    part into long streaks and give out one by one, the middle ones last. No curl, no drop, no spatter, no point.
+    A grey slice the game tints: white where the paint is thick, darker toward the dry tail."""
     w, h = SWEEP
-    yy, xx = np.mgrid[0:round(h * K), 0:round(w * K)]
+    rng = np.random.default_rng(11)
+    rows, cols = round(h * K), round(w * K)
+    yy, xx = np.mgrid[0:rows, 0:cols]
     y = (yy + 0.5) / K
-    u = ((xx + 0.5) / K - SHEAR * (h / 2 - y)) / w       # along the canvas, the slant taken out
-    ease = lambda t: np.clip(t, 0, 1) ** 2 * (3 - 2 * np.clip(t, 0, 1))
-    value = np.zeros(y.shape, np.float32)
-    alpha = np.zeros(y.shape, np.float32)
-    for i, (yc, half, u0, u1) in enumerate(STREAKS):
-        t = (u - u0) / (u1 - u0)
-        d = np.abs(y - yc) - half * (0.22 + 0.78 * ease(t / 0.55))
-        a = np.clip(0.5 - d * K, 0, 1) * ease(t / 0.5) * np.clip(0.5 + t * (u1 - u0) * w * K, 0, 1) \
-            * np.clip(0.5 + (1 - t) * (u1 - u0) * w * K, 0, 1)
-        if i == 0:
-            for off, upto in SLITS:
-                gap = np.abs(y - yc - off) - 0.75 * (1 - ease(t / upto))
-                a *= 1 - np.clip(0.5 - gap * K, 0, 1) * (t < upto)
-        v = 0.66 + 0.34 * ease(t)                        # brighter toward the head
-        value = np.where(a > alpha, v, value)
-        alpha = np.maximum(alpha, a)
-    px = np.zeros((*y.shape, 4), np.float32)
-    px[..., :3] = value[..., None]
+    x = (xx + 0.5) / K - SHEAR * (h / 2 - y)             # along the pull, the slant taken out
+    u = (x - 4.0) / (w - 9.0)                            # 0 where the brush lands, 1 at the longest bristle's end
+    half = 9.0                                           # the mark is 18 points high
+    v = (y - h / 2) / half
+    ease = lambda t: np.clip(t, 0, 1) ** 2 * (3 - 2 * np.clip(t, 0, 1))   # noqa: E731
+    # each bristle is a level row: where it lands, where it gives out, how dry it is from the start
+    row_v = v[:, 0]
+    long = 1 - np.abs(np.clip(row_v + 0.12, -1, 1)) ** 2.2          # the longest a little above the middle
+    wander = np.convolve(rng.random(rows + 8), np.ones(9) / 9, "valid")   # neighbours give out near each other
+    end = 0.50 + 0.50 * long + 0.22 * (wander - 0.5) + 0.05 * (rng.random(rows) - 0.5)
+    start = 0.07 * np.abs(row_v) ** 3 + 0.016 * rng.random(rows)
+    dry = np.convolve(rng.random(rows + 2), (0.25, 0.5, 0.25), "valid")
+    # the grain along each bristle: slow along the pull, fine across it
+    coarse = rng.random((rows, 12))
+    grain = np.stack([np.interp(np.linspace(0, 11, cols), np.arange(12), r) for r in coarse])
+    grain = (grain + np.roll(grain, 1, 0) + np.roll(grain, -1, 0)) / 3
+    grain = 0.5 * dry[:, None] + 0.5 * grain
+    t = (u - start[:, None]) / (end[:, None] - start[:, None])
+    load = 1.55 * (1 - np.clip(t, 0, 1)) ** 0.85         # past 1 the paint covers; under it the grain shows
+    alpha = np.clip((load - grain) * 4.0 + 0.5, 0, 1)
+    alpha *= np.clip(0.5 + (u - start[:, None]) * (w - 9.0) * K, 0, 1)    # the landing's edge
+    alpha *= np.clip(0.5 + (1 - np.abs(v)) * half * K, 0, 1)              # the mark's upper and lower edge
+    alpha *= t < 1
+    value = 1.0 - 0.46 * ease(u / 0.85) - 0.07 * (grain - 0.5)
+    px = np.zeros((rows, cols, 4), np.float32)
+    px[..., :3] = np.clip(value, 0, 1)[..., None]
     px[..., 3] = alpha
     return px
 
@@ -228,13 +241,11 @@ def make(out: Path):
     px = sweep()
     rs.save(px, images / "CritSweep.png")
     listing["CritSweep"] = dict(file="images/CritSweep.png", pixels=[px.shape[1], px.shape[0]], points=list(SWEEP), pad=0.0,
-                                tint=SWEEP_TINT, shear=SHEAR,
-                                use="behind a critical number, under its stroke: centred on the number, its height twice the "
-                                    "number's size, its width the number's width and a half; it stretches along, never up")
+                                tint=SWEEP_TINT, shear=SHEAR, transparency=SWEEP_SEE, number=DIGITS,
+                                use="behind a critical number, under its outline, under its leading half: its height the "
+                                    "digits' own, its left edge a third of a digit before the first digit, its width 0.6 of "
+                                    "the number's and never under three times its height; it stretches along, never up")
     (out / "hud_art.json").write_text(json.dumps(dict(pixelsPerPoint=K, images=listing), indent=1), encoding="utf-8")
-
-
-SWEEP_TINT = "#E8862A"  # amber: under the number's gold and well clear of red
 
 
 # --- the review sheet -----------------------------------------------------------------------------------------------
@@ -258,16 +269,27 @@ def framed(page, x, y, portrait, rarity, small, scale):
 
 
 def crit_tile(ground, text="1,204"):
-    """A critical number on its sweep over a piece of the street, at 2 pixels a point (ui_sheet's own number)."""
+    """A critical number on its mark over a piece of the street, at 2 pixels a point: round 2's digits (wide apart, cream
+    to gold, 10 degrees, a medium warm-brown outline), the mark under their leading half."""
     tile = ground.copy()
     h, w = tile.shape[:2]
-    swept = rs.shrink(rs.load(LOADED / "CritSweep.png"), ui.K / K)
-    swept[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
-    rs.paste(tile, swept, (w - swept.shape[1]) // 2, (h - swept.shape[0]) // 2)
-    item = dict(x=w / ui.K / 2, y=h / ui.K / 2 - 28 * ui.CAP / 2, size=28, text=text, colour=ui.NUMBER["critical"],
-                align="CENTER", layer="number", shear=SHEAR, bold=0.012)
+    size = 28
+    item = dict(x=w / ui.K / 2, y=h / ui.K / 2 - size * ui.CAP / 2, size=size, text=text, colour="#FFFFFF",
+                align="CENTER", layer="number", shear=SHEAR, bold=0.012, space=SPACE)
     number = ui.text_layers(w, h, [item])["number"]
-    ui.over(tile, ui.c(ui.STROKE), ui.spread(number[..., 3], 3))
+    cover = number[..., 3]
+    filled, across = np.where(cover.any(1))[0], np.where(cover.any(0))[0]
+    top, left, right = filled[0], across[0], across[-1]
+    tall = round(size * ui.CAP * ui.K)                   # the digits' height; the comma hangs under it
+    digit = (right - left) / (len(text) - 0.5 + (len(text) - 1) * DIGITS["gap"])    # a digit's width, the comma half
+    swept = rs.shrink(rs.load(LOADED / "CritSweep.png"), tall / (SWEEP[1] * K))
+    swept[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
+    swept[..., 3] *= 1 - SWEEP_SEE
+    rs.paste(tile, swept, round(left - digit / 3), top)
+    ramp = np.clip((np.arange(h) - top) / tall, 0, 1)[:, None]
+    number[..., :3] = (np.array(rs.rgb(DIGITS["top"]), np.float32) * (1 - ramp)
+                       + np.array(rs.rgb(DIGITS["foot"]), np.float32) * ramp)[:, None, :]
+    ui.over(tile, ui.c(DIGITS["outline"]), ui.spread(cover, round(DIGITS["outlinePoints"] * ui.K)))
     rs.paste(tile, number, 0, 0)
     return tile
 
@@ -282,10 +304,10 @@ def sheet(out: Path):
     dark_num, bright_num = far[236:356, 20:320].copy(), street[86:206, 330:630].copy()
     tiles = [crit_tile(g) for g in (dark_num, bright_num)]            # before the page: text_layers resets the scene
     rs.OUT = out
-    W, H = 1640, 1612
+    W, H = 1640, 1694
     page = rs.canvas(W, H, (0.075, 0.07, 0.085))
     ink, soft = "#F2ECE2", "#B9B2C4"
-    text = [(24, 18, 26, "The HUD's own art: the launch portraits, the silhouette and the critical's sweep (AR3, section 3).", ink),
+    text = [(24, 18, 26, "The HUD's own art: the launch portraits, the silhouette and the critical's stroke, round 2 (AR3, section 3).", ink),
             (24, 54, 15, "Each portrait is the Voidkin's own model, the body three-quarter on and the head turned back to the player, cut to its "
                          "rarity frame's mask. Shown in the frame as the game lays it: Back, portrait, frame.", soft)]
     y = 92
@@ -316,18 +338,24 @@ def sheet(out: Path):
         text.append((400 + i * 196 + 52, y + 256, 12, rarity, soft))
         framed(page, 400 + i * 196 + 46, y + 272, f"PortraitUnknown{rarity}", rarity, True, 0.25)
     y += 404 + 20
-    text.append((24, y, 16, "The critical's sweep: speed lines behind the number. Alone as it ships (a grey slice, 4 pixels a point); tinted amber under "
-                            "a critical at 2 pixels a point and at 1, over the street's dark side and its bright end", ink))
+    text.append((24, y, 16, "The critical's stroke, round 2: one pull of a dry brush under the number's leading half, no taller than the digits. "
+                            "The digits are round 2's: wide apart, cream to gold, 10 degrees, a medium warm-brown outline", ink))
     swept = rs.load(LOADED / "CritSweep.png")
-    rs.paste(page, swept, 24, y + 34)
-    for j, tile in enumerate(tiles):
-        rs.paste(page, tile, 500 + j * 316, y + 34)
-        rs.paste(page, rs.shrink(tile, 0.5), 500 + j * 316, y + 34 + 128)
+    rs.paste(page, swept, 24, y + 40)
+    text.append((24, y + 40 + 104, 12, "alone as it ships: a grey slice, 4 pixels a point", soft))
     amber = swept.copy()
     amber[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
-    rs.paste(page, amber, 1150, y + 34)
-    text.append((1150, y + 34 + 230, 12, f"tinted {SWEEP_TINT}, alone", soft))
-    y += 34 + 262
+    rs.paste(page, amber, 24, y + 40 + 130)
+    text.append((24, y + 40 + 234, 12, f"tinted {SWEEP_TINT}, before the game makes it {round(SWEEP_SEE * 100)}% see-through", soft))
+    for j, tile in enumerate(tiles):
+        rs.paste(page, tile, 360 + j * 316, y + 40)
+        rs.paste(page, rs.shrink(tile, 0.5), 360 + j * 316, y + 40 + 128)
+        big = np.repeat(np.repeat(tile, 2, 0), 2, 1)[40:200, 60:540]
+        rs.paste(page, big, 1000, y + 40 + j * 168)
+    text.append((360, y + 40 + 196, 12, "at 2 pixels a point and at 1: the street's dark side, its bright end", soft))
+    text.append((1490, y + 40, 12, "the same two,", soft))
+    text.append((1490, y + 56, 12, "twice the size", soft))
+    y += 40 + 336
     text.append((24, y, 16, "Each image alone at 64 px over dark, as moderation meets it", ink))
     names = [f"Portrait{who}" for who in PORTRAITS] + ["PortraitUnknownCommon"]
     for i, name in enumerate(names):

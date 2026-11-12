@@ -1061,6 +1061,10 @@ return {
 			t.Check("the second rides the Left Arm", weld ~= nil and weld.Part0 ~= nil and weld.Part0.Name == "Left Arm", if weld and weld.Part0 then weld.Part0.Name else "no weld")
 			if first and second then
 				t.Near("at 0.6 of the first's size", second.Size.X / first.Size.X, 0.6, 0.01)
+				-- AR2, section 7: the copy without the ties, which a sleeve can't hide, is as deep as the face alone. The whole
+				-- mask at 0.6 would be 0.6 of the first's depth.
+				local depth = second.Size.Z / first.Size.Z
+				t.Check("without its ties: as deep as the face alone", depth < 0.15, string.format("%.3f of the first's depth", depth))
 			end
 			local look = if second then second:FindFirstChildOfClass("SurfaceAppearance") else nil
 			t.Check("in the mask's own light only", look ~= nil and look.EmissiveTint == Shades.MaskTint and look.EmissiveStrength == Shades.MaskEmissive, if look then `{look.EmissiveTint:ToHex()} at {look.EmissiveStrength}` else "no surface")

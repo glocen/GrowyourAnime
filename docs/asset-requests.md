@@ -596,6 +596,20 @@ Grey boxes on the delivered Burst clip: timing and size only, no art. Made on Op
   - The light and the paper get their own content check (section 3).
 - **Hours:** about 0.6.
 
+### 9. In the game: the second mask without its ties (Faber, 2026-11-12)
+
+- **The upload:** `Shade_MaskBrawlerBare` for the group, `134287799840335`, by `ModelAssembly.PublishMesh`, Approved. Logged in `docs/asset-log.md`.
+- **The template:** `ELITE.Brawler` in `tools/studio/Models/Shade.luau` names that mesh (`Mesh`) at the recipe's new centre, with the same axes. `src/storage/Shade.rbxm` is built again; in Studio its 16 joints are all attached.
+- **Condition 2 holds,** read off a spawned elite: the three uploaded maps, `#FFE2B8` at 6, 0.6 of the first mask's width.
+- **Self-test:** the elite case now checks the copy is as deep as the face alone (0.069 of the first mask's depth; the whole mask would be 0.6). Its 10 checks pass.
+- **Condition 1's looks:** the game's elite under the game's lighting (ClockTime 14.5, bloom on), in Idle and Guard, on dark and bright ground. The images, internal, are in `build/captures/ar2/`.
+  - **From behind, from below-left and from below-behind** (section 6's angles; `elite_bare_close.png`, dark above, bright below): no pale rod or strip in the cuff's hollow or past the sleeve, in any column.
+  - **One pale shape stays from below-left:** a notched strip beside the sleeve. It's the head's own mask, seen edge-on past the arm. Hiding the head's mask removes it; hiding the second mask doesn't (`elite_bare_which.png`).
+  - From behind, the strings high on the head are the first mask's, as designed.
+  - **At 64 px,** from the front, the three-quarter and the side (`elite_bare_64.png`): the small mask stays pale on the arm, and from the front it shows as a thin pale edge, the copy's own face at its angle.
+- **Next:** condition 9's contact sheet is Modulo's.
+- **Hours:** about 0.7.
+
 ## AR3. The UI kit
 
 For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against a real Voidkin's portrait.

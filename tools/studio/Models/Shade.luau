@@ -23,6 +23,7 @@ local MESHES = {
 	Shade_MaskGuard = 127621233124561,
 	Shade_MaskDasher = 92039325647952,
 	Shade_MaskSupport = 82027470218034,
+	Shade_MaskBrawlerBare = 134287799840335, -- the elite's copy without its ties (AR2, section 7)
 }
 -- AR2, section 4 (2026-11-12): the colour map grey under the lit edges and near white under the masks' cuts, and the
 -- glow mask written for the recipe's two strengths over it. The two go up together and are never paired with the first
@@ -46,13 +47,15 @@ local STRENGTH = 32
 local MASK_STRENGTH = 12
 local BODY_TINT = Color3.fromHex("EA4B4F") -- Strength's, until a spawn gives its type
 local MASK_TINT = Color3.fromHex("FFE2B8")
--- The elite's second mask (AR2, section 5; the recipe's `elite`): the same mask again at ELITE_SIZE of it, on the Left
--- Arm's front corner, where its middle goes and where its own +X, +Y and -Z point, at an ordinary Shade's size (the
--- rig's ScaleTo carries it). Only the Brawler's is past the content check; the others wait on their own.
+-- The elite's second mask (AR2, sections 5 and 7; the recipe's `elite`): its Mesh at ELITE_SIZE, on the Left Arm's front
+-- corner, where its middle goes and where its own +X, +Y and -Z point, at an ordinary Shade's size (the rig's ScaleTo
+-- carries it). The Brawler's is a copy of its mask without the ties, which a sleeve can't hide: the same triangles and
+-- UVs, so the same surface. Only the Brawler's is past the content check; the others wait on their own.
 local ELITE_SIZE = 0.6
 local ELITE = {
 	Brawler = {
-		Centre = Vector3.new(-1.7406, 3.5561, -0.2868),
+		Mesh = "Shade_MaskBrawlerBare",
+		Centre = Vector3.new(-2.0694, 3.5561, -0.6156),
 		Right = Vector3.new(0.7002, -0.1392, -0.7002),
 		Up = Vector3.new(0.0984, 0.9903, -0.0984),
 		Facing = Vector3.new(-0.7071, 0, -0.7071),
@@ -105,8 +108,7 @@ return function(Assembly: any): Model
 		Assembly.Weld(rig("Head"), part)
 	end
 	for role, at in ELITE do
-		local piece = `Shade_Mask{role}`
-		local part = Assembly.MeshPart(model, `EliteMask_{role}`, MESHES[piece], at.Centre)
+		local part = Assembly.MeshPart(model, `EliteMask_{role}`, MESHES[at.Mesh], at.Centre)
 		part.Size *= ELITE_SIZE
 		part.CFrame = CFrame.fromMatrix(at.Centre, at.Right, at.Up, -at.Facing)
 		surface(part, MASK_TINT, MASK_STRENGTH)

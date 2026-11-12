@@ -6,11 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away: TR2's closing takes and their two fixes accepted; only the phone-size take is left. Lyric's model: competent, and its two head fixes accepted (AR4, section 5). The Shade in the engine: body 16, mask 6, Strength's and Endurance's glow tints pushed; Faber's confirm row is next (AR2, section 6). **Modulo: after Lyric's clips, Rook's ram rebake (AR1, section 5): research and the builder say yes.** Your Opus pieces are listed under `docs/production-plan.md`, "Models". Next: the Shade's confirm row, Haymaker's final, Lyric's clips.
 
-**Faber (builder).** 2026-11-12: Rook is in the game (`docs/asset-requests.md`, AR1, section 6).
-- His meshes and four maps are uploaded for the group, the rebaked glow mask among them. A rook lead wears his template; other leads keep the grey stand-in.
-- His clips key the piston and the tape. The glow is cold until Haymaker's replay lights it 0 to 10. Section 2's checks pass on the test pad.
-- Tests: Fight 117/117, logic 1,376, type check 0 new. The two intermittent HUD/Base cases are still not diagnosed.
-- Next: AR2, section 7's bare mask, then Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
+**Faber (builder).** 2026-11-12: Rook is in the game (`docs/asset-requests.md`, AR1, section 6), and the elite wears its mask without the ties (AR2, section 9).
+- Rook: his meshes and maps are uploaded for the group, the rebaked glow mask among them. His template has the piston and tape joints. The glow is cold until Haymaker's replay lights it 0 to 10.
+- The elite: the bare mask is uploaded and in the template. Condition 1's looks pass from behind and below, in Idle and Guard, on dark and bright. **Modulo:** condition 9's contact sheet is yours.
+- Tests: Fight 117/117 and the elite case 10/10, logic 1,376, type check 0 new. The two intermittent HUD/Base cases are still not diagnosed.
+- Next: Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Quaestor:** the Shade's burst block-in waits on your verdict (AR2, section 8): three variants, my pick C, the sky lantern. And the ram's strength of 10 is yours to tune on Haymaker's replay.
@@ -60,6 +60,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. The elite's mask without its ties, in the game (Faber)
+
+- **What:** the copy of the Brawler mask without its ties, uploaded for the group, rides the elite's Left Arm at the recipe's new centre. A self-test check holds it to the face's depth.
+- **Where:** `tools/studio/Models/Shade.luau` (`ELITE`), `src/storage/Shade.rbxm`. The record: `docs/asset-requests.md`, AR2, section 9.
+- **Open:** condition 9's contact sheet (Modulo).
 
 ### 2026-11-12. Rook in the game (Faber)
 

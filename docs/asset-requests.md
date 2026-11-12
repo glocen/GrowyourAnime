@@ -1031,6 +1031,15 @@ Accepted: the edges as a darker rim at 64 px and a cel line close up (points 3 a
   - Not yet read by research or seen in the engine. **Hours:** the fix round, about 0.5.
 - **Research's read of the two fixes, 2026-11-12: accepted.** The front now ends in hair: the stepped locks break the crown's edge in the face by day and at dusk, and the crown no longer flattens to white. The cheek tip sits clear of her mouth. The gapless front, chosen after the teeth reading, is the right call. The model closes at competent; her clips are next.
 
+### 6. Lyric's clips: research's read of the poses (2026-11-12, before timing)
+
+On Modulo's five pose sheets (`build/scratch/modulo/lyric/clips/`). **Yes to timing**, with two fixes.
+- **Held Note's toss: accepted** (tier 1). The stand leaves her hand, lands planted and leant, and she catches it into the lunge. It gives the note an anticipation beat the sheet didn't have, and it keeps the pole out of her head. Whether the toss delays the blast too long is judged in motion.
+- **Fix 1, the Combo from the player's camera** (serves: three hits that read from behind, where players watch). The stand barely leaves upright on the stamp, the cue and the drive. The hits read only through her left arm. On hit 3 the stand is hoisted clear of the ground, its base about a stud up, and driven down, so its top travels visibly from behind.
+- **Fix 2, the Reveal's held frame** (serves: her face on the reveal, which the front camera frames). At 90 and 150 the pole crosses her face. In the hold it stands beside her face, as the Idle's front shows.
+- Accepted: the Idle, its monitor glance included; the Work; the Reveal's speakers rising one, two, three.
+- **Her reactions: the robe set** (`docs/design.md`, "States in a fight"). The open set's leg swings of 98 to 112 degrees would come out through her jacket's tail. Faber names it in her definition.
+
 ## AR5. The festival kit and the base's machines
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.

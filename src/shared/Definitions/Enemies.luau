@@ -22,7 +22,7 @@ export type Row = {
 
 local rows: { Row } = {
 	{ Id = "brawler", Name = "Brawler", Kind = "Ordinary", Action = "ShadeSwipe", Type = "Strength", Rig = "Shade", Mask = "Brawler" },
-	-- The elite's second mask on its shoulder waits on AR2 (docs/asset-requests.md).
+	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Strength", Rig = "Shade", Mask = "Brawler", Scale = 1.35 },
 	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Type = "Intelligence", Rig = "Box", Mask = "Round", Size = { 4.2, 7.4, 2.6 } },
 	-- The replay's and the self-test's target: takes every hit, never answers.

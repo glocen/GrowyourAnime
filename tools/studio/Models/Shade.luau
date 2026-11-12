@@ -5,8 +5,9 @@
 -- then Assembly.Serialize(model) into src/storage/Shade.rbxm (ServerStorage.Templates.Shade), which FightService clones.
 -- The meshes need build/import/Shade_<Piece>.txt (copied from the handoff) for their centres.
 -- The rig is Roblox's plain R6 with its six parts hidden: the body's five pieces are welded on their parts and the four
--- masks on the Head, each named Mask_<Role>. A spawn keeps its row's mask and drops the others, and tints the body's
--- lit edges with its type (Config.Shades): a script may set EmissiveTint, never the maps.
+-- masks on the Head, each named Mask_<Role>; an elite's second mask, EliteMask_<Role>, on the Left Arm (AR2, section 5).
+-- A spawn keeps its row's masks and drops the others, and tints the body's lit edges with its type (Config.Shades): a
+-- script may set EmissiveTint and EmissiveStrength, never the maps.
 
 local Players = game:GetService("Players")
 
@@ -23,10 +24,13 @@ local MESHES = {
 	Shade_MaskDasher = 92039325647952,
 	Shade_MaskSupport = 82027470218034,
 }
+-- AR2, section 4 (2026-11-12): the colour map grey under the lit edges and near white under the masks' cuts, and the
+-- glow mask written for the recipe's two strengths over it. The two go up together and are never paired with the first
+-- two (97770465927421, 104234918338692).
 local MAPS = {
-	Color = "rbxassetid://97770465927421",
+	Color = "rbxassetid://101466364915316",
 	Roughness = "rbxassetid://139349513496154",
-	Emissive = "rbxassetid://104234918338692",
+	Emissive = "rbxassetid://102819316179447",
 }
 local BODY = {
 	{ Piece = "Shade_Torso", On = "Torso" },
@@ -36,9 +40,24 @@ local BODY = {
 	{ Piece = "Shade_LeftLeg", On = "Left Leg" },
 }
 local MASKS = { "Brawler", "Guard", "Dasher", "Support" }
-local EMISSIVE = 2 -- the recipe's strength; the game's is Config.Shades.Emissive, set per spawn
+-- The recipe's strengths: the body's five pieces and a mask. The game's are Config.Shades.Emissive and MaskEmissive, set
+-- per spawn.
+local STRENGTH = 32
+local MASK_STRENGTH = 12
 local BODY_TINT = Color3.fromHex("EA4B4F") -- Strength's, until a spawn gives its type
 local MASK_TINT = Color3.fromHex("FFE2B8")
+-- The elite's second mask (AR2, section 5; the recipe's `elite`): the same mask again at ELITE_SIZE of it, on the Left
+-- Arm's front corner, where its middle goes and where its own +X, +Y and -Z point, at an ordinary Shade's size (the
+-- rig's ScaleTo carries it). Only the Brawler's is past the content check; the others wait on their own.
+local ELITE_SIZE = 0.6
+local ELITE = {
+	Brawler = {
+		Centre = Vector3.new(-1.7406, 3.5561, -0.2868),
+		Right = Vector3.new(0.7002, -0.1392, -0.7002),
+		Up = Vector3.new(0.0984, 0.9903, -0.0984),
+		Facing = Vector3.new(-0.7071, 0, -0.7071),
+	},
+}
 -- Points the game reads, in model space (the recipe's frame: the feet on y = 0, facing -Z, the root at y = 3).
 local POINTS = {
 	{ Name = "Chest", On = "Torso", At = Vector3.new(0, 3.0, -0.6) }, -- where a hit lands
@@ -46,12 +65,12 @@ local POINTS = {
 	{ Name = "Collar", On = "Torso", At = Vector3.new(0, 4.5, -0.1) }, -- where the burst starts, where the face was
 }
 
-local function surface(part: MeshPart, tint: Color3)
+local function surface(part: MeshPart, tint: Color3, strength: number)
 	local look = Instance.new("SurfaceAppearance")
 	look.ColorMapContent = Content.fromUri(MAPS.Color)
 	look.RoughnessMapContent = Content.fromUri(MAPS.Roughness)
 	look.EmissiveMaskContent = Content.fromUri(MAPS.Emissive)
-	look.EmissiveStrength = EMISSIVE
+	look.EmissiveStrength = strength
 	look.EmissiveTint = tint
 	look.Parent = part
 end
@@ -76,14 +95,22 @@ return function(Assembly: any): Model
 	end
 	for _, piece in BODY do
 		local part = Assembly.MeshPart(model, piece.Piece, MESHES[piece.Piece], Assembly.Centre(piece.Piece))
-		surface(part, BODY_TINT)
+		surface(part, BODY_TINT, STRENGTH)
 		Assembly.Weld(rig(piece.On), part)
 	end
 	for _, role in MASKS do
 		local piece = `Shade_Mask{role}`
 		local part = Assembly.MeshPart(model, `Mask_{role}`, MESHES[piece], Assembly.Centre(piece))
-		surface(part, MASK_TINT)
+		surface(part, MASK_TINT, MASK_STRENGTH)
 		Assembly.Weld(rig("Head"), part)
+	end
+	for role, at in ELITE do
+		local piece = `Shade_Mask{role}`
+		local part = Assembly.MeshPart(model, `EliteMask_{role}`, MESHES[piece], at.Centre)
+		part.Size *= ELITE_SIZE
+		part.CFrame = CFrame.fromMatrix(at.Centre, at.Right, at.Up, -at.Facing)
+		surface(part, MASK_TINT, MASK_STRENGTH)
+		Assembly.Weld(rig("Left Arm"), part)
 	end
 	for _, point in POINTS do
 		Assembly.Attach(rig(point.On), point.Name, point.At)

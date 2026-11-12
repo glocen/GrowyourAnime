@@ -286,25 +286,31 @@ local function buildBox(row: Enemies.Row, name: string): Model
 end
 
 -- A Shade in AR2's rig (ServerStorage.Templates.Shade, tools/studio/Models/Shade.luau): the row's mask kept and the
--- others dropped, the body's lit edges in its type's colour and the mask in its own (Config.Shades), at the row's scale.
+-- others dropped, an elite's second mask on its Left Arm too, the body's lit edges in its type's colour and the masks in
+-- their own (Config.Shades), at the row's scale.
 local function buildShade(row: Enemies.Row, name: string, type: string): Model
 	local templates = ServerStorage:WaitForChild("Templates")
 	local model = (templates:WaitForChild("Shade") :: Model):Clone()
 	model.Name = name
 	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
 	local keep = `Mask_{row.Mask}`
+	local second = if row.Kind == "Elite" then `EliteMask_{row.Mask}` else nil
 	assert(model:FindFirstChild(keep), `{row.Id}: the rig has no {keep}`)
+	-- Only the Brawler's second mask is past its content check (AR2, section 5): another elite waits for its own.
+	assert(second == nil or model:FindFirstChild(second), `{row.Id}: the rig has no {second}`)
 	for _, part in model:GetChildren() do
-		if part:IsA("BasePart") and string.sub(part.Name, 1, 5) == "Mask_" and part.Name ~= keep then
+		local mask = string.sub(part.Name, 1, 5) == "Mask_" or string.sub(part.Name, 1, 10) == "EliteMask_"
+		if part:IsA("BasePart") and mask and part.Name ~= keep and part.Name ~= second then
 			part:Destroy()
 		end
 	end
 	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
-			local onMask = (look.Parent :: Instance).Name == keep
+			local on = (look.Parent :: Instance).Name
+			local onMask = on == keep or on == second
 			look.EmissiveTint = if onMask then Shades.MaskTint else tint
-			look.EmissiveStrength = Shades.Emissive
+			look.EmissiveStrength = if onMask then Shades.MaskEmissive else Shades.Emissive
 		end
 	end
 	if row.Scale and row.Scale ~= 1 then

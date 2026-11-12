@@ -870,7 +870,7 @@ return {
 			t.Check("it's the Shade rig", shade:GetAttribute("Rig") == "Shade", tostring(shade:GetAttribute("Rig")))
 			local masks = {}
 			for _, part in shade:GetChildren() do
-				if string.sub(part.Name, 1, 5) == "Mask_" then
+				if string.sub(part.Name, 1, 5) == "Mask_" or string.sub(part.Name, 1, 10) == "EliteMask_" then
 					table.insert(masks, part.Name)
 				end
 			end
@@ -882,6 +882,7 @@ return {
 			local kind = tostring(shade:GetAttribute("Type"))
 			t.Check("its body is lit in its type's colour", bodyLook ~= nil and bodyLook.EmissiveTint == Shades.Tint[kind], kind)
 			t.Check("its mask in the mask's own", maskLook ~= nil and maskLook.EmissiveTint == Shades.MaskTint)
+			t.Check("each at its own strength, the recipe's (AR2, section 4)", bodyLook ~= nil and maskLook ~= nil and bodyLook.EmissiveStrength == Shades.Emissive and maskLook.EmissiveStrength == Shades.MaskEmissive, if bodyLook and maskLook then `{bodyLook.EmissiveStrength} and {maskLook.EmissiveStrength}` else "")
 			local root = shade:FindFirstChild("HumanoidRootPart") :: BasePart?
 			if root then
 				local params = RaycastParams.new()
@@ -948,6 +949,53 @@ return {
 					t.Row("seconds from the fall to the burst, the hold included", nil, nil, (hideAt :: number) - (downAt :: number), "s")
 				end
 			end
+			t.Server("FightSpawn") -- clears it
+		end,
+	},
+	{
+		Name = "Fight: an elite wears its mask twice, the second on its Left Arm",
+		Run = function(t: any)
+			-- docs/asset-requests.md, AR2, section 5: the same mask at 0.6 of it, welded to the Left Arm, in the mask's own
+			-- light only; an ordinary Shade has none.
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if type(level) ~= "number" then
+				return
+			end
+			local spawned = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
+			t.Check("the elite spawns", type(spawned) == "table" and spawned.Ok == true, tostring(type(spawned) == "table" and spawned.Error))
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			local model: Model? = nil
+			waitFor(t, 5, function(): boolean
+				model = fighterModel(spawned.Id)
+				return model ~= nil and model:FindFirstChild("EliteMask_Brawler") ~= nil
+			end)
+			local elite = model :: Model
+			t.Check("its model reaches this client", elite ~= nil)
+			if elite == nil then
+				t.Server("FightSpawn")
+				return
+			end
+			local masks = {}
+			for _, part in elite:GetChildren() do
+				if string.sub(part.Name, 1, 5) == "Mask_" or string.sub(part.Name, 1, 10) == "EliteMask_" then
+					table.insert(masks, part.Name)
+				end
+			end
+			table.sort(masks)
+			t.Check("it wears its mask twice and no other", #masks == 2 and masks[1] == "EliteMask_Brawler" and masks[2] == "Mask_Brawler", table.concat(masks, ", "))
+			local first = elite:FindFirstChild("Mask_Brawler") :: BasePart?
+			local second = elite:FindFirstChild("EliteMask_Brawler") :: BasePart?
+			local weld = if second then second:FindFirstChildOfClass("Weld") else nil
+			t.Check("the second rides the Left Arm", weld ~= nil and weld.Part0 ~= nil and weld.Part0.Name == "Left Arm", if weld and weld.Part0 then weld.Part0.Name else "no weld")
+			if first and second then
+				t.Near("at 0.6 of the first's size", second.Size.X / first.Size.X, 0.6, 0.01)
+			end
+			local look = if second then second:FindFirstChildOfClass("SurfaceAppearance") else nil
+			t.Check("in the mask's own light only", look ~= nil and look.EmissiveTint == Shades.MaskTint and look.EmissiveStrength == Shades.MaskEmissive, if look then `{look.EmissiveTint:ToHex()} at {look.EmissiveStrength}` else "no surface")
 			t.Server("FightSpawn") -- clears it
 		end,
 	},

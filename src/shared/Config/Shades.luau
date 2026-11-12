@@ -5,7 +5,10 @@
 -- NL_Debug:Invoke("Tune", "Shades.MaskTint", Color3.fromHex("FFE2B8")), then spawn again.
 
 return {
-	Emissive = 2, -- the glow's strength on every piece (SurfaceAppearance.EmissiveStrength)
+	-- The glow's strengths (SurfaceAppearance.EmissiveStrength), the recipe's (AR2, section 4): the glow mask is written for
+	-- these two over the colour map, so tune both by the same factor, and look again at 64 px.
+	Emissive = 32, -- the body's five pieces
+	MaskEmissive = 12, -- a mask, the elite's second too
 	Tint = {
 		Strength = Color3.fromHex("EA4B4F"),
 		Endurance = Color3.fromHex("F4902A"),

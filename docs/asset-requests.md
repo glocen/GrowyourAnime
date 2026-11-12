@@ -207,7 +207,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): the two maps wait for the builder's upload. The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): it waits for the builder's install. Open: the burst's light and paper, an effect built with the builder.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve, so it's back with Modulo (section 6). Open: the burst's light and paper, an effect built with the builder.
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -434,6 +434,38 @@ A minor asset, so no blockout round: one comparison sheet, `build/handoff/Shade/
   10. No clip changes for it; a clip retimed or re-posed for the elite is checked again. Sections 2 and 4 stand.
 - **What I see wrong:** from behind and from the lead's other side the second mask is a sliver or hidden, so there only the size says elite. It's on a swinging arm: the clips weren't made with it, and condition 9's contact sheet is the first look at that, which is mine to draw when the builder has it in. Drawn as a blockout with the cuts in the type's colour, not as the baked mask. Not seen in the engine, not read by research.
 - **Hours:** about 0.5.
+
+### 6. In the game: the two maps and the elite's second mask (Faber, 2026-11-12)
+
+- **The maps,** uploaded together for the group (section 4, condition 1): Color `101466364915316` and Emissive `102819316179447`, replacing both old ones. The Roughness map is unchanged. Logged in `docs/asset-log.md`.
+- **The strengths** are in `Config.Shades`: `Emissive` 32 on the body's five pieces, `MaskEmissive` 12 on a mask, the elite's second included. `FightService`'s `buildShade` sets each part's tint and strength by whether the part is a mask.
+- **The elite's second mask:**
+  - `EliteMask_Brawler` uses the Brawler mask's mesh and surface at 0.6.
+  - It sits at the recipe's centre and axes (`ELITE` in `tools/studio/Models/Shade.luau`), scaled with the rig, and is welded to the Left Arm.
+  - Only an Elite keeps it, and only the copy that matches its own mask.
+  - Self-test case: "Fight: an elite wears its mask twice, the second on its Left Arm".
+- **Rojo:** the live sync left the new mask's weld unattached in Studio, though the file holds it. The file is byte for byte Studio's own build. The weld is set in Studio to match the file, and the place is saved. The new case caught it.
+- **Tests:**
+  - the Shade and fight cases, 29/29; logic, 1,376; type check, 0 new; world report, empty;
+  - the full self-test, 286/286 on its second run. Its first run failed two cases outside this piece: the HUD's health bar read 0.71 for 0.74, and four Base `Detail` labels read 11.9 px at the smallest phone. Both pass alone; they're intermittent and not yet diagnosed.
+- **The engine looks** (the content check's conditions, a fresh read):
+  - The setup: the game's own models, under the game's lighting (ClockTime 14.5, bloom on), on a dark and a bright ground.
+  - The images, internal: `build/captures/ar2/`.
+  - **Section 4, condition 3: PASS.**
+    - The coat keeps the sheet's violet-to-warm fade, with no red streaked field (`shade_64_dark.png`, `shade_64_bright.png`).
+    - From low behind and low in front, the lifted legs' and the sleeves' ends stay dark inside a thin rim, and bloom doesn't fill them (`shade_64_low_dark.png`, `shade_64_low_bright.png`).
+  - **Section 5, condition 4: PASS.** The small mask stays pale at 64 px from three headings, with no pink from the seam, the collar or the cuff.
+  - **Section 5, condition 3: BLOCK.** The copy's tie stands out of the sleeve as a pale rod:
+    - from below, in idle and in the guard (`elite_mask_close.png`, crops 1 to 3; `elite_detail_dark.png` and `elite_detail_bright.png`, column 2);
+    - from behind, in the guard, with a second short strip past the mask's lower end (`elite_arm_behind.png`, panels 2 and 4).
+    - Idle from behind is clean.
+- **Back to Modulo,** with either way going to the check again:
+  - seat the copy so its ties end inside the arm in every clip, which is a placement change (condition 2);
+  - or make a copy of the mask without ties, which is a new mesh (condition 7).
+  - Then the looks again from behind and below, idle and guard, on dark and bright.
+  - Condition 9's contact sheet waits on that. Until then the elite plays with its second mask in the dev build only.
+- **Seen, for research:** under the game's bloom, the Strength edges read pale salmon-pink, not the sheet's red. Whether the type still reads is research's call.
+- **Hours:** about 2.5, the engine looks included.
 
 ## AR3. The UI kit
 

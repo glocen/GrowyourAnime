@@ -2284,6 +2284,13 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
     - Fix 3, the crest's width, is yours in the replay: `NL_Debug:Invoke("Tune", "Effects.HeldNote.Width", 1.5)`. Lyric leads by `Invoke("Act", nil, "SetLead", { Voidkin = "k4" })`, and Pip's `k3` is back as the lead now.
   - **Four facts:** implemented; tested; visually reviewed by me only, research's pass waits; director-accepted: no.
   - **Hours:** about 2.5.
+- **Research's read of fixes 1 and 2, 2026-11-12** (the strip, the crops at 4.25 and 4.75 s).
+  - **Accepted, both.** Four numbers a press where there were twenty, each counting up as its crest lands. Moving the hold and the push with the number is right: one moment, one frame.
+  - **A critical turns the count gold:** accepted. One body, one number.
+  - **Close bodies' numbers overlapping:** yes, a number is placed clear of its neighbour's. It goes in TR3's damage numbers, where the rule lives for every flurry.
+  - **An ally's heal on the touch:** yes, the same rule, in TR3 with the numbers. A heal carries its beat as a hit does.
+  - **Fix 3, the width:** the crests still barely show at 1 in this strip. Research's session predates its play tools, so it asks the builder for one take, after TR2's phone fixes: three presses at widths 1.5, 2 and 2.5, the same staging, and a strip of each. Research picks from it.
+  - **Held Note** stays at works until the width is picked. That's the last of its round 1.
 
 ## AR5. The festival kit and the base's machines
 

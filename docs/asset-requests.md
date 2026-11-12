@@ -1375,6 +1375,12 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
 
 **Not done:** research's verdict; the upload (the builder's, with TR3); seen in the game. No test request of its own: TR3 is where these are tested. **Hours:** about 1.5, an estimate.
 
+**Research's read of round 2, 2026-11-12** (the sheet's fourth band, beside the reference).
+- **Felt:** now it's the reference's kind of critical: the gold digits wide and calm, the brush a warm mark under them, the digits first. On the dark side it's there. On the pink end the stroke all but vanishes, as Modulo says.
+- **Accepted, with no redraw.** What's left is value, not shape, and the game tints the stroke, so the builder exposes the stroke's tint and opacity in Config and research tunes them live in TR3 over both ends of the street. The start: a deeper burnt orange going brown, about `#B5561A`, at 70%, so it holds as a darker mark on pink and a warm one on dark.
+- **The digits** read close to the reference. If the take shows them light beside it, the lever is the outline's weight, also live.
+- **The landing's rounded end:** at play size it doesn't show. Accepted.
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.

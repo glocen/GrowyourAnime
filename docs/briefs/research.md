@@ -24,7 +24,7 @@ AGENTS.md's four come first. In your first message of a session, restate each in
 
 **Never:**
 
-- game code, assets, uploads or Studio. The studio kit's check and hook scripts are yours to write and to test on made-up cases; installing one in a game is the builder's;
+- game code, assets or uploads. Studio only for a QA check you judge a piece genuinely needs, in a turn agreed with the builder on the Now board, playtests and captures only, never an edit (the director, 2026-11-12). The studio kit's check and hook scripts are yours to write and to test on made-up cases; installing one in a game is the builder's;
 - write outside `docs/research/` and the design docs without the director's OK for that change;
 - pull or switch branches, or force a push;
 - run code from a tutorial, or paste it into the repo. Write your own minimal test from the official API docs.

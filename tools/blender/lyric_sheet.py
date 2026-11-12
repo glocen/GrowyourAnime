@@ -17,8 +17,10 @@ import math
 import sys
 from pathlib import Path
 
+import bmesh
 import bpy
 from mathutils import Matrix, Quaternion, Vector
+from mathutils.bvhtree import BVHTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
@@ -38,6 +40,7 @@ MIC = Vector((0, -0.55, STAFF - 0.3))  # the mic's head on the staff, from its b
 HAND = 1.35                      # from a shoulder's pivot down to the middle of the fist
 REST = {"dr": ((2.62, -0.55, 5.0), 12), "dl": ((-2.62, -0.55, 5.0), -12)}  # each speaker: its middle, its turn inward
 SPEAKER = 0.9                    # a speaker's scale: its cabinet is drawn 1 by 1.3 studs
+RAIL = 24                        # degrees: the model's chalk rail across her back, high at her right
 B = rs.B
 loft, slab = rs.loft, rs.slab
 Z = Vector((0, 0, 1))
@@ -86,11 +89,15 @@ def staff(scene, m):
         *mic])
 
 
-def speaker(scene, m, name, hot):
+def speaker(scene, m, name, hot, model=False):
     """A speaker that hovers: a dark cabinet, a pale frame round its face, one cone in a lit ring with a slot above
     it, a handle on top, and a lit bar on its back for the player's camera. One cone, never two side by side: two
-    would look back at you. Hot, the ring is wider."""
+    would look back at you. Hot, the ring is wider. The model's back has a lit ring instead of the bar, round a flat
+    dark port, so it reads as a speaker from behind too (research's fix 2): a port, not a second cone."""
     ring, cone = (0.4, 0.25) if hot else (0.35, 0.27)
+    back = [ss.plate("BackRing", ss.disc(0, -0.04, 0.33, 20), -0.44, 0.03, m["Glow"]),
+            ss.plate("BackPort", ss.disc(0, -0.04, 0.23, 16), -0.455, 0.03, m["Backstage"])] if model else [
+            slab("BackBar", (0, -0.415, 0.3), (0.44, 0.03, 0.08), m["Glow"])]
     return piece(scene, name, [
         loft("Cabinet", [(-0.64, 0, 0, 0.98, 0.76), (0.64, 0, 0, 1.02, 0.8)], m["BackstageLift"], n=B),
         slab("Frame", (0, 0.39, 0), (0.92, 0.05, 1.18), m["Chalk"]),
@@ -102,13 +109,16 @@ def speaker(scene, m, name, hot):
         slab("Handle", (0, 0, 0.74), (0.5, 0.12, 0.07), m["Chrome"]),
         *[slab("HandlePost", (e * 0.22, 0, 0.68), (0.07, 0.1, 0.1), m["ChromeDeep"]) for e in (-1, 1)],
         slab("BackPlate", (0, -0.39, 0), (0.8, 0.04, 1.06), m["Backstage"]),
-        slab("BackBar", (0, -0.415, 0.3), (0.44, 0.03, 0.08), m["Glow"]),
+        *back,
         bl.place(bl.cylinder("Foot", 0.3, 0.07, 12, m["Rose"]), location=(0, 0, -0.69))])
 
 
-def build(scene, hot=False):
+def build(scene, hot=False, model=False):
     """Lyric, standing square. Returns the joints: empties at R6's pivots, and the three pieces of their own (staff,
-    dr, dl), which the poses place. `hot` is the signature's note: her mouth open, the speakers' rings wide."""
+    dr, dl), which the poses place. `hot` is the signature's note: her mouth open, the speakers' rings wide. `model`
+    is the build lyric_model.py finishes, with research's fixes on the sheet: the bob's back cut into locks that
+    stand off the head, a chalk rail across her back on the slant with the meter standing on it, and the speakers'
+    lit rings on their backs too."""
     m = materials()
     joints = {}
     for name, at in rs.PIVOTS.items():
@@ -131,10 +141,34 @@ def build(scene, hot=False):
     def hem(t, lift=0.0):
         return 1.86 + 0.66 * math.cos(t) + 0.04 * math.sin(2 * t) + lift
 
+    jacket = loft("Jacket", [(hem, -0.14, 0, 2.5, 1.66), (2.8, 0, 0, 2.16, 1.16), (4.0, 0, 0, 2.08, 1.08)], m["Limelight"], n=B)
+
+    # her back, for the player's camera: a level meter, lit. On the model it stands on a chalk rail that crosses her
+    # back on the slant, high at her right (research's fix 1), so the bars' feet climb with it. Both lie on the
+    # jacket's back, which flares out toward the hem.
+    if model:
+        tree = BVHTree.FromPolygons([v.co for v in jacket.data.vertices], [f.vertices for f in jacket.data.polygons])
+
+        def on_back(x, z, proud):
+            hit = tree.ray_cast(Vector((x, -3.0, z)), Vector((0, 1, 0)), 4.0)[0]
+            return Vector((x, hit.y - proud, z))
+
+        rise = math.tan(math.radians(RAIL))
+        rail = [on_back(x, 2.85 + rise * x, 0.02) for x in (-1.0 + 0.25 * i for i in range(9))]
+        back = [bl.tube_along("Rail", rail, [0.05] * len(rail), sides=6, material=m["Chalk"])]
+        for x, h in zip((-0.6, -0.3, 0.0, 0.3, 0.6), (0.42, 0.8, 0.95, 0.56, 0.68)):
+            foot, top = on_back(x, 2.85 + rise * x, 0.03), on_back(x, 2.85 + rise * x + h, 0.03)
+            run = top - foot
+            back.append(slab("Meter", (foot + top) / 2, (0.17, 0.05, run.length), m["Glow"],
+                             rot=(-math.degrees(math.asin(run.y / run.length)), 0, 0)))
+    else:
+        back = [slab("Meter", (-0.6 + 0.3 * i, -0.585, 2.9 + h / 2), (0.17, 0.05, h), m["Glow"])
+                for i, h in enumerate((0.36, 0.74, 1.0, 0.52, 0.82))]
+
     on("root",
        loft("Body", [(2.0, 0, 0, 2.0, 1.0), (4.0, 0, 0, 2.0, 1.0)], m["Backstage"], n=B),
        loft("Belt", [(2.34, 0, 0, 2.06, 1.06), (2.5, 0, 0, 2.06, 1.06)], m["Chalk"], n=B),
-       loft("Jacket", [(hem, -0.14, 0, 2.5, 1.66), (2.8, 0, 0, 2.16, 1.16), (4.0, 0, 0, 2.08, 1.08)], m["Limelight"], n=B),
+       jacket,
        loft("HemBand", [(lambda t: hem(t, -0.012), -0.14, 0, 2.56, 1.72), (lambda t: hem(t, 0.15), -0.13, 0, 2.52, 1.68)],
             m["Chalk"], n=B, caps=False),
        loft("HemHollow", [(lambda t: hem(t, 0.0), -0.14, 0, 2.44, 1.6), (lambda t: hem(t, 0.02), -0.14, 0, 2.44, 1.6)],
@@ -144,9 +178,8 @@ def build(scene, hot=False):
        slab("Panel", (-0.42, 0.56, 2.86), (1.5, 0.04, 0.5), m["LimelightDeep"], rot=(0, -31, 0)),
        loft("Collar", [(3.96, 0, 0, 1.36, 1.1), (4.07, 0, 0, 1.4, 1.14), (4.07, 0, 0, 1.2, 0.94), (3.96, 0, 0, 1.2, 0.94)],
             m["Chalk"], n=3, closed=True),
-       # her back, for the player's camera: a level meter, lit, and the radio pack on her belt
-       *[slab("Meter", (-0.6 + 0.3 * i, -0.585, 2.9 + h / 2), (0.17, 0.05, h), m["Glow"])
-         for i, h in enumerate((0.36, 0.74, 1.0, 0.52, 0.82))],
+       # the meter, and the radio pack on her belt
+       *back,
        slab("Pack", (0.62, -0.6, 2.18), (0.42, 0.2, 0.46), m["ChromeDeep"]),
        slab("PackAerial", (0.76, -0.62, 2.52), (0.05, 0.05, 0.3), m["Chrome"]))
 
@@ -180,6 +213,44 @@ def build(scene, hot=False):
     def under(t):  # the layer beneath, cut level at her jaw: it shows wherever the slant has lifted the top layer
         return 4.8 - (4.8 - 3.96) * away(t)
 
+    def shell(z):  # the top layer's half width and half depth at a height, as its lofts are cut
+        if z >= 5.06:
+            return 0.71, 0.72
+        if z >= 4.86:
+            u = (z - 4.86) / 0.2
+            return 0.83 - 0.12 * u, 0.78 - 0.06 * u
+        u = min(1.0, (4.86 - z) / 0.3)
+        return 0.83 + 0.04 * u, 0.78 + 0.03 * u
+
+    def lock(name, t, tip, width=0.36, stand=0.1, top=5.0, thick=0.08, stations=6):
+        """A lock of the top layer at the angle t round her head: from under the crown, sunk in the bob, down past
+        its edge to a blunt tip that stands `stand` off it. Lens-shaped across, narrowing to half at the tip."""
+        bm = bmesh.new()
+        rings = []
+        for k in range(stations):
+            u = k / (stations - 1)
+            z = top + (tip - top) * u
+            a, b = shell(z)
+            at = Vector((a * math.cos(t), -0.03 + b * math.sin(t), z))
+            out = Vector((b * math.cos(t), a * math.sin(t), 0)).normalized()
+            along = Vector((-a * math.sin(t), b * math.cos(t), 0)).normalized()
+            centre = at + out * (-thick + (1.5 * thick + stand) * u ** 1.6)
+            half = 0.5 * width * (1 - 0.5 * u)
+            rings.append([bm.verts.new(centre + along * (half * math.cos(f)) + out * (0.5 * thick * math.sin(f)))
+                          for f in (math.radians(d) for d in range(0, 360, 60))])
+        for r0, r1 in zip(rings, rings[1:]):
+            for i in range(6):
+                bm.faces.new((r0[i], r0[(i + 1) % 6], r1[(i + 1) % 6], r1[i]))
+        bm.faces.new(rings[0])
+        bm.faces.new(list(reversed(rings[-1])))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        return bl.object_from_bmesh(name, bm, m["Ash"])
+
+    # the model's locks: across the back, from behind her right ear to behind her left, each a little past the bob's
+    # slanted edge by a length of its own. None over the ear cups or the face.
+    locks = [lock("Lock", math.radians(d), cut(math.radians(d)) - drop)
+             for d, drop in zip(range(-30, -151, -20), (0.08, 0.18, 0.11, 0.2, 0.1, 0.17, 0.09))] if model else []
+
     band = [(0.9, 4.45), (0.9, 4.8), (0.8, 5.06), (0.62, 5.21), (0.3, 5.3), (0, 5.32),
             (-0.3, 5.3), (-0.62, 5.21), (-0.8, 5.06), (-0.9, 4.8), (-0.9, 4.45)]
     mouth = face("Mouth", 0.0, 4.21, 0.2, 0.2, m["Ink"], proud=0.006) if hot else face("Mouth", 0.02, 4.24, 0.22, 0.045, m["Ink"], tilt=-6, proud=0.006)
@@ -190,6 +261,7 @@ def build(scene, hot=False):
                      (5.06, 0, -0.02, 1.42, 1.44)], m["Ash"], n=2, caps=False),
        loft("HairTop", [(5.06, 0, -0.02, 1.42, 1.44), (5.2, 0, 0, 1.08, 1.1)], m["Ash"], n=2),
        loft("HairUnder", [(under, 0, -0.03, 1.6, 1.48), (4.84, 0, -0.03, 1.54, 1.44)], m["Rose"], n=2, caps=False),
+       *locks,
        face("BrowR", 0.27, 4.71, 0.24, 0.045, m["Ink"], tilt=-3, proud=0.03),
        face("BrowL", -0.27, 4.71, 0.24, 0.045, m["Ink"], tilt=3, proud=0.03),
        face("EyeR", 0.26, 4.5, 0.2, 0.22, m["Ink"]),
@@ -201,9 +273,11 @@ def build(scene, hot=False):
        bl.tube_along("Headband", [Vector((x, -0.05, z)) for x, z in band], [0.055] * len(band), sides=8, material=m["Backstage"]),
        *[bl.place(bl.cylinder("Cup", 0.22, 0.3, 12, m["Backstage"]), location=(e * 0.9, -0.03, 4.5), rotation=(0, 90, 0)) for e in (-1, 1)],
        *[bl.place(bl.cylinder("CupFace", 0.12, 0.03, 10, m["Chrome"]), location=(e * 1.06, -0.03, 4.5), rotation=(0, 90, 0)) for e in (-1, 1)],
-       bl.tube_along("Boom", [Vector(p) for p in ((0.98, 0.05, 4.42), (0.86, 0.46, 4.3), (0.5, 0.7, 4.24))], [0.035] * 3, sides=6,
-                     material=m["Backstage"]),
-       slab("BoomTip", (0.42, 0.71, 4.24), (0.13, 0.1, 0.1), m["Glow"]))
+       # on the model the boom hugs her cheek, so in sunlight its tip's shadow stays under the tip, not on her face
+       bl.tube_along("Boom", [Vector(p) for p in (((0.98, 0.05, 4.42), (0.8, 0.42, 4.3), (0.42, 0.58, 4.22)) if model else
+                                                  ((0.98, 0.05, 4.42), (0.86, 0.46, 4.3), (0.5, 0.7, 4.24)))],
+                     [0.035] * 3, sides=6, material=m["Backstage"]),
+       slab("BoomTip", (0.34, 0.6, 4.22) if model else (0.42, 0.71, 4.24), (0.13, 0.1, 0.1), m["Glow"]))
 
     # the legs: dark leggings into pale boots on thick soles; the right leg, which the short side bares, has a stripe
     for part, s in (("rh", 1), ("lh", -1)):
@@ -217,7 +291,7 @@ def build(scene, hot=False):
 
     joints["staff"] = staff(scene, m)
     for name in REST:
-        joints[name] = speaker(scene, m, name, hot)
+        joints[name] = speaker(scene, m, name, hot, model)
     return joints
 
 

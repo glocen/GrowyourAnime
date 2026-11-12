@@ -1,0 +1,303 @@
+{
+ "name": "Lyric",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1), and the Head's face decal is removed. Her face is on the Head piece.",
+ "maps": {
+  "Color": "Lyric_Color.png",
+  "Roughness": "Lyric_Roughness.png",
+  "Metalness": "Lyric_Metalness.png",
+  "Emissive": "Lyric_Emissive.png"
+ },
+ "texels_per_stud": 77,
+ "emissive": {
+  "tint": "#FFFFFF",
+  "cold": 1.0,
+  "hot": 2.5,
+  "pieces": [
+   "Lyric_Torso",
+   "Lyric_Head",
+   "Lyric_Staff",
+   "Lyric_SpeakerR",
+   "Lyric_SpeakerL"
+  ],
+  "note": "The mask covers the speakers' rings front and back, the mic's ring, the headset's tip and the meter on her back, and nothing else. They burn at cold as she stands; the speakers and the stand go to hot through the note. The face, the eyes and the rose layer of her hair take no glow, ever. The tint is white because Roblox multiplies the glow by the colour map, which already holds the pink."
+ },
+ "pieces": [
+  {
+   "name": "Lyric_Torso",
+   "mesh": "Lyric_Torso.json",
+   "on": "Torso",
+   "centre": [
+    -0.14,
+    2.6286,
+    0.0
+   ],
+   "size": [
+    2.56,
+    2.883,
+    1.72
+   ],
+   "tris": 1076
+  },
+  {
+   "name": "Lyric_Head",
+   "mesh": "Lyric_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.61965,
+    0.11732
+   ],
+   "size": [
+    2.15,
+    1.511,
+    1.795
+   ],
+   "tris": 1544
+  },
+  {
+   "name": "Lyric_RightArm",
+   "mesh": "Lyric_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.5,
+    3.01,
+    0.0
+   ],
+   "size": [
+    1.15,
+    2.02,
+    1.15
+   ],
+   "tris": 324
+  },
+  {
+   "name": "Lyric_LeftArm",
+   "mesh": "Lyric_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.5,
+    3.01,
+    0.0
+   ],
+   "size": [
+    1.15,
+    2.02,
+    1.15
+   ],
+   "tris": 324
+  },
+  {
+   "name": "Lyric_RightLeg",
+   "mesh": "Lyric_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    -0.07
+   ],
+   "size": [
+    1.1,
+    2.0,
+    1.28
+   ],
+   "tris": 500
+  },
+  {
+   "name": "Lyric_LeftLeg",
+   "mesh": "Lyric_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    -0.07
+   ],
+   "size": [
+    1.1,
+    2.0,
+    1.28
+   ],
+   "tris": 488
+  },
+  {
+   "name": "Lyric_Staff",
+   "mesh": "Lyric_Staff.json",
+   "on": "Right Arm",
+   "centre": [
+    1.5,
+    3.09616,
+    -0.53772
+   ],
+   "size": [
+    1.1,
+    6.192,
+    1.385
+   ],
+   "tris": 896,
+   "motor": "Staff",
+   "pivot": [
+    1.5,
+    2.15,
+    -0.68
+   ]
+  },
+  {
+   "name": "Lyric_SpeakerR",
+   "mesh": "Lyric_SpeakerR.json",
+   "on": "Torso",
+   "centre": [
+    2.62,
+    5.0225,
+    0.53933
+   ],
+   "size": [
+    1.018,
+    1.35,
+    0.92
+   ],
+   "tris": 1048,
+   "motor": "SpeakerR",
+   "pivot": [
+    2.62,
+    5.0,
+    0.55
+   ]
+  },
+  {
+   "name": "Lyric_SpeakerL",
+   "mesh": "Lyric_SpeakerL.json",
+   "on": "Torso",
+   "centre": [
+    -2.62,
+    5.0225,
+    0.53933
+   ],
+   "size": [
+    1.018,
+    1.35,
+    0.92
+   ],
+   "tris": 1048,
+   "motor": "SpeakerL",
+   "pivot": [
+    -2.62,
+    5.0,
+    0.55
+   ]
+  },
+  {
+   "name": "Lyric_HeadEdge",
+   "mesh": "Lyric_HeadEdge.json",
+   "on": "Head",
+   "centre": [
+    0.00082,
+    4.53566,
+    0.11475
+   ],
+   "size": [
+    1.91,
+    1.395,
+    1.857
+   ],
+   "tris": 696,
+   "edge": true
+  },
+  {
+   "name": "Lyric_RightLegEdge",
+   "mesh": "Lyric_RightLegEdge.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    0.65012,
+    -0.06199
+   ],
+   "size": [
+    1.09,
+    0.909,
+    1.276
+   ],
+   "tris": 164,
+   "edge": true
+  },
+  {
+   "name": "Lyric_LeftLegEdge",
+   "mesh": "Lyric_LeftLegEdge.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    0.65012,
+    -0.06199
+   ],
+   "size": [
+    1.09,
+    0.909,
+    1.276
+   ],
+   "tris": 164,
+   "edge": true
+  }
+ ],
+ "motors": {
+  "Staff": {
+   "note": "The mic stand, on the Right Arm. Its pivot is where her fist meets the pole: the clips swing the stand about her hand and never slide the hand along it (R6 has no elbow). At rest it stands upright on its base, the pole just in front of her hanging fist."
+  },
+  "SpeakerR": {
+   "note": "Floats at her right shoulder, held by nothing: a joint of its own on the Torso, its pivot at its middle, its rest turn and its 0.9 scale in the mesh. The clips move and turn it; the note throws both ahead to the wave's edges. Whether it rides on her rig or is a part of the builder's that follows her is the builder's call."
+  },
+  "SpeakerL": {
+   "note": "The same, at her left shoulder."
+  }
+ },
+ "edges": {
+  "pieces": [
+   "Lyric_HeadEdge",
+   "Lyric_RightLegEdge",
+   "Lyric_LeftLegEdge"
+  ],
+  "width": 0.035,
+  "note": "Research's fix 3: dark shells 0.035 studs outside the pale parts (the bob and the boots), turned inside out, so only their far side shows, just past the outline, and she holds over bright ground. Each is welded to its part and takes the same surface (it sits on the Backstage swatch). CastShadow off, or it shades the pale part it wraps; DoubleSided off (the default), or it covers it."
+ },
+ "points": [
+  {
+   "name": "Mic",
+   "on": "Lyric_Staff",
+   "at": [
+    1.5,
+    5.9,
+    -0.13
+   ],
+   "note": "the mic's head: where the note starts"
+  },
+  {
+   "name": "RingR",
+   "on": "Lyric_SpeakerR",
+   "at": [
+    2.5321,
+    4.892,
+    0.1362
+   ],
+   "note": "the right speaker's cone: where the wave leaves it"
+  },
+  {
+   "name": "RingL",
+   "on": "Lyric_SpeakerL",
+   "at": [
+    -2.5321,
+    4.892,
+    0.1362
+   ],
+   "note": "the left speaker's cone"
+  },
+  {
+   "name": "Chest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.2,
+    -0.6
+   ],
+   "note": "where a hit lands"
+  }
+ ],
+ "tris": 8272
+}

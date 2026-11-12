@@ -648,7 +648,7 @@ Accepted as they are: the gems read by colour first at 16 px (the cut follows at
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is drawn and delivered to `build/handoff/Lyric/lyric_sheet.png` (section 4): her look is past the content check, which blocks the signature's name in the roster; the feel line and the sheet wait on research's read, and the model waits on both.
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model carries research's three fixes, is past the content check's second look and **delivered** beside it (section 5), made on Opus 5.5 xhigh: not yet read by research or in the engine.
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -949,6 +949,37 @@ For research, from the check: `docs/decisions.md` still has no "Fighters" sectio
 
 Accepted: the stand's base to her right-front and the arm 10 below level (R6's limit, the hold within condition 9); the note's width, since the speakers mark the cone's edges and don't collide; the free left arm doing the acting. The check's ask: `docs/decisions.md` now has its "Fighters" section, with the tone. Her model can start.
 
+### 5. Lyric's model on R6 (Modulo, 2026-11-12)
+
+- **Where:** `build/handoff/Lyric/`: `Lyric_<Piece>.json` (twelve pieces), `Lyric_Color.png`, `Lyric_Roughness.png`, `Lyric_Metalness.png`, `Lyric_Emissive.png`, `Lyric.recipe.json`, `lyric_model_sheet.png`. Made by `tools/blender/lyric_model.py` (a Cycles bake under the lock, about 20 seconds): `blender -b --factory-startup --python tools/blender/lyric_model.py -- <out dir> [look]`; `look` stops before the bake and draws the model in Workbench. The shapes are `lyric_sheet.build(model=True)`. Made on Opus 5.5 xhigh.
+- **How she sits on R6:** a rigid mesh for each of the six parts, carrying the body's own surface, so the rig's blocks are hidden and the Head's face decal goes. Three pieces on joints of their own:
+  - **The stand,** on the Right Arm, its pivot where her fist meets the pole (`1.5, 2.15, -0.68`). At rest it stands upright on its base, the pole just in front of her hanging fist. The clips swing it about her hand and never slide the hand along it (R6 has no elbow; section 4, point 2).
+  - **The speakers,** each on a joint on the Torso at its own middle (`±2.62, 5, 0.55`), held by nothing, the rest turn and the 0.9 scale in the mesh. Whether one rides on her rig or is the builder's part that follows her stays the builder's call.
+  - And three **edges** (research's fix 3, below), welded to the Head and the legs.
+- **The numbers:** 8,272 triangles in the twelve pieces (the head 1,544, each speaker 1,048, the torso 1,076, the stand 896, the edges 1,024 together). 5.38 studs to the headset's top, 4.15 wide without the speakers; the stand 6.2. One 1024 px atlas, 77 px per stud. Maps: colour with the contact shading baked in, roughness, metalness (the chrome, at 0.6), and a glow mask. No normal map.
+- **The glow** is Storm's pink on the speakers' rings front and back, the mic's ring, the headset's tip and the meter, and nothing else. All of it sits on the Glow swatch, one flat block on both maps. The recipe's tint is white, since the colour map under it is already the pink (AR2, section 4): a strength of 1 as she stands and 2.5 for the speakers and the stand through the note. The face, the eyes and the rose layer take none.
+- **Research's three fixes, made:**
+  1. **The back carries the slant.** The bob's back is cut into seven pale locks, from behind her right ear to behind her left, each sunk under the crown and standing 0.1 studs off the bob past its slanted edge, each its own length; the rose layer under them is unchanged, cut level and blunt (condition 7). A chalk rail crosses her back at 24 degrees, high at her right, lying on the jacket as it flares, and the meter's five bars stand on it.
+  2. **Each speaker shows a lit ring from behind:** a ring round a flat dark port, in place of the sheet's back bar. A port, not a second cone (condition 5).
+  3. **A thin Backstage edge on the Ash parts.** The bob and the boots have a dark shell 0.035 studs outside them, turned inside out, so only its far side shows, just past their outline: an inverted hull. Each shell is a piece of its own (`Lyric_HeadEdge`, `Lyric_RightLegEdge`, `Lyric_LeftLegEdge`) on the Backstage swatch, because it must cast no shadow.
+- **Changed from the sheet (tier 1):** the headset's boom hugs her cheek, so in sunlight its tip's shadow stays under the tip (on the first bake it lay on her cheek as a dark smudge); everything rose (the hair's under-layer, the speakers' feet) sits on the Rose swatch and takes one flat colour (the content check, below); the meter's bars are re-heighted to stand on the rail.
+- **For the builder, in the recipe:**
+  - The edges: CastShadow off, or they shade the pale parts they wrap; DoubleSided off (the default), or they cover them. Each is welded to its part and takes the same SurfaceAppearance.
+  - The three joints' pivots, and four points: `Mic` (the mic's head, where the note starts), `RingR` and `RingL` (each speaker's cone, where the wave leaves it), `Chest`.
+- **What I see wrong:**
+  1. From the front, in sun, the bob is near white and reads as a helmet with a dark rim; the front's slant rests on the fringe and the rose wedge, as on the sheet.
+  2. The headset's lit tip sits at the corner of her mouth. Close up it can read as a pink mark on her cheek.
+  3. At 64 px the edges are under a pixel. What holds her over bright ground there is the darker rim they give the outline. Close up they're a cel line on the pale parts alone, and the rest of her has none.
+  4. The note's open mouth isn't on the model: her face is one mesh with the mouth closed. An open mouth for the note would be a small piece the builder shows during it, or nothing.
+  5. With no clip playing, the stand stands in front of her fist, not in it.
+  6. Nothing is seen in the engine. That the edges draw as they do here (one-sided, no shadow) is the preview's assumption, set as the recipe asks.
+- **Content check, 2026-11-12: BLOCK on the colour map, narrowly; the model, the recipe, the other maps, "Held Note" and rules 2 and 3 passed.** A rose sliver from the hair's under-layer was a drop's silhouette, pointed above and heavy below, shaded to deep magenta: rule 4 at its mildest reading, the handbook's trap on drop shapes, as on Pip's flame. Fixed: every rose face sits on the Rose swatch. **Second look, the same day: PASS** on the rebake, all four maps, the sheet and the recipe. Conditions 1 to 8 and 15 hold on the model (7 stronger, the rose all one flat swatch); 9 and 10 are the clips', 11 to 14 the effect's and the sounds'. **Delivered** after it, all from the one run. New conditions:
+  - The headset's lit tip stays at cold strength, never hot, and never sits over her lips, the note with her mouth open included. Close up it reads as a pink mark on her cheek.
+  - Rose faces stay on their swatch in every later rebake and variant.
+  - In the engine: at 64 px under Lantern Row's dusk grade, the jacket stays green, not teal (condition 3).
+  - Before any upload: her rows in `docs/asset-log.md`, and the batch gets its own check.
+
+**Hours:** the model, about 1.2, the look passes, the fixes and the check's round included.
 
 ## AR5. The festival kit and the base's machines
 

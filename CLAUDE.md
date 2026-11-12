@@ -12,7 +12,7 @@ You are also this game's engineer of record (the directive, sections 8 to 10 and
 
 ## Places
 
-- One place, under the studio's group (group 35516567): universe `9093907961`, main place `78052287756826`. The director gave these ids on 2026-11-11, and the builder verifies them at its first start. No other place yet: the director writes ids here as they're published. The rollback experience, if any: none.
+- One place, under the studio's group (group 35516567): universe `9093907961`, main place `78052287756826`, the director's ids of 2026-11-11. No other place yet: the director writes ids here as they're published. The rollback experience, if any: none.
 - Every place runs the same code. A workspace attribute splits role services, read through one util only (`src/shared/Util/PlaceRole.luau`).
 
 ## Rojo and Studio, every session
@@ -31,16 +31,7 @@ You are also this game's engineer of record (the directive, sections 8 to 10 and
 - Windows Controlled Folder Access: if it's on, don't change it, and keep the project outside Documents, or git, Rojo and Python can't write there.
 - Use `py`, not `python` (the Store shim). Draw generated assets into `build/scratch/<teammate>/`.
 - Blender isn't on PATH: it's the Steam install, `C:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe`.
-- The group's Open Cloud key is in an environment variable the director set. Read it by name, never print it. Its name is in NEXT Button's notes, and the director confirms it covers this game before its first use here.
-
-## Day one
-
-The folder came from the handbook's starter and NEXT Button's team files on 2026-11-09, by research, at the director's ask. Its kit was brought up to the corrected templates on 2026-11-12. It holds no game code. Your first piece is `docs/test-requests.md`, TR1.
-
-At your first start:
-
-- Verify the ids under "Places".
-- The instruction lint and the tool guard are in `.claude/hooks/`, with their config, and `.claude/settings.json` doesn't name them yet. Installing them is yours, on the director's yes: `handbook/tech/README.md`, "Setting it up", step 5. `py .claude/hooks/selftest.py` passes as they are.
+- The group's Open Cloud key is in an environment variable the director set. Read it by name, never print it. Its name is in NEXT Button's notes. It covers this game's uploads (the director, 2026-11-12).
 
 ## Done means
 

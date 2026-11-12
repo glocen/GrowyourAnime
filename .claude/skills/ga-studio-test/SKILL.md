@@ -5,8 +5,6 @@ description: Test and inspect Grow your Anime in Roblox Studio through the Studi
 
 # Testing in Studio (shared by the team)
 
-Carried from NEXT Button on 2026-11-09. The kit it names (the self-test, the debug bridge, the logic tests, the type check) came in with TR1 on 2026-11-12 (`docs/test-requests.md`).
-
 ## Before you trust a result
 
 - Before any Run, the type check: `py tools/checks/luau_check.py` (about 3 seconds, Studio open or closed). `0 new` means go. A new finding is fixed first, never frozen away: `--freeze` only after fixing, so `tools/checks/luau-known.txt` shrinks. Exit code 2 means the check itself couldn't run.

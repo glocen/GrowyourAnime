@@ -8,9 +8,9 @@ description: Close the builder's finished Grow your Anime piece. Run the checks,
 The other teammates close their pieces as their briefs say. Step 7 pushes, and only the builder pushes for the team.
 
 1. **Checks, all passing.**
-   - the type check, the logic tests and the self-test, once they exist (for example the type check, the self-test and the logic tests, in each place that has them).
+   - The type check, the logic tests and the self-test, in each place that has them (`/ga-studio-test`).
    - The world report if markers or world code changed.
-   - a purchase in the published game, if the store changed (for example a match smoke test if the match lifecycle changed, or the first session played from a new save if anything a new player meets changed: the aim is a premium first session).
+   - A purchase in the published game, if the store changed. The first session played from a new save, if anything a new player meets changed: the aim is a premium first session.
    - Add a self-test or logic case for every new mechanic or rule.
 2. **What players see goes through "The checks, in order"** (AGENTS.md):
    - **Your own review:** player-camera captures at 1920×1080 and 1366×768, in the place's real lighting, then a harsh self-critique against the bar. World pieces are also seen at the player's distance, in the place's real lighting, with a backup of what they replaced.

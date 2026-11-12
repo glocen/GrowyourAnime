@@ -12,7 +12,7 @@ Every review opens with **Felt:** one sentence, the piece watched once at full s
 
 **The pass line:** competent, with no obvious issue. Signature abilities, important clips and major landmarks aim at exceptional, and research says when they aren't there. Work that technically passes but feels weak gets a fix. Refinements beyond the pass go to `docs/polish-later.md`.
 
-**The measures:** the vision and the bar (`docs/north-star.md`, "The look" included); the feel line the piece was built to; the chapters under `handbook/visuals/`. This game has no reference footage, so judge the feel directly, at phone size for anything on screen.
+**The measures:** the vision and the bar (`docs/north-star.md`, "The look" included); the feel line the piece was built to; the chapters under `handbook/visuals/`; for a screen, its written reference study, if `/ga-reference-study` names one. This game has no reference footage, so judge the feel directly, at phone size for anything on screen.
 
 **The side-by-side question,** at each review of a piece judged beside a benchmark: could our frame be taken for theirs? A yes is a finding, however well the piece matches. Mechanics are free, but copying a look and feel almost exactly can infringe (`handbook/platform/ip-safety.md`).
 

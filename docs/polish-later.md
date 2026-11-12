@@ -18,6 +18,8 @@ Each waits for an update, and for its own feel line and blockout (`docs/design.m
 ## From the pieces
 
 - **Planned rework, the director's word (2026-11-12): Haymaker's B5.** The ram's square hung over the target through the hold and slammed down on the blow, with Rook's clip re-keyed to strike down and the target pinned. About 3 to 4 hours. The block-in and its costs are in AR1, section 9.
+- **Planned rework, the director's word (2026-11-12): Pip's Lantern Burst's look.** "the vfx of the mage skill is kinda odd but we will keep it make a rework planned for it." The burst stays as it plays now. The rework starts with a new blockout, never a patch on the accepted art (AR4, section 8).
+- **Planned rework, the director's word (2026-11-12): the Voidkin's faces.** "we shouldnt give them all those identical face." Rook, Pip and Lyric keep their faces for now. The rework gives each Voidkin a face of its own, part of its silhouette, and every new Voidkin is designed with its own face from the start (`docs/roster.md`).
 
 - The base's world plates as wide as what they say, not as their longest possible line: on a large screen the Breaker's and the bays' plates show empty room on the right. For the finished kit (AR3). TR2, the builder, 2026-11-12.
 - The killing hit's number and the Shade's rising flame cross for about 4 frames (31 to 34). The number could drift aside when its target bursts. Brief and legible now (AR2, section 13).

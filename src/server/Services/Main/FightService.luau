@@ -225,17 +225,18 @@ local function buildR6(name: string): Model
 end
 
 -- A lead's body: its Voidkin's own (Definitions.Voidkin's Model, ServerStorage.Templates.<Model>) once it's installed,
--- else the grey R6 stand-in. Both are R6 rigs, so both play the R6 clips.
-local function buildLead(def: string, name: string): Model
+-- else the grey R6 stand-in. Both are R6 rigs, so both play the R6 clips; with its body comes its row's reaction set
+-- (Config.Animations.Rigs), the stand-in's is open legs'.
+local function buildLead(def: string, name: string): (Model, string)
 	local row = Voidkin.ById[def]
 	local template = if row and row.Model then ServerStorage:WaitForChild("Templates"):FindFirstChild(row.Model) else nil
 	if template == nil then
-		return buildR6(name)
+		return buildR6(name), "R6"
 	end
 	local model = (template :: Model):Clone()
 	model.Name = name
 	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
-	return model
+	return model, (row :: Voidkin.Row).Rig or "R6"
 end
 
 -- A Shade in grey: a dark box on an unseen root, joined by a Motor6D the client leans for its stand-in motion, and a
@@ -393,7 +394,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 	model:SetAttribute("Side", side)
 	model:SetAttribute("Kind", kind)
 	model:SetAttribute("Def", def)
-	model:SetAttribute("Rig", if side == "Lead" then "R6" else rig or "Box")
+	model:SetAttribute("Rig", rig or (if side == "Lead" then "R6" else "Box"))
 	model:SetAttribute("Title", title)
 	model:SetAttribute("Level", block.Level)
 	model:SetAttribute("Owner", if owner then owner.UserId else 0)
@@ -574,19 +575,8 @@ local function crowd(f: Fighter)
 	end
 end
 
-local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
-	local action = f.Action :: Actions.Action
-	local target = f.ForcedTarget or f.Target
-	if target == nil or not standing(target) then
-		return
-	end
-	local line = flat(target.Root.Position - f.Root.Position)
-	local gap = line.Magnitude
-	local facing = flat(f.Root.CFrame.LookVector)
-	local cosine = if gap > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
-	if not Fight.Reaches(gap, cosine, hit.Reach, Combat.Arc) then
-		return -- a whiff: its effect still plays on the beat, with no spark and no number
-	end
+-- One target's share of a hit: rolled, dealt, pushed along `line` (from the attacker), and shown to every client.
+local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: string, hit: Actions.Hit, at: number, line: Vector3)
 	local rolls = { Dodge = rng:NextNumber(), Critical = rng:NextNumber(), Block = rng:NextNumber() }
 	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls)
 	local left, fell = Fight.Damage(target.Health, result.Total)
@@ -628,6 +618,35 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	})
 	if fell then
 		fall(target, at)
+	end
+end
+
+-- A beat's hit on its fighter's target, if it reaches; with an Area, on every enemy standing that near the target too.
+local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
+	local action = f.Action :: Actions.Action
+	local target = f.ForcedTarget or f.Target
+	if target == nil or not standing(target) then
+		return
+	end
+	local line = flat(target.Root.Position - f.Root.Position)
+	local gap = line.Magnitude
+	local facing = flat(f.Root.CFrame.LookVector)
+	local cosine = if gap > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
+	if not Fight.Reaches(gap, cosine, hit.Reach, Combat.Arc) then
+		return -- a whiff: its effect still plays on the beat, with no spark and no number
+	end
+	local centre = target.Root.Position
+	land(f, action, target, beat, hit, at, line)
+	if hit.Area then
+		local near = {}
+		for _, other in fighters do
+			if other ~= target and other.Side ~= f.Side and standing(other) and Fight.Within(flat(other.Root.Position - centre).Magnitude, hit.Area) then
+				table.insert(near, other)
+			end
+		end
+		for _, other in near do
+			land(f, action, other, beat, hit, at, flat(other.Root.Position - f.Root.Position))
+		end
 	end
 end
 
@@ -866,10 +885,10 @@ function FightService.SpawnLead(player: Player, block: Stats.Block, title: strin
 	if old then
 		remove(old)
 	end
-	local model = buildLead(block.Def, `Lead_{player.UserId}`)
+	local model, rig = buildLead(block.Def, `Lead_{player.UserId}`)
 	local avatar = Parts.Root(player.Character)
 	model:PivotTo(if avatar then besideAvatar(avatar) else CFrame.new(0, 10, 0))
-	local f = register(model, "Lead", "Lead", block.Def, block, Actions.KitOf(block.Def), title, player)
+	local f = register(model, "Lead", "Lead", block.Def, block, Actions.KitOf(block.Def), title, player, rig)
 	leads[player] = f
 	return f
 end

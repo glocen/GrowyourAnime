@@ -6,6 +6,10 @@
 --             lines it scores on the floor. One bar picture for all of it, or grey parts until it's uploaded
 --             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). And the ram's heat on its glow mask,
 --             and the strike's sound (Config.Sounds).
+--   LanternBurst  Pip's signature, AR4's art sheet: the heat in the cage on his glow mask, the throw with its trail, the
+--             flame let out over the target, and the lantern relit over the cooldown as its readout
+--             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8).
+--   LanternShots  Pip's combo, a grey block: a streak from the lantern to the target on each shot (Config.Effects.Shot).
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
 --   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore), on its clip's marker.
 --   Number    a damage number over the target.
@@ -16,6 +20,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
 local Sounds = require(script.Parent.Sounds)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -228,7 +233,8 @@ end
 -- Haymaker's look, a function of the action's clock: build one per press, step it with the clock each frame. The numbers
 -- are read every frame, so a tune shows at once (Config.Effects.Haymaker).
 -- `attacker` is the ram's fighter; `target` gives the target's root, read once at the strike.
-export type Running = { Step: (clock: number) -> boolean, Destroy: () -> () }
+-- A step gets the action's clock, which a hit's hold pauses, and `free`, the same clock run on through holds.
+export type Running = { Step: (clock: number, free: number?) -> boolean, Destroy: () -> () }
 
 function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: () -> BasePart?): Running
 	local STRIKE, SHOCK = beats.Strike, beats.Shock
@@ -351,7 +357,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 
 	local running: Running
 	running = {
-		Step = function(clock: number): boolean
+		Step = function(clock: number, _free: number?): boolean
 			local look = EffectsConfig.Haymaker
 			local hero, floor = look.Hero, look.Floor
 			local lastPiece = passes(hero, (floor.Pieces - 1) / floor.Pieces)
@@ -461,6 +467,367 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		end,
 	}
 	return running
+end
+
+local function smooth(u: number): number
+	local c = math.clamp(u, 0, 1)
+	return c * c * (3 - 2 * c)
+end
+
+-- A value eased between keys { frame, value }, held past either end.
+local function keyed(keys: { { number } }, frame: number): number
+	if frame <= keys[1][1] then
+		return keys[1][2]
+	end
+	for index = 2, #keys do
+		local a, b = keys[index - 1], keys[index]
+		if frame <= b[1] then
+			return a[2] + (b[2] - a[2]) * smooth((frame - a[1]) / math.max(1e-6, b[1] - a[1]))
+		end
+	end
+	return keys[#keys][2]
+end
+
+-- An unlit picture facing the camera on `adornee`, white so the picture shows its own colours (AR4, section 8, the content
+-- check's condition 1). Hidden until shown.
+local function billboard(adornee: Instance, image: string): (BillboardGui, ImageLabel)
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "NL_Effect"
+	gui.Adornee = adornee
+	gui.LightInfluence = 0
+	gui.Enabled = false
+	local label = Instance.new("ImageLabel")
+	label.BackgroundTransparency = 1
+	label.BorderSizePixel = 0
+	label.Size = UDim2.fromScale(1, 1)
+	label.ScaleType = Enum.ScaleType.Stretch
+	label.Image = image
+	label.ImageColor3 = HOT
+	label.Parent = gui
+	gui.Parent = adornee
+	return gui, label
+end
+
+type LanternLook = typeof(EffectsConfig.LanternBurst)
+
+-- A cell of the Lantern Burst's sheet: its offset and its size, in pixels.
+local function cell(sheet: typeof(EffectsConfig.LanternBurst.Sheet), index: number): (Vector2, Vector2)
+	if index < sheet.Bigs then
+		return Vector2.new(index % sheet.Across * sheet.Big, math.floor(index / sheet.Across) * sheet.Big), Vector2.new(sheet.Big, sheet.Big)
+	end
+	return Vector2.new((index - sheet.Bigs) * sheet.Small, sheet.SmallTop), Vector2.new(sheet.Small, sheet.Small)
+end
+
+-- The burst's cell `frames` after the Burst beat: the leap, the boil (played BoilPlays times), the end; nil once gone.
+local function burstCell(burst: typeof(EffectsConfig.LanternBurst.Burst), frames: number): number?
+	local d = frames
+	if d < 4 * burst.Leap then
+		return math.floor(d / burst.Leap)
+	end
+	d -= 4 * burst.Leap
+	local boil = 4 * burst.Boil * burst.BoilPlays
+	if d < boil then
+		return 4 + math.floor(d / burst.Boil) % 4
+	end
+	d -= boil
+	if d < 8 * burst.End then
+		return 8 + math.floor(d / burst.End)
+	end
+	return nil
+end
+
+-- The lantern's readout (research's tier 2, AR4, section 7): dark, then relit to cold over `seconds`, full when the
+-- signature is ready. A newer one, or a new burst, takes over.
+local relit: { [SurfaceAppearance]: number } = {}
+local function relight(surface: SurfaceAppearance, seconds: number)
+	local token = (relit[surface] or 0) + 1
+	relit[surface] = token
+	if seconds <= 0 then
+		surface.EmissiveStrength = EffectsConfig.LanternBurst.Glow.Cold
+		return
+	end
+	surface.EmissiveStrength = 0
+	run(function(age: number): boolean
+		if relit[surface] ~= token or surface.Parent == nil then
+			return false
+		end
+		local glow = EffectsConfig.LanternBurst.Glow
+		local u = math.clamp(age / seconds, 0, 1)
+		surface.EmissiveStrength = glow.Cold * u ^ glow.Relight
+		return u < 1
+	end, function() end)
+end
+Effects.Relight = relight
+
+-- Pip's Lantern Burst, a function of the action's clock (AR4, section 8): the lantern heats on the glow mask while the
+-- heat's flame grows round it, it's thrown with a trail held from his cuff, and at the Burst its flame stands up over the
+-- target, on the ground under where it stopped, and lifts off as a wisp. Then the lantern comes home dark and relights
+-- over the cooldown. The throw's length follows the target (Config.Effects.LanternBurst.Throw). The numbers are read
+-- every frame, so a tune shows at once.
+function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local HEAT, SEND, BURST, RETURN = beats.Heat, beats.Send, beats.Burst, beats.Return
+	local LENGTH, COOLDOWN = action.Length, action.Cooldown
+	local burstHit = action.Hits.Burst
+	local area = if burstHit and burstHit.Area then burstHit.Area else 5
+	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local torso = attacker:FindFirstChild("Torso")
+	local lamp = attacker:FindFirstChild("Pip_Lamp") :: BasePart?
+	local lantern = if lamp then lamp:FindFirstChild("Lantern") :: Attachment? else nil
+	local surface = if lamp then lamp:FindFirstChildOfClass("SurfaceAppearance") else nil
+	local motor = if torso then torso:FindFirstChild("Lamp") :: Motor6D? else nil
+	local sendFrame = math.floor(SEND / FRAME + 0.5)
+	local burstFrame = math.floor(BURST / FRAME + 0.5)
+	local now = 0
+	local done = false
+	local burstFrom: number? = nil -- the free clock at the Burst beat: the flame runs on through the hit's hold
+	if surface then
+		relit[surface] = (relit[surface] or 0) + 1 -- the last readout is over
+	end
+
+	-- The heat, on the lantern.
+	local heatGui, heatLabel = nil :: BillboardGui?, nil :: ImageLabel?
+	if lantern then
+		heatGui, heatLabel = billboard(lantern, EffectsConfig.LanternBurst.Picture)
+	end
+	-- The burst, on a part of its own that stays where the lantern stopped.
+	local stand = part(LIGHT)
+	stand.Transparency = 1
+	stand.Size = Vector3.one * 0.2
+	local burstGui, burstLabel = billboard(stand, EffectsConfig.LanternBurst.Picture)
+	local burstAt: Vector3? = nil -- the burst's foot, on the ground under the lantern at the Burst
+	-- The trail: a beam between two points of its own.
+	local ends = part(LIGHT)
+	ends.Transparency = 1
+	ends.Size = Vector3.one * 0.2
+	if root then
+		ends.CFrame = root.CFrame
+	end
+	local tail = Instance.new("Attachment")
+	tail.Parent = ends
+	local head = Instance.new("Attachment")
+	head.Parent = ends
+	local beam = Instance.new("Beam")
+	beam.Attachment0, beam.Attachment1 = tail, head -- the picture's U runs tail to lantern
+	beam.FaceCamera = true
+	beam.Texture = EffectsConfig.LanternBurst.TrailPicture
+	beam.TextureMode = Enum.TextureMode.Stretch
+	beam.TextureLength = 1
+	beam.Color = ColorSequence.new(HOT)
+	beam.LightInfluence = 0
+	beam.Transparency = NumberSequence.new(0)
+	beam.Segments = 1
+	beam.Enabled = false
+	beam.Parent = ends
+	local flown: { [number]: Vector3 } = {} -- the lantern's place by clip frame, from Send
+
+	-- The throw, scaled to the target at Send: the lamp's joint is offset on its C0, which the Animator leaves alone (it
+	-- owns Transform, and a write there doesn't hold on a client). Each frame the clip's own lantern, in the world, is
+	-- moved to Send's place plus its way from there times the scale, then handed back between Return and the clip's end.
+	local throw: { Scale: number, From: Vector3, Out: Vector3 }? = nil
+	local restC0 = if motor then motor.C0 else CFrame.identity
+	-- Where the clip alone puts the lantern this frame, and the joint's frame it's offset in.
+	local function clipLantern(): (Vector3?, CFrame?)
+		local m, l, body = motor, lantern, torso
+		if m == nil or l == nil or body == nil or not body:IsA("BasePart") then
+			return nil, nil
+		end
+		local joint = (body :: BasePart).CFrame * restC0
+		return (joint * m.Transform * m.C1:Inverse()) * l.Position, joint
+	end
+	local function offsetThrow(clock: number)
+		local t = throw
+		if motor == nil or t == nil or t.Scale == 1 then
+			return
+		end
+		local at, joint = clipLantern()
+		if at == nil or joint == nil then
+			return
+		end
+		if clock <= RETURN then
+			t.Out = (at - t.From) * (t.Scale - 1)
+		end
+		local hand = if clock <= RETURN then 1 else 1 - smooth((clock - RETURN) / math.max(FRAME, LENGTH - RETURN))
+		motor.C0 = restC0 * CFrame.new((joint:VectorToObjectSpace(t.Out * hand)))
+	end
+
+	local function glowAt(clock: number): number
+		local glow = EffectsConfig.LanternBurst.Glow
+		if clock < HEAT then
+			return glow.Cold
+		elseif clock < SEND then
+			return glow.Cold + (glow.Hot - glow.Cold) * ((clock - HEAT) / math.max(FRAME, SEND - HEAT)) ^ glow.Curve
+		elseif clock < BURST then
+			return glow.Hot
+		end
+		return 0
+	end
+
+	local function flownAt(frame: number): Vector3?
+		for f = frame, sendFrame, -1 do
+			if flown[f] then
+				return flown[f]
+			end
+		end
+		return nil
+	end
+
+	local running: Running
+	running = {
+		Step = function(clock: number, given: number?): boolean
+			now = clock
+			local free = given or clock
+			if clock >= LENGTH then
+				running.Destroy()
+				return false
+			end
+			local look: LanternLook = EffectsConfig.LanternBurst
+			local frame = math.floor(clock / FRAME + 1e-4)
+			if burstFrom == nil and clock >= BURST then
+				burstFrom = free - (clock - BURST)
+			end
+			-- Frames since the Burst on the free clock, so the hold on the hit never stills the leap (-1 before it).
+			local after = if burstFrom then math.floor((free - burstFrom) / FRAME + 1e-4) else -1
+			if surface and surface.Parent then
+				surface.EmissiveStrength = glowAt(clock)
+			end
+			-- The throw's scale, once, at Send: from where the lantern is now, the clip's flight ends Flight ahead of him.
+			if throw == nil and clock >= SEND then
+				local from = clipLantern()
+				local aim = target()
+				if from and aim and root then
+					local scale = 1
+					local line = Vector3.new(aim.Position.X - root.Position.X, 0, aim.Position.Z - root.Position.Z)
+					local t = look.Throw
+					if line.Magnitude > 0.01 then
+						local ahead = (from - root.Position):Dot(line.Unit) -- the lantern, toward the target
+						scale = math.clamp((line.Magnitude - t.Short - ahead) / math.max(0.1, t.Flight - ahead), t.Min, t.Max)
+					end
+					throw = { Scale = scale, From = from, Out = Vector3.zero }
+				end
+			end
+			offsetThrow(clock)
+			-- The heat.
+			if heatGui and heatLabel then
+				local heat = look.Heat
+				if clock >= HEAT and clock < BURST then
+					local size = keyed(heat.Keys, clock / FRAME)
+					heatGui.Size = UDim2.new(size, 0, size, 0)
+					heatGui.StudsOffsetWorldSpace = Vector3.new(0, (0.5 - heat.Belly) * size, 0)
+					heatGui.Brightness = heat.Brightness
+					local offset, extent = cell(look.Sheet, heat.First + math.floor((clock - HEAT) / FRAME / heat.PerCell + 1e-4) % 4)
+					heatLabel.ImageRectOffset, heatLabel.ImageRectSize = offset, extent
+					heatGui.Enabled = true
+				else
+					heatGui.Enabled = false
+				end
+			end
+			-- Where the lantern flies, by frame, and where it stops.
+			if lantern and clock >= SEND and frame <= burstFrame and flown[frame] == nil then
+				flown[frame] = lantern.WorldPosition
+			end
+			if burstAt == nil and clock >= BURST and lantern and root then
+				local at = lantern.WorldPosition
+				burstAt = Vector3.new(at.X, root.Position.Y - R6_ROOT_HEIGHT, at.Z)
+			end
+			-- The trail, from the frame after Send until it has closed onto the burst.
+			local trail = look.Trail
+			local closed = if after >= 0 then after / math.max(1, trail.Close) else 0
+			local headAt = if after >= 0 then flownAt(burstFrame) elseif lantern then lantern.WorldPosition else nil
+			local tailAt = flownAt(math.max(sendFrame, frame - trail.Lag))
+			if frame > sendFrame and closed < 1 and headAt and tailAt then
+				tail.WorldPosition = tailAt:Lerp(headAt, closed)
+				head.WorldPosition = headAt
+				beam.Width0, beam.Width1 = trail.Width0, trail.Width1
+				beam.Brightness = trail.Brightness
+				beam.Enabled = true
+			else
+				beam.Enabled = false
+			end
+			-- The burst.
+			local index = if burstAt and after >= 0 then burstCell(look.Burst, after) else nil
+			if index and burstAt then
+				local size = look.Burst.PerArea * area
+				local camera = workspace.CurrentCamera
+				local away = if camera then Vector3.new(camera.CFrame.LookVector.X, 0, camera.CFrame.LookVector.Z) else Vector3.zero
+				away = if away.Magnitude > 0.01 then away.Unit else Vector3.zero
+				stand.CFrame = CFrame.new(burstAt + Vector3.new(0, size / 2, 0) + away * look.Burst.Back)
+				burstGui.Size = UDim2.new(size, 0, size, 0)
+				burstGui.Brightness = look.Burst.Brightness
+				local offset, extent = cell(look.Sheet, index)
+				burstLabel.ImageRectOffset, burstLabel.ImageRectSize = offset, extent
+				burstGui.Enabled = true
+			else
+				burstGui.Enabled = false
+			end
+			return true
+		end,
+		Destroy = function()
+			if done then
+				return
+			end
+			done = true
+			if motor and motor.Parent then
+				motor.C0 = restC0
+			end
+			if heatGui then
+				heatGui:Destroy()
+			end
+			burstGui:Destroy()
+			stand:Destroy()
+			ends:Destroy()
+			if surface and surface.Parent then
+				relight(surface, COOLDOWN - now) -- dark until here, full when it's ready
+			end
+		end,
+	}
+	return running
+end
+
+-- Pip's shots (PipCombo), a grey block: a streak from the lantern to the target on each beat that hits.
+function Effects.LanternShots(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local lamp = attacker:FindFirstChild("Pip_Lamp")
+	local lantern = if lamp then lamp:FindFirstChild("Lantern") :: Attachment? else nil
+	local fired: { [string]: boolean } = {}
+	local function streak(heavy: boolean)
+		local aim = target()
+		if lantern == nil or aim == nil then
+			return
+		end
+		local from, to = lantern.WorldPosition, aim.Position
+		local length = (to - from).Magnitude
+		if length < 0.1 then
+			return
+		end
+		local bar = part(LIGHT, Enum.Material.Neon)
+		local placed = CFrame.lookAt((from + to) / 2, to)
+		run(function(age: number): boolean
+			local shot = EffectsConfig.Shot
+			local t = age / math.max(FRAME, shot.Life)
+			if t >= 1 then
+				return false
+			end
+			local width = (if heavy then shot.Heavy else shot.Width) * (1 - t)
+			bar.Size = Vector3.new(width, width, length)
+			bar.CFrame = placed
+			bar.Transparency = t
+			return true
+		end, function()
+			bar:Destroy()
+		end)
+	end
+	return {
+		Step = function(clock: number, _free: number?): boolean
+			for name, at in beats do
+				local hit = action.Hits[name]
+				if hit and not fired[name] and clock >= at then
+					fired[name] = true
+					streak(hit.Heavy)
+				end
+			end
+			return clock < action.Length
+		end,
+		Destroy = function() end,
+	}
 end
 
 -- A box's lean on its action's clock: back to the strike, a lunge on it, and back. Rotates about the box's foot.

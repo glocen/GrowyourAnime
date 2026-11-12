@@ -14,6 +14,7 @@ export type Hit = {
 	Heavy: boolean, -- the heavy hitstop and shake now; the heavy stagger when the states arrive (docs/design.md, "States in a fight")
 	Reach: number, -- studs, root to root, flat: how far the target may stand when the beat comes
 	Push: number, -- studs the target is knocked back, before its body's weight (Config.Combat.Weight)
+	Area: number?, -- studs round the target: every enemy standing within takes the hit too
 }
 
 export type Action = {
@@ -80,6 +81,52 @@ local rows: { Action } = {
 		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR1, delivery 4)",
 	},
 	{
+		-- Pip's three shots (AR4, section 3): two flicks off his sleeve, the lantern spitting and kicked back, then the whole
+		-- sleeve jabbed and the lantern kicked clean over. He fights from his signature's spacing, so the lantern's throw
+		-- lands where it's drawn to. Coefficients a second as Rook's combo's (a seed: docs/asset-requests.md, AR4, section 8).
+		Id = "PipCombo",
+		Clip = "PipCombo",
+		Length = 1.6667,
+		CancelFrom = 1.5, -- the next flick: Shot3 to Shot1 is 0.63 s
+		Cooldown = 0,
+		Beats = { Shot1 = 0.1667, Shot2 = 0.4333, Shot3 = 1.0333 },
+		Hits = {
+			Shot1 = { Coefficient = 0.75, Heavy = false, Reach = 15.5, Push = 0.3 },
+			Shot2 = { Coefficient = 0.75, Heavy = false, Reach = 15.5, Push = 0.3 },
+			Shot3 = { Coefficient = 1.17, Heavy = false, Reach = 15.5, Push = 1.0 }, -- the lantern kicked clean over
+		},
+		Range = 14.5,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the third: feet set, under the brim)", "hitstop (light)", "a streak from the lantern to the target" },
+		Signed = nil,
+	},
+	{
+		-- Pip's signature (docs/roster.md; AR4, sections 7 and 8): the lantern heats in its cage, he heaves it and is rocked
+		-- back by his own throw, it flies the clip's 12 studs and lets its flame out over an area, then comes home spent. He
+		-- fights 13.5 studs off (Range - Approach), so it stops a stud and a half short of the target's middle, as drawn.
+		Id = "PipLanternBurst",
+		Clip = "PipLanternBurst",
+		Length = 2.2,
+		CancelFrom = 2.0,
+		Cooldown = 10,
+		Beats = { Heat = 0.1333, Send = 0.85, Burst = 1.1, Return = 1.6333 },
+		Hits = {
+			Burst = { Coefficient = 2.5, Heavy = true, Reach = 15.5, Push = 1.5, Area = 5 }, -- each Shade in the flame's foot
+		},
+		Range = 14.5,
+		Heavy = true,
+		State = nil,
+		Levers = {
+			"anticipation (the heat climbing in the cage, Heat to Send)",
+			"recoil (rocked back by his own throw)",
+			"hitstop (heavy)",
+			"the flame let out, twice his height, over the area",
+			"the lantern home dark, relit over the cooldown: the readout",
+		},
+		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR4, section 7)",
+	},
+	{
 		-- A Brawler Shade's swing, AR2's Attack: the coat turns away and the sleeve is flung round after it, landing on `Hit`
 		-- (frame 30). Its length is the clip's, and its hit is a second's worth of the lead's, as before. A client plays the
 		-- clip or its mirror at random (Config.Animations.Mirrors).
@@ -125,10 +172,11 @@ for _, row in rows do
 end
 Actions.EnemyPerSecond = ENEMY_PER_SECOND
 
--- Each Voidkin's kit, in the order a fighter tries them: the signature first, so it goes as soon as it's ready. TR2 has one
--- kit, Rook's, and every lead fights with it on the R6 stand-in until its own is built (docs/test-requests.md, TR2).
+-- Each Voidkin's kit, in the order a fighter tries them: the signature first, so it goes as soon as it's ready. A lead
+-- whose kit isn't built yet fights with Rook's on the R6 stand-in (docs/test-requests.md, TR2).
 Actions.Kits = {
 	rook = { "RookHaymaker", "RookCombo" },
+	pip = { "PipLanternBurst", "PipCombo" },
 } :: { [string]: { string } }
 Actions.StandIn = "rook"
 

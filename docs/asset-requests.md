@@ -1815,6 +1815,50 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - **Fix 1: carried to the replay.** The drawn half is up from 30 on, and the trail is honestly small from the camera the throw comes at. Pip's half has to read at 30 studs through the lantern's glow climb and the bloom. If it's still a few orange pixels, the next levers are the glow's hot end, then the heat's size at Send.
   - **For Modulo's look on the replay, a note and not a fix:** the boil's outer tongues lick out low at the foot (69 to 80), wider than the block-in's column. If in the game it reads as a campfire rather than a flame standing up, those tongues come off the ground.
   - **Accepted:** the trail held at his cuff; the kick ring dropped; the end as a wisp; Back at 0 to start. The two rising flames are called on the replay.
+- **Builder, 2026-11-12: Pip in the game, with his Lantern Burst** (Faber).
+  - **Built, and where:**
+    - **Pip:** assembled from the uploads by `tools/studio/Models/Pip.luau` into `src/storage/Pip.rbxm`. The hat and the lamp are held pieces on the robe rig (`Config.Animations`), his idle is his own, and his clips are imported and kept in the saved place. `Definitions.Voidkin`'s pip names his model and rig.
+    - **His kit:** `PipCombo` and `PipLanternBurst` in `Definitions.Actions`, `Kits.pip`. A hit with `Area` lands on every enemy within that many studs of its target (`Rules.Fight.Within`, `FightService`).
+    - **The look:** `Config.Effects.LanternBurst`, played by `FighterController/Effects.LanternBurst` from `pip_burst_art.json`'s table: the glow's climb on `Pip_Lamp`, the heat on the lantern, the trail's Beam, and the burst, 15 studs (3 × Area), its foot on the ground under where the lantern stops.
+    - **The shots:** a grey block, a streak from the lantern to the target on each shot (`Config.Effects.Shot`). It reads (`build/captures/ar4/pip_combo_take1_scan.png`).
+  - **My calls (tier 1):**
+    - **The effects' own clock runs through the hitstop.** The action's clock stops in a hold, which froze the leap on cell 0 for about 7 frames in take 1. The burst's cells and the trail's closing count from the Burst on that free clock. The heat, the glow and the throw stay on the action's clock.
+    - **The throw follows the target.** The client scales the lantern's flight from Send so it stops `Throw.Short` (1.5 studs) short of the target, between 0 and 1.25 of the clip's, and hands it back between Return and the clip's end. The flight is offset on the lamp joint's `C0`, because the Animator overwrites `Transform` in every phase. The table's positions are by rule from the lantern, so the heat, the trail and the burst follow it.
+    - **The trail plays the right way round:** the round head at the lantern, so the attachments stay as they are. Back stays at 0.
+  - **The readout (section 7, tier 2): my word is yes, and it's built.** The lamp is dark from the Burst to the clip's end. It then relights to Cold over the rest of the cooldown, on `Glow.Relight`'s curve (1, linear), and is full when the signature is ready. A new burst takes it from wherever it is.
+    - **Its cost to build:** one property write a frame on one `SurfaceAppearance` while it relights, on the client only.
+    - **Its cost to the design, for research:** in a fight the signature fires as soon as it's ready, so the lantern sits below full for about 89% of each 10 s cycle: dark for 1.1 s, then 7.8 s of relighting. It reads dim for most of a fight, and full only for a moment before each burst.
+    - **The lever:** `Relight` above 1 holds it dim, then fills it late; below 1 fills it early.
+  - **The content check's conditions, in the game:**
+    1. The tint is white on both billboards and the Beam, with `LightInfluence` 0. The self-test asserts it.
+    2. The burst is an upright billboard facing the camera, and nothing lies on the floor.
+    3. No new shapes.
+    4. **The engine look**, at ClockTime 17.6 (the game has no dusk grade yet), frozen at 0.75 s, with Pip scaled to 64 px (`build/scratch/faber/h64_*.png`):
+       - At headings 20 and −70, the heat reads as the lantern alight beside his hat.
+       - At 90, the lantern is on his far side and peeks out, cage and all, between the brim and his shoulder.
+       - At 160, he's cut off by the screen's edge, a spot the framing avoids.
+       - The game's bloom (Threshold 2) doesn't take the billboards at Brightness 1. Nothing reads red, and nothing hazes onto the ground.
+    5. Both pictures are uploaded for the group by the key, together, Approved, and logged (`docs/asset-log.md`).
+    - **Pip's own conditions:** the face shows under the brim at 64 px, at 17.6 and at 18.3, near dark. The eyes are never lit. `CastShadow` is off on the hat and the lamp in the template. The flame plays as drawn, `#FF8A3D` at its reddest.
+  - **The checks:**
+    - The type check: 0 new. The logic cases: 1,459 pass.
+    - The self-test's Lantern Burst case: 30/30 with Pip as the lead. It covers the glow, the cells, the heat's size and belly, the trail, the burst's size and foot, the white tint, nothing left behind, and the relight.
+    - The whole Fight suite with Rook as the lead: 166/166. With Pip as the lead it was 177/178: the one fail was the case's own, since it looked for Rook's idle. Fixed, it passes on Pip's.
+  - **For research's two judgements** (`build/captures/ar4/`):
+    - **Pip's half at 30 studs:** `pip_burst_take2.mkv`, and `pip_burst_take2_half.png`, four frames through the heat. My read: a cold flame in the cage at rest, then the heat swells beside the hat to 3.2 studs at Send, and it reads from the player's camera. The levers are `Effects.LanternBurst.Glow.Hot`, then `Heat.Keys`.
+    - **The boil, 70 to 77:** `pip_burst_take2_burst.png` (60 fps, the table's two frames a cell) beside `pip_burst_boil1x2_burst.png` (your lever: one frame a cell, played twice).
+      - My read: at two frames a cell the tongues visibly change every second frame, which isn't one card held still. At one a frame it flickers.
+      - Yours to call. The levers are `Burst.Boil` and `Burst.BoilPlays`.
+    - **To replay it yourself:** in a playtest, on the Server, `game.ServerStorage.NL_Debug:Invoke("Act", nil, "SetLead", { Voidkin = "k6" })`, then `Invoke("Replay", nil, "PipLanternBurst", 4)`. `Invoke("Replay", nil)` stops it, and `k1` puts Rook back.
+  - **Seeds, a tier 2 notice for research:**
+    - The shots: 0.75, 0.75 and 1.17 of his power, a second's worth as Rook's combo's, with Reach 15.5.
+    - The burst: 2.5 on each Shade within 5 studs, heavy, Push 1.5, Cooldown 10.
+    - Range: 14.5 for both, so he fights 13.5 studs off (Range − Approach) and the clip's throw lands as drawn.
+  - **Not done:**
+    - Research's verdict on the replay (fixes 1 and 2), with `ga-fresh-eyes`.
+    - The two rising flames on a kill. The replay's dummy doesn't fall, so they wait for the Shade's burst (AR2, section 11).
+    - Modulo's look on the replay: the low outer tongues.
+  - **Hours:** about 4, an estimate.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

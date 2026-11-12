@@ -836,13 +836,16 @@ return {
 			t.Check("at full health", lead:GetAttribute("Health") == lead:GetAttribute("MaxHealth"))
 			local humanoid = lead:FindFirstChildOfClass("Humanoid")
 			local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+			-- Its own idle: its Voidkin's stance, else its rig's (Config.Animations.Idles, Rigs).
+			local rig = Animations.Rigs[tostring(lead:GetAttribute("Rig"))] or Animations.Rigs.R6
+			local want = Animations.Idles[tostring(lead:GetAttribute("Def"))] or rig.Idle
 			local idle: AnimationTrack? = nil
 			for _, playing in (if animator then animator:GetPlayingAnimationTracks() else {}) do
-				if playing.Animation and playing.Animation.Name == Animations.Rigs.R6.Idle then
+				if playing.Animation and playing.Animation.Name == want then
 					idle = playing
 				end
 			end
-			t.Check("its idle plays", idle ~= nil)
+			t.Check("its idle plays", idle ~= nil, want)
 			if idle then
 				t.Near("at full weight", idle.WeightTarget, 1, 0.01)
 			end
@@ -1393,6 +1396,133 @@ return {
 			_, high = lit(vent)
 			t.Check("out by Vent", high == 0, string.format("%.2f", high))
 			heat.Destroy()
+		end,
+	},
+	{
+		Name = "Fight: Lantern Burst's look keeps the art sheet's table, and relights over the cooldown",
+		Stay = true,
+		Run = function(t: any)
+			-- docs/asset-requests.md, AR4, section 8 (build/handoff/Pip/fx/pip_burst_art.json): the glow up from Heat to Send,
+			-- held, out at the Burst; the heat on the lantern from Heat to the Burst; the trail from the frame after Send to
+			-- Close frames past the Burst; the burst's cells from the Burst, on the clock that runs through the hit's hold;
+			-- all white (the content check's condition 1); nothing left; then the lantern relit over the cooldown.
+			local action = Actions.ById.PipLanternBurst
+			local lead = myLead()
+			local lamp = if lead then lead:FindFirstChild("Pip_Lamp") else nil
+			local lantern = if lamp then lamp:FindFirstChild("Lantern") :: Attachment? else nil
+			local surface = if lamp then lamp:FindFirstChildOfClass("SurfaceAppearance") else nil
+			local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			if lead == nil or lantern == nil or surface == nil or root == nil then
+				t.Row("the lead isn't Pip: Lantern Burst's look waits for a Pip lead", nil, nil, nil, "")
+				return
+			end
+			local look = EffectsConfig.LanternBurst
+			local beats = action.Beats
+			local heat, send, burst = beats.Heat, beats.Send, beats.Burst
+			local area = (action.Hits.Burst.Area :: number)
+			local folder = workspace:FindFirstChild("NL_Effects")
+			local theirs: { [Instance]: boolean } = {}
+			for _, p in (if folder then folder:GetDescendants() else {}) do
+				theirs[p] = true
+			end
+			local function mine(class: string): Instance?
+				local home = workspace:FindFirstChild("NL_Effects")
+				for _, p in (if home then home:GetDescendants() else {}) do
+					if not theirs[p] and p:IsA(class) then
+						return p
+					end
+				end
+				return nil
+			end
+			local running = Effects.LanternBurst(beats, lead, function(): BasePart?
+				return nil
+			end, action)
+			local function at(clock: number, free: number?)
+				running.Step(clock, free or clock)
+			end
+			-- The glow (Config.Effects.LanternBurst.Glow).
+			local glow = look.Glow
+			at(heat - FRAME)
+			t.Near("cold before Heat", surface.EmissiveStrength, glow.Cold, 0.001)
+			at((heat + send) / 2)
+			t.Near("heating, halfway to Send", surface.EmissiveStrength, glow.Cold + (glow.Hot - glow.Cold) * 0.5 ^ glow.Curve, 0.01)
+			at(burst - FRAME)
+			t.Near("hot through the flight", surface.EmissiveStrength, glow.Hot, 0.001)
+			-- The heat: its first cell on Heat, its size at Send, on the lantern.
+			at(heat)
+			local heatGui = lantern:FindFirstChildOfClass("BillboardGui")
+			local heatLabel = if heatGui then heatGui:FindFirstChildOfClass("ImageLabel") else nil
+			t.Check("the heat on the lantern, from Heat", heatGui ~= nil and heatGui.Enabled and heatLabel ~= nil)
+			if heatGui and heatLabel then
+				t.Check("its first cell", heatLabel.ImageRectOffset == Vector2.new(512, 768) and heatLabel.ImageRectSize == Vector2.new(128, 128), tostring(heatLabel.ImageRectOffset))
+				t.Check("white and unlit", heatLabel.ImageColor3 == Color3.new(1, 1, 1) and heatGui.LightInfluence == 0 and heatLabel.Image == look.Picture)
+				at(send)
+				t.Near("3.2 studs at Send", heatGui.Size.X.Scale, 3.2, 0.01)
+				t.Near("its belly on the lantern", heatGui.StudsOffsetWorldSpace.Y, (0.5 - look.Heat.Belly) * 3.2, 0.01)
+			end
+			-- The trail: off on Send, on the frame after.
+			local beam = mine("Beam") :: Beam?
+			t.Check("no trail on Send", beam ~= nil and not beam.Enabled)
+			at(send + 2 * FRAME)
+			t.Check("the trail the frame after", beam ~= nil and beam.Enabled)
+			if beam then
+				t.Check("white and unlit, the trail's picture", beam.Color.Keypoints[1].Value == Color3.new(1, 1, 1) and beam.LightInfluence == 0 and beam.Texture == look.TrailPicture)
+			end
+			-- The burst, held by the hit: the clock stays on the Burst, the free clock runs on.
+			at(burst)
+			t.Check("out at the Burst", surface.EmissiveStrength == 0, string.format("%.2f", surface.EmissiveStrength))
+			t.Check("the heat gone at the Burst", heatGui ~= nil and not heatGui.Enabled)
+			local burstGui = mine("BillboardGui") :: BillboardGui?
+			local burstLabel = if burstGui then burstGui:FindFirstChildOfClass("ImageLabel") else nil
+			t.Check("the burst on the Burst", burstGui ~= nil and burstGui.Enabled and burstLabel ~= nil)
+			if burstGui and burstLabel then
+				local size = look.Burst.PerArea * area
+				t.Near("three times the area's studs", burstGui.Size.X.Scale, size, 0.001)
+				local stand = burstGui.Parent :: BasePart
+				t.Near("its foot on the ground", stand.Position.Y - size / 2, root.Position.Y - 3, 0.01)
+				t.Check("white and unlit", burstLabel.ImageColor3 == Color3.new(1, 1, 1) and burstGui.LightInfluence == 0 and burstLabel.Image == look.Picture)
+				local function cellAt(frames: number): (Vector2?, Vector2?)
+					at(burst, burst + frames * FRAME)
+					if not burstGui.Enabled then
+						return nil, nil
+					end
+					return burstLabel.ImageRectOffset, burstLabel.ImageRectSize
+				end
+				local b = look.Burst
+				local boil, ending = 4 * b.Leap, 4 * b.Leap + 4 * b.Boil * b.BoilPlays
+				local cells = {
+					{ 0, Vector2.new(0, 0), 256, "the leap's first cell" },
+					{ boil, Vector2.new(0, 256), 256, "the boil's, through the hold" },
+					{ ending, Vector2.new(0, 512), 256, "the end's" },
+					{ ending + 8 * b.End - 1, Vector2.new(384, 768), 128, "the wisp's, the last" },
+				}
+				for _, row in cells do
+					local offset, extent = cellAt(row[1] :: number)
+					t.Check(row[4] :: string, offset == row[2] and extent == Vector2.new(row[3] :: number, row[3] :: number), `{offset} {extent}`)
+				end
+				local gone = cellAt(ending + 8 * b.End)
+				t.Check("gone after the wisp", gone == nil)
+				at(burst, burst + 2 * FRAME)
+				t.Check("the trail closing onto it", beam ~= nil and beam.Enabled)
+				at(burst, burst + look.Trail.Close * FRAME)
+				t.Check("and closed", beam ~= nil and not beam.Enabled)
+			end
+			-- Nothing left, and the readout: dark at the clip's end, relit by the cooldown.
+			at(action.Length)
+			t.Check("nothing left", mine("BasePart") == nil and mine("Beam") == nil and lantern:FindFirstChildOfClass("BillboardGui") == nil)
+			t.Check("dark at the clip's end", surface.EmissiveStrength == 0, string.format("%.2f", surface.EmissiveStrength))
+			local seconds = action.Cooldown - action.Length
+			local began = os.clock()
+			task.wait(1)
+			local u = (os.clock() - began) / seconds
+			t.Near("relighting over the cooldown's rest", surface.EmissiveStrength, glow.Cold * u ^ glow.Relight, 0.03)
+			local again = Effects.LanternBurst(beats, lead, function(): BasePart?
+				return nil
+			end, action)
+			again.Step(0, 0)
+			t.Near("a new burst takes the lantern back from the readout", surface.EmissiveStrength, glow.Cold, 0.001)
+			again.Destroy()
+			Effects.Relight(surface, 0) -- the lantern ready, as the replay and the next case find it
 		end,
 	},
 	{

@@ -55,6 +55,44 @@ return {
 		},
 	},
 
+	-- Pip's Lantern Burst (docs/asset-requests.md, AR4, sections 7 and 8; tools/blender/pip_burst_art.py): the lantern heats,
+	-- is thrown, and lets its flame out over the target. Two pictures, the group's uploads (docs/asset-log.md); the table
+	-- the art sheet plays them by is build/handoff/Pip/fx/pip_burst_art.json. Frames are the clip's, from its start.
+	LanternBurst = {
+		Picture = "rbxassetid://98613697418337", -- the flame's twenty cells
+		TrailPicture = "rbxassetid://93148687324383", -- the flame blown back
+		-- The sheet: cells 0 to 11 are Big pixels square, Across to a row from the top; the rest are Small, in one row at
+		-- SmallTop, from the left.
+		Sheet = { Big = 256, Across = 4, Bigs = 12, Small = 128, SmallTop = 768 },
+		-- The burst, from the Burst beat: one picture Size studs square for each stud of the hit's Area, its foot on the
+		-- ground under where the lantern stops. Frames each cell holds: the leap (cells 0 to 3), the boil (4 to 7, played
+		-- BoilPlays times), the end (8 to 15). Research's lever if the boil reads as one card held still: Boil 1, BoilPlays 2.
+		Burst = { PerArea = 3, Leap = 1, Boil = 2, BoilPlays = 1, End = 2, Back = 0, Brightness = 1 }, -- Back: studs away from the camera
+		-- The heat, on the lantern from Heat to the Burst: cells 16 to 19, PerCell frames each; its size eased between the
+		-- keys (frame, studs), its belly (that share of its height up from its foot) on the lantern's middle.
+		Heat = {
+			First = 16,
+			PerCell = 2,
+			Keys = { { 8, 1.0 }, { 30, 1.9 }, { 45, 2.8 }, { 51, 3.2 }, { 65, 2.6 } },
+			Belly = 0.1933,
+			Brightness = 1,
+		},
+		-- The trail, from the frame after Send to Close frames after the Burst: a beam from where the lantern was Lag frames
+		-- back (never before Send) to the lantern; from the Burst its tail closes onto it.
+		Trail = { Lag = 15, Close = 5, Width0 = 0.6, Width1 = 2.4, Brightness = 1 },
+		-- The lantern's glow mask (Pip_Lamp): Cold at rest, up to Hot from Heat to Send on the curve u^Curve, held through
+		-- the flight, dark from the Burst. Then the readout (research's tier 2, AR4, section 7): dark until the clip ends,
+		-- it relights to Cold over the rest of the cooldown, full when the signature is ready, on the curve u^Relight.
+		Glow = { Cold = 1.2, Hot = 3.0, Curve = 1.6, Relight = 1 },
+		-- The throw's length follows the target: the clip throws the lantern from where it is at Send to Flight studs ahead
+		-- of him, which stops Short of a target Short + Flight away. Nearer or further, its flight from Send (handed back
+		-- between Return and the clip's end) is scaled to stop Short of the target, between Min and Max of the clip's.
+		Throw = { Flight = 12, Short = 1.5, Min = 0, Max = 1.25 },
+	},
+	-- Pip's shots (PipCombo): a grey block, the builder's. A streak from the lantern to the target on each shot's beat,
+	-- Life seconds; a heavy shot's is wider.
+	Shot = { Width = 0.2, Heavy = 0.45, Life = 0.12 },
+
 	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey
 	-- block, the builder's: a ring of light spreads from its feet and fades, and "Level N" rises over it, slower and larger
 	-- than a hit's number. Seconds; studs; Size in pixels at the phone's size.

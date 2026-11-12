@@ -31,11 +31,14 @@ local BURST_MARKER = "Burst" -- AR2's Burst clip: the body hides here and the ef
 local WALK_SMOOTHING = 10 -- a second's share the walk's speed follows the body by: about a tenth of a second
 
 -- The effects that hang on an action's beats, by its id. A landed hit's spark is every action's.
-local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target: () -> BasePart?) -> Effects.Running } = {
+local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action) -> Effects.Running } = {
 	RookHaymaker = Effects.Haymaker,
+	PipLanternBurst = Effects.LanternBurst,
+	PipCombo = Effects.LanternShots,
 }
 
-type Running = { Effect: Effects.Running, Clock: number }
+-- Clock is the action's, which a hold pauses; Free runs through a hold (an effect that lives past the hit, unheld).
+type Running = { Effect: Effects.Running, Clock: number, Free: number }
 
 -- A hit's push as this screen draws it (Config.Combat.Push.Shown): from the hold's end, along the hit's line, at the
 -- server's pace.
@@ -228,8 +231,8 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 		local effect = make(action.Beats, view.Model, function(): BasePart?
 			local target = targetOf(view)
 			return if target then target.Root else nil
-		end)
-		table.insert(view.Running, { Effect = effect, Clock = view.Clock })
+		end, action)
+		table.insert(view.Running, { Effect = effect, Clock = view.Clock, Free = view.Clock })
 	end
 end
 
@@ -371,7 +374,8 @@ local function add(model: Instance)
 	views[model] = view
 	byId[view.Id] = view
 	local reactions = Animations.Rigs[view.Rig]
-	local idleClip = if reactions then reactions.Idle else nil
+	local def = model:GetAttribute("Def")
+	local idleClip = (if type(def) == "string" then Animations.Idles[def] else nil) or (if reactions then reactions.Idle else nil)
 	if idleClip then
 		local idle = track(view, idleClip)
 		if idle then
@@ -468,7 +472,8 @@ local function stepView(view: View, dt: number, now: number): boolean
 	for index = #view.Running, 1, -1 do
 		local running = view.Running[index]
 		running.Clock += step
-		if not running.Effect.Step(running.Clock) then
+		running.Free += if frozen or now >= view.FrozenUntil then step else dt
+		if not running.Effect.Step(running.Clock, running.Free) then
 			table.remove(view.Running, index)
 		end
 	end

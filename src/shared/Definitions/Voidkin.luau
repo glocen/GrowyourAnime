@@ -17,12 +17,14 @@ export type Row = {
 	-- Its body, ServerStorage.Templates.<Model> (tools/studio/Models/<Model>.luau): an R6 rig whose meshes ride its hidden
 	-- parts, so it plays the R6 clips. Without one, a lead wears the grey R6 stand-in (FightService).
 	Model: string?,
+	-- Its body's shared reactions, a set in Config.Animations.Rigs: "R6" (open legs, the default) or "Robe".
+	Rig: string?,
 }
 
 local rows: { Row } = {
 	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2, Model = "Rook" },
 	{ Id = "kirra", Name = "Kirra", Rarity = "Common", Type = "Agility", Class = "Assassin", Element = "", Zone = 1, Aptitude = 1 },
-	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2 },
+	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2, Model = "Pip", Rig = "Robe" },
 	{ Id = "watt", Name = "Watt", Rarity = "Common", Type = "Endurance", Class = "Tank", Element = "Storm", Zone = 1, Aptitude = 3 },
 	{ Id = "patch", Name = "Patch", Rarity = "Common", Type = "Technique", Class = "Healer", Element = "", Zone = 1, Aptitude = 2 },
 	{ Id = "tumble", Name = "Tumble", Rarity = "Common", Type = "Agility", Class = "Warrior", Element = "", Zone = 2, Aptitude = 1 },

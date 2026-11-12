@@ -43,6 +43,8 @@ local HELD: { [string]: string } = {
 	Creature_ClawsL = "Left Arm",
 	Rook_Piston = "Right Arm",
 	Rook_Tape = "Left Arm",
+	Pip_Hat = "Head", -- Pip's (AR4: tools/studio/Models/Pip.luau): his hat on the Head, his lamp on the Torso
+	Pip_Lamp = "Torso",
 }
 local LEANS = { Torso = true, Head = true } -- pitch flips on these: their bases face the other way from an arm's
 

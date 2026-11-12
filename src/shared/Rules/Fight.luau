@@ -238,6 +238,11 @@ function Fight.PackRing(count: number, spacing: number): { { number } }
 	return out
 end
 
+-- Whether a fighter `distance` studs (flat) from a hit's target stands in the hit's Area, the target's own studs round it.
+function Fight.Within(distance: number, area: number): boolean
+	return area > 0 and distance <= area
+end
+
 -- The push a client draws ahead of the server's (FighterController; AR1, section 8): `t` seconds after the hold ended,
 -- a body pushed `studs` whose replica has brought `shown` of it is drawn this much further on, never back. The server's
 -- push runs over push.Seconds; what the replica still hasn't brought by push.Wait after it is let go over push.HandBack.

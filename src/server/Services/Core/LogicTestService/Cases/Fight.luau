@@ -332,6 +332,27 @@ return {
 		end,
 	},
 	{
+		-- AR4: Pip's Lantern Burst lets its flame out over an area round its target.
+		Name = "Fight: an area hit takes every enemy within its studs of the target, and a hit without one takes none",
+		Run = function(t: any)
+			local area = Actions.ById.PipLanternBurst.Hits.Burst.Area :: number
+			t.Check("Lantern Burst has an area", type(area) == "number" and area > 0)
+			t.Check("on the target", Fight.Within(0, area))
+			t.Check("at its edge", Fight.Within(area, area))
+			t.Check("not past it", not Fight.Within(area + 0.01, area))
+			t.Check("no area, nobody else", not Fight.Within(0, 0))
+			for _, action in Actions.List do
+				for beat, hit in action.Hits do
+					t.Check(`{action.Id}.{beat}: an area is positive when there is one`, hit.Area == nil or hit.Area > 0)
+				end
+			end
+			-- Pip fights from his signature's spacing, so the clip's 12-stud throw lands a stud and a half short of the target.
+			for _, id in Actions.Kits.pip do
+				t.Check(`{id} is fought from the throw's spacing`, near(Actions.ById[id].Range - Combat.Approach, 13.5))
+			end
+		end,
+	},
+	{
 		-- AR1, section 8: a server-moved body reaches a client's screen late, so the client draws the push itself.
 		Name = "Fight: the drawn push reaches the hit's push by the end of the server's, and hands it back",
 		Run = function(t: any)

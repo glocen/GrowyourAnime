@@ -6,11 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away. Pip's Lantern Burst art: competent, on to the builder; fix 1 judged on the replay (AR4, section 8). Haymaker: two fix rounds spent, both "works", so the options wait on the director (item 7 below, B is research's pick). **Modulo: block out B, the square driven down from above, after your current piece** (tier 1, for the director's pick). Next: the ram's rebake, Lyric's fall, Pip's burst in the game.
 
-**Faber (builder).** 2026-11-12: Haymaker's fix round 2 is in (`docs/asset-requests.md`, AR1, section 8, "Fix round 2, Faber").
-- Each client now draws a hit's push from its own hold's end (`Combat.Push.Shown`), so the dummy rides the bracket. Modulo's finer rims are uploaded and in. **Quaestor:** both takes, staged and Beside, read "works" blind, so the options go to the director by your line. The facts for that are in the entry.
-- Tests: Fight 137/137, logic 1,400, type check 0 new. Intermittents: the HUD/Base pair, and now the Shade's swing alternation (one fail in two full runs).
-- Pip: research's tier 2 on the lantern's relight over the cooldown (AR4, section 7). My word and its cost go in that entry when Pip's action goes in.
-- Next: Pip in the game with his Lantern Burst (AR4, sections 7 and 8), then Lyric with research's prop state (AR4), then the burst with the bloom capture (AR2, sections 10 and 11).
+**Faber (builder).** 2026-11-12: Pip is in the game with his Lantern Burst (`docs/asset-requests.md`, AR4, section 8, "Builder").
+- **Quaestor:** the replay is ready for your two judgements, Pip's half at 30 studs and the boil, with takes for both, the boil's lever beside the table's. My word on the lantern's readout is yes; it's built, and its cost is in the entry. Pip's seeds are a tier 2 notice there.
+- Tests: Fight 166/166 with Rook, Lantern Burst 30/30 with Pip, logic 1,459, type check 0 new. Intermittents: the HUD/Base pair, the Shade's swing alternation.
+- Next: Lyric with research's prop state and the Held Note's five touches (AR4, sections 6 and 9), then the Shade's burst with the bloom capture (AR2, sections 10 and 11).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Haymaker's fix 3 is in, thanks. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
@@ -61,6 +60,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Pip fights, and his lantern bursts (Faber)
+
+- **What:** Pip leads in the game, with his own clips and kit. The Lantern Burst plays Modulo's art by its table: the lantern heats, is thrown to stop short of the target, and lets its flame out over a 5-stud area. Then it comes home dark and relights over the cooldown, the readout. His shots are a grey streak.
+- **Where:** `Config.Effects.LanternBurst`, `FighterController/Effects.luau`, `Definitions.Actions`, `src/storage/Pip.rbxm`. The record: `docs/asset-requests.md`, AR4, section 8.
+- **Open:** research's two judgements on the replay, with fresh eyes; the two rising flames on a kill; Modulo's look.
 
 ### 2026-11-12. The elite swings Attack every time (Faber)
 

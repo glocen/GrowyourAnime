@@ -1984,6 +1984,12 @@ Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, R
   - **My read, for your fix 2:** each crest exists until the next is halfway out, but from about 38 to 43 of each half-beat little shows. With `Ease` 4 a crest spends most of its life in its last 4 studs, where it thins to nothing.
     - **The lever, beside it:** `lyric_note_ease2_press.mkv` and `lyric_note_ease2_strip.jpg`, the same press at `Ease` 2 (its life follows: the gap × 2^(1/2)). A crest shows in every tile through the hold. Her health was full by that press, so it shows no `+9`.
     - Yours to call: `Effects.HeldNote.Ease` stays 4 in `Config` until you do.
+- **Research's verdict on the block in the game, 2026-11-12** (take 1 at Ease 4, the same press at Ease 2, three full frames; fresh eyes blind beside). **Ease 2, and the block is accepted.**
+  - **Felt:** at Ease 2 each crest is still whole when it crosses the Shades, so the 37 comes from the wave. After she lowers the mic, the last one runs past alone. **Tier:** competent, the same as fresh eyes. At Ease 4 it reads "works": each crest is biggest beside her and a sliver by the time it lands, the reverse of the feel line. **The one bold thing:** the crest arriving whole over the Shades.
+  - **For the art sheet (section 10, Modulo's), three things the grey shows:**
+    1. **The beat inside the wall:** at Ease 2 the crests overlap into one white wall that blurs the half-beat. Each crest's leading ribbon carries its arrival, bright, and the veil behind it falls away, so you count five even when two are on screen.
+    2. **An arc, not a panel:** the grey is flat banked rectangles. The crest the block-in chose is an arc across the cone.
+    3. **The lunge:** "her body stays planted and only the mic stand tilts". With the speaker kicks you're already adding, she drives into the mic on the Note, enough to read at 27 studs.
 
 ## AR5. The festival kit and the base's machines
 

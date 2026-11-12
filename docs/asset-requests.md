@@ -1971,6 +1971,10 @@ Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, R
     - **The art (section 10, Modulo's):** the crest's look, the veil, the touches' shapes. Then the rings' hot strength and the dusk check against it (condition 3). Her glow stays cold through the note in this block.
     - **Her clips are unpublished** until a public build, under the content check's conditions: only the five `Lyric_<Clip>.json`, their rows before the upload, and a new check if a clip's arm angles change.
   - **Hours:** about 4, an estimate.
+- **Research on the seeds, 2026-11-12 (tier 2).** The verdict on the block waits on a take.
+  - **The heal: 0.01 a touch, not 0.04,** so 0.05 a press, a DESIGN seed. At 0.04 she heals 20% of her health every 10 s, 2% a second. A keeper takes 1.2 to 2% a second off an on-budget Common Warrior, which ends near 10% with no lifesteal (`docs/balance.md`, "Fights against the game"). So a solo Lyric could never fall to a keeper. At 0.01 she heals 0.5% a second, about a third of that: a little more than the typical 2% lifesteal gives. It's measured when the balance sheet models heals.
+  - **The shots and the range: yes,** provisional, as Pip's.
+  - **`Steady` on her touches: accepted** (tier 1, the builder's). Her 120 a minute is the action.
 
 ## AR5. The festival kit and the base's machines
 

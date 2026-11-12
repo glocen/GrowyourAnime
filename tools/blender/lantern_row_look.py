@@ -34,6 +34,7 @@ import blcommon as bl  # noqa: E402
 import r6anim as r6  # noqa: E402
 import r6rig  # noqa: E402
 import rook_clips as rc  # noqa: E402
+import rook_haymaker_fx as hx  # noqa: E402  (the knuckles' place on the ram)
 import rook_sheet as rs  # noqa: E402
 import shade_clips as sc  # noqa: E402
 
@@ -112,6 +113,35 @@ DIRECTIONS = {
 }
 
 
+# Round 2 (research's verdict, 2026-11-12): B's structure in A's hour, held at dusk. The afterglow is only at the street's
+# far end: the sky and the fog take `sky` and `fog` toward `glow_az` and `sky_away` and `fog_away` from it, as Roblox's
+# Atmosphere takes Color toward the sun and Decay away. The one directional light is high, so the fight is lit the same
+# from either end. string_light: one SpotLight a string, straight down (colour, power, cone degrees): the warm pools.
+DIRECTIONS["M"] = {
+    "name": "Lantern dusk, the merge",
+    "idea": "B's dark street and lit fight in A's hour: warm lanterns, cyan between, warm pools, a pink afterglow at the street's end",
+    "sky": ((-0.2, "#4A2E5E"), (0.0, "#F4A0B2"), (0.05, "#EC88AC"), (0.14, "#9C66B8"), (0.32, "#3A3A8A"), (1.0, "#141A48")),
+    "sky_away": ((-0.2, "#2A2658"), (0.0, "#6A58A4"), (0.08, "#4E4692"), (0.3, "#2A2E6C"), (1.0, "#141A48")),
+    "glow_az": 0.0,
+    "clouds": ("#E890B0", "#4A3E86", 0.03, 0.2, 0.56),
+    "moon": None, "stars": 0.35,
+    "sun": (200.0, 62.0, "#A9B4FF", 0.55, True),
+    "ambient": ("#3A3F7C", 0.42),
+    "fog": ("#CC7CA0", 0.0045), "fog_away": "#4A4290",
+    "lantern": (("#FFE7B8", "#FFE7B8", "#66F0FF"), 2.4, 0, 0.0, 0.0),
+    "string_light": ("#FFD49A", 6600.0, 54.0),
+    "ink": ("#0C0A16", 0.14, "big"),
+    "wood": ("#4E3242", "#20151F"), "post": ("#3C1F28", "#170E15"), "awning": ("#B8404C", "#E8D8C0"),
+    "cloth": ("#F0E4CC", "#1E1426"), "noren": ("#262454", "#F0E4CC"), "house": ("#2C2C56", "#151532"),
+    "roof": ("#191936", "#0E0E22"), "ground": ("#766C84", "#585066"), "joint": "#383244",
+    "window": ("#FFC98A", 2.0, 0.25), "paper": ("#FFF2DC", 0.5),
+    "bloom": (0.8, 0.8, (6, 20)), "exposure": 1.0, "skyline": (14.0, 18.0, 22.0, 26.0),
+    # one PointLight, carried by the lead: ahead of him toward his target and over their heads (studs ahead, studs up).
+    # It lights his front and the floor between them; a Shade, its back to the camera, stays a dark shape on that floor.
+    "fighter_light": ("#FFF1DD", 1050.0, 12.0), "fighter_light_ahead": (1.8, 5.2),
+}
+
+
 def srgb(code):
     return rs.srgb(code)[:3]
 
@@ -144,6 +174,22 @@ def _fogged(mat, shader_out):
     fog = nodes.new("ShaderNodeEmission")
     fog.inputs["Color"].default_value = (*FOG["colour"], 1)
     fog.inputs["Strength"].default_value = 1.0
+    if FOG.get("away") is not None:  # Color toward the glow, Decay away from it, by where the camera looks
+        geo = nodes.new("ShaderNodeNewGeometry")
+        dot = nodes.new("ShaderNodeVectorMath")
+        dot.operation = "DOT_PRODUCT"
+        a = math.radians(FOG["azimuth"])
+        dot.inputs[1].default_value = (-math.sin(a), -math.cos(a), 0.0)  # Incoming points at the camera
+        side = nodes.new("ShaderNodeMapRange")
+        side.inputs[1].default_value, side.inputs[2].default_value = -0.2, 0.9
+        tint = nodes.new("ShaderNodeMix")
+        tint.data_type = "RGBA"
+        tint.inputs[6].default_value = (*FOG["away"], 1)
+        tint.inputs[7].default_value = (*FOG["colour"], 1)
+        links.new(geo.outputs["Incoming"], dot.inputs[0])
+        links.new(dot.outputs["Value"], side.inputs[0])
+        links.new(side.outputs[0], tint.inputs[0])
+        links.new(tint.outputs[2], fog.inputs["Color"])
     mix = nodes.new("ShaderNodeMixShader")
     links.new(inv.outputs[0], mix.inputs[0])
     links.new(shader_out, mix.inputs[1])
@@ -290,40 +336,77 @@ def ink_material(code):
 
 # --- our own script: glyphs for the signs and the cloth ----------------------------------------------------------------
 
-def glyph_images(folder: Path, seed=11):
-    """Invented letters, white on black: each a spine with hooks off it and a ring or a dot, drawn with a brush of
-    one width. Nothing here is a real script's character. A column of four (banners) and a row of four (boards)."""
-    rng = np.random.default_rng(seed)
-    cell = 128
+GLYPH_SEED = 23
 
-    def glyph():
-        yy, xx = np.mgrid[0:cell, 0:cell] / cell
-        ink = np.zeros((cell, cell), np.float32)
 
-        def stroke(a, b, w=0.055):
-            a, b = np.array(a), np.array(b)
-            d = b - a
-            t = np.clip(((xx - a[0]) * d[0] + (yy - a[1]) * d[1]) / max(d @ d, 1e-6), 0, 1)
-            dist = np.hypot(xx - (a[0] + t * d[0]), yy - (a[1] + t * d[1]))
-            np.maximum(ink, np.clip((w - dist) / 0.012, 0, 1), out=ink)
+def _curve(p0, p1, p2, n=40):
+    t = np.linspace(0, 1, n)[:, None]
+    return (1 - t) ** 2 * np.array(p0, float) + 2 * t * (1 - t) * np.array(p1, float) + t ** 2 * np.array(p2, float)
 
-        sx = rng.choice((0.38, 0.5, 0.62))
-        stroke((sx, 0.14), (sx + rng.uniform(-0.06, 0.06), 0.86))                      # the spine
-        for _ in range(rng.integers(1, 3)):                                            # its hooks
-            y = rng.uniform(0.25, 0.75)
-            side = rng.choice((-1, 1))
-            end = (sx + side * rng.uniform(0.2, 0.3), y + rng.uniform(-0.16, 0.16))
-            stroke((sx, y), end)
-            stroke(end, (end[0], end[1] + rng.choice((-1, 1)) * 0.1))
-        cx, cy = sx + rng.choice((-1, 1)) * 0.22, rng.uniform(0.25, 0.75)
-        if rng.random() < 0.6:                                                         # a ring
-            r = np.hypot(xx - cx, yy - cy)
-            np.maximum(ink, np.clip((0.05 - np.abs(r - 0.1)) / 0.012, 0, 1), out=ink)
-        else:                                                                          # a dot
-            np.maximum(ink, np.clip((0.07 - np.hypot(xx - cx, yy - cy)) / 0.012, 0, 1), out=ink)
-        return ink
 
-    glyphs = [glyph() for _ in range(8)]
+def _brush(ink, xx, yy, points, radii, soft=0.012):
+    """A brush dragged through `points`, its width changing along the way: thick where it presses, thin where it lifts."""
+    for (x, y), r in zip(points, radii):
+        np.maximum(ink, np.clip((r - np.hypot(xx - x, yy - y)) / soft, 0, 1), out=ink)
+
+
+def glyph(rng, cell=128):
+    """One letter of Lantern Row's hand: a sprig of flame over a small cup. Four or five unequal wedges fan from one
+    root over a wide angle, the longest curling; a short thin cup sits under the root; a thin echo arc hangs below
+    it; one round dot stands off to a side. Every letter leans on a diagonal and may be mirrored.
+
+    What two draws taught (the content check, round 2): a long pressed bowl shrinks to a stem at 16 px, and a stem
+    with two prongs is an E, an F or a pi at any lean; a tall wedge near upright over a hooked foot is a J. So the cup
+    is short and thin, the wedges carry the letter, there are never fewer than four, and a draw whose longest wedge
+    ends within 25 degrees of upright or level is refused. The dot is round: a tailed drop is a shape moderation
+    reads badly alone (handbook/platform/rules-and-moderation.md, "Traps")."""
+    yy, xx = (np.mgrid[0:cell, 0:cell] + 0.5) / cell
+    while True:
+        turn = (rng.integers(0, 4) + 0.5) * math.pi / 2 + rng.uniform(-0.2, 0.2)
+        flip = rng.choice((-1.0, 1.0))
+        n = int(rng.integers(4, 6))
+        span = math.radians(rng.uniform(115, 165))
+        centre = math.radians(rng.uniform(-18, 18))
+        leans = centre + (np.arange(n) - (n - 1) / 2) * span / (n - 1) + rng.uniform(-0.1, 0.1, n)
+        heights = rng.permutation(np.array([0.40, 0.29, 0.21, 0.15, 0.25])[:n])
+        tall = leans[int(np.argmax(heights))]
+        final = math.degrees(turn + flip * tall) % 90.0   # 0 or 90: upright or level, once placed
+        if 25.0 <= final <= 65.0:
+            break
+    ink = np.zeros((cell, cell), np.float32)
+    c, s_ = math.cos(turn), math.sin(turn)
+
+    def place(points):
+        q = np.array(points, float) - (0.5, 0.56)   # the letter's middle, a little over its root
+        q[:, 0] *= flip
+        return np.stack([q[:, 0] * c - q[:, 1] * s_, q[:, 0] * s_ + q[:, 1] * c], 1) * 1.04 + 0.5
+
+    root = np.array((0.5, 0.60))
+    for i in range(n):
+        lean = leans[i]
+        along = np.array((math.sin(lean), -math.cos(lean)))
+        base = root + along * 0.05 + np.array((math.cos(lean), math.sin(lean))) * rng.uniform(-0.015, 0.015)
+        tip = base + heights[i] * along
+        curl = (0.10 if heights[i] > 0.35 else 0.035) * rng.choice((-1.0, 1.0))
+        bend = (base + tip) / 2 + curl * np.array((math.cos(lean), math.sin(lean)))
+        t = np.linspace(0, 1, 30)
+        _brush(ink, xx, yy, place(_curve(base, bend, tip, 30)), 0.009 + 0.052 * np.sin(math.pi * np.clip(t * 1.5, 0, 1)) * (1 - t) ** 0.6)
+    cup = _curve((0.36, 0.63), (0.5, 0.63 + rng.uniform(0.16, 0.22)), (0.64, 0.63), 60)
+    _brush(ink, xx, yy, place(cup), 0.009 + 0.026 * np.sin(math.pi * np.linspace(0, 1, 60)))
+    side = rng.choice((-1.0, 1.0))
+    reach = rng.uniform(0.12, 0.3)   # the echo: a thin arc under the cup, short or long. No tassel: two small parallel
+    e = _curve((0.5 - side * 0.14, 0.86), (0.5 + side * 0.04, 0.97), (0.5 + side * reach, 0.9 - reach * 0.3), 24)  # dashes read as a quote mark
+    _brush(ink, xx, yy, place(e), 0.006 + 0.014 * np.sin(math.pi * np.linspace(0, 1, 24)))
+    low = int(np.argmin(heights))                                   # the dot, beyond the shortest wedge
+    out = root + (heights[low] + 0.17) * np.array((math.sin(leans[low]), -math.cos(leans[low])))
+    _brush(ink, xx, yy, place(np.array([out])), [0.034])
+    return ink
+
+
+def glyph_images(folder: Path, seed=None):
+    """Eight letters, white on black: a column of four (banners) and a row of four (boards and curtains)."""
+    rng = np.random.default_rng(GLYPH_SEED if seed is None else seed)
+    glyphs = [glyph(rng) for _ in range(8)]
     column = np.concatenate(glyphs[:4], axis=0)   # 128 x 512: read top to bottom
     row = np.concatenate(glyphs[4:], axis=1)      # 512 x 128
     images = {}
@@ -333,7 +416,45 @@ def glyph_images(folder: Path, seed=11):
         path = folder / f"{name}.png"
         rs.save(rgba, path)
         images[name] = bpy.data.images.load(str(path))
+    images["all"] = glyphs
     return images
+
+
+SCRIPT_SHEET = "lantern_row_script.png"
+
+
+def glyph_preview(folder: Path, seed=None):
+    """The eight letters as they'll be met: large; at the sizes a sign shows them from the street (32, 16 and 10 px),
+    dark on cloth and pale on a dark curtain; and the 16 px tiles again blown up five times, pixel for pixel, since
+    that's the size where a letter shows if there is one."""
+    rng = np.random.default_rng(GLYPH_SEED if seed is None else seed)
+    glyphs = [glyph(rng) for _ in range(8)]
+    cloth, ink, dark, pale = (np.array(srgb_code(c), np.float32) for c in ("#F0E4CC", "#1E1426", "#262454", "#F0E4CC"))
+    page = rs.canvas(8 * 136 + 16, 128 + 4 * 52 + 40 + 2 * 92, tuple(cloth))
+
+    def tile(g, size, a, b):
+        small = rs.shrink(np.dstack([g, g, g, np.ones_like(g)]), size / 128)[..., 0]
+        out = np.ones((small.shape[0], small.shape[1], 4), np.float32)
+        out[..., :3] = a[None, None] * (1 - small[..., None]) + b[None, None] * small[..., None]
+        return out
+
+    for i, g in enumerate(glyphs):
+        rs.paste(page, tile(g, 128, cloth, ink), 12 + i * 136, 10)
+    y = 150
+    for size, (a, b) in ((32, (cloth, ink)), (16, (cloth, ink)), (10, (cloth, ink)), (16, (dark, pale))):
+        for i, g in enumerate(glyphs):
+            rs.paste(page, tile(g, size, a, b), 12 + i * (size + 6), y)
+        y += 52
+    for a, b in ((cloth, ink), (dark, pale)):
+        for i, g in enumerate(glyphs):
+            rs.paste(page, np.repeat(np.repeat(tile(g, 16, a, b), 5, axis=0), 5, axis=1), 12 + i * 92, y)
+        y += 92
+    rs.save(page, folder / SCRIPT_SHEET)
+
+
+def srgb_code(code):
+    """A colour code as it's stored in a PNG (no linearising): for pictures composed here, not rendered."""
+    return tuple(int(code[i:i + 2], 16) / 255 for i in (1, 3, 5))
 
 
 # --- the street --------------------------------------------------------------------------------------------------------
@@ -436,7 +557,7 @@ def banner(kit, side, y, i):
     kit.block(f"Flag{i}", (0.06, 2.0, 6.4), (x0, y + 1.15, 10.6), kit.m["banner"])
 
 
-def lantern_strings(kit, scene):
+def lantern_strings(kit, scene, near=0.0):
     """Strings across the street every 12 studs, zig-zagging, sagging, a paper lantern every 3.6 studs, a PointLight
     in every n-th one near the camera."""
     colours, strength, every, power, reach = kit.d["lantern"]
@@ -453,6 +574,11 @@ def lantern_strings(kit, scene):
             points.append(p)
         cable = bl.tube_along(f"Cable{s}", points, [0.06] * len(points), sides=4, material=kit.m["cable"])
         kit.pieces.append(cable)
+        if kit.d.get("string_light") and abs(y - near) < 150:
+            code, watts, cone = kit.d["string_light"]
+            mid = a.lerp(b, 0.5)
+            spot = light(kit, scene, f"StringLight{s}", Vector((mid.x, mid.y, mid.z - 4.2)), code, watts, 40.0, kind="SPOT")
+            spot.data.spot_size, spot.data.spot_blend = math.radians(cone), 0.7
         n = 12
         for j in range(1, n):
             t = j / n
@@ -466,13 +592,13 @@ def lantern_strings(kit, scene):
             lamp = bl.join([body, *caps], f"Lantern{s}_{j}")
             lamp.location = p
             kit.add(lamp, big=False, ink=False)
-            if count % every == 0 and y < 140:
+            if every and count % every == 0 and abs(y - near) < 140:
                 light(kit, scene, f"LanternLight{s}_{j}", p - Vector((0, 0, 0.9)), colours[count % len(colours)], power, reach)
             count += 1
 
 
-def light(kit, scene, name, at, code, power, reach, shadow=False):
-    data = bpy.data.lights.new(name, "POINT")
+def light(kit, scene, name, at, code, power, reach, shadow=False, kind="POINT"):
+    data = bpy.data.lights.new(name, kind)
     data.energy, data.color = power, srgb(code)
     data.shadow_soft_size = 0.6
     data.use_shadow = shadow
@@ -487,17 +613,17 @@ def light(kit, scene, name, at, code, power, reach, shadow=False):
     return obj
 
 
-def paper_in_air(kit, rng):
+def paper_in_air(kit, rng, near=0.0):
     """Life in the air: torn paper and petals of it, drifting at every height over the fight and down the street."""
     for i in range(70):
-        y = rng.uniform(2, 110)
+        y = near + (rng.uniform(2, 110) if near < 100 else -rng.uniform(2, 110))
         obj = bl.box(f"Scrap{i}", (0.55, 0.38, 0.03), kit.m["paper"])
         obj.location = (rng.uniform(-HALF + 2, HALF - 2), y, rng.uniform(2.5, 14))
         obj.rotation_euler = tuple(rng.uniform(0, math.tau, 3))
         kit.add(obj)
 
 
-def street(scene, d, images):
+def street(scene, d, images, near=0.0):
     kit = Kit(d, images)
     rng = np.random.default_rng(5)
     ground(kit)
@@ -512,8 +638,8 @@ def street(scene, d, images):
         for k in range(26):
             house(kit, side, -8 + k * 16.0 + (side > 0) * 6, float(rng.choice(d["skyline"])), i)
             i += 1
-    lantern_strings(kit, scene)
-    paper_in_air(kit, rng)
+    lantern_strings(kit, scene, near)
+    paper_in_air(kit, rng, near)
     return kit
 
 
@@ -553,6 +679,30 @@ def sky(scene, d):
         el.color = (*srgb(code), 1)
     links.new(remap.outputs[0], ramp.inputs[0])
     colour = ramp.outputs["Color"]
+    if "sky_away" in d:  # the afterglow at one end only
+        away = nodes.new("ShaderNodeValToRGB")
+        els = away.color_ramp.elements
+        stops = d["sky_away"]
+        while len(els) < len(stops):
+            els.new(0.5)
+        for el, (e, code) in zip(els, stops):
+            el.position = (e + 0.2) / 1.2
+            el.color = (*srgb(code), 1)
+        links.new(remap.outputs[0], away.inputs[0])
+        a = math.radians(d["glow_az"])
+        dot = nodes.new("ShaderNodeVectorMath")
+        dot.operation = "DOT_PRODUCT"
+        dot.inputs[1].default_value = (math.sin(a), math.cos(a), 0.0)
+        links.new(norm.outputs[0], dot.inputs[0])
+        side = nodes.new("ShaderNodeMapRange")
+        side.inputs[1].default_value, side.inputs[2].default_value = -0.2, 0.9
+        links.new(dot.outputs["Value"], side.inputs[0])
+        both = nodes.new("ShaderNodeMix")
+        both.data_type = "RGBA"
+        links.new(side.outputs[0], both.inputs[0])
+        links.new(away.outputs["Color"], both.inputs[6])
+        links.new(colour, both.inputs[7])
+        colour = both.outputs[2]
     # clouds: long bands of noise, squashed in elevation, lit on top and dark under
     lit, dark, low, high, cover = d["clouds"]
     scale = nodes.new("ShaderNodeVectorMath")
@@ -757,8 +907,12 @@ def fighters():
         [o for o in costume.values()] + worn, avatar_objs
 
 
-def stage_them(rigs):
-    """Where the game puts them (Config.Combat.Replay and Lead), in Roblox studs."""
+FAR = 380.0  # studs up the street the far-end view stands, looking back at the gate
+
+
+def stage_them(rigs, far=False):
+    """Where the game puts them (Config.Combat.Replay and Lead), in Roblox studs. `far`: the same staging turned round
+    at the street's far end, the player walking back toward the gate. Returns the eye, the camera's look, the places."""
     replay = r6.luau_table(COMBAT, "Replay = {")
     lead = r6.luau_table(COMBAT, "Lead = {")
     dummy = Vector((0.0, 0.0, -replay["Behind"]))
@@ -773,14 +927,20 @@ def stage_them(rigs):
     other = rook + turned * STRIKE_GAP
     y = r6rig.ROOT_HEIGHT
     up = Vector((0, y, 0))
-    r6.place_root(rigs["Avatar"], 0, avatar + up, (0, 0, -1))
-    r6.place_root(rigs["Shade1"], 0, dummy + up, (rook - dummy).normalized())
-    r6.place_root(rigs["Rook"], 0, rook + up, (dummy - rook).normalized())
-    r6.place_root(rigs["Shade2"], 0, other + up, (rook - other).normalized())
     focus = avatar + Vector((0, y + FOCUS, 0))
     p = math.radians(replay["Pitch"])
     eye = focus + Vector((0, math.sin(p) * ZOOM, math.cos(p) * ZOOM))
-    return eye, focus, {"dummy": dummy, "rook": rook, "other": other, "avatar": avatar, "pitch": replay["Pitch"]}
+    look = Vector((0, -math.sin(p), -math.cos(p)))
+
+    def turn(v, point=True):
+        return Vector((-v.x, v.y, -v.z - (FAR if point else 0.0))) if far else Vector(v)
+
+    dummy, avatar, rook, other, eye = (turn(v) for v in (dummy, avatar, rook, other, eye))
+    r6.place_root(rigs["Avatar"], 0, avatar + up, turn(Vector((0, 0, -1)), False))
+    r6.place_root(rigs["Shade1"], 0, dummy + up, (rook - dummy).normalized())
+    r6.place_root(rigs["Rook"], 0, rook + up, (dummy - rook).normalized())
+    r6.place_root(rigs["Shade2"], 0, other + up, (rook - other).normalized())
+    return eye, turn(look, False), {"dummy": dummy, "rook": rook, "other": other, "avatar": avatar, "pitch": replay["Pitch"]}
 
 
 # --- the picture: bloom and the tone curve -----------------------------------------------------------------------------
@@ -869,6 +1029,15 @@ def measures(frame, cut, mask_ids):
             result[f"{name}_median"] = round(float(np.median(v[mine])), 3)
             result[f"{name}_p90"] = round(float(np.percentile(v[mine], 90)), 3)
             result[f"{name}_around"] = round(float(np.median(v[ring_n])), 3)
+            rim = mine & grow(~mine, 3)                   # its own outline, inside
+            floor = grow(mine, 4) & ~body                 # and what lies just outside it: the floor behind
+            if rim.any() and floor.any():
+                result[f"{name}_edge"] = round(float(abs(np.median(v[rim]) - np.median(v[floor]))), 3)
+    if result.get("Rook_around"):
+        result["lead_over_around"] = round(result["Rook_median"] / result["Rook_around"], 2)
+        lead_q = float(np.percentile(v[seen["Rook"]], 75))   # the Shades are dark by design: the lead's own top quarter
+        result["lead_p75"] = round(lead_q, 3)
+        result["brighter_than_lead_p75"] = round(float((v[~body] > lead_q).mean()), 3)
     return result
 
 
@@ -894,28 +1063,53 @@ def cost(kit, eye, reach=220.0):
 
 # --- a direction -----------------------------------------------------------------------------------------------------
 
-def direction(out: Path, key: str, fast: bool):
+def hit_square(scene, rigs, places):
+    """Haymaker's Strike square (Config.Effects.Haymaker: Strike's Side and Bar, Ahead of the knuckles), four bars across
+    the line of the blow. The game draws it unlit and casts no light with it: here it glows and the bloom does the rest."""
+    strike = r6.luau_table("src/shared/Config/Effects.luau", "Strike = {")
+    ahead = r6.luau_number("src/shared/Config/Effects.luau", "Ahead")
+    side, bar = strike["Side"], strike["Bar"]
+    knuckles = rigs["Rook"].parts["Right Arm"].matrix_world @ Vector(hx.KNUCKLES)
+    line = (r6.point_to_blender(places["dummy"]) - r6.point_to_blender(places["rook"])).normalized()
+    centre = knuckles + line * ahead
+    across = line.cross(Vector((0, 0, 1))).normalized()
+    mat = glowing("HaymakerHot", "#FFB24A", 9.0)
+    turn = line.to_track_quat("Y", "Z").to_euler()
+    made = []
+    for i, (dx, dz, w, h) in enumerate(((0, side / 2, side + bar * 0.3, bar * 0.3), (0, -side / 2, side + bar * 0.3, bar * 0.3),
+                                        (side / 2, 0, bar * 0.3, side), (-side / 2, 0, bar * 0.3, side))):
+        obj = bl.box(f"Square{i}", (w, 0.06, h), mat)
+        obj.location = centre + across * dx + Vector((0, 0, dz))
+        obj.rotation_euler = turn
+        made.append(obj)
+    return made
+
+
+def direction(out: Path, key: str, fast: bool, far=False, hit=False):
     d = DIRECTIONS[key]
-    FOG.update(colour=srgb(d["fog"][0]), density=d["fog"][1])
+    tag = key + ("_far" if far else "") + ("_hit" if hit else "")
+    FOG.update(colour=srgb(d["fog"][0]), density=d["fog"][1], azimuth=d.get("glow_az", 0.0),
+               away=srgb(d["fog_away"]) if "fog_away" in d else None)
     scene, rigs, worn, avatar_objs = fighters()
-    eye, focus, places = stage_them(rigs)
-    scene.frame_set(FRAME)
+    eye, look, places = stage_them(rigs, far)
+    scene.frame_set(FRAME - 1 if hit else FRAME)
+    bpy.context.view_layer.update()
+    extra = hit_square(scene, rigs, places) if hit else []
     images = glyph_images(out)
-    kit = street(scene, d, images)
+    kit = street(scene, d, images, near=FAR if far else 0.0)
     sky(scene, d)
     sun(scene, d)
     if d["fighter_light"]:
         code, power, reach = d["fighter_light"]
-        for name in ("Rook", "Shade1", "Shade2"):
-            at = r6.point_to_blender(places[{"Rook": "rook", "Shade1": "dummy", "Shade2": "other"}[name]]) + Vector((0, -2.0, 7.0))
-            light(kit, scene, f"Over{name}", at, code, power, reach)
-    camera = r6.fixed_camera(scene, eye, focus + Vector((0, 0, 0)), FOV, "Player")
-    # the camera looks along its pitch, not at the focus: point it at a target straight down its look
-    p = math.radians(places["pitch"])
-    look = Vector((0, -math.sin(p), -math.cos(p)))
-    target = eye + look * 10
-    bpy.data.objects.remove(camera, do_unlink=True)
-    camera = r6.fixed_camera(scene, eye, target, FOV, "Player")
+        ahead = d.get("fighter_light_ahead")
+        if ahead:
+            root, target = r6.point_to_blender(places["rook"]), r6.point_to_blender(places["dummy"])
+            light(kit, scene, "LeadLight", root + (target - root).normalized() * ahead[0] + Vector((0, 0, ahead[1])), code, power, reach)
+        else:
+            for name in ("Rook", "Shade1", "Shade2"):
+                root = r6.point_to_blender(places[{"Rook": "rook", "Shade1": "dummy", "Shade2": "other"}[name]])
+                light(kit, scene, f"Over{name}", root + Vector((0, -2.0, 7.0)), code, power, reach)
+    camera = r6.fixed_camera(scene, eye, eye + look * 10, FOV, "Player")
     scene.camera = camera
     camera.data.clip_end = 2000
     r = scene.render
@@ -933,18 +1127,18 @@ def direction(out: Path, key: str, fast: bool):
             setattr(scene.eevee, attr, val)
         except AttributeError:
             pass
-    linear = render_linear(scene, out / f"{key}_frame.exr")
+    linear = render_linear(scene, out / f"{tag}_frame.exr")
     frame = finish(linear, d)
-    rs.save(frame, out / f"{key}_frame.png")
+    rs.save(frame, out / f"{tag}_frame.png")
     # the fighters alone: the street still lights and shades them, but the camera doesn't see it
-    hide = kit.pieces + avatar_objs
+    hide = kit.pieces + avatar_objs + extra
     for obj in hide:
         obj.visible_camera = False
     r.film_transparent = True
     ids = {}
-    cut_linear = render_linear(scene, out / f"{key}_fighters.exr")
+    cut_linear = render_linear(scene, out / f"{tag}_fighters.exr")
     cut = finish(cut_linear, d)
-    rs.save(cut, out / f"{key}_fighters.png")
+    rs.save(cut, out / f"{tag}_fighters.png")
     # each fighter's own silhouette, for its height on the screen
     fighters_objs = {"Rook": [o for o in worn if o.name.startswith("Rook_")],
                      "Shades": [o for o in worn if not o.name.startswith("Rook_")]}
@@ -953,15 +1147,15 @@ def direction(out: Path, key: str, fast: bool):
         for o in others:
             o.visible_camera = False
         scene.eevee.taa_render_samples = 1
-        alone = render_linear(scene, out / f"{key}_{name}.exr")
+        alone = render_linear(scene, out / f"{tag}_{name}.exr")
         ids[name] = alone[..., 3] > 0.5
         for o in others:
             o.visible_camera = True
-    result = {"direction": key, "name": d["name"], "idea": d["idea"], "measures": measures(frame, cut, ids),
-              "cost": cost(kit, eye), "camera": {"eye": list(eye), "pitch": places["pitch"], "fov": FOV, "zoom": ZOOM},
+    result = {"direction": tag, "name": d["name"], "idea": d["idea"], "measures": measures(frame, cut, ids),
+              "cost": cost(kit, eye), "frame": FRAME - 1 if hit else FRAME, "camera": {"eye": list(eye), "pitch": places["pitch"], "fov": FOV, "zoom": ZOOM},
               "fighter_tris": {"Rook": 7236, "Shade": 2444 + 2968}}
-    (out / f"{key}.json").write_text(json.dumps(result, indent=1))
-    for name in (f"{key}_frame.exr", f"{key}_fighters.exr", f"{key}_Rook.exr", f"{key}_Shades.exr"):
+    (out / f"{tag}.json").write_text(json.dumps(result, indent=1))
+    for name in (f"{tag}_frame.exr", f"{tag}_fighters.exr", f"{tag}_Rook.exr", f"{tag}_Shades.exr"):
         (out / name).unlink(missing_ok=True)
     print(json.dumps(result, indent=1))
 
@@ -1045,13 +1239,95 @@ def sheet(out: Path):
     rs.save(page, out / "lantern_row_look.png")
 
 
+TARGETS = {"lead": 1.3, "outshine": 0.10, "edge": 0.15}  # research's, at round 1's verdict (AR5 section 1)
+
+
+def against_targets(m):
+    """One frame's measures in words, against research's three targets."""
+    holds = lambda ok: "holds" if ok else "short"
+    return (f"The lead {m['lead_over_around']:.2f}x what's round him ({m['Rook_median']:.2f} against {m['Rook_around']:.2f}; target 1.3x): "
+            f"{holds(m['lead_over_around'] >= TARGETS['lead'])}.  A Shade's edge against the floor {m['Shades_edge']:.2f} (target 0.15): "
+            f"{holds(m['Shades_edge'] >= TARGETS['edge'])}.  Of the frame, {100 * m['brighter_than_lead_p75']:.0f}% outshines the lead's top quarter, "
+            f"{100 * m['brighter_than_fighters_p75']:.0f}% the three fighters' (target 10%).")
+
+
+def sheet2(out: Path):
+    """Round 2: the merge from the gate, from the far end and with a hit's light; round 1's three beside it for the
+    director's pick; the redrawn script."""
+    rs.OUT = out
+    W, H = 1640, 2256
+    page = rs.canvas(W, H, (0.075, 0.07, 0.085))
+    ink, soft = "#F2ECE2", "#B9B2C4"
+    facts = {tag: json.loads((out / f"{tag}.json").read_text()) for tag in ("M", "M_far", "M_hit", "A", "B", "C")}
+    d = DIRECTIONS["M"]
+    text = [(24, 18, 26, "Lantern Row's look, round 2: the merge, from both ends and with a hit in it (AR5, section 1). Rough blocks, no finish.", ink),
+            (24, 54, 15, "The same fight and camera as round 1 (Rook at Haymaker's Shock, a Shade struck, a Shade winding up; 12.5 studs, 20 degrees down, "
+                         "FOV 70). The pick is among A, B, C and the merge.", soft)]
+    y = 92
+    frame, cut = rs.load(out / "M_frame.png"), rs.load(out / "M_fighters.png")
+    m, c = facts["M"]["measures"], facts["M"]["cost"]
+    text.append((24, y, 22, f"M. {d['name']}: {d['idea']}", ink))
+    rs.paste(page, frame, 24, y + 34)
+    x = 24 + 960 + 24
+    rs.paste(page, rs.shrink(frame, 0.5), x, y + 34)
+    text.append((x, y + 34 + 274, 13, "about a phone's size on a desktop screen (480 x 270)", soft))
+    shots, _ = corners(frame, cut)
+    small = [rs.shrink(patch, min(190 / patch.shape[1], 150 / patch.shape[0])) for patch, _ in shots]
+    rs.paste(page, rs.grey(rs.shrink(frame, 0.2)), x, y + 330)
+    text.append((x, y + 330 + 112, 12, "value", soft))
+    rs.paste(page, small[0], x + 205, y + 330)
+    text.append((x + 205, y + 330 + small[0].shape[0] + 4, 12, "over its darkest", soft))
+    rs.paste(page, small[1], x + 205 + small[0].shape[1] + 12, y + 330)
+    text.append((x + 205 + small[0].shape[1] + 12, y + 330 + small[1].shape[0] + 4, 12, "over its brightest", soft))
+    text.append((24, y + 34 + 548, 14, against_targets(m), soft))
+    text.append((24, y + 34 + 570, 14, f"Cost within {c['reach_studs']:.0f} studs: {c['parts']} pieces ({c['outline_shells']} with an outline shell), "
+                                       f"{c['triangles']:,} triangles, {c['point_lights']} lights (one SpotLight a string, one PointLight carried by the lead).", soft))
+    text.append((24, y + 34 + 592, 14, "Wrong in it: the Shades stand between the camera and the lead and hide half of him; they are lit by nothing of their own, "
+                                       "so two of the three fighters are dark shapes; the stalls have no light of their own yet.", soft))
+    y += 34 + 548 + 92
+    k = 788 / 960
+    for i, (tag, title) in enumerate((("M_far", "The same fight from the street's far end, looking back at the gate"),
+                                      ("M_hit", "One frame earlier, Haymaker's Strike: the hit's square at the knuckles (unlit, no light cast; the bloom is the glow)"))):
+        fx = 24 + i * (788 + 16)
+        text.append((fx, y, 16, title, ink))
+        rs.paste(page, rs.shrink(rs.load(out / f"{tag}_frame.png"), k), fx, y + 26)
+        mm = facts[tag]["measures"]
+        text.append((fx, y + 26 + 448, 13, f"Lead {mm['lead_over_around']:.2f}x what's round him; a Shade's edge {mm['Shades_edge']:.2f}"
+                                           f"{'' if mm['Shades_edge'] >= TARGETS['edge'] else ' (short of 0.15)'}; "
+                                           f"{100 * mm['brighter_than_lead_p75']:.0f}% of the frame outshines the lead's top quarter.", soft))
+    text.append((24, y + 26 + 468, 13, "Wrong in them: from the far end there's no afterglow, the stalls sink near black and it reads closer to night than to blue hour; "
+                                       "the struck Shade hides half of the hit's square from this camera.", soft))
+    y += 26 + 468 + 38
+    text.append((24, y, 16, "Round 1's three, as they were, for the pick", ink))
+    k = 520 / 960
+    for i, key in enumerate(("A", "B", "C")):
+        fx = 24 + i * (520 + 16)
+        rs.paste(page, rs.shrink(rs.load(out / f"{key}_frame.png"), k), fx, y + 26)
+        mm = facts[key]["measures"]
+        text.append((fx, y + 26 + 296, 13, f"{key}. {facts[key]['name']}: lead {mm['Rook_median'] / mm['Rook_around']:.2f}x what's round him; "
+                                           f"{100 * mm['brighter_than_fighters_p75']:.0f}% outshines the fighters.", soft))
+    y += 26 + 296 + 36
+    text.append((24, y, 16, "The script, redrawn: a sprig of flame over a small cup, every letter on a diagonal. Large; at a sign's sizes from the street "
+                            "(32, 16 and 10 px), dark on cloth and pale on a curtain; then the 16 px tiles five times their size.", ink))
+    rs.paste(page, rs.load(out / SCRIPT_SHEET), 24, y + 28)
+    rs.paste(page, rs.text_layer(W, H, text), 0, 0)
+    rs.save(page, out / "lantern_row_look_round2.png")
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     if args and args[0] == "sheet":
         sheet(out)
         return
-    direction(out, args[0] if args else "A", "fast" in args)
+    if args and args[0] == "sheet2":
+        sheet2(out)
+        return
+    if args and args[0] == "glyphs":
+        glyph_images(out)
+        glyph_preview(out, int(args[1]) if len(args) > 1 else None)
+        return
+    direction(out, args[0] if args else "A", "fast" in args, "far" in args, "hit" in args)
 
 
 if __name__ == "__main__":

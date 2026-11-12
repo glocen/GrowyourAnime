@@ -2296,7 +2296,7 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. The kit's full list is written when the direction below is picked. Research's request, 2026-11-12, started early: Modulo's AR4 deliveries are in, and the direction is taste work for Fable's last hours.
 
-**Status:** section 1's sheet delivered, for research's verdict (Modulo, 2026-11-12).
+**Status:** section 1's round 2 sheet delivered, for research's verdict and the director's pick (Modulo, 2026-11-12).
 
 ### 1. Lantern Row's look: the direction sheet
 
@@ -2342,6 +2342,29 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
     4. The script redrawn so that no glyph reads as a Latin letter or a sign at a distance (`b`, `o` and `%` today), with its own check. Serves rule 3 and the street's own voice.
   - **Accepted:** the ink only on shapes against the sky or lit surfaces; the phone levers (a string as one MeshPart, one light per string), with the device take the builder's at install; the sky as a minor lever.
   - **Next:** the director's eye on the three and on the merge's direction, then round 2.
+- **Modulo's round 2, 2026-11-12:** `build/handoff/LanternRow/lantern_row_look_round2.png`, by the same script (`M`, `M far`, `M hit`, `glyphs`, then `sheet2`). The merge's three frames, round 1's three beside them for the pick, and the script.
+  - **The merge, M.** The sky and the haze turn with the view: pink afterglow under violet toward the street's end, violet-blue back toward the gate. Two warm lanterns to one cyan. One SpotLight a string, straight down, for the pools. Paving a step lighter than B's. Ink on the big shapes only (324 shells against B's 659). One PointLight carried by the lead, 1.8 studs ahead of him toward his target and 5.2 up. The Shades carry none.
+  - **Against research's targets** (my measures, on my bloom and tone curve, not Roblox's):
+
+    | Frame | Lead over what's round him (1.3) | A Shade's edge (0.15) | Frame over the lead's top quarter | Frame over the three fighters' (10%) |
+    |---|---|---|---|---|
+    | From the gate | 1.45 (0.52 against 0.36) | 0.17 | 3% | 33% |
+    | From the far end | 1.79 (0.47 against 0.26) | 0.11, short | 2% | 27% |
+    | Haymaker's Strike, the square | 1.54 | 0.20 | 3% | 28% |
+
+  - **Where I disagree with the second target as written.** Counted on the three fighters' top quarter, it can't hold with the third. Two of the three are Shades, dark by design. With a light on each Shade it held (6%), and their edge fell to 0.07, since a lit coat sits on the floor's value. With none, the edge holds and the count is 33%. I propose counting it on the lead's top quarter: 3%. Research's call.
+  - **What the calibration found, for the builder's light:** a light over the lead and above his hat puts him in the hat's shadow (0.25). A light in front of him on the camera's side lights the Shades' backs to the floor's value (edge 0.02). Between him and his target, under the hat's height, it lights his front and the floor behind the Shades.
+  - **Wrong in it:**
+    - From this camera the Shades stand between the player and the lead and hide half of him, and half of Haymaker's square. That's the staging (Lead.Frame), not the look.
+    - From the far end there's no afterglow. The stalls sink near black, it reads closer to night than to blue hour, and the Shades' edge is short. The lever is a lighter haze back toward the gate, or stronger pools.
+    - The pools are a lit lane more than pools. The stalls have no light of their own, and the awnings' red goes brown.
+  - **Phone cost** (the block, within 220 studs; not measured on a device): 827 pieces, 48,484 triangles, 14 lights (13 SpotLights and the lead's), against round 1's 48 to 75.
+  - **The script: not there yet, after two draws.** Draw 1 was a pressed bowl with two or three wedges; draw 2, on the sheet, is a fan of four or five curled wedges over a small cup, each letter on a diagonal (`lantern_row_script.png`, written by `glyphs`).
+    - Content check on the rules (2, 3 and 4): PASS, for this ink on these two grounds. The upload's own files need their own check.
+    - On research's ask: BLOCK, both draws. Nothing reads at true 16 or 10 px, or at 128 and 32. In the 16 px tiles blown up five times, draw 2's glyphs 4 to 7 lean toward a letter (an n or pi, an e, an a, an S), none strongly.
+    - That's two rounds on one idea, so I stop patching. The options, for research: judge at the size a sign really shows from the player's camera; a running band with no letter-sized cells; or refuse draws on the 16 px raster itself (a closed counter, two parallel runs). A cell of about ten ink pixels finds a letter for some reader.
+  - **Content check, the sheet:** PASS. Its one note, not this piece's: a Strength Shade from behind on a dark street is a dark coat with a red mark, worth a glance before a public image stages several.
+  - **Not done:** research's verdict; the director's pick among A, B, C and the merge. **Hours:** about 2.5, an estimate.
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 

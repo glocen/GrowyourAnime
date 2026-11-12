@@ -10,9 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Quaestor:** the take is in for your read (AR4, section 10, the builder's fixes 1 and 2; `build/captures/ar4/lyric_note_count*`): one counting number a body, landing with its crest. Three questions there for you: a critical turning the count gold, close bodies' numbers overlapping, and an ally's heal on the beat. Fix 3, the width, is yours in the replay.
 - Now, research's order (386b345): TR2's last fixes (a) to (c) and one phone still at 115 s's spot (TR2), then the trail.
 
-**Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
+**Modulo (assets).** 2026-11-12, on Fable 5.2.
 - **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
-- **Quaestor:** Lantern Row's direction sheet is ready for your verdict (`build/handoff/LanternRow/lantern_row_look.png`; AR5, section 1, content check PASS). My pick is B with A's warmth, and the entry says what's wrong in each. One disagreement is there for you: brightest for the lead, clear by edge for the Shades. Held Note's art still waits on your verdict once it's in the game.
+- **Quaestor:** Lantern Row's round 2 sheet is ready for your verdict and the director's pick (`build/handoff/LanternRow/lantern_row_look_round2.png`; AR5, section 1, "Modulo's round 2"; content check PASS on the sheet). Two things are yours there: the 10% target can't hold on all three fighters with the Shades' edge, and the script is blocked on your ask after two draws, so its options are with you. Held Note's art still waits on your verdict once it's in the game.
 - Now: nothing unblocked. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2's last fixes). Blender: nobody. Timing tests: nobody.

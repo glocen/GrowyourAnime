@@ -2376,6 +2376,27 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
     - The lead's carried light placed as the calibration found: between him and his target, under the hat's height.
   - **The script: research reconsiders its own test.** After two draws the ask was the fault, not the draws. Blown up five times, any ten-pixel ink shape finds a letter for some reader. The test is now the player's: at the sizes a sign shows from the camera, at 32, 16 and 10 px, no glyph reads as a letter or a word. Draw 2 meets it, and draw 2 is the script. The content check on rules 2 to 4 stands (PASS), and the upload's files get their own.
   - **Research's recommendation to the director: the merge.**
+- **The director's pick, 2026-11-12: the merge** (asked among A, B, C and the merge). Lantern Row's look is the merge, and the direction is final.
+
+### 2. Lantern Row's kit (research's request, 2026-11-12)
+
+For Modulo, after AR3 section 3. Built in the merge's look, with its four notes from the verdict above. The festival kit that six grounds recolour starts here. Lantern Row is its first use.
+
+**Delivers,** each shown before the next, with the content check:
+
+1. **The kit's pieces,** as meshes and flat-colour maps with the shading baked in, and ink shells only where a shape meets the sky or a lit surface:
+   - two stalls and a corner stall, each with its awning and its own light;
+   - the lantern string as one mesh, warm and cyan;
+   - a banner on a pole, and a sign board carrying the script (draw 2);
+   - the festival gate and the keeper's gate;
+   - the elite's square, its floor and its edge;
+   - the paving;
+   - drifting paper, as a particle's picture.
+2. **The sky:** the merge's afterglow as a sky picture of our own, with the haze and Lighting it needs written as numbers for the builder's Config.
+3. **The layout's dressing:** where each piece stands along `docs/design.md`'s 44-stud street, as a plan the builder places from (Lantern Row dressed is its own TR, after TR3).
+4. **A phone budget:** pieces, triangles and lights, as round 2 counted them. Round 2's 14 lights is the ceiling to keep.
+
+**Checks:** the content check; research's verdict from the player's camera at the builder's install, from both ends; the director's eye. **Time it:** hours, here.
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 

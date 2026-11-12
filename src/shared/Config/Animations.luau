@@ -29,6 +29,11 @@ return {
 		ShadeAttack = "ShadeAttackLeft",
 		ShadeHit = "ShadeHitLeft",
 	} :: { [string]: string },
+	-- A clip a kind of fighter never trades for its mirror. AR2, section 10: in AttackLeft the elite's second mask cuts
+	-- into its first, so the elite plays Attack every time; the ordinary Shade keeps alternating.
+	Unmirrored = {
+		Elite = { ShadeAttack = true },
+	} :: { [string]: { [string]: boolean } },
 	-- A walk's ground speed at rate 1, in studs a second (its stride over its loop: Shade.clips.json). The clip plays at the
 	-- body's own speed over this, so its feet keep to the ground, up to MaxRate (AR2: "walk speed comes from the stride").
 	Strides = {

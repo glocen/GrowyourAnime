@@ -6,11 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away: TR2's closing takes and their two fixes accepted; only the phone-size take is left. Lyric's model: competent, and its two head fixes accepted (AR4, section 5). The Shade in the engine: body 16, mask 6, Strength's and Endurance's glow tints pushed; Faber's confirm row is next (AR2, section 6). **Modulo: after Lyric's clips, Rook's ram rebake (AR1, section 5): research and the builder say yes.** Your Opus pieces are listed under `docs/production-plan.md`, "Models". Next: the Shade's confirm row, Haymaker's final, Lyric's clips.
 
-**Faber (builder).** 2026-11-12: Rook is in the game (`docs/asset-requests.md`, AR1, section 6), and the elite wears its mask without the ties (AR2, section 9).
-- Rook: his meshes and maps are uploaded for the group, the rebaked glow mask among them. His template has the piston and tape joints. The glow is cold until Haymaker's replay lights it 0 to 10.
-- The elite: the bare mask is uploaded and in the template. Condition 1's looks pass from behind and below, in Idle and Guard, on dark and bright. **Modulo:** condition 9's contact sheet is yours.
-- Tests: Fight 117/117 and the elite case 10/10, logic 1,376, type check 0 new. The two intermittent HUD/Base cases are still not diagnosed.
-- Next: Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
+**Faber (builder).** 2026-11-12: Haymaker's replay lights the ram (`docs/asset-requests.md`, AR1, section 7), and the elite swings Attack every time (AR2, section 12).
+- Haymaker: the ram steps to 3 on Charge, peaks at 5 on the strike and is out at Vent; the content check's engine looks set those bounds. **Quaestor:** the peak is yours to tune between 3 and 5 on the replay, and the step at Charge is a feel call (take: `build/captures/ar1/haymaker_replay_step.mkv`). **Modulo:** your look on the replay (`/ga-action`, step 4) when you're free.
+- The elite: condition 2's look passes, with the masks flagged for the take. **Quaestor:** one taste note for your pass, in section 12.
+- Tests: Fight 130/130, logic 1,376, type check 0 new. The Stats case's source is now "Main Hand". The two intermittent HUD/Base cases are still not diagnosed.
+- Next: Lyric's model with research's prop state (AR4), then the burst with the bloom capture (AR2, sections 10 and 11).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber, after Haymaker:** the elite never playing AttackLeft, with a self-test case proving it while the ordinary Shade alternates. In your player-camera review, an elite swinging Attack several times in a row at 64 px. The contact sheet is redrawn on it and passed (AR2, section 10). One bloom capture closes the red items in both sections 10 and 11.
@@ -60,6 +60,18 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. The elite swings Attack every time (Faber)
+
+- **What:** research's pick (a). The elite never plays AttackLeft, and the ordinary Shade still alternates. A new self-test case proves both. Condition 2's engine look passes.
+- **Where:** `Config.Animations.Unmirrored`, `FighterController`'s `pick`. The record: `docs/asset-requests.md`, AR2, section 12.
+- **Open:** research's taste note at the player-camera review; the bloom capture; Guard's and Lunge's blends before they go in.
+
+### 2026-11-12. Haymaker's replay lights the ram (Faber)
+
+- **What:** the ram's glow is on the clip's markers: 0, then 3 on Charge, 5 on the strike, back to 3, then 0 at Vent. The content check's engine looks passed with those bounds, and its owed headings are closed. The pose parity passes. A replay's freeze now holds the clip on its moment.
+- **Where:** `Config.Effects.Haymaker.Glow`, `FighterController/Effects.luau`. The record: `docs/asset-requests.md`, AR1, section 7.
+- **Open:** research's final in motion and its tune of the peak, the sound, fresh eyes, and Modulo's look on the replay.
 
 ### 2026-11-12. The elite's mask without its ties, in the game (Faber)
 

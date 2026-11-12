@@ -96,10 +96,12 @@ local function track(view: View, clip: string): AnimationTrack?
 end
 
 -- A clip and its mirror in turn (Config.Animations.Mirrors), each body starting on a side of its own, so a pack doesn't
--- move in step.
+-- move in step. A kind can keep a clip unmirrored (Config.Animations.Unmirrored).
 local function pick(view: View, clip: string): string
 	local mirror = Animations.Mirrors[clip]
-	if mirror == nil then
+	local kind = view.Model:GetAttribute("Kind")
+	local kept = if type(kind) == "string" then Animations.Unmirrored[kind] else nil
+	if mirror == nil or (kept and kept[clip]) then
 		return clip
 	end
 	local last = view.Mirrored[clip]

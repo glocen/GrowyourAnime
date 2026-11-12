@@ -770,6 +770,32 @@ The block-in's C, the sky lantern, with research's three fixes (section 8). Made
 - **Hours:** about 1.0.
 - **Research's verdict, 2026-11-12** (shade_burst_art, shade_burst). **On to the builder.** **Felt:** the last hit lands and a small warm flame leaves the coat and climbs, its paper following it up, gone before the next pack arrives. A kill feels like letting something go, not like a mess. **Tier:** competent. **The one bold thing:** the light leads and the paper follows, in one column. The three fixes land: 79 px of light at 34 against the block-in's 37, the paper in the column, and the ink rim holding on the bright floor. Both your calls are accepted. The flame burns upward, since tongues hanging down read as drips. The corrected camera is the view players have. One flame for every type, warm white and gold: the type is told while the Shade lives, and the release is the same for all, which keeps the check's "no red". No `ga-fresh-eyes`, since it isn't a signature. **For the builder's replay:** under the game's bloom, the cream core must keep its gold edge and not wash to a white blob; that look is the final, beside the bloom capture that closes the red item.
 
+### 12. In the game: the elite swings Attack every time (Faber, 2026-11-12)
+
+Research's pick (a), section 10.
+
+- **The change:**
+  - `Config.Animations.Unmirrored` names, by a fighter's `Kind`, the clips it never trades for their mirror. `Elite = { ShadeAttack = true }`.
+  - `FighterController`'s `pick`, the only route to a mirror clip, reads it.
+  - The ordinary Shade still alternates Attack and AttackLeft, and Hit and HitLeft. The elite keeps its HitLeft.
+- **Condition 1, shown:**
+  - "Fight: the elite swings Attack every time" (new) sees 7 swings, every one Attack.
+  - "Fight: a Shade swings and flinches on alternate sides" still sees 8 alternating swings and alternating flinches. Both cases share one watcher (`swingsOf`).
+  - A live fight's log: 10 swing starts in 12 s, every one Attack.
+- **Condition 2, the engine look:**
+  - An elite fighting Rook, from the player's camera, under the game's bloom, at 59 fps, on the bright floor.
+  - Four Attack joins, every other frame, at 64 px, in `build/captures/ar2/`:
+    - `elite_attack_joins_64.png`, as played.
+    - `elite_attack_joins_flag_64.png` and `_x2.png`, with the first mask flagged magenta and the second green. The flags were runtime Highlights for the take only, never saved.
+  - Unflagged, the check couldn't tell one pale shape from two, so the flags were added.
+  - Through every join only the first mask shows. The second appears after the hit, as a sliver at the shoulder's edge, two shapes.
+- **Content check, 2026-11-12: PASS on condition 2.** To hold:
+  - No Highlight or flag colour goes into `src/`, the place or an upload.
+  - **For research's pass (taste, not a rule):** in a few follow-through frames the second mask's sliver sits against the first mask's lower edge (x2 sheet: row 2, tiles 7 and 8; row 4, tile 6). Unflagged, both are cream, so at 64 px it may read as the mask with a pale strip under it. If it reads as one shape at the player-camera review, it comes back to the check.
+  - Still open: Guard's and Lunge's look through their blends, before either goes in. The bloom capture: ordinary and elite, HitLeft and Burst, on dark and bright. That capture also closes section 11's red item and its gold edge.
+- **Tests:** Fight cases 130/130 at 60 fps; logic 1,376; type check, 0 new.
+- **Hours:** about 0.7.
+
 ## AR3. The UI kit
 
 For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against a real Voidkin's portrait.

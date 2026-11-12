@@ -335,6 +335,57 @@ local function myLead(): Model?
 	return nil
 end
 
+-- A Shade of `def` spawned SHADE_TOUGHER levels over the lead, watched for up to SHADE_WATCH seconds or three swings and
+-- three flinches: the clip each swing and each flinch started, in order. Nil when it can't be watched; the Shade is cleared.
+local function swingsOf(t: any, def: string): ({ string }?, { string }?)
+	local lead = myLead()
+	local level = if lead then lead:GetAttribute("Level") else nil
+	if type(level) ~= "number" then
+		t.Check("the lead is in the world", false)
+		return nil, nil
+	end
+	local spawned = t.Server("FightSpawn", def, level + SHADE_TOUGHER, SHADE_AHEAD)
+	t.Check(`the {def} spawns`, type(spawned) == "table" and spawned.Ok == true)
+	if type(spawned) ~= "table" or spawned.Ok ~= true then
+		return nil, nil
+	end
+	local model: Model? = nil
+	waitFor(t, 5, function(): boolean
+		model = fighterModel(spawned.Id)
+		return model ~= nil and model:FindFirstChild("Shade_Torso") ~= nil
+	end)
+	local humanoid = if model then model:FindFirstChildOfClass("Humanoid") else nil
+	local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+	t.Check("its model reaches this client", animator ~= nil)
+	if model == nil or animator == nil then
+		t.Server("FightSpawn")
+		return nil, nil
+	end
+	-- A start is a track that wasn't playing a frame ago, or went back.
+	local swings: { string }, flinches: { string } = {}, {}
+	local seen: { [AnimationTrack]: number } = {}
+	local until_ = os.clock() + SHADE_WATCH
+	while os.clock() < until_ and model.Parent ~= nil and (#swings < 3 or #flinches < 3) do
+		local now: { [AnimationTrack]: number } = {}
+		for _, track in animator:GetPlayingAnimationTracks() do
+			local before = seen[track]
+			local name = if track.Animation then track.Animation.Name else ""
+			if before == nil or track.TimePosition < before then
+				if name == "ShadeAttack" or name == "ShadeAttackLeft" then
+					table.insert(swings, name)
+				elseif name == "ShadeHit" or name == "ShadeHitLeft" then
+					table.insert(flinches, name)
+				end
+			end
+			now[track] = track.TimePosition
+		end
+		seen = now
+		task.wait()
+	end
+	t.Server("FightSpawn") -- clears it
+	return swings, flinches
+end
+
 return {
 	{
 		Name = "Boot: the server booted clean",
@@ -1075,51 +1126,11 @@ return {
 		Name = "Fight: a Shade swings and flinches on alternate sides",
 		Run = function(t: any)
 			-- research's ask for the Shade (docs/team-notes.md, Now, 2026-11-12): Attack and AttackLeft in turn, Hit and
-			-- HitLeft too (Config.Animations.Mirrors). A start is a track that wasn't playing a frame ago, or went back.
-			local lead = myLead()
-			local level = if lead then lead:GetAttribute("Level") else nil
-			if type(level) ~= "number" then
-				t.Check("the lead is in the world", false)
+			-- HitLeft too (Config.Animations.Mirrors).
+			local swings, flinches = swingsOf(t, "brawler")
+			if swings == nil or flinches == nil then
 				return
 			end
-			local spawned = t.Server("FightSpawn", "brawler", level + SHADE_TOUGHER, SHADE_AHEAD)
-			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
-			if type(spawned) ~= "table" or spawned.Ok ~= true then
-				return
-			end
-			local model: Model? = nil
-			waitFor(t, 5, function(): boolean
-				model = fighterModel(spawned.Id)
-				return model ~= nil and model:FindFirstChild("Shade_Torso") ~= nil
-			end)
-			local humanoid = if model then model:FindFirstChildOfClass("Humanoid") else nil
-			local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
-			t.Check("its model reaches this client", animator ~= nil)
-			if model == nil or animator == nil then
-				t.Server("FightSpawn")
-				return
-			end
-			local swings: { string }, flinches: { string } = {}, {}
-			local seen: { [AnimationTrack]: number } = {}
-			local until_ = os.clock() + SHADE_WATCH
-			while os.clock() < until_ and model.Parent ~= nil and (#swings < 3 or #flinches < 3) do
-				local now: { [AnimationTrack]: number } = {}
-				for _, track in animator:GetPlayingAnimationTracks() do
-					local before = seen[track]
-					local name = if track.Animation then track.Animation.Name else ""
-					if before == nil or track.TimePosition < before then
-						if name == "ShadeAttack" or name == "ShadeAttackLeft" then
-							table.insert(swings, name)
-						elseif name == "ShadeHit" or name == "ShadeHitLeft" then
-							table.insert(flinches, name)
-						end
-					end
-					now[track] = track.TimePosition
-				end
-				seen = now
-				task.wait()
-			end
-			t.Server("FightSpawn") -- clears it
 			local function alternates(list: { string }): boolean
 				for i = 2, #list do
 					if list[i] == list[i - 1] then
@@ -1135,6 +1146,22 @@ return {
 				t.Check("its flinches alternate", alternates(flinches), table.concat(flinches, ", "))
 			end
 			t.Row("flinches seen", nil, nil, #flinches, "")
+		end,
+	},
+	{
+		Name = "Fight: the elite swings Attack every time",
+		Run = function(t: any)
+			-- AR2, section 10 (research picked (a)): in AttackLeft the elite's second mask cuts into its first, so the elite
+			-- never plays it (Config.Animations.Unmirrored). Its other clips keep their mirrors.
+			local swings = swingsOf(t, "brawler_elite")
+			if swings == nil then
+				return
+			end
+			local right = #swings >= 2
+			for _, name in swings do
+				right = right and name == "ShadeAttack"
+			end
+			t.Check("every swing is Attack", right, table.concat(swings, ", "))
 		end,
 	},
 	{

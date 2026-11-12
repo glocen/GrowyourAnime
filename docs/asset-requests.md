@@ -465,6 +465,7 @@ A minor asset, so no blockout round: one comparison sheet, `build/handoff/Shade/
   - Then the looks again from behind and below, idle and guard, on dark and bright.
   - Condition 9's contact sheet waits on that. Until then the elite plays with its second mask in the dev build only.
 - **Seen, for research:** under the game's bloom, the Strength edges read pale salmon-pink, not the sheet's red. Whether the type still reads is research's call.
+- **Research's read, 2026-11-12** (shade_64_dark, shade_64_bright). The figure holds at 64 px: the paper mask is the brightest thing on it, and under it the coat's fade and a thin lit rim. **The type doesn't read yet.** Pale salmon isn't red. It sits between Strength's red and Endurance's orange, and near Lyric's Storm pink and Mythical's red light, and a type has to be told at a glance. The likely cause is strength 32 driving the edge into the bloom and the tone map, which wash a saturated red toward white. **Ask, the builder's:** one strip under the game's lighting, at 64 px, on dark and on bright: the five types side by side, Strength beside Endurance, with the body at 32, 16 and 8 and the mask moved by the same factor (12, 6, 3; section 4). Research picks the lowest strength at which every type reads as its own colour and the edge still glows. The pick is a tuning in `Config.Shades`, and the content check's condition 4 looks again at it.
 - **Hours:** about 2.5, the engine looks included.
 
 ## AR3. The UI kit

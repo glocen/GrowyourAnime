@@ -1958,8 +1958,7 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
     - **Unchanged:** the leap's one tall lick (accepted), the heat, the trail, the timing and every cell's place.
     - **Its cost:** at the peak the flame covers 0.30 to 0.34 of its cell, where it covered 0.35 to 0.36. That's about 11% less flame on screen.
   - **The table is unchanged.** On the new clip, `table()` gives the same play data as the handoff's `pip_burst_art.json`: built from the keyed rig and compared key by key, nothing differs.
-    - The json's `checks` (the render shares and pixels) and the sheet `pip_burst_art.png` are still round 1's.
-    - The full art run is a render as heavy as the one stopped for memory, so it waits for a go.
+    - **The full art run,** on the director's go (2026-11-12, "foreground go"): the json's `checks` and the sheet `pip_burst_art.png` are round 2's. At the peak the burst covers 3.6% to 3.9% of the player's screen. Round 1 covered 4.2% to 4.3%, and the block-in 3.5% to 4.1%.
   - **My calls (tier 1):**
     - **The leap keeps its wide foot:** at 69 the flame stands 9.4 wide on the ground. That shows the area the hit covers, at the moment it lands. Then it draws in.
     - **The hat's tilt against his body stays under about 29°,** or the brim's back cuts his collar. His lean back carries the rest of the tip.
@@ -1970,9 +1969,7 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
     - Import `Pip_LanternBurst` into the saved place.
     - Upload `pip_burst.png` for the group by the key, in place of the current one.
     - The table and the trail are as they were.
-  - **Not done:**
-    - Research's verdict on the replay.
-    - The art sheet's full run and its checks.
+  - **Not done:** research's read of the recoil, on a take that shows him clear. The flame is accepted (below).
   - **Hours:** about 3, an estimate.
 - **Round 2 in the game (Faber, 2026-11-12).**
   - **In:**
@@ -2126,6 +2123,62 @@ Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, R
     1. **The beat inside the wall:** at Ease 2 the crests overlap into one white wall that blurs the half-beat. Each crest's leading ribbon carries its arrival, bright, and the veil behind it falls away, so you count five even when two are on screen.
     2. **An arc, not a panel:** the grey is flat banked rectangles. The crest the block-in chose is an arc across the cone.
     3. **The lunge:** "her body stays planted and only the mic stand tilts". With the speaker kicks you're already adding, she drives into the mic on the Note, enough to read at 27 studs.
+
+### 10. Held Note's look: the art sheet (Modulo, 2026-11-12)
+
+Research's three asks on the block in the game (section 9, its verdict). Made on Opus 5.5 xhigh.
+
+- **Scope.** In it: the crest's ribbon and veil, the touches' shapes (the hit, the heal, the rings' flash), the table, and the lunge. Waiting, the builder's: the rings' hot strength and the dusk check against it (condition 3).
+- **Where:** `build/handoff/Lyric/fx/`.
+  - `lyric_note_crest.png`, 1024 x 256: the ribbon.
+  - `lyric_note_veil.png`, 1024 x 256: the veil.
+  - `lyric_note_touch.png`, 1024 x 512, in 256 cells: `hit0` to `hit3`, `heal` and `flash`.
+  - `lyric_note_art.json`: what plays on every frame.
+  - `lyric_note_art.png`: the sheet, her clip from the player's camera and four other views, at 64 px on dark and on bright.
+  - The code: `tools/blender/lyric_note_art.py` (79e8295), and the lunge in `tools/blender/lyric_clips.py` (f4aad8c).
+- **Ask 1, the beat inside the wall.** Each crest is two Beams on the same two ends.
+  - **The ribbon:** two white strands edged in her Storm, crossing and crossing again over a thin pale core, one for each speaker. Its ends are round.
+  - **The veil, under it:** the band's body, pale and see-through, rimmed in Storm, with a lower `ZOffset`. It holds 3 frames after the throw and falls away over 8 (`veil_hold`, `veil_fade`).
+  - So an older crest is the braid only, and two crests on screen never stack into a wall. Up close (`build/scratch/modulo/lyric/art/lyric_note_strip.png`, 31 to 55), at 45 to 50 the new crest is bright and veiled and the older one a braid.
+- **Ask 2, an arc.** The Beam's `CurveSize` bends each crest into a circle's arc across the cone: 0.2834 × its radius at each end, along the tangent. The table's notes say "an arc, never flat panels".
+- **Ask 3, the lunge** (f4aad8c).
+  - She gathers back on the throw (20), then drives into the mic on the Note: her torso 26° in and 1.4 studs on, her feet stepped out under her hips.
+  - The hold keeps the lean. She straightens off it on the let-go.
+  - The markers are unchanged. AUDIT PASS.
+- **The touches:**
+  - **The hit:** a white ping with Storm crackling out from it, in short strokes that never fall. Four cells, two frames each, 3 studs across, on a Shade's chest the frame a crest reaches it.
+  - **The heal:** a plain mint ring rising round an ally, 14 frames.
+  - **The flash:** white, at each ring. It's 0.9 then 0.6 on the Note, and 0.6 then 0.4 on each crest after.
+- **The table's timing** (`lyric_note_art.json`):
+  - The crests are thrown at 30, 45, 60, 75 and 90.
+  - Each punches 70% of the way out in 7 frames, then drifts on to the end over 34. It's unseen for its first 2.5 studs, out of the rings' flash, and thins to nothing over its last 4.
+  - On the sheet's stage, the target is touched at 33, 48, 63, 78 and 93, the deeper Shade 8 frames after each, and an ally a frame before.
+- **For the builder, one question:** the table's motion is the block-in A's punch and drift, and the game's block plays `Ease` 2, which research accepted.
+  - Either play the table's radius and its two transparencies a frame, or keep `Ease` 2 and take from the table only the look by the crest's age: the ribbon thinning over its last 4 studs, and the veil's 3 and 8 frames.
+  - Yours and research's call. The pictures work with either.
+- **The sheet's checks:**
+  - **The share of the player's screen,** block-in to art: through the hold, 1.4% to 0.6%. At 40, 2.8% to 0.4%. At 92, 0.5% to 0.7%.
+  - **At 64 px,** the effect covers 70 to 158 pixels, on dark and on bright.
+  - **The run:** Blender's peak was 960 MB. It was stopped twice by Claude Code for low system memory, then ran in the foreground on the director's go.
+- **What I see wrong:** on screen the art covers about 40% of the grey's share through the hold. The crest reads as a bright braid where the grey was a band, so its arrival is sharper but it's smaller.
+  - If the replay finds it slight, the lever is the Beam's width (the table's `width`, about 2 to 2.4 studs), as one scale in `Config` that's live by `Tune`. That needs no redraw, since the pictures stretch across it.
+- **My calls (tier 1):**
+  - The ribbon's two strands, one for each speaker.
+  - The veil's 3 and 8 frames.
+  - The crest born unseen for its first 2.5 studs, out of the rings' flash.
+- **The content check: PASS** (rules 2, 3 and 4) on the three pictures, the sheet and the strip.
+  - On its ask, it also looked at the three uploads alone at 64 px over the dusk, a bright ground and grey (`build/scratch/modulo/lyric/art/lyric_note_upload64.png`), and at the clip's bare rig and pack after the lunge. Both closed.
+  - **Its conditions:**
+    1. The crackles stay uneven strokes of different shapes, never twelve identical bolts evenly round a ring.
+    2. An arm stays at or below shoulder height through the throw (16 to 24) and the haul (104 to 112). Measured on every frame by the clip's audit, each arm's highest is 9° above level (the right, at 20), and no arm holds at 20 to 70° up.
+    3. The builder measures the flash's share again at the camera's closest zoom. At the player's default distance the whole effect is under 3% of the screen.
+  - Storm (`#FF6FD8`) reads pink, never red.
+- **For the builder:**
+  - Upload the three pictures for the group by the key.
+  - Play them from the table: two Beams a crest, the veil's `ZOffset` under the ribbon's, `CurveSize` as the table has it, the touch cells and the flash.
+  - Then the rings' hot strength and the dusk check (condition 3), and the flash's share at the closest zoom.
+- **Not done:** the builder's import; research's verdict in the game.
+- **Hours:** about 4, an estimate.
 
 ## AR5. The festival kit and the base's machines
 

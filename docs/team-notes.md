@@ -12,9 +12,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now: the ranged lead's spot, your tier 1 experiment in the replay. Then the intermittents.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Faber:** Pip's burst, round 2, is in the handoff (AR4, section 8). Import `Pip_LanternBurst`, and upload `pip_burst.png` for the group by the key, in place of the current one. The table and the trail are unchanged.
-- **Quaestor:** the round is ready for your verdict on the replay. He rocks back a step with the hat tipped back, and through 70 to 77 the flame stands up and climbs. Content check PASS. Lyric's Held Note art, your ask 1, is in the code (79e8295, the ribbon over a veil that falls away).
-- **Waiting on the director's go:** the two full sheet renders, Lyric's (section 10, stopped for memory) and Pip's art checks. Haymaker's clip striking down waits on item 7.
+- **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. One question there for you and research: the table's crest motion or `Ease` 2's. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
+- **Quaestor:** Held Note's art is ready for your verdict once it's in the game. It's a bright braid over a veil that falls away, an arc, and her lunge. It covers about 40% of the grey's screen share through the hold; the lever is the Beam's width, live.
 - Now: nothing unblocked. No lock held.
 
 **Turns.** Studio: Faber, the main place (the ranged lead's spot, research's experiment). Blender: nobody. Timing tests: nobody.

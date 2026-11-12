@@ -1,0 +1,1964 @@
+{
+ "pictures": {
+  "lyric_note_crest.png": [
+   1024,
+   256
+  ],
+  "lyric_note_veil.png": [
+   1024,
+   256
+  ],
+  "lyric_note_touch.png": [
+   1024,
+   512
+  ]
+ },
+ "fps": 60,
+ "markers": {
+  "Breath": 4,
+  "Note": 30,
+  "Release": 90,
+  "Crest2": 45,
+  "Crest3": 60,
+  "Crest4": 75
+ },
+ "crests": [
+  30,
+  45,
+  60,
+  75,
+  90
+ ],
+ "cone": {
+  "apex": [
+   0.0,
+   -3.909
+  ],
+  "half": 24.0,
+  "start": 9.254,
+  "end": 17.909,
+  "rings_up": 4.593,
+  "fall": 0.2493,
+  "spread": 11.0,
+  "reach": 14.0,
+  "thin": 4.0,
+  "axes": "right, forward, up, studs, from where she stands, the floor under her; she faces forward. Radii are off the apex. Read off her speakers in the hold (frame 60)"
+ },
+ "crest": {
+  "punch": 7,
+  "punch_share": 0.7,
+  "life": 34,
+  "birth": 2.5,
+  "rule": "travel = punch_share * out_fast(t / punch) + (1 - punch_share) * t / life; radius = start + (end - start) * travel; shows = smooth((radius - start) / birth) * (1 - clamp((radius - (end - thin)) / thin)); its height is the span's, times 1 - 0.6 * clamp(...); the veil shows = shows * (1 - smooth((t - veil_hold) / veil_fade))",
+  "veil_hold": 3,
+  "veil_fade": 8,
+  "beam": {
+   "FaceCamera": false,
+   "the width": "upright",
+   "Segments": 24,
+   "TextureMode": "Stretch",
+   "TextureLength": 1,
+   "TextureSpeed": 0,
+   "LightInfluence": 0,
+   "Color": "white",
+   "ends": "the arc's two ends, at plus and minus the half angle, on the radius, at `middle`",
+   "CurveSize": "0.2834 x radius at each end, along the arc's tangent toward the other end: a circle's arc of twice the half angle. An arc, never flat panels (research, AR4 section 10)",
+   "two": "each crest is two Beams on the same two attachments: the ribbon (lyric_note_crest.png, `transparency`) over the veil (lyric_note_veil.png, `veil_transparency`), the veil's ZOffset below the ribbon's"
+  }
+ },
+ "hit": {
+  "cells": [
+   "hit0",
+   "hit1",
+   "hit2",
+   "hit3"
+  ],
+  "frames_a_cell": 2,
+  "size": 3.0,
+  "up": 3.0,
+  "toward_the_camera": 1.2,
+  "when": "the frame a crest that still shows reaches a Shade's radius, 0.7 short"
+ },
+ "heal": {
+  "cell": "heal",
+  "life": 14,
+  "radius": 1.6,
+  "rule": "flat, rising from 0.4 to 5.0 up (out_fast), its radius 1.6 down to 1.12, gone over its last 5 frames; the ring is drawn at 0.8 of its cell's half, so the Part is radius * 2 / 0.8 across"
+ },
+ "flash": {
+  "cell": "flash",
+  "where": "each speaker's ring, 0.15 out along its cone",
+  "swell": [
+   22,
+   0.25,
+   0.55
+  ],
+  "sizes": "0.9 and 0.6 on the Note and the frame after; 0.6 and 0.4 on each crest after"
+ },
+ "cells": {
+  "hit0": [
+   0,
+   0,
+   256,
+   256
+  ],
+  "hit1": [
+   256,
+   0,
+   256,
+   256
+  ],
+  "hit2": [
+   512,
+   0,
+   256,
+   256
+  ],
+  "hit3": [
+   768,
+   0,
+   256,
+   256
+  ],
+  "heal": [
+   0,
+   256,
+   256,
+   256
+  ],
+  "flash": [
+   256,
+   256,
+   256,
+   256
+  ]
+ },
+ "frames": {
+  "22": {
+   "flash": 0.25
+  },
+  "23": {
+   "flash": 0.263
+  },
+  "24": {
+   "flash": 0.297
+  },
+  "25": {
+   "flash": 0.345
+  },
+  "26": {
+   "flash": 0.4
+  },
+  "27": {
+   "flash": 0.455
+  },
+  "28": {
+   "flash": 0.503
+  },
+  "29": {
+   "flash": 0.537
+  },
+  "30": {
+   "flash": 0.9
+  },
+  "31": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 11.574,
+     "transparency": 0.015,
+     "veil_transparency": 0.015,
+     "middle": 4.015,
+     "width": 1.602
+    }
+   ],
+   "flash": 0.6
+  },
+  "32": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 13.258,
+     "transparency": 0.0,
+     "veil_transparency": 0.0,
+     "middle": 3.595,
+     "width": 2.256
+    }
+   ]
+  },
+  "33": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 14.411,
+     "transparency": 0.126,
+     "veil_transparency": 0.126,
+     "middle": 3.308,
+     "width": 2.501
+    }
+   ]
+  },
+  "34": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 15.141,
+     "transparency": 0.308,
+     "veil_transparency": 0.338,
+     "middle": 3.126,
+     "width": 2.436
+    }
+   ]
+  },
+  "35": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 15.553,
+     "transparency": 0.411,
+     "veil_transparency": 0.503,
+     "middle": 3.023,
+     "width": 2.372
+    }
+   ]
+  },
+  "36": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 15.753,
+     "transparency": 0.461,
+     "veil_transparency": 0.632,
+     "middle": 2.973,
+     "width": 2.334
+    }
+   ]
+  },
+  "37": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 15.847,
+     "transparency": 0.485,
+     "veil_transparency": 0.742,
+     "middle": 2.95,
+     "width": 2.314
+    }
+   ]
+  },
+  "38": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 15.924,
+     "transparency": 0.504,
+     "veil_transparency": 0.843,
+     "middle": 2.931,
+     "width": 2.298
+    }
+   ]
+  },
+  "39": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.0,
+     "transparency": 0.523,
+     "veil_transparency": 0.925,
+     "middle": 2.912,
+     "width": 2.28
+    }
+   ]
+  },
+  "40": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.076,
+     "transparency": 0.542,
+     "veil_transparency": 0.98,
+     "middle": 2.892,
+     "width": 2.262
+    }
+   ]
+  },
+  "41": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.153,
+     "transparency": 0.561,
+     "veil_transparency": 1.0,
+     "middle": 2.873,
+     "width": 2.244
+    }
+   ]
+  },
+  "42": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.229,
+     "transparency": 0.58,
+     "veil_transparency": 1.0,
+     "middle": 2.854,
+     "width": 2.224
+    }
+   ]
+  },
+  "43": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.306,
+     "transparency": 0.599,
+     "veil_transparency": 1.0,
+     "middle": 2.835,
+     "width": 2.204
+    }
+   ]
+  },
+  "44": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.382,
+     "transparency": 0.618,
+     "veil_transparency": 1.0,
+     "middle": 2.816,
+     "width": 2.183
+    }
+   ]
+  },
+  "45": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.458,
+     "transparency": 0.637,
+     "veil_transparency": 1.0,
+     "middle": 2.797,
+     "width": 2.162
+    }
+   ],
+   "flash": 0.6
+  },
+  "46": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.535,
+     "transparency": 0.656,
+     "veil_transparency": 1.0,
+     "middle": 2.778,
+     "width": 2.14
+    },
+    {
+     "born": 45,
+     "radius": 11.574,
+     "transparency": 0.015,
+     "veil_transparency": 0.015,
+     "middle": 4.015,
+     "width": 1.602
+    }
+   ],
+   "flash": 0.4
+  },
+  "47": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.611,
+     "transparency": 0.675,
+     "veil_transparency": 1.0,
+     "middle": 2.759,
+     "width": 2.117
+    },
+    {
+     "born": 45,
+     "radius": 13.258,
+     "transparency": 0.0,
+     "veil_transparency": 0.0,
+     "middle": 3.595,
+     "width": 2.256
+    }
+   ]
+  },
+  "48": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.687,
+     "transparency": 0.695,
+     "veil_transparency": 1.0,
+     "middle": 2.74,
+     "width": 2.094
+    },
+    {
+     "born": 45,
+     "radius": 14.411,
+     "transparency": 0.126,
+     "veil_transparency": 0.126,
+     "middle": 3.308,
+     "width": 2.501
+    }
+   ]
+  },
+  "49": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.764,
+     "transparency": 0.714,
+     "veil_transparency": 1.0,
+     "middle": 2.721,
+     "width": 2.07
+    },
+    {
+     "born": 45,
+     "radius": 15.141,
+     "transparency": 0.308,
+     "veil_transparency": 0.338,
+     "middle": 3.126,
+     "width": 2.436
+    }
+   ]
+  },
+  "50": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.84,
+     "transparency": 0.733,
+     "veil_transparency": 1.0,
+     "middle": 2.702,
+     "width": 2.045
+    },
+    {
+     "born": 45,
+     "radius": 15.553,
+     "transparency": 0.411,
+     "veil_transparency": 0.503,
+     "middle": 3.023,
+     "width": 2.372
+    }
+   ]
+  },
+  "51": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.916,
+     "transparency": 0.752,
+     "veil_transparency": 1.0,
+     "middle": 2.683,
+     "width": 2.019
+    },
+    {
+     "born": 45,
+     "radius": 15.753,
+     "transparency": 0.461,
+     "veil_transparency": 0.632,
+     "middle": 2.973,
+     "width": 2.334
+    }
+   ]
+  },
+  "52": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 16.993,
+     "transparency": 0.771,
+     "veil_transparency": 1.0,
+     "middle": 2.664,
+     "width": 1.993
+    },
+    {
+     "born": 45,
+     "radius": 15.847,
+     "transparency": 0.485,
+     "veil_transparency": 0.742,
+     "middle": 2.95,
+     "width": 2.314
+    }
+   ]
+  },
+  "53": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.069,
+     "transparency": 0.79,
+     "veil_transparency": 1.0,
+     "middle": 2.645,
+     "width": 1.966
+    },
+    {
+     "born": 45,
+     "radius": 15.924,
+     "transparency": 0.504,
+     "veil_transparency": 0.843,
+     "middle": 2.931,
+     "width": 2.298
+    }
+   ]
+  },
+  "54": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.146,
+     "transparency": 0.809,
+     "veil_transparency": 1.0,
+     "middle": 2.626,
+     "width": 1.939
+    },
+    {
+     "born": 45,
+     "radius": 16.0,
+     "transparency": 0.523,
+     "veil_transparency": 0.925,
+     "middle": 2.912,
+     "width": 2.28
+    }
+   ]
+  },
+  "55": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.222,
+     "transparency": 0.828,
+     "veil_transparency": 1.0,
+     "middle": 2.607,
+     "width": 1.91
+    },
+    {
+     "born": 45,
+     "radius": 16.076,
+     "transparency": 0.542,
+     "veil_transparency": 0.98,
+     "middle": 2.892,
+     "width": 2.262
+    }
+   ]
+  },
+  "56": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.298,
+     "transparency": 0.847,
+     "veil_transparency": 1.0,
+     "middle": 2.588,
+     "width": 1.882
+    },
+    {
+     "born": 45,
+     "radius": 16.153,
+     "transparency": 0.561,
+     "veil_transparency": 1.0,
+     "middle": 2.873,
+     "width": 2.244
+    }
+   ]
+  },
+  "57": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.375,
+     "transparency": 0.866,
+     "veil_transparency": 1.0,
+     "middle": 2.569,
+     "width": 1.852
+    },
+    {
+     "born": 45,
+     "radius": 16.229,
+     "transparency": 0.58,
+     "veil_transparency": 1.0,
+     "middle": 2.854,
+     "width": 2.224
+    }
+   ]
+  },
+  "58": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.451,
+     "transparency": 0.885,
+     "veil_transparency": 1.0,
+     "middle": 2.55,
+     "width": 1.822
+    },
+    {
+     "born": 45,
+     "radius": 16.306,
+     "transparency": 0.599,
+     "veil_transparency": 1.0,
+     "middle": 2.835,
+     "width": 2.204
+    }
+   ]
+  },
+  "59": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.527,
+     "transparency": 0.905,
+     "veil_transparency": 1.0,
+     "middle": 2.531,
+     "width": 1.791
+    },
+    {
+     "born": 45,
+     "radius": 16.382,
+     "transparency": 0.618,
+     "veil_transparency": 1.0,
+     "middle": 2.816,
+     "width": 2.183
+    }
+   ]
+  },
+  "60": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.604,
+     "transparency": 0.924,
+     "veil_transparency": 1.0,
+     "middle": 2.512,
+     "width": 1.759
+    },
+    {
+     "born": 45,
+     "radius": 16.458,
+     "transparency": 0.637,
+     "veil_transparency": 1.0,
+     "middle": 2.797,
+     "width": 2.162
+    }
+   ],
+   "flash": 0.6
+  },
+  "61": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.68,
+     "transparency": 0.943,
+     "veil_transparency": 1.0,
+     "middle": 2.493,
+     "width": 1.727
+    },
+    {
+     "born": 45,
+     "radius": 16.535,
+     "transparency": 0.656,
+     "veil_transparency": 1.0,
+     "middle": 2.778,
+     "width": 2.14
+    },
+    {
+     "born": 60,
+     "radius": 11.574,
+     "transparency": 0.015,
+     "veil_transparency": 0.015,
+     "middle": 4.015,
+     "width": 1.602
+    }
+   ],
+   "flash": 0.4
+  },
+  "62": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.756,
+     "transparency": 0.962,
+     "veil_transparency": 1.0,
+     "middle": 2.474,
+     "width": 1.694
+    },
+    {
+     "born": 45,
+     "radius": 16.611,
+     "transparency": 0.675,
+     "veil_transparency": 1.0,
+     "middle": 2.759,
+     "width": 2.117
+    },
+    {
+     "born": 60,
+     "radius": 13.258,
+     "transparency": 0.0,
+     "veil_transparency": 0.0,
+     "middle": 3.595,
+     "width": 2.256
+    }
+   ]
+  },
+  "63": {
+   "crests": [
+    {
+     "born": 30,
+     "radius": 17.833,
+     "transparency": 0.981,
+     "veil_transparency": 1.0,
+     "middle": 2.455,
+     "width": 1.66
+    },
+    {
+     "born": 45,
+     "radius": 16.687,
+     "transparency": 0.695,
+     "veil_transparency": 1.0,
+     "middle": 2.74,
+     "width": 2.094
+    },
+    {
+     "born": 60,
+     "radius": 14.411,
+     "transparency": 0.126,
+     "veil_transparency": 0.126,
+     "middle": 3.308,
+     "width": 2.501
+    }
+   ]
+  },
+  "64": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 16.764,
+     "transparency": 0.714,
+     "veil_transparency": 1.0,
+     "middle": 2.721,
+     "width": 2.07
+    },
+    {
+     "born": 60,
+     "radius": 15.141,
+     "transparency": 0.308,
+     "veil_transparency": 0.338,
+     "middle": 3.126,
+     "width": 2.436
+    }
+   ]
+  },
+  "65": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 16.84,
+     "transparency": 0.733,
+     "veil_transparency": 1.0,
+     "middle": 2.702,
+     "width": 2.045
+    },
+    {
+     "born": 60,
+     "radius": 15.553,
+     "transparency": 0.411,
+     "veil_transparency": 0.503,
+     "middle": 3.023,
+     "width": 2.372
+    }
+   ]
+  },
+  "66": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 16.916,
+     "transparency": 0.752,
+     "veil_transparency": 1.0,
+     "middle": 2.683,
+     "width": 2.019
+    },
+    {
+     "born": 60,
+     "radius": 15.753,
+     "transparency": 0.461,
+     "veil_transparency": 0.632,
+     "middle": 2.973,
+     "width": 2.334
+    }
+   ]
+  },
+  "67": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 16.993,
+     "transparency": 0.771,
+     "veil_transparency": 1.0,
+     "middle": 2.664,
+     "width": 1.993
+    },
+    {
+     "born": 60,
+     "radius": 15.847,
+     "transparency": 0.485,
+     "veil_transparency": 0.742,
+     "middle": 2.95,
+     "width": 2.314
+    }
+   ]
+  },
+  "68": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.069,
+     "transparency": 0.79,
+     "veil_transparency": 1.0,
+     "middle": 2.645,
+     "width": 1.966
+    },
+    {
+     "born": 60,
+     "radius": 15.924,
+     "transparency": 0.504,
+     "veil_transparency": 0.843,
+     "middle": 2.931,
+     "width": 2.298
+    }
+   ]
+  },
+  "69": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.146,
+     "transparency": 0.809,
+     "veil_transparency": 1.0,
+     "middle": 2.626,
+     "width": 1.939
+    },
+    {
+     "born": 60,
+     "radius": 16.0,
+     "transparency": 0.523,
+     "veil_transparency": 0.925,
+     "middle": 2.912,
+     "width": 2.28
+    }
+   ]
+  },
+  "70": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.222,
+     "transparency": 0.828,
+     "veil_transparency": 1.0,
+     "middle": 2.607,
+     "width": 1.91
+    },
+    {
+     "born": 60,
+     "radius": 16.076,
+     "transparency": 0.542,
+     "veil_transparency": 0.98,
+     "middle": 2.892,
+     "width": 2.262
+    }
+   ]
+  },
+  "71": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.298,
+     "transparency": 0.847,
+     "veil_transparency": 1.0,
+     "middle": 2.588,
+     "width": 1.882
+    },
+    {
+     "born": 60,
+     "radius": 16.153,
+     "transparency": 0.561,
+     "veil_transparency": 1.0,
+     "middle": 2.873,
+     "width": 2.244
+    }
+   ]
+  },
+  "72": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.375,
+     "transparency": 0.866,
+     "veil_transparency": 1.0,
+     "middle": 2.569,
+     "width": 1.852
+    },
+    {
+     "born": 60,
+     "radius": 16.229,
+     "transparency": 0.58,
+     "veil_transparency": 1.0,
+     "middle": 2.854,
+     "width": 2.224
+    }
+   ]
+  },
+  "73": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.451,
+     "transparency": 0.885,
+     "veil_transparency": 1.0,
+     "middle": 2.55,
+     "width": 1.822
+    },
+    {
+     "born": 60,
+     "radius": 16.306,
+     "transparency": 0.599,
+     "veil_transparency": 1.0,
+     "middle": 2.835,
+     "width": 2.204
+    }
+   ]
+  },
+  "74": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.527,
+     "transparency": 0.905,
+     "veil_transparency": 1.0,
+     "middle": 2.531,
+     "width": 1.791
+    },
+    {
+     "born": 60,
+     "radius": 16.382,
+     "transparency": 0.618,
+     "veil_transparency": 1.0,
+     "middle": 2.816,
+     "width": 2.183
+    }
+   ]
+  },
+  "75": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.604,
+     "transparency": 0.924,
+     "veil_transparency": 1.0,
+     "middle": 2.512,
+     "width": 1.759
+    },
+    {
+     "born": 60,
+     "radius": 16.458,
+     "transparency": 0.637,
+     "veil_transparency": 1.0,
+     "middle": 2.797,
+     "width": 2.162
+    }
+   ],
+   "flash": 0.6
+  },
+  "76": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.68,
+     "transparency": 0.943,
+     "veil_transparency": 1.0,
+     "middle": 2.493,
+     "width": 1.727
+    },
+    {
+     "born": 60,
+     "radius": 16.535,
+     "transparency": 0.656,
+     "veil_transparency": 1.0,
+     "middle": 2.778,
+     "width": 2.14
+    },
+    {
+     "born": 75,
+     "radius": 11.574,
+     "transparency": 0.015,
+     "veil_transparency": 0.015,
+     "middle": 4.015,
+     "width": 1.602
+    }
+   ],
+   "flash": 0.4
+  },
+  "77": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.756,
+     "transparency": 0.962,
+     "veil_transparency": 1.0,
+     "middle": 2.474,
+     "width": 1.694
+    },
+    {
+     "born": 60,
+     "radius": 16.611,
+     "transparency": 0.675,
+     "veil_transparency": 1.0,
+     "middle": 2.759,
+     "width": 2.117
+    },
+    {
+     "born": 75,
+     "radius": 13.258,
+     "transparency": 0.0,
+     "veil_transparency": 0.0,
+     "middle": 3.595,
+     "width": 2.256
+    }
+   ]
+  },
+  "78": {
+   "crests": [
+    {
+     "born": 45,
+     "radius": 17.833,
+     "transparency": 0.981,
+     "veil_transparency": 1.0,
+     "middle": 2.455,
+     "width": 1.66
+    },
+    {
+     "born": 60,
+     "radius": 16.687,
+     "transparency": 0.695,
+     "veil_transparency": 1.0,
+     "middle": 2.74,
+     "width": 2.094
+    },
+    {
+     "born": 75,
+     "radius": 14.411,
+     "transparency": 0.126,
+     "veil_transparency": 0.126,
+     "middle": 3.308,
+     "width": 2.501
+    }
+   ]
+  },
+  "79": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 16.764,
+     "transparency": 0.714,
+     "veil_transparency": 1.0,
+     "middle": 2.721,
+     "width": 2.07
+    },
+    {
+     "born": 75,
+     "radius": 15.141,
+     "transparency": 0.308,
+     "veil_transparency": 0.338,
+     "middle": 3.126,
+     "width": 2.436
+    }
+   ]
+  },
+  "80": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 16.84,
+     "transparency": 0.733,
+     "veil_transparency": 1.0,
+     "middle": 2.702,
+     "width": 2.045
+    },
+    {
+     "born": 75,
+     "radius": 15.553,
+     "transparency": 0.411,
+     "veil_transparency": 0.503,
+     "middle": 3.023,
+     "width": 2.372
+    }
+   ]
+  },
+  "81": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 16.916,
+     "transparency": 0.752,
+     "veil_transparency": 1.0,
+     "middle": 2.683,
+     "width": 2.019
+    },
+    {
+     "born": 75,
+     "radius": 15.753,
+     "transparency": 0.461,
+     "veil_transparency": 0.632,
+     "middle": 2.973,
+     "width": 2.334
+    }
+   ]
+  },
+  "82": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 16.993,
+     "transparency": 0.771,
+     "veil_transparency": 1.0,
+     "middle": 2.664,
+     "width": 1.993
+    },
+    {
+     "born": 75,
+     "radius": 15.847,
+     "transparency": 0.485,
+     "veil_transparency": 0.742,
+     "middle": 2.95,
+     "width": 2.314
+    }
+   ]
+  },
+  "83": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.069,
+     "transparency": 0.79,
+     "veil_transparency": 1.0,
+     "middle": 2.645,
+     "width": 1.966
+    },
+    {
+     "born": 75,
+     "radius": 15.924,
+     "transparency": 0.504,
+     "veil_transparency": 0.843,
+     "middle": 2.931,
+     "width": 2.298
+    }
+   ]
+  },
+  "84": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.146,
+     "transparency": 0.809,
+     "veil_transparency": 1.0,
+     "middle": 2.626,
+     "width": 1.939
+    },
+    {
+     "born": 75,
+     "radius": 16.0,
+     "transparency": 0.523,
+     "veil_transparency": 0.925,
+     "middle": 2.912,
+     "width": 2.28
+    }
+   ]
+  },
+  "85": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.222,
+     "transparency": 0.828,
+     "veil_transparency": 1.0,
+     "middle": 2.607,
+     "width": 1.91
+    },
+    {
+     "born": 75,
+     "radius": 16.076,
+     "transparency": 0.542,
+     "veil_transparency": 0.98,
+     "middle": 2.892,
+     "width": 2.262
+    }
+   ]
+  },
+  "86": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.298,
+     "transparency": 0.847,
+     "veil_transparency": 1.0,
+     "middle": 2.588,
+     "width": 1.882
+    },
+    {
+     "born": 75,
+     "radius": 16.153,
+     "transparency": 0.561,
+     "veil_transparency": 1.0,
+     "middle": 2.873,
+     "width": 2.244
+    }
+   ]
+  },
+  "87": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.375,
+     "transparency": 0.866,
+     "veil_transparency": 1.0,
+     "middle": 2.569,
+     "width": 1.852
+    },
+    {
+     "born": 75,
+     "radius": 16.229,
+     "transparency": 0.58,
+     "veil_transparency": 1.0,
+     "middle": 2.854,
+     "width": 2.224
+    }
+   ]
+  },
+  "88": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.451,
+     "transparency": 0.885,
+     "veil_transparency": 1.0,
+     "middle": 2.55,
+     "width": 1.822
+    },
+    {
+     "born": 75,
+     "radius": 16.306,
+     "transparency": 0.599,
+     "veil_transparency": 1.0,
+     "middle": 2.835,
+     "width": 2.204
+    }
+   ]
+  },
+  "89": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.527,
+     "transparency": 0.905,
+     "veil_transparency": 1.0,
+     "middle": 2.531,
+     "width": 1.791
+    },
+    {
+     "born": 75,
+     "radius": 16.382,
+     "transparency": 0.618,
+     "veil_transparency": 1.0,
+     "middle": 2.816,
+     "width": 2.183
+    }
+   ]
+  },
+  "90": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.604,
+     "transparency": 0.924,
+     "veil_transparency": 1.0,
+     "middle": 2.512,
+     "width": 1.759
+    },
+    {
+     "born": 75,
+     "radius": 16.458,
+     "transparency": 0.637,
+     "veil_transparency": 1.0,
+     "middle": 2.797,
+     "width": 2.162
+    }
+   ],
+   "flash": 0.6
+  },
+  "91": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.68,
+     "transparency": 0.943,
+     "veil_transparency": 1.0,
+     "middle": 2.493,
+     "width": 1.727
+    },
+    {
+     "born": 75,
+     "radius": 16.535,
+     "transparency": 0.656,
+     "veil_transparency": 1.0,
+     "middle": 2.778,
+     "width": 2.14
+    },
+    {
+     "born": 90,
+     "radius": 11.574,
+     "transparency": 0.015,
+     "veil_transparency": 0.015,
+     "middle": 4.015,
+     "width": 1.602
+    }
+   ],
+   "flash": 0.4
+  },
+  "92": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.756,
+     "transparency": 0.962,
+     "veil_transparency": 1.0,
+     "middle": 2.474,
+     "width": 1.694
+    },
+    {
+     "born": 75,
+     "radius": 16.611,
+     "transparency": 0.675,
+     "veil_transparency": 1.0,
+     "middle": 2.759,
+     "width": 2.117
+    },
+    {
+     "born": 90,
+     "radius": 13.258,
+     "transparency": 0.0,
+     "veil_transparency": 0.0,
+     "middle": 3.595,
+     "width": 2.256
+    }
+   ]
+  },
+  "93": {
+   "crests": [
+    {
+     "born": 60,
+     "radius": 17.833,
+     "transparency": 0.981,
+     "veil_transparency": 1.0,
+     "middle": 2.455,
+     "width": 1.66
+    },
+    {
+     "born": 75,
+     "radius": 16.687,
+     "transparency": 0.695,
+     "veil_transparency": 1.0,
+     "middle": 2.74,
+     "width": 2.094
+    },
+    {
+     "born": 90,
+     "radius": 14.411,
+     "transparency": 0.126,
+     "veil_transparency": 0.126,
+     "middle": 3.308,
+     "width": 2.501
+    }
+   ]
+  },
+  "94": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 16.764,
+     "transparency": 0.714,
+     "veil_transparency": 1.0,
+     "middle": 2.721,
+     "width": 2.07
+    },
+    {
+     "born": 90,
+     "radius": 15.141,
+     "transparency": 0.308,
+     "veil_transparency": 0.338,
+     "middle": 3.126,
+     "width": 2.436
+    }
+   ]
+  },
+  "95": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 16.84,
+     "transparency": 0.733,
+     "veil_transparency": 1.0,
+     "middle": 2.702,
+     "width": 2.045
+    },
+    {
+     "born": 90,
+     "radius": 15.553,
+     "transparency": 0.411,
+     "veil_transparency": 0.503,
+     "middle": 3.023,
+     "width": 2.372
+    }
+   ]
+  },
+  "96": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 16.916,
+     "transparency": 0.752,
+     "veil_transparency": 1.0,
+     "middle": 2.683,
+     "width": 2.019
+    },
+    {
+     "born": 90,
+     "radius": 15.753,
+     "transparency": 0.461,
+     "veil_transparency": 0.632,
+     "middle": 2.973,
+     "width": 2.334
+    }
+   ]
+  },
+  "97": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 16.993,
+     "transparency": 0.771,
+     "veil_transparency": 1.0,
+     "middle": 2.664,
+     "width": 1.993
+    },
+    {
+     "born": 90,
+     "radius": 15.847,
+     "transparency": 0.485,
+     "veil_transparency": 0.742,
+     "middle": 2.95,
+     "width": 2.314
+    }
+   ]
+  },
+  "98": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.069,
+     "transparency": 0.79,
+     "veil_transparency": 1.0,
+     "middle": 2.645,
+     "width": 1.966
+    },
+    {
+     "born": 90,
+     "radius": 15.924,
+     "transparency": 0.504,
+     "veil_transparency": 0.843,
+     "middle": 2.931,
+     "width": 2.298
+    }
+   ]
+  },
+  "99": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.146,
+     "transparency": 0.809,
+     "veil_transparency": 1.0,
+     "middle": 2.626,
+     "width": 1.939
+    },
+    {
+     "born": 90,
+     "radius": 16.0,
+     "transparency": 0.523,
+     "veil_transparency": 0.925,
+     "middle": 2.912,
+     "width": 2.28
+    }
+   ]
+  },
+  "100": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.222,
+     "transparency": 0.828,
+     "veil_transparency": 1.0,
+     "middle": 2.607,
+     "width": 1.91
+    },
+    {
+     "born": 90,
+     "radius": 16.076,
+     "transparency": 0.542,
+     "veil_transparency": 0.98,
+     "middle": 2.892,
+     "width": 2.262
+    }
+   ]
+  },
+  "101": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.298,
+     "transparency": 0.847,
+     "veil_transparency": 1.0,
+     "middle": 2.588,
+     "width": 1.882
+    },
+    {
+     "born": 90,
+     "radius": 16.153,
+     "transparency": 0.561,
+     "veil_transparency": 1.0,
+     "middle": 2.873,
+     "width": 2.244
+    }
+   ]
+  },
+  "102": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.375,
+     "transparency": 0.866,
+     "veil_transparency": 1.0,
+     "middle": 2.569,
+     "width": 1.852
+    },
+    {
+     "born": 90,
+     "radius": 16.229,
+     "transparency": 0.58,
+     "veil_transparency": 1.0,
+     "middle": 2.854,
+     "width": 2.224
+    }
+   ]
+  },
+  "103": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.451,
+     "transparency": 0.885,
+     "veil_transparency": 1.0,
+     "middle": 2.55,
+     "width": 1.822
+    },
+    {
+     "born": 90,
+     "radius": 16.306,
+     "transparency": 0.599,
+     "veil_transparency": 1.0,
+     "middle": 2.835,
+     "width": 2.204
+    }
+   ]
+  },
+  "104": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.527,
+     "transparency": 0.905,
+     "veil_transparency": 1.0,
+     "middle": 2.531,
+     "width": 1.791
+    },
+    {
+     "born": 90,
+     "radius": 16.382,
+     "transparency": 0.618,
+     "veil_transparency": 1.0,
+     "middle": 2.816,
+     "width": 2.183
+    }
+   ]
+  },
+  "105": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.604,
+     "transparency": 0.924,
+     "veil_transparency": 1.0,
+     "middle": 2.512,
+     "width": 1.759
+    },
+    {
+     "born": 90,
+     "radius": 16.458,
+     "transparency": 0.637,
+     "veil_transparency": 1.0,
+     "middle": 2.797,
+     "width": 2.162
+    }
+   ]
+  },
+  "106": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.68,
+     "transparency": 0.943,
+     "veil_transparency": 1.0,
+     "middle": 2.493,
+     "width": 1.727
+    },
+    {
+     "born": 90,
+     "radius": 16.535,
+     "transparency": 0.656,
+     "veil_transparency": 1.0,
+     "middle": 2.778,
+     "width": 2.14
+    }
+   ]
+  },
+  "107": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.756,
+     "transparency": 0.962,
+     "veil_transparency": 1.0,
+     "middle": 2.474,
+     "width": 1.694
+    },
+    {
+     "born": 90,
+     "radius": 16.611,
+     "transparency": 0.675,
+     "veil_transparency": 1.0,
+     "middle": 2.759,
+     "width": 2.117
+    }
+   ]
+  },
+  "108": {
+   "crests": [
+    {
+     "born": 75,
+     "radius": 17.833,
+     "transparency": 0.981,
+     "veil_transparency": 1.0,
+     "middle": 2.455,
+     "width": 1.66
+    },
+    {
+     "born": 90,
+     "radius": 16.687,
+     "transparency": 0.695,
+     "veil_transparency": 1.0,
+     "middle": 2.74,
+     "width": 2.094
+    }
+   ]
+  },
+  "109": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 16.764,
+     "transparency": 0.714,
+     "veil_transparency": 1.0,
+     "middle": 2.721,
+     "width": 2.07
+    }
+   ]
+  },
+  "110": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 16.84,
+     "transparency": 0.733,
+     "veil_transparency": 1.0,
+     "middle": 2.702,
+     "width": 2.045
+    }
+   ]
+  },
+  "111": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 16.916,
+     "transparency": 0.752,
+     "veil_transparency": 1.0,
+     "middle": 2.683,
+     "width": 2.019
+    }
+   ]
+  },
+  "112": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 16.993,
+     "transparency": 0.771,
+     "veil_transparency": 1.0,
+     "middle": 2.664,
+     "width": 1.993
+    }
+   ]
+  },
+  "113": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.069,
+     "transparency": 0.79,
+     "veil_transparency": 1.0,
+     "middle": 2.645,
+     "width": 1.966
+    }
+   ]
+  },
+  "114": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.146,
+     "transparency": 0.809,
+     "veil_transparency": 1.0,
+     "middle": 2.626,
+     "width": 1.939
+    }
+   ]
+  },
+  "115": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.222,
+     "transparency": 0.828,
+     "veil_transparency": 1.0,
+     "middle": 2.607,
+     "width": 1.91
+    }
+   ]
+  },
+  "116": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.298,
+     "transparency": 0.847,
+     "veil_transparency": 1.0,
+     "middle": 2.588,
+     "width": 1.882
+    }
+   ]
+  },
+  "117": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.375,
+     "transparency": 0.866,
+     "veil_transparency": 1.0,
+     "middle": 2.569,
+     "width": 1.852
+    }
+   ]
+  },
+  "118": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.451,
+     "transparency": 0.885,
+     "veil_transparency": 1.0,
+     "middle": 2.55,
+     "width": 1.822
+    }
+   ]
+  },
+  "119": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.527,
+     "transparency": 0.905,
+     "veil_transparency": 1.0,
+     "middle": 2.531,
+     "width": 1.791
+    }
+   ]
+  },
+  "120": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.604,
+     "transparency": 0.924,
+     "veil_transparency": 1.0,
+     "middle": 2.512,
+     "width": 1.759
+    }
+   ]
+  },
+  "121": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.68,
+     "transparency": 0.943,
+     "veil_transparency": 1.0,
+     "middle": 2.493,
+     "width": 1.727
+    }
+   ]
+  },
+  "122": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.756,
+     "transparency": 0.962,
+     "veil_transparency": 1.0,
+     "middle": 2.474,
+     "width": 1.694
+    }
+   ]
+  },
+  "123": {
+   "crests": [
+    {
+     "born": 90,
+     "radius": 17.833,
+     "transparency": 0.981,
+     "veil_transparency": 1.0,
+     "middle": 2.455,
+     "width": 1.66
+    }
+   ]
+  }
+ },
+ "checks": {
+  "touched": {
+   "Target": [
+    33,
+    48,
+    63,
+    78,
+    93
+   ],
+   "Other": [
+    41,
+    56,
+    71,
+    86,
+    101
+   ],
+   "Ally": [
+    32,
+    47,
+    62,
+    77,
+    92
+   ]
+  },
+  "share": {
+   "30": {
+    "block": 0.0047,
+    "art": 0.0005
+   },
+   "32": {
+    "block": 0.0046,
+    "art": 0.0035
+   },
+   "34": {
+    "block": 0.0118,
+    "art": 0.0044
+   },
+   "36": {
+    "block": 0.0178,
+    "art": 0.0062
+   },
+   "40": {
+    "block": 0.028,
+    "art": 0.004
+   },
+   "50": {
+    "block": 0.0144,
+    "art": 0.0062
+   },
+   "65": {
+    "block": 0.0144,
+    "art": 0.0062
+   },
+   "80": {
+    "block": 0.0144,
+    "art": 0.0062
+   },
+   "92": {
+    "block": 0.0047,
+    "art": 0.0069
+   },
+   "98": {
+    "block": 0.0219,
+    "art": 0.0066
+   }
+  },
+  "pixels_at_64": {
+   "dark": {
+    "30": 10,
+    "32": 71,
+    "34": 93,
+    "36": 120,
+    "40": 92,
+    "45": 93,
+    "48": 158,
+    "52": 129,
+    "60": 110,
+    "75": 110,
+    "92": 142,
+    "100": 117
+   },
+   "bright": {
+    "30": 10,
+    "32": 70,
+    "34": 93,
+    "36": 120,
+    "40": 92,
+    "45": 93,
+    "48": 158,
+    "52": 129,
+    "60": 110,
+    "75": 110,
+    "92": 141,
+    "100": 117
+   }
+  },
+  "camera": "the player's: behind the avatar, 12.5 studs, 14.0 degrees down, 70 degrees"
+ }
+}

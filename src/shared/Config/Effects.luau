@@ -37,6 +37,17 @@ return {
 		},
 		-- The floor's two lines, scored under the hero's feet in pieces as it passes: hot, then a scorch, eaten from the near end.
 		Floor = { Pieces = 6, Hot = 3, Eat = 4, Life = 11, Bar = 0.5, Over = 0.03, Overlap = 0.3 }, -- frames; studs
+		-- The ram's heat (AR1, sections 5 to 7): the glow mask on these pieces, on the clip's markers. Up from Charge to
+		-- Strike, held through the hitstop to Shock, out by Vent. The content check's engine looks (section 7) hold the
+		-- strength at 5 at most (above it, bloom haloes the ram) and never between 0 and 3 (there the cream band reads
+		-- deeper than cold): the effect keeps Peak at 5 and steps 0 to Step at Charge, Step to 0 at Vent.
+		Glow = {
+			Pieces = { "Rook_RightArm", "Rook_Piston" },
+			Peak = 5, -- EmissiveStrength at the strike: research tunes it on the replay, up to the check's 5
+			Step = 3, -- where the heat starts at Charge and ends at Vent: the check's floor, held at 3 or above
+			Rise = 2, -- the wind-up's curve: it warms slowly, then fast into the strike
+			Fall = 2, -- the cooling's, from Shock to Vent: the heat goes out with the bracket, the last of it lingers
+		},
 	},
 
 	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey

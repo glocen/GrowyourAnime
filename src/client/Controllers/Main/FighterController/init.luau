@@ -448,8 +448,10 @@ local function stepView(view: View, dt: number, now: number): boolean
 				end
 			end
 		end
-		if view.Current and math.abs(view.Current.TimePosition - view.Clock) > 0.05 and view.Clock < action.Length then
-			view.Current.TimePosition = view.Clock -- keep the clip on the clock the hits are timed by
+		-- Keep the clip on the clock the hits are timed by; a replay's freeze puts it exactly there, or the pose sits
+		-- up to the drift's 0.05 s short of the effect it's captured with.
+		if view.Current and (frozen or math.abs(view.Current.TimePosition - view.Clock) > 0.05) and view.Clock < action.Length then
+			view.Current.TimePosition = view.Clock
 		end
 		if view.Clock >= action.Length then
 			endAction(view)

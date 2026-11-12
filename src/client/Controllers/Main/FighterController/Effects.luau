@@ -4,7 +4,7 @@
 --   Haymaker  AR1's art sheet, the block-in's B with the floor's lines (research dropped the wake): the charge square,
 --             the punctuation, one bracket thrown along the ground through the target and eaten as it cools, the two
 --             lines it scores on the floor. One bar picture for all of it, or grey parts until it's uploaded
---             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5).
+--             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). And the ram's heat on its glow mask.
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
 --   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore), on its clip's marker.
 --   Number    a damage number over the target.
@@ -31,6 +31,9 @@ local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
 local R6_ROOT_HEIGHT = 3 -- an R6 root stands 3 studs over the floor: an engine fact
 local STAND_IN_DEPTH = 0.1 -- studs: a grey bar's thickness through its face
 local PICTURE_DEPTH = 0.05 -- a picture's part, unseen
+-- The ram's strength while lit, the content check's engine looks (AR1, section 7): above 5, bloom haloes it; below 3,
+-- its cream band reads deeper than cold. Outside these takes a fresh check.
+local GLOW_FLOOR, GLOW_CEILING = 3, 5
 
 local folder: Folder? = nil
 local function home(): Folder
@@ -227,6 +230,7 @@ export type Running = { Step: (clock: number) -> boolean, Destroy: () -> () }
 
 function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: () -> BasePart?): Running
 	local STRIKE, SHOCK = beats.Strike, beats.Shock
+	local CHARGE, VENT = beats.Charge or 0, beats.Vent or SHOCK
 	local arm = attacker:FindFirstChild("Right Arm") :: BasePart?
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
 	local pool: { Bar } = {}
@@ -235,6 +239,36 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	local knuckles: Vector3? = nil
 	local strikeAt: number? = nil -- the clock on the first frame on or past Strike: its square holds there, through the hitstop
 	local shockAt: number? = nil -- and on the first frame after it, for the Shock square
+
+	-- The ram's heat: the attacker's pieces the glow mask lights (Config.Effects.Haymaker.Glow). A lead without them has none.
+	local glows: { SurfaceAppearance } = {}
+	for _, name in EffectsConfig.Haymaker.Glow.Pieces do
+		local piece = attacker:FindFirstChild(name)
+		local surface = if piece then piece:FindFirstChildOfClass("SurfaceAppearance") else nil
+		if surface then
+			table.insert(glows, surface)
+		end
+	end
+	local function heat(clock: number): number
+		local glow = EffectsConfig.Haymaker.Glow
+		local peak = math.clamp(glow.Peak, GLOW_FLOOR, GLOW_CEILING)
+		local step = math.clamp(glow.Step, GLOW_FLOOR, peak) -- it starts and ends here, never between 0 and it
+		if clock < CHARGE or clock >= VENT then
+			return 0
+		elseif clock < STRIKE then
+			return step + (peak - step) * ((clock - CHARGE) / math.max(FRAME, STRIKE - CHARGE)) ^ glow.Rise
+		elseif clock < SHOCK then
+			return peak
+		end
+		return step + (peak - step) * (1 - (clock - SHOCK) / math.max(FRAME, VENT - SHOCK)) ^ glow.Fall
+	end
+	local function light(strength: number)
+		for _, surface in glows do
+			if surface.Parent then
+				surface.EmissiveStrength = strength
+			end
+		end
+	end
 
 	local function take(): Bar
 		used += 1
@@ -302,6 +336,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 				running.Destroy()
 				return false
 			end
+			light(heat(clock))
 			used = 0
 			local frameNow = math.floor(clock / FRAME + 0.5) -- the clip's frame, for a boil between two of the picture's
 			-- The charge: it forms out of its chips round the ram's face, is drawn tight through the hold, and boils. Cut at the strike.
@@ -387,6 +422,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			return true
 		end,
 		Destroy = function()
+			light(0)
 			for _, bar in pool do
 				bar.Part:Destroy()
 			end

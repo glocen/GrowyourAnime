@@ -1244,6 +1244,57 @@ return {
 			t.Check("over by Strike + 19 frames", over == false)
 			t.Check("and nothing left", left == 0, `{left} parts`)
 			running.Destroy()
+			-- AR1, sections 5 to 7: the ram's heat on the clip's markers, on both lit pieces alike (Config.Effects.Haymaker.Glow).
+			local glow = look.Glow
+			local surfaces: { SurfaceAppearance } = {}
+			for _, name in glow.Pieces do
+				local piece = lead:FindFirstChild(name)
+				local surface = if piece then piece:FindFirstChildOfClass("SurfaceAppearance") else nil
+				if surface then
+					table.insert(surfaces, surface)
+				end
+			end
+			if #surfaces < #glow.Pieces then
+				t.Row(`the lead has {#surfaces} of the ram's {#glow.Pieces} lit pieces: the glow's checks wait for a Rook lead`, nil, nil, nil, "")
+				return
+			end
+			local function strength(): (number, number)
+				local low: number, high: number = math.huge, 0
+				for _, surface in surfaces do
+					low = math.min(low, surface.EmissiveStrength)
+					high = math.max(high, surface.EmissiveStrength)
+				end
+				return low, high
+			end
+			local heat = Effects.Haymaker(action.Beats, lead, function(): BasePart?
+				return nil
+			end)
+			local function lit(clock: number): (number, number)
+				heat.Step(clock)
+				return strength()
+			end
+			-- Section 7: the content check holds it lit between 3 and 5, so it steps 0 to Step at Charge and back at Vent.
+			local peak = math.clamp(glow.Peak, 3, 5)
+			local step = math.clamp(glow.Step, 3, peak)
+			local charge, vent = action.Beats.Charge, action.Beats.Vent
+			local _, cold = strength()
+			t.Check("the ram cold once the look's over", cold == 0, string.format("%.2f", cold))
+			local _, before = lit(charge - FRAME)
+			t.Check("cold before Charge", before == 0, string.format("%.2f", before))
+			local low, high = lit(charge)
+			t.Near("on Charge it steps straight to Step", low, step, 0.01)
+			low, high = lit((charge + strike) / 2)
+			t.Near("warming through the wind-up, halfway", high, step + (peak - step) * 0.5 ^ glow.Rise, 0.01)
+			t.Check("both pieces alike", low == high, string.format("%.2f and %.2f", low, high))
+			low, high = lit(strike)
+			t.Check("at its peak on the strike", low == peak and high == peak, string.format("%.2f, want %.2f", high, peak))
+			_, high = lit((shock + vent) / 2)
+			t.Near("cooling after the shock, halfway", high, step + (peak - step) * 0.5 ^ glow.Fall, 0.01)
+			low, high = lit(vent - FRAME)
+			t.Check("still at Step or above a frame before Vent", low >= step - 0.01, string.format("%.2f", low))
+			_, high = lit(vent)
+			t.Check("out by Vent", high == 0, string.format("%.2f", high))
+			heat.Destroy()
 		end,
 	},
 	{

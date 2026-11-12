@@ -21,7 +21,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 
 **Checks:** the content check on the sheet and before upload; your own review strips; research's verdict (`/ga-review`) on the sheet and on the final in motion; fresh eyes on the final.
 
-**Status:** in progress (Modulo, 2026-11-12). Deliveries 1 to 3, the sheet, the model and the clips, are delivered to `build/handoff/Rook/`. Delivery 4, Haymaker's look, is next, with the builder. Rook's body is in the game, maps and clips included (section 6).
+**Status:** in progress (Modulo, 2026-11-12). Deliveries 1 to 3, the sheet, the model and the clips, are delivered to `build/handoff/Rook/`. Delivery 4, Haymaker's look: the builder's replay is in, the ram's heat with it, past the content check's engine looks (section 7). Research's final in motion, the sound and fresh eyes are next. Rook's body is in the game, maps and clips included (section 6).
 
 **1. The sheet** (Modulo, 2026-11-12).
 
@@ -235,6 +235,54 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 - **Not done:** section 3's pose dump against the export (`tools/blender/r6parity.py compare`). It goes with the replay.
 - **Tests:** Fight cases 117/117 at 60 fps; logic 1,376; type check, 0 new.
 - **Hours:** about 0.8.
+
+### 7. Haymaker's replay: the ram's heat and the engine looks (Faber, 2026-11-12)
+
+- **Scope.** In it: the ram's glow on the clip's markers; the engine looks the content check was owed (section 5's headings at 64 px, and the rebake's conditions 1 and 2); section 6's pose dump. Waiting: the sound, research's final in motion with its tune of the peak, `ga-fresh-eyes`, Modulo's look on the replay (`/ga-action`, step 4).
+- **The glow** (`Config.Effects.Haymaker.Glow`, played by `Effects.Haymaker`):
+  - Cold until Charge, where it steps to `Step` (3).
+  - It curves up to `Peak` (5) by Strike (`Rise` 2) and holds through the hitstop to Shock.
+  - It curves back to 3 (`Fall` 2) and steps to 0 at Vent.
+  - `Rook_RightArm` and `Rook_Piston` light alike, tint `#FFA630`.
+  - The code keeps the lit strength between 3 and 5, whatever is tuned: the check's bounds, below.
+  - Tuned live with `NL_Debug:Invoke("Tune", "Effects.Haymaker.Glow.Peak", n)`.
+- **The engine looks.** The replay frozen on the beat, under the game's lighting (bloom 1, 24, 2), in `build/captures/ar1/`:
+  - `haymaker_fires_64.png` and `_256.png`: Strike, Shock, and 4 and 8 frames on, from eight headings.
+  - `ram_glow_strip_close.png` and `_64.png`: strengths 0 to 10, front and three-quarter.
+  - `ram_band_ramp.png`: the heat band at 90° and 150°, strengths 0 to 10.
+  - `ram_band_step.png`: the band from behind-right, cold, at 3 and at 5, in one pose.
+- **What they measured.** The band's hue is the median over its lit pixels; cold, it's 34.7 at 90° and 37.0 at 150°.
+  - At 0.5 to 1.5 the band goes deeper than cold: 31.2, 32.0 and 34.1 at 90°.
+  - From 2 up it's warmer: 36.3 at 2, 40.2 at 3, 51.1 at 5.
+  - Bloom puts a soft halo on the knuckles and band at 10, a slight glow at 7.5, and none at 5 or below.
+- **Content check, 2026-11-12:**
+  - "It fires" at 64 px from all eight headings: PASS. Section 5's owed item is closed.
+  - Condition 1, BLOCK with a smooth ramp from 0, since below about 2 the band reads deeper than cold. Fix: step 0 to 3 at Charge and 3 to 0 at Vent, confirmed at 3 from behind-right, median 37.0 or more.
+  - Condition 2, BLOCK at 10, where bloom haloes the band and knuckles (7.5 doesn't clear either). Fix: a peak of 5, with the code's ceiling at 5.
+  - Both fixes are made. The confirmation, in one pose and one session, with the deepest tenth in brackets:
+
+    | Strength | Median | Deepest tenth |
+    |---|---|---|
+    | Cold | 37.4 | 35.3 |
+    | 3 | 40.3 | 36.1 |
+    | 5 | 47.4 | n/a |
+
+    Condition 1 holds. At 5, the check accepts the bloom fringe's deep pixels.
+  - To hold: the ram stays lit between 3 and 5. Above 5 needs a moving capture for the trail and a fresh check. A halo at 10 would change condition 2, which is the director's call.
+- **Section 6's pose dump:** `r6parity.py compare` at seven times from 0 to 1.5 s: PASS, worst 0.0004 studs and 0.012°.
+- **The replay's freeze, fixed (tier 1):**
+  - The clip sat up to the clock's 0.05 s drift short of `FreezeAt`. A frozen look showed the effect on its beat and the pose about 1.4 frames early.
+  - A freeze now puts the clip on the clock.
+  - The looks above were shot before the fix; the confirmation, after it.
+- **Self-test:** "Fight: Haymaker's look" checks the glow through the press:
+  - cold before Charge, and 3 on Charge;
+  - halfway up, with both pieces alike;
+  - 5 on the strike, then halfway down;
+  - 3 or more a frame before Vent, and 0 at Vent.
+  - The results: Fight cases 130/130 at 60 fps; logic 1,376; type check, 0 new.
+- **The take:** `build/captures/ar1/haymaker_replay_step.mkv`, 11 s at 59 fps from the player's camera, at 3 and 5.
+- **For research:** the peak is yours to tune between 3 and 5. The step at Charge, where the ram lights in one frame, is a feel call. It's the check's fix: a smooth ramp would need the director to loosen condition 1.
+- **Hours:** about 2.
 
 ## AR2. The Shade, one rig for every enemy
 

@@ -1,0 +1,454 @@
+{
+ "unit": "1 = 1 stud",
+ "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
+ "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel, and a cloth is two faces, one each way.",
+ "shadows": "CastShadow off on LanternString, SquareStrings and the two floors: a lantern never blots its own pool.",
+ "maps": {
+  "LanternRow_Paving_Color.png": "the plain paving, a tile 8 studs square, for a Texture on a Part",
+  "LanternRow_Paper.png": "drifting paper: a 2 by 2 flipbook for a ParticleEmitter"
+ },
+ "pieces": {
+  "StallA": {
+   "mesh": "meshes/StallA.json",
+   "triangles": 714,
+   "vertices": 450,
+   "centre": [
+    0.0,
+    6.7,
+    2.68315
+   ],
+   "size": [
+    13.321,
+    13.68,
+    9.065
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 12 by 7 by 9",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      0.0,
+      6.9,
+      2.9
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "the counter stall; its lamp's glow is painted, a real light is the builder's to add near a fight"
+  },
+  "StallB": {
+   "mesh": "meshes/StallB.json",
+   "triangles": 1100,
+   "vertices": 720,
+   "centre": [
+    0.0,
+    6.0125,
+    2.89471
+   ],
+   "size": [
+    14.5,
+    12.305,
+    9.479
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 12 by 7 by 9",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      0.0,
+      7.2,
+      3.0
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "the prize stall"
+  },
+  "StallCorner": {
+   "mesh": "meshes/StallCorner.json",
+   "triangles": 904,
+   "vertices": 550,
+   "centre": [
+    0.0,
+    7.63,
+    5.89984
+   ],
+   "size": [
+    15.365,
+    15.54,
+    15.566
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 12 by 12 by 9",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      2.4,
+      6.8,
+      2.6
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "open to +Y and to +X; turn it for the other three corners"
+  },
+  "LanternString": {
+   "mesh": "meshes/LanternString.json",
+   "triangles": 916,
+   "vertices": 628,
+   "centre": [
+    0.0,
+    9.555,
+    0.0
+   ],
+   "size": [
+    43.82,
+    19.39,
+    6.62
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none: the poles stand in the gaps between stalls",
+   "lights": [
+    {
+     "name": "Pool",
+     "at": [
+      0.0,
+      14.2,
+      -0.0
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "its pool is painted in the bay under it; over a pack, one SpotLight straight down from Pool (the plan's lights)"
+  },
+  "Banner": {
+   "mesh": "meshes/Banner.json",
+   "triangles": 72,
+   "vertices": 46,
+   "centre": [
+    1.05,
+    7.68,
+    0.0
+   ],
+   "size": [
+    2.7,
+    15.64,
+    0.6
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "the cloth runs along the street: stand it with its X up the street"
+  },
+  "SignBoard": {
+   "mesh": "meshes/SignBoard.json",
+   "triangles": 96,
+   "vertices": 64,
+   "centre": [
+    0.0,
+    3.805,
+    0.0
+   ],
+   "size": [
+    7.68,
+    7.89,
+    1.28
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 7 by 1 by 8",
+   "lights": [],
+   "note": "its face is +Y and -Y"
+  },
+  "FestivalGate": {
+   "mesh": "meshes/FestivalGate.json",
+   "triangles": 1244,
+   "vertices": 744,
+   "centre": [
+    0.0,
+    13.68,
+    0.0
+   ],
+   "size": [
+    48.2,
+    27.64,
+    7.148
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box round each pillar's foot, 4.6 square",
+   "lights": [
+    {
+     "name": "Pool",
+     "at": [
+      0.0,
+      13.0,
+      -0.0
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "clear between the pillars' feet: 36 studs; under the lanterns: 13.2"
+  },
+  "KeepersGate": {
+   "mesh": "meshes/KeepersGate.json",
+   "triangles": 772,
+   "vertices": 484,
+   "centre": [
+    0.0,
+    13.555,
+    -0.19816
+   ],
+   "size": [
+    45.48,
+    27.39,
+    9.823
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the two piers and the two walls",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      0.0,
+      12.5,
+      -4.0
+     ],
+     "colour": "#8CF6FF"
+    }
+   ],
+   "note": "the doorway is 20 wide and 20 tall; KeepersDoor hangs at x -10 and, turned half round, at x 10"
+  },
+  "KeepersDoor": {
+   "mesh": "meshes/KeepersDoor.json",
+   "triangles": 284,
+   "vertices": 184,
+   "centre": [
+    5.0,
+    9.8,
+    0.0
+   ],
+   "size": [
+    10.28,
+    19.88,
+    1.0
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, the leaf",
+   "lights": [],
+   "note": "a hinge at its origin; the second leaf is this one turned half round"
+  },
+  "SquareFloor": {
+   "mesh": "meshes/SquareFloor.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    0.0
+   ],
+   "size": [
+    64.0,
+    0.0,
+    64.0
+   ],
+   "colour": "maps/LanternRow_Square_Color.png",
+   "glow": "maps/LanternRow_Square_Glow.png",
+   "glowTint": "#FFD49A",
+   "glowStrength": 0.85,
+   "collision": "none",
+   "lights": [],
+   "note": "lies 0.06 over the paving; the seal's foot is toward the gate"
+  },
+  "SquareStrings": {
+   "mesh": "meshes/SquareStrings.json",
+   "triangles": 3576,
+   "vertices": 2420,
+   "centre": [
+    0.0,
+    11.27,
+    0.0
+   ],
+   "size": [
+    66.8,
+    22.82,
+    66.8
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none: the poles stand outside the floor",
+   "lights": [
+    {
+     "name": "Pool",
+     "at": [
+      0.0,
+      12.0,
+      -0.0
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "its middle is the square's; the poles stand a stud outside the floor's corners"
+  },
+  "SquarePost": {
+   "mesh": "meshes/SquarePost.json",
+   "triangles": 282,
+   "vertices": 209,
+   "centre": [
+    7.53819,
+    5.18,
+    -0.642
+   ],
+   "size": [
+    16.956,
+    10.64,
+    3.164
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the post, and the rope's line as a low wall",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      0.0,
+      7.0,
+      -1.6
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "the rope runs 16 studs along +X to the next post; its lantern hangs to +Y, into the square"
+  },
+  "SquarePostEnd": {
+   "mesh": "meshes/SquarePostEnd.json",
+   "triangles": 176,
+   "vertices": 110,
+   "centre": [
+    0.0,
+    5.18,
+    -0.642
+   ],
+   "size": [
+    1.88,
+    10.64,
+    3.164
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the post, and the rope's line as a low wall",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      0.0,
+      7.0,
+      -1.6
+     ],
+     "colour": "#FFD49A"
+    }
+   ],
+   "note": "a run's last post: no rope"
+  },
+  "StreetBay": {
+   "mesh": "meshes/StreetBay.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    44.0,
+    0.0,
+    13.333
+   ],
+   "colour": "maps/LanternRow_Street_Color.png",
+   "glow": "maps/LanternRow_Street_Glow.png",
+   "glowTint": "#FFD49A",
+   "glowStrength": 0.85,
+   "collision": "floor",
+   "lights": [],
+   "note": "one under each lantern string; a Part under them carries the walking, this is the look"
+  },
+  "HouseLow": {
+   "mesh": "meshes/HouseLow.json",
+   "triangles": 206,
+   "vertices": 151,
+   "centre": [
+    0.0,
+    9.955,
+    7.5
+   ],
+   "size": [
+    17.914,
+    20.19,
+    17.0
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 16 by 15",
+   "lights": [],
+   "note": "offered: the skyline; its front stands a stud behind the stalls' backs"
+  },
+  "HouseTall": {
+   "mesh": "meshes/HouseTall.json",
+   "triangles": 266,
+   "vertices": 199,
+   "centre": [
+    0.0,
+    13.455,
+    7.5
+   ],
+   "size": [
+    17.914,
+    27.19,
+    17.0
+   ],
+   "colour": "maps/LanternRow_Kit_Color.png",
+   "glow": "maps/LanternRow_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 16 by 15",
+   "lights": [],
+   "note": "offered: the skyline; its front stands a stud behind the stalls' backs"
+  }
+ }
+}

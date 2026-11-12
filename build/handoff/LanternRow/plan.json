@@ -1,0 +1,1765 @@
+{
+ "origin": "the festival gate's middle at pavement level",
+ "axes": "`across` is + to the right walking in (Roblox +X when the street runs toward -Z); `along` is studs up the street from the gate; `turn` is degrees anticlockwise seen from above",
+ "toRoblox": "CFrame.new(across, 0, gateZ - along) * CFrame.Angles(0, math.rad(turn), 0)",
+ "spacing": 80.0,
+ "bay": 13.3333,
+ "stops": {
+  "packs": [
+   32.0,
+   112.0,
+   192.0,
+   352.0,
+   432.0,
+   512.0
+  ],
+  "square": 272.0,
+  "keeper": 592.0
+ },
+ "placements": [
+  {
+   "piece": "FestivalGate",
+   "across": 0,
+   "along": 0,
+   "turn": 0.0
+  },
+  {
+   "piece": "KeepersGate",
+   "across": 0,
+   "along": 592.0,
+   "turn": 180
+  },
+  {
+   "piece": "KeepersDoor",
+   "across": -10,
+   "along": 592.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "KeepersDoor",
+   "across": 10,
+   "along": 592.0,
+   "turn": 180
+  },
+  {
+   "piece": "SquareFloor",
+   "across": 0,
+   "along": 272.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "SquareStrings",
+   "across": 0,
+   "along": 272.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": -8.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 5.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 5.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 18.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 18.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 32.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 32.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 45.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 45.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 58.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 58.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 72.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 72.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 85.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 85.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 98.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 98.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 112.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 112.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 125.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 125.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 138.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 138.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 152.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 152.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 165.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 165.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 178.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 178.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 192.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 192.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 205.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 205.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 218.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 218.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 232.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 232.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 245.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 298.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 312.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 312.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 325.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 325.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 338.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 338.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 352.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 352.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 365.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 365.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 378.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 378.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 392.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 392.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 405.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 405.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 418.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 418.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 432.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 432.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 445.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 445.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 458.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 458.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 472.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 472.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 485.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 485.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 498.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 498.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 512.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 512.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 525.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 525.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 538.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 538.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 552.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 552.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 565.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 565.33,
+   "turn": 0.0
+  },
+  {
+   "piece": "StreetBay",
+   "across": 0,
+   "along": 578.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "LanternString",
+   "across": 0,
+   "along": 578.67,
+   "turn": 0.0
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 22.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 35.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 49.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 55.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 62.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 75.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 89.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 95.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 102.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 115.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 129.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 135.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 142.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 155.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 169.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 175.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 182.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 195.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 209.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 215.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 329.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 335.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 342.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 355.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 369.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 375.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 382.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 395.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 409.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 415.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 422.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 435.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 449.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 455.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 462.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 475.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 489.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 495.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 502.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 515.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 529.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 535.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 542.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 555.67,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": -22.0,
+   "along": 569.0,
+   "turn": -90
+  },
+  {
+   "piece": "Banner",
+   "across": -20.1,
+   "along": 575.3,
+   "turn": 90
+  },
+  {
+   "piece": "StallB",
+   "across": -22.0,
+   "along": 582.33,
+   "turn": -90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 28.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 22.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 41.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 55.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 68.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 62.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 81.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 95.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 108.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 102.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 121.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 135.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 148.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 142.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 161.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 175.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 188.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 182.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 201.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 215.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 335.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 348.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 342.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 361.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 375.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 388.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 382.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 401.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 415.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 428.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 422.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 441.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 455.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 468.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 462.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 481.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 495.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 508.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 502.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 521.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 535.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 548.33,
+   "turn": 90
+  },
+  {
+   "piece": "Banner",
+   "across": 20.1,
+   "along": 542.03,
+   "turn": -90
+  },
+  {
+   "piece": "StallB",
+   "across": 22.0,
+   "along": 561.67,
+   "turn": 90
+  },
+  {
+   "piece": "StallA",
+   "across": 22.0,
+   "along": 575.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallCorner",
+   "across": -28.0,
+   "along": 240.0,
+   "turn": 0
+  },
+  {
+   "piece": "StallCorner",
+   "across": 22.0,
+   "along": 234.0,
+   "turn": 90
+  },
+  {
+   "piece": "StallCorner",
+   "across": -22.0,
+   "along": 310.0,
+   "turn": -90
+  },
+  {
+   "piece": "StallCorner",
+   "across": 28.0,
+   "along": 304.0,
+   "turn": 180
+  },
+  {
+   "piece": "SquarePost",
+   "across": -32.0,
+   "along": 264.0,
+   "turn": -90
+  },
+  {
+   "piece": "SquarePost",
+   "across": -32.0,
+   "along": 280.0,
+   "turn": -90
+  },
+  {
+   "piece": "SquarePost",
+   "across": -32.0,
+   "along": 296.0,
+   "turn": -90
+  },
+  {
+   "piece": "SquarePostEnd",
+   "across": -32.0,
+   "along": 248.0,
+   "turn": -90
+  },
+  {
+   "piece": "SquarePost",
+   "across": 32.0,
+   "along": 248.0,
+   "turn": 90
+  },
+  {
+   "piece": "SquarePost",
+   "across": 32.0,
+   "along": 264.0,
+   "turn": 90
+  },
+  {
+   "piece": "SquarePost",
+   "across": 32.0,
+   "along": 280.0,
+   "turn": 90
+  },
+  {
+   "piece": "SquarePostEnd",
+   "across": 32.0,
+   "along": 296.0,
+   "turn": 90
+  },
+  {
+   "piece": "SignBoard",
+   "across": -17.5,
+   "along": 6.0,
+   "turn": -25
+  },
+  {
+   "piece": "SignBoard",
+   "across": -18.0,
+   "along": 224.8,
+   "turn": -25
+  },
+  {
+   "piece": "SignBoard",
+   "across": 18.0,
+   "along": 319.2,
+   "turn": 25
+  },
+  {
+   "piece": "SignBoard",
+   "across": -17.5,
+   "along": 586.0,
+   "turn": -25
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 0.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 16.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 32.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 48.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 64.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 80.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 96.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 112.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 128.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 144.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 160.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 176.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 192.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 208.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -36.0,
+   "along": 224.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -36.0,
+   "along": 240.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -36.0,
+   "along": 256.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -36.0,
+   "along": 272.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -36.0,
+   "along": 288.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -36.0,
+   "along": 304.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -36.0,
+   "along": 320.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 336.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 352.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 368.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 384.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 400.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 416.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 432.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 448.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 464.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 480.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 496.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 512.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 528.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 544.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 560.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseTall",
+   "across": -30.0,
+   "along": 576.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": -30.0,
+   "along": 592.0,
+   "turn": -90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 8.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 24.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 40.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 56.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 72.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 88.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 104.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 120.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 136.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 152.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 168.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 184.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 200.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 216.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 36.0,
+   "along": 232.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 36.0,
+   "along": 248.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 36.0,
+   "along": 264.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 36.0,
+   "along": 280.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 36.0,
+   "along": 296.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 36.0,
+   "along": 312.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 328.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 344.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 360.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 376.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 392.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 408.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 424.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 440.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 456.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 472.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 488.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 504.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 520.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 536.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 552.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 568.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseTall",
+   "across": 30.0,
+   "along": 584.0,
+   "turn": 90
+  },
+  {
+   "piece": "HouseLow",
+   "across": 30.0,
+   "along": 600.0,
+   "turn": 90
+  }
+ ],
+ "lights": [
+  {
+   "name": "Pack1Pool",
+   "across": 0.0,
+   "along": 32.0,
+   "up": 14.2,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "Pack2Pool",
+   "across": 0.0,
+   "along": 112.0,
+   "up": 14.2,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "Pack3Pool",
+   "across": 0.0,
+   "along": 192.0,
+   "up": 14.2,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "Pack4Pool",
+   "across": 0.0,
+   "along": 352.0,
+   "up": 14.2,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "Pack5Pool",
+   "across": 0.0,
+   "along": 432.0,
+   "up": 14.2,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "Pack6Pool",
+   "across": 0.0,
+   "along": 512.0,
+   "up": 14.2,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "SquarePool",
+   "across": 0.0,
+   "along": 272.0,
+   "up": 12.0,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "GatePool",
+   "across": 0.0,
+   "along": 0.0,
+   "up": 13.0,
+   "colour": "#FFD49A",
+   "kind": "spot",
+   "cone": 66.0
+  },
+  {
+   "name": "KeeperLamp",
+   "across": 0.0,
+   "along": 588.0,
+   "up": 12.5,
+   "colour": "#8CF6FF",
+   "kind": "point",
+   "cone": null
+  }
+ ],
+ "lightsNote": "Every static light the street has: a SpotLight straight down (Face Bottom, Angle = cone) or a PointLight, Shadows off. Every other pool is painted in a floor's glow picture. The lead carries one PointLight more. Brightness and Range are tuned in the engine against the two targets.",
+ "budget": {
+  "reach_studs": 220.0,
+  "whole_street": {
+   "pieces": 271,
+   "triangles": 125690,
+   "lights": 10
+  },
+  "worst_within_reach": {
+   "pieces": 196,
+   "triangles": 91308,
+   "lights": 8,
+   "pieces_at": 240.0,
+   "triangles_at": 272.0,
+   "lights_at": 216.0
+  },
+  "counts": {
+   "FestivalGate": 1,
+   "KeepersGate": 1,
+   "KeepersDoor": 2,
+   "SquareFloor": 1,
+   "SquareStrings": 1,
+   "StreetBay": 42,
+   "LanternString": 39,
+   "StallB": 23,
+   "StallA": 46,
+   "Banner": 23,
+   "StallCorner": 4,
+   "SquarePost": 6,
+   "SquarePostEnd": 2,
+   "SignBoard": 4,
+   "HouseLow": 39,
+   "HouseTall": 37
+  }
+ }
+}

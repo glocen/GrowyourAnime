@@ -2536,6 +2536,89 @@ For Modulo, after AR3 section 3. Built in the merge's look, with its four notes 
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 
+**Delivered (Modulo, 2026-11-13): the five, in one handoff.** `build/handoff/LanternRow/`, made by `tools/blender/lantern_row_kit.py` on the look script. Nothing is uploaded, installed or seen in the engine.
+
+- **Shown together, not one before the next:** my call. The frames that hold the targets need the pieces, the sky, the plan and the lights at once. Any of the five can come back alone.
+- **The sheets:** `lantern_row_kit_sheet.png` (each piece alone, the maps, four frames from the player's camera, the budget), `lantern_row_plan.png` (the street from above), `sky/lantern_row_sky_sheet.png` (both skies and their numbers).
+- **The files:** `meshes/` (16), `maps/` (8), `manifest.json` (a piece's mesh, size, centre, maps, glow, collision and light points), `plan.json` (271 placements, 9 lights, the budget), `sky/` (12 faces, `lighting.json`).
+
+**1. The pieces** (triangles, ink included):
+
+| Piece | Triangles | What it is |
+|---|---|---|
+| StallA | 714 | the counter stall: a striped awning with a cut hem, a curtain, a board, a paper lamp under the cloth |
+| StallB | 1,100 | the prize stall: an indigo roof with a red ridge, shelves, a row of five lanterns of its own |
+| StallCorner | 904 | open to two sides, a striped hip roof, a great lantern on its peak |
+| LanternString | 916 | one span across the street: two poles, eleven lanterns, two warm to one cyan |
+| Banner, SignBoard | 72, 96 | the script (draw 2) down a cloth on a pole, and along a board |
+| FestivalGate | 1,244 | two red pillars on stone feet, two beams, four great lanterns, the board, a seal on a wood plaque |
+| KeepersGate, KeepersDoor | 772, 284 | a roofed lintel on stone piers with a cyan great lantern; one leaf, hung twice |
+| SquareFloor, SquareStrings | 2, 3,576 | the square's floor as one picture; its canopy, two strings crossing from four corner poles |
+| SquarePost, SquarePostEnd | 282, 176 | the square's edge: a lantern post with 16 studs of rope and pennants; a run's last post |
+| StreetBay | 2 | a module of paving, 44 studs by a bay, the string's pool in its glow |
+| HouseLow, HouseTall | 206, 266 | the skyline behind the stalls, lit windows |
+
+- **Maps:** one colour picture and one glow picture for every piece (`LanternRow_Kit_*`, 1024 px): swatches with the shading baked in by height and by occlusion, and the prints. The two floors have their own pair. The plain paving is a tile for a Texture, and the paper is a 2 by 2 flipbook.
+- **Ink:** a piece's ink is in its own mesh, a hull turned inside out on the atlas's ink texel, only where a shape meets the sky or a lit surface. So a piece is one MeshPart, drawn single sided. A cloth is two faces, one each way.
+- **Beyond the request's list, research's to keep or cut:** the two houses (the merge's frames had a skyline), the square's canopy (the source of the square's painted light), the door leaf, the end post.
+- **StallB has a roof, not a striped awning.** It's the kit's one dark roof among red ones. If every stall should wear red, it's a swatch.
+
+**The verdict's four notes:**
+
+1. **The haze lighter back toward the gate:** `#7868B4`, where round 2 had `#4A4290`. A Shade's edge looking back is 0.155, from 0.11.
+2. **Pools as pools:** every string's pool is painted in the paving's glow, so the street reads as a run of pools and costs no light. One real light hangs over each pack, where the fighters themselves need it. The strings' rhythm is set so a string hangs over every pack.
+3. **A light of each stall's own, and red kept red:** a lamp or a lantern row in every stall, painted in the glow. The awnings carry a faint glow of their own colour (0.15 in the mask), so they stay red at dusk and at night.
+4. **The lead's carried light:** 1.8 studs toward his target and 3.8 up, under the hat. Nearer his chest than round 2's, so its strength fell from 1,050 to 560, or his face burns out.
+
+**2. The sky.** Six faces a phase at 1024 px, each pixel drawn from its direction (`sky/LanternRow_SkyDusk_*`, `LanternRow_SkyNight_*`). The afterglow is in Ft, up the street. `sky/lighting.json` holds each phase's numbers. A colour, a direction, a place and a cone carry over as they are. A strength is the script's own unit, given so the two phases keep their ratio, beside the handbook's starting values (practice, not measured here).
+
+**3. The dressing.** `plan.json`, in studs from the festival gate's middle: across, along, turn. One rhythm: a bay is 13.33 studs (a stall with its gap, a string, a module of paving), six to a stop. Stalls stand down both sides except inside the gate on the right, where the Festival Door's twin stands, and round the square, which has a corner stall at each corner.
+
+**4. The phone budget** (counted from the plan, not measured on a device):
+
+| | Pieces | Triangles | Lights |
+|---|---|---|---|
+| The whole street | 271 | 125,690 | 10 with the lead's |
+| The most within 220 studs of anyone on it, both ways | 196 | 91,308 | 8 |
+| In the dusk frame, as round 2 counted | 185 | 53,114 | 5 |
+| Round 2's block, the same count | 827 | 48,484 | 14 |
+
+The pieces are 16 meshes on 3 pairs of pictures, so they batch. The strings are the largest share (39 at 916). A string with seven lanterns would save about 11,000 triangles, if a device asks for it.
+
+**5. Night.** The kit wears the same pictures, so only the sky, the lights, the haze and the bloom turn. The last of the afterglow is a violet breath at the street's end, with a painted moon over it. The directional light keeps its place, dimmer and cooler, so no shadow swings as the phase turns. The floors' glow rises from 0.85 to 1.1, since the floor is darker and a pool does more of the work.
+
+**The measures** (renders, not the engine; the lead at least 1.3, a Shade's edge at least 0.15):
+
+| Frame | Lead over what's round him | A Shade's edge | Frame over the lead's top quarter |
+|---|---|---|---|
+| Dusk, from the gate's end | 1.44 | 0.162 | 3% |
+| Dusk, from the far end | 1.47 | 0.155 | 3% |
+| Night, from the gate's end | 1.65 | 0.154 | 3% |
+| Night, from the far end | 1.56 | 0.170 | 3% |
+
+**For the builder:**
+
+- A piece goes at its place times `centre` (`manifest.json`): `CFrame.new(across, 0, gateZ - along) * CFrame.Angles(0, math.rad(turn), 0)`.
+- One SurfaceAppearance a piece: its colour, its glow as the emissive mask, `glowTint` and `glowStrength`. The floors' tint is `#FFD49A`, so a ground can change its lanterns' colour there.
+- `CastShadow` off on the strings, the canopy and the two floors, or a lantern blots its own pool.
+- The lights in `plan.json` are every static light the street has. `Shadows` off.
+- A StreetBay and the SquareFloor are the look. A Part under them carries the walking. The SquareFloor lies 0.06 over the paving.
+- The sky's face frames are the handbook's, tested there. One glance in the engine confirms the afterglow is up the street.
+- Both phases run at a day clock, with the sun's disc hidden (the handbook's pseudo-night).
+
+**What I see wrong:**
+
+- A Shade's edge passes by a hair in three frames of four. The engine's own light decides it. The lever is the floors' glow strength.
+- The square has no fight frame. Its floor's light is painted from the canopy, unmeasured.
+- The far paving reads flat between pools in the dusk frames. The pools show most under the fight.
+- The stalls' counters hold a few jars and boxes only. Goods are a later pass.
+- The moon doesn't show from the gate's end at the camera's pitch. The canopy covers it.
+- The sky's faces weigh 9 MB together, from the dither against banding.
+
+**Content check:** PASS, 2026-11-13, on its second round, for the kit's maps and meshes and for the twelve sky faces. Round 1 was a BLOCK on two things, both fixed in the script: the seal sat on a red field (now a cream disc on a dark wood plaque, wider than the gate's red pillar), and each lantern's tassel was a red point (now a mustard tuft with a square end). Its conditions: the pass covers the files as they are, so a re-run that changes the script's pictures, the seed or a colour needs a new check; upload only `maps/`, the twelve `sky/LanternRow_Sky*.png` faces and the meshes, never the sheets; on the square's floor the four bars never run through the ring. The checker saw the sheet's 64 px tiles at about 36 px and didn't open the mesh files.
+
+**Not done:** research's verdict; the upload; the install; a device take; the keeper's ring past the gate, which the request doesn't name. **Hours:** about 3, by my count of the runs, not a stopwatch.
+
 ## AR6. Regalia's item art
 
 For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from the reference study, `docs/research/gear-icons.md`. Written in full when phase 3 opens.

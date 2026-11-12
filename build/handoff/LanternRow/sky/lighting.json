@@ -1,0 +1,186 @@
+{
+ "Dusk": {
+  "phase": "Dusk",
+  "sky": {
+   "faces": {
+    "Ft": "LanternRow_SkyDusk_Ft.png",
+    "Lf": "LanternRow_SkyDusk_Lf.png",
+    "Bk": "LanternRow_SkyDusk_Bk.png",
+    "Rt": "LanternRow_SkyDusk_Rt.png",
+    "Up": "LanternRow_SkyDusk_Up.png",
+    "Dn": "LanternRow_SkyDusk_Dn.png"
+   },
+   "StarCount": 0,
+   "SunAngularSize": 0,
+   "MoonAngularSize": 0,
+   "note": "our own stars and moon are in the faces; the afterglow is in Ft, up the street (-Z). A day clock in both phases: at a night clock Roblox darkens a custom sky."
+  },
+  "sun": {
+   "toward": [
+    -0.161,
+    0.883,
+    0.441
+   ],
+   "elevationDegrees": 62.0,
+   "colour": "#A9B4FF",
+   "strength": 0.55,
+   "shadows": true,
+   "note": "the one directional light, high and from behind the player walking in, so the fight is lit the same from either end; `toward` is the unit vector to it with the street running to -Z"
+  },
+  "ambient": {
+   "colour": "#3A3F7C",
+   "strength": 0.42,
+   "asOne": "#242852",
+   "note": "a flat fill, Ambient and OutdoorAmbient alike; `asOne` is colour times strength"
+  },
+  "atmosphere": {
+   "Color": "#CC7CA0",
+   "Decay": "#7868B4",
+   "hazeAt": {
+    "40": 0.16,
+    "100": 0.36,
+    "300": 0.74
+   },
+   "start": {
+    "Density": 0.22,
+    "Offset": 0.12,
+    "Haze": 1.0,
+    "Glare": 0.2
+   },
+   "note": "Color is the haze toward the street's far end, Decay the haze back toward the gate; `hazeAt` is how much of a thing the haze has taken at that many studs in these frames"
+  },
+  "bloom": {
+   "here": {
+    "threshold": 0.8,
+    "intensity": 0.8,
+    "sizesPx": [
+     6,
+     20
+    ]
+   },
+   "start": {
+    "Intensity": 0.6,
+    "Size": 24,
+    "Threshold": 1.3
+   }
+  },
+  "environmentDiffuseScale": 0.6,
+  "glow": {
+   "kit": 2.4,
+   "floor": 0.85,
+   "floorTint": "#FFD49A",
+   "note": "EmissiveStrength for the kit's pieces and for the two floors, as these frames have them"
+  },
+  "pools": {
+   "colour": "#FFD49A",
+   "coneDegrees": 66.0,
+   "up": 14.2,
+   "strength": 9900,
+   "note": "the SpotLight over each pack, the square's and the gate's (the plan's lights), Shadows off"
+  },
+  "lead": {
+   "colour": "#FFF1DD",
+   "ahead": 1.8,
+   "up": 3.8,
+   "range": 12.0,
+   "strength": 560.0,
+   "note": "one PointLight carried by the lead: `ahead` studs toward his target, `up` studs over the ground, under the hat's height"
+  },
+  "targets": {
+   "lead": 1.3,
+   "edge": 0.15
+  }
+ },
+ "Night": {
+  "phase": "Night",
+  "sky": {
+   "faces": {
+    "Ft": "LanternRow_SkyNight_Ft.png",
+    "Lf": "LanternRow_SkyNight_Lf.png",
+    "Bk": "LanternRow_SkyNight_Bk.png",
+    "Rt": "LanternRow_SkyNight_Rt.png",
+    "Up": "LanternRow_SkyNight_Up.png",
+    "Dn": "LanternRow_SkyNight_Dn.png"
+   },
+   "StarCount": 0,
+   "SunAngularSize": 0,
+   "MoonAngularSize": 0,
+   "note": "our own stars and moon are in the faces; the afterglow is in Ft, up the street (-Z). A day clock in both phases: at a night clock Roblox darkens a custom sky."
+  },
+  "sun": {
+   "toward": [
+    -0.161,
+    0.883,
+    0.441
+   ],
+   "elevationDegrees": 62.0,
+   "colour": "#8FA8FF",
+   "strength": 0.34,
+   "shadows": true,
+   "note": "the one directional light, high and from behind the player walking in, so the fight is lit the same from either end; `toward` is the unit vector to it with the street running to -Z"
+  },
+  "ambient": {
+   "colour": "#1E2A62",
+   "strength": 0.4,
+   "asOne": "#10183E",
+   "note": "a flat fill, Ambient and OutdoorAmbient alike; `asOne` is colour times strength"
+  },
+  "atmosphere": {
+   "Color": "#3A3C80",
+   "Decay": "#22306A",
+   "hazeAt": {
+    "40": 0.16,
+    "100": 0.36,
+    "300": 0.74
+   },
+   "start": {
+    "Density": 0.28,
+    "Offset": 0.1,
+    "Haze": 0.8,
+    "Glare": 0.1
+   },
+   "note": "Color is the haze toward the street's far end, Decay the haze back toward the gate; `hazeAt` is how much of a thing the haze has taken at that many studs in these frames"
+  },
+  "bloom": {
+   "here": {
+    "threshold": 0.7,
+    "intensity": 1.0,
+    "sizesPx": [
+     7,
+     22
+    ]
+   },
+   "start": {
+    "Intensity": 0.85,
+    "Size": 28,
+    "Threshold": 1.2
+   }
+  },
+  "environmentDiffuseScale": 0.6,
+  "glow": {
+   "kit": 2.4,
+   "floor": 1.1,
+   "floorTint": "#FFD49A",
+   "note": "EmissiveStrength for the kit's pieces and for the two floors, as these frames have them"
+  },
+  "pools": {
+   "colour": "#FFD49A",
+   "coneDegrees": 66.0,
+   "up": 14.2,
+   "strength": 9900,
+   "note": "the SpotLight over each pack, the square's and the gate's (the plan's lights), Shadows off"
+  },
+  "lead": {
+   "colour": "#FFF1DD",
+   "ahead": 1.8,
+   "up": 3.8,
+   "range": 12.0,
+   "strength": 560.0,
+   "note": "one PointLight carried by the lead: `ahead` studs toward his target, `up` studs over the ground, under the hat's height"
+  },
+  "targets": {
+   "lead": 1.3,
+   "edge": 0.15
+  }
+ }
+}

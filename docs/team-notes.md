@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Quaestor:** two reads wait on you. TR2's still: `build/captures/tr2/phone_plot_before_after.png`. The trail: `build/captures/ar4/pip_trail_turned_strip.jpg`. Your critical-number note is taken into TR3.
 - Now: TR3, the HUD in the world on the kit. AR3's 108 images are uploading under the group.
 
-**Modulo (assets).** 2026-11-12, on Fable 5.2.
-- **Faber:** the critical's stroke is a new picture, round 2: `build/handoff/UI/hud/images/CritSweep.png`, with its layout, shear 0.176, transparency 0.4 and the digits' numbers in `hud_art.json` (AR3, section 3, "Round 2 delivered"). Content check PASS. It replaces round 1's upload once research has read the sheet. The transparency has to reach Config: `kit_config.py` writes the tint and the shear only.
-- **Quaestor:** round 2's stroke waits on your read: the fourth band of `build/handoff/UI/hud/hud_art_sheet.png`. Held Note's art still waits on yours once it's in the game.
-- Now: AR5 section 2, Lantern Row's kit with its night. No lock held.
+**Modulo (assets).** 2026-11-13, on Fable 5.2.
+- **Quaestor:** Lantern Row's kit waits on your read, all five deliveries in one handoff (AR5, section 2, "Delivered"): `build/handoff/LanternRow/lantern_row_kit_sheet.png`, `lantern_row_plan.png` and `sky/lantern_row_sky_sheet.png`. Dusk and night hold both targets from both ends, in renders. Content check PASS. Yours to keep or cut: the houses, the square's canopy, StallB's dark roof.
+- **Faber:** nothing to do on the kit until research has read it. When it's yours, "For the builder" in that entry: `manifest.json`, `plan.json`, `sky/lighting.json`. The critical's stroke (round 2, accepted) still needs its transparency in Config.
+- Now: nothing queued after AR5 section 2. A fix round on the kit if research asks. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR3). Blender: nobody. Timing tests: nobody.
 
@@ -57,6 +57,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. Lantern Row's kit delivered, with its night (Modulo)
+
+- **What:** the festival kit's 16 pieces as meshes on one colour and one glow atlas, ink in each mesh; the paving as lit modules and the square's floor, their pools painted; the paper's flipbook; a dusk sky and a night sky, six faces each; the Lighting numbers for both; the street's dressing plan (271 placements, 9 lights); the phone budget.
+- **Where:** `build/handoff/LanternRow/` (`meshes/`, `maps/`, `sky/`, `manifest.json`, `plan.json`, three sheets), made by `tools/blender/lantern_row_kit.py`. The record: `docs/asset-requests.md`, AR5, section 2, "Delivered".
+- **Measured in renders:** the lead 1.44 to 1.65 times what's round him, a Shade's edge 0.154 to 0.170, at dusk and at night, from both ends. The most within 220 studs: 196 pieces, 91,308 triangles, 8 lights.
+- **For Quaestor:** the verdict, and three calls (the houses, the square's canopy, StallB's roof). **For Faber:** "For the builder" in the entry, after that verdict.
+- **Open:** nothing is uploaded, installed or seen in the engine. A Shade's edge passes by a hair, and the engine's light decides it.
 
 ### 2026-11-12. The HUD's portraits and the critical's sweep delivered (Modulo)
 

@@ -2034,6 +2034,11 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
     - **Pip at 150 stands at the frame's right edge, about half of him cut off.** His reach (gap 13.5) puts him about 49° right of the camera's axis, at the edge of its field of view. The lantern's arc to the dummy and the burst read whole. The recoil shows only as his tilt at that edge, so it isn't clear here either.
     - **The combo:** Pip at the same edge. His shots show only as the numbers over the dummy.
     - **Lyric at 150 stands whole,** right of the dummy (gap 11). Her crests cross toward it from the side.
+- **Research's read of the Frame 150 take, 2026-11-12.**
+  - **The answer: Frame stays at 45.** On the player's side, a ranged lead's reach pushes it to the frame's edge (Pip half cut off at 13.5), and its shots show only as numbers. At 45 it's small but whole, and on screen. The director's word fits it too: the camera stays on the player, and the lead needn't fill it. The experiment is closed, with no change.
+  - **What it showed:** Pip's burst reads whole from either side. The lantern's arc back to the target is the best view of the throw so far.
+  - **Pip's recoil:** judged on Modulo's round 2 replay strip (he rocks back a step with the hat tipped back), and accepted. At the play camera it's a small beat behind the flame, and the flame is the read.
+  - **Pip's Lantern Burst closes: competent,** two rounds and the hold-drift fix. Director-accepted: not yet. The director's planned rework of its look stands (`docs/polish-later.md`). Still open in the game: the trail's quarter turn (the builder's, queued).
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

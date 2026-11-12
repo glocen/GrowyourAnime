@@ -5,7 +5,9 @@ blender.exe -b --factory-startup --python tools/blender/shade_elite.py -- <out_d
 An elite is a larger Shade with a second mask on its shoulder (docs/roster.md). The second mask is the Shade's own
 mask again, smaller, tied to its left arm just under the shoulder: no new mesh and no new map, so the builder clones
 the mask's MeshPart, sizes it and welds it to the Left Arm. The left arm, because the player's camera sits behind the
-lead's right shoulder, and a Shade that faces the lead shows that camera its front and its left side.
+lead's right shoulder, and a Shade that faces the lead shows that camera its front and its left side. In the engine
+the clone's ties stood out of the sleeve, so the Brawler's second mask is now its mesh without them
+(shade_elite_bare.py), and `write` names the mesh each elite wears.
 
 The sheet compares the ways it can sit (WAYS), each on the Brawler at the elite's size beside an ordinary Shade, then
 the picked way (PICK) on all four masks. Workbench only, so no GPU turn; the blockout's shapes are shade_sheet.py's,
@@ -80,11 +82,11 @@ def take(kind, way, views, size=(1000, 1000), span=10.0, centre=(0, 0, 3.0)):
     return out
 
 
-def placement(kind, recipe):
-    """The picked way in the recipe's frame (Roblox: Y up, facing -Z), at the ordinary Shade's size: where the
-    mask's own middle goes, and which way its three axes point."""
+def placement(kind, centre):
+    """The picked way in the recipe's frame (Roblox: Y up, facing -Z), at the ordinary Shade's size, for a mesh of
+    the mask whose middle is `centre` where it's built on the face: where that middle goes, and which way its three
+    axes point."""
     _, at, degrees = WAYS[PICK]
-    centre = recipe["masks"][kind]["centre"]                    # the mask's MeshPart, on the face
     own = Vector((centre[0], -centre[2], centre[1]))            # the same point in this script's frame
     basis = Matrix.Translation(at) @ turn(degrees) @ Matrix.Scale(SMALL, 4) @ Matrix.Translation(-FACE)
     to_roblox = lambda v: [round(v.x, 4), round(v.z, 4), round(-v.y, 4)]  # noqa: E731
@@ -143,15 +145,24 @@ def sheet():
 
 def write():
     recipe = json.loads(RECIPE.read_text(encoding="utf-8"))
+    masks = {}
+    for kind in ss.MASKS:
+        mesh = f"Shade_Mask{kind}Bare.json"  # its copy without ties, where there is one (shade_elite_bare.py)
+        if not (RECIPE.parent / mesh).exists():
+            mesh = recipe["masks"][kind]["mesh"]
+        centre = json.loads((RECIPE.parent / mesh).read_text())["c"]
+        masks[kind] = {"mesh": mesh, **placement(kind, centre)}
     recipe["elite"] = {
-        "note": "An elite wears its own mask twice: the second is the same MeshPart again, with the same surface, "
-                "mask_tint and mask_strength, at `size` of the first, welded to the Left Arm. `centre` is where that "
-                "MeshPart's middle goes and `right`, `up` and `facing` where its own +X, +Y and -Z point, in this "
-                "recipe's frame at the ordinary Shade's size: all of it scales with the rig. The clone's ties and "
-                "knot end up inside the sleeve; nothing runs from it to the collar or the first mask. Only the "
-                "Brawler's is past the content check (docs/asset-requests.md, AR2, section 5).",
+        "note": "An elite wears its own mask twice: the second is the mask's mesh named by `mesh`, with the same "
+                "surface, mask_tint and mask_strength, at `size` of the first, welded to the Left Arm. Where a copy "
+                "without ties exists it's that copy (Shade_Mask<Kind>Bare.json: the same triangles, normals and UVs "
+                "less the strings, the knot and their tails, so the same maps), because a sleeve is too narrow to "
+                "hide the ties (AR2, section 6). `centre` is where that MeshPart's middle goes and `right`, `up` and "
+                "`facing` where its own +X, +Y and -Z point, in this recipe's frame at the ordinary Shade's size: "
+                "all of it scales with the rig. Nothing runs from it to the collar or the first mask. Only the "
+                "Brawler's is past the content check (docs/asset-requests.md, AR2, sections 5 and 6).",
         "on": "Left Arm", "size": SMALL, "way": WAYS[PICK][0],
-        "masks": {kind: placement(kind, recipe) for kind in ss.MASKS}}
+        "masks": masks}
     RECIPE.write_text(json.dumps(recipe, indent=1))  # as shade_model.py writes it
     print("recipe: elite written,", json.dumps(recipe["elite"]["masks"]["Brawler"]))
 

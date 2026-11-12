@@ -226,7 +226,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve, so it's back with Modulo (section 6). Open: the burst's light and paper, an effect built with the builder.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check, for the builder to upload and look at again (section 7). Open: the burst's light and paper, an effect built with the builder.
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -496,6 +496,45 @@ A minor asset, so no blockout round: one comparison sheet, `build/handoff/Shade/
   4. The hem fade stays even and horizontal on every piece.
   5. Everything else stands; section 5's condition 3 stays blocked.
 - **Hours:** about 3, the engine looks included.
+
+### 7. The second mask without its ties (Modulo, 2026-11-12)
+
+This is the fix for section 6's BLOCK on condition 3, by section 6's second way: a copy of the mask without ties, which is a new mesh (condition 7). Made on Opus 5.5 xhigh.
+
+- **Why not a placement change:** I took the second way without trying the first.
+  - At 0.6, each string still runs about 1.1 studs back from the mask's tab, and the tabs are 1.5 studs apart.
+  - The sleeve is a hollow bell, open at the cuff.
+  - A seat that hid the strings from below and from behind, in both the idle and the guard, would sink the mask into the arm.
+  - The copy gives the look the sheet passed, a mask with nothing behind it, and it holds in every clip.
+- **What it is:** `build/handoff/Shade/Shade_MaskBrawlerBare.json`.
+  - It's the delivered `Shade_MaskBrawler.json` less five islands: the two strings, the knot and the knot's two tails. That leaves 464 of 524 triangles.
+  - The kept triangles keep their normals and UVs, so the copy wears the same SurfaceAppearance and the same three maps. No map changes.
+  - It's 2.70 × 2.11 × 0.20 studs at full size.
+- **Where it goes:**
+  - The recipe's `elite` now names the mesh each elite wears, under `mesh`.
+  - The Brawler's centre moves to (-2.0694, 3.5561, -0.6156): 0.465 studs along its facing, because a published mesh is centred on its own box. Its axes don't change.
+  - Placed there, the copy's points land within 0.00001 studs of where they sat on the whole mask.
+  - The other three elites keep their whole masks and wait (condition 5).
+- **The look:** `build/handoff/Shade/shade_elite_bare.png`.
+  - The baked model in the delivered Idle and Guard: close on the arm from below and from behind, as the builder looked, then the Guard from the player's camera.
+  - The top row is the copy with its ties, as the game has it now; the bottom row is without them.
+  - Every rod from the top row is gone. The strings left high in the views from behind are the first mask's, on the head, as designed.
+  - Not yet seen in the engine.
+- **Content check, 2026-11-12: PASS** (rules 2, 3 and 4; condition 3's rods are gone in every column). The 64 px look was judged from the player's-camera column, not drawn. To hold:
+  1. After the upload, the builder looks in the engine with the uploaded mesh, before condition 9's contact sheet: from below and from behind, in Idle and Guard, on dark and bright ground, at the same angles as `elite_mask_close.png` and `elite_arm_behind.png`, with one look at 64 px. A pale strip in the cuff's hollow or past the sleeve comes back.
+  2. It keeps the same surface and settings: the three uploaded maps, `mask_tint` at `mask_strength` 6, 0.6 of its size, at the recipe's new centre. A new map, tint, size or placement goes back to the check.
+  3. The Brawler's only. Copies for the Guard, Dasher and Support wait on condition 5's sheet and their own check.
+  4. It's logged as a new mesh.
+  5. Section 5's other conditions and section 6's stand.
+- **For Faber:**
+  - Upload `Shade_MaskBrawlerBare.json` for the group, as before.
+  - Point `ELITE.Brawler` at that mesh, with the recipe's new centre.
+  - Then condition 1's looks.
+  - After that, condition 9's contact sheet is mine.
+- **Tools:**
+  - `tools/blender/shade_elite_bare.py` is new: it cuts the copy, places it as the game does, and draws the look.
+  - `tools/blender/shade_elite.py`'s `write` now names each elite's mesh and centres the copy.
+- **Hours:** about 0.7.
 
 ## AR3. The UI kit
 

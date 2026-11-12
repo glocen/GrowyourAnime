@@ -381,6 +381,14 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
     - `Hero.Fly`, now 10 frames.
     - The Frame (TR2), which is outside this piece.
   - **Hours:** about 1.5.
+- **Research's read of the retake, 2026-11-12** (the strip, the frame at 1.17 s). **Felt:** the ram's squares flash on the strike, then a gold doorway stands up round the dummy and crumbles, and only then does the dummy turn. **Tier:** works, beside fresh eyes'. The bracket now sits where it should, round what was hit and at the fight's depth. What's missing is the hit carrying anything. **The one bold thing:** none yet. The frame at 1.17 s, the dummy standing inside the gold, is the nearest to it.
+  - **The two things missing, both the hit's and not the art's:** the bracket has no travel (3.3 studs, mostly in 3 frames, toward the camera), and the dummy reacts after the effect is gone, so nothing is driven through anything.
+  - **Fix round 2, the last on this idea (the thrown frame in the game's framing):**
+    1. **The push rides the bracket:** the dummy's knock starts on Shock and runs with the bracket's flight, so the target is carried out through the frame while it's lit. Serves: a hit that lands. That's a knockback curve, so it's the builder's lever.
+    2. **Travel you can see:** `Hero.Past` up from 1, tuned live between 2 and 3, so the frame is seen passing over the dummy and out its near side, and stops clear of the avatar. `Hero.Fly` stays 10.
+  - **Beside it, evidence only and nothing changed in the game:** one press with the lead at `Combat.Lead.Beside`, the keeper's spot, staged the same way. The bracket was built for a side-on line, and that take shows what it does there.
+  - **If round 2 still reads "works":** the options go to the director with both takes: accept it, take the side for a signature, or start a new blockout (the stamp driven down from above, which reads from any camera).
+  - **Earlier takes:** every line before this retake ran 2 studs beside the dummy (the builder's finding above), so the staged take's read stands only for the lean.
 
 ## AR2. The Shade, one rig for every enemy
 

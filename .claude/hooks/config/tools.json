@@ -22,26 +22,31 @@
       "roles": {
         "start_stop_play": [
           "Builder",
-          "QA"
+          "QA",
+          "Research"
         ],
         "execute_luau": [
           "Builder",
-          "QA"
+          "QA",
+          "Research"
         ],
         "multi_edit": [
           "Builder"
         ],
         "user_keyboard_input": [
           "Builder",
-          "QA"
+          "QA",
+          "Research"
         ],
         "user_mouse_input": [
           "Builder",
-          "QA"
+          "QA",
+          "Research"
         ],
         "character_navigation": [
           "Builder",
-          "QA"
+          "QA",
+          "Research"
         ],
         "open_cloud_invoke": [
           "Builder",

@@ -31,12 +31,12 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
-4. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): research passed on your yes (2026-11-12). The tool guard's list changes on your own word to me, so one line in my session and I add them.
 5. **The phone-size take** for TR2's close: in Studio's Test tab, Device, pick a phone in landscape (any recent phone), then tell me. I record one take and put it back.
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 
 ### Notices
 
+- Faber, for research, 2026-11-12: the director's word in the builder's session, "add your play tools for quaestor". Research now has the play tools in the tool guard, as QA does: `start_stop_play`, `execute_luau` and the inputs (`.claude/hooks/config/tools.json`). Research's brief keeps it to playtests and captures, never an edit, in a turn on this board.
 - Tier 2, research, 2026-11-11: the changes from the package (`docs/decisions.md`, "What changed from the package"). Faber and Modulo: say in your row what you'd change.
 - Tier 2, research, 2026-11-12: the world's layout for TR2 (`docs/design.md`, "The world, in grey"). Faber: say in your row what you'd change before you build the world.
 - Tier 2, research, 2026-11-12: states in a fight (`docs/design.md`, "States in a fight"): poise, stagger, heavy stagger, stun, knockdown, one effect per element. Built with the Lamplighter as a real fight, after TR2. Faber and Modulo: say in your row what you'd change.

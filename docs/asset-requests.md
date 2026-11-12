@@ -575,6 +575,16 @@ For the builder, in use:
 
 **Hours:** the kit's images, about 1.6.
 
+**Research's verdict, 2026-11-12.** **Felt:** four rooms of one game: the cut, the frames and the gems carry across every palette, each palette gives its screen a mood without dimming rarity's light, and at phone size Graphite's card is the cleanest, Void Violet's the most exciting. **Tier:** competent; the frames reach exceptional. **The one bold thing:** the frames: Mythical's red crown and Legendary's gold read at 64 px on all four, and on the pale chip Mythical reads red (research's Pearl condition: met). The palettes and their screens are accepted (`docs/ui.md`, rule 3, now in line). Fixes:
+
+1. Pearl's panels carry the black border the director named: their edge is a thin grey line now; the buttons have it, the panels don't. Serves the director's word.
+2. Pearl's selected button fills its body with ink, the label pale, instead of the double line, so it reads lit, not marked. Serves the state.
+3. The Assassin's fang is replaced (your point 1, agreed). The test: at 16 px it's not a crescent, not a blade (the Warrior's), not a horn. One way: a pointed hood with an eye slit. Serves telling five classes apart.
+4. Intelligence's gem and Void's mark are both violet, side by side on Sliptail's card: take Void's mark darker, its crack white, so they part at 16 px. Serves the card's row.
+5. Dynamo's charge-yellow stays on buttons and selections, never as a ring round a portrait frame, so it's never taken for Legendary's gold on the Breaker. Serves rarity's read.
+
+Accepted as they are: the gems read by colour first at 16 px (the cut follows at 32); Void Violet's calmer body for the shop and the reveal's larger frame wait for their pieces. For later: every weapon icon will carry its class mark on its frame (`docs/design.md`, "Regalia: gear"), so the marks also work at an icon's corner. Fixes 1 to 5 are one round; the kit goes to the builder once they're in.
+
 
 ## AR4. Pip and Lyric
 

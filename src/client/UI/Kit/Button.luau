@@ -47,6 +47,11 @@ local function paint(button: TextButton, state: State)
 	end
 	button.BackgroundColor3 = colour
 	button.AutoButtonColor = false
+	-- A button at rest is the colour of the row it sits on: its edge is what says it can be pressed.
+	local edge = button:FindFirstChild("Edge") :: UIStroke?
+	if edge then
+		edge.Enabled = not state.Primary and not state.Disabled
+	end
 	state.Label.Text = if state.Pending then PENDING elseif state.Disabled then state.Disabled else state.Text
 	state.Label.TextColor3 = if state.Disabled then Theme.Colour.Disabled else Theme.Colour.Text
 	button:SetAttribute("Disabled", state.Disabled or "")
@@ -85,6 +90,12 @@ function Button.new(props: Props): TextButton
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
 	corner.Parent = button
+	local edge = Instance.new("UIStroke")
+	edge.Name = "Edge"
+	edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	edge.Color = Theme.Colour.Line
+	edge.Thickness = Theme.Size.Edge
+	edge.Parent = button
 	local label = Text.new({
 		Name = "Label",
 		Size = props.TextSize or Theme.Text.Body,

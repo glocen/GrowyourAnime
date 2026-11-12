@@ -27,6 +27,7 @@ local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
+local Layers = require(UI.Layers)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
@@ -88,6 +89,16 @@ local function screenButton(screen: string, list: string, row: string): TextButt
 	local found = scroll and scroll:FindFirstChild(row)
 	local button = found and found:FindFirstChild("Action")
 	return if button and button:IsA("TextButton") then button else nil
+end
+
+-- How many shards of `def` wait ready to open, in the save's copy.
+local function readyCount(def: string): number
+	local view = ProfileController.Get()
+	local count = 0
+	for _, work in (if view then view.Base.Ready else {}) do
+		count += if work.Def == def then 1 else 0
+	end
+	return count
 end
 
 -- The UI lint on whatever shows now.
@@ -780,22 +791,14 @@ return {
 				return now ~= nil and (now.Bag.Shards[shard] or 0) == held
 			end))
 			t.Server("BaseSkip", SKIP_ALL)
-			local at = 0
 			t.Check("it breaks", waitFor(t, ANSWER, function(): boolean
-				local now = ProfileController.Get()
-				for index, work in (if now then now.Base.Ready else {}) do
-					if work.Def == shard then
-						at = index
-						return true
-					end
-				end
-				return false
+				return readyCount(shard) > 0
 			end))
 			t.Check("the Breaker's prompt says Open", waitFor(t, 1, function(): boolean
 				local prompt = BaseController.Parts().BreakerPrompt :: ProximityPrompt?
 				return prompt ~= nil and prompt.ActionText == "Open"
 			end))
-			local open = screenButton("Base", "Breaker", `Ready{at}`)
+			local open = screenButton("Base", "Breaker", `Ready_{shard}`)
 			t.Check("the screen offers Open on it", open ~= nil)
 			if open == nil then
 				Screen.Close()
@@ -811,6 +814,107 @@ return {
 			BaseController.Dismiss()
 			t.Check("it closes", BaseController.Revealed() == nil)
 			Screen.Close()
+		end,
+	},
+	{
+		Name = "Base: identical shards ready to open share one row with their count, and every row's name shows whole",
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+			if view == nil or view.Progress.Starter == "" then
+				return
+			end
+			local shard = "lanternrow_standard" -- the longest shard name the game has: "Lantern Row shard"
+			local before = readyCount(shard)
+			local held = view.Bag.Shards[shard] or 0
+			t.Server("BaseGive", shard, 2)
+			t.Check("the server gives two", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 2
+			end))
+			for _ = 1, 2 do
+				t.Check("each goes into the Breaker", ProfileController.Act("AddShard", { Shard = shard }).Ok == true)
+			end
+			t.Server("BaseSkip", SKIP_ALL)
+			t.Check("both break", waitFor(t, ANSWER, function(): boolean
+				return readyCount(shard) == before + 2
+			end))
+			local count = readyCount(shard)
+			BaseController.Open()
+			t.Wait(0.1) -- laid out
+			local frame = Screen.Frame("Base")
+			local list = frame and frame:FindFirstChild("Breaker", true)
+			local rows = 0
+			for _, row in (if list then list:GetChildren() else {}) do
+				local label = row:FindFirstChild("Label") :: TextLabel?
+				rows += if string.find(row.Name, "^Ready") and label and label.Text == Read.ShardName(shard) then 1 else 0
+			end
+			t.Check("they share one row", rows == 1, `{rows} rows for {count} ready`)
+			local row = list and list:FindFirstChild(`Ready_{shard}`)
+			local detail = row and row:FindFirstChild("Detail") :: TextLabel?
+			t.Check("its second line gives the count", detail ~= nil and detail.Text == `Ready to open · {count}`, if detail then detail.Text else "no second line")
+			-- A name truncates rather than overrun, so the lint passes it either way: here it must not be cut at all, at
+			-- this screen's scale and at the smallest phone's, where text draws largest against its box (Text.Legible).
+			for _, at in { { Name = "this screen", Scale = nil }, { Name = "the smallest phone", Scale = Theme.Scale.Floor } } do
+				Layers.Force(at.Scale)
+				t.Wait(0.1) -- laid out again
+				local cut = {}
+				for _, label in (if frame then frame:GetDescendants() else {}) do
+					if label:IsA("TextLabel") and label.Name == "Label" and label.Visible and not label.TextFits then
+						table.insert(cut, label.Text)
+					end
+				end
+				t.Check(`no row's name is cut, at {at.Name}'s scale`, #cut == 0, table.concat(cut, ", "))
+				lintClean(t, `the Base screen with shards ready, at {at.Name}'s scale`)
+			end
+			Layers.Force(nil)
+			local open = screenButton("Base", "Breaker", `Ready_{shard}`)
+			t.Check("Open can be pressed", open ~= nil and Button.Press(open))
+			t.Check("it opens one of them", waitFor(t, ANSWER, function(): boolean
+				return BaseController.Revealed() ~= nil and readyCount(shard) == count - 1
+			end))
+			BaseController.Dismiss()
+			t.Check("and the row counts one fewer", waitFor(t, 1, function(): boolean
+				local again = screenButton("Base", "Breaker", `Ready_{shard}`)
+				local line = again and (again.Parent :: Instance):FindFirstChild("Detail") :: TextLabel?
+				return line ~= nil and line.Text == (if count - 1 > 1 then `Ready to open · {count - 1}` else "Ready to open")
+			end))
+			Screen.Close()
+			-- Leaves the Breaker as it found it: the rest of what this case broke, opened.
+			while readyCount(shard) > before do
+				local current = ProfileController.Get()
+				local at = 0
+				for index, work in (if current then current.Base.Ready else {}) do
+					if at == 0 and work.Def == shard then
+						at = index
+					end
+				end
+				if ProfileController.Act("Open", { Index = at }).Ok ~= true then
+					break
+				end
+			end
+		end,
+	},
+	{
+		Name = "Base: the world's plates step back while a screen is open, and come back when it closes",
+		Run = function(t: any)
+			local layer = Layers.Get("World")
+			Screen.Close()
+			t.Wait(0.1) -- a frame of the plates' step
+			t.Check("the world's layer shows with no screen open", layer.Visible)
+			for _, name in { "Base", "Voidkin" } do
+				local hud = HudController.Parts()
+				t.Check(`the dock opens {name}`, Button.Press(hud[name] :: TextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == name
+				end))
+				t.Check(`the world's layer hides while {name} is open`, waitFor(t, 0.5, function(): boolean
+					return not layer.Visible
+				end))
+				Screen.Close()
+				t.Check(`and shows again once {name} closes`, waitFor(t, 0.5, function(): boolean
+					return layer.Visible
+				end))
+			end
 		end,
 	},
 	{
@@ -862,6 +966,53 @@ return {
 			if previous ~= pick.Id then
 				ProfileController.Act("SetWorker", { Bay = 1, Voidkin = previous })
 			end
+		end,
+	},
+	-- For a capture from the player's camera: run "arrives on their own plot" first, then these, then screen_capture.
+	{
+		Name = "Capture: the Base screen open with every kind of row",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			if view == nil or view.Progress.Starter == "" then
+				t.Check("the first shard is chosen", false)
+				return
+			end
+			local standard, named = "lanternrow_standard", "named_watt"
+			local function add(shard: string, n: number)
+				t.Server("BaseGive", shard, n)
+				waitFor(t, ANSWER, function(): boolean
+					local now = ProfileController.Get()
+					return now ~= nil and (now.Bag.Shards[shard] or 0) >= n
+				end)
+				for _ = 1, n do
+					ProfileController.Act("AddShard", { Shard = shard })
+				end
+			end
+			if readyCount(standard) < 2 then
+				add(standard, 2 - readyCount(standard))
+			end
+			if readyCount(named) < 1 then
+				add(named, 1)
+			end
+			t.Server("BaseSkip", SKIP_ALL)
+			add(standard, 3) -- two counting down, one in line
+			t.Server("BaseSkip", 10)
+			t.Server("BaseGive", standard, 2) -- and two in the bag
+			t.Wait(0.5)
+			BaseController.Open()
+			t.Check("the Base screen is open", Screen.Current() == "Base")
+		end,
+	},
+	{
+		Name = "Capture: the plot's plates, no screen open",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			Screen.Close()
+			BaseController.Dismiss()
+			t.Check("no screen is open", Screen.Current() == nil)
 		end,
 	},
 }

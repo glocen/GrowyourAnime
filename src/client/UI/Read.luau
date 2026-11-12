@@ -64,13 +64,13 @@ function Read.VoidkinName(owned: Profile.OwnedVoidkin): string
 	return if row then row.Name else owned.Def
 end
 
--- "Common · Strength · Warrior · Fire"
-function Read.VoidkinLine(def: string): string
+-- "Common · Strength · Warrior · Fire"; "Strength · Warrior · Fire" when `rarity` is false.
+function Read.VoidkinLine(def: string, rarity: boolean?): string
 	local row = Voidkin.ById[def]
 	if row == nil then
 		return ""
 	end
-	local parts = { row.Rarity, row.Type, row.Class }
+	local parts = if rarity == false then { row.Type, row.Class } else { row.Rarity, row.Type, row.Class }
 	if row.Element ~= "" then
 		table.insert(parts, row.Element)
 	end

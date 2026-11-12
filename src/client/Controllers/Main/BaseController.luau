@@ -48,8 +48,14 @@ local STARTER_SIZE = Vector3.new(1.2, 2.2, 1.2)
 local STARTER_SPIN = 0.6 -- radians a second each waiting shard turns
 local CHOOSE_HOLD = 0.4 -- seconds a starter's prompt is held: a choice for good
 local PLATE_LINE = 20 -- authored pixels a plate's line takes
-local PLATE_WIDTH = 170
-local SCREEN = Vector2.new(600, 320)
+-- Each plate as wide as its longest line at the smallest scale, where text draws at 17 authored (Text.Legible):
+-- "Lantern Row shard · 1 min 59 s" is 222, "Bay 2 · nobody works here" 193, "Battery 600 / 600" 126 (measured 2026-11-12).
+local BREAKER_WIDTH = 232
+local BAY_WIDTH = 204
+local BATTERY_WIDTH = 140
+-- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
+-- against "Intelligence · Mage · Fire" at 178 and "Chamber 2 · 1 min 59 s" at 164.
+local SCREEN = Vector2.new(660, 320)
 
 -- What a refusal says to the player, by its code (Rules.Base, Rules.Collection).
 local REASON: { [string]: string } = {
@@ -120,8 +126,8 @@ local function prompt(parent: Instance, name: string, object: string, actionText
 end
 
 -- A plate over `anchor`: a panel of `lines` text lines, filled by the caller.
-local function plate(name: string, anchor: Part, lines: number): Frame
-	local frame = World.Plate(name, Vector2.new(PLATE_WIDTH, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
+local function plate(name: string, anchor: Part, lines: number, width: number): Frame
+	local frame = World.Plate(name, Vector2.new(width, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
 		return if anchor.Parent then anchor.Position else nil
 	end, REACH)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
@@ -204,7 +210,8 @@ local function breakerRows(list: ScrollingFrame, view: Profile.View, now: Read.B
 			local holds = Shards.ById[id].Holds
 			add({
 				Name = id,
-				Text = `{Voidkin.ById[holds].Name} · {Read.VoidkinLine(holds)}`,
+				Text = Voidkin.ById[holds].Name,
+				Detail = Read.VoidkinLine(holds, false), -- the three are Common: the rarity tells nothing between them
 				Action = "Choose",
 				Primary = true,
 				OnPress = function()
@@ -214,25 +221,49 @@ local function breakerRows(list: ScrollingFrame, view: Profile.View, now: Read.B
 		end
 		return
 	end
-	for index, work in view.Base.Ready do
-		add({ Name = `Ready{index}`, Text = `Ready · {Read.ShardName(work.Def)}`, Colour = Theme.Colour.Ready, Action = "Open", Primary = true, OnPress = function()
-			openShard(index)
-		end })
+	-- Identical shards ready to open share one row with their count; Open opens the first of them in the save's order.
+	local kinds: { string } = {}
+	local counts: { [string]: number } = {}
+	for _, work in view.Base.Ready do
+		if counts[work.Def] == nil then
+			table.insert(kinds, work.Def)
+		end
+		counts[work.Def] = (counts[work.Def] or 0) + 1
+	end
+	for _, def in kinds do
+		local count = counts[def]
+		add({
+			Name = `Ready_{def}`,
+			Text = Read.ShardName(def),
+			Detail = if count > 1 then `Ready to open · {count}` else "Ready to open",
+			Colour = Theme.Colour.Ready,
+			Action = "Open",
+			Primary = true,
+			OnPress = function()
+				local current = ProfileController.Get()
+				for index, work in (if current then current.Base.Ready else {}) do
+					if work.Def == def then
+						openShard(index)
+						return
+					end
+				end
+			end,
+		})
 	end
 	for index, chamber in now.Data.Base.Chambers do
 		local work = chamber.Work
 		if work then
-			local prefix = `{index} · {Read.ShardName(work.Def)}`
-			local row = add({ Name = `Chamber{index}`, Text = `{prefix} · {Read.Seconds(Read.Left(now, work))}`, Action = "Take out", OnPress = function()
+			local prefix = `Chamber {index}`
+			local row = add({ Name = `Chamber{index}`, Text = Read.ShardName(work.Def), Detail = `{prefix} · {Read.Seconds(Read.Left(now, work))}`, Action = "Take out", OnPress = function()
 				act("TakeOut", { Chamber = index })
 			end })
-			table.insert(countdowns, { Label = row:FindFirstChild("Label") :: TextLabel, Chamber = index, Prefix = prefix })
+			table.insert(countdowns, { Label = row:FindFirstChild("Detail") :: TextLabel, Chamber = index, Prefix = prefix })
 		else
-			add({ Name = `Chamber{index}`, Text = `{index} · empty`, Colour = Theme.Colour.TextDim })
+			add({ Name = `Chamber{index}`, Text = `Chamber {index} · empty`, Colour = Theme.Colour.TextDim })
 		end
 	end
 	for index, work in now.Data.Base.Line do
-		add({ Name = `Line{index}`, Text = `Waiting · {Read.ShardName(work.Def)}`, Colour = Theme.Colour.TextDim })
+		add({ Name = `Line{index}`, Text = Read.ShardName(work.Def), Detail = "Waiting in line", Colour = Theme.Colour.TextDim })
 	end
 end
 
@@ -252,7 +283,8 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 			local here = current == owned.Id
 			add({
 				Name = owned.Id,
-				Text = `{Read.VoidkinName(owned)} · Lv {owned.Level} · {Read.Rate(Breaker.Output(owned))}`,
+				Text = Read.VoidkinName(owned),
+				Detail = `Lv {owned.Level} · {Read.Rate(Breaker.Output(owned))}`,
 				Action = "Work",
 				Primary = true,
 				Disabled = if here then "Here" elseif role == "Lead" then "Leading" else nil,
@@ -286,17 +318,17 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	end
 	table.sort(shards)
 	for _, id in shards do
-		add({ Name = id, Text = `{Read.ShardName(id)} ×{view.Bag.Shards[id]}`, Action = "Add", Disabled = if view.Progress.Starter == "" then "First, choose" else nil, OnPress = function()
+		add({ Name = id, Text = Read.ShardName(id), Detail = `{view.Bag.Shards[id]} in the bag`, Action = "Add", Disabled = if view.Progress.Starter == "" then "First, choose" else nil, OnPress = function()
 			act("AddShard", { Shard = id })
 		end })
 	end
 	if #shards == 0 then
-		add({ Name = "Bag", Text = "No shards: they drop on Lantern Row", Colour = Theme.Colour.TextDim })
+		add({ Name = "Bag", Text = "No shards yet", Detail = "They drop on Lantern Row", Colour = Theme.Colour.TextDim })
 	end
 	for index, bay in view.Base.Bays do
 		local worker = if bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
-		local text = if worker then `Bay {index} · {Read.VoidkinName(worker)} · {Read.Rate(Breaker.Output(worker))}` else `Bay {index} · nobody works here`
-		add({ Name = `Bay{index}`, Text = text, Action = "Set", OnPress = function()
+		local detail = if worker then `{Read.VoidkinName(worker)} · {Read.Rate(Breaker.Output(worker))}` else "Nobody works here"
+		add({ Name = `Bay{index}`, Text = `Bay {index}`, Detail = detail, Action = "Set", OnPress = function()
 			pickingBay = index
 			build()
 		end })
@@ -307,7 +339,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 		end
 	end
 	local stored = now.Data.Base.Battery
-	add({ Name = "Battery", Text = `Battery {Read.Number(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {Read.Rate(now.Rates.Net)}`, Colour = Theme.Colour.Electricity })
+	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Number(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {Read.Rate(now.Rates.Net)}`, Colour = Theme.Colour.Electricity })
 end
 
 build = function()
@@ -400,10 +432,10 @@ end
 
 -- The plot -------------------------------------------------------------------------------------------------------------
 
-local function spotFor(marker: Instance, name: string, up: number, lines: number): Spot
+local function spotFor(marker: Instance, name: string, up: number, lines: number, width: number): Spot
 	local at = Markers.At(marker).Position + Vector3.new(0, up, 0)
 	local anchor = anchorAt(name, at)
-	return { Marker = marker, Anchor = anchor, Prompt = nil, Plate = plate(name, anchor, lines) }
+	return { Marker = marker, Anchor = anchor, Prompt = nil, Plate = plate(name, anchor, lines, width) }
 end
 
 local function stale(spot: Spot?, marker: Instance?): boolean
@@ -438,7 +470,7 @@ local function find()
 	end
 	clearAll()
 	plot = number
-	local b = spotFor(breakerMarker, "Breaker", BREAKER_UP, 4)
+	local b = spotFor(breakerMarker, "Breaker", BREAKER_UP, 4, BREAKER_WIDTH)
 	b.Prompt = prompt(b.Anchor, "NL_Breaker", "Void Breaker", "Breaker")
 	;(b.Prompt :: ProximityPrompt).Triggered:Connect(function()
 		local view = ProfileController.Get()
@@ -450,10 +482,10 @@ local function find()
 	end)
 	breaker = b
 	if batteryMarker then
-		battery = spotFor(batteryMarker, "Battery", BAY_UP, 1)
+		battery = spotFor(batteryMarker, "Battery", BAY_UP, 1, BATTERY_WIDTH)
 	end
 	for index, marker in bayMarkers do
-		local spot = spotFor(marker, `Bay{index}`, BAY_UP, 1)
+		local spot = spotFor(marker, `Bay{index}`, BAY_UP, 1, BAY_WIDTH)
 		bays[index] = spot
 	end
 	BaseController.Refresh()

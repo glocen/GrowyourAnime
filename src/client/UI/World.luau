@@ -1,13 +1,15 @@
 --!strict
 -- World (client): plates and numbers placed over points in the world, drawn on the World layer and moved every frame
 -- (handbook/visuals/ui.md, "The layer structure": a BillboardGui isn't drawn by Studio's screen capture, so it can't be
--- reviewed). A plate hides while its point is behind the camera, farther than its reach, or gone.
+-- reviewed). A plate hides while its point is behind the camera, farther than its reach, or gone. The whole layer steps
+-- back while a screen is open: the screen has the player's attention, and the world's labels would crowd its edges.
 --   World.Plate(name, size, where, reach?)   a frame over where() (a world position, or nil to hide); size authored
 --   World.Remove(plate)
 
 local RunService = game:GetService("RunService")
 
 local Layers = require(script.Parent.Layers)
+local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
@@ -33,8 +35,10 @@ function World.Remove(frame: Frame)
 end
 
 RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value + 2, function()
+	local layer = Layers.Get("World")
+	layer.Visible = Screen.Current() == nil
 	local camera = workspace.CurrentCamera
-	if camera == nil then
+	if camera == nil or not layer.Visible then
 		return
 	end
 	local viewport = camera.ViewportSize

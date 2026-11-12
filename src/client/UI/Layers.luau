@@ -29,8 +29,12 @@ Layers.Changed = Signal.new()
 local roots: { [string]: Frame } = {}
 local scales: { UIScale } = {}
 local scale = 1
+local forced: number? = nil -- a test's scale, in place of the screen's
 
 local function fit(): number
+	if forced then
+		return forced
+	end
 	local camera = workspace.CurrentCamera
 	local height = if camera then camera.ViewportSize.Y else Theme.Author.Y
 	local small = tostring((GuiService :: any).ViewportDisplaySize) == "Enum.DisplaySize.Small"
@@ -51,6 +55,12 @@ end
 
 function Layers.Scale(): number
 	return scale
+end
+
+-- For tests: every layer drawn at `value` (Theme.Scale.Floor is the smallest phone), or fitted to the screen again (nil).
+function Layers.Force(value: number?)
+	forced = value
+	refit()
 end
 
 function Layers.Get(name: Name): Frame

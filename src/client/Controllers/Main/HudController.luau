@@ -103,16 +103,16 @@ local function voidkinScreen()
 	local list = Row.List(body, "List")
 	local roster = Read.Roster(view)
 	if #roster == 0 then
-		Row.new({ Parent = list, Order = 1, Text = "No Voidkin yet: break a shard at the Breaker", Colour = Theme.Colour.TextDim })
+		Row.new({ Parent = list, Order = 1, Text = "No Voidkin yet", Detail = "Break a shard at the Breaker", Colour = Theme.Colour.TextDim })
 	end
 	for index, owned in roster do
 		local role = Read.Role(view, owned.Id)
-		local line = `{Read.VoidkinName(owned)} · Lv {owned.Level}{if role ~= "" then " · " .. role else ""}`
 		Row.new({
 			Name = owned.Id,
 			Parent = list,
 			Order = index,
-			Text = line,
+			Text = Read.VoidkinName(owned),
+			Detail = `Lv {owned.Level}{if role ~= "" then " · " .. role else ""}`,
 			Action = "Lead",
 			Disabled = if role == "Lead" then "Leading" elseif role ~= "" then "At work" else nil,
 			OnPress = function()

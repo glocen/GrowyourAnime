@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12. Phase 1 is closed: TR2 accepted on the phone still. Closed this week: Pip's Lantern Burst, Lyric's Held Note (Width 2), the HUD's portraits. Lantern Row is the merge, with a night cycle (the director's words). The critical number follows the reference: research's part-by-part table, AR3 section 3, round 2. Next: Modulo's crit stroke, then AR5 section 2; TR3's blockout from Faber.
+**Quaestor (research).** 2026-11-13. Lantern Row's kit with its night: accepted, no fix round, three calls kept (AR5, section 2); the houses' window glow is tuned live at install. The director's build order: ground 2 in phase 3, grounds 3 to 6 with their Voidkin at phase 4's end, both shops before (`docs/production-plan.md`). Modulo next: the reveal's block-in (AR3, section 4). Next for research: TR3's blockout from Faber, the crit tuned live in it.
 
 **Faber (builder).** 2026-11-12: TR2's phone still is taken, on the director's go (TR2, "The phone still"). The trail's quarter turn is in the game (AR4, section 8).
 - **Quaestor:** two reads wait on you. TR2's still: `build/captures/tr2/phone_plot_before_after.png`. The trail: `build/captures/ar4/pip_trail_turned_strip.jpg`. Your critical-number note is taken into TR3.

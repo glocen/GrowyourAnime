@@ -1081,7 +1081,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2). The HUD's portraits, the silhouette and the critical's sweep are made, past the content check, and delivered to `build/handoff/UI/hud/` for research's verdict (section 3).
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2). The HUD's portraits, the silhouette and the critical's sweep are made, past the content check, and delivered to `build/handoff/UI/hud/` for research's verdict (section 3). The reveal's block-in is requested, 2026-11-13 (section 4).
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -1380,6 +1380,22 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
 - **Accepted, with no redraw.** What's left is value, not shape, and the game tints the stroke, so the builder exposes the stroke's tint and opacity in Config and research tunes them live in TR3 over both ends of the street. The start: a deeper burnt orange going brown, about `#B5561A`, at 70%, so it holds as a darker mark on pink and a warm one on dark.
 - **The digits** read close to the reference. If the take shows them light beside it, the lever is the outline's weight, also live.
 - **The landing's rounded end:** at play size it doesn't show. Accepted.
+
+### 4. The reveal: the block-in (research's request, 2026-11-13)
+
+For Modulo, now, so the art is ready when the reveal's ceremony is written for the builder after TR3. The game's signature moment (`docs/design.md`, "Shards and the Void Breaker"; `docs/ui.md`, "The reveal"), so it gets the time it needs, named here: a block-in first, explored fast, judged in motion.
+
+**Feel line, proposed for Modulo to answer:** you tap the shard and it cracks along its own lines, light leaking through, until it splits and a dark silhouette stands in the glow; the colours flood in, the name lands on the hero pose, and from that beat you know how rare it is.
+
+**Delivers,** in grey and stand-ins, no finish:
+- **The Void Shard** as one block-in form for the three grades (Standard, Enriched, Prismatic), and its own lines where it cracks. One shard is seen in the world's drop, the bag, the Breaker's chambers and the reveal, so the form holds at all four sizes.
+- **The beats,** with times in seconds: the crack, the split, the silhouette, the colours, the name. For Common and for Legendary, each as a strip from the full-screen camera at phone size, on Void Violet. Rarer is longer and louder, never slower to skip; the skip comes after the first second.
+- **Rarity's read** before the name: by light, colour and the frame's shape (AR3's ladder), never a coloured word. Mythical's light is reddish (the director, 2026-11-12).
+- **The larger frame** the reveal shows (section 2's note 5), as a block-in cut.
+- Rook's reveal clip ends held on the raised ram (AR1): the silhouette and the name land on it.
+- **Your pick** if you draw variants, and what's wrong in each.
+
+**Checks:** the content check; research's verdict (fresh eyes beside it); then the art sheet, then the builder's engine pass in the reveal's TR. **Time it:** hours, here. **Waits:** sounds (the builder's, to research's cues) and the screen's build, both in the reveal's TR.
 
 ## AR4. Pip and Lyric
 
@@ -2427,7 +2443,7 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. The kit's full list is written when the direction below is picked. Research's request, 2026-11-12, started early: Modulo's AR4 deliveries are in, and the direction is taste work for Fable's last hours.
 
-**Status:** section 1's round 2 sheet delivered, for research's verdict and the director's pick (Modulo, 2026-11-12).
+**Status:** the look is the merge, the director's pick (section 1). Lantern Row's kit, with its night, is delivered and accepted by research, 2026-11-13, with no fix round, for the builder's install in its own TR (section 2). Nothing is uploaded.
 
 ### 1. Lantern Row's look: the direction sheet
 
@@ -2618,6 +2634,14 @@ The pieces are 16 meshes on 3 pairs of pictures, so they batch. The strings are 
 **Content check:** PASS, 2026-11-13, on its second round, for the kit's maps and meshes and for the twelve sky faces. Round 1 was a BLOCK on two things, both fixed in the script: the seal sat on a red field (now a cream disc on a dark wood plaque, wider than the gate's red pillar), and each lantern's tassel was a red point (now a mustard tuft with a square end). Its conditions: the pass covers the files as they are, so a re-run that changes the script's pictures, the seed or a colour needs a new check; upload only `maps/`, the twelve `sky/LanternRow_Sky*.png` faces and the meshes, never the sheets; on the square's floor the four bars never run through the ring. The checker saw the sheet's 64 px tiles at about 36 px and didn't open the mesh files.
 
 **Not done:** research's verdict; the upload; the install; a device take; the keeper's ring past the gate, which the request doesn't name. **Hours:** about 3, by my count of the runs, not a stopwatch.
+
+**Research's verdict, 2026-11-13** (the three sheets and the four frames at full size; renders, so the final is at the builder's install, from both ends, with fresh eyes).
+- **Felt:** an anime festival night. The canopy runs down the street into the afterglow at dusk and into a blue tunnel of light at night, paper rides the air, and the fight stands on lit stone under the one warm light. Dusk and night read as two hours of one place, not two places.
+- **Tier:** competent, close to exceptional in mood. **The one bold thing:** the canopy narrowing to the street's end, now real pieces in one rhythm, a string over every pack.
+- **Accepted:** the five shown together; the four notes landed (the haze back toward the gate, pools painted in the paving's glow, each stall's own light with its red kept red, the lead's light under the hat); the plan's 13.33-stud bay; the budget, with the device take the builder's at install and the seven-lantern string as the lever if a device asks; the sky's 9 MB; the moon hidden from the gate's end.
+- **The three calls, all kept.** The houses: the skyline and its windows are the anime night. The square's canopy: the square's light, judged in a fight frame at install. StallB's dark roof: it breaks the red run, and its own lanterns carry it at night. The door leaf and the end post stay too.
+- **No fix round on the kit.** One note for the install, tuned live: the houses' windows burn as bright as the lanterns in the frames' top corners. Lower the houses' glow strength first (start at about two thirds). If the skyline still reads as a city, as B's did, half the windows go dark in the map, and that's a fix round.
+- **Judged at install, not here:** a Shade's edge by a hair (the floors' glow strength is the lever); the square's fight frame; the far paving between pools.
 
 ## AR6. Regalia's item art
 

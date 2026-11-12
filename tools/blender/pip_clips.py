@@ -782,8 +782,9 @@ def main():
             continue
         heard = io.StringIO()  # the export audits itself aloud: the pack's notes keep what it said
         with contextlib.redirect_stdout(heard):
-            r6.export(rig, out / f"Pip_{name}.json", "Pip", name, take.start, take.start + take.end, markers=take.markers,
-                      source="tools/blender/pip_clips.py", extra={"Loop": take.loop})
+            # the Name is the game's: Author.SaveBaked reads Anim_Pip<Clip> and checks the clip is named the same
+            r6.export(rig, out / f"Pip_{name}.json", "Pip", f"Pip{name}", take.start, take.start + take.end,
+                      markers=take.markers, source="tools/blender/pip_clips.py", extra={"Loop": take.loop})
         print(heard.getvalue(), end="")
         if mode == "audit":
             continue

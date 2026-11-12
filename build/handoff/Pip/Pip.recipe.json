@@ -10,13 +10,13 @@
  },
  "texels_per_stud": 58,
  "emissive": {
-  "tint": "#FF8A3D",
+  "tint": "#FFFFFF",
   "cold": 1.2,
   "hot": 3.0,
   "pieces": [
    "Pip_Lamp"
   ],
-  "note": "The mask covers the lantern's flame and nothing else. It burns at cold as it floats and goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever."
+  "note": "The mask covers the lantern's flame and nothing else. It burns at cold as it floats and goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever. The tint is white because Roblox multiplies the glow by the colour map, which already holds the flame's orange: an orange tint over it turns the flame red."
  },
  "pieces": [
   {

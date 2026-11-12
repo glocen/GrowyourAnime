@@ -9,7 +9,8 @@
  },
  "texels_per_stud": 69,
  "emissive": {
-  "strength": 2.0,
+  "strength": 32.0,
+  "mask_strength": 12.0,
   "tints": {
    "Strength": "#EA4B4F",
    "Endurance": "#F4902A",
@@ -18,7 +19,7 @@
    "Technique": "#42CC7E"
   },
   "mask_tint": "#FFE2B8",
-  "note": "One atlas for the five types. The body's five pieces take the type as EmissiveTint. The mask, its own MeshPart, takes mask_tint whatever the type: its paper glows faintly and its cuts are lit in that warm white, so it reads as paper at dusk. The glow mask is 1 on the lit edges and the masks' cuts, up to 0.12 on the cloth and 0.2 on the masks' paper. The tints are the sheet's proposal until AR3's gems fix them, and the mask's is tuned in the engine under the game's lighting."
+  "note": "One atlas for the five types. The body's five pieces take the type as EmissiveTint and strength as EmissiveStrength. The mask, its own MeshPart with its own SurfaceAppearance, takes mask_tint whatever the type and mask_strength: its paper glows faintly and its cuts are lit in that warm white, so it reads as paper at dusk. Roblox draws (mask x strength x tint + light) x colour map, so the glow mask is written for these two strengths and this colour map: change a strength and every glow scales with it, upload the two maps together. The colour map is a neutral grey under the lit edges and loses its violet where light comes through the cloth. The tints are the sheet's proposal until AR3's gems fix them, and the mask's is tuned in the engine under the game's lighting."
  },
  "pieces": [
   {

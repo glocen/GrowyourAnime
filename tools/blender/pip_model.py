@@ -143,9 +143,13 @@ def export(made, paths, out, density):
                "the Head's face decal is removed. His face is on the Head piece.",
         "maps": {kind: path.name for kind, path in paths.items()},
         "texels_per_stud": round(density),
-        "emissive": {"tint": ps.PALETTE["Flame"], "cold": COLD, "hot": HOT, "pieces": ["Pip_Lamp"],
+        # White: Roblox draws (mask x strength x tint + light) x colour map, and the colour map under the flame is
+        # the flame's own orange. Tinted orange as well, it would come out red.
+        "emissive": {"tint": "#FFFFFF", "cold": COLD, "hot": HOT, "pieces": ["Pip_Lamp"],
                      "note": "The mask covers the lantern's flame and nothing else. It burns at cold as it floats and "
-                             "goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever."},
+                             "goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever. "
+                             "The tint is white because Roblox multiplies the glow by the colour map, which already "
+                             "holds the flame's orange: an orange tint over it turns the flame red."},
         "pieces": pieces,
         "motors": {"Hat": {"note": "Turns about its pivot on the head: it lags every move and lifts on the send. Its "
                                    "rest tilt is in the mesh. CastShadow off on this piece, or the brim puts his face "

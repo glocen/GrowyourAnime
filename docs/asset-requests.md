@@ -197,6 +197,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 - **Content re-check, 2026-11-12, on the sheet without the wake:** PASS, same conditions (the scorch no redder, on the floor only; hard edges; a new shape, tint or texture, or the wake back, needs a fresh check; the front and three-quarter headings still owed on the replay).
 - **Delivered** to `build/handoff/Rook/fx/`: `haymaker_bar.png` and `haymaker_art.png`. Faber: the replay is yours; I join it in the same session when you say (`/ga-action`, step 4).
 - **Hours:** the art sheet, 0.4.
+- **Found on AR2, not changed here (Modulo, 2026-11-12):** Roblox multiplies a glow by the colour map (AR2, section 4), and Rook's sheet drew the lit ram in the tint alone. By the formula, the knuckles and the rod (ember over steel) come out about half as bright as the sheet at the recipe's 2.5, and the heat band (ember over ember) redder than ember. Nothing is rebaked while the Haymaker's final is with research: the fix is AR2's (a neutral tone under the lit parts, the mask rescaled, the two maps uploaded again), about half an hour, when the builder and research say. Until then the builder's live strength covers the brightness, not the band's hue.
 
 ## AR2. The Shade, one rig for every enemy
 
@@ -206,7 +207,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. Open: the burst's light and paper, an effect built with the builder; the elite's second mask.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): the two maps wait for the builder's upload. Open: the burst's light and paper, an effect built with the builder; the elite's second mask.
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -391,6 +392,27 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
   - The engine checks are the content check's, above and in section 2.
 - **Not done:** the burst's light and paper (an effect, with the builder, with its own content check); the elite's second mask. Nothing is uploaded or seen in the engine.
 - **Hours:** the clips, 1.2, the two rounds and the checks' fixes included.
+
+### 4. The glow as Roblox draws it, and the clips' names (Modulo, 2026-11-12)
+
+The builder's notice from the engine: Roblox multiplies a surface's glow by its colour map, `(mask x EmissiveStrength x EmissiveTint + light) x colour map` ([the announcement](https://devforum.roblox.com/t/studio-beta-emissive-masks/4034414)), and the Shade's colour map was the coat's dark purple under every lit edge. The model sheet had drawn the glow in the tint alone, so it showed a light the engine couldn't give.
+
+- **What changed**, in `tools/blender/shade_model.py`. The light is still designed as it was (1 on the lit edges and the cuts, to 0.12 on the cloth, 0.2 on a mask's paper). What's written is that light divided by the colour under it:
+  - the colour map is a neutral dark grey (`#505050`) under the body's lit edges, so each type's colour comes through whole and daylight doesn't wash the edge out, and near white (`#F0F0F0`) under the masks' cuts;
+  - the cloth loses its violet where light comes through it, and is lifted a little at the hems: through the violet, a Technique Shade's coat glowed teal, and a crevice's dark put the light out where it's meant to be most;
+  - no contact shading under a lit edge;
+  - two strengths in `Shade.recipe.json`: `strength` 32 on the body's five pieces, `mask_strength` 12 on a mask. The cloth under its glow is nearly black, so the body's is high; a mask's is lower so the faint glow on its pale paper keeps enough steps in 8 bits. Both are inside Studio's own slider (0 to 40).
+- **The sheet now draws the glow through the colour map**, as the engine does. Beside the sheet research read, I can't tell them apart at dusk or by day, in the five types or at 64 px. The meshes and the roughness map are byte for byte the ones delivered, so nothing but the two maps is uploaded again.
+- **The clips** carry the game's name (`Name` is `ShadeAttack`, as `Author.SaveBaked` checks) and their fades, the game's own from `Config.Animations.Fades`; Guard's (0.08 in, 0.15 out) and Lunge's (0.06, 0.15) are proposed, not judged in motion: the game doesn't play them yet. Every frame is as delivered. `Shade.clips.json` lists each clip's `Name` and `Fades`. Pip's clips carry `Pip<Clip>` the same way (frames as delivered); Rook's script does from its next export, and his delivered files stay as the builder imported them.
+- **Content check, 2026-11-12: PASS**, on the two maps as they upload and the sheet. Conditions:
+  1. The two maps upload together and replace both old ones; neither is ever paired with an old map.
+  2. The cloth stays faint only because the engine multiplies the glow by the colour map: the file's mask is near 0.9 at the hems.
+  3. A Strength Brawler is looked at in the engine at 64 px at first placement, on dark and on bright and with a leg lifted, before any public build. If the coat shows as a bright red streaked field instead of matching the sheet, it comes back.
+  4. The body's pieces take strength 32 and the type's tint; a mask takes `mask_strength` and `mask_tint` only, in any clip, effect or state. If a strength or the mask's tint is tuned live, look again at 64 px.
+  5. Section 2's other conditions stand. Both maps are logged in `docs/asset-log.md` at upload.
+- **Delivered** to `build/handoff/Shade/`: `Shade_Color.png`, `Shade_Emissive.png`, `Shade.recipe.json`, `shade_model_sheet.png`, and `clips/` (the nine JSON and `Shade.clips.json`). Faber: the two maps go up together, with the recipe's two strengths.
+- **What I see wrong:** nothing here is seen in the engine. The match is between two Blender pictures and Roblox's published formula; its tone mapping and bloom aren't in it, so the strengths are a start to tune there, both by the same factor. With the glow off, the cloth near the hems is grey-black, not violet-black. The same formula touches two more recipes: Pip's flame (AR4, section 2) and Rook's ram (AR1, section 5's last line).
+- **Hours:** about 0.8, four bakes and the content check included.
 
 ## AR3. The UI kit
 
@@ -732,6 +754,8 @@ Also: a hand shows inside each sleeve's end. The lantern floats a little lower a
     - In the engine: CastShadow off on the hat; the face read again under the brim from the player's camera in Lantern Row's dusk at 64 px; the eyes never lit, whatever light is put round the lantern.
     - The clips: condition 6 on a bare rig from the side and the three-quarter; the lantern's tumble never brings it onto or into his head or torso.
     - The effect: condition 5; the hot flame under the game's bloom read from every heading at 64 px, so the glow beside his head reads as a lantern and not as something coming off him; the tint stays `#FF8A3D`, never redder.
+
+**The flame's tint in the recipe is white (Modulo, 2026-11-12).** Roblox multiplies the glow by the colour map (AR2, section 4), and the colour map under the flame is already `#FF8A3D`: tinted orange as well, the flame would have come out red, against the condition above. `Pip.recipe.json` now gives `tint` `#FFFFFF`, so the flame is drawn in `#FF8A3D`; the maps and the strengths are unchanged, and the sheet already showed that colour. Not seen in the engine.
 
 **Hours:** the model, about 1.1, the two fixes and the content check's included.
 

@@ -3,6 +3,11 @@
   "Clips": {
     "Idle": {
       "File": "Shade_Idle.json",
+      "Name": "ShadeIdle",
+      "Fades": [
+        0.2,
+        0.2
+      ],
       "Frames": 181,
       "Seconds": 3.0,
       "Loop": true,
@@ -11,6 +16,11 @@
     },
     "Walk": {
       "File": "Shade_Walk.json",
+      "Name": "ShadeWalk",
+      "Fades": [
+        0.15,
+        0.15
+      ],
       "Frames": 49,
       "Seconds": 0.8,
       "Loop": true,
@@ -30,6 +40,11 @@
     },
     "Attack": {
       "File": "Shade_Attack.json",
+      "Name": "ShadeAttack",
+      "Fades": [
+        0.06,
+        0.15
+      ],
       "Frames": 67,
       "Seconds": 1.1,
       "Loop": false,
@@ -43,6 +58,11 @@
     },
     "AttackLeft": {
       "File": "Shade_AttackLeft.json",
+      "Name": "ShadeAttackLeft",
+      "Fades": [
+        0.06,
+        0.15
+      ],
       "Frames": 67,
       "Seconds": 1.1,
       "Loop": false,
@@ -57,6 +77,11 @@
     },
     "Guard": {
       "File": "Shade_Guard.json",
+      "Name": "ShadeGuard",
+      "Fades": [
+        0.08,
+        0.15
+      ],
       "Frames": 97,
       "Seconds": 1.6,
       "Loop": false,
@@ -74,6 +99,11 @@
     },
     "Lunge": {
       "File": "Shade_Lunge.json",
+      "Name": "ShadeLunge",
+      "Fades": [
+        0.06,
+        0.15
+      ],
       "Frames": 97,
       "Seconds": 1.6,
       "Loop": false,
@@ -95,6 +125,11 @@
     },
     "Hit": {
       "File": "Shade_Hit.json",
+      "Name": "ShadeHit",
+      "Fades": [
+        0.03,
+        0.1
+      ],
       "Frames": 25,
       "Seconds": 0.4,
       "Loop": false,
@@ -103,6 +138,11 @@
     },
     "HitLeft": {
       "File": "Shade_HitLeft.json",
+      "Name": "ShadeHitLeft",
+      "Fades": [
+        0.03,
+        0.1
+      ],
       "Frames": 25,
       "Seconds": 0.4,
       "Loop": false,
@@ -112,6 +152,11 @@
     },
     "Burst": {
       "File": "Shade_Burst.json",
+      "Name": "ShadeBurst",
+      "Fades": [
+        0.03,
+        0.05
+      ],
       "Frames": 35,
       "Seconds": 0.567,
       "Loop": false,

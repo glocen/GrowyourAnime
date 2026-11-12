@@ -492,8 +492,9 @@ def main():
         if mode == "poses":
             pose_sheet(scene, cams, take, out)
             continue
-        r6.export(rig, out / f"Rook_{name}.json", "Rook", name, take.start, take.start + take.end, markers=take.markers,
-                  source="tools/blender/rook_clips.py", extra={"Loop": take.loop})
+        # the Name is the game's: Author.SaveBaked reads Anim_Rook<Clip> and checks the clip is named the same
+        r6.export(rig, out / f"Rook_{name}.json", "Rook", f"Rook{name}", take.start, take.start + take.end,
+                  markers=take.markers, source="tools/blender/rook_clips.py", extra={"Loop": take.loop})
         if mode == "audit":
             continue
         arc_sheet(scene, rig, cams, take, out)

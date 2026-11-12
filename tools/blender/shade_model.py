@@ -8,9 +8,14 @@ blocks are hidden; and four masks, each one piece on the Head, of which a Shade 
 1024 px atlas: colour with the contact shading baked in, roughness, and a glow mask. The colour map holds no type
 colour: the type is the glow's tint, so one atlas serves all five.
 
-The glow mask is 1 on the lit edges and on the masks' cuts. On the coat, the sleeves and the legs it rises toward
-their lit edge, as light through paper: a lantern's hoops show in it as darker lines, and the paper's grain. The
-collar and the hollows stay dark.
+The light is designed first, as the sheet shows it: 1 on the lit edges and on the masks' cuts; on the coat, the
+sleeves and the legs it rises toward their lit edge, as light through paper: a lantern's hoops show in it as darker
+lines, and the paper's grain. The collar and the hollows stay dark.
+
+Roblox multiplies a surface's glow by its colour map: (mask x EmissiveStrength x EmissiveTint + light) x colour.
+So the glow mask that's written is that design divided by the colour under it (encode()), the colour map is a
+neutral tone under the lit edges, and the cloth loses its violet where light comes through it, or it would filter
+the type's colour. The body and the masks each have their own EmissiveStrength, in the recipe.
 
 Writes to <out_dir>: Shade_<Piece>.json (blcommon.export_mesh_json), Shade_<Map>.png, Shade.recipe.json,
 shade_model.blend, shade_model_sheet.png and shade_atlas_check.png. The shapes come from shade_sheet.build(), the
@@ -41,12 +46,19 @@ PIECES = [*BODY.values(), *(f"Mask{kind}" for kind in ss.MASKS)]
 SURFACES = {"Void": 0.92, "VoidLift": 0.9, "Paper": 0.82, "PaperShade": 0.86, "Ink": 0.55, "Glow": 0.6}
 LIT = ("Glow",)
 CLOTH = ("Void", "VoidLift")
-UNLIT = "#2A2440"  # a lit edge with its light out: the colour map's tone under the glow
+UNLIT = "#505050"  # the colour map under the body's lit edges: neutral, so the type's colour comes through whole,
+                   # and dark, so daylight doesn't wash the edge out
+CUT = "#F0F0F0"    # under a mask's cuts: they're lit white, and white by day
 GROUND = "Void"    # the colour map's tone past the islands
 SHADE = rm.SHADE
-HOT = 2.0          # the lit edges' EmissiveStrength
+LIGHT = 2.0        # a lit edge's light as designed: what the glow adds to the picture, in the type's colour
+HOT = 32.0         # the body's EmissiveStrength: high, because the cloth under its glow is nearly black
+MASK_HOT = 12.0    # a mask's: lower, so the faint glow on its pale paper keeps enough steps in 8 bits
 PAPER = ("Paper", "PaperShade")
-PAPER_GLOW = 0.2   # the glow mask on a mask's paper: at dusk it reads as paper, not slate (research's read of the model)
+PAPER_GLOW = 0.2   # the light on a mask's paper: at dusk it reads as paper, not slate (research's read of the model)
+NEUTRAL = 0.05     # the cloth's light at which its colour has lost all its violet
+FULL = 0.9         # the most the glow mask is asked for on the cloth: the colour under it is lifted to that
+LUMA = np.array((0.2126, 0.7152, 0.0722), dtype=np.float32)
 MASK_TINT = "#FFE2B8"  # a mask's own EmissiveTint, a warm white: its paper and its cuts. The body's tint is the type
 # The light through the cloth, by piece: (the lit edge's height, how far up it reaches, its most, the piece's own
 # middle in x). Studs, as the piece stands in the model. The legs glow less: they stand under the coat.
@@ -138,9 +150,35 @@ def through_paper(probe, cloth):
     return glow.astype(np.float32)
 
 
+def linear(c):
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def coded(c):
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * np.clip(c, 0, None) ** (1 / 2.4) - 0.055)
+
+
+def unviolet(colour, light):
+    """The colour map where light comes through the cloth: without its hue, and no darker than the body's strength
+    can light. The glow is drawn through this colour, so a violet coat would turn a green Shade's light teal, and a
+    crevice's dark would put the light out where it's meant to be most."""
+    lin = linear(colour[..., :3])
+    grey = (lin @ LUMA)[..., None]
+    w = np.clip(light / NEUTRAL, 0, 1)[..., None]
+    least = (light * LIGHT / (HOT * FULL))[..., None]
+    colour[..., :3] = coded(np.maximum(lin * (1 - w) + grey * w, least))
+
+
+def encode(light, colour, hot):
+    """The glow mask Roblox needs to draw the designed light: the light over the strength and over the colour map
+    under it. Where the colour is too dark for the strength, the mask stops at 1 and the light falls short."""
+    under = np.maximum(linear(colour[..., :3]) @ LUMA, 1e-4)
+    return np.clip(light * LIGHT / (hot * under), 0, 1)
+
+
 def bake(obj, out):
     """The maps, with the contact shading multiplied into the colour, the light through the cloth added to the
-    glow mask, and the strip's swatches painted in."""
+    light on the edges, the strip's swatches painted in, and the light encoded as Roblox's glow mask."""
     scene = bpy.context.scene
     world = bpy.data.worlds.new("Bake")
     scene.world = world
@@ -186,11 +224,17 @@ def bake(obj, out):
     ao = rm.pixels(extra["Shade"])[..., :1] ** 0.85
     images = {kind: bpy.data.images[f"Shade_{kind}"] for kind in paths}
     colour = rm.pixels(images["Color"])
-    colour[..., :3] *= SHADE + (1 - SHADE) * np.where(covered[..., None], ao, 1.0)
-    colour[~covered, :3] = rs.rgb(ss.PALETTE[GROUND])  # past the islands: one tone, never the shade's dark
     glow = rm.pixels(images["Emissive"])
+    lit = glow[..., :1] > 0.5  # no contact shading under a lit edge: the glow is drawn through the colour
+    colour[..., :3] *= SHADE + (1 - SHADE) * np.where(covered[..., None] & ~lit, ao, 1.0)
+    probe = rm.pixels(extra["Probe"])
+    on_mask = covered & (np.rint((probe[..., 0] * 100 - 5) / APART) >= len(BODY))
+    colour[lit[..., 0] & on_mask, :3] = rs.rgb(CUT)
+    colour[~covered, :3] = rs.rgb(ss.PALETTE[GROUND])  # past the islands: one tone, never the shade's dark
     cloth = covered & (rm.pixels(extra["Cloth"])[..., 0] > 0.5)
-    glow[..., :3] = np.maximum(glow[..., :3], through_paper(rm.pixels(extra["Probe"]), cloth)[..., None])
+    within = through_paper(probe, cloth)
+    unviolet(colour, within)
+    glow[..., :3] = np.maximum(glow[..., :3], within[..., None])
     paper = covered & (rm.pixels(extra["Paper"])[..., 0] > 0.5)
     glow[paper, :3] = np.maximum(glow[paper, :3], PAPER_GLOW)
     rows = int(STRIP * 0.8 * SIZE)
@@ -200,6 +244,13 @@ def bake(obj, out):
         code = UNLIT if name in LIT else ss.PALETTE[name]
         for kind, value in (("Color", rs.rgb(code)), ("Roughness", rough), ("Emissive", PAPER_GLOW if name in PAPER else 0.0)):
             maps[kind][:rows, x0:x1, :3] = value
+    on_mask[:rows] = True  # the swatches that glow are paper, and only a mask wears paper
+    light = glow[..., 0].copy()
+    glow[..., :3] = encode(light, colour, np.where(on_mask, MASK_HOT, HOT))[..., None]
+    short = (light > 0) & (glow[..., 0] >= 1) & covered
+    lost = 1 - (np.where(on_mask, MASK_HOT, HOT) * (linear(colour[..., :3]) @ LUMA))[short] / (light[short] * LIGHT)
+    print(f"glow mask: {short.sum()} texels stop at 1 ({100 * short.sum() / max(1, (light > 0).sum()):.1f}% of the lit), "
+          f"losing {100 * lost.mean() if short.any() else 0:.0f}% of their light on average")
     for kind, data in maps.items():
         images[kind].pixels.foreach_set(data.ravel())
         images[kind].save()
@@ -229,8 +280,8 @@ def split(obj):
 
 
 def baked(name, paths):
-    """What Roblox will draw: the maps on one surface, the glow mask in a type's colour. Returns the material and
-    the way to set its type and its strength."""
+    """What Roblox will draw: the maps on one surface, the glow mask in a type's colour and through the colour map,
+    as the engine multiplies it. Returns the material and the way to set its type and its strength."""
     m = bpy.data.materials.new(name)
     if not (m.node_tree and m.node_tree.nodes.get("Principled BSDF")):
         m.use_nodes = True
@@ -243,7 +294,13 @@ def baked(name, paths):
             node.image.colorspace_settings.name = "Non-Color"
         return node.outputs["Color"]
 
-    links.new(texture("Color", False), bsdf.inputs["Base Color"])
+    colour_map = texture("Color", False)
+    links.new(colour_map, bsdf.inputs["Base Color"])
+    tinted = nodes.new("ShaderNodeMix")
+    tinted.data_type, tinted.blend_type = "RGBA", "MULTIPLY"
+    tinted.inputs[0].default_value = 1.0
+    links.new(colour_map, tinted.inputs[6])
+    links.new(tinted.outputs[2], bsdf.inputs["Emission Color"])
     links.new(texture("Roughness", True), bsdf.inputs["Roughness"])
     strength = nodes.new("ShaderNodeMath")
     strength.operation = "MULTIPLY"
@@ -252,7 +309,7 @@ def baked(name, paths):
     m.diffuse_color = (0.62, 0.6, 0.58, 1)  # the clay, in Workbench
 
     def light(colour, hot=HOT):
-        bsdf.inputs["Emission Color"].default_value = rs.srgb(ss.TYPES.get(colour, colour))
+        tinted.inputs[7].default_value = rs.srgb(ss.TYPES.get(colour, colour))
         strength.inputs[1].default_value = hot
 
     return m, light
@@ -298,13 +355,17 @@ def export(made, paths, out, density):
                "The Head carries one mask and nothing else.",
         "maps": {kind: path.name for kind, path in paths.items()},
         "texels_per_stud": round(density),
-        "emissive": {"strength": HOT, "tints": ss.TYPES, "mask_tint": MASK_TINT,
-                     "note": "One atlas for the five types. The body's five pieces take the type as EmissiveTint. The mask, "
-                             "its own MeshPart, takes mask_tint whatever the type: its paper glows faintly and its cuts "
-                             "are lit in that warm white, so it reads as paper at dusk. The glow mask is 1 on the lit "
-                             f"edges and the masks' cuts, up to 0.12 on the cloth and {PAPER_GLOW} on the masks' paper. "
-                             "The tints are the sheet's proposal until AR3's gems fix them, and the mask's is tuned in "
-                             "the engine under the game's lighting."},
+        "emissive": {"strength": HOT, "mask_strength": MASK_HOT, "tints": ss.TYPES, "mask_tint": MASK_TINT,
+                     "note": "One atlas for the five types. The body's five pieces take the type as EmissiveTint and "
+                             "strength as EmissiveStrength. The mask, its own MeshPart with its own SurfaceAppearance, "
+                             "takes mask_tint whatever the type and mask_strength: its paper glows faintly and its "
+                             "cuts are lit in that warm white, so it reads as paper at dusk. Roblox draws (mask x "
+                             "strength x tint + light) x colour map, so the glow mask is written for these two "
+                             "strengths and this colour map: change a strength and every glow scales with it, upload "
+                             "the two maps together. The colour map is a neutral grey under the lit edges and loses "
+                             "its violet where light comes through the cloth. The tints are the sheet's proposal "
+                             "until AR3's gems fix them, and the mask's is tuned in the engine under the game's "
+                             "lighting."},
         "pieces": body,
         "masks": masks,
         "points": [{"name": "Chest", "on": "Torso", "at": rm.roblox((0, 0.6, 3.0)), "note": "where a hit lands"},
@@ -334,7 +395,7 @@ def review(joints, made, paths, recipe, out, facts):
     scene = bpy.context.scene
     look, light = baked("Shade_Baked", paths)
     mask_look, mask_light = baked("Shade_Mask", paths)
-    mask_light(MASK_TINT)
+    mask_light(MASK_TINT, MASK_HOT)
     for piece, o in made.items():
         bl.assign_only(o, look if piece in R6 else mask_look)
     bl.save_blend(out / "shade_model.blend")  # the pieces standing free in the model's frame, for the clips' rig
@@ -489,7 +550,8 @@ def main():
              f"one {SIZE} px atlas, {density:.0f} px per stud",
              "maps: colour, roughness, glow mask",
              "no extra joints: the mask rides the Head",
-             f"the glow: 1 on the lit edges, to {WITHIN['Torso'][2]} on the cloth"]
+             f"the light: 1 on the lit edges, to {WITHIN['Torso'][2]} on the cloth",
+             f"EmissiveStrength {HOT:g}, a mask's {MASK_HOT:g}"]
     print("; ".join(facts))
     review(joints, made, paths, recipe, out, facts)
     atlas_check(paths, out)

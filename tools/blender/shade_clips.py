@@ -386,6 +386,10 @@ def burst(t):
 CLIPS = {"Idle": (idle, "Brawler", False), "Walk": (walk, "Brawler", False), "Attack": (attack, "Brawler", False),
          "AttackLeft": (attack, "Brawler", True), "Guard": (guard, "Guard", False), "Lunge": (lunge, "Dasher", False),
          "Hit": (hit, "Brawler", False), "HitLeft": (hit, "Brawler", True), "Burst": (burst, "Brawler", False)}
+# A clip's Play and Stop fades, in seconds: the game's own where it has them (Shared.Config.Animations.Fades, which
+# Author.SaveBaked checks these against). Guard's and Lunge's are proposed here: the game doesn't play them yet.
+FADES = {"Idle": (0.2, 0.2), "Walk": (0.15, 0.15), "Attack": (0.06, 0.15), "AttackLeft": (0.06, 0.15), "Guard": (0.08, 0.15),
+         "Lunge": (0.06, 0.15), "Hit": (0.03, 0.1), "HitLeft": (0.03, 0.1), "Burst": (0.03, 0.05)}
 
 
 # --- outputs --------------------------------------------------------------------------------------------------------
@@ -502,7 +506,7 @@ def main():
     facts = {}
     for name, take in takes.items():
         wear(CLIPS[name][1])
-        facts[name] = {"File": f"Shade_{name}.json", "Frames": take.end + 1, "Seconds": round(take.end / FPS, 3), "Loop": take.loop,
+        facts[name] = {"File": f"Shade_{name}.json", "Name": f"Shade{name}", "Fades": list(FADES[name]), "Frames": take.end + 1, "Seconds": round(take.end / FPS, 3), "Loop": take.loop,
                        "Markers": [[round(t * FPS), label] for t, label in take.markers], "ShownIn": CLIPS[name][1]}
         if CLIPS[name][2]:
             facts[name]["MirrorOf"] = next(n for n, c in CLIPS.items() if c[0] is CLIPS[name][0] and not c[2])
@@ -521,8 +525,10 @@ def main():
             continue
         heard = io.StringIO()  # the export audits itself aloud: the pack's notes keep what it said
         with contextlib.redirect_stdout(heard):
-            r6.export(rig, out / f"Shade_{name}.json", "Shade", name, take.start, take.start + take.end, markers=take.markers,
-                      source="tools/blender/shade_clips.py", extra={"Loop": take.loop})
+            # the Name is the game's: Author.SaveBaked reads Anim_Shade<Clip> and checks the clip is named the same
+            r6.export(rig, out / f"Shade_{name}.json", "Shade", f"Shade{name}", take.start, take.start + take.end,
+                      markers=take.markers, source="tools/blender/shade_clips.py",
+                      extra={"Loop": take.loop, "FadeIn": FADES[name][0], "FadeOut": FADES[name][1]})
         print(heard.getvalue(), end="")
         if mode == "audit":
             continue

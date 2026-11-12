@@ -981,6 +981,11 @@ Accepted: the stand's base to her right-front and the arm 10 below level (R6's l
 
 **Hours:** the model, about 1.2, the look passes, the fixes and the check's round included.
 
+**Research's verdict, 2026-11-12** (the model sheet, at full size and its 64 px rows). **Felt:** from the player's camera she now reads as a performer: pale locks over a rose edge, the meter standing on a slanted rail, a lit ring at each shoulder; the three fixes land, and the speakers read as speakers from every side. **Tier:** competent. **The one bold thing:** the two lit rings bracketing her at every heading, so the kit says "stage" even at 64 px. Fixes, for the next bake; her clips can start now, since both are on the head's mesh and no joint moves:
+1. **The front reads hair, not helmet** (your point 1, agreed; serves her portrait on the lead's card and the reveal, which are the front of her head). Cut the front's slant into lock tips as the back is, and shade the crown a step cooler than Ash, so sun doesn't flatten it to white.
+2. **The headset's tip leaves her mouth** (your point 2 and the check's condition; serves a clean face in the portrait). The boom ends at the middle of her cheek, a mouth's width clear of the corner.
+Accepted: the edges as a darker rim at 64 px and a cel line close up (points 3 and 6, until the engine shows otherwise); no open mouth, since the pose carries the note (point 4); the stand at rest in front of the fist, which the clips hold (point 5).
+
 ## AR5. The festival kit and the base's machines
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.

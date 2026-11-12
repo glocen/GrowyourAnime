@@ -401,7 +401,10 @@ class Stage:
                 obj.hide_render = True
 
 
-def key(rig):
+def key(rig, wanted=None):
+    """Keys the clip on the rig and checks it carries the markers `wanted` names, on their frames (the clip may carry
+    more: the crests' since AR4, section 10)."""
+    wanted = wanted or MARKS
     data = json.loads(CLIP.read_text())
     for frame in data["Frames"]:
         f = round(frame["T"] * data["Fps"])
@@ -412,8 +415,8 @@ def key(rig):
                 joint.keyframe_insert("location", frame=f)
                 joint.keyframe_insert("rotation_quaternion", frame=f)
     marks = {m["Name"]: round(m["T"] * data["Fps"]) for m in data.get("Markers", [])}
-    if marks != MARKS:
-        raise SystemExit(f"the clip's markers are {marks}, not {MARKS}")
+    if {name: marks.get(name) for name in wanted} != wanted:
+        raise SystemExit(f"the clip's markers are {marks}, without {wanted}")
     return len(data["Frames"])
 
 

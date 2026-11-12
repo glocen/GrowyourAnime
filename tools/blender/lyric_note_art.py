@@ -50,7 +50,10 @@ REACH, THIN = 14.0, 4.0
 # throw did, while drifting on to the end over LIFE: so it's still a third there when the next is at its full.
 PUNCH, PUNCH_SHARE, LIFE = 7, 0.7, 34
 BIRTH = 2.5                    # studs past the rings over which a crest comes up out of their flash: unseen at her face
-CRESTS = (30, 45, 60, 75, 90)  # the half-beats from the Note to the Release, as the clip's speakers kick
+# the clip's markers: a crest is thrown on each of the half-beats from the Note to the Release, as the speakers kick,
+# and each crest that shows a hit lands one (research's five touches, AR4 section 9; the markers Faber's, for the beats)
+MARKS = {**nf.MARKS, "Crest2": 45, "Crest3": 60, "Crest4": 75}
+CRESTS = tuple(MARKS[name] for name in ("Note", "Crest2", "Crest3", "Crest4", "Release"))
 HIT, HIT_SIZE, HIT_UP = 2, 3.0, 3.0  # the hit: frames a cell, studs square, its middle above the floor
 HIT_FORWARD = 1.2              # studs toward the camera from the Shade's middle: in front of its coat
 HEAL_LIFE, HEAL_R = 14, 1.6    # the heal's ring: frames it rises, its radius at the start
@@ -461,7 +464,7 @@ SHEET = (22, 30, 31, 32, 33, 35, 40, 45, 47, 50, 55, 60, 75, 90, 95, 110)  # the
 ROW = (30, 33, 40, 45, 48, 60, 92, 100)                                     # the other views
 SMALL = (30, 32, 34, 36, 40, 45, 48, 52, 60, 75, 92, 100)                   # at 64 px
 SHARE = (30, 32, 34, 36, 40, 50, 65, 80, 92, 98)                            # the block-in's frames, to set beside it
-NAMES = {f: name for name, f in nf.MARKS.items()}
+NAMES = {f: name for name, f in MARKS.items()}
 
 
 def label(f):
@@ -491,7 +494,7 @@ def table(stage):
             frames[str(f)] = entry
     return {
         "pictures": {"lyric_note_crest.png": list(CREST_PX), "lyric_note_touch.png": list(TOUCH_PX)},
-        "fps": 60, "markers": nf.MARKS, "crests": list(CRESTS),
+        "fps": 60, "markers": MARKS, "crests": list(CRESTS),
         "cone": {"apex": [round(v, 3) for v in c.apex], "half": round(c.half, 2), "start": round(c.start, 3),
                  "end": round(c.end, 3), "rings_up": round(c.height, 3), "fall": round(c.fall, 4),
                  "spread": nf.SPREAD, "reach": REACH, "thin": THIN,
@@ -536,8 +539,8 @@ def main():
     for name in (lc.SR, lc.SL):
         m = bpy.data.objects[name].matrix_world
         rest[name] = (m.inverted() @ nf.RINGS[name], (m.to_3x3().inverted() @ nf.AXES[name]).normalized())
-    count = nf.key(rig)
-    print(f"HeldNote: {count} frames, the markers at {nf.MARKS}")
+    count = nf.key(rig, MARKS)
+    print(f"HeldNote: {count} frames, the markers at {MARKS}")
     stage = Stage(scene, rig, count, rest, crest_pic, touch_pic)
     print(f"  touched: {json.dumps(stage.touched)}")
     cams = {}

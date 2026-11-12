@@ -658,6 +658,10 @@ def held_note(t):
     t.free(27, "sine")
     t.free(30, F=0.0)
     t.mark(30, "Note")
+    # the crests between, on the half-beats the speakers kick on: each a touch, a fifth of the signature (AR4, section 9)
+    t.mark(45, "Crest2")
+    t.mark(60, "Crest3")
+    t.mark(75, "Crest4")
     t.key(44, ease="sine", T=(18, 14, 0, 0, 0, 0.44), crouch=0.22, LA=(-54, 0, -38))
     t.key(88, "pushing", ease="out", T=(19, 14, 0, 0, 0, 0.46), crouch=0.24, LA=(-58, 0, -40),
           RA=("note", NOTE_BASE, NOTE_PULL, (78, 0, 18)))

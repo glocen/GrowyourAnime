@@ -54,6 +54,9 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 
 - Lyric's model on R6 (AR4, section 5), delivered on Opus
 - Lyric's five clips (AR4, section 6)
+- The elite's second mask without its ties (AR2, section 7)
+- The Shade's burst: the block-in and the art sheet (AR2, sections 8 and 11)
+- The elite's contact sheet (AR2, section 10)
 
 ## Phases
 

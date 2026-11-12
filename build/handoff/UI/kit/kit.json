@@ -1,0 +1,1400 @@
+{
+ "pixelsPerPoint": 4,
+ "sliceScale": 0.25,
+ "note": "A white slice takes its palette's colour. `cut` is left, top, right, bottom in points, `pad` how far the image reaches past the piece's box. The layer order of a panel, a button, a bar and a frame is tools/blender/ui_kit.py's `panel`, `button`, `bar` and `frame`.",
+ "bar": {
+  "slant": "0.6 x height",
+  "rim": "min(palette rim or 1, 0.2 x height)",
+  "light": "x + 1.77 rim, y + rim, height - 2 rim; width min(slant + (width - slant) x fill - 2.37 rim, width - 3.53 rim); SliceScale (height - 2 rim) / 8 / pixelsPerPoint"
+ },
+ "palettes": {
+  "Graphite Dark": {
+   "panel": [
+    "#20242C",
+    "#13151A"
+   ],
+   "alpha": 0.94,
+   "edge": "#434A57",
+   "facet": "#8A93A6",
+   "glint": "#C9D2E4",
+   "text": "#F3EFE6",
+   "soft": "#A6ADBA",
+   "faint": "#6E7482",
+   "channel": "#06070A",
+   "well": "#0B0C10",
+   "button": [
+    "#323845",
+    "#22262F"
+   ],
+   "pressed": [
+    "#1A1D24",
+    "#20242C"
+   ],
+   "ground": "#2B2E36",
+   "accent": "#FFF4D6",
+   "core": 0.5
+  },
+  "Pearl Light": {
+   "panel": [
+    "#FAF7F0",
+    "#E9E4D8"
+   ],
+   "alpha": 0.96,
+   "edge": "#0E0F14",
+   "border": 1.6,
+   "facet": "#FFFFFF",
+   "glint": "#FFFFFF",
+   "text": "#191B21",
+   "soft": "#535967",
+   "faint": "#8C909B",
+   "channel": "#20232B",
+   "well": "#D8D2C4",
+   "button": [
+    "#FFFFFF",
+    "#EFEADF"
+   ],
+   "pressed": [
+    "#DAD4C6",
+    "#E6E1D5"
+   ],
+   "ground": "#CFCBC2",
+   "rim": 2.0,
+   "seat": 1.6,
+   "warm": [
+    1.0,
+    0.7,
+    0.3
+   ],
+   "accent": "#FFF4D6",
+   "core": 0.9
+  },
+  "Dynamo": {
+   "panel": [
+    "#2C261C",
+    "#17130E"
+   ],
+   "alpha": 0.94,
+   "edge": "#62563F",
+   "facet": "#B09F78",
+   "glint": "#EBDCA6",
+   "text": "#F3EFE6",
+   "soft": "#B8AD95",
+   "faint": "#7F7660",
+   "channel": "#080705",
+   "well": "#0E0C09",
+   "button": [
+    "#40382A",
+    "#2B251B"
+   ],
+   "pressed": [
+    "#1F1B14",
+    "#2C261C"
+   ],
+   "ground": "#34302A",
+   "accent": "#FFE266",
+   "core": 0.5
+  },
+  "Void Violet": {
+   "panel": [
+    "#241B3A",
+    "#110C1F"
+   ],
+   "alpha": 0.95,
+   "edge": "#5D4C8E",
+   "facet": "#9E8CD2",
+   "glint": "#DACDFF",
+   "text": "#F3EFE6",
+   "soft": "#B2A8CA",
+   "faint": "#7B7194",
+   "channel": "#07050C",
+   "well": "#0C0914",
+   "button": [
+    "#392D5A",
+    "#261D3F"
+   ],
+   "pressed": [
+    "#1B142C",
+    "#241B3A"
+   ],
+   "ground": "#2B2542",
+   "accent": "#DCCBFF",
+   "core": 0.5
+  }
+ },
+ "screens": {
+  "Graphite Dark": "the HUD and its cards, the dock, Voidkin, one Voidkin, Regalia, confirm, error, toast, reward",
+  "Dynamo": "the Breaker, the base's bays; later the Forge, the Condenser and the Lab",
+  "Void Violet": "the reveal's card; later the Void Shop",
+  "Pearl Light": "what's read like a printed page: the map, a shard's odds, where a stat's points come from"
+ },
+ "good": "#7CF0A4",
+ "bad": "#FF7A66",
+ "light": "#FFF4D6",
+ "charge": "#FFE266",
+ "numbers": {
+  "plain": "#F8F1DF",
+  "critical": "#FFCF4D",
+  "heal": "#6FE695",
+  "miss": "#B9BEC9"
+ },
+ "elements": {
+  "Fire": "#FF8A3D",
+  "Frost": "#8FE3FF",
+  "Storm": "#FF6FD8",
+  "Void": "#B58CFF"
+ },
+ "images": {
+  "PanelFill": {
+   "file": "images/PanelFill.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "body",
+   "cut": [
+    12.0,
+    12.0,
+    12.0,
+    12.0
+   ]
+  },
+  "PanelEdge": {
+   "file": "images/PanelEdge.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "edge",
+   "cut": [
+    12.0,
+    12.0,
+    12.0,
+    12.0
+   ]
+  },
+  "PanelEdgeBold": {
+   "file": "images/PanelEdgeBold.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "edge",
+   "cut": [
+    12.0,
+    12.0,
+    12.0,
+    12.0
+   ]
+  },
+  "PanelShadow": {
+   "file": "images/PanelShadow.png",
+   "pixels": [
+    256,
+    256
+   ],
+   "points": [
+    64.0,
+    64.0
+   ],
+   "cut": [
+    28.0,
+    28.0,
+    28.0,
+    28.0
+   ],
+   "pad": 16.0,
+   "use": "under the body"
+  },
+  "PanelGlint": {
+   "file": "images/PanelGlint.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "glint",
+   "cut": [
+    12.0,
+    12.0,
+    12.0,
+    12.0
+   ],
+   "use": "the light on the two deep cuts; a pill wears it too"
+  },
+  "PanelFacet": {
+   "file": "images/PanelFacet.png",
+   "pixels": [
+    224,
+    224
+   ],
+   "points": [
+    56.0,
+    56.0
+   ],
+   "tint": "facet",
+   "cut": [
+    36.0,
+    36.0,
+    12.0,
+    12.0
+   ],
+   "use": "at 7 in 100, on a panel 48 points or more each way"
+  },
+  "ButtonFill": {
+   "file": "images/ButtonFill.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "points": [
+    28.0,
+    28.0
+   ],
+   "tint": "body",
+   "cut": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ]
+  },
+  "ButtonEdge": {
+   "file": "images/ButtonEdge.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "points": [
+    28.0,
+    28.0
+   ],
+   "tint": "edge",
+   "cut": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ]
+  },
+  "ButtonEdgeBold": {
+   "file": "images/ButtonEdgeBold.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "points": [
+    28.0,
+    28.0
+   ],
+   "tint": "edge",
+   "cut": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ]
+  },
+  "ButtonShadow": {
+   "file": "images/ButtonShadow.png",
+   "pixels": [
+    240,
+    240
+   ],
+   "points": [
+    60.0,
+    60.0
+   ],
+   "cut": [
+    26.0,
+    26.0,
+    26.0,
+    26.0
+   ],
+   "pad": 16.0,
+   "use": "under the body"
+  },
+  "ButtonBase": {
+   "file": "images/ButtonBase.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "points": [
+    28.0,
+    28.0
+   ],
+   "tint": "accent",
+   "cut": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ],
+   "use": "the light on the lower edge that says it can be pressed"
+  },
+  "ButtonBaseGlow": {
+   "file": "images/ButtonBaseGlow.png",
+   "pixels": [
+    240,
+    240
+   ],
+   "points": [
+    60.0,
+    60.0
+   ],
+   "tint": "accent",
+   "cut": [
+    26.0,
+    26.0,
+    26.0,
+    26.0
+   ],
+   "pad": 16.0,
+   "use": "at 45 in 100 at rest, whole when pressed"
+  },
+  "ButtonRing": {
+   "file": "images/ButtonRing.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "points": [
+    28.0,
+    28.0
+   ],
+   "tint": "accent, green or red",
+   "cut": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ],
+   "use": "selected, succeeded, failed; waiting, with a window run round it"
+  },
+  "ButtonRingGlow": {
+   "file": "images/ButtonRingGlow.png",
+   "pixels": [
+    240,
+    240
+   ],
+   "points": [
+    60.0,
+    60.0
+   ],
+   "tint": "accent, green or red",
+   "cut": [
+    26.0,
+    26.0,
+    26.0,
+    26.0
+   ],
+   "pad": 16.0,
+   "use": "under the body"
+  },
+  "ButtonPressedShade": {
+   "file": "images/ButtonPressedShade.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "points": [
+    28.0,
+    28.0
+   ],
+   "cut": [
+    10.0,
+    10.0,
+    10.0,
+    10.0
+   ],
+   "use": "pressed: the top of the body in shade"
+  },
+  "DotsWell": {
+   "file": "images/DotsWell.png",
+   "pixels": [
+    208,
+    56
+   ],
+   "points": [
+    52.0,
+    14.0
+   ],
+   "use": "waiting: the three dots' well"
+  },
+  "Dot": {
+   "file": "images/Dot.png",
+   "pixels": [
+    48,
+    48
+   ],
+   "points": [
+    12.0,
+    12.0
+   ],
+   "tint": "accent",
+   "use": "waiting: one of the three, each smaller and fainter than the last"
+  },
+  "Tick": {
+   "file": "images/Tick.png",
+   "pixels": [
+    80,
+    64
+   ],
+   "points": [
+    20.0,
+    16.0
+   ],
+   "tint": "green",
+   "use": "succeeded"
+  },
+  "BarChannel": {
+   "file": "images/BarChannel.png",
+   "pixels": [
+    96,
+    40
+   ],
+   "points": [
+    24.0,
+    10.0
+   ],
+   "tint": "channel",
+   "cut": [
+    8.0,
+    0.0,
+    8.0,
+    0.0
+   ]
+  },
+  "BarEdge": {
+   "file": "images/BarEdge.png",
+   "pixels": [
+    96,
+    40
+   ],
+   "points": [
+    24.0,
+    10.0
+   ],
+   "tint": "edge",
+   "cut": [
+    8.0,
+    0.0,
+    8.0,
+    0.0
+   ]
+  },
+  "ThreadChannel": {
+   "file": "images/ThreadChannel.png",
+   "pixels": [
+    64,
+    16
+   ],
+   "points": [
+    16.0,
+    4.0
+   ],
+   "tint": "channel",
+   "cut": [
+    4.0,
+    0.0,
+    4.0,
+    0.0
+   ]
+  },
+  "ThreadEdge": {
+   "file": "images/ThreadEdge.png",
+   "pixels": [
+    64,
+    16
+   ],
+   "points": [
+    16.0,
+    4.0
+   ],
+   "tint": "edge",
+   "cut": [
+    4.0,
+    0.0,
+    4.0,
+    0.0
+   ]
+  },
+  "BarLight": {
+   "file": "images/BarLight.png",
+   "pixels": [
+    64,
+    32
+   ],
+   "points": [
+    16.0,
+    8.0
+   ],
+   "tint": "the light, or its warm edge on a pale panel",
+   "cut": [
+    6.0,
+    0.0,
+    6.0,
+    0.0
+   ]
+  },
+  "BarCore": {
+   "file": "images/BarCore.png",
+   "pixels": [
+    64,
+    32
+   ],
+   "points": [
+    16.0,
+    8.0
+   ],
+   "cut": [
+    6.0,
+    0.0,
+    6.0,
+    0.0
+   ],
+   "use": "white, at the palette's `core`"
+  },
+  "BarHead": {
+   "file": "images/BarHead.png",
+   "pixels": [
+    80,
+    32
+   ],
+   "points": [
+    20.0,
+    8.0
+   ],
+   "use": "white, at the light's leading end"
+  },
+  "BarGlow": {
+   "file": "images/BarGlow.png",
+   "pixels": [
+    176,
+    144
+   ],
+   "points": [
+    44.0,
+    36.0
+   ],
+   "tint": "the light",
+   "cut": [
+    20.0,
+    0.0,
+    20.0,
+    0.0
+   ],
+   "pad": 14.0,
+   "use": "under the light"
+  },
+  "FrameCommonBack": {
+   "file": "images/FrameCommonBack.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameCommonSeat": {
+   "file": "images/FrameCommonSeat.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameCommon": {
+   "file": "images/FrameCommon.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over the portrait; 64 points wide and up"
+  },
+  "FrameCommonSmallBack": {
+   "file": "images/FrameCommonSmallBack.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameCommonSmallSeat": {
+   "file": "images/FrameCommonSmallSeat.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameCommonSmall": {
+   "file": "images/FrameCommonSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over the portrait; under 64 points wide"
+  },
+  "FrameUncommonBack": {
+   "file": "images/FrameUncommonBack.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameUncommonSeat": {
+   "file": "images/FrameUncommonSeat.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameUncommon": {
+   "file": "images/FrameUncommon.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over the portrait; 64 points wide and up"
+  },
+  "FrameUncommonSmallBack": {
+   "file": "images/FrameUncommonSmallBack.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameUncommonSmallSeat": {
+   "file": "images/FrameUncommonSmallSeat.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameUncommonSmall": {
+   "file": "images/FrameUncommonSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over the portrait; under 64 points wide"
+  },
+  "FrameRareBack": {
+   "file": "images/FrameRareBack.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameRareSeat": {
+   "file": "images/FrameRareSeat.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameRare": {
+   "file": "images/FrameRare.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over the portrait; 64 points wide and up"
+  },
+  "FrameRareSmallBack": {
+   "file": "images/FrameRareSmallBack.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameRareSmallSeat": {
+   "file": "images/FrameRareSmallSeat.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameRareSmall": {
+   "file": "images/FrameRareSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over the portrait; under 64 points wide"
+  },
+  "FrameEpicBack": {
+   "file": "images/FrameEpicBack.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameEpicSeat": {
+   "file": "images/FrameEpicSeat.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameEpic": {
+   "file": "images/FrameEpic.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over the portrait; 64 points wide and up"
+  },
+  "FrameEpicSmallBack": {
+   "file": "images/FrameEpicSmallBack.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameEpicSmallSeat": {
+   "file": "images/FrameEpicSmallSeat.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameEpicSmall": {
+   "file": "images/FrameEpicSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over the portrait; under 64 points wide"
+  },
+  "FrameLegendaryBack": {
+   "file": "images/FrameLegendaryBack.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameLegendarySeat": {
+   "file": "images/FrameLegendarySeat.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameLegendary": {
+   "file": "images/FrameLegendary.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over the portrait; 64 points wide and up"
+  },
+  "FrameLegendarySmallBack": {
+   "file": "images/FrameLegendarySmallBack.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameLegendarySmallSeat": {
+   "file": "images/FrameLegendarySmallSeat.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameLegendarySmall": {
+   "file": "images/FrameLegendarySmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over the portrait; under 64 points wide"
+  },
+  "FrameMythicalBack": {
+   "file": "images/FrameMythicalBack.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameMythicalSeat": {
+   "file": "images/FrameMythicalSeat.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameMythical": {
+   "file": "images/FrameMythical.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "over the portrait; 64 points wide and up"
+  },
+  "FrameMythicalSmallBack": {
+   "file": "images/FrameMythicalSmallBack.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "its light and its well, under the portrait"
+  },
+  "FrameMythicalSmallSeat": {
+   "file": "images/FrameMythicalSmallSeat.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over Back, on a pale panel only"
+  },
+  "FrameMythicalSmall": {
+   "file": "images/FrameMythicalSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "over the portrait; under 64 points wide"
+  },
+  "GemStrength": {
+   "file": "images/GemStrength.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "on a panel"
+  },
+  "GemStrengthSeated": {
+   "file": "images/GemStrengthSeated.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in a frame's top cut"
+  },
+  "GemEndurance": {
+   "file": "images/GemEndurance.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "on a panel"
+  },
+  "GemEnduranceSeated": {
+   "file": "images/GemEnduranceSeated.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in a frame's top cut"
+  },
+  "GemAgility": {
+   "file": "images/GemAgility.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "on a panel"
+  },
+  "GemAgilitySeated": {
+   "file": "images/GemAgilitySeated.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in a frame's top cut"
+  },
+  "GemIntelligence": {
+   "file": "images/GemIntelligence.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "on a panel"
+  },
+  "GemIntelligenceSeated": {
+   "file": "images/GemIntelligenceSeated.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in a frame's top cut"
+  },
+  "GemTechnique": {
+   "file": "images/GemTechnique.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "on a panel"
+  },
+  "GemTechniqueSeated": {
+   "file": "images/GemTechniqueSeated.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in a frame's top cut"
+  },
+  "ClassWarrior": {
+   "file": "images/ClassWarrior.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in its seat: on a frame's bottom cut, on a card"
+  },
+  "ClassWarriorGlyph": {
+   "file": "images/ClassWarriorGlyph.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "ink",
+   "use": "bare: a filter, a tab"
+  },
+  "ClassTank": {
+   "file": "images/ClassTank.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in its seat: on a frame's bottom cut, on a card"
+  },
+  "ClassTankGlyph": {
+   "file": "images/ClassTankGlyph.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "ink",
+   "use": "bare: a filter, a tab"
+  },
+  "ClassAssassin": {
+   "file": "images/ClassAssassin.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in its seat: on a frame's bottom cut, on a card"
+  },
+  "ClassAssassinGlyph": {
+   "file": "images/ClassAssassinGlyph.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "ink",
+   "use": "bare: a filter, a tab"
+  },
+  "ClassMage": {
+   "file": "images/ClassMage.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in its seat: on a frame's bottom cut, on a card"
+  },
+  "ClassMageGlyph": {
+   "file": "images/ClassMageGlyph.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "ink",
+   "use": "bare: a filter, a tab"
+  },
+  "ClassHealer": {
+   "file": "images/ClassHealer.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "in its seat: on a frame's bottom cut, on a card"
+  },
+  "ClassHealerGlyph": {
+   "file": "images/ClassHealerGlyph.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "ink",
+   "use": "bare: a filter, a tab"
+  },
+  "ElementFire": {
+   "file": "images/ElementFire.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ]
+  },
+  "ElementFrost": {
+   "file": "images/ElementFrost.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ]
+  },
+  "ElementStorm": {
+   "file": "images/ElementStorm.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ]
+  },
+  "ElementVoid": {
+   "file": "images/ElementVoid.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ]
+  },
+  "Coin": {
+   "file": "images/Coin.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Credits"
+  },
+  "Bolt": {
+   "file": "images/Bolt.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Electricity"
+  },
+  "Spark": {
+   "file": "images/Spark.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "the critical's gold",
+   "use": "the mark on a critical hit"
+  }
+ }
+}

@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: TR2. The Shade is in (AR2): uploaded under the group, assembled on R6, worn by the brawlers and the elite, its clips playing on their markers (TR2's status line). Self-test 253/253 at 60 fps, logic 1,355, world report sound. Quaestor, from your list: the mask's own tint, the walk from the stride, Attack and Hit in turn with their mirrors, the burst on its marker from the collar are in; the Lunge waits for a Dasher. Yours to judge in motion: the walk plays at 2.9 times its clip (Shades move at 12, the stride covers 4.11 a second), and a Shade in reach swings back to back, so it never flinches mid-fight (an ordinary flinches only between actions), a point for States in a fight. Haymaker's final is still yours (`NL_Debug:Invoke("Replay", nil, "RookHaymaker")`). The crowd's kills against a lone player are modelled for you (notice below). Next: your verdict evidence.
 
-**Modulo (assets).** 2026-11-12: AR4, Pip's eight clips are delivered to `build/handoff/Pip/clips/`, accepted by research after its fix round and past the content check on both rounds (`docs/asset-requests.md`, AR4, section 3); not uploaded, not in the engine. On the two reaction sets: nothing to change, they hold for every body I can see coming. AR3: the sheet's round on the director's words is drawn, past the content check and research's read, and in `build/handoff/UI/` (Mythical's red, Pearl's black border, the glance strip beside the failed button and the Strength gem; AR3, section 1). Now: the kit's images, Graphite first. Then Lyric (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
+**Modulo (assets).** 2026-11-12: AR3, the kit's images are delivered to `build/handoff/UI/kit/` (89 images, `kit.json`, the review sheets), past the content check; research's verdict is asked (`docs/asset-requests.md`, AR3, section 2). Not uploaded, not in the engine. The director gave Modulo the choice of each screen's palette: four are drawn, Graphite, Pearl, Dynamo and Void Violet, from one set of images. Pip's clips stay delivered and accepted. Now: Lyric's sheet (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 
@@ -46,6 +46,14 @@ For Faber:
 - Tier 2, research, 2026-11-12: reactions on R6 come in two shared sets, open legs and robe; Pip's Hit, Down and Up are the robe set (`docs/design.md`, "States in a fight"). Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. The UI kit's images delivered (Modulo)
+
+- **What:** the kit as slices (panel, button, bar, thread), the six frames in two cuts, the five type gems, five class marks, four element marks, the coin, the bolt and the spark. A slice is white where a palette colours it, so a palette is a row of colours, never new images.
+- **Where:** `build/handoff/UI/kit/` (`images/`, `kit.json`, the review sheets), made by `tools/blender/ui_kit.py`. The record: `docs/asset-requests.md`, AR3, section 2.
+- **The director, 2026-11-12:** which screens are Pearl and which get a palette of their own is Modulo's to choose, so long as the whole holds together. The choice: Graphite for the field and the collection, Dynamo for the Breaker and the bays, Void Violet for the reveal's card, Pearl for what's read like a page.
+- **For Faber:** "For the builder" in that section: the layer order is the script's `panel`, `button`, `bar` and `frame`; the palettes' rows are in `kit.json`.
+- **Open:** research's verdict. Nothing is uploaded or in the engine.
 
 ### 2026-11-12. Pip: eight clips delivered (Modulo)
 

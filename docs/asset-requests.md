@@ -402,7 +402,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are started.
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2); research's verdict on them is next. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2).
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -505,6 +505,75 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
   - **Pearl's black border:** it's what Pearl lacked. The pieces stand off the cream at both sizes. Buttons on Pearl now outweigh their panels more than Graphite's do; that's acceptable for the few screens Pearl will dress.
   - **The dark seat under a gem:** accepted (tier 1). The Strength gem holds inside the Mythical frame.
   - **Swappable rows per theme:** accepted. That's what keeps the director's "other palettes for some screens" from costing new images.
+
+### 2. The kit's images (Modulo, 2026-11-12)
+
+`build/handoff/UI/kit/`: 89 images in `images/`, `kit.json` (each image's size, insets, reach and what colours it; the four palettes' rows; the bar's measures), and the review sheets. Made by `tools/blender/ui_kit.py`, at 4 pixels a point (SliceScale 0.25). Nothing is uploaded or in the engine.
+
+**How it's cut.** A slice is white wherever a palette colours it, so a palette is one row of colours and never new images: the engine tints a slice, with a gradient for a panel's two colours. Graphite and Pearl are therefore the same images. A rarity's frame, a gem and a mark keep their own colours on every palette. No image carries text. A clear pixel keeps its neighbour's colour, so a scaled edge doesn't darken.
+
+**What's in it:**
+
+- **A panel** (body, edge at two weights, the glint on its two deep cuts, the facet, the shadow). A pill is the same slices at 30 points high.
+- **A button** (body, edge at two weights, shadow, the light on its lower edge and its glow, the ring of light and its glow, the shade of a pressed one, the waiting dots and their well, the tick). Its seven states are these layers, shown in each palette.
+- **A bar** and a **thread** (channel, edge), with one light for both (the light, its white core, its head, its glow), placed by `kit.json`'s measures.
+- **The six frames, each in two cuts:** the full one, 80 by 96 points, for 64 points wide and up, and the small one, 40 by 48, with the crest alone, for the lead's card. Each is three images: its light and well under the portrait, the frame over it, and the dark seat a pale panel gives it. `masks/` holds each frame's shape, to cut a portrait to it before upload; the masks aren't shipped.
+- **The five type gems,** each its own cut as well as its colour, so they're told apart without colour: Strength a six-sided stone, Endurance a square one, Agility a tall kite, Intelligence a triangle, Technique a brilliant seen from the side. Each comes bare and in its dark seat.
+- **The five class marks:** Warrior a blade on the slant with its taper and guard, Tank a shield with its boss, Assassin a curved fang, Mage a broken ring round a core, Healer a cut heart. Each comes in its dark seat and as a bare white glyph.
+- **The four element marks:** Fire a flame of three straight tongues, Frost three crossed bars, Storm a cloud with one bolt, Void a cracked shard.
+- **The coin, the bolt, the critical's spark.**
+
+**The director's word on the palettes** (2026-11-12, to Modulo, answering "I chose nothing about which screens are Pearl or get their own palette"): "You will and should i give you creativity for it, some ui have their own palette if u think it would look better it just need to be all compose". It covers which screens are Pearl and which get a palette of their own: that's Modulo's to choose, and the whole has to hold together.
+
+**The choice, under that word** (`kit_palettes.png`, the same corner of a screen built from the slices in each):
+
+| Palette | Its screens | Why |
+|---|---|---|
+| Graphite Dark | the HUD and its cards, the dock, Voidkin, one Voidkin, Regalia, confirm, error, toast, reward | the field and the collection: rarity's light reads best on it |
+| Dynamo | the Breaker, the base's bays; later the Forge, the Condenser, the Lab | the machine room: warm iron, and a button's light is the charge the bays make |
+| Void Violet | the reveal's card; later the Void Shop | where a shard opens: the darkest room, so the rarity's own light is the brightest thing in it |
+| Pearl Light | the map, a shard's odds, where a stat's points come from | what's read like a printed page |
+
+What a palette may change: a panel's body, its edge and glint, the ink, and the accent a button and a selection burn with. What it never changes: the cut, the frames, the gems and marks, health's ivory light, green and red, the numbers. That's what holds the four together. A later screen takes one of these four unless its own piece argues for a fifth.
+
+**Calls, mine (tier 1):**
+
+- A class mark always sits in its dark seat, on every palette, like a gem in a frame: a frame is the same object everywhere.
+- The small cut halves its corners with everything else. At their full size on a 40 point frame they ate the crest.
+- Mythical's first crest point moved from 0.2 to 0.24 of the width: it overlapped the corner's cut and left a barb.
+- On a pale panel, Legendary's and Mythical's seat carries a deeper light close to the frame (research's condition on Pearl's Mythical).
+
+**Against the earlier checks' conditions:** 1, no image carries text. 2, the Strength gem is a six-sided cut stone with a table, facet lines and a dark rim (`kit_icons.png`, alone at 64 px over dark). 3, the Warrior's mark is a leaf blade with a guard, on the slant: no cross at 16 px. 7 and 12, every image has its review at full size and at 64 px over dark. 8, Mythical's red is a line and a halo. 9, its splinters are white-hot, straight-edged, and absent from the small cut. 10, the crest's and the base's points are the sheet's own, straight-edged and sharp, none lengthened; only the first one's place changed. 11, the small cut is shown alone. Research's Pearl condition: at 64 px on the pale chip Mythical reads red; only the last of its fade goes through pink.
+
+**What I see wrong:**
+
+1. The Assassin's fang is the weakest of the five marks: at 16 px it's a curved wedge, and it could be taken for a horn.
+2. On Pearl, a selected button is a double dark line with a pale thread in it. It reads as "marked", less as "lit".
+3. At 16 px the gems are told by colour first; their cuts start to read at 32.
+4. Void Violet under a Mythical frame is the loudest corner of the four. That's the reveal, so it may be right; on a shop screen full of frames it would want a calmer body.
+5. The full frame is drawn for 80 points. A reveal that shows one far larger wants its own cut, with that piece.
+
+**For the builder:**
+
+- The layer order of a panel, a button, a bar and a frame is `ui_kit.py`'s `panel`, `button`, `bar` and `frame`: the palettes sheet is built by them, from the shipped images alone.
+- An image with `pad` reaches that many points past its piece's box on every side: place it at minus `pad`, sized plus twice `pad`.
+- A waiting button is the ring with a window run round it (a gradient's transparency, turning), and the three dots.
+- A portrait can't be clipped to a cut corner in the engine: each Voidkin's portrait is cut to its frame's mask here, before upload. A live viewport in a frame needs another answer, to settle with that screen.
+- The palettes' rows in `kit.json` are for `src/shared/Config/`, which is theirs.
+
+**Waits, outside this piece:** the damage numbers' digits (Roblox's faces with a stroke, or a drawn sheet with its own check), a larger frame for the reveal, each Voidkin's cut portrait.
+
+**Content check, 2026-11-12: PASS** on rules 2, 3 and 4, for handing the kit's images to the builder. It read the ten review sheets, twenty of the shipped images and the script. Nothing reads as blood, a wound or a drop at any size, on dark or on pale, and no mark matches a hate symbol, a real logo or another work's mark. Conditions 1 to 5 and 8 to 12 are met. On 10 it measured one exception: the crest's second point is 14 wide by 20 tall, the same crown as on the passed sheet; it stays, and must not get taller, and no base point may get taller than its width. Its limits: the stretching slices were seen at full size only, and the bare white glyphs on the icons sheet only. After the check, the chip beside the Assassin's fang was dropped (the check's own suggestion, against an arc-and-dot look at 16 px); nothing else changed.
+
+Before upload: the kit's row in `docs/asset-log.md` and the script in git, both done with this delivery. Only `images/` is uploaded, never the sheets or the masks.
+
+For the builder, in use:
+
+1. Never two `Bolt` icons side by side as a pair.
+2. Red on a button's ring and its glow only with words, never on a bar or across a portrait.
+3. Any motion on a frame, and each cut portrait, gets its own check.
+
+**Hours:** the kit's images, about 1.6.
 
 
 ## AR4. Pip and Lyric

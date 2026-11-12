@@ -63,7 +63,7 @@ RARITIES = {
     "Legendary": dict(cut=(12, 5, 12, 5), stroke=3.5, metal=("#FFEDB0", "#D8A23C"), hot=True, glow=("#FFD777", 11.0, 0.75),
                       crest=((0.24, 6, 8), (0.5, 9, 16), (0.76, 6, 8)), base=((0.5, 8, 9),), wing=6, shards=2),
     "Mythical": dict(cut=(13, 6, 13, 9), stroke=3.5, metal=("#FF8794", "#B3122E"), hot=True, inner=True, glow=("#FF2848", 12.0, 0.7),
-                     crest=((0.2, 5, 9), (0.41, 7, 20), (0.62, 6, 13), (0.8, 5, 7)), base=((0.36, 6, 7), (0.62, 7, 11)),
+                     crest=((0.24, 5, 9), (0.41, 7, 20), (0.62, 6, 13), (0.8, 5, 7)), base=((0.36, 6, 7), (0.62, 7, 11)),
                      wing=7, shards=3, splinter="#FFF1F2"),  # white-hot: a red splinter under a frame could read as a drop
 }
 

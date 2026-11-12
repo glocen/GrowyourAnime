@@ -46,7 +46,7 @@ Break a shard, meet a Voidkin. Lead with one, fight through a ground, win shards
 - **A kit** is a basic combo (two families: the melee three-hit and the ranged three-shot, with stance and tempo of its own), one **signature** on a cooldown, and one **passive**. The signature fires by itself, with a readout the player can watch. Firing it by hand is a later option (`docs/polish-later.md`).
 - **Bodies.** No height stat [D]. Humanoid Voidkin stand at the R6 player's height, on the shared R6 rig [D]. Machines and other large bodies use a custom rig and stand taller [D]. Size is a look: the hurtbox comes from a small set of size classes, so a big body is never a free weakness.
 - **Its own progress:** level (from fighting or working), stars (from duplicates), a nickname the player may give it [D], favourite and lock.
-- **Stars.** A duplicate isn't a second copy: it becomes progress toward the next star, zero to five, each a fixed small gain shown before it's taken. Past five, a duplicate sells for Credits.
+- **Stars** [D: the director's idea, 2026-11-12]. A duplicate isn't a second copy: it waits on its Voidkin as a copy to spend. The player spends them by hand on the next star, zero to seven, at any level, and sees the gain before taking it. Each star costs twice the one before: 1, 2, 4, up to 64 copies for the seventh (the counts in the seeds). Each star is a fixed small gain, not game changing [D]. A Common reaches seven stars where a Mythical never will, and that's the point: the Common gets something the Mythical can't. Past seven, a copy sells for Credits.
 - **Evolution.** One at launch, Rook's, to prove the idea: the same character further along, with a changed look and a stronger signature. More follow only if the first is worth its cost.
 - **Roles.** A Voidkin is the lead, a worker, the champion, or resting. One role at a time. Each role earns its own experience, and a lead far below the account's best levels faster (`docs/balance.md`, "Catch-up").
 
@@ -145,7 +145,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 
 | Currency | Comes from | Goes to |
 |---|---|---|
-| Credits | fights, overflow electricity, duplicates past five stars, the Clash | the Void Shop, forge ranks, the Condenser |
+| Credits | fights, overflow electricity, copies past seven stars, the Clash | the Void Shop, forge ranks, the Condenser |
 | Electricity | workers | breaking shards, infusion |
 | Research Points | first clears, Tower floors, the daily track, the Calamity | the Research Lab |
 | Forge stones, three grades | enemies by ground, the shop | forge ranks |

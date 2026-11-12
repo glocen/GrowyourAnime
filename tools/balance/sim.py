@@ -369,7 +369,7 @@ def report_ownership(n=1500):
                 if day in snaps:
                     snaps[day].append((g, dict(own)))
         print(f"\n  {pname}: {pr['hoursPerDay']} h a day")
-        line("  day", "ground", f"owned/{len(ROSTER)}", "5 types", "5 classes", "Epic+", "a Legend.", "a Mythical", "5-star", w=12)
+        line("  day", "ground", f"owned/{len(ROSTER)}", "5 types", "5 classes", "Epic+", "a Legend.", "a Mythical", "7-star", w=12)
         for day, rows in snaps.items():
             m = len(rows)
 

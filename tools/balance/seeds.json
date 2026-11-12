@@ -24,8 +24,8 @@
   "healerSelfHealPer10s": 0.04,
 
   "shares": { "base": 35, "stars": 3.5, "gear": 27, "forge": 13.5, "emblems": 11, "jewels": 7, "research": 3 },
-  "starPctOfBase": 0.02,
-  "maxStars": 5,
+  "starPctOfBase": 0.0143,
+  "maxStars": 7,
   "gearRarity": { "Common": 0.55, "Uncommon": 0.65, "Rare": 0.76, "Epic": 0.88, "Legendary": 1.00 },
   "forge": { "maxRank": 30, "ranksPerGround": 5, "fullBonusOfGearBase": 0.50 },
   "choosable": { "singleStatFactor": 3, "defFactor": 2.3, "elemFactor": 0.8 },
@@ -87,7 +87,7 @@
     "breakSeconds": { "Standard": 30, "Enriched": 900, "Prismatic": 10800 },
     "energy": { "Standard": 20, "Enriched": 200, "Prismatic": 1500 },
     "regionFactor": [1, 1.5, 2, 4, 6, 7],
-    "starCopies": { "Common": [2, 4, 8, 12, 20], "Uncommon": [2, 3, 6, 10, 15], "Rare": [1, 2, 4, 6, 10], "Epic": [1, 2, 3, 4, 6], "Legendary": [1, 1, 2, 3, 4], "Mythical": [1, 1, 1, 2, 2] },
+    "starCopies": { "Common": [1, 2, 4, 8, 16, 32, 64], "Uncommon": [1, 2, 4, 8, 16, 32, 64], "Rare": [1, 2, 4, 8, 16, 32, 64], "Epic": [1, 2, 4, 8, 16, 32, 64], "Legendary": [1, 2, 4, 8, 16, 32, 64], "Mythical": [1, 2, 4, 8, 16, 32, 64] },
     "value": { "Common": 1, "Uncommon": 3, "Rare": 10, "Epic": 40, "Legendary": 200, "Mythical": 1000 }
   },
 

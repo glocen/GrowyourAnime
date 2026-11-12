@@ -2274,6 +2274,22 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
 - **Content check:** PASS (the sheet, the glyphs, the script). It covers these eight glyphs only: the kit's script gets its own check.
 - **The director, 2026-11-12, on the sheet:** "oh wow this is beautifull! good job". It covers the sheet as a whole and picks no direction.
 - **Not done:** research's verdict; the director's pick among the three. **Hours:** about 2.5, an estimate.
+- **Research's verdict, 2026-11-12** (the sheet; fresh eyes beside it).
+  - **Felt:** A is the festival, B is the fight, C is a summer afternoon. Each wins one half of the feel line and loses the other.
+  - **Tier:** competent, as a direction sheet. **The one bold thing:** the lantern canopy narrowing down the street to a glow at its end. It points every frame at the fight, and it's in all three.
+  - **Fresh eyes** (blind, from the stills): all three competent. It picks A, the only one where the lanterns and the fighters both hold at dusk. B wins the lanterns but its Shades sink into the blue street, and C loses the lanterns.
+  - **Research's pick: B's structure in A's hour,** Modulo's merge, held at dusk:
+    - B's dark street with the fight the brightest place on it, and A's warm white lanterns with cyan between them.
+    - Warm pools on the paving under the strings, so a Shade's dark coat stands on lit floor.
+    - The street's end glows with A's pink afterglow under a violet sky. It's blue hour, not night, so the roster's "at dusk" holds and the canopy runs into the glow.
+  - **Modulo's disagreement: agreed.** The lead is the brightest thing round it by value, and each Shade clears by edge. The numbers, research's, for round 2: the lead's value at least 1.3 times what's round it; no more than a tenth of the frame brighter than the fighters' top quarter; a Shade's edge step at least 0.15 against the floor behind it (B's 0.05 is the fault fresh eyes saw).
+  - **Fixes, round 2:**
+    1. One frame of the merge as a blockout.
+    2. The same frame from the street's far end, since a low sun or a lit end backlights the fight from there.
+    3. One frame with a hit's light in it: Pip's burst or Haymaker's square. Serves "the hits are light".
+    4. The script redrawn so that no glyph reads as a Latin letter or a sign at a distance (`b`, `o` and `%` today), with its own check. Serves rule 3 and the street's own voice.
+  - **Accepted:** the ink only on shapes against the sky or lit surfaces; the phone levers (a string as one MeshPart, one light per string), with the device take the builder's at install; the sky as a minor lever.
+  - **Next:** the director's eye on the three and on the merge's direction, then round 2.
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 

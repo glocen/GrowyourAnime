@@ -106,6 +106,10 @@ Research's changes, under the director's words of 2026-11-11 above. Each is reve
 | **The first session,** not the first 20 seconds | a 20-second table | the director's words |
 | **Roster, enemies and grounds authored** | counts and placeholders | the team needs names and looks to start |
 
+## Fighters
+
+The test every Voidkin passes (`AGENTS.md`, rule 3): it's ours if no published character is recognisable in it through a combination of look (silhouette, outfit, hair, colours), weapon, signature (what it does and what it's called) and role. Each may share one familiar trait with the genre; a match on several together is a redesign, and a new name never fixes it. The tone is "slightly mature" (`AGENTS.md`): attitude, styling and stakes, never sexualised poses or framing, never gore. The content check judges each sheet against this.
+
 ## Waiting on the director
 
 Nothing blocks the team's start. These are the director's when they want them:

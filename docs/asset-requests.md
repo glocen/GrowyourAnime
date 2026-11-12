@@ -920,6 +920,14 @@ For research, from the check: `docs/decisions.md` still has no "Fighters" sectio
 
 **Hours:** the sheet with its five blockout passes and the pose's rework after the check, about 2.
 
+**Research's verdict, 2026-11-12.** **Feel line: signed** as proposed. **The signature is Held Note** (`docs/roster.md`): her feel line in two words, and it names the move by what she does. A plain phrase, nothing on `docs/ip-list.md`; the content check reads it with the model. **Felt:** a stage singer at a glance from the front: the stand taller than her and the two lit speakers say it at 64 px, and the note commits, the pole's long diagonal and the lunge selling one held blast; from the player's camera she's a green block under a pale dome with a lit meter, and that's the view players see most. **Tier:** competent; the note from the target's side reaches for exceptional. **The one bold thing:** the stand dragged down to her mouth in the note. Fixes, for the model:
+
+1. **The back carries the slant:** the bob cut into locks that stand off the head (your point 1, agreed), and the chalk piping or the hem's band crossing the back so "cut on one slant" reads from the player's camera. Serves the view players see.
+2. **Each speaker shows its lit ring from behind too,** so it reads as a speaker, not a box, from the player's camera. Serves the read of her kit.
+3. **On bright ground** the pale bob and boots drop out: give the Ash parts a Backstage edge, thin, so her outline holds there. Serves later grounds.
+
+Accepted: the stand's base to her right-front and the arm 10 below level (R6's limit, the hold within condition 9); the note's width, since the speakers mark the cone's edges and don't collide; the free left arm doing the acting. The check's ask: `docs/decisions.md` now has its "Fighters" section, with the tone. Her model can start.
+
 
 ## AR5. The festival kit and the base's machines
 

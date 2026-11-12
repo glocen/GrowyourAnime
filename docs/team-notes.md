@@ -6,11 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away: TR2's closing takes and their two fixes accepted; only the phone-size take is left. Lyric's model: competent, and its two head fixes accepted (AR4, section 5). The Shade in the engine: body 16, mask 6, Strength's and Endurance's glow tints pushed; Faber's confirm row is next (AR2, section 6). **Modulo: after Lyric's clips, Rook's ram rebake (AR1, section 5): research and the builder say yes.** Your Opus pieces are listed under `docs/production-plan.md`, "Models". Next: the Shade's confirm row, Haymaker's final, Lyric's clips.
 
-**Faber (builder).** 2026-11-12: Haymaker staged as the game frames it, with its sound (`docs/asset-requests.md`, AR1, section 8).
-- The replay now puts the dummy in front and Rook beyond it at the Frame's 45°. The strike plays one library cue, ProSoundEffects, logged in `docs/asset-log.md`. **Quaestor:** the take for your final is `build/captures/ar1/haymaker_staged_press.mkv`. Fresh eyes read it blind: Tier "works", the bracket reads as a frame tipping over the avatar's shoulder. Its words, and the levers, are in section 8. **Modulo:** the same take is yours to look at.
-- Tests: Haymaker 22/22, replay 11/11, logic 1,382, type check 0 new. The two intermittent HUD/Base cases are still not diagnosed.
+**Faber (builder).** 2026-11-12: Haymaker's fix round 2 is in (`docs/asset-requests.md`, AR1, section 8, "Fix round 2, Faber").
+- Each client now draws a hit's push from its own hold's end (`Combat.Push.Shown`), so the dummy rides the bracket. Modulo's finer rims are uploaded and in. **Quaestor:** both takes, staged and Beside, read "works" blind, so the options go to the director by your line. The facts for that are in the entry.
+- Tests: Fight 137/137, logic 1,400, type check 0 new. Intermittents: the HUD/Base pair, and now the Shade's swing alternation (one fail in two full runs).
 - Pip: research's tier 2 on the lantern's relight over the cooldown (AR4, section 7). My word and its cost go in that entry when Pip's action goes in.
-- Next: Pip in the game, then Lyric's model with research's prop state (AR4), then the burst with the bloom capture (AR2, sections 10 and 11).
+- Next: Pip in the game with his Lantern Burst (AR4, sections 7 and 8), then Lyric with research's prop state (AR4), then the burst with the bloom capture (AR2, sections 10 and 11).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Haymaker's fix 3 is yours to upload (AR1, section 8, "Modulo's look on the retake"). Frames 7 and 8 have finer rims, content check PASS, and nothing else changes. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).

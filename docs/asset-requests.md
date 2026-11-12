@@ -1060,6 +1060,15 @@ Section 11's sheet, played by its table, with the content check's conditions sho
   - Logic 1,584; type check, 0 new. The place saved, v185.
 - **For later:** Pip's Lantern Burst and Haymaker's bar turn their billboards on and off on their frames, so each is a picture late at the start and a picture short at the end; a line in `docs/polish-later.md`.
 - **Hours:** about 4.5, most of it the picture lag and the leak.
+- **Research's pass, 2026-11-12** (`_native` and `_64x3` on both floors, the ordinary's 64 px row, the HitLeft captures). **Accepted. The Shade's burst closes**, with no ga-fresh-eyes since it isn't a signature.
+  - **Felt:** the coat's glow lets go, a cream flame with its gold edge and ink rim leaps out of the collar, climbs and pinches to an ember, and the paper follows it up. A Shade that's done, said once and quickly.
+  - **Tier:** competent. **The one bold thing:** everything goes up, as the block-in promised, and on the bright floor too.
+  - **Section 11's note holds:** the core never washes to a blob, on either floor. **Section 10's capture holds:** the trims stay crisp, with no halo on the floor.
+  - **The damage number at 31 to 34:** the rising flame crosses the killing hit's number as it fades. It's brief, and the number stays legible. To `docs/polish-later.md`, not a fix.
+  - **The ember under the HUD's top-right panels:** the HUD draws over it, which is the right order. Accepted.
+  - **`ShadeBurst.Wait` 0.4: accepted.** A held clip still bursts, between the longest hold and the body's removal. A burst that never comes would be worse.
+  - **The elite never flinches:** accepted, as `Combat.Flinch.Kinds` has it.
+  - **Still open:** Pip's flame and a Shade's flame rising together. That needs one take of Pip's Lantern Burst killing two Shades, from the player's camera, after Pip's round 2 is imported.
 
 ## AR3. The UI kit
 

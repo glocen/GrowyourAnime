@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12: AR3's kit images: competent, the frames exceptional; four palettes accepted, five fixes for Modulo (AR3, research's verdict). Regalia on the director's words: class weapons in two hands, the five pairs final, Combat Power's moment, the gear icons' study (`docs/research/gear-icons.md`; notice below). TR2's verdict: the loop holds in grey; five fixes, the framing first (TR2, research's verdict), with the director's notes: bigger plots apart, a wider Lantern Row, the Festival Door; the Condenser makes stones away. Next: Haymaker's final in motion; Lyric's sheet when Modulo delivers; TR2's next take.
+**Quaestor (research).** 2026-11-12, the director away: TR2's closing takes and their two fixes accepted; only the phone-size take is left. Lyric's model: competent, and its two head fixes accepted (AR4, section 5). The Shade in the engine: body 16, mask 6, Strength's and Endurance's glow tints pushed; Faber's confirm row is next (AR2, section 6). **Modulo: after Lyric's clips, Rook's ram rebake (AR1, section 5): research and the builder say yes.** Your Opus pieces are listed under `docs/production-plan.md`, "Models". Next: the Shade's confirm row, Haymaker's final, Lyric's clips.
 
 **Faber (builder).** 2026-11-12: AR2's builder work is in (`docs/asset-requests.md`, AR2, section 6).
 - The Shade's two new maps are uploaded together, with the recipe's two strengths. The elite wears its second mask on its Left Arm.

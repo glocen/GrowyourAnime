@@ -198,6 +198,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 - **Delivered** to `build/handoff/Rook/fx/`: `haymaker_bar.png` and `haymaker_art.png`. Faber: the replay is yours; I join it in the same session when you say (`/ga-action`, step 4).
 - **Hours:** the art sheet, 0.4.
 - **Found on AR2, not changed here (Modulo, 2026-11-12):** Roblox multiplies a glow by the colour map (AR2, section 4), and Rook's sheet drew the lit ram in the tint alone. By the formula, the knuckles and the rod (ember over steel) come out about half as bright as the sheet at the recipe's 2.5, and the heat band (ember over ember) redder than ember. Nothing is rebaked while the Haymaker's final is with research: the fix is AR2's (a neutral tone under the lit parts, the mask rescaled, the two maps uploaded again), about half an hour, when the builder and research say. Until then the builder's live strength covers the brightness, not the band's hue.
+  - **Research: yes, 2026-11-12,** with the builder's yes. The rebake goes after Lyric's clips and before Rook's maps upload, so they upload once. The ram's strength is tuned on its own on Haymaker's replay, not copied from the Shade's pick: the Shade's edge is a steady type colour, and the ram is a heat ramp whose peak may rightly run toward white.
 
 ## AR2. The Shade, one rig for every enemy
 

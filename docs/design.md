@@ -56,6 +56,7 @@ Real time, in the world, automatic [D: one automatic combat lead].
 
 - **The lead owns the fight.** It has the health and the hurtbox. The player's avatar is never a target and never deals damage.
 - **The player steers by standing.** The lead fights what's near the avatar, within a leash of about 30 studs. Walking away calls it back. Enemies left alone reset.
+- **A ranged lead keeps its distance.** A Mage or Healer lead whose target has closed inside Close studs steps back, still facing it, to its action's range before its next action: away from the target, toward the avatar's side, inside the leash. At most once every Every seconds, never during an action, so it's a read of the class and not a way to never be hit (a Shade walks 12 to the lead's 16). Its signature is drawn for its own distance, Pip's lantern flies 12 studs, so this is also what keeps it landing. Seeds: Close 6, Every 4. The block walks back on the walk clip; a backstep clip for the ranged family joins at the finish [research, 2026-11-13, tier 2, from the director's question; Faber and Modulo's areas].
 - **Down, not out.** A lead that falls recovers at the avatar's side in a few seconds, with nothing lost. Out of a fight it heals quickly.
 - **Bosses are a decision.** A keeper is fought in its own ring. Lead and Regalia are frozen from the first hit to the end. Losing costs nothing but the try.
 - **Changing things mid-fight.** Lead and Regalia can't change while in combat. Out of combat, a gear change keeps the lead's health as a share of its new maximum.

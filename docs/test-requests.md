@@ -198,4 +198,4 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 
 ## Next, not yet written
 
-In order, each written when the one before it closes: the reveal's ceremony (with AR3: its larger frame and the shard's crack); Rook, Pip and Lyric installed (with AR1 and AR4); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.
+In order, each written when the one before it closes: the reveal's ceremony (with AR3: its larger frame and the shard's crack); Rook, Pip and Lyric installed (with AR1 and AR4), with a ranged lead keeping its distance (`docs/design.md`, "Combat"); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.

@@ -70,10 +70,14 @@ end
 -- two bodies close together overlapped their numbers). `slots` are offsets in the number's own widths and heights, in
 -- the order tried; the first that overlaps nothing in `taken` wins, and when every one overlaps, the one that overlaps
 -- least. Returns the offset in pixels.
-function Hud.Place(want: Box, taken: { Box }, slots: { { number } }): (number, number)
+-- `top`, when given, is the top band's lower edge (the cards' and the pills', plus a margin): a number's whole life stays
+-- under it (TR3's verdict, fix 4). `rise` is how far it climbs after its birth, so one born near the band starts lower,
+-- and no slot lifts it back over.
+function Hud.Place(want: Box, taken: { Box }, slots: { { number } }, top: number?, rise: number?): (number, number)
 	local bestX, bestY, least = 0, 0, math.huge
+	local lowest = if top then top + want.H / 2 + math.max(rise or 0, 0) - want.Y else -math.huge -- the highest a slot may sit
 	for _, slot in slots do
-		local dx, dy = slot[1] * want.W, slot[2] * want.H
+		local dx, dy = slot[1] * want.W, math.max(slot[2] * want.H, lowest)
 		local moved: Box = { X = want.X + dx, Y = want.Y + dy, W = want.W, H = want.H }
 		local covered = 0
 		for _, other in taken do
@@ -107,12 +111,46 @@ function Hud.Digits(n: number): string
 	return if n < 0 and grouped ~= "0" then "-" .. grouped else grouped
 end
 
+-- A whole number in its compact form, for a place too narrow for its digits (TR3's verdict, fix 6): three figures and
+-- K, M, B or T, cut, never rounded up, so it never shows more than there is: "999", "1.25K", "12.5M", "125B", "1M".
+local UNITS: { { Size: number, Mark: string } } = {
+	{ Size = 1e12, Mark = "T" },
+	{ Size = 1e9, Mark = "B" },
+	{ Size = 1e6, Mark = "M" },
+	{ Size = 1e3, Mark = "K" },
+}
+
+function Hud.Short(n: number): string
+	local whole = math.floor(math.abs(n) + 0.5)
+	local sign = if n < 0 and whole > 0 then "-" else ""
+	for _, unit in UNITS do
+		if whole >= unit.Size then
+			local value = whole / unit.Size
+			local places = if value < 10 then 2 elseif value < 100 then 1 else 0
+			local step = 10 ^ places
+			local cut = math.floor(value * step + 1e-9) / step
+			local text = string.format(`%.{places}f`, cut)
+			if places > 0 then
+				text = text:gsub("0+$", ""):gsub("%.$", "")
+			end
+			return `{sign}{text}{unit.Mark}`
+		end
+	end
+	return sign .. tostring(whole)
+end
+
 -- A card's health in whole points: a fighter still standing shows at least 1, and never more than its most, which is
--- whole points too ("882 / 881" came from rounding the most but not the health).
-function Hud.Health(health: number, most: number): string
+-- whole points too ("882 / 881" came from rounding the most but not the health). `room`, when given, is how many
+-- characters its bar holds: past it, both take their compact form (Hud.Short), if that's shorter.
+function Hud.Health(health: number, most: number, room: number?): string
 	local top = math.max(math.ceil(most - 1e-6), 0)
 	local now = math.clamp(math.ceil(health - 1e-6), 0, top)
-	return `{Hud.Digits(now)} / {Hud.Digits(top)}`
+	local full = `{Hud.Digits(now)} / {Hud.Digits(top)}`
+	if room == nil or #full <= room then
+		return full
+	end
+	local short = `{Hud.Short(now)} / {Hud.Short(top)}`
+	return if #short < #full then short else full
 end
 
 -- What a control says (docs/ui.md, rule 4: "A disabled button says why"): "…" while it waits on the server, its reason

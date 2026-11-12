@@ -2050,6 +2050,47 @@ return {
 		end,
 	},
 	{
+		Name = "HUD: a number born at the top band stays under it its whole life",
+		Run = function(t: any)
+			-- TR3's verdict, fix 4: under the cards' and the pills' lower edge plus a margin, its rise and swell included; one
+			-- born near it starts lower or rises less. A critical (the largest) on a stand-in body whose point is just under
+			-- the band, on the lead card's side, watched every frame it shows.
+			t.Wait(LEAD_SETTLE)
+			local world = Layers.Get("World")
+			local band = world:GetAttribute("Band")
+			t.Check("the HUD sets the band", type(band) == "number", tostring(band))
+			local camera = workspace.CurrentCamera
+			if type(band) ~= "number" or camera == nil then
+				return
+			end
+			local numbers = Combat.Numbers
+			local ray = camera:ViewportPointToRay(camera.ViewportSize.X * 0.2, band * Layers.Scale() + 4)
+			local root = Instance.new("Part")
+			root.Name = "HumanoidRootPart"
+			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
+			root.Position = ray.Origin + ray.Direction * 24 - Vector3.new(0, 3, 0)
+			root.Parent = workspace
+			local key = "SelfTest@band"
+			local closest, frames = math.huge, 0
+			local watch = RunService.RenderStepped:Connect(function()
+				local c = Effects.Counting[root] and Effects.Counting[root][key]
+				local edge = world:GetAttribute("Band")
+				if c and c.Plate.Visible and type(edge) == "number" then
+					frames += 1
+					closest = math.min(closest, (c.Plate.AbsolutePosition.Y - world.AbsolutePosition.Y) / Layers.Scale() - edge)
+				end
+			end)
+			Effects.Number(root, key, 12345, { Style = "Critical" }, numbers)
+			t.Wait(numbers.Seconds * 0.5)
+			Effects.Number(root, key, 678, { Style = "Critical" }, numbers) -- a second hit: it swells as it counts
+			t.Wait(numbers.Seconds + 0.1)
+			watch:Disconnect()
+			root:Destroy()
+			t.Check("it showed", frames > 10, `{frames} frames`)
+			t.Check("never over the band, its rise and swell included", closest >= -1, string.format("%.1f px under it at its closest", closest))
+		end,
+	},
+	{
 		Name = "Fight: the Held Note lands on each Shade in its cone, heals her, and never holds her",
 		Run = function(t: any)
 			-- docs/asset-requests.md, AR4, section 9: five touches, one a crest, each on every Shade inside the cone and a heal
@@ -2497,7 +2538,7 @@ return {
 		end,
 	},
 	{
-		Name = "HUD: the signature's ring empties and flashes when it fires, and fills over its cooldown",
+		Name = "HUD: the signature's ring shows only in a fight, empties and flashes when it fires, and fills over its cooldown",
 		Run = function(t: any)
 			-- TR3, part 5: at the right edge, low. The server says when the signature is ready again (FightService, Ready);
 			-- the ring flashes the moment it fires, then fills with the cooldown, the class's glyph in its middle.
@@ -2516,7 +2557,30 @@ return {
 				return
 			end
 			local action = signature :: Actions.Action
-			t.Check("the ring shows for a lead with a signature", ring.Visible)
+			-- Only in a fight (TR3's verdict, fix 5): hidden out of one, in as the lead takes a target, out a moment after.
+			local config = HudConfig.Ring
+			local function target(): boolean
+				local id = lead:GetAttribute("Target")
+				return type(id) == "string" and id ~= ""
+			end
+			waitFor(t, config.Linger + config.FadeOut + 2, function(): boolean
+				return not target() and not ring.Visible
+			end)
+			t.Check("out of a fight, the ring is hidden", not ring.Visible, `target {tostring(lead:GetAttribute("Target"))}`)
+			local level = lead:GetAttribute("Level")
+			local spawned = t.Server("FightSpawn", "brawler", (if type(level) == "number" then level else 1) + SHADE_TOUGHER, SHADE_AHEAD)
+			t.Check("a Shade to fight spawns", type(spawned) == "table" and spawned.Ok == true)
+			t.Check("the lead takes it on", waitFor(t, SHADE_TIMEOUT, target))
+			t.Wait(config.FadeIn + 0.1)
+			t.Check("in a fight, the ring fades in", ring.Visible and ring:GetAttribute("Seen") == 1, `{tostring(ring:GetAttribute("Seen"))} in`)
+			t.Server("FightSpawn") -- clears it
+			t.Check("the fight ends", waitFor(t, 2, function(): boolean
+				return not target()
+			end))
+			t.Wait(config.Linger / 2)
+			t.Check("it stays a moment after", ring.Visible and ring:GetAttribute("Seen") == 1, `{tostring(ring:GetAttribute("Seen"))} in`)
+			t.Wait(config.Linger / 2 + config.FadeOut + 0.15)
+			t.Check("then fades out", not ring.Visible, `{tostring(ring:GetAttribute("Seen"))} in`)
 			local row = Voidkin.ById[def :: string]
 			local glyph = ring:FindFirstChild("Glyph")
 			t.Check("with its class's glyph", row ~= nil and glyph ~= nil and glyph:GetAttribute("Kit") == `Class{row.Class}Glyph`, if glyph then `{glyph:GetAttribute("Kit")}` else "no glyph")

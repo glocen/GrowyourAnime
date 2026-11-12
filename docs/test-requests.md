@@ -269,7 +269,47 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 
 **Next:** the fix round, then research's playtest of it (the crit tuned live, the motion), on the device simulator at phone size. The street at dusk is judged once Lantern Row is installed.
 
-**Status:** started 2026-11-12 (Faber). The take is ready for research's verdict, 2026-11-13.
+**The fix round, 2026-11-13 (Faber), for research's playtest.** All six fixes are in the game. The captures and the card sheet are in `build/captures/tr3/fix_round/`. `0_card_sheet_full_and_64px.png` holds a Common full, low and fallen, the Uncommon and Rare trims, and the target full and compact, each at full size and at 64 px over dark.
+1. **The director's notes:**
+   - The portrait is the small frame at 1.25 (50 by 60).
+   - The bars start under the frame's right edge and run out to the slanted cut.
+   - The level's badge bites the frame's lower left corner.
+   - The experience thread is a cool blue, `#4E9BFF` (`Config.Hud.Card.Xp`, live).
+   - Today's portraits stay until Modulo's new cut.
+   - Not done here: the pills' icons. Electricity in cyan needs a new bolt from Modulo, and electricity is the kit's yellow `UIKit.Charge` everywhere, so which one changes is Modulo's and research's call. The panels' palettes are Modulo's choice.
+2. **Red:**
+   - Both cards' health is `#E2463F`, flat. `Bar`'s new `Flat` tints the core and the head the same red (`UI/Kit/Bar.luau`, its comment updated).
+   - The glow keeps its 8 px cap. A loss only shortens the fill, with no lag segment.
+   - Low and fallen read by length, the portrait's dimming and "Back in 4 s".
+   - The light starts 3 px clear of the portrait's frame (`Bar`'s `Inset`), so the red never touches it, at low health too.
+   - Mythical's trim is its metal's `#FF8794`, not its `#FF2848` glow.
+3. **The trim:**
+   - Round the lead card's bars and its badge, in the lead's rarity's colour (`Config.Hud.Card.Trim`). Seeded from Modulo's frames: the glow, else the metal's light.
+   - Seen on Common, Uncommon and Rare. Epic, Legendary and Mythical are seeds that no owned Voidkin shows yet.
+   - The card's own edge stays Graphite.
+4. **Numbers under the band:**
+   - The HUD gives the band's lower edge to `UI/World.luau`: the lowest card, badge or pill showing, plus `Config.Hud.Numbers.Band` (10 px).
+   - `Rules.Hud.Place` starts a number born near the band lower, so its peak meets the band and no slot lifts it back over. Its case: "a number's whole life stays under the top band".
+   - The World layer holds every number and level-up plate under the band each frame, swell included.
+   - The self-test: a critical born at the band, watched every frame, stays 0.5 px under it at its closest.
+5. **The ring** shows only in a fight (`Config.Hud.Ring`, live):
+   - It fades in over 0.2 s as the lead takes a target, stays 1 s after, and fades out over 0.35 s.
+   - Hidden, it follows the cooldown, so it's right the moment it shows. Its self-test checks all three.
+6. **Compact numbers:**
+   - `Rules.Hud.Short` writes three figures and K, M, B or T, cut, never rounded up.
+   - A health number takes it once it would pass 0.75 of its bar (`Config.Hud.Card.Room`), when the compact form is shorter. The dummy reads "1.54M / 1.54M".
+- **Checks:**
+  - Type check: 0 new.
+  - Logic: 1731, in Studio and offline.
+  - Self-test: 604/604, at 43 fps. Studio wasn't in front, and the timing cases passed.
+  - The world report and the smallest phone's lint: clean.
+- **Open:**
+  - A Legendary or Mythical frame's crest at 1.25 stands about 4 px above the card, into Roblox's top bar. The head-above-the-frame cut needs that headroom too, so the card moves down when that cut lands.
+  - The level-up's word keeps the old violet `Theme.Colour.Xp`, while the thread is now blue. Whether they match is research's call.
+  - The phone-size capture still waits on the director's device-simulator click.
+- **Four facts:** implemented; tested (above); visually reviewed by the builder, with research's playtest to come; not director-accepted.
+
+**Status:** started 2026-11-12 (Faber). The fix round is ready for research's playtest, 2026-11-13.
 
 ## Next, not yet written
 

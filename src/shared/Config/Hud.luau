@@ -39,6 +39,9 @@ return {
 		-- (Rules.Hud.Place): where it rose, then above, then up to either side.
 		Slots = { { 0, 0 }, { 0, -1 }, { -0.75, -0.5 }, { 0.75, -0.5 }, { 0, -2 } },
 		Pointer = 5, -- the word's pointer, authored pixels across
+		-- Authored pixels a number keeps under the top band (the lowest of the cards and the pills that show), its whole life,
+		-- rise and swell included (TR3's verdict, fix 4). The builder's seed.
+		Band = 10,
 		-- A critical (the director's word to stay close to the reference; research's table, AR3 section 3, round 2): gold,
 		-- heavy, slanted, larger, widely spaced, on the swept stroke. Research tunes these live at TR3's blockout.
 		Critical = {
@@ -72,17 +75,33 @@ return {
 		Weight = 4, -- the ring's width
 		Flash = 0.35, -- seconds of the flash when it fires
 		Ready = 0.6, -- seconds the ring's glow swells when it's ready again
+		-- Only in a fight (TR3's verdict, fix 5): seconds it takes to fade in as the lead takes a target, how long it stays
+		-- after the lead has none, and seconds to fade out. The builder's seeds.
+		FadeIn = 0.2,
+		Linger = 1,
+		FadeOut = 0.35,
 	},
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
-	-- The cards' colours, live for the blockout's fix round (the director's notes, 2026-11-13, in TR3; research asked for
-	-- them live): health's light on the lead's card and the target's, the lead's experience thread, and the lead card's
-	-- trim (its edge). Seeded as the take showed them: health in the kit's light (AR3's in-use rules), the trim the
-	-- Graphite edge.
+	-- The cards' colours, live so research tunes them by playing (TR3's verdict, 2026-11-13, fixes 1 to 3, with the
+	-- director's notes). Health is red on both cards, flat (Bar's Flat: its core and head the same red), and no other bar
+	-- takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's experience thread is a cool colour
+	-- of its own against the red, the builder's to try live. The trim round the lead card's bars and its level's badge is
+	-- the lead's rarity's colour, never a fixed gold (AR3's in-use rule 4), seeded from Modulo's frames
+	-- (tools/blender/ui_sheet.py, RARITIES): the frame's glow, else its metal's light. Room: the share of a health bar
+	-- its number may take before it takes its compact form (fix 6).
 	Card = {
-		Health = UIKit.Light,
-		TargetHealth = UIKit.Light,
-		Xp = Color3.fromRGB(176, 150, 246),
-		Trim = UIKit.Palettes.Graphite.Edge,
+		Health = Color3.fromHex("#E2463F"),
+		TargetHealth = Color3.fromHex("#E2463F"),
+		Xp = Color3.fromHex("#4E9BFF"),
+		Trim = {
+			Common = Color3.fromHex("#666C78"),
+			Uncommon = Color3.fromHex("#DCE2EC"),
+			Rare = Color3.fromHex("#DCE9FF"),
+			Epic = Color3.fromHex("#EEF4FF"),
+			Legendary = Color3.fromHex("#FFD777"),
+			Mythical = Color3.fromHex("#FF8794"), -- its metal's light, not its #FF2848 glow: kept apart from health's red
+		} :: { [string]: Color3 },
+		Room = 0.75,
 	},
 	-- A bar's glow reaches at most this far past its light, authored pixels: the kit's 14 points at a tall bar's scale ran
 	-- past the cards (TR3's take). Read when a bar is set.

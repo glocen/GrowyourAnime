@@ -5,6 +5,8 @@
 -- back while a screen is open: the screen has the player's attention, and the world's labels would crowd its edges.
 --   World.Plate(name, size, where, reach?)   a frame over where() (a world position, or nil to hide); size authored
 --   World.Shift(plate, offset)                moved off its point by `offset`, authored pixels (a number clear of another)
+--   World.Below(plate)                        kept under the top band its whole life: a number (TR3's verdict, fix 4)
+--   World.Band(edge?), World.Edge()           the top band's lower edge, authored pixels from the screen's top (the HUD's)
 --   World.Remove(plate)
 
 local RunService = game:GetService("RunService")
@@ -14,9 +16,10 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2 }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Swell: UIScale? }
 
 local plates: { [Frame]: Plate } = {}
+local band: number? = nil -- the top band's lower edge, margin included: the cards and the pills that show (HudController)
 
 function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: number?): Frame
 	local frame = Instance.new("Frame")
@@ -26,8 +29,24 @@ function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: 
 	frame.Size = UDim2.fromOffset(size.X, size.Y)
 	frame.Visible = false
 	frame.Parent = Layers.Get("World")
-	plates[frame] = { Frame = frame, Where = where, Reach = reach or math.huge, Shift = Vector2.zero }
+	plates[frame] = { Frame = frame, Where = where, Reach = reach or math.huge, Shift = Vector2.zero, Below = false }
 	return frame
+end
+
+function World.Below(frame: Frame)
+	local plate = plates[frame]
+	if plate then
+		plate.Below = true
+	end
+end
+
+function World.Band(edge: number?)
+	band = edge
+	Layers.Get("World"):SetAttribute("Band", edge) -- for the self-test
+end
+
+function World.Edge(): number?
+	return band
 end
 
 function World.Shift(frame: Frame, offset: Vector2)

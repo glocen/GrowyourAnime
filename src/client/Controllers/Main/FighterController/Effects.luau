@@ -1453,8 +1453,9 @@ local function restyle(c: Counting, numbers: Numbers)
 	end
 end
 
--- Clear of the numbers already up: each one's box where it stands now, in authored pixels.
-local function place(c: Counting)
+-- Clear of the numbers already up: each one's box where it stands now, in authored pixels. And under the top band its
+-- whole life (UI.World's band, the HUD's; TR3's verdict, fix 4): `rise` is how far it climbs, in studs.
+local function place(c: Counting, rise: number)
 	local camera = workspace.CurrentCamera
 	local scale = Layers.Scale()
 	local at = c.Where()
@@ -1482,7 +1483,9 @@ local function place(c: Counting)
 			end
 		end
 	end
-	local dx, dy = Hud.Place(want, taken, HudConfig.Numbers.Slots)
+	local peak = camera:WorldToViewportPoint(at + Vector3.new(0, rise, 0))
+	local climb = if peak.Z > 0 then (want.Y + c.H / 2 - (peak.Y / scale + c.Shift.Y)) else 0 -- the rise, in authored pixels
+	local dx, dy = Hud.Place(want, taken, HudConfig.Numbers.Slots, World.Edge(), climb)
 	c.Shift = Vector2.new(dx, dy)
 	World.Shift(c.Plate, c.Shift)
 end
@@ -1546,7 +1549,8 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 		c.Pointer = pointer
 	end
 	onBody[key] = c
-	place(c)
+	World.Below(plate)
+	place(c, numbers.Rise)
 	local function lay(age: number): boolean
 		c.Age = age
 		if not Hud.Live(c.Count, age, numbers.Seconds) then
@@ -1601,6 +1605,7 @@ function Effects.LevelUp(root: BasePart, level: number)
 	local plate = World.Plate("LevelUp", Vector2.new(size * 7, size * 1.6), function(): Vector3?
 		return if root.Parent then root.Position + Vector3.new(0, 3.5 + rise, 0) else nil
 	end)
+	World.Below(plate) -- under the top band, as a number is (TR3's verdict, fix 4)
 	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = Theme.Colour.Xp, Align = Enum.TextXAlignment.Center, Parent = plate })
 	label.TextStrokeTransparency = 0.2
 	label.Text = `Level {level}`

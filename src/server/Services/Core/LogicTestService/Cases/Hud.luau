@@ -70,6 +70,34 @@ return {
 		end,
 	},
 	{
+		Name = "Hud: a number's whole life stays under the top band",
+		Run = function(t: any)
+			-- TR3's verdict, fix 4: the band's lower edge at 50, and a number that climbs 20 after its birth.
+			local slots = { { 0, 0 }, { 0, -1 }, { -1, -0.5 }, { 1, -0.5 } }
+			local TOP, RISE = 50, 20
+			local function peak(want: Hud.Box, dy: number): number
+				return want.Y + dy - want.H / 2 - RISE
+			end
+			local far: Hud.Box = { X = 100, Y = 100, W = 60, H = 24 }
+			local x, y = Hud.Place(far, {}, slots, TOP, RISE)
+			t.Check("well under the band, it stays where it rose", x == 0 and y == 0)
+			local near: Hud.Box = { X = 100, Y = 70, W = 60, H = 24 }
+			x, y = Hud.Place(near, {}, slots, TOP, RISE)
+			t.Equal("born near the band, it starts lower", y, 12)
+			t.Equal("as far as its peak meets the band, no farther", peak(near, y), TOP)
+			x, y = Hud.Place(near, { { X = 100, Y = 82, W = 60, H = 24 } }, slots, TOP, RISE)
+			t.Check("a neighbour there: it goes aside, never up over the band", x == -60 and y == 12)
+			t.Check("its peak still under the band", peak(near, y) >= TOP)
+			local over: Hud.Box = { X = 100, Y = 30, W = 60, H = 24 }
+			x, y = Hud.Place(over, { { X = 100, Y = 100, W = 600, H = 200 } }, slots, TOP, RISE)
+			t.Check("every slot covered: still under the band", peak(over, y) >= TOP - 1e-9)
+			x, y = Hud.Place(near, {}, slots)
+			t.Check("no band: as before", x == 0 and y == 0)
+			x, y = Hud.Place(near, {}, slots, TOP, -5)
+			t.Equal("a rise below nothing counts as none: its top at 58, clear of the band", y, 0)
+		end,
+	},
+	{
 		Name = "Hud: the type edge's arrow for every pair",
 		Run = function(t: any)
 			local types: { string } = {}
@@ -123,6 +151,33 @@ return {
 			t.Equal("below nothing is nothing", Hud.Health(-4, 881.1), "0 / 882")
 			t.Equal("thousands", Hud.Health(1165.5, 1166), "1,166 / 1,166")
 			t.Equal("float noise on a whole most", Hud.Health(1166.0000001, 1166.0000001), "1,166 / 1,166")
+		end,
+	},
+	{
+		Name = "Hud: a number too wide for its bar takes its compact form",
+		Run = function(t: any)
+			-- TR3's verdict, fix 6: three figures and a unit, cut and never rounded up.
+			t.Equal("under a thousand, whole", Hud.Short(999), "999")
+			t.Equal("a thousand", Hud.Short(1000), "1K")
+			t.Equal("three figures", Hud.Short(1250), "1.25K")
+			t.Equal("cut, never rounded up", Hud.Short(1259), "1.25K")
+			t.Equal("float noise doesn't cut a figure", Hud.Short(1150), "1.15K")
+			t.Equal("a trailing nought dropped", Hud.Short(1200), "1.2K")
+			t.Equal("tens", Hud.Short(12345), "12.3K")
+			t.Equal("hundreds", Hud.Short(999999), "999K")
+			t.Equal("millions", Hud.Short(1250000), "1.25M")
+			t.Equal("billions", Hud.Short(125e9), "125B")
+			t.Equal("trillions", Hud.Short(3.4e12), "3.4T")
+			t.Equal("negative", Hud.Short(-12500), "-12.5K")
+			t.Equal("nothing", Hud.Short(0), "0")
+			t.Equal("room enough: the digits", Hud.Health(12345, 12345, 18), "12,345 / 12,345")
+			t.Equal("too wide: compact", Hud.Health(1249999, 1250000, 18), "1.24M / 1.25M")
+			t.Equal("cut: a hurt card never reads full", Hud.Health(1249000, 1250000, 18), "1.24M / 1.25M")
+			t.Equal("full", Hud.Health(1250000, 1250000, 18), "1.25M / 1.25M")
+			t.Equal("no room given: the digits", Hud.Health(1250000, 1250000), "1,250,000 / 1,250,000")
+			t.Equal("just fits", #Hud.Health(123456, 123456, 17), 17)
+			t.Equal("compact only when it's shorter", Hud.Health(1166, 1166, 5), "1,166 / 1,166")
+			t.Equal("the dummy's, on the target's bar (TR3's capture)", Hud.Health(1254735, 1254735, 18), "1.25M / 1.25M")
 		end,
 	},
 	{

@@ -3,7 +3,9 @@
 -- Modulo's order and numbers (tools/blender/ui_kit.py, `bar`; kit.json's "bar"): the channel and its edge, a thread
 -- under 7 points high; then the light, kept a dark rim inside the channel, its front cut on the slant: the glow, the
 -- light, its white core, and the bright head at its front. Bars are told apart by place and label as well as colour
--- (handbook/visuals/ui.md, "Don't"), and red is never a bar's colour (AR3's in-use rules). Size is authored pixels.
+-- (handbook/visuals/ui.md, "Don't"). Red is health's alone, and flat: one warm orange-red, its core and head tinted the
+-- same, never a white-pink head (AR3's in-use rule 2, amended at TR3's verdict, 2026-11-13, with the content check's
+-- conditions). A bar's edge may take a trim of its own (the lead card's, its rarity's colour). Size is authored pixels.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
@@ -18,6 +20,8 @@ export type Props = {
 	AnchorPoint: Vector2?,
 	Parent: Instance?,
 	Colour: Color3, -- the light
+	Flat: boolean?, -- one flat colour: the core and the head tinted as the light (health's red)
+	Inset: number?, -- authored pixels at its left the light never reaches: a bar that starts under a portrait's frame
 	Palette: string?,
 	LayoutOrder: number?,
 }
@@ -32,13 +36,16 @@ local function light(bar: Frame)
 	local colour = bar:GetAttribute("Colour") :: Color3
 	local p = Panel.Palette(bar)
 	local skin = Skin.Of(bar)
-	local w, h = bar.Size.X.Offset, bar.Size.Y.Offset
+	local inset = bar:GetAttribute("Inset")
+	local from = if type(inset) == "number" then inset else 0
+	local w, h = bar.Size.X.Offset - from, bar.Size.Y.Offset
 	local rim = math.min(p.Rim or 1, h * 0.2)
 	local s = 0.6 * h
-	local lx, ly, lh = 1.77 * rim, rim, h - 2 * rim
+	local lx, ly, lh = from + 1.77 * rim, rim, h - 2 * rim
 	local lw = math.min(s + (w - s) * fill - 2.37 * rim, w - 3.53 * rim)
 	local k = lh / 8
-	local warm = p.Warm ~= nil and colour.B < colour.R -- a warm light on a pale panel: gold at its edges
+	local flat = bar:GetAttribute("Flat") == true
+	local warm = not flat and p.Warm ~= nil and colour.B < colour.R -- a warm light on a pale panel: gold at its edges
 	local images: { [string]: ImageLabel } = {}
 	for _, name in LIGHT do
 		local image = skin:FindFirstChild(name) :: ImageLabel?
@@ -66,11 +73,11 @@ local function light(bar: Frame)
 	Skin.Tint(images.Light, if warm and warmth then Color3.new(colour.R * warmth[1], colour.G * warmth[2], colour.B * warmth[3]) else colour)
 	images.Light.ZIndex = 4
 	Skin.Set(images.Core, "BarCore", box)
-	Skin.Tint(images.Core, nil)
+	Skin.Tint(images.Core, if flat then colour else nil)
 	images.Core.ImageTransparency = 1 - (if warm then p.Core else 0.5)
 	images.Core.ZIndex = 5
 	Skin.Set(images.Head, "BarHead", { X = lx + lw - 20 * k, Y = ly, Scale = k })
-	Skin.Tint(images.Head, nil)
+	Skin.Tint(images.Head, if flat then colour else nil)
 	images.Head.ZIndex = 6
 end
 
@@ -85,6 +92,8 @@ function Bar.new(props: Props): Frame
 	bar.LayoutOrder = props.LayoutOrder or 0
 	bar:SetAttribute("Palette", props.Palette or "Graphite")
 	bar:SetAttribute("Colour", props.Colour)
+	bar:SetAttribute("Flat", props.Flat == true)
+	bar:SetAttribute("Inset", props.Inset or 0)
 	bar:SetAttribute("Share", 0)
 	local p = Panel.Palette(bar)
 	local h = props.Size.Y.Offset
@@ -114,6 +123,19 @@ function Bar.Colour(bar: Frame, colour: Color3)
 	end
 	bar:SetAttribute("Colour", colour)
 	light(bar)
+end
+
+-- The edge in a trim of its own (the lead card's, its rarity's colour), or the palette's again (nil). Nothing when
+-- unchanged.
+function Bar.Trim(bar: Frame, colour: Color3?)
+	if bar:GetAttribute("Trim") == colour then
+		return
+	end
+	bar:SetAttribute("Trim", colour)
+	local edge = Skin.Of(bar):FindFirstChild("Edge") :: ImageLabel?
+	if edge then
+		Skin.Tint(edge, colour or Panel.Palette(bar).Edge)
+	end
 end
 
 return Bar

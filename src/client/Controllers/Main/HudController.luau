@@ -27,6 +27,7 @@ local Markers = require(Shared.World.Markers)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
+local World = require(UI.World)
 local Read = require(UI.Read)
 local Panel = require(UI.Kit.Panel)
 local Text = require(UI.Kit.Text)
@@ -48,7 +49,13 @@ local GRAPHITE = UIKit.Palettes.Graphite
 local PAD = Theme.Size.Pad
 -- The cards and the pills fit the smallest phone (Theme.Smallest at the scale's floor, 668 authored across) side by side:
 -- the lead's 8 to 220, the target's centred from 226 to 442, the Electricity pill from 460 (the UI lint's overlap check).
-local CARD = Vector2.new(212, 62) -- the lead's card: the small frame at (7, 7), its lines from 56
+-- The lead's card (TR3's verdict, fix 1, from the director's notes): the portrait its biggest thing, the small frame at
+-- 1.25 (50 by 60); the bars start under the frame's right edge and run out long to the slanted cut; the level's badge
+-- bites the frame's lower left corner.
+local CARD = Vector2.new(212, 62)
+local FACE = { X = 5, Y = 1, Scale = 1.25 } -- the portrait: where its frame's top left sits, and its scale
+local LINES = 50 -- where the bars start, under the frame's right edge (at 55)
+local CLEAR = 8 -- how far into a bar its light starts: 3 clear of the frame, so health's red never touches the portrait
 local TARGET = Vector2.new(216, 50)
 local ELECTRICITY = 200 -- the Electricity pill's width: "600 / 600" and the rate, or "full"
 local PILL = 30 -- a pill's height (tools/blender/ui_kit.py, `pill`)
@@ -56,11 +63,13 @@ local BASE_EVERY = 0.25 -- seconds between reads of the base as it stands now: e
 local SMOOTH = 12 -- frames in a row under 1/30 s before the join's black lifts: a join's stall leaves text undrawn a moment
 local DOCK = Vector2.new(96, Theme.Size.Tap)
 local INK = Color3.fromHex("#0B0C10") -- the outline of text written on a conduit's light
+local WELL = 0.25 -- the signature ring's well, its transparency shown
 
 type Card = {
 	Frame: Frame,
 	Name: TextLabel,
 	Level: TextLabel,
+	Badge: Frame?,
 	Health: Frame,
 	HealthText: TextLabel,
 	Xp: Frame?,
@@ -76,10 +85,14 @@ type Ring = {
 	Glyph: ImageLabel,
 	Flash: UIStroke,
 	Scale: UIScale,
+	Well: Frame,
+	Strokes: { UIStroke }, -- the channel and the two halves' light, faded with the ring
 	Ready: number, -- the server's Ready we last saw
 	FiredAt: number, -- os.clock() of the last flash
 	ReadyAt: number, -- os.clock() it last became ready
 	Full: boolean,
+	FoughtAt: number, -- os.clock() the lead last had a target
+	Seen: number, -- 0 hidden to 1 shown: it fades in as a fight starts, out a moment after it ends
 }
 
 local lead: Card
@@ -201,24 +214,32 @@ end
 local function leadCard(): Card
 	local frame = Panel.new({ Name = "Lead", Size = UDim2.fromOffset(CARD.X, CARD.Y), Position = UDim2.fromOffset(PAD, PAD), Parent = Layers.Get("Hud") })
 	frame.Visible = false
-	local portrait = Portrait.new({ Name = "Portrait", Small = true, Position = UDim2.fromOffset(7, 7), Parent = frame })
-	portrait.ZIndex = 2
-	-- The level on a badge on the frame's foot (the director's word, 2026-11-12, from a reference).
-	local badge = Panel.new({ Name = "Badge", Size = UDim2.fromOffset(30, 18), Position = UDim2.fromOffset(27, 56), AnchorPoint = Vector2.new(0.5, 0.5), Parent = frame })
-	badge.ZIndex = 3
+	local portrait = Portrait.new({ Name = "Portrait", Small = true, Position = UDim2.fromOffset(FACE.X, FACE.Y), Parent = frame })
+	portrait.ZIndex = 3 -- over the bars' start
+	local grow = Instance.new("UIScale")
+	grow.Scale = FACE.Scale
+	grow.Parent = portrait
+	-- The level on a badge biting the frame's lower left corner (the director's notes, 2026-11-13, from a reference).
+	local foot = FACE.Y + 48 * FACE.Scale
+	local badge = Panel.new({ Name = "Badge", Size = UDim2.fromOffset(30, 18), Position = UDim2.fromOffset(FACE.X + 12, foot - 2), AnchorPoint = Vector2.new(0.5, 0.5), Parent = frame })
+	badge.ZIndex = 4
 	local level = Text.new({ Name = "Level", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Center, Parent = badge })
-	level.ZIndex = 3
-	local x = 56
+	level.ZIndex = 4
+	local x = FACE.X + 40 * FACE.Scale + 5 -- the name and the icons, clear of the frame
 	local right = CARD.X - 8
 	local name = Text.new({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Truncate = true, Box = UDim2.fromOffset(right - x - 40, 20), Position = UDim2.fromOffset(x, 4), Parent = frame })
 	local gem = icon(frame, "GemStrength", right - 27, 14, 15)
 	gem.Name = "Gem"
 	local class = icon(frame, "ClassWarrior", right - 8, 14, 15)
 	class.Name = "Class"
-	local health = Bar.new({ Name = "Health", Size = UDim2.fromOffset(right - x, 18), Position = UDim2.fromOffset(x, 26), Colour = HudConfig.Card.Health, Parent = frame })
+	local health = Bar.new({ Name = "Health", Size = UDim2.fromOffset(right - LINES, 18), Position = UDim2.fromOffset(LINES, 26), Colour = HudConfig.Card.Health, Flat = true, Inset = CLEAR, Parent = frame })
+	health.ZIndex = 2
 	local healthText = onLight("Value", health)
-	local xp = Bar.new({ Name = "Xp", Size = UDim2.fromOffset(right - x, 4), Position = UDim2.fromOffset(x, 49), Colour = HudConfig.Card.Xp, Parent = frame })
-	return { Frame = frame, Name = name, Level = level, Health = health, HealthText = healthText, Xp = xp, Portrait = portrait, Gem = gem, Class = class }
+	healthText.Position = UDim2.fromOffset(CLEAR, 0) -- centred on the bar that shows
+	healthText.Size = UDim2.new(1, -CLEAR, 1, 0)
+	local xp = Bar.new({ Name = "Xp", Size = UDim2.fromOffset(right - LINES, 4), Position = UDim2.fromOffset(LINES, 49), Colour = HudConfig.Card.Xp, Inset = CLEAR, Parent = frame })
+	xp.ZIndex = 2
+	return { Frame = frame, Name = name, Level = level, Badge = badge, Health = health, HealthText = healthText, Xp = xp, Portrait = portrait, Gem = gem, Class = class }
 end
 
 local function targetCard(): Card
@@ -229,7 +250,7 @@ local function targetCard(): Card
 	local way = arrow(frame, 31, 14)
 	local name = Text.new({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Truncate = true, Box = UDim2.fromOffset(TARGET.X - 40 - 60, 20), Position = UDim2.fromOffset(40, 4), Parent = frame })
 	local level = Text.new({ Name = "Level", Size = Theme.Text.Caption, Colour = GRAPHITE.Soft, Align = Enum.TextXAlignment.Right, Box = UDim2.fromOffset(56, 20), Position = UDim2.new(1, -8, 0, 4), AnchorPoint = Vector2.new(1, 0), Parent = frame })
-	local health = Bar.new({ Name = "Health", Size = UDim2.fromOffset(TARGET.X - 16, 16), Position = UDim2.fromOffset(8, 27), Colour = HudConfig.Card.TargetHealth, Parent = frame })
+	local health = Bar.new({ Name = "Health", Size = UDim2.fromOffset(TARGET.X - 16, 16), Position = UDim2.fromOffset(8, 27), Colour = HudConfig.Card.TargetHealth, Flat = true, Parent = frame })
 	local healthText = onLight("Value", health)
 	return { Frame = frame, Name = name, Level = level, Health = health, HealthText = healthText, Gem = gem, Arrow = way }
 end
@@ -285,10 +306,11 @@ local function signatureRing(): Ring
 		stroke.Parent = disc
 		return disc, stroke
 	end
-	local well = circle("Well", GRAPHITE.Channel, 1)
+	local well, channel = circle("Well", GRAPHITE.Channel, 1)
 	well.BackgroundColor3 = GRAPHITE.Well
-	well.BackgroundTransparency = 0.25
+	well.BackgroundTransparency = WELL
 	well.Parent = frame
+	local strokes = { channel }
 	local halves = {}
 	for side = 0, 1 do
 		local clip = Instance.new("Frame")
@@ -309,6 +331,7 @@ local function signatureRing(): Ring
 			NumberSequenceKeypoint.new(1, 1),
 		})
 		gradient.Parent = stroke
+		table.insert(strokes, stroke)
 		disc.Parent = clip
 		clip.Parent = frame
 		table.insert(halves, gradient)
@@ -320,7 +343,21 @@ local function signatureRing(): Ring
 	local glyph = Skin.Icon(frame, "ClassWarriorGlyph", config.Size / 2, config.Size / 2, config.Size * 0.5, GRAPHITE.Text, 3)
 	glyph.Name = "Glyph"
 	frame.Parent = Layers.Get("Hud")
-	return { Frame = frame, Halves = halves, Glyph = glyph, Flash = flash, Scale = scale, Ready = 0, FiredAt = -math.huge, ReadyAt = -math.huge, Full = true }
+	return {
+		Frame = frame,
+		Halves = halves,
+		Glyph = glyph,
+		Flash = flash,
+		Scale = scale,
+		Well = well,
+		Strokes = strokes,
+		Ready = 0,
+		FiredAt = -math.huge,
+		ReadyAt = -math.huge,
+		Full = true,
+		FoughtAt = -math.huge,
+		Seen = 0,
+	}
 end
 
 -- How full the ring is, 0 to 1: the right half, then the left (each half's gradient turns its light in).
@@ -332,14 +369,28 @@ local function fillRing(share: number)
 	ring.Frame:SetAttribute("Share", share)
 end
 
-local function stepRing(model: Model?)
+-- The ring shows only in a fight (TR3's verdict, fix 5): it fades in as the lead takes a target, and out a moment after it
+-- has none. Hidden, it still follows the cooldown, so it shows the truth the moment it fades in.
+local function stepRing(model: Model?, fighting: boolean, dt: number)
 	local cooldown = if model then model:GetAttribute("Cooldown") else nil
-	ring.Frame.Visible = model ~= nil and type(cooldown) == "number" and cooldown > 0 and lead.Frame.Visible
-	if not ring.Frame.Visible or model == nil then
-		return
-	end
 	local config = HudConfig.Ring
 	local now = os.clock()
+	local can = model ~= nil and type(cooldown) == "number" and cooldown > 0 and lead.Frame.Visible
+	if can and fighting then
+		ring.FoughtAt = now
+	end
+	local want = can and now - ring.FoughtAt <= config.Linger
+	local by = dt / math.max(if want then config.FadeIn else config.FadeOut, 1e-3)
+	ring.Seen = if can then math.clamp(ring.Seen + (if want then by else -by), 0, 1) else 0
+	ring.Frame.Visible = ring.Seen > 0
+	ring.Frame:SetAttribute("Seen", ring.Seen)
+	if not can or model == nil then
+		return
+	end
+	local seen = ring.Seen
+	local function faded(transparency: number): number
+		return 1 - (1 - transparency) * seen
+	end
 	local readyAt = model:GetAttribute("Ready")
 	local ready = if type(readyAt) == "number" then readyAt else 0
 	if ready > ring.Ready + 1e-3 then
@@ -357,10 +408,14 @@ local function stepRing(model: Model?)
 	if class ~= "" then
 		swap(ring.Glyph, `Class{class}Glyph`)
 	end
-	ring.Glyph.ImageTransparency = if full then 0 else 0.55
+	ring.Glyph.ImageTransparency = faded(if full then 0 else 0.55)
+	ring.Well.BackgroundTransparency = faded(WELL)
+	for _, stroke in ring.Strokes do
+		stroke.Transparency = faded(0)
+	end
 	local since = now - ring.FiredAt
 	local flash = if since < config.Flash then 1 - since / config.Flash else 0
-	ring.Flash.Transparency = 1 - flash
+	ring.Flash.Transparency = faded(1 - flash)
 	local swell = now - ring.ReadyAt
 	local back = if swell < config.Ready then math.sin(math.pi * swell / config.Ready) else 0
 	ring.Scale.Scale = 1 + 0.25 * flash + 0.12 * back
@@ -494,11 +549,33 @@ end
 local function showHealth(card: Card, model: Model)
 	local health, most = healthOf(model)
 	Bar.Set(card.Health, if most > 0 then health / most else 0)
-	card.HealthText.Text = Hud.Health(health, most)
+	-- Too wide for its bar, it takes its compact form (TR3's verdict, fix 6: the dummy's 1,254,735 crowded its bar): the
+	-- characters its share of the bar holds, a digit's width each (Config.Hud.Card.Room).
+	local label = card.HealthText
+	local inset = card.Health:GetAttribute("Inset")
+	local shown = card.Health.Size.X.Offset - (if type(inset) == "number" then inset else 0)
+	local room = math.floor(shown * HudConfig.Card.Room / (label.TextSize * HudConfig.Numbers.Digit))
+	label.Text = Hud.Health(health, most, room)
+end
+
+-- The top band's lower edge for the world's numbers (UI.World.Band): the lowest of the cards and the pills that show,
+-- plus the margin, in the World layer's authored pixels (TR3's verdict, fix 4: numbers stay below the top band).
+local banded: { GuiObject } = {}
+local function band()
+	local lowest: number? = nil
+	for _, frame in banded do
+		local shown = frame.Visible and (frame.Parent :: GuiObject).Visible -- a badge shows with its card
+		if shown then
+			local bottom = frame.AbsolutePosition.Y + frame.AbsoluteSize.Y
+			lowest = math.max(lowest or bottom, bottom)
+		end
+	end
+	local world = Layers.Get("World")
+	World.Band(if lowest then (lowest - world.AbsolutePosition.Y) / Layers.Scale() + HudConfig.Numbers.Band else nil)
 end
 
 -- Every frame: the cards from the fighters' attributes, the ring, the dock's selection, the electricity as it stands now.
-local function step()
+local function step(dt: number)
 	-- The cards' colours from Config.Hud.Card, so a tune shows at once (each call does nothing when it's unchanged).
 	local colours = HudConfig.Card
 	Bar.Colour(lead.Health, colours.Health)
@@ -506,8 +583,17 @@ local function step()
 	if lead.Xp then
 		Bar.Colour(lead.Xp, colours.Xp)
 	end
-	Panel.Trim(lead.Frame, colours.Trim)
 	local model = myLead()
+	-- The trim round the bars and the badge: the lead's rarity's colour (TR3's verdict, fix 3).
+	local row = if model then Voidkin.ById[tostring(model:GetAttribute("Def") or "")] else nil
+	local trim = if row then colours.Trim[row.Rarity] else nil
+	Bar.Trim(lead.Health, trim)
+	if lead.Xp then
+		Bar.Trim(lead.Xp, trim)
+	end
+	if lead.Badge then
+		Panel.Trim(lead.Badge, trim or GRAPHITE.Edge)
+	end
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil
 	local mine = ""
@@ -556,7 +642,8 @@ local function step()
 		target.Gem.Visible = theirs ~= ""
 		point(target.Arrow :: Frame, Hud.Arrow(mine, theirs))
 	end
-	stepRing(model)
+	stepRing(model, foe ~= nil, dt)
+	band()
 	for name, button in dock do
 		local open = Screen.Current() == name
 		if button:GetAttribute("Selected") ~= open then
@@ -590,6 +677,7 @@ function HudController.Start()
 	local value, extra, thread = pill("Electricity", 2, ELECTRICITY, "Bolt")
 	electricity, rate, charge = value, extra, thread :: Frame
 	ring = signatureRing()
+	banded = { lead.Frame, lead.Badge :: Frame, target.Frame, credits.Parent :: GuiObject, electricity.Parent :: GuiObject }
 	chip = Panel.new({
 		Name = "Chip",
 		Size = UDim2.fromOffset(DOCK.X * 3, PILL),

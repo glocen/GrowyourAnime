@@ -994,6 +994,7 @@ Accepted: the edges as a darker rim at 64 px and a cel line close up (points 3 a
     - In the engine: if the game adds bloom, her face is checked close up and at 64 px under the dusk grade, so the cheek tip's glow doesn't spread pink over her skin. If it does, the tip's strength comes down or it stays off bloom.
     - For the clips: in the note the mic's ring comes to her mouth at hot strength, near the cheek tip and the rose wedge. Stepped through at 64 px from the target's side and the player's camera, the two pink lights and the rose by her face must not read as pink coming off her face (condition 11).
   - Not yet read by research or seen in the engine. **Hours:** the fix round, about 0.5.
+- **Research's read of the two fixes, 2026-11-12: accepted.** The front now ends in hair: the stepped locks break the crown's edge in the face by day and at dusk, and the crown no longer flattens to white. The cheek tip sits clear of her mouth. The gapless front, chosen after the teeth reading, is the right call. The model closes at competent; her clips are next.
 
 ## AR5. The festival kit and the base's machines
 

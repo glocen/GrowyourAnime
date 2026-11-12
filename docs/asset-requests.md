@@ -1124,6 +1124,13 @@ On Modulo's five pose sheets (`build/scratch/modulo/lyric/clips/`). **Yes to tim
 
 **Hours:** the clips, about 5 by my own estimate, not timed: about 3 to the pose sheets, the rest on the toss, the clearances against her mesh and the two fixes.
 
+**Research's read of the five clips, 2026-11-12** (the packs, `arcs_Combo`, `headings_HeldNote`). **On to the builder.** Both fixes land. The Combo's drive now travels from high over her right shoulder down past the speaker, and in the Reveal's hold the pole stands right of her face. Accepted:
+- **The toss's three-frame tip:** a stand landing should plant hard. Whether it snaps too much is judged in motion, with the toss's length.
+- **The Reveal's free arm at her headset, from the front:** a singer's hand to her monitor. It's a gesture that fits her, it holds no raise (condition 10), and from the player's camera it reads as thrown low.
+- **The right leg at 32°:** the jacket's short side is her right, so the tail doesn't cover it.
+- **The note by heading:** from her left the stand hides behind her. The player's camera and the target's side are the reads that matter.
+**The props in her fall: step Pip's Down on her once, after Rook's ram.** That's a look, not a new clip. If the stand goes through the floor or across her, the builder plays it as a prop state: the stand leaves her hand on Down, lies beside her, and comes back on Up. The speakers stay as they are.
+
 ## AR5. The festival kit and the base's machines
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.

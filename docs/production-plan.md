@@ -53,6 +53,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 **Made on Opus, for Modulo's look on Fable.** Research lists each piece Modulo delivers on Opus, from its request entry. At the reset Modulo reads them and reworks what it judges needs it, as a fix round in each piece's entry. The Fable pieces before it: everything up to the elite's second mask (AR2, commit 95a5089).
 
 - Lyric's model on R6 (AR4, section 5), delivered on Opus
+- Lyric's five clips (AR4, section 6)
 
 ## Phases
 

@@ -57,6 +57,9 @@
         ],
         "insert_asset": [
           "Builder"
+        ],
+        "save_place": [
+          "Builder"
         ]
       },
       "never": {

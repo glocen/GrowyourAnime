@@ -205,5 +205,101 @@
   "Guard": 2640,
   "Dasher": 2544,
   "Support": 2752
+ },
+ "elite": {
+  "note": "An elite wears its own mask twice: the second is the same MeshPart again, with the same surface, mask_tint and mask_strength, at `size` of the first, welded to the Left Arm. `centre` is where that MeshPart's middle goes and `right`, `up` and `facing` where its own +X, +Y and -Z point, in this recipe's frame at the ordinary Shade's size: all of it scales with the rig. The clone's ties and knot end up inside the sleeve; nothing runs from it to the collar or the first mask. Only the Brawler's is past the content check (docs/asset-requests.md, AR2, section 5).",
+  "on": "Left Arm",
+  "size": 0.6,
+  "way": "on the arm's front corner",
+  "masks": {
+   "Brawler": {
+    "centre": [
+     -1.7406,
+     3.5561,
+     -0.2868
+    ],
+    "right": [
+     0.7002,
+     -0.1392,
+     -0.7002
+    ],
+    "up": [
+     0.0984,
+     0.9903,
+     -0.0984
+    ],
+    "facing": [
+     -0.7071,
+     0.0,
+     -0.7071
+    ]
+   },
+   "Guard": {
+    "centre": [
+     -1.7977,
+     3.5577,
+     -0.3442
+    ],
+    "right": [
+     0.7002,
+     -0.1392,
+     -0.7002
+    ],
+    "up": [
+     0.0984,
+     0.9903,
+     -0.0984
+    ],
+    "facing": [
+     -0.7071,
+     0.0,
+     -0.7071
+    ]
+   },
+   "Dasher": {
+    "centre": [
+     -1.7543,
+     3.5676,
+     -0.3028
+    ],
+    "right": [
+     0.7002,
+     -0.1392,
+     -0.7002
+    ],
+    "up": [
+     0.0984,
+     0.9903,
+     -0.0984
+    ],
+    "facing": [
+     -0.7071,
+     0.0,
+     -0.7071
+    ]
+   },
+   "Support": {
+    "centre": [
+     -1.7885,
+     3.2038,
+     -0.2647
+    ],
+    "right": [
+     0.7002,
+     -0.1392,
+     -0.7002
+    ],
+    "up": [
+     0.0984,
+     0.9903,
+     -0.0984
+    ],
+    "facing": [
+     -0.7071,
+     0.0,
+     -0.7071
+    ]
+   }
+  }
  }
 }

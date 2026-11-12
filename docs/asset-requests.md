@@ -207,7 +207,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): the two maps wait for the builder's upload. Open: the burst's light and paper, an effect built with the builder; the elite's second mask.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): the two maps wait for the builder's upload. The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): it waits for the builder's install. Open: the burst's light and paper, an effect built with the builder.
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -390,7 +390,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
   - Attack and AttackLeft alternate or are picked at random; so do Hit and HitLeft.
   - The body is hidden at the `Burst` marker, where the effect starts, from the collar.
   - The engine checks are the content check's, above and in section 2.
-- **Not done:** the burst's light and paper (an effect, with the builder, with its own content check); the elite's second mask. Nothing is uploaded or seen in the engine.
+- **Not done:** the burst's light and paper (an effect, with the builder, with its own content check). The elite's second mask is section 5. Nothing is uploaded or seen in the engine.
 - **Hours:** the clips, 1.2, the two rounds and the checks' fixes included.
 
 ### 4. The glow as Roblox draws it, and the clips' names (Modulo, 2026-11-12)
@@ -413,6 +413,27 @@ The builder's notice from the engine: Roblox multiplies a surface's glow by its 
 - **Delivered** to `build/handoff/Shade/`: `Shade_Color.png`, `Shade_Emissive.png`, `Shade.recipe.json`, `shade_model_sheet.png`, and `clips/` (the nine JSON and `Shade.clips.json`). Faber: the two maps go up together, with the recipe's two strengths.
 - **What I see wrong:** nothing here is seen in the engine. The match is between two Blender pictures and Roblox's published formula; its tone mapping and bloom aren't in it, so the strengths are a start to tune there, both by the same factor. With the glow off, the cloth near the hems is grey-black, not violet-black. The same formula touches two more recipes: Pip's flame (AR4, section 2) and Rook's ram (AR1, section 5's last line).
 - **Hours:** about 0.8, four bakes and the content check included.
+
+### 5. The elite's second mask (Modulo, 2026-11-12)
+
+A minor asset, so no blockout round: one comparison sheet, `build/handoff/Shade/shade_elite.png`, drawn by `tools/blender/shade_elite.py` (Workbench, no GPU turn), and a placement in `build/handoff/Shade/Shade.recipe.json` under `elite`.
+
+- **What it is:** the Shade's own mask again, the same MeshPart with the same surface, at 0.6 of its size, on the Left Arm's front corner just under the shoulder, upright and facing front-left. No new mesh, no new map, nothing to upload. The recipe gives, for each of the four masks, where the part's middle goes and where its three axes point, at the ordinary Shade's size; it scales with the rig (the game's elite is 1.35).
+- **Why the left arm:** the player's camera sits behind the lead's right shoulder, so a Shade that faces the lead shows it its front and its left. `shade_sheet.py`'s `PLAYER` view (156) is that camera mirrored; this sheet uses 204. The earlier sheets aren't redrawn for it: the Shade is the same on both sides until this mask.
+- **Three ways were drawn** on the Brawler at the elite's size beside an ordinary Shade: A flat on the arm facing out, B on the front corner, C pushed up onto the shoulder. B is picked: from the player's camera it's a second small grin looking back at the player, and it shows from the front and from the left. A is side-on to the camera. C reads as a plate on the shoulder, not a face.
+- **Content check, 2026-11-12: PASS** for way B on rules 2, 3 and 4, with only the Brawler seen at 64 px and on every heading. To hold:
+  1. The same part and surface, with `mask_tint` and `mask_strength` only: never the type's tint or a colour of its own, in any state. The sheet's red cuts are the blockout's.
+  2. The placement stays the recipe's. Moving it to the chest, collar, neck, a hand, beside the first mask or onto the ground, or making it as large as the first, goes back to the check.
+  3. No new string from it to the collar, the neck or the first mask. The clone's ties and knot end up inside the sleeve: look once in the engine from behind and from below, and a pale strip in the cuff's hollow or out of the sleeve's back comes back.
+  4. At first placement, a Strength Brawler elite is looked at at 64 px on dark and bright from three headings, with the game's bloom: no red from the seam, the collar's rim or the cuff spills onto the small mask (with section 4's condition 3).
+  5. The Guard, Dasher and Support elites wait: before one is installed, the sheet gains B on it at 64 px over dark and bright from three headings and goes back to the check (the Support's slips as a small pale hand, the Dasher's point as a spike past the arm). The Brawler elite doesn't wait.
+  6. Nothing else marks an elite without its own check: no aura, ground mark or added lit part.
+  7. If it's ever uploaded as a mesh of its own, it's a new asset, logged and checked.
+  8. It moves only with the Left Arm: no clip or effect knocks it off, dangles it, splits it or throws it. In the burst it goes with the coat in the same frame, never last, never left on the ground, and the burst's paper is scraps, never a whole small face.
+  9. One contact sheet of the elite before any public build: the second mask on, in Strength's red, the nine clips' widest frames at 64 px from the player's camera, on dark and bright; Guard, AttackLeft, HitLeft and Burst first. In the Guard the left sleeve comes level under the first mask: the small mask must not sink into the chest or the first mask.
+  10. No clip changes for it; a clip retimed or re-posed for the elite is checked again. Sections 2 and 4 stand.
+- **What I see wrong:** from behind and from the lead's other side the second mask is a sliver or hidden, so there only the size says elite. It's on a swinging arm: the clips weren't made with it, and condition 9's contact sheet is the first look at that, which is mine to draw when the builder has it in. Drawn as a blockout with the cuts in the type's colour, not as the baked mask. Not seen in the engine, not read by research.
+- **Hours:** about 0.5.
 
 ## AR3. The UI kit
 

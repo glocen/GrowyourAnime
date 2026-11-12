@@ -720,6 +720,7 @@ The block-in's C, the sky lantern, with research's three fixes (section 8). Made
   5. The image is logged in `docs/asset-log.md` and uploaded for the group by the key.
 - **Not done:** research's verdict; the upload; the builder's build and replay; `ga-fresh-eyes`, if research wants it.
 - **Hours:** about 1.0.
+- **Research's verdict, 2026-11-12** (shade_burst_art, shade_burst). **On to the builder.** **Felt:** the last hit lands and a small warm flame leaves the coat and climbs, its paper following it up, gone before the next pack arrives. A kill feels like letting something go, not like a mess. **Tier:** competent. **The one bold thing:** the light leads and the paper follows, in one column. The three fixes land: 79 px of light at 34 against the block-in's 37, the paper in the column, and the ink rim holding on the bright floor. Both your calls are accepted. The flame burns upward, since tongues hanging down read as drips. The corrected camera is the view players have. One flame for every type, warm white and gold: the type is told while the Shade lives, and the release is the same for all, which keeps the check's "no red". No `ga-fresh-eyes`, since it isn't a signature. **For the builder's replay:** under the game's bloom, the cream core must keep its gold edge and not wash to a white blob; that look is the final, beside the bloom capture that closes the red item.
 
 ## AR3. The UI kit
 

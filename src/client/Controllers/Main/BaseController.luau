@@ -131,6 +131,7 @@ local function plate(name: string, anchor: Part, lines: number, width: number): 
 		return if anchor.Parent then anchor.Position else nil
 	end, REACH)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
+	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
 	Panel.Pad(panel, 4)
 	Panel.List(panel, nil, 0)
 	for index = 1, lines do

@@ -7,6 +7,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local PathfindingService = game:GetService("PathfindingService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
@@ -18,6 +19,7 @@ local Combat = require(Shared.Config.Combat)
 local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
 local WorldConfig = require(Shared.Config.World)
+local BaseConfig = require(Shared.Config.Base)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local Drops = require(Shared.Rules.Drops)
@@ -73,6 +75,12 @@ local DOOR_RUN = 4 -- studs before a Festival Door the avatar starts its walk in
 local DOOR_THROUGH = 4 -- seconds from the walk's start to the fade's move: a step in, then the fade's middle
 local DOOR_GONE = 40 -- studs from a door that count as set down on its other side
 local TAKE_ZOOM = 12.5 -- studs from the avatar the take's camera holds: where Roblox's camera starts a player
+local TAKE_KEEPER = 150 -- seconds the keeper's take watches its fight
+local TAKE_KEEPER_LEVEL = 14 -- the lead's level in the keeper's take: it wins bare, where gear will carry it in play
+local KEEPER_SHORT = 55 -- studs past Pack 6 the keeper's take starts: out of its notice and the lead's leash, 25 short of the gate
+local KEEPER_ASK = 5 -- studs from the Challenge the avatar stops to hold it, inside Combat.Keeper.Reach
+local KEEPER_SHOWS = 3 -- seconds after the walk by which the Challenge shows, the gate in view
+local REJOIN_SHARD = "lanternrow_standard" -- the shard the rejoin's takes leave breaking: Lantern Row's packs drop it
 
 -- The angle in degrees between two directions, flat on the ground.
 local function flatAngle(a: Vector3, b: Vector3): number
@@ -147,6 +155,98 @@ local function walkThrough(t: any, door: Instance, close: boolean): boolean
 	end)
 	humanoid:MoveTo(t.Root().Position)
 	return moved
+end
+
+-- A take (TR2's evidence and its close): a stretch of play at real speed from the player's camera. `body` gets the take's
+-- kit: Zero() flashes a white frame so a recording finds its zero; Moment(name) writes a row in seconds from it;
+-- WalkTo(goal) walks the avatar there on a path, as a player steers. While it runs, the camera swings in behind a walking
+-- avatar, and the zoom is held at Roblox's starting distance: a key or a wheel that reaches Studio while the hold keeps it
+-- in front can't pull the camera out (the take of 2026-11-12 lost its last 30 s to one).
+type Take = { Zero: () -> (), Moment: (name: string) -> (), WalkTo: (goal: Vector3) -> boolean }
+local function take(t: any, body: (Take) -> ())
+	local player = Players.LocalPlayer
+	local zero = os.clock()
+	local kit = {} :: Take
+	function kit.Moment(name: string)
+		t.Row(`moment: {name}`, nil, nil, math.floor((os.clock() - zero) * 100 + 0.5) / 100, "s")
+	end
+	function kit.Zero()
+		local flash = Instance.new("ScreenGui")
+		flash.Name = "NL_TakeZero"
+		flash.IgnoreGuiInset = true
+		flash.DisplayOrder = 1000
+		local white = Instance.new("Frame")
+		white.Size = UDim2.fromScale(1, 1)
+		white.BackgroundColor3 = Color3.new(1, 1, 1)
+		white.BorderSizePixel = 0
+		white.Parent = flash
+		flash.Parent = player:WaitForChild("PlayerGui")
+		RunService.RenderStepped:Wait()
+		zero = os.clock()
+		RunService.RenderStepped:Wait()
+		RunService.RenderStepped:Wait()
+		flash:Destroy()
+	end
+	function kit.WalkTo(goal: Vector3): boolean
+		local character = player.Character
+		local humanoid = if character then Parts.Humanoid(character) else nil
+		if humanoid == nil then
+			return false
+		end
+		local points = { goal }
+		local path = PathfindingService:CreatePath({ AgentRadius = 2, AgentHeight = 5, AgentCanJump = false })
+		if pcall(function()
+			path:ComputeAsync(t.Root().Position, goal)
+		end) and path.Status == Enum.PathStatus.Success then
+			points = {}
+			for _, point in path:GetWaypoints() do
+				table.insert(points, point.Position)
+			end
+		end
+		local deadline = os.clock() + TAKE_WALK
+		for _, at in points do
+			humanoid:MoveTo(at)
+			while os.clock() < deadline do
+				local here = t.Root().Position
+				if Vector3.new(here.X - at.X, 0, here.Z - at.Z).Magnitude <= TAKE_REACH then
+					break
+				end
+				t.Wait(0.05)
+			end
+		end
+		local here = t.Root().Position
+		return Vector3.new(here.X - goal.X, 0, here.Z - goal.Z).Magnitude <= TAKE_REACH * 2
+	end
+	-- The camera a player steers: while the avatar walks, it swings in behind it.
+	RunService:BindToRenderStep("NL_TakeCamera", Enum.RenderPriority.Camera.Value - 1, function(dt: number)
+		local root = player.Character and Parts.Root(player.Character)
+		local camera = workspace.CurrentCamera
+		if root == nil or Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z).Magnitude < 2 then
+			return
+		end
+		local look = camera.CFrame.LookVector
+		local flat = Vector3.new(look.X, 0, look.Z)
+		local want = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+		if flat.Magnitude < 0.01 or want.Magnitude < 0.01 then
+			return
+		end
+		-- By angle, the short way round, so a camera facing the avatar exactly turns too (a lerp of opposites never does).
+		local from, to = math.atan2(flat.X, flat.Z), math.atan2(want.X, want.Z)
+		local yaw = from + ((to - from + math.pi) % (2 * math.pi) - math.pi) * math.min(1, dt * TAKE_TURN)
+		local across = math.sqrt(math.max(0, 1 - look.Y * look.Y))
+		local direction = Vector3.new(math.sin(yaw) * across, look.Y, math.cos(yaw) * across)
+		camera.CFrame = CFrame.lookAt(camera.CFrame.Position, camera.CFrame.Position + direction)
+	end)
+	local zoomMin, zoomMax = player.CameraMinZoomDistance, player.CameraMaxZoomDistance
+	player.CameraMinZoomDistance = TAKE_ZOOM
+	player.CameraMaxZoomDistance = TAKE_ZOOM
+	local ok, problem = pcall(body, kit)
+	RunService:UnbindFromRenderStep("NL_TakeCamera")
+	player.CameraMinZoomDistance = zoomMin
+	player.CameraMaxZoomDistance = zoomMax
+	if not ok then
+		error(problem, 0)
+	end
 end
 
 -- The fighter model with id `id`, or nil.
@@ -1039,6 +1139,29 @@ return {
 			end
 			t.Check("a battery under 100 shows its tenth, so it visibly counts up", Read.Stored(0.35) == "0.4" and Read.Stored(86.24) == "86.2" and Read.Stored(2357) == "2,357", `{Read.Stored(0.35)}, {Read.Stored(86.24)}, {Read.Stored(2357)}`)
 			t.Check("the target's card hides out of a fight", not parts.Target.Visible)
+			-- Nothing stands empty: at a join the save's copy comes a moment after the HUD and the plot, and pills and plates
+			-- stood as blank boxes for a second (TR2's rejoin take).
+			local pill = parts.Credits :: TextLabel
+			local said = pill.Text
+			pill.Text = ""
+			RunService.Heartbeat:Wait() -- the change's signal runs deferred
+			t.Check("a pill with nothing to say hides", pill.Parent ~= nil and not (pill.Parent :: GuiObject).Visible)
+			pill.Text = said
+			RunService.Heartbeat:Wait()
+			t.Check("and shows again once it has", pill.Parent ~= nil and (pill.Parent :: GuiObject).Visible)
+			local blank: { string } = {}
+			for _, panel in Layers.Get("World"):GetDescendants() do
+				if panel.Name == "Panel" and panel:IsA("GuiObject") and panel.Visible then
+					local says = false
+					for _, line in panel:GetChildren() do
+						says = says or (line:IsA("TextLabel") and line.Text ~= "")
+					end
+					if not says and panel.Parent then
+						table.insert(blank, panel.Parent.Name)
+					end
+				end
+			end
+			t.Check("no plate shows empty", #blank == 0, table.concat(blank, ", "))
 			lintClean(t, "the HUD")
 		end,
 	},
@@ -1408,117 +1531,44 @@ return {
 			-- in the Test store, the screens pressed through their own buttons. A white frame opens the take so a recording
 			-- finds its zero, and each moment is a row in seconds from it. The way out and home is the Festival Door. One step
 			-- isn't played, and its row says so: Watt's 30 s in the Breaker (BaseSkip).
-			local player = Players.LocalPlayer
-			local zero = os.clock()
-			local function moment(name: string)
-				t.Row(`moment: {name}`, nil, nil, math.floor((os.clock() - zero) * 100 + 0.5) / 100, "s")
-			end
-			local function standing(name: string): number
-				for _, row in t.Server("Packs") do
-					if row.Name == name then
-						return row.Standing
-					end
-				end
-				return 0
-			end
-			local function arrive(): boolean
-				local old = player.Character
-				t.Server("Respawn")
-				return waitFor(t, ARRIVE_TIMEOUT, function(): boolean
-					local character = player.Character
-					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
-					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
-				end)
-			end
-			-- The camera a player steers: while the avatar walks, it swings in behind it.
-			RunService:BindToRenderStep("NL_TakeCamera", Enum.RenderPriority.Camera.Value - 1, function(dt: number)
-				local root = player.Character and Parts.Root(player.Character)
-				local camera = workspace.CurrentCamera
-				if root == nil or Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z).Magnitude < 2 then
-					return
-				end
-				local look = camera.CFrame.LookVector
-				local flat = Vector3.new(look.X, 0, look.Z)
-				local want = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
-				if flat.Magnitude < 0.01 or want.Magnitude < 0.01 then
-					return
-				end
-				local turned = flat.Unit:Lerp(want.Unit, math.min(1, dt * TAKE_TURN))
-				if turned.Magnitude < 0.01 then
-					return
-				end
-				local across = math.sqrt(math.max(0, 1 - look.Y * look.Y))
-				local direction = Vector3.new(turned.Unit.X * across, look.Y, turned.Unit.Z * across)
-				camera.CFrame = CFrame.lookAt(camera.CFrame.Position, camera.CFrame.Position + direction)
-			end)
-			local function walkTo(goal: Vector3): boolean
-				local character = player.Character
-				local humanoid = if character then Parts.Humanoid(character) else nil
-				if humanoid == nil then
-					return false
-				end
-				local points = { goal }
-				local path = PathfindingService:CreatePath({ AgentRadius = 2, AgentHeight = 5, AgentCanJump = false })
-				if pcall(function()
-					path:ComputeAsync(t.Root().Position, goal)
-				end) and path.Status == Enum.PathStatus.Success then
-					points = {}
-					for _, point in path:GetWaypoints() do
-						table.insert(points, point.Position)
-					end
-				end
-				local deadline = os.clock() + TAKE_WALK
-				for _, at in points do
-					humanoid:MoveTo(at)
-					while os.clock() < deadline do
-						local here = t.Root().Position
-						if Vector3.new(here.X - at.X, 0, here.Z - at.Z).Magnitude <= TAKE_REACH then
-							break
+			take(t, function(kit: Take)
+				local player = Players.LocalPlayer
+				local moment, walkTo = kit.Moment, kit.WalkTo
+				local function standing(name: string): number
+					for _, row in t.Server("Packs") do
+						if row.Name == name then
+							return row.Standing
 						end
-						t.Wait(0.05)
 					end
+					return 0
 				end
-				local here = t.Root().Position
-				return Vector3.new(here.X - goal.X, 0, here.Z - goal.Z).Magnitude <= TAKE_REACH * 2
-			end
-			local function fight(name: string): boolean
-				local before = t.Server("Drops")
-				local first = before.Kills == 0
-				return waitFor(t, TAKE_FIGHT, function(): boolean
-					if first and t.Server("Drops").Kills > 0 then
-						first = false
-						moment("the account's first kill: Watt's shard drops")
-					end
-					return standing(name) == 0
-				end)
-			end
+				local function arrive(): boolean
+					local old = player.Character
+					t.Server("Respawn")
+					return waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+						local character = player.Character
+						local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+						return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+					end)
+				end
+				local function fight(name: string): boolean
+					local before = t.Server("Drops")
+					local first = before.Kills == 0
+					return waitFor(t, TAKE_FIGHT, function(): boolean
+						if first and t.Server("Drops").Kills > 0 then
+							first = false
+							moment("the account's first kill: Watt's shard drops")
+						end
+						return standing(name) == 0
+					end)
+				end
 
-			-- The zoom is held at Roblox's starting distance for the take: a key or a wheel that reaches Studio while the hold
-			-- keeps it in front can't pull the camera out (the take of 2026-11-12 lost its last 30 s to one).
-			local zoomMin, zoomMax = player.CameraMinZoomDistance, player.CameraMaxZoomDistance
-			player.CameraMinZoomDistance = TAKE_ZOOM
-			player.CameraMaxZoomDistance = TAKE_ZOOM
-			local ok, problem = pcall(function()
 				t.Server("DataWipe")
 				t.Check("a new account", waitFor(t, ANSWER, function(): boolean
 					local view = ProfileController.Get()
 					return view ~= nil and view.Progress.Starter == ""
 				end))
-				local flash = Instance.new("ScreenGui")
-				flash.Name = "NL_TakeZero"
-				flash.IgnoreGuiInset = true
-				flash.DisplayOrder = 1000
-				local white = Instance.new("Frame")
-				white.Size = UDim2.fromScale(1, 1)
-				white.BackgroundColor3 = Color3.new(1, 1, 1)
-				white.BorderSizePixel = 0
-				white.Parent = flash
-				flash.Parent = player:WaitForChild("PlayerGui")
-				RunService.RenderStepped:Wait()
-				zero = os.clock()
-				RunService.RenderStepped:Wait()
-				RunService.RenderStepped:Wait()
-				flash:Destroy()
+				kit.Zero()
 				moment("zero: the white frame")
 
 				t.Check("the avatar arrives on its plot", arrive())
@@ -1647,12 +1697,247 @@ return {
 				t.Wait(6)
 				moment("end")
 			end)
-			RunService:UnbindFromRenderStep("NL_TakeCamera")
-			player.CameraMinZoomDistance = zoomMin
-			player.CameraMaxZoomDistance = zoomMax
-			if not ok then
-				error(problem, 0)
-			end
+		end,
+	},
+	{
+		Name = "Take: the Lamplighter's fall, for TR2's close",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR2's close (docs/test-requests.md, TR2, research's read of the fixes): the keeper's fight at real speed from the
+			-- player's camera, its fall, the set-down beyond the ring and the shortcut home. Two steps aren't played, and their rows
+			-- say so: the lead's level is set (gear isn't in, and a bare Voidkin can't beat a keeper, docs/balance.md), and the
+			-- avatar is set down short of the keeper's gate (the street is the loop take's). The gate's Challenge is held as a
+			-- player holds it.
+			take(t, function(kit: Take)
+				local player = Players.LocalPlayer
+				local moment, walkTo = kit.Moment, kit.WalkTo
+				local keeper = Combat.Keeper
+				local moved = keeper.Fade.Out + keeper.Fade.Hold / 2 + MOVE_SLACK
+				local before = myLead()
+				local level = if before then before:GetAttribute("Level") else nil
+				t.Check("a lead to fight with", type(level) == "number")
+				if type(level) ~= "number" then
+					return
+				end
+				t.Check("the lead is set to the take's level", t.Server("LeadLevel", TAKE_KEEPER_LEVEL).Ok == true)
+				local old = player.Character
+				t.Server("Respawn")
+				t.Check("the lead stands at it", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local lead = myLead()
+					return player.Character ~= old and lead ~= nil and lead:GetAttribute("Level") == TAKE_KEEPER_LEVEL
+				end))
+				-- Short of the gate, past Pack 6's notice and the lead's leash: along the street from Pack 5 to Pack 6.
+				local at: { [string]: Vector3 } = {}
+				for _, row in t.Server("Packs") do
+					at[row.Name] = row.At
+				end
+				local last, prior = at["Pack 6"], at["Pack 5"]
+				t.Check("the street's last packs stand", last ~= nil and prior ~= nil)
+				if last == nil or prior == nil then
+					return
+				end
+				local along = Vector3.new(last.X - prior.X, 0, last.Z - prior.Z).Unit
+				local start = last + along * KEEPER_SHORT + Vector3.new(0, R6_ROOT_HEIGHT, 0)
+				t.Root().CFrame = CFrame.lookAt(start, start + along)
+				-- The camera behind the avatar, where a player who walked up the street has it.
+				RunService.RenderStepped:Wait()
+				local camera = workspace.CurrentCamera
+				camera.CFrame = CFrame.lookAt(start - along * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
+				local prompt: ProximityPrompt? = nil
+				t.Check("the keeper's gate streams in", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					for _, item in workspace:GetDescendants() do
+						if item:IsA("ProximityPrompt") and item.ActionText == "Challenge" then
+							prompt = item
+						end
+					end
+					return prompt ~= nil
+				end))
+				t.Wait(LEAD_SETTLE + 1)
+				kit.Zero()
+				moment("zero: the white frame")
+				moment(`set down short of the keeper's gate, Rook at level {TAKE_KEEPER_LEVEL} (both set, not played)`)
+				local holder = if prompt then prompt.Parent else nil
+				if prompt == nil or holder == nil or not holder:IsA("BasePart") then
+					return
+				end
+				local here = t.Root().Position
+				local flat = Vector3.new(holder.Position.X, here.Y, holder.Position.Z)
+				-- A prompt shows only while it's on screen (Roblox's own rule, seen 2026-11-12): held as a player holds it, once
+				-- the walk up to the gate has brought it into view.
+				local shown = false
+				local showing = ProximityPromptService.PromptShown:Connect(function(which: ProximityPrompt)
+					shown = shown or which == prompt
+				end)
+				moment("the walk to the keeper's gate")
+				walkTo(flat + (here - flat).Unit * KEEPER_ASK)
+				t.Check("the Challenge shows as the avatar comes up to the gate", waitFor(t, KEEPER_SHOWS, function(): boolean
+					return shown
+				end))
+				showing:Disconnect()
+				t.Wait(1)
+				moment("the Challenge held")
+				prompt:InputHoldBegin()
+				t.Wait(keeper.Hold + 0.2)
+				prompt:InputHoldEnd()
+				local asked = waitFor(t, REPLICATE, function(): boolean
+					return player:GetAttribute("Try") ~= nil
+				end)
+				if not asked then
+					t.Check("the Challenge didn't start a try: KeeperTry stands in", t.Server("KeeperTry").Ok == true)
+					moment("KeeperTry stands in for the Challenge")
+				end
+				moment("the try: the fade into the ring")
+				local seen: any = nil
+				t.Check("the Lamplighter stands in the ring", waitFor(t, moved + 2, function(): boolean
+					seen = t.Server("Keeper")
+					return seen.Keeper ~= "" and seen.KeeperHealth > 0
+				end))
+				if seen == nil or seen.Keeper == "" then
+					return
+				end
+				moment("in the ring, the Lamplighter at its middle")
+				local full, leadFull = seen.KeeperHealth, seen.LeadHealth
+				local struck, hurt, half, outcome = false, false, false, nil
+				local deadline = os.clock() + TAKE_KEEPER
+				while os.clock() < deadline do
+					local now = t.Server("Keeper")
+					if not struck and now.KeeperHealth < full then
+						struck = true
+						moment("Rook's first hit on the Lamplighter")
+					end
+					if not hurt and now.LeadHealth < leadFull then
+						hurt = true
+						moment("the Lamplighter's first hit on Rook")
+					end
+					if not half and now.KeeperHealth <= full / 2 then
+						half = true
+						moment(`the Lamplighter at half, Rook at {math.floor(now.LeadHealth / leadFull * 100 + 0.5)}%`)
+					end
+					local lead = myLead()
+					if now.KeeperHealth <= 0 then
+						outcome = "Win"
+						moment(`the Lamplighter falls, Rook at {math.floor(now.LeadHealth / leadFull * 100 + 0.5)}%`)
+						break
+					elseif (lead and lead:GetAttribute("State") == "Down") or not now.InTry then
+						outcome = "Loss"
+						moment("Rook is down: the try is lost")
+						break
+					end
+					t.Wait(0.1)
+				end
+				t.Check("the Lamplighter falls", outcome == "Win", tostring(outcome))
+				if outcome == "Win" then
+					t.Check("the try ends", waitFor(t, keeper.WinPause + moved + 2, function(): boolean
+						return t.Server("Keeper").InTry == false
+					end))
+					moment("set down beyond the ring")
+					t.Wait(MOVE_SLACK)
+					t.Near("at the ring's exit (studs off)", t.Server("Keeper").FromExit, 0, SET_DOWN)
+					t.Wait(TAKE_READ)
+					local pad = nil
+					t.Check("the shortcut is in view", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+						pad = Markers.Find("Shortcut")
+						return pad ~= nil and pad:IsA("BasePart")
+					end))
+					if pad and pad:IsA("BasePart") then
+						moment("the walk to the shortcut")
+						walkTo(pad.Position + Vector3.new(0, R6_ROOT_HEIGHT, 0))
+						t.Check("the shortcut sets the avatar down at home", waitFor(t, moved + 2, function(): boolean
+							return t.Server("Keeper").FromHome <= SET_DOWN
+						end))
+						moment("home by the shortcut")
+					end
+				end
+				t.Wait(4)
+				moment("end")
+				t.Server("LeadLevel", level) -- the lead's own level back
+				t.Server("Respawn")
+			end)
+		end,
+	},
+	{
+		Name = "Take: a rejoin, part 1: the leave, for TR2's close",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR2's close: a rejoin to the saved base, in two takes either side of a real leave (the playtest stopped, then
+			-- started: a new server loads the save from the Test store, and the time between is time away). Here the player puts
+			-- the bag's Lantern Row shards in the Breaker through the screen, as a player does before leaving.
+			take(t, function(kit: Take)
+				local player = Players.LocalPlayer
+				local moment = kit.Moment
+				local held = t.Server("Base").Bag[REJOIN_SHARD] or 0
+				t.Check("shards in the bag to leave breaking", held >= 1, `{held} held`)
+				local old = player.Character
+				t.Server("Respawn")
+				t.Check("the avatar stands on its plot", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local character = player.Character
+					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+				end))
+				t.Wait(WorldConfig.Arrive + 1)
+				kit.Zero()
+				moment("zero: the white frame")
+				BaseController.Open()
+				moment(`the Base screen: {held} Lantern Row shards in the bag`)
+				t.Wait(TAKE_READ)
+				for index = 1, held do
+					local add = screenButton("Base", "Bays", REJOIN_SHARD)
+					t.Check(`shard {index} goes in through the screen`, add ~= nil and Button.Press(add))
+					moment(`shard {index} into the Breaker`)
+					t.Wait(1.5)
+				end
+				t.Wait(TAKE_READ)
+				Screen.Close()
+				moment("the plot: the Breaker at work, Watt at work")
+				t.Wait(8)
+				local base = t.Server("Base")
+				t.Check("the base as it's left", #base.Ready == 0 and base.Bag[REJOIN_SHARD] == nil, `battery {base.Battery}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`)
+				moment("end: the player leaves (the playtest stops)")
+			end)
+		end,
+	},
+	{
+		Name = "Take: a rejoin, part 2: the return, for TR2's close",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- The return (part 1 says how): the save as it was left, advanced by the time away. The recording starts before the
+			-- playtest does, so it holds the load and the arrival; the white frame comes once the self-test can run.
+			take(t, function(kit: Take)
+				local moment = kit.Moment
+				kit.Zero()
+				moment("zero: the white frame, after the join")
+				local base = t.Server("Base")
+				local battery = tonumber(string.match(base.Battery, "^[%d%.]+")) or -1
+				local watt = false
+				for _, worker in base.Bays do
+					watt = watt or string.find(worker, "(watt)", 1, true) ~= nil
+				end
+				local detail = `battery {base.Battery}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, ready {#base.Ready}, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`
+				t.Check("Watt is still at work", watt, detail)
+				t.Check("the shards left breaking are ready to open", #base.Ready >= 1 and #base.Line == 0, detail)
+				t.Check("the battery paid for them and holds the rest", battery > 0 and battery < BaseConfig.Battery.Capacity, detail)
+				t.Wait(1)
+				moment("the plot as the player finds it")
+				t.Wait(6)
+				BaseController.Open()
+				moment(`the Base screen: {#base.Ready} ready to open`)
+				t.Wait(TAKE_READ)
+				local open = screenButton("Base", "Breaker", `Ready_{REJOIN_SHARD}`)
+				t.Check("one opens through the screen", open ~= nil and Button.Press(open))
+				t.Check("the reveal shows", waitFor(t, ANSWER, function(): boolean
+					return BaseController.Revealed() ~= nil
+				end))
+				moment("the reveal")
+				t.Wait(TAKE_READ + 0.5)
+				BaseController.Dismiss()
+				Screen.Close()
+				moment("the screen closed")
+				t.Wait(3)
+				moment("end")
+			end)
 		end,
 	},
 	{

@@ -95,6 +95,11 @@ local function pill(name: string, order: number, colour: Color3): TextLabel
 		Parent = Layers.Get("Hud"),
 	})
 	local label = Text.new({ Name = "Value", Font = Theme.Font.Strong, Colour = colour, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -PAD * 2, 1, 0), Position = UDim2.fromOffset(PAD, 0), Parent = frame })
+	-- Shown once it has something to say: at a join the save's copy comes a moment after the HUD (TR2's rejoin take).
+	frame.Visible = false
+	label:GetPropertyChangedSignal("Text"):Connect(function()
+		frame.Visible = label.Text ~= ""
+	end)
 	return label
 end
 
@@ -216,7 +221,7 @@ end
 -- Every frame: the cards from the fighters' attributes, the electricity from the base as it stands now.
 local function step()
 	local model = myLead()
-	lead.Frame.Visible = model ~= nil
+	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil
 	if model then
 		local health, most = model:GetAttribute("Health"), model:GetAttribute("MaxHealth")

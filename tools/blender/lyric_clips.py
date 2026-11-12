@@ -678,12 +678,15 @@ def held_note(t):
     # the speakers: they draw back with her breath, then fly out to the wave's edges and shake through the hold
     t.speak(4, "in")
     t.speak(22, "in", R=(2.9, -1.0, 5.3), L=(-2.9, -1.1, 5.0), RT=(6, -4), LT=(-6, -4), F=0.2)
-    t.speak(32, "out", R=(3.6, 4.2, 4.7), L=(-3.6, 4.2, 4.7), RT=(-24, 14), LT=(24, 14), F=0.0, Z=1.0)
+    t.speak(30, "out", R=(3.6, 4.2, 4.7), L=(-3.6, 4.2, 4.7), RT=(-24, 14), LT=(24, 14), F=0.0, Z=1.0)  # landed on the Note
     t.speak(88, "sine", R=(3.7, 4.4, 4.75), L=(-3.7, 4.4, 4.75), Z=1.0)
     t.speak(92, "sine", Z=0.0)
     t.speak(130, "sine", R=HOME[SR], L=HOME[SL], RT=(INWARD[SR], 0.0), LT=(INWARD[SL], 0.0), F=1.0)
     t.speak(150)
-    t.kick(31, "RL", 0.35, 16)
+    # they kick on each crest, the half-beats from the Note to the Release (AR4, section 9): the kick snaps back on the
+    # crest's own frame, and each is home before the next
+    for crest, size, back in ((30, 0.35, 13), (45, 0.22, 13), (60, 0.22, 13), (75, 0.22, 13), (90, 0.3, 16)):
+        t.kick(crest - 1, "RL", size, back)
     t.note(22, "sine", N=0.0)
     t.note(28, N=1.0, pull=NOTE_PULL)
     t.note(88, "sine")

@@ -12,7 +12,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now: Held Note's art (AR4, section 10), then your Frame 150 take. Then the intermittents.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. One question there for you and research: the table's crest motion or `Ease` 2's. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
+- **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
 - **Quaestor:** Held Note's art is ready for your verdict once it's in the game. It's a bright braid over a veil that falls away, an arc, and her lunge. It covers about 40% of the grey's screen share through the hold; the lever is the Beam's width, live.
 - Now: nothing unblocked. No lock held.
 

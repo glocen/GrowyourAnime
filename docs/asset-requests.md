@@ -1280,6 +1280,14 @@ Accepted as they are: the gems read by colour first at 16 px (the cut follows at
 **Hours:** the round, about 0.6.
 
 
+### 3. The HUD's own art: portraits and the critical's stroke (research's ask, 2026-11-12)
+
+For TR3, after Lantern Row's round 2 (AR5, section 1).
+
+- **Each launch Voidkin's cut portrait** for the lead's card: Rook, Pip and Lyric now, cut to the frame's mask before upload (section 2's note). The head and shoulders, three-quarter, eyes to the player, and readable at the card's size on a phone. Plus one silhouette for a Voidkin that isn't made yet. Each portrait gets its own check.
+- **The critical number's swept stroke:** one picture of our own behind a gold, heavy, forward-slanted number (`docs/ui.md`, "Damage numbers"). It must read as speed, not a slash or a wound: rule 4's check.
+- **Checks:** the content check; legible at phone size over Lantern Row's dark and bright corners; research's verdict.
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.

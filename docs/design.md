@@ -111,15 +111,39 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
 
 The largest change from the package, and reversible until gear is built (`docs/decisions.md`, "What changed from the package").
 
-- **Gear belongs to the account,** not to one Voidkin. Fourteen slots [D]: Weapon, Helmet, Shoulders, Chest Armor, Gloves, Bracers, Boots, Shield, Cloak, Amulet, Ring I, Ring II, Earring I, Earring II.
-- **Presets.** A preset is a full set of fourteen choices. One at the start, up to five. Each Voidkin is linked to a preset, so a Tank can wear the tank set and an Assassin the crit set, and swapping the lead swaps nothing by hand. One item may sit in several presets.
-- **Why:** a counter system asks players to swap leads often. Gear worn per Voidkin would make every swap a chore of fourteen items and their sockets, and it would bury new Voidkin under the cost of dressing them. Gear isn't shown on the bodies either way: each Voidkin's look is authored.
+- **Gear belongs to the account,** not to one Voidkin. Fourteen slots [D]: Main Hand, Off Hand, Helmet, Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet, Ring I, Ring II, Earring I, Earring II. The two hands are the two weapon slots [D, 2026-11-12]: they take the places of the package's Weapon and Shield, since the Tank's shield is its off hand.
+- **Weapons belong to a class** [D]: only that class wields them. Each class has its pair:
+
+| Class | Main Hand | Off Hand |
+|---|---|---|
+| Tank | Great Axe [D] | Shield [D] |
+| Mage | Staff [D] | Tome [D] |
+| Assassin | Dagger [D] | Throwing Blades |
+| Warrior | Sword | Scabbard |
+| Healer | Rod | Lantern |
+
+  The unmarked pairs are research's, open to the director's word. Each pair is two silhouettes no other class shares, so an icon says its class before its frame is read.
+- **Presets.** A preset holds the twelve shared slots and one weapon pair for each class. One at the start, up to five. Each Voidkin is linked to a preset and fights with its own class's pair from it, so a Tank wears the tank set and an Assassin the crit set, and swapping the lead swaps nothing by hand. One item may sit in several presets. A preset whose pair is empty for the lead's class says so with a mark on the slot, never silently.
+- **A weapon that drops** is for the lead's class. Five classes would otherwise split every weapon drop five ways. The Void Shop's stock may hold any class.
+- **Why:** a counter system asks players to swap leads often. Gear worn per Voidkin would make every swap a chore of fourteen items and their sockets, and it would bury new Voidkin under the cost of dressing them.
+- **Gear is never shown on the body** [D]: each Voidkin's look is authored. An item's whole look is its icon, so the icon carries all of gear's appeal. Each item kind is modelled in Blender and rendered to its icon, lit, with its rarity's frame and light; rarity also shows in its material, from plain iron to gilt. Dawn has designs of its own. How many designs per kind is set when the item art's request is written (`docs/asset-requests.md`, AR6), after a reference study of the director's references for what makes an icon worth wanting.
 - **An item** has a rarity, a level tier, one main stat fixed by its slot, and a few rolled lines.
-- **Forge ranks sit on the slot,** not the item. Raising the Weapon slot strengthens whatever weapon is there, in every preset, for good. Replacing an item never loses the work.
+- **Forge ranks sit on the slot,** not the item. Raising the Main Hand strengthens whatever is held there, by every class, in every preset, for good. Replacing an item never loses the work.
 - **War Emblems** go in an item's sockets: one on a Common item, two on Uncommon, three on Rare, four on Epic and above [D: four at most]. Emblems obtainable at launch are Common, Uncommon and Rare [D]. Taking one out is free, and replacing an item carries its emblems across.
 - **Jewels:** one jewel socket on items of Rare and above. Jewels carry the percent stats (critical damage, critical guard, lifesteal).
 - **The Stone Condenser** turns lower forge stones into higher ones. **The Research Lab** spends Research Points on permanent, flat gains: stat points, bay output, battery size, a chamber, Breaker tuning.
 - **Dawn** is the premium Legendary series [D]: the top gear of launch, earned in the last ground and the Tower.
+
+### Combat Power
+
+One number for how strong the lead is with its preset, made to be watched rising [D: appealing, 2026-11-12].
+
+- **It never lies.** It's a weighted sum of the lead's resolved stats (`docs/balance.md`, "The stats"), and the weights are fitted by the simulation so that, with no type edge, the higher Combat Power wins more often. A number players chase has to be one they can trust.
+- **Every upgrade moves it.** Everything adds points, so every real gain, an emblem included, raises it by a whole, visible number, never by zero. Its scale is large, set in the seeds.
+- **The moment.** On any change, the number rolls up to its new value with a burst and a floating gain; a loss shows as a plain number down. Over the world, the gain rises beside the lead's card for a second, then the HUD is quiet again.
+- **The pull.** In the bag, an item that would raise it carries an up arrow; a slot with a better item waiting carries a dot. Each ground, keeper and Tower floor shows its recommended Combat Power, the player's beside it in green, amber or red.
+- **Honest.** A tap on it shows how much each source gives, and the parts sum to the total (`docs/ui.md`, "Stats, shown honestly").
+- It's for reading, matchmaking and the Clash's rewards, and never used to compute damage.
 
 ## The Festival of Battles
 

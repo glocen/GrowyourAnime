@@ -60,7 +60,7 @@ Shares of a full launch build's stat points, at level 60:
 
 **Ratings** all convert the same way: `chance = ceiling x mine / (mine + theirs + K x G(level))`. A rating never reaches its ceiling, an opposing rating always pulls it down, and it needs more points at higher levels to hold the same chance. That shape is what keeps a stat from being solved.
 
-**Power** is one number shown to the player: a weighted sum of the stats. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage.
+**Combat Power** is one number shown to the player: a weighted sum of the stats, its weights fitted by the simulation so the higher number wins more often with no type edge. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage. How it's shown: `docs/design.md`, "Combat Power".
 
 ## One hit
 

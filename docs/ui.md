@@ -38,7 +38,7 @@ Built first, in this order, each to the bar before the next.
 3. **The Breaker.** The chambers as they are in the world, each with its shard and time left; the waiting line beneath; the shard's odds one tap away; infusion as a clear choice with its price and its effect on the odds.
 4. **Voidkin.** A grid of portraits, the frame showing rarity, a gem for type and an icon for class. Sort and filter by type, class, role. A long press compares two.
 5. **One Voidkin.** The character large, turning. Name and nickname (rename beside favourite, lock and set as lead). Its stats, its signature and passive in plain words, its stars, its linked preset.
-6. **Regalia.** The fourteen slots around a figure, each showing its item and its forge rank. A tap opens the slot: the item, its sockets, what's in the bag for it, with the difference shown as plain up and down numbers. Presets as tabs.
+6. **Regalia.** The fourteen slots around a figure, each showing its item's icon and its forge rank, the two hands for the lead's class; Combat Power large above them. A tap opens the slot: the item, its sockets, what's in the bag for it, with the difference shown as plain up and down numbers and in Combat Power. Presets as tabs. Combat Power's moments: `docs/design.md`, "Combat Power".
 7. **The base's bays.** Each bay with its worker, output and level; the battery; what the Breaker is drawing. Assign by dragging or by tap.
 8. **The map.** The six grounds as a festival route, the keeper's gate on each, what each ground's shards hold.
 9. **Shared pieces:** confirm, error, toast, reward, empty state.

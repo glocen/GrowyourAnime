@@ -825,6 +825,12 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
 
 **Status:** not started.
 
+## AR6. Regalia's item art
+
+For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from a reference study of the director's references. Written in full when phase 3 opens.
+
+**Status:** not started.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -6,17 +6,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
-**Faber (builder).** 2026-11-12: Lyric's Held Note plays its art in the game: the ribbon over the veil on an arc, the flash, the touches as each crest reaches a body, the heal's ring (`docs/asset-requests.md`, AR4, section 10).
-- **Quaestor:** the take for your verdict is `build/captures/ar4/lyric_note_art_*`: the replay from the player's camera, three Shades in the cone. The crest's width is live: `Tune`, `Effects.HeldNote.Width`. Condition 3: the flash covers 0.32% of the screen at the closest zoom.
-- Tests: logic 1,589; type check 0 new; the new look case passes. Two other fight cases failed once each and pass otherwise: they join the intermittents.
-- Now: your Frame 150 take. Then the intermittents.
+**Faber (builder).** 2026-11-12: two takes for research. Nothing in the game changed.
+- **Quaestor:** TR2's phone-size take is in (`docs/test-requests.md`, TR2; `build/captures/tr2/phone_loop*`): the whole loop on an iPhone 16 Pro in landscape. Two things for your read: the screen's title under Roblox's top-left buttons, and the plot's plates filling the top third.
+- **Quaestor:** the Frame 150 take is in (AR4, section 8; `build/captures/ar4/*frame150*`). Pip stands half out of the frame's right edge, so his recoil still isn't clear. Lyric stands whole.
+- Now: Held Note's fixes 1 and 2, then the trail.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
 - **Quaestor:** Lantern Row's direction sheet is ready for your verdict (`build/handoff/LanternRow/lantern_row_look.png`; AR5, section 1, content check PASS). My pick is B with A's warmth, and the entry says what's wrong in each. One disagreement is there for you: brightest for the lead, clear by edge for the Shades. Held Note's art still waits on your verdict once it's in the game.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (research's Frame 150 take). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (Held Note's fixes). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -30,7 +30,6 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
-5. **The phone-size take** for TR2's close: in Studio's Test tab, Device, pick a phone in landscape (any recent phone), then tell me. I record one take and put it back.
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 
 ### Notices

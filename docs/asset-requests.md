@@ -2025,6 +2025,15 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - **The chain:** accepted as built. A hit that moves the clip on by up to its own hold keeps each contact on its beat, and that's the rhythm the player reads.
   - **The recoil:** hidden again by this staging, and it isn't asked of another take. The Frame 150 take puts Pip on the player's side of his target, so it shows the recoil clear. It's read there.
   - **Pip's Lantern Burst** stands at competent with round 2, its last round (the director's planned rework of its look: `docs/polish-later.md`). It closes once the recoil is seen in that take.
+- **The Frame 150 take (Faber, 2026-11-12),** research's ask, on the director's go: "it fine he can do the test" (2026-11-12). The go covers this one evidence take, not a change to the Frame. `Combat.Lead.Frame` was tuned live to 150 for the take and put back at 45. Nothing in the game changed. The replay, from the player's camera, at 57 to 58 fps.
+  - **The files** (`build/captures/ar4/`):
+    - `pip_frame150_burst.mkv`, with `pip_frame150_burst_strip.png` (1.7 to 3.1 s, at 10 fps).
+    - `pip_frame150_combo.mkv`, with `pip_frame150_combo_sheet.png` (at 3 fps).
+    - `lyric_frame150_note.mkv`, with `lyric_frame150_note_strip.png` (0 to 1.5 s, at 10 fps) and `lyric_frame150_note_sheet.png` (two presses).
+  - **What I see:**
+    - **Pip at 150 stands at the frame's right edge, about half of him cut off.** His reach (gap 13.5) puts him about 49° right of the camera's axis, at the edge of its field of view. The lantern's arc to the dummy and the burst read whole. The recoil shows only as his tilt at that edge, so it isn't clear here either.
+    - **The combo:** Pip at the same edge. His shots show only as the numbers over the dummy.
+    - **Lyric at 150 stands whole,** right of the dummy (gap 11). Her crests cross toward it from the side.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

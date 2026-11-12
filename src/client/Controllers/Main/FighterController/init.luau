@@ -27,7 +27,6 @@ local player = Players.LocalPlayer
 
 -- The late start's catch-up (handbook/feel/combat.md, "Hit confirmation"): own pace first, then faster until in step.
 local CATCH = { OwnPace = 0.08, Over = 0.12, Limit = 0.25 }
-local BURST_MARKER = "Burst" -- AR2's Burst clip: the body hides here and the effect takes over
 local WALK_SMOOTHING = 10 -- a second's share the walk's speed follows the body by: about a tenth of a second
 
 -- The effects that hang on an action's beats, by its id. A landed hit's spark is every action's.
@@ -283,22 +282,10 @@ local function playReaction(view: View, role: string): AnimationTrack?
 	return t
 end
 
--- A Shade bursts into light and paper on its Down clip's `Burst` marker (AR2: the whole body hides on that frame and the
--- effect starts from the collar), or at once when it has no clip.
+-- A Shade bursts as it goes down (AR2, section 11): the effect runs from the Down clip's start, on its clock, and hides
+-- the body on its `Burst` marker (Effects.ShadeBurst), or bursts at once when it has no clip.
 local function burst(view: View, down: AnimationTrack?)
-	local function go()
-		Effects.Burst(view.Model, if view.Collar then view.Collar.WorldCFrame else nil)
-	end
-	if down == nil then
-		go()
-		return
-	end
-	local connection: RBXScriptConnection
-	connection = down:GetMarkerReachedSignal(BURST_MARKER):Connect(function()
-		connection:Disconnect()
-		go()
-	end)
-	table.insert(view.Connections, connection)
+	Effects.ShadeBurst(view.Model, down, view.Collar)
 end
 
 local function onState(view: View)

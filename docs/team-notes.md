@@ -6,10 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away. Pip's Lantern Burst art: competent, on to the builder; fix 1 judged on the replay (AR4, section 8). Haymaker: two fix rounds spent, both "works", so the options wait on the director (item 7 below, B is research's pick). **Modulo: block out B, the square driven down from above, after your current piece** (tier 1, for the director's pick). Next: the ram's rebake, Lyric's fall, Pip's burst in the game.
 
-**Faber (builder).** 2026-11-12: Lyric's Held Note block is in the game, accepted at `Ease` 2 (`docs/asset-requests.md`, AR4, section 9).
-- **Modulo:** research's prop state is in. The stand leaves her fist on Down, lies by her, and comes back on Up. The crests wait for your art (section 10), with research's three notes there.
-- Tests: Held Note 19/19 and Fight 199/199 with Lyric, the whole suite 374/374 with Rook, logic 1,571, type check 0 new.
-- Now: the Shade's burst from your art, with the bloom capture (AR2, sections 10 and 11). Its picture is uploaded. Then the intermittents: the HUD/Base pair, the Shade's swing alternation.
+**Faber (builder).** 2026-11-12: the Shade's burst is in the game from Modulo's art, with the content check's capture (`docs/asset-requests.md`, AR2, section 13).
+- **Quaestor:** the burst and section 10's bloom capture are ready for your pass, `build/captures/ar2/burst_*`. Nothing red after the hide on either floor, and the gold edge holds under the bloom. For your read: the flame passes the damage number about 31 to 34, and on the ordinary takes the ember climbs into the HUD's top-right panels. The elite never plays Hit or HitLeft in a fight, so its part of the capture is the Burst.
+- Fixed on the way: a body that left before its Burst marker kept its burst in the world. Now the burst goes with it, and a clip held still bursts at 0.85 s (a new case). Lyric's HeldNote is re-imported from f4aad8c.
+- Tests: the full suite 399 of 400 (the Base label-size intermittent, queued), logic 1,584, type check 0 new. The place is saved, v185.
+- Now: Pip's round 2 (the clip's import, the picture's upload), then his two rising flames on a kill, then the intermittents.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Pip's burst, round 2, is in the handoff (AR4, section 8). Import `Pip_LanternBurst`, and upload `pip_burst.png` for the group by the key, in place of the current one. The table and the trail are unchanged.
@@ -17,7 +18,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Waiting on the director's go:** the two full sheet renders, Lyric's (section 10, stopped for memory) and Pip's art checks. Haymaker's clip striking down waits on item 7.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (AR2, the Shade's burst). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (AR4, Pip's round 2). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -61,6 +62,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. The Shade bursts into light and paper (Faber)
+
+- **What:** a fallen Shade's collar charges, then flares the coat's size on its Burst marker as the body goes out. A flame climbs, its paper rising after it, from Modulo's art by its table, untinted. The content check's capture closes its red item: nothing red after the hide, on dark and bright, ordinary and elite. A burst no longer stays in the world when its body leaves first or its clip stalls.
+- **Where:** `Config.ShadeBurstArt` (from `tools/art/art_table.py`), `Config.Effects.ShadeBurst`, `FighterController/Effects.luau`. The record: `docs/asset-requests.md`, AR2, section 13.
+- **Open:** research's pass. Pip's and Rook's billboards are drawn a picture late (`docs/polish-later.md`).
 
 ### 2026-11-12. Lyric fights, and her note holds (Faber)
 

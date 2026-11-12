@@ -18,6 +18,7 @@ local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
 local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
+local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
 local WorldConfig = require(Shared.Config.World)
 local BaseConfig = require(Shared.Config.Base)
 local Markers = require(Shared.World.Markers)
@@ -1054,13 +1055,65 @@ return {
 					end
 					return nil
 				end
+				-- the burst's pictures (AR2, section 11), the art sheet's on billboards round its anchor
+				local function pictures(): { BillboardGui }
+					local found = {}
+					local home = workspace:FindFirstChild("NL_Effects")
+					for _, anchor in (if home then home:GetChildren() else {}) do
+						if anchor.Name == "NL_ShadeBurst" then
+							for _, gui in anchor:GetChildren() do
+								if gui:IsA("BillboardGui") then
+									table.insert(found, gui)
+								end
+							end
+						end
+					end
+					return found
+				end
+				-- every billboard is made at the start; a picture shows by its image (Effects.ShadeBurst)
+				local function lit(): { BillboardGui }
+					local on = {}
+					for _, gui in pictures() do
+						local image = gui:FindFirstChildOfClass("ImageLabel")
+						if gui.Enabled and image and image.ImageTransparency < 1 then
+							table.insert(on, gui)
+						end
+					end
+					return on
+				end
 				local hideAt: number? = nil
 				local hideClip: number? = nil
 				local shownBefore = not hidden()
+				local charged = false
+				local atHide: { BillboardGui } = {}
+				local before: { BillboardGui } = {}
+				local beforeClip: number? = nil
+				-- the longest of the last steps: the flare is set on the first step at or past the marker and read a poll
+				-- later, so a long frame there moves the clip's time by that step, not by a nominal frame
+				local polledAt, step = os.clock(), FRAME
 				while os.clock() - (downAt :: number) < 1 do
+					step = math.max(step, os.clock() - polledAt)
+					polledAt = os.clock()
+					-- the effect steps on RenderStepped, before this poll's Heartbeat. A part is drawn the frame it's set; a
+					-- billboard shown is drawn a frame later, one cleared is gone at once. So the hide's picture shows what
+					-- was lit a step before it and is still lit on it.
 					if hidden() then
-						hideAt, hideClip = os.clock(), clipTime()
+						hideAt, hideClip = os.clock(), beforeClip
+						local still = {}
+						for _, gui in lit() do
+							still[gui] = true
+						end
+						for _, gui in before do
+							if still[gui] then
+								table.insert(atHide, gui)
+							end
+						end
 						break
+					end
+					before, beforeClip = lit(), clipTime()
+					charged = charged or #before > 0
+					if beforeClip == nil or (beforeClip :: number) < ShadeBurstArt.Burst * FRAME - 2 * FRAME then
+						step = FRAME -- only the steps round the marker count
 					end
 					task.wait()
 				end
@@ -1068,11 +1121,129 @@ return {
 				t.Check("whole until the marker", shownBefore)
 				t.Check("then the whole body, mask too, hides at once", hideAt ~= nil)
 				if hideAt then
-					t.Near("on the marker, frame 27 of the clip", hideClip or -1, 27 / 60, 2 * FRAME)
+					local marker = ShadeBurstArt.Burst * FRAME
+					t.Check(
+						"its flare set on the marker, frame 27 of the clip: never before it, within two of the steps that ran",
+						hideClip ~= nil and (hideClip :: number) >= marker - 1e-3 and (hideClip :: number) <= marker + 2 * step + 1e-3,
+						string.format("at %.3f s, the marker %.3f, a step %.1f ms", hideClip or -1, marker, step * 1000)
+					)
 					t.Row("seconds from the fall to the burst, the hold included", nil, nil, (hideAt :: number) - (downAt :: number), "s")
+					t.Check("the charge shows in its collar before it", charged)
+					local flare = (ShadeBurstArt.Frames[ShadeBurstArt.Burst] or {})[1]
+					local label = if #atHide == 1 then atHide[1]:FindFirstChildOfClass("ImageLabel") else nil
+					t.Check(
+						"the flare, the art sheet's, drawn in the hide's own picture",
+						flare ~= nil and flare.Kind == "flare" and label ~= nil and label.ImageRectOffset == flare.Offset and label.ImageRectSize == flare.Rect,
+						`{#atHide} lit`
+					)
+					-- the table's At is right, forward and up: the flare's centre straight under the collar, its top over it
+					local offset = if #atHide == 1 then atHide[1].StudsOffsetWorldSpace else Vector3.zero
+					t.Near("the flare's centre under the collar by the table's 1.8", if flare then offset.Y else 0, if flare then flare.At.Z else 1, 0.05)
+					t.Near("and on its line, not out to a side", Vector3.new(offset.X, 0, offset.Z).Magnitude, 0, 0.05)
+					local plain = #pictures() > 0
+					for _, gui in pictures() do
+						local image = gui:FindFirstChildOfClass("ImageLabel")
+						if gui.LightInfluence ~= 0 or image == nil or image.ImageColor3 ~= Color3.new(1, 1, 1) or image.Image ~= EffectsConfig.ShadeBurst.Picture then
+							plain = false
+						end
+					end
+					t.Check("untinted and unlit, the group's picture (the content check's condition 1)", plain)
+					local gone = waitFor(t, (ShadeBurstArt.Last - ShadeBurstArt.Burst) * FRAME + 1, function(): boolean
+						local home = workspace:FindFirstChild("NL_Effects")
+						return home == nil or home:FindFirstChild("NL_ShadeBurst") == nil
+					end)
+					t.Check("nothing of it left after its last frame", gone)
 				end
 			end
 			t.Server("FightSpawn") -- clears it
+		end,
+	},
+	{
+		Name = "Fight: a Shade's burst never waits for good on a clip held still",
+		Run = function(t: any)
+			-- AR2, section 13: the charge runs on the Down clip's clock. A clip held still bursts anyway after
+			-- Config.Effects.ShadeBurst.Wait, before the server takes the body; a body cleared while its clip is held takes the
+			-- charge with it. Before, a body that left with its clip short of the marker left the burst in the world for good.
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if type(level) ~= "number" then
+				return
+			end
+			local function anchors(): number
+				local count = 0
+				local home = workspace:FindFirstChild("NL_Effects")
+				for _, child in (if home then home:GetChildren() else {}) do
+					count += if child.Name == "NL_ShadeBurst" then 1 else 0
+				end
+				return count
+			end
+			-- the Down clip held still on this client, every frame, as a hold that never lets go would
+			local function hold(model: Model)
+				local humanoid = model:FindFirstChildOfClass("Humanoid")
+				local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+				for _, track in (if animator then animator:GetPlayingAnimationTracks() else {}) do
+					if track.Animation and track.Animation.Name == Animations.Rigs.Shade.Down then
+						track:AdjustSpeed(0)
+					end
+				end
+			end
+			-- one Shade beaten by the lead: its model and the moment this client sees it fall
+			local function fallen(): (Model?, number)
+				local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
+				if type(spawned) ~= "table" or spawned.Ok ~= true then
+					return nil, 0
+				end
+				local model: Model? = nil
+				waitFor(t, 5, function(): boolean
+					model = fighterModel(spawned.Id)
+					return model ~= nil
+				end)
+				local shade = model
+				if shade == nil then
+					return nil, 0
+				end
+				local until_ = os.clock() + SHADE_TIMEOUT
+				while os.clock() < until_ and shade.Parent ~= nil and shade:GetAttribute("State") ~= "Down" do
+					task.wait()
+				end
+				return if shade:GetAttribute("State") == "Down" then shade else nil, os.clock()
+			end
+			t.Check("no burst in the world before", anchors() == 0, `{anchors()}`)
+			local forced = ShadeBurstArt.Burst * FRAME + EffectsConfig.ShadeBurst.Wait
+			local held, downAt = fallen()
+			t.Check("a Shade falls", held ~= nil)
+			if held then
+				local torso = held:FindFirstChild("Shade_Torso") :: BasePart?
+				local hidAt: number? = nil
+				while os.clock() - downAt < forced + 0.5 do
+					hold(held)
+					if torso and torso.LocalTransparencyModifier >= 1 then
+						hidAt = os.clock() - downAt
+						break
+					end
+					task.wait()
+				end
+				t.Near("its clip held still, it bursts anyway, Config.Effects.ShadeBurst.Wait past the marker", hidAt or -1, forced, 0.15)
+				t.Check("and the burst ends", waitFor(t, (ShadeBurstArt.Last - ShadeBurstArt.Burst) * FRAME + 1, function(): boolean
+					return anchors() == 0
+				end), `{anchors()} left`)
+			end
+			t.Server("FightSpawn")
+			local cleared, clearedAt = fallen()
+			t.Check("a second Shade falls", cleared ~= nil)
+			if cleared then
+				hold(cleared)
+				t.Server("FightSpawn") -- cleared while its clip is held short of the marker
+				local left = waitFor(t, 1, function(): boolean
+					if cleared.Parent ~= nil then
+						hold(cleared)
+					end
+					return cleared.Parent == nil and anchors() == 0
+				end)
+				t.Check("cleared with its clip held, it takes its burst with it", left, string.format("%d left, %.2f s after its fall", anchors(), os.clock() - clearedAt))
+			end
+			t.Server("FightSpawn")
 		end,
 	},
 	{

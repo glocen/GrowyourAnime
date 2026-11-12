@@ -124,6 +124,22 @@ return {
 		Out = 6,
 	},
 
+	-- A Shade's burst (docs/asset-requests.md, AR2, section 11; tools/blender/shade_burst_art.py): the sky lantern. A small
+	-- flame swells in its collar from the Down clip's frame 18, flares the coat's size on its Burst marker (27), where the body
+	-- hides, and is let go: it climbs and burns down to an ember by 41, its paper rising after it, all gone after 49. Every
+	-- picture on every frame is the art sheet's (Config.ShadeBurstArt). Untinted and unlit, by the content check: a tint, a
+	-- colour or added glow goes back to it. Brightness 1 is the picture's own; the game's bloom does the rest (the capture,
+	-- AR2, sections 10 and 11).
+	ShadeBurst = {
+		Picture = "rbxassetid://91970461037109", -- the group's upload (docs/asset-log.md)
+		Brightness = 1,
+		-- Seconds past the marker's time the charge waits on a clip that never reaches it (a clip held still), then bursts
+		-- anyway. Longer than the killing hit's hold (Combat.Hitstop), which pauses the clip on purpose, and over, with room
+		-- for the replication's delay, before the server takes the body away (Combat.Shade.FadeSeconds); a logic case holds
+		-- both. A body that leaves first takes the charge with it (AR2, section 13).
+		Wait = 0.4,
+	},
+
 	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey
 	-- block, the builder's: a ring of light spreads from its feet and fades, and "Level N" rises over it, slower and larger
 	-- than a hit's number. Seconds; studs; Size in pixels at the phone's size.

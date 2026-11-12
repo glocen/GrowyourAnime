@@ -14,7 +14,8 @@
 --   HeldNote  Lyric's signature, a grey block (Config.Effects.HeldNote; AR4, section 9): the charge in her rings, their
 --             flash, and a crest thrown across the cone on every half-beat, until the art sheet.
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
---   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore), on its clip's marker.
+--   ShadeBurst  a Shade falls: AR2's art sheet, the sky lantern. A flame swells in its collar, flares the coat's size on
+--             its clip's marker as the body goes, and climbs away with its paper (docs/design.md, "Combat": no gore).
 --   Number    a damage number over the target.
 --   Shake     the camera, on the player's own heavy hit or a hard hit taken.
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
@@ -25,6 +26,7 @@ local RunService = game:GetService("RunService")
 
 local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
+local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Sounds = require(script.Parent.Sounds)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -1033,45 +1035,115 @@ end
 
 -- A Shade falls: its whole body hidden on one frame, a flash and a scatter of paper from `at` (a Shade's collar, else its
 -- pivot). The stand-in until AR2's burst of light and paper.
-function Effects.Burst(model: Model, at: CFrame?)
-	local pivot = at or model:GetPivot()
-	for _, p in model:GetDescendants() do
-		if p:IsA("BasePart") then
-			p.LocalTransparencyModifier = 1
+-- A Shade's burst, the sky lantern (AR2, section 11; Config.Effects.ShadeBurst): every picture on every frame from the art
+-- sheet's table (Config.ShadeBurstArt), on billboards of the one picture, untinted and unlit. Up to the Down clip's Burst
+-- marker it runs on the clip's own clock, so the killing hit's hold pauses the charge with the body; the charge rides the
+-- collar as the Torso tips. On the marker the whole body hides on the flare's frame, the first picture the flare is drawn in,
+-- and from then on it runs on the effects' clock, everything placed from where the collar stood, in the Shade's frame as it stood. The table is
+-- an ordinary Shade's size, so a Shade's scale (the elite's) scales it. With no clip it starts at the Burst.
+function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachment?)
+	local look = EffectsConfig.ShadeBurst
+	local scale = model:GetScale()
+	local root = model:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local anchor = part(HOT)
+	anchor.Name = "NL_ShadeBurst"
+	anchor.Transparency = 1
+	anchor.Size = Vector3.one * PICTURE_DEPTH
+	anchor.CFrame = model:GetPivot()
+	-- Every picture's billboard is made now, drawn and see-through, and shown by its image's transparency: a billboard made
+	-- or enabled on the frame it's wanted isn't drawn on that frame, which would lose the flare, a frame long, entirely.
+	local shown: { [string]: { Gui: BillboardGui, Label: ImageLabel } } = {}
+	for _, pictures in ShadeBurstArt.Frames do
+		for _, picture in pictures do
+			local key = picture.Kind .. picture.Id
+			if shown[key] == nil then
+				local gui, label = billboard(anchor, look.Picture)
+				gui.Brightness = look.Brightness
+				gui.ClipsDescendants = false -- a scrap turns past its square
+				gui.Enabled = true
+				label.ImageTransparency = 1
+				shown[key] = { Gui = gui, Label = label }
+			end
 		end
 	end
-	local flash = part(SPARK, Enum.Material.Neon)
-	flash.Shape = Enum.PartType.Ball
-	local paper: { { Part: Part, Velocity: Vector3, Spin: Vector3 } } = {}
-	for _ = 1, 12 do
-		local p = part(LIGHT)
-		p.Size = Vector3.new(0.55, 0.55, 0.05)
-		p.CFrame = pivot * CFrame.new((math.random() - 0.5) * 2, (math.random() - 0.3) * 3, (math.random() - 0.5) * 1)
-		local out = Vector3.new(math.random() - 0.5, 0.6 + math.random(), math.random() - 0.5).Unit * (8 + math.random() * 8)
-		table.insert(paper, { Part = p, Velocity = out, Spin = Vector3.new(math.random() * 9, math.random() * 9, math.random() * 9) })
+	local reached = down == nil
+	local marker: RBXScriptConnection? = nil
+	if down then
+		marker = down:GetMarkerReachedSignal("Burst"):Connect(function()
+			reached = true
+		end)
 	end
-	local last = 0
+	local burstTime = ShadeBurstArt.Burst * FRAME
+	local burstAge: number? = nil
+	local stood: CFrame? = nil
+	local function standing(): CFrame
+		local turn = if root then root.CFrame.Rotation else model:GetPivot().Rotation
+		local at = if collar and collar.Parent then collar.WorldPosition else model:GetPivot().Position
+		return CFrame.new(at) * turn
+	end
+	local hidden = false
+	local was: { [string]: boolean } = {} -- the pictures shown on the last step
 	run(function(age: number): boolean
-		local dt = age - last
-		last = age
-		if age >= 0.9 then
+		-- A billboard set in this step is drawn a frame later than a part, so the body hides the step after the flare is
+		-- set: the picture that first shows the flare is the first without the body.
+		if burstAge ~= nil and not hidden then
+			hidden = true
+			for _, p in model:GetDescendants() do
+				if p:IsA("BasePart") then
+					p.LocalTransparencyModifier = 1
+				end
+			end
+		end
+		if burstAge == nil and model.Parent == nil then
+			-- the body left before its marker (cleared, its pack replaced, streamed out): its clip's clock stops short of the
+			-- Burst, so the charge goes with it rather than waiting on it for good (AR2, section 13)
 			return false
 		end
-		flash.Size = Vector3.one * lerp(2, 7, easeOut(age / 0.25))
-		flash.CFrame = pivot
-		flash.Transparency = math.clamp(age / 0.25, 0, 1)
-		for _, sheet in paper do
-			sheet.Velocity += Vector3.new(0, -14 * dt, 0) -- paper drifts down slowly
-			sheet.Velocity *= (1 - math.min(1, 2.2 * dt))
-			sheet.Part.CFrame = (sheet.Part.CFrame + sheet.Velocity * dt) * CFrame.Angles(sheet.Spin.X * dt, sheet.Spin.Y * dt, sheet.Spin.Z * dt)
-			sheet.Part.Transparency = math.clamp((age - 0.4) / 0.5, 0, 1)
+		if not reached and down and (down.TimePosition >= burstTime - 1e-3 or not down.IsPlaying or age >= burstTime + look.Wait) then
+			reached = true -- the marker's signal can come a step late; the clip's own clock says it's there, or has stalled
 		end
+		if reached and burstAge == nil then
+			burstAge = age
+			stood = standing()
+		end
+		-- After the Burst, the nearest frame: a step runs a hair either side of a frame, and counting down would hold the
+		-- flare, a frame long, for two pictures about every other burst.
+		local frame = if burstAge then ShadeBurstArt.Burst + math.floor((age - (burstAge :: number)) / FRAME + 0.5) else math.floor((down :: AnimationTrack).TimePosition / FRAME + 1e-6)
+		if frame > ShadeBurstArt.Last then
+			return false
+		end
+		local origin = stood or standing()
+		anchor.CFrame = CFrame.new(origin.Position)
+		local now: { [string]: boolean } = {}
+		for _, picture in ShadeBurstArt.Frames[frame] or {} do
+			local key = picture.Kind .. picture.Id
+			local gui, label = shown[key].Gui, shown[key].Label
+			local at = picture.At * scale -- the table's right, forward and up
+			gui.Size = UDim2.fromScale(picture.Size.X * scale, picture.Size.Y * scale)
+			gui.StudsOffsetWorldSpace = origin.RightVector * at.X + origin.LookVector * at.Y + origin.UpVector * at.Z
+			label.ImageTransparency = 0
+			label.ImageRectOffset = picture.Offset
+			label.ImageRectSize = picture.Rect
+			label.Rotation = picture.Rotation
+			label.Size = UDim2.fromScale(picture.Squash, 1)
+			label.Position = UDim2.fromScale((1 - picture.Squash) / 2, 0)
+			now[key] = true
+		end
+		-- A billboard shown or changed is drawn a frame late, and one cleared is gone at once (seen in the take, AR2,
+		-- section 13), so each picture is cleared a step after its last frame: the whole burst is drawn one frame behind,
+		-- evenly, never with a blank frame where one picture hands over to the next.
+		for key, item in shown do
+			if not now[key] and not was[key] then
+				item.Label.ImageTransparency = 1
+			end
+		end
+		was = now
 		return true
 	end, function()
-		flash:Destroy()
-		for _, sheet in paper do
-			sheet.Part:Destroy()
+		if marker then
+			marker:Disconnect()
 		end
+		anchor:Destroy()
 	end)
 end
 

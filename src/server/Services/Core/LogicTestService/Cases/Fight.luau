@@ -14,6 +14,8 @@ local Growth = require(Shared.Rules.Growth)
 local Combat = require(Shared.Config.Combat)
 local EnemiesConfig = require(Shared.Config.Enemies)
 local Animations = require(Shared.Config.Animations)
+local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
+local EffectsConfig = require(Shared.Config.Effects)
 
 local function near(a: number, b: number, tolerance: number?): boolean
 	return math.abs(a - b) <= (tolerance or 1e-9) * math.max(1, math.abs(b))
@@ -409,6 +411,78 @@ return {
 			t.Equal("down stays down", Fight.Mend(0, 100, 0.04), 0)
 			t.Equal("a bad share does nothing", Fight.Mend(50, 100, 0 / 0), 50)
 			t.Equal("nor a negative one", Fight.Mend(50, 100, -0.1), 50)
+		end,
+	},
+	{
+		Name = "Fight: a Shade's burst plays the art sheet: the charge, the flare on the marker, the flame let go, the paper only rising",
+		Run = function(t: any)
+			-- docs/asset-requests.md, AR2, section 11, and its content check: the charge 18 to 26, the flare on the Burst frame
+			-- (27), where the body hides; the flame 28 to 41; the paper 28 to 49, each scrap only rising, shrinking and ending.
+			local art = ShadeBurstArt
+			t.Equal("the Burst frame is the clip's marker's", art.Burst, 27)
+			local span: { [string]: { number } } = {}
+			local outside = 0
+			for frame = art.First, art.Last do
+				for _, picture in art.Frames[frame] or {} do
+					local seen = span[picture.Kind] or { frame, frame }
+					seen[1], seen[2] = math.min(seen[1], frame), math.max(seen[2], frame)
+					span[picture.Kind] = seen
+					local far = picture.Offset + picture.Rect
+					if picture.Offset.X < 0 or picture.Offset.Y < 0 or far.X > art.Size.X or far.Y > art.Size.Y then
+						outside += 1
+					end
+				end
+			end
+			local function between(kind: string, first: number, last: number)
+				local seen = span[kind]
+				t.Check(`the {kind} from {first} to {last}`, seen ~= nil and seen[1] == first and seen[2] == last, if seen then `{seen[1]} to {seen[2]}` else "none")
+			end
+			between("charge", 18, 26)
+			between("flare", art.Burst, art.Burst)
+			between("flame", 28, 41)
+			between("scrap", 28, 49)
+			t.Equal("every picture's rectangle inside the picture", outside, 0)
+			local flare = (art.Frames[art.Burst] :: { ShadeBurstArt.Picture })[1]
+			t.Check("the flare the coat's size, its top 0.9 over the collar", flare.Size == Vector2.new(3.8, 5.4) and near(flare.At.Z + flare.Size.Y / 2, 0.9, 1e-6))
+			-- one scrap, one id: it only rises and shrinks, and once gone it never comes back
+			local last: { [number]: ShadeBurstArt.Picture } = {}
+			local ended: { [number]: boolean } = {}
+			local falls, grows, returns, scraps = 0, 0, 0, 0
+			for frame = art.First, art.Last do
+				local now: { [number]: ShadeBurstArt.Picture } = {}
+				for _, picture in art.Frames[frame] or {} do
+					if picture.Kind == "scrap" then
+						now[picture.Id] = picture
+					end
+				end
+				for id, picture in now do
+					local before = last[id]
+					if ended[id] then
+						returns += 1
+					elseif before then
+						falls += if picture.At.Z < before.At.Z - 1e-9 then 1 else 0
+						grows += if picture.Size.X > before.Size.X + 1e-9 then 1 else 0
+					else
+						scraps += 1
+					end
+				end
+				for id in last do
+					if now[id] == nil then
+						ended[id] = true
+					end
+				end
+				last = now
+			end
+			t.Equal("ten scraps", scraps, 10)
+			t.Equal("no scrap ever falls", falls, 0)
+			t.Equal("no scrap ever grows", grows, 0)
+			t.Equal("none comes back once gone", returns, 0)
+			-- AR2, section 13: a clip that never reaches its marker bursts anyway, after the longest hold pauses it and with
+			-- the replication's delay to spare before the server takes the body away
+			local wait = EffectsConfig.ShadeBurst.Wait
+			local forced = art.Burst / 60 + wait
+			t.Check("the burst waits out the killing hit's longest hold", wait > Combat.Hitstop.Heavy, `{wait} s`)
+			t.Check("and bursts a held clip a fifth of a second or more before the body goes", forced <= Combat.Shade.FadeSeconds - 0.2, string.format("%.2f s of %.2f", forced, Combat.Shade.FadeSeconds))
 		end,
 	},
 	{

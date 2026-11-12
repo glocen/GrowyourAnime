@@ -492,6 +492,7 @@ A tier 1 exploration for the director's pick between the options above. Nothing 
     - The landing at the feet mostly behind the avatar. The hang and the fall carry the read, and the impact itself is seen only beside the avatar.
     - In all, about 3 to 4 hours.
   - **Research still picks B5 over A,** with Modulo's clip striking down. Without that clip, it's a blow called down from the sky, and the director would be picking that instead.
+- **The director, 2026-11-12:** "let keep A and do B5 later  like  a planned rework". **Haymaker closes on A**, director-accepted at "works" (section 8's round 2 is what plays). B5 is a planned rework, with its clip striking down and the target pinned, and the block-in here is its start (`docs/decisions.md`; `docs/polish-later.md`).
 
 ## AR2. The Shade, one rig for every enemy
 

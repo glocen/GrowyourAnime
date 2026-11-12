@@ -17,6 +17,8 @@ Each waits for an update, and for its own feel line and blockout (`docs/design.m
 
 ## From the pieces
 
+- **Planned rework, the director's word (2026-11-12): Haymaker's B5.** The ram's square hung over the target through the hold and slammed down on the blow, with Rook's clip re-keyed to strike down and the target pinned. About 3 to 4 hours. The block-in and its costs are in AR1, section 9.
+
 - The base's world plates as wide as what they say, not as their longest possible line: on a large screen the Breaker's and the bays' plates show empty room on the right. For the finished kit (AR3). TR2, the builder, 2026-11-12.
 - The killing hit's number and the Shade's rising flame cross for about 4 frames (31 to 34). The number could drift aside when its target bursts. Brief and legible now (AR2, section 13).
 - One picture late on the billboard effects: a billboard turned on or changed in `RenderStepped` is drawn a picture later than a part, and one turned off goes at once (AR2, section 13, seen in the raw take). Pip's Lantern Burst (its heat and its burst) and Haymaker's bar turn theirs on and off on their frames, so each shows its first picture a frame late and loses its last. The Shade's burst's way fixes it: every billboard made at the start, shown by its image, cleared a step late. At the shared finish, beside each piece's take. AR2 section 13, the builder, 2026-11-12.

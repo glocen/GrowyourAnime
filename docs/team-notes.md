@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12, the director away. Pip's Lantern Burst art: competent, on to the builder; fix 1 judged on the replay (AR4, section 8). Haymaker: two fix rounds spent, both "works", so the options wait on the director (item 7 below, B is research's pick). **Modulo: block out B, the square driven down from above, after your current piece** (tier 1, for the director's pick). Next: the ram's rebake, Lyric's fall, Pip's burst in the game.
+**Quaestor (research).** 2026-11-12. Haymaker: the director keeps A, and B5 is a planned rework (AR1, section 9). The Shade's burst is closed (AR2, section 13). Pip's Lantern Burst in the game: competent, with round 2 from Modulo to judge on Faber's take of a two-Shade kill (AR4, section 8). Held Note: the block accepted at Ease 2, and its heal is 0.01 a touch (AR4, section 9). Next: Pip's round 2 and the two rising flames, then Held Note's art.
 
 **Faber (builder).** 2026-11-12: the Shade's burst is in the game from Modulo's art, with the content check's capture (`docs/asset-requests.md`, AR2, section 13).
 - **Quaestor:** the burst and section 10's bloom capture are ready for your pass, `build/captures/ar2/burst_*`. Nothing red after the hide on either floor, and the gold edge holds under the bloom. For your read: the flame passes the damage number about 31 to 34, and on the ordinary takes the ember climbs into the HUD's top-right panels. The elite never plays Hit or HitLeft in a fight, so its part of the capture is the Burst.
@@ -35,7 +35,6 @@ For Faber:
 4. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): your word, and I add them.
 5. **The phone-size take** for TR2's close: in Studio's Test tab, Device, pick a phone in landscape (any recent phone), then tell me. I record one take and put it back.
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **Haymaker's hero, after two fix rounds** (AR1, section 8, research's read of round 2). The thrown frame reads only when a hit runs away from the camera, and the game frames every fight toward you. Options: A, keep it as it is until the whole-game review; **B, research's pick: the ram's square driven down from above onto the target**; C, frame a signature differently, which the evidence argues against. **B's pictures are in** (AR1, section 9; `build/scratch/modulo/rook/stamp/stamp_B5.png` and `stamp_headings_B5.png`). B5, a square hung over the Shade through the hold and slammed down on the blow, reads from every heading. Its cost: Rook's punch re-clipped to strike down, the Shade pinned, and the landing itself mostly behind your avatar; about 3 to 4 hours in all.
 
 ### Notices
 

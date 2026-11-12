@@ -402,13 +402,252 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** open.
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The kit's images aren't started: they wait for the director's eye on the sheet, which research has put in front of the director.
+
+### 1. The direction sheet (Modulo, 2026-11-12)
+
+`build/scratch/modulo/ui/sheet/ui_sheet.png`, 2400 by 2144, drawn by `tools/blender/ui_sheet.py` at 2 pixels a point. Both themes side by side: the lead's card, the two pills and the damage numbers over a dusk street and a noon street; the six frames round Rook's portrait; a button's seven states; a panel with two buttons, a long name in a Legendary frame, and three bars (full, low, empty); the four HUD strips again at 1 pixel a point.
+
+**Calls, all mine to be judged:**
+
+- **One cut.** Every piece is a rectangle with its top-left and bottom-right corners cut, never rounded. A panel has one facet line at its top-left cut and nothing else.
+- **Light is ivory** (`#FFF4D6`), the plain hit number's own colour, and it always runs in a dark channel: a bar's fill, a button's lower edge at rest, the edge of a selected one, the run of light on a waiting one. Green and red light only say succeeded and failed, and both come with words.
+- **A rarity is a shape and a light, never a hue.** Common: two cuts, iron. Uncommon: four cuts, steel, a second line inside. Rare: one crest, silver, a soft glow. Epic: a crest and a base point, side notches, white-hot. Legendary: a three-point crown, gold. Mythical: a broken four-point crown, metal and glow that split light. The five hues stay the types', on the gem in the frame's top cut. The class's mark sits in the bottom cut.
+- **Numbers** slant 0.22 and carry a dark stroke that follows their size (1.5 points on a 20 point number, 1 point under it). Proposed element colours, for research: Fire `#FF8A3D`, Frost `#8FE3FF`, Storm `#FFE45C`, Void `#B58CFF`.
+- **Pearl Light** is the same kit on a pale panel, with two extra rules found by drawing it: a bar's light keeps a 2 point dark rim all round, and a frame sits in a dark seat, or silver and white-hot frames vanish.
+
+**Research's question on Agility's blue** (AR2, section 1): the five gems are drawn under a cyan lamp (`#5FE3F0`) and a warm one, at two sizes, at the sheet's bottom right. Agility's `#3F9DF2` stays its own beside the cyan: it's deeper and bluer, and the gem's dark rim holds it. I'd keep it.
+
+**Stand-ins, not the kit:** the type face (Blender's own), the gems, the class mark, the coin and the bolt, the two streets.
+
+**What I see wrong:**
+
+1. On Pearl, a bar's lit part is nearly the panel's own colour. The rim holds it, but the dark empty part is what the eye takes first. The Graphite bar doesn't have this.
+2. Common and Uncommon are close at 1 pixel a point: the second line and the two extra cuts are small.
+3. In the lead's card the frame is 40 points wide, and a crown's small points clot there. The card may want its own cut of each frame: the crest only.
+4. Over the dusk street the numbers' stroke does nothing (they read without it); over noon it's what carries them, and `Dodge` in grey is the weakest.
+5. Pearl's waiting button: the run of light on its top edge is faint. The three dots carry the state.
+
+**Content check, 2026-11-12: PASS** on rules 2, 3 and 4, for the direction sheet only, the HUD strips seen at 1 pixel a point. To hold on the kit's build:
+
+1. No shipped image carries text in Blender's face: the game's text is Roblox's fonts or our own drawn digit sheet, which gets its own check.
+2. The Strength gem stays a hard-faceted stone with its dark rim, in its slot: never round, a teardrop, glossy like a liquid, or scattered. Re-checked alone at 64 px over dark.
+3. The stand-in class mark reads as a plus or a bare cross at 1 pixel a point: the Warrior's icon needs a clear taper and a guard.
+4. The five class icons, four element marks, the final gems, the coin and the bolt each get a check against hate symbols and real logos.
+5. Failed, low health and fallen stay edge light, dimming and words: never a red wash, streak or splash across a portrait.
+6. "Sledgehammer Sunday" stays a long-name test string, or goes through the roster's name check.
+7. Before upload, each sliced image gets a review sheet at full size and at 64 px over dark, and its row in `docs/asset-log.md`.
+
+- **Research's read** (Quaestor, 2026-11-12, on ui_sheet.png at full size, both themes, the 1 pt strips): yes to the direction, carrying fixes 1 to 3 into the kit.
+  - **Felt:** Graphite looks like a game that costs money and keeps quiet. The cut corners and the ivory light running in dark channels are one idea, used everywhere, and the crit's gold number is rightly the loudest thing on screen. Pearl is the weaker theme: its bars and its waiting state lose their light.
+  - **Tier:** competent.
+  - **The one bold thing:** light only ever runs in a dark channel: the bar as a conduit, the button's lit lower edge, the selected one's rim. It's ours, and a player will learn "lit means live" without being told.
+  - **Fixes:**
+    1. **The rarity ladder must read at a glance.** At 1 pt, Common and Uncommon are the same frame, and Rare and Epic differ by a notch. Each step has to add one thing you can see at 64 px: a cut, a point, a step of light. The test is the six frames shuffled at 1 pt, over dark and over Pearl, sorted correctly at a glance (serves: the reveal and the Voidkin grid, where rarity is the whole read).
+    2. **Pearl's full bar reads as an empty outline.** The fill has to be the warmest, brightest thing in the bar and never the panel's colour: for example a warm core under the ivory, or a deeper channel. The test is full, low and empty told apart at 1 pt on Pearl (serves: health read at a glance, in the theme some players will live in).
+    3. **Storm leaves yellow.** #FFE45C beside the crit's gold reads as a small crit, in the same channel. Try a hot magenta (around #FF6FD8), tested beside the crit, the heal and Void's violet at 1 pt over both streets (serves: the crit owning gold).
+  - **Your three questions:**
+    - (1) Rarity as shape and light, with the five hues kept for the types: yes. It's what docs/ui.md asks, and hue rarity would collide with the type gems. Gold and the split light stay where the excitement is, at the top two.
+    - (2) Agility's #3F9DF2: kept. Beside the cyan lamp the gem holds as its own.
+    - (3) Fire #FF8A3D, Frost #8FE3FF and Void #B58CFF: yes. Fire sits near Endurance's orange, but in another channel, so the element marks read by shape first. Storm per fix 3.
+  - **Accepted:**
+    - the lead card's own crest-only cut of each frame;
+    - the one cut and the single facet line;
+    - Pearl's dark seat for frames and the 2 pt rim;
+    - Pearl's faint waiting edge, carried by the dots;
+    - grey Dodge at noon, carried by its stroke;
+    - green and red only with words.
+  - Storm's colour is research's call as lead designer, recorded here; it touches the builder's damage numbers when they come. Research is putting the sheet in front of the director.
+
+**Fixes 1 to 3, drawn on the sheet** (Modulo, 2026-11-12; the sheet is now 2400 by 2316, with a glance-test strip a theme at its foot: the six frames out of order at 64 px, and a bar full, low and empty, at 1 pixel a point):
+
+1. Each rarity adds one thing: Common a hairline in dark iron; Uncommon a thick band of bright steel; Rare a point on top and the first glow; Epic points all four ways, white-hot; Legendary a crown of three in gold; Mythical a broken crown that splits light. The side notches became points that stand out. In the strip I sort all six at a glance on Graphite; on Pearl, Common and Uncommon are the closest pair, told by the pale band inside the seat.
+2. On Pearl a warm light burns gold at its edges and white at its core, inside the 2 point rim, so a fill is never the panel's colour. Full, low and empty are three different things in the strip. Graphite's bar is unchanged.
+3. Storm is `#FF6FD8`. All four elements now stand beside the critical and the heal over both streets, at both sizes: Storm no longer reads as a small critical, and it holds apart from Void's violet.
+
+- **Research's read on fixes 1 to 3** (Quaestor, 2026-11-12, on the glance strips at 1 pt and the street panels): all three pass.
+  - **The six frames, shuffled:**
+    - On Graphite they sort at a glance: none, a double line, a crest, a crest with side points and white glow, gold, the prism.
+    - On Pearl they sort too. Common and Uncommon are the closest pair, held apart by the double line, and Epic's white glow drops out, so on Pearl Epic is told from Rare by its side points alone.
+    - Accepted. The kit keeps the side points as wide as drawn.
+  - **Pearl's bar:** full, low and empty are told apart at 1 pt. Gold at the edges and white at the core reads as full now.
+  - **Storm #FF6FD8:** clear of the crit's gold and the heal's green over both streets. It stays apart from Void's #B58CFF at 1 pt, the closest pair, and holds over the dusk street.
+  - The kit's sliced images start from this sheet once the director has looked at it (the entry's "the director's eye"). I've put it in front of the director.
+
+**Hours:** the sheet with its fixes, about 2.1.
 
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** open.
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His clips are keyed and their pose sheets rendered (section 3), not yet exported or reviewed: stopped there on the director's word, 2026-11-12.
+
+### 1. Pip's sheet (Modulo, 2026-11-12)
+
+`build/scratch/modulo/pip/sheet/pip_sheet.png`, 1920 by 1200, drawn by `tools/blender/pip_sheet.py`. Rook's layout: the outline, front and back on the R6 body, how he stands, the player's camera; Lantern Burst's key pose from the target's side, as an outline and from the player's camera; all of it at 64 px over dark, bright and in black; the values.
+
+**Feel line, signed as written** (Quaestor, 2026-11-12): an apprentice half the size of his own hat, whose one spell is bigger than he is: when the lantern goes, it's him that gets thrown back.
+
+**The look:**
+
+- **One idea:** a hat with a boy under it, and the one spell he has, kept in a lantern. The hat's tip has fallen to his left and the lantern floats at his right, so the two balance in the outline.
+- **The hat:** a brim 3.4 studs wide that sags, a chalk band, a crown that slumps and a tip weighted by a brass bead and a tassel. 6.9 studs to its top. It hangs from the head on its own joint, so a clip can lift and lag it.
+- **The robe** was cut for someone taller: a bell to below the knees with an uneven hem, sleeves that hang half a stud past his hands and open like bells, a collar that stands to his chin. Chalk at the hem, the cuffs and the collar.
+- **The back,** what the player's camera sees: a book as big as his back, in leather with brass corners and one plain brass disc.
+- **The lantern:** a brass cage round a flame, a peaked lid, two paper slips under it that trail. Its own piece, held by nothing. Hot, the flame fills the cage.
+- **The face:** R6's round head, a straight fringe, large eyes with one catchlight each, short brows raised in the middle, a small open mouth. It shows under the brim from the front; from behind he's all hat.
+- **Colours:** Inkwell `#46348A` (Intelligence's family, deep), Chalk `#EFE8D8`, Flame `#FF8A3D` (the Fire colour of AR3's sheet). Brass, leather, chestnut, skin.
+
+**The key pose, the send:** he points with his whole sleeve and the lantern goes, hot, its slips streaming. The spell kicks: he's thrown back on his heels, the hat lifts, and the other hand holds it on.
+
+**For the model and the builder:** two pieces beyond R6's six, the hat and the lantern, each wanting its own joint, as Rook's piston did. Blockout 5,396 triangles.
+
+**What I see wrong:**
+
+1. From the player's camera the send has both arms up and out, a V: the pointing arm doesn't read as pointing from behind. The lantern leaving and its light have to carry it there, which is the effect's work.
+2. Over the dark ground at 64 px the robe and hat hold only by the chalk bands, the book and the lantern. I lightened Inkwell once for it.
+3. The robe's bell is rigid on R6: the legs swing inside it, and a long stride will show a boot through the hem. To settle on the model, as the Shade's coat was.
+4. He's the plain reading of an apprentice mage. What's his own is the pairing (the fallen tip and the floating lantern), the book on his back, and the recoil.
+
+**Content check, 2026-11-12: PASS** on rules 2, 3 and 4, at full size and in the 64 px block; the sheet only. For research: the check found no "Fighters" section in `docs/decisions.md`, which `AGENTS.md` rule 3 points to, and it left two notes for the name's look-again in `docs/ip-list.md`. To hold on the model, the clips and the effect:
+
+1. The face stays lit human skin under the brim from the front, in the game's light and at 64 px over dark: never a dark void, the eyes never lit or yellow.
+2. The hat stays in the robe's colour in any variant or evolution: never straw, tan or yellow over a blue coat, and no stars, moons or belt on it.
+3. No staff, wand, big gloves or gauntlet. The lantern stays a brass lantern that floats and is sent: never a flask, potion or bomb from a launcher, never a creature with a face, wings, limbs or a name.
+4. The book's cover stays plain; a mark added later gets a check against symbols and logos.
+5. The slips stay flat, straight-edged paper, never tapering to drops. The burst and its hit are light, sparks and dust: no burn marks, charring, stains or pools, nothing in the flame's colour that drips or sprays.
+6. The clips are stepped through on a bare rig from the side and three-quarter: the pointing arm is never held nearly still at 20 to 70 degrees up with the body upright; it stays level or moving, with the lean back. The send is read from the player's camera at 64 px on every heading.
+7. The model and each upload batch get their own check.
+
+- **Research's read** (Quaestor, 2026-11-12, on pip_sheet.png at full size and the 64 px rows): a re-render of the sheet with fixes 1 to 3, then the model.
+  - **Felt:** a purple wizard with a floating lantern, clear at a glance. But the feel line's first half isn't on the sheet: the hat is a wizard's hat of the usual size, not one he's half the size of. And from behind, the send reads as a cheer.
+  - **Tier:** works. He's one of three starters, the first choice a player makes, so he aims at exceptional.
+  - **The one bold thing:** from the player's camera, a book as big as his back with a lit lantern bobbing beside it. Nobody else in the roster reads like that from behind.
+  - **Fixes:**
+    1. **The hat really is too big.** The brim comes down to sit on the collar and nearly over his eyes, the crown is taller, and the tip falls further, so the hat is half his outline. The eyes stay visible and lit under the brim (the content check's condition 1). Keep the triangle count at what the joint can lag (serves: the feel line, and "a hat with a boy under it" as the whole read).
+    2. **The send, from behind:** the pointing sleeve goes level and straight down the lantern's line, never up. The recoil reads through the lean back, the hat lifting and the other hand clamping it, not through two raised arms (serves: the send read from the player's camera; also the content check's condition 6).
+    3. **Chalk on the brim's edge.** Inkwell is violet, and Lantern Row's dusk is violet too. Run the chalk band round the brim so the hat's outline, his one idea, holds on the real street. Show it at 64 px over a dusk-violet ground beside the dark and bright rows (serves: the read on the ground where players meet him).
+  - **Accepted:**
+    - Inkwell, Chalk and Flame (#FF8A3D, the Fire colour);
+    - the lantern held by nothing, on its own joint;
+    - the slips;
+    - the robe cut for someone taller;
+    - the face under the brim;
+    - the robe's rigid bell, settled on the model as the Shade's coat was;
+    - the plain apprentice reading, since what's his own is the pairing, the book and the recoil, and fixes 1 and 2 push those.
+  - **The name's look-again:** closes on the content check's two facts, in this entry.
+  - The missing "Fighters" section in docs/decisions.md is already open with the director, along with north-star's "The look". Meanwhile the directive's section 3 and north-star's "The bar" stand in for it.
+
+**Round 2, fixes 1 to 3 drawn** (Modulo, 2026-11-12; the sheet is now 1920 by 1290, with a row at 64 px over Lantern Row's dusk violet):
+
+1. The hat is half his outline: 7.4 studs to its top over a 5 stud body, the brim 3.8 wide. The brim hangs to his collar behind and at the sides and is pushed up at the front, so the eyes show under it; the crown is 2.3 studs tall and slumps left; the tip falls to the level of his brow. One joint, as before. Blockout 5,696 triangles for the whole figure.
+2. The send: one sleeve goes level down the lantern's line, and the lantern is low and ahead of it. The other hand has the brim by its front and clamps it; from the player's camera that arm is behind the hat, so one arm reads. The recoil is the lean back (15 degrees) and the hat lifted 21 degrees off his head.
+3. Chalk runs round the brim's edge. Over the dusk violet at 64 px the hat's outline is that chalk ring and the band.
+
+Also: a hand shows inside each sleeve's end. The lantern floats a little lower and further out, clear of the wider brim.
+
+**What I see wrong now:** the brim's sides hang at shoulder height, so an arm raised sideways goes through it: the clips keep his arms forward or low, or the hat tips with them. In the send's three-quarter view the clamping sleeve covers half his face.
+
+- **Research's read, round 2** (Quaestor, 2026-11-12, on pip_sheet.png at 1920x1290): yes, on to the model.
+  - **Felt:** a hat with a boy under it, now literally. The brim sits on his collar like a lampshade, his eyes peek out under it, and the lantern balances the fallen tip. From behind, the send is one level sleeve down the lantern's line, the other hand clamping the brim. It reads as a throw that kicks.
+  - **Tier:** competent, and the starter's read is there. Whether he reaches exceptional is decided in motion, by the recoil and the hat's lag.
+  - **The one bold thing:** the hat as half of him. Every other read (the face, the book, the lantern) sits under it or beside it.
+  - **For the model and the clips:** the hat's lag on the send is where he becomes his own. Give the hat's joint the most care.
+  - **The name's look-again:** passes. Pip is an ordinary word and name, not one a work invented. Of the content check's two facts (from memory, unchecked; neither changes the reading): the Paladins character shares the name but not the look, the role's dress or the move, and the content check's condition 3 keeps the lantern from ever becoming a flask. Lulu's companion is named Pix, which isn't ours, and condition 2 keeps the hat in the robe's colour.
+
+**Hours:** the sheet with its second round, about 1.8.
+
+### 2. Pip's model on R6 (Modulo, 2026-11-12)
+
+- **Where:** `build/scratch/modulo/pip/model/` until the checks pass, then `build/handoff/Pip/`: `Pip_<Piece>.json` (eight pieces), `Pip_Color.png`, `Pip_Roughness.png`, `Pip_Metalness.png`, `Pip_Emissive.png`, `Pip.recipe.json`, `pip_model_sheet.png`. Made by `tools/blender/pip_model.py` (a Cycles bake under the lock): `blender -b --factory-startup --python tools/blender/pip_model.py -- <out dir>`.
+- **How he sits on R6:** a rigid mesh for each of the six parts, carrying the body's own surface, so the rig's blocks are hidden and the Head's face decal goes. Two pieces on joints of their own:
+  - **The hat,** on the Head, turning about the top of his head (`0, 4.95, 0`). Its rest tilt is in the mesh, so he's himself with no clip playing.
+  - **The lantern,** on the Torso, at `2.75, 4.3, -0.3` beside his right shoulder. Nothing holds it: the clips move and turn it, and Lantern Burst sends it.
+- **The numbers:** 8,208 triangles in the eight pieces (the torso 3,112 with its folds, the hat 1,392, the lantern 604). 7.37 studs to the hat's top, 4.75 wide without the lantern. One 1024 px atlas, 58 px per stud. Maps: colour with the contact shading baked in, roughness, metalness (the brass, at 0.5), and a glow mask. No normal map.
+- **The glow** is the lantern's flame and nothing else: the recipe gives the Fire colour, a strength of 1.2 as it floats and 3 through the send. The face and the eyes take none.
+- **Changed from the sheet (tier 1):**
+  - The hat's fallen tip is one round taper, not four blocks.
+  - The robe's hem is 0.2 studs fuller front and back, so a walk's stride stays inside it up to 25 degrees each way. The recipe carries that number for the clips.
+- **For the builder, in the recipe:** CastShadow off on the hat, or the brim puts his face in the dark (the content check's condition 1), and off on the lantern, which is a light. A light around the lantern is the builder's call, tuned in the engine. Three points: `Lantern` (the flame's middle), `Sleeve` (the right cuff's opening, where the send's line starts), `Chest`.
+- **What I see wrong:**
+  - From the player's camera the sent lantern flies base first, so its hot flame is hidden. The clip has to tumble it, or the effect's light carries the send.
+  - The robe is one large violet field, shaded by contact only. No folds are drawn.
+  - About half the faces, the bevels and the small parts, sit on the atlas's swatches and take one flat colour each. The player's camera never gets close enough to tell.
+  - The hair's side tufts can read as ears from the front.
+  - At 64 px over Lantern Row's dusk, lit as dusk, the robe is close to the ground's own violet. The chalk ring, the hem, the book and the lantern hold him.
+- **Research's read** (Quaestor, 2026-11-12, on pip_model_sheet.png, stills; the clips judge it in motion): yes, on to the clips, carrying fixes 1 and 2.
+  - **Felt:** the sheet's Pip, built. A lampshade of a hat on a small boy, a lit lantern at his shoulder. The face under the brim holds by day and at dusk, and that was the risk. From his right side he's a thin column under an enormous brim, which is the feel line's "half the size of his own hat" in one view.
+  - **Tier:** competent.
+  - **The one bold thing:** the brim's chalk ring from the player's camera. A white ellipse bigger than his shoulders, and you'd know him by it alone across the festival.
+  - **Fixes:**
+    1. **The robe tells its story.** Draw a few long folds from the shoulders that bunch and pool at the hem over the boots, where a robe cut for someone taller would. Keep it in value, not new colour, lighter on the tops of the folds (serves: "cut for someone taller", which is half his character, and breaking the one flat field that sits close to the dusk ground's violet).
+    2. **The side tufts read as floppy ears** in the face crops. Tuck them under the brim, or join them to the fringe in one shape, so they read as hair (serves: the face, the one part of him players meet at the reveal).
+  - **Your two questions:**
+    - The lantern: tumble it, yes. A lantern that turns end over end shows its flame every half turn, and an apprentice who can't throw it straight is his character, not a fault. Its glow at 3 through the send carries the rest.
+    - The flat robe: fix 1.
+  - **Accepted:**
+    - the tip as one taper;
+    - the fuller hem, with 25 degrees in the recipe;
+    - CastShadow off on the hat and the lantern;
+    - the three points;
+    - the swatch faces, which no camera reaches;
+    - the dusk read held by the chalk, the hem, the book and the lantern;
+    - the glow on the flame alone.
+- **Fixes 1 and 2, made (Modulo, 2026-11-12),** on the model and its sheet; research reads them in the clips' packs:
+  1. Nine long folds run down the robe from the shoulders and the chest, in its shape (up to 0.12 studs at the hem) and drawn into the colour map in value alone: lighter along each fold's top, darker beside it. Above the hem the cloth is stacked: a crease that wanders round him and a roll over it. Each sleeve has three drawn folds. The hem's height is unchanged, since a lower hem would let the boots through at a stride.
+  2. The side tufts are gone. The hair's edge drops in a lock down each cheek, one shape with the fringe.
+- **Content check, 2026-11-12: BLOCK on the maps, narrowly; the model, the recipe and rules 2 and 3 passed.**
+  - The flame's five islands on the colour map were pointed drops in the Fire colour, the only warm drop shapes on it (rule 4 at its mildest reading; the handbook's trap on drop shapes).
+  - Fixed: the flame's faces sit on their swatch, one straight-edged block on the colour map and on the glow mask. `rook_model.py`'s bake takes `lit_swatches` for it.
+  - **Second look, the same day: PASS** on the rebaked `Pip_Color.png`, `Pip_Emissive.png` and the sheet, on rules 2, 3 and 4. The only Flame orange on the colour map is its swatch, and the glow mask is one white block over it. The folds are violet on violet in value alone, and the cheek locks read as hair. One new condition: the folds stay in the robe's own violet, and a pass that takes them darker or toward plum or red gets the map another look. The check didn't re-read the recipe or the meshes that round.
+  - **Delivered** to `build/handoff/Pip/` after it: the eight meshes, the four maps, the recipe and the sheet, all from the one run.
+  - The sheet's seven conditions hold on the model; the sixth is the clips'.
+  - **Its conditions from here:**
+    - Before upload, Pip's rows in `docs/asset-log.md`, and the batch gets its own check.
+    - In the engine: CastShadow off on the hat; the face read again under the brim from the player's camera in Lantern Row's dusk at 64 px; the eyes never lit, whatever light is put round the lantern.
+    - The clips: condition 6 on a bare rig from the side and the three-quarter; the lantern's tumble never brings it onto or into his head or torso.
+    - The effect: condition 5; the hot flame under the game's bloom read from every heading at 64 px, so the glow beside his head reads as a lantern and not as something coming off him; the tint stays `#FF8A3D`, never redder.
+
+**Hours:** the model, about 1.1, the two fixes and the content check's included.
+
+### 3. Pip's clips: the poses (Modulo, 2026-11-12)
+
+**Stopped here on the director's word, mid-delivery.** Keyed and pose sheets rendered; no review yet, nothing delivered. To pick up: run the export, read the packs, then research's read and the content check.
+
+- **Where:** `build/scratch/modulo/pip/clips/poses_<Clip>.png`, eight sheets: each named pose from the player's camera, the side, and the front (Lantern Burst from far, to hold the flight). Made by `tools/blender/pip_clips.py` on the kit Rook's clips use: `blender -b --factory-startup --python tools/blender/pip_clips.py -- <out dir> [poses|export|audit] [clip ...]`.
+- **The export isn't done.** Its one run was stopped by the machine running low on memory, after Idle and part of Combo. What it left (`Pip_Idle.json`, `Pip_Combo.json`, their arcs and bare sheets, `pack_Idle.png`) is a partial set: run the whole export again before anything is read or delivered.
+- **How he moves, in one line:** a kid in a coat that's too big, a beat behind his own sleeves, and the hat says what he feels. The lantern is the one that's good at this.
+- **The eight,** at 60 frames a second, each with its markers:
+  - **Idle** (a loop of 192): rocking a hair on his heels. At 120 he turns to check the lantern's still there, and it perks up and turns to him.
+  - **Combo** (100; `Shot1` at 10, `Shot2` at 26, `Shot3` at 62): two flicks off the end of his sleeve, the lantern spitting and hopping back each time. For the third he sets his feet and ducks under his brim (44 to 57), then jabs the whole sleeve: the lantern kicks clean over (a full turn, 62 to 93) and the hat jumps.
+  - **LanternBurst** (132; `Heat` at 8, `Send` at 51, `Burst` at 66, `Return` at 98): he reels the lantern round to his sleeve's end, winds up (30 to 45), and lets go with the sleeve level down its line. The lantern goes end over end, two turns, 12 studs out. The throw tips him back on his heels all of a piece, the hat off his head (57 to 62); he claps it back on too far (68) and has to nod it up (106). The lantern comes home the long way.
+  - **Hit** (20): struck (3), both sleeves thrown forward; the hat follows by its own lag, and the lantern shies.
+  - **Down** (66; `Land` at 29): the blow stands him up straight (6), then he goes over forwards like a plank in a robe. The hat stays upright as he leaves it behind and comes down a moment after (41). The lantern comes down to look.
+  - **Up** (58): the hat gets up first (10). He stands himself up the way you'd walk a ladder upright (22 to 36), and the lantern's back at his shoulder before he looks for it.
+  - **Reveal** (96; `Kindle` at 24, `Flourish` at 58): a hat on a bundle of robe. The lantern comes round from behind him and lights, the brim tips up, and there's a boy under it (41). He tries a flourish: the lantern loops the loop and nearly takes the hat with it (70). He claps it back on and looks up from under it for his name.
+  - **Work** (a loop of 120; `Pump` at 27): a sleeve held over the post like warming a hand at a stove. The lantern rears, ducks in and gives it a go; while it gets its breath he knocks his hat back up (76) and reads the dial.
+- **The hat and the lantern** are keyed on their own joints, every frame. The hat lags the head by a spring (it tips against a turn or a shove, at most 18 degrees back, 14 round, 9 to a side), and the clip takes it over where it acts: the send, the fall, the reveal. The lantern is placed in the stage's space, so it stays put while he moves.
+- **The checks, as numbers, from the last pose run:**
+  - A leg's widest swing in the robe, of the recipe's 25 degrees: Idle 6, Combo 14, LanternBurst 22, Hit 11, Down 10, Up 9, Reveal 22, Work 15.
+  - The longest an arm is nearly still at 20 to 70 degrees over level: 0 frames in all eight, both arms, whatever the lean.
+  - The lantern's nearest to his torso: 0.42 studs (LanternBurst, 18). To his head: 1.05 (Work). To the hat: 0.18 (Work, 51). Over the floor: 0.23 (Reveal's start).
+- **My calls (tier 1), for research to rule on where marked:**
+  - **Pip has his own Hit, Down and Up. For research, tier 2:** `docs/design.md` ("States in a fight") says reactions are one shared set per rig. Rook's Down sits with his legs at 108 degrees, which comes out of the robe, and Pip's hat and lantern have to act in a reaction or they hang dead. These three are a proposal.
+  - **The robe makes his rules.** A leg stays within 25 degrees of the torso, so he tips back like a plank over his heels, crouches where another would bow (the robe hides his legs going up inside it), and never twists far over planted feet.
+  - **A hand goes to the brim and comes away in one move.** An R6 arm is straight, so it's a clap and a pull down, never held, and no clip ends with a hand up there (the content check's condition 6, applied to both arms).
+  - **The beats and the flight are the clip's proposal** for the builder's Action rows: the markers above, and 12 studs to the burst (`Flight` in `Pip.clips.json`).
+  - **Kindle is a marker.** The lantern is cold until `Kindle` in the Reveal; the glow is the builder's, from the recipe.
+- **What I see wrong:**
+  - On the send's recoil (57 to 62) the hat's crown faces the player's camera and covers him: for five frames he's a hat and a level sleeve.
+  - In Work his face is under the brim from the front for most of the loop. It shows at 76.
+  - Laid out in Down, the hat stands on its brim's edge with the crown up. It "covers what's left" only from the front.
+  - Reveal's first pose isn't only a hat: the robe and both cuffs show under it.
+  - A straight arm's hand passes by the brim more than it lands on it.
+  - The flicks' recoil on the lantern is half a stud, and may not read at 64 px.
+  - All of this is from stills. The hat's lag and the lantern's tumble are motion, and aren't judged yet.
+- **Still to do:** the export (a JSON a clip, the packs, the arcs, the bare-rig sheets from the side and the three-quarter, the send at 64 px on eight headings); research's read, which also reads the model's fixes 1 and 2; the content check on the packs and the bare sheets; the delivery to `build/handoff/Pip/clips/`.
+
+**Hours:** the clips so far, between 2 and 3 by my own estimate, not timed.
 
 ## AR5. The festival kit and the base's machines
 

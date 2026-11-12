@@ -230,18 +230,23 @@ def pixels(image):
     return data.reshape(image.size[1], image.size[0], 4)
 
 
-def bake(obj, out):
-    """The maps, with the contact shading multiplied into the colour and the strip's swatches painted in."""
+def bake(obj, out, prefix="Rook", surfaces=None, palette=None, ground=GROUND, lit=LIT, cold=None, who="rook_model.py",
+         lit_swatches=()):
+    """The maps, with the contact shading multiplied into the colour and the strip's swatches painted in. Another
+    fighter gives its own prefix, surfaces, palette and ground; `cold` names the colour a lit surface has with its
+    light out; `lit_swatches` are the surfaces whose swatch glows, for lit faces parked on it."""
+    surfaces, palette = surfaces or SURFACES, palette or rs.PALETTE
+    cold = {"Glow": "Steel"} if cold is None else cold
     scene = bpy.context.scene
     world = bpy.data.worlds.new("Bake")
     scene.world = world
     world.light_settings.distance = 1.2
-    held = lock()
+    held = lock(who)
     try:
-        paths = bl.bake_pbr(obj, SIZE, out, "Rook", samples=16, emissive=LIT, margin=MARGIN, fill=True)
+        paths = bl.bake_pbr(obj, SIZE, out, prefix, samples=16, emissive=lit, margin=MARGIN, fill=True)
         used = [slot.material for slot in obj.material_slots if slot.material]
-        cover = bpy.data.images.new("Rook_Cover", SIZE, SIZE, alpha=False)
-        shade = bpy.data.images.new("Rook_Shade", SIZE, SIZE, alpha=False)
+        cover = bpy.data.images.new(f"{prefix}_Cover", SIZE, SIZE, alpha=False)
+        shade = bpy.data.images.new(f"{prefix}_Shade", SIZE, SIZE, alpha=False)
         cover.colorspace_settings.name = shade.colorspace_settings.name = "Non-Color"
         for m in used:
             m.node_tree.nodes.active.image = cover
@@ -262,16 +267,17 @@ def bake(obj, out):
         inner[:, :-1] &= covered[:, 1:]
         covered = inner
     ao = pixels(shade)[..., :1] ** 0.85
-    images = {kind: bpy.data.images[f"Rook_{kind}"] for kind in paths}
+    images = {kind: bpy.data.images[f"{prefix}_{kind}"] for kind in paths}
     colour = pixels(images["Color"])
     colour[..., :3] *= SHADE + (1 - SHADE) * np.where(covered[..., None], ao, 1.0)
-    colour[~covered, :3] = rs.rgb(rs.PALETTE[GROUND])  # past the islands: one neutral, never the shade's dark
+    colour[~covered, :3] = rs.rgb(palette[ground])  # past the islands: one neutral, never the shade's dark
     rows = int(STRIP * 0.8 * SIZE)
     maps = {"Color": colour, **{kind: pixels(images[kind]) for kind in ("Roughness", "Metalness", "Emissive")}}
-    for i, (name, (rough, metal)) in enumerate(SURFACES.items()):
-        x0, x1 = round(i * SIZE / len(SURFACES)), round((i + 1) * SIZE / len(SURFACES))
-        code = rs.PALETTE["Steel" if name == "Glow" else name]
-        for kind, value in (("Color", rs.rgb(code)), ("Roughness", rough), ("Metalness", metal), ("Emissive", 0.0)):
+    for i, (name, (rough, metal)) in enumerate(surfaces.items()):
+        x0, x1 = round(i * SIZE / len(surfaces)), round((i + 1) * SIZE / len(surfaces))
+        code = palette[cold.get(name, name)]
+        for kind, value in (("Color", rs.rgb(code)), ("Roughness", rough), ("Metalness", metal),
+                            ("Emissive", float(name in lit_swatches))):
             maps[kind][:rows, x0:x1, :3] = value
     for kind, data in maps.items():
         images[kind].pixels.foreach_set(data.ravel())
@@ -280,10 +286,10 @@ def bake(obj, out):
     return paths
 
 
-def split(obj):
+def split(obj, pieces=None, prefix="Rook"):
     """The baked mesh cut back into its pieces, each where it stands in the model."""
     made = {}
-    for index, piece in enumerate(PIECES):
+    for index, piece in enumerate(pieces or PIECES):
         mesh = obj.data.copy()
         bm = bmesh.new()
         bm.from_mesh(mesh)
@@ -292,7 +298,7 @@ def split(obj):
         bm.to_mesh(mesh)
         bm.free()
         mesh.transform(Matrix.Translation((-APART * index, 0, 0)))
-        o = bpy.data.objects.new(f"Rook_{piece}", mesh)
+        o = bpy.data.objects.new(f"{prefix}_{piece}", mesh)
         mesh.name = o.name
         bpy.context.scene.collection.objects.link(o)
         made[piece] = o
@@ -300,8 +306,8 @@ def split(obj):
     return made
 
 
-def baked(name, paths, glow):
-    """What Roblox will draw: the maps on one surface. `glow` is the mask's strength, in the ram's ember."""
+def baked(name, paths, glow, tint=None):
+    """What Roblox will draw: the maps on one surface. `glow` is the mask's strength, in the ram's ember or `tint`."""
     m = bpy.data.materials.new(name)
     if not (m.node_tree and m.node_tree.nodes.get("Principled BSDF")):
         m.use_nodes = True
@@ -322,7 +328,7 @@ def baked(name, paths, glow):
         strength.operation = "MULTIPLY"
         strength.inputs[1].default_value = glow
         links.new(texture("Emissive", True), strength.inputs[0])
-        bsdf.inputs["Emission Color"].default_value = rs.srgb(rs.PALETTE["Ember"])
+        bsdf.inputs["Emission Color"].default_value = rs.srgb(tint or rs.PALETTE["Ember"])
         links.new(strength.outputs[0], bsdf.inputs["Emission Strength"])
     m.diffuse_color = (0.62, 0.6, 0.58, 1)  # the clay, in Workbench
     return m

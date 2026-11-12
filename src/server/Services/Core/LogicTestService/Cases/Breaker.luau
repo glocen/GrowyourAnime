@@ -246,4 +246,31 @@ return {
 			t.Equal("nothing drawn", data.Base.Battery, 0)
 		end,
 	},
+	{
+		Name = "Breaker: the rates a screen shows are the ones an advance runs at, and reading them writes nothing",
+		Run = function(t: any)
+			local seconds, energy = Breaker.Cost(STANDARD)
+			local data = fresh(0)
+			local id = withWatt(data)
+			local made = Breaker.Output(data.Voidkin[id])
+			t.Check("Watt's output is the bay formula", near(made * 60, 3 * BaseConfig.Bays.PerMinutePerAptitude))
+			t.Check("production is the workers' sum", near(Breaker.Production(data), made))
+			local idle = Breaker.Rates(data)
+			t.Check("idle: full speed, all of it to the battery", idle.Speed == 1 and near(idle.Net, made) and not idle.Busy)
+			Breaker.AddToLine(data, work(STANDARD))
+			local before = data.Base.Chambers[1].Work and (data.Base.Chambers[1].Work :: any).Done
+			local short = Breaker.Rates(data)
+			local demand = (energy :: number) / (seconds :: number)
+			t.Check("short on an empty battery: in proportion, nothing stored", short.Busy and near(short.Speed, math.max(BaseConfig.Breaker.MinSpeed, made / demand)) and short.Net == 0)
+			t.Equal("reading changed no work", (data.Base.Chambers[1].Work :: any).Done, before)
+			t.Equal("left is the whole shard", Breaker.Left(data.Base.Chambers[1].Work :: any), seconds)
+			Breaker.Advance(data, T0 + 10)
+			local done = (data.Base.Chambers[1].Work :: any).Done
+			t.Check("an advance runs at that speed", near(done, 10 * short.Speed, 1e-3), `{done} against {10 * short.Speed}`)
+			t.Check("left falls by the work done", near(Breaker.Left(data.Base.Chambers[1].Work :: any), (seconds :: number) - done))
+			data.Base.Battery = 50
+			local charged = Breaker.Rates(data)
+			t.Check("with charge: full speed, the battery pays the rest", charged.Speed == 1 and near(charged.Net, made - demand))
+		end,
+	},
 }

@@ -19,6 +19,7 @@ local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
 local Fight = require(Shared.Rules.Fight)
 local Clips = require(script.Clips)
+local Theme = require(script.Parent.Parent.Parent.UI.Theme)
 local Effects = require(script.Effects)
 
 local player = Players.LocalPlayer
@@ -441,10 +442,10 @@ local function onHit(hit: any)
 	end
 	local numbers = Combat.Numbers
 	if hit.Dodged then
-		Effects.Number(target.Root, "Miss", Color3.fromRGB(170, 170, 170), false, numbers)
+		Effects.Number(target.Root, "Miss", Theme.Colour.Dodge, false, numbers)
 		return
 	end
-	local color = if onMine then Color3.fromRGB(255, 120, 110) elseif hit.Critical then Color3.fromRGB(255, 214, 90) else Color3.new(1, 1, 1)
+	local color = if onMine then Theme.Colour.Hurt elseif hit.Critical then Theme.Colour.Critical else Theme.Colour.Hit
 	Effects.Number(target.Root, tostring(math.floor(hit.Total + 0.5)), color, hit.Critical == true or hit.Heavy == true, numbers)
 	if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
 		Effects.Shake(Combat.Shake.Hurt)

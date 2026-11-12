@@ -18,8 +18,19 @@ local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local Drops = require(Shared.Rules.Drops)
+local Voidkin = require(Shared.Definitions.Voidkin)
+local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
+local ProfileController = require(script.Parent.Parent.ProfileController)
+local UI = script.Parent.Parent.Parent.Parent.UI
+local Theme = require(UI.Theme)
+local Read = require(UI.Read)
+local Button = require(UI.Kit.Button)
+local Screen = require(UI.Kit.Screen)
+local UiLint = require(script.Parent.UiLint)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -44,6 +55,9 @@ local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
 local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
 local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: inside its notice and the lead's leash
 local DROP_BACK = 3 -- seconds a felled pack takes to come back in the drops case: time to leave the street first
+local ANSWER = 3 -- seconds a request through a screen may take to come back in the save's copy
+local PLATE_TICK = 0.4 -- seconds for the plates and pills to show a change (BaseController and HudController read at 4 Hz)
+local SKIP_ALL = 3600 -- seconds of base time a case skips, past any shard's work even at the floor's speed
 
 -- The angle in degrees between two directions, flat on the ground.
 local function flatAngle(a: Vector3, b: Vector3): number
@@ -52,6 +66,37 @@ local function flatAngle(a: Vector3, b: Vector3): number
 		return 180
 	end
 	return math.deg(math.acos(math.clamp(fa.Unit:Dot(fb.Unit), -1, 1)))
+end
+
+-- Waits up to `seconds` for `ok`, and says whether it came.
+local function waitFor(t: any, seconds: number, ok: () -> boolean): boolean
+	local began = os.clock()
+	while os.clock() - began < seconds do
+		if ok() then
+			return true
+		end
+		t.Wait(0.1)
+	end
+	return ok()
+end
+
+-- The button of row `row` in list `list` of the open screen `screen`, or nil.
+local function screenButton(screen: string, list: string, row: string): TextButton?
+	local frame = Screen.Frame(screen)
+	local body = frame and frame:FindFirstChild("Body")
+	local scroll = body and body:FindFirstChild(list)
+	local found = scroll and scroll:FindFirstChild(row)
+	local button = found and found:FindFirstChild("Action")
+	return if button and button:IsA("TextButton") then button else nil
+end
+
+-- The UI lint on whatever shows now.
+local function lintClean(t: any, where: string)
+	local report = UiLint.Run()
+	t.Check(`{where}: every label fits its box`, #report.Fit == 0, UiLint.Detail(report.Fit, report.Checked))
+	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))
+	t.Check(`{where}: every label is on screen`, #report.Screen == 0, UiLint.Detail(report.Screen, report.Checked))
+	t.Check(`{where}: no label shows Roblox's default`, #report.Placeholder == 0, UiLint.Detail(report.Placeholder, report.Checked))
 end
 
 -- The player's own lead's model, or nil.
@@ -614,6 +659,209 @@ return {
 			t.Check("the dummy is gone after the stop", dummy == nil or dummy.Parent == nil)
 			local after = Players.LocalPlayer:GetAttribute("Replay")
 			t.Check("the replay's camera is off", after == nil or after == "", `got {tostring(after)}`)
+		end,
+	},
+	{
+		Name = "HUD: the lead's card reads the lead in the fight, the pills read the save",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local parts = HudController.Parts()
+			local lead = myLead()
+			local view = ProfileController.Get()
+			t.Check("the lead is in the world and the save's copy is here", lead ~= nil and view ~= nil)
+			if lead == nil or view == nil then
+				return
+			end
+			t.Check("the lead's card shows", parts.Lead.Visible)
+			local name, level = (parts.LeadName :: TextLabel).Text, (parts.LeadLevel :: TextLabel).Text
+			t.Check("with the lead's name", name == lead:GetAttribute("Title"), name)
+			t.Check("and its level", level == `Lv {lead:GetAttribute("Level")}`, level)
+			local health, most = lead:GetAttribute("Health") :: number, lead:GetAttribute("MaxHealth") :: number
+			t.Near("its health bar is its share of health", parts.LeadHealth:GetAttribute("Share") :: number, health / most, 0.01)
+			local credits = (parts.Credits :: TextLabel).Text
+			t.Check("the Credits pill shows the save's", credits == `Credits {Read.Number(view.Currency.Credits)}`, credits)
+			t.Wait(PLATE_TICK)
+			local shown = (parts.Electricity :: TextLabel).Text
+			local digits = string.gsub(shown:match("^([%d,]+) /") or "", ",", "")
+			local stored = tonumber(digits)
+			local now = Read.Base(view, workspace:GetServerTimeNow())
+			t.Check("the Electricity pill shows a number", stored ~= nil, shown)
+			if stored then
+				t.Near("the battery as it stands now", stored, now.Data.Base.Battery, 1)
+			end
+			t.Check("the target's card hides out of a fight", not parts.Target.Visible)
+			lintClean(t, "the HUD")
+		end,
+	},
+	{
+		Name = "HUD: the target's card shows the lead's foe in a fight, and leaves with it",
+		Run = function(t: any)
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if lead == nil or type(level) ~= "number" then
+				return
+			end
+			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
+			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			local parts = HudController.Parts()
+			local met = waitFor(t, SHADE_TIMEOUT, function(): boolean
+				return lead:GetAttribute("Target") == spawned.Id and parts.Target.Visible
+			end)
+			t.Check("the target's card shows when the lead takes the Shade on", met)
+			local foe = (parts.TargetName :: TextLabel).Text
+			t.Check("with the Shade's name", foe == Enemies.ById.brawler.Name, foe)
+			t.Server("FightSpawn") -- clears it
+			t.Check("and hides once it's gone", waitFor(t, 2, function(): boolean
+				return not parts.Target.Visible
+			end))
+		end,
+	},
+	{
+		Name = "Base: the plot's Breaker, bays and battery carry their prompt and plate; the dock opens each screen",
+		Run = function(t: any)
+			local parts = BaseController.Parts()
+			local view = ProfileController.Get()
+			t.Check("the save's copy is here", view ~= nil)
+			if view == nil then
+				return
+			end
+			t.Check("the Breaker has its prompt", parts.BreakerPrompt ~= nil and parts.BreakerPrompt:IsA("ProximityPrompt"))
+			t.Check("and its plate", parts.BreakerPlate ~= nil)
+			t.Check("the battery has its plate", parts.BatteryPlate ~= nil)
+			local index = 1
+			while parts[`Bay{index}Plate`] do
+				local open = index <= #view.Base.Bays
+				t.Check(`bay {index} has its plate, and a prompt only when open`, (parts[`Bay{index}Prompt`] ~= nil) == open)
+				index += 1
+			end
+			t.Check("the plot has a bay beyond the open ones, shown locked", index - 1 > #view.Base.Bays, `{index - 1} bays, {#view.Base.Bays} open`)
+			local hud = HudController.Parts()
+			for _, name in { "Base", "Voidkin" } do
+				Screen.Close()
+				t.Check(`the dock's {name} can be pressed`, Button.Press(hud[name] :: TextButton))
+				t.Check(`and opens the {name} screen`, waitFor(t, 1, function(): boolean
+					return Screen.Current() == name
+				end))
+				t.Wait(0.1) -- laid out
+				lintClean(t, `the {name} screen`)
+			end
+			Screen.Close()
+		end,
+	},
+	{
+		Name = "Base: a shard added through the screen breaks, and opening it shows a card that names it",
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+			if view == nil or view.Progress.Starter == "" then
+				return
+			end
+			local shard = "named_watt"
+			local held = view.Bag.Shards[shard] or 0
+			t.Server("BaseGive", shard, 1)
+			t.Check("the server gives one", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 1
+			end))
+			BaseController.Open()
+			local add = screenButton("Base", "Bays", shard)
+			t.Check("the bag's row offers Add", add ~= nil)
+			if add == nil then
+				Screen.Close()
+				return
+			end
+			t.Check("and can be pressed", Button.Press(add))
+			t.Check("the shard leaves the bag", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held
+			end))
+			t.Server("BaseSkip", SKIP_ALL)
+			local at = 0
+			t.Check("it breaks", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				for index, work in (if now then now.Base.Ready else {}) do
+					if work.Def == shard then
+						at = index
+						return true
+					end
+				end
+				return false
+			end))
+			t.Check("the Breaker's prompt says Open", waitFor(t, 1, function(): boolean
+				local prompt = BaseController.Parts().BreakerPrompt :: ProximityPrompt?
+				return prompt ~= nil and prompt.ActionText == "Open"
+			end))
+			local open = screenButton("Base", "Breaker", `Ready{at}`)
+			t.Check("the screen offers Open on it", open ~= nil)
+			if open == nil then
+				Screen.Close()
+				return
+			end
+			Button.Press(open)
+			t.Check("the reveal shows", waitFor(t, ANSWER, function(): boolean
+				return BaseController.Revealed() ~= nil
+			end))
+			local shown = BaseController.Revealed()
+			t.Check("and names Watt", shown ~= nil and shown.Name == Voidkin.ById.watt.Name, if shown then shown.Name else "nothing")
+			lintClean(t, "the reveal")
+			BaseController.Dismiss()
+			t.Check("it closes", BaseController.Revealed() == nil)
+			Screen.Close()
+		end,
+	},
+	{
+		Name = "Base: a worker set through the screen works its bay, and its plate says so",
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			t.Check("a bay is open", view ~= nil and #view.Base.Bays >= 1)
+			if view == nil or #view.Base.Bays < 1 then
+				return
+			end
+			local previous = view.Base.Bays[1].Worker
+			local pick: any = nil
+			for _, owned in Read.Roster(view) do
+				if owned.Id ~= view.Roles.Lead and pick == nil then
+					pick = owned
+				end
+			end
+			t.Check("someone besides the lead can work", pick ~= nil)
+			if pick == nil then
+				return
+			end
+			local function worker(): string
+				local now = ProfileController.Get()
+				return if now and now.Base.Bays[1] then now.Base.Bays[1].Worker else "?"
+			end
+			BaseController.Open()
+			local set = screenButton("Base", "Bays", "Bay1")
+			t.Check("bay 1's row offers Set", set ~= nil and Button.Press(set))
+			if previous == pick.Id then
+				local empty = screenButton("Base", "Bays", "Empty")
+				t.Check("a bay with a worker can be emptied", empty ~= nil and Button.Press(empty))
+				t.Check("and is", waitFor(t, ANSWER, function(): boolean
+					return worker() == ""
+				end))
+				set = screenButton("Base", "Bays", "Bay1")
+				t.Check("bay 1's row offers Set again", set ~= nil and Button.Press(set))
+			end
+			local work = screenButton("Base", "Bays", pick.Id)
+			t.Check(`{Read.VoidkinName(pick)} can be put to work`, work ~= nil and Button.Press(work))
+			t.Check("and works bay 1", waitFor(t, ANSWER, function(): boolean
+				return worker() == pick.Id
+			end))
+			t.Wait(PLATE_TICK)
+			local plate = BaseController.Parts().Bay1Plate
+			local line = if plate then plate:FindFirstChild("Line1", true) :: TextLabel? else nil
+			local text = if line then line.Text else ""
+			t.Check("bay 1's plate names it, with its output", string.find(text, Read.VoidkinName(pick), 1, true) == 1 and string.find(text, "/min", 1, true) ~= nil, text)
+			Screen.Close()
+			if previous ~= pick.Id then
+				ProfileController.Act("SetWorker", { Bay = 1, Voidkin = previous })
+			end
 		end,
 	},
 }

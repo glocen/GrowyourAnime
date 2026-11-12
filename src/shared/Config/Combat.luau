@@ -54,7 +54,7 @@ return {
 		HurtShare = 0.1,
 	},
 	-- Damage numbers over the target: they rise this many studs over this many seconds.
-	Numbers = { Rise = 2.5, Seconds = 0.8, Size = 34 },
+	Numbers = { Rise = 2.5, Seconds = 0.8, Size = 24 }, -- Size: pixels at the phone's size (UI.Theme.Author), scaled with the screen
 
 	-- The keeper's try (KeeperService; docs/test-requests.md, TR2, "the keeper, fought alone"). The builder's numbers, 2026-11-12.
 	Keeper = {

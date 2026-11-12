@@ -12,11 +12,14 @@
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
 -- capture sets to 0 to hold a frame (.claude/skills/ga-studio-test, "Captures").
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
+local UI = script.Parent.Parent.Parent.Parent.UI
+local Theme = require(UI.Theme)
+local World = require(UI.World)
+local Text = require(UI.Kit.Text)
 
 local Effects = {}
 Effects.TimeScale = 1
@@ -463,36 +466,29 @@ function Effects.Burst(model: Model)
 	end)
 end
 
--- A number rising over `root`: `text` in `color`, larger when `big`.
+-- A number rising over `root`: `text` in `color`, larger when `big`. Drawn on the World layer (UI.World), so a capture
+-- shows it; its size is authored at the phone's (UI.Theme.Author) and scales with the layer.
 function Effects.Number(root: BasePart, text: string, color: Color3, big: boolean, numbers: { Rise: number, Seconds: number, Size: number })
-	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.fromOffset(160, 60)
-	gui.AlwaysOnTop = true
-	gui.LightInfluence = 0
-	gui.StudsOffsetWorldSpace = Vector3.new((math.random() - 0.5) * 1.2, 3, 0)
-	gui.Adornee = root
-	local label = Instance.new("TextLabel")
-	label.BackgroundTransparency = 1
-	label.Size = UDim2.fromScale(1, 1)
-	label.Font = Enum.Font.GothamBlack
-	label.TextSize = if big then numbers.Size * 1.35 else numbers.Size
-	label.TextColor3 = color
+	local spread = (math.random() - 0.5) * 1.2
+	local rise = 0
+	local size = if big then numbers.Size * 1.35 else numbers.Size
+	local plate = World.Plate("Number", Vector2.new(size * 5, size * 1.6), function(): Vector3?
+		return if root.Parent then root.Position + Vector3.new(spread, 3 + rise, 0) else nil
+	end)
+	local label = Text.new({ Name = "Number", Size = size, Font = Theme.Font.Number, Colour = color, Align = Enum.TextXAlignment.Center, Parent = plate })
 	label.TextStrokeTransparency = 0.2
 	label.Text = text
-	label.Parent = gui
-	gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
-	local start = gui.StudsOffsetWorldSpace
 	run(function(age: number): boolean
 		local t = age / numbers.Seconds
 		if t >= 1 then
 			return false
 		end
-		gui.StudsOffsetWorldSpace = start + Vector3.new(0, numbers.Rise * easeOut(t), 0)
+		rise = numbers.Rise * easeOut(t)
 		label.TextTransparency = math.clamp((t - 0.6) / 0.4, 0, 1)
 		label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
 		return true
 	end, function()
-		gui:Destroy()
+		World.Remove(plate)
 	end)
 end
 

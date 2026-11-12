@@ -41,24 +41,35 @@ function Breaker.Cost(shardId: string): (number?, number?)
 	return grade.BreakSeconds, grade.Energy * (ShardConfig.RegionFactor[shard.Ground] or 1)
 end
 
+-- The electricity one Voidkin makes at work, per second: 0 for a definition that's gone.
+function Breaker.Output(worker: Profile.OwnedVoidkin): number
+	local bays = BaseConfig.Bays
+	local row = Voidkin.ById[worker.Def]
+	if row == nil then
+		return 0
+	end
+	return row.Aptitude * bays.PerMinutePerAptitude * (1 + bays.PerLevel * (worker.Level - 1)) / 60
+end
+
 -- The electricity the bays' workers make, per second.
 function Breaker.Production(data: Profile.Data): number
-	local bays = BaseConfig.Bays
-	local perMinute = 0
+	local perSecond = 0
 	for _, bay in data.Base.Bays do
 		local worker = if bay.Worker ~= "" then data.Voidkin[bay.Worker] else nil
-		local row = worker and Voidkin.ById[worker.Def]
-		if worker and row then
-			perMinute += row.Aptitude * bays.PerMinutePerAptitude * (1 + bays.PerLevel * (worker.Level - 1))
+		if worker then
+			perSecond += Breaker.Output(worker)
 		end
 	end
-	return perMinute / 60
+	return perSecond
 end
 
 local function remaining(work: Profile.ShardWork): number
 	local seconds = Breaker.Cost(work.Def)
 	return math.max(0, (seconds or 0) - work.Done)
 end
+
+-- Seconds of work a shard has left at full power.
+Breaker.Left = remaining
 
 -- Empty chambers take the line's first shards, in order.
 local function feed(base: Profile.Base)
@@ -149,6 +160,14 @@ local function step(data: Profile.Data, seconds: number, production: number, sum
 		data.Currency.Credits += whole
 		summary.Credits += whole
 	end
+end
+
+-- The base's rates now, for a screen: the Breaker's speed (1 at full power), what the workers make and the battery's change,
+-- per second, and whether a chamber is breaking. Nothing is written.
+function Breaker.Rates(data: Profile.Data): { Speed: number, Production: number, Net: number, Busy: boolean }
+	local production = Breaker.Production(data)
+	local speed, net, busy = regime(data.Base, production)
+	return { Speed = speed, Production = production, Net = net, Busy = busy }
 end
 
 -- Moves the base from its stamp to `now`. `away` is true when the player was offline for the whole gap (a rejoin), so

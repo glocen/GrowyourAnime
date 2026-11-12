@@ -3,7 +3,8 @@
 -- (docs/engineering-plan.md, "Reusable modules"). The server decides every hit (Shared.Rules.Hit, rolled with its own
 -- Random) and every choice (Shared.Rules.Fight); clients only present it.
 -- What clients read, as attributes on each fighter's model: Fighter (its id), Side, Def, Kind, Rig, Title, Level, Owner
--- (a lead's UserId), Health, MaxHealth, State, Target (a fighter id or ""), Action and ActionAt. ActionAt is written last,
+-- (a lead's UserId), Health, MaxHealth, State, StateUntil (server time it ends, 0 for open-ended: a fallen lead's return),
+-- Target (a fighter id or ""), Action and ActionAt. ActionAt is written last,
 -- so a client reads the action on its change. Each hit, landed or dodged, goes to every client as the Hit event.
 -- Beats are checked every frame against the server's clock; decisions every Config.Combat.Think.
 
@@ -100,6 +101,7 @@ end
 local function setState(f: Fighter, state: State, untilTime: number?)
 	f.State = state
 	f.StateUntil = untilTime or 0
+	f.Model:SetAttribute("StateUntil", f.StateUntil) -- before State: a client reads both on State's change
 	f.Model:SetAttribute("State", state)
 end
 

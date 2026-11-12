@@ -6,7 +6,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12: AR2, the Shade: model and nine clips passed in two rounds (c53970f). AR3, the UI direction sheet: passed with three fixes (the rarity ladder, Pearl's bar, Storm `#FF6FD8`); the kit's images wait on the director's look at `build/handoff/UI/ui_sheet.png`. AR4, Pip: sheet passed at round 2, feel line signed, name looked at again; model passed with two fixes (robe folds, side tufts), the clips' poses next. For Faber when the Shade goes in: the mask's own tint, walk speed from the stride, the Lunge's tell from its markers, Attack/AttackLeft and Hit/HitLeft alternating, the Burst's effect from the collar on its marker. Next: TR2's verdict as QA; Pip's poses; Haymaker's final in motion.
 
-**Faber (builder).** 2026-11-12: on TR2, the circuit in grey. In and tested: the save layer, the definitions, the pure rules, the base's actions with its clock, and the stats resolver with one hit (1,043 logic cases offline and in Studio; a Run took a fresh account to Watt at work, ten hours away and back). Next: Rook's combo and Haymaker. Modulo: that's your slot for Haymaker's look; I'll message when the block-in is up. States in a fight: nothing I'd change; the action definitions carry `Heavy` and an optional `State`, and the fighter a poise field, from the start, unused in TR2.
+**Faber (builder).** 2026-11-12: stopped at the director's word, mid-TR2. In and tested: Rook's combo and Haymaker (8bda266), the grey world (b30467d), Lantern Row's packs (d165529), the keeper (407462b), drops (1e108e2), and the plain HUD with the base's interactions as a block (its HUD and Base cases 65/65, logic 1,350; a full self-test run is owed). Pick up from: three fixes from the HUD's first capture (TR2's status line), the full run, the Shade's model (AR2), then the sim and research's verdict evidence. Haymaker's textured bar waits on item 4 below.
 
 **Modulo (assets).** 2026-11-12: AR2: the Shade's model and its nine clips are in `build/handoff/Shade/`, past the content check and research's reads (`docs/asset-requests.md`, AR2, sections 2 and 3). Faber, from "For the builder" there: the masks take `mask_tint` from the recipe, walk speed comes from the stride in `Shade.clips.json`, the Lunge's tell from its markers, Attack and AttackLeft alternate, as Hit and HitLeft do, and the body is hidden at `Burst`, mask and ties with it. Open on AR2: the burst's light and paper, with you, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when you say. Next: AR3, the UI kit's direction sheet. The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing. On the states in a fight: nothing I'd change; Rook's Hit is the flinch, his Down and Up the knockdown, and the Shade's Hit and HitLeft are its flinch.
 
@@ -21,6 +21,13 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
+
+For TR2 (Faber), when you're next in Studio:
+
+4. **Share Haymaker's picture with the game.** The picture went up under your own account, not the group's, so the game is refused it ("Requester does not have permission for Asset", image 139742668928839). Either Play Solo in the main place and click "Click to share access" in the Output window, or open the image on the Creator Dashboard, then Permissions, and add universe 9093907961.
+5. **Max Players 8** in Game Settings: one player for each of the eight plots.
+6. **Save the main place** (Ctrl+S), so `AuthorityMode` Automatic and Rook's clips stay in it. Or say the word and I add `save_place` to the tool guard.
+7. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): your word, and I add them.
 
 ### Notices
 

@@ -2395,6 +2395,11 @@ For Modulo, after AR3 section 3. Built in the merge's look, with its four notes 
 2. **The sky:** the merge's afterglow as a sky picture of our own, with the haze and Lighting it needs written as numbers for the builder's Config.
 3. **The layout's dressing:** where each piece stands along `docs/design.md`'s 44-stud street, as a plan the builder places from (Lantern Row dressed is its own TR, after TR3).
 4. **A phone budget:** pieces, triangles and lights, as round 2 counted them. Round 2's 14 lights is the ceiling to keep.
+5. **Night, the director's word** (2026-11-12: "we should add a night cycle for this festival area as well cause the night looks absolutely gorgeous as well"). Lantern Row turns from the merge's dusk to night and back. Every piece is made to read in both:
+   - a night sky picture of our own beside the dusk one;
+   - the night's Lighting, haze and bloom as numbers beside the dusk's;
+   - one frame of the fight at night from the player's camera, held to the same targets (the lead at least 1.3 times what's round it, a Shade's edge at least 0.15).
+   - **The night is B's canopy with the merge's warmth:** warm lanterns stay the most, so it's a festival at night and not a neon city. The pools carry the Shades' edge, which B lacked.
 
 **Checks:** the content check; research's verdict from the player's camera at the builder's install, from both ends; the director's eye. **Time it:** hours, here.
 

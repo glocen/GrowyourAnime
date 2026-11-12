@@ -16,6 +16,7 @@ local Collection = {}
 Collection.Unknown = "Unknown" -- no such Voidkin definition, or no such owned Voidkin
 Collection.MaxStars = "MaxStars"
 Collection.NotEnough = "NotEnough"
+Collection.Working = "Working" -- a worker can't also lead
 
 -- The owned Voidkin of a definition, or nil. Owned once each, so the first match is the only one.
 function Collection.Owned(data: Profile.Data, def: string): Profile.OwnedVoidkin?
@@ -100,5 +101,34 @@ function Collection.SpendCopies(data: Profile.Data, id: any): { [string]: any }
 	end
 	return { Ok = true, Id = owned.Id, Stars = owned.Stars, Copies = owned.Copies, Credits = credits }
 end
+
+-- Makes an owned Voidkin the lead: { Ok, Id }. A worker is refused: one role at a time (docs/design.md, "Roles").
+function Collection.SetLead(data: Profile.Data, id: any): { [string]: any }
+	local owned = if type(id) == "string" then data.Voidkin[id] else nil
+	if not owned then
+		return { Ok = false, Error = Collection.Unknown }
+	end
+	if Profile.RoleOf(data, owned.Id) == "Worker" then
+		return { Ok = false, Error = Collection.Working }
+	end
+	data.Roles.Lead = owned.Id
+	return { Ok = true, Id = owned.Id }
+end
+
+local function voidkinArg(args: any): any
+	return if type(args) == "table" then args.Voidkin else nil
+end
+
+-- What a client may ask, by name, with the same shape as Rules.Base's actions (VoidkinService registers them).
+--   SetLead { Voidkin }       the lead
+--   SpendCopies { Voidkin }   the next star
+Collection.Actions = {
+	SetLead = function(data: Profile.Data, args: any): { [string]: any }
+		return Collection.SetLead(data, voidkinArg(args))
+	end,
+	SpendCopies = function(data: Profile.Data, args: any): { [string]: any }
+		return Collection.SpendCopies(data, voidkinArg(args))
+	end,
+} :: { [string]: (data: Profile.Data, args: any, now: number, u: number) -> { [string]: any } }
 
 return Collection

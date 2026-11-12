@@ -31,4 +31,11 @@ return {
 		PerMinutePerAptitude = 1.0,
 		PerLevel = 0.02,
 	},
+	-- When the server wakes an online player's base (BaseService): at its next event (a shard finishing, the battery
+	-- emptying or filling), and at least this often, so overflow Credits and the battery's level reach the client.
+	-- Technical, not balance: the builder's call, 2026-11-12.
+	Clock = {
+		MostSeconds = 60,
+		LeastSeconds = 0.25, -- never sooner than this after the last advance, and this late past an event, so it has landed
+	},
 }

@@ -6,6 +6,7 @@
 -- service), or the server's own change (Change). Reading is free: Get, WaitFor. A client holds a read copy, sent whole after
 -- each change (the Profile remote) and fetched once at start (ProfileGet).
 
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -194,6 +195,15 @@ local function registerDebug()
 			draft.Currency.Credits += amount
 			return { Ok = true, Credits = draft.Currency.Credits }
 		end)
+	end)
+	-- Runs a client's action as that player through the Act remote's own path, op id and all, so an action and its repeat
+	-- are tested without a menu. A fresh op id unless one is given.
+	DebugService.Register("Act", function(who: any, name: any, args: any, opId: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player then
+			return { Ok = false, Error = "NoPlayer" }
+		end
+		return onAct(player, if opId == nil then HttpService:GenerateGUID(false) else opId, name, args)
 	end)
 	DebugService.Register("DataState", function(): string
 		return `{STORE_NAME} store, DataStoreState {ProfileStore.DataStoreState}`

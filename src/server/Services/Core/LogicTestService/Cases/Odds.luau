@@ -1,0 +1,123 @@
+--!strict
+-- Odds cases (pure): every table sums to one, a Named shard is certain, ground 1's Standard shard matches the seeds by hand,
+-- luck lifts only the top tier and stops at its cap, featured Voidkin weigh more, and a large sample of rolls lands on the
+-- odds shown. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+
+local Shared = game:GetService("ReplicatedStorage").Shared
+local Odds = require(Shared.Rules.Odds)
+local Shards = require(Shared.Definitions.Shards)
+local ShardConfig = require(Shared.Config.Shards)
+
+local STANDARD = "lanternrow_standard"
+
+local function chanceOf(entries: { Odds.Entry }, id: string): number
+	for _, entry in entries do
+		if entry.Id == id then
+			return entry.Chance
+		end
+	end
+	return 0
+end
+
+local function near(a: number, b: number): boolean
+	return math.abs(a - b) < 1e-9
+end
+
+-- A seeded stream of numbers in (0, 1), the same in Studio and in Lune (Random isn't in both). Park–Miller: the product
+-- stays under 2^47, so doubles hold it exactly (a 2^30 multiplier would pass 2^53 and lose its low bits).
+local MODULUS = 2147483647
+local function stream(seed: number): () -> number
+	local state = seed % MODULUS
+	return function(): number
+		state = (state * 48271) % MODULUS
+		return state / MODULUS
+	end
+end
+
+return {
+	{
+		Name = "Odds: every shard's table sums to one",
+		Run = function(t: any)
+			for _, shard in Shards.List do
+				for _, luck in { 0, 0.2, ShardConfig.LuckCap } do
+					local sum = 0
+					for _, entry in Odds.Table(shard.Id, luck) do
+						sum += entry.Chance
+					end
+					t.Check(`{shard.Id} at luck {luck}`, near(sum, 1), `sum {sum}`)
+				end
+			end
+		end,
+	},
+	{
+		Name = "Odds: a Named shard holds one Voidkin, for certain",
+		Run = function(t: any)
+			local entries = Odds.Table("named_watt", ShardConfig.LuckCap)
+			t.Equal("one entry", #entries, 1)
+			t.Equal("Watt", entries[1].Id, "watt")
+			t.Equal("certain", entries[1].Chance, 1)
+			t.Equal("rolled", Odds.Roll("named_watt", 0, 0.99), "watt")
+		end,
+	},
+	{
+		Name = "Odds: ground 1's Standard shard, worked by hand",
+		Run = function(t: any)
+			-- Ground 1 holds five Commons and one Uncommon (Sable); the Standard pool weighs them 60 and 30.
+			local entries = Odds.Table(STANDARD, 0)
+			t.Equal("six Voidkin", #entries, 6)
+			t.Check("Sable a third", near(chanceOf(entries, "sable"), 30 / 90))
+			t.Check("Rook a fifth of the rest", near(chanceOf(entries, "rook"), 60 / 90 / 5))
+			t.Equal("nothing from ground 2", chanceOf(entries, "lyric"), 0)
+		end,
+	},
+	{
+		Name = "Odds: luck lifts the top tier, up to its cap",
+		Run = function(t: any)
+			local lifted = Odds.Table(STANDARD, 0.4)
+			t.Check("Sable lifted", near(chanceOf(lifted, "sable"), 30 * 1.4 / (60 + 30 * 1.4)))
+			local capped = Odds.Table(STANDARD, 5)
+			local atCap = Odds.Table(STANDARD, ShardConfig.LuckCap)
+			t.Check("past the cap is the cap", near(chanceOf(capped, "sable"), chanceOf(atCap, "sable")))
+			local negative = Odds.Table(STANDARD, -1)
+			t.Check("no negative luck", near(chanceOf(negative, "sable"), 30 / 90))
+		end,
+	},
+	{
+		Name = "Odds: the ground's own Voidkin are featured",
+		Run = function(t: any)
+			-- A ground-3 shard for this case only: ground 1's Commons are older than ground 2's, so they weigh 1 against 3.
+			local id = "case_maskparade_standard"
+			local row = { Id = id, Grade = "Standard", Ground = "maskparade", Holds = "" }
+			Shards.ById[id] = row :: any
+			local ok, err = pcall(function()
+				local entries = Odds.Table(id, 0)
+				local rook, tumble = chanceOf(entries, "rook"), chanceOf(entries, "tumble")
+				t.Check("Tumble (zone 2) weighs three Rooks (zone 1)", near(tumble, rook * ShardConfig.FeaturedWeight), `{tumble} against {rook}`)
+			end)
+			Shards.ById[id] = nil
+			t.Check("ran", ok, tostring(err))
+		end,
+	},
+	{
+		Name = "Odds: a large sample lands on the odds shown",
+		Run = function(t: any)
+			local n = 60000
+			local entries = Odds.Table(STANDARD, 0)
+			local counts: { [string]: number } = {}
+			local u = stream(20261112)
+			for _ = 1, n do
+				local id = Odds.Roll(STANDARD, 0, u()) :: string
+				counts[id] = (counts[id] or 0) + 1
+			end
+			for _, entry in entries do
+				local p = entry.Chance
+				local spread = 4 * math.sqrt(p * (1 - p) / n) -- four standard errors
+				local seen = (counts[entry.Id] or 0) / n
+				t.Check(`{entry.Id} at {string.format("%.4f", p)}`, math.abs(seen - p) <= spread, `seen {string.format("%.4f", seen)}`)
+			end
+			t.Equal("u near 0 gives the first", Odds.Roll(STANDARD, 0, 0), entries[1].Id)
+			t.Equal("u near 1 gives the last", Odds.Roll(STANDARD, 0, 0.9999999), entries[#entries].Id)
+			t.Equal("an unknown shard gives nothing", Odds.Roll("nothing", 0, 0.5), nil)
+		end,
+	},
+}

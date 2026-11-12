@@ -65,8 +65,9 @@ export type Bay = {
 }
 
 export type Base = {
-	Stamp: number, -- os.time() the base was last advanced to (Rules.Base); 0 before the first advance
+	Stamp: number, -- os.time() the base was last advanced to (Rules.Breaker); 0 before the first advance
 	Battery: number, -- electricity stored
+	Spill: number, -- Credits from overflow not yet whole, carried to the next advance (0 to 1)
 	Chambers: { Chamber }, -- one per chamber the Breaker has
 	Line: { ShardWork }, -- the waiting line, in the order it's fed
 	Ready: { ShardWork }, -- broken and waiting to be opened, oldest first
@@ -134,6 +135,7 @@ function Profile.Template(): Data
 		Base = {
 			Stamp = 0,
 			Battery = BaseConfig.Start.Battery,
+			Spill = 0,
 			Chambers = chambers,
 			Line = {},
 			Ready = {},

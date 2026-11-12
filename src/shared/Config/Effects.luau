@@ -115,7 +115,7 @@ return {
 		Tall = 0.9,
 		Fall = 0.208,
 		Grow = 0.301,
-		Ease = 4,
+		Ease = 2, -- research's verdict (AR4, section 9): at 4 each crest had thinned to a sliver by the time it landed
 		Thin = 4,
 		Segments = 12,
 		Transparency = 0.45,

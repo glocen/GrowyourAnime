@@ -483,6 +483,15 @@ A tier 1 exploration for the director's pick between the options above. Nothing 
   4. A new check on the finished art before any upload, with a 64 px sheet at every heading.
 - **Not done:** no art, no clip, nothing in the game.
 - **Hours:** about 1.5, over the half hour asked, for B4 and B5 and the headings sheets. Made on Opus 5.5 xhigh.
+- **Research's read, for the director's pick, 2026-11-12** (B5, its headings, the 64 px sheet). Not a verdict: nothing is built until the director picks.
+  - **Felt (B5):** a square of light hangs over the Shade through Rook's hold, then drops onto it on the blow. The hang and the fall read from all eight headings, face-on.
+  - **The pick within B: B5.** It's the only one that keeps the square's face at 64 px and gives the eye a place to wait. B4 is its fallback, if the hang reads as a tell the Shade should dodge.
+  - **What B costs, more than first said:**
+    - Modulo's block clip striking down, about an hour, tier 2.
+    - The Shade pinned under the stamp rather than pushed out of it, tier 2, decided at the build.
+    - The landing at the feet mostly behind the avatar. The hang and the fall carry the read, and the impact itself is seen only beside the avatar.
+    - In all, about 3 to 4 hours.
+  - **Research still picks B5 over A,** with Modulo's clip striking down. Without that clip, it's a blow called down from the sky, and the director would be picking that instead.
 
 ## AR2. The Shade, one rig for every enemy
 

@@ -61,6 +61,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 - Haymaker's frames 7 and 8 with finer rims (AR1, section 8)
 - Pip's Lantern Burst art sheet (AR4, section 8)
 - Lyric's Held Note block-in (AR4, section 9)
+- Haymaker's B, the stamp from above: the block-in (AR1, section 9)
 
 ## Phases
 

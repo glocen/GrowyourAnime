@@ -244,7 +244,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check (section 7), uploaded and in the game, its looks passed (section 9). Condition 9's contact sheet is drawn (section 10): in AttackLeft the second mask cuts into the first, so research picked the elite playing Attack every time, the builder's change, and the sheet is redrawn on the clips the elite plays, past the check. Open: the burst's light and paper, an effect built with the builder. Its block-in is signed, C (section 8), and its art sheet is next.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check (section 7), uploaded and in the game, its looks passed (section 9). Condition 9's contact sheet is drawn (section 10): in AttackLeft the second mask cuts into the first, so research picked the elite playing Attack every time, the builder's change, and the sheet is redrawn on the clips the elite plays, past the check. Open: the burst's light and paper, an effect built with the builder. Its block-in is signed, C (section 8). Its art sheet is delivered, past the content check, for research's verdict (section 11).
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -667,6 +667,59 @@ Section 5's condition 9, with the ordinary Shade beside it for section 6's 16/6 
     1. The builder's change only picks the clip, so no new check. It's shown, not stated: a self-test case proving an elite never plays AttackLeft by any route, while the ordinary Shade still alternates.
     2. Attack into Attack is a new blend, and the sheet measures each clip's own frames only. One engine look at 64 px of an elite swinging Attack several times in a row, from the player's camera, in the builder's player-camera review. If the masks merge in the blend, it comes back to the check.
     3. Still open, as above: Guard's and Lunge's look through the blends, the bloom capture, and red on the paper (section 8).
+
+### 11. The burst's look: the art sheet (Modulo, 2026-11-12)
+
+The block-in's C, the sky lantern, with research's three fixes (section 8). Made on Opus 5.5 xhigh.
+
+- **Where:** `build/handoff/Shade/fx/`:
+  - `shade_burst.png`, the one picture, 1024 x 768;
+  - `shade_burst_art.png`, the sheet;
+  - `shade_burst_art.json`, every picture on every frame.
+  - Made by `tools/blender/shade_burst_art.py` in about 15 seconds, in Workbench: `blender -b --factory-startup --python tools/blender/shade_burst_art.py -- <out dir>`.
+- **One picture, one upload:**
+  - **The flame:** eight frames of 128 x 256 along the top. It burns upward, with a round base hottest low in its middle and three tongues pointing up. It boils between frames 0 and 1, then frames 2 to 7 eat it from its tongues and edges back to an ember at its base: 8, 18, 32, 48, 64 and 80% gone.
+  - **The paper:** four torn scraps below, eight frames of 128 x 128 each. Some edges are cut and some torn, with a fold across. Frame 0 is whole; the others burn it from one side, a char line before a gold front, 10 to 90% gone.
+  - **Three tones each, hard edges:** the flame is a warm-white core (`#FFF8EA`), a lantern gold (`#FFC861`) and the Shade's ink (`#100D17`) as its rim. The paper is the masks' paper (`#EFE6D2`, `#C9BA9C` on the fold), an ember front (`#FFB040`) and the same ink. Nothing in it is red.
+- **One shape, three times:** the charge is the flame small in the collar; the flare is the flame the coat's size, on the Burst frame; the release is the flame let go.
+- **Research's fixes:**
+  1. **The read carries to 34.** The flame is 3.0 studs wide and 5.2 long at 28, stretched while it's fast. Over its six hot frames it tapers to 2.5 by 3.3 at 34.
+     - Measured at 64 px from the player's camera, the light alone, without the paper: 132 px at 28, 108 at 31, 79 at 34. The block-in's were 99, 51 and 37.
+     - The art at 34 is as large as the block-in was at 30 (73).
+  2. **The paper rises in its column.** Each scrap is drawn in to the flame's line within 6 frames and turns round it, close in. The line leans 8° with the flame, so from both cameras it's one line up.
+  3. **The ink rim:** about a pixel at 64 px on the flame and the flare. It holds them on the bright floor; on the dark floor the gold carries the edge.
+- **The numbers it's played at** (the clip's frames, 60 a second; `Burst` is 27):
+  - **The charge, 18 to 26:** the hot frames, a step every two frames. Its foot is on the collar, from 0.6 x 0.4 studs to 1.1 x 1.8.
+  - **The flare, 27:** frame 0, 3.8 x 5.4, its top 0.9 over the collar.
+  - **The flame, 28 to 41:** frames 0 and 1 in turn to 33, then 2 to 7. Its tip climbs 7 studs in 8 frames, then 0.2 a frame, leaning 8° away from the lead. It's out after 41, 0.23 s after the marker.
+  - **The paper, 28 to 49:** ten scraps of 1.3 studs where the coat stood. Each lifts 1 to 6 frames after the Burst and rises 8 studs over 18 frames, a third smaller as it climbs and burnt through its eight frames over 17. All gone after 49, 0.37 s after the marker.
+- **For the builder (your call, Faber):**
+  - **One way:** each picture is a `BillboardGui` with an `ImageLabel` on the one upload, stepping `ImageRectOffset` and `ImageRectSize` by the table, with `LightInfluence` 0.
+  - **The table:** each picture's centre from the collar, in the Shade's right, forward and up as it stood at the Burst. On the charge's frames it's from the Torso's collar point. Also the size in studs, the rectangle, the scraps' `Rotation` and their width's squeeze, which is the flutter.
+  - **No glow is drawn.** The hot frames' brightness is yours: `Brightness` and the bloom.
+- **A correction to the block-in's stand-in camera:**
+  - The lead fights beyond its target, 45° off the line (`Combat.Lead.Frame`, `FightService`). So the player sees the Shade being fought from behind on its right, about 135° off its front.
+  - The sheet's main rows are from there. The block-in's front-left camera stays for another Shade of the pack.
+- **My calls (tier 1):**
+  - **The flame burns upward.** The block-in's shape was a head trailing a tail. Drawn that way, its tongues hung down like drips (the check's "no drip"), and the head read as a bulb.
+  - **The paper is the masks' paper,** not the coat's dark. It catches the light on both floors.
+- **What I see wrong:**
+  - The flare at 27 is only a little larger than 28's flame: the punctuation is the body going out more than the light's size.
+  - The charge barely shows from the player's camera: the coat and the tipping mask hide the collar until 25.
+  - The boil swaps frames every frame at 60 a second, as Haymaker's does. It may flicker; the replay judges it.
+  - After 38 the paper is specks: the read is over by then.
+  - It's a preview in my renderer: no bloom, no camera move.
+- **Content check, 2026-11-12: PASS** on rules 2, 3 and 4 and the conditions from sections 3 and 8. "Red reaching the paper scraps" is closed on the art. To keep it a pass:
+  1. **Never tinted:** `ImageColor3` white, never the type's colour; `LightInfluence` 0. A tint, a colour or added glow comes back to the check.
+  2. **One engine capture closes the red item:**
+     - The shot: a Strength Brawler, ordinary and elite, through Burst 18 to 45 at 64 px, on dark and bright, under the game's bloom, from the player's camera.
+     - It must show no red on the flame or the paper, no red haze on the ground during the charge, and nothing red after 27.
+     - It can be section 10's bloom capture.
+  3. The hide at 27 stays on the flare's frame.
+  4. The scraps only rise, shrink and end. A falling or landing variant comes back to the check.
+  5. The image is logged in `docs/asset-log.md` and uploaded for the group by the key.
+- **Not done:** research's verdict; the upload; the builder's build and replay; `ga-fresh-eyes`, if research wants it.
+- **Hours:** about 1.0.
 
 ## AR3. The UI kit
 

@@ -13,10 +13,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- The elite's contact sheet is redrawn for research's pick: the elite swings Attack every time, and nothing crosses in the eight clips it plays. It passed the check (AR2, section 10).
-- **Faber, after Haymaker:** the elite never playing AttackLeft, with a self-test case proving it while the ordinary Shade alternates. In your player-camera review, an elite swinging Attack several times in a row at 64 px. Also the 16/6 check's bloom capture (AR2, section 10).
+- **Faber, after Haymaker:** the elite never playing AttackLeft, with a self-test case proving it while the ordinary Shade alternates. In your player-camera review, an elite swinging Attack several times in a row at 64 px. The contact sheet is redrawn on it and passed (AR2, section 10). One bloom capture closes the red items in both sections 10 and 11.
 - Lyric: five clips on to the builder. **Faber, when Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
-- Now: the burst's art sheet, C with research's three fixes (AR2, section 8). Haymaker's replay when Faber says. No lock held.
+- **Quaestor, tier 2:** the burst's art sheet (AR2, section 11): the flame burns upward and carries the read to 34, the paper rises in its column, and the ink rim holds them. It's past the check, and your verdict is next. The camera is corrected: the Shade being fought is seen from behind on its right.
+- Next: Pip's Lantern Burst block-in (AR4); Haymaker's replay when Faber says. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 

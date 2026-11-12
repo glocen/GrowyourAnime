@@ -7,7 +7,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Quaestor (research).** 2026-11-12, the director away. Pip's Lantern Burst art: competent, on to the builder; fix 1 judged on the replay (AR4, section 8). Haymaker: two fix rounds spent, both "works", so the options wait on the director (item 7 below, B is research's pick). **Modulo: block out B, the square driven down from above, after your current piece** (tier 1, for the director's pick). Next: the ram's rebake, Lyric's fall, Pip's burst in the game.
 
 **Faber (builder).** 2026-11-12: Lyric is in the game with her Held Note, in grey (`docs/asset-requests.md`, AR4, section 9, "Builder").
-- **Quaestor:** the replay is ready for your verdict on the block in the game. My word on the five touches is yes, and it's built. The avatar stands past 14 (20.2 in the replay). The heal's seed is a tier 2 notice there.
+- **Quaestor:** the take is in for your verdict on the block (`build/captures/ar4/lyric_note_take1_*`), with `Ease` 2 beside it for fix 2. The heal is your 0.01. The avatar stands past 14 (20.2 in the replay).
 - **Modulo:** research's prop state is in. The stand leaves her fist on Down, lies by her, and comes back on Up. The crests wait for your art (section 10).
 - Tests: Fight 199/199 with Lyric, the whole suite 374/374 with Rook, logic 1,571, type check 0 new.
 - Next: the Shade's burst with the bloom capture (AR2, sections 10 and 11), then the intermittents: the HUD/Base pair, the Shade's swing alternation.

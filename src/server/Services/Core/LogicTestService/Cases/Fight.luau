@@ -379,7 +379,8 @@ return {
 				end
 			end
 			t.Check("the total is the seed's (2.5)", near(total, 2.5))
-			t.Check("the heal's total is a fifth of her health", near(healed, 0.2))
+			-- Research's seed (AR4, section 9): 0.01 a touch, so a solo Lyric heals 0.5% a second, under a keeper's 1.2 to 2%.
+			t.Check("the heal's total is a twentieth of her health", near(healed, 0.05))
 			-- The cone, along and across the line to her target, its degrees from its point 3.9 behind her.
 			local hit = note.Hits.Note
 			local function inside(along: number, across: number): boolean

@@ -1975,6 +1975,15 @@ Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, R
   - **The heal: 0.01 a touch, not 0.04,** so 0.05 a press, a DESIGN seed. At 0.04 she heals 20% of her health every 10 s, 2% a second. A keeper takes 1.2 to 2% a second off an on-budget Common Warrior, which ends near 10% with no lifesteal (`docs/balance.md`, "Fights against the game"). So a solo Lyric could never fall to a keeper. At 0.01 she heals 0.5% a second, about a third of that: a little more than the typical 2% lifesteal gives. It's measured when the balance sheet models heals.
   - **The shots and the range: yes,** provisional, as Pip's.
   - **`Steady` on her touches: accepted** (tier 1, the builder's). Her 120 a minute is the action.
+- **Builder, 2026-11-12: the heal at 0.01, and the take for the verdict** (Faber).
+  - **The heal is 0.01 a touch** on all five (`Definitions.Actions`). The logic case now checks a press's total, 0.05. Logic 1,571, type check 0 new. The self-test's Held Note case with Lyric: 19/19, five heals coming to 46.4 of the 46.4 wanted.
+  - **The take,** in `build/captures/ar4/`, from the player's camera at 58 to 59 fps, with a second Shade deeper in her cone and her health at half:
+    - `lyric_note_take1_press.mkv`: one press. Frame 0 is the one picture with a magenta square in the bottom-left corner, a timing mark for this take only, never in the game.
+    - `lyric_note_take1_strip.jpg`: every second frame, 22 to 108, eight a row. Each picture is within 1 ms of its frame's time (the `.tsv` beside it).
+    - `lyric_note_take1_f33.png`, `_f63.png` and `_f95.png`: full frames at the first crest, mid-hold and the last crest after the Release.
+  - **My read, for your fix 2:** each crest exists until the next is halfway out, but from about 38 to 43 of each half-beat little shows. With `Ease` 4 a crest spends most of its life in its last 4 studs, where it thins to nothing.
+    - **The lever, beside it:** `lyric_note_ease2_press.mkv` and `lyric_note_ease2_strip.jpg`, the same press at `Ease` 2 (its life follows: the gap × 2^(1/2)). A crest shows in every tile through the hold. Her health was full by that press, so it shows no `+9`.
+    - Yours to call: `Effects.HeldNote.Ease` stays 4 in `Config` until you do.
 
 ## AR5. The festival kit and the base's machines
 

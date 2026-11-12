@@ -6,7 +6,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12: the director's eye on AR3's sheet is in: Graphite Dark is the main theme, and Pearl Light, with a black border, serves some screens (`docs/decisions.md`); the kit's images are unblocked, and Modulo has been told. AR2, the Shade: passed (c53970f). AR4, Pip: sheet and model passed, the clips' poses next. For Faber when the Shade goes in: the mask's own tint, walk speed from the stride, the Lunge's tell from its markers, Attack/AttackLeft and Hit/HitLeft alternating, the Burst's effect from the collar on its marker. Ruled: Pip's Hit, Down and Up become R6's robe set (notice below). Next: TR2's verdict as QA; Pip's poses once exported; Haymaker's final in motion.
 
-**Faber (builder).** 2026-11-12: TR2. In and tested: Rook's combo and Haymaker (8bda266), the grey world (b30467d), Lantern Row's packs (d165529), the keeper (407462b), drops (1e108e2), the plain HUD with the base's interactions (4863086), and the fixes from its captures (TR2's status line). Self-test 215/215 at 60 fps, logic 1,350, world report sound. Next: the Shade's model (AR2), then the sim and research's verdict evidence. Haymaker's textured bar waits on item 4 below; Max Players still reads 60 (item 5).
+**Faber (builder).** 2026-11-12: TR2. In and tested: Rook's combo and Haymaker (8bda266), the grey world (b30467d), Lantern Row's packs (d165529), the keeper (407462b), drops (1e108e2), the plain HUD with the base's interactions (4863086), and the fixes from its captures (TR2's status line). Self-test 215/215 at 60 fps, logic 1,350, world report sound. Haymaker plays its textured bar, uploaded again under the group (116379507394315); Quaestor, its final in motion is yours to judge (`NL_Debug:Invoke("Replay", nil, "RookHaymaker")`). Next: the Shade's model (AR2), then the sim and research's verdict evidence.
 
 **Modulo (assets).** 2026-11-12: stopped on the director's word, relayed by Quaestor; nothing running, no lock held. AR4, Pip: the sheet and the model are in `build/handoff/Pip/`, past the content check and research's reads (`docs/asset-requests.md`, AR4, sections 1 and 2); not uploaded, not in the engine. His eight clips are keyed and their pose sheets rendered, with no review yet (section 3): the export was stopped by the machine running low on memory, so the next step is to run it again, then research's read and the content check. Quaestor: section 3 asks you to rule on Pip's own Hit, Down and Up, against the shared reaction set. AR3: the kit's images wait on the director's look at `build/handoff/UI/ui_sheet.png`. Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing.
 
@@ -22,12 +22,9 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
 
-For TR2 (Faber), when you're next in Studio:
+For Faber:
 
-4. **Share Haymaker's picture with the game.** The picture went up under your own account, not the group's, so the game is refused it ("Requester does not have permission for Asset", image 139742668928839). Either Play Solo in the main place and click "Click to share access" in the Output window, or open the image on the Creator Dashboard, then Permissions, and add universe 9093907961.
-5. **Max Players 8** in Game Settings: one player for each of the eight plots.
-6. **Save the main place** (Ctrl+S), so `AuthorityMode` Automatic and Rook's clips stay in it. Or say the word and I add `save_place` to the tool guard.
-7. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): your word, and I add them.
+4. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): your word, and I add them.
 
 ### Notices
 
@@ -41,6 +38,7 @@ For TR2 (Faber), when you're next in Studio:
 - Tier 1, Faber, 2026-11-12: the keeper is fought in a copy of the ring for each plot, and code lays the grey world from Config (same place).
 - Tier 2, Faber, 2026-11-12, for research: the builder's seeds (the Breaker's free floor, the battery, away, Named and starter shards, copies past seven), in `docs/test-requests.md`, TR2.
 - Faber, for research, 2026-11-12: the director's word that the player's avatar is R6 only, for the register; and the handbook's lessons from the kit's first run here. Both are in TR1's entry.
+- Faber, for research, 2026-11-12: the director's word that the group's Open Cloud key covers this game's uploads, for the register (`docs/test-requests.md`, TR2's status line). The builder uploads through `tools/upload/upload_asset.py`, from `build/upload/`, after the content check, as before.
 - Tier 2, research, 2026-11-12: reactions on R6 come in two shared sets, open legs and robe; Pip's Hit, Down and Up are the robe set (`docs/design.md`, "States in a fight"). Faber and Modulo: say in your row what you'd change.
 
 ## Entries

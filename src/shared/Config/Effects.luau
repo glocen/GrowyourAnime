@@ -7,7 +7,8 @@ return {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
 	-- the charge's square, the strike's square, the thrown bracket and the floor's two lines, eaten as it cools.
 	Haymaker = {
-		Picture = "", -- the bar's eight frames, one under another (docs/asset-log.md); "" plays the grey stand-in
+		-- The bar's eight frames, one under another: the group's upload (docs/asset-log.md); "" plays the grey stand-in.
+		Picture = "rbxassetid://116379507394315",
 		FrameWidth = 512, -- pixels
 		FrameHeight = 128,
 		Body = 0.6, -- the share of a frame's height the stroke fills

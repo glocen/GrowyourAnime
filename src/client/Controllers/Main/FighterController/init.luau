@@ -21,6 +21,7 @@ local Fight = require(Shared.Rules.Fight)
 local Clips = require(script.Clips)
 local Theme = require(script.Parent.Parent.Parent.UI.Theme)
 local Effects = require(script.Effects)
+local Sounds = require(script.Sounds)
 
 local player = Players.LocalPlayer
 
@@ -566,6 +567,7 @@ local function onReplay()
 end
 
 function FighterController.Start()
+	Sounds.Preload()
 	CollectionService:GetInstanceAddedSignal("Fighter"):Connect(function(model: Instance)
 		task.spawn(add, model)
 	end)

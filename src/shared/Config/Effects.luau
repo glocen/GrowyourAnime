@@ -37,6 +37,7 @@ return {
 		},
 		-- The floor's two lines, scored under the hero's feet in pieces as it passes: hot, then a scorch, eaten from the near end.
 		Floor = { Pieces = 6, Hot = 3, Eat = 4, Life = 11, Bar = 0.5, Over = 0.03, Overlap = 0.3 }, -- frames; studs
+		Sound = "HaymakerStrike", -- the cue on the strike's frame, at the knuckles (Config.Sounds)
 		-- The ram's heat (AR1, sections 5 to 7): the glow mask on these pieces, on the clip's markers. Up from Charge to
 		-- Strike, held through the hitstop to Shock, out by Vent. The content check's engine looks (section 7) hold the
 		-- strength at 5 at most (above it, bloom haloes the ram) and never between 0 and 3 (there the cream band reads

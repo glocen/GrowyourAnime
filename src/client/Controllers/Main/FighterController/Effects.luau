@@ -4,7 +4,8 @@
 --   Haymaker  AR1's art sheet, the block-in's B with the floor's lines (research dropped the wake): the charge square,
 --             the punctuation, one bracket thrown along the ground through the target and eaten as it cools, the two
 --             lines it scores on the floor. One bar picture for all of it, or grey parts until it's uploaded
---             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). And the ram's heat on its glow mask.
+--             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). And the ram's heat on its glow mask,
+--             and the strike's sound (Config.Sounds).
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
 --   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore), on its clip's marker.
 --   Number    a damage number over the target.
@@ -16,6 +17,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
+local Sounds = require(script.Parent.Sounds)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local World = require(UI.World)
@@ -352,6 +354,13 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			if clock >= STRIKE then
 				if line == nil then
 					fix()
+				end
+				if strikeAt == nil then
+					-- the strike's cue, on the frame the strike's square is thrown (handbook/visuals/audio.md: on contact)
+					local where = knuckles or (if root then (root :: BasePart).Position else nil)
+					if where then
+						Sounds.Play(look.Sound, where)
+					end
 				end
 				strikeAt = strikeAt or clock
 			end

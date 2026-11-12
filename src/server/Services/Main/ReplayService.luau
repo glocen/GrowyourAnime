@@ -8,9 +8,11 @@
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
 --   NL_Debug:Invoke("FightSpawn", who)                      removes every Shade it spawned
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
--- The lead stands at the pad's middle, the dummy ahead of it at the action's own spacing (Config.Combat.Replay.Distance),
--- the avatar Replay.Behind behind, all facing down the pad, and the client puts the camera behind the avatar. Each press
--- starts with the dummy back on its spot (FightService.Force). The dummy has the lead's level, so the numbers read true.
+-- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
+-- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
+-- beyond the dummy at the action's own spacing (Replay.Distance), turned Lead.Frame degrees toward the avatar's right,
+-- the side it walks in from, facing the dummy. The client puts the camera behind the avatar. Each press starts with the
+-- dummy back on its spot (FightService.Force). The dummy has the lead's level, so the numbers read true.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -106,20 +108,21 @@ local function replay(who: any, actionId: any, every: any): any
 	sessions[player] = session
 	pad()
 	local top = CENTER.Y + SIZE.Y / 2
-	local spot = Vector3.new(CENTER.X, top + STAND, CENTER.Z)
 	local ahead = Vector3.new(0, 0, -1)
+	local right = Vector3.new(1, 0, 0) -- ahead is -Z, so right is +X: in play the lead walks in from the avatar's right
 	if session.Dummy then
 		FightService.Remove(session.Dummy)
 	end
 	local gap = if Combat.Replay.Distance > 0 then Combat.Replay.Distance else action.Range - Combat.Approach
-	local dummyAt = Vector3.new(spot.X, top, spot.Z) + ahead * gap
+	local dummyAt = Vector3.new(CENTER.X, top, CENTER.Z)
+	local stand = dummyAt - ahead * Combat.Replay.Behind - right * Combat.Lead.Side + Vector3.new(0, STAND, 0)
 	session.Dummy = FightService.SpawnEnemy("dummy", lead.Block.Level, CFrame.lookAt(dummyAt, dummyAt - ahead))
+	local turn = math.rad(Combat.Lead.Frame)
+	local spot = dummyAt + (ahead * math.cos(turn) + right * math.sin(turn)) * gap + Vector3.new(0, STAND, 0)
 	player:RequestStreamAroundAsync(spot)
 	lead.Root.AssemblyLinearVelocity = Vector3.zero
-	lead.Root.CFrame = CFrame.lookAt(spot, spot + ahead)
+	lead.Root.CFrame = CFrame.lookAt(spot, Vector3.new(dummyAt.X, spot.Y, dummyAt.Z))
 	root.AssemblyLinearVelocity = Vector3.zero
-	local left = Vector3.new(-1, 0, 0) -- ahead is -Z, so left is -X: in play the lead stands to the avatar's right
-	local stand = spot - ahead * Combat.Replay.Behind + left * Combat.Lead.Side
 	root.CFrame = CFrame.lookAt(stand, stand + ahead)
 	FightService.Force(lead, action.Id, seconds, session.Dummy)
 	player:SetAttribute("Replay", `{action.Id}@{workspace:GetServerTimeNow()}`)

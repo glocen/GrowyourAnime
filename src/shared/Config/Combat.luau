@@ -93,8 +93,8 @@ return {
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.
 	Replay = {
-		Distance = 0, -- the dummy stands this far ahead of the lead; 0 is the action's own spacing, where a lead fights from (Range - Approach)
-		Behind = 9, -- the avatar stands this far behind the lead, and Lead.Side to its left, as in play; the camera behind the avatar
+		Distance = 0, -- the lead stands this far beyond the dummy; 0 is the action's own spacing, where a lead fights from (Range - Approach)
+		Behind = 9, -- the avatar stands this far behind the dummy and Lead.Side to its left, the lead beyond it at Lead.Frame, as in play
 		Pitch = 20, -- degrees the camera looks down, over the avatar onto the fight
 		Every = 3.5, -- seconds from one press to the next
 		FreezeAt = 0, -- Studio: above 0, the player's own lead stops this many seconds into each press (clip, effect, sparks), to capture or study a beat; 0 is off

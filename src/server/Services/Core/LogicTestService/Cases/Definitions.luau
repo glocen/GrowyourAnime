@@ -8,6 +8,8 @@ local Shards = require(Shared.Definitions.Shards)
 local Grounds = require(Shared.Definitions.Grounds)
 local Rarity = require(Shared.Definitions.Rarity)
 local ShardConfig = require(Shared.Config.Shards)
+local SoundConfig = require(Shared.Config.Sounds)
+local EffectsConfig = require(Shared.Config.Effects)
 local Odds = require(Shared.Rules.Odds)
 
 local TYPES = { Agility = true, Strength = true, Endurance = true, Intelligence = true, Technique = true }
@@ -86,6 +88,22 @@ return {
 					t.Check(`{grade} weighs {name}`, weights[name] ~= nil)
 				end
 			end
+		end,
+	},
+	{
+		Name = "Definitions: sound cues are whole, levelled within bounds, and resolve",
+		Run = function(t: any)
+			local all = SoundConfig.Cues :: { [string]: SoundConfig.Cue }
+			for name, cue in all do
+				t.Check(`{name} has a library id`, type(cue.Id) == "number" and cue.Id > 0)
+				t.Check(`{name}'s slice runs forward`, cue.From >= 0 and cue.To > cue.From)
+				local gain = 10 ^ ((SoundConfig.Reference - cue.Level) / 20)
+				t.Check(`{name} levels within the bounds`, gain >= SoundConfig.Gain[1] and gain <= SoundConfig.Gain[2], string.format("%.2f", gain))
+				t.Check(`{name}'s pitch spread`, cue.Pitch[1] > 0 and cue.Pitch[2] >= cue.Pitch[1])
+				t.Check(`{name} fades out past its full volume`, cue.Near > 0 and cue.Range > cue.Near)
+			end
+			local strike = EffectsConfig.Haymaker.Sound
+			t.Check("Haymaker's strike cue resolves", all[strike] ~= nil, strike)
 		end,
 	},
 }

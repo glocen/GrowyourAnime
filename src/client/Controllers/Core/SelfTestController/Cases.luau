@@ -1232,6 +1232,21 @@ return {
 				end
 				return count, all
 			end
+			-- The strike's cue (Config.Sounds): one point sound, on the strike's frame, not again through the hitstop.
+			local cue = EffectsConfig.Haymaker.Sound
+			local theirSounds: { [Instance]: boolean } = {}
+			for _, point in workspace.Terrain:GetChildren() do
+				theirSounds[point] = true
+			end
+			local function cues(): number
+				local count = 0
+				for _, point in workspace.Terrain:GetChildren() do
+					if not theirSounds[point] and point.Name == "NL_Sound" and point:FindFirstChild(cue) then
+						count += 1
+					end
+				end
+				return count
+			end
 			local running = Effects.Haymaker(action.Beats, lead, function(): BasePart?
 				return nil
 			end)
@@ -1240,6 +1255,7 @@ return {
 				return (shown())
 			end
 			t.Check("the charge's square before the strike", at(strike - 10 * FRAME) == SQUARE, `{shown()} bars`)
+			t.Check("no strike sound before the strike", cues() == 0, `{cues()} plays`)
 			-- Which square shows: its four bars, the longest as long as the square's side and bar (a picture's part is the
 			-- stroke's length over the picture's span).
 			local look = EffectsConfig.Haymaker
@@ -1261,6 +1277,7 @@ return {
 			-- a slow frame that lands past Shock still gives the strike its square, and the hitstop holds the clock there
 			t.Check("the strike's square on the first frame past Strike", isSquare(shock + 0.25 * FRAME, look.Strike))
 			t.Check("held there through the hitstop", isSquare(shock + 0.25 * FRAME, look.Strike))
+			t.Check("the strike's sound plays once, on the strike", cues() == 1, `{cues()} plays`)
 			t.Check("the shock's square on the next frame", isSquare(shock + 0.75 * FRAME, look.Shock))
 			local flying = at(shock + 4 * FRAME)
 			t.Check("the hero and the floor's lines while it flies", flying > BRACKET, `{flying} bars`)

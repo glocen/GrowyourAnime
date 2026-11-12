@@ -21,7 +21,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 
 **Checks:** the content check on the sheet and before upload; your own review strips; research's verdict (`/ga-review`) on the sheet and on the final in motion; fresh eyes on the final.
 
-**Status:** in progress (Modulo, 2026-11-12). Deliveries 1 to 3, the sheet, the model and the clips, are delivered to `build/handoff/Rook/`. Delivery 4, Haymaker's look: the builder's replay is in, the ram's heat with it, past the content check's engine looks (section 7). Research's final in motion, the sound and fresh eyes are next. Rook's body is in the game, maps and clips included (section 6).
+**Status:** in progress (Modulo, 2026-11-12). Deliveries 1 to 3, the sheet, the model and the clips, are delivered to `build/handoff/Rook/`. Delivery 4, Haymaker's look: the builder's replay is in, the ram's heat with it, past the content check's engine looks (section 7), staged as the game frames it and with its sound (section 8). Fresh eyes has read it. Research's final and Modulo's look on the staged take are next, and the director's ear on the sound. Rook's body is in the game, maps and clips included (section 6).
 
 **1. The sheet** (Modulo, 2026-11-12).
 
@@ -289,6 +289,42 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - The bracket lives about 23 frames from the throw to gone, the last six eaten: the eight frames read as the bar breaking into chips, never a smear or a fade.
   - In this staging it flies away from the camera, so for its first ten frames it's an edge-on strip at Rook's right, and the floor's lines are a short dark stub by his foot.
   - To read on the staged take: the bracket face-on and coming at the camera, with the number still landing in it; the floor's lines along their length; and the last eaten frame, where the chips are dark dashes over the sky here. Nearer the camera, if their rims read as a dark lattice, frames 7 and 8 get a thinner rim: mine, then a new upload and a check.
+
+### 8. Haymaker staged as the game frames it, and its sound (Faber, 2026-11-12)
+
+- **Scope.** In it: the replay restaged as research asked (section 7, its read); the strike's sound, one library cue; one staged press. Waiting: research's final on this take, Modulo's look on it, and the director's ear on the cue.
+- **The staging** (`ReplayService`; `Config.Combat.Replay`):
+  - The dummy stands at the pad's middle.
+  - The avatar stands `Replay.Behind` (9) behind it and `Lead.Side` (3.5) to the left, facing down the pad.
+  - Rook stands beyond the dummy at the action's spacing (`Range - Approach`), turned `Lead.Frame` (45°) toward the avatar's right, facing the dummy. That's `Fight.Beyond`'s spot for a lead that walks in on the avatar's right.
+  - The camera is unchanged: behind the avatar, pitched 20°, at the player's zoom.
+  - Straight behind the dummy, the avatar's head hid it at this pitch, hence the side step.
+- **What this staging shows that the old one hid:**
+  - The push runs from Rook through the dummy, so the hit throws the dummy about 6 studs toward the camera's left. It stands behind the avatar until the next press resets it.
+  - The bracket's line runs the same way. To this camera it's 35° off face-on, and it passes over the avatar's left shoulder, where the head covers part of it.
+  - Both are the game's own rules (the Frame, the push, the line through the target), now aimed at the player. Nothing was changed for them.
+- **The sound:** `Config.Sounds.Cues.HaymakerStrike`, played by `FighterController/Sounds`.
+  - It plays on the strike's frame, at the knuckles, through one SoundGroup (`NL_Combat`), and every cue is preloaded at start.
+  - The source: ProSoundEffects' "Metal Impact Heavy Clunking Hits Scraping 3 (SFX)", 9116673915, its third hit, 2.35 to 3.05 s.
+  - Measured: attack 0.00 s, -20 dB at 0.17 s, -40 dB at 0.80 s; low 46%, mid 45%, high 10%; -5.8 dBFS, levelled to -14.
+  - Played at a pitch of 0.96 to 1.04, at full volume within 30 studs and gone by 160.
+  - Found with the handbook's audio tools, now in `tools/studio/Audio` (`Briefs` holds the cue's brief). It ranked fourth of eight on shape. It was picked over the top three: two short wooden knocks, under -20 dB by 0.08 s and small for a signature, and a clunk that holds full level for 0.36 s, which is a scrape, not a punch.
+  - Alternates: 121062167179910, "heavy thud kick 1", a community upload; and 9116673678, the same set's first.
+  - Provisional until the director's ear accepts it: `NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it in a fight.
+- **The take has no sound.** The recorder takes the picture only, and this PC has no loopback device, only the microphone, which stays unused. The cue's timing is proven by the self-test: none before the strike, one on its frame, none again through the hitstop. In the game it loads and plays, with no permission error in Output.
+- **Checks:** self-test Haymaker 22/22 at 59 fps, replay 11/11 at 60 fps. Logic 1,382: a new case checks every cue is whole, levelled within 0.25 to 2, and that Haymaker's cue resolves. Type check, 0 new.
+- **The take:** `build/captures/ar1/haymaker_staged_press.mkv`, one press, viewport only, 2.4 s at 59.2 fps. The press starts at 0.15 s and the strike lands at 1.10 s. It's cut from `haymaker_staged.mkv` (8 s, three presses). Inside the press, two frame steps run 33 and 34 ms: at 0.75 s in the wind-up, and at 1.72 s after the bracket is gone.
+  - `haymaker_staged_strip.png`: every second frame, from 0.32 s before the strike to 0.38 s after it.
+  - `haymaker_staged_full_<s>.png` at 0.70, 1.10, 1.17 and 1.27 s: the wind-up, the strike, 4 frames after, 10 frames after.
+- **`ga-fresh-eyes`, blind, on the strip and the four frames** (judged against the feel line alone, picture only):
+  - **Felt:** "a hollow gold outline swings up and leans off to the left behind the avatar's head, hangs there and breaks into dashes. It reads as a frame or crane arm tipping over. It doesn't read as a square face driven along the ground through the target."
+  - **Tier:** works. "The hit registers through the number and the sparks, but nothing stamps." The square stands upright, it moves sideways instead of out through the target, the dummy doesn't seem to react, and the avatar hides much of the shape.
+  - **The one bold thing:** none carries it. The gold outline at 1.17 and 1.27 s pulls the eye away from the punch and the target.
+- **For research, the levers I can turn live, none turned:**
+  - The bracket's lean (`Hero.Lean`, 16°, set for a side view). Coming at the camera, it reads as tipping over.
+  - The line's aim: through the target (the design), or toward the lead's own avatar. That second one is a change of direction rule, so it's yours and Modulo's.
+  - The Frame itself (`Lead.Frame`, TR2) is outside this piece.
+- **Hours:** about 1.5.
 
 ## AR2. The Shade, one rig for every enemy
 

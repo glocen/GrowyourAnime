@@ -63,6 +63,30 @@ Real time, in the world, automatic [D: one automatic combat lead].
 - **Fights can be long** [D]: nothing ends a fight early. Two hard-to-kill builds may trade for minutes, and that's the build system working.
 - **No gore** (`AGENTS.md`, rule 4): Shades burst into light and paper, Voidkin kneel and fade.
 
+### States in a fight
+
+[D: "stagger, heavy stagger, stun etc.", the director, 2026-11-12.] One ladder for everyone who fights: Voidkin, Shades and keepers alike. Each state has its own cue, readable at phone size, made of light, dust and shapes, never wounds.
+
+| State | Caused by | What it does | Its cue |
+|---|---|---|---|
+| Flinch | any hit | a short reaction. It never cancels an action, so two automatic fighters can't lock each other | a spark where it lands |
+| Stagger | the poise bar filling | cancels the action under way; open for a moment; the bar empties | a ring that cracks around it |
+| Heavy stagger | a heavy hit (marked on the action: Haymaker is the first) that fills the bar, or lands with it past half | a longer stagger, knocked back. A signature being wound up is broken, and its cooldown starts over | thrown back in a burst of dust |
+| Stun | only an action that says so | can't act or move for its time | sparks circling the head |
+| Knockdown | a launcher or a kit's finisher that says so | down and up; can't be hit while rising | dust where it lands |
+| Burn (Fire) | Fire hits | part of the Fire damage arrives over a few seconds | embers |
+| Chill, then Freeze (Frost) | Frost hits add chill; full chill freezes | chill slows actions and movement; a freeze is a stun inside ice | frost creeping, then a shell of ice |
+| Shock (Storm) | Storm hits | the next hits fill its poise bar faster | crackling light |
+| Sap (Void) | Void hits | it heals less for a few seconds | dark motes |
+
+- **Poise.** Every fighter has a poise bar that fills from hits and drains when it's left alone. Class sets its size: a Tank's is the largest, an Assassin's the smallest. An elite's and a keeper's bar sits on the target's card. Filling it is the fight's payoff: a heavy stagger and a window to hit hard.
+- **Elites and keepers** don't flinch, and a stun or a freeze lasts half as long on them.
+- **No lock.** After a stun or a freeze, a fighter can't be stunned or frozen again for a while. A long fight between two automatic builds stays a fight.
+- **Nothing on top.** A state changes timing, movement or healing. An element's effect is paid out of that element's own damage (`docs/balance.md`, "One damage order"), so nothing is added on top and no stat is multiplied.
+- **A signature names its state** in its roster row when it has one: Rill's Cold Snap freezes, Ashen's Last Ember burns, Rook's Haymaker is heavy.
+- **The numbers** are the builder's, in Config, starting from `handbook/feel/combat.md` ("Hitstun, stagger and chains") and tuned by playing.
+- **When:** TR2 keeps its block, with a flinch and a down-and-up. The states join with the Lamplighter as a real fight, where poise first matters. Reactions are one shared clip set per rig (R6, the Shade's), not one per Voidkin.
+
 ## Shards and the Void Breaker
 
 - **Three grades** [D]: Standard (breaks in about half a minute [D]), Enriched, Prismatic. A **Named** shard holds one stated Voidkin, never a roll.

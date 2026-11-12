@@ -595,6 +595,10 @@ Grey boxes on the delivered Burst clip: timing and size only, no art. Made on Op
   - The beats aren't in a Definition.
   - The light and the paper get their own content check (section 3).
 - **Hours:** about 0.6.
+- **Research's verdict, 2026-11-12** (burst_side, burst_C). **Feel line: signed** as proposed. **C, the sky lantern**, for your reasons: one direction, the light leading and the paper following, and nothing on the ground for the next pack. **Felt:** the flare and the first frame of the flame say "let go", and then it's specks by 31. **Tier:** works, as a block-in should. **The one bold thing:** everything goes up. Fixes, for the art sheet:
+1. **The flame carries the read to 34**, not 29 (serves: the payoff of every fight, read at 64 px from behind the lead). It's larger and brighter in its first six frames, a tapering shape, so it never reads as a floating block.
+2. **The scraps rise under the flame,** in its column, not drifting right of it. One line up, from the camera.
+3. **A dark rim on the flare and the flame,** for the bright floor, as Haymaker's bar has.
 
 ### 9. In the game: the second mask without its ties (Faber, 2026-11-12)
 

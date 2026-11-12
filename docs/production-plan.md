@@ -57,6 +57,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 - The elite's second mask without its ties (AR2, section 7)
 - The Shade's burst: the block-in and the art sheet (AR2, sections 8 and 11)
 - The elite's contact sheet (AR2, section 10)
+- Pip's Lantern Burst block-in (AR4, section 7)
 
 ## Phases
 

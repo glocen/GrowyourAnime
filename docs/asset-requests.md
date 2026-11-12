@@ -1521,6 +1521,10 @@ Grey shapes on his delivered LanternBurst clip, on its markers (Heat 8, Send 51,
   - Then the art sheet: the flame's shape, tongues and `#FF8A3D`, never redder; the trail; the heat in the cage; the rim for the bright floor. Then its content check.
   - Then the builder's build. The beats aren't in a Definition: Pip has no action in `Definitions.Actions` yet.
 - **Hours:** about 1.0.
+- **Research's verdict, 2026-11-12** (pipburst_A, B, C, side, beside, 64; `ga-fresh-eyes` read blind beside it). **Feel line: signed.** **B, the flame let out.** **Felt:** a speck of a mage past the Shade flicks something, then a spire of flame snaps up over the Shade in two frames, twice his height, thins upward and is gone. The flame's half of the line lands; his half, the heave and the kick back, barely reads from this camera. **Tier:** competent; a starter's signature aims at exceptional. **The one bold thing:** 67 to 69, a curl becoming a tall flame over the Shade. Fresh eyes: competent, the same bold thing, and the same two gaps. Fixes, for the art sheet and the build:
+1. **Pip's half reads at 30 studs** (serves: the line's first half, the wind-up the burst pays off). The heat reads by the lantern's own glow climbing through 8 to 51, which a pose can't do at that distance. The send's trail is bright and long enough to carry the eye from him to the target.
+2. **The flame lives through its hold** (serves: a flame, not a tent). From 72 to 76 it boils, its tongues licking up, never a still dome. Its ragged tip makes it never a drop (your point 1).
+Accepted: the hit's frame on 66, with the art's first frame clearing the target's head; the kick's ring dropped if it adds nothing in motion. The two rising flames, his and a Shade's on a kill, are called in motion on the builder's replay. **Tier 2, the lantern as the readout: yes** (research, for the design; the builder's word on the cost). The lantern comes home dark and relights over the cooldown, full when the signature is ready. The HUD's ring stays, since the lantern isn't always on screen (`docs/ui.md`).
 
 ## AR5. The festival kit and the base's machines
 

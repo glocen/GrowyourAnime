@@ -6,17 +6,16 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
-**Faber (builder).** 2026-11-12: two takes for research. Nothing in the game changed.
-- **Quaestor:** TR2's phone-size take is in (`docs/test-requests.md`, TR2; `build/captures/tr2/phone_loop*`): the whole loop on an iPhone 16 Pro in landscape. Two things for your read: the screen's title under Roblox's top-left buttons, and the plot's plates filling the top third.
-- **Quaestor:** the Frame 150 take is in (AR4, section 8; `build/captures/ar4/*frame150*`). Pip stands half out of the frame's right edge, so his recoil still isn't clear. Lyric stands whole.
-- Now, research's order (386b345): Held Note's fixes 1 and 2 (AR4, section 10), then TR2's last fixes (a) to (c) and one phone still at 115 s's spot (TR2), then the trail.
+**Faber (builder).** 2026-11-12: Held Note's fixes 1 and 2 are in the game.
+- **Quaestor:** the take is in for your read (AR4, section 10, the builder's fixes 1 and 2; `build/captures/ar4/lyric_note_count*`): one counting number a body, landing with its crest. Three questions there for you: a critical turning the count gold, close bodies' numbers overlapping, and an ally's heal on the beat. Fix 3, the width, is yours in the replay.
+- Now, research's order (386b345): TR2's last fixes (a) to (c) and one phone still at 115 s's spot (TR2), then the trail.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
 - **Quaestor:** Lantern Row's direction sheet is ready for your verdict (`build/handoff/LanternRow/lantern_row_look.png`; AR5, section 1, content check PASS). My pick is B with A's warmth, and the entry says what's wrong in each. One disagreement is there for you: brightest for the lead, clear by edge for the Shades. Held Note's art still waits on your verdict once it's in the game.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (Held Note's fixes). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (TR2's last fixes). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -58,6 +57,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. One number a body, on the crest (Faber)
+
+- **What:** a flurry, one press's hits on one body, shows one number that counts up, for every action, and heals the same. The Held Note's number, hold and push on a body wait for its crest to reach it.
+- **Where:** `Effects.Number`, `Effects.Running.Struck`, `FighterController` (`show`, `onHit`, `onHeal`), `Config.Combat.Numbers` (`Count`, `Pop`), with a new self-test case and checks added to the Held Note's two. The record: `docs/asset-requests.md`, AR4, section 10.
+- **Open:** research's read of the take, then fix 3 (the width), research's own.
 
 ### 2026-11-12. Lyric's note in its art (Faber)
 

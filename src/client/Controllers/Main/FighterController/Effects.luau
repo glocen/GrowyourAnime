@@ -17,7 +17,7 @@
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
 --   ShadeBurst  a Shade falls: AR2's art sheet, the sky lantern. A flame swells in its collar, flares the coat's size on
 --             its clip's marker as the body goes, and climbs away with its paper (docs/design.md, "Combat": no gore).
---   Number    a damage number over the target.
+--   Number    a damage number over the target: one counting number for a flurry, one press's hits on one body.
 --   Shake     the camera, on the player's own heavy hit or a hard hit taken.
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
 -- capture sets to 0 to hold a frame (.claude/skills/ga-studio-test, "Captures").
@@ -240,12 +240,14 @@ end
 -- are read every frame, so a tune shows at once (Config.Effects.Haymaker).
 -- `attacker` is the ram's fighter; `target` gives the target's root, read once at the strike.
 -- A step gets the action's clock, which a hit's hold pauses, and `free`, the same clock run on through holds.
--- Struck, when an effect draws its own hit: the server struck `body` on `beat` of its action; true when the effect takes
--- the hit's look on itself, and the spark then stays off.
+-- Struck, when an effect draws its own hit: `body` is struck on `beat` of its action; true when the effect takes the hit
+-- on itself, and the spark then stays off. It calls `landed` on the frame it reaches the body, or at once if it already
+-- has, so the body's hold, push and number come with it; `look`: it draws the hit's own look on the body there too (a
+-- miss asks without it). Destroyed early, it calls every `landed` still waiting.
 export type Running = {
 	Step: (clock: number, free: number?) -> boolean,
 	Destroy: () -> (),
-	Struck: ((beat: string, body: Model) -> boolean)?,
+	Struck: ((beat: string, body: Model, landed: () -> (), look: boolean) -> boolean)?,
 }
 
 function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: () -> BasePart?): Running
@@ -1020,8 +1022,8 @@ end
 
 -- Lyric's Held Note (LyricHeldNote), AR4's art sheet (Config.Effects.HeldNote): the flash swelling in her rings, then a
 -- crest thrown across the cone on every beat that hits, each living until the next is halfway out, so one is always on
--- its way; the last runs out alone after the Release. A body the server strikes takes the hit's cells when its crest
--- reaches it (Struck), in place of the spark.
+-- its way; the last runs out alone after the Release. A body the server strikes takes its hit when its crest reaches it
+-- (Struck): the hit's cells in place of the spark, and its hold, push and number with them (AR4, section 10, fix 2).
 function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
 	local look = EffectsConfig.HeldNote
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
@@ -1044,8 +1046,23 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 	local first = if order[1] then beats[order[1]] else 0
 	local crests: { Crest } = {}
 	local thrown: { [string]: boolean } = {}
-	local struck: { { Beat: string, Body: Model } } = {}
-	local asked: { [Model]: { [string]: boolean } } = {}
+	-- A body struck on a beat whose crest hasn't reached it yet: what lands then, and whether its cells are drawn.
+	local struck: { { Beat: string, Body: Model, Look: boolean, Landed: { () -> () } } } = {}
+	local reached: { [Model]: { [string]: boolean } } = {}
+	local function land(hit: { Beat: string, Body: Model, Look: boolean, Landed: { () -> () } })
+		local done = reached[hit.Body] or {}
+		reached[hit.Body] = done
+		done[hit.Beat] = true
+		if hit.Look then
+			touch(hit.Body)
+		end
+		for _, landed in hit.Landed do
+			local ok, problem = pcall(landed)
+			if not ok then
+				warn(`Effects.HeldNote: a hit's landing: {problem}`)
+			end
+		end
+	end
 	local function throw(index: number)
 		if root == nil then
 			return
@@ -1098,7 +1115,7 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 		end
 		return nil
 	end
-	-- Each struck body takes the hit's cells once its crest reaches it, or at once if its crest has run out.
+	-- Each struck body's hit lands once its crest reaches it, or at once if its crest has run out or the body has gone.
 	local function reach()
 		for index = #struck, 1, -1 do
 			local hit = struck[index]
@@ -1111,7 +1128,7 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			local body = hit.Body:FindFirstChild("HumanoidRootPart") :: BasePart?
 			local due = false
 			if body == nil then
-				table.remove(struck, index)
+				due = true
 			elseif crest then
 				local point = crest.Root - crest.Axis * (crest.Hit.Apex or 0)
 				local away = Vector3.new(body.Position.X - point.X, 0, body.Position.Z - point.Z).Magnitude
@@ -1121,11 +1138,13 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			end
 			if due then
 				table.remove(struck, index)
-				touch(hit.Body)
+				land(hit)
 			end
 		end
 	end
+	local gone = false
 	local function destroy()
+		gone = true
 		for _, flash in flashes do
 			flash.Gui:Destroy()
 		end
@@ -1134,8 +1153,13 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			crest.Holder:Destroy()
 		end
 		table.clear(crests)
+		-- Cut short (she's knocked down, or gone): what still waits lands now, so no number is lost.
+		local waiting = table.clone(struck)
 		table.clear(struck)
-		table.clear(asked)
+		for _, hit in waiting do
+			hit.Look = false
+			land(hit)
+		end
 	end
 	return {
 		Step = function(clock: number, _free: number?): boolean
@@ -1169,16 +1193,23 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			return alive
 		end,
 		Destroy = destroy,
-		Struck = function(beat: string, body: Model): boolean
+		Struck = function(beat: string, body: Model, landed: () -> (), drawn: boolean): boolean
 			if action.Hits[beat] == nil then
 				return false
 			end
-			local beatsOf = asked[body] or {}
-			asked[body] = beatsOf
-			if not beatsOf[beat] then
-				beatsOf[beat] = true
-				table.insert(struck, { Beat = beat, Body = body })
+			local done = reached[body]
+			if gone or (done and done[beat]) then
+				landed() -- its crest has reached it already, or run out with the rest
+				return true
 			end
+			for _, hit in struck do
+				if hit.Beat == beat and hit.Body == body then
+					hit.Look = hit.Look or drawn
+					table.insert(hit.Landed, landed)
+					return true
+				end
+			end
+			table.insert(struck, { Beat = beat, Body = body, Look = drawn, Landed = { landed } })
 			return true
 		end,
 	}
@@ -1325,28 +1356,97 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 	end)
 end
 
--- A number rising over `root`: `text` in `color`, larger when `big`. Drawn on the World layer (UI.World), so a capture
--- shows it; its size is authored at the phone's (UI.Theme.Author) and scales with the layer.
-function Effects.Number(root: BasePart, text: string, color: Color3, big: boolean, numbers: { Rise: number, Seconds: number, Size: number })
+-- A number over a body: one for each `key` on it, so a flurry (one press's hits) is one counting number and never a wall
+-- (docs/ui.md, "Damage numbers"; Config.Combat.Numbers). The first rises over `root`: `prefix` and `amount` in `color`,
+-- larger when `big`. Each one after it, while it shows, adds its amount: the number counts up to the new total over
+-- Count seconds, swelling Pop times and settling, and its fade starts over. A big one after makes it big from there, in
+-- its colour. With `amount` nil it's the word `prefix` (Miss), popped again on a repeat. Drawn on the World layer
+-- (UI.World), so a capture shows it; its size is authored at the phone's (UI.Theme.Author) and scales with the layer.
+type Numbers = { Rise: number, Seconds: number, Size: number, Count: number, Pop: number }
+type Counting = {
+	Age: number,
+	Total: number,
+	From: number, -- what it showed when the last amount came
+	Changed: number, -- its age then, or -inf before any
+	Label: TextLabel,
+	Scale: UIScale,
+	Grown: number, -- 1, or the big size's share once a big one came after it
+	Big: boolean,
+	Prefix: string,
+	Word: boolean,
+}
+local counting: { [BasePart]: { [string]: Counting } } = {}
+Effects.Counting = counting -- for the self-test
+
+local BIG = 1.35 -- a critical's or a heavy hit's number, against a plain one
+
+local function counted(c: Counting, numbers: Numbers): number
+	local u = if numbers.Count > 0 then easeOut((c.Age - c.Changed) / numbers.Count) else 1
+	return c.From + (c.Total - c.From) * u
+end
+
+function Effects.Number(root: BasePart, key: string, amount: number?, prefix: string, color: Color3, big: boolean, numbers: Numbers)
+	local onBody = counting[root] or {}
+	counting[root] = onBody
+	local live = onBody[key]
+	if live then
+		if amount then
+			live.From = counted(live, numbers)
+			live.Total += amount
+		end
+		live.Changed = live.Age
+		if big and not live.Big then
+			live.Big, live.Grown = true, BIG
+			live.Label.TextColor3 = color
+		end
+		return
+	end
 	local spread = (math.random() - 0.5) * 1.2
 	local rise = 0
-	local size = if big then numbers.Size * 1.35 else numbers.Size
+	local size = if big then numbers.Size * BIG else numbers.Size
 	local plate = World.Plate("Number", Vector2.new(size * 5, size * 1.6), function(): Vector3?
 		return if root.Parent then root.Position + Vector3.new(spread, 3 + rise, 0) else nil
 	end)
 	local label = Text.new({ Name = "Number", Size = size, Font = Theme.Font.Number, Colour = color, Align = Enum.TextXAlignment.Center, Parent = plate })
 	label.TextStrokeTransparency = 0.2
-	label.Text = text
-	run(function(age: number): boolean
-		local t = age / numbers.Seconds
+	local scale = Instance.new("UIScale")
+	scale.Parent = plate
+	local c: Counting = {
+		Age = 0,
+		Total = amount or 0,
+		From = amount or 0,
+		Changed = -math.huge,
+		Label = label,
+		Scale = scale,
+		Grown = 1,
+		Big = big,
+		Prefix = prefix,
+		Word = amount == nil,
+	}
+	onBody[key] = c
+	local function lay(age: number): boolean
+		c.Age = age
+		local since = age - (if c.Changed > -math.huge then c.Changed else 0) -- its fade runs from the last amount
+		local t = since / numbers.Seconds
 		if t >= 1 then
 			return false
 		end
-		rise = numbers.Rise * easeOut(t)
+		rise = numbers.Rise * easeOut(age / numbers.Seconds)
+		label.Text = if c.Word then c.Prefix else `{c.Prefix}{math.floor(counted(c, numbers) + 0.5)}`
+		local pop = if numbers.Count > 0 then 1 - easeOut((age - c.Changed) / numbers.Count) else 0
+		scale.Scale = c.Grown * (1 + (numbers.Pop - 1) * pop)
 		label.TextTransparency = math.clamp((t - 0.6) / 0.4, 0, 1)
 		label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
 		return true
-	end, function()
+	end
+	lay(0)
+	run(lay, function()
+		if onBody[key] == c then
+			onBody[key] = nil
+		end
+		if next(onBody) == nil and counting[root] == onBody then
+			counting[root] = nil
+		end
 		World.Remove(plate)
 	end)
 end

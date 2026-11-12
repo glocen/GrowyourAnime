@@ -2261,6 +2261,29 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
     3. **The crest's width** up, live, until the leading ribbon is the brightest edge in the cone: research tunes it in the replay (`Effects.HeldNote.Width`) once 1 and 2 are in. No redraw. Serves the beat inside the wall.
   - **Accepted:** the flash (condition 3 met at 0.32%); the ring on the touch; Ease 2.
   - **Not judged here:** the noon pad's pale ground eats a pale crest. The dusk check comes with Lantern Row's look (AR5), and the Frame 150 take shows her from the player's side.
+- **Builder, 2026-11-12: fixes 1 and 2 in the game, and the take** (Faber). Made on Opus 5.5.
+  - **Implemented:**
+    - **Fix 1, one counting number per body** (`Effects.Number`, `FighterController`'s `onHit` and `onHeal`): a flurry is one press of one fighter's action on one body, for every action. Its window is the number's own life: it joins while the number still shows, so up to `Seconds` (0.8) after the press's last hit. Its first hit's number rises as before. Each later hit adds to it: the number counts up to the new total over `Combat.Numbers.Count` (0.12 s), swells `Pop` times (1.3) and settles, and its fade starts over from that hit. Heals merge the same way (`+`), and a Miss is one word that pops again. Both numbers are live by `Tune`.
+    - **My call (tier 1):** a critical inside a flurry turns its number gold and 1.35 times larger from that hit on, so the body keeps one number. The other way is the critical as its own number beside the count. Say if you want that.
+    - **Fix 2, the number on the touch** (`Effects.Running.Struck`, `FighterController`'s `show` and `onHit`): when the crest draws the hit, the body's number, hold and push all wait for the frame the crest reaches it. The hold and push weren't named in the fix. I moved them because they broke the same way, 5 to 15 frames early. A Miss waits for the crest too, without the touch. A hit asked about after its touch lands at once. If she's knocked down mid-hold, what still waits lands then, so no number is lost. Client only, and the server's beat and numbers are unchanged.
+  - **Tested:**
+    - Type check: 0 new. Logic: 1589.
+    - New case: "a flurry is one counting number on each body" (14 checks: it counts to the whole, swells and settles, fades from the last hit, another press is its own number, a critical turns it gold, a Miss is one word).
+    - The Held Note's look case now also checks that both askings land on the touch's frame and not the beat's, that one asked after the touch lands at once, and that a cut-short note lands what waits.
+    - In the replay with Lyric, the whole-fight case also checks one number a body for the press (2 bodies, never more than 1 at once), each counted to its hits' whole, each arriving with its touch, and her heals as one number to their whole. All passed (70/70 across the two cases).
+    - The whole Fight suite, with Pip leading: 295/295 at 60 fps.
+    - TR3 asks for the merge as a logic case. The rule is client-side here, tested by the self-test, and it moves into pure Luau with TR3.
+  - **The take for your read:** `build/captures/ar4/lyric_note_count_take.mkv` (12 s at 57.9 fps, lossless; four presses every 3 s, at about 0.3, 3.3, 6.3 and 9.3 s).
+    - It's the replay from the player's camera, with three level-8 Brawlers standing in her cone 8 to 13 studs out, and the dummy. Level 8, so they survive the four presses: Lyric is level 3 now, and level-1 Brawlers burst on the first press.
+    - Only for the take, they were spawned on their spots with `Combat.Shade.Notice` 0, `WalkSpeed` 0 and `GiveUp` 1000, then put back.
+    - Also: `lyric_note_count_strip.jpg` (the second press at 12 fps from 3.5 s), and `lyric_note_count_4.25s.png` and `4.75s.png` (crops of the bodies: 122 and 138 counting to 203 and 230).
+    - What I see: four numbers a press where there were twenty, each counting up as its crest lands. As in round 1, the Shades bunch in front of her at this framing.
+  - **For research:**
+    - Two bodies standing close still overlap their numbers (the 4.75 s crop: two 203s). Each number keeps the random sideways spread it had before. Not in fix 1. If you want it, the lever is a number placed clear of a neighbour's.
+    - A heal's ring and number on an ally in her cone still come on the server's beat, not when the crest reaches the ally (the Heal event carries no beat). Only her own heal shows in the replay. Say if fix 2 should cover allies.
+    - Fix 3, the crest's width, is yours in the replay: `NL_Debug:Invoke("Tune", "Effects.HeldNote.Width", 1.5)`. Lyric leads by `Invoke("Act", nil, "SetLead", { Voidkin = "k4" })`, and Pip's `k3` is back as the lead now.
+  - **Four facts:** implemented; tested; visually reviewed by me only, research's pass waits; director-accepted: no.
+  - **Hours:** about 2.5.
 
 ## AR5. The festival kit and the base's machines
 

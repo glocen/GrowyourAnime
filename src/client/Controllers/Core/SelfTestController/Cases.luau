@@ -1782,7 +1782,8 @@ return {
 			t.Near("swelling in the charge", flashSize() or -1, swell, 0.001)
 			local label = if flashes[1] then flashes[1]:FindFirstChildOfClass("ImageLabel") else nil
 			t.Check("the flash's cell, white and unlit", label ~= nil and label.Image == look.Touch and label.ImageRectOffset == Vector2.new(look.Cell, look.Cell) and label.ImageColor3 == Color3.new(1, 1, 1) and flashes[1].LightInfluence == 0)
-			-- The server strikes the Shade on the Note: the effect takes it, once, and nothing it doesn't hit.
+			-- The server strikes the Shade on the Note: the effect takes it, once, and nothing it doesn't hit. Asked twice (the
+			-- screen's own beat, then the server's hit with its number), both land on the touch's frame (fix 2).
 			local struck = running.Struck
 			t.Check("the effect draws its own hits", struck ~= nil)
 			if struck == nil then
@@ -1791,9 +1792,19 @@ return {
 				shade:Destroy()
 				return
 			end
-			t.Check("a beat it doesn't hit on isn't its", struck("SelfTest", shade) == false)
-			local once = struck("Note", shade)
-			t.Check("the Note's is, asked twice", once and struck("Note", shade))
+			local clockNow = first
+			local landedAt: { number } = {}
+			local function landing(): () -> ()
+				local index = #landedAt + 1
+				landedAt[index] = -1
+				return function()
+					landedAt[index] = clockNow
+				end
+			end
+			t.Check("a beat it doesn't hit on isn't its", struck("SelfTest", shade, function() end, true) == false)
+			local once = struck("Note", shade, landing(), true)
+			t.Check("the Note's is, asked twice", once and struck("Note", shade, landing(), false))
+			t.Check("nothing lands before the crest is thrown", landedAt[1] == -1 and landedAt[2] == -1)
 			at(first)
 			t.Near("the Note's flash", flashSize() or -1, flash.Note[1], 0.001)
 			at(first + 1.5 * FRAME)
@@ -1831,7 +1842,8 @@ return {
 			local touchedAt: number? = nil
 			local point = Vector3.new(origin.X, 0, origin.Z) - Vector3.new(0, 0, -1) * apex
 			for frames = 1, 30 do
-				at(first + frames * FRAME)
+				clockNow = first + frames * FRAME
+				at(clockNow)
 				if touchedAt == nil and shadeRoot:FindFirstChildOfClass("BillboardGui") then
 					touchedAt = frames
 				end
@@ -1878,12 +1890,33 @@ return {
 					end
 				end
 				t.Check("once, though struck twice", guis == 1, `{guis}`)
+				local touchClock = first + touchedAt * FRAME
+				t.Check("both askings landed on the touch's frame, not the beat's", landedAt[1] == touchClock and landedAt[2] == touchClock, `{landedAt[1]}, {landedAt[2]} against {touchClock}`)
+				local late = false
+				struck("Note", shade, function()
+					late = true
+				end, false)
+				t.Check("asked after the touch, it lands at once", late)
 				local gui = shadeRoot:FindFirstChildOfClass("BillboardGui") :: BillboardGui
 				local cellLabel = gui:FindFirstChildOfClass("ImageLabel")
 				t.Near("its size", gui.Size.X.Scale, look.Hit.Size, 0.001)
 				t.Near("toward the camera", gui.StudsOffset.Z, look.Hit.Toward, 0.001)
 				t.Check("its cells' picture, white and unlit", cellLabel ~= nil and cellLabel.Image == look.Touch and cellLabel.ImageColor3 == Color3.new(1, 1, 1) and gui.LightInfluence == 0)
 			end
+			-- Cut short with a hit still on its way (she's knocked down): it lands then, so its number isn't lost.
+			local cut = Effects.HeldNote(beats, stand, function(): BasePart?
+				return shadeRoot
+			end, action)
+			local cutLanded = false
+			if cut.Struck then
+				cut.Struck("Note", shade, function()
+					cutLanded = true
+				end, true)
+			end
+			cut.Step(first, first)
+			t.Check("cut short before its crest reaches the body", not cutLanded)
+			cut.Destroy()
+			t.Check("what waited lands as it's cut short", cutLanded)
 			-- Done: the last crest out, nothing left on the stand-in or in the effects.
 			local done = not running.Step(action.Length + 2, action.Length + 2)
 			t.Check("done after the last crest", done)
@@ -1911,6 +1944,59 @@ return {
 			t.Check("and gone", #mine("BasePart") == 0)
 			stand:Destroy()
 			shade:Destroy()
+		end,
+	},
+	{
+		Name = "Fight: a flurry is one counting number on each body; it counts up, pops, and fades from its last hit",
+		Run = function(t: any)
+			-- docs/ui.md, "Damage numbers": a flurry merges into one counting number (AR4, section 10, fix 1). On a stand-in body:
+			-- one press's three hits make one number that counts to their whole, swells on each and settles, and fades from the
+			-- last; another press's is its own; a critical after makes it gold and larger; a Miss is one word, popped again.
+			local numbers = Combat.Numbers
+			local root = Instance.new("Part")
+			root.Name = "HumanoidRootPart"
+			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
+			root.CFrame = CFrame.new(0, 600, 0)
+			root.Parent = workspace
+			local counting = Effects.Counting
+			local function keys(): number
+				local n = 0
+				for _ in counting[root] or {} do
+					n += 1
+				end
+				return n
+			end
+			Effects.Number(root, "SelfTest@1", 37, "", Theme.Colour.Hit, false, numbers)
+			local one = if counting[root] then counting[root]["SelfTest@1"] else nil
+			t.Check("the first hit's number", one ~= nil and one.Label.Text == "37", if one then one.Label.Text else "none")
+			if one == nil then
+				root:Destroy()
+				return
+			end
+			t.Near("unswollen", one.Scale.Scale, 1, 0.001)
+			t.Wait(numbers.Seconds * 0.5)
+			Effects.Number(root, "SelfTest@1", 37, "", Theme.Colour.Hit, false, numbers)
+			Effects.Number(root, "SelfTest@1", 40, "", Theme.Colour.Hit, false, numbers)
+			t.Check("the press's next hits join it", keys() == 1 and one.Total == 114, `{keys()} numbers, {one.Total}`)
+			t.Wait(1 / 30)
+			t.Check("it swells as it counts", one.Scale.Scale > 1.02, string.format("%.3f", one.Scale.Scale))
+			t.Wait(numbers.Count + 0.05)
+			t.Check("counted up to the whole", one.Label.Text == "114", one.Label.Text)
+			t.Near("and settled", one.Scale.Scale, 1, 0.001)
+			t.Check("its fade starts over from the last hit", one.Label.TextTransparency < 0.05, string.format("%.2f", one.Label.TextTransparency))
+			Effects.Number(root, "SelfTest@2", 9, "", Theme.Colour.Hit, false, numbers)
+			t.Check("another press is its own number", keys() == 2)
+			Effects.Number(root, "SelfTest@1", 50, "", Theme.Colour.Critical, true, numbers)
+			t.Check("a critical after turns it gold and larger", one.Big and one.Label.TextColor3 == Theme.Colour.Critical)
+			t.Wait(numbers.Count + 0.05)
+			t.Near("larger, settled", one.Scale.Scale, 1.35, 0.001)
+			Effects.Number(root, "SelfTest:miss", nil, "Miss", Theme.Colour.Dodge, false, numbers)
+			Effects.Number(root, "SelfTest:miss", nil, "Miss", Theme.Colour.Dodge, false, numbers)
+			local miss = if counting[root] then counting[root]["SelfTest:miss"] else nil
+			t.Check("a Miss is one word", keys() == 3 and miss ~= nil and miss.Label.Text == "Miss")
+			t.Wait(numbers.Seconds + 0.1)
+			t.Check("all gone a fade after their last", counting[root] == nil, `{keys()} left`)
+			root:Destroy()
 		end,
 	},
 	{
@@ -1949,6 +2035,39 @@ return {
 					gained += heal.Amount
 				end
 			end)
+			-- Each frame, the numbers on screen (AR4, section 10, fixes 1 and 2): one counting number for the press on each
+			-- body, the most it counted to, and whether a body's touch stood on it the frame its number came.
+			local dealt: { [BasePart]: number } = {}
+			local onDealt = Net.Client.On("Hit", function(hit: any)
+				local root = if type(hit) == "table" and hit.A == lead and typeof(hit.T) == "Instance" then (hit.T :: Instance):FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+				if root and not hit.Dodged and type(hit.Total) == "number" then
+					dealt[root] = (dealt[root] or 0) + hit.Total
+				end
+			end)
+			local prefix, healPrefix = `{if view then view.Id else "?"}@`, `heal:{if view then view.Id else "?"}@`
+			local mostAtOnce, mostHealsAtOnce = 0, 0
+			local counted: { [BasePart]: number } = {}
+			local came: { [BasePart]: boolean } = {}
+			local healed = 0
+			local watch = RunService.RenderStepped:Connect(function()
+				for root, keyed in Effects.Counting do
+					local here, healsHere = 0, 0
+					for key, number in keyed do
+						if string.sub(key, 1, #prefix) == prefix then
+							here += 1
+							counted[root] = math.max(counted[root] or 0, number.Total)
+							if came[root] == nil then
+								came[root] = root:FindFirstChild("NL_Effect") ~= nil
+							end
+						elseif string.sub(key, 1, #healPrefix) == healPrefix then
+							healsHere += 1
+							healed = math.max(healed, number.Total)
+						end
+					end
+					mostAtOnce = math.max(mostAtOnce, here)
+					mostHealsAtOnce = math.max(mostHealsAtOnce, healsHere)
+				end
+			end)
 			local began = os.clock()
 			local frozenBefore = if view then view.FrozenUntil else 0
 			local ok, result = pcall(function()
@@ -1961,6 +2080,18 @@ return {
 			t.Wait(action.Length + 0.3)
 			onHit:Disconnect()
 			onHeal:Disconnect()
+			onDealt:Disconnect()
+			watch:Disconnect()
+			local bodies, whole, withTouch = 0, true, true
+			for root, total in dealt do
+				bodies += 1
+				whole = whole and math.abs((counted[root] or 0) - total) < 0.5
+				withTouch = withTouch and came[root] == true
+			end
+			t.Check("one counting number a body for the press", bodies >= 2 and mostAtOnce == 1, `{bodies} bodies, at most {mostAtOnce} at once`)
+			t.Check("each counted to its hits' whole", whole)
+			t.Check("each came with its touch, not on the server's beat", withTouch)
+			t.Check("her heals one counting number, to their whole", mostHealsAtOnce == 1 and math.abs(healed - gained) < 0.5, `{mostHealsAtOnce} at once, {healed} of {gained}`)
 			local struck = 0
 			for _, by in hits do
 				struck += 1

@@ -197,9 +197,10 @@ end
 
 -- A hit's moment on screen: both bodies held, a spark where it lands, the camera on the player's own heavy hit. `key` is
 -- the beat's press: an area's or a cone's every target gets its own hold and spark, the attacker one hold and one shake for
--- them all, and none on a steady hit (Actions.Hit.Steady: a run of beats that keeps its count). `drawn`: the action's
--- effect draws the hit on the target itself, and the spark stays off (drawnBy).
-local function show(attacker: View, target: View?, heavy: boolean, steady: boolean, key: string, drawn: boolean?)
+-- them all, and none on a steady hit (Actions.Hit.Steady: a run of beats that keeps its count). `draw`: asks the action's
+-- effect to draw the hit on the target itself (drawnBy); when it does, the spark stays off and the target's hold waits
+-- for the effect to reach it.
+local function show(attacker: View, target: View?, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?)
 	local each = if target then `{key}#{target.Id}` else key
 	if attacker.Shown[each] then
 		return
@@ -211,17 +212,22 @@ local function show(attacker: View, target: View?, heavy: boolean, steady: boole
 	if first and not steady then
 		freeze(attacker, hold)
 	end
-	-- A body struck in the middle of its own action shows the spark and the number, and its clip never holds: its own
-	-- beats keep the stage, timed as the server times them, which holds nothing (AR4, section 8: research, 2026-11-12).
-	if target and target.Action == nil then
-		freeze(target, hold)
-	end
-	if target and not drawn then
-		local at = chest(target)
-		local from = attacker.Root.Position
-		local toward = Vector3.new(from.X - at.X, 0, from.Z - at.Z)
-		local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "Box" then target.Root.Size.Z / 2 else 0.6) else at
-		Effects.Spark(surface, from, heavy)
+	if target then
+		-- A body struck in the middle of its own action shows the spark and the number, and its clip never holds: its own
+		-- beats keep the stage, timed as the server times them, which holds nothing (AR4, section 8: research, 2026-11-12).
+		local function land()
+			if target.Action == nil then
+				freeze(target, hold)
+			end
+		end
+		if not (draw and draw(land)) then
+			land()
+			local at = chest(target)
+			local from = attacker.Root.Position
+			local toward = Vector3.new(from.X - at.X, 0, from.Z - at.Z)
+			local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "Box" then target.Root.Size.Z / 2 else 0.6) else at
+			Effects.Spark(surface, from, heavy)
+		end
 	end
 	if first and heavy and isMine(attacker) then
 		Effects.Shake(Combat.Shake.Heavy)
@@ -230,14 +236,15 @@ end
 FighterController.Show = show
 
 -- True when one of the attacker's effects for the action begun `at` takes the hit of `beat` on `target` on itself (the
--- Held Note's touches, when its crest reaches the body). Asking twice for one body and beat draws it once.
-local function drawnBy(attacker: View, beat: string, at: any, target: View?): boolean
+-- Held Note's, when its crest reaches the body): it calls `landed` then, and draws the hit's look there when `look`.
+-- Asking twice for one body and beat draws it once, and calls each `landed`.
+local function drawnBy(attacker: View, beat: string, at: any, target: View?, landed: () -> (), look: boolean): boolean
 	if target == nil then
 		return false
 	end
 	for _, running in attacker.Running do
 		local struck = running.Effect.Struck
-		if running.At == at and struck and struck(beat, target.Model) then
+		if running.At == at and struck and struck(beat, target.Model, landed, look) then
 			return true
 		end
 	end
@@ -589,7 +596,10 @@ local function stepView(view: View, dt: number, now: number): boolean
 				local facing = Vector3.new(look.X, 0, look.Z)
 				local cosine = if line.Magnitude > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
 				if Fight.Reaches(line.Magnitude, cosine, hit.Reach, Combat.Arc) then
-					show(view, target, hit.Heavy, hit.Steady == true, `{beat}@{view.ActionAt}`, drawnBy(view, beat, view.ActionAt, target))
+					local at = view.ActionAt
+					show(view, target, hit.Heavy, hit.Steady == true, `{beat}@{at}`, function(landed: () -> ()): boolean
+						return drawnBy(view, beat, at, target, landed, true)
+					end)
 				end
 			end
 		end
@@ -723,42 +733,62 @@ local function catchUp(view: View, beat: any, at: any)
 	end
 end
 
+-- The key a body's numbers merge by: one press of one fighter's action is one flurry (Effects.Number).
+local function pressOf(model: any): string
+	local view = if typeof(model) == "Instance" then views[model :: Model] else nil
+	local at = if view then view.Model:GetAttribute("ActionAt") else nil
+	return if view and type(at) == "number" then `{view.Id}@{at}` else `alone@{os.clock()}`
+end
+
 local function onHit(hit: any)
 	if type(hit) ~= "table" then
 		return
 	end
 	local attacker = views[hit.A]
 	local target = views[hit.T]
+	local at = if attacker then attacker.Model:GetAttribute("ActionAt") else nil
+	-- An effect that draws the hit on the target (the Held Note's crest) has the target's hold, push and number wait for it
+	-- to reach the body: the number on the touch (AR4, section 10, fix 2).
+	local function drawn(landed: () -> (), look: boolean): boolean
+		return attacker ~= nil and type(hit.Beat) == "string" and drawnBy(attacker, hit.Beat, at, target, landed, look)
+	end
 	if attacker and not hit.Dodged then
-		local at = hit.A:GetAttribute("ActionAt")
 		catchUp(attacker, hit.Beat, at)
-		local drawn = type(hit.Beat) == "string" and drawnBy(attacker, hit.Beat, at, target)
-		show(attacker, target, hit.Heavy == true, hit.Steady == true, `{hit.Beat}@{at}`, drawn)
-		if target then
-			knockOf(attacker, target, hit)
-		end
+		show(attacker, target, hit.Heavy == true, hit.Steady == true, `{hit.Beat}@{at}`, function(landed: () -> ()): boolean
+			return drawn(landed, true)
+		end)
 	end
 	if target == nil then
 		return
 	end
-	local mine, onMine = isMine(attacker), isMine(target)
-	if not (mine or onMine) then
-		return
+	local struck: View = target
+	local press = pressOf(hit.A)
+	local function land()
+		if attacker and not hit.Dodged then
+			knockOf(attacker, struck, hit)
+		end
+		local mine, onMine = isMine(attacker), isMine(struck)
+		if not (mine or onMine) then
+			return
+		end
+		local numbers = Combat.Numbers
+		if hit.Dodged then
+			Effects.Number(struck.Root, `{press}:miss`, nil, "Miss", Theme.Colour.Dodge, false, numbers)
+			return
+		end
+		local color = if onMine then Theme.Colour.Hurt elseif hit.Critical then Theme.Colour.Critical else Theme.Colour.Hit
+		Effects.Number(struck.Root, press, hit.Total, "", color, hit.Critical == true or hit.Heavy == true, numbers)
+		if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
+			Effects.Shake(Combat.Shake.Hurt)
+		end
 	end
-	local numbers = Combat.Numbers
-	if hit.Dodged then
-		Effects.Number(target.Root, "Miss", Theme.Colour.Dodge, false, numbers)
-		return
-	end
-	local color = if onMine then Theme.Colour.Hurt elseif hit.Critical then Theme.Colour.Critical else Theme.Colour.Hit
-	Effects.Number(target.Root, tostring(math.floor(hit.Total + 0.5)), color, hit.Critical == true or hit.Heavy == true, numbers)
-	if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
-		Effects.Shake(Combat.Shake.Hurt)
+	if not drawn(land, false) then
+		land()
 	end
 end
 
 -- A hit's heal (Actions.Hit.Heal): its look round the healed body (HEALS), and its number over it on the screens of the
--- healer's player and the healed's.
+-- healer's player and the healed's, one counting number for the press.
 local function onHeal(heal: any)
 	if type(heal) ~= "table" or type(heal.Amount) ~= "number" then
 		return
@@ -774,9 +804,8 @@ local function onHeal(heal: any)
 	if not (isMine(healer) or isMine(healed)) then
 		return
 	end
-	local amount = math.floor(heal.Amount + 0.5)
-	if amount >= 1 then
-		Effects.Number(healed.Root, `+{amount}`, Theme.Colour.Heal, false, Combat.Numbers)
+	if heal.Amount >= 0.5 then
+		Effects.Number(healed.Root, `heal:{pressOf(heal.A)}`, heal.Amount, "+", Theme.Colour.Heal, false, Combat.Numbers)
 	end
 end
 

@@ -72,8 +72,11 @@ return {
 		Hurt = { Magnitude = 0.6, Roughness = 12, Fade = 0.2 }, -- the player's own lead is hit hard (a tenth of its health)
 		HurtShare = 0.1,
 	},
-	-- Damage numbers over the target: they rise this many studs over this many seconds.
-	Numbers = { Rise = 2.5, Seconds = 0.8, Size = 24 }, -- Size: pixels at the phone's size (UI.Theme.Author), scaled with the screen
+	-- Damage numbers over the target: they rise this many studs over this many seconds. A flurry, one press's hits on one
+	-- body, is one counting number (docs/ui.md, "Damage numbers"): each hit after the first counts it up to the new total
+	-- over Count seconds, swelling it Pop times and settling, and its fade starts over from that hit. The builder's
+	-- numbers, 2026-11-12, to tune by playing.
+	Numbers = { Rise = 2.5, Seconds = 0.8, Size = 24, Count = 0.12, Pop = 1.3 }, -- Size: pixels at the phone's size (UI.Theme.Author), scaled with the screen
 
 	-- The keeper's try (KeeperService; docs/test-requests.md, TR2, "the keeper, fought alone"). The builder's numbers, 2026-11-12.
 	Keeper = {

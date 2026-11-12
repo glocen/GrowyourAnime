@@ -31,6 +31,7 @@ return {
 	-- The side street runs from the crossing between the Towers to the festival gate: a plot's depth, its path behind and
 	-- its Tower, 8 s. Then Lantern Row.
 	Row = {
+		Ground = "lanternrow", -- the ground this street is (Definitions.Grounds): its keeper's win counts there
 		Wide = 2, -- 32 studs between the stall fronts
 		FirstPack = 2, -- from the gate to the first pack, in view of it
 		Spacing = 5, -- 80 studs from stop to stop, past the lead's leash (Config.Combat.Lead.Leash)

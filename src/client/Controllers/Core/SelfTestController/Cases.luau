@@ -36,6 +36,11 @@ local FACING_TOLERANCE = 10 -- degrees off straight at the Breaker that still co
 local CAMERA_TOLERANCE = 25 -- the camera swings in behind the avatar a moment late
 local RESPAWN_PATH = "World.Row.Respawn"
 local PACK_BACK = 1 -- seconds a felled pack takes to come back while the case runs; the case puts the seed back
+local MOVE_SLACK = 0.5 -- seconds past a fade's move before the case reads where the avatar stands
+local SET_DOWN = 2 -- studs from its spot a set-down avatar may stand once physics settles it
+local KEEPER_MEETS = 3 -- seconds after arriving by which the lead fights the keeper (it walks 4 studs into Lead.Leash)
+local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
+local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
 
 -- The angle in degrees between two directions, flat on the ground.
 local function flatAngle(a: Vector3, b: Vector3): number
@@ -197,6 +202,93 @@ return {
 				end
 			end
 			t.Server("Tune", RESPAWN_PATH, wait)
+		end,
+	},
+	{
+		Name = "Keeper: a try in the plot's own ring; a win is saved and sets down beyond it, a loss before the gate",
+		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
+		Run = function(t: any)
+			local keeper = Combat.Keeper
+			local moved = keeper.Fade.Out + keeper.Fade.Hold / 2 + MOVE_SLACK
+			local def = nil
+			for _, stop in WorldConfig.Row.Stops do
+				def = if stop.Kind == "Keeper" then stop.Def else def
+			end
+			local before = t.Server("Keeper")
+			t.Check("no try yet", before.Ok == true and before.InTry == false)
+			local start = t.Server("KeeperTry")
+			t.Check("a try starts", start.Ok == true, tostring(start.Error))
+			if start.Ok ~= true then
+				return
+			end
+			-- The attribute replicates after the server's answer: wait for it, briefly.
+			local named = os.clock() + REPLICATE
+			while Players.LocalPlayer:GetAttribute("Try") ~= def and os.clock() < named do
+				t.Wait(0.05)
+			end
+			t.Check("the player's Try names the keeper", Players.LocalPlayer:GetAttribute("Try") == def, tostring(Players.LocalPlayer:GetAttribute("Try")))
+			t.Check("one try at a time", t.Server("KeeperTry").Error == "InTry")
+			t.Wait(moved)
+			local inside = t.Server("Keeper")
+			t.Near("the avatar stands at its copy's entrance (studs off)", inside.FromEntry, 0, SET_DOWN)
+			t.Check("the copy is its plot's, out of sight of the street", inside.FromCopy > 0 and inside.FromCopy < inside.Radius)
+			t.Check("a fresh keeper stands in it", inside.Keeper ~= "" and inside.KeeperHealth > 0)
+			-- The fight is joined with nobody pressing anything: the keeper comes for the lead from the middle of the ring, and the
+			-- lead meets it once it's inside Lead.Leash of the avatar.
+			t.Check("the keeper comes for the lead at once", inside.KeeperTarget ~= "" and inside.KeeperTarget == inside.Lead, `target {inside.KeeperTarget}, lead {inside.Lead}`)
+			local joined = inside
+			local meetBy = os.clock() + KEEPER_MEETS
+			while joined.LeadTarget ~= joined.Keeper and os.clock() < meetBy do
+				t.Wait(0.2)
+				joined = t.Server("Keeper")
+			end
+			t.Check("and the lead meets it", joined.LeadTarget == joined.Keeper, `lead's target {joined.LeadTarget}`)
+			-- And they trade hits, never a stand-off just outside each other's reach (Combat.Approach).
+			local traded = joined
+			local tradeBy = os.clock() + KEEPER_TRADES
+			while (traded.KeeperHealth >= joined.KeeperHealth or traded.LeadHealth >= joined.LeadHealth) and os.clock() < tradeBy do
+				t.Wait(0.25)
+				traded = t.Server("Keeper")
+			end
+			t.Check("the lead lands hits on the keeper", traded.KeeperHealth < joined.KeeperHealth, `{traded.KeeperHealth} of {joined.KeeperHealth}`)
+			t.Check("and the keeper on the lead", traded.LeadHealth < joined.LeadHealth, `{traded.LeadHealth} of {joined.LeadHealth}`)
+			t.Check("the keeper falls", t.Server("KeeperEnd", "Win").Ok == true)
+			t.Wait(0.3)
+			local saved = t.Server("Keeper").Wins
+			t.Check("the win is saved before any fade", saved == before.Wins + 1, `{saved} wins, was {before.Wins}`)
+			t.Wait(keeper.WinPause + moved)
+			local won = t.Server("Keeper")
+			t.Check("the try is over", won.InTry == false and Players.LocalPlayer:GetAttribute("Try") == nil)
+			t.Near("the avatar stands at the ring's exit (studs off)", won.FromExit, 0, SET_DOWN)
+			-- The shortcut home, a step away.
+			local pad = Markers.Find("Shortcut")
+			t.Check("the shortcut is in view of the exit", pad ~= nil and pad:IsA("BasePart"))
+			if pad and pad:IsA("BasePart") then
+				t.Root().CFrame = pad.CFrame + Vector3.new(0, R6_ROOT_HEIGHT, 0)
+				t.Wait(moved + 0.3)
+				t.Near("the shortcut sets the avatar down on its plot (studs off)", t.Server("Keeper").FromHome, 0, SET_DOWN)
+			end
+			-- A loss: the lead falls.
+			local again = t.Server("KeeperTry")
+			t.Check("a second try starts", again.Ok == true, tostring(again.Error))
+			if again.Ok ~= true then
+				return
+			end
+			t.Wait(moved)
+			t.Check("the lead falls", t.Server("KeeperEnd", "Loss").Ok == true)
+			t.Wait(keeper.LossPause + moved)
+			local lost = t.Server("Keeper")
+			t.Check("the try is over", lost.InTry == false)
+			t.Near("the avatar stands before the keeper's gate (studs off)", lost.FromBefore, 0, SET_DOWN)
+			t.Check("a loss saves nothing", lost.Wins == before.Wins + 1, `{lost.Wins} wins`)
+			-- The lead back up before the next case needs it.
+			local deadline = os.clock() + Combat.Lead.DownSeconds + 2
+			repeat
+				t.Wait(0.2)
+				local lead = myLead()
+			until (lead and lead:GetAttribute("State") ~= "Down") or os.clock() > deadline
+			local lead = myLead()
+			t.Check("the lead is back up after its fall", lead ~= nil and lead:GetAttribute("State") ~= "Down")
 		end,
 	},
 	{

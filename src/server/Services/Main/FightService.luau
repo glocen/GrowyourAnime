@@ -628,7 +628,10 @@ local function thinkShade(f: Fighter, at: number)
 	if f.State == "Flinch" then
 		return
 	end
-	if f.Target and Fight.GivesUp(fromHome, Combat.Shade.GiveUp) then
+	-- A keeper is fought alone in its own copy of the ring (KeeperService): it comes for its challenger at once, and nothing
+	-- in the copy is far enough to make it give up. Copies stand 600 studs apart, so it never sees another player's lead.
+	local keeper = f.Kind == "Keeper"
+	if f.Target and not keeper and Fight.GivesUp(fromHome, Combat.Shade.GiveUp) then
 		endAction(f, at)
 		setTarget(f, nil)
 		face(f, nil)
@@ -648,7 +651,8 @@ local function thinkShade(f: Fighter, at: number)
 			})
 		end
 	end
-	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, Combat.Shade.Notice)
+	local notice = if keeper then Combat.Keeper.Notice else Combat.Shade.Notice
+	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice)
 	setTarget(f, if targetId then fighters[targetId] else nil)
 	local target = f.Target
 	if target == nil then

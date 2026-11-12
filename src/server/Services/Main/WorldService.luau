@@ -274,7 +274,7 @@ local function lay(folder: Folder)
 				end
 				block(ring, "Rail", Vector3.new(length, 3, 1), spotAt, GREY.Wall)
 			end
-			Markers.Stamp(ring, "Ring", { Def = stop.Def, Level = stop.Level })
+			Markers.Stamp(ring, "Ring", { Def = stop.Def, Level = stop.Level, Ground = row.Ground })
 		end
 	end
 	-- The stall fronts, from the gate to the keeper's gate, open at the square; then round the ring to the shut gate.

@@ -5,7 +5,10 @@
 
 return {
 	Think = 0.1, -- seconds between a fighter's decisions; beats are checked every frame
-	Approach = 0.5, -- a fighter stops this far inside an action's range
+	-- A fighter walks to this far inside an action's range. More than the Humanoid's own stop: Humanoid:MoveTo counts itself
+	-- arrived about 0.6 studs short of its point (measured 2026-11-12), and at 0.5 a lead and a keeper closing on each other
+	-- both stopped 0.1 outside their reach and stood there.
+	Approach = 1,
 	Arc = 70, -- degrees either side of a fighter's facing that its hits reach
 	-- Fighters closing on one target take places around it (Rules/Fight.Spread): they don't collide, so this is what keeps a
 	-- pack from stacking. Spacing in degrees apart; a fighter acts once within Arc degrees of its place, else walks to it.
@@ -52,6 +55,20 @@ return {
 	},
 	-- Damage numbers over the target: they rise this many studs over this many seconds.
 	Numbers = { Rise = 2.5, Seconds = 0.8, Size = 34 },
+
+	-- The keeper's try (KeeperService; docs/test-requests.md, TR2, "the keeper, fought alone"). The builder's numbers, 2026-11-12.
+	Keeper = {
+		Hold = 0.5, -- seconds the gate's Challenge is held: a try is a decision
+		Reach = 10, -- studs from the gate it can be asked
+		Fade = { Out = 0.25, Hold = 0.2, Back = 0.35 }, -- the fade around each move; the move is in the middle of Hold
+		Entry = 6, -- studs inside the copy's rim the avatar arrives, facing the keeper at its middle
+		WinPause = 2, -- seconds after the keeper's fall before the fade out: the fall is seen
+		LossPause = 1, -- seconds after the lead's fall
+		Before = 10, -- studs before the keeper's gate a loss sets the avatar down
+		-- It notices its challenger anywhere in its copy (a 41-stud ring inside a fenced square: 133 corner to corner) and
+		-- never gives up, so a fight at the rim can't reset it. Copies stand 600 apart.
+		Notice = 140,
+	},
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.
 	Replay = {

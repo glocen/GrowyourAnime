@@ -26,6 +26,8 @@ local REMOTES: { [string]: Spec } = {
 	Profile = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (view) the whole read copy after each change
 	-- The fight (FightService).
 	Hit = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (hit) one landed or dodged hit, for its hold, spark and number
+	-- The keeper's try (KeeperService).
+	Fade = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (out, hold, back) seconds of a fade to black and back, around a move
 }
 
 local CLASS_FOR_KIND: { [Kind]: string } = {

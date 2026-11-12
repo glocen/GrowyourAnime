@@ -7,6 +7,7 @@ local CollectionService = game:GetService("CollectionService")
 
 local Tags = require(script.Parent.Tags)
 local Enemies = require(script.Parent.Parent.Definitions.Enemies)
+local Grounds = require(script.Parent.Parent.Definitions.Grounds)
 
 local Markers = {}
 
@@ -68,6 +69,16 @@ function Markers.Stamp(item: Instance, name: string, attributes: { [string]: any
 	item:AddTag(s.Tag)
 end
 
+-- Takes every contract tag off `item` and all inside it: a copy of a marked thing that isn't a marker itself.
+function Markers.Unstamp(item: Instance)
+	for _, s in Tags do
+		item:RemoveTag(s.Tag)
+		for _, inside in item:GetDescendants() do
+			inside:RemoveTag(s.Tag)
+		end
+	end
+end
+
 local function standsOnGround(item: Instance): boolean
 	local at = Markers.At(item).Position
 	local params = RaycastParams.new()
@@ -110,6 +121,10 @@ function Markers.Report(plots: number): { string }
 			local def = item:GetAttribute("Def")
 			if s.Attributes.Def and type(def) == "string" and Enemies.ById[def] == nil then
 				problem(`{name}: {where} names no enemy "{def}"`)
+			end
+			local ground = item:GetAttribute("Ground")
+			if s.Attributes.Ground and type(ground) == "string" and Grounds.ById[ground] == nil then
+				problem(`{name}: {where} names no ground "{ground}"`)
 			end
 			local plot = item:GetAttribute("Plot")
 			if s.Attributes.Plot and type(plot) == "number" and (plot < 1 or plot > plots or plot % 1 ~= 0) then

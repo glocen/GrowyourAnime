@@ -32,7 +32,8 @@ local specs: { [string]: Spec } = {
 	Elite = { Tag = "GA_Elite", Attributes = { Def = "string", Level = "number", Type = "string?" }, Count = 1, Ground = true },
 	KeeperGate = { Tag = "GA_KeeperGate", Attributes = {}, Count = 1, Ground = true },
 	-- The keeper's ring: a model whose pivot is its centre, on the floor. A try is fought in a copy of it (KeeperService).
-	Ring = { Tag = "GA_Ring", Attributes = { Def = "string", Level = "number" }, Count = 1, Ground = true },
+	-- Ground: the ground whose keeper it is (Definitions.Grounds), which a win counts on.
+	Ring = { Tag = "GA_Ring", Attributes = { Def = "string", Level = "number", Ground = "string" }, Count = 1, Ground = true },
 	-- Where a win sets the player down: beyond the ring, by the shortcut and the shut gate.
 	RingExit = { Tag = "GA_RingExit", Attributes = {}, Count = 1, Ground = true },
 	-- The shortcut home, opened by the first win: a pad that sets the player down at their own plot.

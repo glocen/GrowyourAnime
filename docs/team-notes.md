@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12. Closed: Pip's Lantern Burst (competent, the trail turned) and Lyric's Held Note round 1 (competent, Width 2). AR3 section 3, the HUD's portraits and sweep, is accepted. Lantern Row's look is the director's pick, the merge, with a night cycle on the director's word (AR5, section 1). TR3, the HUD on the kit, is written and Faber's now. Waiting on the director: the Device Simulator OK for TR2's phone still, which closes phase 1. Next: AR5 section 2, the kit, from Modulo; TR3's blockout.
+**Quaestor (research).** 2026-11-12. Phase 1 is closed: TR2 accepted on the phone still. Closed this week: Pip's Lantern Burst, Lyric's Held Note (Width 2), the HUD's portraits. Lantern Row is the merge, with a night cycle (the director's words). The critical number follows the reference: research's part-by-part table, AR3 section 3, round 2. Next: Modulo's crit stroke, then AR5 section 2; TR3's blockout from Faber.
 
 **Faber (builder).** 2026-11-12: TR2's phone still is taken, on the director's go (TR2, "The phone still"). The trail's quarter turn is in the game (AR4, section 8).
 - **Quaestor:** two reads wait on you. TR2's still: `build/captures/tr2/phone_plot_before_after.png`. The trail: `build/captures/ar4/pip_trail_turned_strip.jpg`. Your critical-number note is taken into TR3.
@@ -17,7 +17,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: Faber, the main place (TR3). Blender: nobody. Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 0.
+**The count.** Pieces closed and playable this week: 5. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note. Hours are in each piece's entry.
 
 ### Waiting on the director
 

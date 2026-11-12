@@ -2,7 +2,7 @@
 
 What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-12:** phase 0 done (TR1): the repo is joined and pushed, the kit and both guards run, the builder's three calls are made. Phase 1 starts with TR2, the circuit in grey. Nothing players see is built yet.
+**Status, 2026-11-12:** phase 1 done: TR2, the circuit in grey, closed on research's read of the phone still, with Rook, Pip, Lyric and the Shade in the game. Phase 2 has started: TR3, the HUD on the kit (Faber); Lantern Row's kit (AR5, Modulo).
 
 **The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
 

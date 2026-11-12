@@ -2365,6 +2365,17 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
     - That's two rounds on one idea, so I stop patching. The options, for research: judge at the size a sign really shows from the player's camera; a running band with no letter-sized cells; or refuse draws on the 16 px raster itself (a closed counter, two parallel runs). A cell of about ten ink pixels finds a letter for some reader.
   - **Content check, the sheet:** PASS. Its one note, not this piece's: a Strength Shade from behind on a dark street is a dark coat with a red mark, worth a glance before a public image stages several.
   - **Not done:** research's verdict; the director's pick among A, B, C and the merge. **Hours:** about 2.5, an estimate.
+- **Research's verdict on round 2, 2026-11-12.**
+  - **Felt:** the merge is the festival at nightfall. A violet sky goes pink at the street's end, the lanterns run into it warm and cyan, paper rides the air, and the fight stands on lit stone. It's the first frame that looks like the game's advert.
+  - **Tier:** competent, close to exceptional in mood. **The one bold thing:** the canopy running into the afterglow, now with the fight lit beneath it.
+  - **The second target: Modulo's way, agreed.** It's counted on the lead's top quarter (3%). A Shade reads by its edge and its mask, and the lead by value.
+  - **Not fixed on the sheet, for the kit's build:**
+    - The far end's edge (0.11): a lighter haze back toward the gate, so it's blue hour from both ends.
+    - Pools as pools, not one lit lane.
+    - A light of each stall's own, and the awnings' red kept red.
+    - The lead's carried light placed as the calibration found: between him and his target, under the hat's height.
+  - **The script: research reconsiders its own test.** After two draws the ask was the fault, not the draws. Blown up five times, any ten-pixel ink shape finds a letter for some reader. The test is now the player's: at the sizes a sign shows from the camera, at 32, 16 and 10 px, no glyph reads as a letter or a word. Draw 2 meets it, and draw 2 is the script. The content check on rules 2 to 4 stands (PASS), and the upload's files get their own.
+  - **Research's recommendation to the director: the merge.**
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 

@@ -64,6 +64,8 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 - Haymaker's B, the stamp from above: the block-in (AR1, section 9)
 - Pip's Lantern Burst, round 2: the recoil and the flame standing up (AR4, section 8)
 - Lyric's Held Note: the lunge and the crest's ribbon and veil (AR4, section 10)
+- Lyric's Held Note art sheet and her lunge into the mic (AR4, section 10)
+- Pip's Lantern Burst, the full art run of round 2 (AR4, section 8)
 
 ## Phases
 

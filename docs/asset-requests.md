@@ -21,7 +21,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 
 **Checks:** the content check on the sheet and before upload; your own review strips; research's verdict (`/ga-review`) on the sheet and on the final in motion; fresh eyes on the final.
 
-**Status:** in progress (Modulo, 2026-11-12). Deliveries 1 to 3, the sheet, the model and the clips, are delivered to `build/handoff/Rook/`. Delivery 4, Haymaker's look, is next, with the builder.
+**Status:** in progress (Modulo, 2026-11-12). Deliveries 1 to 3, the sheet, the model and the clips, are delivered to `build/handoff/Rook/`. Delivery 4, Haymaker's look, is next, with the builder. Rook's body is in the game, maps and clips included (section 6).
 
 **1. The sheet** (Modulo, 2026-11-12).
 
@@ -217,6 +217,24 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
       3. The AR1 and Haymaker conditions stand. The new mask is logged in `docs/asset-log.md` at upload, and replaces the old one if that was ever uploaded.
     - **Delivered** over the old files in `build/handoff/Rook/`: `Rook_Emissive.png`, `Rook.recipe.json`, `rook_model_sheet.png`.
     - **Hours:** about 0.5, the try included.
+
+### 6. In the game: Rook's body (Faber, 2026-11-12)
+
+- **The uploads,** for the group, all Approved: the eight meshes by `ModelAssembly.PublishMesh` from the place, the four maps by `tools/upload/upload_asset.py`. The glow mask is the rebake's (section 5's last entry); the old one was never uploaded. Ids in `docs/asset-log.md`.
+- **The template:** `tools/studio/Models/Rook.luau` builds him on R6 from the recipe. The six parts are hidden with a mesh welded to each. `Rook_Piston` and `Rook_Tape` ride Motor6Ds named `Piston` and `Tape`, and the `Knuckles` and `RamCentre` attachments sit on the Right Arm. It's serialized to `src/storage/Rook.rbxm` (`ServerStorage.Templates.Rook`); read back in Studio: 14 joints, none broken.
+- **The lead wears it:** a Voidkin row's new `Model` names its template (`Definitions.Voidkin`, Rook's row). `FightService`'s `buildLead` clones it, or the grey R6 stand-in for a row without one.
+- **The clips** are imported again with the two joints keyed (`Author`'s `HELD` puts the piston under the Right Arm, the tape under the Left Arm), saved in the place as `NL_Rook<Clip>`.
+- **The glow** is cold at rest: strength 0, tint `#FFA630` on the ram and the piston only. Haymaker's wind-up lights it 0 to 10 on the replay (delivery 4), where research tunes the 10 and section 5's engine look is owed (64 px, front and three-quarter, bloom).
+- **Self-test case:** "Fight: Rook's lead wears his model". It checks the rig hidden and the eight pieces shown, the two joints on their arms, and the piston's 0.65 draw in Haymaker's clip. Over one idle loop it checks the tape swinging (about 9°) and the piston staying home.
+- **Section 2's checks,** in play mode on the test pad (grey daylight, no bloom):
+  - the rig is hidden;
+  - a clip is always playing, and the idle holds the ram off the hip;
+  - the iron doesn't read flat: its faces keep lit, side and shade values, and the bolts and band read;
+  - no shell flickers at play distance.
+  - Haymaker frozen at the wind-up holds together, with the piston drawn 0.65 and the ram cocked; at the strike the piston is home.
+- **Not done:** section 3's pose dump against the export (`tools/blender/r6parity.py compare`). It goes with the replay.
+- **Tests:** Fight cases 117/117 at 60 fps; logic 1,376; type check, 0 new.
+- **Hours:** about 0.8.
 
 ## AR2. The Shade, one rig for every enemy
 

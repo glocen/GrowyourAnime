@@ -34,8 +34,16 @@ local LEGS = { ["Right Leg"] = true, ["Left Leg"] = true }
 -- a clip's grip Pose nests under that arm's Pose.
 local GRIPS = { GripR = "Right Arm", GripL = "Left Arm" }
 -- Parts a rig carries on a joint of their own in an arm, keyed like a grip: a creature's claws (their
--- Motor6Ds ClawR and ClawL). Their Poses nest under their arms and follow the arm's weight; they get no rest keys.
-local HELD: { [string]: string } = { GripR = "Right Arm", GripL = "Left Arm", Creature_ClawsR = "Right Arm", Creature_ClawsL = "Left Arm" }
+-- Motor6Ds ClawR and ClawL), Rook's piston and tape (AR1: tools/studio/Models/Rook.luau). Their Poses nest under their
+-- arms and follow the arm's weight; they get no rest keys.
+local HELD: { [string]: string } = {
+	GripR = "Right Arm",
+	GripL = "Left Arm",
+	Creature_ClawsR = "Right Arm",
+	Creature_ClawsL = "Left Arm",
+	Rook_Piston = "Right Arm",
+	Rook_Tape = "Left Arm",
+}
 local LEANS = { Torso = true, Head = true } -- pitch flips on these: their bases face the other way from an arm's
 
 local Author = {}
@@ -302,7 +310,7 @@ end
 -- they're joined linearly), Markers ({ T, Name }), and Loop and Priority when it sets them (else a one-shot at
 -- Action2). Weights ({ [part] = weight }) override a part's weight (else the legs take Legs and the rest 1). A frame's
 -- GripR and GripL turn the weapons on their wrists (GRIPS), and a rig's held parts turn under their arms the same way
--- (HELD: the Creature's claws); a driven arm without its grip holds it at rest
+-- (HELD: the Creature's claws, Rook's piston and tape); a driven arm without its grip holds it at rest
 -- (restWrists). A limb at weight 0 is left out, so the loops under the clip pose it (leaving it out and a Pose
 -- at weight 0 blend alike, and Pose.Weight is deprecated); the Torso stays, at weight 0, as the container a keyed arm,
 -- head or leg needs. Fails on a malformed clip (problems). Writes NL_<name> into RBX_ANIMSAVES.R6, replacing an earlier

@@ -3,6 +3,7 @@
 -- players. Generated from docs/roster.md, "The thirty-one", on 2026-11-12: the roster is the design, these rows are what the
 -- game reads. A row changes in both, the roster first. Kits (combo, signature, passive) join as each fighter is built.
 -- Zone is the first ground (Definitions.Grounds, by Order) whose shards hold it. Aptitude is its work in a bay, 1 to 3.
+-- Model is the build's, not the roster's: the fighter's own body, once it's installed.
 
 export type Row = {
 	Id: string,
@@ -13,10 +14,13 @@ export type Row = {
 	Element: string, -- Fire, Frost, Storm, Void, or "" for none
 	Zone: number,
 	Aptitude: number,
+	-- Its body, ServerStorage.Templates.<Model> (tools/studio/Models/<Model>.luau): an R6 rig whose meshes ride its hidden
+	-- parts, so it plays the R6 clips. Without one, a lead wears the grey R6 stand-in (FightService).
+	Model: string?,
 }
 
 local rows: { Row } = {
-	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2 },
+	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2, Model = "Rook" },
 	{ Id = "kirra", Name = "Kirra", Rarity = "Common", Type = "Agility", Class = "Assassin", Element = "", Zone = 1, Aptitude = 1 },
 	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2 },
 	{ Id = "watt", Name = "Watt", Rarity = "Common", Type = "Endurance", Class = "Tank", Element = "Storm", Zone = 1, Aptitude = 3 },

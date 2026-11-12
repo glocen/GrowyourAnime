@@ -21,6 +21,7 @@ local Signal = require(Shared.Util.Signal)
 local Parts = require(Shared.Util.Parts)
 local Actions = require(Shared.Definitions.Actions)
 local Enemies = require(Shared.Definitions.Enemies)
+local Voidkin = require(Shared.Definitions.Voidkin)
 local Combat = require(Shared.Config.Combat)
 local Shades = require(Shared.Config.Shades)
 local Stats = require(Shared.Rules.Stats)
@@ -214,6 +215,20 @@ local function buildR6(name: string): Model
 			part.Material = Enum.Material.SmoothPlastic
 		end
 	end
+	return model
+end
+
+-- A lead's body: its Voidkin's own (Definitions.Voidkin's Model, ServerStorage.Templates.<Model>) once it's installed,
+-- else the grey R6 stand-in. Both are R6 rigs, so both play the R6 clips.
+local function buildLead(def: string, name: string): Model
+	local row = Voidkin.ById[def]
+	local template = if row and row.Model then ServerStorage:WaitForChild("Templates"):FindFirstChild(row.Model) else nil
+	if template == nil then
+		return buildR6(name)
+	end
+	local model = (template :: Model):Clone()
+	model.Name = name
+	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
 	return model
 end
 
@@ -815,7 +830,7 @@ function FightService.SpawnLead(player: Player, block: Stats.Block, title: strin
 	if old then
 		remove(old)
 	end
-	local model = buildR6(`Lead_{player.UserId}`)
+	local model = buildLead(block.Def, `Lead_{player.UserId}`)
 	local avatar = Parts.Root(player.Character)
 	model:PivotTo(if avatar then besideAvatar(avatar) else CFrame.new(0, 10, 0))
 	local f = register(model, "Lead", "Lead", block.Def, block, Actions.KitOf(block.Def), title, player)

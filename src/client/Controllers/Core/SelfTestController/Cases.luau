@@ -43,6 +43,8 @@ local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (le
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
 local BEAT_TOLERANCE = 1 / 120 -- half a frame at 60 fps
 local LEAD_SETTLE = 1.5 -- seconds for the lead to catch up after the reset's teleport (Config.Combat.Lead)
+local TAPE_WATCH = 2.4 -- one loop of Rook's idle
+local TAPE_SWING = 5 -- degrees: his idle swings the tape about 9
 local REPLAY_PAUSE = 5 -- seconds past the action before a second press, longer than the case waits
 local SHADE_AHEAD = 12 -- studs ahead of the avatar a test Shade spawns: inside its notice and the lead's leash
 local SHADE_TIMEOUT = 20 -- seconds a level-matched ordinary may take to fall (the seed is 5 s of fighting, Config.Enemies)
@@ -792,6 +794,72 @@ return {
 			t.Check("its idle plays", idle ~= nil)
 			if idle then
 				t.Near("at full weight", idle.WeightTarget, 1, 0.01)
+			end
+		end,
+	},
+	{
+		Name = "Fight: Rook's lead wears his model",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local found = myLead()
+			t.Check("the lead is in the world", found ~= nil)
+			if found == nil then
+				return
+			end
+			local lead = found :: Model
+			local row = Voidkin.ById[tostring(lead:GetAttribute("Def"))]
+			if row == nil or row.Model ~= "Rook" then
+				t.Row(`the lead is {tostring(lead:GetAttribute("Def"))}, not Rook: his checks wait for a Rook lead`, nil, nil, nil, "")
+				return
+			end
+			-- AR1 (tools/studio/Models/Rook.luau): R6's seven parts hidden, his eight pieces riding them
+			local hidden, shown = 0, 0
+			for _, part in lead:GetChildren() do
+				if part:IsA("BasePart") then
+					if string.sub(part.Name, 1, 5) == "Rook_" then
+						shown += if part.Transparency == 0 then 1 else 0
+					else
+						hidden += if part.Transparency >= 1 then 1 else 0
+					end
+				end
+			end
+			t.Check("R6's seven parts are hidden", hidden == 7, `{hidden} of 7`)
+			t.Check("his eight pieces show", shown == 8, `{shown} of 8`)
+			local function joint(arm: string, name: string, piece: string): Motor6D?
+				local on = lead:FindFirstChild(arm)
+				local motor = if on then on:FindFirstChild(name) else nil
+				local part1 = if motor and motor:IsA("Motor6D") then motor.Part1 else nil
+				local ok = part1 ~= nil and part1.Name == piece
+				t.Check(`the {name} joint turns {piece} on the {arm}`, ok)
+				return if ok then motor :: Motor6D else nil
+			end
+			local piston = joint("Right Arm", "Piston", "Rook_Piston")
+			local tape = joint("Left Arm", "Tape", "Rook_Tape")
+			-- his clips key the two, under their arms (tools/studio/Animations/Author's HELD): Haymaker's wind-up slides the
+			-- piston 0.65 studs toward the shoulder
+			local slide = -1
+			local haymaker = Clips.Sequence(Actions.ById.RookHaymaker.Clip or "")
+			for _, keyframe in if haymaker then haymaker:GetKeyframes() else {} do
+				for _, pose in (keyframe :: Keyframe):GetDescendants() do
+					if pose:IsA("Pose") and pose.Name == "Rook_Piston" and (pose.Parent :: Instance).Name == "Right Arm" then
+						slide = math.max(slide, pose.CFrame.Position.Magnitude)
+					end
+				end
+			end
+			t.Near("Haymaker slides the piston", slide, 0.65, 0.01)
+			-- and a clip always plays: idle, the piston rests home and the tape swings (at R6's rest pose the ram meets the hip)
+			if piston and tape then
+				local first = tape.Transform
+				local swing, out = 0, 0
+				local began = os.clock()
+				while os.clock() - began < TAPE_WATCH do
+					RunService.Heartbeat:Wait()
+					local _, angle = (first:Inverse() * tape.Transform):ToAxisAngle()
+					swing = math.max(swing, math.deg(angle))
+					out = math.max(out, piston.Transform.Position.Magnitude)
+				end
+				t.Check("the tape swings through the idle", swing > TAPE_SWING, string.format("%.1f degrees", swing))
+				t.Near("the piston rests home", out, 0, 0.01)
 			end
 		end,
 	},

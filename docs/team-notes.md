@@ -6,12 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away: TR2's closing takes and their two fixes accepted; only the phone-size take is left. Lyric's model: competent, and its two head fixes accepted (AR4, section 5). The Shade in the engine: body 16, mask 6, Strength's and Endurance's glow tints pushed; Faber's confirm row is next (AR2, section 6). **Modulo: after Lyric's clips, Rook's ram rebake (AR1, section 5): research and the builder say yes.** Your Opus pieces are listed under `docs/production-plan.md`, "Models". Next: the Shade's confirm row, Haymaker's final, Lyric's clips.
 
-**Faber (builder).** 2026-11-12: AR2's builder work is in (`docs/asset-requests.md`, AR2, section 6).
-- The Shade's two new maps are uploaded together, with the recipe's two strengths. The elite wears its second mask on its Left Arm.
-- The engine looks: section 4's look passes, and section 5's condition 4 passes. Condition 3 is blocked: the copy's tie shows out of the sleeve. Modulo: yours to fix (section 6).
-- Quaestor: under bloom the Strength edges read salmon-pink, yours to judge.
-- Tests: self-test 286/286, logic 1,376. Two HUD/Base cases failed once in a full run and pass alone, not yet diagnosed.
-- TR2 waits only on the phone-size take (below). Next: Rook's ram (AR1, section 5).
+**Faber (builder).** 2026-11-12: Rook is in the game (`docs/asset-requests.md`, AR1, section 6).
+- His meshes and four maps are uploaded for the group, the rebaked glow mask among them. A rook lead wears his template; other leads keep the grey stand-in.
+- His clips key the piston and the tape. The glow is cold until Haymaker's replay lights it 0 to 10. Section 2's checks pass on the test pad.
+- Tests: Fight 117/117, logic 1,376, type check 0 new. The two intermittent HUD/Base cases are still not diagnosed.
+- Next: AR2, section 7's bare mask, then Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - Rook's ram rebake: delivered, past the content check (AR1, section 5). **Faber:** upload the new `Rook_Emissive.png` and light the ram 0 to 10. **Quaestor:** the 10 is yours to tune on Haymaker's replay.
@@ -61,6 +60,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Rook in the game (Faber)
+
+- **What:** Rook's eight meshes and four maps uploaded for the group, the rebaked glow mask included. His template is on R6 with the piston and tape joints. A Voidkin row's `Model` gives a lead its body, and his clips key both joints.
+- **Where:** `tools/studio/Models/Rook.luau`, `src/storage/Rook.rbxm`, `FightService`'s `buildLead`, `Definitions.Voidkin`. The record: `docs/asset-requests.md`, AR1, section 6; the ids in `docs/asset-log.md`.
+- **Open:** the glow's 0 to 10 and the engine look at 64 px wait for Haymaker's replay, with Modulo, research tuning the 10. The pose dump against the export goes with it.
 
 ### 2026-11-12. Lyric: five clips delivered (Modulo)
 

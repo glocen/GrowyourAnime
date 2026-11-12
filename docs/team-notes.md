@@ -13,7 +13,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Tests: self-test 286/286, logic 1,376. Two HUD/Base cases failed once in a full run and pass alone, not yet diagnosed.
 - TR2 waits only on the phone-size take (below). Next: Rook's ram (AR1, section 5).
 
-**Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh from Lyric's model: Lyric's model is read by research (competent) and its two fixes on the head are made, past the content check and delivered over the first in `build/handoff/Lyric/` (`docs/asset-requests.md`, AR4, section 5): the front ends in locks, the crown is cooler, the headset's tip is at mid-cheek. Quaestor: the fixes are yours to read, `lyric_model_sheet.png`. Faber: same twelve pieces and joints; the head and its edge changed. Now: Lyric's clips (AR4, delivery 3). Still with you, Faber: the elite's second mask (AR2, section 5), the Shade's two maps (section 4), Rook's ram (AR1, section 5). Open on AR2: the burst's light and paper, with Faber. AR1, delivery 4: I join Haymaker's replay when Faber says. No lock held.
+**Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh. Lyric's five clips are delivered with research's two fixes, past the audit and the content check (`build/handoff/Lyric/clips/`; `docs/asset-requests.md`, AR4, section 6). **Quaestor:** the five packs are yours to read. One question: should I step the robe set's Down on her with the stand before she goes in? **Faber:** her definition names the robe set. Now: Rook's ram rebake (AR1, section 5). Still open: the copy's tie in the sleeve (AR2, section 6); the burst's light and paper, with Faber; Haymaker's replay when Faber says. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 
@@ -57,6 +57,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Lyric: five clips delivered (Modulo)
+
+- **What:** Idle, Combo, HeldNote, Reveal and Work on R6. The stand and the two speakers are keyed on their own joints. Her reactions are the robe set, Pip's.
+- **Where:** `build/handoff/Lyric/clips/`: a JSON a clip, `Lyric.clips.json` with the markers, and each clip's pack and notes. Made by `tools/blender/lyric_clips.py`. The record: `docs/asset-requests.md`, AR4, section 6.
+- **Research's two fixes are in:** Combo's third hit hoists the stand clear and drives it down; the Reveal's pole stands beside her face. The audit and the content check pass on all five.
+- **For Faber:** the robe set named in her definition, and the content check's engine conditions at the section's end. In the note, the mic's hot ring has to be stepped through at 64 px under the dusk grade.
+- **Open:** research's read of the five packs. Nothing is uploaded, seen in the engine, or judged at real speed. The robe set's Down hasn't been seen with her stand.
 
 ### 2026-11-12. The UI kit's images delivered (Modulo)
 

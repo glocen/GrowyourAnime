@@ -1,0 +1,80 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Idle": {
+      "File": "Lyric_Idle.json",
+      "Frames": 241,
+      "Seconds": 4.0,
+      "Loop": true,
+      "Markers": []
+    },
+    "Combo": {
+      "File": "Lyric_Combo.json",
+      "Frames": 106,
+      "Seconds": 1.75,
+      "Loop": false,
+      "Markers": [
+        [
+          15,
+          "Shot1"
+        ],
+        [
+          30,
+          "Shot2"
+        ],
+        [
+          60,
+          "Shot3"
+        ]
+      ]
+    },
+    "HeldNote": {
+      "File": "Lyric_HeldNote.json",
+      "Frames": 151,
+      "Seconds": 2.5,
+      "Loop": false,
+      "Markers": [
+        [
+          4,
+          "Breath"
+        ],
+        [
+          30,
+          "Note"
+        ],
+        [
+          90,
+          "Release"
+        ]
+      ]
+    },
+    "Reveal": {
+      "File": "Lyric_Reveal.json",
+      "Frames": 151,
+      "Seconds": 2.5,
+      "Loop": false,
+      "Markers": [
+        [
+          18,
+          "Power"
+        ],
+        [
+          90,
+          "Strike"
+        ]
+      ]
+    },
+    "Work": {
+      "File": "Lyric_Work.json",
+      "Frames": 121,
+      "Seconds": 2.0,
+      "Loop": true,
+      "Markers": [
+        [
+          30,
+          "Pump"
+        ]
+      ]
+    }
+  }
+}

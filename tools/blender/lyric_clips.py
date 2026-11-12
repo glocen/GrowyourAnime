@@ -597,9 +597,10 @@ def combo(t):
     t.key(37, ease="sine", T=(3, 4, 0), LA=(52, 0, -16), look=EYES)
     t.key(44, ease="in", T=(-2, 8, 0), crouch=0.02, LA=(20, 0, -16), RA=(30, 0, 8))
     t.stand(44, ease="in")
-    t.key(54, "hoists it", ease="in", T=(-9, 10, 0, 0, 0, -0.05), crouch=0.0, RA=(48, 0, 10), LA=(-10, 0, -30),
+    t.key(54, "hoists it", ease="in", T=(-9, 10, 0, 0, 0, -0.05), crouch=0.0, RA=(100, 0, 14), LA=(-10, 0, -30),
           look=(0.0, 10.0, 6.2))
-    t.stand(54, "in", held=(-6, 0, 2.6))
+    t.stand(54, "in", held=(12, 70, 2.7))  # clear of the ground, its base about a stud up, its top out to her right:
+    # driven down, the top chops across her right side, where the game's camera sees it travel
     t.key(60, "3: drives it down", ease="out", T=(13, 8, 0, 0, 0, 0.18), crouch=0.22, RA=(18, 0, 8), LA=(30, 0, -22),
           look=NOD, feet={"Right Leg": (0.66, 0.3)})
     t.stand(60, at=(1.8, 1.75))
@@ -692,7 +693,7 @@ def held_note(t):
 def reveal(t):
     """The show hasn't started: head down, the speakers dark and low at her sides. They power up and rise to her
     shoulders; she counts it in with two taps of the stand's base, and on three her chin comes up to you, the stand
-    tipped in to her, the free hand thrown out low at her side. Held for her name."""
+    upright beside her face, the free hand thrown out low at her side. Held for her name."""
     low = dict(T=(9, 9, 0), crouch=0.08, H=(24, 4, 0), RA=(4, 0, 6), LA=(4, 0, -4))
     t.key(0, "before the show", **low)
     t.stand(0, at=(1.6, 0.95))
@@ -707,8 +708,8 @@ def reveal(t):
     t.stand(60, at=(1.6, 0.95))
     t.key(82, ease="in", T=(12, 12, 0), crouch=0.12, H=(26, 4, 0), LA=(18, 0, -8))
     t.key(90, "and three", ease="out", T=(-5, 16, 0), crouch=0.04, look=(0.0, 10.0, 5.6), H=(0, 0, 3),
-          RA=(12, 0, 8), LA=(10, 0, -52), feet={"Right Leg": (0.78, 0.3), "Left Leg": (-0.5, -0.15)})
-    t.stand(90, at=(1.75, 1.0))
+          RA=(14, 0, 28), LA=(10, 0, -52), feet={"Right Leg": (0.72, 0.2), "Left Leg": (-0.5, -0.15)})
+    t.stand(90, held=(5, 80, 2.2))  # upright beside her face, under her fist: the front camera sees both, apart
     t.mark(90, "Strike")
     t.key(100, ease="sine", T=(-3, 15, 0), LA=(8, 0, -48), crouch=0.05)
     t.key(150, "held for the name", T=(-4, 15, 0), LA=(9, 0, -50), crouch=0.04)
@@ -895,7 +896,7 @@ def main():
         arc_sheet(scene, rig, cams, take, out)
         bare_sheet(scene, rig, take, undress, out)
         if name == "HeldNote":
-            heading_sheet(scene, rig, take, (10, 22, 30, 60), out)
+            heading_sheet(scene, rig, take, (10, 20, 30, 60), out)
         strip = [take.start + round(i * take.end / 11) for i in range(12)]
         r6.review_pack(scene, rig, out / f"pack_{name}", [(take.start + f, f"{name} {f}: {label}") for f, label in take.beats],
                        lambda frame: cams[VIEWS.get(name, ("game",))[0]], bare=SIDE[0], strip=strip, undress=undress,

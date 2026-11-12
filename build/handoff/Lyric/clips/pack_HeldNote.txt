@@ -1,0 +1,24 @@
+HeldNote: 151 frames, 2.50 s
+  the stand's nearest to her, in studs (the pole and the mic's head): Torso 0.20 at 27; Head 0.17 at 94; Left Arm 1.38 at 88; Right Leg 0.35 at 116; Left Leg 1.64 at 150; Right Arm 0.00 at 25
+  its base at its lowest over the floor: -0.00 at 83; her fist on the pole from 2.20 to 5.11 studs up it (it holds from 1.3 to 5.2)
+  the mic's head from her mouth at each named pose: 10: 2.65, 20: 3.83, 30: 0.79 (+0.45 -0.11 +0.65), 88: 0.69 (+0.33 +0.03 +0.60), 96: 2.02, 106: 3.28
+  the speakers' nearest, past their cabinets: Head 1.04 at 7; Torso 1.16 at 138; Right Arm 0.55 at 120; Left Arm 0.29 at 139; Pole 0.36 at 113
+  a leg's widest swing: right 32 at 88, left 18 at 106 (the tail allows 30)
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 150), left 0 (to 150); each arm at its highest: right 6 at 20, left -7 at 88
+[audit] Lyric_HeldNote.json (export, 151 poses)
+  Legs cross            0.000 studs
+  Arm through body      0.028 studs at 1.4833 (Left Arm into Torso)
+  Leg out of hip        0.064 studs at 1.45 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 1.35 (Right Leg)
+  Pop                   1.857x at 0.25 (Right Leg turns 2.0 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip            16.298 deg at 1.4833 (Left Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.05 (the head off its neck)
+  Nod                   0.000 deg
+  Beat                  3.507x at 1.4833 (Right Arm turns 12.9 deg in one frame, on the marker Release; the clip's own beat, for information)
+  Shoulder cap          0.394 studs at 1.6 (Right Arm; inherent to R6, for information)
+  Eyes                 +3.6 to +11.6 deg (at 1.7833 and 0.3167; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

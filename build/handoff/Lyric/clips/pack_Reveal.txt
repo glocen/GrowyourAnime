@@ -1,0 +1,24 @@
+Reveal: 151 frames, 2.50 s
+  the stand's nearest to her, in studs (the pole and the mic's head): Torso 0.15 at 83; Head 0.11 at 76; Left Arm 2.05 at 83; Right Leg 0.49 at 7; Left Leg 1.56 at 83; Right Arm 9.00 at 0
+  its base at its lowest over the floor: -0.00 at 62; her fist on the pole from 1.38 to 2.31 studs up it (it holds from 1.3 to 5.2)
+  the mic's head from her mouth at each named pose: 0: 2.62, 30: 2.66, 60: 2.66, 90: 3.05, 150: 3.10
+  the speakers' nearest, past their cabinets: Head 1.05 at 20; Torso 1.06 at 19; Right Arm 0.10 at 0; Left Arm 0.13 at 20; Pole 0.88 at 86
+  a leg's widest swing: right 16 at 81, left 17 at 82 (the tail allows 30)
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 150), left 0 (to 150); each arm at its highest: right -56 at 90, left -38 at 90
+[audit] Lyric_Reveal.json (export, 151 poses)
+  Legs cross            0.000 studs
+  Arm through body      0.007 studs at 1.4667 (Left Arm into Torso)
+  Leg out of hip        0.015 studs at 1.3667 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 1.2 (Right Leg)
+  Pop                   1.491x at 1.0 (Head turns 3.4 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             3.620 deg at 1.5 (Left Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 2.35 (the head off its neck)
+  Nod                  28.000 deg at 0.5 (the head against the torso)
+  Beat                  1.389x at 1.5 (Right Leg turns 7.8 deg in one frame, on the marker Strike; the clip's own beat, for information)
+  Shoulder cap          0.394 studs at 1.5 (Left Arm; inherent to R6, for information)
+  Eyes                 -37.6 to +6.3 deg (at 0.5 and 1.6333; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

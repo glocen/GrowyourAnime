@@ -1041,6 +1041,82 @@ On Modulo's five pose sheets (`build/scratch/modulo/lyric/clips/`). **Yes to tim
 - Accepted: the Idle, its monitor glance included; the Work; the Reveal's speakers rising one, two, three.
 - **Her reactions: the robe set** (`docs/design.md`, "States in a fight"). The open set's leg swings of 98 to 112 degrees would come out through her jacket's tail. Faber names it in her definition.
 
+- **Delivered: the five clips, with research's two fixes** (Modulo, 2026-11-12; made on Opus 5.5 xhigh). They are in `build/handoff/Lyric/clips/`: the five `Lyric_<Clip>.json`, `Lyric.clips.json` (frames, loops, markers), and each clip's pack with its notes. They are made by `tools/blender/lyric_clips.py` (`blender -b --factory-startup --python tools/blender/lyric_clips.py -- <out dir> [poses|export|audit] [clip ...]`). The working set is in `build/scratch/modulo/lyric/clips/`: the pose sheets, `arcs_<Clip>.png`, `bare_<Clip>.png` and `headings_HeldNote.png` (the toss and the note at 64 px, on eight headings, over both grounds). The audit and the content check pass on all five. Nothing is uploaded, seen in the engine, or judged at real speed.
+  - **The five,** at 60 frames a second. Each clip has a body track and three prop joints: `Lyric_Staff` (the stand, at her fist), `Lyric_SpeakerL` and `Lyric_SpeakerR`. The clips' names carry the `Lyric` prefix.
+    - **Idle** (a loop of 241): her weight is on her back foot, the stand leant in to her fist, and her chin keeps time. Once a loop (166 to 196) she glances back over her right shoulder at her monitor.
+    - **Combo** (106; `Shot1` at 15, `Shot2` at 30, `Shot3` at 60): she stamps the base and the right speaker fires; she cuts her free hand at you and the left one fires. Then she hoists the whole stand and drives it down, and both fire.
+    - **HeldNote** (151; `Breath` at 4, `Note` at 30, `Release` at 90): one breath, then she tosses the stand out (14 to 23). It flies near upright, clear of her, lands planted far out to her right and tips in to her. She catches it into the lunge: the mic at her mouth, her weight on it, the free arm flung low behind. The speakers fly out to the cone's edges and shake through the hold. After two beats of pushing she lets it go (96) and walks the stand back in (106 to 150).
+    - **Reveal** (151; `Power` at 18, `Strike` at 90): her head is down and the speakers dark and low. They power up and rise, and two taps of the base count it in. On three her chin comes up, the stand upright beside her face, the free hand thrown out low. Held for her name.
+    - **Work** (a loop of 121; `Pump` at 30): a soundcheck at the bay. The speakers are turned on the post and pump on every beat. She stamps the stand on two, and on four (84 to 108) she looks up to read the dial.
+  - **Research's two fixes:**
+    1. **Combo, hit 3.** At 54 the stand is hoisted clear, its base about a stud up and its top above the right speaker. The mic's head is then 4.1 studs from her mouth, against 2.0 to 2.5 for the other hits. At 60 it's driven down. From the player's camera its top travels one long arc, from high over her right shoulder down past the speaker (`arcs_Combo.png`, a dot a frame).
+    2. **Reveal, the hold.** At 90 and 150 the pole stands upright to the right of her face, under her fist. From the front her face is clear (`pack_Reveal.png`, `poses_Reveal.png`).
+  - **My calls (tier 1):**
+    - The free arm's swing at `Shot2` is a little wider, because the audit had it 0.055 studs into her body at 29.
+    - `headings_HeldNote.png` shows frames 10, 20, 30 and 60, so the toss is among them.
+  - **The checks, as numbers, from the last run of all five:**
+    - **The audit: PASS on every clip.** The worst results, each against its line:
+
+      | Check | Worst | Line |
+      |---|---|---|
+      | An arm into the body | 0.042 studs (Combo) | 0.05 |
+      | A leg out of the hip | 0.064 studs (HeldNote's lunge) | 0.10 |
+      | Pop | 2.22x (Combo's free arm) | 3.0 |
+      | A limb's turn about its length | 16 degrees in a frame | 45 |
+      | Nod | 28 degrees (the Reveal's start and Work's post) | 30 |
+
+      Nothing goes under the floor, and both loops' seams are at 0. Work's look up at the dial is quick, up to 12 degrees a frame at 90, and smooth (pop 1.0x).
+    - **Held arms: none.** A raised arm held still: 0.00 s in all five. An arm nearly still at 20 to 70 degrees up: 0 frames in all five. The highest the stand arm goes is 19 degrees up, at Combo's hoist (54), moving, and 6 up at the throw (HeldNote 20). In the note it's about 10 below level. The free arm at its highest: -7 (HeldNote), -29 (Combo), -38 (Reveal), -74 (Work), -80 (Idle).
+    - **The stand's nearest to her:**
+      - Torso 0.15 studs (Reveal 83), Head 0.10 (Combo 60, the pole beside her face as it comes down), the right leg 0.17 (Combo 54).
+      - It's 0.00 to her right arm at HeldNote 25: that's the catch, her hand meeting the pole.
+      - Her fist stays on the pole, 1.38 to 5.11 studs up it, of the 1.3 to 5.2 it can hold. 5.11 is the haul, her hand high up the pole.
+      - In the note the mic's head is 0.79 studs from her mouth at 30 and 0.69 at 88, just off her face toward the game's camera.
+    - **The speakers' nearest to her:** 0.10 studs from her right arm at the Reveal's start, low at her sides. Otherwise 0.29 or more.
+    - **A leg's widest swing:**
+      - The left leg is under the jacket's tail, which allows 30: Idle 6, Combo 12, HeldNote 18, Reveal 17, Work 7.
+      - The right leg is on the hem's short side: 32 in HeldNote's lunge (88), 17 in Combo, 16 in the Reveal.
+    - **Her eyes, the face's pitch:** Idle -5 to +6; Combo -5 to +9; HeldNote +4 to +12; Reveal -38 with her head down to +6; Work -29 at the post to +22 at the dial.
+  - **The clip pass:**
+    - [x] Key poses from the clip's camera, read on all five packs: the player's camera for the fight, the front for the Reveal and Work, wide for the note.
+    - [x] The eyes are measured (above).
+    - [x] The audit passes on every export.
+    - [x] Feet planted, and both loops close with a seam of 0.
+    - [x] The stand and speakers keyed with the body at each beat, clear of her (above).
+    - [ ] Blended the way the game blends: the builder's.
+    - [x] Arcs and spacing are on `arcs_<Clip>.png`. The mic's widest spacing is on the toss, the hoist's drive and the haul. It's densest in the hold.
+    - [ ] Judged moving at real speed: no, Blender runs headless here.
+    - [x] Markers sit on every beat (`Lyric.clips.json`).
+    - [ ] The game's own dump against the export: the builder's.
+  - **What I see wrong:**
+    - **The toss lands fast.** From 20 to 23 the stand tips from near upright to its long lean. At speed that may read as a snap, not a fall. Research's line already holds the toss's length for motion.
+    - **The Reveal's free arm, from the front.** From 90 to 150 the arm, thrown out low (38 degrees under level), points toward the front camera and foreshortens beside her head. The content check read it as a hand at her headset. From the player's camera it reads as thrown out low.
+    - **The robe set has no tracks for her props.** It carries no keys for her stand or speakers, so they stay at rest against their joints: the stand in her fist, the speakers by her shoulders. Where that lands in Down, as she goes over like a plank, I haven't seen. It may put the stand's base through the floor or the pole across her. I can step Pip's three on her rig with the props if research wants it before she goes in.
+    - **The note at 64 px, by heading** (`headings_HeldNote.png`):
+      - From her left (225 to 270 degrees) the stand is behind her and barely shows.
+      - From her right front (45 to 90) its lean points at the lens, and it reads near upright.
+      - From the player's side, behind her right shoulder, and from her front it's the long diagonal to her mouth.
+  - **For research:** the read of the five packs, with fixes 1 and 2. The toss's length and the hoist's drive at speed are for the engine.
+  - **For the builder, when Lyric goes in:**
+    - Her definition names the `robe` set (research's ruling), and the robe set's look on her stand and speakers is the line above.
+    - Show the blend over Idle, and the game's dump against the export.
+    - The content check's engine conditions are below.
+  - **Content check, 2026-11-12: PASS** on rules 2, 3 and 4, and on conditions 4, 5, 9 and 10, for all five clips.
+    - **What it opened:** every pack and its notes, the bare, pose and arc sheets, and `headings_HeldNote.png`. The 64 px read is real for the note; for the other four it rests on the packs' strips.
+    - **Condition 9:** stepped bare, the note is a lunge with a forward lean and the arm about level.
+    - **Condition 10:** no free arm holds a raise.
+    - **Condition 11, at the model's baked glow:** at 30 and 60, from her front and from behind, the mic, the cheek tip and the rose read as separate small marks.
+    - **Also seen, and not blocking:** the stand passing 0.10 to 0.17 studs from her head, a blunt prop in its own place. HeldNote's right leg at 32 is research's to judge.
+    - **To hold for the upload and the engine:**
+      1. Upload only the five `Lyric_<Clip>.json`, never the review images.
+      2. Her clips' rows go in `docs/asset-log.md` before upload, and the batch gets its own check.
+      3. At the mic ring's hot strength in the note, step through at 64 px from the target's side and from the player's camera, under Lantern Row's dusk grade. The ring, the cheek tip and the rose must not read as pink coming off her face (condition 11). If they do, the ring's strength comes down or it stays off bloom. The cheek tip stays cold.
+      4. Nothing traces the mic's head: no trail, ribbon or particles on its path, which rises off her face.
+      5. Her reactions are the robe set, never the open set.
+      6. A change to a clip's arm angles, or a new emote or victory clip, gets a new check. Conditions 4, 5 and 11 to 14 still hold for the effect and the sounds.
+
+**Hours:** the clips, about 5 by my own estimate, not timed: about 3 to the pose sheets, the rest on the toss, the clearances against her mesh and the two fixes.
+
 ## AR5. The festival kit and the base's machines
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.

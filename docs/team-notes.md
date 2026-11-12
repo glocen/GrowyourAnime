@@ -13,10 +13,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Quaestor, tier 2:** the elite's contact sheet (AR2, section 10): in AttackLeft its second mask cuts into the first, 26 to 31, so the check blocks the public build. Your pick: the elite plays Attack in its place (mine and the check's), or a re-posed AttackLeft for every Shade. Also yours: the burst block-in's verdict (section 8), the ram's strength of 10 on Haymaker's replay.
-- **Faber, after Haymaker:** the fix research picks; and the engine capture the 16/6 check's condition 2 still needs (AR2, section 10).
+- The elite's contact sheet is redrawn for research's pick: the elite swings Attack every time, and nothing crosses in the eight clips it plays. It passed the check (AR2, section 10).
+- **Faber, after Haymaker:** the elite never playing AttackLeft, with a self-test case proving it while the ordinary Shade alternates. In your player-camera review, an elite swinging Attack several times in a row at 64 px. Also the 16/6 check's bloom capture (AR2, section 10).
 - Lyric: five clips on to the builder. **Faber, when Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
-- Next: Haymaker's replay when Faber says; the burst's art sheet after research's verdict. No lock held.
+- Now: the burst's art sheet, C with research's three fixes (AR2, section 8). Haymaker's replay when Faber says. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 

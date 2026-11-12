@@ -1,5 +1,5 @@
 """The elite's contact sheet (AR2, section 5, condition 9; section 6's 16/6 check, condition 2): the Brawler elite
-with its second mask on, the copy without ties where the game puts it, in the nine delivered clips, from the player's
+with its second mask on, the copy without ties where the game puts it, in the clips an elite plays, from the player's
 camera, at 64 px on dark and bright, with the ordinary Shade beside it where the 16/6 check asks.
 
 blender.exe -b --factory-startup --python tools/blender/shade_elite_contact.py -- <out_dir>
@@ -35,8 +35,9 @@ import shade_elite_bare as eb  # noqa: E402
 import shade_model as sm  # noqa: E402
 
 HANDOFF = se.RECIPE.parent
-# condition 9's four first, then the rest in the delivered order
-CLIPS = ("Guard", "AttackLeft", "HitLeft", "Burst", "Idle", "Walk", "Attack", "Lunge", "Hit")
+# the clips an elite plays: condition 9's four first, its swing being Attack every time, never AttackLeft (research's
+# pick, AR2 section 10: in AttackLeft the second mask cuts into the first), then the rest in the delivered order
+CLIPS = ("Guard", "Attack", "HitLeft", "Burst", "Idle", "Walk", "Lunge", "Hit")
 GAP = 400                     # frames between clips on the one timeline
 VIEW = (336.0, 18.0, 13.0)    # the player's camera on a Shade that faces the lead: its front and its left (body_camera)
 SUN = (540 - VIEW[0]) % 360   # the same heading in rook_sheet's measure, for the sun over the camera's left shoulder
@@ -47,13 +48,12 @@ F64 = 64 / (5 * STUD)         # a 5 stud body 64 px tall
 BIG = 0.5
 # the frames condition 9 names in the four first: the guard braced (its left sleeve level under the first mask), the
 # left swing's hit, the blow from the left, the last frame before the burst
-NAMED = {"Guard": (44, "braced"), "AttackLeft": (30, "Hit"), "HitLeft": (3, "struck"), "Burst": (27, "Burst")}
+NAMED = {"Guard": (44, "braced"), "Attack": (30, "Hit"), "HitLeft": (3, "struck"), "Burst": (27, "Burst")}
 # the 16/6 check's condition 2: the ordinary Shade and the elite side by side. None is the clip's widest frame.
 SIDE_BY_SIDE = (("HitLeft", None), ("Burst", 20), ("Burst", 27))
 NEAR = ("Torso", "RightArm", "Mask")  # what the second mask may not sink into: the coat, the other sleeve, the first mask
-SEEN = ("Seen: in AttackLeft the second mask crosses the first from 26 to 31, round the Hit, and the coat at 26: at 64 px",
-        "the two masks are one pale shape. Every other clip clears. The game plays Attack and AttackLeft in turn, so it shows.",
-        "Moving the mask down or round the arm doesn't clear AttackLeft without crossing the Guard or the sleeve, or turning side-on.")
+SEEN = ("The elite swings Attack every time, never AttackLeft (research's pick, AR2 section 10): in AttackLeft its second mask",
+        "cuts into the first from 26 to 31, so that swing is the ordinary Shade's only. Nothing here crosses anything.")
 
 
 def key_clips(rig):
@@ -243,14 +243,14 @@ def main():
 
     # band B: the four first, larger, at dusk
     y1, bc = 560, 236
-    text.append((x0, y1 - 30, 16, "Guard, AttackLeft, HitLeft, Burst, larger, at dusk: the frame condition 9 names, then where the second mask comes nearest the coat, the other sleeve or the first mask", soft))
+    text.append((x0, y1 - 30, 16, "Guard, Attack, HitLeft, Burst, larger, at dusk: the frame condition 9 names, then where the second mask comes nearest the coat, the other sleeve or the first mask", soft))
     rs.fill(page, x0, y1, bc * len(close), 330, rs.NIGHT)
     for c, (clip, frame, label) in enumerate(close):
         rs.stand(page, rs.shrink(picture(clip, frame, True), BIG * se.SCALE), x0 + c * bc, y1 + 318, bc)
         text.append((x0 + c * bc + 10, y1 + 8, 14, f"{clip} {frame}, {label}", pale))
-    # band C: the nine widest, larger, at dusk
+    # band C: each at its widest, larger, at dusk
     y2 = 960
-    text.append((x0, y2 - 30, 16, "The nine at their widest, larger, at dusk", soft))
+    text.append((x0, y2 - 30, 16, "Each clip the elite plays at its widest, larger, at dusk", soft))
     rs.fill(page, x0, y2, bc * len(CLIPS), 330, rs.NIGHT)
     for c, clip in enumerate(CLIPS):
         frame = found[clip]["widest"][0]

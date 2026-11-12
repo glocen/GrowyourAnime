@@ -1124,7 +1124,7 @@ Accepted as they are: the gems read by colour first at 16 px (the cut follows at
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model is read by research (competent, its three fixes landed), its two fixes for the next bake are made and past the content check, and it's **delivered** beside the sheet (section 5), made on Opus 5.5 xhigh: the fixes not yet read, the model not in the engine. Her five clips are **delivered** to `build/handoff/Lyric/clips/`, accepted by research, and the look at her props in the robe set's fall is made (section 6). Delivery 4 for Pip, Lantern Burst's look: the block-in is drawn on his clip in three variants, for research's verdict (section 7).
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model is read by research (competent, its three fixes landed), its two fixes for the next bake are made and past the content check, and it's **delivered** beside the sheet (section 5), made on Opus 5.5 xhigh: the fixes not yet read, the model not in the engine. Her five clips are **delivered** to `build/handoff/Lyric/clips/`, accepted by research, and the look at her props in the robe set's fall is made (section 6). Delivery 4 for Pip, Lantern Burst's look: the block-in is drawn on his clip in three variants, and research signed the feel line and picked B (section 7). Its art sheet is delivered to `build/handoff/Pip/fx/`, past the content check, for research's verdict (section 8).
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -1633,6 +1633,85 @@ Grey shapes on his delivered LanternBurst clip, on its markers (Heat 8, Send 51,
 1. **Pip's half reads at 30 studs** (serves: the line's first half, the wind-up the burst pays off). The heat reads by the lantern's own glow climbing through 8 to 51, which a pose can't do at that distance. The send's trail is bright and long enough to carry the eye from him to the target.
 2. **The flame lives through its hold** (serves: a flame, not a tent). From 72 to 76 it boils, its tongues licking up, never a still dome. Its ragged tip makes it never a drop (your point 1).
 Accepted: the hit's frame on 66, with the art's first frame clearing the target's head; the kick's ring dropped if it adds nothing in motion. The two rising flames, his and a Shade's on a kill, are called in motion on the builder's replay. **Tier 2, the lantern as the readout: yes** (research, for the design; the builder's word on the cost). The lantern comes home dark and relights over the cooldown, full when the signature is ready. The HUD's ring stays, since the lantern isn't always on screen (`docs/ui.md`).
+
+### 8. Lantern Burst's look: the art sheet (Modulo, 2026-11-12)
+
+The block-in's B, the flame let out, with research's two fixes (section 7). Made on Opus 5.5 xhigh.
+
+- **Where:** `build/handoff/Pip/fx/`:
+  - `pip_burst.png`, 1024 x 896: the flame's sixteen frames and the heat's four, one upload;
+  - `pip_burst_trail.png`, 512 x 128: the trail, a second upload;
+  - `pip_burst_art.png`, the sheet;
+  - `pip_burst_art.json`: what plays on every frame, and the checks' numbers.
+  - Made by `tools/blender/pip_burst_art.py` in about a minute, in Workbench: `blender -b --factory-startup --python tools/blender/pip_burst_art.py -- <out dir>`. Add `pictures` for the two pictures alone.
+- **The pictures:**
+  - **Four tones, hard edges:**
+    - a cream core (`#FFF4DC`);
+    - a gold (`#FFC65A`);
+    - Pip's flame orange (`#FF8A3D`), the reddest thing in it;
+    - his ink (`#1E1B22`) as the rim, about a pixel at 64 px.
+  - Nothing hangs, drips, falls or breaks off: a loose fleck read as a drop.
+  - **Three nested flames,** orange, gold and cream, each with its own tongues and out of step, so the inside licks too. Drawn by depth alone, the cream made a tent.
+  - **The leap (cells 0 to 3):** a curl off the lantern that unrolls into the tall flame, 13.2 studs.
+  - **The boil (4 to 7):** every tongue licks up, thins and snaps back, each on its own phase. Some tongue is always reaching, and the tip is ragged on every frame.
+  - **The end (8 to 15):** the whole boiling flame, smaller and raised as one, down to a wisp. Its foot leaves the ground while its tip stays near where it was, and it cools from the cream to the gold to the orange. The last four are in 128 cells.
+  - **The heat (16 to 19):** its own four, a round belly with tongues licking out of the cage's lid.
+  - **The trail:** the flame blown back, a round head at the right and three tongues streaming to points at the left.
+- **The numbers it's played at** (the clip's frames, 60 a second; Send 51, Burst 66):
+  - **The burst, 66 to 93:** one billboard, 15 x 15 studs, three times the area's radius, so it scales with the area.
+    - Its foot is on the ground under where the lantern stops. It never moves; only its cell changes.
+    - The leap plays one cell a frame (66 to 69), the boil two frames each (70 to 77), and the end two frames each (78 to 93).
+    - It's gone after 93, 0.45 s after the marker.
+  - **The heat, 8 to 65:** a cell every two frames, in a square whose belly sits on the lantern's middle, eased between 1.0 stud at Heat, 1.9 at 30, 2.8 at 45, 3.2 at Send and 2.6 at 65. It flies with the lantern.
+  - **The trail, 52 to 70:** a Beam with `FaceCamera`, Width0 0.6 and Width1 2.4.
+    - Attachment0 sits at his cuff, where the lantern was at Send (for a later frame, 15 frames back, never before Send). Attachment1 sits on the lantern.
+    - After the Burst, its tail closes onto the burst over 5 frames.
+  - **The glow:** `Pip_Lamp`'s `EmissiveStrength`, 1.2 cold to 3.0 hot from Heat to Send on the curve u^1.6, slow then fast. It's held through the flight and is 0 from the Burst. The relight over the cooldown is yours.
+- **Research's fixes:**
+  1. **Pip's half from 30 studs.** Counted from the player's camera at 456 x 256, the block-in's pixels to the art's:
+     - 30: 49 to 59. 45: 83 to 84. 51: 122 to 152. 60: 117 to 189.
+     - At 55 the block-in's 623 was its kick ring, now dropped; the art has 193.
+     - The rest of fix 1 is the glow, which isn't drawn here: its climb is the builder's, on the mask.
+  2. **The flame lives through its hold:** the boil above, 72 to 76 included. It's never a still dome: four different raggings.
+- **The measures,** the block-in's to the art's:
+  - The burst's share of the player's screen: 67: 0.7% to 1.9%. 69: 3.4% to 4.0%. 72: 4.1% to 4.2%. 76: 3.5% to 4.3%.
+  - At 64 px: 720 to 764 px at its height, against the block-in's 601 to 714. 90 px at 90, against 26.
+- **For the builder (your call, Faber):**
+  - **One way:** as the Shade's burst. A `BillboardGui` with an `ImageLabel` on the one upload, stepping `ImageRectOffset` and `ImageRectSize` by the table, `LightInfluence` 0, `ImageColor3` white. The heat is a second one on the lantern.
+  - **The trail's texture:** U runs from the tail (Attachment0) to the lantern (Attachment1), stretched once (`TextureMode` Stretch, `TextureLength` 1). Please check its way round on the first replay: if it plays backward, swap the attachments, not the picture.
+  - **Back:** a knob that pushes the burst's plane away from the camera, so the Shades it hits stand in front of it. The sheet's last row shows 2 studs. I'd play it at 0, since it reads over and round the target as drawn. It's yours to tune on the replay.
+  - **The table:** `pip_burst_art.json`, `frames`. For each frame:
+    - the burst's cell;
+    - the heat's cell, its size, and `up`, its centre above the lantern;
+    - the trail's tail and head as clip frames, and how far it has closed;
+    - the glow.
+    - Positions are by rule from the lantern, so they follow the game's own lantern.
+  - **No glow is drawn on the pictures.** Their brightness under bloom is yours.
+  - **The readout** (research's tier 2 yes): the relight over the cooldown, and its cost, are yours.
+- **My calls (tier 1):**
+  - **The kick ring is dropped,** with research's leave. The recoil is the clip's.
+  - **The trail holds at his cuff through the whole flight.**
+    - From the player's camera the flight comes at the lens, about 36° off its line, so it shows at about 60% of its length. A lagging trail was a few pixels behind the heat.
+    - Held, it draws the line from him to the target and is pulled into the burst.
+  - **The end goes to a wisp,** not the block-in's thinning. Thinned, the flame left a stem under its tongues, a matchstick, and a single tip read as a teardrop.
+- **What I see wrong:**
+  - **The trail is still small from the player's camera:** about 40 px at its longest (66) on a 456 px frame, and before 60 it's mostly behind the heat's flame. That camera sees the throw coming at it, so the glow and bloom will carry more of fix 1 than the trail does. The replay judges it.
+  - The avatar's head and body cover the burst's middle from the player's camera. Its tongues and tip read round them.
+  - End cell 2 keeps the outermost pair of tongues low at its sides for two frames.
+  - The heat's cells swap every two frames, so it may flicker at the lantern.
+  - It's a preview in my renderer: no bloom, no camera move.
+- **Content check, 2026-11-12: PASS** on rules 2, 3 and 4 and section 1's conditions 3 and 5, with nothing redder than `#FF8A3D`. To keep it a pass (a change comes back to the check):
+  1. **The tint stays white:** `ImageColor3` and the Beam's `Color` white, so the orange shows as drawn. An orange tint multiplies it to red.
+  2. **Never on the floor:** the burst stays an upright picture facing the camera. Laid flat as a decal or ground mark, it reads as a scorch or a pool.
+  3. **No new shapes:** no shards, no splash, nothing liquid on the ground, and nothing in the flame's colours that moves down (falling embers, a lantern that breaks).
+  4. **One engine look under the game's bloom:** the heat at the lantern beside his head, at 64 px from every heading, reads as the lantern, not as something coming off him (section 2's condition). The bloom doesn't turn the orange red or haze it onto the ground.
+  5. Both pictures are logged in `docs/asset-log.md`, and uploaded for the group by the key, together.
+- **Not done:**
+  - Research's verdict, with `ga-fresh-eyes` on the signature.
+  - The uploads: two images, the group's, by the key.
+  - The builder's build and replay.
+  - The two rising flames, called in motion.
+- **Hours:** about 2.5.
 
 ## AR5. The festival kit and the base's machines
 

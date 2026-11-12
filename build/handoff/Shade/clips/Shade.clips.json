@@ -1,0 +1,127 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Idle": {
+      "File": "Shade_Idle.json",
+      "Frames": 181,
+      "Seconds": 3.0,
+      "Loop": true,
+      "Markers": [],
+      "ShownIn": "Brawler"
+    },
+    "Walk": {
+      "File": "Shade_Walk.json",
+      "Frames": 49,
+      "Seconds": 0.8,
+      "Loop": true,
+      "Markers": [
+        [
+          0,
+          "Step"
+        ],
+        [
+          24,
+          "Step"
+        ]
+      ],
+      "ShownIn": "Brawler",
+      "Stride": 3.29,
+      "StudsPerSecond": 4.11
+    },
+    "Attack": {
+      "File": "Shade_Attack.json",
+      "Frames": 67,
+      "Seconds": 1.1,
+      "Loop": false,
+      "Markers": [
+        [
+          30,
+          "Hit"
+        ]
+      ],
+      "ShownIn": "Brawler"
+    },
+    "AttackLeft": {
+      "File": "Shade_AttackLeft.json",
+      "Frames": 67,
+      "Seconds": 1.1,
+      "Loop": false,
+      "Markers": [
+        [
+          30,
+          "Hit"
+        ]
+      ],
+      "ShownIn": "Brawler",
+      "MirrorOf": "Attack"
+    },
+    "Guard": {
+      "File": "Shade_Guard.json",
+      "Frames": 97,
+      "Seconds": 1.6,
+      "Loop": false,
+      "Markers": [
+        [
+          12,
+          "Raise"
+        ],
+        [
+          72,
+          "Drop"
+        ]
+      ],
+      "ShownIn": "Guard"
+    },
+    "Lunge": {
+      "File": "Shade_Lunge.json",
+      "Frames": 97,
+      "Seconds": 1.6,
+      "Loop": false,
+      "Markers": [
+        [
+          14,
+          "Line"
+        ],
+        [
+          40,
+          "Lunge"
+        ],
+        [
+          54,
+          "Land"
+        ]
+      ],
+      "ShownIn": "Dasher"
+    },
+    "Hit": {
+      "File": "Shade_Hit.json",
+      "Frames": 25,
+      "Seconds": 0.4,
+      "Loop": false,
+      "Markers": [],
+      "ShownIn": "Brawler"
+    },
+    "HitLeft": {
+      "File": "Shade_HitLeft.json",
+      "Frames": 25,
+      "Seconds": 0.4,
+      "Loop": false,
+      "Markers": [],
+      "ShownIn": "Brawler",
+      "MirrorOf": "Hit"
+    },
+    "Burst": {
+      "File": "Shade_Burst.json",
+      "Frames": 35,
+      "Seconds": 0.567,
+      "Loop": false,
+      "Markers": [
+        [
+          27,
+          "Burst"
+        ]
+      ],
+      "ShownIn": "Brawler"
+    }
+  }
+}

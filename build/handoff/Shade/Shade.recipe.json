@@ -1,0 +1,208 @@
+{
+ "name": "Shade",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1). The Head carries one mask and nothing else.",
+ "maps": {
+  "Color": "Shade_Color.png",
+  "Roughness": "Shade_Roughness.png",
+  "Emissive": "Shade_Emissive.png"
+ },
+ "texels_per_stud": 69,
+ "emissive": {
+  "strength": 2.0,
+  "tints": {
+   "Strength": "#EA4B4F",
+   "Endurance": "#F4902A",
+   "Agility": "#3F9DF2",
+   "Intelligence": "#A470F2",
+   "Technique": "#42CC7E"
+  },
+  "mask_tint": "#FFE2B8",
+  "note": "One atlas for the five types. The body's five pieces take the type as EmissiveTint. The mask, its own MeshPart, takes mask_tint whatever the type: its paper glows faintly and its cuts are lit in that warm white, so it reads as paper at dusk. The glow mask is 1 on the lit edges and the masks' cuts, up to 0.12 on the cloth and 0.2 on the masks' paper. The tints are the sheet's proposal until AR3's gems fix them, and the mask's is tuned in the engine under the game's lighting."
+ },
+ "pieces": [
+  {
+   "name": "Shade_Torso",
+   "mesh": "Shade_Torso.json",
+   "on": "Torso",
+   "centre": [
+    0.0,
+    3.161,
+    0.0
+   ],
+   "size": [
+    2.36,
+    2.958,
+    1.48
+   ],
+   "tris": 1036
+  },
+  {
+   "name": "Shade_RightArm",
+   "mesh": "Shade_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.7275,
+    2.9275,
+    0.0
+   ],
+   "size": [
+    1.495,
+    2.145,
+    1.35
+   ],
+   "tris": 380
+  },
+  {
+   "name": "Shade_LeftArm",
+   "mesh": "Shade_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.7275,
+    2.9275,
+    0.0
+   ],
+   "size": [
+    1.495,
+    2.145,
+    1.35
+   ],
+   "tris": 380
+  },
+  {
+   "name": "Shade_RightLeg",
+   "mesh": "Shade_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.0,
+    1.03
+   ],
+   "tris": 324
+  },
+  {
+   "name": "Shade_LeftLeg",
+   "mesh": "Shade_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.0,
+    1.03
+   ],
+   "tris": 324
+  }
+ ],
+ "masks": {
+  "Brawler": {
+   "name": "Shade_MaskBrawler",
+   "mesh": "Shade_MaskBrawler.json",
+   "on": "Head",
+   "centre": [
+    4e-05,
+    4.86035,
+    -0.055
+   ],
+   "size": [
+    2.696,
+    2.108,
+    1.75
+   ],
+   "tris": 524,
+   "type": "Strength",
+   "top": 5.91
+  },
+  "Guard": {
+   "name": "Shade_MaskGuard",
+   "mesh": "Shade_MaskGuard.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.863,
+    -0.19
+   ],
+   "size": [
+    2.543,
+    1.908,
+    2.02
+   ],
+   "tris": 196,
+   "type": "Endurance",
+   "top": 5.82
+  },
+  "Dasher": {
+   "name": "Shade_MaskDasher",
+   "mesh": "Shade_MaskDasher.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.8797,
+    -0.09
+   ],
+   "size": [
+    1.37,
+    3.638,
+    1.82
+   ],
+   "tris": 100,
+   "type": "Agility",
+   "top": 6.7
+  },
+  "Support": {
+   "name": "Shade_MaskSupport",
+   "mesh": "Shade_MaskSupport.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.26729,
+    -0.0855
+   ],
+   "size": [
+    2.968,
+    1.935,
+    1.811
+   ],
+   "tris": 308,
+   "type": "Intelligence",
+   "top": 5.23
+  }
+ },
+ "points": [
+  {
+   "name": "Chest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.0,
+    -0.6
+   ],
+   "note": "where a hit lands"
+  },
+  {
+   "name": "Crest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.0,
+    0.62
+   ],
+   "note": "the lit mark on its back"
+  }
+ ],
+ "tris": {
+  "body": 2444,
+  "Brawler": 2968,
+  "Guard": 2640,
+  "Dasher": 2544,
+  "Support": 2752
+ }
+}

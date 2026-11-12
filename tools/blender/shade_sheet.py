@@ -237,6 +237,7 @@ def build(scene, kind, m):
     on("root",
        rs.loft("Coat", [(1.72, 0, 0, 2.3, 1.42), (2.6, 0, 0, 2.12, 1.16), (4.0, 0, 0, 2.06, 1.06)], m["Void"], n=B),
        rs.loft("Hem", [(1.7, 0, 0, 2.36, 1.48), (1.93, 0, 0, 2.3, 1.41)], m["Glow"], n=B),
+       rs.loft("HemHollow", [(1.682, 0, 0, 2.2, 1.32), (1.71, 0, 0, 2.2, 1.32)], m["Ink"], n=B),
        rs.hexa("Seam", [(-0.07, 0.7, 1.86), (0.07, 0.7, 1.86), (0.07, 0.74, 1.86), (-0.07, 0.74, 1.86),
                         (-0.07, 0.575, 2.6), (0.07, 0.575, 2.6), (0.07, 0.615, 2.6), (-0.07, 0.615, 2.6)], m["Glow"]),
        rs.hexa("Seam", [(-0.07, 0.575, 2.6), (0.07, 0.575, 2.6), (0.07, 0.615, 2.6), (-0.07, 0.615, 2.6),
@@ -256,11 +257,13 @@ def build(scene, kind, m):
            rs.loft("Sleeve", [(1.9, e * 1.8, 0, 1.3, 1.3), (3.0, e * 1.5, 0, 1.04, 1.04), (4.0, e * 1.5, 0, 1.0, 1.0)], m["VoidLift"], n=B),
            rs.loft("Cuff", [(1.88, e * 1.8, 0, 1.35, 1.35), (2.12, e * 1.74, 0, 1.28, 1.28)], m["Glow"], n=B),
            rs.loft("Hollow", [(1.855, e * 1.8, 0, 1.12, 1.12), (1.882, e * 1.8, 0, 1.12, 1.12)], m["Ink"], n=B))
-    # the legs: two straight tubes to the floor, their hems lit, no feet
+    # the legs: two straight tubes to the floor, their hems lit, no feet. Under a leg, as under the coat's hem and
+    # in a cuff, there's a dark hollow inside a thin lit rim: never a filled lit face where a foot would be.
     for part, e in (("rh", 1), ("lh", -1)):
         on(part,
-           rs.loft("Leg", [(0.0, e * 0.5, 0, 0.98, 0.98), (2.0, e * 0.5, 0, 0.98, 0.98)], m["VoidLift"], n=B),
-           rs.loft("LegHem", [(0.0, e * 0.5, 0, 1.03, 1.03), (0.21, e * 0.5, 0, 1.03, 1.03)], m["Glow"], n=B))
+           rs.loft("Leg", [(0.02, e * 0.5, 0, 0.98, 0.98), (2.0, e * 0.5, 0, 0.98, 0.98)], m["VoidLift"], n=B),
+           rs.loft("LegHem", [(0.012, e * 0.5, 0, 1.03, 1.03), (0.21, e * 0.5, 0, 1.03, 1.03)], m["Glow"], n=B),
+           rs.loft("LegHollow", [(0.0, e * 0.5, 0, 0.95, 0.95), (0.03, e * 0.5, 0, 0.95, 0.95)], m["Ink"], n=B))
     return joints
 
 

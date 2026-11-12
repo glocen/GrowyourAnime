@@ -155,7 +155,7 @@ def project(obj):
     bpy.ops.object.mode_set(mode="OBJECT")
 
 
-def park_small(mesh):
+def park_small(mesh, lit=LIT):
     """Marks as `unseen` the islands too small to carry shading: they take their surface's swatch. Padded by the
     bake's margin, a small island is a round blob of one colour on the map, which reads as a drop. The lit faces
     stay, since the swatches don't glow. Returns how many faces it parked."""
@@ -165,7 +165,7 @@ def park_small(mesh):
     parked = 0
     for island in mesh_utils.mesh_linked_uv_islands(mesh):
         faces = [f for f in island if not unseen[f]]
-        if not faces or any(mesh.materials[mesh.polygons[f].material_index].name in LIT for f in faces):
+        if not faces or any(mesh.materials[mesh.polygons[f].material_index].name in lit for f in faces):
             continue
         pts = np.array([uv[i].vector[:] for f in faces for i in mesh.polygons[f].loop_indices])
         area = 0.0
@@ -179,7 +179,7 @@ def park_small(mesh):
     return parked
 
 
-def unwrap(obj):
+def unwrap(obj, surfaces=None, lit=LIT):
     """The faces that show, into one atlas above the strip; the rest onto their surface's swatch in it."""
     mesh = obj.data
     if not mesh.uv_layers:
@@ -187,14 +187,14 @@ def unwrap(obj):
     project(obj)
     parked = 0
     for _ in range(6):  # again while it finds some: with faces gone, the next projection cuts its islands anew
-        more = park_small(mesh)
+        more = park_small(mesh, lit)
         if not more:
             break
         parked += more
         project(obj)
     print(f"parked on the swatches: {parked} faces of islands under {SMALL} px")
     unseen = face_values(mesh, "unseen")
-    names = list(SURFACES)
+    names = list(surfaces or SURFACES)
     uv = mesh.uv_layers.active.uv
     area3, area2 = 0.0, 0.0
     for poly in mesh.polygons:
@@ -215,12 +215,12 @@ def unwrap(obj):
 
 # --- the bake -------------------------------------------------------------------------------------------------
 
-def lock():
+def lock(who="rook_model.py"):
     path = Path(__file__).resolve().parents[2] / "build" / "locks" / "blender.lock"
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists() and time.time() - path.stat().st_mtime < 1800:
         raise SystemExit(f"The GPU is held: {path.read_text().strip()}")
-    path.write_text(f"Modulo, rook_model.py, {time.strftime('%Y-%m-%d %H:%M')}\n")
+    path.write_text(f"Modulo, {who}, {time.strftime('%Y-%m-%d %H:%M')}\n")
     return path
 
 

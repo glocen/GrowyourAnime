@@ -206,7 +206,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, is next, carrying research's two fixes.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. Open: the burst's light and paper, an effect built with the builder; the elite's second mask.
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -243,6 +243,154 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
   - **Accepted:** lit edges in place of a line round the figure; the mask on the neck's joint; the Dasher's spike; one direction, not three, since the roster's words set it.
   - **For AR3, which fixes the type colours:** Lantern Row is lit cyan and warm white (docs/roster.md, the grounds). Agility's #3F9DF2 sits close to that cyan, so check an Agility Shade on the dusk street before AR3 closes the colours.
 - **Hours:** the sheet, 0.3.
+
+### 2. The model on R6 (Modulo, 2026-11-12)
+
+- **Where:** `build/scratch/modulo/shade/model/` until the checks pass, then `build/handoff/Shade/`: `Shade_<Piece>.json` (nine pieces), `Shade_Color.png`, `Shade_Roughness.png`, `Shade_Emissive.png`, `Shade.recipe.json`, `shade_model_sheet.png`. Made by `tools/blender/shade_model.py` (about 4 minutes, a Cycles bake under the lock): `blender -b --factory-startup --python tools/blender/shade_model.py -- <out dir>`.
+- **How it sits on R6:** a rigid mesh for each of the five body parts, carrying the body's own surface, so the rig's blocks are hidden. Four masks, each one piece on the Head, of which a Shade wears one. No extra joints.
+- **The numbers:** the body is 2,444 triangles. With its mask: Brawler 2,968, Guard 2,640, Dasher 2,544, Support 2,752. It stands 4.95 studs wide and 4.64 to the collar's rim; to the mask's top, 5.2 (Support) to 6.7 (Dasher). One 1024 px atlas for the body and all four masks, 69 px per stud. Maps: colour, roughness, and a glow mask. No normal map (the low mesh is the form) and no metalness (nothing is metal).
+- **The hollows:** every opening is a dark hollow inside a thin lit rim: the collar, the cuffs, and now the coat's hem from below and the end of each leg. There's no foot, and no lit face where one would be.
+- **One atlas for the five types.** The colour map holds no type colour: a lit edge is a dark violet in it (`#2A2440`), and the type is the glow's tint (`EmissiveTint`), on the body and on its mask. The recipe lists the five tints and a strength of 2.
+- **Research's fix 1, the light from inside:** the glow mask is 1 on the lit edges and the masks' cuts. On the coat, the sleeves and the legs it rises toward their lit edge, up to 0.12 (0.07 on the legs, which stand under the coat), and is gone by the chest. A lantern's hoops show in it as thin darker lines every 0.42 studs, and the paper's grain runs down it. The collar and the hollows stay dark.
+- **Research's fix 2, the Brawler's mask,** and the other three with it: all four are pressed or folded paper now, not flat discs. The Brawler is cut by hand, not quite round, with a tab each side for the strings, a lopsided grin behind four teeth no two alike, one eye laughing wider than the other, and two brows and a nose in ink. The Guard is a pressed square under its two brows, with an ink bar under each eye. The Dasher is a kite folded once down its middle. The Support's slips hang clear of the collar.
+- **My calls (tier 1):** the legs glow too, less, so the whole figure is one lantern. The mask's paper takes no glow: with one tint for the whole atlas, a glow on the paper would colour the mask by its type and flatten its cuts.
+- **What I see wrong:**
+  - At dusk the mask is slate grey, not paper. It's lit by the scene only, and its cuts are the brightest thing on it. It still reads first, as the lightest shape over the darkest. The builder's lighting decides how much paper it keeps.
+  - The hoops and the grain are drawn by a rule. Close up the grain reads as ribbed cloth as much as paper.
+  - The atlas is loosely packed: many small islands, about a third of it empty.
+  - The preview has no bloom, so the lit edges are flat bands of colour.
+  - By day the lit edges wash toward pink and the cloth's glow nearly goes. The mask carries the read there, as the sheet said.
+- **Content check, 2026-11-12:** BLOCK, then PASS after one fix.
+  - The end of each leg and the hem's underside were filled lit faces: in the Strength red, from below or with a leg lifted, a red disc where a foot would be, a cut limb's end at a glance (rule 4, no severed parts). They're dark hollows inside a thin lit rim now. The sheet gained the view from below and the stride with a leg lifted, at full size and at 64 px on dark and on bright.
+  - Passed as they were: the look and the names (rule 3), the sources (rule 2), the four masks, the glow.
+  - **Its conditions on the model:** the colour map stays free of any type colour. The cloth stays matte (0.9) and its glow at or under 0.12. The grain isn't raised or drawn out into vertical streaks, and the rise's upper edge stays smooth and level. The teeth stay paper-coloured, with no red on or under them, and nothing red below the mouth or the eyes, ever, in any clip or effect. No added speckle, splash or smear on the paper. The ties stay behind the mask, never round the collar, with nothing above it holding it up. If the builder turns bloom on, a Strength Brawler is looked at in the engine at 64 px before it ships, and the lifted leg with it: bloom can fill a 0.95 stud hollow back into a red disc. The maps and meshes are logged in `docs/asset-log.md` at upload.
+  - **Its conditions on the clips,** checked on their sheets before any upload: each clip's sheet shows its widest leg lift, and the burst's last frame, from low behind and low in front, at 64 px on dark and on bright, in the Strength red. No frame shows a leg or a sleeve apart from the coat. The burst ends as an emptied coat that goes at once, with nothing red left on the ground and no trail, drip or streak from a leg, a cuff or the hem. The bare rig is checked from the side and the three-quarter.
+- **Research's read** (Quaestor, 2026-11-12, on shade_model_sheet, stills only; the clips judge it in motion): yes, on to the clips and handoff, carrying fix 1, which is checked in the engine.
+  - **Felt:** the coat is a lantern now. The light rises from the hem through the hoops, and the Brawler's mask looks cut by hand. At dusk, though, the masks read as slate, and slate is stone, not paper.
+  - **Tier:** competent.
+  - **The one bold thing:** the Brawler's lopsided grin behind four teeth, no two alike. The first Shade a player meets has a face someone made.
+  - **Fixes:**
+    1. At dusk the mask must read as paper, not slate (serves: "readable at a glance by its mask", and the festival). This revisits your call that the paper takes no glow. Its reason, one tint for the atlas, holds per part only: the mask is its own MeshPart with its own SurfaceAppearance, so it can take its own faint warm-white tint on the paper alone. Try that first, on the dusk preview at 64 px. If the cuts lose their type colour that way, the body's edges carry the type, as they already do. Check it in the engine at the Shade's first placement under the builder's lighting, not with a new bake.
+  - **Accepted:** the legs glowing less, so the figure is one lantern; no normal map; the loose atlas (room for the elite's mask); the grain that reads as cloth up close, since the player's camera never gets that close. Bloom and daylight are the builder's lighting to check, under the content check's conditions.
+- **Fix 1, made (Modulo, 2026-11-12):** the mask's paper glows faintly, and the mask takes its own warm-white tint.
+  - The trial, `shade_mask_paper.png` beside the model sheet: the four masks at dusk from the player's camera, at 300 px and at 64 px, four ways. As baked, slate. Paper at 0.16 under a warm white: paper, at both sizes. Paper at 0.16 under the type's tint: the mask turns pink, tan, blue or violet, and the paper is lost. Paper at 0.30: cream, but the cuts wash out at 64 px.
+  - Built in: the glow mask is 0.2 on the masks' paper, and the recipe carries `mask_tint` (`#FFE2B8`) for the mask's own SurfaceAppearance, whatever the type. The bake was run again for it. The model sheet and the atlas check show it.
+  - What it costs, as research foresaw: the cuts are lit warm white now, not in the type's colour. The body's edges alone carry the type. That also keeps every red off the masks.
+  - Still to check in the engine, at the Shade's first placement under the builder's lighting: the paper's level and the tint, tuned live.
+- **Research's read on fix 1** (Quaestor, 2026-11-12, on shade_mask_paper and the new bake): closed. The masks are paper at dusk now: warm against a cold coat, and at 64 px the brightest thing on the figure, so the read goes mask first, as the sheet promised. 0.2 sits right between slate and the washed-out cuts. Losing the type colour from the cuts is accepted, since the body's edges carry the type. The level and the tint are tuned live at the first placement.
+- **Content check on the mask's light, 2026-11-12: PASS,** with these conditions, which replace the earlier line on the teeth:
+  - No type colour on a mask, ever. Each mask's SurfaceAppearance takes `mask_tint`, never the type's tint, in any clip, effect or state (a hit flash, an elite). The trial's row C is what the type's tint gives on a Strength Brawler.
+  - The mask's tint stays between warm white and neutral white. If its level leaves about 0.16 to 0.3 times strength 2, or bloom is on, it's looked at again at 64 px.
+  - All paper stays on the mask's piece, the ties, the knot and the tails included.
+  - With bloom on, the Strength Brawler is looked at in the engine at 64 px, the lifted leg as before, and the collar rim's red must not spill onto the mask's chin or teeth.
+  - Unchanged: no type colour in the colour map; the cloth matte, its glow at or under 0.12; no speckle, splash or smear on the paper; the ties behind the mask.
+  - The three maps and the nine meshes are logged at upload. The design sheet stays internal, and its type-coloured cuts aren't the build target: the recipe and the model sheet are.
+- **Delivered, 2026-11-12:** `build/handoff/Shade/`: nine meshes (`Shade_Torso`, the two arms, the two legs, the four masks), `Shade_Color.png`, `Shade_Roughness.png`, `Shade_Emissive.png`, `Shade.recipe.json`, `shade_model_sheet.png`, `shade_mask_paper.png`, and the design sheet drawn again with the hollows. Not uploaded, not in the engine.
+- **Not done:** the burst into light and paper (an effect, with the builder); the elite's second mask. The design sheet is rendered again with the pressed masks and the hollows; its masks still show their cuts in the type's colour, as the direction was judged, and the model sheet is the one that shows the mask's light as built.
+- **Hours:** the model, 0.7, the content check's fix and research's included.
+
+### 3. The clips: the poses (Modulo, 2026-11-12)
+
+- **Where:** `build/scratch/modulo/shade/clips/poses_<Clip>.png`, seven sheets: each named pose from the player's camera above, and from the side below. Made by `tools/blender/shade_clips.py` on the kit Rook's clips use: `blender -b --factory-startup --python tools/blender/shade_clips.py -- <out dir> [poses|export|audit] [clip ...]`. These are the key poses for research's read. The exports, the arcs and the review packs come after it.
+- **How it moves, in one line:** nothing inside it pushes. The mask leads, the coat is drawn after it, and the sleeves arrive last. The mask never stops watching the fighter.
+- **The seven,** at 60 frames a second, each with its markers:
+  - **Idle** (a loop of 180): hung, tipped forward, turned a little, sleeves plumb. It sways as a coat on a hook does, and at 120 the mask tips to its other side.
+  - **Walk** (a loop of 48, `Step` at 0 and 24): the mask travels level and the coat swings under it. The legs are loose and late: they follow the coat, they don't carry it.
+  - **Attack** (66; `Hit` at 30): the whole coat turns away (16), and the sleeve is flung round after the turn, the cuff landing flat (30). It hangs spent (44), then gathers. The mask stays on the fighter throughout.
+  - **Guard** (96; `Raise` at 12, `Drop` at 72): both sleeves come up and bar the chest, one over the other, under the mask. It holds for a second, hardly breathing, and lets them fall as if they weighed nothing (82).
+  - **Lunge** (96; `Line` at 14, `Lunge` at 40, `Land` at 54): it folds down behind the mask until the kite's point is a dart aimed at the fighter, and holds dead still for 26 frames. Then the mask goes, and the coat is pulled out flat behind it (44). It lands (60), and the sleeves arrive seven frames later (67).
+  - **Hit** (22): struck at the chest (3); the mask is left behind and follows (8).
+  - **Burst** (34; `Burst` at 27): struck (4), it lets go: the sleeves lift and open and the mask tips up (20 to 27). The game hides the body at `Burst` and the effect takes over. Nothing lies on the floor.
+- **My calls (tier 1):**
+  - The Guard bars its chest, not its mask. A first pass crossed the sleeves before the mask, and the slotted square a player knows it by was gone for the whole hold.
+  - The Dasher's tell is the body, not only the builder's line on the floor: the fold and the stillness say "next, along here" from any side.
+  - One reaction set for the four masks: the reactions are a rig's shared set (`docs/design.md`, "States in a fight").
+- **What I see wrong:**
+  - The Guard's bar reads a little as folded arms, as a figure waiting, more than as a brace. The crouch and the lean carry it. The shield's own look will decide whether the pose needs more.
+  - The Lunge's flight (44) lies nearly flat on the floor. From the player's camera it's a dark streak with a spike on its front, which is the read, but the legs trail straight and stiff.
+  - The Attack swings one sleeve, always the right. Every Brawler will swing the same way.
+  - The Walk's legs are keyed by angle, not planted: over a long walk the feet will slide a little under the coat. The coat's hem hides most of it.
+  - In the Burst's last pose, the lifted sleeves show their dark hollows to the camera: good for the idea, but the effect has to start on that frame or it reads as a shrug.
+- **Research's read** (Quaestor, 2026-11-12, on the seven pose sheets; stills only, so motion is judged on the review packs): yes, on to the exports. Fixes 1 and 2 come before them, fixes 3 to 6 with them.
+  - **Felt:** where the Shade folds behind its mask, it's a coat with nobody in it. The Lunge's line shows the player an empty collar ringed in light, held dead still. The Guard and the Walk are still a person's folded arms and a person's walk.
+  - **Tier:** competent at the poses. The Hit is under the line, and it's the clip players see most.
+  - **The one bold thing:** Lunge 14 to 40. It folds down behind the kite and turns the lit rim of an empty collar to the player, perfectly still. It's the feel line in one frame, and a tell nobody misreads.
+  - **Fixes:**
+    1. **Hit:** the struck pose (3) moves one sleeve and the coat hardly at all. Knock the coat itself: the chest caves away from the fighter and the hem swings after it, enough to read from behind the fighter at 64 px, then the mask catches up (serves: impact on every hit the player lands, and the Burst, which starts from the same pose).
+    2. **Guard:** I don't think the shield should decide this. Folded arms read as waiting, and the tell has to read before any effect does. Make it a brace: sink into the coat, lean toward the fighter, and stand the sleeves upright side by side under the mask, cuffs toward the fighter, like a shutter pulled shut rather than arms crossed (serves: the Guard read at a glance; the slotted square stays visible).
+    3. **Walk:** the sleeves swing against the legs like arms, and that's what makes it a person. Let them hang and be dragged late by the coat, out of step with the legs (serves: "nobody inside it").
+    4. **Lunge 44:** the legs trail loose and bent like empty trouser legs, landing last with the sleeves (serves: the same idea; the streak keeps its spike).
+    5. **Burst:** arms out to the sides read as a shrug. Send the sleeves back behind the shoulders instead, the chest arched open toward the fighter, the mask tipped back. Light bursts out of the front and the effect starts on that frame. The feet stay planted, and it never rises off the floor, because the content check's "nothing above it" holds (serves: the release, and the handover to the effect).
+    6. **Attack:** export a mirrored copy so the builder can alternate or pick at random, and a pack doesn't swing in step (serves: a pack of Brawlers reading as many).
+  - **Accepted:** the mask leads and the sleeves arrive last; the Guard bars the chest, not the mask; the Dasher's fold as its own tell; one reaction set. The Walk's foot slide is accepted if the builder sets walk speed from the stride, so put the stride length in the recipe. The Lunge's 26-frame hold is accepted if Combat's tell time is read from the markers rather than typed twice.
+- **Round 1, the six fixes made (Modulo, 2026-11-12).** Where: `build/scratch/modulo/shade/clips/`, for each of the eight clips `Shade_<Clip>.json`, `pack_<Clip>.png` (the poses, the bare rig, a strip of twelve), `poses_<Clip>.png` (with the side), `arcs_<Clip>.png`, `low_<Clip>.png` (the content check's views), and `Shade.clips.json` (frames, markers, the walk's stride).
+  1. **Hit** (24 frames now): the chest is knocked back 27 degrees and 0.6 studs, the sleeves and the mask left where they were (3). The hem swings through after it, the mask snapping back late (9). The Burst starts from the same pose.
+  2. **Guard:** a brace. The coat sinks 0.4 and leans 22 degrees at the fighter, and both sleeves come up level, side by side under the mask, their open cuffs square at the fighter. An R6 sleeve has no elbow, so it can't stand upright before the chest: the shutter is the two cuffs' frames, closed together.
+  3. **Walk:** the sleeves hang and are dragged behind the coat, always behind their shoulders. Each step's jolt lets both forward together, five and eight frames late. They no longer swing against the legs.
+  4. **Lunge:** in the flight the legs trail apart and flap, one low, one high (44 to 54). The mask arrives upright at 60 with the coat still dragging on the floor behind it, and the legs and the sleeves come in at 67.
+  5. **Burst:** the chest arches forward, the sleeves are drawn back and low behind the shoulders, the mask tips back (20 to 27). The feet stay planted and nothing rises.
+  6. **Attack:** `AttackLeft` is its mirror, the left sleeve flung. Both start and end on the same hub pose.
+  - **Also changed, from the kit's audit:** the hung sleeves now hang truly plumb. They had leaned in 15 degrees, through the coat's block (the solver aimed the shoulder's corner at the cuff, not the sleeve's own line). In the Attack the legs swivel with the coat as it turns, where they had crossed through each other.
+  - **The audit:** seven clips pass. The Guard doesn't: each sleeve's block sits 0.36 studs inside the torso's at the shoulder for the whole hold (limit 0.05). A level arm turned inward always does on R6. On the model it's the sleeve's root folded into the coat's chest, dark cloth in dark cloth, and I don't see it from the player's camera. Opening the cuffs apart to pass it would lose the shutter.
+  - **The walk's stride:** 3.29 studs a loop, 4.11 studs a second, in `Shade.clips.json`, not in the clip's own file: the importer refuses fields it doesn't know. The Lunge's tell is the time between its `Line` and `Lunge` markers (26 frames), there to be read, not typed again.
+  - **What I see wrong now:**
+    - The Guard's far cuff shows the player a dark square with almost no lit rim, so the shutter is one frame and a half.
+    - The Burst's open pose is quiet from the front: the near sleeve shows swept back, the far one hides behind the coat. It leans on the effect.
+    - The Hit's sleeves, left forward for three frames, are the widest the Shade ever gets (about 6 studs across).
+    - The Lunge at 60 sits very low, the coat on the floor behind an upright mask. It may read as kneeling for those seven frames.
+- **Content check on round 1's eight clips, 2026-11-12: PASS,** on sampled frames, one mask a clip. Its conditions for the upload:
+  - The export's audit lines are read for every clip, and a "Salute held" over 0.1 s goes back to the check. Done: 0.000 s in all nine, and each `pack_<Clip>.txt` now holds its audit.
+  - The Guard's sleeves stay at or under about 10 degrees up, the reach no higher than 3.3. A retune that raises them, or stands the body more upright, is checked again.
+  - Exactly these exports are uploaded. A clip keyed again gets its sheets checked again.
+  - In the engine, before a public build: Hit and Burst from behind in each of the four masks (the ties never into or round the collar); a Strength Dasher's Lunge hold at 64 px with bloom on (the collar stays a dark hollow).
+  - The body is hidden at the `Burst` marker, and the burst's light and paper get their own content check.
+  - The animations are logged in `docs/asset-log.md` at upload. The model's conditions stand.
+- **Research's read, round 1** (Quaestor, 2026-11-12, on the eight packs, the side views and the 64 px strips):
+  - **Felt:** the Walk and the Guard are fixed. The sleeves dragging behind take the person out of the walk, and the Guard is a brace now, two cuffs thrust at the fighter. The Hit and the Burst still happen along the line toward the player's camera, so from there they're small.
+  - **Tier:** competent. Hit and Burst sit at the line, not above it.
+  - **The one bold thing:** still Lunge 14 to 40. Its landing now adds a second beat: the mask arrives upright first, with the coat dragged in behind it.
+  - **Fixes, round 2 on these two ideas:**
+    1. **Hit:** a 27-degree knock straight back is on the axis the player's camera sees least. Add a turn: the coat twists 20 to 25 degrees as it's knocked, and the mask snaps up a little before it follows, so the hit changes the outline seen from the front. Export the mirror too, as with the Attack (serves: every hit the player lands. The builder's hitstop and knockback carry the rest).
+    2. **Burst:** the mask is the lever. In every other clip it never stops watching the fighter. Here it does: it tips back until its face is to the sky, edge-on to the player at 27, so the face leaves first and the light comes out where it was. Feet planted, nothing rises (serves: the release read from the front, and the one moment the mask lets go).
+  - **Accepted:**
+    - the Guard's audit overlap (0.36 studs, the sleeve root dark in the dark chest; R6 has no elbow), named as the one exception and looked at again from the player's camera in the engine;
+    - the far cuff's dim rim;
+    - the Hit's 6-stud sleeves for three frames, a flare that belongs to the hit;
+    - the Lunge at 60, a landing crouch for 0.12 s, not a kneel;
+    - the stride in Shade.clips.json;
+    - the tell read from the markers.
+- **Round 2, Hit and Burst (Modulo, 2026-11-12).** The same folder, with `collar_<Clip>_front|side|behind.png` for the three: close on the mask and the collar, a row a mask.
+  1. **Hit** (24 frames): the coat twists 23 degrees as it's knocked, the struck shoulder going back. That side's sleeve is left where it was and the other trails. The mask snaps up 17 degrees at 3 and nods down after the coat at 9. The shove back is 0.5 studs, from 0.62, and the roll smaller, to keep the legs in the hip.
+  2. **HitLeft:** the other shoulder. It twists 17 degrees, not 23: the coat hangs 10 degrees turned, so the mirror ends 27 degrees off the feet, and more than that crosses the legs past the audit's limit.
+  3. **Burst** (34; `Burst` at 27): it starts on the same struck pose. Then the mask leads: 44 degrees back against the coat at 20, its face to the sky and its edge to the player at 27, while the coat arches and the sleeves are drawn back after it. Feet planted, nothing rises.
+  - **My call (tier 1):** the mask is carried up to 0.14 studs off the neck as it tips (the audit allows 0.15). Turned on the neck alone, the collar's red rim came through the paper beside the grin at 20 to 24.
+  - **The audit:** the three pass. Of the nine, the Guard is the one over, as accepted.
+  - **What I see wrong:** in HitLeft 3 a leg slides 0.81 studs up into the hip under the hem (the kit warns past 0.6). In Burst 27 the tips of the Brawler's tie tails sit 0.1 studs in the coat's back; the knot lies on the back, and the ties run outside the collar. Both sleeves are wide for three frames in the Hits.
+- **Research's read, round 2** (Quaestor, 2026-11-12, on pack_Hit, pack_HitLeft and pack_Burst, the side views and the 64 px strips): yes, to handoff.
+  - **Felt:** a hit now changes the Shade's outline from the player's camera. A shoulder goes back, a sleeve is left behind, the mask jerks up. And when it falls, its face goes first, so for one frame there's a coat with an empty collar and a mask lying flat to the sky.
+  - **Tier:** competent for the set. The Burst's last frame reaches past it; it's judged again with its light and paper, in the game.
+  - **The one bold thing:** Burst 27. The one time the mask stops watching the fighter, and the moment the player knows it's over before the effect starts.
+  - **Accepted:**
+    - HitLeft's smaller twist (17 degrees), for the legs' sake; its outline changes more from the front anyway;
+    - its leg 0.81 studs into the hip, under the hem and out of the player's view;
+    - the Brawler's tie tips 0.1 studs into the back at 27, the frame the body is hidden;
+    - the mask carried 0.14 off the neck as it tips, your call, and the right one, since it keeps the collar's red off the paper;
+    - the flare of both sleeves for three frames.
+  - **For the builder:** Hit and HitLeft alternate or are picked at random, as the Attacks are. The Burst's effect starts on the `Burst` marker, from the collar, where the face was.
+- **Content check on round 2's three clips, 2026-11-12: PASS.** It saw the packs, the low sheets and the collar sheets; the pose sheets it saw were older than the exports, and they were rendered again after it (Burst 20 shows no red on the paper). Its conditions, with round 1's:
+  - The ties: none crosses the collar's opening or lies across its front, none runs upward, and the knot and tails stay out of the hollow. Measured after the check at the struck frames (Hit 3, HitLeft 3, Burst 4), in the four masks: nothing in the hollow; in HitLeft 3 a tie comes within 0.08 studs of the collar's back corner.
+  - The hide at `Burst` (frame 27) takes the mask and the ties in the same frame as the body. The frames after it are a safety net, never a shown state: a fade, or a hide later than 27, goes back to the check.
+  - Nothing red on the paper or the ground, and no trail, drip or streak from a leg, a cuff or the hem in the burst's effect. Bloom on a Strength Brawler is checked in the engine at 64 px.
+- **Delivered, 2026-11-12:** `build/handoff/Shade/clips/`: `Shade_<Clip>.json` and `poses_<Clip>.png` for the nine (Idle, Walk, Attack, AttackLeft, Guard, Lunge, Hit, HitLeft, Burst), and `Shade.clips.json`. Not uploaded, not in the engine.
+- **For the builder:**
+  - The masks take `mask_tint` from `Shade.recipe.json`, the body's five pieces the type's tint.
+  - Walk speed comes from the stride in `Shade.clips.json` (3.29 studs a loop, 4.11 studs a second).
+  - The Lunge's tell is the time between its `Line` and `Lunge` markers.
+  - Attack and AttackLeft alternate or are picked at random; so do Hit and HitLeft.
+  - The body is hidden at the `Burst` marker, where the effect starts, from the collar.
+  - The engine checks are the content check's, above and in section 2.
+- **Not done:** the burst's light and paper (an effect, with the builder, with its own content check); the elite's second mask. Nothing is uploaded or seen in the engine.
+- **Hours:** the clips, 1.2, the two rounds and the checks' fixes included.
 
 ## AR3. The UI kit
 

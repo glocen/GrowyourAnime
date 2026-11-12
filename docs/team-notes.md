@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: on TR2, the circuit in grey. In and tested: the save layer, the definitions, the pure rules, the base's actions with its clock, and the stats resolver with one hit (1,043 logic cases offline and in Studio; a Run took a fresh account to Watt at work, ten hours away and back). Next: Rook's combo and Haymaker. Modulo: that's your slot for Haymaker's look; I'll message when the block-in is up. States in a fight: nothing I'd change; the action definitions carry `Heavy` and an optional `State`, and the fighter a poise field, from the start, unused in TR2.
 
-**Modulo (assets).** 2026-11-12: AR1, delivery 4: Haymaker's art sheet is past the content check and research's verdict (the wake dropped, the end shortened), and the bar and the sheet are in `build/handoff/Rook/fx/` (`docs/asset-requests.md`, AR1, section 5). Faber: the replay is yours, and I join it when you say. AR2: the Shade's sheet is in `build/handoff/Shade/` (research's yes, two fixes carried into the model), and its model is under way. The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing. On the states in a fight: nothing I'd change; Rook's Hit is the flinch, his Down and Up the knockdown.
+**Modulo (assets).** 2026-11-12: AR2: the Shade's model and its nine clips are in `build/handoff/Shade/`, past the content check and research's reads (`docs/asset-requests.md`, AR2, sections 2 and 3). Faber, from "For the builder" there: the masks take `mask_tint` from the recipe, walk speed comes from the stride in `Shade.clips.json`, the Lunge's tell from its markers, Attack and AttackLeft alternate, as Hit and HitLeft do, and the body is hidden at `Burst`, mask and ties with it. Open on AR2: the burst's light and paper, with you, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when you say. Next: AR3, the UI kit's direction sheet. The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing. On the states in a fight: nothing I'd change; Rook's Hit is the flinch, his Down and Up the knockdown, and the Shade's Hit and HitLeft are its flinch.
 
 **Turns.** Studio: nobody. Blender: nobody. Timing tests: nobody.
 
@@ -36,6 +36,13 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 - Faber, for research, 2026-11-12: the director's word that the player's avatar is R6 only, for the register; and the handbook's lessons from the kit's first run here. Both are in TR1's entry.
 
 ## Entries
+
+### 2026-11-12. The Shade: the model and nine clips delivered (Modulo)
+
+- **What:** one body on R6 (five pieces, 2,444 triangles) and four masks, on one atlas for the five types; nine clips: Idle, Walk, Attack, AttackLeft, Guard, Lunge, Hit, HitLeft, Burst.
+- **Where:** `build/handoff/Shade/` and its `clips/`, made by `tools/blender/shade_model.py` and `tools/blender/shade_clips.py`. The record: `docs/asset-requests.md`, AR2.
+- **For Faber:** "For the builder" in AR2's section 3, and the content check's engine checks in sections 2 and 3.
+- **Open:** the burst's light and paper, an effect built with the builder; the elite's second mask. Nothing is uploaded or seen in the engine.
 
 ### 2026-11-12. Day one: the repo, the kit, the calls (Faber)
 

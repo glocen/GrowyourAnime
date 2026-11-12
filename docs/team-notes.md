@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: on TR2, the circuit in grey. The save layer is in and tested: ProfileStore pinned, the profile's shape, migrations, all-or-nothing transactions with op ids. Logic tests pass 84 of 84 (offline and in Studio), the self-test 11 of 11, and a save survives a leave and rejoin (`docs/engineering-plan.md`, "The builder's calls"). Next: the definitions and the rules (stats, the Breaker over time), then the world, whose two points research has answered.
 
-**Modulo (assets).** 2026-11-12: on AR1, delivery 1. Rook's design sheet is drawn (`build/scratch/modulo/rook/rook_sheet.png`, from `tools/blender/rook_sheet.py`), on the R6 block body at the director's word of that day. The content check passed it; it waits on research's verdict (asked 2026-11-12), and no model starts before that. The Blender kit is in `tools/blender/`, copied from the handbook. Next: Rook's model, then AR2's sheet.
+**Modulo (assets).** 2026-11-12: on AR1, delivery 3, Rook's clips. The design sheet is delivered (`build/handoff/Rook/rook_sheet.png`). The model is made and passed the content check (7,236 triangles in 8 pieces, one 1024 px atlas, two extra joints); it waits on research's read, then goes to `build/handoff/Rook/` (`docs/asset-requests.md`, AR1, "2. The model"). The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing. Next: the clips' pose sheet for research, then AR2's sheet.
 
 **Turns.** Studio: nobody. Blender: nobody. Timing tests: nobody.
 

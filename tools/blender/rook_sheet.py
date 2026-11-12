@@ -6,8 +6,8 @@ blender.exe -b --factory-startup --python tools/blender/rook_sheet.py -- <out_di
     the design sheet of one variant (the chosen one by default); `small` also writes a half-size copy to iterate on
 
 Workbench only, so no GPU lock. Studs, X right, Y forward, Z up, the character faces +Y. Every piece hangs from one
-of R6's six parts at the engine's own pivots (r6rig.py), so a pose here is one the rig can hold. The shapes are a
-blockout: the model (delivery 2) is built again, to the sheet."""
+of R6's six parts at the engine's own pivots (r6rig.py), so a pose here is one the rig can hold. The shapes are the
+model's own low mesh: rook_model.py (delivery 2) takes build() from here, finishes the pieces and bakes them."""
 import math
 import sys
 from pathlib import Path
@@ -64,9 +64,10 @@ def rgb(code):
     return tuple(int(code[i:i + 2], 16) / 255 for i in (1, 3, 5))
 
 
-def materials():
+def materials(hot=False):
+    """One material per palette colour, and Glow: the knuckles and the piston's rod, steel until the ram is hot."""
     made = {}
-    for name, code in PALETTE.items():
+    for name, code in {**PALETTE, "Glow": PALETTE["Ember" if hot else "Steel"]}.items():
         m = bpy.data.materials.new(name)
         m.diffuse_color = srgb(code)
         m.roughness = 1.0
@@ -132,11 +133,12 @@ def gauntlet(p):
     return 1.55 * g, 1.4 * g, zb, zb + 0.8 * g, zb + 0.8 * g + 0.4, 3.3
 
 
-def build(scene, variant, hot=False):
+def build(scene, variant, hot=False, model=False):
     """Rook, standing square. Returns the joints: empties at R6's pivots, with every piece parented to its part.
-    `hot` lights the knuckles: the gauntlet as it is through Haymaker's wind-up."""
+    `hot` lights the knuckles and draws the piston out: the gauntlet as it is through Haymaker's wind-up. `model`
+    builds the piston's rod at its full length, sunk in its case, for the piece that slides (rook_model.py)."""
     p = dict(BASE, **VARIANTS[variant])
-    m = materials()
+    m = materials(hot)
     joints = {}
     for name, at in PIVOTS.items():
         j = bpy.data.objects.new(name, None)
@@ -159,6 +161,7 @@ def build(scene, variant, hot=False):
     hem = 2.98
     on("root",
        loft("Waist", [(2.0, 0, 0, 2.02, 1.02), (2.22, 0, 0, 2.02, 1.02)], m["Ink"], n=B),
+       slab("Buckle", (0, 0.52, 2.11), (0.36, 0.07, 0.2), m["Steel"]),
        loft("Wrap", [(2.2, 0, 0, 2.0, 1.0), (3.02, 0, 0, 2.0, 1.0)], m["Bone"], n=B),
        *[loft("WrapTurn", [(z, 0, 0, 2.02, 1.02), (z + 0.035, 0, 0, 2.02, 1.02)], m["BoneShade"], n=B) for z in (2.4, 2.6, 2.8)],
        loft("Jacket", [(hem, 0, 0, 2.1, 1.1), (3.2, 0, 0, 2.06, 1.07), (4.0, 0, 0, 2.06, 1.07)], m["Oxblood"], n=B),
@@ -201,23 +204,30 @@ def build(scene, variant, hot=False):
     def gr(z, k, y=0.06):  # a gauntlet ring, k of the fist's width
         return (z, gx, y, wf * k, df * k)
 
-    glow = m["Ember" if hot else "Steel"]
+    glow = m["Glow"]
+    zs = zb + 0.64 * (zf - zb)  # the seam round the fist, where its two plates meet
     on("rs",
        loft("Sleeve", [(3.0, 1.5, 0, 1.05, 1.05), (4.02, 1.5, 0, 1.05, 1.05)], m["Oxblood"], n=B),
-       loft("Fist", [gr(zb, 0.9), gr(zb + 0.12, 1.0), gr(zf - 0.12, 1.0), gr(zf, 0.9)], m["IronDeep"], n=n_fist),
+       loft("Fist", [gr(zb, 0.9), gr(zb + 0.12, 1.0), gr(zs - 0.035, 1.0), gr(zs - 0.03, 0.95), gr(zs + 0.03, 0.95),
+                     gr(zs + 0.035, 1.0), gr(zf - 0.12, 1.0), gr(zf, 0.9)], m["Iron"], n=n_fist),
        loft("Heat", [gr(zf - 0.02, 0.72), gr(zf + 0.14, 0.68)], m["Ember"], n=n_fist),
        loft("Forearm", [gr(zf + 0.12, 0.6), gr(zw + 0.12, 0.6), gr(zw + 0.14, 0.76), gr(zc, 0.76), gr(zc + 0.02, 0.86), gr(zc + 0.18, 0.86),
                         gr(zc + 0.2, 0.6)],
-            m["Iron"], n=5),
+            m["IronDeep"], n=5),
        loft("Strap", [gr(zw - 0.1, 0.63), gr(zw + 0.1, 0.63)], m["Bone"], n=5))
     if p["fist"] == "ram":
         on("rs", *[slab("Knuckle", (gx + k * wf * 0.34, 0.06, zb - 0.09), (wf * 0.24, df * 0.84, 0.26), glow) for k in (-1, 0, 1)])
     else:
         on("rs", loft("Band", [gr(zb + 0.2, 1.04), gr(zb + 0.36, 1.04)], glow, n=n_fist))
+    for along, across in ((0, 1), (1, 0)):  # two bolts on the fist's outer face, two on its front
+        for k in (-1, 1):
+            at = (gx + wf * (0.5 * across + 0.26 * k * along), 0.06 + df * (0.5 * along + 0.26 * k * across), zb + 0.3 * (zf - zb))
+            on("rs", bl.place(bl.cylinder("Bolt", 0.085 * g, 0.09, 10, m["Steel"]), location=at, rotation=(90 * along, 90 * across, 0)))
     px, py, drawn = gx + wf * 0.12, 0.06 - df * 0.4, 0.75 if hot else 0.1
+    rod = 0.85 if model else drawn + 0.1
     on("rs",
-       bl.place(bl.cylinder("PistonCase", 0.21 * g, zc - zw + 0.25, 14, m["IronDeep"]), location=(px, py, (zc + zw) / 2 + 0.1)),
-       bl.place(bl.cylinder("PistonRod", 0.1 * g, drawn + 0.1, 10, glow), location=(px, py, zc + 0.22 + drawn / 2)),
+       bl.place(bl.cylinder("PistonCase", 0.21 * g, zc - zw + 0.25, 14, m["Iron"]), location=(px, py, (zc + zw) / 2 + 0.1)),
+       bl.place(bl.cylinder("PistonRod", 0.1 * g, rod, 10, glow), location=(px, py, zc + 0.27 + drawn - rod / 2)),
        bl.place(bl.cylinder("PistonCap", 0.24 * g, 0.16, 14, m["Steel"]), location=(px, py, zc + 0.3 + drawn)))
     if p["pauldron"]:
         on("rs", loft("Pauldron", [(3.78, 1.56, 0, 1.3, 1.3), (4.1, 1.56, 0, 1.3, 1.3), (4.22, 1.54, 0, 1.0, 1.0)], m["Iron"], n=8))
@@ -282,6 +292,7 @@ def build(scene, variant, hot=False):
         cx = s * 0.5
         on(part,
            loft("Trouser", [(0.3, cx, 0, 1.0, 1.02), (2.0, cx, 0, 1.0, 1.02)], m["Charcoal"], n=B),
+           loft("TrouserCuff", [(0.3, cx, 0, 1.05, 1.07), (0.54, cx, 0, 1.05, 1.07)], m["Charcoal"], n=B),
            loft("Sole", [(0.0, cx, 0.08, 1.0, 1.2), (0.1, cx, 0.08, 1.0, 1.2)], m["BoneShade"], n=B),
            loft("Shoe", [(0.1, cx, 0.07, 1.0, 1.16), (0.3, cx, 0.05, 1.0, 1.12), (0.34, cx, 0.0, 0.96, 1.0)], m["Ink"], n=B))
     return joints
@@ -307,7 +318,7 @@ def stand_on_floor(joints):
 
 def pose_square(joints):
     """Square on, arms held off the body, as a model sheet stands a figure."""
-    aim(joints["rs"], Quaternion(), (0.2, 0.0, -1.0))
+    aim(joints["rs"], Quaternion(), (0.36, 0.0, -1.0))
     aim(joints["ls"], Quaternion(), (-0.12, 0.0, -1.0))
     stand_on_floor(joints)
 
@@ -316,7 +327,7 @@ def pose_idle(joints):
     """How he stands: bladed a little, feet apart, the gauntlet hanging heavy and wide of the hip."""
     body = Matrix.Rotation(math.radians(-14), 3, "Z").to_quaternion()
     joints["root"].rotation_quaternion = body
-    aim(joints["rs"], body, (0.2, -0.04, -1.0), stage=False)
+    aim(joints["rs"], body, (0.36, 0.1, -1.0), stage=False)
     aim(joints["ls"], body, (-0.2, 0.2, -1.0), stage=False)
     joints["neck"].rotation_quaternion = body.inverted() @ Quaternion((1, 0, 0), math.radians(-4))
     aim(joints["lh"], body, (-0.2, 0.2, -1.0), twist=10)
@@ -632,10 +643,11 @@ def sheet(variant, small):
         save(shrink(page, 0.5), OUT / "rook_sheet_small.png")
 
 
-OUT = bl.out_dir()
-ARGS = sys.argv[sys.argv.index("--") + 2:]
-if ARGS and ARGS[0] == "pack":
-    pack()
-else:
-    names = [a for a in ARGS[1:] if a != "small"]
-    sheet(" ".join(names) or CHOSEN, "small" in ARGS)
+if __name__ == "__main__":
+    OUT = bl.out_dir()
+    ARGS = sys.argv[sys.argv.index("--") + 2:]
+    if ARGS and ARGS[0] == "pack":
+        pack()
+    else:
+        names = [a for a in ARGS[1:] if a != "small"]
+        sheet(" ".join(names) or CHOSEN, "small" in ARGS)

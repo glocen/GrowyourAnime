@@ -1,0 +1,254 @@
+{
+ "pixelsPerPoint": 4,
+ "images": {
+  "PortraitRook": {
+   "file": "images/PortraitRook.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "Rook, cut to FrameCommon: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitRookSmall": {
+   "file": "images/PortraitRookSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "Rook, cut to FrameCommonSmall: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitPip": {
+   "file": "images/PortraitPip.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "Pip, cut to FrameCommon: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitPipSmall": {
+   "file": "images/PortraitPipSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "Pip, cut to FrameCommonSmall: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitLyric": {
+   "file": "images/PortraitLyric.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "Lyric, cut to FrameRare: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitLyricSmall": {
+   "file": "images/PortraitLyricSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "Lyric, cut to FrameRareSmall: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitUnknownCommon": {
+   "file": "images/PortraitUnknownCommon.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameCommon"
+  },
+  "PortraitUnknownCommonSmall": {
+   "file": "images/PortraitUnknownCommonSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameCommonSmall"
+  },
+  "PortraitUnknownUncommon": {
+   "file": "images/PortraitUnknownUncommon.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameUncommon"
+  },
+  "PortraitUnknownUncommonSmall": {
+   "file": "images/PortraitUnknownUncommonSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameUncommonSmall"
+  },
+  "PortraitUnknownRare": {
+   "file": "images/PortraitUnknownRare.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameRare"
+  },
+  "PortraitUnknownRareSmall": {
+   "file": "images/PortraitUnknownRareSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameRareSmall"
+  },
+  "PortraitUnknownEpic": {
+   "file": "images/PortraitUnknownEpic.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameEpic"
+  },
+  "PortraitUnknownEpicSmall": {
+   "file": "images/PortraitUnknownEpicSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameEpicSmall"
+  },
+  "PortraitUnknownLegendary": {
+   "file": "images/PortraitUnknownLegendary.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameLegendary"
+  },
+  "PortraitUnknownLegendarySmall": {
+   "file": "images/PortraitUnknownLegendarySmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameLegendarySmall"
+  },
+  "PortraitUnknownMythical": {
+   "file": "images/PortraitUnknownMythical.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameMythical"
+  },
+  "PortraitUnknownMythicalSmall": {
+   "file": "images/PortraitUnknownMythicalSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "a Voidkin with no portrait yet, cut to FrameMythicalSmall"
+  },
+  "CritSweep": {
+   "file": "images/CritSweep.png",
+   "pixels": [
+    448,
+    224
+   ],
+   "points": [
+    112.0,
+    56.0
+   ],
+   "pad": 0.0,
+   "tint": "#E8862A",
+   "shear": 0.22,
+   "use": "behind a critical number, under its stroke: centred on the number, its height twice the number's size, its width the number's width and a half; it stretches along, never up"
+  }
+ }
+}

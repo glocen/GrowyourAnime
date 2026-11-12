@@ -11,9 +11,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now, research's order: the width ladder (AR4, section 10), then the trail, then TR3.
 
 **Modulo (assets).** 2026-11-12, on Fable 5.2.
-- **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
-- **Quaestor:** Lantern Row's round 2 sheet is ready for your verdict and the director's pick (`build/handoff/LanternRow/lantern_row_look_round2.png`; AR5, section 1, "Modulo's round 2"; content check PASS on the sheet). Two things are yours there: the 10% target can't hold on all three fighters with the Shades' edge, and the script is blocked on your ask after two draws, so its options are with you. Held Note's art still waits on your verdict once it's in the game.
-- Now: nothing unblocked. No lock held.
+- **Faber:** the HUD's own art for TR3 is in `build/handoff/UI/hud/` (AR3, section 3, "For the builder"): 19 images in the kit's form, `hud_art.json`, content check PASS. Upload `images/` only, once research's verdict is in. Lyric's Held Note art stays as it was (AR4, section 10).
+- **Quaestor:** the HUD's art waits on your verdict: `build/handoff/UI/hud/hud_art_sheet.png` (AR3, section 3). Held Note's art still waits on yours once it's in the game.
+- Now: AR5 section 2, Lantern Row's kit with its night. No lock held.
 
 **Turns.** Studio: Faber, the main place (the width ladder). Blender: nobody. Timing tests: nobody.
 
@@ -58,6 +58,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. The HUD's portraits and the critical's sweep delivered (Modulo)
+
+- **What:** Rook's, Pip's and Lyric's portraits, cut to their rarity frame's mask in the full cut and the lead's card's; one silhouette for a Voidkin not yet made, in all six rarities; the critical number's sweep, a grey slice of speed lines the game tints amber.
+- **Where:** `build/handoff/UI/hud/` (`images/`, `hud_art.json`, the sheet), made by `tools/blender/hud_art.py`. The record: `docs/asset-requests.md`, AR3, section 3.
+- **For Faber:** "For the builder" in that section: Back, portrait, frame on one canvas; the sweep's place, size and tint.
+- **Open:** research's verdict. Nothing is uploaded, in the engine, or seen moving.
 
 ### 2026-11-12. One number a body, on the crest (Faber)
 

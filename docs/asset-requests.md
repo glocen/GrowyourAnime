@@ -1081,7 +1081,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2).
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2). The HUD's portraits, the silhouette and the critical's sweep are made, past the content check, and delivered to `build/handoff/UI/hud/` for research's verdict (section 3).
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -1287,6 +1287,48 @@ For TR3, after Lantern Row's round 2 (AR5, section 1).
 - **Each launch Voidkin's cut portrait** for the lead's card: Rook, Pip and Lyric now, cut to the frame's mask before upload (section 2's note). The head and shoulders, three-quarter, eyes to the player, and readable at the card's size on a phone. Plus one silhouette for a Voidkin that isn't made yet. Each portrait gets its own check.
 - **The critical number's swept stroke:** one picture of our own behind a gold, heavy, forward-slanted number (`docs/ui.md`, "Damage numbers"). It must read as speed, not a slash or a wound: rule 4's check.
 - **Checks:** the content check; legible at phone size over Lantern Row's dark and bright corners; research's verdict.
+
+**Delivered (Modulo, 2026-11-12):** `build/handoff/UI/hud/`: `images/` (19), `hud_art.json` in the kit's form, and the sheet, `hud_art_sheet.png`. Made by `tools/blender/hud_art.py` (`make`, `sheet`). Nothing is uploaded or in the engine.
+
+- **The portraits.** Each is the Voidkin's own model, the body about a third of a turn off and the head turned back to the player, lit by the model's sun with a soft fill from the camera. Two cuts each, on the frame's own canvas: `Portrait<Name>` for the full frame (80 by 96 points) and `Portrait<Name>Small` for the lead's card (40 by 48), cut to their rarity's mask from `Definitions.Voidkin` (Rook and Pip Common, Lyric Rare).
+  - **Rook** sizes you up: the gauntlet's shoulder forward, chin down, a level look from under the brow.
+  - **Pip** looks up from under a hat too big for him, head cocked.
+  - **Lyric** is between songs: chin a touch up, the headset and its mic to the camera. Her stand is hidden: at this crop it was a bar across her face.
+- **The silhouette.** A head, a neck and a pair of shoulders in flat violet, lit along the upper edges, faceless. One picture cut to all six rarities in both cuts (`PortraitUnknown<Rarity>[Small]`), since a mask is the frame's. It's drawn, not shot: a bare R6 body at a portrait's crop was a slab with a stub, and at the card's size it read as an empty frame (my first two tries, and the content check's note on the second).
+- **The critical's sweep,** `CritSweep`: five level streaks leaning with the number's slant, one wide with dry gaps and four hairlines, thin tails behind and square heads forward. A grey slice, 112 by 56 points, tinted by the game. On the sheet it's amber `#E8862A` under the gold number, so the number stays the brightest thing.
+- **Read at phone size:** the sheet shows the four in the lead's card's frame at 2 pixels a point and at 1, over the merge's dark side and its bright end (round 2's own frames), and the sweep under a critical over both. All four portraits read at 1; the sweep reads as lines of speed at 2 and as an amber bar with a streak either side at 1.
+
+**For the builder:**
+
+1. A portrait is laid Back, portrait, frame, at the frame's own place and size: same canvas, same pad, nothing to align.
+2. A Voidkin without a portrait takes `PortraitUnknown<its rarity>`.
+3. `CritSweep` sits behind a critical number and under its stroke, centred on it: its height twice the number's size, its width the number's width and a half. It stretches along, never up. The tint and the slant are in `hud_art.json`.
+4. Only `images/` is uploaded.
+
+**Content check, 2026-11-12: PASS** on rules 2, 3 and 4, each of the five on its own line. It read the sheet, all 19 images, the uncut renders and the script, and compared the sweep with the reference's stroke: ours is five ruled streaks from numbers, the reference's one brush blob with a curled tail. Its limits: 64 px over dark only; likeness from memory. To hold, each change coming back to the check:
+
+1. The sweep's tint is amber `#E8862A` or yellower: never red, crimson, magenta, plum or black, and never under the received number.
+2. The sweep stays level behind a number: never turned to a diagonal, crossed, doubled, stretched upward, or left on a body, a portrait or the ground.
+3. The sweep stays straight parallel streaks with square heads: no curve, no taper at both ends, no flecks beside it, no gloss.
+4. Rook's collar rim under the chin stays the jacket's flat colour, even and joined on both sides; the plaster stays clean and pale.
+5. Lyric's rose stays flat, bright and matte, ending level at the collar, never a free strand on the skin; the mic's tip stays clear of the mouth.
+6. Pip's face stays lit skin under the brim at the card's size on the real street, at night too.
+7. A fallen or low portrait is dimmed and edge-lit only: no red wash, streak or crack across a face.
+8. The silhouette stays faceless and plain: a mark, a glow or a question mark gets its own check.
+9. Each new Voidkin's portrait, each evolution's, and any new angle or crop gets its own check.
+
+The silhouette was redrawn after that check, and went back alone: **PASS**, 2026-11-12, all twelve cuts. Its nearest wrong reads, a stoppered bottle or a rubber stamp in the small Mythical cut seen bare, are harmless and gone in the frame. It adds to 8: no knob, hair, costume line or new proportion without a check, and the fill stays the kit's violet with its pale rim, never red or flesh-toned, never tinted by a fallen state. The handoff's files are this make's, byte for byte.
+
+**What I see wrong:**
+
+- The portraits wear the models' one face each (`docs/polish-later.md` has a face of its own for each Voidkin): the pose and the head's turn carry the character here, not the expression.
+- Rook's gauntlet is a grey block at the frame's corner: it says "shoulder", not "gauntlet", at this crop.
+- Lyric is the busiest at 1 pixel a point: the hair, the rose, the headset and the mic share about 20 pixels.
+- The silhouette is the familiar head-and-shoulders mark, nothing of the Void in it. It does its job and no more.
+- The sweep's wide streak is a slab at 1 pixel a point. Whether it should thin there is seen with the real font, its stroke and motion, in TR3.
+- Nothing was seen in the engine, on a phone, or moving. The street behind the cards is my render of the merge, not Roblox's.
+
+**Not done:** research's verdict; the upload (the builder's, with TR3); seen in the game. No test request of its own: TR3 is where these are tested. **Hours:** about 1.5, an estimate.
 
 ## AR4. Pip and Lyric
 
@@ -2291,6 +2333,16 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
   - **An ally's heal on the touch:** yes, the same rule, in TR3 with the numbers. A heal carries its beat as a hit does.
   - **Fix 3, the width:** the crests still barely show at 1 in this strip. Research's session predates its play tools, so it asks the builder for one take, after TR2's phone fixes: three presses at widths 1.5, 2 and 2.5, the same staging, and a strip of each. Research picks from it.
   - **Held Note** stays at works until the width is picked. That's the last of its round 1.
+- **Builder, 2026-11-12: the width ladder, for research's pick** (Faber). One take, three presses: `Effects.HeldNote.Width` 1.5, 2 and 2.5, tuned live between presses.
+  - **Files:** `build/captures/ar4/lyric_width_ladder_take.mkv` (12 s, lossless; the presses at about 1.6, 4.6 and 7.6 s).
+    - One strip a press: `lyric_width_1.5_strip.jpg`, `lyric_width_2_strip.jpg`, `lyric_width_2.5_strip.jpg` (12 fps, from 0.2 s after the press, as the count take's strip).
+    - `lyric_width_ladder_side.png`: the three side by side, each 1 s after its press, cropped to the bodies.
+  - **Staging:** as the count take. Lyric leads in the replay, every 3 s, with the dummy and three level-8 Brawlers spawned on her line at 5.1, 7.6 and 10.0 studs. `Notice` 0, `WalkSpeed` 0 and `GiveUp` 1000 only for the take, all put back after, and Pip leads again.
+  - **Two things to weigh:**
+    - The hits' pushes carry the Brawlers about 1.8 studs outward over the take (6.9, 9.3 and 11.8 at its end), so the third press's bodies stand a little apart from the first's. Compare the crests' spread, not the bodies' places.
+    - The take runs at 57.3 fps, or 58.7 without one 267 ms step at 0.05 s, before the first press.
+  - **What I see:** at 1.5 the rings hug the bodies. At 2 they span the pair. At 2.5 the crest reaches past the bodies on both sides.
+  - **Four facts:** taken. Research's pick waits, and Config stays at 1 until it.
 
 ## AR5. The festival kit and the base's machines
 

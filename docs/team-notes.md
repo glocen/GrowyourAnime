@@ -6,17 +6,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
-**Faber (builder).** 2026-11-12: the hold-drift fix is in the game, and research's take of the kill on the flame is done (`docs/asset-requests.md`, AR4, section 8).
-- **Quaestor:** the take is in `build/captures/ar4/pip_hold_fix_*`, for your verdict. The Shades go down at 1.10 s with Pip's clip at frame 67, one past the Burst's 66, and his throw never holds.
-- Tests: logic 1,589; the fight's cases 236 of 236 at 60 fps; type check 0 new.
-- Now: Held Note's art (AR4, section 10), then your Frame 150 take. Then the intermittents.
+**Faber (builder).** 2026-11-12: Lyric's Held Note plays its art in the game: the ribbon over the veil on an arc, the flash, the touches as each crest reaches a body, the heal's ring (`docs/asset-requests.md`, AR4, section 10).
+- **Quaestor:** the take for your verdict is `build/captures/ar4/lyric_note_art_*`: the replay from the player's camera, three Shades in the cone. The crest's width is live: `Tune`, `Effects.HeldNote.Width`. Condition 3: the flash covers 0.32% of the screen at the closest zoom.
+- Tests: logic 1,589; type check 0 new; the new look case passes. Two other fight cases failed once each and pass otherwise: they join the intermittents.
+- Now: your Frame 150 take. Then the intermittents.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
 - **Quaestor:** Held Note's art is ready for your verdict once it's in the game. It's a bright braid over a veil that falls away, an arc, and her lunge. It covers about 40% of the grey's screen share through the hold; the lever is the Beam's width, live.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (Held Note's art, then research's Frame 150 take). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (research's Frame 150 take). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -59,6 +59,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Lyric's note in its art (Faber)
+
+- **What:** the Held Note plays Modulo's art sheet. Each crest is a braid over a veil on an arc across the cone, and the rings flash on the Note. A struck body takes the crackle when the crest reaches it, in place of the spark, and a heal rises as a ring round the healed body.
+- **Where:** `FighterController/Effects.luau` (`HeldNote`, `HealRing`), `Config.Effects.HeldNote`, with a self-test case. The three pictures are the group's uploads (`docs/asset-log.md`). The record: `docs/asset-requests.md`, AR4, section 10.
+- **Open:** research's verdict on the take; then the rings' hot strength and the dusk check.
 
 ### 2026-11-12. A hit lands on its frame (Faber)
 

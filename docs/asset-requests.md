@@ -2206,6 +2206,29 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
   - Then the rings' hot strength and the dusk check (condition 3), and the flash's share at the closest zoom.
 - **Not done:** the builder's import; research's verdict in the game.
 - **Hours:** about 4, an estimate.
+- **Builder, 2026-11-12: the art in the game, and the take for the verdict** (Faber). Made on Opus 5.5.
+  - **Implemented** (`FighterController/Effects.luau`, `Config.Effects.HeldNote`):
+    - **The pictures** are the group's uploads, all Approved (read back): the ribbon 98526314701538, the veil 97868344376539, the touches 108376131261819 (`docs/asset-log.md`). The ribbon and the veil went up turned a quarter clockwise, their left end the top row, with the pixels unchanged, because a Beam runs a picture's height along it (`handbook/visuals/vfx-engine-facts.md`, "Beam"; tested here).
+    - **Each crest is two Beams on the arc's two ends:** the ribbon (`ZOffset` 0.02) over the veil (0). Both are upright (`FaceCamera` off), stretched, still, white, unlit, 24 segments. The ends sit at plus and minus the half angle on the radius off the apex, the first on her left. `CurveSize` is 4/3 × tan(half / 2) × radius at both ends (0.2834 × r at 24°), so each crest is a circle's arc.
+    - **Motion and look:** the motion stays `Ease` 2 (research's answer, above). The look by age is the table's: born unseen over its first 2.5 studs, narrowing to 0.4 of its height over the last 4, the veil held 3 frames and gone over 8.
+    - **The width:** `Config.Effects.HeldNote.Width`, a scale on the table's height, live by `NL_Debug:Invoke("Tune", "Effects.HeldNote.Width", 1.5)`. At 1 it's the table's: 0.9 studs at the rings, growing as the crest goes out.
+    - **The flash:** the flash cell on each ring, 0.15 out along her facing. It swells from 0.25 to 0.55 over the 8 frames before the Note, is 0.9 and 0.6 on the Note and the frame after, and 0.6 and 0.4 on each later crest.
+    - **The touches:** a struck body takes the hit's four cells (2 frames each, 3 studs, 1.2 toward the camera) on the frame its crest comes within 0.7 of it. They come in place of the spark (`Effects.Running.Struck`; `FighterController`, `drawnBy`). If its crest has already run out, they come at once. Its number and hold stay on the server's beat.
+    - **The heal's ring:** each heal puts the ring flat round the healed body (`Effects.HealRing`, by the healer's action, `FighterController`'s `HEALS`). It rises from 0.4 to 5 studs (out fast), its radius goes from 1.6 to 1.12, and it's gone over the last 5 of its 14 frames.
+  - **Tested:**
+    - Type check: 0 new. Logic: 1589.
+    - A new self-test case on a stand-in of hers, so it runs with any lead: "the Held Note's look keeps the art sheet's table". It checks the flash's sizes and cell, the two Beams' setup, the arc (both ends on the radius, 48° apart, its middle on the radius too), the height and width by age, Width live, the veil gone after 11 frames, the touch on the frame the crest comes within Short (frame 5 at 9 studs) and only once though struck twice, the heal's ring, and nothing left. It passed in both whole Fight runs.
+    - The whole Fight suite at 60 fps: 273/278, then 274/278. The fails were in two other cases, each passing in the other run, the first alone too (30/30): the Lantern Burst's look (its lantern checks read the lead's own burst from the fight before) and the replay's combo (no hit landed). Both read state this client-only change doesn't touch. They join the intermittents.
+  - **Condition 3, the flash at the camera's closest zoom.** In the replay with the camera fully in (0.5), on the Note's frame (the flash's largest, 0.9 studs), the two flashes cover 0.32% of the screen. That counts their cells' whole squares, so it's an upper bound: RingR at 15.7 studs, RingL at 10.6, at 1361 × 827. She's nearer only when the avatar walks up to her: one 0.9-stud cell covers 2.8% of the screen at 3 studs and 1.0% at 5, for one frame, then 0.6 for one more.
+  - **The take for research's verdict:** `build/captures/ar4/lyric_note_art_take.mkv` (12 s at 58.5 fps, lossless; four presses, every 3 s). It's the replay from the player's camera, three level-1 brawlers standing in the cone between her and the dummy.
+    - The Shades were spawned on their spots with `Combat.Shade.Notice` 0 and `WalkSpeed` 0, tuned for the take only and put back.
+    - Also: `lyric_note_art_strip.png` (one press at 12 fps from 2.2 s) and `lyric_note_art_full_2.45s.png`.
+    - What I see: each crest a braided band crossing the three Shades and the dummy, the crackles and the ring landing on each body as the crest reaches it, the numbers on the beat. The Shades bunch in front of her at this framing.
+  - **For research:**
+    - The number comes on the server's beat, and a body's touch comes when the crest reaches it: about 5 frames later at 9 studs, about 15 at 14.
+    - The rings' hot strength and the dusk check (condition 3) come after the verdict, as scoped.
+  - **Four facts:** implemented; tested; visually reviewed by me only, research's pass waits; director-accepted: no.
+  - **Hours:** about 3.
 
 ## AR5. The festival kit and the base's machines
 

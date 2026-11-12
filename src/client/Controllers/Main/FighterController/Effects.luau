@@ -11,8 +11,9 @@
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8).
 --   LanternShots  Pip's combo, a grey block: a streak from the lantern to the target on each shot (Config.Effects.Shot).
 --   SpeakerShots  Lyric's combo, the same from her speakers' rings, the ones each shot names.
---   HeldNote  Lyric's signature, a grey block (Config.Effects.HeldNote; AR4, section 9): the charge in her rings, their
---             flash, and a crest thrown across the cone on every half-beat, until the art sheet.
+--   HeldNote  Lyric's signature, AR4's art sheet (Config.Effects.HeldNote; AR4, section 10): the flash in her rings, a
+--             crest thrown across the cone on every half-beat (a ribbon over a veil that falls away), and the hit's
+--             cells on each Shade it reaches. HealRing: the heal's ring rising round each body it mends.
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
 --   ShadeBurst  a Shade falls: AR2's art sheet, the sky lantern. A flame swells in its collar, flares the coat's size on
 --             its clip's marker as the body goes, and climbs away with its paper (docs/design.md, "Combat": no gore).
@@ -239,7 +240,13 @@ end
 -- are read every frame, so a tune shows at once (Config.Effects.Haymaker).
 -- `attacker` is the ram's fighter; `target` gives the target's root, read once at the strike.
 -- A step gets the action's clock, which a hit's hold pauses, and `free`, the same clock run on through holds.
-export type Running = { Step: (clock: number, free: number?) -> boolean, Destroy: () -> () }
+-- Struck, when an effect draws its own hit: the server struck `body` on `beat` of its action; true when the effect takes
+-- the hit's look on itself, and the spark then stays off.
+export type Running = {
+	Step: (clock: number, free: number?) -> boolean,
+	Destroy: () -> (),
+	Struck: ((beat: string, body: Model) -> boolean)?,
+}
 
 function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: () -> BasePart?): Running
 	local STRIKE, SHOCK = beats.Strike, beats.Shock
@@ -470,7 +477,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			end
 			table.clear(pool)
 		end,
-	}
+	} :: Running
 	return running
 end
 
@@ -784,7 +791,7 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 				relight(surface, COOLDOWN - now) -- dark until here, full when it's ready
 			end
 		end,
-	}
+	} :: Running
 	return running
 end
 
@@ -871,11 +878,43 @@ function Effects.SpeakerShots(beats: { [string]: number }, attacker: Model, targ
 	end)
 end
 
--- One crest of the Held Note: where it was thrown from and along, when, for how long, and by which beat's hit.
-type Crest = { Parts: { Part }, Born: number, Life: number, Root: Vector3, Axis: Vector3, Floor: number, Hit: Actions.Hit }
+-- One crest of the Held Note, thrown on `Beat` at `Born` for `Life` seconds from where she stood, along the line to her
+-- target. Its two Beams, the ribbon over the veil, share the arc's two ends. `Radius` (from the cone's point) and
+-- `Shows` are as last laid.
+type Crest = {
+	Beat: string,
+	Born: number,
+	Life: number,
+	Root: Vector3,
+	Axis: Vector3,
+	Floor: number,
+	Hit: Actions.Hit,
+	Holder: Part,
+	Ends: { Attachment },
+	Ribbon: Beam,
+	Veil: Beam,
+	Radius: number,
+	Shows: number,
+}
 
--- A crest `age` seconds out (Config.Effects.HeldNote): an arc of grey panels round the cone's point, across the cone, its
--- veil's height and place eased out from the rings, each panel thinning to nothing over the last Thin studs from her.
+local function crestBeam(holder: Part, ends: { Attachment }, picture: string, z: number): Beam
+	local beam = Instance.new("Beam")
+	beam.Attachment0, beam.Attachment1 = ends[1], ends[2] -- the picture's top row on Attachment0, the arc's first end
+	beam.FaceCamera = false -- upright: its width along the ends' Y
+	beam.Texture = picture
+	beam.TextureMode = Enum.TextureMode.Stretch
+	beam.TextureLength = 1
+	beam.TextureSpeed = 0
+	beam.LightInfluence = 0
+	beam.Color = ColorSequence.new(HOT)
+	beam.Transparency = NumberSequence.new(1)
+	beam.ZOffset = z
+	beam.Parent = holder
+	return beam
+end
+
+-- A crest `age` seconds out (Config.Effects.HeldNote): its arc's ends round the cone's point, its height and place eased
+-- out from the rings, and how it shows by its age. False once it's done.
 local function layCrest(crest: Crest, age: number): boolean
 	local look = EffectsConfig.HeldNote
 	local u = age / math.max(FRAME, crest.Life)
@@ -883,41 +922,115 @@ local function layCrest(crest: Crest, age: number): boolean
 		return false
 	end
 	local hit = crest.Hit
-	local reach, cone, apex = hit.Reach, hit.Cone or 0, hit.Apex or 0
+	local reach, cone, apex = hit.Reach, math.rad(hit.Cone or 0), hit.Apex or 0
 	local out = look.From + (reach - look.From) * (1 - (1 - u) ^ look.Ease) -- studs from her along the line
-	local tall = look.Tall + look.Grow * (out - look.From)
+	local thin = math.clamp((out - (reach - look.Thin)) / math.max(look.Thin, 0.01), 0, 1)
+	local shows = smooth((out - look.From) / math.max(look.Birth, 0.01)) * (1 - thin)
+	local veil = shows * (1 - smooth((age / FRAME - look.VeilHold) / math.max(look.VeilFade, 0.01)))
+	local tall = (look.Tall + look.Grow * (out - look.From)) * (1 - look.Narrow * thin) * look.Width
 	local middle = crest.Floor + look.Up - look.Fall * (out - look.From)
 	local radius = out + apex
 	local point = crest.Root - crest.Axis * apex
-	local count = #crest.Parts
-	local step = math.rad(2 * cone / count)
-	local chord = 2 * radius * math.sin(step / 2) + 0.05
-	for index, panel in crest.Parts do
-		local turn = CFrame.fromAxisAngle(Vector3.yAxis, math.rad(-cone) + (index - 0.5) * step)
-		local direction = turn:VectorToWorldSpace(crest.Axis)
+	-- The first end on her left (a turn about +Y takes her forward to her left), where the picture's left end, its top
+	-- row as uploaded, lies; +X along the arc toward her right, Y up, so the band stands upright.
+	for index, angle in { cone, -cone } do
+		local direction = CFrame.fromAxisAngle(Vector3.yAxis, angle):VectorToWorldSpace(crest.Axis)
 		local at = point + direction * radius
-		local from = Vector3.new(at.X - crest.Root.X, 0, at.Z - crest.Root.Z).Magnitude
-		local left = math.clamp((reach - from) / math.max(look.Thin, 0.01), 0, 1)
-		at = Vector3.new(at.X, middle, at.Z)
-		panel.Size = Vector3.new(chord, math.max(0.01, tall * left), STAND_IN_DEPTH)
-		panel.CFrame = CFrame.lookAt(at, at + direction)
-		panel.Transparency = 1 - (1 - look.Transparency) * left
+		crest.Ends[index].WorldCFrame = CFrame.fromMatrix(Vector3.new(at.X, middle, at.Z), direction:Cross(Vector3.yAxis), Vector3.yAxis)
 	end
+	local curve = 4 / 3 * math.tan(cone / 2) * radius -- a circle's arc spanning twice the cone: 4/3 tan(span / 4) r
+	for _, beam in { crest.Ribbon, crest.Veil } do
+		beam.CurveSize0, beam.CurveSize1 = curve, curve
+		beam.Width0, beam.Width1 = tall, tall
+		beam.Segments = look.Segments
+	end
+	crest.Ribbon.Transparency = NumberSequence.new(1 - shows)
+	crest.Veil.Transparency = NumberSequence.new(1 - veil)
+	crest.Radius, crest.Shows = radius, shows
 	return true
 end
 
--- Lyric's Held Note (LyricHeldNote), a grey block (Config.Effects.HeldNote): the charge in her rings, their flash on the
--- first crest, and a crest thrown across the cone on every beat that hits. Each lives until the next is halfway out, so one
--- is always on its way, and the last runs out alone after the Release.
+-- The Held Note's hit on `body`: the touch sheet's four cells on its root, toward the camera (Config.Effects.HeldNote.Hit).
+local function touch(body: Model)
+	local look = EffectsConfig.HeldNote
+	local root = body:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if root == nil then
+		return
+	end
+	local hit = look.Hit
+	local gui, label = billboard(root, look.Touch)
+	gui.Size = UDim2.fromScale(hit.Size, hit.Size)
+	gui.StudsOffset = Vector3.new(0, 0, hit.Toward) -- in the camera's space: toward the lens
+	label.ImageRectOffset = Vector2.zero
+	label.ImageRectSize = Vector2.new(look.Cell, look.Cell)
+	gui.Enabled = true
+	run(function(age: number): boolean
+		local index = math.floor(age / (hit.Frames * FRAME))
+		if index > 3 or gui.Parent == nil then
+			return false
+		end
+		label.ImageRectOffset = Vector2.new(index * look.Cell, 0)
+		return true
+	end, function()
+		gui:Destroy()
+	end)
+end
+
+-- A heal on `root`'s body: the touch sheet's ring, flat round it, rising as it narrows and fades
+-- (Config.Effects.HeldNote.Heal).
+function Effects.HealRing(root: BasePart)
+	local look = EffectsConfig.HeldNote
+	local heal = look.Heal
+	local plate = part(HOT)
+	plate.Transparency = 1
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "NL_Effect"
+	gui.Face = Enum.NormalId.Top
+	gui.LightInfluence = 0
+	gui.CanvasSize = Vector2.new(look.Cell, look.Cell)
+	gui.Adornee = plate
+	local label = Instance.new("ImageLabel")
+	label.BackgroundTransparency = 1
+	label.BorderSizePixel = 0
+	label.Size = UDim2.fromScale(1, 1)
+	label.Image = look.Touch
+	label.ImageColor3 = HOT
+	label.ImageRectOffset = Vector2.new(0, look.Cell)
+	label.ImageRectSize = Vector2.new(look.Cell, look.Cell)
+	label.Parent = gui
+	gui.Parent = plate
+	local function lay(age: number): boolean
+		local frames = age / FRAME
+		if frames > heal.Frames or root.Parent == nil then
+			return false
+		end
+		local u = frames / heal.Frames
+		local across = heal.Radius * (1 - (1 - heal.Shrink) * u) * 2 / heal.Drawn
+		local floor = root.Position.Y - R6_ROOT_HEIGHT
+		plate.Size = Vector3.new(across, PICTURE_DEPTH, across)
+		plate.CFrame = CFrame.new(root.Position.X, floor + heal.From + (heal.To - heal.From) * outFast(u), root.Position.Z)
+		label.ImageTransparency = math.clamp((frames - (heal.Frames - heal.Fade)) / math.max(heal.Fade, 0.01), 0, 1)
+		return true
+	end
+	lay(0)
+	run(lay, function()
+		plate:Destroy()
+	end)
+end
+
+-- Lyric's Held Note (LyricHeldNote), AR4's art sheet (Config.Effects.HeldNote): the flash swelling in her rings, then a
+-- crest thrown across the cone on every beat that hits, each living until the next is halfway out, so one is always on
+-- its way; the last runs out alone after the Release. A body the server strikes takes the hit's cells when its crest
+-- reaches it (Struck), in place of the spark.
 function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
 	local look = EffectsConfig.HeldNote
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
-	local glows: { [Attachment]: Part } = {}
+	local flashes: { { Ring: Attachment, Gui: BillboardGui } } = {}
 	for _, ring in rings(attacker) do
-		local glow = part(SPARK, Enum.Material.Neon)
-		glow.Shape = Enum.PartType.Ball
-		glow.Transparency = 1
-		glows[ring] = glow
+		local gui, label = billboard(ring, look.Touch)
+		label.ImageRectOffset = Vector2.new(look.Cell, look.Cell)
+		label.ImageRectSize = Vector2.new(look.Cell, look.Cell)
+		table.insert(flashes, { Ring = ring, Gui = gui })
 	end
 	local order: { string } = {}
 	for name in beats do
@@ -931,6 +1044,8 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 	local first = if order[1] then beats[order[1]] else 0
 	local crests: { Crest } = {}
 	local thrown: { [string]: boolean } = {}
+	local struck: { { Beat: string, Body: Model } } = {}
+	local asked: { [Model]: { [string]: boolean } } = {}
 	local function throw(index: number)
 		if root == nil then
 			return
@@ -943,31 +1058,84 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			line = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
 		end
 		local gap = if order[index + 1] then beats[order[index + 1]] - beats[name] elseif index > 1 then beats[name] - beats[order[index - 1]] else 0.25
-		local panels = {}
-		for _ = 1, math.max(1, look.Segments) do
-			local panel = part(LIGHT, Enum.Material.Neon)
-			panel.Transparency = 1
-			table.insert(panels, panel)
+		local holder = part(HOT)
+		holder.Transparency = 1
+		holder.Size = Vector3.one * 0.2
+		holder.CFrame = CFrame.new(root.Position)
+		local ends = { Instance.new("Attachment"), Instance.new("Attachment") }
+		for _, point in ends do
+			point.Parent = holder
 		end
 		table.insert(crests, {
-			Parts = panels,
+			Beat = name,
 			Born = beats[name],
 			Life = gap * 2 ^ (1 / look.Ease),
 			Root = here,
 			Axis = line.Unit,
 			Floor = root.Position.Y - R6_ROOT_HEIGHT,
 			Hit = action.Hits[name],
+			Holder = holder,
+			Ends = ends,
+			Ribbon = crestBeam(holder, ends, look.Ribbon, 0.02),
+			Veil = crestBeam(holder, ends, look.Veil, 0), -- under the ribbon
+			Radius = 0,
+			Shows = 0,
 		})
 	end
-	local function destroy()
-		for _, glow in glows do
-			glow:Destroy()
+	-- The flash's size at `clock`, in studs, or nil when it's out.
+	local function flashAt(clock: number): number?
+		local flash = look.Flash
+		local charge = look.Charge * FRAME
+		if clock >= first - charge and clock < first then
+			return flash.Swell[1] + (flash.Swell[2] - flash.Swell[1]) * smooth((clock - (first - charge)) / math.max(charge, FRAME))
 		end
-		table.clear(glows)
+		for index, name in order do
+			local into = clock - beats[name]
+			if into >= 0 and into < 2 * FRAME then
+				local sizes = if index == 1 then flash.Note else flash.Crest
+				return sizes[if into < FRAME then 1 else 2]
+			end
+		end
+		return nil
+	end
+	-- Each struck body takes the hit's cells once its crest reaches it, or at once if its crest has run out.
+	local function reach()
+		for index = #struck, 1, -1 do
+			local hit = struck[index]
+			local crest: Crest? = nil
+			for _, each in crests do
+				if each.Beat == hit.Beat then
+					crest = each
+				end
+			end
+			local body = hit.Body:FindFirstChild("HumanoidRootPart") :: BasePart?
+			local due = false
+			if body == nil then
+				table.remove(struck, index)
+			elseif crest then
+				local point = crest.Root - crest.Axis * (crest.Hit.Apex or 0)
+				local away = Vector3.new(body.Position.X - point.X, 0, body.Position.Z - point.Z).Magnitude
+				due = crest.Shows > 0 and crest.Radius >= away - look.Hit.Short
+			elseif thrown[hit.Beat] then
+				due = true
+			end
+			if due then
+				table.remove(struck, index)
+				touch(hit.Body)
+			end
+		end
+	end
+	local function destroy()
+		for _, flash in flashes do
+			flash.Gui:Destroy()
+		end
+		table.clear(flashes)
 		for _, crest in crests do
-			clear(crest.Parts)
+			crest.Holder:Destroy()
 		end
 		table.clear(crests)
+		table.clear(struck)
+		table.clear(asked)
 	end
 	return {
 		Step = function(clock: number, _free: number?): boolean
@@ -980,21 +1148,19 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			for index = #crests, 1, -1 do
 				local crest = crests[index]
 				if not layCrest(crest, clock - crest.Born) then
-					clear(crest.Parts)
+					crest.Holder:Destroy()
 					table.remove(crests, index)
 				end
 			end
-			local charge, out = look.Charge * FRAME, look.Out * FRAME
-			for ring, glow in glows do
-				local size, fade = 0, 1
-				if clock >= first - charge and clock < first then
-					size, fade = look.Flash * (clock - (first - charge)) / math.max(charge, FRAME), 0.3
-				elseif clock >= first and clock < first + out then
-					size, fade = look.Flash, (clock - first) / math.max(out, FRAME)
+			reach()
+			local size = flashAt(clock)
+			local forward = if root then root.CFrame.LookVector * 0.15 else Vector3.zero -- 0.15 out along her speakers' cones
+			for _, flash in flashes do
+				flash.Gui.Enabled = size ~= nil
+				if size then
+					flash.Gui.Size = UDim2.fromScale(size, size)
+					flash.Gui.StudsOffsetWorldSpace = flash.Ring.WorldCFrame:VectorToObjectSpace(forward)
 				end
-				glow.Size = Vector3.one * math.max(size, 0.05)
-				glow.CFrame = CFrame.new(ring.WorldPosition)
-				glow.Transparency = fade
 			end
 			local alive = clock < action.Length or #crests > 0
 			if not alive then
@@ -1003,6 +1169,18 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			return alive
 		end,
 		Destroy = destroy,
+		Struck = function(beat: string, body: Model): boolean
+			if action.Hits[beat] == nil then
+				return false
+			end
+			local beatsOf = asked[body] or {}
+			asked[body] = beatsOf
+			if not beatsOf[beat] then
+				beatsOf[beat] = true
+				table.insert(struck, { Beat = beat, Body = body })
+			end
+			return true
+		end,
 	}
 end
 

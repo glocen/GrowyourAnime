@@ -101,15 +101,31 @@ return {
 		Speakers = { Shot1 = { "RingR" }, Shot2 = { "RingL" }, Shot3 = { "RingR", "RingL" } } :: { [string]: { string } },
 	},
 
-	-- Lyric's Held Note (LyricHeldNote): a grey block, the builder's, until the art sheet (AR4, section 9, variant A, and
-	-- research's verdict). On each beat that hits, a crest is thrown from her rings across the hit's whole cone (its Cone
-	-- degrees either side of the line to her target, from its Apex behind her), fast then slowing on the curve
-	-- 1 - (1 - u)^Ease, out to the hit's Reach from her; it thins to nothing over its last Thin studs, and lives until the
-	-- next is halfway out (the gap to the next beat, times 2^(1/Ease)). Its veil stands Up studs over the floor at From
-	-- studs out, Tall high; a stud further out it falls Fall and grows Grow (the block-in's 1.8 to 4.6 up at the target).
-	-- The charge: a light swells in each ring over Charge frames before the first crest, to Flash studs, and flashes there
-	-- on it over Out frames, ring-sized (the content check: clear of her face).
+	-- Lyric's Held Note (LyricHeldNote): AR4's art sheet (section 10; build/handoff/Lyric/fx/lyric_note_art.json) on the
+	-- block's motion (section 9; research, 2026-11-12: Ease 2 stays, the table's punch and drift isn't used).
+	-- The motion: on each beat that hits, a crest is thrown from her rings across the hit's whole cone (its Cone degrees
+	-- either side of the line to her target, round its Apex behind her), fast then slowing on the curve 1 - (1 - u)^Ease,
+	-- out to the hit's Reach from her. It lives until the next is halfway out (the gap to the next beat, times 2^(1/Ease)).
+	-- Its band's middle stands Up studs over the floor at From studs out, Tall high; a stud further out it falls Fall and
+	-- grows Grow.
+	-- The look by the crest's age (the table's): each crest is two Beams on its arc's two ends, bent into the arc by their
+	-- CurveSize, the ribbon over the veil. It's born unseen over its first Birth studs, out of the rings' flash; over its
+	-- last Thin it fades to nothing and loses Narrow of its height. The veil holds VeilHold frames after the throw, then
+	-- falls away over VeilFade. Width scales the band's height: research's live lever on the crest's size (section 10).
+	-- The flash, on each ring: it swells from Swell[1] to Swell[2] studs over Charge frames before the first crest, is
+	-- Note[1] then Note[2] on it, and Crest[1] then Crest[2] on each crest after.
+	-- The hit: the touch sheet's four cells, Frames each, Size studs across, on a struck body's root, Toward the camera, from
+	-- the frame its crest reaches it (Short of its radius from the cone's point). It stands in for the spark.
+	-- The heal: a ring flat round the healed body, rising From to To studs over its Frames (fast first), its Radius
+	-- shrinking to Shrink of itself, gone over its last Fade frames; drawn at Drawn of its cell's half.
+	-- Every picture untinted and unlit (the content check).
 	HeldNote = {
+		-- the group's uploads (docs/asset-log.md). The ribbon and the veil are uploaded turned a quarter: a Beam runs its
+		-- picture's height along it (handbook/visuals/vfx-engine-facts.md, "Beam"; tested here, 2026-11-12)
+		Ribbon = "rbxassetid://98526314701538",
+		Veil = "rbxassetid://97868344376539",
+		Touch = "rbxassetid://108376131261819", -- 256 px cells: the hit's four on row 0; the heal, then the flash, on row 1
+		Cell = 256,
 		From = 4.7,
 		Up = 4.5,
 		Tall = 0.9,
@@ -117,11 +133,16 @@ return {
 		Grow = 0.301,
 		Ease = 2, -- research's verdict (AR4, section 9): at 4 each crest had thinned to a sliver by the time it landed
 		Thin = 4,
-		Segments = 12,
-		Transparency = 0.45,
+		Width = 1,
+		Birth = 2.5,
+		Narrow = 0.6,
+		VeilHold = 3,
+		VeilFade = 8,
+		Segments = 24,
 		Charge = 8,
-		Flash = 0.9,
-		Out = 6,
+		Flash = { Swell = { 0.25, 0.55 }, Note = { 0.9, 0.6 }, Crest = { 0.6, 0.4 } },
+		Hit = { Frames = 2, Size = 3, Toward = 1.2, Short = 0.7 },
+		Heal = { Frames = 14, From = 0.4, To = 5, Radius = 1.6, Shrink = 0.7, Fade = 5, Drawn = 0.8 },
 	},
 
 	-- A Shade's burst (docs/asset-requests.md, AR2, section 11; tools/blender/shade_burst_art.py): the sky lantern. A small

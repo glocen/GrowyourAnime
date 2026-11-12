@@ -1698,6 +1698,222 @@ return {
 		end,
 	},
 	{
+		Name = "Fight: the Held Note's look keeps the art sheet's table: the flash, two Beams on an arc, a touch as it reaches, the heal's ring",
+		Stay = true,
+		Run = function(t: any)
+			-- docs/asset-requests.md, AR4, section 10 (build/handoff/Lyric/fx/lyric_note_art.json), on a stand-in of hers (a
+			-- root and the two rings), so it runs with any lead: the flash swelling in the rings and its sizes on the beats; on
+			-- each beat a crest of two Beams, the ribbon over the veil, white and unlit, upright, on an arc round the cone's
+			-- point with the table's CurveSize; its height, place and width by its age, the width times Config's Width; the veil
+			-- gone after its hold and fade; a struck Shade's touch on the frame the crest comes within Short of it, once; the
+			-- heal's ring rising flat round a body; nothing left after.
+			local action = Actions.ById.LyricHeldNote
+			local look = EffectsConfig.HeldNote
+			local beats = action.Beats
+			local note = action.Hits.Note
+			local cone, apex = math.rad(note.Cone or 0), note.Apex or 0
+			local origin = Vector3.new(0, 600, 0) -- far over the map: these parts are this client's own
+			local function body(name: string, at: Vector3): (Model, BasePart)
+				local model = Instance.new("Model")
+				model.Name = name
+				local root = Instance.new("Part")
+				root.Name = "HumanoidRootPart"
+				root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
+				root.Size = Vector3.new(2, 2, 1)
+				root.CFrame = CFrame.lookAt(at, at + Vector3.new(0, 0, -1))
+				root.Parent = model
+				model.PrimaryPart = root
+				model.Parent = workspace
+				return model, root
+			end
+			local stand, root = body("SelfTest_Lyric", origin)
+			for _, name in { "RingR", "RingL" } do
+				local ring = Instance.new("Attachment")
+				ring.Name = name
+				ring.Position = Vector3.new(if name == "RingR" then 2.5 else -2.5, 1.9, 0)
+				ring.Parent = root
+			end
+			local away = 9 -- studs ahead of her, inside the cone
+			local shade, shadeRoot = body("SelfTest_Shade", origin + Vector3.new(0, 0, -away))
+			local folder = workspace:FindFirstChild("NL_Effects")
+			local theirs: { [Instance]: boolean } = {}
+			for _, p in (if folder then folder:GetDescendants() else {}) do
+				theirs[p] = true
+			end
+			local function mine(class: string): { Instance }
+				local found = {}
+				local home = workspace:FindFirstChild("NL_Effects")
+				for _, p in (if home then home:GetDescendants() else {}) do
+					if not theirs[p] and p:IsA(class) then
+						table.insert(found, p)
+					end
+				end
+				return found
+			end
+			local function smooth(u: number): number
+				local c = math.clamp(u, 0, 1)
+				return c * c * (3 - 2 * c)
+			end
+			local running = Effects.HeldNote(beats, stand, function(): BasePart?
+				return shadeRoot
+			end, action)
+			local function at(clock: number)
+				running.Step(clock, clock)
+			end
+			local flashes: { BillboardGui } = {}
+			for _, ring in root:GetChildren() do
+				local gui = ring:FindFirstChildOfClass("BillboardGui")
+				if gui then
+					table.insert(flashes, gui)
+				end
+			end
+			t.Check("a flash on each ring", #flashes == 2, `{#flashes}`)
+			local first = beats.Note
+			local charge = look.Charge * FRAME
+			local flash = look.Flash
+			local function flashSize(): number?
+				local gui = flashes[1]
+				return if gui and gui.Enabled then gui.Size.X.Scale else nil
+			end
+			at(first - charge - FRAME)
+			t.Check("no flash before the charge", flashSize() == nil)
+			at(first - FRAME)
+			local swell = flash.Swell[1] + (flash.Swell[2] - flash.Swell[1]) * smooth((charge - FRAME) / charge)
+			t.Near("swelling in the charge", flashSize() or -1, swell, 0.001)
+			local label = if flashes[1] then flashes[1]:FindFirstChildOfClass("ImageLabel") else nil
+			t.Check("the flash's cell, white and unlit", label ~= nil and label.Image == look.Touch and label.ImageRectOffset == Vector2.new(look.Cell, look.Cell) and label.ImageColor3 == Color3.new(1, 1, 1) and flashes[1].LightInfluence == 0)
+			-- The server strikes the Shade on the Note: the effect takes it, once, and nothing it doesn't hit.
+			local struck = running.Struck
+			t.Check("the effect draws its own hits", struck ~= nil)
+			if struck == nil then
+				running.Destroy()
+				stand:Destroy()
+				shade:Destroy()
+				return
+			end
+			t.Check("a beat it doesn't hit on isn't its", struck("SelfTest", shade) == false)
+			local once = struck("Note", shade)
+			t.Check("the Note's is, asked twice", once and struck("Note", shade))
+			at(first)
+			t.Near("the Note's flash", flashSize() or -1, flash.Note[1], 0.001)
+			at(first + 1.5 * FRAME)
+			t.Near("and the frame after", flashSize() or -1, flash.Note[2], 0.001)
+			at(first + 2.5 * FRAME)
+			t.Check("then out", flashSize() == nil)
+			local beams = mine("Beam")
+			t.Check("one crest: two Beams", #beams == 2, `{#beams}`)
+			local foundRibbon: Beam?, foundVeil: Beam? = nil, nil
+			for _, each in beams do
+				if each:IsA("Beam") and each.Texture == look.Ribbon then
+					foundRibbon = each
+				elseif each:IsA("Beam") and each.Texture == look.Veil then
+					foundVeil = each
+				end
+			end
+			t.Check("the ribbon and the veil", foundRibbon ~= nil and foundVeil ~= nil)
+			if foundRibbon == nil or foundVeil == nil then
+				running.Destroy()
+				stand:Destroy()
+				shade:Destroy()
+				return
+			end
+			local ribbon, veil = foundRibbon :: Beam, foundVeil :: Beam
+			t.Check("the ribbon over the veil", ribbon.ZOffset > veil.ZOffset)
+			for _, beam in { ribbon, veil } do
+				t.Check(`{beam.Texture == look.Ribbon and "ribbon" or "veil"}: upright, stretched, still, white, unlit, on the same ends`, not beam.FaceCamera and beam.TextureMode == Enum.TextureMode.Stretch and beam.TextureSpeed == 0 and beam.LightInfluence == 0 and beam.Color.Keypoints[1].Value == Color3.new(1, 1, 1) and beam.Segments == look.Segments and beam.Attachment0 == ribbon.Attachment0 and beam.Attachment1 == ribbon.Attachment1)
+			end
+			-- Frame by frame from the Note: the crest's place by its age, and the touch on the frame it comes within Short.
+			local life = (beats.Crest2 - first) * 2 ^ (1 / look.Ease)
+			local function outAt(frames: number): number
+				local u = frames * FRAME / life
+				return look.From + (note.Reach - look.From) * (1 - (1 - u) ^ look.Ease)
+			end
+			local touchedAt: number? = nil
+			local point = Vector3.new(origin.X, 0, origin.Z) - Vector3.new(0, 0, -1) * apex
+			for frames = 1, 30 do
+				at(first + frames * FRAME)
+				if touchedAt == nil and shadeRoot:FindFirstChildOfClass("BillboardGui") then
+					touchedAt = frames
+				end
+				if frames == 6 then
+					local out = outAt(frames)
+					local radius = out + apex
+					local a0, a1 = ribbon.Attachment0 :: Attachment, ribbon.Attachment1 :: Attachment
+					local p0, p1 = a0.WorldPosition, a1.WorldPosition
+					local flat0, flat1 = Vector3.new(p0.X, 0, p0.Z) - point, Vector3.new(p1.X, 0, p1.Z) - point
+					t.Near("at 6 frames, the first end on the radius", flat0.Magnitude, radius, 0.01)
+					t.Near("and the second", flat1.Magnitude, radius, 0.01)
+					t.Near("across twice the cone", math.deg(math.acos(math.clamp(flat0.Unit:Dot(flat1.Unit), -1, 1))), 2 * math.deg(cone), 0.05)
+					t.Check("the first end on her left", p0.X < p1.X, string.format("%.2f, %.2f", p0.X, p1.X))
+					t.Near("at the height by its age", p0.Y, origin.Y - 3 + look.Up - look.Fall * (out - look.From), 0.01)
+					local curve = 4 / 3 * math.tan(cone / 2) * radius
+					t.Near("CurveSize as the table: 0.2834 x radius at 24 degrees", ribbon.CurveSize0, curve, 0.001)
+					t.Near("at both ends", ribbon.CurveSize1, curve, 0.001)
+					local c0 = p0 + a0.WorldCFrame.RightVector * ribbon.CurveSize0
+					local c1 = p1 - a1.WorldCFrame.RightVector * ribbon.CurveSize1
+					local middle = p0 * 0.125 + c0 * 0.375 + c1 * 0.375 + p1 * 0.125
+					t.Near("an arc: its middle on the radius too", (Vector3.new(middle.X, 0, middle.Z) - point).Magnitude, radius, 0.01 * radius)
+					t.Near("its width by its age", ribbon.Width0, (look.Tall + look.Grow * (out - look.From)) * look.Width, 0.001)
+					local was = look.Width
+					look.Width = was * 2
+					at(first + frames * FRAME)
+					local wide = ribbon.Width0
+					look.Width = was
+					at(first + frames * FRAME)
+					t.Near("times Config's Width, live", wide, (look.Tall + look.Grow * (out - look.From)) * was * 2, 0.001)
+				end
+				if frames == look.VeilHold + look.VeilFade then
+					t.Near("the veil gone after its hold and fade", veil.Transparency.Keypoints[1].Value, 1, 0.001)
+					t.Check("the ribbon still on", ribbon.Transparency.Keypoints[1].Value < 1)
+				end
+			end
+			t.Check("the Shade touched", touchedAt ~= nil)
+			if touchedAt then
+				local due = away - look.Hit.Short
+				t.Check("on the frame the crest comes within Short of it", outAt(touchedAt) >= due and outAt(touchedAt - 1) < due, `frame {touchedAt}`)
+				local guis = 0
+				for _, each in shadeRoot:GetChildren() do
+					if each:IsA("BillboardGui") then
+						guis += 1
+					end
+				end
+				t.Check("once, though struck twice", guis == 1, `{guis}`)
+				local gui = shadeRoot:FindFirstChildOfClass("BillboardGui") :: BillboardGui
+				local cellLabel = gui:FindFirstChildOfClass("ImageLabel")
+				t.Near("its size", gui.Size.X.Scale, look.Hit.Size, 0.001)
+				t.Near("toward the camera", gui.StudsOffset.Z, look.Hit.Toward, 0.001)
+				t.Check("its cells' picture, white and unlit", cellLabel ~= nil and cellLabel.Image == look.Touch and cellLabel.ImageColor3 == Color3.new(1, 1, 1) and gui.LightInfluence == 0)
+			end
+			-- Done: the last crest out, nothing left on the stand-in or in the effects.
+			local done = not running.Step(action.Length + 2, action.Length + 2)
+			t.Check("done after the last crest", done)
+			t.Check("nothing left", #mine("Beam") == 0 and #mine("BasePart") == 0 and #mine("BillboardGui") == 0)
+			local onRings = 0
+			for _, ring in root:GetChildren() do
+				onRings += #ring:GetChildren()
+			end
+			t.Check("the rings bare", onRings == 0, `{onRings}`)
+			t.Wait(4 * look.Hit.Frames * FRAME + 0.1)
+			t.Check("the touch over after its four cells", shadeRoot:FindFirstChildOfClass("BillboardGui") == nil)
+			-- The heal's ring round a body: flat, its cell, as wide as the table says, from its floor up; then gone.
+			Effects.HealRing(shadeRoot)
+			local plate = mine("BasePart")[1] :: BasePart?
+			local surface = if plate then plate:FindFirstChildOfClass("SurfaceGui") else nil
+			local healLabel = if surface then surface:FindFirstChildOfClass("ImageLabel") else nil
+			t.Check("a ring", plate ~= nil and surface ~= nil and healLabel ~= nil)
+			if plate and surface and healLabel then
+				local heal = look.Heal
+				t.Check("flat, its cell, white and unlit", surface.Face == Enum.NormalId.Top and healLabel.ImageRectOffset == Vector2.new(0, look.Cell) and healLabel.ImageColor3 == Color3.new(1, 1, 1) and surface.LightInfluence == 0)
+				t.Near("radius x 2 / Drawn across", plate.Size.X, heal.Radius * 2 / heal.Drawn, 0.001)
+				t.Near("its floor's From up", plate.Position.Y, shadeRoot.Position.Y - 3 + heal.From, 0.001)
+			end
+			t.Wait(look.Heal.Frames * FRAME + 0.1)
+			t.Check("and gone", #mine("BasePart") == 0)
+			stand:Destroy()
+			shade:Destroy()
+		end,
+	},
+	{
 		Name = "Fight: the Held Note lands on each Shade in its cone, heals her, and never holds her",
 		Run = function(t: any)
 			-- docs/asset-requests.md, AR4, section 9: five touches, one a crest, each on every Shade inside the cone and a heal

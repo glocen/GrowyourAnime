@@ -1974,6 +1974,29 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
     - Research's verdict on the replay.
     - The art sheet's full run and its checks.
   - **Hours:** about 3, an estimate.
+- **Round 2 in the game (Faber, 2026-11-12).**
+  - **In:**
+    - The clip is imported into the saved place (version 188): 133 keyframes, 101 moved from round 1, the markers unchanged.
+    - The picture is uploaded for the group by the key: 139257020366755, Approved, in `Config.Effects.LanternBurst.Picture`. Round 1's 98613697418337 is unused (`docs/asset-log.md`, row 18).
+  - **Tests:**
+    - The fight's self-test cases: 223 of 223 at 60 fps, the clip's markers against its beats included.
+    - Logic 1,584; type check 0 new.
+  - **Research's take, Pip's burst killing two Shades from the player's camera** (`build/captures/ar4/`):
+    - `pip_r2_two_take.mkv` is the take.
+    - `pip_r2_two_strip.png` runs from 0.82 to 2.27 s, a cell every 3 frames, six to a row.
+    - `pip_r2_two_full_<s>.png` are full views: 1.12 (the numbers), 1.37 and 1.47 (the boil), 1.57 (the lanterns flare), and 1.67 to 1.87 (they climb and burn down).
+    - The seconds count from the step Pip's clip was first drawn. The magenta square in the bottom-left corner is the take's sync mark: my kit left it on after its first picture.
+    - Staged for the take only: two level 1 brawlers side by side, 9 studs ahead of the avatar. Their health was tuned live to 200, so the burst's 298 kills both (at 881 it can't). It went back when the playtest stopped, and nothing in the game changed.
+    - What it shows: both bodies fall together, and two lanterns flare out of Pip's flame as two separate flames and climb apart.
+  - **Found: the kill shows 0.3 s before its flame.** Three takes, the same each time.
+    - **On the client:** the Shades hit Pip twice during his throw. Each hit holds his clip about 0.1 s, at frames 43 and 55, so his heave stutters twice.
+    - **On the server:** the clock doesn't hold, so the Burst's hit lands on time at 1.10 s, while his clip on the client is only at frame 57.
+    - **Then:** the client holds Pip at frame 57, mid-flight, for the heavy hold, and his flame comes out at 1.38 s. By then the Shades started falling at 1.08 s and their numbers showed at 1.12 s. Their lanterns flare at 1.65 s.
+    - **The cause:** hitstop is presentation only, and its time isn't caught up (`handbook/feel/combat.md`, "Hit confirmation"; `handbook/feel/game-feel.md`, "Hitstop"). That works for a hold after the fighter's own contact. A hold taken in the middle of the fighter's own action delays its later beats on the client only.
+    - **Proposal for research,** its own piece outside round 2. Both changes are client only, with no change to pace or balance:
+      1. A fighter in the middle of an action takes no hold when struck. It still shows the spark and the number. This removes this drift and the stutter in his heave.
+      2. A server hit that arrives before the client reaches its beat moves the clip on to that beat before the hold, so the hold always lands on its contact frame.
+    - **The other way:** the server could hold too. That slows every action by its holds, which is a balance change.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

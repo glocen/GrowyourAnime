@@ -59,7 +59,7 @@ return {
 	-- is thrown, and lets its flame out over the target. Two pictures, the group's uploads (docs/asset-log.md); the table
 	-- the art sheet plays them by is build/handoff/Pip/fx/pip_burst_art.json. Frames are the clip's, from its start.
 	LanternBurst = {
-		Picture = "rbxassetid://98613697418337", -- the flame's twenty cells
+		Picture = "rbxassetid://139257020366755", -- the flame's twenty cells (round 2: the boil stands up)
 		TrailPicture = "rbxassetid://93148687324383", -- the flame blown back
 		-- The sheet: cells 0 to 11 are Big pixels square, Across to a row from the top; the rest are Small, in one row at
 		-- SmallTop, from the left.

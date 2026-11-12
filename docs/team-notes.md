@@ -6,11 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Haymaker: the director keeps A, and B5 is a planned rework (AR1, section 9). The Shade's burst is closed (AR2, section 13). Pip's Lantern Burst in the game: competent, with round 2 from Modulo to judge on Faber's take of a two-Shade kill (AR4, section 8). Held Note: the block accepted at Ease 2, and its heal is 0.01 a touch (AR4, section 9). Next: Pip's round 2 and the two rising flames, then Held Note's art.
 
-**Faber (builder).** 2026-11-12: the Shade's burst is in the game from Modulo's art, with the content check's capture (`docs/asset-requests.md`, AR2, section 13).
-- **Quaestor:** the burst and section 10's bloom capture are ready for your pass, `build/captures/ar2/burst_*`. Nothing red after the hide on either floor, and the gold edge holds under the bloom. For your read: the flame passes the damage number about 31 to 34, and on the ordinary takes the ember climbs into the HUD's top-right panels. The elite never plays Hit or HitLeft in a fight, so its part of the capture is the Burst.
-- Fixed on the way: a body that left before its Burst marker kept its burst in the world. Now the burst goes with it, and a clip held still bursts at 0.85 s (a new case). Lyric's HeldNote is re-imported from f4aad8c.
-- Tests: the full suite 399 of 400 (the Base label-size intermittent, queued), logic 1,584, type check 0 new. The place is saved, v185.
-- Now: Pip's round 2 (the clip's import, the picture's upload), then his two rising flames on a kill, then the intermittents.
+**Faber (builder).** 2026-11-12: Pip's round 2 is in the game, and research's take of his burst killing two Shades is done (`docs/asset-requests.md`, AR4, section 8).
+- **Quaestor:** the take, its strip and full views are in `build/captures/ar4/pip_r2_two_*`, for your verdict. Found on the way: the kill shows 0.3 s before the flame, because a hold taken during his own action holds only the client's clip. Two client-only fixes are proposed in the same section, for your word.
+- Tests: the fight's cases 223 of 223, logic 1,584, type check 0 new. The place is saved, v188.
+- Now: the ranged lead's spot, your tier 1 experiment in the replay. Then the intermittents.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Pip's burst, round 2, is in the handoff (AR4, section 8). Import `Pip_LanternBurst`, and upload `pip_burst.png` for the group by the key, in place of the current one. The table and the trail are unchanged.
@@ -18,7 +17,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Waiting on the director's go:** the two full sheet renders, Lyric's (section 10, stopped for memory) and Pip's art checks. Haymaker's clip striking down waits on item 7.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (AR4, Pip's round 2). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (the ranged lead's spot, research's experiment). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -32,7 +31,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
-4. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): your word, and I add them.
+4. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): research passed on your yes (2026-11-12). The tool guard's list changes on your own word to me, so one line in my session and I add them.
 5. **The phone-size take** for TR2's close: in Studio's Test tab, Device, pick a phone in landscape (any recent phone), then tell me. I record one take and put it back.
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 
@@ -61,6 +60,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Pip's round 2 in the game (Faber)
+
+- **What:** Modulo's round 2 of the Lantern Burst plays in the game: Pip is rocked back a step, and the flame stands up. Research's take of the burst killing two Shades shows two lanterns rising out of his flame.
+- **Where:** the clip in the saved place (v188), and the picture's new upload in `Config.Effects.LanternBurst.Picture`. The record: `docs/asset-requests.md`, AR4, section 8.
+- **Open:** research's verdict on round 2. The kill shows 0.3 s before the flame (a hold mid-action, held on the client only), with two fixes proposed in the same section.
 
 ### 2026-11-12. The Shade bursts into light and paper (Faber)
 

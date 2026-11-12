@@ -4,3 +4,5 @@ Every asset made for the game, and every sound taken from Roblox's library: one 
 
 | Date | Asset | Kind | Made by, or from | Tool or source | Roblox id | Notes |
 |---|---|---|---|---|---|---|
+| 2026-11-12 | Rook, the model: eight meshes and four maps (`build/handoff/Rook/`) | meshes, textures | Modulo | `tools/blender/rook_model.py`, from `rook_sheet.py`'s shapes | not uploaded | AR1, delivery 2. Original design; content check PASS 2026-11-12 |
+| 2026-11-12 | Rook's clips: Idle, Combo, Haymaker, Hit, Down, Up, Reveal, Work (`build/handoff/Rook/clips/`) | animations | Modulo | `tools/blender/rook_clips.py` | not uploaded | AR1, delivery 3. Content check PASS 2026-11-12 |

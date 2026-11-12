@@ -1,0 +1,200 @@
+{
+ "name": "Rook",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
+ "maps": {
+  "Color": "Rook_Color.png",
+  "Roughness": "Rook_Roughness.png",
+  "Metalness": "Rook_Metalness.png",
+  "Emissive": "Rook_Emissive.png"
+ },
+ "texels_per_stud": 73,
+ "emissive": {
+  "tint": "#FFA630",
+  "cold": 0,
+  "hot": 2.5,
+  "pieces": [
+   "Rook_RightArm",
+   "Rook_Piston"
+  ],
+  "note": "the mask covers the knuckles, the heat band and the piston's rod"
+ },
+ "pieces": [
+  {
+   "name": "Rook_Torso",
+   "mesh": "Rook_Torso.json",
+   "on": "Torso",
+   "centre": [
+    0.0,
+    3.445,
+    0.1
+   ],
+   "size": [
+    2.1,
+    2.89,
+    1.6
+   ],
+   "tris": 1512
+  },
+  {
+   "name": "Rook_Head",
+   "mesh": "Rook_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.74426,
+    -0.02946
+   ],
+   "size": [
+    1.375,
+    1.739,
+    1.369
+   ],
+   "tris": 916
+  },
+  {
+   "name": "Rook_RightArm",
+   "mesh": "Rook_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.7425,
+    2.71875,
+    -0.03875
+   ],
+   "size": [
+    1.983,
+    3.002,
+    1.882
+   ],
+   "tris": 2912
+  },
+  {
+   "name": "Rook_LeftArm",
+   "mesh": "Rook_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.5,
+    3.01,
+    0.0
+   ],
+   "size": [
+    1.05,
+    2.02,
+    1.05
+   ],
+   "tris": 648
+  },
+  {
+   "name": "Rook_RightLeg",
+   "mesh": "Rook_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    -0.0725
+   ],
+   "size": [
+    1.05,
+    2.0,
+    1.215
+   ],
+   "tris": 488
+  },
+  {
+   "name": "Rook_LeftLeg",
+   "mesh": "Rook_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    -0.0725
+   ],
+   "size": [
+    1.05,
+    2.0,
+    1.215
+   ],
+   "tris": 488
+  },
+  {
+   "name": "Rook_Piston",
+   "mesh": "Rook_Piston.json",
+   "on": "Right Arm",
+   "centre": [
+    1.9525,
+    3.3,
+    0.64
+   ],
+   "size": [
+    0.585,
+    0.96,
+    0.6
+   ],
+   "tris": 200,
+   "motor": "Piston",
+   "pivot": [
+    1.9525,
+    3.5,
+    0.64
+   ]
+  },
+  {
+   "name": "Rook_Tape",
+   "mesh": "Rook_Tape.json",
+   "on": "Left Arm",
+   "centre": [
+    -2.15802,
+    1.96115,
+    0.62581
+   ],
+   "size": [
+    0.348,
+    1.007,
+    0.521
+   ],
+   "tris": 72,
+   "motor": "Tape",
+   "pivot": [
+    -2.1091,
+    2.4646,
+    0.3956
+   ]
+  }
+ ],
+ "motors": {
+  "Piston": {
+   "slides": [
+    0,
+    1,
+    0
+   ],
+   "travel": 0.65,
+   "note": "along the arm, toward the shoulder, through Haymaker's wind-up"
+  },
+  "Tape": {
+   "note": "swings about its pivot: the loose ends trail the arm"
+  }
+ },
+ "points": [
+  {
+   "name": "Knuckles",
+   "on": "Right Arm",
+   "at": [
+    1.72,
+    1.2175,
+    -0.06
+   ],
+   "note": "the ram's striking face"
+  },
+  {
+   "name": "RamCentre",
+   "on": "Right Arm",
+   "at": [
+    1.72,
+    1.9375,
+    -0.06
+   ]
+  }
+ ],
+ "tris": 7236
+}

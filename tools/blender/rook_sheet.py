@@ -272,7 +272,7 @@ def build(scene, variant, hot=False, model=False):
        face("LightR", 0.305, 4.615, 0.055, 0.06, m["Bone"], proud=0.012),
        face("LightL", -0.235, 4.615, 0.055, 0.06, m["Bone"], proud=0.012),
        face("Plaster", 0.0, 4.4, 0.3, 0.085, m["Bone"], tilt=7, proud=0.006),
-       face("Mouth", 0.05, 4.2, 0.26, 0.035, m["SkinShade"], tilt=-7))
+       face("Mouth", 0.03, 4.2, 0.36, 0.045, m["Ink"], tilt=-5, proud=0.006))  # one firm line: a set jaw
     blocks = {"notch": ((-0.64, -0.4), (-0.22, 0.64)), "merlon": ((-0.64, -0.28), (-0.17, 0.17), (0.28, 0.64)),
               "wedge": ((-0.64, 0.64),), "crop": ()}[p["hair"]]
 

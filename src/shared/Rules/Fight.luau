@@ -117,9 +117,10 @@ function Fight.Damage(health: number, amount: number): (number, boolean)
 	return left, left <= 0
 end
 
--- Health after `seconds` out of a fight. `since` is how long since it last hit or was hit; healing starts After that.
-function Fight.Heal(health: number, maxHealth: number, since: number, seconds: number, heal: { After: number, PerSecond: number }): number
-	if since < heal.After or health <= 0 or not (seconds > 0) then
+-- Health after `seconds` of healing. `since` is how long since it last took a hit; healing starts After that, and never
+-- while an enemy is `engaged` with it (research's read of TR2's fixes, 2026-11-12).
+function Fight.Heal(health: number, maxHealth: number, since: number, seconds: number, heal: { After: number, PerSecond: number }, engaged: boolean): number
+	if engaged or since < heal.After or health <= 0 or not (seconds > 0) then
 		return health
 	end
 	return math.min(maxHealth, health + maxHealth * heal.PerSecond * seconds)

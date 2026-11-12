@@ -131,12 +131,13 @@ local function registerDebug()
 	DebugService.Register("BaseGive", function(who: any, shard: any, count: any): any
 		local player = DebugService.ResolvePlayer(who)
 		local amount = if count == nil then 1 else count
-		if not player or type(shard) ~= "string" or Shards.ById[shard] == nil or type(amount) ~= "number" or amount < 1 or amount ~= math.floor(amount) then
+		if not player or type(shard) ~= "string" or Shards.ById[shard] == nil or type(amount) ~= "number" or amount == 0 or amount ~= math.floor(amount) then
 			return { Ok = false, Error = "BadArgs" }
 		end
 		return DataService.Change(player, "BaseGive", function(draft: Profile.Data): { [string]: any }
-			draft.Bag.Shards[shard] = (draft.Bag.Shards[shard] or 0) + amount
-			return { Ok = true, Held = draft.Bag.Shards[shard] }
+			local held = math.max(0, (draft.Bag.Shards[shard] or 0) + amount) -- a negative count takes them out, never below none
+			draft.Bag.Shards[shard] = if held > 0 then held else nil
+			return { Ok = true, Held = held }
 		end)
 	end)
 end

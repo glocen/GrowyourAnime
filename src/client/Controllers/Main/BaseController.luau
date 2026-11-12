@@ -558,6 +558,15 @@ function BaseController.Refresh()
 			table.insert(lines, "Void Breaker · idle")
 		end
 		setLines(breaker.Plate, lines)
+		-- Lit while a shard waits in the bag, until it's in (research's read of TR2's fixes, 2026-11-12).
+		local bagged = false
+		for _, count in view.Bag.Shards do
+			bagged = bagged or count > 0
+		end
+		local panel = breaker.Plate:FindFirstChild("Panel")
+		if panel and panel:IsA("GuiObject") then
+			Panel.Lit(panel, bagged)
+		end
 		if breaker.Prompt then
 			breaker.Prompt.ActionText = if #view.Base.Ready > 0 then "Open" else "Breaker"
 		end

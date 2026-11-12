@@ -28,7 +28,9 @@ return {
 		CatchUpFrom = 18,
 		TeleportFrom = 90, -- past this it reappears at the avatar's side
 		DownSeconds = 4, -- down, then up at the avatar's side at full health, with nothing lost
-		Heal = { After = 5, PerSecond = 0.1 }, -- out of a fight: after 5 s without a hit either way, a tenth a second
+		-- It heals After seconds from the last hit it took, PerSecond of its health a second, but never while a Shade is
+		-- engaged with it: so it walks into the next pack whole (research's read of TR2's fixes, 2026-11-12; tier 2).
+		Heal = { After = 2, PerSecond = 0.25 },
 	},
 
 	-- Shades (docs/test-requests.md, TR2, "the builder's read"): a pack notices a lead within 20 studs and gives up past 40

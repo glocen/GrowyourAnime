@@ -1070,6 +1070,62 @@ return {
 		end,
 	},
 	{
+		Name = "HUD: a shard in the bag: the chip names the next step, and the Breaker's plate is lit until it's in",
+		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
+		Run = function(t: any)
+			-- Home is the server's respawn and the field is the test pad: a far marker isn't streamed in to this client.
+			local hud = HudController.Parts()
+			-- The plates are laid again with the world, so the Breaker's may be on its way back.
+			local plate, panel, stroke = nil :: Instance?, nil :: Instance?, nil :: UIStroke?
+			waitFor(t, ANSWER, function(): boolean
+				plate = BaseController.Parts().BreakerPlate
+				panel = if plate then plate:FindFirstChild("Panel") else nil
+				stroke = if panel then panel:FindFirstChildOfClass("UIStroke") else nil
+				return stroke ~= nil
+			end)
+			t.Check("the Breaker's plate", stroke ~= nil, `plate {plate ~= nil}, panel {panel ~= nil}, edge {stroke ~= nil}`)
+			if not stroke then
+				return
+			end
+			local function held(): number
+				local view = ProfileController.Get()
+				local total = 0
+				for _, count in (if view then view.Bag.Shards else {}) do
+					total += count
+				end
+				return total
+			end
+			local before = held()
+			local shard = "named_watt"
+			t.Check("a shard goes in the bag", t.Server("BaseGive", shard, 1).Ok == true)
+			t.Check("and the save's copy has it", waitFor(t, ANSWER, function(): boolean
+				return held() == before + 1
+			end))
+			local text = hud.ChipText :: TextLabel
+			local old = Players.LocalPlayer.Character
+			t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+				local character = Players.LocalPlayer.Character
+				local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+				return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+			end))
+			t.Wait(PLATE_TICK * 2)
+			t.Check("at home, the chip says into the Breaker", hud.Chip.Visible and string.find(text.Text, "into the Breaker", 1, true) ~= nil, text.Text)
+			t.Check("and the Breaker's plate is lit", stroke.Color == Theme.Colour.Ready, tostring(stroke.Color))
+			t.Reset() -- the test pad, off the plot
+			t.Wait(PLATE_TICK * 2)
+			t.Check("in the field, break it at home", hud.Chip.Visible and string.find(text.Text, "at home", 1, true) ~= nil and string.find(text.Text, "Breaker", 1, true) == nil, text.Text)
+			t.Check("the shard comes back out of the bag", t.Server("BaseGive", shard, -1).Ok == true)
+			t.Check("as it was", waitFor(t, ANSWER, function(): boolean
+				return held() == before
+			end))
+			t.Wait(PLATE_TICK * 2)
+			if before == 0 then
+				t.Check("an empty bag: no chip", not hud.Chip.Visible, text.Text)
+				t.Check("and the plate unlit", stroke.Color == Theme.Colour.Line, tostring(stroke.Color))
+			end
+		end,
+	},
+	{
 		Name = "Base: the plot's Breaker, bays and battery carry their prompt and plate; the dock opens each screen",
 		Run = function(t: any)
 			local parts = BaseController.Parts()

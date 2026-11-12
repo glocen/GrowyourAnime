@@ -50,7 +50,7 @@ export type Fighter = {
 	ActionAt: number,
 	Checked: number, -- the action's clock at the last beat check
 	ReadyAt: { [string]: number },
-	LastFight: number, -- it last hit or was hit
+	LastHurt: number, -- it last took a hit (Combat.Lead.Heal)
 	NextThink: number,
 	Home: CFrame?, -- a Shade's spawn
 	Pack: string?,
@@ -350,7 +350,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ActionAt = 0,
 		Checked = -1,
 		ReadyAt = {},
-		LastFight = -math.huge,
+		LastHurt = -math.huge,
 		NextThink = at + rng:NextNumber() * Combat.Think, -- spread over the tick
 		Home = nil,
 		Pack = nil,
@@ -525,7 +525,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls)
 	local left, fell = Fight.Damage(target.Health, result.Total)
 	setHealth(target, left)
-	f.LastFight, target.LastFight = at, at
+	target.LastHurt = at
 	if target.Side == "Shade" and f.Side == "Lead" then
 		if f.Owner and not target.Hitters[f.Owner] then
 			target.Hitters[f.Owner] = true
@@ -593,7 +593,7 @@ local function rise(f: Fighter, at: number)
 	end
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
-	f.LastFight = -math.huge
+	f.LastHurt = -math.huge
 	setState(f, "Idle")
 	FightService.Rose:Fire(f)
 end
@@ -621,6 +621,11 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		stop(f)
 		return
 	end
+	local engaged = false -- a Shade has it for its target
+	for _, other in fighters do
+		engaged = engaged or (other.Side == "Shade" and other.Target == f and standing(other))
+	end
+	setHealth(f, Fight.Heal(f.Health, f.Block.Health, at - f.LastHurt, dt, Combat.Lead.Heal, engaged))
 	local toAvatar = (avatar.Position - f.Root.Position).Magnitude -- in three dimensions: an avatar teleported straight up still pulls its lead
 	local candidates: { Fight.Candidate } = {}
 	for _, other in fighters do
@@ -663,7 +668,6 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		return
 	end
 	face(f, nil)
-	setHealth(f, Fight.Heal(f.Health, f.Block.Health, at - f.LastFight, dt, Combat.Lead.Heal))
 	if toAvatar > Combat.Lead.Follow then
 		endAction(f, at)
 		moveTo(f, besideAvatar(avatar).Position, Fight.FollowSpeed(toAvatar, Combat.Lead))

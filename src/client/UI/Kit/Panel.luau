@@ -39,6 +39,16 @@ function Panel.new(props: Props): Frame
 	return frame
 end
 
+-- A panel's edge lit in the Ready colour, twice as thick: a place that asks for the player's next step (the Breaker's
+-- plate while a shard waits in the bag; research's read of TR2's fixes, 2026-11-12). Off, its edge as made.
+function Panel.Lit(frame: GuiObject, on: boolean)
+	local stroke = frame:FindFirstChildOfClass("UIStroke")
+	if stroke then
+		stroke.Color = if on then Theme.Colour.Ready else Theme.Colour.Line
+		stroke.Thickness = if on then Theme.Size.Edge * 2 else Theme.Size.Edge
+	end
+end
+
 -- A list inside `frame`: its children stack in order, `gap` apart.
 function Panel.List(frame: GuiObject, direction: Enum.FillDirection?, gap: number?): UIListLayout
 	local list = Instance.new("UIListLayout")

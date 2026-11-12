@@ -15,6 +15,7 @@ local EffectsConfig = require(Shared.Config.Effects)
 local Profile = require(Shared.Data.Profile)
 local BaseConfig = require(Shared.Config.Base)
 local Growth = require(Shared.Rules.Growth)
+local Markers = require(Shared.World.Markers)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
@@ -152,8 +153,21 @@ local function fallenNear(): Vector3?
 	return best
 end
 
--- The chip over the dock while the bag holds a shard: the hook home stays in view until it's in the Breaker
--- (research's verdict on TR2, 2026-11-12).
+-- Whether the avatar stands on its own plot.
+local function atHome(): boolean
+	local plot = player:GetAttribute("Plot")
+	local floor = if type(plot) == "number" then Markers.Find("Plot", { Plot = plot }) else nil
+	local at = avatarAt()
+	if floor == nil or not floor:IsA("BasePart") or at == nil then
+		return false
+	end
+	local offset = floor.CFrame:PointToObjectSpace(at)
+	return math.abs(offset.X) <= floor.Size.X / 2 and math.abs(offset.Z) <= floor.Size.Z / 2
+end
+
+-- The chip over the dock while the bag holds a shard: the hook home stays in view until it's in the Breaker, and names
+-- the step that's next: in the field "break it at home", at home "into the Breaker" (research's verdict on TR2 and its
+-- read of the fixes, 2026-11-12).
 local function showChip(view: Profile.View)
 	local kinds, total, first = 0, 0, nil :: string?
 	for shard, count in view.Bag.Shards do
@@ -165,7 +179,9 @@ local function showChip(view: Profile.View)
 	end
 	chip.Visible = total > 0
 	if first then
-		chipText.Text = if kinds == 1 and total == 1 then `{Read.ShardName(first)}: break it at home` else `{total} shards: break them at home`
+		local home = atHome()
+		local step = if home then "into the Breaker" elseif total == 1 then "break it at home" else "break them at home"
+		chipText.Text = if kinds == 1 and total == 1 then `{Read.ShardName(first)}: {step}` else `{total} shards: {step}`
 	end
 end
 
@@ -239,6 +255,7 @@ local function step()
 		local stored = base.Data.Base.Battery
 		local rate = if stored >= BaseConfig.Battery.Capacity - 1e-6 then "full" else Read.Rate(base.Rates.Net)
 		electricity.Text = `{Read.Stored(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {rate}`
+		showChip(view) -- home or the field, as the avatar moves
 	end
 end
 

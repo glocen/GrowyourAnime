@@ -309,10 +309,11 @@ return {
 				t.Equal(`{bad} does nothing`, (Fight.Damage(100, bad)), 100)
 			end
 			local heal = Combat.Lead.Heal
-			t.Equal("in a fight, no healing", Fight.Heal(50, 100, heal.After - 0.01, 1, heal), 50)
-			t.Check("out of it, a share a second", near(Fight.Heal(50, 100, heal.After, 1, heal), 50 + 100 * heal.PerSecond))
-			t.Equal("never past the maximum", Fight.Heal(99, 100, 60, 60, heal), 100)
-			t.Equal("down, no healing", Fight.Heal(0, 100, 60, 1, heal), 0)
+			t.Equal("just hit, no healing", Fight.Heal(50, 100, heal.After - 0.01, 1, heal, false), 50)
+			t.Check("After seconds from the last hit taken, a share a second", near(Fight.Heal(50, 100, heal.After, 1, heal, false), 50 + 100 * heal.PerSecond))
+			t.Equal("never while an enemy is engaged with it", Fight.Heal(50, 100, 60, 1, heal, true), 50)
+			t.Equal("never past the maximum", Fight.Heal(99, 100, 60, 60, heal, false), 100)
+			t.Equal("down, no healing", Fight.Heal(0, 100, 60, 1, heal, false), 0)
 			t.Check("a new maximum keeps the share", near(Fight.Rescale(40, 80, 200), 100))
 			t.Equal("from nothing, full", Fight.Rescale(0, 0, 200), 200)
 		end,

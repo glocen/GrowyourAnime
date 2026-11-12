@@ -298,7 +298,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check (section 7), uploaded and in the game, its looks passed (section 9). Condition 9's contact sheet is drawn (section 10): in AttackLeft the second mask cuts into the first, so research picked the elite playing Attack every time, the builder's change, and the sheet is redrawn on the clips the elite plays, past the check. Open: the burst's light and paper, an effect built with the builder. Its block-in is signed, C (section 8). Its art sheet is delivered, past the content check, for research's verdict (section 11).
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check (section 7), uploaded and in the game, its looks passed (section 9). Condition 9's contact sheet is drawn (section 10): in AttackLeft the second mask cuts into the first, so research picked the elite playing Attack every time, the builder's change, and the sheet is redrawn on the clips the elite plays, past the check. Open: the burst's light and paper, an effect built with the builder. Its block-in is signed, C (section 8). Its art sheet is accepted by research, competent, and on to the builder (section 11).
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -1016,7 +1016,7 @@ Accepted as they are: the gems read by colour first at 16 px (the cut follows at
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model is read by research (competent, its three fixes landed), its two fixes for the next bake are made and past the content check, and it's **delivered** beside the sheet (section 5), made on Opus 5.5 xhigh: the fixes not yet read, the model not in the engine. Her clips are next.
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model is read by research (competent, its three fixes landed), its two fixes for the next bake are made and past the content check, and it's **delivered** beside the sheet (section 5), made on Opus 5.5 xhigh: the fixes not yet read, the model not in the engine. Her five clips are **delivered** to `build/handoff/Lyric/clips/`, accepted by research, and the look at her props in the robe set's fall is made (section 6). Delivery 4 for Pip, Lantern Burst's look: the block-in is drawn on his clip in three variants, for research's verdict (section 7).
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -1464,6 +1464,63 @@ On Modulo's five pose sheets (`build/scratch/modulo/lyric/clips/`). **Yes to tim
     - 30 to the end: laid out, the pole lies across her head, through her hair's surface, the base standing a stud off the floor.
   - **The speakers: they stay.** They ride her shoulders down. Laid out, they sit 0.09 (right) and 0.15 studs (left) over the floor beside her head, never through it.
   - **For Faber, when Lyric goes in:** research's prop state for the stand on `Down`. It leaves her fist at the blow, before 12, so it never flags up over her, and lies beside her. On `Up` it comes back to her hand. `Hit` and `Up` weren't stepped. `Hit` is short and keeps her upright. `Up` starts from the lying pose, so the stand comes back to her as she rises.
+
+### 7. Pip's Lantern Burst: the block-in (Modulo, 2026-11-12)
+
+Grey shapes on his delivered LanternBurst clip, on its markers (Heat 8, Send 51, Burst 66, Return 98): timing and size only, no art. Made on Opus 5.5 xhigh.
+
+- **Where:** `build/scratch/modulo/pip/burst/`.
+  - `pipburst_A.png`, `_B.png` and `_C.png`: sixteen frames each from the player's camera, 8 to 128.
+  - The three variants side by side: `pipburst_side.png`; `_beside.png`, the camera beside an elite; `_hidden.png`, the worst case; `_bright.png`; `_64.png`.
+  - `pipburst.json` holds the lantern's places, each variant's share of the screen and its size.
+  - `tools/blender/pip_burst_fx.py` rebuilds them in about two minutes.
+- **The camera, as the game frames a fight** (`Config.Combat.Lead`). The lead stands beyond its target, turned `Frame` (45°). The camera is 12.5 studs behind the avatar, at the game's 70° field of view.
+  - The player sees past the avatar and the target to Pip's front-left, 33° off his front and 30 studs away. The burst is nearer, at 21.
+  - The avatar faces 26° past its target, the game's own turn for a keeper's ring, so its body hides none of the fight.
+  - Beside an elite (`Beside`, 90) the throw crosses the screen and he's seen 63° off his front.
+  - Dead on (`_hidden.png`), the avatar's body and the target hide the burst's middle.
+  - The lantern stops a stud and a half short of the target's middle, so from the player's side the target stands in front of it. **Whatever the burst is, it has to read over and round the target.**
+- **Feel line, proposed for research to sign:** past his target you see the little mage heave the lantern and get rocked back by his own throw; then his spell stands up over the Shades, a flame twice his height, and it's gone by the time he gets his hat up to look.
+- **Job and rank:** his signature, and a starter's, so it aims at exceptional. It pays off a wind-up of 0.7 s, and it shows which Shades are hit.
+- **One idea, three times:** the flame in his lantern, small, then bigger than he is.
+  - **The heat** (8 to 51): the flame grows in the cage. It fills the cage by 30 and spills out past it by 45, to 1.25 studs.
+  - **The send** (51 to 65): a ring kicks back off the lantern at his cuff, opening from 0.7 to 3.3 studs and pushed 0.9 toward him. It's the push that throws him (51 to 57). The lantern streaks out, its trail long while it's fast and gone as it stops.
+  - **The punctuation** (66): a ball of light at the lantern, 1.7 studs.
+  - **The burst** (67 on), by variant, over the area. The area's radius is a stand-in 5 studs, the builder's.
+  - **After:** the lantern goes home spent, its flame out from 66 until it's home at 128, where it relights.
+- **Variants:**
+  - **A, the bloom:** seven tongues fly out of the lantern level, swing up to stand round the area's edge as they get there, then lift off and go out by 92.
+  - **B, the flame let out:** one flame leaps up out of the lantern. Its foot drops to the floor by 69 and its belly is the area's width by 70. Its tip is at 12.7 studs by 70 and 13.2 at 72. From 73 it tears off the floor and narrows as it rises, its tip to 13.8 at 80, and it's gone at 92.
+  - **C, the lantern of light:** the lantern's six bars spring out to the area's edge and up to 9.5 studs, with a lid on them and the flame filling them from 68 to 78. Then the bars break outward and go out by 90.
+- **The measures,** at the game's field of view from the player's camera:
+
+  | Variant | Peak share of the screen | Tallest |
+  |---|---|---|
+  | A | 1.0% at 72 | 6.6 studs |
+  | B | 4.05% at 72 | 13.8 studs |
+  | C | 3.7% at 72 | 12.1 studs |
+
+  For scale: Pip stands 6.9 studs to the top of his hat, and Haymaker's thrown bracket is 5.4 studs tall at most.
+- **My pick: B.**
+  - One shape and one direction: it leaps up, most of its height in four frames, and its foot is the area.
+  - It's the only one where the feel line's "bigger than he is" reads in a frame: twice his height, beside him.
+  - It reads over the target from all three cameras, and its top still shows over the avatar's head when the avatar is dead on.
+  - A is the size of a Shade and reads as spikes standing up from the ground; dead on, the avatar hides it.
+  - C reads as a gazebo, a cage set down over the target, and a cage says "held", a state this signature doesn't have (`docs/roster.md`).
+- **Stand-ins, not decided here:** the area's radius (5); the flight, the clip's 12 studs, scaled so the lantern stops about a stud short of the target's front; the camera's geometry (Faber's staged replay is the truth); the greys.
+- **What I see wrong:**
+  - **B's mass is one smooth teardrop.** On the sheets it can read as a drop or an onion dome. The art sheet gives it tongues and a ragged tip, so it's never a drop (section 1, condition 5).
+  - **B rises, like the Shade's burst** (AR2, section 11). When the Lantern Burst kills, two flames go up within a breath of each other. They differ in size (13 studs against about 4), in colour (`#FF8A3D` against warm white and gold) and in when they come. Whether that reads as one gesture or a muddle is a call for motion.
+  - **The punctuation is hidden from the player's camera.** The ball at 66 sits behind the target. From there the first readable frame is 67, B's tip just over the Shade's mask at 6.8 studs. The hit's frame belongs on 66 all the same, and the art's first frame has to clear the target's head.
+  - **The heat is about 8 pixels at that distance.** From there, the wind-up reads through his pose and the lantern's own glow, not through the effect's size.
+  - **The kick's ring** is a thin circle at his sleeve, and it's gone at 64 px. The recoil is the clip's read. If the ring adds nothing in motion, the art drops it.
+  - The 64 px sheet's labels cover a third of each tile, as on the Shade's.
+- **For research and the builder, tier 2, a proposal:** the signature "fires by itself, with a readout the player can watch" (`docs/design.md`). The lantern comes home spent. Its flame could relight over the cooldown, from dark at the burst to full when it's ready, so the lantern is the readout. It needs `EmissiveStrength` on `Pip_Lamp` driven by the cooldown, and research's word.
+- **Not done:**
+  - Research's verdict, with `ga-fresh-eyes` on the signature.
+  - Then the art sheet: the flame's shape, tongues and `#FF8A3D`, never redder; the trail; the heat in the cage; the rim for the bright floor. Then its content check.
+  - Then the builder's build. The beats aren't in a Definition: Pip has no action in `Definitions.Actions` yet.
+- **Hours:** about 1.0.
 
 ## AR5. The festival kit and the base's machines
 

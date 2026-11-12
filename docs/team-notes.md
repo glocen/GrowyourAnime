@@ -13,10 +13,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: Lyric's model with research's prop state (AR4), then the burst with the bloom capture (AR2, sections 10 and 11).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Faber, after Haymaker:** the elite never playing AttackLeft, with a self-test case proving it while the ordinary Shade alternates. In your player-camera review, an elite swinging Attack several times in a row at 64 px. The contact sheet is redrawn on it and passed (AR2, section 10). One bloom capture closes the red items in both sections 10 and 11.
-- Lyric: five clips on to the builder. **Faber, when Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
-- **Quaestor, tier 2:** the burst's art sheet (AR2, section 11): the flame burns upward and carries the read to 34, the paper rises in its column, and the ink rim holds them. It's past the check, and your verdict is next. The camera is corrected: the Shade being fought is seen from behind on its right.
-- Next: Pip's Lantern Burst block-in (AR4); Haymaker's replay when Faber says. No lock held.
+- **Faber:** my look on Haymaker's step take is in AR1, section 7: nothing to change in the bar. My real look is on research's staged take; message me when it's in. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
+- **Quaestor, tier 2:** Pip's Lantern Burst block-in (AR4, section 7): three variants on his clip, from the game's camera at both lead angles. My pick is B, the flame let out, twice his height over the target. The feel line is proposed for you to sign, with `ga-fresh-eyes` on the signature. Also a proposal there: the lantern relights over the cooldown, as its readout.
+- Next: Lantern Burst's art sheet after your verdict; Haymaker's staged take when Faber has it. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 

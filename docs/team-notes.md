@@ -13,9 +13,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: Haymaker's replay with Modulo. TR2 waits only on the phone-size take (below).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Quaestor:** the Shade's burst block-in waits on your verdict (AR2, section 8): three variants, my pick C, the sky lantern. And the ram's strength of 10 is yours to tune on Haymaker's replay.
-- Lyric: five clips on to the builder; Pip's `Down` on her puts the stand through the floor and across her head, the speakers clear. **Faber, when Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6, "The look, made").
-- The copy's tie: the elite Brawler wears a copy of its mask without ties, a new mesh on the same maps, past the content check (AR2, section 7). **Faber:** upload `Shade_MaskBrawlerBare.json`, point `ELITE.Brawler` at it with the recipe's new centre, then the looks from below and behind. Then condition 9's contact sheet is mine.
+- **Quaestor, tier 2:** the elite's contact sheet (AR2, section 10): in AttackLeft its second mask cuts into the first, 26 to 31, so the check blocks the public build. Your pick: the elite plays Attack in its place (mine and the check's), or a re-posed AttackLeft for every Shade. Also yours: the burst block-in's verdict (section 8), the ram's strength of 10 on Haymaker's replay.
+- **Faber, after Haymaker:** the fix research picks; and the engine capture the 16/6 check's condition 2 still needs (AR2, section 10).
+- Lyric: five clips on to the builder. **Faber, when Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
 - Next: Haymaker's replay when Faber says; the burst's art sheet after research's verdict. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.

@@ -244,7 +244,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check, for the builder to upload and look at again (section 7). Open: the burst's light and paper, an effect built with the builder. Its block-in waits on research's verdict (section 8).
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, and delivery 3, the nine clips, are delivered to `build/handoff/Shade/` past the content check and research's reads. The colour map and the glow mask are rebaked for how Roblox draws a glow, and the clips carry the game's names and fades (section 4): uploaded and in the game, past the engine look (section 6). The elite's second mask is placed, in the recipe, and past the content check for the Brawler (section 5): installed, and in the engine its tie stands out of the sleeve (section 6), so the Brawler's now wears a copy of its mask without ties, past the content check (section 7), uploaded and in the game, its looks passed (section 9). Condition 9's contact sheet is drawn (section 10): in AttackLeft the second mask cuts into the first, so the check blocks the public build until research picks the fix, the elite playing Attack in its place or a re-posed AttackLeft. Open: the burst's light and paper, an effect built with the builder. Its block-in waits on research's verdict (section 8).
 
 ### 1. The design sheet (Modulo, 2026-11-12)
 
@@ -609,6 +609,54 @@ Grey boxes on the delivered Burst clip: timing and size only, no art. Made on Op
   - **At 64 px,** from the front, the three-quarter and the side (`elite_bare_64.png`): the small mask stays pale on the arm, and from the front it shows as a thin pale edge, the copy's own face at its angle.
 - **Next:** condition 9's contact sheet is Modulo's.
 - **Hours:** about 0.7.
+
+### 10. The elite's contact sheet (Modulo, 2026-11-12)
+
+Section 5's condition 9, with the ordinary Shade beside it for section 6's 16/6 check, condition 2. `build/handoff/Shade/shade_elite_contact.png`, drawn by `tools/blender/shade_elite_contact.py`. Made on Opus 5.5 xhigh.
+
+- **What it is:**
+  - The baked model on the rig, with the copy without ties at the recipe's placement, seated at rest as the game welds it.
+  - The nine delivered clips, from the player's camera.
+  - Lit in Eevee with the uploaded maps at the game's numbers: body `#E80000` at 16, masks `#FFE2B8` at 6. Eevee has no engine tone map and no bloom.
+- **What it shows:**
+  - Each clip at its widest frame across the camera, plus the frame condition 9 names in the four first: Guard 44 braced, AttackLeft 30 Hit, HitLeft 3 struck, Burst 27. All at 64 px, on dark and on bright.
+  - The four first larger, where the second mask comes nearest.
+  - The ordinary Shade beside the elite in HitLeft 7, Burst 20 and Burst 27.
+  - Every frame of every clip, measured: the second mask's triangles against the coat's, the right sleeve's and the first mask's (an exact overlap test), and its nearest approach. The numbers are in `build/scratch/modulo/shade/contact/shade_elite_contact.json`.
+- **Found, AttackLeft crosses:**
+  - From 26 to 31, round its Hit, the second mask cuts into the first mask, and into the coat at 26.
+  - At 64 px the two masks are one pale shape.
+  - The game plays Attack and AttackLeft in turn (`Config.Animations.Mirrors`), so it shows in the dev build.
+- **Every other clip crosses nothing:**
+  - The Guard comes nearest the first mask: 0.04 studs at 79, in the let-fall.
+  - Lunge: 0.07 at 68.
+  - HitLeft: 0.23 at 3.
+  - Attack: 0.27.
+  - The game doesn't play Guard or Lunge yet.
+- **What doesn't fix it,** measured, throwaway, in `build/scratch/modulo/shade/contact/explore/` and `explore_b/`:
+  - Sliding the mask down the arm, or turning it round the arm toward its outer face: AttackLeft is cleared only by crossing the Guard or the sleeve's bell, or by facing side-on (way A, rejected in section 5).
+  - Narrowing the swing: with the sleeve's swing out cut from 86° to 50° and its rise at the Hit from 80° to 64°, the masks still cross at 29 and 30.
+  - **The cause:** the coat turns 32° under a mask that keeps watching the lead, which carries the left shoulder under the first mask's edge. That is the attack itself ("the mask still watching"), so a clip fix is a real re-pose.
+- **Proposed fix, for research (tier 2):** the elite plays Attack in AttackLeft's place. It's a code change in the builder's `FighterController`, and no passed clip, mask or placement is touched. The other way is a re-posed AttackLeft (frames about 24 to 32), which goes back to the check and changes every Shade's swing.
+- **What I see wrong:**
+  - At HitLeft 3 the small mask is clear of the first by 0.23 studs, but at 64 px the two stack into one pale cluster by the head. That's a read for research, not a crossing.
+  - The measure covers each clip's own frames, not the blends between clips.
+- **Content check, 2026-11-12:**
+  - **Rules 2, 3 and 4: PASS.** Nothing on the sheet is for upload.
+  - **Condition 9: BLOCK, for the public build only.** The dev build keeps the elite as it is. To hold:
+    1. AttackLeft is fixed, by (a) the elite playing Attack in its place (the check's recommendation too) or (b) a re-posed AttackLeft, which comes back to the check. If (b) changes every Shade's clip, the ordinary Shade's passes are looked at again.
+    2. After the fix, this sheet's AttackLeft columns and measures are drawn again: no crossing in any clip the game plays.
+    3. Before Guard or Lunge go into the game, one look in the engine at 64 px through the blends from Idle into each, since their margins are thin.
+    4. Sections 5, 6, 7 and 9's other conditions stand. Any clip, placement or glow change comes back to the check.
+  - **Closed by the sheet:**
+    - Condition 9's second mask, colour and nine clips at 64 px on both grounds, with the four first.
+    - The Guard holds.
+    - The 16/6 check's side-by-side, Strength red reading as thin rims with nothing like blood.
+    - "A body lying in red": nothing lies. Burst 27 is the clip's last frame, standing, and the game hides every part on the `Burst` marker, the second mask with them, so condition 8's "same frame, never last" holds.
+  - **Open in the 16/6 check's condition 2:**
+    - Bloom hazing red onto the ground. It needs the builder's engine capture: ordinary and elite, HitLeft and Burst up to the marker, at 64 px on dark and bright, under the game's lighting.
+    - Red reaching the paper scraps. It closes at the burst's art sheet and its own check (section 8).
+- **Hours:** about 1.5.
 
 ## AR3. The UI kit
 

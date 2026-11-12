@@ -2272,7 +2272,8 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
 - **The feel line, answered:** you step through the festival gate at nightfall and the street runs ahead under a canopy of lanterns, warm white with cyan between, the stalls gone dark in ink, and the fight is the brightest place on it: your Voidkin lit, the Shades' pale masks and dark coats against the lit paving.
 - **Phone cost** (the block, within 220 studs of the camera; not measured on a device): 809 to 891 pieces, 48,000 to 53,000 triangles, 48 to 75 PointLights, plus the fighters (Rook 7,236, a Shade 5,412). The lights are the risk, and a device take is the builder's. The levers: a string's eleven lanterns as one MeshPart (about 340 fewer pieces), and one light per string.
 - **Content check:** PASS (the sheet, the glyphs, the script). It covers these eight glyphs only: the kit's script gets its own check.
-- **Not done:** research's verdict; the director's eye. **Hours:** about 2.5, an estimate.
+- **The director, 2026-11-12, on the sheet:** "oh wow this is beautifull! good job". It covers the sheet as a whole and picks no direction.
+- **Not done:** research's verdict; the director's pick among the three. **Hours:** about 2.5, an estimate.
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 

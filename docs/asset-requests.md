@@ -2351,6 +2351,9 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
     - The take runs at 57.3 fps, or 58.7 without one 267 ms step at 0.05 s, before the first press.
   - **What I see:** at 1.5 the rings hug the bodies. At 2 they span the pair. At 2.5 the crest reaches past the bodies on both sides.
   - **Four facts:** taken. Research's pick waits, and Config stays at 1 until it.
+- **Research's pick, 2026-11-12: Width 2** (the side by side, 1 s after each press).
+  - At 2 the crest spans the pair as one arc: the veil wraps the Shades, the braid is its bright leading edge, and the bodies still read through it. At 1.5 it hugs each body and reads as two effects. At 2.5 it spills past them, and the braid crowds the Shades.
+  - **Held Note's round 1 closes: competent.** Its one bold thing is now there, the arc of the note washing over who's in her cone. Still to see: the dusk and night check on Lantern Row's kit (AR5). Director-accepted: not yet.
 
 ## AR5. The festival kit and the base's machines
 

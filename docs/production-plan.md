@@ -48,7 +48,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 
 - **Quaestor: Opus 5.5 high** from the next session. Research asks the director for Fable only for: the store's design, the retune after the first real play data, or a verdict the team disputes.
 - **Faber: Opus 5.5 xhigh.** Good for this work when each piece has a tight request and its tests. What gets a Fable read first when the reset comes: `docs/engineering-plan.md`, "For the Fable pass". A read, not a rewrite, unless the read finds one is needed.
-- **Modulo: Fable 5.2 high.** The look is where the bar is won. From 2026-11-12, Opus 5.5 xhigh until the Fable limit resets, then back on Fable 5.2 high (`docs/decisions.md`, 2026-11-12). Later on 2026-11-12, back on Fable for the last 9% of its usage. From 2026-11-13, Opus 5.5 xhigh again: Fable's usage is at 100% (the director: "he will be back on opus so record we are at 100% for fable"), and Fable returns at its reset. Each delivery names its model.
+- **Modulo: Fable 5.2 high.** The look is where the bar is won. From 2026-11-12, Opus 5.5 xhigh until the Fable limit resets, then back on Fable 5.2 high (`docs/decisions.md`, 2026-11-12). Later on 2026-11-12, back on Fable for the last 9% of its usage. From 2026-11-13, Opus 5.5 xhigh again: Fable's usage is at 100% (the director: "he will be back on opus so record we are at 100% for fable"), and Fable returns at its reset, this weekend (the director, 2026-11-13: "he will be back on fable this weekend, his approaches to art as fable so far is incredible"). Each delivery names its model.
 
 **Made on Opus, for Modulo's look on Fable.** Research lists each piece Modulo delivers on Opus, from its request entry. At the reset Modulo reads them and reworks what it judges needs it, as a fix round in each piece's entry. The Fable pieces before it: everything up to the elite's second mask (AR2, commit 95a5089).
 
@@ -66,6 +66,10 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 - Lyric's Held Note: the lunge and the crest's ribbon and veil (AR4, section 10)
 - Lyric's Held Note art sheet and her lunge into the mic (AR4, section 10)
 - Pip's Lantern Burst, the full art run of round 2 (AR4, section 8)
+- Lyric's Held Note clip: the speakers' fly-out on the crests, and the crests' markers (AR4, section 9)
+- Lantern Row's direction sheet, round 1 (AR5, section 1): superseded by round 2 and the kit, both on Fable, so likely nothing to rework
+
+On Fable since 2026-11-12, 22:05: Lantern Row's round 2 and its kit with the night (AR5), the HUD's portraits and the critical's stroke, both rounds (AR3, section 3). From 2026-11-13, on Opus again: the reveal's block-in (AR3, section 4) joins this list when it's delivered.
 
 ## Phases
 

@@ -882,7 +882,7 @@ return {
 			local kind = tostring(shade:GetAttribute("Type"))
 			t.Check("its body is lit in its type's colour", bodyLook ~= nil and bodyLook.EmissiveTint == Shades.Tint[kind], kind)
 			t.Check("its mask in the mask's own", maskLook ~= nil and maskLook.EmissiveTint == Shades.MaskTint)
-			t.Check("each at its own strength, the recipe's (AR2, section 4)", bodyLook ~= nil and maskLook ~= nil and bodyLook.EmissiveStrength == Shades.Emissive and maskLook.EmissiveStrength == Shades.MaskEmissive, if bodyLook and maskLook then `{bodyLook.EmissiveStrength} and {maskLook.EmissiveStrength}` else "")
+			t.Check("each at its own strength, Config.Shades' (AR2, section 6)", bodyLook ~= nil and maskLook ~= nil and bodyLook.EmissiveStrength == Shades.Emissive and maskLook.EmissiveStrength == Shades.MaskEmissive, if bodyLook and maskLook then `{bodyLook.EmissiveStrength} and {maskLook.EmissiveStrength}` else "")
 			local root = shade:FindFirstChild("HumanoidRootPart") :: BasePart?
 			if root then
 				local params = RaycastParams.new()

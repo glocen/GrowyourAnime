@@ -48,7 +48,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 
 - **Quaestor: Opus 5.5 high** from the next session. Research asks the director for Fable only for: the store's design, the retune after the first real play data, or a verdict the team disputes.
 - **Faber: Opus 5.5 xhigh.** Good for this work when each piece has a tight request and its tests. What gets a Fable read first when the reset comes: `docs/engineering-plan.md`, "For the Fable pass". A read, not a rewrite, unless the read finds one is needed.
-- **Modulo: Fable 5.2 high.** The look is where the bar is won. From 2026-11-12, Opus 5.5 xhigh until the Fable limit resets, then back on Fable 5.2 high (`docs/decisions.md`, 2026-11-12).
+- **Modulo: Fable 5.2 high.** The look is where the bar is won. From 2026-11-12, Opus 5.5 xhigh until the Fable limit resets, then back on Fable 5.2 high (`docs/decisions.md`, 2026-11-12). Later on 2026-11-12, back on Fable for the last 9% of its usage, then Opus again on the director's word; each delivery names its model.
 
 **Made on Opus, for Modulo's look on Fable.** Research lists each piece Modulo delivers on Opus, from its request entry. At the reset Modulo reads them and reworks what it judges needs it, as a fix round in each piece's entry. The Fable pieces before it: everything up to the elite's second mask (AR2, commit 95a5089).
 
@@ -79,11 +79,11 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 3. The build.** Regalia with presets, the bag, the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Grounds 2 and 3. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
 
-**Phase 4. Breadth.** Grounds 4 to 6, the rest of the roster as each reaches the bar, the Void Shop, the Rift.
+**Phase 4. Breadth.** Grounds 4 to 6, the Void Shop, the Rift. The rest of the roster comes at phase 4's very end, once everything else is set and done, the store's design included (the director, 2026-11-12).
 
 **Phase 5. The Strip.** The Clash Grounds, the Calamity.
 
-**Phase 6. Launch.** The store's design and the director's approval, the game page, a real phone, a soft opening, then public on the director's go.
+**Phase 6. Launch.** The director's approval of the store (its design is done before phase 4's Voidkin), the game page, a real phone, a soft opening, then public on the director's go.
 
 ## The cut line
 

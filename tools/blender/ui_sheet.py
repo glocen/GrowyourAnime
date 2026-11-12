@@ -41,7 +41,8 @@ THEMES = {
     "Graphite Dark": dict(panel=("#20242C", "#13151A"), alpha=0.94, edge="#434A57", facet="#8A93A6", glint="#C9D2E4",
                           text="#F3EFE6", soft="#A6ADBA", faint="#6E7482", channel="#06070A", well="#0B0C10",
                           button=("#323845", "#22262F"), pressed=("#1A1D24", "#20242C"), ground="#2B2E36"),
-    "Pearl Light": dict(panel=("#FAF7F0", "#E9E4D8"), alpha=0.96, edge="#B9B2A2", facet="#FFFFFF", glint="#FFFFFF",
+    # the director, 2026-11-12: Pearl's pieces carry a black border
+    "Pearl Light": dict(panel=("#FAF7F0", "#E9E4D8"), alpha=0.96, edge=STROKE, border=1.6, facet="#FFFFFF", glint="#FFFFFF",
                         text="#191B21", soft="#535967", faint="#8C909B", channel="#20232B", well="#D8D2C4",
                         button=("#FFFFFF", "#EFEADF"), pressed=("#DAD4C6", "#E6E1D5"), ground="#CFCBC2",
                         rim=2.0, seat=1.6, warm=(1.0, 0.7, 0.3)),
@@ -49,7 +50,9 @@ THEMES = {
 
 # A rarity is the frame's shape and its light, never a hue: the five hues belong to the types. Each step up adds one
 # thing seen at 64 px (research's fix 1): a hairline in dark iron; a thick band of bright steel; a point on top and
-# the first glow; points all four ways, white-hot; a crown of three in gold; a broken crown that splits light.
+# the first glow; points all four ways, white-hot; a crown of three in gold; a broken crown in red light (the director,
+# 2026-11-12: reddish, not a rainbow). Its red is deeper than the failed button's and it burns white at its core: the
+# glance strip stands it beside that button and the Strength gem.
 RARITIES = {
     "Common": dict(cut=(6, 0, 6, 0), stroke=1.2, metal=("#666C78", "#444852")),
     "Uncommon": dict(cut=(8, 4, 8, 4), stroke=3.2, metal=("#DCE2EC", "#939CAD"), inner=True),
@@ -59,9 +62,9 @@ RARITIES = {
                  crest=((0.5, 9, 13),), base=((0.5, 8, 10),), wing=7, shards=1),
     "Legendary": dict(cut=(12, 5, 12, 5), stroke=3.5, metal=("#FFEDB0", "#D8A23C"), hot=True, glow=("#FFD777", 11.0, 0.75),
                       crest=((0.24, 6, 8), (0.5, 9, 16), (0.76, 6, 8)), base=((0.5, 8, 9),), wing=6, shards=2),
-    "Mythical": dict(cut=(13, 6, 13, 9), stroke=3.5, metal="prism", hot=True, inner=True, glow=("prism", 12.0, 0.7),
+    "Mythical": dict(cut=(13, 6, 13, 9), stroke=3.5, metal=("#FF8794", "#B3122E"), hot=True, inner=True, glow=("#FF2848", 12.0, 0.7),
                      crest=((0.2, 5, 9), (0.41, 7, 20), (0.62, 6, 13), (0.8, 5, 7)), base=((0.36, 6, 7), (0.62, 7, 11)),
-                     wing=7, shards=3),
+                     wing=7, shards=3, splinter="#FFF1F2"),  # white-hot: a red splinter under a frame could read as a drop
 }
 
 
@@ -167,14 +170,6 @@ class Tile:
                                      layer=layer, shear=shear, bold=bold))
 
 
-def prism(t, cx, cy, turn=0.55, soft=0.38):
-    """Light split by a shard: the hue runs once round the frame, pale."""
-    h = (np.arctan2(t.y - cy, t.x - cx) / (2 * math.pi) + turn) % 1.0
-    rgb = np.stack([np.clip(np.abs(6 * h - 3) - 1, 0, 1), np.clip(2 - np.abs(6 * h - 2), 0, 1),
-                    np.clip(2 - np.abs(6 * h - 4), 0, 1)], axis=-1).astype(np.float32)
-    return 1 - soft * (1 - rgb)
-
-
 # --- the kit's pieces -----------------------------------------------------------------------------------------------
 
 def panel(t, x0, y0, x1, y1, th, cut=10.0, shadow=True):
@@ -184,7 +179,7 @@ def panel(t, x0, y0, x1, y1, th, cut=10.0, shadow=True):
         t.glow(d, 6.0, BLACK, 0.3)
     t.paint(d, t.ramp(th["panel"][0], th["panel"][1], (t.y - y0) / (y1 - y0)), th["alpha"])
     t.paint(np.maximum(d, (t.x - x0) + (t.y - y0) - cut * 3.4), c(th["facet"]), 0.07)
-    t.line(d, 1.0, c(th["edge"]), 0.95)
+    t.line(d, th.get("border", 1.0), c(th["edge"]), 0.95)
     t.paint(sd_segment(t.x, t.y, (x0 + 0.5, y0 + cut), (x0 + cut, y0 + 0.5)) - 0.6, c(th["glint"]), 0.85)
     t.paint(sd_segment(t.x, t.y, (x1 - cut, y1 - 0.5), (x1 - 0.5, y1 - cut)) - 0.5, c(th["glint"]), 0.35)
     return d
@@ -213,12 +208,16 @@ def conduit(t, x0, y0, x1, h, fill, th, light=LIGHT):
     over(t.px, WHITE, np.clip(0.5 - lit * K, 0, 1) * head * 0.75)
 
 
-def gem(t, cx, cy, r, colour):
-    """A type's gem: a cut stone, lit from the top left. The stand-in for the kit's five."""
+def gem(t, cx, cy, r, colour, seat=0.0):
+    """A type's gem: a cut stone, lit from the top left. The stand-in for the kit's five. In a frame's cut it sits in
+    a dark `seat`, so the Strength gem holds against Mythical's red light."""
     colour = c(colour)
     d = t.poly([(cx, cy - r), (cx + r * 0.82, cy - r * 0.36), (cx + r * 0.82, cy + r * 0.36), (cx, cy + r),
                 (cx - r * 0.82, cy + r * 0.36), (cx - r * 0.82, cy - r * 0.36)])
-    t.glow(d, r * 0.45, colour, 0.35)
+    if seat:
+        t.paint(d - seat, c(STROKE), 0.92)
+    else:
+        t.glow(d, r * 0.45, colour, 0.35)
     t.paint(d - 1.0, c(STROKE))
     t.paint(d, colour)
     slope = (t.y - cy) + (t.x - cx) * 0.55
@@ -265,13 +264,10 @@ def frame(t, x0, y0, w, h, rarity, face, th, type_="Strength", marks=True):
     x1, y1, cx, cy = x0 + w, y0 + h, x0 + w / 2, y0 + h / 2
     d = t.poly(outline(x0, y0, x1, y1, r))
     scale = w / 80.0
-    if r["metal"] == "prism":
-        metal = prism(t, cx, cy)
-    else:
-        metal = t.ramp(r["metal"][0], r["metal"][1], (t.y - y0) / h)
+    metal = t.ramp(r["metal"][0], r["metal"][1], (t.y - y0) / h)
     if "glow" in r:
         code, radius, strength = r["glow"]
-        t.glow(d, radius * scale, prism(t, cx, cy, soft=0.55) if code == "prism" else c(code), strength)
+        t.glow(d, radius * scale, c(code), strength)
     if th.get("seat"):  # pale metal on a pale panel: the frame sits in a dark seat
         t.paint(d - th["seat"] * max(scale, 0.75), c(th["channel"]), 0.92)
     t.paint(d, t.ramp("#1B1E26", "#090A0D", (t.y - y0) / h))
@@ -292,9 +288,10 @@ def frame(t, x0, y0, w, h, rarity, face, th, type_="Strength", marks=True):
             tri = t.poly([(ax + sx * s, ay - sy * s * 0.2), (ax - sx * s * 0.2, ay + sy * s), (ax + sx * s * 0.75, ay + sy * s * 0.75)])
             if "glow" in r:
                 t.glow(tri, 2.0, WHITE, 0.3)
-            t.paint(tri, metal)
+            t.paint(tri, c(r["splinter"]) if "splinter" in r else metal)
     if marks:
-        gem(t, x0 + 1.5 * scale + 4 * scale, y0 + 1.5 * scale + 4 * scale, 6.5 * max(scale, 0.8), ss.TYPES[type_])
+        gem(t, x0 + 1.5 * scale + 4 * scale, y0 + 1.5 * scale + 4 * scale, 6.5 * max(scale, 0.8), ss.TYPES[type_],
+            seat=2.4 * max(scale, 0.8))
         class_mark(t, x1 - 6.5 * scale, y1 - 6.5 * scale, 6.0 * max(scale, 0.8), th)
     return d
 
@@ -314,7 +311,7 @@ def button(t, x0, y0, w, h, label, th, state="rest", reason=None):
     t.paint(d, t.ramp(fill[0], fill[1], (t.y - y0) / h), 1.0)
     if state == "disabled":
         t.paint(d, c(th["ground"]), 0.55)
-    t.line(d, 1.0, c(th["edge"]), alpha)
+    t.line(d, th.get("border", 1.0), c(th["edge"]), alpha)
     channel = c(th["channel"])
     if state == "pressed":
         t.paint(np.maximum(d, t.y - y0 - 5), BLACK, 0.22)
@@ -370,7 +367,7 @@ def pill(t, x0, y0, w, th, icon, value, extra=None, fill=None):
     d = t.poly(cut_box(x0, y0, x0 + w, y0 + h, 9, 3, 9, 3))
     t.glow(d, 5.0, BLACK, 0.28)
     t.paint(d, t.ramp(th["panel"][0], th["panel"][1], (t.y - y0) / h), th["alpha"])
-    t.line(d, 1.0, c(th["edge"]), 0.95)
+    t.line(d, th.get("border", 1.0), c(th["edge"]), 0.95)
     t.paint(sd_segment(t.x, t.y, (x0 + 0.5, y0 + 9), (x0 + 9, y0 + 0.5)) - 0.6, c(th["glint"]), 0.85)
     icon(t, x0 + 19, y0 + h / 2, 8.0)
     ty = y0 + (h - 14 * CAP) / 2 - (2 if fill is not None else 0)
@@ -601,6 +598,22 @@ def glance(name, face):
     return rs.shrink(sheet.px, 0.5)
 
 
+def reds(name, face):
+    """The director's Mythical beside the kit's other reds, at 1 pixel a point: its frame with a Strength gem in the cut,
+    a failed button with its words, the gem alone, and the lead's card in a Mythical frame on low health. It has to
+    sort as the top rarity and never read as "failed"."""
+    th = THEMES[name]
+    sheet = Sheet(COLUMN, 120, th["ground"])
+    t = sheet.tile(0, 0, COLUMN, 120)
+    panel(t, 0.5, 0.5, COLUMN - 0.5, 119.5, th, shadow=False)
+    frame(t, 18, 26, 64, 80, "Mythical", face, th, type_="Strength")
+    button(t, 104, 26, 124, 44, "Break", th, "failed", "No free chamber")
+    gem(t, 250, 40, 6.5, ss.TYPES["Strength"])
+    gem(t, 250, 76, 10.0, ss.TYPES["Strength"])
+    lead_card(t, 284, 29, th, face, "Rook", 60, 0.22, 0.85, rarity="Mythical", width=270)
+    return sheet
+
+
 def main():
     out = bl.out_dir()
     face = portrait()
@@ -615,7 +628,13 @@ def main():
         bottom = column(sheet, MARGIN + i * (COLUMN + GUTTER), name, face)
     t = sheet.tile(0, bottom, sheet.w, 196)
     t.text(MARGIN, 4, 10, "At 1 pixel a point, the smallest a phone would ever draw it:", "#C9CDD6")
-    t.text(MARGIN, 104, 10, "The glance test at 1 pixel a point: the six frames out of order, 64 px wide, and a bar full, low and empty.", "#C9CDD6")
+    t.text(MARGIN, 104, 10, "The glance test at 1 pixel a point: the six frames out of order, 64 px wide, and a bar full, low and empty. "
+           "Beside it, Mythical's red with the kit's other reds: a failed button and the Strength gem.", "#C9CDD6")
+    strips = {name: reds(name, face) for name in THEMES}
+    for i, strip in enumerate(strips.values()):  # their text joins the sheet's, at its own place and half its size
+        ox, oy = MARGIN + i * (COLUMN + GUTTER) + COLUMN / 2 + 4, bottom + 122
+        sheet.items += [dict(item, x=ox + item["x"] / 2, y=oy + item["y"] / 2, size=item["size"] / 2) for item in strip.items]
+        rs.paste(sheet.px, rs.shrink(strip.px, 0.5), round(ox * K), round(oy * K))
     layers = text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items)
     for name, stroke in (("number", 3), ("number_small", 2)):
         if name in layers:
@@ -632,6 +651,7 @@ def main():
     for i, name in enumerate(THEMES):
         rs.paste(sheet.px, glance(name, face), round((MARGIN + i * (COLUMN + GUTTER)) * K), round((bottom + 122) * K))
     rs.save(sheet.px, out / "ui_sheet.png")
+    rs.save(sheet.px[round((bottom + 118) * K):].copy(), out / "ui_glance.png")  # the glance strips alone, for a close read
 
 
 if __name__ == "__main__":

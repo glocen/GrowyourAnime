@@ -402,7 +402,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes.
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn and past the content check (section 1, "The director's words, drawn on the sheet"), and waits on research's read.
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -412,7 +412,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 - **One cut.** Every piece is a rectangle with its top-left and bottom-right corners cut, never rounded. A panel has one facet line at its top-left cut and nothing else.
 - **Light is ivory** (`#FFF4D6`), the plain hit number's own colour, and it always runs in a dark channel: a bar's fill, a button's lower edge at rest, the edge of a selected one, the run of light on a waiting one. Green and red light only say succeeded and failed, and both come with words.
-- **A rarity is a shape and a light, never a hue.** Common: two cuts, iron. Uncommon: four cuts, steel, a second line inside. Rare: one crest, silver, a soft glow. Epic: a crest and a base point, side notches, white-hot. Legendary: a three-point crown, gold. Mythical: a broken four-point crown, metal and glow that split light. The five hues stay the types', on the gem in the frame's top cut. The class's mark sits in the bottom cut.
+- **A rarity is a shape and a light, never a hue.** Common: two cuts, iron. Uncommon: four cuts, steel, a second line inside. Rare: one crest, silver, a soft glow. Epic: a crest and a base point, side notches, white-hot. Legendary: a three-point crown, gold. Mythical: a broken four-point crown in red light (the director, 2026-11-12; it split light before). The five hues stay the types', on the gem in the frame's top cut. The class's mark sits in the bottom cut.
 - **Numbers** slant 0.22 and carry a dark stroke that follows their size (1.5 points on a 20 point number, 1 point under it). Proposed element colours, for research: Fire `#FF8A3D`, Frost `#8FE3FF`, Storm `#FFE45C`, Void `#B58CFF`.
 - **Pearl Light** is the same kit on a pale panel, with two extra rules found by drawing it: a bar's light keeps a 2 point dark rim all round, and a frame sits in a dark seat, or silver and white-hot frames vanish.
 
@@ -474,7 +474,31 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
   - **Storm #FF6FD8:** clear of the crit's gold and the heal's green over both streets. It stays apart from Void's #B58CFF at 1 pt, the closest pair, and holds over the dusk street.
   - The kit's sliced images start from this sheet once the director has looked at it (the entry's "the director's eye"). I've put it in front of the director.
 
-**Hours:** the sheet with its fixes, about 2.1.
+**The director's words, drawn on the sheet** (Modulo, 2026-11-12; `build/scratch/modulo/ui/sheet/ui_sheet.png`, and its foot alone at true size in `ui_glance.png`):
+
+1. **Mythical's light is red.** The broken crown is as it was. Its metal runs from a pale red at the crown to a deep one at the base (`#FF8794` to `#B3122E`), the glow is `#FF2848`, and a white-hot line runs inside it as on Epic and Legendary. The split light is gone from the script.
+2. **Pearl's pieces carry a black border,** 1.6 points, on panels, pills and buttons. A bar's rim and a frame's seat were dark already.
+3. **The glance strip has a second half,** at 1 pixel a point on both themes: the Mythical frame with a Strength gem in its cut, a failed button with its words, the gem alone at two sizes, and the lead's card in a Mythical frame on low health.
+4. **A gem in a frame's cut sits in a dark seat** (mine, tier 1). Without it the Strength gem was red on red in a Mythical frame.
+5. **The colours stay swappable.** Every colour a piece uses comes from its theme's one row in the script, and the kit's images will be cut so a screen's own palette is a new row, not new images. Which screens are Pearl, and which get their own palette, isn't chosen here: that's the director's.
+
+**What I see, at 1 pixel a point:**
+
+- Shuffled among the six, Mythical sorts at once on both themes: it's the only red, and the crown is the tallest shape. Gold, white and red are three steps nobody mixes up.
+- Beside the failed button it doesn't read as "failed". The button's is a thin dull line round a plain box, with words under it. Mythical's is a wide crown that glows. But they're one family of hue, and on Pearl, where every glow is weaker, they're closer than on Graphite.
+- The Strength gem holds in its seat. In the lead's card the frame has no gem; the card's own gem sits beside it on the panel, clear of the glow.
+- On low health in a Mythical frame, the amber of the bar's low light sits near the frame's red. They're apart on the card, and the bar's is a line, not a crown.
+- Pearl's black border makes its buttons the strongest thing on a Pearl panel, more than Graphite's are on theirs. A disabled button's border is faded with it.
+
+**Content check, 2026-11-12: PASS** on rules 2, 3 and 4 for this round, for the direction sheet only. The red is edge light: it's painted under the slot and the portrait, so none of it lies across a face, and it reads as a lit sign at full size and at 1 pixel a point. The broken crown matches no symbol or logo the check could name. Its one spot near the line was the splinters, red like the metal and trailing off the lower corner at 64 px; they're white-hot on the sheet now, drawn after the check. Added to the first check's seven, for the kit's images:
+
+8. The red stays the frame's own line and outer halo. It never fills, tints or crosses the portrait, never pools or shifts below the frame, and never pulses, thickens or spreads inward on low health, failed or fallen: those states stay as condition 5 says, on a Mythical card too.
+9. Mythical's splinters are white-hot or dropped under about 96 px wide, and stay straight-edged triangles, never a shrinking row of red specks under the frame's foot. The Mythical slice's review sheet settles it at full size and at 64 px over dark.
+10. The crest's and the base's points stay straight-edged, sharp and no taller than about their width, never rounded, lengthened or tapered. Any motion on the frame (a flicker, a break-off, particles) gets its own check.
+11. The card's 40-point cut is checked alone at true size over dark: the ring stays open with its white core showing. If the points fuse into a solid red mass over the head, the card takes the crest-only cut.
+12. The Mythical frame alone, with no portrait and on transparency, gets its 64 px look over dark before upload, with the other slices.
+
+**Hours:** the sheet with its fixes, about 2.1; the round on the director's words, about 0.5.
 
 ## AR4. Pip and Lyric
 

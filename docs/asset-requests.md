@@ -435,6 +435,55 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
     - **C. Frame a signature differently** (the lead's spot or the camera). The Beside take argues against it: from there the frame is edge-on. A camera move would touch every action.
   - **Meanwhile, tier 1:** Modulo blocks out B after its current piece, so the director picks from pictures, not words.
 
+### 9. Haymaker's B: the block-in (Modulo, 2026-11-12)
+
+A tier 1 exploration for the director's pick between the options above. Nothing gets built until the director picks.
+
+- **Where:**
+  - The script: `tools/blender/rook_haymaker_stamp.py`.
+  - The sheets: `build/scratch/modulo/rook/stamp/`.
+    - `stamp_B1.png` to `stamp_B5.png`: the game's camera, 16 frames each.
+    - `stamp_side.png`, `stamp_beside.png` (an elite's spot, 90), `stamp_hidden.png` (the avatar dead on) and `stamp_bright.png`.
+    - `stamp_64.png`: no labels over the tiles, since the square falls through the top. One row a variant, B1 to B5; the frames 52, 54, 55, 56, 57, 58, 60, 64 and 70; drawn 3 times over.
+    - `stamp_headings_B3.png` and `stamp_headings_B5.png`: the same staging turned round the target every 45°.
+  - **The staging:** Rook plays his delivered Haymaker clip, and the target stands at the hit's Range, 6. The game's camera has the lead beyond the target, turned 45° (`Combat.Lead.Frame`); it sees Rook 43° off his front from 23.9 studs, and the target from 20.
+  - **The stand-ins:** grey boxes, every square four of the bar's strokes, side 4.6 and bar 0.85. It falls from 10 studs over 4 frames and lands on Strike (57). The target is pushed as the game pushes it, 4 studs from the bracket's second frame.
+- **The variants:**
+  - **B1, the drop:** the square lies flat, falls onto the target and stamps the floor round its feet. On Shock it kicks open and a thinner square runs out along the floor.
+  - **B2, the weight lifted:** B1 with a tell. Through the hold, the flat square forms over the target's head and is hauled up to the top of its drop.
+  - **B3, the drop and its shaft:** B1's fall stretched along its travel, a chute of light for the frames it falls.
+  - **B4, the face slammed down:** the square stands up turned to the camera, so its face always shows. It drops stretched tall, lands round the target's legs on Strike and squashes flat on Shock, and two bars run out along the floor from its feet.
+  - **B5, the face lifted and slammed:** B4 with B2's tell. The upright square hangs over the target through the hold, drawn tight, then slams.
+- **The measures,** the share of the game's screen at 70°, in percent:
+
+  | Frame | 53 | 55 | 56 | 57 Strike | 58 Shock | 60 | 64 | 70 |
+  |---|---|---|---|---|---|---|---|---|
+  | B1, B2 | 0.73 | 0.37 | 0.48 | 0.41 | 0.45 | 0.28 | 0.14 | 0 |
+  | B3 | 0.73 | 1.42 | 1.85 | 0.41 | 0.45 | 0.28 | 0.14 | 0 |
+  | B4, B5 | 1.89 | 1.86 | 1.54 | 0.57 | 0.51 | 0.32 | 0.15 | 0.06 |
+
+  B2 and B5 match B1 and B4 from 53 on: their tell comes before.
+- **My read: does a downward blow land the pile driver from any camera?**
+  - **The fall, yes, from every heading.** The game's camera looks down at 14°, so straight down stays straight down on screen at every heading in the headings sheets.
+  - **The square, only if it stands up.** The camera's eye is about 7.6 studs up, and the fall runs from 10 to 0, so a flat square (B1 to B3) is edge-on through the fall: a sliver at 0.4 to 0.5% of the screen. On the floor, seen from 20 studs, its depth shrinks to about a third: a squashed diamond. B3's chute reads as a block of light falling, not a square. Upright and turned to the camera (B4, B5), the square shows its whole face all the way down: four times the flat square's share. B4 and B5 are the only ones where Haymaker's one bold thing keeps its face, and the only ones that read as a square at 64 px.
+  - **The landing, no, from most cameras.** On Strike the stamp is at the target's feet, the part the avatar covers. The game's camera sees one corner beside the avatar's shoulder. The hidden camera sees nothing in B1 to B3 and a sliver in B4 and B5. In every variant the landing is 0.4 to 0.6% of the screen. So the fall carries the read, and the landing doesn't.
+  - **The clip doesn't strike down.** Rook's Haymaker punches straight forward and stops 3.4 studs short of the target (the knuckles at 2.65 forward on Strike). A square dropping from above is at right angles to his blow. The timing joins them, since both land on 57, but it reads "he punched, and something fell on the Shade": a blow called down, not his own. For a pile driver that's his, the strike would go down: a new block clip on the same markers, Strike kept on 57, about an hour of mine. That's a clip change on a signed action, so tier 2.
+- **Proposed feel line (B5, with the clip striking down):** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."
+- **My pick: B5, if the director picks B,** and with the clip striking down.
+  - **Why:** its face shows from every heading, and the hang puts the eye on the square before the 4-frame fall. Without the hang, B4's fall is three frames on screen (54 to 56) at 60 fps and can blink.
+  - **With today's clip:** B5 is still the strongest picture. Then the director is picking a blow called down, not a pile driver.
+- **What I see wrong, for the build if B is picked:**
+  1. **The push slides the target out of its stamp** toward the avatar (Push 4), so the stamp is left on an empty floor. A pile driver pins. Push 0, or a squash in place, is a number on a signed hit: tier 2, research's and the builder's.
+  2. **The hung square's top touches the top of the game's frame** at 52 and 53 (it hangs 10 studs up and is 4.6 tall). Hang it about 2 studs lower.
+  3. **The landing is mostly covered** (above). If the director wants the impact itself seen, it has to reach above the avatar's shoulders: the bars along the floor don't.
+- **Content check:** PASS, 2026-11-12, on the sheets and the script. Conditions for the art stage:
+  1. The upright frame never lingers, slows or holds at the head or neck, and is never drawn as a collar or a hanging frame. It passes the head in one frame and lands at the feet. B5's hang stays well above the head.
+  2. The light stays hard-edged and geometric, crisp strokes and fades, never a soft pool, smear or puddle on the floor in any colour.
+  3. No glyph inside the square without a fresh check.
+  4. A new check on the finished art before any upload, with a 64 px sheet at every heading.
+- **Not done:** no art, no clip, nothing in the game.
+- **Hours:** about 1.5, over the half hour asked, for B4 and B5 and the headings sheets. Made on Opus 5.5 xhigh.
+
 ## AR2. The Shade, one rig for every enemy
 
 For Modulo, after AR1's sheet is approved (it can run beside AR1's model).

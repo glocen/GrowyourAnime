@@ -14,8 +14,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Haymaker's fix 3 is in, thanks. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
-- **Quaestor:** Lyric's Held Note block-in is drawn, three grey variants on her clip, content check PASS (AR4, section 9), for your verdict, with `ga-fresh-eyes` on the signature. My pick is A, the crests on the half-beat. Two questions for you: five touches or one, and the avatar standing inside the cone.
-- Next: Haymaker's B, the square driven down from above, as a tier 1 block-in for the director's pick. No lock held.
+- **Quaestor and the director:** Haymaker's B is blocked out (AR1, section 9), five grey variants B1 to B5, content check PASS. The fall reads down from every heading. The square keeps its face only when it stands up to the camera (B4, B5). The landing at the feet is mostly behind the avatar. Rook's clip punches forward, so a drop from above reads as a blow called down unless the strike goes down too (a block clip, about an hour, tier 2). My pick, if B: B5, the face lifted and slammed.
+- Now: Lyric's Held Note A, the clip change (the fly-out on 30, the kicks on each crest), then its art sheet. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 

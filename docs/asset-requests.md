@@ -2209,9 +2209,26 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
 
 ## AR5. The festival kit and the base's machines
 
-For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.
+For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. The kit's full list is written when the direction below is picked. Research's request, 2026-11-12, started early: Modulo's AR4 deliveries are in, and the direction is taste work for Fable's last hours.
 
-**Status:** not started.
+**Status:** section 1 asked (research, 2026-11-12).
+
+### 1. Lantern Row's look: the direction sheet
+
+**Feel line, proposed for Modulo to answer:** you step through the festival gate at dusk and the street opens ahead, lanterns strung overhead glowing cyan and warm white under a painted sky, and your Voidkin and the Shades stand out against the stalls like a frame from an anime's festival night.
+
+**The director's word, 2026-11-12:** "i hope it looks a bit anime like". The levers research named to the director, for you to weigh, not a spec: a painted dusk gradient sky with the lanterns blooming against it; bold clean shapes in flat painted colour with the shading baked in, as on Rook; dark outlines on the big shapes, modelled in, since the engine draws none; life in the air (paper, banners, light); signs in an invented script of our own.
+
+**Delivers:** one sheet, before any kit is modelled. Explore fast: rough blocks, no finish.
+
+- Three directions, A, B and C, each as one frame of Lantern Row (`docs/design.md`, "The world, in grey": 44 studs between the stall fronts) from the player's camera, as the game sets it (`Config.Combat.Replay`): Rook fighting two Shades in the middle distance.
+- The same frame of each at phone size, and over its darkest and brightest corner. The fighters must stay the brightest, clearest things in it, by value and edge.
+- Each direction is made only from what the engine can draw: a sky of our own picture, Lighting and Atmosphere and bloom, flat-colour maps, outlines as geometry. Note each one's cost for a phone, roughly in parts and triangles.
+- Your pick among the three, and what you see wrong in each.
+
+**Checks:** the content check on the sheet; research's verdict (the blockout checkpoint), then the director's eye. **Time it:** hours, here.
+
+**Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 
 ## AR6. Regalia's item art
 

@@ -1859,6 +1859,13 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
     - The two rising flames on a kill. The replay's dummy doesn't fall, so they wait for the Shade's burst (AR2, section 11).
     - Modulo's look on the replay: the low outer tongues.
   - **Hours:** about 4, an estimate.
+- **Research's verdict on the replay, 2026-11-12** (take 2: the burst, the half, the scan; the boil at 1x2; fresh eyes blind beside). In the dev build.
+  - **Felt:** the lantern heats beside his hat, a gold streak leaves him, one tall lick shoots up past the Shade and the flame fans out round it, holds, then pinches up into a wisp. **Tier:** competent, the same as fresh eyes. A signature aims higher. **The one bold thing:** the entrance, the single lick for one frame before the rest fans out. Fresh eyes named it too.
+  - **Fix 1, Pip's half: accepted for the heat.** It swells to his head's size beside the hat at Send, and the streak carries it to the target. `Glow.Hot` stays. **His recoil doesn't read at the player's distance** (fresh eyes: "standing, then ducking"). That's half the feel line, so it's a fix: the throw rocks him back a step, and the hat tips with it. Modulo's clip.
+  - **Fix 2, the boil: the table's two frames a cell stays.** At one a frame it flickers. **But the peak holds one outline for about 14 frames, and both readers called it a bonfire.** Modulo's note becomes a fix: lift the outer tongues off the ground, narrow the foot, and let the outline climb a little through 70 to 77, so a flame stands up rather than a fire sits.
+  - These two are the second round on the burst. After them it stays competent if it doesn't climb, with no third round.
+  - **The readout: `Glow.Relight` 0.5,** research's call on the design cost. The lamp is dark straight after the burst, which is the read that matters, and lit again by the cooldown's middle, so Pip's lantern isn't dim for most of a fight. The HUD ring still says "ready".
+  - **The seeds, tier 2: yes, provisional.** The burst at 2.5 a Shade is under Haymaker's 4.0 on one target and over it on two. That's the crowd-clearer's trade. They're measured when the slice's packs exist.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

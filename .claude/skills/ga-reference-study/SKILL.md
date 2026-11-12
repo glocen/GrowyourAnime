@@ -7,7 +7,7 @@ description: Study reference footage and screenshots to answer one design questi
 
 ## Where the evidence is
 
-- **The written study, read it first:** none yet. This game has no reference footage so far (`/ga-review`, "The measures"). When the director names a reference, research writes its study under `docs/research/` and names it here: a survey of the footage by topic, with measured bursts, so nobody opens a video to answer a question already answered.
+- **The written study, read it first:** `docs/research/gear-icons.md` (gear icons and the forge screen, from Taichi Panda 3: Dragon Hunter screenshots in `build/reference/dragon-hunter/`). When the director names a reference, research writes its study under `docs/research/` and names it here: a survey of the footage by topic, with measured bursts, so nobody opens a video to answer a question already answered.
 - **The footage and images:** `build/reference/`, gitignored, never uploaded. `inbox/` is where the director drops new ones. Whoever studies one moves it to its home and names it in the study.
 - **Study evidence only:** never copy frames, crops or traced shapes into the game or the repo. Git keeps our notes and our own drawings.
 

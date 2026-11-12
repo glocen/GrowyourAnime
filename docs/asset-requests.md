@@ -827,7 +827,7 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
 
 ## AR6. Regalia's item art
 
-For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from a reference study of the director's references. Written in full when phase 3 opens.
+For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from the reference study, `docs/research/gear-icons.md`. Written in full when phase 3 opens.
 
 **Status:** not started.
 

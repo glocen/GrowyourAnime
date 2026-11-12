@@ -132,7 +132,7 @@ The largest change from the package, and reversible until gear is built (`docs/d
 - **War Emblems** go in an item's sockets: one on a Common item, two on Uncommon, three on Rare, four on Epic and above [D: four at most]. Emblems obtainable at launch are Common, Uncommon and Rare [D]. Taking one out is free, and replacing an item carries its emblems across.
 - **Jewels:** one jewel socket on items of Rare and above. Jewels carry the percent stats (critical damage, critical guard, lifesteal).
 - **The Stone Condenser** turns lower forge stones into higher ones. **The Research Lab** spends Research Points on permanent, flat gains: stat points, bay output, battery size, a chamber, Breaker tuning.
-- **Dawn** is the premium Legendary series [D]: the top gear of launch, earned in the last ground and the Tower.
+- **Dawn** is the premium Legendary series [D]: Legendary rarity, above ordinary Legendary items [D, 2026-11-12], and the top gear of launch, earned in the last ground and the Tower. Its pieces read as one set (`docs/research/gear-icons.md`).
 
 ### Combat Power
 

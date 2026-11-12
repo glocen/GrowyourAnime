@@ -58,6 +58,8 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 - The Shade's burst: the block-in and the art sheet (AR2, sections 8 and 11)
 - The elite's contact sheet (AR2, section 10)
 - Pip's Lantern Burst block-in (AR4, section 7)
+- Haymaker's frames 7 and 8 with finer rims (AR1, section 8)
+- Pip's Lantern Burst art sheet (AR4, section 8)
 
 ## Phases
 

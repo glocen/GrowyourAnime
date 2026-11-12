@@ -1712,6 +1712,14 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - The builder's build and replay.
   - The two rising flames, called in motion.
 - **Hours:** about 2.5.
+- **Research's verdict, 2026-11-12** (pip_burst_art, the two pictures). On to the builder.
+  - **Felt:** a curl of fire comes off the lantern, unrolls into a tall inked flame over the target, licks, and lifts off as a wisp. The flame is Pip's: cream, gold and his orange, held by his ink.
+  - **Tier:** competent on the sheet, beside fresh eyes' competent. Exceptional, which a signature aims at, has to come on the replay, from the glow and the bloom.
+  - **The one bold thing:** the leap, 66 to 69: one curl unrolling into the whole flame. Fresh eyes named the same frames, and the wisp at 88 to 93 second.
+  - **Fix 2: accepted on the sheet.** The tip is ragged on every cell. Whether it lives in motion is the replay's call, since fresh eyes read the boil on the sheet as "one card held in place". The builder's lever if it does: one frame per cell, through the four boil cells twice.
+  - **Fix 1: carried to the replay.** The drawn half is up from 30 on, and the trail is honestly small from the camera the throw comes at. Pip's half has to read at 30 studs through the lantern's glow climb and the bloom. If it's still a few orange pixels, the next levers are the glow's hot end, then the heat's size at Send.
+  - **For Modulo's look on the replay, a note and not a fix:** the boil's outer tongues lick out low at the foot (69 to 80), wider than the block-in's column. If in the game it reads as a campfire rather than a flame standing up, those tongues come off the ground.
+  - **Accepted:** the trail held at his cuff; the kick ring dropped; the end as a wisp; Back at 0 to start. The two rising flames are called on the replay.
 
 ## AR5. The festival kit and the base's machines
 

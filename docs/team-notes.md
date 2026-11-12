@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12. Haymaker: the director keeps A, and B5 is a planned rework (AR1, section 9). The Shade's burst is closed (AR2, section 13). Pip's Lantern Burst in the game: competent, with round 2 from Modulo to judge on Faber's take of a two-Shade kill (AR4, section 8). Held Note: the block accepted at Ease 2, and its heal is 0.01 a touch (AR4, section 9). Next: Pip's round 2 and the two rising flames, then Held Note's art.
+**Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
 **Faber (builder).** 2026-11-12: Pip's round 2 is in the game, and research's take of his burst killing two Shades is done (`docs/asset-requests.md`, AR4, section 8).
 - **Quaestor:** the take, its strip and full views are in `build/captures/ar4/pip_r2_two_*`, for your verdict. Found on the way: the kill shows 0.3 s before the flame, because a hold taken during his own action holds only the client's clip. Two client-only fixes are proposed in the same section, for your word.

@@ -2244,7 +2244,7 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. The kit's full list is written when the direction below is picked. Research's request, 2026-11-12, started early: Modulo's AR4 deliveries are in, and the direction is taste work for Fable's last hours.
 
-**Status:** section 1 asked (research, 2026-11-12).
+**Status:** section 1's sheet delivered, for research's verdict (Modulo, 2026-11-12).
 
 ### 1. Lantern Row's look: the direction sheet
 
@@ -2260,6 +2260,19 @@ For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six g
 - Your pick among the three, and what you see wrong in each.
 
 **Checks:** the content check on the sheet; research's verdict (the blockout checkpoint), then the director's eye. **Time it:** hours, here.
+
+**Modulo's sheet, 2026-11-12:** `build/handoff/LanternRow/lantern_row_look.png`, made by `tools/blender/lantern_row_look.py` (one run a direction, then `sheet`). The staging and the camera come from Config: the struck Shade 9 studs ahead of the avatar and Lead.Side to its right, Rook beyond it at Lead.Frame, the second Shade one Slots.Spacing round him, the camera at 12.5 studs, 20° down, FOV 70. The fighters wear their delivered maps and play their own clips (Rook at Haymaker's Shock, Hit, Attack's wind-up). The avatar is a grey stand-in. Eevee renders in linear light, then one bloom and one tone curve of mine are applied the same to all three. Those two are an approximation of Roblox's, not a measurement. The sky is a shader here; in the game it's six painted faces.
+
+- **A, Painted dusk.** A low gold sun behind the player, a pink band under a violet sky ahead, warm wood, a low skyline. Wrong: the middle values are murky, the street is lighter than the fight (Rook 0.26 against 0.39 round him), and the sun only lights the fight from this end of the street. From the other end it's backlit.
+- **B, Ink night.** A dark street, cyan lanterns blooming, a soft PointLight carried over each fighter. The only one where the lead is the brightest thing round him (Rook 0.41 against 0.28; 7% of the frame outshines the fighters). Wrong: it reads as a neon city more than a festival (cyan everywhere, too many lit windows); the Shades' coats sit on the paving's value (edge step 0.05, the lowest); the heavy ink is invisible on dark shapes, 659 shells for little.
+- **C, Last light.** Golden hour, the sun raking across, long shadows, pastel cel colour. It has the clearest silhouettes (edge step 0.30) and is the most slice-of-life. Wrong: the fighters are the darkest things in it (99% of the frame outshines them), and the game's hits are light, sparks and glow, which a bright street washes out.
+- **In all three:** the invented script reads as Latin letters at a distance ("b", "o", "%"), so the real script needs a design of its own. The stalls repeat. The sky is a minor lever from this camera: pitched 20° down, it's a strip at the top. The lantern canopy and the paving are the major ones.
+- **My pick: B, with A's warmth.** Night, so the fight and its effects are the brightest things on the street. Warm white lanterns for most, cyan between them, as the feel line has it. Half the lit windows. Warm light pools on the paving under the strings, so the Shades' dark coats stand against lit floor. Ink only on shapes seen against the sky or lit surfaces.
+- **Where I disagree with the ask:** "the fighters the brightest" can't hold for the Shades. Their coats are void-dark by design (AR2), so only a near-black street would put them on top. I propose: the lead the brightest thing round it by value, and each Shade clear by edge (dark against lit floor, its mask and its type's glow). Research sets the numbers at its verdict.
+- **The feel line, answered:** you step through the festival gate at nightfall and the street runs ahead under a canopy of lanterns, warm white with cyan between, the stalls gone dark in ink, and the fight is the brightest place on it: your Voidkin lit, the Shades' pale masks and dark coats against the lit paving.
+- **Phone cost** (the block, within 220 studs of the camera; not measured on a device): 809 to 891 pieces, 48,000 to 53,000 triangles, 48 to 75 PointLights, plus the fighters (Rook 7,236, a Shade 5,412). The lights are the risk, and a device take is the builder's. The levers: a string's eleven lanterns as one MeshPart (about 340 fewer pieces), and one light per string.
+- **Content check:** PASS (the sheet, the glyphs, the script). It covers these eight glyphs only: the kit's script gets its own check.
+- **Not done:** research's verdict; the director's eye. **Hours:** about 2.5, an estimate.
 
 **Waits, outside this section:** the kit's pieces, the Breaker and the bay, the other five grounds' recolours, the world's install (the builder).
 

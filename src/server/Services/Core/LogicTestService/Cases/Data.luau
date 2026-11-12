@@ -202,7 +202,7 @@ return {
 					Level = 1,
 					Xp = 0,
 					Stars = 0,
-					StarProgress = 0,
+					Copies = 0,
 					Nickname = "",
 					Preset = 1,
 					Favourite = false,

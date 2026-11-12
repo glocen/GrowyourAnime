@@ -55,7 +55,7 @@ The package's D04, and the heart of `docs/balance.md`.
 
 The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is what it was built from.
 
-**An owned Voidkin:** `Id` (made by the server when it's uncovered, never reused), `Def`, `Level`, `Xp`, `Stars`, `StarProgress`, `Nickname`, `Preset` (which Regalia preset it's linked to), `Favourite`, `Locked`, `Born`. Its role is read from the slot that holds it (the builder, TR2).
+**An owned Voidkin:** `Id` (made by the server when it's uncovered, never reused), `Def`, `Level`, `Xp`, `Stars`, `Copies` (duplicates not yet spent on a star), `Nickname`, `Preset` (which Regalia preset it's linked to), `Favourite`, `Locked`, `Born`. Its role is read from the slot that holds it (the builder, TR2).
 
 **An owned item:** `Id`, `Def`, `Tier`, `Rarity`, `Lines` (the rolled lines), `Sockets` (emblem ids), `Jewel`.
 

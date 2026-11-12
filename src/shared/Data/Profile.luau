@@ -20,7 +20,7 @@ export type OwnedVoidkin = {
 	Level: number,
 	Xp: number, -- toward the next level
 	Stars: number, -- 0 to the ceiling in Config
-	StarProgress: number, -- duplicates counted toward the next star
+	Copies: number, -- duplicates waiting to be spent on the next star, by hand (docs/design.md, "Voidkin", "Stars")
 	Nickname: string, -- "" for none; stored raw, filtered for each viewer when shown (docs/roblox-rules.md)
 	Preset: number, -- the Regalia preset it wears: an index into Presets
 	Favourite: boolean,

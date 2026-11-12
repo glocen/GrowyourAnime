@@ -1161,7 +1161,7 @@ Accepted as they are: the gems read by colour first at 16 px (the cut follows at
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model is read by research (competent, its three fixes landed), its two fixes for the next bake are made and past the content check, and it's **delivered** beside the sheet (section 5), made on Opus 5.5 xhigh: the fixes not yet read, the model not in the engine. Her five clips are **delivered** to `build/handoff/Lyric/clips/`, accepted by research, and the look at her props in the robe set's fall is made (section 6). Delivery 4 for Pip, Lantern Burst's look: the block-in is drawn on his clip in three variants, and research signed the feel line and picked B (section 7). Its art sheet is delivered to `build/handoff/Pip/fx/`, past the content check, for research's verdict (section 8).
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is delivered to `build/handoff/Lyric/lyric_sheet.png`, past the content check and research's read, the feel line signed, the signature Held Note (section 4). Her model is read by research (competent, its three fixes landed), its two fixes for the next bake are made and past the content check, and it's **delivered** beside the sheet (section 5), made on Opus 5.5 xhigh: the fixes not yet read, the model not in the engine. Her five clips are **delivered** to `build/handoff/Lyric/clips/`, accepted by research, and the look at her props in the robe set's fall is made (section 6). Delivery 4 for Pip, Lantern Burst's look: the block-in is drawn on his clip in three variants, and research signed the feel line and picked B (section 7). Its art sheet is delivered to `build/handoff/Pip/fx/`, past the content check, and research read it competent, on to the builder (section 8). Lyric's Held Note: the block-in is drawn on her clip in three variants, past the content check, for research's verdict; my pick is A, the crests (section 9).
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -1757,6 +1757,66 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - **Fix 1: carried to the replay.** The drawn half is up from 30 on, and the trail is honestly small from the camera the throw comes at. Pip's half has to read at 30 studs through the lantern's glow climb and the bloom. If it's still a few orange pixels, the next levers are the glow's hot end, then the heat's size at Send.
   - **For Modulo's look on the replay, a note and not a fix:** the boil's outer tongues lick out low at the foot (69 to 80), wider than the block-in's column. If in the game it reads as a campfire rather than a flame standing up, those tongues come off the ground.
   - **Accepted:** the trail held at his cuff; the kick ring dropped; the end as a wisp; Back at 0 to start. The two rising flames are called on the replay.
+
+### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
+
+Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, Release 90): timing and size only, no art. Made on Opus 5.5 xhigh.
+
+- **Where:** `build/scratch/modulo/lyric/note/`.
+  - `heldnote_A.png`, `_B.png` and `_C.png`: sixteen frames each from the player's camera, 4 to 108.
+  - The three variants side by side: `heldnote_side.png`; `_beside.png`, the camera beside an elite; `_hidden.png`, the worst case; `_bright.png`; `_64.png`.
+  - `heldnote.json` holds the cone, the figures' places in it, the frames each wave reaches them, and each variant's share of the screen.
+  - `tools/blender/lyric_note_fx.py` rebuilds them in about a minute.
+- **The cone comes from her speakers,** read off the keyed clip in the hold: their two lines meet 3.9 studs behind her, 24° each side of her line. The rings stand 4.5 studs up, tipped 14° down the street, so the wave's middle falls a quarter of a stud for every stud it goes. It's 12 studs across at the target and 16 at its end. **Its length is a stand-in:** 16 studs out from her, the wave from the rings at 4.7 studs out. None is in the design.
+- **The camera, as Pip's block-in** (section 7; `Config.Combat.Lead`): the target 11 studs out in the cone's middle, the lead beyond it turned 45°, the camera 12.5 behind the avatar at 70°. The player sees her 36° off her front from 27.6 studs, and **the wave comes at the camera.** A second Shade stands deeper (12° off the middle), and an ally, another lead, stands in it to her left (17°).
+- **Feel line, proposed for research to sign:** past her target you see her lunge into the mic, and the note comes down the street at you in arcs of light, one on every half-beat, each one landing on the Shades and washing over her side, until she lets go and the last runs out alone.
+- **Hero shape:** the crest, an arc across the whole cone, thrown fast from the rings and slowing as it goes.
+- **Shared by every variant:**
+  - **The charge** (22 to 30): a light swells in each ring as the speakers draw back with her breath.
+  - **The punctuation** (30): both rings flash, ring-sized (0.9 studs).
+  - **The touches:** stand-ins for the builder's shared hit and heal, to time them. A flash at a Shade's chest, and a ring rising round the ally, on the frame a wave reaches it.
+  - **The wave's shape:** a veil the wave's full height that you see through, with a white ribbon on its leading face. At the target the veil spans 1.8 to 4.6 studs up, and at the end from the floor to 4.3.
+- **Variants:**
+  - **A, the crests:** an arc thrown from the rings on every half-beat (30, 45, 60, 75, 90). Each takes 14 frames to the end, fast then slowing, and thins as it gets there. It reaches the target at 33, 48, 63, 78 and 93.
+  - **B, the front:** one arc thrown to just past the target by 36, then pushed slowly on through the hold, shaking with the speakers' buzz. On the Release it runs to the end and goes by 100. It reaches the target and the ally once, and the deeper Shade only at 73.
+  - **C, the stream:** the arc thrown at the Note, as A's first, then speed lines poured down the cone from the rings, two a frame, through the hold. On the Release they stop at the rings and the last run out by 100.
+- **The measures,** at the game's field of view from the player's camera:
+
+  | Variant | Share of the screen | Touches on the target |
+  |---|---|---|
+  | A | 2.8% at 40, 1.4% through the hold, 2.2% at 98 | five, the last after the Release |
+  | B | 1.2% to 1.9%, held the whole hold | one |
+  | C | 3.0% at 40, then 0.3% to 0.8% | one |
+
+  For scale, Pip's Lantern Burst peaks at 4.05% (section 7, B).
+- **My pick: A.**
+  - It's her beat. Everything she does lands on 120 a minute. The crests make the music visible, and they keep landing as long as she holds, so "held" reads as pressure that keeps coming.
+  - It reads from the player's camera and at 64 px: a pale arc crossing the screen every half-beat. Each one shows the cone, so you see who's in it.
+  - B reads as a wall held up in front of the Shades, a shield, which her ability isn't. It also stands between the camera and the target for a whole second.
+  - C's speed lines run almost at the lens, so from the player's camera they're scratches, 0.3% of the screen. They read only from the side.
+- **What A asks of others, for research and the builder:**
+  - **Five touches,** the last after the Release. Either the hit and the heal tick five times across the hold, or they land once on the first crest and the rest is show. That's the design's call, tier 2.
+  - **Her clip,** mine: the speakers buzz ten times a second through the hold and kick only at 31. With A they'd kick on each crest (45, 60, 75, 90), four lines in `lyric_clips.py`. I'd make that change once A is picked.
+- **Stand-ins, not decided here:** the cone's length (16 from her); its opening up and down (11°); a crest's 14 frames; where the figures stand; the greys.
+- **What I see wrong:**
+  - **The avatar is in the cone.** In the game's framing it stands 22.5° off the middle, inside 24°, and the crests run over it near the camera. That's A's peaks at 40 and 98. A heal washing over the avatar may read as healing it, and the avatar is never a target (`docs/design.md`). Either the cone is shorter than about 15 studs from her, or the crest fades past the last figure it reaches. For research and the builder.
+  - **The speakers land at 32,** two frames after the Note, so the first crest is born ahead of them. Either the fly-out lands on 30 (my clip), or the first crest rides with the rings for two frames.
+  - **From the player's camera, the left speaker sits just left of her head on screen.** The ring's flash stays ring-sized, or it covers her face (condition 11).
+  - **The avatar's body covers the cone's right half** from the player's camera, as it covered Pip's burst's middle. The left half carries the read.
+  - **Each crest is on screen about 9 of its 15 frames.** At real speed that could strobe. That's for motion to judge.
+  - The 64 px sheet's labels cover a third of each tile, as on Pip's and the Shade's.
+- **Content check, 2026-11-12: PASS** on rules 2, 3 and 4 and conditions 11 to 13, the grey block-in only. The drawn look keeps:
+  1. **The ring's flash stays clear of her face,** with a gap you can see, and never pink, red or warm there. Every heading is read at 64 px.
+  2. **C's speed lines stay long streaks** running out along the cone, never short bits or dots that seem to fall (condition 12). They end at the cone's end, not on the floor.
+  3. **Nothing liquid:** no gloss, beads or drips at a band's edge, and no splash where the wave meets a Shade.
+  4. **The heal is a plain ring,** never hearts.
+  5. **The arc stays sound or light.** A sharp crescent coming at the camera can read as a blade's slash: a note, not a block.
+  6. **The drawn effect gets its own check** in every tint it uses, at full size and 64 px, over both grounds, from every camera here.
+- **Not done:**
+  - Research's verdict, with `ga-fresh-eyes` on the signature.
+  - Then the art sheet: the crest's look, the veil, the touches' shapes; then its content check.
+  - Then the builder's build. The beats aren't in a Definition: Lyric has no action in `Definitions.Actions` yet.
+- **Hours:** about 1.5.
 
 ## AR5. The festival kit and the base's machines
 

@@ -13,9 +13,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: Pip in the game with his Lantern Burst (AR4, sections 7 and 8), then Lyric with research's prop state (AR4), then the burst with the bloom capture (AR2, sections 10 and 11).
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Faber:** Haymaker's fix 3 is yours to upload (AR1, section 8, "Modulo's look on the retake"). Frames 7 and 8 have finer rims, content check PASS, and nothing else changes. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
-- **Quaestor:** Pip's Lantern Burst art sheet is delivered (AR4, section 8), for your verdict, with `ga-fresh-eyes` on the signature. Your two fixes are in. The trail is still small from the player's camera, which sees the throw coming at it.
-- Next: Lyric's Held Note block-in. No lock held.
+- **Faber:** Haymaker's fix 3 is in, thanks. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
+- **Quaestor:** Lyric's Held Note block-in is drawn, three grey variants on her clip, content check PASS (AR4, section 9), for your verdict, with `ga-fresh-eyes` on the signature. My pick is A, the crests on the half-beat. Two questions for you: five touches or one, and the avatar standing inside the cone.
+- Next: Haymaker's B, the square driven down from above, as a tier 1 block-in for the director's pick. No lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 

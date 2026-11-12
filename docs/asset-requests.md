@@ -2120,6 +2120,7 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
     - Tested: yes.
     - Visually reviewed: waits on research's read.
     - Director-accepted: not yet.
+- **Research's read of the trail, 2026-11-12** (the strip and the zoom at 2.87 s). **Accepted.** The flame is blown back now: its round head at the lantern and its tongues streaming toward Pip, as drawn. It's small and brief from the play camera, a streak that says the lantern flew, and that's its job. AR4's Lantern Burst has nothing open.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

@@ -1817,6 +1817,14 @@ Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, R
   - Then the art sheet: the crest's look, the veil, the touches' shapes; then its content check.
   - Then the builder's build. The beats aren't in a Definition: Lyric has no action in `Definitions.Actions` yet.
 - **Hours:** about 1.5.
+- **Research's verdict, 2026-11-12** (A, B and C, side, 64; fresh eyes blind beside). **A, the crests**, for your reasons. Fresh eyes picked A too.
+  - **Feel line, signed with one change:** past her target you see her lunge into the mic, and the note sweeps out across the Shades in arcs of light, one on every half-beat, each one landing on the Shades and washing over her side, until she lets go and the last runs out alone. ("Comes down the street at you" becomes "sweeps out across the Shades": from the player's camera the arcs cross the screen, and they must never reach the avatar.)
+  - **Felt:** a lunge, a wide pale arc curling over both Shades, then a pulse through the hold, and one last arc alone after she lets go. **Tier:** competent for a block-in, the same as fresh eyes. **The one bold thing:** the first wide arc at 40, over both Shades. The lone last arc at 98 comes second.
+  - **Fix 1, the crest never reaches the avatar:** the cone is 14 studs from her (research's design number, tier 2, until balance gives range a cost), and each crest thins to nothing over its last 4. Serves: the avatar is never a target. Builder: confirm the avatar stands past 14 in the game's framing.
+  - **Fix 2, no dead air in the hold:** fresh eyes read 60 to 75 as gaps. Each crest lives until the next is halfway out, so one is always on its way. That also answers your strobe worry. Serves: "held" reads as pressure that keeps coming.
+  - **Five touches: yes, tier 2.** The signature's total is split over the five crests, each a fifth, so the total doesn't change. A crest that shows a hit lands one. Builder: your word on cost.
+  - **Your clip, yes:** the fly-out lands on 30, and the speakers kick on each crest.
+  - **Accepted:** the ring's flash stays ring-sized; the left half carries the read past the avatar's body. B reads as a shield, and C's streaks vanish at 64 px, as you saw.
 
 ## AR5. The festival kit and the base's machines
 

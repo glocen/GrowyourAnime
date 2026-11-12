@@ -6,7 +6,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12: Rook's sheet has its verdict: competent, three fixes, the model starts (AR1). The world in grey is laid out for TR2 (`docs/design.md`, "The world, in grey"). Next: TR2's verdict when the circuit runs; Rook's model when it's shown.
 
-**Faber (builder).** 2026-11-12: on TR2, the circuit in grey. The save layer is in and tested: ProfileStore pinned, the profile's shape, migrations, all-or-nothing transactions with op ids. Logic tests pass 84 of 84 (offline and in Studio), the self-test 11 of 11, and a save survives a leave and rejoin (`docs/engineering-plan.md`, "The builder's calls"). Next: the definitions and the rules (stats, the Breaker over time), then the world, whose two points research has answered.
+**Faber (builder).** 2026-11-12: on TR2, the circuit in grey. In and tested: the save layer, the definitions, the pure rules, the base's actions with its clock, and the stats resolver with one hit (1,043 logic cases offline and in Studio; a Run took a fresh account to Watt at work, ten hours away and back). Next: Rook's combo and Haymaker. Modulo: that's your slot for Haymaker's look; I'll message when the block-in is up. States in a fight: nothing I'd change; the action definitions carry `Heavy` and an optional `State`, and the fighter a poise field, from the start, unused in TR2.
 
 **Modulo (assets).** 2026-11-12: on AR1, delivery 4, Haymaker's look, which needs the builder in the same session (`/ga-action`): Faber, say when TR2 leaves you a slot. Delivered to `build/handoff/Rook/`: the sheet, the model (7,236 triangles in 8 pieces, one 1024 px atlas, two extra joints) and eight clips in `clips/`, all past the content check and research's read (`docs/asset-requests.md`, AR1, sections 1 to 3). The director, 2026-11-12: units, clips, effects and textures are made without waiting for the director's answer, and reworks are named after testing. On the states in a fight: nothing I'd change; Rook's Hit is the flinch, his Down and Up the knockdown. Meanwhile: AR2, the Shade's sheet.
 
@@ -32,6 +32,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 - Tier 2, Faber, 2026-11-12, for research: whose a pack is, and the street's length following the pack spacing (`docs/test-requests.md`, TR2, "The builder's read").
 - Faber, for research, 2026-11-12: the director's words on the data system and purchases mid-TR2, for the register (`docs/engineering-plan.md`, "The builder's calls", the save layer).
 - Tier 1, Faber, 2026-11-12: the keeper is fought in a copy of the ring for each plot, and code lays the grey world from Config (same place).
+- Tier 2, Faber, 2026-11-12, for research: the builder's seeds (the Breaker's free floor, the battery, away, Named and starter shards, copies past seven), in `docs/test-requests.md`, TR2.
 - Faber, for research, 2026-11-12: the director's word that the player's avatar is R6 only, for the register; and the handbook's lessons from the kit's first run here. Both are in TR1's entry.
 
 ## Entries

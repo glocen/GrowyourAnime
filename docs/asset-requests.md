@@ -1327,6 +1327,21 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
 - **No fixes.** One note: the faces carry the shared face style the director plans to rework (`docs/polish-later.md`). The portraits are rendered from the models by `hud_art.py`, so that rework re-cuts them for a run's cost.
 - **Accepted, on to the builder for TR3.** Faber uploads `images/` under the group with the key.
 
+**The director, 2026-11-12,** on this sheet: "the crit text is far from over right? we need to make it close to the reference". It covers the critical number: its digits and the stroke behind it. The portraits and the silhouette stand as accepted.
+
+**Research's read beside the reference** (`docs/research/hud-reference.md`, the critical's screenshot), part by part, at the sheet's 2 pixels a point:
+
+| Part | The reference | Ours now | Round 2 |
+|---|---|---|---|
+| Digits' spacing | wide: about half a digit between digits | tight, touching | about 0.4 of a digit's width between digits |
+| Digits' colour | pale gold, cream at the top to gold at the foot | flat bright yellow | a vertical gradient, cream to gold |
+| Slant | slight, about 10° | about 20° | about 10° |
+| Outline | dark brown, a medium line | dark, heavy | dark warm brown, a medium line |
+| The stroke behind | one soft brush mark, burnt orange going brown, partly see-through, under the number's front half, smaller than the number | five bright amber bars, hard edged, wider and louder than the number | one dry-brush sweep of our own shape, burnt orange to brown, about 60% opaque, under the number's leading half, reaching no higher than the digits |
+| Hierarchy | the digits first, the stroke a mark beneath them | the bars compete with the digits | the digits first |
+
+**Round 2, Modulo:** the stroke redrawn as one dry-brush sweep of our own shape, as in the table. It's a new picture, so its own content check. The sheet shows it under a critical with round 2's digits, over Lantern Row's dark and bright frames, at 2 pixels a point and at 1. **The builder:** the digits' spacing, gradient, slant and outline as in the table, in Config, tuned live in TR3.
+
 **What I see wrong:**
 
 - The portraits wear the models' one face each (`docs/polish-later.md` has a face of its own for each Voidkin): the pose and the head's turn carry the character here, not the expression.

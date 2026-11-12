@@ -120,6 +120,84 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - Added with them: Haymaker and the hook swing round wide and rising. The first export took the ram under the shoulder like a pendulum.
 - **Hours:** the clips, 0.7.
 
+**4. Haymaker's look: the block-in** (Modulo, 2026-11-12). Grey boxes on the real clip, timing and size only, no art.
+
+- **Where:** `build/scratch/modulo/rook/haymaker_fx/`: `blockin_A.png`, `blockin_B.png` and `blockin_C.png` (twelve frames each from the player's assumed camera), `blockin_side.png`, `blockin_bright.png` (a bright floor) and `blockin_64.png`. `tools/blender/rook_haymaker_fx.py` rebuilds them in about 15 s.
+- **Feel line, proposed for research to sign:** Rook's punch lands and the ram's own square face is thrown down the ground through you, like the stamp of a pile driver, seen from behind him.
+- **Job and rank:** a signature. It shows where the shock runs and that the hit is heavy.
+- **The hero shape:** the ram's face as a square bracket, two posts and a lintel, standing on the ground across the hit's line. Direction: down the line, from the knuckles through the target. Acceleration: it snaps out and settles, 78% of its 8 studs in the first 4 frames and the rest by frame 10. It grows as it goes, so the body it reaches stands inside it.
+- **One shape, three times:**
+  - The charge: a square drawn tight onto the ram's face through the hold, from 2.9 studs to 1.7, cut at the strike.
+  - The punctuation: the same square thrown open round the ram, 3.0 then 3.6 studs, on the Strike frame and the Shock frame.
+  - The release: the bracket.
+- **Variants:**
+  - A, the corridor: five brackets punched up one after another down the line, each larger. They stay where they were laid and leave from the near end.
+  - B, the thrown frame: one bracket flies down the line, stretched along its travel while it's fast.
+  - C, the thrown frame and its wake: B, and where it passed it leaves A's brackets standing, thinner and greyer.
+- **My pick: C.** B gives one hero with a direction, and from behind it closes round the target like a frame. Alone it leaves the ground between them empty, and from the side it's one post. The wake gives the depth and shows the line that was hit, and it stays under the hero in value.
+- **On the clip's markers:** the charge from 0.47 s to Strike; the punctuation on Strike and Shock; the bracket from the frame after Shock; all of it gone 0.42 s after Strike.
+- **Stand-ins, not decided here:** the reach (8 studs), the target's place (7 studs ahead), the body's knock back, the two greys. Colour and texture wait for the art sheet.
+- **What I see wrong:**
+  - From the player's camera, Rook's own body hides the bracket for its first two frames. The punctuation square carries those frames.
+  - On the bright floor the light bars are weak and the dark rim must carry them. That's the art sheet's first job.
+  - The body's knock runs along the view, so it barely shows from behind. How it's shown is the builder's, with the camera.
+  - At Strike the ram is 2.5 studs right of his centre line: the swing is wide, and the ram reaches the centre line by Step. The shock's line starts at the ram's face and runs to the target, 30° across on this stand-in.
+  - The 64 px sheet's labels cover a third of each tile.
+- **Not done:** this is my preview, not the builder's replay, which doesn't exist yet. The beats aren't in a Definition.
+- **Research's verdict** (Quaestor, 2026-11-12, on blockin_A/B/C, side and 64):
+  - **Feel line, signed with one change:** Rook's punch lands and the ram's own square face is thrown along the ground through the target, like the stamp of a pile driver, seen from behind him. ("Through you" becomes "through the target": the player stands behind Rook, not in the line.)
+  - **Felt:** the ram's square face thrown at the target and framing it, an idea only this weapon could have. From the player's camera, though, C's wake piles up round the target and hides it, and at 64 px the bars almost vanish.
+  - **Tier:** competent, for a block-in. The direction is right.
+  - **The one bold thing:** the square. The shock is the ram's own face, so the effect says who threw it.
+  - **Pick: C.** Behind him, B is cleaner. But champions in the Clash Grounds and other players on Lantern Row see Haymaker from the side, and from there only the wake shows the line that was hit.
+  - **Fixes:**
+    1. The bars read at 64 px: about three times as thick as now, a lintel you can see on a phone (serves: "it looks expensive", hits that land).
+    2. The wake stands at most half the hero's height and stops short of the target, so from behind the target's body and its hit reaction stay clear. It keeps the side read (serves: a hit you can read).
+  - **Waits for the art sheet, as you wrote:** colour, the bright floor's rim, a ground mark under the posts.
+- **The fixes, as made** (Modulo, 2026-11-12, `blockin_C.png` and the three shared sheets redrawn):
+  1. The hero's bar is 0.85 studs at the ram and 1.35 at the end of the line, from 0.4 and 0.6. The punctuation square, the charge's square and the floor's lines are thicker with it.
+  2. The wake is three brackets at half the hero's height, the last one a stud short of the target. From behind, the target stands clear inside the hero's frame. From the side the wake still shows the line.
+- **Next:** the art sheet (the bar's texture and how it erodes, the colour, the rim for a bright floor, the ground mark), then the builder's replay.
+- **Hours:** the block-in, 0.3.
+
+### 5. Haymaker's look: the art sheet (Modulo, 2026-11-12)
+
+- **Where:** `build/handoff/Rook/fx/haymaker_art.png` (the sheet) and `haymaker_bar.png` (the one picture, 512 x 1024). Made by `tools/blender/rook_haymaker_art.py`, about 40 seconds, Workbench: `blender -b --factory-startup --python tools/blender/rook_haymaker_art.py -- <out dir>`. It plays the block-in's thrown frame with the floor's lines (its B: research dropped C's wake at this sheet), at the block-in's numbers.
+- **One bar, drawn once.** Every element is the same picture: the charge's square, the strike's square, the thrown bracket's posts and lintel, the floor's two lines. One upload, and "one shape three times" holds by construction.
+- **The bar:** a chisel's stroke, both ends cut on the slant, in three tones: a cream core (`#FFF1CC`), Rook's ember (`#FFA630`), an ink rim (`#1E1B22`) that holds the shape on a bright floor. Three thin slits run in from its ends, and it's cracked into slanted chips in two rows, no two the same length.
+- **How it's eaten:** eight frames, baked. One field says how deep each texel sits in the stroke, and a frame keeps what's deeper than its threshold: 0, 7, 16, 28, 42, 57, 72 and 86% of the bar gone. The cracks open first, then the chips part and shrink, and the tones follow the edge inward, so it cools as it goes: cream, then ember, then ink. Hard edges throughout, nothing soft, nothing round.
+- **The numbers it's played at** (frames of the clip, 60 a second; Strike is 57):
+  - The charge, 28 to 56: the square forms out of its chips over 8 frames (frames 7 to 0), then boils between frames 0 and 1.
+  - The strike's square: frame 0 on Strike, frame 3 on Shock.
+  - The hero, 59 to 74: frames 0 and 1 in turn while it flies (10 frames), then 1 to 7 over 6 frames while it still drifts, opens 6% and its feet lift.
+  - The floor's lines: hot for 3 frames, then x (0.34, 0.26, 0.30), a scorch, eaten from age 4 to 11.
+  - All gone by frame 76, 0.32 s after Strike. The block-in's markers said 82: the end is shorter by research's fix.
+- **For the builder (your call, Faber):** each bar is a flat picture, unlit, cut by its alpha, stretched along its length only. The preview draws a bar's stroke as 60% of its plane's height and 92% of its length. One way that needs one upload: a `SurfaceGui` on a thin transparent part with an `ImageLabel`, stepping `ImageRectOffset` by 128 px a frame, and `ImageColor3` for the scorch's tint. No glow is added on the sheet.
+- **My calls (tier 1):** the block-in's dark backing box became the rim, drawn in the picture. The corners are flush, so it stays a bracket and never a gate. I tried two afterimages behind the hero while it's fast, and took them out: they weren't in the block-in, and they cluttered it.
+- **What I see wrong:**
+  - Frame 59: the ram and his own body still hide half the hero, as in the block-in.
+  - The chips are drawn by a rule, and at full size the bar's cracks show it: regular, like brickwork. At the size it's played, they read as a cracked stamp.
+  - With the wake gone, the side view shows the bracket and two thin lines on the floor: honest, and plainer than the block-in's C.
+  - On the dark floor the scorch is nearly invisible. That's meant: the hot frames carry it there, and the scorch is for the bright floor.
+  - It's a preview in my renderer, not the builder's replay: no bloom, no camera move, no hitstop, the stand-in body.
+- **Not done:** the beats in a Definition, the builder's replay, the sound, the camera. `ga-fresh-eyes` on the final.
+- **Content check, 2026-11-12:** PASS, on `haymaker_bar.png` as it would upload and on the look as the sheet draws it, in all three tints on both floors.
+  - To keep it a pass: the scorch no redder than it is; the scorch on the floor, never on a body; the bars hard-edged, with no soft, round or glossy variant. A change of tint or shape needs a fresh check.
+  - Still owed before a public build: the effect at "it fires" from the front and three-quarter headings at 64 px, on the builder's replay. The sheet shows it from behind and from the side only.
+  - The image is logged in `docs/asset-log.md` at upload.
+- **Research's verdict** (Quaestor, 2026-11-12, on haymaker_art and haymaker_bar): on to the builder with the wake dropped.
+  - **Felt:** the ram's face thrown as a hot iron square that frames the target and cools as it breaks up: cream, then ember, then ink. In colour the wake reads as rusty scaffolding under it.
+  - **Tier:** competent on the sheet. Exceptional, which a signature aims at, has to come from the builder's hitstop, camera and sound on the replay, judged in motion with fresh eyes.
+  - **The one bold thing:** one bar for everything, eaten as it cools. The effect is made of one stroke, and the stroke carries Rook's ember.
+  - **The wake: dropped.** It was there for the side read, and in colour the floor's two lines already give that read, cleaner. That's the block-in's B with the scorch lines. It's also the second round on the wake idea, so it's dropped rather than patched again.
+  - **Fix:** the last frames, 74 to 80, hang as a slow scatter of chips where the bracket was. Let the hero leave sooner, so the end is as hard as the start (serves: a hit that lands and is done).
+  - **Accepted:** the ink rim for the bright floor; no glow on the sheet (bloom is the builder's); the cracks' regularity, which reads as a cracked stamp at play size; frame 59 hidden behind his body, with the strike's square carrying it.
+  - **The content check's open item** stays open for the builder's replay: the front and three-quarter headings at 64 px.
+- **The verdict, as made** (Modulo, 2026-11-12): the wake and its tint are out of the script and the sheet. The hero is eaten over 6 frames, not 12, and the floor's lines leave 2 frames sooner, so nothing is left by frame 76. The bar's picture is unchanged. The numbers above are the ones now played.
+- **Content re-check, 2026-11-12, on the sheet without the wake:** PASS, same conditions (the scorch no redder, on the floor only; hard edges; a new shape, tint or texture, or the wake back, needs a fresh check; the front and three-quarter headings still owed on the replay).
+- **Delivered** to `build/handoff/Rook/fx/`: `haymaker_bar.png` and `haymaker_art.png`. Faber: the replay is yours; I join it in the same session when you say (`/ga-action`, step 4).
+- **Hours:** the art sheet, 0.4.
+
 ## AR2. The Shade, one rig for every enemy
 
 For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
@@ -128,7 +206,43 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
 
 **Delivers:** a sheet with the body, the glowing outline in the five type colours, and the four masks (`docs/roster.md`, "Enemies"); then the model on one rig; then its clips: idle, walk, a basic attack, the Guard's raise, the Dasher's line and lunge, hit taken, and the burst into light and paper when it falls. No wounds, no blood, nothing left behind (`AGENTS.md`, rule 4).
 
-**Checks:** as AR1. **Status:** open.
+**Checks:** as AR1. **Status:** in progress (Modulo, 2026-11-12). Delivery 1, the sheet, is delivered to `build/handoff/Shade/`. Delivery 2, the model, is next, carrying research's two fixes.
+
+### 1. The design sheet (Modulo, 2026-11-12)
+
+- **Where:** `build/handoff/Shade/shade_sheet.png`, with the view from behind and above in `shade_above.png`. Made by `tools/blender/shade_sheet.py` (headless Blender, about a minute): `blender -b --factory-startup --python tools/blender/shade_sheet.py -- <out dir> [small]`.
+- **The one idea:** a festival coat with nobody in it, lit from inside like a paper lantern. The mask hangs where a face should be, tied round nothing: from the side there's the mask, two strings, a knot, and no head.
+- **What's read, in order:** the mask's outline, then the lit edges by colour, then the hollow collar and cuffs.
+- **The body:** the R6 body under a dark coat (Void `#1B1728`): a bell from the shoulders to a lit hem, a lit seam down the front, a round lit mark on the back, an open collar with a lit rim and a dark hollow, bell sleeves with lit cuffs and a dark hollow, straight legs with lit hems, no hands and no feet. It stands hung: tipped forward, turned a little, limbs plumb, the mask crooked. The blockout is 2,720 triangles, 4 studs to the shoulders, 5.5 to 6.7 to the mask's top.
+- **The four masks,** in paper (`#EFE6D2`), each about two studs across, each with its own outline: the Brawler a disc, all grin, behind four paper teeth; the Guard a square under two heavy brows that jut past its sides; the Dasher a long kite, one point over the chest and one above the collar; the Support a wide, low band with its ends drawn out sideways, over a veil of four paper slips.
+- **My calls (tier 1):**
+  - The mask sits on the neck's joint, so one rig carries all four and a clip can tip it. The head part itself isn't drawn.
+  - The "glowing outline" is made as lit edges on the coat (hem, seam, cuffs, collar), not a line round the whole figure: an outline round a dark body on a dusk ground reads as a sticker, and lit edges read as light from inside. On the sheet the glow is drawn on the picture; in the game it's a Neon part or the builder's choice.
+  - The five type colours on the sheet are a proposal (Strength `#EA4B4F`, Endurance `#F4902A`, Agility `#3F9DF2`, Intelligence `#A470F2`, Technique `#42CC7E`), from the package's words (red, orange, blue, purple, green). AR3 fixes them, and the Shade takes AR3's.
+  - The Dasher's mask stands 0.7 studs taller than the others, so its outline is a spike above the shoulders.
+- **What I see wrong:**
+  - At 64 px the four outlines differ (a ball, a slanted box, a spike, a wing), but each is about 20 px, and the tie strings add noise at the collar.
+  - The Brawler's mask is the plainest of the four: at a glance it's a grin on a disc. The model's paint (a seam, a fold, brush marks) has to give it the paper.
+  - The Support's band reads a little like a bat's wings from the front. The veil is what makes it a mask, and it merges with the coat in an outline.
+  - On a bright floor the coat is a dark block and the lit edges lose most of their weight: the mask carries the read there.
+  - The square pose's sleeves stand 5.3 studs across. Hung, they fall inside 4.
+  - This is one direction, not three: the idea was clear from the roster's words, so I spent the time on the masks.
+- **Not done:** the elite's second mask, the keepers (their own sheets), the burst into light and paper (a clip and an effect, with the model).
+- **Content check, 2026-11-12:** BLOCK, then PASS after two fixes.
+  - The collar's inside was lit: from behind and above, in the Strength red, a filled red disc where a neck would be. It's dark now, like the cuffs, and only the rim is lit. The sheet gained the view from behind and above, at full size (`shade_above.png`) and at 64 px.
+  - The back's mark was a hollow diamond under the knot's two tails, a structure too close to a rune. It's a solid round disc now, and the tails end at the collar, 0.8 stud or more above it for every mask.
+  - Passed as they were: the look and the names (rule 3), the lit bands and the empty coat (rule 4), the sources (rule 2).
+  - For the clips: the feet stay planted with nothing above it, and the ties stay behind the mask, never round the collar.
+- **Research's verdict** (Quaestor, 2026-11-12, on shade_sheet, shade_above and the 64 px rows): yes, on to the model, carrying fixes 1 and 2.
+  - **Felt:** a coat with nobody in it, and a mask tied round nothing. Each behaviour is told by its outline before its colour. But the light reads as neon piping on a dark tracksuit, not as a lantern lit from inside.
+  - **Tier:** competent.
+  - **The one bold thing:** the side view. The mask, two strings, a knot, and no head behind them. It's the enemy's whole idea in one frame.
+  - **Fixes:**
+    1. "Lit from inside like a paper lantern" isn't on the sheet yet. The edges are lines of light on a dead coat. The coat itself needs to glow a little from within: light that rises toward the lit hem and the cuffs, as through paper, while the collar's inside stays dark as the content check asked. The body stays dark overall (serves: the one idea, and the festival it belongs to).
+    2. The Brawler's mask reads as a smiley sticker. It must read as a festival mask someone made by hand, at 64 px too. It's the Shade players meet first and most (serves: "a Common is a character", "nothing looks like a placeholder").
+  - **Accepted:** lit edges in place of a line round the figure; the mask on the neck's joint; the Dasher's spike; one direction, not three, since the roster's words set it.
+  - **For AR3, which fixes the type colours:** Lantern Row is lit cyan and warm white (docs/roster.md, the grounds). Agility's #3F9DF2 sits close to that cyan, so check an Agility Shade on the dusk street before AR3 closes the colours.
+- **Hours:** the sheet, 0.3.
 
 ## AR3. The UI kit
 

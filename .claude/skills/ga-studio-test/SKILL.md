@@ -18,7 +18,7 @@ Carried from NEXT Button on 2026-11-09. The kit it names (the self-test, the deb
 - If the director is playing during a test, their inputs show up in the logs. Ask them to step away for timed tests.
 - The Studio window under test must be in front. One behind another window draws at 13 to 33 fps, and timing checks then fail with nothing wrong. The self-test's first line gives the client's frame rate and warns below 50. If the window can't come forward, report those timing cases NOT VERIFIED, never FAIL. Starting a Run can leave a terminal in front, so read the frame rate once the Run is up. A session can bring the window forward itself: user32 `SetForegroundWindow` after a tap of Alt.
 - Read logs and reports for what matters (counts, FAIL lines, errors). Don't pull whole logs into the conversation.
-- Studio sessions use a test save store and live servers the live one, once saving exists. The builder names both here.
+- Studio sessions save to the `"Test"` store and live servers to `"Live"` (`DataService`, since TR2), so a playtest never touches a player's save. `NL_Debug:Invoke("DataState")` says which store and whether Studio has API access; `("Data")` reads the save; `("DataWipe")` makes the player a new account; `("DataCredits", nil, n)` changes something to check a rejoin by.
 
 ## The tools
 

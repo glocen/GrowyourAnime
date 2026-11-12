@@ -23,6 +23,8 @@ Made in TR1, 2026-11-12. Each is the builder's technical call (`AGENTS.md`, "Des
 
 - **ProfileStore stays,** unedited, in `src/libraries/server/`, fetched from its source (Mad Studio's ProfileStore, a pinned release) when TR2 builds saving, and called through one wrapper of ours. Its session lock is what keeps two servers from writing one profile, the classic way a game duplicates items, and the directive says it plainly: "do not rewrite a proven persistence library just to create a new system" (section 9).
 - **`PlayerHandlerData` and `ProductManager` are replaced,** with a layer written fresh for this game. NEXT Button's (`src/owner/`, read 2026-11-12 on the director's OK) holds pets as counts by kind, where section 9 wants a unique id per owned Voidkin with its own level, stars and history. It changes a profile through about thirty-five one-field setters with game rules inside them, and syncs the client with one remote event per field. Only its store receipts are safe from a repeat. The director, 2026-11-12, on reading it: "sure but i think we should redo everything so we make it perfect, next button was kinda.. rushed". That word covers NEXT Button's data system.
+- **Purchases start from the director's `ProductManager`.** The director, 2026-11-12, mid-TR2: "we can use my data systems by the way as always as well as the product handler etc". Shown the trade, they chose: the new save layer stays, and when the store is designed, their `ProductManager` is the starting point for purchases, adapted to this layer. Then: "just whatever best and has the highest quality and is robust this is a sensitive issue". So when the store is built, the builder reads their `ProductManager` first and keeps whatever of it is the most robust. That covers purchases only. `PlayerHandlerData` stays replaced.
+- **Built in TR2, 2026-11-12:** ProfileStore 1.0.3, pinned (`src/libraries/README.md`); the shape in `Shared.Data.Profile`, migrations in `Shared.Data.Migrations`, and every write as one `Shared.Data.Transaction` (on a copy, committed whole, op id in the same step), opened and closed by `DataService`. A Voidkin's role is read from the slot that points at it, not stored on it, so a role has one home.
 - **Kept as lessons, rewritten in our code:** a receipt is granted only once its purchase id is saved (ProfileStore's documented way); `AddUserId` on every profile, for data deletion requests; a profile whose session ends kicks its player; Studio and live servers use different stores.
 - **Reopen it** if ProfileStore's lock fails a test we write for it, or Roblox ships a save service that locks sessions itself.
 
@@ -51,7 +53,9 @@ The package's D04, and the heart of `docs/balance.md`.
 
 ## Data contracts (a sketch)
 
-**An owned Voidkin:** `Id` (made by the server when it's uncovered, never reused), `Def`, `Level`, `Xp`, `Stars`, `StarProgress`, `Nickname`, `Preset` (which Regalia preset it's linked to), `Role`, `Favourite`, `Locked`, `Born`.
+The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is what it was built from.
+
+**An owned Voidkin:** `Id` (made by the server when it's uncovered, never reused), `Def`, `Level`, `Xp`, `Stars`, `StarProgress`, `Nickname`, `Preset` (which Regalia preset it's linked to), `Favourite`, `Locked`, `Born`. Its role is read from the slot that holds it (the builder, TR2).
 
 **An owned item:** `Id`, `Def`, `Tier`, `Rarity`, `Lines` (the rolled lines), `Sockets` (emblem ids), `Jewel`.
 

@@ -20,6 +20,10 @@ local REMOTES: { [string]: Spec } = {
 	ClientReady = { Kind = "Event", RatePerSecond = 1 }, -- client -> server: (bootErrors) how the client's boot went
 	Tune = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients, Studio only: (path, value) a Config change (TuneService)
 	DebugCommand = { Kind = "Function", RatePerSecond = 30 }, -- client -> server, answered only in Studio: (name, ...) runs a DebugService command
+	-- The save (DataService).
+	Act = { Kind = "Function", RatePerSecond = 10 }, -- client -> server: (opId, action, args) -> answer; a repeated opId gets its first answer
+	ProfileGet = { Kind = "Function", RatePerSecond = 1 }, -- client -> server: () -> the player's read copy, once it's loaded
+	Profile = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (view) the whole read copy after each change
 }
 
 local CLASS_FOR_KIND: { [Kind]: string } = {

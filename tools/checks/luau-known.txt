@@ -1,2 +1,13 @@
 # Findings luau_check.py already knows, one per line: file, kind, message. Written by --freeze, never by hand.
 # A finding listed here isn't reported. Fix some, freeze again, and this list only shrinks.
+src/libraries/server/ProfileStore.luau: LocalShadow: Variable 'success' shadows previous declaration at line N
+src/libraries/server/ProfileStore.luau: LocalUnused: Variable 'error_message' is never used; prefix with '_' to silence
+src/libraries/server/ProfileStore.luau: LocalUnused: Variable 'success' is never used; prefix with '_' to silence
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a *error-type* & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a *error-type* & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a *error-type* & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a *error-type* & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a *error-type* & unknown & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a *error-type* & unknown & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a T & string
+src/libraries/server/ProfileStore.luau: TypeError: the function 'string.len' expects to get a string as its 1st argument, but is being given a T & string

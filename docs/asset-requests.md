@@ -1319,6 +1319,14 @@ For TR3, after Lantern Row's round 2 (AR5, section 1).
 
 The silhouette was redrawn after that check, and went back alone: **PASS**, 2026-11-12, all twelve cuts. Its nearest wrong reads, a stoppered bottle or a rubber stamp in the small Mythical cut seen bare, are harmless and gone in the frame. It adds to 8: no knob, hair, costume line or new proportion without a check, and the fill stays the kit's violet with its pale rim, never red or flesh-toned, never tinted by a fallen state. The handoff's files are this make's, byte for byte.
 
+**Research's verdict, 2026-11-12** (the sheet).
+- **Felt:** three people looking back at you from the corner, each in one glance: Rook sizing you up, Pip unsure under his hat, Lyric between songs. Even at the card's small size over the street's dark side and its bright end, you know who leads.
+- **Tier:** competent. **The one bold thing:** the eyes to the player. A HUD card that looks at you is a companion, not a stat block.
+- **The sweep:** accepted. At 2 pixels a point it's speed, at 1 an amber bar that still lifts the gold, and the number stays the brightest thing.
+- **The silhouette:** accepted. A faceless violet bust says "not yet yours", not "missing".
+- **No fixes.** One note: the faces carry the shared face style the director plans to rework (`docs/polish-later.md`). The portraits are rendered from the models by `hud_art.py`, so that rework re-cuts them for a run's cost.
+- **Accepted, on to the builder for TR3.** Faber uploads `images/` under the group with the key.
+
 **What I see wrong:**
 
 - The portraits wear the models' one face each (`docs/polish-later.md` has a face of its own for each Voidkin): the pose and the head's turn carry the character here, not the expression.

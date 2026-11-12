@@ -60,7 +60,9 @@ return {
 	-- the art sheet plays them by is build/handoff/Pip/fx/pip_burst_art.json. Frames are the clip's, from its start.
 	LanternBurst = {
 		Picture = "rbxassetid://139257020366755", -- the flame's twenty cells (round 2: the boil stands up)
-		TrailPicture = "rbxassetid://93148687324383", -- the flame blown back
+		-- The flame blown back, uploaded turned a quarter (its tongues the top row, its head the bottom): a Beam runs its
+		-- picture's height along it (handbook/visuals/vfx-engine-facts.md, "Beam"). 93148687324383 was the same picture sideways.
+		TrailPicture = "rbxassetid://105763467007985",
 		-- The sheet: cells 0 to 11 are Big pixels square, Across to a row from the top; the rest are Small, in one row at
 		-- SmallTop, from the left.
 		Sheet = { Big = 256, Across = 4, Bigs = 12, Small = 128, SmallTop = 768 },
@@ -133,7 +135,7 @@ return {
 		Grow = 0.301,
 		Ease = 2, -- research's verdict (AR4, section 9): at 4 each crest had thinned to a sliver by the time it landed
 		Thin = 4,
-		Width = 1,
+		Width = 2, -- research's pick from the ladder of 1.5, 2 and 2.5 (AR4, section 10, 2026-11-12)
 		Birth = 2.5,
 		Narrow = 0.6,
 		VeilHold = 3,

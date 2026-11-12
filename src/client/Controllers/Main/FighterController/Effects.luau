@@ -621,11 +621,15 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 	local head = Instance.new("Attachment")
 	head.Parent = ends
 	local beam = Instance.new("Beam")
-	beam.Attachment0, beam.Attachment1 = tail, head -- the picture's U runs tail to lantern
+	-- A Beam runs its picture's height along it, top row at Attachment0 (handbook/visuals/vfx-engine-facts.md, "Beam"), so
+	-- the trail is uploaded turned a quarter: its tongues' tips the top row at the tail, its round head the bottom at the
+	-- lantern. Still, never sliding, or the head would wrap round to the tail.
+	beam.Attachment0, beam.Attachment1 = tail, head
 	beam.FaceCamera = true
 	beam.Texture = EffectsConfig.LanternBurst.TrailPicture
 	beam.TextureMode = Enum.TextureMode.Stretch
 	beam.TextureLength = 1
+	beam.TextureSpeed = 0
 	beam.Color = ColorSequence.new(HOT)
 	beam.LightInfluence = 0
 	beam.Transparency = NumberSequence.new(0)

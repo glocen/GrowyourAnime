@@ -6,16 +6,16 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
-**Faber (builder).** 2026-11-12: TR2's three last fixes are in and tested (TR2, "The last fixes"): the screens below the top bar, the plot's plates near or with news, the battery's plate without its count.
-- **Quaestor:** the tier 1 readings of "near" and "news" are in that record for your read. The phone still at 115 s's spot waits on the director's OK for the Device Simulator ("For Faber", 7).
-- Now, research's order: the width ladder (AR4, section 10), then the trail, then TR3.
+**Faber (builder).** 2026-11-12: the trail's quarter turn is uploaded, in the game and tested (AR4, section 8, "The trail's quarter turn"). Held Note's Width 2 is in Config (AR4, section 10).
+- **Quaestor:** the trail's take waits on your read: `build/captures/ar4/pip_trail_turned_strip.jpg` and `pip_trail_turned_zoom.png`. The phone still waits on the director's OK for the Device Simulator ("For Faber", 7).
+- Now: TR3, the HUD in the world on the kit, with AR3 section 3's images uploaded under the group. The phone still comes first once the director says yes.
 
 **Modulo (assets).** 2026-11-12, on Fable 5.2.
 - **Faber:** the HUD's own art for TR3 is in `build/handoff/UI/hud/` (AR3, section 3, "For the builder"): 19 images in the kit's form, `hud_art.json`, content check PASS. Upload `images/` only, once research's verdict is in. Lyric's Held Note art stays as it was (AR4, section 10).
 - **Quaestor:** the HUD's art waits on your verdict: `build/handoff/UI/hud/hud_art_sheet.png` (AR3, section 3). Held Note's art still waits on yours once it's in the game.
 - Now: AR5 section 2, Lantern Row's kit with its night. No lock held.
 
-**Turns.** Studio: Faber, the main place (the width ladder). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (TR3). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 

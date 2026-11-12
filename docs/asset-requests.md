@@ -2097,6 +2097,29 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - **What it showed:** Pip's burst reads whole from either side. The lantern's arc back to the target is the best view of the throw so far.
   - **Pip's recoil:** judged on Modulo's round 2 replay strip (he rocks back a step with the hat tipped back), and accepted. At the play camera it's a small beat behind the flame, and the flame is the read.
   - **Pip's Lantern Burst closes: competent,** two rounds and the hold-drift fix. Director-accepted: not yet. The director's planned rework of its look stands (`docs/polish-later.md`). Still open in the game: the trail's quarter turn (the builder's, queued).
+- **The trail's quarter turn in the game (Faber, 2026-11-12).**
+  - **Why:** a Beam runs its picture's height along it, with the top row at Attachment0. 93148687324383 laid the flame across the beam.
+  - **In:**
+    - The same picture, turned a quarter: `build/upload/pip_burst_trail_along.png`, 128 x 512. ffmpeg's `transpose=1` turned Modulo's pixels and nothing was redrawn (the row in `docs/asset-log.md`).
+    - Content check PASS. The group's upload is 105763467007985, Approved, and `Config.Effects.LanternBurst.TrailPicture` names it.
+    - The tongues' tips are the top row, at the tail. The round head is the bottom row, at the lantern.
+    - The beam's `TextureSpeed` is now 0. Its default of 1 slid the picture, and the head wrapped round to the tail.
+  - **Tests:**
+    - Type check 0 new.
+    - The Lantern Burst case gains "stretched once and still". The fight's cases ran 296 of 296 with Pip leading.
+  - **The take** (`build/captures/ar4/`):
+    - `pip_trail_turned_take.mkv`: 10 s, lossless, at 58.3 fps, with one 133 ms step at 0.05 s, before the presses. The replay presses Lantern Burst every 4 s, the first about 2 s in, with Pip leading on the dummy.
+    - `pip_trail_turned_strip.jpg`: 2.80 to 2.97 s, every picture at 48 fps, cropped to Pip and the dummy.
+    - `pip_trail_turned_zoom.png`: the trail at 2.87 s, at four times.
+  - **What I see:**
+    - The trail is on screen about 0.13 s, from the lantern leaving his hand to the burst (2.83 to 2.95 s).
+    - The round cream head sits at the lantern. The outline tapers to the tongues' tips toward Pip.
+    - From the play camera it's small, about 75 by 60 pixels of the 2560 by 1600 capture. The tongues read only in the zoom, and the lantern's own flame overlaps the head.
+  - **Four facts:**
+    - Implemented: yes.
+    - Tested: yes.
+    - Visually reviewed: waits on research's read.
+    - Director-accepted: not yet.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 
@@ -2354,6 +2377,7 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
 - **Research's pick, 2026-11-12: Width 2** (the side by side, 1 s after each press).
   - At 2 the crest spans the pair as one arc: the veil wraps the Shades, the braid is its bright leading edge, and the bodies still read through it. At 1.5 it hugs each body and reads as two effects. At 2.5 it spills past them, and the braid crowds the Shades.
   - **Held Note's round 1 closes: competent.** Its one bold thing is now there, the arc of the note washing over who's in her cone. Still to see: the dusk and night check on Lantern Row's kit (AR5). Director-accepted: not yet.
+- **In the game, 2026-11-12 (Faber):** `Config.Effects.HeldNote.Width` is 2. Held Note's self-test cases ran 70 of 70 with Lyric leading.
 
 ## AR5. The festival kit and the base's machines
 

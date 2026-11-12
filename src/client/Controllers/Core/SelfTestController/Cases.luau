@@ -1640,6 +1640,8 @@ return {
 			t.Check("the trail the frame after", beam ~= nil and beam.Enabled)
 			if beam then
 				t.Check("white and unlit, the trail's picture", beam.Color.Keypoints[1].Value == Color3.new(1, 1, 1) and beam.LightInfluence == 0 and beam.Texture == look.TrailPicture)
+				-- A Beam runs its picture's height along it: the turned picture, stretched once and still.
+				t.Check("stretched once and still, so its head stays at the lantern", beam.TextureMode == Enum.TextureMode.Stretch and beam.TextureLength == 1 and beam.TextureSpeed == 0, `speed {beam.TextureSpeed}`)
 			end
 			-- The burst, held by the hit: the clock stays on the Burst, the free clock runs on.
 			at(burst)

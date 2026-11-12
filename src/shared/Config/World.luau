@@ -50,7 +50,7 @@ return {
 		Ring = 5, -- the Lamplighter's ring, 80 studs across, behind the keeper's gate
 		Beyond = 1.5, -- from the ring's far edge to Drum Court's gate, shut, in view
 		Spread = 7, -- studs between a pack's Shades at its spawn (inside Combat.Shade.Notice, so one notices for all)
-		Respawn = 15, -- seconds after a pack's last Shade falls until it's back (the builder's seed, 2026-11-12)
+		Respawn = 15, -- seconds after a pack's last Shade falls until it's back, the elite's too (the builder's seed, 2026-11-12)
 	},
 
 	-- How the grey build stands up: studs, not times.

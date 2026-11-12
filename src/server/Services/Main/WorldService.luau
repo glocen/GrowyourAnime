@@ -30,6 +30,7 @@ local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so 
 local PAVED_TOP = 0.6 -- the Strip, the streets and the plots stand a tenth higher, for the same reason
 local OVERLAY = 0.1 -- a mark on a paved floor: the kept back of a plot, a Tower's footprint
 local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
+local READ_LIVE = { ["World.Row.Respawn"] = true } -- World numbers read when used (PackService), not laid
 
 local GREY = {
 	Ground = Color3.fromRGB(78, 80, 86),
@@ -68,9 +69,9 @@ local function slab(parent: Instance, name: string, x0: number, x1: number, z0: 
 	return block(parent, name, size, CFrame.new((x0 + x1) / 2, top - thick / 2, (z0 + z1) / 2), color)
 end
 
--- A marker that's only a place: unseen, untouchable, standing on the floor at `at`.
+-- A marker that's only a place: unseen, untouchable, its centre on the floor at `at`, so where it stands is the floor.
 local function spot(parent: Instance, name: string, at: CFrame): Part
-	local p = block(parent, name, Vector3.new(2, 0.2, 2), at * CFrame.new(0, 0.1, 0), GREY.Pad)
+	local p = block(parent, name, Vector3.new(2, 0.2, 2), at, GREY.Pad)
 	p.Transparency = 1
 	p.CanCollide = false
 	p.CanQuery = false
@@ -408,11 +409,13 @@ function WorldService.Start()
 		join(player)
 	end
 	Players.PlayerRemoving:Connect(leave)
-	-- A World number tuned in a playtest: lay the grey world again, once for a burst of tunes.
+	-- A World number tuned in a playtest: lay the grey world again, once for a burst of tunes. A number read live, that
+	-- moves nothing laid, leaves it be.
 	local pending = false
 	TuneService.Changed:Connect(function(path: string)
 		local current = workspace:FindFirstChild(WORLD)
-		if string.sub(path, 1, 6) ~= "World." or current == nil or current:GetAttribute("Grey") ~= true or pending then
+		local laid = string.sub(path, 1, 6) == "World." and not READ_LIVE[path]
+		if not laid or current == nil or current:GetAttribute("Grey") ~= true or pending then
 			return
 		end
 		pending = true

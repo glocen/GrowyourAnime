@@ -14,6 +14,7 @@ local Actions = require(Shared.Definitions.Actions)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
+local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
@@ -33,6 +34,8 @@ local GONE_BY = 19 * FRAME -- the art sheet: Haymaker's look is over by frame 76
 local ARRIVE_TIMEOUT = 8 -- seconds for a respawned avatar to stand on its spawn
 local FACING_TOLERANCE = 10 -- degrees off straight at the Breaker that still count as facing it
 local CAMERA_TOLERANCE = 25 -- the camera swings in behind the avatar a moment late
+local RESPAWN_PATH = "World.Row.Respawn"
+local PACK_BACK = 1 -- seconds a felled pack takes to come back while the case runs; the case puts the seed back
 
 -- The angle in degrees between two directions, flat on the ground.
 local function flatAngle(a: Vector3, b: Vector3): number
@@ -147,6 +150,53 @@ return {
 			t.Near("the avatar faces the Breaker (degrees off)", flatAngle(root.CFrame.LookVector, toBreaker), 0, FACING_TOLERANCE)
 			local camera = workspace.CurrentCamera
 			t.Near("so does the camera (degrees off)", flatAngle(camera.CFrame.LookVector, toBreaker), 0, CAMERA_TOLERANCE)
+		end,
+	},
+	{
+		Name = "Packs: each stop stands its Shades, and a fallen pack comes back",
+		Stay = true,
+		Run = function(t: any)
+			local rows = t.Server("Packs")
+			local byName: { [string]: any } = {}
+			for _, row in rows do
+				byName[row.Name] = row
+			end
+			local packs = 0
+			for _, stop in WorldConfig.Row.Stops do
+				packs += if stop.Kind == "Pack" then 1 else 0
+			end
+			local found = 0
+			for name in byName do
+				found += if string.sub(name, 1, 5) == "Pack " then 1 else 0
+			end
+			t.Check("a pack at each pack stop, and the elite", found == packs and byName.Elite ~= nil, `{found} packs for {packs} stops`)
+			for name, row in byName do
+				t.Check(`{name} stands {row.Count}`, row.Standing == row.Count, `{row.Standing} standing`)
+				if row.Count > 1 then
+					t.Near(`{name}'s Shades stand Row.Spread apart`, row.Gap, WorldConfig.Row.Spread, 0.5)
+				end
+			end
+			local first = byName["Pack 1"]
+			if first == nil then
+				return
+			end
+			local wait = t.Server("Tune", RESPAWN_PATH)
+			t.Server("Tune", RESPAWN_PATH, PACK_BACK)
+			local felled = t.Server("PackDefeat", "Pack 1")
+			t.Check("Pack 1 falls", felled.Ok == true and felled.Felled == first.Count, `{tostring(felled.Felled)} felled`)
+			local down = t.Server("Packs")
+			for _, row in down do
+				if row.Name == "Pack 1" then
+					t.Check("none of it stands, and it's coming back", row.Standing == 0 and row.BackIn > 0, `{row.Standing} standing, back in {row.BackIn}`)
+				end
+			end
+			t.Wait(PACK_BACK + 0.5)
+			for _, row in t.Server("Packs") do
+				if row.Name == "Pack 1" then
+					t.Check("it's back, whole, after Row.Respawn", row.Standing == first.Count, `{row.Standing} standing`)
+				end
+			end
+			t.Server("Tune", RESPAWN_PATH, wait)
 		end,
 	},
 	{

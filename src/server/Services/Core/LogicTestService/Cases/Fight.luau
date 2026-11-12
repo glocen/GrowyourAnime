@@ -278,4 +278,26 @@ return {
 			t.Equal("from nothing, full", Fight.Rescale(0, 0, 200), 200)
 		end,
 	},
+	{
+		Name = "Fight: a pack stands round its spawn, its Shades a spacing apart",
+		Run = function(t: any)
+			local one = Fight.PackRing(1, 7)
+			t.Check("one Shade stands on the spawn", #one == 1 and one[1][1] == 0 and one[1][2] == 0)
+			t.Equal("nothing below one", #Fight.PackRing(0, 7), 1)
+			for _, count in { 2, 3, 4, 6 } do
+				local ring = Fight.PackRing(count, 7)
+				t.Equal(`{count} Shades, {count} places`, #ring, count)
+				local sumX, sumZ = 0, 0
+				for k, here in ring do
+					local nextOne = ring[k % count + 1]
+					local gap = math.sqrt((here[1] - nextOne[1]) ^ 2 + (here[2] - nextOne[2]) ^ 2)
+					t.Check(`{count}: place {k} is the spacing from the next`, near(gap, 7, 1e-6), `got {gap}`)
+					sumX += here[1]
+					sumZ += here[2]
+				end
+				t.Check(`{count}: centred on the spawn`, math.abs(sumX) < 1e-6 and math.abs(sumZ) < 1e-6)
+				t.Check(`{count}: the first straight ahead`, math.abs(ring[1][1]) < 1e-9 and ring[1][2] < 0)
+			end
+		end,
+	},
 }

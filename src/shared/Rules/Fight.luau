@@ -188,4 +188,20 @@ function Fight.Spread(angles: { number }, spacing: number): { number }
 	return out
 end
 
+-- Where a pack's `count` Shades stand round its spawn: on one circle, each `spacing` from its neighbours, the first straight
+-- ahead (-Z, the spawn's look). Offsets { X, Z } in studs, in the spawn's own frame. One Shade stands on the spawn.
+function Fight.PackRing(count: number, spacing: number): { { number } }
+	local n = math.max(1, math.floor(count))
+	if n == 1 then
+		return { { 0, 0 } }
+	end
+	local radius = spacing / (2 * math.sin(math.pi / n))
+	local out: { { number } } = {}
+	for k = 1, n do
+		local angle = (k - 1) * 2 * math.pi / n
+		table.insert(out, { radius * math.sin(angle), -radius * math.cos(angle) })
+	end
+	return out
+end
+
 return Fight

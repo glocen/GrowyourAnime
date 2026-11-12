@@ -760,6 +760,14 @@ function FightService.Remove(f: Fighter)
 	remove(f)
 end
 
+-- Studio's tests: `f` falls at once, as if hit to nothing. Its hitters are whoever hit it before.
+function FightService.Defeat(f: Fighter)
+	if fighters[f.Id] == f and f.State ~= "Down" then
+		setHealth(f, 0)
+		fall(f, now())
+	end
+end
+
 function FightService.LeadOf(player: Player): Fighter?
 	return leads[player]
 end

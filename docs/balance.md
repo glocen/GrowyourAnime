@@ -91,6 +91,8 @@ A lead more than a few levels under the account's highest Voidkin earns experien
 | Electricity | research, an event | x2 |
 | Luck | Breaker tuning from research, infusion | +0.40 lift on a shard's top two tiers |
 
+The Stone Condenser is how time away becomes strength (`docs/design.md`, "The base"). Its stones count inside forge ranks' share, not on top of it, and its tray's cap bounds how far a player who checks in often pulls ahead of one who doesn't. Its rate and cap are seeds, set by the simulation before phase 3.
+
 The Void Rift is Breaker speed for a minute, on a schedule. Online all day it averages x1.63. It's the one large multiplier in the game, it's on a clock, and it touches time only.
 
 ## Pace

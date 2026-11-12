@@ -60,9 +60,9 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 2. One ground at the bar.** Rook, Pip and Lyric finished and timed. Lantern Row dressed. The HUD, the reveal and the Breaker screen on the real kit. The Lamplighter. The first session reviewed whole, from a phone. This is the game's proof and its advert.
 
-**Phase 3. The build.** Regalia with presets, the Forge, emblems, jewels, research. Grounds 2 and 3. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
+**Phase 3. The build.** Regalia with presets, the bag, the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Grounds 2 and 3. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
 
-**Phase 4. Breadth.** Grounds 4 to 6, the rest of the roster as each reaches the bar, the Void Shop, the Rift, the Stone Condenser.
+**Phase 4. Breadth.** Grounds 4 to 6, the rest of the roster as each reaches the bar, the Void Shop, the Rift.
 
 **Phase 5. The Strip.** The Clash Grounds, the Calamity.
 

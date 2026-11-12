@@ -105,6 +105,8 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
 - **Extraction bays:** up to six [D], opened as the player advances. A worker's output comes from its aptitude and its level. Research adds to it.
 - **The battery** stores what isn't used, to a cap. Past the cap, the overflow sells itself into Credits at a poor rate, so nothing is thrown away and hoarding is pointless.
 - **Machines:** the Void Breaker, the Forge, the Stone Condenser, the Research Lab [D]. Each is a place to walk to, with its own sound.
+- **The Stone Condenser makes forge stones, online and away** [D, 2026-11-12: "a machine at base that produce stones ... it will work offlines making players come back and get very strong"]. It draws electricity like the Breaker, so the workers feed it too (research's). What it makes lands in its tray, which has a cap: a full tray stops, and coming back to empty it is the reason to return. Its grade and speed rise with its level. Turning lower stones into higher ones stays its second job. Stones still drop from enemies, keepers and the Tower [D]. More uses come later [D: "for now only this"].
+- **Room for it all** [D, 2026-11-12: bases "way bigger", since six workers in their machines take room]: the Breaker, six bays each with its Voidkin at work inside, the battery, the Forge, the Condenser, the Lab, and the Tower behind. The plot's size comes from these, set at TR2's verdict.
 - **Visiting** another base is free and safe [D]: look, never touch.
 
 ## Regalia: gear
@@ -196,9 +198,11 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 | Currency | Comes from | Goes to |
 |---|---|---|
 | Credits | fights, overflow electricity, copies past seven stars, the Clash | the Void Shop, forge ranks, the Condenser |
-| Electricity | workers | breaking shards, infusion |
+| Electricity | workers | breaking shards, infusion, the Condenser |
 | Research Points | first clears, Tower floors, the daily track, the Calamity | the Research Lab |
-| Forge stones, three grades | enemies by ground, the shop | forge ranks |
+| Forge stones, three grades | enemies by ground, keepers, the Tower, the Condenser, the shop | forge ranks |
+
+**The bag** [D, 2026-11-12: "we will need a inventory systems"] holds everything owned that isn't a Voidkin: items, emblems, jewels, stones, shards. One screen with tabs by kind, sort and filter, a lock on anything precious, and a count of its space. Items that would raise Combat Power carry the up arrow (Combat Power, above).
 
 Void Essence is out of launch: nothing needed it that these four don't cover (`docs/polish-later.md`).
 

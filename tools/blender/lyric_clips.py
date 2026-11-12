@@ -628,7 +628,7 @@ def combo(t):
 NOTE_BASE = (3.3, 2.6)  # which way the stand's base lands for the note: ahead and to her right (note_base sets how far)
 NOTE_PULL = (0.45, 0.55, 0.05)  # where the mic's head comes to from her mouth: just off her face, a little to the
 # side the game's camera is on, so her face and the mic both read; the pole's top clears her jaw from here
-NOTE_FEET = {"Right Leg": (0.75, 0.95), "Left Leg": (-0.55, -0.6)}
+NOTE_FEET = {"Right Leg": (0.75, 1.45), "Left Leg": (-0.55, -0.1)}  # the lunge's stance, under her hips as they drive
 
 
 def held_note(t):
@@ -643,8 +643,10 @@ def held_note(t):
           RA=(34, 0, 26), LA=(14, 0, -30))
     t.stand(10, "cubic", held=(12, 240, 2.2))
     t.key(14, ease="out", T=(-5, 16, 0), RA=(62, 0, 34), LA=(8, 0, -34))
-    t.key(20, "throws it out", ease="in", T=(-2, 18, 0), RA=(96, 0, 46), LA=(4, 0, -38))
-    t.key(30, "the note", ease="out", T=(17, 14, 0, 0, 0, 0.4), feet=NOTE_FEET, crouch=0.2, look=(1.5, 10.0, 5.6),
+    # she gathers back on the throw, then drives down and through into the mic on the Note: the lunge reads at the
+    # player's 27 studs only as the whole body travelling (research and fresh eyes, AR4 section 10: "only the stand tilts")
+    t.key(20, "throws it out", ease="in", T=(-6, 18, 0, 0, 0, -0.15), crouch=0.1, RA=(96, 0, 46), LA=(4, 0, -38))
+    t.key(30, "the note", ease="out", T=(26, 14, 0, 0, 0, 1.4), feet=NOTE_FEET, crouch=0.3, look=(1.5, 10.0, 5.6),
           H=(0, 0, 4), RA=("note", NOTE_BASE, NOTE_PULL, (78, 0, 18)), LA=(-48, 0, -36))
     # the toss: she lets the stand go on her throw; it flies out and lands planted, leant in to where her mouth will
     # be, and she catches it as she lunges in
@@ -662,15 +664,16 @@ def held_note(t):
     t.mark(45, "Crest2")
     t.mark(60, "Crest3")
     t.mark(75, "Crest4")
-    t.key(44, ease="sine", T=(18, 14, 0, 0, 0, 0.44), crouch=0.22, LA=(-54, 0, -38))
-    t.key(88, "pushing", ease="out", T=(19, 14, 0, 0, 0, 0.46), crouch=0.24, LA=(-58, 0, -40),
+    t.key(44, ease="sine", T=(23, 14, 0, 0, 0, 1.28), crouch=0.3, LA=(-54, 0, -38))  # settled a little off the drive
+    t.key(88, "pushing", ease="out", T=(24, 14, 0, 0, 0, 1.3), crouch=0.3, LA=(-58, 0, -40),
           RA=("note", NOTE_BASE, NOTE_PULL, (78, 0, 18)))
     t.stand(90, "in")  # planted until she hauls it
     t.mark(90, "Release")
-    t.key(96, "lets it go", ease="sine", T=(4, 12, 0, 0, 0, 0.2), crouch=0.08, look=EYES, H=(0, 0, 2),
+    t.key(96, "lets it go", ease="sine", T=(0, 12, 0, 0, 0, 0.3), crouch=0.15, look=EYES, H=(0, 0, 2),
           RA=(100, 0, 52), LA=(10, 0, -18))
     t.stand(96, "sine", aim=0.0)  # the mic lifted off her mouth and away to her right, her hand high up the pole
-    t.key(106, "hauls it in", ease="in", T=(-1, 10, 0, 0, 0, 0.1), RA=(70, 0, 40), crouch=0.04)
+    t.key(106, "hauls it in", ease="in", T=(-1, 10, 0, 0, 0, 0.1), RA=(70, 0, 40), crouch=0.04,
+          feet={"Right Leg": (0.7, 0.95), "Left Leg": (-0.55, -0.5)})  # she steps back off the lunge as she hauls
     t.stand(106, "in", held=(6, 60, 3.2))
     t.key(116, ease="in", T=(-2, 10, 0, 0, 0, 0.08), RA=(30, 0, 18), crouch=0.02,
           feet={"Right Leg": (0.66, 0.4), "Left Leg": (-0.52, -0.25)})

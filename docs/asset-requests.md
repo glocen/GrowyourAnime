@@ -402,7 +402,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The kit's images aren't started: they wait for the director's eye on the sheet, which research has put in front of the director.
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first.
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 

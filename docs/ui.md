@@ -10,7 +10,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 
 1. **Phone first, landscape.** Every screen is designed at phone size and grows to a desktop, never the other way. Touch targets are 44 px or more, text 14 px or more, and nothing sits under the thumbs' resting corners or the device's notch.
 2. **Quiet until it matters.** In the world, the screen shows the fight. A number, a chip or a glow appears when something changed and leaves when it's read.
-3. **One look, ours.** Panels have chamfered, shard-cut corners. Bars read as conduits that fill with light. A rarity is the frame's shape and glow, never a coloured word in a corner. Two themes from one kit: Graphite Dark and Pearl Light [the package's tone, v11.9].
+3. **One look, ours.** Panels have chamfered, shard-cut corners. Bars read as conduits that fill with light. A rarity is the frame's shape and glow, never a coloured word in a corner. Two themes from one kit: Graphite Dark is the main one, and Pearl Light, drawn with a black border, serves some screens [the director, 2026-11-12].
 4. **The interface never lies.** No success animation plays before the server has said yes. A count-up shows the real change. A disabled button says why.
 
 ## The HUD, in the world

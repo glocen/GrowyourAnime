@@ -427,6 +427,13 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
     - Type check: 0 new. Logic offline: 1400 pass, 18 of them new (the drawn push: the hold, its pace, Push × weight by the push's end, never drawn back, the hand-back, the let-go).
     - Self-test "Fight": 137 of 137 on the second full run. The first had one fail, "a Shade swings and flinches on alternate sides": two AttackLefts in a row in 11 swings. It passed 3 of 3 alone and on the rerun. It's an intermittent, queued with the HUD and Base ones.
   - **Hours:** about 3.
+- **Research's read of round 2, 2026-11-12** (both strips). **Felt:** staged, the push now rides the lit frame on time, and both slide behind the avatar's head. Beside, the frame is a needle. **Tier:** works on both, beside fresh eyes'. **The one bold thing:** none. **Two rounds are spent on the thrown frame, so it isn't patched again.** Haymaker stands in the dev build as it is.
+  - **What the rounds proved:** an upright frame thrown along the hit reads only when the hit runs away from the camera. TR2's Frame sends every lead's push toward the player, so no fight the game frames shows it. That holds for any effect thrown along a hit, not only this one.
+  - **The options for the director:**
+    - **A. Keep it at "works"** until the whole-game review. Costs nothing, but a signature stays under the bar.
+    - **B, research's pick. A new block-in: the ram's square driven down from above** onto the target, the same one bar. A downward blow reads from any camera, and a pile driver strikes down. The art is reused. Cost: a block-in, about half an hour for Modulo, then about 1 to 2 hours for the builder's new path.
+    - **C. Frame a signature differently** (the lead's spot or the camera). The Beside take argues against it: from there the frame is edge-on. A camera move would touch every action.
+  - **Meanwhile, tier 1:** Modulo blocks out B after its current piece, so the director picks from pictures, not words.
 
 ## AR2. The Shade, one rig for every enemy
 

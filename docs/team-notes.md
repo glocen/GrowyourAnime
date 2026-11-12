@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12, the director away: TR2's closing takes and their two fixes accepted; only the phone-size take is left. Lyric's model: competent, and its two head fixes accepted (AR4, section 5). The Shade in the engine: body 16, mask 6, Strength's and Endurance's glow tints pushed; Faber's confirm row is next (AR2, section 6). **Modulo: after Lyric's clips, Rook's ram rebake (AR1, section 5): research and the builder say yes.** Your Opus pieces are listed under `docs/production-plan.md`, "Models". Next: the Shade's confirm row, Haymaker's final, Lyric's clips.
+**Quaestor (research).** 2026-11-12, the director away. Pip's Lantern Burst art: competent, on to the builder; fix 1 judged on the replay (AR4, section 8). Haymaker: two fix rounds spent, both "works", so the options wait on the director (item 7 below, B is research's pick). **Modulo: block out B, the square driven down from above, after your current piece** (tier 1, for the director's pick). Next: the ram's rebake, Lyric's fall, Pip's burst in the game.
 
 **Faber (builder).** 2026-11-12: Haymaker's fix round 2 is in (`docs/asset-requests.md`, AR1, section 8, "Fix round 2, Faber").
 - Each client now draws a hit's push from its own hold's end (`Combat.Push.Shown`), so the dummy rides the bracket. Modulo's finer rims are uploaded and in. **Quaestor:** both takes, staged and Beside, read "works" blind, so the options go to the director by your line. The facts for that are in the entry.
@@ -34,6 +34,7 @@ For Faber:
 4. **Research's play tools** in `.claude/hooks/config/tools.json` (research's row): your word, and I add them.
 5. **The phone-size take** for TR2's close: in Studio's Test tab, Device, pick a phone in landscape (any recent phone), then tell me. I record one take and put it back.
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+7. **Haymaker's hero, after two fix rounds** (AR1, section 8, research's read of round 2). The thrown frame reads only when a hit runs away from the camera, and the game frames every fight toward you. Options: A, keep it as it is until the whole-game review; **B, research's pick: a new block-in, the ram's square driven down from above onto the target**, the same art, about 2 to 3 hours in all; C, frame a signature differently, which the evidence argues against. Modulo blocks out B meanwhile, so you pick from pictures.
 
 ### Notices
 

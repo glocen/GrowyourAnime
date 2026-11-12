@@ -77,9 +77,9 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 2. One ground at the bar.** Rook, Pip and Lyric finished and timed. Lantern Row dressed. The HUD, the reveal and the Breaker screen on the real kit. The Lamplighter. The first session reviewed whole, from a phone. This is the game's proof and its advert.
 
-**Phase 3. The build.** Regalia with presets, the bag, the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Grounds 2 and 3. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
+**Phase 3. The build.** Regalia with presets, the bag, the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Ground 2, Drum Court. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
 
-**Phase 4. Breadth.** Grounds 4 to 6, the Void Shop, the Rift. The rest of the roster comes at phase 4's very end, once everything else is set and done, the store's design included (the director, 2026-11-12).
+**Phase 4. Breadth.** The Void Shop, the Rift. Then, at phase 4's very end, once everything else is set and done: grounds 3 to 6 with the rest of the roster, since each ground's shards carry its Voidkin. Both shops, the Robux store and the Void Shop, are designed and set up before that block (the director, 2026-11-12).
 
 **Phase 5. The Strip.** The Clash Grounds, the Calamity.
 
@@ -87,7 +87,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 ## The cut line
 
-The director's, set once phase 2 is judged. Research's recommendation until then: launch needs phases 0 to 4 and the Tower. The Clash Grounds and the Calamity launch if they're at the bar, and are the first update if they aren't. A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is a floor, not a cap (the director, 2026-11-12, `docs/decisions.md`). At least Rook, Kirra, Pip, Watt and Lyric, and up to eight with one Uncommon, one Epic and one Legendary, whatever is finished when the systems are ready. Updates follow soon after launch. A faster launch comes from cutting systems here, not the roster.
+The director's, set once phase 2 is judged. Research's recommendation until then: launch needs phases 0 to 4 and the Tower. Whether launch waits for grounds 3 to 6, or opens on grounds 1 and 2 with the rest as updates, is the director's call here (2026-11-12). The Clash Grounds and the Calamity launch if they're at the bar, and are the first update if they aren't. A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is a floor, not a cap (the director, 2026-11-12, `docs/decisions.md`). At least Rook, Kirra, Pip, Watt and Lyric, and up to eight with one Uncommon, one Epic and one Legendary, whatever is finished when the systems are ready. Updates follow soon after launch. A faster launch comes from cutting systems here, not the roster.
 
 ## The date
 

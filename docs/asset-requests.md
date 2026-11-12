@@ -331,6 +331,12 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   3. **Frames 7 and 8, after those two.** At 1.27 s the last eaten frame's chips and their ink rims read as a dark chain over the floor: the lattice I was watching for. At the target's depth they're about half that size, so judge them there first. If they still read as a chain, I thin those two frames' rims; it's a new picture, its content check and an upload.
   - The aim stays through the target (the design). Aimed at the avatar, it would come into the player's face even more.
   - The floor's lines run toward the camera here, a short dark stroke from the dummy: fine, nothing to change.
+- **Research's read of the staged take, 2026-11-12** (the strip, the four full frames). **Felt:** the wind-up, the sparks and the number land together on the dummy, then a gold frame swings off over the avatar's shoulder and takes the eye from the hit. **Tier:** works, beside fresh eyes'. That's under the pass line, and a signature aims higher. **The one bold thing:** the strike's frame (1.10 s), the sparks and the number on the dummy. The hero doesn't carry it on this take.
+  - **The cause, as Modulo reads it:** the hero was built for a camera behind Rook, and TR2's Frame turns him to face the player. The bar, the art and the timing aren't at fault.
+  - **The feel line's camera clause follows TR2:** "seen from behind him" becomes "seen from the player's side of the target". The rest stands, the aim through the target included.
+  - **Modulo's fixes 1 and 2: yes,** in its order, with its size note. The lean goes by how side-on the line is (0 face-on, 16 side-on), so a side-on line keeps it. Serves: the stamp lands on what was hit, at the fight's depth, with the number in it. Fix 3 is judged on the retake.
+  - **Next:** the builder turns them live and shoots one press, staged the same way. Fresh eyes reads it blind, and Modulo reads it too. Research signs the final on that take. This is the first fix round on the hero in the game's framing.
+  - **The sound** waits on the director's ear (the Now board). The take is silent, so research doesn't judge it.
 
 ## AR2. The Shade, one rig for every enemy
 

@@ -649,6 +649,12 @@ Also: a hand shows inside each sleeve's end. The lantern floats a little lower a
 
 **Hours:** the clips so far, between 2 and 3 by my own estimate, not timed.
 
+- **Research's ruling on Hit, Down and Up** (Quaestor, 2026-11-12, tier 2, on the section's numbers; the poses themselves are read after the export):
+  - **Yes, as a second shared set, not as Pip's own.** One set per Voidkin would put three clips on each of 31; one set per body costs three clips once. Five of the 31 wear a long robe or gown (Pip, Cinder, Halcyon, Crane, Umbriel), and Rook's Down at 108 degrees comes out of every one of them. So R6 gets two sets, open legs and robe, and these three are the robe set. Recorded in `docs/design.md`, "States in a fight", "When".
+  - **What that asks of the clips:** the body has to read as a fall without the hat and the lantern, because the next robed Voidkin has neither. The props keep their keys on their own joints. A body without those joints has no track for them, so nothing changes for it.
+  - **For Faber, when Pip goes in:** a Voidkin's definition names its reaction set, `open` or `robe`. Rook and the Shade's rig stay as they are.
+  - **Modulo:** say in your row if two sets don't hold for a body you can see coming (a long tail, a mech's custom rig is already its own).
+
 ## AR5. The festival kit and the base's machines
 
 For Modulo, after AR4. One kit of stalls, lanterns, banners and gates that six grounds recolour; the Void Breaker with its chambers; a bay. Written in full when AR4 closes.

@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-12: the director's eye on AR3's sheet is in: Graphite Dark is the main theme, and Pearl Light, with a black border, serves some screens (`docs/decisions.md`); the kit's images are unblocked, and Modulo has been told. AR2, the Shade: passed (c53970f). AR4, Pip: sheet and model passed, the clips' poses next. For Faber when the Shade goes in: the mask's own tint, walk speed from the stride, the Lunge's tell from its markers, Attack/AttackLeft and Hit/HitLeft alternating, the Burst's effect from the collar on its marker. Next: TR2's verdict as QA; Pip's poses and his Hit, Down and Up; Haymaker's final in motion.
+**Quaestor (research).** 2026-11-12: the director's eye on AR3's sheet is in: Graphite Dark is the main theme, and Pearl Light, with a black border, serves some screens (`docs/decisions.md`); the kit's images are unblocked, and Modulo has been told. AR2, the Shade: passed (c53970f). AR4, Pip: sheet and model passed, the clips' poses next. For Faber when the Shade goes in: the mask's own tint, walk speed from the stride, the Lunge's tell from its markers, Attack/AttackLeft and Hit/HitLeft alternating, the Burst's effect from the collar on its marker. Ruled: Pip's Hit, Down and Up become R6's robe set (notice below). Next: TR2's verdict as QA; Pip's poses once exported; Haymaker's final in motion.
 
 **Faber (builder).** 2026-11-12: stopped at the director's word, mid-TR2. In and tested: Rook's combo and Haymaker (8bda266), the grey world (b30467d), Lantern Row's packs (d165529), the keeper (407462b), drops (1e108e2), and the plain HUD with the base's interactions as a block (its HUD and Base cases 65/65, logic 1,350; a full self-test run is owed). Pick up from: three fixes from the HUD's first capture (TR2's status line), the full run, the Shade's model (AR2), then the sim and research's verdict evidence. Haymaker's textured bar waits on item 4 below.
 
@@ -41,6 +41,7 @@ For TR2 (Faber), when you're next in Studio:
 - Tier 1, Faber, 2026-11-12: the keeper is fought in a copy of the ring for each plot, and code lays the grey world from Config (same place).
 - Tier 2, Faber, 2026-11-12, for research: the builder's seeds (the Breaker's free floor, the battery, away, Named and starter shards, copies past seven), in `docs/test-requests.md`, TR2.
 - Faber, for research, 2026-11-12: the director's word that the player's avatar is R6 only, for the register; and the handbook's lessons from the kit's first run here. Both are in TR1's entry.
+- Tier 2, research, 2026-11-12: reactions on R6 come in two shared sets, open legs and robe; Pip's Hit, Down and Up are the robe set (`docs/design.md`, "States in a fight"). Faber and Modulo: say in your row what you'd change.
 
 ## Entries
 

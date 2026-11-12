@@ -70,7 +70,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 ## The cut line
 
-The director's, set once phase 2 is judged. Research's recommendation until then: launch needs phases 0 to 4 and the Tower. The Clash Grounds and the Calamity launch if they're at the bar, and are the first update if they aren't. A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is ten (the director, 2026-11-12, `docs/decisions.md`): the three starters, at least one per rarity up to Mythical and every class. The first update is ready at launch, and the rest of the launch scope is cut to fit ten.
+The director's, set once phase 2 is judged. Research's recommendation until then: launch needs phases 0 to 4 and the Tower. The Clash Grounds and the Calamity launch if they're at the bar, and are the first update if they aren't. A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is a floor, not a cap (the director, 2026-11-12, `docs/decisions.md`). At least Rook, Kirra, Pip, Watt and Lyric, and up to eight with one Uncommon, one Epic and one Legendary, whatever is finished when the systems are ready. Updates follow soon after launch. A faster launch comes from cutting systems here, not the roster.
 
 ## The date
 

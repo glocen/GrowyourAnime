@@ -29,6 +29,9 @@ import rook_sheet as rs  # noqa: E402
 CORE, EMBER, RIM = "#FFF1CC", rs.PALETTE["Ember"], rs.PALETTE["Ink"]
 FRAMES, FW, FH = 8, 512, 128
 EATEN = (0.0, 0.07, 0.16, 0.28, 0.42, 0.57, 0.72, 0.86)  # the share of the bar that's gone, frame by frame
+# How deep the ink rim runs, frame by frame. The last two are finer: there the chips are small, and at the target's
+# depth a full rim round each read as a dark chain over the floor (AR1, section 8, the retake).
+INK = (0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.075, 0.05)
 BODY, SPAN = 0.6, 0.92  # the share of a frame's height and of its width the whole stroke fills
 # A tint multiplies the picture, as an ImageColor3 would: a scored line cools to a scorch.
 TINTS = {"hot": (1.0, 1.0, 1.0), "cool": (0.34, 0.26, 0.3)}
@@ -75,10 +78,10 @@ def bar_frames(seed=7):
     drawn = deep[deep > 0]
     rim, ember, core = (np.array(rs.rgb(c), dtype=np.float32) for c in (RIM, EMBER, CORE))
     frames = []
-    for gone in EATEN:
+    for gone, ink in zip(EATEN, INK):
         left_in = deep - (np.quantile(drawn, gone) if gone else 0.0)
         frame = np.empty((h, w, 4), dtype=np.float32)
-        frame[..., :3] = np.where((left_in < 0.12)[..., None], rim, np.where((left_in < 0.34)[..., None], ember, core))
+        frame[..., :3] = np.where((left_in < ink)[..., None], rim, np.where((left_in < 0.34)[..., None], ember, core))
         frame[..., 3] = left_in > 0
         frame = rs.shrink(frame, 1 / k)
         frame[..., :3] = np.where(frame[..., 3:] > 1e-6, frame[..., :3], rim)  # an empty texel keeps the rim's colour

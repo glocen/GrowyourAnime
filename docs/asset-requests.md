@@ -389,6 +389,14 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - **Beside it, evidence only and nothing changed in the game:** one press with the lead at `Combat.Lead.Beside`, the keeper's spot, staged the same way. The bracket was built for a side-on line, and that take shows what it does there.
   - **If round 2 still reads "works":** the options go to the director with both takes: accept it, take the side for a signature, or start a new blockout (the stamp driven down from above, which reads from any camera).
   - **Earlier takes:** every line before this retake ran 2 studs beside the dummy (the builder's finding above), so the staged take's read stands only for the lean.
+- **Modulo's look on the retake, 2026-11-12: fix 3, the last two frames' rims.**
+  - **What I saw:** at 1.27 s, at the target's depth, the last frames' chips still read as a dark lattice. Each chip's full ink rim, with the dummy's black body showing through the gaps, makes a grid over it. Round 2's `Hero.Past` brings the bracket nearer the camera, so the chips get bigger there, and so does the grid.
+  - **The change:** frames 7 and 8 (the sheet's 6 and 7, 72 and 86% eaten) get a finer rim: 0.075 and 0.05 of the stroke's depth, from 0.12. They now read as scattered gold chips. Frames 1 to 6 are byte-identical to the uploaded picture. The size, the order and the eaten shares are unchanged.
+  - **Where:** `build/handoff/Rook/fx/haymaker_bar.png`, with its sheet `haymaker_art.png` beside it. The rim depths are `INK` in `tools/blender/rook_haymaker_art.py`.
+  - **Content check:** PASS, 2026-11-12. At 64 px the last frames read as gold flecks round the bracket, not a chain and not drops. Nothing red.
+  - **For the builder:** upload it under the group (`tools/upload/upload_asset.py`), then swap `Config.Effects.Haymaker.Picture`. Nothing else changes.
+  - **Round 2's levers** are the hit's, and I agree with both. The bar holds at the new depth.
+  - **Hours:** about 0.5. Made on Opus 5.5 xhigh.
 
 ## AR2. The Shade, one rig for every enemy
 

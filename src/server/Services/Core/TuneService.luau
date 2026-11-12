@@ -13,9 +13,11 @@ local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Tune = require(Shared.Util.Tune)
 local Preset = require(Shared.Util.Preset)
+local Signal = require(Shared.Util.Signal)
 local DebugService = require(script.Parent.DebugService)
 
 local TuneService = {}
+TuneService.Changed = Signal.new() -- (path, value) after a tune is applied on the server, for code that lays things from Config
 
 type Change = { From: any, To: any }
 local changes: { [string]: Change } = {}
@@ -38,6 +40,7 @@ local function tune(first: any, second: any, third: any): any
 	local change = changes[path]
 	changes[path] = { From = if change then change.From else old, To = value }
 	Net.Server.FireAll("Tune", path, value)
+	TuneService.Changed:Fire(path, value)
 	return value
 end
 

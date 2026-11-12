@@ -14,6 +14,8 @@ local Actions = require(Shared.Definitions.Actions)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
+local Markers = require(Shared.World.Markers)
+local Parts = require(Shared.Util.Parts)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 
@@ -28,6 +30,18 @@ local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
 local SQUARE = 4 -- bars in a square
 local BRACKET = 3 -- bars in a bracket: two posts and a lintel
 local GONE_BY = 19 * FRAME -- the art sheet: Haymaker's look is over by frame 76, Strike (57) + 19
+local ARRIVE_TIMEOUT = 8 -- seconds for a respawned avatar to stand on its spawn
+local FACING_TOLERANCE = 10 -- degrees off straight at the Breaker that still count as facing it
+local CAMERA_TOLERANCE = 25 -- the camera swings in behind the avatar a moment late
+
+-- The angle in degrees between two directions, flat on the ground.
+local function flatAngle(a: Vector3, b: Vector3): number
+	local fa, fb = Vector3.new(a.X, 0, a.Z), Vector3.new(b.X, 0, b.Z)
+	if fa.Magnitude < 1e-3 or fb.Magnitude < 1e-3 then
+		return 180
+	end
+	return math.deg(math.acos(math.clamp(fa.Unit:Dot(fb.Unit), -1, 1)))
+end
 
 -- The player's own lead's model, or nil.
 local function myLead(): Model?
@@ -86,6 +100,53 @@ return {
 			local humanoid = t.Character():FindFirstChildOfClass("Humanoid")
 			local rig = if humanoid then humanoid.RigType else nil
 			t.Check("the rig is R6", rig == Enum.HumanoidRigType.R6, `got {tostring(rig)}`)
+		end,
+	},
+	{
+		Name = "World: the place's markers keep the world contract",
+		Stay = true,
+		Run = function(t: any)
+			local problems = t.Server("WorldReport")
+			local first = if type(problems) == "table" then problems[1] else nil
+			t.Check("the world report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+		end,
+	},
+	{
+		Name = "World: the player arrives on their own plot, facing the Breaker",
+		Stay = true, -- it makes its own arrival; the next case's reset takes the avatar back to the pad
+		Run = function(t: any)
+			local player = Players.LocalPlayer
+			local plot = player:GetAttribute("Plot")
+			t.Check("the player owns a plot", type(plot) == "number", `got {tostring(plot)}`)
+			local spawn = if type(plot) == "number" then Markers.Find("Spawn", { Plot = plot }) else nil
+			local breaker = if type(plot) == "number" then Markers.Find("Breaker", { Plot = plot }) else nil
+			t.Check("its spawn and its Breaker are marked", spawn ~= nil and breaker ~= nil)
+			if not (spawn and breaker) then
+				return
+			end
+			local old = player.Character
+			t.Check("the server respawns the avatar", t.Server("Respawn") == true)
+			local deadline = os.clock() + ARRIVE_TIMEOUT
+			local root: BasePart? = nil
+			repeat
+				t.Wait(0.1)
+				local character = player.Character
+				local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+				root = if character and humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then Parts.Root(character) else nil
+			until root or os.clock() > deadline
+			t.Check("a new avatar stands on the ground", root ~= nil)
+			if not root then
+				return
+			end
+			t.Wait(0.3) -- the camera settles behind it
+			local at = Markers.At(spawn)
+			local offset = at:PointToObjectSpace(root.Position)
+			local size = if spawn:IsA("BasePart") then spawn.Size else Vector3.new(2, 0, 2)
+			t.Check("on its plot's spawn", math.abs(offset.X) <= size.X / 2 and math.abs(offset.Z) <= size.Z / 2, `{string.format("%.1f, %.1f", offset.X, offset.Z)} from its centre`)
+			local toBreaker = Markers.At(breaker).Position - root.Position
+			t.Near("the avatar faces the Breaker (degrees off)", flatAngle(root.CFrame.LookVector, toBreaker), 0, FACING_TOLERANCE)
+			local camera = workspace.CurrentCamera
+			t.Near("so does the camera (degrees off)", flatAngle(camera.CFrame.LookVector, toBreaker), 0, CAMERA_TOLERANCE)
 		end,
 	},
 	{

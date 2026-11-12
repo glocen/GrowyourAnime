@@ -80,6 +80,17 @@ The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is wh
 | The Clash Grounds | server: champions are server-run from their owner's saved stats | watches |
 | Bases: who has which plot | server, at join | walks around |
 
+## The world contract
+
+The handbook's rule ([the world contract](../handbook/engineering/architecture.md)), as this game keeps it. Built in TR2, 2026-11-12.
+
+- **One list.** Every tag a world stamps and code reads, with its attributes and how many a world holds, is in `Shared.World.Tags`. Code reads markers only through `Shared.World.Markers`, never a tag's name as a literal, and only those inside `workspace`: copies in storage carry the same tags.
+- **Whoever builds a world stamps it.** With no `workspace.World` in the place, `WorldService` lays research's layout in grey from `Config.World` and stamps it as it goes. An authored world (level design, later) replaces it by being there. A grey world saved into the place by mistake (attribute `Grey`) is laid fresh at boot.
+- **The world report:** `NL_Debug:Invoke("WorldReport")` returns what's wrong, empty when the world is whole: a marker's kind and attribute types, enemy ids, plot numbers, ground under each standing marker, and the counts (per plot or in the whole world). The server logs it at boot, and the self-test checks it.
+- **The grey world, laid out:** the crossing's centre is the origin and north is `-Z`. Plots are numbered west to east, the north row first. A World number tuned in a playtest lays it again, and `WorldService.Laid` tells whatever stands on a marker to find it again.
+- **Plots:** the server gives each player the lowest free plot at join (the player attribute `Plot`, freed at leave) and sets them down on its spawn, facing the Breaker. Eight plots, so the place's Max Players is eight.
+- Screens read replicated state, never markers.
+
 ## Transactions
 
 - Each change to a valuable is one server function: check, then apply everything to the profile, with no yield between.

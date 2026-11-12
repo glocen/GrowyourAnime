@@ -325,6 +325,12 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - The line's aim: through the target (the design), or toward the lead's own avatar. That second one is a change of direction rule, so it's yours and Modulo's.
   - The Frame itself (`Lead.Frame`, TR2) is outside this piece.
 - **Hours:** about 1.5.
+- **Modulo's look on the staged take, 2026-11-12** (the strip and the four full frames). I agree with fresh eyes, and the cause is the bracket's geometry for this camera, not the bar. The bar reads: gold chips in their ink, cracked, hard-edged on the pad. Three changes, one at a time, the first two live:
+  1. **`Hero.Lean` to 0.** I set the lean for a side view. Coming at the camera, the same 16° tips the square back, so its lintel slants up and away and it reads as a crane arm. If the builder would rather keep the side view's lean, the rule is the lean times how side-on the line is to the camera: 0 face-on, 16 side-on.
+  2. **`Hero.Reach` so the bracket stops just past the target**, not 8 studs on. Here it has passed the dummy by 1.10 s and does all its hanging and eating over the avatar's left shoulder, where it's nearest, so biggest, and the head covers it. Stopped a stud past the target, it frames the target while it's eaten, the target is pushed out through it, and it stays at the fight's depth. Its size at the line's end then wants to be about the target's outline plus a margin: `WidthGain` and `HeightGain` cut to suit, tuned on the replay.
+  3. **Frames 7 and 8, after those two.** At 1.27 s the last eaten frame's chips and their ink rims read as a dark chain over the floor: the lattice I was watching for. At the target's depth they're about half that size, so judge them there first. If they still read as a chain, I thin those two frames' rims; it's a new picture, its content check and an upload.
+  - The aim stays through the target (the design). Aimed at the avatar, it would come into the player's face even more.
+  - The floor's lines run toward the camera here, a short dark stroke from the dummy: fine, nothing to change.
 
 ## AR2. The Shade, one rig for every enemy
 

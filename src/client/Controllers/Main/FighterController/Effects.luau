@@ -10,6 +10,9 @@
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8).
 --   LanternShots  Pip's combo, a grey block: a streak from the lantern to the target on each shot (Config.Effects.Shot).
+--   SpeakerShots  Lyric's combo, the same from her speakers' rings, the ones each shot names.
+--   HeldNote  Lyric's signature, a grey block (Config.Effects.HeldNote; AR4, section 9): the charge in her rings, their
+--             flash, and a crest thrown across the cone on every half-beat, until the art sheet.
 --   BoxPose   a Shade box's stand-in motion on its action's beats: it leans back, then lunges.
 --   Burst     a Shade falls: it bursts into light and paper (docs/design.md, "Combat": no gore), on its clip's marker.
 --   Number    a damage number over the target.
@@ -783,50 +786,221 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 	return running
 end
 
--- Pip's shots (PipCombo), a grey block: a streak from the lantern to the target on each beat that hits.
-function Effects.LanternShots(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
-	local lamp = attacker:FindFirstChild("Pip_Lamp")
-	local lantern = if lamp then lamp:FindFirstChild("Lantern") :: Attachment? else nil
-	local fired: { [string]: boolean } = {}
-	local function streak(heavy: boolean)
-		local aim = target()
-		if lantern == nil or aim == nil then
-			return
-		end
-		local from, to = lantern.WorldPosition, aim.Position
-		local length = (to - from).Magnitude
-		if length < 0.1 then
-			return
-		end
-		local bar = part(LIGHT, Enum.Material.Neon)
-		local placed = CFrame.lookAt((from + to) / 2, to)
-		run(function(age: number): boolean
-			local shot = EffectsConfig.Shot
-			local t = age / math.max(FRAME, shot.Life)
-			if t >= 1 then
-				return false
-			end
-			local width = (if heavy then shot.Heavy else shot.Width) * (1 - t)
-			bar.Size = Vector3.new(width, width, length)
-			bar.CFrame = placed
-			bar.Transparency = t
-			return true
-		end, function()
-			bar:Destroy()
-		end)
+-- A grey streak from `from` to `to` (Config.Effects.Shot), over its Life; a heavy shot's is wider.
+local function streak(from: Vector3, to: Vector3, heavy: boolean)
+	local length = (to - from).Magnitude
+	if length < 0.1 then
+		return
 	end
+	local bar = part(LIGHT, Enum.Material.Neon)
+	local placed = CFrame.lookAt((from + to) / 2, to)
+	run(function(age: number): boolean
+		local shot = EffectsConfig.Shot
+		local t = age / math.max(FRAME, shot.Life)
+		if t >= 1 then
+			return false
+		end
+		local width = (if heavy then shot.Heavy else shot.Width) * (1 - t)
+		bar.Size = Vector3.new(width, width, length)
+		bar.CFrame = placed
+		bar.Transparency = t
+		return true
+	end, function()
+		bar:Destroy()
+	end)
+end
+
+-- A streak to the target on each beat that hits, from each of the points `from` gives for that beat.
+local function shots(beats: { [string]: number }, target: () -> BasePart?, action: Actions.Action, from: (beat: string) -> { Attachment }): Running
+	local fired: { [string]: boolean } = {}
 	return {
 		Step = function(clock: number, _free: number?): boolean
 			for name, at in beats do
 				local hit = action.Hits[name]
 				if hit and not fired[name] and clock >= at then
 					fired[name] = true
-					streak(hit.Heavy)
+					local aim = target()
+					if aim then
+						for _, point in from(name) do
+							streak(point.WorldPosition, aim.Position, hit.Heavy)
+						end
+					end
 				end
 			end
 			return clock < action.Length
 		end,
 		Destroy = function() end,
+	}
+end
+
+-- Pip's shots (PipCombo), a grey block: a streak from the lantern to the target on each beat that hits.
+function Effects.LanternShots(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local lamp = attacker:FindFirstChild("Pip_Lamp")
+	local lantern = if lamp then lamp:FindFirstChild("Lantern") :: Attachment? else nil
+	return shots(beats, target, action, function(_beat: string): { Attachment }
+		return if lantern then { lantern } else {}
+	end)
+end
+
+-- Lyric's speakers' rings, by name (tools/studio/Models/Lyric.luau: RingR and RingL).
+local function rings(attacker: Model): { [string]: Attachment }
+	local found: { [string]: Attachment } = {}
+	for _, point in attacker:GetDescendants() do
+		if point:IsA("Attachment") and (point.Name == "RingR" or point.Name == "RingL") then
+			found[point.Name] = point
+		end
+	end
+	return found
+end
+
+-- Lyric's shots (LyricCombo), a grey block: a streak from a speaker's ring to the target on each shot, from the rings
+-- Config.Effects.Shot.Speakers names for it.
+function Effects.SpeakerShots(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local found = rings(attacker)
+	return shots(beats, target, action, function(beat: string): { Attachment }
+		local out = {}
+		for _, name in EffectsConfig.Shot.Speakers[beat] or {} do
+			local point = found[name]
+			if point then
+				table.insert(out, point)
+			end
+		end
+		return out
+	end)
+end
+
+-- One crest of the Held Note: where it was thrown from and along, when, for how long, and by which beat's hit.
+type Crest = { Parts: { Part }, Born: number, Life: number, Root: Vector3, Axis: Vector3, Floor: number, Hit: Actions.Hit }
+
+-- A crest `age` seconds out (Config.Effects.HeldNote): an arc of grey panels round the cone's point, across the cone, its
+-- veil's height and place eased out from the rings, each panel thinning to nothing over the last Thin studs from her.
+local function layCrest(crest: Crest, age: number): boolean
+	local look = EffectsConfig.HeldNote
+	local u = age / math.max(FRAME, crest.Life)
+	if u >= 1 then
+		return false
+	end
+	local hit = crest.Hit
+	local reach, cone, apex = hit.Reach, hit.Cone or 0, hit.Apex or 0
+	local out = look.From + (reach - look.From) * (1 - (1 - u) ^ look.Ease) -- studs from her along the line
+	local tall = look.Tall + look.Grow * (out - look.From)
+	local middle = crest.Floor + look.Up - look.Fall * (out - look.From)
+	local radius = out + apex
+	local point = crest.Root - crest.Axis * apex
+	local count = #crest.Parts
+	local step = math.rad(2 * cone / count)
+	local chord = 2 * radius * math.sin(step / 2) + 0.05
+	for index, panel in crest.Parts do
+		local turn = CFrame.fromAxisAngle(Vector3.yAxis, math.rad(-cone) + (index - 0.5) * step)
+		local direction = turn:VectorToWorldSpace(crest.Axis)
+		local at = point + direction * radius
+		local from = Vector3.new(at.X - crest.Root.X, 0, at.Z - crest.Root.Z).Magnitude
+		local left = math.clamp((reach - from) / math.max(look.Thin, 0.01), 0, 1)
+		at = Vector3.new(at.X, middle, at.Z)
+		panel.Size = Vector3.new(chord, math.max(0.01, tall * left), STAND_IN_DEPTH)
+		panel.CFrame = CFrame.lookAt(at, at + direction)
+		panel.Transparency = 1 - (1 - look.Transparency) * left
+	end
+	return true
+end
+
+-- Lyric's Held Note (LyricHeldNote), a grey block (Config.Effects.HeldNote): the charge in her rings, their flash on the
+-- first crest, and a crest thrown across the cone on every beat that hits. Each lives until the next is halfway out, so one
+-- is always on its way, and the last runs out alone after the Release.
+function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local look = EffectsConfig.HeldNote
+	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local glows: { [Attachment]: Part } = {}
+	for _, ring in rings(attacker) do
+		local glow = part(SPARK, Enum.Material.Neon)
+		glow.Shape = Enum.PartType.Ball
+		glow.Transparency = 1
+		glows[ring] = glow
+	end
+	local order: { string } = {}
+	for name in beats do
+		if action.Hits[name] then
+			table.insert(order, name)
+		end
+	end
+	table.sort(order, function(a: string, b: string): boolean
+		return beats[a] < beats[b]
+	end)
+	local first = if order[1] then beats[order[1]] else 0
+	local crests: { Crest } = {}
+	local thrown: { [string]: boolean } = {}
+	local function throw(index: number)
+		if root == nil then
+			return
+		end
+		local name = order[index]
+		local here = Vector3.new(root.Position.X, 0, root.Position.Z)
+		local aim = target()
+		local line = if aim then Vector3.new(aim.Position.X, 0, aim.Position.Z) - here else Vector3.zero
+		if line.Magnitude < 0.01 then
+			line = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+		end
+		local gap = if order[index + 1] then beats[order[index + 1]] - beats[name] elseif index > 1 then beats[name] - beats[order[index - 1]] else 0.25
+		local panels = {}
+		for _ = 1, math.max(1, look.Segments) do
+			local panel = part(LIGHT, Enum.Material.Neon)
+			panel.Transparency = 1
+			table.insert(panels, panel)
+		end
+		table.insert(crests, {
+			Parts = panels,
+			Born = beats[name],
+			Life = gap * 2 ^ (1 / look.Ease),
+			Root = here,
+			Axis = line.Unit,
+			Floor = root.Position.Y - R6_ROOT_HEIGHT,
+			Hit = action.Hits[name],
+		})
+	end
+	local function destroy()
+		for _, glow in glows do
+			glow:Destroy()
+		end
+		table.clear(glows)
+		for _, crest in crests do
+			clear(crest.Parts)
+		end
+		table.clear(crests)
+	end
+	return {
+		Step = function(clock: number, _free: number?): boolean
+			for index, name in order do
+				if not thrown[name] and clock >= beats[name] then
+					thrown[name] = true
+					throw(index)
+				end
+			end
+			for index = #crests, 1, -1 do
+				local crest = crests[index]
+				if not layCrest(crest, clock - crest.Born) then
+					clear(crest.Parts)
+					table.remove(crests, index)
+				end
+			end
+			local charge, out = look.Charge * FRAME, look.Out * FRAME
+			for ring, glow in glows do
+				local size, fade = 0, 1
+				if clock >= first - charge and clock < first then
+					size, fade = look.Flash * (clock - (first - charge)) / math.max(charge, FRAME), 0.3
+				elseif clock >= first and clock < first + out then
+					size, fade = look.Flash, (clock - first) / math.max(out, FRAME)
+				end
+				glow.Size = Vector3.one * math.max(size, 0.05)
+				glow.CFrame = CFrame.new(ring.WorldPosition)
+				glow.Transparency = fade
+			end
+			local alive = clock < action.Length or #crests > 0
+			if not alive then
+				destroy()
+			end
+			return alive
+		end,
+		Destroy = destroy,
 	}
 end
 

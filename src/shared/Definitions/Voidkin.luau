@@ -36,7 +36,7 @@ local rows: { Row } = {
 	{ Id = "rill", Name = "Rill", Rarity = "Uncommon", Type = "Agility", Class = "Mage", Element = "Frost", Zone = 3, Aptitude = 1 },
 	{ Id = "dirge", Name = "Dirge", Rarity = "Uncommon", Type = "Technique", Class = "Tank", Element = "Void", Zone = 3, Aptitude = 2 },
 	{ Id = "juno", Name = "Juno", Rarity = "Uncommon", Type = "Intelligence", Class = "Warrior", Element = "Storm", Zone = 3, Aptitude = 2 },
-	{ Id = "lyric", Name = "Lyric", Rarity = "Rare", Type = "Technique", Class = "Healer", Element = "Storm", Zone = 2, Aptitude = 2 },
+	{ Id = "lyric", Name = "Lyric", Rarity = "Rare", Type = "Technique", Class = "Healer", Element = "Storm", Zone = 2, Aptitude = 2, Model = "Lyric", Rig = "Robe" },
 	{ Id = "mirage", Name = "Mirage", Rarity = "Rare", Type = "Agility", Class = "Assassin", Element = "Fire", Zone = 3, Aptitude = 1 },
 	{ Id = "bulwark", Name = "Bulwark", Rarity = "Rare", Type = "Endurance", Class = "Tank", Element = "Frost", Zone = 3, Aptitude = 3 },
 	{ Id = "sliptail", Name = "Sliptail", Rarity = "Rare", Type = "Intelligence", Class = "Mage", Element = "Void", Zone = 3, Aptitude = 2 },

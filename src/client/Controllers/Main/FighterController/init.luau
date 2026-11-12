@@ -35,6 +35,8 @@ local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target
 	RookHaymaker = Effects.Haymaker,
 	PipLanternBurst = Effects.LanternBurst,
 	PipCombo = Effects.LanternShots,
+	LyricHeldNote = Effects.HeldNote,
+	LyricCombo = Effects.SpeakerShots,
 }
 
 -- Clock is the action's, which a hold pauses; Free runs through a hold (an effect that lives past the hit, unheld).
@@ -43,6 +45,17 @@ type Running = { Effect: Effects.Running, Clock: number, Free: number }
 -- A hit's push as this screen draws it (Config.Combat.Push.Shown): from the hold's end, along the hit's line, at the
 -- server's pace.
 type Knock = { Home: Vector3, Direction: Vector3, Studs: number, From: number }
+
+-- A prop let go of on Down and taken back on Up (Config.Animations.Props). At is when its move began.
+type Prop = {
+	Motor: Motor6D,
+	Home: CFrame, -- its C0 in the hand
+	Def: string,
+	Phase: "Held" | "Down" | "Falling" | "Lying" | "Rise" | "Rising",
+	From: CFrame, -- falling: the world place it left the hand; rising: where it lay, in the root's frame
+	To: CFrame, -- where it lies, in the root's frame
+	At: number,
+}
 
 type View = {
 	Model: Model,
@@ -76,6 +89,7 @@ type View = {
 	State: string,
 	Connections: { RBXScriptConnection },
 	Knock: Knock?,
+	Prop: Prop?,
 }
 
 local views: { [Model]: View } = {}
@@ -175,14 +189,21 @@ local function freezeOf(view: View): number?
 	return nil
 end
 
--- A hit's moment on screen: both bodies held, a spark where it lands, the camera on the player's own heavy hit.
-local function show(attacker: View, target: View?, heavy: boolean, key: string)
-	if attacker.Shown[key] then
+-- A hit's moment on screen: both bodies held, a spark where it lands, the camera on the player's own heavy hit. `key` is
+-- the beat's press: an area's or a cone's every target gets its own hold and spark, the attacker one hold and one shake for
+-- them all, and none on a steady hit (Actions.Hit.Steady: a run of beats that keeps its count).
+local function show(attacker: View, target: View?, heavy: boolean, steady: boolean, key: string)
+	local each = if target then `{key}#{target.Id}` else key
+	if attacker.Shown[each] then
 		return
 	end
+	local first = not attacker.Shown[key]
+	attacker.Shown[each] = true
 	attacker.Shown[key] = true
 	local hold = if heavy then Combat.Hitstop.Heavy else Combat.Hitstop.Light
-	freeze(attacker, hold)
+	if first and not steady then
+		freeze(attacker, hold)
+	end
 	freeze(target, hold)
 	if target then
 		local at = chest(target)
@@ -191,7 +212,7 @@ local function show(attacker: View, target: View?, heavy: boolean, key: string)
 		local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "Box" then target.Root.Size.Z / 2 else 0.6) else at
 		Effects.Spark(surface, from, heavy)
 	end
-	if heavy and isMine(attacker) then
+	if first and heavy and isMine(attacker) then
 		Effects.Shake(Combat.Shake.Heavy)
 	end
 end
@@ -308,8 +329,100 @@ local function onState(view: View)
 		if view.Model:GetAttribute("Side") == "Shade" then
 			burst(view, down)
 		end
-	elseif state == "Idle" and was == "Down" and view.Rig == "R6" then
-		playReaction(view, "Up")
+		local prop = view.Prop
+		if prop then
+			prop.Phase, prop.At = "Down", os.clock()
+		end
+	elseif state == "Idle" and was == "Down" then
+		playReaction(view, "Up") -- a rig with no Up (a Shade's, a box) plays none
+		local prop = view.Prop
+		if prop and prop.Phase == "Down" then
+			prop.Phase = "Held" -- never let go
+		elseif prop and prop.Phase ~= "Held" then
+			prop.Phase = "Rise"
+		end
+	end
+end
+
+-- Where a prop's piece is in the hand, under the clip's Transform.
+local function inHand(prop: Prop): CFrame
+	local motor = prop.Motor
+	return (motor.Part0 :: BasePart).CFrame * prop.Home * motor.Transform * motor.C1:Inverse()
+end
+
+-- Out of the hand, the piece leaves its joint on this screen only (the motor off, the piece anchored), so the clip's arm
+-- can't carry it: the server's copy never changes.
+local function letGo(prop: Prop, out: boolean)
+	local piece = prop.Motor.Part1 :: BasePart
+	if out then
+		prop.Motor.Enabled = false
+		piece.Anchored = true
+	else
+		prop.Motor.C0 = prop.Home
+		piece.Anchored = false
+		prop.Motor.Enabled = true
+	end
+end
+
+-- One frame of a prop (Config.Animations.Props): let go at its Drop into the Down clip, falling flat beside the body,
+-- lying there, and carried back to the hand on Up. Where it lies, and where it rises from, are kept in the root's frame,
+-- so it stays beside the body if the body is moved (a lead rises at the avatar's side).
+local function stepProp(view: View, now: number)
+	local prop = view.Prop
+	if prop == nil or prop.Phase == "Held" or prop.Motor.Part0 == nil or prop.Motor.Part1 == nil then
+		return
+	end
+	local spec = Animations.Props[prop.Def]
+	if spec == nil then
+		return
+	end
+	local piece = prop.Motor.Part1 :: BasePart
+	local root = view.Root.CFrame
+	if prop.Phase == "Down" then
+		local down = view.Reaction
+		local into = if down and down.IsPlaying then down.TimePosition else now - prop.At
+		if into < spec.Drop then
+			return
+		end
+		local floor = -3 -- an R6 root stands 3 studs over the floor
+		-- its length along the body, lying on its back: its own up along the root's look, its face to the sky
+		prop.To = CFrame.fromMatrix(Vector3.new(spec.Aside, floor + piece.Size.Z / 2, -spec.Along), Vector3.xAxis, -Vector3.zAxis)
+		prop.From = piece.CFrame
+		letGo(prop, true)
+		prop.Phase, prop.At = "Falling", now
+	end
+	if prop.Phase == "Rise" then
+		prop.From = root:ToObjectSpace(piece.CFrame) -- from wherever it is, fallen or still falling
+		prop.Phase, prop.At = "Rising", now
+	end
+	if prop.Phase == "Falling" then
+		local u = math.clamp((now - prop.At) / math.max(spec.Fall, 0.01), 0, 1)
+		local rest = root * prop.To
+		local fall = prop.From:Lerp(rest, u * u) -- it drops, faster as it goes
+		local half = piece.Size / 2
+		local low = math.huge
+		for _, corner in { Vector3.new(1, 1, 1), Vector3.new(1, 1, -1), Vector3.new(1, -1, 1), Vector3.new(1, -1, -1) } do
+			local reach = math.abs(fall:VectorToWorldSpace(half * corner).Y)
+			low = math.min(low, fall.Position.Y - reach)
+		end
+		local floor = root.Position.Y - 3
+		if low < floor then
+			fall += Vector3.new(0, floor - low, 0) -- tipping over, never through the floor
+		end
+		piece.CFrame = fall
+		if u >= 1 then
+			prop.Phase = "Lying"
+		end
+	elseif prop.Phase == "Lying" then
+		piece.CFrame = root * prop.To
+	elseif prop.Phase == "Rising" then
+		local u = math.clamp((now - prop.At) / math.max(spec.Back, 0.01), 0, 1)
+		if u >= 1 then
+			letGo(prop, false)
+			prop.Phase = "Held"
+		else
+			piece.CFrame = (root * prop.From):Lerp(inHand(prop), u * u * (3 - 2 * u))
+		end
 	end
 end
 
@@ -375,6 +488,11 @@ local function add(model: Instance)
 	byId[view.Id] = view
 	local reactions = Animations.Rigs[view.Rig]
 	local def = model:GetAttribute("Def")
+	local propSpec = if type(def) == "string" then Animations.Props[def] else nil
+	local propMotor = if propSpec then model:FindFirstChild(propSpec.Motor, true) else nil
+	if propSpec and propMotor and propMotor:IsA("Motor6D") then
+		view.Prop = { Motor = propMotor, Home = propMotor.C0, Def = def :: string, Phase = "Held", From = CFrame.identity, To = CFrame.identity, At = 0 }
+	end
 	local idleClip = (if type(def) == "string" then Animations.Idles[def] else nil) or (if reactions then reactions.Idle else nil)
 	if idleClip then
 		local idle = track(view, idleClip)
@@ -456,7 +574,7 @@ local function stepView(view: View, dt: number, now: number): boolean
 				local facing = Vector3.new(look.X, 0, look.Z)
 				local cosine = if line.Magnitude > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
 				if Fight.Reaches(line.Magnitude, cosine, hit.Reach, Combat.Arc) then
-					show(view, target, hit.Heavy, `{beat}@{view.ActionAt}`)
+					show(view, target, hit.Heavy, hit.Steady == true, `{beat}@{view.ActionAt}`)
 				end
 			end
 		end
@@ -526,6 +644,7 @@ local function stepView(view: View, dt: number, now: number): boolean
 	if view.State == "Down" and reaction and reaction.IsPlaying and reaction.Length > 0 and reaction.TimePosition >= reaction.Length - 0.04 then
 		reaction:AdjustSpeed(0)
 	end
+	stepProp(view, now)
 	return frozen
 end
 
@@ -574,7 +693,7 @@ local function onHit(hit: any)
 	local target = views[hit.T]
 	if attacker and not hit.Dodged then
 		local at = hit.A:GetAttribute("ActionAt")
-		show(attacker, target, hit.Heavy == true, `{hit.Beat}@{at}`)
+		show(attacker, target, hit.Heavy == true, hit.Steady == true, `{hit.Beat}@{at}`)
 		if target then
 			knockOf(attacker, target, hit)
 		end
@@ -595,6 +714,21 @@ local function onHit(hit: any)
 	Effects.Number(target.Root, tostring(math.floor(hit.Total + 0.5)), color, hit.Critical == true or hit.Heavy == true, numbers)
 	if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
 		Effects.Shake(Combat.Shake.Hurt)
+	end
+end
+
+-- A hit's heal (Actions.Hit.Heal): its number over the healed body, on the screens of the healer's player and the healed's.
+local function onHeal(heal: any)
+	if type(heal) ~= "table" or type(heal.Amount) ~= "number" then
+		return
+	end
+	local healer, healed = views[heal.A], views[heal.T]
+	if healed == nil or not (isMine(healer) or isMine(healed)) then
+		return
+	end
+	local amount = math.floor(heal.Amount + 0.5)
+	if amount >= 1 then
+		Effects.Number(healed.Root, `+{amount}`, Theme.Colour.Heal, false, Combat.Numbers)
 	end
 end
 
@@ -626,6 +760,7 @@ function FighterController.Start()
 		task.spawn(add, model)
 	end
 	Net.Client.On("Hit", onHit)
+	Net.Client.On("Heal", onHeal)
 	player:GetAttributeChangedSignal("Replay"):Connect(function()
 		task.delay(0.15, onReplay) -- once the avatar's move has reached this client and the camera has followed it
 	end)

@@ -6,17 +6,18 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12, the director away. Pip's Lantern Burst art: competent, on to the builder; fix 1 judged on the replay (AR4, section 8). Haymaker: two fix rounds spent, both "works", so the options wait on the director (item 7 below, B is research's pick). **Modulo: block out B, the square driven down from above, after your current piece** (tier 1, for the director's pick). Next: the ram's rebake, Lyric's fall, Pip's burst in the game.
 
-**Faber (builder).** 2026-11-12: Pip is in the game with his Lantern Burst (`docs/asset-requests.md`, AR4, section 8, "Builder").
-- **Quaestor:** the replay is ready for your two judgements, Pip's half at 30 studs and the boil, with takes for both, the boil's lever beside the table's. My word on the lantern's readout is yes; it's built, and its cost is in the entry. Pip's seeds are a tier 2 notice there.
-- Tests: Fight 166/166 with Rook, Lantern Burst 30/30 with Pip, logic 1,459, type check 0 new. Intermittents: the HUD/Base pair, the Shade's swing alternation.
-- Next: Lyric with research's prop state and the Held Note's five touches (AR4, sections 6 and 9), then the Shade's burst with the bloom capture (AR2, sections 10 and 11).
+**Faber (builder).** 2026-11-12: Lyric is in the game with her Held Note, in grey (`docs/asset-requests.md`, AR4, section 9, "Builder").
+- **Quaestor:** the replay is ready for your verdict on the block in the game. My word on the five touches is yes, and it's built. The avatar stands past 14 (20.2 in the replay). The heal's seed is a tier 2 notice there.
+- **Modulo:** research's prop state is in. The stand leaves her fist on Down, lies by her, and comes back on Up. The crests wait for your art (section 10).
+- Tests: Fight 199/199 with Lyric, the whole suite 374/374 with Rook, logic 1,571, type check 0 new.
+- Next: the Shade's burst with the bloom capture (AR2, sections 10 and 11), then the intermittents: the HUD/Base pair, the Shade's swing alternation.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Haymaker's fix 3 is in, thanks. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
 - **Quaestor and the director:** Haymaker's B is blocked out (AR1, section 9), five grey variants B1 to B5, content check PASS. The fall reads down from every heading. The square keeps its face only when it stands up to the camera (B4, B5). The landing at the feet is mostly behind the avatar. Rook's clip punches forward, so a drop from above reads as a blow called down unless the strike goes down too (a block clip, about an hour, tier 2). My pick, if B: B5, the face lifted and slammed.
 - Now: Lyric's Held Note A, the clip change (the fly-out on 30, the kicks on each crest), then its art sheet. No lock held.
 
-**Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (AR2, the Shade's burst). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -60,6 +61,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. Lyric fights, and her note holds (Faber)
+
+- **What:** Lyric leads in the game, with her own clips and kit. The Held Note throws a grey crest on every half-beat: five touches, each hitting every Shade in her cone and healing her and her allies, and her clip never stops on one. On Down her stand leaves her hand and lies beside her, then comes back on Up. Up now plays on robe rigs too, and an area hit sparks on every Shade it touches.
+- **Where:** `Definitions.Actions`, `Rules.Fight.InCone`, `FightService`, `Config.Effects.HeldNote`, `Config.Animations.Props`, `FighterController`, `src/storage/Lyric.rbxm`. The record: `docs/asset-requests.md`, AR4, section 9.
+- **Open:** research's verdict on the replay, and the heal's seed; Modulo's art for the crest.
 
 ### 2026-11-12. Pip fights, and his lantern bursts (Faber)
 

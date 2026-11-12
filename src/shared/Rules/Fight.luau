@@ -108,6 +108,17 @@ function Fight.Reaches(distance: number, cosine: number, reach: number, arc: num
 	return distance < 0.5 or cosine >= math.cos(math.rad(arc)) -- touching, any side counts
 end
 
+-- Whether a body `along` studs down a cone's line from the fighter and `across` studs off it stands in the cone
+-- (Actions.Hit.Cone): within `reach` of the fighter, and within `cone` degrees of the line seen from the cone's point,
+-- `apex` studs behind the fighter (Lyric's: where her speakers' lines meet, AR4, section 9). Never behind the fighter.
+function Fight.InCone(along: number, across: number, reach: number, cone: number, apex: number): boolean
+	if not (along >= 0) or not (math.sqrt(along * along + across * across) <= reach) then
+		return false
+	end
+	local ahead = along + apex
+	return ahead > 0 and math.deg(math.atan2(math.abs(across), ahead)) <= cone
+end
+
 -- Health after `amount` of damage, and whether it fell. Never below 0; a bad amount does nothing.
 function Fight.Damage(health: number, amount: number): (number, boolean)
 	if not (amount > 0) or amount == math.huge then
@@ -124,6 +135,15 @@ function Fight.Heal(health: number, maxHealth: number, since: number, seconds: n
 		return health
 	end
 	return math.min(maxHealth, health + maxHealth * heal.PerSecond * seconds)
+end
+
+-- Health after a hit's heal of `share` of the most (Actions.Hit.Heal): never past the most, and a body that's down
+-- stays down. A bad share does nothing.
+function Fight.Mend(health: number, maxHealth: number, share: number): number
+	if health <= 0 or not (share > 0) or share == math.huge then
+		return health
+	end
+	return math.min(maxHealth, health + maxHealth * share)
 end
 
 -- Health kept as a share of a new maximum (a level, a gear change out of a fight: docs/design.md, "Combat").

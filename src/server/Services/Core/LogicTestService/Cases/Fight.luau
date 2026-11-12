@@ -353,6 +353,64 @@ return {
 		end,
 	},
 	{
+		-- AR4, section 9: Lyric's Held Note touches every Shade in its cone on each crest, and heals her and her allies.
+		Name = "Fight: the Held Note's five crests split its total, its cone reaches 14 studs, and a heal mends a share",
+		Run = function(t: any)
+			local note = Actions.ById.LyricHeldNote
+			local crests = { "Note", "Crest2", "Crest3", "Crest4", "Release" }
+			local total, healed, count = 0, 0, 0
+			for _ in note.Hits do
+				count += 1
+			end
+			t.Equal("five touches, one a crest", count, #crests)
+			for i, beat in crests do
+				local hit = note.Hits[beat]
+				t.Check(`{beat} is a touch`, hit ~= nil)
+				if hit == nil then
+					continue
+				end
+				total += hit.Coefficient
+				healed += hit.Heal or 0
+				t.Check(`{beat}: each a fifth, the same`, near(hit.Coefficient, note.Hits.Note.Coefficient) and near(hit.Heal or 0, note.Hits.Note.Heal or 0))
+				t.Check(`{beat}: the cone is 14 studs from her, 24 degrees a side from 3.9 behind her`, hit.Reach == 14 and hit.Cone == 24 and hit.Apex == 3.9)
+				t.Check(`{beat}: her hold keeps its count`, hit.Steady == true)
+				if i > 1 then
+					t.Check(`{beat}: a half-beat after the last`, near(note.Beats[beat] - note.Beats[crests[i - 1]], 0.25))
+				end
+			end
+			t.Check("the total is the seed's (2.5)", near(total, 2.5))
+			t.Check("the heal's total is a fifth of her health", near(healed, 0.2))
+			-- The cone, along and across the line to her target, its degrees from its point 3.9 behind her.
+			local hit = note.Hits.Note
+			local function inside(along: number, across: number): boolean
+				return Fight.InCone(along, across, hit.Reach, hit.Cone :: number, hit.Apex :: number)
+			end
+			local edge = (11 + 3.9) * math.tan(math.rad(24))
+			t.Check("at its end", inside(14, 0))
+			t.Check("not past it", not inside(14.01, 0))
+			t.Check("at its edge by the target, either side", inside(11, edge - 0.01) and inside(11, -(edge - 0.01)))
+			t.Check("not outside it", not inside(11, edge + 0.01))
+			t.Check("not past its end at the edge", not inside(12, 7.3))
+			t.Check("never behind her", not inside(-1, 0) and not inside(-4, 0))
+			t.Check("from her own spot it still reaches forward", inside(0.5, 0.1))
+			-- The avatar in the game's framing (Combat.Lead.Frame): her target 11 out, she beyond it turned Frame from the
+			-- avatar's line; the avatar `d` from the target stands past 14 from her once d passes 3.9 (fix 1, section 9).
+			local frame = math.rad(Combat.Lead.Frame)
+			for _, d in { 4, 5.2, 8 } do
+				local away = math.sqrt(d * d + 121 + 2 * 11 * d * math.cos(frame))
+				t.Check(`the avatar {d} from her target stands past the cone ({away})`, away > hit.Reach)
+			end
+			for _, id in Actions.Kits.lyric do
+				t.Check(`{id} is fought where the cone's middle meets her target (11)`, near(Actions.ById[id].Range - Combat.Approach, 11))
+			end
+			t.Check("a heal mends a share of the most", near(Fight.Mend(50, 100, 0.04), 54))
+			t.Equal("never past the most", Fight.Mend(99, 100, 0.04), 100)
+			t.Equal("down stays down", Fight.Mend(0, 100, 0.04), 0)
+			t.Equal("a bad share does nothing", Fight.Mend(50, 100, 0 / 0), 50)
+			t.Equal("nor a negative one", Fight.Mend(50, 100, -0.1), 50)
+		end,
+	},
+	{
 		-- AR1, section 8: a server-moved body reaches a client's screen late, so the client draws the push itself.
 		Name = "Fight: the drawn push reaches the hit's push by the end of the server's, and hands it back",
 		Run = function(t: any)

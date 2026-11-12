@@ -43,6 +43,9 @@ local HELD: { [string]: string } = {
 	Creature_ClawsL = "Left Arm",
 	Rook_Piston = "Right Arm",
 	Rook_Tape = "Left Arm",
+	Lyric_Staff = "Right Arm", -- Lyric's (AR4: tools/studio/Models/Lyric.luau): her mic stand in her right fist, her speakers on the Torso
+	Lyric_SpeakerR = "Torso",
+	Lyric_SpeakerL = "Torso",
 	Pip_Hat = "Head", -- Pip's (AR4: tools/studio/Models/Pip.luau): his hat on the Head, his lamp on the Torso
 	Pip_Lamp = "Torso",
 }

@@ -27,6 +27,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
+local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
@@ -1523,6 +1524,73 @@ return {
 			t.Near("a new burst takes the lantern back from the readout", surface.EmissiveStrength, glow.Cold, 0.001)
 			again.Destroy()
 			Effects.Relight(surface, 0) -- the lantern ready, as the replay and the next case find it
+		end,
+	},
+	{
+		Name = "Fight: the Held Note lands on each Shade in its cone, heals her, and never holds her",
+		Run = function(t: any)
+			-- docs/asset-requests.md, AR4, section 9: five touches, one a crest, each on every Shade inside the cone and a heal
+			-- on her; her hold keeps its count (Steady), the Shades still hold; the avatar stands past the cone's 14.
+			local action = Actions.ById.LyricHeldNote
+			local lead = myLead()
+			if lead == nil or lead:GetAttribute("Def") ~= "lyric" then
+				t.Row("the lead isn't Lyric: the Held Note waits for a Lyric lead", nil, nil, nil, "")
+				return
+			end
+			local view = FighterController.Views[lead]
+			local hits: { [string]: { [string]: number } } = {}
+			local steady, heals, gained = true, 0, 0
+			local avatarAway: number? = nil
+			local character = Players.LocalPlayer.Character
+			local avatar = if character then character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			local onHit = Net.Client.On("Hit", function(hit: any)
+				local struckId = if type(hit) == "table" and typeof(hit.T) == "Instance" then (hit.T :: Instance):GetAttribute("Fighter") else nil
+				if type(struckId) == "string" and hit.A == lead and hit.Action == action.Id then
+					local by = hits[struckId] or {}
+					by[hit.Beat] = (by[hit.Beat] or 0) + 1
+					hits[struckId] = by
+					steady = steady and hit.Steady == true
+					if avatar and avatarAway == nil then
+						local root = lead:FindFirstChild("HumanoidRootPart") :: BasePart
+						avatarAway = Vector3.new(avatar.Position.X - root.Position.X, 0, avatar.Position.Z - root.Position.Z).Magnitude
+					end
+				end
+			end)
+			local onHeal = Net.Client.On("Heal", function(heal: any)
+				if type(heal) == "table" and heal.T == lead and type(heal.Amount) == "number" then
+					heals += 1
+					gained += heal.Amount
+				end
+			end)
+			local began = os.clock()
+			local frozenBefore = if view then view.FrozenUntil else 0
+			local ok, result = pcall(function()
+				local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE)
+				t.Server("FightSpawn", "dummy", lead:GetAttribute("Level"), 11) -- deeper in her cone than the replay's dummy
+				t.Server("FightHealth", 0.5)
+				return started
+			end)
+			t.Check("the replay starts, a second Shade in the cone, her health at half", ok and type(result) == "table" and result.Ok == true, tostring(if ok then result and result.Error else result))
+			t.Wait(action.Length + 0.3)
+			onHit:Disconnect()
+			onHeal:Disconnect()
+			local struck = 0
+			for _, by in hits do
+				struck += 1
+				for beat in action.Hits do
+					t.Check(`{beat} landed once on each`, by[beat] == 1, `{by[beat] or 0} times`)
+				end
+			end
+			t.Check("both Shades in the cone took the crests", struck == 2, `{struck}`)
+			t.Check("every touch is steady", steady)
+			local most = lead:GetAttribute("MaxHealth") :: number
+			t.Check("a heal on her with every crest", heals == 5, `{heals}`)
+			t.Near("each a share of her most", gained, 5 * (action.Hits.Note.Heal :: number) * most, 0.5)
+			t.Check("her clip never held", view ~= nil and view.FrozenUntil <= math.max(frozenBefore, began), if view then string.format("%.2f after", view.FrozenUntil - began) else "no view")
+			t.Check("the avatar stands past the cone", avatarAway ~= nil and avatarAway > action.Hits.Note.Reach, tostring(avatarAway))
+			t.Server("FightSpawn")
+			t.Server("Replay")
+			t.Wait(0.3)
 		end,
 	},
 	{

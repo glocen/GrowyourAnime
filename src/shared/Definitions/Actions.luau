@@ -15,6 +15,17 @@ export type Hit = {
 	Reach: number, -- studs, root to root, flat: how far the target may stand when the beat comes
 	Push: number, -- studs the target is knocked back, before its body's weight (Config.Combat.Weight)
 	Area: number?, -- studs round the target: every enemy standing within takes the hit too
+	-- Degrees either side of the fighter's line to its target: every enemy within Reach of the fighter inside that cone
+	-- takes the hit too (Rules.Fight.InCone)
+	Cone: number?,
+	-- Studs behind the fighter the cone's point stands, its degrees measured from there (Lyric's: where her speakers'
+	-- lines meet, AR4, section 9); 0 when nil
+	Apex: number?,
+	-- A share of the healed one's health, given on the beat: to the fighter itself, and with a Cone to every ally lead
+	-- standing inside it (docs/design.md: a Healer keeps itself up alone and others up in a group)
+	Heal: number?,
+	-- The fighter never holds on this hit, only its target: a run of beats that must keep their count (Lyric's crests)
+	Steady: boolean?,
 }
 
 export type Action = {
@@ -127,6 +138,57 @@ local rows: { Action } = {
 		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR4, section 7)",
 	},
 	{
+		-- Lyric's three hits (AR4, section 6): she stamps the base and the right speaker fires; she cuts her free hand at
+		-- you and the left one fires; she hoists the whole stand, drives it down, and both fire. Pip's seeds (a second's
+		-- worth as Rook's combo's), from her signature's spacing (docs/asset-requests.md, AR4, section 9).
+		Id = "LyricCombo",
+		Clip = "LyricCombo",
+		Length = 1.75,
+		CancelFrom = 1.5, -- the next stamp: Shot3 to Shot1 is 0.75 s
+		Cooldown = 0,
+		Beats = { Shot1 = 0.25, Shot2 = 0.5, Shot3 = 1.0 },
+		Hits = {
+			Shot1 = { Coefficient = 0.75, Heavy = false, Reach = 13, Push = 0.3 },
+			Shot2 = { Coefficient = 0.75, Heavy = false, Reach = 13, Push = 0.3 },
+			Shot3 = { Coefficient = 1.17, Heavy = false, Reach = 13, Push = 1.0 }, -- both speakers at once
+		},
+		Range = 12,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the stand hoisted clear before the third)", "hitstop (light)", "a streak from a speaker to the target" },
+		Signed = nil,
+	},
+	{
+		-- Lyric's signature (docs/roster.md; AR4, section 9): a breath, she lunges into the mic, and the note sweeps out
+		-- across the Shades in crests on every half-beat until she lets go. Each crest touches every Shade in the cone, a
+		-- fifth of the signature's total, and heals her and every ally lead in it (research's tier 2). The cone is 14 studs
+		-- from her (research's design number), 24 degrees each side of her line, as her speakers throw it. She fights 11 off
+		-- (Range - Approach), where the cone's middle meets her target, as the block-in framed it.
+		Id = "LyricHeldNote",
+		Clip = "LyricHeldNote",
+		Length = 2.5,
+		CancelFrom = 2.3,
+		Cooldown = 10,
+		Beats = { Breath = 0.0667, Note = 0.5, Crest2 = 0.75, Crest3 = 1.0, Crest4 = 1.25, Release = 1.5 },
+		Hits = {
+			Note = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.04, Steady = true },
+			Crest2 = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.04, Steady = true },
+			Crest3 = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.04, Steady = true },
+			Crest4 = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.04, Steady = true },
+			Release = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.04, Steady = true },
+		},
+		Range = 12,
+		Heavy = false,
+		State = nil,
+		Levers = {
+			"anticipation (the breath, the speakers drawn back)",
+			"a crest on every half-beat, the count kept: her hold never stops on a touch (Steady)",
+			"hitstop (light, on the Shades only)",
+			"the heal washing over her and her allies",
+		},
+		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR4, section 9)",
+	},
+	{
 		-- A Brawler Shade's swing, AR2's Attack: the coat turns away and the sleeve is flung round after it, landing on `Hit`
 		-- (frame 30). Its length is the clip's, and its hit is a second's worth of the lead's, as before. A client plays the
 		-- clip or its mirror at random (Config.Animations.Mirrors).
@@ -177,6 +239,7 @@ Actions.EnemyPerSecond = ENEMY_PER_SECOND
 Actions.Kits = {
 	rook = { "RookHaymaker", "RookCombo" },
 	pip = { "PipLanternBurst", "PipCombo" },
+	lyric = { "LyricHeldNote", "LyricCombo" },
 } :: { [string]: { string } }
 Actions.StandIn = "rook"
 

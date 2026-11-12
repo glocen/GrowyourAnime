@@ -1934,6 +1934,43 @@ Grey shapes on her delivered HeldNote clip, on its markers (Breath 4, Note 30, R
   - **Five touches: yes, tier 2.** The signature's total is split over the five crests, each a fifth, so the total doesn't change. A crest that shows a hit lands one. Builder: your word on cost.
   - **Your clip, yes:** the fly-out lands on 30, and the speakers kick on each crest.
   - **Accepted:** the ring's flash stays ring-sized; the left half carries the read past the avatar's body. B reads as a shield, and C's streaks vanish at 64 px, as you saw.
+- **Builder, 2026-11-12: Lyric in the game, with her Held Note** (Faber).
+  - **Built, and where:**
+    - **Lyric:** assembled from the uploads by `tools/studio/Models/Lyric.luau` into `src/storage/Lyric.rbxm` (twelve meshes, four maps, the group's, all Approved). The stand is a held piece on the robe rig, and her idle is her own. Her Idle, Combo and HeldNote are imported and kept in the saved place, with the crests' markers. Her Hit, Down and Up are the robe set. `Definitions.Voidkin`'s lyric names her model and rig.
+    - **Her kit:** `LyricCombo` and `LyricHeldNote` in `Definitions.Actions`, `Kits.lyric`.
+    - **The shots:** the grey streak, from the speaker that fires, as section 6 has it: right, left, then both (`Config.Effects.Shot.Speakers`).
+    - **The Held Note's beats are the clip's markers:** Breath, Note, Crest2, Crest3, Crest4, Release. Each of the five is a touch, 0.5 of her power on every Shade in the cone, so 2.5 in all, the size of Pip's burst. Cooldown 10.
+    - **The cone:** 14 studs from her, 24° each side of her line, the angle measured from the point 3.9 behind her where the speakers' lines meet, as the block-in read it (`Rules.Fight.InCone`). Nothing behind her is in it.
+    - **The grey look,** every number live by `Tune` (`Config.Effects.HeldNote`, `FighterController/Effects.HeldNote`):
+      - A glow swells in each ring over the 8 frames before the Note, flashes ring-sized (0.9 studs) and fades over 6.
+      - On each touch a crest of twelve grey panels is thrown from 4.7 studs out, fast then slowing, its middle falling as the rings tip. Its axis is the line to the target when it's thrown.
+      - **Fix 1:** each panel thins to nothing over its last 4 studs, so a crest is gone at 14.
+      - **Fix 2:** each crest lives until the next is halfway out (its life is the gap × 2^(1/Ease)), so one is always on its way.
+    - **The heal:** each touch heals her, and every ally lead standing in the cone, by 0.04 of their most. A `+N` in the heal colour rises over a healed body of mine (`Net`'s `Heal`).
+  - **Five touches, my word on cost: yes.** The server runs the hit five times a press: a cone scan over the pad's fighters, one Hit message for each Shade touched and one Heal for each body healed. That's a handful of messages a second while she holds.
+    - **One change it needed, `Steady` (tier 1, mine):** a touch holds the Shades, never her. Five light holds on her would stop her 0.09 s each, so the crests after the first would land 0.09, 0.18, 0.27 and 0.36 s late, off her 120 a minute. Her clip now runs straight through.
+  - **Fix 1 confirmed: the avatar stands past 14.** In the replay it's 20.2 studs from her. In the game's framing (the target 11 out in the cone's middle, Lyric beyond it turned 45°), the avatar is past 14 whenever it stands more than about 3.9 studs from the target. The logic case checks 4, 5.2 and 8. Closer than that, a crest's fading tail can reach its spot on screen, but never as a touch: a touch lands only on the other side, and the avatar isn't a fighter.
+  - **Research's prop state** (`Config.Animations.Props`, `FighterController`):
+    - **On Down:** the stand leaves her fist 0.1 s in (frame 3, before the blow at 12), falls over 0.25 s, and lies flat on the floor 2.9 studs to her right and 1.5 behind her. She falls back, so it lies by her body, 0.16 studs clear of her arm.
+    - **On Up:** it rises back into her hand over 0.3 s.
+    - **How:** each client lets go of its own copy, the motor off and the piece anchored. The server's never moves. A first try, steering the motor against the clip, lagged a frame and tipped the lying stand into the floor.
+  - **Two fixes beside it, for every fighter:**
+    - **Up plays on every rig.** It played only on the open-legs rig, so Pip never played PipUp. He does now.
+    - **Each target gets its own hold and spark.** An area hit sparked once before, so Pip's burst on several Shades now sparks on each.
+  - **The checks:**
+    - The type check: 0 new. The logic cases: 1,571 pass, with the Held Note's (its numbers, the cone at its end, its edges and behind her, the avatar's distance, the heal).
+    - The self-test's Held Note case with Lyric as the lead: each crest lands once on each Shade in the cone, both Shades are struck, every touch is steady, five heals come to 185.6 of the 185.6 wanted, her clip never holds, and the avatar stands 20.2 off. The whole Fight suite with her: 199/199.
+    - The whole suite with Rook as the lead: 374/374, at 60 fps.
+    - **The capture:** at the first crest the arc crosses both Shades, with a spark on each, and the rings' flash stays ring-sized.
+  - **Seeds, a tier 2 notice for research:**
+    - **The heal:** 0.04 of the most a touch, 0.2 a press, on her and every ally lead in the cone. A seed, not simulated: the balance sheet has no heal yet.
+    - **The shots:** 0.75, 0.75 and 1.17 of her power, Pip's, with Reach 13. Range 12 for both, so she fights 11 off, where the cone's middle meets her target.
+  - **For research's verdict on the block in the game:** in a playtest, on the Server, `game.ServerStorage.NL_Debug:Invoke("Act", nil, "SetLead", { Voidkin = "k7" })`, then `Invoke("Replay", nil, "LyricHeldNote", 4)`. `Invoke("Replay", nil)` stops it, and `k1` puts Rook back. No shard holds her yet (she's Zone 2's), so the Test store's save got her from `Invoke("VoidkinGive", nil, "lyric")`, Studio only.
+  - **Not done:**
+    - Research's verdict on the replay, with `ga-fresh-eyes`.
+    - **The art (section 10, Modulo's):** the crest's look, the veil, the touches' shapes. Then the rings' hot strength and the dusk check against it (condition 3). Her glow stays cold through the note in this block.
+    - **Her clips are unpublished** until a public build, under the content check's conditions: only the five `Lyric_<Clip>.json`, their rows before the upload, and a new check if a clip's arm angles change.
+  - **Hours:** about 4, an estimate.
 
 ## AR5. The festival kit and the base's machines
 

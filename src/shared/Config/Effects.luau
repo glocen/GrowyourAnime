@@ -82,16 +82,47 @@ return {
 		Trail = { Lag = 15, Close = 5, Width0 = 0.6, Width1 = 2.4, Brightness = 1 },
 		-- The lantern's glow mask (Pip_Lamp): Cold at rest, up to Hot from Heat to Send on the curve u^Curve, held through
 		-- the flight, dark from the Burst. Then the readout (research's tier 2, AR4, section 7): dark until the clip ends,
-		-- it relights to Cold over the rest of the cooldown, full when the signature is ready, on the curve u^Relight.
-		Glow = { Cold = 1.2, Hot = 3.0, Curve = 1.6, Relight = 1 },
+		-- it relights to Cold over the rest of the cooldown, full when the signature is ready, on the curve u^Relight. Research's
+		-- verdict (AR4, section 8): 0.5, so it's lit again by mid-cooldown, not dim for most of a fight.
+		Glow = { Cold = 1.2, Hot = 3.0, Curve = 1.6, Relight = 0.5 },
 		-- The throw's length follows the target: the clip throws the lantern from where it is at Send to Flight studs ahead
 		-- of him, which stops Short of a target Short + Flight away. Nearer or further, its flight from Send (handed back
 		-- between Return and the clip's end) is scaled to stop Short of the target, between Min and Max of the clip's.
 		Throw = { Flight = 12, Short = 1.5, Min = 0, Max = 1.25 },
 	},
-	-- Pip's shots (PipCombo): a grey block, the builder's. A streak from the lantern to the target on each shot's beat,
-	-- Life seconds; a heavy shot's is wider.
-	Shot = { Width = 0.2, Heavy = 0.45, Life = 0.12 },
+	-- Pip's shots (PipCombo) and Lyric's (LyricCombo): a grey block, the builder's. A streak from the lantern, or from a
+	-- speaker's ring, to the target on each shot's beat, Life seconds; a heavy shot's is wider. Speakers: the rings each of
+	-- Lyric's shots fires from (AR4, section 6: she stamps the base and the right one fires, cuts her free hand at you and
+	-- the left one fires, then drives the stand down and both fire).
+	Shot = {
+		Width = 0.2,
+		Heavy = 0.45,
+		Life = 0.12,
+		Speakers = { Shot1 = { "RingR" }, Shot2 = { "RingL" }, Shot3 = { "RingR", "RingL" } } :: { [string]: { string } },
+	},
+
+	-- Lyric's Held Note (LyricHeldNote): a grey block, the builder's, until the art sheet (AR4, section 9, variant A, and
+	-- research's verdict). On each beat that hits, a crest is thrown from her rings across the hit's whole cone (its Cone
+	-- degrees either side of the line to her target, from its Apex behind her), fast then slowing on the curve
+	-- 1 - (1 - u)^Ease, out to the hit's Reach from her; it thins to nothing over its last Thin studs, and lives until the
+	-- next is halfway out (the gap to the next beat, times 2^(1/Ease)). Its veil stands Up studs over the floor at From
+	-- studs out, Tall high; a stud further out it falls Fall and grows Grow (the block-in's 1.8 to 4.6 up at the target).
+	-- The charge: a light swells in each ring over Charge frames before the first crest, to Flash studs, and flashes there
+	-- on it over Out frames, ring-sized (the content check: clear of her face).
+	HeldNote = {
+		From = 4.7,
+		Up = 4.5,
+		Tall = 0.9,
+		Fall = 0.208,
+		Grow = 0.301,
+		Ease = 4,
+		Thin = 4,
+		Segments = 12,
+		Transparency = 0.45,
+		Charge = 8,
+		Flash = 0.9,
+		Out = 6,
+	},
 
 	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey
 	-- block, the builder's: a ring of light spreads from its feet and fades, and "Level N" rises over it, slower and larger

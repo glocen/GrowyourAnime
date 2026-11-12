@@ -5,7 +5,7 @@
 -- (ServerStorage.RBX_ANIMSAVES.R6.NL_<Clip>, which the server hands each client to register), and not at all live:
 -- every clip is published before a public build (handbook/art/animation.md, "Importing and publishing").
 -- Rigs: each rig's shared reactions, one clip set per rig, not per Voidkin (docs/design.md, "States in a fight"). R6
--- with open legs uses Rook's, as does TR2's stand-in; R6 in a robe uses Pip's (AR4), named by a Voidkin row's Rig. The
+-- with open legs uses Rook's, as does TR2's stand-in; R6 in a robe uses Pip's (AR4: Pip and Lyric), named by a Voidkin row's Rig. The
 -- Shade's (AR2) is every Shade's: its Down bursts on the clip's `Burst` marker. Idles: a Voidkin's own stance, by its
 -- def, over its rig's.
 
@@ -30,6 +30,7 @@ return {
 	} :: { [string]: { [string]: string } },
 	Idles = {
 		pip = "PipIdle",
+		lyric = "LyricIdle",
 	} :: { [string]: string },
 	-- A clip's mirror, picked at random each time it plays, so a pack doesn't swing or reel in step (AR2).
 	Mirrors = {
@@ -47,6 +48,13 @@ return {
 		ShadeWalk = 4.11,
 	} :: { [string]: number },
 	Walk = { MinSpeed = 0.6, MaxRate = 3 }, -- studs a second below which it stands; the fastest it plays
+	-- A prop a Voidkin lets go of when it goes down, by its def (research's prop state for Lyric's stand, AR4, section 6):
+	-- its motor's piece leaves the hand Drop seconds into the Down clip (before its frame 12, at the blow), falls over Fall
+	-- seconds to lie flat Aside studs to the body's right and Along ahead (Lyric falls back, so hers lies by her body, clear
+	-- of her arm), and goes back to the hand over Back once Up begins.
+	Props = {
+		lyric = { Motor = "Staff", Drop = 0.1, Fall = 0.25, Aside = 2.9, Along = -1.5, Back = 0.3 },
+	} :: { [string]: { Motor: string, Drop: number, Fall: number, Aside: number, Along: number, Back: number } },
 	-- The game's name for each clip, for its fades.
 	Roles = {
 		RookIdle = "Idle",
@@ -61,6 +69,9 @@ return {
 		PipHit = "Hit",
 		PipDown = "Down",
 		PipUp = "Up",
+		LyricIdle = "Idle",
+		LyricCombo = "Combo",
+		LyricHeldNote = "Signature",
 		ShadeIdle = "Idle",
 		ShadeWalk = "Walk",
 		ShadeAttack = "Swipe",

@@ -613,6 +613,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Dodged = result.Dodged,
 		Heavy = hit.Heavy,
 		Hold = hold,
+		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Health = left,
 		MaxHealth = target.Block.Health,
 	})
@@ -621,15 +622,50 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 end
 
--- A beat's hit on its fighter's target, if it reaches; with an Area, on every enemy standing that near the target too.
+-- Whether `other` stands inside `f`'s cone along `axis`, a flat unit line (Actions.Hit.Cone; Rules.Fight.InCone).
+local function inCone(f: Fighter, other: Fighter, axis: Vector3, hit: Actions.Hit): boolean
+	local offset = flat(other.Root.Position - f.Root.Position)
+	local along = offset:Dot(axis)
+	return Fight.InCone(along, (offset - axis * along).Magnitude, hit.Reach, hit.Cone :: number, hit.Apex or 0)
+end
+
+-- A beat's heal (Actions.Hit.Heal): the fighter itself, and with a Cone every ally lead standing inside it along `axis`,
+-- each mended a share of its own most, and shown to every client.
+local function mend(f: Fighter, hit: Actions.Hit, axis: Vector3?)
+	local healed = { f }
+	if hit.Cone and axis then
+		for _, other in fighters do
+			if other ~= f and other.Side == "Lead" and f.Side == "Lead" and standing(other) and inCone(f, other, axis, hit) then
+				table.insert(healed, other)
+			end
+		end
+	end
+	for _, other in healed do
+		local before = other.Health
+		local after = Fight.Mend(before, other.Block.Health, hit.Heal :: number)
+		if standing(other) and after > before then
+			setHealth(other, after)
+			Net.Server.FireAll("Heal", { A = f.Model, T = other.Model, Amount = after - before, Health = after, MaxHealth = other.Block.Health })
+		end
+	end
+end
+
+-- A beat's hit on its fighter's target, if it reaches; with an Area, on every enemy standing that near the target too;
+-- with a Cone, on every enemy inside it. A heal comes first, and with no target the fighter still heals itself.
 local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local action = f.Action :: Actions.Action
 	local target = f.ForcedTarget or f.Target
-	if target == nil or not standing(target) then
+	if target ~= nil and not standing(target) then
+		target = nil
+	end
+	local line = if target then flat(target.Root.Position - f.Root.Position) else Vector3.zero
+	local gap = line.Magnitude
+	if hit.Heal then
+		mend(f, hit, if gap > 0.01 then line.Unit else nil)
+	end
+	if target == nil then
 		return
 	end
-	local line = flat(target.Root.Position - f.Root.Position)
-	local gap = line.Magnitude
 	local facing = flat(f.Root.CFrame.LookVector)
 	local cosine = if gap > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
 	if not Fight.Reaches(gap, cosine, hit.Reach, Combat.Arc) then
@@ -645,6 +681,17 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 			end
 		end
 		for _, other in near do
+			land(f, action, other, beat, hit, at, flat(other.Root.Position - f.Root.Position))
+		end
+	end
+	if hit.Cone and gap > 0.01 then
+		local inside = {}
+		for _, other in fighters do
+			if other ~= target and other.Side ~= f.Side and standing(other) and inCone(f, other, line.Unit, hit) then
+				table.insert(inside, other)
+			end
+		end
+		for _, other in inside do
 			land(f, action, other, beat, hit, at, flat(other.Root.Position - f.Root.Position))
 		end
 	end
@@ -934,6 +981,13 @@ function FightService.Defeat(f: Fighter)
 	if fighters[f.Id] == f and f.State ~= "Down" then
 		setHealth(f, 0)
 		fall(f, now())
+	end
+end
+
+-- Studio's tests: `f` at `share` of its most health, standing (a heal's case needs a lead that's hurt).
+function FightService.SetHealthShare(f: Fighter, share: number)
+	if fighters[f.Id] == f and f.State ~= "Down" and share > 0 and share <= 1 then
+		setHealth(f, f.Block.Health * share)
 	end
 end
 

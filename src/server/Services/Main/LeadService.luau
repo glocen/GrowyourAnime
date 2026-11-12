@@ -1,7 +1,8 @@
 --!strict
 -- LeadService (server): the player's lead in the world, the Voidkin in Roles.Lead (Shared.Data.Profile), as a fighter
 -- beside the avatar (FightService). It follows the save: a new lead replaces the old one, and a level gained gives it its
--- new stat block, its health kept as a share. Studio adds LeadLevel, to try a fight at a level without playing up to it.
+-- new stat block, its health kept as a share. Studio adds LeadLevel, to try a fight at a level without playing up to it,
+-- and VoidkinGive, to try a Voidkin no shard of the built grounds holds yet (Lyric's is the second ground's).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -12,6 +13,7 @@ local Profile = require(Shared.Data.Profile)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local GrowthConfig = require(Shared.Config.Growth)
 local Stats = require(Shared.Rules.Stats)
+local Collection = require(Shared.Rules.Collection)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -86,6 +88,16 @@ function LeadService.Start()
 				end
 				owned.Level, owned.Xp = level, 0
 				return { Ok = true, Level = level }
+			end)
+		end)
+		-- Studio only: `def` uncovered as a shard's would be (Collection.Uncover): new, or a copy of the one owned.
+		DebugService.Register("VoidkinGive", function(who: any, def: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if not player or type(def) ~= "string" then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			return DataService.Change(player, "VoidkinGive", function(draft: Profile.Data): { [string]: any }
+				return Collection.Uncover(draft, def, workspace:GetServerTimeNow())
 			end)
 		end)
 	end

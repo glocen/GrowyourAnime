@@ -8,6 +8,7 @@
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
 --   NL_Debug:Invoke("FightSpawn", who)                      removes every Shade it spawned
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
+--   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
 -- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
 -- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
 -- beyond the dummy at the action's own spacing (Replay.Distance), turned Lead.Frame degrees toward the avatar's right,
@@ -163,6 +164,20 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any): any
 	return { Ok = true, Id = f.Id, Health = f.Health }
 end
 
+local function fightHealth(who: any, share: any): any
+	local player = DebugService.ResolvePlayer(who)
+	local lead = if player then FightService.LeadOf(player) else nil
+	if lead == nil or type(share) ~= "number" or not (share >= 0 and share <= 1) then
+		return { Ok = false, Error = "BadArgs" }
+	end
+	if share == 0 then
+		FightService.Defeat(lead)
+	else
+		FightService.SetHealthShare(lead, share)
+	end
+	return { Ok = true, Health = lead.Health }
+end
+
 local function fighters(): any
 	local list: { { [string]: any } } = {}
 	for id, f in FightService.All() do
@@ -193,6 +208,7 @@ function ReplayService.Start()
 	DebugService.Register("Replay", replay)
 	DebugService.Register("FightSpawn", fightSpawn)
 	DebugService.Register("Fighters", fighters)
+	DebugService.Register("FightHealth", fightHealth)
 	Players.PlayerRemoving:Connect(stopFor)
 end
 

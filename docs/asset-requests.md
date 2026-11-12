@@ -50,7 +50,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 - **How he sits on R6:** meshes and one texture set. A rigid mesh rides each of the six parts and carries the body's own surface too, so the rig's blocks are hidden. Hair, collar, jacket and gauntlet are geometry. The face is geometry too, so it holds at any distance. One 1024 px atlas holds everything, with the contact shading baked into the colour, at 73 px a stud. No normal map: the low mesh is the form.
 - **Cost:** 7,236 triangles in 8 pieces, the gauntlet arm 2,912 of them. Four maps: colour, roughness, metalness and a glow mask.
 - **Two joints past R6's six:** `Rook_Piston` on the right arm slides 0.65 studs toward the shoulder, and `Rook_Tape` on the left arm swings. Their pivots are in the recipe, and the clips key them under those names.
-- **The glow:** the mask covers the knuckles, the heat band and the piston's rod. The game lights it on `Rook_RightArm` and `Rook_Piston` with `EmissiveStrength` 0 to 2.5 and `EmissiveTint` #FFA630, through Haymaker's wind-up.
+- **The glow:** the mask covers the knuckles, the heat band and the piston's rod. The game lights it on `Rook_RightArm` and `Rook_Piston` with `EmissiveStrength` 0 to 10 and `EmissiveTint` #FFA630, through Haymaker's wind-up. The 10 is from the rebake, section 5's last entry; it was 2.5.
 - **Research's fixes:** 1, the ram's big faces are Iron over Charcoal trousers. 2, the rest pose holds the ram 20° out, with daylight to the hip. Added on the model: a seam and four bolts on the fist, trouser cuffs, a steel buckle.
 - **For the builder to check in the game:**
   - Hide the six rig parts (Transparency 1).
@@ -199,6 +199,24 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 - **Hours:** the art sheet, 0.4.
 - **Found on AR2, not changed here (Modulo, 2026-11-12):** Roblox multiplies a glow by the colour map (AR2, section 4), and Rook's sheet drew the lit ram in the tint alone. By the formula, the knuckles and the rod (ember over steel) come out about half as bright as the sheet at the recipe's 2.5, and the heat band (ember over ember) redder than ember. Nothing is rebaked while the Haymaker's final is with research: the fix is AR2's (a neutral tone under the lit parts, the mask rescaled, the two maps uploaded again), about half an hour, when the builder and research say. Until then the builder's live strength covers the brightness, not the band's hue.
   - **Research: yes, 2026-11-12,** with the builder's yes. The rebake goes after Lyric's clips and before Rook's maps upload, so they upload once. The ram's strength is tuned on its own on Haymaker's replay, not copied from the Shade's pick: the Shade's edge is a steady type colour, and the ram is a heat ramp whose peak may rightly run toward white.
+  - **The rebake, made** (Modulo, 2026-11-12; made on Opus 5.5 xhigh). The record:
+    - **Only `Rook_Emissive.png` and the recipe changed.** The eight meshes and the colour, roughness and metalness maps are byte for byte the ones in `build/handoff/Rook/`. Faber: upload the glow mask with the others, and nothing else changes.
+    - **What changed:**
+      - The mask is now the sheet's light over the strength and over the colour map's brightness under it (`encode_glow` in `tools/blender/rook_model.py`), as the Shade's is.
+      - The recipe's `hot` is 10, where it was 2.5. At 10 the ram shows the light the sheet designed. 35% of the lit texels fall short of it: the crevices, whose baked shading is too dark for the strength. Their glow stays darker in the shade.
+    - **One call against my own proposal (tier 1): the band keeps its ember.** I had proposed a neutral tone under the lit parts. Through the formula, a try of the gauntlet, cold and lit, settled it (`build/scratch/modulo/rook/try/ram_glow_try.png`).
+      - **The tries:** the colour under the band was ember (kept), steel, iron or bone, each with the mask encoded.
+      - **Ember kept:** cold, the band is the ring of ember he wears at rest. Lit, ember over ember reads within a hair of the sheet: a touch deeper orange than the knuckles, toward the wrist. In a heat ramp that's the right way round.
+      - **A neutral or light tone instead:** it would turn the band steel, iron or bone at rest, for almost nothing lit. Iron goes brown.
+      - **The knuckles were the real fault.** With the delivered mask they came out a dull tan, about a third of the sheet's light. Now they match it.
+    - **The sheet** (`build/scratch/modulo/rook/model/rook_model_sheet.png`) now draws the lit ram through the colour map, at the preview's 1.4 of the design's 2.5, as before. Its two lit views can't be told from the sheet research read.
+    - **What I see wrong:** it's two Blender pictures and Roblox's published formula, with no tone mapping or bloom. The 10 is a start for the replay, where research tunes it. Every glow scales with it.
+    - **Content check, 2026-11-12: PASS** on the new mask, the sheet, the try and the recipe. The lit colours run from ember to cream, nothing goes red, and no glow sits on skin or cloth. To hold:
+      1. The tint stays `#FFA630`, on the ram and the piston only. A new tint, a strength above 10, or a new colour under the band gets a fresh check. Through the ramp from 0 to 10, the band never shows deeper than the delivered maps' orange (the try's second column).
+      2. On Haymaker's replay, the lit ram is looked at in the engine at 64 px, with bloom if it's on, from the front and three-quarter headings, with Haymaker's own owed headings. Bloom must not spread the band or the knuckles into a soft glow or a trail on the arm.
+      3. The AR1 and Haymaker conditions stand. The new mask is logged in `docs/asset-log.md` at upload, and replaces the old one if that was ever uploaded.
+    - **Delivered** over the old files in `build/handoff/Rook/`: `Rook_Emissive.png`, `Rook.recipe.json`, `rook_model_sheet.png`.
+    - **Hours:** about 0.5, the try included.
 
 ## AR2. The Shade, one rig for every enemy
 

@@ -12,12 +12,12 @@
  "emissive": {
   "tint": "#FFA630",
   "cold": 0,
-  "hot": 2.5,
+  "hot": 10.0,
   "pieces": [
    "Rook_RightArm",
    "Rook_Piston"
   ],
-  "note": "the mask covers the knuckles, the heat band and the piston's rod"
+  "note": "the mask covers the knuckles, the heat band and the piston's rod. Roblox draws the glow through the colour map, (mask x strength x tint + light) x colour, so the mask is encoded for hot: at that strength the ram shows the sheet's light. Change it and every glow scales with it."
  },
  "pieces": [
   {

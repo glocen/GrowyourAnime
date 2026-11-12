@@ -5,7 +5,8 @@ blender.exe -b --factory-startup --python tools/blender/rook_model.py -- <out_di
 How he sits on R6: a rigid mesh for each of the six parts, which carries the body's own surface too, so the rig's
 blocks are hidden; and two pieces on joints of their own, the gauntlet's piston (it slides along the arm) and the loose
 tape ends (they swing). Everything shares one 1024 px atlas: colour with the contact shading baked in, roughness,
-metalness, and a mask over the knuckles, the heat band and the piston's rod, which the game lights through the wind-up.
+metalness, and a mask over the knuckles, the heat band and the piston's rod, which the game lights through the wind-up,
+encoded for the way Roblox draws a glow through the colour map (encode_glow).
 No normal map: the low mesh is the form, and a bake of it is flat.
 
 Writes to <out_dir>: Rook_<Piece>.json (blcommon.export_mesh_json), Rook_<Map>.png, Rook.recipe.json (what the
@@ -52,7 +53,13 @@ LIT = ("Ember", "Glow")
 BEVELS = {"Hair": 0.035, "CollarMerlon": 0.025, "Knuckle": 0.035, "PistonCap": 0.03, "PistonCase": 0.03, "Bolt": 0.02,
           "Buckle": 0.02}
 SHADE = np.array((0.40, 0.34, 0.48), dtype=np.float32)  # what a crevice multiplies the colour by: cool, never grey
-HOT = 2.5  # the lit ram's EmissiveStrength
+# Roblox draws a glow through the colour map: (mask x EmissiveStrength x EmissiveTint + light) x colour map. So the mask
+# that's written is the light the sheet designs (the mask at DESIGN, in the ember tint alone) over HOT and over the
+# colour under it (encode_glow). The colour map keeps the ember band and the steel knuckles: a neutral under the band
+# would put out the ring of ember he wears at rest, and lit, the band ember over ember reads within a hair of the sheet.
+DESIGN = 2.5  # the light the sheet means, as an EmissiveStrength on the ember tint alone
+HOT = 10.0    # the lit ram's EmissiveStrength, which the mask is encoded for
+LUMA = np.array((0.2126, 0.7152, 0.0722), dtype=np.float32)
 
 
 def base(obj):
@@ -286,6 +293,26 @@ def bake(obj, out, prefix="Rook", surfaces=None, palette=None, ground=GROUND, li
     return paths
 
 
+def linear(c):
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def encode_glow(paths, design=DESIGN, hot=HOT):
+    """The glow mask rewritten for Roblox's formula: the designed light over the strength and over the colour map's
+    brightness under it. Where the colour is too dark for the strength, the mask stops at 1 and the light falls short.
+    Returns the share of lit texels that fall short."""
+    colour = pixels(bpy.data.images.load(str(paths["Color"]), check_existing=True))
+    image = bpy.data.images.load(str(paths["Emissive"]), check_existing=True)
+    glow = pixels(image)
+    under = np.maximum(linear(colour[..., :3]) @ LUMA, 1e-4)
+    want = glow[..., 0] * design / (hot * under)
+    lit = glow[..., 0] > 0
+    glow[..., :3] = np.clip(want, 0, 1)[..., None]
+    image.pixels.foreach_set(glow.ravel())
+    image.save()
+    return float((want[lit] > 1.001).sum()) / max(int(lit.sum()), 1)
+
+
 def split(obj, pieces=None, prefix="Rook"):
     """The baked mesh cut back into its pieces, each where it stands in the model."""
     made = {}
@@ -306,8 +333,9 @@ def split(obj, pieces=None, prefix="Rook"):
     return made
 
 
-def baked(name, paths, glow, tint=None):
-    """What Roblox will draw: the maps on one surface. `glow` is the mask's strength, in the ram's ember or `tint`."""
+def baked(name, paths, glow, tint=None, through=False):
+    """What Roblox will draw: the maps on one surface. `glow` is the mask's strength, in the ram's ember or `tint`;
+    `through` multiplies the glow by the colour map, as Roblox does."""
     m = bpy.data.materials.new(name)
     if not (m.node_tree and m.node_tree.nodes.get("Principled BSDF")):
         m.use_nodes = True
@@ -329,6 +357,13 @@ def baked(name, paths, glow, tint=None):
         strength.inputs[1].default_value = glow
         links.new(texture("Emissive", True), strength.inputs[0])
         bsdf.inputs["Emission Color"].default_value = rs.srgb(tint or rs.PALETTE["Ember"])
+        if through:
+            times = nodes.new("ShaderNodeMix")
+            times.data_type, times.blend_type = "RGBA", "MULTIPLY"
+            times.inputs["Factor"].default_value = 1.0
+            times.inputs[7].default_value = rs.srgb(tint or rs.PALETTE["Ember"])
+            links.new(texture("Color", False), times.inputs[6])
+            links.new(times.outputs[2], bsdf.inputs["Emission Color"])
         links.new(strength.outputs[0], bsdf.inputs["Emission Strength"])
     m.diffuse_color = (0.62, 0.6, 0.58, 1)  # the clay, in Workbench
     return m
@@ -368,7 +403,10 @@ def export(made, paths, out, density):
         "maps": {kind: path.name for kind, path in paths.items()},
         "texels_per_stud": round(density),
         "emissive": {"tint": rs.PALETTE["Ember"], "cold": 0, "hot": HOT, "pieces": ["Rook_RightArm", "Rook_Piston"],
-                     "note": "the mask covers the knuckles, the heat band and the piston's rod"},
+                     "note": "the mask covers the knuckles, the heat band and the piston's rod. Roblox draws the glow "
+                             "through the colour map, (mask x strength x tint + light) x colour, so the mask is "
+                             "encoded for hot: at that strength the ram shows the sheet's light. Change it and every "
+                             "glow scales with it."},
         "pieces": pieces,
         "motors": {"Piston": {"slides": [0, 1, 0], "travel": TRAVEL, "note": "along the arm, toward the shoulder, through Haymaker's wind-up"},
                    "Tape": {"note": "swings about its pivot: the loose ends trail the arm"}},
@@ -424,7 +462,8 @@ def rest(joints):
 
 def review(joints, made, paths, recipe, out, facts):
     scene = bpy.context.scene
-    cold, hot = baked("Rook_Cold", paths, 0.0), baked("Rook_Hot", paths, 1.4)  # 1.4: the preview's own, short of white
+    # lit as Roblox draws it, at the preview's own 1.4 of the design's 2.5, short of white
+    cold, hot = baked("Rook_Cold", paths, 0.0), baked("Rook_Hot", paths, HOT * 1.4 / DESIGN, through=True)
     for o in made.values():
         bl.assign_only(o, cold)
     bl.save_blend(out / "rook_model.blend")  # the pieces standing free in the model's frame, for the clips' rig
@@ -538,6 +577,9 @@ def main():
     area, density = unwrap(whole)
     print(f"faces {total}, unseen {hidden}; seen area {area:.1f} sq studs; {density:.0f} px per stud at {SIZE}")
     paths = bake(whole, out)
+    short = encode_glow(paths)
+    print(f"glow encoded for EmissiveStrength {HOT:g}: {short:.0%} of the lit texels fall short of the design "
+          f"(their colour is too dark for it)")
     made = split(whole)
     recipe = export(made, paths, out, density)
     pts = [v.co for o in made.values() for v in o.data.vertices]

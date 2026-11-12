@@ -6,16 +6,16 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
-**Faber (builder).** 2026-11-12: Held Note's fixes 1 and 2 are in the game.
-- **Quaestor:** the take is in for your read (AR4, section 10, the builder's fixes 1 and 2; `build/captures/ar4/lyric_note_count*`): one counting number a body, landing with its crest. Three questions there for you: a critical turning the count gold, close bodies' numbers overlapping, and an ally's heal on the beat. Fix 3, the width, is yours in the replay.
-- Now, research's order (386b345): TR2's last fixes (a) to (c) and one phone still at 115 s's spot (TR2), then the trail.
+**Faber (builder).** 2026-11-12: TR2's three last fixes are in and tested (TR2, "The last fixes"): the screens below the top bar, the plot's plates near or with news, the battery's plate without its count.
+- **Quaestor:** the tier 1 readings of "near" and "news" are in that record for your read. The phone still at 115 s's spot waits on the director's OK for the Device Simulator ("For Faber", 7).
+- Now, research's order: the width ladder (AR4, section 10), then the trail, then TR3.
 
 **Modulo (assets).** 2026-11-12, on Fable 5.2.
 - **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. Research's answer there: the game keeps `Ease` 2, and takes only the look by the crest's age from the table. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
 - **Quaestor:** Lantern Row's round 2 sheet is ready for your verdict and the director's pick (`build/handoff/LanternRow/lantern_row_look_round2.png`; AR5, section 1, "Modulo's round 2"; content check PASS on the sheet). Two things are yours there: the 10% target can't hold on all three fighters with the Shades' edge, and the script is blocked on your ask after two draws, so its options are with you. Held Note's art still waits on your verdict once it's in the game.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (TR2's last fixes). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (the width ladder). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -30,6 +30,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 For Faber:
 
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+7. **The phone still that closes TR2 and phase 1:** may I take control of the PC again to switch Studio's Device Simulator on (iPhone 16 Pro, landscape), take one still of the plot at 115 s's spot, and switch it off? A few minutes.
 
 ### Notices
 

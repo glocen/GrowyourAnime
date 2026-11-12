@@ -1,7 +1,9 @@
 --!strict
 -- Layers (client): one ScreenGui per layer, each with one UIScale (handbook/visuals/ui.md, "The layer structure").
--- Authored at Theme.Author and scaled by height, clamped (handbook/visuals/ui.md, "Phones"). Only the HUD keeps clear of
--- Roblox's top bar and the notch; the others run full-bleed. Every container is named NL_..., which the UI lint reads as ours.
+-- Authored at Theme.Author and scaled by height, clamped (handbook/visuals/ui.md, "Phones"). The HUD and the screens keep
+-- clear of Roblox's top bar and the notch (TR2, research's read of the phone take, fix 1: a screen's title sat under
+-- Roblox's own buttons); the world's plates, the overlay's cover and the toasts run full-bleed. Every container is named
+-- NL_..., which the UI lint reads as ours.
 --   Layers.Get("Hud")      the layer's root frame, made on first use
 --   Layers.Scale()         the scale every layer draws at now
 --   Layers.Changed         (scale) after a refit
@@ -73,9 +75,9 @@ function Layers.Get(name: Name): Frame
 	gui.ResetOnSpawn = false
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	gui.DisplayOrder = ORDER[name]
-	local hud = name == "Hud"
-	gui.IgnoreGuiInset = not hud
-	gui.ScreenInsets = if hud then Enum.ScreenInsets.CoreUISafeInsets else Enum.ScreenInsets.None
+	local inset = name == "Hud" or name == "Menus"
+	gui.IgnoreGuiInset = not inset
+	gui.ScreenInsets = if inset then Enum.ScreenInsets.CoreUISafeInsets else Enum.ScreenInsets.None
 	local uiScale = Instance.new("UIScale")
 	uiScale.Scale = scale
 	uiScale.Parent = gui

@@ -1,7 +1,8 @@
 --!strict
 -- Screen (client kit): a full screen on the Menus layer, one at a time, with its title and a visible exit
 -- (handbook/visuals/ui.md, "Screen standard"). Opening one closes the one before. Its content is rebuilt by its owner
--- whenever the server's copy changes, so it never shows a stale state.
+-- whenever the server's copy changes, so it never shows a stale state. It stands in the room the layer leaves below
+-- Roblox's top bar, and shrinks to that room on a short screen: its body's lists scroll.
 --   Screen.Open(name, title, size) -> the body frame to fill
 --   Screen.Close()
 --   Screen.Current() -> the open screen's name, or nil
@@ -17,6 +18,15 @@ local Screen = {}
 Screen.Closed = Signal.new() -- (name)
 
 local TITLE = 32 -- authored height of the title row
+local MARGIN = 8 -- authored pixels kept between a screen and the edge of its room
+
+-- As large as authored, or as the room allows.
+local function fit(frame: Frame, size: Vector2)
+	local room = Layers.Get("Menus").AbsoluteSize / Layers.Scale()
+	local wide = if room.X > 0 then math.min(size.X, room.X - MARGIN * 2) else size.X
+	local tall = if room.Y > 0 then math.min(size.Y, room.Y - MARGIN * 2) else size.Y
+	frame.Size = UDim2.fromOffset(wide, tall)
+end
 
 local open: { Name: string, Frame: Frame }? = nil
 
@@ -49,6 +59,16 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 		Parent = Layers.Get("Menus"),
 	})
 	frame.Active = true -- a tap on the screen stays on it
+	fit(frame, size)
+	local refit = function()
+		fit(frame, size)
+	end
+	local resized = Layers.Get("Menus"):GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
+	local rescaled = Layers.Changed:Connect(refit)
+	frame.Destroying:Connect(function()
+		resized:Disconnect()
+		rescaled:Disconnect()
+	end)
 	local heading = Text.new({
 		Name = "Title",
 		Size = Theme.Text.Title,

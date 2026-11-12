@@ -118,6 +118,17 @@ function SelfTestService.Init()
 		local dummy = pad and freshDummy(pad, standAt(Vector3.zero), tonumber(distance), tonumber(turn))
 		return dummy and dummy.Name
 	end)
+	-- The avatar's root set down at `at` (a world position), looking toward `look` along the ground: a spot on the map
+	-- for a case that needs one (the plot's plates, near and far).
+	DebugService.Register("TestStandAt", function(who: any, at: any, look: any): boolean
+		local player, _, root = characterOf(who)
+		assert(typeof(at) == "Vector3", "at: a Vector3")
+		player:RequestStreamAroundAsync(at)
+		local toward = if typeof(look) == "Vector3" then Vector3.new(look.X, at.Y, look.Z) else at + Vector3.new(0, 0, -1)
+		root.AssemblyLinearVelocity = Vector3.zero
+		root.CFrame = CFrame.lookAt(at, if (toward - at).Magnitude > 1e-3 then toward else at + Vector3.new(0, 0, -1))
+		return true
+	end)
 end
 
 function SelfTestService.Start()

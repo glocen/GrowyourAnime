@@ -2,7 +2,9 @@
 -- BaseController (client): the player's own base, in grey (docs/test-requests.md, TR2, items 1, 2 and 7; docs/ui.md,
 -- "The screens of the first loop", 2, 3 and 7, in stock frames). On the plot: a prompt at the Breaker (Open while a shard
 -- is ready, else the Base screen), one at each open bay, and the three starter shards waiting in front of the Breaker until
--- one is chosen. Over the world: the Breaker's chambers counting down, each bay's worker and output, the battery. The Base
+-- one is chosen. Over the world: the Breaker's chambers counting down, each bay's worker and output, the battery's name.
+-- A plate speaks only near its machine, or while it's lit with something to do (TR2, research's read of the phone take,
+-- fix 2): the Breaker with a shard to put in or to open, a bay that a free Voidkin could work. The Base
 -- screen: the chambers, the line, what's ready, the bag, the bays and who works in them. Opening a shard shows the reveal:
 -- one card with the name, no ceremony yet. Every change is asked of the server (ProfileController.Act) and shown only
 -- once it answers; the prompts are this player's alone, so a visitor can look and never touch.
@@ -18,6 +20,7 @@ local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
 local Markers = require(Shared.World.Markers)
+local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
@@ -39,6 +42,11 @@ local FIND_EVERY = 1 -- seconds between looks for the plot's markers: they strea
 local TICK = 0.25 -- seconds between countdown updates
 local REACH = 140 -- studs from the camera a base's plates show: the plot and the Strip, never the street
 local PROMPT_REACH = 10 -- studs from a prompt's spot it can be pressed
+-- Studs, flat, from a machine's spot within which its plate speaks without news: the prompt's reach and a few steps. The
+-- spawn stands 14 from the battery, so a player arriving home sees no plate that has nothing to say. A plate lets go
+-- NEAR_SLACK farther out than it takes hold, so it never flickers at the edge.
+local NEAR = PROMPT_REACH + 3
+local NEAR_SLACK = 2
 local BREAKER_UP = 7 -- studs over the Breaker's marker its plate and prompt stand
 local BAY_UP = 4
 local STARTER_OUT = 7 -- studs in front of the Breaker, toward the spawn, the starter shards wait
@@ -49,10 +57,11 @@ local STARTER_SPIN = 0.6 -- radians a second each waiting shard turns
 local CHOOSE_HOLD = 0.4 -- seconds a starter's prompt is held: a choice for good
 local PLATE_LINE = 20 -- authored pixels a plate's line takes
 -- Each plate as wide as its longest line at the smallest scale, where text draws at 17 authored (Text.Legible):
--- "Lantern Row shard · 1 min 59 s" is 222, "Bay 2 · nobody works here" 193, "Battery 600 / 600" 126 (measured 2026-11-12).
+-- "Lantern Row shard · 1 min 59 s" is 222, "Bay 2 · nobody works here" 193 (measured 2026-11-12). The battery's plate
+-- says only its name: the Electricity pill carries the count (TR2, research's read of the phone take, fix 3).
 local BREAKER_WIDTH = 232
 local BAY_WIDTH = 204
-local BATTERY_WIDTH = 140
+local BATTERY_WIDTH = 80
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178 and "Chamber 2 · 1 min 59 s" at 164.
 local SCREEN = Vector2.new(660, 320)
@@ -68,7 +77,8 @@ local REASON: { [string]: string } = {
 	Unknown = "That can't be done",
 }
 
-type Spot = { Marker: Instance, Anchor: Part, Prompt: ProximityPrompt?, Plate: Frame }
+-- Ground: the marker's spot on the floor. Near: the avatar stands within NEAR of it. News: it's lit with something to do.
+type Spot = { Marker: Instance, Ground: Vector3, Anchor: Part, Prompt: ProximityPrompt?, Plate: Frame, Near: boolean, News: boolean }
 
 local folder: Folder? = nil
 local plot: number? = nil
@@ -125,10 +135,22 @@ local function prompt(parent: Instance, name: string, object: string, actionText
 	return p
 end
 
--- A plate over `anchor`: a panel of `lines` text lines, filled by the caller.
-local function plate(name: string, anchor: Part, lines: number, width: number): Frame
+-- Whether a spot's plate speaks now: it has news, or the avatar stands near it.
+local function speaks(spot: Spot): boolean
+	local root = Parts.Root(player.Character)
+	if root == nil then
+		spot.Near = false
+	else
+		local gap = root.Position - spot.Anchor.Position
+		spot.Near = Vector2.new(gap.X, gap.Z).Magnitude <= (if spot.Near then NEAR + NEAR_SLACK else NEAR)
+	end
+	return spot.News or spot.Near
+end
+
+-- A plate over `anchor`: a panel of `lines` text lines, filled by the caller, shown while `shown()`.
+local function plate(name: string, anchor: Part, lines: number, width: number, shown: () -> boolean): Frame
 	local frame = World.Plate(name, Vector2.new(width, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
-		return if anchor.Parent then anchor.Position else nil
+		return if anchor.Parent and shown() then anchor.Position else nil
 	end, REACH)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
 	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
@@ -434,9 +456,13 @@ end
 -- The plot -------------------------------------------------------------------------------------------------------------
 
 local function spotFor(marker: Instance, name: string, up: number, lines: number, width: number): Spot
-	local at = Markers.At(marker).Position + Vector3.new(0, up, 0)
-	local anchor = anchorAt(name, at)
-	return { Marker = marker, Anchor = anchor, Prompt = nil, Plate = plate(name, anchor, lines, width) }
+	local ground = Markers.At(marker).Position
+	local anchor = anchorAt(name, ground + Vector3.new(0, up, 0))
+	local spot: Spot = { Marker = marker, Ground = ground, Anchor = anchor, Prompt = nil, Plate = nil :: any, Near = false, News = false }
+	spot.Plate = plate(name, anchor, lines, width, function(): boolean
+		return speaks(spot)
+	end)
+	return spot
 end
 
 local function stale(spot: Spot?, marker: Instance?): boolean
@@ -559,21 +585,28 @@ function BaseController.Refresh()
 			table.insert(lines, "Void Breaker · idle")
 		end
 		setLines(breaker.Plate, lines)
-		-- Lit while a shard waits in the bag, until it's in (research's read of TR2's fixes, 2026-11-12).
+		-- Lit, and seen from anywhere on the plot, while a shard waits in the bag, until it's in (research's read of TR2's
+		-- fixes, 2026-11-12), or one waits to be opened.
 		local bagged = false
 		for _, count in view.Bag.Shards do
 			bagged = bagged or count > 0
 		end
+		breaker.News = bagged or #view.Base.Ready > 0
 		local panel = breaker.Plate:FindFirstChild("Panel")
 		if panel and panel:IsA("GuiObject") then
-			Panel.Lit(panel, bagged)
+			Panel.Lit(panel, breaker.News)
 		end
 		if breaker.Prompt then
 			breaker.Prompt.ActionText = if #view.Base.Ready > 0 then "Open" else "Breaker"
 		end
 	end
 	if battery then
-		setLines(battery.Plate, { `Battery {Read.Stored(now.Data.Base.Battery)} / {Read.Number(BaseConfig.Battery.Capacity)}` })
+		setLines(battery.Plate, { "Battery" })
+	end
+	-- Someone neither leading nor working, whom an empty bay could take.
+	local free = false
+	for id in view.Voidkin do
+		free = free or Read.Role(view, id) == ""
 	end
 	for index, spot in bays do
 		local bay = view.Base.Bays[index]
@@ -583,6 +616,11 @@ function BaseController.Refresh()
 			elseif worker then `{Read.VoidkinName(worker)} · {Read.Rate(Breaker.Output(worker))}`
 			else `Bay {index} · nobody works here`,
 		})
+		spot.News = bay ~= nil and worker == nil and free
+		local panel = spot.Plate:FindFirstChild("Panel")
+		if panel and panel:IsA("GuiObject") then
+			Panel.Lit(panel, spot.News)
+		end
 		if bay and spot.Prompt == nil then
 			local p = prompt(spot.Anchor, "NL_Bay", `Bay {index}`, "Set worker")
 			p.Triggered:Connect(function()
@@ -623,6 +661,25 @@ function BaseController.Parts(): { [string]: Instance }
 		parts[id] = part
 	end
 	return parts
+end
+
+-- For tests: each plate's spot by its name ("Breaker", "Battery", "Bay1"), whether it's near and has news, its spot on
+-- the floor, and how near speaks.
+BaseController.Near = NEAR
+BaseController.NearSlack = NEAR_SLACK
+function BaseController.Says(): { [string]: { Near: boolean, News: boolean, Ground: Vector3 } }
+	local says = {}
+	local function add(name: string, spot: Spot?)
+		if spot then
+			says[name] = { Near = spot.Near, News = spot.News, Ground = spot.Ground }
+		end
+	end
+	add("Breaker", breaker)
+	add("Battery", battery)
+	for index, spot in bays do
+		add(`Bay{index}`, spot)
+	end
+	return says
 end
 
 function BaseController.Start()

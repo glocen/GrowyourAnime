@@ -3,6 +3,7 @@
 -- the `t` API (SelfTestController, type Test). Manual = true keeps a case out of a full run; Stay = true skips the reset to
 -- the pad. Expected values come from Config or the instances themselves, never typed twice. One case, one behaviour.
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -2385,7 +2386,10 @@ return {
 			t.Wait(PLATE_TICK * 2)
 			if before == 0 then
 				t.Check("an empty bag: no chip", not hud.Chip.Visible, text.Text)
-				t.Check("and the plate unlit", stroke.Color == Theme.Colour.Line, tostring(stroke.Color))
+				local view = ProfileController.Get()
+				if view and #view.Base.Ready == 0 then -- a shard waiting to open lights it too
+					t.Check("and the plate unlit", stroke.Color == Theme.Colour.Line, tostring(stroke.Color))
+				end
 			end
 		end,
 	},
@@ -2419,6 +2423,174 @@ return {
 				lintClean(t, `the {name} screen`)
 			end
 			Screen.Close()
+		end,
+	},
+	{
+		Name = "UI: a screen stands below Roblox's top bar, and shrinks to the room it has",
+		Run = function(t: any)
+			local root = Layers.Get("Menus")
+			local gui = root.Parent :: ScreenGui
+			t.Check("the screens' layer keeps clear of the top bar and the notch", not gui.IgnoreGuiInset and gui.ScreenInsets == Enum.ScreenInsets.CoreUISafeInsets)
+			local bar = GuiService:GetGuiInset().Y
+			local top = Layers.Get("World").AbsolutePosition.Y -- the full-bleed layer starts at the screen's top
+			t.Check("its room starts below the top bar", root.AbsolutePosition.Y - top >= bar - 0.5, `{root.AbsolutePosition.Y - top} px down, the bar {bar}`)
+			local function inside(frame: GuiObject): boolean
+				local a, b = frame.AbsolutePosition, frame.AbsolutePosition + frame.AbsoluteSize
+				local c, d = root.AbsolutePosition, root.AbsolutePosition + root.AbsoluteSize
+				return a.X >= c.X - 0.5 and a.Y >= c.Y - 0.5 and b.X <= d.X + 0.5 and b.Y <= d.Y + 0.5
+			end
+			BaseController.Open()
+			local frame = Screen.Frame("Base")
+			t.Check("the Base screen opens", frame ~= nil)
+			if frame == nil then
+				return
+			end
+			local authored = frame.Size.Y.Offset
+			t.Wait(0.1) -- laid out
+			t.Check("it stands within the room", inside(frame), `{frame.AbsolutePosition} {frame.AbsoluteSize}`)
+			-- A screen too short for it: the scale that leaves 250 authored pixels of room.
+			Layers.Force(root.AbsoluteSize.Y / 250)
+			t.Wait(0.1)
+			t.Check("on a short screen, it shrinks to the room", frame.Size.Y.Offset < authored and inside(frame), `{frame.Size.Y.Offset} of {authored} authored`)
+			Layers.Force(nil)
+			t.Wait(0.1)
+			t.Check("and grows back with the room", frame.Size.Y.Offset == authored and inside(frame), `{frame.Size.Y.Offset} of {authored} authored`)
+			lintClean(t, "the Base screen, fitted")
+			Screen.Close()
+		end,
+	},
+	{
+		Name = "Base: the plot's plates speak only near their machine or lit with news, and the battery's says only its name",
+		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			local says = BaseController.Says()
+			local breaker, battery = says.Breaker, says.Battery
+			t.Check("the plot's spots are here", view ~= nil and breaker ~= nil and battery ~= nil)
+			if view == nil or breaker == nil or battery == nil then
+				return
+			end
+			local parts = BaseController.Parts()
+			local flat = battery.Ground - breaker.Ground
+			local back = Vector3.new(flat.X, 0, flat.Z).Unit -- from the Breaker toward the spawn
+			local function stand(at: Vector3, look: Vector3)
+				t.Server("TestStandAt", at + Vector3.new(0, 3, 0), look)
+				t.Wait(0.1) -- the camera's focus follows the avatar
+				-- The camera keeps its own look (FadeController): turned to the avatar's, a little down, as a player would.
+				local camera = workspace.CurrentCamera
+				local along = Vector3.new(look.X - at.X, 0, look.Z - at.Z)
+				if camera and along.Magnitude > 1e-3 then
+					local from = camera.CFrame.Position
+					local down = math.rad(15)
+					camera.CFrame = CFrame.lookAt(from, from + along.Unit * math.cos(down) - Vector3.new(0, math.sin(down), 0))
+				end
+				t.Wait(PLATE_TICK + 0.3) -- the plates read at 4 Hz
+			end
+			local function plateOf(name: string): Frame
+				return parts[`{name}Plate`] :: Frame
+			end
+			local function lit(name: string): boolean
+				local panel = plateOf(name):FindFirstChild("Panel")
+				local stroke = if panel then panel:FindFirstChildOfClass("UIStroke") else nil
+				return stroke ~= nil and stroke.Color == Theme.Colour.Ready
+			end
+			-- What the save says each spot has to do: a shard to put in or open, a bay a free Voidkin could take.
+			local function news(): { [string]: boolean }
+				local now = ProfileController.Get() :: any
+				local bagged, free = false, false
+				for _, count in now.Bag.Shards do
+					bagged = bagged or count > 0
+				end
+				for id in now.Voidkin do
+					free = free or Read.Role(now, id) == ""
+				end
+				local out: { [string]: boolean } = { Breaker = bagged or #now.Base.Ready > 0, Battery = false }
+				for name in BaseController.Says() do
+					local index = tonumber(name:match("^Bay(%d+)$"))
+					if index then
+						local bay: any = now.Base.Bays[index]
+						out[name] = bay ~= nil and bay.Worker == "" and free
+					end
+				end
+				return out
+			end
+			-- Every plate whose spot is neither near nor lit is hidden; each spot's news is the save's.
+			local function quiet(where: string)
+				local want = news()
+				local wrong, loud = {}, {}
+				for name, spot in BaseController.Says() do
+					if spot.News ~= want[name] or lit(name) ~= want[name] then
+						table.insert(wrong, `{name} {spot.News}/{lit(name)}, the save {want[name]}`)
+					end
+					if not spot.News and not spot.Near and plateOf(name).Visible then
+						table.insert(loud, name)
+					end
+				end
+				t.Check(`{where}: each plate's news and its light are the save's`, #wrong == 0, table.concat(wrong, "; "))
+				t.Check(`{where}: a plate neither near nor with news hides`, #loud == 0, table.concat(loud, ", "))
+			end
+			local function nearOnes(): string
+				local list = {}
+				for name, spot in BaseController.Says() do
+					if spot.Near then
+						table.insert(list, name)
+					end
+				end
+				table.sort(list)
+				return table.concat(list, ", ")
+			end
+
+			stand(battery.Ground + back * 24, breaker.Ground)
+			t.Check("far from every machine, none is near", nearOnes() == "", nearOnes())
+			quiet("far off")
+
+			stand(battery.Ground + back * 6, battery.Ground)
+			t.Check("beside the battery, only it is near", nearOnes() == "Battery", nearOnes())
+			t.Check("and its plate shows", waitFor(t, 1, function(): boolean
+				return plateOf("Battery").Visible
+			end))
+			local line = plateOf("Battery"):FindFirstChild("Line1", true) :: TextLabel?
+			t.Check("saying only its name: the Electricity pill has the count", line ~= nil and line.Text == "Battery", if line then line.Text else "no line")
+			quiet("beside the battery")
+			local spawnAt = BaseController.Near + 1 -- the spawn's distance from the battery, about
+			stand(battery.Ground + back * spawnAt, battery.Ground)
+			t.Check(`stepping back to {spawnAt} studs, it holds on`, BaseController.Says().Battery.Near)
+			stand(battery.Ground + back * (BaseController.Near + BaseController.NearSlack + 3), battery.Ground)
+			t.Check("past its slack it lets go, and the plate hides", not BaseController.Says().Battery.Near and not plateOf("Battery").Visible)
+			stand(battery.Ground + back * spawnAt, battery.Ground)
+			t.Check(`coming in to {spawnAt} studs, it stays quiet: it takes hold only within {BaseController.Near}`, not BaseController.Says().Battery.Near and not plateOf("Battery").Visible)
+
+			stand(breaker.Ground + back * 8, breaker.Ground)
+			t.Check("beside the Breaker, it's near", BaseController.Says().Breaker.Near)
+			t.Check("and its plate shows", waitFor(t, 1, function(): boolean
+				return plateOf("Breaker").Visible
+			end))
+
+			-- News reaches the far side of the plot.
+			stand(battery.Ground + back * 24, breaker.Ground)
+			local shard = "named_watt"
+			local had = news().Breaker
+			t.Check("a shard goes in the bag", t.Server("BaseGive", shard, 1).Ok == true)
+			t.Check("far off, the Breaker's plate lights and shows", waitFor(t, ANSWER, function(): boolean
+				return BaseController.Says().Breaker.News and lit("Breaker") and plateOf("Breaker").Visible
+			end))
+			quiet("with a shard in the bag")
+			t.Check("the shard comes back out", t.Server("BaseGive", shard, -1).Ok == true)
+			t.Check("and the Breaker's news is the save's again", waitFor(t, ANSWER, function(): boolean
+				return BaseController.Says().Breaker.News == had and (had or not plateOf("Breaker").Visible)
+			end))
+			local worker = view.Base.Bays[1] and view.Base.Bays[1].Worker or ""
+			if worker ~= "" and says.Bay1 then
+				t.Check("bay 1's worker steps out", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = "" }).Ok == true)
+				t.Check("far off, bay 1 lights and shows: a free Voidkin could work it", waitFor(t, ANSWER, function(): boolean
+					return BaseController.Says().Bay1.News and lit("Bay1") and plateOf("Bay1").Visible
+				end))
+				t.Check("the worker goes back", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = worker }).Ok == true)
+				t.Check("and bay 1 is quiet again", waitFor(t, ANSWER, function(): boolean
+					return not BaseController.Says().Bay1.News and not lit("Bay1") and not plateOf("Bay1").Visible
+				end))
+			end
+			quiet("at the end")
 		end,
 	},
 	{

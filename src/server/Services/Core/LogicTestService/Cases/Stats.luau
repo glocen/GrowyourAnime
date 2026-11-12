@@ -139,7 +139,7 @@ return {
 		Name = "Stats: rarity, class and level shape the own base only",
 		Run = function(t: any)
 			local data = fresh()
-			give(data, "Weapon", { { Stat = "Attack", Value = 40 }, { Stat = "Critical", Value = 12 } })
+			give(data, "Main Hand", { { Stat = "Attack", Value = 40 }, { Stat = "Critical", Value = 12 } })
 			for _, row in Voidkin.List do
 				local owned = own(data, row.Id, 9, 0)
 				local block, lines = Stats.Resolve(owned, data.Presets[1], data)
@@ -148,7 +148,7 @@ return {
 					local expected = StatsConfig.Base[stat] * StatsConfig.Rarity[row.Rarity] * StatsConfig.Class[row.Class][stat] * g
 					t.Check(`{row.Id} {stat} base`, near(from(lines, "Base")[stat], expected))
 				end
-				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Weapon"), { Attack = 40, Critical = 12 }))
+				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Main Hand"), { Attack = 40, Critical = 12 }))
 				t.Equal(`{row.Id} critical is the item's`, block.Critical, 12)
 			end
 		end,

@@ -186,6 +186,14 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 - A phone-size capture of one fight on Lantern Row that holds a hit dealt, a critical, damage received, a heal (Lyric), the lead's fall and return, and the type edge. Then the plot with a shard ready. Long names and empty and full states, as `docs/ui.md` asks.
 - Research's verdict, then the director's eye.
 
+**The director's notes, 2026-11-13, for the blockout's fix round** (`docs/decisions.md`; said mid-build, so they're taken at the checkpoint, not before): "it need a bit more palette of colors it going great so far, but the HP of the voidkin need to be red obviously and i would like to see the hud take more inspiration of tcp 3 hud top left". Research's reading of the reference's card (`build/reference/dragon-hunter/2026-11-12_arena-normal-damage.png`), part by part, for our card in our kit's shapes:
+- **Health red** on both cards, the lead's and the target's, with current and maximum in light digits inside it. The reference's is a warm orange-red.
+- **The thin bar in a colour of its own,** not the health's: the reference's second bar is blue. Ours is experience; the colour is the builder's to try live, a cool one against the red.
+- **The portrait is the card's biggest thing.** The face is larger than the bars' height, and the head stands above the frame's top edge. That needs a new cut of each portrait from Modulo (AR3, section 3), asked once the take shows the card's size. The bars start under the frame's right edge and run out long, ending in a slanted cut.
+- **The level on a small badge** at the frame's lower corner, overlapping it.
+- **A warm trim** round the bars and the frame, as the reference's gold rims. Ours can take the rarity's colour.
+- **More colour across the HUD** comes from colours that mean something: health red, experience its own colour, the rarity's trim, the gems', the pills' icons (Credits warm, Electricity cyan). The panels stay Graphite.
+
 **Status:** started 2026-11-12 (Faber), TR2 being closed.
 
 ## Next, not yet written

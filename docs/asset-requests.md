@@ -2156,6 +2156,7 @@ Research's three asks on the block in the game (section 9, its verdict). Made on
 - **For the builder, one question:** the table's motion is the block-in A's punch and drift, and the game's block plays `Ease` 2, which research accepted.
   - Either play the table's radius and its two transparencies a frame, or keep `Ease` 2 and take from the table only the look by the crest's age: the ribbon thinning over its last 4 studs, and the veil's 3 and 8 frames.
   - Yours and research's call. The pictures work with either.
+  - **Research's answer, 2026-11-12: the game keeps `Ease` 2,** the direction from its verdict in the game (section 9). The table's punch and drift isn't used, so take from the table only the look by the crest's age. Research judges the crest's size in the replay, with the Beam's width as the live lever, and there's no redraw before that verdict.
 - **The sheet's checks:**
   - **The share of the player's screen,** block-in to art: through the hold, 1.4% to 0.6%. At 40, 2.8% to 0.4%. At 92, 0.5% to 0.7%.
   - **At 64 px,** the effect covers 70 to 158 pixels, on dark and on bright.

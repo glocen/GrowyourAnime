@@ -493,6 +493,84 @@ function Effects.Number(root: BasePart, text: string, color: Color3, big: boolea
 	end)
 end
 
+-- A level gained (Config.Effects.LevelUp): the reward's two beats at once, a ring of light spreading from the feet, eased
+-- out so it bursts and settles, and the new level rising over the lead, held long enough to read.
+function Effects.LevelUp(root: BasePart, level: number)
+	local look = EffectsConfig.LevelUp
+	local ring = part(Theme.Colour.Xp, Enum.Material.Neon)
+	ring.Shape = Enum.PartType.Cylinder
+	local feet = root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0)
+	local size = look.Size
+	local rise = 0
+	local plate = World.Plate("LevelUp", Vector2.new(size * 7, size * 1.6), function(): Vector3?
+		return if root.Parent then root.Position + Vector3.new(0, 3.5 + rise, 0) else nil
+	end)
+	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = Theme.Colour.Xp, Align = Enum.TextXAlignment.Center, Parent = plate })
+	label.TextStrokeTransparency = 0.2
+	label.Text = `Level {level}`
+	run(function(age: number): boolean
+		if age >= math.max(look.Seconds, look.Ring.Seconds) then
+			return false
+		end
+		local r = math.clamp(age / look.Ring.Seconds, 0, 1)
+		local across = lerp(look.Ring.From, look.Ring.To, easeOut(r))
+		ring.Size = Vector3.new(look.Ring.Thick, across, across)
+		ring.CFrame = CFrame.new(if root.Parent then root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0) else feet) * CFrame.Angles(0, 0, math.pi / 2)
+		ring.Transparency = if r >= 1 then 1 else r * r
+		local t = age / look.Seconds
+		rise = look.Rise * easeOut(t)
+		label.TextTransparency = math.clamp((t - 0.7) / 0.3, 0, 1)
+		label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
+		return true
+	end, function()
+		ring:Destroy()
+		World.Remove(plate)
+	end)
+end
+
+-- A shard won (Config.Effects.ShardLeap): it leaves the fallen Shade in an arc, eased in and out so it lifts off and
+-- settles, spinning, and lands on the avatar in a small flash. `to` is read every frame, so it follows a walking avatar.
+function Effects.ShardLeap(from: Vector3?, to: () -> Vector3?)
+	local look = EffectsConfig.ShardLeap
+	local function flash(at: Vector3)
+		local ball = part(Theme.Colour.Ready, Enum.Material.Neon)
+		ball.Shape = Enum.PartType.Ball
+		run(function(age: number): boolean
+			local t = age / look.Flash.Seconds
+			if t >= 1 then
+				return false
+			end
+			ball.Size = Vector3.one * lerp(1, look.Flash.To, easeOut(t))
+			ball.CFrame = CFrame.new(at)
+			ball.Transparency = t
+			return true
+		end, function()
+			ball:Destroy()
+		end)
+	end
+	local start = to()
+	if from == nil or start == nil then
+		if start then
+			flash(start)
+		end
+		return
+	end
+	local shard = part(Theme.Colour.Ready, Enum.Material.Neon)
+	shard.Size = Vector3.new(look.Size * 0.6, look.Size, look.Size * 0.6)
+	local last: Vector3 = start
+	run(function(age: number): boolean
+		local t = math.clamp(age / look.Seconds, 0, 1)
+		last = to() or last
+		local eased = t * t * (3 - 2 * t)
+		local at = from:Lerp(last, eased) + Vector3.new(0, look.Height * 4 * t * (1 - t), 0)
+		shard.CFrame = CFrame.new(at) * CFrame.Angles(0, age * look.Spin, math.rad(45))
+		return t < 1
+	end, function()
+		shard:Destroy()
+		flash(last)
+	end)
+end
+
 -- The camera's shake: each one adds its own, and fades on its own.
 type Shaking = { Magnitude: number, Roughness: number, Fade: number, Age: number, Seed: number }
 local shakes: { Shaking } = {}

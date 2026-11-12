@@ -69,6 +69,9 @@ local TAKE_WALK = 45 -- seconds a walk of the take may last
 local TAKE_FIGHT = 75 -- seconds a pack may take to fall in the take
 local TAKE_TURN = 2.5 -- how fast the take's camera swings in behind a walking avatar (a share of the gap a second)
 local TAKE_REACH = 2.5 -- studs from a waypoint that count as there
+local DOOR_RUN = 4 -- studs before a Festival Door the avatar starts its walk in
+local DOOR_THROUGH = 4 -- seconds from the walk's start to the fade's move: a step in, then the fade's middle
+local DOOR_GONE = 40 -- studs from a door that count as set down on its other side
 local TAKE_ZOOM = 12.5 -- studs from the avatar the take's camera holds: where Roblox's camera starts a player
 
 -- The angle in degrees between two directions, flat on the ground.
@@ -119,6 +122,31 @@ local function lintClean(t: any, where: string)
 	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))
 	t.Check(`{where}: every label is on screen`, #report.Screen == 0, UiLint.Detail(report.Screen, report.Checked))
 	t.Check(`{where}: no label shows Roblox's default`, #report.Placeholder == 0, UiLint.Detail(report.Placeholder, report.Checked))
+end
+
+-- Walks the avatar into a Festival Door's way from the side it stands on (DOOR_RUN studs out when `close`, else wherever it
+-- is), and waits for the fade to move it: true once it's been set down away from the door.
+local function walkThrough(t: any, door: Instance, close: boolean): boolean
+	local way = door:FindFirstChild("Way")
+	local character = Players.LocalPlayer.Character
+	local humanoid = if character then Parts.Humanoid(character) else nil
+	if way == nil or not way:IsA("BasePart") or humanoid == nil then
+		return false
+	end
+	local look = Vector3.new(way.CFrame.LookVector.X, 0, way.CFrame.LookVector.Z).Unit
+	local floor = way.Position - Vector3.new(0, way.Size.Y / 2 - R6_ROOT_HEIGHT, 0)
+	local side = if (t.Root().Position - floor):Dot(look) >= 0 then 1 else -1
+	if close then
+		t.Root().CFrame = CFrame.lookAt(floor + look * side * DOOR_RUN, floor)
+		t.Wait(0.3)
+	end
+	humanoid:MoveTo(floor - look * side * 2)
+	local moved = waitFor(t, DOOR_THROUGH, function(): boolean
+		local here = t.Root().Position
+		return Vector3.new(here.X - floor.X, 0, here.Z - floor.Z).Magnitude > DOOR_GONE
+	end)
+	humanoid:MoveTo(t.Root().Position)
+	return moved
 end
 
 -- The fighter model with id `id`, or nil.
@@ -386,6 +414,49 @@ return {
 			until (lead and lead:GetAttribute("State") ~= "Down") or os.clock() > deadline
 			local lead = myLead()
 			t.Check("the lead is back up after its fall", lead ~= nil and lead:GetAttribute("State") ~= "Down")
+		end,
+	},
+	{
+		Name = "World: the Festival Door takes the player to Lantern Row's gate, and its twin takes them home",
+		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
+		Run = function(t: any)
+			local fade = Combat.Keeper.Fade
+			local moved = fade.Out + fade.Hold / 2 + MOVE_SLACK
+			local plot = Players.LocalPlayer:GetAttribute("Plot")
+			local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+			local landing = Markers.Find("DoorLanding", { Ground = WorldConfig.Row.Ground })
+			local home = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
+			local spawn = if type(plot) == "number" then Markers.Find("Spawn", { Plot = plot }) else nil
+			t.Check("the plot has its door, Lantern Row its twin and its landing", door ~= nil and landing ~= nil and home ~= nil and spawn ~= nil)
+			if not (door and landing and home and spawn) then
+				return
+			end
+			local function flat(a: Vector3, b: Vector3): number
+				return Vector3.new(a.X - b.X, 0, a.Z - b.Z).Magnitude
+			end
+			-- From the spawn, as a player arrives.
+			t.Root().CFrame = Markers.At(spawn) + Vector3.new(0, R6_ROOT_HEIGHT, 0)
+			t.Wait(0.5)
+			local fromSpawn = flat(Markers.At(door).Position, Markers.At(spawn).Position)
+			t.Check("the door stands near the spawn, in view", fromSpawn < 60, `{math.floor(fromSpawn)} studs`)
+			t.Check("the avatar walks into the plot's door", walkThrough(t, door, true))
+			t.Wait(moved)
+			local at = Markers.At(landing)
+			t.Near("the plot's door sets the avatar down at Lantern Row's gate (studs off)", flat(t.Root().Position, at.Position), 0, SET_DOWN)
+			t.Near("facing through it (degrees off)", flatAngle(t.Root().CFrame.LookVector, at.LookVector), 0, FACING_TOLERANCE)
+			-- Out of the lead's leash of every pack: the arrival is a look up the street, never a fight already joined.
+			local nearest = math.huge
+			for _, pack in Markers.All("Pack") do
+				nearest = math.min(nearest, flat(Markers.At(pack).Position, at.Position))
+			end
+			t.Check("no pack within the lead's leash of the landing", nearest > Combat.Lead.Leash, `{math.floor(nearest)} studs to the nearest`)
+			local lead = myLead()
+			local leadRoot = if lead then Parts.Root(lead) else nil
+			t.Check("the lead comes through beside it", leadRoot ~= nil and flat(leadRoot.Position, t.Root().Position) <= Combat.Lead.Follow, if leadRoot then `{math.floor(flat(leadRoot.Position, t.Root().Position))} studs` else "no lead")
+			t.Wait(1) -- past the door's gap, once a second at most a player
+			t.Check("and into its twin", walkThrough(t, home, true))
+			t.Wait(moved)
+			t.Near("its twin sets the avatar down on its plot (studs off)", flat(t.Root().Position, Markers.At(spawn).Position), 0, SET_DOWN)
 		end,
 	},
 	{
@@ -959,13 +1030,14 @@ return {
 			t.Check("the Credits pill shows the save's", credits == `Credits {Read.Number(view.Currency.Credits)}`, credits)
 			t.Wait(PLATE_TICK)
 			local shown = (parts.Electricity :: TextLabel).Text
-			local digits = string.gsub(shown:match("^([%d,]+) /") or "", ",", "")
+			local digits = string.gsub(shown:match("^([%d,%.]+) /") or "", ",", "")
 			local stored = tonumber(digits)
 			local now = Read.Base(view, workspace:GetServerTimeNow())
 			t.Check("the Electricity pill shows a number", stored ~= nil, shown)
 			if stored then
 				t.Near("the battery as it stands now", stored, now.Data.Base.Battery, 1)
 			end
+			t.Check("a battery under 100 shows its tenth, so it visibly counts up", Read.Stored(0.35) == "0.4" and Read.Stored(86.24) == "86.2" and Read.Stored(2357) == "2,357", `{Read.Stored(0.35)}, {Read.Stored(86.24)}, {Read.Stored(2357)}`)
 			t.Check("the target's card hides out of a fight", not parts.Target.Visible)
 			lintClean(t, "the HUD")
 		end,
@@ -1278,8 +1350,8 @@ return {
 		Run = function(t: any)
 			-- TR2's evidence (docs/test-requests.md, TR2): the loop at real speed from the player's camera, on a new account
 			-- in the Test store, the screens pressed through their own buttons. A white frame opens the take so a recording
-			-- finds its zero, and each moment is a row in seconds from it. Two steps aren't played, and their rows say so:
-			-- the walk home (a respawn) and Watt's 30 s in the Breaker (BaseSkip).
+			-- finds its zero, and each moment is a row in seconds from it. The way out and home is the Festival Door. One step
+			-- isn't played, and its row says so: Watt's 30 s in the Breaker (BaseSkip).
 			local player = Players.LocalPlayer
 			local zero = os.clock()
 			local function moment(name: string)
@@ -1421,7 +1493,31 @@ return {
 					return myLead() ~= nil
 				end))
 				moment("Rook stands by the avatar")
+				-- Rook's level-ups and downs, as they happen.
+				local lead = myLead()
+				local watching: { RBXScriptConnection } = {}
+				if lead then
+					table.insert(watching, lead:GetAttributeChangedSignal("Level"):Connect(function()
+						moment(`Rook reaches level {lead:GetAttribute("Level")}`)
+					end))
+					table.insert(watching, lead:GetAttributeChangedSignal("State"):Connect(function()
+						if lead:GetAttribute("State") == "Down" then
+							moment("Rook is down")
+						end
+					end))
+				end
 				t.Wait(2)
+				local plot = player:GetAttribute("Plot")
+				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+				t.Check("the plot has its Festival Door", door ~= nil)
+				if door then
+					moment("the walk to the Festival Door")
+					local look = Markers.At(door).LookVector
+					walkTo(Markers.At(door).Position - look * DOOR_RUN + Vector3.new(0, R6_ROOT_HEIGHT, 0))
+					t.Check("through it", walkThrough(t, door, false))
+					moment("through the door: Lantern Row's gate")
+					t.Wait(1)
+				end
 
 				local packs: { [string]: any } = {}
 				for _, row in t.Server("Packs") do
@@ -1442,9 +1538,19 @@ return {
 					t.Wait(2)
 				end
 
-				moment("home: a respawn stands in for the walk back")
-				t.Check("the avatar is home", arrive())
-				t.Wait(WorldConfig.Arrive + 1)
+				for _, connection in watching do
+					connection:Disconnect()
+				end
+				local homeDoor = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
+				t.Check("Lantern Row has its door home", homeDoor ~= nil)
+				if homeDoor then
+					moment("the walk back to the door home")
+					local look = Markers.At(homeDoor).LookVector
+					walkTo(Markers.At(homeDoor).Position + look * DOOR_RUN + Vector3.new(0, R6_ROOT_HEIGHT, 0))
+					t.Check("the avatar is home", walkThrough(t, homeDoor, false))
+					moment("home through the door")
+				end
+				t.Wait(1.5)
 				BaseController.Open()
 				moment("the Base screen, Watt's shard in the bag")
 				t.Wait(TAKE_READ)

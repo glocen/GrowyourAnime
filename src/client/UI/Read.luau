@@ -25,6 +25,15 @@ function Read.Number(n: number): string
 	return if n < 0 then "-" .. grouped else grouped
 end
 
+-- Electricity stored: a tenth shown below 100, so a new battery visibly counts up (research's verdict on TR2,
+-- 2026-11-12: "it must visibly count up"; at a bay's +3.0/min the tenth turns every 2 s): "0.4", "86.2", "2,357".
+function Read.Stored(n: number): string
+	if math.abs(n) < 100 then
+		return string.format("%.1f", math.floor(n * 10 + 0.5) / 10)
+	end
+	return Read.Number(n)
+end
+
 -- Electricity a second as a minute's: "+3.0/min".
 function Read.Rate(perSecond: number): string
 	local perMinute = perSecond * 60

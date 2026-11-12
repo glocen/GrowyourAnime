@@ -13,13 +13,15 @@ return {
 	-- joining, or a reset. The builder's, 2026-11-12.
 	Arrive = 0.4,
 
-	-- Eight plots, two rows of four, facing each other across the Strip; one per player (Max Players 8).
+	-- Eight plots, two rows of four, facing each other across the Strip; one per player (Max Players 8). A plot is 200 studs
+	-- square and neighbours stand 48 apart (the director, 2026-11-12: "base should be 200"; research's verdict on TR2): the
+	-- Festival Door, not the walk, takes a player to the grounds.
 	Plots = {
 		Count = 8,
-		Across = 5, -- 80 studs, open onto the Strip
-		Deep = 5, -- 80 studs: the Breaker at the front, the bays at its sides, the battery between them
+		Across = 12.5, -- 200 studs, open onto the Strip
+		Deep = 12.5, -- 200 studs: the Breaker at the front, the bays at its sides, the battery between them
 		Kept = 1.5, -- 24 studs at the back, kept for the Forge, the Lab and the Condenser (phase 3)
-		Between = 0.75, -- 12 studs of path between neighbours
+		Between = 3, -- 48 studs between neighbours
 		Behind = 1, -- 16 studs of path behind a plot, then its Tower
 		Tower = 2, -- the Tower's footprint, 32 studs, left empty (phase 3)
 		Bays = 2, -- one open, the second locked (TR2)
@@ -32,17 +34,18 @@ return {
 	},
 
 	-- The side street runs from the crossing between the Towers to the festival gate: a plot's depth, its path behind and
-	-- its Tower, 8 s. Then Lantern Row.
+	-- its Tower: 15.5 s at a 200-stud plot, so the Festival Door is the way in. Then Lantern Row.
 	Row = {
 		Ground = "lanternrow", -- the ground this street is (Definitions.Grounds): its keeper's win counts there
-		Wide = 2, -- 32 studs between the stall fronts
+		Wide = 2.75, -- 44 studs between the stall fronts (research's verdict on TR2, 2026-11-12)
 		FirstPack = 2, -- from the gate to the first pack, in view of it
 		Spacing = 5, -- 80 studs from stop to stop, past the lead's leash (Config.Combat.Lead.Leash)
 		-- The street's rhythm, from the gate: three packs, the elite's square, three packs, the keeper's gate.
-		-- Levels: the builder's seeds (tier 2, for research), 2026-11-12.
+		-- Levels: the builder's seeds (tier 2, for research), 2026-11-12. Pack 2 at level 1 is research's second lever for a
+		-- new account's first fights (its verdict on TR2, 2026-11-12: no down before the elite, an early pack in 15 to 20 s).
 		Stops = {
 			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 1 },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 2 },
+			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 1 },
 			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 3 },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 4 },
 			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 5 },
@@ -63,5 +66,10 @@ return {
 		Wall = 10, -- the stall fronts' and the gates' height
 		Copies = 600, -- how far apart the keeper's ring copies stand, one per plot, out of sight
 		CopiesAt = 3000, -- studs east of the crossing the first copy stands
+		-- The Festival Door: its way of light, Wide by High, in a frame. On a plot it stands DoorAt studs right of the
+		-- Breaker's line and level with it; at a ground's gate, AtGate studs inside it, against the east stall front. A plot's
+		-- door sets the player down Landing studs before the gate, facing through it: out of the lead's leash of the first
+		-- pack (Combat.Lead.Leash), so the arrival is a look up the street before the first fight.
+		Door = { Wide = 6, High = 9, DoorAt = 34, AtGate = 10, Landing = 4 },
 	},
 }

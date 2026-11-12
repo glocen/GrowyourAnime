@@ -102,6 +102,22 @@ local function gate(parent: Instance, name: string, at: CFrame, wide: number, hi
 	return m
 end
 
+-- The Festival Door: a frame with a way of light through it, its pivot on the floor at `at`, the way's face along `at`'s
+-- look. Walking into the way takes the player through (DoorService).
+local function door(parent: Instance, name: string, at: CFrame): Model
+	local d = WorldConfig.Grey.Door
+	local m = model(parent, name, at)
+	for _, side in { -1, 1 } do
+		block(m, "Post", Vector3.new(1.5, d.High, 1.5), at * CFrame.new(side * (d.Wide / 2 + 0.75), d.High / 2, 0), GREY.Gate)
+	end
+	block(m, "Lintel", Vector3.new(d.Wide + 3, 1.5, 1.5), at * CFrame.new(0, d.High + 0.75, 0), GREY.Gate)
+	local way = block(m, "Way", Vector3.new(d.Wide, d.High, 0.4), at * CFrame.new(0, d.High / 2, 0), GREY.Pad)
+	way.Material = Enum.Material.Neon
+	way.Transparency = 0.35
+	way.CanCollide = false
+	return m
+end
+
 -- A wall along z from z0 to z1 at x, `high` tall.
 local function wallZ(parent: Instance, x: number, z0: number, z1: number, high: number)
 	if math.abs(z1 - z0) < 0.5 then
@@ -154,6 +170,8 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 	-- Low, so the owner sees the Breaker over it from the spawn.
 	block(battery, "Cell", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), GREY.Battery)
 	Markers.Stamp(battery, "Battery", { Plot = number })
+	-- The Festival Door, right of the Breaker and level with it, in view from the spawn.
+	Markers.Stamp(door(m, "Festival Door", at * CFrame.new(WorldConfig.Grey.Door.DoorAt, 0, front + 12)), "FestivalDoor", { Plot = number })
 	-- The owner arrives behind it all, facing the Breaker.
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "Spawn"
@@ -233,6 +251,13 @@ local function lay(folder: Folder)
 	local north = Vector3.new(0, 0, -1)
 	local gateAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, gateZ), Vector3.new(0, PAVED_TOP, gateZ) + north)
 	Markers.Stamp(gate(folder, "Festival gate", gateAt, studs(row.Wide), high, false), "FestivalGate")
+	-- Its twin, inside the gate against the east stall front, takes the player home; the plots' doors land them before
+	-- the gate in the street's middle, looking through it.
+	local doors = c.Grey.Door
+	local homeDoorAt = CFrame.lookAt(Vector3.new(rowHalf - 4, PAVED_TOP, gateZ - doors.AtGate), Vector3.new(0, PAVED_TOP, gateZ - doors.AtGate))
+	Markers.Stamp(door(folder, "Home door", homeDoorAt), "GroundDoor", { Ground = row.Ground })
+	local landingAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, gateZ + doors.Landing), Vector3.new(0, PAVED_TOP, gateZ + doors.Landing) + north)
+	Markers.Stamp(spot(folder, "Door landing", landingAt), "DoorLanding", { Ground = row.Ground })
 
 	-- Lantern Row's stops, and its stall fronts with the elite's square opened out of them.
 	local street = Instance.new("Folder")

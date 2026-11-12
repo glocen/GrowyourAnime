@@ -14,4 +14,7 @@ return {
 	XpPerKillPerG = 10,
 	KillsPerHour = 450, -- seeds "pace.killsPerHour"
 	PaceHours = { 1, 3, 6, 10, 15, 22 }, -- by ground order; seeds "grounds[].paceHours"
+	-- A new account's first fights (research's verdict on TR2, 2026-11-12): the first levels take these kills instead of the
+	-- pace's, so the lead reaches level 2 during its first pack, at its second kill. The builder's seed.
+	Early = { 2 },
 }

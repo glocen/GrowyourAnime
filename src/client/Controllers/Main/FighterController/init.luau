@@ -380,6 +380,14 @@ local function add(model: Instance)
 	table.insert(view.Connections, model:GetAttributeChangedSignal("State"):Connect(function()
 		onState(view)
 	end))
+	local level = model:GetAttribute("Level")
+	table.insert(view.Connections, model:GetAttributeChangedSignal("Level"):Connect(function()
+		local now = model:GetAttribute("Level")
+		if isMine(view) and type(now) == "number" and type(level) == "number" and now > level then
+			Effects.LevelUp(view.Root, now)
+		end
+		level = now
+	end))
 	onState(view)
 	onAction(view)
 end

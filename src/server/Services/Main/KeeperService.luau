@@ -97,6 +97,18 @@ local function fade(player: Player): number
 	return f.Out + f.Hold / 2 -- the move, in the middle of the black
 end
 
+-- Sets the player and their lead down at `at` in the middle of a fade: the shortcut's way home, and the Festival Door's
+-- (DoorService). Not during a try, which moves the player itself. False when nothing moves.
+function KeeperService.SetDown(player: Player, at: CFrame): boolean
+	if tries[player] then
+		return false
+	end
+	task.delay(fade(player), function()
+		setDown(player, at)
+	end)
+	return true
+end
+
 -- The copies, one per plot, and the gate's prompt, from the markers as they stand now. A try under way ends.
 local function lay()
 	for player in tries do
@@ -354,9 +366,7 @@ function KeeperService.Start()
 			last[player] = now
 			local home = WorldService.SpawnOf(player)
 			if home then
-				task.delay(fade(player), function()
-					setDown(player, home)
-				end)
+				KeeperService.SetDown(player, home)
 			end
 		end)
 	end

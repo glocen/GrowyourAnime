@@ -29,6 +29,10 @@ function Growth.GroundOf(level: number): number
 end
 
 function Growth.KillsPerLevel(level: number): number
+	local early = GrowthConfig.Early[level]
+	if early then
+		return early -- a new account's first fights
+	end
 	local index = Growth.GroundOf(level)
 	local row = Grounds.List[index]
 	return GrowthConfig.PaceHours[index] * GrowthConfig.KillsPerHour / (row.LevelTo - row.LevelFrom + 1)

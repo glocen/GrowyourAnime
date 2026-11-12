@@ -11,6 +11,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage.Shared
+local EffectsConfig = require(Shared.Config.Effects)
 local Profile = require(Shared.Data.Profile)
 local BaseConfig = require(Shared.Config.Base)
 local Growth = require(Shared.Rules.Growth)
@@ -26,6 +27,7 @@ local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
+local Effects = require(script.Parent.FighterController.Effects)
 
 local HudController = {}
 
@@ -43,6 +45,8 @@ local lead: Card
 local target: Card
 local credits: TextLabel
 local electricity: TextLabel
+local chip: Frame
+local chipText: TextLabel
 local dock: { [string]: TextButton } = {}
 local lastView: Profile.View? = nil
 local baseReadAt = 0
@@ -125,7 +129,47 @@ local function voidkinScreen()
 	end
 end
 
--- What changed since the last copy, said once: a shard gained, a level gained.
+local function avatarAt(): Vector3?
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+	return if root and root.Parent then root.Position else nil
+end
+
+-- Where a shard just won leaps from: the nearest fallen Shade to the avatar, within ShardLeap.From.
+local function fallenNear(): Vector3?
+	local at = avatarAt()
+	local best: Vector3? = nil
+	local bestGap = EffectsConfig.ShardLeap.From
+	for _, model in fighters() do
+		if model:IsA("Model") and model:GetAttribute("Side") == "Shade" and model:GetAttribute("State") == "Down" and at then
+			local where = model:GetPivot().Position
+			local gap = (where - at).Magnitude
+			if gap < bestGap then
+				best, bestGap = where, gap
+			end
+		end
+	end
+	return best
+end
+
+-- The chip over the dock while the bag holds a shard: the hook home stays in view until it's in the Breaker
+-- (research's verdict on TR2, 2026-11-12).
+local function showChip(view: Profile.View)
+	local kinds, total, first = 0, 0, nil :: string?
+	for shard, count in view.Bag.Shards do
+		if count > 0 then
+			kinds += 1
+			total += count
+			first = first or shard
+		end
+	end
+	chip.Visible = total > 0
+	if first then
+		chipText.Text = if kinds == 1 and total == 1 then `{Read.ShardName(first)}: break it at home` else `{total} shards: break them at home`
+	end
+end
+
+-- What changed since the last copy, said once: a shard gained (it leaps to the avatar), a level gained.
 local function notice(old: Profile.View?, new: Profile.View)
 	if old == nil then
 		return
@@ -134,6 +178,7 @@ local function notice(old: Profile.View?, new: Profile.View)
 		local gained = count - (old.Bag.Shards[shard] or 0)
 		if gained > 0 then
 			Toast.Show(`+{gained} {Read.ShardName(shard)}`, Theme.Colour.Ready)
+			Effects.ShardLeap(fallenNear(), avatarAt)
 		end
 	end
 	local id = new.Roles.Lead
@@ -145,6 +190,7 @@ end
 
 local function showView(view: Profile.View)
 	credits.Text = `Credits {Read.Number(view.Currency.Credits)}`
+	showChip(view)
 	Button.Set(dock.Voidkin, { Disabled = if next(view.Voidkin) ~= nil then false else "No Voidkin" })
 	if Screen.Current() == "Voidkin" then
 		voidkinScreen()
@@ -192,7 +238,7 @@ local function step()
 		local base = Read.Base(view, workspace:GetServerTimeNow())
 		local stored = base.Data.Base.Battery
 		local rate = if stored >= BaseConfig.Battery.Capacity - 1e-6 then "full" else Read.Rate(base.Rates.Net)
-		electricity.Text = `{Read.Number(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {rate}`
+		electricity.Text = `{Read.Stored(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {rate}`
 	end
 end
 
@@ -205,6 +251,15 @@ function HudController.Start()
 	Bar.Colour(target.Health, Theme.Colour.EnemyHealth)
 	credits = pill("Credits", 1, Theme.Colour.Credits)
 	electricity = pill("Electricity", 2, Theme.Colour.Electricity)
+	chip = Panel.new({
+		Name = "Chip",
+		Size = UDim2.fromOffset(DOCK.X * 3, PILL.Y),
+		Position = UDim2.new(0.5, 0, 1, -PAD - DOCK.Y - Theme.Size.Gap),
+		AnchorPoint = Vector2.new(0.5, 1),
+		Parent = Layers.Get("Hud"),
+	})
+	chip.Visible = false
+	chipText = Text.new({ Name = "Value", Font = Theme.Font.Strong, Colour = Theme.Colour.Ready, Align = Enum.TextXAlignment.Center, Truncate = true, Box = UDim2.new(1, -PAD * 2, 1, 0), Position = UDim2.fromOffset(PAD, 0), Parent = chip })
 	local holder = Instance.new("Frame")
 	holder.Name = "Dock"
 	holder.BackgroundTransparency = 1
@@ -256,6 +311,8 @@ function HudController.Parts(): { [string]: GuiObject }
 		TargetHealth = target.Health,
 		Credits = credits,
 		Electricity = electricity,
+		Chip = chip,
+		ChipText = chipText,
 		Voidkin = dock.Voidkin,
 		Base = dock.Base,
 	}

@@ -272,6 +272,33 @@ return {
 		end,
 	},
 	{
+		Name = "Fight: a crowd adds to a Shade's health from its third lead",
+		Run = function(t: any)
+			local c = Combat.Crowd
+			t.Equal("one lead: its own", Fight.CrowdHealth(100, 1, c), 100)
+			t.Equal("a duo: still its own", Fight.CrowdHealth(100, c.From - 1, c), 100)
+			t.Equal("the third adds its share", Fight.CrowdHealth(100, c.From, c), 100 * (1 + c.Share))
+			t.Equal("each further one its share again", Fight.CrowdHealth(100, c.From + 1, c), 100 * (1 + 2 * c.Share))
+			t.Equal("none: its own", Fight.CrowdHealth(100, 0, c), 100)
+		end,
+	},
+	{
+		Name = "Fight: a lead fights beyond its target, and walks round to get there",
+		Run = function(t: any)
+			local frame = Combat.Lead.Frame
+			local step = Combat.Slots.Step
+			-- The avatar at bearing 180 round the target (to its west): beyond is 0 (east), turned toward the lead's side.
+			t.Check("from the north side, beyond and north", near(Fight.Beyond(180, 90, frame), frame), `{Fight.Beyond(180, 90, frame)}`)
+			t.Check("from the south side, beyond and south", near(Fight.Beyond(180, -90, frame), -frame), `{Fight.Beyond(180, -90, frame)}`)
+			t.Check("straight between the avatar and its target, still beyond", math.abs(Fight.Wrap(Fight.Beyond(180, 180, frame))) <= frame + 1e-6)
+			t.Check("the avatar across the back of the circle", near(Fight.Beyond(-170, 0, frame), 10 - frame), `{Fight.Beyond(-170, 0, frame)}`)
+			t.Check("a step at a time", near(Fight.Toward(180, 0, step), Fight.Wrap(180 + step)) or near(Fight.Toward(180, 0, step), Fight.Wrap(180 - step)))
+			t.Check("the short way round", near(Fight.Toward(170, -170, step), -170), `{Fight.Toward(170, -170, step)}`)
+			t.Check("there already, it stays", near(Fight.Toward(30, 30, step), 30))
+			t.Check("never past its place", near(Fight.Toward(0, step / 2, step), step / 2))
+		end,
+	},
+	{
 		Name = "Fight: damage, healing and a new maximum",
 		Run = function(t: any)
 			local left, fell = Fight.Damage(100, 30)

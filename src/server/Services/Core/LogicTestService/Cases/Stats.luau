@@ -90,9 +90,14 @@ return {
 	{
 		Name = "Stats: experience follows the pace table",
 		Run = function(t: any)
-			t.Equal("ground 1 is fifty kills a level", Growth.KillsPerLevel(1), 50)
+			local early = #GrowthConfig.Early
+			t.Equal("ground 1 is fifty kills a level, past the first fights", Growth.KillsPerLevel(early + 1), 50)
+			for level, kills in GrowthConfig.Early do
+				t.Equal(`a new account's level {level} takes its early kills`, Growth.KillsPerLevel(level), kills)
+			end
+			t.Check("the lead reaches level 2 inside its first pack of three", Growth.KillsPerLevel(1) < 3, `{Growth.KillsPerLevel(1)} kills`)
 			t.Equal("a level-1 kill", Growth.XpPerKill(1), GrowthConfig.XpPerKillPerG)
-			t.Equal("level 1 to 2", Growth.XpToNext(1), 50 * GrowthConfig.XpPerKillPerG)
+			t.Equal("level 1 to 2", Growth.XpToNext(1), Growth.KillsPerLevel(1) * GrowthConfig.XpPerKillPerG)
 			t.Equal("no level past the last", Growth.XpToNext(GrowthConfig.MaxLevel), nil)
 			local data = fresh()
 			local owned = own(data, "rook", 1, 0)

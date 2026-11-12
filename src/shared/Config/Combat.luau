@@ -12,13 +12,17 @@ return {
 	Arc = 70, -- degrees either side of a fighter's facing that its hits reach
 	-- Fighters closing on one target take places around it (Rules/Fight.Spread): they don't collide, so this is what keeps a
 	-- pack from stacking. Spacing in degrees apart; a fighter acts once within Arc degrees of its place, else walks to it.
-	Slots = { Spacing = 60, Arc = 20 },
+	-- Step: the most degrees round its target a fighter heads for at once, so it walks round the target, not through it.
+	Slots = { Spacing = 60, Arc = 20, Step = 60 },
 
 	-- The lead (docs/design.md, "Combat"): it fights what's near the avatar and comes back when the avatar walks away.
 	Lead = {
 		Leash = 30, -- it fights enemies within this of the avatar
 		Follow = 6, -- with nothing to fight, it walks to the avatar's side once it's this far away
 		Side = 3.5, -- the spot it walks to: this far right of the avatar and a stud behind
+		-- Engaged, it stands beyond its target along the avatar's facing, turned this many degrees round toward the side it's
+		-- on, so the camera frames the fight and the target doesn't hide it (research's verdict on TR2, 2026-11-12). A seed.
+		Frame = 45,
 		WalkSpeed = 16,
 		CatchUpSpeed = 26, -- once it's CatchUpFrom away, so it keeps up with a running avatar
 		CatchUpFrom = 18,
@@ -36,6 +40,10 @@ return {
 		ResetSpeed = 24, -- walking home after giving up, untouchable
 		FadeSeconds = 1.2, -- a fallen Shade bursts into light and paper, then is gone
 	},
+
+	-- A crowd on one Shade (research's verdict on TR2, 2026-11-12): from the From-th lead that hits it, each further lead adds
+	-- Share of its health, to its most and to what it has left. A seed.
+	Crowd = { From = 3, Share = 0.5 },
 
 	-- Who flinches: a short reaction that never cancels an action (docs/design.md, "States in a fight").
 	Flinch = { Seconds = 0.28, Kinds = { Lead = true, Ordinary = true, Dummy = true } },

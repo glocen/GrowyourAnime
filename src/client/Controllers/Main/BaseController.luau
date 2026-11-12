@@ -339,7 +339,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 		end
 	end
 	local stored = now.Data.Base.Battery
-	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Number(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {Read.Rate(now.Rates.Net)}`, Colour = Theme.Colour.Electricity })
+	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Stored(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {Read.Rate(now.Rates.Net)}`, Colour = Theme.Colour.Electricity })
 end
 
 build = function()
@@ -563,7 +563,7 @@ function BaseController.Refresh()
 		end
 	end
 	if battery then
-		setLines(battery.Plate, { `Battery {Read.Number(now.Data.Base.Battery)} / {Read.Number(BaseConfig.Battery.Capacity)}` })
+		setLines(battery.Plate, { `Battery {Read.Stored(now.Data.Base.Battery)} / {Read.Number(BaseConfig.Battery.Capacity)}` })
 	end
 	for index, spot in bays do
 		local bay = view.Base.Bays[index]

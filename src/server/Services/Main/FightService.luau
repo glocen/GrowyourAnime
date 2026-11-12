@@ -56,6 +56,7 @@ export type Fighter = {
 	Pack: string?,
 	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
+	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
 	-- The replay's (Studio): one action on a timer, against one target, standing still.
 	Forced: string?,
 	ForcedEvery: number,
@@ -355,6 +356,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Pack = nil,
 		Ground = nil,
 		Hitters = {},
+		Alone = block.Health,
 		Forced = nil,
 		ForcedEvery = 0,
 		ForcedNext = 0,
@@ -428,8 +430,15 @@ local function avatarRoot(f: Fighter): BasePart?
 	return nil
 end
 
--- Where `f` stands to fight `target`, `radius` studs from it: its place among the fighters of its side closing on that
--- target (Rules/Fight.Spread). Also how far, in degrees, `f` stands from that place.
+local function bearingOf(offset: Vector3): number
+	return math.deg(math.atan2(offset.Z, offset.X))
+end
+
+-- Where `f` heads to fight `target`, `radius` studs from it: its place among the fighters of its side closing on that
+-- target (Rules/Fight.Spread), each wanting to stay where it is, but a lead wanting the target's far side along its
+-- avatar's facing, the way the player's camera looks (Fight.Beyond: a Shade comes to the lead at the avatar's side, so the
+-- avatar's place would put the fight off the frame's edge; the take of 2026-11-12), and the way there round the target
+-- (Fight.Toward). Also how far, in degrees, `f` stands from its place.
 local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, number)
 	local center = target.Root.Position
 	local mates: { Fighter } = {}
@@ -441,18 +450,20 @@ local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, n
 	table.sort(mates, function(a: Fighter, b: Fighter): boolean
 		return a.Id < b.Id
 	end)
-	local angles: { number } = {}
-	local mine = 1
+	local wants: { number } = {}
+	local mine, here = 1, 0
 	for index, other in mates do
-		local offset = flat(other.Root.Position - center)
-		angles[index] = math.deg(math.atan2(offset.Z, offset.X))
+		local bearing = bearingOf(flat(other.Root.Position - center))
+		local avatar = if other.Side == "Lead" then avatarRoot(other) else nil
+		local watched = if avatar then flat(-avatar.CFrame.LookVector) else Vector3.zero -- the side the player watches from
+		wants[index] = if watched.Magnitude > 0.5 then Fight.Beyond(bearingOf(watched), bearing, Combat.Lead.Frame) else bearing
 		if other == f then
-			mine = index
+			mine, here = index, bearing
 		end
 	end
-	local spread = Fight.Spread(angles, Combat.Slots.Spacing)
-	local bearing = math.rad(spread[mine])
-	return center + Vector3.new(math.cos(bearing), 0, math.sin(bearing)) * radius, math.abs(Fight.Wrap(spread[mine] - angles[mine]))
+	local place = Fight.Spread(wants, Combat.Slots.Spacing)[mine]
+	local heading = math.rad(Fight.Toward(here, place, Combat.Slots.Step))
+	return center + Vector3.new(math.cos(heading), 0, math.sin(heading)) * radius, math.abs(Fight.Wrap(place - here))
 end
 
 -- The hit's push, once the hold is over: the body jumps on the frame it lets go (handbook/feel/combat.md).
@@ -479,6 +490,24 @@ end
 
 local fall: (f: Fighter, at: number) -> ()
 
+-- Its most health for the leads that have hit it, and as much added to what it has left (Fight.CrowdHealth): a crowd's
+-- further leads each add a share of its health, and a duo fights it as one would (research's verdict on TR2, 2026-11-12).
+local function crowd(f: Fighter)
+	local leads = 0
+	for _ in f.Hitters do
+		leads += 1
+	end
+	local most = Fight.CrowdHealth(f.Alone, leads, Combat.Crowd)
+	if most ~= f.Block.Health then
+		local added = most - f.Block.Health
+		local block = table.clone(f.Block)
+		block.Health = most
+		f.Block = block
+		f.Model:SetAttribute("MaxHealth", most)
+		setHealth(f, math.max(0, f.Health + added))
+	end
+end
+
 local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local action = f.Action :: Actions.Action
 	local target = f.ForcedTarget or f.Target
@@ -498,8 +527,9 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	setHealth(target, left)
 	f.LastFight, target.LastFight = at, at
 	if target.Side == "Shade" and f.Side == "Lead" then
-		if f.Owner then
+		if f.Owner and not target.Hitters[f.Owner] then
 			target.Hitters[f.Owner] = true
+			crowd(target)
 		end
 		if target.Pack then
 			local hitBy = packHit[target.Pack] or {}
@@ -649,8 +679,9 @@ local function thinkShade(f: Fighter, at: number)
 	local fromHome = flat(f.Root.Position - home.Position).Magnitude
 	if f.State == "Reset" then
 		if fromHome < 2 then
-			setHealth(f, f.Block.Health)
 			f.Hitters = {}
+			crowd(f) -- back to its health alone
+			setHealth(f, f.Block.Health)
 			if f.Pack then
 				packHit[f.Pack] = nil
 			end

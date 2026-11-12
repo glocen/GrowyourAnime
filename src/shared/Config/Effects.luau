@@ -38,4 +38,13 @@ return {
 		-- The floor's two lines, scored under the hero's feet in pieces as it passes: hot, then a scorch, eaten from the near end.
 		Floor = { Pieces = 6, Hot = 3, Eat = 4, Life = 11, Bar = 0.5, Over = 0.03, Overlap = 0.3 }, -- frames; studs
 	},
+
+	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey
+	-- block, the builder's: a ring of light spreads from its feet and fades, and "Level N" rises over it, slower and larger
+	-- than a hit's number. Seconds; studs; Size in pixels at the phone's size.
+	LevelUp = { Ring = { Seconds = 0.6, From = 2, To = 10, Thick = 0.3 }, Rise = 3, Seconds = 1.6, Size = 34 },
+	-- A shard won, leaping from where its Shade fell to the avatar (research's verdict on TR2, 2026-11-12: the hook that
+	-- sends you home, seen). A grey block, the builder's: it hops up, arcs over Seconds as high as Height, spinning, and lands
+	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.
+	ShardLeap = { Seconds = 0.8, Height = 7, Size = 1.4, Spin = 9, From = 60, Flash = { Seconds = 0.3, To = 4 } },
 }

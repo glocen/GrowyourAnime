@@ -188,6 +188,29 @@ function Fight.Spread(angles: { number }, spacing: number): { number }
 	return out
 end
 
+-- Where a lead wants to stand around its target, as a bearing around it: on the target's far side from where the player
+-- watches, so the player's camera frames the fight, never with the lead between the two (research's verdict on TR2,
+-- 2026-11-12). Turned `frame` degrees toward the side the lead already stands on, so the target doesn't hide it.
+-- `avatar` is the bearing the player watches from (FightService: the avatar's back), `current` the lead's.
+function Fight.Beyond(avatar: number, current: number, frame: number): number
+	local beyond = Fight.Wrap(avatar + 180)
+	local side = if Fight.Wrap(current - beyond) < 0 then -1 else 1
+	return Fight.Wrap(beyond + side * frame)
+end
+
+-- A Shade's most health with `leads` leads on it: from crowd.From on, each further lead adds crowd.Share of its health
+-- `alone`, so a duo fights it as one would and eight don't sweep at three times the pace (research's verdict on TR2,
+-- 2026-11-12).
+function Fight.CrowdHealth(alone: number, leads: number, crowd: { From: number, Share: number }): number
+	return alone * (1 + crowd.Share * math.max(0, leads - crowd.From + 1))
+end
+
+-- The bearing a fighter heads for next on its way round a target to `want`: at most `step` degrees from where it stands,
+-- so it walks round the target rather than through it (fighters don't collide).
+function Fight.Toward(current: number, want: number, step: number): number
+	return Fight.Wrap(current + math.clamp(Fight.Wrap(want - current), -step, step))
+end
+
 -- Where a pack's `count` Shades stand round its spawn: on one circle, each `spacing` from its neighbours, the first straight
 -- ahead (-Z, the spawn's look). Offsets { X, Z } in studs, in the spawn's own frame. One Shade stands on the spawn.
 function Fight.PackRing(count: number, spacing: number): { { number } }

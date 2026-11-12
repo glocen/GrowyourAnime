@@ -39,6 +39,12 @@ local specs: { [string]: Spec } = {
 	-- The shortcut home, opened by the first win: a pad that sets the player down at their own plot.
 	Shortcut = { Tag = "GA_Shortcut", Attributes = {}, Count = 1, Ground = true },
 	ShutGate = { Tag = "GA_ShutGate", Attributes = {}, Count = 1, Ground = true },
+	-- The Festival Door (docs/design.md, "The world, in grey"): a frame on each plot whose way of light (a part named Way)
+	-- takes the player to a ground's gate; its twin at each ground's gate (Ground: which) takes them home. DoorLanding: where
+	-- the plot's door sets the player down at that ground, facing into it.
+	FestivalDoor = { Tag = "GA_FestivalDoor", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	GroundDoor = { Tag = "GA_GroundDoor", Attributes = { Ground = "string" }, Count = 1, Ground = true },
+	DoorLanding = { Tag = "GA_DoorLanding", Attributes = { Ground = "string" }, Count = 1, Ground = true },
 }
 
 return specs

@@ -1,13 +1,18 @@
 """Lyric's Held Note in its art, on her clip (AR4, section 10; the block-in's A, the crests, section 9).
 
-blender.exe -b --factory-startup --python tools/blender/lyric_note_art.py -- <out_dir> [pictures]
+blender.exe -b --factory-startup --python tools/blender/lyric_note_art.py -- <out_dir> [pictures | strip]
 
 A, the crests, with research's two fixes: the cone is 14 studs from her, and each crest thins to nothing over its last
-4; and no dead air, each crest living on until the next is halfway out. Two pictures:
-- lyric_note_crest.png, 1024 x 256: one crest, for a Beam across the cone, stretched once along it (U from one end of
-  the arc to the other) and its height across (V). A band of light in three see-through steps, a pale white with a
-  touch of her Storm, edged in Storm; through it two white strands cross and cross again, the note's wave, one for each
-  speaker. Its ends are round: a crest is never a blade.
+4; and no dead air, each crest living on until the next is halfway out. And research's three asks on the block in the
+game: a bright leading ribbon whose veil falls away behind it, so five arrivals read with two crests on screen; an arc,
+never flat panels; her lunge into the mic (in lyric_clips.py). Three pictures:
+- lyric_note_crest.png, 1024 x 256: the ribbon, one crest's leading edge, for a Beam across the cone, stretched once
+  along it (U from one end of the arc to the other) and its height across (V). Two white strands edged in her Storm
+  cross and cross again, the note's wave, one for each speaker, over a thin pale core. Its ends are round: a crest is
+  never a blade.
+- lyric_note_veil.png, 1024 x 256: the veil, the same band's body in two see-through steps, a pale white with a touch
+  of her Storm, rimmed in Storm along its top and bottom. A second Beam under the ribbon, on the same two ends; it
+  falls away VEIL_HOLD frames after the throw, over VEIL_FADE, so an older crest is a bright line only.
 - lyric_note_touch.png, 1024 x 512, 256 cells: the hit's four frames (row 0: a white ping and her Storm crackling out
   from it, short strokes that never fall), the heal's ring (row 1, cell 0: a plain ring, mint in her Limelight), the
   rings' flash (row 1, cell 1: white only, beside her face).
@@ -15,9 +20,10 @@ Hard edges and steps, no blur, nothing liquid, nothing red: her conditions 11 to
 The crest is the hero: thrown from the rings on every half-beat (30, 45, 60, 75, 90), it punches out to most of the
 cone in PUNCH frames and drifts on to its end, born unseen out of the rings' flash and thinning to nothing over its last
 THIN studs, so one crest is always on its way. Each Shade it reaches takes the hit's four frames; each ally the ring.
-Writes the two pictures, the sheet lyric_note_art.png (her clip from the player's camera and four other views, at
+Writes the three pictures, the sheet lyric_note_art.png (her clip from the player's camera and four other views, at
 64 px on dark and on bright, the share of the screen), and lyric_note_art.json (what plays on every frame, for the
-builder). With `pictures`, only the pictures. Needs lyric_model.py's output, as lyric_clips.py does. Workbench, so no
+builder). With `pictures`, only the pictures; with `strip`, the pictures and lyric_note_strip.png, eight frames from
+the player's camera, a light look when memory is short. Needs lyric_model.py's output, as lyric_clips.py does. Workbench, so no
 GPU turn. Stage directions as lyric_note_fx.py: right, forward, up, in studs, from where she stands; she faces forward.
 """
 import json
@@ -50,6 +56,10 @@ REACH, THIN = 14.0, 4.0
 # throw did, while drifting on to the end over LIFE: so it's still a third there when the next is at its full.
 PUNCH, PUNCH_SHARE, LIFE = 7, 0.7, 34
 BIRTH = 2.5                    # studs past the rings over which a crest comes up out of their flash: unseen at her face
+# research's ask (AR4, section 10): five arrivals must read even with two crests on screen. The veil is full as a crest
+# is thrown and washes over the target (about its third frame), then falls away; the ribbon lives on, so an older crest
+# is a bright line, never a second veil stacked on the new one
+VEIL_HOLD, VEIL_FADE = 3, 8
 # the clip's markers: a crest is thrown on each of the half-beats from the Note to the Release, as the speakers kick,
 # and each crest that shows a hit lands one (research's five touches, AR4 section 9; the markers Faber's, for the beats)
 MARKS = {**nf.MARKS, "Crest2": 45, "Crest3": 60, "Crest4": 75}
@@ -96,35 +106,56 @@ def taper(x):
     return 0.34 + 0.66 * (1 - np.abs(x) ** 2.2)
 
 
-def crest_picture():
-    """One crest, U along the arc and V across its height: three see-through steps of the pale veil, a Storm edge on the
-    outermost, and two white strands crossing through it. Rounded at both ends."""
+def band_grid():
+    """The crest's pictures share their frame: U along the arc, V across its height, the band's taper and its round
+    caps, and `level(s)`, 1 on the edge of a step `s` of the band's height."""
     w, h = CREST_PX
     X, Y = grid(w, h)
     T = taper(X)
     cap = np.clip((np.abs(X) - 0.86) / 0.14, 0, None)  # the ends: each step closes in a round cap
-    pic = np.zeros(X.shape + (4,))
 
-    def level(s):  # 1 on the step's edge, below inside it
+    def level(s):
         return np.sqrt((Y / (s * T)) ** 2 + cap ** 2)
 
-    for s, alpha in ((1.0, 0.16), (0.68, 0.26), (0.38, 0.38)):
-        pic = over(pic, VEIL, np.where(level(s) <= 1, alpha, 0.0))
-    edge = 7 / (h / 2)  # 7 px of the half height
-    outer = level(1.0)
-    # the Storm edge runs along the rims only, and fades out round the ends: an arc of light, never a closed outline
-    rim = 0.9 * np.clip(1 - cap / 0.5, 0, 1)
-    pic = over(pic, rs.rgb(STORM), np.where((outer <= 1) & (outer > 1 - edge / T), rim, 0.0))
-    # the two strands, counter to each other: they cross and cross again, wide in the middle; they fade out before
-    # the ends rather than closing to points
+    return X, Y, T, cap, level
+
+
+def crest_picture():
+    """The crest's ribbon, its leading light, there the crest's whole life: a narrow core of the pale light, and two
+    strands crossing and crossing again through it, the note's wave, one for each speaker, white edged in her Storm so
+    they hold on a bright floor too. They fade out before the ends rather than closing to points: never a blade."""
+    w, h = CREST_PX
+    X, Y, T, cap, level = band_grid()
+    pic = np.zeros(X.shape + (4,))
+    pic = over(pic, VEIL, np.where(level(0.36) <= 1, 0.34, 0.0))
     phase = math.pi * 4.5 * (X + 1)
     curve = 0.52 * T * np.sin(phase)
     slope = np.gradient(curve, axis=1) * (w * K / 2) * (h / w)  # in pixels across over pixels along
-    thick = (3.5 + 2.5 * T) / (h / 2)
-    fade = 0.9 * np.clip((0.86 - np.abs(X)) / 0.24, 0, 1)
-    for sign in (1, -1):
-        d = np.abs(Y - sign * curve) / np.sqrt(1 + slope ** 2)
+    thick = (5.0 + 3.0 * T) / (h / 2)
+    border = 2.5 / (h / 2)
+    fade = np.clip((0.86 - np.abs(X)) / 0.24, 0, 1)
+    dist = [np.abs(Y - sign * curve) / np.sqrt(1 + slope ** 2) for sign in (1, -1)]
+    for d in dist:  # the Storm borders first, so where the strands cross both whites lie over both borders
+        pic = over(pic, rs.rgb(STORM), np.where(d <= thick / 2 + border, fade, 0.0))
+    for d in dist:
         pic = over(pic, rs.rgb(WHITE), np.where(d <= thick / 2, fade, 0.0))
+    return down(pic)
+
+
+def veil_picture():
+    """The crest's veil, the soft light behind its ribbon: two wide see-through steps of the pale light, edged in her
+    Storm along the top and the bottom only, fading out round the ends: an arc of light, never a closed outline. It
+    shows as a crest is thrown and washes over the target, and falls away after, so the crests never stack into a
+    wall (research, AR4 section 10)."""
+    w, h = CREST_PX
+    X, Y, T, cap, level = band_grid()
+    pic = np.zeros(X.shape + (4,))
+    for s, alpha in ((1.0, 0.18), (0.68, 0.28)):
+        pic = over(pic, VEIL, np.where(level(s) <= 1, alpha, 0.0))
+    edge = 7 / (h / 2)  # 7 px of the half height
+    outer = level(1.0)
+    rim = 0.9 * np.clip(1 - cap / 0.5, 0, 1)
+    pic = over(pic, rs.rgb(STORM), np.where((outer <= 1) & (outer > 1 - edge / T), rim, 0.0))
     return down(pic)
 
 
@@ -197,15 +228,16 @@ def rect(name):
 # --- what plays on every frame ---------------------------------------------------------------------------------------
 
 def crest(cone, t):
-    """A crest `t` frames after it's thrown: (its radius off the apex, how much of it shows, its height's share), or None
-    once it's gone."""
+    """A crest `t` frames after it's thrown: (its radius off the apex, how much of its ribbon shows, its height's share,
+    how much of its veil shows), or None once it's gone."""
     if not 0 <= t <= LIFE:
         return None
     travel = PUNCH_SHARE * hx.out_fast(t / PUNCH) + (1 - PUNCH_SHARE) * t / LIFE
     radius = cone.start + (cone.end - cone.start) * travel
     born = nf.smooth((radius - cone.start) / BIRTH)
     thin = hx.clamp((radius - (cone.end - THIN)) / THIN)
-    return radius, born * (1 - thin), 1 - 0.6 * thin
+    shows = born * (1 - thin)
+    return radius, shows, 1 - 0.6 * thin, shows * (1 - nf.smooth((t - VEIL_HOLD) / VEIL_FADE))
 
 
 def band(cone, radius, height):
@@ -247,7 +279,7 @@ def flash_size(f):
 
 
 def art(stage, f):
-    """Everything drawn on frame f: ("crest", born, radius, shows, height), ("quad", cell, centre, size),
+    """Everything drawn on frame f: ("crest", born, radius, shows, height, veil), ("quad", cell, centre, size),
     ("ring", centre, radius, shows)."""
     out = []
     for born in CRESTS:
@@ -295,13 +327,14 @@ class Stage(nf.Stage):
     hidden; `shoot` shows them one at a time, painted black, then their alpha as grey, then their colour times their
     alpha, and lays them over the shaded clip by the differences."""
 
-    def __init__(self, scene, rig, frames, rest, crest_pic, touch_pic):
+    def __init__(self, scene, rig, frames, rest, crest_pic, veil_pic, touch_pic):
         self.ready, self.layers = False, []
         self.solo, self.coat, self.painted = None, "black", {}  # the layer shown, the pass it's painted for
-        self.crest_pic, self.touch_pic = crest_pic, touch_pic
+        self.crest_pic, self.veil_pic, self.touch_pic = crest_pic, veil_pic, touch_pic
         super().__init__(scene, rig, frames, rest)
         self.touched = touches(self)
-        self.slots = [self.layer(f"Fx.Crest{i}", crest_pic) for i in range(3)]
+        self.slots = [self.layer(f"Fx.Crest{i}", crest_pic) for i in range(3)]  # at most three crests are out at once
+        self.veils = [self.layer(f"Fx.Veil{i}", veil_pic) for i in range(3)]
         self.quads = []
         self.heal = self.layer("Fx.Heal", cut(touch_pic, "heal"), horizontal=True)
         self.ready = True
@@ -384,7 +417,7 @@ class Stage(nf.Stage):
             return
         f = scene.frame_current
         self.place_avatar(scene)
-        for obj in self.slots + self.quads + [self.heal]:
+        for obj in self.slots + self.veils + self.quads + [self.heal]:
             obj.hide_render = True
         self.layers = []
         if not (self.show and scene.camera):
@@ -392,15 +425,19 @@ class Stage(nf.Stage):
         eye = scene.camera.matrix_world.translation
         view = scene.camera.matrix_world.to_3x3().normalized()
         face = Matrix((view.col[0], -view.col[2], view.col[1])).transposed()  # across the screen, at the camera, up it
-        slots, used = iter(self.slots), 0
+        slots, veils, used = iter(self.slots), iter(self.veils), 0
         for item in art(self, f):
             if item[0] == "crest":
-                _, born, radius, shows, height = item
+                _, born, radius, shows, height, veil = item
                 obj = next(slots)
                 bottom, top = band(self.cone, radius, height)
                 self.ribbon(obj, radius, bottom, top)
                 centre = Vector((*(self.cone.apex + Vector((0.0, radius))), (bottom + top) / 2))
                 self.layers.append((obj, self.crest_pic, shows, centre))
+                if veil > 0.004:  # on the ribbon's own arc, drawn under it (in Roblox: the same attachments, a lower ZOffset)
+                    under = next(veils)
+                    self.ribbon(under, radius, bottom, top)
+                    self.layers.append((under, self.veil_pic, veil, centre + (centre - eye).normalized() * 0.01))
             elif item[0] == "ring":
                 _, centre, radius, shows = item
                 across = radius * 2 / 0.8  # the ring is drawn at 0.8 of its cell's half
@@ -464,6 +501,7 @@ SHEET = (22, 30, 31, 32, 33, 35, 40, 45, 47, 50, 55, 60, 75, 90, 95, 110)  # the
 ROW = (30, 33, 40, 45, 48, 60, 92, 100)                                     # the other views
 SMALL = (30, 32, 34, 36, 40, 45, 48, 52, 60, 75, 92, 100)                   # at 64 px
 SHARE = (30, 32, 34, 36, 40, 50, 65, 80, 92, 98)                            # the block-in's frames, to set beside it
+STRIP = (31, 33, 36, 40, 45, 47, 50, 55)                                    # `strip`: two crests out, from 45
 NAMES = {f: name for name, f in MARKS.items()}
 
 
@@ -481,9 +519,10 @@ def table(stage):
         for born in CRESTS:
             at = crest(c, f - born)
             if at and at[1] > 0.004:
-                radius, shows, height = at
+                radius, shows, height, veil = at
                 bottom, top = band(c, radius, height)
                 crests.append({"born": born, "radius": round(radius, 3), "transparency": round(1 - shows, 3),
+                               "veil_transparency": round(1 - veil, 3),
                                "middle": round((bottom + top) / 2, 3), "width": round(top - bottom, 3)})
         if crests:
             entry["crests"] = crests
@@ -493,7 +532,8 @@ def table(stage):
         if entry:
             frames[str(f)] = entry
     return {
-        "pictures": {"lyric_note_crest.png": list(CREST_PX), "lyric_note_touch.png": list(TOUCH_PX)},
+        "pictures": {"lyric_note_crest.png": list(CREST_PX), "lyric_note_veil.png": list(CREST_PX),
+                     "lyric_note_touch.png": list(TOUCH_PX)},
         "fps": 60, "markers": MARKS, "crests": list(CRESTS),
         "cone": {"apex": [round(v, 3) for v in c.apex], "half": round(c.half, 2), "start": round(c.start, 3),
                  "end": round(c.end, 3), "rings_up": round(c.height, 3), "fall": round(c.fall, 4),
@@ -503,12 +543,18 @@ def table(stage):
         "crest": {"punch": PUNCH, "punch_share": PUNCH_SHARE, "life": LIFE, "birth": BIRTH,
                   "rule": "travel = punch_share * out_fast(t / punch) + (1 - punch_share) * t / life; radius = start + "
                           "(end - start) * travel; shows = smooth((radius - start) / birth) * (1 - clamp((radius - (end - "
-                          "thin)) / thin)); its height is the span's, times 1 - 0.6 * clamp(...)",
+                          "thin)) / thin)); its height is the span's, times 1 - 0.6 * clamp(...); the veil shows = "
+                          "shows * (1 - smooth((t - veil_hold) / veil_fade))",
+                  "veil_hold": VEIL_HOLD, "veil_fade": VEIL_FADE,
                   "beam": {"FaceCamera": False, "the width": "upright", "Segments": 24, "TextureMode": "Stretch",
                            "TextureLength": 1, "TextureSpeed": 0, "LightInfluence": 0, "Color": "white",
                            "ends": "the arc's two ends, at plus and minus the half angle, on the radius, at `middle`",
                            "CurveSize": "0.2834 x radius at each end, along the arc's tangent toward the other end: "
-                                        "a circle's arc of twice the half angle"}},
+                                        "a circle's arc of twice the half angle. An arc, never flat panels "
+                                        "(research, AR4 section 10)",
+                           "two": "each crest is two Beams on the same two attachments: the ribbon "
+                                  "(lyric_note_crest.png, `transparency`) over the veil (lyric_note_veil.png, "
+                                  "`veil_transparency`), the veil's ZOffset below the ribbon's"}},
         "hit": {"cells": ["hit0", "hit1", "hit2", "hit3"], "frames_a_cell": HIT, "size": HIT_SIZE, "up": HIT_UP,
                 "toward_the_camera": HIT_FORWARD,
                 "when": "the frame a crest that still shows reaches a Shade's radius, 0.7 short"},
@@ -525,8 +571,9 @@ def table(stage):
 def main():
     out = bl.out_dir()
     rs.OUT = out
-    crest_pic, touch_pic = crest_picture(), touch_picture()
+    crest_pic, veil_pic, touch_pic = crest_picture(), veil_picture(), touch_picture()
     rs.save(crest_pic, out / "lyric_note_crest.png")
+    rs.save(veil_pic, out / "lyric_note_veil.png")
     rs.save(touch_pic, out / "lyric_note_touch.png")
     if "pictures" in sys.argv[sys.argv.index("--") + 1:]:
         return
@@ -541,7 +588,7 @@ def main():
         rest[name] = (m.inverted() @ nf.RINGS[name], (m.to_3x3().inverted() @ nf.AXES[name]).normalized())
     count = nf.key(rig, MARKS)
     print(f"HeldNote: {count} frames, the markers at {MARKS}")
-    stage = Stage(scene, rig, count, rest, crest_pic, touch_pic)
+    stage = Stage(scene, rig, count, rest, crest_pic, veil_pic, touch_pic)
     print(f"  touched: {json.dumps(stage.touched)}")
     cams = {}
     for name in ("fight", "fight50", "beside", "hidden"):
@@ -562,6 +609,13 @@ def main():
     r.use_stamp_note, r.stamp_font_size = True, 18
 
     big, row, tiny, share_px = (456, 256), (228, 128), (75, 64), (480, 270)
+    if "strip" in sys.argv[sys.argv.index("--") + 1:]:  # a light look: eight frames from the player's camera only
+        strip = rs.canvas(4 * big[0] + 50, 2 * big[1] + 30, rs.PAPER)
+        for i, f in enumerate(STRIP):
+            rs.paste(strip, shoot(scene, stage, cams["fight"], f, label(f), big, out)[0],
+                     10 + (i % 4) * (big[0] + 10), 10 + (i // 4) * (big[1] + 10))
+        rs.save(strip, out / "lyric_note_strip.png")
+        return
     game = [shoot(scene, stage, cams["fight"], f, label(f), big, out) for f in SHEET]
     rows = {view: [shoot(scene, stage, cams[view], f, label(f), row, out)[0] for f in ROW]
             for view in ("beside", "hidden", "side")}
@@ -587,33 +641,34 @@ def main():
     (out / "lyric_note_art.json").write_text(json.dumps(numbers, indent=1))
     print(json.dumps(numbers["checks"], indent=1))
 
-    W, H = 1920, 2660
+    W, H = 1920, 2810
     page = rs.canvas(W, H, rs.PAPER)
     ink, soft = INK, "#6A655E"
     x0 = 40
     text = [(x0, 30, 54, "LYRIC'S HELD NOTE, THE ART", ink),
-            (860, 30, 20, "The block-in's A, the crests, with research's two fixes: the cone ends 14 studs out, each crest thinning", ink),
-            (860, 54, 20, "to nothing over its last 4; and no dead air, each crest still there when the next is halfway out.", ink)]
+            (860, 30, 20, "The block-in's A, the crests, with research's fixes: the cone ends 14 studs out, each crest thinning to", ink),
+            (860, 54, 20, "nothing over its last 4; one always on its way; a bright ribbon whose veil falls away; an arc; her lunge.", ink)]
     y = 104
-    text.append((x0, y, 20, "lyric_note_crest.png, 1024 x 256, a Beam's picture stretched once along the arc; lyric_note_touch.png, 1024 x 512: the hit, the heal, the flash", ink))
-    crest_small = rs.shrink(crest_pic, 0.5)
+    text.append((x0, y, 20, "lyric_note_crest.png, the ribbon, and lyric_note_veil.png, under it, 1024 x 256 each, Beams' pictures stretched once along the arc; lyric_note_touch.png, 1024 x 512", ink))
+    crest_small, veil_small = rs.shrink(crest_pic, 0.5), rs.shrink(veil_pic, 0.5)
     touch_small = rs.shrink(touch_pic, 0.5)
     for i, (ground, grey) in enumerate(((rs.NIGHT, False), (rs.DAY, False), (rs.rgb("#77777B"), True))):
-        rs.fill(page, x0 + i * 620, y + 30, 532, 148, ground)
+        rs.fill(page, x0 + i * 620, y + 30, 532, 288, ground)
         rs.paste(page, rs.grey(crest_small) if grey else crest_small, x0 + 10 + i * 620, y + 40)
-        rs.fill(page, x0 + i * 620, y + 188, 532, 276, ground)
-        rs.paste(page, rs.grey(touch_small) if grey else touch_small, x0 + 10 + i * 620, y + 198)
+        rs.paste(page, rs.grey(veil_small) if grey else veil_small, x0 + 10 + i * 620, y + 180)
+        rs.fill(page, x0 + i * 620, y + 328, 532, 276, ground)
+        rs.paste(page, rs.grey(touch_small) if grey else touch_small, x0 + 10 + i * 620, y + 338)
     for i, words in enumerate((
             f"The crest: thrown from the rings on every half-beat ({', '.join(map(str, CRESTS))}), {PUNCH_SHARE:.0%} of the way out in {PUNCH} frames, then drifting to the end over {LIFE}; "
-            f"unseen for its first {BIRTH} studs (out of the rings' flash), thinning over its last {THIN}.",
+            f"unseen for its first {BIRTH} studs (out of the rings' flash), thinning over its last {THIN}. Its veil holds {VEIL_HOLD} frames and falls away over {VEIL_FADE}.",
             f"The hit: a white ping and Storm crackling out, {HIT} frames a cell, {HIT_SIZE} studs, on a Shade's chest the frame a crest reaches it. "
             f"The heal: the plain ring rising round an ally, {HEAL_LIFE} frames. The flash: white, at each ring.")):
-        text.append((x0, y + 474 + i * 20, 15, words, soft))
-    y = 640
+        text.append((x0, y + 614 + i * 20, 15, words, soft))
+    y = 790
     text.append((x0, y, 20, "From the player's camera: behind the avatar, the lead past its target turned 45 degrees (the clip's frames, 60 a second; the Note is 30, the Release 90)", ink))
     for n, (tile, _) in enumerate(game):
         rs.paste(page, tile, x0 + (n % 4) * 466, y + 28 + (n // 4) * 266)
-    y = 1740
+    y = 1890
     for title, key in (("On a bright floor", "bright"), ("Beside: an elite's spot, the wave crossing the screen", "beside"),
                        ("Hidden: the avatar facing its target dead on", "hidden"), ("From the side", "side")):
         text.append((x0, y, 18, title, ink))

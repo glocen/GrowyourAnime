@@ -5,6 +5,8 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local PathfindingService = game:GetService("PathfindingService")
 
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
@@ -62,6 +64,12 @@ local DROP_BACK = 3 -- seconds a felled pack takes to come back in the drops cas
 local ANSWER = 3 -- seconds a request through a screen may take to come back in the save's copy
 local PLATE_TICK = 0.4 -- seconds for the plates and pills to show a change (BaseController and HudController read at 4 Hz)
 local SKIP_ALL = 3600 -- seconds of base time a case skips, past any shard's work even at the floor's speed
+local TAKE_READ = 3 -- seconds the take leaves a screen or a card up, as a player reads it
+local TAKE_WALK = 45 -- seconds a walk of the take may last
+local TAKE_FIGHT = 75 -- seconds a pack may take to fall in the take
+local TAKE_TURN = 2.5 -- how fast the take's camera swings in behind a walking avatar (a share of the gap a second)
+local TAKE_REACH = 2.5 -- studs from a waypoint that count as there
+local TAKE_ZOOM = 12.5 -- studs from the avatar the take's camera holds: where Roblox's camera starts a player
 
 -- The angle in degrees between two directions, flat on the ground.
 local function flatAngle(a: Vector3, b: Vector3): number
@@ -1261,6 +1269,228 @@ return {
 			t.Wait(0.5)
 			BaseController.Open()
 			t.Check("the Base screen is open", Screen.Current() == "Base")
+		end,
+	},
+	{
+		Name = "Take: the loop on a new account, for research's verdict",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR2's evidence (docs/test-requests.md, TR2): the loop at real speed from the player's camera, on a new account
+			-- in the Test store, the screens pressed through their own buttons. A white frame opens the take so a recording
+			-- finds its zero, and each moment is a row in seconds from it. Two steps aren't played, and their rows say so:
+			-- the walk home (a respawn) and Watt's 30 s in the Breaker (BaseSkip).
+			local player = Players.LocalPlayer
+			local zero = os.clock()
+			local function moment(name: string)
+				t.Row(`moment: {name}`, nil, nil, math.floor((os.clock() - zero) * 100 + 0.5) / 100, "s")
+			end
+			local function standing(name: string): number
+				for _, row in t.Server("Packs") do
+					if row.Name == name then
+						return row.Standing
+					end
+				end
+				return 0
+			end
+			local function arrive(): boolean
+				local old = player.Character
+				t.Server("Respawn")
+				return waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local character = player.Character
+					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+				end)
+			end
+			-- The camera a player steers: while the avatar walks, it swings in behind it.
+			RunService:BindToRenderStep("NL_TakeCamera", Enum.RenderPriority.Camera.Value - 1, function(dt: number)
+				local root = player.Character and Parts.Root(player.Character)
+				local camera = workspace.CurrentCamera
+				if root == nil or Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z).Magnitude < 2 then
+					return
+				end
+				local look = camera.CFrame.LookVector
+				local flat = Vector3.new(look.X, 0, look.Z)
+				local want = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+				if flat.Magnitude < 0.01 or want.Magnitude < 0.01 then
+					return
+				end
+				local turned = flat.Unit:Lerp(want.Unit, math.min(1, dt * TAKE_TURN))
+				if turned.Magnitude < 0.01 then
+					return
+				end
+				local across = math.sqrt(math.max(0, 1 - look.Y * look.Y))
+				local direction = Vector3.new(turned.Unit.X * across, look.Y, turned.Unit.Z * across)
+				camera.CFrame = CFrame.lookAt(camera.CFrame.Position, camera.CFrame.Position + direction)
+			end)
+			local function walkTo(goal: Vector3): boolean
+				local character = player.Character
+				local humanoid = if character then Parts.Humanoid(character) else nil
+				if humanoid == nil then
+					return false
+				end
+				local points = { goal }
+				local path = PathfindingService:CreatePath({ AgentRadius = 2, AgentHeight = 5, AgentCanJump = false })
+				if pcall(function()
+					path:ComputeAsync(t.Root().Position, goal)
+				end) and path.Status == Enum.PathStatus.Success then
+					points = {}
+					for _, point in path:GetWaypoints() do
+						table.insert(points, point.Position)
+					end
+				end
+				local deadline = os.clock() + TAKE_WALK
+				for _, at in points do
+					humanoid:MoveTo(at)
+					while os.clock() < deadline do
+						local here = t.Root().Position
+						if Vector3.new(here.X - at.X, 0, here.Z - at.Z).Magnitude <= TAKE_REACH then
+							break
+						end
+						t.Wait(0.05)
+					end
+				end
+				local here = t.Root().Position
+				return Vector3.new(here.X - goal.X, 0, here.Z - goal.Z).Magnitude <= TAKE_REACH * 2
+			end
+			local function fight(name: string): boolean
+				local before = t.Server("Drops")
+				local first = before.Kills == 0
+				return waitFor(t, TAKE_FIGHT, function(): boolean
+					if first and t.Server("Drops").Kills > 0 then
+						first = false
+						moment("the account's first kill: Watt's shard drops")
+					end
+					return standing(name) == 0
+				end)
+			end
+
+			-- The zoom is held at Roblox's starting distance for the take: a key or a wheel that reaches Studio while the hold
+			-- keeps it in front can't pull the camera out (the take of 2026-11-12 lost its last 30 s to one).
+			local zoomMin, zoomMax = player.CameraMinZoomDistance, player.CameraMaxZoomDistance
+			player.CameraMinZoomDistance = TAKE_ZOOM
+			player.CameraMaxZoomDistance = TAKE_ZOOM
+			local ok, problem = pcall(function()
+				t.Server("DataWipe")
+				t.Check("a new account", waitFor(t, ANSWER, function(): boolean
+					local view = ProfileController.Get()
+					return view ~= nil and view.Progress.Starter == ""
+				end))
+				local flash = Instance.new("ScreenGui")
+				flash.Name = "NL_TakeZero"
+				flash.IgnoreGuiInset = true
+				flash.DisplayOrder = 1000
+				local white = Instance.new("Frame")
+				white.Size = UDim2.fromScale(1, 1)
+				white.BackgroundColor3 = Color3.new(1, 1, 1)
+				white.BorderSizePixel = 0
+				white.Parent = flash
+				flash.Parent = player:WaitForChild("PlayerGui")
+				RunService.RenderStepped:Wait()
+				zero = os.clock()
+				RunService.RenderStepped:Wait()
+				RunService.RenderStepped:Wait()
+				flash:Destroy()
+				moment("zero: the white frame")
+
+				t.Check("the avatar arrives on its plot", arrive())
+				moment("arrival on the plot")
+				t.Wait(WorldConfig.Arrive + 1)
+				BaseController.Open()
+				moment("the Base screen: choose your first shard")
+				t.Wait(TAKE_READ)
+				local choose = screenButton("Base", "Breaker", "starter_rook")
+				t.Check("Rook's shard is chosen through the screen", choose ~= nil and Button.Press(choose))
+				moment("Rook's shard chosen: it breaks")
+				t.Check("it breaks", waitFor(t, 15, function(): boolean
+					return readyCount("starter_rook") > 0
+				end))
+				moment("ready to open")
+				t.Wait(1)
+				local open = screenButton("Base", "Breaker", "Ready_starter_rook")
+				t.Check("and opens through the screen", open ~= nil and Button.Press(open))
+				t.Check("the reveal shows", waitFor(t, ANSWER, function(): boolean
+					return BaseController.Revealed() ~= nil
+				end))
+				moment("the reveal: Rook")
+				t.Wait(TAKE_READ + 0.5)
+				BaseController.Dismiss()
+				Screen.Close()
+				moment("the card and the screen closed")
+				t.Check("the lead stands by the avatar", waitFor(t, 5, function(): boolean
+					return myLead() ~= nil
+				end))
+				moment("Rook stands by the avatar")
+				t.Wait(2)
+
+				local packs: { [string]: any } = {}
+				for _, row in t.Server("Packs") do
+					packs[row.Name] = row
+				end
+				for _, name in { "Pack 1", "Pack 2" } do
+					local row = packs[name]
+					if row == nil then
+						t.Check(`{name} stands`, false)
+						break
+					end
+					local at: Vector3 = row.At
+					moment(`the walk to {name}`)
+					t.Check(`the avatar walks to {name}`, walkTo(at + Vector3.new(0, R6_ROOT_HEIGHT, PACK_STAND)))
+					moment(`at {name}`)
+					t.Check(`{name} falls`, fight(name))
+					moment(`{name} down`)
+					t.Wait(2)
+				end
+
+				moment("home: a respawn stands in for the walk back")
+				t.Check("the avatar is home", arrive())
+				t.Wait(WorldConfig.Arrive + 1)
+				BaseController.Open()
+				moment("the Base screen, Watt's shard in the bag")
+				t.Wait(TAKE_READ)
+				local add = screenButton("Base", "Bays", "named_watt")
+				t.Check("Watt's shard goes in through the screen", add ~= nil and Button.Press(add))
+				moment("Watt's shard in the Breaker")
+				t.Wait(TAKE_READ)
+				t.Server("BaseSkip", 30)
+				moment("skipped: Watt's 30 s in the Breaker")
+				t.Check("it breaks", waitFor(t, ANSWER, function(): boolean
+					return readyCount("named_watt") > 0
+				end))
+				t.Wait(1)
+				local openWatt = screenButton("Base", "Breaker", "Ready_named_watt")
+				t.Check("and opens through the screen", openWatt ~= nil and Button.Press(openWatt))
+				t.Check("the reveal shows", waitFor(t, ANSWER, function(): boolean
+					return BaseController.Revealed() ~= nil
+				end))
+				moment("the reveal: Watt")
+				t.Wait(TAKE_READ + 0.5)
+				BaseController.Dismiss()
+				local view = ProfileController.Get()
+				local watt: any = nil
+				for _, owned in (if view then Read.Roster(view) else {}) do
+					if view and owned.Id ~= view.Roles.Lead then
+						watt = owned
+					end
+				end
+				local set = screenButton("Base", "Bays", "Bay1")
+				t.Check("bay 1 offers Set", set ~= nil and Button.Press(set))
+				t.Wait(1)
+				local work = if watt then screenButton("Base", "Bays", watt.Id) else nil
+				t.Check("Watt goes to work through the screen", work ~= nil and Button.Press(work))
+				moment("Watt to work in bay 1")
+				t.Wait(TAKE_READ)
+				Screen.Close()
+				moment("the plot: Watt's plate and the battery")
+				t.Wait(6)
+				moment("end")
+			end)
+			RunService:UnbindFromRenderStep("NL_TakeCamera")
+			player.CameraMinZoomDistance = zoomMin
+			player.CameraMaxZoomDistance = zoomMax
+			if not ok then
+				error(problem, 0)
+			end
 		end,
 	},
 	{

@@ -12,9 +12,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now: the Shade's burst from your art, with the bloom capture (AR2, sections 10 and 11). Its picture is uploaded. Then the intermittents: the HUD/Base pair, the Shade's swing alternation.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
-- **Faber:** Haymaker's fix 3 is in, thanks. **When Lyric goes in:** research's prop state for the stand on `Down` and `Up` (AR4, section 6).
-- **Quaestor and the director:** Haymaker's B is blocked out (AR1, section 9), five grey variants B1 to B5, content check PASS. The fall reads down from every heading. The square keeps its face only when it stands up to the camera (B4, B5). The landing at the feet is mostly behind the avatar. Rook's clip punches forward, so a drop from above reads as a blow called down unless the strike goes down too (a block clip, about an hour, tier 2). My pick, if B: B5, the face lifted and slammed.
-- Now: Lyric's Held Note A, the clip change (the fly-out on 30, the kicks on each crest), then its art sheet. No lock held.
+- **Faber:** Pip's burst, round 2, is in the handoff (AR4, section 8). Import `Pip_LanternBurst`, and upload `pip_burst.png` for the group by the key, in place of the current one. The table and the trail are unchanged.
+- **Quaestor:** the round is ready for your verdict on the replay. He rocks back a step with the hat tipped back, and through 70 to 77 the flame stands up and climbs. Content check PASS. Lyric's Held Note art, your ask 1, is in the code (79e8295, the ribbon over a veil that falls away).
+- **Waiting on the director's go:** the two full sheet renders, Lyric's (section 10, stopped for memory) and Pip's art checks. Haymaker's clip striking down waits on item 7.
+- Now: nothing unblocked. No lock held.
 
 **Turns.** Studio: Faber, the main place (AR2, the Shade's burst). Blender: nobody. Timing tests: nobody.
 

@@ -425,8 +425,8 @@ def combo(t):
 def burst(t):
     """He reels the lantern round on the end of his sleeve like a kite in a wind, winds up like a boy with a ball too
     heavy for him, and lets go: the sleeve goes level down its line, the lantern goes end over end, and the throw
-    throws him. Back on his heels all of a piece, the free sleeve wheeling, the hat off his head; it comes down again
-    by itself, too far, and he has to tip his chin up to see from under it whether it worked."""
+    throws him. Back on his heels all of a piece, the free sleeve wheeling, then a step back to catch himself, the
+    hat tipped back off his brow; he leans in to see whether it worked, and nods the hat back down."""
     line = ("reach", (1.2, 6.0, 3.45), (90, 0, 0))  # the sleeve level, down the lantern's line
 
     def thrown(pitch, back=0.0):
@@ -444,20 +444,23 @@ def burst(t):
     t.key(51, "the send", T=(7, 14, 0, 0, 0, 0.3), RA=line, LA=(20, 0, -4), crouch=0.1)
     t.mark(51, "Send")
     # The kick throws him, not only his hat (research's fix 1). He rocks back over his heels like a plank, toes up: the
-    # robe is a bell, so the legs go with the body or they come out of it. Then it has him off the floor, and he
-    # comes down half a stud behind where he stood, the hat landing on him as he does.
-    t.key(57, "it throws him", T=thrown(-21), feet={"Right Leg": None, "Left Leg": None}, RL=(-8, 0, 0), LL=(8, 0, 0),
-          H=(-12, -4, 0), RA=line, LA=(-22, 0, -28), crouch=0.0)
-    t.key(62, "the hat's off", T=thrown(-27, 0.35), RL=(-6, 0, 0), LL=(8, 0, 0), lift=0.14, H=(-8, -2, 0), RA=line,
-          LA=(-36, 0, -38))
+    # robe is a bell, so the legs go with the body or they come out of it. Round 2 (AR4 section 8, "standing, then
+    # ducking" at the player's distance): the rock has to read at 30 studs, so it ends in a step. His back foot goes a
+    # stud behind him and takes him, the front one dragged after, and he stays rocked back on it through the burst,
+    # tall, the hat tipped back off his brow, never sunk under it.
+    t.key(56, "it throws him", T=thrown(-24), feet={"Right Leg": None, "Left Leg": None}, RL=(-8, 0, 0), LL=(8, 0, 0),
+          H=(-12, -4, 0), RA=line, LA=(-30, 0, -34), crouch=0.0)
+    # the robe lets a leg 25 degrees off the body, so a foot behind his hips needs the lean eased: he steps out of it
+    t.key(61, "a step back", T=(-12, 12, 0, 0, 0, -1.1), feet={"Right Leg": (0.65, -1.2), "Left Leg": (-0.55, -0.35)},
+          crouch=0.04, H=(-10, -2, 0), RA=line, LA=(-48, 0, -40))
+    t.key(65, "caught on it", ease="out", T=(-10, 12, 0, 0, 0, -1.25), feet={"Left Leg": (-0.55, -0.45)}, crouch=0.1,
+          H=(-6, -2, 0), RA=(74, 0, 6), LA=(-20, 0, -30))
     t.mark(66, "Burst")
-    t.key(68, "and on, too far", T=(-14, 12, 0, 0, 0, -1.25), feet={"Right Leg": (0.6, -0.85), "Left Leg": (-0.55, -0.35)},
-          lift=0.0, crouch=0.14, H=(4, -2, 0), RA=line, LA=(-14, 0, -24))
-    t.key(76, ease="sine", T=(-11, 10, 0, 0, 0, -1.1), RA=(60, 0, 4), LA=(34, 0, -12), crouch=0.04)
-    t.key(86, "did it work?", ease="sine", T=(-8, 8, 0, 0, 0, -0.98), H=(-16, 3, 5), RA=(24, 0, 8), LA=(24, 0, -8), crouch=0.08)
+    t.key(74, ease="sine", T=(-9, 10, 0, 0, 0, -1.15), RA=(58, 0, 4), LA=(30, 0, -12), crouch=0.05)
+    t.key(86, "did it work?", ease="sine", T=(-6, 8, 0, 0, 0, -1.0), H=(6, 3, 4), RA=(24, 0, 8), LA=(24, 0, -8), crouch=0.06)
     t.mark(98, "Return")
-    t.key(101, ease="in", T=(-6, 4, 0, 0, 0, -0.85), H=(3, 0, 0), RA=(14, 0, 8), LA=(19, 0, -6), feet={"Right Leg": (0.52, -0.45)})
-    t.key(106, "he nods it back up", T=(-6, 3, 0, 0, 0, -0.6), H=(-15, 0, 0))
+    t.key(101, ease="in", T=(-6, 4, 0, 0, 0, -0.85), H=(-6, 0, 0), RA=(14, 0, 8), LA=(19, 0, -6), feet={"Right Leg": (0.52, -0.6)})
+    t.key(106, "he nods it back down", T=(-4, 3, 0, 0, 0, -0.6), H=(16, 0, 0))
     t.key(119, T=(-3, -4, 0, 0, 0, -0.3), look=EYES, H=(0, 0, 0), feet={"Left Leg": (-0.5, 0.1)})
     t.key(132, T=HUB["T"], RA=HUB["RA"], LA=HUB["LA"], crouch=HUB["crouch"], feet=HUB["feet"])
     t.lamp(8, ease="cubic")
@@ -474,13 +477,14 @@ def burst(t):
     t.hat(44)
     t.hat(49, HG=1.0)
     t.hat(52, ease="out", HT=(4, 0, 0))  # the throw leaves it behind
-    t.hat(57, ease="out", HT=(15, 0, -3, 0, 0.14, 0))  # and the kick has it off his head
-    t.hat(61, ease="sine", HT=(21, -6, -3, 0, 0.22, 0))
-    t.hat(63, ease="in", HT=(20, -6, -2, 0, 0.2, 0))  # it hangs a moment, then comes down by itself, and too far
-    t.hat(68, ease="out", HT=(-10, -2, 0, 0, -0.04, 0))
-    t.hat(72, ease="sine", HT=(-7, -2, 0, 0, -0.03, 0))  # down over his eyes
+    # Tipped back, it rides up off his head, and its tilt against his body (this, less his head's pitch) stays under
+    # about 29 degrees, or the brim's back cuts his collar: his lean back carries the rest of the tip.
+    t.hat(56, ease="out", HT=(16, 0, -3, 0, 0.2, 0))  # and the kick tips it back, off his brow
+    t.hat(61, ease="sine", HT=(19, -6, -4, 0, 0.24, 0))  # right back as he steps, the point behind him
+    t.hat(66, ease="sine", HT=(14, -6, -3, 0, 0.2, 0))  # it rocks as the step takes him
+    t.hat(72, ease="sine", HT=(18, -5, -3, 0, 0.22, 0))  # and sits there, cocked back, askew
     t.hat(103, ease="out")
-    t.hat(108, ease="back", HT=(5, 0, 0, 0, 0.06, 0))  # the nod hops it up
+    t.hat(108, ease="back", HT=(-4, 0, 0, 0, 0.02, 0))  # the nod tips it forward, into place
     t.hat(116, HT=(0, 0, 0))
     t.hat(122, HG=0.0)
 

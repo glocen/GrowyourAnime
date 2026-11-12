@@ -6,9 +6,11 @@ The block-in's B, the flame let out (pip_burst_fx.py), with research's two fixes
 lantern's own flame climbs up out of its cage through the heat, and the send draws a bright trail from his cuff toward
 the target); and the flame lives through its hold, boiling, its tongues licking up and breaking off. Two pictures:
 - pip_burst.png, 1024 x 896: the flame's sixteen frames, the first twelve in 256 cells, the last four of the end and the
-  heat's four in 128 cells along the bottom. The leap: a curl off the lantern that unrolls into the tall flame. The boil:
-  four frames whose tongues lick up, thin and snap back, out of step. The end: eight frames in which the whole flame is
-  drawn in and lifted off the ground as its tip climbs, cooling from the cream to the gold to Pip's orange. Each is three
+  heat's four in 128 cells along the bottom. The leap: a curl off the lantern that unrolls into the tall flame, its foot
+  wide where the hit lands. The boil: four frames whose tongues lick up, thin and snap back, out of step, while the flame
+  stands up (its foot drawn in, its root pinched, the outer tongues up its flanks off the ground) and its top climbs a
+  little, so no outline is held (research's round 2). The end: eight frames in which the whole flame is drawn in and
+  lifted off the ground as its tip climbs, cooling from the cream to the gold to Pip's orange. Each is three
   nested flames (orange, gold, cream), each with its own tongues. Every frame is drawn where it stands in one 15 stud
   square on the ground, so the burst is one picture that doesn't move. The heat: its own four, a round belly in the cage.
 - pip_burst_trail.png, 512 x 128: the flame blown back into three tongues, for a Beam from the tail to the lantern.
@@ -122,16 +124,26 @@ TONGUES = (
     ((-4.6, 0.7), (-6.3, 3.7), -0.4, 0.72, 0.35),   # low at the area's edge
     ((4.7, 0.6), (6.4, 3.3), 0.4, 0.68, 0.95),
 )
+# Research's round 2 on the boil (AR4 section 8: "both readers called it a bonfire"): stood up, the flame draws its foot
+# in (FOOT's width times 1 - STAND_FOOT) and stands it taller, its column's root rises STAND_ROOT studs so it pinches
+# to the ground like a flame's root rather than standing on it as a block, and the four outer tongues leave the
+# ground for its flanks, licking up: each one's root and tip, stood.
+STAND_FOOT, STAND_RISE, STAND_ROOT = 0.6, 0.16, 1.3
+STOOD = {5: ((-2.2, 3.4), (-3.9, 8.6)), 6: ((2.3, 3.2), (4.0, 8.0)),
+         7: ((-2.3, 2.2), (-3.5, 5.6)), 8: ((2.4, 2.0), (3.6, 5.3))}
 
 
 def shape(X, Y, phase, grow=1.0, narrow=1.0, lift=0.0, top=13.2, hook=0.0, foot=1.0, lamp=False, thin=1.0, tongues=9,
-          k=0.28):
+          k=0.28, stand=0.0, pinch=None):
     """The flame's distance field on one frame. `phase`: the boil, 0 to 1 a cycle. Through it each tongue licks up,
     longer and thinner and swaying, then snaps back short as its tip goes; their phases differ, so some tongue is always
     reaching. `grow`: how far the tongues are out (the leap). `narrow`, `lift`, `top`: the end, the flame drawn in and
     its foot off the ground. `hook`: the tallest tongue's tip still curled over, as it unrolls. `foot`: how much of the
     foot is left. `lamp`: a round belly for the heat, not a foot. `thin`: every width, for the flames drawn inside;
-    `tongues`, how many of them they keep, and `k`, how softly they're joined, so an inner flame is one piece."""
+    `tongues`, how many of them they keep, and `k`, how softly they're joined, so an inner flame is one piece.
+    `stand`, 0 to 1: how far it has stood up (STOOD), its foot drawn in and its outer tongues off the ground; `pinch`,
+    the foot's share of it, if not the same."""
+    pinch = stand if pinch is None else pinch
     def at(x, y):  # the flame's own place to where it's drawn this frame
         return x * narrow, lift + y * (top - lift) / 13.2
 
@@ -139,11 +151,15 @@ def shape(X, Y, phase, grow=1.0, narrow=1.0, lift=0.0, top=13.2, hook=0.0, foot=
     fields = []
     if foot > 0.02:
         cx, cy, rx, ry = BELLY if lamp else FOOT
+        if not lamp:
+            rx, ry = rx * (1 - STAND_FOOT * pinch), ry * (1 + STAND_RISE * pinch)
         bx, by = at(cx, cy)
         fields.append(belly(X, Y, bx, by, rx * narrow * foot * thin, ry * foot * squash * thin))
     root, tip, bend, width = COLUMN
     if lamp:
         root = (0.0, BELLY[1])
+    else:
+        root = (root[0], root[1] + STAND_ROOT * pinch)
     r0, t0 = np.array(at(*root)), np.array(at(tip[0], root[1] + (tip[1] - root[1]) * grow))
     fields.append(lick(X, Y, s_curve(r0, t0, bend * narrow), width * narrow ** 0.7 * thin, p=0.9))
     for i, (root, tip, bend, width, offset) in enumerate(TONGUES):
@@ -151,6 +167,10 @@ def shape(X, Y, phase, grow=1.0, narrow=1.0, lift=0.0, top=13.2, hook=0.0, foot=
             continue
         if lamp and i >= 5:
             root = (root[0] * 0.8, max(root[1], 1.6))
+        elif i in STOOD and stand > 0:
+            (sr, st), s = STOOD[i], stand
+            root = tuple(a + (b - a) * s for a, b in zip(root, sr))
+            tip = tuple(a + (b - a) * s for a, b in zip(tip, st))
         f = (phase + offset) % 1.0
         g = grow * (0.6 + 0.62 * f)
         sway = bend + 0.8 * math.sin(2 * math.pi * f) * (1 if bend >= 0 else -1)
@@ -240,15 +260,21 @@ def ending(k):
     # last, nothing is left under it as a stem, and its tip stays near where it was while its foot leaves the ground.
     u = k / 7
     scale = 1 - 0.85 * u ** 0.9  # to a wisp by the last, so nothing big is cut off when it's gone
-    return dict(phase=0.75 + (4 + k) / 4, scale=scale, rise=0.85 * 13.2 * (1 - scale), foot=max(0.0, 1 - 1.6 * u), cool=u,
+    return dict(phase=0.75 + (4 + k) / 4, scale=scale, rise=0.85 * CLIMB[-1] * (1 - scale), foot=max(0.0, 1 - 1.6 * u),
+                # on from where the boil stood and climbed to, its tongues still up its flanks; the foot's pinch lets go
+                # as it lifts off, or the drawn-in foot hangs under it as a point, a drop: its bottom goes round
+                cool=u, stand=1.0, pinch=max(0.0, 1 - 2 * u), top=CLIMB[-1],
                 tongues=9 if k < 3 else 7)  # the outermost pair go with the foot, or they'd stand off its sides
 
 
+# Research's round 2: through the boil the flame stands up (STAND, from the leap's wide foot, which shows the area the
+# hit lands on) and its outline climbs a little (CLIMB, its top as drawn), so no outline is held.
+STAND, CLIMB = (0.6, 0.9, 1.0, 1.0), (13.2, 13.55, 13.9, 14.25)
 FRAMES = (
     "curl", "curl",
     dict(phase=0.3, grow=0.84, narrow=0.84, top=12.4, hook=0.55, foot=0.9),
-    dict(phase=0.5, grow=0.96, narrow=0.98, top=13.0, hook=0.2),
-    *(dict(phase=0.75 + n / 4) for n in range(4)),     # the boil
+    dict(phase=0.5, grow=0.96, narrow=0.98, top=13.0, hook=0.2, stand=0.2),
+    *(dict(phase=0.75 + n / 4, stand=STAND[n], top=CLIMB[n]) for n in range(4)),     # the boil
     *(ending(k) for k in range(8)),                     # the end
     *(dict(phase=n / 4, lamp=True) for n in range(4)),  # the heat, in the lantern
 )
@@ -621,7 +647,7 @@ def main():
         rs.paste(page, rs.grey(trail) if grey else trail, x0 + 10 + i * 600, y + 518)
     for i, words in enumerate((
             f"The leap, one a frame from the Burst ({FIRST} to {FIRST + 3}): a curl off the lantern that unrolls into the tall flame. The boil, two frames each ({FIRST + 4} to {FIRST + 11}): "
-            "every tongue licks up, thins and snaps back, out of step.",
+            "every tongue licks up, thins and snaps back, out of step, as the flame stands up off its wide foot and its top climbs.",
             f"The end, two frames each ({FIRST + 12} to {LAST}): the whole flame smaller and raised as one, its foot leaving the ground, cooling from the cream to the gold to Pip's orange. "
             "Three nested flames, each with its own tongues.",
             f"pip_burst_trail.png, 512 x 128: the flame blown back, its head at the right, for a Beam with FaceCamera from his cuff (where the lantern was at the Send, "

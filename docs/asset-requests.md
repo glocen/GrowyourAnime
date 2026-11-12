@@ -1866,6 +1866,49 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - These two are the second round on the burst. After them it stays competent if it doesn't climb, with no third round.
   - **The readout: `Glow.Relight` 0.5,** research's call on the design cost. The lamp is dark straight after the burst, which is the read that matters, and lit again by the cooldown's middle, so Pip's lantern isn't dim for most of a fight. The HUD ring still says "ready".
   - **The seeds, tier 2: yes, provisional.** The burst at 2.5 a Shade is under Haymaker's 4.0 on one target and over it on two. That's the crowd-clearer's trade. They're measured when the slice's packs exist.
+- **Round 2, the last on the burst: he's rocked back a step, and the flame stands up (Modulo, 2026-11-12).** Made on Opus 5.5 xhigh.
+  - **Fix 1, the recoil.** Files: `tools/blender/pip_clips.py`, `burst()`; `build/handoff/Pip/clips/Pip_LanternBurst.json` and `pack_LanternBurst.png`/`.txt`.
+    - **Why it read as ducking:** in round 1 the kick knocked the hat off his head, and it came down too far, over his eyes. So he sank under it.
+    - **The throw now throws him (56):** he leans back 24° with both feet free. At 61 he steps back onto his right foot, his hips 1.1 studs behind where he stood, and he's caught on it at 65, about 1.4 studs back.
+    - **The rest of the clip:** he stays rocked back and tall through the burst. At 86 he leans in to see whether it worked, and he steps home over the return.
+    - **The hat** tips back off his brow with the throw: 16°, then 19° against his body at the step, riding 0.2 studs up, held through the burst. At 106 he nods it back down (16°), and it settles forward into place at 108.
+    - **The beats are unchanged:** 133 frames and the same markers (Heat 8, Send 51, Burst 66, Return 98).
+    - **The audit: PASS.**
+      - A leg's widest swing is 24° of the robe's 25°, at the step.
+      - The brim's rim is never lower than 2.91 studs, so he's tall through the whole clip.
+      - His left hand comes no nearer the hat than 1.43.
+    - **The brim against the robe's mesh:**
+      - Nothing is inside it through the hold.
+      - At the kick (56), 3 to 14 vertices are 0.03 inside. Round 1 had about 20 at 0.1 through its hold.
+      - The deepest point is the wind-up's sleeve at 46, 0.29 in, unchanged.
+    - **At 64 px** (`build/scratch/modulo/pip/round2/headings_LanternBurst.png`, eight headings, dusk and bright): the tipped hat changes his outline from every heading. The key poses are in `poses_LanternBurst.png` beside it.
+  - **Fix 2, the flame stands up.** Files: `tools/blender/pip_burst_art.py` (`STAND`, `CLIMB`, `STOOD`, and `stand` and `pinch` in `shape`); `build/handoff/Pip/fx/pip_burst.png`.
+    - **The foot draws in** through the boil (70 to 77). On the ground it's 9.4 studs at 69, then 6.5, 5.1, 4.7 and 4.7. Before, it held at 11.
+    - **The root pinches up,** so the flame rises from a point rather than standing on a block.
+    - **The four outer tongues leave the ground** for its flanks. Their lowest points are 0.75, 2.1, 2.2 and 2.9 studs up, where before they were all at 0.01.
+    - **Below 4 studs** the widest is now 9.1 down to 7.3, from 12.3 to 12.6.
+    - **The top climbs,** 13.2 to 14.25 as drawn. The licks still move it: measured, it's 13.5, 11.9, 12.8 and 13.8, then 14.5 at 78.
+    - So each two-frame cell has its own outline, where round 1 held one through the boil.
+    - **The end** starts from where the boil stood, with its tongues still up its flanks. The pinch at its foot lets go as it lifts, so its bottom stays round and never comes to a point.
+    - **Unchanged:** the leap's one tall lick (accepted), the heat, the trail, the timing and every cell's place.
+    - **Its cost:** at the peak the flame covers 0.30 to 0.34 of its cell, where it covered 0.35 to 0.36. That's about 11% less flame on screen.
+  - **The table is unchanged.** On the new clip, `table()` gives the same play data as the handoff's `pip_burst_art.json`: built from the keyed rig and compared key by key, nothing differs.
+    - The json's `checks` (the render shares and pixels) and the sheet `pip_burst_art.png` are still round 1's.
+    - The full art run is a render as heavy as the one stopped for memory, so it waits for a go.
+  - **My calls (tier 1):**
+    - **The leap keeps its wide foot:** at 69 the flame stands 9.4 wide on the ground. That shows the area the hit covers, at the moment it lands. Then it draws in.
+    - **The hat's tilt against his body stays under about 29°,** or the brim's back cuts his collar. His lean back carries the rest of the tip.
+    - **The hat over his eyes is gone:** it tips back off his brow, and the nod brings it down.
+  - **What I see wrong:** at 64 px the climb barely shows: a stud is about 4 px. The stand and the narrower foot read; the climb reads at full size.
+  - **The content check: PASS** (rules 2, 3 and 4) on the picture, the glance, the pack, the headings, the poses and the bare rig. On its ask, it also checked every cell at 64 px over the dusk and the bright ground (`build/scratch/modulo/pip/flame/pip_burst_at64.png`). Nothing drips, every tongue points up, there's no red past `#FF8A3D`, and nothing sits on the floor.
+  - **For the builder:**
+    - Import `Pip_LanternBurst` into the saved place.
+    - Upload `pip_burst.png` for the group by the key, in place of the current one.
+    - The table and the trail are as they were.
+  - **Not done:**
+    - Research's verdict on the replay.
+    - The art sheet's full run and its checks.
+  - **Hours:** about 3, an estimate.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

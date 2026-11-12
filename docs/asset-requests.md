@@ -402,7 +402,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn and past the content check (section 1, "The director's words, drawn on the sheet"), and waits on research's read.
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are started.
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -500,11 +500,18 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Hours:** the sheet with its fixes, about 2.1; the round on the director's words, about 0.5.
 
+- **Research's read of the round** (Quaestor, 2026-11-12, on `ui_sheet.png` and `ui_glance.png`): yes. The kit's images start, Graphite first.
+  - **Mythical:** red, with the broken crown the tallest shape. It sorts at once among the six on both themes, and gold, white and red are three clear steps. The failed button shares its hue but never its shape, and it always carries words (rule 3's "green and red only with words"), so that holds. On Pearl the halo washes toward pink at 1 pt. The director asked for reddish, so the Pearl Mythical slice is read at 64 px for "red, not pink", and its halo deepens if it doesn't pass.
+  - **Pearl's black border:** it's what Pearl lacked. The pieces stand off the cream at both sizes. Buttons on Pearl now outweigh their panels more than Graphite's do; that's acceptable for the few screens Pearl will dress.
+  - **The dark seat under a gem:** accepted (tier 1). The Strength gem holds inside the Mythical frame.
+  - **Swappable rows per theme:** accepted. That's what keeps the director's "other palettes for some screens" from costing new images.
+
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are past research's read, with its one fix round made, and the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric is next in this request.
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric is next in this request.
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -737,6 +744,11 @@ Also: a hand shows inside each sleeve's end. The lantern floats a little lower a
     8. The face and the eyes, read in the engine at Work 83 to 92 from the front, with the lit lantern a stud from his head, and at LanternBurst 57 to 63 from the front, where the thrown hat shades his face in Blender (CastShadow off on the hat should clear it).
     9. The glow at 64 px from every heading, with Combo 12 and 28 from the side and Work 76 to 92 from the front among the frames.
     10. Sections 1 and 2 still apply.
+- **Research's read of round 1** (Quaestor, 2026-11-12, on the three packs in `build/handoff/Pip/clips/`): all three fixes pass, and Pip's eight clips are accepted.
+  - **LanternBurst:** from the side, at 57 to 62, the bare rig goes over like a plank, where before only the hat went. Now he's the one thrown back, and the hat's disc lands on him as he lands. This is the feel line in stills. Whether it reaches exceptional is decided in motion, in the engine.
+  - **Combo:** 1.15 and 1.25 studs with opposite rolls is the beat the flicks lacked. Frames 12 and 28 aren't in the pack. They're read in the engine's 64 px pass (the content check's item 9).
+  - **Work:** at 76 and 83 the eyes show under the tipped brim, with the lantern lighting his face. Taking the pack from the front three-quarter is right until the bay is drawn.
+
 
 ## AR5. The festival kit and the base's machines
 

@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-12: TR2. In and tested: Rook's combo and Haymaker (8bda266), the grey world (b30467d), Lantern Row's packs (d165529), the keeper (407462b), drops (1e108e2), the plain HUD with the base's interactions (4863086), and the fixes from its captures (TR2's status line). Self-test 215/215 at 60 fps, logic 1,350, world report sound. Haymaker plays its textured bar, uploaded again under the group (116379507394315); Quaestor, its final in motion is yours to judge (`NL_Debug:Invoke("Replay", nil, "RookHaymaker")`). Next: the Shade's model (AR2), then the sim and research's verdict evidence.
 
-**Modulo (assets).** 2026-11-12: AR4, Pip's eight clips are delivered to `build/handoff/Pip/clips/`, past research's read with its fix round and the content check on both rounds (`docs/asset-requests.md`, AR4, section 3); not uploaded, not in the engine. Research hasn't read the fix round's three clips again. On the two reaction sets: nothing to change, they hold for every body I can see coming. AR3: the sheet's round on the director's words is drawn and past the content check (Mythical's red, Pearl's black border, the glance strip beside the failed button and the Strength gem; AR3, section 1), and waits on research's read. Next: the kit's images, Graphite first, on that read; then Lyric (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
+**Modulo (assets).** 2026-11-12: AR4, Pip's eight clips are delivered to `build/handoff/Pip/clips/`, accepted by research after its fix round and past the content check on both rounds (`docs/asset-requests.md`, AR4, section 3); not uploaded, not in the engine. On the two reaction sets: nothing to change, they hold for every body I can see coming. AR3: the sheet's round on the director's words is drawn, past the content check and research's read, and in `build/handoff/UI/` (Mythical's red, Pearl's black border, the glance strip beside the failed button and the Strength gem; AR3, section 1). Now: the kit's images, Graphite first. Then Lyric (AR4). Open on AR2: the burst's light and paper, with Faber, and the elite's second mask. AR1, delivery 4: I join Haymaker's replay when Faber says. Nothing running, no lock held.
 
 **Turns.** Studio: Faber, the main place (TR2). Blender: nobody. Timing tests: nobody.
 
@@ -49,7 +49,7 @@ For Faber:
 - **Where:** `build/handoff/Pip/clips/` (a JSON a clip, `Pip.clips.json` with the markers and the 12-stud flight, each clip's pack and notes), made by `tools/blender/pip_clips.py`. The record: `docs/asset-requests.md`, AR4, section 3.
 - **Changed on the way:** no hand ever goes to the hat, the send's kick throws his whole body, and Down falls backwards with the hat over his face.
 - **For Faber:** the ten engine checks at the section's end, and "For the builder" above them: the blend over Idle, the fall from the game's own camera, the dump against the export.
-- **Open:** research's second read of LanternBurst, Combo and Work after its fixes. Nothing is uploaded, seen in the engine, or judged at real speed.
+- **Open:** nothing is uploaded, seen in the engine, or judged at real speed.
 
 ### 2026-11-12. The Shade: the model and nine clips delivered (Modulo)
 

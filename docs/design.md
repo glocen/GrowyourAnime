@@ -120,9 +120,9 @@ The largest change from the package, and reversible until gear is built (`docs/d
 | Mage | Staff [D] | Tome [D] |
 | Assassin | Dagger [D] | Throwing Blades |
 | Warrior | Sword | Scabbard |
-| Healer | Rod | Lantern |
+| Healer | Crystal Baton [D] | Codex [D: a book] |
 
-  The unmarked pairs are research's, open to the director's word. Each pair is two silhouettes no other class shares, so an icon says its class before its frame is read.
+  The unmarked pairs are research's, open to the director's word. Every main hand is a silhouette no other class shares. The Mage and the Healer both hold a book: the Mage's Tome is heavy and dark, the Healer's Codex light and clasped with the baton's crystal, and every weapon icon carries its class mark on the frame, so the two never read as one.
 - **Presets.** A preset holds the twelve shared slots and one weapon pair for each class. One at the start, up to five. Each Voidkin is linked to a preset and fights with its own class's pair from it, so a Tank wears the tank set and an Assassin the crit set, and swapping the lead swaps nothing by hand. One item may sit in several presets. A preset whose pair is empty for the lead's class says so with a mark on the slot, never silently.
 - **A weapon that drops** is for the lead's class. Five classes would otherwise split every weapon drop five ways. The Void Shop's stock may hold any class.
 - **Why:** a counter system asks players to swap leads often. Gear worn per Voidkin would make every swap a chore of fourteen items and their sockets, and it would bury new Voidkin under the cost of dressing them.

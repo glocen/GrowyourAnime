@@ -140,7 +140,8 @@ One number for how strong the lead is with its preset, made to be watched rising
 
 - **It never lies.** It's a weighted sum of the lead's resolved stats (`docs/balance.md`, "The stats"), and the weights are fitted by the simulation so that, with no type edge, the higher Combat Power wins more often. A number players chase has to be one they can trust.
 - **Every upgrade moves it.** Everything adds points, so every real gain, an emblem included, raises it by a whole, visible number, never by zero. Its scale is large, set in the seeds.
-- **The moment.** On any change, the number rolls up to its new value with a burst and a floating gain; a loss shows as a plain number down. Over the world, the gain rises beside the lead's card for a second, then the HUD is quiet again.
+- **Where it shows.** On Regalia and on one Voidkin, at the Voidkin's feet between the slot columns, large, so it reads as the character's own [D: where is research's choice]. The same view is what a visiting player sees of your lead.
+- **The moment** [D, 2026-11-12]. When an upgrade lands, the number pops a little, the gain shows in green with a "+", and the gold counter rolls to its new value. A loss shows as a plain number down. Over the world, the gain rises beside the lead's card for a second, then the HUD is quiet again.
 - **The pull.** In the bag, an item that would raise it carries an up arrow; a slot with a better item waiting carries a dot. Each ground, keeper and Tower floor shows its recommended Combat Power, the player's beside it in green, amber or red.
 - **Honest.** A tap on it shows how much each source gives, and the parts sum to the total (`docs/ui.md`, "Stats, shown honestly").
 - It's for reading, matchmaking and the Clash's rewards, and never used to compute damage.

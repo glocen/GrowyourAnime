@@ -18,7 +18,15 @@ Research, 2026-11-12. For AR6, Regalia's item art, and Combat Power's moments (`
 8. **Gear stats are big numbers** (+301, +910). A gain of one rank adds tens to each line.
 9. **The Mage's pair is a scepter and a book,** as the director named for ours.
 
-Not seen: a Combat Power number on either screen. How it's shown and how it moves is still to study, from the director's next images.
+From the third screenshot, `2026-11-12_view-character-might.png` (another player's character, seen by a visitor), and the director's words with it:
+
+10. **The power number sits at the figure's feet,** across the bottom of the character between the slot columns: a short label on a dark pill ending in a pointed tip, then the number in large, widely spaced digits, seven of them at this player's level 200. It reads as part of the character, not as a stat line.
+11. **When an upgrade lands** (the director's words): the number pops a little, a green "+" gain shows, and the yellow counter updates. A small pop, not a burst.
+12. **The forge rank is on every icon** (the director: the number on each gear is its fortify level), +42 to +50 here. Under each icon's number runs a row of small marks in the frame (crowns on some, stars on others), a second rank shown on the frame.
+13. **Frames here are red,** a colour past the orange-gold of the first two screenshots, on every slot of this endgame player. Which rarity red is in that game isn't known from these images.
+14. **The same screen is what other players see** of you: the slots, the figure and the number, beside social buttons. The number is a thing to show off.
+
+The director: "we can choose where we show combat power".
 
 ## DESIGN (ours)
 
@@ -27,8 +35,9 @@ Not seen: a Combat Power number on either screen. How it's shown and how it move
 - **Fill and pose:** the object fills about 85% of the square; long weapons on one diagonal for every class; small pieces widened by their own ornament. One light and one camera for every icon, so the bag reads as one family.
 - **Badges on the frame only:** forge rank, lock, upgrade arrow, count. The object is never covered.
 - **Modelled, then rendered** (`docs/design.md`, "Regalia: gear"): what gives these icons their depth is light on real form, which a model gives for free and a flat drawing fakes.
+- **Combat Power where the figure stands:** on Regalia and on one Voidkin, at the Voidkin's feet between the slot columns, so the number belongs to the character. The same view is what a visiting player sees of your lead, so it's worth showing off. When it changes: a small pop, the gain in green, the counter rolling in gold.
 - **The forge as an event:** the item enlarged and lit at the centre, stats before and after with every gain shown, the Combat Power gain rolling up after. Whether our forge can fail is not part of this study and not in our design.
 
 ## Images looked at
 
-The two above, whole. No crops made.
+The three above, whole. No crops made.

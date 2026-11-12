@@ -58,7 +58,13 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - Metalness is low (0.35 on the iron) so the ram keeps its value under any sky. Say if it reads flat.
   - The clothes are shells 0.01 to 0.02 studs proud of the body: look for flicker at a distance.
 - **Content check, 2026-11-12:** BLOCK on the colour map, then PASS. The first map's ground between the islands was dark plum, and its small islands padded into drop shapes. Now the ground is one neutral, and islands under 20 px sit on flat swatches. To hold: an entry in `docs/asset-log.md` before upload; the lead arm stepped on a bare rig when Haymaker's clip is checked.
-- **Research's read:** asked 2026-11-12.
+- **Research's read** (Quaestor, 2026-11-12, stills from the baked maps; the clips judge it in motion): the model rides on to the clips as it is.
+  - **Felt:** the sheet's brawler made solid. The Iron ram now leads every view, and at 64 px over dark it reads before the jacket does.
+  - **Tier:** competent. Fixes 1 and 2 landed. Exceptional still has to come from the wind-up in motion.
+  - **The one bold thing:** the lit ram from the player's camera. The ember face is the brightest thing in the frame, so the tell sits on the weapon, where the player looks.
+  - **Fixes:**
+    1. At the reveal's size, the mouth reads as a smudge under the plaster. Give it one firm line, a set jaw (serves: the reveal's "a real character, a name"). It's on the colour map, so the clips aren't touched.
+    2. The sheet's fix 3 is still open, for the pose sheet: from the player's camera, the lead arm hides behind the head through the hold.
 - **Hours:** the model, 0.5.
 
 ## AR2. The Shade, one rig for every enemy

@@ -13,6 +13,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
 local WorldConfig = require(Shared.Config.World)
+local Net = require(Shared.Net)
 local Markers = require(Shared.World.Markers)
 local Log = require(Shared.Util.Log)
 local Signal = require(Shared.Util.Signal)
@@ -30,7 +31,7 @@ local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so 
 local PAVED_TOP = 0.6 -- the Strip, the streets and the plots stand a tenth higher, for the same reason
 local OVERLAY = 0.1 -- a mark on a paved floor: the kept back of a plot, a Tower's footprint
 local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
-local READ_LIVE = { ["World.Row.Respawn"] = true } -- World numbers read when used (PackService), not laid
+local READ_LIVE = { ["World.Row.Respawn"] = true, ["World.Arrive"] = true } -- World numbers read when used, not laid
 
 local GREY = {
 	Ground = Color3.fromRGB(78, 80, 86),
@@ -245,7 +246,7 @@ local function lay(folder: Folder)
 		local at = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + Vector3.new(0, 0, 1)) -- facing the way the player comes
 		if stop.Kind == "Pack" then
 			pack += 1
-			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1 })
+			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1, Ground = row.Ground })
 		elseif stop.Kind == "Elite" then
 			slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot)
 			table.insert(openings, { z - squareHalf, z + squareHalf })
@@ -254,7 +255,7 @@ local function lay(folder: Folder)
 				wallX(street, z - squareHalf - 1, side * (rowHalf + 1), side * (squareHalf + 2), high)
 				wallX(street, z + squareHalf + 1, side * (rowHalf + 1), side * (squareHalf + 2), high)
 			end
-			Markers.Stamp(spot(street, "Elite", at), "Elite", { Def = stop.Def, Level = stop.Level })
+			Markers.Stamp(spot(street, "Elite", at), "Elite", { Def = stop.Def, Level = stop.Level, Ground = row.Ground })
 		elseif stop.Kind == "Keeper" then
 			local keeperAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + north)
 			Markers.Stamp(gate(street, "Keeper's gate", keeperAt, studs(row.Wide), high, true), "KeeperGate")
@@ -361,11 +362,13 @@ local function leave(player: Player)
 	end
 end
 
--- Set down on the plot's spawn, facing what it faces.
+-- A new avatar on its plot's spawn, facing the Breaker, then the client opens from black with the camera behind it. The
+-- event reaches the client after the pivot does, so the camera turns behind the final facing, never the spawn's first.
 local function setDown(player: Player, character: Model)
 	local at = WorldService.SpawnOf(player)
 	if at then
 		character:PivotTo(at * CFrame.new(0, SPAWN_UP, 0))
+		Net.Server.Fire("Fade", player, 0, 0, WorldConfig.Arrive)
 	end
 end
 

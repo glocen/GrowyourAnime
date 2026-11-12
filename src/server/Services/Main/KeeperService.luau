@@ -222,7 +222,9 @@ function KeeperService.Try(player: Player): { [string]: any }
 		end
 		setDown(player, copy.Entry)
 		local looks = copy.Centre.Position + (ring :: any).ToGate
-		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, (ring :: any).Level, CFrame.lookAt(copy.Centre.Position, looks))
+		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, (ring :: any).Level, CFrame.lookAt(copy.Centre.Position, looks), {
+			Ground = (ring :: any).Ground,
+		})
 	end)
 	return { Ok = true }
 end

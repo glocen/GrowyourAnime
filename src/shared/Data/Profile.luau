@@ -102,6 +102,7 @@ export type Data = {
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
+		Kills: number, -- enemies that fell with this player's lead among their hitters (Rules.Drops); the first drops Watt's shard
 	},
 }
 
@@ -141,7 +142,7 @@ function Profile.Template(): Data
 			Ready = {},
 			Bays = bays,
 		},
-		Progress = { Starter = "", Grounds = {} },
+		Progress = { Starter = "", Grounds = {}, Kills = 0 },
 	}
 end
 

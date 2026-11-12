@@ -27,9 +27,9 @@ local specs: { [string]: Spec } = {
 	Shop = { Tag = "GA_Shop", Attributes = {}, Count = 1, Ground = true },
 	FestivalGate = { Tag = "GA_FestivalGate", Attributes = {}, Count = 1, Ground = true },
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's
-	-- colour, else the Def's own.
-	Pack = { Tag = "GA_Pack", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?" }, Ground = true },
-	Elite = { Tag = "GA_Elite", Attributes = { Def = "string", Level = "number", Type = "string?" }, Count = 1, Ground = true },
+	-- colour, else the Def's own. Ground: the ground it stands in (Definitions.Grounds), whose Standard shard it drops.
+	Pack = { Tag = "GA_Pack", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", Ground = "string" }, Ground = true },
+	Elite = { Tag = "GA_Elite", Attributes = { Def = "string", Level = "number", Type = "string?", Ground = "string" }, Count = 1, Ground = true },
 	KeeperGate = { Tag = "GA_KeeperGate", Attributes = {}, Count = 1, Ground = true },
 	-- The keeper's ring: a model whose pivot is its centre, on the floor. A try is fought in a copy of it (KeeperService).
 	-- Ground: the ground whose keeper it is (Definitions.Grounds), which a win counts on.

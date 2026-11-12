@@ -1,7 +1,9 @@
 --!strict
 -- FadeController (client): a fade to black and back around a move the server makes, so a keeper's try, its end and the
 -- shortcut home never jump the camera in view (Net "Fade": out, hold, back seconds; KeeperService moves the avatar in the
--- middle of the hold). The newest fade wins.
+-- middle of the hold; WorldService opens each arrival from black). The newest fade wins. In the black, the camera swings
+-- behind the avatar: Roblox's camera keeps the old heading otherwise, and a player set down facing the keeper or their
+-- Breaker would open their eyes looking away from it.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

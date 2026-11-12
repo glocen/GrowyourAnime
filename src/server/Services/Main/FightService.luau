@@ -51,6 +51,7 @@ export type Fighter = {
 	NextThink: number,
 	Home: CFrame?, -- a Shade's spawn
 	Pack: string?,
+	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	-- The replay's (Studio): one action on a timer, against one target, standing still.
 	Forced: string?,
@@ -318,6 +319,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		NextThink = at + rng:NextNumber() * Combat.Think, -- spread over the tick
 		Home = nil,
 		Pack = nil,
+		Ground = nil,
 		Hitters = {},
 		Forced = nil,
 		ForcedEvery = 0,
@@ -747,7 +749,7 @@ function FightService.SetBlock(f: Fighter, block: Stats.Block)
 end
 
 -- An enemy of row `def` at `level`, standing at `at`, which is also its home. `options` gives its type and its pack.
-function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string? }?): Fighter
+function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string?, Ground: string? }?): Fighter
 	local row = assert(Enemies.ById[def], `no enemy {def}`)
 	local block = Stats.Enemy(def, level, if options then options.Type else nil)
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
@@ -756,6 +758,7 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	local f = register(model, "Shade", row.Kind, def, block, kit, row.Name)
 	f.Home = model:GetPivot()
 	f.Pack = if options then options.Pack else nil
+	f.Ground = if options then options.Ground else nil
 	model:SetAttribute("Type", block.Type)
 	return f
 end

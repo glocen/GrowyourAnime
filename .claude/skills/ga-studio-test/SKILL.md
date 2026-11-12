@@ -27,7 +27,7 @@ Carried from NEXT Button on 2026-11-09. The kit it names (the self-test, the deb
 - **The whole suite outlasts an MCP call and loses its report.** Run it detached, writing into a `StringValue`, then read the value.
 - **Debug bridge** (Server context, Studio only): `NL_Debug:Invoke("Commands")`. `Commands` lists every command.
 - **Live numbers:** `NL_Debug:Invoke("Tune", path, value)`, never a required Config, since a snippet's `require` is its own copy.
-- **Logic tests:** `NL_Debug:Invoke("LogicTests")` check the rule math. **World report:** `none yet` checks the place's tagged markers. Run both with the self-test after a change.
+- **Logic tests:** `NL_Debug:Invoke("LogicTests")` check the rule math. **World report:** `NL_Debug:Invoke("WorldReport")` checks the place's tagged markers (empty means sound). Run both with the self-test after a change.
 - **Pure rules with Studio closed:** `lune run tools/checks/logic_offline.luau src/server/Services/Core/LogicTestService/Cases` runs the same case files as `LogicTests`, in about a second. Exit 0 is a pass. A case that needs the engine reports `STUDIO`, never a pass.
 - **Presets:** `NL_Debug:Invoke("Preset")` reads the one being played, `("Preset", name)` switches every side. The self-test and the logic tests run on `Baseline` and put the played one back.
 - `t.Press` and `t.Hold` need the game's Scriptable bindings (`TestInput.ContextName`). The game has none yet, so a case that presses waits until a piece adds them.

@@ -9,6 +9,9 @@ export type Stop = { Kind: string, Def: string, Level: number, Count: number? }
 
 return {
 	Walk = 16, -- studs a second the times are worked at: Roblox's default walk
+	-- Seconds a new avatar opens from black on its plot's spawn, the camera turned behind it (WorldService, FadeController):
+	-- joining, or a reset. The builder's, 2026-11-12.
+	Arrive = 0.4,
 
 	-- Eight plots, two rows of four, facing each other across the Strip; one per player (Max Players 8).
 	Plots = {

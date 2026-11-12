@@ -41,6 +41,7 @@ local function stand(group: Group)
 	local level = marker:GetAttribute("Level")
 	local count = marker:GetAttribute("Count")
 	local type_ = marker:GetAttribute("Type")
+	local ground = marker:GetAttribute("Ground")
 	if type(def) ~= "string" or type(level) ~= "number" then
 		Log.Warn("PackService", `{group.Name}'s marker has no Def or Level: the world report says what's wrong`)
 		return
@@ -51,6 +52,7 @@ local function stand(group: Group)
 		local f = FightService.SpawnEnemy(def, level, at * CFrame.new(offset[1], 0, offset[2]), {
 			Type = if type(type_) == "string" then type_ else nil,
 			Pack = group.Name,
+			Ground = if type(ground) == "string" then ground else nil,
 		})
 		group.Alive[f] = true
 		-- Gone without falling (a cleanup): counted as fallen, so the pack still comes back.
@@ -102,13 +104,16 @@ local function standAll()
 	end
 end
 
-local function packs(): any
+local function packs(who: any): any
+	local player = DebugService.ResolvePlayer(who)
 	local list = {}
 	local now = workspace:GetServerTimeNow()
 	for name, group in groups do
 		local spots = {}
+		local hitBy = 0
 		for f in group.Alive do
 			table.insert(spots, f.Model:GetPivot().Position)
+			hitBy += if player and f.Hitters[player] then 1 else 0
 		end
 		local gap = math.huge
 		for i = 1, #spots do
@@ -125,6 +130,9 @@ local function packs(): any
 			Standing = #spots,
 			Gap = if gap == math.huge then 0 else gap,
 			BackIn = if group.BackAt then math.max(0, group.BackAt - now) else 0,
+			Ground = group.Marker:GetAttribute("Ground"),
+			At = Markers.At(group.Marker).Position, -- the marker, for a client that has the street streamed out
+			HitBy = hitBy, -- its standing Shades the asking player's lead has hit: each one's fall pays them
 		})
 	end
 	table.sort(list, function(a, b)

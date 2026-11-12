@@ -17,6 +17,7 @@ local EffectsConfig = require(Shared.Config.Effects)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
+local Drops = require(Shared.Rules.Drops)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 
@@ -41,6 +42,8 @@ local SET_DOWN = 2 -- studs from its spot a set-down avatar may stand once physi
 local KEEPER_MEETS = 3 -- seconds after arriving by which the lead fights the keeper (it walks 4 studs into Lead.Leash)
 local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
 local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
+local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: inside its notice and the lead's leash
+local DROP_BACK = 3 -- seconds a felled pack takes to come back in the drops case: time to leave the street first
 
 -- The angle in degrees between two directions, flat on the ground.
 local function flatAngle(a: Vector3, b: Vector3): number
@@ -132,6 +135,10 @@ return {
 			if not (spawn and breaker) then
 				return
 			end
+			-- Looking away from the Breaker first, as a player back from the street does: the arrival must turn the camera.
+			local camera = workspace.CurrentCamera
+			local away = Markers.At(spawn).Position - Markers.At(breaker).Position
+			camera.CFrame = CFrame.lookAt(camera.CFrame.Position, camera.CFrame.Position + Vector3.new(away.X, 0, away.Z))
 			local old = player.Character
 			t.Check("the server respawns the avatar", t.Server("Respawn") == true)
 			local deadline = os.clock() + ARRIVE_TIMEOUT
@@ -146,14 +153,13 @@ return {
 			if not root then
 				return
 			end
-			t.Wait(0.3) -- the camera settles behind it
+			t.Wait(WorldConfig.Arrive) -- the arrival opens from black, the camera behind it
 			local at = Markers.At(spawn)
 			local offset = at:PointToObjectSpace(root.Position)
 			local size = if spawn:IsA("BasePart") then spawn.Size else Vector3.new(2, 0, 2)
 			t.Check("on its plot's spawn", math.abs(offset.X) <= size.X / 2 and math.abs(offset.Z) <= size.Z / 2, `{string.format("%.1f, %.1f", offset.X, offset.Z)} from its centre`)
 			local toBreaker = Markers.At(breaker).Position - root.Position
 			t.Near("the avatar faces the Breaker (degrees off)", flatAngle(root.CFrame.LookVector, toBreaker), 0, FACING_TOLERANCE)
-			local camera = workspace.CurrentCamera
 			t.Near("so does the camera (degrees off)", flatAngle(camera.CFrame.LookVector, toBreaker), 0, CAMERA_TOLERANCE)
 		end,
 	},
@@ -289,6 +295,78 @@ return {
 			until (lead and lead:GetAttribute("State") ~= "Down") or os.clock() > deadline
 			local lead = myLead()
 			t.Check("the lead is back up after its fall", lead ~= nil and lead:GetAttribute("State") ~= "Down")
+		end,
+	},
+	{
+		-- Not Stay: the reset before it records where the run will put the avatar back (TestPadClear), never the street.
+		Name = "Drops: the Shades a player's lead hit pay them as they fall, into the save; a pack it never hit pays nothing",
+		Run = function(t: any)
+			local before = t.Server("Drops")
+			t.Check("the save is open", before.Ok == true, tostring(before.Error))
+			if before.Ok ~= true then
+				return
+			end
+			-- From the server: on the pad, this client has the street streamed out.
+			local first, second = nil, nil
+			for _, r in t.Server("Packs") do
+				first = if r.Name == "Pack 1" then r else first
+				second = if r.Name == "Pack 2" then r else second
+			end
+			t.Check("Pack 1 and Pack 2 stand", first ~= nil and second ~= nil and first.Standing == first.Count and second.Standing == second.Count)
+			if first == nil or second == nil then
+				return
+			end
+			local wait = t.Server("Tune", RESPAWN_PATH)
+			t.Server("Tune", RESPAWN_PATH, DROP_BACK)
+			-- A pack nobody's lead touched: its fall pays nothing.
+			t.Server("PackDefeat", "Pack 2")
+			t.Wait(0.3)
+			local untouched = t.Server("Drops").Kills
+			t.Check("Pack 2's fall paid nothing", untouched == before.Kills, `{untouched - before.Kills} kills paid`)
+			-- Stand before Pack 1, facing it, and let the lead land a hit.
+			local at: Vector3 = first.At
+			local stand = at + Vector3.new(0, R6_ROOT_HEIGHT, PACK_STAND)
+			t.Root().CFrame = CFrame.lookAt(stand, Vector3.new(at.X, stand.Y, at.Z))
+			local row: any = nil
+			local hitBy = os.clock() + SHADE_TIMEOUT
+			repeat
+				t.Wait(0.2)
+				for _, r in t.Server("Packs") do
+					row = if r.Name == "Pack 1" then r else row
+				end
+			until (row and row.HitBy > 0) or os.clock() > hitBy
+			t.Check("the lead hits Pack 1", row ~= nil and row.HitBy > 0)
+			if row == nil or row.HitBy == 0 then
+				t.Reset()
+				t.Server("Tune", RESPAWN_PATH, wait)
+				return
+			end
+			local mid = t.Server("Drops")
+			local felled = t.Server("PackDefeat", "Pack 1")
+			t.Wait(0.3)
+			local after = t.Server("Drops")
+			local kills = after.Kills - mid.Kills
+			t.Check("each Shade it hit pays once", felled.Ok == true and kills >= row.HitBy and kills <= row.Count, `{kills} paid, {row.HitBy} hit, {row.Count} in the pack`)
+			local each = Drops.Roll("Ordinary", row.Level, row.Ground, 0.999) :: Drops.Drop
+			local credits = after.Credits - mid.Credits
+			t.Check("its Credits, per Config.Drops", credits == kills * each.Credits, `{credits} for {kills} x {each.Credits}`)
+			local gained = after.Standard - mid.Standard
+			t.Check("Standard shards, at most one a Shade", gained >= 0 and gained <= kills, `{gained} for {kills}`)
+			t.Check("the lead's experience rose", after.Level > mid.Level or after.Xp == mid.Xp + kills * each.Xp, `level {mid.Level} to {after.Level}, xp {mid.Xp} to {after.Xp}`)
+			local wantNamed = before.Named + (if before.Kills == 0 then 1 else 0)
+			t.Check("Watt's shard only on the account's first kill", after.Named == wantNamed, `{after.Named} held, {wantNamed} wanted`)
+			-- Leave as found: off the street before Pack 1 is back, the seed back, the lead healed out of the fight.
+			t.Reset()
+			t.Wait(DROP_BACK)
+			t.Server("Tune", RESPAWN_PATH, wait)
+			local heal = Combat.Lead.Heal
+			local healBy = os.clock() + heal.After + 1 / heal.PerSecond + 1
+			local lead = myLead()
+			while lead and lead:GetAttribute("Health") ~= lead:GetAttribute("MaxHealth") and os.clock() < healBy do
+				t.Wait(0.25)
+				lead = myLead()
+			end
+			t.Check("the lead heals to full out of the fight", lead ~= nil and lead:GetAttribute("Health") == lead:GetAttribute("MaxHealth"))
 		end,
 	},
 	{

@@ -192,7 +192,7 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 - **The portrait is the card's biggest thing.** The face is larger than the bars' height, and the head stands above the frame's top edge. That needs a new cut of each portrait from Modulo (AR3, section 3), asked once the take shows the card's size. The bars start under the frame's right edge and run out long, ending in a slanted cut.
 - **The level on a small badge** at the frame's lower corner, overlapping it.
 - **A warm trim** round the bars and the frame, as the reference's gold rims. Ours can take the rarity's colour.
-- **More colour across the HUD** comes from colours that mean something: health red, experience its own colour, the rarity's trim, the gems', the pills' icons (Credits warm, Electricity cyan). The panels stay Graphite.
+- **More colour across the HUD** comes from colours that mean something: health red, experience its own colour, the rarity's trim, the gems', the pills' icons (Credits warm, Electricity cyan). The panels may take colour too: not every panel stays Graphite or Pearl, as long as the whole is well composed (the director, 2026-11-13: "not all panels should stay dark or pearly light it just need to be all well composed"). Which panel takes which palette is Modulo's choice, as the director said on 2026-11-12 (`docs/ui.md`, "One look, ours").
 
 **Status:** started 2026-11-12 (Faber), TR2 being closed.
 

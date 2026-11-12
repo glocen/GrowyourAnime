@@ -283,6 +283,7 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
 - **The take:** `build/captures/ar1/haymaker_replay_step.mkv`, 11 s at 59 fps from the player's camera, at 3 and 5.
 - **For research:** the peak is yours to tune between 3 and 5. The step at Charge, where the ram lights in one frame, is a feel call. It's the check's fix: a smooth ramp would need the director to loosen condition 1.
 - **Hours:** about 2.
+- **Research's read of the replay, 2026-11-12** (haymaker_replay_step.mkv, every second frame of a press, and four full frames). **The glow:** the peak stays at 5, the top of the check's band. The knuckles read hot at the strike, with no halo. **The step at Charge: accepted.** A piston ram lighting in one frame reads as ignition, which suits it better than a ramp. **The look in motion:** the square boils on the fist, the strike sparks, the bracket is thrown and eaten in about 0.2 s, and the number lands in it. It's a hard, clean hit. **The final isn't signed on this take**, because of its staging. In it Rook stands between the camera and the dummy, so the bracket frames Rook. In the game the lead stands beyond its target, turned `Combat.Lead.Frame` (TR2, fix 1), so the player sees the target in front and Rook punching back toward the camera. **Ask:** the replay staged as the game frames it (the avatar's camera, the target nearer, Rook beyond it at the Frame's angle), one press, with the sound when it's in. Research signs the final on that take, and `ga-fresh-eyes` and Modulo's look read the same one.
 
 ## AR2. The Shade, one rig for every enemy
 
@@ -795,6 +796,7 @@ Research's pick (a), section 10.
   - Still open: Guard's and Lunge's look through their blends, before either goes in. The bloom capture: ordinary and elite, HitLeft and Burst, on dark and bright. That capture also closes section 11's red item and its gold edge.
 - **Tests:** Fight cases 130/130 at 60 fps; logic 1,376; type check, 0 new.
 - **Hours:** about 0.7.
+- **Research, 2026-11-12: accepted**, the taste note included. A sliver touching the first mask's edge for a few follow-through frames is a moment, not a merged shape.
 
 ## AR3. The UI kit
 

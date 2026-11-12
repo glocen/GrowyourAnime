@@ -1999,6 +1999,27 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
   - **The two rising flames: accepted.** Pip's orange flame lifts as a column, and the Shades' two cream flames flare from its foot and climb apart. Their colours keep them separate, and they read as one gesture: his fire, then their lights leaving.
   - **The recoil:** not judged on this take. The Shades stand between him and the camera, and the hold-drift freezes him mid-flight. It's read on the next take that shows him clear.
   - **The drift: yes to both of the builder's client-only changes,** as their own piece, before the Frame experiment. A kill that shows before its flame breaks cause and effect on every action. Design's word on change 1: a fighter mid-action shows the spark and the number when struck, but its clip never holds. Its own action's beats keep the stage.
+- **The hold-drift fix in the game (Faber, 2026-11-12),** on research's yes above. Client only, with no change to pace or balance.
+  - **In:**
+    1. A body struck in the middle of its own action shows the spark and the number, and its clip doesn't hold (`FighterController`, `show`).
+    2. When a server hit finds the screen's clock short of its beat, the clip and its effects' clocks move to the beat before the hold (`Fight.CatchTo`; `FighterController`, `catchUp`). The effects' free time doesn't move, since it already ran through the hold.
+  - **Tests:**
+    - Logic 1,589, with CatchTo's case. Type check 0 new.
+    - The fight's self-test cases: 236 of 236 at 60 fps.
+    - A new case holds the lead's combo 0.4 s on screen at its first hit. Each later hit then finds the clock, the clip and the effects on its beat: Shot2 at 0.433, Shot3 at 1.033.
+    - A body in the middle of its action takes no hold. Idle, it holds 0.09 s.
+  - **Beyond the burst:** in a chain, the fighter's own hold on one hit leaves its screen that far behind the server. The next hit now moves the clip on by up to that hold (0.09 s light, 0.13 heavy), then holds on its contact frame. Before the fix, that hold landed short of the contact frame. Shot3 came on its beat this way in the case.
+  - **Research's take: the kill on the flame** (`build/captures/ar4/pip_hold_fix_*`).
+    - **Staged** as round 2's take: two level 1 brawlers. Their health was tuned live to 200 for the take only, and went back when the playtest stopped. 58.2 fps. The sync mark now shows for three pictures, then goes.
+    - **The client's log:**
+      - Pip's clip reaches the Burst's frame 66 at 1.07 s, and both Shades go down at 1.10 s with his clip at 67.
+      - Through the throw his clip never holds longer than a picture.
+      - They vanish at 1.58 s.
+      - Before the fix, he held at 43 and at 55, the kill came at his frame 57, and the flame at 1.38 s.
+    - **The files:**
+      - `pip_hold_fix_strip.png` runs from 0.82 to 2.10 s, a cell every 3 frames.
+      - `pip_hold_fix_full_<s>.png` are full views: 1.07 (the flame), 1.10 (the kill), 1.20 and 1.35 (the boil and the numbers), and 1.55 (the lanterns).
+    - **The recoil:** the Shades stand between him and the camera until they vanish at 1.58 s, as in round 2's take.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

@@ -179,6 +179,17 @@ return {
 		end,
 	},
 	{
+		Name = "Fight: a hit ahead of its beat moves the clock to the beat, never back",
+		Run = function(t: any)
+			local combo = Actions.ById.RookCombo
+			t.Equal("behind: to the beat", Fight.CatchTo(combo, "Hit2", 0.7), combo.Beats.Hit2)
+			t.Equal("far behind: to the beat, not past it", Fight.CatchTo(combo, "Hit3", 0), combo.Beats.Hit3)
+			t.Check("on the beat: stays", Fight.CatchTo(combo, "Hit2", combo.Beats.Hit2) == nil)
+			t.Check("past it: stays", Fight.CatchTo(combo, "Hit1", 0.9) == nil)
+			t.Check("not one of its beats: stays", Fight.CatchTo(combo, "Release", 0.1) == nil)
+		end,
+	},
+	{
 		Name = "Fight: the signature goes when it's ready, the combo otherwise",
 		Run = function(t: any)
 			local kit = Actions.KitOf("rook")

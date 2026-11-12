@@ -23,6 +23,17 @@ function Fight.BeatsBetween(action: Actions.Action, from: number, to: number): {
 	return found
 end
 
+-- Where a screen's clock of `action` moves to when the server's hit on `beat` reaches it at `clock`: the beat's time when
+-- the clock hasn't reached it yet (a hold the server doesn't keep left the clip behind), so the hit's hold lands on its
+-- contact frame; nil when it's there or past it, or `beat` isn't one of the action's (AR4, section 8: research, 2026-11-12).
+function Fight.CatchTo(action: Actions.Action, beat: string, clock: number): number?
+	local at = action.Beats[beat]
+	if at == nil or at <= clock or at > action.Length then
+		return nil
+	end
+	return at
+end
+
 -- The first action of `kit` (in its order) that's off its cooldown at `now`. `readyAt` holds when each may go again.
 function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, now: number): Actions.Action?
 	for _, action in kit do

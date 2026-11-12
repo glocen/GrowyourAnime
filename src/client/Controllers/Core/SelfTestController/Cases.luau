@@ -1812,6 +1812,95 @@ return {
 		end,
 	},
 	{
+		Name = "Fight: a hit ahead of its beat moves the clip to it, and a body struck mid-action never holds",
+		Run = function(t: any)
+			-- AR4, section 8 (research, 2026-11-12). The lead's combo in the replay, its screen held 0.4 s on the first hit
+			-- as a Shade's hit on it used to hold it: each later hit from the server finds its clip and its effects on the
+			-- hit's beat, never short of it. Then a hit's moment on a body mid-action: a spark, no hold.
+			local lead = myLead()
+			t.Check("the lead is in the world", lead ~= nil)
+			if lead == nil then
+				return
+			end
+			local combo: Actions.Action? = nil
+			for _, action in Actions.KitOf(lead:GetAttribute("Def") :: string) do
+				local count = 0
+				for _ in action.Hits do
+					count += 1
+				end
+				if action.Cooldown == 0 and count >= 2 then
+					combo = action
+				end
+			end
+			local view = FighterController.Views[lead]
+			t.Check("the lead has a combo of two hits or more, and a view", combo ~= nil and view ~= nil)
+			if combo == nil or view == nil then
+				return
+			end
+			local action = combo :: Actions.Action
+			local held = false
+			local seen: { { Beat: string, Clock: number, Clip: number?, Effects: boolean } } = {}
+			local connection = Net.Client.On("Hit", function(hit: any)
+				if type(hit) ~= "table" or hit.A ~= lead or hit.Action ~= action.Id then
+					return
+				end
+				if not held then
+					held = true
+					view.FrozenUntil = os.clock() + 0.4
+					return
+				end
+				local beat = hit.Beat
+				task.defer(function() -- after the screen's own handler of the same hit
+					local inStep = true
+					for _, running in view.Running do
+						inStep = inStep and math.abs(running.Clock - view.Clock) < 1e-6
+					end
+					table.insert(seen, {
+						Beat = beat,
+						Clock = view.Clock,
+						Clip = if view.Current then view.Current.TimePosition else nil,
+						Effects = inStep,
+					})
+				end)
+			end)
+			local ok, result = pcall(function()
+				return t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE)
+			end)
+			t.Check("the replay starts", ok and type(result) == "table" and result.Ok == true, tostring(if ok then result and result.Error else result))
+			t.Wait(action.Length + 0.3)
+			connection:Disconnect()
+			t.Check("the later hits came", #seen >= 1, `{#seen}`)
+			for _, row in seen do
+				local at = action.Beats[row.Beat]
+				t.Check(`{row.Beat}: the clock on its beat or past it`, row.Clock >= at - 1e-3, string.format("%.3f against %.3f", row.Clock, at))
+				t.Check(`{row.Beat}: the clip on the clock`, row.Clip == nil or math.abs(row.Clip - row.Clock) < 0.02, string.format("%.3f", row.Clip or -1))
+				t.Check(`{row.Beat}: the effects on the clock`, row.Effects)
+			end
+			-- A body mid-action takes the spark and no hold; the same body idle holds.
+			local struck: any = nil
+			for model, each in FighterController.Views do
+				if model:GetAttribute("Kind") == "Dummy" then
+					struck = each
+				end
+			end
+			t.Check("the replay's dummy is on screen", struck ~= nil)
+			if struck then
+				local was = struck.Action
+				local before = struck.FrozenUntil
+				struck.Action = Actions.ById.ShadeSwipe -- no yield until it's put back: no frame steps it
+				FighterController.Show(view, struck, false, false, "SelfTest@1")
+				local mid = struck.FrozenUntil
+				struck.Action = was
+				t.Check("mid-action: no hold", mid == before, string.format("%.3f later", mid - before))
+				t.Wait(Combat.Hitstop.Light + 0.1)
+				FighterController.Show(view, struck, false, false, "SelfTest@2")
+				t.Check("idle: the hold", struck.FrozenUntil > os.clock(), string.format("%.3f", struck.FrozenUntil - os.clock()))
+			end
+			t.Server("Replay")
+			t.Wait(0.3)
+		end,
+	},
+	{
 		Name = "HUD: the lead's card reads the lead in the fight, the pills read the save",
 		Run = function(t: any)
 			t.Wait(LEAD_SETTLE)

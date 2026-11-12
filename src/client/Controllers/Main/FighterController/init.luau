@@ -96,6 +96,7 @@ local byId: { [string]: View } = {}
 
 local FighterController = {}
 FighterController.Views = views -- for the self-test
+FighterController.Show = nil :: any -- for the self-test: a hit's moment on screen (set to show, below)
 
 local function track(view: View, clip: string): AnimationTrack?
 	local animator = view.Animator
@@ -203,7 +204,11 @@ local function show(attacker: View, target: View?, heavy: boolean, steady: boole
 	if first and not steady then
 		freeze(attacker, hold)
 	end
-	freeze(target, hold)
+	-- A body struck in the middle of its own action shows the spark and the number, and its clip never holds: its own
+	-- beats keep the stage, timed as the server times them, which holds nothing (AR4, section 8: research, 2026-11-12).
+	if target and target.Action == nil then
+		freeze(target, hold)
+	end
 	if target then
 		local at = chest(target)
 		local from = attacker.Root.Position
@@ -215,6 +220,7 @@ local function show(attacker: View, target: View?, heavy: boolean, steady: boole
 		Effects.Shake(Combat.Shake.Heavy)
 	end
 end
+FighterController.Show = show
 
 local function targetOf(view: View): View?
 	local id = view.Model:GetAttribute("Target")
@@ -672,6 +678,29 @@ local function stepKnock(view: View, now: number)
 	end
 end
 
+-- The server's hit on `beat` of the action begun `at`, reaching a screen whose clock of it is still short of the beat
+-- (its own hold before it, kept here and not by the server): the clip and its effects move on to the beat, so the hit's
+-- hold lands on its contact frame (Fight.CatchTo). Effects key on their markers with "at or past", so none is skipped.
+local function catchUp(view: View, beat: any, at: any)
+	local action = view.Action
+	if action == nil or type(beat) ~= "string" or at ~= view.ActionAt then
+		return
+	end
+	local to = Fight.CatchTo(action, beat, view.Clock)
+	if to == nil then
+		return
+	end
+	-- The effects' own clocks follow the action's; their free time ran through the hold already, so it stays.
+	local ahead = to - view.Clock
+	view.Clock = to
+	for _, running in view.Running do
+		running.Clock += ahead
+	end
+	if view.Current and to < action.Length then
+		view.Current.TimePosition = to
+	end
+end
+
 local function onHit(hit: any)
 	if type(hit) ~= "table" then
 		return
@@ -680,6 +709,7 @@ local function onHit(hit: any)
 	local target = views[hit.T]
 	if attacker and not hit.Dodged then
 		local at = hit.A:GetAttribute("ActionAt")
+		catchUp(attacker, hit.Beat, at)
 		show(attacker, target, hit.Heavy == true, hit.Steady == true, `{hit.Beat}@{at}`)
 		if target then
 			knockOf(attacker, target, hit)

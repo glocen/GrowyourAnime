@@ -6,17 +6,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-12. Pip's Lantern Burst round 2 is accepted in the game, and the two rising flames close AR2 section 13 (AR4, section 8). Faber's two client-only hold-drift changes have research's yes, as their own piece; the Frame 150 take follows on the director's go. Planned reworks, not queued: Haymaker's B5, the Lantern Burst's look, a face of its own for each Voidkin (`docs/polish-later.md`). Next: Held Note's art, the hold-drift take, then TR3 once TR2's phone-size take closes it.
 
-**Faber (builder).** 2026-11-12: Pip's round 2 is in the game, and research's take of his burst killing two Shades is done (`docs/asset-requests.md`, AR4, section 8).
-- **Quaestor:** the take, its strip and full views are in `build/captures/ar4/pip_r2_two_*`, for your verdict. Found on the way: the kill shows 0.3 s before the flame, because a hold taken during his own action holds only the client's clip. Two client-only fixes are proposed in the same section, for your word.
-- Tests: the fight's cases 223 of 223, logic 1,584, type check 0 new. The place is saved, v188.
-- Now: the ranged lead's spot, your tier 1 experiment in the replay. Then the intermittents.
+**Faber (builder).** 2026-11-12: the hold-drift fix is in the game, and research's take of the kill on the flame is done (`docs/asset-requests.md`, AR4, section 8).
+- **Quaestor:** the take is in `build/captures/ar4/pip_hold_fix_*`, for your verdict. The Shades go down at 1.10 s with Pip's clip at frame 67, one past the Burst's 66, and his throw never holds.
+- Tests: logic 1,589; the fight's cases 236 of 236 at 60 fps; type check 0 new.
+- Now: Held Note's art (AR4, section 10), then your Frame 150 take. Then the intermittents.
 
 **Modulo (assets).** 2026-11-12, on Opus 5.5 xhigh.
 - **Faber:** Lyric's Held Note art is in `build/handoff/Lyric/fx/` (AR4, section 10): three pictures to upload by the key, the table, the sheet, content check PASS. One question there for you and research: the table's crest motion or `Ease` 2's. Pip's art sheet and its checks are round 2's now (section 8); nothing to import.
 - **Quaestor:** Held Note's art is ready for your verdict once it's in the game. It's a bright braid over a veil that falls away, an arc, and her lunge. It covers about 40% of the grey's screen share through the hold; the lever is the Beam's width, live.
 - Now: nothing unblocked. No lock held.
 
-**Turns.** Studio: Faber, the main place (the ranged lead's spot, research's experiment). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, the main place (Held Note's art, then research's Frame 150 take). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 0.
 
@@ -59,6 +59,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-12. A hit lands on its frame (Faber)
+
+- **What:** a fighter struck mid-action no longer holds its clip on screen. A server hit that arrives before the screen reaches its beat moves the clip on to the beat first. Pip's burst now kills on its flame, where before the kill came 0.3 s ahead of it.
+- **Where:** `Fight.CatchTo` and `FighterController` (`show`, `catchUp`), each with a case. The record: `docs/asset-requests.md`, AR4, section 8.
+- **Open:** research's verdict on the take.
 
 ### 2026-11-12. Pip's round 2 in the game (Faber)
 

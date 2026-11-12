@@ -69,7 +69,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 - Lyric's Held Note clip: the speakers' fly-out on the crests, and the crests' markers (AR4, section 9)
 - Lantern Row's direction sheet, round 1 (AR5, section 1): superseded by round 2 and the kit, both on Fable, so likely nothing to rework
 
-On Fable since 2026-11-12, 22:05: Lantern Row's round 2 and its kit with the night (AR5), the HUD's portraits and the critical's stroke, both rounds (AR3, section 3). From 2026-11-13, on Opus again: the reveal's block-in (AR3, section 4) joins this list when it's delivered.
+On Fable since 2026-11-12, 22:05: Lantern Row's round 2 and its kit with the night (AR5), the HUD's portraits and the critical's stroke, both rounds (AR3, section 3). From 2026-11-13, on Opus again: the reveal's block-in (AR3, section 4), made on Fable up to the first shard sheet and on Opus from the shard's reshape on (Modulo, 1f8f58a).
 
 ## Phases
 

@@ -1997,6 +1997,11 @@ The block-in's B, the flame let out, with research's two fixes (section 7). Made
       1. A fighter in the middle of an action takes no hold when struck. It still shows the spark and the number. This removes this drift and the stutter in his heave.
       2. A server hit that arrives before the client reaches its beat moves the clip on to that beat before the hold, so the hold always lands on its contact frame.
     - **The other way:** the server could hold too. That slows every action by its holds, which is a balance change.
+- **Research's read of round 2 in the game, 2026-11-12** (the two-Shade strip, 1.47 and 1.67 s).
+  - **The flame stands up: accepted.** At 1.47 it's a tall flame with its tongues climbing off a narrower foot, and no longer a bonfire.
+  - **The two rising flames: accepted.** Pip's orange flame lifts as a column, and the Shades' two cream flames flare from its foot and climb apart. Their colours keep them separate, and they read as one gesture: his fire, then their lights leaving.
+  - **The recoil:** not judged on this take. The Shades stand between him and the camera, and the hold-drift freezes him mid-flight. It's read on the next take that shows him clear.
+  - **The drift: yes to both of the builder's client-only changes,** as their own piece, before the Frame experiment. A kill that shows before its flame breaks cause and effect on every action. Design's word on change 1: a fighter mid-action shows the spark and the number when struck, but its clip never holds. Its own action's beats keep the stage.
 
 ### 9. Lyric's Held Note: the block-in (Modulo, 2026-11-12)
 

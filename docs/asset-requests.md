@@ -337,6 +337,50 @@ For Modulo. Research's request, 2026-11-11. The exemplar: what every later Voidk
   - **Modulo's fixes 1 and 2: yes,** in its order, with its size note. The lean goes by how side-on the line is (0 face-on, 16 side-on), so a side-on line keeps it. Serves: the stamp lands on what was hit, at the fight's depth, with the number in it. Fix 3 is judged on the retake.
   - **Next:** the builder turns them live and shoots one press, staged the same way. Fresh eyes reads it blind, and Modulo reads it too. Research signs the final on that take. This is the first fix round on the hero in the game's framing.
   - **The sound** waits on the director's ear (the Now board). The take is silent, so research doesn't judge it.
+- **The retake, Faber, 2026-11-12.** Fixes 1 and 2, turned one at a time on the replay.
+  - **Found on the way: every replay take so far missed the target.**
+    - The replay held its target on the server only (`ForcedTarget`), and the client reads the `Target` attribute.
+    - So the effect's line fell back to Rook's facing from his knuckles: parallel to the hit, 2 studs to its side.
+    - The staged take's bracket, and the ones before it, passed beside the dummy, never through it.
+    - In play the attribute is set, so the game itself wasn't affected.
+    - Fixed in `FightService`: the attribute shows the held target first. A check in the replay's self-test case covers it.
+  - **Fix 1, the lean:**
+    - `Hero.Lean` is multiplied by how side-on the hit's line runs to the camera, read once at the strike. It's linear in the angle: 0 face-on, 1 side-on.
+    - In the game's framing the line runs at 45° to the camera, so the bracket leans 8°.
+  - **Fix 2, the reach:**
+    - The line ends `Hero.Past` (1 stud) beyond the target's centre. `Hero.Reach` (8) is now only for a press with no target.
+    - The bracket faces down the hit's line (Rook's body to the target, the line the server pushes along). Before, it faced down the knuckles' line, about 30° off.
+    - Facing the knuckles' line, the dummy left past a post. Facing the hit's line, it's driven out through the opening.
+    - It still flies from the knuckles, so nothing jumps.
+  - **The size:**
+    - `WidthGain` goes from 3.6 to 2.8. The end frame's opening is the dummy's 2.6-stud width plus about half a stud each side.
+    - `HeightGain` stays 3.4. From this camera the lintel already clears the dummy's head with a margin, and cutting it would close on the head.
+  - **Checks:**
+    - Type check: 0 new. Logic: 1382 pass.
+    - Self-test "Haymaker's look": 26 pass, 3 of them new:
+      - Aimed, the bracket ends Past beyond the target, down the hit's line (0.000 studs off).
+      - It stands square to that line.
+      - It leans by how side-on the line runs to the camera (3.0°, want 3.0 from the test's camera).
+    - "The replay lands each hit": 12 pass, 1 new: the lead is aimed at the dummy.
+  - **The take,** staged as before, in `build/captures/ar1/`:
+    - `haymaker_retake_press.mkv`: one press, 2.4 s, the strike at 1.10 s.
+    - `haymaker_retake_strip.png`: every second frame, from 0.32 s before the strike to 0.38 s after it.
+    - `haymaker_retake_full_<s>.png`: at 0.70, 1.10, 1.17 and 1.27 s.
+  - **`ga-fresh-eyes`, blind, on the strip and the four frames:**
+    - **Felt:** "a hollow gold frame springs up around the target, swells toward the camera, then crumbles into tiles. It reads as a gilded doorway opening over the dummy, not as a solid face driven along the ground, and the dummy only turns after the effect has gone."
+    - **Tier:** works. "It reads clearly as a hit with a shape of its own, but it has no weight and no travel: nothing is thrown through the target and nothing stamps down."
+    - **The one bold thing:** none. The eye goes to the upright arch round the dummy at +4 frames. "The strike itself, a small white spark behind the dummy, is hidden from the player's camera."
+  - **What I see, for research:**
+    - The bracket is now where Modulo asked: round what was hit, at the fight's depth, and the dummy goes out through it.
+    - What it lost is travel. From the knuckles to a stud past the target is about 3.3 studs, mostly in the first three frames, so it reads as rising in place.
+    - Two causes sit outside the bracket:
+      - From this camera the punch lands on the dummy's far side, because TR2's Frame puts the lead beyond the target.
+      - The push carries the dummy toward the avatar, which hides it in the last frames.
+  - **Levers, none turned:**
+    - `Hero.Past`, now 1. More gives travel, and brings the bracket nearer the camera.
+    - `Hero.Fly`, now 10 frames.
+    - The Frame (TR2), which is outside this piece.
+  - **Hours:** about 1.5.
 
 ## AR2. The Shade, one rig for every enemy
 

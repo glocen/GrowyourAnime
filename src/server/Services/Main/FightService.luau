@@ -115,10 +115,16 @@ local function setHealth(f: Fighter, health: number)
 	f.Model:SetAttribute("Health", health)
 end
 
+-- Who the client sees a fighter aimed at (an effect's line through it): the replay's held target first, then its own.
+local function showTarget(f: Fighter)
+	local shown = f.ForcedTarget or f.Target
+	f.Model:SetAttribute("Target", if shown then shown.Id else "")
+end
+
 local function setTarget(f: Fighter, target: Fighter?)
 	if f.Target ~= target then
 		f.Target = target
-		f.Model:SetAttribute("Target", if target then target.Id else "")
+		showTarget(f)
 	end
 end
 
@@ -428,6 +434,7 @@ local function remove(f: Fighter)
 		end
 		if other.ForcedTarget == f then
 			other.ForcedTarget = nil
+			showTarget(other)
 		end
 	end
 	for _, hit in packHit do
@@ -901,6 +908,7 @@ function FightService.Force(f: Fighter, action: string?, every: number?, target:
 	f.ForcedEvery = every or 0
 	f.ForcedNext = now()
 	f.ForcedTarget = target
+	showTarget(f)
 	if action == nil then
 		face(f, nil)
 	end

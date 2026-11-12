@@ -23,15 +23,19 @@ return {
 		Ahead = 0.3, -- studs down the line from the knuckles the squares stand
 		-- The hero: one bracket thrown down the line from the frame after Shock. It snaps out over Fly frames and drifts on
 		-- (it never quite stops), then is eaten over Leaves frames as it opens and its feet lift.
+		-- The line ends Past the target, so the bracket is eaten round what it hit, at the fight's depth (section 8).
 		Hero = {
-			Reach = 8, -- studs down the line it flies
+			Past = 1, -- studs past the target's centre the line ends
+			Reach = 8, -- studs down the line it flies when there's no target
 			Fly = 10,
 			Drift = 0.004, -- the line's share a frame it drifts once it has flown
 			Leaves = 6,
 			Opens = 0.06, -- it opens this share as it's eaten
 			Lift = 0.3, -- its feet lift this share of its height, by the square of how far it's eaten
-			Lean = 16, -- degrees it leans the way it goes, for whoever watches from the side
-			Width = 2.2, WidthGain = 3.6, -- studs at the knuckles, and gained by the line's end
+			-- Degrees it leans the way it goes, seen side-on; times how side-on the line is to the camera, so a line coming at
+			-- the camera stands upright (0 face-on, 1 side-on, by the angle; section 8)
+			Lean = 16,
+			Width = 2.2, WidthGain = 2.8, -- studs at the knuckles, and gained by the line's end: the target's outline and a margin there
 			Height = 2.0, HeightGain = 3.4,
 			Bar = 0.85, BarGain = 0.5,
 		},

@@ -237,8 +237,10 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
 	local pool: { Bar } = {}
 	local used = 0
-	local line: CFrame? = nil -- on the floor under the knuckles at the strike, looking down the line
+	local line: CFrame? = nil -- on the floor under the knuckles at the strike, facing down the hit's line
 	local knuckles: Vector3? = nil
+	local aimAt: Vector3? = nil -- the target's centre on the floor at the strike; nil, and the line runs Reach straight on
+	local sideOn = 1 -- how side-on the hit's line runs to this client's camera at the strike: 0 at or away from it, 1 across it
 	local strikeAt: number? = nil -- the clock on the first frame on or past Strike: its square holds there, through the hitstop
 	local shockAt: number? = nil -- and on the first frame after it, for the Shock square
 
@@ -292,7 +294,9 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		return CFrame.lookAt(at, at - a.CFrame.UpVector, a.CFrame.LookVector)
 	end
 
-	-- The line: from under the knuckles at the strike, along the floor, to the target (or straight ahead).
+	-- The line: from under the knuckles at the strike, along the floor, to Past beyond the target (or Reach straight on). The
+	-- bracket faces down the hit's line, the attacker's body to the target, which the server pushes the target along: what
+	-- was hit is driven out through it (section 8).
 	local function fix()
 		local at = face()
 		if at == nil or root == nil then
@@ -300,14 +304,25 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		end
 		local r = root :: BasePart
 		knuckles = at.Position
-		local origin = Vector3.new(at.Position.X, r.Position.Y - R6_ROOT_HEIGHT, at.Position.Z)
+		local floorY = r.Position.Y - R6_ROOT_HEIGHT
+		local origin = Vector3.new(at.Position.X, floorY, at.Position.Z)
 		local aim = target()
-		local toward = if aim then Vector3.new(aim.Position.X - origin.X, 0, aim.Position.Z - origin.Z) else Vector3.zero
+		local toward = if aim then Vector3.new(aim.Position.X - r.Position.X, 0, aim.Position.Z - r.Position.Z) else Vector3.zero
+		aimAt = if aim then Vector3.new(aim.Position.X, floorY, aim.Position.Z) else nil
 		if toward.Magnitude < 0.5 then
 			local look = r.CFrame.LookVector
 			toward = Vector3.new(look.X, 0, look.Z)
 		end
 		line = CFrame.lookAt(origin, origin + toward.Unit)
+		local camera = workspace.CurrentCamera
+		if camera then
+			local view = camera.CFrame.LookVector
+			local flat = Vector3.new(view.X, 0, view.Z)
+			if flat.Magnitude > 1e-3 then
+				local across = math.clamp(math.abs(flat.Unit:Cross(toward.Unit).Y), 0, 1)
+				sideOn = math.asin(across) / (math.pi / 2)
+			end
+		end
 	end
 
 	-- How far down the line the hero is, as the line's share, `f` frames after Shock: it never quite stops.
@@ -321,6 +336,13 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			return hero.Fly + (share - 1) / hero.Drift
 		end
 		return hero.Fly * (1 - (1 - share) ^ (1 / 3))
+	end
+
+	-- The bracket's foot point and facing at `share` of the line: it flies from the knuckles to the line's end, facing the
+	-- hit's line all the way.
+	local function standAt(hero: typeof(EffectsConfig.Haymaker.Hero), path: CFrame, share: number): CFrame
+		local ends = if aimAt then aimAt + path.LookVector * hero.Past else path.Position + path.LookVector * hero.Reach
+		return path + (ends - path.Position) * share
 	end
 
 	local function size(hero: typeof(EffectsConfig.Haymaker.Hero), share: number): (number, number, number)
@@ -382,7 +404,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			end
 			if path and past then
 				local f = (clock - SHOCK) / FRAME
-				local lean = math.rad(hero.Lean)
+				local lean = math.rad(hero.Lean * sideOn)
 				-- The hero: one bracket down the line, boiling while it flies, then eaten as it opens and its feet lift.
 				if f > 0 and f <= hero.Fly + hero.Leaves then
 					local share = far(hero, f)
@@ -392,7 +414,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 					w, h = w * opens, h * opens
 					local low = h * hero.Lift * leaves * leaves
 					local k = if leaves == 0 then frameNow % 2 else math.min(#look.Eaten - 1, 1 + math.floor(leaves * (#look.Eaten - 2) + 0.5))
-					local stand = path * CFrame.new(0, 0, -hero.Reach * share) * CFrame.Angles(-lean, 0, 0)
+					local stand = standAt(hero, path, share) * CFrame.Angles(-lean, 0, 0)
 					local post = h - low + bar
 					for _, sign in { -1, 1 } do
 						layBar(take(), look, stand * CFrame.new(sign * w / 2, low + (h - low) / 2, 0) * CFrame.Angles(0, 0, math.pi / 2), post, bar, k, HOT, UPRIGHT)
@@ -412,8 +434,8 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 					local k = if age < floor.Eat then 0 else math.floor(age - floor.Eat)
 					for _, sign in { -1, 1 } do
 						local wa, wb = (size(hero, a)), (size(hero, b))
-						local from3 = (path * CFrame.new(sign * wa / 2, floor.Over, -hero.Reach * a)).Position
-						local to3 = (path * CFrame.new(sign * wb / 2, floor.Over, -hero.Reach * b)).Position
+						local from3 = (standAt(hero, path, a) * CFrame.new(sign * wa / 2, floor.Over, 0)).Position
+						local to3 = (standAt(hero, path, b) * CFrame.new(sign * wb / 2, floor.Over, 0)).Position
 						local along = to3 - from3
 						if along.Magnitude < 1e-3 then
 							continue

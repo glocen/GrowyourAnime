@@ -1288,6 +1288,60 @@ return {
 			t.Check("over by Strike + 19 frames", over == false)
 			t.Check("and nothing left", left == 0, `{left} parts`)
 			running.Destroy()
+			-- Section 8: aimed, the hero ends Hero.Past beyond the target down the hit's line (the lead's body to the target,
+			-- which the push follows), faces that line, and leans by how side-on it runs to this camera. The target stands off
+			-- to one side, so the knuckles' own line to it differs from the hit's.
+			local root = lead:FindFirstChild("HumanoidRootPart") :: BasePart?
+			local camera = workspace.CurrentCamera
+			if root and camera then
+				local r = root :: BasePart
+				local ahead = Vector3.new(r.CFrame.LookVector.X, 0, r.CFrame.LookVector.Z).Unit
+				local right = Vector3.new(r.CFrame.RightVector.X, 0, r.CFrame.RightVector.Z).Unit
+				local mark = Instance.new("Part")
+				mark.Name = "NL_SelfTestTarget"
+				mark.Anchored = true
+				mark.CanCollide = false
+				mark.CanQuery = false
+				mark.Transparency = 1
+				mark.Size = Vector3.one
+				mark.Position = r.Position + ahead * 5 - right * 1.5
+				mark.Parent = workspace
+				local floorY = r.Position.Y - 3 -- an R6 root's height over the floor
+				local hitLine = Vector3.new(mark.Position.X - r.Position.X, 0, mark.Position.Z - r.Position.Z).Unit
+				local view = Vector3.new(camera.CFrame.LookVector.X, 0, camera.CFrame.LookVector.Z).Unit
+				local sideOn = math.asin(math.clamp(math.abs(view:Cross(hitLine).Y), 0, 1)) / (math.pi / 2)
+				local aimed = Effects.Haymaker(action.Beats, lead, function(): BasePart?
+					return mark
+				end)
+				aimed.Step(shock + 0.25 * FRAME)
+				aimed.Step(shock + 0.75 * FRAME)
+				aimed.Step(shock + look.Hero.Fly * FRAME) -- the end of its flight: the whole line
+				local posts: { BasePart } = {}
+				local home = workspace:FindFirstChild("NL_Effects")
+				for _, p in (if home then home:GetChildren() else {}) do
+					local gui = p:FindFirstChildOfClass("SurfaceGui")
+					if not theirs[p] and p:IsA("BasePart") and (p.Transparency < 1 or (gui and gui.Enabled)) and math.abs(p.CFrame.RightVector.Y) > 0.9 then
+						table.insert(posts, p)
+					end
+				end
+				t.Check("aimed: the hero's two posts", #posts == 2, `{#posts} upright bars`)
+				if #posts == 2 then
+					local axis = posts[1].CFrame.RightVector * math.sign(posts[1].CFrame.RightVector.Y) -- up the post
+					local mid = (posts[1].Position + posts[2].Position) / 2
+					local foot = mid - axis * ((mid.Y - floorY) / axis.Y)
+					local want = Vector3.new(mark.Position.X, floorY, mark.Position.Z) + hitLine * look.Hero.Past
+					local off = Vector3.new(foot.X - want.X, 0, foot.Z - want.Z).Magnitude
+					t.Check("it ends Past beyond the target, down the hit's line", off < 0.05, string.format("%.3f studs off", off))
+					local across = posts[1].Position - posts[2].Position
+					local skew = math.abs(Vector3.new(across.X, 0, across.Z).Unit:Dot(hitLine))
+					t.Check("square to the hit's line", skew < 0.01, string.format("%.3f", skew))
+					local tilt = math.deg(math.acos(math.clamp(axis.Y, 0, 1)))
+					local wantTilt = look.Hero.Lean * sideOn
+					t.Check("leaning by how side-on the line runs to the camera", math.abs(tilt - wantTilt) < 0.5, string.format("%.1f degrees, want %.1f", tilt, wantTilt))
+				end
+				aimed.Destroy()
+				mark:Destroy()
+			end
 			-- AR1, sections 5 to 7: the ram's heat on the clip's markers, on both lit pieces alike (Config.Effects.Haymaker.Glow).
 			local glow = look.Glow
 			local surfaces: { SurfaceAppearance } = {}
@@ -1372,6 +1426,10 @@ return {
 			local health = if dummy then dummy:GetAttribute("Health") else nil
 			local max = if dummy then dummy:GetAttribute("MaxHealth") else nil
 			t.Check("the dummy took damage", type(health) == "number" and type(max) == "number" and health < max)
+			-- the client sees the lead aimed at the dummy, so an effect's line runs through it as in play
+			local aimed = lead:GetAttribute("Target")
+			local dummyId = if dummy then dummy:GetAttribute("Fighter") else nil
+			t.Check("the lead is aimed at the dummy", type(aimed) == "string" and aimed ~= "" and aimed == dummyId, `{tostring(aimed)} against {tostring(dummyId)}`)
 			for beat in action.Hits do
 				t.Check(`{beat} landed once`, beats[beat] == 1, `{beats[beat] or 0} times`)
 			end

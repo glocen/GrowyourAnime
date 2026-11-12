@@ -627,7 +627,7 @@ Accepted as they are: the gems read by colour first at 16 px (the cut follows at
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.
 
-**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric is next in this request.
+**Status:** started (Modulo, 2026-11-12), while AR1's delivery 4 waits on the builder and AR3 on its verdicts. Pip's sheet is past the content check and research's two reads (section 1) and delivered to `build/handoff/Pip/pip_sheet.png`. His model is past research's read and the content check (section 2) and delivered beside it, not yet in the engine. His eight clips are accepted by research after its one fix round, past the content check on both rounds (section 3), and **delivered** to `build/handoff/Pip/clips/`, not yet in the engine. Lyric's sheet is drawn and delivered to `build/handoff/Lyric/lyric_sheet.png` (section 4): her look is past the content check, which blocks the signature's name in the roster; the feel line and the sheet wait on research's read, and the model waits on both.
 
 ### 1. Pip's sheet (Modulo, 2026-11-12)
 
@@ -866,6 +866,59 @@ Also: a hand shows inside each sleeve's end. The lantern floats a little lower a
   - **LanternBurst:** from the side, at 57 to 62, the bare rig goes over like a plank, where before only the hat went. Now he's the one thrown back, and the hat's disc lands on him as he lands. This is the feel line in stills. Whether it reaches exceptional is decided in motion, in the engine.
   - **Combo:** 1.15 and 1.25 studs with opposite rolls is the beat the flicks lacked. Frames 12 and 28 aren't in the pack. They're read in the engine's 64 px pass (the content check's item 9).
   - **Work:** at 76 and 83 the eyes show under the tipped brim, with the lantern lighting his face. Taking the pack from the front three-quarter is right until the bay is drawn.
+
+### 4. Lyric's sheet (Modulo, 2026-11-12)
+
+`build/handoff/Lyric/lyric_sheet.png`, 1920 by 1290, drawn by `tools/blender/lyric_sheet.py` (Workbench, about 9 seconds, no GPU turn). Pip's layout: the outline, front and back on the R6 body, how she stands, the player's camera; the signature's key pose from the target's side, as an outline side on and from the player's camera; all of it at 64 px over dark, Lantern Row's dusk and bright, and in black; the values. The sheet doesn't carry the signature's name (the content check, below).
+
+**Feel line, proposed, for research to sign or change:** a stage singer who's never played a room this small: she drags the mic stand down to her, leans her whole weight into one note, and the two speakers she brought throw it down the street.
+
+**The look:**
+
+- **One idea:** she brought the stage with her, and everything she wears is cut on one slant, high at her right and low at her left.
+- **The stand:** 6.2 studs on a round weighted base, a head taller than she is. A dark taped grip, a pale clutch, a chrome upper tube, and a chrome ball mic that leans back toward whoever holds the stand, with a lit ring under its head. She carries it as a staff in her gloved right hand. Its own piece.
+- **The speakers:** two cabinets, 0.9 by 1.2 studs, that hover at her shoulders at two heights. One cone in a lit ring on the front, a lit bar on the back, a handle on top. Each its own piece, held by nothing.
+- **The bob,** in two layers: a pale top layer cut straight from her right ear down to her left jaw, its fringe swept the same way, over a rose layer cut level at the jaw. The rose shows as a wedge that widens to her right, from the front and from behind.
+- **The headset:** a band over the bob, a cup at each ear, a boom from her right ear to her mouth with a lit tip.
+- **The jacket:** its hem runs from her right hip to her left knee, with a chalk band along it; chalk piping from her right shoulder to her left hip; a low collar. The back, what the player's camera sees: five lit bars, a level meter, and a radio pack on her belt.
+- **The legs:** dark leggings into pale boots on thick dark soles, and one chalk stripe on the right leg, the one the short side bares.
+- **The face:** R6's round head, eyes with one catchlight each, level brows, the fringe over her left brow. On the note her mouth is open.
+- **Colours:** Limelight `#34A866` (Technique's family, deeper), Ash `#EAE4D6`, Storm `#FF6FD8` (AR3's Storm, and only on what's lit). Rose `#D94FB4` is matte and never lit. Backstage dark, chrome, skin.
+
+**The key pose, the note:** she lunges with her right side leading. The stand's base is planted ahead and to her right, 58 degrees off her line, and the stand is leant 47 degrees, so the mic comes down to her mouth and her gloved fist closes on the pole under it, 10 degrees below level. Her body leans 17 degrees into it, her free arm is flung low and back, and the two speakers are thrown up and ahead to the wave's two edges, tipped down the street, their rings wide. From the player's camera the pole runs out to the right at its full length.
+
+**For the model and the builder:** three pieces beyond R6's six, the stand and the two speakers. The stand wants a joint on the right arm; each speaker wants its own joint, and whether a speaker rides on her or is the builder's part that follows her is the builder's call. Blockout 5,028 triangles. Standing she is 6.26 studs across with the speakers and 6.19 to the mic's top; the note is 8.7 across and 6.6 deep.
+
+**What I see wrong:**
+
+1. From behind the bob is still a smooth pale dome with a rose wedge under it: a cap at a glance. The slant and the two layers read; hair doesn't yet. The model has to cut it into locks with tips that stand off the head.
+2. R6 has no elbow, so the stand can only be held where its pole passes within an arm of her shoulder. With the base straight ahead of her the fist can't reach the pole at all and the arm ends 37 degrees up, straight and held; that was the first key pose, and it's why the base now goes to her right. The clips have the same limit: the stand swings about her right hand, never the hand along the stand. From the side the note's outline lost its long diagonal for it.
+3. The speakers are boxes in the outline. What says speaker is the lit ring, which is there at 64 px from the front and missing from behind, where each shows one lit bar.
+4. One hand holds the stand in every pose, so her right arm is spoken for in every clip: the free left arm does all the acting.
+5. The note is wide. The speakers end 4 studs ahead and 3.6 out to each side and the stand's base 3.5 to her right, which is the effect's cone more than her body. In a fight they'd pass through allies. On the sheet's 64 px rows the two note poses' stands cross from one cell into the next.
+6. Green with pink lights over Lantern Row's dusk holds at 64 px; over the bright ground the pale bob and boots drop away and she's a green block.
+
+**Content check, 2026-11-12: BLOCK, on one thing that isn't drawn:** the signature's name in the roster, "Encore", on this fighter (rule 3, with `docs/ip-list.md`'s lines on signature-move names and shared names). The check's reason went to research by message; the rename is research's, and only the new name needs a check. Until then no sheet, definition or text of mine carries the name. The look, the poses, "Lyric" and "Tempo" pass rules 2, 3 and 4, at full size and in the 64 px block, judged from memory without web access. The check saw the pass before the last: since it, the heading lost the name and the mic arm went from 37 degrees up to 10 below level (its condition 9, measured by the script, which prints it). To hold on the model, the clips and the effect:
+
+1. The signature is renamed before any player-facing text, definition or UI carries it.
+2. The pale layer covers the whole crown and fringe, and the rose shows only under the slant. Never a left and right split, never red, never an all-pink, teal, turquoise or green head, never twin tails, long hair, loops or rings.
+3. The jacket stays this true green in every variant, evolution and light grade: never teal, turquoise or cyan, never olive or khaki. No necktie, pleated skirt, detached sleeves, arm numerals or lit panel on a sleeve; the meter stays on her back as plain solid bars.
+4. The stand stays a mic stand with a ball mic and a blunt round base: no blade, spike or point, never a guitar, wand or green rod. She never rides a floating stage or platform.
+5. The speakers stay two plain cabinets with one cone each: no face, eyes, ears, limbs, wings or names, no megaphone horns, never more than two.
+6. No brand mark, logo or text on the headset, speakers, pack or jacket. A mark added later gets its own check.
+7. When the bob is cut into locks, the rose ends stay blunt and level. No rose lock tapers to a hanging point at the neck, and rose stays matte, unlit and off the skin, collar and jacket.
+8. The leggings stay full-length, opaque and dark, and the hem's short side never rises above the belt.
+9. The note's hold is stepped through on a bare rig from the side and three-quarter. In the hold the fist is at or below shoulder height, or the arm keeps moving, with the lunge, the lean and the low-back free arm kept (`handbook/platform/rules-and-moderation.md`, the held straight arm).
+10. The free arm never holds a straight raise toward the crowd in any idle, victory or emote clip. No wink, blown kiss, heart hands, beckoning or hip-sway idle.
+11. The wave is light, arcs, rings and speed lines that start at the speakers' rings, clear of her head. Nothing pink streams from her mouth or face on any heading at 64 px.
+12. The effect has no droplets, spray, falling particles, splats, stains, pools or glossy shapes, and never shifts toward red. The hit is light, sparks and dust, and the heal is not hearts.
+13. The wave stays a cone and never lengthens for each fighter it passes. Its shapes are drawn by our scripts.
+14. Her sounds come from Roblox's library and are logged: no vocal-synth voice bank, no AI voice, no published melody.
+15. The model and each upload batch get their own check, with the player's camera at 64 px over the dusk ground.
+
+For research, from the check: `docs/decisions.md` still has no "Fighters" section, and no line on how mature the tone is; the check judged to the mildest reading. "Tempo" is never paired with "Lethal".
+
+**Hours:** the sheet with its five blockout passes and the pose's rework after the check, about 2.
 
 
 ## AR5. The festival kit and the base's machines

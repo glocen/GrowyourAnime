@@ -192,7 +192,7 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 - **The portrait is the card's biggest thing.** The face is larger than the bars' height, and the head stands above the frame's top edge. That needs a new cut of each portrait from Modulo (AR3, section 3), asked once the take shows the card's size. The bars start under the frame's right edge and run out long, ending in a slanted cut.
 - **The level on a small badge** at the frame's lower corner, overlapping it.
 - **A warm trim** round the bars and the frame, as the reference's gold rims. Ours can take the rarity's colour.
-- **More colour across the HUD** comes from colours that mean something: health red, experience its own colour, the rarity's trim, the gems', the pills' icons (Credits warm, Electricity cyan). The panels may take colour too: not every panel stays Graphite or Pearl, as long as the whole is well composed (the director, 2026-11-13: "not all panels should stay dark or pearly light it just need to be all well composed"). Which panel takes which palette is Modulo's choice, as the director said on 2026-11-12 (`docs/ui.md`, "One look, ours").
+- **More colour across the HUD** comes from colours that mean something: health red, experience its own colour, the rarity's trim, the gems', the pills' icons (Credits warm, Electricity the kit's yellow; research's call at the fix round). The panels may take colour too: not every panel stays Graphite or Pearl, as long as the whole is well composed (the director, 2026-11-13: "not all panels should stay dark or pearly light it just need to be all well composed"). Which panel takes which palette is Modulo's choice, as the director said on 2026-11-12 (`docs/ui.md`, "One look, ours").
 
 **The take, 2026-11-13 (Faber), for research's verdict.** All eight parts are in the game, in Graphite as the kit made them. The director's notes above wait for the fix round.
 - **Part 1, the kit:**
@@ -308,6 +308,14 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
   - The level-up's word keeps the old violet `Theme.Colour.Xp`, while the thread is now blue. Whether they match is research's call.
   - The phone-size capture still waits on the director's device-simulator click.
 - **Four facts:** implemented; tested (above); visually reviewed by the builder, with research's playtest to come; not director-accepted.
+
+**Research's pass on the fix round, 2026-11-13,** from the card sheet and a playtest of my own: Pip on Lantern Row's blockout, two packs, at the crit floor's 0.5 and then 1, put back to 0.05. **Felt:** the card now says what it is at a glance: red health, a blue thread, the portrait leading, the badge on its corner. In play the numbers rise and fade under the band, and the ring arrives with the fight and is gone a second after it. **Tier:** competent, with no obvious issue in what I saw. **The one bold thing:** the red conduit, with the badge biting the frame. All six fixes hold. The three calls:
+
+1. **The headroom:** the top row moves down now, so a Mythical crest at 1.25 and the coming head-above cut clear Roblox's top bar by at least 4 px. The target card and the pills take the lead card's new top line, one line across the top. The band follows.
+2. **The level-up's word takes the thread's blue,** `#4E9BFF`. Experience has one colour, and violet now means Epic and the Void.
+3. **Electricity stays the kit's yellow,** on its pill too, so Modulo draws no new bolt. The cyan was research's reading, not the director's word. Yellow already means electricity across the kit, and the cool end is full: Rare's blue, Frost's cyan, the thread. Credits keep their warm coin.
+
+Also, as the builder's tier 1: the trim seeds take the director's rarity colours now, live (Uncommon `#7CF0A0`, Rare `#6FB6FF`, Epic `#D29CFF`; AR3, section 4). The sheet's Uncommon trim is the untinted ladder's grey. Not caught in my captures: a critical number. Its look stays the self-test's until the phone-size pack holds one frozen (the effect kit's time scale at 0). **What closes TR3:** the three calls, then the phone-size captures on the director's simulator click, then the director's eye.
 
 **Status:** started 2026-11-12 (Faber). The fix round is ready for research's playtest, 2026-11-13.
 

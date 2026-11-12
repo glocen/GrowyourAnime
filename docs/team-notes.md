@@ -12,9 +12,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now: waiting on the verdict, then the fix round with the director's notes. Next queued: the reveal's ceremony.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **Quaestor:** the reveal's block-in waits on your verdict, fresh eyes beside it (AR3, section 4, "Delivered"): `build/handoff/Reveal/`, the two movies and the two strips first. My pick is layout B. Content check PASS. The director's word on the rarities' colours (Uncommon green, Rare blue, Epic purple) is in the block-in, and in that entry for your register, with its costs to the kit.
+- The reveal's block-in: competent, layout B accepted, six fixes for the art sheet; the director's rarity colours settled (AR3, section 4, "Research's verdict").
+- Now: the reveal's art sheet, with the six fixes and the three colour checks (the near gem pairs at 64 px over dark, Rare beside Frost, a rarity's green with its frame), then the content check on the exact files. Next: the kit's three frames tinted, its own small piece. No lock held.
 - **Faber:** Lantern Row's kit is accepted; "For the builder" in AR5, section 2 is yours at its install. The ranged lead's distance (notice): no change from me.
-- Now: nothing queued. Next: the reveal's art sheet after the verdict; the kit's rarity colours if research rules them in. No lock held.
 
 **Turns.** Studio: the main place is free, for research's TR3 read (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 

@@ -6,10 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work. **AR8 switched to effects built in 3D in the engine** (the director's word, `docs/decisions.md`): one kit of meshes and textures (Modulo, next), one data-driven player (Faber, once the kit lands; Faber keeps on other pieces meanwhile, the director's word), then B1's exit as a spiral burning off from its foot, the Lamplighter's signature, B5's square (AR8, "The method"). A, C and B2 closed at competent and stay. AR7: the keeper's signature clip, option 1 picked (the lantern held higher and out to the side, off the face's line), after the kit. AR7's install and fall: works, four fixes with Faber (the lead on the left and holding to Gone, Out darker and longer, Arrive about 17). TR3 and TR4 closed. Next: verdicts as the takes arrive.
 
-**Faber (builder).** 2026-11-13. B5's and B1's takes are superseded by AR8's method (research). One take waits on research:
-- **AR7's install and the fall's replay** (AR7, section 5, "AR7 installed, and the fall's replay built"): the keeper in its own rig, its Challenge, its walk at 5, its lantern going out. The takes are in `build/captures/ar7/`, with three things I see for the verdict.
-- **Research's tier 2 on the walk:** a ranged lead's extra free hits come to 0.65 s at most, so 5 stays.
-- **Now:** two HUD cases that AR7's desktop run found failing, outside it (the level-up word over the band; a plate 1 px short under the pill). Then Rook, Pip and Lyric installed, and the effect player once Modulo's kit lands.
+**Faber (builder).** 2026-11-13.
+- **AR7:** fixes 1 to 3 are in (5fc87a3), with a take, `build/captures/ar7/ar7_fixes*`. **Research, your call:** fix 4 can't be met by Arrive, because the hat stands above the camera's eye. The take shows two more things: Pip still crosses the Challenge, and the fight sits under the pills. The measures and options A to D are in AR7 section 5, "Fixes 1 to 3 in". My pick is A, then B.
+- **The two HUD cases are fixed** (bfdb57f). The whole self-test passes, 861/861 under the phone emulator.
+- **Now:** AR8's kit, in order: Modulo's unlit question, then the upload batch under the group, then the effect player. Rook, Pip and Lyric come once AR7 closes.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
@@ -17,7 +17,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
 - **Now:** AR8's kit **delivered** (`build/handoff/FxKit/`; AR8, "The kit"): 21 meshes and 19 images, content check PASS, the flame on its redraw. **Faber:** one upload batch under the group, then the player. Open for you there: whether a MeshPart showing its texture draws unlit. **Next:** the keeper's Signature clip, option 1 (AR7, section 7); research sees the hold from the game's camera before the re-export. No lock held.
 
-**Turns.** Studio: the main place is Faber's (the HUD cases). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's (AR8's kit). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 7. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal. Hours are in each piece's entry.
 

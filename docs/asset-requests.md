@@ -3156,6 +3156,39 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   - The lone lantern among the street's own can't be judged on a grey street, so it goes to Lantern Row's install (AR5, section 2).
 - **Next look:** one take of the try and the fall after fixes 1 to 4, from the same camera.
 
+**Fixes 1 to 3 in; Arrive can't meet fix 4 (Faber, 2026-11-13; 5fc87a3).**
+- **Fixes 1–3, as asked, the numbers in Config:**
+  1. A try sets the lead down at `Combat.Keeper.Side` −3.5, the avatar's left. Measured: −3.50.
+  2. After a keeper with a fall goes down, a lead that was on it holds and faces it until Gone plus the longest hold, then turns. Measured: 0.01 studs of drift, 0° off.
+  3. `Falls.Lamplighter`: from Gutter the paper's Color eases (`Ease` 2) to `Dark` (66, 74, 90), reaching it at Out. Gone moves to 101, so Out to Gone is 0.35 s.
+  - Two numbers follow from the later Gone: `WinPause` 2.4 (the last scrap is seen), `FadeSeconds` 2.1.
+- **Checks:**
+  - Self-test: 861/861 at 60 fps under the phone emulator, the touch camera's checks included.
+  - Logic: 2436/2436, in Studio and offline. The world report is empty. Type check: 0 new.
+  - New checks: the lead's side; the hold, its facing, then the turn; the paper's own colour until Gutter, going down, dark from Out to Gone; Out to Gone at 0.3–0.45 s; Dark is a deep blue-grey; the last scrap comes before WinPause.
+- **Take,** at Arrive 14 with Pip, under the phone emulator, in `build/captures/ar7/`:
+  - `ar7_fixes.mp4` (sheet `ar7_fixes_sheet.png`);
+  - `ar7_fixes_challenge.png`: from the fade's lift, 10 cells a second;
+  - `ar7_fixes_fall_strip.png`: the fall, 10 cells a second.
+- **Fix 4, measured** on the phone's 750×401 viewport, frame by frame (the hat's top):
+  - Arrive 14: y 82. Arrive 16: 77. Arrive 18: 84 to 90, at 31 to 34 studs.
+  - So the hat stands 57 to 69 px over the Electricity pill's foot (147) and over the Credits pill's (108) in nearly every frame. Arrive 18 is no better than 14.
+  - **Why no Arrive can work:** the camera's eye is 7.8 studs over the keeper's floor and the hat's top is 10.5.
+    - The hat is above eye level, so at any distance it projects above the horizon (y 116 to 123).
+    - The top band's feet are all below the horizon: Target 137, Electricity 147, Lead 171.
+    - On the phone the band covers the width but for two gaps, of 25 and 38 px.
+    - A step back only eases the hat toward the horizon, about 2 px a stud, while the keeper shrinks.
+  - Arrive stays 14.
+- **The take shows two more things:**
+  1. **Pip still crosses the Challenge.** Set down on the left, it walks to its slot on the keeper's far side, to the right. That's `Lead.Beside.Keeper` 90 with `Fight.Aside`, which takes the side the keeper leans to. The walk crosses the camera's line, so its hat covers the keeper's body through the Lift and the Stamp.
+  2. **The same slot pulls the fight to the frame's right edge.** The fall's lantern, now plainly dark, stands under the Credits pill, the Electricity pill and the shard toast, with Pip out of frame. So the bold thing is mostly hidden on a phone.
+- **Options, each with its cost** (the call is research's):
+  - **A.** In a try, the lead takes the keeper's near side: `Fight.Aside`'s side flipped for keepers. The walk-in never crosses the camera's line, the fight and the fall sit nearer the middle, and the lead watching is in frame. About 45 minutes, with a logic case and a take.
+  - **B.** The top band goes see-through over the keeper: a piece fades to about a quarter while the hat or the lantern is under it, then eases back. It works on every device and with any placement. About 1.5 hours, with a self-test case.
+  - **C.** The try's economy pills step out: Credits and Electricity slide up for the try and come back for the win's count. This clears only the right column; a fight under the Target card stays covered. About 1 hour.
+  - **D.** The try's camera goes higher, the eye about 14 studs instead of 7.8, so the hat projects under the band. The avatar then sinks into the bottom HUD and the view turns top-down. About 1 hour, plus a framing study.
+  - **My pick:** A, then B.
+
 ### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
 
 Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.

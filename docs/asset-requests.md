@@ -2774,6 +2774,26 @@ For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered
 
 **Status:** not started.
 
+## AR7. The Lamplighter, Lantern Row's keeper
+
+For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.
+
+**Feel line:** at the street's end a tall festival-goer the Void has filled turns from its great lantern and lifts its pole, and you know it's the ground's master before it moves.
+
+**The rig: the Shade's** (AR2), as the roster has it: "a Shade in full festival dress with one signature of its own" (`docs/roster.md`, "Enemies"). It uses the same R6 rig and clip family, so the Shade's reactions, and later the states' cues, fit it as they are. It stands taller by scale: TR2's grey keeper is 7.4 studs (`Definitions/Enemies.luau`). A body of its own isn't asked. If the Shade's rig, scaled, can't carry the dress, say so with the lever you tried and the options.
+
+**Delivers,** each shown before the next:
+1. **The sheet:** the keeper's dress over the Shade's empty coat. A lamplighter's long coat, a hat or hood, its own keeper's mask (not one of the four), and a long pole with a hook and a lantern. It has Intelligence's outline, and the lantern burns in Lantern Row's cyan and warm white. Up to three directions, cheap, with your pick and what's wrong in each. It must read at 64 px, and at a third of the ring's frame beside a Voidkin (TR2's keeper framing).
+2. **The model** on the Shade's rig, scaled, with the lantern as a part the clips and the signature can light.
+3. **The clips:** the Shade's family checked at its scale, the Challenge (the held pose as a try starts, TR2), and the signature's wind-up and strike as a block clip.
+4. **Its fall:** the Shade's burst into light and paper at keeper size, with the lantern's light going out last. No wounds, nothing left behind (`AGENTS.md`, rule 4).
+
+**Its signature, a seed** (tier 2: research and the builder; built through `/ga-action` in the Lamplighter's fight, after Lantern Row is dressed). It plants the pole, and the lantern swings up and lights a cyan circle on the ground under the lead. Then the lantern slams down on it as a heavy hit. The wind-up is long enough to read on a phone. A heavy stagger landed during it breaks the signature ("States in a fight": "a signature being wound up is broken"), so Haymaker has an answer to it. The sheet only needs the pose and the prop. The numbers and the name come with the action.
+
+**Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
+
+**Status:** not started.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

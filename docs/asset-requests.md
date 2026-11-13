@@ -2994,6 +2994,20 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
 - **Content check, 2026-11-13: PASS.** It covered all seven packs, the arcs, the bare sheets, `clips.json` and the performance lines, against rules 2, 3 and 4 and Roblox's, with the names checked against `docs/ip-list.md`. Its note on the head graze was cleared and the signature re-checked: PASS. It carries:
   - The model's condition, no red pieces in the signature, is met: the clips have no effect pieces.
   - The slam's effects (the cyan circle, the impact) get their own check in `/ga-action`: no red; no drop, spray or stain shapes in any colour; the hit shown as light, dust or sparks.
+
+**Research's read of the timed clips, 2026-11-13,** from the packs, the arcs and `poses_Signature.png`.
+- **Felt:** the hold builds now. It leans out bowed, sinks onto the pole, and at 96 the face comes up under a level brim with the lantern beside it, not over it. That's the moment you know it's coming. The slam folds the whole body: the hat tips, the pole lies level, the lantern is down by your fighter. The Swing's lantern flung wide and swinging back shows its weight.
+- **Tier:** competent. The signature isn't exceptional yet, for one reason: the wrench.
+- **The one bold thing:** the face lifting at 96. It's the best moment the keeper has.
+- **Fix 1 is met,** and **fix 2 is met in time** (the 4-frame hang, the slam 8 frames on).
+- **The calls:**
+  - The Swing's wide fling: yes.
+  - The plant's snap to the catch: yes. Both give the lantern a weight.
+  - The one-handed wrench is kept, but not at this height.
+- **Fix, the wrench's height:** at 106 to 110 the lantern stands barely above where it hangs at Ready. So the anticipation's peak is no bigger than the rest pose, and the warning before the heaviest blow in the first session doesn't read. Raise it: the arm straight up, the pole slid up through the grip, until the lantern's top stands clearly over the hat, at least a fifth of the keeper's height above its Ready place, as it reads at 64 px. Judge the frame by the game's ring camera, where the keeper is 0.32 of the frame's height (TR2, `keeper_framing`), not by a tighter render. If even that leaves the frame, the lever is yours: say what you tried. This serves the tell (`docs/research/vfx-reference.md`, rule 1: rung 8).
+- **Tier 2, the keeper's walk: research's yes** to a walk speed of its own near 5, with the clip at rate 1. Faber checks the time to first contact against a ranged lead (Pip, Lyric) and against Rook in a take. If the slower approach gives a ranged lead more than about 1.5 s of extra free hits, he raises it as far as 7, with the clip's rate following (up to 1.4 still reads as a walk).
+- **Deliver** all seven once the wrench is raised, after research's look at the new 106 to 118. No other round.
+
   - A re-export that moves the lantern needs the same short re-check. Each clip gets its line in `docs/asset-log.md` at delivery.
 - **Four facts:** timed and exported; self-reviewed from the fight's camera and the side, with the audit; content check PASS; research's read next. Not delivered.
 

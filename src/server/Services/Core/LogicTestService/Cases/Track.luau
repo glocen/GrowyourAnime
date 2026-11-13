@@ -145,9 +145,26 @@ return {
 				local going = 8 + 1.5 * (band - 1)
 				t.Check(`band {band} whole until {66 + going}`, near(Track.Value(tracks.Transparency, going), 0))
 				t.Check(`band {band} gone by {66 + going + 3}`, near(Track.Value(tracks.Transparency, going + 3), 1))
+				-- B1's finish: cut, never faded, so no half-gone flame reads rose over the Shade or a dusk sky
+				t.Check(`band {band} whole while it flares, then cut`, near(Track.Value(tracks.Transparency, going + 1.99), 0)
+					and near(Track.Value(tracks.Transparency, going + 2.01), 1))
 				t.Check(`band {band} flares hot as it goes`, near(Track.Value(tracks.Glow, going + 1.5), 4))
 			end
 			t.Check("the flare's white on 70", near(Track.Value(rows.Flare.Tracks.Size, 4), 5.5) and near(Track.Value(rows.Flare.Tracks.Size, 7), 0))
+			-- B1's finish (AR8, "B1's finish: the bands on fire"): the coil on fire, a burning front where each band meets the next
+			t.Check("the coil on fire", rows.Coil.Look == "fx_fire_Flame")
+			local fronts = rows.Front
+			t.Check("the fronts ride the coil and grow with it", fronts ~= nil and fronts.On == "Coil" and fronts.Tracks.Scale == rows.Coil.Tracks.Scale)
+			for n = 1, 5 do
+				local name = `FxCoil2_Front{n}`
+				local tracks = (fronts.Bands :: any)[name]
+				local going = 8 + 1.5 * (n - 1)
+				t.Check(`front {n} sits where band {n} meets {n + 1}`, FxKit.Meshes[name].Of == "FxCoil2" and FxKit.Meshes[name].Front == n)
+				t.Check(`front {n} unseen until band {n} burns`, near(Track.Value(tracks.Transparency, going), 1))
+				t.Check(`front {n} shown as it burns`, near(Track.Value(tracks.Transparency, going + 0.5), 0) and near(Track.Value(tracks.Transparency, going + 2), 0))
+				t.Check(`front {n} gone as band {n + 1} takes over`, near(Track.Value(tracks.Transparency, going + 3), 1))
+				t.Check(`front {n} brighter than the bands`, Track.Value(tracks.Glow, going + 1) > Track.Value(((rows.Coil.Bands :: any)[`FxCoil2_Burn{n}`]).Glow, 0))
+			end
 			t.Check("the light at its brightest on the flare", near(Track.Value(rows.Light.Tracks.Brightness, 4), 4))
 		end,
 	},

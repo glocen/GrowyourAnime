@@ -539,10 +539,31 @@ return {
 			t.Check("on the coil's tip", (player.Parts("Flare")[1] :: BasePart).Position:FuzzyEq(tip, 1e-3))
 			local light = player.Parts("Light")[1]:FindFirstChildOfClass("PointLight") :: PointLight
 			t.Check("the light at its brightest on the flare", math.abs(light.Brightness - 4) < 1e-6, tostring(light.Brightness))
+			local fronts = player.Parts("Front") :: { any }
+			t.Check("five burning fronts", #fronts == 5, tostring(#fronts))
+			local frontLook = if effect.Grey then rows.Front.Grey else rows.Front.Look
+			local frontSurface = (fronts[1] :: MeshPart):FindFirstChildOfClass("SurfaceAppearance")
+			t.Check("in the kit's flame", frontSurface ~= nil and frontSurface.ColorMapContent.Uri == FxKit.Images[frontLook :: string].Id)
+			t.Check("none while the coil's whole", fronts[1].Transparency == 1 and fronts[5].Transparency == 1)
 			player.Step(9.5)
-			t.Check("from 74 the foot burns first", coil[1].Transparency > 0 and coil[1].Transparency < 1 and coil[2].Transparency == 0, `{coil[1].Transparency} {coil[2].Transparency}`)
+			t.Check("from 74 the foot burns first, whole while it flares", coil[1].Transparency == 0 and coil[2].Transparency == 0, `{coil[1].Transparency} {coil[2].Transparency}`)
+			local unitBand = FxKit.Meshes[coil[1].Name]
+			local coilFrame = (coil[1] :: BasePart).CFrame * CFrame.new(-unitBand.Centre * (coil[1].Size / unitBand.Size))
+			local unitFront = FxKit.Meshes[fronts[1].Name]
+			local frontScale = fronts[1].Size / unitFront.Size
+			t.Check("the first front burning, the next unseen", fronts[1].Transparency == 0 and fronts[2].Transparency == 1, `{fronts[1].Transparency} {fronts[2].Transparency}`)
+			t.Check("on the coil, turned with it, where its first band meets the second",
+				(fronts[1].Position - (coilFrame * CFrame.new(unitFront.Centre * frontScale)).Position).Magnitude < 1e-3
+				and (frontScale - coil[1].Size / unitBand.Size).Magnitude < 1e-4)
+			t.Check("glowing at its Glow", math.abs((frontSurface :: SurfaceAppearance).EmissiveStrength
+				- Track.Value((rows.Front.Bands :: any).FxCoil2_Front1.Glow, 9.5)) < 1e-6)
 			local band = (rows.Coil.Bands :: any).FxCoil2_Burn1
 			t.Check("flaring hot as it goes", math.abs((surface :: SurfaceAppearance).EmissiveStrength - Track.Value(band.Glow, 9.5)) < 1e-6)
+			player.Step(10.5)
+			t.Check("cut, never faded: past 76 the foot's gone, the next band whole under its front",
+				coil[1].Transparency == 1 and coil[2].Transparency == 0 and fronts[2].Transparency == 0,
+				`{coil[1].Transparency} {coil[2].Transparency} {fronts[2].Transparency}`)
+			player.Step(9.5)
 			local embers = player.Parts("Embers")[1] :: BasePart
 			local emitter = embers:FindFirstChildOfClass("ParticleEmitter") :: ParticleEmitter
 			t.Check("embers rise off the burning edge", emitter.Rate == 90 and emitter.Texture == FxKit.Images.fx_ember.Id, tostring(emitter.Rate))
@@ -555,7 +576,10 @@ return {
 			for _, part in coil do
 				gone = gone and part.Transparency == 1
 			end
-			t.Check("gone on 84, the tip last", gone)
+			for _, part in fronts do
+				gone = gone and part.Transparency == 1
+			end
+			t.Check("gone on 84, the tip last, its fronts with it", gone)
 			t.Check("the embers stop", emitter.Rate == 0)
 			t.Check("it lives on while its embers do", player.Step(player.End - 1))
 			t.Check("and ends", not player.Step(player.End + 1))

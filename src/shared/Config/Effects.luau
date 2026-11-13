@@ -61,14 +61,31 @@ export type Row = {
 }
 export type Rows = { Area: number, Grey: boolean, Action: string?, Rows: { [string]: Row } }
 
--- A coil band's burn (B1's exit): it holds whole until `from`, fades over Goes frames on Quad In, and flares from 2 to 4
--- as it goes (build/handoff/Pip/fx/pip_burst_rows.json).
+-- A coil band's burn (B1's exit): it holds whole, flaring from 2 to 4 from `from`, and is cut two frames in, its front
+-- covering the cut (build/handoff/Pip/fx/pip_burst_rows.json). Never a fade: half-gone fire over a dark Shade or a dusk sky
+-- reads rose, redder than the kit's orange (B1's finish, content check conditions 1 and 4).
 local function burn(from: number): { [string]: { Key } }
 	return {
-		Transparency = { { 0, 0 }, { from, 0, "Quad In" }, { from + 3, 1 } },
+		Transparency = { { 0, 0 }, { from + 2, 0 }, { from + 2, 1 } },
 		Glow = { { 0, 2 }, { from, 2, "Quad Out" }, { from + 1.5, 4, "Linear" }, { from + 3, 4 } },
 	}
 end
+
+-- B1's burning front n (AR8, "B1's finish"): shown as band n starts to burn, held 1.5 frames, gone over one as the next
+-- takes over.
+local function front(from: number): { [string]: { Key } }
+	return {
+		Transparency = { { 0, 1 }, { from, 1, "Linear" }, { from + 0.5, 0 }, { from + 2, 0, "Quad In" }, { from + 3, 1 } },
+		Glow = { { 0, 3 } },
+	}
+end
+
+-- B1's coil and its fronts grow as one: (width, height, width), 0.7 of Modulo's width, its height kept (research's fix 1).
+local COIL_SCALE: { Key } = {
+	{ 0, Vector3.new(3.004, 3, 3.004), "Quart Out" },
+	{ 4, Vector3.new(3.265, 5, 3.265), "Linear" },
+	{ 18.5, Vector3.new(3.265, 5.6, 3.265) },
+}
 
 return {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
@@ -327,20 +344,17 @@ return {
 		-- Shades and the floor, brightest on the flare.
 		LanternExit = {
 			Area = 5,
-			Grey = true,
+			Grey = false,
 			Rows = {
+				-- On fire (B1's finish): a dark saturated rim, the flame's orange, gold and a white core licking up each strand,
+				-- drawn for its Glow of 2; its strength is the Glow, never the texture.
 				Coil = {
 					Kind = "Mesh",
 					Part = { "FxCoil2_Burn1", "FxCoil2_Burn2", "FxCoil2_Burn3", "FxCoil2_Burn4", "FxCoil2_Burn5", "FxCoil2_Burn6" },
-					Look = "fx_across_Flame",
+					Look = "fx_fire_Flame",
 					Grey = "fx_across_Grey",
 					Tracks = {
-						Scale = {
-							-- It hugs the Shade, it doesn't balloon: 0.7 of Modulo's width, its height kept (research's fix 1).
-							{ 0, Vector3.new(3.004, 3, 3.004), "Quart Out" },
-							{ 4, Vector3.new(3.265, 5, 3.265), "Linear" },
-							{ 18.5, Vector3.new(3.265, 5.6, 3.265) },
-						},
+						Scale = COIL_SCALE, -- it hugs the Shade, it doesn't balloon
 						Spin = { { 0, 0, "Quart Out" }, { 18.5, -150 } },
 					},
 					Bands = {
@@ -350,6 +364,23 @@ return {
 						FxCoil2_Burn4 = burn(12.5),
 						FxCoil2_Burn5 = burn(14),
 						FxCoil2_Burn6 = burn(15.5),
+					},
+				},
+				-- The burning edge: where band n meets n + 1, a bright line across each strand with ragged tongues licking up
+				-- it, brighter than the bands, climbing a band every 1.5 frames from 74 (B1's finish).
+				Front = {
+					Kind = "Mesh",
+					On = "Coil",
+					Part = { "FxCoil2_Front1", "FxCoil2_Front2", "FxCoil2_Front3", "FxCoil2_Front4", "FxCoil2_Front5" },
+					Look = "fx_rise_Flame",
+					Grey = "fx_rise_Grey",
+					Tracks = { Scale = COIL_SCALE },
+					Bands = {
+						FxCoil2_Front1 = front(8),
+						FxCoil2_Front2 = front(9.5),
+						FxCoil2_Front3 = front(11),
+						FxCoil2_Front4 = front(12.5),
+						FxCoil2_Front5 = front(14),
 					},
 				},
 				-- The effect's one white, its focal point, on 70 (rule 3): at the coil's tip, its unit coil's 2.2 up.
@@ -696,34 +727,35 @@ return {
 				High = "Tip.High",
 				Like = "Shaft",
 				Taper = 0.5, -- hugging the shaft
+				-- 1.4 times the shaft's width, from 1.9, so the shaft reads crisp (research's final, 2026-11-13)
 				Image = "lamplighter_column_halo",
 				Grey = "", -- none in the block-in
 				Color = Color3.new(1, 1, 1),
 				Beam = { FaceCamera = true, TextureMode = "Stretch", TextureLength = 1, TextureSpeed = 0, LightEmission = 1, LightInfluence = 0, Segments = 10, ZOffset = -0.5 },
 				Tracks = {
 					Width = {
-						{ 0, 20.976, "Linear" },
-						{ 1, 15.105, "Linear" },
-						{ 2, 11.628, "Linear" },
-						{ 3, 11.4, "Linear" },
-						{ 4, 11.4, "Linear" },
-						{ 5, 11.4, "Linear" },
-						{ 6, 11.098, "Linear" },
-						{ 7, 10.796, "Linear" },
-						{ 8, 10.495, "Linear" },
-						{ 9, 10.193, "Linear" },
-						{ 10, 9.891, "Linear" },
-						{ 11, 9.589, "Linear" },
-						{ 12, 9.288, "Linear" },
-						{ 13, 8.986, "Linear" },
-						{ 14, 8.684, "Linear" },
-						{ 15, 8.382, "Linear" },
-						{ 16, 8.081, "Linear" },
-						{ 17, 7.779, "Linear" },
-						{ 18, 7.477, "Linear" },
-						{ 19, 7.175, "Linear" },
-						{ 20, 6.874, "Linear" },
-						{ 21, 6.572 },
+						{ 0, 15.456, "Linear" },
+						{ 1, 11.13, "Linear" },
+						{ 2, 8.568, "Linear" },
+						{ 3, 8.4, "Linear" },
+						{ 4, 8.4, "Linear" },
+						{ 5, 8.4, "Linear" },
+						{ 6, 8.177, "Linear" },
+						{ 7, 7.955, "Linear" },
+						{ 8, 7.733, "Linear" },
+						{ 9, 7.511, "Linear" },
+						{ 10, 7.288, "Linear" },
+						{ 11, 7.066, "Linear" },
+						{ 12, 6.844, "Linear" },
+						{ 13, 6.621, "Linear" },
+						{ 14, 6.399, "Linear" },
+						{ 15, 6.176, "Linear" },
+						{ 16, 5.954, "Linear" },
+						{ 17, 5.732, "Linear" },
+						{ 18, 5.509, "Linear" },
+						{ 19, 5.287, "Linear" },
+						{ 20, 5.065, "Linear" },
+						{ 21, 4.843 },
 					},
 				},
 			},

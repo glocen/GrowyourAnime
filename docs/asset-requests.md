@@ -4486,6 +4486,27 @@ This answers fix 3 of research's verdict on B1's exit from its rows, for the fin
   - Research's final, with `ga-fresh-eyes`.
 - **Hours:** about 0.3, 19:07 to 19:27 UTC, the content check included. An estimate from the two commits' times.
 
+**The build and the take (Faber, 2026-11-13).**
+- **Where:**
+  - `Config.Effects.Rows.LanternExit`, out of grey: the Coil row in `fx_fire_Flame`; a new `Front` row, five fronts On Coil, sharing the coil's Scale keys (`COIL_SCALE`).
+  - The image and the five meshes went up in cc503a5 (ids in `docs/asset-log.md`). `src/shared/Assets/FxKit.rbxm` is rebuilt with them (28 meshes, 13 looks).
+- **One change from the rows: each band is cut, never faded** (`burn()`). It stays whole, flaring 2 to 4, until 2 frames into its burn, then goes in one frame. The fronts cover the cut and keep the json's fade.
+  - Why: in the engine a half-gone band reads redder than `#FF8A3D` (conditions 1 and 4): peach stripes over the Shade at noon (hue 20°), rose over the dusk sky (8.8°). A shorter fade fixed noon, not dusk.
+- **The red check** (redder than 23.5°, saturation over 0.45, value over 0.55, new in the burst), worst frame: noon 88 px (19.2°, from 208 before the cut), dusk 380 px (15.5°), above 80 px (20.2°). Each is the coil's thin dark rim or Pip's own robe moving, never a band.
+- **The take** (`build/captures/ar8/b1_finish_*`): noon, dusk (ClockTime 18.4), above (a client camera 19 studs over the Shade, looking down); `b1_finish_beside_grey.png` (the grey, noon, dusk, above, 4 frames apart), `_64px.png`, `_noon_strip.png`, `_dusk_close.png`. For the take only, `Combat.Lead.Side` went from 3.5 to 7 so the avatar clears the Shade (the framing fix waits in "Rook, Pip and Lyric installed").
+- **Against the open list:**
+  - The rim stays darker than the body at noon and at dusk.
+  - The fronts show at phone size as a bright edge climbing.
+  - From above, a two-armed swirl standing off the floor with its shadow, never a decal (conditions 3 and 5).
+  - The tongues climb round the Shade and past its head with the coil, never off it (condition 2), seen at the replay's one heading and from above.
+  - At noon at Glow 4, the bands go pale gold with orange edges; Glow is kept as delivered.
+- **Fresh eyes, blind: competent.** For it: two strands burning down to one crossed flare over the Shade's head, popping into embers, at every light. Against it: at noon a glossy cream-gold ribbon more than flame, and the fronts lost at 64 px; the throw's recoil barely registers at phone size (the clip and the framing).
+  - If research wants more flame at noon, the cheap try is the bands' Glow lowered by Tune (back to the content check, condition 5).
+- **Checks:** type check 0 new; logic 3870/3870 offline and in Studio; self-test on the phone's emulation, B1's exit 28/28, Lantern Burst 27/27, the keeper's signature 42/42.
+- **In the same commit:** the keeper's halo at 1.4 times the shaft (research's Tune on the signature's final).
+- **Open:** research's final. Modulo: the cut written back into `pip_burst_rows.json`.
+- **Hours:** about 0.5, 20:04 to 20:30 UTC, the takes and the red check included, after the uploads and the kit's rebuild counted in cc503a5. From the commit's and the files' times.
+
 ### The keeper's signature in the engine (Faber, 2026-11-13)
 
 Section 7's rows played in grey on the keeper's clip through the one player, joined to the action, its hit and the camera (the method's order, 3). It's a signature, so research's verdict comes with `ga-fresh-eyes`.

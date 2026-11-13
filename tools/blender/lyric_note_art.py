@@ -77,6 +77,10 @@ def mix(a, b, t):
 
 
 VEIL = mix(WHITE, STORM, 0.15)  # a pale white with a touch of her Storm
+# the effects pass (AR8, part B): a bright interior with a darker, saturated edge, so it holds on a bright sky as well as
+# at night (docs/research/vfx-reference.md, rule 3). The edge is her Rose taken a fifth toward her Ink: a deep magenta,
+# never red
+DEEP = mix(ls.PALETTE["Rose"], INK, 0.2)
 
 
 # --- the pictures ----------------------------------------------------------------------------------------------------
@@ -122,21 +126,24 @@ def band_grid():
 
 def crest_picture():
     """The crest's ribbon, its leading light, there the crest's whole life: a narrow core of the pale light, and two
-    strands crossing and crossing again through it, the note's wave, one for each speaker, white edged in her Storm so
-    they hold on a bright floor too. They fade out before the ends rather than closing to points: never a blade."""
+    strands crossing and crossing again through it, the note's wave, one for each speaker. Bold for the effects pass:
+    each strand a white core twice as thick as before, in her Storm, rimmed in the deep magenta, so it reads on the
+    bright sky as on the night; and fewer crossings, so each one carries at phone size. They fade out before the ends
+    rather than closing to points: never a blade."""
     w, h = CREST_PX
     X, Y, T, cap, level = band_grid()
     pic = np.zeros(X.shape + (4,))
-    pic = over(pic, VEIL, np.where(level(0.36) <= 1, 0.34, 0.0))
-    phase = math.pi * 4.5 * (X + 1)
+    pic = over(pic, VEIL, np.where(level(0.36) <= 1, 0.45, 0.0))
+    phase = math.pi * 3.0 * (X + 1)
     curve = 0.52 * T * np.sin(phase)
     slope = np.gradient(curve, axis=1) * (w * K / 2) * (h / w)  # in pixels across over pixels along
-    thick = (5.0 + 3.0 * T) / (h / 2)
-    border = 2.5 / (h / 2)
+    thick = (12.0 + 7.0 * T) / (h / 2)
+    storm, deep = 3.0 / (h / 2), 6.5 / (h / 2)  # the Storm band, then the deep rim outside it
     fade = np.clip((0.86 - np.abs(X)) / 0.24, 0, 1)
     dist = [np.abs(Y - sign * curve) / np.sqrt(1 + slope ** 2) for sign in (1, -1)]
-    for d in dist:  # the Storm borders first, so where the strands cross both whites lie over both borders
-        pic = over(pic, rs.rgb(STORM), np.where(d <= thick / 2 + border, fade, 0.0))
+    for colour, out in ((DEEP, deep), (rs.rgb(STORM), storm)):  # rims first, so where the strands cross both whites
+        for d in dist:                                           # lie over both rims
+            pic = over(pic, colour, np.where(d <= thick / 2 + out, fade, 0.0))
     for d in dist:
         pic = over(pic, rs.rgb(WHITE), np.where(d <= thick / 2, fade, 0.0))
     return down(pic)
@@ -152,10 +159,11 @@ def veil_picture():
     pic = np.zeros(X.shape + (4,))
     for s, alpha in ((1.0, 0.18), (0.68, 0.28)):
         pic = over(pic, VEIL, np.where(level(s) <= 1, alpha, 0.0))
-    edge = 7 / (h / 2)  # 7 px of the half height
+    edge = 10 / (h / 2)  # px of the half height: the deep rim, with her Storm on its inner side
     outer = level(1.0)
     rim = 0.9 * np.clip(1 - cap / 0.5, 0, 1)
-    pic = over(pic, rs.rgb(STORM), np.where((outer <= 1) & (outer > 1 - edge / T), rim, 0.0))
+    pic = over(pic, DEEP, np.where((outer <= 1) & (outer > 1 - edge / T), rim, 0.0))
+    pic = over(pic, rs.rgb(STORM), np.where((outer <= 1 - 0.55 * edge / T) & (outer > 1 - edge / T), rim, 0.0))
     return down(pic)
 
 
@@ -201,6 +209,7 @@ def touch_picture():
             pts = [way * (inner + (outer - inner) * k / 3) * stud for k in range(4)]
             kink = 0.09 * stud * (1 if (j + n) % 2 else -1)
             path = jag(pts, (kink, -kink, kink))
+            cell = over(cell, DEEP, np.where(stroke(X, Y, path, width + 0.05), 1.0, 0.0))  # the deep rim (AR8)
             cell = over(cell, rs.rgb(STORM), np.where(stroke(X, Y, path, width), 1.0, 0.0))
             if n < 2:  # a white core in the first two, while it's hot
                 cell = over(cell, rs.rgb(WHITE), np.where(stroke(X, Y, path, width * 0.4), 1.0, 0.0))

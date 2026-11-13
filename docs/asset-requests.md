@@ -3226,6 +3226,84 @@ Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered
 - **Out of this piece:** fresh eyes couldn't see Pip's heave and recoil from this camera. That's his accepted clip (AR4, section 3), not the burst. It's noted for the whole-session review.
 - **Next:** the art sheet, under the content check's six conditions.
 
+### B1, the art sheet (Modulo, 2026-11-13)
+
+H with the verdict's fix, drawn: Pip's cream, gold and orange inside, a dark amber rim (`#A85A1A`) outside, flat and unlit like the first art, the bloom left to the game.
+
+- **Where:** `build/scratch/modulo/pip/coil_art/`.
+  - `pip_burst.png`, 1024 x 896: the upload, in the old one's places.
+  - `pip_burst_coil_art.png`: the review sheet. It has the picture on dark, bright and grey, sixteen frames from the player's camera, rows for the "before" as it plays, a bright floor, beside the fight, dead on and from the side, and 64 px rows (before, the grey K, the coil on dark and on bright, and in grey).
+  - `pip_burst_coil_art.json`: the table and the checks.
+  - The script is `tools/blender/pip_burst_coil_art.py`; `pictures` draws the picture alone. The grey K beside it is `pip_burst_rework.py`'s `column()`.
+- **The fix, as asked:**
+  - Three ribbons, two thirds of a turn each, about 2.7 studs wide at the foot, leave the area's edge and pull in fast to one twisting column. There's one rim round the outside, and orange seams inside where one ribbon passes over another.
+  - Their heads close to one point over the target. A white-gold flare burns there on 69 to 71, at its biggest on 70. It's the effect's only white, and the top value in the grey row.
+  - Then the foot lets go on 71 and climbs 82% of the way up. The column thins to a thread as it cools from cream to gold to orange, flickers high over the target by 90, and is gone by 93.
+  - At 64 px, beside B: one A-shaped mass with its bright point on top. B is one blob with no point.
+- **Where it leaves the signed blockout, for research's call:**
+  - **No low ring: two small ground flames take its place.** Drawn as a picture facing the camera, the ring read as a flat white decal on the floor from every heading (the content check's conditions 3 and 5). Instead, a small flame stands where each outer foot lets go, a breath after the peak (71 to 79). It's lower, gold and orange, and dies down forking into two or three tongues. The flame that would stand under the lifted coil is left out, because it read as a drop hanging from it. If research wants the ring, it comes back drawn as a rising wall of light (condition 3).
+  - **The top stands at 10.4 studs at the peak,** rising to 12 as the coil climbs, where K's grey stood at 11 to 13. That fits the 15-stud square with the flare, and it's still over Pip's 6.9.
+  - **The end thins to a thread.** K's coil shrank into a blob. Three converging ribbons joined into an egg there, the drop that condition 2 rules out.
+- **The measures,** from the player's camera. "Before" is the delivered art as it plays.
+
+  | Frame | 67 | 69 | 70 | 72 | 76 | 80 | 86 |
+  |---|---|---|---|---|---|---|---|
+  | Share of the screen, before | 1.93% | 3.95% | 4.18% | 3.64% | 3.93% | 3.13% | 1.55% |
+  | Share of the screen, the coil | 2.82% | 3.82% | 4.38% | 3.72% | 2.04% | 1.15% | 0.44% |
+  | Pixels at 64 px, before | 363 | 715 | 731 | 657 | 668 | 553 | 331 at 84 |
+  | Pixels at 64 px, the coil | 510 | 680 | 732 | 649 | 373 | 209 | 106 at 84 |
+
+  At 70 the coil is as big as B. It gets there sooner, and by 76 it's half gone where B held. The bright floor's numbers match the dark's.
+- **The content check: PASS** (rules 2, 3 and 4), on the picture at full size, the sheet and the 64 px rows over dark, bright and grey.
+  - Met in the art:
+    - The rim's hue is about 27°, yellower than `#FF8A3D`.
+    - Nothing moves down, and the last cells end as a forked flicker and a thread high in the air.
+    - There's no ring on the floor.
+    - It's drawn side-on, never as a whirl.
+    - It comes from our own script.
+  - Its optional note is done: the smallest ground flames had one tip, a far-off likeness to a droplet icon, and now they die forking.
+  - **Open before upload:**
+    1. Condition 4 in the engine. At 64 px, from the player's camera and dead on, between 74 and 78 the climbing column's foot passes the Shade's head. In motion it must read as lifting away, not as coming out of the head. If it holds at head height for more than about a frame, it lifts sooner: my number, in `ends()`.
+    2. The engine's tints stay white.
+    3. A camera from above, if the build ever turns to Trails up a helix instead of this picture (condition 5).
+    4. The coil's row in `docs/asset-log.md`, at delivery.
+- **For Faber:** one re-upload, in the old one's place, with the same layout. Cells 0 to 15 are the coil. Cells 16 to 19, the heat, are unchanged pixel for pixel. The trail is unchanged too, its pixels identical, so it isn't uploaded again. `Config.Effects.LanternBurst.Burst` already plays the coil as drawn, with Leap 1, Boil 2, BoilPlays 1 and End 2: one frame a cell on 66 to 69, then two through 93. BoilPlays stays 1, because the cells follow on rather than boil.
+- **Not done:**
+  - Research's pass on the sheet, with `ga-fresh-eyes` (rung 7).
+  - Then delivery to `build/handoff/Pip/fx/`, Faber's upload, and his take in motion at phone size beside the "before".
+  - The kill's two flames, still a call for motion.
+- **Hours:** about 0.6, 14:12 to 14:48 UTC.
+
+### B2. Held Note made bolder (Modulo, 2026-11-13)
+
+The ask: a bright interior with a darker, saturated edge and a bolder main shape, so it holds on a bright sky. The same three pictures, at the same sizes and in the same places. Only their look changes.
+
+- **Where:** `build/scratch/modulo/lyric/bold/`.
+  - The uploads: `lyric_note_crest.png`, `lyric_note_veil.png` and `lyric_note_touch.png`.
+  - `lyric_note_art.png` is the sheet.
+  - `crest_small.png` puts the crest before (top) over bold (bottom), on night, a bright sky and dusk, at four sizes down to phone size.
+  - `compare.png` shows the player's camera at 47 and the bright floor's frames 30 to 100, before over bold.
+  - The script is `tools/blender/lyric_note_art.py`.
+- **What changed:**
+  - **The edge** is a new deep magenta: her Rose taken a fifth toward her Ink, never red. It's the outer rim of the crest's strands and of the veil, with her Storm inside it and the white core inside that. It's also an under-stroke on the touch's crackles.
+  - **The main shape:**
+    - The crest's two white strands are about two and a half times as thick.
+    - Their wave runs three periods where it ran four and a half, so each crossing carries at phone size.
+    - The veil's core band is a little fuller.
+- **Before and bold** (`crest_small.png`):
+  - On the bright sky, the old strands thinned to a pale line at the smallest size, and only the veil's rim read. The bold ones hold as a magenta-edged wave down to the smallest.
+  - At night they read as before, only thicker.
+- **The content check: PASS** (rules 2, 3 and 4), with four conditions:
+  1. AR4's three still hold, the crackles above all: about 12, of uneven shapes, never evenly spaced identical bolts.
+  2. The deep rim stays at the Rose-Ink mix or lighter, never redder. The engine never tints warm.
+  3. Before upload, one review sheet with the three final files at full size and at 64 px over dark and bright, as `lyric_note_upload64.png` was, and the touch alone at 64 px. I make it at delivery.
+  4. Each re-uploaded picture's row in `docs/asset-log.md`, with the old ids marked unused.
+- **For Faber:** three re-uploads, in their places and at the same sizes. `Config.Effects.HeldNote` plays them as it does now.
+- **Not done:**
+  - Research's pass on the sheet.
+  - Then delivery to `build/handoff/Lyric/fx/` with condition 3's sheet, Faber's uploads, and research's pass in motion at phone size beside the "before".
+- **Hours:** about 0.3, the run at 14:07 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

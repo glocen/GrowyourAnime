@@ -120,8 +120,38 @@ def let_go(stage, t):
     return twister(stage, t, late=5, ease=lambda x: 1 - (1 - hx.clamp(x)) ** 1.7)
 
 
+def column(stage, t, ribbons, turns, fat=(1.9, 0.6), pull=2.5):
+    """H with research's fix (B1, its verdict): at 64 px H's coil broke into diagonal hatching, so one mass and one
+    focal point. Fewer, fatter turns, about two stripes from foot to apex; ribbons near two studs wide that leave the
+    area's edge and pull in fast to one twisting column, then close to a point over the target; a flare where they
+    meet on 70, the top value for a frame or two; then the climb, as H."""
+    at, out = stage.lamp[BURST], []
+    head, tail = grow(t, 5), 1 - (1 - hx.clamp((t - 5) / (LIFE - 5))) ** 1.7
+    if head - tail > 0.02:
+        top, spin = 11.0 + 2.0 * tail, 1.8 * hx.out_fast(t / LIFE)
+        for k in range(ribbons):
+            base, points = stage.bar0 + k * 2 * math.pi / ribbons, []
+            for i in range(SEGMENTS + 1):
+                s = tail + (head - tail) * i / SEGMENTS
+                rho = 0.3 + (0.95 * AREA - 1.5) * (1 - s) ** pull + 1.2 * (1 - s ** 2.5)
+                angle = base + 2 * math.pi * turns * s * (1 - 0.35 * tail) + spin
+                points.append(Vector((at.x + rho * math.cos(angle), at.y + rho * math.sin(angle), 0.2 + top * s)))
+            for i, (p, q) in enumerate(zip(points, points[1:])):
+                span, s = q - p, tail + (head - tail) * i / SEGMENTS
+                width = (fat[0] - fat[1] * s) * (1 - 0.5 * tail)
+                if span.length > 0.05:
+                    out.append(("box", "white", (p + q) / 2, (width, width, span.length + 0.1), pf.toward(span)))
+    r = {3: 1.0, 4: 2.0, 5: 1.5, 6: 0.7}.get(t, 0.0)  # the flare where they meet, its peak on 70
+    if r:
+        out.append(("ball", "white", Vector((at.x, at.y, 11.2)), (r, r, r), Quaternion()))
+    return out + low_wall(at, t - 4, 12)
+
+
 VARIANTS = {"B": ("before, the flame let out", before), "D": ("the flare", flare), "E": ("the spill", spill),
-            "G": ("the twister", twister), "H": ("the twister let go sooner", let_go)}
+            "G": ("the twister", twister), "H": ("the twister let go sooner", let_go),
+            "I": ("H fixed: three fat ribbons, two thirds of a turn", lambda stage, t: column(stage, t, 3, 0.67)),
+            "J": ("H fixed: two fat ribbons, one turn", lambda stage, t: column(stage, t, 2, 1.0)),
+            "K": ("I fatter, pulled in sooner", lambda stage, t: column(stage, t, 3, 0.67, (2.7, 1.0), 3.5))}
 
 
 def layout(stage, variant, f):

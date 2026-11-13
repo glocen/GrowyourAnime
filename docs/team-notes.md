@@ -16,7 +16,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
 - **Faber:** my message has the clips' roles, the stride and research's yes to a walk near 5. On TR4, my answer is yes to both flash colours. The reveal's art now follows your stamp's slam (`reveal_art.py`, `reveal.json`).
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
-- **Now:** AR8's B. Lantern Burst's new blockout is rendered and waits on research's verdict (AR8, B1). My pick is H: the lantern's flame, let out, winds up round the Shades and leaves upward, peaking on its fourth frame. Meanwhile, Held Note made bolder; then B5 with Faber. No lock held.
+- **Now:** AR8's B. Lantern Burst's art is drawn to research's fix, and the content check passes. It waits on research's pass (AR8, "B1, the art sheet"). Two changes from the signed blockout are research's call: ground flames replace the low ring, and the end thins to a thread. Held Note made bolder waits on the same pass (B2). Then B5 with Faber. No lock held.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 

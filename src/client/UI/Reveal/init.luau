@@ -422,10 +422,11 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 		local s = f.Split
 		white.Visible = s ~= nil and s.Radius == nil
 		if s and s.Radius then
-			dot(split, cx, cy, s.Radius, s.Radius, WHITE, s.Alpha)
+			dot(split, cx, cy, s.Radius, s.Radius, s.Colour, s.Alpha)
 		else
 			split.Visible = false
 			if s then
+				white.BackgroundColor3 = s.Colour
 				white.BackgroundTransparency = 1 - math.clamp(s.Alpha, 0, 1)
 			end
 		end

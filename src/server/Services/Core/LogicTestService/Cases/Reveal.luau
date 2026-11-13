@@ -151,9 +151,19 @@ return {
 	{
 		Name = "Reveal: the name slams to its size and never lands wider than the widest",
 		Run = function(t: any)
-			t.Check("not before it shows", Reveal.Slam(-0.051) == nil)
-			t.Check("1.7 times as it comes in", near(Reveal.Slam(-0.05) :: number, 1.7))
-			t.Check("under its size as it lands", near(Reveal.Slam(0) :: number, 0.93))
+			local stamp = RevealConfig.Stamp
+			local lead = stamp.Frames / FPS
+			t.Check("not before it shows", Reveal.Slam(-lead - 0.001) == nil)
+			t.Check("large as it shows", near(Reveal.Slam(-lead) :: number, stamp.From))
+			t.Check("under its size as it lands", near(Reveal.Slam(0) :: number, stamp.Under))
+			-- research's TR4 fix 2: a stamp's fall over about four frames, faster each frame, so it reads as a stamp, not a cut
+			t.Check("it falls over about four frames", stamp.Frames >= 3 and stamp.Frames <= 5, `{stamp.Frames}`)
+			local last = nil
+			for k = stamp.Frames, 1, -1 do
+				local step = (Reveal.Slam(-k / FPS) :: number) - (Reveal.Slam(-(k - 1) / FPS) :: number)
+				t.Check(`frame {stamp.Frames - k + 1}: smaller, and by more than the frame before`, step > 0 and (last == nil or step > last), `{step}`)
+				last = step
+			end
 			t.Check("still at its size", near(Reveal.Slam(0.5) :: number, 1, 1e-6))
 			for _, name in Rarity.Order do
 				local r = Art.Rarities[name]
@@ -312,7 +322,14 @@ return {
 				local r = Art.Rarities[name]
 				local split = r.Times.Split
 				local flash = Reveal.At(r, split).Split
-				t.Check(`{name}: the flash at full on the split`, flash ~= nil and near(flash.Alpha, r.Flash.Strength))
+				local top = if r.Flash.Radius then r.Flash.Strength else math.min(r.Flash.Strength, RevealConfig.WholeFlash.Most)
+				t.Check(`{name}: the flash at full on the split`, flash ~= nil and near(flash.Alpha, top))
+				if flash and r.Flash.Radius == nil then
+					-- research's TR4 fix 1: the whole screen never pure white, so the split's pieces show through
+					local c = flash.Colour
+					t.Check(`{name}: the whole screen's flash in its own light, not white`, math.min(c.R, c.G, c.B) < 0.95, tostring(c))
+					t.Check(`{name}: and short of opaque`, flash.Alpha <= 0.9, `{flash.Alpha}`)
+				end
 				t.Check(`{name}: gone in its time`, Reveal.At(r, split + r.Flash.Seconds + 1e-9).Split == nil)
 				t.Check(`{name}: none before`, Reveal.At(r, split - 0.001).Split == nil)
 			end

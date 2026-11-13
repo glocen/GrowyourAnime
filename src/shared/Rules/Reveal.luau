@@ -58,16 +58,19 @@ function Reveal.Run(u: number): number
 	return 1 - (1 - math.clamp(u, 0, 1)) ^ 1.4
 end
 
--- The name's size against its own, `u` seconds from landing: 1.7 times in, down in three frames, under its size on the
--- frame it lands, a small rebound, still. Nil before it shows.
+-- The name's size against its own, `u` seconds from landing: a stamp (Config.Reveal.Stamp). It shows large, falls onto
+-- its place faster each frame, lands under its size on its time, rebounds a little, and is still. Nil before it shows.
 function Reveal.Slam(u: number): number?
-	if u < -0.05 then
+	local stamp = RevealConfig.Stamp
+	local lead = stamp.Frames / 60
+	if u < -lead - 1e-9 then
 		return nil
 	end
 	if u < 0 then
-		return 0.93 + 0.77 * (-u / 0.05) ^ 1.6
+		local left = -u / lead -- 1 as it shows, 0 as it lands
+		return stamp.Under + (stamp.From - stamp.Under) * (1 - (1 - left) ^ stamp.Power)
 	end
-	return 1 - 0.07 * math.exp(-u / 0.03) * math.cos(u / 0.05 * math.pi)
+	return 1 - (1 - stamp.Under) * math.exp(-u / 0.03) * math.cos(u / 0.05 * math.pi)
 end
 
 -- Points the screen sits below its rest as the name lands: down at once, a rebound, still in about 0.2 s.
@@ -500,10 +503,20 @@ export type Frame = {
 	Figure: { Cover: number, Rim: number, Edge: number?, Line: number }?, -- from the split
 	Strike: { Ring: Ring, Dot: number, Column: { Width: number, Alpha: number }? }?, -- 0.25 s from the Knock
 	Name: { U: number, Slam: number, Burn: number, Landed: number, Glint: { X: number, Alpha: number }?, Wash: number, Right: number, Span: number }?,
-	Split: { Radius: number?, Alpha: number }?, -- the split's flash; no radius: the whole screen
+	Split: { Radius: number?, Alpha: number, Colour: Color3 }?, -- the split's flash; no radius: the whole screen
 	Kick: number,
 	Done: boolean, -- the card's time
 }
+
+-- The whole screen's flash colour at a rarity: its own light, never pure white (Config.Reveal.WholeFlash).
+function Reveal.WholeColour(r: Rarity): Color3
+	for name, colour in RevealConfig.WholeFlash.Colour do
+		if Art.Rarities[name] == r then
+			return colour
+		end
+	end
+	return r.Light.Colour:Lerp(WHITE, 0.8)
+end
 
 -- Everything the stage lays at `t`, for a name `width` points wide where it lands (Widest if not given).
 function Reveal.At(r: Rarity, t: number, width: number?): Frame
@@ -564,10 +577,11 @@ function Reveal.At(r: Rarity, t: number, width: number?): Frame
 		local flash = r.Flash
 		if tau < flash.Seconds then
 			if flash.Radius then
-				frame.Split = { Radius = flash.Radius, Alpha = flash.Strength * (1 - tau / flash.Seconds) ^ 2 }
+				frame.Split = { Radius = flash.Radius, Alpha = flash.Strength * (1 - tau / flash.Seconds) ^ 2, Colour = WHITE }
 			else
 				local fade = if tau < 0.035 then 1 else (1 - (tau - 0.035) / (flash.Seconds - 0.035)) ^ 1.5
-				frame.Split = { Alpha = flash.Strength * fade }
+				local whole = RevealConfig.WholeFlash
+				frame.Split = { Alpha = math.min(flash.Strength, whole.Most) * fade, Colour = Reveal.WholeColour(r) }
 			end
 		end
 	end

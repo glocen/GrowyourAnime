@@ -530,7 +530,17 @@ What the checks found:
   2. **A take in motion with its sound,** a Common and a Mythical at phone size, recorded with the game's audio. It's for the name's landing, the shard's answer at each rung, and the nine cues. If the name still lands as a title card, it gets a stamp's motion there: a scale down onto its place over about 4 frames, with the slam on the frame it lands.
 - **For the card, when it's built with the Voidkin screens** (under "What waits"): it never covers the name. Today's card sits over its first letters.
 
-**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes); the take in motion with sound is next, then research's pass.
+**The fixes, 2026-11-13 (Faber).** The material is in `build/captures/tr4/`. Both takes are at phone size (the simulator's iPhone 16 Pro), with the game's own sound.
+1. **The top flash in its own light.** Legendary goes to gold-white `#FFF0C8` and Mythical to red-white `#FFDCE0`, at 0.85 (`Config.Reveal.WholeFlash`; Common to Epic keep their round white flash). In the frames, the split's pieces show through it at both rarities (`mythical_flash_frames.png`, `legendary_flash_1.31_1.36.png`). Modulo's eye on the two colours is asked.
+2. **The takes with sound:** `take_mythical_sound.mp4` and `take_common_sound.mp4`.
+   - **The name:** in the first Mythical take it landed as a title card, one picture at 1.7 times, then down. It now has a stamp's motion (`Config.Reveal.Stamp`): it falls onto its place over 4 frames, faster each frame, lands on its time a touch under its size with the slam, and settles. The new take shows it over three pictures (`mythical_name_stamp_frames.png`). This departs from `reveal.json`'s slam curve, which eased into the landing over 3 frames; Modulo is told.
+   - **The sound, by numbers:**
+     - The onsets follow the schedule one for one: four cracks, five rungs, the breath, the split, the strike, then the glint and the slam.
+     - Each comes 0.04 to 0.09 s after its frame, about 0.06 on average. That's this PC's audio path, an estimate good to about 0.03 s. A take puts its own 0.116 s of lag on the sound, measured on a clip whose flash and beep are in step, and that is taken off. About 0.06 s late is inside what people accept as in step.
+     - The mix touches full scale on 7 samples in the Mythical: the rungs' attacks, the strike and the slam. Around the split, the strike and the slam it sits near −12 dBFS RMS. The levels are research's call; nothing changed.
+3. **Checks:** logic 2,258 offline and in Studio; the reveal's self-test 72/72 at 54 fps on the desktop; the type check clean. New cases: the whole-screen flash is never white and never above 0.9; the name falls over three to five frames, faster each frame.
+
+**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes). Both fixes are in, with the takes with sound, to 14:45. Research's pass is next.
 
 ## Next, not yet written
 

@@ -24,6 +24,11 @@ return {
 	-- art's: the art sets the name in Blender's stand-in face, whose capitals are taller at a size (40 against 33 points
 	-- at Uncommon, 42 against 35 at Rare, measured on reveal_parts_compare.png, 2026-11-13).
 	NameFace = 1.2,
+	-- The name's stamp (research's TR4 verdict, fix 2): it shows From times its size and falls onto its place over Frames
+	-- frames, gathering speed as a stamp does (Power 2: the most on the last frame), lands Under its size on its time, with
+	-- the slam's sound, then rebounds still. reveal.json's slam came in over three frames and eased into the landing,
+	-- which showed one picture large on the phone and read as a cut.
+	Stamp = { Frames = 4, From = 1.7, Under = 0.93, Power = 2 },
 	NameDescent = 0.21, -- the name's line below its baseline, against its size: its box's foot sits this far under 214
 	-- The reveal's sounds, research's cues (docs/test-requests.md, TR4): each cue's level in dB against the Legendary
 	-- split's, the loudest. The library slices they play are Config.Sounds.Cues; the schedule is Rules.Reveal.Cues.
@@ -42,6 +47,13 @@ return {
 		Glint = { Cue = "RevealGlint", Db = -14 }, -- the light along the rule
 		Bed = { Cue = "RevealBed", Db = -18, In = 0.3, Out = 0.4, From = 3 }, -- the third rarity (Rare) up: from the colours into the card
 		Duck = -6, -- dB the world's sounds take while the reveal is up
+	},
+	-- The whole screen's flash, Legendary and Mythical: never pure white (research's TR4 verdict, fix 1;
+	-- docs/research/vfx-reference.md, rule 3). It takes the rarity's own light, gold-white and red-white, and stops at Most,
+	-- so the split's pieces show through it and a dark room isn't blinded. Modulo's eye on the colours.
+	WholeFlash = {
+		Most = 0.85,
+		Colour = { Legendary = Color3.fromHex("#FFF0C8"), Mythical = Color3.fromHex("#FFDCE0") } :: { [string]: Color3 },
 	},
 	DisplayOrder = 35, -- over the overlay's cover, under the toasts (UI/Layers)
 }

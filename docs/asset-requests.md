@@ -2949,6 +2949,48 @@ The keeper's own Idle, Walk and Hit, rather than the Shade's family, are its cal
 
 Then time it. The signature goes to `ga-fresh-eyes` beside research's read at its motion blockout with Faber (`/ga-action`).
 
+## AR8. The effects pass
+
+For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.
+
+**Feel line:** every hit lands with the weight of what it is: a quick flick of light on an ordinary blow, a held, bright, shuddering instant on a signature. Every press and reward answers the thumb at once, so on a phone the fight and the screens feel expensive.
+
+**The block contains** three parts. Each is judged in motion at phone size beside its "before":
+- **A. The hit (Faber).**
+  - The hitstop by rung.
+  - The struck body's flash, shaken inside the freeze.
+  - The camera's shake as trauma squared.
+  - The billboards drawn a picture late, with the builder's own fix: every billboard made at the start, shown by its image, cleared a step late, as the Shade's burst does (AR2, section 13; moved here from `docs/polish-later.md`).
+  - The study's rule 2 gives the starting numbers.
+  - **Tier 2:** research's part is given here. Faber's is its own call on the numbers, tuned by playing. Faber checks the pace in `tools/balance/sim.py` once the hitstop changes, since the server's push waits it out.
+- **B. The signatures' looks (Modulo, then Faber).**
+  - **Haymaker:** the director's planned B5 (`docs/polish-later.md`; AR1, section 9), rather than a patch on the impact first. It's built to the study's rule 3.
+  - **Lantern Burst:** its planned rework, from a new blockout (`docs/polish-later.md`).
+  - **Held Note:** a bright interior with a darker, saturated edge and a bolder main shape, so it holds on a bright sky.
+  - The Lamplighter's slam is built to the same rules in its own `/ga-action` (AR7), not here.
+- **C. The interface (Faber, Modulo's art where a look is new).**
+  - The level-up as light that rises.
+  - Pops for Credits, Electricity and experience, sized to their rung.
+  - A press a thumb can feel.
+  - Exits shorter than entrances, eased in (rule 4).
+
+**Waits:**
+- the reveal: TR4 builds it, and the pass reads it there;
+- the states' cues;
+- new sounds;
+- the damage numbers' look: TR3's, unchanged unless a rung asks for it.
+
+**Order:** A first, then C (Faber, after TR4). B as Modulo is free, after AR7's delivery 3 is timed: Lantern Burst's blockout, Held Note, then B5 with Faber.
+
+**Checks:**
+- the content check on every new look;
+- research's pass in motion at phone size, beside the "before";
+- `ga-fresh-eyes` at rung 7 and up.
+
+**Time, forecast, not a cap:** A about 1 hour, C about 1.5, Held Note about 1, Lantern Burst 2 to 3 (a signature), B5 3 to 4 (the director's own estimate). Each part records what it took.
+
+**Status:** requested, 2026-11-13.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

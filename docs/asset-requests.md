@@ -3243,6 +3243,53 @@ For Faber and Modulo (research's request, 2026-11-13). It rests on the director'
 
 **Status:** requested, 2026-11-13.
 
+### The method: effects built in 3D (research, 2026-11-13, on the director's word)
+
+The director, 2026-11-13: "make it like how pro vfx does in a way that efficient for everyone" (`docs/decisions.md`).
+
+**Why:**
+- Our skill effects were mostly a drawn picture on a card turned to the camera. A flat card can't go round anything, which is why the coil's "winds up round" failed three times.
+- The handbook already says it: "effects look flat when their shapes turn to the lens" (`handbook/visuals/vfx.md`, "Depth", and "Technique by kind").
+
+**The technique:** built in the engine from parts.
+- **Meshes from Blender** for shapes with a near and a far side (a coil, a shell, a hoop, a crescent, a column, chips), with our gradient textures.
+- **Beams and Trails** for anything that scrolls: ribbons, streaks, winding, a burn moving along a shape. A mesh's texture doesn't scroll.
+- **Particles** for sparks, embers, chips and dust, with our drawn cells as flipbooks where a hand-drawn touch helps.
+- **Lights** for the glow on bodies, and the struck body's `Highlight` (A).
+- **A picture on a card** only for a thin strand or a flat moment.
+
+**Efficient for everyone: one kit, one player** (`handbook/visuals/vfx.md`, "Technique by kind").
+1. **The kit (Modulo, once, about 1.5 to 2 hours).**
+   - Meshes: a coil of two and of three strands, a shell, a hoop with an upright band, a crescent, a column, chips.
+   - Textures, by script: gradient ramps (bright core, saturated edge, clear), a flame-tongue strip, ribs, a streak, a spark, an ember, a soft glow, and a small flame flipbook.
+   - One content check and one upload batch for all of it.
+2. **The player (Faber, once, about 1.5 hours).** One module plays rows from `Config.Effects`:
+   - a kit part, and what it's attached to;
+   - Start to End: size, tilt, spin, transparency and colour, with an ease;
+   - its frames on the clip's markers;
+   - particles by their spec.
+
+   It's tuned live, and no effect gets code of its own. Whether an existing module becomes it is Faber's call.
+3. **Each effect after that:**
+   - Modulo writes its rows and draws any texture the kit lacks. The look stays Modulo's.
+   - Faber puts the rows in and times them on the markers.
+   - The grey block-in is the kit with grey textures, in the engine, judged from a take at phone size. Variants are rows, not new sheets.
+   - A fix is a number changed while playing. The content check sees only new meshes and textures.
+
+**Order:**
+1. The kit and the player, side by side.
+2. B1's exit: the coil as a spiral round the Shades, burning off from its foot as its transparency moves up.
+3. The Lamplighter's signature (AR7). Section 7's Beams already work this way and carry over.
+4. B5's square: a framed plate standing up, with depth.
+
+Held Note, the level-up and A stay as they passed.
+
+**On a phone:**
+- A mesh's `SurfaceAppearance` can't be preloaded, so use `MeshPart.TextureID` and a warm pass at load (`handbook/visuals/vfx-engine-facts.md`, "Meshes" and "Preloading").
+- Fewer, larger particles.
+
+**The split** is the handbook's: the asset maker owns a signature effect's shape, texture and life, and the builder owns its code and timing.
+
 ### A. The hit (Faber, 2026-11-13)
 
 - **The hitstop by rung** (`Config.Combat.Hitstop.Rungs`; the study's rule 2 for the starting numbers). A hit takes the highest row at or under its rung (`Rules.Fight.Lever`). Before, every hit held 0.09 s and a heavy one 0.13.

@@ -3200,6 +3200,11 @@ Research's fixes 1 to 3, drawn under the content check's seven conditions. The s
 
 **Hours:** about 0.75, 16:10 to 16:55 UTC.
 
+**Research's call on the tier 2 (2026-11-13): option 1,** higher and out to the keeper's side, with the fall down that side.
+- **Why:** it is the only option that clears every heading, and the shorter lift costs nothing that carries the read (the column leaving at 130 to 140).
+- **The order in Modulo's queue:** AR8's kit first, then this clip, then the effects' rows as the player lands.
+- **Research's look:** at the hold, from the game's camera, before the re-export goes to Faber.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.
@@ -3277,7 +3282,7 @@ The director, 2026-11-13: "make it like how pro vfx does in a way that efficient
    - A fix is a number changed while playing. The content check sees only new meshes and textures.
 
 **Order:**
-1. The kit and the player, side by side.
+1. The kit (Modulo), then the player (Faber). Meanwhile Faber keeps working on other pieces (the director, 2026-11-13: "meanwhile faber keep working on other stuff"): the Lamplighter's install, then Rook, Pip and Lyric installed. Faber takes the player when the kit lands and the piece in hand is closed.
 2. B1's exit: the coil as a spiral round the Shades, burning off from its foot as its transparency moves up.
 3. The Lamplighter's signature (AR7). Section 7's Beams already work this way and carry over.
 4. B5's square: a framed plate standing up, with depth.

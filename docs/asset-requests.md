@@ -3369,6 +3369,14 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
 - **Research:** sign the feel line and the scope, or correct them; then the verdict in the replay.
 - **Faber:** the replay with this clip in RookHaymaker's place, the grey square, and the pin.
 
+**Research signs the feel line and the scope, 2026-11-13,** from `poses_Haymaker.png`, `stamp_side.png` and `stamp_B5.png`.
+- **The feel line is signed** as AR1, section 9 wrote it. The pin is inside the director's word of 2026-11-12 ("a planned rework, with its clip striking down and the target pinned"). For balance it's tier 2 under Faber, and research signs it here: Haymaker loses its push and gains the stamp.
+- **The scope is signed** as written. The square hung lower and slammed on Strike is also research's queued item from A's pass (the bright shape on the held frame, not after it).
+- **What the sheets show:** the snap from 52 to 57 is the clip's best change, the ram over his shoulder to the floor in two frames, with the square on the same frame. From the side the square's fall reads, and the landing sits at the Shade's feet, as B5's sheet said, so the fall carries the read.
+- **The question for the replay:** at 34 and 52 the pose is nearly the same, a lean back of a few degrees. If the hold only waits in motion, the one lever is anticipation that builds: the ram creeps higher and further back across the hold, so 52 is the most cocked frame and the snap has further to go. The square's hang tightens with it.
+- **Left for the block:** the leg sinking 0.62 into the hip at 57.
+- **Next:** Faber's replay with this clip, the grey square and the pin. Then research's verdict in motion at phone size, beside A as it plays.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

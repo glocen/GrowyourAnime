@@ -579,7 +579,7 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
      - the pole's rock reads (AR7);
      - the keeper's lantern and look down share a shot (AR8, the keeper's signature).
    - **For A:** the ease is gentle, about 0.4 s. It eases back only after the fight has been over about 1.5 s, so a lead stepping in and out never makes the camera swim. It never takes the player's own drag of the camera.
-2. **The skip back,** for Pip and Lyric, through `/ga-action`, as designed in `docs/design.md`, "Combat". In the block, the body moves in a held pose. It closes on its balance check: ten runs with the skip and ten without, within 10%.
+2. **The skip back,** for Pip and Lyric, through `/ga-action`, as designed in `docs/design.md`, "Combat". In the block, the body plays Modulo's block clip, or a held pose if it isn't in yet. It closes on its balance check: ten runs with the skip and ten without, within 10%.
 3. **The three passives,** from `docs/roster.md`, each with a grey cue readable at phone size. These are seeds: tier 2, research's, tuned by playing, with Faber's view in his row.
    - **Rook's Second Wind:** the first time he drops under 30% health in a fight, he gets a shield worth 20% of his maximum health for 6 s, once a fight. Its cue is a shell round him that cracks when it breaks.
    - **Pip's Kindle:** every fourth basic hit, counted across combos, adds Fire damage worth 40% of that hit as its own coloured number. Its cue is the lantern flaring on the shot.
@@ -588,7 +588,7 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
 4. **Timed:** each lead plays its whole kit in real fights, not the replay: combo, signature on its cooldown, passive. Haymaker's hitstop and camera numbers get set by playing (B5's "Not done").
 
 **Waits:**
-- the skip clip for the robe set (Modulo's, at the shared finish);
+- the skip clip's finish (its block clip is Modulo's, made now: `docs/design.md`, "Combat");
 - the passives' art;
 - the states, Burn and Shock included (with the Lamplighter as a real fight);
 - Rook's evolution;

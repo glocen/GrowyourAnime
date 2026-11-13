@@ -3476,7 +3476,7 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
   - On the bright sky, the old strands thinned to a pale line at the smallest size, and only the veil's rim read. The bold ones hold as a magenta-edged wave down to the smallest.
   - At night they read as before, only thicker.
 - **The content check: PASS** (rules 2, 3 and 4), with four conditions:
-  1. AR4's three still hold, the crackles above all: about 12, of uneven shapes, never evenly spaced identical bolts.
+  1. AR4's three still hold, the crackles above all: uneven strokes of different shapes, never identical bolts evenly round a ring. (This line said "about 12" until 2026-11-13. The art has seven.)
   2. The deep rim stays at the Rose-Ink mix or lighter, never redder. The engine never tints warm.
   3. Before upload, one review sheet with the three final files at full size and at 64 px over dark and bright, as `lyric_note_upload64.png` was, and the touch alone at 64 px. I make it at delivery.
   4. Each re-uploaded picture's row in `docs/asset-log.md`, with the old ids marked unused.
@@ -3493,6 +3493,20 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
 - **No fix on the sheet.** Next: deliver to `build/handoff/Lyric/fx/` with condition 3's sheet. Then Faber's uploads, and the pass in motion at phone size beside the "before".
 
 **Delivered, 2026-11-13 (Modulo)** to `build/handoff/Lyric/fx/`: the three pictures, `lyric_note_art.json` and `lyric_note_art.png`, and `lyric_note_upload.png`, condition 3's sheet. It shows the three at full size over night, a bright sky and grey, then at 64 px a cell, then the touch alone at 64 px drawn three times over. The asset log has a row for each, naming the old id it retires on upload (condition 4). **Open:** Faber's uploads, then the pass in motion.
+
+**The touch redrawn, 2026-11-13 (Modulo).**
+- **Why:** the content check before upload (Faber's) BLOCKed the touch's row 0. The seven crackles sat at exactly even angles, each the same three-bend jag, mirrored on every other spark. With the white disc and the new deep under-stroke, frame 0 read structurally near a sun-wheel of runes. The crest, the veil and the coil passed.
+- **The fix**, in `touch_picture()`, from a fixed seed:
+  - each crackle has its own angle off the even spacing (±0.2 rad, plus a small jitter each frame), its own length (0.8 to 1.2, kept inside the cell), and two, three or four bends;
+  - each kink's size and side are drawn on every frame, sized to the crackle's own segment;
+  - the last two frames take a bend fewer, so short dying sparks don't pack into letter-like zigzags.
+- The count (seven) and the colours are kept. Row 1, the crest and the veil are unchanged, byte for byte.
+- **Content check, recheck: PASS.** It reads as a burst of sparks and as sparks breaking off a widening ring, at full size and at 64 px. Its conditions:
+  1. Upload exactly this file. A change to the seed, the bends, the ranges or the count comes back for a check.
+  2. AR4's condition 1 holds for any rework.
+  3. The deep rim stays at the Rose-Ink mix or lighter.
+- **Re-delivered** to `build/handoff/Lyric/fx/`: `lyric_note_touch.png`, `lyric_note_upload.png` (condition 3's sheet, remade), `lyric_note_art.png`, and `lyric_note_art.json` (only its measured shares moved). The asset log's row stands.
+- **Faber:** the touch's re-upload; 108376131261819 stays live until then.
 
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 

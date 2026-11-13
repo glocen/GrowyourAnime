@@ -28,6 +28,7 @@ GPU turn. Stage directions as lyric_note_fx.py: right, forward, up, in studs, fr
 """
 import json
 import math
+import random
 import sys
 from pathlib import Path
 
@@ -195,6 +196,14 @@ def touch_picture():
     R = np.hypot(X, Y)
     stud = 2 / HIT_SIZE
     sparks = 7
+    # Each crackle its own (the content check before upload, 2026-11-13: even angles and one mirrored jag sat near a
+    # wheel of glyphs): its own angle off the even spacing, its own length, two, three or four bends, and kinks of its
+    # own size and side on every frame. Seeded, so a rebuild draws the same picture.
+    rng = random.Random(4417)
+    spread = [rng.uniform(-0.2, 0.2) for _ in range(sparks)]
+    reach = [rng.uniform(0.8, 1.2) for _ in range(sparks)]
+    bends = [3, 2, 3, 4, 3, 2, 3]
+    rng.shuffle(bends)
     for n in range(4):
         cell = np.zeros(X.shape + (4,))
         ring_r, ring_w = (0.25, 0.55, 0.85, 1.1)[n] * stud, (0.24, 0.17, 0.1, 0.05)[n] * stud
@@ -204,11 +213,19 @@ def touch_picture():
         inner, outer = ((0.3, 0.78), (0.55, 1.15), (0.88, 1.36), (1.15, 1.45))[n]
         width = (0.13, 0.11, 0.08, 0.05)[n] * stud
         for j in range(sparks):
-            a = 2 * math.pi * j / sparks + 0.35 + 0.18 * (n % 2)  # the crackle shifts a little each frame
+            # the crackle shifts a little each frame, each spark its own way
+            a = 2 * math.pi * j / sparks + 0.35 + spread[j] + rng.uniform(-0.08, 0.08)
             way = Vector((math.cos(a), math.sin(a)))
-            pts = [way * (inner + (outer - inner) * k / 3) * stud for k in range(4)]
-            kink = 0.09 * stud * (1 if (j + n) % 2 else -1)
-            path = jag(pts, (kink, -kink, kink))
+            far = min(inner + (outer - inner) * reach[j], 1.4)  # inside the 3-stud cell, never cut flat
+            b = bends[j] if n < 2 else max(2, bends[j] - 1)  # dying, it has fewer bends: short and tight reads as a letter
+            pts = [way * (inner + (far - inner) * k / b) * stud for k in range(b + 1)]
+            seg = (far - inner) / b  # each kink sized to its own segment, so every spark keeps a bolt's proportions
+            side = rng.choice((1, -1))
+            kinks = []
+            for _ in range(b):
+                kinks.append(side * rng.uniform(0.3, 0.55) * seg * stud)
+                side = -side if rng.random() < 0.8 else side  # mostly a zigzag, now and then two bends one way
+            path = jag(pts, kinks)
             cell = over(cell, DEEP, np.where(stroke(X, Y, path, width + 0.05), 1.0, 0.0))  # the deep rim (AR8)
             cell = over(cell, rs.rgb(STORM), np.where(stroke(X, Y, path, width), 1.0, 0.0))
             if n < 2:  # a white core in the first two, while it's hot

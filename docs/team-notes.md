@@ -6,10 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's pass given (competent; the break seen through a red-white flash, the name stamped); closed; its level check moves to an offline mixdown in AR8 A (a take's loudness is the PC's compression); the sounds wait on the director's ear. AR7, the Lamplighter: the seven clips passed and delivered (the wrench raised over the hat); the keeper's own walk near 5 (tier 2, Faber's take checks it). AR8, the effects pass (the director's word, no yes needed; measured against `docs/research/vfx-reference.md`): A, the hit, passed at competent with fresh eyes; C, the interface, competent (the press, screens, pops), with the level-up's word and the toasts over the Electricity pill to fix (Faber) and the column's texture (Modulo, minor); B1 and B2 passed on their sheets and delivered, Faber's take next (the coil's wind and C's numbers stepping aside judged there); B5's feel line and scope signed, Faber's replay next. Seen and queued: the avatar covers the lead against a pack, in the next TR. Next: verdicts as the takes arrive.
 
-**Faber (builder).** 2026-11-13. AR8's C, the interface, is built and waits on research's pass (AR8, "C. The interface").
-- **What changed:** a press squeezes; screens and toasts come in eased out and leave quicker, eased in; Credits, Electricity, experience and a level pop at their rung; the level-up is a column of light sized by the lead; numbers grow with their hit's rung and step aside for a signature.
-- **Takes:** `build/captures/ar8/`, beside the "before". Seen there, for later: the toasts run past the phone's right edge and over the Electricity pill.
-- **Next:** AR8's B1 and B2, Modulo's delivery: four re-uploads and the take. Then AR7's install, then Rook, Pip and Lyric installed.
+**Faber (builder).** 2026-11-13. AR8: C's fixes and B1 and B2 are installed, and one take waits on research's one pass to close all three (AR8, "C's fixes, and B1 and B2 installed").
+- **What changed:** the level-up's word stands clear over the head, white edged in blue. The toasts sit inside the safe area under the pills. The column wears Modulo's picture. The coil, the bold crest, veil and touch, and the column are uploaded and installed. World plates now sit on their points on a notched phone.
+- **Take:** `build/captures/ar8/c_b1_b2/`, at phone size.
+- **Next:** B5's replay (Rook's block clip, the grey square, the pin). Then AR7's install, then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
@@ -61,6 +61,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. AR8 C's fixes, and B1 and B2 installed (Faber)
+
+- **What:** the level-up's "Level N" now stands clear over the lead's head, white edged in the thread's blue. It slides aside, eased, from a pill or a toast it would cross. The toasts sit under the Electricity pill, inside the safe area. The column wears Modulo's picture, white at its peak and blue as it fades. Lantern Burst plays the coil, and Held Note the bold crest, veil and touch.
+- **Found:** on a notched phone, world plates stood off their points toward the sides, because the viewport is the safe width and the layer is full-bleed. `UI/World` now maps through the top bar's inset from the layer's corner.
+- **Where:** `UI/World`, `UI/Kit/Toast`, `UI/Layers`, `HudController`, `FighterController/Effects`, `Config.Effects`, `Config.Hud`. Ids are in `docs/asset-log.md`, rows 39 to 43. The record: AR8, "C's fixes, and B1 and B2 installed".
+- **Checked:** the whole self-test, 793/793 at 60 fps; logic 2407.
+- **For research:** one pass on `build/captures/ar8/c_b1_b2/` closes C, B1 and B2. Condition 4 and part 5 read there.
 
 ### 2026-11-13. AR8 C built: the interface (Faber)
 

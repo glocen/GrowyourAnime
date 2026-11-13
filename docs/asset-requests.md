@@ -3545,6 +3545,65 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
 - **Re-delivered** to `build/handoff/Lyric/fx/`: `lyric_note_touch.png`, `lyric_note_upload.png` (condition 3's sheet, remade), `lyric_note_art.png`, and `lyric_note_art.json` (only its measured shares moved). The asset log's row stands.
 - **Faber:** the touch's re-upload; 108376131261819 stays live until then.
 
+### C's fixes, and B1 and B2 installed (Faber, 2026-11-13)
+
+Research's fixes 1 and 3 on C, the column's picture with research's lever, and the four pictures of B1 and B2, in one take at phone size, so one pass closes C, B1 and B2 (research, 2026-11-13). Code in 4b36cab.
+
+**Built.**
+1. **The word** (`Effects.LevelUp`; `Config.Effects.LevelUp.Word`). It now reads "Level N", filled near white (`Fill` 0.15 toward the thread's blue) and edged in the thread's blue (a `UIStroke` of `Edge` 2.5 px at the HUD's scale).
+   - Its foot stands `Clear` 0.8 studs over the lead's measured top, hat and all, so it never lies on the lead.
+   - Its plate is fitted to its text, so it takes only the room it needs.
+2. **The word among the HUD's top pieces** (`UI/World.luau`, `HudController`; `Config.Hud.Numbers.Slide`). Tier 1, my call: the word may stand in the sky between the top band's pieces.
+   - Where it would cross a pill or a toast, it slides aside within its own width, eased (`Rate` 14). With no room, it goes under the band, as numbers do.
+   - Damage numbers keep TR3's full band, unchanged.
+3. **Found on the way: world plates stood off their points on a notched phone.** The camera's viewport is the safe width, while the layer is full-bleed, so plates drifted outward toward the sides. `World` now places a plate at a viewport pixel less the top bar's inset, from the layer's corner. This moves every world plate (numbers, the word, nameplates) onto its point at phone size. The self-test checks it.
+4. **The toasts** (`UI/Kit/Toast.luau`, `UI/Layers.luau`). They're on the inset layers now, inside the safe area. `Toast.Top` is 92, under the Electricity pill's foot (83), so a toast covers no pill and runs past no edge, at both sizes.
+5. **The column's picture** (`Config.Effects.LevelUp.Column.Picture`). It's stretched once along the beam, its top row at the foot. Its `Color` is white at the peak and goes to the thread's blue as it fades (research's lever).
+   - **The sleeve stays the flat blue: my call.** Over the body, the picture's white core would light the lead pale. The flat blue keeps experience's one colour on it.
+6. **Uploaded under the group, Approved, installed** (`docs/asset-log.md`, rows 39 to 43):
+
+   | Picture | Id | Plays in |
+   |---|---|---|
+   | the coil (B1) | 100913199674615 | `LanternBurst.Picture` |
+   | the crest (B2) | 99574922833055 | `HeldNote.Ribbon` |
+   | the veil (B2) | 112733560800824 | `HeldNote.Veil` |
+   | the touch (B2, the rechecked redraw) | 132431936099861 | `HeldNote.Touch` |
+   | the column (C, fix 2) | 104727013188370 | `LevelUp.Column.Picture` |
+
+   The four ids they replaced are marked unused. `Config.Effects.LanternBurst.Burst` plays the coil as Modulo set it (Leap 1, Boil 2, BoilPlays 1, End 2).
+
+**Checked:**
+- The type check: 0 new.
+- Logic: 2407/2407 offline.
+- The whole self-test: 793/793 at 60 fps, under the phone emulator. New or widened cases:
+  - a toast at both sizes;
+  - experience's one colour (the word's edge and fill, the column's picture, white at its brightest and blue as it fades);
+  - the light rising (the word's foot over the head);
+  - and a new one: an open plate stands on its point, keeps its place in a gap under the top bar, is pushed under a pill it can't slide past, and slides clear of a pill and a toast, keeping its height.
+
+**The take,** in `build/captures/ar8/c_b1_b2/`, at phone size (Studio's emulator, iPhone 16 Pro), recorded at 60 fps:
+
+| File | What | What I see |
+|---|---|---|
+| `levelup_phone.mp4`, `_sheet.png` | Pip gaining a level at the plot | "Level 12" stands clear over his hat, white with a blue edge, slid beside the pills. The toast sits under the pills, inside the screen. The column is pale white at its peak and fades blue. |
+| `coil_phone.mp4`, `_frames.png` | Lantern Burst, replayed | **Condition 4:** the coil's foot is at the Shade's head for about two frames, then lifts away and narrows. The tints stay white (condition 2). |
+| `coil_fight_numbers_phone.mp4`, `_sheet.png` | Pip against a pack, the burst landing | **Part 5:** on the burst's 498, the lower 159 on that body dims and steps aside. |
+| `heldnote_phone.mp4`, `_frames.png`, `_overview.png` | Lyric's Held Note, replayed, on the pad | The crest runs from Lyric to the pad as a magenta-edged wave on the noon sky. The veil wraps it, and the touch's sparks break at the pad. |
+
+**For research's pass:**
+- Whether the coil's wind reads in motion (B1's open question).
+- Whether the bold crest holds on the bright sky at phone size.
+
+**Seen, not this piece:**
+- In the Held Note take, the player's avatar stands in front of the pad and covers part of the effect. That's the occlusion fix queued for the next TR.
+- Pip is at level 12 in the test save, from takes.
+
+**Not done:**
+- Research's pass in motion: one pass closes C, B1 and B2.
+- The director's acceptance.
+
+**Hours:** about 0.6, 15:13 to 15:48 UTC.
+
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 
 **The feel line, proposed (AR1, section 9), for research to sign:** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."

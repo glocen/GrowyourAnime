@@ -59,9 +59,13 @@ BASE = 0.6                      # the first ribbon's angle at its foot, from the
 TILT = math.radians(10.0)       # the picture's view, tipped down this much: the ring an ellipse, the coil from the side
 LIFT = 0.95 * AREA * math.sin(TILT)  # so the near foot stands on the picture's bottom
 SAMPLES, RIM = 44, 0.24         # points along a ribbon; studs of dark amber at the edge, about a pixel at 64 px
-SEAM, JOIN = 0.14, 0.35         # the orange seam where one ribbon passes over another; the soft join that makes one mass
+SEAM, JOIN = 0.3, 0.35          # the orange seam where one ribbon passes over another, two pixels at phone size so its
+# travel shows the wind (it was 0.14, under a pixel there); the soft join that makes one mass
 HEAD = 0.35                     # the share of a ribbon's length its head tapers to a point over: the top a flame's point
 CLIMB = 0.82                    # how far up the coil its foot climbs by the last frame
+LETGO = ((5, 0.0), (6, 0.06), (8, 0.25), (10, 0.6))  # the foot's way up the coil by frame, fast: then on to CLIMB
+WIND = 0.18                     # radians a frame the coil keeps turning, the way its seams climb: with the leap's whirl,
+# 0.4 to 0.7 a cell, under a third of the three ribbons' repeat, so the turn reads one way at speed, never backward
 # Every cell, by the frame it first shows (the Burst's 66 is t 0): the leap's four one a frame, then two a frame
 CELLS_T = (0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26)
 # The flare: on t, its size and how hot; its tongues, by angle, reach and width (shares of its size), uneven and up
@@ -76,9 +80,23 @@ def smooth(u):
 
 
 def ends(t):
-    """How far up the coil its head and its foot are on frame t: K's, but the foot climbs to CLIMB of the way, so what's
-    left as it goes is a flame that thins to a thread, taller than wide to the last, never an egg or a drop."""
-    return rw.grow(t, 5), CLIMB * (1 - (1 - hx.clamp((t - 5) / (LIFE - 5))) ** 1.7)
+    """How far up the coil its head and its foot are on frame t. The foot climbs to CLIMB of the way, so what's left as
+    it goes is a flame that thins to a thread, taller than wide to the last, never an egg or a drop. It lets go on 71
+    and passes the Shade's head between two cells: on 74 it's round the body, at its chest (2.9 studs), and from 76 it's
+    clear over the head (7 studs and up), then it drifts on up. K's slower climb sat at the crown on 78 to 81 and read as
+    a plume growing out of the head (the content check's condition 4; research's pass on Faber's take)."""
+    if t <= LETGO[-1][0]:
+        tail = float(np.interp(t, *zip(*LETGO)))
+    else:
+        tail = LETGO[-1][1] + (CLIMB - LETGO[-1][1]) * (1 - (1 - hx.clamp((t - LETGO[-1][0]) / (LIFE - LETGO[-1][0]))) ** 1.5)
+    return rw.grow(t, 5), tail
+
+
+def turned(t):
+    """How far round the coil has turned on frame t: it whirls in on the leap and keeps turning the same way to the end,
+    the way that carries its seams up and round from cell to cell, so the wind is seen at speed. K's whirl turned the
+    other way and stopped after the leap: its seams stood still, and it read as a cone narrowing as it rose."""
+    return -(1.8 * hx.out_fast(t / LIFE) + WIND * t)
 
 
 def thickness(t):
@@ -92,7 +110,7 @@ def coil(t):
     head, tail = ends(t)
     gone = hx.clamp((t - 5) / (LIFE - 5))  # 0 as it lets go of the floor, 1 on the last frame
     # the block's 11 to 13 studs, a little lower, so the flare and the last wisp stay inside the picture's square
-    top, spin = 10.4 + 1.6 * tail, 1.8 * hx.out_fast(t / LIFE)
+    top, spin = 10.4 + 1.6 * tail, turned(t)
     out, lifted = [], float(smooth((tail - 0.02) / 0.15))
     for k in range(RIBBONS):
         s = np.linspace(tail, head, SAMPLES)
@@ -273,7 +291,7 @@ def ground(X, Y, t, near):
     size, fields = 1 - 0.55 * a / 8, []
     thin, fork = 1 - 0.75 * (a / 8) ** 1.3, float(smooth((a - 1) / 5))
     for k in range(RIBBONS):
-        angle = BASE + k * 2 * math.pi / RIBBONS + 1.8 * hx.out_fast(5 / LIFE)  # where the foot was as it let go
+        angle = BASE + k * 2 * math.pi / RIBBONS + turned(5)  # where the foot was as it let go
         x = 0.95 * AREA * math.cos(angle)
         # one under the coil as it lifts would read as a drop hanging from it: only those out past its sides
         if (math.sin(angle) < 0) != near or abs(x) < 2.6:
@@ -451,9 +469,9 @@ def main():
 
     numbers = pa.table(stage)
     numbers["burst"]["cells"] = ("0 to 3, one a frame from the Burst: the ribbons leave the area's edge and wind up; "
-                                 "4: the flare where they meet, on 70 and 71; 5 to 7: the coil standing, spinning; "
-                                 "8 to 15: it lets go of the floor and climbs away, cooling, to a wisp. Played straight "
-                                 "through: BoilPlays 1")
+                                 "4: the flare where they meet, on 70 and 71; 5: the coil lets go of the floor; 6: round "
+                                 "the Shade's chest; 7 to 15: clear over its head, climbing away, cooling, to a wisp, turning "
+                                 "one way all through. Played straight through: BoilPlays 1")
     numbers["checks"] = {
         "share_at_peak": {str(f): {"before": round(peak_before[f] / area, 4), "art": round(peak[f] / area, 4)}
                           for f in PEAK},
@@ -477,9 +495,10 @@ def main():
         rs.paste(page, rs.grey(shrunk) if grey else shrunk, x0 + 10 + i * 600, y + 40)
     for i, words in enumerate((
             f"One a frame from the Burst ({pa.FIRST} to {pa.FIRST + 3}): the ribbons leave the area's edge and wind in. Cell 4, on 70 and 71: the flare where they meet, white at its middle. "
-            "Then two frames each: the coil standing and spinning (72 to 77),",
-            f"then letting go of the floor and climbing away, cooling from cream to gold to orange, to a wisp ({pa.FIRST + 12} to {pa.LAST}). Pip's cream, gold and orange inside, "
-            "a dark amber rim (#A85A1A, never redder than #FF8A3D); the secondary, a small flame left where each outer foot lets go.")):
+            "Then two frames each, turning one way:",
+            f"the coil lets go of the floor ({pa.FIRST + 6}), is round the Shade's chest ({pa.FIRST + 8}), and from {pa.FIRST + 10} is clear over its head, climbing away and cooling "
+            f"from cream to gold to orange, to a wisp (to {pa.LAST}).",
+            "Pip's cream, gold and orange inside, a dark amber rim (#A85A1A, never redder than #FF8A3D); the secondary, a small flame left where each outer foot lets go.")):
         text.append((x0, y + 510 + i * 20, 15, words, soft))
     y = 680
     text.append((x0, y, 20, f"From the player's camera: behind the avatar, Pip 33 degrees off his front and 30 studs away (the clip's frames, 60 a second; Burst is {pa.FIRST})", ink))

@@ -51,7 +51,7 @@
   "foot": "on the ground under the lantern's Burst position",
   "first": 66,
   "last": 93,
-  "cells": "0 to 3, one a frame from the Burst: the ribbons leave the area's edge and wind up; 4: the flare where they meet, on 70 and 71; 5 to 7: the coil standing, spinning; 8 to 15: it lets go of the floor and climbs away, cooling, to a wisp. Played straight through: BoilPlays 1"
+  "cells": "0 to 3, one a frame from the Burst: the ribbons leave the area's edge and wind up; 4: the flare where they meet, on 70 and 71; 5: the coil lets go of the floor; 6: round the Shade's chest; 7 to 15: clear over its head, climbing away, cooling, to a wisp, turning one way all through. Played straight through: BoilPlays 1"
  },
  "heat": {
   "belly": 0.19333333333333333,
@@ -1199,32 +1199,32 @@
  "checks": {
   "share_at_peak": {
    "67": {
-    "before": 0.0193,
-    "art": 0.0282
+    "before": 0.0282,
+    "art": 0.0288
    },
    "69": {
-    "before": 0.0395,
-    "art": 0.0382
+    "before": 0.0382,
+    "art": 0.0377
    },
    "70": {
-    "before": 0.0418,
-    "art": 0.0438
+    "before": 0.0438,
+    "art": 0.0442
    },
    "72": {
-    "before": 0.0364,
-    "art": 0.0372
+    "before": 0.0372,
+    "art": 0.0356
    },
    "76": {
-    "before": 0.0393,
-    "art": 0.0204
+    "before": 0.0204,
+    "art": 0.0145
    },
    "80": {
-    "before": 0.0313,
-    "art": 0.0115
+    "before": 0.0115,
+    "art": 0.0075
    },
    "86": {
-    "before": 0.0155,
-    "art": 0.0044
+    "before": 0.0044,
+    "art": 0.0039
    }
   },
   "pixels_at_64": {
@@ -1245,6 +1245,20 @@
    "dark": {
     "60": 34,
     "66": 321,
+    "67": 526,
+    "68": 587,
+    "69": 673,
+    "70": 736,
+    "72": 618,
+    "74": 452,
+    "76": 252,
+    "80": 124,
+    "84": 76,
+    "90": 37
+   },
+   "before": {
+    "60": 34,
+    "66": 321,
     "67": 510,
     "68": 601,
     "69": 680,
@@ -1256,32 +1270,18 @@
     "84": 106,
     "90": 37
    },
-   "before": {
-    "60": 34,
-    "66": 156,
-    "67": 363,
-    "68": 535,
-    "69": 715,
-    "70": 731,
-    "72": 657,
-    "74": 653,
-    "76": 668,
-    "80": 553,
-    "84": 331,
-    "90": 79
-   },
    "bright": {
     "60": 38,
     "66": 323,
-    "67": 510,
-    "68": 601,
-    "69": 679,
-    "70": 731,
-    "72": 651,
-    "74": 475,
-    "76": 376,
-    "80": 209,
-    "84": 106,
+    "67": 525,
+    "68": 585,
+    "69": 674,
+    "70": 736,
+    "72": 619,
+    "74": 454,
+    "76": 255,
+    "80": 124,
+    "84": 76,
     "90": 37
    }
   },

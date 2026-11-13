@@ -3630,6 +3630,19 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
   - Pip's throw is too small and far off to read at phone size.
   - All three are the next TR's framing (TR "Next").
 
+**B1, the last redraw, 2026-11-13 (Modulo):** the coil's second fix round, as research set it. Delivered to `build/handoff/Pip/fx/` under the old names (`pip_burst.png`, `pip_burst_art.json`, `pip_burst_art.png`), the same layout, so `Config.Effects.LanternBurst` plays it as it is.
+- **Condition 4, the foot sooner** (`LETGO` and `ends()`): it lets go of the floor on 72, wraps the Shade from the chest up on 74 and 75 (its foot 2.9 studs up, the head inside the flame, never under it), and from 76 it's clear over the head, at 7 studs and up. Before, it sat on the crown from 78 to 81.
+- **The wind** (`turned()`, `WIND`, `SEAM`): the coil whirls in on the leap and then keeps turning the same way to its last cell, 0.4 to 0.7 radians a cell. That's under a third of the three ribbons' repeat, so at speed the seams climb one way round and never read backward. The seams are twice as wide, two pixels at phone size. Before, the whirl stopped after the leap, so the seams stood still.
+- **The measures,** before (the delivered coil) and now. Share of the screen: 72, 3.72% and 3.56%; 76, 2.04% and 1.45%; 80, 1.15% and 0.75%. Pixels at 64 px: 76, 373 and 252. Frames 67 to 70 are unchanged.
+- **The content check: PASS** (rules 2, 3 and 4, conditions 1 to 6). To hold at upload:
+  - condition 4 in the engine at 64 px, from the player's camera and dead on, 74 to 76;
+  - the tints stay white;
+  - the asset log's new row, which retires 100913199674615 on upload.
+  - It also asks the take to watch for one thing: cells 78 to 85 are rounder than before, and they must not read as an egg in motion. If they do, the fix is a taller top tongue.
+- **For Faber:** one re-upload in the coil's place, then one take. The trail is unchanged pixel for pixel.
+- **Not done:** the upload, the take, and research's pass in motion: the round's last.
+- **Hours:** about 0.3, 15:48 to 16:05 UTC.
+
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 
 **The feel line, proposed (AR1, section 9), for research to sign:** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."

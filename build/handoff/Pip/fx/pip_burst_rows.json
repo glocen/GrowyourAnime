@@ -19,7 +19,7 @@
     "FxCoil2_Burn5",
     "FxCoil2_Burn6"
    ],
-   "Texture": "fx_across_Flame",
+   "Texture": "fx_fire_Flame",
    "BlockIn": "fx_across_Grey",
    "Place": "the six bands as one coil: its foot on the ground at On, each band at the coil's centre plus its 'offset' times the scale; all six share the Scale and Spin, each has its own Transparency and Glow",
    "Tracks": {
@@ -313,7 +313,235 @@
      ]
     }
    },
-   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot as it fades, the tip last, gone on 84"
+   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot as it fades, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"
+  },
+  {
+   "Name": "Front",
+   "Part": [
+    "FxCoil2_Front1",
+    "FxCoil2_Front2",
+    "FxCoil2_Front3",
+    "FxCoil2_Front4",
+    "FxCoil2_Front5"
+   ],
+   "Texture": "fx_rise_Flame",
+   "BlockIn": "fx_rise_Grey",
+   "On": "Coil",
+   "Place": "on the coil's frame, its spin included, each at its centre times the scale as the bands are; its Scale the coil's own keys",
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      [
+       3.004,
+       3.0,
+       3.004
+      ],
+      "Quart Out"
+     ],
+     [
+      4,
+      [
+       3.265,
+       5.0,
+       3.265
+      ],
+      "Linear"
+     ],
+     [
+      18.5,
+      [
+       3.265,
+       5.6,
+       3.265
+      ],
+      null
+     ]
+    ]
+   },
+   "Bands": {
+    "FxCoil2_Front1": {
+     "Transparency": [
+      [
+       0,
+       1.0,
+       null
+      ],
+      [
+       8.0,
+       1.0,
+       "Linear"
+      ],
+      [
+       8.5,
+       0.0,
+       null
+      ],
+      [
+       10.0,
+       0.0,
+       "Quad In"
+      ],
+      [
+       11.0,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       3.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Front2": {
+     "Transparency": [
+      [
+       0,
+       1.0,
+       null
+      ],
+      [
+       9.5,
+       1.0,
+       "Linear"
+      ],
+      [
+       10.0,
+       0.0,
+       null
+      ],
+      [
+       11.5,
+       0.0,
+       "Quad In"
+      ],
+      [
+       12.5,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       3.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Front3": {
+     "Transparency": [
+      [
+       0,
+       1.0,
+       null
+      ],
+      [
+       11.0,
+       1.0,
+       "Linear"
+      ],
+      [
+       11.5,
+       0.0,
+       null
+      ],
+      [
+       13.0,
+       0.0,
+       "Quad In"
+      ],
+      [
+       14.0,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       3.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Front4": {
+     "Transparency": [
+      [
+       0,
+       1.0,
+       null
+      ],
+      [
+       12.5,
+       1.0,
+       "Linear"
+      ],
+      [
+       13.0,
+       0.0,
+       null
+      ],
+      [
+       14.5,
+       0.0,
+       "Quad In"
+      ],
+      [
+       15.5,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       3.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Front5": {
+     "Transparency": [
+      [
+       0,
+       1.0,
+       null
+      ],
+      [
+       14.0,
+       1.0,
+       "Linear"
+      ],
+      [
+       14.5,
+       0.0,
+       null
+      ],
+      [
+       16.0,
+       0.0,
+       "Quad In"
+      ],
+      [
+       17.0,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       3.0,
+       null
+      ]
+     ]
+    }
+   },
+   "Why": "fix 3: the burning edge, a white line across each strand with a ragged row of tongues licking up it, brighter than the bands; it climbs a band every 1.5 frames from 74 and goes with the tips' band"
   },
   {
    "Name": "Flare",

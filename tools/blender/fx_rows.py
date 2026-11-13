@@ -3,9 +3,10 @@ keyed on its clip's markers, for the builder's one player (Config.Effects). This
 json for the builder, and previews them in grey on the effect's own stage, so the rows are checked at 64 px before the
 engine's block-in. The engine's take is the judge; this is the maker's own check.
 
-blender.exe -b --factory-startup --python tools/blender/fx_rows.py -- <out_dir> [B1 | Signature [Back] | B5 [Close | Small] [<clip>]]
-(Back: only the sheets behind the keeper the content check asked for, round the hat at 64 px; Close, Small: only B5's
-close sheet, or its 64 px sheets; B5's clip defaults to the delivered Rook_Haymaker.json)
+blender.exe -b --factory-startup --python tools/blender/fx_rows.py -- <out_dir> [B1 | Finish | Signature [Back] | B5 [Close | Small] [<clip>]]
+(Finish: B1's rows with fix 3's look, and its sheets before and after; Back: only the sheets behind the keeper the
+content check asked for, round the hat at 64 px; Close, Small: only B5's close sheet, or its 64 px sheets; B5's clip
+defaults to the delivered Rook_Haymaker.json)
 
 A row is one kit part or one engine object (Part), what it hangs on (On), and its tracks. A track is a list of keys:
 [frames after the effect's marker at the clip's 60 a second, the value reached there, the ease on to the next key, as
@@ -22,6 +23,12 @@ way its strands climb, flares white where they meet (70), and from 74 it burns o
 foot first, each flaring hot as it goes, embers rising off the burning edge, the top tongue last, by 84. Two small
 flames stand at its feet as the burn starts, the secondary, lower and softer. Two strands, not three: seen from above,
 three arms winding out of a centre is the shape B1's content check keeps off every camera (condition 5).
+
+B1's finish (research's fix 3, "a ragged, brighter tongue edge on the burning front as it eats upward; and a darker
+saturated edge on a bright core along the bands"): the coil's bands take fx_fire_Flame, drawn for the engine's self-lit
+look, and a Front row puts the kit's FxCoil2_Front<b> at the top of each band as it burns, bright tongues off its edge.
+Previewed on a plain stage through fx_kit.engine's model of the self-lit look (the bands and fronts by an id pass, a
+mild bloom), before and after, at noon and dusk: a model, so the engine's take beside the grey is the judge.
 
 Signature (the Lamplighter's, AR7 section 7 with option 1's clip; AR8's order 3): section 7's three Beams carry over,
 and the hold's glow card becomes a light and a small shell. Through the hold the lantern's own paper climbs toward its
@@ -47,6 +54,7 @@ import random
 import sys
 from pathlib import Path
 
+import bmesh
 import bpy
 import numpy as np
 from mathutils import Quaternion, Vector
@@ -117,6 +125,20 @@ def band_tracks(k):
             "Glow": [[0, 2.0, None], [start, 2.0, "Quad Out"], [start + GOES * 0.5, 4.0, "Linear"], [start + GOES, 4.0, None]]}
 
 
+COIL_SCALE = [[0, [round(H * 0.92, 3), V * 0.6, round(H * 0.92, 3)], "Quart Out"], [4, [round(H, 3), V, round(H, 3)], "Linear"],
+              [18.5, [round(H, 3), round(V * 1.12, 3), round(H, 3)], None]]
+FIRE_LOOK, FRONT_GLOW = "fx_fire_Flame", 3.0  # fix 3: the bands on fire (fx_kit.fire); the front brighter than they are
+
+
+def front_tracks(b):
+    """The front where band b meets b + 1: shown as band b starts to burn, held until band b + 1 has started, then gone,
+    so the line of tongues climbs a band every STEP frames, from 74 to the tips' band."""
+    on, off = BURN + STEP * (b - 1), BURN + STEP * b + 0.5
+    return {"Transparency": [[0, 1.0, None], [on, 1.0, "Linear"], [on + 0.5, 0.0, None], [off, 0.0, "Quad In"],
+                             [off + 1.0, 1.0, None]],
+            "Glow": [[0, FRONT_GLOW, None]]}
+
+
 B1 = {
     "Effect": "Lantern Burst's coil and its exit (AR8, B1)",
     "Clip": "PipLanternBurst", "From": "Burst", "Marker": pf.BURST, "Fps": 60, "Area": AREA,
@@ -124,18 +146,24 @@ B1 = {
     "On": "the ground under the lantern's stop, where Config.Effects.LanternBurst.Burst stands its foot",
     "Replaces": "the coil's picture (Config.Effects.LanternBurst.Burst); the heat and the trail stay",
     "Rows": [
-        {"Name": "Coil", "Part": [f"{COIL}_Burn{k}" for k in range(1, BANDS + 1)], "Texture": "fx_across_Flame",
+        {"Name": "Coil", "Part": [f"{COIL}_Burn{k}" for k in range(1, BANDS + 1)], "Texture": FIRE_LOOK,
          "BlockIn": "fx_across_Grey",
          "Place": "the six bands as one coil: its foot on the ground at On, each band at the coil's centre plus its "
                   "'offset' times the scale; all six share the Scale and Spin, each has its own Transparency and Glow",
-         "Tracks": {"Scale": [[0, [round(H * 0.92, 3), V * 0.6, round(H * 0.92, 3)], "Quart Out"],
-                              [4, [round(H, 3), V, round(H, 3)], "Linear"],
-                              [18.5, [round(H, 3), round(V * 1.12, 3), round(H, 3)], None]],
-                    "Spin": [[0, 0.0, "Quart Out"], [18.5, -150.0, None]]},
+         "Tracks": {"Scale": COIL_SCALE, "Spin": [[0, 0.0, "Quart Out"], [18.5, -150.0, None]]},
          "Bands": {f"{COIL}_Burn{k}": band_tracks(k) for k in range(1, BANDS + 1)},
          "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from "
                 "above, the way its strands climb, and stretches up as it burns; the bands go foot first, each "
-                "flaring hot as it fades, the tip last, gone on 84"},
+                "flaring hot as it fades, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the "
+                "flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"},
+        {"Name": "Front", "Part": [f"{COIL}_Front{b}" for b in range(1, BANDS)], "Texture": "fx_rise_Flame",
+         "BlockIn": "fx_rise_Grey", "On": "Coil",
+         "Place": "on the coil's frame, its spin included, each at its centre times the scale as the bands are; "
+                  "its Scale the coil's own keys",
+         "Tracks": {"Scale": COIL_SCALE},
+         "Bands": {f"{COIL}_Front{b}": front_tracks(b) for b in range(1, BANDS)},
+         "Why": "fix 3: the burning edge, a white line across each strand with a ragged row of tongues licking up it, "
+                "brighter than the bands; it climbs a band every 1.5 frames from 74 and goes with the tips' band"},
         {"Name": "Flare", "Part": "fx_glow", "On": "the coil's tip", "Kind": "a card or one particle, facing the camera",
          "Color": HOT, "LightEmission": 1,
          "Tracks": {"Size": [[3, 3.0, "Quad Out"], [4, 5.5, "Quad In"], [5, 4.0, "Linear"], [6, 2.0, "Linear"],
@@ -1018,6 +1046,169 @@ def main_b5(out, clip=None, only=None):
     tmp.unlink(missing_ok=True)
 
 
+# --- B1's finish (research's fix 3): the coil on fire, as the engine draws it ------------------------------------------
+
+FINISH = (68, 70, 72, 74, 75, 76, 77, 78, 79, 80, 82, 83)
+FINISH_CLOSE = (70, 75, 78)
+LIGHT_ON = {"pale": 0.6, "dusk": 0.2}  # the light on a kit mesh, as engine()'s `light`: noon's pad, Lantern Row's dusk
+
+
+def blur(img, r):
+    """Three box blurs of radius r down each axis: near enough a gaussian, for the bloom."""
+    for axis in (0, 1):
+        for _ in range(3):
+            pad = [(0, 0)] * img.ndim
+            pad[axis] = (r + 1, r)
+            c = np.cumsum(np.pad(img, pad, mode="edge"), axis=axis)
+            img = (np.take(c, range(2 * r + 1, c.shape[axis]), axis=axis) - np.take(c, range(0, c.shape[axis] - 2 * r - 1), axis=axis)) / (2 * r + 1)
+    return img
+
+
+class FireStage:
+    """The coil round a stand-in Shade on the pad, its bands and fronts as kit meshes in the unit coil, under one empty
+    that takes the rows' Scale and Spin. Drawn in three passes: the lit stage, the parts' textures flat, and each part's
+    id; then each part's texels through fx_kit.engine at its Glow, over the stage at its Transparency, with a mild bloom
+    (a model of the engine's: the take is the judge)."""
+
+    def __init__(self):
+        self.scene = scene = bl.reset_scene()
+        scene.render.engine = "BLENDER_WORKBENCH"
+        scene.view_settings.view_transform = "Standard"
+        scene.display.render_aa = "OFF"
+        scene.render.film_transparent = False
+        shading = scene.display.shading
+        shading.background_type = "VIEWPORT"
+        floor = bpy.data.objects.new("Floor", bpy.data.meshes.new("Floor"))
+        floor.data.from_pydata([(-60, -60, 0), (60, -60, 0), (60, 60, 0), (-60, 60, 0)], [], [(0, 1, 2, 3)])
+        self.floor_m = bpy.data.materials.new("Floor")
+        floor.data.materials.append(self.floor_m)
+        target = bpy.data.objects.new("Target", bpy.data.meshes.new("Target"))
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=1.0)
+        bm.to_mesh(target.data)
+        bm.free()
+        target.scale, target.location = (2.0, 1.0, TARGET_TOP), (0.0, 0.0, TARGET_TOP / 2)
+        target_m = bpy.data.materials.new("Target")
+        target_m.diffuse_color = (0.16, 0.16, 0.2, 1)
+        target.data.materials.append(target_m)
+        for obj in (floor, target):
+            scene.collection.objects.link(obj)
+        self.root = bpy.data.objects.new("Coil", None)
+        scene.collection.objects.link(self.root)
+        self.images = {n: kit_image(n, f(p)) for n, f, p in (("fx_across_Flame", kit.across, "Flame"), (FIRE_LOOK, kit.fire, "Flame"),
+                                                             ("fx_rise_Flame", kit.rise, "Flame"))}
+        self.parts = {}
+        for k in range(1, BANDS + 1):
+            self.parts[f"{COIL}_Burn{k}"] = self.part(f"{COIL}_Burn{k}", kit.coil(2, 1.0, (k - 1) / BANDS, k / BANDS))
+        for b in range(1, BANDS):
+            self.parts[f"{COIL}_Front{b}"] = self.part(f"{COIL}_Front{b}", kit.front(2, 1.0, b / BANDS, 40 + b))
+            kit.textured(self.parts[f"{COIL}_Front{b}"], self.images["fx_rise_Flame"])
+        self.ids = {name: i + 1 for i, name in enumerate(self.parts)}
+        for name, obj in self.parts.items():
+            obj.color = (self.ids[name] / 16, 0.0, 0.0, 1.0)
+        data = bpy.data.cameras.new("Camera")
+        data.sensor_fit, data.angle = "VERTICAL", math.radians(40)
+        self.camera = bpy.data.objects.new("Camera", data)
+        scene.collection.objects.link(self.camera)
+        scene.camera = self.camera
+        az, el, dist, aim = math.radians(25), math.radians(12), 27.0, Vector((0.0, 0.0, 5.6))
+        way = Vector((math.sin(az) * math.cos(el), -math.cos(az) * math.cos(el), math.sin(el)))
+        self.camera.location = aim + way * dist
+        self.camera.rotation_euler = (-way).to_track_quat("-Z", "Y").to_euler()
+
+    def part(self, name, bm):
+        obj = bpy.data.objects.new(name, kit_mesh(name, bm))
+        self.scene.collection.objects.link(obj)
+        obj.parent = self.root
+        obj.display.show_shadows = False
+        kit.textured(obj, self.images[FIRE_LOOK])
+        return obj
+
+    def weather(self, pale):
+        self.floor_m.diffuse_color = (0.74, 0.72, 0.68, 1) if pale else (0.12, 0.11, 0.15, 1)
+        self.scene.display.shading.background_color = (0.62, 0.74, 0.86) if pale else (0.05, 0.05, 0.1)
+
+    def tile(self, f, look, pale, size, label=""):
+        """The tile at clip frame f: look "before" (fx_across_Flame, no front) or "after" (fx_fire_Flame and the fronts)."""
+        t = f - pf.BURST
+        rows = {row["Name"]: row for row in B1["Rows"]}
+        coil, front = rows["Coil"], rows["Front"]
+        scale, spin = value(COIL_SCALE, t), value(coil["Tracks"]["Spin"], t) or 0.0
+        self.root.scale = (scale[0], scale[2], scale[1])
+        self.root.rotation_euler = (0.0, 0.0, math.radians(spin))
+        state = {}
+        for name, obj in self.parts.items():
+            tracks = (coil if "Burn" in name else front)["Bands"][name]
+            clear = value(tracks["Transparency"], t)
+            clear = 1.0 if clear is None else clear
+            if look == "before" and "Front" in name:
+                clear = 1.0
+            state[name] = (value(tracks["Glow"], t) or 1.0, clear)
+            if "Burn" in name:
+                kit.textured(obj, self.images["fx_across_Flame" if look == "before" else FIRE_LOOK])
+        self.weather(pale)
+        scene, shading, r = self.scene, self.scene.display.shading, self.scene.render
+        r.resolution_x, r.resolution_y = size[0] * 2, size[1] * 2
+        out = {}
+        for pass_, light, colour, shown in (("base", "STUDIO", "MATERIAL", False), ("tex", "FLAT", "TEXTURE", True),
+                                            ("id", "FLAT", "OBJECT", True)):
+            for name, obj in self.parts.items():
+                obj.hide_render = not shown or state[name][1] >= 0.999
+            shading.light, shading.color_type = light, colour
+            if pass_ == "id":  # the sky and the stage read as no part (white is past every id)
+                shading.background_color = (1.0, 1.0, 1.0)
+            shading.show_shadows = shading.show_cavity = pass_ == "base"
+            r.use_stamp = pass_ == "base" and bool(label)
+            r.stamp_note_text = label
+            r.filepath = str(self.tmp)
+            bpy.ops.render.render(write_still=True)
+            out[pass_] = sa.rs.load(self.tmp)
+        base, tex, ids = out["base"], out["tex"][..., :3], out["id"][..., 0]
+        keys = kit.to_srgb(np.arange(16, dtype=np.float32) / 16)
+        which = np.abs(ids[..., None] - keys[None, None, :]).argmin(-1)
+        glow, clear = np.zeros(which.shape, np.float32), np.ones(which.shape, np.float32)
+        for name, i in self.ids.items():
+            m = which == i
+            glow[m], clear[m] = state[name]
+        lin = kit.to_linear(tex)
+        x = lin * lin * glow[..., None] + LIGHT_ON["pale" if pale else "dusk"] * lin
+        shown = (1 - clear)[..., None]
+        pic = base[..., :3] * (1 - shown) + kit.to_srgb(kit.aces(x)) * shown
+        over = np.maximum(x - 1.0, 0.0) * shown
+        pic = np.clip(pic + 0.18 * blur(over, max(2, size[1] // 60)), 0, 1)
+        h, w = size[1], size[0]
+        small = pic.reshape(h, 2, w, 2, 3).mean(axis=(1, 3))
+        return np.concatenate([small, np.ones((h, w, 1), np.float32)], axis=-1)
+
+
+def main_b1_finish(out):
+    """B1's finish: the sheet (before and after on the pad at noon, after at dusk, from the game's side), the close one
+    (70, 75, 78 large), and the 64 px rows; texels through the engine's model. The rows json with them."""
+    (out / "pip_burst_rows.json").write_text(json.dumps(B1, indent=1) + "\n", encoding="utf-8")
+    print(f"wrote {out / 'pip_burst_rows.json'}")
+    stage = FireStage()
+    stage.tmp = out / "_tile.png"
+    r = stage.scene.render
+    r.use_stamp_date = r.use_stamp_render_time = r.use_stamp_camera = r.use_stamp_lens = False
+    r.use_stamp_scene = r.use_stamp_filename = r.use_stamp_frame = r.use_stamp_time = False
+    r.use_stamp_note = True
+    r.stamp_font_size = 22
+    rows, small = [], []
+    for look, pale in (("before", True), ("after", True), ("after", False)):
+        tiles = [stage.tile(f, look, pale, (240, 320), f"{look}, {'noon' if pale else 'dusk'}: {f}" if f == FINISH[0] else f"{f}")
+                 for f in FINISH]
+        rows.append(sa.sheet([sa.edged(t) for t in tiles], len(tiles)))
+        if look == "after":
+            small.append(sa.sheet([sa.edged(t.reshape(64, 5, 48, 5, 4).mean(axis=(1, 3))) for t in tiles], len(tiles)))
+    sa.rs.save(sa.stack(rows), out / "b1_finish.png")
+    sa.rs.save(sa.stack(small).repeat(3, axis=0).repeat(3, axis=1), out / "b1_finish_64.png")
+    r.stamp_font_size = 26
+    close = [sa.sheet([sa.edged(stage.tile(f, look, pale, (480, 640), f"{look}, {'noon' if pale else 'dusk'}: {f}")) for f in FINISH_CLOSE], 3)
+             for look, pale in (("before", True), ("after", True), ("after", False))]
+    sa.rs.save(sa.stack(close), out / "b1_finish_close.png")
+    stage.tmp.unlink(missing_ok=True)
+
+
 def main():
     sys.stdout.reconfigure(line_buffering=True)
     out = bl.out_dir()
@@ -1027,6 +1218,9 @@ def main():
         return
     if "Signature" in args:
         main_signature(out, back="Back" in args)
+        return
+    if "Finish" in args:
+        main_b1_finish(out)
         return
     (out / "pip_burst_rows.json").write_text(json.dumps(B1, indent=1) + "\n", encoding="utf-8")
     print(f"wrote {out / 'pip_burst_rows.json'}")

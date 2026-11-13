@@ -9,6 +9,8 @@ where a far side shows its inside (the body stands inside hoops and shells; a co
   They lie on the funnel, upright bands, so from the side they never go edge-on. U across a strand, V along it
   (0 the foot). Each also comes cut along V into BANDS pieces, _Burn1 (the foot) to _Burn6 (the tips): fade them
   foot first and the burn climbs (AR8's order, B1: "burning off from its foot as its transparency moves up").
+  FxCoil2 also has _Front1 to _Front5 (B1's finish, fix 3): the burning front where _Burn<b> meets _Burn<b+1>, a
+  bright line across each strand and a ragged row of upright tongues off it, on fx_rise_<P>; shown while _Burn<b> burns.
 - FxShell: a sphere. U round, V pole to pole (0 the bottom).
 - FxHoop: a flat ring with an upright band round its rim (the handbook's depth rule: a flat ring vanishes edge-on).
   U round; V 0 to .5 the ring, inner to outer, .5 to 1 the band, floor to lip: one gradient out and up.
@@ -26,7 +28,9 @@ Textures:
   the foot, hotter at the tip), fx_rise_<P> (the core at V 0 to the deep colour at V 1), fx_ribs_<P> (lit paper
   between six dark ribs: a lantern's look on a shell or a column). Drawn in their own colours, so nothing rests on
   whether a MeshPart's Color tints its texture; opaque, so nothing rests on what a MeshPart does with a texture's
-  alpha. The silhouettes are the geometry's, and a fade is the part's Transparency.
+  alpha. The silhouettes are the geometry's, and a fade is the part's Transparency. fx_fire_<P> (B1's bands on fire:
+  a dark saturated rim, the body, gold licks and a white core) is drawn for the engine's self-lit look at Glow
+  FIRE_GLOW, not in flat colours: through `engine` it comes out in FIRE's colours, so tune its row's Glow, never it.
 - White with alpha, tinted in the game (Beams, Trails and particles multiply by Color): fx_beam (across a beam: a
   bright core, a lower edge, clear outside; tiles along), fx_tongues (a flame's tongues licking off the left edge,
   tiles along: on a Trail they rise off Attachment0's side), fx_streak (a needle moving left, for VelocityParallel),
@@ -124,6 +128,71 @@ def ribs(palette, w=64, h=256):
     paper = 0.55 + 0.35 * smooth(d * RIBS * 2) - 0.15 * v  # each panel brightest at its middle, a little deeper up
     rib = 1 - smooth((d - 0.006) / 0.004)                # about 4 px across
     return ladder(paper * (1 - rib) + 0.06 * rib, palette)
+
+
+# Fire (AR8 B1, research's fix 3: the bands read as gold silk, not fire). Drawn for the engine, not flat: a kit look is
+# a SurfaceAppearance whose emissive mask is its own colour map, and Roblox draws (mask x EmissiveStrength + light) x
+# colour map (AR2, section 4), the texel squared times the Glow, so a flat ramp at Glow 2 to 4 blows its middle out to
+# one pale gold and its thin rim to red. Each step here is the texel that comes out as its colour (drawn_for).
+FIRE = {"Flame": ("#FFF6E2", "#FFC650", "#FF8A3D", "#B5500F")}  # core, gold, body, rim, as they come out in the game
+FIRE_GLOW, FIRE_LIGHT = 2.0, 0.3   # the Glow it's drawn for (a whole band's), and the light on it (a dusk street's)
+FIRE_STEPS = (0.24, 0.6, 0.88)     # across a strand (0 its edges, 1 its middle): rim to body, body to gold, gold to the
+# core; between the licks a thin white core down the middle, at a lick gold and white swell out toward the rim
+FIRE_REACH = (0.03, 0.3, 0.36)     # how far a lick at its fullest brings each step out toward the rim
+FIRE_LICKS = 6                     # licks along a strand, each a tongue: a round foot, its point toward the tips
+
+
+def aces(x):
+    return np.clip(x * (2.51 * x + 0.03) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0)
+
+
+def to_linear(c):
+    c = np.asarray(c, dtype=np.float32)
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def to_srgb(c):
+    c = np.clip(np.asarray(c, dtype=np.float32), 0.0, 1.0)
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * c ** (1 / 2.4) - 0.055)
+
+
+def engine(texture, glow, light):
+    """A kit mesh's texture as the game draws it: (mask x Glow + light) x colour map, the mask the colour map, through a
+    filmic curve. sRGB in and out. A model, without bloom: the take is the judge."""
+    t = to_linear(texture[..., :3])
+    return to_srgb(aces(t * t * glow + light * t))
+
+
+def drawn_for(colour, glow=FIRE_GLOW, light=FIRE_LIGHT):
+    """The texel (sRGB) that comes out as `colour`: the curve undone, then glow T^2 + light T = x solved for T."""
+    xs = np.linspace(0.0, 16.0, 64001, dtype=np.float32)
+    x = np.interp(np.minimum(to_linear(rgb(colour)), 0.985), aces(xs), xs)
+    t = (-light + np.sqrt(light * light + 4 * glow * x)) / (2 * glow)
+    return to_srgb(np.minimum(t, 1.0))
+
+
+def fire(palette="Flame", w=128, h=512):
+    """A strand on fire (fx_fire_<P>): hard steps across it from a dark saturated rim through the orange body and gold
+    to a thin white core down its middle (rule 3); at each lick the gold and the white swell out toward the rim, a
+    tongue with a round foot pointing to the tips, a little hotter toward them. Drawn for the engine (`drawn_for`), so
+    the file looks paler and pinker than it plays."""
+    u, v = grid(w, h)
+    side = 1 - np.abs(2 * u - 1)
+    right = (u > 0.5).astype(np.float32)
+    along = v * FIRE_LICKS + 0.5 * right + 0.1 * np.sin(19.0 * v + 2.0 * right)
+    n, phase = np.floor(along), along % 1.0
+    size = 0.8 + 0.2 * np.sin(n * 2.4 + 1.3 * right)  # each lick its own size
+    lick = size * (1 - phase) ** 1.3 * smooth(phase / 0.2)  # a tongue: a round foot, its point up the strand (+V)
+    hot = 0.06 * smooth((v - 0.4) / 0.6)
+    cuts = [step - reach * lick - (hot if i else 0.0) for i, (step, reach) in enumerate(zip(FIRE_STEPS, FIRE_REACH))]
+    colours = [drawn_for(c) for c in FIRE[palette][::-1]]  # rim, body, gold, core
+    out = np.empty(u.shape + (4,), dtype=np.float32)
+    out[..., :3] = colours[0]
+    for cut, colour in zip(cuts, colours[1:]):
+        k = smooth((side - cut) * w / 2 + 0.5)[..., None]  # a step a texel wide
+        out[..., :3] = out[..., :3] * (1 - k) + colour * k
+    out[..., 3] = 1.0
+    return out
 
 
 def beam(w=64, h=256):
@@ -247,6 +316,12 @@ def textures():
         out[f"fx_across_{p}"] = (across(p), {"for": "MeshPart.TextureID: a coil's strands, the crescent", "alpha": "opaque"})
         out[f"fx_rise_{p}"] = (rise(p), {"for": "MeshPart.TextureID: the column, the hoop, a shell, chips", "alpha": "opaque"})
         out[f"fx_ribs_{p}"] = (ribs(p), {"for": "MeshPart.TextureID: a lantern's ribs on a shell or a column", "alpha": "opaque"})
+    for p in FIRE:
+        out[f"fx_fire_{p}"] = (fire(p), {"for": "MeshPart.TextureID: a coil's strands on fire (B1's bands)", "alpha": "opaque",
+                                         "drawn": f"for the engine at Glow {FIRE_GLOW:g}: each step the texel that comes "
+                                                  "out as its colour, (mask x Glow + light) x colour map; the file "
+                                                  "looks paler and pinker than it plays",
+                                         "colours": dict(zip(("core", "gold", "body", "rim"), FIRE[p]))})
     out["fx_beam"] = (beam(), {"for": "Beam or Trail: across it a bright core and a lower edge, clear outside; tiles along",
                                "set": "TextureMode Wrap or Stretch; TextureSpeed 0 unless it flows"})
     out["fx_tongues"] = (tongues(), {"for": "Beam or Trail: a flame's tongues off Attachment0's side (the image's left), tiles along",
@@ -326,6 +401,79 @@ def coil(strands, turns, lo=0.0, hi=1.0):
             width = max(C_WIDTH * (1 - C_NARROW * s) * min(1.0, (1 - s) / C_HEAD) ** 0.85, 0.004)
             rows.append([p + side * width * (u - 0.5) + out * 0.12 * width * (1 - (2 * u - 1) ** 2) for u in (0.0, 0.5, 1.0)])
         surface(bm, uv, rows, (0.0, 0.5, 1.0), ss)
+    both_sides(bm)
+    return bm
+
+
+FRONT_TONGUES, FRONT_LIFT = 4, 0.015  # tongues across a strand; how far off its faces a front lies (unit coil)
+
+
+def strand_at(base, turns, s):
+    """A strand's frame at s: its centre, its across way (U), its outward normal, its width and how long it runs a
+    unit of s, as coil() lays it."""
+    p, angle = coil_point(s, base, turns)
+    tangent = coil_point(min(s + 1e-3, 1.0), base, turns)[0] - coil_point(max(s - 1e-3, 0.0), base, turns)[0]
+    out = Vector((math.cos(angle), math.sin(angle), 0.0))
+    side = tangent.cross(out).normalized()
+    normal = side.cross(tangent).normalized()
+    normal = normal if normal.dot(out) > 0 else -normal
+    width = max(C_WIDTH * (1 - C_NARROW * s) * min(1.0, (1 - s) / C_HEAD) ** 0.85, 0.004)
+    run = tangent.length / (min(s + 1e-3, 1.0) - max(s - 1e-3, 0.0))
+    return p, side, out, normal, width, run
+
+
+def front(strands, turns, s, seed):
+    """The burning front where band b meets b + 1 (s = b / BANDS): on each strand, a bright line across the cut, and a
+    ragged row of tongues standing up off it, upright, each on the funnel's tangent there (its face out from the axis),
+    so they rise past the strand's own edge into the air like a flame eating up it. Both sides built. On fx_rise: V 0,
+    the core, along the line and at each tongue's foot; the tips 0.75. A tongue's height is in unit coil: the game
+    stretches the coil about 1.7 times taller than wide, and the tongues with it."""
+    rng = random.Random(seed)
+    bm, uv = new_bm()
+    up = Vector((0.0, 0.0, 1.0))
+
+    def point(base, u, ss):
+        p, side, out, normal, width, _ = strand_at(base, turns, ss)
+        return p + side * width * (u - 0.5) + out * 0.12 * width * (1 - (2 * u - 1) ** 2) + normal * FRONT_LIFT
+
+    def face(verts, uvs):
+        f = bm.faces.new(verts)
+        for loop, (a, b) in zip(f.loops, uvs):
+            loop[uv].uv = (a, b)
+        f.smooth = False
+        f.normal_update()
+        centre = f.calc_center_median()
+        if f.normal.dot(Vector((centre.x, centre.y, 0.0))) < 0:
+            f.normal_flip()
+
+    for k in range(strands):
+        base = 2 * math.pi * k / strands
+        _, _, _, _, width, run = strand_at(base, turns, s)
+        line = 0.07 * width / run  # the line's half width, in s
+        us = [j / 8 for j in range(9)]
+        lo = [bm.verts.new(point(base, u, s - line)) for u in us]
+        hi = [bm.verts.new(point(base, u, s + line)) for u in us]
+        for j in range(8):
+            face([lo[j], lo[j + 1], hi[j + 1], hi[j]], [(us[j], 0.0), (us[j + 1], 0.0), (us[j + 1], 0.04), (us[j], 0.04)])
+        for i in range(FRONT_TONGUES):
+            root = point(base, min(0.95, max(0.05, (i + 0.5) / FRONT_TONGUES + rng.uniform(-0.05, 0.05))), s)
+            radial = Vector((root.x, root.y, 0.0)).normalized()
+            circ = up.cross(radial)
+            half = width * 0.5 / FRONT_TONGUES * rng.uniform(1.1, 1.5)
+            tall, lean = width * rng.uniform(0.3, 0.7), width * rng.uniform(-0.12, 0.12)
+            steps, rows = 5, []
+            for n in range(steps + 1):
+                a = n / steps
+                centre = root + up * tall * a + circ * lean * a * a + radial * 0.4 * FRONT_LIFT * a
+                h = half * (1 - a) ** 0.75 * (1 + 0.35 * math.sin(math.pi * a))
+                rows.append([bm.verts.new(centre)] if n == steps else [bm.verts.new(centre + circ * d * h) for d in (-1, 1)])
+            for n in range(steps):
+                a0, a1 = 0.75 * n / steps, 0.75 * (n + 1) / steps
+                left, right = rows[n]
+                if len(rows[n + 1]) == 1:
+                    face([left, right, rows[n + 1][0]], [(0.0, a0), (1.0, a0), (0.5, a1)])
+                else:
+                    face([left, right, rows[n + 1][1], rows[n + 1][0]], [(0.0, a0), (1.0, a0), (1.0, a1), (0.0, a1)])
     both_sides(bm)
     return bm
 
@@ -475,6 +623,12 @@ def meshes():
         for b in range(BANDS):
             out[f"{name}_Burn{b + 1}"] = (coil(strands, turns, b / BANDS, (b + 1) / BANDS),
                                           {"of": name, "band": b + 1, "textures": "fx_across_<P>"})
+        if name == "FxCoil2":  # B1's coil (fix 3): the burning front at the top of each band but the tips'
+            for b in range(1, BANDS):
+                out[f"{name}_Front{b}"] = (front(strands, turns, b / BANDS, 40 + b),
+                                           {"of": name, "front": b, "textures": "fx_rise_<P>",
+                                            "uv": "U across a tongue, V up it: 0 the line along the cut (the core), 0.75 the tips",
+                                            "place": f"as the bands: where _Burn{b} meets _Burn{b + 1}; shown while _Burn{b} burns"})
     out["FxShell"] = (shell(), {"textures": "fx_rise_<P> or fx_ribs_<P>", "uv": "U round, V pole to pole: 0 the bottom"})
     out["FxHoop"] = (hoop(), {"textures": "fx_rise_<P>", "uv": "U round; V 0 to .5 the floor ring, inner to outer; .5 to 1 the band, floor to lip"})
     out["FxCrescent"] = (crescent(), {"textures": "fx_across_<P>", "uv": "U across: 0 the inner edge; V along: 0 the tail, 1 the head"})
@@ -613,9 +767,14 @@ def review(objects, images, out):
     burn = []
     for name, gone in [("FxCoil3", g) for g in range(BANDS)] + [("FxCoil2", BANDS // 2)]:
         bands = [objects[f"{name}_Burn{b + 1}"] for b in range(BANDS)]
+        on_fire = name == "FxCoil2"  # B1's: on fire, its front where the burn has reached (the texture as the file is)
         for obj in bands:
-            textured(obj, images[f"fx_across_{LOOK[name][1]}"])
-        burn.append(over(shot(scene, camera, bands[gone:], "FLAT", tmp, frame=bands), DARK))  # framed on every band
+            textured(obj, images["fx_fire_Flame" if on_fire else f"fx_across_{LOOK[name][1]}"])
+        shown = bands[gone:]
+        if on_fire:
+            textured(objects[f"{name}_Front{gone}"], images["fx_rise_Flame"])
+            shown = shown + [objects[f"{name}_Front{gone}"]]
+        burn.append(over(shot(scene, camera, shown, "FLAT", tmp, frame=bands), DARK))  # framed on every band
     while len(burn) < len(CELLS):
         burn.append(over(np.zeros((TILE, TILE, 4), dtype=np.float32), DARK))
     rows.append(np.concatenate(burn, axis=1))
@@ -656,6 +815,7 @@ def texture_sheet(pixels, out):
         return out_
 
     mesh_side = [tall(pixels[f"fx_{kind}_{p}"]) for kind in ("across", "rise", "ribs") for p in PALETTES]
+    mesh_side += [shrink(pixels[f"fx_fire_{p}"], pixels[f"fx_fire_{p}"].shape[0] // 256) for p in FIRE]  # 512 tall
     whites = [tall(pixels[n]) for n in ("fx_beam", "fx_tongues", "fx_streak", "fx_spark", "fx_ember", "fx_glow", "fx_flame")]
     rows = [strip(mesh_side), strip([checker(p) for p in whites]), strip([lit(p) for p in whites])]
     width = max(r.shape[1] for r in rows)

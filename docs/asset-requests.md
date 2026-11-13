@@ -4415,10 +4415,48 @@ This answers research's three fixes on the replay (B5, "Research's verdict on th
   2. The fall stays at four frames. A slower drop would linger at the head and need a fresh check.
   3. The clip's upload check uses its bare-rig sheet from the side and the three-quarter (`bare_Haymaker.png`).
 - **Open:**
-  - Faber: the two meshes' upload, the rows in his player, the clip in the replay, and the Config offer.
+  - Faber: the two meshes' upload, the rows in the player, the clip in the replay, and the Config offer.
   - The take on a pale sky checks that the rim stays darker than the core, and that Glow at 2 on Strike blooms no halo.
   - Research's final, with `ga-fresh-eyes`.
 - **Hours:** about 0.6, 18:30 to 19:10 UTC, the content check included. An estimate from the files' times.
+
+### B1's finish: the bands on fire (Modulo, 2026-11-13)
+
+This answers fix 3 of research's verdict on B1's exit from its rows, for the finish: "a ragged, brighter tongue edge on the burning front as it eats upward; and a darker saturated edge on a bright core along the bands". It's judged in the final, beside the grey.
+- **Why the take read as gold silk:** Faber's look uses a texture as its own glow mask. In linear light that comes out at about T² × Glow + light × T, then through the filmic curve. So `fx_across_Flame` at Glow 2 to 4 blows out to pale gold, and its thin rim goes red and gets lost. `fx_kit.engine` models this, and the old texture through it gives the take's pale gold.
+- **Where:**
+  - **The kit:** `fx_fire_Flame` in `build/handoff/FxKit/images/`, and `FxCoil2_Front1` to `_Front5` in `meshes/`. `fx_kit.json` gains their six entries, and both sheets change in their last cells. The other 44 files are byte for byte as delivered.
+  - **The rows:** `build/handoff/Pip/fx/pip_burst_rows.json`, made by `tools/blender/fx_rows.py` (`Finish`).
+  - **The previews:**
+    - `pip_burst_finish.png`: the burn frame by frame, 68 to 83, before at noon, then after at noon and at dusk.
+    - `pip_burst_finish_64.png`: after, at 64 px.
+    - `pip_burst_finish_close.png`: frames 70, 75 and 78, close.
+- **The bands:** `fx_fire_Flame`.
+  - Across each strand, from the edge in: a dark, saturated rim, the orange body, gold, and a thin white core down the middle.
+  - Along each strand, six licks where the gold and white swell out toward the rim. Each lick is a tongue with a round foot, pointing to the tips.
+  - It's drawn for the engine. Each step is the texel that comes out as its colour at Glow 2: core `#FFF6E2`, gold `#FFC650`, body `#FF8A3D`, rim `#B5500F`. So the file looks paler and pinker than it plays. To change its strength, tune the row's Glow, never the texture.
+- **The front:** each `FxCoil2_Front<b>` sits where `_Burn<b>` meets `_Burn<b+1>`. On each strand it's a bright line across the cut, with four upright tongues off it, ragged in height and lean, in `fx_rise_Flame`. It's placed as the bands are: the coil's frame, at its centre plus its offset times the scale.
+- **The rows:**
+  - The Coil row's Texture becomes `fx_fire_Flame`. Its bands' Glow tracks are as they were: 2, flaring to 4 as each band goes.
+  - A new Front row: the five fronts, On Coil, in `fx_rise_Flame` (block-in `fx_rise_Grey`), with the coil's Scale keys and Glow 3. Each front shows as its band starts to burn (8, 9.5, 11, 12.5 and 14 frames after the Burst), holds 1.5 frames, and fades over one as the next takes over.
+  - The other rows are as delivered.
+- **Previewed** on a plain stage through `fx_kit.engine`'s model, with a mild bloom:
+  - At noon and at dusk, the bands read as orange fire, with a dark rim and bright licks.
+  - The fronts flash white at the burning edge.
+  - At 64 px it reads as fire, not silk.
+  - It's a model, not the engine: the take beside the grey is the judge.
+- **The content check: PASS,** on the texture at size and at 64 px, both kit sheets, the fronts' entries and their generator, the three previews and the rows. Rule 4 holds: the rim is a darker orange (23.5° of hue, the body's), the tongues stand upright from the line, and nothing moves down. Condition 5 holds: two strands and no third arm from above, judged on the grey sheet. Carried to the build:
+  1. **The band fading over the target, 76 to 79,** must read as hot flame fading, never as a stain on the Shade, at 64 px from the player's camera. If it reads dim or pinkish, shorten that band's fade or hold its Glow.
+  2. **Condition 4, with the fronts on:** the tongues pass the Shade's head height at about 78. At every heading they must read as burning up round the target, never as coming off the head.
+  3. **One camera from above in the take,** with the fire and its fronts. Neither the coil nor the texture is ever a ground decal, an icon or a HUD picture.
+  4. **The tints stay white.** The texture is uploaded as drawn. Nothing in the take is redder than `#FF8A3D`, at noon or at dusk.
+  5. **A change** to the texture, the fronts' geometry or the rows' Glow comes back to the check.
+  6. B1's earlier conditions 1 to 6 ("B1. Lantern Burst's new blockout") stand.
+- **Open:**
+  - Faber: upload one image and five meshes, set the Coil row's Texture, add the Front row, and take it beside the grey at noon and at dusk, with the camera from above.
+  - In the take: the rim stays darker than the body, the white core doesn't wash a strand out at Glow 4 (if it does, lower Glow), and the fronts show at phone size.
+  - Research's final, with `ga-fresh-eyes`.
+- **Hours:** about 0.5, 19:07 to 19:35 UTC, the content check included. An estimate from the commit's and the files' times.
 
 ## Later, by ground
 

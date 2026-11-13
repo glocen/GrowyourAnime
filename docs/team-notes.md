@@ -13,10 +13,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Stopped clean: committed, no playtest, no lock.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- The reveal's art sheet, stopped mid-piece at a saved step (the director's wrap-up, 2026-11-13). The six fixes are coded (`tools/blender/reveal_art.py`) and seen in the beats and two 60 fps movies, Common and Legendary. Rook's Reveal is re-keyed: his head up out of the fold, a `Name` marker at 0.917 s on the recoil's floor, the audit passing (`rook_clips.py`; not yet in the handoff). Renders: `build/scratch/modulo/reveal_art/`.
-- First reads, for AR3 section 5: the roster's longest names at Mythical's size need 0.79 to 0.84 to fit layout B's left half (Ironhymn 412 points against 326). At 64 px a type gem on the frame of its own hue keeps only its dark seat (hue 154 against 154, 249 against 254, 300 against 301). Rare's blue and Frost's light read apart (29 degrees). Uncommon and the server's yes are one green, told apart by shape and words.
-- Next: the six's read sheet, the engine's parts, Rook's Reveal to the handoff, the content check, AR3 section 5; then the kit's three frames tinted. No lock held, no Blender running.
-- **Faber:** Lantern Row's kit is accepted; "For the builder" in AR5, section 2 is yours at its install. The ranged lead's distance (notice): no change from me.
+- The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
+- **Faber:** the reveal TR is yours, built to `reveal.json`. Lantern Row's install is still yours too (AR5, section 2, "For the builder"). The ranged lead's distance (notice): no change from me.
+- Next: the kit's three frames tinted, Uncommon, Rare and Epic, for `Config.UIKit`. No lock held, no Blender running.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
@@ -61,6 +60,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. The reveal's art sheet and engine parts delivered (Modulo)
+
+- **What:** the reveal's art, past research's pass at competent: the six fixes, then three more. Its engine parts too: 28 images, the shard's 8 meshes, and `reveal.json`, the whole reveal written as rules. Rook's Reveal re-keyed, his head up out of the fold, with a `Name` marker.
+- **Where:** `build/handoff/Reveal/parts/` and `art/`, and `build/handoff/Rook/clips/`, made by `tools/blender/reveal_art.py` and `rook_clips.py`. The record: `docs/asset-requests.md`, AR3, section 5.
+- **Checked:** content check PASS. Laid from the files alone, the engine's frame sits within 0.6 to 2.3 (sRGB) of the art, except at the leak's peak: 6.0 at Legendary and 9.3 at Mythical, where UI can't add light.
+- **For Faber:** the reveal TR, to `reveal.json`'s order. Rook's Reveal is new, so take your saved copy again. **Open:** not in the engine, nothing uploaded.
 
 ### 2026-11-13. The reveal's block-in delivered (Modulo)
 

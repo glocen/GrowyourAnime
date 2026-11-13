@@ -1081,7 +1081,7 @@ For Modulo, from `docs/ui.md`. After AR1's sheet, so the kit is designed against
 
 **Checks:** the content check; legible at phone size over a bright and a dark world; research's verdict.
 
-**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2). The HUD's portraits, the silhouette and the critical's sweep are made, past the content check, and delivered to `build/handoff/UI/hud/` for research's verdict (section 3). The reveal's block-in is requested, 2026-11-13 (section 4).
+**Status:** the direction sheet is past the content check and research's verdict, its three fixes drawn and passed (section 1), and delivered to `build/handoff/UI/ui_sheet.png`. The director's eye, 2026-11-12: Graphite Dark is the main theme; Pearl Light stays for some screens, drawn with a black border (`docs/decisions.md`, the director's words). The kit's images start from the sheet, Graphite first. The director, on the same sheet: some screens get a palette of their own on the same kit, and Mythical's light is reddish, not the split rainbow; its broken crown stays. The glance strip is drawn again with the red Mythical, beside the failed button and the Strength gem, at 1 pt over both themes. That round is drawn, past the content check and research's read (section 1, "The director's words, drawn on the sheet"), and delivered to `build/handoff/UI/ui_sheet.png`, with its foot at true size in `ui_glance.png`. The kit's images are made, past the content check, and delivered to `build/handoff/UI/kit/` (section 2). Research's verdict on them: competent, the frames exceptional, the four palettes accepted; its five fixes are drawn and past the content check (section 2, "The fix round"), so the kit is ready for the builder. Nothing is uploaded or in the engine. The director, 2026-11-12, to Modulo: which screens are Pearl and which get their own palette is Modulo's to choose (section 2). The HUD's portraits, the silhouette and the critical's sweep are made, past the content check, and delivered to `build/handoff/UI/hud/` for research's verdict (section 3). The reveal's block-in is requested, 2026-11-13 (section 4). Its art sheet is past research's pass at competent, and its engine parts and Rook's re-keyed Reveal are past the content check and delivered to `build/handoff/Reveal/` and `build/handoff/Rook/clips/`, for the builder's reveal TR (section 5).
 
 ### 1. The direction sheet (Modulo, 2026-11-12)
 
@@ -1471,6 +1471,35 @@ The fold from Epic up keeps its line (the head up), and the ram's thin handle go
 - **For Quaestor:** the fixes' read. **Next:** the engine's parts, Rook's Reveal to the handoff, then the content check on the exact files.
 
 **Research's read of the fix round, 2026-11-13,** from both movies frame by frame (commit 44b3439). The three fixes hold. A Common's pieces stay off him, and the last pale one sits outside the frame's right edge. On Legendary the colours run down from the ram's head over frames 149 to 155 with the hot line leading, and read as a sweep now, not a cut. The shard ticks and brightens on each rung, strongest at gold. The swell is small at full speed, but it's there, and the climb is the shard's too now. Research's pass on the art sheet is given at competent. **Next:** the content check on the exact files, then the builder's reveal TR, where the motion is judged again in the engine.
+
+**Delivered: the engine's parts and Rook's Reveal (Modulo, 2026-11-13).** Content check PASS 2026-11-13, on the 28 images at size and at 64 px, the three sheets, the meshes' render, `reveal.json` and the four clip files. Made by `tools/blender/reveal_art.py parts` and `partsheet`, from the art's own rules.
+- **`build/handoff/Reveal/parts/`:**
+  - `images/`: 28 images, none over 1024 px. The room, the glow, the rings, the column, the rays at 7, 11 and 14, each rarity's halo, window and frame, the name's rule, the shard's palette, and `reveal_leak.png`: the seams' light in one atlas, 1020 by 830. Every light is white, and the engine tints it.
+  - `meshes/`: the shard's 8 pieces, `Shard_*.json`, painted through the palette's UV, so they show the art's swatches unlit.
+  - `reveal.json`: the whole reveal written as rules. The screen in points, each image's rect and anchor, the 16 layers in order, the places, the curves, the light, the shard's pose and leak, each rarity's times and colours, the figure, the strike, the name, the split's flash and the skip.
+  - The sheets: `reveal_parts.png` (every image), `reveal_parts_64.png` (each at 64 px on dark and on grey), `reveal_parts_compare.png` (the art's frame over the engine's, at four moments for each rarity).
+- **`build/handoff/Reveal/art/`:** the read set research passed (the rarity sheet, both strips, both 60 fps movies, the names, the colours, the shard). It's the target the engine is judged against.
+- **Rook's Reveal, re-keyed (fix 6):** `build/handoff/Rook/clips/Rook_Reveal.json` and `poses_Reveal.png` replace the delivered pair. He folds with his head up, so the silhouette keeps a line. 97 frames, 1.60 s, with the `Name` marker at 0.917 s on the recoil's floor. The audit passes: the ram comes no nearer than 0.04 studs to his own torso, at frame 16, in the crouch.
+- **How close, measured** (`reveal.json`, `checks`; the mean difference in sRGB, 0 to 255). The engine's frame, laid from these files alone, sits 0.6 to 2.3 off the art at every moment except the leak's, at all six rarities. The leak's last rung is the hard one:
+
+| Rarity | Mean off | Worst pixel |
+|---|---|---|
+| Common | 0.8 | 10 |
+| Uncommon to Epic | 2.2 to 2.5 | about 30 |
+| Legendary | 6.0 | 68 |
+| Mythical | 9.3 | 110 |
+
+- **The limits:**
+  - UI can't add light, so light laid over light falls short where the art burns past white. Each leak set is stored at its settled strength and boosted, which is exact settled and at the top. At Mythical's peak (1.30 s), though, the engine's beams and white reach about 80 to 85% of the art's: the shard reads redder and less white-hot.
+  - The leak is baked once, from the Standard shard, not from each grade's.
+  - Mid-widen, the leak crossfades between two seam sets, balanced so it doesn't dip.
+- **For the builder:**
+  - Build to `reveal.json`'s `order`. `EngineStage` in the script is the reference: the compare sheet's lower frames are laid from these files only.
+  - The figure and the name are the game's own: Rook's model in a ViewportFrame, the name in the game's face.
+  - Rook's Reveal changed, so a saved copy in the place is taken again from the new json.
+  - Before the animation is uploaded, the content check asks for a strip of the bare rig from the side to go with it. That's mine to draw on request.
+  - Nothing is uploaded.
+- **Not done:** seen in the engine; the uploads. There's no test request of its own: the builder's reveal TR is where these are tested. **Hours:** the parts, about 4 by my own estimate, not timed, most of them on the leak.
 
 ## AR4. Pip and Lyric
 

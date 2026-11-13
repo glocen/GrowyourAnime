@@ -1,0 +1,2468 @@
+{
+ "about": "AR3 section 5, the reveal's engine parts (tools/blender/reveal_art.py parts). Points on the 844 by 390 screen, x right, y down from its top left; seconds from the tap unless said. Every light is laid over, never added: an image tinted by `tint`, its cover times `alpha`. The rules are the art's own, written out; EngineStage in the script lays frames from these files to check them.",
+ "screen": {
+  "points": [
+   844,
+   390
+  ],
+  "fps": 60
+ },
+ "images": {
+  "reveal_room": {
+   "file": "images/reveal_room.png",
+   "pixels": [
+    1024,
+    473
+   ],
+   "points": [
+    844.0,
+    389.86
+   ],
+   "use": "the room: full screen, under everything"
+  },
+  "reveal_glow": {
+   "file": "images/reveal_glow.png",
+   "pixels": [
+    256,
+    256
+   ],
+   "points": "6 s by 6 s",
+   "use": "every round light: its cover exp(-(r / s) ** 2) for a light s points round, drawn 6 s across (6 sx by 6 sy for a stretched one), tinted, its strength as its cover"
+  },
+  "reveal_rings": {
+   "file": "images/reveal_rings.png",
+   "pixels": [
+    1024,
+    1024
+   ],
+   "points": "R / radius square",
+   "use": "a ring of radius R and width w: the cell whose ratio is nearest w / R, drawn R / radius across (radius is the ring's share of its cell's width), tinted",
+   "cells": {
+    "0.33": {
+     "rect": [
+      0,
+      0,
+      512,
+      512
+     ],
+     "ratio": 0.33,
+     "radius": 0.24733
+    },
+    "0.2": {
+     "rect": [
+      512,
+      0,
+      512,
+      512
+     ],
+     "ratio": 0.2,
+     "radius": 0.30762
+    },
+    "0.12": {
+     "rect": [
+      0,
+      512,
+      512,
+      512
+     ],
+     "ratio": 0.12,
+     "radius": 0.3619
+    },
+    "0.07": {
+     "rect": [
+      512,
+      512,
+      512,
+      512
+     ],
+     "ratio": 0.07,
+     "radius": 0.40677
+    }
+   }
+  },
+  "reveal_column": {
+   "file": "images/reveal_column.png",
+   "pixels": [
+    64,
+    1024
+   ],
+   "points": "6 wd by 472",
+   "use": "a rare strike's column: wd wide is 6 wd across, 472 points tall, its top 400 points over the ram's head; stretched across only"
+  },
+  "reveal_rays7": {
+   "file": "images/reveal_rays7.png",
+   "pixels": [
+    1024,
+    1024
+   ],
+   "points": [
+    1520.0,
+    1520.0
+   ],
+   "use": "7 rays (0.5 baked in), 1520 points square, its middle on the rays' point, turned clockwise by the rule, tinted"
+  },
+  "reveal_rays11": {
+   "file": "images/reveal_rays11.png",
+   "pixels": [
+    1024,
+    1024
+   ],
+   "points": [
+    1520.0,
+    1520.0
+   ],
+   "use": "11 rays (0.5 baked in), 1520 points square, its middle on the rays' point, turned clockwise by the rule, tinted"
+  },
+  "reveal_rays14": {
+   "file": "images/reveal_rays14.png",
+   "pixels": [
+    1024,
+    1024
+   ],
+   "points": [
+    1520.0,
+    1520.0
+   ],
+   "use": "14 rays (0.5 baked in), 1520 points square, its middle on the rays' point, turned clockwise by the rule, tinted"
+  },
+  "reveal_halo_Common": {
+   "file": "images/reveal_halo_Common.png",
+   "pixels": [
+    306,
+    354
+   ],
+   "points": [
+    306.0,
+    354.0
+   ],
+   "use": "the window's halo, its colour and strength baked",
+   "anchor": [
+    0.5,
+    0.5
+   ]
+  },
+  "reveal_window_Common": {
+   "file": "images/reveal_window_Common.png",
+   "pixels": [
+    484,
+    580
+   ],
+   "points": [
+    242.0,
+    290.0
+   ],
+   "use": "the window's light inside it, baked",
+   "anchor": [
+    0.5,
+    0.5
+   ]
+  },
+  "reveal_frame_Common": {
+   "file": "images/reveal_frame_Common.png",
+   "pixels": [
+    488,
+    584
+   ],
+   "points": [
+    244.0,
+    292.0
+   ],
+   "use": "the frame's metal, untinted",
+   "anchor": [
+    0.5,
+    0.5
+   ]
+  },
+  "reveal_halo_Uncommon": {
+   "file": "images/reveal_halo_Uncommon.png",
+   "pixels": [
+    346,
+    394
+   ],
+   "points": [
+    346.0,
+    394.0
+   ],
+   "use": "the window's halo, its colour and strength baked",
+   "anchor": [
+    0.49942,
+    0.49949
+   ]
+  },
+  "reveal_window_Uncommon": {
+   "file": "images/reveal_window_Uncommon.png",
+   "pixels": [
+    484,
+    580
+   ],
+   "points": [
+    242.0,
+    290.0
+   ],
+   "use": "the window's light inside it, baked",
+   "anchor": [
+    0.5,
+    0.5
+   ]
+  },
+  "reveal_frame_Uncommon": {
+   "file": "images/reveal_frame_Uncommon.png",
+   "pixels": [
+    494,
+    590
+   ],
+   "points": [
+    247.0,
+    295.0
+   ],
+   "use": "the frame's metal, untinted",
+   "anchor": [
+    0.5,
+    0.5
+   ]
+  },
+  "reveal_halo_Rare": {
+   "file": "images/reveal_halo_Rare.png",
+   "pixels": [
+    438,
+    510
+   ],
+   "points": [
+    438.0,
+    510.0
+   ],
+   "use": "the window's halo, its colour and strength baked",
+   "anchor": [
+    0.5,
+    0.52353
+   ]
+  },
+  "reveal_window_Rare": {
+   "file": "images/reveal_window_Rare.png",
+   "pixels": [
+    484,
+    628
+   ],
+   "points": [
+    242.0,
+    314.0
+   ],
+   "use": "the window's light inside it, baked",
+   "anchor": [
+    0.5,
+    0.53822
+   ]
+  },
+  "reveal_frame_Rare": {
+   "file": "images/reveal_frame_Rare.png",
+   "pixels": [
+    494,
+    638
+   ],
+   "points": [
+    247.0,
+    319.0
+   ],
+   "use": "the frame's metal, untinted",
+   "anchor": [
+    0.5,
+    0.53762
+   ]
+  },
+  "reveal_halo_Epic": {
+   "file": "images/reveal_halo_Epic.png",
+   "pixels": [
+    564,
+    634
+   ],
+   "points": [
+    564.0,
+    634.0
+   ],
+   "use": "the window's halo, its colour and strength baked",
+   "anchor": [
+    0.5,
+    0.50536
+   ]
+  },
+  "reveal_window_Epic": {
+   "file": "images/reveal_window_Epic.png",
+   "pixels": [
+    552,
+    691
+   ],
+   "points": [
+    276.0,
+    345.5
+   ],
+   "use": "the window's light inside it, baked",
+   "anchor": [
+    0.49928,
+    0.50999
+   ]
+  },
+  "reveal_frame_Epic": {
+   "file": "images/reveal_frame_Epic.png",
+   "pixels": [
+    578,
+    703
+   ],
+   "points": [
+    289.0,
+    351.5
+   ],
+   "use": "the frame's metal, untinted",
+   "anchor": [
+    0.48547,
+    0.50839
+   ]
+  },
+  "reveal_halo_Legendary": {
+   "file": "images/reveal_halo_Legendary.png",
+   "pixels": [
+    638,
+    718
+   ],
+   "points": [
+    638.0,
+    718.0
+   ],
+   "use": "the window's halo, its colour and strength baked",
+   "anchor": [
+    0.50031,
+    0.51142
+   ]
+  },
+  "reveal_window_Legendary": {
+   "file": "images/reveal_window_Legendary.png",
+   "pixels": [
+    542,
+    700
+   ],
+   "points": [
+    271.0,
+    350.0
+   ],
+   "use": "the window's light inside it, baked",
+   "anchor": [
+    0.49963,
+    0.524
+   ]
+  },
+  "reveal_frame_Legendary": {
+   "file": "images/reveal_frame_Legendary.png",
+   "pixels": [
+    610,
+    726
+   ],
+   "points": [
+    305.0,
+    363.0
+   ],
+   "use": "the frame's metal, untinted",
+   "anchor": [
+    0.49967,
+    0.5135
+   ]
+  },
+  "reveal_halo_Mythical": {
+   "file": "images/reveal_halo_Mythical.png",
+   "pixels": [
+    670,
+    758
+   ],
+   "points": [
+    670.0,
+    758.0
+   ],
+   "use": "the window's halo, its colour and strength baked",
+   "anchor": [
+    0.4997,
+    0.51451
+   ]
+  },
+  "reveal_window_Mythical": {
+   "file": "images/reveal_window_Mythical.png",
+   "pixels": [
+    551,
+    729
+   ],
+   "points": [
+    275.5,
+    364.5
+   ],
+   "use": "the window's light inside it, baked",
+   "anchor": [
+    0.50018,
+    0.52949
+   ]
+  },
+  "reveal_frame_Mythical": {
+   "file": "images/reveal_frame_Mythical.png",
+   "pixels": [
+    624,
+    752
+   ],
+   "points": [
+    312.0,
+    376.0
+   ],
+   "use": "the frame's metal, untinted",
+   "anchor": [
+    0.49936,
+    0.52128
+   ]
+  },
+  "reveal_rule": {
+   "file": "images/reveal_rule.png",
+   "pixels": [
+    248,
+    18
+   ],
+   "points": [
+    124.0,
+    9.0
+   ],
+   "use": "the name's rule, white, tinted by the rarity's metal: a nine-slice, SliceCenter in pixels, SliceScale 0.5",
+   "slice": [
+    16,
+    0,
+    228,
+    18
+   ],
+   "span": 120.0
+  },
+  "reveal_palette": {
+   "file": "images/reveal_palette.png",
+   "pixels": [
+    256,
+    32
+   ],
+   "points": "a texture",
+   "use": "the shard's meshes' texture: eight swatches, a face's UV on its swatch's middle",
+   "swatches": [
+    "#9886EC",
+    "#5B49B2",
+    "#33276F",
+    "#1A1340",
+    "#F5F0FF",
+    "#A493F0",
+    "#C3B3FF",
+    "#FFFFFF"
+   ]
+  },
+  "reveal_leak": {
+   "file": "images/reveal_leak.png",
+   "pixels": [
+    1020,
+    830
+   ],
+   "points": "by its cells",
+   "use": "the light the shard leaks, one atlas of nine sets (the seams cracking, then each rung's width): the wide glow, the pieces' whitening, the beams (half a pixel a point), the tight glow and the white where the lights together run past full (1); each cell with its own points and its anchor on the shard's root",
+   "cells": {
+    "wide0": {
+     "scale": 0.3472,
+     "points": [
+      140.0,
+      118.0
+     ],
+     "anchor": [
+      0.5,
+      0.55497
+     ],
+     "rect": [
+      891,
+      693,
+      70,
+      59
+     ]
+    },
+    "piecesHot0": {
+     "scale": 0.3472,
+     "points": [
+      100.0,
+      112.0
+     ],
+     "anchor": [
+      0.52,
+      0.5847
+     ],
+     "rect": [
+      961,
+      693,
+      50,
+      56
+     ]
+    },
+    "tight0": {
+     "scale": 0.8979,
+     "points": [
+      98.0,
+      69.0
+     ],
+     "anchor": [
+      0.5,
+      0.52878
+     ],
+     "rect": [
+      793,
+      693,
+      98,
+      69
+     ]
+    },
+    "wide1": {
+     "scale": 0.3447,
+     "points": [
+      138.0,
+      142.0
+     ],
+     "anchor": [
+      0.50725,
+      0.6161
+     ],
+     "rect": [
+      645,
+      693,
+      69,
+      71
+     ]
+    },
+    "piecesHot1": {
+     "scale": 0.3447,
+     "points": [
+      100.0,
+      148.0
+     ],
+     "anchor": [
+      0.52,
+      0.68572
+     ],
+     "rect": [
+      595,
+      693,
+      50,
+      74
+     ]
+    },
+    "tight1": {
+     "scale": 0.8617,
+     "points": [
+      98.0,
+      136.0
+     ],
+     "anchor": [
+      0.5,
+      0.76093
+     ],
+     "rect": [
+      0,
+      557,
+      98,
+      136
+     ]
+    },
+    "wide2": {
+     "scale": 0.7077,
+     "points": [
+      154.0,
+      186.0
+     ],
+     "anchor": [
+      0.50649,
+      0.58863
+     ],
+     "rect": [
+      104,
+      693,
+      77,
+      93
+     ]
+    },
+    "piecesHot2": {
+     "scale": 0.3,
+     "points": [
+      104.0,
+      162.0
+     ],
+     "anchor": [
+      0.51923,
+      0.67584
+     ],
+     "rect": [
+      543,
+      693,
+      52,
+      81
+     ]
+    },
+    "piecesHot2Boost": {
+     "ramp": [
+      0.3,
+      0.7077
+     ],
+     "points": [
+      104.0,
+      164.0
+     ],
+     "anchor": [
+      0.51923,
+      0.6676
+     ],
+     "rect": [
+      404,
+      693,
+      52,
+      82
+     ]
+    },
+    "beams2": {
+     "scale": 0.7077,
+     "points": [
+      220.0,
+      312.0
+     ],
+     "anchor": [
+      0.50909,
+      0.63297
+     ],
+     "rect": [
+      500,
+      381,
+      110,
+      156
+     ]
+    },
+    "tight2": {
+     "scale": 1.4627,
+     "points": [
+      98.0,
+      152.0
+     ],
+     "anchor": [
+      0.5,
+      0.68083
+     ],
+     "rect": [
+      852,
+      381,
+      98,
+      152
+     ]
+    },
+    "hot2": {
+     "curve": [
+      [
+       0.8354,
+       0.0
+      ],
+      [
+       1.4627,
+       1.0
+      ]
+     ],
+     "points": [
+      62.0,
+      40.0
+     ],
+     "anchor": [
+      0.51613,
+      0.68715
+     ],
+     "rect": [
+      0,
+      790,
+      62,
+      40
+     ]
+    },
+    "wide3": {
+     "scale": 0.7077,
+     "points": [
+      154.0,
+      186.0
+     ],
+     "anchor": [
+      0.50649,
+      0.58863
+     ],
+     "rect": [
+      181,
+      693,
+      77,
+      93
+     ]
+    },
+    "piecesHot3": {
+     "scale": 0.3,
+     "points": [
+      104.0,
+      184.0
+     ],
+     "anchor": [
+      0.51923,
+      0.59503
+     ],
+     "rect": [
+      258,
+      693,
+      52,
+      92
+     ]
+    },
+    "piecesHot3Boost": {
+     "ramp": [
+      0.3,
+      0.7077
+     ],
+     "points": [
+      104.0,
+      188.0
+     ],
+     "anchor": [
+      0.51923,
+      0.58237
+     ],
+     "rect": [
+      52,
+      693,
+      52,
+      94
+     ]
+    },
+    "beams3": {
+     "scale": 0.7077,
+     "points": [
+      218.0,
+      350.0
+     ],
+     "anchor": [
+      0.50459,
+      0.56425
+     ],
+     "rect": [
+      98,
+      381,
+      109,
+      175
+     ]
+    },
+    "tight3": {
+     "scale": 1.4367,
+     "points": [
+      98.0,
+      175.0
+     ],
+     "anchor": [
+      0.5,
+      0.59135
+     ],
+     "rect": [
+      207,
+      381,
+      98,
+      175
+     ]
+    },
+    "hot3": {
+     "curve": [
+      [
+       0.8354,
+       0.0
+      ],
+      [
+       1.4367,
+       1.0
+      ]
+     ],
+     "points": [
+      61.0,
+      39.0
+     ],
+     "anchor": [
+      0.5082,
+      0.67913
+     ],
+     "rect": [
+      62,
+      790,
+      61,
+      39
+     ]
+    },
+    "wide4": {
+     "scale": 0.8506,
+     "points": [
+      162.0,
+      208.0
+     ],
+     "anchor": [
+      0.50617,
+      0.58407
+     ],
+     "rect": [
+      564,
+      557,
+      81,
+      104
+     ]
+    },
+    "piecesHot4": {
+     "scale": 0.425,
+     "points": [
+      104.0,
+      194.0
+     ],
+     "anchor": [
+      0.51923,
+      0.57467
+     ],
+     "rect": [
+      968,
+      557,
+      52,
+      97
+     ]
+    },
+    "piecesHot4Boost": {
+     "ramp": [
+      0.425,
+      0.8506
+     ],
+     "points": [
+      104.0,
+      194.0
+     ],
+     "anchor": [
+      0.51923,
+      0.57467
+     ],
+     "rect": [
+      0,
+      693,
+      52,
+      97
+     ]
+    },
+    "beams4": {
+     "scale": 0.425,
+     "points": [
+      216.0,
+      356.0
+     ],
+     "anchor": [
+      0.50926,
+      0.55474
+     ],
+     "rect": [
+      116,
+      195,
+      108,
+      178
+     ]
+    },
+    "beams4Boost": {
+     "ramp": [
+      0.425,
+      0.8506
+     ],
+     "points": [
+      216.0,
+      356.0
+     ],
+     "anchor": [
+      0.50926,
+      0.55474
+     ],
+     "rect": [
+      224,
+      195,
+      108,
+      178
+     ]
+    },
+    "tight4": {
+     "scale": 0.85,
+     "points": [
+      98.0,
+      175.0
+     ],
+     "anchor": [
+      0.5,
+      0.59135
+     ],
+     "rect": [
+      305,
+      381,
+      98,
+      175
+     ]
+    },
+    "tight4Boost": {
+     "ramp": [
+      0.85,
+      1.4936
+     ],
+     "points": [
+      97.0,
+      175.0
+     ],
+     "anchor": [
+      0.50515,
+      0.59135
+     ],
+     "rect": [
+      403,
+      381,
+      97,
+      175
+     ]
+    },
+    "hot4": {
+     "curve": [
+      [
+       0.6503,
+       0.0
+      ],
+      [
+       0.85,
+       0.0364
+      ],
+      [
+       1.4936,
+       1.0
+      ]
+     ],
+     "points": [
+      79.0,
+      70.0
+     ],
+     "anchor": [
+      0.49367,
+      0.4498
+     ],
+     "rect": [
+      714,
+      693,
+      79,
+      70
+     ]
+    },
+    "wide5": {
+     "scale": 1.1249,
+     "points": [
+      170.0,
+      226.0
+     ],
+     "anchor": [
+      0.50588,
+      0.57295
+     ],
+     "rect": [
+      368,
+      557,
+      85,
+      113
+     ]
+    },
+    "piecesHot5": {
+     "scale": 0.57,
+     "points": [
+      104.0,
+      200.0
+     ],
+     "anchor": [
+      0.51923,
+      0.58743
+     ],
+     "rect": [
+      864,
+      557,
+      52,
+      100
+     ]
+    },
+    "piecesHot5Boost": {
+     "ramp": [
+      0.57,
+      1.1249
+     ],
+     "points": [
+      104.0,
+      200.0
+     ],
+     "anchor": [
+      0.51923,
+      0.58743
+     ],
+     "rect": [
+      916,
+      557,
+      52,
+      100
+     ]
+    },
+    "beams5": {
+     "scale": 0.57,
+     "points": [
+      232.0,
+      372.0
+     ],
+     "anchor": [
+      0.50862,
+      0.53088
+     ],
+     "rect": [
+      813,
+      0,
+      116,
+      186
+     ]
+    },
+    "beams5Boost": {
+     "ramp": [
+      0.57,
+      1.1249
+     ],
+     "points": [
+      232.0,
+      372.0
+     ],
+     "anchor": [
+      0.50862,
+      0.53088
+     ],
+     "rect": [
+      0,
+      195,
+      116,
+      186
+     ]
+    },
+    "tight5": {
+     "scale": 0.95,
+     "points": [
+      98.0,
+      176.0
+     ],
+     "anchor": [
+      0.5,
+      0.58799
+     ],
+     "rect": [
+      824,
+      195,
+      98,
+      176
+     ]
+    },
+    "tight5Boost": {
+     "ramp": [
+      0.95,
+      1.692
+     ],
+     "points": [
+      98.0,
+      176.0
+     ],
+     "anchor": [
+      0.5,
+      0.58799
+     ],
+     "rect": [
+      922,
+      195,
+      98,
+      176
+     ]
+    },
+    "hot5": {
+     "curve": [
+      [
+       0.5473,
+       0.0
+      ],
+      [
+       0.95,
+       0.1318
+      ],
+      [
+       1.692,
+       1.0
+      ]
+     ],
+     "points": [
+      87.0,
+      82.0
+     ],
+     "anchor": [
+      0.50575,
+      0.50593
+     ],
+     "rect": [
+      456,
+      693,
+      87,
+      82
+     ]
+    },
+    "wide6": {
+     "scale": 1.4665,
+     "points": [
+      176.0,
+      238.0
+     ],
+     "anchor": [
+      0.51136,
+      0.56927
+     ],
+     "rect": [
+      280,
+      557,
+      88,
+      119
+     ]
+    },
+    "piecesHot6": {
+     "scale": 0.72,
+     "points": [
+      108.0,
+      202.0
+     ],
+     "anchor": [
+      0.51852,
+      0.58161
+     ],
+     "rect": [
+      756,
+      557,
+      54,
+      101
+     ]
+    },
+    "piecesHot6Boost": {
+     "ramp": [
+      0.72,
+      1.4665
+     ],
+     "points": [
+      108.0,
+      202.0
+     ],
+     "anchor": [
+      0.51852,
+      0.58161
+     ],
+     "rect": [
+      810,
+      557,
+      54,
+      101
+     ]
+    },
+    "beams6": {
+     "scale": 0.72,
+     "points": [
+      248.0,
+      380.0
+     ],
+     "anchor": [
+      0.50806,
+      0.5197
+     ],
+     "rect": [
+      565,
+      0,
+      124,
+      190
+     ]
+    },
+    "beams6Boost": {
+     "ramp": [
+      0.72,
+      1.4665
+     ],
+     "points": [
+      248.0,
+      380.0
+     ],
+     "anchor": [
+      0.50806,
+      0.5197
+     ],
+     "rect": [
+      689,
+      0,
+      124,
+      190
+     ]
+    },
+    "tight6": {
+     "scale": 1.0,
+     "points": [
+      98.0,
+      178.0
+     ],
+     "anchor": [
+      0.5,
+      0.587
+     ],
+     "rect": [
+      332,
+      195,
+      98,
+      178
+     ]
+    },
+    "tight6Boost": {
+     "ramp": [
+      1.0,
+      1.7692
+     ],
+     "points": [
+      98.0,
+      176.0
+     ],
+     "anchor": [
+      0.5,
+      0.58799
+     ],
+     "rect": [
+      0,
+      381,
+      98,
+      176
+     ]
+    },
+    "hot6": {
+     "curve": [
+      [
+       0.5224,
+       0.0
+      ],
+      [
+       1.0,
+       0.1654
+      ],
+      [
+       1.7692,
+       1.0
+      ]
+     ],
+     "points": [
+      94.0,
+      86.0
+     ],
+     "anchor": [
+      0.53191,
+      0.51728
+     ],
+     "rect": [
+      310,
+      693,
+      94,
+      86
+     ]
+    },
+    "wide7": {
+     "scale": 1.7042,
+     "points": [
+      182.0,
+      248.0
+     ],
+     "anchor": [
+      0.50549,
+      0.56244
+     ],
+     "rect": [
+      189,
+      557,
+      91,
+      124
+     ]
+    },
+    "piecesHot7": {
+     "scale": 0.92,
+     "points": [
+      110.0,
+      210.0
+     ],
+     "anchor": [
+      0.50909,
+      0.56898
+     ],
+     "rect": [
+      509,
+      557,
+      55,
+      105
+     ]
+    },
+    "piecesHot7Boost": {
+     "ramp": [
+      0.92,
+      1.7042
+     ],
+     "points": [
+      110.0,
+      208.0
+     ],
+     "anchor": [
+      0.50909,
+      0.57445
+     ],
+     "rect": [
+      645,
+      557,
+      55,
+      104
+     ]
+    },
+    "beams7": {
+     "scale": 0.92,
+     "points": [
+      278.0,
+      390.0
+     ],
+     "anchor": [
+      0.51079,
+      0.50637
+     ],
+     "rect": [
+      0,
+      0,
+      139,
+      195
+     ]
+    },
+    "beams7Boost": {
+     "ramp": [
+      0.92,
+      1.7042
+     ],
+     "points": [
+      276.0,
+      390.0
+     ],
+     "anchor": [
+      0.50725,
+      0.50637
+     ],
+     "rect": [
+      139,
+      0,
+      138,
+      195
+     ]
+    },
+    "tight7": {
+     "scale": 1.0,
+     "points": [
+      99.0,
+      177.0
+     ],
+     "anchor": [
+      0.50505,
+      0.58467
+     ],
+     "rect": [
+      529,
+      195,
+      99,
+      177
+     ]
+    },
+    "tight7Boost": {
+     "ramp": [
+      1.0,
+      1.763
+     ],
+     "points": [
+      98.0,
+      177.0
+     ],
+     "anchor": [
+      0.5,
+      0.58467
+     ],
+     "rect": [
+      628,
+      195,
+      98,
+      177
+     ]
+    },
+    "hot7": {
+     "curve": [
+      [
+       0.4185,
+       0.0
+      ],
+      [
+       1.0,
+       0.2559
+      ],
+      [
+       1.763,
+       1.0
+      ]
+     ],
+     "points": [
+      115.0,
+      154.0
+     ],
+     "anchor": [
+      0.53043,
+      0.61355
+     ],
+     "rect": [
+      737,
+      381,
+      115,
+      154
+     ]
+    },
+    "wide8": {
+     "scale": 1.4852,
+     "points": [
+      182.0,
+      250.0
+     ],
+     "anchor": [
+      0.50549,
+      0.56594
+     ],
+     "rect": [
+      98,
+      557,
+      91,
+      125
+     ]
+    },
+    "piecesHot8": {
+     "scale": 1.0,
+     "points": [
+      112.0,
+      214.0
+     ],
+     "anchor": [
+      0.51786,
+      0.55835
+     ],
+     "rect": [
+      453,
+      557,
+      56,
+      107
+     ]
+    },
+    "piecesHot8Boost": {
+     "ramp": [
+      1.0,
+      1.4852
+     ],
+     "points": [
+      112.0,
+      206.0
+     ],
+     "anchor": [
+      0.51786,
+      0.58003
+     ],
+     "rect": [
+      700,
+      557,
+      56,
+      103
+     ]
+    },
+    "beams8": {
+     "scale": 1.0,
+     "points": [
+      290.0,
+      390.0
+     ],
+     "anchor": [
+      0.51034,
+      0.50637
+     ],
+     "rect": [
+      277,
+      0,
+      145,
+      195
+     ]
+    },
+    "beams8Boost": {
+     "ramp": [
+      1.0,
+      1.4852
+     ],
+     "points": [
+      286.0,
+      390.0
+     ],
+     "anchor": [
+      0.51049,
+      0.50637
+     ],
+     "rect": [
+      422,
+      0,
+      143,
+      195
+     ]
+    },
+    "tight8": {
+     "scale": 1.0,
+     "points": [
+      99.0,
+      178.0
+     ],
+     "anchor": [
+      0.50505,
+      0.58138
+     ],
+     "rect": [
+      430,
+      195,
+      99,
+      178
+     ]
+    },
+    "tight8Boost": {
+     "ramp": [
+      1.0,
+      1.4852
+     ],
+     "points": [
+      98.0,
+      177.0
+     ],
+     "anchor": [
+      0.5,
+      0.58467
+     ],
+     "rect": [
+      726,
+      195,
+      98,
+      177
+     ]
+    },
+    "hot8": {
+     "curve": [
+      [
+       0.3511,
+       0.0
+      ],
+      [
+       1.0,
+       0.4298
+      ],
+      [
+       1.4852,
+       1.0
+      ]
+     ],
+     "points": [
+      127.0,
+      155.0
+     ],
+     "anchor": [
+      0.52756,
+      0.61604
+     ],
+     "rect": [
+      610,
+      381,
+      127,
+      155
+     ]
+    }
+   },
+   "sets": [
+    {
+     "seams": "A",
+     "width": 1.0
+    },
+    {
+     "seams": "AB",
+     "width": 1.0
+    },
+    {
+     "seams": "ABC",
+     "width": 1.0
+    },
+    {
+     "seams": "ABCD",
+     "width": 1.0
+    },
+    {
+     "seams": "ABCD",
+     "width": 1.2
+    },
+    {
+     "seams": "ABCD",
+     "width": 1.45
+    },
+    {
+     "seams": "ABCD",
+     "width": 1.7
+    },
+    {
+     "seams": "ABCD",
+     "width": 2.3
+    },
+    {
+     "seams": "ABCD",
+     "width": 2.8
+    }
+   ]
+  }
+ },
+ "order": [
+  "1 the room: reveal_room, full screen",
+  "2 the room's light: reveal_glow at (cx, cy), s 300, tint the light, alpha 0.34 level",
+  "3 each rung's ring, for 0.3 s after it: reveal_rings at (cx, cy), R 30 + 900 age, w 10 + 60 age, tint the light, alpha 0.5 lv (1 - age / 0.3)",
+  "4 from the split, the rays (rarities with rays): reveal_rays<n> centred on (cx, 187.6), turned 0.12 tau radians clockwise, tint the rays' colour, alpha min(1, opened)",
+  "5 the window's halo, then its fill: reveal_halo_<rarity>, reveal_window_<rarity>, anchored on (cx, 202), sized their points times (sx, sy)",
+  "6 the sill's line: reveal_glow at (cx, 346), s 170 across and 5 down, tint the light, alpha 0.45 level",
+  "7 the frame: reveal_frame_<rarity> anchored on (cx, 202) at its size, alpha framed",
+  "8 the shard's ViewportFrame (the pieces, the buds, the core), its cover the pieces' fade",
+  "9 the leak over it, until the split's core is gone: the picked sets' wide glow, the pieces' white, the beams, the tight glow, the white (shard.leak)",
+  "10 the fighter's ViewportFrame",
+  "11 the strike, for 0.25 s from the Knock: a ring, a white dot and, with rays, the column",
+  "12 the frame again, cut to the rows below 330 (its foot over his soles: a Frame clipping a copy)",
+  "13 a rung's flash at the shard: reveal_glow at (cx, cy), s 110, tint mix(light, white, 0.5), alpha flash",
+  "14 the name, its rule, the glint, the wash",
+  "15 the split's flash: reveal_glow at (cx, cy), s the rarity's radius, or a white Frame over the screen",
+  "16 the whole screen kicked down by the name's kick"
+ ],
+ "places": {
+  "cx": "W / 2 + (600 - W / 2) smooth((clip - 0.4) / 0.3): the window and the fighter stand on it",
+  "cy": 192.5,
+  "window_middle": [
+   null,
+   202.0
+  ],
+  "window_top": 58.0,
+  "sill": 346.0,
+  "foot_band": 330.0,
+  "rays_point": 187.6,
+  "clip": "tau + offset: where his Reveal clip is; tau = t - split"
+ },
+ "curves": {
+  "smooth": "u clamped to 0..1; u u (3 - 2 u)",
+  "back": "u clamped to 0..1, v = u - 1; 1 + v v (2.70158 v + 1.70158)",
+  "snap": "0 before 0; 1.35 a / 0.03 to 0.03 s; then 1 + 0.35 exp(-(a - 0.03) / 0.05)",
+  "bump": "0 before 0; exp(-a / 0.06) (1 - exp(-a / 0.015)) / 0.5364",
+  "run": "1 - (1 - clamp(u, 0, 1)) ** 1.4",
+  "slam": "none before -0.05; to 0: 0.93 + 0.77 (-u / 0.05) ** 1.6; then 1 - 0.07 exp(-u / 0.03) cos(u / 0.05 pi)",
+  "kick": "0 before 0; shake exp(-u / 0.05) cos(u / 0.09 2 pi), points down"
+ },
+ "light": {
+  "shard": "#C9B8FF",
+  "rule": "Start at the shard's light, level 0. Each step (when, colour, lv, wide) the time has passed: w = smooth((t - when) / 0.06), colour and level mixed toward its by w. With a breath (b0, b1), from b0: level times 1 - 0.8 smooth((t - b0) / (b1 - b0) 1.6). From the split: the rarity's own colour and level.",
+  "burn": "the rungs' push on the seams: 1 + 0.8 max over the steps after the first of bump(t - when) (0.6 + 0.4 lv)"
+ },
+ "shard": {
+  "meshes": {
+   "UpperLeft": {
+    "mesh": "meshes/Shard_UpperLeft.json",
+    "triangles": 104,
+    "centre": [
+     -0.44952,
+     0.76926,
+     -0.05
+    ],
+    "order": 0,
+    "side_A": 1,
+    "away": [
+     -0.59356,
+     0.80436,
+     -0.02629
+    ],
+    "reach": 0.75,
+    "slides": {
+     "seam": "B",
+     "way": -1,
+     "along": [
+      0.83774,
+      0.54601,
+      0.00851
+     ]
+    }
+   },
+   "Tip": {
+    "mesh": "meshes/Shard_Tip.json",
+    "triangles": 96,
+    "centre": [
+     0.35574,
+     1.03543,
+     -0.05
+    ],
+    "order": 1,
+    "side_A": 1,
+    "away": [
+     0.2683,
+     0.96314,
+     0.01961
+    ],
+    "reach": 1.0
+   },
+   "Sliver": {
+    "mesh": "meshes/Shard_Sliver.json",
+    "triangles": 20,
+    "centre": [
+     -0.65016,
+     -0.93433,
+     0.00535
+    ],
+    "order": 2,
+    "side_A": -1,
+    "away": [
+     -0.65041,
+     -0.75958,
+     0.00134
+    ],
+    "reach": 1.25,
+    "slides": {
+     "seam": "D",
+     "way": -1,
+     "along": [
+      0.83664,
+      0.54745,
+      0.01856
+     ]
+    }
+   },
+   "Foot": {
+    "mesh": "meshes/Shard_Foot.json",
+    "triangles": 108,
+    "centre": [
+     -0.00036,
+     -0.93765,
+     -0.05
+    ],
+    "order": 3,
+    "side_A": -1,
+    "away": [
+     -0.05635,
+     -0.99799,
+     0.0291
+    ],
+    "reach": 0.85
+   },
+   "Chip": {
+    "mesh": "meshes/Shard_Chip.json",
+    "triangles": 32,
+    "centre": [
+     0.566,
+     -0.16518,
+     0.01194
+    ],
+    "order": 4,
+    "side_A": -1,
+    "away": [
+     0.9659,
+     0.20826,
+     0.15382
+    ],
+    "reach": 1.1,
+    "slides": {
+     "seam": "C",
+     "way": 1,
+     "along": [
+      0.84006,
+      0.50108,
+      -0.20789
+     ]
+    }
+   },
+   "BudFoot": {
+    "mesh": "meshes/Shard_BudFoot.json",
+    "triangles": 136,
+    "host": "Foot",
+    "centre": [
+     0.84349,
+     -1.06175,
+     -0.05849
+    ]
+   },
+   "BudSliver": {
+    "mesh": "meshes/Shard_BudSliver.json",
+    "triangles": 136,
+    "host": "Sliver",
+    "centre": [
+     -1.00453,
+     -0.96093,
+     0.05763
+    ]
+   },
+   "Core": {
+    "mesh": "meshes/Shard_Core.json",
+    "triangles": 38,
+    "centre": [
+     0.0,
+     0.01395,
+     -0.0465
+    ]
+   }
+  },
+  "grades": {
+   "Standard": [],
+   "Enriched": [
+    "BudFoot"
+   ],
+   "Prismatic": [
+    "BudFoot",
+    "BudSliver"
+   ]
+  },
+  "frame": "Roblox's: 1 = one of the shard's units. Each MeshPart is CFrame(location) * rotation * CFrame(centre) from the root; a bud goes on its host piece the same way, welded.",
+  "surface": "TextureID reveal_palette.png on every piece and bud; the core takes no texture, its Color by the rule, SmoothPlastic. The ViewportFrame lit flat: Ambient white, LightColor black (to be read in the engine against the palette's swatches)",
+  "camera": {
+   "target": [
+    0.0,
+    0.05,
+    0.0
+   ],
+   "direction": [
+    0.2406,
+    0.10453,
+    0.96498
+   ],
+   "fov": 2.0,
+   "distance": 223.431,
+   "frame": "a ViewportFrame the screen's size, transparent, the camera CFrame.lookAt(target + direction * distance, target)"
+  },
+  "root": {
+   "origin": [
+    422.0,
+    197.486
+   ],
+   "per_x": [
+    48.515,
+    1.264
+   ],
+   "per_z": [
+    0.0,
+    -49.726
+   ],
+   "rule": "The root's sway and squash move the ViewportFrame on the screen, not the camera: its AnchorPoint on `origin`, placed at origin + at.x per_x + at.z per_z, sized the screen times (scale.x, scale.z). The leak's cells ride with it, sized by the same."
+  },
+  "seams": {
+   "cracks": "each rarity's `cracks`, seams A to D",
+   "gap": "0.045 snap(t - crack) widen(t)",
+   "widen": "the most over the steps passed of 1 + (wide - 1) smooth((t - when) / 0.08); 1 before any"
+  },
+  "pose": {
+   "shake": "0 before 0; 0.006 + 0.022 level widen / 2",
+   "at": "(sin(173 t) shake, 0.03 sin(3.1 t) + sin(211 t + 1) shake)",
+   "tap": "exp(-t / 0.035) from 0: scale (1 + 0.07 tap, 1 - 0.07 tap)",
+   "rise": "with a climb: 0.25 smooth((t - 0.4) / 0.6) added to at.z",
+   "swell": "1 + 0.05 smooth((t - (split - 0.15)) / 0.15); with a breath (b0, b1): 1 + 0.06 smooth((t - 0.4) / 0.6) - 0.16 smooth((t - b0) / (b1 - b0) 1.4), and from b0 at is (0.2 at.x, 0.2 at.z + 0.03) before the rise; scale times swell",
+   "rung": "each step after the first, i from 0, age = t - when, amp = 0.6 + 0.4 lv, while 0 <= age < 0.3: scale times 1 + 0.05 amp bump(age); jolt = 0.08 amp exp(-age / 0.025) cos(age / 0.05 2 pi); at.x plus jolt (minus for odd i), at.z plus 0.35 jolt",
+   "fly": "reach (1 - exp(-tau / 0.13)) from the split",
+   "spin": "max(0, tau) 5 + fly 0.22",
+   "core": "1 to the split, then max(0, 1 - tau / 0.09): the core's scale",
+   "piece": "location = side_A A_normal gap_A / 2 + (its seam's way along gap) + away fly reach; rotation (Blender's XYZ, written for Roblox) = Y((2 - i) spin 0.3) * Z(-(i - 2) spin 0.8) * X((0.5 + i) spin 0.6), each CFrame.fromAxisAngle, i the piece's order",
+   "A_normal": [
+    -0.53613,
+    0.82535,
+    -0.17707
+   ],
+   "fade": "the pieces' cover 1 - smooth((tau - 0.18) / 0.25)"
+  },
+  "core_colour": "mix(#07050C, mix(light, white, 0.55 + 0.45 level), min(1, level + 0.35))",
+  "leak": "Every cell is in reveal_leak, anchored on the root, sized the root's scale. m = min(1, level + 0.35), k = the core's scale, burn the rung's push. The cells come in nine sets, i = 0 to 8 (sets): 0 to 2 the seams cracked one by one (A, AB, ABC) at their width, 3 to 8 all four at each rung's width (1, 1.2, 1.45, 1.7, 2.3, 2.8). Which show: snap_n = snap(t - crack n) for each crack; n = the cracks begun. None before the first. While n < 4 or snap_4 < 1: f = min(1, snap_n); set n-2 by 1 - f and set n-1 by blend(f) (n = 1: set 0 by f alone); over = max(1, mean of snap_1..n) times widen (the rungs' widening, the pose's rule). After: widen picks the two rung sets either side of it, f by how near it is to the upper (past 2.8, set 8 alone): the lower by 1 - f, the upper by blend(f); over = max(1, mean of the four snaps). blend(f) = f / (1 - 0.6 (1 - f)). Lay the lower set first. burn' = burn over. a = m level burn' k; b = a once the first rung has come, else no beams; c = m burn' k. piecesHot and hot cells are white, the rest tinted the light. A cell's alpha at its drive x: with a scale, min(1, x / scale); with a ramp [lo, hi], clamp((x - lo) / (hi - lo), 0, 1); with a curve ([x, alpha] points), straight between them, held past the ends. For each kind in this order, each picked set's cell and then its Boost, alpha times the set's share: wide<i> from a; piecesHot<i> from a; beams<i> from b; tight<i> from c; hot<i> from c. A cell missing from the atlas had nothing in it: skip it."
+ },
+ "rarities": {
+  "Common": {
+   "times": {
+    "split": 0.55,
+    "colours": 1.0,
+    "name": 1.0667,
+    "card": 1.6167
+   },
+   "grade": "Standard",
+   "cracks": [
+    0.03,
+    0.14,
+    0.25,
+    0.34
+   ],
+   "steps": [
+    {
+     "when": 0.03,
+     "colour": "#C9B8FF",
+     "level": 0.4,
+     "wide": 1.0
+    }
+   ],
+   "breath": null,
+   "offset": 0.4,
+   "reach": 8.0,
+   "light": {
+    "colour": "#A9AFBD",
+    "level": 0.42,
+    "rays": 0,
+    "rays_colour": "#A9AFBD"
+   },
+   "flash": {
+    "radius": 70.0,
+    "strength": 0.55,
+    "seconds": 0.1
+   },
+   "name_scale": 1.0,
+   "shake": 2.5,
+   "hold": 0.55,
+   "rule": "#525762"
+  },
+  "Uncommon": {
+   "times": {
+    "split": 0.6,
+    "colours": 1.13,
+    "name": 1.1967,
+    "card": 1.8467
+   },
+   "grade": "Standard",
+   "cracks": [
+    0.03,
+    0.14,
+    0.25,
+    0.34
+   ],
+   "steps": [
+    {
+     "when": 0.03,
+     "colour": "#C9B8FF",
+     "level": 0.4,
+     "wide": 1.0
+    },
+    {
+     "when": 0.3,
+     "colour": "#7CF0A0",
+     "level": 0.5,
+     "wide": 1.2
+    }
+   ],
+   "breath": null,
+   "offset": 0.32,
+   "reach": 8.5,
+   "light": {
+    "colour": "#7CF0A0",
+    "level": 0.6,
+    "rays": 0,
+    "rays_colour": "#7CF0A0"
+   },
+   "flash": {
+    "radius": 95.0,
+    "strength": 0.6,
+    "seconds": 0.11
+   },
+   "name_scale": 1.06,
+   "shake": 3.0,
+   "hold": 0.65,
+   "rule": "#84D9A4"
+  },
+  "Rare": {
+   "times": {
+    "split": 0.85,
+    "colours": 1.52,
+    "name": 1.5867,
+    "card": 2.3867
+   },
+   "grade": "Enriched",
+   "cracks": [
+    0.03,
+    0.14,
+    0.25,
+    0.34
+   ],
+   "steps": [
+    {
+     "when": 0.03,
+     "colour": "#C9B8FF",
+     "level": 0.4,
+     "wide": 1.0
+    },
+    {
+     "when": 0.3,
+     "colour": "#7CF0A0",
+     "level": 0.5,
+     "wide": 1.2
+    },
+    {
+     "when": 0.48,
+     "colour": "#6FB6FF",
+     "level": 0.6,
+     "wide": 1.45
+    }
+   ],
+   "breath": null,
+   "offset": 0.18,
+   "reach": 9.0,
+   "light": {
+    "colour": "#6FB6FF",
+    "level": 0.76,
+    "rays": 0,
+    "rays_colour": "#6FB6FF"
+   },
+   "flash": {
+    "radius": 135.0,
+    "strength": 0.7,
+    "seconds": 0.12
+   },
+   "name_scale": 1.12,
+   "shake": 3.5,
+   "hold": 0.8,
+   "rule": "#87B6ED"
+  },
+  "Epic": {
+   "times": {
+    "split": 1.05,
+    "colours": 1.9,
+    "name": 1.9667,
+    "card": 2.9167
+   },
+   "grade": "Enriched",
+   "cracks": [
+    0.03,
+    0.14,
+    0.25,
+    0.34
+   ],
+   "steps": [
+    {
+     "when": 0.03,
+     "colour": "#C9B8FF",
+     "level": 0.4,
+     "wide": 1.0
+    },
+    {
+     "when": 0.3,
+     "colour": "#7CF0A0",
+     "level": 0.5,
+     "wide": 1.2
+    },
+    {
+     "when": 0.48,
+     "colour": "#6FB6FF",
+     "level": 0.6,
+     "wide": 1.45
+    },
+    {
+     "when": 0.66,
+     "colour": "#D29CFF",
+     "level": 0.72,
+     "wide": 1.7
+    }
+   ],
+   "breath": [
+    0.85,
+    1.05
+   ],
+   "offset": 0.0,
+   "reach": 9.5,
+   "light": {
+    "colour": "#D29CFF",
+    "level": 0.9,
+    "rays": 7,
+    "rays_colour": "#D29CFF"
+   },
+   "flash": {
+    "radius": 190.0,
+    "strength": 0.8,
+    "seconds": 0.14
+   },
+   "name_scale": 1.18,
+   "shake": 4.5,
+   "hold": 0.95,
+   "rule": "#BE92F1"
+  },
+  "Legendary": {
+   "times": {
+    "split": 1.3,
+    "colours": 2.15,
+    "name": 2.2167,
+    "card": 3.3167
+   },
+   "grade": "Prismatic",
+   "cracks": [
+    0.03,
+    0.14,
+    0.25,
+    0.34
+   ],
+   "steps": [
+    {
+     "when": 0.03,
+     "colour": "#C9B8FF",
+     "level": 0.4,
+     "wide": 1.0
+    },
+    {
+     "when": 0.3,
+     "colour": "#7CF0A0",
+     "level": 0.5,
+     "wide": 1.2
+    },
+    {
+     "when": 0.48,
+     "colour": "#6FB6FF",
+     "level": 0.6,
+     "wide": 1.45
+    },
+    {
+     "when": 0.66,
+     "colour": "#D29CFF",
+     "level": 0.72,
+     "wide": 1.7
+    },
+    {
+     "when": 0.84,
+     "colour": "#FFD777",
+     "level": 0.92,
+     "wide": 2.3
+    }
+   ],
+   "breath": [
+    1.05,
+    1.3
+   ],
+   "offset": 0.0,
+   "reach": 11.0,
+   "light": {
+    "colour": "#FFD777",
+    "level": 1.0,
+    "rays": 11,
+    "rays_colour": "#FFD777"
+   },
+   "flash": {
+    "radius": null,
+    "strength": 1.0,
+    "seconds": 0.22
+   },
+   "name_scale": 1.24,
+   "shake": 5.5,
+   "hold": 1.1,
+   "rule": "#E8C16B"
+  },
+  "Mythical": {
+   "times": {
+    "split": 1.8,
+    "colours": 2.65,
+    "name": 2.7167,
+    "card": 3.9667
+   },
+   "grade": "Prismatic",
+   "cracks": [
+    0.03,
+    0.14,
+    0.25,
+    0.34
+   ],
+   "steps": [
+    {
+     "when": 0.03,
+     "colour": "#C9B8FF",
+     "level": 0.4,
+     "wide": 1.0
+    },
+    {
+     "when": 0.3,
+     "colour": "#7CF0A0",
+     "level": 0.5,
+     "wide": 1.2
+    },
+    {
+     "when": 0.48,
+     "colour": "#6FB6FF",
+     "level": 0.6,
+     "wide": 1.45
+    },
+    {
+     "when": 0.66,
+     "colour": "#D29CFF",
+     "level": 0.72,
+     "wide": 1.7
+    },
+    {
+     "when": 0.84,
+     "colour": "#FFD777",
+     "level": 0.92,
+     "wide": 2.3
+    },
+    {
+     "when": 1.25,
+     "colour": "#FF2848",
+     "level": 1.0,
+     "wide": 2.8
+    }
+   ],
+   "breath": [
+    1.5,
+    1.8
+   ],
+   "offset": 0.0,
+   "reach": 11.0,
+   "light": {
+    "colour": "#FF2848",
+    "level": 1.0,
+    "rays": 14,
+    "rays_colour": "#FFF1F2"
+   },
+   "flash": {
+    "radius": null,
+    "strength": 1.0,
+    "seconds": 0.26
+   },
+   "name_scale": 1.3,
+   "shake": 6.5,
+   "hold": 1.25,
+   "rule": "#D24258"
+  }
+ },
+ "figure": {
+  "tile": [
+   320,
+   390
+  ],
+  "centre": "(cx, 185): his soles on the sill",
+  "camera": {
+   "look_at": "3.5 studs over his soles",
+   "direction_in_his_frame": [
+    0.60967,
+    0.13917,
+    -0.78034
+   ],
+   "fov": 2.0,
+   "distance": 242.86,
+   "note": "rook_clips.FRONT: 38 degrees round to his right, 8 up; 390 points are 8.48 studs"
+  },
+  "dark": "#07050C",
+  "rim": "the light's colour over his edge, 2 points in, at 0.8 x min(1, 0.45 + 0.55 level) back(tau / 0.16), where his colours haven't come",
+  "flood": {
+   "origin_in_tile": [
+    87.8,
+    97.5
+   ],
+   "reach": 325.8,
+   "soft": 45.0,
+   "seconds": 0.13,
+   "rule": "from the Knock, edge = reach run((clip - Knock) / 0.13); a point d from the origin shows his colours by clamp((edge - d) / 45, 0, 1), dark under; the hot line mix(light, white, 0.55) at exp(-((d - edge + 22.5) / 25) ** 2) (1 - u / 1.3) 0.8 while u < 1.3"
+  },
+  "cover": "smooth((tau - 0.03) / 0.08)",
+  "knock": 0.85,
+  "name_marker": 0.91667
+ },
+ "strike": {
+  "ring": "reveal_rings at the ram's head, R 14 + 820 age, w 5 + 40 age, tint mix(light, white, 0.55), alpha (0.35 + 0.5 level) (1 - age / 0.25)",
+  "dot": "reveal_glow at the head, s 22, white, alpha 0.7 max(0, 1 - age / 0.06)",
+  "column": "with rays: reveal_column, wd 7 + 30 age / 0.25, tint the rays' colour, alpha 0.8 (1 - age / 0.25)",
+  "head": "the flood's origin in his tile, on the screen"
+ },
+ "name": {
+  "face": "the game's: Builder Sans ExtraBold, Italic (the critical's slant)",
+  "colour": "#F3EFE6",
+  "size": "58 x the rarity's name scale (TextSize)",
+  "left": 70.0,
+  "baseline": 214.0,
+  "widest": 379.2,
+  "fit": "a name wider than `widest` at its size is set smaller to fit, never cut",
+  "slam": "its size times slam(u), u = t - name time; it grows from the point a quarter along its foot",
+  "burn": "mix(colour, white, max(0, 1 - max(u, 0) / 0.14) ** 2)",
+  "rule": "from u = -0.02, cover smooth((u + 0.02) / 0.03): reveal_rule from x = left - 12, y = baseline + 10, 9 tall, its span from left - 10 to min(right + 22, left + widest + 6), tinted the rarity's `rule`",
+  "glint": "from u = 0 for 0.3 s: gx = left - 10 + (u / 0.2) (right + 32 - left); reveal_glow at (gx, baseline + 14.5), s 14 across and 40 down, white, alpha 1 - u / 0.3, clipped to the rule's box; and reveal_glow at (gx, baseline + 14.5), s 22 by 9, tint the light, alpha 0.6 (1 - u / 0.3)",
+  "wash": "reveal_glow on the name's middle, s 0.6 its width by 40, white, alpha 0.3 max(0, 1 - u / 0.1)"
+ },
+ "split_flash": "radius, strength, seconds a rarity: reveal_glow at (cx, cy) s the radius, white, alpha strength (1 - tau / seconds) ** 2; with no radius a white Frame over the screen, alpha strength, then from 0.035 s strength (1 - (tau - 0.035) / (seconds - 0.035)) ** 1.5",
+ "skip": "open from 1.0 s, every rarity",
+ "checks": {
+  "compare": {
+   "Common": [
+    {
+     "t": 0.36,
+     "moment": "the leak at its last rung",
+     "mean": 0.78,
+     "over_24": 0.0013,
+     "worst": 10.0
+    },
+    {
+     "t": 0.75,
+     "moment": "him dark in the window",
+     "mean": 0.64,
+     "over_24": 0.0,
+     "worst": 3.0
+    },
+    {
+     "t": 1.065,
+     "moment": "his colours running",
+     "mean": 0.67,
+     "over_24": 0.0,
+     "worst": 3.8
+    },
+    {
+     "t": 1.217,
+     "moment": "the name down",
+     "mean": 0.69,
+     "over_24": 0.0004,
+     "worst": 2.8
+    }
+   ],
+   "Uncommon": [
+    {
+     "t": 0.36,
+     "moment": "the leak at its last rung",
+     "mean": 2.22,
+     "over_24": 0.0061,
+     "worst": 29.5
+    },
+    {
+     "t": 0.8,
+     "moment": "him dark in the window",
+     "mean": 1.15,
+     "over_24": 0.0,
+     "worst": 5.0
+    },
+    {
+     "t": 1.195,
+     "moment": "his colours running",
+     "mean": 1.14,
+     "over_24": 0.0,
+     "worst": 6.7
+    },
+    {
+     "t": 1.347,
+     "moment": "the name down",
+     "mean": 1.14,
+     "over_24": 0.0004,
+     "worst": 4.4
+    }
+   ],
+   "Rare": [
+    {
+     "t": 0.53,
+     "moment": "the leak at its last rung",
+     "mean": 2.48,
+     "over_24": 0.0073,
+     "worst": 30.9
+    },
+    {
+     "t": 1.05,
+     "moment": "him dark in the window",
+     "mean": 1.17,
+     "over_24": 0.0,
+     "worst": 5.3
+    },
+    {
+     "t": 1.585,
+     "moment": "his colours running",
+     "mean": 1.22,
+     "over_24": 0.0001,
+     "worst": 9.3
+    },
+    {
+     "t": 1.737,
+     "moment": "the name down",
+     "mean": 1.2,
+     "over_24": 0.0004,
+     "worst": 6.0
+    }
+   ],
+   "Epic": [
+    {
+     "t": 0.71,
+     "moment": "the leak at its last rung",
+     "mean": 2.22,
+     "over_24": 0.0102,
+     "worst": 30.0
+    },
+    {
+     "t": 1.25,
+     "moment": "him dark in the window",
+     "mean": 0.96,
+     "over_24": 0.0011,
+     "worst": 11.6
+    },
+    {
+     "t": 1.965,
+     "moment": "his colours running",
+     "mean": 1.28,
+     "over_24": 0.0036,
+     "worst": 21.9
+    },
+    {
+     "t": 2.117,
+     "moment": "the name down",
+     "mean": 1.06,
+     "over_24": 0.0014,
+     "worst": 12.6
+    }
+   ],
+   "Legendary": [
+    {
+     "t": 0.89,
+     "moment": "the leak at its last rung",
+     "mean": 6.03,
+     "over_24": 0.0453,
+     "worst": 67.5
+    },
+    {
+     "t": 1.5,
+     "moment": "him dark in the window",
+     "mean": 2.01,
+     "over_24": 0.0,
+     "worst": 10.0
+    },
+    {
+     "t": 2.215,
+     "moment": "his colours running",
+     "mean": 2.3,
+     "over_24": 0.0052,
+     "worst": 24.6
+    },
+    {
+     "t": 2.367,
+     "moment": "the name down",
+     "mean": 2.01,
+     "over_24": 0.0004,
+     "worst": 11.2
+    }
+   ],
+   "Mythical": [
+    {
+     "t": 1.3,
+     "moment": "the leak at its last rung",
+     "mean": 9.26,
+     "over_24": 0.0733,
+     "worst": 109.5
+    },
+    {
+     "t": 2.0,
+     "moment": "him dark in the window",
+     "mean": 2.14,
+     "over_24": 0.0,
+     "worst": 10.6
+    },
+    {
+     "t": 2.715,
+     "moment": "his colours running",
+     "mean": 2.34,
+     "over_24": 0.0005,
+     "worst": 14.8
+    },
+    {
+     "t": 2.867,
+     "moment": "the name down",
+     "mean": 2.28,
+     "over_24": 0.0005,
+     "worst": 12.6
+    }
+   ]
+  },
+  "note": "the art's frame against the engine's laid from these files, at 1 pixel a point: mean, the share of pixels past 24 of 255, and the 99.5th percentile (worst)"
+ }
+}

@@ -62,24 +62,30 @@ return {
 	{
 		Name = "Odds: ground 1's Standard shard, worked by hand",
 		Run = function(t: any)
-			-- Ground 1 holds five Commons and one Uncommon (Sable); the Standard pool weighs them 60 and 30.
+			-- Ground 1 holds five Commons, one Uncommon (Sable) and one Rare (Lyric, moved to Lantern Row's shards on
+			-- 2026-11-13, docs/roster.md); the Standard pool weighs them 60, 30 and 9, and its Epic has no one here.
 			local entries = Odds.Table(STANDARD, 0)
-			t.Equal("six Voidkin", #entries, 6)
-			t.Check("Sable a third", near(chanceOf(entries, "sable"), 30 / 90))
-			t.Check("Rook a fifth of the rest", near(chanceOf(entries, "rook"), 60 / 90 / 5))
-			t.Equal("nothing from ground 2", chanceOf(entries, "lyric"), 0)
+			t.Equal("seven Voidkin", #entries, 7)
+			t.Check("Sable 30 in 99", near(chanceOf(entries, "sable"), 30 / 99))
+			t.Check("Lyric 9 in 99", near(chanceOf(entries, "lyric"), 9 / 99))
+			t.Check("Rook a fifth of the Commons", near(chanceOf(entries, "rook"), 60 / 99 / 5))
+			t.Equal("nothing from ground 2", chanceOf(entries, "tumble"), 0)
 		end,
 	},
 	{
-		Name = "Odds: luck lifts the top tier, up to its cap",
+		Name = "Odds: luck lifts the top tiers, up to its cap",
 		Run = function(t: any)
+			-- three tiers live (Common, Uncommon, Rare), so the top two are lifted
 			local lifted = Odds.Table(STANDARD, 0.4)
-			t.Check("Sable lifted", near(chanceOf(lifted, "sable"), 30 * 1.4 / (60 + 30 * 1.4)))
+			local total = 60 + (30 + 9) * 1.4
+			t.Check("Sable lifted", near(chanceOf(lifted, "sable"), 30 * 1.4 / total))
+			t.Check("Lyric lifted", near(chanceOf(lifted, "lyric"), 9 * 1.4 / total))
+			t.Check("the Commons not", near(chanceOf(lifted, "rook"), 60 / total / 5))
 			local capped = Odds.Table(STANDARD, 5)
 			local atCap = Odds.Table(STANDARD, ShardConfig.LuckCap)
 			t.Check("past the cap is the cap", near(chanceOf(capped, "sable"), chanceOf(atCap, "sable")))
 			local negative = Odds.Table(STANDARD, -1)
-			t.Check("no negative luck", near(chanceOf(negative, "sable"), 30 / 90))
+			t.Check("no negative luck", near(chanceOf(negative, "sable"), 30 / 99))
 		end,
 	},
 	{

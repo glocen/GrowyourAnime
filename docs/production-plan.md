@@ -79,7 +79,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 1. The circuit, in grey** (TR2, AR1, AR2). The whole loop with stand-ins: a base, the Breaker with chambers, three starter shards, a lead that fights by the real rules, Shades as boxes, Lantern Row as a grey street, a Named shard, a bay, electricity, saving. It answers: is the loop worth playing before any art? Meanwhile Modulo makes Rook and one Shade to the bar, and times them.
 
-**Phase 2. One ground at the bar.** Rook, Pip and Lyric finished and timed. Lantern Row dressed. The HUD, the reveal and the Breaker screen on the real kit. The Lamplighter. The first session reviewed whole, from a phone. This is the game's proof and its advert. Its signature effects close at competent; the push toward exceptional waits for the finish pass before launch (the director, 2026-11-13, `docs/decisions.md`).
+**Phase 2. One ground at the bar.** Rook, Pip and Lyric finished and timed. Lantern Row dressed. The HUD, the reveal and the Breaker screen on the real kit. The Lamplighter. The first session reviewed whole, from a phone. This is the game's proof and its advert. Its signature effects close at competent; the push toward exceptional waits for the finish pass before launch (the director, 2026-11-13, `docs/decisions.md`). **Content as data** (Faber, after TR6, before the next Voidkin is installed): `docs/engineering-plan.md`, "Content at scale", items 1 to 5, so each Voidkin, effect and Shade after it is mostly data and art.
 
 **Phase 3. The build.** Regalia with presets, the bag, the Forge and the Stone Condenser that feeds it, emblems, jewels, research. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
 

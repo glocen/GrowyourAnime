@@ -116,6 +116,29 @@ It's the builder's call, system by system. Where research sees the design itself
 
 A module is worth it when its second user exists in the design. Building for one nobody has designed yet isn't asked for.
 
+## Content at scale
+
+The director's word, 2026-11-13: "foundation / well made module script on everything to produce content at massive scales very fast". The runtime already keeps no `if id ==` branch: what follows is what one more item still costs, read from the code on 2026-11-13.
+
+| Kind | Data today | Art today | Code still written per item |
+|---|---|---|---|
+| **A Voidkin** | its row (`Definitions/Voidkin`), 2 or 3 `Actions` rows, its `Kits` and `Skips` entries, its `Idles`, `Roles` and `Props` in `Config/Animations`, two portraits in `Config/UIKit` | Modulo's model, sheet and clips scripts, to `build/handoff/<Name>/` | an assembly script (`tools/studio/Models/<Name>.luau`, 112 to 140 lines, the same skeleton each time), its `HELD` lines in `Animations/Author`, its signature's effect (below), and its self-test cases |
+| **An effect** | a `Rows` entry in `Config/Effects` (the newer ones: the keeper's signature, the lantern's exit) | the effect's art and rows scripts, to `*_rows.json` | the older signatures are functions in `FighterController/Effects.luau`: Haymaker about 335 lines, Lantern Burst 250, Held Note 190 plus its crest; one line each in `EFFECTS`; any sound on a beat is in its function |
+| **A Shade** | its row in `Definitions/Enemies` (rig, mask, action, type, scale); a new move needs an `Actions` row | its mask on the shared Shade rig; an elite's second mask needs its own entry and a fresh `Shade.rbxm` | none |
+| **A keeper** | its `Enemies` row, 3 `Actions` rows, its `Animations` and `Falls` entries, its look and `Rows` | about six Blender scripts and an assembly script | its fall assumes a lantern and a pole (`LanternOut`), and an enemy has one action, so a signature never joins its fight (it plays only through `KeeperForce`) |
+| **A ground** | its `Grounds` row and shard factor exist for all six; one Standard shard row | the street kit | `WorldService.lay` lays one street from one `World.Row`; nine world tags are one per world; one ring, one door target, and Lantern Row named in code. Lantern Row is the only ground at launch (the director, 2026-11-13), so this waits until after it |
+
+**To become data,** in the order they pay at launch:
+1. **Effects as rows.** `Rows` gains the four things the older functions do by hand: a streak from a body point on a beat, a camera move, a sound on a beat, and a relight over the cooldown. An action names its rows (`Action.Effect`), which replaces the `EFFECTS` table. The three older signatures move over at the finish pass, where they're remade anyway.
+2. **One model assembler** reading Modulo's `<Name>.recipe.json`, in place of one script per model, deriving `HELD` from it too.
+3. **Rows generated from `*_rows.json`,** never copied by hand into `Config/Effects`.
+4. **A Voidkin's entries on its row:** its kit, skip, idle and clip roles, read from one place instead of four tables in two files.
+5. **One self-test per kind, looped over every item:** "its look keeps its frames and leaves nothing" once for every effect, the markers for every clip (already so), the model's parts for every model.
+6. **An enemy's kit,** as a lead's, so a keeper's signature joins its fight, and a fall built from any kept parts.
+7. **After launch, streets by ground:** `World.Row` per ground, the one-per-world tags per ground, a ring and a door each.
+
+The piece that does 1 to 5 is "Content as data" in `docs/production-plan.md`.
+
 ## How each system is tested
 
 | System | First check | Then |

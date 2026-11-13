@@ -559,7 +559,7 @@ What the checks found:
 
 ## Next, not yet written
 
-In order, each written when the one before it closes: Rook, Pip and Lyric installed (TR7, below); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.
+Written: TR8, Lantern Row dressed with its night, and TR9, the Breaker screen (below). Still to write, each when the one before it closes: the Lamplighter as a real fight; Regalia.
 
 ## TR7. Rook, Pip and Lyric installed (Faber, with AR1 and AR4)
 
@@ -780,3 +780,42 @@ It's judged in motion at phone size, beside the before.
 **Order in the queue:** after TR5. **Time, forecast:** about 2 hours.
 
 **Status:** requested, 2026-11-13.
+
+## TR8. Lantern Row dressed, with its night (Faber, with AR5)
+
+Research's entry, 2026-11-14. Phase 2's "Lantern Row dressed" (`docs/production-plan.md`). The kit is delivered and accepted (AR5, section 2), so the direction is chosen: this is the build, not a new blockout.
+
+**Feel line:** through the festival gate, the player steps off the plot into a warm street of stalls and lantern strings at dusk that slowly turns to night, and every fight on it, a pack, the elite's square, the keeper's gate, reads clear against the light at phone size.
+
+**The block contains:**
+- **The kit installed** from `build/handoff/LanternRow/` as AR5's "For the builder" says: each piece at its place from `manifest.json`, one SurfaceAppearance each, the lights in `plan.json` and no others, `CastShadow` off where it says, a Part under each look floor for the walking. The upload covers what the content check passed, and nothing else.
+- **Through the world contract** (`docs/engineering-plan.md`, "The world contract"): the markers the fight already reads stay where TR2 put them, and the world report stays sound.
+- **The night cycle:** one server clock, dusk and night with a crossfade (`docs/decisions.md`, 2026-11-12). The seed, tier 2 and tuned by playing: 20 minutes, 13 of dusk, 5 of night, a minute's crossing each way. Its length and a jump to either phase are live through Tune, for the takes.
+- **The three notes for the install, tuned live:** the houses' glow at about two thirds (half their windows dark if the skyline still reads as a city); a Shade's edge against the floors (the floors' glow strength is the lever); the square's fight frame.
+
+**Waits:** goods on the counters; the keeper's ring past the gate as dressing; the Breaker and the bay as machines; the other grounds' recolours.
+
+**Checks:** self-test and world report; the device take with the phone's device test on, inside AR5's budget (14 lights the ceiling); research's verdict from the player's camera from both ends, in a pack fight, the square and the keeper's gate, at dusk and at night; `ga-fresh-eyes` at the final (a major landmark aims at exceptional).
+
+**Order in the queue:** after TR6 and "Content as data". **Time, forecast:** 3 to 5 hours.
+
+**Status:** requested, 2026-11-14.
+
+## TR9. The Breaker screen, on the kit (Faber, with AR3)
+
+Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`docs/production-plan.md`); the screen's design is `docs/ui.md`, "The screens of the first loop", 3. TR2's grey prompts and plates are its "before".
+
+**Feel line:** at home, the player opens the Void Breaker and sees its chambers as they stand in the world, each shard cracking with its time left, the waiting line below, and with one tap the shard's odds, so feeding a shard in feels like loading a machine, not filling a form.
+
+**The block contains:**
+- **Two or three layouts in grey,** judged at phone size in a take at home with shards breaking: the chambers, the waiting line, the odds one tap away, infusion as a clear choice with its Electricity price and what it does to the odds (`docs/design.md`, "Infusion"; not on Named shards).
+- **Then the picked one on AR3's kit,** in the Dynamo palette (`docs/ui.md`, "One look, ours"), with its frames and motion from TR6.
+- **The odds as `Rules/Odds` gives them,** never copied into the screen.
+
+**Waits:** the bays' screen (`docs/ui.md`, 7); the Condenser; any Robux price (`docs/roblox-rules.md`).
+
+**Checks:** a self-test case for each control's state, the UI lint, a logic case if a rule moves; the content check on any new text; research's verdict on the grey layouts, then its pass on the build at phone size.
+
+**Order in the queue:** after TR8. **Time, forecast:** 2 to 3 hours.
+
+**Status:** requested, 2026-11-14.

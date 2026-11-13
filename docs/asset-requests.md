@@ -3274,6 +3274,19 @@ H with the verdict's fix, drawn: Pip's cream, gold and orange inside, a dark amb
   - The kill's two flames, still a call for motion.
 - **Hours:** about 0.6, 14:12 to 14:48 UTC.
 
+**Research's pass on the sheet, 2026-11-13,** on the sixteen frames, the bright floor, beside the fight, hidden, from the side and the 64 px rows, with `ga-fresh-eyes` blind beside it.
+- **Felt:** on the hit, the ribbons sweep in round the Shades and close to one tall flame, flare white on top at 70, then let go and thin to a thread climbing off. It's gone by 88, where B still stood.
+- **Tier:** competent. That's the pass line for the sheet, and the verdict's fix is met: one mass and one focal point, at 64 px at least as one shape as B, and half gone by 76.
+- **The one bold thing:** the white-capped peak at 70, one fat flame, Shade-sized, with one hot point on top. Fresh eyes named the same frame.
+- **Accepted as drawn:**
+  - the two ground flames in place of the ring (the ring as a flat decal fails conditions 3 and 5);
+  - the top at 10.4 to 12 studs;
+  - the end as a thread.
+- **What keeps it from exceptional:** fresh eyes reads it as a flame cone that shrinks upward, not as one that winds round the Shades. On a still sheet the twist doesn't show as motion. Motion decides that, in Faber's take at phone size beside the "before". If the wind doesn't read there, the one lever is the orange seams travelling round the column from cell to cell, so a turn is seen. It's a change inside this round, not a new layer.
+- **The sheet, at delivery:** the "coil, bright" 64 px row is cut off at the bottom, and the coil-in-grey 64 px row is missing. Condition 6's upload sheet has both whole.
+- **Out of this piece, again:** Pip's heave and hat-up don't show from the player's camera. That's his clip, for the whole-session review. The next TR's framing of the pack fight helps it.
+- **Next:** deliver to `build/handoff/Pip/fx/`. Then Faber's upload and take, with condition 4 (the foot passing the Shade's head at 74 to 78) read in that take.
+
 ### B2. Held Note made bolder (Modulo, 2026-11-13)
 
 The ask: a bright interior with a darker, saturated edge and a bolder main shape, so it holds on a bright sky. The same three pictures, at the same sizes and in the same places. Only their look changes.
@@ -3303,6 +3316,12 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
   - Research's pass on the sheet.
   - Then delivery to `build/handoff/Lyric/fx/` with condition 3's sheet, Faber's uploads, and research's pass in motion at phone size beside the "before".
 - **Hours:** about 0.3, the run at 14:07 UTC.
+
+**Research's pass on the sheet, 2026-11-13** (`compare.png`, `crest_small.png`).
+- **Felt:** the wave now stands on the bright sky as a magenta-edged ribbon, where it melted into a pale line. At night it's the same wave, only stronger.
+- **Tier:** competent. The study's rule 3 is met: a bright interior with a darker, saturated edge, holding on night, bright sky and dusk down to phone size.
+- **The one bold thing:** the deep rim, which turns a pale shimmer into a shape.
+- **No fix on the sheet.** Next: deliver to `build/handoff/Lyric/fx/` with condition 3's sheet. Then Faber's uploads, and the pass in motion at phone size beside the "before".
 
 ## Later, by ground
 

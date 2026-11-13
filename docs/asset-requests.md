@@ -2792,7 +2792,45 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** not started.
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and waits for research's verdict (section 1).
+
+### 1. The sheet (Modulo, 2026-11-13)
+
+- **Where:** `build/scratch/modulo/lamplighter/sheet/lamplighter_sheet.png`, 1920 by 1640, with a half-size copy beside it. It's delivered to `build/handoff/Lamplighter/` on research's yes. `tools/blender/lamplighter_sheet.py` draws it in headless Blender in about a minute: `-- <out dir> [small]`. It's a Workbench blockout over the Shade's own builder, with the glow drawn on the picture. Rook is his baked model in Eevee.
+- **The rig carries the dress.** The Shade's R6 at 1.5 times its size (the elite is 1.35), with no body of its own. The lever is to dress over the Shade's coat, not to swap it:
+  - A long bell coat from the hem at 0.62 to the shoulders, with the Shade's lit hem and seam on the outside.
+  - Wide oversleeves from 2.3 down, the Shade's lit cuff showing below them.
+  - The pole runs through the right cuff, so an arm's clip carries it.
+- **The three directions,** each on the sheet from the front, as the ring's camera sees it, and in outline:
+  - **A, the Bearer (my pick):** a straw cone hat over a lantern-faced paper mask with closed eyes. The indigo coat has cream bands and a red sash, and a lantern crest is on the back. The pole is planted upright, and the lantern hangs from its crook beside the face.
+    - What's wrong: from above, the brim hides the mask's brow (the ring's camera sees it level, so both eyes show). A staff and a cone hat could read as a generic mage, so the lantern and the festival coat have to carry it.
+  - **B, the Warden:** a peaked hood round a crescent mask, with the pole over the shoulder and the lantern behind the head.
+    - What's wrong: a hood and a long pole over the shoulder is a scythe-bearer's outline, so it reads as death, not as the festival's master. The lantern hides behind the head from the player's camera.
+  - **C, the Crier:** a tall lacquer cap over a lattice mask, with the pole held out and the lantern hung in front.
+    - What's wrong: the lantern hangs between the keeper and the player and covers the mask and the coat. Held out level, the pole reads as a fishing rod, not as a weapon it can bring down.
+- **Why A:**
+  - The planted pole is the signature's own start, so the stance already says what it will do.
+  - The cone hat is an outline no Shade has.
+  - The lantern hangs at the mask's height, so lamp and face read as one. The face is a lantern too: the street's master wears the street.
+- **The signature's pose** is on the sheet as a seed: the pole planted ahead, the lantern swung up over the head, and a cyan circle under the lead. Its cuffs show end-on as lit squares, which the clip fixes by the arm's roll.
+- **At 64 px** the three outlines are different on night, day and paper, beside an ordinary Shade at the same scale. A's hat and lantern carry it.
+- **In the ring, beside Rook,** at TR2's framing, measured from TR2's capture: zoom 10, pitch 10, FOV 70.
+
+  | Direction | Size (studs) | Body share of the ring's frame | With the pole |
+  |---|---|---|---|
+  | A | 10.4 × 5.2 × 12.4 tall to the pole's top | 43% | 60% |
+  | B | – | 45% | 51% |
+  | C | – | 49% | 60% |
+
+- **For research and the builder, the scale:**
+  - The request's "a third of the ring's frame" and a keeper taller than the elite don't fit together.
+  - A third would be about 1.16 times a Shade, under the elite's 1.35: about 8.2 studs to the hat's top, against an elite's 7.4 to 9 to its mask's top. At 1.5 the hat's top is at 10.5.
+  - I'd keep 1.5 and let the keeper's framing pull the camera out, because a keeper shorter than an elite fails the feel line. The number is the builder's (`Definitions/Enemies.luau`).
+- **Content check, 2026-11-13: PASS.** Rules 2, 3 and 4 and Roblox's, the names against `docs/ip-list.md`. Two notes carried to the model and the fall:
+  - A's thin red hat cords run down beside the pale mask. The model ties them under the chin, in rope or cream.
+  - The fall bursts into light and paper with no red pieces, the sash's included.
+- **Time:** about 25 minutes by the clock (Quaestor's message at 10:57 UTC, the sheet past the check at 11:20), against the 3 hours named. On Opus 5.5 xhigh.
+- **Four facts:** made; self-reviewed; content check PASS; not delivered; research's verdict open.
 
 ## Later, by ground
 

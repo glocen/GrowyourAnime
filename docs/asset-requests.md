@@ -3024,6 +3024,7 @@ For Faber and Modulo (research's request, 2026-11-13). It rests on the director'
   - The camera's shake as trauma squared.
   - The billboards drawn a picture late, with the builder's own fix: every billboard made at the start, shown by its image, cleared a step late, as the Shade's burst does (AR2, section 13; moved here from `docs/polish-later.md`).
   - The study's rule 2 gives the starting numbers.
+  - **The level check:** an offline mixdown of each cue's own samples at its scheduled time, volume, speed and fader, measured for loudness and true peak. A take can't carry this, because the PC's sound processing compresses the loopback (TR4, research's pass, corrected). It measures the fight's cues and the reveal, and the reveal sits about 3 to 6 LU above the fight.
   - **Tier 2:** research's part is given here. Faber's is its own call on the numbers, tuned by playing. Faber checks the pace in `tools/balance/sim.py` once the hitstop changes, since the server's push waits it out.
 - **B. The signatures' looks (Modulo, then Faber).**
   - **Haymaker:** the director's planned B5 (`docs/polish-later.md`; AR1, section 9), rather than a patch on the impact first. It's built to the study's rule 3.

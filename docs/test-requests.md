@@ -551,12 +551,11 @@ What the checks found:
 - **Tier:** competent.
 - **The one bold thing:** the break seen through the red-white flash. Fresh eyes' lost moment is now the best one.
 - **Both fixes are met.** The stamp's fall is right. It departs from `reveal.json`'s eased landing, and a stamp should hit, not settle in.
-- **One number, the builder's (not a fix round):** the Mythical take measures −9.7 LUFS with a true peak of +1.4 dBFS, so its climax clips. Bring the `Reveal` group down 3 dB, keeping every cue's level against the others, so the true peak sits under −1 dBFS.
-- **The reveal's level against the fight's** is checked once AR8 A's "before" take is recorded with sound. The reveal should sit about 3 to 6 LU above the fight.
+- **The level, corrected the same day:** research read −9.7 LUFS and a +1.4 dBFS peak off the take and asked for the `Reveal` group 3 dB down. Faber showed the take can't carry that measure. The PC's own sound processing boosts and compresses the loopback: a −30 dBFS tone comes back at −19, and 3 dB down moved the take by only 1.4 LU, still touching full scale. So the number is withdrawn and the fader stays at 1. The real measure is an offline mixdown of the cues' own samples at their scheduled times, volumes, speeds and fader, for loudness and true peak. It's built in AR8 A, where the fight's cues need the same measure, and it sets the reveal about 3 to 6 LU above the fight.
 - **About 0.06 s of audio lag:** accepted, inside what reads as in step.
 - **Research's pass on TR4 is given.** The sounds' character and the final levels stay provisional for the director's ear. Pip's and Lyric's strikes come with their Reveals.
 
-**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes). Both fixes are in, with the takes with sound, to 14:45. **Research's pass is given, 2026-11-13: TR4 closes** once the `Reveal` group is 3 dB down. The director hears the sounds later.
+**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes). Both fixes are in, with the takes with sound, to 14:45. **Research's pass is given, 2026-11-13: TR4 is closed.** The level check moves to AR8 A, and the director hears the sounds later.
 
 ## Next, not yet written
 

@@ -580,10 +580,10 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
      - the keeper's lantern and look down share a shot (AR8, the keeper's signature).
    - **For A:** the ease is gentle, about 0.4 s. It eases back only after the fight has been over about 1.5 s, so a lead stepping in and out never makes the camera swim. It never takes the player's own drag of the camera.
 2. **The skip back,** for Pip and Lyric, through `/ga-action`, as designed in `docs/design.md`, "Combat". In the block, the body plays Modulo's block clip, or a held pose if it isn't in yet. It closes on its balance check: ten runs with the skip and ten without, within 10%.
-3. **The three passives,** from `docs/roster.md`, each with a grey cue readable at phone size. These are seeds: tier 2, research's, tuned by playing, with Faber's view in his row.
-   - **Rook's Second Wind:** the first time he drops under 30% health in a fight, he gets a shield worth 20% of his maximum health for 6 s, once a fight. Its cue is a shell round him that cracks when it breaks.
-   - **Pip's Kindle:** every fourth basic hit, counted across combos, adds Fire damage worth 40% of that hit as its own coloured number. Its cue is the lantern flaring on the shot.
-   - **Lyric's Tempo:** after Held Note, the next hit of each ally, herself included, lands 40% harder. Its cue is a beat ring on the ally until that hit.
+3. **The three passives,** from `docs/roster.md`, short and simple (the director, 2026-11-13), each with a grey cue readable at phone size where it has one. The numbers are seeds: tier 2, research's, tuned by playing, with Faber's view in his row.
+   - **Rook's Second Wind:** below 30% health he takes 20% less damage. Its cue is a faint shell round him while it holds.
+   - **Pip's Kindle:** his combo's third shot adds Fire damage worth 40% of that shot, as its own coloured number. Its cue is the lantern flaring on the shot.
+   - **Lyric's Tempo:** Held Note's cooldown is 20% shorter. It needs no cue: the song comes round more often.
    - The three must leave the balance check within 10% of each other's time to clear Lantern Row's first pack at their level. If one isn't, its passive's number moves, not its combo's.
 4. **Timed:** each lead plays its whole kit in real fights, not the replay: combo, signature on its cooldown, passive. Haymaker's hitstop and camera numbers get set by playing (B5's "Not done").
 

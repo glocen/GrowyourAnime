@@ -13,15 +13,16 @@ The thirty-one Voidkin of launch, the enemies, and the six grounds of the Festiv
 - **Element** colours its second damage number. A dash means it deals none.
 - **Zone** is the first ground whose shards hold it. It stays in the next ground's shards too.
 - **Apt** is its aptitude in an extraction bay, 1 to 3. It has nothing to do with combat.
+- **Passive,** Common to Epic: one plain effect in a few words, with at most one plain condition (the director, 2026-11-13, `docs/decisions.md`). Those not yet written so are rewritten when their Voidkin is built.
 - **Roots** are genre-level only, for the team. They name no work and no character.
 
 ## The thirty-one
 
 | id | Name | Rarity | Type | Class | Element | Zone | Apt | Look | Signature | Passive | Roots |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rook | Rook | Common | Strength | Warrior | - | 1 | 2 | Street brawler: cropped jacket with a high collar, taped fists, one oversized gauntlet | Haymaker: a long wind-up, one straight punch, a shockwave along the ground | Second Wind: the first time he drops under 30% health, a small shield, once a fight | fighting manga |
+| rook | Rook | Common | Strength | Warrior | - | 1 | 2 | Street brawler: cropped jacket with a high collar, taped fists, one oversized gauntlet | Haymaker: a long wind-up, one straight punch, a shockwave along the ground | Second Wind: takes less damage below 30% health | fighting manga |
 | kirra | Kirra | Common | Agility | Assassin | - | 1 | 1 | Courier ninja: a scarf twice her length, a satchel, two short blades crossed on her back | Scarf Step: vanishes, crosses the target, cuts on the way out | First Strike: her first hit on a new target always crits | ninja action |
-| pip | Pip | Common | Intelligence | Mage | Fire | 1 | 2 | Apprentice: a hat too big, sleeves too long, a lantern that floats beside him | Lantern Burst: the lantern flies out and bursts over a small area | Kindle: every fourth basic hit adds Fire damage | fantasy school |
+| pip | Pip | Common | Intelligence | Mage | Fire | 1 | 2 | Apprentice: a hat too big, sleeves too long, a lantern that floats beside him | Lantern Burst: the lantern flies out and bursts over a small area | Kindle: his third shot adds Fire damage | fantasy school |
 | watt | Watt | Common | Endurance | Tank | Storm | 1 | 3 | Mechanic: a generator backpack with two coils, a welding visor, a wrench as wide as a shield | Ground Wire: plants the wrench, shields himself, and a pulse stops nearby enemies for a moment | Insulated: takes less elemental damage | workshop comedy |
 | patch | Patch | Common | Technique | Healer | - | 1 | 2 | Field medic: a cross-strap satchel, bandage ribbons from both wrists, round glasses | Quick Fix: heals the ally with the least health, herself when alone | Triage: her heals are stronger on a target under half health | medical drama |
 | tumble | Tumble | Common | Agility | Warrior | - | 2 | 1 | Acrobat: wide trousers, wrapped forearms, bells at the ankles | Cartwheel Kick: a spinning double kick that hits all around | Momentum: each hit in a row on one target adds damage, up to a cap | street dance |
@@ -33,7 +34,7 @@ The thirty-one Voidkin of launch, the enemies, and the six grounds of the Festiv
 | rill | Rill | Uncommon | Agility | Mage | Frost | 3 | 1 | River sprite: a reed hat, sleeves that pour like water, a ring of water turning above one hand | Cold Snap: the ring flies out, freezes and breaks | Slipstream: harder to hit while she keeps her distance | water-spirit folklore |
 | dirge | Dirge | Uncommon | Technique | Tank | Void | 3 | 2 | Bell knight: dented plate, a tattered tabard, a handbell the size of a mace | Toll: one stroke of the bell draws every enemy near | Mourner: takes less damage for each enemy on him, up to a cap | gothic knight |
 | juno | Juno | Uncommon | Intelligence | Warrior | Storm | 3 | 2 | School swordswoman: a blazer over wide pleated trousers, a wooden practice sword that crackles | Thunder Draw: a quick draw and a dash through the target | Study: crits more on a target she has hit five times | school battle |
-| lyric | Lyric | Rare | Technique | Healer | Storm | 2 | 2 | Stage singer: a two-tone bob cut at a slant, a headset, a mic-staff, two speaker drones | Held Note: a wave of sound that heals allies and hurts enemies in a cone | Tempo: after her signature, each ally's next hit lands harder | virtual singer |
+| lyric | Lyric | Rare | Technique | Healer | Storm | 2 | 2 | Stage singer: a two-tone bob cut at a slant, a headset, a mic-staff, two speaker drones | Held Note: a wave of sound that heals allies and hurts enemies in a cone | Tempo: Held Note comes back sooner | virtual singer |
 | mirage | Mirage | Rare | Agility | Assassin | Fire | 3 | 1 | Desert blade dancer: a veil, two curved daggers, a belt of coins | Heat Haze: leaves an afterimage that strikes a second time | Shimmer: after a dodge, her next hit crits | desert adventure |
 | bulwark | Bulwark | Rare | Endurance | Tank | Frost | 3 | 3 | Knight mech: a tower shield with frost vents, a helm with one slit of light, shoulders like ramparts | Rampart: raises an ice wall that shields allies behind it | Rime: a blocked hit gives him a small shield | mecha, knightly |
 | sliptail | Sliptail | Rare | Intelligence | Mage | Void | 3 | 2 | Fox fortune-teller: a fox mask worn on the side of the head, paper slips orbiting in a fan, long sleeves | Nine Slips: the slips leave the fan and home on targets | Trickster: after a dodge, reappears behind the attacker | fox-spirit folklore |

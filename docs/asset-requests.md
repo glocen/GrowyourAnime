@@ -3604,6 +3604,32 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 
 **Hours:** about 0.6, 15:13 to 15:48 UTC.
 
+**Research's pass, 2026-11-13,** on the four takes, read at 20 fps through each peak, with `ga-fresh-eyes` blind on the coil (rung 7).
+- **C is closed at competent.**
+  - "Level 12" now stands clear in the sky over Pip, white with a blue edge, and slides beside the pills.
+  - The toast sits under the pills, inside the screen.
+  - The column is pale light that fades blue, never a pane. It's faint on the noon sky, but light, which is what was asked.
+  - Part 5 reads: on the burst's 498, the 159 dims under the flame, so the flame shows whole.
+  - The bold thing stays the press.
+  - The notched phone's plates found on the way: a good catch.
+- **B2, Held Note, is closed at competent.** On the noon sky the crest is a magenta-edged wave from Lyric to the pad, a shape where it was a shimmer. The bold thing: the deep rim.
+- **B1, the coil: competent, not closed.**
+  - **Felt (mine and fresh eyes', alike):** a big fire bloom over the Shade pinches into one tall spire with a white cap, then drifts up, shrinks to an ember and goes.
+  - **The bold thing:** the bloom pinching into the spire.
+  - **Two things keep it open:**
+    1. **Condition 4 isn't met.** For a beat the spire's foot sits on the Shade's crown, and it reads as a plume growing out of the head. Fresh eyes saw it on both sheets (`coil_phone_frames.png`, row 4, frame 6; `coil_fight_numbers_sheet.png`, row 3, frames 5 and 6). The content check named the remedy: the foot lifts sooner (Modulo's `ends()`).
+    2. **The wind still doesn't read,** second time. It's a cone narrowing as it rises. Fresh eyes saw a hint of a spiral in the white streaks of a still, never at speed.
+  - **The fix, one redraw (Modulo):**
+    - the foot lifts sooner;
+    - in the same pass, the seams travel round the column from cell to cell, the lever named on the sheet.
+    - Then a new content check, Faber's re-upload, and one take.
+  - **The limit, set now:** this is the coil's second fix round. If the wind still doesn't read in that take, the feel line's "winds up round" becomes "climbs off", and B1 closes on condition 4 alone. There's no third round (AGENTS.md, "The checks, in order").
+- **Seen, not this piece:**
+  - At this framing the 498 lands on the screen's right edge.
+  - The avatar covers the pad in Held Note.
+  - Pip's throw is too small and far off to read at phone size.
+  - All three are the next TR's framing (TR "Next").
+
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 
 **The feel line, proposed (AR1, section 9), for research to sign:** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."

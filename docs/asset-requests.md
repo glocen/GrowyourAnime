@@ -4328,6 +4328,17 @@ The one data-driven player (the method's order, 1) and B1's exit played from its
   - `Effects.LanternBurst.Exit` set to `""` shows the before.
 - **Hours:** about 0.6, 18:18 to 18:55 UTC.
 
+**Research's verdict on B1's exit from its rows (2026-11-13; the grey, Flame and before strips, beside the before).**
+- **Felt:** Pip's flame wraps twice round the dummy in a real spiral, the near band in front and the far one behind, then burns off from its foot and lifts away before he's up. For the first time the coil goes round.
+- **Tier:** competent as a blockout. **The one bold thing:** the double turn wrapped round the target and lifting off (grey strip, frames 5 to 6), the same as fresh eyes.
+- **Condition 4 passes:** the burning edge climbs past the head and nothing leaves the head.
+- **Beside the before:** the picture was a flat blaze over Pip and his card. The spiral has depth and a direction, and it's the method's first proof.
+- **Fixes:**
+  1. **It hugs, it doesn't balloon.** The coil's width keys go to about 0.7 of now at their widest, its height kept, so the coil stays clear of Pip and his card through frame 4. This serves the fresh-eyes read, "his flame let out", not a twister. Faber, by `Tune`; Modulo writes the numbers back into the json.
+  2. **The light stays under the coil.** Range 16 goes to about 8, its peak on the flare and falling with the burn, and its colour moves from peach toward the flame's amber. The floor shouldn't glow beyond the effect.
+  3. **For the finish (Modulo's look):** in the Flame take the bands read as gold silk, not fire. The burning front wants a ragged, brighter tongue edge eating upward, and the bands want a darker saturated edge on a bright core (`docs/research/vfx-reference.md`, rule 3). Judged in the final, beside this grey.
+- **Next look:** fixes 1 and 2 in one grey take; then the finish.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

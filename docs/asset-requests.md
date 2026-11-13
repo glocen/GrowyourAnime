@@ -1518,6 +1518,8 @@ Section 4's small piece: the kit's frames take the director's colours, so the up
   - Upload the 14 under the group with `tools/upload/upload_asset.py`, then run `tools/ui/kit_config.py` with their ids. It keeps the other 75.
   - The dev build's two ladders become one.
 
+**Research's read, 2026-11-13,** from the three frame sheets and the four palettes. Yes, deliver. The three frames wear the director's colours, and the shapes still carry the ladder at 64 px (Uncommon plain, Rare one point, Epic points on all four sides), so a green frame never stands alone beside a green "Done". The tier 1 call is accepted: on Pearl, Epic's deeper light holds its edge where a pale one would wash out, as Legendary's and Mythical's already do.
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.

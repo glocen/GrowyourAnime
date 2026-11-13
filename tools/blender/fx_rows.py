@@ -324,7 +324,7 @@ def chip_rows(chips):
     in the keeper's frame: X its right, Y up, Z toward its back."""
     out = []
     for i, (angle, reach, lift, lag) in enumerate(chips):
-        start, offset, scale = sa.PEAK + 1 + lag, [], []
+        start, offset, scale = sa.CHIPS + lag, [], []
         for a in (0, 2, 4, 6, 9, 12, 15, 18):
             d = sa.CHIP_EDGE * sa.WIDE + 5.0 * reach * hx.out_fast(a / 10)
             up = 0.8 + 5.5 * lift * hx.out_fast(a / 14)
@@ -393,26 +393,31 @@ def keeper(chips):
              "BlockIn": "fx_beam, Color grey", "On": "the ground under the drum's middle on the Slam",
              "FaceCamera": True, "TextureMode": "Wrap", "TextureLength": round(sa.PERIOD * S, 3),
              "TextureSpeed": sa.CLIMB, "LightEmission": sa.EMISSION, "LightInfluence": 0, "Color": [1, 1, 1],
-             "Segments": 20, "FootFade": round(sa.FOOT * S, 2),
+             "Segments": 20, "FootFade": round(sa.FOOT * S, 2), "Taper": sa.TAPER,
              "Attachment0": "On, Foot up", "Attachment1": "On, Top up",
              "Tracks": {k: col[k] for k in ("Foot", "Top", "Width", "Transparency")},
-             "Why": "section 7's column: straight sides, the paper lantern's ribs climbing it (one rib a TextureLength; "
-                    "they must run up, toward Attachment1: flip TextureSpeed's sign if they run down). Its "
-                    "Transparency fades its first FootFade studs in, over the track's value. Two thirds of its "
-                    "height on the slam itself, its peak on 121, its foot letting go on 123, gone by 140"},
+             "Why": "section 7's column: lamplight widest at the foot (Width0 the track's Width, Width1 that times "
+                    "Taper), the paper lantern's ribs climbing it (one rib a TextureLength; they must run up, toward "
+                    "Attachment1: flip TextureSpeed's sign if they run down). Its Transparency fades its first "
+                    "FootFade studs in, over the track's value. It leaps: its height in its first five frames (13.5 "
+                    "studs by 123), then foot and top climb away together on an ease-in (30 studs by 139), its light "
+                    "held until the climb is under way (to 132) and gone by 140"},
             {"Name": "Tip", "From": "Slam", "Part": "Beam", "Texture": "lamplighter_column_tip",
              "BlockIn": "fx_beam, Color grey", "FaceCamera": True, "TextureMode": "Stretch", "TextureLength": 1,
              "TextureSpeed": 0, "LightEmission": sa.EMISSION, "LightInfluence": 0, "Color": [1, 1, 1], "Segments": 10,
              "Attachment0": "the Shaft's Attachment1", "Attachment1": "Spike studs over it",
+             "Width": "the Shaft's width at its top, Width0 and Width1: its Width times its Taper",
              "Tracks": {"Spike": col["Spike"]},
-             "Why": "the needle over the shaft, the shaft's Width and Transparency"},
+             "Why": "the needle over the shaft, footed on its top: the width there and the shaft's Transparency"},
             {"Name": "Halo", "From": "Slam", "Part": "Beam", "Texture": "lamplighter_column_halo",
              "BlockIn": "none", "FaceCamera": True, "TextureMode": "Stretch", "TextureLength": 1, "TextureSpeed": 0,
              "LightEmission": 1, "LightInfluence": 0, "Color": [1, 1, 1], "Segments": 10, "ZOffset": -0.5,
+             "Taper": sa.TAPER,
              "Attachment0": "the Shaft's Attachment0", "Attachment1": "the Tip's Attachment1",
              "Tracks": {"Width": col["HaloWidth"]},
-             "Why": f"the column's glow behind it, {sa.HALO} times its width, wider on the slam and the frame after "
-                    "(the flash); the shaft's Transparency"},
+             "Why": f"the column's glow behind it, {sa.HALO} times its width, so the shaft reads crisp with a soft "
+                    "edge; wider on the slam and the frame after (the flash), hugging the shaft as it tapers; the "
+                    "shaft's Transparency"},
             {"Name": "Chips", "From": "Slam", "Kind": "MeshParts, no texture, Material Neon, Color by name, unlit "
              "by the scene; each its own Offset and Scale (uniform: the chip's unit size times it), turned by Turn "
              "(degrees: about Y, then its own X, then its own Z)",
@@ -458,12 +463,15 @@ def keeper_layers(stage, f):
         spike = value(rows["Tip"]["Tracks"]["Spike"], t) / S
         a, b = Vector((p.x, p.y, foot)), Vector((p.x, p.y, top))
         c = b + Vector((0.0, 0.0, spike))
-        out.append({"kind": "beam", "layer": "halo", "a0": a, "a1": c, "width": value(rows["Halo"]["Tracks"]["Width"], t) / S,
-                    "pic": "halo", "wrap": False, "opaque": 1 - clear, "emission": 1.0})
-        out.append({"kind": "beam", "layer": "shaft", "a0": a, "a1": b, "width": width, "pic": "column", "wrap": True,
-                    "scroll": sa.CLIMB * t / 60, "fade": sa.FOOT, "opaque": 1 - clear, "emission": sa.EMISSION})
-        out.append({"kind": "beam", "layer": "tip", "a0": b, "a1": c, "width": width, "pic": "tip", "wrap": False,
-                    "opaque": 1 - clear, "emission": sa.EMISSION})
+        halo, taper = value(rows["Halo"]["Tracks"]["Width"], t) / S, rows["Shaft"]["Taper"]
+        out.append({"kind": "beam", "layer": "halo", "a0": a, "a1": c, "width": halo,
+                    "width1": halo * rows["Halo"]["Taper"], "pic": "halo", "wrap": False, "opaque": 1 - clear,
+                    "emission": 1.0})
+        out.append({"kind": "beam", "layer": "shaft", "a0": a, "a1": b, "width": width, "width1": width * taper,
+                    "pic": "column", "wrap": True, "scroll": sa.CLIMB * t / 60, "fade": sa.FOOT, "opaque": 1 - clear,
+                    "emission": sa.EMISSION})
+        out.append({"kind": "beam", "layer": "tip", "a0": b, "a1": c, "width": width * taper, "pic": "tip",
+                    "wrap": False, "opaque": 1 - clear, "emission": sa.EMISSION})  # footed on the shaft's top
     for name, colour in (("cyan", sa.CYAN), ("warm", sa.WARM)):
         boxes = []
         for chip in rows["Chips"]["Each"]:

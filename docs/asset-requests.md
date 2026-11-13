@@ -4294,6 +4294,15 @@ Section 7's look as kit parts and lights (the method's order, 3). The hold's glo
   - The take at phone size.
   - Research's verdict, with `ga-fresh-eyes` (a signature).
 - **Hours:** about 0.4, 18:06 to 18:30 UTC, the content check's two rounds included.
+- **Written back from the engine,** at Faber's request (AR8, "The leap and the final"; cc503a5).
+  - The column's numbers in `tools/blender/lamplighter_signature_art.py` now carry the leap, the taper and research's halo at 1.4. A regeneration of `lamplighter_signature_rows.json` keeps them.
+  - These match `Rows.KeeperSignature` key for key: the Shaft's Foot, Top, Width and Transparency, the Tip's Spike, and both Tapers.
+  - The Tip is footed on the shaft's top and takes the width there.
+  - The Halo's Width matches Faber's Tune to 1.4 within 0.001 stud.
+  - The three pictures regenerate byte for byte.
+  - The preview is redrawn with the taper. The share measures weren't rerun, because the engine's take is the judge.
+  - The content check passed.
+  - **Hours:** about 0.2, 20:04 to 20:15 UTC.
 
 ### The player, and B1's exit in grey (Faber, 2026-11-13)
 

@@ -294,6 +294,7 @@
    ],
    "Segments": 20,
    "FootFade": 2.1,
+   "Taper": 0.5,
    "Attachment0": "On, Foot up",
    "Attachment1": "On, Top up",
    "Tracks": {
@@ -330,194 +331,194 @@
      ],
      [
       6,
-      0.653,
+      0.067,
       "Linear"
      ],
      [
       7,
-      1.41,
+      0.309,
       "Linear"
      ],
      [
       8,
-      2.272,
+      0.755,
       "Linear"
      ],
      [
       9,
-      3.24,
+      1.421,
       "Linear"
      ],
      [
       10,
-      4.312,
+      2.322,
       "Linear"
      ],
      [
       11,
-      5.49,
+      3.467,
       "Linear"
      ],
      [
       12,
-      6.773,
+      4.867,
       "Linear"
      ],
      [
       13,
-      8.16,
+      6.529,
       "Linear"
      ],
      [
       14,
-      9.652,
+      8.46,
       "Linear"
      ],
      [
       15,
-      11.25,
+      10.667,
       "Linear"
      ],
      [
       16,
-      12.953,
+      13.156,
       "Linear"
      ],
      [
       17,
-      14.76,
+      15.931,
       "Linear"
      ],
      [
       18,
-      16.673,
+      18.999,
       "Linear"
      ],
      [
       19,
-      18.69,
+      22.363,
       "Linear"
      ],
      [
       20,
-      20.812,
+      26.029,
       "Linear"
      ],
      [
       21,
-      23.04,
+      30.0,
       null
      ]
     ],
     "Top": [
      [
       0,
-      7.5,
+      2.0,
       "Linear"
      ],
      [
       1,
-      10.2,
+      7.5,
       "Linear"
      ],
      [
       2,
-      11.1,
+      11.0,
       "Linear"
      ],
      [
       3,
-      11.4,
+      12.6,
       "Linear"
      ],
      [
       4,
-      11.475,
+      13.3,
       "Linear"
      ],
      [
       5,
-      11.55,
+      13.5,
       "Linear"
      ],
      [
       6,
-      11.67,
+      13.567,
       "Linear"
      ],
      [
       7,
-      11.88,
+      13.809,
       "Linear"
      ],
      [
       8,
-      12.18,
+      14.255,
       "Linear"
      ],
      [
       9,
-      12.57,
+      14.921,
       "Linear"
      ],
      [
       10,
-      13.05,
+      15.822,
       "Linear"
      ],
      [
       11,
-      13.62,
+      16.967,
       "Linear"
      ],
      [
       12,
-      14.28,
+      18.367,
       "Linear"
      ],
      [
       13,
-      15.03,
+      20.029,
       "Linear"
      ],
      [
       14,
-      15.87,
+      21.96,
       "Linear"
      ],
      [
       15,
-      16.8,
+      24.167,
       "Linear"
      ],
      [
       16,
-      17.82,
+      26.656,
       "Linear"
      ],
      [
       17,
-      18.93,
+      29.431,
       "Linear"
      ],
      [
       18,
-      20.13,
+      32.499,
       "Linear"
      ],
      [
       19,
-      21.42,
+      35.863,
       "Linear"
      ],
      [
       20,
-      22.8,
+      39.529,
       "Linear"
      ],
      [
       21,
-      24.27,
+      43.5,
       null
      ]
     ],
@@ -691,57 +692,57 @@
      ],
      [
       11,
-      0.02,
+      0.0,
       "Linear"
      ],
      [
       12,
-      0.074,
+      0.0,
       "Linear"
      ],
      [
       13,
-      0.156,
+      0.0,
       "Linear"
      ],
      [
       14,
-      0.259,
+      0.0,
       "Linear"
      ],
      [
       15,
-      0.376,
+      0.08,
       "Linear"
      ],
      [
       16,
-      0.5,
+      0.18,
       "Linear"
      ],
      [
       17,
-      0.624,
+      0.32,
       "Linear"
      ],
      [
       18,
-      0.741,
+      0.48,
       "Linear"
      ],
      [
       19,
-      0.844,
+      0.64,
       "Linear"
      ],
      [
       20,
-      0.926,
+      0.8,
       "Linear"
      ],
      [
       21,
-      0.98,
+      0.93,
       "Linear"
      ],
      [
@@ -751,7 +752,7 @@
      ]
     ]
    },
-   "Why": "section 7's column: straight sides, the paper lantern's ribs climbing it (one rib a TextureLength; they must run up, toward Attachment1: flip TextureSpeed's sign if they run down). Its Transparency fades its first FootFade studs in, over the track's value. Two thirds of its height on the slam itself, its peak on 121, its foot letting go on 123, gone by 140"
+   "Why": "section 7's column: lamplight widest at the foot (Width0 the track's Width, Width1 that times Taper), the paper lantern's ribs climbing it (one rib a TextureLength; they must run up, toward Attachment1: flip TextureSpeed's sign if they run down). Its Transparency fades its first FootFade studs in, over the track's value. It leaps: its height in its first five frames (13.5 studs by 123), then foot and top climb away together on an ease-in (30 studs by 139), its light held until the climb is under way (to 132) and gone by 140"
   },
   {
    "Name": "Tip",
@@ -773,6 +774,7 @@
    "Segments": 10,
    "Attachment0": "the Shaft's Attachment1",
    "Attachment1": "Spike studs over it",
+   "Width": "the Shaft's width at its top, Width0 and Width1: its Width times its Taper",
    "Tracks": {
     "Spike": [
      [
@@ -887,7 +889,7 @@
      ]
     ]
    },
-   "Why": "the needle over the shaft, the shaft's Width and Transparency"
+   "Why": "the needle over the shaft, footed on its top: the width there and the shaft's Transparency"
   },
   {
    "Name": "Halo",
@@ -908,123 +910,124 @@
    ],
    "Segments": 10,
    "ZOffset": -0.5,
+   "Taper": 0.5,
    "Attachment0": "the Shaft's Attachment0",
    "Attachment1": "the Tip's Attachment1",
    "Tracks": {
     "Width": [
      [
       0,
-      20.976,
+      15.456,
       "Linear"
      ],
      [
       1,
-      15.105,
+      11.13,
       "Linear"
      ],
      [
       2,
-      11.628,
+      8.568,
       "Linear"
      ],
      [
       3,
-      11.4,
+      8.4,
       "Linear"
      ],
      [
       4,
-      11.4,
+      8.4,
       "Linear"
      ],
      [
       5,
-      11.4,
+      8.4,
       "Linear"
      ],
      [
       6,
-      11.098,
+      8.178,
       "Linear"
      ],
      [
       7,
-      10.796,
+      7.955,
       "Linear"
      ],
      [
       8,
-      10.495,
+      7.733,
       "Linear"
      ],
      [
       9,
-      10.193,
+      7.511,
       "Linear"
      ],
      [
       10,
-      9.891,
+      7.288,
       "Linear"
      ],
      [
       11,
-      9.589,
+      7.066,
       "Linear"
      ],
      [
       12,
-      9.288,
+      6.844,
       "Linear"
      ],
      [
       13,
-      8.986,
+      6.621,
       "Linear"
      ],
      [
       14,
-      8.684,
+      6.399,
       "Linear"
      ],
      [
       15,
-      8.382,
+      6.176,
       "Linear"
      ],
      [
       16,
-      8.081,
+      5.954,
       "Linear"
      ],
      [
       17,
-      7.779,
+      5.732,
       "Linear"
      ],
      [
       18,
-      7.477,
+      5.509,
       "Linear"
      ],
      [
       19,
-      7.175,
+      5.287,
       "Linear"
      ],
      [
       20,
-      6.874,
+      5.065,
       "Linear"
      ],
      [
       21,
-      6.572,
+      4.842,
       null
      ]
     ]
    },
-   "Why": "the column's glow behind it, 1.9 times its width, wider on the slam and the frame after (the flash); the shaft's Transparency"
+   "Why": "the column's glow behind it, 1.4 times its width, so the shaft reads crisp with a soft edge; wider on the slam and the frame after (the flash), hugging the shaft as it tapers; the shaft's Transparency"
   },
   {
    "Name": "Chips",

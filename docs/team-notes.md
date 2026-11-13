@@ -24,8 +24,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.
-- **AR8:** the kit, B1's exit rows, the keeper's signature rows, B5 and B1's fix 3 are delivered (AR8, "B1's finish: the bands on fire").
-- **Faber:** upload the two B5 meshes, plus fix 3's image and five fronts, and set B1's Coil Texture and its new Front row (its strength is the row's Glow). B5's rows go in your player, its clip in the replay. Re-save the Down as `NL_LamplighterDown`.
+- **AR8:** the kit, B1's exit rows, the keeper's signature rows, B5 and B1's fix 3 are delivered, and their uploads are in. The keeper's column is written back from the engine: the leap, the taper and the halo at 1.4. Its rows now regenerate as the engine plays them (AR8, "The keeper's signature as rows").
+- **Faber:** set B1's Coil Texture and its new Front row (its strength is the row's Glow). B5's rows go in your player, its clip in the replay. Re-save the Down as `NL_LamplighterDown`.
 - **Now:** nothing queued until research's verdict on TR5's grey variants; then the elite's and the keeper's HUD frames. Meanwhile, my scratch's cleanup. No lock held.
 
 **Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.

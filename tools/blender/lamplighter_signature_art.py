@@ -1,19 +1,21 @@
-"""The Lamplighter's signature effect, drawn (AR7, section 6): A, the column, with research's fixes of 2026-11-13.
-1. No hold from 120 to 127: the foot lets go of the street two frames after the peak, as B1's H did.
-2. Narrower and taller, so the slam's pose and the lead's flash stay seen through 119 to 121, its share over the coil's.
-3. The keeper's own shape, not the teardrop: straight sides like lamplight, the paper lantern's ribs as bands of light
+"""The Lamplighter's signature effect, drawn (AR7, section 6): A, the column, with research's fixes of 2026-11-13, and
+its leap and taper from the final (AR8, "The leap and the final": Faber's, at research's verdict).
+1. It leaps: its height comes in its first five frames, then foot and top climb away together on an ease-in, its light
+   held until the climb is under way.
+2. Narrow and tall, so the slam's pose and the lead's flash stay seen through 119 to 121, its share over the coil's.
+3. The keeper's own shape, not the teardrop: lamplight widest at the foot, the paper lantern's ribs as bands of light
    climbing it, in Lantern Row's cyan and warm white.
 
 blender.exe -b --factory-startup --python tools/blender/lamplighter_signature_art.py -- <out_dir>
 
 The column is three Beams, as the engine draws them (handbook/visuals/vfx-engine-facts.md, "Beam"), standing where the
 lantern lands:
-- the shaft, Width0 = Width1 (straight sides), its picture wrapped (TextureMode Wrap): one period is one rib, so the
-  ribs repeat up it every TextureLength, and TextureSpeed makes them climb. Its foot is faded by its Transparency.
-- the tip on top of it, the same width, its picture stretched once: the spike, drawn in the picture, so its edges stay
-  clean whatever the Beam's width (a Beam narrowed to nothing skews its picture across its two triangles).
-- the halo behind both, from the foot to the point, wider, faint: the light's glow, and on the slam, wider still, the
-  slam's flash.
+- the shaft, Width1 = TAPER Width0 (widest at the foot), its picture wrapped (TextureMode Wrap): one period is one rib,
+  so the ribs repeat up it every TextureLength, and TextureSpeed makes them climb. Its foot is faded by its Transparency.
+- the tip on top of it, the shaft's width there, its picture stretched once: the spike, drawn in the picture, so its
+  edges stay clean whatever the Beam's width (a Beam narrowed to nothing skews its picture across its two triangles).
+- the halo behind both, from the foot to the point, wider, faint, tapered as the shaft: the light's glow, and on the
+  slam, wider still, the slam's flash.
 Pictures, straight alpha, the Beam's Color white:
 - lamplighter_column.png, one period: the lantern's warm white heart, its cyan paper, then the deeper cyan at the
   sides, where it ends in a short fade: a bright interior with a darker saturated edge (docs/research/vfx-reference.md,
@@ -62,14 +64,22 @@ HEART = "#FFF9EE"  # a rib's middle, brighter
 DARK = "#262B3A"   # condition 7's dark colour, the shape alone
 
 # --- the column, frame by frame (t: frames from the slam) ------------------------------------------------------------
-WIDE = 4.0       # the shaft's width at the peak (6 studs; the grey's belly was 7.6): the keeper's body stays clear of it
-TOP = 7.6        # the shaft's top at the peak; the spike over it, its point just inside the game frame's top
+WIDE = 4.0       # the shaft's width at its foot at its height (6 studs; the grey's belly was 7.6): the keeper's body clear
+TOP = 9.0        # the shaft's length once it has leapt (13.5 studs); the spike over it
 SPIKE = 0.95     # the spike's length over the column's width (never over WIDE's): long, so it reads as light, not a point
-HALO = 1.9       # the glow round it: a third Beam this many times its width, from its foot to its point
-BIRTH = {0: (5.0, 1.15), 1: (6.8, 1.06), 2: (7.4, 1.02)}  # the shaft's top and width (over WIDE) as it leaps up, already
-# two thirds of its height on the slam itself (lower and wider, from the ring it read as a hut), narrowing to the peak
+HALO = 1.4       # the glow round it: a third Beam this many times its width, from its foot to its point (1.9 until
+# research's final of 2026-11-13: the shaft crisp with a soft edge, not a haze)
+TAPER = 0.5      # the shaft's and the halo's width at their top, over their foot's (a Beam's Width1 over its Width0):
+# widest at the foot; the tip, footed on the shaft's top, takes the width there
+LEAP = tuple(v / S for v in (2.0, 7.5, 11.0, 12.6, 13.3, 13.5))  # the shaft's top as it leaps, from the slam to its
+# height on LETGO (studs, over S)
+WIDTHS = {0: 1.15, 1: 1.06, 2: 1.02}  # its width (over WIDE) as it leaps, narrowing to its height
 FLASH = {0: 1.6, 1: 1.25}  # the slam's flash: the halo this much wider on the slam and the frame after
-PEAK, LETGO, FADE, END = 3, 5, 10, 22  # the peak (121), the foot lets go (123), it goes out from 128 and is gone by 140
+CHIPS, LETGO, END = 4, 5, 22  # the chips fly (122), the column at its height and its foot letting go (123), gone by 140
+RISE, RISE_END, RISE_EASE = 20.0, 21, 2.2  # from LETGO, foot and top climb together on an ease-in, RISE (30 studs) by
+# RISE_END (139)
+CLEAR = {15: 0.08, 16: 0.18, 17: 0.32, 18: 0.48, 19: 0.64, 20: 0.8, 21: 0.93}  # its Transparency: its light held until
+# the climb is under way (to 132), then gone by END
 FOOT = 1.4       # the length over which the shaft's foot fades in (its Transparency), in the keeper's units
 PERIOD = 1.75    # a rib to the next: the shaft's TextureLength, in the keeper's units
 CLIMB = 7.0      # periods a second the ribs climb the shaft: its TextureSpeed
@@ -100,12 +110,11 @@ def column_at(t):
     keeper's units; how opaque it is, and how far its ribs have climbed, in periods. None outside its life."""
     if not 0 <= t < END:
         return None
-    top, wide = BIRTH.get(t, (TOP, 1.0))
-    after, tau = max(0, t - PEAK), max(0, t - LETGO)
-    foot = 0.4 * tau + 0.035 * tau * tau          # lets go and climbs away, faster and faster
-    top += 0.05 * after + 0.03 * tau * tau         # the top climbs slower: it shortens as it goes
-    width = WIDE * wide * (1 - 0.45 * hx.clamp(tau / (END - LETGO)))  # and thins
-    opaque = 1 - pf.smooth((t - FADE) / (END - FADE))
+    tau = max(0, t - LETGO)
+    foot = RISE * hx.clamp(tau / (RISE_END - LETGO)) ** RISE_EASE  # lets go and climbs away, faster and faster
+    top = LEAP[t] if t < len(LEAP) else TOP + foot  # it leaps to its height, then climbs whole, foot and top together
+    width = WIDE * WIDTHS.get(t, 1.0) * (1 - 0.45 * hx.clamp(tau / (END - LETGO)))  # and thins
+    opaque = 1 - CLEAR.get(t, 0.0)
     return {"foot": foot, "top": top, "width": width, "spike": SPIKE * min(width, WIDE), "opaque": opaque,
             "scroll": CLIMB * t / 60}
 
@@ -243,19 +252,22 @@ def art(stage, f):
     if c:
         p = stage.hit
         foot, top = Vector((p.x, p.y, c["foot"])), Vector((p.x, p.y, c["top"]))
+        halo = HALO * FLASH.get(f - SLAM, 1.0) * c["width"]
         out.append({"kind": "beam", "layer": "halo", "a0": foot, "a1": top + Vector((0, 0, c["spike"])),
-                    "width": HALO * FLASH.get(f - SLAM, 1.0) * c["width"], "pic": "halo", "wrap": False, "opaque": c["opaque"], "emission": 1.0})
-        out.append({"kind": "beam", "layer": "shaft", "a0": foot, "a1": top, "width": c["width"], "pic": "column",
-                    "wrap": True, "scroll": c["scroll"], "fade": FOOT, "opaque": c["opaque"], "emission": EMISSION})
+                    "width": halo, "width1": halo * TAPER, "pic": "halo", "wrap": False, "opaque": c["opaque"],
+                    "emission": 1.0})
+        out.append({"kind": "beam", "layer": "shaft", "a0": foot, "a1": top, "width": c["width"],
+                    "width1": c["width"] * TAPER, "pic": "column", "wrap": True, "scroll": c["scroll"], "fade": FOOT,
+                    "opaque": c["opaque"], "emission": EMISSION})
         out.append({"kind": "beam", "layer": "tip", "a0": top, "a1": top + Vector((0, 0, c["spike"])),
-                    "width": c["width"], "pic": "tip", "wrap": False, "opaque": c["opaque"], "emission": EMISSION})
+                    "width": c["width"] * TAPER, "pic": "tip", "wrap": False, "opaque": c["opaque"], "emission": EMISSION})
     t = f - SLAM
     for tint in (CYAN, WARM):
         boxes = []
         for i, (angle, reach, lift, lag) in enumerate(stage.chips):
             if (tint == CYAN) != (i % 2 == 0):
                 continue
-            a = t - PEAK - 1 - lag
+            a = t - CHIPS - lag
             if 0 <= a <= 18:
                 d, s = CHIP_EDGE * WIDE + 5.0 * reach * hx.out_fast(a / 10), CHIP_SIZE * (1 - a / 18) ** 0.8
                 centre = Vector((stage.hit.x + d * math.cos(angle), stage.hit.y + d * math.sin(angle),
@@ -321,8 +333,8 @@ class Stage(sig.Stage):
                 axis = (a1 - a0).normalized()
                 across = axis.cross(eye - (a0 + a1) / 2).normalized()
                 item.update(origin=a0, x=across, y=axis, length=(a1 - a0).length)
-                w = item["width"] / 2
-                corners = (a0 - across * w, a0 + across * w, a1 + across * w, a1 - across * w)
+                w0, w1 = item["width"] / 2, item.get("width1", item["width"]) / 2  # Width0 at a0, Width1 at a1
+                corners = (a0 - across * w0, a0 + across * w0, a1 + across * w1, a1 - across * w1)
             else:  # a BillboardGui, laid over the drum: toward the camera past the drum, however it's tilted
                 at = item["at"] + (eye - item["at"]).normalized() * GLOW_OUT
                 item.update(origin=at, x=right, y=up)
@@ -403,7 +415,8 @@ def lay(item, pics, eye, rays, pixels):
     if item["kind"] == "board":
         rgb, a = sample(pic, px / item["w"] + 0.5, 0.5 - py / item["h"], False)
         return rgb, a * item["opaque"]
-    u = px / item["width"] + 0.5
+    w0, w1 = item["width"], item.get("width1", item["width"])  # the width from a0 to a1, straight between
+    u = px / (w0 + (w1 - w0) * np.clip(py / item["length"], 0.0, 1.0)) + 0.5
     if item["wrap"]:  # every TextureLength, the texture slid up by its climb; the foot faded by its Transparency
         rgb, a = sample(pic, u, py / PERIOD - item["scroll"], True)
         a = a * smooth(0.0, item["fade"], py) * (py <= item["length"])
@@ -720,15 +733,16 @@ def main():
     (out / "lamplighter_signature_art.json").write_text(json.dumps(table, indent=1))
     print(json.dumps({"share": share, "covered": covered, "apex_over_top": over}))
     tmp.unlink(missing_ok=True)
-    peak = column_at(PEAK)
+    peak = column_at(LETGO)
     rs.OUT = out  # where rook_sheet.text_layer draws its text
     caption_sheet(pics, out / "signature_art_pictures.png", [
         f"The shaft: a Beam, Wrap, TextureLength {PERIOD * S:.2f} studs (one rib), TextureSpeed {CLIMB:g} (the ribs climb), "
-        f"Width0 = Width1, LightEmission {EMISSION}, LightInfluence 0; its foot faded over {FOOT * S:.1f} studs.",
-        f"The tip: a Beam, Stretch, TextureLength 1, TextureSpeed 0, the shaft's width, its length {SPIKE} of the width. "
-        f"The halo: a Beam, Stretch, from the foot to the point, {HALO} times as wide, LightEmission 1.",
-        f"At the peak (121): {peak['width'] * S:.1f} studs wide, the shaft to {peak['top'] * S:.1f} studs, the point at "
-        f"{(peak['top'] + peak['spike']) * S:.1f}. The foot lets go on 123; gone by 140.",
+        f"Width1 = {TAPER} Width0, LightEmission {EMISSION}, LightInfluence 0; its foot faded over {FOOT * S:.1f} studs.",
+        f"The tip: a Beam, Stretch, TextureLength 1, TextureSpeed 0, the shaft's width at its top, its length {SPIKE} of "
+        f"the shaft's foot. The halo: a Beam, Stretch, from the foot to the point, {HALO} times as wide, Width1 = "
+        f"{TAPER} Width0, LightEmission 1.",
+        f"At its height (123): {peak['width'] * S:.1f} studs wide at the foot, the shaft to {peak['top'] * S:.1f} studs, "
+        f"the point at {(peak['top'] + peak['spike']) * S:.1f}. Then it climbs, {RISE * S:.0f} studs by 139; gone by 140.",
         f"The glow: a BillboardGui over the lantern's drum, through the hold, LightInfluence 0.",
         f"Colours: Lantern Row's cyan {CYAN} and {CYAN_EDGE}, its warm {WARM} and {WARM_DEEP}; a core of {CORE}, a rib's "
         f"middle {HEART}.",

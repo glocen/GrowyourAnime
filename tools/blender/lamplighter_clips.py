@@ -665,28 +665,32 @@ def signature(t):
           H=(23, -2, 4))
     # up at you: over your fighter's head toward the camera behind it, so the face comes out from under the brim (your
     # fighter's own face is below the keeper's eyes: looking at it would bow the head as low as the plant did)
-    t.key(96, "and looks up at you", ease="out", T=(6, 18, 0, 0.02, 0, 0.02), crouch=0.17, LA=(-4, 0, -20),
+    # the wrench out of it heaves, slow out of the look and fast through its middle: the arm goes twice as far as it
+    # did, and a quart out of the look threw a third of it into one frame
+    t.key(96, "and looks up at you", ease="cubic", T=(6, 18, 0, 0.02, 0, 0.02), crouch=0.17, LA=(-4, 0, -20),
           look=(0.0, REACH, 5.0))
-    t.pole(96, ease="out", at=foot)
+    t.pole(96, ease="cubic", at=foot)
     t.lamp(30)  # the plant flings the lantern up; it comes over your fighter by the Light and steadies through the hold
     t.lamp(44, "sine", pin=0.25)
     t.lamp(60, pin=0.1)
     t.lamp(96, pin=0.1)
     t.lamp(100)
-    # The wrench, then a hang at its top (fix 2). The pole comes up beside the hat on its right, clear of the brim,
-    # and the lantern swings up beside it, inside the ring's frame (over the hat it would leave it). An R6 left arm
-    # can't reach a pole that far out, so the right wrenches and slams it and the left is flung out against it. The
-    # slam brings the lantern down on the floor at your fighter, the hand slid up the pole for it.
+    # The wrench, then a hang at its top (fix 2). One-handed: an R6 left arm can't reach a pole that far out, so the
+    # right wrenches and slams it and the left is flung out against it. Research's read of the timing: the arm goes
+    # straight up, a little out so the pole clears the brim, and the pole slides up through the grip, the lantern
+    # standing over the hat in the ring's frame. At the top the pole tips back a touch along the slam's own line, so it
+    # comes down in one plane out at the keeper's right, its foot swinging back clear of the body; the hand slides up it
+    # on the way down, and the lantern comes down on the floor at your fighter.
     # The chest stays near square, so the raised arm is out at its side, never along its facing (r6parity's salute);
     # the slam's crouch and lean stay inside what the coat's hem covers.
-    up, top, down = (0.0, toward, 3.9), (-6.0, toward, 3.9), (90.0, toward, 4.6)
-    wrench, high, slam = (2.75, 0.3, 4.2), (2.75, 0.25, 4.35), (1.9, 1.4, 2.0)  # the grip at the arm's full reach
+    up, top, down = (6.0, 90.0, 2.6), (-4.0, toward, 2.4), (90.0, toward, 4.6)
+    wrench, high, slam = (2.3, 0.15, 6.2), (2.35, 0.1, 6.5), (1.9, 1.4, 2.0)  # overhead, past the arm's reach: straight
     t.key(106, "it wrenches it up", ease="sine", T=(-10, -6, 4, 0, 0, -0.05), crouch=-0.02,
-          RA=("grip", wrench, (130, 0, 30)), LA=(40, 0, -60))
+          RA=("grip", wrench, (170, 0, 20)), LA=(40, 0, -60))
     t.pole(106, ease="sine", line=up)
     t.mark(106, "Wrench")
     t.key(110, "it hangs there", ease="in", T=(-12, -8, 5, 0, 0, -0.06), crouch=-0.03,
-          RA=("grip", high, (134, 0, 30)), LA=(46, 0, -64))
+          RA=("grip", high, (174, 0, 20)), LA=(46, 0, -64))
     t.pole(110, ease="in", line=top)
     t.key(118, "the slam", ease="out", T=(20, -6, -4, 0.05, 0, 0.2), crouch=0.18, RA=("grip", slam, (70, 0, 10)),
           LA=(-30, 0, -35), look=(0.0, REACH, 0.0))
@@ -724,9 +728,33 @@ def stage_camera(scene, azimuth, elevation, distance, focus, fov=40.0, name="Cam
     return r6.fixed_camera(scene, eye + Vector((0, distance * math.sin(e), 0)), at, fov, name)
 
 
+RING_SHARE = 0.32  # the keeper's share of the ring's frame, hat to floor (TR2's keeper_framing)
+HAT_TOP = 6.89     # the hat's top in the stance (the model's measure)
+
+
 def cameras(scene, rig):
+    # the ring's camera: the fight's way round, as far off as TR2 frames the keeper, at the game's 70 degrees
+    ring = HAT_TOP / (RING_SHARE * 2 * math.tan(math.radians(35.0)))
     return {"fight": stage_camera(scene, *FIGHT, 20.0, (1.0, 1.4, 3.6), name="fight"),
-            "side": stage_camera(scene, *SIDE, 21.0, (0.6, 1.4, 3.5), name="side")}
+            "side": stage_camera(scene, *SIDE, 21.0, (0.6, 1.4, 3.5), name="side"),
+            "ring": stage_camera(scene, *FIGHT, ring, (0.6, 1.4, 3.4), fov=70.0, name="ring")}
+
+
+def ring_sheet(scene, cams, take, out, span=None, beats=True):
+    """The key poses as the ring frames the keeper, at 960 by 540 and at the size where the keeper stands 64 px tall;
+    with `span` (first, last, step), those frames too at 64 px, the motion between two beats."""
+    shots = [(cams["ring"], take.start + f, f"{take.name} {f}: {label}") for f, label in take.beats]
+    font = scene.render.stamp_font_size
+    for size, tag in (((960, 540), "ring"), ((356, 200), "ring64")) if beats else ():
+        scene.render.resolution_x, scene.render.resolution_y = size
+        scene.render.stamp_font_size = 22 if tag == "ring" else 10
+        print(f"wrote {r6.render_shots(scene, shots, out / f'{tag}_{take.name}.png', columns=min(6, len(shots)))}")
+    if span:
+        scene.render.resolution_x, scene.render.resolution_y = 356, 200
+        scene.render.stamp_font_size = 10
+        frames = list(range(span[0], span[1] + 1, span[2]))
+        print(f"wrote {r6.render_shots(scene, [(cams['ring'], take.start + f, str(f)) for f in frames], out / f'ring64_{take.name}_{span[0]}_{span[1]}.png', columns=len(frames))}")
+    scene.render.stamp_font_size = font
 
 
 def pose_sheet(scene, cams, take, out):
@@ -871,7 +899,7 @@ def main():
     sys.stdout.reconfigure(line_buffering=True)
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
-    mode = args[0] if args and args[0] in ("poses", "family", "export", "audit") else "poses"
+    mode = args[0] if args and args[0] in ("poses", "ring", "family", "export", "audit") else "poses"
     scene, rig, costume, undress, feet, ctl, motors, rest, grip_local = build(out)
     print(f"the grip on the right arm: {tuple(round(c, 3) for c in grip_local)}; the lead {REACH:.2f} off; KeeperSwing "
           f"{SWING['Length']} s, Strike {SWING['Strike']}, Recover {SWING['Recover']}; the lantern's cord "
@@ -908,8 +936,12 @@ def main():
                        "Loop": take.loop, "Markers": [[round(t * FPS), label] for t, label in take.markers]}
         if speed is not None:  # Config.Animations.Strides: its ground speed at rate 1, in the game's studs a second
             facts[name]["Stride"] = round(speed, 2)
-        if mode == "poses":
-            pose_sheet(scene, cams, take, out)
+        if mode in ("poses", "ring"):
+            if mode == "poses":
+                pose_sheet(scene, cams, take, out)
+            if name == "Signature":  # the ring's frame alone is light: the wrench, its hang and the slam
+                span = next((tuple(int(v) for v in a[5:].split(",")) for a in args if a.startswith("span=")), (98, 122, 2))
+                ring_sheet(scene, cams, take, out, span=span, beats=mode == "poses")
             continue
         heard = io.StringIO()  # the export audits itself aloud: the pack's notes keep what it said
         with contextlib.redirect_stdout(heard):
@@ -927,7 +959,7 @@ def main():
                        notes=notes + heard.getvalue())
     if mode == "poses":
         blocking_sheet(scene, cams, list(takes.values()), out)
-    elif len(takes) == len(CLIPS):
+    elif mode != "ring" and len(takes) == len(CLIPS):
         (out / f"{NAME}.clips.json").write_text(json.dumps({"Fps": FPS, "Clips": facts}, indent=2) + "\n", encoding="utf-8")
         print(f"wrote {out / (NAME + '.clips.json')}")
 

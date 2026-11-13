@@ -1,0 +1,108 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Idle": {
+      "File": "Lamplighter_Idle.json",
+      "Frames": 241,
+      "Seconds": 4.0,
+      "Loop": true,
+      "Markers": [
+        [
+          188,
+          "Catch"
+        ]
+      ]
+    },
+    "Challenge": {
+      "File": "Lamplighter_Challenge.json",
+      "Frames": 93,
+      "Seconds": 1.533,
+      "Loop": false,
+      "Markers": [
+        [
+          44,
+          "Lift"
+        ],
+        [
+          58,
+          "Stamp"
+        ]
+      ]
+    },
+    "Ready": {
+      "File": "Lamplighter_Ready.json",
+      "Frames": 181,
+      "Seconds": 3.0,
+      "Loop": true,
+      "Markers": []
+    },
+    "Walk": {
+      "File": "Lamplighter_Walk.json",
+      "Frames": 65,
+      "Seconds": 1.067,
+      "Loop": true,
+      "Markers": [
+        [
+          0,
+          "Pole"
+        ],
+        [
+          32,
+          "Step"
+        ]
+      ],
+      "Stride": 4.94
+    },
+    "Swing": {
+      "File": "Lamplighter_Swing.json",
+      "Frames": 97,
+      "Seconds": 1.6,
+      "Loop": false,
+      "Markers": [
+        [
+          0,
+          "Wind"
+        ],
+        [
+          48,
+          "Strike"
+        ],
+        [
+          60,
+          "Recover"
+        ]
+      ]
+    },
+    "Hit": {
+      "File": "Lamplighter_Hit.json",
+      "Frames": 31,
+      "Seconds": 0.5,
+      "Loop": false,
+      "Markers": []
+    },
+    "Signature": {
+      "File": "Lamplighter_Signature.json",
+      "Frames": 183,
+      "Seconds": 3.033,
+      "Loop": false,
+      "Markers": [
+        [
+          24,
+          "Plant"
+        ],
+        [
+          44,
+          "Light"
+        ],
+        [
+          106,
+          "Wrench"
+        ],
+        [
+          118,
+          "Slam"
+        ]
+      ]
+    }
+  }
+}

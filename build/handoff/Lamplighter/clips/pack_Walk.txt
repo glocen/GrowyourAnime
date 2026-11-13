@@ -1,0 +1,24 @@
+Walk: 65 frames, 1.07 s; markers Pole 0, Step 32
+  the pole's lowest point over the floor -0.00 at 38; the grip from 2.30 to 2.52 up it (it holds from 1.0 to 6.0)
+  the pole's nearest to the body (past its radius): Torso 0.52 at 39; Head 0.70 at 11; Left Arm 3.29 at 10; Right Leg 0.95 at 38; Left Leg 2.11 at 37
+  the lantern's foot at its lowest 4.33 at 35; its widest off plumb 48 at 57; its nearest to the body (past its drum): Torso 1.68 at 3; Head 0.70 at 4; Left Arm 3.41 at 2; Right Leg 3.29 at 2; Left Leg 4.05 at 3
+  Pole (0): the grip at (2.57, 0.62, 2.50); the lantern over (2.93, -1.36), its foot 4.45 up
+  Step (32): the grip at (2.53, 0.07, 2.34); the lantern over (3.70, 0.50), its foot 4.47 up
+  the walk covers 5.27 studs a loop at the game's 1.5, 4.94 a second at rate 1: at the keeper's 12 the game plays it at 2.43, 4.6 steps a second
+  a leg's widest swing: right 25 at 64, left 25 at 64 (the coat holds 27); each arm at its highest: right -44 at 64, left -60 at 64
+[audit] Lamplighter_Walk.json (export, 65 poses)
+  Legs cross            0.000 studs at 0.6667 (the legs)
+  Arm through body      0.000 studs at 0.1333 (Right Arm into Torso)
+  Leg out of hip        0.000 studs at 0.55 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.4 (Left Leg)
+  Pop                   1.000x at 0.4 (Right Arm turns 2.2 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             1.667 deg at 0.6833 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.3 (the head off its neck)
+  Nod                   3.721 deg at 0.0 (the head against the torso)
+  Shoulder cap          0.227 studs at 0.3667 (Right Arm; inherent to R6, for information)
+  Eyes                 -16.0 to -13.8 deg (at 0.5333 and 0.8; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

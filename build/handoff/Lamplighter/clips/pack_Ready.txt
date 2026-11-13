@@ -1,0 +1,22 @@
+Ready: 181 frames, 3.00 s; markers none
+  the pole's lowest point over the floor -0.00 at 24; the grip from 2.39 to 2.50 up it (it holds from 1.0 to 6.0)
+  the pole's nearest to the body (past its radius): Torso 1.03 at 112; Head 0.60 at 0; Left Arm 3.25 at 0; Right Leg 1.36 at 180; Left Leg 2.54 at 180
+  the lantern's foot at its lowest 4.60 at 180; its widest off plumb 5 at 180; its nearest to the body (past its drum): Torso 2.17 at 20; Head 0.92 at 21; Left Arm 3.96 at 19; Right Leg 3.75 at 19; Left Leg 4.49 at 179
+  start (0): the grip at (2.63, 0.51, 2.40); the lantern over (3.80, -0.13), its foot 4.61 up
+  a leg's widest swing: right 12 at 180, left 4 at 90 (the coat holds 27); each arm at its highest: right -42 at 90, left -68 at 180
+[audit] Lamplighter_Ready.json (export, 181 poses)
+  Legs cross            0.000 studs
+  Arm through body      0.000 studs at 0.55 (Right Arm into Torso)
+  Leg out of hip        0.013 studs at 0.0167 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.5833 (Right Leg)
+  Pop                   0.000x
+  Seam                  0.000 deg
+  Limb flip             0.024 deg at 0.7667 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 1.1 (the head off its neck)
+  Nod                  18.154 deg at 1.5 (the head against the torso)
+  Shoulder cap          0.235 studs at 0.35 (Right Arm; inherent to R6, for information)
+  Eyes                 -21.5 to -21.0 deg (at 1.4833 and 3.0; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

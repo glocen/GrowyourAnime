@@ -1,0 +1,25 @@
+Challenge: 93 frames, 1.53 s; markers Lift 44, Stamp 58
+  the pole's lowest point over the floor -0.00 at 61; the grip from 2.29 to 2.47 up it (it holds from 1.0 to 6.0)
+  the pole's nearest to the body (past its radius): Torso 1.03 at 58; Head 0.59 at 88; Left Arm 3.25 at 92; Right Leg 1.36 at 58; Left Leg 2.54 at 58
+  the lantern's foot at its lowest 4.57 at 58; its widest off plumb 8 at 58; its nearest to the body (past its drum): Torso 2.14 at 77; Head 0.86 at 78; Left Arm 3.94 at 78; Right Leg 3.74 at 77; Left Leg 4.47 at 77
+  start (0): the grip at (2.71, 0.37, 2.29); the lantern over (3.87, -0.15), its foot 4.68 up
+  Lift (44): the grip at (2.70, 0.50, 2.50); the lantern over (3.85, 0.01), its foot 4.84 up
+  Stamp (58): the grip at (2.63, 0.49, 2.32); the lantern over (3.88, 0.17), its foot 4.57 up
+  a leg's widest swing: right 17 at 0, left 3 at 44 (the coat holds 27); each arm at its highest: right -33 at 52, left -64 at 0
+[audit] Lamplighter_Challenge.json (export, 93 poses)
+  Legs cross            0.000 studs
+  Arm through body      0.001 studs at 0.95 (Right Arm into Torso)
+  Leg out of hip        0.014 studs at 0.8667 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.9 (Left Leg)
+  Pop                   0.652x at 0.7667 (Right Arm turns 2.7 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             3.897 deg at 0.9667 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.75 (the head off its neck)
+  Nod                  22.000 deg at 0.0 (the head against the torso)
+  Beat                  1.533x at 0.75 (Right Arm turns 4.1 deg in one frame, on the marker Lift; the clip's own beat, for information)
+  Shoulder cap          0.250 studs at 0.0333 (Right Arm; inherent to R6, for information)
+  Eyes                 -30.8 to -1.4 deg (at 0.0 and 0.9667; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

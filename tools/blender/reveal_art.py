@@ -1,7 +1,7 @@
 """AR3, section 5: the reveal's look, the art sheet (docs/asset-requests.md; the block-in is section 4 and
 reveal_blockin.py, whose form, beats and layout B research accepted). Finished here, with research's six fixes:
 
-1. The name lands as a hit: larger, slammed to size in three frames with an overshoot, a glint along its rule, the
+1. The name lands as a hit: larger, slammed to size in four frames with an overshoot, a glint along its rule, the
    screen kicked, and Rook's recoil under it (his Reveal clip's `Name` marker, rook_clips.py).
 2. The name's size follows the rarity, Common's to 1.3 times at Mythical.
 3. The split's flash follows the rarity: a pop held to the shard for a Common; only Legendary and Mythical white out.
@@ -230,7 +230,7 @@ NAME_SCALE = dict(zip(RARITIES, (1.0, 1.06, 1.12, 1.18, 1.24, 1.30)))  # fix 2
 NAME_SIZE, NAME_LEFT, NAME_BASE = 58.0, 70.0, 214.0
 WING = max(r.get("wing", 0) for r in rb.RARITIES.values()) * GROW
 NAME_MAX = CX - BIG[0] / 2 - WING - 14.0 - NAME_LEFT   # the widest a name may land: 14 points short of the widest wing
-SLAM = 1.7                     # the name arrives this much larger, and is down in three frames
+SLAM = 1.7                     # the name arrives this much larger, and is down in four frames at 60
 SHAKE = dict(zip(RARITIES, (2.5, 3.0, 3.5, 4.5, 5.5, 6.5)))         # points the screen kicks down as the name lands
 # fix 3: the split's flash. A radius in points held to the shard, or None: the whole screen goes white.
 FLASH = dict(zip(RARITIES, ((70.0, 0.55, 0.10), (95.0, 0.6, 0.11), (135.0, 0.7, 0.12), (190.0, 0.8, 0.14),
@@ -290,12 +290,15 @@ def frame_layer(cx, rarity):
 
 
 def slam(u):
-    """The name's size against its own at `u` seconds from landing: 1.7 times in, down in three frames, under its size
-    on the frame it lands, then a small rebound and still."""
-    if u < -0.05:
+    """The name's size against its own at `u` seconds from landing: the engine's stamp (Rules.Reveal.Slam, with
+    Config.Reveal.Stamp; TR4, research's fix 2). 1.7 times in, falling onto its place over four frames at 60, faster
+    each frame, under its size on the frame it lands, then a small rebound and still. The art's first slam eased into
+    its landing over three frames, and on the phone that read as a cut."""
+    lead = 4 / 60
+    if u < -lead - 1e-9:
         return None
     if u < 0:
-        return 0.93 + (SLAM - 0.93) * (-u / 0.05) ** 1.6
+        return 0.93 + (SLAM - 0.93) * (1.0 - (1.0 + u / lead) ** 2)
     return 1.0 - 0.07 * math.exp(-u / 0.03) * math.cos(u / 0.05 * math.pi)
 
 
@@ -1351,7 +1354,7 @@ def parts(out: Path):
             snap="0 before 0; 1.35 a / 0.03 to 0.03 s; then 1 + 0.35 exp(-(a - 0.03) / 0.05)",
             bump="0 before 0; exp(-a / 0.06) (1 - exp(-a / 0.015)) / 0.5364",
             run="1 - (1 - clamp(u, 0, 1)) ** 1.4",
-            slam="none before -0.05; to 0: 0.93 + 0.77 (-u / 0.05) ** 1.6; then 1 - 0.07 exp(-u / 0.03) cos(u / 0.05 pi)",
+            slam="the engine's (Rules.Reveal.Slam, Config.Reveal.Stamp): none before -4/60; to 0: 0.93 + 0.77 (1 - (1 + u / (4/60)) ** 2); then 1 - 0.07 exp(-u / 0.03) cos(u / 0.05 pi)",
             kick="0 before 0; shake exp(-u / 0.05) cos(u / 0.09 2 pi), points down"),
         light=dict(
             shard=rb.SHARD_LIGHT,

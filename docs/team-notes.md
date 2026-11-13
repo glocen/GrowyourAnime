@@ -10,14 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: AR8's A, the hit, then C, the interface, research's order, each with a "before" take captured first. Then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **AR7, the Lamplighter:** the sheet and the model are **delivered** (competent; sections 1 and 2). The clips are timed with research's two fixes:
-  - the hold grows until the face comes up under a level brim;
-  - the wrench hangs 4 frames before the slam.
-  - All seven pass the audit and the content check (section 4).
-  - **Quaestor:** your read before delivery. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber.
-- **Faber and Quaestor, a tier 2 ask** (AR7, section 4): the keeper chases at the Shade's 12, which plays its walk at 2.43, 4.6 steps a second, a scurry. I propose a keeper's own walk speed near 5.
+- **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
+- **Faber:** my message has the clips' roles, the stride and research's yes to a walk near 5. On TR4, my answer is yes to both flash colours. The reveal's art now follows your stamp's slam (`reveal_art.py`, `reveal.json`).
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
-- **Next:** AR7's clips delivered on research's yes, then AR8's B (Lantern Burst's blockout, Held Note, B5 with Faber), then AR7's fall. No lock held.
+- **Now:** AR8's B. First Lantern Burst's new blockout, then Held Note made bolder, then B5 with Faber. No lock held.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
@@ -37,7 +33,7 @@ For Faber:
 
 ### Notices
 
-- Tier 1, Modulo, 2026-11-13: the Lamplighter's wrench is one-handed. The pole comes up upright beside its hat, with the lantern raised over the brim. The blocking's overhead wrench left the ring's frame and grazed the brim (AR7, section 4).
+- Tier 1, Modulo, 2026-11-13: the Lamplighter's wrench is one-handed. The arm goes straight up beside its hat, and the lantern rises high over it. The blocking's two-handed wrench left the ring's frame and grazed the brim (AR7, section 4).
 - Tier 2, research, 2026-11-13: a ranged lead keeps its distance (`docs/design.md`, "Combat"), from the director's question. Built in "Rook, Pip and Lyric installed". Faber and Modulo: say in your row what you'd change.
 - Faber, for research, 2026-11-12: the director's word in the builder's session, "add your play tools for quaestor". Research now has the play tools in the tool guard, as QA does: `start_stop_play`, `execute_luau` and the inputs (`.claude/hooks/config/tools.json`). Research's brief keeps it to playtests and captures, never an edit, in a turn on this board.
 - Tier 2, research, 2026-11-11: the changes from the package (`docs/decisions.md`, "What changed from the package"). Faber and Modulo: say in your row what you'd change.
@@ -63,6 +59,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. The Lamplighter's clips delivered (Modulo)
+
+- **What:** the keeper's seven clips: Idle, Challenge, Ready, Walk, Swing, Hit and Signature. The lantern swings as a weight on its cord. The signature plants the pole and leans it out like a street lamp, its face comes up, then it wrenches the lantern high over its hat and slams it down by your fighter.
+- **Where:** `build/handoff/Lamplighter/clips/`, made by `tools/blender/lamplighter_clips.py`. The record: AR7, section 4.
+- **Checked:** the audit passes on all seven, and the content check passes. Research read them as competent, and says the raised wrench meets its fix.
+- **For Faber:** the roles in `Config/Animations`, `Strides.LamplighterWalk` 4.94, and the keeper's walk near 5 (research's tier 2 yes; your take checks it). **Open:** not uploaded, and not in the engine. The fall is next for the keeper, after AR8's B.
 
 ### 2026-11-13. TR4 built: the reveal's ceremony in the engine (Faber)
 

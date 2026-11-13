@@ -1,0 +1,25 @@
+Swing: 97 frames, 1.60 s; markers Wind 0, Strike 48, Recover 60
+  the pole's lowest point over the floor -0.00 at 84; the grip from 2.40 to 2.55 up it (it holds from 1.0 to 6.0)
+  the pole's nearest to the body (past its radius): Torso 0.03 at 34; Head 0.44 at 5; Left Arm 2.74 at 60; Right Leg 0.57 at 32; Left Leg 1.64 at 32
+  the lantern's foot at its lowest 0.69 at 60; its widest off plumb 100 at 40; its nearest to the body (past its drum): Torso 2.08 at 85; Head 0.75 at 14; Left Arm 3.77 at 85; Right Leg 3.60 at 81; Left Leg 4.34 at 81
+  Wind (0): the grip at (2.63, 0.51, 2.40); the lantern over (3.80, -0.00), its foot 4.68 up
+  Strike (48): the grip at (1.29, 2.14, 2.90); the lantern over (7.30, 0.12), its foot 3.33 up
+  Recover (60): the grip at (0.91, 2.35, 2.68); the lantern over (5.73, 1.58), its foot 0.69 up
+  a leg's widest swing: right 13 at 48, left 27 at 26 (the coat holds 27); each arm at its highest: right -14 at 40, left -46 at 48
+[audit] Lamplighter_Swing.json (export, 97 poses)
+  Legs cross            0.018 studs at 0.4333 (the legs)
+  Arm through body      0.010 studs at 1.4167 (Right Arm into Torso)
+  Leg out of hip        0.013 studs at 0.0 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.8 (Right Leg)
+  Pop                   1.124x at 0.4333 (Left Leg turns 3.5 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip            12.283 deg at 0.8 (Left Leg turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 1.3333 (the head off its neck)
+  Nod                  26.749 deg at 0.4333 (the head against the torso)
+  Beat                  1.315x at 0.8 (Right Leg turns 2.0 deg in one frame, on the marker Strike; the clip's own beat, for information)
+  Shoulder cap          0.287 studs at 1.15 (Left Arm; inherent to R6, for information)
+  Eyes                 -21.3 to -17.8 deg (at 0.1167 and 0.4333; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

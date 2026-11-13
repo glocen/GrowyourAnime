@@ -2794,7 +2794,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: blocked (section 3), then timed with research's two fixes, past the content check, and waiting on research's read before delivery (section 4).
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: blocked (section 3), timed with research's two fixes, the wrench raised on research's read, past the content check and research's look, and **delivered** to `build/handoff/Lamplighter/clips/` (section 4). Delivery 4, the fall, comes after AR8 part B.
 
 ### 1. The sheet (Modulo, 2026-11-13)
 
@@ -2994,6 +2994,7 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
 - **Content check, 2026-11-13: PASS.** It covered all seven packs, the arcs, the bare sheets, `clips.json` and the performance lines, against rules 2, 3 and 4 and Roblox's, with the names checked against `docs/ip-list.md`. Its note on the head graze was cleared and the signature re-checked: PASS. It carries:
   - The model's condition, no red pieces in the signature, is met: the clips have no effect pieces.
   - The slam's effects (the cyan circle, the impact) get their own check in `/ga-action`: no red; no drop, spray or stain shapes in any colour; the hit shown as light, dust or sparks.
+  - A re-export that moves the lantern needs the same short re-check. Each clip gets its line in `docs/asset-log.md` at delivery.
 
 **Research's read of the timed clips, 2026-11-13,** from the packs, the arcs and `poses_Signature.png`.
 - **Felt:** the hold builds now. It leans out bowed, sinks onto the pole, and at 96 the face comes up under a level brim with the lantern beside it, not over it. That's the moment you know it's coming. The slam folds the whole body: the hat tips, the pole lies level, the lantern is down by your fighter. The Swing's lantern flung wide and swinging back shows its weight.
@@ -3007,10 +3008,21 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
 - **Fix, the wrench's height:** at 106 to 110 the lantern stands barely above where it hangs at Ready. So the anticipation's peak is no bigger than the rest pose, and the warning before the heaviest blow in the first session doesn't read. Raise it: the arm straight up, the pole slid up through the grip, until the lantern's top stands clearly over the hat, at least a fifth of the keeper's height above its Ready place, as it reads at 64 px. Judge the frame by the game's ring camera, where the keeper is 0.32 of the frame's height (TR2, `keeper_framing`), not by a tighter render. If even that leaves the frame, the lever is yours: say what you tried. This serves the tell (`docs/research/vfx-reference.md`, rule 1: rung 8).
 - **Tier 2, the keeper's walk: research's yes** to a walk speed of its own near 5, with the clip at rate 1. Faber checks the time to first contact against a ranged lead (Pip, Lyric) and against Rook in a take. If the slower approach gives a ranged lead more than about 1.5 s of extra free hits, he raises it as far as 7, with the clip's rate following (up to 1.4 still reads as a walk).
 - **Deliver** all seven once the wrench is raised, after research's look at the new 106 to 118. No other round.
+- **The wrench raised (Modulo, 2026-11-13),** in `build/scratch/modulo/lamplighter/clips/`:
+  - The arm goes straight up, to 80°, the most R6 reaches: the grip is 5.25 up. The pole slides up through the grip, from 3.9 to 2.6 up it, tipped 6° out to the right so it clears the brim.
+  - At 110 it tips back 4° along the slam's own line, so the fall stays in one plane at the keeper's right. The first try swept the pole's foot through the torso (−0.09 at 114) and the right leg.
+  - At 106 the lantern's foot is 8.73 up, against Ready's 4.68 and the hat's top at 6.89. That's 59% of the keeper's height above its Ready place, about 38 px at 64 px. The whole drum stands over the hat from 102 to 112, swinging on its cord.
+  - **The heave** (tier 1): 96 to 106 was a quart ease-out, and over the longer rise it threw a third of the move into frame 97, a one-frame jump at 64 px. It's now a cubic in-out over the same 10 frames: the look holds to about 99, and the heave fills 100 to 102. The slam's timing is unchanged: it lands at 118 and rests to 153.
+  - **A ring camera** joins the script: the fight's way round, at the game's 70° with the keeper 0.32 of the frame's height (`ring_Signature.png`, `ring64_Signature.png`). `-- ring Signature span=a,b,step` renders a strip of frames alone at 64 px, in about 0.4 GB.
+  - **Checks:** the audit passes on the Signature (Pop 1.04; salute 0.05 s, in passing; an arm in the body 0.043). The pole clears the torso by 0.24 and the right leg by 0.57. The content check's short re-check of 96 to 118: **PASS**, with nothing new to carry.
+  - **Time:** about 15 minutes by the clock, from research's read (13:37 UTC) to the strips (13:52). The clips took about 1 hour 30 of the 4 named.
 - **Research's look at the raised wrench, 2026-11-13** (`ring_Signature_wrench.png`, `ring64x2_Signature_94_122.png`): **met.** From 102 to 112 the lantern stands high over the hat, the tallest shape the keeper makes, unmistakable at 64 px. Then it comes down in one plane onto your fighter. The heave from 100 to 102 fixes the one-frame jump. Yes, deliver all seven.
-
-  - A re-export that moves the lantern needs the same short re-check. Each clip gets its line in `docs/asset-log.md` at delivery.
-- **Four facts:** timed and exported; self-reviewed from the fight's camera and the side, with the audit; content check PASS; research's read next. Not delivered.
+- **Four facts:**
+  - Made: timed and exported.
+  - Self-reviewed: from the fight's camera, the side and the ring's, with the audit. Content check PASS, and PASS again on the raised wrench.
+  - Delivered 2026-11-13 to `build/handoff/Lamplighter/clips/`, byte for byte what was checked: the seven `Lamplighter_<Clip>.json`, `Lamplighter.clips.json`, and a pack each (`pack_<Clip>.png` and `.txt`). Its row is in `docs/asset-log.md`. Not uploaded, and not in the engine.
+  - Accepted: research's read was competent, and its look at the raised wrench met.
+  - The roles and the walk went to Faber with the delivery.
 
 ## AR8. The effects pass
 

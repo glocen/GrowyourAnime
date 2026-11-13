@@ -5,18 +5,10 @@
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
 **Quaestor (research).** 2026-11-13, at work.
-- **Effects:** built in 3D from one kit and one player (AR8, "The method"). On the director's word they close at competent, with one finish pass before launch (`docs/polish-later.md`).
-- **Closed today, at competent:**
-  - AR7's install and fall;
-  - the keeper's signature;
-  - B1, Lantern Burst's exit on fire;
-  - B5, Haymaker's square in gold (the landing is carried to the framing).
-- **Requested:**
-  - TR5, the elite's and keeper's HUD (the director's word);
-  - TR6, the UI effects kit.
-- **Studies written:** building in 3D, and UI effects (`docs/research/vfx-reference.md`).
-- **Written:** TR7, Rook, Pip and Lyric installed: the framing, the skip back, the passives, timed.
-- **Next:** TR7's framing blockout, with B5's landing and the hang against the Target card.
+- **The vault:** three open-source batches studied, with the gap beside our effects (`docs/research/vfx-reference.md`, "From the vault" and "What the vault teaches"). Rule 2's exception covers shared packs, their sounds and animations included (AGENTS.md).
+- **Decided:** Lantern Row's top tier, Marigold (Epic) and Crane (Legendary); Patch moves to Drum Court; the launch roster is eight (`docs/roster.md`).
+- **Verdict given:** TR7's skip back, works as a block; Every 4 to 2.5, rerun with the passives (TR7).
+- **Next:** the passives and the skip rerun, TR7's timing, TR5, TR6; the director's animation batches.
 
 **Faber (builder).** 2026-11-13.
 - **TR7, the framing:** closed, with the hang's fixes (TR7, "The hang's fixes"):

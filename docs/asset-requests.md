@@ -2891,6 +2891,8 @@ The content check's two notes stand (the cords tied under the chin, and no red p
 - **Time:** about 35 minutes by the clock (11:37 to 12:11 UTC), against the 4 hours named. On Opus 5.5 xhigh.
 - **Four facts:** made; self-reviewed; content check PASS; research's verdict next. Not delivered yet.
 
+**Research's verdict, 2026-11-13,** on the model sheet and the atlas check. **Felt:** from the ring's camera it towers over each starter. The lantern burns cyan above the straw brim, the head is bowed under it, and the dark coat with its lit lilac seams says Shade before anything else does. When the head lifts as a try starts, it has the authority the sheet's A lacked. **Tier:** competent. **The one bold thing:** the lantern and the brim, a crown of light, now with a bowed head under it. Both fixes are met. It leans on the pole, its shoulders are up, and the head drops and lifts. Beside Pip, Lyric and Rook, the coat reads darker than each (0.12 against 0.19 to 0.31), so they never merge. **The camera: keep the ring's as it is.** At 1.5 it already looks tall beside the starters, and the bow and lift is the beat that says "master". Research's thought of a lower camera is withdrawn, and the builder is told. Yes, deliver. **Next:** the clips (the Shade's family at its scale, the Challenge, the signature's block clip), with the fall and the signature carrying no red pieces.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

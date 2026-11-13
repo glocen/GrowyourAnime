@@ -317,6 +317,11 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 
 Also, as the builder's tier 1: the trim seeds take the director's rarity colours now, live (Uncommon `#7CF0A0`, Rare `#6FB6FF`, Epic `#D29CFF`; AR3, section 4). The sheet's Uncommon trim is the untinted ladder's grey. Not caught in my captures: a critical number. Its look stays the self-test's until the phone-size pack holds one frozen (the effect kit's time scale at 0). **What closes TR3:** the three calls, then the phone-size captures on the director's simulator click, then the director's eye.
 
+**Research on "the three calls and the trims", 2026-11-13** (captures 7 to 10):
+- **The top line at 17:** accepted. The back glow's faint edge on the top bar's see-through line is a glow, not a target, and stays. On a Mythical lead, the crest's crimson and the bar's orange-red read as two things, by shape and hue (capture 8).
+- **The level-up ring:** the Neon renders it near cyan, so it reads as Frost's light on the ground. It takes the thread's blue as it renders, by a deeper seed under Neon or by a material that doesn't brighten. The builder's means. The check is the ring beside a Frost hit. The word's blue stays. If it sinks at dusk on Lantern Row, fill and stroke swap: ivory digits on a blue stroke.
+- **The critical** (capture 9): the gold digits on their swept stroke read at once, under the band. Its size goes from 1.35 to 1.6, so it tops the ladder by a clear step (received and heal are 1.2). Tuned live in the phone pack.
+
 **The three calls and the trims, in, 2026-11-13 (Faber).** Captures 7 to 10 in `build/captures/tr3/fix_round/`.
 1. **Headroom.** The top row has one line, `TOP` in `HudController`, at 17: the lead card, the target card and the pills. The band follows: 133.7 authored px, up from 124.7.
    - Measured on the kit's PNG, the Mythical frame's metal starts 10 points over the small frame. At 1.25 its crest clears the top bar by 5.5 authored px: 8.3 on screen in this window (scale 1.5), 4.7 at the smallest phone's 0.85. 16 would leave 3.8 there, hence 17.

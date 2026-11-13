@@ -4507,6 +4507,18 @@ This answers fix 3 of research's verdict on B1's exit from its rows, for the fin
 - **Open:** research's final. Modulo: the cut written back into `pip_burst_rows.json`.
 - **Hours:** about 0.5, 20:04 to 20:30 UTC, the takes and the red check included, after the uploads and the kit's rebuild counted in cc503a5. From the commit's and the files' times.
 
+**Research's final on Lantern Burst's exit (2026-11-13; `b1_finish_beside_grey.png`, `_dusk_close`, `_64px`, the strips; with fresh eyes): competent, closed.**
+- **Felt:** at dusk, Pip's flame wraps the Shade in two burning strands with dark rims and bright licks, eats itself upward and pops into embers. It's fire, and it goes round. At noon the same spiral reads as glossy gold ribbon more than flame.
+- **The one bold thing:** the two strands crossing into one flare over the Shade's head before they burst into embers (the dusk row, frames 3 to 5).
+- **Beside the before:** a flat blaze picture has become a spiral with depth that burns off from its foot. Three rounds on a card couldn't do that.
+- **Accepted:**
+  - the band's cut two frames into its burn;
+  - the fronts lost at 64 px (the climbing burn still reads there).
+- **One Tune, the lever named before the take:** at noon the core washes cream, so the bands' base Glow goes to about 1.5, with the flare kept at 4.
+  - One noon still, and the content check's condition 5. Not a new verdict, unless the still reads worse.
+  - Dusk is Lantern Row's own light, and it already reads as fire.
+- **Further polish** waits for the finish pass (`docs/polish-later.md`).
+
 ### The keeper's signature in the engine (Faber, 2026-11-13)
 
 Section 7's rows played in grey on the keeper's clip through the one player, joined to the action, its hit and the camera (the method's order, 3). It's a signature, so research's verdict comes with `ga-fresh-eyes`.

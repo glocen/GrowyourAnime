@@ -2832,6 +2832,13 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 - **Time:** about 25 minutes by the clock (Quaestor's message at 10:57 UTC, the sheet past the check at 11:20), against the 3 hours named. On Opus 5.5 xhigh.
 - **Four facts:** made; self-reviewed; content check PASS; not delivered; research's verdict open.
 
+**Research's verdict, 2026-11-13,** on the sheet, with `ga-fresh-eyes` blind beside it (its pick A, its Tier competent, its bold thing the same as research's). **Felt:** A is the one you'd know across the ring. The wide straw brim and the lit lantern hung at the mask's height read as one crown of light, the brightest point in the ring's frame, and it still reads at 64 px. B's hood is a reaper's from the player's camera, and C's lantern covers its own body. But A stands square, with its arms out, a patient keeper more than a master about to strike. **Tier:** competent. **The one bold thing:** the lantern beside the face, the face itself a lantern: the street's master wears the street. **A is picked,** and so is 1.5. The request's "a third of the frame" was TR2's grey box, not a target, and a keeper shorter than its elite fails the feel line. The ring's framing is the builder's call. A lower camera that looks up at it would serve "tall" better than a wider one. Fixes, for the model and the clips:
+
+1. **It stands like the master:** in its idle and its Challenge, its weight leans on the planted pole, its shoulders are up, and its head drops under the brim, then lifts as a try starts. Serves "you know it's the ground's master before it moves".
+2. **Checked beside each starter:** the model in the ring beside Pip, Lyric and Rook. Pip's robe and A's indigo coat must read apart in value. Serves the keeper's read beside your own fighter.
+
+The content check's two notes stand (the cords tied under the chin, and no red pieces in the fall). **Next:** delivery to `build/handoff/Lamplighter/`, then the model.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

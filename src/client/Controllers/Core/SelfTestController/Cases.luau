@@ -2050,6 +2050,28 @@ return {
 		end,
 	},
 	{
+		Name = "HUD: experience has one colour: the level-up's word is the thread's blue, its ring seeded from it for Neon",
+		Run = function(t: any)
+			-- Research on TR3's three calls (2026-11-13): the word takes the card's thread's blue, and the ring renders as it,
+			-- not as Frost's cyan, so it's seeded from the thread at Ring.Neon's share. On a stand-in body.
+			local root = Instance.new("Part")
+			root.Name = "HumanoidRootPart"
+			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
+			root.CFrame = CFrame.new(0, 600, 0)
+			root.Parent = workspace
+			local xp, neon = HudConfig.Card.Xp, EffectsConfig.LevelUp.Ring.Neon
+			local ring, word = Effects.LevelUp(root, 7)
+			t.Check("the word is the thread's blue", word.TextColor3:ToHex() == xp:ToHex(), word.TextColor3:ToHex())
+			local c = ring.Color -- a part keeps its colour in 8 bits, so a step either way
+			local near = math.max(math.abs(c.R - xp.R * neon), math.abs(c.G - xp.G * neon), math.abs(c.B - xp.B * neon)) <= 1.5 / 255
+			t.Check("the ring is the thread's blue at Ring.Neon's share", near, c:ToHex())
+			t.Check("in Neon", ring.Material == Enum.Material.Neon)
+			t.Wait(math.max(EffectsConfig.LevelUp.Seconds, EffectsConfig.LevelUp.Ring.Seconds) + 0.1)
+			t.Check("both gone after the effect", ring.Parent == nil and not word:IsDescendantOf(game))
+			root:Destroy()
+		end,
+	},
+	{
 		Name = "HUD: a number born at the top band stays under it its whole life",
 		Run = function(t: any)
 			-- TR3's verdict, fix 4: under the cards' and the pills' lower edge plus a margin, its rise and swell included; one
@@ -3572,6 +3594,26 @@ return {
 			Screen.Close()
 			BaseController.Dismiss()
 			t.Check("no screen is open", Screen.Current() == nil)
+		end,
+	},
+	{
+		Name = "Capture: the level-up's ring beside a Frost hit",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- Research on TR3's three calls (2026-11-13): the ring told from Frost's cyan, judged beside a Frost hit's
+			-- number. On the player's own lead, at once, held for a capture. For a still, slow the ring first:
+			-- NL_Debug:Invoke("Tune", "Effects.LevelUp.Ring.Seconds", 6), and put it back (0.6) after.
+			local lead = myLead()
+			local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			t.Check("the player's lead stands", root ~= nil)
+			if lead == nil or root == nil then
+				return
+			end
+			local level = tonumber(lead:GetAttribute("Level")) or 1
+			Effects.LevelUp(root, level + 1)
+			Effects.Number(root, "Capture@Frost", 1234, { Style = "Element", Colour = UIKit.Elements.Frost }, Combat.Numbers)
+			t.Wait(3)
 		end,
 	},
 }

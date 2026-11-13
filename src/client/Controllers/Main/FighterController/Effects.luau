@@ -1594,11 +1594,13 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 end
 
 -- A level gained (Config.Effects.LevelUp): the reward's two beats at once, a ring of light spreading from the feet, eased
--- out so it bursts and settles, and the new level rising over the lead, held long enough to read.
-function Effects.LevelUp(root: BasePart, level: number)
+-- out so it bursts and settles, and the new level rising over the lead, held long enough to read. Returns the ring and
+-- the word, for the self-test.
+function Effects.LevelUp(root: BasePart, level: number): (Part, TextLabel)
 	local look = EffectsConfig.LevelUp
 	local xp = HudConfig.Card.Xp -- experience's one colour, the card's thread's (research's pass on TR3's fix round)
-	local ring = part(xp, Enum.Material.Neon)
+	local neon = look.Ring.Neon -- seeded deeper, so under Neon it renders as the thread's blue, not Frost's cyan
+	local ring = part(Color3.new(xp.R * neon, xp.G * neon, xp.B * neon), Enum.Material.Neon)
 	ring.Shape = Enum.PartType.Cylinder
 	local feet = root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0)
 	local size = look.Size
@@ -1628,6 +1630,7 @@ function Effects.LevelUp(root: BasePart, level: number)
 		ring:Destroy()
 		World.Remove(plate)
 	end)
+	return ring, label
 end
 
 -- A shard won (Config.Effects.ShardLeap): it leaves the fallen Shade in an arc, eased in and out so it lifts off and

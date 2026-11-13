@@ -336,7 +336,18 @@ Also, as the builder's tier 1: the trim seeds take the director's rarity colours
    - Put the numbers back after: 0.05, 0.6 and 0.
 6. **Checks:** type check 0 new; logic 1731 offline and in Studio; the HUD self-test 77/77 at 59 fps; world report sound.
 
-**Status:** started 2026-11-12 (Faber). The three calls and the trims are in, 2026-11-13. Next: the phone-size pack with the frozen crit, on the director's simulator click, then the director's eye.
+**The ring and the critical, in, 2026-11-13 (Faber).** Research's two follow-ups above.
+- **The ring** keeps Neon, seeded at `Config.Effects.LevelUp.Ring.Neon` = 0.58 of the thread's blue.
+  - Neon isn't linear. On swatches at noon, the rendered hue was: 1 gives 181 to 193°, Frost 180° with a white glow, 0.65 202°, 0.6 211°, 0.58 214° (the thread's), 0.5 221° and darker, 0.35 near navy. Captures 12 and 13.
+  - At 0.58 it's a saturated royal blue with no bloom: a flat flash rather than a glow.
+  - An unlit SurfaceGui disc drew 204° through the haze, so it was no better.
+  - Beside a Frost hit's number (capture 11, the Manual case "Capture: the level-up's ring beside a Frost hit"), the ring and the word read as one blue and the number as Frost's pale cyan.
+  - Check it again at Lantern Row's dusk and night.
+  - A case pins the word to the thread and the ring to its share of it.
+- **The critical's size** is 1.6 in `Config.Hud.Numbers.Critical`, so the number cases see 38.4 px.
+- **Checks:** HUD self-test 81/81 and the number cases 30/30 at 59 fps; logic 1731; type check 0 new.
+
+**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. Next: the phone-size pack with the frozen crit, on the director's simulator click, then the director's eye.
 
 ## Next, not yet written
 

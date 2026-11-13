@@ -45,7 +45,7 @@ return {
 		-- A critical (the director's word to stay close to the reference; research's table, AR3 section 3, round 2): gold,
 		-- heavy, slanted, larger, widely spaced, on the swept stroke. Research tunes these live at TR3's blockout.
 		Critical = {
-			Size = 1.35,
+			Size = 1.6, -- tops the ladder by a clear step: received and heal are 1.2 (research on TR3's three calls, 2026-11-13)
 			Gap = 0.4, -- about 0.4 of a digit between digits
 			Top = Color3.fromHex("#FFF4D6"), -- cream at the head
 			Foot = Color3.fromHex("#F2B43C"), -- to gold at the foot

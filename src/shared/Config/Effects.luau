@@ -165,8 +165,12 @@ return {
 
 	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey
 	-- block, the builder's: a ring of light spreads from its feet and fades, and "Level N" rises over it, slower and larger
-	-- than a hit's number. Seconds; studs; Size in pixels at the phone's size.
-	LevelUp = { Ring = { Seconds = 0.6, From = 2, To = 10, Thick = 0.3 }, Rise = 3, Seconds = 1.6, Size = 34 },
+	-- than a hit's number. Seconds; studs; Size in pixels at the phone's size. Both take experience's one colour, the card's
+	-- thread (Config.Hud.Card.Xp). Ring.Neon: the share of it the ring is seeded with, so it renders as the thread's blue and
+	-- not as Frost's cyan (research on TR3's three calls, 2026-11-13). Neon isn't linear; measured at noon on swatches, the
+	-- rendered hue: 1 gives 181 to 193 degrees (Frost renders 180), 0.65 202, 0.6 211, 0.58 214 (the thread's), 0.5 221
+	-- and darker, 0.35 near navy. No bloom below about 0.65. Check again at Lantern Row's dusk and night.
+	LevelUp = { Ring = { Seconds = 0.6, From = 2, To = 10, Thick = 0.3, Neon = 0.58 }, Rise = 3, Seconds = 1.6, Size = 34 },
 	-- A shard won, leaping from where its Shade fell to the avatar (research's verdict on TR2, 2026-11-12: the hook that
 	-- sends you home, seen). A grey block, the builder's: it hops up, arcs over Seconds as high as Height, spinning, and lands
 	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.

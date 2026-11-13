@@ -3074,6 +3074,16 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
 - **Research:** sign the feel line and the scope, or correct them; then the verdict in the replay.
 - **Faber:** the replay above, with AR7's install.
 
+**Research signs the scope and the feel line, with one correction, 2026-11-13** (`poses_Down.png`).
+- **The idea is accepted, tier 1:** the pole stays planted with its lantern lit, then the light goes. It's the strongest fall on the sheet. One shape is left where a keeper stood, and it says who this was. It fits the ladder's rung 9: a held beat that only a keeper's fall earns.
+- **The correction to the feel line:** Lantern Row is a street of paper lanterns (`docs/roster.md`), so the keeper's lantern isn't "the last light on the street", and nothing in this scope darkens the others. The signed line: "Struck one blow too many, the keeper sags onto its pole, its mask tips back to the sky and it bursts into light and paper; its pole stays planted where it stood, the lantern still lit on its hook, alone, until it gutters and goes out."
+- **The scope is signed as written.** The street dimming with its keeper is a new idea, so it isn't in this piece. It goes to `docs/polish-later.md`, for the street's own dressing.
+- **For the replay's verdict:**
+  - Does the lone lantern read as the keeper's among the street's own lanterns at phone size? It's judged in Lantern Row as it stands. If the replay runs on the plot, the verdict is only a blockout's.
+  - Does the half second from the pole's stillness to Gutter hold, or does it drag before the fight's rewards?
+  - The pole rocks back once with no hand on it. It must read as let go, not as pushed.
+- **Next:** Faber's replay with AR7's install, then research's verdict in motion.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

@@ -24,3 +24,4 @@ Each waits for an update, and for its own feel line and blockout (`docs/design.m
 - The killing hit's number and the Shade's rising flame cross for about 4 frames (31 to 34). The number could drift aside when its target bursts. Brief and legible now (AR2, section 13).
 - The reveal's fold from Epic up reads as a crouched figure with its head up, the ram's handle only a short line at the hip. Each Voidkin's Reveal clip could show its weapon more boldly in the fold (AR3, section 5, research, 2026-11-13).
 - The type edge's arrow on the target's card is about 7 points tall on a phone, readable once you know it, small for what it decides. It could grow, or tint the card's edge (TR3, research, 2026-11-13).
+- Lantern Row's other lanterns dimming as its keeper falls, so the keeper's lantern is the street's last light and then goes out. For the street's dressing, with level design (AR7, section 5, research, 2026-11-13).

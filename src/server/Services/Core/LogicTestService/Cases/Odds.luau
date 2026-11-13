@@ -1,7 +1,7 @@
 --!strict
--- Odds cases (pure): every table sums to one, a Named shard is certain, ground 1's Standard shard matches the seeds by hand,
--- luck lifts only the top tier and stops at its cap, featured Voidkin weigh more, and a large sample of rolls lands on the
--- odds shown. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- Odds cases (pure): every table sums to one, a Named shard is certain, ground 1's Standard, Enriched and Prismatic shards
+-- match the seeds by hand, luck lifts the top two tiers and stops at its cap, featured Voidkin weigh more, and a large
+-- sample of rolls lands on the odds shown. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Odds = require(Shared.Rules.Odds)
@@ -62,30 +62,66 @@ return {
 	{
 		Name = "Odds: ground 1's Standard shard, worked by hand",
 		Run = function(t: any)
-			-- Ground 1 holds five Commons, one Uncommon (Sable) and one Rare (Lyric, moved to Lantern Row's shards on
-			-- 2026-11-13, docs/roster.md); the Standard pool weighs them 60, 30 and 9, and its Epic has no one here.
+			-- Ground 1 holds eight (docs/roster.md, Lantern Row's shards at launch, research's call of 2026-11-13): four
+			-- Commons (Rook, Kirra, Pip, Watt; Patch moved to Drum Court), Sable (Uncommon), Lyric (Rare), Marigold (Epic) and
+			-- Crane (Legendary). The Standard pool weighs them 60, 30, 9 and 1, and gives no Legendary.
 			local entries = Odds.Table(STANDARD, 0)
 			t.Equal("seven Voidkin", #entries, 7)
-			t.Check("Sable 30 in 99", near(chanceOf(entries, "sable"), 30 / 99))
-			t.Check("Lyric 9 in 99", near(chanceOf(entries, "lyric"), 9 / 99))
-			t.Check("Rook a fifth of the Commons", near(chanceOf(entries, "rook"), 60 / 99 / 5))
-			t.Equal("nothing from ground 2", chanceOf(entries, "tumble"), 0)
+			t.Check("Rook a quarter of the Commons", near(chanceOf(entries, "rook"), 60 / 100 / 4))
+			t.Check("Sable 30 in 100", near(chanceOf(entries, "sable"), 30 / 100))
+			t.Check("Lyric 9 in 100", near(chanceOf(entries, "lyric"), 9 / 100))
+			t.Check("Marigold 1 in 100", near(chanceOf(entries, "marigold"), 1 / 100))
+			t.Equal("no Crane from a Standard", chanceOf(entries, "crane"), 0)
+			t.Equal("nothing from ground 2", chanceOf(entries, "patch"), 0)
 		end,
 	},
 	{
 		Name = "Odds: luck lifts the top tiers, up to its cap",
 		Run = function(t: any)
-			-- three tiers live (Common, Uncommon, Rare), so the top two are lifted
+			-- four tiers live (Common to Epic), so the top two, Rare and Epic, are lifted
 			local lifted = Odds.Table(STANDARD, 0.4)
-			local total = 60 + (30 + 9) * 1.4
-			t.Check("Sable lifted", near(chanceOf(lifted, "sable"), 30 * 1.4 / total))
+			local total = 60 + 30 + (9 + 1) * 1.4
 			t.Check("Lyric lifted", near(chanceOf(lifted, "lyric"), 9 * 1.4 / total))
-			t.Check("the Commons not", near(chanceOf(lifted, "rook"), 60 / total / 5))
+			t.Check("Marigold lifted", near(chanceOf(lifted, "marigold"), 1 * 1.4 / total))
+			t.Check("Sable not", near(chanceOf(lifted, "sable"), 30 / total))
+			t.Check("the Commons not", near(chanceOf(lifted, "rook"), 60 / total / 4))
 			local capped = Odds.Table(STANDARD, 5)
 			local atCap = Odds.Table(STANDARD, ShardConfig.LuckCap)
-			t.Check("past the cap is the cap", near(chanceOf(capped, "sable"), chanceOf(atCap, "sable")))
+			t.Check("past the cap is the cap", near(chanceOf(capped, "marigold"), chanceOf(atCap, "marigold")))
 			local negative = Odds.Table(STANDARD, -1)
-			t.Check("no negative luck", near(chanceOf(negative, "sable"), 30 / 99))
+			t.Check("no negative luck", near(chanceOf(negative, "marigold"), 1 / 100))
+		end,
+	},
+	{
+		Name = "Odds: Lantern Row's Enriched and Prismatic shards reach Epic and Legendary, worked by hand",
+		Run = function(t: any)
+			-- Rows for this case only: the grades exist in Config.Shards.Pools, their Lantern Row shards not yet.
+			local rows: { [string]: any } = {
+				case_lanternrow_enriched = { Id = "case_lanternrow_enriched", Grade = "Enriched", Ground = "lanternrow", Holds = "" },
+				case_lanternrow_prismatic = { Id = "case_lanternrow_prismatic", Grade = "Prismatic", Ground = "lanternrow", Holds = "" },
+			}
+			for id, row in rows do
+				Shards.ById[id] = row
+			end
+			local ok, err = pcall(function()
+				-- Enriched: no Commons; Uncommon 45, Rare 35, Epic 16, Legendary 4
+				local enriched = Odds.Table("case_lanternrow_enriched", 0)
+				t.Equal("Enriched: four Voidkin", #enriched, 4)
+				t.Check("Enriched: Sable 45 in 100", near(chanceOf(enriched, "sable"), 45 / 100))
+				t.Check("Enriched: Lyric 35 in 100", near(chanceOf(enriched, "lyric"), 35 / 100))
+				t.Check("Enriched: Marigold 16 in 100", near(chanceOf(enriched, "marigold"), 16 / 100))
+				t.Check("Enriched: Crane 4 in 100", near(chanceOf(enriched, "crane"), 4 / 100))
+				-- Prismatic: Rare 40, Epic 38, Legendary 18; its Mythical 4 has no one on ground 1, so it drops out
+				local prismatic = Odds.Table("case_lanternrow_prismatic", 0)
+				t.Equal("Prismatic: three Voidkin", #prismatic, 3)
+				t.Check("Prismatic: Lyric 40 in 96", near(chanceOf(prismatic, "lyric"), 40 / 96))
+				t.Check("Prismatic: Marigold 38 in 96", near(chanceOf(prismatic, "marigold"), 38 / 96))
+				t.Check("Prismatic: Crane 18 in 96", near(chanceOf(prismatic, "crane"), 18 / 96))
+			end)
+			for id in rows do
+				Shards.ById[id] = nil
+			end
+			t.Check("ran", ok, tostring(err))
 		end,
 	},
 	{

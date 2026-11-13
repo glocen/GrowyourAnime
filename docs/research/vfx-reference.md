@@ -220,6 +220,35 @@ Research, 2026-11-13, on the director's word of that day: "we also need to do re
    - reduced motion turns moves into fades.
 6. **On a phone:** a pop on a plain frame by UIScale, never on a CanvasGroup; gradients move by Offset and Rotation only.
 
+## From the vault: open-source effects, read apart
+
+The director shares open-source effects to study (2026-11-13). Each one is kept in `build/reference/vfx-vault/<name>/`, which is gitignored and stays local. It's read headless with Lune, so its scripts never run. Its full digest sits beside it in `build/scratch/quaestor/vault/`. Using one in the game waits on the director's yes to rule 2's exception (`docs/decisions.md`).
+
+### slash_blue (read 2026-11-13; the VFX Forge Emit Module, zilibobi, VFX-DL 1.0)
+
+OBSERVED in the file:
+- **Shape:** 100 particle emitters, 27 beams and 3 trails, on five invisible root parts, with no meshes. Each effect is authored as attributes, and a runtime module plays them.
+- **Three beats:**
+  - **0 s:** the swing, the flying slice and the hit go off together. The slice is a part tweened 50 studs in 1 s, Cubic Out, carrying stacked beams and a 0.5 s particle wake.
+  - **0.5 s:** an inhale 60 studs out: two stars shrink from 20 to 0 over 0.4 s, ease-in.
+  - **0.8 s:** the blast, with rings, smokes, sparks, ten bezier-flown trails per path set, a camera shake and a sound.
+- **Two screen punches,** on Lighting: FOV 70 to 60, Blur 7 and Contrast 0.1 in 0.1 s, released over 0.5 s. Then the blast: Blur 10 to 12, Contrast 0.5, Brightness 0.2 and a pink tint, released over 1.2 s, Circular Out.
+- **The ids:** about 70 texture ids and 3 sounds, none uploaded by the file's author as far as the file shows. Who owns each needs a lookup before any use.
+
+The tips, OBSERVED with their numbers, each with what it means for us (DESIGN):
+1. **An inhale before the payoff:** 0.3 s of contraction, a star shrinking 20 to 0, ease-in, before the blast lands. For us: a signature's Charge beat gets one shrinking shape. The keeper's Gather and Haymaker's hang already do this; Lantern Burst's Heat could.
+2. **A 3-frame flash:** the brightest layers live 0.05 s, the shapes under them 0.2 to 0.4 s, and the residue 0.5 to 2 s. For us: a flash is never longer than 3 frames at 60 fps. Check A's hit and the strike flashes against it.
+3. **Dark under bright:** each bright crescent (LightEmission 1, Brightness 5 to 30, ZOffset 5 to 10) has a twin with no emission (LightEmission 0, black to deep violet) and dark smoke at ZOffset -2. For us: our rim-darker-than-core rule, done as a separate layer, which keeps the shape on a pale sky. It's the cheapest fix for the noon wash-out B1 met.
+4. **Ease-out growth:** a ring does half its growth in the first 10% of its life (0, then 14 at 0.1, then 30 at 1). A flash does the reverse, 20 to 5 in 0.15 s. For us: rings in the rows use Quart or Expo Out, never linear.
+5. **Sparks that brake:** a launch speed of 15 to 225 with Drag 5 to 7, size 0 to a peak at 15 to 20% of life then 0, and VelocityParallel Squash 2 to 0. They stretch on the launch and shorten as they slow. For us: the hit sparks' spec in the kit.
+6. **Squash as a second size curve:** a ray goes -1 to 0.5, from thin and tall to wide. One texture gives two silhouettes. For us: fewer textures in the kit.
+7. **Hue-shift, keep the value:** a ramp from cyan to violet. Only the 0.05 s glow carries the accent. For us: each Voidkin's ramp stays in its own family. The chromatic rainbow is theirs, and too loud for our restraint.
+8. **A blade of beams on a moving part:** three stacked beams (Brightness 30, Stretch, TextureSpeed 2) between attachments on a tweened part, faded as a unit by a late transparency scale. For us: a projectile's body, such as Pip's lantern streak.
+9. **Screen punch fast, release slow:** 0.1 s in, 0.5 to 1.2 s out. For us: only rung 7 and up, and gentle. The level-up and a keeper's fall are the other candidates.
+10. **Shake by distance:** amplitude 0.2 for a swing and 1 for a blast, falling off linearly to zero at 150 to 300 studs. For us: only a player's own lead's signature shakes that player's camera.
+
+**Too much for our bar:** its size, with blasts 60 studs across and 30 to 50 particles each, and its rainbow ramps. On a phone in a pack fight, that's noise. Our ladder (`DESIGN`, below) sets how big each moment gets.
+
 ## Ours beside them (OBSERVED in our config and captures, 2026-11-13)
 
 | What | Ours now | The professionals | Read |

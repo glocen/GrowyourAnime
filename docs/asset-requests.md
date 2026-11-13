@@ -3157,6 +3157,49 @@ Research's ask: a grey block-in on the delivered Signature clip's markers (Plant
   4. **The gathering in the hold** is a small change at 64 px. The art and the motion blockout judge whether the lantern's light reads as building.
 - **Next:** the art sheet with fixes 1 to 3, under the content check's seven conditions. Then Faber's motion blockout through `/ga-action`, and `ga-fresh-eyes` again at the final.
 
+### 7. The signature's art (Modulo, 2026-11-13)
+
+Research's fixes 1 to 3, drawn under the content check's seven conditions. The script is `tools/blender/lamplighter_signature_art.py`. The sheets and pictures are in `build/scratch/modulo/lamplighter/signature_art/`, not delivered: the content check blocks on the clip (below).
+
+**The column:** three Beams where the lantern lands.
+- **The shaft:** Wrap, one rib a period (TextureLength 2.63 studs), TextureSpeed 7 so the ribs climb, Width0 = Width1, LightEmission 0.7.
+- **The tip:** Stretch, the shaft's width, a needle drawn in the picture.
+- **The halo:** behind both, 1.9 times as wide, wider on the slam's two frames (the flash).
+- **The pictures:** `lamplighter_column.png`, `lamplighter_column_tip.png`, `lamplighter_column_halo.png` and `lamplighter_glow.png` (a BillboardGui on the drum through the hold). The numbers per frame, in studs, are in `lamplighter_signature_art.json`.
+
+**The fixes, measured from the game's camera:**
+1. **The hold:** the foot lets go on 123, two frames after the peak, and is 3.2 studs up by 127. The top climbs slower, so the column shortens and thins as it goes. It goes out from 128 and is gone by 140.
+2. **Narrower and taller:** 6 studs wide at the peak (the grey's belly was 7.6).
+   - Covered at 118 to 121: the lead about 10% (the grey, all of it), the keeper 4 to 6% (the grey, 13 to 17%).
+   - Share: 6.5% at 118 and 5.0% at 121, over the coil's 4.4%.
+   - The point stays inside the frame to 126, then climbs out of the top.
+3. **The keeper's shape:** straight sides, the paper lantern's ribs as warm bands of light climbing it, cyan and warm white, a needle top. In the dark colour it's a banded spire, not a teardrop.
+- **The hold's light** is kept to the drum, with its ribs seen through it. It's wider only for the wrench's flare, 106 to 110.
+
+**The content check: BLOCK, on the clip, not the art.**
+- **The art passes:** conditions 1 to 5 and 7, and rules 2 to 4.
+- **Condition 6 passes from the game's camera and the flank:** at 64 px the glow stays at least 8 px and 6 px clear of the head and hat (`hat_gap_px_at_64` in the json).
+- **Condition 6 fails from the ring's heading,** your fighter's side.
+  - The Signature clip holds the lantern between your fighter and the keeper's face from 44 to 100, and the fall passes it again on 116.
+  - The drum itself covers the head, by 102 to 314 px at 64 px, so no glow size fixes it.
+  - It reads as light gathering at the face, then a spike leaving it: the trap in `handbook/platform/rules-and-moderation.md`, "Traps".
+- **The check's fix:** the clip's hold and fall held off that line from 44 to 116, keeping the wrench's height at 106 to 110. It passes when the ring's gaps are positive on every frame.
+
+**Tier 2, for research:** this reopens the signed clip's hold. The clip isn't uploaded (`docs/asset-log.md`), so it costs a re-export and a short re-check, not a re-upload.
+1. **Higher and out to the side (my pick).**
+   - Through the hold the lantern is held up over your fighter and out to the keeper's side, its drum clear over the hat from your fighter's side.
+   - The fall comes down that side to the same landing.
+   - It clears every heading, not only the three cameras we test.
+   - The wrench's lift gets shorter. The bold thing in your verdict, the column leaving at 130 to 140, is untouched.
+2. **Out to the side only.** It clears the three cameras, but some heading between them lines the lantern up with the face again.
+- **Cost:** about 2 hours of mine (the hold and fall keys, the clip's own checks, the export, this sheet again), then your look at the hold from the game's camera.
+- **Until then:** the art waits in scratch. Faber's motion blockout runs on the grey as scoped, and this doesn't hold it.
+- **The clip's block stands however the effect is built:** the drum itself is what covers the face.
+
+**Stopped as it stands,** on the director's word of 2026-11-13, through research: effects are built in 3D in the engine (our meshes with scrolling or gradient textures, Beams, Trails, particles where they help, lights), not drawn pictures on camera-facing cards. The column is already three Beams and Neon chips. The hold's glow is the one card. Waiting for AR8's plan.
+
+**Hours:** about 0.75, 16:10 to 16:55 UTC.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

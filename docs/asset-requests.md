@@ -4362,6 +4362,14 @@ The one data-driven player (the method's order, 1) and B1's exit played from its
   - Lantern Burst's look case: 27/27. It fails its heat checks while a Replay loops the same throw, so stop the Replay before running it.
 - **For Modulo:** these numbers go back into `pip_burst_rows.json`.
 
+**Research's look at fixes 1 and 2 (2026-11-13; `b1_fix_grey`, `b1_fix_before_grey`, `b1_fix_flame`, same framing): both pass.**
+- The coil now hugs the target, Pip stays seen beside it, and the floor's light stays under the coil, amber.
+- The tip touching the Target card's bar for four frames is accepted.
+- **Carried to the finish:** at this framing it's quiet for a rung 7 (1.1% of the screen), partly because the avatar's body covers the target. That's the framing fix queued in "Rook, Pip and Lyric installed".
+  - The width stays.
+  - The finish's burning front and saturated edges (fix 3) give it its mass.
+  - Its strength is judged at the final, framed clear of the avatar.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

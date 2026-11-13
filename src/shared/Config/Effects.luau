@@ -3,6 +3,48 @@
 -- FighterController/Effects. Frames are the clip's, 60 a second; distances in studs. Tuned live in a playtest:
 -- NL_Debug:Invoke("Tune", "Effects.Haymaker.Stamp.Top", 6.4).
 
+-- An effect as rows (AR8, "The method"), played by FighterController/Rows: no effect gets code of its own. A row is one
+-- kit part or one engine object, what it rides, and its tracks (Rules.Track: keys { frame after the effect's marker, value,
+-- ease on to the next as Roblox names it }). Before a row's first key it isn't there; past a track's last key it holds.
+--   Kind     "Mesh": the kit's meshes (Config.FxKit) in Part, placed as one, each with the kit's texture Look as its own
+--            emissive mask (it reads at night as by day), or Grey's in the block-in. "Card": the kit's Image facing the
+--            camera. "Emitter": a ParticleEmitter with the kit's Image and Emitter's properties as Roblox names them (a pair
+--            of numbers is a range; a list of { time, value } a sequence; a string an Enum item). "Light": a PointLight.
+--   On       another row it rides: its place, spin and tilt, and its scale for At and Radius. None: the effect's foot.
+--   Tracks   At (Vector3: on a row, in its unit space; else studs), Scale (Vector3, the mesh's unit size times it),
+--            Spin (degrees round up, negative clockwise from above), Tilt (Vector3, degrees), Transparency, Glow (the
+--            look's emissive strength), Color, Size (a card's studs), Brightness, Rate, Radius (an emitter's disc, in
+--            its row's unit space).
+--   Bands    a Mesh row's tracks for one of its parts, over the row's own.
+--   Emit     { frame, count }: an emitter's particles let go at once.
+-- Area: the hit's area the rows are written at; a hit of another area scales the places and sizes (not the particles).
+-- Grey: the block-in, every look grey and every colour its own grey.
+export type Key = { any }
+export type Row = {
+	Kind: string,
+	On: string?,
+	Part: { string }?,
+	Look: string?,
+	Grey: string?,
+	Image: string?,
+	Color: Color3?,
+	Range: number?,
+	Emitter: { [string]: any }?,
+	Emit: { { number } }?,
+	Tracks: { [string]: { Key } },
+	Bands: { [string]: { [string]: { Key } } }?,
+}
+export type Rows = { Area: number, Grey: boolean, Rows: { [string]: Row } }
+
+-- A coil band's burn (B1's exit): it holds whole until `from`, fades over Goes frames on Quad In, and flares from 2 to 4
+-- as it goes (build/handoff/Pip/fx/pip_burst_rows.json).
+local function burn(from: number): { [string]: { Key } }
+	return {
+		Transparency = { { 0, 0 }, { from, 0, "Quad In" }, { from + 3, 1 } },
+		Glow = { { 0, 2 }, { from, 2, "Quad Out" }, { from + 1.5, 4, "Linear" }, { from + 3, 4 } },
+	}
+end
+
 return {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
 	-- the charge's square and the strike's square, eaten as it cools. Then B5's stamp (AR8, "B5"), a grey block until its art.
@@ -97,6 +139,9 @@ return {
 		-- of him, which stops Short of a target Short + Flight away. Nearer or further, its flight from Send (handed back
 		-- between Return and the clip's end) is scaled to stop Short of the target, between Min and Max of the clip's.
 		Throw = { Flight = 12, Short = 1.5, Min = 0, Max = 1.25 },
+		-- The exit (AR8, B1): the rows in Rows that play from the Burst, in place of the burst's picture; "" plays the
+		-- picture, the before. The heat and the trail stay.
+		Exit = "LanternExit",
 	},
 	-- Pip's shots (PipCombo) and Lyric's (LyricCombo): a grey block, the builder's. A streak from the lantern, or from a
 	-- speaker's ring, to the target on each shot's beat, Life seconds; a heavy shot's is wider. Speakers: the rings each of
@@ -230,4 +275,129 @@ return {
 	-- sends you home, seen). A grey block, the builder's: it hops up, arcs over Seconds as high as Height, spinning, and lands
 	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.
 	ShardLeap = { Seconds = 0.8, Height = 7, Size = 1.4, Spin = 9, From = 60, Flash = { Seconds = 0.3, To = 4 } },
+
+	-- The effects as rows (the header). Tuned live: "Effects.Rows.LanternExit.Rows.Coil.Tracks.Spin.2.2".
+	Rows = {
+		-- Pip's Lantern Burst, its exit (AR8, B1; Modulo's rows, build/handoff/Pip/fx/pip_burst_rows.json), from the Burst
+		-- (frame 66) on the ground under the lantern's stop, facing along the throw. The lantern's flame let out as the kit's
+		-- two-strand coil round the Shades: a third grown and over the target's head on the hit, whole by 70, turning
+		-- clockwise from above the way its strands climb and stretching up as it burns. From 74 its six bands go foot first,
+		-- each flaring hot as it fades, the tip last, gone on 84; embers rise off the burning edge, two small flames stand at
+		-- its feet as the burn starts, and the effect's one white flares at its tip on 70. A light in its middle lights the
+		-- Shades and the floor, brightest on the flare.
+		LanternExit = {
+			Area = 5,
+			Grey = true,
+			Rows = {
+				Coil = {
+					Kind = "Mesh",
+					Part = { "FxCoil2_Burn1", "FxCoil2_Burn2", "FxCoil2_Burn3", "FxCoil2_Burn4", "FxCoil2_Burn5", "FxCoil2_Burn6" },
+					Look = "fx_across_Flame",
+					Grey = "fx_across_Grey",
+					Tracks = {
+						Scale = {
+							{ 0, Vector3.new(4.291, 3, 4.291), "Quart Out" },
+							{ 4, Vector3.new(4.664, 5, 4.664), "Linear" },
+							{ 18.5, Vector3.new(4.664, 5.6, 4.664) },
+						},
+						Spin = { { 0, 0, "Quart Out" }, { 18.5, -150 } },
+					},
+					Bands = {
+						FxCoil2_Burn1 = burn(8),
+						FxCoil2_Burn2 = burn(9.5),
+						FxCoil2_Burn3 = burn(11),
+						FxCoil2_Burn4 = burn(12.5),
+						FxCoil2_Burn5 = burn(14),
+						FxCoil2_Burn6 = burn(15.5),
+					},
+				},
+				-- The effect's one white, its focal point, on 70 (rule 3): at the coil's tip, its unit coil's 2.2 up.
+				Flare = {
+					Kind = "Card",
+					On = "Coil",
+					Image = "fx_glow",
+					Color = Color3.new(1, 0.97, 0.88),
+					Tracks = {
+						At = { { 3, Vector3.new(0, 2.2, 0) } },
+						Size = { { 3, 3, "Quad Out" }, { 4, 5.5, "Quad In" }, { 5, 4, "Linear" }, { 6, 2, "Linear" }, { 7, 0 } },
+					},
+				},
+				-- The burn reads as burning: a disc riding the burning edge, from the foot on 74 to the tip on 84, its radius
+				-- the coil's there (the unit coil's 0.45 + 0.55 (1 - s)^1.6), embers rising off its rim. Never falling, never red.
+				Embers = {
+					Kind = "Emitter",
+					On = "Coil",
+					Image = "fx_ember",
+					Emitter = {
+						Shape = "Disc",
+						ShapeStyle = "Surface",
+						EmissionDirection = "Top",
+						Lifetime = { 0.35, 0.6 },
+						Speed = { 3, 6 },
+						Acceleration = Vector3.new(0, 4, 0),
+						Drag = 2,
+						Size = { { 0, 0.5 }, { 1, 0 } },
+						Color = { { 0, Color3.new(1, 0.84, 0.55) }, { 1, Color3.new(1, 0.54, 0.24) } },
+						LightEmission = 1,
+						FlipbookLayout = "Grid2x2",
+						FlipbookMode = "Loop",
+						FlipbookStartRandom = true,
+						FlipbookFramerate = { 0, 0 },
+					},
+					Tracks = {
+						At = { { 8, Vector3.new(0, 0, 0), "Linear" }, { 18.5, Vector3.new(0, 2.2, 0) } },
+						Radius = { { 8, 1 }, { 10.625, 0.797 }, { 13.25, 0.632 }, { 15.875, 0.51 }, { 18.5, 0.45 } },
+						Rate = { { 8, 90 }, { 18.5, 90 }, { 19, 0 } },
+					},
+				},
+				-- The secondary, a breath after the peak, lower and softer, where the burn starts: one flame at each of the
+				-- coil's two feet, where its strands leave the ground, turned with its spin. Lifted to stand on the ground.
+				FootA = {
+					Kind = "Emitter",
+					On = "Coil",
+					Image = "fx_flame",
+					Emitter = {
+						EmissionDirection = "Top",
+						Lifetime = { 0.3, 0.45 },
+						Speed = { 0.5, 1.5 },
+						Size = { 1.4, 2 },
+						Color = { { 0, Color3.new(1, 0.86, 0.5) }, { 1, Color3.new(1, 0.54, 0.24) } },
+						LightEmission = 0.6,
+						FlipbookLayout = "Grid2x2",
+						FlipbookMode = "OneShot",
+					},
+					Emit = { { 8, 1 } },
+					Tracks = { At = { { 8, Vector3.new(1, 0.17, 0) } } },
+				},
+				FootB = {
+					Kind = "Emitter",
+					On = "Coil",
+					Image = "fx_flame",
+					Emitter = {
+						EmissionDirection = "Top",
+						Lifetime = { 0.3, 0.45 },
+						Speed = { 0.5, 1.5 },
+						Size = { 1.4, 2 },
+						Color = { { 0, Color3.new(1, 0.86, 0.5) }, { 1, Color3.new(1, 0.54, 0.24) } },
+						LightEmission = 0.6,
+						FlipbookLayout = "Grid2x2",
+						FlipbookMode = "OneShot",
+					},
+					Emit = { { 8, 1 } },
+					Tracks = { At = { { 8, Vector3.new(-1, 0.17, 0) } } },
+				},
+				-- The Shades and the floor lit by it, brightest on the flare: in the coil's middle.
+				Light = {
+					Kind = "Light",
+					On = "Coil",
+					Range = 16,
+					Color = Color3.new(1, 0.69, 0.38),
+					Tracks = {
+						At = { { 0, Vector3.new(0, 1.1, 0) } },
+						Brightness = { { 0, 1.5, "Quart Out" }, { 4, 4, "Cubic In" }, { 18.5, 0 } },
+					},
+				},
+			},
+		} :: Rows,
+	} :: { [string]: Rows },
 }

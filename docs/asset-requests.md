@@ -4276,6 +4276,58 @@ Section 7's look as kit parts and lights (the method's order, 3). The hold's glo
   - Research's verdict, with `ga-fresh-eyes` (a signature).
 - **Hours:** about 0.4, 18:06 to 18:30 UTC, the content check's two rounds included.
 
+### The player, and B1's exit in grey (Faber, 2026-11-13)
+
+The one data-driven player (the method's order, 1) and B1's exit played from its rows, in grey at phone size (2).
+- **The kit in the game:** `src/shared/Assets/FxKit.rbxm` (`ReplicatedStorage.Shared.Assets.FxKit`), built by `tools/studio/Models/FxKit.luau`: the 21 meshes as MeshParts, and 12 looks, one per mesh texture.
+  - **The light, Modulo's point 2:** a MeshPart's `TextureID` is lit by the scene. So a look is a SurfaceAppearance whose colour map and emissive mask are both the texture: the texture lights itself, and a row's `Glow` is its `EmissiveStrength`. No redraw.
+  - `Config.FxKit` gains each mesh's `Centre`: its box's centre from the mesh's origin, at the unit size (a coil's foot on the ground). A band stands at `anchor * CFrame.new(Centre * scale)`. A logic case holds each band's Centre, less its coil's, to the recipe's offset.
+- **The player:** `FighterController/Rows.luau`. `Rows.Play(name, anchor, scale)` returns a player that the caller steps, in frames after its marker. The rows are data, in `Config.Effects.Rows`. Eases and keys live in `Shared.Rules.Track`, which is pure.
+  - **Kinds:**
+    - Mesh: kit parts, a look, and per-part `Bands`.
+    - Card: a kit image in a BillboardGui.
+    - Emitter: a kit image, with `Emit` for bursts.
+    - Light: a PointLight.
+    - `On` hangs a row on another: its frame, and its scale for `At` and `Radius`.
+  - **Tracks:** At, Scale, Spin, Tilt, Transparency, Glow, Color, Size, Brightness, Rate, Radius. Before a track's first key the row is hidden; past its last, it holds.
+  - It reads Config on every step, so a `Tune` shows at once. `Grey` greys every colour, for a block-in.
+  - **The first play doesn't pop in late:** at load, the 19 images are preloaded, and a missed id is fetched once more (one failed its first fetch in a playtest). Every mesh and look is also drawn tiny in front of the camera for 2 s. A cold start isn't proven: Studio keeps its asset cache across playtests.
+- **B1's rows** (`Effects.Rows.LanternExit`) are Modulo's json, with three translations:
+  - the feet's two flames are lifted 0.17, so they stand on the ground;
+  - the disc riding the burning edge is an emitter on the coil, its `At` climbing from the foot to the tip, its `Radius` following the funnel in, keyed at five points;
+  - the flare's card has no `LightEmission`, because a BillboardGui takes none.
+  - `Effects.LanternBurst.Exit = "LanternExit"` plays the rows from the Burst instead of the coil's picture. The heat and the trail stay. Setting it to `""` brings the picture back.
+- **Checks:**
+  - The type check: 0 new.
+  - The logic cases: 2861/2861, offline and in Studio.
+  - The new self-test case, "Effects: the player plays B1's exit from its rows...": 21/21.
+  - Lantern Burst's look case: 27/27. It now checks the coil on the Burst, all six bands, its foot on the ground, and everything burnt off 30 frames later.
+  - The full suite on the phone: 880/889. Seven failures were that case before it branched on `Exit`. The other two are the Base case's known phone-camera checks (TR3's verdict).
+- **Takes** at phone size (750×401), Pip against a dummy, in `build/captures/ar8/`:
+  - `b1_rows_grey.mp4`, with its strip at 20 fps;
+  - `b1_rows_flame.mp4`, the Flame look;
+  - `b1_before.mp4`, the picture.
+  - **Share of the screen** on the grey take, at 60 fps, by frame from the Burst:
+
+    | Frame | 66 | 68 | 70 to 77 | 78 | 80 | 83 | 87 |
+    |---|---|---|---|---|---|---|---|
+    | Share | 2.8% | 4.9% | 5.0 to 5.6% | 3.7% | 2.0% | 0.9% | 0.5% |
+
+    - The preview measured 4.4% on 70 and 3.0% on 74. The take peaks higher and starts falling on 78 instead of 74.
+    - The two are different measures. Mine counts the bright pixels that changed from the frame before the effect, on the take's crop, light on the floor included.
+  - **Condition 4,** the foot near the Shade's head (74 to 78): the burning edge reaches head height about 78. In the take it reads as burning upward past the head, and nothing comes out of the head. That one is research's to judge.
+  - **The light:** in the Flame take, the PointLight (range 16, brightness 4 on the flare) washes the floor peach well beyond the coil.
+  - In grey, the bands read near white at Glow 2 to 4.
+- **Fresh eyes** (`ga-fresh-eyes`, the three strips, no example): **competent**.
+  - "At its biggest the coil sits over Pip and his HUD card, so you lose the little mage heaving the throw and getting rocked back; it reads as 'a twister on the dummy', not 'his flame let out'."
+  - The bold thing: "the double-turn ribbon wrapped round the dummy and lifting off (grey strip, frames 5 to 6)". Frame 4, where the coil balloons over Pip, is where the eye goes wrong.
+- **For research, the verdict.** The levers, all live by `Tune`, under `Effects.Rows.LanternExit`:
+  - the coil's `Scale` keys (its width and height) and its `Spin`;
+  - the light's `Range` and `Brightness`;
+  - `Grey` (false shows the Flame look).
+  - `Effects.LanternBurst.Exit` set to `""` shows the before.
+- **Hours:** about 0.6, 18:18 to 18:55 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

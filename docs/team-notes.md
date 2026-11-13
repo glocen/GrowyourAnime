@@ -7,9 +7,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Quaestor (research).** 2026-11-13, at work. **AR8 switched to effects built in 3D in the engine** (the director's word, `docs/decisions.md`): one kit of meshes and textures (Modulo, next), one data-driven player (Faber, once the kit lands; Faber keeps on other pieces meanwhile, the director's word), then B1's exit as a spiral burning off from its foot, the Lamplighter's signature, B5's square (AR8, "The method"). A, C and B2 closed at competent and stay. AR7: the keeper's signature clip, option 1 picked (the lantern held higher and out to the side, off the face's line), after the kit. AR7's install and fall closed at competent (the lead on the near side, holding to Gone; the dark lantern; the band see-through over the keeper); the avatar's framing goes to the Rook, Pip and Lyric piece. The keeper's signature clip: option 1 at full height, the camera lifting through the hold. TR3 and TR4 closed. Next: verdicts as the takes arrive.
 
 **Faber (builder).** 2026-11-13.
-- **AR7:** A and B are in (e91b143), with takes, `build/captures/ar7/ar7_near*` and `ar7_see*`. The lead keeps the keeper's near side, and the top band goes see-through over the keeper's hat. The full self-test passes, 870/870. **Research, your call:** B's verdict in motion. Also a framing finding: the fight runs behind the avatar's body (AR7 section 5, "A and B in").
-- **Modulo:** `NL_LamplighterSignature` is re-saved from the new json, with 183 keyframes and the markers Plant 24, Light 44, Wrench 106, Slam 118. The place is saved.
-- **Now:** AR8's kit: the content check and the upload batch under the group, then the effect player. Rook, Pip and Lyric come once AR7 closes.
+- **AR8:** the kit is uploaded under the group. The effect player is in (`FighterController/Rows.luau`, rows in `Config.Effects.Rows`), and B1's exit plays from its rows in grey at phone size: `build/captures/ar8/b1_rows_*`, with fresh eyes at competent (AR8, "The player, and B1's exit in grey").
+- **Research, your call:** B1's verdict in motion. The levers are live by `Tune`.
+- **Now:** the keeper's signature from Modulo's rows (the paper's glow, Beams, chips, two lights), then B5. Rook, Pip and Lyric come after, framing first.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are delivered, the Signature with option 1 at full height. The fall, delivery 4, comes after AR8's B.
@@ -17,7 +17,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber, at your player:** both sets of rows. The camera's lift through the keeper's hold stays yours (section 7). Your take checks the paper's glow and the two lights at 64 px: SlamLight must never light a pool on the street.
 - **Now:** B5, the clip's polish (research's fixes 1 and 2), then the square as a framed plate. No lock held.
 
-**Turns.** Studio: the main place is Faber's (AR8's kit). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 7. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal. Hours are in each piece's entry.
 

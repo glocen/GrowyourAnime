@@ -39,6 +39,9 @@ local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local Sounds = require(script.Parent.Parent.Parent.Main.FighterController.Sounds)
+local Rows = require(script.Parent.Parent.Parent.Main.FighterController.Rows)
+local FxKit = require(Shared.Config.FxKit)
+local Track = require(Shared.Rules.Track)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
@@ -492,6 +495,70 @@ return {
 			t.Server("Tune", TUNE_PATH, before)
 			t.Wait(0.3)
 			t.Check("and the old one back", Tune.Read(TUNE_PATH) == before)
+		end,
+	},
+	{
+		Name = "Effects: the player plays B1's exit from its rows, each part on its frame, and leaves nothing",
+		Stay = true,
+		Run = function(t: any)
+			-- AR8, "The method": Config.Effects.Rows.LanternExit through FighterController/Rows, stepped by hand.
+			local effect = EffectsConfig.Rows.LanternExit
+			local rows = effect.Rows
+			local root = t.Character():FindFirstChild("HumanoidRootPart") :: BasePart
+			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
+			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
+			t.Wait(2.5)
+			t.Check("the warm pass ran and is over", Rows.Warmed())
+			local player = Rows.Play("LanternExit", anchor, 1)
+			local coil = player.Parts("Coil") :: { any }
+			t.Check("one part for each of the coil's bands", #coil == #(rows.Coil.Part :: { string }), tostring(#coil))
+			local look = if effect.Grey then rows.Coil.Grey else rows.Coil.Look
+			local first = coil[1] :: MeshPart
+			local surface = first:FindFirstChildOfClass("SurfaceAppearance")
+			t.Check("each band wears the kit's look, its texture its own emissive mask", surface ~= nil
+				and surface.ColorMapContent.Uri == FxKit.Images[look :: string].Id
+				and surface.EmissiveMaskContent.Uri == FxKit.Images[look :: string].Id, tostring(surface and surface.ColorMapContent.Uri))
+			player.Step(-1)
+			t.Check("nothing shown before its first key", first.Transparency == 1)
+			player.Step(4)
+			local scale = Track.Value(rows.Coil.Tracks.Scale, 4) :: Vector3
+			local worst = 0
+			for _, part in coil do
+				local unit = FxKit.Meshes[part.Name]
+				worst = math.max(worst, (part.Size - unit.Size * scale).Magnitude)
+				local should = (anchor * CFrame.new(unit.Centre * scale)).Position
+				worst = math.max(worst, (part.Position - should).Magnitude)
+			end
+			t.Check("whole on 70: every band at its size and place on the coil", worst < 1e-3, string.format("%.4f", worst))
+			t.Check("whole and glowing", first.Transparency == 0 and math.abs((surface :: SurfaceAppearance).EmissiveStrength - 2) < 1e-6)
+			local card = player.Parts("Flare")[1]:FindFirstChildWhichIsA("BillboardGui", true) :: BillboardGui
+			local label = card:FindFirstChildOfClass("ImageLabel") :: ImageLabel
+			t.Check("the flare, white at the tip on 70", label.ImageTransparency == 0 and math.abs(card.Size.X.Scale - 5.5) < 1e-6, tostring(card.Size))
+			local tip = (anchor * CFrame.new(Vector3.new(0, 2.2, 0) * scale)).Position
+			t.Check("on the coil's tip", (player.Parts("Flare")[1] :: BasePart).Position:FuzzyEq(tip, 1e-3))
+			local light = player.Parts("Light")[1]:FindFirstChildOfClass("PointLight") :: PointLight
+			t.Check("the light at its brightest on the flare", math.abs(light.Brightness - 4) < 1e-6, tostring(light.Brightness))
+			player.Step(9.5)
+			t.Check("from 74 the foot burns first", coil[1].Transparency > 0 and coil[1].Transparency < 1 and coil[2].Transparency == 0, `{coil[1].Transparency} {coil[2].Transparency}`)
+			local band = (rows.Coil.Bands :: any).FxCoil2_Burn1
+			t.Check("flaring hot as it goes", math.abs((surface :: SurfaceAppearance).EmissiveStrength - Track.Value(band.Glow, 9.5)) < 1e-6)
+			local embers = player.Parts("Embers")[1] :: BasePart
+			local emitter = embers:FindFirstChildOfClass("ParticleEmitter") :: ParticleEmitter
+			t.Check("embers rise off the burning edge", emitter.Rate == 90 and emitter.Texture == FxKit.Images.fx_ember.Id, tostring(emitter.Rate))
+			local low = embers.Position.Y
+			player.Step(15)
+			t.Check("the edge climbs", embers.Position.Y > low + 1, string.format("%.2f to %.2f", low, embers.Position.Y))
+			t.Check("the flare cleared a step after its last frame", label.ImageTransparency == 1)
+			player.Step(19)
+			local gone = true
+			for _, part in coil do
+				gone = gone and part.Transparency == 1
+			end
+			t.Check("gone on 84, the tip last", gone)
+			t.Check("the embers stop", emitter.Rate == 0)
+			t.Check("it lives on while its embers do", player.Step(player.End - 1))
+			t.Check("and ends", not player.Step(player.End + 1))
+			t.Check("leaving nothing", coil[1].Parent == nil and embers.Parent == nil)
 		end,
 	},
 	{
@@ -2073,8 +2140,39 @@ return {
 			t.Check("the heat gone the step after", heatGui ~= nil and not pictured(heatGui))
 			local burstGui = mine("BillboardGui") :: BillboardGui?
 			local burstLabel = if burstGui then burstGui:FindFirstChildOfClass("ImageLabel") else nil
-			t.Check("the burst on the Burst", pictured(burstGui) and burstLabel ~= nil)
-			if burstGui and burstLabel then
+			if look.Exit ~= "" then
+				-- The exit's rows in place of the picture (AR8, B1; the player's own case checks each row): the coil on the
+				-- Burst, its foot on the ground under the lantern's stop, run on the free clock through the hold, gone after
+				-- its burn; the picture never shown.
+				t.Check("no burst picture: the exit's rows play instead", not pictured(burstGui))
+				local home = workspace:FindFirstChild("NL_Rows")
+				local bands: { MeshPart } = {}
+				for _, p in (if home then home:GetChildren() else {}) do
+					if p:IsA("MeshPart") and string.find(p.Name, "^FxCoil2_Burn") and p.Transparency < 1 then
+						table.insert(bands, p)
+					end
+				end
+				t.Check("the coil on the Burst, all six bands", #bands == 6, tostring(#bands))
+				local band1 = nil :: MeshPart?
+				for _, p in bands do
+					band1 = if p.Name == "FxCoil2_Burn1" then p else band1
+				end
+				if band1 then
+					local unit = FxKit.Meshes.FxCoil2_Burn1
+					local scale = band1.Size.Y / unit.Size.Y
+					t.Near("its foot on the ground", band1.Position.Y - unit.Centre.Y * scale, root.Position.Y - 3, 0.01)
+					at(burst, burst + 30 * FRAME)
+					t.Check("burnt off after its burn, on the free clock through the hold", band1.Transparency == 1)
+				end
+				at(burst, burst + 2 * FRAME)
+				t.Check("the trail closing onto it", beam ~= nil and beam.Enabled)
+				at(burst, burst + look.Trail.Close * FRAME)
+				t.Check("and closed", beam ~= nil and not beam.Enabled)
+			end
+			if look.Exit == "" then
+				t.Check("the burst on the Burst", pictured(burstGui) and burstLabel ~= nil)
+			end
+			if look.Exit == "" and burstGui and burstLabel then
 				local size = look.Burst.PerArea * area
 				t.Near("three times the area's studs", burstGui.Size.X.Scale, size, 0.001)
 				local stand = burstGui.Parent :: BasePart

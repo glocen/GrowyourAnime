@@ -24,6 +24,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Fight = require(Shared.Rules.Fight)
 local Clips = require(script.Clips)
 local Effects = require(script.Effects)
+local Rows = require(script.Rows)
 local Sounds = require(script.Sounds)
 
 local player = Players.LocalPlayer
@@ -987,6 +988,7 @@ end
 
 function FighterController.Start()
 	Sounds.Preload()
+	Rows.Warm() -- the effect kit drawn once, unseen, so the first effect never pops in late (AR8)
 	CollectionService:GetInstanceAddedSignal("Fighter"):Connect(function(model: Instance)
 		task.spawn(add, model)
 	end)

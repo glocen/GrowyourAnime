@@ -8,7 +8,8 @@
 --             it lands.
 --   LanternBurst  Pip's signature, AR4's art sheet: the heat in the cage on his glow mask, the throw with its trail, the
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
---             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8).
+--             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8). The flame let out is its exit's rows
+--             (AR8, B1; Config.Effects.Rows, played by Rows), or the burst's picture when Exit is "".
 --   LanternShots  Pip's combo, a grey block: a streak from the lantern to the target on each shot (Config.Effects.Shot).
 --   SpeakerShots  Lyric's combo, the same from her speakers' rings, the ones each shot names.
 --   HeldNote  Lyric's signature, AR4's art sheet (Config.Effects.HeldNote; AR4, section 10): the flash in her rings, a
@@ -32,6 +33,7 @@ local Combat = require(ReplicatedStorage.Shared.Config.Combat)
 local Fight = require(ReplicatedStorage.Shared.Rules.Fight)
 local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Sounds = require(script.Parent.Sounds)
+local Rows = require(script.Parent.Rows)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local World = require(UI.World)
@@ -694,6 +696,8 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 	local burstGui, burstLabel = billboard(stand, EffectsConfig.LanternBurst.Picture)
 	local burstShown = shownBy(burstGui, burstLabel)
 	local burstAt: Vector3? = nil -- the burst's foot, on the ground under the lantern at the Burst
+	local exit: Rows.Player? = nil -- the exit's rows, from the Burst (AR8, B1)
+	local exitFrames = 0
 	-- The trail: a beam between two points of its own.
 	local ends = part(LIGHT)
 	ends.Transparency = 1
@@ -831,6 +835,16 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 			if burstAt == nil and clock >= BURST and lantern and root then
 				local at = lantern.WorldPosition
 				burstAt = Vector3.new(at.X, root.Position.Y - R6_ROOT_HEIGHT, at.Z)
+				if look.Exit ~= "" and burstAt then
+					-- The exit's foot, facing along the throw: the coil's feet stand either side of the line.
+					local foot = burstAt :: Vector3
+					local way = Vector3.new(foot.X - root.Position.X, 0, foot.Z - root.Position.Z)
+					if way.Magnitude < 0.01 then
+						way = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+					end
+					local rows = (EffectsConfig.Rows :: any)[look.Exit]
+					exit = Rows.Play(look.Exit, CFrame.lookAt(foot, foot + way), area / (if rows then rows.Area else area))
+				end
 			end
 			-- The trail, from the frame after Send until it has closed onto the burst.
 			local trail = look.Trail
@@ -846,8 +860,15 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 			else
 				beam.Enabled = false
 			end
-			-- The burst.
-			local index = if burstAt and after >= 0 then burstCell(look.Burst, after) else nil
+			-- The exit, on the free clock from the Burst, so the hold on the hit never stills it.
+			if exit and burstFrom then
+				exitFrames = (free - burstFrom) / FRAME
+				if not exit.Step(exitFrames) then
+					exit = nil
+				end
+			end
+			-- The burst's picture, the before.
+			local index = if burstAt and after >= 0 and look.Exit == "" then burstCell(look.Burst, after) else nil
 			if index and burstAt then
 				local size = look.Burst.PerArea * area
 				local camera = workspace.CurrentCamera
@@ -878,6 +899,13 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 			burstGui:Destroy()
 			stand:Destroy()
 			ends:Destroy()
+			if exit then -- the exit outlives the clip: on in its own time, from where it was
+				local rows, from = exit :: Rows.Player, exitFrames
+				exit = nil
+				run(function(age: number): boolean
+					return rows.Step(from + age / FRAME)
+				end, rows.Destroy)
+			end
 			if surface and surface.Parent then
 				relight(surface, COOLDOWN - now) -- dark until here, full when it's ready
 			end

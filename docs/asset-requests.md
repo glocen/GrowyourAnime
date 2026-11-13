@@ -4477,6 +4477,71 @@ This answers fix 3 of research's verdict on B1's exit from its rows, for the fin
   - Research's final, with `ga-fresh-eyes`.
 - **Hours:** about 0.3, 19:07 to 19:27 UTC, the content check included. An estimate from the two commits' times.
 
+### The keeper's signature in the engine (Faber, 2026-11-13)
+
+Section 7's rows played in grey on the keeper's clip through the one player, joined to the action, its hit and the camera (the method's order, 3). It's a signature, so research's verdict comes with `ga-fresh-eyes`.
+- **Scope.**
+  - **The block contains:**
+    - the action `KeeperSignature` (`src/shared/Definitions/Actions.luau`) on the clip's beats: Plant 0.4, Light 0.7333, Wrench 1.7667, Slam 1.9667;
+    - the rows in grey (`Config.Effects.Rows.KeeperSignature`, written by a generator from Modulo's json);
+    - rung 8's hitstop, the flash and the hurt shake on the Slam;
+    - the camera's lift through the hold.
+    - It's pressed only by `NL_Debug` `KeeperForce`, in a try.
+  - **What waits:**
+    - its place in the keeper's rotation, and its cooldown and coefficient (a seed for now: 12 s, three times the enemy rate);
+    - the heavy-stagger break;
+    - the sound;
+    - the column's three pictures, uploaded after the verdict. The upload check confirms them byte for byte against section 7's.
+- **The player grew** (`FighterController/Rows.luau`, the row types in `Config.Effects`):
+  - A row can ride a point on a body (`Body`) and start on a beat (`From`).
+  - **Glow:** a part's own `EmissiveStrength`, put back after.
+  - **Point:** a spot held on the street where the lantern fell (`Ground`, `Hold`).
+  - **Beam:** `Low` and `High` ends; `Trail` behind a moving point; `Like` to share another Beam's width and fade; `FootFade`.
+  - **`Let()`** gives the body back at once if the keeper falls after the Slam, while the column plays on.
+- **Range 7.5, measured.** The clip's lantern lands 6.33 ahead of the keeper and 1.92 to its left. From 7.5 it comes down beside your fighter, 2.25 from its middle.
+- **The beats' marks** are rounded to whole frames: the Slam's 1.9667 s is 118.002 frames.
+- **The lift is 18°, tried by playing** (Config had 6).
+  - At 6, with the keeper about 20 studs off, the lantern stayed over the phone's top edge through the whole hold.
+  - At 18 it's in the frame from the Light on, and it eases back over 0.3 s with the hit.
+- **A bug found on the way, fixed: the camera on a phone.**
+  - A phone's camera follows (`TouchCameraMovementMode` Default plays as Follow). On the next frame it undoes any turn it didn't make itself, and keeps only the pitch.
+  - So the fade's swing behind the avatar (`FadeController`) and the replay's turn never held on a phone.
+  - Both now go through `src/shared/Util/CameraTurn.luau`: one rendered frame in Scriptable clears what the camera remembers.
+  - The lift is a pitch, which the camera keeps.
+- **`KeeperForce`** (`KeeperService`):
+  - It's for after the try's fight has settled, with the lead at the keeper's side.
+  - The keeper stays where it stands and presses the signature every 6 s.
+  - The lead is set back along their line to Range, held still, and kept over half its health.
+- **The take,** at phone size from the fight's camera behind the avatar, after the try's own fade. It's in `build/captures/ar8/keeper_sig/`:
+  - `keeper_sig_grey.mp4`, with its strips `_hold`, `_slam` and `_64px`;
+  - `_hold_lift6`, the hold at the old 6°.
+- **What it shows:**
+  - **The hold:** the lantern swings up, the camera rises to it, and it hangs white at the top right.
+  - **The Slam:** the streak trails the fall. A white column stands beside Pip as the chips fly and the flash lands. The column lets go and climbs away, gone by about 141.
+  - **The lights:** the street light leaves no disc that reads as a pool (condition 5). HoldLight and SlamLight stay soft at 64 px.
+  - **The column's share:**
+    - about 3% of the screen at its peak, 6% of the width by 45% of the height;
+    - 1.8% counting near-white pixels alone: in grey it reads pale blue-white.
+  - **The fight's framing:** in this fight the keeper stands just behind the avatar's right shoulder, and the Target card covers its head. That's for "Rook, Pip and Lyric installed", framing first.
+- **`ga-fresh-eyes`, blind: competent.**
+  - **Felt:** a long, still windup, with the lantern mostly cut off at the top as a pale ball. Then a fast swing down, and a clean white shaft beside the blue hat that rises off the ground and is gone in about a fifth of a second.
+  - **The bold thing:** the white column (the slam strip, frames 7 and 8). It reads even at 64 px.
+  - **Against it:**
+    - the gathering happens at the frame's top edge, so the keeper's look down and the glow never share a shot;
+    - the column is an even slab, with no acceleration you can see before it lets go.
+- **Checks:**
+  - The type check: 0 new.
+  - The logic cases: 3711/3711, offline.
+  - The self-test on the phone emulation:
+    - the signature's case: 39/39;
+    - the camera's: 4/4;
+    - the arrival's: 9/9;
+    - the keeper's try: 40/40.
+- **Open:**
+  - Research's verdict. A signature closes at competent (the director's word, 2026-11-13).
+  - Then the pictures' upload.
+- **Hours:** about 1, 18:52 to 19:55 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

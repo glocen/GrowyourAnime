@@ -9,7 +9,9 @@
 --   keeper's gate. A leave or a respawn ends it with nothing saved.
 -- * The shortcut pad sets whoever steps on it down on their own plot. It's reached only beyond the ring, so only by a win.
 -- Studio: NL_Debug:Invoke("Keeper", who) the try's state; ("KeeperTry", who) a try as if the gate were asked;
--- ("KeeperEnd", who, "Win" | "Loss") the keeper or the lead falls at once.
+-- ("KeeperEnd", who, "Win" | "Loss") the keeper or the lead falls at once; ("KeeperForce", who, action, every?) the try's
+-- keeper pressing it every `every` seconds (6) where it stands, its lead set back to the action's Range and held still
+-- facing it, kept over half its health, for a take (AR8, the keeper's signature); ("KeeperForce", who) lets both go.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -20,6 +22,7 @@ local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
 local Log = require(Shared.Util.Log)
 local Enemies = require(Shared.Definitions.Enemies)
+local Actions = require(Shared.Definitions.Actions)
 local Combat = require(Shared.Config.Combat)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
@@ -426,6 +429,49 @@ function KeeperService.Start()
 				return { Ok = false, Error = "BadArgs" }
 			end
 			return { Ok = true }
+		end)
+		DebugService.Register("KeeperForce", function(who: any, action: any, every: any): any
+			local player = DebugService.ResolvePlayer(who)
+			local try = if player then tries[player] else nil
+			local keeper = if try then try.Keeper else nil
+			local lead = if player then FightService.LeadOf(player) else nil
+			if keeper == nil or lead == nil then
+				return { Ok = false, Error = "NoTry" }
+			end
+			if action == nil then
+				FightService.Force(keeper, nil)
+				FightService.Force(lead, nil)
+				lead.Home = nil
+				return { Ok = true }
+			end
+			local row = if type(action) == "string" then Actions.ById[action] else nil
+			if row == nil or (every ~= nil and type(every) ~= "number") then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			-- Where the fight has put them (let it settle first: the lead at the keeper's side, Combat.Lead.Beside): the keeper
+			-- stays, facing the lead, and the lead steps back along their line to the action's range, facing it.
+			local spot = keeper.Root.Position
+			local away = lead.Root.Position - spot
+			away = Vector3.new(away.X, 0, away.Z)
+			away = if away.Magnitude > 0.01 then away.Unit else Vector3.new(0, 0, -1)
+			local from = spot + away * row.Range
+			from = Vector3.new(from.X, lead.Root.Position.Y, from.Z)
+			keeper.Root.AssemblyLinearVelocity = Vector3.zero
+			keeper.Root.CFrame = CFrame.lookAt(spot, Vector3.new(from.X, spot.Y, from.Z))
+			lead.Root.AssemblyLinearVelocity = Vector3.zero
+			lead.Root.CFrame = CFrame.lookAt(from, Vector3.new(spot.X, from.Y, spot.Z))
+			lead.Home = lead.Root.CFrame -- every press from the same spacing: the last one's push undone
+			FightService.Force(lead, "", 0, keeper)
+			FightService.Force(keeper, action, every or 6, lead)
+			task.spawn(function()
+				while keeper.Forced == action and lead.Forced == "" and lead.Model.Parent do
+					if lead.Health < lead.Block.Health * 0.5 then
+						FightService.SetHealthShare(lead, 1)
+					end
+					task.wait(0.1)
+				end
+			end)
+			return { Ok = true, Range = row.Range }
 		end)
 	end
 end

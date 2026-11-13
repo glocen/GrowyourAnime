@@ -1,14 +1,15 @@
 --!strict
 -- Track cases (pure): an effect row's eases and keys (Rules.Track), and every effect's rows whole against the kit
--- (Config.Effects.Rows, Config.FxKit; AR8, "The method").
+-- (Config.Effects.Rows, Config.FxKit; AR8, "The method"), and the keeper's signature on its beats.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Track = require(Shared.Rules.Track)
 local EffectsConfig = require(Shared.Config.Effects)
 local FxKit = require(Shared.Config.FxKit)
+local Actions = require(Shared.Definitions.Actions)
 
-local KINDS = { Mesh = true, Card = true, Emitter = true, Light = true }
+local KINDS = { Mesh = true, Card = true, Emitter = true, Light = true, Glow = true, Point = true, Beam = true }
 
 local function near(a: number, b: number): boolean
 	return math.abs(a - b) <= 1e-9 * math.max(1, math.abs(b))
@@ -76,10 +77,31 @@ return {
 			end
 			for effectName, effect in EffectsConfig.Rows do
 				t.Check(`{effectName} is written at an area`, effect.Area > 0)
+				local action = if effect.Action then Actions.ById[effect.Action] else nil
+				t.Check(`{effectName}: its action is one`, effect.Action == nil or action ~= nil, tostring(effect.Action))
 				for rowName, row in effect.Rows do
 					local label = `{effectName}.{rowName}`
 					t.Check(`{label}: a kind the player plays`, KINDS[row.Kind] == true, row.Kind)
 					t.Check(`{label}: rides a row of its effect`, row.On == nil or (effect.Rows[row.On] ~= nil and row.On ~= rowName), tostring(row.On))
+					t.Check(`{label}: rides one thing`, row.On == nil or row.Body == nil)
+					t.Check(`{label}: counts from a beat of its action`, row.From == nil or (action ~= nil and action.Beats[row.From] ~= nil), tostring(row.From))
+					t.Check(`{label}: rides a body only in an action's effect`, row.Body == nil or action ~= nil)
+					for _, ref in { row.Low, row.High } do
+						local parts = string.split(ref, ".")
+						local other = effect.Rows[parts[1]]
+						t.Check(`{label}: hangs on a beam's end, {ref}`, other ~= nil and other.Kind == "Beam" and (parts[2] == "Low" or parts[2] == "High"))
+					end
+					local like = if row.Like then effect.Rows[row.Like] else nil
+					t.Check(`{label}: like a beam of its effect`, row.Like == nil or (like ~= nil and like.Kind == "Beam" and row.Like ~= rowName), tostring(row.Like))
+					if row.Kind == "Beam" then
+						local picture = if row.Image then FxKit.Images[row.Image] or EffectsConfig.Pictures[row.Image] else nil
+						t.Check(`{label}: {row.Image} is a kit image or a picture`, picture ~= nil)
+						t.Check(`{label}: its picture uploaded once it's out of grey`, effect.Grey or (picture ~= nil and picture ~= ""))
+						t.Check(`{label}: its block-in a kit image, or none`, row.Grey == nil or row.Grey == "" or FxKit.Images[row.Grey] ~= nil, tostring(row.Grey))
+						t.Check(`{label}: its ends`, row.Trail ~= nil or row.Low ~= nil or row.Tracks.Foot ~= nil or row.On ~= nil or row.Body ~= nil)
+					elseif row.Kind == "Glow" then
+						t.Check(`{label}: one part of its body`, action ~= nil and row.Part ~= nil and #row.Part == 1)
+					end
 					if row.Kind == "Mesh" then
 						t.Check(`{label}: has parts`, row.Part ~= nil and #row.Part > 0)
 						for _, part in row.Part or {} do
@@ -126,6 +148,50 @@ return {
 			end
 			t.Check("the flare's white on 70", near(Track.Value(rows.Flare.Tracks.Size, 4), 5.5) and near(Track.Value(rows.Flare.Tracks.Size, 7), 0))
 			t.Check("the light at its brightest on the flare", near(Track.Value(rows.Light.Tracks.Brightness, 4), 4))
+		end,
+	},
+	{
+		-- AR7, section 7, and Modulo's rows (AR8, "The keeper's signature as rows"): the content check's conditions a and b,
+		-- and 4 (the floor clear by about 140), on the clip's frames.
+		Name = "Track: the keeper's signature on its beats, as its content check passed it",
+		Run = function(t: any)
+			local action = Actions.ById.KeeperSignature
+			local effect = EffectsConfig.Rows[EffectsConfig.KeeperSignature.Rows]
+			t.Check("its rows are its action's", effect ~= nil and effect.Action == action.Id)
+			local rows = effect.Rows
+			local mark: { [string]: number } = {}
+			for beat, at in action.Beats do
+				mark[beat] = math.floor(at * 60 + 0.5)
+			end
+			t.Equal("Plant on 24", mark.Plant, 24)
+			t.Equal("Light on 44", mark.Light, 44)
+			t.Equal("Wrench on 106", mark.Wrench, 106)
+			t.Equal("Slam on 118", mark.Slam, 118)
+			local function at(row: string, track: string, frame: number): any
+				local r = rows[row]
+				return Track.Value(r.Tracks[track], frame - mark[r.From :: string])
+			end
+			t.Check("the paper at its top on the Wrench, 106 and 107", near(at("Paper", "Glow", 106), 3) and near(at("Paper", "Glow", 107), 3))
+			t.Check("the paper dim after the Slam", at("Paper", "Glow", 119) < 1.2)
+			t.Check("and relit as it was by 160", near(at("Paper", "Glow", 160), 1.2))
+			t.Check("the hold's light out by 104 (condition a)", near(at("HoldLight", "Brightness", 104), 0))
+			t.Check("the shell gone by 104 (condition a)", near(at("Shell", "Transparency", 104), 1))
+			t.Check("the streak from 111", at("Streak", "Transparency", 110) == nil and at("Streak", "Transparency", 111) < 1)
+			t.Check("and gone before 117 (condition b)", at("Streak", "Transparency", 116) < 1 and near(at("Streak", "Transparency", 117), 1))
+			t.Check("the column on the Slam", at("Shaft", "Width", 118) > 0 and near(at("Shaft", "Transparency", 118), 0))
+			t.Check("its foot lets go from 124", near(at("Shaft", "Foot", 123), 0) and at("Shaft", "Foot", 124) > 0)
+			local clear = 0
+			for name, row in rows do
+				if row.From == "Slam" then
+					local _, last = Track.Span(row.Tracks.Transparency or row.Tracks.Scale or row.Tracks.Brightness or row.Tracks.At)
+					clear = math.max(clear, mark.Slam + last)
+					if row.Kind == "Mesh" then
+						t.Check(`{name} shrinks to nothing`, near(at(name, "Scale", 141), 0))
+					end
+				end
+			end
+			t.Check("the floor clear by 141 (condition 4)", clear <= 141, tostring(clear))
+			t.Check("the street's light out by 140", near(at("SlamLight", "Brightness", 140), 0))
 		end,
 	},
 }

@@ -22,6 +22,7 @@ local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Fight = require(Shared.Rules.Fight)
+local CameraTurn = require(Shared.Util.CameraTurn)
 local Clips = require(script.Clips)
 local Effects = require(script.Effects)
 local Rows = require(script.Rows)
@@ -40,6 +41,7 @@ local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target
 	PipCombo = Effects.LanternShots,
 	LyricHeldNote = Effects.HeldNote,
 	LyricCombo = Effects.SpeakerShots,
+	KeeperSignature = Effects.KeeperSignature,
 }
 
 -- The look of a heal (Actions.Hit.Heal) on the body it mends, by the healer's action.
@@ -970,7 +972,7 @@ end
 
 -- The replay (ReplayService) sets "Replay" on the player: the camera turns to look down the pad, pitched over the avatar
 -- (Config.Combat.Replay.Pitch). The player's camera keeps its own distance and centres on the avatar as in play, so this
--- sets only its turn: what the replay shows is what a player sees.
+-- sets only its turn (through CameraTurn, which a phone's camera keeps): what the replay shows is what a player sees.
 local function onReplay()
 	local action = player:GetAttribute("Replay")
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
@@ -983,7 +985,7 @@ local function onReplay()
 	local look = flatLook * math.cos(pitch) - Vector3.new(0, math.sin(pitch), 0)
 	local focus = camera.Focus.Position
 	local zoom = (camera.CFrame.Position - focus).Magnitude
-	camera.CFrame = CFrame.lookAt(focus - look * zoom, focus)
+	CameraTurn.To(CFrame.lookAt(focus - look * zoom, focus))
 end
 
 function FighterController.Start()

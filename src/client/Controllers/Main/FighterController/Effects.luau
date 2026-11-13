@@ -10,6 +10,8 @@
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8). The flame let out is its exit's rows
 --             (AR8, B1; Config.Effects.Rows, played by Rows), or the burst's picture when Exit is "".
+--   KeeperSignature  the Lamplighter's, its rows on the action's beats (Config.Effects.Rows.KeeperSignature; AR8), and
+--             the camera lifted through the hold when the lead it's aimed at is the player's own.
 --   LanternShots  Pip's combo, a grey block: a streak from the lantern to the target on each shot (Config.Effects.Shot).
 --   SpeakerShots  Lyric's combo, the same from her speakers' rings, the ones each shot names.
 --   HeldNote  Lyric's signature, AR4's art sheet (Config.Effects.HeldNote; AR4, section 10): the flash in her rings, a
@@ -23,6 +25,7 @@
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
 -- capture sets to 0 to hold a frame (.claude/skills/ga-studio-test, "Captures").
 
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TextService = game:GetService("TextService")
@@ -103,9 +106,28 @@ local function run(step: (age: number) -> boolean, done: () -> ())
 	table.insert(timed, { Age = 0, Step = step, Done = done })
 end
 
+-- The camera's lift (Config.Effects.KeeperSignature.Lift): degrees the player's camera is turned up about its focus, after
+-- the camera module has placed it. The default camera reads its own look each frame, so only the change since the last
+-- frame is turned in: what was turned before is already in its look. Only the player's own camera, and only while the
+-- camera module drives it.
+local lift = { Wanted = 0, Turned = 0 }
+local function turnLift()
+	local change = lift.Wanted - lift.Turned
+	lift.Turned = lift.Wanted
+	local camera = workspace.CurrentCamera
+	if math.abs(change) < 1e-6 or camera == nil or camera.CameraType ~= Enum.CameraType.Custom then
+		return
+	end
+	local focus = camera.Focus.Position
+	local view = camera.CFrame
+	local turn = CFrame.fromAxisAngle(view.RightVector, math.rad(change)) -- positive: the look goes up
+	camera.CFrame = CFrame.new(focus) * turn * CFrame.new(-focus) * view
+end
+
 -- After the camera and before the World layer places its plates (Camera + 2), so a plate's rise and size this frame are
 -- what the World layer keeps under the top band.
 RunService:BindToRenderStep("NL_Effects", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
+	turnLift()
 	for index = #timed, 1, -1 do
 		local item = timed[index]
 		item.Age += dt * Effects.TimeScale
@@ -912,6 +934,108 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 		end,
 	} :: Running
 	return running
+end
+
+-- The keeper's signature (Config.Effects.KeeperSignature; AR7, sections 6 and 7; AR8): its rows on the action's beats,
+-- from the keeper's foot, facing as it does. Up to the Slam they run on the action's clock, which the hold pauses, so the
+-- lantern's glow and streak stay on the clip; from the Slam on the free clock, so the hold on the hit never stills the
+-- column. The camera's lift through the hold, for the player's own lead. Ended early (its keeper fell), what it left in the
+-- street plays out and what rides the body goes.
+function Effects.KeeperSignature(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local look = EffectsConfig.KeeperSignature
+	local LIGHT, SLAM, LENGTH = beats.Light, beats.Slam, action.Length
+	local written = (EffectsConfig.Rows :: any)[look.Rows]
+	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local bodyScale = attacker:GetScale()
+	local marks: { [string]: number } = {}
+	for beat, at in beats do
+		marks[beat] = math.floor(at / FRAME + 0.5) -- the clip's markers stand on whole frames; the beats are written to 4 places
+	end
+	local stand = if root then root.CFrame else attacker:GetPivot()
+	local foot = stand.Position - Vector3.new(0, if root then R6_ROOT_HEIGHT * bodyScale else 0, 0)
+	local facing = Vector3.new(stand.LookVector.X, 0, stand.LookVector.Z)
+	facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
+	local rows = Rows.Play(look.Rows, CFrame.lookAt(foot, foot + facing), bodyScale / (if written then written.Area else bodyScale), {
+		Body = attacker,
+		Marks = marks,
+	})
+	local slamFree: number? = nil
+	local frames = 0
+	local lifted = 0
+	local done = false
+
+	local function mine(): boolean
+		local struck = target()
+		local body = if struck then struck.Parent else nil
+		return body ~= nil and body:GetAttribute("Owner") == Players.LocalPlayer.UserId
+	end
+
+	local running: Running
+	running = {
+		Step = function(clock: number, given: number?): boolean
+			if done then
+				return false
+			end
+			if clock >= LENGTH then
+				running.Destroy()
+				return false
+			end
+			local free = given or clock
+			if slamFree == nil and clock >= SLAM then
+				slamFree = free - (clock - SLAM)
+			end
+			local seconds = if slamFree then SLAM + free - (slamFree :: number) else clock
+			frames = seconds / FRAME
+			-- The lift: eased up from the Light over Rise, back from the Slam over Fall.
+			local up = look.Lift
+			local u = 0
+			if seconds >= SLAM then
+				u = 1 - math.clamp((seconds - SLAM) / up.Fall, 0, 1)
+			elseif seconds >= LIGHT then
+				u = math.clamp((seconds - LIGHT) / up.Rise, 0, 1)
+			end
+			local want = if mine() then up.Degrees * smooth(u) else 0
+			lift.Wanted += want - lifted
+			lifted = want
+			rows.Step(frames)
+			return true
+		end,
+		Destroy = function()
+			if done then
+				return
+			end
+			done = true
+			if frames >= SLAM / FRAME and frames < rows.End then -- the column plays out; the body's rows go
+				rows.Let()
+				local from = frames
+				run(function(age: number): boolean
+					return rows.Step(from + age / FRAME)
+				end, rows.Destroy)
+			else
+				rows.Destroy()
+			end
+			if lifted ~= 0 then -- eased back over Fall, never snapped
+				local was = lifted
+				lifted = 0
+				local fall = look.Lift.Fall
+				local given = 0
+				run(function(age: number): boolean
+					local want = was * (1 - smooth(math.clamp(age / fall, 0, 1)))
+					lift.Wanted += want - (was - given)
+					given = was - want
+					return age < fall
+				end, function()
+					lift.Wanted -= was - given
+				end)
+			end
+		end,
+	} :: Running
+	return running
+end
+
+-- For the self-test: the degrees the camera is lifted by now.
+function Effects.Lift(): number
+	return lift.Wanted
 end
 
 -- A grey streak from `from` to `to` (Config.Effects.Shot), over its Life; a heavy shot's is wider.

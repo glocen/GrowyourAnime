@@ -16,6 +16,7 @@ local TweenService = game:GetService("TweenService")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
+local CameraTurn = require(Shared.Util.CameraTurn)
 
 local FadeController = {}
 
@@ -46,8 +47,8 @@ local function untilWhole()
 end
 
 -- In the black, after the move: the camera swings behind the avatar, at the distance and pitch it had, so the player opens
--- their eyes looking where the avatar was set down to look (the keeper, the shut gate, their Breaker). Roblox's camera
--- reads its look from the camera's own CFrame each frame, so setting it once holds.
+-- their eyes looking where the avatar was set down to look (the keeper, the shut gate, their Breaker). Through CameraTurn,
+-- or a phone's camera turns back.
 local function behind()
 	local camera = workspace.CurrentCamera
 	local root = Parts.Root(Players.LocalPlayer.Character)
@@ -63,7 +64,7 @@ local function behind()
 	end
 	local pitch = math.asin(math.clamp(offset.Y / distance, -1, 1))
 	local back = -look.Unit * math.cos(pitch) * distance + Vector3.new(0, math.sin(pitch) * distance, 0)
-	camera.CFrame = CFrame.lookAt(focus + back, focus)
+	CameraTurn.To(CFrame.lookAt(focus + back, focus))
 end
 
 function FadeController.Start()

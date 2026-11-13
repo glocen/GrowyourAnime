@@ -5,6 +5,8 @@
 -- the clock: Step(frames) takes frames after the effect's marker at the clip's 60 a second, fractions and all, and says
 -- whether the effect still lives. The tracks are read every step, so a Tune shows at once; an emitter's properties and the
 -- kit's parts are set when it plays, so a Tune there shows on the next.
+-- An action's effect (the keeper's signature) passes its body and its beats: a row's From names the beat its keys count
+-- from, a Body row rides a point of the body, and a Glow row lights one of its parts, put back as it was at the end.
 -- A look is a SurfaceAppearance template, its texture its own emissive mask, cloned onto the part: a script can't set a
 -- look's maps. It can't be preloaded either, so Warm draws every kit mesh and look once, unseen, at load, and the first
 -- effect never pops in late (handbook/visuals/vfx-engine-facts.md, "Preloading").
@@ -29,8 +31,16 @@ export type Player = {
 	Name: string,
 	Step: (frames: number) -> boolean,
 	Destroy: () -> (),
+	-- Lets go of the body (it fell, or its action ended early): its glows put back, the rows that ride it gone; the rest
+	-- play on in their own time.
+	Let: () -> (),
 	End: number, -- the frame the last row is done, particles included
 	Parts: (row: string) -> { Instance }, -- what a row made, for the self-test
+}
+
+export type Options = {
+	Body: Model?, -- what Body rows ride and Glow rows light
+	Marks: { [string]: number }?, -- the frames of its action's beats from the action's start, for each row's From
 }
 
 local kit: Folder? = nil
@@ -55,6 +65,18 @@ end
 local function grey(colour: Color3): Color3
 	local y = 0.299 * colour.R + 0.587 * colour.G + 0.114 * colour.B
 	return Color3.new(y, y, y)
+end
+
+-- An image's id: the kit's (Config.FxKit), or one of the effects' own pictures (Config.Effects.Pictures; "" until it's
+-- uploaded).
+local function imageId(name: string): string
+	local image = FxKit.Images[name]
+	if image then
+		return image.Id
+	end
+	local picture = EffectsConfig.Pictures[name]
+	assert(picture ~= nil, `no image "{name}"`)
+	return picture
 end
 
 local function carrier(): Part
@@ -143,7 +165,25 @@ type Piece = {
 	Emitter: ParticleEmitter?,
 	Emitted: { [number]: boolean },
 	Light: PointLight?,
+	Offset: number, -- the frame its From beat stands on: its keys count from there
+	Placed: boolean, -- what it rides is there this step
+	Held: boolean, -- a Hold row's frame, kept from its first shown step
+	Rides: Instance?, -- a Body row's point on the body
+	History: { { number } }?, -- a Trail row's points by frame: { frame, x, y, z }
+	Beam: Beam?,
+	Ends: { Attachment }?,
+	Blank: boolean, -- a Beam with no picture (none in the block-in): never shown
+	Low: Vector3, -- a Beam's ends, for the rows that hang on them
+	High: Vector3,
+	Glow: SurfaceAppearance?, -- a Glow row's look on the body, and its strength before
+	GlowWas: number,
+	Touched: boolean,
 }
+
+-- The row a ref names: "Shaft.High" is the Shaft's.
+local function refRow(ref: string): string
+	return (string.split(ref, ".")[1])
+end
 
 -- The rows in an order where each comes after the row it rides.
 local function ordered(rows: { [string]: EffectsConfig.Row }): { string }
@@ -153,10 +193,10 @@ local function ordered(rows: { [string]: EffectsConfig.Row }): { string }
 			return
 		end
 		assert(depth < 16, `rows ride in a loop at "{name}"`)
-		local on = rows[name].On
-		if on then
-			assert(rows[on], `row "{name}" rides "{on}", which isn't a row`)
-			place(on, depth + 1)
+		local row = rows[name]
+		for _, other in { row.On, row.Like, if row.Low then refRow(row.Low) else nil, if row.High then refRow(row.High) else nil } do
+			assert(rows[other], `row "{name}" hangs on "{other}", which isn't a row`)
+			place(other, depth + 1)
 		end
 		placed[name] = true
 		table.insert(order, name)
@@ -172,7 +212,30 @@ local function ordered(rows: { [string]: EffectsConfig.Row }): { string }
 	return order
 end
 
-local function make(name: string, row: EffectsConfig.Row, greyed: boolean): Piece
+-- The point a Body row rides: the body's attachment by that name, or else its part.
+local function pointOf(body: Model?, name: string): Instance?
+	if body == nil then
+		return nil
+	end
+	local part: Instance? = nil
+	for _, d in body:GetDescendants() do
+		if d.Name == name then
+			if d:IsA("Attachment") then
+				return d
+			elseif d:IsA("BasePart") and part == nil then
+				part = d
+			end
+		end
+	end
+	return part
+end
+
+local function make(name: string, row: EffectsConfig.Row, greyed: boolean, options: Options): Piece
+	local offset = 0
+	if row.From then
+		local marks = options.Marks
+		offset = assert(marks and marks[row.From], `row "{name}": no beat "{row.From}" to count from`)
+	end
 	local piece: Piece = {
 		Name = name,
 		Row = row,
@@ -183,7 +246,32 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean): Piec
 		Meshes = {},
 		Was = false,
 		Emitted = {},
+		Offset = offset,
+		Placed = false,
+		Held = false,
+		Blank = false,
+		Low = Vector3.zero,
+		High = Vector3.zero,
+		GlowWas = 0,
+		Touched = false,
 	}
+	if row.Body then
+		piece.Rides = pointOf(options.Body, row.Body)
+	end
+	if row.Trail then
+		piece.History = {}
+	end
+	if row.Kind == "Glow" then -- the body's own look: nothing made
+		local body = options.Body
+		local part = if body and row.Part then body:FindFirstChild(row.Part[1], true) else nil
+		local look = if part then part:FindFirstChildOfClass("SurfaceAppearance") else nil
+		if look then
+			piece.Glow, piece.GlowWas = look, look.EmissiveStrength
+		end
+		return piece
+	elseif row.Kind == "Point" then -- a place, for the rows that hang on it
+		return piece
+	end
 	if row.Kind == "Mesh" then
 		local templates = kitFolder()
 		local lookName = if greyed then row.Grey or row.Look else row.Look
@@ -243,6 +331,27 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean): Piec
 			light.Shadows = false
 			light.Parent = holder
 			piece.Light = light
+		elseif row.Kind == "Beam" then
+			holder.CFrame = CFrame.identity -- its ends are set in the world
+			local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+			a0.Name, a1.Name = "Low", "High"
+			a0.Parent, a1.Parent = holder, holder
+			local beam = Instance.new("Beam")
+			beam.Name = "NL_RowBeam"
+			beam.Attachment0, beam.Attachment1 = a0, a1
+			beam.Enabled = false
+			beam.Segments = 10
+			for property, value in row.Beam or {} do
+				local target = beam :: any
+				target[property] = convert(target[property], value, greyed)
+			end
+			local id = if greyed and row.Grey ~= nil then (if row.Grey == "" then "" else imageId(row.Grey)) else imageId(row.Image :: string)
+			beam.Texture = id
+			piece.Blank = id == ""
+			local colour = row.Color or Color3.new(1, 1, 1)
+			beam.Color = ColorSequence.new(if greyed then grey(colour) else colour)
+			beam.Parent = holder
+			piece.Beam, piece.Ends = beam, { a0, a1 }
 		else
 			error(`row "{name}": no kind "{row.Kind}"`)
 		end
@@ -259,22 +368,56 @@ local function tail(row: EffectsConfig.Row): number
 	return (if type(life) == "table" then math.max(life[1], life[2]) else life) / FRAME
 end
 
+-- A Trail row's point at frame `t`, between the steps it was seen at; its oldest if it wasn't seen that far back.
+local function pointBefore(history: { { number } }, t: number): Vector3?
+	local count = #history
+	if count == 0 then
+		return nil
+	end
+	for index = count, 1, -1 do
+		local a = history[index]
+		if a[1] <= t then
+			local b = history[index + 1]
+			if b == nil or b[1] <= a[1] then
+				return Vector3.new(a[2], a[3], a[4])
+			end
+			local u = (t - a[1]) / (b[1] - a[1])
+			return Vector3.new(a[2], a[3], a[4]):Lerp(Vector3.new(b[2], b[3], b[4]), u)
+		end
+	end
+	local first = history[1]
+	return Vector3.new(first[2], first[3], first[4])
+end
+
 -- Plays the rows named `name` from `anchor` (the effect's foot; its look vector the way it faces), at `scale` times the
--- size they're written at (the hit's area over the rows' Area).
-function Rows.Play(name: string, anchor: CFrame, scale: number): Player
+-- size they're written at (the hit's area over the rows' Area). `options`: the body and beats of an action's effect.
+function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options?): Player
 	local effect = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows
 	assert(effect, `no rows "{name}"`)
+	local given: Options = options or {}
 	local greyed = effect.Grey
 	local order = ordered(effect.Rows)
 	local pieces: { [string]: Piece } = {}
 	local finish = 0
 	for _, rowName in order do
 		local row = effect.Rows[rowName]
-		pieces[rowName] = make(rowName, row, greyed)
+		local piece = make(rowName, row, greyed, given)
+		pieces[rowName] = piece
 		local _, last = span(row)
-		finish = math.max(finish, last + tail(row))
+		finish = math.max(finish, piece.Offset + last + tail(row))
 	end
 	local done = false
+	local let = false
+
+	local function putBack()
+		for _, piece in pieces do
+			local look = piece.Glow
+			if look and piece.Touched and look.Parent then
+				look.EmissiveStrength = piece.GlowWas
+			end
+			piece.Glow = nil
+		end
+	end
 
 	local player: Player
 	local function destroy()
@@ -282,6 +425,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 			return
 		end
 		done = true
+		putBack()
 		for _, piece in pieces do
 			for _, made in piece.Made do
 				made:Destroy()
@@ -289,7 +433,14 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 		end
 	end
 
-	local function step(t: number): boolean
+	-- A beam's end another row names ("Shaft.High"), as it stands this step.
+	local function refPoint(ref: string): Vector3
+		local parts = string.split(ref, ".")
+		local piece = pieces[parts[1]]
+		return if parts[2] == "Low" then piece.Low else piece.High
+	end
+
+	local function step(frames: number): boolean
 		if done then
 			return false
 		end
@@ -298,22 +449,54 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 			local piece = pieces[rowName]
 			local row = rows[rowName] or piece.Row
 			local tracks = row.Tracks
-			local parentFrame, parentScale = anchor, Vector3.one * scale
-			if row.On then
-				local parent = pieces[row.On]
-				parentFrame, parentScale = parent.Frame, parent.Scale
-			end
-			local at = Track.Value(tracks.At, t) or Vector3.zero
-			local spin = Track.Value(tracks.Spin, t) or 0
-			local tilt = Track.Value(tracks.Tilt, t) or Vector3.zero
-			piece.Frame = parentFrame
-				* CFrame.new(at * parentScale)
-				* CFrame.Angles(0, math.rad(spin), 0)
-				* CFrame.Angles(math.rad(tilt.X), math.rad(tilt.Y), math.rad(tilt.Z))
+			local t = frames - piece.Offset -- its own frames, from its From beat
 			local shown = t >= piece.First
+			if not (row.Hold and piece.Held) then
+				local parentFrame, parentScale, placed = anchor, Vector3.one * scale, true
+				if row.On then
+					local parent = pieces[row.On]
+					parentFrame, parentScale, placed = parent.Frame, parent.Scale, parent.Placed
+				elseif row.Body then
+					local point = piece.Rides
+					if let or point == nil or point.Parent == nil then
+						placed = false
+					elseif point:IsA("Attachment") then
+						parentFrame = point.WorldCFrame
+					else
+						parentFrame = (point :: BasePart).CFrame
+					end
+				end
+				local at = Track.Value(tracks.At, t) or Vector3.zero
+				local spin = Track.Value(tracks.Spin, t) or 0
+				local tilt = Track.Value(tracks.Tilt, t) or Vector3.zero
+				local frame = parentFrame
+					* CFrame.new(at * parentScale)
+					* CFrame.Angles(0, math.rad(spin), 0)
+					* CFrame.Angles(math.rad(tilt.X), math.rad(tilt.Y), math.rad(tilt.Z))
+				local turn = row.Turn
+				if turn then -- about up, then its own X, then its own Z
+					frame *= CFrame.Angles(0, math.rad(turn.Y), 0) * CFrame.Angles(math.rad(turn.X), 0, 0) * CFrame.Angles(0, 0, math.rad(turn.Z))
+				end
+				if row.Ground then -- set down to the effect's foot, upright, facing as the effect does
+					frame = CFrame.new(frame.X, anchor.Y, frame.Z) * anchor.Rotation
+				end
+				piece.Frame, piece.Scale, piece.Placed = frame, parentScale, placed
+				if row.Hold and shown and placed then
+					piece.Held = true
+				end
+				local history = piece.History
+				if history and placed then
+					local p = frame.Position
+					table.insert(history, { t, p.X, p.Y, p.Z })
+					if #history > 120 then
+						table.remove(history, 1)
+					end
+				end
+			end
+			shown = shown and piece.Placed
 			if row.Kind == "Mesh" then
-				local own = Track.Value(tracks.Scale, t) or Vector3.one
-				piece.Scale = own * scale
+				local own = Track.Value(tracks.Scale, t)
+				piece.Scale = (if type(own) == "number" then Vector3.one * own elseif own then own :: Vector3 else Vector3.one) * scale
 				local fade = Track.Value(tracks.Transparency, t)
 				local glow = Track.Value(tracks.Glow, t)
 				local tint = Track.Value(tracks.Color, t)
@@ -328,7 +511,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 					part.Size = unit.Size * piece.Scale
 					part.CFrame = piece.Frame * CFrame.new(unit.Centre * piece.Scale)
 					part.Transparency = (band and Track.Value(band.Transparency, t)) or fade or 0
-					local colour = (band and Track.Value(band.Color, t)) or tint
+					local colour = (band and Track.Value(band.Color, t)) or tint or row.Color
 					local look = mesh.Look
 					if look then
 						look.EmissiveStrength = (band and Track.Value(band.Glow, t)) or glow or 1
@@ -339,8 +522,64 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 						part.Color = if greyed then grey(colour) else colour
 					end
 				end
+			elseif row.Kind == "Glow" then
+				local look = piece.Glow
+				local glow = Track.Value(tracks.Glow, t)
+				if look and look.Parent and glow and not let then
+					look.EmissiveStrength = glow
+					piece.Touched = true
+				end
+			elseif row.Kind == "Beam" then
+				local beam = piece.Beam :: Beam
+				local ends = piece.Ends :: { Attachment }
+				local likeName = row.Like
+				local like = if likeName then rows[likeName] or pieces[likeName].Row else nil
+				local likeT = if likeName then frames - pieces[likeName].Offset else t
+				local width = Track.Value(tracks.Width, t) or (like and Track.Value(like.Tracks.Width, likeT)) or 0
+				local fade = Track.Value(tracks.Transparency, t) or (like and Track.Value(like.Tracks.Transparency, likeT)) or 0
+				local up = piece.Frame.UpVector
+				local studs = piece.Scale.Y
+				local low: Vector3?, high: Vector3? = nil, nil
+				local trail = row.Trail
+				if trail then -- from the point's trailing edge back to where it was Lag frames before
+					local now = piece.Frame.Position
+					local back = pointBefore(piece.History :: { { number } }, t - (Track.Value(tracks.Lag, t) or 0))
+					local along = if back then now - back else Vector3.zero
+					if back and along.Magnitude > 1e-3 then
+						low = now - along.Unit * trail.Back * studs
+						high = back - along.Unit * trail.Beyond * studs
+					end
+				else
+					local foot = if row.Low then refPoint(row.Low) else piece.Frame.Position + up * (Track.Value(tracks.Foot, t) or 0) * studs
+					local spike = Track.Value(tracks.Spike, t)
+					low = foot
+					high = if row.High then refPoint(row.High)
+						elseif spike then foot + up * spike * studs
+						else piece.Frame.Position + up * (Track.Value(tracks.Top, t) or 0) * studs
+				end
+				local on = shown and not piece.Blank and width > 0 and fade < 1 and low ~= nil and high ~= nil
+				if low and high then
+					piece.Low, piece.High = low, high
+					ends[1].WorldPosition, ends[2].WorldPosition = low, high
+					local v = math.clamp(fade, 0, 1)
+					local length = (high - low).Magnitude
+					local footFade = row.FootFade
+					if footFade and footFade > 0 and length > 1e-3 then
+						local f = math.clamp(footFade * studs / length, 0.001, 0.998)
+						beam.Transparency = NumberSequence.new({
+							NumberSequenceKeypoint.new(0, 1),
+							NumberSequenceKeypoint.new(f, v),
+							NumberSequenceKeypoint.new(1, v),
+						})
+					else
+						beam.Transparency = NumberSequence.new(v)
+					end
+				end
+				beam.Width0, beam.Width1 = width * studs, width * studs
+				beam.Enabled = on
+			elseif row.Kind == "Point" then
+				continue
 			else
-				piece.Scale = parentScale
 				local holder = piece.Carrier :: Part
 				holder.CFrame = piece.Frame
 				if row.Kind == "Card" then
@@ -380,7 +619,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 				end
 			end
 		end
-		if t > finish then
+		if frames > finish then
 			destroy()
 			return false
 		end
@@ -391,6 +630,10 @@ function Rows.Play(name: string, anchor: CFrame, scale: number): Player
 		Name = name,
 		Step = step,
 		Destroy = destroy,
+		Let = function()
+			let = true
+			putBack()
+		end,
 		End = finish,
 		Parts = function(rowName: string): { Instance }
 			local piece = pieces[rowName]

@@ -252,6 +252,36 @@ local rows: { Action } = {
 		Levers = { "anticipation (the head lifted to you before it moves)", "the stamp: the pole lifted a hand and set down" },
 		Signed = nil,
 	},
+	{
+		-- The Lamplighter's signature (AR7, sections 6 and 7; AR8, the keeper's signature): it plants its pole, leans its
+		-- lantern out over your fighter as the light gathers in it, wrenches it high on Wrench and slams it down beside them on
+		-- Slam, and the light leaps back up out of the street as a column. Its effect is its rows (Config.Effects.Rows.
+		-- KeeperSignature). In the motion blockout it's pressed only by the replay's hold (KeeperForce): its place in the
+		-- keeper's fight, its cooldown and its coefficient are a seed, signed with the fight's rotation.
+		Id = "KeeperSignature",
+		Clip = "LamplighterSignature",
+		Length = 3.0333,
+		CancelFrom = 3.0333,
+		Cooldown = 12,
+		Beats = { Plant = 0.4, Light = 0.7333, Wrench = 1.7667, Slam = 1.9667 },
+		Hits = {
+			Slam = { Coefficient = ENEMY_PER_SECOND * 3, Heavy = true, Reach = 10, Push = 2.5, Rung = 8 },
+		},
+		-- the lantern lands 6.33 studs ahead of the keeper and 1.92 to its left (AR7, section 7): from 7.5 it's down beside
+		-- your fighter, 2.25 from its middle, its drum clear of the body
+		Range = 7.5,
+		Heavy = true,
+		State = nil,
+		Levers = {
+			"anticipation (the long hold: the lantern leant out over your fighter, its light gathering, the camera lifted to it)",
+			"the flare on the Wrench",
+			"the streak trailing the fall",
+			"hitstop (rung 8, the keeper's), the flash and the hurt shake on Slam",
+			"knockback",
+			"the column (the hero shape), its foot letting go and climbing away",
+		},
+		Signed = nil,
+	},
 }
 
 local Actions = {}

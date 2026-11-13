@@ -791,23 +791,32 @@ local function rise(f: Fighter, at: number)
 	FightService.Rose:Fire(f)
 end
 
+-- The replay's hold (FightService.Force): true while `f` is held, facing its target and pressing its action on time. A
+-- lead or a Shade alike; an action that isn't one ("") holds it still, facing, pressing nothing.
+local function forced(f: Fighter, at: number): boolean
+	if f.Forced == nil then
+		return false
+	end
+	local target = f.ForcedTarget
+	face(f, if target then target.Root.Position else nil)
+	if target and at >= f.ForcedNext and not busy(f, at) then
+		local action = Actions.ById[f.Forced]
+		if action then
+			if target.Home then -- every press from the same spacing: the last one's push undone
+				target.Root.AssemblyLinearVelocity = Vector3.zero
+				target.Root.CFrame = target.Home
+			end
+			start(f, action, at)
+		end
+		f.ForcedNext = at + f.ForcedEvery
+	end
+	return true
+end
+
 -- A lead's turn to decide.
 local function thinkLead(f: Fighter, at: number, dt: number)
 	local avatar = avatarRoot(f)
-	if f.Forced then
-		local target = f.ForcedTarget
-		face(f, if target then target.Root.Position else nil)
-		if target and at >= f.ForcedNext and not busy(f, at) then
-			local action = Actions.ById[f.Forced]
-			if action then
-				if target.Home then -- every press from the same spacing: the last one's push undone
-					target.Root.AssemblyLinearVelocity = Vector3.zero
-					target.Root.CFrame = target.Home
-				end
-				start(f, action, at)
-			end
-			f.ForcedNext = at + f.ForcedEvery
-		end
+	if forced(f, at) then
 		return
 	end
 	if avatar == nil then
@@ -880,6 +889,9 @@ local function thinkShade(f: Fighter, at: number)
 	local home = f.Home
 	if f.Kit[1] == nil or home == nil then
 		return -- a dummy stands and takes it
+	end
+	if f.State ~= "Flinch" and forced(f, at) then
+		return
 	end
 	local fromHome = flat(f.Root.Position - home.Position).Magnitude
 	if f.State == "Reset" then

@@ -27,6 +27,7 @@ local WorldConfig = require(Shared.Config.World)
 local BaseConfig = require(Shared.Config.Base)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
+local CameraTurn = require(Shared.Util.CameraTurn)
 local Drops = require(Shared.Rules.Drops)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
@@ -559,6 +560,177 @@ return {
 			t.Check("it lives on while its embers do", player.Step(player.End - 1))
 			t.Check("and ends", not player.Step(player.End + 1))
 			t.Check("leaving nothing", coil[1].Parent == nil and embers.Parent == nil)
+		end,
+	},
+	{
+		Name = "Effects: the keeper's signature plays its rows on its beats, on a body, and leaves the body as it was",
+		Stay = true,
+		Run = function(t: any)
+			-- AR8, "The keeper's signature in the engine": Config.Effects.Rows.KeeperSignature through Rows, stepped by hand
+			-- on a stand-in body: its lantern part, its look and its "Lantern" point, as the keeper's rig has them.
+			local action = Actions.ById.KeeperSignature
+			local marks: { [string]: number } = {}
+			for beat, at in action.Beats do
+				marks[beat] = math.floor(at * 60 + 0.5)
+			end
+			local root = t.Character():FindFirstChild("HumanoidRootPart") :: BasePart
+			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
+			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
+			local body = Instance.new("Model")
+			body.Name = "NL_TestKeeper"
+			local lantern = Instance.new("MeshPart") -- a look sits only on a MeshPart
+			lantern.Name = "Lamplighter_Lantern"
+			lantern.Anchored, lantern.CanCollide, lantern.CanQuery = true, false, false
+			lantern.Size = Vector3.new(3, 3.45, 3)
+			lantern.Transparency = 1
+			local held = anchor * CFrame.new(1.5, 11, -3) -- leant out over the fighter through the hold
+			lantern.CFrame = held
+			local look = Instance.new("SurfaceAppearance")
+			look.EmissiveStrength = 1.2
+			look.Parent = lantern
+			local point = Instance.new("Attachment")
+			point.Name = "Lantern"
+			point.Parent = lantern
+			lantern.Parent = body
+			body.Parent = workspace
+			local player = Rows.Play("KeeperSignature", anchor, 1, { Body = body, Marks = marks })
+			local function beam(row: string): Beam
+				return player.Parts(row)[1]:FindFirstChildOfClass("Beam") :: Beam
+			end
+			local function light(row: string): PointLight
+				return player.Parts(row)[1]:FindFirstChildOfClass("PointLight") :: PointLight
+			end
+			local shell = player.Parts("Shell")[1] :: MeshPart
+
+			player.Step(40)
+			t.Near("before the Light: the paper as it was", look.EmissiveStrength, 1.2, 1e-6)
+			t.Check("no shell, no light", shell.Transparency == 1 and light("HoldLight").Brightness == 0)
+			player.Step(96)
+			t.Near("the light gathered in the paper at the look, 96", look.EmissiveStrength, 2.2, 1e-6)
+			t.Check("the shell round the drum's middle", shell.Position:FuzzyEq(point.WorldPosition, 1e-3), tostring(shell.Position - point.WorldPosition))
+			t.Check("at its size there", (shell.Size - FxKit.Meshes.FxShell.Size * Vector3.new(1.9, 2.25, 1.9)).Magnitude < 1e-3, tostring(shell.Size))
+			t.Near("see-through", shell.Transparency, 0.45, 1e-6)
+			t.Check("the hold's light at the lantern", (player.Parts("HoldLight")[1] :: BasePart).Position:FuzzyEq(point.WorldPosition, 1e-3))
+			t.Near("building", light("HoldLight").Brightness, 2.4, 1e-6)
+			lantern.CFrame = held * CFrame.new(0, 1, 0) * CFrame.Angles(0, 0, 0.3)
+			player.Step(97)
+			t.Check("the shell rides the lantern as it moves", shell.Position:FuzzyEq(point.WorldPosition, 1e-3))
+			player.Step(104)
+			t.Check("the shell and the light gone by 104 (condition a)", shell.Transparency == 1 and light("HoldLight").Brightness == 0)
+			player.Step(106)
+			t.Near("the paper at its top on the Wrench", look.EmissiveStrength, 3, 1e-6)
+			-- The fall: the lantern driven down to the street beside the fighter.
+			local landing = anchor * CFrame.new(-1.92, 1.9, -6.33)
+			local fallFrom = lantern.Position
+			for frame = 107, 118 do
+				local u = (frame - 106) / 12
+				lantern.CFrame = CFrame.new(fallFrom:Lerp(landing.Position, u * u))
+				player.Step(frame)
+				if frame == 113 then
+					local streak = beam("Streak")
+					local ends = player.Parts("Streak")[1]:GetChildren()
+					t.Check("the streak trails the fall on 113", streak.Enabled and math.abs(streak.Width0 - 3.3) < 1e-6)
+					local low = (streak.Attachment0 :: Attachment).WorldPosition
+					local high = (streak.Attachment1 :: Attachment).WorldPosition
+					t.Check("from the drum's trailing edge, behind it", (low - point.WorldPosition).Magnitude > 1.49 and high.Y > low.Y, `{#ends} {low} {high}`)
+				end
+				if frame == 117 then
+					t.Check("the streak gone before 117 (condition b)", not beam("Streak").Enabled)
+				end
+			end
+			local spot = Vector3.new(point.WorldPosition.X, anchor.Y, point.WorldPosition.Z)
+			local shaft = beam("Shaft")
+			t.Check("the column on the Slam", shaft.Enabled and math.abs(shaft.Width0 - 6.9) < 1e-6, tostring(shaft.Width0))
+			t.Check("its foot on the street under the drum", (shaft.Attachment0 :: Attachment).WorldPosition:FuzzyEq(spot, 1e-3), tostring((shaft.Attachment0 :: Attachment).WorldPosition - spot))
+			t.Check("its top 7.5 up", (shaft.Attachment1 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 7.5, 0), 1e-3))
+			t.Check("the tip over it", (beam("Tip").Attachment0 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 7.5, 0), 1e-3) and beam("Tip").Enabled)
+			t.Check("the halo none in the block-in", not beam("Halo").Enabled)
+			t.Check("the street lit 4 up, at its brightest", (player.Parts("SlamLight")[1] :: BasePart).Position:FuzzyEq(spot + Vector3.new(0, 4, 0), 1e-3) and light("SlamLight").Brightness == 5)
+			lantern.CFrame = held -- lifted again: the column stays where it fell
+			player.Step(124)
+			local stood = (shaft.Attachment0 :: Attachment).WorldPosition
+			t.Check("the column stays where the lantern fell", Vector3.new(stood.X, 0, stood.Z):FuzzyEq(Vector3.new(spot.X, 0, spot.Z), 1e-3))
+			t.Check("the paper dim after the Slam", look.EmissiveStrength < 1.2, string.format("%.2f", look.EmissiveStrength))
+			t.Check("its foot letting go on 124", (shaft.Attachment0 :: Attachment).WorldPosition.Y > anchor.Y)
+			local shown, chips = 0, 0
+			for index = 1, 9 do
+				local chip = player.Parts(`Chip{index}`)[1] :: MeshPart
+				chips += 1
+				if chip.Transparency == 0 and chip.Material == Enum.Material.Neon then
+					shown += 1
+				end
+			end
+			t.Check("nine chips flung off its edge, Neon", shown == 9 and chips == 9, tostring(shown))
+			player.Step(141)
+			t.Check("the street clear by 141 (condition 4)", not shaft.Enabled and light("SlamLight").Brightness == 0 and (player.Parts("Chip1")[1] :: MeshPart).Size.Magnitude < 0.01)
+			t.Check("it lives on while the paper relights", player.Step(player.End - 1))
+			t.Check("and ends", not player.Step(player.End + 1))
+			t.Near("the paper as it was", look.EmissiveStrength, 1.2, 1e-6)
+			t.Check("leaving nothing", shell.Parent == nil and player.Parts("Shaft")[1].Parent == nil)
+			-- Let go after the Slam (its keeper fell): the body's glow back at once, the column plays on.
+			local again = Rows.Play("KeeperSignature", anchor, 1, { Body = body, Marks = marks })
+			lantern.CFrame = landing
+			again.Step(110)
+			again.Step(120)
+			again.Let()
+			t.Near("let go: the paper back at once", look.EmissiveStrength, 1.2, 1e-6)
+			again.Step(121)
+			local column = again.Parts("Shaft")[1]:FindFirstChildOfClass("Beam") :: Beam
+			t.Check("the column plays on", column.Enabled)
+			again.Destroy()
+			t.Check("and ends with nothing left", column.Parent == nil)
+			-- The camera's lift through the hold, when the lead it's aimed at is the player's own.
+			local lead = Instance.new("Model")
+			lead:SetAttribute("Owner", Players.LocalPlayer.UserId)
+			local chest = Instance.new("Part")
+			chest.Anchored, chest.CanCollide, chest.CanQuery, chest.Transparency = true, false, false, 1
+			chest.CFrame = anchor * CFrame.new(0, 3, -7.5)
+			chest.Parent = lead
+			lead.Parent = workspace
+			local lift = EffectsConfig.KeeperSignature.Lift
+			local base = Effects.Lift()
+			local running = Effects.KeeperSignature(action.Beats, body, function(): BasePart?
+				return chest
+			end, action)
+			running.Step(action.Beats.Light + lift.Rise)
+			t.Near("lifted through the hold", Effects.Lift() - base, lift.Degrees, 1e-6)
+			running.Step(action.Beats.Slam + lift.Fall)
+			t.Near("and down again after the Slam", Effects.Lift() - base, 0, 1e-6)
+			local early = Effects.KeeperSignature(action.Beats, body, function(): BasePart?
+				return chest
+			end, action)
+			early.Step(action.Beats.Light + lift.Rise)
+			early.Destroy()
+			t.Near("ended mid-hold: still lifted on that frame", Effects.Lift() - base, lift.Degrees, 1e-6)
+			t.Wait(lift.Fall + 0.2)
+			t.Near("then eased back down over Fall", Effects.Lift() - base, 0, 1e-6)
+			running.Destroy()
+			t.Near("and the paper as it was, both put back", look.EmissiveStrength, 1.2, 1e-6)
+			body:Destroy()
+			lead:Destroy()
+		end,
+	},
+	{
+		Name = "Camera: a turn put on the player's camera stays, on a phone's following camera too",
+		Stay = true,
+		Run = function(t: any)
+			-- CameraTurn: a phone's camera follows, and undoes on the next frame a turn it didn't make itself (measured
+			-- 2026-11-13); the fade's swing behind the avatar and the replay's turn go through CameraTurn so it stays. A
+			-- mouse's camera keeps it either way. Run on the phone emulation to test the following camera.
+			local camera = workspace.CurrentCamera
+			local focus = camera.Focus.Position
+			local turned = CFrame.new(focus) * CFrame.Angles(0, math.rad(90), 0) * CFrame.new(-focus) * camera.CFrame
+			CameraTurn.To(turned)
+			for _ = 1, 10 do
+				RunService.RenderStepped:Wait()
+			end
+			t.Near("turned a quarter round, ten frames on (degrees off)", flatAngle(camera.CFrame.LookVector, turned.LookVector), 0, 2)
+			t.Check("and the camera the player's again", camera.CameraType == Enum.CameraType.Custom)
+			local back = CFrame.new(camera.Focus.Position) * CFrame.Angles(0, math.rad(-90), 0) * CFrame.new(-camera.Focus.Position)
+			CameraTurn.To(back * camera.CFrame)
+			for _ = 1, 3 do
+				RunService.RenderStepped:Wait()
+			end
 		end,
 	},
 	{

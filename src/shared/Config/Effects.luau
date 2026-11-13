@@ -10,15 +10,27 @@
 --            emissive mask (it reads at night as by day), or Grey's in the block-in. "Card": the kit's Image facing the
 --            camera. "Emitter": a ParticleEmitter with the kit's Image and Emitter's properties as Roblox names them (a pair
 --            of numbers is a range; a list of { time, value } a sequence; a string an Enum item). "Light": a PointLight.
+--            "Glow": the body's own look on its Part, its strength from the Glow track, put back at the end. "Point": a
+--            place only, for the rows that hang on it. "Beam": a Beam in Image (or Grey's in the block-in; "" none there),
+--            with Beam's properties as Roblox names them, between its two ends (below).
 --   On       another row it rides: its place, spin and tilt, and its scale for At and Radius. None: the effect's foot.
---   Tracks   At (Vector3: on a row, in its unit space; else studs), Scale (Vector3, the mesh's unit size times it),
---            Spin (degrees round up, negative clockwise from above), Tilt (Vector3, degrees), Transparency, Glow (the
---            look's emissive strength), Color, Size (a card's studs), Brightness, Rate, Radius (an emitter's disc, in
---            its row's unit space).
+--   Body     a point of the action's body it rides instead (an attachment by that name, else a part).
+--   From     the beat of the effect's action its keys count from; none: the effect's marker.
+--   Ground   set down to the effect's foot, upright, facing as the effect does. Hold: its place kept from its first frame.
+--   Turn     Vector3, degrees: turned about up, then about its own X, then its own Z.
+--   Tracks   At (Vector3: on a row, in its unit space; else studs), Scale (Vector3, the mesh's unit size times it; a
+--            number for all three), Spin (degrees round up, negative clockwise from above), Tilt (Vector3, degrees),
+--            Transparency, Glow (a look's emissive strength), Color, Size (a card's studs), Brightness, Rate, Radius (an
+--            emitter's disc, in its row's unit space); a Beam's Width, Foot, Top, Spike and Lag.
+--   Beam ends: Low is Foot studs up its place, or another Beam's end ("Shaft.High"); High is Top studs up its place, or
+--            Spike studs over Low, or another's end. Trail { Back, Beyond }: from its point Back studs behind it along its
+--            motion, to where it was Lag frames before and Beyond studs further. Like: another Beam whose Width and
+--            Transparency it takes when it has none. FootFade: studs from Low over which it fades in.
 --   Bands    a Mesh row's tracks for one of its parts, over the row's own.
 --   Emit     { frame, count }: an emitter's particles let go at once.
--- Area: the hit's area the rows are written at; a hit of another area scales the places and sizes (not the particles).
--- Grey: the block-in, every look grey and every colour its own grey.
+-- Area: the hit's area the rows are written at, or for an action's own effect the body's scale; another scales the places
+-- and sizes (not the particles). Grey: the block-in, every look grey and every colour its own grey. Action: the action
+-- whose beats its rows' From name.
 export type Key = { any }
 export type Row = {
 	Kind: string,
@@ -33,8 +45,19 @@ export type Row = {
 	Emit: { { number } }?,
 	Tracks: { [string]: { Key } },
 	Bands: { [string]: { [string]: { Key } } }?,
+	From: string?,
+	Body: string?,
+	Ground: boolean?,
+	Hold: boolean?,
+	Turn: Vector3?,
+	Beam: { [string]: any }?,
+	Trail: { Back: number, Beyond: number }?,
+	Low: string?,
+	High: string?,
+	Like: string?,
+	FootFade: number?,
 }
-export type Rows = { Area: number, Grey: boolean, Rows: { [string]: Row } }
+export type Rows = { Area: number, Grey: boolean, Action: string?, Rows: { [string]: Row } }
 
 -- A coil band's burn (B1's exit): it holds whole until `from`, fades over Goes frames on Quad In, and flares from 2 to 4
 -- as it goes (build/handoff/Pip/fx/pip_burst_rows.json).
@@ -276,6 +299,21 @@ return {
 	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.
 	ShardLeap = { Seconds = 0.8, Height = 7, Size = 1.4, Spin = 9, From = 60, Flash = { Seconds = 0.3, To = 4 } },
 
+	-- The keeper's signature (AR7, sections 6 and 7; AR8, "The keeper's signature in the engine"): its rows on the action's
+	-- beats, and the camera's lift through the hold when the lead it's aimed at is the player's own: Degrees up, eased in
+	-- over Rise seconds from Light, held, and back over Fall from Slam (AR7, section 6: from the fight's camera the wrench
+	-- stands over a phone's top edge). 18 tried by playing (2026-11-13): at 6 the lantern stayed over the top edge through
+	-- the whole hold with the keeper about 20 studs off; at 18 it's in the frame, under the edge, from the Light on.
+	KeeperSignature = { Rows = "KeeperSignature", Lift = { Degrees = 18, Rise = 0.6, Fall = 0.3 } },
+
+	-- The effects' own pictures, by name, for rows that use one outside the kit: the group's uploads (docs/asset-log.md),
+	-- "" until uploaded, which a block-in in grey doesn't need.
+	Pictures = {
+		lamplighter_column = "",
+		lamplighter_column_tip = "",
+		lamplighter_column_halo = "",
+	} :: { [string]: string },
+
 	-- The effects as rows (the header). Tuned live: "Effects.Rows.LanternExit.Rows.Coil.Tracks.Spin.2.2".
 	Rows = {
 		-- Pip's Lantern Burst, its exit (AR8, B1; Modulo's rows, build/handoff/Pip/fx/pip_burst_rows.json), from the Burst
@@ -399,6 +437,575 @@ return {
 						Brightness = { { 0, 1.5, "Quart Out" }, { 4, 4, "Sine InOut" }, { 8, 3.2, "Linear" }, { 18.5, 0 } },
 					},
 				},
+			},
+		} :: Rows,
+		-- The keeper's signature (AR7, section 7; Modulo's rows, build/handoff/Lamplighter/fx/lamplighter_signature_rows.json),
+		-- written at the keeper's scale (Definitions.Enemies), each from its beat. Through the hold the light gathers in the
+		-- lantern's paper, a shell of warm light round its belly and a light on the street; one streak trails the fall; on
+		-- the Slam the light leaps back up out of the street beside your fighter as a column, its foot letting go and
+		-- climbing away, chips flung off its edge.
+		KeeperSignature = {
+			Area = 1.5,
+			Grey = true,
+			Action = "KeeperSignature",
+			Rows = {
+			-- The light gathers in the paper through the hold, flares on the Wrench, dims on the Slam: the lantern's own glow.
+			Paper = {
+				Kind = "Glow",
+				From = "Light",
+				Part = { "Lamplighter_Lantern" },
+				Tracks = {
+					Glow = {
+						{ 0, 1.2, "Sine InOut" },
+						{ 52, 2.2, "Quad In" },
+						{ 60, 2.6, "Linear" },
+						{ 62, 3, "Linear" },
+						{ 63, 3, "Quad Out" },
+						{ 68, 2.4, "Linear" },
+						{ 74, 2.4, "Quart Out" },
+						{ 75, 0.4, "Sine InOut" },
+						{ 116, 1.2 },
+					},
+				},
+			},
+			-- Lamplight on your fighter and the street under the lantern, building to the look, out by 104 (condition a).
+			HoldLight = {
+				Kind = "Light",
+				From = "Light",
+				Body = "Lantern",
+				Range = 14,
+				Color = Color3.new(0.82, 0.958, 0.918),
+				Tracks = {
+					Brightness = {
+						{ 0, 0, "Quad Out" },
+						{ 6, 1.2, "Sine InOut" },
+						{ 52, 2.4, "Quad In" },
+						{ 56, 3.2, "Quad In" },
+						{ 60, 0 },
+					},
+				},
+			},
+			-- The hold's glow made a shape round the paper's belly, the drum's rims standing out of it; gone by 104.
+			Shell = {
+				Kind = "Mesh",
+				From = "Light",
+				Body = "Lantern",
+				Part = { "FxShell" },
+				Look = "fx_rise_Warm",
+				Grey = "fx_rise_Grey",
+				Tracks = {
+					Scale = {
+						{ 0, Vector3.new(1.6, 1.9, 1.6), "Quad Out" },
+						{ 8, Vector3.new(1.75, 2.1, 1.75), "Sine InOut" },
+						{ 52, Vector3.new(1.9, 2.25, 1.9), "Linear" },
+						{ 56, Vector3.new(1.9, 2.25, 1.9), "Quad In" },
+						{ 60, Vector3.new(1.5, 1.75, 1.5) },
+					},
+					Transparency = {
+						{ 0, 1, "Quad Out" },
+						{ 8, 0.6, "Sine InOut" },
+						{ 52, 0.45, "Linear" },
+						{ 56, 0.4, "Quad In" },
+						{ 60, 1 },
+					},
+					Glow = { { 0, 1.5, "Sine InOut" }, { 52, 3, "Linear" }, { 60, 3 } },
+				},
+			},
+			-- One straight streak behind the falling lantern, in the column's light, gone before 117 (condition b).
+			Streak = {
+				Kind = "Beam",
+				From = "Wrench",
+				Body = "Lantern",
+				Image = "lamplighter_column_tip",
+				Grey = "fx_beam",
+				Color = Color3.new(1, 1, 1),
+				Beam = { FaceCamera = true, TextureMode = "Stretch", TextureLength = 1, TextureSpeed = 0, LightEmission = 1, LightInfluence = 0, Segments = 10 },
+				Trail = { Back = 1.5, Beyond = 0.9 }, -- from the drum's trailing edge back to where it was Lag frames before
+				Tracks = {
+					Width = { { 5, 3.3 } },
+					Lag = { { 5, 5 } },
+					Transparency = { { 5, 0.15, "Linear" }, { 10, 0.15 }, { 11, 1 } },
+				},
+			},
+			-- The ground under the drum's middle on the Slam: the column's foot.
+			Spot = {
+				Kind = "Point",
+				From = "Slam",
+				Body = "Lantern",
+				Ground = true,
+				Hold = true,
+				Tracks = { At = { { 0, Vector3.zero } } },
+			},
+			-- Section 7's column: straight sides, the paper lantern's ribs climbing it, its foot letting go after the peak.
+			Shaft = {
+				Kind = "Beam",
+				From = "Slam",
+				On = "Spot",
+				Image = "lamplighter_column",
+				Grey = "fx_beam",
+				Color = Color3.new(1, 1, 1),
+				Beam = { FaceCamera = true, TextureMode = "Wrap", TextureLength = 2.625, TextureSpeed = 7, LightEmission = 0.7, LightInfluence = 0, Segments = 20 },
+				FootFade = 2.1,
+				Tracks = {
+					Foot = {
+						{ 0, 0, "Linear" },
+						{ 1, 0, "Linear" },
+						{ 2, 0, "Linear" },
+						{ 3, 0, "Linear" },
+						{ 4, 0, "Linear" },
+						{ 5, 0, "Linear" },
+						{ 6, 0.653, "Linear" },
+						{ 7, 1.41, "Linear" },
+						{ 8, 2.272, "Linear" },
+						{ 9, 3.24, "Linear" },
+						{ 10, 4.312, "Linear" },
+						{ 11, 5.49, "Linear" },
+						{ 12, 6.773, "Linear" },
+						{ 13, 8.16, "Linear" },
+						{ 14, 9.652, "Linear" },
+						{ 15, 11.25, "Linear" },
+						{ 16, 12.953, "Linear" },
+						{ 17, 14.76, "Linear" },
+						{ 18, 16.673, "Linear" },
+						{ 19, 18.69, "Linear" },
+						{ 20, 20.812, "Linear" },
+						{ 21, 23.04 },
+					},
+					Top = {
+						{ 0, 7.5, "Linear" },
+						{ 1, 10.2, "Linear" },
+						{ 2, 11.1, "Linear" },
+						{ 3, 11.4, "Linear" },
+						{ 4, 11.475, "Linear" },
+						{ 5, 11.55, "Linear" },
+						{ 6, 11.67, "Linear" },
+						{ 7, 11.88, "Linear" },
+						{ 8, 12.18, "Linear" },
+						{ 9, 12.57, "Linear" },
+						{ 10, 13.05, "Linear" },
+						{ 11, 13.62, "Linear" },
+						{ 12, 14.28, "Linear" },
+						{ 13, 15.03, "Linear" },
+						{ 14, 15.87, "Linear" },
+						{ 15, 16.8, "Linear" },
+						{ 16, 17.82, "Linear" },
+						{ 17, 18.93, "Linear" },
+						{ 18, 20.13, "Linear" },
+						{ 19, 21.42, "Linear" },
+						{ 20, 22.8, "Linear" },
+						{ 21, 24.27 },
+					},
+					Width = {
+						{ 0, 6.9, "Linear" },
+						{ 1, 6.36, "Linear" },
+						{ 2, 6.12, "Linear" },
+						{ 3, 6, "Linear" },
+						{ 4, 6, "Linear" },
+						{ 5, 6, "Linear" },
+						{ 6, 5.841, "Linear" },
+						{ 7, 5.682, "Linear" },
+						{ 8, 5.524, "Linear" },
+						{ 9, 5.365, "Linear" },
+						{ 10, 5.206, "Linear" },
+						{ 11, 5.047, "Linear" },
+						{ 12, 4.888, "Linear" },
+						{ 13, 4.729, "Linear" },
+						{ 14, 4.571, "Linear" },
+						{ 15, 4.412, "Linear" },
+						{ 16, 4.253, "Linear" },
+						{ 17, 4.094, "Linear" },
+						{ 18, 3.935, "Linear" },
+						{ 19, 3.776, "Linear" },
+						{ 20, 3.618, "Linear" },
+						{ 21, 3.459 },
+					},
+					Transparency = {
+						{ 0, 0, "Linear" },
+						{ 1, 0, "Linear" },
+						{ 2, 0, "Linear" },
+						{ 3, 0, "Linear" },
+						{ 4, 0, "Linear" },
+						{ 5, 0, "Linear" },
+						{ 6, 0, "Linear" },
+						{ 7, 0, "Linear" },
+						{ 8, 0, "Linear" },
+						{ 9, 0, "Linear" },
+						{ 10, 0, "Linear" },
+						{ 11, 0.02, "Linear" },
+						{ 12, 0.074, "Linear" },
+						{ 13, 0.156, "Linear" },
+						{ 14, 0.259, "Linear" },
+						{ 15, 0.376, "Linear" },
+						{ 16, 0.5, "Linear" },
+						{ 17, 0.624, "Linear" },
+						{ 18, 0.741, "Linear" },
+						{ 19, 0.844, "Linear" },
+						{ 20, 0.926, "Linear" },
+						{ 21, 0.98, "Linear" },
+						{ 22, 1 },
+					},
+				},
+			},
+			-- The needle over the shaft, with the shaft's width and fade.
+			Tip = {
+				Kind = "Beam",
+				From = "Slam",
+				On = "Spot",
+				Low = "Shaft.High",
+				Like = "Shaft",
+				Image = "lamplighter_column_tip",
+				Grey = "fx_beam",
+				Color = Color3.new(1, 1, 1),
+				Beam = { FaceCamera = true, TextureMode = "Stretch", TextureLength = 1, TextureSpeed = 0, LightEmission = 0.7, LightInfluence = 0, Segments = 10 },
+				Tracks = {
+					Spike = {
+						{ 0, 5.7, "Linear" },
+						{ 1, 5.7, "Linear" },
+						{ 2, 5.7, "Linear" },
+						{ 3, 5.7, "Linear" },
+						{ 4, 5.7, "Linear" },
+						{ 5, 5.7, "Linear" },
+						{ 6, 5.549, "Linear" },
+						{ 7, 5.398, "Linear" },
+						{ 8, 5.247, "Linear" },
+						{ 9, 5.096, "Linear" },
+						{ 10, 4.946, "Linear" },
+						{ 11, 4.795, "Linear" },
+						{ 12, 4.644, "Linear" },
+						{ 13, 4.493, "Linear" },
+						{ 14, 4.342, "Linear" },
+						{ 15, 4.191, "Linear" },
+						{ 16, 4.04, "Linear" },
+						{ 17, 3.889, "Linear" },
+						{ 18, 3.739, "Linear" },
+						{ 19, 3.588, "Linear" },
+						{ 20, 3.437, "Linear" },
+						{ 21, 3.286 },
+					},
+				},
+			},
+			-- The column's glow behind it, 1.9 times its width, wider on the slam and the frame after.
+			Halo = {
+				Kind = "Beam",
+				From = "Slam",
+				On = "Spot",
+				Low = "Shaft.Low",
+				High = "Tip.High",
+				Like = "Shaft",
+				Image = "lamplighter_column_halo",
+				Grey = "", -- none in the block-in
+				Color = Color3.new(1, 1, 1),
+				Beam = { FaceCamera = true, TextureMode = "Stretch", TextureLength = 1, TextureSpeed = 0, LightEmission = 1, LightInfluence = 0, Segments = 10, ZOffset = -0.5 },
+				Tracks = {
+					Width = {
+						{ 0, 20.976, "Linear" },
+						{ 1, 15.105, "Linear" },
+						{ 2, 11.628, "Linear" },
+						{ 3, 11.4, "Linear" },
+						{ 4, 11.4, "Linear" },
+						{ 5, 11.4, "Linear" },
+						{ 6, 11.098, "Linear" },
+						{ 7, 10.796, "Linear" },
+						{ 8, 10.495, "Linear" },
+						{ 9, 10.193, "Linear" },
+						{ 10, 9.891, "Linear" },
+						{ 11, 9.589, "Linear" },
+						{ 12, 9.288, "Linear" },
+						{ 13, 8.986, "Linear" },
+						{ 14, 8.684, "Linear" },
+						{ 15, 8.382, "Linear" },
+						{ 16, 8.081, "Linear" },
+						{ 17, 7.779, "Linear" },
+						{ 18, 7.477, "Linear" },
+						{ 19, 7.175, "Linear" },
+						{ 20, 6.874, "Linear" },
+						{ 21, 6.572 },
+					},
+				},
+			},
+			-- The secondary, a breath after the peak: angular bits of light flung up and out off the column's edge, shrinking as they rise.
+			Chip1 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip1" },
+				Color = Color3.new(0.549, 0.965, 1), -- cyan
+				Turn = Vector3.new(45, 16.1, -34.4),
+				Tracks = {
+					At = {
+						{ 4, Vector3.new(2.59, 1.2, -0.75), "Linear" },
+						{ 6, Vector3.new(5.74, 4.2, -1.65), "Linear" },
+						{ 8, Vector3.new(7.64, 6.35, -2.2), "Linear" },
+						{ 10, Vector3.new(8.62, 7.8, -2.48), "Linear" },
+						{ 13, Vector3.new(9.03, 8.94, -2.6), "Linear" },
+						{ 16, Vector3.new(9.04, 9.28, -2.6), "Linear" },
+						{ 19, Vector3.new(9.04, 9.31, -2.6), "Linear" },
+						{ 22, Vector3.new(9.04, 9.31, -2.6) },
+					},
+					Scale = {
+						{ 4, 1.26, "Linear" },
+						{ 6, 1.147, "Linear" },
+						{ 8, 1.031, "Linear" },
+						{ 10, 0.911, "Linear" },
+						{ 13, 0.724, "Linear" },
+						{ 16, 0.523, "Linear" },
+						{ 19, 0.301, "Linear" },
+						{ 22, 0 },
+					},
+				},
+			},
+			Chip2 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip2" },
+				Color = Color3.new(1, 0.922, 0.761), -- warm
+				Turn = Vector3.new(45, 45.9, -34.4),
+				Tracks = {
+					At = {
+						{ 5, Vector3.new(1.88, 1.2, -1.94), "Linear" },
+						{ 7, Vector3.new(3.42, 3.88, -3.53), "Linear" },
+						{ 9, Vector3.new(4.36, 5.8, -4.5), "Linear" },
+						{ 11, Vector3.new(4.84, 7.09, -4.99), "Linear" },
+						{ 14, Vector3.new(5.04, 8.11, -5.2), "Linear" },
+						{ 17, Vector3.new(5.04, 8.42, -5.2), "Linear" },
+						{ 20, Vector3.new(5.04, 8.44, -5.2), "Linear" },
+						{ 23, Vector3.new(5.04, 8.44, -5.2) },
+					},
+					Scale = {
+						{ 5, 1.26, "Linear" },
+						{ 7, 1.147, "Linear" },
+						{ 9, 1.031, "Linear" },
+						{ 11, 0.911, "Linear" },
+						{ 14, 0.724, "Linear" },
+						{ 17, 0.523, "Linear" },
+						{ 20, 0.301, "Linear" },
+						{ 23, 0 },
+					},
+				},
+			},
+			Chip3 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip3" },
+				Color = Color3.new(0.549, 0.965, 1), -- cyan
+				Turn = Vector3.new(45, 94.6, -34.4),
+				Tracks = {
+					At = {
+						{ 4, Vector3.new(-0.22, 1.2, -2.69), "Linear" },
+						{ 6, Vector3.new(-0.5, 2.93, -6.21), "Linear" },
+						{ 8, Vector3.new(-0.67, 4.18, -8.34), "Linear" },
+						{ 10, Vector3.new(-0.75, 5.01, -9.44), "Linear" },
+						{ 13, Vector3.new(-0.79, 5.67, -9.89), "Linear" },
+						{ 16, Vector3.new(-0.79, 5.87, -9.9), "Linear" },
+						{ 19, Vector3.new(-0.79, 5.89, -9.9), "Linear" },
+						{ 22, Vector3.new(-0.79, 5.89, -9.9) },
+					},
+					Scale = {
+						{ 4, 1.26, "Linear" },
+						{ 6, 1.147, "Linear" },
+						{ 8, 1.031, "Linear" },
+						{ 10, 0.911, "Linear" },
+						{ 13, 0.724, "Linear" },
+						{ 16, 0.523, "Linear" },
+						{ 19, 0.301, "Linear" },
+						{ 22, 0 },
+					},
+				},
+			},
+			Chip4 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip1" },
+				Color = Color3.new(1, 0.922, 0.761), -- warm
+				Turn = Vector3.new(45, 112.8, -34.4),
+				Tracks = {
+					At = {
+						{ 4, Vector3.new(-1.05, 1.2, -2.49), "Linear" },
+						{ 6, Vector3.new(-1.9, 4.06, -4.53), "Linear" },
+						{ 8, Vector3.new(-2.42, 6.11, -5.76), "Linear" },
+						{ 10, Vector3.new(-2.69, 7.48, -6.4), "Linear" },
+						{ 13, Vector3.new(-2.8, 8.57, -6.66), "Linear" },
+						{ 16, Vector3.new(-2.8, 8.9, -6.66), "Linear" },
+						{ 19, Vector3.new(-2.8, 8.92, -6.66), "Linear" },
+						{ 22, Vector3.new(-2.8, 8.92, -6.66) },
+					},
+					Scale = {
+						{ 4, 1.26, "Linear" },
+						{ 6, 1.147, "Linear" },
+						{ 8, 1.031, "Linear" },
+						{ 10, 0.911, "Linear" },
+						{ 13, 0.724, "Linear" },
+						{ 16, 0.523, "Linear" },
+						{ 19, 0.301, "Linear" },
+						{ 22, 0 },
+					},
+				},
+			},
+			Chip5 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip2" },
+				Color = Color3.new(0.549, 0.965, 1), -- cyan
+				Turn = Vector3.new(45, 167.7, -34.4),
+				Tracks = {
+					At = {
+						{ 4, Vector3.new(-2.64, 1.2, -0.57), "Linear" },
+						{ 6, Vector3.new(-5.87, 3.2, -1.28), "Linear" },
+						{ 8, Vector3.new(-7.83, 4.63, -1.7), "Linear" },
+						{ 10, Vector3.new(-8.84, 5.59, -1.92), "Linear" },
+						{ 13, Vector3.new(-9.26, 6.35, -2.02), "Linear" },
+						{ 16, Vector3.new(-9.26, 6.58, -2.02), "Linear" },
+						{ 19, Vector3.new(-9.26, 6.59, -2.02), "Linear" },
+						{ 22, Vector3.new(-9.26, 6.59, -2.02) },
+					},
+					Scale = {
+						{ 4, 1.26, "Linear" },
+						{ 6, 1.147, "Linear" },
+						{ 8, 1.031, "Linear" },
+						{ 10, 0.911, "Linear" },
+						{ 13, 0.724, "Linear" },
+						{ 16, 0.523, "Linear" },
+						{ 19, 0.301, "Linear" },
+						{ 22, 0 },
+					},
+				},
+			},
+			Chip6 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip3" },
+				Color = Color3.new(1, 0.922, 0.761), -- warm
+				Turn = Vector3.new(45, 215.2, -34.4),
+				Tracks = {
+					At = {
+						{ 4, Vector3.new(-2.21, 1.2, 1.55), "Linear" },
+						{ 6, Vector3.new(-4.62, 2.82, 3.26), "Linear" },
+						{ 8, Vector3.new(-6.09, 3.98, 4.29), "Linear" },
+						{ 10, Vector3.new(-6.84, 4.75, 4.82), "Linear" },
+						{ 13, Vector3.new(-7.15, 5.37, 5.04), "Linear" },
+						{ 16, Vector3.new(-7.16, 5.55, 5.04), "Linear" },
+						{ 19, Vector3.new(-7.16, 5.57, 5.04), "Linear" },
+						{ 22, Vector3.new(-7.16, 5.57, 5.04) },
+					},
+					Scale = {
+						{ 4, 1.26, "Linear" },
+						{ 6, 1.147, "Linear" },
+						{ 8, 1.031, "Linear" },
+						{ 10, 0.911, "Linear" },
+						{ 13, 0.724, "Linear" },
+						{ 16, 0.523, "Linear" },
+						{ 19, 0.301, "Linear" },
+						{ 22, 0 },
+					},
+				},
+			},
+			Chip7 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip1" },
+				Color = Color3.new(0.549, 0.965, 1), -- cyan
+				Turn = Vector3.new(45, 240.5, -34.4),
+				Tracks = {
+					At = {
+						{ 5, Vector3.new(-1.33, 1.2, 2.35), "Linear" },
+						{ 7, Vector3.new(-2.42, 2.99, 4.27), "Linear" },
+						{ 9, Vector3.new(-3.08, 4.28, 5.44), "Linear" },
+						{ 11, Vector3.new(-3.41, 5.14, 6.04), "Linear" },
+						{ 14, Vector3.new(-3.55, 5.82, 6.29), "Linear" },
+						{ 17, Vector3.new(-3.56, 6.03, 6.29), "Linear" },
+						{ 20, Vector3.new(-3.56, 6.04, 6.29), "Linear" },
+						{ 23, Vector3.new(-3.56, 6.04, 6.29) },
+					},
+					Scale = {
+						{ 5, 1.26, "Linear" },
+						{ 7, 1.147, "Linear" },
+						{ 9, 1.031, "Linear" },
+						{ 11, 0.911, "Linear" },
+						{ 14, 0.724, "Linear" },
+						{ 17, 0.523, "Linear" },
+						{ 20, 0.301, "Linear" },
+						{ 23, 0 },
+					},
+				},
+			},
+			Chip8 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip2" },
+				Color = Color3.new(1, 0.922, 0.761), -- warm
+				Turn = Vector3.new(45, 275.5, -34.4),
+				Tracks = {
+					At = {
+						{ 5, Vector3.new(0.26, 1.2, 2.69), "Linear" },
+						{ 7, Vector3.new(0.48, 3.84, 4.97), "Linear" },
+						{ 9, Vector3.new(0.61, 5.74, 6.35), "Linear" },
+						{ 11, Vector3.new(0.68, 7.01, 7.06), "Linear" },
+						{ 14, Vector3.new(0.71, 8.01, 7.36), "Linear" },
+						{ 17, Vector3.new(0.71, 8.32, 7.36), "Linear" },
+						{ 20, Vector3.new(0.71, 8.34, 7.36), "Linear" },
+						{ 23, Vector3.new(0.71, 8.34, 7.36) },
+					},
+					Scale = {
+						{ 5, 1.26, "Linear" },
+						{ 7, 1.147, "Linear" },
+						{ 9, 1.031, "Linear" },
+						{ 11, 0.911, "Linear" },
+						{ 14, 0.724, "Linear" },
+						{ 17, 0.523, "Linear" },
+						{ 20, 0.301, "Linear" },
+						{ 23, 0 },
+					},
+				},
+			},
+			Chip9 = {
+				Kind = "Mesh",
+				From = "Slam",
+				On = "Spot",
+				Part = { "FxChip3" },
+				Color = Color3.new(0.549, 0.965, 1), -- cyan
+				Turn = Vector3.new(45, 320, -34.4),
+				Tracks = {
+					At = {
+						{ 4, Vector3.new(2.07, 1.2, 1.74), "Linear" },
+						{ 6, Vector3.new(3.89, 2.9, 3.27), "Linear" },
+						{ 8, Vector3.new(5, 4.12, 4.2), "Linear" },
+						{ 10, Vector3.new(5.57, 4.93, 4.67), "Linear" },
+						{ 13, Vector3.new(5.8, 5.58, 4.87), "Linear" },
+						{ 16, Vector3.new(5.81, 5.78, 4.87), "Linear" },
+						{ 19, Vector3.new(5.81, 5.79, 4.87), "Linear" },
+						{ 22, Vector3.new(5.81, 5.79, 4.87) },
+					},
+					Scale = {
+						{ 4, 1.26, "Linear" },
+						{ 6, 1.147, "Linear" },
+						{ 8, 1.031, "Linear" },
+						{ 10, 0.911, "Linear" },
+						{ 13, 0.724, "Linear" },
+						{ 16, 0.523, "Linear" },
+						{ 19, 0.301, "Linear" },
+						{ 22, 0 },
+					},
+				},
+			},
+			-- The street, your fighter and the keeper lit by the column, brightest on the slam: 4 studs over its foot.
+			SlamLight = {
+				Kind = "Light",
+				From = "Slam",
+				On = "Spot",
+				Range = 20,
+				Color = Color3.new(0.729, 0.96, 0.945),
+				Tracks = {
+					At = { { 0, Vector3.new(0, 4, 0) } },
+					Brightness = { { 0, 5, "Quart Out" }, { 3, 3, "Sine InOut" }, { 22, 0 } },
+				},
+			},
 			},
 		} :: Rows,
 	} :: { [string]: Rows },

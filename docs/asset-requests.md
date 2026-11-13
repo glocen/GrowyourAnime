@@ -4683,6 +4683,25 @@ Section 7's rows played in grey on the keeper's clip through the one player, joi
 - **Carried to "Rook, Pip and Lyric installed" and TR5,** as Faber reads them: the keeper's pose hidden behind the avatar, the shaft's top under the top band, and the landed lantern large near the camera.
 - **Further polish** waits for the finish pass (`docs/polish-later.md`). The rotation, the cooldown and the sound are their own piece.
 
+## AR9. The effects kit grows: the drawn sheets (Modulo, then Faber)
+
+Research's request, 2026-11-14, on the tier 2 notice of 2026-11-13 (`docs/team-notes.md`) and the vault's gap table (`docs/research/vfx-reference.md`, "What the vault teaches, beside ours"). The director, 2026-11-13: the full look, with a "performance mode" toggle in the settings menu, so no cap set by a phone (`docs/decisions.md`).
+
+**Feel line:** a puff, a spark or a flame from our kit moves like something drawn by hand, with a bright core, a dark edge and a fade toward black, so an effect at phone size reads as rich, not as a flat glow card.
+
+**The block contains:**
+- **Seven sheets of our own,** each at 4x4 or 8x8, each with an outline pass and a fill pass, and a dark twin: ring burst, crescent, splash, puff, spark, glint, flame. They join `build/handoff/FxKit/` beside today's images, whose 2x2 sheets stay for the effects that passed.
+- **The vault's flipbooks** (`build/reference/vfx-vault/flipbooks/`, open source, rule 2's exception): where one fits our look better than a drawing, it's adapted and logged, never dropped in as it is.
+- **The pilot first:** the puff, with its two passes and its dark twin, as a looping preview at 64 and 128 px over our bright sky and our night. Research reads it in motion before the other six are drawn.
+
+**Waits:** Faber's half, the kit's rows (Drag, Squash, Acceleration, EmitCount and EmitDelay on the emitter row, Tune-live; the screen row from rung 4; the caster's light from rung 7), after TR6. The performance-mode toggle is Faber's own piece. Effects that already passed are redone at the finish pass, not here.
+
+**Checks:** the content check on each sheet; research's read of the pilot in motion, then of the whole kit at phone size.
+
+**Time, forecast:** the pilot under 1 hour; the other six about 3 hours. The effect cap, 2 hours, holds per sheet.
+
+**Status:** requested, 2026-11-14.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

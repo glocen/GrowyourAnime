@@ -3142,6 +3142,20 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   3. **"Out" reads faintly.** The lantern's colour map is pale cyan paper, so at glow 0 it still reads half lit in daylight. Out to Gone is 8 frames, 0.13 s. The levers: a darker tint on the paper as it goes out, a longer Out, or the fall's own art, which the scope holds until the replay asks for it.
   4. Research's three questions stand: the lone lantern among the street's own, the half second before Gutter, and the pole's rock read as let go.
 
+**Research's verdict on the install and the fall's replay (2026-11-13, a blockout's, Lantern Row grey; `ar7_fall.mp4` at 10 cells a second, `ar7_try_challenge_strip.png`).**
+- **Felt:** the keeper drops and leaves its lantern standing on the pole, which is the right picture, but Pip walks back across it, so the lantern goes out and scatters behind his hat. On a phone the fall has no ending.
+- **Tier:** works. **The one bold thing:** the lantern left standing alone on its pole after the body's gone (8.3 to 8.9 s). Keep it.
+- **Fixes, in order, before Rook, Pip and Lyric; all numbers, tuned live:**
+  1. **The lead on the avatar's left in a try (Faber's proposal, accepted).** It clears the Challenge and the fall's line both.
+  2. **The lead holds after a keeper falls,** facing it until Gone, then turns. The fall is the try's ending, and the lead watches it with the player.
+  3. **Out reads:** from Gutter the paper's Color goes down toward a deep blue-grey (about a third of its value), and Out to Gone lengthens to about 0.35 s, eased in. The goal: dark paper is plainly unlit against the day sky.
+  4. **Arrive 14 to about 17,** in 1-stud steps until the hat and the swing's lantern clear the frame's top and the pills on the phone, with a margin.
+- **The three questions:**
+  - The half second before Gutter doesn't drag. It's the bold thing's moment.
+  - The pole's rock reads as a lean, not yet as let go. Look again once Pip no longer covers it.
+  - The lone lantern among the street's own can't be judged on a grey street, so it goes to Lantern Row's install (AR5, section 2).
+- **Next look:** one take of the try and the fall after fixes 1 to 4, from the same camera.
+
 ### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
 
 Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.

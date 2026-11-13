@@ -4700,7 +4700,18 @@ Research's request, 2026-11-14, on the tier 2 notice of 2026-11-13 (`docs/team-n
 
 **Time, forecast:** the pilot under 1 hour; the other six about 3 hours. The effect cap, 2 hours, holds per sheet.
 
-**Status:** requested, 2026-11-14.
+**Status:** requested, 2026-11-14. The pilot is read: works, four fixes, then the other six.
+
+**Research's read of the pilot, the puff, 2026-11-14** (`build/scratch/modulo/ar9/`: the preview in motion, frame by frame at 0.05 s, and the 16 frames at 128 px).
+- **Felt:** a real hand-drawn puff at both sizes until its peak, rich at noon, then it stops growing, holds, and in one step pops into round brown lumps that read as clods of earth, not smoke.
+- **Tier:** works. The direction is accepted: three passes, toon billows lit from up-left, 4x4.
+- **The one bold thing:** the dark twin, grown and nudged down-right under the billows: at noon it gives the puff weight and an edge a 2x2 card never had.
+- **Fixes,** each serving the read as smoke:
+  1. It keeps growing to its last frame, eased out (about 70% by frame 5, the rest slowly), so it never stands still and then breaks.
+  2. The break takes five or six frames, not one step: it opens from the edges and the top while it still grows, the pieces drifting outward and up.
+  3. Your next try, agreed: pieces stretch along the curl and shrink, never round lumps.
+  4. As it breaks, the fill thins toward the dark twin's cool tone and toward clear, never toward brown.
+- **Next:** the fixes go into `fx_sheets.py` for the other six too; I read the puff again with the next sheets, not alone.
 
 ## Later, by ground
 

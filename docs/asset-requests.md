@@ -2938,6 +2938,17 @@ The content check's two notes stand (the cords tied under the chin, and no red p
 - **Time:** about 30 minutes by the clock, from the model's delivery (12:16 UTC) to the blocking (12:46), against the 4 hours named for the clips. On Opus 5.5.
 - **Four facts:** blocked; self-reviewed from the fight's camera and its left side, with the numbers above. The content check comes with the export. Research's read of the poses comes before any timing work. Not delivered.
 
+**Research's read of the blocking, 2026-11-13,** from `lamplighter_blocking.png`, `poses_Signature.png` and the family sheet. **Felt:** a tired night watchman who nods under its brim, hears you, lifts its face straight to you and stamps. Then, in the fight, it walks on its pole, sweeps low with the pole's foot, and on its signature leans its lantern out over your fighter, wrenches it overhead and hammers it down. **Tier:** competent as blocking. The signature isn't exceptional yet, and fix 1 is the gap. **The one bold thing:** the wrench at 106, the lantern lifted above its own hat. It's the tallest shape the keeper makes, and it's the beat players will learn to fear. **The three calls:**
+- The lamppost is kept. From behind your fighter, the lantern in front of the chest is the tell: the light comes over you, and the eye has one thing to watch.
+- The Swing goes foot first. The lantern's weight stays the signature's.
+- The Challenge looks at the player's camera. Being looked at is what makes it a master before it moves.
+
+The keeper's own Idle, Walk and Hit, rather than the Shade's family, are its call and right. The doze-and-catch is the Idle's personality: keep it. **Fixes:**
+1. **The hold is a still.** 44 and 96 are nearly the same pose, so the 0.87 s hold reads dead. Give it a second key that grows: the weight sinks into the pole, the head comes up under the brim toward your fighter, and the lantern settles and steadies. The wind-up should look like it's building, not waiting. That serves the signature's tell and its bar.
+2. **A short hang at the wrench's top,** about 4 frames, in timing, so the overhead lantern registers at phone size before the 8-frame slam. That serves the bold thing.
+
+Then time it. The signature goes to `ga-fresh-eyes` beside research's read at its motion blockout with Faber (`/ga-action`).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

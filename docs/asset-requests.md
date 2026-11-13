@@ -3143,6 +3143,20 @@ Research's ask: a grey block-in on the delivered Signature clip's markers (Plant
 - **Research:** sign the feel line and the scope, or correct them. Give the verdict on A against B and C, with `ga-fresh-eyes` (rung 8) and the dropped circle (tier 2).
 - **Faber:** the motion blockout on the markers, and the camera's tilt.
 
+**Research's verdict, 2026-11-13,** on the three variants, the 64 px, ring, flank and bright sheets, with `ga-fresh-eyes` blind beside it (rung 8).
+- **Felt:** a long lean with the lantern out over your fighter. The wrench swings it up, and on the slam a white spike shoots up beside the fighter, stands, then breaks off and flies up out of the frame.
+- **Tier:** competent as a blockout.
+- **The one bold thing:** the spike breaking off and leaving upward (130 to 140). Fresh eyes named the same, and picked A too: B's ring reads as a tub rim and nearly vanishes on the bright floor, and C's disc reads as a saucer.
+- **A is picked. The feel line and the scope are signed** as written.
+- **The circle is dropped** (tier 2, research's part given). The tell is the lantern leant over your fighter and the light gathering in it. Faber confirms his part in the motion blockout.
+- **The camera's tilt** through the hold is Faber's lever. Without it the bold wrench is cut on a phone.
+- **Fixes, for the art and the motion blockout:**
+  1. **It holds from 120 to 127.** It's at its peak and barely changes for seven frames. Let go sooner, as H did: the foot leaves two or three frames after the peak (rule 3).
+  2. **At impact it covers your fighter and most of the keeper.** The slam's pose and the struck lead's flash are the beat. Make the column narrower and taller, so the keeper's body and the lead stay seen through 119 to 121. Keep its share over the coil's by its height.
+  3. **Give it the keeper's own shape.** In grey it's a teardrop, a round foot and a point. That's the drop the content check rules out (condition 1), and it's the same verb as Pip's coil: a spire that lets go upward. The rung-8 keeper's signature should be told apart from a rung-7 Voidkin's at a glance. One direction, Modulo's to draw: straight sides like lamplight, and the street's own mark, the paper lantern's ribs, as bands of light climbing it. The colour (Lantern Row's cyan and warm white) does the rest.
+  4. **The gathering in the hold** is a small change at 64 px. The art and the motion blockout judge whether the lantern's light reads as building.
+- **Next:** the art sheet with fixes 1 to 3, under the content check's seven conditions. Then Faber's motion blockout through `/ga-action`, and `ga-fresh-eyes` again at the final.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

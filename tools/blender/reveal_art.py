@@ -212,14 +212,17 @@ LIFT = rb.FLOOR - SILL         # the figure was shot with his soles on rb.FLOOR
 GROW = 2.4                     # the larger frame's points against the small frame's, in height and width alike: the kit's
 #                                condition 10 keeps a point no taller for its width than the passed crown
 SILL_BAND = 16.0               # how much of the frame's foot is drawn over his soles: the line, the cuts, the base points
-CX = rb.STAGE["B"]             # where he and the window stand once the name is down (layout B)
+CX = 600.0                     # where he and the window stand once the name is down (layout B): 52 points right of the
+#                                block-in's, so the roster's widest names land at their rarity's size (the names check)
+STEP = (0.4, 0.3)              # he steps right from the screen's middle at this point of his clip, over this long
 KNOCK, NAME = 51 / FPS, 55 / FPS   # Rook's Reveal: the ram fires; the kick's floor, where his name lands (rook_clips.py)
 RARITIES = list(ui.RARITIES)
 OFFSET = dict(zip(RARITIES, (0.40, 0.32, 0.18, 0.0, 0.0, 0.0)))     # fix 4: how far into the clip he appears
 HOLD = dict(zip(RARITIES, (0.55, 0.65, 0.80, 0.95, 1.10, 1.25)))    # the name held before the card
 NAME_SCALE = dict(zip(RARITIES, (1.0, 1.06, 1.12, 1.18, 1.24, 1.30)))  # fix 2
 NAME_SIZE, NAME_LEFT, NAME_BASE = 58.0, 70.0, 214.0
-NAME_MAX = 326.0               # the widest a name may land: from its left edge to 14 points short of the widest frame's wing
+WING = max(r.get("wing", 0) for r in rb.RARITIES.values()) * GROW
+NAME_MAX = CX - BIG[0] / 2 - WING - 14.0 - NAME_LEFT   # the widest a name may land: 14 points short of the widest wing
 SLAM = 1.7                     # the name arrives this much larger, and is down in three frames
 SHAKE = dict(zip(RARITIES, (2.5, 3.0, 3.5, 4.5, 5.5, 6.5)))         # points the screen kicks down as the name lands
 # fix 3: the split's flash. A radius in points held to the shard, or None: the whole screen goes white.
@@ -339,7 +342,8 @@ class Stage(rb.Stage):
         colour, level = self.glow_at(t_)
         split, tau = plan["split"], t_ - plan["split"]
         clip = tau + OFFSET[self.rarity]          # where his clip is
-        cx = W / 2 + (CX - W / 2) * smooth((tau - 0.4) / 0.3)  # he steps right as he opens up
+        cx = W / 2 + (CX - W / 2) * smooth((clip - STEP[0]) / STEP[1])  # he steps right as he opens up, on his clip's
+        #                                                                  time, so he's still before the ram fires
         cy = H / 2 - 0.05 * UNIT
         far = np.hypot(t.x - cx, t.y - cy)
         ray_colour = c(light.get("ray", light["colour"]))
@@ -447,9 +451,9 @@ class Stage(rb.Stage):
         sprite[..., :3] = sprite[..., :3] + (WHITE - sprite[..., :3]) * burn
         width, height = self.name.shape[1] / SLAM, self.name.shape[0] / SLAM   # its size once down, in pixels
         mx, my = NAME_LEFT * K + width / 2, NAME_BASE * K - height / 2
-        # it grows from a point on its foot, a third in: it comes down onto its rule, and the longest at Mythical's
-        # size still clears the screen's left edge at 1.7 times
-        rs.paste(px, sprite, round(NAME_LEFT * K + 0.3 * (width - sprite.shape[1])), round(NAME_BASE * K - sprite.shape[0]))
+        # it grows from a point on its foot, a quarter in: it comes down onto its rule, and the widest a name may land
+        # still clears the screen's left edge at 1.7 times
+        rs.paste(px, sprite, round(NAME_LEFT * K + 0.25 * (width - sprite.shape[1])), round(NAME_BASE * K - sprite.shape[0]))
         landed = smooth((u + 0.02) / 0.03)
         if landed <= 0:
             return
@@ -476,13 +480,13 @@ def beats_of(rarity):
     if rarity == "Common":
         return ((-0.1, "the shard waits"), (0.05, "the tap: the slant opens"), (0.3, "its lines, one by one"),
                 (0.5, "it swells"), (split + 0.017, "the split: a pop at the shard"), (split + 0.11, "the window; him dark"),
-                (colours - 0.12, "the ram up, still dark (skip from 1.0)"), (colours + 0.017, "it fires: the colours"),
+                (colours - 0.12, "the ram up, still dark (skip from 1.0)"), (colours + 0.017, "it fires; the name comes in"),
                 (name - 0.025, "the name slams in"), (name + 0.033, "down: the kick, the glint"),
                 (name + 0.15, "the glint off the rule's end"), (card, "held, the card next"))
     return ((-0.1, "the shard waits"), (0.05, "the tap: the slant opens"), (0.36, "green: past Common"), (0.54, "blue"),
             (0.72, "purple"), (0.98, "gold (skip from 1.0)"), (1.24, "the breath: dark, drawn in"),
             (split + 0.02, "the split: the screen goes white"), (split + 0.2, "the window: three points; his head up"),
-            (colours + 0.017, "it fires: the colours"), (name + 0.033, "down: the kick, the glint"), (card - 0.02, "held, the card next"))
+            (colours + 0.017, "it fires; the name comes in"), (name + 0.033, "down: the kick, the glint"), (card - 0.02, "held, the card next"))
 
 
 def beats(out: Path, rarity, first, last):
@@ -548,45 +552,72 @@ def read_sheet(out: Path):
         t.text(20, y + 48, 9, f"colours {w['colours']:.2f} s", SOFT_INK)
         t.text(20, y + 60, 9, f"name {w['name']:.2f} s", SOFT_INK)
         t.text(20, y + 72, 9, f"card {w['card']:.2f} s", SOFT_INK)
+        radius, _, length = FLASH[rarity]
+        t.text(20, y + 88, 9, f"flash {length:.2f} s:", NOTE)
+        t.text(20, y + 100, 9, "the screen white" if radius is None else f"{radius:.0f} points round", NOTE)
         for j in range(3):
-            tile = rs.shrink(rs.load(out / "read" / f"{rarity}_{j}.png"), 0.6 * ui.K)
+            shot = rs.load(out / "read" / f"{rarity}_{j}.png")
+            tile = rs.shrink(shot, tw * ui.K / shot.shape[1])   # the frame at 1 pixel a point, to its slot on the sheet
             rs.paste(sheet.px, tile, round((left + j * (tw + gap)) * ui.K), round(y * ui.K))
     rb.finish(sheet, out / "reveal_art_rarity.png")
 
 
-NAME_CHECK = ("UMBRIEL", "SHIOMARU", "MARIGOLD", "IRONHYMN", "STELLANE", "SLIPTAIL")  # the roster's longest, by eight letters
+VOIDKIN = Path(__file__).resolve().parents[2] / "src" / "shared" / "Definitions" / "Voidkin.luau"
+
+
+def roster():
+    """Every Voidkin's name and rarity, read from the game's own definitions."""
+    import re
+    rows = re.findall(r'Name = "([^"]+)", Rarity = "(\w+)"', VOIDKIN.read_text(encoding="utf-8"))
+    return [(name.upper(), rarity) for name, rarity in rows]
 
 
 def names_frames(out: Path):
-    """Mythical's name size with the roster's longest names, held, layout B's left half: one stage, the name swapped."""
-    stage = Stage(out, "Mythical")
+    """Every name in the roster measured at its own rarity's size, and at Mythical's (research's check); the six
+    widest at their own size drawn held, layout B, each on its own rarity's stage."""
     (out / "names").mkdir(exist_ok=True)
     fits = {}
-    for name in NAME_CHECK:
-        stage.set_name(name)
-        fits[name] = dict(points=round(stage.wide, 1), fit=round(stage.fit, 3))
-        rs.save(stage.frame(stage.when["card"] - 0.02), out / "names" / f"Mythical_{name}.png")
-    (out / "names" / "fits.json").write_text(json.dumps(fits, indent=1), encoding="utf-8", newline="\n")
-    print(json.dumps(fits))
+    for name, rarity in roster():
+        sprite = rb.name_sprite(out, name, NAME_SIZE * NAME_SCALE[rarity] * SLAM, VIOLET["text"], shear=rb.SLANT, space=1.04)
+        wide = sprite.shape[1] / SLAM / ui.K
+        mythical = wide * NAME_SCALE["Mythical"] / NAME_SCALE[rarity]
+        fits[name] = dict(rarity=rarity, points=round(wide, 1), fit=round(min(1.0, NAME_MAX / wide), 3),
+                          mythical=round(mythical, 1), mythical_fit=round(min(1.0, NAME_MAX / mythical), 3))
+    shown = sorted(fits, key=lambda n: -fits[n]["points"])[:6]
+    for rarity in RARITIES:   # one stage a rarity; only held frames follow a new name (Stage.set_name)
+        mine = [n for n in shown if fits[n]["rarity"] == rarity]
+        if mine:
+            stage = Stage(out, rarity, mine[0])
+            for name in mine:
+                stage.set_name(name)
+                rs.save(stage.frame(stage.when["card"] - 0.02), out / "names" / f"{name}.png")
+    (out / "names" / "fits.json").write_text(json.dumps(dict(max=round(NAME_MAX, 1), shown=shown, names=fits), indent=1),
+                                             encoding="utf-8", newline="\n")
+    print(json.dumps({n: fits[n] for n in shown}))
 
 
 def names_sheet(out: Path):
-    fits = json.loads((out / "names" / "fits.json").read_text(encoding="utf-8"))
-    tw, th, gap, top = W / 2, H / 2, 8.0, 64.0
+    found = json.loads((out / "names" / "fits.json").read_text(encoding="utf-8"))
+    fits, shown = found["names"], found["shown"]
+    squeezed = sorted((f["mythical_fit"], n) for n, f in fits.items() if f["mythical_fit"] < 1)
+    tw, th, gap, top = W / 2, H / 2, 8.0, 88.0
     sheet = ui.Sheet(40 + 2 * tw + gap, top + 3 * (th + 30) + 8, SHEET_GROUND)
     t = sheet.tile(0, 0, sheet.w, sheet.h)
-    t.text(20, 12, 15, "The reveal, the art: the longest names at Mythical's size", INK)
+    t.text(20, 12, 15, "The reveal, the art: the roster's widest names, each at its own rarity's size", INK)
     t.text(20, 36, 9.5, f"AR3 section 5, fix 2. A name is {NAME_SIZE:.0f} points at Common, {NAME_SCALE['Mythical']:.2f} times at "
-           f"Mythical, and lands no wider than {NAME_MAX:.0f} points: a longer one is set smaller, never cut. Held, layout B, "
+           f"Mythical, and lands no wider than {NAME_MAX:.0f} points: a wider one is set smaller, never cut.", SOFT_INK)
+    t.text(20, 50, 9.5, f"All {len(fits)} names from the game's definitions (Voidkin.luau); the six widest, held, layout B, "
            "half size.", SOFT_INK)
-    for i, name in enumerate(NAME_CHECK):
+    t.text(20, 66, 9.5, "Research's check, every name at Mythical's size: "
+           + ("all fit." if not squeezed else ", ".join(f"{n.title()} set at {f:.2f}" for f, n in squeezed)
+              + f"; the rest fit."), NOTE)
+    for i, name in enumerate(shown):
         row, col = divmod(i, 2)
         x, y = 20 + col * (tw + gap), top + row * (th + 30)
-        rs.paste(sheet.px, rs.shrink(rs.load(out / "names" / f"Mythical_{name}.png"), 0.5), round(x * ui.K), round(y * ui.K))
+        rs.paste(sheet.px, rs.shrink(rs.load(out / "names" / f"{name}.png"), 0.5), round(x * ui.K), round(y * ui.K))
         f = fits[name]
         said = "fits" if f["fit"] >= 1 else f"set at {f['fit']:.2f} to fit"
-        t.text(x, y + th + 5, 9.5, f"{name.title()}{' (Mythical)' if name == NAMES['Mythical'] else ''}: "
-               f"{f['points']:.0f} points at Mythical's size, {said}", "#E6E8EE")
+        t.text(x, y + th + 5, 9.5, f"{name.title()}, {f['rarity']}: {f['points']:.0f} points at its size, {said}", "#E6E8EE")
     rb.finish(sheet, out / "reveal_art_names.png")
 
 

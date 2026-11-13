@@ -2794,7 +2794,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips, is next.
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: the blocking is made and waits on research's read before any timing work (section 3).
 
 ### 1. The sheet (Modulo, 2026-11-13)
 
@@ -2893,6 +2893,50 @@ The content check's two notes stand (the cords tied under the chin, and no red p
 - **Faber, to build it:** the recipe holds every piece's part, pivot and glow, and the "For the builder" lines above. The pole needs a clip before the keeper is seen, and the clips come next (delivery 3). The ring's camera stays as it is (research's verdict below).
 
 **Research's verdict, 2026-11-13,** on the model sheet and the atlas check. **Felt:** from the ring's camera it towers over each starter. The lantern burns cyan above the straw brim, the head is bowed under it, and the dark coat with its lit lilac seams says Shade before anything else does. When the head lifts as a try starts, it has the authority the sheet's A lacked. **Tier:** competent. **The one bold thing:** the lantern and the brim, a crown of light, now with a bowed head under it. Both fixes are met. It leans on the pole, its shoulders are up, and the head drops and lifts. Beside Pip, Lyric and Rook, the coat reads darker than each (0.12 against 0.19 to 0.31), so they never merge. **The camera: keep the ring's as it is.** At 1.5 it already looks tall beside the starters, and the bow and lift is the beat that says "master". Research's thought of a lower camera is withdrawn, and the builder is told. Yes, deliver. **Next:** the clips (the Shade's family at its scale, the Challenge, the signature's block clip), with the fall and the signature carrying no red pieces.
+
+### 3. The clips: the blocking (Modulo, 2026-11-13)
+
+- **Where:** `build/scratch/modulo/lamplighter/clips/`:
+  - `lamplighter_blocking.png`: every clip's key poses from the fight's camera, a row a clip.
+  - `poses_<Clip>.png`: each clip's key poses from the fight's camera and from its left side.
+  - `family/lamplighter_family.png`: the Shade's own clips on the keeper.
+  - `tools/blender/lamplighter_clips.py` draws them in Workbench in about a minute: `-- <out dir> [poses|family] [clip ...]`. The performance lines are in it, one a clip, written before the poses.
+- **The fight's camera:** behind your fighter, at 20° round from the keeper's front and 2° up, from a touch below the mask (TR2's zoom 10 and pitch 10 at 1.5). Stage units are the Shade's; the game's are 1.5 times them. Your fighter stands at KeeperSwing's Range, 6 studs (4.0 here), read from `Definitions/Actions.luau`.
+- **How the props move,** three tracks a clip:
+  - **The body:** keyed as the Shade's are (`rook_clips.py`), the legs re-solved on every frame.
+  - **The pole:** its joint is at the grip, so its line always passes through the right cuff. Planted, its foot stays on its floor place and the pole slides through the grip. Held, it's leant toward a heading. The two blend by direction, never by the foot's place.
+  - **The lantern:** hung from the hook's tip on its cord, swung off plumb by keys. Where it would go through the floor, it lies on it instead.
+- **The Shade's family, checked at keeper scale.** None of the Shade's five clips can play on the keeper. Each lays the pole through the coat, and the lantern stands stiff on its cord:
+
+  | The Shade's clip | The pole's lowest point | Its nearest to the body | The lantern off plumb | A leg's widest (the coat holds 27°) |
+  |---|---|---|---|---|
+  | Idle | −0.10 | −0.10 | 49° | 16° |
+  | Walk | 0.17 | −0.10 | 67° | 30° |
+  | Attack | −0.68 | −0.10 | 75° | 14° |
+  | Hit | −0.44 | −0.10 | 80° | 42° |
+  | Burst | −0.47 | −0.07 | 100° | 39° |
+
+  So the keeper takes its own set: Idle, Walk, Hit and, at delivery 4, its Down. **Faber:** `Config/Animations` gets a Lamplighter rig set; the Shade's isn't used for it.
+- **The clips,** blocked as key poses (frames at 60 fps):
+  - **Idle,** a 240-frame loop. Hung on the planted pole, the head bowed 31° in all (the model's bow), a breath, and once a loop the head sinks under the brim and catches itself.
+  - **Challenge,** 92 frames. 0 it waits; 18 it hears you; **44 Lift**, it looks at you; **58 Stamp**, the pole lifted a hand and stamped; 92 it looks at your fighter, in Ready.
+    - **Why at you:** at 1.5, looking at your fighter is 22° down, so a lift to it moved the head only a few degrees, and the first blocking didn't read. Lifted to the player's camera, the head comes up 29° and the hat goes flat.
+  - **Ready,** a 180-frame loop: squared to your fighter, still on the pole, the head up.
+  - **Walk,** a 64-frame loop. The legs swing 25°. The pole goes ahead and is planted with the left foot. It covers 3.51 a loop (4.94 studs a second at 1.5); the game's walk speed times it in phase B.
+  - **Swing,** KeeperSwing's 96 frames: Strike 48 and Recover 60, from its Beats in `Definitions/Actions.luau`.
+    - **The lever:** anticipation, the lean back, as the action names. It draws the pole's foot back past its hip like a lance, then sweeps it round and across at your fighter's chest. The pole turns over in its hand, the lantern flung up behind its shoulder, and it plants the pole again.
+    - **Why the pole's foot, not the crook:** a crook-first flat sweep, blocked first, put the lantern into the camera, onto the floor (0.18) and through the head. Now the crook and the lantern stay high: the lantern's foot is 0.92 up at its lowest. The lantern's weight stays the signature's.
+  - **Hit,** 30 frames. Rocked back a little, the head lifted under the brim; then onto the pole as the lantern swings. The feet never move.
+  - **Signature, the block clip,** 178 frames: the lamppost.
+    - **The beats:** 24 **Plant**, the pole planted ahead and out to its right. 44 **Light**, the pole leant 20° out over your fighter, one-handed, like a street lamp: the lantern hangs at (0.52, 4.32), over your fighter at (0, 4.0), its foot 3.85 up. It holds to 96. 106, it wrenches the pole up with both hands, the lantern over its own head. 114 **Slam**: it brings the pole down like a hammer, and the lantern lands at (0.32, 4.64), on the circle, lying there to 152. 178 Ready.
+    - **Plant to Slam** is 1.5 s; the action sets the real numbers.
+    - **Why the lamppost:** the seed says "the lantern swings up and lights a cyan circle on the ground under the lead". Read as the lantern standing over its hook, it fails: a lantern on a cord can't stand up there through a wind-up. As a street lamp leant over your fighter, the circle is the lantern's own light, and the keeper of a street of lanterns becomes one.
+- **For research, the read from the fight's camera:** the lamppost's lantern hangs over your fighter, so from behind your fighter it sits in front of the keeper's chest. From the side it reads as a street lamp. I'd keep it: the light comes over you, and the circle is at your fighter's feet. Your call.
+- **Known, for phase B:** the breakdowns, arcs and the lantern's swing as a pendulum. Four grazes in transitions:
+  - the Swing's recovery against the coat (−0.07 at 67) and the right leg (−0.03 at 32);
+  - the Signature's wrench against the coat (−0.10 at 98) and the hat (−0.09 at 110).
+- **Time:** about 30 minutes by the clock, from the model's delivery (12:16 UTC) to the blocking (12:46), against the 4 hours named for the clips. On Opus 5.5.
+- **Four facts:** blocked; self-reviewed from the fight's camera and its left side, with the numbers above. The content check comes with the export. Research's read of the poses comes before any timing work. Not delivered.
 
 ## Later, by ground
 

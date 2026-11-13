@@ -531,7 +531,9 @@ return {
 				worst = math.max(worst, (part.Position - should).Magnitude)
 			end
 			t.Check("whole on 70: every band at its size and place on the coil", worst < 1e-3, string.format("%.4f", worst))
-			t.Check("whole and glowing", first.Transparency == 0 and math.abs((surface :: SurfaceAppearance).EmissiveStrength - 2) < 1e-6)
+			t.Check("whole and glowing at its Glow", first.Transparency == 0
+				and math.abs((surface :: SurfaceAppearance).EmissiveStrength - Track.Value((rows.Coil.Bands :: any).FxCoil2_Burn1.Glow, 4)) < 1e-6,
+				tostring((surface :: SurfaceAppearance).EmissiveStrength))
 			local card = player.Parts("Flare")[1]:FindFirstChildWhichIsA("BillboardGui", true) :: BillboardGui
 			local label = card:FindFirstChildOfClass("ImageLabel") :: ImageLabel
 			t.Check("the flare, white at the tip on 70", label.ImageTransparency == 0 and math.abs(card.Size.X.Scale - 5.5) < 1e-6, tostring(card.Size))

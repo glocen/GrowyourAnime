@@ -61,13 +61,14 @@ export type Row = {
 }
 export type Rows = { Area: number, Grey: boolean, Action: string?, Rows: { [string]: Row } }
 
--- A coil band's burn (B1's exit): it holds whole, flaring from 2 to 4 from `from`, and is cut two frames in, its front
+-- A coil band's burn (B1's exit): it holds whole, flaring from 1.5 to 4 from `from`, and is cut two frames in, its front
 -- covering the cut (build/handoff/Pip/fx/pip_burst_rows.json). Never a fade: half-gone fire over a dark Shade or a dusk sky
--- reads rose, redder than the kit's orange (B1's finish, content check conditions 1 and 4).
+-- reads rose, redder than the kit's orange (B1's finish, content check conditions 1 and 4). Its base Glow is 1.5, from 2,
+-- so at noon it reads as flame, not gold ribbon (research's final, 2026-11-13).
 local function burn(from: number): { [string]: { Key } }
 	return {
 		Transparency = { { 0, 0 }, { from + 2, 0 }, { from + 2, 1 } },
-		Glow = { { 0, 2 }, { from, 2, "Quad Out" }, { from + 1.5, 4, "Linear" }, { from + 3, 4 } },
+		Glow = { { 0, 1.5 }, { from, 1.5, "Quad Out" }, { from + 1.5, 4, "Linear" }, { from + 3, 4 } },
 	}
 end
 
@@ -347,7 +348,7 @@ return {
 			Grey = false,
 			Rows = {
 				-- On fire (B1's finish): a dark saturated rim, the flame's orange, gold and a white core licking up each strand,
-				-- drawn for its Glow of 2; its strength is the Glow, never the texture.
+				-- drawn for a Glow of 2 and played at 1.5 (burn()); its strength is the Glow, never the texture.
 				Coil = {
 					Kind = "Mesh",
 					Part = { "FxCoil2_Burn1", "FxCoil2_Burn2", "FxCoil2_Burn3", "FxCoil2_Burn4", "FxCoil2_Burn5", "FxCoil2_Burn6" },

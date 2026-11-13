@@ -4519,6 +4519,13 @@ This answers fix 3 of research's verdict on B1's exit from its rows, for the fin
   - Dusk is Lantern Row's own light, and it already reads as fire.
 - **Further polish** waits for the finish pass (`docs/polish-later.md`).
 
+**The Tune, in (Faber, 2026-11-13):** the bands' base Glow is 1.5 in `burn()`, the flare kept at 4.
+- At noon the lower band shows its orange licks rather than blowing out cream, and the flare is as it was. At dusk the stripes are orange, peach and cream.
+- The red check, worst frame: noon 150 px (17.6°), the HUD's health bar, Pip's robe and specks of rim on the Shade's top; dusk 303 px (22.1°, from 15.5°), the lower band's thin rim. No band body.
+- The stills: `build/captures/ar8/b1_finish_glow15_*` (Glow 2 beside 1.5 at noon and dusk, 64 px, both red maps).
+- The content check (condition 5): PASS. Carried: a Glow below 1.5 or a flare other than 4 comes back to the check, with a dusk sheet at 64 px.
+- On the written Config: self-test B1's exit 28/28, Lantern Burst 27/27; logic 3870/3870 offline. Modulo: the base Glow written back.
+
 ### The keeper's signature in the engine (Faber, 2026-11-13)
 
 Section 7's rows played in grey on the keeper's clip through the one player, joined to the action, its hit and the camera (the method's order, 3). It's a signature, so research's verdict comes with `ga-fresh-eyes`.

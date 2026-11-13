@@ -1,11 +1,13 @@
 """The Lamplighter's clips on the Shade's R6 rig, its model riding it (AR7, delivery 3).
 
-blender.exe -b --factory-startup --python tools/blender/lamplighter_clips.py -- <out_dir> [poses|family] [clip ...]
+blender.exe -b --factory-startup --python tools/blender/lamplighter_clips.py -- <out_dir> [poses|family|export|audit] [clip ...]
 
 - poses (the default): each clip's key poses from the fight's camera and from the side, a sheet a clip, and one blocking
   sheet of every clip's poses from the fight's camera, with the checks' numbers printed.
 - family: the Shade's own clips (shade_clips.py) as the game would play them on the keeper, the pole and the lantern
   riding the right arm unkeyed: what each does to them, measured, on one sheet.
+- export: Lamplighter_<Clip>.json for the builder (r6anim.export, with its audit), one review pack a clip, the arcs and
+  the bare rig, and Lamplighter.clips.json. audit: the export without the pictures.
 
 Needs lamplighter_model.py's output (lamplighter_model.blend, Lamplighter.recipe.json and the maps) in MODEL. The keying
 is rook_clips.py's, as the Shade's: every clip at 60 fps on its own stretch of one timeline, starting from its hub; feet
@@ -23,6 +25,8 @@ Three tracks a clip, keyed apart:
 How it moves: it's the street's master, and it's in no hurry. Its weight is on the pole whenever the pole is down, and
 everything it does starts from the pole: the try's stamp, the swing, the signature's plant.
 """
+import contextlib
+import io
 import json
 import math
 import re
@@ -708,11 +712,64 @@ def family(scene, rig, feet, ctl, motors, rest, out):
     return facts
 
 
+def audit(rig, take) -> dict:
+    """What the content check asks of every clip, as numbers: each leg's widest swing against the coat's hem, and each
+    arm at its highest."""
+    scene = bpy.context.scene
+    swing = {leg: (0.0, 0) for leg in r6.LEGS}
+    top = {"Right Arm": (-90.0, 0), "Left Arm": (-90.0, 0)}
+    for f in range(take.end + 1):
+        scene.frame_set(take.start + f)
+        for leg in r6.LEGS:
+            pose = r6.pose_of(rig, leg)
+            swing[leg] = max(swing[leg], (max(abs(pose[0]), abs(pose[2])), f))
+        for arm in top:
+            along = (r6.to_roblox(rig.parts[arm].matrix_world).to_3x3() @ Vector((0, -1, 0))).normalized()
+            top[arm] = max(top[arm], (math.degrees(math.asin(max(-1, min(1, along.y)))), f))
+    return {"swing": swing, "top": top}
+
+
+def arc_sheet(scene, rig, cams, take, rest, out):
+    """One dot a frame where the grip (amber), the pole's foot (pale) and the lantern's middle (cyan) are through the
+    clip, over the body at its middle beat: the arcs and their spacing."""
+    frames = range(take.start, take.start + take.end + 1)
+
+    def at(rig, part):
+        return r6.to_roblox(rig.parts[part].matrix_world)
+
+    dots = r6.path_dots(rig, frames, [(POLE, (0.0, 0.0, 0.0))], radius=0.06, name="Grip", at=at)
+    dots += r6.path_dots(rig, frames, [(POLE, tuple(rest["F0"] - rest["G0"]))], colour=(0.92, 0.9, 0.82), radius=0.05,
+                         name="Foot", at=at)
+    dots += r6.path_dots(rig, frames, [(LAMP, tuple(rest["h0"] * rest["cord"]))], colour=(0.35, 0.9, 0.95), radius=0.07,
+                         name="Lamp", at=at)
+    beat = take.start + (take.beats[len(take.beats) // 2][0] if take.beats else 0)
+    scene.render.resolution_x, scene.render.resolution_y = 640, 560
+    path = r6.render_shots(scene, [(cams[view], beat, f"{take.name}: one dot a frame, {view}") for view in ("fight", "side")],
+                           out / f"arcs_{take.name}.png", columns=2)
+    for dot in dots:
+        bpy.data.objects.remove(dot, do_unlink=True)
+    print(f"wrote {path}")
+
+
+def bare_sheet(scene, rig, take, undress, out, tiles=20):
+    """The clip stepped through on the bare rig, the costume, the pole and the lantern off, from its left side and the
+    fight's camera."""
+    step = max(1, math.ceil((take.end + 1) / tiles))
+    frames = list(range(0, take.end + 1, step))
+    undress(True)
+    cams = [stage_camera(scene, *view, 15.0, (0.0, 0.4, 3.0), name=f"bare {i}") for i, view in enumerate((SIDE, FIGHT))]
+    scene.render.resolution_x, scene.render.resolution_y = 190, 230
+    path = r6.render_shots(scene, [(cam, take.start + f, f"{f}") for cam in cams for f in frames],
+                           out / f"bare_{take.name}.png", columns=len(frames))
+    undress(False)
+    print(f"wrote {path} (every {step} frames; its left side, then the fight's camera)")
+
+
 def main():
     sys.stdout.reconfigure(line_buffering=True)
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
-    mode = args[0] if args and args[0] in ("poses", "family") else "poses"
+    mode = args[0] if args and args[0] in ("poses", "family", "export", "audit") else "poses"
     scene, rig, costume, undress, feet, ctl, motors, rest, grip_local = build(out)
     print(f"the grip on the right arm: {tuple(round(c, 3) for c in grip_local)}; the lead {REACH:.2f} off; KeeperSwing "
           f"{SWING['Length']} s, Strike {SWING['Strike']}, Recover {SWING['Recover']}")
@@ -730,13 +787,41 @@ def main():
     rc.ground(rig, feet, list(takes.values()))
     numbers = props(rig, ctl, motors, rest, list(takes.values()))
     cams = cameras(scene, rig)
+    facts = {}
     for name, take in takes.items():
-        print(report(take, numbers[name]), end="")
+        notes, checks = report(take, numbers[name]), audit(rig, take)
         if name == "Walk":
-            print(f"  the walk covers {take.stride:.2f} studs a loop, {take.stride / (take.end / FPS):.2f} a second "
-                  f"({take.stride * SCALE:.2f} and {take.stride * SCALE / (take.end / FPS):.2f} at 1.5)")
-        pose_sheet(scene, cams, take, out)
-    blocking_sheet(scene, cams, list(takes.values()), out)
+            notes += (f"  the walk covers {take.stride:.2f} studs a loop, {take.stride / (take.end / FPS):.2f} a second "
+                      f"({take.stride * SCALE:.2f} and {take.stride * SCALE / (take.end / FPS):.2f} at 1.5)\n")
+        notes += (f"  a leg's widest swing: right {checks['swing']['Right Leg'][0]:.0f} at {checks['swing']['Right Leg'][1]}, "
+                  f"left {checks['swing']['Left Leg'][0]:.0f} at {checks['swing']['Left Leg'][1]} (the coat holds 27); each "
+                  f"arm at its highest: right {checks['top']['Right Arm'][0]:.0f} at {checks['top']['Right Arm'][1]}, left "
+                  f"{checks['top']['Left Arm'][0]:.0f} at {checks['top']['Left Arm'][1]}\n")
+        print(notes, end="")
+        facts[name] = {"File": f"{NAME}_{name}.json", "Frames": take.end + 1, "Seconds": round(take.end / FPS, 3),
+                       "Loop": take.loop, "Markers": [[round(t * FPS), label] for t, label in take.markers]}
+        if mode == "poses":
+            pose_sheet(scene, cams, take, out)
+            continue
+        heard = io.StringIO()  # the export audits itself aloud: the pack's notes keep what it said
+        with contextlib.redirect_stdout(heard):
+            # the Name is the game's: Author.SaveBaked reads Anim_Lamplighter<Clip> and checks the clip is named the same
+            r6.export(rig, out / f"{NAME}_{name}.json", NAME, f"{NAME}{name}", take.start, take.start + take.end,
+                      markers=take.markers, source="tools/blender/lamplighter_clips.py", extra={"Loop": take.loop})
+        print(heard.getvalue(), end="")
+        if mode == "audit":
+            continue
+        arc_sheet(scene, rig, cams, take, rest, out)
+        bare_sheet(scene, rig, take, undress, out)
+        strip = [take.start + round(i * take.end / 11) for i in range(12)]
+        r6.review_pack(scene, rig, out / f"pack_{name}", [(take.start + f, f"{name} {f}: {label}") for f, label in take.beats],
+                       lambda frame: cams["fight"], bare=SIDE[0], strip=strip, undress=undress,
+                       notes=notes + heard.getvalue())
+    if mode == "poses":
+        blocking_sheet(scene, cams, list(takes.values()), out)
+    elif len(takes) == len(CLIPS):
+        (out / f"{NAME}.clips.json").write_text(json.dumps({"Fps": FPS, "Clips": facts}, indent=2) + "\n", encoding="utf-8")
+        print(f"wrote {out / (NAME + '.clips.json')}")
 
 
 if __name__ == "__main__":

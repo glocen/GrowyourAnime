@@ -143,6 +143,83 @@ Roblox has no custom shaders. So a trick that needs one (a texture panning on a 
 | a glow on the mesh | an emissive mask (`EmissiveStrength` by script, the red channel), or Neon with vertex colour and no texture |
 | a texture that flickers through by itself | the ForceField material on a grey texture: free motion, but its speed can't be set |
 
+## UI effects: how the professionals make them feel, and how they're built
+
+Research, 2026-11-13, on the director's word of that day: "we also need to do research on pro tip for ui effects and ui vfx". Written public sources only. Roblox's engine facts for UI effects are in `handbook/visuals/ui.md`, "UI effects: engine facts".
+
+### What the sources say
+
+1. **A reward flies, lands, then the counter answers.**
+   - Icons fly to their counter on a curve, not a straight line, each with a random arc and a stagger, at most about 10 icons per gain.
+   - The counter starts ticking when the first one lands, and pulses about 30% larger over about 0.25 s.
+   - A "+N" takes its meter's colour.
+   - OBSERVED: [a Zynga postmortem](https://gamedeveloper.com/design/clicking-and-rewards-in-empires-and-allies), [Bézier coin flights](https://sstyles93.github.io/blogs/mmgs_bezier).
+2. **A reward's layers are 60 to 150 ms apart.**
+   - Spark, then value, then count, about 400 ms in all.
+   - All at once reads as one flash, and wider gaps read as lag.
+   - The answer comes on the press, not the release.
+   - OBSERVED, weak: [dev.to, the reward moment](https://dev.to/patilrb/the-reward-moment-is-the-product-43h6).
+3. **A press:**
+   - The press squeezes to about 0.97.
+   - Nothing scales in from 0: from 0.9 or more.
+   - OBSERVED: [Emil Kowalski, animation tips](https://emilkowal.ski/ui/7-practical-animation-tips).
+4. **Springs:**
+   - Apple's spring is a duration and a bounce. A bounce of 0.15 is barely felt, 0.3 is clear, and above about 0.4 is too much for UI. MANUAL: [WWDC23, animate with springs](https://developer.apple.com/videos/play/wwdc2023/10158/).
+   - On Roblox, the open spr module: a damping ratio of 1 is neutral, and below 1 is for what must pop. OBSERVED: [spr](https://github.com/Fraktality/spr).
+   - Springs beat tweens when a target changes mid-motion.
+5. **Stagger:** 30 to 80 ms per item, capped, since 10 items at 50 ms make the last one wait half a second. OBSERVED: [Flutter's staggered menu](https://docs.flutter.dev/cookbook/effects/staggered-menu-animation).
+6. **Count-ups:** Expo Out, with most of a large jump counted fast and only the end eased. OBSERVED: [countUp.js](https://github.com/inorganik/countUp.js).
+7. **A reveal:**
+   - Anticipation, then the climax at the highest contrast and saturation, then a short, faint dissipation.
+   - A bigger reward builds a longer anticipation.
+   - OBSERVED: [80.lv, shape, colour and motion](https://80.lv/articles/vfx-staples-shape-color-and-motion/).
+   - "Joyful but subtle", with light and shadow drawing the eye exactly when and where. MANUAL: [a Supercell studio blog](https://supercell.com/en/news/job-uiux-artists-story/).
+8. **How much juice:**
+   - 3,018 players across four levels of juiciness. None and extreme both did worse than medium and high, on play time, experience, motivation and performance. MANUAL, peer-reviewed: [Kao 2020](https://www.x-mol.com/paper/1307980428882448384).
+   - Too much amplified feedback lowers how competent players feel. MANUAL: [CHI 2024](https://publikationen.bibliothek.kit.edu/1000171104/152952099).
+9. **Apple's motion rules:**
+   - Feedback is brief and precise.
+   - No motion on the most frequent interactions.
+   - Motion is never the only carrier of information.
+   - No sustained wobble near 0.2 Hz.
+   - The player's reduced-motion setting is respected.
+   - MANUAL: [Apple HIG, motion](https://developer.apple.com/design/human-interface-guidelines/motion).
+10. **One motion language:**
+    - a few named patterns and tokens, never literal values;
+    - effects kept as data, with every timing offset in one place;
+    - one 0-to-1 handle per effect.
+    - OBSERVED: [Atlassian, motion](https://atlassian.design/foundations/motion).
+
+**No source gives:** alpha values for glows and rays, a layer order for UI glows, or a phone budget for UI objects.
+
+### DESIGN: our UI effects (starting numbers, tuned by playing)
+
+1. **One UI effects kit, data-driven like the 3D player.**
+   - Pop, Press, Fly, Count, Shine, Rays, Burst.
+   - Each is one module with named tokens in `UI/Theme.Motion`, so no screen makes a tween of its own.
+   - It's the UI's version of the 3D kit, built once.
+2. **The press:**
+   - a squeeze to about 0.96 on press, with a spring back at bounce 0.15;
+   - `ClickHaptic` on a phone.
+
+   This answers our open line, "a pixel isn't felt under a thumb".
+3. **A reward, by its rung on the ladder:**
+   - **A small gain (rung 2 to 3):** the count and a 1.1 pulse.
+   - **A kill's Credits and a shard caught (rung 4 to 5):**
+     - 4 to 8 icons fly on curved arcs, staggered about 40 ms;
+     - the count starts on the first landing and runs about 0.6 s, Expo Out;
+     - the pill pulses about 1.25 over 0.25 s.
+   - **A level-up or a reveal (5 and up):** sunburst rays from a Conical gradient and a shine sweep, with the layers 60 to 150 ms apart.
+4. **Springs only where something pops:**
+   - panels keep their tweens (Quart Out, exits shorter and eased in, as rule 4 of the effects pass);
+   - pops take a spring with bounce 0.15 to 0.3, never above 0.4.
+5. **Restraint, the measure of premium:**
+   - medium to high juice, never extreme;
+   - nothing moves on its own for long, and a shine sweeps only on what's rare;
+   - no motion carries information alone;
+   - reduced motion turns moves into fades.
+6. **On a phone:** a pop on a plain frame by UIScale, never on a CanvasGroup; gradients move by Offset and Rotation only.
+
 ## Ours beside them (OBSERVED in our config and captures, 2026-11-13)
 
 | What | Ours now | The professionals | Read |

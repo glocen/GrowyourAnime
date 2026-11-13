@@ -631,9 +631,15 @@ def hit(t):
     t.key(30, T=READY["T"], crouch=READY["crouch"], H=READY["H"], look=LEAD, LA=READY["LA"])
 
 
-# The signature's hold: the pole's lean and heading, and where its foot is planted. The lantern hangs over your
-# fighter's shoulder, beside the keeper's face from the fight's camera, not in front of it.
+# The signature's plant: the pole's lean and heading, and where its foot is planted.
 LAMPPOST = (22.0, -38.0, (1.95, 0.95))
+# Its hold (option 1, AR7 section 7): the pole lifted off the plant and held up one-handed near its foot, leant out over
+# your fighter on the keeper's right, the crook opening ahead and out: the lantern hangs high over your fighter's side,
+# its drum clear over the hat from every heading in front (from the fighter's side, it hung in front of the face).
+# The lean, its heading, and the grip's studs up the pole; where the grip is held; the crook's heading.
+RAISE, RAISED, RAISE_OPEN = (24.0, 15.0, 1.15), (2.0, 1.0, 5.0), 20.0
+# Its fall: the slam's heading; the frame the pole is tipped over the top, its lean there, and where the grip is then.
+FALL, TIP, OVER, TIPPED = -52.0, 114, 30.0, (2.6, 0.9, 6.3)
 
 
 def on_pole(d):
@@ -643,11 +649,12 @@ def on_pole(d):
     return (foot[0] + d * math.sin(a) * math.sin(h), foot[1] + d * math.sin(a) * math.cos(h), d * math.cos(a))
 
 def signature(t):
-    """The block of its signature. It plants the pole out ahead of it and leans the whole length out over your fighter
-    like a street lamp, one-handed, and the lantern swings up and over until it hangs above your fighter's head and
-    lights the ground in a circle under it: long enough that you see it coming. Then it wrenches the pole up out of the
-    ground with both hands and brings it down like a hammer, and the lantern comes down on the circle."""
-    lean, toward, foot = LAMPPOST
+    """The block of its signature. It plants the pole out ahead of it, then lifts it out of the plant and holds it up
+    one-handed near its foot, leant out over your fighter, and the lantern swings up and over until it hangs high over
+    your fighter's side, its drum clear over the hat from every heading: long enough that you see it coming. Then it
+    wrenches the pole straight up, tips it over the top and brings it down like a hammer, and the lantern comes down
+    beside your fighter."""
+    foot = LAMPPOST[2]
     t.key(0, "ready")
     t.pole(0, under=True)
     t.key(12, ease="in", T=(2, -8, -4, 0.04, 0, 0), crouch=-0.02, RA=("grip", (1.8, 1.0, 3.2), (40, 0, 20)))
@@ -656,20 +663,22 @@ def signature(t):
           RA=("grip", on_pole(2.6), (50, 0, 20)))  # the chest turned into the plant, so the arm reaching it clears it
     t.pole(24, ease="out", at=foot, open=0)
     t.mark(24, "Plant")
-    # The hold grows (research's read, fix 1): it leans the pole out with its head still down under the brim, then its
-    # weight sinks onto the pole, the left hand comes forward for it and the head comes up to your fighter.
-    t.key(44, "and leans it out over you", ease="sine", T=(3, 18, 0, 0, 0, -0.06), crouch=0.06,
-          RA=("grip", on_pole(3.4), (80, 0, 10)), LA=(-25, 0, -30), H=(28, -4, 4))
+    # The hold grows (research's read, fix 1): it lifts the pole out of the plant and up over you with its head still
+    # down under the brim, then its weight settles under the pole, the left hand comes forward and the head comes up to
+    # your fighter.
+    t.key(44, "and lifts it out over you", ease="sine", T=(3, 18, 0, 0, 0, -0.06), crouch=0.06,
+          RA=("grip", RAISED, (140, 0, 20)), LA=(-25, 0, -30), H=(28, -4, 4))
+    t.pole(44, ease="sine", line=RAISE, open=RAISE_OPEN)
     t.mark(44, "Light")
-    t.key(70, "it sinks onto it", ease="sine", T=(5, 18, 0, 0.0, 0, -0.02), crouch=0.12, LA=(-14, 0, -26),
+    t.key(70, "it braces under it", ease="sine", T=(5, 18, 0, 0.0, 0, -0.02), crouch=0.12, LA=(-14, 0, -26),
           H=(23, -2, 4))
+    t.pole(70, ease="sine")
     # up at you: over your fighter's head toward the camera behind it, so the face comes out from under the brim (your
     # fighter's own face is below the keeper's eyes: looking at it would bow the head as low as the plant did)
-    # the wrench out of it heaves, slow out of the look and fast through its middle: the arm goes twice as far as it
-    # did, and a quart out of the look threw a third of it into one frame
+    # the wrench out of it heaves, slow out of the look and fast through its middle
     t.key(96, "and looks up at you", ease="cubic", T=(6, 18, 0, 0.02, 0, 0.02), crouch=0.17, LA=(-4, 0, -20),
           look=(0.0, REACH, 5.0))
-    t.pole(96, ease="cubic", at=foot)
+    t.pole(96, ease="cubic")
     t.lamp(30)  # the plant flings the lantern up; it comes over your fighter by the Light and steadies through the hold
     t.lamp(44, "sine", pin=0.25)
     t.lamp(60, pin=0.1)
@@ -683,7 +692,11 @@ def signature(t):
     # on the way down, and the lantern comes down on the floor at your fighter.
     # The chest stays near square, so the raised arm is out at its side, never along its facing (r6parity's salute);
     # the slam's crouch and lean stay inside what the coat's hem covers.
-    up, top, down = (6.0, 90.0, 2.6), (-4.0, toward, 2.4), (90.0, toward, 4.6)
+    # Option 1's fall (AR7, section 7): the pole tips over the top with the arm still high, so the lantern crosses over
+    # the hat, and only then does the arm drive it down onto your fighter, the lantern dropping beside it on the far
+    # side of the face's line from your fighter's side.
+    fall = FALL
+    up, top, over, down = (6.0, 90.0, 2.6), (-4.0, fall, 2.4), (OVER, fall, 2.6), (90.0, fall, 4.6)
     wrench, high, slam = (2.3, 0.15, 6.2), (2.35, 0.1, 6.5), (1.9, 1.4, 2.0)  # overhead, past the arm's reach: straight
     t.key(106, "it wrenches it up", ease="sine", T=(-10, -6, 4, 0, 0, -0.05), crouch=-0.02,
           RA=("grip", wrench, (170, 0, 20)), LA=(40, 0, -60))
@@ -692,19 +705,22 @@ def signature(t):
     t.key(110, "it hangs there", ease="in", T=(-12, -8, 5, 0, 0, -0.06), crouch=-0.03,
           RA=("grip", high, (174, 0, 20)), LA=(46, 0, -64))
     t.pole(110, ease="in", line=top)
+    t.key(TIP, ease="snap", T=(-6, -7, 3, 0.01, 0, 0.0), crouch=0.0, RA=("grip", TIPPED, (165, 0, 15)), LA=(30, 0, -55))
+    t.pole(TIP, ease="snap", line=over)
     t.key(118, "the slam", ease="out", T=(20, -6, -4, 0.05, 0, 0.2), crouch=0.18, RA=("grip", slam, (70, 0, 10)),
           LA=(-30, 0, -35), look=(0.0, REACH, 0.0))
     t.pole(118, ease="out", line=down)
     t.mark(118, "Slam")
     t.key(124, "it gives", ease="sine", T=(19, -6, -3, 0.04, 0, 0.19), crouch=0.16)
     t.key(142, "it holds it down", ease="sine", T=(20, -5, -3, 0.04, 0, 0.19), crouch=0.17)
-    t.pole(142, ease="sine", line=(88.0, toward, 4.6))
+    t.pole(142, ease="sine", line=(88.0, fall, 4.6))
     t.key(160, ease="sine", T=(3, 2, 0, 0, 0, 0), crouch=0.08)  # it straightens first, its head back from the rising pole
-    t.key(170, ease="sine", T=(2, 6, 5, 0, 0, 0), crouch=0.05)  # and tips its head away from it, so it never passes the head
+    t.key(170, ease="sine", T=(2, 11, 10, 0, 0, 0), crouch=0.05)  # and tips its head away from it, so it never passes the head
     # the lantern comes round from the right with the pole's head, thrown out ahead of it, clear of the hat, and down
-    # onto the circle
+    # beside your fighter
     t.lamp(112)
-    t.lamp(115, "sine", (30.0, -10.0), 0.6)
+    t.lamp(114, "sine", (50.0, -50.0), 0.7)
+    t.lamp(116, "sine", (0.0, -65.0), 0.9)
     t.lamp(118, "out", (0.0, -35.0), 1.0)
     t.lamp(124)
     t.key(182, "ready", ease="sine", T=READY["T"], crouch=READY["crouch"], RA=READY["RA"], LA=READY["LA"], look=LEAD,

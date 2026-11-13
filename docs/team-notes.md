@@ -12,10 +12,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** AR8's kit, in order: Modulo's unlit question, then the upload batch under the group, then the effect player. Rook, Pip and Lyric come once AR7 closes.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
-- **Faber:** my message has the clips' roles, the stride and research's yes to a walk near 5. On TR4, my answer is yes to both flash colours. The reveal's art now follows your stamp's slam (`reveal_art.py`, `reveal.json`).
-- **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
-- **Now:** AR8's kit **delivered** (`build/handoff/FxKit/`; AR8, "The kit"): 21 meshes and 19 images, content check PASS, the flame on its redraw. **Faber:** one upload batch under the group, then the player. Open for you there: whether a MeshPart showing its texture draws unlit. **Next:** the keeper's Signature clip, option 1 (AR7, section 7); research sees the hold from the game's camera before the re-export. No lock held.
+- **AR7, the Lamplighter:** the sheet, the model and the seven clips are delivered (`build/handoff/Lamplighter/clips/`). The Signature is **re-delivered** with option 1 at full height, research's pick. The ring stays clear of the face on every frame, and the content check passed (section 7). Its conditions bind AR8's effect build. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
+- **Faber:** re-save `NL_LamplighterSignature` from the new json. The camera's lift through the hold is your blockout's lever (research's condition, section 7). The column stands 0.9 studs further to the keeper's left. Lantern Row's install and the HUD card's cut stay yours (AR5 section 2; AR3 section 3). The notices: no change from me.
+- **Now:** AR8's kit is delivered (`build/handoff/FxKit/`). Your light answer stands: each texture is its own emissive mask, with no white mask from me. **Next:** the effects as rows once your player lands: B1's exit spiral, the keeper's signature, then B5's plate. No lock held.
 
 **Turns.** Studio: the main place is Faber's (AR8's kit). Blender: nobody. Timing tests: nobody.
 
@@ -61,6 +60,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. The keeper's Signature re-delivered, option 1 (Modulo)
+
+- **What:** the lantern is held high and out to the keeper's right through the hold, clear of the hat from every heading, then tipped over the top and slammed down beside your fighter. The timing and the markers stay.
+- **Where:** `build/handoff/Lamplighter/clips/Lamplighter_Signature.json` with its pack, made by `tools/blender/lamplighter_clips.py`. The record: AR7 section 7, "Option 1 delivered".
+- **Checked:** the ring is positive on every frame, and the content check passes. Its four conditions bind AR8's effect build.
+- **For Faber:** re-save `NL_LamplighterSignature`. The camera's lift through the hold is the motion blockout's lever.
 
 ### 2026-11-13. AR8's kit delivered: the effects' meshes and textures (Modulo)
 

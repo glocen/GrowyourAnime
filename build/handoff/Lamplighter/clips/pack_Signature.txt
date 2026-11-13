@@ -1,28 +1,28 @@
 Signature: 183 frames, 3.03 s; markers Plant 24, Light 44, Wrench 106, Slam 118
-  the pole's lowest point over the floor -0.00 at 170; the grip from 2.39 to 4.60 up it (it holds from 1.0 to 6.0)
-  the pole's nearest to the body (past its radius): Torso 0.24 at 106; Head 0.01 at 20; Left Arm 2.21 at 106; Right Leg 0.57 at 103; Left Leg 1.55 at 103
-  the lantern's foot at its lowest -0.00 at 129; its widest off plumb 100 at 23; its nearest to the body (past its drum): Torso 1.65 at 176; Head 0.02 at 176; Left Arm 2.73 at 118; Right Leg 3.02 at 118; Left Leg 3.04 at 125
-  the lantern rests on the floor from 118 to 153 (10 frames)
+  the pole's lowest point over the floor -0.00 at 170; the grip from 1.15 to 4.60 up it (it holds from 1.0 to 6.0)
+  the pole's nearest to the body (past its radius): Torso 0.23 at 103; Head 0.01 at 20; Left Arm 2.04 at 128; Right Leg 0.73 at 106; Left Leg 1.56 at 106
+  the lantern's foot at its lowest -0.00 at 129; its widest off plumb 100 at 23; its nearest to the body (past its drum): Torso 1.66 at 176; Head 0.08 at 175; Left Arm 2.38 at 118; Right Leg 2.94 at 157; Left Leg 2.79 at 118
+  the lantern rests on the floor from 118 to 142 (11 frames)
   start (0): the grip at (2.63, 0.51, 2.40); the lantern over (3.80, -0.00), its foot 4.68 up
   Plant (24): the grip at (1.46, 2.03, 2.19); the lantern over (1.50, 4.26), its foot 5.20 up
-  Light (44): the grip at (1.21, 2.17, 3.10); the lantern over (0.18, 4.97), its foot 3.47 up
-  Wrench (106): the grip at (1.86, -0.04, 5.25); the lantern over (1.94, 2.74), its foot 8.73 up
-  Slam (118): the grip at (1.93, 1.43, 1.97); the lantern over (-0.65, 4.48), its foot 0.00 up
+  Light (44): the grip at (1.98, 0.99, 4.97); the lantern over (2.95, 4.70), its foot 7.35 up
+  Wrench (106): the grip at (1.86, -0.04, 5.25); the lantern over (3.45, 2.63), its foot 9.19 up
+  Slam (118): the grip at (1.93, 1.43, 1.97); the lantern over (-1.28, 4.22), its foot 0.00 up
   a leg's widest swing: right 27 at 142, left 24 at 110 (the coat holds 27); each arm at its highest: right 80 at 110, left -16 at 110
 [audit] Lamplighter_Signature.json (export, 183 poses)
   Legs cross            0.000 studs
-  Arm through body      0.043 studs at 1.9333 (Left Arm into Torso)
+  Arm through body      0.034 studs at 2.0667 (Right Arm into Torso)
   Leg out of hip        0.020 studs at 0.4 (Right Leg)
   Weapon through body   0.000 studs
-  Under the floor       0.000 studs at 0.9667 (Right Leg)
-  Pop                   1.042x at 1.7 (Right Leg turns 3.8 deg in one frame)
+  Under the floor       0.000 studs at 1.9 (Left Leg)
+  Pop                   1.965x at 1.9 (Left Leg turns 4.1 deg in one frame)
   Seam                  0.000 deg
-  Limb flip            24.914 deg at 1.9667 (Left Arm turns about its own length in one frame)
+  Limb flip            25.551 deg at 1.9667 (Left Arm turns about its own length in one frame)
   Wrist flip            0.000 deg
-  Salute held           0.050 s at 1.9 (Right Arm 65 up, 3 off its facing, in the zone to 1.9333)
-  Neck offset           0.000 studs at 2.6833 (the head off its neck)
+  Salute held           0.083 s at 0.4667 (Right Arm 32 up, 10 off its facing, in the zone to 0.5333)
+  Neck offset           0.000 studs at 2.0 (the head off its neck)
   Nod                  28.279 deg at 0.7333 (the head against the torso)
-  Beat                  1.324x at 1.9667 (Head turns 7.9 deg in one frame, on the marker Slam; the clip's own beat, for information)
-  Shoulder cap          0.453 studs at 1.9 (Left Arm; inherent to R6, for information)
+  Beat                  1.394x at 1.9667 (Torso turns 11.4 deg in one frame, on the marker Slam; the clip's own beat, for information)
+  Shoulder cap          0.449 studs at 1.8333 (Left Arm; inherent to R6, for information)
   Eyes                 -47.7 to +9.3 deg (at 2.3667 and 1.6; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
 AUDIT PASS

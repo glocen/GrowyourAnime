@@ -3331,6 +3331,24 @@ Research's fixes 1 to 3, drawn under the content check's seven conditions. The s
   - **The two-frame crossing at 114 to 116** from behind or left of your fighter is accepted. It's the lantern landing on them, in motion, and the content check rules on it.
   - **One condition, for Faber's motion blockout (section 6):** at either height, the hold sits at the game frame's top edge, and on a phone the top band covers it. The camera lifts through the hold so the lantern stays in frame below the band from the Light to the wrench, then comes back down for the slam. That tilt is the signature's camera lever, judged in the motion blockout.
 
+**Option 1 delivered (Modulo, 2026-11-13), at full height.**
+- **The hold:** the pole comes up off its plant and is held one-handed near its foot, leant out over your fighter on the keeper's right (`RAISE`, `RAISED` and `RAISE_OPEN` in `tools/blender/lamplighter_clips.py`). At the Light the lantern hangs over (2.95, 4.70) keeper units, its foot 7.35 up. The timing, the wrench and the four markers stay.
+- **The fall:** the pole tips over the top with the arm still high (`TIP` 114), then drives down along heading −52. The lantern lands at (−1.28, 4.22), about 0.9 studs further to the keeper's left than before.
+- **Measured on the exported json,** as clear pixels between the drum and the head and hat at 64 px:
+  - The ring is positive on every frame from 44 to 118, the least 3.1 at 114. The hold has 14 or more.
+  - The game camera's least is 1.2 at 116, and the flank's is 7.2.
+  - A sweep of 11 headings at the game camera's distance: the hold is clear at every heading, the least 5.0 at 35°. From straight behind your fighter and from its left (−30, 0), the landing crosses the face on 114 and on 116 to 117.
+  - On the game's screen the drum's top sits at 1.0 through the hold (0.74 before) and 1.11 at the wrench (1.03 before). That's the camera's lift, in research's condition above.
+  - The body: the pole is 0.01 off the head at 20, as before. The lantern is 0.08 off it at 175 (0.02 before). The widest leg swing is 27, and the coat holds 27. The audit passes.
+- **The content check: PASS** on the clip. The block on condition 6 is lifted. The crossing at 114 to 117 is accepted as motion: a solid drum swinging past for about four frames, with nothing gathering at the face. Its conditions bind AR8's effect build:
+  - **a.** From 104 to 118, no glow, halo or motes sit on the drum beyond its paper. The hold's light and shell are out by 104.
+  - **b.** The fall's streak (111 to 118) never lies across the head or face at any heading on 117 or 118. It's straight, in light colours only.
+  - **c.** The column and chips stand at the new landing, with section 7's numbers re-measured there.
+  - **d.** The effect's own check covers 112 to 119 from −30 and 0, at 64 px, on the dark floor and the bright one.
+- **Delivered:** `Lamplighter_Signature.json`, `pack_Signature.png` and `pack_Signature.txt` in `build/handoff/Lamplighter/clips/`. `Lamplighter.clips.json` is unchanged: 183 frames, the same markers. The sheets are in `build/scratch/modulo/sig_opt1/`: `pick_full/` and `pick_d/`, and `json_full/` (the hold from the game's camera and the ring, and the crossing).
+- **Hours:** about 0.7, 17:20 to 18:00 UTC.
+- **Faber:** re-save the Signature as `NL_LamplighterSignature` from this json. The camera's lift through the hold is your motion blockout's lever (research's condition above).
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

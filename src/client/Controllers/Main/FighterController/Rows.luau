@@ -79,6 +79,26 @@ local function imageId(name: string): string
 	return picture
 end
 
+-- A fresh copy of a kit mesh in a kit look, unseen and not yet parented: a row's part, or a coded effect's (Haymaker's
+-- stamp). With no look it's a flat light in its Color.
+function Rows.Mesh(partName: string, lookName: string?): (MeshPart, SurfaceAppearance?)
+	local templates = kitFolder()
+	local template = (templates :: any).Meshes:FindFirstChild(partName)
+	assert(template and FxKit.Meshes[partName], `no kit mesh "{partName}"`)
+	local lookTemplate = if lookName then (templates :: any).Looks:FindFirstChild(lookName) else nil
+	assert(lookName == nil or lookTemplate, `no kit look "{lookName}"`)
+	local part = template:Clone() :: MeshPart
+	part.Transparency = 1
+	local look: SurfaceAppearance? = nil
+	if lookTemplate then
+		look = lookTemplate:Clone()
+		look.Parent = part
+	else
+		part.Material = Enum.Material.Neon
+	end
+	return part, look
+end
+
 local function carrier(): Part
 	local p = Instance.new("Part")
 	p.Name = "NL_RowCarrier"
@@ -273,22 +293,9 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean, optio
 		return piece
 	end
 	if row.Kind == "Mesh" then
-		local templates = kitFolder()
 		local lookName = if greyed then row.Grey or row.Look else row.Look
-		local lookTemplate = if lookName then (templates :: any).Looks:FindFirstChild(lookName) else nil
-		assert(lookName == nil or lookTemplate, `no kit look "{lookName}"`)
 		for _, partName in row.Part or {} do
-			local template = (templates :: any).Meshes:FindFirstChild(partName)
-			assert(template and FxKit.Meshes[partName], `no kit mesh "{partName}"`)
-			local part = template:Clone() :: MeshPart
-			part.Transparency = 1
-			local look: SurfaceAppearance? = nil
-			if lookTemplate then
-				look = lookTemplate:Clone()
-				look.Parent = part
-			else -- no look: a flat light in its Color
-				part.Material = Enum.Material.Neon
-			end
+			local part, look = Rows.Mesh(partName, lookName)
 			part.Parent = home()
 			table.insert(piece.Meshes, { Part = part, Look = look, Name = partName })
 			table.insert(piece.Made, part)

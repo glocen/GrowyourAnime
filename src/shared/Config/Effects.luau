@@ -90,7 +90,7 @@ local COIL_SCALE: { Key } = {
 
 return {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
-	-- the charge's square and the strike's square, eaten as it cools. Then B5's stamp (AR8, "B5"), a grey block until its art.
+	-- the charge's square and the strike's square, eaten as it cools. Then B5's stamp (AR8, "B5"), in its art (Stamp.Art).
 	Haymaker = {
 		-- The bar's eight frames, one under another: the group's upload (docs/asset-log.md); "" plays the grey stand-in.
 		Picture = "rbxassetid://82029716338204",
@@ -105,7 +105,7 @@ return {
 		Strike = { Side = 3.0, Bar = 0.8, Frame = 0 },
 		Shock = { Side = 3.7, Bar = 0.7, Frame = 3 },
 		Ahead = 0.3, -- studs down the line from the knuckles the squares stand
-		-- B5, the stamp, a grey block (docs/asset-requests.md, AR8, "B5"; AR1, section 9; tools/blender/rook_haymaker_stamp.py,
+		-- B5, the stamp (docs/asset-requests.md, AR8, "B5"; AR1, section 9; tools/blender/rook_haymaker_stamp.py,
 		-- face() lifted). A square stood up facing the camera hangs over the target through the hold, drawn tight. It
 		-- slams down onto it over Drop frames, stretched tall, and lands on Strike. It squashes flat on Shock while two bars
 		-- run out along the floor from its feet, and is eaten where it lies, the target pinned under it (Actions: Haymaker's push is 0). Frames are counted from Strike; studs from the floor.
@@ -118,8 +118,12 @@ return {
 			-- Its foot at the top of the hang, where it falls from. On a phone at the replay's framing, the sheet's 10 and Modulo's
 			-- 8 cut its top off the frame (by 13 px at 8); at 6.4 it stands 28 px inside, under the top bar's buttons.
 			Top = 6.4,
-			Forms = 0.65, -- its side's share as it forms, and its bar then: drawn tight to Side and Bar
+			-- Its side's share as it forms, and its bar then: drawn tight to Side and Bar with the ram, on Tighten, slowly then
+			-- fast into the drop. Loose and over 1 its top edge stays level as it tightens and rises (fix 1, the hold builds;
+			-- Modulo's offer, AR8, "B5's polish and the square's art"; it was 0.65 on Quad Out).
+			Forms = 1.2,
 			FormBar = 0.3,
+			Tighten = "Quad In",
 			Drop = 4, -- frames it falls, faster and faster, to land on Strike
 			Stretch = 0.35, -- it grows this share taller, and Narrow narrower, as it falls fast
 			Narrow = 0.15,
@@ -131,6 +135,23 @@ return {
 			Eaten = 12,
 			Run = { Reach = 4.5, Frames = 8, Life = 9, Width = 0.5 }, -- the floor's two bars: out Reach studs over Frames, gone after Life
 			Alone = 6, -- studs ahead of the lead it lands with no target: Haymaker's range
+			-- Its art (AR8, "B5's polish and the square's art"; build/handoff/Rook/fx/rook_haymaker_rows.json): a framed plate
+			-- standing up. Two posts the full height and two rails between them, of the kit's FxBar in fx_across_Ember (a dark
+			-- rim, orange, a cream core), round FxPlate in fx_rise_Ember set back inside; the floor's two runs, FxBar laid face
+			-- up, hard strokes, never a pool. No light at the landing, and the plate never left on the floor. Grey plays the
+			-- block-in looks on the same meshes. Keys are frames from Strike (Rules.Track).
+			Art = {
+				Grey = false,
+				Frame = { Mesh = "FxBar", Look = "fx_across_Ember", Grey = "fx_across_Grey" }, -- the posts, the rails, the runs
+				Plate = { Mesh = "FxPlate", Look = "fx_rise_Ember", Grey = "fx_rise_Grey" },
+				Depth = 0.5, -- studs through a post; a rail is Rails of it, so no rail's face lies in a post's
+				Rails = 0.9,
+				Pane = 0.06, -- studs: the plate's thickness
+				-- The frame's and the plate's EmissiveStrength: 1 through the hang, 2 on Strike, 1 again two frames after.
+				Glow = { { -21, 1, "Linear" }, { -1, 1, "Linear" }, { 0, 2, "Quad Out" }, { 2, 1 } },
+				-- The plate's Transparency: it charges through the hang, flashes on Strike, and is gone before the stamp lies flat.
+				Charge = { { -21, 0.85, "Quad In" }, { -6, 0.35, "Linear" }, { -1, 0.35, "Linear" }, { 0, 0.15, "Linear" }, { 3, 1 } },
+			},
 		},
 		Sound = "HaymakerStrike", -- the cue on the strike's frame, at the knuckles (Config.Sounds)
 		-- The ram's heat (AR1, sections 5 to 7): the glow mask on these pieces, on the clip's markers. Up from Charge to

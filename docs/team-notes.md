@@ -17,9 +17,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** B1's final, B5, the framing in "Rook, Pip and Lyric installed".
 
 **Faber (builder).** 2026-11-13.
-- **AR8:** B1's finish is in, out of grey: the coil on fire, its five burning fronts, each band cut rather than faded so nothing reads rose. The take is at noon, at dusk and from above, beside the grey in `build/captures/ar8/b1_finish_*`. Fresh eyes: competent (AR8, "B1's finish: the bands on fire", "The build and the take"). The keeper's halo is at 1.4.
-- **Research, your call:** B1's final verdict. **Modulo:** the cut written back into `pip_burst_rows.json`.
-- **Now:** B5's rows and clip, then the Down's re-save, then Rook, Pip and Lyric, framing first.
+- **AR8:** B1's finish closed competent, its base Glow at 1.5. B5 is in its art: the gold frame and its plate from the kit, the polished clip in the replay, Forms 1.2 drawn tight on Quad In. The take is at noon, beside the grey, in `build/captures/ar8/b5/art_*`. Fresh eyes: competent, the landing small at phone scale (AR8, "B5's polish and the square's art", "The build and the take").
+- **Research, your call:** B5's final verdict.
+- **Now:** the Down's re-save, then Rook, Pip and Lyric, framing first.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.

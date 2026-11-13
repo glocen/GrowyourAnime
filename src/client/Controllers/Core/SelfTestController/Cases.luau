@@ -2200,12 +2200,8 @@ return {
 			type Square = { Count: number, Foot: number, Wide: number, Tall: number, Centre: Vector3, Faces: boolean }
 			local function square(at: number): Square
 				running.Step(strike + at * FRAME)
-				local bars = shown("NL_Stamp")
-				local posts: { BasePart }, across: { BasePart } = {}, {}
-				for _, p in bars do
-					table.insert(if p.Size.Y > p.Size.X then posts else across, p)
-				end
-				local got: Square = { Count = #bars, Foot = -1, Wide = 0, Tall = 0, Centre = Vector3.zero, Faces = false }
+				local posts, across = shown("NL_StampPost"), shown("NL_StampRail")
+				local got: Square = { Count = #posts + #across, Foot = -1, Wide = 0, Tall = 0, Centre = Vector3.zero, Faces = false }
 				if #posts == 2 and #across == 2 then
 					table.sort(across, function(a: BasePart, b: BasePart): boolean
 						return a.Position.Y < b.Position.Y
@@ -2227,8 +2223,24 @@ return {
 			local before = square(-s.Rise - 1)
 			t.Check("nothing before it forms", before.Count == 0, `{before.Count} bars`)
 			local forms = square(-s.Rise + 0.5)
-			t.Check("it forms small over the target's head", forms.Count == 4 and forms.Wide < s.Side * 0.75 and math.abs(forms.Foot - s.Over) < 0.3, string.format("%d bars, %.2f wide, foot at %.2f", forms.Count, forms.Wide, forms.Foot))
+			t.Check("it forms loose over the target's head", forms.Count == 4 and math.abs(forms.Wide - s.Side * s.Forms) < 0.1 * s.Side and math.abs(forms.Foot - s.Over) < 0.3, string.format("%d bars, %.2f wide, foot at %.2f", forms.Count, forms.Wide, forms.Foot))
+			-- its art (Stamp.Art): the kit's bar and plate in their looks, posts upright, glowing and charging on its keys
+			local art = s.Art
+			local function lookOf(p: BasePart?): string?
+				local surface = if p then p:FindFirstChildOfClass("SurfaceAppearance") else nil
+				return if surface then surface.ColorMapContent.Uri else nil
+			end
+			local post = shown("NL_StampPost")[1]
+			local plate = shown("NL_StampPlate")[1]
+			t.Check("in the kit's look: the frame's ember, the plate's", lookOf(post) == FxKit.Images[if art.Grey then art.Frame.Grey else art.Frame.Look].Id
+				and lookOf(plate) == FxKit.Images[if art.Grey then art.Plate.Grey else art.Plate.Look].Id, tostring(lookOf(post)))
+			t.Check("its posts stand upright", post ~= nil and math.abs(post.CFrame.RightVector.Y) > 0.999)
 			local hung = square(-s.Drop - 1)
+			plate = shown("NL_StampPlate")[1]
+			t.Check("the plate charging inside the frame", plate ~= nil and math.abs(plate.Transparency - Track.Value(art.Charge, -s.Drop - 1)) < 1e-6
+				and plate.Size.X < hung.Wide, string.format("%.3f", if plate then plate.Transparency else -1))
+			local surface = if plate then plate:FindFirstChildOfClass("SurfaceAppearance") else nil
+			t.Check("glowing at its hang's Glow", surface ~= nil and math.abs(surface.EmissiveStrength - Track.Value(art.Glow, -s.Drop - 1)) < 1e-6)
 			t.Near("hung: drawn tight to its side", hung.Wide, s.Side, 0.01)
 			t.Near("at the top of its drop", hung.Foot, s.Top, 0.01)
 			t.Check("over the target", on(hung, spot) < 0.05, string.format("%.3f studs off", on(hung, spot)))
@@ -2238,6 +2250,9 @@ return {
 			local falling = square(-1.5)
 			t.Check("falling: lower, and stretched taller than wide", falling.Foot > 0.05 and falling.Foot < hung.Foot - 1 and falling.Tall > falling.Wide, string.format("foot at %.2f, %.2f tall, %.2f wide", falling.Foot, falling.Tall, falling.Wide))
 			local landed = square(0.25)
+			local postSurface = shown("NL_StampPost")[1]:FindFirstChildOfClass("SurfaceAppearance") :: SurfaceAppearance
+			t.Check("brighter on Strike", postSurface.EmissiveStrength > Track.Value(art.Glow, -s.Drop - 1)
+				and math.abs(postSurface.EmissiveStrength - Track.Value(art.Glow, 0.25)) < 1e-6, string.format("%.3f", postSurface.EmissiveStrength))
 			t.Near("on Strike: on the floor", landed.Foot, 0.04, 0.01)
 			t.Near("wide", landed.Wide, s.Side * s.Spread, 0.01)
 			t.Check("at the target's feet", on(landed, spot) < 0.05, string.format("%.3f studs off", on(landed, spot)))
@@ -2245,8 +2260,17 @@ return {
 			local shock = square(1.25)
 			t.Check("on Shock: where it landed, though the target moved", on(shock, spot) < 0.05, string.format("%.3f studs off", on(shock, spot)))
 			t.Near("squashed flat", shock.Tall, s.Side * s.Squash[2], 0.01)
-			local run = #shown("NL_StampRun")
-			t.Check("the floor's two bars run out from its feet", run == 2, `{run} bars`)
+			local runParts = shown("NL_StampRun")
+			t.Check("the floor's two bars run out from its feet, face up", #runParts == 2 and math.abs(runParts[1].CFrame.LookVector.Y) > 0.999, `{#runParts} bars`)
+			square(3.25)
+			t.Check("the plate gone before it lies flat, never left on the floor", #shown("NL_StampPlate") == 0)
+			local lights = 0
+			for _, p in (if workspace:FindFirstChild("NL_Effects") then (workspace :: any).NL_Effects:GetChildren() else {}) do
+				if p.Name:sub(1, 8) == "NL_Stamp" and p:FindFirstChildWhichIsA("Light", true) then
+					lights += 1
+				end
+			end
+			t.Check("no light at the landing", lights == 0)
 			local eaten = square(s.Eat + s.Eaten + 0.25)
 			t.Check("eaten where it lies", eaten.Count == 0 and #shown("NL_StampRun") == 0, `{eaten.Count} bars`)
 			local over = running.Step(strike + (s.Eat + s.Eaten + 1) * FRAME)

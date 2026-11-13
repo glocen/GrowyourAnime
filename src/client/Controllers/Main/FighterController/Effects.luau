@@ -34,6 +34,7 @@ local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
 local Combat = require(ReplicatedStorage.Shared.Config.Combat)
 local Fight = require(ReplicatedStorage.Shared.Rules.Fight)
+local Track = require(ReplicatedStorage.Shared.Rules.Track)
 local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Sounds = require(script.Parent.Sounds)
 local Rows = require(script.Parent.Rows)
@@ -51,7 +52,6 @@ local Effects = {}
 Effects.TimeScale = 1
 
 local LIGHT = Color3.fromRGB(225, 225, 225) -- the stand-ins' grey
-local MID = Color3.fromRGB(140, 140, 140) -- a stand-in's secondary shape
 local SPARK = Color3.fromRGB(255, 255, 255)
 local HOT = Color3.new(1, 1, 1) -- a picture's own colours
 local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
@@ -382,16 +382,23 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		line = CFrame.lookAt(origin, origin + toward.Unit)
 	end
 
-	-- B5, the stamp (Config.Effects.Haymaker.Stamp), in grey: the square's two posts and two bars, then the floor's two
-	-- bars, made at the start. It hangs over wherever the target is through the hold, and lands where it stood on Strike:
-	-- pinned, the target stays there with it.
-	local stampBars: { Part } = {}
-	for index = 1, 6 do
-		local p = part(if index <= 4 then LIGHT else MID)
-		p.Name = if index <= 4 then "NL_Stamp" else "NL_StampRun"
-		p.Transparency = 1
-		table.insert(stampBars, p)
+	-- B5, the stamp (Config.Effects.Haymaker.Stamp), in its art (Stamp.Art): two posts and two rails of the kit's bar round
+	-- its plate, then the floor's two runs, made at the start. It hangs over wherever the target is through the hold, and
+	-- lands where it stood on Strike: pinned, the target stays there with it.
+	type StampPiece = { Part: MeshPart, Look: SurfaceAppearance? }
+	local art = EffectsConfig.Haymaker.Stamp.Art
+	local stampMade: { MeshPart } = {}
+	local function stampPiece(name: string, kind: typeof(art.Frame)): StampPiece
+		local p, look = Rows.Mesh(kind.Mesh, if art.Grey then kind.Grey else kind.Look)
+		p.Name = name
+		p.Parent = home()
+		table.insert(stampMade, p)
+		return { Part = p, Look = look }
 	end
+	local posts = { stampPiece("NL_StampPost", art.Frame), stampPiece("NL_StampPost", art.Frame) }
+	local rails = { stampPiece("NL_StampRail", art.Frame), stampPiece("NL_StampRail", art.Frame) }
+	local runs = { stampPiece("NL_StampRun", art.Frame), stampPiece("NL_StampRun", art.Frame) }
+	local plate = stampPiece("NL_StampPlate", art.Plate)
 	local landedAt: Vector3? = nil -- the target's floor point on Strike
 	local targetTop: number? = nil -- the target's top over the floor, measured once
 
@@ -416,7 +423,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	end
 
 	local function hideStamp()
-		for _, p in stampBars do
+		for _, p in stampMade do
 			p.Transparency = 1
 		end
 	end
@@ -452,7 +459,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		if f < -s.Drop then
 			-- hung over the target's head through the hold, drawn tight as it rises to the top of its drop
 			local u = math.clamp((f + s.Rise) / math.max(1, s.Rise - s.Drop - 2), 0, 1)
-			local ease = 1 - (1 - u) ^ 2
+			local ease = Track.Ease(s.Tighten, u)
 			w = s.Side * (s.Forms + (1 - s.Forms) * ease)
 			h = w
 			z = over + (top - over) * ease
@@ -476,25 +483,43 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 				run = outFast(f / s.Run.Frames)
 			end
 		end
-		-- the grey stand-in shows being eaten as transparency, as the bar's does
+		-- Eaten as transparency. The kit's bar lies along its X, its faces along Z: a post is turned upright, a run face up.
+		local glow = Track.Value(art.Glow, f) :: number
+		local function lit(piece: StampPiece)
+			if piece.Look then
+				(piece.Look :: SurfaceAppearance).EmissiveStrength = glow
+			end
+		end
 		for index, sign in { -1, 1 } do
-			local post = stampBars[index]
-			post.Size = Vector3.new(bar, h + bar, STAND_IN_DEPTH)
-			post.CFrame = facing * CFrame.new(sign * w / 2, z + h / 2, 0)
-			post.Transparency = gone
-			local across = stampBars[2 + index]
-			across.Size = Vector3.new(w + bar, bar, STAND_IN_DEPTH)
-			across.CFrame = facing * CFrame.new(0, z + h * (index - 1), 0)
-			across.Transparency = gone
-			local floorBar = stampBars[4 + index]
+			local post = posts[index]
+			post.Part.Size = Vector3.new(h + bar, bar, art.Depth)
+			post.Part.CFrame = facing * CFrame.new(sign * w / 2, z + h / 2, 0) * CFrame.Angles(0, 0, math.pi / 2)
+			post.Part.Transparency = gone
+			lit(post)
+			local rail = rails[index]
+			rail.Part.Size = Vector3.new(w, bar, art.Depth * art.Rails)
+			rail.Part.CFrame = facing * CFrame.new(0, z + h * (index - 1), 0)
+			rail.Part.Transparency = gone
+			lit(rail)
+			local floorBar = runs[index].Part
 			if run then
 				local reach = w / 2 + s.Run.Reach * run
-				floorBar.Size = Vector3.new(reach - w / 2 + 0.01, 0.16, s.Run.Width * (1 - run) + 0.05)
-				floorBar.CFrame = facing * CFrame.new(sign * (w / 2 + reach) / 2, 0.08, 0)
+				floorBar.Size = Vector3.new(reach - w / 2 + 0.01, s.Run.Width * (1 - run) + 0.05, 0.16)
+				floorBar.CFrame = facing * CFrame.new(sign * (w / 2 + reach) / 2, 0.08, 0) * CFrame.Angles(math.pi / 2, 0, 0)
 				floorBar.Transparency = 0
 			else
 				floorBar.Transparency = 1
 			end
+		end
+		-- the plate inside the frame, set back in it; never shown thinner than a sliver
+		local across, up = w - bar, h - bar
+		if across < 0.02 or up < 0.02 then
+			plate.Part.Transparency = 1
+		else
+			plate.Part.Size = Vector3.new(across, up, art.Pane)
+			plate.Part.CFrame = facing * CFrame.new(0, z + h / 2, 0)
+			plate.Part.Transparency = math.max(Track.Value(art.Charge, f) :: number, gone)
+			lit(plate)
 		end
 	end
 
@@ -559,10 +584,10 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 				bar.Part:Destroy()
 			end
 			table.clear(pool)
-			for _, p in stampBars do
+			for _, p in stampMade do
 				p:Destroy()
 			end
-			table.clear(stampBars)
+			table.clear(stampMade)
 		end,
 	} :: Running
 	return running

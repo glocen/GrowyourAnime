@@ -222,4 +222,29 @@ return {
 			t.Check("the street's light out by 140", near(at("SlamLight", "Brightness", 140), 0))
 		end,
 	},
+	{
+		-- AR8, "B5's polish and the square's art" (Config.Effects.Haymaker.Stamp.Art; rook_haymaker_rows.json), its keys
+		-- counted from Strike, as its content check passed them
+		Name = "Track: Haymaker's stamp in its art, against the kit and on its keys",
+		Run = function(t: any)
+			local s = EffectsConfig.Haymaker.Stamp
+			local art = s.Art
+			for _, kind in { art.Frame, art.Plate } do
+				t.Check(`{kind.Mesh} is the kit's`, FxKit.Meshes[kind.Mesh] ~= nil and FxKit.Meshes[kind.Mesh].Size == Vector3.one)
+				t.Check(`{kind.Look} and {kind.Grey} are the kit's looks`, FxKit.Images[kind.Look] ~= nil and FxKit.Images[kind.Grey] ~= nil
+					and string.find(FxKit.Images[kind.Look].Use, "^MeshPart") ~= nil)
+			end
+			t.Check("the frame in its ember, the plate in its rising ember", art.Frame.Look == "fx_across_Ember" and art.Plate.Look == "fx_rise_Ember")
+			t.Check("no rail's face in a post's", art.Rails > 0 and art.Rails < 1)
+			t.Check("the plate a pane, thinner than the frame", art.Pane > 0 and art.Pane < art.Depth * art.Rails)
+			t.Check("Glow 1 through the hang", near(Track.Value(art.Glow, -s.Rise), 1) and near(Track.Value(art.Glow, -1), 1))
+			t.Check("Glow 2 on Strike", near(Track.Value(art.Glow, 0), 2))
+			t.Check("1 again two frames after", near(Track.Value(art.Glow, 2), 1) and near(Track.Value(art.Glow, 10), 1))
+			t.Check("the plate charges through the hang", near(Track.Value(art.Charge, -s.Rise), 0.85) and near(Track.Value(art.Charge, -6), 0.35))
+			t.Check("it flashes on Strike", near(Track.Value(art.Charge, 0), 0.15))
+			t.Check("gone 3 frames after, before it lies flat", near(Track.Value(art.Charge, 3), 1) and 3 <= #s.Squash)
+			t.Check("the hang tightens on a known ease", Track.Known(s.Tighten))
+			t.Check("formed loose: over its side, its top edge held as it tightens", s.Forms > 1 and s.FormBar < s.Bar)
+		end,
+	},
 }

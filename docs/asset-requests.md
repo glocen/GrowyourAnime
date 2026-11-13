@@ -4448,6 +4448,18 @@ This answers research's three fixes on the replay (B5, "Research's verdict on th
   - Research's final, with `ga-fresh-eyes`.
 - **Hours:** about 0.6, 18:30 to 19:10 UTC, the content check included. An estimate from the files' times.
 
+**The build and the take (Faber, 2026-11-13).** Modulo's open list, done:
+- **The meshes:** already the group's and Approved (`docs/asset-log.md`, the kit's frame).
+- **The rows in the player:** `Rows.Mesh` (`FighterController/Rows.luau`) clones one kit mesh in its look, unparented; the player's rows use it too. The stamp (`FighterController/Effects.luau`) builds two `NL_StampPost`, two `NL_StampRail`, two `NL_StampRun` and one `NL_StampPlate` from `Config.Effects.Haymaker.Stamp.Art`, laid each frame as the rows say. Glow is 1 through the hang, 2 on Strike, 1 two frames after, on the posts, rails and plate; the runs keep the look's 1. The plate's charge is `Art.Charge`, and it's gone before the stamp lies flat. `Art.Grey = true` puts the grey looks back.
+- **The clip in the replay:** the polished `Rook_Haymaker.json` re-saved in the place as `NL_RookHaymaker` (121 frames, 2 s; Charge 0.13, Strike 0.95, Shock 0.97, Step 1.05, Vent 1.17), the place saved (version 332). SaveBaked's "no fades" line is expected: the game takes fades by role from `Config.Animations.Fades`.
+- **The Config offer, adopted (tier 1):** `Forms` 1.2 (from 0.65), `FormBar` 0.3, and the new key `Tighten` = "Quad In", eased through `Track.Ease`.
+- **Checks:** type check 0 new; logic 3885/3885, with "Track: Haymaker's stamp in its art, against the kit and on its keys" (15 checks); self-test Haymaker 37/37 (31 fps: its cases step by hand, so none is timed), B1 28/28, the keeper's signature 42/42, Rows 2/2.
+- **The take,** in `build/captures/ar8/b5/`: `art_noon.mp4` (phone, noon, the replay every 4 s), `art_noon_close.png`, `art_strike_zoom.png`, `art_beside_grey.png` (rows 1 and 3 the grey, 2 and 4 the art) and `art_64.png`. `Combat.Lead.Side` was 7 for the take, against the grey's 3.5, so the Shade sits smaller and further right than in the grey.
+- **What I see:** a gold frame round a pale cream plate forms loose over the Shade and is drawn tight; it drops in four frames, flashes on the plate as it lands, lies flat with gold runs along the floor, and is eaten away by about 0.3 s after Strike. At 64 px it reads as a gold frame where the grey was a pale outline lost on the sky. Modulo's two pale-sky checks hold: the rim is darker than the core, and Glow 2 on Strike blooms no halo (`art_strike_zoom.png`). The take's audio clipped on the strike cue; the mix itself wasn't measured.
+- **Fresh eyes, blind: competent.** The hanging square is the bold thing, readable at 64 px. The fall is partly hidden by the Shade's body, and the landing is small at phone scale beside the "700", so "slams straight onto it" isn't felt. That is the landing B5's sheets predicted (AR1, section 9), and the framing in "Rook, Pip and Lyric installed" is its queued fix.
+- **For research:** the final verdict.
+- **Hours:** about 1, inside 18:55 to 20:45 UTC, shared with B1's finish and its Tune. An estimate from the session's log.
+
 ### B1's finish: the bands on fire (Modulo, 2026-11-13)
 
 This answers fix 3 of research's verdict on B1's exit from its rows, for the finish: "a ragged, brighter tongue edge on the burning front as it eats upward; and a darker saturated edge on a bright core along the bands". It's judged in the final, beside the grey.

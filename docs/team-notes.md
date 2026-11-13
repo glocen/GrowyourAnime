@@ -6,15 +6,16 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work.
 - **Effects:** built in 3D from one kit and one player (AR8, "The method"). On the director's word they close at competent, with one finish pass before launch (`docs/polish-later.md`).
-- **Closed today:**
+- **Closed today, at competent:**
   - AR7's install and fall;
-  - the keeper's signature.
-- **B1's exit:** competent in grey, the finish look being taken.
+  - the keeper's signature;
+  - B1, Lantern Burst's exit on fire;
+  - B5, Haymaker's square in gold (the landing is carried to the framing).
 - **Requested:**
   - TR5, the elite's and keeper's HUD (the director's word);
   - TR6, the UI effects kit.
 - **Studies written:** building in 3D, and UI effects (`docs/research/vfx-reference.md`).
-- **Next:** B1's final, B5, the framing in "Rook, Pip and Lyric installed".
+- **Next:** the Down's re-save, then the framing in "Rook, Pip and Lyric installed", with B5's landing and the hang against the Target card.
 
 **Faber (builder).** 2026-11-13.
 - **AR8:** B1's finish closed competent, its base Glow at 1.5. B5 is in its art: the gold frame and its plate from the kit, the polished clip in the replay, Forms 1.2 drawn tight on Quad In. The take is at noon, beside the grey, in `build/captures/ar8/b5/art_*`. Fresh eyes: competent, the landing small at phone scale (AR8, "B5's polish and the square's art", "The build and the take").
@@ -31,7 +32,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 9. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature. Hours are in each piece's entry.
+**The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 
 ### Waiting on the director
 

@@ -4460,6 +4460,15 @@ This answers research's three fixes on the replay (B5, "Research's verdict on th
 - **For research:** the final verdict.
 - **Hours:** about 1, inside 18:55 to 20:45 UTC, shared with B1's finish and its Tune. An estimate from the session's log.
 
+**Research's final on Haymaker's square (2026-11-13; `art_beside_grey.png`, `art_noon_close.png`, `art_strike_zoom.png`, `art_64.png`; fresh eyes blind beside it): competent, closed.**
+- **Felt:** while Rook winds back, a loose gold frame round a cream pane hangs over the Shade and draws tight with him. It drops in one beat, the Shade flashes, and the frame lies flat, its gold runs shoot along the floor, and it's eaten away.
+- **The one bold thing:** the hanging square, gold on the noon sky, drawn tight as the ram cocks. Fresh eyes named the same. The blockout's pale outline was lost on that sky. This one reads whole at 64 px.
+- **Beside the blockout:** the hold now builds, as fix 1 asked. The art answers fix 3: the rim is darker than the core, with no halo on Strike. The bold thing has moved from the landing to the hang. The landing is the weaker half now: small beside the "700" and partly behind the Shade. Like for like it isn't proven, since the take ran `Lead.Side` 7 against the grey's 3.5.
+- **Carried, not fixed here:** the landing is judged again in "Rook, Pip and Lyric installed", from its fixed framing. It must read there as the slam onto the target.
+  - If it still doesn't, the lever then is the runs' length and their Glow on Strike. Never a plate left on the floor, and never a light at the landing.
+  - The same take checks the hang's top edge against the Target card. In the take, the square's top crosses the card's bar.
+- **Further polish** waits for the finish pass (`docs/polish-later.md`).
+
 ### B1's finish: the bands on fire (Modulo, 2026-11-13)
 
 This answers fix 3 of research's verdict on B1's exit from its rows, for the finish: "a ragged, brighter tongue edge on the burning front as it eats upward; and a darker saturated edge on a bright core along the bands". It's judged in the final, beside the grey.

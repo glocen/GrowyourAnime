@@ -226,6 +226,9 @@ local function buildR6(name: string): Model
 	return model
 end
 
+-- The grey stand-in, for a Voidkin not yet made: the reveal shows it too (RevealService).
+FightService.StandIn = buildR6
+
 -- A lead's body: its Voidkin's own (Definitions.Voidkin's Model, ServerStorage.Templates.<Model>) once it's installed,
 -- else the grey R6 stand-in. Both are R6 rigs, so both play the R6 clips; with its body comes its row's reaction set
 -- (Config.Animations.Rigs), the stand-in's is open legs'.

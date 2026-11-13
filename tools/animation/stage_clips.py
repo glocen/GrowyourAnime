@@ -20,7 +20,7 @@ R6 = {"Torso", "Head", "Right Arm", "Left Arm", "Right Leg", "Left Leg"}
 def stage(character: str, clip: str, r6_only: bool) -> Path:
     source = ROOT / "build" / "handoff" / character / "clips" / f"{character}_{clip}.json"
     data = json.loads(source.read_text(encoding="utf-8"))
-    if data.get("Name") != clip:
+    if data.get("Name") not in (clip, f"{character}{clip}"):  # the Reveals carry the character's name already
         raise SystemExit(f"{source.name}: its Name is {data.get('Name')!r}, not {clip!r}")
     data["Name"] = f"{character}{clip}"
     dropped = set()

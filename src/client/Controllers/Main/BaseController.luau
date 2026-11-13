@@ -6,7 +6,7 @@
 -- A plate speaks only near its machine, or while it's lit with something to do (TR2, research's read of the phone take,
 -- fix 2): the Breaker with a shard to put in or to open, a bay that a free Voidkin could work. The Base
 -- screen: the chambers, the line, what's ready, the bag, the bays and who works in them. Opening a shard shows the reveal:
--- one card with the name, no ceremony yet. Every change is asked of the server (ProfileController.Act) and shown only
+-- the ceremony at its rarity (UI/Reveal, TR4), then one card with the name. Every change is asked of the server (ProfileController.Act) and shown only
 -- once it answers; the prompts are this player's alone, so a visitor can look and never touch.
 
 local Players = game:GetService("Players")
@@ -16,6 +16,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local BaseConfig = require(Shared.Config.Base)
+local RevealConfig = require(Shared.Config.Reveal)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
@@ -23,7 +24,6 @@ local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
-local Layers = require(UI.Layers)
 local Read = require(UI.Read)
 local World = require(UI.World)
 local Panel = require(UI.Kit.Panel)
@@ -31,6 +31,7 @@ local Text = require(UI.Kit.Text)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
+local RevealStage = require(UI.Reveal)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 
@@ -88,7 +89,8 @@ local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
 local countdowns: { { Label: TextLabel, Chamber: number, Prefix: string } } = {}
-local reveal: { Frame: Instance, Shown: number, Name: string, Outcome: string }? = nil
+type Shown = { Frame: Instance, Stage: RevealStage.Handle, Card: Frame?, Carded: number, Name: string, Outcome: string }
+local reveal: Shown? = nil
 
 local function act(name: string, args: any?): { [string]: any }
 	local answer = ProfileController.Act(name, args)
@@ -386,34 +388,31 @@ end
 
 -- The reveal -----------------------------------------------------------------------------------------------------------
 
-local function dismiss()
-	if reveal and os.clock() - reveal.Shown >= Theme.Time.Skip then
-		reveal.Frame:Destroy()
+-- A tap: shut for the skip's first second; in the ceremony, to its held frame and the card; on the card, once it has
+-- stood Config.Reveal.CardHold, closed.
+local function tap()
+	local shown = reveal
+	if shown == nil then
+		return
+	end
+	if shown.Card == nil then
+		shown.Stage.Skip()
+	elseif os.clock() - shown.Carded >= RevealConfig.CardHold then
+		shown.Stage.Destroy()
+		shown.Frame:Destroy()
 		reveal = nil
 	end
 end
 
--- One card for what Open uncovered (Rules.Base.Open's answer): new, a copy, or sold for Credits.
-function BaseController.Reveal(answer: { [string]: any })
-	if reveal then
-		reveal.Frame:Destroy()
-	end
-	local def = tostring(answer.Def)
-	local row = Voidkin.ById[def]
-	local name = if row then row.Name else def
-	local cover = Instance.new("TextButton")
-	cover.Name = "Reveal"
-	cover.Text = ""
-	cover.AutoButtonColor = false
-	cover.Size = UDim2.fromScale(1, 1)
-	cover.BackgroundColor3 = Theme.Colour.Backing
+-- The card that's there today, over the ceremony's held frame: new, a copy, or sold for Credits.
+local function card(shown: Shown, answer: { [string]: any }, row: Voidkin.Row?)
+	local cover = shown.Frame :: TextButton
 	cover.BackgroundTransparency = Theme.Transparency.Dim
-	cover.BorderSizePixel = 0
-	cover.Parent = Layers.Get("Overlay")
+	local def = tostring(answer.Def)
 	local cardFrame = Panel.new({ Name = "Card", Size = UDim2.fromOffset(320, 176), Position = UDim2.fromScale(0.5, 0.5), AnchorPoint = Vector2.new(0.5, 0.5), Parent = cover })
 	Panel.Pad(cardFrame, Theme.Size.Pad * 2)
 	Panel.List(cardFrame, nil, 2)
-	local outcome = tostring(answer.Outcome)
+	local outcome = shown.Outcome
 	type Line = { Name: string, Text: string, Size: number, Colour: Color3, Font: Font }
 	local note = if answer.Lead == true then "Your lead: it fights beside you"
 		elseif outcome == "Copy" then "One more toward its next star"
@@ -422,7 +421,7 @@ function BaseController.Reveal(answer: { [string]: any })
 	local kind = if outcome == "New" then "A new Voidkin" elseif outcome == "Copy" then "A copy" else "Already at its last star"
 	local lines: { Line } = {
 		{ Name = "Kind", Text = kind, Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Font = Theme.Font.Body },
-		{ Name = "Name", Text = name, Size = Theme.Text.Big, Colour = Theme.Colour.Text, Font = Theme.Font.Strong },
+		{ Name = "Name", Text = shown.Name, Size = Theme.Text.Big, Colour = Theme.Colour.Text, Font = Theme.Font.Strong },
 		{ Name = "Line", Text = Read.VoidkinLine(def), Size = Theme.Text.Body, Colour = Theme.Colour.TextDim, Font = Theme.Font.Body },
 		{ Name = "Note", Text = note, Size = Theme.Text.Body, Colour = Theme.Colour.Ready, Font = Theme.Font.Body },
 		{ Name = "Skip", Text = "", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Font = Theme.Font.Body },
@@ -432,26 +431,65 @@ function BaseController.Reveal(answer: { [string]: any })
 		label.LayoutOrder = order
 		label.Text = line.Text
 	end
-	local shown = os.clock()
-	reveal = { Frame = cover, Shown = shown, Name = name, Outcome = outcome }
-	task.delay(Theme.Time.Skip, function()
+	shown.Card, shown.Carded = cardFrame, os.clock()
+	task.delay(RevealConfig.CardHold, function()
 		local skip = cardFrame:FindFirstChild("Skip") :: TextLabel?
-		if skip and reveal and reveal.Shown == shown then
+		if skip and reveal == shown then
 			skip.Text = "Tap to continue"
 		end
 	end)
-	cover.Activated:Connect(dismiss)
 end
 
--- For tests: the reveal on screen, and closing it as a tap after the skip time would.
-function BaseController.Revealed(): { Name: string, Outcome: string }?
-	return if reveal then { Name = reveal.Name, Outcome = reveal.Outcome } else nil
+-- What Open uncovered (Rules.Base.Open's answer): the ceremony at its rarity (UI/Reveal), then its card.
+-- `show` sets the stage's own options (its rarity, name and body) in place of the definition's: the test bridge's Show.
+function BaseController.Reveal(answer: { [string]: any }, show: RevealStage.Options?)
+	if reveal then
+		reveal.Stage.Destroy()
+		reveal.Frame:Destroy()
+		reveal = nil
+	end
+	local def = tostring(answer.Def)
+	local row = Voidkin.ById[def]
+	local name = if row then row.Name else def
+	local shown: Shown
+	local options: RevealStage.Options = show or { Rarity = if row then row.Rarity else "Common", Name = name, Model = if row then row.Model else nil }
+	local stage = RevealStage.Play(options, function()
+		if reveal == shown then
+			card(shown, answer, row)
+		end
+	end)
+	local cover = Instance.new("TextButton")
+	cover.Name = "RevealTap"
+	cover.Text = ""
+	cover.AutoButtonColor = false
+	cover.Size = UDim2.fromScale(1, 1)
+	cover.BackgroundColor3 = Theme.Colour.Backing
+	cover.BackgroundTransparency = 1
+	cover.BorderSizePixel = 0
+	cover.ZIndex = 10
+	cover.Parent = stage.Root
+	shown = { Frame = cover :: Instance, Stage = stage, Card = nil :: Frame?, Carded = 0, Name = name, Outcome = tostring(answer.Outcome) }
+	reveal = shown
+	cover.Activated:Connect(tap)
+end
+
+-- For tests: the reveal on screen (its ceremony's time, and whether its card shows), a tap as a player's, and closing it
+-- outright.
+function BaseController.Revealed(): { Name: string, Outcome: string, Time: number, Card: boolean }?
+	local shown = reveal
+	return if shown then { Name = shown.Name, Outcome = shown.Outcome, Time = shown.Stage.Time(), Card = shown.Card ~= nil } else nil
+end
+
+function BaseController.Tap()
+	tap()
 end
 
 function BaseController.Dismiss()
-	if reveal then
-		reveal.Shown = -math.huge
-		dismiss()
+	local shown = reveal
+	if shown then
+		shown.Stage.Destroy()
+		shown.Frame:Destroy()
+		reveal = nil
 	end
 end
 
@@ -684,8 +722,36 @@ function BaseController.Says(): { [string]: { Near: boolean, News: boolean, Grou
 	return says
 end
 
+-- Studio only: the reveal driven from a snippet, which can't reach this client's modules (TR4's captures and tuning).
+--   NL_RevealTest:Invoke("Play", "lyric")   the ceremony for a Voidkin, as a break would show it (display only: nothing owned)
+--   NL_RevealTest:Invoke("Seek", 1.2)       its clock pinned there; ("Seek") lets it run on
+--   NL_RevealTest:Invoke("Show", { Rarity = "Mythical", Name = "Umbriel", Model = "Rook" })   the stage's own options
+--   NL_RevealTest:Invoke("State"), ("Tap"), ("Close")
+local function revealBridge()
+	local bridge = Instance.new("BindableFunction")
+	bridge.Name = "NL_RevealTest"
+	bridge.OnInvoke = function(command: string, value: any): any
+		if command == "Play" then
+			BaseController.Reveal({ Def = value, Outcome = "New" })
+		elseif command == "Show" then -- the stage at a rarity with a name and a body, e.g. Rook's at Mythical as the art sheet lays it
+			BaseController.Reveal({ Def = value.Name, Outcome = "New" }, value)
+		elseif command == "Seek" and reveal then
+			reveal.Stage.Seek(value)
+		elseif command == "Tap" then
+			tap()
+		elseif command == "Close" then
+			BaseController.Dismiss()
+		end
+		return BaseController.Revealed()
+	end
+	bridge.Parent = ReplicatedStorage
+end
+
 function BaseController.Start()
 	HudController.OpenBase = BaseController.Open
+	if RunService:IsStudio() then
+		revealBridge()
+	end
 	ProfileController.Changed:Connect(function()
 		BaseController.Refresh()
 		if Screen.Current() == "Base" then

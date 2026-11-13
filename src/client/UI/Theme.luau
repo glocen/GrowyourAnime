@@ -82,7 +82,6 @@ Theme.Motion = {
 Theme.Time = {
 	Toast = 2.5, -- one line, then it leaves
 	Toasts = 2, -- stacked at most
-	Skip = 1, -- a reveal can be skipped after this
 	Fight = 6, -- seconds since the last hit that still count as in a fight
 }
 

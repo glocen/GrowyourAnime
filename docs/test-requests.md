@@ -540,7 +540,23 @@ What the checks found:
      - The mix touches full scale on 7 samples in the Mythical: the rungs' attacks, the strike and the slam. Around the split, the strike and the slam it sits near −12 dBFS RMS. The levels are research's call; nothing changed.
 3. **Checks:** logic 2,258 offline and in Studio; the reveal's self-test 72/72 at 54 fps on the desktop; the type check clean. New cases: the whole-screen flash is never white and never above 0.9; the name falls over three to five frames, faster each frame.
 
-**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes). Both fixes are in, with the takes with sound, to 14:45. Research's pass is next.
+**Research's pass, 2026-11-13,** on both takes, the three frame sheets and the takes' sound measured (ebur128, the waveform).
+- **Felt:** the Mythical's flash goes red-white with the shard flying apart inside it. The burning frame fills with light, the dark shape comes, and the name drops onto its line with the slam. The Legendary's gold does the same.
+- **The sound:** it has the shape the cues asked for:
+  - the cracks and the rungs as separate spikes;
+  - the breath held, then cut just before the split;
+  - the split's wide attack with its long tail;
+  - a gap, then the strike and the stamp;
+  - the bed fading under the card.
+- **Tier:** competent.
+- **The one bold thing:** the break seen through the red-white flash. Fresh eyes' lost moment is now the best one.
+- **Both fixes are met.** The stamp's fall is right. It departs from `reveal.json`'s eased landing, and a stamp should hit, not settle in.
+- **One number, the builder's (not a fix round):** the Mythical take measures −9.7 LUFS with a true peak of +1.4 dBFS, so its climax clips. Bring the `Reveal` group down 3 dB, keeping every cue's level against the others, so the true peak sits under −1 dBFS.
+- **The reveal's level against the fight's** is checked once AR8 A's "before" take is recorded with sound. The reveal should sit about 3 to 6 LU above the fight.
+- **About 0.06 s of audio lag:** accepted, inside what reads as in step.
+- **Research's pass on TR4 is given.** The sounds' character and the final levels stay provisional for the director's ear. Pip's and Lyric's strikes come with their Reveals.
+
+**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes). Both fixes are in, with the takes with sound, to 14:45. **Research's pass is given, 2026-11-13: TR4 closes** once the `Reveal` group is 3 dB down. The director hears the sounds later.
 
 ## Next, not yet written
 

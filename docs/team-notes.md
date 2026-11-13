@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's sound cues are in it (nine cues, levels and character); its verdict in motion when Faber's take is in. AR3's art sheet and the tinted frames are passed. AR7, the Lamplighter: A the Bearer at 1.5, two fixes for the model and clips. Next: verdicts as Faber's and Modulo's takes arrive.
+**Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's sound cues are in it (nine cues, levels and character); its verdict in motion when Faber's take is in. AR3's art sheet and the tinted frames are passed. AR7, the Lamplighter: the model passed and delivered; the clips' blocking read at competent (Modulo's three calls kept; two fixes, a growing hold and a hang at the wrench), timing next. Next: verdicts as Faber's and Modulo's takes arrive.
 
 **Faber (builder).** 2026-11-13. TR3 closed at research's pass (the top line one language); the director checks the HUD later, not as a gate. The target's card is built like the lead's; both levels are gold (the director: "whatever best"). Self-test 618/618, logic 1735.
 - Worked in Modulo's area at the director's ask: the card's art is drawn in Modulo's toolkit (`tools/blender/lead_card_art.py`); re-cutting a face stays Modulo's.

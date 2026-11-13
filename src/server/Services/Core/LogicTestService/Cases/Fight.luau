@@ -528,6 +528,15 @@ return {
 			local forced = fall.Burst / 60 + EffectsConfig.ShadeBurst.Wait
 			t.Check("a held clip's burst, forced, as early", forced <= keeper.FadeSeconds - 0.2, string.format("%.2f s of %.2f", forced, keeper.FadeSeconds))
 			t.Check("and the body goes before the try's fade", keeper.FadeSeconds < keeper.WinPause)
+			-- research's verdict on the install, fix 3: out reads, the paper dark and unlit a third of a second before Gone,
+			-- going down from Gutter, eased in, to a deep blue-grey at about a third of its value
+			t.Check("Out to Gone about a third of a second", (fall.Gone - fall.Out) / 60 >= 0.3 and (fall.Gone - fall.Out) / 60 <= 0.45, string.format("%.2f s", (fall.Gone - fall.Out) / 60))
+			local _, saturation, value = fall.Dark:ToHSV()
+			t.Check("its paper down to a deep blue-grey", value >= 0.2 and value <= 0.45 and saturation > 0.05 and saturation < 0.45 and fall.Dark.B > fall.Dark.R, string.format("value %.2f, saturation %.2f", value, saturation))
+			t.Check("eased in", fall.Ease > 1)
+			-- the scraps finish before the try's fade begins
+			local last = fall.Gone / 60 + hold + (ShadeBurstArt.Last - ShadeBurstArt.Burst) / 60
+			t.Check("its scraps' last before the try's fade", last <= keeper.WinPause, string.format("%.2f s of %.2f", last, keeper.WinPause))
 			-- the paper is the burst's scraps, by id: the lantern's first, then the pole's
 			local scraps: { [number]: boolean } = {}
 			for _, pictures in ShadeBurstArt.Frames do

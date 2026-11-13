@@ -113,7 +113,10 @@ return {
 		-- Degrees the avatar's facing turns off the keeper there, so its own body, near the camera, hides none of the keeper:
 		-- the fight sits right of the frame's middle (the avatar 4 studs wide 12.5 from the camera, the keeper 4.2 wide).
 		Turn = 26,
-		WinPause = 2, -- seconds after the keeper's fall before the fade out: the fall is seen
+		-- Studs right of the avatar its lead is set down, and walks back to, in a try: on its left, clear of the Challenge
+		-- and the fall's line (research's verdict on AR7's install, fix 1).
+		Side = -3.5,
+		WinPause = 2.4, -- seconds after the keeper's fall before the fade out: the fall is seen, its scraps' last included
 		LossPause = 1, -- seconds after the lead's fall
 		Before = 10, -- studs before the keeper's gate a loss sets the avatar down
 		-- It notices its challenger anywhere in its copy (a 41-stud ring inside a fenced square: 133 corner to corner) and
@@ -125,7 +128,7 @@ return {
 		WalkSpeed = 5,
 		-- Seconds from its fall until the server takes its body: past the Down clip's Gone, with the longest hold and the
 		-- replication's delay to spare (AR7, section 5: the server keeps the body until Gone; a logic case holds it).
-		FadeSeconds = 1.9,
+		FadeSeconds = 2.1,
 	},
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.

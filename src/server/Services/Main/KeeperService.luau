@@ -44,9 +44,10 @@ type Try = {
 	Plot: number,
 	Keeper: FightService.Fighter?,
 	Ending: boolean,
+	LeadSide: number?, -- studs right of the avatar its lead was set down (the self-test's read of Combat.Keeper.Side)
 }
 
-type Copy = { Centre: CFrame, Entry: CFrame } -- Entry: where the avatar arrives, facing the middle
+type Copy = { Centre: CFrame } -- its middle, where the keeper starts
 
 local tries: { [Player]: Try } = {}
 local copies: { [number]: Copy } = {}
@@ -74,7 +75,16 @@ local function wall(parent: Instance, size: Vector3, at: CFrame)
 	p.Parent = parent
 end
 
--- Moves the avatar and its lead to `at`, the lead at its side, both looking where `at` looks.
+-- Where the avatar arrives in `copy`, facing its middle, Arrive from it toward the gate and turned Turn left: read at each
+-- try, so both are tuned live.
+local function entryOf(copy: Copy): CFrame
+	local r = ring :: any
+	local entry = copy.Centre.Position + r.ToGate * math.min(Combat.Keeper.Arrive, r.Radius - 1)
+	return CFrame.lookAt(entry, copy.Centre.Position) * CFrame.Angles(0, math.rad(Combat.Keeper.Turn), 0)
+end
+
+-- Moves the avatar and its lead to `at`, the lead at its side (its left in a try: Combat.Keeper.Side), both looking where
+-- `at` looks.
 local function setDown(player: Player, at: CFrame)
 	local character = player.Character
 	local root = Parts.Root(character)
@@ -87,7 +97,8 @@ local function setDown(player: Player, at: CFrame)
 	local lead = FightService.LeadOf(player)
 	if lead and lead.State ~= "Down" then
 		lead.Root.AssemblyLinearVelocity = Vector3.zero
-		lead.Root.CFrame = stand * CFrame.new(Combat.Lead.Side, 0, 1)
+		local side = if player:GetAttribute("Try") ~= nil then Combat.Keeper.Side else Combat.Lead.Side
+		lead.Root.CFrame = stand * CFrame.new(side, 0, 1)
 	end
 end
 
@@ -168,9 +179,7 @@ local function lay()
 			local across = if offset.X ~= 0 then Vector3.new(1, FENCE_HIGH, side) else Vector3.new(side, FENCE_HIGH, 1)
 			wall(copy, across, CFrame.new(centre.Position + offset * (side / 2) + Vector3.new(0, FENCE_HIGH / 2, 0)))
 		end
-		local entry = centre.Position + toGate * math.min(Combat.Keeper.Arrive, radius - 1)
-		local facing = CFrame.lookAt(entry, centre.Position) * CFrame.Angles(0, math.rad(Combat.Keeper.Turn), 0) -- turned left
-		copies[plot] = { Centre = centre, Entry = facing }
+		copies[plot] = { Centre = centre }
 	end
 
 	-- The gate's Challenge, on a part of our own at its foot, so an authored gate needs no named part.
@@ -233,7 +242,11 @@ function KeeperService.Try(player: Player): { [string]: any }
 		if tries[player] ~= try or ring == nil then
 			return
 		end
-		setDown(player, copy.Entry)
+		setDown(player, entryOf(copy))
+		local root, lead = Parts.Root(player.Character), FightService.LeadOf(player)
+		if root and lead then
+			try.LeadSide = (lead.Root.Position - root.Position):Dot(root.CFrame.RightVector)
+		end
 		local looks = copy.Centre.Position + (ring :: any).ToGate
 		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, (ring :: any).Level, CFrame.lookAt(copy.Centre.Position, looks), {
 			Ground = (ring :: any).Ground,
@@ -317,6 +330,7 @@ local function state(who: any): any
 		Ok = true,
 		InTry = try ~= nil,
 		Ending = if try then try.Ending else false,
+		LeadSide = if try then try.LeadSide or 0 else 0,
 		Keeper = if keeper then keeper.Id else "",
 		KeeperHealth = if keeper then keeper.Health else 0,
 		-- Who each is fighting, for "the fight is joined": the keeper's target and the lead's, by id.
@@ -327,7 +341,7 @@ local function state(who: any): any
 		FromCopy = if copy and root then (root.Position - copy.Centre.Position).Magnitude else -1,
 		-- Degrees the avatar faces off its copy's middle, where the keeper starts.
 		OffCentre = if copy and root then math.deg(math.acos(math.clamp(flatLook(root.CFrame.LookVector):Dot(flatLook(copy.Centre.Position - root.Position)), -1, 1))) else -1,
-		FromEntry = from(if copy then copy.Entry else nil),
+		FromEntry = from(if copy and ring then entryOf(copy) else nil),
 		FromExit = from(if exit then Markers.At(exit) else nil),
 		FromBefore = from(before),
 		FromHome = from(WorldService.SpawnOf(player)),

@@ -24,6 +24,7 @@ local Enemies = require(Shared.Definitions.Enemies)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Combat = require(Shared.Config.Combat)
 local Shades = require(Shared.Config.Shades)
+local EffectsConfig = require(Shared.Config.Effects)
 local Stats = require(Shared.Rules.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
@@ -58,6 +59,9 @@ export type Fighter = {
 	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
+	-- A lead watching a keeper it felled, standing and facing where it fell, until its Down's Gone (AR7, section 5, fix 2).
+	Watch: Vector3?,
+	WatchUntil: number,
 	-- The replay's (Studio): one action on a timer, against one target, standing still.
 	Forced: string?,
 	ForcedEvery: number,
@@ -415,6 +419,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Ground = nil,
 		Hitters = {},
 		Alone = block.Health,
+		WatchUntil = 0,
 		Forced = nil,
 		ForcedEvery = 0,
 		ForcedNext = 0,
@@ -481,9 +486,10 @@ local function remove(f: Fighter)
 	f.Model:Destroy()
 end
 
--- Where a lead stands beside its avatar: a little to the right and behind, at the avatar's height.
-local function besideAvatar(avatar: BasePart): CFrame
-	local side = Combat.Lead.Side
+-- Where a lead stands beside its avatar: a little to the right and behind, at the avatar's height; in a keeper's try, on
+-- its left (Combat.Keeper.Side: clear of the Challenge and the fall's line).
+local function besideAvatar(avatar: BasePart, owner: Player?): CFrame
+	local side = if owner and owner:GetAttribute("Try") ~= nil then Combat.Keeper.Side else Combat.Lead.Side
 	return avatar.CFrame * CFrame.new(side, 0, 1)
 end
 
@@ -754,6 +760,18 @@ function fall(f: Fighter, at: number)
 	else
 		setState(f, "Down")
 		task.delay(if f.Kind == "Keeper" then Combat.Keeper.FadeSeconds else Combat.Shade.FadeSeconds, remove, f)
+		-- A keeper's fall is the try's ending: the leads on it watch it, facing it, until its Down's Gone, the longest hold
+		-- past it, and then turn (AR7, section 5, fix 2).
+		local def = Enemies.ById[f.Def]
+		local falls = if def and def.Rig then (EffectsConfig.Falls :: any)[def.Rig] else nil
+		if f.Kind == "Keeper" and falls then
+			for _, other in fighters do
+				if other.Side == "Lead" and other.Target == f then
+					other.Watch = f.Root.Position
+					other.WatchUntil = at + falls.Gone / 60 + Fight.LongestHold(Combat.Hitstop)
+				end
+			end
+		end
 	end
 	FightService.Fell:Fire(f, hitters)
 end
@@ -762,7 +780,7 @@ local function rise(f: Fighter, at: number)
 	local avatar = avatarRoot(f)
 	if avatar then
 		f.Root.AssemblyLinearVelocity = Vector3.zero
-		f.Root.CFrame = besideAvatar(avatar)
+		f.Root.CFrame = besideAvatar(avatar, f.Owner)
 	end
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
@@ -813,7 +831,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	if mode == "Teleport" then
 		endAction(f, at)
 		f.Root.AssemblyLinearVelocity = Vector3.zero
-		f.Root.CFrame = besideAvatar(avatar)
+		f.Root.CFrame = besideAvatar(avatar, f.Owner)
 		return
 	end
 	if f.State == "Flinch" then
@@ -837,14 +855,22 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		end
 		return
 	end
-	-- Follow: nothing to fight near the avatar.
+	-- Follow: nothing to fight near the avatar; first, a keeper it felled watched to its end.
 	if busy(f, at) then
 		return
 	end
+	local watch = f.Watch
+	if watch and at < f.WatchUntil and toAvatar <= Combat.Lead.Leash then
+		endAction(f, at)
+		stop(f)
+		face(f, watch)
+		return
+	end
+	f.Watch = nil
 	face(f, nil)
 	if toAvatar > Combat.Lead.Follow then
 		endAction(f, at)
-		moveTo(f, besideAvatar(avatar).Position, Fight.FollowSpeed(toAvatar, Combat.Lead))
+		moveTo(f, besideAvatar(avatar, f.Owner).Position, Fight.FollowSpeed(toAvatar, Combat.Lead))
 	end
 end
 
@@ -976,7 +1002,7 @@ function FightService.SpawnLead(player: Player, block: Stats.Block, title: strin
 	end
 	local model, rig = buildLead(block.Def, `Lead_{player.UserId}`)
 	local avatar = Parts.Root(player.Character)
-	model:PivotTo(if avatar then besideAvatar(avatar) else CFrame.new(0, 10, 0))
+	model:PivotTo(if avatar then besideAvatar(avatar, player) else CFrame.new(0, 10, 0))
 	local f = register(model, "Lead", "Lead", block.Def, block, Actions.KitOf(block.Def), title, player, rig)
 	leads[player] = f
 	return f

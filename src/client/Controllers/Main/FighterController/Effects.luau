@@ -50,6 +50,7 @@ local MID = Color3.fromRGB(140, 140, 140) -- a stand-in's secondary shape
 local SPARK = Color3.fromRGB(255, 255, 255)
 local HOT = Color3.new(1, 1, 1) -- a picture's own colours
 local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
+local HELD_END = 0.04 -- seconds before its end a Down's last frame is held (FighterController, Effects.HeldEnd)
 local R6_ROOT_HEIGHT = 3 -- an R6 root stands 3 studs over the floor: an engine fact
 local STAND_IN_DEPTH = 0.1 -- studs: a grey bar's thickness through its face
 local PICTURE_DEPTH = 0.05 -- a picture's part, unseen
@@ -1455,8 +1456,9 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 	end)
 end
 
--- A keeper's lantern goes out (AR7, section 5; Config.Effects.Falls): on its Down clip's clock, the lantern's glow and
--- its light steady at Glow to Gutter, flickering under a falling top to Out, dark from there; on Gone its Kept parts go
+-- A keeper's lantern goes out (AR7, section 5; Config.Effects.Falls): on its Down clip's clock, run on past the clip's held
+-- last frame, the lantern's glow and its light steady at Glow to Gutter, flickering under a falling top to Out, dark from
+-- there, its paper going down to Dark from Gutter, eased in, there by Out; on Gone its Kept parts go
 -- to a handful of the burst's own paper scraps, the lantern's from the lantern, the pole's from between its foot and its
 -- hook, each picture as the art table draws it from the Burst on (only rising, only shrinking), at the model's scale. The
 -- parts hide the step after the scraps are set, as the body hides after the flare. Runs beside Effects.ShadeBurst.
@@ -1467,6 +1469,7 @@ function Effects.LanternOut(model: Model, down: AnimationTrack?, fall: Fall)
 	local glow = if lantern then lantern:FindFirstChildOfClass("SurfaceAppearance") else nil
 	local light = if lantern then lantern:FindFirstChildWhichIsA("PointLight", true) else nil
 	local brightness = if light then light.Brightness else 0
+	local paper = if glow then glow.Color else nil
 	local kept: { BasePart } = {}
 	for _, name in fall.Kept do
 		local p = model:FindFirstChild(name)
@@ -1516,8 +1519,9 @@ function Effects.LanternOut(model: Model, down: AnimationTrack?, fall: Fall)
 	local turn = CFrame.identity
 	local was: { [number]: boolean } = {}
 	run(function(age: number): boolean
-		-- the clip's clock while it plays (a hold pauses it with the body), else on from where it stood
-		if down and down.IsPlaying and goneAge == nil then
+		-- the clip's clock while it plays (a hold pauses it with the body), else on from where it stood: its end held too
+		local ended = down ~= nil and down.Length > 0 and down.TimePosition >= down.Length - HELD_END
+		if down and down.IsPlaying and not ended and goneAge == nil then
 			clock = math.max(clock, down.TimePosition)
 		else
 			clock += age - last
@@ -1542,6 +1546,10 @@ function Effects.LanternOut(model: Model, down: AnimationTrack?, fall: Fall)
 			end
 			if glow then
 				glow.EmissiveStrength = g
+				if paper then
+					local p = math.clamp((frame - fall.Gutter) / (fall.Out - fall.Gutter), 0, 1)
+					glow.Color = paper:Lerp(fall.Dark, p ^ fall.Ease)
+				end
 			end
 			if light then
 				light.Brightness = brightness * g / fall.Glow
@@ -2091,5 +2099,7 @@ RunService:BindToRenderStep("NL_FightShake", Enum.RenderPriority.Camera.Value + 
 		* CFrame.new(wobble(t, SEED, 0.5) * studs, wobble(SEED, t, 1.5) * studs, 0)
 		* CFrame.Angles(wobble(t, 2.5, SEED) * angle * 0.5, wobble(3.5, t, SEED) * angle * 0.5, wobble(SEED, 4.5, t) * angle)
 end)
+
+Effects.HeldEnd = HELD_END
 
 return Effects

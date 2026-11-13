@@ -757,7 +757,7 @@ local function stepView(view: View, dt: number, now: number): boolean
 	end
 	-- Down holds its last frame until the fighter rises.
 	local reaction = view.Reaction
-	if view.State == "Down" and reaction and reaction.IsPlaying and reaction.Length > 0 and reaction.TimePosition >= reaction.Length - 0.04 then
+	if view.State == "Down" and reaction and reaction.IsPlaying and reaction.Length > 0 and reaction.TimePosition >= reaction.Length - Effects.HeldEnd then
 		reaction:AdjustSpeed(0)
 	end
 	stepProp(view, now)

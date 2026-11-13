@@ -629,6 +629,8 @@ return {
 			t.Check("the copy is its plot's, out of sight of the street", inside.FromCopy > 0 and inside.FromCopy < inside.Radius)
 			t.Check("a fresh keeper stands in it", inside.Keeper ~= "" and inside.KeeperHealth > 0)
 			t.Near("the avatar faces past the ring's middle, so its own body hides none of the keeper (degrees)", inside.OffCentre, Combat.Keeper.Turn, 2)
+			-- research's verdict on AR7's install, fix 1: the lead on its left, clear of the Challenge and the fall's line
+			t.Near("its lead set down on its left (studs right of it)", inside.LeadSide, Combat.Keeper.Side, 0.3)
 			-- The fight is joined with nobody pressing anything: the keeper comes for the lead from the middle of the ring, and the
 			-- lead meets it once it's inside Lead.Leash of the avatar.
 			t.Check("the keeper comes for the lead at once", inside.KeeperTarget ~= "" and inside.KeeperTarget == inside.Lead, `target {inside.KeeperTarget}, lead {inside.Lead}`)
@@ -658,11 +660,38 @@ return {
 				end
 				return math.abs(off - beside) <= BESIDE_TOLERANCE
 			end), `{math.floor(off + 0.5)} degrees off the avatar's facing, want {beside} ±{BESIDE_TOLERANCE}`)
+			-- Fix 2: after the keeper falls the lead holds, facing it, until its Down's Gone (the longest hold past it), then turns.
+			local ours, them = myLead(), fighterModel(joined.Keeper)
+			local fellAt = if them then them:GetPivot().Position else Vector3.zero
+			local leadFrom = if ours then ours:GetPivot().Position else Vector3.zero
 			t.Check("the keeper falls", t.Server("KeeperEnd", "Win").Ok == true)
-			t.Wait(0.3)
-			local saved = t.Server("Keeper").Wins
+			local fellClock = os.clock()
+			local fall = EffectsConfig.Falls[Enemies.ById[def :: string].Rig]
+			local watched = fall.Gone / 60 + FightRule.LongestHold(Combat.Hitstop)
+			local drift, offKeeper, saved = 0, 0, nil
+			while os.clock() - fellClock < watched - 0.15 do
+				if ours and ours.Parent then
+					local pivot = ours:GetPivot()
+					drift = math.max(drift, Vector3.new(pivot.Position.X - leadFrom.X, 0, pivot.Position.Z - leadFrom.Z).Magnitude)
+					-- from its last action's end: a swing under way ends first
+					if os.clock() - fellClock > 0.6 then
+						offKeeper = math.max(offKeeper, flatAngle(pivot.LookVector, fellAt - pivot.Position))
+					end
+				end
+				if saved == nil and os.clock() - fellClock > 0.3 then
+					saved = t.Server("Keeper").Wins
+				end
+				task.wait()
+			end
 			t.Check("the win is saved before any fade", saved == before.Wins + 1, `{saved} wins, was {before.Wins}`)
-			t.Wait(keeper.WinPause + moved)
+			t.Check("the lead holds where it stood until Gone", drift < 1, string.format("%.2f studs", drift))
+			t.Check("facing the keeper", offKeeper < 25, string.format("%.0f degrees off", offKeeper))
+			local turned = waitFor(t, keeper.WinPause - watched - 0.05, function(): boolean
+				local pivot = if ours and ours.Parent then ours:GetPivot() else nil
+				return pivot ~= nil and (flatAngle(pivot.LookVector, fellAt - pivot.Position) > 45 or (pivot.Position - leadFrom).Magnitude > drift + 1)
+			end)
+			t.Check("then it turns from it, before the fade", turned)
+			t.Wait(math.max(0, keeper.WinPause + moved - (os.clock() - fellClock)))
 			local won = t.Server("Keeper")
 			t.Check("the try is over", won.InTry == false and Players.LocalPlayer:GetAttribute("Try") == nil)
 			t.Near("the avatar stands at the ring's exit (studs off)", won.FromExit, 0, SET_DOWN)
@@ -1524,16 +1553,25 @@ return {
 			t.Near("at its own pace (studs a second)", median, Combat.Keeper.WalkSpeed, 0.8)
 			-- the fall, on the Down clip's clock (the killing hit's hold pauses it, so not the wall's)
 			t.Check("it falls", t.Server("FightDefeat", spawned.Id).Ok == true)
+			-- the clip's clock, run on past its held last frame (Gone may come after the clip's end)
+			local held: number? = nil
 			local function clipTime(): number?
+				if held then
+					return held + os.clock()
+				end
 				local humanoid = keeper:FindFirstChildOfClass("Humanoid")
 				local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
 				for _, track in (if animator then animator:GetPlayingAnimationTracks() else {}) do
 					if track.Animation and track.Animation.Name == Animations.Rigs.Lamplighter.Down then
+						if track.Length > 0 and track.TimePosition >= track.Length - Effects.HeldEnd then
+							held = track.TimePosition - os.clock()
+						end
 						return track.TimePosition
 					end
 				end
 				return nil
 			end
+			local paper = if lantern then lantern.Color else Color3.new()
 			local function shows(name: string): boolean
 				local piece = keeper:FindFirstChild(name)
 				return piece ~= nil and piece:IsA("BasePart") and piece.LocalTransparencyModifier < 1
@@ -1551,7 +1589,10 @@ return {
 				end
 				return count
 			end
-			local seen = { BodyAfterBurst = false, KeptAfterBurst = true, KeptBurst = false, SteadyBefore = true, Dimmed = false, LitAfterOut = false, Gone = false, Scraps = 0, KeptAfterGone = false }
+			local seen = { BodyAfterBurst = false, KeptAfterBurst = true, KeptBurst = false, SteadyBefore = true, Dimmed = false, LitAfterOut = false, Gone = false, Scraps = 0, KeptAfterGone = false, PaperBefore = true, Darkening = false, DarkAfterOut = true, DarkSeen = false }
+			local function near(a: Color3, b: Color3): boolean
+				return math.abs(a.R - b.R) + math.abs(a.G - b.G) + math.abs(a.B - b.B) < 0.03
+			end
 			local deadline = os.clock() + 4
 			local clock: number? = nil
 			local scrapsAt: number? = nil
@@ -1565,12 +1606,17 @@ return {
 					seen.KeptAfterBurst = seen.KeptAfterBurst and shows("Lamplighter_Pole") and shows("Lamplighter_Lantern")
 					seen.KeptBurst = true
 				end
+				local colour = if lantern then lantern.Color else paper
 				if frame and frame < fall.Gutter - 1 then
 					seen.SteadyBefore = seen.SteadyBefore and math.abs(glow - fall.Glow) < 1e-3
+					seen.PaperBefore = seen.PaperBefore and near(colour, paper)
 				elseif frame and frame > fall.Gutter + 1 and frame < fall.Out - 1 then
 					seen.Dimmed = seen.Dimmed or glow < fall.Glow - 1e-3
+					seen.Darkening = seen.Darkening or (not near(colour, paper) and not near(colour, fall.Dark))
 				elseif frame and frame > fall.Out + 1 and frame < fall.Gone - 1 then
 					seen.LitAfterOut = seen.LitAfterOut or glow > 0
+					seen.DarkAfterOut = seen.DarkAfterOut and near(colour, fall.Dark)
+					seen.DarkSeen = true
 				end
 				if frame and frame >= fall.Gone - 1 then
 					seen.Gone = true -- the body is still here at Gone
@@ -1589,6 +1635,9 @@ return {
 			t.Check("the lantern steady until Gutter", seen.SteadyBefore)
 			t.Check("guttering from Gutter", seen.Dimmed)
 			t.Check("and out on Out", not seen.LitAfterOut)
+			t.Check("its paper its own until Gutter", seen.PaperBefore)
+			t.Check("going down from Gutter", seen.Darkening)
+			t.Check("and dark from Out to Gone", seen.DarkSeen and seen.DarkAfterOut)
 			t.Check("the server keeps the body to Gone", seen.Gone, string.format("the clip at %.2f s when it went", clock or -1))
 			t.Check("then the pole and lantern go to paper scraps", seen.Scraps > 0 and seen.Scraps <= fall.Scraps.Lantern + fall.Scraps.Pole and not seen.KeptAfterGone, `{seen.Scraps} scraps at once`)
 			t.Server("FightSpawn")

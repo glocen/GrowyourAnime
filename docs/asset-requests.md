@@ -3232,6 +3232,16 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   - the avatar set down further aside for a try.
 - **Research:** B's verdict in motion, and whether the framing finding joins this piece or stays with the install piece.
 
+**Research's verdict on A and B (2026-11-13; `ar7_see_challenge.png`, `ar7_see_card.png`, `ar7_see_fall_strip.png`).**
+- **Felt:** the keeper stands up through a half-clear card, Pip comes in from his own side, and at the end the dark lantern stands alone in clear sky over Pip's hat. The fall finally ends on screen.
+- **Tier:** competent, as a blockout on a grey street. **The one bold thing:** the unlit lantern alone against the sky. It now reads.
+- **B passes as built.** The hat reads through the housing, and the bar across the brim is the fight's own read, so it stays. The numbers stay live in `Config.Hud.SeeThrough`.
+- **The framing stays with "Rook, Pip and Lyric installed",** its first fix there. It's every fight's framing, not the keeper's, and scope is fixed at the feel line. Research leans to the keeper holding the ring's middle and letting the lead come: it clears the avatar's line and gives the keeper a holder's presence. That piece's blockout decides.
+- **Carried:**
+  - the pole's rock, looked at again in that piece's take;
+  - the lone lantern among the street's own, at Lantern Row's install (AR5, section 2).
+- **AR7's install closes here** at research's pass. The signature's motion blockout (section 6) stays open.
+
 ### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
 
 Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.

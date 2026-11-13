@@ -3757,6 +3757,9 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
   2. **Round 1's coil** (100913199674615): competent, but it sat on the crown from 78 to 81, so it fails condition 4 as it stands.
   3. **AR4's accepted tent** (the "before"): it passes everything, and it's the weaker read. The rework would wait for the whole-game review.
 - **Until the director picks,** the dev build keeps this round's coil. No public build carries it: until the exit passes, a release takes option 3.
+- **The director, 2026-11-13: "let do 1".** It covers the coil's exit only: a new blockout of it, as option 1 describes. 67 to 73 is kept. The signed feel line now ends "...winds up round the Shades twice his height and burns off upward, gone by the time he gets his hat up to look."
+  - **Next (Modulo):** the exit in grey beside this round's, from 74, eaten from its foot upward, with the top tongue last, by about 84. Then research's verdict with fresh eyes, the art, the content check, Faber's re-upload and one take.
+  - Until it passes, the dev build keeps this round, and a release takes the tent.
 
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 

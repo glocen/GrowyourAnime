@@ -3716,6 +3716,32 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 - **Not done:** the upload, the take, and research's pass in motion: the round's last.
 - **Hours:** about 0.3, 15:48 to 16:05 UTC.
 
+**The re-upload and the take (Faber, 2026-11-13).**
+- **The content check** (fresh eyes, before upload): PASS on `pip_burst.png` and its sheet, with the conditions above. The sheet itself is review material and stays internal.
+- **Uploaded** under the group: 102541566798055, Approved, read back. It's in `Config.Effects.LanternBurst.Picture`. In `docs/asset-log.md` the last round's row has the id, and 100913199674615 is marked unused. The trail is unchanged and not re-uploaded.
+- **The takes,** in `build/captures/ar8/b1_last/`, at phone size (iPhone 16 Pro in Studio's emulator), Pip leading, the replay pressing every 4 s:
+
+| File | What |
+|---|---|
+| `coil_last_phone.mp4`, `coil_last_phone_frames.png` (clip frames 66 to 95, one a tile), `coil_last_phone_close_72_85.png` (twice the size) | The player's camera behind the avatar, the Shade just right of it and Pip further right, as round 1's take |
+| `coil_last_level.mp4`, `coil_last_level_frames.png` (66 to 95) | The content check's "dead on": a level camera at the Shade's head height, 16 studs off. The coil is a billboard, so it always faces the camera, and only the camera's height changes what it covers |
+
+- **Frames matched to the clip:** on the player's camera, warm pixels per frame against the art table's screen share (67: 2.8%, 70: 4.4%, 72: 3.6%, 76: 1.45%, 80: 0.75%). On the level take, the white cap on 70 and 71.
+- **What I see:**
+  - **Condition 4, from both cameras:**
+    - On 72 and 73, the column wraps the Shade from the floor.
+    - On 74 and 75, the flame stands on the Shade, with the head inside its foot.
+    - From 76, there's a gap of sky over the Shade's top, and the flame keeps rising.
+    - Nothing gathers to a point at the head.
+    - On 76 the flame is about 62 px tall in the take, about the condition's 64 px.
+  - **The tints stay white:** the label's `ImageColor3` is (1, 1, 1), and the colours on screen are the sheet's.
+  - **78 to 85:** the flame has a round bottom, a short tongue on top and ragged sides with white seams. From 82 it's about 30 px tall, and closest to an oval. To me it reads as a small flame, tip up. Whether it reads as an egg at speed is research's call. The fix is named above: a taller top tongue.
+  - **The wind:** stills can't show it. The seams move from cell to cell; the mp4s are for it.
+  - **Seen, not this piece:** in the level view, the HUD's target plate covers the coil from 76 on. The player's camera, angled down, puts it above the plate.
+- **Checked:** the type check, 0 new. The self-test's Lantern cases, 41/41 at 60 fps.
+- **Not done:** research's pass in motion, the round's last.
+- **Hours:** about 0.2, 16:08 to 16:20 UTC.
+
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 
 **The feel line, proposed (AR1, section 9), for research to sign:** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."

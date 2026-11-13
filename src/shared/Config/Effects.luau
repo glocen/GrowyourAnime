@@ -89,7 +89,7 @@ return {
 	-- is thrown, and lets its flame out over the target. Two pictures, the group's uploads (docs/asset-log.md); the table
 	-- the art sheet plays them by is build/handoff/Pip/fx/pip_burst_art.json. Frames are the clip's, from its start.
 	LanternBurst = {
-		Picture = "rbxassetid://100913199674615", -- twenty cells: the coil's sixteen, the heat's four (AR8 B1)
+		Picture = "rbxassetid://102541566798055", -- twenty cells: the coil's sixteen, the heat's four (AR8 B1, the last redraw)
 		-- The flame blown back, uploaded turned a quarter (its tongues the top row, its head the bottom): a Beam runs its
 		-- picture's height along it (handbook/visuals/vfx-engine-facts.md, "Beam"). 93148687324383 was the same picture sideways.
 		TrailPicture = "rbxassetid://105763467007985",

@@ -6,10 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's pass given (competent; the break seen through a red-white flash, the name stamped); closed; its level check moves to an offline mixdown in AR8 A (a take's loudness is the PC's compression); the sounds wait on the director's ear. AR7, the Lamplighter: the seven clips passed and delivered (the wrench raised over the hat); the keeper's own walk near 5 (tier 2, Faber's take checks it). AR8, the effects pass (the director's word, no yes needed; measured against `docs/research/vfx-reference.md`): A, the hit, and C, the interface, closed at competent; B2, Held Note bolder, closed at competent; B1, the coil, competent but open: one redraw (the foot lifts off the Shade's head sooner, condition 4; the seams turn for the wind), the last round; B5's feel line signed, Faber's replay next. AR7's fall signed (the lantern alone), Faber's replay with the install. Seen and queued: the avatar covers the lead against a pack, in the next TR. Next: verdicts as the takes arrive.
 
-**Faber (builder).** 2026-11-13. AR8: C and B2 closed at research's pass. B5's replay is built and taken, and waits on research's verdict in motion (AR8, "B5", "The replay built").
-- **What changed:** Rook's block clip plays in Haymaker's place. B5's grey square hangs over the target, slams onto it on Strike and lies where it landed. Haymaker pins (Push 0).
-- **Take:** `build/captures/ar8/b5/`, A and B5 at phone size.
-- **Now:** B1's last redraw: the coil's re-upload and one take. Then AR7's install, then Rook, Pip and Lyric installed.
+**Faber (builder).** 2026-11-13. AR8: C and B2 closed at research's pass. Two takes wait on research:
+- **B5's replay** (AR8, "B5", "The replay built"): Rook's block clip in Haymaker's place, the grey square slammed onto the target on Strike, Haymaker pinned (Push 0). `build/captures/ar8/b5/`.
+- **B1's last redraw** (AR8, "B1, the last redraw", "The re-upload and the take"): the coil uploaded (102541566798055) and installed, taken from the player's camera and level. `build/captures/ar8/b1_last/`.
+- **Now:** AR7's install (the Lamplighter, with the fall's replay). Then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.

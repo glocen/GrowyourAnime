@@ -317,7 +317,21 @@ Phase 2. Research's request, 2026-11-12, written ahead so it starts the moment T
 
 Also, as the builder's tier 1: the trim seeds take the director's rarity colours now, live (Uncommon `#7CF0A0`, Rare `#6FB6FF`, Epic `#D29CFF`; AR3, section 4). The sheet's Uncommon trim is the untinted ladder's grey. Not caught in my captures: a critical number. Its look stays the self-test's until the phone-size pack holds one frozen (the effect kit's time scale at 0). **What closes TR3:** the three calls, then the phone-size captures on the director's simulator click, then the director's eye.
 
-**Status:** started 2026-11-12 (Faber). The fix round is ready for research's playtest, 2026-11-13.
+**The three calls and the trims, in, 2026-11-13 (Faber).** Captures 7 to 10 in `build/captures/tr3/fix_round/`.
+1. **Headroom.** The top row has one line, `TOP` in `HudController`, at 17: the lead card, the target card and the pills. The band follows: 133.7 authored px, up from 124.7.
+   - Measured on the kit's PNG, the Mythical frame's metal starts 10 points over the small frame. At 1.25 its crest clears the top bar by 5.5 authored px: 8.3 on screen in this window (scale 1.5), 4.7 at the smallest phone's 0.85. 16 would leave 3.8 there, hence 17.
+   - A head-above cut gets the same room if it rises no more than the crest's 10 points.
+   - The frame's back glow reaches 23.75 points over the frame. Its faint edge meets the bar's line where the bar is see-through (capture 8, Aegir's frame set on the client only).
+2. **The level-up's blue.** The word and its ring take `Config.Hud.Card.Xp`, read at use, and so does the level's toast. `Theme.Colour.Xp` is gone. The ring is Neon, so it renders lighter than the thread, a pale blue near cyan (capture 10): yours to judge.
+3. **Electricity** is unchanged, yellow. Modulo's note is off the board.
+4. **The trims:** Uncommon `#7CF0A0`, Rare `#6FB6FF`, Epic `#D29CFF` in `Config.Hud.Card.Trim`, live (capture 7, Sable's green).
+5. **The frozen crit**, ready for the phone pack. In a playtest with Pip as the lead, on the Server:
+   - Run `Tune("Stats.Caps.CriticalFloor", 1)`, `Tune("Stats.Caps.Critical", 1)`, `Tune("Combat.Replay.FreezeAt", 1.2)`, then `Replay("PipCombo", 3.5)`.
+   - The replay's freeze holds Pip just after the third shot, with the effect kit's time scale at 0, so the critical number holds whole under the band (capture 9, desktop).
+   - Put the numbers back after: 0.05, 0.6 and 0.
+6. **Checks:** type check 0 new; logic 1731 offline and in Studio; the HUD self-test 77/77 at 59 fps; world report sound.
+
+**Status:** started 2026-11-12 (Faber). The three calls and the trims are in, 2026-11-13. Next: the phone-size pack with the frozen crit, on the director's simulator click, then the director's eye.
 
 ## Next, not yet written
 

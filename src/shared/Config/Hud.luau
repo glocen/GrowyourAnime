@@ -86,18 +86,19 @@ return {
 	-- director's notes). Health is red on both cards, flat (Bar's Flat: its core and head the same red), and no other bar
 	-- takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's experience thread is a cool colour
 	-- of its own against the red, the builder's to try live. The trim round the lead card's bars and its level's badge is
-	-- the lead's rarity's colour, never a fixed gold (AR3's in-use rule 4), seeded from Modulo's frames
-	-- (tools/blender/ui_sheet.py, RARITIES): the frame's glow, else its metal's light. Room: the share of a health bar
-	-- its number may take before it takes its compact form (fix 6).
+	-- the lead's rarity's colour, never a fixed gold (AR3's in-use rule 4): the director's three rarity colours (AR3,
+	-- section 4, settled), and for the rest Modulo's frames (tools/blender/ui_sheet.py, RARITIES): the glow, else the
+	-- metal's light. Experience has this one colour: the thread, the level-up's word and ring, its toast. Room: the share
+	-- of a health bar its number may take before it takes its compact form (fix 6).
 	Card = {
 		Health = Color3.fromHex("#E2463F"),
 		TargetHealth = Color3.fromHex("#E2463F"),
 		Xp = Color3.fromHex("#4E9BFF"),
 		Trim = {
 			Common = Color3.fromHex("#666C78"),
-			Uncommon = Color3.fromHex("#DCE2EC"),
-			Rare = Color3.fromHex("#DCE9FF"),
-			Epic = Color3.fromHex("#EEF4FF"),
+			Uncommon = Color3.fromHex("#7CF0A0"),
+			Rare = Color3.fromHex("#6FB6FF"),
+			Epic = Color3.fromHex("#D29CFF"),
 			Legendary = Color3.fromHex("#FFD777"),
 			Mythical = Color3.fromHex("#FF8794"), -- its metal's light, not its #FF2848 glow: kept apart from health's red
 		} :: { [string]: Color3 },

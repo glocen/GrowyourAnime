@@ -29,7 +29,6 @@ Theme.Colour = {
 	TextDim = GRAPHITE.Soft,
 	Disabled = GRAPHITE.Faint,
 	Primary = Color3.fromRGB(96, 170, 236), -- the one action a screen asks for
-	Xp = Color3.fromRGB(176, 150, 246), -- a level reached (the HUD's cards take theirs from Config.Hud.Card)
 	Electricity = UIKit.Charge,
 	Credits = Color3.fromRGB(238, 198, 92),
 	Ready = Color3.fromRGB(246, 222, 128),

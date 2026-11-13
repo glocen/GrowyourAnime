@@ -53,6 +53,10 @@ local PAD = Theme.Size.Pad
 -- 1.25 (50 by 60); the bars start under the frame's right edge and run out long to the slanted cut; the level's badge
 -- bites the frame's lower left corner.
 local CARD = Vector2.new(212, 62)
+-- The top row's one line, the lead card's, the target's and the pills': a Mythical frame's crest (10 points over the small
+-- frame, 12.5 at 1.25, from FACE.Y) clears Roblox's top bar by 5.5 authored px, 4.7 on screen at Theme.Scale.Floor, and
+-- the head cut has the same room (research's pass on TR3's fix round, call 1).
+local TOP = 17
 local FACE = { X = 5, Y = 1, Scale = 1.25 } -- the portrait: where its frame's top left sits, and its scale
 local LINES = 50 -- where the bars start, under the frame's right edge (at 55)
 local CLEAR = 8 -- how far into a bar its light starts: 3 clear of the frame, so health's red never touches the portrait
@@ -212,7 +216,7 @@ local function point(holder: Frame, way: string)
 end
 
 local function leadCard(): Card
-	local frame = Panel.new({ Name = "Lead", Size = UDim2.fromOffset(CARD.X, CARD.Y), Position = UDim2.fromOffset(PAD, PAD), Parent = Layers.Get("Hud") })
+	local frame = Panel.new({ Name = "Lead", Size = UDim2.fromOffset(CARD.X, CARD.Y), Position = UDim2.fromOffset(PAD, TOP), Parent = Layers.Get("Hud") })
 	frame.Visible = false
 	local portrait = Portrait.new({ Name = "Portrait", Small = true, Position = UDim2.fromOffset(FACE.X, FACE.Y), Parent = frame })
 	portrait.ZIndex = 3 -- over the bars' start
@@ -243,7 +247,7 @@ local function leadCard(): Card
 end
 
 local function targetCard(): Card
-	local frame = Panel.new({ Name = "Target", Size = UDim2.fromOffset(TARGET.X, TARGET.Y), Position = UDim2.new(0.5, 0, 0, PAD), AnchorPoint = Vector2.new(0.5, 0), Parent = Layers.Get("Hud") })
+	local frame = Panel.new({ Name = "Target", Size = UDim2.fromOffset(TARGET.X, TARGET.Y), Position = UDim2.new(0.5, 0, 0, TOP), AnchorPoint = Vector2.new(0.5, 0), Parent = Layers.Get("Hud") })
 	frame.Visible = false
 	local gem = icon(frame, "GemStrength", 16, 14, 15)
 	gem.Name = "Gem"
@@ -260,7 +264,7 @@ local function pill(name: string, order: number, width: number, image: string): 
 	local frame = Panel.new({
 		Name = name,
 		Size = UDim2.fromOffset(width, PILL),
-		Position = UDim2.new(1, -PAD, 0, PAD + (order - 1) * (PILL + Theme.Size.Gap)),
+		Position = UDim2.new(1, -PAD, 0, TOP + (order - 1) * (PILL + Theme.Size.Gap)),
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = Layers.Get("Hud"),
 	})
@@ -524,7 +528,7 @@ local function notice(old: Profile.View?, new: Profile.View)
 	local id = new.Roles.Lead
 	local was, now = old.Voidkin[id], new.Voidkin[id]
 	if was and now and now.Level > was.Level then
-		Toast.Show(`{Read.VoidkinName(now)} reached level {now.Level}`, Theme.Colour.Xp)
+		Toast.Show(`{Read.VoidkinName(now)} reached level {now.Level}`, HudConfig.Card.Xp)
 	end
 end
 

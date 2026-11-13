@@ -1597,7 +1597,8 @@ end
 -- out so it bursts and settles, and the new level rising over the lead, held long enough to read.
 function Effects.LevelUp(root: BasePart, level: number)
 	local look = EffectsConfig.LevelUp
-	local ring = part(Theme.Colour.Xp, Enum.Material.Neon)
+	local xp = HudConfig.Card.Xp -- experience's one colour, the card's thread's (research's pass on TR3's fix round)
+	local ring = part(xp, Enum.Material.Neon)
 	ring.Shape = Enum.PartType.Cylinder
 	local feet = root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0)
 	local size = look.Size
@@ -1606,7 +1607,7 @@ function Effects.LevelUp(root: BasePart, level: number)
 		return if root.Parent then root.Position + Vector3.new(0, 3.5 + rise, 0) else nil
 	end)
 	World.Below(plate) -- under the top band, as a number is (TR3's verdict, fix 4)
-	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = Theme.Colour.Xp, Align = Enum.TextXAlignment.Center, Parent = plate })
+	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = xp, Align = Enum.TextXAlignment.Center, Parent = plate })
 	label.TextStrokeTransparency = 0.2
 	label.Text = `Level {level}`
 	run(function(age: number): boolean

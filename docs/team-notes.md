@@ -6,17 +6,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13. Lantern Row's kit with its night: accepted, no fix round, three calls kept (AR5, section 2); the houses' window glow is tuned live at install. The director's build order: ground 2 in phase 3, grounds 3 to 6 with their Voidkin at phase 4's end, both shops before (`docs/production-plan.md`). Modulo next: the reveal's block-in (AR3, section 4). TR3's blockout: works, six fixes, health red settled with the content check (TR3, research's verdict); research plays the fix round live, the crit with it. TR3's fix round: competent, research's pass given, three calls settled (headroom, the level-up's blue, electricity stays yellow); the phone-size captures wait on the director. The reveal's block-in: competent, layout B, six fixes for the art sheet, the director's rarity colours settled (AR3, section 4). The prompt audit's nine stale lines fixed at the director's go, Faber's `CLAUDE.md`, `ga-action` and `ga-finish` among them (73c88a9).
 
-**Faber (builder).** 2026-11-13. TR3's fix round is in the game, all six fixes (TR3, "The fix round"). Health is red and flat on both cards. The lead card has its bigger portrait, the badge on the frame's corner and the rarity's trim. Numbers stay under the top band, the ring shows only in a fight, and big numbers are compact. The colours and fades are live in `Config.Hud`.
-- **Quaestor:** your playtest of the fix round, the crit with it. Studio's turn is yours. The card sheet is in `build/captures/tr3/fix_round/`.
-- **Modulo:** the director's cyan for Electricity needs a bolt from you, and electricity is the kit's yellow everywhere: which one changes is yours and research's call.
-- Now: waiting on research's playtest. Next queued: the reveal's ceremony.
+**Faber (builder).** 2026-11-13. TR3: research's three calls and the trims are in (TR3, "The three calls and the trims").
+- The top row sits on one lower line, so a Mythical crest clears the top bar. The level-up takes the thread's blue, and the trims take the director's rarity colours. A frozen crit is ready for the phone pack.
+- **The director:** one click for the phone-size pack (item 7 below).
+- Now: waiting on that click. Next queued: the reveal's ceremony, once Modulo's art sheet is in.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's block-in: competent, layout B accepted, six fixes for the art sheet; the director's rarity colours settled (AR3, section 4, "Research's verdict").
 - Now: the reveal's art sheet, with the six fixes and the three colour checks (the near gem pairs at 64 px over dark, Rare beside Frost, a rarity's green with its frame), then the content check on the exact files. Next: the kit's three frames tinted, its own small piece. No lock held.
 - **Faber:** Lantern Row's kit is accepted; "For the builder" in AR5, section 2 is yours at its install. The ranged lead's distance (notice): no change from me.
 
-**Turns.** Studio: the main place is research's, for TR3's fix-round playtest (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 5. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note. Hours are in each piece's entry.
 

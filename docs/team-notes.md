@@ -16,7 +16,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
 - **Faber:** my message has the clips' roles, the stride and research's yes to a walk near 5. On TR4, my answer is yes to both flash colours. The reveal's art now follows your stamp's slam (`reveal_art.py`, `reveal.json`).
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
-- **Now:** AR8's B. Lantern Burst's art is drawn to research's fix, and the content check passes. It waits on research's pass (AR8, "B1, the art sheet"). Two changes from the signed blockout are research's call: ground flames replace the low ring, and the end thins to a thread. Held Note made bolder waits on the same pass (B2). Then B5 with Faber. No lock held.
+- **Now:** AR8's B. Lantern Burst's coil (B1) and Held Note made bolder (B2) passed research's pass on their sheets and are **delivered** (`build/handoff/Pip/fx/`, `build/handoff/Lyric/fx/`), with their asset-log rows. **Faber:** one re-upload for the burst and three for Held Note, then your take. Next: B5 with Faber; its block clip striking down is started (`tools/blender/rook_haymaker_down.py`). No lock held.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
@@ -62,6 +62,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. AR8 B1 and B2 delivered: Lantern Burst's coil and Held Note made bolder (Modulo)
+
+- **What:** Lantern Burst's flame, let out. Three fat ribbons wind in round the Shades to one column and flare white on 70. Then they let go and climb off as a thread, gone by 93. Two small forked flames stay where the outer feet let go. Held Note's crest, veil and crackles are rimmed in a deep magenta, and the crest's strands are about two and a half times as thick, so the wave holds on a bright sky.
+- **Where:** `build/handoff/Pip/fx/pip_burst.png`, with `pip_burst_art.json` and `pip_burst_art.png`; `build/handoff/Lyric/fx/`, the three pictures and `lyric_note_upload.png`. The scripts: `tools/blender/pip_burst_coil_art.py` and `lyric_note_art.py`. The record: AR8, "B1, the art sheet" and "B2".
+- **Checked:** the content check passes on both, and research's pass on the sheets is competent.
+- **For Faber:** one re-upload for the burst, with the same layout; `Config.Effects.LanternBurst.Burst` plays it as drawn, and the trail is unchanged. Three re-uploads for Held Note, with the crest and the veil turned a quarter as before. The asset log names the old id each retires. In your take, check the coil's foot leaving the Shade's head at 74 to 78 (condition 4), and whether the wind reads.
+- **Open:** Faber's uploads and take, then research's pass in motion.
 
 ### 2026-11-13. AR8 A built: the hit by its rung (Faber)
 

@@ -3287,6 +3287,8 @@ H with the verdict's fix, drawn: Pip's cream, gold and orange inside, a dark amb
 - **Out of this piece, again:** Pip's heave and hat-up don't show from the player's camera. That's his clip, for the whole-session review. The next TR's framing of the pack fight helps it.
 - **Next:** deliver to `build/handoff/Pip/fx/`. Then Faber's upload and take, with condition 4 (the foot passing the Shade's head at 74 to 78) read in that take.
 
+**Delivered, 2026-11-13 (Modulo)** to `build/handoff/Pip/fx/`: `pip_burst.png`, with `pip_burst_art.json` and `pip_burst_art.png`, the sheet and its table under the old names. They're the same shape as before, so `Config.Effects.LanternBurst` reads them as it reads the old ones. The trail is unchanged. The sheet's 64 px rows are now whole, five of them, the coil in grey included. The asset log has the row (condition 6). **Open:** Faber's upload and take, with conditions 1 to 3 read in it.
+
 ### B2. Held Note made bolder (Modulo, 2026-11-13)
 
 The ask: a bright interior with a darker, saturated edge and a bolder main shape, so it holds on a bright sky. The same three pictures, at the same sizes and in the same places. Only their look changes.
@@ -3322,6 +3324,8 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
 - **Tier:** competent. The study's rule 3 is met: a bright interior with a darker, saturated edge, holding on night, bright sky and dusk down to phone size.
 - **The one bold thing:** the deep rim, which turns a pale shimmer into a shape.
 - **No fix on the sheet.** Next: deliver to `build/handoff/Lyric/fx/` with condition 3's sheet. Then Faber's uploads, and the pass in motion at phone size beside the "before".
+
+**Delivered, 2026-11-13 (Modulo)** to `build/handoff/Lyric/fx/`: the three pictures, `lyric_note_art.json` and `lyric_note_art.png`, and `lyric_note_upload.png`, condition 3's sheet. It shows the three at full size over night, a bright sky and grey, then at 64 px a cell, then the touch alone at 64 px drawn three times over. The asset log has a row for each, naming the old id it retires on upload (condition 4). **Open:** Faber's uploads, then the pass in motion.
 
 ## Later, by ground
 

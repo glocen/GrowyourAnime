@@ -462,7 +462,7 @@ def main():
     (out / "pip_burst_coil_art.json").write_text(json.dumps(numbers, indent=1))
     print(json.dumps(numbers["checks"], indent=1))
 
-    W, H = 1920, 3060
+    W, H = 1920, 3280
     page = rs.canvas(W, H, rs.PAPER)
     ink, soft = "#1E1B22", "#6A655E"
     x0 = 40
@@ -496,15 +496,14 @@ def main():
         y += 160
     y += 10
     text.append((x0, y, 18, "At 64 px from the player's camera: before, the grey K, then the coil on dark and on bright, and in grey. Under each, the effect's pixels", ink))
-    for i, key in enumerate(("before", "block", "dark", "bright")):
+    for i, (key, name, grey) in enumerate((("before", "before, as it plays", False), ("block", "the grey K", False),
+                                           ("dark", "the coil, dark", False), ("bright", "the coil, bright", False),
+                                           ("dark", "the coil in grey", True))):
         for c, (tile, n, _) in enumerate(small[key]):
-            rs.paste(page, tile, x0 + c * 80, y + 26 + i * 86)
+            rs.paste(page, rs.grey(tile) if grey else tile, x0 + c * 80, y + 26 + i * 86)
             text.append((x0 + c * 80 + 2, y + 26 + i * 86 + 66, 12, f"{SMALL[c]}: {n}", soft))
-        text.append((x0 + 12 * 80 + 8, y + 50 + i * 86, 14, ("before, as it plays", "the grey K", "the coil, dark",
-                                                              "the coil, bright")[i], soft))
-    for c, (tile, _, _) in enumerate(small["dark"]):
-        rs.paste(page, rs.grey(tile), x0 + 1240 + (c % 6) * 80, y + 26 + (c // 6) * 86)
-    y += 376
+        text.append((x0 + 12 * 80 + 8, y + 50 + i * 86, 14, name, soft))
+    y += 26 + 5 * 86 + 14
     peaks = ", ".join(f"{f}: {peak_before[f] / area:.1%} to {peak[f] / area:.1%}" for f in PEAK)
     for i, words in enumerate((f"The burst's share of the player's screen, before to the coil: {peaks}.",
                                "The heat, the trail and the glow are as they were (AR4, section 8). The pictures are drawn flat and unlit, facing the camera, with no glow added: the game's bloom is the builder's.")):

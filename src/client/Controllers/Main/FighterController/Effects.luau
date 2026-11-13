@@ -1,12 +1,11 @@
 --!strict
 -- Effects (client): the fight's stand-ins in grey, timing and size only (TR2; the looks come with the art sheets).
 --   Spark     a landed hit: a burst of light where it lands, larger on a heavy hit. Light only: no wound, nothing left.
---   Haymaker  AR1's art sheet, the block-in's B with the floor's lines (research dropped the wake): the charge square,
---             the punctuation, one bracket thrown along the ground through the target and eaten as it cools, the two
---             lines it scores on the floor. One bar picture for all of it, or grey parts until it's uploaded
---             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). And the ram's heat on its glow mask,
---             and the strike's sound (Config.Sounds). While Stamp.On, B5's grey block in the bracket's place: the
---             square hung over the target through the hold, slammed onto it on Strike, squashed flat where it lands.
+--   Haymaker  AR1's art sheet: the charge square and the punctuation, one bar picture for both, or grey parts until
+--             it's uploaded (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). The ram's heat on its
+--             glow mask, and the strike's sound (Config.Sounds). And B5's stamp, a grey block until its art (AR8,
+--             "B5"): the square hung over the target through the hold, slammed onto it on Strike, squashed flat where
+--             it lands.
 --   LanternBurst  Pip's signature, AR4's art sheet: the heat in the cage on his glow mask, the throw with its trail, the
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8).
@@ -178,7 +177,7 @@ type Face = { Gui: SurfaceGui, Label: ImageLabel }
 type Bar = { Part: Part, Faces: { Face }, Was: boolean }
 type Look = typeof(EffectsConfig.Haymaker)
 
-local BAR_FACES = { Enum.NormalId.Front, Enum.NormalId.Back } -- every face a bar is laid with: UPRIGHT's and ON_FLOOR's
+local BAR_FACES = { Enum.NormalId.Front, Enum.NormalId.Back } -- every face a bar is laid with
 
 local function newBar(): Bar
 	local p = part(LIGHT)
@@ -243,7 +242,6 @@ local function layBar(bar: Bar, look: Look, at: CFrame, length: number, thick: n
 end
 
 local UPRIGHT = { Enum.NormalId.Front, Enum.NormalId.Back } -- seen from either side of the line
-local ON_FLOOR = { Enum.NormalId.Back } -- seen from above
 
 -- Four bars round `at`'s centre in its X-Y plane, `side` apart and `length` long: a square.
 local function square(take: () -> Bar, look: Look, at: CFrame, side: number, length: number, thick: number, frame: number)
@@ -277,17 +275,15 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	local CHARGE, VENT = beats.Charge or 0, beats.Vent or SHOCK
 	local arm = attacker:FindFirstChild("Right Arm") :: BasePart?
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
-	-- Made at the start, as many as a frame lays at most (the square's four, or the hero's three and the floor's two a
-	-- piece), so no bar's first picture waits on its making (AR8 A).
+	-- Made at the start, as many as a frame lays at most (a square's four), so no bar's first picture waits on its making
+	-- (AR8 A).
 	local pool: { Bar } = {}
-	for _ = 1, math.max(4, 3 + 2 * EffectsConfig.Haymaker.Floor.Pieces) do
+	for _ = 1, 4 do
 		table.insert(pool, newBar())
 	end
 	local used = 0
 	local line: CFrame? = nil -- on the floor under the knuckles at the strike, facing down the hit's line
 	local knuckles: Vector3? = nil
-	local aimAt: Vector3? = nil -- the target's centre on the floor at the strike; nil, and the line runs Reach straight on
-	local sideOn = 1 -- how side-on the hit's line runs to this client's camera at the strike: 0 at or away from it, 1 across it
 	local strikeAt: number? = nil -- the clock on the first frame on or past Strike: its square holds there, through the hitstop
 	local shockAt: number? = nil -- and on the first frame after it, for the Shock square
 
@@ -341,9 +337,8 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		return CFrame.lookAt(at, at - a.CFrame.UpVector, a.CFrame.LookVector)
 	end
 
-	-- The line: from under the knuckles at the strike, along the floor, to Past beyond the target (or Reach straight on). The
-	-- bracket faces down the hit's line, the attacker's body to the target, which the server pushes the target along: what
-	-- was hit is driven out through it (section 8).
+	-- The line: from under the knuckles at the strike, along the floor, toward the target (or straight on): the strike's
+	-- and the shock's squares stand on it.
 	local function fix()
 		local at = face()
 		if at == nil or root == nil then
@@ -355,45 +350,11 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		local origin = Vector3.new(at.Position.X, floorY, at.Position.Z)
 		local aim = target()
 		local toward = if aim then Vector3.new(aim.Position.X - r.Position.X, 0, aim.Position.Z - r.Position.Z) else Vector3.zero
-		aimAt = if aim then Vector3.new(aim.Position.X, floorY, aim.Position.Z) else nil
 		if toward.Magnitude < 0.5 then
 			local look = r.CFrame.LookVector
 			toward = Vector3.new(look.X, 0, look.Z)
 		end
 		line = CFrame.lookAt(origin, origin + toward.Unit)
-		local camera = workspace.CurrentCamera
-		if camera then
-			local view = camera.CFrame.LookVector
-			local flat = Vector3.new(view.X, 0, view.Z)
-			if flat.Magnitude > 1e-3 then
-				local across = math.clamp(math.abs(flat.Unit:Cross(toward.Unit).Y), 0, 1)
-				sideOn = math.asin(across) / (math.pi / 2)
-			end
-		end
-	end
-
-	-- How far down the line the hero is, as the line's share, `f` frames after Shock: it never quite stops.
-	local function far(hero: typeof(EffectsConfig.Haymaker.Hero), f: number): number
-		return outFast(f / hero.Fly) + math.max(0, f - hero.Fly) * hero.Drift
-	end
-
-	-- The frame after Shock the hero passes `share` of the line.
-	local function passes(hero: typeof(EffectsConfig.Haymaker.Hero), share: number): number
-		if share >= 1 then
-			return hero.Fly + (share - 1) / hero.Drift
-		end
-		return hero.Fly * (1 - (1 - share) ^ (1 / 3))
-	end
-
-	-- The bracket's foot point and facing at `share` of the line: it flies from the knuckles to the line's end, facing the
-	-- hit's line all the way.
-	local function standAt(hero: typeof(EffectsConfig.Haymaker.Hero), path: CFrame, share: number): CFrame
-		local ends = if aimAt then aimAt + path.LookVector * hero.Past else path.Position + path.LookVector * hero.Reach
-		return path + (ends - path.Position) * share
-	end
-
-	local function size(hero: typeof(EffectsConfig.Haymaker.Hero), share: number): (number, number, number)
-		return hero.Width + hero.WidthGain * share, hero.Height + hero.HeightGain * share, hero.Bar + hero.BarGain * share
 	end
 
 	-- B5, the stamp (Config.Effects.Haymaker.Stamp), in grey: the square's two posts and two bars, then the floor's two
@@ -516,11 +477,8 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	running = {
 		Step = function(clock: number, _free: number?): boolean
 			local look = EffectsConfig.Haymaker
-			local hero, floor, stamp = look.Hero, look.Floor, look.Stamp
-			local lastPiece = passes(hero, (floor.Pieces - 1) / floor.Pieces)
-			local finish = if stamp.On
-				then math.max(STRIKE + (stamp.Eat + stamp.Eaten + 1) * FRAME, SHOCK + 2 * FRAME)
-				else SHOCK + (math.max(hero.Fly + hero.Leaves, lastPiece + floor.Life) + 1) * FRAME
+			local stamp = look.Stamp
+			local finish = math.max(STRIKE + (stamp.Eat + stamp.Eaten + 1) * FRAME, SHOCK + 2 * FRAME)
 			if clock >= finish then
 				running.Destroy()
 				return false
@@ -553,7 +511,6 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			end
 			local path, hand = line, knuckles
 			-- The punctuation: the square thrown open round the ram, on the Strike frame (held through the hitstop) and the next.
-			local past = false -- the squares have had their frames: the hero's turn
 			if path and hand and strikeAt then
 				local across = CFrame.lookAt(hand, hand + path.LookVector) * CFrame.new(0, 0, -look.Ahead)
 				if clock < SHOCK or clock == strikeAt then
@@ -562,61 +519,10 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 					shockAt = shockAt or clock
 					if clock < SHOCK + FRAME or clock == shockAt then
 						square(take, look, across, look.Shock.Side, look.Shock.Side + look.Shock.Bar, look.Shock.Bar, look.Shock.Frame)
-					else
-						past = true
 					end
 				end
 			end
-			if stamp.On then
-				stampAt((clock - STRIKE) / FRAME)
-			else
-				hideStamp()
-			end
-			if path and past and not stamp.On then
-				local f = (clock - SHOCK) / FRAME
-				local lean = math.rad(hero.Lean * sideOn)
-				-- The hero: one bracket down the line, boiling while it flies, then eaten as it opens and its feet lift.
-				if f > 0 and f <= hero.Fly + hero.Leaves then
-					local share = far(hero, f)
-					local leaves = math.clamp((f - hero.Fly) / hero.Leaves, 0, 1)
-					local w, h, bar = size(hero, share)
-					local opens = 1 + hero.Opens * leaves
-					w, h = w * opens, h * opens
-					local low = h * hero.Lift * leaves * leaves
-					local k = if leaves == 0 then frameNow % 2 else math.min(#look.Eaten - 1, 1 + math.floor(leaves * (#look.Eaten - 2) + 0.5))
-					local stand = standAt(hero, path, share) * CFrame.Angles(-lean, 0, 0)
-					local post = h - low + bar
-					for _, sign in { -1, 1 } do
-						layBar(take(), look, stand * CFrame.new(sign * w / 2, low + (h - low) / 2, 0) * CFrame.Angles(0, 0, math.pi / 2), post, bar, k, HOT, UPRIGHT)
-					end
-					layBar(take(), look, stand * CFrame.new(0, h, 0), w + bar, bar, k, HOT, UPRIGHT) -- flush at the corners: a bracket, not a gate
-				end
-				-- The floor's lines: under the posts' feet, in pieces from the frame the hero passed each, hot, then a scorch.
-				local reached = far(hero, f)
-				for index = 0, floor.Pieces - 1 do
-					local a = index / floor.Pieces
-					local age = f - passes(hero, a)
-					local b = if age >= 0 then math.min((index + 1) / floor.Pieces, reached) else a
-					if b - a < 0.01 or age > floor.Life then
-						continue
-					end
-					local tint = if age < floor.Hot then HOT else look.Scorch
-					local k = if age < floor.Eat then 0 else math.floor(age - floor.Eat)
-					for _, sign in { -1, 1 } do
-						local wa, wb = (size(hero, a)), (size(hero, b))
-						local from3 = (standAt(hero, path, a) * CFrame.new(sign * wa / 2, floor.Over, 0)).Position
-						local to3 = (standAt(hero, path, b) * CFrame.new(sign * wb / 2, floor.Over, 0)).Position
-						local along = to3 - from3
-						if along.Magnitude < 1e-3 then
-							continue
-						end
-						local x = along.Unit
-						local up = Vector3.yAxis
-						local laid = CFrame.fromMatrix((from3 + to3) / 2, x, up:Cross(x), up)
-						layBar(take(), look, laid, along.Magnitude + floor.Overlap * look.Span, floor.Bar, k, tint, ON_FLOOR)
-					end
-				end
-			end
+			stampAt((clock - STRIKE) / FRAME)
 			for index = used + 1, #pool do
 				hideBar(pool[index])
 			end

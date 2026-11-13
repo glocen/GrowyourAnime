@@ -1,12 +1,11 @@
 --!strict
 -- Effects (shared Config): the look of the signature effects, from the asset maker's art sheets, played by the client's
 -- FighterController/Effects. Frames are the clip's, 60 a second; distances in studs. Tuned live in a playtest:
--- NL_Debug:Invoke("Tune", "Effects.Haymaker.Hero.Reach", 9).
+-- NL_Debug:Invoke("Tune", "Effects.Haymaker.Stamp.Top", 6.4).
 
 return {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
-	-- the charge's square, the strike's square, the thrown bracket and the floor's two lines, eaten as it cools. While
-	-- Stamp.On, B5's grey stamp takes the bracket's and the lines' place.
+	-- the charge's square and the strike's square, eaten as it cools. Then B5's stamp (AR8, "B5"), a grey block until its art.
 	Haymaker = {
 		-- The bar's eight frames, one under another: the group's upload (docs/asset-log.md); "" plays the grey stand-in.
 		Picture = "rbxassetid://82029716338204",
@@ -15,40 +14,17 @@ return {
 		Body = 0.6, -- the share of a frame's height the stroke fills
 		Span = 0.92, -- and of its width
 		Eaten = { 0, 0.07, 0.16, 0.28, 0.42, 0.57, 0.72, 0.86 }, -- the share gone in each frame; the stand-in shows it as transparency
-		Scorch = Color3.new(0.34, 0.26, 0.3), -- a floor line's tint once it cools (the content check: no redder)
 		-- The charge: the square forms out of its chips round the ram's face and is drawn tight through the hold.
 		Charge = { From = 29, Forms = 8, Held = 5, Side = 2.9, Tight = 1.1, Last = 0.1, Bar = 0.3, Over = 0.5 }, -- frames before Strike; studs
 		-- The punctuation: the same square thrown open round the ram, on the Strike frame and the Shock frame.
 		Strike = { Side = 3.0, Bar = 0.8, Frame = 0 },
 		Shock = { Side = 3.7, Bar = 0.7, Frame = 3 },
 		Ahead = 0.3, -- studs down the line from the knuckles the squares stand
-		-- The hero: one bracket thrown down the line from the frame after Shock. It snaps out over Fly frames and drifts on
-		-- (it never quite stops), then is eaten over Leaves frames as it opens and its feet lift.
-		-- The line ends Past the target, so the bracket is eaten round what it hit, at the fight's depth (section 8).
-		Hero = {
-			Past = 2.5, -- studs past the target's centre the line ends: the frame seen out its near side as the knock carries it
-			Reach = 8, -- studs down the line it flies when there's no target
-			Fly = 10,
-			Drift = 0.004, -- the line's share a frame it drifts once it has flown
-			Leaves = 6,
-			Opens = 0.06, -- it opens this share as it's eaten
-			Lift = 0.3, -- its feet lift this share of its height, by the square of how far it's eaten
-			-- Degrees it leans the way it goes, seen side-on; times how side-on the line is to the camera, so a line coming at
-			-- the camera stands upright (0 face-on, 1 side-on, by the angle; section 8)
-			Lean = 16,
-			Width = 2.2, WidthGain = 2.8, -- studs at the knuckles, and gained by the line's end: the target's outline and a margin there
-			Height = 2.0, HeightGain = 3.4,
-			Bar = 0.85, BarGain = 0.5,
-		},
-		-- The floor's two lines, scored under the hero's feet in pieces as it passes: hot, then a scorch, eaten from the near end.
-		Floor = { Pieces = 6, Hot = 3, Eat = 4, Life = 11, Bar = 0.5, Over = 0.03, Overlap = 0.3 }, -- frames; studs
 		-- B5, the stamp, a grey block (docs/asset-requests.md, AR8, "B5"; AR1, section 9; tools/blender/rook_haymaker_stamp.py,
-		-- face() lifted). In place of the hero and the floor's lines, a square stood up facing the camera hangs over the
-		-- target through the hold, drawn tight. It slams down onto it over Drop frames, stretched tall, and lands on Strike.
-		-- It squashes flat on Shock while two bars run out along the floor from its feet, and is eaten where it lies, the
-		-- target pinned under it (Actions: Haymaker's push is 0). Frames are counted from Strike; studs from the floor.
+		-- face() lifted). A square stood up facing the camera hangs over the target through the hold, drawn tight. It
+		-- slams down onto it over Drop frames, stretched tall, and lands on Strike. It squashes flat on Shock while two bars
+		-- run out along the floor from its feet, and is eaten where it lies, the target pinned under it (Actions: Haymaker's push is 0). Frames are counted from Strike; studs from the floor.
 		Stamp = {
-			On = true, -- false plays A's bracket thrown through the target: a look beside it while B5 is a blockout
 			Side = 4.6, -- the square's side: the target's footprint and a margin
 			Bar = 0.85,
 			Rise = 21, -- frames before Strike it forms over the target's head (the sheet's frame 36)

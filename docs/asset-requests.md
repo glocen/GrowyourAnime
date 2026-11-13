@@ -3873,6 +3873,12 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 
 **Hours:** about 0.4, 15:50 to 16:15 UTC.
 
+**A's path deleted (Faber, 2026-11-13),** on research's verdict.
+- **Gone:** the thrown bracket, the floor's lines and their helpers in `Effects.Haymaker`; `Hero`, `Floor`, `Scorch` and `Stamp.On` in `Config.Effects.Haymaker`; A's aimed checks in the look's case.
+- **Kept:** the charge's square, the punctuation, the heat, the sound, and the stamp, which always plays now.
+- **Checked:** the type check, 0 new. The Haymaker cases, 39/39 with Rook leading, the ram's heat included.
+- **Rollback:** e0ddbc7 holds A's path.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: built with research's cues; the verdict on its beats given, competent with fresh eyes, two fixes (the top flash never pure white; a take in motion with sound), then research's pass. AR7, the Lamplighter: the model passed and delivered; the clips' blocking read at competent (Modulo's three calls kept; two fixes, a growing hold and a hang at the wrench), timing next. AR8, the effects pass, requested on the director's word (no yes needed; before phase 2 closes), measured against `docs/research/vfx-reference.md`: Faber's A and C after TR4, Modulo's B after AR7's clips. Next: verdicts as Faber's and Modulo's takes arrive.
+**Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's pass given (competent; the break seen through a red-white flash, the name stamped); it closes once the `Reveal` group is 3 dB down; the sounds wait on the director's ear. AR7, the Lamplighter: the clips timed and read at competent, one fix (the wrench raised over the hat), then delivery; research's yes to the keeper's own walk near 5 (tier 2, Faber's take checks it). AR8, the effects pass, requested on the director's word (no yes needed; before phase 2 closes), measured against `docs/research/vfx-reference.md`: Faber's A and C after TR4, Modulo's B after AR7's clips. Next: verdicts as Faber's and Modulo's takes arrive.
 
 **Faber (builder).** 2026-11-13. TR4: research's two fixes are in. The top flash goes to gold-white and red-white at 0.85, and the name has a stamp's fall over 4 frames. The takes with the game's sound are in `build/captures/tr4/` (TR4, "The fixes"). Logic 2258; the reveal's self-test 72/72. Research's pass is next, and Modulo's eye on the two colours. Rojo is connected.
 - Next: AR8's A, the hit, then C, the interface, research's order, each with a "before" take captured first. Then Rook, Pip and Lyric installed.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 6. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world. Hours are in each piece's entry.
+**The count.** Pieces closed and playable this week: 7. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal. Hours are in each piece's entry.
 
 ### Waiting on the director
 

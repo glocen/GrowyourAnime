@@ -41,6 +41,7 @@ local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local Sounds = require(script.Parent.Parent.Parent.Main.FighterController.Sounds)
 local Rows = require(script.Parent.Parent.Parent.Main.FighterController.Rows)
+local Shoulder = require(script.Parent.Parent.Parent.Main.FighterController.Shoulder)
 local FxKit = require(Shared.Config.FxKit)
 local Track = require(Shared.Rules.Track)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
@@ -3279,6 +3280,32 @@ return {
 			t.Check("the dummy is gone after the stop", dummy == nil or dummy.Parent == nil)
 			local after = Players.LocalPlayer:GetAttribute("Replay")
 			t.Check("the replay's camera is off", after == nil or after == "", `got {tostring(after)}`)
+		end,
+	},
+	{
+		-- TR7, the framing (research's verdict, 2026-11-13: A): Config.Combat.Shoulder through FighterController/Shoulder.
+		Name = "Camera: in a fight the shoulder eases right and up, holds after it, then eases back",
+		Run = function(t: any)
+			local shoulder = Combat.Shoulder
+			local humanoid = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+			t.Check("the avatar is in the world", humanoid ~= nil, "no humanoid")
+			if humanoid == nil then
+				return
+			end
+			local full = Vector3.new(shoulder.Right, shoulder.Up, 0)
+			local action = Actions.ById.RookCombo
+			t.Server("Replay", action.Id, 1.2)
+			t.Wait(shoulder.Ease + 0.35)
+			local lead = myLead()
+			local aimed = if lead then lead:GetAttribute("Target") else nil
+			t.Check("the lead has a target", type(aimed) == "string" and aimed ~= "", tostring(aimed))
+			t.Check("eased in by its ease", (humanoid.CameraOffset - full).Magnitude < 0.15, tostring(humanoid.CameraOffset))
+			t.Server("Replay")
+			t.Wait(shoulder.Hold * 0.6)
+			t.Check("held after the fight", (humanoid.CameraOffset - full).Magnitude < 0.15, tostring(humanoid.CameraOffset))
+			t.Wait(shoulder.Hold * 0.4 + shoulder.Ease + 0.35)
+			t.Check("eased back once the hold is over", humanoid.CameraOffset.Magnitude < 0.15, tostring(humanoid.CameraOffset))
+			t.Check("its share at rest", Shoulder.Share() < 0.05, string.format("%.3f", Shoulder.Share()))
 		end,
 	},
 	{

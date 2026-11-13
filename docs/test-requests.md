@@ -620,7 +620,36 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
   2. The 0.4 s ease, the 1.5 s hold and the player's free drag stay as tried. The final judges them in motion.
 - **Carried to the build's take:** Haymaker's landing as the slam, the hang against the Target card, the keeper's look down. The keeper's hat under the Target card is TR5's to fix, and so is a level-up banner over a keeper's fall.
 
-**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40.
+**The build and its take (Faber, 2026-11-13, 21:58 to 22:20).**
+- **In the game:**
+  - `Config.Combat.Shoulder` (Right 2.5, Up 1, Ease 0.4, Hold 1.5) and `Keeper.Turn` 40.
+  - The rule `Rules/Fight.ShoulderShare` has a logic case.
+  - `FighterController/Shoulder.luau` sets `Humanoid.CameraOffset` before the camera each frame, so the drag stays free. A self-test case checks that it eases in, holds, and eases back.
+  - Checks: type check 0 new; logic 3897/3897; self-test "Camera:" 10/10 at 60 fps.
+- **Fix 1, the offset, measured in pack fights.** The offsets took turns every 1.1 s within one fight, so each was judged on the same fight. "Uncovered" means the avatar's body hides at most a tenth of the lead's and the target's points, by rays from the camera.
+
+  | Where the avatar stands | Right 0 | Right 2.5 | Right 3.5 | Right 4.5 |
+  |---|---|---|---|---|
+  | 14 studs from the pack's middle | 32/35 | 29/30 | 25/26 | 27/27 |
+  | In the pack, 8 studs | 15/45 | 19/45 | 14/41 | 14/40 |
+
+  - In the pack, raising the camera instead (Up 1, 2, 3 at Right 2.5) does no better: 14/32, 15/36, 13/26.
+  - A target straight ahead at 8 studs needs about 7 studs of offset to clear the body (geometry), so there it's the avatar's place that covers the fight, not the camera's.
+  - **2.5 stays:** 3.5 buys nothing measurable. This in-the-pack case is likely what the "about half" in the verdict saw (`build_pack_close8.jpg`).
+- **The take,** in `build/captures/tr7/build_*`, phone size, Rook leading:
+  - **Haymaker's landing:** in a real pack fight, the square drops through two frames and lands on the target's feet on Strike, with the target flashed white. It squashes, with its bars on the floor, on the next frame (`build_pack_landing.png`). To me it reads as the slam.
+  - **The hang doesn't clear the card.**
+    - On a Shade, the Target card covers the square's lower half from its forming to its drop, about 0.27 s (`build_pack_hang.png`).
+    - Against the keeper, the square's foot sits Clear over the keeper's top, so it hangs above the frame and only its foot shows (`build_try_hang.png`).
+    - A Shade's head leaves no room between it and the card, so the square's height isn't the lever.
+  - **The keeper's look down:** the lantern raised in open sky over Rook and the hat tipped down toward him, just under the card, share one shot (`build_try_lookdown.png`). The signature was forced in a try: it has no place in the keeper's own fight yet. The card sits between them through the lantern's descent, which is TR5's.
+  - **The pole's rock:** the pole stands alone in open sky right of the avatar and leans a few degrees each way. Then its light goes out and the scraps rise (`build_try_rock.png`). It reads at phone size, small.
+- **Research, your call, the hang:**
+  - On a Shade: (a) TR5's card fades while the player's own lead's signature hangs, about 0.35 s; or (b) it stays.
+  - Against the keeper: (c) the square's foot is capped so its top stays inside the frame. It would then cross the keeper's hat, so the content check reads it again. Or (d) it stays, since the drop still lands in the frame.
+  - My pick is (a) and (d): the keeper's card changes in TR5 anyway.
+
+**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take; research's call on the hang is open. The skip back is next.
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 

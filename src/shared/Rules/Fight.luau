@@ -368,4 +368,13 @@ function Fight.ShakeOf(trauma: number): number
 	return trauma * trauma
 end
 
+-- The fight camera's share of its shoulder offset (Config.Combat.Shoulder), `dt` seconds on from `share`: toward 1 while
+-- the fight is on or ended at most Hold seconds ago (`since`, 0 while it's on), else toward 0. It closes the gap as a
+-- spring with no overshoot, about 95% of the way in Ease seconds (three time constants), so a long frame never jumps it.
+function Fight.ShoulderShare(share: number, since: number, dt: number, shoulder: { Ease: number, Hold: number }): number
+	local want = if since <= shoulder.Hold then 1 else 0
+	local k = 1 - math.exp(-math.max(dt, 0) * 3 / math.max(shoulder.Ease, 1e-3))
+	return math.clamp(share + (want - share) * k, 0, 1)
+end
+
 return Fight

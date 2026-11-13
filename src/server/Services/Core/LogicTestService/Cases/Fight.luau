@@ -692,4 +692,41 @@ return {
 			t.Check("a signature's jolt shakes over twice a critical's", Fight.ShakeOf(Fight.Lever(7, hitstop).Trauma) > 2 * Fight.ShakeOf(Fight.Lever(4, hitstop).Trauma))
 		end,
 	},
+	{
+		Name = "Fight: the shoulder camera eases in on a fight, holds after it, eases back, and never jumps (TR7)",
+		Run = function(t)
+			local shoulder = Combat.Shoulder
+			local function run(share: number, since: number, seconds: number, dt: number, ending: boolean?): number
+				local left = seconds
+				while left > 1e-9 do
+					local step = math.min(dt, left)
+					share = Fight.ShoulderShare(share, since, step, shoulder)
+					left -= step
+					if ending then
+						since += step
+					end
+				end
+				return share
+			end
+			local frame = 1 / 60
+			-- research's verdict: about 2.5 studs right and 1 up, eased in about 0.4 s, held about 1.5 s after the fight
+			t.Check("it moves right", shoulder.Right > 0, `{shoulder.Right}`)
+			t.Check("no further right than 3.5 (the pack's trial)", shoulder.Right <= 3.5, `{shoulder.Right}`)
+			t.Check("it lifts a little", shoulder.Up >= 0 and shoulder.Up <= 2, `{shoulder.Up}`)
+			t.Check("a gentle ease, 0.25 to 0.6 s", shoulder.Ease >= 0.25 and shoulder.Ease <= 0.6, `{shoulder.Ease}`)
+			t.Check("a hold of at least a second, so it never swims", shoulder.Hold >= 1, `{shoulder.Hold}`)
+			local eased = run(0, 0, shoulder.Ease, frame)
+			t.Check("in by its ease", eased >= 0.94, `{eased}`)
+			local quarter = run(0, 0, shoulder.Ease / 4, frame)
+			t.Check("eased, not snapped: part way at a quarter of it", quarter > 0.3 and quarter < 0.75, `{quarter}`)
+			local held = run(1, 0, shoulder.Hold * 0.95, frame, true)
+			t.Check("held through the hold after the fight", held >= 0.999, `{held}`)
+			local back = run(1, shoulder.Hold + 1e-6, shoulder.Ease, frame, true)
+			t.Check("back by its ease once the hold is over", back <= 0.06, `{back}`)
+			t.Equal("at rest out of a fight", run(0, math.huge, 2, frame), 0)
+			local long = Fight.ShoulderShare(0, 0, 0.5, shoulder)
+			t.Check("a long frame never overshoots", long > 0 and long <= 1, `{long}`)
+			t.Equal("nothing in no time", Fight.ShoulderShare(0.4, 0, 0, shoulder), 0.4)
+		end,
+	},
 }

@@ -100,6 +100,13 @@ return {
 		Hurt = 0.45,
 		HurtShare = 0.1,
 	},
+	-- The camera in a fight (TR7, the framing; research's verdict, 2026-11-13: variant A): while the player's lead has a
+	-- target, the camera eases Right studs right and Up studs up in the avatar's own space (Humanoid.CameraOffset), so the
+	-- avatar sits left of the frame and the fight right of centre, clear of its body. About 95% of the way in Ease seconds;
+	-- it eases back only once the fight has been over Hold seconds, so a lead stepping in and out never makes it swim. The
+	-- player's own drag turns the camera as ever. Right is the smallest that leaves the lead and its target clear of the
+	-- avatar nine frames in ten in a pack (Rules/Fight.ShoulderShare).
+	Shoulder = { Right = 2.5, Up = 1, Ease = 0.4, Hold = 1.5 },
 	-- Damage numbers over the target: they rise this many studs over this many seconds. A flurry, one press's hits on one
 	-- body, is one counting number (docs/ui.md, "Damage numbers"): each hit after the first counts it up to the new total
 	-- over Count seconds, swelling it Pop times and settling, and its fade starts over from that hit. The builder's
@@ -115,8 +122,9 @@ return {
 		-- third of the frame's height (research's read of TR2's closing takes, 2026-11-12; at 34 it was a fifth).
 		Arrive = 14,
 		-- Degrees the avatar's facing turns off the keeper there, so its own body, near the camera, hides none of the keeper:
-		-- the fight sits right of the frame's middle (the avatar 4 studs wide 12.5 from the camera, the keeper 4.2 wide).
-		Turn = 26,
+		-- the fight sits right of the frame's middle (the avatar 4 studs wide 12.5 from the camera, the keeper 4.2 wide). 40
+		-- from 26 with the shoulder camera (TR7, the framing's verdict): the lone lantern stands in open sky beside the avatar.
+		Turn = 40,
 		-- Studs right of the avatar its lead is set down, and walks back to, in a try: on its left, clear of the Challenge
 		-- and the fall's line (research's verdict on AR7's install, fix 1).
 		Side = -3.5,

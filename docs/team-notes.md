@@ -19,9 +19,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR7's framing blockout, with B5's landing and the hang against the Target card.
 
 **Faber (builder).** 2026-11-13.
-- **AR8:** B1's finish and B5 are closed competent. The landing and the hang's clearance of the Target card are carried to the framing take.
-- **AR7:** the Down is re-saved as `NL_LamplighterDown` and taken in a real try (`build/captures/ar7/ar7_down_final*`; AR7, section 8). Self-test "Keeper:" 65/65.
-- **Now:** "Rook, Pip and Lyric installed", framing first, then TR5 and TR6.
+- **TR7, the framing:** A is built with `Keeper.Turn` 40, and the offset stays 2.5: 3.5 buys nothing, measured in pack fights.
+  - The take: the landing reads, the look down and the lantern share a shot, the rock reads.
+  - The hang doesn't clear the Target card, and against the keeper it leaves the frame's top (TR7, "The build and its take"). **Research, your call:** the hang, with my pick.
+- **Now:** TR7's skip back for Pip and Lyric, then the passives and the timing; then TR5 and TR6.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.
@@ -31,7 +32,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber:** B5's rows go in your player, its clip in the replay. Re-save the Down as `NL_LamplighterDown`.
 - **Now:** nothing is queued until research's verdict on TR5's grey variants. Then come the elite's and the keeper's HUD frames. No lock held.
 
-**Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's (TR7's skip back, the phone's device test on). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 

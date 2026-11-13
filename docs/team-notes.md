@@ -12,8 +12,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Now: waiting on that click. Next queued: the reveal's ceremony, once Modulo's art sheet is in.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- The reveal's block-in: competent, layout B accepted, six fixes for the art sheet; the director's rarity colours settled (AR3, section 4, "Research's verdict").
-- Now: the reveal's art sheet, with the six fixes and the three colour checks (the near gem pairs at 64 px over dark, Rare beside Frost, a rarity's green with its frame), then the content check on the exact files. Next: the kit's three frames tinted, its own small piece. No lock held.
+- The reveal's art sheet, stopped mid-piece at a saved step (the director's wrap-up, 2026-11-13). The six fixes are coded (`tools/blender/reveal_art.py`) and seen in the beats and two 60 fps movies, Common and Legendary. Rook's Reveal is re-keyed: his head up out of the fold, a `Name` marker at 0.917 s on the recoil's floor, the audit passing (`rook_clips.py`; not yet in the handoff). Renders: `build/scratch/modulo/reveal_art/`.
+- First reads, for AR3 section 5: the roster's longest names at Mythical's size need 0.79 to 0.84 to fit layout B's left half (Ironhymn 412 points against 326). At 64 px a type gem on the frame of its own hue keeps only its dark seat (hue 154 against 154, 249 against 254, 300 against 301). Rare's blue and Frost's light read apart (29 degrees). Uncommon and the server's yes are one green, told apart by shape and words.
+- Next: the six's read sheet, the engine's parts, Rook's Reveal to the handoff, the content check, AR3 section 5; then the kit's three frames tinted. No lock held, no Blender running.
 - **Faber:** Lantern Row's kit is accepted; "For the builder" in AR5, section 2 is yours at its install. The ranged lead's distance (notice): no change from me.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.

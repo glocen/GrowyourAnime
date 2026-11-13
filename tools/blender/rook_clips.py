@@ -364,19 +364,23 @@ def up(t):
 
 
 def reveal(t):
-    """He comes out of the shard folded small behind the ram, opens up to his full width, puts the ram straight up over
-    his head, and it fires once at the sky. It works. He looks at you and holds it there while his name lands."""
-    low = dict(T=(40, 0, 0, 0, 0, 0.1), feet={"Right Leg": (0.75, -0.2), "Left Leg": (-0.75, 0.2)},
-               crouch=0.5, H=(28, 0, 0), RA=(70, 0, 12), LA=(72, 0, -12))
-    t.key(0, "folded", **low)
-    t.key(16, ease="back", **{**low, "T": (43, 0, 0, 0, 0, 0.1), "RA": (70, 0, 18), "LA": (72, 0, -18)})
+    """He comes out of the shard folded small behind the ram, his head up: he's already sizing you up from under his
+    brow, the one line that reads in the dark (AR3 section 4, research's fix 6). He opens up to his full width, puts the
+    ram straight up over his head, and it fires once at the sky. The kick drops him into his knees as his name slams
+    down (fix 1: `Name`, the recoil's floor), and he holds it there, looking at you."""
+    low = dict(T=(24, 0, 0, 0, 0, 0.1), feet={"Right Leg": (0.75, -0.2), "Left Leg": (-0.75, 0.2)},
+               crouch=0.56, H=(-16, 0, 0), RA=(34, 0, 22), LA=(60, 0, -10))
+    t.key(0, "folded, eyes up", **low)
+    t.key(16, ease="back", **{**low, "T": (27, 0, 0, 0, 0, 0.1), "RA": (70, 0, 18), "LA": (60, 0, -16)})
     t.key(30, "opens", T=(-8, 0, 0), crouch=0.02, H=(-10, 0, 0), RA=(16, 0, 62), LA=(16, 0, -56), TP=(0, 0, -30))
     t.key(44, "the ram up", T=(-6, -10, 0), RA=(164, 0, 44), LA=(20, 0, -30), look=(1.2, 1.0, 9.0), H=(0, 0, 0),
           crouch=0.04, P=0.55, TP=(0, 0, 10), feet=HUB["feet"])
     t.key(49, ease="snap", RA=(172, 0, 30), P=0.65)
-    t.key(51, "it fires", T=(-2, -10, 0), RA=(168, 0, 20), P=0.0, crouch=0.14, TP=(-16, 0, 0))
+    t.key(51, "it fires", ease="out", T=(-2, -10, 0), RA=(168, 0, 20), P=0.0, crouch=0.10, TP=(-16, 0, 0))
     t.mark(51, "Knock")
-    t.key(58, ease="sine", T=(-5, -12, 0), RA=(176, 0, 12), look=ENEMY, crouch=0.06, TP=(8, 0, 0))
+    t.key(55, "the kick: his name", ease="sine", T=(5, -11, 0), RA=(165, 0, 24), look=ENEMY, crouch=0.26, TP=(-6, 0, 0))
+    t.mark(55, "Name")
+    t.key(64, ease="sine", T=(-5, -12, 0), RA=(176, 0, 12), crouch=0.06, TP=(8, 0, 0))
     # The hold stands the ram within 15° of straight up: a straight arm held lower than that is a pose the content check
     # blocks (handbook/platform/rules-and-moderation.md, "Salute-like poses"). The idle takes over after the card.
     t.key(96, "held for the name", T=(-6, -12, 0), RA=(177, 0, 12), crouch=0.04, TP=(0, 0, 0))

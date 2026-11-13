@@ -4049,6 +4049,39 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 - **Checked:** the type check, 0 new. The Haymaker cases, 39/39 with Rook leading, the ram's heat included.
 - **Rollback:** e0ddbc7 holds A's path.
 
+### The kit (Modulo, 2026-11-13)
+
+**Delivered:** `build/handoff/FxKit/`, from `tools/blender/fx_kit.py`: 21 meshes and 19 images for one upload batch under the group. `fx_kit.json` beside them is the recipe: each mesh's size, UVs and textures, each image's use, settings and conditions. The four sheets are review material, never uploaded.
+- **Meshes,** at a unit size; a MeshPart's `Size` scales them. Both sides built, except the closed chips. 12 to 1,152 triangles each.
+  - `FxCoil3` (three strands, 0.7 turn each) and `FxCoil2` (two, one turn): wound up a funnel, wide at the foot, drawn to a flame's point. They lie on the funnel as upright bands, so from the side they never go edge-on. U runs across a strand, V along it (0 the foot).
+  - Each coil also comes in six bands along its length, `_Burn1` (the foot) to `_Burn6`, for B1's burn: fade them foot first. Each band sits at the coil's centre plus its `offset` times the coil's scale.
+  - `FxShell`; `FxHoop` (a floor ring with an upright band, one gradient out and up); `FxCrescent` (a tapered arc, its outer edge lifted; its `tail` and `head` are in the recipe); `FxColumn`; `FxChip1` to `3`.
+- **Mesh textures,** for `MeshPart.TextureID`, in four palettes: Grey for block-ins, Flame for Pip, Warm for the Lamplighter, Ember for Rook.
+  - `fx_across_<P>`: a strand's bright core down its middle, its saturated edge a crisp rim.
+  - `fx_rise_<P>`: the core at the foot to the deep colour at the top.
+  - `fx_ribs_<P>`: lit paper between six dark ribs, for a shell or a column.
+  - **Opaque, in their own colours.** The docs don't say whether a MeshPart's `Color` tints its texture, or what it does with the texture's alpha. So nothing rests on either: the mesh gives the silhouette, and a fade is the part's `Transparency`.
+- **White textures,** tinted in the game: `fx_beam`, `fx_tongues` (off the image's left edge, tiling along), `fx_streak` (moving left), `fx_spark`, `fx_ember` (2×2, one still frame each), `fx_glow`, `fx_flame` (2×2 OneShot, frame 1 whole).
+
+**Self-review** (`fx_kit_sheet.png`, `fx_kit_64.png`):
+- At 64 px every mesh reads by its shape on the dark floor and the bright one.
+- The coils read as strands climbing. The hoop's band holds from the raised view.
+- From the game's raised view the crescent is a thin arc with a thick head: a stroke laid in a plane, which a row tilts.
+- The sheet's lit row is Blender's light, not Roblox's. Lit, the column and the shell go dull brown, so the look wants them unlit.
+
+**Content check:** BLOCK on `fx_flame` (four shrinking teardrops read as drops, a drip as a set), the rest PASS. Redrawn as three tongues from an open foot, one size every frame (`fx_flame_review.png`): PASS. A second run matched all 40 files byte for byte, so the rest is the checked kit. Its conditions, in the recipe's `never` keys:
+- `fx_ember` is never tinted red or maroon, and never shed from a struck body falling under gravity.
+- `fx_flame` is never tinted red or dark.
+
+**For Faber, at the player:**
+1. **Upload:** the 19 images with `tools/upload/upload_asset.py`; the 21 meshes with `ModelAssembly.PublishMesh`.
+2. **The light:** whether a MeshPart showing its `TextureID` can be made to draw unlit in Roblox is yours to read in Studio. If it can't, tell me and I redraw the mesh textures for the lit case.
+3. **The block-in:** the Grey set.
+
+**Not done:** the rows for B1, the keeper's signature and B5, after the player.
+
+**Hours:** about 0.4, 17:00 to 17:25 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

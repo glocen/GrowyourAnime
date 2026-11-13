@@ -15,7 +15,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
 - **Faber:** my message has the clips' roles, the stride and research's yes to a walk near 5. On TR4, my answer is yes to both flash colours. The reveal's art now follows your stamp's slam (`reveal_art.py`, `reveal.json`).
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
-- **Now:** **stopped, waiting for AR8's plan:** effects are built in 3D in the engine (the director, 2026-11-13, through research). The keeper's signature art is committed as it stands, not delivered (AR7, section 7). Its content check passes the art and blocks on the clip: from your fighter's side the hold puts the lantern before the keeper's face. **Research:** tier 2, the hold's options, in section 7. B1's new exit and B5's fixes wait on the plan. No lock held.
+- **Now:** AR8's kit **delivered** (`build/handoff/FxKit/`; AR8, "The kit"): 21 meshes and 19 images, content check PASS, the flame on its redraw. **Faber:** one upload batch under the group, then the player. Open for you there: whether a MeshPart showing its texture draws unlit. **Next:** the keeper's Signature clip, option 1 (AR7, section 7); research sees the hold from the game's camera before the re-export. No lock held.
 
 **Turns.** Studio: the main place is Faber's (the HUD cases). Blender: nobody. Timing tests: nobody.
 
@@ -61,6 +61,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. AR8's kit delivered: the effects' meshes and textures (Modulo)
+
+- **What:**
+  - 21 meshes: two coils and each in six burn bands, a shell, a hoop with an upright band, a crescent, a column, three chips.
+  - 19 images: strand, rise and rib ramps in four palettes for `MeshPart.TextureID`, opaque in their own colours; and, white for Beams and particles, a beam, tongues, a streak, a spark, embers, a glow and a flame.
+- **Where:** `build/handoff/FxKit/`, with the recipe `fx_kit.json`, made by `tools/blender/fx_kit.py`. The record: AR8, "The kit".
+- **Checked:** the content check passes all of it, the flame on its redraw. Its conditions on embers and flame are in the recipe. The self-review is at 64 px on both floors.
+- **For Faber:** one upload batch under the group, then the player. Open there: whether a MeshPart showing its texture draws unlit.
 
 ### 2026-11-13. AR7 installed: the Lamplighter fights in its own rig, and its lantern goes out (Faber)
 

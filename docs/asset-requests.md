@@ -2794,7 +2794,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: blocked (section 3), timed with research's two fixes, the wrench raised on research's read, past the content check and research's look, and **delivered** to `build/handoff/Lamplighter/clips/` (section 4). Delivery 4, the fall, comes after AR8 part B.
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: blocked (section 3), timed with research's two fixes, the wrench raised on research's read, past the content check and research's look, and **delivered** to `build/handoff/Lamplighter/clips/` (section 4). Delivery 4, the fall: its block clip played in the replay at competent (section 5); the final clip, its rock let go, is past the content check and **delivered** to `build/handoff/Lamplighter/clips/` (section 8).
 
 ### 1. The sheet (Modulo, 2026-11-13)
 
@@ -3387,6 +3387,25 @@ Research's fixes 1 to 3, drawn under the content check's seven conditions. The s
 - **Delivered:** `Lamplighter_Signature.json`, `pack_Signature.png` and `pack_Signature.txt` in `build/handoff/Lamplighter/clips/`. `Lamplighter.clips.json` is unchanged: 183 frames, the same markers. The sheets are in `build/scratch/modulo/sig_opt1/`: `pick_full/` and `pick_d/`, and `json_full/` (the hold from the game's camera and the ring, and the crossing).
 - **Hours:** about 0.7, 17:20 to 18:00 UTC.
 - **Faber:** re-save the Signature as `NL_LamplighterSignature` from this json. The camera's lift through the hold is your motion blockout's lever (research's condition above).
+
+### 8. The fall: the final clip (Modulo, 2026-11-13)
+
+This is delivery 4, the block clip of section 5 polished, on research's open note: "The pole's rock reads as a lean, not yet as let go."
+- **Where:** `Lamplighter_Down.json`, `pack_Down.png`, `pack_Down.txt` and `bare_Down.png` (the bare rig, for the upload's check) in `build/handoff/Lamplighter/clips/`. `Lamplighter.clips.json` gains Down; its other seven clips are unchanged. Made by `tools/blender/lamplighter_fall.py`, now named as the export's `Source`.
+- **The same clip otherwise:** 97 frames, the markers Burst 34, Gutter 64, Out 80 and Gone 88. `Config.Effects.Falls.Lamplighter` keeps its own Gone at 101, past the held last frame. Frames 0 to 26 are as the block's.
+- **The rock, let go:**
+  - From 26 to 34, tipping back to the sky, the keeper drags the pole over with it, 9° toward itself on Burst.
+  - With nothing on it, the pole springs back past upright and wobbles out, each swing about half the last: −4.3° on 40, +1.8° on 46 and −0.9° on 52, and it stands still by 58. A sine between the turns is the spring's own motion: at rest on each turn and fastest through upright, so nothing in it reads as pushed.
+  - The lantern swings after the hook and steadies through Gutter. At its widest it's under 50° off plumb, the sag's own widest.
+  - It's measured on the export, the pole's lean frame by frame (the script's `poses` log). Each turn's aim is solved against the grip it gives, because an arm can't reach every place. The hidden body stands a quarter stud toward the pole for the first swing away. `rock_Down.png` (frames 30 to 60, every second frame) is in `build/scratch/modulo/lamplighter/fall_final/`, with the pose sheet.
+- **Checks:** the audit passes: an arm into the body 0.015, a leg out of the hip 0.035, Pop 1.04, a salute held 0 s. While the body shows, the pole stays 0.78 off the torso, at 34.
+- **The content check: PASS,** on the pose and rock sheets, the bare rig, the arcs, the pack and the export. Nothing red is left after Burst, nothing is left behind, no arm is ever raised straight, and the lone pole reads as a street lantern. Carried to the build:
+  1. The game hides the body on Burst, so only the pole and the lantern remain. The export keeps the body's pose after 34.
+  2. The scraps at Gone stay the burst's own, with no red and no flame.
+- **Open:**
+  - Faber: re-save the Down as `NL_LamplighterDown` from this json, and take it from the game's camera.
+  - Research's look at the rock, in the take of "Rook, Pip and Lyric installed", where it was carried.
+- **Hours:** about 0.2, 19:27 to 19:40 UTC, the content check included.
 
 ## AR8. The effects pass
 
@@ -4456,7 +4475,7 @@ This answers fix 3 of research's verdict on B1's exit from its rows, for the fin
   - Faber: upload one image and five meshes, set the Coil row's Texture, add the Front row, and take it beside the grey at noon and at dusk, with the camera from above.
   - In the take: the rim stays darker than the body, the white core doesn't wash a strand out at Glow 4 (if it does, lower Glow), and the fronts show at phone size.
   - Research's final, with `ga-fresh-eyes`.
-- **Hours:** about 0.5, 19:07 to 19:35 UTC, the content check included. An estimate from the commit's and the files' times.
+- **Hours:** about 0.3, 19:07 to 19:27 UTC, the content check included. An estimate from the two commits' times.
 
 ## Later, by ground
 

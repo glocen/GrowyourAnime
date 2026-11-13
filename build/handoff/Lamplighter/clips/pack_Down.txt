@@ -1,0 +1,27 @@
+Down: 97 frames, 1.60 s; markers Burst 34, Gutter 64, Out 80, Gone 88
+  the pole's lowest point over the floor -0.00 at 45; the grip from 1.90 to 2.47 up it (it holds from 1.0 to 6.0)
+  the pole's nearest to the body (past its radius): Torso 0.78 at 46; Head 0.21 at 46; Left Arm 2.79 at 34; Right Leg 1.26 at 34; Left Leg 2.22 at 34
+  the lantern's foot at its lowest 4.36 at 5; its widest off plumb 50 at 15; its nearest to the body (past its drum): Torso 1.51 at 69; Head 0.13 at 69; Left Arm 3.26 at 69; Right Leg 3.49 at 68; Left Leg 4.08 at 69
+  start (0): the grip at (2.63, 0.51, 2.40); the lantern over (3.80, -0.00), its foot 4.68 up
+  Burst (34): the grip at (2.31, 0.43, 2.11); the lantern over (3.70, 0.15), its foot 5.00 up
+  Gutter (64): the grip at (2.64, 0.52, 2.18); the lantern over (3.44, 0.01), its foot 4.53 up
+  Out (80): the grip at (2.64, 0.52, 2.18); the lantern over (3.74, -0.05), its foot 4.63 up
+  Gone (88): the grip at (2.64, 0.52, 2.18); the lantern over (3.85, 0.01), its foot 4.66 up
+  a leg's widest swing: right 19 at 16, left 24 at 34 (the coat holds 27); each arm at its highest: right -39 at 4, left -28 at 34
+[audit] Lamplighter_Down.json (export, 97 poses)
+  Legs cross            0.001 studs at 0.05 (the legs)
+  Arm through body      0.015 studs at 0.1667 (Left Arm into Torso)
+  Leg out of hip        0.035 studs at 0.2667 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.4167 (Right Leg)
+  Pop                   1.042x at 0.3667 (Right Leg turns 2.6 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip            11.046 deg at 0.0167 (Left Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.2667 (the head off its neck)
+  Nod                  30.000 deg at 0.2667 (the head against the torso)
+  Beat                  1.351x at 0.5667 (Left Leg turns 5.4 deg in one frame, on the marker Burst; the clip's own beat, for information)
+  Shoulder cap          0.265 studs at 0.4333 (Right Arm; inherent to R6, for information)
+  Eyes                 -43.6 to +71.9 deg (at 0.2667 and 0.5667; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

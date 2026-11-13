@@ -103,6 +103,30 @@
           "Slam"
         ]
       ]
+    },
+    "Down": {
+      "File": "Lamplighter_Down.json",
+      "Frames": 97,
+      "Seconds": 1.6,
+      "Loop": false,
+      "Markers": [
+        [
+          34,
+          "Burst"
+        ],
+        [
+          64,
+          "Gutter"
+        ],
+        [
+          80,
+          "Out"
+        ],
+        [
+          88,
+          "Gone"
+        ]
+      ]
     }
   }
 }

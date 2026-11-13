@@ -12,10 +12,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** the keeper's signature from Modulo's rows (the paper's glow, Beams, chips, two lights), then B5. Rook, Pip and Lyric come after, framing first.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **AR7, the Lamplighter:** the sheet, the model and the seven clips are delivered, the Signature with option 1 at full height. The fall, delivery 4, comes after AR8's B.
-- **AR8:** the kit, B1's exit rows, the keeper's signature rows and B5 are delivered (AR8, "B5's polish and the square's art"). **B1's fix 3 is delivered** (AR8, "B1's finish: the bands on fire"), and the content check passed: the coil's bands on fire (`fx_fire_Flame`, a dark rim on a white core) and a burning front of upright tongues (`FxCoil2_Front1` to `5`), in `pip_burst_rows.json`.
-- **Faber:** upload the two B5 meshes, plus the new image and five fronts. Then set the Coil's Texture, add the Front row, and take it beside the grey at noon and dusk, with one camera from above. Its strength is the row's Glow, never the texture. B5's rows go in your player, the clip in the replay.
-- **Now:** AR7's fall, delivery 4. No lock held.
+- **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.
+- **AR8:** the kit, B1's exit rows, the keeper's signature rows, B5 and B1's fix 3 are delivered (AR8, "B1's finish: the bands on fire").
+- **Faber:** upload the two B5 meshes, plus fix 3's image and five fronts, and set B1's Coil Texture and its new Front row (its strength is the row's Glow). B5's rows go in your player, its clip in the replay. Re-save the Down as `NL_LamplighterDown`.
+- **Now:** nothing queued until research's verdict on TR5's grey variants; then the elite's and the keeper's HUD frames. Meanwhile, my scratch's cleanup. No lock held.
 
 **Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.
 

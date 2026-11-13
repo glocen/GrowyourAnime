@@ -25,7 +25,7 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Swell: UIScale? }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale? }
 export type Span = { Left: number, Right: number, Edge: number } -- a piece of the band, its margin included, authored pixels
 
 local plates: { [Frame]: Plate } = {}
@@ -89,9 +89,9 @@ local function crossing(middle: number, half: number, top: number): (number?, nu
 	return edge, left, right
 end
 
--- How far an open plate slides aside to clear the pieces it would cross (0 if none, or no room within Room of its width
--- and the screen), and the edge it's pushed under then: the pieces' if it couldn't slide, the top bar's always.
-local function aside(middle: number, half: number, top: number, wide: number): (number, number?)
+-- How far an open plate slides aside to clear the pieces it would cross: 0 if none, or no room within Room of its width
+-- and the screen.
+local function aside(middle: number, half: number, top: number, wide: number): number
 	local edge, left, right = crossing(middle, half, top)
 	local best = 0
 	if edge then
@@ -105,12 +105,8 @@ local function aside(middle: number, half: number, top: number, wide: number): (
 				end
 			end
 		end
-		if found then
-			edge = nil
-		end
 	end
-	local under = if edge and floor then math.max(edge, floor) else edge or floor
-	return best, under
+	return best
 end
 
 function World.Remove(frame: Frame)
@@ -160,18 +156,30 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			local swell = if plate.Swell then plate.Swell.Scale else 1
 			local top = on.Y / scale + shift.Y - frame.Size.Y.Offset * swell
 			if plate.Open then
-				-- Aside from what it would cross, eased there from where it stood, or set there on its first frame.
-				local middle = on.X / scale + shift.X
-				local by, under = aside(middle, frame.Size.X.Offset * swell / 2, top, room.X / scale)
+				-- Aside from what it would cross, eased there from where it stood, or set there on its first frame. Then under
+				-- what it crosses where it stands now, mid-slide too, and never over the top bar: it drops at once and rises
+				-- back eased, so it never stands over a piece's corner while it slides out (the level-up case, 2026-11-13).
+				local middle, half = on.X / scale + shift.X, frame.Size.X.Offset * swell / 2
+				local rate = math.min(1, dt * HudConfig.Numbers.Slide.Rate)
+				local by = aside(middle, half, top, room.X / scale)
 				local was = plate.Slide
-				local slide = if was then was + (by - was) * math.min(1, dt * HudConfig.Numbers.Slide.Rate) else by
+				local slide = if was then was + (by - was) * rate else by
 				plate.Slide = slide
-				shift += Vector2.new(slide, 0)
-				edge = under or -math.huge
+				local crossed = crossing(middle + slide, half - 0.5, top) -- clear within half a pixel: the ease only nears its end
+				local bar = floor
+				local under = if crossed and bar then math.max(crossed, bar) else crossed or bar
+				local want = if under then math.max(0, under - top) else 0
+				local had = plate.Drop
+				local drop = if had and want < had then had + (want - had) * rate else want
+				plate.Drop = drop
+				shift += Vector2.new(slide, drop)
+			else
+				shift += Vector2.new(0, math.max(0, edge - top))
 			end
-			shift += Vector2.new(0, math.max(0, edge - top))
 		end
-		frame.Position = UDim2.new(on.X / room.X, shift.X, on.Y / room.Y, shift.Y)
+		-- The shift too, in the layer's pixels: a UDim's offset is a whole number, and a push of 21.9999 cut to 21 stood an
+		-- open plate a pixel over the piece it cleared (the World case, 2026-11-13).
+		frame.Position = UDim2.fromScale((on.X + shift.X * scale) / room.X, (on.Y + shift.Y * scale) / room.Y)
 		frame.Visible = true
 	end
 end)

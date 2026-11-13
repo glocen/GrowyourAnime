@@ -2529,12 +2529,23 @@ return {
 			local pillFoot = authored(pill.AbsolutePosition + pill.AbsoluteSize).Y
 			top = authored(plate.AbsolutePosition).Y
 			t.Check("under the pill when it can't slide clear within its room", top >= pillFoot + HudConfig.Numbers.Band - 0.5, string.format("its top at %.1f, the pill's foot %.1f", top, pillFoot))
-			-- One that crosses a piece's side by a little slides aside, eased, and keeps its height.
-			local margin, settle = HudConfig.Numbers.Band, 4 / HudConfig.Numbers.Slide.Rate + 0.1
+			-- One that crosses a piece's side by a little slides aside, eased, held under it until it's clear, and then rises
+			-- back, eased, to its own height: two eases, each about 4 / Rate to its last pixel.
+			local margin, settle = HudConfig.Numbers.Band, 8 / HudConfig.Numbers.Slide.Rate + 0.1
 			local function beside(piece: GuiObject, label: string)
 				local side = authored(piece.AbsolutePosition).X - margin -- its span's left
+				local edge = authored(piece.AbsolutePosition + piece.AbsoluteSize).Y + margin -- its span's edge
 				x = (side - size.X / 2 + 10) * scale + origin.X + inset.X -- crossing it by 10
+				local over, overlapped = math.huge, false
+				local watch = RunService.RenderStepped:Connect(function()
+					if plate.Visible and authored(plate.AbsolutePosition + plate.AbsoluteSize).X > side + 0.5 then
+						overlapped = true
+						over = math.min(over, authored(plate.AbsolutePosition).Y - edge)
+					end
+				end)
 				t.Wait(settle)
+				watch:Disconnect()
+				t.Check(`held under {label} while it still crosses it, mid-slide too`, not overlapped or over >= -0.5, if overlapped then string.format("%.1f px under its edge at its closest", over) else "clear from its first frame")
 				local right = authored(plate.AbsolutePosition + plate.AbsoluteSize).X
 				local stood = authored(plate.AbsolutePosition).Y
 				local was = authored(Vector2.new(0, foot) - inset).Y - size.Y
@@ -2593,8 +2604,9 @@ return {
 			root:Destroy()
 			t.Check("it showed", frames > 10, `{frames} frames`)
 			t.Check("never over the band, its rise and swell included", closest >= -1, string.format("%.1f px under it at its closest", closest))
-			-- The level-up's word is kept under it by the World layer itself (it has no slot): born there, it's pushed down
-			-- (the phone pack, 2026-11-13: it drew over the Electricity pill).
+			-- The level-up's word is an open plate (research's pass on AR8 C, fix 1): born at the band, it may stand in the sky
+			-- between the band's pieces, but never over one it crosses, nor over the top bar's foot (the phone pack,
+			-- 2026-11-13: it drew over the Electricity pill). Each piece's span is its frame, the band's margin all round.
 			local feet = Instance.new("Part")
 			feet.Name = "HumanoidRootPart"
 			feet.Anchored, feet.CanCollide, feet.CanQuery, feet.Transparency = true, false, false, 1
@@ -2603,19 +2615,37 @@ return {
 			local _, word = Effects.LevelUp(feet, 7)
 			local plate = word.Parent :: Frame
 			local up = EffectsConfig.LevelUp
-			local least, seen = math.huge, 0
+			local parts = HudController.Parts()
+			local pieces = { parts.Lead, parts.Target, (parts.Credits :: GuiObject).Parent :: GuiObject, (parts.Electricity :: GuiObject).Parent :: GuiObject }
+			local margin = HudConfig.Numbers.Band
+			local overPiece, overBar, seen, crossed = math.huge, math.huge, 0, 0
 			local look = RunService.RenderStepped:Connect(function()
-				local edge = world:GetAttribute("Band")
-				if plate.Parent and plate.Visible and type(edge) == "number" then
-					seen += 1
-					least = math.min(least, (plate.AbsolutePosition.Y - world.AbsolutePosition.Y) / Layers.Scale() - edge)
+				if not (plate.Parent and plate.Visible) then
+					return
+				end
+				seen += 1
+				local origin, scale = world.AbsolutePosition, Layers.Scale()
+				local left = (plate.AbsolutePosition.X - origin.X) / scale
+				local right = left + plate.AbsoluteSize.X / scale
+				local top = (plate.AbsolutePosition.Y - origin.Y) / scale
+				overBar = math.min(overBar, top - (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale)
+				for _, piece in pieces do
+					if piece.Visible then
+						local at = (piece.AbsolutePosition - origin) / scale
+						local size = piece.AbsoluteSize / scale
+						if at.X - margin < right - 0.5 and at.X + size.X + margin > left + 0.5 then -- flush beside it isn't over it
+							crossed += 1
+							overPiece = math.min(overPiece, top - (at.Y + size.Y + margin))
+						end
+					end
 				end
 			end)
 			t.Wait(up.Seconds + up.Column.Peak * up.Column.Seconds + 0.1)
 			look:Disconnect()
 			feet:Destroy()
 			t.Check("the level-up's word showed", seen > 10, `{seen} frames`)
-			t.Check("and never over the band, its rise included", least >= -1, string.format("%.1f px under it at its closest", least))
+			t.Check("and never over the top bar's foot, its rise included", overBar >= -1, string.format("%.1f px under it at its closest", overBar))
+			t.Check("nor over a piece of the band it crosses", crossed == 0 or overPiece >= -1, if crossed == 0 then "it crossed none" else string.format("%.1f px under one at its closest", overPiece))
 		end,
 	},
 	{

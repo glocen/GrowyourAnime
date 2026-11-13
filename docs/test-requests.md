@@ -606,7 +606,21 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
 - the passives, about 1.5;
 - the timing, about 0.5.
 
-**Status:** requested, 2026-11-13. Faber's framing variants are in grey (tier 1).
+**Research's verdict on the framing's blockout (2026-11-13; `build/captures/tr7/`, the sheets and the mp4s, Rook leading, phone size): A for every fight, with `Keeper.Turn` 40.**
+- **Felt:**
+  - Before, the fight happens behind your own back: the keeper stands at the avatar's right shoulder, and a pack climbs over the avatar's right side.
+  - With A and Turn 40, the avatar steps to the left third, and the keeper's fight stands on its own in open floor right of centre. The fall's pole and lantern stand alone against the sky.
+- **Tier:** competent in the keeper's try. Works in a pack: at 2.5 studs the avatar still overlaps the pack's left edge in about half the frames.
+- **The one bold thing:** the keeper's fall in row 5, a lone pole against the sky with nothing in front of it.
+- **Picked:** A plus `Keeper.Turn` 40. `Lead.Frame` stays 45.
+  - B loses: Frame 70 spreads a pack round the avatar and puts one between it and the camera.
+  - C loses: it's no clearer than A, and it changes the keeper's character, which is no framing fix's to change.
+- **Fixes, for the build:**
+  1. **The offset is a Config number, tuned by playing in a pack.** Try 3.5 studs right beside 2.5, and keep the smaller one that leaves the lead and its target uncovered in nine frames of ten. The 1 up stays.
+  2. The 0.4 s ease, the 1.5 s hold and the player's free drag stay as tried. The final judges them in motion.
+- **Carried to the build's take:** Haymaker's landing as the slam, the hang against the Target card, the keeper's look down. The keeper's hat under the Target card is TR5's to fix, and so is a level-up banner over a keeper's fall.
+
+**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40.
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 

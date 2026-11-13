@@ -10,6 +10,10 @@ reveal_blockin.py, whose form, beats and layout B research accepted). Finished h
    points hang free below it.
 6. The fold keeps one readable line: Rook's head is up out of it (rook_clips.py).
 
+Then research's three on the art (section 5): a Common's pieces clear the window before he stands (they fly out past
+the frame, behind him, and fade); the colours run down him from the strike over about 8 frames; the shard answers each
+rung of its climb with a swell, a tick aside and its seams burning brighter.
+
 And the shard's finish: crystal, a dark violet cut in four flat tones with lit edges, painted into the model so the
 engine's model looks the same. The three colour checks of research's verdict are their own sheet.
 
@@ -22,6 +26,7 @@ Run: blender -b --factory-startup --python tools/blender/reveal_art.py -- <out_d
   read <rarity> / readsheet the six: the split's flash, him dark, the name, at 1 px a point -> read/, reveal_art_rarity.png
   names / namesheet         the roster's longest names at Mythical's size, layout B -> names/, reveal_art_names.png
   colours                   research's three colour checks -> reveal_art_colours.png
+  clear                     the broken pieces seen inside the window, every frame from the split -> clear.json
   movie <rarity> i j / assemble <rarity>   at 60 a second, 1 px a point -> reveal_art_<rarity>.mp4
   parts                     the engine's files: images/, meshes/, reveal.json, and their review sheet
 Text is Blender's own face, standing in for the game's. Nothing is taken from anywhere else.
@@ -229,6 +234,13 @@ SHAKE = dict(zip(RARITIES, (2.5, 3.0, 3.5, 4.5, 5.5, 6.5)))         # points the
 FLASH = dict(zip(RARITIES, ((70.0, 0.55, 0.10), (95.0, 0.6, 0.11), (135.0, 0.7, 0.12), (190.0, 0.8, 0.14),
                             (None, 1.0, 0.22), (None, 1.0, 0.26))))
 NAMES = dict(zip(RARITIES, ("ROOK", "SABLE", "LYRIC", "HALCYON", "STELLANE", "UMBRIEL")))
+# Research's three fixes on the art (section 5):
+REACH = dict(zip(RARITIES, (8.0, 8.5, 9.0, 9.5, 11.0, 11.0)))  # 1: how far the pieces fly, in the shard's units: out past
+#                                                                  the frame, every rarity, before he stands
+GONE = (0.18, 0.25)            # 1: the pieces fade from this long after the split, over this long
+FLOOD = 0.13                   # 2: the colours run from the strike to his farthest point in about 8 frames
+RUNG = dict(swell=0.05, tick=0.08, light=0.8)   # 3: a rung's answer: the shard swells, ticks aside (in its units), and
+#                                                  its seams burn brighter, each as a share of its own size or light
 
 
 def times(rarity):
@@ -292,15 +304,32 @@ def kick(u, rarity):
     return SHAKE[rarity] * math.exp(-u / 0.05) * math.cos(u / 0.09 * 2 * math.pi)
 
 
+def bump(age):
+    """A rung's answer at `age` seconds: up in about 0.025 s, gone by about 0.25; 1 at its height."""
+    if age < 0:
+        return 0.0
+    return math.exp(-age / 0.06) * (1.0 - math.exp(-age / 0.015)) / 0.5364
+
+
+def run(u):
+    """How far down him the colours are, 0 to 1, at `u` of their run: quick off the strike, easing down his legs."""
+    return 1.0 - (1.0 - min(1.0, max(0.0, u))) ** 1.4
+
+
 class Stage(rb.Stage):
     """Everything a frame is made of, kept between frames: the block-in's stage, finished, layout B only."""
 
-    def __init__(self, out: Path, rarity, name=None):
+    def __init__(self, out: Path, rarity, name=None, probe=False):
         self.out, self.rarity, self.layout = out, rarity, "B"
-        self.plan, self.light, self.r = rb.PLANS[rarity], rb.LIGHT[rarity], rb.RARITIES[rarity]
+        self.plan, self.light, self.r = dict(rb.PLANS[rarity], reach=REACH[rarity]), rb.LIGHT[rarity], rb.RARITIES[rarity]
         self.when = times(rarity)
+        self.probe = [] if probe else None
         self.set_name(name or NAMES[rarity])
         self.figure = rb.Figure(out)
+        shot = self.figure.at(KNOCK + FLOOD / 2)   # how far the colours run: the ram's head to his farthest pixel, mid-run
+        ys, xs = np.nonzero(shot[..., 3] > 0.5)
+        ax, ay = self.figure.accent
+        self.run = float(np.hypot(xs - ax, ys - ay).max()) + 45.0 * ui.K
         self.shard = Shard(self.plan["grade"])
         sheet = ui.Sheet(W, H, VIOLET["panel"][1])
         self.t = t = sheet.tile(0, 0, W, H)
@@ -334,6 +363,24 @@ class Stage(rb.Stage):
                 self.frames.clear()
             self.frames[key] = frame_layer(cx, self.rarity)
         return self.frames[key]
+
+    def shard_pose(self, t_):
+        """The block-in's pose, and each rung of the climb answered (fix 3): a swell, and a tick aside that settles."""
+        pose = super().shard_pose(t_)
+        (sx, sz), (ax, az) = pose["scale"], pose["at"]
+        for i, (when, _, lv, _) in enumerate(self.plan["steps"][1:]):
+            age, amp = t_ - when, 0.6 + 0.4 * lv
+            if 0 <= age < 0.3:
+                grow = 1.0 + RUNG["swell"] * amp * bump(age)
+                jolt = RUNG["tick"] * amp * math.exp(-age / 0.025) * math.cos(age / 0.05 * 2 * math.pi)
+                sx, sz = sx * grow, sz * grow
+                ax, az = ax + (1 if i % 2 == 0 else -1) * jolt, az + 0.35 * jolt
+        pose["scale"], pose["at"] = (sx, sz), (ax, az)
+        return pose
+
+    def push(self, t_):
+        """How much brighter the seams burn on a rung (fix 3): 1, up to 1 + RUNG's light just after a new colour."""
+        return 1.0 + RUNG["light"] * max([bump(t_ - when) * (0.6 + 0.4 * lv) for when, _, lv, _ in self.plan["steps"][1:]] or [0.0])
 
     def frame(self, t_):
         t, plan, light, r, K = self.t, self.plan, self.light, self.r, ui.K
@@ -375,15 +422,30 @@ class Stage(rb.Stage):
         for when, _, lv, _ in plan["steps"][1:]:  # each step up flashes at the shard, never the screen
             if 0 <= t_ - when < 0.08:
                 flash = max(flash, 0.35 * lv * (1 - (t_ - when) / 0.08))
+        pieces = None
+        if t_ < split + 0.7:  # the shard, and what leaks from it: over the window, behind him (fix 1)
+            self.shard.pose(**self.shard_pose(t_))
+            clay, leak = self.shard.shoot(self.out, (W * K, H * K), W / UNIT, centre=(0.0, 0.0, 0.05))
+            clay[..., 3] *= 1.0 - smooth((tau - GONE[0]) / GONE[1])
+            rs.paste(px, clay, 0, 0)
+            pieces = clay[..., 3]
+            if level > 0 and leak.max() > 0.01:
+                leak = leak * min(1.0, level + 0.35)
+                burn = self.push(t_)
+                add(px, colour, soft(leak, 20 * K, f=2 * K) * 2.2 * level * burn)
+                if len(plan["steps"]) > 1 and t_ > plan["steps"][1][0]:
+                    add(px, colour, rb.beams(leak, cx * K, cy * K, reach=0.9 + 1.6 * level, f=2 * K) * 1.6 * level * burn)
+                add(px, colour, blur(leak, 2.5 * K) * 1.8 * burn)
+                add(px, WHITE, blur(leak, K / 2) * (0.55 + 0.45 * level) if K > 1 else leak * 0.8 * (0.55 + 0.45 * level))
         x0 = round((cx - rb.TILE[0] / 2) * K)
-        if tau >= 0:  # the fighter: dark first, then his colours from the ram as it fires
+        if tau >= 0:  # the fighter: dark first, then his colours run down from the ram as it fires
             shot = self.figure.at(clip)
             alpha = shot[..., 3]
-            flood = (clip - KNOCK) / 0.1
+            flood = (clip - KNOCK) / FLOOD   # fix 2: 0 at the strike, 1 once the colours reach his farthest point
             ax, ay = self.figure.accent
             yy, xx = np.mgrid[0:shot.shape[0], 0:shot.shape[1]].astype(np.float32)
             reach = np.hypot(xx - ax, yy - ay)
-            edge = flood * 500.0 * K
+            edge = self.run * run(flood)
             lit = np.clip((edge - reach) / (45.0 * K), 0, 1) if flood > 0 else np.zeros_like(alpha)
             body = shot.copy()
             dark = c(VIOLET["channel"])
@@ -396,6 +458,11 @@ class Stage(rb.Stage):
                 body[..., :3] = body[..., :3] + (hot - body[..., :3]) * band[..., None]
             body[..., 3] *= smooth((tau - 0.03) / 0.08)   # in once the pop has cleared the shard, never a ghost through it
             rs.paste(px, body, x0, -round(LIFT * K))
+            if self.probe is not None and pieces is not None:  # fix 1's measure: the pieces seen in the window, round him
+                him, drop = np.zeros_like(pieces), round(LIFT * K)
+                him[:body.shape[0] - drop, x0:x0 + body.shape[1]] = body[drop:, :, 3]
+                seen = pieces * (1.0 - him)
+                self.probe.append((t_, tau, float((seen * inside).sum()) / K ** 2, float(seen.sum()) / K ** 2))
             hx, hy = (x0 + ax) / K, ay / K - LIFT   # the ram's head as it fires, in points
             age = clip - KNOCK
             if 0 <= age < 0.25:  # the shot: a ring off the ram's head, every rarity, louder as it climbs
@@ -409,19 +476,6 @@ class Stage(rb.Stage):
             layer = self.metal(cx).copy()
             layer[..., 3] *= framed * np.clip((t.y - (SILL - SILL_BAND)) / 2.0, 0, 1)
             rs.paste(px, layer, 0, 0)
-        if t_ < split + 0.7:  # the shard, and what leaks from it
-            self.shard.pose(**self.shard_pose(t_))
-            clay, leak = self.shard.shoot(self.out, (W * K, H * K), W / UNIT, centre=(0.0, 0.0, 0.05))
-            gone = 1.0 - smooth((tau - 0.22) / 0.3) if plan["reach"] < 6 else 1.0
-            clay[..., 3] *= gone
-            rs.paste(px, clay, 0, 0)
-            if level > 0 and leak.max() > 0.01:
-                leak = leak * min(1.0, level + 0.35)
-                add(px, colour, soft(leak, 20 * K, f=2 * K) * 2.2 * level)
-                if len(plan["steps"]) > 1 and t_ > plan["steps"][1][0]:
-                    add(px, colour, rb.beams(leak, cx * K, cy * K, reach=0.9 + 1.6 * level, f=2 * K) * 1.6 * level)
-                add(px, colour, blur(leak, 2.5 * K) * 1.8)
-                add(px, WHITE, blur(leak, K / 2) * (0.55 + 0.45 * level) if K > 1 else leak * 0.8 * (0.55 + 0.45 * level))
         if flash > 0:
             add(px, colour * 0.5 + 0.5, flash * np.exp(-(far / 110.0) ** 2))
         u = t_ - self.when["name"]
@@ -755,6 +809,24 @@ def ss_types():
     return ss.TYPES
 
 
+def clear(out: Path):
+    """Fix 1's measure: for each rarity, the broken pieces seen inside the window (not behind him), in square points,
+    every frame from the split, and when they're last seen there."""
+    rb.set_scale(1)
+    found = {}
+    for rarity in RARITIES:
+        stage = Stage(out, rarity, probe=True)
+        for i in range(round(0.6 * FPS)):
+            stage.frame(stage.plan["split"] + i / FPS)
+        rows = stage.probe
+        last = max((tau for _, tau, inwin, _ in rows if inwin > 12.0), default=0.0)
+        found[rarity] = dict(last=round(last, 3), at=[[round(tau, 3), round(inwin), round(seen)] for _, tau, inwin, seen in rows[::3]])
+        print(rarity, f"last seen in the window (over 12 sq pt) at {last:.3f} s after the split; he stands at "
+              f"{0.11:.2f}; window opens by 0.16")
+        print("  ", " ".join(f"{tau:.2f}:{inwin:.0f}" for _, tau, inwin, _ in rows[:24:2]))
+    (out / "clear.json").write_text(json.dumps(found, indent=1), encoding="utf-8", newline="\n")
+
+
 MOVIE = (-0.3, 0.5)
 
 
@@ -810,6 +882,8 @@ def main():
         names_sheet(out)
     elif mode == "colours":
         colours_sheet(out)
+    elif mode == "clear":
+        clear(out)
     elif mode == "movie":
         movie(out, rarity, int(nums[0]), int(nums[1]))
     elif mode == "assemble":

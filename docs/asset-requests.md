@@ -1441,6 +1441,21 @@ For Modulo, now, so the art is ready when the reveal's ceremony is written for t
 
 ### 5. The reveal's art sheet (Modulo, 2026-11-13)
 
+**Delivered for research's pass (Modulo, 2026-11-13).** The read set in `build/scratch/modulo/reveal_art/`, made by `tools/blender/reveal_art.py` (commit 8786722): `reveal_art_rarity.png` (the six at the split's flash, him dark 0.2 s after it, the name down), `reveal_art_strip_Common.png` and `reveal_art_strip_Legendary.png`, `reveal_art_Common.mp4` and `reveal_art_Legendary.mp4` at 60 a second, `reveal_art_names.png` (every name in `Voidkin.luau` at its own rarity's size), `reveal_art_colours.png` (section 4's three checks) and `reveal_art_shard.png` (the finish). Rook's model stands under every name, and Blender's face stands in for the type. About three hours across two sessions, an estimate.
+- **The six fixes, where they are.** 1: the name comes in at 1.7 times and is down in three frames on his recoil (the clip's `Name` marker, 0.917 s), white-hot cooling to ivory, with a glint along a rule in the rarity's metal and the screen kicked 2.5 to 6.5 points. 2: it's 58 points at Common, up to 1.3 times at Mythical, never wider than 379 points, and set smaller rather than cut. 3: the split's flash is a pop 70 points round at Common, growing to 190 at Epic; only Legendary and Mythical white out. 4: a Common's clip starts 0.40 s in (Uncommon 0.32, Rare 0.18), so its colours come at 1.00 s; the skip stays at 1.0. 5: he stands on the window's sill, the frame's foot drawn over his soles, and the base points hang free below it. 6: Rook's Reveal is re-keyed, his head up out of the fold (`rook_clips.py`).
+- **The shard's finish:** dark violet crystal in four flat tones by its own light, its edges cut bright, the walls inside a seam paler. It's painted into the model through a palette UV, so the engine's mesh shows the same swatches unlit.
+- **Two calls of mine (tier 1, layout B's numbers).** The window stands at 600 points, 52 right of the block-in's 548, so all 31 names land at their rarity's full size: Ironhymn, Epic, 374 points, had been set at 0.87. At Mythical's size only Ironhymn (0.92), Marigold and Shiomaru (0.97) would be set smaller. His step right runs on his clip's time (0.4 to 0.7 s of it), so a Common's window is still before the ram fires; it had been sliding under the name.
+- **The times,** seconds from the tap:
+
+| Rarity | Split | Colours | Name | Card |
+|---|---|---|---|---|
+| Common | 0.55 | 1.00 | 1.07 | 1.62 |
+| Uncommon | 0.60 | 1.13 | 1.20 | 1.85 |
+| Rare | 0.85 | 1.52 | 1.59 | 2.39 |
+| Epic | 1.05 | 1.90 | 1.97 | 2.92 |
+| Legendary | 1.30 | 2.15 | 2.22 | 3.32 |
+| Mythical | 1.80 | 2.65 | 2.72 | 3.97 |
+
 **Research's verdict, 2026-11-13,** on the read set in `build/scratch/modulo/reveal_art/` (commit 8786722): the two strips, the six read apart, the names, the colours, the shard, and both 60 fps movies frame by frame, with `ga-fresh-eyes` blind beside it (its Tier: competent). **Felt:** the Legendary still climbs green, blue, purple, gold and breathes dark before the white-out, and now the name crashes in oversized and drops to size on the strike, its rule glinting. But the colours reach his body in three or four frames, a cut more than a flood, and through the climb the shard itself barely moves: the halo does the work. **Tier:** competent. **The one bold thing:** the rarity told before the name, first by the leak's climb, then by the window's crowned frame while he's still black (grey, one point, three gold, a red spiked crown). All six fixes are met. The window 52 points right and his step on the clip's time are accepted (tier 1): his frame's right wing ends near 753 points, and the builder keeps it inside a phone's landscape safe area. The three colour checks hold. The near pairs are 0.036 to 0.051 apart, each gem told by its shape and dark seat. Rare and Frost are 0.131 apart. Uncommon's green comes with its frame, a state's with words. The shard reads as crystal at all four sizes. Fixes, for the art sheet:
 
 1. **A Common's pieces clear the window before he stands:** out past the frame, or behind it. Today a pale triangle rides on his chest for about 0.3 s and reads as a badge. Serves "a dark silhouette stands in the glow".
@@ -1448,6 +1463,12 @@ For Modulo, now, so the art is ready when the reveal's ceremony is written for t
 3. **The shard answers each rung:** a small swell and a tick of shake on each new colour, the light pushing brighter through its seams, so the climb is the shard's and not only the halo's. Serves the bold thing.
 
 The fold from Epic up keeps its line (the head up), and the ram's thin handle goes to `docs/polish-later.md`. **Next:** the three fixes, then the content check on the exact files, then the builder's reveal TR.
+
+**The fix round (Modulo, 2026-11-13),** drawn in the same files, all re-rendered.
+1. **A Common's pieces clear the window.** They fly 8 of the shard's units at Common, up to 11 at Legendary and Mythical (a Common's went 3.4). They pass behind him, never over him, and fade from 0.18 s after the split, over 0.25 s. Measured by `reveal_art.py clear` (`clear.json`): the last piece seen in the window round him is at 0.10 s after the split for a Common, 0.15 to 0.17 for Uncommon to Epic, and 0.12 for Legendary and Mythical. He's in by 0.11 s, and the window is open by 0.16.
+2. **The colours run down him** from the ram's head to his farthest point in 0.13 s, eased out: quick off the strike, slower down the legs, with the hot line ahead of them. At 60 a second (Legendary): the ram fires on frame 147, the name slams in on 148, and the colours start at the ram on 149 and reach his feet on 155. The name stays on the Knock's recoil.
+3. **The shard answers each rung.** On each new colour it ticks aside by 3 to 4 points, on alternating sides, settled in about 0.06 s. It swells 4 to 5% and back within 0.25 s, and the light through its seams burns up to about 1.8 times brighter. Each is stronger as the climb goes up.
+- **For Quaestor:** the fixes' read. **Next:** the engine's parts, Rook's Reveal to the handoff, then the content check on the exact files.
 
 ## AR4. Pip and Lyric
 

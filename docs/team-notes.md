@@ -15,7 +15,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
 - **Faber:** the reveal TR is yours, built to `reveal.json`. Lantern Row's install is still yours too (AR5, section 2, "For the builder"). The ranged lead's distance (notice): no change from me.
-- Rook's Reveal on the bare rig is delivered beside the clip, content check PASS. The kit's three frames, tinted in the director's colours: 14 images, content check PASS, for research's read (AR3, section 6). Then I deliver them for `Config.UIKit`. No lock held, no Blender running.
+- Rook's Reveal on the bare rig is delivered beside the clip, content check PASS. The kit's three frames are tinted in the director's colours and **delivered** over `build/handoff/UI/kit/`: 14 images, content check PASS, research's yes (AR3, section 6).
+- Next: the HUD card's new portrait cut, the head standing above the frame (TR3's fix 1; AR3, section 3). No lock held, no Blender running.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
@@ -60,6 +61,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. The kit's three frames tinted (Modulo)
+
+- **What:** Uncommon green, Rare blue, Epic purple on the kit's frames, the director's colours on the same shapes, so the uploaded ladder matches the reveal's. 14 of the kit's 89 images; the rest and `kit.json` are unchanged.
+- **Where:** `build/handoff/UI/kit/images/`, made by `tools/blender/ui_kit.py`; the colours live in `ui_sheet.RARITIES`. The record: AR3, section 6.
+- **For Faber:** upload the 14, then run `kit_config.py` with their ids. **Open:** not uploaded.
 
 ### 2026-11-13. The reveal's art sheet and engine parts delivered (Modulo)
 

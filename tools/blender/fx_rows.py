@@ -118,16 +118,20 @@ V = AREA                 # up: the tip 2.2 Areas up, 11 studs at Area 5 (the uni
 BANDS = 6
 BURN, STEP, GOES = 8, 1.5, 3   # the first band starts going on 74; each next one STEP frames later; each takes GOES
 CUT = 2  # frames into its burn a band is cut, whole until then: never faded (B1's finish, in the engine, 758c83b)
+BASE, FLARE = 1.5, 4.0  # a band's Glow, whole and at the height of its burn: fx_fire_Flame is drawn for 2, played at
+# 1.5 so its core doesn't clip white before the flare (research's final; Faber's, cec7c67). Under 1.5, or a flare other
+# than 4, comes back to the content check with a dusk sheet at 64 px
 HOT, COOL = (1.0, 0.97, 0.88), (1.0, 0.54, 0.24)  # white-gold, and the flame's orange (#FF8A3D's family, never redder)
 
 
 def band_tracks(k):
-    """Band k's burn: it flares from 2 to 4 from its start and is cut CUT frames in, its front covering the cut. Never
-    a fade: in the engine a half-gone band over a dark Shade or a dusk sky read rose, redder than #FF8A3D (B1's finish,
-    the content check's conditions 1 and 4)."""
+    """Band k's burn: it flares from BASE to FLARE from its start and is cut CUT frames in, its front covering the cut.
+    Never a fade: in the engine a half-gone band over a dark Shade or a dusk sky read rose, redder than #FF8A3D (B1's
+    finish, the content check's conditions 1 and 4)."""
     start = BURN + STEP * (k - 1)
     return {"Transparency": [[0, 0.0, None], [start + CUT, 0.0, None], [start + CUT, 1.0, None]],
-            "Glow": [[0, 2.0, None], [start, 2.0, "Quad Out"], [start + GOES * 0.5, 4.0, "Linear"], [start + GOES, 4.0, None]]}
+            "Glow": [[0, BASE, None], [start, BASE, "Quad Out"], [start + GOES * 0.5, FLARE, "Linear"],
+                     [start + GOES, FLARE, None]]}
 
 
 COIL_SCALE = [[0, [round(H * 0.92, 3), V * 0.6, round(H * 0.92, 3)], "Quart Out"], [4, [round(H, 3), V, round(H, 3)], "Linear"],
@@ -161,7 +165,8 @@ B1 = {
                 "above, the way its strands climb, and stretches up as it burns; the bands go foot first, each "
                 "flaring hot and cut two frames in, never faded (half-gone, it read rose over a dark Shade or a dusk "
                 "sky), the front covering the cut, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, "
-                "then the flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"},
+                "then the flame's orange, gold, and a white core licking up each strand, drawn for a Glow of 2 and "
+                "played at 1.5, so its core doesn't clip white before the flare's 4"},
         {"Name": "Front", "Part": [f"{COIL}_Front{b}" for b in range(1, BANDS)], "Texture": "fx_rise_Flame",
          "BlockIn": "fx_rise_Grey", "On": "Coil",
          "Place": "on the coil's frame, its spin included, each at its centre times the scale as the bands are; "

@@ -87,12 +87,12 @@
      "Glow": [
       [
        0,
-       2.0,
+       1.5,
        null
       ],
       [
        8.0,
-       2.0,
+       1.5,
        "Quad Out"
       ],
       [
@@ -128,12 +128,12 @@
      "Glow": [
       [
        0,
-       2.0,
+       1.5,
        null
       ],
       [
        9.5,
-       2.0,
+       1.5,
        "Quad Out"
       ],
       [
@@ -169,12 +169,12 @@
      "Glow": [
       [
        0,
-       2.0,
+       1.5,
        null
       ],
       [
        11.0,
-       2.0,
+       1.5,
        "Quad Out"
       ],
       [
@@ -210,12 +210,12 @@
      "Glow": [
       [
        0,
-       2.0,
+       1.5,
        null
       ],
       [
        12.5,
-       2.0,
+       1.5,
        "Quad Out"
       ],
       [
@@ -251,12 +251,12 @@
      "Glow": [
       [
        0,
-       2.0,
+       1.5,
        null
       ],
       [
        14.0,
-       2.0,
+       1.5,
        "Quad Out"
       ],
       [
@@ -292,12 +292,12 @@
      "Glow": [
       [
        0,
-       2.0,
+       1.5,
        null
       ],
       [
        15.5,
-       2.0,
+       1.5,
        "Quad Out"
       ],
       [
@@ -313,7 +313,7 @@
      ]
     }
    },
-   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot and cut two frames in, never faded (half-gone, it read rose over a dark Shade or a dusk sky), the front covering the cut, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"
+   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot and cut two frames in, never faded (half-gone, it read rose over a dark Shade or a dusk sky), the front covering the cut, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the flame's orange, gold, and a white core licking up each strand, drawn for a Glow of 2 and played at 1.5, so its core doesn't clip white before the flare's 4"
   },
   {
    "Name": "Front",

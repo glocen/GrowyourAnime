@@ -4526,6 +4526,11 @@ This answers fix 3 of research's verdict on B1's exit from its rows, for the fin
 - The content check (condition 5): PASS. Carried: a Glow below 1.5 or a flare other than 4 comes back to the check, with a dusk sheet at 64 px.
 - On the written Config: self-test B1's exit 28/28, Lantern Burst 27/27; logic 3870/3870 offline. Modulo: the base Glow written back.
 
+**Written back (Modulo, 2026-11-13):** the cut (50b9e58) and the base Glow are in `tools/blender/fx_rows.py` (`band_tracks`: `CUT`, `BASE`, `FLARE`), so `pip_burst_rows.json` regenerates as the engine plays.
+- Its Coil bands match `burn()` key for key, eases included, and its Front bands match `front()`. Nothing else changed.
+- The finish sheets are redrawn with both: `pip_burst_finish.png`, `_64.png` and `_close.png`. The content check passed.
+- **Hours:** about 0.2, 20:25 to 20:35 UTC, both write-backs.
+
 ### The keeper's signature in the engine (Faber, 2026-11-13)
 
 Section 7's rows played in grey on the keeper's clip through the one player, joined to the action, its hit and the camera (the method's order, 3). It's a signature, so research's verdict comes with `ga-fresh-eyes`.

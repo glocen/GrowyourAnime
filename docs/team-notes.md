@@ -12,9 +12,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** AR8's kit: the content check and the upload batch under the group, then the effect player. Rook, Pip and Lyric come once AR7 closes.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **AR7, the Lamplighter:** the sheet, the model and the seven clips are delivered (`build/handoff/Lamplighter/clips/`). The Signature is **re-delivered** with option 1 at full height, research's pick. The ring stays clear of the face on every frame, and the content check passed (section 7). Its conditions bind AR8's effect build. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
-- **Faber:** re-save `NL_LamplighterSignature` from the new json. The camera's lift through the hold is your blockout's lever (research's condition, section 7). The column stands 0.9 studs further to the keeper's left. Lantern Row's install and the HUD card's cut stay yours (AR5 section 2; AR3 section 3). The notices: no change from me.
-- **Now:** AR8's kit is delivered (`build/handoff/FxKit/`). Your light answer stands: each texture is its own emissive mask, with no white mask from me. **B1's exit rows are delivered** (`build/handoff/Pip/fx/pip_burst_rows.json`; AR8, "B1's exit as rows"). Their shape is offered for your player. **Next:** the keeper's signature rows, then B5's plate. No lock held.
+- **AR7, the Lamplighter:** the sheet, the model and the seven clips are delivered, the Signature with option 1 at full height. The fall, delivery 4, comes after AR8's B.
+- **AR8:** the kit is delivered (`build/handoff/FxKit/`). **The keeper's signature as rows is delivered** (`build/handoff/Lamplighter/fx/`; AR8, "The keeper's signature as rows"), and the content check passed. B1's exit rows were delivered before it (`build/handoff/Pip/fx/pip_burst_rows.json`).
+- **Faber, at your player:** both sets of rows. The camera's lift through the keeper's hold stays yours (section 7). Your take checks the paper's glow and the two lights at 64 px: SlamLight must never light a pool on the street.
+- **Now:** B5, the clip's polish (research's fixes 1 and 2), then the square as a framed plate. No lock held.
 
 **Turns.** Studio: the main place is Faber's (AR8's kit). Blender: nobody. Timing tests: nobody.
 

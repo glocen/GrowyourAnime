@@ -4231,6 +4231,51 @@ The coil let out as kit parts, burning off from its foot (the director's "let do
 - **Open:** Faber's player, then the block-in in grey from the rows at phone size, then research's verdict with fresh eyes (rung 7).
 - **Hours:** about 0.2, 17:57 to 18:10 UTC.
 
+### The keeper's signature as rows (Modulo, 2026-11-13)
+
+Section 7's look as kit parts and lights (the method's order, 3). The hold's glow card becomes a light and a small shell. The Beams carry over.
+- **Where:** `build/handoff/Lamplighter/fx/`.
+  - `lamplighter_signature_rows.json`, written by `tools/blender/fx_rows.py` (`Signature`). The rows have B1's shape. Sizes are in studs.
+  - The column's three pictures: byte for byte the ones section 7 checked.
+  - `lamplighter_signature_rows.png`: the preview from the game's camera.
+  - The other sheets are in `build/scratch/modulo/sig_rows/`. This is my own check. The engine's take is the judge.
+- **The rows:**
+  - **Paper,** from Light: the lantern's own `EmissiveStrength`. It builds from 1.2 to 3.0 through the hold, flares on the Wrench (106 to 107), and goes dim on the Slam. It replaces Config's 3.0 through the signature, for this clip only.
+  - **HoldLight,** a PointLight, range 14, no shadows. It rises to 3.2 by 100 and is out by 104 (condition a).
+  - **Shell:** `FxShell`, `fx_rise_Warm` (`fx_rise_Grey` for the block-in), welded at the drum's middle. It swells from 3.2 by 3.8 studs to 3.8 by 4.5 at the look; the drum is 3 by 3.45, so the drum's rims stand out of it. It's see-through to 0.4 at its peak and gone by 104.
+  - **Streak,** from the Wrench: a Beam, `lamplighter_column_tip`, 3.3 wide, trailing 5 frames behind the falling lantern. It shows from 111 to 116.
+  - **Shaft, Tip and Halo,** from the Slam: section 7's three Beams, frame by frame, at the new landing.
+  - **Chips:** 9 `FxChip` parts, cyan and warm in turn, Neon. They rise, slow and shrink to nothing by 141.
+  - **SlamLight,** a PointLight, range 20. It's brightest on the Slam and out by 140.
+  - **Faber's, not in the rows:** the hitstop, the shake, the lead's flash and the camera's lift through the hold.
+- **Two calls of mine (tier 1):**
+  - **No motes.** At 64 px they're under a pixel, and on a sphere round the drum some would start beside the hat (condition 6). The docs don't explain `ShapePartial` or `ShapeInOut`, so I couldn't aim them clear.
+  - **The streak ends on 116.** On 117 it would lie across the face from -45 to 15 (condition b).
+- **Measured,** at 64 px:
+  - **The shell's gap to the head and hat:** 38 px from the game's camera, 18.7 from the ring's, 20.3 from the flank's. Every heading from -105 to 165 keeps a gap of at least 10.2 px. From -165 to -120, behind the keeper, the drum itself meets the hat.
+  - **The streak:** clear from -90 to 90 on 114 to 116, at least 2.2 px. From behind, it starts at the drum, over the hat's crown.
+- **The column at the new landing,** from the game's camera:
+
+  | Frame | 118 | 119 | 120 | 121 | 124 | 127 | 130 | 136 |
+  |---|---|---|---|---|---|---|---|---|
+  | Share now | 5.7% | 5.26% | 4.3% | 4.35% | 4.3% | 4.0% | 3.5% | 0.28% |
+  | Section 7's | 6.5% | 6.0% | 5.0% | 5.0% | 5.0% | 4.7% | 4.1% | 0.3% |
+
+  - From 120 to 124 it's level with B1's coil (4.4%). If research wants it to lead, `Width` or `Top` is the lever, live.
+  - The apex leaves the frame from 128 (section 7: from 127).
+- **The content check:**
+  - The first round was a BLOCK, for missing evidence: no sheet showed the headings behind the keeper, where the gap measures negative.
+  - The sheets it asked for are `sig_rows_back64_*.png` and `sig_rows_back_*.png`: -165 to -120 through the hold, and -180 to -150 on the streak, on the dark floor and the bright one.
+  - **PASS** on them: from behind, the ball is the drum's own size and place, behind the hat, with the pole running up into it, and no face shows. Conditions a to d, 1 to 7 and rules 2 to 4 pass.
+  - Carried to the engine's take:
+    1. Read the paper's glow, HoldLight and SlamLight at 64 px. SlamLight must never light a filled disc on the street that reads as a pool (condition 5).
+    2. The three pictures' upload check confirms them against section 7's files.
+- **Open:**
+  - Faber's player.
+  - The take at phone size.
+  - Research's verdict, with `ga-fresh-eyes` (a signature).
+- **Hours:** about 0.4, 18:06 to 18:30 UTC, the content check's two rounds included.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

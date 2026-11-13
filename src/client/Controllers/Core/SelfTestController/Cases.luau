@@ -642,10 +642,15 @@ return {
 			local shaft = beam("Shaft")
 			t.Check("the column on the Slam", shaft.Enabled and math.abs(shaft.Width0 - 6.9) < 1e-6, tostring(shaft.Width0))
 			t.Check("its foot on the street under the drum", (shaft.Attachment0 :: Attachment).WorldPosition:FuzzyEq(spot, 1e-3), tostring((shaft.Attachment0 :: Attachment).WorldPosition - spot))
-			t.Check("its top 7.5 up", (shaft.Attachment1 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 7.5, 0), 1e-3))
-			t.Check("the tip over it", (beam("Tip").Attachment0 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 7.5, 0), 1e-3) and beam("Tip").Enabled)
-			t.Check("the halo none in the block-in", not beam("Halo").Enabled)
+			-- research's verdict on the grey (2026-11-13): it leaps from the street, widest at the foot
+			t.Check("its top 2 up as it leaps", (shaft.Attachment1 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 2, 0), 1e-3))
+			t.Check("the tip over it", (beam("Tip").Attachment0 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 2, 0), 1e-3) and beam("Tip").Enabled)
+			t.Check("half as wide at its top", math.abs(shaft.Width1 - 6.9 * 0.5) < 1e-6, tostring(shaft.Width1))
+			t.Check("the tip as wide as the shaft's top", math.abs(beam("Tip").Width0 - shaft.Width1) < 1e-6, tostring(beam("Tip").Width0))
+			t.Check("the halo only out of grey", beam("Halo").Enabled == not EffectsConfig.Rows.KeeperSignature.Grey)
 			t.Check("the street lit 4 up, at its brightest", (player.Parts("SlamLight")[1] :: BasePart).Position:FuzzyEq(spot + Vector3.new(0, 4, 0), 1e-3) and light("SlamLight").Brightness == 5)
+			player.Step(123)
+			t.Check("at its full height by 123", (shaft.Attachment1 :: Attachment).WorldPosition:FuzzyEq(spot + Vector3.new(0, 13.5, 0), 1e-3))
 			lantern.CFrame = held -- lifted again: the column stays where it fell
 			player.Step(124)
 			local stood = (shaft.Attachment0 :: Attachment).WorldPosition

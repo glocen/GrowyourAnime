@@ -4562,6 +4562,38 @@ Section 7's rows played in grey on the keeper's clip through the one player, joi
   2. one take beside this grey, for the final with fresh eyes;
   3. the rotation, the cooldown and the sound, as their own piece.
 
+**The leap and the final (Faber, 2026-11-13).** The verdict's fix by Tune, then the pictures, then one take beside the grey.
+- **The leap,** in `Config.Effects.Rows.KeeperSignature.Shaft` (frames from the Slam, 118):
+  - The top stands up 2 studs on the Slam and reaches its peak, 13.5, by 123, in its first quarter: 7.5, 11, 12.6 and 13.3 on the way.
+  - The foot holds to 123, then foot and top climb together on an ease-in, 30 studs by 139, each frame's rise bigger than the last.
+  - It holds its light to 132 and fades out by 140, once the climb is well under way.
+  - **Widest at the foot:** a Beam row's new `Taper` is its top's width as a share of its foot's. It's 0.5 on the shaft and the halo, and the tip, footed on the shaft's top, takes the width there.
+  - Its grey take: `keeper_sig_leap_grey.mp4` and its slam strip.
+- **The pictures:** byte for byte section 7's files, then uploaded under the group, all Approved (read back). The ids are in `docs/asset-log.md`. The rows then came out of grey (`Grey = false`).
+- **In the same batch, for B1's finish and B5:** `fx_fire_Flame`, `FxBar`, `FxPlate` and `FxCoil2_Front1` to `_Front5`, all Approved. `src/shared/Config/FxKit.luau` was regenerated with them: 28 meshes, 20 images, and a front as `Front = n`.
+- **The final take,** from the fight's camera behind the avatar, at phone size: `keeper_sig_final.mp4` with `_hold`, `_slam`, `_peak` and `_64px`, in `build/captures/ar8/keeper_sig/`.
+  - **The hold:** the lantern climbs into the frame on the lift and goes from pale cyan to white by the Wrench.
+  - **On the Slam:** at +1 the lantern lands on Pip in its glow. At +3 a tapered white spire stands out of the street beside Pip, its point two thirds up the screen. By +5 it runs off the top. By +9 its foot has left the street and the chips fly. A pale streak climbs off the top through +16.
+  - Near-white share at its peak: 3.9% of the screen (the grey's 1.7%).
+- **`ga-fresh-eyes`, blind: competent.**
+  - **Felt:** "The lantern climbs over the keeper's head and turns white over a long, readable hold. Then it drops onto the wizard, and a bright white spire bursts off the top of the screen, thins and lifts away."
+  - **The bold thing:** the column at +3 to +5, "a tapered white spire coming up out of the street beside the wizard and running off the top of the screen".
+  - **Against it:**
+    - the keeper's look down and its pose don't read;
+    - the column's height is lost behind the top bars and the screen's edge;
+    - after the slam the eye stays on the cyan lantern on the ground, near the camera;
+    - the column reads as a wide, soft glow round the fighter rather than a crisp shaft.
+  - **My read:** the first three come from the fight's framing. The keeper stands at the avatar's shoulder, so its lantern lands near the camera, and the bars sit over the climb. That's for "Rook, Pip and Lyric installed", framing first, and TR5. The softness is the halo, 1.9 times the shaft's width. If research wants the shaft crisper, it's one Tune on `Rows.KeeperSignature.Halo`, its Width or Transparency. I left it as it is: a signature closes at competent.
+- **Checks:**
+  - The type check: 0 new.
+  - The logic cases: 3752/3752, offline. They cover the leap, the ease-in, the held light, the taper, and the kit's fronts.
+  - The self-test on the phone emulation: the signature's case 42/42, out of grey; B1's exit 21/21.
+- **Open:**
+  - Research's final verdict.
+  - Modulo writes the column's numbers back into `lamplighter_signature_rows.json`.
+  - The rotation, the cooldown and the sound, as their own piece.
+- **Hours:** about 0.4, 19:49 to 20:10 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

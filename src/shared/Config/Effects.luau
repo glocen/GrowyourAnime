@@ -25,7 +25,8 @@
 --   Beam ends: Low is Foot studs up its place, or another Beam's end ("Shaft.High"); High is Top studs up its place, or
 --            Spike studs over Low, or another's end. Trail { Back, Beyond }: from its point Back studs behind it along its
 --            motion, to where it was Lag frames before and Beyond studs further. Like: another Beam whose Width and
---            Transparency it takes when it has none. FootFade: studs from Low over which it fades in.
+--            Transparency it takes when it has none (footed on its top, the width there). FootFade: studs from Low over
+--            which it fades in. Taper: the width at High as a share of the width at Low.
 --   Bands    a Mesh row's tracks for one of its parts, over the row's own.
 --   Emit     { frame, count }: an emitter's particles let go at once.
 -- Area: the hit's area the rows are written at, or for an action's own effect the body's scale; another scales the places
@@ -56,6 +57,7 @@ export type Row = {
 	High: string?,
 	Like: string?,
 	FootFade: number?,
+	Taper: number?,
 }
 export type Rows = { Area: number, Grey: boolean, Action: string?, Rows: { [string]: Row } }
 
@@ -309,9 +311,9 @@ return {
 	-- The effects' own pictures, by name, for rows that use one outside the kit: the group's uploads (docs/asset-log.md),
 	-- "" until uploaded, which a block-in in grey doesn't need.
 	Pictures = {
-		lamplighter_column = "",
-		lamplighter_column_tip = "",
-		lamplighter_column_halo = "",
+		lamplighter_column = "rbxassetid://136476355133145",
+		lamplighter_column_tip = "rbxassetid://94760089297087",
+		lamplighter_column_halo = "rbxassetid://71122841157536",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header). Tuned live: "Effects.Rows.LanternExit.Rows.Coil.Tracks.Spin.2.2".
@@ -446,7 +448,7 @@ return {
 		-- climbing away, chips flung off its edge.
 		KeeperSignature = {
 			Area = 1.5,
-			Grey = true,
+			Grey = false,
 			Action = "KeeperSignature",
 			Rows = {
 			-- The light gathers in the paper through the hold, flares on the Wrench, dims on the Slam: the lantern's own glow.
@@ -546,6 +548,7 @@ return {
 				Color = Color3.new(1, 1, 1),
 				Beam = { FaceCamera = true, TextureMode = "Wrap", TextureLength = 2.625, TextureSpeed = 7, LightEmission = 0.7, LightInfluence = 0, Segments = 20 },
 				FootFade = 2.1,
+				Taper = 0.5, -- widest at the foot
 				Tracks = {
 					Foot = {
 						{ 0, 0, "Linear" },
@@ -554,46 +557,46 @@ return {
 						{ 3, 0, "Linear" },
 						{ 4, 0, "Linear" },
 						{ 5, 0, "Linear" },
-						{ 6, 0.653, "Linear" },
-						{ 7, 1.41, "Linear" },
-						{ 8, 2.272, "Linear" },
-						{ 9, 3.24, "Linear" },
-						{ 10, 4.312, "Linear" },
-						{ 11, 5.49, "Linear" },
-						{ 12, 6.773, "Linear" },
-						{ 13, 8.16, "Linear" },
-						{ 14, 9.652, "Linear" },
-						{ 15, 11.25, "Linear" },
-						{ 16, 12.953, "Linear" },
-						{ 17, 14.76, "Linear" },
-						{ 18, 16.673, "Linear" },
-						{ 19, 18.69, "Linear" },
-						{ 20, 20.812, "Linear" },
-						{ 21, 23.04 },
+						{ 6, 0.067, "Linear" },
+						{ 7, 0.309, "Linear" },
+						{ 8, 0.755, "Linear" },
+						{ 9, 1.421, "Linear" },
+						{ 10, 2.322, "Linear" },
+						{ 11, 3.467, "Linear" },
+						{ 12, 4.867, "Linear" },
+						{ 13, 6.529, "Linear" },
+						{ 14, 8.46, "Linear" },
+						{ 15, 10.667, "Linear" },
+						{ 16, 13.156, "Linear" },
+						{ 17, 15.931, "Linear" },
+						{ 18, 18.999, "Linear" },
+						{ 19, 22.363, "Linear" },
+						{ 20, 26.029, "Linear" },
+						{ 21, 30, "Linear" },
 					},
 					Top = {
-						{ 0, 7.5, "Linear" },
-						{ 1, 10.2, "Linear" },
-						{ 2, 11.1, "Linear" },
-						{ 3, 11.4, "Linear" },
-						{ 4, 11.475, "Linear" },
-						{ 5, 11.55, "Linear" },
-						{ 6, 11.67, "Linear" },
-						{ 7, 11.88, "Linear" },
-						{ 8, 12.18, "Linear" },
-						{ 9, 12.57, "Linear" },
-						{ 10, 13.05, "Linear" },
-						{ 11, 13.62, "Linear" },
-						{ 12, 14.28, "Linear" },
-						{ 13, 15.03, "Linear" },
-						{ 14, 15.87, "Linear" },
-						{ 15, 16.8, "Linear" },
-						{ 16, 17.82, "Linear" },
-						{ 17, 18.93, "Linear" },
-						{ 18, 20.13, "Linear" },
-						{ 19, 21.42, "Linear" },
-						{ 20, 22.8, "Linear" },
-						{ 21, 24.27 },
+						{ 0, 2, "Linear" },
+						{ 1, 7.5, "Linear" },
+						{ 2, 11, "Linear" },
+						{ 3, 12.6, "Linear" },
+						{ 4, 13.3, "Linear" },
+						{ 5, 13.5, "Linear" },
+						{ 6, 13.567, "Linear" },
+						{ 7, 13.809, "Linear" },
+						{ 8, 14.255, "Linear" },
+						{ 9, 14.921, "Linear" },
+						{ 10, 15.822, "Linear" },
+						{ 11, 16.967, "Linear" },
+						{ 12, 18.367, "Linear" },
+						{ 13, 20.029, "Linear" },
+						{ 14, 21.96, "Linear" },
+						{ 15, 24.167, "Linear" },
+						{ 16, 26.656, "Linear" },
+						{ 17, 29.431, "Linear" },
+						{ 18, 32.499, "Linear" },
+						{ 19, 35.863, "Linear" },
+						{ 20, 39.529, "Linear" },
+						{ 21, 43.5, "Linear" },
 					},
 					Width = {
 						{ 0, 6.9, "Linear" },
@@ -631,22 +634,22 @@ return {
 						{ 8, 0, "Linear" },
 						{ 9, 0, "Linear" },
 						{ 10, 0, "Linear" },
-						{ 11, 0.02, "Linear" },
-						{ 12, 0.074, "Linear" },
-						{ 13, 0.156, "Linear" },
-						{ 14, 0.259, "Linear" },
-						{ 15, 0.376, "Linear" },
-						{ 16, 0.5, "Linear" },
-						{ 17, 0.624, "Linear" },
-						{ 18, 0.741, "Linear" },
-						{ 19, 0.844, "Linear" },
-						{ 20, 0.926, "Linear" },
-						{ 21, 0.98, "Linear" },
-						{ 22, 1 },
+						{ 11, 0, "Linear" },
+						{ 12, 0, "Linear" },
+						{ 13, 0, "Linear" },
+						{ 14, 0, "Linear" },
+						{ 15, 0.08, "Linear" },
+						{ 16, 0.18, "Linear" },
+						{ 17, 0.32, "Linear" },
+						{ 18, 0.48, "Linear" },
+						{ 19, 0.64, "Linear" },
+						{ 20, 0.8, "Linear" },
+						{ 21, 0.93, "Linear" },
+						{ 22, 1, "Linear" },
 					},
 				},
 			},
-			-- The needle over the shaft, with the shaft's width and fade.
+			-- The needle over the shaft, with the shaft's width at its top and its fade.
 			Tip = {
 				Kind = "Beam",
 				From = "Slam",
@@ -692,6 +695,7 @@ return {
 				Low = "Shaft.Low",
 				High = "Tip.High",
 				Like = "Shaft",
+				Taper = 0.5, -- hugging the shaft
 				Image = "lamplighter_column_halo",
 				Grey = "", -- none in the block-in
 				Color = Color3.new(1, 1, 1),

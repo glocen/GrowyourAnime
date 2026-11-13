@@ -99,6 +99,7 @@ return {
 						t.Check(`{label}: its picture uploaded once it's out of grey`, effect.Grey or (picture ~= nil and picture ~= ""))
 						t.Check(`{label}: its block-in a kit image, or none`, row.Grey == nil or row.Grey == "" or FxKit.Images[row.Grey] ~= nil, tostring(row.Grey))
 						t.Check(`{label}: its ends`, row.Trail ~= nil or row.Low ~= nil or row.Tracks.Foot ~= nil or row.On ~= nil or row.Body ~= nil)
+						t.Check(`{label}: a taper is a share of its foot's width`, row.Taper == nil or (row.Taper > 0 and row.Taper <= 1), tostring(row.Taper))
 					elseif row.Kind == "Glow" then
 						t.Check(`{label}: one part of its body`, action ~= nil and row.Part ~= nil and #row.Part == 1)
 					end
@@ -180,6 +181,16 @@ return {
 			t.Check("and gone before 117 (condition b)", at("Streak", "Transparency", 116) < 1 and near(at("Streak", "Transparency", 117), 1))
 			t.Check("the column on the Slam", at("Shaft", "Width", 118) > 0 and near(at("Shaft", "Transparency", 118), 0))
 			t.Check("its foot lets go from 124", near(at("Shaft", "Foot", 123), 0) and at("Shaft", "Foot", 124) > 0)
+			-- research's verdict on the grey (2026-11-13): it leaps, then climbs gaining speed, widest at the foot
+			t.Check("it leaps: its height peaks in its first quarter", at("Shaft", "Top", 118) < at("Shaft", "Top", 123) * 0.5
+				and at("Shaft", "Top", 123) - at("Shaft", "Foot", 123) >= at("Shaft", "Top", 130) - at("Shaft", "Foot", 130) - 1e-6)
+			local function rise(frame: number): number
+				return at("Shaft", "Foot", frame + 1) - at("Shaft", "Foot", frame)
+			end
+			t.Check("then climbs gaining speed", rise(126) < rise(130) and rise(130) < rise(134) and rise(134) < rise(138))
+			t.Check("held until the climb is under way", near(at("Shaft", "Transparency", 132), 0))
+			local shaftRow = rows.Shaft
+			t.Check("widest at the foot", shaftRow.Taper ~= nil and shaftRow.Taper < 1)
 			local clear = 0
 			for name, row in rows do
 				if row.From == "Slam" then

@@ -29,7 +29,7 @@ end
 
 return {
 	{
-		Name = "Definitions: AR8's effect kit, every mesh and image uploaded, every burn band on its coil",
+		Name = "Definitions: AR8's effect kit, every mesh and image uploaded, every burn band and front on its coil",
 		Run = function(t: any)
 			local meshes, images = 0, 0
 			for name, mesh in FxKit.Meshes do
@@ -38,22 +38,27 @@ return {
 				t.Check(`{name} has a size`, mesh.Size.X > 0 and mesh.Size.Y > 0 and mesh.Size.Z > 0)
 				if mesh.Of then
 					t.Check(`{name} is a band of a coil in the kit`, FxKit.Meshes[mesh.Of] ~= nil and mesh.Of ~= name, tostring(mesh.Of))
-					t.Check(`{name}'s band is 1 to 6, with its offset`, mesh.Band ~= nil and mesh.Band >= 1 and mesh.Band <= 6 and mesh.Offset ~= nil)
+					t.Check(`{name} is a band 1 to 6 or a front 1 to 5, with its offset`, mesh.Offset ~= nil
+						and ((mesh.Band ~= nil and mesh.Front == nil and mesh.Band >= 1 and mesh.Band <= 6)
+							or (mesh.Front ~= nil and mesh.Band == nil and mesh.Front >= 1 and mesh.Front <= 5)))
 				end
 			end
 			for name, image in FxKit.Images do
 				images += 1
 				t.Check(`{name} has an asset id`, string.find(image.Id, "^rbxassetid://%d+$") ~= nil, image.Id)
 			end
-			t.Equal("the kit's 21 meshes", meshes, 21)
-			t.Equal("its 19 images", images, 19)
-			for _, coil in { "FxCoil2", "FxCoil3" } do
-				local bands = 0
+			t.Equal("the kit's 28 meshes", meshes, 28)
+			t.Equal("its 20 images", images, 20)
+			for coil, fronts in ({ FxCoil2 = 5, FxCoil3 = 0 } :: { [string]: number }) do
+				local bands, edges = 0, 0
 				for _, mesh in FxKit.Meshes do
-					bands += if mesh.Of == coil then 1 else 0
+					bands += if mesh.Of == coil and mesh.Band then 1 else 0
+					edges += if mesh.Of == coil and mesh.Front then 1 else 0
 				end
 				t.Equal(`{coil} burns in six bands`, bands, 6)
+				t.Equal(`{coil}'s burning fronts`, edges, fronts)
 			end
+			t.Check("the fire bands' Flame uploaded (B1's finish)", FxKit.Images.fx_fire_Flame ~= nil)
 			for name in FxKit.Palettes do
 				for _, family in { "fx_across_", "fx_rise_", "fx_ribs_" } do
 					t.Check(`{family}{name} uploaded`, FxKit.Images[family .. name] ~= nil)

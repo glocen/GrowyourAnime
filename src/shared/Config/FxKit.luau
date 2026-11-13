@@ -5,14 +5,14 @@
 -- Meshes: Size is the mesh's box at the unit size, and it's centred on that box; a MeshPart's Size over it is its scale.
 -- Centre is that box's centre from the mesh's own origin in Blender (a coil's foot on the ground), at the unit size.
 -- A coil's burn band (Of, Band 1 at the foot) sits at the coil's centre plus Offset times the coil's scale; they fade
--- foot first. The crescent's Tail and Head are its two ends, in its unit space. Texture names the image family it takes
--- (<P> a palette).
+-- foot first. A burning front (Of, Front n) sits where band n meets n + 1, the same way, shown while band n burns. The
+-- crescent's Tail and Head are its two ends, in its unit space. Texture names the image family it takes (<P> a palette).
 -- Images: the mesh textures in four palettes, opaque and in their own colours (a fade is the part's transparency); the
 -- white ones are tinted by Color, for Beams, Trails and particles, set as Use says. The content check's conditions:
 -- fx_ember is never tinted red or maroon, and never shed from a struck body falling under gravity; fx_flame is never
 -- tinted red or dark.
 
-export type Mesh = { Id: string, Size: Vector3, Centre: Vector3, Texture: string, Of: string?, Band: number?, Offset: Vector3?, Tail: Vector3?, Head: Vector3? }
+export type Mesh = { Id: string, Size: Vector3, Centre: Vector3, Texture: string, Of: string?, Band: number?, Front: number?, Offset: Vector3?, Tail: Vector3?, Head: Vector3? }
 export type Image = { Id: string, Use: string }
 
 return {
@@ -31,6 +31,11 @@ return {
 		FxCoil2_Burn4 = { Id = "rbxassetid://120291802591756", Size = Vector3.new(1.3802, 0.7629, 1.0609), Centre = Vector3.new(0, 1.26762, 0), Texture = "fx_across_<P>", Of = "FxCoil2", Band = 4, Offset = Vector3.new(0, 0.3084, 0) },
 		FxCoil2_Burn5 = { Id = "rbxassetid://106340762792151", Size = Vector3.new(0.7479, 0.6384, 1.111), Centre = Vector3.new(0, 1.60345, 0), Texture = "fx_across_<P>", Of = "FxCoil2", Band = 5, Offset = Vector3.new(0, 0.6442, 0) },
 		FxCoil2_Burn6 = { Id = "rbxassetid://133240805993086", Size = Vector3.new(0.9028, 0.4576, 0.8986), Centre = Vector3.new(0, 1.9728, 0), Texture = "fx_across_<P>", Of = "FxCoil2", Band = 6, Offset = Vector3.new(0, 1.0136, 0) },
+		FxCoil2_Front1 = { Id = "rbxassetid://110439867753165", Size = Vector3.new(1.1769, 0.7766, 1.7458), Centre = Vector3.new(0.00133, 0.47936, -0.00177), Texture = "fx_rise_<P>", Of = "FxCoil2", Front = 1, Offset = Vector3.new(0.0013, -0.4799, -0.0018) },
+		FxCoil2_Front2 = { Id = "rbxassetid://82936505617570", Size = Vector3.new(1.0668, 0.7738, 1.5207), Centre = Vector3.new(0.00832, 0.86686, -0.00011), Texture = "fx_rise_<P>", Of = "FxCoil2", Front = 2, Offset = Vector3.new(0.0083, -0.0924, -0.0001) },
+		FxCoil2_Front3 = { Id = "rbxassetid://81419179068803", Size = Vector3.new(1.4185, 0.5969, 0.3605), Centre = Vector3.new(0.0004, 1.16803, -0.0033), Texture = "fx_rise_<P>", Of = "FxCoil2", Front = 3, Offset = Vector3.new(0.0004, 0.2088, -0.0033) },
+		FxCoil2_Front4 = { Id = "rbxassetid://114437914813899", Size = Vector3.new(0.8605, 0.6229, 1.157), Centre = Vector3.new(0.00432, 1.57586, -0.00269), Texture = "fx_rise_<P>", Of = "FxCoil2", Front = 4, Offset = Vector3.new(0.0043, 0.6166, -0.0027) },
+		FxCoil2_Front5 = { Id = "rbxassetid://114537610593818", Size = Vector3.new(0.6552, 0.2451, 0.9612), Centre = Vector3.new(-0.00047, 1.85606, -0.00085), Texture = "fx_rise_<P>", Of = "FxCoil2", Front = 5, Offset = Vector3.new(-0.0005, 0.8968, -0.0008) },
 		FxShell = { Id = "rbxassetid://133905388943735", Size = Vector3.new(2, 2, 2), Centre = Vector3.new(0, 0, 0), Texture = "fx_rise_<P> or fx_ribs_<P>" },
 		FxHoop = { Id = "rbxassetid://87488287563359", Size = Vector3.new(2, 0.3, 2), Centre = Vector3.new(0, 0.15, 0), Texture = "fx_rise_<P>" },
 		FxCrescent = { Id = "rbxassetid://87541901111854", Size = Vector3.new(0.827, 0.1709, 1.9696), Centre = Vector3.new(0.58648, 0.08554, 0), Texture = "fx_across_<P>", Tail = Vector3.new(-0.413, 0.085, 0.983), Head = Vector3.new(-0.413, 0.085, -0.983) },
@@ -38,6 +43,8 @@ return {
 		FxChip1 = { Id = "rbxassetid://80126931509779", Size = Vector3.new(1, 0.1424, 0.3469), Centre = Vector3.new(0, 0.00791, -0.02275), Texture = "fx_rise_<P>, or none: Neon in a Color" },
 		FxChip2 = { Id = "rbxassetid://73433857318703", Size = Vector3.new(1, 0.1435, 0.3142), Centre = Vector3.new(0, 0.00797, -0.00961), Texture = "fx_rise_<P>, or none: Neon in a Color" },
 		FxChip3 = { Id = "rbxassetid://98316106150756", Size = Vector3.new(1, 0.1578, 0.3694), Centre = Vector3.new(0, 0.00877, -0.0075), Texture = "fx_rise_<P>, or none: Neon in a Color" },
+		FxBar = { Id = "rbxassetid://83429427811229", Size = Vector3.new(1, 1, 1), Centre = Vector3.new(0, 0, 0), Texture = "fx_across_<P>" },
+		FxPlate = { Id = "rbxassetid://139534490464484", Size = Vector3.new(1, 1, 1), Centre = Vector3.new(0, 0, 0), Texture = "fx_rise_<P>" },
 	} :: { [string]: Mesh },
 	Images = {
 		fx_across_Grey = { Id = "rbxassetid://139956977840496", Use = "MeshPart.TextureID: a coil's strands, the crescent" },
@@ -52,6 +59,7 @@ return {
 		fx_across_Ember = { Id = "rbxassetid://116333297359044", Use = "MeshPart.TextureID: a coil's strands, the crescent" },
 		fx_rise_Ember = { Id = "rbxassetid://117388118542904", Use = "MeshPart.TextureID: the column, the hoop, a shell, chips" },
 		fx_ribs_Ember = { Id = "rbxassetid://110868798137696", Use = "MeshPart.TextureID: a lantern's ribs on a shell or a column" },
+		fx_fire_Flame = { Id = "rbxassetid://122793873593321", Use = "MeshPart.TextureID: a coil's strands on fire (B1's bands)" },
 		fx_beam = { Id = "rbxassetid://109017225338468", Use = "Beam or Trail: across it a bright core and a lower edge, clear outside; tiles along; TextureMode Wrap or Stretch; TextureSpeed 0 unless it flows" },
 		fx_tongues = { Id = "rbxassetid://80204991292755", Use = "Beam or Trail: a flame's tongues off Attachment0's side (the image's left), tiles along; TextureSpeed for the lick to travel" },
 		fx_streak = { Id = "rbxassetid://134352081493152", Use = "ParticleEmitter: a needle, moving left; Orientation VelocityParallel; Squash negative stretches it" },

@@ -535,7 +535,11 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 				local likeName = row.Like
 				local like = if likeName then rows[likeName] or pieces[likeName].Row else nil
 				local likeT = if likeName then frames - pieces[likeName].Offset else t
-				local width = Track.Value(tracks.Width, t) or (like and Track.Value(like.Tracks.Width, likeT)) or 0
+				local own = Track.Value(tracks.Width, t)
+				local width = own or (like and Track.Value(like.Tracks.Width, likeT)) or 0
+				if own == nil and like and row.Low == `{likeName}.High` then
+					width *= like.Taper or 1 -- footed on its Like's top: the width there
+				end
 				local fade = Track.Value(tracks.Transparency, t) or (like and Track.Value(like.Tracks.Transparency, likeT)) or 0
 				local up = piece.Frame.UpVector
 				local studs = piece.Scale.Y
@@ -575,7 +579,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 						beam.Transparency = NumberSequence.new(v)
 					end
 				end
-				beam.Width0, beam.Width1 = width * studs, width * studs
+				beam.Width0, beam.Width1 = width * studs, width * (row.Taper or 1) * studs
 				beam.Enabled = on
 			elseif row.Kind == "Point" then
 				continue

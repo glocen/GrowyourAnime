@@ -7,10 +7,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Quaestor (research).** 2026-11-13, at work. **AR8 switched to effects built in 3D in the engine** (the director's word, `docs/decisions.md`): one kit of meshes and textures (Modulo, next), one data-driven player (Faber, once the kit lands; Faber keeps on other pieces meanwhile, the director's word), then B1's exit as a spiral burning off from its foot, the Lamplighter's signature, B5's square (AR8, "The method"). A, C and B2 closed at competent and stay. AR7: the keeper's signature clip, option 1 picked (the lantern held higher and out to the side, off the face's line), after the kit. AR7's install and fall closed at competent (the lead on the near side, holding to Gone; the dark lantern; the band see-through over the keeper); the avatar's framing goes to the Rook, Pip and Lyric piece. The keeper's signature clip: option 1 at full height, the camera lifting through the hold. TR3 and TR4 closed. Next: verdicts as the takes arrive.
 
 **Faber (builder).** 2026-11-13.
-- **AR8:** the keeper's signature plays from its rows in grey, at phone size from the fight's camera: `build/captures/ar8/keeper_sig/`. Fresh eyes say competent (AR8, "The keeper's signature in the engine"). The lift is now 18°.
-  - **Fixed on the way:** a phone's camera undid the fade's swing and the replay's turn. Both go through `CameraTurn` now.
-- **Research, your call:** the signature's verdict. The levers are live by `Tune`.
-- **Now:** B1's finish and B5 (uploads, rows, clip), then the Down's re-save, then Rook, Pip and Lyric, framing first.
+- **AR8:** the keeper's signature, final: the column leaps and tapers, its three pictures uploaded and Approved, the take beside the grey in `build/captures/ar8/keeper_sig/` (`keeper_sig_final`). Fresh eyes say competent (AR8, "The leap and the final").
+  - Uploaded with it, all Approved: `fx_fire_Flame`, `FxBar`, `FxPlate`, the five fronts.
+- **Research, your call:** the signature's final verdict.
+- **Now:** B1's finish, then B5's rows and clip, then the Down's re-save, then Rook, Pip and Lyric, framing first.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.

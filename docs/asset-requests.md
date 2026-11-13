@@ -3024,6 +3024,56 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   - Accepted: research's read was competent, and its look at the raised wrench met.
   - The roles and the walk went to Faber with the delivery.
 
+### 5. The fall: the block clip (Modulo, 2026-11-13)
+
+**The feel line, proposed, for research to sign:** "Struck one blow too many, the keeper sags onto its pole, its mask tips back to the sky and it bursts into light and paper; its pole stays planted where it stood, the lantern still lit on its hook, the last light on the street, until it gutters and goes out."
+- **The hero shape:** the lit lantern on the lone pole.
+- **The levers:**
+  - anticipation in the sag onto the pole and the mask letting go;
+  - the Shade's own Burst;
+  - then a held beat: the lantern alone for half a second before its light goes.
+- **Why the pole stands** (tier 1, for the verdict): the keeper of a street of lanterns leaves one behind, as its signature leans its pole out as a street lamp. A falling pole was the other road: a long sweep and a lantern rolling on the floor, where a light low by the ground can read as a pool (Pip's condition 4).
+
+**Scope, fixed here.**
+- **The block:**
+  - the clip, `tools/blender/lamplighter_fall.py`, exported as `Lamplighter_Down.json` (LamplighterDown): 97 frames, 1.60 s, with the markers Burst 34, Gutter 64, Out 80 and Gone 88;
+  - in the replay (Faber, with AR7's install):
+    - the Shade's burst at keeper size (1.5) on Burst, the body hidden there, the Pole and the Lantern kept;
+    - the lantern's glow steady at 1.2, flickering from Gutter, and 0 on Out;
+    - on Gone, the pole and the lantern go to a handful of the burst's own paper scraps, with no flame;
+    - the server keeps the body until Gone.
+- **Waits:**
+  - any art of the fall's own (the guttering, the last scraps), if the replay asks for it;
+  - the final clip's polish;
+  - the sound.
+
+**The clip.**
+- 4: struck, it's rocked back, the size of Hit's blow at the shoulder. The planted pole carries the grip's jolt about three times up to its hook, so the lantern is held back from flinging over it.
+- 16: it sags onto its pole, the head bowed under the brim.
+- 26: the mask lets go.
+- 34, **Burst**: its face is to the sky and the hat tips back, as the Shade's Burst.
+- After that the hidden body brings the grip back over the pole's planted foot, so the pole rocks back past upright once and stands still by 54. The lantern swings and steadies.
+- 64, **Gutter**; 80, **Out**; 88, **Gone**.
+
+**Checks, on the export:**
+- The audit passes: an arm into the body 0.015, a leg out of the hip 0.035, Pop 1.04.
+- The pole stays 0.96 off the torso and 0.51 off the head (at 44, hidden).
+- The lantern's widest off plumb is 50° at 15, as it sags (74° before the hold at the blow). It stays 0.84 off the head.
+- A leg swings at most 24° (the coat holds 27).
+
+**The read on the sheet** (`build/scratch/modulo/lamplighter/fall/poses_Down.png`, from the fight's camera and its left side, the body hidden after Burst as the game hides it):
+- It reads struck, sagging, then the face to the sky.
+- Then one shape is left, the lamppost with its lantern, and it holds through the light's going out.
+- The bare rig and the arcs: `bare_Down.png`, `arcs_Down.png`.
+
+**Content:** the model's check carried a condition, no red pieces in the fall. The body and its red sash hide at Burst, and the burst's art has no red. The pole that stays is the model's dark lacquer, for the final's check to read. The block plays unpublished in the replay, so the content check comes with the final clip, before any upload.
+
+**Time:** about 15 minutes by the clock, from B5's commit to the export (16:14), against the 2 hours named for the fall.
+
+**Asks:**
+- **Research:** sign the feel line and the scope, or correct them; then the verdict in the replay.
+- **Faber:** the replay above, with AR7's install.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

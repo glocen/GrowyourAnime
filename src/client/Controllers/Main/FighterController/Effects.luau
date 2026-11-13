@@ -1341,9 +1341,17 @@ end
 -- collar as the Torso tips. On the marker the whole body hides on the flare's frame, the first picture the flare is drawn in,
 -- and from then on it runs on the effects' clock, everything placed from where the collar stood, in the Shade's frame as it stood. The table is
 -- an ordinary Shade's size, so a Shade's scale (the elite's) scales it. With no clip it starts at the Burst.
-function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachment?)
+-- A keeper's fall (`fall`, Config.Effects.Falls) runs the same burst on its own Down clip: the table's frames are moved
+-- to its Burst marker, and its Kept parts aren't hidden (Effects.LanternOut puts them out).
+export type Fall = typeof(EffectsConfig.Falls.Lamplighter)
+function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachment?, fall: Fall?)
 	local look = EffectsConfig.ShadeBurst
 	local scale = model:GetScale()
+	local offset = if fall then ShadeBurstArt.Burst - fall.Burst else 0 -- the table's frame for a clip's frame
+	local kept: { [string]: boolean } = {}
+	for _, name in if fall then fall.Kept else {} do
+		kept[name] = true
+	end
 	local root = model:FindFirstChild("HumanoidRootPart") :: BasePart?
 	local anchor = part(HOT)
 	anchor.Name = "NL_ShadeBurst"
@@ -1373,7 +1381,7 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 			reached = true
 		end)
 	end
-	local burstTime = ShadeBurstArt.Burst * FRAME
+	local burstTime = (ShadeBurstArt.Burst - offset) * FRAME
 	local burstAge: number? = nil
 	local stood: CFrame? = nil
 	local function standing(): CFrame
@@ -1389,7 +1397,7 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 		if burstAge ~= nil and not hidden then
 			hidden = true
 			for _, p in model:GetDescendants() do
-				if p:IsA("BasePart") then
+				if p:IsA("BasePart") and not kept[p.Name] then
 					p.LocalTransparencyModifier = 1
 				end
 			end
@@ -1408,7 +1416,7 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 		end
 		-- After the Burst, the nearest frame: a step runs a hair either side of a frame, and counting down would hold the
 		-- flare, a frame long, for two pictures about every other burst.
-		local frame = if burstAge then ShadeBurstArt.Burst + math.floor((age - (burstAge :: number)) / FRAME + 0.5) else math.floor((down :: AnimationTrack).TimePosition / FRAME + 1e-6)
+		local frame = if burstAge then ShadeBurstArt.Burst + math.floor((age - (burstAge :: number)) / FRAME + 0.5) else math.floor((down :: AnimationTrack).TimePosition / FRAME + 1e-6) + offset
 		if frame > ShadeBurstArt.Last then
 			return false
 		end
@@ -1444,6 +1452,149 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 			marker:Disconnect()
 		end
 		anchor:Destroy()
+	end)
+end
+
+-- A keeper's lantern goes out (AR7, section 5; Config.Effects.Falls): on its Down clip's clock, the lantern's glow and
+-- its light steady at Glow to Gutter, flickering under a falling top to Out, dark from there; on Gone its Kept parts go
+-- to a handful of the burst's own paper scraps, the lantern's from the lantern, the pole's from between its foot and its
+-- hook, each picture as the art table draws it from the Burst on (only rising, only shrinking), at the model's scale. The
+-- parts hide the step after the scraps are set, as the body hides after the flare. Runs beside Effects.ShadeBurst.
+function Effects.LanternOut(model: Model, down: AnimationTrack?, fall: Fall)
+	local scale = model:GetScale()
+	local lantern = model:FindFirstChild(fall.Lantern) :: BasePart?
+	local pole = model:FindFirstChild(fall.Pole) :: BasePart?
+	local glow = if lantern then lantern:FindFirstChildOfClass("SurfaceAppearance") else nil
+	local light = if lantern then lantern:FindFirstChildWhichIsA("PointLight", true) else nil
+	local brightness = if light then light.Brightness else 0
+	local kept: { BasePart } = {}
+	for _, name in fall.Kept do
+		local p = model:FindFirstChild(name)
+		if p and p:IsA("BasePart") then
+			table.insert(kept, p)
+		end
+	end
+	-- The scraps: ids by where they rise from, and a billboard each made now, drawn and see-through (a billboard made on
+	-- the frame it's wanted isn't drawn on that frame).
+	local from: { [number]: string } = {}
+	for id = 1, fall.Scraps.Lantern do
+		from[id] = "Lantern"
+	end
+	for id = fall.Scraps.Lantern + 1, fall.Scraps.Lantern + fall.Scraps.Pole do
+		from[id] = "Pole"
+	end
+	local anchors: { [string]: Part } = {}
+	for _, where in { "Lantern", "Pole" } do
+		local anchor = part(HOT)
+		anchor.Name = "NL_LanternOut"
+		anchor.Transparency = 1
+		anchor.Size = Vector3.one * PICTURE_DEPTH
+		anchor.CFrame = model:GetPivot()
+		anchors[where] = anchor
+	end
+	local shown: { [number]: { Gui: BillboardGui, Label: ImageLabel } } = {}
+	for id, where in from do
+		local gui, label = billboard(anchors[where], EffectsConfig.ShadeBurst.Picture)
+		gui.Brightness = EffectsConfig.ShadeBurst.Brightness
+		gui.ClipsDescendants = false
+		gui.Enabled = true
+		label.ImageTransparency = 1
+		shown[id] = { Gui = gui, Label = label }
+	end
+	local function point(on: BasePart?, name: string): Vector3?
+		local a = if on then on:FindFirstChild(name) else nil
+		return if a and a:IsA("Attachment") then a.WorldPosition else nil
+	end
+	local function flicker(clock: number): number
+		local n = math.floor(clock * fall.Flicker.Rate)
+		local r = (math.sin(n * 12.9898 + 4.1414) * 43758.5453) % 1 -- the same jumps every fall
+		return fall.Flicker.Low + (1 - fall.Flicker.Low) * r
+	end
+	local clock, last = 0, 0
+	local goneAge: number? = nil
+	local hidden = false
+	local turn = CFrame.identity
+	local was: { [number]: boolean } = {}
+	run(function(age: number): boolean
+		-- the clip's clock while it plays (a hold pauses it with the body), else on from where it stood
+		if down and down.IsPlaying and goneAge == nil then
+			clock = math.max(clock, down.TimePosition)
+		else
+			clock += age - last
+		end
+		last = age
+		if goneAge ~= nil and not hidden then
+			hidden = true
+			for _, p in kept do
+				p.LocalTransparencyModifier = 1
+			end
+		end
+		if goneAge == nil then
+			if model.Parent == nil then
+				return false -- the body left before Gone: its parts went with it
+			end
+			local frame = clock / FRAME
+			local g = fall.Glow
+			if frame >= fall.Out then
+				g = 0
+			elseif frame >= fall.Gutter then
+				g = fall.Glow * (1 - (frame - fall.Gutter) / (fall.Out - fall.Gutter)) * flicker(clock)
+			end
+			if glow then
+				glow.EmissiveStrength = g
+			end
+			if light then
+				light.Brightness = brightness * g / fall.Glow
+				light.Enabled = g > 0
+			end
+			if frame < fall.Gone then
+				return true
+			end
+			goneAge = age
+			turn = model:GetPivot().Rotation
+			local up = Vector3.new(0, fall.Scraps.Lift * scale, 0)
+			local at = point(lantern, "Lantern")
+			if at then
+				anchors.Lantern.CFrame = CFrame.new(at + up)
+			end
+			local foot, hook = point(pole, "PoleFoot"), point(pole, "HookTip")
+			if foot and hook then
+				anchors.Pole.CFrame = CFrame.new((foot + hook) / 2 + up)
+			end
+		end
+		-- the scraps as the table draws them from the frame after its Burst, the nearest frame (as the burst counts)
+		local artFrame = ShadeBurstArt.Burst + 1 + math.floor((age - (goneAge :: number)) / FRAME + 0.5)
+		if artFrame > ShadeBurstArt.Last + 1 then
+			return false
+		end
+		local now: { [number]: boolean } = {}
+		for _, picture in ShadeBurstArt.Frames[artFrame] or {} do
+			local item = if picture.Kind == "scrap" then shown[picture.Id] else nil
+			if item then
+				local at = picture.At * scale
+				item.Gui.Size = UDim2.fromScale(picture.Size.X * scale, picture.Size.Y * scale)
+				item.Gui.StudsOffsetWorldSpace = turn.RightVector * at.X + turn.LookVector * at.Y + turn.UpVector * at.Z
+				item.Label.ImageTransparency = 0
+				item.Label.ImageRectOffset = picture.Offset
+				item.Label.ImageRectSize = picture.Rect
+				item.Label.Rotation = picture.Rotation
+				item.Label.Size = UDim2.fromScale(picture.Squash, 1)
+				item.Label.Position = UDim2.fromScale((1 - picture.Squash) / 2, 0)
+				now[picture.Id] = true
+			end
+		end
+		-- each cleared a step after its last frame, as the burst's are: drawn one behind, evenly
+		for id, item in shown do
+			if not now[id] and not was[id] then
+				item.Label.ImageTransparency = 1
+			end
+		end
+		was = now
+		return true
+	end, function()
+		for _, anchor in anchors do
+			anchor:Destroy()
+		end
 	end)
 end
 

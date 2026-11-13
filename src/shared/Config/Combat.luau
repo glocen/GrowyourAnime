@@ -119,6 +119,13 @@ return {
 		-- It notices its challenger anywhere in its copy (a 41-stud ring inside a fenced square: 133 corner to corner) and
 		-- never gives up, so a fight at the rim can't reset it. Copies stand 600 apart.
 		Notice = 140,
+		-- Its own walk (research's tier 2, AR7, section 4: a master walks, it doesn't scurry): near its clip's stride at rate 1
+		-- (Config.Animations.Strides.LamplighterWalk), up to 7 if a ranged lead's free hits on its approach come to more than
+		-- about 1.5 s.
+		WalkSpeed = 5,
+		-- Seconds from its fall until the server takes its body: past the Down clip's Gone, with the longest hold and the
+		-- replication's delay to spare (AR7, section 5: the server keeps the body until Gone; a logic case holds it).
+		FadeSeconds = 1.9,
 	},
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.

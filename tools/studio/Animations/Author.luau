@@ -48,6 +48,10 @@ local HELD: { [string]: string } = {
 	Lyric_SpeakerL = "Torso",
 	Pip_Hat = "Head", -- Pip's (AR4: tools/studio/Models/Pip.luau): his hat on the Head, his lamp on the Torso
 	Pip_Lamp = "Torso",
+	-- The Lamplighter's (AR7: tools/studio/Models/Lamplighter.luau): its pole in the right hand, and the lantern on the
+	-- pole's hook, a held part on a held part: its Pose nests under the pole's.
+	Lamplighter_Pole = "Right Arm",
+	Lamplighter_Lantern = "Lamplighter_Pole",
 }
 local LEANS = { Torso = true, Head = true } -- pitch flips on these: their bases face the other way from an arm's
 
@@ -370,16 +374,31 @@ function Author.SaveBaked(name: string, as: string?): (KeyframeSequence, string)
 			pose.EasingStyle = Enum.PoseEasingStyle.Linear
 			poses[part] = pose
 		end
-		for grip, arm in HELD do
-			local transform = frame.Poses[grip]
-			-- under a kept arm only; a wrist weighted 0 there stays at 0, or restWrists would hold it at the arm's weight
-			if transform and poses[arm] then
-				local pose = Instance.new("Pose")
-				pose.Name = grip
-				pose.Parent = poses[arm]
-				pose.CFrame = CFrame.new(table.unpack(transform))
-				pose.Weight = weight(grip)
-				pose.EasingStyle = Enum.PoseEasingStyle.Linear
+		-- Held parts, each under its kept arm (or kept held part: the Lamplighter's lantern on its pole), parents first; a
+		-- wrist weighted 0 there stays at 0, or restWrists would hold it at the arm's weight.
+		local pending: { string } = {}
+		for grip in HELD do
+			if frame.Poses[grip] then
+				table.insert(pending, grip)
+			end
+		end
+		local placed = true
+		while placed and #pending > 0 do
+			placed = false
+			for index = #pending, 1, -1 do
+				local grip = pending[index]
+				local arm = HELD[grip]
+				if poses[arm] then
+					local pose = Instance.new("Pose")
+					pose.Name = grip
+					pose.Parent = poses[arm]
+					pose.CFrame = CFrame.new(table.unpack(frame.Poses[grip]))
+					pose.Weight = weight(grip)
+					pose.EasingStyle = Enum.PoseEasingStyle.Linear
+					poses[grip] = pose
+					table.remove(pending, index)
+					placed = true
+				end
 			end
 		end
 	end

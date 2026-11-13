@@ -17,6 +17,7 @@ local Net = require(Shared.Net)
 local Actions = require(Shared.Definitions.Actions)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
+local EffectsConfig = require(Shared.Config.Effects)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local Voidkin = require(Shared.Definitions.Voidkin)
@@ -397,9 +398,14 @@ local function playReaction(view: View, role: string): AnimationTrack?
 end
 
 -- A Shade bursts as it goes down (AR2, section 11): the effect runs from the Down clip's start, on its clock, and hides
--- the body on its `Burst` marker (Effects.ShadeBurst), or bursts at once when it has no clip.
+-- the body on its `Burst` marker (Effects.ShadeBurst), or bursts at once when it has no clip. A keeper's rig has a fall of
+-- its own (Config.Effects.Falls): the same burst on its clip's marker, and its lantern left to go out (AR7, section 5).
 local function burst(view: View, down: AnimationTrack?)
-	Effects.ShadeBurst(view.Model, down, view.Collar)
+	local fall = EffectsConfig.Falls[view.Rig]
+	Effects.ShadeBurst(view.Model, down, view.Collar, fall)
+	if fall then
+		Effects.LanternOut(view.Model, down, fall)
+	end
 end
 
 local function onState(view: View)

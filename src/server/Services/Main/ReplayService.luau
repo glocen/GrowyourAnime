@@ -4,9 +4,10 @@
 --   NL_Debug:Invoke("Replay", who, "RookHaymaker")      every Config.Combat.Replay.Every seconds
 --   NL_Debug:Invoke("Replay", who, "RookCombo", 2)      every 2 seconds
 --   NL_Debug:Invoke("Replay", who)                      stops, and puts the player and the lead back
--- Two more Studio tools for fights, for tests and play checks:
+-- More Studio tools for fights, for tests and play checks:
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
 --   NL_Debug:Invoke("FightSpawn", who)                      removes every Shade it spawned
+--   NL_Debug:Invoke("FightDefeat", who, id)                 one of those falls at once, its fall seen whole
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
 --   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
 -- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
@@ -164,6 +165,17 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any): any
 	return { Ok = true, Id = f.Id, Health = f.Health }
 end
 
+-- One of FightSpawn's enemies falls at once, as if hit to nothing: its fall seen whole (the keeper's lantern going out).
+local function fightDefeat(_who: any, id: any): any
+	for f in spawned do
+		if f.Id == id then
+			FightService.Defeat(f)
+			return { Ok = true }
+		end
+	end
+	return { Ok = false, Error = "NotSpawned" }
+end
+
 local function fightHealth(who: any, share: any): any
 	local player = DebugService.ResolvePlayer(who)
 	local lead = if player then FightService.LeadOf(player) else nil
@@ -207,6 +219,7 @@ function ReplayService.Start()
 	end
 	DebugService.Register("Replay", replay)
 	DebugService.Register("FightSpawn", fightSpawn)
+	DebugService.Register("FightDefeat", fightDefeat)
 	DebugService.Register("Fighters", fighters)
 	DebugService.Register("FightHealth", fightHealth)
 	Players.PlayerRemoving:Connect(stopFor)

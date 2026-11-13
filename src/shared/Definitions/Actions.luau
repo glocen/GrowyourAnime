@@ -217,9 +217,11 @@ local rows: { Action } = {
 		Signed = nil,
 	},
 	{
-		-- The Lamplighter's one attack in TR2: health and a basic swing (docs/test-requests.md, TR2).
+		-- The Lamplighter's one attack in TR2: health and a basic swing (docs/test-requests.md, TR2). AR7's clip: it draws the
+		-- pole's foot back past its hip like a lance, then sweeps it round and across at the lead's chest, the lantern flung
+		-- wide behind its shoulder and back by Recover (docs/asset-requests.md, AR7, section 4).
 		Id = "KeeperSwing",
-		Clip = nil,
+		Clip = "LamplighterSwing",
 		Length = 1.6,
 		CancelFrom = 1.6,
 		Cooldown = 0,
@@ -230,7 +232,24 @@ local rows: { Action } = {
 		Range = 6,
 		Heavy = false,
 		State = nil,
-		Levers = { "anticipation (the lean back)", "hitstop (light)", "knockback" },
+		Levers = { "anticipation (the pole's foot drawn back past its hip)", "hitstop (light)", "knockback", "the lantern's weight (flung wide, swinging back)" },
+		Signed = nil,
+	},
+	{
+		-- The Lamplighter's Challenge, held as a try starts (AR7, section 4: the fade clears about 0.45 s in, so the Lift is
+		-- seen): it hears you, lifts its face to the player's camera on Lift and stamps its pole on Stamp, and ends in Ready.
+		-- It never hits, and it's no one's to choose: the keeper's row starts it as it's spawned (Definitions.Enemies' Enter).
+		Id = "KeeperChallenge",
+		Clip = "LamplighterChallenge",
+		Length = 1.5333,
+		CancelFrom = 1.5333,
+		Cooldown = 0,
+		Beats = { Lift = 0.7333, Stamp = 0.9667 },
+		Hits = {},
+		Range = 0,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the head lifted to you before it moves)", "the stamp: the pole lifted a hand and set down" },
 		Signed = nil,
 	},
 }

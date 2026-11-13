@@ -6,8 +6,9 @@
 -- every clip is published before a public build (handbook/art/animation.md, "Importing and publishing").
 -- Rigs: each rig's shared reactions, one clip set per rig, not per Voidkin (docs/design.md, "States in a fight"). R6
 -- with open legs uses Rook's, as does TR2's stand-in; R6 in a robe uses Pip's (AR4: Pip and Lyric), named by a Voidkin row's Rig. The
--- Shade's (AR2) is every Shade's: its Down bursts on the clip's `Burst` marker. Idles: a Voidkin's own stance, by its
--- def, over its rig's.
+-- Shade's (AR2) is every Shade's: its Down bursts on the clip's `Burst` marker. The Lamplighter's (AR7) is its own: the
+-- Shade's clips lay its pole through its coat. Idles: a fighter's own stance, by its def, over its rig's: the keeper
+-- fights in its Ready, its Idle the doze it's built in.
 
 return {
 	Fades = {
@@ -21,16 +22,19 @@ return {
 		Swipe = { In = 0.06, Out = 0.15 },
 		Burst = { In = 0.03, Out = 0.05 },
 		Signature = { In = 0.06, Out = 0.15 },
+		Challenge = { In = 0.06, Out = 0.15 }, -- the keeper's, as a try starts: it ends in Ready's pose
 	},
 	Ids = {} :: { [string]: number },
 	Rigs = {
 		R6 = { Idle = "RookIdle", Hit = "RookHit", Down = "RookDown", Up = "RookUp" },
 		Robe = { Idle = "PipIdle", Hit = "PipHit", Down = "PipDown", Up = "PipUp" },
 		Shade = { Idle = "ShadeIdle", Walk = "ShadeWalk", Hit = "ShadeHit", Down = "ShadeBurst" },
+		Lamplighter = { Idle = "LamplighterIdle", Walk = "LamplighterWalk", Hit = "LamplighterHit", Down = "LamplighterDown" },
 	} :: { [string]: { [string]: string } },
 	Idles = {
 		pip = "PipIdle",
 		lyric = "LyricIdle",
+		lamplighter = "LamplighterReady",
 	} :: { [string]: string },
 	-- A clip's mirror, picked at random each time it plays, so a pack doesn't swing or reel in step (AR2).
 	Mirrors = {
@@ -46,6 +50,7 @@ return {
 	-- body's own speed over this, so its feet keep to the ground, up to MaxRate (AR2: "walk speed comes from the stride").
 	Strides = {
 		ShadeWalk = 4.11,
+		LamplighterWalk = 4.94, -- at its Scale, 1.5 (Lamplighter.clips.json)
 	} :: { [string]: number },
 	Walk = { MinSpeed = 0.6, MaxRate = 3 }, -- studs a second below which it stands; the fastest it plays
 	-- A prop a Voidkin lets go of when it goes down, by its def (research's prop state for Lyric's stand, AR4, section 6):
@@ -79,5 +84,13 @@ return {
 		ShadeHit = "Hit",
 		ShadeHitLeft = "Hit",
 		ShadeBurst = "Burst",
+		LamplighterIdle = "Idle",
+		LamplighterReady = "Idle",
+		LamplighterChallenge = "Challenge",
+		LamplighterWalk = "Walk",
+		LamplighterSwing = "Swipe",
+		LamplighterHit = "Hit",
+		LamplighterSignature = "Signature",
+		LamplighterDown = "Burst",
 	} :: { [string]: string },
 }

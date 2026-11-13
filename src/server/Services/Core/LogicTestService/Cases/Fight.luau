@@ -35,7 +35,8 @@ return {
 				seen[action.Id] = true
 				t.Check(`{action.Id} cancels inside its length`, action.CancelFrom > 0 and action.CancelFrom <= action.Length)
 				t.Check(`{action.Id} has a cooldown of 0 or more`, action.Cooldown >= 0)
-				t.Check(`{action.Id} starts inside its reach`, action.Range > 0)
+				-- an entrance (AR7's Challenge) hurts no one and is never chosen by its reach
+				t.Check(`{action.Id} starts inside its reach`, action.Range > 0 or next(action.Hits) == nil)
 				local beats = 0
 				for name, at in action.Beats do
 					beats += 1
@@ -66,13 +67,22 @@ return {
 			for _, row in Enemies.List do
 				t.Check(`{row.Id}'s numbers exist`, (EnemiesConfig :: any)[row.Kind] ~= nil)
 				t.Check(`{row.Id}'s action exists`, row.Action == nil or Actions.ById[row.Action] ~= nil)
-				if row.Rig == "Shade" then
+				if row.Rig == "Box" then
+					t.Check(`{row.Id}'s box has a size`, row.Size ~= nil and #(row.Size :: { number }) == 3)
+				elseif row.Rig == "Shade" then
 					-- AR2's rig carries the four masks by role (tools/studio/Models/Shade.luau)
 					local masks = { Brawler = true, Guard = true, Dasher = true, Support = true }
-					t.Check(`{row.Id} wears one of the rig's masks`, masks[row.Mask] == true)
-					t.Check(`{row.Id}'s scale is a size`, row.Scale == nil or (row.Scale :: number) > 0)
+					t.Check(`{row.Id} wears one of the rig's masks`, row.Mask ~= nil and masks[row.Mask :: string] == true)
 				else
-					t.Check(`{row.Id}'s box has a size`, row.Size ~= nil and #(row.Size :: { number }) == 3)
+					-- a rig of its own (AR7: the keeper's template), with its clips by role
+					t.Check(`{row.Id}'s rig has its clips`, Animations.Rigs[row.Rig] ~= nil)
+				end
+				t.Check(`{row.Id}'s scale is a size`, row.Scale == nil or (row.Scale :: number) > 0)
+				if row.Enter then
+					-- the entrance it holds as it's spawned: an action that hurts no one
+					local enter = Actions.ById[row.Enter :: string]
+					t.Check(`{row.Id}'s entrance exists`, enter ~= nil)
+					t.Check(`{row.Id}'s entrance hurts no one`, enter ~= nil and next(enter.Hits) == nil)
 				end
 			end
 		end,
@@ -496,6 +506,47 @@ return {
 			local forced = art.Burst / 60 + wait
 			t.Check("the burst waits out the longest hold", wait > Fight.LongestHold(Combat.Hitstop), `{wait} s against {Fight.LongestHold(Combat.Hitstop)}`)
 			t.Check("and bursts a held clip a fifth of a second or more before the body goes", forced <= Combat.Shade.FadeSeconds - 0.2, string.format("%.2f s of %.2f", forced, Combat.Shade.FadeSeconds))
+		end,
+	},
+	{
+		-- AR7, sections 4 and 5: the keeper falls into the Shade's burst on its own clip's Burst, its lantern gutters, goes
+		-- out and goes to paper at Gone, and the server keeps the body until then; it walks at its own pace.
+		Name = "Fight: the keeper's fall keeps its order and its body to Gone, and it walks its walk",
+		Run = function(t: any)
+			local row = Enemies.ById.lamplighter
+			local fall = (EffectsConfig.Falls :: any)[row.Rig]
+			t.Check("the keeper's rig has its fall", fall ~= nil)
+			if fall == nil then
+				return
+			end
+			t.Check("Burst, Gutter, Out, Gone, in order", fall.Burst < fall.Gutter and fall.Gutter < fall.Out and fall.Out < fall.Gone)
+			t.Equal("its fall is its rig's Down", Animations.Roles[Animations.Rigs[row.Rig].Down], "Burst")
+			local hold = Fight.LongestHold(Combat.Hitstop)
+			local keeper = Combat.Keeper
+			local gone = fall.Gone / 60 + hold
+			t.Check("Gone, after the longest hold, a fifth of a second or more before the body goes", gone <= keeper.FadeSeconds - 0.2, string.format("%.2f s of %.2f", gone, keeper.FadeSeconds))
+			local forced = fall.Burst / 60 + EffectsConfig.ShadeBurst.Wait
+			t.Check("a held clip's burst, forced, as early", forced <= keeper.FadeSeconds - 0.2, string.format("%.2f s of %.2f", forced, keeper.FadeSeconds))
+			t.Check("and the body goes before the try's fade", keeper.FadeSeconds < keeper.WinPause)
+			-- the paper is the burst's scraps, by id: the lantern's first, then the pole's
+			local scraps: { [number]: boolean } = {}
+			for _, pictures in ShadeBurstArt.Frames do
+				for _, picture in pictures do
+					if picture.Kind == "scrap" then
+						scraps[picture.Id] = true
+					end
+				end
+			end
+			local wanted = fall.Scraps.Lantern + fall.Scraps.Pole
+			local all = fall.Scraps.Lantern >= 1 and fall.Scraps.Pole >= 1
+			for id = 1, wanted do
+				all = all and scraps[id] == true
+			end
+			t.Check("its scraps are the burst's own", all, `{wanted} wanted`)
+			t.Check("its lantern dims to a floor above nothing", fall.Flicker.Low > 0 and fall.Flicker.Low < 1 and fall.Glow > 0)
+			-- research's tier 2 (AR7, section 4): its own speed near 5, the clip near rate 1, never past 1.4
+			local rate = keeper.WalkSpeed / Animations.Strides[Animations.Rigs[row.Rig].Walk]
+			t.Check("its walk plays near rate 1, never past 1.4", rate >= 0.9 and rate <= 1.42, string.format("rate %.2f", rate))
 		end,
 	},
 	{

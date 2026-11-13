@@ -346,6 +346,31 @@ local function buildShade(row: Enemies.Row, name: string, type: string): Model
 	return model
 end
 
+-- An enemy in a rig of its own (ServerStorage.Templates.<Rig>: the Lamplighter's, tools/studio/Models/Lamplighter.luau),
+-- built on the Shade's frame: each surface's glow says what it is (its attribute Glow), so the body's lit seams take its
+-- type's colour and the mask a mask's, as a Shade's (Config.Shades); any other glow is its own. At the row's scale.
+local function buildRig(row: Enemies.Row, name: string, type: string): Model
+	local templates = ServerStorage:WaitForChild("Templates")
+	local model = (templates:WaitForChild(row.Rig) :: Model):Clone()
+	model.Name = name
+	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
+	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
+	for _, look in model:GetDescendants() do
+		if look:IsA("SurfaceAppearance") then
+			local glow = look:GetAttribute("Glow")
+			if glow == "Body" then
+				look.EmissiveTint, look.EmissiveStrength = tint, Shades.Emissive
+			elseif glow == "Mask" then
+				look.EmissiveTint, look.EmissiveStrength = Shades.MaskTint, Shades.MaskEmissive
+			end
+		end
+	end
+	if row.Scale and row.Scale ~= 1 then
+		model:ScaleTo(row.Scale)
+	end
+	return model
+end
+
 local function register(model: Model, side: "Lead" | "Shade", kind: string, def: string, block: Stats.Block, kit: { Actions.Action }, title: string, owner: Player?, rig: string?): Fighter
 	nextId += 1
 	local id = `f{nextId}`
@@ -728,7 +753,7 @@ function fall(f: Fighter, at: number)
 		setState(f, "Down", at + Combat.Lead.DownSeconds)
 	else
 		setState(f, "Down")
-		task.delay(Combat.Shade.FadeSeconds, remove, f)
+		task.delay(if f.Kind == "Keeper" then Combat.Keeper.FadeSeconds else Combat.Shade.FadeSeconds, remove, f)
 	end
 	FightService.Fell:Fire(f, hitters)
 end
@@ -897,7 +922,7 @@ local function thinkShade(f: Fighter, at: number)
 		start(f, action, at)
 	else
 		endAction(f, at)
-		moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), Combat.Shade.WalkSpeed)
+		moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), if keeper then Combat.Keeper.WalkSpeed else Combat.Shade.WalkSpeed)
 	end
 end
 
@@ -973,12 +998,12 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
 	local name = `{row.Id}_{level}`
 	local model, up
-	if row.Rig == "Shade" then
-		model = buildShade(row, name, block.Type)
-		up = SHADE_ROOT_HEIGHT * (row.Scale or 1) + 0.05 -- the rig's feet on the floor
-	else
+	if row.Rig == "Box" then
 		model = buildBox(row, name)
 		up = (row.Size :: { number })[2] / 2 + 0.1
+	else
+		model = if row.Rig == "Shade" then buildShade(row, name, block.Type) else buildRig(row, name, block.Type)
+		up = SHADE_ROOT_HEIGHT * (row.Scale or 1) + 0.05 -- the rig's feet on the floor
 	end
 	model:PivotTo(at + Vector3.new(0, up, 0))
 	local f = register(model, "Shade", row.Kind, def, block, kit, row.Name, nil, row.Rig)
@@ -986,6 +1011,10 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	f.Pack = if options then options.Pack else nil
 	f.Ground = if options then options.Ground else nil
 	model:SetAttribute("Type", block.Type)
+	if row.Enter then
+		-- held to its end before it does anything else: busy() keeps it from walking or striking (the keeper's Challenge)
+		start(f, Actions.ById[row.Enter], now())
+	end
 	return f
 end
 

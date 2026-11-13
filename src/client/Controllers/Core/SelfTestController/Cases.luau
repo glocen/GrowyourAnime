@@ -1440,6 +1440,161 @@ return {
 		end,
 	},
 	{
+		-- AR7: the keeper on its own rig (sections 2 and 4) and its fall's block (section 5, signed 2026-11-13): it holds its
+		-- Challenge before anything, fights in its Ready, walks at its own pace, and falls into the Shade's burst on its clip's
+		-- Burst with its pole and lantern left standing, the lantern lit, guttering and out, then gone to paper; the server
+		-- keeps the body until Gone.
+		Name = "Keeper: the Lamplighter wears its rig, holds its Challenge, walks at its pace, and its lantern goes out last",
+		Run = function(t: any)
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if type(level) ~= "number" then
+				return
+			end
+			local row = Enemies.ById.lamplighter
+			local fall = EffectsConfig.Falls[row.Rig]
+			local challenge = Actions.ById[row.Enter :: string]
+			-- outside the lead's leash, so the keeper walks to it alone for a while
+			local spawned = t.Server("FightSpawn", "lamplighter", level, Combat.Lead.Leash + 10)
+			t.Check("the keeper spawns", type(spawned) == "table" and spawned.Ok == true, tostring(type(spawned) == "table" and spawned.Error))
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			local spawnedAt = os.clock()
+			local model: Model? = nil
+			waitFor(t, 5, function(): boolean
+				model = fighterModel(spawned.Id)
+				return model ~= nil and model:FindFirstChild("Lamplighter_Lantern") ~= nil
+			end)
+			local keeper = model :: Model
+			local root = if keeper then keeper:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			t.Check("its model reaches this client", keeper ~= nil and root ~= nil)
+			if keeper == nil or root == nil then
+				t.Server("FightSpawn")
+				return
+			end
+			t.Check("it's its own rig", keeper:GetAttribute("Rig") == "Lamplighter", tostring(keeper:GetAttribute("Rig")))
+			t.Near("at its scale", keeper:GetScale(), row.Scale or 1, 0.01)
+			local params = RaycastParams.new()
+			params.FilterDescendantsInstances = { workspace:FindFirstChild("Fighters") :: Instance, Players.LocalPlayer.Character :: Instance }
+			params.FilterType = Enum.RaycastFilterType.Exclude
+			local floor = workspace:Raycast(root.Position, Vector3.new(0, -20, 0), params)
+			t.Near("its feet on the floor, at its scale", if floor then root.Position.Y - floor.Position.Y else -1, 3 * (row.Scale or 1), 0.45)
+			local function look(name: string): SurfaceAppearance?
+				local piece = keeper:FindFirstChild(name)
+				return if piece then piece:FindFirstChildOfClass("SurfaceAppearance") else nil
+			end
+			local body, mask, lantern = look("Lamplighter_Torso"), look("Lamplighter_Head"), look("Lamplighter_Lantern")
+			local kind = tostring(keeper:GetAttribute("Type"))
+			t.Check("its seams lit in its type's colour at a Shade's strength", body ~= nil and body.EmissiveTint == Shades.Tint[kind] and body.EmissiveStrength == Shades.Emissive, kind)
+			t.Check("its mask in a mask's", mask ~= nil and mask.EmissiveTint == Shades.MaskTint and mask.EmissiveStrength == Shades.MaskEmissive)
+			t.Near("its lantern burning cold", if lantern then lantern.EmissiveStrength else -1, fall.Glow, 1e-3)
+			-- the Challenge first, held still to its end
+			t.Check("it holds its Challenge as it's spawned", keeper:GetAttribute("Action") == challenge.Id and waitFor(t, 1, function(): boolean
+				return playing(keeper)[challenge.Clip :: string] == true
+			end), tostring(keeper:GetAttribute("Action")))
+			local from = root.Position
+			local drift = 0
+			while os.clock() - spawnedAt < challenge.Length - 0.15 do
+				drift = math.max(drift, (root.Position - from).Magnitude)
+				task.wait()
+			end
+			t.Check("and stands where it was through it", drift < 0.3, string.format("%.2f studs", drift))
+			t.Check("its stance under everything is its Ready", waitFor(t, 1, function(): boolean
+				return playing(keeper)[Animations.Idles.lamplighter] == true
+			end))
+			-- its walk: its own speed, the clip near rate 1 (research's tier 2, AR7, section 4)
+			local walked = waitFor(t, 2, function(): boolean
+				return playing(keeper)[Animations.Rigs.Lamplighter.Walk] == true
+			end)
+			t.Check("it walks its own walk", walked)
+			local speeds: { number } = {}
+			local last, lastAt = root.Position, os.clock()
+			local walkUntil = os.clock() + 1.2
+			while os.clock() < walkUntil and keeper:GetAttribute("Action") == "" do
+				task.wait(0.2)
+				local now = os.clock()
+				local step = root.Position - last
+				table.insert(speeds, Vector3.new(step.X, 0, step.Z).Magnitude / (now - lastAt))
+				last, lastAt = root.Position, now
+			end
+			table.sort(speeds)
+			local median = if #speeds > 0 then speeds[math.floor(#speeds / 2) + 1] else -1
+			t.Near("at its own pace (studs a second)", median, Combat.Keeper.WalkSpeed, 0.8)
+			-- the fall, on the Down clip's clock (the killing hit's hold pauses it, so not the wall's)
+			t.Check("it falls", t.Server("FightDefeat", spawned.Id).Ok == true)
+			local function clipTime(): number?
+				local humanoid = keeper:FindFirstChildOfClass("Humanoid")
+				local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+				for _, track in (if animator then animator:GetPlayingAnimationTracks() else {}) do
+					if track.Animation and track.Animation.Name == Animations.Rigs.Lamplighter.Down then
+						return track.TimePosition
+					end
+				end
+				return nil
+			end
+			local function shows(name: string): boolean
+				local piece = keeper:FindFirstChild(name)
+				return piece ~= nil and piece:IsA("BasePart") and piece.LocalTransparencyModifier < 1
+			end
+			local function scraps(): number
+				local count = 0
+				local home = workspace:FindFirstChild("NL_Effects")
+				for _, anchor in (if home then home:GetChildren() else {}) do
+					if anchor.Name == "NL_LanternOut" then
+						for _, gui in anchor:GetChildren() do
+							local image = if gui:IsA("BillboardGui") then gui:FindFirstChildOfClass("ImageLabel") else nil
+							count += if image and image.ImageTransparency < 1 then 1 else 0
+						end
+					end
+				end
+				return count
+			end
+			local seen = { BodyAfterBurst = false, KeptAfterBurst = true, KeptBurst = false, SteadyBefore = true, Dimmed = false, LitAfterOut = false, Gone = false, Scraps = 0, KeptAfterGone = false }
+			local deadline = os.clock() + 4
+			local clock: number? = nil
+			local scrapsAt: number? = nil
+			while os.clock() < deadline and keeper.Parent ~= nil do
+				local at = clipTime()
+				clock = at or clock
+				local frame = if at then at / FRAME else nil
+				local glow = if lantern then lantern.EmissiveStrength else -1
+				if frame and frame >= fall.Burst + 2 and frame < fall.Gone - 1 then
+					seen.BodyAfterBurst = seen.BodyAfterBurst or shows("Lamplighter_Torso")
+					seen.KeptAfterBurst = seen.KeptAfterBurst and shows("Lamplighter_Pole") and shows("Lamplighter_Lantern")
+					seen.KeptBurst = true
+				end
+				if frame and frame < fall.Gutter - 1 then
+					seen.SteadyBefore = seen.SteadyBefore and math.abs(glow - fall.Glow) < 1e-3
+				elseif frame and frame > fall.Gutter + 1 and frame < fall.Out - 1 then
+					seen.Dimmed = seen.Dimmed or glow < fall.Glow - 1e-3
+				elseif frame and frame > fall.Out + 1 and frame < fall.Gone - 1 then
+					seen.LitAfterOut = seen.LitAfterOut or glow > 0
+				end
+				if frame and frame >= fall.Gone - 1 then
+					seen.Gone = true -- the body is still here at Gone
+				end
+				local count = scraps()
+				seen.Scraps = math.max(seen.Scraps, count)
+				scrapsAt = scrapsAt or (if count > 0 then os.clock() else nil)
+				if scrapsAt and os.clock() - scrapsAt > 3 * FRAME then
+					-- a step after Gone the pole and lantern are gone: only paper
+					seen.KeptAfterGone = seen.KeptAfterGone or shows("Lamplighter_Pole") or shows("Lamplighter_Lantern")
+				end
+				task.wait()
+			end
+			t.Check("its body hidden on the clip's Burst", seen.KeptBurst and not seen.BodyAfterBurst)
+			t.Check("its pole and lantern left standing", seen.KeptBurst and seen.KeptAfterBurst)
+			t.Check("the lantern steady until Gutter", seen.SteadyBefore)
+			t.Check("guttering from Gutter", seen.Dimmed)
+			t.Check("and out on Out", not seen.LitAfterOut)
+			t.Check("the server keeps the body to Gone", seen.Gone, string.format("the clip at %.2f s when it went", clock or -1))
+			t.Check("then the pole and lantern go to paper scraps", seen.Scraps > 0 and seen.Scraps <= fall.Scraps.Lantern + fall.Scraps.Pole and not seen.KeptAfterGone, `{seen.Scraps} scraps at once`)
+			t.Server("FightSpawn")
+		end,
+	},
+	{
 		Name = "Fight: Haymaker's look keeps its frames, and leaves nothing",
 		Stay = true,
 		Run = function(t: any)

@@ -3,8 +3,9 @@
 -- enemy is; its numbers come from Config.Enemies by its Kind, times G at the level its spawn gives, through Rules.Stats.
 -- A spawn gives the level and, for a Shade, the type: the outline's colour (ground 1's are Endurance, Strength, Technique).
 -- A Shade wears AR2's rig (Rig "Shade": ServerStorage.Templates.Shade, one mask kept by its role, scaled by Scale). The
--- keeper waits for its own sheet and the dummy stays a target, so both are TR2's grey boxes with a mask shape (Size, in
--- studs). No Roblox API: it runs with Studio closed.
+-- Lamplighter wears its own (Rig "Lamplighter": ServerStorage.Templates.Lamplighter, AR7), scaled by Scale, and holds its
+-- Challenge as a try starts (Enter). The dummy stays a target, TR2's grey box with a mask shape (Size, in studs). No
+-- Roblox API: it runs with Studio closed.
 
 export type Kind = "Ordinary" | "Elite" | "Keeper" | "Dummy"
 
@@ -14,17 +15,21 @@ export type Row = {
 	Kind: Kind,
 	Action: string?, -- its one action (Definitions.Actions); nil: it never attacks
 	Type: string, -- when the spawn gives none
-	Rig: "Shade" | "Box",
-	Mask: string, -- Shade: the mask's role (Brawler, Guard, Dasher, Support); Box: its shape (docs/roster.md)
-	Scale: number?, -- Shade: the rig's size against an ordinary Shade's (the elite's is its box's height over the ordinary's)
+	-- "Shade": AR2's rig, its masks by role; "Box": TR2's grey box; any other: the template of that name, its own rig and
+	-- clip set (Config.Animations.Rigs)
+	Rig: string,
+	Mask: string?, -- Shade: the mask's role (Brawler, Guard, Dasher, Support); Box: its shape (docs/roster.md)
+	Scale: number?, -- a rig's size against an ordinary Shade's (the elite's is its box's height over the ordinary's)
 	Size: { number }?, -- Box: width, height, depth
+	Enter: string?, -- an action it holds as it's spawned, to its end, before it does anything else (Definitions.Actions)
 }
 
 local rows: { Row } = {
 	{ Id = "brawler", Name = "Brawler", Kind = "Ordinary", Action = "ShadeSwipe", Type = "Strength", Rig = "Shade", Mask = "Brawler" },
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Strength", Rig = "Shade", Mask = "Brawler", Scale = 1.35 },
-	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Type = "Intelligence", Rig = "Box", Mask = "Round", Size = { 4.2, 7.4, 2.6 } },
+	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)
+	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Type = "Intelligence", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge" },
 	-- The replay's and the self-test's target: takes every hit, never answers.
 	{ Id = "dummy", Name = "Dummy", Kind = "Dummy", Action = nil, Type = "", Rig = "Box", Mask = "Round", Size = { 2.6, 4.6, 1.6 } },
 }

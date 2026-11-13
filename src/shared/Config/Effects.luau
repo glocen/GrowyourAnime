@@ -168,6 +168,27 @@ return {
 		-- both. A body that leaves first takes the charge with it (AR2, section 13).
 		Wait = 0.4,
 	},
+	-- A keeper's fall, by its rig (AR7, section 5; research signed the scope, 2026-11-13): the Shade's burst at its size on
+	-- its Down clip's Burst, the body hidden there and the Kept parts left standing; the lantern's glow steady at Glow (the
+	-- recipe's cold), flickering from Gutter, out on Out; on Gone the Kept parts go to a handful of the burst's own paper
+	-- scraps, no flame: the art table's first Lantern scraps from the lantern, the next Pole from the pole's middle, each
+	-- set Lift studs over it at a Shade's size. Frames are the clip's, its markers' (a self-test case holds them to the
+	-- clip). The flicker: the glow jumps between Low and all of itself Rate times a second, under a top that falls to 0 by
+	-- Out; the lantern's light follows the glow. A grey block, the builder's numbers, tuned by playing.
+	Falls = {
+		Lamplighter = {
+			Burst = 34,
+			Gutter = 64,
+			Out = 80,
+			Gone = 88,
+			Kept = { "Lamplighter_Pole", "Lamplighter_Lantern" },
+			Lantern = "Lamplighter_Lantern", -- its glow and its light; its "Lantern" point the scraps' place
+			Pole = "Lamplighter_Pole", -- its "PoleFoot" and "HookTip" points: the scraps' place between them
+			Glow = 1.2,
+			Flicker = { Rate = 14, Low = 0.15 },
+			Scraps = { Lantern = 4, Pole = 3, Lift = 2 },
+		},
+	} :: { [string]: { Burst: number, Gutter: number, Out: number, Gone: number, Kept: { string }, Lantern: string, Pole: string, Glow: number, Flicker: { Rate: number, Low: number }, Scraps: { Lantern: number, Pole: number, Lift: number } } },
 
 	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment), rung 5:
 	-- light that rises (AR8 C; docs/research/vfx-reference.md, rule 3). A grey block, the builder's. Seconds; studs; Size

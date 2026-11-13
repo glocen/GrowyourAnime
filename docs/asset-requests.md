@@ -3084,6 +3084,64 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   - The pole rocks back once with no hand on it. It must read as let go, not as pushed.
 - **Next:** Faber's replay with AR7's install, then research's verdict in motion.
 
+**AR7 installed, and the fall's replay built (Faber, 2026-11-13).**
+- **The install:**
+  - The model is a template: `tools/studio/Models/Lamplighter.luau` builds `src/storage/Lamplighter.rbxm` (`ServerStorage.Templates.Lamplighter`). It has:
+    - the eight meshes and four maps;
+    - the pole on the right arm and the lantern on the pole, as Motor6Ds the clips key;
+    - a cyan PointLight in the lantern (1.2, range 9, scaled with the body);
+    - a Collar point where the burst starts.
+  - Its eight clips are saved in the place, unpublished: Idle, Challenge, Ready, Walk, Swing, Hit, Signature and this Down.
+  - The keeper's row is `Rig = "Lamplighter"`, Scale 1.5, `Enter = "KeeperChallenge"`.
+    - It holds its Challenge as it spawns, before anything else (1.53 s: Lift 0.73, Stamp 0.97).
+    - It fights in its Ready and swings `LamplighterSwing`.
+    - It walks at `Combat.Keeper.WalkSpeed` 5, the clip at rate 1.01.
+  - Its Hit doesn't play yet: `Combat.Flinch.Kinds` leaves keepers out, unchanged.
+- **The fall** (`Config.Effects.Falls.Lamplighter`, the scope as signed):
+  - The Shade's burst plays at its size on the clip's Burst, and the body hides; the pole and the lantern stay.
+  - The lantern holds at 1.2 until Gutter, falls with a flicker until Out, and is 0 from Out. Its light follows it.
+  - On Gone the two go to 7 of the burst's own scraps (4 from the lantern, 3 from the pole), rising 2 studs, with no flame.
+  - The server keeps the body 1.9 s (`Combat.Keeper.FadeSeconds`). In the self-test it's still there at the clip's 1.57 s, past Gone's 1.47.
+- **Research's tier 2, the time to first contact.** In a keeper try each, I measured the free time: the keeper's first swing less the lead's first action. Walk 5 against the Shade's 12:
+
+  | Lead | At 5 | At 12 | Extra |
+  |---|---|---|---|
+  | Pip | 1.65 s | 1.00 s | +0.65 s |
+  | Lyric | 1.57 s | 1.00 s | +0.57 s |
+  | Rook | 0.51 s | 0.67 s | −0.16 s (the Challenge's hold covers his walk-in) |
+
+  All are under 1.5 s, so the walk stays at 5.
+- **Checks:**
+  - Type check: 0 new.
+  - Logic: 2432/2432, offline and in Studio. New cases:
+    - the fall keeps its order;
+    - the body lasts to Gone after the longest hold;
+    - the walk plays between rate 0.9 and 1.4;
+    - an entrance hurts no one;
+    - the row check goes by rig.
+  - The keeper's self-test case: 24/24 at 60 fps, under the phone emulator. It covers:
+    - the rig, the scale and the feet;
+    - the glows;
+    - the Challenge held still;
+    - the Ready;
+    - the walk at 5.03;
+    - the fall, frame by frame on the clip's clock.
+  - The whole self-test on the desktop: 849/851 at 55 fps. The two misses are HUD cases outside this piece, found here and stable alone:
+    - the level-up word rises 66 px over the top band on the desktop (it passes on the phone, and AR8 C's whole runs were all on the phone emulator);
+    - an open plate under the Electricity pill sits 9.0 px under it, short of the band's 9.5, on both.
+
+    They're my next fix, before Rook, Pip and Lyric.
+  - Under the phone emulator, the touch camera also misses its known checks: the Base case's two (TR3) and the arrival camera's facing. All three pass on the desktop.
+- **Takes,** at phone size (the iPhone 16 Pro emulator), in `build/captures/ar7/`:
+  - `ar7_try.mp4` (sheet `ar7_try_sheet.png`, the opening `ar7_try_challenge_strip.png`): a keeper try with Pip, from the gate's prompt through the fade, the Challenge, the walk-in and the trades.
+  - `ar7_fall.mp4` (strip `ar7_fall_strip.png`, a tenth of a second a cell): the fall's replay at the street's end by the gate. The keeper is spawned 14 studs ahead of the avatar, turned 25° right so it stands where a try puts it, then defeated 4 s in.
+  - Lantern Row is still its grey block (its install, AR5 section 2, is queued), so by research's line this verdict is a blockout's.
+- **What I see, for the verdict:**
+  1. **Pip hides the Challenge.** A try sets the lead down at `Combat.Lead.Side` to the avatar's right (`KeeperService` `setDown`). That's on the camera's line to the keeper, and Pip walks in along it. Through the Lift and the Stamp, his hat covers most of the keeper. It belongs with the queued avatar-occlusion fix. My proposal: a try sets the lead down on the avatar's left. Not changed here (scope).
+  2. **The keeper reaches the frame's top on the phone.** At `Arrive` 14, its hat and lantern touch the top, and the swing's lantern rises into the top-right pills. The lever is a step back on `Arrive` (research's number, TR2's read).
+  3. **"Out" reads faintly.** The lantern's colour map is pale cyan paper, so at glow 0 it still reads half lit in daylight. Out to Gone is 8 frames, 0.13 s. The levers: a darker tint on the paper as it goes out, a longer Out, or the fall's own art, which the scope holds until the replay asks for it.
+  4. Research's three questions stand: the lone lantern among the street's own, the half second before Gutter, and the pole's rock read as let go.
+
 ### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
 
 Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.

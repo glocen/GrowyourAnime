@@ -75,6 +75,74 @@ Where no source gave a number, it says so.
     - every effect equally loud;
     - late secondaries that kill the momentum.
 
+## Building in 3D: how the professionals make the parts
+
+Research, 2026-11-13, on the director's word of that day: "we should looks at pro tips regarding 3d and take note". Written public sources only. Techniques, never a look.
+
+Roblox has no custom shaders. So a trick that needs one (a texture panning on a mesh, erosion by a threshold, two textures multiplied, a soft rim) takes a stand-in from the last list in this section. The Roblox engine facts found here are in `handbook/visuals/vfx-engine-facts.md`, "Meshes".
+
+### Meshes
+
+1. **The UVs run along the shape's length, in one piece, with no seams.**
+   - The texture is clamped, not wrapped, so a sweep along it ends cleanly.
+   - A ribbon is better a curved strip, about a third of a cylinder and double-sided, than a flat plane. It reads from more sides.
+   - OBSERVED: [realtimevfx, mesh ribbons](https://realtimevfx.com/t/vfx-basics-mesh-soulercoasters/1987). MANUAL: [Epic, animating UVs](https://dev.epicgames.com/documentation/unreal-engine/animating-uv-coordinates-in-unreal-engine).
+2. **A whirlwind is nested shells.**
+   - The inner shell moves fastest and each outer one slower.
+   - Bumps in the mesh keep the outline from being a smooth tube.
+   - The mesh's ends fade through painted vertex alpha, so no hard border shows.
+   - Small sprites ride over the shells for detail.
+   - OBSERVED: [realtimevfx, a tornado](https://realtimevfx.com/t/soulnado-vfx-wip/7500) and [80.lv, a tornado](https://80.lv/articles/creating-a-tornado-in-unity/).
+3. **Breaking repetition:** each spawn turns the mesh by a random angle. OBSERVED: [realtimevfx, a League effects artist's notes](https://realtimevfx.com/t/shannon-mcsheehan-lol-fx-knowledge-share/1133?page=15).
+4. **Volume on a thrown thing:** a few curved strips, turned at random about the line of flight within a narrow range. Two crossed strips add body. OBSERVED: [80.lv, stylized combat effects](https://80.lv/articles/creating-stylized-combat-vfx-in-the-zelda-style/).
+5. **Mesh or card:**
+   - Meshes take swipes, slashes, shockwaves and anything with a near and a far side.
+   - Flat sparks, flashes and glows stay on cards facing the camera.
+   - OBSERVED: [VFX Apprentice, the basics](https://www.vfxapprentice.com/blog/textures-meshes-shaders-vfx-basics).
+
+### Textures
+
+6. **Grey, tinted in the engine.**
+   - Textures are painted in greyscale and coloured by the engine, so one texture serves many effects.
+   - A gradient ramp gives one part several colours.
+   - OBSERVED: [realtimevfx, gradient mapping](https://realtimevfx.com/t/particle-gradient-mapping/1952).
+7. **Layered noise:**
+   - its scales an octave apart (0.5, 1, 2), never close ones, which beat against each other;
+   - its speeds compatible, or the layers read as two sheets sliding;
+   - the more layers, the narrower each one's range.
+
+   OBSERVED: [JangaFX on Diablo III's effects](https://jangafx.com/insights/diablo-3-vfx-experiments), and [realtimevfx, scrolling](https://realtimevfx.com/t/vfx-basics-creating-the-scrolling-texture-with-mask-setup/1966).
+8. **A ribbon's look:** the brightest values at its edges. Two ribbons on the same path, one adding light and one covering, build depth. OBSERVED: the League thread above.
+9. **Size:** no source gives a budget. On Roblox, memory goes by pixel count, so a 512 costs four times a 256 (MANUAL). A practitioner rarely needs noise over 512 (weak).
+
+### Layers and their motion
+
+10. **Each layer has its own build-up, peak and aftermath,** and together they make the effect's.
+    - A trail starts as the swing gathers speed and ends as its force fades.
+    - An impact is built in order: the contact point, then debris, dust, shockwaves, smoke, then a few small lingering bits.
+    - The build-up before the impact stays clean.
+    - OBSERVED: [80.lv, trails and impacts](https://80.lv/articles/trail-impact-vfx-production).
+11. **A beat of breath before and after:** a short charge-in and an aftermath, added once the core works. OBSERVED: the stylized combat article above.
+12. **Timing first, then detail.** Every extra layer is "more risk of dissonance". Grey block-ins make tuning faster, and re-timing alone can change what an effect means. OBSERVED: [VFX Apprentice, timing](https://www.vfxapprentice.com/blog/the-soul-of-effects-what-is-timing-in-vfx) and [realtimevfx, block-ins](https://realtimevfx.com/t/block-ins-and-timing/29830).
+13. **Motion lives in curves.**
+    - A constant pan reads as still, so the speed and the strength change over the life.
+    - Sparks start stretched and shrink to dots.
+    - Halving a lingering cloud's life and softening its edge cured it.
+    - OBSERVED: the two 80.lv articles above.
+    - No source gives a scale curve in numbers.
+14. **One base, many effects:** a fix to the base reaches every effect built on it. MANUAL: [Epic, Niagara's emitter inheritance](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/Niagara/UNiagaraEmitter). The kit and the player are our version.
+
+### On Roblox, the stand-ins (DESIGN, from the sources and `handbook/visuals/vfx-engine-facts.md`)
+
+| A shader trick elsewhere | Ours |
+|---|---|
+| a texture panning round a shell | the shell spins (the player's `Spin`). Nested shells spin at different speeds, the inner fastest |
+| a texture panning along a ribbon | a Beam with `TextureSpeed`, or two Beams at different speeds for parallax (MANUAL: [Roblox's waterfall tutorial](https://create.roblox.com/docs/tutorials/use-case-tutorials/vfx/create-waterfalls)) |
+| a soft fade at a mesh's ends | vertex alpha painted in Blender, with `Transparency` above 0 |
+| erosion by a threshold | the burn as a Start-to-End track: a band's transparency stepping up the coil, as B1's exit does |
+| a glow on the mesh | an emissive mask (`EmissiveStrength` by script, the red channel), or Neon with vertex colour and no texture |
+| a texture that flickers through by itself | the ForceField material on a grey texture: free motion, but its speed can't be set |
+
 ## Ours beside them (OBSERVED in our config and captures, 2026-11-13)
 
 | What | Ours now | The professionals | Read |

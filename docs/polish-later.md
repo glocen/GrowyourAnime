@@ -20,7 +20,7 @@ Each waits for an update, and for its own feel line and blockout (`docs/design.m
 On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game is built, before launch and before anything public. Each push starts from its piece's competent verdict, and is judged beside it in motion at phone size.
 - **First, a trial:** Fable takes one effect, beside Opus's version of the same one. The trial decides which model runs the rest.
 - **The signature effects, from competent toward exceptional:**
-  - Haymaker (AR8 B5);
+  - Haymaker (AR8 B5). Against a keeper, its hang sits above the frame, since a cap at the hat was blocked (TR7, "The hang's fixes"). The lever to try is the camera's, not the square's: a short tilt up through the hang;
   - Lantern Burst (AR8 B1);
   - Held Note (AR8 B2);
   - the Lamplighter's signature (AR7);

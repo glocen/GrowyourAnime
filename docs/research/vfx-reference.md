@@ -249,6 +249,45 @@ The tips, OBSERVED with their numbers, each with what it means for us (DESIGN):
 
 **Too much for our bar:** its size, with blasts 60 studs across and 30 to 50 particles each, and its rainbow ramps. On a phone in a pack fight, that's noise. Our ladder (`DESIGN`, below) sets how big each moment gets.
 
+### The second batch (read 2026-11-13: eleven files, six flipbook sheets, one code repo)
+
+OBSERVED in the files. Each digest is `build/scratch/quaestor/vault/<name>_digest.md`. Every script was read as text, and none calls by id, loadstring, HTTP or a paid service: all are clean.
+
+| File | What it is | Terms found | Verdict |
+|---|---|---|---|
+| day1 (Lightning Axes) | a blink-dash, 20 studs in 0.175 s, then a spin; 55 emitters, one hue | "use in games ... credit would be nice" | **yes**, for technique: small, clear beats, reads on a phone |
+| JaxelosCosmoOS | an orb: 1.25 s charge, a 0.5 s flight, a 0.1 s shrink, a cross flare, a star burst | none | **yes**, as a study: disciplined palette and beats; a signature budget |
+| day4 (gravthrust) | a rise, then a 45-stud lunge in a spiral of trails | a like and a follow asked; "reupload the keyframesequence" (their animation, never ours to use) | partly: the best choreography; too many layers |
+| MEshFlipOpenSource | a mesh flipbook: a Decal's images swapped on a sphere or pillar | none | partly: the best hero-shape technique; its own look too loud |
+| LotusSlashVFXOSByMarcid | a spin slash with a lotus bloom; 521 emitters | **CC BY-NC 4.0, study only** | partly: excellent beats; far too heavy |
+| DoubleFireSlashVFXOSByMarcid | an X of two fire cuts, 10 frames apart | "CREDIT ME" labels, no license | partly: the ideas, not the density |
+| HanamiLotusSwarmOSByMarcid | rows of lotus meshes blooming outward | none | partly: the wave idea; 1260 emitters is noise |
+| 2yroldmiseorb | a looping void orb, 17 layers | none | partly: the loop and the black core fit the Void |
+| WaterPracticeVFX | a 2 s water vortex | none | partly: good lessons, no hit frame |
+| QP2V40OS, ForceandReactorsPresets | presets for outside plugins; nothing renders without them | none | partly: the numbers only; the plugins are never adopted |
+
+**Nothing here is taken whole.** One is non-commercial, most state no terms (so their rights are unknown), and their sounds, animations and demo rigs are never ours. The lessons are the value.
+
+The tips, OBSERVED, each with what it means for us (DESIGN):
+1. **A blink hides the cut** (day1): the body fades out in 0.075 s and back in 0.065 s under a burst, and the clip freezes while it's hidden. The arrival burst reuses the departure's layers at 0.55 to 0.6 of their life, so it lands sharper. For us: the skip back, and any dash.
+2. **Two cuts, 10 frames apart** (DoubleFire): an X lands as two beats, not one. For us: a two-hit signature is two flashes at least 0.15 s apart, or the second is lost.
+3. **Fade to black, not to clear** (DoubleFire, Lotus): embers ramp red to dark red to black, and ground rings burn out by darkening. For us: dissipation keeps the shape on our pale sky (the noon wash-out of B1), the same rule as slash_blue's dark twin.
+4. **Negative LightEmission** keeps a colour saturated and smoke solid (DoubleFire, Lotus, day4). It's undocumented: the builder tests it in our lighting before any row uses it.
+5. **A negative size curve is a free delay** (Cosmo): the particle is born below zero and appears when the curve crosses it. For us: the second layer of a row needs no delay field.
+6. **A four-point glint from one sprite** (Cosmo): two copies, one squashed wide, one tall. For us: the strike glint without a new texture.
+7. **The mesh flipbook** (MEshFlip): a Decal on an invisible part's mesh, its image swapped 16 to 24 times over about 1 s while the part grows, ease-out cubic. For us: the hero shape of a rung 7 and up (a shell, a pillar) gets drawn motion. Our 3D method stays the base; this is its top tier, made with our own frames.
+8. **Freeze inside the effect** (ForceandReactors): the effect's own time scale dips to 0.01 at 21 to 30% of its life, then returns to 1. For us: a hitstop that touches only the effect, not the fight's clock; worth a try on Haymaker's landing.
+9. **One master curve** (ForceandReactors): size, time scale, colour and brightness all read from one intensity. For us: the ladder's rung could be that one number on a row.
+10. **A wave from staggered copies** (Hanami): one unit in three rows, 0.06 s apart, each further out and 1.4x larger. For us: a ground signature's spread at three to five copies, never eighteen.
+11. **A seamless loop** (2yroldmiseorb): rate × lifetime of 2 to 3, transparency 1 > 0 > 1, the flipbook played once per life. For us: idle auras and the shard's hum never pop.
+12. **Accelerating lunge** (day4): spring stiffness ramps 20 to 1000 over 0.5 s, ease-in. For us: a lead's dash speeds up into the hit rather than snapping.
+13. **The silhouette frame** (day4, QP2V40): one or two frames of black fill with a rim, or a Contrast +5 then -5 flash. For us: rung 8 at most, the keeper's fall, and only after a photosensitivity check.
+14. **A shake profile** (QP2V40): amplitude up to 4 at 11% of 1 s, down to 0.5 by 53%, 12 Hz, zero at 500 studs. For us: a ceiling. Ours stay at slash_blue's 0.2 to 1.
+
+**The flipbook sheets** (`build/reference/vfx-vault/flipbooks/`; their source not yet stated): a ring burst drawn three ways (a shaded fill, an outline alone, two-tone toon), then a wisp splash, a hook splash and a flame, each 4x4 at 1920 px (256 px a frame once fitted to Roblox's 1024). For us: **an outline pass and a fill pass as separate sheets** lets a quiet hit play the outline alone and a signature both, one drawing on two rungs. The finished frames are ours to draw in `tools/`.
+
+**ViewportStencil** (github.com/sebasvcx/ViewportStencil, MIT): code that draws a model inside a surface, such as a crack, a hole or a portal, through a masked ViewportFrame, without cutting the ground. A library, not art, so it's the builder's call, with its license notice kept. For later: craters and portals. Not Haymaker's landing, which takes no plate on the floor (AR8).
+
 ## Ours beside them (OBSERVED in our config and captures, 2026-11-13)
 
 | What | Ours now | The professionals | Read |

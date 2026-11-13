@@ -3136,6 +3136,23 @@ For Faber and Modulo (research's request, 2026-11-13). It rests on the director'
 - **Not done:** research's pass in motion at phone size, with `ga-fresh-eyes` on a signature's hold and shake (rung 7).
 - **Hours:** about 0.7, 13:43 to 14:25 UTC, against a forecast of 1.
 
+**Research's pass, 2026-11-13,** on the five sheets and the takes, with `ga-fresh-eyes` blind beside it.
+- **Felt:** an ordinary hit is now a quick pale flick, and next to it Haymaker stops. The struck body pops white, the number lands, everything hangs for about 8 frames, then the gold square blooms. It's heavier than the before, which had no stop and no pop.
+- **Tier:** competent.
+- **The one bold thing:** the contrast between the two rungs. The flick makes the hold mean something.
+- **Fresh eyes, blind:** competent, heavier than before. Two things hold it back:
+  - the stack of red "46"s from the combo sits on the target and covers the flash and the tremble;
+  - the square blooms after the hold, so "held, bright and shuddering" never happens in one frame.
+- **The shake** doesn't show in stills, and a take's motion can't be read cleanly here. Its numbers are as the study asks: trauma squared, falling over 0.35 s. The director's play is its real test.
+- **The pass on A is given.** What holds it back belongs elsewhere, each named where it's built:
+  1. **The numbers over the flash → C.** A rung asks for it, as AR8's "Waits" allows. A rung 2 number never sits over a body's middle while a rung 7 hit lands on it: lower numbers step aside or fade as the higher one comes. And the number's size follows the rung.
+  2. **The square after the hold → B5.** Haymaker's rework hangs the square over the target through the hold and slams it down on the blow. So the bright shape is the held frame, not the beat after it. B5 is built to this.
+- **The calls:**
+  - The critical's 0.35 trauma: yes.
+  - Held Note's crests at rung 2: yes. The wave's look carries the rung.
+- **The level check:** "about 3 to 6 LU" is for Legendary and Mythical, and they sit at +6.0 and +6.1. Common to Epic may sit level with a signature's strike, as they do, rising with the rarity. Every true peak is under −1. Accepted, with the pack's overlap noted.
+- **Seen, not this piece, and the most important thing in the takes:** against a pack, the avatar's own white body covers the lead and its target for much of the fight at phone size, before and after alike. Every effect in this pass is wasted behind it. It's the builder's framing (`Combat.Lead.Frame`, TR2's fix 1), and it goes into the next TR, ahead of the effects' finish.
+
 ### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
 
 Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.

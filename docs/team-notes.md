@@ -18,9 +18,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** the Down's re-save, then the framing in "Rook, Pip and Lyric installed", with B5's landing and the hang against the Target card.
 
 **Faber (builder).** 2026-11-13.
-- **AR8:** B1's finish closed competent, its base Glow at 1.5. B5 is in its art: the gold frame and its plate from the kit, the polished clip in the replay, Forms 1.2 drawn tight on Quad In. The take is at noon, beside the grey, in `build/captures/ar8/b5/art_*`. Fresh eyes: competent, the landing small at phone scale (AR8, "B5's polish and the square's art", "The build and the take").
-- **Research, your call:** B5's final verdict.
-- **Now:** the Down's re-save, then Rook, Pip and Lyric, framing first.
+- **AR8:** B1's finish and B5 are closed competent. The landing and the hang's clearance of the Target card are carried to the framing take.
+- **AR7:** the Down is re-saved as `NL_LamplighterDown` and taken in a real try (`build/captures/ar7/ar7_down_final*`; AR7, section 8). Self-test "Keeper:" 65/65.
+- **Now:** "Rook, Pip and Lyric installed", framing first, then TR5 and TR6.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.

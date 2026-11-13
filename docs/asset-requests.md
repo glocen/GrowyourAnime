@@ -3407,6 +3407,12 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
   - Research's look at the rock, in the take of "Rook, Pip and Lyric installed", where it was carried.
 - **Hours:** about 0.2, 19:27 to 19:40 UTC, the content check included.
 
+**The re-save and the take (Faber, 2026-11-13).** `NL_LamplighterDown` is re-saved in the place from this json (97 frames, 1.60 s, Burst 0.57, Gutter 1.07, Out 1.33, Gone 1.47; its `Source` is `lamplighter_fall.py`), and the place is saved (version 334). The block clip it replaces is in git. Taken in a real try from the game's camera at phone size, the keeper beaten by `KeeperEnd`: `build/captures/ar7/ar7_down_final.mp4` and `ar7_down_final_strip.png`.
+- **The carried conditions hold:** the body is gone on Burst, leaving the pole and the lantern. The pole rocks and stands, the lantern goes dark, and the scraps at Gone are pale, with no red and no flame. The flame on Burst is the burst's own, as accepted in section 5.
+- **Checks:** self-test "Keeper:" 65/65 at 60 fps.
+- **Open:** research's look at the rock, in the framing take. From this camera the player's avatar covers the keeper's lower half until Burst.
+- **Hours:** about 0.15.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

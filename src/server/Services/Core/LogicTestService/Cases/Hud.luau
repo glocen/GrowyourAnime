@@ -1,12 +1,14 @@
 --!strict
 -- Hud cases (pure): the flurry's one counting number, a number placed clear of its neighbours', the type edge's arrow for
--- every pair, the digits, and what a control says (docs/test-requests.md, TR3, "Checks").
+-- every pair, the digits, and what a control says (docs/test-requests.md, TR3, "Checks"); the interface's motion: a
+-- press's squeeze, a reward's pop, a number's size by its rung and its giving way (AR8 C).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Hud = require(Shared.Rules.Hud)
 local Hit = require(Shared.Rules.Hit)
 local StatsConfig = require(Shared.Config.Stats)
+local HudConfig = require(Shared.Config.Hud)
 
 local COUNT = 0.12 -- seconds a number counts over
 local SECONDS = 0.8 -- seconds a number shows after its last amount
@@ -210,6 +212,78 @@ return {
 			t.Equal("full once ready", Hud.Ready(20, 10, 20), 1)
 			t.Equal("and stays full", Hud.Ready(20, 10, 99), 1)
 			t.Equal("no cooldown, always full", Hud.Ready(20, 0, 10), 1)
+		end,
+	},
+	{
+		Name = "Hud: a press squeezes at once, holds a quick tap, and comes back over its mark to exactly 1",
+		Run = function(t: any)
+			local press = HudConfig.Motion.Press
+			t.Equal("untouched, full size", Hud.Squeeze(5, nil, nil, press), 1)
+			t.Equal("the touch's own frame, full size", Hud.Squeeze(5, 5, nil, press), 1)
+			local early = Hud.Squeeze(5 + press.In / 2, 5, nil, press)
+			t.Check("half its In, past half the squeeze (eased out)", early < 1 - (1 - press.Squeeze) / 2 and early > press.Squeeze)
+			t.Check("squeezed within 0.1 s (rule 4)", near(Hud.Squeeze(5 + math.min(press.In, 0.1), 5, nil, press), press.Squeeze))
+			t.Check("held, it stays squeezed", near(Hud.Squeeze(9, 5, nil, press), press.Squeeze))
+			t.Check("a squeeze a thumb feels: 5 to 12 per cent", press.Squeeze >= 0.88 and press.Squeeze <= 0.95)
+			-- A tap shorter than Least stays down until Least.
+			local up = 5 + press.Least / 4
+			t.Check("a quick tap stays squeezed to Least", near(Hud.Squeeze(5 + press.Least, 5, up, press), press.Squeeze))
+			local from = 5 + press.Least
+			local most = 0
+			for i = 1, 40 do
+				most = math.max(most, Hud.Squeeze(from + press.Out * i / 40, 5, up, press))
+			end
+			t.Check("it comes back past full size for a moment", most > 1)
+			t.Check("by a small mark, under 3 per cent", most < 1.03)
+			t.Equal("and settles at exactly 1", Hud.Squeeze(from + press.Out, 5, up, press), 1)
+			t.Equal("an old let-go is ignored", Hud.Squeeze(9, 5, 4, press), Hud.Squeeze(9, 5, nil, press))
+			-- A long hold comes back from where it was, at once.
+			t.Check("a long hold starts back the moment it's let go", near(Hud.Squeeze(8, 5, 8, press), press.Squeeze))
+		end,
+	},
+	{
+		Name = "Hud: a reward pops early and settles, larger by its rung",
+		Run = function(t: any)
+			local pop = HudConfig.Pop
+			t.Equal("nothing before", Hud.Pop(0, pop.Peak), 0)
+			t.Equal("full at its peak", Hud.Pop(pop.Peak, pop.Peak), 1)
+			t.Equal("nothing after", Hud.Pop(1, pop.Peak), 0)
+			t.Check("the peak early: in its first third", pop.Peak > 0 and pop.Peak <= 1 / 3)
+			t.Check("quick up: past half by a quarter of the way", Hud.Pop(pop.Peak / 4, pop.Peak) > 0.4)
+			t.Check("the settle eases in and out: slow off the peak", Hud.Pop(pop.Peak + 0.05 * (1 - pop.Peak), pop.Peak) > 0.98)
+			t.Equal("rung 1 doesn't swell", Hud.PopScale(1, pop.Swell), 1)
+			local last = 0
+			for _, key in { "Xp", "Credits", "Level" } do
+				local scale = Hud.PopScale(pop.Rungs[key], pop.Swell)
+				t.Check(`{key} swells more than the rung below`, scale > last)
+				last = scale
+			end
+			t.Check("a level, rung 5, swells under a third", last < 4 / 3)
+			t.Check("an exit never outlasts its entrance (about 0.8)", HudConfig.Motion.Screen.Exit <= 0.85 * HudConfig.Motion.Screen.Enter)
+			t.Check("and a toast's", HudConfig.Motion.Toast.Exit <= 0.85 * HudConfig.Motion.Toast.Enter)
+		end,
+	},
+	{
+		Name = "Hud: a number's size follows its hit's rung, and a lower one gives way, eased in",
+		Run = function(t: any)
+			local by = HudConfig.Numbers.Rung
+			t.Equal("an ordinary hit, its style's size", Hud.NumberScale("Dealt", 2, by), 1)
+			t.Equal("no rung, its style's size", Hud.NumberScale("Dealt", nil, by), 1)
+			t.Equal("a critical at its own rung", Hud.NumberScale("Critical", 4, by), 1)
+			t.Check("a signature's hit is larger", Hud.NumberScale("Dealt", 7, by) > Hud.NumberScale("Dealt", 3, by))
+			t.Check("a combo's last is larger than a hit", Hud.NumberScale("Dealt", 3, by) > 1)
+			t.Equal("never past Most", Hud.NumberScale("Dealt", 99, by), by.Most)
+			t.Equal("a lower rung never shrinks it", Hud.NumberScale("Critical", 2, by), 1)
+			local fade0, aside0 = Hud.Yield(0, 0.1)
+			t.Equal("not faded the moment it lands", fade0, 0)
+			t.Equal("not moved yet", aside0, 0)
+			local fade, aside = Hud.Yield(0.05, 0.1)
+			t.Check("half way: the fade eased in, slow first", fade < 0.5)
+			t.Check("and the step aside eased out, quick first", aside > 0.5)
+			local fade1, aside1 = Hud.Yield(1, 0.1)
+			t.Equal("gone by its seconds", fade1, 1)
+			t.Equal("all the way aside", aside1, 1)
+			t.Check("it leaves within a tenth (research's fix 1)", HudConfig.Numbers.Yield.Seconds <= 0.1)
 		end,
 	},
 }

@@ -163,14 +163,32 @@ return {
 		Wait = 0.4,
 	},
 
-	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment). A grey
-	-- block, the builder's: a ring of light spreads from its feet and fades, and "Level N" rises over it, slower and larger
-	-- than a hit's number. Seconds; studs; Size in pixels at the phone's size. Both take experience's one colour, the card's
-	-- thread (Config.Hud.Card.Xp). Ring.Neon: the share of it the ring is seeded with, so it renders as the thread's blue and
-	-- not as Frost's cyan (research on TR3's three calls, 2026-11-13). Neon isn't linear; measured at noon on swatches, the
-	-- rendered hue: 1 gives 181 to 193 degrees (Frost renders 180), 0.65 202, 0.6 211, 0.58 214 (the thread's), 0.5 221
-	-- and darker, 0.35 near navy. No bloom below about 0.65. Check again at Lantern Row's dusk and night.
-	LevelUp = { Ring = { Seconds = 0.6, From = 2, To = 10, Thick = 0.3, Neon = 0.58 }, Rise = 3, Seconds = 1.6, Size = 34 },
+	-- A level gained, on the player's own lead (research's verdict on TR2, 2026-11-12: a first level-up as a moment), rung 5:
+	-- light that rises (AR8 C; docs/research/vfx-reference.md, rule 3). A grey block, the builder's. Seconds; studs; Size
+	-- in pixels at the phone's size.
+	-- Both are sized by the lead, measured once from its feet to its model's top, hat and all (Tall for a body with no
+	-- model): each stands Over studs past that top and is Wide of that height wide. The lead stands in front of the
+	-- column, so its solid part must clear the head before its Fade begins (Pip, 7.4 studs, hid a fixed 7-stud one).
+	-- The main shape, a column of light, stands up out of the lead's feet: its top climbs to its height over Climb of its
+	-- life, eased out, and drifts on up; it is brightest at Peak of its life, Opaque at most; then its foot leaves the ground
+	-- and climbs after its top, eased in, as it narrows by Narrow and fades, eased, gone by Seconds. Along it, it's Foot of
+	-- its opacity at its foot and fades to nothing over its top's Fade, so it reads as light, never as a solid. The
+	-- secondary, a breath (Delay) later, is a sleeve of the same light, wider and fainter (Alpha opaque at most), on the
+	-- same curve, drawn Front studs toward the camera so it lies over the body as light around it. Continuous light:
+	-- nothing falls or scatters (the content check's condition 2). Both are beams facing the camera, Emission their light's
+	-- emission (at noon, 0.3 already goes pale and toward Frost's cyan against the sky), in experience's one colour as it
+	-- is (Config.Hud.Card.Xp; the ring before them was Neon, seeded at 0.58 of it to render as the thread's blue: research
+	-- on TR3's three calls). The word pops in from From of its size over Pop as the column peaks, and rises Rise over
+	-- Seconds, slower and larger than a hit's number.
+	LevelUp = {
+		Column = { Seconds = 0.7, Over = 5, Wide = 0.6, Climb = 0.3, Peak = 0.25, Narrow = 0.5, Opaque = 0.85, Foot = 0.4, Fade = 0.25, Emission = 0 },
+		Sleeve = { Delay = 0.08, Seconds = 0.6, Over = 1, Wide = 0.75, Alpha = 0.3, Front = 2 },
+		Word = { From = 0.6, Pop = 0.18 },
+		Tall = 5,
+		Rise = 3,
+		Seconds = 1.6,
+		Size = 34,
+	},
 	-- A shard won, leaping from where its Shade fell to the avatar (research's verdict on TR2, 2026-11-12: the hook that
 	-- sends you home, seen). A grey block, the builder's: it hops up, arcs over Seconds as high as Height, spinning, and lands
 	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.

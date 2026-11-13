@@ -65,6 +65,40 @@ return {
 				Least = 3,
 			},
 		},
+		-- By the hit's rung (AR8 C; research's pass on A): a number grows Grow of its style's size for each rung over its
+		-- style's own (Rungs; a critical's style is rung 4's), at most Most times. While a hit of rung Yield.From or more
+		-- lands on a body, the lower numbers on it leave its middle: out and up by Aside authored pixels, fading over
+		-- Seconds, eased in, never down the body (the content check's condition 1).
+		Rung = { Grow = 0.08, Most = 1.5, Rungs = { Critical = 4 } :: { [string]: number }, Default = 2 },
+		Yield = { From = 7, Seconds = 0.1, Aside = 14 },
+	},
+	-- The interface's motion (AR8 C; docs/research/vfx-reference.md, rule 4). Seconds; scales are of full size.
+	Motion = {
+		-- A press: the face squeezes to Squeeze within In of the touch, held at least Least, and comes back over Out with a
+		-- small overshoot (Back: the ease's strength; 0 is none). It replaces the pixel's sink.
+		Press = { Squeeze = 0.92, In = 0.05, Least = 0.08, Out = 0.14, Back = 2.4 },
+		-- A screen comes in from From of its size, see-through, eased out over Enter; it leaves to To, eased in, over Exit:
+		-- about 0.8 of its entrance (rule 4).
+		Screen = { Enter = 0.2, Exit = 0.16, From = 0.94, To = 0.97 },
+		-- A toast slides in from the screen's right edge over Enter, eased out, and leaves that way over Exit, eased in.
+		Toast = { Enter = 0.2, Exit = 0.16 },
+	},
+	-- A reward pops at its rung (rule 4): it swells to 1 + Swell × (rung − 1) of its size, at its peak at Peak of Seconds
+	-- (eased out), and settles by Seconds (eased in and out). A Credits or Electricity win also sends a "+N" up off its pill,
+	-- Rise authored pixels over the first half of Gain seconds, fading over the last third after its last win; wins within
+	-- its life count up as one, over Count seconds. Electricity pops only on a jump of Jump of the battery's capacity or
+	-- more in one read (a return from away), never the bays' flow. Experience: a glint over the thread's light, Glow opaque
+	-- at its peak, brightest at its new end; a level: its number swells and goes Glow of the way to white.
+	Pop = {
+		Seconds = 0.35,
+		Peak = 0.25,
+		Swell = 0.06,
+		Glow = 0.6,
+		Rungs = { Xp = 2, Credits = 3, Electricity = 3, Level = 5 } :: { [string]: number },
+		Gain = 0.9,
+		Rise = 12,
+		Jump = 0.05,
+		Count = 0.15,
 	},
 	-- The type edge's arrow on the target's card (docs/ui.md): up when the lead's type beats the target's.
 	Arrow = { Up = UIKit.Good, Down = Color3.fromHex("#A6ADBA") },

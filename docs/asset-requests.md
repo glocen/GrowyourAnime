@@ -3153,6 +3153,102 @@ For Faber and Modulo (research's request, 2026-11-13). It rests on the director'
 - **The level check:** "about 3 to 6 LU" is for Legendary and Mythical, and they sit at +6.0 and +6.1. Common to Epic may sit level with a signature's strike, as they do, rising with the rarity. Every true peak is under −1. Accepted, with the pack's overlap noted.
 - **Seen, not this piece, and the most important thing in the takes:** against a pack, the avatar's own white body covers the lead and its target for much of the fight at phone size, before and after alike. Every effect in this pass is wasted behind it. It's the builder's framing (`Combat.Lead.Frame`, TR2's fix 1), and it goes into the next TR, ahead of the effects' finish.
 
+### C. The interface (Faber, 2026-11-13)
+
+AR8's feel line. Each part is judged in motion at phone size beside its "before" (rule 5). The rungs are the study's ladder (rule 1).
+
+**The block contains:**
+1. **The press,** a squeeze a thumb can feel (rule 4).
+   - The button's face drops to 0.92 within 0.05 s of the touch. A quick tap is held squeezed at least 0.08 s, so it always shows.
+   - It comes back over 0.14 s, eased out a little past full size, then settles.
+   - It replaces the one-pixel sink. The lever: squash, as anticipation of the tap.
+2. **In and out** (rule 4).
+   - A screen comes in over 0.2 s, eased out, from 0.94 of its size and see-through. It leaves over 0.16 s (0.8 of that), eased in, to 0.97 and gone.
+   - A toast slides in from the right edge over 0.2 s, eased out, and leaves that way over 0.16 s, eased in.
+3. **Rewards pop at their rung.**
+   - Experience, rung 2: the lead card's thread brightens and settles.
+   - Credits, rung 3: the pill swells and a "+N" rises off it. Wins close together count up as one number.
+   - Electricity, rung 3, does the same, only when the battery jumps (a return from away), never for the bays' steady flow.
+   - A level, rung 5: the level badge swells and brightens.
+4. **The level-up as light that rises,** rung 5 (rule 3).
+   - The main shape is a column of the thread's blue, standing up out of the lead's feet past its head. It's brightest within the first quarter of its life. Its foot then leaves the ground and climbs after its top, and it's gone by 0.7 s.
+   - The secondary, a breath later, is a wider, fainter sleeve of the same light climbing the body (the content check's condition 2: one continuous light, nothing that could read as falling specks).
+   - The word pops in and rises.
+   - The flat ring on the ground goes.
+5. **The numbers by rung** (research's pass on A).
+   - A number's size grows with its hit's rung.
+   - While a hit of rung 7 or more lands on a body, the lower numbers on it leave its middle and fade over 0.1 s, eased in. The signature's flash and tremble are then seen.
+
+**Waits:**
+- Modulo's art: everything here is grey, made of parts and the kit's images.
+- A sound on the press or the pops.
+- The Breaker's and the reveal's own screens, built with their pieces.
+
+**Built, 2026-11-13.** The motion is pure where it can be (`Rules.Hud`: `Squeeze`, `Pop`, `PopScale`, `NumberScale`, `Yield`), and every number is in `Config.Hud` (`Motion`, `Pop`, `Numbers.Rung`, `Numbers.Yield`) or `Config.Effects.LevelUp`, tuned live.
+1. **The press** (`UI/Kit/Button.luau`). The face and its label are anchored at their middle, each with its own scale.
+   - The face is at 0.92 within 0.05 s of the touch, and held there at least 0.08 s, so a quick tap shows.
+   - It comes back over 0.14 s on a Back ease (2.4), a little past full size, and settles at exactly 1.
+   - The one-pixel sink is gone. The lever: squash, as anticipation of the tap.
+2. **In and out.**
+   - A screen (`UI/Kit/Screen.luau`) stands in a group the room's size, which fades and scales as one. It comes in over 0.2 s, Quart out, from 0.94 and see-through, and leaves over 0.16 s, Quad in, to 0.97 and gone.
+   - A closed screen is closed at once: `Current` is nil, `Closed` fires, and nothing in it takes a tap while it leaves.
+   - A toast (`UI/Kit/Toast.luau`) slides in from past the right edge over 0.2 s, Quart out, and leaves the same way over 0.16 s, Quad in.
+3. **The pops** (`UI/Kit/Pop.luau`, new; `HudController`).
+   - A piece swells about its middle to `PopScale` of its rung, its peak at a quarter of 0.35 s, and settles.
+   - A "+N" rises off its left side. Wins within its life count up into one number, which swells a little as each joins.
+   - Credits, rung 3: the swell and a "+N".
+   - Electricity, rung 3: the same, only when the battery jumps (a return from away), never for the bays' flow.
+   - Experience, rung 2: a glint runs along the card's thread, with no swell.
+   - A level, rung 5: the badge swells and its number goes toward white at the peak.
+4. **The level-up** (`Effects.LevelUp`). Two beams facing the camera, the thread's blue, unlit by the scene. The ring is gone.
+   - The lead is measured once, feet to the top of its model, hat and all.
+   - **The column** stands 5 studs past that top and is 0.6 of the lead's height wide (Pip: 12.4 studs tall, 4.4 wide). It's brightest at a quarter of 0.7 s, at 0.85; then its foot climbs after its top, and it's gone by 0.7 s.
+   - **The sleeve** comes 0.08 s later: 0.75 of the height wide, 0.3 at most, drawn 2 studs toward the camera, so it lies over the body as light around it.
+   - **The word** pops in from 0.6 of its size at the column's peak, on a Back ease, and rises.
+   - **Found on the way:**
+     - A beam with one segment takes its transparency only at its two ends, so the first build ran from 0.66 to clear and barely showed. It's 20 segments now.
+     - A fixed 7-stud column hid behind Pip, who is 7.4 studs to his hat. And the lead stands in front of the column, so its solid part must clear the head before it fades.
+     - Emission is 0: at 0.3 and up it goes pale and toward Frost's cyan against the noon sky.
+5. **The numbers by rung** (`Effects.Number`, `Effects.Yield`; the server's `hit.Rung`, which already counts a critical).
+   - A number grows 8% for each rung over its style's own (a critical's is 4, the others 2), to at most 1.5×.
+   - While a hit of rung 7 or more lands on a body, the lower numbers on it go aside, outward and up by 14 px, and fade over 0.1 s, eased in.
+
+**Checked:**
+- The type check: 0 new.
+- Logic: 2407 passed, offline and in Studio. Three new cases: the press, a reward's early peak, and a number's size with its yield.
+- Self-test, the touched cases, at 60 fps:
+
+  | Case | Passed |
+  |---|---|
+  | the press | 13/13 |
+  | a screen in and out | 11/11 |
+  | a toast | 9/9 |
+  | the pops | 16/16 |
+  | the numbers by rung | 10/10 |
+  | the level-up's light, on a stand-in as tall as Pip | 19/19 |
+  | experience's one colour | 8/8 |
+  | the button's states | 15/15 |
+
+- The whole suite: 765/765 at 60 fps, under the phone emulator. The run before it failed one case, Lantern Burst's look (6 of its checks), which runs before any case of C's and passed 32/32 twice alone: an intermittent, as the fight's look cases have shown before.
+
+**The takes,** in `build/captures/ar8/`, at phone size (Studio's device emulator), Pip leading at the plot:
+- `before_interface.mp4` and its sheet; `after_interface.mp4` and its sheet at 2 fps; `after_levelup_10fps.png`.
+- In each: a level gained, Credits won (250, then 40), then the dock opens Voidkin, then Base, each closed by its Close.
+- **What I see in the after:**
+  - The column stands up blue past Pip's hat as "Level 10" pops, lifts off, and is gone in about 0.7 s. The badge goes from 9 to 10 with its swell.
+  - The "+250" rises off the Credits pill, and the "+40" counts into it.
+  - The screens grow in out of a fade and fall away quicker.
+- **No fight take** for part 5: the cases measure it.
+
+**Seen, not this piece:**
+- On the phone, the toast stack runs past the right edge: its root spans −62 to 812 px on a 750-wide screen.
+- The toast sits over the Electricity pill: `Toast.Top` clears one pill, not two.
+- Both are the kit's, and I fix them at the next pass on the toasts.
+
+**Not done:** research's pass in motion at phone size, beside the before.
+
+**Hours:** about 0.8, 14:19 to 15:10 UTC, against a forecast of 1.5.
+
 ### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
 
 Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.

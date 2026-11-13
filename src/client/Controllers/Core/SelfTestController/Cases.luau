@@ -50,6 +50,8 @@ local Layers = require(UI.Layers)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
+local Toast = require(UI.Kit.Toast)
+local Pop = require(UI.Kit.Pop)
 local UiLint = require(script.Parent.UiLint)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
@@ -2108,25 +2110,130 @@ return {
 		end,
 	},
 	{
-		Name = "HUD: experience has one colour: the level-up's word is the thread's blue, its ring seeded from it for Neon",
+		Name = "HUD: experience has one colour: the level-up's word and its light are the thread's blue",
 		Run = function(t: any)
-			-- Research on TR3's three calls (2026-11-13): the word takes the card's thread's blue, and the ring renders as it,
-			-- not as Frost's cyan, so it's seeded from the thread at Ring.Neon's share. On a stand-in body.
+			-- Research on TR3's three calls (2026-11-13): the word takes the card's thread's blue, and so does the light, as it
+			-- is (a beam, unlit by the scene: AR8 C). On a stand-in body.
 			local root = Instance.new("Part")
 			root.Name = "HumanoidRootPart"
 			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
 			root.CFrame = CFrame.new(0, 600, 0)
 			root.Parent = workspace
-			local xp, neon = HudConfig.Card.Xp, EffectsConfig.LevelUp.Ring.Neon
-			local ring, word = Effects.LevelUp(root, 7)
+			local look = EffectsConfig.LevelUp
+			local xp = HudConfig.Card.Xp
+			local column, word, sleeve = Effects.LevelUp(root, 7)
 			t.Check("the word is the thread's blue", word.TextColor3:ToHex() == xp:ToHex(), word.TextColor3:ToHex())
-			local c = ring.Color -- a part keeps its colour in 8 bits, so a step either way
-			local near = math.max(math.abs(c.R - xp.R * neon), math.abs(c.G - xp.G * neon), math.abs(c.B - xp.B * neon)) <= 1.5 / 255
-			t.Check("the ring is the thread's blue at Ring.Neon's share", near, c:ToHex())
-			t.Check("in Neon", ring.Material == Enum.Material.Neon)
-			t.Wait(math.max(EffectsConfig.LevelUp.Seconds, EffectsConfig.LevelUp.Ring.Seconds) + 0.1)
-			t.Check("both gone after the effect", ring.Parent == nil and not word:IsDescendantOf(game))
+			for name, light in { column = column, sleeve = sleeve } :: { [string]: Beam } do
+				local c = light.Color.Keypoints
+				t.Check(`the {name} is the thread's blue, all along it`, c[1].Value:ToHex() == xp:ToHex() and c[#c].Value:ToHex() == xp:ToHex(), c[1].Value:ToHex())
+				t.Check(`unlit by the scene`, light.LightInfluence == 0)
+			end
+			t.Wait(look.Seconds + look.Column.Peak * look.Column.Seconds + 0.1)
+			t.Check("all gone after the effect", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game) and not word:IsDescendantOf(game))
 			root:Destroy()
+		end,
+	},
+	{
+		Name = "Effects: the level-up is light that rises: a column out of the feet past the head, its foot after, gone by its seconds",
+		Run = function(t: any)
+			-- AR8 C, part 4 (rule 3): the main shape stands up out of the feet past the head, brightest in the first quarter
+			-- of its life; its foot then leaves the ground and climbs after its top; the sleeve comes a breath later, wider and
+			-- fainter, over the body; the word pops in as the column peaks. Solid light: one part each, nothing falls (the
+			-- content check's condition 2). Sized by the lead: a stand-in body whose hat stands as tall as Pip's, sampled
+			-- every frame.
+			local body = Instance.new("Model")
+			body.Name = "SelfTestLead"
+			local root = Instance.new("Part")
+			root.Name = "HumanoidRootPart"
+			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
+			root.CFrame = CFrame.new(0, 600, 0)
+			root.Parent = body
+			local feet = 600 - 3 + 0.1 -- R6: the root stands 3 studs over the feet
+			local tall = 7.5 -- Pip, hat and all
+			local hat = Instance.new("Part")
+			hat.Name = "Hat"
+			hat.Anchored, hat.CanCollide, hat.CanQuery, hat.Transparency = true, false, false, 1
+			hat.Size = Vector3.one
+			hat.CFrame = CFrame.new(0, feet + tall - 0.5, 0)
+			hat.Parent = body
+			body.PrimaryPart = root
+			body.Parent = workspace
+			local look = EffectsConfig.LevelUp
+			local c = look.Column
+			local born = os.clock()
+			local column, word, sleeve = Effects.LevelUp(root, 7)
+			local scale = word:FindFirstChildOfClass("UIScale")
+			local brightest, brightestAt, highest, footAt, lowestFoot = 1, -1, -math.huge, -1, math.huge
+			local sleeveFirst, sleeveWidest, columnWidest, sleeveOpaque = -1, 0, 0, 0
+			local wordFirst, wordBiggest = -1, 0
+			local footLast = -math.huge
+			local fell = false
+			local function opaque(beam: Beam): number
+				local o = beam:GetAttribute("Opaque")
+				return if beam:IsDescendantOf(game) and beam.Enabled and type(o) == "number" then o else 0
+			end
+			local soft, faded = true, true
+			local watch = RunService.RenderStepped:Connect(function()
+				local age = os.clock() - born
+				local o = opaque(column)
+				if o > 0 then
+					local foot = (column.Attachment0 :: Attachment).WorldPosition.Y - feet
+					local top = (column.Attachment1 :: Attachment).WorldPosition.Y - feet
+					highest = math.max(highest, top)
+					lowestFoot = math.min(lowestFoot, foot)
+					if foot < footLast - 0.01 then
+						fell = true
+					end
+					footLast = foot
+					if foot > 0.3 and footAt < 0 then
+						footAt = age
+					end
+					if 1 - o < brightest then
+						brightest, brightestAt = 1 - o, age
+					end
+					columnWidest = math.max(columnWidest, column.Width0)
+					local k = column.Transparency.Keypoints
+					if o > 0.2 then
+						soft = soft and k[1].Value > 1 - o + 0.05 -- its foot softer than its body
+					end
+					faded = faded and k[#k].Value >= 0.999 -- and nothing at its top
+				end
+				local so = opaque(sleeve)
+				if so > 0 then
+					if sleeveFirst < 0 then
+						sleeveFirst = age
+					end
+					sleeveWidest = math.max(sleeveWidest, sleeve.Width0)
+					sleeveOpaque = math.max(sleeveOpaque, so)
+				end
+				if word.Parent and word.TextTransparency < 1 then
+					if wordFirst < 0 then
+						wordFirst = age
+					end
+					wordBiggest = math.max(wordBiggest, if scale then scale.Scale else 1)
+				end
+			end)
+			t.Wait(c.Seconds + 0.1)
+			t.Check("the column is gone by its seconds", opaque(column) == 0, `{opaque(column)}`)
+			t.Wait(look.Seconds + c.Peak * c.Seconds - c.Seconds + 0.1)
+			watch:Disconnect()
+			body:Destroy()
+			t.Check("it stands out of the feet", lowestFoot < 0.3, string.format("its foot at %.2f studs", lowestFoot))
+			t.Check("past the head: its Over past the lead's top, hat and all", highest >= tall + c.Over - 0.05, string.format("its top at %.2f studs, the lead %.1f", highest, tall))
+			t.Near("as wide as its share of the lead's height", columnWidest, tall * c.Wide, 0.05)
+			t.Check("drawn in segments enough to show its soft foot and its fade", column.Segments >= 10 and sleeve.Segments >= 10, `{column.Segments}, {sleeve.Segments}`)
+			t.Check("the sleeve lies over the body", sleeve.ZOffset == look.Sleeve.Front and look.Sleeve.Front > 0, `{sleeve.ZOffset}`)
+			t.Check("brightest in the first quarter of its life, or near it", brightestAt >= 0 and brightestAt <= c.Seconds * 0.3, string.format("at %.3f s", brightestAt))
+			t.Check("at its Opaque at its brightest, never a solid", math.abs((1 - brightest) - c.Opaque) < 0.05 and c.Opaque < 1, string.format("%.2f", 1 - brightest))
+			t.Check("soft at its foot and gone at its top: light, not a shape", soft and faded)
+			t.Check("its foot leaves the ground after the peak", footAt > brightestAt, string.format("foot off at %.3f s, peak %.3f s", footAt, brightestAt))
+			t.Check("nothing falls: the foot only climbs", not fell)
+			t.Check("the sleeve a breath later", sleeveFirst >= look.Sleeve.Delay - 0.02, string.format("at %.3f s", sleeveFirst))
+			t.Check("wider", sleeveWidest > columnWidest, string.format("%.2f against %.2f", sleeveWidest, columnWidest))
+			t.Check("and fainter", sleeveOpaque <= look.Sleeve.Alpha + 0.01, string.format("%.2f", sleeveOpaque))
+			t.Check("the word pops in as the column peaks", wordFirst >= c.Peak * c.Seconds - 0.03 and wordFirst <= c.Peak * c.Seconds + 0.1, string.format("at %.3f s", wordFirst))
+			t.Check("past its size for a moment", wordBiggest > 1, string.format("%.3f", wordBiggest))
+			t.Check("all gone after", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game) and not word:IsDescendantOf(game))
 		end,
 	},
 	{
@@ -2177,6 +2284,7 @@ return {
 			feet.Parent = workspace
 			local _, word = Effects.LevelUp(feet, 7)
 			local plate = word.Parent :: Frame
+			local up = EffectsConfig.LevelUp
 			local least, seen = math.huge, 0
 			local look = RunService.RenderStepped:Connect(function()
 				local edge = world:GetAttribute("Band")
@@ -2185,7 +2293,7 @@ return {
 					least = math.min(least, (plate.AbsolutePosition.Y - world.AbsolutePosition.Y) / Layers.Scale() - edge)
 				end
 			end)
-			t.Wait(EffectsConfig.LevelUp.Seconds + 0.1)
+			t.Wait(up.Seconds + up.Column.Peak * up.Column.Seconds + 0.1)
 			look:Disconnect()
 			feet:Destroy()
 			t.Check("the level-up's word showed", seen > 10, `{seen} frames`)
@@ -2525,6 +2633,267 @@ return {
 			t.Check("a press that answers nothing goes back to rest, no flash", Button.State(button) == "Rest", Button.State(button))
 			button:Destroy()
 			release:Destroy()
+		end,
+	},
+	{
+		Name = "Kit: a press squeezes within 0.05 s about its middle, holds a quick tap, and comes back past full size to 1",
+		Run = function(t: any)
+			-- AR8 C, part 1 (rule 4): the face and the label squeeze about the button's middle; the button's own box, and so
+			-- the layout, never moves. A press with no touch (a pad, a key) squeezes as a tap.
+			local press = HudConfig.Motion.Press
+			local button = Button.new({
+				Name = "SelfTestSqueeze",
+				Text = "Lead",
+				Size = UDim2.fromOffset(120, Theme.Size.Tap),
+				Position = UDim2.fromScale(0.5, 0.5),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Parent = Layers.Get("Hud"),
+				OnPress = function() end,
+			})
+			local label = button:FindFirstChild("Label", true) :: TextLabel
+			t.Wait(0.05)
+			local middle = label.AbsolutePosition + label.AbsoluteSize / 2
+			local box = button.AbsoluteSize
+			t.Check("at rest, full size", Button.Squeeze(button) == 1)
+			Button.Touch(button, true)
+			t.Wait(press.In + 0.04)
+			local squeezed = Button.Squeeze(button)
+			t.Check("squeezed within its In", math.abs(squeezed - press.Squeeze) < 0.005, string.format("%.3f", squeezed))
+			local now = label.AbsolutePosition + label.AbsoluteSize / 2
+			t.Check("about its middle", (now - middle).Magnitude <= 1, string.format("%.1f px off", (now - middle).Magnitude))
+			t.Check("its box, and so the layout, unmoved", button.AbsoluteSize == box)
+			t.Check("held, the pressed look", Button.State(button) == "Pressed", Button.State(button))
+			local most = 0
+			local watch = RunService.RenderStepped:Connect(function()
+				most = math.max(most, Button.Squeeze(button))
+			end)
+			Button.Touch(button, false)
+			t.Wait(press.Out + 0.1)
+			watch:Disconnect()
+			t.Check("back past full size for a moment", most > 1, string.format("at most %.4f", most))
+			t.Check("by a small mark", most < 1.03, string.format("at most %.4f", most))
+			t.Check("and settled at exactly 1", Button.Squeeze(button) == 1, string.format("%.4f", Button.Squeeze(button)))
+			-- A quick tap: down and up in one frame still shows.
+			Button.Touch(button, true)
+			Button.Touch(button, false)
+			t.Wait(press.Least * 0.75)
+			t.Check("a quick tap stays squeezed to its Least", Button.Squeeze(button) < 1 - (1 - press.Squeeze) / 2, string.format("%.3f", Button.Squeeze(button)))
+			t.Wait(press.Least + press.Out + 0.1)
+			Button.Press(button)
+			t.Wait(press.In)
+			t.Check("a press with no touch squeezes as a tap", Button.Squeeze(button) < 1, string.format("%.3f", Button.Squeeze(button)))
+			t.Wait(press.Least + press.Out + 0.1)
+			t.Check("and comes back", Button.Squeeze(button) == 1)
+			button:Destroy()
+		end,
+	},
+	{
+		Name = "Kit: a screen comes in eased out and leaves eased in, quicker, closed the moment it's asked",
+		Run = function(t: any)
+			-- AR8 C, part 2 (rule 4): in from a little smaller, see-through, eased out; out to a little smaller, eased in, in
+			-- about 0.8 of the entrance. Closed at once: nothing in it takes a tap while it leaves.
+			local motion = HudConfig.Motion.Screen
+			t.Check("its exit about 0.8 of its entrance", motion.Exit <= motion.Enter * 0.85 and motion.Exit >= motion.Enter * 0.7)
+			Screen.Close()
+			t.Wait(motion.Exit + 0.05)
+			Screen.Open("SelfTestScreen", "Self-test", Vector2.new(300, 200))
+			local stage = Screen.Stage("SelfTestScreen")
+			t.Check("it stands in its group", stage ~= nil)
+			if stage == nil then
+				Screen.Close()
+				return
+			end
+			local scale = stage:FindFirstChildOfClass("UIScale") :: UIScale
+			t.Check("it starts see-through and smaller", stage.GroupTransparency > 0.9 and scale.Scale < 1, string.format("%.2f, %.3f", stage.GroupTransparency, scale.Scale))
+			local born = os.clock()
+			local quarter: number? = nil
+			local watch = RunService.RenderStepped:Connect(function()
+				if quarter == nil and os.clock() - born >= motion.Enter * 0.25 then
+					quarter = stage.GroupTransparency
+				end
+			end)
+			t.Wait(motion.Enter + 0.1)
+			watch:Disconnect()
+			t.Check("eased out: more than half in by a quarter of its time", quarter ~= nil and quarter < 0.5, if quarter then string.format("%.2f see-through", quarter) else "no frame")
+			t.Check("in by its Enter", stage.GroupTransparency == 0 and scale.Scale == 1, string.format("%.2f, %.3f", stage.GroupTransparency, scale.Scale))
+			Screen.Close()
+			t.Check("closed at once", Screen.Current() == nil and Screen.Frame("SelfTestScreen") == nil)
+			t.Check("nothing in it takes a tap while it leaves", stage.Interactable == false)
+			local left = os.clock()
+			local half: number? = nil
+			watch = RunService.RenderStepped:Connect(function()
+				if half == nil and os.clock() - left >= motion.Exit * 0.5 then
+					half = stage.GroupTransparency
+				end
+			end)
+			t.Wait(motion.Exit + 0.1)
+			watch:Disconnect()
+			t.Check("eased in: under half gone at half its time", half ~= nil and half < 0.5, if half then string.format("%.2f see-through", half) else "no frame")
+			t.Check("gone by its Exit", stage.Parent == nil)
+		end,
+	},
+	{
+		Name = "Kit: a toast slides in from the right edge, eased out, and leaves that way, eased in",
+		Run = function(t: any)
+			-- AR8 C, part 2 (rule 4). Shown past the stack's room, so the oldest is pushed out and leaves at once.
+			local motion = HudConfig.Motion.Toast
+			local function plateOf(message: string): Frame?
+				for _, label in Layers.Get("Toasts"):GetDescendants() do
+					if label:IsA("TextLabel") and label.Name == "Message" and label.Text == message then
+						return label.Parent :: Frame
+					end
+				end
+				return nil
+			end
+			Toast.Show("Self-test toast 1")
+			local plate = plateOf("Self-test toast 1")
+			t.Check("it shows", plate ~= nil)
+			if plate == nil then
+				return
+			end
+			local away = plate.Position.X.Offset
+			t.Check("it starts off the right edge", away >= Toast.Width + Theme.Size.Pad, `{away} px over`)
+			local born = os.clock()
+			local quarter: number? = nil
+			local watch = RunService.RenderStepped:Connect(function()
+				if quarter == nil and os.clock() - born >= motion.Enter * 0.25 then
+					quarter = plate.Position.X.Offset
+				end
+			end)
+			t.Wait(motion.Enter + 0.1)
+			watch:Disconnect()
+			t.Check("eased out: past half way in by a quarter of its time", quarter ~= nil and quarter < away / 2, if quarter then `{quarter} px over` else "no frame")
+			t.Check("in by its Enter", plate.Position.X.Offset == 0, `{plate.Position.X.Offset} px over`)
+			for i = 2, Theme.Time.Toasts + 1 do
+				Toast.Show(`Self-test toast {i}`)
+			end
+			t.Check("pushed out, it's no longer shown", table.find(Toast.Shown(), "Self-test toast 1") == nil)
+			local left = os.clock()
+			local half: number? = nil
+			watch = RunService.RenderStepped:Connect(function()
+				if half == nil and os.clock() - left >= motion.Exit * 0.5 then
+					half = plate.Position.X.Offset
+				end
+			end)
+			t.Wait(motion.Exit + 0.1)
+			watch:Disconnect()
+			t.Check("eased in: under half way out at half its time", half ~= nil and half < away / 2 and half > 0, if half then `{half} px over` else "no frame")
+			t.Check("and gone by its Exit", plate.Parent == nil or plate.Parent.Parent == nil)
+			t.Wait(Theme.Time.Toast + motion.Exit + 0.1) -- the rest leave
+		end,
+	},
+	{
+		Name = "HUD: a reward pops at its rung: Credits swell in place, a +N rises and counts, a level swells and its thread glints",
+		Run = function(t: any)
+			-- AR8 C, part 3 (rule 4). Credits and a level from the server (DataCredits, LeadLevel), put back after.
+			local cfg = HudConfig.Pop
+			local parts = HudController.Parts()
+			local pill = (parts.Credits :: GuiObject).Parent :: GuiObject
+			local level = parts.LeadLevel :: TextLabel
+			local glint = parts.XpGlint :: Frame
+			t.Wait(cfg.Seconds + 0.1) -- anything popping settles
+			local middle = pill.AbsolutePosition + pill.AbsoluteSize / 2
+			local most, moved, levelMost, glinted, whitest = 1, 0, 1, 0, 0
+			local gold = HudConfig.Card.Level
+			local watch = RunService.RenderStepped:Connect(function()
+				most = math.max(most, Pop.Active(pill))
+				moved = math.max(moved, (pill.AbsolutePosition + pill.AbsoluteSize / 2 - middle).Magnitude)
+				levelMost = math.max(levelMost, Pop.Active(level))
+				if glint.Visible then
+					glinted = math.max(glinted, 1 - glint.BackgroundTransparency)
+				end
+				local c = level.TextColor3
+				whitest = math.max(whitest, (c.R + c.G + c.B) - (gold.R + gold.G + gold.B))
+			end)
+			t.Check("credits given", t.Server("DataCredits", 25).Ok == true)
+			t.Check("a +N rises off the pill", waitFor(t, 2, function(): boolean
+				return Pop.Gained(pill) == "+25"
+			end), Pop.Gained(pill))
+			t.Check("credits again, close after", t.Server("DataCredits", 15).Ok == true)
+			t.Check("the two count up as one", waitFor(t, 1, function(): boolean
+				return Pop.Gained(pill) == "+40"
+			end), Pop.Gained(pill))
+			t.Check("the +N leaves after its life", waitFor(t, cfg.Gain + 0.5, function(): boolean
+				return Pop.Gained(pill) == ""
+			end))
+			t.Server("DataCredits", -40) -- a spend: no pop
+			local view = ProfileController.Get()
+			local owned = if view then view.Voidkin[view.Roles.Lead] else nil
+			local was = if owned then owned.Level else nil
+			if was then
+				t.Check("a level gained", t.Server("LeadLevel", was + 1).Ok == true)
+				t.Wait(1)
+				t.Server("LeadLevel", was)
+			end
+			t.Wait(cfg.Seconds + 0.1)
+			watch:Disconnect()
+			local want = Hud.PopScale(cfg.Rungs.Credits, cfg.Swell)
+			t.Check("Credits swelled to its rung's size", math.abs(most - want) < 0.02, string.format("%.3f, its rung's %.3f", most, want))
+			t.Check("in place: the pill's middle never moved", moved <= 1, string.format("%.1f px", moved))
+			t.Check("and settled", Pop.Active(pill) == 1)
+			if was then
+				local high = Hud.PopScale(cfg.Rungs.Level, cfg.Swell)
+				t.Check("the level swelled larger, at its rung", math.abs(levelMost - high) < 0.03 and levelMost > most, string.format("%.3f, its rung's %.3f", levelMost, high))
+				t.Check("and brightened toward white", whitest > 0.2, string.format("%.2f", whitest))
+				t.Check("its colour back after", level.TextColor3:ToHex() == gold:ToHex(), level.TextColor3:ToHex())
+				t.Check("the thread glinted", glinted >= cfg.Glow - 0.05, string.format("%.2f opaque", glinted))
+				t.Check("and the glint's gone after", not glint.Visible)
+			end
+		end,
+	},
+	{
+		Name = "Effects: a number's size follows its hit's rung, and a heavy hit sends the lower numbers aside, up, fading",
+		Run = function(t: any)
+			-- AR8 C, part 5 (research's pass on A, fix 1): larger by rung; while a rung-7 hit lands on a body, its lower
+			-- numbers leave its middle, out and up (never down the body: the content check's condition 1), fading over
+			-- Yield.Seconds, eased in; the heavy hit's own number stays. On stand-in bodies in front of the camera.
+			local camera = workspace.CurrentCamera
+			local function body(x: number): Part
+				local root = Instance.new("Part")
+				root.Name = "HumanoidRootPart"
+				root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
+				root.CFrame = camera.CFrame * CFrame.new(x, -2, -24)
+				root.Parent = workspace
+				return root
+			end
+			local numbers = Combat.Numbers
+			local a, b = body(-6), body(6)
+			Effects.Number(a, "light", 100, { Style = "Dealt", Rung = 2 }, numbers)
+			Effects.Number(b, "heavy", 100, { Style = "Dealt", Rung = 7 }, numbers)
+			local light, heavy = Effects.Counting[a].light, Effects.Counting[b].heavy
+			local by = HudConfig.Numbers.Rung
+			local ratio = heavy.H / light.H
+			t.Check("a signature's hit is larger by its rung", math.abs(ratio - Hud.NumberScale("Dealt", 7, by)) < 0.01, string.format("%.3f times", ratio))
+			Effects.Number(a, "light", 50, { Style = "Dealt", Rung = 4 }, numbers)
+			t.Check("a heavier hit joining a number makes it larger", light.H > heavy.H / Hud.NumberScale("Dealt", 7, by) + 0.5, string.format("%.1f px", light.H))
+			-- The yield: a rung-2 number and a word, then a rung-7 hit on the same body.
+			local c = body(0)
+			Effects.Number(c, "low", 100, { Style = "Dealt", Rung = 2 }, numbers)
+			Effects.Number(c, "word", nil, { Style = "Word", Word = "Block" }, numbers)
+			t.Wait(0.05)
+			local low, word = Effects.Counting[c].low, Effects.Counting[c].word
+			local yield = HudConfig.Numbers.Yield
+			local born = os.clock()
+			local half: number? = nil
+			local watch = RunService.RenderStepped:Connect(function()
+				if half == nil and os.clock() - born >= yield.Seconds * 0.5 then
+					half = low.Fade
+				end
+			end)
+			Effects.Yield(c, 7)
+			Effects.Number(c, "sig", 900, { Style = "Dealt", Rung = 7 }, numbers)
+			t.Check("the lower numbers give way", low.YieldAt ~= nil and word.YieldAt ~= nil)
+			t.Check("out of the middle and up, never down", low.Aside.Y < 0 and word.Aside.Y < 0 and math.abs(low.Aside.X) > 0)
+			t.Check("the heavy hit's own number stays", Effects.Counting[c].sig ~= nil and Effects.Counting[c].sig.YieldAt == nil)
+			t.Check("a hit after on a yielded key is a new number", Effects.Counting[c].low == nil)
+			t.Wait(yield.Seconds + 0.05)
+			watch:Disconnect()
+			t.Check("eased in: under half faded at half its time", half ~= nil and half < 0.5, if half then string.format("%.2f", half) else "no frame")
+			t.Check("gone by its Seconds", low.Fade >= 1 and word.Fade >= 1, string.format("%.2f, %.2f", low.Fade, word.Fade))
+			t.Wait(numbers.Seconds + 0.1)
+			for _, root in { a, b, c } do
+				root:Destroy()
+			end
 		end,
 	},
 	{
@@ -2875,7 +3244,7 @@ return {
 				t.Check(`and opens the {name} screen`, waitFor(t, 1, function(): boolean
 					return Screen.Current() == name
 				end))
-				t.Wait(0.1) -- laid out
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
 				lintClean(t, `the {name} screen`)
 			end
 			Screen.Close()
@@ -2902,7 +3271,7 @@ return {
 				return
 			end
 			local authored = frame.Size.Y.Offset
-			t.Wait(0.1) -- laid out
+			t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
 			t.Check("it stands within the room", inside(frame), `{frame.AbsolutePosition} {frame.AbsoluteSize}`)
 			-- A screen too short for it: the scale that leaves 250 authored pixels of room.
 			Layers.Force(root.AbsoluteSize.Y / 250)
@@ -3286,7 +3655,7 @@ return {
 			end))
 			local count = readyCount(shard)
 			BaseController.Open()
-			t.Wait(0.1) -- laid out
+			t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
 			local frame = Screen.Frame("Base")
 			local list = frame and frame:FindFirstChild("Breaker", true)
 			local rows = 0
@@ -3917,13 +4286,13 @@ return {
 		end,
 	},
 	{
-		Name = "Capture: the level-up's ring beside a Frost hit",
+		Name = "Capture: the level-up's light beside a Frost hit",
 		Manual = true,
 		Stay = true,
 		Run = function(t: any)
 			-- Research on TR3's three calls (2026-11-13): the ring told from Frost's cyan, judged beside a Frost hit's
-			-- number. On the player's own lead, at once, held for a capture. For a still, slow the ring first:
-			-- NL_Debug:Invoke("Tune", "Effects.LevelUp.Ring.Seconds", 6), and put it back (0.6) after.
+			-- number. On the player's own lead, at once, held for a capture. For a still, slow the column first:
+			-- NL_Debug:Invoke("Tune", "Effects.LevelUp.Column.Seconds", 6), and put it back (0.7) after.
 			local lead = myLead()
 			local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
 			t.Check("the player's lead stands", root ~= nil)
@@ -3934,6 +4303,55 @@ return {
 			Effects.LevelUp(root, level + 1)
 			Effects.Number(root, "Capture@Frost", 1234, { Style = "Element", Colour = UIKit.Elements.Frost }, Combat.Numbers)
 			t.Wait(3)
+		end,
+	},
+	{
+		Name = "Capture: the interface in motion",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- AR8 C, each part beside its "before" (docs/asset-requests.md, AR8): a level gained, Credits won (a big win, then
+			-- a small one), then a thumb on the dock opens a screen and its Close shuts it, twice. A tap is a thumb's: down,
+			-- held, up, then the tap (Button.Touch, Button.Press). Start the recording, then the case; about 12 s.
+			local parts = HudController.Parts()
+			local function tap(button: TextButton?)
+				if button == nil then
+					return
+				end
+				Button.Touch(button, true)
+				t.Wait(0.12)
+				Button.Touch(button, false)
+				Button.Press(button)
+			end
+			local function closeOf(name: string): TextButton?
+				local frame = Screen.Frame(name)
+				return if frame then frame:FindFirstChild("Close", true) :: TextButton? else nil
+			end
+			local view = ProfileController.Get()
+			local owned = if view then view.Voidkin[view.Roles.Lead] else nil
+			t.Check("the save names a lead", owned ~= nil)
+			if owned == nil then
+				return
+			end
+			local level = owned.Level
+			t.Wait(1)
+			t.Server("LeadLevel", level + 1)
+			t.Wait(2)
+			t.Server("DataCredits", 250)
+			t.Wait(1)
+			t.Server("DataCredits", 40)
+			t.Wait(1.5)
+			tap(parts.Voidkin :: TextButton)
+			t.Wait(1.5)
+			tap(closeOf("Voidkin"))
+			t.Wait(1)
+			tap(parts.Base :: TextButton)
+			t.Wait(1.5)
+			tap(closeOf("Base"))
+			t.Wait(1)
+			t.Server("LeadLevel", level)
+			t.Server("DataCredits", -290)
+			t.Check("no screen is left open", Screen.Current() == nil)
 		end,
 	},
 }

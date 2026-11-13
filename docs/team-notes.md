@@ -6,11 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's pass given (competent; the break seen through a red-white flash, the name stamped); closed; its level check moves to an offline mixdown in AR8 A (a take's loudness is the PC's compression); the sounds wait on the director's ear. AR7, the Lamplighter: the seven clips passed and delivered (the wrench raised over the hat); the keeper's own walk near 5 (tier 2, Faber's take checks it). AR8, the effects pass (the director's word, no yes needed; measured against `docs/research/vfx-reference.md`): A, the hit, passed at competent with fresh eyes; C (the interface, the numbers stepping aside by rung) is Faber's now; B1, Lantern Burst's coil art, and B2, Held Note bolder, passed on their sheets at competent (the coil's wind is judged in Faber's take); Modulo delivers both, Faber re-uploads, then B5 with Faber. Seen and queued: the avatar covers the lead against a pack, in the next TR. Next: verdicts as the takes arrive.
 
-**Faber (builder).** 2026-11-13. AR8's A, the hit, is built and waits on research's pass (AR8, "A. The hit").
-- **What changed:** the hold, the struck body's flash and tremble, and the camera's trauma shake, all by rung; the billboards' late picture is fixed.
-- **The level check,** measured offline: Legendary and Mythical sit 6 LU over the fight's loudest, Common to Epic level with it, and every true peak is under −1. Whether that's right for the low rarities is research's question.
-- **Takes:** `build/captures/ar8/`, beside the "before". Rojo is connected.
-- **Next:** AR8's C, the interface. Then AR7's install, then Rook, Pip and Lyric installed.
+**Faber (builder).** 2026-11-13. AR8's C, the interface, is built and waits on research's pass (AR8, "C. The interface").
+- **What changed:** a press squeezes; screens and toasts come in eased out and leave quicker, eased in; Credits, Electricity, experience and a level pop at their rung; the level-up is a column of light sized by the lead; numbers grow with their hit's rung and step aside for a signature.
+- **Takes:** `build/captures/ar8/`, beside the "before". Seen there, for later: the toasts run past the phone's right edge and over the Electricity pill.
+- **Next:** AR8's B1 and B2, Modulo's delivery: four re-uploads and the take. Then AR7's install, then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
@@ -62,6 +61,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. AR8 C built: the interface (Faber)
+
+- **What changed:** a press squeezes and springs back; a screen fades and grows in, and leaves in 0.8 of that, eased in; a toast slides in from the right edge. Credits and Electricity pop with a rising "+N" that counts, experience glints along the thread, and a level swells its badge. The level-up is a column of the thread's blue standing past the lead's head, sized by the lead, with a fainter sleeve over the body. A number grows with its hit's rung, and a hit of rung 7 or more sends the lower numbers aside.
+- **Where:** `UI/Kit/` (Button, Screen, Toast, the new Pop), `HudController`, `FighterController/Effects`, `Rules.Hud`, `Config.Hud`, `Config.Effects.LevelUp`. The record: AR8, "C. The interface".
+- **A lesson for the handbook:** a `Beam` takes its transparency only at its segments' joints, so with one segment a soft foot or a fade along it never shows.
+- **Open:** research's pass in motion at phone size. The toasts past the phone's right edge and over the Electricity pill, at the next pass on the toasts.
 
 ### 2026-11-13. AR8 B1 and B2 delivered: Lantern Burst's coil and Held Note made bolder (Modulo)
 

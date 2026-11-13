@@ -1418,9 +1418,14 @@ end
 -- swells Pop times and settles, and its fade starts over. A critical after makes it a critical from there. It rises
 -- from the body and is placed clear of the numbers already up (Rules.Hud.Place). Drawn on the World layer (UI.World),
 -- so a capture shows it; sizes are authored at the phone's (UI.Theme.Author) and scale with the layer.
+-- Its size follows its hit's rung (`rung`; Rules.Hud.NumberScale; AR8 C, research's pass on A): a heavier hit joining it
+-- makes it larger from there. While a heavier hit lands on the body, the lower numbers on it give way (Effects.Yield).
 type Numbers = { Rise: number, Seconds: number, Size: number, Count: number, Pop: number }
-export type NumberLook = { Style: string, Colour: Color3?, Word: string? }
+export type NumberLook = { Style: string, Colour: Color3?, Word: string?, Rung: number? }
 type Counting = {
+	Rung: number?, -- its hit's, or nil for a word
+	YieldAt: number?, -- its age when a heavier hit sent it aside
+	Aside: Vector2, -- the way it leaves, a unit
 	Age: number,
 	Count: Hud.Count,
 	Plate: Frame,
@@ -1490,7 +1495,7 @@ end
 
 local function restyle(c: Counting, numbers: Numbers)
 	local look, share = lookOf(c.Style, c.Colour)
-	local size = numbers.Size * share
+	local size = numbers.Size * share * Hud.NumberScale(c.Style, c.Rung, HudConfig.Numbers.Rung)
 	Digits.Restyle(c.Row, size, look)
 	c.W, c.H = Digits.Width(c.Text, size, look), size * 1.2
 	c.Plate.Size = UDim2.fromOffset(c.W + size, c.H)
@@ -1542,8 +1547,14 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 	local live = onBody[key]
 	if live then
 		Hud.Add(live.Count, amount or 0, live.Age, numbers.Count)
+		local heavier = look.Rung ~= nil and look.Rung > (live.Rung or 0)
+		if heavier then
+			live.Rung = look.Rung
+		end
 		if look.Style == "Critical" and not live.Big then
 			live.Big, live.Style = true, "Critical"
+			restyle(live, numbers)
+		elseif heavier then
 			restyle(live, numbers)
 		end
 		return
@@ -1557,6 +1568,9 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 	scale.Parent = plate
 	local first, share = lookOf(look.Style, look.Colour)
 	local c: Counting = {
+		Rung = if amount == nil then nil else look.Rung,
+		YieldAt = nil,
+		Aside = Vector2.zero,
 		Age = 0,
 		Count = Hud.Count(amount or 0),
 		Plate = plate,
@@ -1615,6 +1629,17 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 		end
 		scale.Scale = 1 + (numbers.Pop - 1) * Hud.Swell(c.Count, age, numbers.Count)
 		c.Fade = math.clamp((t - 0.6) / 0.4, 0, 1)
+		local yieldAt = c.YieldAt
+		if yieldAt then
+			-- Giving way to a heavier hit: out of the body's middle and up, fading, eased in; gone, it's done.
+			local yield = HudConfig.Numbers.Yield
+			local fade, aside = Hud.Yield(age - yieldAt, yield.Seconds)
+			c.Fade = math.max(c.Fade, fade)
+			World.Shift(plate, c.Shift + c.Aside * yield.Aside * aside)
+			if fade >= 1 then
+				return false
+			end
+		end
 		Digits.Fade(c.Row, c.Fade)
 		local s = c.Sweep
 		if s then
@@ -1639,16 +1664,72 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 	end)
 end
 
--- A level gained (Config.Effects.LevelUp): the reward's two beats at once, a ring of light spreading from the feet, eased
--- out so it bursts and settles, and the new level rising over the lead, held long enough to read. Returns the ring and
--- the word, for the self-test.
-function Effects.LevelUp(root: BasePart, level: number): (Part, TextLabel)
+-- A hit of `rung` landing on `root`: the numbers on it of a lower rung leave its middle, out to their side and up,
+-- fading over Config.Hud.Numbers.Yield.Seconds, eased in, so the heavy hit's flash and tremble are seen (research's pass
+-- on AR8 A, fix 1). Never down the body (the content check's condition 1). A number that gives way takes no more hits:
+-- the next one on its key is a new number.
+function Effects.Yield(root: BasePart, rung: number)
+	local onBody = counting[root]
+	if onBody == nil then
+		return
+	end
+	for key, c in onBody do
+		if c.YieldAt == nil and (c.Rung or 0) < rung then
+			c.YieldAt = c.Age
+			local side = if c.Shift.X < 0 then -1 else 1
+			c.Aside = Vector2.new(side, -1).Unit
+			onBody[key] = nil
+		end
+	end
+end
+
+-- A beam takes its transparency only at its segments' joints: one segment draws only its two ends, and the soft foot and
+-- the fade at the top vanish. Twenty put a joint on every twentieth of it, where its keypoints fall.
+local BEAM_SEGMENTS = 20
+
+-- A level gained (Config.Effects.LevelUp), rung 5: light that rises. A column of experience's blue stands up out of the
+-- feet past the head, brightest early; its foot then climbs after its top as it narrows and fades. A breath later a wider,
+-- fainter sleeve of the same light climbs the body, over it. Each is a beam facing the camera, sized by the lead, soft at
+-- its foot and fading to nothing at its top, so it reads as light and never as a solid. The new level pops in over the
+-- lead as the column peaks, and rises, held long enough to read. All of it follows a walking lead. Returns the column, the
+-- word and the sleeve, for the self-test; each beam's "Opaque" attribute is how opaque it is now.
+function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	local look = EffectsConfig.LevelUp
+	local c, s, w = look.Column, look.Sleeve, look.Word
 	local xp = HudConfig.Card.Xp -- experience's one colour, the card's thread's (research's pass on TR3's fix round)
-	local neon = look.Ring.Neon -- seeded deeper, so under Neon it renders as the thread's blue, not Frost's cyan
-	local ring = part(Color3.new(xp.R * neon, xp.G * neon, xp.B * neon), Enum.Material.Neon)
-	ring.Shape = Enum.PartType.Cylinder
+	local ends = part(xp)
+	ends.Name = "LevelUp"
+	ends.Transparency = 1
+	ends.Size = Vector3.one * 0.2
+	ends.CFrame = root.CFrame
+	local function shaft(name: string): Beam
+		local foot = Instance.new("Attachment")
+		foot.Parent = ends
+		local top = Instance.new("Attachment")
+		top.Parent = ends
+		local beam = Instance.new("Beam")
+		beam.Name = name
+		beam.Attachment0, beam.Attachment1 = foot, top -- 0 along it is the foot
+		beam.FaceCamera = true
+		beam.Color = ColorSequence.new(xp)
+		beam.LightEmission = c.Emission
+		beam.LightInfluence = 0
+		beam.Segments = BEAM_SEGMENTS
+		beam.Enabled = false
+		beam:SetAttribute("Opaque", 0)
+		beam.Parent = ends
+		return beam
+	end
+	local column, sleeve = shaft("Column"), shaft("Sleeve")
+	sleeve.ZOffset = s.Front
 	local feet = root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0)
+	-- How tall the lead stands, feet to the top of its model, hat and all.
+	local tall = look.Tall
+	local model = root.Parent
+	if model and model:IsA("Model") then
+		local box, extent = model:GetBoundingBox()
+		tall = math.max(box.Position.Y + extent.Y / 2 - feet.Y, 1)
+	end
 	local size = look.Size
 	local rise = 0
 	local plate = World.Plate("LevelUp", Vector2.new(size * 7, size * 1.6), function(): Vector3?
@@ -1656,27 +1737,73 @@ function Effects.LevelUp(root: BasePart, level: number): (Part, TextLabel)
 	end)
 	World.Below(plate) -- under the top band, as a number is (TR3's verdict, fix 4)
 	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = xp, Align = Enum.TextXAlignment.Center, Parent = plate })
-	label.TextStrokeTransparency = 0.2
 	label.Text = `Level {level}`
+	label.TextTransparency = 1
+	label.TextStrokeTransparency = 1
+	local swell = Instance.new("UIScale")
+	swell.Scale = w.From
+	swell.Parent = label
+	-- A shaft of light standing over `at`: its foot and top in studs above, its width, how opaque at its fullest. Along
+	-- it: soft at its foot, full a fifth of the way up, and fading to nothing over its top's Fade.
+	local function lay(beam: Beam, at: Vector3, foot: number, top: number, width: number, opaque: number)
+		local a0, a1 = beam.Attachment0 :: Attachment, beam.Attachment1 :: Attachment
+		a0.WorldPosition = at + Vector3.new(0, foot, 0)
+		a1.WorldPosition = at + Vector3.new(0, math.max(top, foot + 0.05), 0)
+		beam.Width0, beam.Width1 = width, width
+		beam.Enabled = opaque > 0
+		beam:SetAttribute("Opaque", opaque)
+		if opaque > 0 then
+			beam.Transparency = NumberSequence.new({
+				NumberSequenceKeypoint.new(0, 1 - opaque * c.Foot),
+				NumberSequenceKeypoint.new(0.2, 1 - opaque),
+				NumberSequenceKeypoint.new(1 - c.Fade, 1 - opaque),
+				NumberSequenceKeypoint.new(1, 1),
+			})
+		end
+	end
+	-- Where a shaft is at `t` of its life: its top up fast, then on up a little; its foot after its top, eased in; its
+	-- width narrowing as its foot climbs; brightest at the peak, early.
+	local function climb(t: number, height: number, width: number, narrow: number): (number, number, number, number)
+		local top = height * (easeOut(t / c.Climb) + 0.2 * math.max(0, t - c.Climb) / (1 - c.Climb))
+		local u = math.clamp((t - c.Peak) / (1 - c.Peak), 0, 1)
+		return top * u * u, top, width * (1 - narrow * u * u), Hud.Pop(t, c.Peak)
+	end
+	local wordAt = c.Peak * c.Seconds
+	local last = math.max(c.Seconds, s.Delay + s.Seconds, wordAt + look.Seconds)
 	run(function(age: number): boolean
-		if age >= math.max(look.Seconds, look.Ring.Seconds) then
+		if age >= last then
 			return false
 		end
-		local r = math.clamp(age / look.Ring.Seconds, 0, 1)
-		local across = lerp(look.Ring.From, look.Ring.To, easeOut(r))
-		ring.Size = Vector3.new(look.Ring.Thick, across, across)
-		ring.CFrame = CFrame.new(if root.Parent then root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0) else feet) * CFrame.Angles(0, 0, math.pi / 2)
-		ring.Transparency = if r >= 1 then 1 else r * r
-		local t = age / look.Seconds
-		rise = look.Rise * easeOut(t)
-		label.TextTransparency = math.clamp((t - 0.7) / 0.3, 0, 1)
-		label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
+		local at = if root.Parent then root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0) else feet
+		local tc = age / c.Seconds
+		if tc < 1 then
+			local foot, top, width, pop = climb(tc, tall + c.Over, tall * c.Wide, c.Narrow)
+			lay(column, at, foot, top, width, pop * c.Opaque)
+		else
+			lay(column, at, 0, 0, 0, 0)
+		end
+		local ts = (age - s.Delay) / s.Seconds
+		if ts > 0 and ts < 1 then
+			local foot, top, width, pop = climb(ts, tall + s.Over, tall * s.Wide, c.Narrow / 2)
+			lay(sleeve, at, foot, top, width, pop * s.Alpha)
+		else
+			lay(sleeve, at, 0, 0, 0, 0)
+		end
+		local since = age - wordAt
+		if since >= 0 then
+			local t = since / look.Seconds
+			local u = math.clamp(since / w.Pop, 0, 1) - 1
+			swell.Scale = lerp(w.From, 1, 1 + 2.7 * u * u * u + 1.7 * u * u) -- in with a small overshoot (a Back ease)
+			rise = look.Rise * easeOut(t)
+			label.TextTransparency = math.clamp((t - 0.7) / 0.3, 0, 1)
+			label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
+		end
 		return true
 	end, function()
-		ring:Destroy()
+		ends:Destroy()
 		World.Remove(plate)
 	end)
-	return ring, label
+	return column, label, sleeve
 end
 
 -- A shard won (Config.Effects.ShardLeap): it leaves the fallen Shade in an arc, eased in and out so it lifts off and

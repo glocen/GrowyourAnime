@@ -40,6 +40,7 @@ local TargetCard = require(UI.TargetCard)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
+local Pop = require(UI.Kit.Pop)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local Effects = require(script.Parent.FighterController.Effects)
 local FadeController = require(script.Parent.FadeController)
@@ -91,6 +92,8 @@ local chipText: TextLabel
 local ring: Ring
 local dock: { [string]: TextButton } = {}
 local lastView: Profile.View? = nil
+local glint: Frame -- experience's pop: a light over the thread's
+local lastStored: number? = nil -- the battery at the last read, for its jump
 local baseReadAt = 0
 
 local function fighters(): { Instance }
@@ -205,6 +208,7 @@ local function pill(name: string, order: number, width: number, image: string): 
 	value:GetPropertyChangedSignal("Text"):Connect(function()
 		frame.Visible = value.Text ~= ""
 	end)
+	Pop.Centre(frame) -- it swells in place
 	return value, extra, thread
 end
 
@@ -451,10 +455,28 @@ local function notice(old: Profile.View?, new: Profile.View)
 			Effects.ShardLeap(fallenNear(), avatarAt)
 		end
 	end
+	local pops = HudConfig.Pop.Rungs
+	local won = new.Currency.Credits - old.Currency.Credits
+	if won > 0 then
+		local pillFrame = credits.Parent :: GuiObject
+		Pop.Play(pillFrame, pops.Credits)
+		Pop.Gain(pillFrame, won, HudConfig.Card.Level, Read.Number)
+	end
 	local id = new.Roles.Lead
 	local was, now = old.Voidkin[id], new.Voidkin[id]
+	if was and now and (now.Level > was.Level or now.Xp > was.Xp) then
+		Pop.Play(glint, pops.Xp, { Swell = false, Paint = function(p: number)
+			local share = lead.Xp:GetAttribute("Share")
+			glint.Visible = p > 0
+			glint.Size = UDim2.fromScale(if type(share) == "number" then share else 0, 1)
+			glint.BackgroundTransparency = 1 - HudConfig.Pop.Glow * p
+		end })
+	end
 	if was and now and now.Level > was.Level then
 		Toast.Show(`{Read.VoidkinName(now)} reached level {now.Level}`, HudConfig.Card.Xp)
+		Pop.Play(lead.Level, pops.Level, { Paint = function(p: number)
+			lead.Level.TextColor3 = HudConfig.Card.Level:Lerp(Color3.new(1, 1, 1), HudConfig.Pop.Glow * p)
+		end })
 	end
 end
 
@@ -564,6 +586,13 @@ local function step(dt: number)
 		local base = Read.Base(view, workspace:GetServerTimeNow())
 		local stored = base.Data.Base.Battery
 		local cap = BaseConfig.Battery.Capacity
+		-- A jump (a return from away) pops; the bays' steady flow never does.
+		if lastStored and cap > 0 and stored - lastStored >= HudConfig.Pop.Jump * cap then
+			local pillFrame = electricity.Parent :: GuiObject
+			Pop.Play(pillFrame, HudConfig.Pop.Rungs.Electricity)
+			Pop.Gain(pillFrame, stored - lastStored, UIKit.Charge, Read.Stored)
+		end
+		lastStored = stored
 		electricity.Text = `{Read.Stored(stored)} / {Read.Number(cap)}`
 		rate.Text = if stored >= cap - 1e-6 then "full" else Read.Rate(base.Rates.Net)
 		if charge then
@@ -587,6 +616,22 @@ function HudController.Start()
 	local value, extra, thread = pill("Electricity", 2, ELECTRICITY, "Bolt")
 	electricity, rate, charge = value, extra, thread :: Frame
 	ring = signatureRing()
+	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
+	glint = Instance.new("Frame")
+	glint.Name = "Glint"
+	glint.BackgroundColor3 = Color3.new(1, 1, 1)
+	glint.BackgroundTransparency = 1
+	glint.BorderSizePixel = 0
+	glint.Visible = false
+	glint.ZIndex = 2
+	local glow = Instance.new("UIGradient")
+	glow.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.6, 0.6), NumberSequenceKeypoint.new(1, 0) })
+	glow.Parent = glint
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = glint
+	glint.Parent = lead.Xp
+	Pop.Centre(lead.Level) -- it swells about its middle
 	banded = { lead.Frame, target.Frame, credits.Parent :: GuiObject, electricity.Parent :: GuiObject }
 	chip = Panel.new({
 		Name = "Chip",
@@ -668,6 +713,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		TargetGem = target.Gem,
 		Credits = credits,
 		Electricity = electricity,
+		XpGlint = glint,
 		ElectricityRate = rate,
 		Signature = ring.Frame,
 		Chip = chip,

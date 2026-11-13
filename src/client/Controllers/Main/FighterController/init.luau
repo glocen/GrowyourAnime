@@ -895,6 +895,10 @@ local function onHit(hit: any)
 		-- damage on the player's own lead is received; the player's own hit is dealt, or a critical, and its element's share
 		-- is its own number in the element's colour, a beat behind.
 		local numbers = Combat.Numbers
+		local rung = if type(hit.Rung) == "number" then hit.Rung else 2
+		if rung >= HudConfig.Numbers.Yield.From then
+			Effects.Yield(struck.Root, rung) -- the lower numbers on the body give way to it (research's pass on AR8 A)
+		end
 		if hit.Dodged then
 			Effects.Number(struck.Root, `{press}:word`, nil, { Style = "Word", Word = "Dodge" }, numbers)
 			return
@@ -903,19 +907,19 @@ local function onHit(hit: any)
 			Effects.Number(struck.Root, `{press}:word`, nil, { Style = "Word", Word = "Block" }, numbers)
 		end
 		if onMine then
-			Effects.Number(struck.Root, press, hit.Total, { Style = "Received" }, numbers)
+			Effects.Number(struck.Root, press, hit.Total, { Style = "Received", Rung = rung }, numbers)
 		else
 			local elemental = if type(hit.Elemental) == "number" then hit.Elemental else 0
 			local physical = hit.Total - elemental
 			if physical >= 0.5 or elemental < 0.5 then
-				Effects.Number(struck.Root, press, physical, { Style = if hit.Critical then "Critical" else "Dealt" }, numbers)
+				Effects.Number(struck.Root, press, physical, { Style = if hit.Critical then "Critical" else "Dealt", Rung = rung }, numbers)
 			end
 			local def = if attacker then Voidkin.ById[tostring(attacker.Model:GetAttribute("Def"))] else nil
 			local colour = if def then UIKit.Elements[def.Element] else nil
 			if elemental >= 0.5 and colour then
 				local root = struck.Root
 				task.delay(HudConfig.Numbers.Element.Delay, function()
-					Effects.Number(root, `{press}:element`, elemental, { Style = "Element", Colour = colour }, numbers)
+					Effects.Number(root, `{press}:element`, elemental, { Style = "Element", Colour = colour, Rung = rung }, numbers)
 				end)
 			end
 		end

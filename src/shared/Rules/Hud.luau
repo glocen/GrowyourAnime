@@ -189,6 +189,69 @@ function Hud.Back(untilAt: number, now: number): number
 	return math.max(1, math.ceil(untilAt - now))
 end
 
+-- AR8 C, the interface's motion (Config.Hud.Motion and Pop; docs/research/vfx-reference.md, rule 4).
+export type Press = { Squeeze: number, In: number, Least: number, Out: number, Back: number }
+
+-- A button's face, a share of its size, `now` seconds on: touched at `down`, let go at `up` (nil while held; an up
+-- before the down is an old one). The squeeze comes in eased out; a quick tap stays squeezed for at least Least; it
+-- comes back eased out with a small overshoot (a Back ease), to exactly 1.
+function Hud.Squeeze(now: number, down: number?, up: number?, press: Press): number
+	if down == nil then
+		return 1
+	end
+	local squeezed = function(at: number): number
+		local u = if press.In > 0 then math.clamp((at - down) / press.In, 0, 1) else 1
+		return 1 - (1 - press.Squeeze) * Hud.Ease(u)
+	end
+	if up == nil or up < down then
+		return squeezed(now)
+	end
+	local from = math.max(up, down + press.Least)
+	if now <= from then
+		return squeezed(now)
+	end
+	local u = if press.Out > 0 then math.clamp((now - from) / press.Out, 0, 1) else 1
+	if u >= 1 then
+		return 1
+	end
+	local start = squeezed(from)
+	local c1 = press.Back
+	local back = 1 + (c1 + 1) * (u - 1) ^ 3 + c1 * (u - 1) ^ 2 -- 0 to 1, past 1 for a moment when c1 > 0
+	return start + (1 - start) * back
+end
+
+-- A pop's shape, 0 to 1 to 0 over its life `t` (0 to 1): up to its peak at `peak`, eased out, then down, eased in and
+-- out (rule 3: the peak early, never a linear fade).
+function Hud.Pop(t: number, peak: number): number
+	if t <= 0 or t >= 1 then
+		return 0
+	end
+	if t < peak then
+		return Hud.Ease(t / peak)
+	end
+	local u = (t - peak) / (1 - peak)
+	return 1 - u * u * (3 - 2 * u)
+end
+
+-- How large a pop swells at its rung: 1 + swell × (rung − 1).
+function Hud.PopScale(rung: number, swell: number): number
+	return 1 + swell * (math.max(rung, 1) - 1)
+end
+
+-- A number's size by its hit's rung: Grow of its style's size for each rung over the style's own, at most Most.
+function Hud.NumberScale(style: string, rung: number?, by: { Grow: number, Most: number, Rungs: { [string]: number }, Default: number }): number
+	local own = by.Rungs[style] or by.Default
+	local over = math.max(0, (rung or own) - own)
+	return math.min(1 + by.Grow * over, by.Most)
+end
+
+-- A number giving way to a heavier hit, `since` seconds after it landed: its fade (0 to 1, eased in) and how far it has
+-- moved aside (0 to 1, eased out).
+function Hud.Yield(since: number, seconds: number): (number, number)
+	local u = if seconds > 0 then math.clamp(since / seconds, 0, 1) else 1
+	return u * u, Hud.Ease(u)
+end
+
 -- How full the signature's ring is: 0 the moment it fires, 1 once it's ready again.
 function Hud.Ready(readyAt: number, cooldown: number, now: number): number
 	if cooldown <= 0 then

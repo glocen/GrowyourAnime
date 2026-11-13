@@ -4,16 +4,20 @@
 -- `button`): the shadow, a lit ring's glow, the body, the disabled veil, the edge, the pressed shade, the lit ring, and the
 -- accent's base line at rest. A press that waits (an Act) shows the light running round its edge and three dots until it
 -- answers, and refuses a second press meanwhile, so nothing is asked twice. It flashes succeeded or failed only on the
--- server's answer (rule 4: the interface never lies). Pressed sinks it a pixel; no state moves the layout.
+-- server's answer (rule 4: the interface never lies). A touch squeezes its face and label about their middle within
+-- 0.05 s, and a let-go brings them back over full size for a moment (Config.Hud.Motion.Press, Rules.Hud.Squeeze; AR8 C);
+-- a press with no touch (a pad, a key) squeezes as a tap. No state moves the layout.
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
 --   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false })
 --   Button.Press(button)                             what a tap does, for tests: false when disabled or pending
+--   Button.Touch(button, down)                       a finger going down on it or coming off, for tests
 --   Button.State(button)                             the state it shows
 
 local RunService = game:GetService("RunService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
+local HudConfig = require(Shared.Config.Hud)
 local Hud = require(Shared.Rules.Hud)
 local Theme = require(script.Parent.Parent.Theme)
 local Text = require(script.Parent.Text)
@@ -45,6 +49,9 @@ type State = {
 	Selected: boolean,
 	Primary: boolean,
 	Held: boolean,
+	DownAt: number?, -- the touch's moment, while its squeeze runs
+	UpAt: number?, -- the let-go's
+	Scales: { UIScale }, -- the face's and the label's
 	Flash: string?, -- "Succeeded" or "Failed", for a moment after the server's answer
 	FlashUntil: number,
 	OnPress: () -> ...any,
@@ -57,6 +64,7 @@ Button.FlashSeconds = 0.6
 -- Held until the button is destroyed: a weak table keyed by an instance can lose a live one (Text's note).
 local states: { [TextButton]: State } = {}
 local waiting: { [TextButton]: boolean } = {}
+local squeezing: { [TextButton]: boolean } = {}
 
 function Button.State(button: TextButton): string
 	local state = states[button]
@@ -84,8 +92,6 @@ local function paint(button: TextButton, state: State)
 	local lit = if now == "Selected" then p.Accent elseif now == "Succeeded" then UIKit.Good elseif now == "Failed" then UIKit.Bad else nil
 	local pressed = now == "Pressed"
 	local inked = now == "Selected" and p.Selected ~= nil
-	local skin = Skin.Of(button)
-	skin.Position = UDim2.fromOffset(0, if pressed then 1 else 0)
 	layers.Shadow.Visible = not pressed
 	layers.RingGlow.Visible = lit ~= nil
 	if lit then
@@ -114,17 +120,46 @@ local function paint(button: TextButton, state: State)
 	state.Tick.Visible = now == "Succeeded"
 	state.Label.Text = Hud.Says(state.Text, state.Disabled, false)
 	state.Label.Visible = now ~= "Waiting"
-	state.Label.Position = UDim2.fromOffset(if now == "Succeeded" then 12 else 0, if pressed then 1 else 0)
+	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else 0, 0.5, 0)
 	state.Label.TextColor3 = if now == "Disabled" then p.Soft elseif inked then (p.SelectedText or p.Text) else p.Text
 	button:SetAttribute("Disabled", state.Disabled or "")
 	button:SetAttribute("Pending", state.Pending)
 	button:SetAttribute("State", now)
 end
 
+-- What a finger or the mouse does going down on the button (`down`) and coming off it: the held look. The tap itself is
+-- Activated's, so a test's touch then calls Press.
+function Button.Touch(button: TextButton, down: boolean)
+	local state = states[button]
+	if state == nil then
+		return
+	end
+	state.Held = down
+	local at = os.clock()
+	if down then
+		state.DownAt, state.UpAt = at, nil
+	elseif state.DownAt then
+		state.UpAt = at
+	end
+	squeezing[button] = if state.DownAt then true else nil
+	paint(button, state)
+end
+
+-- How squeezed its face is, a share of its size (1 at rest), for tests.
+function Button.Squeeze(button: TextButton): number
+	local state = states[button]
+	return if state then state.Scales[1].Scale else 1
+end
+
 function Button.Press(button: TextButton): boolean
 	local state = states[button]
 	if state == nil or state.Disabled or state.Pending then
 		return false
+	end
+	if state.DownAt == nil then -- a press with no touch: a tap's squeeze
+		local at = os.clock()
+		state.DownAt, state.UpAt = at, at
+		squeezing[button] = true
 	end
 	state.Pending = true
 	state.Flash = nil
@@ -214,6 +249,17 @@ function Button.new(props: Props): TextButton
 		Align = Enum.TextXAlignment.Center,
 		Parent = button,
 	})
+	-- The face and the label squeeze about the button's middle.
+	skin.AnchorPoint = Vector2.new(0.5, 0.5)
+	skin.Position = UDim2.fromScale(0.5, 0.5)
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	local scales = {}
+	for _, piece in { skin, label } :: { GuiObject } do
+		local scale = Instance.new("UIScale")
+		scale.Name = "Squeeze"
+		scale.Parent = piece
+		table.insert(scales, scale)
+	end
 	local tick = Skin.Icon(button, "Tick", 29, 0, 20, UIKit.Good, 2)
 	centred(tick, 0)
 	tick.Name = "Tick"
@@ -228,6 +274,7 @@ function Button.new(props: Props): TextButton
 		Selected = false,
 		Primary = props.Primary == true,
 		Held = false,
+		Scales = scales,
 		Flash = nil,
 		FlashUntil = 0,
 		OnPress = props.OnPress,
@@ -236,17 +283,16 @@ function Button.new(props: Props): TextButton
 	button.Destroying:Connect(function()
 		states[button] = nil
 		waiting[button] = nil
+		squeezing[button] = nil
 	end)
 	button.InputBegan:Connect(function(input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			state.Held = true
-			paint(button, state)
+			Button.Touch(button, true)
 		end
 	end)
 	button.InputEnded:Connect(function(input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			state.Held = false
-			paint(button, state)
+			Button.Touch(button, false)
 		end
 	end)
 	button.Activated:Connect(function()
@@ -275,12 +321,33 @@ function Button.Set(button: TextButton, change: { Text: string?, Disabled: (stri
 	paint(button, state)
 end
 
--- The running light and the dots, while a button waits.
+-- The running light and the dots, while a button waits; the squeeze, while a touch's runs.
 RunService.RenderStepped:Connect(function()
+	local t = os.clock()
+	if next(squeezing) ~= nil then
+		local press = HudConfig.Motion.Press
+		for button in squeezing do
+			local state = states[button]
+			if state == nil or button.Parent == nil then
+				squeezing[button] = nil
+				continue
+			end
+			local scale = Hud.Squeeze(t, state.DownAt, state.UpAt, press)
+			local up = state.UpAt
+			local down = state.DownAt :: number
+			if up and t >= math.max(up, down + press.Least) + press.Out then
+				scale = 1
+				state.DownAt, state.UpAt = nil, nil
+				squeezing[button] = nil
+			end
+			for _, s in state.Scales do
+				s.Scale = scale
+			end
+		end
+	end
 	if next(waiting) == nil then
 		return
 	end
-	local t = os.clock()
 	for button in waiting do
 		local state = states[button]
 		if state == nil or button.Parent == nil then

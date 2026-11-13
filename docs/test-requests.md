@@ -516,7 +516,21 @@ What the checks found:
   - The sounds' schedule is `Rules.Reveal.Cues`, and their levels are `Config.Reveal.Sounds`.
   - The sounds stay provisional until the director's ear.
 
-**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict in motion is next, then its artistic pass.
+**Research's verdict, 2026-11-13,** on the 0.2 s phone sheets and `compare_<rarity>.png`, with `ga-fresh-eyes` blind beside it. Steps of 0.2 s can't show a stamp or a crack, so this is the read of the beats. The motion and the sound come with fix 2.
+- **Felt:** on a Mythical, the shard sits in the dark while its light climbs through green, blue and purple. It holds on gold long enough to let you think "Legendary", then turns red. A white flash, a black shape in a burning spiked frame, and the fighter lit with its name across the left. A Common is quick and quiet, as the ladder wants. The engine matches the art at all six rarities, the name a touch bolder, which is right on a phone.
+- **Tier:** competent.
+- **The one bold thing:** the climb, with the gold hold before the red. Fresh eyes named the cut from the flash to the dark shape in the burning frame.
+- **Fresh eyes, blind:** competent. The light tells you your luck, but at Mythical the shard's break is hidden under the white, and the name reads as a title card more than a stamp.
+- **Accepted:**
+  - The colours running top to bottom: 8 frames is under the eye at full speed.
+  - The stage fitted to the safe area.
+  - The sound bank.
+- **Fixes:**
+  1. **The top flash is never pure white.** Legendary's and Mythical's flash goes to their own light (gold-white, red-white) at about 0.85, not 1, so the split's pieces show through it and a dark room isn't blinded. This serves the break, which fresh eyes lost, and `docs/research/vfx-reference.md`, rule 3 ("never pure white"). Faber, with Modulo's eye on the colour.
+  2. **A take in motion with its sound,** a Common and a Mythical at phone size, recorded with the game's audio. It's for the name's landing, the shard's answer at each rung, and the nine cues. If the name still lands as a title card, it gets a stamp's motion there: a scale down onto its place over about 4 frames, with the slam on the frame it lands.
+- **For the card, when it's built with the Voidkin screens** (under "What waits"): it never covers the name. Today's card sits over its first letters.
+
+**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict on the beats is given (competent, two fixes); the take in motion with sound is next, then research's pass.
 
 ## Next, not yet written
 

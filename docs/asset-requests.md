@@ -2794,7 +2794,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: the blocking is made and waits on research's read before any timing work (section 3).
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is past the content check and research's verdict (competent) and **delivered** to `build/handoff/Lamplighter/` (section 2). Delivery 3, the clips: blocked (section 3), then timed with research's two fixes, past the content check, and waiting on research's read before delivery (section 4).
 
 ### 1. The sheet (Modulo, 2026-11-13)
 
@@ -2948,6 +2948,54 @@ The keeper's own Idle, Walk and Hit, rather than the Shade's family, are its cal
 2. **A short hang at the wrench's top,** about 4 frames, in timing, so the overhead lantern registers at phone size before the 8-frame slam. That serves the bold thing.
 
 Then time it. The signature goes to `ga-fresh-eyes` beside research's read at its motion blockout with Faber (`/ga-action`).
+
+### 4. The clips: timed (Modulo, 2026-11-13)
+
+- **Where:** `build/scratch/modulo/lamplighter/clips/export/`. It holds:
+  - the seven `Lamplighter_<Clip>.json` and `Lamplighter.clips.json` (lengths, loops, markers, the walk's stride);
+  - a review pack a clip (`pack_<Clip>.png`, with its notes and audit in `.txt`);
+  - the arcs, one dot a frame for the grip, the pole's foot and the lantern (`arcs_<Clip>.png`);
+  - the bare rig stepped through (`bare_<Clip>.png`).
+  - `tools/blender/lamplighter_clips.py -- <out dir> export` makes them in about 2 minutes. Its `audit` mode runs alone in 30 seconds.
+- **The lantern is a weight on its cord now,** not keyed: the game's gravity, a 1.61 cord (a 0.70 s swing), a little drag, and the floor. Keys only pull it toward a swing. It's caught at 100° off plumb, so it never goes over the top. A clip that isn't a loop ends with it hanging plumb, and a loop closes its seam.
+- **Fix 1, the hold grows** (`poses_Signature.png`, 44 to 96, from the fight's camera):
+  - 44: it leans the pole out, head bowed 28° under the brim.
+  - 70: its weight sinks onto the pole.
+  - 96: the head comes up, and the face comes out under a level brim. The lantern settles from 60 to 96.
+  - **Why the blocking's hold was a still:** your fighter's face is 2.4 below the keeper's eyes at 4.0 off. So "looks at you" bowed the head 31°, deeper than the plant's own bow. The 96 now looks over your fighter's head, toward the camera behind it.
+  - **The lamppost moved** so the face shows: the pole's foot is at (1.95, 0.95), leant 22° at −38°. The lantern hangs over your fighter's shoulder, beside the keeper's face, where the blocking's covered it.
+- **Fix 2, the hang:** 106 **Wrench**, 110 the top held 4 frames, 118 **Slam** 8 frames later.
+  - **The wrench is one-handed** (tier 1). The pole comes up upright beside the hat on its right, the lantern up beside it, and the left arm is flung out against it.
+  - Why: the blocking's overhead wrench took the lantern out of the ring's frame and the pole through the brim (−0.09). An R6 left arm can't reach the pole out there.
+- **The slam:** the pole comes down level, the hand slid up it to 4.6, and the lantern lands on the floor at (−0.65, 4.48), by your fighter at (0, 4.0). It stays down to about 153.
+  - Why level, not head down: the drum hangs 2.92 below the hook, so with the pole's head on the floor the lantern went 0.56 through it.
+- **The signature's numbers:** 183 frames, 3.03 s. Markers: Plant 24, Light 44, Wrench 106, Slam 118. Plant to Slam is 1.57 s, the window a heavy stagger can break. The action sets the real numbers.
+- **The Swing's turn-over:** the pole now turns over upright at its right side (a key at 33). The foot passes down beside the leg, and the lantern up and out to the right. Before, the lantern went through the head (−1.00 at 34). At the Strike the lantern is flung wide (7.3 to its right, at its 100° catch) and comes back by Recover: its weight shown, for your read at speed.
+- **The Walk is the blocking's 64 frames,** as research called it right. It covers 5.27 studs a loop, 4.94 a second at rate 1 (`Stride` in `clips.json`).
+  - **For Faber and research (tier 2):** the keeper chases at the Shade's `WalkSpeed` 12 (`Config/Combat.luau`). That plays the walk at 2.43, 4.6 steps a second: a scurry, not a master.
+  - A first try timed the loop to 12 studs a second (28 frames). The lantern flailed to 134°.
+  - My proposal: a keeper's own walk speed near 5, the clip at rate 1.
+- **The rest:**
+  - Idle: 240 frames, Catch 188, the lantern still (1° at its widest).
+  - Challenge: 92 frames, Lift 44, Stamp 58. The stamp kicks the lantern.
+  - Ready: 180 frames.
+  - Hit: 30 frames. The blow swings the lantern 52°.
+  - The Challenge goes from Wait into Ready. The Swing, the Hit and the Signature start and end on Ready. The loops close their seams (0°).
+- **Checks, my own:**
+  - r6parity's audit: **PASS on all seven**, at the export.
+  - The signature at its closest: an arm in the body 0.043 (limit 0.05); salute held 0 s; a nod of 28.3° (30); a leg's widest 27° (the coat holds 27).
+  - Nothing passes the head. The pole is 0.01 clear at its closest (20), and the lantern 0.02 (176). The content check's note on a 0.01 graze at 171 was cleared in this pass: it tips its head away as the pole rises.
+  - The blocking's four grazes are gone.
+  - The plant flings the lantern to its 100° catch at 23: a snap in motion, for your read.
+- **For Faber, at delivery:**
+  - `Config/Animations` needs the Lamplighter's set: Idle, Challenge, Ready, Walk, Swing (KeeperSwing), Hit and Signature. `Strides.LamplighterWalk` is `clips.json`'s 4.94.
+  - The Challenge is 1.53 s. The keeper should hold it to its end: the screen clears about 0.45 s in, so the Lift at 0.73 s is seen.
+- **Time:** about 45 minutes by the clock, from research's read (12:49 UTC) to the export (13:35). With the blocking, about 1 hour 15 of the 4 named for the clips. On Opus 5.5.
+- **Content check, 2026-11-13: PASS.** It covered all seven packs, the arcs, the bare sheets, `clips.json` and the performance lines, against rules 2, 3 and 4 and Roblox's, with the names checked against `docs/ip-list.md`. Its note on the head graze was cleared and the signature re-checked: PASS. It carries:
+  - The model's condition, no red pieces in the signature, is met: the clips have no effect pieces.
+  - The slam's effects (the cyan circle, the impact) get their own check in `/ga-action`: no red; no drop, spray or stain shapes in any colour; the hit shown as light, dust or sparks.
+  - A re-export that moves the lantern needs the same short re-check. Each clip gets its line in `docs/asset-log.md` at delivery.
+- **Four facts:** timed and exported; self-reviewed from the fight's camera and the side, with the audit; content check PASS; research's read next. Not delivered.
 
 ## AR8. The effects pass
 

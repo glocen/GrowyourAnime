@@ -20,7 +20,9 @@ Three tracks a clip, keyed apart:
   the grip and turns about it. Planted, its foot is on a floor place and the pole slides through the grip as the arm
   moves; held, its line is leant off upright toward a heading with the grip a length up it. Its crook opens toward a
   heading;
-- the lantern (Take.lamp): hung from the hook's tip, plumb, or swung off plumb by the keys.
+- the lantern: a weight on its cord, carried by the hook's tip and left to swing (swing_lantern), under the game's
+  gravity, with the floor under it. A key (Take.lamp) can pull it toward a swing; a clip that isn't a loop ends with it
+  hanging plumb, as the hub it fades to does, and a loop's swing is run until it repeats.
 
 How it moves: it's the street's master, and it's in no hurry. Its weight is on the pole whenever the pole is down, and
 everything it does starts from the pole: the try's stamp, the swing, the signature's plant.
@@ -35,7 +37,7 @@ from pathlib import Path
 
 import bpy
 import numpy as np
-from mathutils import Matrix, Vector
+from mathutils import Matrix, Quaternion, Vector
 from mathutils.bvhtree import BVHTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -58,22 +60,33 @@ ACTIONS = "src/shared/Definitions/Actions.luau"
 FIGHT, SIDE = (20.0, 2.0), (-85.0, 6.0)  # the fight's camera, behind the lead with the keeper turned to it, from a touch
 # below the mask (TR2's framing), and its left side, clear of the lantern
 STRIDE = 25.0  # degrees a leg swings each way in the keeper's walk: the recipe's stride, 27, holds the long coat's hem
+WALK_LOOP = 64  # frames of the walk's two steps: a heavy 1.9 a second, the master in no hurry (the blocking's, kept)
 FERRULE = 0.12  # the pole's foot's radius
 POLE_TOP = lsh.POLE_TOP  # the pole's length, foot to top
 HOLD = (1.0, 6.0)  # studs up the pole from its foot that the grip can close on: over the ferrule, under the crook
 LAMP_R, LAMP_DROP = lsh.LAMP[0], lsh.LAMP[1] / 2 + lsh.HOOP  # the drum's radius, and its middle to its foot
 NOD = rc.NOD
 GRIP = (0.3, -1.28, 0.0)  # the grip in the right arm's frame: set from the recipe as the rig is built
+COMBAT = "src/shared/Config/Combat.luau"
+GRAVITY = 196.2 / SCALE  # Roblox's pull (Workspace.Gravity's default), in the keeper's units: the game scales it by 1.5
+LAMP_DAMP = 3.0  # how fast the lantern's swing dies, a second: a heavy drum on a stiff hook, an eighth left a swing
+SUBSTEPS = 8  # the lantern's steps a frame
+SETTLE = 16  # frames over which a clip that isn't a loop brings the lantern to plumb, as its hub hangs it
+MAX_SWING = 100.0  # degrees off plumb the lantern is flung at most: past it a cord goes slack, which a drum on a
+# fixed hoop can't show, so it's caught there and loses most of its speed
 
 
-def row_number(anchor, name) -> float:
-    """The first `name = number` after `anchor` in Definitions/Actions: the game's own numbers, never typed again."""
-    text = (r6.REPO / ACTIONS).read_text(encoding="utf-8")
+def row_number(anchor, name, path=ACTIONS) -> float:
+    """The first `name = number` after `anchor` in one of the game's files: its own numbers, never typed again."""
+    text = (r6.REPO / path).read_text(encoding="utf-8")
     return float(re.search(rf"\b{name}\s*=\s*(-?[\d.]+)", text[text.index(anchor):]).group(1))
 
 
 SWING = r6.luau_table(ACTIONS, 'Id = "KeeperSwing"')  # Length, and its Beats: Wind, Strike, Recover, in seconds
 REACH = row_number('Id = "KeeperSwing"', "Range") / SCALE  # how far off the lead stands when the keeper swings
+# The keeper comes for its challenger at the Shade's walk (FightService, the Shades' step), in studs a second; the game
+# plays a walk at the body's speed over the clip's (Config.Animations.Strides), so the loop is timed to play at 1 there
+WALK_SPEED = row_number("Shade = {", "WalkSpeed", COMBAT)
 LEAD = (0.0, REACH, 3.0)  # the lead's face, a Voidkin's height over the floor, in the keeper's units
 # You: the player's camera behind the lead (TR2's zoom 10 and pitch 10 from the lead's face at 4.5 studs), in the keeper's
 # units. The challenge's lift looks at you, not your fighter: you're the one who asked
@@ -207,6 +220,66 @@ def rest_on_floor(tip, down, cord) -> tuple:
     return flat * math.sin(hi) - Vector((0, 1, 0)) * math.cos(hi), True
 
 
+def swing_lantern(tips, pulls, cord, loop) -> tuple:
+    """The lantern as a weight on its cord, hung from the hook's tip and carried by it frame by frame: the game's
+    gravity, a little drag, and the floor, where it stops dead. `pulls` (forward, right, pin) a frame draw it toward a
+    keyed swing by `pin`. A loop is run until it repeats and its seam closed; a clip that isn't one ends hanging plumb.
+    Returns each frame's cord line (Roblox, down from the tip) and whether it lay on the floor."""
+    n = len(tips)
+    dt = 1.0 / (FPS * SUBSTEPS)
+    drag, fall = math.exp(-LAMP_DAMP * dt), Vector((0.0, -GRAVITY * dt * dt, 0.0))
+    downs, rests = [None] * n, [False] * n
+
+    limit = math.radians(MAX_SWING)
+
+    def floor(tip, p):
+        d = (p - tip).normalized()
+        off = math.acos(max(-1.0, min(1.0, -d.y)))
+        if off > limit:  # caught at the widest swing, in the same upright plane
+            flat = Vector((d.x, 0.0, d.z)).normalized()
+            d = flat * math.sin(limit) - Vector((0.0, 1.0, 0.0)) * math.cos(limit)
+        d, resting = rest_on_floor(tip, d, cord)
+        return tip + d * cord, resting, resting or off > limit  # the place, on the floor, stopped
+
+    p = floor(tips[0], tips[0] + Vector((0.0, -cord, 0.0)))[0]
+    prev = p.copy()
+    frames = n - 1 if loop else n  # a loop's last frame is its first
+    passes = max(2, math.ceil(6.0 * FPS / frames)) if loop else 1
+    for _ in range(passes):
+        for f in range(frames):
+            tip, pull = tips[f], pulls[f]
+            target, pin = hang(pull.x, pull.y), min(max(pull.z, 0.0), 1.0)
+            if not loop and f > n - 1 - SETTLE:
+                s = (f - (n - 1 - SETTLE)) / SETTLE
+                if s * s * (3 - 2 * s) > pin:
+                    target, pin = Vector((0.0, -1.0, 0.0)), s * s * (3 - 2 * s)
+            if pin > 0.0:
+                moving = p - prev
+                p = tip + (p - tip).normalized().slerp(target, pin) * cord
+                prev = p - moving * (1.0 - pin)
+            p, rests[f], stopped = floor(tip, p)
+            if stopped:
+                prev = p.copy()
+            downs[f] = (p - tip).normalized()
+            if f == n - 1:
+                break
+            nxt = tips[(f + 1) % (n - 1) if loop else f + 1]
+            for s in range(1, SUBSTEPS + 1):
+                at = tip.lerp(nxt, s / SUBSTEPS)
+                p, prev = p + (p - prev) * drag + fall, p
+                p = at + (p - at).normalized() * cord
+                p, _, stopped = floor(at, p)
+                if stopped:
+                    prev = p.copy()
+    if loop:  # the seam: what the next pass would start from, turned back onto the first frame over the loop
+        end = (p - tips[0]).normalized()
+        q = end.rotation_difference(downs[0])
+        for f in range(n - 1):
+            downs[f] = Quaternion((1.0, 0.0, 0.0, 0.0)).slerp(q, f / (n - 1)) @ downs[f]
+        downs[n - 1], rests[n - 1] = downs[0].copy(), rests[0]
+    return downs, rests
+
+
 def grip_at(motors) -> Vector:
     """Where the pole passes through the right cuff (its joint), Roblox world, at the current frame."""
     return r6.to_roblox(motors[POLE].matrix_world).to_translation()
@@ -271,9 +344,10 @@ class Take(rc.Take):
             p["open"] = (near(open, p["open"][0]), 0.0, 0.0)
         return self._hold(f, ease, {k: p[k] for k in ("plant", "line", "open")})
 
-    def lamp(self, f, ease=None, swing=(0.0, 0.0)):
-        """Keys the lantern's swing at clip frame `f`: degrees off plumb toward the keeper's front and its right."""
-        self.props["lamp"] = (*swing, 0.0)
+    def lamp(self, f, ease=None, swing=(0.0, 0.0), pin=0.0):
+        """Keys a pull on the lantern at clip frame `f`: toward `swing`, degrees off plumb toward the keeper's front and
+        its right, by `pin` (0 leaves it to swing, 1 holds it there)."""
+        self.props["lamp"] = (*swing, pin)
         return self._hold(f, ease, {"lamp": self.props["lamp"]})
 
     def key(self, f, label=None, ease=None, **changes):
@@ -354,13 +428,15 @@ class Skin:
 
 
 def props(rig, ctl, motors, rest, takes) -> dict:
-    """The last pass, once the body is keyed on every frame: the pole solved through the grip and the lantern hung
-    from the hook's tip, each keyed on every frame. Returns each clip's numbers."""
+    """The last pass, once the body is keyed on every frame: the pole solved through the grip, then the lantern swung
+    on its cord from the hook's tip (swing_lantern), each keyed on every frame. Returns each clip's numbers."""
     scene, facts, skin = bpy.context.scene, {}, Skin()
     for take in takes:
         n = {"foot": (9.0, 0), "grip": [9.0, -9.0], "lamp_low": (9.0, 0), "near": {part: (9.0, 0) for part in Skin.PARTS},
              "lamp_near": {part: (9.0, 0) for part in Skin.PARTS}, "plumb": (0.0, 0), "rests": [], "at": {}}
         marks = {round(s * FPS): name for s, name in take.markers}
+        poles = []  # a frame's grip, the pole's foot and its line, the hook's tip, and how the pole is turned
+        pulls = []
         for f in range(take.end + 1):
             frame = take.start + f
             scene.frame_set(frame)
@@ -383,11 +459,15 @@ def props(rig, ctl, motors, rest, takes) -> dict:
             placed = pole_frame(foot, u, heading(v["open"].x) - Vector((0, 0.35, 0))) @ rest["frame"].inverted()
             r6.key_matrices(rig, frame, {POLE: r6.to_blender(r6.to_roblox(motors[POLE].matrix_world).inverted()
                                                              @ placed @ Matrix.Translation(rest["G0"]))})
-            bpy.context.view_layer.update()
-            tip = placed @ rest["T0"]
-            turned = placed.to_3x3()
-            down, resting = rest_on_floor(tip, hang(v["lamp"].x, v["lamp"].y), rest["cord"])
-            if resting:
+            poles.append((g, foot, u, placed @ rest["T0"], placed.to_3x3()))
+            pulls.append(v["lamp"])
+        downs, rests = swing_lantern([p[3] for p in poles], pulls, rest["cord"], take.loop)
+        for f in range(take.end + 1):
+            frame = take.start + f
+            scene.frame_set(frame)
+            g, foot, u, tip, turned = poles[f]
+            down = downs[f]
+            if rests[f]:
                 n["rests"].append(f)
             lamp = (turned @ rest["h0"]).rotation_difference(down).to_matrix() @ turned
             joint = Matrix.Translation(tip) @ lamp.to_4x4()
@@ -425,12 +505,10 @@ def idle(t):
     t.pole(0, under=True)
     t.key(70, "a breath in", ease="sine", T=(7, -8, -5, 0.08, 0, 0), crouch=0.02, H=(20, 0, 6), RA=(48, 0, 30))
     t.key(140, ease="sine", T=(10, -8, -6.5, 0.1, 0, 0), crouch=0.08, H=(24, 0, 6), RA=WAIT["RA"])
-    t.key(176, "it sinks under the brim", ease="cubic", H=(32, 2, 7))
+    t.key(176, "it sinks under the brim", ease="cubic", H=(29, 2, 7))
     t.key(188, "and catches itself", ease="out", H=(16, -1, 5))
     t.key(240, T=WAIT["T"], crouch=WAIT["crouch"], H=WAIT["H"], RA=WAIT["RA"])
-    t.lamp(0, "sine")
-    t.lamp(120, "sine", (2.5, 1.5))
-    t.lamp(240)
+    t.mark(188, "Catch")
 
 
 def ready(t):
@@ -441,9 +519,6 @@ def ready(t):
     t.pole(0, under=True)
     t.key(90, "a breath in", ease="sine", T=(3.5, -6, -3.5, 0.05, 0, 0), crouch=0.0, RA=(46, 0, 28))
     t.key(180, T=READY["T"], crouch=READY["crouch"], RA=READY["RA"])
-    t.lamp(0, "sine")
-    t.lamp(90, "sine", (1.5, -1.0))
-    t.lamp(180)
 
 
 def challenge(t):
@@ -460,44 +535,51 @@ def challenge(t):
     t.key(58, "the stamp", ease="out", T=(7, -6, -4, 0.05, 0, 0), crouch=0.09, RA=READY["RA"])
     t.pole(58, under=True)
     t.mark(58, "Stamp")
+    t.lamp(56)  # the stamp jolts the lantern up on its hoop: a kick it then swings out of
+    t.lamp(58, "out", (12, 4), 0.35)
+    t.lamp(62)
     t.key(70, ease="sine", T=(5, -6, -4, 0.05, 0, 0), crouch=0.04)
     t.key(92, "then at your fighter", ease="sine", T=READY["T"], crouch=READY["crouch"], LA=READY["LA"], look=LEAD,
           H=READY["H"])
-    t.lamp(0)
-    t.lamp(52, "out", (-6, 0))
-    t.lamp(60, "sine", (10, 3))
-    t.lamp(72, "sine", (-4, -1))
-    t.lamp(92)
 
 
 def walk(t):
     """It walks its street as it has every night, on its round: the pole goes ahead and is planted, and the body is
     carried up to it and past it, the lantern swinging after the hook. Its step is the long coat's: a leg swings no
-    wider than the hem lets it."""
+    wider than the hem lets it. Two heavy steps a loop; the game plays it at the body's speed over the clip's, so its
+    feet keep to the floor whatever the keeper's pace."""
     t.loop = True
     loose = {"Right Leg": None, "Left Leg": None}
     s = STRIDE
-    t.key(0, "the left foot and the pole land", ease="sine", feet=loose, T=(12, -6, -3), RL=(-s, 0, 0), LL=(s, 0, 0),
-          H=(4, 4, 4), RA=(52, 0, 26), LA=(-16, 0, -10))
-    t.key(16, "carried up to it", ease="sine", T=(10, -3, -1), RL=(0, 0, 0), LL=(0, 0, 0), RA=(30, 0, 27), LA=(-8, 0, -10))
-    t.key(32, "the right foot lands", ease="sine", T=(12, 1, 1), RL=(s, 0, 0), LL=(-s, 0, 0), RA=(8, 0, 27), LA=(4, 0, -10))
-    t.key(48, "the pole goes ahead", ease="sine", T=(10, -3, -2), RL=(0, 0, 0), LL=(0, 0, 0), RA=(34, 0, 27), LA=(-6, 0, -10))
-    t.key(64, T=(12, -6, -3), RL=(-s, 0, 0), LL=(s, 0, 0), H=(4, 4, 4), RA=(52, 0, 26), LA=(-16, 0, -10))
+    land = dict(T=(12, -6, -3), RL=(-s, 0, 0), LL=(s, 0, 0), H=(4, 4, 4), RA=(52, 0, 26), LA=(-16, 0, -10))
+    t.key(0, "the left foot and the pole land", ease="sine", feet=loose, **land)
     scene = bpy.context.scene
     scene.frame_set(t.start)
     r6._refresh()
     a, b = sc.leg_ends(t.rig)
-    per_frame = 2 * abs(a.z - b.z) / 64  # the floor covered in a loop, a frame's worth: a planted foot goes back by it
+    t.stride = 2 * abs(a.z - b.z)  # the floor a loop covers, in the keeper's units
+    loop = WALK_LOOP
+    q = loop // 4
+    t.key(q, "carried up to it", ease="sine", T=(10, -3, -1), RL=(0, 0, 0), LL=(0, 0, 0), RA=(30, 0, 27), LA=(-8, 0, -10))
+    t.key(2 * q, "the right foot lands", ease="sine", T=(12, 1, 1), RL=(s, 0, 0), LL=(-s, 0, 0), RA=(8, 0, 27),
+          LA=(4, 0, -10))
+    t.key(3 * q, "the pole goes ahead", ease="sine", T=(10, -3, -2), RL=(0, 0, 0), LL=(0, 0, 0), RA=(34, 0, 27),
+          LA=(-6, 0, -10))
+    t.key(loop, **land)
+    per_frame = t.stride / loop  # a planted foot goes back by it a frame
+    # The pole is planted a quarter of the loop, from a little ahead of the grip to a little behind it, then carried
+    # and swung ahead on a short arc: its hook rocks a little, and the lantern swings with the step, not wild
+    held = loop // 4
     t.pole(0, under=True)
     x, y = t.props["plant"][:2]
-    t.pole(28, "lin", at=(x, y - per_frame * 28))
-    t.pole(36, "sine", line=(14, 0, 2.66))
-    t.pole(54, "sine", line=(10, 180, 2.66))
-    t.pole(64, at=(x, y))
-    t.lamp(0, "sine", (-6, 0))
-    t.lamp(32, "sine", (4, 1))
-    t.lamp(64, swing=(-6, 0))
-    t.stride = 2 * abs(a.z - b.z)
+    ahead = per_frame * held / 2
+    t.pole(0, at=(x, y + ahead))
+    t.pole(held, "lin", at=(x, y - ahead))
+    t.pole(round(loop * 0.45), "sine", line=(10, 0, 2.66))
+    t.pole(round(loop * 0.75), "sine", line=(10, 180, 2.66))
+    t.pole(loop, at=(x, y + ahead))
+    t.mark(0, "Pole")
+    t.mark(2 * q, "Step")
 
 
 def swing(t):
@@ -512,27 +594,28 @@ def swing(t):
     t.mark(0, "Wind")
     t.key(8, ease="in", T=(3, -10, -4, 0.05, 0, 0), crouch=0.0, RA=("grip", (2.3, 0.8, 2.9), (40, 0, 30)))
     t.pole(8, ease="in", line=(6.0, 0.0, 2.4))
-    t.key(26, "drawn back", ease="cubic", T=(-8, -32, -2, 0, 0, 0.1), crouch=0.1, RA=("grip", (2.2, 0.0, 3.0), (20, 0, 50)),
+    # drawn back and swept with its head out to the right, so the head never passes over the hat
+    t.key(26, "drawn back", ease="cubic", T=(-8, -20, -2, 0, 0, 0.1), crouch=0.1, RA=("grip", (2.3, 0.0, 3.0), (20, 0, 50)),
           LA=(25, 0, -25))
-    t.pole(26, ease="cubic", butt=(1.6, -2.0, 1.2), grip=2.4)
+    t.pole(26, ease="in", butt=(2.4, -1.6, 1.6), grip=2.4)
+    # the pole turns over upright at its right side: the foot passes down beside the leg, never under the body, and the
+    # head up and out to the right, never over the hat with the lantern
+    t.pole(33, ease="lin", line=(13.0, 90.0, 2.4))
     t.key(strike - 8, ease="in", T=(0, -14, -2), RA=("grip", (2.2, 1.0, 3.0), (40, 0, 40)))
-    t.pole(strike - 8, ease="in", butt=(2.4, 3.2, 1.6), grip=2.4)
+    t.pole(strike - 8, ease="in", butt=(1.6, 3.0, 1.7), grip=2.4)
     t.key(strike, "it lands", ease="lin", T=(10, 22, 4, 0, 0, -0.15), crouch=0.16, RA=("grip", (1.2, 1.6, 3.1), (70, 0, 0)),
           LA=(-20, 0, -35))
     t.pole(strike, ease="lin", butt=(-0.6, 3.3, 1.6), grip=2.4)
     t.mark(strike, "Strike")
-    t.key(recover, "spent", ease="out", T=(8, 36, 4, 0, 0, -0.1), RA=("grip", (0.5, 1.3, 3.0), (70, 0, -20)))
+    t.key(recover, "spent", ease="out", T=(8, 36, 4, 0, 0, -0.1), RA=("grip", (0.9, 1.6, 3.0), (70, 0, -20)))
     t.pole(recover, ease="out", butt=(-2.0, 2.4, 1.4), grip=2.4)
     t.mark(recover, "Recover")
+    # the foot comes back round in front of it, clear of the coat, before it's planted
+    t.key(recover + 14, ease="sine", T=(7, 18, 2, 0, 0, -0.04), RA=("grip", (1.3, 1.4, 3.0), (60, 0, -10)))
+    t.pole(recover + 14, ease="sine", butt=(0.6, 2.9, 0.8), grip=2.4)
     t.key(length, "ready", ease="sine", T=READY["T"], crouch=READY["crouch"], RA=READY["RA"], LA=READY["LA"], look=LEAD,
           H=READY["H"])
     t.pole(length, under=True, open=114)
-    t.lamp(0)
-    t.lamp(26, "sine", (-15, 10))
-    t.lamp(strike, "sine", (-30, 25))
-    t.lamp(recover + 6, "sine", (-25, -20))
-    t.lamp(length - 16, "sine", (6, 0))
-    t.lamp(length)
 
 
 def hit(t):
@@ -546,13 +629,11 @@ def hit(t):
           RA=READY["RA"])
     t.key(20, ease="sine", T=(6, -6, -4, 0.05, 0, 0), crouch=0.05, H=(2, 0, 4))
     t.key(30, T=READY["T"], crouch=READY["crouch"], H=READY["H"], look=LEAD, LA=READY["LA"])
-    t.lamp(0)
-    t.lamp(6, "sine", (-14, -4))
-    t.lamp(16, "sine", (8, 2))
-    t.lamp(30)
 
 
-LAMPPOST = (20.0, -22.0, (1.5, 0.9))  # the signature's hold: the pole's lean and heading, and where its foot is planted
+# The signature's hold: the pole's lean and heading, and where its foot is planted. The lantern hangs over your
+# fighter's shoulder, beside the keeper's face from the fight's camera, not in front of it.
+LAMPPOST = (22.0, -38.0, (1.95, 0.95))
 
 
 def on_pole(d):
@@ -560,7 +641,6 @@ def on_pole(d):
     lean, toward, foot = LAMPPOST
     a, h = math.radians(lean), math.radians(toward)
     return (foot[0] + d * math.sin(a) * math.sin(h), foot[1] + d * math.sin(a) * math.cos(h), d * math.cos(a))
-
 
 def signature(t):
     """The block of its signature. It plants the pole out ahead of it and leans the whole length out over your fighter
@@ -572,38 +652,60 @@ def signature(t):
     t.pole(0, under=True)
     t.key(12, ease="in", T=(2, -8, -4, 0.04, 0, 0), crouch=-0.02, RA=("grip", (1.8, 1.0, 3.2), (40, 0, 20)))
     t.pole(12, ease="in", line=(-6.0, 0.0, 2.4))
-    t.key(24, "it plants the pole", ease="out", T=(16, -4, -2, 0.04, 0, 0.12), crouch=0.14,
-          RA=("grip", on_pole(2.6), (50, 0, 10)))
+    t.key(24, "it plants the pole", ease="out", T=(16, 10, -2, 0.04, 0, 0.12), crouch=0.14,
+          RA=("grip", on_pole(2.6), (50, 0, 20)))  # the chest turned into the plant, so the arm reaching it clears it
     t.pole(24, ease="out", at=foot, open=0)
     t.mark(24, "Plant")
-    t.key(44, "and leans it out over you", ease="cubic", T=(-2, 6, 0, 0, 0, -0.06), crouch=0.06,
-          RA=("grip", on_pole(3.6), (80, 0, 10)), LA=(-25, 0, -30), look=LEAD)
+    # The hold grows (research's read, fix 1): it leans the pole out with its head still down under the brim, then its
+    # weight sinks onto the pole, the left hand comes forward for it and the head comes up to your fighter.
+    t.key(44, "and leans it out over you", ease="sine", T=(3, 18, 0, 0, 0, -0.06), crouch=0.06,
+          RA=("grip", on_pole(3.4), (80, 0, 10)), LA=(-25, 0, -30), H=(28, -4, 4))
     t.mark(44, "Light")
-    t.key(96, "held, burning", ease="sine", T=(-4, 6, 0, 0, 0, -0.08), crouch=0.08)
-    t.pole(96, ease="in", at=foot)
-    t.key(106, "it wrenches it up", ease="in", T=(-10, -4, 0, 0, 0, -0.05), crouch=-0.02,
-          RA=("grip", (0.9, 0.9, 4.4), (120, 0, 10)), LA=("reach", (0.7, 0.8, 3.6), (100, 0, -10)))
-    t.pole(106, ease="in", line=(-6.0, toward, 3.6))
-    t.key(114, "the slam", ease="out", T=(30, 0, 0, 0, 0, 0.3), crouch=0.3, RA=("grip", (0.9, 1.9, 2.3), (70, 0, 0)),
-          LA=("reach", (1.1, 1.0, 2.35), (60, 0, -10)), look=(0.0, REACH, 0.0))
-    t.pole(114, ease="out", line=(92.0, toward, 3.6))
-    t.mark(114, "Slam")
-    t.key(138, "it holds it down", ease="sine", T=(26, 0, 0, 0, 0, 0.26), crouch=0.26)
-    t.pole(138, ease="sine", line=(90.0, toward, 3.6))
-    t.key(178, "ready", ease="sine", T=READY["T"], crouch=READY["crouch"], RA=READY["RA"], LA=READY["LA"], look=LEAD,
+    t.key(70, "it sinks onto it", ease="sine", T=(5, 18, 0, 0.0, 0, -0.02), crouch=0.12, LA=(-14, 0, -26),
+          H=(23, -2, 4))
+    # up at you: over your fighter's head toward the camera behind it, so the face comes out from under the brim (your
+    # fighter's own face is below the keeper's eyes: looking at it would bow the head as low as the plant did)
+    t.key(96, "and looks up at you", ease="out", T=(6, 18, 0, 0.02, 0, 0.02), crouch=0.17, LA=(-4, 0, -20),
+          look=(0.0, REACH, 5.0))
+    t.pole(96, ease="out", at=foot)
+    t.lamp(30)  # the plant flings the lantern up; it comes over your fighter by the Light and steadies through the hold
+    t.lamp(44, "sine", pin=0.25)
+    t.lamp(60, pin=0.1)
+    t.lamp(96, pin=0.1)
+    t.lamp(100)
+    # The wrench, then a hang at its top (fix 2). The pole comes up beside the hat on its right, clear of the brim,
+    # and the lantern swings up beside it, inside the ring's frame (over the hat it would leave it). An R6 left arm
+    # can't reach a pole that far out, so the right wrenches and slams it and the left is flung out against it. The
+    # slam brings the lantern down on the floor at your fighter, the hand slid up the pole for it.
+    # The chest stays near square, so the raised arm is out at its side, never along its facing (r6parity's salute);
+    # the slam's crouch and lean stay inside what the coat's hem covers.
+    up, top, down = (0.0, toward, 3.9), (-6.0, toward, 3.9), (90.0, toward, 4.6)
+    wrench, high, slam = (2.75, 0.3, 4.2), (2.75, 0.25, 4.35), (1.9, 1.4, 2.0)  # the grip at the arm's full reach
+    t.key(106, "it wrenches it up", ease="sine", T=(-10, -6, 4, 0, 0, -0.05), crouch=-0.02,
+          RA=("grip", wrench, (130, 0, 30)), LA=(40, 0, -60))
+    t.pole(106, ease="sine", line=up)
+    t.mark(106, "Wrench")
+    t.key(110, "it hangs there", ease="in", T=(-12, -8, 5, 0, 0, -0.06), crouch=-0.03,
+          RA=("grip", high, (134, 0, 30)), LA=(46, 0, -64))
+    t.pole(110, ease="in", line=top)
+    t.key(118, "the slam", ease="out", T=(20, -6, -4, 0.05, 0, 0.2), crouch=0.18, RA=("grip", slam, (70, 0, 10)),
+          LA=(-30, 0, -35), look=(0.0, REACH, 0.0))
+    t.pole(118, ease="out", line=down)
+    t.mark(118, "Slam")
+    t.key(124, "it gives", ease="sine", T=(19, -6, -3, 0.04, 0, 0.19), crouch=0.16)
+    t.key(142, "it holds it down", ease="sine", T=(20, -5, -3, 0.04, 0, 0.19), crouch=0.17)
+    t.pole(142, ease="sine", line=(88.0, toward, 4.6))
+    t.key(160, ease="sine", T=(3, 2, 0, 0, 0, 0), crouch=0.08)  # it straightens first, its head back from the rising pole
+    t.key(170, ease="sine", T=(2, 6, 5, 0, 0, 0), crouch=0.05)  # and tips its head away from it, so it never passes the head
+    # the lantern comes round from the right with the pole's head, thrown out ahead of it, clear of the hat, and down
+    # onto the circle
+    t.lamp(112)
+    t.lamp(115, "sine", (30.0, -10.0), 0.6)
+    t.lamp(118, "out", (0.0, -35.0), 1.0)
+    t.lamp(124)
+    t.key(182, "ready", ease="sine", T=READY["T"], crouch=READY["crouch"], RA=READY["RA"], LA=READY["LA"], look=LEAD,
           H=READY["H"])
-    t.pole(178, under=True, open=114)
-    t.lamp(0)
-    t.lamp(24, "sine", (-15, 0))
-    t.lamp(36, "sine", (20, 0))
-    t.lamp(46, "sine", (-6, 0))
-    t.lamp(58, "sine", (2, 0))
-    t.lamp(96, "sine", (0, 0))
-    t.lamp(106, "in", (10, 0))
-    t.lamp(114, "out", (-35, 0))
-    t.lamp(124, "sine", (-10, 0))
-    t.lamp(138, "sine", (0, 0))
-    t.lamp(178)
+    t.pole(182, under=True, open=114)
 
 
 # name: (the clip, its hub)
@@ -772,7 +874,8 @@ def main():
     mode = args[0] if args and args[0] in ("poses", "family", "export", "audit") else "poses"
     scene, rig, costume, undress, feet, ctl, motors, rest, grip_local = build(out)
     print(f"the grip on the right arm: {tuple(round(c, 3) for c in grip_local)}; the lead {REACH:.2f} off; KeeperSwing "
-          f"{SWING['Length']} s, Strike {SWING['Strike']}, Recover {SWING['Recover']}")
+          f"{SWING['Length']} s, Strike {SWING['Strike']}, Recover {SWING['Recover']}; the lantern's cord "
+          f"{rest['cord']:.2f}, a swing {2 * math.pi * math.sqrt(rest['cord'] / GRAVITY):.2f} s")
     if mode == "family":
         family(scene, rig, feet, ctl, motors, rest, out)
         return
@@ -790,9 +893,12 @@ def main():
     facts = {}
     for name, take in takes.items():
         notes, checks = report(take, numbers[name]), audit(rig, take)
+        speed = None
         if name == "Walk":
-            notes += (f"  the walk covers {take.stride:.2f} studs a loop, {take.stride / (take.end / FPS):.2f} a second "
-                      f"({take.stride * SCALE:.2f} and {take.stride * SCALE / (take.end / FPS):.2f} at 1.5)\n")
+            speed = take.stride * SCALE / (take.end / FPS)
+            notes += (f"  the walk covers {take.stride * SCALE:.2f} studs a loop at the game's 1.5, {speed:.2f} a second "
+                      f"at rate 1: at the keeper's {WALK_SPEED:g} the game plays it at {WALK_SPEED / speed:.2f}, "
+                      f"{2 * WALK_SPEED / (take.stride * SCALE):.1f} steps a second\n")
         notes += (f"  a leg's widest swing: right {checks['swing']['Right Leg'][0]:.0f} at {checks['swing']['Right Leg'][1]}, "
                   f"left {checks['swing']['Left Leg'][0]:.0f} at {checks['swing']['Left Leg'][1]} (the coat holds 27); each "
                   f"arm at its highest: right {checks['top']['Right Arm'][0]:.0f} at {checks['top']['Right Arm'][1]}, left "
@@ -800,6 +906,8 @@ def main():
         print(notes, end="")
         facts[name] = {"File": f"{NAME}_{name}.json", "Frames": take.end + 1, "Seconds": round(take.end / FPS, 3),
                        "Loop": take.loop, "Markers": [[round(t * FPS), label] for t, label in take.markers]}
+        if speed is not None:  # Config.Animations.Strides: its ground speed at rate 1, in the game's studs a second
+            facts[name]["Stride"] = round(speed, 2)
         if mode == "poses":
             pose_sheet(scene, cams, take, out)
             continue

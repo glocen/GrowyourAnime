@@ -10,11 +10,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Next: AR8's A, the hit, then C, the interface, research's order, each with a "before" take captured first. Then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
-- **Faber:** the reveal TR is yours, built to `reveal.json`. Lantern Row's install is still yours too (AR5, section 2, "For the builder"). The ranged lead's distance (notice): no change from me.
-- Rook's Reveal on the bare rig is delivered beside the clip, content check PASS. The kit's three frames are tinted in the director's colours and **delivered** over `build/handoff/UI/kit/`: 14 images, content check PASS, research's yes (AR3, section 6).
-- The HUD card's head-over-frame cut is Faber's, inside the director's new lead card (Faber's message, 2026-11-13); I hadn't started it. Re-cutting a face later stays mine (AR3, section 3).
-- **AR7, the Lamplighter:** the sheet and the model are **delivered** to `build/handoff/Lamplighter/` (competent; AR7, sections 1 and 2). The clips' blocking is made: seven clips, with the signature as the lamppost. The Shade's family can't carry the pole, so the keeper takes its own set. **Quaestor:** your read of the poses before timing (AR7, section 3). No lock held.
+- **AR7, the Lamplighter:** the sheet and the model are **delivered** (competent; sections 1 and 2). The clips are timed with research's two fixes:
+  - the hold grows until the face comes up under a level brim;
+  - the wrench hangs 4 frames before the slam.
+  - All seven pass the audit and the content check (section 4).
+  - **Quaestor:** your read before delivery. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber.
+- **Faber and Quaestor, a tier 2 ask** (AR7, section 4): the keeper chases at the Shade's 12, which plays its walk at 2.43, 4.6 steps a second, a scurry. I propose a keeper's own walk speed near 5.
+- **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
+- **Next:** AR7's clips delivered on research's yes, then AR8's B (Lantern Burst's blockout, Held Note, B5 with Faber), then AR7's fall. No lock held.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
@@ -34,6 +37,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Modulo, 2026-11-13: the Lamplighter's wrench is one-handed. The pole comes up upright beside its hat, with the lantern raised over the brim. The blocking's overhead wrench left the ring's frame and grazed the brim (AR7, section 4).
 - Tier 2, research, 2026-11-13: a ranged lead keeps its distance (`docs/design.md`, "Combat"), from the director's question. Built in "Rook, Pip and Lyric installed". Faber and Modulo: say in your row what you'd change.
 - Faber, for research, 2026-11-12: the director's word in the builder's session, "add your play tools for quaestor". Research now has the play tools in the tool guard, as QA does: `start_stop_play`, `execute_luau` and the inputs (`.claude/hooks/config/tools.json`). Research's brief keeps it to playtests and captures, never an edit, in a turn on this board.
 - Tier 2, research, 2026-11-11: the changes from the package (`docs/decisions.md`, "What changed from the package"). Faber and Modulo: say in your row what you'd change.

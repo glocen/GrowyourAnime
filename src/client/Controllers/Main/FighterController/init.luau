@@ -64,6 +64,11 @@ type Prop = {
 	At: number,
 }
 
+-- A hit shown on a body (Held), and the body's flash and tremble from it (Struck): Rules.Fight.Flash and .Tremble, by the
+-- hit's rung (Config.Combat.Hitstop; AR8 A).
+type Held = { Target: View, At: number?, Rung: number, Hold: number }
+type Struck = { At: number, Flash: number, Glow: number, Hold: number, Tremble: number, Seed: number, Shown: Vector3?, Offset: Vector3 }
+
 type View = {
 	Model: Model,
 	Id: string,
@@ -89,6 +94,9 @@ type View = {
 	Rate: number,
 	FrozenUntil: number,
 	Shown: { [string]: boolean }, -- the hits this screen has shown, by beat and press
+	Held: { [string]: Held }, -- each hit it has shown on a body, by beat, press and target: what a server's hit may raise
+	Struck: Struck?, -- its flash and tremble as a hit's target, while they run
+	Glow: Highlight?, -- its flash's fill, made on its first hit
 	Running: { Running },
 	Joint: Motor6D?, -- a box's lean
 	Height: number,
@@ -197,12 +205,42 @@ local function freezeOf(view: View): number?
 	return nil
 end
 
--- A hit's moment on screen: both bodies held, a spark where it lands, the camera on the player's own heavy hit. `key` is
--- the beat's press: an area's or a cone's every target gets its own hold and spark, the attacker one hold and one shake for
--- them all, and none on a steady hit (Actions.Hit.Steady: a run of beats that keeps its count). `draw`: asks the action's
--- effect to draw the hit on the target itself (drawnBy); when it does, the spark stays off and the target's hold waits
--- for the effect to reach it.
-local function show(attacker: View, target: View?, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?)
+-- The struck body's flash, and its tremble inside its hold when `trembles` (Config.Combat.Hitstop; AR8 A): from now, a
+-- later hit starting it over. The flash is a white fill over the body (a Highlight, one a body, made on its first hit).
+local function strike(view: View, lever: Fight.Lever, hold: number, trembles: boolean)
+	local glow = view.Glow
+	if glow == nil or glow.Parent == nil then
+		local made = Instance.new("Highlight")
+		made.Name = "NL_HitFlash"
+		made.FillColor = Color3.new(1, 1, 1)
+		made.FillTransparency = 1
+		made.OutlineTransparency = 1
+		made.DepthMode = Enum.HighlightDepthMode.Occluded
+		made.Enabled = false
+		made.Adornee = view.Model
+		made.Parent = view.Model
+		view.Glow = made
+	end
+	local was = view.Struck
+	view.Struck = {
+		At = os.clock(),
+		Flash = lever.Flash,
+		Glow = lever.Glow,
+		Hold = hold,
+		Tremble = if trembles then lever.Tremble else 0,
+		Seed = math.random() * 100,
+		Shown = if was then was.Shown else nil, -- the tremble's last place, so the next frame takes its offset back
+		Offset = if was then was.Offset else Vector3.zero,
+	}
+end
+
+-- A hit's moment on screen: both bodies held for the hit's rung (Rules.Fight.Hold), the struck body's flash and tremble,
+-- a spark where it lands, the camera's trauma on the player's own lead's hit. `key` is the beat's press: an area's or a
+-- cone's every target gets its own hold, flash and spark, the attacker one hold and one jolt for them all, and none on a
+-- steady hit (Actions.Hit.Steady: a run of beats that keeps its count). `draw`: asks the action's effect to draw the hit
+-- on the target itself (drawnBy); when it does, the spark stays off and the target's hold waits for the effect to reach
+-- it. A beat shown from the clock is its own rung; the server's hit raises it for a critical or a kill (raise).
+local function show(attacker: View, target: View?, rung: number, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?)
 	local each = if target then `{key}#{target.Id}` else key
 	if attacker.Shown[each] then
 		return
@@ -210,17 +248,24 @@ local function show(attacker: View, target: View?, heavy: boolean, steady: boole
 	local first = not attacker.Shown[key]
 	attacker.Shown[each] = true
 	attacker.Shown[key] = true
-	local hold = if heavy then Combat.Hitstop.Heavy else Combat.Hitstop.Light
+	local lever = Fight.Lever(rung, Combat.Hitstop)
+	local hold = Fight.Hold(rung, false, Combat.Hitstop)
 	if first and not steady then
 		freeze(attacker, hold)
 	end
 	if target then
-		-- A body struck in the middle of its own action shows the spark and the number, and its clip never holds: its own
-		-- beats keep the stage, timed as the server times them, which holds nothing (AR4, section 8: research, 2026-11-12).
+		local held: Held = { Target = target, At = nil, Rung = rung, Hold = hold }
+		attacker.Held[each] = held
+		-- A body struck in the middle of its own action shows the flash, the spark and the number, and its clip never holds:
+		-- its own beats keep the stage, timed as the server times them, which holds nothing (AR4, section 8: research,
+		-- 2026-11-12).
 		local function land()
-			if target.Action == nil then
+			local holds = target.Action == nil
+			if holds then
 				freeze(target, hold)
 			end
+			held.At = os.clock()
+			strike(target, lever, hold, holds)
 		end
 		if not (draw and draw(land)) then
 			land()
@@ -231,11 +276,42 @@ local function show(attacker: View, target: View?, heavy: boolean, steady: boole
 			Effects.Spark(surface, from, heavy)
 		end
 	end
-	if first and heavy and isMine(attacker) then
-		Effects.Shake(Combat.Shake.Heavy)
+	if first and isMine(attacker) then
+		Effects.Jolt(lever.Trauma)
 	end
 end
 FighterController.Show = show
+
+-- The server's word on a hit this screen showed from the clock (onHit): a critical's higher rung and a killing hit's
+-- longer hold are known only there, a replication's delay after the beat. A hold still running is held to the server's
+-- length; a hold already over isn't started again, which would stutter. A higher rung flashes the body again at its own
+-- strength, and the player's own lead's camera takes the rung's further trauma, with the critical's number.
+local function raise(attacker: View, each: string, rung: number, hold: number)
+	local held = attacker.Held[each]
+	if held == nil or held.At == nil then
+		return
+	end
+	local target = held.Target
+	local now = os.clock()
+	local at = held.At :: number
+	if hold > held.Hold and now < at + held.Hold and now < target.FrozenUntil then
+		target.FrozenUntil = math.max(target.FrozenUntil, at + hold)
+		held.Hold = hold
+		local struck = target.Struck
+		if struck then
+			struck.Hold = math.max(0, at + hold - struck.At) -- the tremble shrinks across the longer hold
+		end
+	end
+	if rung > held.Rung then
+		local lever = Fight.Lever(rung, Combat.Hitstop)
+		local before = Fight.Lever(held.Rung, Combat.Hitstop)
+		strike(target, lever, math.max(0, at + held.Hold - now), now < target.FrozenUntil)
+		if isMine(attacker) then
+			Effects.Jolt(lever.Trauma - before.Trauma)
+		end
+		held.Rung = rung
+	end
+end
 
 -- True when one of the attacker's effects for the action begun `at` takes the hit of `beat` on `target` on itself (the
 -- Held Note's, when its crest reaches the body): it calls `landed` then, and draws the hit's look there when `look`.
@@ -263,6 +339,7 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 	view.Action = action
 	view.ActionAt = at
 	view.Shown = {}
+	view.Held = {}
 	view.Begun = os.clock()
 	local late = math.max(0, workspace:GetServerTimeNow() - at)
 	if late > CATCH.Limit then
@@ -501,6 +578,9 @@ local function add(model: Instance)
 		Rate = 1,
 		FrozenUntil = 0,
 		Shown = {},
+		Held = {},
+		Struck = nil,
+		Glow = nil,
 		Running = {},
 		Joint = root:FindFirstChild("Body") :: Motor6D?,
 		Height = if body then body.Size.Y else root.Size.Y,
@@ -561,6 +641,9 @@ local function remove(model: Instance)
 	for _, running in view.Running do
 		running.Effect.Destroy()
 	end
+	if view.Glow then
+		view.Glow:Destroy()
+	end
 end
 
 -- The rate the action's clock runs at this frame: 0 in a hold, faster while catching up a late start.
@@ -599,7 +682,7 @@ local function stepView(view: View, dt: number, now: number): boolean
 				local cosine = if line.Magnitude > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
 				if Fight.Reaches(line.Magnitude, cosine, hit.Reach, Combat.Arc) then
 					local at = view.ActionAt
-					show(view, target, hit.Heavy, hit.Steady == true, `{beat}@{at}`, function(landed: () -> ()): boolean
+					show(view, target, Fight.Rung(hit.Rung, false, Combat.Hitstop), hit.Heavy, hit.Steady == true, `{beat}@{at}`, function(landed: () -> ()): boolean
 						return drawnBy(view, beat, at, target, landed, true)
 					end)
 				end
@@ -712,6 +795,36 @@ local function stepKnock(view: View, now: number)
 	end
 end
 
+-- One frame of a struck body's flash and tremble (strike). The tremble moves the root as the drawn push does, and takes
+-- its last frame's offset back first unless the replica has moved the body since, so it never walks it off.
+local function stepStruck(view: View, now: number)
+	local struck = view.Struck :: Struck
+	local t = now - struck.At
+	local glow = view.Glow
+	local fill = Fight.Flash(t, struck.Flash, struck.Glow)
+	if glow then
+		glow.FillTransparency = 1 - fill
+		glow.Enabled = fill > 0
+	end
+	local root = view.Root
+	local at = root.Position
+	local base = if struck.Shown and (at - (struck.Shown :: Vector3)).Magnitude < 1e-3 then at - struck.Offset else at
+	local studs = Fight.Tremble(t, struck.Hold, struck.Tremble)
+	local offset = Vector3.zero
+	if studs > 0 then
+		local rate = Combat.Hitstop.Tremble.Rate
+		local turn = math.floor(t * rate) * 2.39996 + struck.Seed -- a new side each step, never back the way it came
+		offset = Vector3.new(math.cos(turn), 0, math.sin(turn)) * studs
+	end
+	if base + offset ~= at then
+		root.CFrame += base + offset - at
+	end
+	struck.Shown, struck.Offset = base + offset, offset
+	if fill <= 0 and studs <= 0 and t > 0 then
+		view.Struck = nil
+	end
+end
+
 -- The server's hit on `beat` of the action begun `at`, reaching a screen whose clock of it is still short of the beat
 -- (its own hold before it, kept here and not by the server): the clip and its effects move on to the beat, so the hit's
 -- hold lands on its contact frame (Fight.CatchTo). Effects key on their markers with "at or past", so none is skipped.
@@ -756,9 +869,14 @@ local function onHit(hit: any)
 	end
 	if attacker and not hit.Dodged then
 		catchUp(attacker, hit.Beat, at)
-		show(attacker, target, hit.Heavy == true, hit.Steady == true, `{hit.Beat}@{at}`, function(landed: () -> ()): boolean
+		local rung = if type(hit.Rung) == "number" then hit.Rung else 2
+		local key = `{hit.Beat}@{at}`
+		show(attacker, target, rung, hit.Heavy == true, hit.Steady == true, key, function(landed: () -> ()): boolean
 			return drawn(landed, true)
 		end)
+		if target and type(hit.Hold) == "number" then
+			raise(attacker, `{key}#{target.Id}`, rung, hit.Hold)
+		end
 	end
 	if target == nil then
 		return
@@ -802,7 +920,7 @@ local function onHit(hit: any)
 			end
 		end
 		if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
-			Effects.Shake(Combat.Shake.Hurt)
+			Effects.Jolt(Combat.Shake.Hurt)
 		end
 	end
 	if not drawn(land, false) then
@@ -886,6 +1004,13 @@ function FighterController.Start()
 				if not knocked then
 					view.Knock = nil
 					warn(`FighterController: {view.Model.Name}'s knock: {problem}`)
+				end
+			end
+			if view.Struck then
+				local stepped, problem = pcall(stepStruck, view, now)
+				if not stepped then
+					view.Struck = nil
+					warn(`FighterController: {view.Model.Name}'s flash: {problem}`)
 				end
 			end
 		end

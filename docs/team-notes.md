@@ -6,8 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's pass given (competent; the break seen through a red-white flash, the name stamped); closed; its level check moves to an offline mixdown in AR8 A (a take's loudness is the PC's compression); the sounds wait on the director's ear. AR7, the Lamplighter: the clips timed and read at competent, one fix (the wrench raised over the hat), then delivery; research's yes to the keeper's own walk near 5 (tier 2, Faber's take checks it). AR8, the effects pass, requested on the director's word (no yes needed; before phase 2 closes), measured against `docs/research/vfx-reference.md`: Faber's A and C after TR4, Modulo's B after AR7's clips. Next: verdicts as Faber's and Modulo's takes arrive.
 
-**Faber (builder).** 2026-11-13. TR4: research's two fixes are in. The top flash goes to gold-white and red-white at 0.85, and the name has a stamp's fall over 4 frames. The takes with the game's sound are in `build/captures/tr4/` (TR4, "The fixes"). Logic 2258; the reveal's self-test 72/72. Research's pass is next, and Modulo's eye on the two colours. Rojo is connected.
-- Next: AR8's A, the hit, then C, the interface, research's order, each with a "before" take captured first. Then Rook, Pip and Lyric installed.
+**Faber (builder).** 2026-11-13. AR8's A, the hit, is built and waits on research's pass (AR8, "A. The hit").
+- **What changed:** the hold, the struck body's flash and tremble, and the camera's trauma shake, all by rung; the billboards' late picture is fixed.
+- **The level check,** measured offline: Legendary and Mythical sit 6 LU over the fight's loudest, Common to Epic level with it, and every true peak is under −1. Whether that's right for the low rarities is research's question.
+- **Takes:** `build/captures/ar8/`, beside the "before". Rojo is connected.
+- **Next:** AR8's C, the interface. Then AR7's install, then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
@@ -59,6 +62,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. AR8 A built: the hit by its rung (Faber)
+
+- **What:** every hit holds, flashes and shakes by its rung. An ordinary blow is a 0.045 s flick of white. A signature is a 0.13 s held instant: the body flashed white and trembling, the camera rolled through it. The camera shake is trauma squared, from the player's own lead only. Haymaker's bars and the billboards of Lantern Burst and Held Note no longer draw a frame late.
+- **Where:** the numbers are in `Config.Combat.Hitstop` and `Shake`, the rules in `Rules.Fight`, the screen's side in `FighterController`. The level check is `tools/studio/Audio/Loudness` and `Mixdown`. The record: AR8, "A. The hit".
+- **Done:** logic 2368, the whole self-test 697/697 at 60 fps. Takes are in `build/captures/ar8/`, each beside its "before".
+- **For research:** the pass in motion. The level check reads Legendary and Mythical 6 LU over the fight's loudest, Common to Epic level with it, and every true peak under −1.
+- **Open:** research's pass. Then C, the interface.
 
 ### 2026-11-13. The Lamplighter's clips delivered (Modulo)
 

@@ -605,7 +605,9 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			packHit[target.Pack] = hitBy
 		end
 	end
-	local hold = if result.Dodged then 0 elseif hit.Heavy then Combat.Hitstop.Heavy else Combat.Hitstop.Light
+	-- The hold by the hit's rung, a critical's raised and a killing hit's at least its own (Rules.Fight.Hold; AR8 A)
+	local rung = Fight.Rung(hit.Rung, result.Critical, Combat.Hitstop)
+	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop)
 	if not result.Dodged then
 		if not fell and target.Action == nil and (Combat.Flinch.Kinds :: any)[target.Kind] then
 			setState(target, "Flinch", at + hold + Combat.Flinch.Seconds)
@@ -624,6 +626,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Blocked = result.Blocked,
 		Dodged = result.Dodged,
 		Heavy = hit.Heavy,
+		Rung = rung,
 		Hold = hold,
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Health = left,

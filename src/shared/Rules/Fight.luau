@@ -297,4 +297,73 @@ function Fight.KnockAhead(studs: number, t: number, shown: number, push: { Secon
 	return ahead
 end
 
+export type Lever = { From: number, Hold: number, Flash: number, Glow: number, Tremble: number, Trauma: number }
+export type Hitstop = { Rungs: { Lever }, Critical: number, Kill: number }
+
+-- A hit's rung on the importance ladder (Actions.Hit.Rung; docs/research/vfx-reference.md, rule 1): its own, 2 when it
+-- names none, and at least the critical's when it's critical.
+function Fight.Rung(rung: number?, critical: boolean, hitstop: Hitstop): number
+	local own = rung or 2
+	return if critical then math.max(own, hitstop.Critical) else own
+end
+
+-- The hit's levers for a rung (Config.Combat.Hitstop.Rungs): the highest row at or under it, or the lowest row.
+function Fight.Lever(rung: number, hitstop: Hitstop): Lever
+	local chosen = hitstop.Rungs[1]
+	for _, row in hitstop.Rungs do
+		if row.From <= rung and row.From >= chosen.From then
+			chosen = row
+		end
+	end
+	return chosen
+end
+
+-- Seconds both bodies hold on a hit of `rung`: its row's, and at least the killing hit's own when it fells.
+function Fight.Hold(rung: number, killing: boolean, hitstop: Hitstop): number
+	local hold = Fight.Lever(rung, hitstop).Hold
+	return if killing then math.max(hold, hitstop.Kill) else hold
+end
+
+-- The longest hold any hit can have: what waits on a hold (the Shade's burst on a held clip) waits this out.
+function Fight.LongestHold(hitstop: Hitstop): number
+	local most = hitstop.Kill
+	for _, row in hitstop.Rungs do
+		most = math.max(most, row.Hold)
+	end
+	return most
+end
+
+-- The struck body's flash `t` seconds in, as the fill's opacity: `glow` at once, eased out (quadratic) to 0 at `seconds`,
+-- so its top value lasts a picture or two and it never fades linearly (docs/research/vfx-reference.md, rule 3).
+function Fight.Flash(t: number, seconds: number, glow: number): number
+	if t < 0 or t >= seconds or seconds <= 0 then
+		return 0
+	end
+	local left = 1 - t / seconds
+	return glow * left * left
+end
+
+-- How far the struck body trembles `t` seconds into a hold of `hold` seconds: `studs`, shrinking linearly to nothing at
+-- the hold's end (docs/research/vfx-reference.md, item 10). The side it goes is the caller's noise.
+function Fight.Tremble(t: number, hold: number, studs: number): number
+	if t < 0 or t >= hold or hold <= 0 then
+		return 0
+	end
+	return studs * (1 - t / hold)
+end
+
+-- The camera's trauma (Config.Combat.Shake): `add` on `trauma`, capped at 1; after `dt` seconds it falls by dt / decay.
+-- The shake is its square, so a big jolt lands and a small one barely ticks (Eiserloh, GDC 2016).
+function Fight.Trauma(trauma: number, add: number): number
+	return math.clamp(trauma + math.max(add, 0), 0, 1)
+end
+
+function Fight.TraumaAfter(trauma: number, dt: number, decay: number): number
+	return if decay > 0 then math.max(0, trauma - dt / decay) else 0
+end
+
+function Fight.ShakeOf(trauma: number): number
+	return trauma * trauma
+end
+
 return Fight

@@ -492,7 +492,7 @@ return {
 			-- the replication's delay to spare before the server takes the body away
 			local wait = EffectsConfig.ShadeBurst.Wait
 			local forced = art.Burst / 60 + wait
-			t.Check("the burst waits out the killing hit's longest hold", wait > Combat.Hitstop.Heavy, `{wait} s`)
+			t.Check("the burst waits out the longest hold", wait > Fight.LongestHold(Combat.Hitstop), `{wait} s against {Fight.LongestHold(Combat.Hitstop)}`)
 			t.Check("and bursts a held clip a fifth of a second or more before the body goes", forced <= Combat.Shade.FadeSeconds - 0.2, string.format("%.2f s of %.2f", forced, Combat.Shade.FadeSeconds))
 		end,
 	},
@@ -537,6 +537,82 @@ return {
 				t.Check(`{count}: centred on the spawn`, math.abs(sumX) < 1e-6 and math.abs(sumZ) < 1e-6)
 				t.Check(`{count}: the first straight ahead`, math.abs(ring[1][1]) < 1e-9 and ring[1][2] < 0)
 			end
+		end,
+	},
+	{
+		Name = "Fight: a hit's levers grow with its rung (AR8 A)",
+		Run = function(t: any)
+			-- docs/research/vfx-reference.md, rules 1 and 2: the hold, the flash, the tremble and the camera's trauma by the
+			-- hit's rung on the ladder; a critical raised, a killing hit holding at least its own.
+			local hitstop = Combat.Hitstop
+			local rows = hitstop.Rungs
+			t.Check("rows", #rows >= 3)
+			for k = 2, #rows do
+				local a, b = rows[k - 1], rows[k]
+				t.Check(`row {k} sits higher on the ladder`, b.From > a.From)
+				t.Check(`row {k} holds no shorter`, b.Hold >= a.Hold)
+				t.Check(`row {k} flashes no shorter`, b.Flash >= a.Flash)
+				t.Check(`row {k} glows no less`, b.Glow >= a.Glow)
+				t.Check(`row {k} trembles no less`, b.Tremble >= a.Tremble)
+				t.Check(`row {k} jolts no less`, b.Trauma >= a.Trauma)
+			end
+			for _, row in rows do
+				t.Check(`rung {row.From}: a hold of 0.03 to 0.2 s`, row.Hold >= 0.03 and row.Hold <= 0.2, `{row.Hold}`)
+				t.Check(`rung {row.From}: a glow inside 0 to 1`, row.Glow > 0 and row.Glow <= 1)
+				t.Check(`rung {row.From}: trauma inside 0 to 1`, row.Trauma >= 0 and row.Trauma <= 1)
+				-- nothing below 7 takes the top value for more than a picture or two (rule 1)
+				if row.From < 7 then
+					t.Check(`rung {row.From}: below the top value`, row.Glow < 0.8, `{row.Glow}`)
+					t.Equal(`rung {row.From}: no tremble`, row.Tremble, 0)
+				else
+					t.Check(`rung {row.From}: it trembles`, row.Tremble > 0)
+				end
+			end
+			-- the ladder's own rungs (rule 1)
+			t.Equal("an ordinary hit is 2", Fight.Rung(nil, false, hitstop), 2)
+			t.Equal("a critical ordinary hit is the critical's", Fight.Rung(nil, true, hitstop), hitstop.Critical)
+			t.Equal("a critical signature keeps its own", Fight.Rung(7, true, hitstop), 7)
+			t.Equal("rung 5 takes rung 4's row", Fight.Lever(5, hitstop).From, 4)
+			t.Equal("below the ladder takes the lowest row", Fight.Lever(1, hitstop).From, rows[1].From)
+			t.Equal("past the top takes the top", Fight.Lever(10, hitstop).From, rows[#rows].From)
+			-- the study's starting numbers (rule 2)
+			local ordinary, critical, signature = Fight.Hold(2, false, hitstop), Fight.Hold(4, false, hitstop), Fight.Hold(7, false, hitstop)
+			t.Check("an ordinary hit holds 0.04 to 0.05 s", ordinary >= 0.04 and ordinary <= 0.05, `{ordinary}`)
+			t.Check("a critical holds about 0.07 s", near(critical, 0.07, 0.15), `{critical}`)
+			t.Check("a signature holds 0.12 to 0.14 s", signature >= 0.12 and signature <= 0.14, `{signature}`)
+			t.Equal("a killing ordinary hit holds the kill's", Fight.Hold(2, true, hitstop), hitstop.Kill)
+			t.Equal("a killing signature keeps its longer own", Fight.Hold(7, true, hitstop), math.max(signature, hitstop.Kill))
+			t.Check("the longest hold is the longest", Fight.LongestHold(hitstop) >= signature and Fight.LongestHold(hitstop) >= hitstop.Kill)
+			-- every hit's rung is on the ladder, a signature's at 7 or more
+			for _, action in Actions.List do
+				for beat, hit in action.Hits do
+					local rung = hit.Rung or 2
+					t.Check(`{action.Id}.{beat}: rung 2 to 9`, rung >= 2 and rung <= 9, `{rung}`)
+				end
+			end
+			t.Check("Haymaker is a signature's", (Actions.ById.RookHaymaker.Hits.Strike.Rung or 2) >= 7)
+			t.Check("Lantern Burst is a signature's", (Actions.ById.PipLanternBurst.Hits.Burst.Rung or 2) >= 7)
+			t.Equal("the combo's ram is its last", Actions.ById.RookCombo.Hits.Hit3.Rung, 3)
+			t.Equal("the Shade's swing is 3", Actions.ById.ShadeSwipe.Hits.Hit.Rung, 3)
+			-- the flash: its top at once, eased out, gone at its end
+			t.Equal("the flash starts at its glow", Fight.Flash(0, 0.06, 0.5), 0.5)
+			t.Check("eased: under half by halfway", Fight.Flash(0.03, 0.06, 0.5) < 0.25)
+			t.Equal("gone at its end", Fight.Flash(0.06, 0.06, 0.5), 0)
+			t.Equal("nothing before it", Fight.Flash(-0.01, 0.06, 0.5), 0)
+			-- the tremble shrinks across the hold to nothing
+			t.Equal("the tremble at its full at the hold's start", Fight.Tremble(0, 0.13, 0.2), 0.2)
+			t.Check("half by half the hold", near(Fight.Tremble(0.065, 0.13, 0.2), 0.1, 1e-6))
+			t.Equal("none once the hold is over", Fight.Tremble(0.13, 0.13, 0.2), 0)
+			-- trauma: added and capped, falling over Decay, the shake its square
+			t.Equal("trauma adds", Fight.Trauma(0.3, 0.5), 0.8)
+			t.Equal("capped at 1", Fight.Trauma(0.8, 0.8), 1)
+			t.Equal("never taken by a jolt", Fight.Trauma(0.5, -1), 0.5)
+			t.Check("falls by dt over decay", near(Fight.TraumaAfter(1, 0.1, 0.4), 0.75, 1e-9))
+			t.Equal("never below nothing", Fight.TraumaAfter(0.1, 1, 0.4), 0)
+			t.Equal("the shake is its square", Fight.ShakeOf(0.5), 0.25)
+			local shake = Combat.Shake
+			t.Check("a decay of 0.3 to 0.4 s (rule 2)", shake.Decay >= 0.3 and shake.Decay <= 0.4, `{shake.Decay}`)
+			t.Check("a signature's jolt shakes over twice a critical's", Fight.ShakeOf(Fight.Lever(7, hitstop).Trauma) > 2 * Fight.ShakeOf(Fight.Lever(4, hitstop).Trauma))
 		end,
 	},
 }

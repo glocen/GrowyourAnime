@@ -12,7 +12,13 @@ local Tune = {}
 -- Seam: other tables a path may start with. Roots.Action = function(keys) return node, firstKeyIndex end
 Tune.Roots = {} :: { [string]: (keys: { string }) -> (any, number) }
 
-local function locate(path: string): ({ [string]: any }, string)
+-- A key in a list (Config.Combat.Hitstop.Rungs) is its number: "Combat.Hitstop.Rungs.1.Hold".
+local function key(node: any, name: string): any
+	local index = tonumber(name)
+	return if node[name] == nil and index ~= nil and node[index] ~= nil then index else name
+end
+
+local function locate(path: string): ({ [any]: any }, any)
 	local keys = string.split(path, ".")
 	if keys[1] == "Config" then
 		table.remove(keys, 1)
@@ -30,10 +36,10 @@ local function locate(path: string): ({ [string]: any }, string)
 	end
 	assert(node, `"{path}" names no {keys[1]}`)
 	for index = first, #keys - 1 do
-		node = node[keys[index]]
+		node = node[key(node, keys[index])]
 		assert(type(node) == "table", `"{path}": {keys[index]} isn't a table`)
 	end
-	return node, keys[#keys]
+	return node, key(node, keys[#keys])
 end
 
 function Tune.Read(path: string): any

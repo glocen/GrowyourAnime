@@ -3067,6 +3067,75 @@ For Faber and Modulo (research's request, 2026-11-13). It rests on the director'
 
 **Status:** requested, 2026-11-13.
 
+### A. The hit (Faber, 2026-11-13)
+
+- **The hitstop by rung** (`Config.Combat.Hitstop.Rungs`; the study's rule 2 for the starting numbers). A hit takes the highest row at or under its rung (`Rules.Fight.Lever`). Before, every hit held 0.09 s and a heavy one 0.13.
+
+  | Rung | Hits | Hold | Flash | Glow | Tremble | Trauma |
+  |---|---|---|---|---|---|---|
+  | 2 | ordinary | 0.045 | 0.06 | 0.55 | 0 | 0 |
+  | 3 | a combo's last, the Shade's swing, the keeper's strike | 0.05 | 0.06 | 0.6 | 0 | 0 |
+  | 4 | a critical (it lifts any hit to 4) | 0.07 | 0.08 | 0.7 | 0 | 0.35 |
+  | 7 | Haymaker, Lantern Burst | 0.13 | 0.1 | 0.9 | 0.18 | 0.8 |
+  | 8 | the keeper's signature | 0.14 | 0.1 | 0.9 | 0.22 | 0.8 |
+
+  - The rung lives on each hit (`Definitions.Actions`, `Hit.Rung`), and the server sends it with the hit. A killing hit holds at least 0.09 s, the old hold, so the last blow lands before the burst.
+  - Held Note's five crests stay at rung 2, my call: a signature's hold on each, a quarter-second apart, would freeze the struck body for half the note. The wave's own look carries its rung.
+- **The flash:** a white `Highlight` on the struck body, made at its first hit and kept. It starts at Glow's opacity on its first frame and eases out (squared) over Flash.
+- **The tremble:** at rung 7 and up, the struck body shakes inside the freeze. It moves Tremble studs at first, shrinks to nothing as the hold ends, changes direction 45 times a second, and is put back exactly where it was.
+- **The camera:** trauma, as the study has it.
+  - Each jolt adds trauma, up to 1, and it falls by 1 every 0.35 s. The shake is trauma squared: at full, 1.2 studs and 2.5° of roll, with half of that in pitch and yaw, its noise at 16 a second.
+  - Only the player's own lead shakes it. A critical shakes 0.12 of full, a signature 0.64, and the lead hit hard 0.2.
+  - A critical adds 0.35 trauma, under the study's "about 0.5" for a heavy hit, because criticals come often in a pack fight. It's my starting number, to tune by playing.
+  - It replaces the fixed Heavy and Hurt shakes.
+- **What the client predicts:** the screen shows a beat from its own clock, before the server's hit arrives. A critical or a kill is known only from the server. So the server's hit stretches a hold that is still running, flashes the body again, and adds the trauma difference.
+  - **The limit:** if the server's hit arrives after the predicted hold has ended, it shows as a flash and a jolt with the number, not a longer freeze.
+- **The billboards a picture late,** fixed the way the Shade's burst fixed them (AR2, section 13): made at the start, shown by their image, cleared a step late.
+  - Haymaker's bars: both faces are made at the start, `max(4, 3 + 2 × pieces)` bars.
+  - Lantern Burst's heat and burst.
+  - Held Note's flashes.
+  - The last cell of a touch is kept for one step.
+- **Tuned live:** `Tune` reads a list's row by its number: `NL_Debug:Invoke("Tune", "Combat.Hitstop.Rungs.4.Hold", 0.1)`.
+- **The level check.** The measure is `tools/studio/Audio/Loudness.luau` (ITU-R BS.1770-4: K-weighting at any rate, momentary, short-term and gated integrated loudness, and true peak oversampled 4×).
+  - Its cases are in `LogicTestService/Cases/Audio.luau`: the standard's own coefficients, a full-scale 997 Hz tone at −3.01 LUFS at 48 and 32 kHz, the gate, a peak between samples, and silence.
+  - The mix is `tools/studio/Audio/Mixdown.luau`. It takes each cue's own samples at the game's gain, speed, time, cut and fades, through its group's fader, and measures them; run it in Edit with `Mixdown.Report()`.
+  - The fight's loudest cue is Haymaker's strike: momentary −19.7 LUFS, true peak −7.3 dBTP.
+
+  | Reveal | Over the fight (momentary) | True peak |
+  |---|---|---|
+  | Common | +0.1 LU | −2.8 dBTP |
+  | Uncommon | +0.4 | −2.5 |
+  | Rare | +0.8 | −2.2 |
+  | Epic | +1.1 | −1.9 |
+  | Legendary | +6.0 | −1.6 |
+  | Mythical | +6.1 | −1.3 |
+
+  - **My reading:**
+    - Every true peak is under −1.
+    - Legendary and Mythical sit at the top of the 3 to 6 range.
+    - Common to Epic sit level with a signature's strike. Every reveal clears an ordinary hit.
+    - The fight here is one cue at a time. In a pack, overlapping hits add up: two equal ones are 3 LU louder. So the fight's real top is likely higher than this.
+    - Raising Common to Epic by 2 LU or more on the fader would push Epic's true peak over −1. A lift there needs the cues reshaped, not the fader.
+  - **For research:** does "about 3 to 6" cover every rarity, or may the low ones sit level with a signature? It's measured on one channel, so a centred sound on two speakers reads 3 LU higher. Every cue is read the same way, so the differences hold.
+- **The pace:** `tools/balance/sim.py` has no hold, push or flinch, so its figures don't change.
+  - In the game, the server pushes once the hold is over. An ordinary hit's flinch now ends 0.325 s after it lands (0.28 + 0.045), down from 0.37. A combo's last ends at 0.33, a critical at 0.35, and a signature is unchanged at 0.41.
+  - An attacker's own timing is the server's, and nothing holds it.
+  - Not measured in play.
+- **Checked:**
+  - The type check: 0 new.
+  - Logic: 2368 offline and in Studio, with 13 new for the audio.
+  - Self-test: the whole suite passes, 697/697 at 60 fps. The new checks: the flash at its top and gone after, a signature's trauma, the tremble moving the body and putting it back, the trauma falling to 0.
+  - `Tune` takes a row by its number and refuses a row that isn't there.
+  - Logic cases cover the rows rising with the rung, every hit's rung, and the flash, tremble and shake maths.
+- **The takes,** in `build/captures/ar8/`, at phone size (Studio's device emulator) with sound: Rook against five level-9 Brawlers at the top of Lantern Row, each beside its "before".
+  - `before_` and `after_fight_lantern_row.mp4`, with their sheets.
+  - `before_` and `after_haymaker_60fps.png`: a Haymaker strike, 36 frames at 60 fps.
+  - `after_hit_60fps.png`: an ordinary hit.
+  - **What I see:** the after's strike holds about 8 frames, with the struck body flashed white and the camera rolled through it; the before shows neither. An ordinary hit's flash is a pale wash for about 4 frames.
+  - **Seen, not this piece:** the avatar's own body hides much of the lead against a pack at this angle, in both takes.
+- **Not done:** research's pass in motion at phone size, with `ga-fresh-eyes` on a signature's hold and shake (rung 7).
+- **Hours:** about 0.7, 13:43 to 14:25 UTC, against a forecast of 1.
+
 ### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
 
 Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.

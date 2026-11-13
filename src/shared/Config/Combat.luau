@@ -1,7 +1,7 @@
 --!strict
 -- Combat (shared Config): how a fight moves and how it's shown (docs/design.md, "Combat"). Studs are at Roblox's default
 -- walk of 16 a second. The builder's numbers, 2026-11-12, from handbook/feel/combat.md and game-feel.md's starting points,
--- tuned by playing: NL_Debug:Invoke("Tune", "Combat.Hitstop.Heavy", 0.16).
+-- tuned by playing: NL_Debug:Invoke("Tune", "Combat.Hitstop.Rungs.4.Hold", 0.16) (a list's row by its number).
 
 return {
 	Think = 0.1, -- seconds between a fighter's decisions; beats are checked every frame
@@ -61,15 +61,39 @@ return {
 
 	-- The hit's four moments (handbook/feel/combat.md, "Hit reactions and knockback"). The hold is the client's, presentation
 	-- only; the server pushes once the hold is over, so the body jumps on the frame it lets go.
-	Hitstop = { Light = 0.09, Heavy = 0.13 },
+	-- By the hit's rung on the importance ladder (Actions.Hit.Rung; docs/research/vfx-reference.md, rules 1 and 2), the
+	-- highest row at or under it (Rules.Fight.Lever): Hold, seconds both bodies freeze; Flash, seconds the struck body
+	-- glows white, from Glow (the fill's opacity at its first picture) eased out; Tremble, studs the struck body shakes
+	-- inside the freeze, shrinking to nothing at its end (rung 7 and up); Trauma, the camera's added on the player's own
+	-- lead's hit (Shake). A critical is at least rung Critical, and a killing hit holds at least Kill seconds, the old light
+	-- hold, so the last blow lands before the burst. AR8 A, the builder's starting numbers, tuned by playing.
+	Hitstop = {
+		Rungs = {
+			{ From = 2, Hold = 0.045, Flash = 0.06, Glow = 0.55, Tremble = 0, Trauma = 0 }, -- an ordinary hit
+			{ From = 3, Hold = 0.05, Flash = 0.06, Glow = 0.6, Tremble = 0, Trauma = 0 }, -- a combo's last, the Shade's swing
+			{ From = 4, Hold = 0.07, Flash = 0.08, Glow = 0.7, Tremble = 0, Trauma = 0.35 }, -- a critical
+			{ From = 7, Hold = 0.13, Flash = 0.1, Glow = 0.9, Tremble = 0.18, Trauma = 0.8 }, -- a Voidkin's signature
+			{ From = 8, Hold = 0.14, Flash = 0.1, Glow = 0.9, Tremble = 0.22, Trauma = 0.8 }, -- the keeper's signature
+		},
+		Critical = 4,
+		Kill = 0.09,
+		Tremble = { Rate = 45 }, -- the struck body's shake: direction changes a second
+	},
 	-- The push: Seconds at a steady pace, on the server. Shown: each screen draws it from its own hold's end instead of
 	-- waiting for the body's replica, which comes a replication delay late (AR1, section 8); Wait is the longest it waits
 	-- for the replica to catch up, then it hands the body back over HandBack seconds.
 	Push = { Seconds = 0.1, Shown = true, Wait = 0.4, HandBack = 0.1 },
-	-- The camera, the client's: magnitude in studs, roughness a second, fade in seconds (handbook/feel/game-feel.md).
+	-- The camera, the client's, as trauma (handbook/feel/game-feel.md; docs/research/vfx-reference.md, item 12): each jolt
+	-- adds trauma, capped at 1, which falls by 1 every Decay seconds; the shake is trauma squared, so a big jolt lands and a
+	-- small one barely ticks. At full shake the camera moves Studs and turns Degrees (roll, with half of it in pitch and
+	-- yaw), its noise changing Rate times a second. A hit's trauma is its rung's (Hitstop.Rungs); Hurt is the player's own
+	-- lead hit hard (HurtShare of its health). AR8 A, the builder's starting numbers, tuned by playing.
 	Shake = {
-		Heavy = { Magnitude = 1.6, Roughness = 14, Fade = 0.15 }, -- the player's own lead lands a heavy hit
-		Hurt = { Magnitude = 0.6, Roughness = 12, Fade = 0.2 }, -- the player's own lead is hit hard (a tenth of its health)
+		Decay = 0.35,
+		Studs = 1.2,
+		Degrees = 2.5,
+		Rate = 16,
+		Hurt = 0.45,
 		HurtShare = 0.1,
 	},
 	-- Damage numbers over the target: they rise this many studs over this many seconds. A flurry, one press's hits on one

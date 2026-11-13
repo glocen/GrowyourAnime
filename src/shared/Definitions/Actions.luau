@@ -26,6 +26,10 @@ export type Hit = {
 	Heal: number?,
 	-- The fighter never holds on this hit, only its target: a run of beats that must keep their count (Lyric's crests)
 	Steady: boolean?,
+	-- Its rung on the importance ladder (docs/research/vfx-reference.md, rule 1), which sets its hold, its flash, the struck
+	-- body's tremble and the camera's trauma (Config.Combat.Hitstop): 2 when nil, an ordinary hit; 3 a combo's last or
+	-- the Shade's swing; 7 a Voidkin's signature; 8 the keeper's. A critical raises it (Rules.Fight.Rung).
+	Rung: number?,
 }
 
 export type Action = {
@@ -59,7 +63,7 @@ local rows: { Action } = {
 		Hits = {
 			Hit1 = { Coefficient = 0.9, Heavy = false, Reach = 6, Push = 0.4 },
 			Hit2 = { Coefficient = 0.9, Heavy = false, Reach = 6, Push = 0.4 },
-			Hit3 = { Coefficient = 1.4, Heavy = false, Reach = 6, Push = 1.2 }, -- the ram opens space for the next lunge
+			Hit3 = { Coefficient = 1.4, Heavy = false, Reach = 6, Push = 1.2, Rung = 3 }, -- the ram opens space for the next lunge
 		},
 		Range = 4.5,
 		Heavy = false,
@@ -77,7 +81,7 @@ local rows: { Action } = {
 		Cooldown = 10,
 		Beats = { Charge = 0.1333, Strike = 0.95, Shock = 0.9667, Step = 1.05, Vent = 1.1667 },
 		Hits = {
-			Strike = { Coefficient = 4.0, Heavy = true, Reach = 9, Push = 4 },
+			Strike = { Coefficient = 4.0, Heavy = true, Reach = 9, Push = 4, Rung = 7 },
 		},
 		Range = 6,
 		Heavy = true,
@@ -104,7 +108,7 @@ local rows: { Action } = {
 		Hits = {
 			Shot1 = { Coefficient = 0.75, Heavy = false, Reach = 15.5, Push = 0.3 },
 			Shot2 = { Coefficient = 0.75, Heavy = false, Reach = 15.5, Push = 0.3 },
-			Shot3 = { Coefficient = 1.17, Heavy = false, Reach = 15.5, Push = 1.0 }, -- the lantern kicked clean over
+			Shot3 = { Coefficient = 1.17, Heavy = false, Reach = 15.5, Push = 1.0, Rung = 3 }, -- the lantern kicked clean over
 		},
 		Range = 14.5,
 		Heavy = false,
@@ -123,7 +127,7 @@ local rows: { Action } = {
 		Cooldown = 10,
 		Beats = { Heat = 0.1333, Send = 0.85, Burst = 1.1, Return = 1.6333 },
 		Hits = {
-			Burst = { Coefficient = 2.5, Heavy = true, Reach = 15.5, Push = 1.5, Area = 5 }, -- each Shade in the flame's foot
+			Burst = { Coefficient = 2.5, Heavy = true, Reach = 15.5, Push = 1.5, Area = 5, Rung = 7 }, -- each Shade in the flame's foot
 		},
 		Range = 14.5,
 		Heavy = true,
@@ -150,7 +154,7 @@ local rows: { Action } = {
 		Hits = {
 			Shot1 = { Coefficient = 0.75, Heavy = false, Reach = 13, Push = 0.3 },
 			Shot2 = { Coefficient = 0.75, Heavy = false, Reach = 13, Push = 0.3 },
-			Shot3 = { Coefficient = 1.17, Heavy = false, Reach = 13, Push = 1.0 }, -- both speakers at once
+			Shot3 = { Coefficient = 1.17, Heavy = false, Reach = 13, Push = 1.0, Rung = 3 }, -- both speakers at once
 		},
 		Range = 12,
 		Heavy = false,
@@ -170,6 +174,8 @@ local rows: { Action } = {
 		CancelFrom = 2.3,
 		Cooldown = 10,
 		Beats = { Breath = 0.0667, Note = 0.5, Crest2 = 0.75, Crest3 = 1.0, Crest4 = 1.25, Release = 1.5 },
+		-- Each crest an ordinary hit's rung, not the signature's: five a quarter-second apart, and a signature's hold on each
+		-- would freeze the struck half the note. The wave's own look carries the rung (AR8 A, the builder's call).
 		Hits = {
 			Note = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.01, Steady = true },
 			Crest2 = { Coefficient = 0.5, Heavy = false, Reach = 14, Push = 0.3, Cone = 24, Apex = 3.9, Heal = 0.01, Steady = true },
@@ -199,7 +205,7 @@ local rows: { Action } = {
 		Cooldown = 0,
 		Beats = { Hit = 0.5 },
 		Hits = {
-			Hit = { Coefficient = ENEMY_PER_SECOND * 1.1, Heavy = false, Reach = 5.5, Push = 0.5 },
+			Hit = { Coefficient = ENEMY_PER_SECOND * 1.1, Heavy = false, Reach = 5.5, Push = 0.5, Rung = 3 },
 		},
 		Range = 4,
 		Heavy = false,
@@ -216,7 +222,7 @@ local rows: { Action } = {
 		Cooldown = 0,
 		Beats = { Wind = 0, Strike = 0.8, Recover = 1.0 },
 		Hits = {
-			Strike = { Coefficient = ENEMY_PER_SECOND * 1.6, Heavy = false, Reach = 8, Push = 1.5 },
+			Strike = { Coefficient = ENEMY_PER_SECOND * 1.6, Heavy = false, Reach = 8, Push = 1.5, Rung = 3 },
 		},
 		Range = 6,
 		Heavy = false,

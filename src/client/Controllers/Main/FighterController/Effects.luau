@@ -18,7 +18,7 @@
 --   ShadeBurst  a Shade falls: AR2's art sheet, the sky lantern. A flame swells in its collar, flares the coat's size on
 --             its clip's marker as the body goes, and climbs away with its paper (docs/design.md, "Combat": no gore).
 --   Number    a damage number over the target: one counting number for a flurry, one press's hits on one body.
---   Shake     the camera, on the player's own heavy hit or a hard hit taken.
+--   Jolt      the camera's trauma, on the player's own lead's hit by its rung, or a hard hit taken.
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
 -- capture sets to 0 to hold a frame (.claude/skills/ga-studio-test, "Captures").
 
@@ -27,6 +27,8 @@ local RunService = game:GetService("RunService")
 
 local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
+local Combat = require(ReplicatedStorage.Shared.Config.Combat)
+local Fight = require(ReplicatedStorage.Shared.Rules.Fight)
 local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Sounds = require(script.Parent.Sounds)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -166,20 +168,46 @@ end
 -- A signature's bar: one flat stroke of its picture, unlit and cut by its alpha, on the faces of a thin part; with no
 -- picture yet, the part itself in grey, as transparent as the frame is eaten. Laid with its length along the CFrame's X,
 -- its thickness along Y, and its faces along Z (Back, +Z, toward whoever it faces).
+-- The engine draws a GUI shown or changed a picture late and one cleared at once (AR2, section 13), so a bar's faces
+-- are made with it, always enabled, shown by their image, and cleared a step after its last frame (Was): every picture
+-- is drawn, one behind, evenly (AR8 A).
 type Face = { Gui: SurfaceGui, Label: ImageLabel }
-type Bar = { Part: Part, Faces: { Face } }
+type Bar = { Part: Part, Faces: { Face }, Was: boolean }
 type Look = typeof(EffectsConfig.Haymaker)
+
+local BAR_FACES = { Enum.NormalId.Front, Enum.NormalId.Back } -- every face a bar is laid with: UPRIGHT's and ON_FLOOR's
 
 local function newBar(): Bar
 	local p = part(LIGHT)
 	p.Transparency = 1
-	return { Part = p, Faces = {} }
+	local bar: Bar = { Part = p, Faces = {}, Was = false }
+	for _, normal in BAR_FACES do
+		local gui = Instance.new("SurfaceGui")
+		gui.Face = normal
+		gui.LightInfluence = 0 -- unlit, as the sheet draws it
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 64
+		local label = Instance.new("ImageLabel")
+		label.BackgroundTransparency = 1
+		label.BorderSizePixel = 0
+		label.Size = UDim2.fromScale(1, 1)
+		label.ScaleType = Enum.ScaleType.Stretch
+		label.ImageTransparency = 1
+		label.Parent = gui
+		gui.Parent = p
+		table.insert(bar.Faces, { Gui = gui, Label = label })
+	end
+	return bar
 end
 
 local function hideBar(bar: Bar)
 	bar.Part.Transparency = 1
+	if bar.Was then
+		bar.Was = false -- its last picture is drawn this frame: cleared on the next
+		return
+	end
 	for _, face in bar.Faces do
-		face.Gui.Enabled = false
+		face.Label.ImageTransparency = 1
 	end
 end
 
@@ -192,31 +220,14 @@ local function layBar(bar: Bar, look: Look, at: CFrame, length: number, thick: n
 		p.Color = Color3.new(LIGHT.R * tint.R, LIGHT.G * tint.G, LIGHT.B * tint.B)
 		p.Transparency = look.Eaten[k + 1]
 		for _, face in bar.Faces do
-			face.Gui.Enabled = false
+			face.Label.ImageTransparency = 1
 		end
 		return
 	end
 	p.Transparency = 1
 	p.Size = Vector3.new(length / look.Span, thick / look.Body, PICTURE_DEPTH)
-	if #bar.Faces == 0 then
-		for _, normal in faces do
-			local gui = Instance.new("SurfaceGui")
-			gui.Face = normal
-			gui.LightInfluence = 0 -- unlit, as the sheet draws it
-			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-			gui.PixelsPerStud = 64
-			local label = Instance.new("ImageLabel")
-			label.BackgroundTransparency = 1
-			label.BorderSizePixel = 0
-			label.Size = UDim2.fromScale(1, 1)
-			label.ScaleType = Enum.ScaleType.Stretch
-			label.Parent = gui
-			gui.Parent = p
-			table.insert(bar.Faces, { Gui = gui, Label = label })
-		end
-	end
+	bar.Was = true
 	for _, face in bar.Faces do
-		face.Gui.Enabled = true
 		local label = face.Label
 		if label.Image ~= look.Picture then
 			label.Image = look.Picture
@@ -224,6 +235,7 @@ local function layBar(bar: Bar, look: Look, at: CFrame, length: number, thick: n
 		label.ImageRectSize = Vector2.new(look.FrameWidth, look.FrameHeight)
 		label.ImageRectOffset = Vector2.new(0, k * look.FrameHeight)
 		label.ImageColor3 = tint
+		label.ImageTransparency = if table.find(faces, face.Gui.Face) then 0 else 1
 	end
 end
 
@@ -262,7 +274,12 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	local CHARGE, VENT = beats.Charge or 0, beats.Vent or SHOCK
 	local arm = attacker:FindFirstChild("Right Arm") :: BasePart?
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
+	-- Made at the start, as many as a frame lays at most (the square's four, or the hero's three and the floor's two a
+	-- piece), so no bar's first picture waits on its making (AR8 A).
 	local pool: { Bar } = {}
+	for _ = 1, math.max(4, 3 + 2 * EffectsConfig.Haymaker.Floor.Pieces) do
+		table.insert(pool, newBar())
+	end
 	local used = 0
 	local line: CFrame? = nil -- on the floor under the knuckles at the strike, facing down the hit's line
 	local knuckles: Vector3? = nil
@@ -529,6 +546,26 @@ local function billboard(adornee: Instance, image: string): (BillboardGui, Image
 	return gui, label
 end
 
+-- A billboard shown by its image's transparency, never by Enabled, and cleared a step after its last frame: the engine
+-- draws one shown or changed a picture late and one cleared at once (AR2, section 13), so this draws every picture, one
+-- behind, evenly (AR8 A). `showBy(shown, true)` on each frame it has a picture, false on each it hasn't.
+type Shown = { Gui: BillboardGui, Label: ImageLabel, Was: boolean }
+
+local function shownBy(gui: BillboardGui, label: ImageLabel): Shown
+	label.ImageTransparency = 1
+	gui.Enabled = true
+	return { Gui = gui, Label = label, Was = false }
+end
+
+local function showBy(shown: Shown, on: boolean)
+	if on then
+		shown.Label.ImageTransparency = 0
+	elseif not shown.Was then
+		shown.Label.ImageTransparency = 1
+	end
+	shown.Was = on
+end
+
 type LanternLook = typeof(EffectsConfig.LanternBurst)
 
 -- A cell of the Lantern Burst's sheet: its offset and its size, in pixels.
@@ -607,14 +644,18 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 
 	-- The heat, on the lantern.
 	local heatGui, heatLabel = nil :: BillboardGui?, nil :: ImageLabel?
+	local heatShown: Shown? = nil
 	if lantern then
-		heatGui, heatLabel = billboard(lantern, EffectsConfig.LanternBurst.Picture)
+		local gui, label = billboard(lantern, EffectsConfig.LanternBurst.Picture)
+		heatGui, heatLabel = gui, label
+		heatShown = shownBy(gui, label)
 	end
 	-- The burst, on a part of its own that stays where the lantern stopped.
 	local stand = part(LIGHT)
 	stand.Transparency = 1
 	stand.Size = Vector3.one * 0.2
 	local burstGui, burstLabel = billboard(stand, EffectsConfig.LanternBurst.Picture)
+	local burstShown = shownBy(burstGui, burstLabel)
 	local burstAt: Vector3? = nil -- the burst's foot, on the ground under the lantern at the Burst
 	-- The trail: a beam between two points of its own.
 	local ends = part(LIGHT)
@@ -732,7 +773,7 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 			end
 			offsetThrow(clock)
 			-- The heat.
-			if heatGui and heatLabel then
+			if heatGui and heatLabel and heatShown then
 				local heat = look.Heat
 				if clock >= HEAT and clock < BURST then
 					local size = keyed(heat.Keys, clock / FRAME)
@@ -741,9 +782,9 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 					heatGui.Brightness = heat.Brightness
 					local offset, extent = cell(look.Sheet, heat.First + math.floor((clock - HEAT) / FRAME / heat.PerCell + 1e-4) % 4)
 					heatLabel.ImageRectOffset, heatLabel.ImageRectSize = offset, extent
-					heatGui.Enabled = true
+					showBy(heatShown, true)
 				else
-					heatGui.Enabled = false
+					showBy(heatShown, false)
 				end
 			end
 			-- Where the lantern flies, by frame, and where it stops.
@@ -780,9 +821,9 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 				burstGui.Brightness = look.Burst.Brightness
 				local offset, extent = cell(look.Sheet, index)
 				burstLabel.ImageRectOffset, burstLabel.ImageRectSize = offset, extent
-				burstGui.Enabled = true
+				showBy(burstShown, true)
 			else
-				burstGui.Enabled = false
+				showBy(burstShown, false)
 			end
 			return true
 		end,
@@ -977,12 +1018,15 @@ local function touch(body: Model)
 	label.ImageRectOffset = Vector2.zero
 	label.ImageRectSize = Vector2.new(look.Cell, look.Cell)
 	gui.Enabled = true
+	local over = false
 	run(function(age: number): boolean
 		local index = math.floor(age / (hit.Frames * FRAME))
-		if index > 3 or gui.Parent == nil then
+		if over or gui.Parent == nil then
 			return false
 		end
-		label.ImageRectOffset = Vector2.new(index * look.Cell, 0)
+		-- past its last cell, kept a step: drawn a picture late, it would go before its last cell was seen (AR8 A)
+		over = index > 3
+		label.ImageRectOffset = Vector2.new(math.min(index, 3) * look.Cell, 0)
 		return true
 	end, function()
 		gui:Destroy()
@@ -1038,12 +1082,12 @@ end
 function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
 	local look = EffectsConfig.HeldNote
 	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
-	local flashes: { { Ring: Attachment, Gui: BillboardGui } } = {}
+	local flashes: { { Ring: Attachment, Gui: BillboardGui, Shown: Shown } } = {}
 	for _, ring in rings(attacker) do
 		local gui, label = billboard(ring, look.Touch)
 		label.ImageRectOffset = Vector2.new(look.Cell, look.Cell)
 		label.ImageRectSize = Vector2.new(look.Cell, look.Cell)
-		table.insert(flashes, { Ring = ring, Gui = gui })
+		table.insert(flashes, { Ring = ring, Gui = gui, Shown = shownBy(gui, label) })
 	end
 	local order: { string } = {}
 	for name in beats do
@@ -1191,7 +1235,7 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 			local size = flashAt(clock)
 			local forward = if root then root.CFrame.LookVector * 0.15 else Vector3.zero -- 0.15 out along her speakers' cones
 			for _, flash in flashes do
-				flash.Gui.Enabled = size ~= nil
+				showBy(flash.Shown, size ~= nil)
 				if size then
 					flash.Gui.Size = UDim2.fromScale(size, size)
 					flash.Gui.StudsOffsetWorldSpace = flash.Ring.WorldCFrame:VectorToObjectSpace(forward)
@@ -1678,32 +1722,40 @@ function Effects.ShardLeap(from: Vector3?, to: () -> Vector3?)
 	end)
 end
 
--- The camera's shake: each one adds its own, and fades on its own.
-type Shaking = { Magnitude: number, Roughness: number, Fade: number, Age: number, Seed: number }
-local shakes: { Shaking } = {}
+-- The camera's trauma (Config.Combat.Shake; Rules.Fight.Trauma): each jolt adds to it, it falls on its own, and the
+-- camera shakes by its square, moving and turning (roll, and half as much pitch and yaw) on smooth noise. AR8 A.
+local trauma = 0
+local shaken = 0 -- seconds the noise has run
+local SEED = math.random() * 100
 
-function Effects.Shake(params: { Magnitude: number, Roughness: number, Fade: number })
-	table.insert(shakes, { Magnitude = params.Magnitude, Roughness = params.Roughness, Fade = params.Fade, Age = 0, Seed = math.random() * 100 })
+function Effects.Jolt(add: number)
+	trauma = Fight.Trauma(trauma, add)
+end
+
+function Effects.Trauma(): number -- for the self-test
+	return trauma
+end
+
+-- math.noise stays mostly within half of its range: doubled and clamped, it fills -1 to 1.
+local function wobble(x: number, y: number, z: number): number
+	return math.clamp(math.noise(x, y, z) * 2, -1, 1)
 end
 
 RunService:BindToRenderStep("NL_FightShake", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-	if #shakes == 0 then
+	if trauma <= 0 then
 		return
 	end
-	local offset = Vector3.zero
-	for index = #shakes, 1, -1 do
-		local s = shakes[index]
-		s.Age += dt
-		local left = 1 - s.Age / s.Fade
-		if left <= 0 then
-			table.remove(shakes, index)
-			continue
-		end
-		local t = s.Age * s.Roughness
-		offset += Vector3.new(math.noise(t, s.Seed), math.noise(s.Seed, t), 0) * s.Magnitude * left * 0.25
-	end
+	local shake = Combat.Shake
+	local amount = Fight.ShakeOf(trauma)
+	trauma = Fight.TraumaAfter(trauma, dt, shake.Decay)
+	shaken += dt
+	local t = shaken * shake.Rate
+	local studs = shake.Studs * amount
+	local angle = math.rad(shake.Degrees) * amount
 	local camera = workspace.CurrentCamera
-	camera.CFrame = camera.CFrame * CFrame.new(offset)
+	camera.CFrame = camera.CFrame
+		* CFrame.new(wobble(t, SEED, 0.5) * studs, wobble(SEED, t, 1.5) * studs, 0)
+		* CFrame.Angles(wobble(t, 2.5, SEED) * angle * 0.5, wobble(3.5, t, SEED) * angle * 0.5, wobble(SEED, 4.5, t) * angle)
 end)
 
 return Effects

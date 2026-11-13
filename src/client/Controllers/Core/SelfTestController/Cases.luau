@@ -34,6 +34,7 @@ local Rarity = require(Shared.Definitions.Rarity)
 local RevealConfig = require(Shared.Config.Reveal)
 local RevealArt = require(Shared.Config.RevealArt)
 local RevealRule = require(Shared.Rules.Reveal)
+local FightRule = require(Shared.Rules.Fight)
 local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
@@ -66,6 +67,32 @@ local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
 local SQUARE = 4 -- bars in a square
 local BRACKET = 3 -- bars in a bracket: two posts and a lintel
 local GONE_BY = 19 * FRAME -- the art sheet: Haymaker's look is over by frame 76, Strike (57) + 19
+
+-- An effect's GUI shows by its image, enabled from its making and cleared a step after its last frame (AR8 A).
+local function pictured(gui: Instance?): boolean
+	if gui == nil or not (gui:IsA("BillboardGui") or gui:IsA("SurfaceGui")) or not (gui :: any).Enabled then
+		return false
+	end
+	for _, label in gui:GetChildren() do
+		if label:IsA("ImageLabel") and label.ImageTransparency < 1 then
+			return true
+		end
+	end
+	return false
+end
+
+-- A part an effect lays: seen in grey, or by a face's picture.
+local function laid(p: BasePart): boolean
+	if p.Transparency < 1 then
+		return true
+	end
+	for _, gui in p:GetChildren() do
+		if pictured(gui) then
+			return true
+		end
+	end
+	return false
+end
 local ARRIVE_TIMEOUT = 8 -- seconds for a respawned avatar to stand on its spawn
 local FACING_TOLERANCE = 10 -- degrees off straight at the Breaker that still count as facing it
 local CAMERA_TOLERANCE = 25 -- the camera swings in behind the avatar a moment late
@@ -1437,8 +1464,7 @@ return {
 						continue
 					end
 					all += 1
-					local gui = p:FindFirstChildOfClass("SurfaceGui")
-					if p.Transparency < 1 or (gui and gui.Enabled) then
+					if laid(p) then
 						count += 1
 					end
 				end
@@ -1464,6 +1490,7 @@ return {
 			end)
 			local function at(clock: number): number
 				running.Step(clock)
+				running.Step(clock) -- a bar the step before laid and this doesn't is kept a step (AR8 A): settled
 				return (shown())
 			end
 			t.Check("the charge's square before the strike", at(strike - 10 * FRAME) == SQUARE, `{shown()} bars`)
@@ -1476,11 +1503,8 @@ return {
 				local longest = 0
 				local home = workspace:FindFirstChild("NL_Effects")
 				for _, p in (if home then home:GetChildren() else {}) do
-					if not theirs[p] and p:IsA("BasePart") then
-						local gui = p:FindFirstChildOfClass("SurfaceGui")
-						if p.Transparency < 1 or (gui and gui.Enabled) then
-							longest = math.max(longest, p.Size.X)
-						end
+					if not theirs[p] and p:IsA("BasePart") and laid(p) then
+						longest = math.max(longest, p.Size.X)
 					end
 				end
 				local want = (square.Side + square.Bar) / (if look.Picture == "" then 1 else look.Span)
@@ -1528,11 +1552,11 @@ return {
 				aimed.Step(shock + 0.25 * FRAME)
 				aimed.Step(shock + 0.75 * FRAME)
 				aimed.Step(shock + look.Hero.Fly * FRAME) -- the end of its flight: the whole line
+				aimed.Step(shock + look.Hero.Fly * FRAME) -- settled: the shock's square, kept a step, cleared
 				local posts: { BasePart } = {}
 				local home = workspace:FindFirstChild("NL_Effects")
 				for _, p in (if home then home:GetChildren() else {}) do
-					local gui = p:FindFirstChildOfClass("SurfaceGui")
-					if not theirs[p] and p:IsA("BasePart") and (p.Transparency < 1 or (gui and gui.Enabled)) and math.abs(p.CFrame.RightVector.Y) > 0.9 then
+					if not theirs[p] and p:IsA("BasePart") and laid(p) and math.abs(p.CFrame.RightVector.Y) > 0.9 then
 						table.insert(posts, p)
 					end
 				end
@@ -1661,7 +1685,7 @@ return {
 			at(heat)
 			local heatGui = lantern:FindFirstChildOfClass("BillboardGui")
 			local heatLabel = if heatGui then heatGui:FindFirstChildOfClass("ImageLabel") else nil
-			t.Check("the heat on the lantern, from Heat", heatGui ~= nil and heatGui.Enabled and heatLabel ~= nil)
+			t.Check("the heat on the lantern, from Heat", pictured(heatGui) and heatLabel ~= nil)
 			if heatGui and heatLabel then
 				t.Check("its first cell", heatLabel.ImageRectOffset == Vector2.new(512, 768) and heatLabel.ImageRectSize == Vector2.new(128, 128), tostring(heatLabel.ImageRectOffset))
 				t.Check("white and unlit", heatLabel.ImageColor3 == Color3.new(1, 1, 1) and heatGui.LightInfluence == 0 and heatLabel.Image == look.Picture)
@@ -1682,10 +1706,12 @@ return {
 			-- The burst, held by the hit: the clock stays on the Burst, the free clock runs on.
 			at(burst)
 			t.Check("out at the Burst", surface.EmissiveStrength == 0, string.format("%.2f", surface.EmissiveStrength))
-			t.Check("the heat gone at the Burst", heatGui ~= nil and not heatGui.Enabled)
+			t.Check("the heat kept a step past its last frame, drawn a picture late (AR8 A)", pictured(heatGui))
+			at(burst)
+			t.Check("the heat gone the step after", heatGui ~= nil and not pictured(heatGui))
 			local burstGui = mine("BillboardGui") :: BillboardGui?
 			local burstLabel = if burstGui then burstGui:FindFirstChildOfClass("ImageLabel") else nil
-			t.Check("the burst on the Burst", burstGui ~= nil and burstGui.Enabled and burstLabel ~= nil)
+			t.Check("the burst on the Burst", pictured(burstGui) and burstLabel ~= nil)
 			if burstGui and burstLabel then
 				local size = look.Burst.PerArea * area
 				t.Near("three times the area's studs", burstGui.Size.X.Scale, size, 0.001)
@@ -1694,7 +1720,8 @@ return {
 				t.Check("white and unlit", burstLabel.ImageColor3 == Color3.new(1, 1, 1) and burstGui.LightInfluence == 0 and burstLabel.Image == look.Picture)
 				local function cellAt(frames: number): (Vector2?, Vector2?)
 					at(burst, burst + frames * FRAME)
-					if not burstGui.Enabled then
+					at(burst, burst + frames * FRAME) -- settled: a cell gone is kept a step (AR8 A)
+					if not pictured(burstGui) then
 						return nil, nil
 					end
 					return burstLabel.ImageRectOffset, burstLabel.ImageRectSize
@@ -1812,7 +1839,7 @@ return {
 			local flash = look.Flash
 			local function flashSize(): number?
 				local gui = flashes[1]
-				return if gui and gui.Enabled then gui.Size.X.Scale else nil
+				return if pictured(gui) then gui.Size.X.Scale else nil
 			end
 			at(first - charge - FRAME)
 			t.Check("no flash before the charge", flashSize() == nil)
@@ -1848,6 +1875,8 @@ return {
 			t.Near("the Note's flash", flashSize() or -1, flash.Note[1], 0.001)
 			at(first + 1.5 * FRAME)
 			t.Near("and the frame after", flashSize() or -1, flash.Note[2], 0.001)
+			at(first + 2.5 * FRAME)
+			t.Check("kept a step past its last frame, drawn a picture late (AR8 A)", flashSize() ~= nil)
 			at(first + 2.5 * FRAME)
 			t.Check("then out", flashSize() == nil)
 			local beams = mine("Beam")
@@ -2401,13 +2430,37 @@ return {
 				local was = struck.Action
 				local before = struck.FrozenUntil
 				struck.Action = Actions.ById.ShadeSwipe -- no yield until it's put back: no frame steps it
-				FighterController.Show(view, struck, false, false, "SelfTest@1")
+				FighterController.Show(view, struck, 2, false, false, "SelfTest@1")
 				local mid = struck.FrozenUntil
 				struck.Action = was
 				t.Check("mid-action: no hold", mid == before, string.format("%.3f later", mid - before))
-				t.Wait(Combat.Hitstop.Light + 0.1)
-				FighterController.Show(view, struck, false, false, "SelfTest@2")
+				t.Wait(Combat.Hitstop.Kill + 0.1)
+				FighterController.Show(view, struck, 2, false, false, "SelfTest@2")
 				t.Check("idle: the hold", struck.FrozenUntil > os.clock(), string.format("%.3f", struck.FrozenUntil - os.clock()))
+				-- AR8 A: the struck body's flash by the hit's rung, its tremble inside a signature's hold, the camera's trauma.
+				local hitstop = Combat.Hitstop
+				t.Check("idle: the flash", struck.Glow ~= nil and struck.Struck ~= nil)
+				t.Wait(1 / 60)
+				local glow = struck.Glow :: Highlight?
+				t.Check("the flash is drawn, under the top value", glow ~= nil and glow.Enabled and glow.FillTransparency > 1 - FightRule.Lever(2, hitstop).Glow - 1e-3, if glow then string.format("%.2f", glow.FillTransparency) else "none")
+				t.Wait(FightRule.Lever(2, hitstop).Flash + 0.1)
+				t.Check("and over", glow ~= nil and not glow.Enabled and struck.Struck == nil)
+				local home = struck.Root.Position
+				local traumaBefore = Effects.Trauma()
+				FighterController.Show(view, struck, 7, true, false, "SelfTest@3")
+				t.Check("the player's own lead's signature: trauma", Effects.Trauma() >= math.min(1, traumaBefore + FightRule.Lever(7, hitstop).Trauma) - 1e-6, string.format("%.2f", Effects.Trauma()))
+				local hold = FightRule.Hold(7, false, hitstop)
+				local moved, ends = 0, os.clock() + hold
+				while os.clock() < ends do
+					t.Wait(1 / 60)
+					moved = math.max(moved, (struck.Root.Position - home).Magnitude)
+				end
+				local most = FightRule.Lever(7, hitstop).Tremble
+				t.Check("a signature's tremble shakes the body inside its hold", moved > most * 0.25 and moved <= most + 0.02, string.format("%.3f of %.2f studs", moved, most))
+				t.Wait(0.1)
+				t.Check("and puts it back where it stood", (struck.Root.Position - home).Magnitude < 0.02, string.format("%.3f studs off", (struck.Root.Position - home).Magnitude))
+				t.Wait(hitstop.Rungs[#hitstop.Rungs].Flash + Combat.Shake.Decay)
+				t.Check("the trauma falls to nothing", Effects.Trauma() == 0, string.format("%.3f", Effects.Trauma()))
 			end
 			t.Server("Replay")
 			t.Wait(0.3)

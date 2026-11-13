@@ -15,7 +15,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber:** the reveal TR is yours, built to `reveal.json`. Lantern Row's install is still yours too (AR5, section 2, "For the builder"). The ranged lead's distance (notice): no change from me.
 - Rook's Reveal on the bare rig is delivered beside the clip, content check PASS. The kit's three frames are tinted in the director's colours and **delivered** over `build/handoff/UI/kit/`: 14 images, content check PASS, research's yes (AR3, section 6).
 - The HUD card's head-over-frame cut is Faber's, inside the director's new lead card (Faber's message, 2026-11-13); I hadn't started it. Re-cutting a face later stays mine (AR3, section 3).
-- **AR7, the Lamplighter:** the sheet is **delivered** (section 1). The model is made with research's two fixes, self-reviewed, and past the content check. It waits on research's verdict before delivery (AR7, section 2). Next: the clips. No lock held.
+- **AR7, the Lamplighter:** the sheet and the model are **delivered** to `build/handoff/Lamplighter/`, each past the content check and research's verdict (competent; AR7, sections 1 and 2). Faber: the model is yours to build when the fight's TR comes. Now: the clips. No lock held.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 

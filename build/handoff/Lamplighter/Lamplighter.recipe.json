@@ -1,0 +1,266 @@
+{
+ "name": "Lamplighter",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0), in the Shade's units",
+ "scale": 1.5,
+ "scale_note": "Built at an ordinary Shade's size: the game scales the template by its row's Scale (model:ScaleTo), research's pick 1.5 (AR7). Every number here is before the scale.",
+ "rig": "R6, the Shade's. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1), and the Head's face decal is removed. The Head piece carries the mask, the hat and its cords. Two more pieces turn on Motor6Ds of their own: the pole on the Right Arm, the lantern on the pole.",
+ "maps": {
+  "Color": "Lamplighter_Color.png",
+  "Roughness": "Lamplighter_Roughness.png",
+  "Metalness": "Lamplighter_Metalness.png",
+  "Emissive": "Lamplighter_Emissive.png"
+ },
+ "texels_per_stud": 60,
+ "emissive": {
+  "body": {
+   "pieces": [
+    "Lamplighter_Torso",
+    "Lamplighter_RightArm",
+    "Lamplighter_LeftArm",
+    "Lamplighter_RightLeg",
+    "Lamplighter_LeftLeg"
+   ],
+   "tint": "#A470F2",
+   "strength": 32.0
+  },
+  "head": {
+   "pieces": [
+    "Lamplighter_Head"
+   ],
+   "tint": "#FFE2B8",
+   "strength": 12.0
+  },
+  "lantern": {
+   "pieces": [
+    "Lamplighter_Lantern"
+   ],
+   "tint": "#FFFFFF",
+   "cold": 1.2,
+   "hot": 3.0
+  },
+  "pole": {
+   "pieces": [
+    "Lamplighter_Pole"
+   ],
+   "strength": 0
+  },
+  "note": "One atlas, one glow mask, four SurfaceAppearances. The body takes Intelligence's colour as EmissiveTint at the Shade's strength; the Head takes the mask's warm white at the mask's, so its paper glows faintly and its cuts are lit, as a Shade's. Roblox draws (mask x strength x tint + light) x colour map, and these two are encoded for those strengths over this colour map: upload the maps together. The lantern's paper is cyan round a warm white heart in the colour map, so its tint is white: a cyan tint over cyan would go deeper and darker. It burns at cold as it stands and goes to hot through the signature's wind-up; the fall puts it out last. The pole takes no glow."
+ },
+ "pieces": [
+  {
+   "name": "Lamplighter_Torso",
+   "mesh": "Lamplighter_Torso.json",
+   "on": "Torso",
+   "centre": [
+    0.0,
+    2.6125,
+    0.0
+   ],
+   "size": [
+    3.06,
+    4.055,
+    2.56
+   ],
+   "tris": 1428
+  },
+  {
+   "name": "Lamplighter_Head",
+   "mesh": "Lamplighter_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    5.18314,
+    -0.04
+   ],
+   "size": [
+    3.59,
+    3.694,
+    3.59
+   ],
+   "tris": 1916
+  },
+  {
+   "name": "Lamplighter_RightArm",
+   "mesh": "Lamplighter_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.785,
+    2.9375,
+    0.0
+   ],
+   "size": [
+    1.61,
+    2.165,
+    1.82
+   ],
+   "tris": 760
+  },
+  {
+   "name": "Lamplighter_LeftArm",
+   "mesh": "Lamplighter_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.785,
+    2.9375,
+    0.0
+   ],
+   "size": [
+    1.61,
+    2.165,
+    1.82
+   ],
+   "tris": 760
+  },
+  {
+   "name": "Lamplighter_RightLeg",
+   "mesh": "Lamplighter_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.0,
+    1.03
+   ],
+   "tris": 324
+  },
+  {
+   "name": "Lamplighter_LeftLeg",
+   "mesh": "Lamplighter_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.0,
+    1.03
+   ],
+   "tris": 324
+  },
+  {
+   "name": "Lamplighter_Pole",
+   "mesh": "Lamplighter_Pole.json",
+   "on": "Right Arm",
+   "centre": [
+    2.85773,
+    2.57695,
+    -0.8518
+   ],
+   "size": [
+    4.511,
+    5.303,
+    5.35
+   ],
+   "tris": 388,
+   "motor": "Pole",
+   "pivot": [
+    1.8,
+    1.72,
+    0.0
+   ]
+  },
+  {
+   "name": "Lamplighter_Lantern",
+   "mesh": "Lamplighter_Lantern.json",
+   "on": "Lamplighter_Pole",
+   "centre": [
+    4.31704,
+    3.58584,
+    -1.69875
+   ],
+   "size": [
+    2.308,
+    2.645,
+    2.659
+   ],
+   "tris": 204,
+   "motor": "Lantern",
+   "pivot": [
+    4.9752,
+    4.6157,
+    -2.7467
+   ]
+  }
+ ],
+ "motors": {
+  "Pole": {
+   "note": "The pole on the Right Arm, its pivot the grip just under the cuff's dark hollow. It's built as the master's stance holds it, the idle, so with the arm raised to the stance it stands plumb with no key on its own joint. At rest, with no clip and the arm hanging, it runs from the floor behind the right heel up through the grip, out forward and to the right. The Shade's shared clips don't key it: a keeper clip, or a hold layered over the right arm at a higher priority, carries it (delivery 3). It turns and slides along its length through the grip, so a clip plants its foot on the ground."
+  },
+  "Lantern": {
+   "note": "The great lantern on the pole, its pivot the hook's tip, where its cord ties on. Clips keep it hanging plumb and swing it; the signature swings it up over the hook. CastShadow off: it's a light. A PointLight inside it, in cyan, is the builder's call, tuned in the engine."
+  }
+ },
+ "points": [
+  {
+   "name": "Lantern",
+   "on": "Lamplighter_Lantern",
+   "at": [
+    4.317,
+    3.5858,
+    -1.6988
+   ],
+   "note": "the light's middle: the signature lights its circle from here"
+  },
+  {
+   "name": "HookTip",
+   "on": "Lamplighter_Pole",
+   "at": [
+    4.9752,
+    4.6157,
+    -2.7467
+   ],
+   "note": "where the cord ties on"
+  },
+  {
+   "name": "PoleFoot",
+   "on": "Lamplighter_Pole",
+   "at": [
+    0.7119,
+    0.0173,
+    1.7326
+   ],
+   "note": "the pole's foot: planted on the ground in the stance"
+  },
+  {
+   "name": "Grip",
+   "on": "Right Arm",
+   "at": [
+    1.8,
+    1.72,
+    0.0
+   ],
+   "note": "the pole's pivot on the arm"
+  },
+  {
+   "name": "Chest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.1,
+    -0.75
+   ],
+   "note": "where a hit lands"
+  },
+  {
+   "name": "Crest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.36,
+    0.72
+   ],
+   "note": "the lantern crest on its back"
+  }
+ ],
+ "tris": 6104,
+ "stride": {
+  "degrees": 27,
+  "note": "each leg's widest swing, forward and back, that stays inside the long coat's hem; the Shade's walk swings 30 forward"
+ }
+}

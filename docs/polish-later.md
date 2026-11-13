@@ -15,6 +15,17 @@ Each waits for an update, and for its own feel line and blockout (`docs/design.m
 - Void Essence, if a system ever needs a fifth currency.
 - A second art seat for the world, if the count shows the team waiting on one maker.
 
+## The finish pass
+
+On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game is built, before launch and before anything public. Each push starts from its piece's competent verdict, and is judged beside it in motion at phone size.
+- **First, a trial:** Fable takes one effect, beside Opus's version of the same one. The trial decides which model runs the rest.
+- **The signature effects, from competent toward exceptional:**
+  - Haymaker (AR8 B5);
+  - Lantern Burst (AR8 B1);
+  - Held Note (AR8 B2);
+  - the Lamplighter's signature (AR7);
+  - each later Voidkin's, as they close.
+
 ## From the pieces
 
 - **Moved into the effects pass, 2026-11-13** (`docs/asset-requests.md`, AR8, on the director's word of that day): Haymaker's B5 (its block-in and costs in AR1, section 9), Pip's Lantern Burst's planned rework (AR4, section 8), the billboards drawn a picture late (AR2, section 13), and the level-up's flat ring (TR3).

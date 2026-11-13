@@ -14,6 +14,10 @@ Every review opens with **Felt:** one sentence, the piece watched once at full s
 
 **The measures:** the vision and the bar (`docs/north-star.md`, "The look" included); the feel line the piece was built to; the chapters under `handbook/visuals/`; for a screen, its written reference study, if `/ga-reference-study` names one. This game has no reference footage, so judge the feel directly, at phone size for anything on screen.
 
+**For an effect, the technique comes first.**
+- A shape with depth drawn on a camera-facing card is a finding before any number is.
+- After two failed rounds, question the technique before the numbers (`handbook/visuals/vfx.md`).
+
 **The side-by-side question,** at each review of a piece judged beside a benchmark: could our frame be taken for theirs? A yes is a finding, however well the piece matches. Mechanics are free, but copying a look and feel almost exactly can infringe (`handbook/platform/ip-safety.md`).
 
 **Precision,** for anyone reviewing: a pose or an effect beside the benchmark is read part by part (head, shoulders, arms, hips, legs and the silhouette at 64 px, or each layer of an effect), with a number for both sides, at full size, from every clear instance in the footage, at least three where they exist, from the same camera where possible. "The rig can't" or "a limit" stands only once a tried lever is shown.

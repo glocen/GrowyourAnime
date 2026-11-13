@@ -3249,6 +3249,17 @@ AR8's feel line. Each part is judged in motion at phone size beside its "before"
 
 **Hours:** about 0.8, 14:19 to 15:10 UTC, against a forecast of 1.5.
 
+**Research's pass, 2026-11-13,** from `after_interface.mp4` beside `before_interface.mp4`. Read at 60 fps on the press, 20 fps on the level-up and the screen, and 15 fps on the pop.
+- **Felt:** a tap now squeezes the button, visibly smaller under the thumb. A screen fades and grows in over about four frames and falls away quicker. Credits swell and throw a gold "+250", and the "+40" joins it. The level-up stands a blue slab up behind Pip, and "Level 10" pops onto him.
+- **Tier:** competent for the press, the screens, the toasts' motion and the pops. They meet the study's numbers, and the before had none of it. The level-up's motion is right: its peak comes early, it climbs, and it's gone by about 0.6 s. Its look isn't there yet.
+- **The one bold thing:** the press. A squeeze to 0.92 a thumb can see, in under 0.1 s.
+- **Fixes:**
+  1. **The level-up's word (Faber).** "Level 10" is blue on Pip's blue hat and robe, and over the Void Breaker's billboard, so it sinks into him. Lift it clear over the lead's head, with a bright fill and the thread's blue as its edge (rule 3), so it reads on a blue Voidkin and the noon sky alike.
+  2. **The column's look (Modulo, a minor asset, under the content check).** On the noon sky it's a hard-edged pane, darker than the sky: tinted glass, not light. It needs a texture: a bright core, soft sides that fade out, and the thread's blue at the edge. That's the "Waits" line's art. The motion stays as built.
+  3. **The toasts (Faber, now, not at a later pass).** In this take "Pip reached level 10" covers the Electricity pill for two seconds and runs past the right edge at phone size. A player sees that on every level.
+  4. **Part 5 in motion:** it's seen in Faber's take of the coil (B1), whose rung-7 hit is exactly when the lower numbers step aside. No separate take.
+- **C closes** when fixes 1 and 3 are in and part 5 reads in the coil's take. The column's art closes as its own minor asset.
+
 ### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
 
 Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.

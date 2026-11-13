@@ -3067,6 +3067,65 @@ For Faber and Modulo (research's request, 2026-11-13). It rests on the director'
 
 **Status:** requested, 2026-11-13.
 
+### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
+
+Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.
+
+- **Where:** `build/scratch/modulo/pip/burst_rework/`.
+  - `pipburst_B.png`, `_D.png`, `_E.png`, `_G.png` and `_H.png`: sixteen frames each from the player's camera, 51 to 95, dense through the peak.
+  - All five side by side: `_side.png`; `_beside.png`, beside an elite; `_hidden.png`, dead on; `_bright.png`; `_64.png`.
+  - `pipburst.json` holds each variant's share of the screen and its size.
+  - `tools/blender/pip_burst_rework.py` rebuilds them in about a minute, on `pip_burst_fx.py`'s stage, cameras and measures.
+- **What's odd in the "before"** (B, as it plays: `build/captures/ar4/pip_burst_boil1x2_burst.png`):
+  - It's one flat flame cut out in ink, standing at full size over the target from 70 to 84 and boiling in place.
+  - It has no peak and no fade: its share is 3.9% at 70, 4.05% at 72, still 3.4% at 76 and 2.8% at 80. It reads as a tent of fire set down on the Shades, not a blow.
+  - Against `docs/research/vfx-reference.md`, rule 3: the peak belongs in the first quarter of the life, then an eased fade, with a secondary a breath later, lower and softer. B has none of the three.
+- **Kept from AR4:** the heat, the send and its trail; the hit's frame on 66; the area (5 studs, the builder's stand-in); the lantern coming home dark and relighting over the cooldown.
+- **Dropped:** the kick's ring. AR4 said to drop it if it added nothing in motion, and it didn't.
+- **Variants.** Each is a third grown on 66, so its first frame clears the target's head, and each is gone by 92.
+  - **D, the flare:** a ball of fire the area's size in four frames, then it lifts off and burns down. A low ring of light runs out past the area's edge a breath later, and embers are flung out and up.
+  - **E, the spill:** the lantern poured out. Fire runs along the ground to the area's edge and rears up there in a crest, waist high round the Shades. A breath later the lantern's own flame stands up in the middle, then the crest tears up off the ground and goes out.
+  - **G, the twister:** three ribbons of fire spring up round the area's edge and wind in to a point high over the target, then unwind upward off the ground and go out. The low ring a breath later.
+  - **H, G let go sooner:** G held its whole coil from 70 to 79. Here the coil's foot leaves the ground two frames after the peak, fast at first, so the coil is already climbing off the Shades while it's bright.
+- **The measures,** at the game's field of view from the player's camera:
+
+  | Variant | Peak share of the screen | At 76 | At 80 | At 86 | Tallest at the peak |
+  |---|---|---|---|---|---|
+  | B, before | 4.05% at 72 | 3.4% | 2.8% | 1.5% | 13.2 studs |
+  | D | 2.3% at 72 | 2.0% | 1.3% | 0.6% | 5.1 |
+  | E | 1.75% at 76 | 1.75% | 1.7% | 1.7% | 3.4, its centre flame 8.1 |
+  | G | 3.5% at 72 | 3.3% | 2.4% | 0.7% | 11.4 |
+  | H | 3.5% at 70 | 2.3% | 1.2% | 0.4% | 11.3 |
+
+  For scale: Pip stands 6.9 studs to the top of his hat.
+- **My pick: H.**
+  - One main shape with a direction: the coil winds up from the area's edge to a point over the target, then leaves upward. Its head is up in five frames.
+  - The peak is on 70, the fourth of its 26 frames, inside the first quarter. It's at two thirds by 76 and a third by 80: the eased fade rule 3 asks for, where B was still at 85% of its peak on 76.
+  - Its foot is the area: the ribbons rise from its edge, so the coil shows which Shades are caught.
+  - It reads over the target from all three cameras. Dead on, the coil's top climbs clear of the avatar's head.
+  - It keeps the signed line's "twice his height" (11.3 studs at the peak) and "gone by the time he gets his hat up". It's still AR4's one idea, the flame in his lantern, small, then bigger than he is: the lantern's own flame, let out.
+- **What I see wrong:**
+  - **D reads as a balloon.** A ball has no direction, and it holds its size from 68 to 79 before floating off. Its embers and its ring are lost at 64 px.
+  - **E is the clearest read of the area, but it's a fence.** A low wall holds from 72 to 86, so its peak is late and it never fades. Its centre flame is a needle.
+  - **G is H with a hold.**
+  - **H in grey reads as a spring.** The art makes it fire: each ribbon thick at its foot and thinning to a ragged tongue at its head, a white-gold core, a darker saturated edge in `#FF8A3D`'s family, never redder (rule 3). On the bright floor the grey ribbons sink into it (`_bright.png`), so that dark edge is what holds them there.
+  - **H's secondary barely reads at 64 px.** The low ring of light a breath after the peak does its job as a secondary, lower and softer. If motion shows it adds nothing, the art drops it, as with the kick's ring.
+  - **On a kill, two flames still go up** (AR4, section 7; the Shade's burst, AR2, section 11): now a coil of three ribbons against a single column, different in size and colour. Still a call for motion.
+- **Feel line, proposed for research to sign.** One change from AR4's signed line: "his spell stands up over the Shades, a flame twice his height" becomes the flame let out, winding up. "Past his target you see the little mage heave the lantern and get rocked back by his own throw; then the lantern's flame, let out, winds up round the Shades twice his height and flies off upward, gone by the time he gets his hat up to look."
+- **The content check: PASS on H** (rules 2, 3 and 4), on the grey blockout and its idea; the art comes back to it. G and D pass the same way. E would block as art: fire running along the ground is a liquid on the ground (section 8, condition 3). **Its conditions for the art:**
+  1. The darker edge stays amber to brown-orange, never crimson or maroon, and nothing is redder than `#FF8A3D`. The engine's tints stay white (section 8, condition 1).
+  2. Nothing moves down. The tips point up or along the ribbon's travel, and the last pieces (79 to 86) rise and shrink (section 8, condition 3).
+  3. The ground ring is a low wall of light that rises and fades, never a flat or dark ring, a scorch or a wet band on the floor (section 8, condition 2).
+  4. The ribbons rise from the floor at the area's edge, never out of a Shade, and the point they gather to stays clearly over the target's head. Before upload, the engine at 64 px from every heading shows it never reads as coming off the Shade's head.
+  5. It's a helix from the side, never a flat three-armed whirl. Seen from straight above, three arms spiralling out of a centre come too near a hate symbol, so it's never a ground decal, an icon, a HUD readout or a cooldown picture, and any camera that looks down on it is checked.
+  6. The art comes from our own script, and the upload files come back to the check with a sheet at full size and at 64 px over dark and bright. Each gets its row in `docs/asset-log.md`.
+- **A note on the build, for Faber's cost:** in Roblox the coil is most likely three `Trail`s on attachments driven up a helix, which gives the taper and the fade along each ribbon without a billboard per segment. The build is Faber's call.
+- **Not done:**
+  - Research's verdict, with `ga-fresh-eyes` (a Voidkin's signature, rung 7).
+  - Then the art sheet: the ribbon's look, its core and edge, its tongues, and the trail's meeting with it.
+  - Then Faber's build, and research's pass in motion at phone size beside the "before".
+- **Hours:** about 0.6, 13:35 to 14:10 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

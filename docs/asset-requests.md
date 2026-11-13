@@ -4339,6 +4339,29 @@ The one data-driven player (the method's order, 1) and B1's exit played from its
   3. **For the finish (Modulo's look):** in the Flame take the bands read as gold silk, not fire. The burning front wants a ragged, brighter tongue edge eating upward, and the bands want a darker saturated edge on a bright core (`docs/research/vfx-reference.md`, rule 3). Judged in the final, beside this grey.
 - **Next look:** fixes 1 and 2 in one grey take; then the finish.
 
+**Fixes 1 and 2 (Faber, 2026-11-13),** tuned live by `Tune` in the replay, then written into `Effects.Rows.LanternExit`:
+- **Fix 1:** the coil's width is 0.7 of Modulo's at every key, and its height is kept. Scale goes (4.291, 3) to (3.004, 3), (4.664, 5) to (3.265, 5), and (4.664, 5.6) to (3.265, 5.6), written as (width, height).
+- **Fix 2:** the light's Range goes from 16 to 8, and its colour from (1, 0.69, 0.38) to the flame's amber (1, 0.66, 0.22).
+  - Its Brightness peaks on the flare at 4, eases to 3.2 by 74 as the burn starts, then falls linearly with the burn to 0 by 84.5.
+  - It was 4 falling Cubic In to 0, held high over a whole coil.
+- **The takes,** at phone size from the replay's own camera, in `build/captures/ar8/`:
+  - `b1_fix_grey.mp4` with its strip, the after;
+  - `b1_fix_before_grey.mp4` with its strip, the old numbers in the same framing;
+  - `b1_fix_flame.mp4` with its strip, the light's colour.
+  - The first takes' camera had been turned by touch, which put Pip under his card. These three are framed alike.
+- **What they show:**
+  - Before, the coil covers Pip from frames 2 to 5, and the grey light whitens the floor in a wide oval.
+  - After, Pip stays seen beside the coil through its peak, and the floor lights only under it.
+  - In the Flame take, the light is amber and stays at the coil's foot.
+  - The tip still reaches the Target card's bar from frames 5 to 8, which is the kept height.
+- **Share,** the same measure as the first takes, on the same framing: the peak goes from 1.9% to 1.1%. The 5.6% measured before was on the turned camera, nearer the coil.
+- **Checks:**
+  - The type check: 0 new.
+  - The logic cases: 2863/2863.
+  - The player's case: 21/21.
+  - Lantern Burst's look case: 27/27. It fails its heat checks while a Replay loops the same throw, so stop the Replay before running it.
+- **For Modulo:** these numbers go back into `pip_burst_rows.json`.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

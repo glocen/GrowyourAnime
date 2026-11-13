@@ -296,9 +296,10 @@ return {
 					Grey = "fx_across_Grey",
 					Tracks = {
 						Scale = {
-							{ 0, Vector3.new(4.291, 3, 4.291), "Quart Out" },
-							{ 4, Vector3.new(4.664, 5, 4.664), "Linear" },
-							{ 18.5, Vector3.new(4.664, 5.6, 4.664) },
+							-- It hugs the Shade, it doesn't balloon: 0.7 of Modulo's width, its height kept (research's fix 1).
+							{ 0, Vector3.new(3.004, 3, 3.004), "Quart Out" },
+							{ 4, Vector3.new(3.265, 5, 3.265), "Linear" },
+							{ 18.5, Vector3.new(3.265, 5.6, 3.265) },
 						},
 						Spin = { { 0, 0, "Quart Out" }, { 18.5, -150 } },
 					},
@@ -386,15 +387,16 @@ return {
 					Emit = { { 8, 1 } },
 					Tracks = { At = { { 8, Vector3.new(-1, 0.17, 0) } } },
 				},
-				-- The Shades and the floor lit by it, brightest on the flare: in the coil's middle.
+				-- The Shades lit by it, the floor only under the coil (research's fix 2), in the flame's amber: in the coil's
+				-- middle, brightest on the flare, falling with the burn.
 				Light = {
 					Kind = "Light",
 					On = "Coil",
-					Range = 16,
-					Color = Color3.new(1, 0.69, 0.38),
+					Range = 8,
+					Color = Color3.new(1, 0.66, 0.22),
 					Tracks = {
 						At = { { 0, Vector3.new(0, 1.1, 0) } },
-						Brightness = { { 0, 1.5, "Quart Out" }, { 4, 4, "Cubic In" }, { 18.5, 0 } },
+						Brightness = { { 0, 1.5, "Quart Out" }, { 4, 4, "Sine InOut" }, { 8, 3.2, "Linear" }, { 18.5, 0 } },
 					},
 				},
 			},

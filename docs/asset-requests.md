@@ -2794,7 +2794,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is in progress.
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is made, self-reviewed and past the content check, and waits on research's verdict (section 2).
 
 ### 1. The sheet (Modulo, 2026-11-13)
 
@@ -2840,6 +2840,56 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 2. **Checked beside each starter:** the model in the ring beside Pip, Lyric and Rook. Pip's robe and A's indigo coat must read apart in value. Serves the keeper's read beside your own fighter.
 
 The content check's two notes stand (the cords tied under the chin, and no red pieces in the fall). **Next:** delivery to `build/handoff/Lamplighter/`, then the model.
+
+### 2. The model on the Shade's rig (Modulo, 2026-11-13)
+
+- **Where:** `build/scratch/modulo/lamplighter/model/`. It's delivered to `build/handoff/Lamplighter/` on research's yes. It holds:
+  - `lamplighter_model_sheet.png` (1920 by 1700, with a half-size copy) and `lamplighter_atlas_check.png`.
+  - The four maps, the eight meshes as JSON, `Lamplighter.recipe.json`, and `lamplighter_model.blend` for the clips.
+  - `tools/blender/lamplighter_model.py` makes it all in headless Blender in about 2 minutes: `-- <out dir>`. With `--stance` it draws the pose in clay, without the bake.
+- **What it is:** the Shade's R6 body as AR2 built it, with its own coat taken off, under A the Bearer's dress: the long coat, the oversleeves, the lantern-faced mask and the sedge hat.
+  - Eight pieces, 6,104 triangles. The six R6 parts: the Head carries the mask, the hat and its cords. Two more pieces turn on Motor6Ds of their own: the pole on the Right Arm, and the lantern on the pole.
+  - One 1024 px atlas at 60 px a stud: colour with the contact shading baked in, roughness, metalness (the brass), and one glow mask read three ways.
+    - The body glows in Intelligence's violet at the Shade's 32.
+    - The mask's paper and cuts glow in its warm white at 12.
+    - The lantern's paper glows whole under a white tint: 1.2 as it stands, 3.0 through the signature.
+  - The coat's folds, the hat's plaited straw, the lantern's ribs and the pole's grain are drawn into the colour map.
+- **Fix 1, it stands like the master:**
+  - **The idle:** leaned 9° forward over the planted pole, turned 8° to it and tipped 6° onto it. The right sleeve goes down and out to the pole, as onto a staff, and the left is held back. The head is bowed 22° under the brim.
+  - **The Challenge:** the head lifts to 4° up as a try starts.
+  - Both are on the sheet from the ring's camera, and close on the face.
+  - **Built in the stance:** the pole and the lantern are built where the stance holds them, so the idle never keys their joints. The Shade's shared clips don't carry the pole: delivery 3 adds a hold on the right arm, or keeper clips.
+  - **The arm:** a first try held the arm out level. The ring's camera then saw the sleeve's open end as a dark square beside the face. Angled down, the end sits at the waist with the pole through it.
+- **Fix 2, beside each starter:** in the ring at dusk, at TR2's framing, beside Pip, Lyric and Rook, with the keeper's head lifted.
+  - The coat went from the kit's indigo (#2C2A64, 0.18 coded, in Pip's band) down to #161436 (0.09).
+  - Measured in the frames, the keeper's torso (median) against each starter:
+
+  | Beside | The keeper's torso | The starter | Share in the dark band (under 0.15) |
+  |---|---|---|---|
+  | Pip | 0.12 | 0.19 | 54% against 23% |
+  | Lyric | 0.12 | 0.31 | 54% against 7% |
+  | Rook | 0.12 | 0.20 | 54% against 36% |
+
+  - A first step (#1E1C4A) read 0.14 against Pip's 0.19, both mostly dark, so I went one step further.
+  - In the grey crops on the sheet, Pip's robe is a mid grey against the coat's near-black. The torso's median includes the cream bands and the lit hem, so the coat alone is darker still.
+- **The content check's note is carried:** the hat's cords are rope (#8A7150). They run down beside the mask and tie in a knot under its chin, with two short tails.
+- **Measured:**
+  - **Clearances:** the pole stands 0.50 off the brim, and the lantern 0.88 off it and 0.18 off its pole. From the ring's camera the lantern is 88 px clear of the mask.
+  - **Height:** in the stance, the hat's top is at 6.89 studs (10.3 at 1.5), and the pole's top at 7.7 (11.6).
+  - **Stride:** a leg swings 27° each way inside the long coat's hem. The Shade's walk swings 30° forward, so the keeper's takes 25° (in the recipe).
+  - **Glow:** 24 texels of the body's glow stop short at 1, none of them visible.
+- **For the builder,** once it's delivered:
+  - **The recipe:** each piece's R6 part, the two motors' pivots, the four SurfaceAppearances' tints and strengths, and six points (the lantern's middle, the hook's tip, the pole's foot, the grip, the chest and the crest).
+  - **The rest pose with no clip:** the pole runs from behind the right heel up through the grip, forward and out. So a clip must play before the keeper is seen.
+  - **The lantern:** CastShadow is off. A cyan PointLight in it is your call.
+- **For research, the camera:**
+  - The ring's camera sees the keeper's face from a touch below. So the bowed head shows the brim over the brow, not over the eyes.
+  - The "lower" view on the sheet looks up 10°, as your thought for "tall" would. From there the bow reads less still.
+  - The head's drop reads best from level or above. A lower camera trades some of fix 1's beat for height.
+- **Content check, 2026-11-13: PASS.** It covered the sheet, the atlas check, all four maps and the recipe, against rules 2, 3 and 4 and Roblox's rules, with the names checked against `docs/ip-list.md`. The hat-cord note is met.
+  - Two conditions stay open: the fall and the signature have no red pieces, and each map and mesh gets its line in `docs/asset-log.md` before upload (at delivery).
+- **Time:** about 35 minutes by the clock (11:37 to 12:11 UTC), against the 4 hours named. On Opus 5.5 xhigh.
+- **Four facts:** made; self-reviewed; content check PASS; research's verdict next. Not delivered yet.
 
 ## Later, by ground
 

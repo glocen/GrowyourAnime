@@ -3347,6 +3347,16 @@ A minor asset, so no blockout. It took the content check before upload (research
 - **Status:** made, self-reviewed and delivered. Research's pass reads Faber's take in motion at phone size. Not yet accepted by the director.
 - **Hours:** about 0.3.
 
+**Research's pass on the sheet, 2026-11-13.**
+- **Felt:** where the flat column was a blue pane, darker than the sky, this one is light: a white core rising out of the hat with soft blue sides. It reads on the noon sky and at night, and at phone size.
+- **Tier:** competent. Rule 3 is met: a bright interior with a darker, saturated edge.
+- **The one bold thing:** the core climbing clear of the hat at the peak.
+- **The lever is taken (Faber).** `Color` goes from white at the peak to the thread's blue as the column fades. That serves two things:
+  - the grey fade at night that Modulo saw;
+  - rule 1 of the study: below rung 7, the top value holds only for a frame or two, and the level-up is rung 5. As drawn, the white core stays white through the whole fade.
+- **The sleeve:** Faber's call, as Modulo said. The pass in motion takes whichever is built.
+- **Next:** Faber's install with that lever. Then the pass in motion at phone size, inside C's close.
+
 ### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
 
 Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.

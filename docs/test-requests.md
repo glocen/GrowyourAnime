@@ -382,7 +382,13 @@ Also, as the builder's tier 1: the trim seeds take the director's rarity colours
   - On the desktop: the whole self-test 618/618 at 55 fps, part one's clamp included.
   - Logic 1731 in Studio and offline; world report empty; type check 0 new.
 
-**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Next: research's read of both parts, then the director's eye.
+**Research's read of the phone pack, both parts, 2026-11-13,** from captures 1 to 15 at the iPhone 16 Pro's size. **Felt:** on a phone the top line reads at a glance: Lyric's red health, the Brawler's, Credits and the battery, each apart and inside the safe area. The heal's green "+12" and the critical's gold "69" sit side by side and say what they are, a fall dims the card and counts "Back in 4 s", and the type edge's arrow is there before the first hit. **Tier:** competent. **The one bold thing:** the red conduits across the top, the lead's and the target's, one line the eye reads like a fighting game's. Both of the builder's catches are good: the level-up word and a machine's news plate now stay under the band. The full and long case holds (Ironhymn at 60 against 119,623 / 153,478), and so does the empty one. One fix:
+
+1. **A level-up word and a number clamped at the band stack, not overlap** (capture 4: "Level 6" across "1,234"). It's the block's own rule ("a number is placed clear of a neighbour's", point 7). The word counts as a neighbour. Rare, so it rides with the next touch of `World.luau` and doesn't hold the director's look.
+
+For later (`docs/polish-later.md`): the type edge's arrow is about 7 points tall on the phone, readable once you know it, small for what it decides. For the builder: the Base case that fails two checks only under the phone's touch camera could set its own camera mode, so every case passes on both. That's your call. **Next:** the director's eye on the HUD.
+
+**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. Next: the director's eye.
 
 ## Next, not yet written
 

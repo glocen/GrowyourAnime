@@ -2,8 +2,9 @@
 -- HudController (client): the HUD in the world, on Modulo's kit (docs/ui.md, "The HUD, in the world"; TR3). Top left,
 -- the lead's card (UI.LeadCard): the portrait in its rarity's frame, the head over it and the level on a badge, the name
 -- on its tab with the class mark, the type's stud, a long health light with current and maximum inside, a thin
--- experience light; fallen, the portrait dims and the health says the seconds until it's back. Top centre, the target's card, only in a fight: its gem, the type edge's
--- arrow before the first hit, its name and level, its health. Top right, two pills: Credits, and Electricity stored
+-- experience light; fallen, the portrait dims and the health says the seconds until it's back. Top centre, the target's
+-- card (UI.TargetCard), built like the lead's, only in a fight: its stud and gem, the type edge's arrow before the first
+-- hit, its name and level on its tab, its health light. Top right, two pills: Credits, and Electricity stored
 -- over its cap with the rate and a thread of charge. Right edge, low, the signature's ring: it fills over the cooldown
 -- and flashes when it fires. Bottom centre, the dock: Voidkin and Base, selected while their screen is open, and the
 -- chip over it while a shard waits. Everything reads the fighters' attributes (FightService) or the save's copy
@@ -35,6 +36,7 @@ local Bar = require(UI.Kit.Bar)
 local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
 local LeadCard = require(UI.LeadCard)
+local TargetCard = require(UI.TargetCard)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -54,24 +56,12 @@ local PAD = Theme.Size.Pad
 -- frame's crest) stands 6 points under its top, so it clears Roblox's top bar by more than the 5.5 authored px research's
 -- pass on TR3's fix round asked of the crest (call 1).
 local TOP = 17
-local TARGET = Vector2.new(216, 50)
 local ELECTRICITY = 200 -- the Electricity pill's width: "600 / 600" and the rate, or "full"
 local PILL = 30 -- a pill's height (tools/blender/ui_kit.py, `pill`)
 local BASE_EVERY = 0.25 -- seconds between reads of the base as it stands now: each copies the save
 local SMOOTH = 12 -- frames in a row under 1/30 s before the join's black lifts: a join's stall leaves text undrawn a moment
 local DOCK = Vector2.new(96, Theme.Size.Tap)
-local INK = Color3.fromHex("#0B0C10") -- the outline of text written on a conduit's light
 local WELL = 0.25 -- the signature ring's well, its transparency shown
-
-type Card = { -- the target's
-	Frame: Frame,
-	Name: TextLabel,
-	Level: TextLabel,
-	Health: Frame,
-	HealthText: TextLabel,
-	Gem: ImageLabel,
-	Arrow: Frame?,
-}
 
 type Ring = {
 	Frame: Frame,
@@ -90,7 +80,8 @@ type Ring = {
 }
 
 local lead: LeadCard.Card
-local target: Card
+local target: TargetCard.Card
+local targetArrow: Frame
 local credits: TextLabel
 local electricity: TextLabel
 local rate: TextLabel
@@ -151,17 +142,6 @@ local function swap(image: ImageLabel, name: string)
 	end
 end
 
--- Text written on a conduit's light: the number reads over the light and over the empty channel alike.
-local function onLight(name: string, parent: Instance): TextLabel
-	local label = Text.new({ Name = name, Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Center, Parent = parent })
-	label.ZIndex = 3
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = INK
-	stroke.Thickness = 1.5
-	stroke.Parent = label
-	return label
-end
-
 -- The type edge's arrow: a chevron of two strokes, up or down (Rules.Hud.Arrow).
 local function arrow(parent: Instance, cx: number, cy: number): Frame
 	local holder = Instance.new("Frame")
@@ -203,19 +183,6 @@ local function point(holder: Frame, way: string)
 			stroke.BackgroundColor3 = colour
 		end
 	end
-end
-
-local function targetCard(): Card
-	local frame = Panel.new({ Name = "Target", Size = UDim2.fromOffset(TARGET.X, TARGET.Y), Position = UDim2.new(0.5, 0, 0, TOP), AnchorPoint = Vector2.new(0.5, 0), Parent = Layers.Get("Hud") })
-	frame.Visible = false
-	local gem = icon(frame, "GemStrength", 16, 14, 15)
-	gem.Name = "Gem"
-	local way = arrow(frame, 31, 14)
-	local name = Text.new({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Truncate = true, Box = UDim2.fromOffset(TARGET.X - 40 - 60, 20), Position = UDim2.fromOffset(40, 4), Parent = frame })
-	local level = Text.new({ Name = "Level", Size = Theme.Text.Caption, Colour = GRAPHITE.Soft, Align = Enum.TextXAlignment.Right, Box = UDim2.fromOffset(56, 20), Position = UDim2.new(1, -8, 0, 4), AnchorPoint = Vector2.new(1, 0), Parent = frame })
-	local health = Bar.new({ Name = "Health", Size = UDim2.fromOffset(TARGET.X - 16, 16), Position = UDim2.fromOffset(8, 27), Colour = HudConfig.Card.TargetHealth, Flat = true, Parent = frame })
-	local healthText = onLight("Value", health)
-	return { Frame = frame, Name = name, Level = level, Health = health, HealthText = healthText, Gem = gem, Arrow = way }
 end
 
 -- A pill (tools/blender/ui_kit.py, `pill`): its icon, its value, what's after it in soft ink, and for electricity a thread.
@@ -509,22 +476,17 @@ local function healthOf(model: Model): (number, number)
 	return (if type(health) == "number" then health else 0), (if type(most) == "number" then most else 0)
 end
 
--- A card's health: its share on its bar, current and most inside. `lead`: the lead's card, its light and its digits set
--- tight (UI.LeadCard).
-local function showHealth(bar: Frame, label: TextLabel, model: Model, isLead: boolean)
+-- A card's health: its share on its light, current and most inside, set tight (UI.LeadCard; the target's card is built
+-- like the lead's, UI.TargetCard).
+local function showHealth(bar: Frame, label: TextLabel, model: Model)
 	local health, most = healthOf(model)
-	local share = if most > 0 then health / most else 0
-	if isLead then
-		LeadCard.Fill(bar, share)
-	else
-		Bar.Set(bar, share)
-	end
+	LeadCard.Fill(bar, if most > 0 then health / most else 0)
 	-- Too wide for its bar, it takes its compact form (TR3's verdict, fix 6: the dummy's 1,254,735 crowded its bar): the
 	-- characters its share of the bar holds, a digit's width each (Config.Hud.Card.Room).
 	local inset = bar:GetAttribute("Inset")
 	local shown = bar.Size.X.Offset - (if type(inset) == "number" then inset else 0)
 	local room = math.floor(shown * HudConfig.Card.Room / (label.TextSize * HudConfig.Numbers.Digit))
-	label.Text = Hud.Health(health, most, room, isLead)
+	label.Text = Hud.Health(health, most, room, true)
 end
 
 -- The top band's lower edge for the world's numbers (UI.World.Band): the lowest of the cards and the pills that show,
@@ -544,9 +506,6 @@ end
 
 -- Every frame: the cards from the fighters' attributes, the ring, the dock's selection, the electricity as it stands now.
 local function step(dt: number)
-	-- The target's colour from Config.Hud.Card, so a tune shows at once (it does nothing when it's unchanged). The lead's
-	-- lights are drawn in their colours (UI.LeadCard), its rims tinted its rarity's.
-	Bar.Colour(target.Health, HudConfig.Card.TargetHealth)
 	local model = myLead()
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil
@@ -567,7 +526,7 @@ local function step(dt: number)
 			LeadCard.Fill(lead.Health, 0)
 			lead.HealthText.Text = `Back in {Read.Seconds(back)}`
 		else
-			showHealth(lead.Health, lead.HealthText, model, true)
+			showHealth(lead.Health, lead.HealthText, model)
 		end
 		lead.Frame:SetAttribute("Down", down)
 		local view = ProfileController.Get()
@@ -581,15 +540,14 @@ local function step(dt: number)
 	end
 	target.Frame.Visible = foe ~= nil
 	if foe then
-		showHealth(target.Health, target.HealthText, foe, false)
-		target.Name.Text = tostring(foe:GetAttribute("Title") or "")
-		target.Level.Text = `Lv {tostring(foe:GetAttribute("Level") or "")}`
+		showHealth(target.Health, target.HealthText, foe)
+		TargetCard.Name(target, tostring(foe:GetAttribute("Title") or ""), `Lv {tostring(foe:GetAttribute("Level") or "")}`)
 		local theirs = kindOf(foe)
 		if theirs ~= "" then
 			swap(target.Gem, `Gem{theirs}`)
 		end
 		target.Gem.Visible = theirs ~= ""
-		point(target.Arrow :: Frame, Hud.Arrow(mine, theirs))
+		point(targetArrow, Hud.Arrow(mine, theirs))
 	end
 	stepRing(model, foe ~= nil, dt)
 	band()
@@ -620,7 +578,10 @@ HudController.OpenBase = function() end
 
 function HudController.Start()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
-	target = targetCard()
+	-- The target's card centred, its blade and tab level with the lead's.
+	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP - UIKit.TargetCard.Offset.Y))
+	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)
+	targetArrow.ZIndex = 6 -- over the tab
 	local creditsValue = pill("Credits", 1, 120, "Coin")
 	credits = creditsValue
 	local value, extra, thread = pill("Electricity", 2, ELECTRICITY, "Bolt")
@@ -703,7 +664,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		Target = target.Frame,
 		TargetName = target.Name,
 		TargetHealth = target.Health,
-		TargetArrow = target.Arrow :: Frame,
+		TargetArrow = targetArrow,
 		TargetGem = target.Gem,
 		Credits = credits,
 		Electricity = electricity,

@@ -240,9 +240,11 @@ return {
 		CardHousing = { Id = "rbxassetid://140514399842838", Pixels = Vector2.new(728, 179), Points = Vector2.new(182, 44.75), Pad = 6, At = Vector2.new(40, 34) },
 		CardHousingRim = { Id = "rbxassetid://90832792373903", Pixels = Vector2.new(728, 179), Points = Vector2.new(182, 44.75), Pad = 6, At = Vector2.new(40, 34) },
 		CardTab = { Id = "rbxassetid://74297729962679", Pixels = Vector2.new(393, 114), Points = Vector2.new(98.25, 28.5), Cut = { 15.28, 14, 15.28, 14 }, Pad = 5, At = Vector2.new(53.635, 18) },
-		CardTabRim = { Id = "rbxassetid://118479284277634", Pixels = Vector2.new(393, 114), Points = Vector2.new(98.25, 28.5), Cut = { 15.28, 14, 15.28, 14 }, Pad = 5, At = Vector2.new(53.635, 18) },
+		CardTabRim = { Id = "rbxassetid://112698487555855", Pixels = Vector2.new(393, 114), Points = Vector2.new(98.25, 28.5), Cut = { 15.28, 14, 15.28, 14 }, Pad = 5, At = Vector2.new(53.635, 18) },
 		CardLightHealth = { Id = "rbxassetid://126270143823371", Pixels = Vector2.new(287, 68), Points = Vector2.new(71.75, 17), Cut = { 8.15, 8.25, 13.15, 8.25 }, Pad = 0, At = Vector2.new(0, 0) },
 		CardLightXp = { Id = "rbxassetid://128463299571267", Pixels = Vector2.new(268, 26), Points = Vector2.new(67, 6.5), Cut = { 3.425, 3, 8.425, 3 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardTargetHousing = { Id = "rbxassetid://110637050700764", Pixels = Vector2.new(712, 143), Points = Vector2.new(178, 35.75), Cut = { 23.13, 17.625, 23.13, 17.625 }, Pad = 6, At = Vector2.new(44.005, 34) },
+		CardTargetHousingRim = { Id = "rbxassetid://70503415107768", Pixels = Vector2.new(712, 143), Points = Vector2.new(178, 35.75), Cut = { 23.13, 17.625, 23.13, 17.625 }, Pad = 6, At = Vector2.new(44.005, 34) },
 		CardBadge = { Id = "rbxassetid://77420086203170", Pixels = Vector2.new(136, 96), Points = Vector2.new(34, 24), Pad = 4, At = Vector2.new(1, 72) },
 		CardBadgeRim = { Id = "rbxassetid://110655299972425", Pixels = Vector2.new(136, 96), Points = Vector2.new(34, 24), Pad = 4, At = Vector2.new(1, 72) },
 		CardFrameCommon = { Id = "rbxassetid://137554330922876", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
@@ -277,5 +279,14 @@ return {
 		Glow = 4, -- a light's glow ahead of its front
 		Tab = { 18, 36.4, 80, 61.915 }, -- its top, its foot, its width as drawn, its top edge's left end
 		Badge = { 14, 80, 26, 16 }, -- centre and size
+	},
+	-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.
+	TargetCard = {
+		Size = Vector2.new(216, 39.8),
+		Offset = Vector2.new(-41.36, -18), -- the lead's points to the target's
+		Housing = { 2.645, 16, 215, 39.8 }, -- its foot's left, its top, its top's right end, its foot
+		Health = { 16.245, 19.4, 204.63, 17 }, -- the light's top edge: its left end, its y, its full right end; its height
+		FillFrom = 16.245, -- the light's empty point along its top edge
+		Stud = Vector2.new(8, 27.9), -- the type's stud, on the blade's left end
 	},
 }

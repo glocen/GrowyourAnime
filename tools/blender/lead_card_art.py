@@ -16,6 +16,7 @@ lays them, in the card's own points (232 by 96, its top left at the HUD's PAD, T
   CardFrame<Rarity>      the portrait's frame at the card's size: its glow and its rim, the opening clear
   CardHead<Who>          the head over the frame's top rim, along its straight top, its sides soft
   CardBadge, CardBadgeRim  the level's badge
+  CardTargetHousing(Rim) the target's card: one blade, the health slot, sliced across (the lead's tab and light on it)
 
     blender -b --factory-startup --python tools/blender/lead_card_art.py -- build/handoff/UI/hud/lead_card make
     blender -b --factory-startup --python tools/blender/lead_card_art.py -- build/handoff/UI/hud/lead_card sheet
@@ -213,8 +214,10 @@ def tab(pal):
     rim = Layer()
     r = rim.t
     dr = tab_shape(r)
-    # The rim along the left edge to the tab's foot (it meets the housing's own there), the top, the right edge to Y0.
-    keep = np.where(r.x < left(TAB_TOP) + TAB_REF / 2, r.y - TAB_FOOT, r.y - Y0 - 0.55)
+    # The rim along the left edge to the tab's foot (it meets the housing's own there), the top, the right edge to Y0;
+    # never along the foot itself, which lies inside the housing (it showed there as a line under the name).
+    near_left = (r.x - left(r.y)) / np.hypot(1.0, SLANT) - (RIM + 0.6)
+    keep = np.minimum(r.y - Y0 - 0.55, near_left)
     r.paint(np.maximum(np.abs(dr + RIM / 2) - RIM / 2, keep), WHITE)
     for layer in (lay, rim):  # nothing under the tab's foot: the housing is there (the kit's slice wants a pad all round)
         layer.t.px[..., 3] *= cover(layer.t.y - TAB_FOOT)
@@ -255,6 +258,62 @@ def light(ramp, sheen, h, length=60.0):
     run = h * SLANT
     image = lay.crop(*box)
     return image, across(image, run + 0.5, run + 1.5 + GLOW)
+
+
+# --- the target's card ---------------------------------------------------------------------------------------------
+# Built like the lead's (TR3, point 3; research's pass on the lead card, 2026-11-13): one blade, the health slot only,
+# on the lead's slant and in its gradient, so the lead's tab and light sit on it as they sit on the lead's. Drawn in the
+# lead's points and moved by T_OFFSET into the target card's own (216 across, centred at the top). Sliced across: the
+# game sets its length. No portrait: the type's stud pins the blade's left end, the light starting beside it.
+
+T_W = 216.0
+T_Y1 = HEALTH_Y0 + HEALTH_H + INSET  # the blade's foot
+T_STUD = (left(HEALTH_Y0 + HEALTH_H / 2), HEALTH_Y0 + HEALTH_H / 2)  # on the blade's left edge, the slot's middle
+T_OFFSET = (8.0 - T_STUD[0], -TAB_TOP)  # lead points to target points: the stud 8 in, the tab's top at 0
+T_END = T_W - 1.0 - T_OFFSET[0]  # the blade's top right, in the lead's points
+
+
+def t_slot(t, end):
+    """The health slot, an inset in from both slanted ends (the lead's is open at its left, under the frame)."""
+    ya, yb = HEALTH_Y0, HEALTH_Y0 + HEALTH_H
+    right = lambda y: end - INSET * 1.3 - (y - Y0) * SLANT  # noqa: E731
+    return t.poly([(left(ya) + INSET * 1.3, ya), (right(ya), ya), (right(yb), yb), (left(yb) + INSET * 1.3, yb)])
+
+
+def target_housing(pal):
+    lay = Layer()
+    t = lay.t
+    house = t.poly(blade(Y0, T_Y1, X1))
+    slot = t_slot(t, X1)
+    pad = 6.0
+    shadow(t, house, 4.5, 0.5, pad)
+    region = np.maximum(house, -slot)
+    body(t, region, pal)  # the lead's gradient, over the lead's height: the tab's patch matches it
+    lacquer(t, region, Y0, pal)  # no sheen sweep: the middle is stretched, so it stays the same column to column
+    ui.over(t.px, stops(t, (t.y - HEALTH_Y0) / HEALTH_H, ((0, pal["slot"][0]), (1, pal["slot"][1]))), cover(slot) * SLOT_ALPHA)
+    t.paint(np.maximum(slot, np.abs(t.y - (HEALTH_Y0 + HEALTH_H) + 0.5) - 0.45), c(pal["glint"]), 0.18)
+    t.line(house - RIM, 0.7, c(pal["ink"]), 0.8)
+    t.line(house + RIM, 0.6, BLACK, 0.5)
+    top_edges = np.maximum(house + RIM, -(house + RIM + 1.2))
+    lit_from_above = np.clip((np.roll(house, 3, axis=0) - house) * 1.5, 0, 1)
+    ui.over(t.px, c(pal["glint"]), cover(top_edges) * lit_from_above * 0.7)
+    rim = Layer()
+    rim.t.line(rim.t.poly(blade(Y0, T_Y1, X1)), RIM, WHITE)
+    box = (left(T_Y1) - pad, Y0 - pad, X1 + pad, T_Y1 + pad)
+    run = (T_Y1 - Y0) * SLANT
+    image = lay.crop(*box)
+    cap = pad + run + INSET * 1.3 + 2.0  # each cap holds a slanted end and the slot's end inside it
+    return image, rim.crop(*box), pad, across(image, cap, cap)
+
+
+def target_geometry():
+    """The target card's shape, in its own points: its size, the lead-points offset, the blade's box (its foot's left,
+    its top, its top's right end, its foot), the light's row as light_rows() gives the lead's, and the stud."""
+    dx, dy = T_OFFSET
+    xl = left(HEALTH_Y0) + INSET * 1.3
+    xr = T_END - INSET * 1.3 - (HEALTH_Y0 - Y0) * SLANT - INSET * 1.3
+    return dict(size=[T_W, T_Y1 + dy], offset=[dx, dy], housing=[left(T_Y1) + dx, Y0 + dy, T_END + dx, T_Y1 + dy],
+                health=[xl + dx, HEALTH_Y0 + dy, xr + dx, HEALTH_H], fillFrom=xl + dx, stud=[T_STUD[0] + dx, T_STUD[1] + dy])
 
 
 # --- the badge ------------------------------------------------------------------------------------------------------
@@ -390,6 +449,9 @@ def make(out: Path):
                                  ("CardLightXp", EMBER["xp"], EMBER["xp_sheen"], XP_H)):
         px, cut = light(ramp, sheen, h)
         keep(name, px, 0.0, 0.0, 0.0, f"a light {h} high, sliced across: its box from its foot's left to its glow", cut)
+    th_px, th_rim, pad, cut = target_housing(pal)
+    keep("CardTargetHousing", th_px, left(T_Y1), Y0, pad, "the target's blade, sliced across; its box from its foot's left, in the lead's points", cut)
+    keep("CardTargetHousingRim", th_rim, left(T_Y1), Y0, pad, "its rim: white, tinted", cut)
     b_px, b_rim, pad = badge(pal)
     keep("CardBadge", b_px, BADGE[0] - BADGE[2] / 2, BADGE[1] - BADGE[3] / 2, pad, "the level's badge")
     keep("CardBadgeRim", b_rim, BADGE[0] - BADGE[2] / 2, BADGE[1] - BADGE[3] / 2, pad, "the badge's rim: tinted")
@@ -408,7 +470,7 @@ def make(out: Path):
     lights = light_rows()
     geometry = dict(card=[W, H], frame=list(FRAME), housing=[X0, Y0, X1, Y1], slant=SLANT, inset=INSET,
                     lights=lights, fillFrom=FILL_FROM, step=STEP, tab=[TAB_TOP, TAB_FOOT, TAB_REF, left(TAB_TOP)],
-                    glow=GLOW, badge=list(BADGE), mid=MID)
+                    glow=GLOW, badge=list(BADGE), mid=MID, target=target_geometry())
     (out / "lead_card.json").write_text(json.dumps(dict(pixelsPerPoint=K, geometry=geometry, images=listing), indent=1),
                                         encoding="utf-8", newline="\n")
     print(f"wrote {out / 'lead_card.json'}: {len(listing)} images")
@@ -469,6 +531,41 @@ def compose(data, img, who, rarity, health, xp, name_w, ground):
     return canvas[round((M - 8) * K):round((M + H) * K), round((M - 8) * K):round((M + W) * K)]
 
 
+def compose_target(data, img, geometry, health, text_w, ground):
+    """The target's card as UI.TargetCard lays it: the blade, the light, the tab (the arrow, the name and the level
+    are the game's own text, measured here by `text_w`, the name's left to the level's end)."""
+    g = geometry["target"]
+    tw, th = g["size"]
+    dx, dy = g["offset"]
+    canvas = rs.canvas(round((tw + 2 * M) * K), round((th + 2 * M) * K), tuple(c(ground)))
+
+    def put(px, x, y):
+        rs.paste(canvas, px, round((x + M) * K), round((y + M) * K))
+
+    trim = TRIM["Common"]
+    e = data["CardTargetHousing"]
+    hx0, hy0, hx1, hy1 = g["housing"]
+    for name in ("CardTargetHousing", "CardTargetHousingRim"):
+        px = sliced(img[name], e["cut"], hx1 - hx0 + 2 * e["pad"])
+        put(tinted(px, trim) if name.endswith("Rim") else px, hx0 - e["pad"], hy0 - e["pad"])
+    xl, y0, xr, h = g["health"]
+    if health > 0:
+        el = data["CardLightHealth"]
+        front = g["fillFrom"] + (xr - g["fillFrom"]) * health
+        width = max(front - xl + h * SLANT + GLOW, el["cut"][0] + el["cut"][2])
+        put(sliced(img["CardLightHealth"], el["cut"], width), xl - h * SLANT, y0)
+    et = data["CardTab"]
+    tab_w = (T_NAME_X - left(TAB_TOP)) + text_w + T_TAB_AFTER
+    for name in ("CardTab", "CardTabRim"):
+        px = sliced(img[name], et["cut"], tab_w + (TAB_FOOT - TAB_TOP) * SLANT + 2 * et["pad"])
+        put(tinted(px, trim) if name.endswith("Rim") else px, et["at"][0] + dx - et["pad"], et["at"][1] + dy - et["pad"])
+    return canvas[round((M - 8) * K):round((M + th + 8) * K), round((M - 8) * K):round((M + tw + 8) * K)]
+
+
+T_NAME_X = 71.0  # the name's left on the tab, in the lead's points: the type edge's arrow before it (UI.TargetCard)
+T_TAB_AFTER = 10.0  # the tab runs on past the level this far
+
+
 def sheet(out: Path):
     """Each card on a pale ground and a night one, at 4 pixels a point: the text is the game's own, not drawn here."""
     data = json.loads((out / "lead_card.json").read_text(encoding="utf-8"))["images"]
@@ -482,6 +579,10 @@ def sheet(out: Path):
                                     for ground in ("#8C9AB0", "#141925")], axis=1))
     rs.save(np.concatenate(rows[:3], axis=0), out / "lead_card_sheet.png")
     rs.save(np.concatenate(rows[3:], axis=0), out / "lead_card_sheet_unknown.png")
+    geometry = json.loads((out / "lead_card.json").read_text(encoding="utf-8"))["geometry"]
+    rows = [np.concatenate([compose_target(data, img, geometry, health, text_w, ground) for ground in ("#8C9AB0", "#141925")], axis=1)
+            for health, text_w in ((1.0, 92.0), (0.46, 64.0), (0.08, 120.0))]
+    rs.save(np.concatenate(rows, axis=0), out / "target_card_sheet.png")
 
 
 def main():

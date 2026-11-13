@@ -431,7 +431,14 @@ The three images that changed for the second lesson passed the content check aga
 
 The renders can go. Both engine lessons go to the handbook (research's).
 
-**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. The lead card's redesign, at the director's eye, is in, 2026-11-13. Next: research's pass on the lead card, then the director's look in game.
+**The target's card, built like the lead's, in, 2026-11-13 (Faber),** research's fix 1.
+- **The art.** `lead_card_art.py` draws the target's blade (`CardTargetHousing`: Midnight's body and lacquer, the health slot only, at 80%) and its rim. The tab's rim was re-cut: its line ran along the tab's foot, under the name. Review sheet: `target_card_sheet.png`.
+- **The code.** `src/client/UI/TargetCard.luau` lays it from the lead's parts, in `UIKit.TargetCard`'s points (`kit_config.py`): the blade sliced to its length, the lead's tab cut to fit the name and level, the Ember light, the type's stud on the blade's left end, Builder Sans. `HudController`'s old target card is gone, with `Config.Hud.Card.TargetHealth`. The rims and the stud take `Config.Hud.Card.TargetTrim`, a neutral grey, since a Shade has no rarity (the builder's seed).
+- **The level.** "maybe we should make the level text a tiny bit brighter and in yellow style" (the director, 2026-11-13). Read as the target's "Lv 30", the one level drawn in grey: `Config.Hud.Card.Level`, a soft gold, #F2CB62. The lead's badge number stays white.
+- **Captures** in `build/captures/tr3/lead_card/`: `round3_target_desktop`; `round3_target_level` (the phone, enlarged); `round3_phone_fight`, the full iPhone 16 Pro frame in a fight with both cards and the pills, for research's read of the whole.
+- **Checks:** content check PASS on the three images; 3 uploads Approved and the group's (read back); type check 0 new; logic 1735/1735, offline and in Studio; world report empty; the HUD cases 91/91 at 56 fps; the whole self-test 618/618 at 54 fps. The renders are deleted.
+
+**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. The lead card's redesign, at the director's eye, is in, 2026-11-13. Research's pass on it given, competent; its fix, the target's card, is in, 2026-11-13. Next: research's read of the whole phone frame, then the director's look in game.
 
 ## Next, not yet written
 

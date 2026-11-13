@@ -10,7 +10,8 @@
 --   LeadCard.Who(card, voidkinId?, down)  the face, the frame and the trims
 --   LeadCard.Kind(card, type, class)      the stud's gem and the class mark
 --   LeadCard.Name(card, text)             the name, its tab cut to fit it
---   LeadCard.Fill(bar, share)             a light's share, 0 to 1 (card.Health, card.Xp)
+--   LeadCard.Fill(bar, share)             a light's share, 0 to 1 (card.Health, card.Xp, a target card's Health)
+-- UI.TargetCard is built from the same parts: Lay, Image, Light, Stud and Digits below.
 
 local TextService = game:GetService("TextService")
 
@@ -52,7 +53,8 @@ local INK = Color3.fromHex("#000000") -- the stud's well, Midnight's ink
 local DIGITS_INK = Color3.fromHex("#0B0C10") -- the outline of the health digits on the light
 local NAME_FONT = Enum.Font.BuilderSansBold -- the name's face, for measuring (Theme.Font.Strong)
 
--- Lays the kit image `name` at its place in the card, in a holder whose top left is at `origin` in the card's points.
+-- Lays the kit image `name` at its place in the card, in a holder whose top left is at `origin` in the card's points
+-- (`size`: a sliced image's box, past its pad).
 local function at(image: ImageLabel, name: string, origin: Vector2, size: Vector2?)
 	local im = UIKit.Images[name]
 	local place = (im.At or Vector2.zero) - origin
@@ -74,17 +76,22 @@ local function image(parent: Instance, name: string, kit: string, z: number, ori
 	return made
 end
 
--- A light in its slot: `row` is its top edge (its left end under the frame, its y, its right end when full) and height.
-local function light(card: Frame, name: string, kit: string, row: { number }, z: number): Frame
-	local from, y, right, h = G.FillFrom, row[2], row[3], row[4]
+-- A light in its slot: `row` is its top edge (its left end, its y, its right end when full) and its height; `from`, its
+-- empty point along that edge (the lead's: the frame's right side, its left end under the frame).
+local function light(card: Frame, name: string, kit: string, row: { number }, from: number, z: number): Frame
+	local y, right, h = row[2], row[3], row[4]
 	local bar = Instance.new("Frame")
 	bar.Name = name
 	bar.BackgroundTransparency = 1
-	bar.Position = UDim2.fromOffset(from, y) -- the share that shows: the frame's right side to the light's full end
+	bar.Position = UDim2.fromOffset(from, y) -- the share that shows: the empty point to the light's full end
 	bar.Size = UDim2.fromOffset(right - from, h)
 	bar.ZIndex = z
 	bar:SetAttribute("Kit", kit)
 	bar:SetAttribute("Share", -1)
+	bar:SetAttribute("Left", row[1])
+	bar:SetAttribute("Right", right)
+	bar:SetAttribute("From", from)
+	bar:SetAttribute("Height", h)
 	bar.Parent = card
 	local lit = Instance.new("ImageLabel")
 	lit.Name = "Light"
@@ -107,14 +114,53 @@ function LeadCard.Fill(bar: Frame, share: number)
 		return
 	end
 	local kit = bar:GetAttribute("Kit") :: string
-	local row = if kit == "CardLightHealth" then G.Health else G.Xp
-	local left, right, h = row[1], row[3], row[4]
+	local left, right, from, h = bar:GetAttribute("Left") :: number, bar:GetAttribute("Right") :: number, bar:GetAttribute("From") :: number, bar:GetAttribute("Height") :: number
 	local cut = UIKit.Images[kit].Cut :: { number }
-	local front = G.FillFrom + (right - G.FillFrom) * clamped -- along the top edge
+	local front = from + (right - from) * clamped -- along the top edge
 	local w = math.max(front - left + h * SLANT + G.Glow, cut[1] + cut[3])
-	-- From the light's foot's left, under the frame, in the bar's own place.
-	Skin.Set(lit, kit, { X = left - h * SLANT - G.FillFrom, Y = 0, W = w, H = h })
+	-- From the light's foot's left, in the bar's own place.
+	Skin.Set(lit, kit, { X = left - h * SLANT - from, Y = 0, W = w, H = h })
 end
+
+-- The type's stud: a well in Midnight's ink, its rim (a UIStroke named Rim, in the trim's colour), the type's gem in it.
+local function stud(parent: Instance, centre: Vector2, z: number): ImageLabel
+	local well = Instance.new("Frame")
+	well.Name = "Stud"
+	well.AnchorPoint = Vector2.new(0.5, 0.5)
+	well.Position = UDim2.fromOffset(centre.X, centre.Y)
+	well.Size = UDim2.fromOffset(2 * STUD, 2 * STUD)
+	well.BackgroundColor3 = INK
+	well.BorderSizePixel = 0
+	well.ZIndex = z
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = well
+	local ring = Instance.new("UIStroke")
+	ring.Name = "Rim"
+	ring.Thickness = 1.5
+	ring.Parent = well
+	well.Parent = parent
+	local gem = Skin.Icon(well, "GemStrength", STUD, STUD, 2 * STUD * 0.8 + 1, nil, 1)
+	gem.Name = "Gem"
+	return gem
+end
+
+-- The health digits on a light, centred on the share that shows, outlined so they read on the empty slot too.
+local function digits(health: Frame): TextLabel
+	local label = Text.new({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Align = Enum.TextXAlignment.Center, Parent = health })
+	label.ZIndex = 3
+	local outline = Instance.new("UIStroke")
+	outline.Color = DIGITS_INK
+	outline.Thickness = 1
+	outline.Parent = label
+	return label
+end
+
+LeadCard.Lay = at
+LeadCard.Image = image
+LeadCard.Light = light
+LeadCard.Stud = stud
+LeadCard.Digits = digits
 
 function LeadCard.new(parent: Instance, position: UDim2): Card
 	local card = Instance.new("Frame")
@@ -126,8 +172,8 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	card.Parent = parent
 	image(card, "Housing", "CardHousing", 1)
 	image(card, "HousingRim", "CardHousingRim", 2)
-	local health = light(card, "Health", "CardLightHealth", G.Health, 3)
-	local xp = light(card, "Xp", "CardLightXp", G.Xp, 3)
+	local health = light(card, "Health", "CardLightHealth", G.Health, G.FillFrom, 3)
+	local xp = light(card, "Xp", "CardLightXp", G.Xp, G.FillFrom, 3)
 	image(card, "Tab", "CardTab", 4)
 	image(card, "TabRim", "CardTabRim", 5)
 	-- The name on its tab, Builder Sans Bold; the class mark after it.
@@ -151,13 +197,7 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	mark.Parent = card
 	local class = Skin.Icon(mark, "ClassWarrior", CLASS / 2, CLASS / 2, CLASS, nil, 1)
 	class.Name = "Class"
-	-- The health digits on the light, centred on the share that shows, outlined so they read on the empty slot too.
-	local healthText = Text.new({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Align = Enum.TextXAlignment.Center, Parent = health })
-	healthText.ZIndex = 3
-	local outline = Instance.new("UIStroke")
-	outline.Color = DIGITS_INK
-	outline.Thickness = 1
-	outline.Parent = healthText
+	local healthText = digits(health)
 	-- The portrait: its face, its rarity's frame, its head over the frame's top rim.
 	local portrait = Instance.new("Frame")
 	portrait.Name = "Portrait"
@@ -168,25 +208,8 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	portrait:SetAttribute("Voidkin", "-")
 	portrait:SetAttribute("Dim", false)
 	portrait.Parent = card
-	-- The type's stud where the bars meet the frame: a well in the rim's colour, the type's gem in it.
-	local stud = Instance.new("Frame")
-	stud.Name = "Stud"
-	stud.AnchorPoint = Vector2.new(0.5, 0.5)
-	stud.Position = UDim2.fromOffset(FRAME[1] + FRAME[3] + 0.5, G.Mid)
-	stud.Size = UDim2.fromOffset(2 * STUD, 2 * STUD)
-	stud.BackgroundColor3 = INK
-	stud.BorderSizePixel = 0
-	stud.ZIndex = 8
-	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0.5, 0)
-	round.Parent = stud
-	local ring = Instance.new("UIStroke")
-	ring.Name = "Rim"
-	ring.Thickness = 1.5
-	ring.Parent = stud
-	stud.Parent = card
-	local gem = Skin.Icon(stud, "GemStrength", STUD, STUD, 2 * STUD * 0.8 + 1, nil, 1)
-	gem.Name = "Gem"
+	-- The type's stud where the bars meet the frame.
+	local gem = stud(card, Vector2.new(FRAME[1] + FRAME[3] + 0.5, G.Mid), 8)
 	-- The level on its badge, biting the frame's lower left corner.
 	local bx, by, bw, bh = G.Badge[1], G.Badge[2], G.Badge[3], G.Badge[4]
 	image(card, "Badge", "CardBadge", 9)

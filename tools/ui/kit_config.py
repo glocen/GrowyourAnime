@@ -148,6 +148,7 @@ def main() -> None:
             f"Points = Vector2.new({num(float(pt[0]))}, {num(float(pt[1]))}){cut}, Pad = {num(float(im.get('pad', 0.0)))}{at} }},"
         )
     g = lead["geometry"]
+    t = g["target"]
     rounded = lambda x: num(round(float(x), 3))  # noqa: E731
     light = lambda row: "{ " + ", ".join(rounded(x) for x in row) + " }"  # noqa: E731
     out += [
@@ -165,6 +166,15 @@ def main() -> None:
         f"\t\tGlow = {rounded(g['glow'])}, -- a light's glow ahead of its front",
         f"\t\tTab = {light(g['tab'])}, -- its top, its foot, its width as drawn, its top edge's left end",
         f"\t\tBadge = {light(g['badge'])}, -- centre and size",
+        "\t},",
+        "\t-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.",
+        "\tTargetCard = {",
+        f"\t\tSize = Vector2.new({rounded(t['size'][0])}, {rounded(t['size'][1])}),",
+        f"\t\tOffset = Vector2.new({rounded(t['offset'][0])}, {rounded(t['offset'][1])}), -- the lead's points to the target's",
+        f"\t\tHousing = {light(t['housing'])}, -- its foot's left, its top, its top's right end, its foot",
+        f"\t\tHealth = {light(t['health'])}, -- the light's top edge: its left end, its y, its full right end; its height",
+        f"\t\tFillFrom = {rounded(t['fillFrom'])}, -- the light's empty point along its top edge",
+        f"\t\tStud = Vector2.new({rounded(t['stud'][0])}, {rounded(t['stud'][1])}), -- the type's stud, on the blade's left end",
         "\t},",
         "}",
         "",

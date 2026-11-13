@@ -82,18 +82,21 @@ return {
 		FadeOut = 0.35,
 	},
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
-	-- The cards' colours, live so research tunes them by playing (TR3's verdict, 2026-11-13, fixes 1 to 3, with the
-	-- director's notes). Health is red on both cards, flat (Bar's Flat: its core and head the same red), and no other bar
-	-- takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's experience thread is a cool colour
-	-- of its own against the red, the builder's to try live. The trim round the lead card's bars and its level's badge is
+	-- The cards' colours (TR3's verdict, 2026-11-13, fixes 1 to 3, with the director's notes). Health is the Ember light on
+	-- both cards, and no other bar takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's
+	-- experience light is a cool colour of its own against the red. The trim round the lead card's bars and its level's badge is
 	-- the lead's rarity's colour, never a fixed gold (AR3's in-use rule 4): the director's three rarity colours (AR3,
 	-- section 4, settled), and for the rest Modulo's frames (tools/blender/ui_sheet.py, RARITIES): the glow, else the
 	-- metal's light. Experience has this one colour: the thread, the level-up's word and ring, its toast. Room: the share
 	-- of a health bar its number may take before it takes its compact form (fix 6).
 	Card = {
-		-- The lead's card draws its lights in their colours (tools/blender/lead_card_art.py, the Ember pick of 2026-11-13);
-		-- Xp stays experience's one colour for the level-up's ring and word.
-		TargetHealth = Color3.fromHex("#E2463F"),
+		-- The lead's card and the target's draw their lights in their colours (tools/blender/lead_card_art.py, the Ember pick
+		-- of 2026-11-13); Xp stays experience's one colour for the level-up's ring and word. The target's rims and stud: a
+		-- neutral grey, Common's metal light, since a Shade has no rarity (the builder's seed).
+		TargetTrim = Color3.fromHex("#666C78"),
+		-- The target's level beside its name: "a tiny bit brighter and in yellow style" (the director, 2026-11-13), a soft
+		-- gold a step brighter than the soft grey it replaces.
+		Level = Color3.fromHex("#F2CB62"),
 		Xp = Color3.fromHex("#4E9BFF"),
 		Trim = {
 			Common = Color3.fromHex("#666C78"),

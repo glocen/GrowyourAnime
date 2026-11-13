@@ -48,7 +48,34 @@
    26.0,
    16.0
   ],
-  "mid": 55.6
+  "mid": 55.6,
+  "target": {
+   "size": [
+    216.0,
+    39.8
+   ],
+   "offset": [
+    -41.36,
+    -18.0
+   ],
+   "housing": [
+    2.645000000000003,
+    16.0,
+    215.0,
+    39.8
+   ],
+   "health": [
+    16.245000000000005,
+    19.4,
+    204.63000000000005,
+    17.0
+   ],
+   "fillFrom": 16.245000000000005,
+   "stud": [
+    8.0,
+    27.9
+   ]
+  }
  },
  "images": {
   "CardHousing": {
@@ -175,6 +202,52 @@
     3.0,
     8.425,
     3.0
+   ]
+  },
+  "CardTargetHousing": {
+   "file": "images/CardTargetHousing.png",
+   "pixels": [
+    712,
+    143
+   ],
+   "points": [
+    178.0,
+    35.75
+   ],
+   "pad": 6.0,
+   "at": [
+    44.005,
+    34.0
+   ],
+   "use": "the target's blade, sliced across; its box from its foot's left, in the lead's points",
+   "cut": [
+    23.130000000000003,
+    17.625,
+    23.130000000000003,
+    17.625
+   ]
+  },
+  "CardTargetHousingRim": {
+   "file": "images/CardTargetHousingRim.png",
+   "pixels": [
+    712,
+    143
+   ],
+   "points": [
+    178.0,
+    35.75
+   ],
+   "pad": 6.0,
+   "at": [
+    44.005,
+    34.0
+   ],
+   "use": "its rim: white, tinted",
+   "cut": [
+    23.130000000000003,
+    17.625,
+    23.130000000000003,
+    17.625
    ]
   },
   "CardBadge": {

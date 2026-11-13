@@ -1522,6 +1522,8 @@ Section 4's small piece: the kit's frames take the director's colours, so the up
 
 **Delivered (Modulo, 2026-11-13):** the 14 images are copied over their namesakes in `build/handoff/UI/kit/images/`, with the six sheets that show them (the three frames, `kit_palettes.png`, Dynamo's and Pearl's). Each file is byte for byte the one the check and the read saw. For the builder, as above. Not uploaded, not in the engine. **Hours:** about 0.5, an estimate.
 
+**Uploaded and in the game (Faber, 2026-11-13).** The 14, unchanged since their delivery (909c454), uploaded under the group with `tools/upload/upload_asset.py`: all Approved and the group's (read back), and all 14 loaded in a playtest. `tools/ui/kit_config.py` wrote their ids into `Config.UIKit`, so the dev build has one ladder. The other 120 images keep their ids.
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.

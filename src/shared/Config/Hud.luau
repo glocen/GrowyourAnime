@@ -91,7 +91,8 @@ return {
 	-- metal's light. Experience has this one colour: the thread, the level-up's word and ring, its toast. Room: the share
 	-- of a health bar its number may take before it takes its compact form (fix 6).
 	Card = {
-		Health = Color3.fromHex("#E2463F"),
+		-- The lead's card draws its lights in their colours (tools/blender/lead_card_art.py, the Ember pick of 2026-11-13);
+		-- Xp stays experience's one colour for the level-up's ring and word.
 		TargetHealth = Color3.fromHex("#E2463F"),
 		Xp = Color3.fromHex("#4E9BFF"),
 		Trim = {

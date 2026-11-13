@@ -1,11 +1,13 @@
 --!strict
 -- UIKit (shared config): the UI kit's images and palettes, as the game reads them. Written by
 -- tools/ui/kit_config.py from Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3,
--- sections 2 and 3), with each image's group upload id: run it again after a re-cut, never edit by hand.
+-- sections 2 and 3) and the lead card's build/handoff/UI/hud/lead_card/lead_card.json (tools/blender/lead_card_art.py),
+-- with each image's group upload id: run it again after a re-cut, never edit by hand.
 -- A slice is white where a palette colours it. Cut is left, top, right, bottom in points; Pad is how far an image
--- reaches past its piece's box on every side. The kit draws them (src/client/UI/Kit).
+-- reaches past its piece's box on every side; At, a lead card image's box's top left in the card's points. The kit
+-- draws them (src/client/UI/Kit, src/client/UI/LeadCard.luau).
 
-export type Image = { Id: string, Pixels: Vector2, Points: Vector2, Cut: { number }?, Pad: number }
+export type Image = { Id: string, Pixels: Vector2, Points: Vector2, Cut: { number }?, Pad: number, At: Vector2? }
 export type Palette = {
 	Panel: { Color3 }, -- a panel's body, top to bottom
 	Alpha: number,
@@ -235,5 +237,45 @@ return {
 		PortraitUnknownMythical = { Id = "rbxassetid://119495411714927", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
 		PortraitUnknownMythicalSmall = { Id = "rbxassetid://135088296799291", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		CritSweep = { Id = "rbxassetid://104612895906533", Pixels = Vector2.new(288, 96), Points = Vector2.new(72, 24), Pad = 0 },
+		CardHousing = { Id = "rbxassetid://140514399842838", Pixels = Vector2.new(728, 179), Points = Vector2.new(182, 44.75), Pad = 6, At = Vector2.new(40, 34) },
+		CardHousingRim = { Id = "rbxassetid://90832792373903", Pixels = Vector2.new(728, 179), Points = Vector2.new(182, 44.75), Pad = 6, At = Vector2.new(40, 34) },
+		CardTab = { Id = "rbxassetid://74297729962679", Pixels = Vector2.new(393, 114), Points = Vector2.new(98.25, 28.5), Cut = { 15.28, 14, 15.28, 14 }, Pad = 5, At = Vector2.new(53.635, 18) },
+		CardTabRim = { Id = "rbxassetid://118479284277634", Pixels = Vector2.new(393, 114), Points = Vector2.new(98.25, 28.5), Cut = { 15.28, 14, 15.28, 14 }, Pad = 5, At = Vector2.new(53.635, 18) },
+		CardLightHealth = { Id = "rbxassetid://126270143823371", Pixels = Vector2.new(287, 68), Points = Vector2.new(71.75, 17), Cut = { 8.15, 8.25, 13.15, 8.25 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardLightXp = { Id = "rbxassetid://128463299571267", Pixels = Vector2.new(268, 26), Points = Vector2.new(67, 6.5), Cut = { 3.425, 3, 8.425, 3 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardBadge = { Id = "rbxassetid://77420086203170", Pixels = Vector2.new(136, 96), Points = Vector2.new(34, 24), Pad = 4, At = Vector2.new(1, 72) },
+		CardBadgeRim = { Id = "rbxassetid://110655299972425", Pixels = Vector2.new(136, 96), Points = Vector2.new(34, 24), Pad = 4, At = Vector2.new(1, 72) },
+		CardFrameCommon = { Id = "rbxassetid://137554330922876", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameUncommon = { Id = "rbxassetid://94150302596043", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameRare = { Id = "rbxassetid://92670447076457", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameEpic = { Id = "rbxassetid://137676971880867", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameLegendary = { Id = "rbxassetid://123699759722658", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameMythical = { Id = "rbxassetid://106463911460597", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFaceRook = { Id = "rbxassetid://111933008720404", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadRook = { Id = "rbxassetid://132363143310985", Pixels = Vector2.new(232, 128), Points = Vector2.new(58, 32), Pad = 0, At = Vector2.new(2, -6) },
+		CardFacePip = { Id = "rbxassetid://92052677835724", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadPip = { Id = "rbxassetid://83027548099474", Pixels = Vector2.new(232, 128), Points = Vector2.new(58, 32), Pad = 0, At = Vector2.new(2, -6) },
+		CardFaceLyric = { Id = "rbxassetid://121086016431391", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadLyric = { Id = "rbxassetid://88976256906496", Pixels = Vector2.new(232, 128), Points = Vector2.new(58, 32), Pad = 0, At = Vector2.new(2, -6) },
+		CardFaceUnknownCommon = { Id = "rbxassetid://104192155118608", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownUncommon = { Id = "rbxassetid://87875711212129", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownRare = { Id = "rbxassetid://80324505064838", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownEpic = { Id = "rbxassetid://126963605272336", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownLegendary = { Id = "rbxassetid://96161984645975", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownMythical = { Id = "rbxassetid://92887772643085", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 	} :: { [string]: Image },
+	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
+	LeadCard = {
+		Size = Vector2.new(232, 96),
+		Frame = { 2, 20, 58, 62 }, -- the portrait's frame: x, y, w, h
+		Housing = { 40, 34, 210, 66.7 }, -- x0, y0, x1, y1
+		Slant = 0.45, -- across per down, every slanted edge
+		Mid = 55.6, -- where the two blades meet
+		Health = { 57.605, 37.4, 199.63, 17 }, -- a light's top edge: its left end, its y, its full right end; its height
+		Xp = { 48.875, 56.8, 160.9, 6.5 },
+		FillFrom = 61, -- a bar's empty point along its top edge: the frame's right side
+		Glow = 4, -- a light's glow ahead of its front
+		Tab = { 18, 36.4, 80, 61.915 }, -- its top, its foot, its width as drawn, its top edge's left end
+		Badge = { 14, 80, 26, 16 }, -- centre and size
+	},
 }

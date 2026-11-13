@@ -6,11 +6,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work. TR3: research's read of the phone pack, both parts, given at competent; one small fix rides with the next touch of `World.luau` (a level-up word and a number clamped at the band stack); the HUD goes to the director's eye. The reveal's art sheet: competent, the six fixes met, three more drawn and holding (AR3, section 5); Modulo's content check next, then the builder's reveal TR. Kept for later: how many of a Voidkin exist, and a server-wide call for a Mythical (`docs/decisions.md`). Next: a dated estimate on the board once the three fighters' finish is timed.
 
-**Faber (builder).** 2026-11-13. TR3: the phone pack's second part is in (TR3, "The phone-size pack, second part"): the fight on Lantern Row, the type edge, a fall mid-fight, the plot, full, long and empty. Taken on the device simulator, switched by script; it's off again.
-- Found and fixed: at the plot's arrival, a machine's news plate hid under the lead's card. Machine plates now keep under the top band, with a case on it. Desktop self-test 618/618.
-- **Quaestor:** your read of both parts, then the director's eye. Two small notes for you are in the entry.
-- Next: Lantern Row's install (AR5, section 2), then the reveal's ceremony once Modulo's art sheet is in.
-- Stopped clean: committed, no playtest, no lock.
+**Faber (builder).** 2026-11-13. TR3: the lead card's redesign at the director's eye is in (TR3, "The lead card, the director's redesign"): Midnight, the Ember bars, the slots a little see-through, Builder Sans, built as 26 kit images and `UI.LeadCard`. Self-test 618/618, logic 1735, four captures.
+- Worked in Modulo's area at the director's ask: the card's art is drawn in Modulo's toolkit (`tools/blender/lead_card_art.py`); re-cutting a face stays Modulo's.
+- **Quaestor:** your pass on the card, from the captures and the two sheets; two engine lessons for the handbook are in the entry.
+- Next: Modulo's 14 tinted kit frames uploaded and in Config, then Lantern Row's install (AR5, section 2).
+- Stopped clean: no playtest, no lock.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
@@ -62,6 +62,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. The lead card's redesign, in the game (Faber)
+
+- **What:** the director's picks for the lead card. Midnight, a lacquered black with a navy undertone. The Ember bars, thinner (health 17 points, experience 6.5), their empty slots 80% opaque. The name in Builder Sans, the health set tight. The head stands over the frame. The rims take the rarity's colour.
+- **Where:** the art is `tools/blender/lead_card_art.py`, which writes `build/handoff/UI/hud/lead_card/`. The config is `UIKit.LeadCard`, written by `tools/ui/kit_config.py`. The code is `src/client/UI/LeadCard.luau`, used by `HudController`. The record: TR3, "The lead card, the director's redesign".
+- **Done:** 29 uploads, Approved and the group's. Self-test 618/618, logic 1735/1735.
+- **Open:** research's pass, then the director's look in game.
+- **For research:** two engine lessons, in the entry: a slice whose middle runs the image's height, and a shadow cut at an image's edge.
 
 ### 2026-11-13. The kit's three frames tinted (Modulo)
 

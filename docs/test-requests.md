@@ -388,7 +388,44 @@ Also, as the builder's tier 1: the trim seeds take the director's rarity colours
 
 For later (`docs/polish-later.md`): the type edge's arrow is about 7 points tall on the phone, readable once you know it, small for what it decides. For the builder: the Base case that fails two checks only under the phone's touch camera could set its own camera mode, so every case passes on both. That's your call. **Next:** the director's eye on the HUD.
 
-**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. Next: the director's eye.
+**The lead card, the director's redesign, in, 2026-11-13 (Faber).** At the director's eye, the lead card was redrawn from mocks the director picked from in the builder's session. The words, all 2026-11-13, covering the lead card only:
+- "the color let make it something mature so gradiant black or see if u can make it diff", then "let go with midnight": a lacquered black gradient with a navy undertone.
+- Both bars a little thinner (health 17 points, experience 6.5), in the Ember colours, lit at the top and deep at the foot.
+- "the black background of xp and hp should be a bit transparent not by much": the empty slots at 80%.
+- The text in Builder Sans; the artifacts round Pip's portrait gone.
+- "once it done let continue".
+
+What was built:
+- **The art.** `tools/blender/lead_card_art.py` draws 26 kit images into `build/handoff/UI/hud/lead_card/`, with `lead_card.json`, a review sheet for the three Voidkin and one for the stand-in's rarities. It uses Modulo's toolkit and portrait renders, worked in Modulo's area at the director's ask; Modulo was told, and re-cutting a face stays Modulo's.
+- **The pieces.** The housing and its rim, the tab under the name sliced to fit it, the two lights, a face, frame and head for each Voidkin, the stand-in's face in six rarities, and the badge. The rims are white, tinted the rarity's colour (`Config.Hud.Card.Trim`).
+- **The code.** `tools/ui/kit_config.py` writes the images and the card's geometry (`UIKit.LeadCard`). `src/client/UI/LeadCard.luau` lays the card. `HudController` uses it: its old lead card is gone, and so is `Config.Hud.Card.Health`, since the lights carry their own colours.
+- **The health text.** It is set tight on the lead card ("1,466/1,466": `Rules.Hud.Health`'s `tight`), with four logic cases.
+
+Two engine lessons, for research's handbook:
+- A sliced image whose middle runs its full height draws only its top third, stretched. The lights and the tab came out pale until each cut kept a middle of half a point (`across` in the script).
+- A soft shadow that is still above zero at an image's edge shows in game as a faint box. Each shadow now fades to nothing by 0.9 of its image's pad.
+
+The three images that changed for the second lesson passed the content check again and were uploaded again. The light and tab images didn't change, only their slice numbers.
+
+**Captures** in `build/captures/tr3/lead_card/`:
+- desktop, full health;
+- 42% health;
+- fallen ("Back in 2 s", the portrait dimmed);
+- the iPhone 16 Pro on the device simulator, switched by script and off again.
+
+**Checks:**
+- Content check PASS on the 26 images, and on the three re-cut.
+- 29 uploads, all Approved and the group's (read back).
+- Type check 0 new.
+- Logic 1735/1735, offline and in Studio; world report empty.
+- The HUD cases 91/91 at 56 fps.
+- The whole self-test 618/618 at 55 fps.
+
+**Open:**
+- A UDim2 offset rounds to a whole pixel, so a layer may sit up to 0.6 authored px from its drawn place. None shows in the captures.
+- The uncut renders stay in `lead_card/renders/` out of git until research's pass, then go.
+
+**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. The lead card's redesign, at the director's eye, is in, 2026-11-13. Next: research's pass on the lead card, then the director's look in game.
 
 ## Next, not yet written
 

@@ -1,0 +1,521 @@
+{
+ "pixelsPerPoint": 4,
+ "geometry": {
+  "card": [
+   232.0,
+   96.0
+  ],
+  "frame": [
+   2.0,
+   20.0,
+   58.0,
+   62.0
+  ],
+  "housing": [
+   40.0,
+   34.0,
+   210.0,
+   66.7
+  ],
+  "slant": 0.45,
+  "inset": 3.4,
+  "lights": {
+   "Health": [
+    57.605000000000004,
+    37.4,
+    199.63000000000002,
+    17.0
+   ],
+   "Xp": [
+    48.87500000000001,
+    56.8,
+    160.90000000000003,
+    6.5
+   ]
+  },
+  "fillFrom": 61.0,
+  "step": 30.0,
+  "tab": [
+   18.0,
+   36.4,
+   80.0,
+   61.915000000000006
+  ],
+  "glow": 4.0,
+  "badge": [
+   14.0,
+   80.0,
+   26.0,
+   16.0
+  ],
+  "mid": 55.6
+ },
+ "images": {
+  "CardHousing": {
+   "file": "images/CardHousing.png",
+   "pixels": [
+    728,
+    179
+   ],
+   "points": [
+    182.0,
+    44.75
+   ],
+   "pad": 6.0,
+   "at": [
+    40.0,
+    34.0
+   ],
+   "use": "the two blades, Midnight; its box from X0, Y0 in the card's points"
+  },
+  "CardHousingRim": {
+   "file": "images/CardHousingRim.png",
+   "pixels": [
+    728,
+    179
+   ],
+   "points": [
+    182.0,
+    44.75
+   ],
+   "pad": 6.0,
+   "at": [
+    40.0,
+    34.0
+   ],
+   "use": "the housing's rim: white, tinted the rarity's colour"
+  },
+  "CardTab": {
+   "file": "images/CardTab.png",
+   "pixels": [
+    393,
+    114
+   ],
+   "points": [
+    98.25,
+    28.5
+   ],
+   "pad": 5.0,
+   "at": [
+    53.635000000000005,
+    18.0
+   ],
+   "use": "the name's tab, sliced across; its box from its foot's left",
+   "cut": [
+    15.28,
+    14.0,
+    15.28,
+    14.0
+   ]
+  },
+  "CardTabRim": {
+   "file": "images/CardTabRim.png",
+   "pixels": [
+    393,
+    114
+   ],
+   "points": [
+    98.25,
+    28.5
+   ],
+   "pad": 5.0,
+   "at": [
+    53.635000000000005,
+    18.0
+   ],
+   "use": "the tab's rim: white, tinted the rarity's colour",
+   "cut": [
+    15.28,
+    14.0,
+    15.28,
+    14.0
+   ]
+  },
+  "CardLightHealth": {
+   "file": "images/CardLightHealth.png",
+   "pixels": [
+    287,
+    68
+   ],
+   "points": [
+    71.75,
+    17.0
+   ],
+   "pad": 0.0,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "a light 17.0 high, sliced across: its box from its foot's left to its glow",
+   "cut": [
+    8.15,
+    8.25,
+    13.15,
+    8.25
+   ]
+  },
+  "CardLightXp": {
+   "file": "images/CardLightXp.png",
+   "pixels": [
+    268,
+    26
+   ],
+   "points": [
+    67.0,
+    6.5
+   ],
+   "pad": 0.0,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "a light 6.5 high, sliced across: its box from its foot's left to its glow",
+   "cut": [
+    3.4250000000000003,
+    3.0,
+    8.425,
+    3.0
+   ]
+  },
+  "CardBadge": {
+   "file": "images/CardBadge.png",
+   "pixels": [
+    136,
+    96
+   ],
+   "points": [
+    34.0,
+    24.0
+   ],
+   "pad": 4.0,
+   "at": [
+    1.0,
+    72.0
+   ],
+   "use": "the level's badge"
+  },
+  "CardBadgeRim": {
+   "file": "images/CardBadgeRim.png",
+   "pixels": [
+    136,
+    96
+   ],
+   "points": [
+    34.0,
+    24.0
+   ],
+   "pad": 4.0,
+   "at": [
+    1.0,
+    72.0
+   ],
+   "use": "the badge's rim: tinted"
+  },
+  "CardFrameCommon": {
+   "file": "images/CardFrameCommon.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "pad": 24.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "the portrait's frame, Common"
+  },
+  "CardFrameUncommon": {
+   "file": "images/CardFrameUncommon.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "pad": 24.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "the portrait's frame, Uncommon"
+  },
+  "CardFrameRare": {
+   "file": "images/CardFrameRare.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "pad": 24.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "the portrait's frame, Rare"
+  },
+  "CardFrameEpic": {
+   "file": "images/CardFrameEpic.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "pad": 24.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "the portrait's frame, Epic"
+  },
+  "CardFrameLegendary": {
+   "file": "images/CardFrameLegendary.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "pad": 24.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "the portrait's frame, Legendary"
+  },
+  "CardFrameMythical": {
+   "file": "images/CardFrameMythical.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "pad": 24.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "the portrait's frame, Mythical"
+  },
+  "CardFaceRook": {
+   "file": "images/CardFaceRook.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "Rook in a Common frame's opening, under the frame"
+  },
+  "CardHeadRook": {
+   "file": "images/CardHeadRook.png",
+   "pixels": [
+    232,
+    128
+   ],
+   "points": [
+    58.0,
+    32.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    -6.0
+   ],
+   "use": "Rook's head over the frame's top rim, over the frame"
+  },
+  "CardFacePip": {
+   "file": "images/CardFacePip.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "Pip in a Common frame's opening, under the frame"
+  },
+  "CardHeadPip": {
+   "file": "images/CardHeadPip.png",
+   "pixels": [
+    232,
+    128
+   ],
+   "points": [
+    58.0,
+    32.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    -6.0
+   ],
+   "use": "Pip's head over the frame's top rim, over the frame"
+  },
+  "CardFaceLyric": {
+   "file": "images/CardFaceLyric.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "Lyric in a Rare frame's opening, under the frame"
+  },
+  "CardHeadLyric": {
+   "file": "images/CardHeadLyric.png",
+   "pixels": [
+    232,
+    128
+   ],
+   "points": [
+    58.0,
+    32.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    -6.0
+   ],
+   "use": "Lyric's head over the frame's top rim, over the frame"
+  },
+  "CardFaceUnknownCommon": {
+   "file": "images/CardFaceUnknownCommon.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "a Voidkin with no portrait yet, Common: its head inside the frame, no head over it"
+  },
+  "CardFaceUnknownUncommon": {
+   "file": "images/CardFaceUnknownUncommon.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "a Voidkin with no portrait yet, Uncommon: its head inside the frame, no head over it"
+  },
+  "CardFaceUnknownRare": {
+   "file": "images/CardFaceUnknownRare.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "a Voidkin with no portrait yet, Rare: its head inside the frame, no head over it"
+  },
+  "CardFaceUnknownEpic": {
+   "file": "images/CardFaceUnknownEpic.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "a Voidkin with no portrait yet, Epic: its head inside the frame, no head over it"
+  },
+  "CardFaceUnknownLegendary": {
+   "file": "images/CardFaceUnknownLegendary.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "a Voidkin with no portrait yet, Legendary: its head inside the frame, no head over it"
+  },
+  "CardFaceUnknownMythical": {
+   "file": "images/CardFaceUnknownMythical.png",
+   "pixels": [
+    232,
+    248
+   ],
+   "points": [
+    58.0,
+    62.0
+   ],
+   "pad": 0.0,
+   "at": [
+    2.0,
+    20.0
+   ],
+   "use": "a Voidkin with no portrait yet, Mythical: its head inside the frame, no head over it"
+  }
+ }
+}

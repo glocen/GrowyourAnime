@@ -178,6 +178,11 @@ return {
 			t.Equal("just fits", #Hud.Health(123456, 123456, 17), 17)
 			t.Equal("compact only when it's shorter", Hud.Health(1166, 1166, 5), "1,166 / 1,166")
 			t.Equal("the dummy's, on the target's bar (TR3's capture)", Hud.Health(1254735, 1254735, 18), "1.25M / 1.25M")
+			-- The lead's card sets its digits tight: no spaces round the slash, and its room counts that way too.
+			t.Equal("tight", Hud.Health(504.2, 881.1, nil, true), "505/882")
+			t.Equal("tight, thousands", Hud.Health(1165.5, 1166, 18, true), "1,166/1,166")
+			t.Equal("tight just fits", #Hud.Health(1234567, 1234567, 19, true), 19)
+			t.Equal("tight, too wide: compact", Hud.Health(1249999, 1250000, 18, true), "1.24M/1.25M")
 		end,
 	},
 	{

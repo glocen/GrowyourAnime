@@ -2463,7 +2463,7 @@ return {
 			local health, most = lead:GetAttribute("Health") :: number, lead:GetAttribute("MaxHealth") :: number
 			t.Near("its health bar is its share of health", parts.LeadHealth:GetAttribute("Share") :: number, health / most, 0.01)
 			local inside = (parts.LeadHealthText :: TextLabel).Text
-			t.Check("with its health and its most inside", inside == Hud.Health(health, most), inside)
+			t.Check("with its health and its most inside, set tight", inside == Hud.Health(health, most, nil, true), inside)
 			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
 			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
 			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)

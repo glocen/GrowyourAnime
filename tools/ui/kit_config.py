@@ -17,6 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 KIT = ROOT / "build" / "handoff" / "UI" / "kit" / "kit.json"
 HUD = ROOT / "build" / "handoff" / "UI" / "hud" / "hud_art.json"
+LEAD = ROOT / "build" / "handoff" / "UI" / "hud" / "lead_card" / "lead_card.json"  # tools/blender/lead_card_art.py
 OUT = ROOT / "src" / "shared" / "Config" / "UIKit.luau"
 
 PALETTE_NAMES = {"Graphite Dark": "Graphite", "Pearl Light": "Pearl", "Dynamo": "Dynamo", "Void Violet": "Void"}
@@ -55,7 +56,7 @@ def old_ids() -> dict:
 
 def new_ids(path: Path) -> dict:
     ids = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in path.read_text(encoding="utf-8-sig").splitlines():  # -sig: PowerShell's Add-Content writes a BOM
         if line.strip():
             row = json.loads(line)
             if row.get("result", {}).get("ok"):
@@ -68,8 +69,9 @@ def main() -> None:
         sys.exit("usage: kit_config.py <ids.jsonl>")
     kit = json.loads(KIT.read_text(encoding="utf-8"))
     hud = json.loads(HUD.read_text(encoding="utf-8"))
+    lead = json.loads(LEAD.read_text(encoding="utf-8"))
     ids = old_ids() | new_ids(Path(sys.argv[1]))
-    images = kit["images"] | hud["images"]
+    images = kit["images"] | hud["images"] | lead["images"]
     missing = [name for name in images if name not in ids]
     if missing:
         sys.exit(f"no upload id for {len(missing)}: {', '.join(missing[:8])}")
@@ -78,11 +80,13 @@ def main() -> None:
         "--!strict",
         "-- UIKit (shared config): the UI kit's images and palettes, as the game reads them. Written by",
         "-- tools/ui/kit_config.py from Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3,",
-        "-- sections 2 and 3), with each image's group upload id: run it again after a re-cut, never edit by hand.",
+        "-- sections 2 and 3) and the lead card's build/handoff/UI/hud/lead_card/lead_card.json (tools/blender/lead_card_art.py),",
+        "-- with each image's group upload id: run it again after a re-cut, never edit by hand.",
         "-- A slice is white where a palette colours it. Cut is left, top, right, bottom in points; Pad is how far an image",
-        "-- reaches past its piece's box on every side. The kit draws them (src/client/UI/Kit).",
+        "-- reaches past its piece's box on every side; At, a lead card image's box's top left in the card's points. The kit",
+        "-- draws them (src/client/UI/Kit, src/client/UI/LeadCard.luau).",
         "",
-        "export type Image = { Id: string, Pixels: Vector2, Points: Vector2, Cut: { number }?, Pad: number }",
+        "export type Image = { Id: string, Pixels: Vector2, Points: Vector2, Cut: { number }?, Pad: number, At: Vector2? }",
         "export type Palette = {",
         "\tPanel: { Color3 }, -- a panel's body, top to bottom",
         "\tAlpha: number,",
@@ -138,11 +142,33 @@ def main() -> None:
     for name, im in images.items():
         px, pt = im["pixels"], im["points"]
         cut = ", Cut = { " + ", ".join(num(float(x)) for x in im["cut"]) + " }" if im.get("cut") else ""
+        at = f", At = Vector2.new({num(float(im['at'][0]))}, {num(float(im['at'][1]))})" if im.get("at") else ""
         out.append(
             f'\t\t{name} = {{ Id = "rbxassetid://{ids[name]}", Pixels = Vector2.new({px[0]}, {px[1]}), '
-            f"Points = Vector2.new({num(float(pt[0]))}, {num(float(pt[1]))}){cut}, Pad = {num(float(im.get('pad', 0.0)))} }},"
+            f"Points = Vector2.new({num(float(pt[0]))}, {num(float(pt[1]))}){cut}, Pad = {num(float(im.get('pad', 0.0)))}{at} }},"
         )
-    out += ["\t} :: { [string]: Image },", "}", ""]
+    g = lead["geometry"]
+    rounded = lambda x: num(round(float(x), 3))  # noqa: E731
+    light = lambda row: "{ " + ", ".join(rounded(x) for x in row) + " }"  # noqa: E731
+    out += [
+        "\t} :: { [string]: Image },",
+        "\t-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).",
+        "\tLeadCard = {",
+        f"\t\tSize = Vector2.new({rounded(g['card'][0])}, {rounded(g['card'][1])}),",
+        f"\t\tFrame = {light(g['frame'])}, -- the portrait's frame: x, y, w, h",
+        f"\t\tHousing = {light(g['housing'])}, -- x0, y0, x1, y1",
+        f"\t\tSlant = {rounded(g['slant'])}, -- across per down, every slanted edge",
+        f"\t\tMid = {rounded(g['mid'])}, -- where the two blades meet",
+        f"\t\tHealth = {light(g['lights']['Health'])}, -- a light's top edge: its left end, its y, its full right end; its height",
+        f"\t\tXp = {light(g['lights']['Xp'])},",
+        f"\t\tFillFrom = {rounded(g['fillFrom'])}, -- a bar's empty point along its top edge: the frame's right side",
+        f"\t\tGlow = {rounded(g['glow'])}, -- a light's glow ahead of its front",
+        f"\t\tTab = {light(g['tab'])}, -- its top, its foot, its width as drawn, its top edge's left end",
+        f"\t\tBadge = {light(g['badge'])}, -- centre and size",
+        "\t},",
+        "}",
+        "",
+    ]
     OUT.write_text("\n".join(out), encoding="utf-8", newline="\n")
     print(f"wrote {OUT.relative_to(ROOT)}: {len(images)} images, {len(kit['palettes'])} palettes")
 

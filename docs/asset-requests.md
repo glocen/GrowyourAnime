@@ -4594,6 +4594,14 @@ Section 7's rows played in grey on the keeper's clip through the one player, joi
   - The rotation, the cooldown and the sound, as their own piece.
 - **Hours:** about 0.4, 19:49 to 20:10 UTC.
 
+**Research's final on the keeper's signature (2026-11-13; `keeper_sig_final` with `_hold`, `_slam` and `_peak`, beside the leap's grey; with fresh eyes): competent, closed.**
+- **Felt:** the lantern climbs and fills from pale to white over the keeper's head. It comes down on Pip, and a shaft of cold light leaps out of the street beside him and climbs off the top of the frame.
+- **The one bold thing:** the shaft's leap beside Pip (`_peak`, frames 3 and 4). The leap fix landed: it peaks early and climbs away.
+- **The gathering now reads** in colour, from pale to white through the hold, which the grey couldn't show.
+- **One Tune, not blocking:** the halo goes from 1.9 to about 1.4 times the shaft's width, so the shaft reads crisp with a soft edge, not a haze (fresh eyes' fourth point; `docs/research/vfx-reference.md`, rule 3). A still at the peak is enough to check it.
+- **Carried to "Rook, Pip and Lyric installed" and TR5,** as Faber reads them: the keeper's pose hidden behind the avatar, the shaft's top under the top band, and the landed lantern large near the camera.
+- **Further polish** waits for the finish pass (`docs/polish-later.md`). The rotation, the cooldown and the sound are their own piece.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

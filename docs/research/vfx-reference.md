@@ -330,7 +330,7 @@ OBSERVED in our `Config.Effects`: **25 layers across every effect in the game**,
 | Beats | one or two | anticipation (an inhale or a charge), a 3-frame flash, the shape, a breath, the secondary, residue | rung 7 and up has all six; rung 2 to 4 keeps flash, shape, residue |
 | Screen | a short linear shake | FOV punch, blur, contrast, vignette, a fast-in slow-out ladder | rung 4 and up gets a screen row, from the ladder above |
 | Light | none on the caster | a PointLight that flashes with the hit or rides the charge | a light row on the caster for rung 7 and up |
-| Budget | far under | often far over (500 to 4,800 particles) | a cap per rung, found on a phone: the vault shows both what works and what's too much |
+| Budget | far under | often far over (500 to 4,800 particles) | the full look, no cap set by a phone; a "performance mode" setting lowers it (the director, 2026-11-13, `docs/decisions.md`) |
 
 **When:** the kit gets these capabilities now (the effects kit stays at the bar now, the director's word of 2026-11-13 on the finish pass). The effects being built now use them. Effects that already passed are redone at the finish pass, with this table as its brief.
 

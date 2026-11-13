@@ -74,12 +74,12 @@
        null
       ],
       [
-       8.0,
+       10.0,
        0.0,
-       "Quad In"
+       null
       ],
       [
-       11.0,
+       10.0,
        1.0,
        null
       ]
@@ -115,12 +115,12 @@
        null
       ],
       [
-       9.5,
+       11.5,
        0.0,
-       "Quad In"
+       null
       ],
       [
-       12.5,
+       11.5,
        1.0,
        null
       ]
@@ -156,12 +156,12 @@
        null
       ],
       [
-       11.0,
+       13.0,
        0.0,
-       "Quad In"
+       null
       ],
       [
-       14.0,
+       13.0,
        1.0,
        null
       ]
@@ -197,12 +197,12 @@
        null
       ],
       [
-       12.5,
+       14.5,
        0.0,
-       "Quad In"
+       null
       ],
       [
-       15.5,
+       14.5,
        1.0,
        null
       ]
@@ -238,12 +238,12 @@
        null
       ],
       [
-       14.0,
+       16.0,
        0.0,
-       "Quad In"
+       null
       ],
       [
-       17.0,
+       16.0,
        1.0,
        null
       ]
@@ -279,12 +279,12 @@
        null
       ],
       [
-       15.5,
+       17.5,
        0.0,
-       "Quad In"
+       null
       ],
       [
-       18.5,
+       17.5,
        1.0,
        null
       ]
@@ -313,7 +313,7 @@
      ]
     }
    },
-   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot as it fades, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"
+   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot and cut two frames in, never faded (half-gone, it read rose over a dark Shade or a dusk sky), the front covering the cut, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"
   },
   {
    "Name": "Front",

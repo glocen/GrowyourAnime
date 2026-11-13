@@ -20,7 +20,8 @@ Particles are given by their emitter's own properties.
 B1 (Pip's Lantern Burst, its exit; the director, 2026-11-13: "let do 1"; AR8's method): the lantern's flame let out as
 the kit's two-strand coil, wound up round the Shades from the area's edge to a point twice Pip's height. It spins the
 way its strands climb, flares white where they meet (70), and from 74 it burns off from its foot: its six bands go
-foot first, each flaring hot as it goes, embers rising off the burning edge, the top tongue last, by 84. Two small
+foot first, each flaring hot and cut two frames in (never faded), embers rising off the burning edge, the top tongue
+last, by 84. Two small
 flames stand at its feet as the burn starts, the secondary, lower and softer. Two strands, not three: seen from above,
 three arms winding out of a centre is the shape B1's content check keeps off every camera (condition 5).
 
@@ -116,12 +117,16 @@ H = 0.7 * 2.0 * AREA / 2.144  # across: 0.7 of two Areas (the unit coil is 2.144
 V = AREA                 # up: the tip 2.2 Areas up, 11 studs at Area 5 (the unit coil's strands climb 2.2)
 BANDS = 6
 BURN, STEP, GOES = 8, 1.5, 3   # the first band starts going on 74; each next one STEP frames later; each takes GOES
+CUT = 2  # frames into its burn a band is cut, whole until then: never faded (B1's finish, in the engine, 758c83b)
 HOT, COOL = (1.0, 0.97, 0.88), (1.0, 0.54, 0.24)  # white-gold, and the flame's orange (#FF8A3D's family, never redder)
 
 
 def band_tracks(k):
+    """Band k's burn: it flares from 2 to 4 from its start and is cut CUT frames in, its front covering the cut. Never
+    a fade: in the engine a half-gone band over a dark Shade or a dusk sky read rose, redder than #FF8A3D (B1's finish,
+    the content check's conditions 1 and 4)."""
     start = BURN + STEP * (k - 1)
-    return {"Transparency": [[0, 0.0, None], [start, 0.0, "Quad In"], [start + GOES, 1.0, None]],
+    return {"Transparency": [[0, 0.0, None], [start + CUT, 0.0, None], [start + CUT, 1.0, None]],
             "Glow": [[0, 2.0, None], [start, 2.0, "Quad Out"], [start + GOES * 0.5, 4.0, "Linear"], [start + GOES, 4.0, None]]}
 
 
@@ -154,8 +159,9 @@ B1 = {
          "Bands": {f"{COIL}_Burn{k}": band_tracks(k) for k in range(1, BANDS + 1)},
          "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from "
                 "above, the way its strands climb, and stretches up as it burns; the bands go foot first, each "
-                "flaring hot as it fades, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, then the "
-                "flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"},
+                "flaring hot and cut two frames in, never faded (half-gone, it read rose over a dark Shade or a dusk "
+                "sky), the front covering the cut, the tip last, gone on 84. On fire (fix 3): a dark saturated rim, "
+                "then the flame's orange, gold, and a white core licking up each strand, drawn for the Glow of 2"},
         {"Name": "Front", "Part": [f"{COIL}_Front{b}" for b in range(1, BANDS)], "Texture": "fx_rise_Flame",
          "BlockIn": "fx_rise_Grey", "On": "Coil",
          "Place": "on the coil's frame, its spin included, each at its centre times the scale as the bands are; "

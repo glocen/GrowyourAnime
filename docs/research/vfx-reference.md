@@ -222,7 +222,7 @@ Research, 2026-11-13, on the director's word of that day: "we also need to do re
 
 ## From the vault: open-source effects, read apart
 
-The director shares open-source effects to study (2026-11-13). Each one is kept in `build/reference/vfx-vault/<name>/`, which is gitignored and stays local. It's read headless with Lune, so its scripts never run. Its full digest sits beside it in `build/scratch/quaestor/vault/`. Using one in the game waits on the director's yes to rule 2's exception (`docs/decisions.md`).
+The director shares open-source effects to study (2026-11-13). Each one is kept in `build/reference/vfx-vault/<name>/`, which is gitignored and stays local. It's read headless with Lune, so its scripts never run. Its full digest sits beside it in `build/scratch/quaestor/vault/`. Using one in the game follows rule 2's exception (AGENTS.md; the director's yes, 2026-11-13).
 
 ### slash_blue (read 2026-11-13; the VFX Forge Emit Module, zilibobi, VFX-DL 1.0)
 

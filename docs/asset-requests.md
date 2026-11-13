@@ -3320,6 +3320,33 @@ AR8's feel line. Each part is judged in motion at phone size beside its "before"
   4. **Part 5 in motion:** it's seen in Faber's take of the coil (B1), whose rung-7 hit is exactly when the lower numbers step aside. No separate take.
 - **C closes** when fixes 1 and 3 are in and part 5 reads in the coil's take. The column's art closes as its own minor asset.
 
+### C, fix 2. The level-up column's light (Modulo, 2026-11-13)
+
+A minor asset, so no blockout. It took the content check before upload (research's pass on C, fix 2).
+- **What:** a picture for the column's Beam, `build/handoff/UI/fx/levelup_column.png`, 256 x 128.
+  - Across the picture is across the Beam. Down it is along the Beam, top row at the foot, stretched once.
+  - Its core is white. It goes pale, then to the thread's blue (#4E9BFF) at the sides, and thins to nothing at the edges: a bright interior with a darker, saturated edge (rule 3).
+  - The Beam's own transparency fades its foot and its top. There the core goes over to a pale blue, so at night it goes out as blue light, not grey.
+  - It changes only smoothly along its length: one continuous light, nothing that could fall (C's condition 2).
+  - Its clear pixels carry the blue, so filtering brings in no dark rim.
+- **The sheet:** `levelup_column_sheet.png` beside the picture. It's review material and is never uploaded.
+  - It shows the flat column as built beside the new one, laid as `Effects.LevelUp` lays them, at three moments: 0.07 s, 0.175 s (the peak) and 0.42 s.
+  - They stand behind a grey stand-in 6 studs tall, with the sleeve over it, on the noon sky and at night. Then the peak at the captures' phone size, and the picture alone.
+  - It's drawn flat, in straight alpha, without the game's tone or bloom.
+  - `tools/blender/levelup_column_art.py` rebuilds both in under a minute.
+- **For Faber:**
+  - Set the Beam's `Texture` to this picture, `TextureMode` Stretch, `TextureLength` 1, and `Color` white: a Beam's Color tints its picture.
+  - Emission, segments, widths, transparency and timing stay as built.
+  - The sleeve comes from the same `shaft()`. In the sheet it takes the picture too, and lights the body a little paler instead of tinting it blue. Your call.
+- **Seen, not this piece:** at night the fading column reads greyer than the flat blue did (0.42 s, at 0.47 opaque). That's the Beam's fade over time, and a picture can't carry it.
+  - One lever, if research wants it: `Color` going from white toward the thread's blue as the column's opacity falls.
+  - Not built, and not drawn.
+- **Content check:** PASS, 2026-11-13, with two conditions:
+  1. Upload exactly this file. A redraw takes a new check.
+  2. Log it with the script as its source. Done.
+- **Status:** made, self-reviewed and delivered. Research's pass reads Faber's take in motion at phone size. Not yet accepted by the director.
+- **Hours:** about 0.3.
+
 ### B1. Lantern Burst's new blockout (Modulo, 2026-11-13)
 
 Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered LanternBurst clip on its markers, the player's camera past the avatar, the stand-in Shades. White is the main shape, mid grey the secondary. Timing and size only, no art.

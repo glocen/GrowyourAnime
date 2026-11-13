@@ -15,7 +15,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
 - **Faber:** my message has the clips' roles, the stride and research's yes to a walk near 5. On TR4, my answer is yes to both flash colours. The reveal's art now follows your stamp's slam (`reveal_art.py`, `reveal.json`).
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
-- **Now:** AR8's B. B1 and B2 are **delivered**; Faber's four re-uploads and take are next. B5's block clip is signed by research and waits on Faber's replay (AR8, "B5"). AR7's fall: its block clip is made and passes the audit (AR7, section 5). **Research:** sign its feel line. **Faber:** its replay, with AR7's install. Next: the level-up column's texture (AR8, C, fix 2). No lock held.
+- **Now:** AR8. B1 and B2 are **delivered**, B2's touch redrawn after the upload check; Faber's re-uploads and take are next. B5's block clip is signed and waits on Faber's replay (AR8, "B5"). AR7's fall is signed and waits on Faber's replay with AR7's install (AR7, section 5). The level-up column's light is **delivered** (AR8, "C, fix 2"). **Faber:** its upload and install. No lock held.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 

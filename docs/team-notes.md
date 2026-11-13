@@ -6,11 +6,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work. TR3: research's read of the phone pack, both parts, given at competent; one small fix rides with the next touch of `World.luau` (a level-up word and a number clamped at the band stack); the HUD goes to the director's eye. The reveal's art sheet: competent, the six fixes met, three more drawn and holding (AR3, section 5); Modulo's content check next, then the builder's reveal TR. Kept for later: how many of a Voidkin exist, and a server-wide call for a Mythical (`docs/decisions.md`). Next: a dated estimate on the board once the three fighters' finish is timed.
 
-**Faber (builder).** 2026-11-13. TR3: the lead card's redesign is in, and research's fix too: the target's card built like the lead's (TR3, "The target's card, built like the lead's"), its level in gold at the director's word. Self-test 618/618, logic 1735. The full phone frame in a fight waits on research's read. The kit's 14 tinted frames are uploaded and in Config (AR3, section 6). Next: Lantern Row's install (AR5, section 2).
+**Faber (builder).** 2026-11-13. TR3 closed at research's pass (the top line one language); the director checks the HUD later, not as a gate. The target's card is built like the lead's; both levels are gold (the director: "whatever best"). Self-test 618/618, logic 1735.
 - Worked in Modulo's area at the director's ask: the card's art is drawn in Modulo's toolkit (`tools/blender/lead_card_art.py`); re-cutting a face stays Modulo's.
-- **Quaestor:** your pass on the card, from the captures and the two sheets; two engine lessons for the handbook are in the entry.
-- Next: Modulo's 14 tinted kit frames uploaded and in Config, then Lantern Row's install (AR5, section 2).
-- Stopped clean: no playtest, no lock.
+- Now: the reveal's ceremony (TR4), built to Modulo's `reveal.json`; it comes before Lantern Row in research's order (`docs/test-requests.md`, "Next, not yet written").
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
@@ -63,13 +61,12 @@ For Faber:
 
 ## Entries
 
-### 2026-11-13. The lead card's redesign, in the game (Faber)
+### 2026-11-13. TR3 closed: the HUD on the kit, both cards in Midnight (Faber)
 
-- **What:** the director's picks for the lead card. Midnight, a lacquered black with a navy undertone. The Ember bars, thinner (health 17 points, experience 6.5), their empty slots 80% opaque. The name in Builder Sans, the health set tight. The head stands over the frame. The rims take the rarity's colour.
-- **Where:** the art is `tools/blender/lead_card_art.py`, which writes `build/handoff/UI/hud/lead_card/`. The config is `UIKit.LeadCard`, written by `tools/ui/kit_config.py`. The code is `src/client/UI/LeadCard.luau`, used by `HudController`. The record: TR3, "The lead card, the director's redesign".
-- **Done:** 29 uploads, Approved and the group's. Self-test 618/618, logic 1735/1735.
-- **Open:** research's pass, then the director's look in game.
-- **For research:** two engine lessons, in the entry: a slice whose middle runs the image's height, and a shadow cut at an image's edge.
+- **What:** the HUD in the world on the kit, with the lead card at the director's picks (Midnight, the Ember bars, Builder Sans, the head over the frame) and the target's card built like it. Both levels are in gold.
+- **Where:** the art is `tools/blender/lead_card_art.py`, which writes `build/handoff/UI/hud/lead_card/`. The config is `UIKit.LeadCard` and `UIKit.TargetCard`, written by `tools/ui/kit_config.py`. The code is `src/client/UI/LeadCard.luau` and `TargetCard.luau`, used by `HudController`. The record: TR3.
+- **Done:** 32 uploads, Approved and the group's. Self-test 618/618, logic 1735/1735. Research's pass given, no fix left.
+- **Open:** the director checks the HUD later, not as a gate (the director, 2026-11-13: "my approval is not required").
 
 ### 2026-11-13. The kit's three frames tinted (Modulo)
 

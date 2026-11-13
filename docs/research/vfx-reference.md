@@ -288,6 +288,52 @@ The tips, OBSERVED, each with what it means for us (DESIGN):
 
 **ViewportStencil** (github.com/sebasvcx/ViewportStencil, MIT): code that draws a model inside a surface, such as a crack, a hole or a portal, through a masked ViewportFrame, without cutting the ground. A library, not art, so it's the builder's call, with its license notice kept. For later: craters and portals. Not Haymaker's landing, which takes no plate on the floor (AR8).
 
+### The third batch (read 2026-11-13: ten files; the director: "not all vfx are high quality or made by pro")
+
+OBSERVED; digests beside the others. All clean. Craft rated honestly.
+
+| File | What it is | Craft | Terms | Verdict |
+|---|---|---|---|---|
+| InkSwingOSByMarcid | a black ink brush-slash: three stacked smear meshes, ink that curls back like liquid | solid, near pro | none in the file; the author's others are CC BY-NC | **yes**, for lessons: value contrast without glow |
+| ArtemisArrowRainVFXOSByMarcid | a charge, four arrows, then a 1.4 s arrow storm | solid; staging pro | a credit label only | partly: the best lesson on many projectiles |
+| Purple_arcane_showcase | a 10 s scripted orb showcase | solid | library headers only | partly: its screen-punch ladder, in code |
+| JaxelosStarOSS | a looping comet, three colour variants | solid | none | **yes**, for its tail |
+| DemonAuraVFX | a looping red aura on a rig | solid | none | partly: tendrils and the eye for an awakened state |
+| bem | a channelled fire beam | amateur effect, solid camera | none | partly: camera and light moves; ~4,800 particles is what not to do |
+| stuff | a two-fighter fight cinematic, no effects | solid | none | partly: the held impact |
+| Death_FX | a 1 s blue burst | amateur | none | partly: a KO pop's recipe |
+| bow_thngiemajig | an idle aura on a bow | amateur | none | partly: emitter volumes along a silhouette |
+| First_OS | a map-scale sky beam with rainbow strobes | amateur | none | no |
+
+**Sounds in the whole vault** (read by `AudioContent`): only day1 (4), day4 (4), slash_blue (3) and First_OS (4) have any.
+
+The new tips, OBSERVED, with what they mean for us (DESIGN):
+1. **Value, not glow** (InkSwing): black, grey and tan smears with no bloom read at phone size. For us: a mature look's strongest hits can be dark shapes with a thin bright edge, not more light.
+2. **Many projectiles as two emitters** (Artemis): the rain is speed lines (Rate 35, life 0.15 s, Speed 300, squashed long) and, apart, ground hits in a box at Rate 18; the eye pairs them. About ten streaks on screen at once, framed by a sky circle and a ground circle as one shape. For us: any volley, never one part per arrow.
+3. **A screen ladder in two steps** (Purple arcane): a main hit takes vignette 0.5, FOV to 45 eased back over 0.4 s, shake 1.3 over 0.6 s; a minor hit takes FOV 54 and blur 1 for 0.05 s, shake over 0.25 s. For us: rungs 7 to 8 and rung 4, scaled down to our camera.
+4. **The held impact** (stuff): both bodies freeze 1.25 s while the camera keeps easing to rest; the strike is 3 frames after a 0.35 s coil. For us: a keeper's fall (rung 9) only, a few tenths of that.
+5. **A tail that fades over a zone** (JaxelosStar): its beams end at 24, 32.5, 43 and 49 studs. For us: dash wakes and Pip's streak taper by staggered ends, not by one fade.
+6. **Charge widens, release snaps** (bem): FOV 70 to 80 over a 0.6 s charge, then 60 in 0.15 s; a hand light tweened with the effect lights the caster and the floor. For us: a channelled signature's breath, with the light on the caster, never on the landing (AR8).
+7. **Tendrils as curved beams** (DemonAura): four tapered, camera-facing beams make the whole silhouette. A three-hump size curve twinkles without a flipbook. For us: awakened states and the keeper's aura.
+8. **Emitter volumes** (bow): invisible boxes along a shape make the sparkle trace its silhouette. For us: a weapon's glint along its edge.
+
+## What the vault teaches, beside ours (2026-11-13)
+
+OBSERVED in our `Config.Effects`: **25 layers across every effect in the game**, 3 of them emitters, all 2x2 flipbooks, and no layer that is dark. A good file in the vault spends 15 to 100 layers on a single moment. The gap isn't polish; it's structure. DESIGN, what changes:
+
+| | Ours now | The vault, every good file | The change |
+|---|---|---|---|
+| Layers | one to six per effect | a stack per beat: flash, main shape, secondary, residue | each beat a small stack: 4 to 8 layers at rung 2 to 4, 10 to 20 at rung 7 to 9 |
+| Dark | none | a dark twin under every bright layer; smoke and embers fade to black | every bright layer gets its dark twin; dissipation darkens, never just clears |
+| Drawn motion | 2x2 flipbooks | 4x4 and 8x8 sheets; outline and fill drawn apart; mesh flipbooks for hero shapes | a texture kit of our own sheets (ring burst, crescent, splash, puff, spark, glint, flame), each with an outline pass and a fill pass |
+| Physics | little | Drag 5 to 7, Squash on velocity, Acceleration that curls, negative size as a delay | the kit's emitter row exposes Drag, Squash, Acceleration, EmitCount and EmitDelay, all Tune-live |
+| Beats | one or two | anticipation (an inhale or a charge), a 3-frame flash, the shape, a breath, the secondary, residue | rung 7 and up has all six; rung 2 to 4 keeps flash, shape, residue |
+| Screen | a short linear shake | FOV punch, blur, contrast, vignette, a fast-in slow-out ladder | rung 4 and up gets a screen row, from the ladder above |
+| Light | none on the caster | a PointLight that flashes with the hit or rides the charge | a light row on the caster for rung 7 and up |
+| Budget | far under | often far over (500 to 4,800 particles) | a cap per rung, found on a phone: the vault shows both what works and what's too much |
+
+**When:** the kit gets these capabilities now (the effects kit stays at the bar now, the director's word of 2026-11-13 on the finish pass). The effects being built now use them. Effects that already passed are redone at the finish pass, with this table as its brief.
+
 ## Ours beside them (OBSERVED in our config and captures, 2026-11-13)
 
 | What | Ours now | The professionals | Read |

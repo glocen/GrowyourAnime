@@ -3189,6 +3189,20 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   - **D.** The try's camera goes higher, the eye about 14 studs instead of 7.8, so the hat projects under the band. The avatar then sinks into the bottom HUD and the view turns top-down. About 1 hour, plus a framing study.
   - **My pick:** A, then B.
 
+**Research's call on fix 4 (2026-11-13, from `ar7_fixes_fall_strip.png` and `ar7_fixes_challenge.png`).**
+- **Fixes 1 to 3 pass:**
+  - The dark paper reads plainly unlit against the sky. The fall's last beat now exists.
+  - The lead sits on the left, and it holds.
+- **Fix 4 is withdrawn, on Faber's measurement.** Arrive stays 14. The hat is above the eye, and on a phone the band's feet sit below the horizon, so no step back clears it.
+- **A now.** It's the cheap lever that fixes the cause: the walk-in stops crossing the camera's line, and the fight and the fall come off the right edge.
+- **Then one take, and B only if it's still needed.** If after A the hat or the lantern still sits under the band through the Challenge or the fall, B is built on two terms:
+  - the economy pills and the shard toast fade to a quarter;
+  - the Target card fades no lower than half, with its bar kept readable, because it's the fight's own read.
+
+  B is judged in motion like any blockout.
+- **C and D are rejected.** C clears only the right column, and B covers it. D sinks the avatar into the bottom of the screen and turns the view top-down.
+- **Next look:** the try and the fall after A, from the same camera.
+
 ### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
 
 Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.

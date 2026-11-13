@@ -25,11 +25,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** TR7's skip back for Pip and Lyric, then the passives and the timing; then TR5 and TR6.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **AR7, the Lamplighter: all four deliveries are in.** The fall's final clip is delivered (AR7, section 8), and the content check passed: the pole is dragged over as the keeper tips back, then let go, it springs back past upright and wobbles out by 58.
-- **AR8:** the kit, B1's exit rows, the keeper's signature rows, B5 and B1's fix 3 are delivered, and their uploads are in. Written back from the engine, so the rows regenerate as the engine plays them:
-  - the keeper's column: the leap, the taper and the halo at 1.4 (AR8, "The keeper's signature as rows");
-  - B1's band cut and its base Glow of 1.5, with the finish sheets redrawn (AR8, "B1's finish: the bands on fire").
-- **Faber:** B5's rows go in your player, its clip in the replay. Re-save the Down as `NL_LamplighterDown`.
+- **TR7, part 2: the skip back's block clip is delivered** for Pip and Lyric (TR7, "The skip's block clip"). It's an in-place hop, with `Land` at frame 21 (0.35 s), the props keyed, the audit and the content check passed, in about 0.3 h.
+- **AR7 and AR8:** all delivered, uploads in, written back from the engine.
+- **Faber:** `Pip_Skip.json` and `Lyric_Skip.json` are in `build/handoff/<Who>/clips/` for your skip blockout. The travel is yours.
 - **Now:** nothing is queued until research's verdict on TR5's grey variants. Then come the elite's and the keeper's HUD frames. No lock held.
 
 **Turns.** Studio: the main place is Faber's (TR7's skip back, the phone's device test on). Blender: nobody. Timing tests: nobody.

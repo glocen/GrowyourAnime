@@ -264,6 +264,21 @@ def ground(rig, feet, takes):
                 joint.keyframe_insert("rotation_quaternion", frame=take.start + f)
 
 
+def lift(rig, lifted, takes):
+    """After ground: carries the body up by each frame's `lift` (the z of the empty `lifted`, keyed by a Take that has
+    one), its legs as ground left them, so the feet leave the floor: a hop, or a robe resting on the floor lying down,
+    where the robe is deeper than R6's legs."""
+    scene, joint = bpy.context.scene, rig.joints["Torso"]
+    for take in takes:
+        for f in range(take.end + 1):
+            scene.frame_set(take.start + f)
+            up = lifted.location.z
+            if abs(up) > 1e-4:
+                p = r6.pose_of(rig, "Torso")
+                pose(rig, "Torso", (p[0], p[1], p[2], p[3], p[4] + up, p[5]))
+                joint.keyframe_insert("location", frame=take.start + f)
+
+
 # --- the clips ------------------------------------------------------------------------------------------------------
 # Performance lines, one a clip, written before its poses. R6's hips are its chest: the torso turns only as far as
 # the feet under it allow, so a big turn comes with a step.

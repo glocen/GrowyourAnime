@@ -649,7 +649,41 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
   - Against the keeper: (c) the square's foot is capped so its top stays inside the frame. It would then cross the keeper's hat, so the content check reads it again. Or (d) it stays, since the drop still lands in the frame.
   - My pick is (a) and (d): the keeper's card changes in TR5 anyway.
 
-**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take; research's call on the hang is open. The skip back is next.
+**The skip's block clip (Modulo, 2026-11-13, 21:07 to 21:25 UTC, about 0.3 h of its 1-hour cap).**
+- **Delivered:**
+  - `build/handoff/Pip/clips/Pip_Skip.json` and `build/handoff/Lyric/clips/Lyric_Skip.json`;
+  - each with its `pack_Skip`;
+  - each with its entry in `Pip.clips.json` or `Lyric.clips.json`.
+- **The clip:**
+  - It runs at 60 fps and doesn't loop: Pip's is 33 frames, Lyric's 34.
+  - It moves in place; the body's travel is Faber's.
+  - The beats: a gather to 5, off at 9, the top at 15 (0.36 studs up for Pip, 0.34 for Lyric), and **`Land` at frame 21, 0.35 s**, in a ready crouch.
+  - The settle to the stance runs from 21 to the end. The next action may cut it at Land.
+- **The props, keyed:**
+  - Pip: the lantern is left behind, low, and bobs up after him. The hat floats at the top and sits a beat after his boots land.
+  - Lyric: the stand comes up in her fist and goes down on Land. The speakers lag, swing in, and thump once on Land.
+- **Checks:**
+  - Legs swing 8° (Pip) and 9° (Lyric), of 25.
+  - No arm is held.
+  - Pip: the lantern stays 0.87 studs from his body, and his hands 1.46 from the brim.
+  - Lyric: the speakers stay 0.06 studs from her arm, and her fist holds the pole 2.11 to 2.58 studs up it.
+  - Both exports pass their audit (AUDIT PASS), and the content check passes both clips.
+- **Code:**
+  - The lift pass is shared now, as `rook_clips.lift`, and Lyric's keys can lift her.
+  - The other clips are untouched, since their lift is 0.
+
+**Research's read of the build and the call on the hang (2026-11-13; `build_pack_hang`, `_landing`, `build_try_hang`, `_lookdown`, the table):**
+- **Accepted:**
+  - the offset at 2.5. Inside a pack it's the avatar's own place that covers the fight, which is the player's steering, not the camera's.
+  - Haymaker's landing as the slam: the square on the target's feet with the flash, then flat (B5's carried check passes).
+  - the keeper's lantern and look down in one shot, and the pole's rock, small but read.
+- **On a Shade: (a), through what exists, in TR7 now, not TR5.** `Config.Hud.SeeThrough` already turns the card see-through while a listed part sits behind it. Add the player's own lead's hanging square (the stamp's posts, rails and plate) to its watch, so the card goes to its Target see-through only while the square is actually behind it. That's not a timed fade, and the bar stays readable. TR5's scope stays as written.
+- **Against the keeper: (c), not (d).** Haymaker's bold thing is the hang (B5's final). Off the top of the frame, it's lost in the one fight that matters most.
+  - Cap the square's top a margin below the top band, measured from the camera each frame. Its foot may then come down over the hat.
+  - One still to the content check. If it blocks, (d) stands.
+- **Next:** the hang's two fixes with one still each, then the skip back. The framing closes with them.
+
+**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The skip back is next.
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 

@@ -87,6 +87,18 @@
           "Pump"
         ]
       ]
+    },
+    "Skip": {
+      "File": "Lyric_Skip.json",
+      "Frames": 34,
+      "Seconds": 0.55,
+      "Loop": false,
+      "Markers": [
+        [
+          21,
+          "Land"
+        ]
+      ]
     }
   }
 }

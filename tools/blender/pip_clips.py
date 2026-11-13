@@ -217,20 +217,6 @@ class Take(rc.Take):
         return self
 
 
-def lift(rig, ctl, takes):
-    """After rook_clips.ground: carries the body over where its legs rest it, by each frame's `lift`. Lying down, it's
-    the robe that rests on the floor, and the robe is deeper than R6's legs."""
-    scene, joint = bpy.context.scene, rig.joints["Torso"]
-    for take in takes:
-        for f in range(take.end + 1):
-            scene.frame_set(take.start + f)
-            up = ctl["lift"].location.z
-            if abs(up) > 1e-4:
-                p = r6.pose_of(rig, "Torso")
-                rc.pose(rig, "Torso", (p[0], p[1], p[2], p[3], p[4] + up, p[5]))
-                joint.keyframe_insert("location", frame=take.start + f)
-
-
 def spin(a, b) -> Vector:
     """The turn that takes rotation `a` to `b`, as an axis times its angle, in the world's frame."""
     d = b @ a.inverted()
@@ -660,8 +646,37 @@ def work(t):
     t.hat(120)
 
 
+def skip(t):
+    """He hops back out of reach like a kid who's touched a stove: both feet at once, never a step, his eyes on you
+    the whole way. The sleeves fling forward to keep him upright, the lantern is left behind for a moment and bobs up
+    after him, and the hat floats off his head at the top and sits back down a beat after his boots do. The body's
+    travel is the game's (TR7, part 2): here he hops in place, and lands ready (Land)."""
+    t.key(0)
+    t.key(5, "gathers", ease="in", T=(5, -10, 0, 0, 0, 0.05), crouch=0.15, RA=(-6, 0, 12), LA=(-2, 0, -8))
+    t.key(9, "off", ease="out", T=(-6, -10, 0, 0, 0, -0.1), crouch=0.0, lift=0.14, RA=(34, 0, 14), LA=(40, 0, -10),
+          feet={"Right Leg": (0.5, 0.0), "Left Leg": (-0.5, 0.15)})
+    t.key(15, "in the air", ease="in", T=(-2, -10, 0, 0, 0, -0.04), crouch=0.04, lift=0.36, RA=(52, 0, 18), LA=(58, 0, -12),
+          feet={"Right Leg": (0.52, -0.3), "Left Leg": (-0.52, -0.12)})
+    t.key(21, "lands", ease="out", T=(6, -10, 0, 0, 0, 0.05), crouch=0.15, lift=0.0, RA=(26, 0, 16), LA=(30, 0, -11),
+          feet=HUB["feet"])
+    t.mark(21, "Land")
+    t.key(26, ease="sine", T=(0, -10, 0), crouch=0.07, RA=(13, 0, 10), LA=(20, 0, -7))
+    t.key(32, T=HUB["T"], RA=HUB["RA"], LA=HUB["LA"], crouch=HUB["crouch"])
+    t.lamp(6, ease="in")
+    t.lamp(12, ease="out", L=(2.8, 0.7, 4.22), LR=(12, 0, 0), LB=0.3)  # left behind, low, as he goes
+    t.lamp(19, ease="in", L=(2.82, 0.55, 4.62), LR=(4, 0, 0))  # and bobs up after him
+    t.lamp(25, ease="out", L=(2.77, 0.15, 4.2), LR=(-10, 0, 0))  # past him as he stops, and down
+    t.lamp(31, ease="sine", L=HOME, LR=(0, 0, 0), LB=1.0)
+    t.lamp(32)
+    t.hat(10, ease="out")
+    t.hat(16, ease="sine", HT=(-4, 0, 0, 0, 0.07, -0.03))  # it floats off his head at the top
+    t.hat(22, ease="out", HT=(3, 0, 0, 0, 0.05, 0))  # his boots are down; it isn't yet
+    t.hat(26, ease="back", HT=(0, 0, 0))
+    t.hat(32)
+
+
 CLIPS = {"Idle": idle, "Combo": combo, "LanternBurst": burst, "Hit": hit, "Down": down, "Up": up, "Reveal": reveal,
-         "Work": work}
+         "Work": work, "Skip": skip}
 # The rows a clip's pose sheet shows, and the first is its pack's view. The send is read from far off too, since the
 # lantern goes twelve studs; the Reveal is met from the front; laid out he's longer than the game view is tall, so the
 # fall and the rise are read from the same places with a wider lens, aimed lower.
@@ -762,7 +777,7 @@ def main():
             for line in take.warned:
                 print("  " + line)
     rc.ground(rig, feet, list(takes.values()))
-    lift(rig, ctl, list(takes.values()))
+    rc.lift(rig, ctl["lift"], list(takes.values()))
     numbers = props(rig, ctl, motors, list(takes.values()))
     cams = cameras(scene, rig)
     facts = {}

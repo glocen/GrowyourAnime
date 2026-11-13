@@ -106,6 +106,18 @@
           "Pump"
         ]
       ]
+    },
+    "Skip": {
+      "File": "Pip_Skip.json",
+      "Frames": 33,
+      "Seconds": 0.533,
+      "Loop": false,
+      "Markers": [
+        [
+          21,
+          "Land"
+        ]
+      ]
     }
   }
 }

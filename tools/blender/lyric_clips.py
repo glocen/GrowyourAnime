@@ -169,7 +169,7 @@ def build():
     feet = {leg: r6._empty(f"Lyric.Foot.{leg}", None, Matrix.Identity(4), 0.1) for leg in r6.LEGS}
     # holders of numbers, keyed like anything else, read back frame by frame once the body is keyed
     ctl = {name: r6._empty(f"Lyric.Ctl.{name}", None, Matrix.Identity(4), 0.1)
-           for name in ("base", "stand", "sr", "srt", "sl", "slt", "float", "kick", "note", "pull", "free", "line")}
+           for name in ("base", "stand", "sr", "srt", "sl", "slt", "float", "kick", "note", "pull", "free", "line", "lift")}
     for empty in (*feet.values(), *ctl.values()):
         empty.location = (0, 0, 0)
     return scene, rig, costume, undress, feet, ctl, motors
@@ -282,7 +282,7 @@ def facing(turn, tilt) -> Vector:
 
 HUB = {
     "T": (-1, 9, 0), "feet": {"Right Leg": (0.62, 0.12), "Left Leg": (-0.52, -0.1)}, "RL": (0, 0, 0), "LL": (0, 0, 0),
-    "crouch": 0.03, "look": EYES, "H": (0, 0, 2), "RA": (4, 0, 7), "LA": (6, 0, -7),
+    "crouch": 0.03, "look": EYES, "H": (0, 0, 2), "RA": (4, 0, 7), "LA": (6, 0, -7), "lift": 0.0,
 }
 SPEAKERS = {"R": HOME[SR], "RT": (INWARD[SR], 0.0), "L": HOME[SL], "LT": (INWARD[SL], 0.0), "F": 1.0, "Z": 0.0}
 
@@ -316,14 +316,14 @@ class Take(rc.Take):
         """Keys the stand at clip frame `f`. `at`: its base planted at a floor place (right, forward), or a stage place
         (right, forward, up) off the floor. `held`: (lean, toward, grip), the pole leant `lean` degrees toward stage
         heading `toward` with her fist `grip` studs up it, turned into a base place from where her fist is at `f`
-        (key the body at `f` first). `aim`: how much the mic turns to her mouth (0 to 1); `spin`: degrees more about the
-        pole. What isn't named holds."""
+        (key the body at `f` first; the lift that carries her at `f` carries it too). `aim`: how much the mic turns to
+        her mouth (0 to 1); `spin`: degrees more about the pole. What isn't named holds."""
         p = self.props
         if held is not None:
             bpy.context.scene.frame_set(self.start + f)
             lean, toward, grip = held
             b = fist(self.motors) - grip * leant(lean, toward)
-            p["B"] = (*world(b)[:2], max(world(b)[2], 1e-3))
+            p["B"] = (*world(b)[:2], max(world(b)[2] + self.state["lift"], 1e-3))
         elif at is not None:
             p["B"] = (at[0], at[1], at[2] if len(at) > 2 else 0.0)
         p["A"] = p["A"] if aim is None else aim
@@ -395,6 +395,7 @@ class Take(rc.Take):
             empty.location.z = s["crouch"]
             empty.keyframe_insert("location", frame=frame)
             r6._set_interpolation(empty, frame, *interp)
+        self._hold(f, ease, {"lift": (0, 0, s["lift"])})
         self.keys.append((f, frozenset(planted)))
         rest = {}
         if s.get("look") is not None:
@@ -767,7 +768,37 @@ def work(t):
         t.kick(beat + 1, "RL", 0.12 if beat == 30 else 0.07, 12)
 
 
-CLIPS = {"Idle": idle, "Combo": combo, "HeldNote": held_note, "Reveal": reveal, "Work": work}
+def skip(t):
+    """She skips back off the stage's lip: one light hop on the balls of her feet, never a step, her eyes on you all the
+    way. The stand comes up with her in her fist and goes down with her on the landing like a downbeat, her chin nods
+    it, and the speakers she left behind swing in after her and thump once as she lands. The body's travel is the
+    game's (TR7, part 2): here she hops in place, and lands ready (Land)."""
+    t.key(0)
+    t.stand(0)
+    t.key(5, "gathers", ease="in", T=(4, 9, 0, 0, 0, 0.04), crouch=0.14, RA=(10, 0, 7), LA=(-4, 0, -10))
+    t.stand(5, "in")
+    t.key(9, "off", ease="out", T=(-6, 9, 0, 0, 0, -0.1), crouch=0.0, lift=0.14, RA=(16, 0, 8), LA=(38, 0, -16),
+          look=(0.0, 10.0, 5.5), feet={"Right Leg": (0.62, 0.22), "Left Leg": (-0.52, 0.05)})
+    t.stand(9, "out", held=(4, 200, 2.3))  # up off the floor in her fist, as she goes
+    t.key(15, "in the air", ease="in", T=(-2, 9, 0, 0, 0, -0.04), crouch=0.04, lift=0.34, RA=(18, 0, 8), LA=(52, 0, -18),
+          feet={"Right Leg": (0.62, -0.15), "Left Leg": (-0.52, -0.3)})
+    t.stand(15, "in", held=(4, 200, 2.3))
+    t.key(21, "lands", ease="out", T=(5, 9, 0, 0, 0, 0.04), crouch=0.13, lift=0.0, RA=(8, 0, 7), LA=(22, 0, -12),
+          feet=HUB["feet"], look=NOD)
+    t.stand(21, at=B0)  # set down where it lives, on the landing
+    t.mark(21, "Land")
+    t.key(26, ease="sine", T=(0, 9, 0), crouch=0.06, look=EYES, LA=(10, 0, -9))
+    t.key(33, **{k: HUB[k] for k in ("T", "crouch", "RA", "LA", "feet")}, look=EYES)
+    t.speak(6, "in")
+    t.speak(12, "out", R=(2.72, -0.1, 5.08), L=(-2.74, -0.25, 4.74), F=0.3)  # left behind, low, as she goes
+    t.speak(18, "in", R=(2.74, -0.2, 5.45), L=(-2.76, -0.35, 5.1))  # and swung up in after her
+    t.speak(24, "out", R=(2.7, -0.75, 5.05), L=(-2.62, -0.9, 4.7))  # past her as she stops
+    t.speak(31, "sine", R=HOME[SR], L=HOME[SL], F=1.0)
+    t.speak(33)
+    t.kick(21, "RL", 0.05, 10)  # the landing's thump, on her cue
+
+
+CLIPS = {"Idle": idle, "Combo": combo, "HeldNote": held_note, "Reveal": reveal, "Work": work, "Skip": skip}
 # The rows a clip's pose sheet shows, and the first is its pack's view. The note is as wide as its cone, so it's read
 # with a wider lens, and from the target's side too; the Reveal is met from the front.
 VIEWS = {"HeldNote": ("wide", "met", "wide side"), "Reveal": ("front", "side", "game"), "Work": ("front", "side", "game")}
@@ -868,6 +899,7 @@ def main():
             for line in take.warned:
                 print("  " + line)
     rc.ground(rig, feet, list(takes.values()))
+    rc.lift(rig, ctl["lift"], list(takes.values()))
     numbers = props(rig, ctl, motors, list(takes.values()))
     cams = cameras(scene, rig)
     facts = {}

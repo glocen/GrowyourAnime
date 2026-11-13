@@ -38,7 +38,7 @@ One maker is one queue. If the board's count shows the team waiting on Modulo fo
 | Design, research, quality | Quaestor | now |
 | Code | Faber | now |
 | Art | Modulo | now |
-| QA | Probator | when the director decides (2026-11-12): not at phase 1's end. Until then, the builder's checks and player-camera captures are a piece's evidence, and research reads them as QA would: the test output, the angles still missing, what regressed |
+| QA | Probator | at phase 4's end, for the whole game before launch (the director, 2026-11-13). Through phase 4 the team stays three; level design and environment art aren't opened, since the grounds are one kit recoloured (`docs/roster.md`). Until then, the builder's checks and player-camera captures are a piece's evidence, and research reads them as QA would: the test output, the angles still missing, what regressed |
 
 The PC's limits hold: two Studios at most, one render at a time. A seat opens when work waits for it.
 

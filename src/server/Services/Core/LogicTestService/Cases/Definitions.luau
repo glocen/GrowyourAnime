@@ -11,6 +11,7 @@ local ShardConfig = require(Shared.Config.Shards)
 local SoundConfig = require(Shared.Config.Sounds)
 local EffectsConfig = require(Shared.Config.Effects)
 local Odds = require(Shared.Rules.Odds)
+local SoundRule = require(Shared.Rules.Sound)
 
 local TYPES = { Agility = true, Strength = true, Endurance = true, Intelligence = true, Technique = true }
 local CLASSES = { Warrior = true, Tank = true, Assassin = true, Mage = true, Healer = true }
@@ -97,10 +98,15 @@ return {
 			for name, cue in all do
 				t.Check(`{name} has a library id`, type(cue.Id) == "number" and cue.Id > 0)
 				t.Check(`{name}'s slice runs forward`, cue.From >= 0 and cue.To > cue.From)
-				local gain = 10 ^ ((SoundConfig.Reference - cue.Level) / 20)
-				t.Check(`{name} levels within the bounds`, gain >= SoundConfig.Gain[1] and gain <= SoundConfig.Gain[2], string.format("%.2f", gain))
+				local gain = SoundRule.Gain(cue)
 				t.Check(`{name}'s pitch spread`, cue.Pitch[1] > 0 and cue.Pitch[2] >= cue.Pitch[1])
-				t.Check(`{name} fades out past its full volume`, cue.Near > 0 and cue.Range > cue.Near)
+				if SoundRule.Screen(cue) then
+					-- the screen's cues are bounded where they're mixed (Reveal's case: no file played past twice its own)
+					t.Check(`{name} is not turned down past the bound`, gain >= SoundConfig.Gain[1], string.format("%.2f", gain))
+				else
+					t.Check(`{name} levels within the bounds`, gain >= SoundConfig.Gain[1] and gain <= SoundConfig.Gain[2], string.format("%.2f", gain))
+					t.Check(`{name} fades out past its full volume`, cue.Near > 0 and cue.Range > cue.Near)
+				end
 			end
 			local strike = EffectsConfig.Haymaker.Sound
 			t.Check("Haymaker's strike cue resolves", all[strike] ~= nil, strike)

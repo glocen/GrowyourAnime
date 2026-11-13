@@ -25,5 +25,23 @@ return {
 	-- at Uncommon, 42 against 35 at Rare, measured on reveal_parts_compare.png, 2026-11-13).
 	NameFace = 1.2,
 	NameDescent = 0.21, -- the name's line below its baseline, against its size: its box's foot sits this far under 214
+	-- The reveal's sounds, research's cues (docs/test-requests.md, TR4): each cue's level in dB against the Legendary
+	-- split's, the loudest. The library slices they play are Config.Sounds.Cues; the schedule is Rules.Reveal.Cues.
+	Sounds = {
+		Crack = { Cue = "RevealCrack", Db = -14, Semitones = 1 }, -- each seam, a semitone over the last
+		Rung = { Cue = "RevealRung", Db = { -12, -6 }, Semitones = 2 }, -- each rung after the first colour, a step up each, the first to the top (Mythical's)
+		Breath = { Cue = "RevealBreath", Db = -10, Cut = 0.12 }, -- Epic up: its peak cut dead this long before the split
+		SplitLow = { -- deeper and longer as it climbs: slower a rarity up
+			Cue = "RevealSplitLow",
+			Db = { Common = -12, Uncommon = -10, Rare = -8, Epic = -5 } :: { [string]: number },
+			Speed = { Common = 1.12, Uncommon = 1.06, Rare = 1, Epic = 0.94 } :: { [string]: number },
+		},
+		SplitHigh = { Cue = "RevealSplitHigh", Db = 0, Speed = { Legendary = 1, Mythical = 0.9 } :: { [string]: number } },
+		Strike = { Db = -6, Length = 0.4, Cues = { RookReveal = "HaymakerStrike" } :: { [string]: string } }, -- his own, on the Knock, shortened
+		Name = { Cue = "RevealName", Db = { -4, -2 }, Late = 1 / 60 }, -- Common to Mythical, a frame after the slam
+		Glint = { Cue = "RevealGlint", Db = -14 }, -- the light along the rule
+		Bed = { Cue = "RevealBed", Db = -18, In = 0.3, Out = 0.4, From = 3 }, -- the third rarity (Rare) up: from the colours into the card
+		Duck = -6, -- dB the world's sounds take while the reveal is up
+	},
 	DisplayOrder = 35, -- over the overlay's cover, under the toasts (UI/Layers)
 }

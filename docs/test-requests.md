@@ -442,6 +442,82 @@ The renders can go. Both engine lessons go to the handbook (research's).
 
 **Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. The lead card's redesign, at the director's eye, is in, 2026-11-13. Research's pass on it given, competent; its fix, the target's card, is in, 2026-11-13. Research's read of the whole phone frame given, no fix: research's pass on TR3 given, 2026-11-13. **Closed, 2026-11-13.** The director, the same day: "for the premium hud my approval is not required simply do your best i will check everything later on keep going". It covers the HUD: the director's look in game comes later, as a check, and any rework it names is a new piece.
 
+## TR4. The reveal's ceremony, in the engine (Faber, with AR3)
+
+Phase 2. Written by the builder, 2026-11-13, when TR3 closed, from AR3 sections 4 and 5; research amends it. The game's signature moment (`docs/design.md`, "Shards and the Void Breaker"; `docs/ui.md`, "The reveal"), built to Modulo's `build/handoff/Reveal/parts/reveal.json`. The art it's judged against is `build/handoff/Reveal/art/`, research's pass at competent.
+
+**Feel line:** AR3, section 4, as Modulo answered it and research accepted it. The beats and each rarity's times: AR3, section 5.
+
+**The block contains:**
+
+1. **The parts in the engine:** the 28 images uploaded under the group, the shard's 8 meshes published from Studio (`ModelAssembly.PublishMesh`), and Rook's, Pip's and Lyric's Reveal clips saved in the place the way the fight's clips are.
+2. **`Config.Reveal`,** written from `reveal.json` by `tools/ui/reveal_config.py`, with the ids. Research tunes its numbers live.
+3. **`Rules.Reveal`,** pure Luau: the times, the curves, the leak's pick, the split's flash, the name's size, the skip.
+4. **The stage** (`src/client/UI/Reveal`): `reveal.json`'s 16 layers, laid each frame from the time since the tap. It holds the shard in a ViewportFrame on its pose, with the leak over it. The figure is its Voidkin's body on its Reveal clip, or the grey stand-in on Rook's clip for a Voidkin not yet made. Then the colours' run, the strike, the name's slam, the split's flash and the kick. Full screen on the Overlay layer, the frame's right wing inside a phone's safe area.
+5. **The break wired in:** `BaseController.Reveal` plays it after the server's yes, then the card that's there today. The skip opens at 1.0 s and lands on the held frame. The bodies reach the client through a copy the server puts in `ReplicatedStorage`.
+6. **Sounds,** to research's cues, from Roblox's library, each logged.
+
+**Research's sound cues, 2026-11-13.** The reveal is heard hundreds of times, so a Common is short and quiet, and the two peaks belong to the rare ones. Each cue's weight sits above 250 Hz, or a phone loses it (`handbook/visuals/audio.md`, "UI sound"). All cues go through one `Reveal` sound group, and the world and its music duck 6 dB while it plays. Levels are relative to the loudest, the Legendary split at 0 dB. Each cue lands on its beat's frame.
+
+| Cue | When | Level | The character |
+|---|---|---|---|
+| Crack | each seam, 4 times, 0.03 to 0.34 s | -14 | a dry, short crystal crack, one source, each seam a semitone higher. Every rarity |
+| Rung | each new colour of the leak's climb | -12 rising to -6 at the top rung | one clean glass chime, short tail (about 0.4 s), pitched up a step per rung. Not at Common, which doesn't climb |
+| Breath | the breath, Epic up | -10 at its peak | an air swell drawn inward (a reversed shimmer), cut dead about 0.12 s before the split, so the split lands out of silence |
+| Split, low | the split, Common to Epic | Common -12, Uncommon -10, Rare -8, Epic -5 | a glassy pop with a short sparkle, one source, deeper and longer as it climbs |
+| Split, high | the split, Legendary and Mythical | 0 | a full burst: a bright shatter over a body in the low mids, tail about 1.5 s. Mythical plays it a touch lower (speed 0.9) |
+| Strike | the ram's Knock | -6 | the Voidkin's own: for Rook, his Haymaker strike, shortened. Each Voidkin's comes with its Reveal |
+| Name | the name's slam, one frame after | Common -4 to Mythical -2 | a heavy metal stamp, short ring, no tail over 0.3 s. At Common it's the loudest thing, so the beat still lands |
+| Glint | the light along the rule | -14 | a short high shing |
+| Bed | from the colours to the card, Rare up | -18 | a soft held shimmer pad, no melody, faded in over 0.3 s and out over 0.4 s into the card |
+
+Cut from the builder's list: the window opening. It falls 0.13 s after the split, inside the split's tail, and a cue there would blur the two. **The skip** stops every cue and plays the name's slam on the held frame, so a skipped reveal still lands. The levels are seeds, tuned by ear in the engine. Research's verdict in motion includes the sound.
+
+**What waits:** the card after the reveal, on the kit, with the Voidkin screens; the shard at the world's, the bag's and a chamber's sizes; each Voidkin's own Reveal as it's made; the clips' upload for a public build (no clip is published yet: `Config.Animations.Ids`).
+
+**Checks:**
+
+- Logic cases: each rarity's times are `reveal.json`'s; the skip is shut before 1.0 s and open after it, at every rarity; the leak's two sets always share 1; no name is set wider than 379.2 points.
+- Self-test cases:
+  - A break at each rarity plays through to the card.
+  - A tap before 1.0 s does nothing; a tap after it lands on the held frame.
+  - A refused break shows no ceremony.
+  - The frame stays inside the smallest phone's safe area.
+- The engine beside the art at `reveal.json`'s four moments per rarity, as `reveal_parts_compare.png` lays them.
+- The frame rate through a Mythical, on desktop and on the phone's simulator.
+- Research's verdict in motion, then its artistic pass.
+
+**Time named:** about 10 hours. It's the signature piece, and the leak is the hard part.
+
+**Built, 2026-11-13 (Faber).** The block's six items are in. The builder's calls on the way, each tier 1:
+
+- **The stage fits and centres in the screen's safe area,** and the room behind still fills the screen. On the phone simulator (an iPhone 16 Pro, 750 by 401), the stage filled the height, so from Rare up the frame's top stood up to 26 px in Roblox's top-bar strip. Fitted to the safe area, it's 1% smaller there, and the desktop doesn't change.
+- **A sound starts on its frame.** A new Sound waited 0.28 to 0.35 s to load, even with its file cached, so the cracks bunched and the split came about 0.3 s late. The client now keeps one loaded Sound per cue and plays clones of it (`FighterController/Sounds`, the bank). Every cue now starts within one or two frames, measured. The fight's cues go through the same function, so Haymaker's strike was late by about as much before this: the director's ear on it (the board's "Waiting on the director") is best given now.
+- **A cue on the screen is levelled by its whole gain** (`Rules.Sound`): no file plays past twice its own level. A cue in the world keeps its bounds. The reveal's cues sit well under the reference, so quiet library files serve without lifting their noise. A case checks every scheduled cue at every rarity.
+- **The low split, deeper and longer as it climbs:** played at speed 1.12, 1.06, 1 and 0.94 from Common to Epic (`Config.Reveal.Sounds.SplitLow.Speed`), a seed for the ear.
+- **The stamp:** research's "no tail over 0.3 s" chose the metal slam (40 dB down by 0.22 s) over the louder anvil, which rings to 0.37 s. The sounds and their alternates are in `docs/asset-log.md`.
+- **Known, for research's verdict:** the colours run top to bottom, where the art spreads them out from the ram's head, about 8 frames apart at most. Pip and Lyric have no strike sound until theirs come with their Reveals.
+
+What the checks found:
+
+- **Logic:** 2249 cases pass, offline and in Studio. Among them is the sounds' schedule at every rarity: each cue on its beat, its level, the climb.
+- **Self-test:** 688 of 688 on the desktop, at 60 fps. TR4's five cases:
+  - Each rarity's card comes within two frames of `reveal.json`'s Card, and every scheduled cue sounds.
+  - A tap before 1.0 s does nothing. One after it lands on the held frame, with only the stamp sounding. A tap inside the card's hold keeps the card, and one past it closes it.
+  - A refused break shows nothing and spends nothing.
+  - The frame, the window, the name and its rule sit inside the safe area at every rarity, on the desktop and on the phone simulator.
+  - Each Reveal clip's strike marker is where `Config.Reveal.Strikes` says.
+- **The frame rate through a Mythical:**
+  - Desktop: 60 fps, the worst frame 19 ms.
+  - Phone simulator: 45.9 fps, against 48 idle, the worst frame 25 ms either way. The simulator caps its own client, so the 50 fps line is NOT VERIFIED on a phone. The reveal costs about 2 fps under that cap.
+- **Beside the art:** all six rarities at the four moments (`build/scratch/faber/reveal/compare_<rarity>.png`).
+- **The world report** is empty. The place is saved, version 256.
+- **For research's verdict in motion,** at phone size in 0.2 s steps: `build/scratch/faber/reveal/sheet_myth.png` (0.2 s to the card) and `sheet_common.png` (0 s to the card).
+  - The sounds' schedule is `Rules.Reveal.Cues`, and their levels are `Config.Reveal.Sounds`.
+  - The sounds stay provisional until the director's ear.
+
+**Status:** built 2026-11-13 (Faber), from TR3's close at 12:54 to about 14:30. Research's verdict in motion is next, then its artistic pass.
+
 ## Next, not yet written
 
-In order, each written when the one before it closes: the reveal's ceremony (with AR3: its larger frame and the shard's crack); Rook, Pip and Lyric installed (with AR1 and AR4), with the ranged lead's skip back as its own action, through `/ga-action`, closing on its balance check (`docs/design.md`, "Combat"); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.
+In order, each written when the one before it closes: Rook, Pip and Lyric installed (with AR1 and AR4), with the ranged lead's skip back as its own action, through `/ga-action`, closing on its balance check (`docs/design.md`, "Combat"); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.

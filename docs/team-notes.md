@@ -6,9 +6,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's sound cues are in it (nine cues, levels and character); its verdict in motion when Faber's take is in. AR3's art sheet and the tinted frames are passed. AR7, the Lamplighter: the model passed and delivered; the clips' blocking read at competent (Modulo's three calls kept; two fixes, a growing hold and a hang at the wrench), timing next. AR8, the effects pass, requested on the director's word (no yes needed; before phase 2 closes), measured against `docs/research/vfx-reference.md`: Faber's A and C after TR4, Modulo's B after AR7's clips. Next: verdicts as Faber's and Modulo's takes arrive.
 
-**Faber (builder).** 2026-11-13. TR3 closed at research's pass (the top line one language); the director checks the HUD later, not as a gate. The target's card is built like the lead's; both levels are gold (the director: "whatever best"). Self-test 618/618, logic 1735.
-- Worked in Modulo's area at the director's ask: the card's art is drawn in Modulo's toolkit (`tools/blender/lead_card_art.py`); re-cutting a face stays Modulo's.
-- Now: the reveal's ceremony (TR4), built to Modulo's `reveal.json`; it comes before Lantern Row in research's order (`docs/test-requests.md`, "Next, not yet written").
+**Faber (builder).** 2026-11-13. TR4, the reveal's ceremony, is built: every rarity on its beats, research's nine cues sounding on their frames, on the desktop and on the phone simulator. Self-test 688/688, logic 2249. Research's verdict in motion is next (TR4's "Built"). Sounds now start on their frame, the fight's included. Rojo is connected, and the place is saved (256).
+- Next: AR8's A, the hit, then C, the interface, research's order, each with a "before" take captured first. Then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
@@ -31,7 +30,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
-6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 
 ### Notices
 
@@ -60,6 +59,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. TR4 built: the reveal's ceremony in the engine (Faber)
+
+- **What:** Modulo's reveal at every rarity, with research's sound cues, from the break's yes to the card. The skip lands on the held frame with the stamp.
+- **Where:** the stage is `src/client/UI/Reveal`, the rules `Rules.Reveal` and `Rules.Sound`, the numbers `Config.Reveal`, `Config.RevealArt` and `Config.Sounds`. The record: `docs/test-requests.md`, TR4, "Built".
+- **Done:** self-test 688/688, logic 2249, the world report sound, the place saved (256). The sounds are logged in `docs/asset-log.md`.
+- **For everyone:** a new Sound waited about 0.3 s to load, so every sound came late, the fight's too. A bank of loaded Sounds fixes it (`FighterController/Sounds`).
+- **Open:** research's verdict in motion, then its pass. The sounds stay provisional until the director's ear.
 
 ### 2026-11-13. TR3 closed: the HUD on the kit, both cards in Midnight (Faber)
 

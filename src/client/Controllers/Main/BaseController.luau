@@ -224,6 +224,12 @@ local function openShard(index: number?)
 	end
 end
 
+-- A broken shard opened, the oldest unless `index`, as the Breaker's prompt and its screen open one: the reveal shows
+-- only once the server says it opened (a refusal is a toast).
+function BaseController.OpenShard(index: number?)
+	openShard(index)
+end
+
 local function breakerRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	local order = 0
 	local function add(props: any): Frame
@@ -484,6 +490,14 @@ function BaseController.Tap()
 	tap()
 end
 
+-- The reveal's clock pinned at `t` seconds from the tap, or let run on (nil): for tests and captures.
+function BaseController.Seek(t: number?)
+	local shown = reveal
+	if shown then
+		shown.Stage.Seek(t)
+	end
+end
+
 function BaseController.Dismiss()
 	local shown = reveal
 	if shown then
@@ -735,8 +749,8 @@ local function revealBridge()
 			BaseController.Reveal({ Def = value, Outcome = "New" })
 		elseif command == "Show" then -- the stage at a rarity with a name and a body, e.g. Rook's at Mythical as the art sheet lays it
 			BaseController.Reveal({ Def = value.Name, Outcome = "New" }, value)
-		elseif command == "Seek" and reveal then
-			reveal.Stage.Seek(value)
+		elseif command == "Seek" then
+			BaseController.Seek(value)
 		elseif command == "Tap" then
 			tap()
 		elseif command == "Close" then

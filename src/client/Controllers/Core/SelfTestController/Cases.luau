@@ -7,6 +7,7 @@ local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
 local PathfindingService = game:GetService("PathfindingService")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 
@@ -29,9 +30,14 @@ local Parts = require(Shared.Util.Parts)
 local Drops = require(Shared.Rules.Drops)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Rarity = require(Shared.Definitions.Rarity)
+local RevealConfig = require(Shared.Config.Reveal)
+local RevealArt = require(Shared.Config.RevealArt)
+local RevealRule = require(Shared.Rules.Reveal)
 local Enemies = require(Shared.Definitions.Enemies)
 local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
+local Sounds = require(script.Parent.Parent.Parent.Main.FighterController.Sounds)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
@@ -73,6 +79,8 @@ local BESIDE_TOLERANCE = 25 -- degrees off square to the avatar's facing that st
 local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
 local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
 local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: inside its notice and the lead's leash
+local CARD_SLACK = 0.1 -- seconds past reveal.json's Card the reveal's card may come: its frame, and the spawn that builds it
+local FPS_FLOOR = 50 -- frames a second the Mythical's reveal holds: the self-test's own warning line
 local DROP_BACK = 3 -- seconds a felled pack takes to come back in the drops case: time to leave the street first
 local ANSWER = 3 -- seconds a request through a screen may take to come back in the save's copy
 local PLATE_TICK = 0.4 -- seconds for the plates and pills to show a change (BaseController and HudController read at 4 Hz)
@@ -135,6 +143,27 @@ local function readyCount(def: string): number
 		count += if work.Def == def then 1 else 0
 	end
 	return count
+end
+
+-- Rook's reveal at `rarity`, on his body, as the NL_RevealTest bridge's Show plays it: display only, nothing owned.
+local function showReveal(rarity: string)
+	local rook = Voidkin.ById.rook
+	BaseController.Reveal({ Def = rook.Id, Outcome = "New" }, { Rarity = rarity, Name = rook.Name, Model = rook.Model })
+end
+
+-- Waits a frame at a time until the reveal's clock reaches `at`: false if it's gone or `seconds` pass first.
+local function revealAt(at: number, seconds: number): boolean
+	local began = os.clock()
+	while os.clock() - began < seconds do
+		local shown = BaseController.Revealed()
+		if shown == nil then
+			return false
+		elseif shown.Time >= at then
+			return true
+		end
+		RunService.RenderStepped:Wait()
+	end
+	return false
 end
 
 -- The UI lint on whatever shows now.
@@ -3017,6 +3046,166 @@ return {
 			BaseController.Dismiss()
 			t.Check("it closes", BaseController.Revealed() == nil)
 			Screen.Close()
+		end,
+	},
+	{
+		Name = "Reveal: a break at each rarity plays through to its card, every cue sounding",
+		Run = function(t: any)
+			-- TR4's check, each rarity on Rook's body: the card comes on reveal.json's Card, and every cue Rules.Reveal.Cues
+			-- schedules starts a Sound. The Mythical's frame rate too (TR4: run on the desktop and on the phone simulator).
+			local rook = Voidkin.ById.rook
+			local clip = if rook.Model and RevealConfig.Strikes[`{rook.Model}Reveal`] then `{rook.Model}Reveal` else RevealConfig.Fallback
+			local strike = RevealConfig.Sounds.Strike.Cues[clip]
+			local function length(cue: string): number
+				return Sounds.Length(cue) or 0
+			end
+			for index, rarity in Rarity.Order do
+				local r = RevealArt.Rarities[rarity]
+				local expected = #RevealRule.Cues(r, rarity, index, strike, length)
+				local began = os.clock()
+				showReveal(rarity)
+				local group = SoundService:FindFirstChild("NL_RevealSounds")
+				local heard = 0
+				local counting = if group
+					then group.ChildAdded:Connect(function(child: Instance)
+						heard += if child:IsA("Sound") then 1 else 0
+					end)
+					else nil
+				local frames, worst = 0, 0
+				local carded: number? = nil
+				while os.clock() - began < r.Times.Card + CARD_SLACK * 2 do
+					local step = RunService.RenderStepped:Wait()
+					frames += 1
+					worst = math.max(worst, step)
+					local shown = BaseController.Revealed()
+					if shown and shown.Card then
+						carded = os.clock() - began
+						break
+					end
+				end
+				if counting then
+					counting:Disconnect()
+				end
+				t.Check(`{rarity}: the card comes`, carded ~= nil)
+				if carded then
+					t.Near(`{rarity}: on reveal.json's Card, {r.Times.Card} s`, carded, r.Times.Card + CARD_SLACK / 2, CARD_SLACK / 2)
+				end
+				t.Check(`{rarity}: every cue starts a Sound`, heard == expected, `{heard} of {expected}`)
+				if rarity == Rarity.Order[#Rarity.Order] and carded then
+					local fps = frames / carded
+					t.Check(`{rarity}: holds {FPS_FLOOR} fps or more`, fps >= FPS_FLOOR, string.format("%.0f fps, the worst frame %.0f ms", fps, worst * 1000))
+				end
+				BaseController.Dismiss()
+			end
+			t.Check("it closes", BaseController.Revealed() == nil)
+		end,
+	},
+	{
+		Name = "Reveal: a tap before the skip opens does nothing; one after lands on the held frame with only the stamp; one past the card's hold closes it",
+		Run = function(t: any)
+			local rarity = Rarity.Order[#Rarity.Order - 1]
+			local r = RevealArt.Rarities[rarity]
+			showReveal(rarity)
+			t.Check("the reveal runs", revealAt(RevealConfig.Skip / 2, RevealConfig.Skip))
+			BaseController.Tap()
+			RunService.RenderStepped:Wait()
+			local shown = BaseController.Revealed()
+			t.Check("a tap before the skip opens does nothing", shown ~= nil and not shown.Card and shown.Time < RevealConfig.Skip, if shown then string.format("%.2f s", shown.Time) else "gone")
+			t.Check("the skip opens", revealAt(RevealConfig.Skip + 0.1, RevealConfig.Skip))
+			BaseController.Tap()
+			RunService.RenderStepped:Wait()
+			shown = BaseController.Revealed()
+			t.Check("a tap after it lands on the held frame", shown ~= nil and math.abs(shown.Time - r.Times.Card) < 1e-3, if shown then string.format("%.2f s", shown.Time) else "gone")
+			t.Check("the card comes with it", waitFor(t, CARD_SLACK * 2, function(): boolean
+				local now = BaseController.Revealed()
+				return now ~= nil and now.Card
+			end))
+			local group = SoundService:FindFirstChild("NL_RevealSounds")
+			local left: { string } = {}
+			for _, sound in if group then group:GetChildren() else {} do
+				if sound:IsA("Sound") then
+					table.insert(left, sound.Name)
+				end
+			end
+			t.Check("every cue stops but the name's stamp", #left == 1 and left[1] == RevealConfig.Sounds.Name.Cue, table.concat(left, ", "))
+			BaseController.Tap()
+			t.Check("a tap inside the card's hold keeps it", BaseController.Revealed() ~= nil)
+			t.Wait(RevealConfig.CardHold + 0.05)
+			BaseController.Tap()
+			t.Check("a tap past it closes it", BaseController.Revealed() == nil)
+		end,
+	},
+	{
+		Name = "Reveal: a refused break shows no ceremony",
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			local ready = if view then #view.Base.Ready else 0
+			BaseController.OpenShard(ready + 1) -- past the end: the server refuses it (nothing ready, or no such shard)
+			t.Wait(0.1)
+			t.Check("no reveal", BaseController.Revealed() == nil)
+			t.Check("nothing on the overlay", Layers.Get("Overlay"):FindFirstChild("Reveal") == nil)
+			local now = ProfileController.Get()
+			local after = if now then #now.Base.Ready else 0
+			t.Check("nothing spent", after == ready, `{after} ready, {ready} before`)
+		end,
+	},
+	{
+		Name = "Reveal: on the held frame, the frame, the window, the name and its rule sit inside this screen's safe area",
+		Run = function(t: any)
+			-- TR4's check, run on the desktop and on the phone simulator's smallest phone: the reveal fills the whole screen,
+			-- and what must read keeps inside the safe area (the frame's right wing stands nearest the edge).
+			local probe = Instance.new("ScreenGui")
+			probe.Name = "NL_SelfTestSafe"
+			probe.ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets
+			local safe = Instance.new("Frame")
+			safe.Size = UDim2.fromScale(1, 1)
+			safe.BackgroundTransparency = 1
+			safe.Parent = probe
+			probe.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+			for _, rarity in Rarity.Order do
+				showReveal(rarity)
+				BaseController.Seek(RevealArt.Rarities[rarity].Times.Card)
+				RunService.RenderStepped:Wait()
+				RunService.RenderStepped:Wait()
+				local holder = Layers.Get("Overlay"):FindFirstChild("Reveal")
+				local stage = holder and holder:FindFirstChild("Stage", true)
+				t.Check(`{rarity}: the stage shows`, stage ~= nil)
+				local low, high = safe.AbsolutePosition, safe.AbsolutePosition + safe.AbsoluteSize
+				for _, name in { "Frame", "Window", "Name", "Rule" } do
+					local piece = stage and stage:FindFirstChild(name)
+					if piece and piece:IsA("GuiObject") and piece.Visible then
+						local a, b = piece.AbsolutePosition, piece.AbsolutePosition + piece.AbsoluteSize
+						local inside = a.X >= low.X - 0.5 and a.Y >= low.Y - 0.5 and b.X <= high.X + 0.5 and b.Y <= high.Y + 0.5
+						t.Check(`{rarity}: the {name} inside the safe area`, inside, string.format("%.0f,%.0f to %.0f,%.0f in %.0f,%.0f to %.0f,%.0f", a.X, a.Y, b.X, b.Y, low.X, low.Y, high.X, high.Y))
+					else
+						t.Check(`{rarity}: the {name} shows`, false)
+					end
+				end
+				BaseController.Dismiss()
+			end
+			probe:Destroy()
+		end,
+	},
+	{
+		Name = "Reveal: each Voidkin's Reveal clip marks its strike where Config.Reveal.Strikes says",
+		Stay = true,
+		Run = function(t: any)
+			for clip, strike in RevealConfig.Strikes do
+				local sequence = Clips.Sequence(clip)
+				t.Check(`{clip} is baked`, sequence ~= nil)
+				local at: number? = nil
+				for _, keyframe in if sequence then sequence:GetKeyframes() else {} do
+					for _, marker in (keyframe :: Keyframe):GetMarkers() do
+						if marker.Name == strike.Marker then
+							at = (keyframe :: Keyframe).Time
+						end
+					end
+				end
+				t.Check(`{clip} marks {strike.Marker}`, at ~= nil)
+				if at then
+					t.Near(`{clip}: {strike.Marker} at {strike.Time} s`, at, strike.Time, BEAT_TOLERANCE)
+				end
+			end
 		end,
 	},
 	{

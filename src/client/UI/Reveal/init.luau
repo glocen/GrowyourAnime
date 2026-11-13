@@ -7,19 +7,26 @@
 --   stage.Skip()      from 1.0 s, to the held frame
 --   stage.Seek(t)     for tests and captures: the clock pinned at t (nil lets it run on from there)
 --   stage.Destroy()
+-- Its sounds are research's cues (Rules.Reveal.Cues) through one group, the world ducked under them; a skip stops them
+-- and stamps the name. A pinned clock (Seek) is silent.
 
 local ContentProvider = game:GetService("ContentProvider")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TextService = game:GetService("TextService")
+local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage.Shared
 local Art = require(Shared.Config.RevealArt)
 local RevealConfig = require(Shared.Config.Reveal)
 local Reveal = require(Shared.Rules.Reveal)
+local RarityDefs = require(Shared.Definitions.Rarity)
+local SoundConfig = require(Shared.Config.Sounds)
 local Layers = require(script.Parent.Layers)
 local Shard = require(script.Shard)
 local Figure = require(script.Figure)
+local Sounds = require(script.Parent.Parent.Controllers.Main.FighterController.Sounds)
 
 local WHITE = Color3.new(1, 1, 1)
 local FONT = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold, Enum.FontStyle.Italic)
@@ -27,6 +34,8 @@ local MARGIN = 24 -- points of room past the window's top and foot, so the kick 
 local HEAD = Vector2.new(-Art.Figure.Tile.X / 2, 185 - Art.Figure.Tile.Y / 2) + Art.Figure.Flood.Origin -- the ram's head, from cx
 local COLUMN = { 400, 72 } -- the column reaches this far above the ram's head, and this far below
 local LEAK_LABELS = 24
+local SOUND_GROUP = "NL_RevealSounds"
+local LATE = 0.1 -- a cue more than this past its time when the clock reaches it (a skip, a seek) stays silent
 local Z = { Glow = 1, Rings = 2, Rays = 3, Halo = 4, Window = 5, Sill = 6, Frame = 7, Shard = 8, Leak = 9, Figure = 10, Strike = 11, Foot = 12, Flash = 13, Name = 14, Split = 15 }
 
 local Stage = {}
@@ -41,6 +50,30 @@ export type Handle = {
 	Destroy: () -> (),
 }
 
+-- The screen's safe area, from a ScreenGui inset as the HUD's is (Roblox's top bar, a phone's notch): the stage fits and
+-- centres in it, while the room behind fills the whole screen. On a phone the stage would otherwise fill the height,
+-- and from Rare up the frame's top would stand in the top bar's strip (the self-test, on the iPhone 16 Pro).
+local safeArea: Frame? = nil
+local function safe(): Frame
+	local found = safeArea
+	if found and found.Parent and found.Parent.Parent then
+		return found
+	end
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "NL_RevealSafe"
+	gui.ResetOnSpawn = false
+	gui.ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets
+	local area = Instance.new("Frame")
+	area.Name = "Safe"
+	area.Size = UDim2.fromScale(1, 1)
+	area.BackgroundTransparency = 1
+	area.Parent = gui
+	gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+	safeArea = area
+	return area
+end
+
+task.spawn(safe) -- laid out long before the first break
 task.spawn(function() -- every image ready before the first break, so nothing pops in
 	local ids = {}
 	for _, image in Art.Images do
@@ -229,14 +262,76 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 		return math.min(pinned or (os.clock() - start), r.Times.Card)
 	end
 
+	-- The sounds: each cue once, when the running clock reaches it.
+	local index = table.find(RarityDefs.Order, options.Rarity) or 1
+	local strike = RevealConfig.Sounds.Strike.Cues[figure.Clip]
+	local cues = Reveal.Cues(r, options.Rarity, index, strike, function(cue: string): number
+		return Sounds.Length(cue) or 0.5
+	end)
+	local group = Sounds.Group(SOUND_GROUP, SoundConfig.Reveal)
+	local fired: { [number]: boolean } = {}
+	local playing: { [number]: Sound } = {}
+	Sounds.Duck(RevealConfig.Sounds.Duck)
+
+	local function stop(sound: Sound, out: number?)
+		if out and out > 0 then
+			local fade = TweenService:Create(sound, TweenInfo.new(out), { Volume = 0 })
+			fade.Completed:Once(function()
+				sound:Destroy()
+			end)
+			fade:Play()
+		else
+			sound:Destroy()
+		end
+	end
+
+	local function hear(t: number)
+		for i, cue in cues do
+			if not fired[i] and t >= cue.At then
+				fired[i] = true
+				local sound = if t - cue.At < LATE then Sounds.Flat(cue.Cue, cue.Db, cue.Speed, group, cue.Loop) else nil
+				if sound then
+					playing[i] = sound
+					if cue.In and cue.In > 0 then
+						local full = sound.Volume
+						sound.Volume = 0
+						TweenService:Create(sound, TweenInfo.new(cue.In), { Volume = full }):Play()
+					end
+				end
+			end
+			local sound = playing[i]
+			if sound and cue.Until and t >= cue.Until then
+				playing[i] = nil
+				stop(sound, cue.Out)
+			end
+		end
+	end
+
+	-- Every cue stopped and none still to come.
+	local function hush()
+		for i in cues do
+			fired[i] = true
+			local sound = playing[i]
+			if sound then
+				playing[i] = nil
+				stop(sound)
+			end
+		end
+	end
+
 	local function frameAt(t: number)
 		local f = Reveal.At(r, t, box.X)
-		local viewport = if workspace.CurrentCamera then workspace.CurrentCamera.ViewportSize else screen
-		local whole = math.min(viewport.X / screen.X, viewport.Y / screen.Y)
+		local area = safe()
+		local fits, corner = area.AbsoluteSize, area.AbsolutePosition - holder.AbsolutePosition
+		if fits.X < 1 or fits.Y < 1 then -- not laid out yet: the whole screen
+			fits, corner = if workspace.CurrentCamera then workspace.CurrentCamera.ViewportSize else screen, Vector2.zero
+		end
+		local whole = math.min(fits.X / screen.X, fits.Y / screen.Y)
 		local layer = Layers.Scale()
 		fit.Scale = whole / layer
 		local kick = f.Kick * whole / layer
-		stage.Position = UDim2.new(0.5, 0, 0.5, kick)
+		local centre = (corner + fits / 2) / layer
+		stage.Position = UDim2.fromOffset(centre.X, centre.Y + kick)
 		room.Position = UDim2.new(0, 0, 0, kick - MARGIN * whole / layer)
 		room.Size = UDim2.new(1, 0, 1, 2 * MARGIN * whole / layer)
 		local cx, cy, colour = f.Cx, places.Cy, f.Colour
@@ -344,7 +439,11 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 
 	frameAt(0)
 	local connection = RunService.RenderStepped:Connect(function()
-		frameAt(now())
+		local t = now()
+		if pinned == nil then
+			hear(t)
+		end
+		frameAt(t)
 	end)
 
 	local handle: Handle
@@ -361,6 +460,13 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 			if pinned then
 				pinned = r.Times.Card
 			end
+			hush() -- the skip stops every cue and stamps the name on the held frame, so it still lands
+			local stamp = RevealConfig.Sounds.Name
+			for _, cue in cues do
+				if cue.Cue == stamp.Cue then
+					Sounds.Flat(cue.Cue, cue.Db, cue.Speed, group)
+				end
+			end
 			return true
 		end,
 		Seek = function(t: number?)
@@ -374,6 +480,8 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 		end,
 		Destroy = function()
 			connection:Disconnect()
+			hush()
+			Sounds.Duck(0)
 			holder:Destroy()
 		end,
 	}

@@ -9,6 +9,7 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Art = require(Shared.Config.RevealArt)
 local RevealConfig = require(Shared.Config.Reveal)
+local Rarity = require(Shared.Definitions.Rarity)
 
 local W = Art.Screen.X
 local WHITE = Color3.new(1, 1, 1)
@@ -399,6 +400,70 @@ function Reveal.NameSize(r: Rarity, width: number): number
 	local size = Art.Name.Size * r.NameScale * face
 	local wide = width * r.NameScale * face
 	return if wide > Art.Name.Widest then size * Art.Name.Widest / wide else size
+end
+
+-- The sounds ---------------------------------------------------------------------------------------------------------
+
+-- One sound of the reveal: the library cue it plays (Config.Sounds.Cues) from `At`, at `Db` against the loudest and at
+-- `Speed`; stopped at `Until`, faded in over `In` and out over `Out` when given, looped over its slice when `Loop`.
+export type Cue = { At: number, Cue: string, Db: number, Speed: number, Until: number?, In: number?, Out: number?, Loop: boolean? }
+
+local function lerp(a: number, b: number, u: number): number
+	return a + (b - a) * u
+end
+
+-- The reveal's sounds at a rarity, in time order (research's cues, TR4): `name` is the rarity's, `index` its place in
+-- Rarity.Order (1 Common to 6 Mythical), `strike` his clip's strike cue if he has one, `length(cue)` a cue's slice in
+-- seconds (the breath ends on its cut, so it starts that long before).
+function Reveal.Cues(r: Rarity, name: string, index: number, strike: string?, length: (cue: string) -> number): { Cue }
+	local s = RevealConfig.Sounds
+	local times = r.Times
+	local out: { Cue } = {}
+	for i, at in r.Cracks do
+		table.insert(out, { At = at, Cue = s.Crack.Cue, Db = s.Crack.Db, Speed = 2 ^ ((i - 1) * s.Crack.Semitones / 12) })
+	end
+	local top = 1
+	for _, other in Art.Rarities do
+		top = math.max(top, #(other :: Rarity).Steps)
+	end
+	for k = 2, #r.Steps do
+		local u = if top > 2 then (k - 2) / (top - 2) else 1
+		table.insert(out, {
+			At = r.Steps[k].When,
+			Cue = s.Rung.Cue,
+			Db = lerp(s.Rung.Db[1], s.Rung.Db[2], u),
+			Speed = 2 ^ ((k - 2) * s.Rung.Semitones / 12),
+		})
+	end
+	if r.Breath then
+		local cut = times.Split - s.Breath.Cut
+		table.insert(out, { At = cut - length(s.Breath.Cue), Cue = s.Breath.Cue, Db = s.Breath.Db, Speed = 1, Until = cut })
+	end
+	local high = s.SplitHigh.Speed[name]
+	if high then
+		table.insert(out, { At = times.Split, Cue = s.SplitHigh.Cue, Db = s.SplitHigh.Db, Speed = high })
+	else
+		local db, speed = s.SplitLow.Db[name] or s.SplitLow.Db.Common, s.SplitLow.Speed[name] or 1
+		table.insert(out, { At = times.Split, Cue = s.SplitLow.Cue, Db = db, Speed = speed })
+	end
+	if strike then
+		table.insert(out, { At = times.Colours, Cue = strike, Db = s.Strike.Db, Speed = 1, Until = times.Colours + s.Strike.Length })
+	end
+	if index >= s.Bed.From then
+		table.insert(out, { At = times.Colours, Cue = s.Bed.Cue, Db = s.Bed.Db, Speed = 1, Until = times.Card, In = s.Bed.In, Out = s.Bed.Out, Loop = true })
+	end
+	table.insert(out, { At = times.Name, Cue = s.Glint.Cue, Db = s.Glint.Db, Speed = 1 })
+	local order = #Rarity.Order
+	table.insert(out, {
+		At = times.Name + s.Name.Late,
+		Cue = s.Name.Cue,
+		Db = lerp(s.Name.Db[1], s.Name.Db[2], if order > 1 then (index - 1) / (order - 1) else 1),
+		Speed = 1,
+	})
+	table.sort(out, function(a: Cue, b: Cue): boolean
+		return a.At < b.At
+	end)
+	return out
 end
 
 -- The skip opens a second in, every rarity.

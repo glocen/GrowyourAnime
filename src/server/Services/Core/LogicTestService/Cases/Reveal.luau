@@ -11,6 +11,8 @@ local Art = require(Shared.Config.RevealArt)
 local RevealConfig = require(Shared.Config.Reveal)
 local Rarity = require(Shared.Definitions.Rarity)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local SoundConfig = require(Shared.Config.Sounds)
+local SoundRule = require(Shared.Rules.Sound)
 
 local FPS = 60
 local CLOSE = 1e-4 -- the generated config's rounding
@@ -215,6 +217,86 @@ return {
 					ordered = ordered and keys[i][1] > keys[i - 1][1]
 				end
 				t.Check(`edge {edge}: in order`, ordered)
+			end
+		end,
+	},
+	{
+		Name = "Reveal: the sounds land on their beats, research's cues at each rarity",
+		Run = function(t: any)
+			local s = RevealConfig.Sounds
+			local function length(_: string): number
+				return 0.5
+			end
+			for index, name in Rarity.Order do
+				local r = Art.Rarities[name]
+				local cues = Reveal.Cues(r, name, index, "HaymakerStrike", length)
+				local by: { [string]: { Reveal.Cue } } = {}
+				local ordered = true
+				for i, c in cues do
+					by[c.Cue] = by[c.Cue] or {}
+					table.insert(by[c.Cue], c)
+					ordered = ordered and (i == 1 or c.At >= cues[i - 1].At)
+				end
+				t.Check(`{name}: in time order`, ordered)
+				local cracks = by[s.Crack.Cue] or {}
+				t.Equal(`{name}: a crack at each seam`, #cracks, #r.Cracks)
+				t.Check(`{name}: each crack a semitone over the last`, #cracks >= 2 and near((cracks[2].Speed :: number) / (cracks[1].Speed :: number), 2 ^ (1 / 12)))
+				t.Equal(`{name}: a rung at each new colour`, #(by[s.Rung.Cue] or {}), #r.Steps - 1)
+				local breath = by[s.Breath.Cue]
+				t.Check(`{name}: a breath only where the art breathes`, (breath ~= nil) == (r.Breath ~= nil))
+				if breath then
+					local cut = breath[1].Until :: number
+					t.Check(`{name}: the breath cut dead before the split`, near(cut, r.Times.Split - s.Breath.Cut) and near(breath[1].At + 0.5, cut))
+				end
+				local high = by[s.SplitHigh.Cue]
+				t.Check(`{name}: the full burst only at the two peaks`, (high ~= nil) == (name == "Legendary" or name == "Mythical"))
+				local split = (high or by[s.SplitLow.Cue] or {})[1]
+				t.Check(`{name}: the split on its frame`, split ~= nil and near(split.At, r.Times.Split))
+				local strike = (by.HaymakerStrike or {})[1]
+				t.Check(`{name}: his strike on the Knock, shortened`, strike ~= nil and near(strike.At, r.Times.Colours) and near(strike.Until :: number, r.Times.Colours + s.Strike.Length))
+				t.Check(`{name}: the bed from Rare up`, (by[s.Bed.Cue] ~= nil) == (index >= 3))
+				local stamp = (by[s.Name.Cue] or {})[1]
+				t.Check(`{name}: the stamp a frame after the slam`, stamp ~= nil and near(stamp.At, r.Times.Name + 1 / 60))
+			end
+			local function one(cues: { Reveal.Cue }, cue: string, last: boolean?): Reveal.Cue?
+				local found = nil
+				for _, c in cues do
+					if c.Cue == cue and (found == nil or last) then
+						found = c
+					end
+				end
+				return found
+			end
+			local mythical = Reveal.Cues(Art.Rarities.Mythical, "Mythical", #Rarity.Order, nil, length)
+			local top = one(mythical, s.Rung.Cue, true)
+			t.Check("the top rung at its level", top ~= nil and near(top.Db, s.Rung.Db[2]))
+			local burst = one(mythical, s.SplitHigh.Cue)
+			t.Check("Mythical's burst a touch lower", burst ~= nil and near(burst.Speed, 0.9))
+			local stamp = one(mythical, s.Name.Cue)
+			t.Check("Mythical's stamp at its level", stamp ~= nil and near(stamp.Db, s.Name.Db[2]))
+			local common = Reveal.Cues(Art.Rarities.Common, "Common", 1, nil, length)
+			t.Check("no strike without his own", one(common, "HaymakerStrike") == nil)
+			local pop = one(common, s.SplitLow.Cue)
+			t.Check("Common's pop at its level", pop ~= nil and near(pop.Db, s.SplitLow.Db.Common))
+			local last = math.huge
+			local deeper = true
+			for index, name in Rarity.Order do
+				local low = one(Reveal.Cues(Art.Rarities[name], name, index, nil, length), s.SplitLow.Cue)
+				if low then
+					deeper = deeper and low.Speed < last
+					last = low.Speed
+				end
+			end
+			t.Check("the pop deeper and longer as it climbs", deeper and last < 1)
+			local commonStamp = one(common, s.Name.Cue)
+			t.Check("Common's stamp at its level, its loudest", commonStamp ~= nil and near(commonStamp.Db, s.Name.Db[1]) and pop ~= nil and commonStamp.Db > pop.Db)
+			local cues = SoundConfig.Cues :: { [string]: SoundConfig.Cue }
+			for index, name in Rarity.Order do
+				for _, c in Reveal.Cues(Art.Rarities[name], name, index, "HaymakerStrike", length) do
+					local cue = cues[c.Cue]
+					local volume = if cue then SoundRule.Gain(cue) * cue.Volume * 10 ^ (c.Db / 20) else math.huge
+					t.Check(`{name}'s {c.Cue} plays no louder than twice its file`, volume <= SoundConfig.Gain[2], string.format("%.2f", volume))
+				end
 			end
 		end,
 	},

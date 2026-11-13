@@ -31,7 +31,7 @@ local GORE = { -- the ToS
 -- six letters or more also rule out run-together titles ("nuclearthronekillsound").
 local OTHER_WORKS = {
 	"minecraft", "zelda", "mario", "sonic the hedgehog", "sega", "pokemon", "fortnite", "skyrim", 
-	"valorant", "overwatch", "undertale", "deltarune",
+	"valorant", "overwatch", "undertale", "deltarune", "pvz", "plants vs zombies", "minesweeper",
 	"terraria", "csgo", "cs go", "counter strike", "call of duty", "cod", "warzone", "tf2", "team fortress", "half life",
 	"star wars", "lightsaber", "light saber", "jedi", "sith", "naruto", "anime", "dbz", "dragon ball", "goku",
 	"jojo", "demon slayer", "genshin", "deepwoken", "rogue lineage", "blox fruits", "piggy", "bedwars",
@@ -84,7 +84,7 @@ export type Pick = {
 }
 
 local function normalized(title: string): string
-	local text = string.lower(title):gsub("[^%w]+", " "):gsub("%s+", " ")
+	local text = string.lower(title):gsub("(%a)(%d)", "%1 %2"):gsub("(%d)(%a)", "%1 %2"):gsub("[^%w]+", " "):gsub("%s+", " ") -- "death4" is "death 4"
 	return ` {text} `
 end
 

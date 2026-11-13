@@ -32,6 +32,7 @@ export type Figure = {
 	ColoursFade: UIGradient,
 	HotGroup: CanvasGroup,
 	HotFade: UIGradient,
+	Clip: string, -- the Reveal clip he plays (his own, or the stand-in's)
 	Strike: number, -- his strike marker's time in his clip
 	Length: number, -- his clip's length
 }
@@ -144,6 +145,7 @@ function Figure.new(model: string?, parent: Instance, z: number): Figure
 		ColoursFade = coloursFade,
 		HotGroup = hotGroup,
 		HotFade = hotFade,
+		Clip = clip,
 		Strike = RevealConfig.Strikes[clip].Time,
 		Length = if track and track.Length > 0 then track.Length else 1.6,
 	}

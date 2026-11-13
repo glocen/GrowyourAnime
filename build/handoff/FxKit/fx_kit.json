@@ -452,6 +452,41 @@
    ],
    "textures": "fx_rise_<P>, or none: Neon in a Color",
    "uv": "planar, across its face"
+  },
+  "FxBar": {
+   "file": "meshes/FxBar.json",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tris": 20,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "textures": "fx_across_<P>",
+   "uv": "U across: 0 and 1 its long edges (the chamfers and walls on the rim), the front 0.06 to 0.94; V 0.7 all along",
+   "axes": "X along it, Y across, Z its depth; its front faces -Z, the way a part looks",
+   "frame": "a square's four strokes: the posts the full height and turned 90 degrees round Z, the rails between them a little shallower, their ends inside the posts"
+  },
+  "FxPlate": {
+   "file": "meshes/FxPlate.json",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tris": 12,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "textures": "fx_rise_<P>",
+   "uv": "U across, V up: 0 at its foot (the core) to 0.75 at its top",
+   "axes": "X across, Y up, Z its depth; its front faces -Z"
   }
  },
  "textures": {

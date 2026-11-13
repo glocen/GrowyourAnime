@@ -4370,6 +4370,56 @@ The one data-driven player (the method's order, 1) and B1's exit played from its
   - The finish's burning front and saturated edges (fix 3) give it its mass.
   - Its strength is judged at the final, framed clear of the avatar.
 
+**Written back (Modulo, 2026-11-13):** `build/handoff/Pip/fx/pip_burst_rows.json` now has Faber's fixes 1 and 2.
+- The coil's Scale is at 0.7 of the width. `H` in `tools/blender/fx_rows.py` holds it.
+- The Light row has the new Range, colour and Brightness, as above.
+- Nothing else in the file changed. Fix 3, the finish's look, is next.
+
+### B5's polish and the square's art (Modulo, 2026-11-13)
+
+This answers research's three fixes on the replay (B5, "Research's verdict on the replay"): the clip's polish (fixes 1 and 2), and the square as a framed plate standing up (fix 3; the method's order, 4), under AR1 section 9's four conditions.
+- **Where:**
+  - **The clip:** `build/handoff/Rook/clips/Rook_Haymaker.json`, made by `tools/blender/rook_haymaker_down.py`. Its name, length and markers are the delivered clip's, so it drops into the replay in place. Beside it, `bare_Haymaker.png` shows the bare rig from the side and the three-quarter, for the upload's check.
+  - **The kit's frame:** `FxBar` and `FxPlate` in `build/handoff/FxKit/meshes/`. `fx_kit.json` gains their two entries, and the sheets gain a Square cell. The other 42 files are byte for byte as delivered.
+  - **The rows:** `build/handoff/Rook/fx/rook_haymaker_rows.json`, made by `tools/blender/fx_rows.py` (`B5`).
+  - **The previews:** `rook_haymaker_rows.png` (close on the square, pale sky and dusk), `rook_haymaker_hang.png` (the hang three ways: the grey now, the art on today's numbers, the art drawn in) and `rook_haymaker_64.png` (64 px at eight headings, pale sky). The other sheets are in `build/scratch/modulo/rook/b5art/`.
+- **Fix 1, the hold builds.** The ram's knuckles go back 0.08 studs a frame from 34 to 44, then 0.19 a frame from 44 to 52: 2.15 studs in all. He tips back as he leans off under it, so 52 is the most cocked frame. The script's `path` mode measures it.
+- **Fix 2, the drop is upright.** The ram goes over the top from 52 to 54, then down one line. From 54 to 57 it drops 3.7 studs and moves 0.37 forward: about 6° off upright, seen from his side. From 55 to 56 it's 0°.
+  - On 54 the ram passes 0.03 studs from his torso. The audit passes.
+  - The before and after, from his side and the game's camera: `build/scratch/modulo/rook/b5p/compare_*.png`.
+- **Fix 3, the art (rule 3):**
+  - **The square:** four `FxBar` strokes in `fx_across_Ember`. The chamfers and walls give a dark, saturated rim, then orange, then a cream core on the front. The posts run the full height. The rails sit between them at 0.9 of the posts' depth, so no faces share a plane.
+  - **The plate:** `FxPlate` in `fx_rise_Ember`, cream at its foot and a deeper gold at its top, set back inside the strokes. It has no glyph (condition 3).
+  - On the pale sky the square now reads gold and orange on blue. At dusk it glows. At 64 px it reads whole, as a framed square, at every heading, on both skies.
+- **The rows, for Faber's `stampAt`,** which keeps computing w, h, z, bar and gone each frame:
+  - **Posts, two:** turned upright by `CFrame.Angles(0, 0, math.pi / 2)`, Size (h + bar, bar, Depth).
+  - **Rails, two:** Size (w, bar, Depth × Rails).
+  - **Plate:** Size (w − bar, h − bar, Pane). Its Transparency charges from 0.85 to 0.35 through the hang (Quad In, to 6 frames before Strike), is 0.15 on Strike, and is gone 3 frames after, before the stamp lies flat.
+  - **Runs, two:** `FxBar` laid face up along the floor, where the grey bars run now.
+  - **Glow:** 1 through the hang, 2 on Strike, back to 1 two frames after.
+  - **Never:** a light at the landing, or the plate left on the floor.
+- **Fix 1's square, offered (tier 1, live by `Tune`):** `Forms` 1.2 and a `Tighten` of Quad In.
+  - The square forms loose, at 1.2 of its side with thin bars. It is drawn tight with the ram: slowly, then fast into 52.
+  - `stampAt` eases the hang by `1 - (1 - u)^2` in code, so `Tighten` would be a new Config key.
+  - The top edge stays level: 12.47 studs up 21 frames before Strike, 12.62 at 6 before. Today's climbs from 9.94 to 12.62. So the phone's framing holds.
+- **Measured** from the game's camera on the pale sky, with the drawn-in numbers. Share of the screen, by frame:
+
+  | Frame | 36 | 40 | 44 | 48 | 52 | 54 | 55 | 56 | 57 | 58 | 61 | 64 | 70 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+  | Share | 3.0% | 3.2% | 3.1% | 3.0% | 2.9% | 3.0% | 3.0% | 2.5% | 0.7% | 0.5% | 0.3% | 0.3% | 0.1% |
+
+  - **The fall:** the bottom rail is at 5.71 studs on 55, with the head's top at 5.8. It's at 3.35 on 56, and on the floor on 57.
+  - From 57, the avatar's body hides much of the landing. That's the framing fix queued in "Rook, Pip and Lyric installed".
+- **The content check: PASS,** on the polished clip, the sheets at full size and at 64 px, the kit's Square cell and both json files. Section 9's conditions 1 to 4 and rules 2 to 4 hold. Carried to the build:
+  1. The hang's foot stays computed from each target's own top (`Clear`).
+  2. The fall stays at four frames. A slower drop would linger at the head and need a fresh check.
+  3. The clip's upload check uses its bare-rig sheet from the side and the three-quarter (`bare_Haymaker.png`).
+- **Open:**
+  - Faber: the two meshes' upload, the rows in his player, the clip in the replay, and the Config offer.
+  - The take on a pale sky checks that the rim stays darker than the core, and that Glow at 2 on Strike blooms no halo.
+  - Research's final, with `ga-fresh-eyes`.
+- **Hours:** about 0.6, 18:30 to 19:10 UTC, the content check included. An estimate from the files' times.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

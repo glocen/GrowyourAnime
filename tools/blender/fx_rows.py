@@ -3,8 +3,9 @@ keyed on its clip's markers, for the builder's one player (Config.Effects). This
 json for the builder, and previews them in grey on the effect's own stage, so the rows are checked at 64 px before the
 engine's block-in. The engine's take is the judge; this is the maker's own check.
 
-blender.exe -b --factory-startup --python tools/blender/fx_rows.py -- <out_dir> [B1 | Signature [Back]]
-(Back: only the sheets behind the keeper the content check asked for, round the hat at 64 px)
+blender.exe -b --factory-startup --python tools/blender/fx_rows.py -- <out_dir> [B1 | Signature [Back] | B5 [Close | Small] [<clip>]]
+(Back: only the sheets behind the keeper the content check asked for, round the hat at 64 px; Close, Small: only B5's
+close sheet, or its 64 px sheets; B5's clip defaults to the delivered Rook_Haymaker.json)
 
 A row is one kit part or one engine object (Part), what it hangs on (On), and its tracks. A track is a list of keys:
 [frames after the effect's marker at the clip's 60 a second, the value reached there, the ease on to the next key, as
@@ -30,6 +31,15 @@ Wrench. A straight streak follows the fall, clear of the keeper's head (conditio
 the light leaps up out of the street where it landed: the column, its foot letting go on 123, climbing away by 140, chips
 flung up off its edge, a light on the street. Previewed on the art's own stage (lamplighter_signature_art.py), which
 lays the Beams per pixel from their pictures; the paper's glow and the lights aren't drawn there.
+
+B5 (Rook's Haymaker, AR8's order 4; research's fix 3, "a bright interior and a darker, saturated edge"): the stamp's
+square as a framed plate standing up. Effects.luau's stampAt keeps its geometry (w, h, z, bar, gone each frame); its
+grey Parts become four FxBar strokes on fx_across_Ember, dark-rimmed with a hot core down each, round an FxPlate on
+fx_rise_Ember, bright at its foot, the edge that leads down. The plate charges through the hang, flashes on Strike and
+is gone by the third frame after, before the stamp lies flat: nothing glows on the floor. Fix 1's draw-in is offered
+in the numbers: the square forms loose, 1.2 of its side with thin bars, and is drawn tight as the ram is, slowly, then
+fast into the beat too long. Previewed on rook_haymaker_stamp.py's stage, the target pinned; the parts drawn unlit,
+as their glow mask draws them, over the lit stage, the plate at its transparency.
 """
 import json
 import math
@@ -50,7 +60,9 @@ import lamplighter_signature_fx as sig  # noqa: E402  (the keeper's stage, its c
 import pip_burst_fx as pf  # noqa: E402
 import pip_clips as pc  # noqa: E402
 import r6anim as r6  # noqa: E402
+import rook_clips as rc  # noqa: E402
 import rook_haymaker_fx as hx  # noqa: E402
+import rook_haymaker_stamp as st  # noqa: E402  (B5's stage: the target, the avatar, the cameras, the clip's keys)
 
 KIT = Path(__file__).resolve().parents[2] / "build" / "handoff" / "FxKit" / "fx_kit.json"
 
@@ -91,7 +103,8 @@ def value(track, t):
 
 AREA = 5.0
 COIL = "FxCoil2"
-H = 2.0 * AREA / 2.144   # across: the foot's outer edge two Areas wide (the unit coil is 2.144 across)
+H = 0.7 * 2.0 * AREA / 2.144  # across: 0.7 of two Areas (the unit coil is 2.144 across), so it hugs the Shades
+# rather than ballooning past them: research's fix 1, tuned live by Faber (AR8, "Fixes 1 and 2", e8aac57)
 V = AREA                 # up: the tip 2.2 Areas up, 11 studs at Area 5 (the unit coil's strands climb 2.2)
 BANDS = 6
 BURN, STEP, GOES = 8, 1.5, 3   # the first band starts going on 74; each next one STEP frames later; each takes GOES
@@ -141,9 +154,11 @@ B1 = {
                      "Color": [[0, (1.0, 0.86, 0.5)], [1, list(COOL)]], "LightEmission": 0.6,
                      "FlipbookMode": "OneShot"},
          "Why": "the secondary, a breath after the peak, lower and softer, where the burn starts"},
-        {"Name": "Light", "Part": "PointLight", "On": "the coil's middle", "Range": 16, "Color": (1.0, 0.69, 0.38),
-         "Tracks": {"Brightness": [[0, 1.5, "Quart Out"], [4, 4.0, "Cubic In"], [18.5, 0.0, None]]},
-         "Why": "the Shades and the floor lit by it, brightest on the flare"},
+        {"Name": "Light", "Part": "PointLight", "On": "the coil's middle", "Range": 8, "Color": (1.0, 0.66, 0.22),
+         "Tracks": {"Brightness": [[0, 1.5, "Quart Out"], [4, 4.0, "Sine InOut"], [8, 3.2, "Linear"],
+                                   [18.5, 0.0, None]]},
+         "Why": "the Shades and the floor under the coil lit by it in the flame's amber, peaking on the flare and "
+                "falling with the burn (research's fix 2, tuned live by Faber)"},
     ],
 }
 EFFECTS = {"B1": B1}
@@ -689,10 +704,327 @@ def main_signature(out, back=False):
     tmp.unlink(missing_ok=True)
 
 
+# --- B5: Rook's square, a framed plate standing up (AR8's order 4; Config.Effects.Haymaker.Stamp) --------------------
+
+STAMP = {"Side": 4.6, "Bar": 0.85, "Rise": 21, "Over": 5.6, "Clear": 1, "Top": 6.4, "Forms": 0.65, "FormBar": 0.3,
+         "Drop": 4, "Stretch": 0.35, "Narrow": 0.15, "Squash": (0.55, 0.3, 0.26, 0.24), "Spread": 1.3, "Spreads": 1.55,
+         "SpreadGain": 0.05, "Eat": 3, "Eaten": 12, "Run": {"Reach": 4.5, "Frames": 8, "Life": 9, "Width": 0.5},
+         "Tighten": "Quad Out"}  # Config.Effects.Haymaker.Stamp as it stands; stampAt's hang eases 1 - (1 - u)^2
+DRAWN = STAMP | {"Forms": 1.2, "Tighten": "Quad In"}  # fix 1, offered: formed loose and drawn tight, as the ram is
+DEPTH, RAILS, PANE = 0.5, 0.9, 0.06  # studs: a stroke's depth; the rails' share of it; the plate's
+PLATE = [[-21, 0.85, "Quad In"], [-6, 0.35, "Linear"], [-1, 0.35, "Linear"], [0, 0.15, "Linear"], [3, 1.0, None]]
+GLOW = [[-21, 1.0, "Linear"], [-1, 1.0, "Linear"], [0, 2.0, "Quad Out"], [2, 1.0, None]]
+TARGET_TOP = 5.8   # the stand-in Shade's top (its mask's), what stampAt measures off a body's box
+B5_SHEET = (36, 40, 44, 48, 51, 52, 53, 54, 55, 56, 57, 58, 59, 61, 64, 70)
+B5_HANG = (36, 40, 44, 47, 49, 51, 53)
+B5_64 = (40, 48, 52, 54, 55, 56, 57, 58, 60, 64)
+B5_CLOSE = (40, 48, 51, 55, 56, 57, 58, 61)
+
+B5 = {
+    "Effect": "Haymaker's stamp in its art (AR8, B5): the ram's square as a framed plate standing up",
+    "Clip": "RookHaymaker", "From": "Strike", "Marker": st.STRIKE, "Fps": 60,
+    "Kit": "build/handoff/FxKit/fx_kit.json: FxBar and FxPlate, each 1 x 1 x 1 studs, so a Size is in studs",
+    "On": "stampAt's square (Effects.luau): its facing, and w, h, z, bar and gone each frame, as they are",
+    "Replaces": "the stamp's four grey Parts and the floor's two; the charge on the ram and the punctuation stay",
+    "Rows": [
+        {"Name": "Posts", "Part": "FxBar", "Count": 2, "Texture": "fx_across_Ember", "BlockIn": "fx_across_Grey",
+         "Place": "facing * CFrame.new(sign * w / 2, z + h / 2, 0) * CFrame.Angles(0, 0, math.pi / 2): FxBar lies "
+                  "along X, so a post is turned upright",
+         "Size": "Vector3.new(h + bar, bar, Depth)", "Tracks": {"Transparency": "gone, as now", "Glow": GLOW},
+         "Why": "the posts run the full height, so the square's outer corners are theirs"},
+        {"Name": "Rails", "Part": "FxBar", "Count": 2, "Texture": "fx_across_Ember", "BlockIn": "fx_across_Grey",
+         "Place": "facing * CFrame.new(0, z + h * (index - 1), 0)",
+         "Size": "Vector3.new(w, bar, Depth * Rails)", "Tracks": {"Transparency": "gone, as now", "Glow": GLOW},
+         "Why": "between the posts, their ends inside them; a little shallower, so no rail's face lies in a post's"},
+        {"Name": "Plate", "Part": "FxPlate", "Texture": "fx_rise_Ember", "BlockIn": "fx_rise_Grey",
+         "Place": "facing * CFrame.new(0, z + h / 2, 0)",
+         "Size": "Vector3.new(w - bar, h - bar, Pane); hidden while either side is under 0.02",
+         "Tracks": {"Transparency": PLATE, "Glow": GLOW},
+         "Why": "the bright interior, at its brightest where it leads down; it charges through the hang, flashes on "
+                "Strike and is gone by the third frame after, before the stamp lies flat: no light left on the floor"},
+        {"Name": "Runs", "Part": "FxBar", "Count": 2, "Texture": "fx_across_Ember", "BlockIn": "fx_across_Grey",
+         "Place": "where the floor's bars run now, turned face up: * CFrame.Angles(math.pi / 2, 0, 0)",
+         "Size": "Vector3.new(reach - w / 2 + 0.01, Run.Width * (1 - run) + 0.05, 0.16)",
+         "Why": "hard strokes along the floor, never a pool (the content check, section 9's condition 2)"},
+    ],
+    "Config": {"Forms": DRAWN["Forms"], "Tighten": DRAWN["Tighten"], "Depth": DEPTH, "Rails": RAILS, "Pane": PANE,
+               "Why": "fix 1, offered: Forms over 1 and an ease in, so the square forms loose, 1.2 of its side with "
+                      "thin bars, and is drawn tight with the ram, slowly, then fast into the beat too long (the ram "
+                      "creeps back twice as fast from 44); its top edge stays where it was (12.5 studs up at the "
+                      "start, 12.6 at the end, over the preview's Shade), so the phone's framing holds"},
+    "Glow": "the emissive strength through the glow mask, on the frames from Strike; the take checks the rim stays "
+            "darker than the core on a bright sky, and at 2 on Strike blooms no halo",
+    "Never": "a light at the landing (a PointLight on the floor is a pool); the plate left lying on the floor",
+}
+
+
+def stamp_square(s, f):
+    """stampAt at f frames from Strike, with the numbers `s`: w, h, z, bar, gone and the floor's run; None before."""
+    if f < -s["Rise"]:
+        return None
+    over = max(s["Over"], TARGET_TOP + s["Clear"])
+    top = over + (s["Top"] - s["Over"])
+    run, gone = None, 0.0
+    if f < -s["Drop"]:
+        e = ease(s["Tighten"], (f + s["Rise"]) / max(1, s["Rise"] - s["Drop"] - 2))
+        w = h = s["Side"] * (s["Forms"] + (1 - s["Forms"]) * e)
+        z, bar = over + (top - over) * e, s["FormBar"] + (s["Bar"] - s["FormBar"]) * e
+    elif f < 0:
+        fast = min(1.0, max(0.0, (f + s["Drop"]) / max(1, s["Drop"] - 1)))
+        u = min(1.0, max(0.0, (f + s["Drop"]) / s["Drop"]))
+        w, h = s["Side"] * (1 - s["Narrow"] * fast), s["Side"] * (1 + s["Stretch"] * fast)
+        z, bar = 0.04 + (top - 0.04) * (1 - u * u), s["Bar"]
+    else:
+        k = math.floor(f)
+        h = s["Side"] * s["Squash"][min(k, len(s["Squash"]) - 1)]
+        w = s["Side"] * (s["Spread"] if k == 0 else s["Spreads"] + s["SpreadGain"] * min(1.0, max(0.0, (f - 1) / 10)))
+        z = 0.04
+        gone = min(1.0, max(0.0, (f - s["Eat"]) / s["Eaten"]))
+        bar = s["Bar"] * (1 - gone) + 0.02
+        if f <= s["Run"]["Life"]:
+            run = hx.out_fast(f / s["Run"]["Frames"])
+    return {"w": w, "h": h, "z": z, "bar": bar, "gone": gone, "run": run}
+
+
+def kit_mesh(name, bm):
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    return mesh
+
+
+def kit_image(name, pixels):
+    image = bpy.data.images.new(name, pixels.shape[1], pixels.shape[0], alpha=True)
+    image.pixels.foreach_set(np.ascontiguousarray(pixels, dtype=np.float32).ravel())
+    return image
+
+
+class SquareStage(st.Stage):
+    """rook_haymaker_stamp.py's stage, the target pinned, the stamp in the kit's parts by layer ("solid": the charge,
+    the punctuation and the runs; "frame": the four strokes; "plate"), or the grey Parts as the game draws them now
+    (`look` "grey"). `numbers`: STAMP or DRAWN."""
+
+    def __init__(self, scene, rig, knuckles):
+        super().__init__(scene, rig, knuckles)
+        self.look, self.numbers, self.only = "art", DRAWN, None
+        self.images = {f"fx_{k}_{p}": kit_image(f"fx_{k}_{p}", getattr(kit, k)(p)) for k in ("across", "rise") for p in ("Ember", "Grey")}
+        self.bar_mesh, self.pane_mesh = kit_mesh("FxBar", kit.bar()), kit_mesh("FxPlate", kit.plate())
+        self.parts = {"charge": [self.kit_part(self.bar_mesh) for _ in range(4)],
+                      "solid": [self.kit_part(self.bar_mesh) for _ in range(6)],
+                      "frame": [self.kit_part(self.bar_mesh) for _ in range(4)], "plate": [self.kit_part(self.pane_mesh)]}
+        kit.textured(self.parts["solid"][0], self.images["fx_across_Ember"])
+        kit.textured(self.parts["plate"][0], self.images["fx_rise_Ember"])
+        for obj in self.parts["charge"]:  # the charge rides the ram's face
+            obj.parent = rig.parts["Right Arm"]
+        self.grey = [self.box("white") for _ in range(4)]
+        self.alpha, self.used = {}, {}
+
+    @staticmethod
+    def kit_part(mesh):
+        obj = bpy.data.objects.new(f"Fx.{mesh.name}", mesh)
+        bpy.context.scene.collection.objects.link(obj)
+        obj.display.show_shadows, obj.hide_render = False, True
+        return obj
+
+    def put(self, layer, centre, turn, scale):
+        obj = self.parts[layer][self.used[layer]]
+        self.used[layer] += 1
+        obj.location, obj.rotation_euler, obj.scale = centre, tuple(math.radians(a) for a in turn), scale
+
+    def set(self, scene, *_):
+        f = scene.frame_current
+        self.place_avatar(scene)
+        if scene.camera:
+            eye = scene.camera.matrix_world.translation
+            self.facing = (Vector((eye.x, eye.y)) - Vector(st.TARGET)).normalized()
+        self.target.location = (st.TARGET[0], st.TARGET[1], 0.0)  # pinned: the strike pushes nothing (tier 2, signed)
+        self.used = {layer: 0 for layer in self.parts}
+        self.alpha = {"charge": 0.0, "solid": 0.0, "frame": 0.0, "plate": 1.0}
+        grey_used = 0
+        # the charge, drawn tight on the ram's face through the hold and cut at the strike, as st draws it
+        if st.WIND - 6 <= f < st.STRIKE:
+            side = 2.9 - 1.1 * st.clamp((f - st.WIND + 6) / (st.HELD - st.WIND + 6)) ** 2 - 0.1 * st.clamp((f - st.HELD) / 4)
+            for i in range(4):
+                across, sign = i < 2, 1 if i % 2 else -1
+                at = Vector(hx.KNUCKLES) + (Vector((0, sign * side / 2, 0)) if across else Vector((sign * side / 2, 0, 0)))
+                self.put("charge", at, (90, 0, 0) if across else (90, 0, 90), (side + 0.2, 0.2, 0.2))
+        # the punctuation, thrown open across the line at the ram on Strike and Shock
+        if f in (st.STRIKE, st.SHOCK):
+            side, width = (3.0, 0.8) if f == st.STRIKE else (3.7, 0.7)
+            x, y, z = self.knuckles
+            for sign in (-1, 1):
+                self.put("solid", (x, y + 0.3, z + sign * side / 2), (0, 0, 0), (side + width, 0.1, width))
+                self.put("solid", (x + sign * side / 2, y + 0.3, z), (0, 90, 0), (side + width, 0.1, width))
+        sq = stamp_square(self.numbers, f - st.STRIKE)
+        if sq:
+            fx, fy = self.facing
+            across, yaw = Vector((fy, -fx, 0.0)), math.degrees(math.atan2(-fx, fy))
+            foot = Vector((st.TARGET[0], st.TARGET[1], 0.0))
+            up = Vector((0.0, 0.0, 1.0))
+            w, h, z, bar = sq["w"], sq["h"], sq["z"], sq["bar"]
+            if self.look == "grey":
+                for sign in (-1, 1):
+                    for obj, at, size in ((self.grey[grey_used], foot + across * sign * w / 2 + up * (z + h / 2), (bar, 0.1, h + bar)),
+                                          (self.grey[grey_used + 1], foot + up * (z + h * (sign + 1) / 2), (w + bar, 0.1, bar))):
+                        obj.location, obj.scale, obj.rotation_euler, obj.hide_render = at, size, (0, 0, math.radians(yaw)), sq["gone"] > 0.5
+                    grey_used += 2
+            elif sq["gone"] < 1:
+                for sign in (-1, 1):
+                    self.put("frame", foot + across * sign * w / 2 + up * (z + h / 2), (0, 90, yaw), (h + bar, DEPTH, bar))
+                    self.put("frame", foot + up * (z + h * (sign + 1) / 2), (0, 0, yaw), (w, DEPTH * RAILS, bar))
+                self.alpha["frame"] = sq["gone"]
+                pane = value(PLATE, f - st.STRIKE)
+                if pane is not None and pane < 1 and w - bar > 0.02 and h - bar > 0.02:
+                    self.put("plate", foot + up * (z + h / 2), (0, 0, yaw), (w - bar, PANE, h - bar))
+                    self.alpha["plate"] = pane
+            if sq["run"] is not None and self.look != "grey":
+                run, r = sq["run"], self.numbers["Run"]
+                reach = w / 2 + r["Reach"] * run
+                for sign in (-1, 1):
+                    self.put("solid", foot + across * sign * (w / 2 + reach) / 2 + up * 0.08, (90, 0, yaw),
+                             (reach - w / 2 + 0.01, 0.16, r["Width"] * (1 - run) + 0.05))
+        for obj in self.grey[grey_used:]:
+            obj.hide_render = True
+        self.reveal(self.only)
+
+    def reveal(self, layer):
+        """Shows only `layer`'s parts in use ("base": none of them; None: all)."""
+        self.only = layer
+        for name, pool in self.parts.items():
+            for n, obj in enumerate(pool):
+                obj.hide_render = n >= self.used.get(name, 0) or layer not in (None, name)
+
+    def layers(self):
+        """The layers drawn this frame, front first, with their transparency."""
+        return [(name, self.alpha[name]) for name in ("charge", "solid", "frame", "plate") if self.used.get(name) and self.alpha[name] < 1]
+
+
+def b5_tile(scene, stage, camera, f, size, tmp, label=""):
+    """One tile: the lit stage without the stamp, and the parts drawn unlit (as their glow mask shows them) over it at
+    their transparency, front layers first. Returns the tile and the bare stage (row 0 the top)."""
+    scene.camera = camera
+    r, shading = scene.render, scene.display.shading
+    r.resolution_x, r.resolution_y = size
+    r.use_stamp, r.stamp_note_text = bool(label), label
+    scene.frame_set(f)
+
+    def shot(layer, flat):
+        stage.reveal(layer)
+        shading.light = "FLAT" if flat else "STUDIO"
+        shading.show_shadows = shading.show_cavity = shading.show_object_outline = not flat
+        r.filepath = str(tmp)
+        bpy.ops.render.render(write_still=True)
+        return sa.rs.load(tmp)
+
+    base = shot("base", False)
+    out, drawn = base.copy(), stage.layers()
+    if drawn:
+        bare = shot("base", True)
+        taken = np.zeros(base.shape[:2], dtype=bool)
+        for layer, t in drawn:
+            pic = shot(layer, True)
+            m = (np.abs(pic[..., :3] - bare[..., :3]).max(-1) > 0.02) & ~taken
+            out[m, :3] = out[m, :3] * t + pic[m, :3] * (1 - t)
+            taken |= m
+    stage.reveal(None)
+    shading.light = "STUDIO"
+    shading.show_shadows = shading.show_cavity = shading.show_object_outline = True
+    return out, base
+
+
+def main_b5(out, clip=None, only=None):
+    tmp = out / "_tile.png"
+    if clip:
+        st.CLIP = Path(clip).resolve()
+    (out / "rook_haymaker_rows.json").write_text(json.dumps(B5, indent=1) + "\n", encoding="utf-8")
+    print(f"wrote {out / 'rook_haymaker_rows.json'}; the clip {st.CLIP}")
+    scene, rig, *_ = rc.build()
+    st.key(rig)
+    scene.frame_set(st.STRIKE)
+    knuckles = tuple(rig.parts["Right Arm"].matrix_world @ Vector(hx.KNUCKLES))
+    stage = SquareStage(scene, rig, knuckles)
+    fight = st.game_camera(scene, "fight", 70.0)
+    turned = {h: st.game_camera(scene, f"h{h}", 70.0) for h in st.HEADINGS}
+    floor = bpy.data.objects["Floor"]
+    floor.scale *= 4
+    floor_m = floor.data.materials[0]
+    shading = scene.display.shading
+    dusk, night = tuple(floor_m.diffuse_color), tuple(shading.background_color)
+
+    def weather(pale):
+        floor_m.diffuse_color = (0.74, 0.72, 0.68, 1) if pale else dusk
+        shading.background_color = (0.62, 0.74, 0.86) if pale else night
+
+    r = scene.render
+    r.dither_intensity = 0.0
+    r.use_stamp_date = r.use_stamp_render_time = r.use_stamp_camera = r.use_stamp_lens = False
+    r.use_stamp_scene = r.use_stamp_filename = r.use_stamp_frame = r.use_stamp_time = False
+    r.use_stamp_note = True
+
+    # 64 px at every heading round the target (section 9's condition 4): the game's whole view, its 70 degrees, 64 px
+    # tall; a heading a row from 0, every 45 degrees
+    if only in (None, "Small"):
+        for pale in (True, False):
+            weather(pale)
+            rows = [sa.sheet([sa.edged(b5_tile(scene, stage, turned[h], f, (114, 64), tmp)[0]) for f in B5_64], len(B5_64))
+                    for h in st.HEADINGS]
+            sa.rs.save(sa.stack(rows).repeat(3, axis=0).repeat(3, axis=1), out / f"b5_art_64_{'pale' if pale else 'dusk'}.png")
+
+    # close on the square from the game's side, the avatar out of the way: the art itself, pale sky and dusk
+    if only in (None, "Close"):
+        look, _ = st.staged("fight")
+        close = hx.camera(scene, "close", math.degrees(math.atan2(-look.x, -look.y)), 8.0, 34.0,
+                          (st.TARGET[0], st.TARGET[1], 6.5), 24.0)
+        r.stamp_font_size = 16
+        rows = []
+        for pale in (True, False):
+            weather(pale)
+            rows.append(sa.sheet([sa.edged(b5_tile(scene, stage, close, f, (288, 324), tmp, label=f"{'pale' if pale else 'dusk'} {f}")[0])
+                                  for f in B5_CLOSE], len(B5_CLOSE)))
+        sa.rs.save(sa.stack(rows), out / "b5_art_close.png")
+    if only:
+        tmp.unlink(missing_ok=True)
+        return
+
+    # the game's camera, the whole stamp on the polished clip, on a pale sky and at dusk
+    share = {}
+    for pale in (True, False):
+        weather(pale)
+        r.stamp_font_size = 22
+        tiles = []
+        for f in B5_SHEET:
+            tile, base = b5_tile(scene, stage, fight, f, (480, 270), tmp, label=("pale sky: " if pale and f == B5_SHEET[0] else "") + st.label(f))
+            tiles.append(sa.edged(tile))
+            if pale:
+                share[f] = round(float((np.abs(tile[..., :3] - base[..., :3]).max(-1) > 0.03).mean()), 4)
+        sa.rs.save(sa.sheet(tiles, 4), out / f"b5_art_{'pale' if pale else 'dusk'}.png")
+
+    # the hang: the grey as it is, the art on today's numbers, the art drawn in (fix 1, offered)
+    weather(True)
+    r.stamp_font_size = 15
+    rows = []
+    for look, numbers, name in (("grey", STAMP, "grey now"), ("art", STAMP, "art, today's numbers"), ("art", DRAWN, "art, drawn in")):
+        stage.look, stage.numbers = look, numbers
+        rows.append(sa.sheet([sa.edged(b5_tile(scene, stage, fight, f, (320, 180), tmp, label=f"{name}: {f}" if f == B5_HANG[0] else f"{f}")[0])
+                              for f in B5_HANG], len(B5_HANG)))
+    stage.look, stage.numbers = "art", DRAWN
+    sa.rs.save(sa.stack(rows), out / "b5_art_hang.png")
+
+    top ={name: {f: round(sq["z"] + sq["h"] + sq["bar"] / 2, 2) for f in range(-21, -3, 3) if (sq := stamp_square(n, f))}
+           for name, n in (("today", STAMP), ("drawn", DRAWN))}
+    measures = {"share_pale": share, "top_edge_studs_by_frame_from_strike": top, "target_top": TARGET_TOP}
+    print(json.dumps(measures))
+    (out / "b5_art.json").write_text(json.dumps(measures, indent=1) + "\n", encoding="utf-8")
+    tmp.unlink(missing_ok=True)
+
+
 def main():
     sys.stdout.reconfigure(line_buffering=True)
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
+    if "B5" in args:
+        main_b5(out, next((a for a in args if a.endswith(".json")), None), next((a for a in ("Close", "Small") if a in args), None))
+        return
     if "Signature" in args:
         main_signature(out, back="Back" in args)
         return

@@ -1,0 +1,162 @@
+{
+ "Effect": "Haymaker's stamp in its art (AR8, B5): the ram's square as a framed plate standing up",
+ "Clip": "RookHaymaker",
+ "From": "Strike",
+ "Marker": 57,
+ "Fps": 60,
+ "Kit": "build/handoff/FxKit/fx_kit.json: FxBar and FxPlate, each 1 x 1 x 1 studs, so a Size is in studs",
+ "On": "stampAt's square (Effects.luau): its facing, and w, h, z, bar and gone each frame, as they are",
+ "Replaces": "the stamp's four grey Parts and the floor's two; the charge on the ram and the punctuation stay",
+ "Rows": [
+  {
+   "Name": "Posts",
+   "Part": "FxBar",
+   "Count": 2,
+   "Texture": "fx_across_Ember",
+   "BlockIn": "fx_across_Grey",
+   "Place": "facing * CFrame.new(sign * w / 2, z + h / 2, 0) * CFrame.Angles(0, 0, math.pi / 2): FxBar lies along X, so a post is turned upright",
+   "Size": "Vector3.new(h + bar, bar, Depth)",
+   "Tracks": {
+    "Transparency": "gone, as now",
+    "Glow": [
+     [
+      -21,
+      1.0,
+      "Linear"
+     ],
+     [
+      -1,
+      1.0,
+      "Linear"
+     ],
+     [
+      0,
+      2.0,
+      "Quad Out"
+     ],
+     [
+      2,
+      1.0,
+      null
+     ]
+    ]
+   },
+   "Why": "the posts run the full height, so the square's outer corners are theirs"
+  },
+  {
+   "Name": "Rails",
+   "Part": "FxBar",
+   "Count": 2,
+   "Texture": "fx_across_Ember",
+   "BlockIn": "fx_across_Grey",
+   "Place": "facing * CFrame.new(0, z + h * (index - 1), 0)",
+   "Size": "Vector3.new(w, bar, Depth * Rails)",
+   "Tracks": {
+    "Transparency": "gone, as now",
+    "Glow": [
+     [
+      -21,
+      1.0,
+      "Linear"
+     ],
+     [
+      -1,
+      1.0,
+      "Linear"
+     ],
+     [
+      0,
+      2.0,
+      "Quad Out"
+     ],
+     [
+      2,
+      1.0,
+      null
+     ]
+    ]
+   },
+   "Why": "between the posts, their ends inside them; a little shallower, so no rail's face lies in a post's"
+  },
+  {
+   "Name": "Plate",
+   "Part": "FxPlate",
+   "Texture": "fx_rise_Ember",
+   "BlockIn": "fx_rise_Grey",
+   "Place": "facing * CFrame.new(0, z + h / 2, 0)",
+   "Size": "Vector3.new(w - bar, h - bar, Pane); hidden while either side is under 0.02",
+   "Tracks": {
+    "Transparency": [
+     [
+      -21,
+      0.85,
+      "Quad In"
+     ],
+     [
+      -6,
+      0.35,
+      "Linear"
+     ],
+     [
+      -1,
+      0.35,
+      "Linear"
+     ],
+     [
+      0,
+      0.15,
+      "Linear"
+     ],
+     [
+      3,
+      1.0,
+      null
+     ]
+    ],
+    "Glow": [
+     [
+      -21,
+      1.0,
+      "Linear"
+     ],
+     [
+      -1,
+      1.0,
+      "Linear"
+     ],
+     [
+      0,
+      2.0,
+      "Quad Out"
+     ],
+     [
+      2,
+      1.0,
+      null
+     ]
+    ]
+   },
+   "Why": "the bright interior, at its brightest where it leads down; it charges through the hang, flashes on Strike and is gone by the third frame after, before the stamp lies flat: no light left on the floor"
+  },
+  {
+   "Name": "Runs",
+   "Part": "FxBar",
+   "Count": 2,
+   "Texture": "fx_across_Ember",
+   "BlockIn": "fx_across_Grey",
+   "Place": "where the floor's bars run now, turned face up: * CFrame.Angles(math.pi / 2, 0, 0)",
+   "Size": "Vector3.new(reach - w / 2 + 0.01, Run.Width * (1 - run) + 0.05, 0.16)",
+   "Why": "hard strokes along the floor, never a pool (the content check, section 9's condition 2)"
+  }
+ ],
+ "Config": {
+  "Forms": 1.2,
+  "Tighten": "Quad In",
+  "Depth": 0.5,
+  "Rails": 0.9,
+  "Pane": 0.06,
+  "Why": "fix 1, offered: Forms over 1 and an ease in, so the square forms loose, 1.2 of its side with thin bars, and is drawn tight with the ram, slowly, then fast into the beat too long (the ram creeps back twice as fast from 44); its top edge stays where it was (12.5 studs up at the start, 12.6 at the end, over the preview's Shade), so the phone's framing holds"
+ },
+ "Glow": "the emissive strength through the glow mask, on the frames from Strike; the take checks the rim stays darker than the core on a bright sky, and at 2 on Strike blooms no halo",
+ "Never": "a light at the landing (a PointLight on the floor is a pool); the plate left lying on the floor"
+}

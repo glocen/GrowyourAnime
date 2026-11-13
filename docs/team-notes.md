@@ -13,9 +13,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are delivered, the Signature with option 1 at full height. The fall, delivery 4, comes after AR8's B.
-- **AR8:** the kit is delivered (`build/handoff/FxKit/`). **The keeper's signature as rows is delivered** (`build/handoff/Lamplighter/fx/`; AR8, "The keeper's signature as rows"), and the content check passed. B1's exit rows were delivered before it (`build/handoff/Pip/fx/pip_burst_rows.json`).
-- **Faber, at your player:** both sets of rows. The camera's lift through the keeper's hold stays yours (section 7). Your take checks the paper's glow and the two lights at 64 px: SlamLight must never light a pool on the street.
-- **Now:** B5, the clip's polish (research's fixes 1 and 2), then the square as a framed plate. No lock held.
+- **AR8:** the kit, B1's exit rows and the keeper's signature rows are delivered. **B5 is delivered** (AR8, "B5's polish and the square's art"), and the content check passed: the polished clip, the square as a framed plate (two new kit meshes, `FxBar` and `FxPlate`) and its rows in `build/handoff/Rook/fx/`. B1's rows carry Faber's fixes 1 and 2.
+- **Faber:** upload the two meshes, then put B5's rows in your player and the clip in the replay. `Forms` 1.2 with a Quad In `Tighten` is offered for fix 1, live by `Tune`. No light at the landing.
+- **Now:** B1's fix 3, for the finish: a ragged, brighter tongue edge on the burning front, and a dark, saturated edge on a bright core along the bands. No lock held.
 
 **Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.
 

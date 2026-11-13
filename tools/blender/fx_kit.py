@@ -16,6 +16,9 @@ where a far side shows its inside (the body stands inside hoops and shells; a co
   edge), V along (0 the tail, 1 the head; the widest point past the middle, toward the head).
 - FxColumn: an open cylinder. U round, V up.
 - FxChip1 to 3: faceted shards, closed, planar UVs.
+- FxBar: one stroke of a frame (Rook's square, AR8 B5): a box, its front edges chamfered all round, on fx_across: the
+  chamfers and walls on its crisp rim, the front deep to the core and back. A square is four of them, its plate in it.
+- FxPlate: the pane a frame holds, a thin box on fx_rise: the core at its foot, deeper up.
 
 Textures:
 - For MeshPart.TextureID, opaque, in each palette (Grey for the block-ins, Flame for Pip, Warm for the Lamplighter,
@@ -416,6 +419,53 @@ def chip(seed):
     return bm
 
 
+def bar(across=0.15, deep=0.3, end=0.025, rim=0.06, v=0.7):
+    """FxBar: one stroke of a frame, a box with its front edges chamfered all round, flat-faced. X along it, Z across,
+    Y its depth, the front at +Y (Roblox's -Z, where a part looks). The chamfers take `across` of its width each side
+    and `end` of its length at each end, `deep` of its depth. U: the chamfers and walls on fx_across's crisp rim, the
+    front from `rim` to 1 - `rim`, deep to the core and back; V holds in across's flat stretch, the same all along."""
+    bm, uv = new_bm()
+    a = 0.5 - across
+
+    def ring(x, h, d):  # the corners round, in (along, across): -,- then +,- then +,+ then -,+
+        return [bm.verts.new((sx * x, d, sh * h)) for sx, sh in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+
+    front, foot, back = ring(0.5 - end, a, 0.5), ring(0.5, 0.5, 0.5 - deep), ring(0.5, 0.5, -0.5)
+    hold = 0.02  # an end chamfer's U: all rim
+
+    def face(verts, us):
+        f = bm.faces.new(verts)
+        for loop in f.loops:
+            loop[uv].uv = (us[verts.index(loop.vert)], v)
+        f.smooth = False
+
+    face(front, (rim, rim, 1 - rim, 1 - rim))
+    face([front[0], front[1], foot[1], foot[0]], (rim, rim, 0.0, 0.0))          # the chamfer along its low edge
+    face([front[2], front[3], foot[3], foot[2]], (1 - rim, 1 - rim, 1.0, 1.0))  # along its high edge
+    face([front[1], front[2], foot[2], foot[1]], (hold,) * 4)                  # the ends
+    face([front[3], front[0], foot[0], foot[3]], (hold,) * 4)
+    face([foot[0], foot[1], back[1], back[0]], (0.0,) * 4)                     # the walls, the back: the rim
+    face([foot[2], foot[3], back[3], back[2]], (1.0,) * 4)
+    face([foot[1], foot[2], back[2], back[1]], (0.0,) * 4)
+    face([foot[3], foot[0], back[0], back[3]], (0.0,) * 4)
+    face(back, (0.0,) * 4)
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    return bm
+
+
+def plate(top=0.75):
+    """FxPlate: the pane a frame holds, a thin box. X across, Z up, Y its depth (the front at +Y). V from 0 at its foot
+    to `top` at its top edge: on fx_rise, the core where it leads down, deeper up; U across."""
+    bm, uv = new_bm()
+    bmesh.ops.create_cube(bm, size=1.0)
+    for f in bm.faces:
+        for loop in f.loops:
+            loop[uv].uv = (loop.vert.co.x + 0.5, top * (loop.vert.co.z + 0.5))
+        f.smooth = False
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    return bm
+
+
 def meshes():
     """name -> (bmesh, recipe entry). The coils' bands follow their coil."""
     out = {}
@@ -431,6 +481,13 @@ def meshes():
     out["FxColumn"] = (column(), {"textures": "fx_rise_<P> or fx_ribs_<P>", "uv": "U round, V up"})
     for k in range(3):
         out[f"FxChip{k + 1}"] = (chip(11 + 7 * k), {"textures": "fx_rise_<P>, or none: Neon in a Color", "uv": "planar, across its face"})
+    out["FxBar"] = (bar(), {"textures": "fx_across_<P>", "uv": "U across: 0 and 1 its long edges (the chamfers and walls on "
+                            "the rim), the front 0.06 to 0.94; V 0.7 all along",
+                            "axes": "X along it, Y across, Z its depth; its front faces -Z, the way a part looks",
+                            "frame": "a square's four strokes: the posts the full height and turned 90 degrees round Z, "
+                                     "the rails between them a little shallower, their ends inside the posts"})
+    out["FxPlate"] = (plate(), {"textures": "fx_rise_<P>", "uv": "U across, V up: 0 at its foot (the core) to 0.75 at its top",
+                                "axes": "X across, Y up, Z its depth; its front faces -Z"})
     return out
 
 
@@ -508,9 +565,28 @@ def write(name, sheet, folder):
     image.save()
 
 
-CELLS = ("FxCoil3", "FxCoil2", "FxShell", "FxHoop", "FxCrescent", "FxColumn", "Chips")
+CELLS = ("FxCoil3", "FxCoil2", "FxShell", "FxHoop", "FxCrescent", "FxColumn", "Chips", "Square")
 LOOK = {"FxCoil3": ("across", "Flame"), "FxCoil2": ("across", "Ember"), "FxShell": ("ribs", "Warm"),
-        "FxHoop": ("rise", "Ember"), "FxCrescent": ("across", "Ember"), "FxColumn": ("rise", "Warm"), "Chips": ("rise", "Flame")}
+        "FxHoop": ("rise", "Ember"), "FxCrescent": ("across", "Ember"), "FxColumn": ("rise", "Warm"), "Chips": ("rise", "Flame"),
+        "Square": ("across", "Ember")}  # the square's plate takes fx_rise
+SQUARE = (4.6, 0.85, 0.5)  # the review's square: B5's side and bar (Config.Effects.Haymaker.Stamp), the strokes' depth
+
+
+def square(objects):
+    """FxBar four times as a frame, its plate in it, turned to face the review's camera: posts the full height, rails
+    between them 0.9 as deep (their front faces never on the posts'), their ends at the posts' middles."""
+    side, width, depth = SQUARE
+    parts = []
+    for k, (at, turn, size) in enumerate([((s * side / 2, 0, 0), (0, 90, 180), (side + width, depth, width)) for s in (-1, 1)] +
+                                         [((0, 0, s * side / 2), (0, 0, 180), (side, 0.9 * depth, width)) for s in (-1, 1)]):
+        obj = objects["FxBar"] if k == 0 else bpy.data.objects.new(f"FxBar{k + 1}", objects["FxBar"].data)
+        if k:
+            bpy.context.scene.collection.objects.link(obj)
+        obj.location, obj.rotation_euler, obj.scale = at, tuple(math.radians(a) for a in turn), size
+        parts.append(obj)
+    pane = objects["FxPlate"]
+    pane.rotation_euler, pane.scale = (0, 0, math.pi), (side - width, 0.06, side - width)
+    return parts + [pane]
 
 
 def review(objects, images, out):
@@ -519,14 +595,15 @@ def review(objects, images, out):
     chips = [objects[f"FxChip{k + 1}"] for k in range(3)]
     for obj, at, turn in zip(chips, ((-0.75, 0.0, 0.0), (0.35, 0.35, 0.15), (0.8, -0.35, -0.1)), ((20, 10, 15), (-35, 25, 80), (60, -15, -40))):
         obj.location, obj.rotation_euler = at, tuple(math.radians(a) for a in turn)
-    groups = {name: ([objects[name]] if name != "Chips" else chips) for name in CELLS}
+    groups = {name: ([objects[name]] if name not in ("Chips", "Square") else chips) for name in CELLS}
+    groups["Square"] = square(objects)
 
     def row(palette, light, floor, small=False):
         tiles = []
         for name in CELLS:
             kind, colour = LOOK[name]
             for obj in groups[name]:
-                textured(obj, images[f"fx_{kind}_{palette or colour}"])
+                textured(obj, images[f"fx_{'rise' if obj.name == 'FxPlate' else kind}_{palette or colour}"])
             tiles.append(over(shot(scene, camera, groups[name], light, tmp), floor))
         strip = np.concatenate(tiles, axis=1)
         return shrink(strip, TILE // 64) if small else strip
@@ -539,6 +616,8 @@ def review(objects, images, out):
         for obj in bands:
             textured(obj, images[f"fx_across_{LOOK[name][1]}"])
         burn.append(over(shot(scene, camera, bands[gone:], "FLAT", tmp, frame=bands), DARK))  # framed on every band
+    while len(burn) < len(CELLS):
+        burn.append(over(np.zeros((TILE, TILE, 4), dtype=np.float32), DARK))
     rows.append(np.concatenate(burn, axis=1))
     write("fx_kit_sheet", np.concatenate(rows[::-1], axis=0), out)
     small = [row("Grey", "FLAT", DARK, True), row(None, "FLAT", DARK, True), row(None, "FLAT", BRIGHT, True)]

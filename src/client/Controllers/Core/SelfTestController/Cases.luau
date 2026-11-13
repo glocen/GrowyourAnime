@@ -2712,6 +2712,62 @@ return {
 		end,
 	},
 	{
+		Name = "HUD: a machine's plate with news never hides under the top band",
+		Run = function(t: any)
+			-- The phone pack, part two (2026-11-13): at the plot on a phone, the Breaker's plate ("Ready to open") stood under
+			-- the lead's card. The camera is turned so the Breaker's point is halfway up the band on the lead card's side; its
+			-- plate must show whole under the band.
+			local world = Layers.Get("World")
+			local plate: Frame? = nil
+			waitFor(t, ANSWER, function(): boolean
+				plate = BaseController.Parts().BreakerPlate :: Frame?
+				return plate ~= nil and plate:FindFirstChild("Panel") ~= nil
+			end)
+			t.Check("the Breaker's plate", plate ~= nil)
+			if plate == nil then
+				return
+			end
+			local shard = "named_watt"
+			local gave = t.Server("BaseGive", shard, 1)
+			t.Check("a shard in the bag: the plate has news", type(gave) == "table" and gave.Ok == true)
+			local old = Players.LocalPlayer.Character
+			t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+				local character = Players.LocalPlayer.Character
+				local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+				return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+			end))
+			t.Wait(PLATE_TICK * 2)
+			local prompt = BaseController.Parts().BreakerPrompt
+			local anchor = if prompt then prompt.Parent :: BasePart? else nil
+			local camera = workspace.CurrentCamera
+			local band = world:GetAttribute("Band")
+			t.Check("its point, and the band", anchor ~= nil and camera ~= nil and type(band) == "number", tostring(band))
+			if anchor and camera and type(band) == "number" then
+				local scale = Layers.Scale()
+				local at = Vector2.new(camera.ViewportSize.X * 0.15, band * scale * 0.5)
+				camera.CameraType = Enum.CameraType.Scriptable
+				-- Turned so the pixel `at` looks along the line to the point: its direction in the camera's frame is turned
+				-- onto the camera's forward.
+				camera.CFrame = CFrame.lookAt(camera.CFrame.Position, anchor.Position)
+				local aside = camera.CFrame:VectorToObjectSpace(camera:ViewportPointToRay(at.X, at.Y).Direction)
+				camera.CFrame *= CFrame.fromRotationBetweenVectors(aside, Vector3.new(0, 0, -1))
+				for _ = 1, 3 do
+					RunService.RenderStepped:Wait()
+				end
+				local point = camera:WorldToViewportPoint(anchor.Position)
+				t.Check("the Breaker's point is over the band", point.Y / scale < band, string.format("%.1f against %.1f", point.Y / scale, band))
+				t.Check("its plate shows", plate.Visible and plate.Parent ~= nil)
+				local top = (plate.AbsolutePosition.Y - world.AbsolutePosition.Y) / scale - band
+				t.Check("whole under the band", top >= -1, string.format("its top %.1f px under the band", top))
+				t.Check("and right under it, not lost lower", top <= 2, string.format("its top %.1f px under the band", top))
+				camera.CameraType = Enum.CameraType.Custom
+			end
+			if type(gave) == "table" and gave.Ok == true then
+				t.Server("BaseGive", shard, -1)
+			end
+		end,
+	},
+	{
 		Name = "Base: the plot's Breaker, bays and battery carry their prompt and plate; the dock opens each screen",
 		Run = function(t: any)
 			local parts = BaseController.Parts()

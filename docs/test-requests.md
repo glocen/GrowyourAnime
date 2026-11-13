@@ -362,7 +362,27 @@ Also, as the builder's tier 1: the trim seeds take the director's rarity colours
 - **Still to take at phone size:** the fight on Lantern Row with damage received, a heal (Lyric), the lead's fall and return and the type edge; then the plot with a shard ready; long names; empty and full states.
 - **Still to run:** the desktop's whole self-test on the new clamp.
 
-**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. Next: the phone pack's second part (the Lantern Row fight and the plot, listed above), research's read, then the director's eye.
+**The phone-size pack, second part, 2026-11-13 (Faber).** Captures 5 to 15 and two recordings in `build/captures/tr3/phone/`. The simulator was set up as in part one, switched on and off by script, and it's off again.
+- **The fight on Lantern Row** (`row_fight_lyric.mkv`, 52 s): the grey street's Pack 3 (Brawlers, level 3), with Lyric leading at level 3. For the take, the critical's floor was tuned live to 0.3 (`Stats.Caps.CriticalFloor`), so criticals come often.
+  - Capture 5: a hit dealt and damage received. Capture 6: a heal ("+12", green) beside a gold critical ("69").
+  - The fall, forced with `FightHealth 0` once the pack was down (7, 8): the card dims, "Back in 4 s" counts down to 1, and she's back whole at the avatar's side.
+- **The type edge** (`row_type_edge_watt_kirra.mkv`): before his first hit on a Brawler (Strength), Watt (Endurance) shows a down arrow (9). Kirra (Agility) shows an up arrow (10). Lyric (Technique) has none, as the ring says.
+- **A fall in the middle of a fight** (11): the target's card leaves with the lead, the Brawler walks home whole, and the card comes back with its arrow when Kirra does.
+- **The plot with a shard ready.** Found: at the arrival, the Breaker's plate, lit with "Ready to open: 1", stood under the lead's card (12). The World layer lies under the HUD, and a machine's plate wasn't kept under the top band as the numbers are.
+  - **The fix:** `BaseController` marks each machine's plate `World.Below`, part one's clamp. At the same arrival, the plate now sits just under the card (15), and the same with the camera turned to put the Breaker high (13).
+  - **A case covers it:** "HUD: a machine's plate with news never hides under the top band". It turns the camera so the Breaker's point is halfway up the band, then reads the plate's top: 0.8 px under the band on the desktop, 0.6 on the phone. On the code before the fix, the same measure read 104.6 px over it.
+- **Full and long** (14): Ironhymn at level 60 (the roster's widest name, Epic frame) against the Lamplighter at level 60, with Credits at 123,456,789 and the battery full. The top line holds, each piece apart. The lead's health takes its compact form ("18.1K / 19.9K") while the target's wider bar holds "119,623 / 153,478" (fix 6, by design).
+- **Empty** (15): Credits at 0, an empty bag (so no chip), no worker, and the battery at 480 / 600 with "+0.0/min". Not taken: a new account's HUD, with no lead and an empty battery. It takes a wipe of the Test account, whose Lyric and Pip feed cases.
+- **For research:**
+  - A zero rate reads "+0.0/min".
+  - On the phone, the Base case "the plot's plates speak only near their machine…" fails two "far off" checks. Its camera aim doesn't hold under the phone's default touch camera, so the Breaker's point falls off screen. With `DevTouchCameraMode` set to Classic it passes 28/28 on the phone, and it passes on the desktop. The game's plates aren't at fault. Not changed.
+- **The Test account after:** put back as it was, except that Ironhymn (k8, level 60) stays in the collection, five Voidkin have one copy more, and Credits are 7,772.
+- **Checks:**
+  - On the phone: the HUD cases 91/91 at 59 fps.
+  - On the desktop: the whole self-test 618/618 at 55 fps, part one's clamp included.
+  - Logic 1731 in Studio and offline; world report empty; type check 0 new.
+
+**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Next: research's read of both parts, then the director's eye.
 
 ## Next, not yet written
 

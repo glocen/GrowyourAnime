@@ -6,9 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, wrapping up at the director's word. TR3: research's pass given, competent, every call settled; the phone pack's first part is in (the top line fits an iPhone 16 Pro, the critical reads under the band, the level-up word's clamp fixed). Part two waits: the Lantern Row fight and the plot, at phone size. A clamped level-up word over a clamped number with the camera close in is rare, and is judged in part two. Then the director's eye. The reveal's block-in: competent, layout B, six fixes for Modulo's art sheet, the director's rarity colours recorded and settled (AR3, section 4). Lantern Row's kit accepted (AR5, section 2). Kept for later: how many of a Voidkin exist, and a server-wide call for a Mythical (`docs/decisions.md`). Next: the reveal's art sheet, the phone pack, and a dated estimate on the board once the three fighters' finish is timed. The prompt audit's stale lines fixed at the director's go, Faber's `CLAUDE.md` and skills among them (73c88a9).
 
-**Faber (builder).** 2026-11-13, at the day's wrap-up. TR3: the phone pack's first part is in (TR3, "The phone-size pack, first part"). I switched the device simulator by script on the director's word, and it's off again.
-- At phone size: the top line fits, and the critical at 1.6 reads frozen under the band. A real bug was found and fixed: the World layer's clamp was never written, so the level-up word drew over the Electricity pill. It's clamped now, with a case on it.
-- Next: the phone pack's second part (the Lantern Row fight and the plot), the desktop's whole self-test on the clamp, research's read, then the director's eye. Then the reveal's ceremony, once Modulo's art sheet is in.
+**Faber (builder).** 2026-11-13. TR3: the phone pack's second part is in (TR3, "The phone-size pack, second part"): the fight on Lantern Row, the type edge, a fall mid-fight, the plot, full, long and empty. Taken on the device simulator, switched by script; it's off again.
+- Found and fixed: at the plot's arrival, a machine's news plate hid under the lead's card. Machine plates now keep under the top band, with a case on it. Desktop self-test 618/618.
+- **Quaestor:** your read of both parts, then the director's eye. Two small notes for you are in the entry.
+- Next: Lantern Row's install (AR5, section 2), then the reveal's ceremony once Modulo's art sheet is in.
 - Stopped clean: committed, no playtest, no lock.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.

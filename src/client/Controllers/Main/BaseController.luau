@@ -152,6 +152,8 @@ local function plate(name: string, anchor: Part, lines: number, width: number, s
 	local frame = World.Plate(name, Vector2.new(width, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
 		return if anchor.Parent and shown() then anchor.Position else nil
 	end, REACH)
+	-- Kept under the top band: a machine high on screen put its news under the lead's card (the phone pack, 2026-11-13).
+	World.Below(frame)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
 	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
 	Panel.Pad(panel, 4, 10) -- clear of the panel's cut corner and its lit edge at the sides (TR3's take)

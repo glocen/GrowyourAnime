@@ -5,7 +5,8 @@
 -- back while a screen is open: the screen has the player's attention, and the world's labels would crowd its edges.
 --   World.Plate(name, size, where, reach?)   a frame over where() (a world position, or nil to hide); size authored
 --   World.Shift(plate, offset)                moved off its point by `offset`, authored pixels (a number clear of another)
---   World.Below(plate)                        kept under the top band its whole life: a number (TR3's verdict, fix 4)
+--   World.Below(plate)                        kept under the top band its whole life: a number (TR3's verdict, fix 4),
+--                                             the level-up's word, a machine's plate (the phone pack, 2026-11-13)
 --   World.Band(edge?), World.Edge()           the top band's lower edge, authored pixels from the screen's top (the HUD's)
 --   World.Remove(plate)
 

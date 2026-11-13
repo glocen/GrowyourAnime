@@ -3742,6 +3742,22 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 - **Not done:** research's pass in motion, the round's last.
 - **Hours:** about 0.2, 16:08 to 16:20 UTC.
 
+**Research's pass, 2026-11-13: the round doesn't close the coil.** From `b1_last/`, with `ga-fresh-eyes` blind.
+- **Felt:** the hit is the strongest it has been. On 67 to 73 a tall crowned tent of fire towers over the Shade. Then it breaks off into an oval that floats slowly up and shrinks for about a second.
+- **Tier:** works. Fresh eyes says the same, down from round 1's competent. The hit carries it, and the exit undoes it.
+- **The bold thing:** 69 to 73, the crowned flame over the Shade.
+- **The three checks:**
+  1. **The wind:** it doesn't read, the third time. It's a mirror-symmetric cone, and the seams are too thin to turn at speed.
+  2. **Condition 4:** from 76 it's met. On 74 and 75 the flame's foot holds the head inside it, and fresh eyes reads a candle flame on a wick, from both cameras.
+  3. **The egg:** 76 to 87 is a round-bottomed oval with a point, and 88 to 95 a bead. Both fresh eyes and I read it. That's the shape the content check named as the risk.
+- **The rule:** two fix rounds have run on the coil's exit. So the idea is reconsidered, not patched, and the options go to the director with this evidence (AGENTS.md, "The checks, in order"). It waits under "Waiting on the director" on the Now board.
+  1. **A new blockout of the exit alone (research's pick).** 67 to 73 is kept as it is. From 74 the column burns away from its foot upward, eaten bottom to top, so no separate shape ever passes the head or closes into an oval. The top tongue goes last, by about 84. The feel line's "flies off upward" becomes "burns off upward".
+     - Cost: about an hour of Modulo's, a content check, a re-upload and one take.
+     - It answers all three checks at once and drops the wind the art never carried.
+  2. **Round 1's coil** (100913199674615): competent, but it sat on the crown from 78 to 81, so it fails condition 4 as it stands.
+  3. **AR4's accepted tent** (the "before"): it passes everything, and it's the weaker read. The rework would wait for the whole-game review.
+- **Until the director picks,** the dev build keeps this round's coil. No public build carries it: until the exit passes, a release takes option 3.
+
 ### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
 
 **The feel line, proposed (AR1, section 9), for research to sign:** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."
@@ -3831,6 +3847,17 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 - The fall takes about two frames on screen, with the ram coming down.
 - On Strike, the square lands wide round the dummy's feet as the punctuation's gold squares flash at the ram. On Shock it flattens, and the floor bars run out.
 - The dummy stays where it stood. A's shoved it toward the avatar.
+
+**Research's verdict on the replay, 2026-11-13,** from `b5/`, with `ga-fresh-eyes` blind beside it (rung 7).
+- **Felt:** a pale square waits over the Shade through Rook's hold. Then in one beat it's flat and wide on the floor round the dummy, with the flash and the camera's dip, and the dummy stays planted.
+- **Tier:** competent as a blockout. Clearly stronger than A, whose bracket is small, sideways and half hidden. Fresh eyes says the same.
+- **The one bold thing:** the floor stamp, the square suddenly flat and wide at the dummy's feet with the flash. Fresh eyes named the same.
+- **B5 wins over A.** A's path goes, as built. The hang at 6.4 is accepted (tier 1): at 8 the square is loose bars off the top of the screen.
+- **Fixes, for the clip's polish and the square's art:**
+  1. **The hold only waits.** That was the signed question, and both reads say so: Rook holds one pose for about seven frames, and the square barely tightens. The lever named at signing: the ram creeps higher and further back, so 52 is the most cocked frame. The square draws in visibly with it, so "drawn tight" is seen, not just grown into.
+  2. **The blow reads more forward than straight down** from the player's camera. The clip's polish brings the ram's last frames over the target's line, so the drop is vertical on screen.
+  3. **The art:** the hanging square is pale on a pale sky. It needs a bright interior and a darker, saturated edge (rule 3), under section 9's four conditions.
+- **Next:** Modulo, the clip's polish with fixes 1 and 2, and the square's art. Then Faber's take and the final with fresh eyes.
 
 **For the verdict:**
 - **The grey square is pale on the noon sky,** so in the hold it reads faintly. Its art will carry it.

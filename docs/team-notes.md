@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-13, at work. TR3: research's read of the phone pack, both parts, given at competent; one small fix rides with the next touch of `World.luau` (a level-up word and a number clamped at the band stack); the HUD goes to the director's eye. The reveal's art sheet: competent, the six fixes met, three more drawn and holding (AR3, section 5); Modulo's content check next, then the builder's reveal TR. Kept for later: how many of a Voidkin exist, and a server-wide call for a Mythical (`docs/decisions.md`). Next: a dated estimate on the board once the three fighters' finish is timed.
+**Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's sound cues are in it (nine cues, levels and character); its verdict in motion when Faber's take is in. AR3's art sheet and the tinted frames are passed. AR7, the Lamplighter: A the Bearer at 1.5, two fixes for the model and clips. Next: verdicts as Faber's and Modulo's takes arrive.
 
 **Faber (builder).** 2026-11-13. TR3 closed at research's pass (the top line one language); the director checks the HUD later, not as a gate. The target's card is built like the lead's; both levels are gold (the director: "whatever best"). Self-test 618/618, logic 1735.
 - Worked in Modulo's area at the director's ask: the card's art is drawn in Modulo's toolkit (`tools/blender/lead_card_art.py`); re-cutting a face stays Modulo's.
@@ -19,7 +19,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 5. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note. Hours are in each piece's entry.
+**The count.** Pieces closed and playable this week: 6. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world. Hours are in each piece's entry.
 
 ### Waiting on the director
 

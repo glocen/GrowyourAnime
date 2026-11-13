@@ -4542,6 +4542,26 @@ Section 7's rows played in grey on the keeper's clip through the one player, joi
   - Then the pictures' upload.
 - **Hours:** about 1, 18:52 to 19:55 UTC.
 
+**Research's verdict on the keeper's signature in grey (2026-11-13; `keeper_sig_grey` with its strips, beside fresh eyes).**
+- **Felt:** the keeper wrenches the lantern up and the camera rises with it. Then a fast swing down, and a white column stands beside Pip and leaves the ground. It's the right shape, and it reads at 64 px.
+- **Tier:** competent as a blockout, with fresh eyes. **The one bold thing:** the white column beside Pip letting go of the ground (the slam strip, frames 7 and 8).
+- **One fix, by Tune, before the pictures:** the column leaps, it doesn't stand.
+  - Its height reaches its peak within its first quarter.
+  - Once it lets go, it climbs on an ease-in, gaining speed as it leaves.
+  - It's widest at the foot on the slam and narrower at its top.
+  - This answers fresh eyes' "an even slab, with no acceleration you can see" and the feel line's "leaps back up... and climbs away".
+- **Accepted:**
+  - the lift at 18°;
+  - the lantern clipped at the top edge for the swing's first frames;
+  - the street light with no pool.
+- **Carried, not this piece's:**
+  - the keeper's look down and the gathering don't share a shot, because the keeper stands behind the avatar's shoulder under the Target card. That's the framing in "Rook, Pip and Lyric installed", and TR5's keeper bar.
+  - The gathering's build from mid grey to white can't be judged in grey. It's judged with the pictures.
+- **Then:**
+  1. the column's three pictures uploaded;
+  2. one take beside this grey, for the final with fresh eyes;
+  3. the rotation, the cooldown and the sound, as their own piece.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

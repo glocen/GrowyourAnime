@@ -1497,7 +1497,7 @@ The fold from Epic up keeps its line (the head up), and the ram's thin handle go
   - Build to `reveal.json`'s `order`. `EngineStage` in the script is the reference: the compare sheet's lower frames are laid from these files only.
   - The figure and the name are the game's own: Rook's model in a ViewportFrame, the name in the game's face.
   - Rook's Reveal changed, so a saved copy in the place is taken again from the new json.
-  - Before the animation is uploaded, the content check asks for a strip of the bare rig from the side to go with it. That's mine to draw on request.
+  - The bare rig from the side and the three-quarter, every 5 frames, is `bare_Reveal.png` beside the clip (`rook_clips.py bare`). Content check PASS 2026-11-13: the hold's arm stands straight up beside the head, at 165 to 177°, well above the band that reads as a salute. Upload this exact json; a re-export means a new strip and a new check.
   - Nothing is uploaded.
 - **Not done:** seen in the engine; the uploads. There's no test request of its own: the builder's reveal TR is where these are tested. **Hours:** the parts, about 4 by my own estimate, not timed, most of them on the leak.
 

@@ -6,6 +6,8 @@ blender.exe -b --factory-startup --python tools/blender/rook_clips.py -- <out_di
 - export: Rook_<Clip>.json for the builder (r6anim.export, with its audit), the ram's clearance from the body, one
   review pack a clip, and its arcs (one dot a frame).
 - audit: the export without the review packs.
+- bare: one sheet a clip on the bare rig, from the side and the three-quarter, what the content check asks before an
+  upload (handbook/platform/rules-and-moderation.md, step 6).
 
 Needs rook_model.py's output (rook_model.blend and Rook.recipe.json) in MODEL. Every clip is keyed at 60 fps on its own
 stretch of one timeline and starts from HUB, the stance the one-shots share. Feet are given as places on the floor:
@@ -31,6 +33,7 @@ import rook_sheet as rs  # noqa: E402
 FPS = 60
 MODEL = Path(__file__).resolve().parents[2] / "build" / "scratch" / "modulo" / "rook" / "model"
 GAME, FRONT = (152.0, 18.0), (38.0, 8.0)  # the camera's azimuth from his front and its elevation; GAME is assumed
+SIDE, QUARTER = (90.0, 6.0), (48.0, 8.0)  # the bare sheet's two views, Pip's and Lyric's
 SINK = 0.6  # studs a leg may slide up into the hip
 STEP = 0.3  # studs a travelling foot lifts, at most
 NOD = 28.0  # degrees the head may pitch against the torso: past 30 the chin sinks into the collar
@@ -474,10 +477,24 @@ def arc_sheet(scene, rig, cams, take, out):
     print(f"wrote {path}")
 
 
+def bare_sheet(scene, rig, take, undress, out, tiles=20):
+    """The clip stepped through on the bare rig, the costume and the ram off, from the side and the three-quarter."""
+    step = max(1, math.ceil((take.end + 1) / tiles))
+    frames = list(range(0, take.end + 1, step))
+    undress(True)
+    cams = [r6.body_camera(scene, rig, take.start, az, el, distance=14.0, height=3.2, name=f"bare {view}")
+            for view, (az, el) in (("side", SIDE), ("quarter", QUARTER))]
+    scene.render.resolution_x, scene.render.resolution_y = 190, 230
+    path = r6.render_shots(scene, [(cam, take.start + f, f"{f}") for cam in cams for f in frames],
+                           out / f"bare_{take.name}.png", columns=len(frames))
+    undress(False)
+    print(f"wrote {path} (every {step} frames; the side, then the three-quarter)")
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
-    mode = args[0] if args and args[0] in ("poses", "export", "audit") else "poses"
+    mode = args[0] if args and args[0] in ("poses", "export", "audit", "bare") else "poses"
     wanted = [a for a in args if a in CLIPS] or list(CLIPS)
     scene, rig, costume, undress, feet = build()
     takes = {}
@@ -495,6 +512,9 @@ def main():
               f"over the floor {low:.2f} at {at}")
         if mode == "poses":
             pose_sheet(scene, cams, take, out)
+            continue
+        if mode == "bare":
+            bare_sheet(scene, rig, take, undress, out)
             continue
         # the Name is the game's: Author.SaveBaked reads Anim_Rook<Clip> and checks the clip is named the same
         r6.export(rig, out / f"Rook_{name}.json", "Rook", f"Rook{name}", take.start, take.start + take.end,

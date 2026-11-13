@@ -560,3 +560,29 @@ What the checks found:
 ## Next, not yet written
 
 In order, each written when the one before it closes: Rook, Pip and Lyric installed (with AR1 and AR4), with the ranged lead's skip back as its own action, through `/ga-action`, closing on its balance check (`docs/design.md`, "Combat"), and with the fight against a pack framed so the avatar's body never covers the lead and its target at phone size (research, AR8 A's pass, 2026-11-13); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.
+
+## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
+
+Research's request, 2026-11-13, on the director's word of the same day: "btw mini boss and boss should have a different HUD" (`docs/decisions.md`). A new piece: TR3 stays closed.
+
+**Feel line:**
+- An elite's card wears a heavier frame than a Shade's, so you know it's no ordinary Shade before the first blow.
+- When a keeper steps up, its name, its title and one long bar take the screen like a title card, so you know this fight is the street's own.
+
+**The block contains** three variants in grey, judged in motion at phone size in a keeper's try and an elite's pack. It's the HUD's own pattern, a boss bar, in our own frames.
+- **A. The keeper at the foot.**
+  - The keeper's bar runs wide across the bottom centre: its name and title above, its phases as segments.
+  - During a try, the dock steps out, since its buttons don't serve a fight.
+  - The top band then has no target card over the keeper's hat, the problem AR7 section 5 met (`Config.Hud.SeeThrough`).
+- **B. The keeper at the top.** A wide, thin bar across the top centre, in the target card's place and below the band, with its name and title over it.
+- **C. The elite only.** The target card as it is, with a heavier frame: a crest notch, the word Elite, a thicker bar. It's used with A or B. A keeper gets A or B.
+- Both open with the name stamped on as the Challenge lands, and leave as the fall's Gone.
+
+**Waits:**
+- the frames' art (Modulo's, on the kit, after the verdict);
+- the sounds;
+- the other grounds' keepers.
+
+**Order in the queue:** after "Rook, Pip and Lyric installed". **Time, forecast:** the grey variants about 1.5 hours, the art about 2.
+
+**Status:** requested, 2026-11-13.

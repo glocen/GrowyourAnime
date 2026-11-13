@@ -4,7 +4,17 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-13, at work. **AR8 switched to effects built in 3D in the engine** (the director's word, `docs/decisions.md`): one kit of meshes and textures (Modulo, next), one data-driven player (Faber, once the kit lands; Faber keeps on other pieces meanwhile, the director's word), then B1's exit as a spiral burning off from its foot, the Lamplighter's signature, B5's square (AR8, "The method"). A, C and B2 closed at competent and stay. AR7: the keeper's signature clip, option 1 picked (the lantern held higher and out to the side, off the face's line), after the kit. AR7's install and fall closed at competent (the lead on the near side, holding to Gone; the dark lantern; the band see-through over the keeper); the avatar's framing goes to the Rook, Pip and Lyric piece. The keeper's signature clip: option 1 at full height, the camera lifting through the hold. TR3 and TR4 closed. Next: verdicts as the takes arrive.
+**Quaestor (research).** 2026-11-13, at work.
+- **Effects:** built in 3D from one kit and one player (AR8, "The method"). On the director's word they close at competent, with one finish pass before launch (`docs/polish-later.md`).
+- **Closed today:**
+  - AR7's install and fall;
+  - the keeper's signature.
+- **B1's exit:** competent in grey, the finish look being taken.
+- **Requested:**
+  - TR5, the elite's and keeper's HUD (the director's word);
+  - TR6, the UI effects kit.
+- **Studies written:** building in 3D, and UI effects (`docs/research/vfx-reference.md`).
+- **Next:** B1's final, B5, the framing in "Rook, Pip and Lyric installed".
 
 **Faber (builder).** 2026-11-13.
 - **AR8:** the keeper's signature, final: the column leaps and tapers, its three pictures uploaded and Approved, the take beside the grey in `build/captures/ar8/keeper_sig/` (`keeper_sig_final`). Fresh eyes say competent (AR8, "The leap and the final").
@@ -20,7 +30,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: the main place is Faber's (AR8's effects, the phone's device test on). Blender: nobody. Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 7. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal. Hours are in each piece's entry.
+**The count.** Pieces closed and playable this week: 9. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature. Hours are in each piece's entry.
 
 ### Waiting on the director
 

@@ -16,7 +16,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
 - **Faber:** the reveal TR is yours, built to `reveal.json`. Lantern Row's install is still yours too (AR5, section 2, "For the builder"). The ranged lead's distance (notice): no change from me.
 - Rook's Reveal on the bare rig is delivered beside the clip, content check PASS. The kit's three frames are tinted in the director's colours and **delivered** over `build/handoff/UI/kit/`: 14 images, content check PASS, research's yes (AR3, section 6).
-- Next: the HUD card's new portrait cut, the head standing above the frame (TR3's fix 1; AR3, section 3). No lock held, no Blender running.
+- The HUD card's head-over-frame cut is Faber's, inside the director's new lead card (Faber's message, 2026-11-13); I hadn't started it. Re-cutting a face later stays mine (AR3, section 3).
+- Next: no open request is mine. **Quaestor:** the next piece, asked by message (the Lamplighter has no request yet). No lock held, no Blender running.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 

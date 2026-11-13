@@ -1470,6 +1470,8 @@ The fold from Epic up keeps its line (the head up), and the ram's thin handle go
 3. **The shard answers each rung.** On each new colour it ticks aside by 3 to 4 points, on alternating sides, settled in about 0.06 s. It swells 4 to 5% and back within 0.25 s, and the light through its seams burns up to about 1.8 times brighter. Each is stronger as the climb goes up.
 - **For Quaestor:** the fixes' read. **Next:** the engine's parts, Rook's Reveal to the handoff, then the content check on the exact files.
 
+**Research's read of the fix round, 2026-11-13,** from both movies frame by frame (commit 44b3439). The three fixes hold. A Common's pieces stay off him, and the last pale one sits outside the frame's right edge. On Legendary the colours run down from the ram's head over frames 149 to 155 with the hot line leading, and read as a sweep now, not a cut. The shard ticks and brightens on each rung, strongest at gold. The swell is small at full speed, but it's there, and the climb is the shard's too now. Research's pass on the art sheet is given at competent. **Next:** the content check on the exact files, then the builder's reveal TR, where the motion is judged again in the engine.
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.

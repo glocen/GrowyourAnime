@@ -425,6 +425,12 @@ The three images that changed for the second lesson passed the content check aga
 - A UDim2 offset rounds to a whole pixel, so a layer may sit up to 0.6 authored px from its drawn place. None shows in the captures.
 - The uncut renders stay in `lead_card/renders/` out of git until research's pass, then go.
 
+**Research's pass on the lead card, 2026-11-13,** from the two sheets and the four captures. **Felt:** the card has grown up. A lacquered midnight housing, the ember health lit along its top, and Pip's hat rising out of the frame, so the Voidkin stands in its card rather than sitting behind glass. Fallen, the face dims and "Back in 2 s" sits in the empty slot, plain to read. **Tier:** competent, near the top of it. **The one bold thing:** the head breaking the frame's top edge, which makes the portrait the card's biggest thing, as the reference does it. The type gem biting the frame's corner where the bars begin ties the face to the bars. On the phone the tight "1,466/1,466" fits, and the hat clears Roblox's bar. One fix, before the director's look:
+
+1. **The target's card is built like the lead's** (this TR, point 3: "built like the lead's"), in the same housing, light and type. Today the top line holds two looks side by side: the lead's midnight and ember beside the target's Graphite card from before. It serves a HUD "all well composed" (the director, 2026-11-13), and the director's words for the lead card aren't widened, because point 3 already asks for it. Then one full-frame capture at phone size, in a fight, with both cards and the pills, for research's read of the whole.
+
+The renders can go. Both engine lessons go to the handbook (research's).
+
 **Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. The phone pack's second part and the machine plates' clamp are in, 2026-11-13. Research's read of both parts given, 2026-11-13. The lead card's redesign, at the director's eye, is in, 2026-11-13. Next: research's pass on the lead card, then the director's look in game.
 
 ## Next, not yet written

@@ -2792,7 +2792,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
 
 **Checks:** the content check (rules 3 and 4); research's verdict with fresh eyes at the sheet and at the block clip. **Time it:** hours, here. **Waits:** the states' cues, the sounds and the keeper's phases on its card, all in the fight's TR.
 
-**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and waits for research's verdict (section 1).
+**Status:** in progress (Modulo, 2026-11-13, on Opus 5.5 xhigh). **Time named at the start:** about 13 hours over the four deliveries: the sheet 3, the model 4, the clips 4, the fall 2. It's a signature piece, so the time is a forecast, not a cap; each delivery records what it took. Delivery 1, the sheet, is past the content check and research's verdict (competent, A at 1.5) and **delivered** to `build/handoff/Lamplighter/` (section 1). Delivery 2, the model, is in progress.
 
 ### 1. The sheet (Modulo, 2026-11-13)
 
@@ -2830,7 +2830,7 @@ For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first 
   - A's thin red hat cords run down beside the pale mask. The model ties them under the chin, in rope or cream.
   - The fall bursts into light and paper with no red pieces, the sash's included.
 - **Time:** about 25 minutes by the clock (Quaestor's message at 10:57 UTC, the sheet past the check at 11:20), against the 3 hours named. On Opus 5.5 xhigh.
-- **Four facts:** made; self-reviewed; content check PASS; not delivered; research's verdict open.
+- **Four facts:** made; self-reviewed; content check PASS; research's verdict below; **delivered** 2026-11-13 to `build/handoff/Lamplighter/lamplighter_sheet.png`, byte for byte the sheet checked.
 
 **Research's verdict, 2026-11-13,** on the sheet, with `ga-fresh-eyes` blind beside it (its pick A, its Tier competent, its bold thing the same as research's). **Felt:** A is the one you'd know across the ring. The wide straw brim and the lit lantern hung at the mask's height read as one crown of light, the brightest point in the ring's frame, and it still reads at 64 px. B's hood is a reaper's from the player's camera, and C's lantern covers its own body. But A stands square, with its arms out, a patient keeper more than a master about to strike. **Tier:** competent. **The one bold thing:** the lantern beside the face, the face itself a lantern: the street's master wears the street. **A is picked,** and so is 1.5. The request's "a third of the frame" was TR2's grey box, not a target, and a keeper shorter than its elite fails the feel line. The ring's framing is the builder's call. A lower camera that looks up at it would serve "tall" better than a wider one. Fixes, for the model and the clips:
 

@@ -1446,6 +1446,7 @@ return {
 		Run = function(t: any)
 			-- docs/asset-requests.md, AR1, section 5: the charge to the strike, the strike's square held through the hitstop,
 			-- the shock's square the frame after, then the hero and the floor's lines; all gone by frame 76, Strike + 19.
+			-- While B5's stamp is on (AR8, "B5"), it takes the hero's and the lines' place, checked in its own case.
 			local action = Actions.ById.RookHaymaker
 			local lead = myLead()
 			t.Check("the lead is in the world", lead ~= nil)
@@ -1463,8 +1464,8 @@ return {
 				local count, all = 0, 0
 				local home = workspace:FindFirstChild("NL_Effects")
 				for _, p in (if home then home:GetChildren() else {}) do
-					if theirs[p] or not p:IsA("BasePart") then
-						continue
+					if theirs[p] or not p:IsA("BasePart") or p.Name:sub(1, 8) == "NL_Stamp" then
+						continue -- B5's stamp has its own case
 					end
 					all += 1
 					if laid(p) then
@@ -1506,7 +1507,7 @@ return {
 				local longest = 0
 				local home = workspace:FindFirstChild("NL_Effects")
 				for _, p in (if home then home:GetChildren() else {}) do
-					if not theirs[p] and p:IsA("BasePart") and laid(p) then
+					if not theirs[p] and p:IsA("BasePart") and laid(p) and p.Name:sub(1, 8) ~= "NL_Stamp" then
 						longest = math.max(longest, p.Size.X)
 					end
 				end
@@ -1519,20 +1520,25 @@ return {
 			t.Check("the strike's sound plays once, on the strike", cues() == 1, `{cues()} plays`)
 			t.Check("the shock's square on the next frame", isSquare(shock + 0.75 * FRAME, look.Shock))
 			local flying = at(shock + 4 * FRAME)
-			t.Check("the hero and the floor's lines while it flies", flying > BRACKET, `{flying} bars`)
-			local last = shock + (look.Hero.Fly + look.Hero.Leaves - 0.5) * FRAME
-			t.Check("the hero still there on its last frame", at(last) >= BRACKET, `{shown()} bars`)
+			if look.Stamp.On then
+				-- AR8, "B5": the stamp in the bracket's place (its own case)
+				t.Check("B5: no bracket thrown, nor the floor's lines", flying == 0, `{flying} bars`)
+			else
+				t.Check("the hero and the floor's lines while it flies", flying > BRACKET, `{flying} bars`)
+				local last = shock + (look.Hero.Fly + look.Hero.Leaves - 0.5) * FRAME
+				t.Check("the hero still there on its last frame", at(last) >= BRACKET, `{shown()} bars`)
+			end
 			local over = running.Step(strike + GONE_BY)
 			local _, left = shown()
 			t.Check("over by Strike + 19 frames", over == false)
 			t.Check("and nothing left", left == 0, `{left} parts`)
 			running.Destroy()
-			-- Section 8: aimed, the hero ends Hero.Past beyond the target down the hit's line (the lead's body to the target,
-			-- which the push follows), faces that line, and leans by how side-on it runs to this camera. The target stands off
-			-- to one side, so the knuckles' own line to it differs from the hit's.
+			-- Section 8, A's, while the stamp is off: aimed, the hero ends Hero.Past beyond the target down the hit's line (the
+			-- lead's body to the target), faces that line, and leans by how side-on it runs to this camera. The target stands
+			-- off to one side, so the knuckles' own line to it differs from the hit's.
 			local root = lead:FindFirstChild("HumanoidRootPart") :: BasePart?
 			local camera = workspace.CurrentCamera
-			if root and camera then
+			if root and camera and not look.Stamp.On then
 				local r = root :: BasePart
 				local ahead = Vector3.new(r.CFrame.LookVector.X, 0, r.CFrame.LookVector.Z).Unit
 				local right = Vector3.new(r.CFrame.RightVector.X, 0, r.CFrame.RightVector.Z).Unit
@@ -1632,6 +1638,124 @@ return {
 			_, high = lit(vent)
 			t.Check("out by Vent", high == 0, string.format("%.2f", high))
 			heat.Destroy()
+		end,
+	},
+	{
+		-- docs/asset-requests.md, AR8, "B5" (Config.Effects.Haymaker.Stamp): through the hold the square hangs over the
+		-- target, facing the camera, drawn tight as it rises; it slams down over Drop frames, stretched tall; on Strike it
+		-- lands at the target's feet, wide, and stays there when the target moves; it squashes on Shock as the floor's two
+		-- bars run out, and is gone by the look's end. The pin itself, Haymaker's push of 0, is a logic case.
+		Name = "Fight: Haymaker's stamp hangs over the target, slams onto it on Strike, and lies where it landed",
+		Stay = true,
+		Run = function(t: any)
+			local look = EffectsConfig.Haymaker
+			local s = look.Stamp
+			if not s.On then
+				t.Row("the stamp is off (Stamp.On): A's bracket plays, checked by the look's case", nil, nil, nil, "")
+				return
+			end
+			local action = Actions.ById.RookHaymaker
+			local lead = myLead()
+			local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			local camera = workspace.CurrentCamera
+			t.Check("the lead is in the world", root ~= nil and camera ~= nil)
+			if lead == nil or root == nil or camera == nil then
+				return
+			end
+			local r = root :: BasePart
+			local strike = action.Beats.Strike
+			local floorY = r.Position.Y - 3 -- an R6 root's height over the floor
+			local ahead = Vector3.new(r.CFrame.LookVector.X, 0, r.CFrame.LookVector.Z).Unit
+			local right = Vector3.new(r.CFrame.RightVector.X, 0, r.CFrame.RightVector.Z).Unit
+			local mark = Instance.new("Part")
+			mark.Name = "NL_SelfTestTarget"
+			mark.Anchored = true
+			mark.CanCollide = false
+			mark.CanQuery = false
+			mark.Transparency = 1
+			mark.Size = Vector3.one
+			mark.Position = r.Position + ahead * 6 + right * 1.5
+			mark.Parent = workspace
+			local spot = Vector3.new(mark.Position.X, floorY, mark.Position.Z)
+			local running = Effects.Haymaker(action.Beats, lead, function(): BasePart?
+				return mark
+			end)
+			local function shown(name: string): { BasePart }
+				local found = {}
+				local home = workspace:FindFirstChild("NL_Effects")
+				for _, p in (if home then home:GetChildren() else {}) do
+					if p:IsA("BasePart") and p.Name == name and p.Transparency < 1 then
+						table.insert(found, p)
+					end
+				end
+				return found
+			end
+			-- The square `at` frames from Strike: its count, its foot over the floor (the lower bar's centre), its width
+			-- (post to post), its height (bar to bar), its centre on the floor, and whether it faces the camera.
+			type Square = { Count: number, Foot: number, Wide: number, Tall: number, Centre: Vector3, Faces: boolean }
+			local function square(at: number): Square
+				running.Step(strike + at * FRAME)
+				local bars = shown("NL_Stamp")
+				local posts: { BasePart }, across: { BasePart } = {}, {}
+				for _, p in bars do
+					table.insert(if p.Size.Y > p.Size.X then posts else across, p)
+				end
+				local got: Square = { Count = #bars, Foot = -1, Wide = 0, Tall = 0, Centre = Vector3.zero, Faces = false }
+				if #posts == 2 and #across == 2 then
+					table.sort(across, function(a: BasePart, b: BasePart): boolean
+						return a.Position.Y < b.Position.Y
+					end)
+					got.Foot = across[1].Position.Y - floorY
+					got.Tall = across[2].Position.Y - across[1].Position.Y
+					got.Wide = (posts[1].Position - posts[2].Position).Magnitude
+					local mid = (posts[1].Position + posts[2].Position) / 2
+					got.Centre = Vector3.new(mid.X, floorY, mid.Z)
+					local toward = camera.CFrame.Position - got.Centre
+					toward = Vector3.new(toward.X, 0, toward.Z).Unit
+					got.Faces = across[1].CFrame.LookVector:Dot(toward) > 0.999
+				end
+				return got
+			end
+			local function on(got: Square, where: Vector3): number
+				return (got.Centre - where).Magnitude
+			end
+			local before = square(-s.Rise - 1)
+			t.Check("nothing before it forms", before.Count == 0, `{before.Count} bars`)
+			local forms = square(-s.Rise + 0.5)
+			t.Check("it forms small over the target's head", forms.Count == 4 and forms.Wide < s.Side * 0.75 and math.abs(forms.Foot - s.Over) < 0.3, string.format("%d bars, %.2f wide, foot at %.2f", forms.Count, forms.Wide, forms.Foot))
+			local hung = square(-s.Drop - 1)
+			t.Near("hung: drawn tight to its side", hung.Wide, s.Side, 0.01)
+			t.Near("at the top of its drop", hung.Foot, s.Top, 0.01)
+			t.Check("over the target", on(hung, spot) < 0.05, string.format("%.3f studs off", on(hung, spot)))
+			t.Check("facing the camera", hung.Faces)
+			local held = square(-s.Drop - 2)
+			t.Check("held there a frame before it drops", math.abs(held.Foot - hung.Foot) < 0.01 and math.abs(held.Wide - hung.Wide) < 0.01)
+			local falling = square(-1.5)
+			t.Check("falling: lower, and stretched taller than wide", falling.Foot > 0.05 and falling.Foot < hung.Foot - 1 and falling.Tall > falling.Wide, string.format("foot at %.2f, %.2f tall, %.2f wide", falling.Foot, falling.Tall, falling.Wide))
+			local landed = square(0.25)
+			t.Near("on Strike: on the floor", landed.Foot, 0.04, 0.01)
+			t.Near("wide", landed.Wide, s.Side * s.Spread, 0.01)
+			t.Check("at the target's feet", on(landed, spot) < 0.05, string.format("%.3f studs off", on(landed, spot)))
+			mark.Position += right * 3 -- the target moves on: the stamp stays where it landed
+			local shock = square(1.25)
+			t.Check("on Shock: where it landed, though the target moved", on(shock, spot) < 0.05, string.format("%.3f studs off", on(shock, spot)))
+			t.Near("squashed flat", shock.Tall, s.Side * s.Squash[2], 0.01)
+			local run = #shown("NL_StampRun")
+			t.Check("the floor's two bars run out from its feet", run == 2, `{run} bars`)
+			local eaten = square(s.Eat + s.Eaten + 0.25)
+			t.Check("eaten where it lies", eaten.Count == 0 and #shown("NL_StampRun") == 0, `{eaten.Count} bars`)
+			local over = running.Step(strike + (s.Eat + s.Eaten + 1) * FRAME)
+			t.Check("over once eaten", over == false)
+			local left = 0
+			local home = workspace:FindFirstChild("NL_Effects")
+			for _, p in (if home then home:GetChildren() else {}) do
+				if p.Name:sub(1, 8) == "NL_Stamp" then
+					left += 1
+				end
+			end
+			t.Check("and nothing left", left == 0, `{left} parts`)
+			running.Destroy()
+			mark:Destroy()
 		end,
 	},
 	{

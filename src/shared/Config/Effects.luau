@@ -5,7 +5,8 @@
 
 return {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
-	-- the charge's square, the strike's square, the thrown bracket and the floor's two lines, eaten as it cools.
+	-- the charge's square, the strike's square, the thrown bracket and the floor's two lines, eaten as it cools. While
+	-- Stamp.On, B5's grey stamp takes the bracket's and the lines' place.
 	Haymaker = {
 		-- The bar's eight frames, one under another: the group's upload (docs/asset-log.md); "" plays the grey stand-in.
 		Picture = "rbxassetid://82029716338204",
@@ -41,6 +42,35 @@ return {
 		},
 		-- The floor's two lines, scored under the hero's feet in pieces as it passes: hot, then a scorch, eaten from the near end.
 		Floor = { Pieces = 6, Hot = 3, Eat = 4, Life = 11, Bar = 0.5, Over = 0.03, Overlap = 0.3 }, -- frames; studs
+		-- B5, the stamp, a grey block (docs/asset-requests.md, AR8, "B5"; AR1, section 9; tools/blender/rook_haymaker_stamp.py,
+		-- face() lifted). In place of the hero and the floor's lines, a square stood up facing the camera hangs over the
+		-- target through the hold, drawn tight. It slams down onto it over Drop frames, stretched tall, and lands on Strike.
+		-- It squashes flat on Shock while two bars run out along the floor from its feet, and is eaten where it lies, the
+		-- target pinned under it (Actions: Haymaker's push is 0). Frames are counted from Strike; studs from the floor.
+		Stamp = {
+			On = true, -- false plays A's bracket thrown through the target: a look beside it while B5 is a blockout
+			Side = 4.6, -- the square's side: the target's footprint and a margin
+			Bar = 0.85,
+			Rise = 21, -- frames before Strike it forms over the target's head (the sheet's frame 36)
+			Over = 5.6, -- its foot as it forms; and at least Clear over the target's own top, well above the head (the content check)
+			Clear = 1,
+			-- Its foot at the top of the hang, where it falls from. On a phone at the replay's framing, the sheet's 10 and Modulo's
+			-- 8 cut its top off the frame (by 13 px at 8); at 6.4 it stands 28 px inside, under the top bar's buttons.
+			Top = 6.4,
+			Forms = 0.65, -- its side's share as it forms, and its bar then: drawn tight to Side and Bar
+			FormBar = 0.3,
+			Drop = 4, -- frames it falls, faster and faster, to land on Strike
+			Stretch = 0.35, -- it grows this share taller, and Narrow narrower, as it falls fast
+			Narrow = 0.15,
+			Squash = { 0.55, 0.3, 0.26, 0.24 }, -- its height, a share of Side, on Strike and each frame after: flat into the floor
+			Spread = 1.3, -- its width, a share of Side, on Strike; then Spreads, gaining SpreadGain over 10 frames
+			Spreads = 1.55,
+			SpreadGain = 0.05,
+			Eat = 3, -- frames after Strike it starts to be eaten, and the frames it takes to go
+			Eaten = 12,
+			Run = { Reach = 4.5, Frames = 8, Life = 9, Width = 0.5 }, -- the floor's two bars: out Reach studs over Frames, gone after Life
+			Alone = 6, -- studs ahead of the lead it lands with no target: Haymaker's range
+		},
 		Sound = "HaymakerStrike", -- the cue on the strike's frame, at the knuckles (Config.Sounds)
 		-- The ram's heat (AR1, sections 5 to 7): the glow mask on these pieces, on the clip's markers. Up from Charge to
 		-- Strike, held through the hitstop to Shock, out by Vent. The content check's engine looks (section 7) hold the

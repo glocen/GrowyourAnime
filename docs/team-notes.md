@@ -6,10 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, at work; the director is away about 6 hours from the afternoon, and the team keeps going. TR3 closed at research's pass (the HUD's pieces close at research's pass, the director checking later: `docs/decisions.md`). TR4, the reveal: research's pass given (competent; the break seen through a red-white flash, the name stamped); closed; its level check moves to an offline mixdown in AR8 A (a take's loudness is the PC's compression); the sounds wait on the director's ear. AR7, the Lamplighter: the seven clips passed and delivered (the wrench raised over the hat); the keeper's own walk near 5 (tier 2, Faber's take checks it). AR8, the effects pass (the director's word, no yes needed; measured against `docs/research/vfx-reference.md`): A, the hit, and C, the interface, closed at competent; B2, Held Note bolder, closed at competent; B1, the coil, competent but open: one redraw (the foot lifts off the Shade's head sooner, condition 4; the seams turn for the wind), the last round; B5's feel line signed, Faber's replay next. AR7's fall signed (the lantern alone), Faber's replay with the install. Seen and queued: the avatar covers the lead against a pack, in the next TR. Next: verdicts as the takes arrive.
 
-**Faber (builder).** 2026-11-13. AR8: C's fixes and B1 and B2 are installed, and one take waits on research's one pass to close all three (AR8, "C's fixes, and B1 and B2 installed").
-- **What changed:** the level-up's word stands clear over the head, white edged in blue. The toasts sit inside the safe area under the pills. The column wears Modulo's picture. The coil, the bold crest, veil and touch, and the column are uploaded and installed. World plates now sit on their points on a notched phone.
-- **Take:** `build/captures/ar8/c_b1_b2/`, at phone size.
-- **Next:** B5's replay (Rook's block clip, the grey square, the pin). Then AR7's install, then Rook, Pip and Lyric installed.
+**Faber (builder).** 2026-11-13. AR8: C and B2 closed at research's pass. B5's replay is built and taken, and waits on research's verdict in motion (AR8, "B5", "The replay built").
+- **What changed:** Rook's block clip plays in Haymaker's place. B5's grey square hangs over the target, slams onto it on Strike and lies where it landed. Haymaker pins (Push 0).
+- **Take:** `build/captures/ar8/b5/`, A and B5 at phone size.
+- **Now:** B1's last redraw: the coil's re-upload and one take. Then AR7's install, then Rook, Pip and Lyric installed.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **AR7, the Lamplighter:** the sheet, the model and the seven clips are **delivered** (`build/handoff/Lamplighter/clips/`, section 4). Research read them as competent and says the raised wrench meets the fix. The signature's `ga-fresh-eyes` stays at its motion blockout with Faber. The fall, delivery 4, comes after AR8's B.
@@ -17,7 +17,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber:** Lantern Row's install is still yours (AR5, section 2). The HUD card's head-over-frame cut is yours; re-cutting a face later stays mine (AR3, section 3). The ranged lead's distance (notice): no change from me.
 - **Now:** AR8. B1's last redraw is **delivered** (the foot leaves the Shade's head sooner, and the coil keeps turning one way; content check PASS; AR8, "B1, the last redraw"). **Faber:** its re-upload and one take. B5's block clip and AR7's fall wait on Faber's replays. The Lamplighter's signature effect as a grey block-in, A the column picked, content check PASS (AR7, section 6). **Research:** the feel line, the scope and the verdict. **Faber:** the motion blockout and a camera tilt for the wrench. No lock held.
 
-**Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's playtest (B1's take). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 7. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal. Hours are in each piece's entry.
 
@@ -61,6 +61,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-13. AR8 B5's replay: Haymaker slams a square and pins (Faber)
+
+- **What:** Modulo's block clip plays in RookHaymaker's place. B5's grey square forms over the target through the hold, falls stretched, lands on Strike at its feet and squashes on Shock as two floor bars run out. It lies where it landed. Haymaker's strike pushes nothing (the pin, tier 2, signed). A's bracket returns with `Stamp.On` false.
+- **Tier 1:** the hang's top is 6.4, not the scope's 8, because at 8 the square leaves a phone's frame.
+- **Where:** `Effects.Haymaker`, `Config.Effects.Haymaker.Stamp`, `Definitions/Actions` (RookHaymaker), `stage_clips.py --source`. The record: AR8, "B5", "The replay built".
+- **Checked:** type check 0 new; logic 2408; the new stamp case 18/18; the suite's timing cases pass at 60 fps.
+- **For research:** the verdict in motion on `build/captures/ar8/b5/`, A beside B5.
 
 ### 2026-11-13. AR8 C's fixes, and B1 and B2 installed (Faber)
 

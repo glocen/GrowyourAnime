@@ -5,7 +5,8 @@
 --             the punctuation, one bracket thrown along the ground through the target and eaten as it cools, the two
 --             lines it scores on the floor. One bar picture for all of it, or grey parts until it's uploaded
 --             (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). And the ram's heat on its glow mask,
---             and the strike's sound (Config.Sounds).
+--             and the strike's sound (Config.Sounds). While Stamp.On, B5's grey block in the bracket's place: the
+--             square hung over the target through the hold, slammed onto it on Strike, squashed flat where it lands.
 --   LanternBurst  Pip's signature, AR4's art sheet: the heat in the cage on his glow mask, the throw with its trail, the
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8).
@@ -46,6 +47,7 @@ local Effects = {}
 Effects.TimeScale = 1
 
 local LIGHT = Color3.fromRGB(225, 225, 225) -- the stand-ins' grey
+local MID = Color3.fromRGB(140, 140, 140) -- a stand-in's secondary shape
 local SPARK = Color3.fromRGB(255, 255, 255)
 local HOT = Color3.new(1, 1, 1) -- a picture's own colours
 local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
@@ -394,13 +396,131 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		return hero.Width + hero.WidthGain * share, hero.Height + hero.HeightGain * share, hero.Bar + hero.BarGain * share
 	end
 
+	-- B5, the stamp (Config.Effects.Haymaker.Stamp), in grey: the square's two posts and two bars, then the floor's two
+	-- bars, made at the start. It hangs over wherever the target is through the hold, and lands where it stood on Strike:
+	-- pinned, the target stays there with it.
+	local stampBars: { Part } = {}
+	for index = 1, 6 do
+		local p = part(if index <= 4 then LIGHT else MID)
+		p.Name = if index <= 4 then "NL_Stamp" else "NL_StampRun"
+		p.Transparency = 1
+		table.insert(stampBars, p)
+	end
+	local landedAt: Vector3? = nil -- the target's floor point on Strike
+	local targetTop: number? = nil -- the target's top over the floor, measured once
+
+	local function stampFoot(): Vector3?
+		if root == nil then
+			return nil
+		end
+		local r = root :: BasePart
+		local floorY = r.Position.Y - R6_ROOT_HEIGHT
+		local aim = target()
+		if aim then
+			local body = aim.Parent
+			if targetTop == nil and body and body:IsA("Model") and body ~= workspace then -- a fighter's body (Workspace is a Model)
+				local box, extent = body:GetBoundingBox()
+				targetTop = box.Position.Y + extent.Y / 2 - floorY
+			end
+			return Vector3.new(aim.Position.X, floorY, aim.Position.Z)
+		end
+		local look = Vector3.new(r.CFrame.LookVector.X, 0, r.CFrame.LookVector.Z)
+		local ahead = if look.Magnitude > 1e-3 then look.Unit else Vector3.new(0, 0, -1)
+		return Vector3.new(r.Position.X, floorY, r.Position.Z) + ahead * EffectsConfig.Haymaker.Stamp.Alone
+	end
+
+	local function hideStamp()
+		for _, p in stampBars do
+			p.Transparency = 1
+		end
+	end
+
+	-- `f`: frames from Strike, on the action's clock.
+	local function stampAt(f: number)
+		local s = EffectsConfig.Haymaker.Stamp
+		if f < -s.Rise then
+			hideStamp()
+			return
+		end
+		if f >= 0 and landedAt == nil then
+			landedAt = stampFoot()
+		end
+		local foot = landedAt or stampFoot()
+		local camera = workspace.CurrentCamera
+		if foot == nil or camera == nil then
+			hideStamp()
+			return
+		end
+		-- stood up facing the camera, whichever way it looks: X across the square as it's seen, Z toward the camera
+		local toward = camera.CFrame.Position - (foot :: Vector3)
+		toward = Vector3.new(toward.X, 0, toward.Z)
+		if toward.Magnitude < 1e-3 then
+			toward = -Vector3.new(camera.CFrame.LookVector.X, 0, camera.CFrame.LookVector.Z)
+		end
+		local facing = CFrame.lookAt(foot :: Vector3, (foot :: Vector3) + toward.Unit)
+		local over = math.max(s.Over, (targetTop or 0) + s.Clear)
+		local top = over + (s.Top - s.Over)
+		local floorOver = 0.04 -- studs: its foot's bar on the floor
+		local w, h, z, bar, gone = 0, 0, 0, 0, 0
+		local run: number? = nil
+		if f < -s.Drop then
+			-- hung over the target's head through the hold, drawn tight as it rises to the top of its drop
+			local u = math.clamp((f + s.Rise) / math.max(1, s.Rise - s.Drop - 2), 0, 1)
+			local ease = 1 - (1 - u) ^ 2
+			w = s.Side * (s.Forms + (1 - s.Forms) * ease)
+			h = w
+			z = over + (top - over) * ease
+			bar = s.FormBar + (s.Bar - s.FormBar) * ease
+		elseif f < 0 then
+			-- slammed down, faster and faster, stretched tall while it's fast
+			local fast = math.clamp((f + s.Drop) / math.max(1, s.Drop - 1), 0, 1)
+			local u = math.clamp((f + s.Drop) / s.Drop, 0, 1)
+			w, h = s.Side * (1 - s.Narrow * fast), s.Side * (1 + s.Stretch * fast)
+			z = floorOver + (top - floorOver) * (1 - u * u)
+			bar = s.Bar
+		else
+			-- landed on Strike, squashed flat on Shock, eaten where it lies; the floor's bars run out from its feet
+			local k = math.floor(f)
+			h = s.Side * s.Squash[math.min(k, #s.Squash - 1) + 1]
+			w = s.Side * (if k == 0 then s.Spread else s.Spreads + s.SpreadGain * math.clamp((f - 1) / 10, 0, 1))
+			z = floorOver
+			gone = math.clamp((f - s.Eat) / s.Eaten, 0, 1)
+			bar = s.Bar * (1 - gone) + 0.02
+			if f <= s.Run.Life then
+				run = outFast(f / s.Run.Frames)
+			end
+		end
+		-- the grey stand-in shows being eaten as transparency, as the bar's does
+		for index, sign in { -1, 1 } do
+			local post = stampBars[index]
+			post.Size = Vector3.new(bar, h + bar, STAND_IN_DEPTH)
+			post.CFrame = facing * CFrame.new(sign * w / 2, z + h / 2, 0)
+			post.Transparency = gone
+			local across = stampBars[2 + index]
+			across.Size = Vector3.new(w + bar, bar, STAND_IN_DEPTH)
+			across.CFrame = facing * CFrame.new(0, z + h * (index - 1), 0)
+			across.Transparency = gone
+			local floorBar = stampBars[4 + index]
+			if run then
+				local reach = w / 2 + s.Run.Reach * run
+				floorBar.Size = Vector3.new(reach - w / 2 + 0.01, 0.16, s.Run.Width * (1 - run) + 0.05)
+				floorBar.CFrame = facing * CFrame.new(sign * (w / 2 + reach) / 2, 0.08, 0)
+				floorBar.Transparency = 0
+			else
+				floorBar.Transparency = 1
+			end
+		end
+	end
+
 	local running: Running
 	running = {
 		Step = function(clock: number, _free: number?): boolean
 			local look = EffectsConfig.Haymaker
-			local hero, floor = look.Hero, look.Floor
+			local hero, floor, stamp = look.Hero, look.Floor, look.Stamp
 			local lastPiece = passes(hero, (floor.Pieces - 1) / floor.Pieces)
-			local finish = SHOCK + (math.max(hero.Fly + hero.Leaves, lastPiece + floor.Life) + 1) * FRAME
+			local finish = if stamp.On
+				then math.max(STRIKE + (stamp.Eat + stamp.Eaten + 1) * FRAME, SHOCK + 2 * FRAME)
+				else SHOCK + (math.max(hero.Fly + hero.Leaves, lastPiece + floor.Life) + 1) * FRAME
 			if clock >= finish then
 				running.Destroy()
 				return false
@@ -447,7 +567,12 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 					end
 				end
 			end
-			if path and past then
+			if stamp.On then
+				stampAt((clock - STRIKE) / FRAME)
+			else
+				hideStamp()
+			end
+			if path and past and not stamp.On then
 				local f = (clock - SHOCK) / FRAME
 				local lean = math.rad(hero.Lean * sideOn)
 				-- The hero: one bracket down the line, boiling while it flies, then eaten as it opens and its feet lift.
@@ -503,6 +628,10 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 				bar.Part:Destroy()
 			end
 			table.clear(pool)
+			for _, p in stampBars do
+				p:Destroy()
+			end
+			table.clear(stampBars)
 		end,
 	} :: Running
 	return running

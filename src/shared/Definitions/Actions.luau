@@ -72,8 +72,9 @@ local rows: { Action } = {
 		Signed = nil,
 	},
 	{
-		-- Rook's signature (docs/roster.md): a long wind-up, one straight punch, a shockwave along the ground. One target in
-		-- TR2's block: the roster's shockwave reads as the bracket's travel, not yet a second hit (the builder's read).
+		-- Rook's signature (docs/roster.md): a long wind-up, then the ram driven down into the floor before the Shade, a
+		-- square of light slammed onto it on the same frame, the Shade pinned where it stood: B5's block (docs/asset-requests.md,
+		-- AR8, "B5"; the director's planned rework, 2026-11-12). One target, as in TR2's block.
 		Id = "RookHaymaker",
 		Clip = "RookHaymaker",
 		Length = 2.0,
@@ -81,19 +82,21 @@ local rows: { Action } = {
 		Cooldown = 10,
 		Beats = { Charge = 0.1333, Strike = 0.95, Shock = 0.9667, Step = 1.05, Vent = 1.1667 },
 		Hits = {
-			Strike = { Coefficient = 4.0, Heavy = true, Reach = 9, Push = 4, Rung = 7 },
+			-- Push 0: the pin. The stamp lands on the target and it stays under it (tier 2, research, 2026-11-13: AR8, "B5")
+			Strike = { Coefficient = 4.0, Heavy = true, Reach = 9, Push = 0, Rung = 7 },
 		},
 		Range = 6,
 		Heavy = true,
 		State = nil, -- heavy, not a state: the heavy stagger joins with the states (docs/design.md, "States in a fight")
 		Levers = {
-			"anticipation (the hold, Charge to Strike, with the charge square drawing tight)",
+			"anticipation (the hold, Charge to Strike: the ram cocked over his shoulder, the square hung over the target, drawn tight)",
+			"the snap (up to down in two frames, the square falling with the ram)",
 			"hitstop (heavy)",
-			"knockback (thrown back)",
+			"the pin (no knockback: the target held where the stamp lands)",
 			"screen shake (own heavy hit)",
-			"the bracket thrown along the ground through the target",
+			"squash (the stamp flattened into the floor on Shock)",
 		},
-		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR1, delivery 4)",
+		Signed = "the feel line: Quaestor, 2026-11-13 (docs/asset-requests.md, AR8, \"B5\")",
 	},
 	{
 		-- Pip's three shots (AR4, section 3): two flicks off his sleeve, the lantern spitting and kicked back, then the whole

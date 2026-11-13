@@ -7,7 +7,10 @@ import folder into ServerStorage.NL_Import.
 --r6 keeps only R6's six joints, for a stand-in on the plain R6 body (TR2's lead). Without it the character's own
 joints stay, for its own rig.
 
+--source reads <Character>_<Clip>.json from another folder: a block clip for a replay, before it's delivered.
+
 Run:  py tools/animation/stage_clips.py Rook Idle Combo Haymaker Hit Down Up --r6
+      py tools/animation/stage_clips.py Rook Haymaker --source build/scratch/modulo/rook/b5
 """
 import argparse
 import json
@@ -17,8 +20,8 @@ ROOT = Path(__file__).resolve().parents[2]
 R6 = {"Torso", "Head", "Right Arm", "Left Arm", "Right Leg", "Left Leg"}
 
 
-def stage(character: str, clip: str, r6_only: bool) -> Path:
-    source = ROOT / "build" / "handoff" / character / "clips" / f"{character}_{clip}.json"
+def stage(character: str, clip: str, r6_only: bool, folder: Path | None = None) -> Path:
+    source = (folder or ROOT / "build" / "handoff" / character / "clips") / f"{character}_{clip}.json"
     data = json.loads(source.read_text(encoding="utf-8"))
     if data.get("Name") not in (clip, f"{character}{clip}"):  # the Reveals carry the character's name already
         raise SystemExit(f"{source.name}: its Name is {data.get('Name')!r}, not {clip!r}")
@@ -43,9 +46,11 @@ def main() -> None:
     parser.add_argument("character")
     parser.add_argument("clips", nargs="+")
     parser.add_argument("--r6", action="store_true", help="keep only R6's six joints")
+    parser.add_argument("--source", type=Path, help="the folder holding <Character>_<Clip>.json, from the project root")
     args = parser.parse_args()
+    folder = ROOT / args.source if args.source else None
     for clip in args.clips:
-        stage(args.character, clip, args.r6)
+        stage(args.character, clip, args.r6, folder)
 
 
 if __name__ == "__main__":

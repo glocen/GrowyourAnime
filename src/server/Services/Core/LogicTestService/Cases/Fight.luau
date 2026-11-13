@@ -87,6 +87,8 @@ return {
 			t.Equal("the signature's coefficient", haymaker.Hits.Strike.Coefficient, 4.0)
 			t.Equal("the signature's cooldown", haymaker.Cooldown, 10)
 			t.Check("Haymaker is heavy", haymaker.Heavy and haymaker.Hits.Strike.Heavy)
+			-- AR8, "B5": the stamp lands on the target and it stays under it (tier 2, research, 2026-11-13)
+			t.Equal("Haymaker pins: its strike pushes nothing", haymaker.Hits.Strike.Push, 0)
 			local lead = (0.9 + 0.9 + 1.4) / combo.CancelFrom + haymaker.Hits.Strike.Coefficient / haymaker.Cooldown
 			t.Check("the enemies' coefficient a second is the lead's", near(Actions.EnemyPerSecond, lead))
 			for _, id in { "ShadeSwipe", "KeeperSwing" } do
@@ -500,9 +502,10 @@ return {
 		-- AR1, section 8: a server-moved body reaches a client's screen late, so the client draws the push itself.
 		Name = "Fight: the drawn push reaches the hit's push by the end of the server's, and hands it back",
 		Run = function(t: any)
+			-- the combo's ram, the game's longest push since Haymaker pins (AR8, "B5")
 			local push = Combat.Push
 			for _, kind in { "Dummy", "Elite" } do
-				local studs = Actions.ById.RookHaymaker.Hits.Strike.Push * (Combat.Weight :: { [string]: number })[kind]
+				local studs = Actions.ById.RookCombo.Hits.Hit3.Push * (Combat.Weight :: { [string]: number })[kind]
 				t.Equal(`{kind}: nothing drawn through the hold`, Fight.KnockAhead(studs, -0.05, 0, push), 0)
 				t.Check(`{kind}: half the server's push, half the studs`, near(Fight.KnockAhead(studs, push.Seconds / 2, 0, push) :: number, studs / 2))
 				t.Check(`{kind}: by its end, all of Push × weight`, near(Fight.KnockAhead(studs, push.Seconds, 0, push) :: number, studs))

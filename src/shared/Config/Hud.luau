@@ -94,8 +94,9 @@ return {
 		-- of 2026-11-13); Xp stays experience's one colour for the level-up's ring and word. The target's rims and stud: a
 		-- neutral grey, Common's metal light, since a Shade has no rarity (the builder's seed).
 		TargetTrim = Color3.fromHex("#666C78"),
-		-- The target's level beside its name: "a tiny bit brighter and in yellow style" (the director, 2026-11-13), a soft
-		-- gold a step brighter than the soft grey it replaces.
+		-- A level on both cards: the target's beside its name, "a tiny bit brighter and in yellow style" (the director,
+		-- 2026-11-13), a soft gold a step brighter than the soft grey it replaced; the lead's on its badge the same, the
+		-- director leaving it to the builder ("whatever best", 2026-11-13). Experience keeps its blue, the level this gold.
 		Level = Color3.fromHex("#F2CB62"),
 		Xp = Color3.fromHex("#4E9BFF"),
 		Trim = {

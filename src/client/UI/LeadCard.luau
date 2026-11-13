@@ -218,6 +218,7 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 		Name = "Level",
 		Size = Theme.Text.Caption,
 		Font = Theme.Font.Number,
+		Colour = HudConfig.Card.Level,
 		Align = Enum.TextXAlignment.Center,
 		Box = UDim2.fromOffset(bw, bh),
 		Position = UDim2.fromOffset(bx - bw / 2, by - bh / 2),

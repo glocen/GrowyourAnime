@@ -2110,6 +2110,28 @@ return {
 			root:Destroy()
 			t.Check("it showed", frames > 10, `{frames} frames`)
 			t.Check("never over the band, its rise and swell included", closest >= -1, string.format("%.1f px under it at its closest", closest))
+			-- The level-up's word is kept under it by the World layer itself (it has no slot): born there, it's pushed down
+			-- (the phone pack, 2026-11-13: it drew over the Electricity pill).
+			local feet = Instance.new("Part")
+			feet.Name = "HumanoidRootPart"
+			feet.Anchored, feet.CanCollide, feet.CanQuery, feet.Transparency = true, false, false, 1
+			feet.Position = ray.Origin + ray.Direction * 24 - Vector3.new(0, 3, 0)
+			feet.Parent = workspace
+			local _, word = Effects.LevelUp(feet, 7)
+			local plate = word.Parent :: Frame
+			local least, seen = math.huge, 0
+			local look = RunService.RenderStepped:Connect(function()
+				local edge = world:GetAttribute("Band")
+				if plate.Parent and plate.Visible and type(edge) == "number" then
+					seen += 1
+					least = math.min(least, (plate.AbsolutePosition.Y - world.AbsolutePosition.Y) / Layers.Scale() - edge)
+				end
+			end)
+			t.Wait(EffectsConfig.LevelUp.Seconds + 0.1)
+			look:Disconnect()
+			feet:Destroy()
+			t.Check("the level-up's word showed", seen > 10, `{seen} frames`)
+			t.Check("and never over the band, its rise included", least >= -1, string.format("%.1f px under it at its closest", least))
 		end,
 	},
 	{

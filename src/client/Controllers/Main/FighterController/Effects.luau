@@ -96,7 +96,9 @@ local function run(step: (age: number) -> boolean, done: () -> ())
 	table.insert(timed, { Age = 0, Step = step, Done = done })
 end
 
-RunService.RenderStepped:Connect(function(dt: number)
+-- After the camera and before the World layer places its plates (Camera + 2), so a plate's rise and size this frame are
+-- what the World layer keeps under the top band.
+RunService:BindToRenderStep("NL_Effects", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
 	for index = #timed, 1, -1 do
 		local item = timed[index]
 		item.Age += dt * Effects.TimeScale

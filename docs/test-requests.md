@@ -348,7 +348,21 @@ Also, as the builder's tier 1: the trim seeds take the director's rarity colours
 - **The critical's size** is 1.6 in `Config.Hud.Numbers.Critical`, so the number cases see 38.4 px.
 - **Checks:** HUD self-test 81/81 and the number cases 30/30 at 59 fps; logic 1731; type check 0 new.
 
-**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. Next: the phone-size pack with the frozen crit, on the director's simulator click, then the director's eye.
+**The phone-size pack, first part, 2026-11-13 (Faber).** Captures 1 to 4 in `build/captures/tr3/phone/`.
+- **The simulator:** Studio's Device Simulator, iPhone 16 Pro in landscape: a 750×401 viewport, UI scale 1.069, touch on. The builder switched it on and off by script, on the director's word (2026-11-13: "Do it yourself for the device test you are allowed to use script"). It's off again.
+- **On the test pad** with the dummy, Pip as the lead. This isn't yet the fight on Lantern Row that the checks ask for.
+  1. **The top line** (capture 1): the lead card, the target card and both pills sit on one line inside the safe area. The ring, the chip and the dock are clear of the thumbs.
+  2. **The frozen critical at 1.6** (capture 2), by the recipe above: "561" in gold on its stroke, whole under the band.
+  3. **Found: the World layer's clamp was never written.** A plate marked `World.Below` was marked and nothing more, so the level-up word rose over the Electricity pill (capture 3).
+     - **The fix:** `World.luau` now pushes a Below plate down by whatever crosses the band, its height read with the number's swell (its UIScale) counted. The effect kit's timed step runs at `BindToRenderStep` Camera+1, before the plates are placed at Camera+2.
+     - **On the phone:** the worst frame of a number is 0.2 px over the band, and of the level-up word 1.0 px, which is pixel rounding. The word sits under the band (capture 4).
+     - **A case covers it:** "HUD: a number born at the top band stays under it its whole life" now also fires a level-up and watches its word every frame.
+- **For research:** with the camera close in, the clamped level-up word and a number also clamped at the band can overlap (capture 4). It's rare in play. Not changed.
+- **Checks:** on the phone, HUD self-test 83/83 at 59 fps and the number cases 32/32. Logic 1731 offline; type check 0 new.
+- **Still to take at phone size:** the fight on Lantern Row with damage received, a heal (Lyric), the lead's fall and return and the type edge; then the plot with a shard ready; long names; empty and full states.
+- **Still to run:** the desktop's whole self-test on the new clamp.
+
+**Status:** started 2026-11-12 (Faber). The three calls, the trims, the ring and the critical are in, 2026-11-13. The phone pack's first part and the clamp fix are in, 2026-11-13. Next: the phone pack's second part (the Lantern Row fight and the plot, listed above), research's read, then the director's eye.
 
 ## Next, not yet written
 

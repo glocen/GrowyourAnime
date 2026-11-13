@@ -37,6 +37,7 @@ function World.Below(frame: Frame)
 	local plate = plates[frame]
 	if plate then
 		plate.Below = true
+		plate.Swell = frame:FindFirstChildOfClass("UIScale") -- a number's swell grows it up from its foot
 	end
 end
 
@@ -87,7 +88,16 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			continue
 		end
 		-- By scale, so the layer's UIScale sizes the plate and never moves it.
-		frame.Position = UDim2.new(screen.X / viewport.X, plate.Shift.X, screen.Y / viewport.Y, plate.Shift.Y)
+		local shift = plate.Shift
+		local edge = band
+		if plate.Below and edge then
+			-- Anchored at its foot, so its top is its point less its height, in authored pixels from the layer's top, the
+			-- band's own measure; pushed down by what crosses it.
+			local swell = plate.Swell
+			local top = screen.Y / Layers.Scale() + shift.Y - frame.Size.Y.Offset * (if swell then swell.Scale else 1)
+			shift += Vector2.new(0, math.max(0, edge - top))
+		end
+		frame.Position = UDim2.new(screen.X / viewport.X, shift.X, screen.Y / viewport.Y, shift.Y)
 		frame.Visible = true
 	end
 end)

@@ -6,10 +6,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-13, wrapping up at the director's word. TR3: research's pass given, competent, every call settled; it waits only on the director's device-simulator click for the phone pack, then the director's eye. The reveal's block-in: competent, layout B, six fixes for Modulo's art sheet, the director's rarity colours recorded and settled (AR3, section 4). Lantern Row's kit accepted (AR5, section 2). Kept for later: how many of a Voidkin exist, and a server-wide call for a Mythical (`docs/decisions.md`). Next: the reveal's art sheet, the phone pack, and a dated estimate on the board once the three fighters' finish is timed. The prompt audit's stale lines fixed at the director's go, Faber's `CLAUDE.md` and skills among them (73c88a9).
 
-**Faber (builder).** 2026-11-13. TR3: research's three calls and the trims are in (TR3, "The three calls and the trims").
-- The top row sits on one lower line, so a Mythical crest clears the top bar. The level-up takes the thread's blue, and the trims take the director's rarity colours. A frozen crit is ready for the phone pack.
-- **The director:** one click for the phone-size pack (item 7 below).
-- Now: waiting on that click. Next queued: the reveal's ceremony, once Modulo's art sheet is in.
+**Faber (builder).** 2026-11-13, at the day's wrap-up. TR3: the phone pack's first part is in (TR3, "The phone-size pack, first part"). I switched the device simulator by script on the director's word, and it's off again.
+- At phone size: the top line fits, and the critical at 1.6 reads frozen under the band. A real bug was found and fixed: the World layer's clamp was never written, so the level-up word drew over the Electricity pill. It's clamped now, with a case on it.
+- Next: the phone pack's second part (the Lantern Row fight and the plot), the desktop's whole self-test on the clamp, research's read, then the director's eye. Then the reveal's ceremony, once Modulo's art sheet is in.
+- Stopped clean: committed, no playtest, no lock.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's art sheet, stopped mid-piece at a saved step (the director's wrap-up, 2026-11-13). The six fixes are coded (`tools/blender/reveal_art.py`) and seen in the beats and two 60 fps movies, Common and Legendary. Rook's Reveal is re-keyed: his head up out of the fold, a `Name` marker at 0.917 s on the recoil's floor, the audit passing (`rook_clips.py`; not yet in the handoff). Renders: `build/scratch/modulo/reveal_art/`.
@@ -32,7 +32,6 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 For Faber:
 
 6. **Your ear on Haymaker's strike sound**, a provisional pick. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **One click for TR3's phone capture:** Studio's device simulator, on a phone in landscape (Test → Device), then tell me. I can't switch it this session: computer use isn't available here.
 
 ### Notices
 

@@ -59,7 +59,7 @@ return {
 	-- is thrown, and lets its flame out over the target. Two pictures, the group's uploads (docs/asset-log.md); the table
 	-- the art sheet plays them by is build/handoff/Pip/fx/pip_burst_art.json. Frames are the clip's, from its start.
 	LanternBurst = {
-		Picture = "rbxassetid://139257020366755", -- the flame's twenty cells (round 2: the boil stands up)
+		Picture = "rbxassetid://100913199674615", -- twenty cells: the coil's sixteen, the heat's four (AR8 B1)
 		-- The flame blown back, uploaded turned a quarter (its tongues the top row, its head the bottom): a Beam runs its
 		-- picture's height along it (handbook/visuals/vfx-engine-facts.md, "Beam"). 93148687324383 was the same picture sideways.
 		TrailPicture = "rbxassetid://105763467007985",
@@ -124,9 +124,9 @@ return {
 	HeldNote = {
 		-- the group's uploads (docs/asset-log.md). The ribbon and the veil are uploaded turned a quarter: a Beam runs its
 		-- picture's height along it (handbook/visuals/vfx-engine-facts.md, "Beam"; tested here, 2026-11-12)
-		Ribbon = "rbxassetid://98526314701538",
-		Veil = "rbxassetid://97868344376539",
-		Touch = "rbxassetid://108376131261819", -- 256 px cells: the hit's four on row 0; the heal, then the flash, on row 1
+		Ribbon = "rbxassetid://99574922833055", -- AR8 B2, bold
+		Veil = "rbxassetid://112733560800824", -- AR8 B2, bold
+		Touch = "rbxassetid://132431936099861", -- 256 px cells: the hit's four on row 0; the heal, then the flash, on row 1
 		Cell = 256,
 		From = 4.7,
 		Up = 4.5,
@@ -178,12 +178,17 @@ return {
 	-- nothing falls or scatters (the content check's condition 2). Both are beams facing the camera, Emission their light's
 	-- emission (at noon, 0.3 already goes pale and toward Frost's cyan against the sky), in experience's one colour as it
 	-- is (Config.Hud.Card.Xp; the ring before them was Neon, seeded at 0.58 of it to render as the thread's blue: research
-	-- on TR3's three calls). The word pops in from From of its size over Pop as the column peaks, and rises Rise over
-	-- Seconds, slower and larger than a hit's number.
+	-- on TR3's three calls). The column wears Modulo's picture (its foot the top row), stretched along it, its colour white
+	-- at its peak and the thread's blue as it fades, so its fade never reads grey at night (research's pass on Modulo's
+	-- sheet, AR8 C, fix 2); the sleeve stays the flat blue. The word pops in from From of its size over Pop as the column
+	-- peaks, and rises Rise over Seconds, slower and larger than a hit's number. Its foot stands Clear studs over the
+	-- lead's top, hat and all; it's filled bright (white with Fill of experience's blue) and edged in that blue, Edge
+	-- authored pixels, so it reads over a blue hat and over the sky (research's pass on AR8 C, fix 1: blue on Pip's blue
+	-- hat, it sank).
 	LevelUp = {
-		Column = { Seconds = 0.7, Over = 5, Wide = 0.6, Climb = 0.3, Peak = 0.25, Narrow = 0.5, Opaque = 0.85, Foot = 0.4, Fade = 0.25, Emission = 0 },
+		Column = { Seconds = 0.7, Over = 5, Wide = 0.6, Climb = 0.3, Peak = 0.25, Narrow = 0.5, Opaque = 0.85, Foot = 0.4, Fade = 0.25, Emission = 0, Picture = "rbxassetid://104727013188370" },
 		Sleeve = { Delay = 0.08, Seconds = 0.6, Over = 1, Wide = 0.75, Alpha = 0.3, Front = 2 },
-		Word = { From = 0.6, Pop = 0.18 },
+		Word = { From = 0.6, Pop = 0.18, Clear = 0.8, Fill = 0.15, Edge = 2.5 },
 		Tall = 5,
 		Rise = 3,
 		Seconds = 1.6,

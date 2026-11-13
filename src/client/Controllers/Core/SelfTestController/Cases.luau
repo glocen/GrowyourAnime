@@ -47,6 +47,7 @@ local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
+local World = require(UI.World)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
@@ -2110,10 +2111,11 @@ return {
 		end,
 	},
 	{
-		Name = "HUD: experience has one colour: the level-up's word and its light are the thread's blue",
+		Name = "HUD: experience has one colour: the level-up's word is edged in the thread's blue, the sleeve is that blue, the column fades to it",
 		Run = function(t: any)
 			-- Research on TR3's three calls (2026-11-13): the word takes the card's thread's blue, and so does the light, as it
-			-- is (a beam, unlit by the scene: AR8 C). On a stand-in body.
+			-- is (a beam, unlit by the scene: AR8 C). Research's pass on AR8 C, fix 1: the word's fill is bright and the blue
+			-- is its edge, so it reads over a blue hat. On a stand-in body.
 			local root = Instance.new("Part")
 			root.Name = "HumanoidRootPart"
 			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
@@ -2122,13 +2124,40 @@ return {
 			local look = EffectsConfig.LevelUp
 			local xp = HudConfig.Card.Xp
 			local column, word, sleeve = Effects.LevelUp(root, 7)
-			t.Check("the word is the thread's blue", word.TextColor3:ToHex() == xp:ToHex(), word.TextColor3:ToHex())
-			for name, light in { column = column, sleeve = sleeve } :: { [string]: Beam } do
-				local c = light.Color.Keypoints
-				t.Check(`the {name} is the thread's blue, all along it`, c[1].Value:ToHex() == xp:ToHex() and c[#c].Value:ToHex() == xp:ToHex(), c[1].Value:ToHex())
-				t.Check(`unlit by the scene`, light.LightInfluence == 0)
+			local edge = word:FindFirstChildOfClass("UIStroke")
+			local fill = word.TextColor3
+			t.Check("the word is edged in the thread's blue", edge ~= nil and edge.Color:ToHex() == xp:ToHex(), if edge then edge.Color:ToHex() else "no edge")
+			t.Check("its edge drawn at its authored width", edge ~= nil and math.abs(edge.Thickness - look.Word.Edge * Layers.Scale()) < 0.01)
+			t.Check("its fill is bright, near white", math.min(fill.R, fill.G, fill.B) >= 0.8, fill:ToHex())
+			t.Check("and of the same blue's hue", (fill.B - fill.R) * (xp.B - xp.R) > 0, `{fill:ToHex()} against {xp:ToHex()}`)
+			t.Check("one edge only, no legacy stroke", word.TextStrokeTransparency >= 1)
+			local k = sleeve.Color.Keypoints
+			t.Check("the sleeve is the thread's blue, all along it", k[1].Value:ToHex() == xp:ToHex() and k[#k].Value:ToHex() == xp:ToHex(), k[1].Value:ToHex())
+			t.Check("both unlit by the scene", column.LightInfluence == 0 and sleeve.LightInfluence == 0)
+			-- Research's pass on Modulo's column picture (AR8 C, fix 2): the column wears it, white at its peak, and its
+			-- colour goes to the thread's blue as it fades, so the fade never reads grey. Watched every frame it shows.
+			t.Check("the column wears its picture, stretched once along it", column.Texture == look.Column.Picture and column.TextureMode == Enum.TextureMode.Stretch and column.TextureLength == 1)
+			local function near(a: Color3, b: Color3): number
+				return math.abs(a.R - b.R) + math.abs(a.G - b.G) + math.abs(a.B - b.B)
 			end
-			t.Wait(look.Seconds + look.Column.Peak * look.Column.Seconds + 0.1)
+			local white = Color3.new(1, 1, 1)
+			local brightest, atBrightest, peaked, lastFaint = 0, white, false, nil :: Color3?
+			local watch = RunService.RenderStepped:Connect(function()
+				local o = column:GetAttribute("Opaque")
+				if column:IsDescendantOf(game) and column.Enabled and type(o) == "number" and o > 0 then
+					local colour = column.Color.Keypoints[1].Value
+					if o >= brightest then
+						brightest, atBrightest = o, colour
+					elseif o < brightest * 0.3 then
+						peaked, lastFaint = true, colour
+					end
+				end
+			end)
+			t.Wait(look.Column.Seconds + 0.1)
+			watch:Disconnect()
+			t.Check("white at its brightest", near(atBrightest, white) < 0.15, atBrightest:ToHex())
+			t.Check("the thread's blue as it fades", peaked and lastFaint ~= nil and near(lastFaint, xp) < near(lastFaint, white), if lastFaint then lastFaint:ToHex() else "never faint")
+			t.Wait(look.Seconds + look.Column.Peak * look.Column.Seconds - look.Column.Seconds)
 			t.Check("all gone after the effect", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game) and not word:IsDescendantOf(game))
 			root:Destroy()
 		end,
@@ -2165,7 +2194,8 @@ return {
 			local scale = word:FindFirstChildOfClass("UIScale")
 			local brightest, brightestAt, highest, footAt, lowestFoot = 1, -1, -math.huge, -1, math.huge
 			local sleeveFirst, sleeveWidest, columnWidest, sleeveOpaque = -1, 0, 0, 0
-			local wordFirst, wordBiggest = -1, 0
+			local wordFirst, wordBiggest, wordLowest = -1, 0, math.huge
+			local plate = word.Parent :: Frame
 			local footLast = -math.huge
 			local fell = false
 			local function opaque(beam: Beam): number
@@ -2211,6 +2241,10 @@ return {
 						wordFirst = age
 					end
 					wordBiggest = math.max(wordBiggest, if scale then scale.Scale else 1)
+					local over = World.Where(plate)
+					if over then
+						wordLowest = math.min(wordLowest, over.Y - feet)
+					end
 				end
 			end)
 			t.Wait(c.Seconds + 0.1)
@@ -2233,7 +2267,79 @@ return {
 			t.Check("and fainter", sleeveOpaque <= look.Sleeve.Alpha + 0.01, string.format("%.2f", sleeveOpaque))
 			t.Check("the word pops in as the column peaks", wordFirst >= c.Peak * c.Seconds - 0.03 and wordFirst <= c.Peak * c.Seconds + 0.1, string.format("at %.3f s", wordFirst))
 			t.Check("past its size for a moment", wordBiggest > 1, string.format("%.3f", wordBiggest))
+			t.Check("the word stands clear over the lead's top, hat and all, its whole life", wordLowest >= tall + look.Word.Clear - 0.05 and look.Word.Clear > 0, string.format("its foot at %.2f studs, the lead %.1f", wordLowest, tall))
 			t.Check("all gone after", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game) and not word:IsDescendantOf(game))
+		end,
+	},
+	{
+		Name = "World: an open plate stands in the sky between the top band's pieces, and under any piece it crosses",
+		Run = function(t: any)
+			-- Research's pass on AR8 C, fix 1: the level-up's word over the lead's head, free in the sky between the lead's
+			-- card and the pills, never over one. A stand-in plate whose top is above the band, set in the gap and then
+			-- under the Electricity pill, out of a fight (the target's card hidden).
+			t.Wait(LEAD_SETTLE)
+			local world = Layers.Get("World")
+			local band = world:GetAttribute("Band")
+			local camera = workspace.CurrentCamera
+			local parts = HudController.Parts()
+			t.Check("the HUD sets the band", type(band) == "number", tostring(band))
+			t.Check("out of a fight: the target's card hidden", not parts.Target.Visible)
+			if type(band) ~= "number" or camera == nil or parts.Target.Visible then
+				return
+			end
+			-- Points are set in the viewport, a GUI pixel plus the top bar's inset; the band is in the World layer's authored
+			-- pixels from its corner.
+			local origin, scale = world.AbsolutePosition, Layers.Scale()
+			local inset = GuiService:GetGuiInset()
+			local function authored(gui: Vector2): Vector2
+				return (gui - origin) / scale
+			end
+			local lead, pill = parts.Lead, (parts.Electricity :: GuiObject).Parent :: GuiObject
+			local size = Vector2.new(60, 30)
+			local leadRight = lead.AbsolutePosition.X + lead.AbsoluteSize.X
+			t.Check("room in the gap for it", pill.AbsolutePosition.X - leadRight > (size.X + 2 * HudConfig.Numbers.Band) * scale)
+			local x = (leadRight + pill.AbsolutePosition.X) / 2 + inset.X
+			local foot = (band - size.Y / 2) * scale + origin.Y + inset.Y -- its foot half a plate over the band
+			local plate = World.Plate("SelfTestOpen", size, function(): Vector3?
+				local ray = camera:ViewportPointToRay(x, foot)
+				return ray.Origin + ray.Direction * 20
+			end)
+			World.Below(plate, true)
+			t.Wait(0.1)
+			local stands = Vector2.new(plate.AbsolutePosition.X + plate.AbsoluteSize.X / 2, plate.AbsolutePosition.Y + plate.AbsoluteSize.Y)
+			local point = Vector2.new(x, foot) - inset
+			t.Check("it stands on its point: a viewport pixel less the top bar's inset", (stands - point).Magnitude < 1, `{stands} against {point}`)
+			local top = authored(plate.AbsolutePosition).Y
+			t.Check("in the gap it keeps its place, over the band", top < band - size.Y / 4, string.format("its top at %.1f, the band %.1f", top, band))
+			t.Check("and under the top bar", plate.AbsolutePosition.Y >= Layers.Get("Hud").AbsolutePosition.Y - 0.5)
+			x = pill.AbsolutePosition.X + pill.AbsoluteSize.X / 2 + inset.X
+			t.Wait(0.1)
+			local pillFoot = authored(pill.AbsolutePosition + pill.AbsoluteSize).Y
+			top = authored(plate.AbsolutePosition).Y
+			t.Check("under the pill when it can't slide clear within its room", top >= pillFoot + HudConfig.Numbers.Band - 0.5, string.format("its top at %.1f, the pill's foot %.1f", top, pillFoot))
+			-- One that crosses a piece's side by a little slides aside, eased, and keeps its height.
+			local margin, settle = HudConfig.Numbers.Band, 4 / HudConfig.Numbers.Slide.Rate + 0.1
+			local function beside(piece: GuiObject, label: string)
+				local side = authored(piece.AbsolutePosition).X - margin -- its span's left
+				x = (side - size.X / 2 + 10) * scale + origin.X + inset.X -- crossing it by 10
+				t.Wait(settle)
+				local right = authored(plate.AbsolutePosition + plate.AbsoluteSize).X
+				local stood = authored(plate.AbsolutePosition).Y
+				local was = authored(Vector2.new(0, foot) - inset).Y - size.Y
+				t.Check(`it slides aside, clear of {label}, to a pixel's rounding`, right <= side + 1.5, string.format("its right at %.1f, the side %.1f", right, side))
+				t.Check(`and keeps its height beside {label}`, math.abs(stood - was) < 1, string.format("its top at %.1f, its own %.1f", stood, was))
+			end
+			beside(pill, "the pill")
+			Toast.Show("Self-test: a plate stands aside")
+			t.Wait(HudConfig.Motion.Toast.Enter)
+			local stack = Toast.Stack()
+			t.Check("a toast's stack shows", stack ~= nil)
+			if stack then
+				foot = stack.AbsolutePosition.Y + stack.AbsoluteSize.Y / 2 + inset.Y -- its foot at the stack's middle
+				beside(stack, "a toast")
+			end
+			World.Remove(plate)
+			t.Wait(Theme.Time.Toast + HudConfig.Motion.Toast.Exit) -- the toast leaves
 		end,
 	},
 	{
@@ -2764,6 +2870,32 @@ return {
 			watch:Disconnect()
 			t.Check("eased out: past half way in by a quarter of its time", quarter ~= nil and quarter < away / 2, if quarter then `{quarter} px over` else "no frame")
 			t.Check("in by its Enter", plate.Position.X.Offset == 0, `{plate.Position.X.Offset} px over`)
+			-- Research's pass on AR8 C, fix 2: a full stack sits inside the safe area, under the pills, over nothing it
+			-- would hide (the pills, the signature's ring), in this window and on the smallest phone.
+			local stack = (plate.Parent :: Frame).Parent :: Frame
+			local parts = HudController.Parts()
+			local hud = Layers.Get("Hud")
+			local top = GuiService.TopbarInset.Height
+			local function clear(piece: GuiObject): boolean
+				local a, b = stack.AbsolutePosition, stack.AbsolutePosition + stack.AbsoluteSize
+				local c, d = piece.AbsolutePosition, piece.AbsolutePosition + piece.AbsoluteSize
+				return a.X >= d.X or c.X >= b.X or a.Y >= d.Y or c.Y >= b.Y
+			end
+			for _, at in { { Name = "this window", Scale = nil :: number?, Box = nil :: Vector2? }, { Name = "the smallest phone", Scale = Theme.Scale.Floor, Box = Theme.Smallest - Vector2.new(0, top) } } do
+				Layers.Force(at.Scale)
+				Layers.Box(at.Box)
+				t.Wait(0.1) -- laid out again
+				local edge = hud.AbsolutePosition.X + hud.AbsoluteSize.X
+				local right = stack.AbsolutePosition.X + stack.AbsoluteSize.X
+				t.Check(`inside the safe area's right edge, in {at.Name}`, right <= edge + 0.5, `{right} against {edge}`)
+				t.Check(`under the top of the safe area, in {at.Name}`, stack.AbsolutePosition.Y >= hud.AbsolutePosition.Y)
+				for _, name in { "Credits", "Electricity" } do
+					t.Check(`clear of the {name} pill, in {at.Name}`, clear((parts[name] :: GuiObject).Parent :: GuiObject))
+				end
+				t.Check(`clear of the signature's ring, in {at.Name}`, clear(parts.Signature :: GuiObject))
+			end
+			Layers.Box(nil)
+			Layers.Force(nil)
 			for i = 2, Theme.Time.Toasts + 1 do
 				Toast.Show(`Self-test toast {i}`)
 			end

@@ -512,18 +512,31 @@ local function showHealth(bar: Frame, label: TextLabel, model: Model)
 end
 
 -- The top band's lower edge for the world's numbers (UI.World.Band): the lowest of the cards and the pills that show,
--- plus the margin, in the World layer's authored pixels (TR3's verdict, fix 4: numbers stay below the top band).
+-- plus the margin, in the World layer's authored pixels (TR3's verdict, fix 4: numbers stay below the top band). And each
+-- piece's own span, its margin all round, a toast stack's while it shows, and the top bar's foot: an open plate, the
+-- level-up's word, stands clear of only what it crosses (research's pass on AR8 C, fix 1).
 local banded: { GuiObject } = {}
 local function band()
+	local world = Layers.Get("World")
+	local origin, scale, margin = world.AbsolutePosition, Layers.Scale(), HudConfig.Numbers.Band
+	local function span(frame: GuiObject): World.Span
+		local at, size = frame.AbsolutePosition - origin, frame.AbsoluteSize
+		return { Left = at.X / scale - margin, Right = (at.X + size.X) / scale + margin, Edge = (at.Y + size.Y) / scale + margin }
+	end
 	local lowest: number? = nil
+	local spans: { World.Span } = {}
 	for _, frame in banded do
 		if frame.Visible then
-			local bottom = frame.AbsolutePosition.Y + frame.AbsoluteSize.Y
-			lowest = math.max(lowest or bottom, bottom)
+			local piece = span(frame)
+			lowest = math.max(lowest or piece.Edge, piece.Edge)
+			table.insert(spans, piece)
 		end
 	end
-	local world = Layers.Get("World")
-	World.Band(if lowest then (lowest - world.AbsolutePosition.Y) / Layers.Scale() + HudConfig.Numbers.Band else nil)
+	local toasts = Toast.Stack()
+	if toasts then
+		table.insert(spans, span(toasts))
+	end
+	World.Band(lowest, spans, (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale)
 end
 
 -- Every frame: the cards from the fighters' attributes, the ring, the dock's selection, the electricity as it stands now.

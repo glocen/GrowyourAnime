@@ -2,7 +2,8 @@
 -- Layers (client): one ScreenGui per layer, each with one UIScale (handbook/visuals/ui.md, "The layer structure").
 -- Authored at Theme.Author and scaled by height, clamped (handbook/visuals/ui.md, "Phones"). The HUD and the screens keep
 -- clear of Roblox's top bar and the notch (TR2, research's read of the phone take, fix 1: a screen's title sat under
--- Roblox's own buttons); the world's plates, the overlay's cover and the toasts run full-bleed. Every container is named
+-- Roblox's own buttons), and so do the toasts, which stood past the notch's side at phone size (AR8 C, research's pass,
+-- fix 2); the world's plates and the overlay's cover run full-bleed. Every container is named
 -- NL_..., which the UI lint reads as ours.
 --   Layers.Get("Hud")      the layer's root frame, made on first use
 --   Layers.Scale()         the scale every layer draws at now
@@ -34,7 +35,7 @@ local scales: { UIScale } = {}
 local scale = 1
 local forced: number? = nil -- a test's scale, in place of the screen's
 local boxed: Vector2? = nil -- a test's phone, in rendered pixels: the inset layers laid out in it
-local INSET: { [string]: boolean } = { Hud = true, Menus = true } -- kept clear of Roblox's top bar and the notch
+local INSET: { [string]: boolean } = { Hud = true, Menus = true, Toasts = true } -- kept clear of Roblox's top bar and the notch
 
 -- An inset layer's root fills its safe area, or a test's phone box from the safe area's top left.
 local function size(name: string, root: Frame)

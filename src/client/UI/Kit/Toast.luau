@@ -4,7 +4,6 @@
 -- "HUD behaviour"). It shows only what the server has already said. It slides in from the screen's right edge, eased
 -- out, and leaves that way, eased in, a little quicker (Config.Hud.Motion.Toast; rule 4; AR8 C).
 
-local GuiService = game:GetService("GuiService")
 local TweenService = game:GetService("TweenService")
 
 local HudConfig = require(game:GetService("ReplicatedStorage").Shared.Config.Hud)
@@ -18,7 +17,7 @@ local Toast = {}
 
 Toast.Width = 220
 Toast.Height = 28
-Toast.Top = 42 -- authored pixels under the top bar: below the pills
+Toast.Top = 92 -- authored pixels from the safe area's top: under the Electricity pill's foot (83), never over a pill
 
 local shown: { Frame } = {}
 local stack: Frame? = nil
@@ -39,8 +38,7 @@ local function holder(): Frame
 end
 
 local function place(frame: Frame)
-	local inset = GuiService.TopbarInset.Max.Y / Layers.Scale()
-	frame.Position = UDim2.new(1, -Theme.Size.Pad, 0, inset + Toast.Top)
+	frame.Position = UDim2.new(1, -Theme.Size.Pad, 0, Toast.Top) -- its layer is inset: clear of the top bar and the notch
 end
 
 local order = 0
@@ -92,6 +90,11 @@ function Toast.Show(message: string, colour: Color3?)
 			leave(slot)
 		end
 	end)
+end
+
+-- The stack while any notice shows, for what keeps clear of it (UI.World's open plates), or nil.
+function Toast.Stack(): Frame?
+	return if #shown > 0 and stack and stack.Parent then stack else nil
 end
 
 -- The notices on screen now, newest last: for tests.

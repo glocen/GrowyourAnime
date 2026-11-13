@@ -42,6 +42,10 @@ return {
 		-- Authored pixels a number keeps under the top band (the lowest of the cards and the pills that show), its whole life,
 		-- rise and swell included (TR3's verdict, fix 4). The builder's seed.
 		Band = 10,
+		-- An open plate (the level-up's word) that would cross a piece of the band slides aside into the open sky, at most
+		-- Room of its own width, and eases there at this rate a second; with no room it's pushed under instead (research's
+		-- pass on AR8 C, fix 1). The builder's seed.
+		Slide = { Room = 1, Rate = 14 },
 		-- A critical (the director's word to stay close to the reference; research's table, AR3 section 3, round 2): gold,
 		-- heavy, slanted, larger, widely spaced, on the swept stroke. Research tunes these live at TR3's blockout.
 		Critical = {

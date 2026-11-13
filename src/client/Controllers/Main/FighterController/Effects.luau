@@ -24,6 +24,7 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TextService = game:GetService("TextService")
 
 local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
@@ -1688,11 +1689,12 @@ end
 local BEAM_SEGMENTS = 20
 
 -- A level gained (Config.Effects.LevelUp), rung 5: light that rises. A column of experience's blue stands up out of the
--- feet past the head, brightest early; its foot then climbs after its top as it narrows and fades. A breath later a wider,
--- fainter sleeve of the same light climbs the body, over it. Each is a beam facing the camera, sized by the lead, soft at
--- its foot and fading to nothing at its top, so it reads as light and never as a solid. The new level pops in over the
--- lead as the column peaks, and rises, held long enough to read. All of it follows a walking lead. Returns the column, the
--- word and the sleeve, for the self-test; each beam's "Opaque" attribute is how opaque it is now.
+-- feet past the head, brightest early; its foot then climbs after its top as it narrows and fades. A breath later a
+-- wider, fainter sleeve of the same light climbs the body, over it. Each is a beam facing the camera, sized by the
+-- lead, soft at its foot and fading to nothing at its top, so it reads as light and never as a solid. The new level
+-- pops in clear over the lead's head as the column peaks, bright and edged in the blue, and rises, held long enough to
+-- read. All of it follows a walking lead. Returns the column, the word and the sleeve, for the self-test; each beam's
+-- "Opaque" attribute is how opaque it is now.
 function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	local look = EffectsConfig.LevelUp
 	local c, s, w = look.Column, look.Sleeve, look.Word
@@ -1722,6 +1724,12 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	end
 	local column, sleeve = shaft("Column"), shaft("Sleeve")
 	sleeve.ZOffset = s.Front
+	-- The column's picture, stretched once along it, its top row at the foot; white at its peak (AR8 C, fix 2).
+	column.Texture = c.Picture
+	column.TextureMode = Enum.TextureMode.Stretch
+	column.TextureLength = 1
+	column.TextureSpeed = 0
+	local white = Color3.new(1, 1, 1)
 	local feet = root.Position - Vector3.new(0, R6_ROOT_HEIGHT - 0.1, 0)
 	-- How tall the lead stands, feet to the top of its model, hat and all.
 	local tall = look.Tall
@@ -1732,14 +1740,26 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	end
 	local size = look.Size
 	local rise = 0
-	local plate = World.Plate("LevelUp", Vector2.new(size * 7, size * 1.6), function(): Vector3?
-		return if root.Parent then root.Position + Vector3.new(0, 3.5 + rise, 0) else nil
+	-- As wide as its words and its edge, so it stands aside from only what it would really cross.
+	local words = `Level {level}`
+	local wide = TextService:GetTextSize(words, size, Enum.Font.BuilderSansExtraBold, Vector2.new(1000, 100)).X + w.Edge * 2 + 4
+	local plate = World.Plate("LevelUp", Vector2.new(wide, size * 1.6), function(): Vector3?
+		-- The plate's foot, clear over the lead's top, hat and all, wherever it walks.
+		local over = tall + w.Clear + rise - (R6_ROOT_HEIGHT - 0.1)
+		return if root.Parent then root.Position + Vector3.new(0, over, 0) else nil
 	end)
-	World.Below(plate) -- under the top band, as a number is (TR3's verdict, fix 4)
-	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = xp, Align = Enum.TextXAlignment.Center, Parent = plate })
-	label.Text = `Level {level}`
+	World.Below(plate, true) -- under the cards and pills it crosses, and free in the sky between them (AR8 C, fix 1)
+	local fill = Color3.new(1, 1, 1):Lerp(xp, w.Fill)
+	local label = Text.new({ Name = "Level", Size = size, Font = Theme.Font.Number, Colour = fill, Align = Enum.TextXAlignment.Center, Parent = plate })
+	label.Text = words
 	label.TextTransparency = 1
 	label.TextStrokeTransparency = 1
+	local edge = Instance.new("UIStroke")
+	edge.Color = xp
+	edge.Thickness = w.Edge * Layers.Scale() -- a stroke's width isn't grown by the layer's UIScale
+	edge.LineJoinMode = Enum.LineJoinMode.Round
+	edge.Transparency = 1
+	edge.Parent = label
 	local swell = Instance.new("UIScale")
 	swell.Scale = w.From
 	swell.Parent = label
@@ -1779,6 +1799,7 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 		if tc < 1 then
 			local foot, top, width, pop = climb(tc, tall + c.Over, tall * c.Wide, c.Narrow)
 			lay(column, at, foot, top, width, pop * c.Opaque)
+			column.Color = ColorSequence.new(white:Lerp(xp, 1 - pop)) -- white at its peak, the blue as it fades
 		else
 			lay(column, at, 0, 0, 0, 0)
 		end
@@ -1796,7 +1817,7 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 			swell.Scale = lerp(w.From, 1, 1 + 2.7 * u * u * u + 1.7 * u * u) -- in with a small overshoot (a Back ease)
 			rise = look.Rise * easeOut(t)
 			label.TextTransparency = math.clamp((t - 0.7) / 0.3, 0, 1)
-			label.TextStrokeTransparency = math.max(0.2, label.TextTransparency)
+			edge.Transparency = label.TextTransparency
 		end
 		return true
 	end, function()

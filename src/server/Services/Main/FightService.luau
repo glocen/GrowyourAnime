@@ -526,13 +526,14 @@ local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, n
 	local mine, here = 1, 0
 	local beside = (Combat.Lead.Beside :: { [string]: number })[target.Kind]
 	local frame = beside or Combat.Lead.Frame
+	local near = (Combat.Lead.Near :: { [string]: boolean })[target.Kind] == true
 	for index, other in mates do
 		local bearing = bearingOf(flat(other.Root.Position - center))
 		local avatar = if other.Side == "Lead" then avatarRoot(other) else nil
 		local watched = if avatar then flat(-avatar.CFrame.LookVector) else Vector3.zero -- the side the player watches from
 		if avatar and watched.Magnitude > 0.5 and beside then
 			local lean = Fight.Wrap(bearingOf(flat(center - avatar.Position)) - bearingOf(watched) - 180)
-			wants[index] = Fight.Aside(bearingOf(watched), lean, bearing, frame, Combat.Lead.Straight)
+			wants[index] = Fight.Aside(bearingOf(watched), lean, bearing, frame, Combat.Lead.Straight, near)
 		elseif watched.Magnitude > 0.5 then
 			wants[index] = Fight.Beyond(bearingOf(watched), bearing, frame)
 		else

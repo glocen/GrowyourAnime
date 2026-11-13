@@ -105,6 +105,8 @@ local SET_DOWN = 2 -- studs from its spot a set-down avatar may stand once physi
 local KEEPER_MEETS = 3 -- seconds after arriving by which the lead fights the keeper (it arrives inside Lead.Leash of it)
 local KEEPER_BESIDE = 4 -- seconds after they trade hits by which the lead stands at the keeper's side
 local BESIDE_TOLERANCE = 25 -- degrees off square to the avatar's facing that still read as side by side
+local LANDED = 0.3 -- seconds after a keeper's fall by which a lead's step under way has landed: a think and the replication
+local CAMERA_BACK = 12.5 -- studs behind the avatar the player's camera stands at Roblox's default zoom (the takes' camera)
 local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
 local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
 local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: inside its notice and the lead's leash
@@ -634,6 +636,26 @@ return {
 			-- The fight is joined with nobody pressing anything: the keeper comes for the lead from the middle of the ring, and the
 			-- lead meets it once it's inside Lead.Leash of the avatar.
 			t.Check("the keeper comes for the lead at once", inside.KeeperTarget ~= "" and inside.KeeperTarget == inside.Lead, `target {inside.KeeperTarget}, lead {inside.Lead}`)
+			-- Research's call on fix 4, option A: on screen the lead stays on its own side of the keeper from its walk-in to its
+			-- place beside it, never crossing the camera's line to it (Combat.Lead.Near). Pixels past the keeper's middle, worst.
+			local keeperAt = fighterModel(inside.Keeper) -- where it stood as the try began: the ring's middle
+			local keeperSide = if keeperAt then (keeperAt:GetPivot().Position - t.Root().Position):Dot(t.Root().CFrame.RightVector) else 0
+			local sideOf = if keeperSide > 0 then -1 else 1 -- the lead's side of the line: away from where the Turn puts the keeper
+			local crossed, frames = -math.huge, 0
+			-- The line from the player's camera at Roblox's default zoom behind the avatar (the takes' camera) to the keeper, in
+			-- the ground's plane: the self-test's own camera isn't the game's, so the line is drawn from where it would stand.
+			local watchCross = RunService.Heartbeat:Connect(function()
+				local them, ours, root = fighterModel(inside.Keeper), myLead(), t.Root()
+				if them and ours and root then
+					local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
+					local eye = root.Position - look * CAMERA_BACK
+					local toKeeper = them:GetPivot().Position - eye
+					local along = Vector3.new(toKeeper.X, 0, toKeeper.Z).Unit
+					local toLead = ours:GetPivot().Position - eye
+					frames += 1
+					crossed = math.max(crossed, Vector3.new(toLead.X, 0, toLead.Z):Dot(along:Cross(Vector3.yAxis)) * -sideOf)
+				end
+			end)
 			local joined = inside
 			local meetBy = os.clock() + KEEPER_MEETS
 			while joined.LeadTarget ~= joined.Keeper and os.clock() < meetBy do
@@ -660,19 +682,95 @@ return {
 				end
 				return math.abs(off - beside) <= BESIDE_TOLERANCE
 			end), `{math.floor(off + 0.5)} degrees off the avatar's facing, want {beside} ±{BESIDE_TOLERANCE}`)
+			watchCross:Disconnect()
+			t.Check("the lead never crosses the camera's line to the keeper", frames > 30 and crossed < 0, string.format("%.1f studs past it at worst, in %d frames", crossed, frames))
+			do
+				-- the side toward the avatar's line of sight, as the keeper stood when the try began
+				local them, ours = fighterModel(joined.Keeper), myLead()
+				local leadSide = if them and ours then (ours:GetPivot().Position - them:GetPivot().Position):Dot(t.Root().CFrame.RightVector) else 0
+				t.Check("it stands on the keeper's near side", keeperSide * leadSide < 0, string.format("the keeper began %.1f studs right of the avatar; the lead stands %.1f right of it", keeperSide, leadSide))
+			end
+			-- Research's call on fix 4, option B (Config.Hud.SeeThrough): the camera held so the keeper's hat stands under a piece
+			-- of the top band, then turned to the sky. Under it, the piece fades to its floor and no lower, the Target card's bar
+			-- held readable; out of view, all of it whole again, each part exactly as it was.
+			do
+				local see = HudConfig.SeeThrough
+				local hud = HudController.Parts()
+				local camera = workspace.CurrentCamera
+				local housing = hud.Target:FindFirstChild("Housing") :: ImageLabel?
+				local light = hud.TargetHealth:FindFirstChild("Light") :: ImageLabel?
+				local housingWhole, lightWhole = -1, -1 -- read once the sky has held: the test's own camera may start on the keeper
+				local aim: GuiObject? = nil -- the piece the hat is held under; nil, the sky
+				local lowest: { [string]: number } = {}
+				local wasType, was = camera.CameraType, camera.CFrame -- given back as it was: the player's camera keeps its aim
+				camera.CameraType = Enum.CameraType.Scriptable
+				RunService:BindToRenderStep("NL_SeeThroughCamera", Enum.RenderPriority.Camera.Value + 1, function()
+					local root, them = t.Root(), fighterModel(joined.Keeper)
+					local hat = if them then them:FindFirstChild("Lamplighter_Head") else nil
+					if not (root and hat and hat:IsA("BasePart")) then
+						return
+					end
+					local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
+					local eye = root.Position - look * CAMERA_BACK + Vector3.new(0, 3, 0)
+					if aim == nil then
+						camera.CFrame = CFrame.lookAt(eye, eye + Vector3.new(0, 1, 0) + look * 0.01) -- the sky: no keeper in view
+						return
+					end
+					-- Turned so the piece's middle looks along the line to the hat (as the Base's band case aims).
+					local middle = aim.AbsolutePosition + aim.AbsoluteSize / 2 + GuiService:GetGuiInset()
+					camera.CFrame = CFrame.lookAt(eye, hat.Position)
+					local aside = camera.CFrame:VectorToObjectSpace(camera:ViewportPointToRay(middle.X, middle.Y).Direction)
+					camera.CFrame *= CFrame.fromRotationBetweenVectors(aside, Vector3.new(0, 0, -1))
+				end)
+				local function hold(piece: GuiObject?, seconds: number)
+					aim = piece
+					local untilAt = os.clock() + seconds
+					while os.clock() < untilAt do
+						for name, opacity in HudController.SeeThrough() do
+							lowest[name] = math.min(lowest[name] or 1, opacity)
+						end
+						RunService.RenderStepped:Wait()
+					end
+				end
+				local ok, problem = pcall(function()
+					hold(nil, see.Hold + 0.7)
+					housingWhole, lightWhole = if housing then housing.ImageTransparency else -1, if light then light.ImageTransparency else -1
+					hold(hud.Target, 0.7)
+					local now = HudController.SeeThrough()
+					t.Check("the hat under the Target card: it fades to its floor", hud.Target.Visible and math.abs((now.Target or 1) - see.Target) < 0.02, string.format("at %.2f, its floor %.2f", now.Target or 1, see.Target))
+					t.Check("its bar held readable", math.abs((now.TargetBar or 1) - see.Bar) < 0.02, string.format("at %.2f", now.TargetBar or 1))
+					t.Check("drawn so: its housing see-through, its light nearly whole", housing ~= nil and light ~= nil and math.abs(housing.ImageTransparency - Hud.Faded(housingWhole, see.Target)) < 0.02 and math.abs(light.ImageTransparency - Hud.Faded(lightWhole, see.Bar)) < 0.02, string.format("housing %.2f, light %.2f", if housing then housing.ImageTransparency else -1, if light then light.ImageTransparency else -1))
+					hold(hud.Credits.Parent :: GuiObject, 0.7)
+					now = HudController.SeeThrough()
+					t.Check("under the Credits pill: it fades to a quarter", math.abs((now.Credits or 1) - see.Economy) < 0.02, string.format("at %.2f", now.Credits or 1))
+					hold(nil, see.Hold + 0.7)
+					now = HudController.SeeThrough()
+					t.Check("out of view, every piece whole again", now.Target == 1 and now.TargetBar == 1 and now.Credits == 1 and now.Electricity == 1, string.format("target %.2f, bar %.2f, credits %.2f, electricity %.2f", now.Target or -1, now.TargetBar or -1, now.Credits or -1, now.Electricity or -1))
+					t.Check("each part exactly as it was", housing ~= nil and light ~= nil and housing.ImageTransparency == housingWhole and light.ImageTransparency == lightWhole and hud.Target:GetAttribute("Opacity") == nil)
+				end)
+				RunService:UnbindFromRenderStep("NL_SeeThroughCamera")
+				camera.CFrame = was
+				camera.CameraType = wasType
+				t.Check("never past research's floors", (lowest.Target or 1) >= see.Target - 1e-3 and (lowest.TargetBar or 1) >= see.Bar - 1e-3 and (lowest.Credits or 1) >= see.Economy - 1e-3 and (lowest.Electricity or 1) >= see.Economy - 1e-3, string.format("target %.2f, bar %.2f", lowest.Target or 1, lowest.TargetBar or 1))
+				if not ok then
+					error(problem, 0)
+				end
+			end
 			-- Fix 2: after the keeper falls the lead holds, facing it, until its Down's Gone (the longest hold past it), then turns.
 			local ours, them = myLead(), fighterModel(joined.Keeper)
 			local fellAt = if them then them:GetPivot().Position else Vector3.zero
-			local leadFrom = if ours then ours:GetPivot().Position else Vector3.zero
+			local leadFrom: Vector3? = nil -- where it stands once a step under way at the fall has landed (a think and the replication)
 			t.Check("the keeper falls", t.Server("KeeperEnd", "Win").Ok == true)
 			local fellClock = os.clock()
 			local fall = EffectsConfig.Falls[Enemies.ById[def :: string].Rig]
 			local watched = fall.Gone / 60 + FightRule.LongestHold(Combat.Hitstop)
 			local drift, offKeeper, saved = 0, 0, nil
 			while os.clock() - fellClock < watched - 0.15 do
-				if ours and ours.Parent then
+				if ours and ours.Parent and os.clock() - fellClock > LANDED then
 					local pivot = ours:GetPivot()
-					drift = math.max(drift, Vector3.new(pivot.Position.X - leadFrom.X, 0, pivot.Position.Z - leadFrom.Z).Magnitude)
+					local from = leadFrom or pivot.Position
+					leadFrom = from
+					drift = math.max(drift, Vector3.new(pivot.Position.X - from.X, 0, pivot.Position.Z - from.Z).Magnitude)
 					-- from its last action's end: a swing under way ends first
 					if os.clock() - fellClock > 0.6 then
 						offKeeper = math.max(offKeeper, flatAngle(pivot.LookVector, fellAt - pivot.Position))
@@ -688,7 +786,7 @@ return {
 			t.Check("facing the keeper", offKeeper < 25, string.format("%.0f degrees off", offKeeper))
 			local turned = waitFor(t, keeper.WinPause - watched - 0.05, function(): boolean
 				local pivot = if ours and ours.Parent then ours:GetPivot() else nil
-				return pivot ~= nil and (flatAngle(pivot.LookVector, fellAt - pivot.Position) > 45 or (pivot.Position - leadFrom).Magnitude > drift + 1)
+				return pivot ~= nil and (flatAngle(pivot.LookVector, fellAt - pivot.Position) > 45 or (pivot.Position - (leadFrom or pivot.Position)).Magnitude > drift + 1)
 			end)
 			t.Check("then it turns from it, before the fade", turned)
 			t.Wait(math.max(0, keeper.WinPause + moved - (os.clock() - fellClock)))

@@ -10,6 +10,7 @@
 -- chip over it while a shard waits. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -41,6 +42,7 @@ local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Pop = require(UI.Kit.Pop)
+local Fade = require(UI.Kit.Fade)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local Effects = require(script.Parent.FighterController.Effects)
 local FadeController = require(script.Parent.FadeController)
@@ -95,6 +97,8 @@ local lastView: Profile.View? = nil
 local glint: Frame -- experience's pop: a light over the thread's
 local lastStored: number? = nil -- the battery at the last read, for its jump
 local baseReadAt = 0
+local seen: { [string]: { Share: number, Over: number } } = {} -- the top band's pieces over a keeper: each one's fade
+local opacities: { [string]: number } = {} -- each piece's opacity now, by name: for tests
 
 local function fighters(): { Instance }
 	local folder = workspace:FindFirstChild("Fighters")
@@ -539,6 +543,109 @@ local function band()
 	World.Band(lowest, spans, (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale)
 end
 
+-- The top band goes see-through over a keeper (Config.Hud.SeeThrough; research's call on AR7's fix 4, option B): the
+-- screen boxes of the listed parts that show, in the HUD's pixels, then each piece eased toward its floor while one is under
+-- it, and back to whole once none has been for Hold. The lead's card stays whole: nothing tall stands on the left.
+local CORNERS = {
+	Vector3.new(-1, -1, -1), Vector3.new(-1, -1, 1), Vector3.new(-1, 1, -1), Vector3.new(-1, 1, 1),
+	Vector3.new(1, -1, -1), Vector3.new(1, -1, 1), Vector3.new(1, 1, -1), Vector3.new(1, 1, 1),
+}
+
+local function tallBoxes(): { Hud.Rect }
+	local boxes: { Hud.Rect } = {}
+	local camera = workspace.CurrentCamera
+	if not camera then
+		return boxes
+	end
+	local inset = GuiService:GetGuiInset()
+	for _, model in fighters() do
+		local names = if model:IsA("Model") then HudConfig.SeeThrough.Parts[tostring(model:GetAttribute("Rig"))] else nil
+		for _, name in names or {} do
+			local part = model:FindFirstChild(name)
+			if part and part:IsA("BasePart") and part.Transparency < 1 and part.LocalTransparencyModifier < 1 then
+				local box: Hud.Rect? = nil
+				for _, corner in CORNERS do
+					local at = camera:WorldToViewportPoint(part.CFrame * (part.Size / 2 * corner))
+					if at.Z > 0 then
+						local x, y = at.X - inset.X, at.Y - inset.Y
+						box = if box
+							then { Left = math.min(box.Left, x), Top = math.min(box.Top, y), Right = math.max(box.Right, x), Bottom = math.max(box.Bottom, y) }
+							else { Left = x, Top = y, Right = x, Bottom = y }
+					end
+				end
+				if box then
+					table.insert(boxes, box)
+				end
+			end
+		end
+	end
+	return boxes
+end
+
+local function rectOf(frame: GuiObject): Hud.Rect
+	local at, size = frame.AbsolutePosition, frame.AbsoluteSize
+	return { Left = at.X, Top = at.Y, Right = at.X + size.X, Bottom = at.Y + size.Y }
+end
+
+local function seeThrough(dt: number)
+	local config = HudConfig.SeeThrough
+	local boxes = tallBoxes()
+	local now = os.clock()
+	local toasts = Toast.Stack()
+	local pieces: { { Name: string, Root: GuiObject?, Rects: { Hud.Rect }, Floor: number, Keep: { [Instance]: boolean }? } } = {
+		{ Name = "Target", Root = target.Frame, Rects = { rectOf(target.Frame) }, Floor = config.Target, Keep = { [target.Health] = true, [target.HealthText] = true } },
+		{ Name = "Credits", Root = credits.Parent :: GuiObject, Rects = { rectOf(credits.Parent :: GuiObject) }, Floor = config.Economy },
+		{ Name = "Electricity", Root = electricity.Parent :: GuiObject, Rects = { rectOf(electricity.Parent :: GuiObject) }, Floor = config.Economy },
+		{ Name = "Toasts", Root = toasts, Rects = {}, Floor = config.Economy },
+	}
+	if toasts then
+		for _, slot in toasts:GetChildren() do
+			local plate = slot:FindFirstChild("Toast")
+			if plate and plate:IsA("GuiObject") then
+				table.insert(pieces[4].Rects, rectOf(plate))
+			end
+		end
+	end
+	for _, piece in pieces do
+		local state = seen[piece.Name]
+		if not state then
+			state = { Share = 0, Over = -math.huge }
+			seen[piece.Name] = state
+		end
+		local root = piece.Root
+		if root and root.Visible then
+			for _, rect in piece.Rects do
+				for _, box in boxes do
+					if Hud.Over(rect, box) then
+						state.Over = now
+					end
+				end
+			end
+		end
+		local want = if now - state.Over < config.Hold then 1 else 0
+		state.Share += (want - state.Share) * math.min(1, dt * config.Rate)
+		if math.abs(want - state.Share) < 1e-3 then
+			state.Share = want
+		end
+		local opacity = Hud.Through(state.Share, piece.Floor)
+		opacities[piece.Name] = opacity
+		if piece.Keep then
+			opacities[piece.Name .. "Bar"] = Hud.Through(state.Share, config.Bar)
+		end
+		if root then
+			local keep: { [Instance]: number }? = nil
+			if piece.Keep then
+				local own = Hud.Through(state.Share, config.Bar)
+				keep = {}
+				for part in piece.Keep do
+					(keep :: { [Instance]: number })[part] = own
+				end
+			end
+			Fade.Set(root, opacity, keep)
+		end
+	end
+end
+
 -- Every frame: the cards from the fighters' attributes, the ring, the dock's selection, the electricity as it stands now.
 local function step(dt: number)
 	local model = myLead()
@@ -586,6 +693,7 @@ local function step(dt: number)
 	end
 	stepRing(model, foe ~= nil, dt)
 	band()
+	seeThrough(dt)
 	for name, button in dock do
 		local open = Screen.Current() == name
 		if button:GetAttribute("Selected") ~= open then
@@ -707,6 +815,12 @@ function HudController.Start()
 			end
 		end
 	end)
+end
+
+-- For tests: each top band piece's opacity now over a keeper (Config.Hud.SeeThrough), 1 whole: Target, TargetBar, Credits,
+-- Electricity, Toasts.
+function HudController.SeeThrough(): { [string]: number }
+	return table.clone(opacities)
 end
 
 -- For tests: the HUD's parts by name.

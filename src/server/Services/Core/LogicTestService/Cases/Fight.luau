@@ -337,6 +337,20 @@ return {
 		end,
 	},
 	{
+		-- research's call on AR7's fix 4, option A (2026-11-13)
+		Name = "Fight: beside a keeper, a lead takes the side toward the player's line of sight, so its walk-in never crosses it",
+		Run = function(t: any)
+			local beside = Combat.Lead.Beside.Keeper
+			local straight = Combat.Lead.Straight
+			t.Check("keepers are fought from the near side", (Combat.Lead.Near :: { [string]: boolean }).Keeper == true)
+			t.Check("elites keep the far side", (Combat.Lead.Near :: { [string]: boolean }).Elite ~= true)
+			t.Check("seen off to the north, it stands south", near(Fight.Aside(180, 20, -90, beside, straight, true), -beside), `{Fight.Aside(180, 20, -90, beside, straight, true)}`)
+			t.Check("seen off to the south, it stands north", near(Fight.Aside(180, -20, 90, beside, straight, true), beside), `{Fight.Aside(180, -20, 90, beside, straight, true)}`)
+			t.Check("whichever side it stands on now", near(Fight.Aside(180, 20, 90, beside, straight, true), -beside))
+			t.Check("seen straight ahead, it still keeps its nearer side", near(Fight.Aside(180, straight / 2, -90, beside, straight, true), -beside))
+		end,
+	},
+	{
 		Name = "Fight: damage, healing and a new maximum",
 		Run = function(t: any)
 			local left, fell = Fight.Damage(100, 30)

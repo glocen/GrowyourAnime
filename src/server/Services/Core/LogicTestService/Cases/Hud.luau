@@ -19,6 +19,30 @@ end
 
 return {
 	{
+		Name = "Hud: the top band goes see-through over a keeper, never past research's floors",
+		Run = function(t: any)
+			local card: Hud.Rect = { Left = 260, Top = 17, Right = 490, Bottom = 80 }
+			t.Check("a hat under the card is over it", Hud.Over(card, { Left = 380, Top = 60, Right = 420, Bottom = 110 }))
+			t.Check("one beside it isn't", not Hud.Over(card, { Left = 495, Top = 30, Right = 540, Bottom = 90 }))
+			t.Check("one below it isn't", not Hud.Over(card, { Left = 380, Top = 81, Right = 420, Bottom = 120 }))
+			t.Check("touching edges aren't over", not Hud.Over(card, { Left = 490, Top = 17, Right = 520, Bottom = 80 }))
+			t.Check("a box inside it is over", Hud.Over(card, { Left = 300, Top = 30, Right = 310, Bottom = 40 }))
+			local see = HudConfig.SeeThrough
+			t.Equal("research's term: the economy pills and the toast fade to a quarter", see.Economy, 0.25)
+			t.Check("research's term: the Target card never lower than half", see.Target >= 0.5, tostring(see.Target))
+			t.Check("its bar stays more solid than the card", see.Bar >= see.Target, tostring(see.Bar))
+			t.Equal("whole, nothing faded", Hud.Through(0, see.Target), 1)
+			t.Check("at its floor, the card at Target", near(Hud.Through(1, see.Target), see.Target))
+			t.Check("never past it", near(Hud.Through(3, see.Target), see.Target))
+			t.Check("halfway, halfway", near(Hud.Through(0.5, 0.5), 0.75))
+			t.Check("an opaque part at half shows half", near(Hud.Faded(0, 0.5), 0.5))
+			t.Check("a part already half see-through at half shows a quarter", near(Hud.Faded(0.5, 0.5), 0.75))
+			t.Check("a hidden part stays hidden", near(Hud.Faded(1, 0.25), 1))
+			t.Check("whole, a part keeps its own", near(Hud.Faded(0.3, 1), 0.3))
+			t.Check("the keeper's hat and lantern are the parts watched", table.find(see.Parts.Lamplighter, "Lamplighter_Head") ~= nil and table.find(see.Parts.Lamplighter, "Lamplighter_Lantern") ~= nil)
+		end,
+	},
+	{
 		Name = "Hud: a flurry is one number counting the real total",
 		Run = function(t: any)
 			local c = Hud.Count(37)

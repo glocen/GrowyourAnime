@@ -232,12 +232,14 @@ end
 
 -- Where a fighter stands round a target wider than itself, which the player sees `lean` degrees off the avatar's facing:
 -- `frame` degrees round from beyond it, on the side away from the avatar's line of sight, so neither the avatar's own body
--- nor the target hides it. Seen within `straight` degrees of straight ahead, it keeps the side it's nearer, as Beyond does.
-function Fight.Aside(avatar: number, lean: number, current: number, frame: number, straight: number): number
+-- nor the target hides it; `near`, on the side toward it instead, so a lead coming from that side never crosses the line.
+-- Seen within `straight` degrees of straight ahead, it keeps the side it's nearer, as Beyond does.
+function Fight.Aside(avatar: number, lean: number, current: number, frame: number, straight: number, near: boolean?): number
 	if math.abs(lean) < straight then
 		return Fight.Beyond(avatar, current, frame)
 	end
-	return Fight.Wrap(avatar + 180 + (if lean < 0 then -1 else 1) * frame)
+	local away = if lean < 0 then -1 else 1
+	return Fight.Wrap(avatar + 180 + (if near then -away else away) * frame)
 end
 
 -- A Shade's most health with `leads` leads on it: from crowd.From on, each further lead adds crowd.Share of its health

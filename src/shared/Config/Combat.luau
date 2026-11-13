@@ -29,6 +29,10 @@ return {
 		-- Degrees off the avatar's facing within which such a target reads straight ahead: there the lead keeps the side it's
 		-- nearer; past it, the side away from the avatar's line of sight, so the avatar's own body hides neither.
 		Straight = 5,
+		-- Against these kinds, past Straight, the side toward the avatar's line of sight instead: a try's lead, set down on the
+		-- avatar's left, never walks across the camera's line to the keeper, and the fight comes off the frame's edge
+		-- (research's call on AR7's fix 4, option A, 2026-11-13).
+		Near = { Keeper = true },
 		WalkSpeed = 16,
 		CatchUpSpeed = 26, -- once it's CatchUpFrom away, so it keeps up with a running avatar
 		CatchUpFrom = 18,

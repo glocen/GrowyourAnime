@@ -150,4 +150,17 @@ return {
 	-- A bar's glow reaches at most this far past its light, authored pixels: the kit's 14 points at a tall bar's scale ran
 	-- past the cards (TR3's take). Read when a bar is set.
 	Bar = { GlowReach = 8 },
+	-- The top band goes see-through over a keeper (research's call on AR7's fix 4, option B, 2026-11-13). While one of the
+	-- rig's parts below stands under a piece on screen, the piece fades, eased at Rate a second: the economy pills and the
+	-- shard toast to Economy, the Target card to Target and never lower, its bar and its health to Bar, so the fight's own
+	-- read holds. It comes back once none has been under it for Hold seconds, so a hat grazing an edge doesn't flutter it.
+	-- Opacities: 1 is whole. The builder's seeds for Rate, Hold and Bar.
+	SeeThrough = {
+		Economy = 0.25,
+		Target = 0.5,
+		Bar = 0.85,
+		Rate = 10,
+		Hold = 0.25,
+		Parts = { Lamplighter = { "Lamplighter_Head", "Lamplighter_Lantern" } } :: { [string]: { string } }, -- the hat, the lantern
+	},
 }

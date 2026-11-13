@@ -9,6 +9,24 @@ local Hit = require(Shared.Rules.Hit)
 
 local Hud = {}
 
+-- A box on screen, in pixels.
+export type Rect = { Left: number, Top: number, Right: number, Bottom: number }
+
+-- Whether two boxes share any area (touching edges don't).
+function Hud.Over(a: Rect, b: Rect): boolean
+	return a.Left < b.Right and b.Left < a.Right and a.Top < b.Bottom and b.Top < a.Bottom
+end
+
+-- An element's transparency with its piece drawn at `opacity` of itself: a part of what shows of it (1 is whole).
+function Hud.Faded(own: number, opacity: number): number
+	return 1 - (1 - own) * math.clamp(opacity, 0, 1)
+end
+
+-- A piece's opacity at fade `share` (0 whole, 1 at its floor), its floor `floor`.
+function Hud.Through(share: number, floor: number): number
+	return 1 - math.clamp(share, 0, 1) * (1 - floor)
+end
+
 -- Out fast, settling: how a number counts and rises.
 function Hud.Ease(u: number): number
 	local c = math.clamp(u, 0, 1)

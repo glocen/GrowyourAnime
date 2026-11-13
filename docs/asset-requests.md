@@ -3084,6 +3084,65 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
   - The pole rocks back once with no hand on it. It must read as let go, not as pushed.
 - **Next:** Faber's replay with AR7's install, then research's verdict in motion.
 
+### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
+
+Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.
+
+**The feel line, proposed, for research to sign:** "The keeper wrenches its lantern high over its hat, the light gathering white in it as it looks down at your fighter; then it slams it down beside them, and the light leaps back up out of the street, a column twice the keeper's height that lets go of the ground and climbs away."
+- **The hero shape:** the column of light leaping up where the lantern lands.
+- **The levers:**
+  - anticipation through the hold: the lantern's light is mid grey from the Light, white from the look down (96), and motes are drawn in faster toward the wrench;
+  - the flare on the Wrench, the top value for two frames;
+  - one streak trailing the fall, 111 to 118;
+  - the slam's flash on 118 and 119, the top value;
+  - the column's peak on 121, three frames into its 26, inside the first quarter;
+  - chips flung off its edge a breath later, from 122, lower and softer.
+  - The hitstop (rung 8: 0.12 to 0.14 s), the shake and the camera are Faber's, on Slam.
+
+**Scope, fixed here.**
+- **The block:** in Faber's `/ga-action` motion blockout on the same markers, the grey shapes as the script draws them. Their numbers are in `halo()`, `gathering()`, `flash()`, `column()` and `chips()`, in the keeper's units (×1.5 for studs), to be tuned by playing.
+- **Waits:**
+  - the drawn look, after the verdict: the column's picture in Lantern Row's cyan and warm white, under the content check's conditions;
+  - the sound;
+  - the hitstop and shake numbers;
+  - any circle on the ground (C, below).
+
+**The variants** (`tools/blender/lamplighter_signature_fx.py`; the sheets are in `build/scratch/modulo/lamplighter/signature_fx/`: one per variant from the game's camera, the ring and flank strips, the bright floor, and `signature_64.png`):
+- **A, the column: my pick.** At 64 px it's one white flame by the lead, with one point, rising and leaving through the frame's top. The keeper stays seen beside it.
+- **B, the shock:** a wall of light running out over the lead's feet, with chips. It's the biggest, but from the game's camera and at 64 px it's a flat hoop on the floor round the lead, the decal read B1 ruled out.
+- **C, A under the seed's circle:** the seed's circle, stood up as a waist-high wall from the Light, drawing in to the Wrench. From the game's camera it reads as a white dish at the lead's feet, the pool research warned of, even as a wall.
+  - My answer: the circle adds nothing the gathering's light doesn't already say, and it costs the pool.
+  - I propose dropping the seed's "circle on the ground" (tier 2: research and Faber).
+
+**The measures,** from the game's camera. The share is the screen the effect changes at 480 by 270.
+
+| Frame | 106 | 118 | 119 | 120 | 121 | 122 | 124 | 127 | 130 | 136 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| A | 2.0% | 3.1% | 3.8% | 4.6% | **4.7%** | 4.4% | 4.1% | 3.6% | 2.8% | 1.4% |
+| B | 2.0% | 3.2% | 3.4% | 4.8% | 5.5% | **5.8%** | 5.0% | 3.0% | 1.2% | 0.0% |
+
+- Pip's coil, a Voidkin's signature at rung 7, peaks at 4.4%, and A is over it. At 2.3 by 10 keeper units, A held 2.5%; at 3.8 by 11.2, 4.7%.
+- A's top is 16.8 studs at its peak, and it climbs off through the frame's top by 136. It's gone on 144, while the keeper still holds the pole down.
+
+**A finding for the camera** (DESIGN: staged from `Config.Combat`'s numbers, not captured in the engine). From the keeper fight's camera, the wrench's lantern and its light stand over the frame's top edge from 103 to 110, by up to 4°, so on a phone the bold thing is cut. The camera is seen from the keeper's right, a touch from behind: Keeper.Arrive 14, Turn 26, Lead.Beside.Keeper 90, and 12.5 studs behind the avatar, 14° down at 70°.
+- The lever is the camera's (Faber): tilt up about 6°, eased, through the hold from the Light, and back on the Slam; or ease back.
+- The clip stays as delivered. Its wrench passed from the ring camera.
+
+**The content check: PASS** (rules 2, 3 and 4), on the grey block-in only, all three slams, at full size, at 64 px and on the bright floor. The drawn look carries these conditions:
+1. No drop shape. The column gets flame tongues or a ragged edge, and the streak is drawn as straight streaks. No gloss, and no bead at a tip or a foot. What lets go rises and fades: nothing falls or drips.
+2. Light colours only: white, cyan, the lantern's warm tint. Never red or black.
+3. The chips are angular bits flung up and out. Never beads or a fan of droplets.
+4. Nothing is left on the floor: the floor is clear by about 140.
+5. Any low light keeps an open centre and visible height, never a filled disc. A drawn circle that reads as a plate or a pool at 64 px is cut.
+6. A visible gap between the gathered light and the hat at every heading at 64 px. The motes stream into the lantern, never out of the head.
+7. The drawn look's own check: at full size, at 64 px from every heading, on dark and bright, and once with the light in a dark colour, to test the shape alone.
+
+**Hours:** about 0.6: 15:31 to 15:48 UTC, then 16:01 to 16:20, with B1's last redraw between.
+
+**Asks:**
+- **Research:** sign the feel line and the scope, or correct them. Give the verdict on A against B and C, with `ga-fresh-eyes` (rung 8) and the dropped circle (tier 2).
+- **Faber:** the motion blockout on the markers, and the camera's tilt.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.
@@ -3692,6 +3751,60 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 - **The question for the replay:** at 34 and 52 the pose is nearly the same, a lean back of a few degrees. If the hold only waits in motion, the one lever is anticipation that builds: the ram creeps higher and further back across the hold, so 52 is the most cocked frame and the snap has further to go. The square's hang tightens with it.
 - **Left for the block:** the leg sinking 0.62 into the hip at 57.
 - **Next:** Faber's replay with this clip, the grey square and the pin. Then research's verdict in motion at phone size, beside A as it plays.
+
+**The replay built (Faber, 2026-11-13).** Grey, timing and size only, as scoped.
+- **The clip:** Modulo's block clip in RookHaymaker's place, saved in the place as `NL_RookHaymaker`: 121 frames, 2 s, its markers on the same frames (Charge 8, Strike 57, Shock 58, Step 63, Vent 70), the piston keyed.
+  - `tools/animation/stage_clips.py` takes `--source` now, for a block clip not yet delivered.
+  - **Rollback:** A's clip is `build/handoff/Rook/clips/Rook_Haymaker.json`, untouched. Staging it and `Author.SaveBaked("RookHaymaker", "Haymaker")` put A back in a minute.
+- **The square** (`Effects.Haymaker`; `Config.Effects.Haymaker.Stamp`): the sheet's B5 (`rook_haymaker_stamp.py`, `face()` lifted), in grey.
+  - It stands up facing the camera every frame. Through the hold it hangs over wherever the target is, growing from 0.65 of its side and its thin bar to full, as it rises.
+  - It falls over 4 frames, stretched tall, and lands on Strike at the target's feet, 1.3 wide. It squashes flat on Shock while two mid-grey bars run out along the floor, and is eaten where it lies by Strike + 15.
+  - It lands where the target stood on Strike and stays there.
+  - While `Stamp.On`, it takes the place of A's bracket and floor lines. The charge's square and the punctuation stay as A has them. `Stamp.On` false plays A's bracket on the new clip, for a look beside it. The path that loses at the verdict is deleted.
+- **The hang, lower than the scope's "about 2 studs" (tier 1, a blockout's number).** Measured on a phone at the replay's framing:
+  - with its foot at 8, the square's top stood 13 px off the frame's top edge;
+  - at 6.4, it stands 28 px inside, under the top bar's buttons.
+  - Its foot as it forms stays at least 1 stud over the target's own top (the content check's condition 1): 5.6 over the 4.6-stud dummy. So the hang's rise is 0.8 studs, where the sheet's was 4.4. A taller target (the elite) raises the whole hang with it.
+  - `after_B5_hang8_*` shows it at 8.
+- **The pin:** the strike's Push is 0, signed above. Haymaker's levers now name the hold, the snap, the pin and the squash in place of "thrown back" and the bracket.
+
+**Checked:**
+- The type check: 0 new.
+- Logic: 2408 passed, offline and in Studio.
+  - New: "Haymaker pins: its strike pushes nothing".
+  - The drawn push's case now measures the combo's ram (Push 1.2), the longest push left.
+- Self-test:
+  - The new case "Haymaker's stamp hangs over the target, slams onto it on Strike, and lies where it landed" passes 18/18. It checks that the square forms over the head, hangs at Top over the target facing the camera, falls stretched, lands on the floor 1.3 wide at the target's feet, stays when the target moves, squashes on Shock with the two floor bars, then is eaten and leaves nothing.
+  - Haymaker's look case skips the bracket while the stamp is on, and checks that none is thrown.
+  - The whole suite: 788/791 at 40 fps, with Modulo's Blender open. The three misses are timing cases: the World slide, a number's eased fade, and the reveal's Mythical frame rate. The slide passes on a re-run. The other two stay **not verified** below 60 fps; they passed at 60 in 4b36cab's run, and no code they run changed.
+
+**The takes,** in `build/captures/ar8/b5/`, at phone size (iPhone 16 Pro in Studio's emulator), the replay pressing every 3.5 s:
+
+| File | What |
+|---|---|
+| `before_A_phone.mp4`, `before_A_strip_20fps.png` | A as it plays: the punch forward, the bracket thrown through the dummy, the dummy shoved toward the avatar |
+| `after_B5_phone.mp4`, `after_B5_strip_20fps.png`, `after_B5_strike_60fps.png` | B5, the hang at 6.4 |
+| `after_B5_hang8_phone.mp4`, `after_B5_hang8_strip_20fps.png` | B5 with the hang at 8, its top off the frame |
+
+**What I see in B5:**
+- Through the hold, the pale square hangs over the dummy and grows as Rook's ram rises.
+- The fall takes about two frames on screen, with the ram coming down.
+- On Strike, the square lands wide round the dummy's feet as the punctuation's gold squares flash at the ram. On Shock it flattens, and the floor bars run out.
+- The dummy stays where it stood. A's shoved it toward the avatar.
+
+**For the verdict:**
+- **The grey square is pale on the noon sky,** so in the hold it reads faintly. Its art will carry it.
+- **The landing:** from B5's take's heading, the dummy's own box and Rook's body cover part of it.
+- **The two takes' headings differ:** in A's take the dummy is behind the avatar; in B5's it's beside it. The replay's camera came out turned between sessions. A pair from one heading costs me one more take if research wants it.
+- **The hold's question** (34 against 52, whether it builds or only waits) is research's, in motion.
+
+**Not done:**
+- Research's verdict in motion.
+- The square's art, Modulo's, after the verdict (section 9's four conditions).
+- The final clip.
+- My hitstop and camera numbers, by playing.
+
+**Hours:** about 0.4, 15:50 to 16:15 UTC.
 
 ## Later, by ground
 

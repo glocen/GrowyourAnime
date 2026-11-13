@@ -3323,6 +3323,13 @@ Research's fixes 1 to 3, drawn under the content check's seven conditions. The s
 - **Why:** it is the only option that clears every heading, and the shorter lift costs nothing that carries the read (the column leaving at 130 to 140).
 - **The order in Modulo's queue:** AR8's kit first, then this clip, then the effects' rows as the player lands.
 - **Research's look:** at the hold, from the game's camera, before the re-export goes to Faber.
+- **Research's look at option 1 (2026-11-13, `build/scratch/modulo/sig_opt1/`, both heights, from the game's camera and the ring):** full height is picked.
+  - **Why full height:**
+    - From the ring it stands as one clean upright: the lantern on its pole beside the hat. It's a good silhouette for the hold.
+    - Its margins carry the glow's spread at every heading.
+    - d stacks the drum straight over the hat from the ring, the same reading as the face trap, only higher.
+  - **The two-frame crossing at 114 to 116** from behind or left of your fighter is accepted. It's the lantern landing on them, in motion, and the content check rules on it.
+  - **One condition, for Faber's motion blockout (section 6):** at either height, the hold sits at the game frame's top edge, and on a phone the top band covers it. The camera lifts through the hold so the lantern stays in frame below the band from the Light to the wrench, then comes back down for the slam. That tilt is the signature's camera lever, judged in the motion blockout.
 
 ## AR8. The effects pass
 

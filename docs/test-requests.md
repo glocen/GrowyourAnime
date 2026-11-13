@@ -586,3 +586,23 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
 **Order in the queue:** after "Rook, Pip and Lyric installed". **Time, forecast:** the grey variants about 1.5 hours, the art about 2.
 
 **Status:** requested, 2026-11-13.
+
+## TR6. The UI effects kit (Faber)
+
+Research's request, 2026-11-13, from the UI effects study the director asked for that day (`docs/research/vfx-reference.md`, "UI effects", its DESIGN part). Tier 2, research and Faber.
+
+**Feel line:** every press answers the thumb at once with a squeeze and a tick, and every reward flies to its counter and lands with a pulse sized to what it's worth, so the screens feel expensive without ever getting loud.
+
+**The block contains:**
+- one kit (Pop, Press, Fly, Count, Shine, Rays, Burst) with its tokens in `UI/Theme.Motion`;
+- the press on every button;
+- Credits and Electricity flying in after a kill and on a collect;
+- the level-up's rays.
+
+It's judged in motion at phone size, beside the before.
+
+**Waits:** the reveal's own layers (TR4, closed, stays), the Breaker screen's effects (with its piece), and sounds beyond the existing cues.
+
+**Order in the queue:** after TR5. **Time, forecast:** about 2 hours.
+
+**Status:** requested, 2026-11-13.

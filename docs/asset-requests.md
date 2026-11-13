@@ -4154,6 +4154,44 @@ Research's fixes 1 and 3 on C, the column's picture with research's lever, and t
 
 **Hours:** about 0.4, 17:00 to 17:25 UTC.
 
+### B1's exit as rows (Modulo, 2026-11-13)
+
+The coil let out as kit parts, burning off from its foot (the director's "let do 1"; the method's order, 2). The rows replace the coil's picture. The heat and the trail stay.
+- **Where:** `build/handoff/Pip/fx/pip_burst_rows.json`, written by `tools/blender/fx_rows.py`.
+  - It also previews the rows in grey on Pip's stage. The sheets are in `build/scratch/modulo/pip/b1_rows/`: from the player's camera, side, dead on, from above, on the bright floor, and at 64 px.
+  - This is my own check. The engine's take is the judge.
+- **The row's shape, offered for the player:**
+  - A row is a kit part or an engine object, what it hangs on, and its tracks.
+  - A track's key is: frames after the marker (at the clip's 60), the value there, and the ease on to the next key, in Roblox's names.
+  - Sizes are at Area 5 and scale with it. The shape is Faber's to change.
+- **The rows,** from Burst (66):
+  - **Coil:** `FxCoil2`'s six bands as one coil, `fx_across_Flame` (`fx_across_Grey` for the block-in).
+    - Its foot is on the ground under the lantern's stop: 10 studs across, the tip 11 up.
+    - Already over the target's head on 66 (6.6 studs) and whole by 70.
+    - It spins 150° clockwise seen from above, the way its strands climb, and stretches up a tenth as it burns.
+    - From 74 the bands go foot first, 1.5 frames apart, three frames each. Each flares from Glow 2 to 4 as it fades. The tip goes last and is gone on 84.5.
+  - **Flare:** `fx_glow` at the tip on 69 to 72, 5.5 studs on 70, white-gold. It's the effect's one white.
+  - **Embers:** `fx_ember` on a disc riding the burning edge, 74 to 84. They rise, gold to `#FF8A3D`, and never fall.
+  - **Feet:** `fx_flame`, one burst of two at each foot on 74. This is the secondary, lower and softer.
+  - **Light:** a PointLight in the coil, brightest on the flare, out by 84.
+- **Two strands, not three.** Seen from above, three arms winding out of a centre is what condition 5 keeps off every camera. Two strands also give the verdict's "about two turns from foot to apex". From above, at 62°, it's a two-armed swirl.
+- **Measured** in the preview, from the player's camera:
+
+  | Frame | 66 | 68 | 70 | 72 | 74 | 76 | 78 | 80 | 82 | 84 |
+  |---|---|---|---|---|---|---|---|---|---|---|
+  | Share of the screen | 1.0% | 2.4% | **4.4%** | 3.1% | 3.0% | 3.0% | 2.0% | 1.7% | 1.4% | 0.6% |
+
+  - The peak matches the art's 4.4% on 70.
+  - It holds whole to 74, then burns off. No shape is ever separate, so nothing passes the head or closes to an oval.
+- **The content check:** no new mesh or texture, so it sees nothing new (the method). The art's conditions are met in the rows:
+  - 1: `#FF8A3D` is the reddest colour;
+  - 2: nothing moves down;
+  - 3: no ring;
+  - 5: two strands.
+  - Condition 4, the foot near the Shade's head, is read in the engine's take.
+- **Open:** Faber's player, then the block-in in grey from the rows at phone size, then research's verdict with fresh eyes (rung 7).
+- **Hours:** about 0.2, 17:57 to 18:10 UTC.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

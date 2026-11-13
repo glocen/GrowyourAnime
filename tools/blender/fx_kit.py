@@ -638,4 +638,5 @@ def main():
     print(f"Wrote {len(recipe['meshes'])} meshes, {len(recipe['textures'])} textures, the sheets, to {out}")
 
 
-main()
+if __name__ == "__main__":  # fx_rows.py builds the same meshes for its previews
+    main()

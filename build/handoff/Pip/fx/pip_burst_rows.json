@@ -1,0 +1,509 @@
+{
+ "Effect": "Lantern Burst's coil and its exit (AR8, B1)",
+ "Clip": "PipLanternBurst",
+ "From": "Burst",
+ "Marker": 66,
+ "Fps": 60,
+ "Area": 5.0,
+ "Kit": "build/handoff/FxKit/fx_kit.json: each part's unit 'size', and a coil band's 'offset'",
+ "On": "the ground under the lantern's stop, where Config.Effects.LanternBurst.Burst stands its foot",
+ "Replaces": "the coil's picture (Config.Effects.LanternBurst.Burst); the heat and the trail stay",
+ "Rows": [
+  {
+   "Name": "Coil",
+   "Part": [
+    "FxCoil2_Burn1",
+    "FxCoil2_Burn2",
+    "FxCoil2_Burn3",
+    "FxCoil2_Burn4",
+    "FxCoil2_Burn5",
+    "FxCoil2_Burn6"
+   ],
+   "Texture": "fx_across_Flame",
+   "BlockIn": "fx_across_Grey",
+   "Place": "the six bands as one coil: its foot on the ground at On, each band at the coil's centre plus its 'offset' times the scale; all six share the Scale and Spin, each has its own Transparency and Glow",
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      [
+       4.291,
+       3.0,
+       4.291
+      ],
+      "Quart Out"
+     ],
+     [
+      4,
+      [
+       4.664,
+       5.0,
+       4.664
+      ],
+      "Linear"
+     ],
+     [
+      18.5,
+      [
+       4.664,
+       5.6,
+       4.664
+      ],
+      null
+     ]
+    ],
+    "Spin": [
+     [
+      0,
+      0.0,
+      "Quart Out"
+     ],
+     [
+      18.5,
+      -150.0,
+      null
+     ]
+    ]
+   },
+   "Bands": {
+    "FxCoil2_Burn1": {
+     "Transparency": [
+      [
+       0,
+       0.0,
+       null
+      ],
+      [
+       8.0,
+       0.0,
+       "Quad In"
+      ],
+      [
+       11.0,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       2.0,
+       null
+      ],
+      [
+       8.0,
+       2.0,
+       "Quad Out"
+      ],
+      [
+       9.5,
+       4.0,
+       "Linear"
+      ],
+      [
+       11.0,
+       4.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Burn2": {
+     "Transparency": [
+      [
+       0,
+       0.0,
+       null
+      ],
+      [
+       9.5,
+       0.0,
+       "Quad In"
+      ],
+      [
+       12.5,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       2.0,
+       null
+      ],
+      [
+       9.5,
+       2.0,
+       "Quad Out"
+      ],
+      [
+       11.0,
+       4.0,
+       "Linear"
+      ],
+      [
+       12.5,
+       4.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Burn3": {
+     "Transparency": [
+      [
+       0,
+       0.0,
+       null
+      ],
+      [
+       11.0,
+       0.0,
+       "Quad In"
+      ],
+      [
+       14.0,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       2.0,
+       null
+      ],
+      [
+       11.0,
+       2.0,
+       "Quad Out"
+      ],
+      [
+       12.5,
+       4.0,
+       "Linear"
+      ],
+      [
+       14.0,
+       4.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Burn4": {
+     "Transparency": [
+      [
+       0,
+       0.0,
+       null
+      ],
+      [
+       12.5,
+       0.0,
+       "Quad In"
+      ],
+      [
+       15.5,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       2.0,
+       null
+      ],
+      [
+       12.5,
+       2.0,
+       "Quad Out"
+      ],
+      [
+       14.0,
+       4.0,
+       "Linear"
+      ],
+      [
+       15.5,
+       4.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Burn5": {
+     "Transparency": [
+      [
+       0,
+       0.0,
+       null
+      ],
+      [
+       14.0,
+       0.0,
+       "Quad In"
+      ],
+      [
+       17.0,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       2.0,
+       null
+      ],
+      [
+       14.0,
+       2.0,
+       "Quad Out"
+      ],
+      [
+       15.5,
+       4.0,
+       "Linear"
+      ],
+      [
+       17.0,
+       4.0,
+       null
+      ]
+     ]
+    },
+    "FxCoil2_Burn6": {
+     "Transparency": [
+      [
+       0,
+       0.0,
+       null
+      ],
+      [
+       15.5,
+       0.0,
+       "Quad In"
+      ],
+      [
+       18.5,
+       1.0,
+       null
+      ]
+     ],
+     "Glow": [
+      [
+       0,
+       2.0,
+       null
+      ],
+      [
+       15.5,
+       2.0,
+       "Quad Out"
+      ],
+      [
+       17.0,
+       4.0,
+       "Linear"
+      ],
+      [
+       18.5,
+       4.0,
+       null
+      ]
+     ]
+    }
+   },
+   "Why": "a third grown and already over the target's head on the hit, whole by 70; it turns clockwise from above, the way its strands climb, and stretches up as it burns; the bands go foot first, each flaring hot as it fades, the tip last, gone on 84"
+  },
+  {
+   "Name": "Flare",
+   "Part": "fx_glow",
+   "On": "the coil's tip",
+   "Kind": "a card or one particle, facing the camera",
+   "Color": [
+    1.0,
+    0.97,
+    0.88
+   ],
+   "LightEmission": 1,
+   "Tracks": {
+    "Size": [
+     [
+      3,
+      3.0,
+      "Quad Out"
+     ],
+     [
+      4,
+      5.5,
+      "Quad In"
+     ],
+     [
+      5,
+      4.0,
+      "Linear"
+     ],
+     [
+      6,
+      2.0,
+      "Linear"
+     ],
+     [
+      7,
+      0.0,
+      null
+     ]
+    ]
+   },
+   "Why": "the effect's one white, its focal point, on 70 (rule 3)"
+  },
+  {
+   "Name": "Embers",
+   "Part": "fx_ember",
+   "Kind": "ParticleEmitter, Shape Disc, EmissionDirection Top",
+   "On": "a disc riding the burning edge: from the foot on 74 to the tip on 84, its radius the coil's there",
+   "Emitter": {
+    "Rate": 90,
+    "Lifetime": [
+     0.35,
+     0.6
+    ],
+    "Speed": [
+     3,
+     6
+    ],
+    "Acceleration": [
+     0,
+     4,
+     0
+    ],
+    "Drag": 2,
+    "Size": [
+     [
+      0,
+      0.5
+     ],
+     [
+      1,
+      0.0
+     ]
+    ],
+    "Color": [
+     [
+      0,
+      [
+       1.0,
+       0.84,
+       0.55
+      ]
+     ],
+     [
+      1,
+      [
+       1.0,
+       0.54,
+       0.24
+      ]
+     ]
+    ],
+    "LightEmission": 1,
+    "FlipbookMode": "Loop",
+    "FlipbookStartRandom": true
+   },
+   "Tracks": {
+    "Rate": [
+     [
+      8,
+      90.0,
+      null
+     ],
+     [
+      18.5,
+      90.0,
+      null
+     ],
+     [
+      19,
+      0.0,
+      null
+     ]
+    ]
+   },
+   "Why": "the burn reads as burning: embers rise off the edge as it climbs; never falling, never red (the kit)"
+  },
+  {
+   "Name": "Feet",
+   "Part": "fx_flame",
+   "Kind": "ParticleEmitter, one burst",
+   "On": "the coil's two feet, where its strands leave the ground (turned with the Spin)",
+   "Emitter": {
+    "Burst": 2,
+    "At": 8,
+    "Lifetime": [
+     0.3,
+     0.45
+    ],
+    "Speed": [
+     0.5,
+     1.5
+    ],
+    "Size": [
+     1.4,
+     2.0
+    ],
+    "Color": [
+     [
+      0,
+      [
+       1.0,
+       0.86,
+       0.5
+      ]
+     ],
+     [
+      1,
+      [
+       1.0,
+       0.54,
+       0.24
+      ]
+     ]
+    ],
+    "LightEmission": 0.6,
+    "FlipbookMode": "OneShot"
+   },
+   "Why": "the secondary, a breath after the peak, lower and softer, where the burn starts"
+  },
+  {
+   "Name": "Light",
+   "Part": "PointLight",
+   "On": "the coil's middle",
+   "Range": 16,
+   "Color": [
+    1.0,
+    0.69,
+    0.38
+   ],
+   "Tracks": {
+    "Brightness": [
+     [
+      0,
+      1.5,
+      "Quart Out"
+     ],
+     [
+      4,
+      4.0,
+      "Cubic In"
+     ],
+     [
+      18.5,
+      0.0,
+      null
+     ]
+    ]
+   },
+   "Why": "the Shades and the floor lit by it, brightest on the flare"
+  }
+ ]
+}

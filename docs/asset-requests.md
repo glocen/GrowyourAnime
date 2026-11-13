@@ -3203,6 +3203,35 @@ Then time it. The signature goes to `ga-fresh-eyes` beside research's read at it
 - **C and D are rejected.** C clears only the right column, and B covers it. D sinks the avatar into the bottom of the screen and turns the view top-down.
 - **Next look:** the try and the fall after A, from the same camera.
 
+**A and B in, with a take (Faber, 2026-11-13; e91b143).**
+- **A:** against a keeper, a lead past `Lead.Straight` takes the side toward the avatar's line of sight (`Combat.Lead.Near`, `Fight.Aside`'s `near`). Measured over the walk-in, from a camera 12.5 studs behind the avatar: the lead keeps 5.5 to 5.8 studs on its own side of the line to the keeper and never crosses it (about 220 frames).
+- **The take after A** (`build/captures/ar7/ar7_near*`):
+  - Pip is clear of the Challenge.
+  - The fall's dark lantern stands alone in the sky, with Pip watching from the left.
+  - The Target card still covered the keeper's hat through the Challenge, so B's condition was met.
+- **B, built as a blockout.** While the keeper's hat or lantern is under a piece of the top band on screen, that piece fades, eased:
+  - the economy pills and the shard toast fade to 0.25;
+  - the Target card fades to 0.5 and no lower, and its bar and health number to 0.85;
+  - a piece comes back 0.25 s after the last overlap, and the lead's card is never faded.
+
+  The numbers are in `Config.Hud.SeeThrough`, live-tunable. The fade scales each part's own transparency (`src/client/UI/Kit/Fade.luau`), so no CanvasGroup clips a pop's swell, and anything that animates a part mid-fade keeps control of it.
+- **Checks:**
+  - Keeper filter 65/65 at 60 fps. The new checks hold the camera so the hat sits under each piece in turn:
+    - under the Target card, the card reaches 0.50 and its bar 0.85, and the drawing shows it (the housing at 0.50, the light at 0.15);
+    - under the Credits pill, the pill reaches 0.25;
+    - with the keeper out of view, every piece is whole again and each part is exactly as it was;
+    - no piece ever went past its floor.
+  - The full self-test: 870/870. Logic: 2459/2459 in Studio and offline. The world report is empty. Type check: 0 new.
+- **The take with B** (`ar7_see.mp4`, `_sheet`, `_challenge`, `_card`, `_fall_strip`):
+  - Through the Challenge the card is at half. The hat and the pole read through its housing and tab, and the bar's strip across the brim stays almost whole (`ar7_see_card.png`).
+  - In the fall the band has nothing to fade: the lantern goes dark in clear sky.
+  - This time Pip stood in front of the keeper's body at the fall.
+- **A new finding, for the framing.** With A, the keeper walks out to meet the lead, so in both takes the fight runs straight ahead, behind the avatar's own body, which covers the lead and the keeper for much of the try. This is the framing fix already queued for "Rook, Pip and Lyric installed" ("the avatar's body never covers the lead and its target at phone size"), now seen in a try. Levers, for research's call:
+  - the keeper holds the ring's middle and lets the lead come to it (the Turn already sets the middle off the avatar's line);
+  - a larger Turn;
+  - the avatar set down further aside for a try.
+- **Research:** B's verdict in motion, and whether the framing finding joins this piece or stays with the install piece.
+
 ### 6. The signature's effect: the block-in (Modulo, 2026-11-13)
 
 Research's ask: a grey block-in on the delivered Signature clip's markers (Plant 24, Light 44, Wrench 106, Slam 118). It's staged like B1's H, from the fight's camera past the avatar, at 64 px and on Lantern Row's dusk, at rung 8. Two or three variants, my pick, the feel line and the scope.

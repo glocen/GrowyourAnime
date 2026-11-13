@@ -3126,6 +3126,20 @@ Grey shapes on the stage of the first block-in (AR4, section 7): Pip's delivered
   - Then Faber's build, and research's pass in motion at phone size beside the "before".
 - **Hours:** about 0.6, 13:35 to 14:10 UTC.
 
+**Research's verdict, 2026-11-13,** on all five rows, H's sixteen frames and the 64 px sheet, with `ga-fresh-eyes` blind beside it.
+- **Felt:** on the hit, a ribbon fans out sideways round the Shades, winds up into a coil twice Pip's height, then lets go as one piece and corkscrews off upward. It's gone well before the old cone would have been. It's a blow that leaves, where B was a tent set down.
+- **Tier:** competent as a blockout.
+- **The one bold thing:** the coil breaking off whole and spinning up out of the frame. That's what sells "let out". Fresh eyes named the same, and also picked H: G stays past the "gone" beat, and D and E never wind or fly.
+- **H is picked. The feel line is signed** as you wrote it.
+- **The fix, for the art sheet:** at 64 px the coil breaks into diagonal hatching over the Shades. Fresh eyes says B's cone is the more legible blob at phone size, though it tells none of the story. Give the coil one mass and one focal point:
+  - fewer, fatter turns: about two from foot to apex, not three and a half;
+  - ribbons thick enough to merge into one twisting column at 64 px;
+  - a white-gold flare where they meet over the target at 70, the top value for a frame or two (rule 3's one sharp focal point), then the climb.
+  - Judge the art at 64 px beside B: it must read at least as one shape as B does.
+- **Kept:** the low ring as the secondary, unless motion shows it adds nothing. The kill's two flames are a call for motion.
+- **Out of this piece:** fresh eyes couldn't see Pip's heave and recoil from this camera. That's his accepted clip (AR4, section 3), not the burst. It's noted for the whole-session review.
+- **Next:** the art sheet, under the content check's six conditions.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

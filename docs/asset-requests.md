@@ -1439,6 +1439,16 @@ For Modulo, now, so the art is ready when the reveal's ceremony is written for t
 
 **Next:** Modulo's art sheet with the six fixes and the three checks, then the content check on the exact files, then the builder's reveal TR.
 
+### 5. The reveal's art sheet (Modulo, 2026-11-13)
+
+**Research's verdict, 2026-11-13,** on the read set in `build/scratch/modulo/reveal_art/` (commit 8786722): the two strips, the six read apart, the names, the colours, the shard, and both 60 fps movies frame by frame, with `ga-fresh-eyes` blind beside it (its Tier: competent). **Felt:** the Legendary still climbs green, blue, purple, gold and breathes dark before the white-out, and now the name crashes in oversized and drops to size on the strike, its rule glinting. But the colours reach his body in three or four frames, a cut more than a flood, and through the climb the shard itself barely moves: the halo does the work. **Tier:** competent. **The one bold thing:** the rarity told before the name, first by the leak's climb, then by the window's crowned frame while he's still black (grey, one point, three gold, a red spiked crown). All six fixes are met. The window 52 points right and his step on the clip's time are accepted (tier 1): his frame's right wing ends near 753 points, and the builder keeps it inside a phone's landscape safe area. The three colour checks hold. The near pairs are 0.036 to 0.051 apart, each gem told by its shape and dark seat. Rare and Frost are 0.131 apart. Uncommon's green comes with its frame, a state's with words. The shard reads as crystal at all four sizes. Fixes, for the art sheet:
+
+1. **A Common's pieces clear the window before he stands:** out past the frame, or behind it. Today a pale triangle rides on his chest for about 0.3 s and reads as a badge. Serves "a dark silhouette stands in the glow".
+2. **The colours run down from the strike over about 8 frames (0.13 s),** not 3 or 4, so the eye follows them down his body. The name's slam stays on the Knock. Serves "the colours flood in".
+3. **The shard answers each rung:** a small swell and a tick of shake on each new colour, the light pushing brighter through its seams, so the climb is the shard's and not only the halo's. Serves the bold thing.
+
+The fold from Epic up keeps its line (the head up), and the ram's thin handle goes to `docs/polish-later.md`. **Next:** the three fixes, then the content check on the exact files, then the builder's reveal TR.
+
 ## AR4. Pip and Lyric
 
 For Modulo, after AR1 closes. The ranged family and the first element (Pip); a heal and a complex signature (Lyric). Same four deliveries, timed. With AR1 they give the cost of a simple, a middling and a complex Voidkin, and with Rook's evolution they're the package's gate C: three finished exemplars and one evolved.

@@ -377,4 +377,40 @@ function Fight.ShoulderShare(share: number, since: number, dt: number, shoulder:
 	return math.clamp(share + (want - share) * k, 0, 1)
 end
 
+-- The skip back (docs/design.md, "Combat"; Config.Combat.Skip). A ranged lead between actions skips when the nearest enemy
+-- is inside Close studs and its last skip was at least Every seconds ago (`since`), never while an enemy's swing at it is
+-- winding up: a skip never dodges a hit already coming.
+function Fight.ShouldSkip(nearest: number, since: number, windingUp: boolean, skip: { Close: number, Every: number }): boolean
+	return nearest < skip.Close and since >= skip.Every and not windingUp
+end
+
+-- The bearings round its target a skip tries, in order: its place in the frame first, then Step degrees either side at a
+-- time, the side it already stands on first at each step, to straight across. Degrees, wrapped as Fight.Wrap.
+function Fight.SkipBearings(place: number, step: number, here: number): { number }
+	local out = { Fight.Wrap(place) }
+	local first = if Fight.Wrap(here - place) >= 0 then 1 else -1
+	local k = 1
+	while k * step < 180 - 1e-6 do
+		table.insert(out, Fight.Wrap(place + first * k * step))
+		table.insert(out, Fight.Wrap(place - first * k * step))
+		k += 1
+	end
+	if math.abs(k * step - 180) < 1e-6 then
+		table.insert(out, Fight.Wrap(place + 180))
+	end
+	return out
+end
+
+-- Whether a skip's way, flat, from `from` to `to`, keeps clear of an enemy at `enemy`: never nearer it than `body`, or,
+-- when it starts nearer than that, never nearer than where it starts (straight away from it).
+function Fight.SkipKeepsClear(from: Vector3, to: Vector3, enemy: Vector3, body: number): boolean
+	local a = Vector3.new(from.X, 0, from.Z)
+	local b = Vector3.new(to.X, 0, to.Z)
+	local e = Vector3.new(enemy.X, 0, enemy.Z)
+	local line = b - a
+	local length = line.Magnitude
+	local closest = if length < 1e-6 then (e - a).Magnitude else (e - (a + line * math.clamp((e - a):Dot(line) / (length * length), 0, 1))).Magnitude
+	return closest >= math.min(body, (e - a).Magnitude) - 1e-6
+end
+
 return Fight

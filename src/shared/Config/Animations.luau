@@ -23,6 +23,7 @@ return {
 		Burst = { In = 0.03, Out = 0.05 },
 		Signature = { In = 0.06, Out = 0.15 },
 		Challenge = { In = 0.06, Out = 0.15 }, -- the keeper's, as a try starts: it ends in Ready's pose
+		Skip = { In = 0.04, Out = 0.1 }, -- a ranged lead's skip back (TR7): quick in, and the next action cuts it at Land
 	},
 	Ids = {} :: { [string]: number },
 	Rigs = {
@@ -74,9 +75,11 @@ return {
 		PipHit = "Hit",
 		PipDown = "Down",
 		PipUp = "Up",
+		PipSkip = "Skip",
 		LyricIdle = "Idle",
 		LyricCombo = "Combo",
 		LyricHeldNote = "Signature",
+		LyricSkip = "Skip",
 		ShadeIdle = "Idle",
 		ShadeWalk = "Walk",
 		ShadeAttack = "Swipe",

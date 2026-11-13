@@ -107,6 +107,14 @@ return {
 	-- player's own drag turns the camera as ever. Right is the smallest that leaves the lead and its target clear of the
 	-- avatar nine frames in ten in a pack (Rules/Fight.ShoulderShare).
 	Shoulder = { Right = 2.5, Up = 1, Ease = 0.4, Hold = 1.5 },
+	-- A ranged lead's skip back (docs/design.md, "Combat"; TR7, part 2; research's seeds, tier 2): it skips when an enemy is
+	-- inside Close studs (a Shade's swing reaches 4), it's between actions, its last skip was Every seconds ago or more, and
+	-- no enemy's swing at it is winding up. It lands at its next action's range from its target, in its place in the frame;
+	-- if that spot isn't clear, the nearest that is, Step degrees round the target at a time; with none clear, it fights
+	-- where it stands. Clear: on the ground (Ground studs of drop at most), no wall on the way (Body studs wide), within the
+	-- leash, no enemy within Close of it, and the way never nearer an enemy than Body. It travels from its start to Land.
+	-- On: off for the balance check's runs without it (Tune "Combat.Skip.On").
+	Skip = { On = true, Close = 5, Every = 4, Step = 30, Body = 1.5, Ground = 2 },
 	-- Damage numbers over the target: they rise this many studs over this many seconds. A flurry, one press's hits on one
 	-- body, is one counting number (docs/ui.md, "Damage numbers"): each hit after the first counts it up to the new total
 	-- over Count seconds, swelling it Pop times and settling, and its fade starts over from that hit. The builder's

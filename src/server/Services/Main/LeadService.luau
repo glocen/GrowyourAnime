@@ -75,10 +75,13 @@ function LeadService.Start()
 		task.defer(sync, player)
 	end
 	if RunService:IsStudio() then
-		-- Studio only: the lead at `level`, its experience at the level's start.
-		DebugService.Register("LeadLevel", function(who: any, level: any): any
+		-- Studio only: the lead at `level`, its experience at the level's start, or at `xp` (a test putting a save back).
+		DebugService.Register("LeadLevel", function(who: any, level: any, xp: any): any
 			local player = DebugService.ResolvePlayer(who)
 			if not player or type(level) ~= "number" or level ~= math.floor(level) or level < 1 or level > GrowthConfig.MaxLevel then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			if xp ~= nil and (type(xp) ~= "number" or xp < 0) then
 				return { Ok = false, Error = "BadArgs" }
 			end
 			return DataService.Change(player, "LeadLevel", function(draft: Profile.Data): { [string]: any }
@@ -86,7 +89,7 @@ function LeadService.Start()
 				if owned == nil then
 					return { Ok = false, Error = "NoLead" }
 				end
-				owned.Level, owned.Xp = level, 0
+				owned.Level, owned.Xp = level, if xp == nil then 0 else xp
 				return { Ok = true, Level = level }
 			end)
 		end)

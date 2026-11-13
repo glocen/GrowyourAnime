@@ -166,6 +166,39 @@ local rows: { Action } = {
 		Signed = nil,
 	},
 	{
+		-- Pip's skip back (docs/design.md, "Combat", the skip back; TR7, part 2): a quick hop back to his place in the frame,
+		-- at his next action's range from his target, still facing it. Modulo's block clip moves in place: the gather to
+		-- frame 5, off at 9, the top at 15, Land at 21. The server carries the body from the start to Land
+		-- (FightService.trySkip); his next action may start on Land. No hit: it spends time, his and the enemy's.
+		Id = "PipSkip",
+		Clip = "PipSkip",
+		Length = 0.5333,
+		CancelFrom = 0.35, -- Land: the settle is cut by the next action
+		Cooldown = 0, -- its own Every (Config.Combat.Skip), and no ring on the HUD
+		Beats = { Land = 0.35 },
+		Hits = {},
+		Range = 0, -- never chosen from a kit (Actions.Skips)
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the gather, to frame 5)", "movement during (the travel back, from the start to Land)", "the landing cut into the next action" },
+		Signed = "the feel line: Quaestor, 2026-11-13 (docs/design.md, \"Combat\"; TR7)",
+	},
+	{
+		-- Lyric's skip back, as Pip's: the same hop in her robe, the stand up in her fist and down on Land.
+		Id = "LyricSkip",
+		Clip = "LyricSkip",
+		Length = 0.55,
+		CancelFrom = 0.35,
+		Cooldown = 0,
+		Beats = { Land = 0.35 },
+		Hits = {},
+		Range = 0,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the gather, to frame 5)", "movement during (the travel back, from the start to Land)", "the landing cut into the next action" },
+		Signed = "the feel line: Quaestor, 2026-11-13 (docs/design.md, \"Combat\"; TR7)",
+	},
+	{
 		-- Lyric's signature (docs/roster.md; AR4, section 9): a breath, she lunges into the mic, and the note sweeps out
 		-- across the Shades in crests on every half-beat until she lets go. Each crest touches every Shade in the cone, a
 		-- fifth of the signature's total, and heals her and every ally lead in it (research's tier 2). The cone is 14 studs
@@ -300,6 +333,18 @@ Actions.Kits = {
 	lyric = { "LyricHeldNote", "LyricCombo" },
 } :: { [string]: { string } }
 Actions.StandIn = "rook"
+
+-- A ranged lead's skip back, by its def: a Mage's or a Healer's (docs/design.md, "Combat"). Never in a kit, so never
+-- chosen as an attack: the lead takes it on its own rule (Rules.Fight.ShouldSkip).
+Actions.Skips = {
+	pip = "PipSkip",
+	lyric = "LyricSkip",
+} :: { [string]: string }
+
+function Actions.SkipOf(def: string): Action?
+	local id = Actions.Skips[def]
+	return if id then Actions.ById[id] else nil
+end
 
 function Actions.KitOf(def: string): { Action }
 	local ids = Actions.Kits[def] or Actions.Kits[Actions.StandIn]

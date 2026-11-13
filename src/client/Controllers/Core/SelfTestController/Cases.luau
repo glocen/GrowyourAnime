@@ -72,6 +72,16 @@ local SHADE_AHEAD = 12 -- studs ahead of the avatar a test Shade spawns: inside 
 local SHADE_TIMEOUT = 20 -- seconds a level-matched ordinary may take to fall (the seed is 5 s of fighting, Config.Enemies)
 local SHADE_TOUGHER = 10 -- levels over the lead's a Shade spawns at to swing and flinch several times before it falls
 local SHADE_WATCH = 12 -- seconds the alternation case watches for three swings and three flinches
+-- The skip back as this screen draws it (Config.Combat.Skip): a body replicates about a tenth of a second behind its
+-- action's attribute, so the landing is read that much after Land, and the Shade may have stepped in meanwhile.
+local SKIP_LAG = 0.15 -- seconds
+local SKIP_LAG_STUDS = 1.5 -- studs the Shade can close in that lag
+local SKIP_SETTLE = 0.15 -- seconds after the landing it must stay put
+local SKIP_SLIDE = 0.5 -- studs it may drift in them
+local SKIP_MIN_TRAVEL = 2 -- studs farther from the Shade's spot it must land
+local SKIP_FACING = 30 -- degrees off the Shade at worst through the travel, once turned onto it
+local SKIP_TURN = 0.1 -- seconds into the skip it has turned onto the Shade: it may start off it, from a Shade that ran in
+local SKIP_NEXT = 0.3 -- seconds after Land its next action may wait for the next think
 local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
 local SQUARE = 4 -- bars in a square
 local GONE_BY = 19 * FRAME -- the art sheet: Haymaker's look is over by frame 76, Strike (57) + 19
@@ -1373,7 +1383,7 @@ return {
 			local piston = joint("Right Arm", "Piston", "Rook_Piston")
 			local tape = joint("Left Arm", "Tape", "Rook_Tape")
 			-- his clips key the two, under their arms (tools/studio/Animations/Author's HELD): Haymaker's wind-up slides the
-			-- piston 0.65 studs toward the shoulder
+			-- piston 0.85 studs toward the shoulder at its most cocked (AR8 B5's polish, build/handoff/Rook/clips/Rook_Haymaker.json)
 			local slide = -1
 			local haymaker = Clips.Sequence(Actions.ById.RookHaymaker.Clip or "")
 			for _, keyframe in if haymaker then haymaker:GetKeyframes() else {} do
@@ -1383,7 +1393,7 @@ return {
 					end
 				end
 			end
-			t.Near("Haymaker slides the piston", slide, 0.65, 0.01)
+			t.Near("Haymaker slides the piston", slide, 0.85, 0.01)
 			-- and a clip always plays: idle, the piston rests home and the tape swings (at R6's rest pose the ram meets the hip)
 			if piston and tape then
 				local first = tape.Transform
@@ -1443,6 +1453,127 @@ return {
 			t.Check("the Shade hits the lead", hurt)
 			t.Check("the Shade falls", fell, string.format("after %.1f s", seconds))
 			t.Row("seconds from its spawn to its fall, walk-in included", nil, nil, seconds, "s")
+		end,
+	},
+	{
+		Name = "Fight: a ranged lead skips back when a Shade closes: away from it by Land, facing it, into its next action (TR7)",
+		Run = function(t: any)
+			-- Each Voidkin with a skip leads in turn (Actions.Skips: Pip, Lyric); the save's own lead is put back after.
+			local view = t.Server("Data")
+			local owned = if type(view) == "table" and type(view.Voidkin) == "table" then view.Voidkin else {}
+			local was = if type(view) == "table" and type(view.Roles) == "table" then view.Roles.Lead else nil
+			local ids: { string } = {}
+			for id, row in owned do
+				if type(row) == "table" and Actions.Skips[row.Def] then
+					table.insert(ids, id)
+				end
+			end
+			table.sort(ids)
+			local function flat(v: Vector3): Vector3
+				return Vector3.new(v.X, 0, v.Z)
+			end
+			-- One lead's first skip against a level-matched Shade, watched each frame as this screen draws it.
+			local function trial(def: string)
+				local skip = Actions.SkipOf(def) :: Actions.Action
+				local lead: Model? = nil
+				local began = os.clock()
+				while lead == nil and os.clock() - began < LEAD_SETTLE * 2 do
+					t.Wait(0.1)
+					local found = myLead()
+					lead = if found and found:GetAttribute("Def") == def then found else nil
+				end
+				local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+				t.Check(`{def} leads`, lead ~= nil and root ~= nil)
+				if lead == nil or root == nil then
+					return
+				end
+				local body = lead :: Model
+				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
+				t.Check(`{def}: the Shade spawns`, type(spawned) == "table" and spawned.Ok == true)
+				local function shade(): BasePart?
+					for _, model in (workspace:FindFirstChild("Fighters") :: Instance):GetChildren() do
+						if model:GetAttribute("Fighter") == body:GetAttribute("Target") then
+							return model:FindFirstChild("HumanoidRootPart") :: BasePart?
+						end
+					end
+					return nil
+				end
+				local skippedAt: number? = nil
+				local from, foe = Vector3.zero, Vector3.zero
+				local startGap, landGap, worst, worstAt, startOff = 0, 0, 0, 0, 0
+				local landedAt: Vector3? = nil
+				local settled: Vector3? = nil
+				local nextIn: number? = nil
+				began = os.clock()
+				while os.clock() - began < SHADE_TIMEOUT and (settled == nil or nextIn == nil) do
+					RunService.Heartbeat:Wait()
+					local target = shade()
+					local action = body:GetAttribute("Action")
+					if skippedAt == nil then
+						if action == skip.Id and target then
+							skippedAt = os.clock()
+							from, foe = root.Position, target.Position
+							startGap = flat(from - foe).Magnitude
+						end
+						continue
+					end
+					local since = os.clock() - (skippedAt :: number)
+					if target and since <= skip.Beats.Land then
+						local look = flat(root.CFrame.LookVector)
+						local toward = flat(target.Position - root.Position)
+						local off = if look.Magnitude > 1e-3 and toward.Magnitude > 1e-3
+							then math.deg(math.acos(math.clamp(look.Unit:Dot(toward.Unit), -1, 1)))
+							else 0
+						if since < SKIP_TURN then
+							startOff = math.max(startOff, off)
+						elseif off > worst then
+							worst, worstAt = off, since
+						end
+					end
+					if landedAt == nil and since >= skip.Beats.Land + SKIP_LAG then
+						landedAt = root.Position
+						landGap = flat(root.Position - foe).Magnitude
+					end
+					if landedAt and settled == nil and since >= skip.Beats.Land + SKIP_LAG + SKIP_SETTLE then
+						settled = root.Position
+					end
+					if nextIn == nil and action ~= skip.Id and action ~= "" then
+						nextIn = since
+					end
+				end
+				t.Server("FightSpawn") -- clears what is left
+				t.Check(`{def} skips when the Shade closes`, skippedAt ~= nil, `within {SHADE_TIMEOUT} s`)
+				if skippedAt == nil then
+					return
+				end
+				t.Check(`{def}: it skipped with the Shade inside Close`, startGap < Combat.Skip.Close + SKIP_LAG_STUDS, string.format("%.1f studs", startGap))
+				t.Check(`{def}: it lands farther from where the Shade stood`, landGap > startGap + SKIP_MIN_TRAVEL, string.format("%.1f to %.1f studs", startGap, landGap))
+				t.Check(`{def}: outside Close`, landGap >= Combat.Skip.Close, string.format("%.1f studs", landGap))
+				t.Check(`{def}: facing the Shade all the way`, worst <= SKIP_FACING, string.format("%.0f degrees at worst, %.2f s in", worst, worstAt))
+				t.Row(`{def}: degrees off the Shade as it started, before it turned`, nil, nil, startOff, "degrees")
+				if landedAt and settled then
+					local drift = flat(settled - landedAt).Magnitude
+					t.Check(`{def}: and stops on Land, no slide after`, drift <= SKIP_SLIDE, string.format("%.2f studs", drift))
+				end
+				t.Check(`{def}: it lands into its next action`, nextIn ~= nil and nextIn <= skip.Beats.Land + SKIP_NEXT, if nextIn then string.format("%.2f s after it skipped", nextIn) else "none")
+				t.Row(`{def}: studs it skipped`, nil, nil, flat((landedAt or from) - from).Magnitude, "studs")
+			end
+			local tried: { [string]: boolean } = {}
+			for _, id in ids do
+				local def = owned[id].Def
+				if tried[def] then
+					continue
+				end
+				local answer = t.Server("Act", "SetLead", { Voidkin = id })
+				if type(answer) == "table" and answer.Ok == true then -- a worker can't lead: another of its kind may
+					tried[def] = true
+					trial(def)
+				end
+			end
+			t.Server("Act", "SetLead", { Voidkin = was })
+			if next(tried) == nil then
+				t.Row("no Pip or Lyric free to lead: the skip's checks wait for one", nil, nil, nil, "")
+			end
 		end,
 	},
 	{

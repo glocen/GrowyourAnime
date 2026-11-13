@@ -729,4 +729,68 @@ return {
 			t.Equal("nothing in no time", Fight.ShoulderShare(0.4, 0, 0, shoulder), 0.4)
 		end,
 	},
+	{
+		-- docs/design.md, "Combat", the skip back (TR7, part 2): its seeds, its rows, when it's taken, where it goes.
+		Name = "Fight: a ranged lead skips back when an enemy closes, never into a swing already coming, to its place first (TR7)",
+		Run = function(t: any)
+			local skip = Combat.Skip
+			t.Check("on", skip.On == true)
+			t.Check("Close past a Shade's swing (4 studs)", skip.Close > 4 and skip.Close <= 8, `{skip.Close}`)
+			t.Check("Every a few seconds", skip.Every >= 2 and skip.Every <= 8, `{skip.Every}`)
+			t.Check("Step divides the half turn", skip.Step > 0 and (180 / skip.Step) % 1 == 0, `{skip.Step}`)
+			-- every Mage and Healer with a kit has a skip, nobody else; a skip is never in a kit, never hits, lands on Land
+			for _, row in Voidkin.List do
+				local ranged = row.Class == "Mage" or row.Class == "Healer"
+				local action = Actions.SkipOf(row.Id)
+				if Actions.Kits[row.Id] then
+					t.Check(`{row.Id}: a skip if and only if ranged`, (action ~= nil) == ranged, `{row.Class}`)
+				end
+				if action then
+					local land = action.Beats.Land
+					local hits = 0
+					for _ in action.Hits do
+						hits += 1
+					end
+					t.Check(`{action.Id}: no hit, no cooldown, no range`, hits == 0 and action.Cooldown == 0 and action.Range == 0)
+					t.Check(`{action.Id}: lands about 0.35 s in, cut from there`, land ~= nil and math.abs(land - 0.35) < 0.05 and action.CancelFrom == land and land < action.Length, `{land}`)
+					t.Equal(`{action.Id}: its clip's role`, Animations.Roles[action.Clip :: string], "Skip")
+					for _, id in Actions.Kits[row.Id] or {} do
+						t.Check(`{action.Id}: not in the kit`, id ~= action.Id, id)
+					end
+				end
+			end
+			t.Check("Skip has its fades", Animations.Fades.Skip ~= nil)
+			-- when
+			t.Equal("an enemy inside Close, its last skip long ago: skips", Fight.ShouldSkip(skip.Close - 0.5, math.huge, false, skip), true)
+			t.Equal("an enemy at Close: no", Fight.ShouldSkip(skip.Close, math.huge, false, skip), false)
+			t.Equal("its last skip under Every ago: no", Fight.ShouldSkip(1, skip.Every - 0.01, false, skip), false)
+			t.Equal("at Every: yes", Fight.ShouldSkip(1, skip.Every, false, skip), true)
+			t.Equal("a swing at it winding up: no", Fight.ShouldSkip(1, math.huge, true, skip), false)
+			-- where: its place first, its own side first at each step, out to straight across, each once
+			local tries = Fight.SkipBearings(30, 30, 50)
+			t.Equal("its place first", tries[1], 30)
+			t.Equal("then its own side", tries[2], 60)
+			t.Equal("then the other", tries[3], 0)
+			t.Equal("straight across last", tries[#tries], -150)
+			t.Equal("every step once", #tries, 12)
+			local other = Fight.SkipBearings(30, 30, 10)
+			t.Equal("standing on the other side, that side first", other[2], 0)
+			local seen: { [number]: boolean } = {}
+			local once = true
+			for _, bearing in Fight.SkipBearings(-170, 30, 0) do
+				local key = math.floor(bearing + 0.5)
+				once = once and not seen[key] and bearing > -180 - 1e-9 and bearing <= 180
+				seen[key] = true
+			end
+			t.Check("wrapped, none twice", once)
+			-- the way: never nearer an enemy than Body; from point blank, only straight away
+			local body = skip.Body
+			t.Equal("away from it: clear", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(-10, 0, 0), Vector3.new(2, 0, 0), body), true)
+			t.Equal("past it: not", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(10, 0, 0), Vector3.new(5, 0, 0.5), body), false)
+			t.Equal("beside the way, Body off: clear", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(10, 0, 0), Vector3.new(5, 0, body + 0.1), body), true)
+			t.Equal("from point blank, straight away: clear", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(-10, 0, 0), Vector3.new(0.5, 0, 0), body), true)
+			t.Equal("from point blank, across it: not", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(0, 0, 10), Vector3.new(0.5, 0, 0.5), body), false)
+			t.Equal("height doesn't count", Fight.SkipKeepsClear(Vector3.new(0, 3, 0), Vector3.new(-10, 3, 0), Vector3.new(2, 0, 0), body), true)
+		end,
+	},
 }

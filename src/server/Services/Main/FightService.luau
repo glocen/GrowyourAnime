@@ -53,6 +53,7 @@ export type Fighter = {
 	Checked: number, -- the action's clock at the last beat check
 	ReadyAt: { [string]: number },
 	LastHurt: number, -- it last took a hit (Combat.Lead.Heal)
+	SkippedAt: number, -- a ranged lead's last skip back (Combat.Skip)
 	NextThink: number,
 	Home: CFrame?, -- a Shade's spawn
 	Pack: string?,
@@ -82,6 +83,7 @@ local GREY = Color3.fromRGB(163, 162, 165)
 local SHADE_BODY = Color3.fromRGB(46, 46, 52)
 local SHADE_MASK = Color3.fromRGB(214, 214, 214)
 local SHADE_ROOT_HEIGHT = 3 -- the Shade rig's root above its feet, at scale 1 (the recipe's frame)
+local LEAD_ROOT_HEIGHT = 3 -- an R6 lead's root above its feet
 
 local rng = Random.new()
 local fighters: { [string]: Fighter } = {}
@@ -413,6 +415,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Checked = -1,
 		ReadyAt = {},
 		LastHurt = -math.huge,
+		SkippedAt = -math.huge,
 		NextThink = at + rng:NextNumber() * Combat.Think, -- spread over the tick
 		Home = nil,
 		Pack = nil,
@@ -510,8 +513,8 @@ end
 -- target (Rules/Fight.Spread), each wanting to stay where it is, but a lead wanting the target's far side along its
 -- avatar's facing, the way the player's camera looks (Fight.Beyond: a Shade comes to the lead at the avatar's side, so the
 -- avatar's place would put the fight off the frame's edge; the take of 2026-11-12), and the way there round the target
--- (Fight.Toward). Also how far, in degrees, `f` stands from its place.
-local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, number)
+-- (Fight.Toward). Also how far, in degrees, `f` stands from its place, its place's bearing, and its own.
+local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, number, number, number)
 	local center = target.Root.Position
 	local mates: { Fighter } = {}
 	for _, other in fighters do
@@ -545,7 +548,7 @@ local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, n
 	end
 	local place = Fight.Spread(wants, Combat.Slots.Spacing)[mine]
 	local heading = math.rad(Fight.Toward(here, place, Combat.Slots.Step))
-	return center + Vector3.new(math.cos(heading), 0, math.sin(heading)) * radius, math.abs(Fight.Wrap(place - here))
+	return center + Vector3.new(math.cos(heading), 0, math.sin(heading)) * radius, math.abs(Fight.Wrap(place - here)), place, here
 end
 
 -- The hit's push, once the hold is over: the body jumps on the frame it lets go (handbook/feel/combat.md). It goes its
@@ -555,47 +558,57 @@ end
 -- Seconds × PUSH_GIVE_UP.
 local PUSH_GIVE_UP = 3
 local pushing: { [Fighter]: number } = {}
+-- The body carried `amount` studs along `unit`, flat, at a steady pace over `seconds`: a hit's push, or a skip's travel.
+-- A skip passes `facing`, re-aimed at each frame and held rigid: the think's tick and the Align's responsiveness both
+-- trail a bearing that swings this fast up close (about 30 degrees, the skip's self-test).
+local function glide(f: Fighter, unit: Vector3, amount: number, seconds: number, facing: Fighter?)
+	local token = (pushing[f] or 0) + 1
+	pushing[f] = token
+	f.Align.RigidityEnabled = facing ~= nil
+	local from = f.Root.Position
+	local speed = amount / seconds
+	local started = os.clock()
+	f.Push.VectorVelocity = unit * speed
+	f.Push.Enabled = true
+	local connection: RBXScriptConnection
+	connection = RunService.Heartbeat:Connect(function(dt: number)
+		if pushing[f] ~= token then
+			connection:Disconnect() -- a newer push has it
+			return
+		end
+		if fighters[f.Id] ~= f then
+			connection:Disconnect()
+			pushing[f] = nil
+			return
+		end
+		local left = amount - (f.Root.Position - from):Dot(unit)
+		if left <= 0.02 or os.clock() - started > seconds * PUSH_GIVE_UP then
+			connection:Disconnect()
+			pushing[f] = nil
+			f.Push.Enabled = false
+			f.Align.RigidityEnabled = false
+			local v = f.Root.AssemblyLinearVelocity
+			f.Root.AssemblyLinearVelocity = Vector3.new(0, v.Y, 0)
+			return
+		end
+		f.Push.VectorVelocity = unit * math.min(speed, left / math.max(dt, 1 / 240))
+		if facing and facing.Root.Parent then
+			face(f, facing.Root.Position)
+		end
+	end)
+end
+
 local function push(f: Fighter, direction: Vector3, studs: number, hold: number)
 	local weight = (Combat.Weight :: any)[f.Kind] or 1
 	local amount = studs * weight
 	if amount <= 0 or direction.Magnitude < 0.01 then
 		return
 	end
-	local seconds = Combat.Push.Seconds
 	task.delay(hold, function()
 		if fighters[f.Id] ~= f then
 			return
 		end
-		local token = (pushing[f] or 0) + 1
-		pushing[f] = token
-		local unit = direction.Unit
-		local from = f.Root.Position
-		local speed = amount / seconds
-		local started = os.clock()
-		f.Push.VectorVelocity = unit * speed
-		f.Push.Enabled = true
-		local connection: RBXScriptConnection
-		connection = RunService.Heartbeat:Connect(function(dt: number)
-			if pushing[f] ~= token then
-				connection:Disconnect() -- a newer push has it
-				return
-			end
-			if fighters[f.Id] ~= f then
-				connection:Disconnect()
-				pushing[f] = nil
-				return
-			end
-			local left = amount - (f.Root.Position - from):Dot(unit)
-			if left <= 0.02 or os.clock() - started > seconds * PUSH_GIVE_UP then
-				connection:Disconnect()
-				pushing[f] = nil
-				f.Push.Enabled = false
-				local v = f.Root.AssemblyLinearVelocity
-				f.Root.AssemblyLinearVelocity = Vector3.new(0, v.Y, 0)
-				return
-			end
-			f.Push.VectorVelocity = unit * math.min(speed, left / math.max(dt, 1 / 240))
-		end)
+		glide(f, direction.Unit, amount, Combat.Push.Seconds)
 	end)
 end
 
@@ -813,6 +826,84 @@ local function forced(f: Fighter, at: number): boolean
 	return true
 end
 
+-- The skip back's clear spot (Combat.Skip): on the ground, no wall on the way or where it lands, within the leash, no
+-- enemy within Close, and the way never nearer an enemy than Body (Rules.Fight.SkipKeepsClear).
+local function skipClear(f: Fighter, spot: Vector3, avatar: BasePart, enemies: { Fighter }): boolean
+	local skip = Combat.Skip
+	if flat(spot - avatar.Position).Magnitude > Combat.Lead.Leash then
+		return false
+	end
+	for _, enemy in enemies do
+		local at = enemy.Root.Position
+		if flat(spot - at).Magnitude < skip.Close or not Fight.SkipKeepsClear(f.Root.Position, spot, at, skip.Body) then
+			return false
+		end
+	end
+	local ignore = RaycastParams.new()
+	ignore.FilterType = Enum.RaycastFilterType.Exclude
+	local skipped: { Instance } = { folder }
+	for _, player in Players:GetPlayers() do
+		if player.Character then
+			table.insert(skipped, player.Character)
+		end
+	end
+	ignore.FilterDescendantsInstances = skipped
+	ignore.RespectCanCollide = true
+	local from = f.Root.Position
+	local way = flat(spot - from)
+	if way.Magnitude > 1e-3 and workspace:Spherecast(from, skip.Body / 2, way, ignore) then
+		return false -- a wall or a stall on the way
+	end
+	local ground = workspace:Raycast(spot + Vector3.new(0, 1, 0), Vector3.new(0, -(LEAD_ROOT_HEIGHT + 1 + skip.Ground), 0), ignore)
+	return ground ~= nil
+end
+
+-- A ranged lead's skip back (docs/design.md, "Combat"; Rules.Fight.ShouldSkip): back to its place in the frame at its
+-- next action's range from `target`, or the nearest clear spot at that range, travelling from its start to Land. True if
+-- it skipped.
+local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number): boolean
+	local skip = Actions.SkipOf(f.Def)
+	if skip == nil or not Combat.Skip.On then
+		return false
+	end
+	local enemies: { Fighter } = {}
+	local nearest, windingUp = math.huge, false
+	for _, other in fighters do
+		if other.Side ~= f.Side and other.Kind ~= "Dummy" and standing(other) then
+			table.insert(enemies, other)
+			nearest = math.min(nearest, distance(f.Root, other.Root))
+			local swing = other.Action
+			if other.Target == f and swing then
+				for beat in swing.Hits do
+					windingUp = windingUp or at - other.ActionAt < swing.Beats[beat]
+				end
+			end
+		end
+	end
+	if not Fight.ShouldSkip(nearest, at - f.SkippedAt, windingUp, Combat.Skip) then
+		return false
+	end
+	local next = Fight.Choose(f.Kit, f.ReadyAt, at)
+	local radius = math.max(0, (if next then next.Range else 4) - Combat.Approach)
+	local _, _, place, here = slotFor(f, target, radius)
+	local center = target.Root.Position
+	for _, bearing in Fight.SkipBearings(place, Combat.Skip.Step, here) do
+		local heading = math.rad(bearing)
+		local spot = Vector3.new(center.X + math.cos(heading) * radius, f.Root.Position.Y, center.Z + math.sin(heading) * radius)
+		if skipClear(f, spot, avatar, enemies) then
+			start(f, skip, at)
+			f.SkippedAt = at
+			f.Humanoid:MoveTo(spot) -- so it doesn't walk back to where it stood once it lands
+			local way = flat(spot - f.Root.Position)
+			if way.Magnitude > 0.05 then
+				glide(f, way.Unit, way.Magnitude, skip.Beats.Land, target)
+			end
+			return true
+		end
+	end
+	return false -- cornered or surrounded: it fights where it stands
+end
+
 -- A lead's turn to decide.
 local function thinkLead(f: Fighter, at: number, dt: number)
 	local avatar = avatarRoot(f)
@@ -853,11 +944,16 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		if busy(f, at) then
 			return
 		end
+		if trySkip(f, target, avatar, at) then
+			return
+		end
 		local action = Fight.Choose(f.Kit, f.ReadyAt, at)
 		local range = if action then action.Range else 4
 		local gap = distance(f.Root, target.Root)
 		local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
-		if action and gap <= action.Range and off <= Combat.Slots.Arc then
+		-- after a skip it fires from where it lands while its target is in range, and never walks in again (Combat.Skip)
+		local landed = at - f.SkippedAt < Combat.Skip.Every
+		if action and gap <= action.Range and (off <= Combat.Slots.Arc or landed) then
 			start(f, action, at)
 		else
 			endAction(f, at)

@@ -155,7 +155,11 @@ return {
 	-- shard toast to Economy, the Target card to Target and never lower, its bar and its health to Bar, so the fight's own
 	-- read holds. It comes back once none has been under it for Hold seconds, so a hat grazing an edge doesn't flutter it.
 	-- Opacities: 1 is whole. The builder's seeds for Rate, Hold and Bar.
+	-- Tag: an effect's piece the band watches the same way, carrying this CollectionService tag: the player's own lead's
+	-- hanging square, Haymaker's stamp, its posts, rails and plate (TR7, research's call on the hang, 2026-11-13, (a)). It
+	-- fades the card only while the square stands behind it, with no timed fade.
 	SeeThrough = {
+		Tag = "NL_SeeThrough",
 		Economy = 0.25,
 		Target = 0.5,
 		Bar = 0.85,

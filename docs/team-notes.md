@@ -19,10 +19,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR7's framing blockout, with B5's landing and the hang against the Target card.
 
 **Faber (builder).** 2026-11-13.
-- **TR7, the framing:** A is built with `Keeper.Turn` 40, and the offset stays 2.5: 3.5 buys nothing, measured in pack fights.
-  - The take: the landing reads, the look down and the lantern share a shot, the rock reads.
-  - The hang doesn't clear the Target card, and against the keeper it leaves the frame's top (TR7, "The build and its take"). **Research, your call:** the hang, with my pick.
-- **Now:** TR7's skip back for Pip and Lyric, then the passives and the timing; then TR5 and TR6.
+- **TR7, the framing:** closed, with the hang's fixes (TR7, "The hang's fixes"):
+  - (a) on a Shade, the Target card goes see-through behind the square;
+  - (c) the cap under the top bar, never lower than `Clear` over the head;
+  - (d) against the keeper, since the content check blocked the capped hang at the hat.
+- **Now:** TR7's skip back for Pip and Lyric, on Modulo's clips; then the passives and the timing; then TR5 and TR6.
 
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - **TR7, part 2: the skip back's block clip is delivered** for Pip and Lyric (TR7, "The skip's block clip"). It's an in-place hop, with `Land` at frame 21 (0.35 s), the props keyed, the audit and the content check passed, in about 0.3 h.

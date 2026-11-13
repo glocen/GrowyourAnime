@@ -5,7 +5,7 @@
 --             it's uploaded (Config.Effects.Haymaker; docs/asset-requests.md, AR1, section 5). The ram's heat on its
 --             glow mask, and the strike's sound (Config.Sounds). And B5's stamp, a grey block until its art (AR8,
 --             "B5"): the square hung over the target through the hold, slammed onto it on Strike, squashed flat where
---             it lands.
+--             it lands. Never over the top bar's foot; the top band goes see-through while your own lead's hangs behind it.
 --   LanternBurst  Pip's signature, AR4's art sheet: the heat in the cage on his glow mask, the throw with its trail, the
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8). The flame let out is its exit's rows
@@ -25,6 +25,7 @@
 -- Effects driven by an action take its clock on screen, which hitstop pauses; the rest run on Effects.TimeScale, which a
 -- capture sets to 0 to hold a frame (.claude/skills/ga-studio-test, "Captures").
 
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -388,19 +389,26 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 	type StampPiece = { Part: MeshPart, Look: SurfaceAppearance? }
 	local art = EffectsConfig.Haymaker.Stamp.Art
 	local stampMade: { MeshPart } = {}
-	local function stampPiece(name: string, kind: typeof(art.Frame)): StampPiece
+	-- The player's own lead's square stands where the top band is: the band watches its hanging pieces and goes see-through
+	-- while one is behind it (Config.Hud.SeeThrough.Tag). Another player's never fades your HUD.
+	local mine = attacker:GetAttribute("Side") == "Lead" and attacker:GetAttribute("Owner") == Players.LocalPlayer.UserId
+	local function stampPiece(name: string, kind: typeof(art.Frame), watched: boolean): StampPiece
 		local p, look = Rows.Mesh(kind.Mesh, if art.Grey then kind.Grey else kind.Look)
 		p.Name = name
+		if watched and mine then
+			CollectionService:AddTag(p, HudConfig.SeeThrough.Tag)
+		end
 		p.Parent = home()
 		table.insert(stampMade, p)
 		return { Part = p, Look = look }
 	end
-	local posts = { stampPiece("NL_StampPost", art.Frame), stampPiece("NL_StampPost", art.Frame) }
-	local rails = { stampPiece("NL_StampRail", art.Frame), stampPiece("NL_StampRail", art.Frame) }
-	local runs = { stampPiece("NL_StampRun", art.Frame), stampPiece("NL_StampRun", art.Frame) }
-	local plate = stampPiece("NL_StampPlate", art.Plate)
+	local posts = { stampPiece("NL_StampPost", art.Frame, true), stampPiece("NL_StampPost", art.Frame, true) }
+	local rails = { stampPiece("NL_StampRail", art.Frame, true), stampPiece("NL_StampRail", art.Frame, true) }
+	local runs = { stampPiece("NL_StampRun", art.Frame, false), stampPiece("NL_StampRun", art.Frame, false) }
+	local plate = stampPiece("NL_StampPlate", art.Plate, true)
 	local landedAt: Vector3? = nil -- the target's floor point on Strike
 	local targetTop: number? = nil -- the target's top over the floor, measured once
+	local targetKind: string? = nil -- the target's Kind, read with its top
 
 	local function stampFoot(): Vector3?
 		if root == nil then
@@ -414,6 +422,7 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			if targetTop == nil and body and body:IsA("Model") and body ~= workspace then -- a fighter's body (Workspace is a Model)
 				local box, extent = body:GetBoundingBox()
 				targetTop = box.Position.Y + extent.Y / 2 - floorY
+				targetKind = body:GetAttribute("Kind") :: string?
 			end
 			return Vector3.new(aim.Position.X, floorY, aim.Position.Z)
 		end
@@ -454,6 +463,35 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 		local over = math.max(s.Over, (targetTop or 0) + s.Clear)
 		local top = over + (s.Top - s.Over)
 		local floorOver = 0.04 -- studs: its foot's bar on the floor
+		-- The highest its top edge may stand over the floor: the screen's row Under pixels below the top bar's foot
+		-- (Stamp.Under; UI.World.Ceiling) is a plane through the camera; each outer top corner of the frame, front and
+		-- back, meets it at its own height, and the lowest of them holds (a top edge seen off-centre tilts on screen).
+		-- Never below `lowest`: the hang's is Over, Clear above the head. Off against Stamp.Uncapped kinds.
+		local eye: Vector3? = nil
+		local row = Vector3.zero
+		local edge = if targetKind and (s.Uncapped :: { [string]: boolean })[targetKind] then nil else World.Ceiling()
+		if edge then
+			local y = edge + s.Under * Layers.Scale()
+			local left, right = camera:ViewportPointToRay(0, y), camera:ViewportPointToRay(camera.ViewportSize.X, y)
+			row = left.Direction:Cross(right.Direction)
+			if math.abs(row.Y) > 1e-6 then
+				eye = left.Origin
+			end
+		end
+		local depth = art.Depth * math.max(1, art.Rails) / 2
+		local function capped(height: number, tall: number, half: number, lowest: number): number
+			if eye == nil or height <= lowest then
+				return height
+			end
+			local ceiling = math.huge
+			for _, x in { -half, half } do
+				for _, d in { -depth, depth } do
+					local corner = (facing * CFrame.new(x, 0, d)).Position
+					ceiling = math.min(ceiling, -row:Dot(corner - (eye :: Vector3)) / row.Y)
+				end
+			end
+			return math.max(lowest, math.min(height, ceiling - tall))
+		end
 		local w, h, z, bar, gone = 0, 0, 0, 0, 0
 		local run: number? = nil
 		if f < -s.Drop then
@@ -462,15 +500,16 @@ function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: 
 			local ease = Track.Ease(s.Tighten, u)
 			w = s.Side * (s.Forms + (1 - s.Forms) * ease)
 			h = w
-			z = over + (top - over) * ease
 			bar = s.FormBar + (s.Bar - s.FormBar) * ease
+			z = capped(over + (top - over) * ease, h + bar / 2, w / 2 + bar / 2, over) -- the frame's outer edge, half a bar past its lines
 		elseif f < 0 then
 			-- slammed down, faster and faster, stretched tall while it's fast
 			local fast = math.clamp((f + s.Drop) / math.max(1, s.Drop - 1), 0, 1)
 			local u = math.clamp((f + s.Drop) / s.Drop, 0, 1)
 			w, h = s.Side * (1 - s.Narrow * fast), s.Side * (1 + s.Stretch * fast)
-			z = floorOver + (top - floorOver) * (1 - u * u)
 			bar = s.Bar
+			local hungAt = capped(top, s.Side + bar / 2, s.Side / 2 + bar / 2, over) -- where the hang was capped
+			z = capped(floorOver + (hungAt - floorOver) * (1 - u * u), h + bar / 2, w / 2 + bar / 2, floorOver)
 		else
 			-- landed on Strike, squashed flat on Shock, eaten where it lies; the floor's bars run out from its feet
 			local k = math.floor(f)

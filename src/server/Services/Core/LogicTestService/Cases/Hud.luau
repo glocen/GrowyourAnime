@@ -40,6 +40,8 @@ return {
 			t.Check("a hidden part stays hidden", near(Hud.Faded(1, 0.25), 1))
 			t.Check("whole, a part keeps its own", near(Hud.Faded(0.3, 1), 0.3))
 			t.Check("the keeper's hat and lantern are the parts watched", table.find(see.Parts.Lamplighter, "Lamplighter_Head") ~= nil and table.find(see.Parts.Lamplighter, "Lamplighter_Lantern") ~= nil)
+			-- TR7, research's call on the hang (a): the effects' pieces it watches too, by a tag (your lead's hanging square)
+			t.Check("an effect's watched pieces carry a tag", type(see.Tag) == "string" and #see.Tag > 0, tostring(see.Tag))
 		end,
 	},
 	{

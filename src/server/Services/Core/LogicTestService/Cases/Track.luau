@@ -245,6 +245,9 @@ return {
 			t.Check("gone 3 frames after, before it lies flat", near(Track.Value(art.Charge, 3), 1) and 3 <= #s.Squash)
 			t.Check("the hang tightens on a known ease", Track.Known(s.Tighten))
 			t.Check("formed loose: over its side, its top edge held as it tightens", s.Forms > 1 and s.FormBar < s.Bar)
+			-- TR7, research's call on the hang (c): kept a margin under the top bar's foot, never touching it
+			t.Check("kept under the top bar by a margin", s.Under > 0 and s.Under <= 40, tostring(s.Under))
+			t.Check("never capped over the keeper (the content check's block, (d))", s.Uncapped.Keeper == true)
 		end,
 	},
 }

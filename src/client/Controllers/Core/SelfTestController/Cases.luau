@@ -3,6 +3,7 @@
 -- the `t` API (SelfTestController, type Test). Manual = true keeps a case out of a full run; Stay = true skips the reset to
 -- the pad. Expected values come from Config or the instances themselves, never typed twice. One case, one behaviour.
 
+local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -408,6 +409,22 @@ local function myLead(): Model?
 		end
 	end
 	return nil
+end
+
+-- The highest pixel row any of `parts` reaches on screen (the smallest viewport Y over their boxes' eight corners).
+local function topOnScreen(parts: { BasePart }): number
+	local camera = workspace.CurrentCamera
+	local highest = math.huge
+	for _, part in parts do
+		for _, x in { -1, 1 } do
+			for _, y in { -1, 1 } do
+				for _, z in { -1, 1 } do
+					highest = math.min(highest, camera:WorldToViewportPoint(part.CFrame * (part.Size / 2 * Vector3.new(x, y, z))).Y)
+				end
+			end
+		end
+	end
+	return highest
 end
 
 -- A Shade of `def` spawned SHADE_TOUGHER levels over the lead, watched for up to SHADE_WATCH seconds or three swings and
@@ -2221,10 +2238,43 @@ return {
 			local function on(got: Square, where: Vector3): number
 				return (got.Centre - where).Magnitude
 			end
+			-- TR7 (c): it never stands over the top bar's foot plus Under. Where that cap bites in this framing, its height
+			-- is lower than the Config's and its top edge sits on that line on screen, within 3 px.
+			local function atLine(): (boolean, string)
+				local edge = World.Ceiling()
+				if edge == nil then
+					return false, "no top bar"
+				end
+				local line = edge + s.Under * Layers.Scale()
+				local frame = shown("NL_StampPost")
+				for _, rail in shown("NL_StampRail") do
+					table.insert(frame, rail)
+				end
+				local highest = topOnScreen(frame)
+				return math.abs(highest - line) <= 1.5, string.format("capped: its top at %.1f px, the line at %.1f", highest, line)
+			end
+			-- ...but never held lower than Over, Clear above the head (Haymaker's content check, condition 1): there the
+			-- head's margin wins.
+			local function heightOk(got: number, want: number, within: number): (boolean, string)
+				if math.abs(got - want) < within then
+					return true, ""
+				end
+				if got < s.Over - 0.01 then
+					return false, "under its floor over the head"
+				end
+				if got < want then
+					if math.abs(got - s.Over) < 0.01 then
+						return true, "held at its floor over the head"
+					end
+					return atLine()
+				end
+				return false, ""
+			end
 			local before = square(-s.Rise - 1)
 			t.Check("nothing before it forms", before.Count == 0, `{before.Count} bars`)
 			local forms = square(-s.Rise + 0.5)
-			t.Check("it forms loose over the target's head", forms.Count == 4 and math.abs(forms.Wide - s.Side * s.Forms) < 0.1 * s.Side and math.abs(forms.Foot - s.Over) < 0.3, string.format("%d bars, %.2f wide, foot at %.2f", forms.Count, forms.Wide, forms.Foot))
+			local formsHigh, formsNote = heightOk(forms.Foot, s.Over, 0.3)
+			t.Check("it forms loose over the target's head", forms.Count == 4 and math.abs(forms.Wide - s.Side * s.Forms) < 0.1 * s.Side and formsHigh, string.format("%d bars, %.2f wide, foot at %.2f %s", forms.Count, forms.Wide, forms.Foot, formsNote))
 			-- its art (Stamp.Art): the kit's bar and plate in their looks, posts upright, glowing and charging on its keys
 			local art = s.Art
 			local function lookOf(p: BasePart?): string?
@@ -2243,7 +2293,8 @@ return {
 			local surface = if plate then plate:FindFirstChildOfClass("SurfaceAppearance") else nil
 			t.Check("glowing at its hang's Glow", surface ~= nil and math.abs(surface.EmissiveStrength - Track.Value(art.Glow, -s.Drop - 1)) < 1e-6)
 			t.Near("hung: drawn tight to its side", hung.Wide, s.Side, 0.01)
-			t.Near("at the top of its drop", hung.Foot, s.Top, 0.01)
+			local hungHigh, hungNote = heightOk(hung.Foot, s.Top, 0.01)
+			t.Check("at the top of its drop, or capped under the top bar", hungHigh, string.format("got %.2f, want %.2f %s", hung.Foot, s.Top, hungNote))
 			t.Check("over the target", on(hung, spot) < 0.05, string.format("%.3f studs off", on(hung, spot)))
 			t.Check("facing the camera", hung.Faces)
 			local held = square(-s.Drop - 2)
@@ -3306,6 +3357,147 @@ return {
 			t.Wait(shoulder.Hold * 0.4 + shoulder.Ease + 0.35)
 			t.Check("eased back once the hold is over", humanoid.CameraOffset.Magnitude < 0.15, tostring(humanoid.CameraOffset))
 			t.Check("its share at rest", Shoulder.Share() < 0.05, string.format("%.3f", Shoulder.Share()))
+		end,
+	},
+	{
+		-- TR7, research's call on the hang (2026-11-13): (a) the top band watches your own lead's hanging square
+		-- (Config.Hud.SeeThrough.Tag); (c) the square never stands over the top bar's foot (Stamp.Under, UI.World.Ceiling),
+		-- but never hangs lower than Clear over the target's head (Haymaker's content check, condition 1), and against
+		-- Stamp.Uncapped kinds it isn't capped at all (the content check's block of the keeper's still: (d) stands).
+		-- Its top tuned far too high, so the cap must hold it.
+		Name = "Haymaker: your lead's hanging square stays under the top bar, never down to the head, and the card goes see-through behind it",
+		Run = function(t: any)
+			local TOP_PATH = "Effects.Haymaker.Stamp.Top"
+			local TALL = 30
+			local action = Actions.ById.RookHaymaker
+			local s = EffectsConfig.Haymaker.Stamp
+			local tag = HudConfig.SeeThrough.Tag
+			local before = t.Server("Tune", TOP_PATH)
+			t.Server("Tune", TOP_PATH, TALL)
+			local ok, problem = pcall(function()
+				t.Server("Replay", action.Id, action.Length + 3)
+				local started = os.clock()
+				local hangFrames, tagged, untaggedRun, lowestCard = 0, true, true, 1
+				local over, lowestHang, overLine, atLine, atFloor = math.huge, math.huge, 0, 0, 0
+				local worst = ""
+				while os.clock() - started < action.Beats.Strike + 0.4 do
+					local lead = myLead()
+					local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+					local folder = workspace:FindFirstChild("NL_Effects")
+					local posts: { BasePart }, rails: { BasePart } = {}, {}
+					for _, part in (if folder then folder:GetChildren() else {}) do
+						if part:IsA("BasePart") and part.Transparency < 1 then
+							if part.Name == "NL_StampRun" then
+								untaggedRun = untaggedRun and not CollectionService:HasTag(part, tag)
+							elseif part.Name == "NL_StampPost" or part.Name == "NL_StampRail" or part.Name == "NL_StampPlate" then
+								tagged = tagged and CollectionService:HasTag(part, tag)
+								table.insert(if part.Name == "NL_StampPost" then posts elseif part.Name == "NL_StampRail" then rails else {}, part)
+							end
+						end
+					end
+					local floorY = if root then root.Position.Y - 3 else 0
+					local foot = if #rails == 2 then math.min(rails[1].Position.Y, rails[2].Position.Y) - floorY else 0
+					local edge = World.Ceiling()
+					if #posts == 2 and #rails == 2 and foot > 0.5 and edge then -- hung or falling, not lying on the floor
+						-- the hang is square (its post's length less its bar is its rail's), the drop stretched tall
+						local square = math.abs(posts[1].Size.X - posts[1].Size.Y - rails[1].Size.X) < 1e-4
+						if over == math.huge then
+							-- the replay's dummy, measured as the effect does: its top over the lead's floor, and Clear
+							for _, model in (workspace:FindFirstChild("Fighters") or workspace):GetChildren() do
+								if model:IsA("Model") and model:GetAttribute("Kind") == "Dummy" then
+									local box, extent = model:GetBoundingBox()
+									over = math.max(s.Over, box.Position.Y + extent.Y / 2 - floorY + s.Clear)
+								end
+							end
+						end
+						local line = edge + s.Under * Layers.Scale()
+						local frame = { posts[1], posts[2], rails[1], rails[2] }
+						local top = topOnScreen(frame)
+						local floored = square and math.abs(foot - over) < 0.01
+						if square then
+							hangFrames += 1
+							lowestHang = math.min(lowestHang, foot)
+							atLine += if math.abs(top - line) <= 1.5 then 1 else 0
+							atFloor += if floored then 1 else 0
+						end
+						-- on or under the margin's line, every corner of its boxes within a pixel and a half; over it only
+						-- while held at its floor over the head
+						if top < line - 1.5 and not floored then
+							overLine += 1
+							worst = string.format("its top at %.1f px, the line at %.1f, its foot at %.2f", top, line, foot)
+						end
+						lowestCard = math.min(lowestCard, HudController.SeeThrough().Target or 1)
+					end
+					RunService.RenderStepped:Wait()
+				end
+				t.Check("the square hung", hangFrames > 5, `{hangFrames} frames`)
+				t.Check("its posts, rails and plate are watched by the top band", tagged)
+				t.Check("its floor's runs aren't", untaggedRun)
+				t.Check("held by the cap, at the line or at its floor", atLine + atFloor > 0, `{atLine} frames at the line, {atFloor} at its floor`)
+				t.Check("its top never over the top bar's foot plus the margin, but at its floor over the head", overLine == 0, `{overLine} frames over: {worst}`)
+				t.Check("never hung lower than Clear over the target's head", lowestHang >= over - 0.01, string.format("lowest foot %.2f, its floor %.2f", lowestHang, over))
+				t.Check("the Target card went see-through behind it, no lower than its floor", lowestCard < 1 and lowestCard >= HudConfig.SeeThrough.Target - 1e-3, string.format("lowest %.2f", lowestCard))
+			end)
+			t.Server("Replay")
+			-- Uncapped: the same square stepped over a tall body, a Keeper and then an Ordinary, at the top of its hang.
+			local made: Instance? = nil
+			local ok2, problem2 = pcall(function()
+				local lead = myLead()
+				local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+				if lead == nil or root == nil then
+					t.Check("the lead is in the world", false)
+					return
+				end
+				local r = root :: BasePart
+				local floorY = r.Position.Y - 3
+				local ahead = Vector3.new(r.CFrame.LookVector.X, 0, r.CFrame.LookVector.Z).Unit
+				local body = Instance.new("Model")
+				body.Name = "NL_SelfTestTall"
+				made = body
+				local part = Instance.new("Part")
+				part.Anchored, part.CanCollide, part.CanQuery, part.Transparency = true, false, false, 1
+				part.Size = Vector3.new(4, 9, 4)
+				part.Position = Vector3.new(r.Position.X, floorY + 4.5, r.Position.Z) + ahead * 8
+				part.Parent = body
+				body.Parent = workspace
+				local function hungAt(kind: string): number
+					body:SetAttribute("Kind", kind)
+					local folder = workspace:FindFirstChild("NL_Effects")
+					local theirs: { [Instance]: boolean } = {}
+					for _, p in (if folder then folder:GetChildren() else {}) do
+						theirs[p] = true
+					end
+					local running = Effects.Haymaker(action.Beats, lead :: Model, function(): BasePart?
+						return part
+					end)
+					running.Step(action.Beats.Strike + (-s.Drop - 1) * FRAME)
+					local low = math.huge
+					folder = workspace:FindFirstChild("NL_Effects")
+					for _, p in (if folder then folder:GetChildren() else {}) do
+						if not theirs[p] and p:IsA("BasePart") and p.Name == "NL_StampRail" then
+							low = math.min(low, p.Position.Y - floorY)
+						end
+					end
+					running.Destroy()
+					return low
+				end
+				local tallOver = math.max(s.Over, 9 + s.Clear)
+				local free = tallOver + (TALL - s.Over)
+				local keeper = hungAt("Keeper")
+				t.Check("over a Keeper, uncapped: at the top of its drop", s.Uncapped.Keeper == true and math.abs(keeper - free) < 0.01, string.format("foot at %.2f, want %.2f", keeper, free))
+				local ordinary = hungAt("Ordinary")
+				t.Check("over an Ordinary as tall, capped, never under its floor", ordinary < free - 0.01 and ordinary >= tallOver - 0.01, string.format("foot at %.2f, its floor %.2f", ordinary, tallOver))
+			end)
+			if made then
+				(made :: Instance):Destroy()
+			end
+			t.Server("Tune", TOP_PATH, before)
+			if not ok then
+				error(problem, 0)
+			end
+			if not ok2 then
+				error(problem2, 0)
+			end
 		end,
 	},
 	{

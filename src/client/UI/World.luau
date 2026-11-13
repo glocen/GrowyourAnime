@@ -12,6 +12,7 @@
 --                                             the lead's head: research's pass on AR8 C, fix 1)
 --   World.Band(edge?, spans?, floor?)         the top band's lower edge, authored pixels from the screen's top; each piece's
 --   World.Edge()                              own span; the top bar's foot (the HUD's)
+--   World.Ceiling()                           that foot in the viewport's pixels: a shape in the world kept under it
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
 
@@ -63,6 +64,16 @@ end
 
 function World.Edge(): number?
 	return band
+end
+
+-- The top bar's foot in the viewport's pixels (Camera:ViewportPointToRay's), or nil before the HUD has set it: for a shape in
+-- the world that stays under it, B5's hanging square (TR7, research's call on the hang, (c), at the top bar's foot).
+function World.Ceiling(): number?
+	if floor == nil then
+		return nil
+	end
+	local world = Layers.Get("World")
+	return world.AbsolutePosition.Y + floor * Layers.Scale() + GuiService:GetGuiInset().Y
 end
 
 function World.Shift(frame: Frame, offset: Vector2)

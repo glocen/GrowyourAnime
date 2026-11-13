@@ -118,6 +118,14 @@ return {
 			-- Its foot at the top of the hang, where it falls from. On a phone at the replay's framing, the sheet's 10 and Modulo's
 			-- 8 cut its top off the frame (by 13 px at 8); at 6.4 it stands 28 px inside, under the top bar's buttons.
 			Top = 6.4,
+			-- Never over the top bar: its top edge stands at least Under authored pixels below the top bar's foot, measured
+			-- from the camera each frame (UI.World.Ceiling), while the Target card goes see-through behind it
+			-- (Config.Hud.SeeThrough.Tag; TR7, research's call on the hang, 2026-11-13, (a) and (c)). But the hang is never
+			-- held lower than Over, Clear above the target's head: there the head's margin wins over the top bar (Haymaker's
+			-- content check, condition 1). Against Uncapped kinds the cap is off, since capped it hung at the keeper's hat:
+			-- the content check blocked it, 2026-11-13, so research's (d) stands.
+			Under = 10,
+			Uncapped = { Keeper = true },
 			-- Its side's share as it forms, and its bar then: drawn tight to Side and Bar with the ram, on Tighten, slowly then
 			-- fast into the drop. Loose and over 1 its top edge stays level as it tightens and rises (fix 1, the hold builds;
 			-- Modulo's offer, AR8, "B5's polish and the square's art"; it was 0.65 on Quad Out).

@@ -10,6 +10,7 @@
 -- chip over it while a shard waits. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
 
+local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -543,7 +544,8 @@ local function band()
 	World.Band(lowest, spans, (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale)
 end
 
--- The top band goes see-through over a keeper (Config.Hud.SeeThrough; research's call on AR7's fix 4, option B): the
+-- The top band goes see-through over a keeper and over your own lead's hanging square (Config.Hud.SeeThrough; research's
+-- calls on AR7's fix 4, option B, and on TR7's hang, (a)): the
 -- screen boxes of the listed parts that show, in the HUD's pixels, then each piece eased toward its floor while one is under
 -- it, and back to whole once none has been for Hold. The lead's card stays whole: nothing tall stands on the left.
 local CORNERS = {
@@ -558,26 +560,32 @@ local function tallBoxes(): { Hud.Rect }
 		return boxes
 	end
 	local inset = GuiService:GetGuiInset()
+	local function add(part: Instance?)
+		if part and part:IsA("BasePart") and part.Transparency < 1 and part.LocalTransparencyModifier < 1 then
+			local box: Hud.Rect? = nil
+			for _, corner in CORNERS do
+				local at = camera:WorldToViewportPoint(part.CFrame * (part.Size / 2 * corner))
+				if at.Z > 0 then
+					local x, y = at.X - inset.X, at.Y - inset.Y
+					box = if box
+						then { Left = math.min(box.Left, x), Top = math.min(box.Top, y), Right = math.max(box.Right, x), Bottom = math.max(box.Bottom, y) }
+						else { Left = x, Top = y, Right = x, Bottom = y }
+				end
+			end
+			if box then
+				table.insert(boxes, box)
+			end
+		end
+	end
 	for _, model in fighters() do
 		local names = if model:IsA("Model") then HudConfig.SeeThrough.Parts[tostring(model:GetAttribute("Rig"))] else nil
 		for _, name in names or {} do
-			local part = model:FindFirstChild(name)
-			if part and part:IsA("BasePart") and part.Transparency < 1 and part.LocalTransparencyModifier < 1 then
-				local box: Hud.Rect? = nil
-				for _, corner in CORNERS do
-					local at = camera:WorldToViewportPoint(part.CFrame * (part.Size / 2 * corner))
-					if at.Z > 0 then
-						local x, y = at.X - inset.X, at.Y - inset.Y
-						box = if box
-							then { Left = math.min(box.Left, x), Top = math.min(box.Top, y), Right = math.max(box.Right, x), Bottom = math.max(box.Bottom, y) }
-							else { Left = x, Top = y, Right = x, Bottom = y }
-					end
-				end
-				if box then
-					table.insert(boxes, box)
-				end
-			end
+			add(model:FindFirstChild(name))
 		end
+	end
+	-- and the effects' pieces that stand where the band is: your own lead's hanging square (Config.Hud.SeeThrough.Tag)
+	for _, part in CollectionService:GetTagged(HudConfig.SeeThrough.Tag) do
+		add(part)
 	end
 	return boxes
 end

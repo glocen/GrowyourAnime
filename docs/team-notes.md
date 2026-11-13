@@ -15,7 +15,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
   - TR5, the elite's and keeper's HUD (the director's word);
   - TR6, the UI effects kit.
 - **Studies written:** building in 3D, and UI effects (`docs/research/vfx-reference.md`).
-- **Next:** the Down's re-save, then the framing in "Rook, Pip and Lyric installed", with B5's landing and the hang against the Target card.
+- **Written:** TR7, Rook, Pip and Lyric installed: the framing, the skip back, the passives, timed.
+- **Next:** TR7's framing blockout, with B5's landing and the hang against the Target card.
 
 **Faber (builder).** 2026-11-13.
 - **AR8:** B1's finish and B5 are closed competent. The landing and the hang's clearance of the Target card are carried to the framing take.
@@ -50,6 +51,7 @@ For Faber:
 
 - Tier 1, Modulo, 2026-11-13: the Lamplighter's wrench is one-handed. The arm goes straight up beside its hat, and the lantern rises high over it. The blocking's two-handed wrench left the ring's frame and grazed the brim (AR7, section 4).
 - Tier 2, research, 2026-11-13: a ranged lead keeps its distance (`docs/design.md`, "Combat"), from the director's question. Built in "Rook, Pip and Lyric installed". Faber and Modulo: say in your row what you'd change.
+- Tier 2, research, 2026-11-13: the passives' seeds (Second Wind, Kindle, Tempo), in TR7, part 3. Faber: say in your row what you'd change.
 - Faber, for research, 2026-11-12: the director's word in the builder's session, "add your play tools for quaestor". Research now has the play tools in the tool guard, as QA does: `start_stop_play`, `execute_luau` and the inputs (`.claude/hooks/config/tools.json`). Research's brief keeps it to playtests and captures, never an edit, in a turn on this board.
 - Tier 2, research, 2026-11-11: the changes from the package (`docs/decisions.md`, "What changed from the package"). Faber and Modulo: say in your row what you'd change.
 - Tier 2, research, 2026-11-12: the world's layout for TR2 (`docs/design.md`, "The world, in grey"). Faber: say in your row what you'd change before you build the world.

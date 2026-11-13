@@ -559,7 +559,54 @@ What the checks found:
 
 ## Next, not yet written
 
-In order, each written when the one before it closes: Rook, Pip and Lyric installed (with AR1 and AR4), with the ranged lead's skip back as its own action, through `/ga-action`, closing on its balance check (`docs/design.md`, "Combat"), and with the fight against a pack framed so the avatar's body never covers the lead and its target at phone size (research, AR8 A's pass, 2026-11-13); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.
+In order, each written when the one before it closes: Rook, Pip and Lyric installed (TR7, below); Lantern Row dressed (with AR5), with its night cycle: one clock for the server, dusk and night with a crossfade between them. Research's seed for its length, tier 2 and tuned by playing: a 20-minute cycle, 13 minutes of dusk, 5 of night and a minute's crossing each way; the Lamplighter as a real fight; Regalia.
+
+## TR7. Rook, Pip and Lyric installed (Faber, with AR1 and AR4)
+
+Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric finished and timed" (`docs/production-plan.md`). It comes first in the queue, before TR5 and TR6.
+
+**Feel line:** on a phone, in a pack fight on Lantern Row, each of the three fights in a way you can see. Rook plants and hammers. Pip skips back out of reach and lobs fire. Lyric keeps her distance and sings the pack back. The fight always sits clear of your own avatar, right of centre, so every landing reads.
+
+**The block contains,** in this order, each judged in motion at phone size before the next:
+1. **The framing,** in grey, from Faber's three variants. Each is judged in a pack fight and a keeper's try.
+   - **A. A shoulder camera in a fight:** an ease of about 2.5 studs right and 1 up while the lead is engaged.
+   - **B. Geometry only:** `Lead.Frame` 70 and `Keeper.Turn` 40.
+   - **C. The keeper holds the ring's middle,** plus A or B for packs.
+   - **The checks:**
+     - the avatar never covers the lead or its target;
+     - Haymaker's landing reads as the slam (AR8, B5's final);
+     - the hang clears the Target card;
+     - the pole's rock reads (AR7);
+     - the keeper's lantern and look down share a shot (AR8, the keeper's signature).
+   - **For A:** the ease is gentle, about 0.4 s. It eases back only after the fight has been over about 1.5 s, so a lead stepping in and out never makes the camera swim. It never takes the player's own drag of the camera.
+2. **The skip back,** for Pip and Lyric, through `/ga-action`, as designed in `docs/design.md`, "Combat". In the block, the body moves in a held pose. It closes on its balance check: ten runs with the skip and ten without, within 10%.
+3. **The three passives,** from `docs/roster.md`, each with a grey cue readable at phone size. These are seeds: tier 2, research's, tuned by playing, with Faber's view in his row.
+   - **Rook's Second Wind:** the first time he drops under 30% health in a fight, he gets a shield worth 20% of his maximum health for 6 s, once a fight. Its cue is a shell round him that cracks when it breaks.
+   - **Pip's Kindle:** every fourth basic hit, counted across combos, adds Fire damage worth 40% of that hit as its own coloured number. Its cue is the lantern flaring on the shot.
+   - **Lyric's Tempo:** after Held Note, the next hit of each ally, herself included, lands 40% harder. Its cue is a beat ring on the ally until that hit.
+   - The three must leave the balance check within 10% of each other's time to clear Lantern Row's first pack at their level. If one isn't, its passive's number moves, not its combo's.
+4. **Timed:** each lead plays its whole kit in real fights, not the replay: combo, signature on its cooldown, passive. Haymaker's hitstop and camera numbers get set by playing (B5's "Not done").
+
+**Waits:**
+- the skip clip for the robe set (Modulo's, at the shared finish);
+- the passives' art;
+- the states, Burn and Shock included (with the Lamplighter as a real fight);
+- Rook's evolution;
+- the finish pass on the signatures (`docs/polish-later.md`).
+
+**Verdicts:**
+- the framing's blockout;
+- the skip back's blockout (`/ga-action`);
+- the passives together;
+- the final, from QA's pack once QA has joined, else Faber's takes, with fresh eyes on the framing.
+
+**Order in the queue:** first. **Time, forecast:**
+- the framing, about 1 hour;
+- the skip back with its check, about 2;
+- the passives, about 1.5;
+- the timing, about 0.5.
+
+**Status:** requested, 2026-11-13. Faber's framing variants are in grey (tier 1).
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 

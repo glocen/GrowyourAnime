@@ -3327,6 +3327,48 @@ The ask: a bright interior with a darker, saturated edge and a bolder main shape
 
 **Delivered, 2026-11-13 (Modulo)** to `build/handoff/Lyric/fx/`: the three pictures, `lyric_note_art.json` and `lyric_note_art.png`, and `lyric_note_upload.png`, condition 3's sheet. It shows the three at full size over night, a bright sky and grey, then at 64 px a cell, then the touch alone at 64 px drawn three times over. The asset log has a row for each, naming the old id it retires on upload (condition 4). **Open:** Faber's uploads, then the pass in motion.
 
+### B5. Haymaker struck down: the block clip (Modulo, 2026-11-13)
+
+**The feel line, proposed (AR1, section 9), for research to sign:** "Through Rook's long hold a square of light hangs over the Shade, drawn tight, and as his blow comes down it slams straight onto it and stamps the floor at its feet, the Shade pinned where it stood."
+- **The hero shape:** the square, falling the same way as the ram, on the same frame.
+- **The levers:** anticipation in the hold (the ram cocked up, the piston creaking open); the snap from up to down in two frames, 55 to 57; then his weight on it at 63. The hitstop and the camera stay Faber's, on Strike.
+
+**Scope, fixed here.**
+- **The block:**
+  - the clip, `tools/blender/rook_haymaker_down.py`, exported as `Rook_Haymaker.json` under the delivered clip's name (RookHaymaker): the same length and markers (Charge 8, Strike 57, Shock 58, Step 63, Vent 70); only the hold and the blow change;
+  - the square as the grey stand-in from B5's stamp sheets, hung about 2 studs lower (its top touches the frame at 52 and 53), slammed on Strike;
+  - the pin (Faber; tier 2, since it takes Haymaker's push away).
+- **Waits:**
+  - the square's art, after the blockout's verdict, under section 9's four conditions;
+  - the final clip's polish;
+  - Faber's hitstop and camera numbers, tuned by playing.
+
+**The clip.**
+- 34: the ram goes up over his right shoulder, upright, while the taped arm marks the target.
+- 52: he holds it a beat too long, leaning back under it, the piston open.
+- 57: he drives it straight down into the floor about 3 studs in front of his right foot, hunched over it, with his left foot forward.
+- 63: his weight goes on it. He's back at rest by 120.
+
+**Checks, on the export:**
+- The audit passes: an arm into the body 0.041 (limit 0.05), the legs crossing 0.032, a leg out of the hip 0.024.
+- The ram stays clear of the body (0.00 at 56, a passing frame) and stops 0.30 over the floor at 59.
+- One leg sinks 0.62 into the hip at 57, past the rig's 0.6 warning (R6 has no knee). It's left for the block.
+
+**The read on the sheets.**
+- The silhouette flips from up to down in two frames, the strongest change in the clip.
+- On B5's stamp sheet, the square comes down on 57 the same way as the ram.
+- After 60 the push slides the target out, which is what the pin stops.
+- 34 and 52 are close: whether the hold builds or only waits is the blockout's question, in motion.
+- The evidence is in `build/scratch/modulo/rook/b5/`: `poses_Haymaker.png`, `pack_Haymaker.png`, `stamp_B5.png`, `stamp_side.png`, `stamp_headings_B5.png`.
+
+**No content check yet.** The block is Rook's delivered rig and ram, played unpublished in the replay. The final clip and the square's art get it before any upload, with section 9's conditions.
+
+**Time:** the block clip's runs, about 15 minutes measured (15:54 to 16:08), after the first poses earlier in the afternoon.
+
+**Asks:**
+- **Research:** sign the feel line and the scope, or correct them; then the verdict in the replay.
+- **Faber:** the replay with this clip in RookHaymaker's place, the grey square, and the pin.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra, Watt, Patch, Sable), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

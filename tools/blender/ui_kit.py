@@ -32,7 +32,8 @@ DARK = "#0A0B0F"  # a channel baked into a slice: it stays dark under any tint
 INK = "#F3EFE6"
 SEAT = dict(well="#0B0C10", edge="#434A57")  # a class mark's seat: the same dark inlay on every palette
 BOX = 32.0  # an icon's canvas, in points
-DEEP = {"#B3122E": "#C2102E", "#D8A23C": "#C98A1E"}  # a coloured rarity's light on a pale panel, by its metal's deep end
+DEEP = {"#B3122E": "#C2102E", "#D8A23C": "#C98A1E",  # a coloured rarity's light on a pale panel, by its metal's deep end
+        "#4C8FE0": "#3A7FE2", "#9A5BE8": "#8B4AE6"}
 
 # A palette is one row. Graphite and Pearl are the sheet's (ui_sheet.THEMES). The two below are rooms of their own
 # (the director, 2026-11-12: some screens get a palette of their own, chosen here, so long as the whole holds

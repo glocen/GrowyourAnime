@@ -48,17 +48,19 @@ THEMES = {
                         rim=2.0, seat=1.6, warm=(1.0, 0.7, 0.3)),
 }
 
-# A rarity is the frame's shape and its light, never a hue: the five hues belong to the types. Each step up adds one
-# thing seen at 64 px (research's fix 1): a hairline in dark iron; a thick band of bright steel; a point on top and
-# the first glow; points all four ways, white-hot; a crown of three in gold; a broken crown in red light (the director,
-# 2026-11-12: reddish, not a rainbow). Its red is deeper than the failed button's and it burns white at its core: the
-# glance strip stands it beside that button and the Strength gem.
+# A rarity is the frame's shape, its light and its hue. Each step up adds one thing seen at 64 px (research's fix 1):
+# a hairline in dark iron; a thick band in green; a point on top and the first glow, in blue; points all four ways,
+# white-hot, in purple; a crown of three in gold; a broken crown in red light (the director, 2026-11-12: reddish, not
+# a rainbow). Its red is deeper than the failed button's and it burns white at its core: the glance strip stands it
+# beside that button and the Strength gem. The green, blue and purple are the director's (2026-11-13, AR3 section 4:
+# Uncommon #7CF0A0, Rare #6FB6FF, Epic #D29CFF); the metals and lights below are the ones the reveal's frames wear.
+# Each type gem keeps its dark seat on every frame, so a gem on the frame of its own hue is still told by its shape.
 RARITIES = {
     "Common": dict(cut=(6, 0, 6, 0), stroke=1.2, metal=("#666C78", "#444852")),
-    "Uncommon": dict(cut=(8, 4, 8, 4), stroke=3.2, metal=("#DCE2EC", "#939CAD"), inner=True),
-    "Rare": dict(cut=(10, 4, 10, 4), stroke=3.0, metal=("#F0F4FA", "#A7B1C2"), glow=("#DCE9FF", 6.0, 0.5),
+    "Uncommon": dict(cut=(8, 4, 8, 4), stroke=3.2, metal=("#D2FFE0", "#4FBF7A"), inner=True),
+    "Rare": dict(cut=(10, 4, 10, 4), stroke=3.0, metal=("#DDEEFF", "#4C8FE0"), glow=("#6FB6FF", 6.0, 0.6),
                  crest=((0.5, 9, 10),)),
-    "Epic": dict(cut=(11, 5, 11, 5), stroke=3.2, metal=("#FFFFFF", "#BCC6D8"), hot=True, glow=("#EEF4FF", 10.0, 0.78),
+    "Epic": dict(cut=(11, 5, 11, 5), stroke=3.2, metal=("#F3E2FF", "#9A5BE8"), hot=True, glow=("#C98CFF", 10.0, 0.8),
                  crest=((0.5, 9, 13),), base=((0.5, 8, 10),), wing=7, shards=1),
     "Legendary": dict(cut=(12, 5, 12, 5), stroke=3.5, metal=("#FFEDB0", "#D8A23C"), hot=True, glow=("#FFD777", 11.0, 0.75),
                       crest=((0.24, 6, 8), (0.5, 9, 16), (0.76, 6, 8)), base=((0.5, 8, 9),), wing=6, shards=2),

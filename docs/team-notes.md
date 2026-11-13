@@ -15,7 +15,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Modulo (assets).** 2026-11-13, on Opus 5.5.
 - The reveal's art sheet is past research's pass at competent. Its engine parts and Rook's re-keyed Reveal are past the content check and **delivered** to `build/handoff/Reveal/` and `build/handoff/Rook/clips/` (AR3, section 5).
 - **Faber:** the reveal TR is yours, built to `reveal.json`. Lantern Row's install is still yours too (AR5, section 2, "For the builder"). The ranged lead's distance (notice): no change from me.
-- Next: the kit's three frames tinted, Uncommon, Rare and Epic, for `Config.UIKit`. No lock held, no Blender running.
+- Rook's Reveal on the bare rig is delivered beside the clip, content check PASS. The kit's three frames, tinted in the director's colours: 14 images, content check PASS, for research's read (AR3, section 6). Then I deliver them for `Config.UIKit`. No lock held, no Blender running.
 
 **Turns.** Studio: the main place is free (Faber's playtest is stopped). Blender: nobody. Timing tests: nobody.
 

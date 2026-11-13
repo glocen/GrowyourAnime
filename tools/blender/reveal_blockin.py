@@ -269,14 +269,10 @@ def rays(x, y, cx, cy, count, turn, reach):
 # --- the rarities -----------------------------------------------------------------------------------------------------
 
 SHARD_LIGHT = "#C9B8FF"  # the shard's own light: pale violet, the same in every shard, before it tells anything
-# The director, 2026-11-13: "i believe uncommon should be green, rare should be blue, epic should be purple". The kit's
-# ladder (ui_sheet.RARITIES) was a shape and a light, never a hue; the reveal's block-in takes the director's hues on the
-# same shapes. The kit's frames aren't changed here.
+# The director, 2026-11-13: "i believe uncommon should be green, rare should be blue, epic should be purple". The
+# block-in drew those hues first; the kit's ladder (ui_sheet.RARITIES) wears them now, and this reads it.
 HUES = {"Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777", "Mythical": "#FF2848"}
 RARITIES = {name: dict(r) for name, r in ui.RARITIES.items()}
-RARITIES["Uncommon"].update(metal=("#D2FFE0", "#4FBF7A"))
-RARITIES["Rare"].update(metal=("#DDEEFF", "#4C8FE0"), glow=("#6FB6FF", 6.0, 0.6))
-RARITIES["Epic"].update(metal=("#F3E2FF", "#9A5BE8"), glow=("#C98CFF", 10.0, 0.8))
 LIGHT = {  # a rarity's light: its colour, how strong, how far the window glows (points), its rays, its core
     "Common": dict(colour="#A9AFBD", level=0.42, halo=10.0, rays=0, core=0.0),
     "Uncommon": dict(colour=HUES["Uncommon"], level=0.6, halo=16.0, rays=0, core=0.15),

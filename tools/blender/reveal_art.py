@@ -712,18 +712,14 @@ def distance(one, two):
 
 
 def tinted_kit():
-    """The kit's slices with the director's hues on Uncommon, Rare and Epic: the metals the reveal's frames wear, which
-    the kit's own tinting (the next piece) takes."""
+    """The kit's slices, its frames in the director's hues on Uncommon, Rare and Epic (ui_sheet.RARITIES)."""
     import ui_kit as kit
-    saved = dict(ui.RARITIES)
-    ui.RARITIES.update({k: rb.RARITIES[k] for k in ("Uncommon", "Rare", "Epic")})
     kit.IMAGES.clear()
     ui.K = kit.K
     kit.panels()
     kit.buttons()
     kit.frames()
     kit.icons()
-    ui.RARITIES.update(saved)
     return kit
 
 

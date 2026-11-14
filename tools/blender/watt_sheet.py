@@ -379,7 +379,7 @@ VISOR = {"square": True, "stood": True, "leant": True, "wire": False}
 
 GAME, FRONT = rs.GAME, ps.FRONT
 PAPER, NIGHT, DAY, DUSK = rs.PAPER, rs.NIGHT, rs.DAY, ps.DUSK
-PX, F64 = ks.PX, ks.F64
+RUN_PX = ks.PX  # pixels a stud in this run's renders; a draft halves it (ks.F64 follows, so the 64 px block holds)
 
 
 def posed(scene, pose):
@@ -411,13 +411,13 @@ def takes(wanted, ghosted=()):
             if close:
                 out[pose, view] = rs.trim(ks.render(scene, view, azimuth, elevation, *close))
                 continue
-            shot = ks.render(scene, view, azimuth, elevation, centre, span)
+            shot = ks.render(scene, view, azimuth, elevation, centre, span, RUN_PX)
             if (pose, view) in ghosted:
                 for o in ghosts:
                     o.hide_render = False
                 for o in body:
                     o.hide_render = True
-                shade = ks.faded(ks.render(scene, view, azimuth, elevation, centre, span), 0.5)
+                shade = ks.faded(ks.render(scene, view, azimuth, elevation, centre, span, RUN_PX), 0.5)
                 for o in body:
                     o.hide_render = False
                 out[pose, view, "ghost"] = rs.trim(ks.over(shot, shade))
@@ -459,16 +459,17 @@ def check():
     print(f"Storm {hue(PALETTE['Storm']):.0f} deg of hue, Kirra's Sky {hue(SKY):.0f}: {abs(hue(PALETTE['Storm']) - hue(SKY)):.0f} apart")
 
 
-def sheet(small):
-    close = (Vector((0, -0.45, 4.45)), 3.9, 2 * PX)  # the head, the visor and the coils, at twice the scale
-    wanted = {"square": {"front": (180, 0), "back": (0, 0), "close front": (156, 6, *close), "close back": (24, 14, *close)},
-              "stood": {"front": FRONT, "game": GAME, "flat": (180, 0)},
-              "leant": {"front": FRONT, "game": GAME},
-              "wire": {"met": (165, 6), "side": (90, 3), "game": GAME},
-              "rook": {"front": FRONT, "game": GAME}}
-    s = takes(wanted, ghosted={("wire", "side"), ("wire", "game")})
+def wanted_views():
+    close = (Vector((0, -0.45, 4.45)), 3.9, 2 * RUN_PX)  # the head, the visor and the coils, at twice the scale
+    return {"square": {"front": (180, 0), "back": (0, 0), "close front": (156, 6, *close), "close back": (24, 14, *close)},
+            "stood": {"front": FRONT, "game": GAME, "flat": (180, 0)},
+            "leant": {"front": FRONT, "game": GAME},
+            "wire": {"met": (165, 6), "side": (90, 3), "game": GAME},
+            "rook": {"front": FRONT, "game": GAME}}
 
-    # the numbers first
+
+def measures(s):
+    """The numbers, printed: sizes, triangles, and each take's outline against Rook's at 64 px."""
     print(f"square {s['square', 'size']} studs, top {s['square', 'top']}; stood {s['stood', 'size']}; leant {s['leant', 'size']}, "
           f"{s['leant', 'wrench']}; wire {s['wire', 'size']}")
     print(f"tris: square {s['tris', 'square']}, wire {s['tris', 'wire']}")
@@ -481,6 +482,37 @@ def sheet(small):
                   f"Rook {rook.shape[1]}x{rook.shape[0]} px, cover {rook.mean():.2f}; overlap {measured[take, view]:.2f}")
     apart = abs(hue(PALETTE["Storm"]) - hue(SKY))
     print(f"Storm and Kirra's Sky: {apart:.0f} degrees of hue apart")
+    return measured, apart
+
+
+def draft():
+    """The takes at half the pixels a stud, their numbers, and one plain strip of pictures, no text: to judge the look
+    while memory is short. The 64 px measures hold, as the block shrinks to the same 64 px."""
+    s = takes(wanted_views(), ghosted={("wire", "game")})
+    measures(s)
+    page = rs.canvas(2400, 1500, PAPER)
+    labels = []
+    ks.fit_row(page, labels, [(rs.black(s["stood", "flat"]), ""), (s["square", "front"], ""), (s["square", "back"], ""),
+                              (s["stood", "front"], ""), (s["stood", "game"], ""), (s["leant", "front"], ""), (s["leant", "game"], ""),
+                              (s["rook", "game"], "")], 30, 2370, 560, 520, PAPER, gap=30)
+    ks.fit_row(page, labels, [(s["square", "close front"], ""), (s["square", "close back"], ""), (s["wire", "met"], ""),
+                              (s["wire", "side"], ""), (s["wire", "game", "ghost"], "")], 30, 1700, 1180, 560, PAPER, gap=30)
+    keys = [("stood", "game"), ("stood", "front"), ("leant", "game"), ("leant", "front"), ("wire", "game"), ("wire", "met"),
+            ("rook", "game"), ("rook", "front")]
+    x, y = 1740, 640
+    for row, ground in enumerate((NIGHT, DUSK, DAY)):
+        rs.fill(page, x, y + row * 96, 640, 92, ground)
+        cx = x + 8
+        for key in keys:
+            q = rs.shrink(rs.trim(s[key]), ks.F64)
+            rs.stand(page, q, cx, y + row * 96 + 88, q.shape[1])
+            cx += q.shape[1] + 12
+    rs.save(page, OUT / "watt_draft.png")
+
+
+def sheet(small):
+    s = takes(wanted_views(), ghosted={("wire", "side"), ("wire", "game")})
+    measured, apart = measures(s)
 
     W, H = 1920, 1920
     page = rs.canvas(W, H, PAPER)
@@ -548,7 +580,7 @@ def sheet(small):
     x0, y0 = 620, 1410
     keys = [("stood", "game"), ("stood", "front"), ("leant", "game"), ("leant", "front"), ("wire", "game"), ("wire", "met"),
             ("rook", "game"), ("rook", "front")]
-    small_shots = [rs.shrink(rs.trim(s[key]), F64) for key in keys]
+    small_shots = [rs.shrink(rs.trim(s[key]), ks.F64) for key in keys]
     widths = [q.shape[1] + 10 for q in small_shots]
     widths[5] += 26  # a gap before Rook
     text += [(x0, y0, 19, "at 64 px over dark, Lantern Row's dusk, noon, and in black", soft),
@@ -581,5 +613,9 @@ if __name__ == "__main__":
     args = sys.argv[sys.argv.index("--") + 2:]
     if "check" in args:
         check()
+    elif "draft" in args:
+        RUN_PX = ks.PX // 2
+        ks.F64 = 64 / (5 * RUN_PX)
+        draft()
     else:
         sheet("small" in args)

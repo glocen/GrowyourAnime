@@ -33,6 +33,10 @@ local LightingConfig = require(Shared.Config.Lighting)
 local Parts = require(Shared.Util.Parts)
 local CameraTurn = require(Shared.Util.CameraTurn)
 local Drops = require(Shared.Rules.Drops)
+local Odds = require(Shared.Rules.Odds)
+local Breaker = require(Shared.Rules.Breaker)
+local Profile = require(Shared.Data.Profile)
+local ShardConfig = require(Shared.Config.Shards)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Rarity = require(Shared.Definitions.Rarity)
@@ -58,6 +62,7 @@ local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
+local BreakerScreen = require(UI.BreakerScreen)
 local World = require(UI.World)
 local Read = require(UI.Read)
 local RingLooks = require(UI.RingLooks)
@@ -204,6 +209,96 @@ local function readyCount(def: string): number
 		count += if work.Def == def then 1 else 0
 	end
 	return count
+end
+
+-- Opens the shards of `def` ready beyond `keep`, the oldest first: a case leaves the Breaker as it found it.
+local function openReadyDown(t: any, def: string, keep: number)
+	while readyCount(def) > keep do
+		local current = ProfileController.Get()
+		local at = 0
+		for index, work in (if current then current.Base.Ready else {}) do
+			if at == 0 and work.Def == def then
+				at = index
+			end
+		end
+		local count = readyCount(def)
+		if ProfileController.Act("Open", { Index = at }).Ok ~= true then
+			break
+		end
+		waitFor(t, ANSWER, function(): boolean
+			return readyCount(def) < count
+		end)
+	end
+end
+
+-- A piece of the open Breaker screen, by name at any depth under its body, or nil.
+local function breakerPart(name: string): Instance?
+	local frame = Screen.Frame(BreakerScreen.Name)
+	local body = frame and frame:FindFirstChild("Body")
+	return body and body:FindFirstChild(name, true)
+end
+
+-- A label's text on the open Breaker screen: the label `label` under the piece `name`, or "".
+local function breakerText(name: string, label: string): string
+	local piece = breakerPart(name)
+	local found = piece and piece:FindFirstChild(label, true)
+	return if found and found:IsA("TextLabel") then found.Text else ""
+end
+
+-- A shard kind in the bag as the Breaker's screen names it: its place among the bag's kinds, by id.
+local function bagItem(def: string): BreakerScreen.Selection?
+	local view = ProfileController.Get()
+	local ids: { string } = {}
+	for id, count in (if view then view.Bag.Shards else {}) do
+		if count > 0 then
+			table.insert(ids, id)
+		end
+	end
+	table.sort(ids)
+	local index = table.find(ids, def)
+	return if index then { Kind = "Bag", Index = index, Def = def } else nil
+end
+
+-- The work of a shard the Breaker's screen has chosen, in the save's copy, or nil.
+local function chosenWork(item: BreakerScreen.Selection?): Profile.ShardWork?
+	local view = ProfileController.Get()
+	if view == nil or item == nil then
+		return nil
+	elseif item.Kind == "Chamber" then
+		local chamber = view.Base.Chambers[item.Index]
+		return if chamber then chamber.Work else nil
+	elseif item.Kind == "Line" then
+		return view.Base.Line[item.Index]
+	elseif item.Kind == "Ready" then
+		return view.Base.Ready[item.Index]
+	end
+	return nil
+end
+
+-- The Breaker screen's infusion button at `level`, and why it's off: "" when it takes a press.
+local function infuseButton(level: number): (TextButton?, string)
+	local found = breakerPart(`Infuse{level}`)
+	local button = if found and found:IsA("TextButton") then found else nil
+	return button, if button then tostring(button:GetAttribute("Disabled") or "") else "no button"
+end
+
+-- A chance as the Breaker's screen writes it, and the rarest tier of a shard's odds at `luck` with its whole share.
+local function percentOf(chance: number): string
+	local p = chance * 100
+	if chance > 0 and p < 0.01 then
+		return "<0.01%"
+	end
+	return if p < 1 then string.format("%.2f%%", p) else string.format("%.1f%%", p)
+end
+local function rarestShare(def: string, luck: number): (string, number)
+	local entries = Odds.Table(def, luck)
+	local last = entries[#entries]
+	local tier = if last then Voidkin.ById[last.Id].Rarity else ""
+	local share = 0
+	for _, entry in entries do
+		share += if Voidkin.ById[entry.Id].Rarity == tier then entry.Chance else 0
+	end
+	return tier, share
 end
 
 -- Rook's reveal at `rarity`, on his body, as the NL_RevealTest bridge's Show plays it: display only, nothing owned.
@@ -4635,6 +4730,38 @@ return {
 		end,
 	},
 	{
+		Name = "Kit: a screen opened again, as its owner rebuilds it, keeps its panel and refills in place, with no second entrance",
+		Run = function(t: any)
+			-- TR9: the Breaker's screen rebuilds on every tap and every change of the save, so a rebuild mustn't flash.
+			local motion = HudConfig.Motion.Screen
+			Screen.Close()
+			t.Wait(motion.Exit + 0.05)
+			local body = Screen.Open("SelfTestScreen", "Self-test", Vector2.new(300, 200))
+			local old = Instance.new("Frame")
+			old.Name = "Old"
+			old.Parent = body
+			t.Wait(motion.Enter + 0.1)
+			local frame = Screen.Frame("SelfTestScreen")
+			local closed = 0
+			local watch = Screen.Closed:Connect(function()
+				closed += 1
+			end)
+			local again = Screen.Open("SelfTestScreen", "Self-test, again", Vector2.new(320, 200))
+			watch:Disconnect()
+			local stage = Screen.Stage("SelfTestScreen")
+			local title = frame and frame:FindFirstChild("Title") :: TextLabel?
+			t.Check("the same panel and body", frame ~= nil and Screen.Frame("SelfTestScreen") == frame and again == body)
+			t.Check("its body emptied for its owner", body:FindFirstChild("Old") == nil and #body:GetChildren() == 0, `{#body:GetChildren()} left`)
+			t.Check("its title the new one", title ~= nil and title.Text == "Self-test, again", if title then title.Text else "none")
+			t.Check("its size the new one", frame ~= nil and frame.Size.X.Offset == 320, if frame then tostring(frame.Size) else "none")
+			t.Check("no second entrance", stage ~= nil and stage.GroupTransparency == 0, if stage then string.format("%.2f see-through", stage.GroupTransparency) else "no stage")
+			t.Check("nothing closed", closed == 0 and Screen.Current() == "SelfTestScreen")
+			Screen.Open("SelfTestScreenOther", "Self-test, other", Vector2.new(300, 200))
+			t.Check("another screen still takes its place", Screen.Current() == "SelfTestScreenOther" and Screen.Frame("SelfTestScreen") == nil)
+			Screen.Close()
+		end,
+	},
+	{
 		Name = "Kit: a toast slides in from the right edge, eased out, and leaves that way, eased in",
 		Run = function(t: any)
 			-- AR8 C, part 2 (rule 4). Shown past the stack's room, so the oldest is pushed out and leaves at once.
@@ -6262,6 +6389,279 @@ return {
 					break
 				end
 			end
+		end,
+	},
+	{
+		Name = "Breaker: with nothing ready its prompt opens its own screen, and each layout shows the chambers, what waits and the chosen shard's odds, rarest first",
+		Run = function(t: any)
+			-- TR9's grey screen in its three layouts (Config.Hud.Breaker.Layout), at this screen's scale and the smallest
+			-- phone's: the chambers as they stand, what's ready, waiting and in the bag, and one tap to a shard's odds.
+			local view = ProfileController.Get()
+			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+			if view == nil or view.Progress.Starter == "" then
+				return
+			end
+			local shard = "lanternrow_standard"
+			local held = view.Bag.Shards[shard] or 0
+			t.Server("BaseGive", shard, 2)
+			t.Check("the server gives two", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 2
+			end))
+			t.Check("one goes into the Breaker, one stays in the bag", ProfileController.Act("AddShard", { Shard = shard }).Ok == true)
+			t.Check("the save shows it", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 1
+			end))
+			Screen.Close()
+			local ready = #(ProfileController.Get() :: Profile.View).Base.Ready
+			BaseController.PressBreaker()
+			if ready == 0 then
+				t.Check("its prompt, with nothing ready, opens the Breaker's screen", Screen.Current() == BreakerScreen.Name, tostring(Screen.Current()))
+			else
+				t.Check(`its prompt, with {ready} ready, opens the oldest`, waitFor(t, ANSWER, function(): boolean
+					return BaseController.Revealed() ~= nil
+				end))
+				BaseController.Dismiss()
+				BaseController.OpenBreaker()
+			end
+			local before = readyCount(shard) -- the one put in is still breaking
+			local first = BreakerScreen.Selected()
+			t.Check("it opens on a chamber's shard", first ~= nil and first.Kind == "Chamber", if first then `{first.Kind} {first.Index}` else "none")
+			local layout = HudConfig.Breaker.Layout
+			local function built(name: string): boolean
+				if name == "List" then
+					return breakerPart("Shards") ~= nil
+				elseif name == "Sheet" then
+					return breakerPart("Chambers") ~= nil and breakerPart("Machine") == nil
+				end
+				return breakerPart("Machine") ~= nil
+			end
+			-- The chosen shard's pane: its name, and every chance as the server rolls it, rarest first.
+			local function oddsShown(where: string)
+				local item = BreakerScreen.Selected()
+				local title = breakerText("Odds", "Title")
+				t.Check(`{where}: the pane names the chosen shard`, item ~= nil and string.find(title, Read.ShardName(item.Def), 1, true) ~= nil, title)
+				local list = breakerPart("Chances")
+				local work = chosenWork(item)
+				local entries = if item then Odds.Table(item.Def, if work then work.Luck else 0) else {}
+				local off: { string } = {}
+				for index, entry in entries do
+					local line = list and list:FindFirstChild(entry.Id)
+					local chance = line and line:FindFirstChild("Chance") :: TextLabel?
+					if line == nil or chance == nil or not line:IsA("GuiObject") then
+						table.insert(off, `{entry.Id} missing`)
+					elseif chance.Text ~= percentOf(entry.Chance) or line.LayoutOrder ~= #entries - index + 1 then
+						table.insert(off, `{entry.Id}: {chance.Text} at {line.LayoutOrder}`)
+					end
+				end
+				t.Check(`{where}: every chance as the server rolls it, rarest first`, #entries > 0 and #off == 0, off[1] or `{#entries} chances`)
+			end
+			-- The chambers as they stand, up to the most a Breaker has, and the bag's shard on the strip.
+			local function machineShown(where: string)
+				local now = ProfileController.Get() :: Profile.View
+				local row = breakerPart("Chambers")
+				local most = math.max(BaseConfig.Breaker.MostChambers, #now.Base.Chambers)
+				local wrong: { string } = {}
+				for index = 1, most do
+					local cell = row and row:FindFirstChild(`Chamber{index}`)
+					local label = cell and cell:FindFirstChild("Name") :: TextLabel?
+					local left = cell and cell:FindFirstChild("Left") :: TextLabel?
+					local chamber = now.Base.Chambers[index]
+					local want = if chamber == nil then "Locked" elseif chamber.Work == nil then "Empty" else nil
+					if cell == nil or label == nil then
+						table.insert(wrong, `chamber {index} missing`)
+					elseif want and label.Text ~= want then
+						table.insert(wrong, `chamber {index} says {label.Text}, not {want}`)
+					elseif want == nil and (cell:FindFirstChild("Crack") == nil or left == nil or string.find(left.Text, " left$") == nil) then
+						table.insert(wrong, `chamber {index} lacks its crack or its time`)
+					end
+				end
+				t.Check(`{where}: each chamber as it stands, up to {most}, the rest locked`, #wrong == 0, wrong[1])
+				local bag = bagItem(shard)
+				local detail = if bag then breakerText(`Bag{bag.Index}`, "Detail") else ""
+				t.Check(`{where}: the bag's shard on the strip, with its count`, string.find(detail, "^In the bag · ") ~= nil, detail)
+			end
+			for _, name in { "Machine", "List", "Sheet" } do
+				t.Server("Tune", "Hud.Breaker.Layout", name)
+				t.Check(`{name}: built`, waitFor(t, 2, function(): boolean
+					return HudConfig.Breaker.Layout == name and built(name)
+				end))
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
+				if name == "List" then
+					local now = ProfileController.Get() :: Profile.View
+					local shards = #now.Base.Ready + #now.Base.Line
+					for _, chamber in now.Base.Chambers do
+						shards += if chamber.Work then 1 else 0
+					end
+					for _, count in now.Bag.Shards do
+						shards += if count > 0 then 1 else 0
+					end
+					local rows = 0
+					for _, child in (breakerPart("Shards") :: Instance):GetChildren() do
+						rows += if string.find(child.Name, "^%a+%d+$") then 1 else 0
+					end
+					t.Check("List: a row for every shard and every kind in the bag", rows == shards, `{rows} rows, {shards} shards`)
+					oddsShown("List")
+					local bag = bagItem(shard)
+					local odds = bag and screenButton(BreakerScreen.Name, "Shards", `Bag{bag.Index}`)
+					t.Check("List: a row's Odds chooses its shard", odds ~= nil and Button.Press(odds) and waitFor(t, 1, function(): boolean
+						local item = BreakerScreen.Selected()
+						return item ~= nil and item.Kind == "Bag" and item.Def == shard
+					end))
+					oddsShown("List, the bag's shard")
+				else
+					machineShown(name)
+					if name == "Sheet" then
+						t.Check("Sheet: no odds before a tap", breakerPart("Odds") == nil)
+						BreakerScreen.Select(first)
+						t.Check("Sheet: a tap on a shard brings its odds over the machine", breakerPart("Odds") ~= nil)
+					end
+					oddsShown(name)
+				end
+				for _, at in { { Name = "this screen", Scale = nil }, { Name = "the smallest phone", Scale = Theme.Scale.Floor } } do
+					Layers.Force(at.Scale)
+					t.Wait(0.1) -- laid out again
+					lintClean(t, `{name}, at {at.Name}'s scale`)
+				end
+				Layers.Force(nil)
+				if name == "Sheet" then
+					local back = breakerPart("Back")
+					t.Check("Sheet: Back takes the odds away", back ~= nil and back:IsA("TextButton") and Button.Press(back) and waitFor(t, 1, function(): boolean
+						return breakerPart("Odds") == nil
+					end))
+				end
+			end
+			t.Server("Tune", "Hud.Breaker.Layout", layout)
+			Screen.Close()
+			-- Leaves the Breaker as it found it: the bag's shard taken back, the one put in broken and opened.
+			t.Server("BaseGive", shard, -1)
+			t.Server("BaseSkip", SKIP_ALL)
+			waitFor(t, ANSWER, function(): boolean
+				return readyCount(shard) > before
+			end)
+			openReadyDown(t, shard, before)
+		end,
+	},
+	{
+		Name = "Breaker: infusion shows its price and what it does to the rarest tier, says why when it can't, and spends once",
+		Run = function(t: any)
+			-- TR9 (docs/design.md, "Infusion"; Rules.Base.Infuse): a little or a lot, each with its Electricity price.
+			local view = ProfileController.Get()
+			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+			if view == nil or view.Progress.Starter == "" then
+				return
+			end
+			local shard = "lanternrow_standard"
+			local battery = view.Base.Battery
+			local held = view.Bag.Shards[shard] or 0
+			local heldWatt = view.Bag.Shards.named_watt or 0
+			local before = readyCount(shard)
+			local capacity = BaseConfig.Battery.Capacity
+			local layout = HudConfig.Breaker.Layout
+			t.Server("Tune", "Hud.Breaker.Layout", "Machine")
+			t.Server("BaseGive", shard, 1)
+			t.Server("BaseGive", "named_watt", 1)
+			t.Check("the server gives a shard and Watt's", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 1 and (now.Bag.Shards.named_watt or 0) == heldWatt + 1
+			end))
+			Screen.Close()
+			BaseController.OpenBreaker()
+			-- Watt's shard holds him alone: no odds to lift.
+			BreakerScreen.Select(bagItem("named_watt"))
+			local _, why = infuseButton(1)
+			t.Check("a Named shard can't be infused, and says why", why == "Holds one Voidkin", why)
+			t.Check("and says so under the button", breakerText("Odds", "Effect1") == "No odds to lift", breakerText("Odds", "Effect1"))
+			-- A shard in the bag: in first, and the screen keeps it chosen where it lands.
+			BreakerScreen.Select(bagItem(shard))
+			_, why = infuseButton(1)
+			t.Check("a shard in the bag: put it in first", why == "Put it in first", why)
+			local action = breakerPart("Action")
+			local label = action and action:FindFirstChild("Label") :: TextLabel?
+			t.Check("its one thing to do: Put it in", label ~= nil and label.Text == "Put it in", if label then label.Text else "none")
+			t.Check("which takes a press", action ~= nil and action:IsA("TextButton") and Button.Press(action))
+			t.Check("it goes in, still chosen where it stands", waitFor(t, ANSWER, function(): boolean
+				local item = BreakerScreen.Selected()
+				local work = chosenWork(item)
+				return item ~= nil and (item.Kind == "Chamber" or item.Kind == "Line") and work ~= nil and work.Def == shard and work.Luck == 0
+			end))
+			local chosen = BreakerScreen.Selected() :: BreakerScreen.Selection
+			-- An empty battery: each level says what it needs, or that the battery can't hold it.
+			t.Server("BaseBattery", 0)
+			t.Check("the battery emptied", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and now.Base.Battery < ShardConfig.Infusion[1].Energy
+			end))
+			t.Wait(0.1) -- rebuilt from the save's copy
+			for index, level in ShardConfig.Infusion do
+				local button, off = infuseButton(index)
+				local want = if level.Energy > capacity then "More than the battery holds" else `Needs {Read.Number(level.Energy)}`
+				t.Check(`level {index}, the battery empty: "{want}"`, off == want, off)
+				local text = button and button:FindFirstChild("Label") :: TextLabel?
+				t.Check(`level {index}: its price on the button`, text ~= nil and string.find(text.Text, Read.Number(level.Energy), 1, true) ~= nil, if text then text.Text else "none")
+				local tier, low = rarestShare(shard, 0)
+				local _, high = rarestShare(shard, math.min(ShardConfig.LuckCap, level.Lift))
+				local effect = breakerText("Odds", `Effect{index}`)
+				t.Check(`level {index}: what it does to the rarest tier`, high > low and effect == `{tier} {percentOf(low)} → {percentOf(high)}`, effect)
+			end
+			-- A full battery: a little takes a press, and the server takes its price once.
+			local little = ShardConfig.Infusion[1]
+			t.Server("BaseBattery", capacity)
+			t.Check("a little can be pressed with the battery full", waitFor(t, ANSWER, function(): boolean
+				local _, off = infuseButton(1)
+				return off == ""
+			end))
+			local button = infuseButton(1)
+			t.Check("and is pressed", button ~= nil and Button.Press(button))
+			local slack = Breaker.Production(ProfileController.Get() :: any) * (ANSWER + 1) + 1e-3
+			t.Check("the server takes its price and lifts the shard", waitFor(t, ANSWER, function(): boolean
+				local work = chosenWork(chosen)
+				local now = ProfileController.Get()
+				return work ~= nil and math.abs(work.Luck - little.Lift) < 1e-6 and now ~= nil and now.Base.Battery <= capacity - little.Energy + slack
+			end))
+			t.Check("the screen says it's infused", waitFor(t, 1, function(): boolean
+				local _, off = infuseButton(1)
+				return off == "Infused" and string.find(breakerText("Odds", "Place"), "infused, a little", 1, true) ~= nil
+			end), breakerText("Odds", "Place"))
+			local again, off = infuseButton(#ShardConfig.Infusion)
+			t.Check("and takes no second infusion", off == "Infused" and again ~= nil and not Button.Press(again), off)
+			local entries = Odds.Table(shard, little.Lift)
+			local last = entries[#entries]
+			local chance = if last then breakerText(last.Id, "Chance") else ""
+			t.Check("its odds show the lift", last ~= nil and chance == percentOf(last.Chance), chance)
+			if chosen.Kind == "Chamber" then
+				t.Check("its chamber says so, by the level put in", breakerText(`Chamber{chosen.Index}`, "Infused") == "Infused, a little", breakerText(`Chamber{chosen.Index}`, "Infused"))
+			end
+			lintClean(t, "the Breaker with an infused shard chosen")
+			-- Broken: nothing more goes in, and the one thing to do is open it.
+			t.Server("BaseSkip", SKIP_ALL)
+			t.Check("it breaks", waitFor(t, ANSWER, function(): boolean
+				return readyCount(shard) > before
+			end))
+			local now = ProfileController.Get() :: Profile.View
+			local at = 0
+			for index, work in now.Base.Ready do
+				if work.Def == shard and math.abs(work.Luck - little.Lift) < 1e-6 then
+					at = index
+				end
+			end
+			BreakerScreen.Select({ Kind = "Ready", Index = at, Def = shard })
+			_, why = infuseButton(1)
+			t.Check("a shard broken: already broken", at > 0 and why == "Already broken", why)
+			action = breakerPart("Action")
+			label = action and action:FindFirstChild("Label") :: TextLabel?
+			t.Check("its one thing to do: Open", label ~= nil and label.Text == "Open", if label then label.Text else "none")
+			t.Check("which opens it", action ~= nil and action:IsA("TextButton") and Button.Press(action) and waitFor(t, ANSWER, function(): boolean
+				return BaseController.Revealed() ~= nil
+			end))
+			BaseController.Dismiss()
+			-- Leaves the base as it found it: Watt's shard taken back, the rest opened, the battery as it was.
+			t.Server("Tune", "Hud.Breaker.Layout", layout)
+			Screen.Close()
+			t.Server("BaseGive", "named_watt", -1)
+			openReadyDown(t, shard, before)
+			t.Server("BaseBattery", battery)
 		end,
 	},
 	{

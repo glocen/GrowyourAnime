@@ -77,6 +77,21 @@ function Odds.Table(shardId: string, luck: number?): { Entry }
 	return entries
 end
 
+-- How many of a shard's tiers luck lifts: its top two, its top one when it has two, none when it has one (a Named shard,
+-- or a ground whose Voidkin all share a tier). Infusion is offered only where this is above 0.
+function Odds.Lifted(shardId: string): number
+	local tiers: { [string]: boolean } = {}
+	local count = 0
+	for _, entry in Odds.Table(shardId, 0) do
+		local rarity = Voidkin.ById[entry.Id].Rarity
+		if not tiers[rarity] then
+			tiers[rarity] = true
+			count += 1
+		end
+	end
+	return if count > 2 then 2 elseif count == 2 then 1 else 0
+end
+
 -- The Voidkin one roll gives, for `u` in [0, 1) from the server's random source. Nil for a shard with nothing in it.
 function Odds.Roll(shardId: string, luck: number?, u: number): string?
 	local entries = Odds.Table(shardId, luck)

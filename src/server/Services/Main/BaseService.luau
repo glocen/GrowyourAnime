@@ -128,6 +128,19 @@ local function registerDebug()
 			return { Ok = true, Finished = summary.Finished, Made = summary.Made, Credits = summary.Credits }
 		end)
 	end)
+	-- The battery set to `amount`, within its capacity: the Breaker screen's prices tried at each side (TR9).
+	DebugService.Register("BaseBattery", function(who: any, amount: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(amount) ~= "number" or amount ~= amount then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "BaseBattery", function(draft: Profile.Data): { [string]: any }
+			Breaker.Advance(draft, now())
+			local before = draft.Base.Battery
+			draft.Base.Battery = math.clamp(amount, 0, BaseConfig.Battery.Capacity)
+			return { Ok = true, Battery = draft.Base.Battery, Before = before }
+		end)
+	end)
 	DebugService.Register("BaseGive", function(who: any, shard: any, count: any): any
 		local player = DebugService.ResolvePlayer(who)
 		local amount = if count == nil then 1 else count

@@ -6,7 +6,8 @@
 -- It comes in from a little smaller, see-through, eased out, and leaves to a little smaller, eased in, in about 0.8 of
 -- its entrance (Config.Hud.Motion.Screen; rule 4; AR8 C): the panel in a group the size of the room, which fades and
 -- scales as one. A closed screen is closed at once (Current is nil, Closed fires, nothing in it takes a tap) while it
--- leaves.
+-- leaves. The same screen opened again, as its owner rebuilds it on a change, keeps its panel and refills its body in
+-- place: no second entrance, and Closed doesn't fire.
 --   Screen.Open(name, title, size) -> the body frame to fill
 --   Screen.Close()
 --   Screen.Current() -> the open screen's name, or nil
@@ -37,7 +38,7 @@ local function fit(frame: Frame, size: Vector2)
 	frame.Size = UDim2.fromOffset(wide, tall)
 end
 
-local open: { Name: string, Frame: Frame, Stage: CanvasGroup }? = nil
+local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2 }? = nil
 
 local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyle, direction: Enum.EasingDirection, see: number, size: number): Tween
 	local info = TweenInfo.new(seconds, style, direction)
@@ -81,6 +82,16 @@ function Screen.Stage(name: string): CanvasGroup?
 end
 
 function Screen.Open(name: string, title: string, size: Vector2): Frame
+	local current = open
+	local again = current and current.Name == name and current.Frame:FindFirstChild("Body")
+	local named = current and current.Frame:FindFirstChild("Title")
+	if current and again and named and named:IsA("TextLabel") then
+		again:ClearAllChildren()
+		named.Text = title
+		current.Size = size
+		fit(current.Frame, size)
+		return again :: Frame
+	end
 	Screen.Close()
 	local motion = HudConfig.Motion.Screen
 	local stage = Instance.new("CanvasGroup")
@@ -103,8 +114,9 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 	})
 	frame.Active = true -- a tap on the screen stays on it
 	fit(frame, size)
+	local record = { Name = name, Frame = frame, Stage = stage, Size = size }
 	local refit = function()
-		fit(frame, size)
+		fit(frame, record.Size)
 	end
 	local resized = Layers.Get("Menus"):GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
 	local rescaled = Layers.Changed:Connect(refit)
@@ -138,7 +150,7 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 	body.Parent = frame
 	stage.Parent = Layers.Get("Menus")
 	tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1)
-	open = { Name = name, Frame = frame, Stage = stage }
+	open = record
 	return body
 end
 

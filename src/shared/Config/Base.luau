@@ -18,6 +18,7 @@ return {
 		-- Short of power the Breaker slows in proportion to what it gets, but never below this share of full speed
 		-- (docs/design.md: "it never stops dead"). The builder's seed, 2026-11-12.
 		MinSpeed = 0.25,
+		MostChambers = 4, -- docs/design.md: two chambers at the start and up to four; the screen shows the rest locked
 	},
 	Battery = {
 		Capacity = 600, -- electricity held at most. The builder's seed, 2026-11-12: about two hours of ground 1's two workers

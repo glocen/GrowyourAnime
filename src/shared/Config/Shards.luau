@@ -30,4 +30,10 @@ return {
 	} :: { [string]: number },
 	-- Luck from every source adds into one lift on the top two tiers a shard can give, up to this.
 	LuckCap = 0.4,
+	-- Infusion (docs/design.md, "Shards and the Void Breaker"): electricity from the battery into one shard before it breaks,
+	-- a little or a lot, lifting its top two tiers by Lift, the price the same whatever the shard (seeds.json, "luck").
+	Infusion = {
+		{ Lift = 0.10, Energy = 300 },
+		{ Lift = 0.25, Energy = 900 },
+	} :: { { Lift: number, Energy: number } },
 }

@@ -1,7 +1,7 @@
 --!strict
 -- BaseController (client): the player's own base, in grey (docs/test-requests.md, TR2, items 1, 2 and 7; docs/ui.md,
 -- "The screens of the first loop", 2, 3 and 7, in stock frames). On the plot: a prompt at the Breaker (Open while a shard
--- is ready, else the Base screen), one at each open bay, and the three starter shards waiting in front of the Breaker until
+-- is ready, else the Breaker's own screen, UI/BreakerScreen, TR9), one at each open bay, and the three starter shards waiting in front of the Breaker until
 -- one is chosen. Over the world: the Breaker's chambers counting down, each bay's worker and output, the battery's name.
 -- A plate speaks only near its machine, or while it's lit with something to do (TR2, research's read of the phone take,
 -- fix 2): the Breaker with a shard to put in or to open, a bay that a free Voidkin could work. The Base
@@ -32,6 +32,7 @@ local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local RevealStage = require(UI.Reveal)
+local BreakerScreen = require(UI.BreakerScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 
@@ -75,6 +76,10 @@ local REASON: { [string]: string } = {
 	Empty = "Nothing there",
 	Leading = "The lead can't work too",
 	Working = "A worker can't lead too",
+	Named = "That shard holds one Voidkin",
+	Infused = "That shard is already infused",
+	Short = "Not enough Electricity stored",
+	Moved = "That shard has moved on",
 	BadArgs = "That can't be done",
 	Unknown = "That can't be done",
 }
@@ -395,6 +400,25 @@ function BaseController.Open()
 	build()
 end
 
+-- The Void Breaker's own screen (TR9, UI/BreakerScreen): the chambers, what's ready, waiting and in the bag, a shard's
+-- odds and its infusion.
+function BaseController.OpenBreaker()
+	local view = ProfileController.Get()
+	if view then
+		BreakerScreen.Open(view, { Act = act, Open = openShard })
+	end
+end
+
+-- The Breaker's prompt, pressed: the oldest shard ready opens, else the Breaker's own screen. For tests too.
+function BaseController.PressBreaker()
+	local view = ProfileController.Get()
+	if view and #view.Base.Ready > 0 then
+		openShard(nil)
+	else
+		BaseController.OpenBreaker()
+	end
+end
+
 -- The reveal -----------------------------------------------------------------------------------------------------------
 
 -- A tap: shut for the skip's first second; in the ceremony, to its held frame and the card; on the card, once it has
@@ -559,12 +583,7 @@ local function find()
 	local b = spotFor(breakerMarker, "Breaker", BREAKER_UP, 4, BREAKER_WIDTH)
 	b.Prompt = prompt(b.Anchor, "NL_Breaker", "Void Breaker", "Breaker")
 	;(b.Prompt :: ProximityPrompt).Triggered:Connect(function()
-		local view = ProfileController.Get()
-		if view and #view.Base.Ready > 0 then
-			openShard(nil)
-		else
-			BaseController.Open()
-		end
+		BaseController.PressBreaker()
 	end)
 	breaker = b
 	if batteryMarker then
@@ -702,6 +721,7 @@ function BaseController.Refresh()
 			spot.Prompt = nil
 		end
 	end
+	BreakerScreen.Tick(now)
 	for _, countdown in countdowns do
 		local work = now.Data.Base.Chambers[countdown.Chamber] and now.Data.Base.Chambers[countdown.Chamber].Work
 		if work and countdown.Label.Parent then
@@ -789,6 +809,8 @@ function BaseController.Start()
 		BaseController.Refresh()
 		if Screen.Current() == "Base" then
 			build()
+		elseif Screen.Current() == BreakerScreen.Name then
+			BaseController.OpenBreaker()
 		end
 	end)
 	task.spawn(function()

@@ -11,11 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **TR8 in build, its offline half done** (its status in `docs/test-requests.md`): the kit laid by its plan once its template is built, dusk and night on one clock, the 20 pictures uploaded. The meshes, the template, the self-test and the takes wait on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
-- **Also waiting on the MCP:** the self-tests of TR5's frames, TR6, TR7, TR10 to TR13 and "Content as data"; Kirra's install, with TR14 riding on it (Modulo's recipe is re-delivered and builds offline).
-- **For Modulo, TR8:** the paper's drift has no numbers in the handoff (rate, size, speed, lifetime). They're yours to give when you next touch the kit.
-- **Next:** TR9 offline while Studio is down, then TR15.
-- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) TR15: a point left unspent should count as spread evenly until it's spent, or a player who never opens the board is weaker than today. TR14: nothing.
+- **TR9 built offline** (its status in `docs/test-requests.md`): infusion on the server, and the Breaker's own screen in three grey layouts (`Hud.Breaker.Layout`: Machine, List, Sheet). A screen now refills in place instead of flashing. TR8's offline half was done before it.
+- **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's take at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13 and "Content as data"; Kirra's install, with TR14. For Modulo, TR8: the paper's drift has no numbers in the handoff.
+- **Next:** TR15 offline.
+- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) TR15: a point left unspent should count as spread evenly until it's spent. (3) TR9, tier 2 for research: "a lot" costs 900 and the battery holds 600, so it can't be paid. I also read infusion as once per shard, though luck adds from every source; say if two should stack.
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
@@ -40,6 +39,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-14, TR9: a screen opened again, as its owner rebuilds it, keeps its panel and refills its body in place, so the Base and Breaker screens no longer replay their entrance on each change. The Breaker's prompt opens the oldest ready shard as before, else the Breaker's own screen.
 - Tier 1, Faber, 2026-11-14, TR8: the ground's look holds from 24 studs short of the festival gate, so a door's landing opens in it, and the place keeps its own Lighting elsewhere. The stalls, signs and houses collide by their box and the posts by their mesh. The gates collide by the grey street's own parts. The street's floor wears the paving tile under the bays, and the lead carries the plan's tenth light at its head, in the ground only.
 - Tier 2, Modulo, 2026-11-14: Scarf Step lands to the side of the Shade, about 35° off the line from the player's camera, so its line shows 9.8 of its 10 studs on the screen instead of folding to a streak (AR10, section 1). Research and Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-13: the effects kit grows, from the vault (`docs/research/vfx-reference.md`, "What the vault teaches, beside ours"): a stack of layers per beat, a dark twin under each bright layer, our own 4x4 and 8x8 sheets with outline and fill passes, the emitter row with Drag, Squash, Acceleration, EmitCount and EmitDelay, a screen row and a caster light from rung 4 and 7; the full look, with a "performance mode" setting to lower it (the director, 2026-11-13). The kit now; effects that passed, at the finish pass. Faber and Modulo: after your current piece, say in your row what you'd change.

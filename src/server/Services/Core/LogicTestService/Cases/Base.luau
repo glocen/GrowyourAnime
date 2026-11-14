@@ -15,6 +15,8 @@ local Base = require(Shared.Rules.Base)
 local Collection = require(Shared.Rules.Collection)
 local Shards = require(Shared.Definitions.Shards)
 local BaseConfig = require(Shared.Config.Base)
+local ShardConfig = require(Shared.Config.Shards)
+local Odds = require(Shared.Rules.Odds)
 local DataConfig = require(Shared.Config.Data)
 
 local T0 = 1_800_000_000
@@ -105,6 +107,28 @@ return {
 				breaking += if chamber.Work then 1 else 0
 			end
 			t.Equal("one shard breaking", breaking + #data.Base.Line, 1)
+		end,
+	},
+	{
+		Name = "Base: a shard put in answers where it stands, its chamber or its place in the line",
+		Run = function(t: any)
+			-- The Breaker's screen keeps a shard chosen as it goes in (TR9), from this answer.
+			local data = fresh()
+			local chambers = #data.Base.Chambers
+			data.Bag.Shards[STANDARD] = chambers + 1
+			for index = 1, chambers do
+				local answer = act(data, "AddShard", { Shard = STANDARD }, T0)
+				t.Check(`shard {index} into chamber {index}`, answer.Ok == true and answer.Chamber == index and answer.Line == nil, `{tostring(answer.Chamber)}, {tostring(answer.Line)}`)
+			end
+			local waiting = act(data, "AddShard", { Shard = STANDARD }, T0)
+			t.Check("the next waits first in the line", waiting.Ok == true and waiting.Line == 1 and waiting.Chamber == nil, `{tostring(waiting.Chamber)}, {tostring(waiting.Line)}`)
+			data.Bag.Shards.named_watt = 1
+			local quick = act(data, "AddShard", { Shard = "named_watt" }, T0)
+			local line = data.Base.Line
+			local at = table.find(line, line[quick.Line or 0])
+			t.Check("a shard that breaks sooner is answered at its own place", quick.Ok == true and at ~= nil and line[at].Def == "named_watt", `{tostring(quick.Line)}`)
+			local shorter = (Breaker.Cost("named_watt") :: number) < (Breaker.Cost(STANDARD) :: number)
+			t.Equal("ahead of the longer one when shorter", quick.Line, if shorter then 1 else 2)
 		end,
 	},
 	{
@@ -246,6 +270,71 @@ return {
 			local opened = act(data, "Open", {}, away + 1)
 			t.Check("one opens", opened.Ok == true)
 			saves(t, data, "after the return")
+		end,
+	},
+	{
+		Name = "Base: TR9, infusion puts the battery's electricity into one shard before it breaks, once, a little or a lot",
+		Run = function(t: any)
+			local data = withRook()
+			local now = T0 + 100
+			data.Bag.Shards[STANDARD] = 3
+			act(data, "AddShard", { Shard = STANDARD }, now)
+			act(data, "AddShard", { Shard = STANDARD }, now)
+			act(data, "AddShard", { Shard = STANDARD }, now)
+			t.Check("a shard breaking in chamber 1 and one waiting", data.Base.Chambers[1].Work ~= nil and #data.Base.Line >= 1)
+			local a, b = ShardConfig.Infusion[1], ShardConfig.Infusion[2]
+			data.Base.Battery = a.Energy + b.Energy + 5
+			Breaker.Advance(data, now)
+			local stored = data.Base.Battery
+			local little = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, now, "op-infuse-1")
+			t.Check("a little, into the chamber's shard", little.Ok == true and little.Luck == a.Lift, little.Error)
+			t.Equal("its price from the battery", data.Base.Battery, stored - a.Energy)
+			t.Equal("the shard carries its luck", (data.Base.Chambers[1].Work :: any).Luck, a.Lift)
+			local again = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, now, "op-infuse-1")
+			t.Check("the same op again: its answer, nothing spent twice", again.Ok == true and data.Base.Battery == stored - a.Energy)
+			local twice = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 2 }, now, "op-infuse-2")
+			t.Equal("once a shard", twice.Error, Base.Infused)
+			local lot = act(data, "Infuse", { Line = 1, Def = STANDARD, Level = 2 }, now, "op-infuse-3")
+			t.Check("a lot, into the line's first", lot.Ok == true and lot.Luck == b.Lift, lot.Error)
+			t.Equal("both prices spent", data.Base.Battery, stored - a.Energy - b.Energy)
+			local short = act(data, "Infuse", { Chamber = 2, Def = STANDARD, Level = 1 }, now, "op-infuse-4")
+			t.Equal("short of electricity: refused", short.Error, Base.Short)
+			t.Equal("and nothing spent", data.Base.Battery, stored - a.Energy - b.Energy)
+			-- The luck reaches the roll: the top tier's chance at this luck is the table's.
+			local plain, lifted = Odds.Table(STANDARD, 0), Odds.Table(STANDARD, b.Lift)
+			t.Check("the top tier's chance is lifted", lifted[#lifted].Chance > plain[#plain].Chance)
+			saves(t, data, "after infusing")
+		end,
+	},
+	{
+		Name = "Base: TR9, infusion is never offered on a shard that holds a stated Voidkin, nor on one that broke or moved",
+		Run = function(t: any)
+			local data = fresh()
+			act(data, "ChooseStarter", { Shard = "starter_pip" }, T0)
+			data.Base.Battery = 5000
+			local where = if data.Base.Chambers[1].Work then { Chamber = 1 } else { Line = 1 }
+			local args = table.clone(where) :: any
+			args.Def, args.Level = "starter_pip", 1
+			t.Equal("a starter holds one Voidkin: no odds to lift", act(data, "Infuse", args, T0).Error, Base.Named)
+			t.Equal("Odds says so", Odds.Lifted("starter_pip"), 0)
+			t.Check("a ground's shard lifts its top tiers", Odds.Lifted(STANDARD) > 0)
+			-- The shard broke a moment before the ask reached the server.
+			local data2 = withRook()
+			data2.Bag.Shards[STANDARD] = 1
+			act(data2, "AddShard", { Shard = STANDARD }, T0 + 50)
+			data2.Base.Battery = 5000
+			local cost = Breaker.Cost(STANDARD) :: number
+			local stored = data2.Base.Battery
+			local late = act(data2, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, T0 + 50 + cost * 20)
+			t.Equal("broken since: refused", late.Error, Base.Moved)
+			local kept = data2.Base.Chambers[1].Work
+			t.Check("a refusal changes nothing: nothing spent, the shard as it was", data2.Base.Battery == stored and kept ~= nil and kept.Luck == 0,
+				`{data2.Base.Battery} of {stored}`)
+			t.Equal("a shard that isn't the one seen", act(data2, "Infuse", { Chamber = 1, Def = "lanternrow_enriched", Level = 1 }, T0 + 50 + cost * 20).Error, Base.Moved)
+			t.Equal("no such level", act(data2, "Infuse", { Chamber = 1, Def = STANDARD, Level = 3 }, T0).Error, Base.BadArgs)
+			t.Equal("both places", act(data2, "Infuse", { Chamber = 1, Line = 1, Def = STANDARD, Level = 1 }, T0).Error, Base.BadArgs)
+			t.Equal("neither", act(data2, "Infuse", { Def = STANDARD, Level = 1 }, T0).Error, Base.BadArgs)
+			t.Equal("a fraction", act(data2, "Infuse", { Chamber = 1.5, Def = STANDARD, Level = 1 }, T0).Error, Base.BadArgs)
 		end,
 	},
 }

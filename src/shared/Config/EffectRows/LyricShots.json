@@ -1,0 +1,14 @@
+{
+  "Schema": "rows/1",
+  "Effect": "LyricShots",
+  "Why": "Lyric's shots (LyricCombo), a grey block, the builder's: the right speaker's ring fires, then the left, then both (AR4, section 6).",
+  "Area": 1,
+  "Grey": true,
+  "Action": "LyricCombo",
+  "Rows": {
+    "Shot1": { "Kind": "Streak", "Body": "RingR", "From": "Shot1", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} },
+    "Shot2": { "Kind": "Streak", "Body": "RingL", "From": "Shot2", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} },
+    "Shot3R": { "Kind": "Streak", "Body": "RingR", "From": "Shot3", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} },
+    "Shot3L": { "Kind": "Streak", "Body": "RingL", "From": "Shot3", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} }
+  }
+}

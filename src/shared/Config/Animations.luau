@@ -7,14 +7,13 @@
 -- Rigs: each rig's shared reactions, one clip set per rig, not per Voidkin (docs/design.md, "States in a fight"). R6
 -- with open legs uses Rook's, as does TR2's stand-in; R6 in a robe uses Pip's (AR4: Pip and Lyric), named by a Voidkin row's Rig. The
 -- Shade's (AR2) is every Shade's: its Down bursts on the clip's `Burst` marker. The Lamplighter's (AR7) is its own: the
--- Shade's clips lay its pole through its coat. Idles: a fighter's own stance, by its def, over its rig's: the keeper
--- fights in its Ready, its Idle the doze it's built in.
+-- Shade's clips lay its pole through its coat. A fighter's own stance, over its rig's Idle, is on its row (a Voidkin's
+-- Kit, an enemy's Idle; Definitions.Actions, IdleOf).
 
 return {
 	Fades = {
 		Idle = { In = 0.2, Out = 0.2 },
 		Combo = { In = 0.06, Out = 0.12 },
-		Haymaker = { In = 0.06, Out = 0.15 },
 		Hit = { In = 0.03, Out = 0.1 },
 		Down = { In = 0.05, Out = 0.05 },
 		Up = { In = 0.05, Out = 0.2 },
@@ -32,11 +31,6 @@ return {
 		Shade = { Idle = "ShadeIdle", Walk = "ShadeWalk", Hit = "ShadeHit", Down = "ShadeBurst" },
 		Lamplighter = { Idle = "LamplighterIdle", Walk = "LamplighterWalk", Hit = "LamplighterHit", Down = "LamplighterDown" },
 	} :: { [string]: { [string]: string } },
-	Idles = {
-		pip = "PipIdle",
-		lyric = "LyricIdle",
-		lamplighter = "LamplighterReady",
-	} :: { [string]: string },
 	-- A clip's mirror, picked at random each time it plays, so a pack doesn't swing or reel in step (AR2).
 	Mirrors = {
 		ShadeAttack = "ShadeAttackLeft",
@@ -61,25 +55,17 @@ return {
 	Props = {
 		lyric = { Motor = "Staff", Drop = 0.1, Fall = 0.25, Aside = 2.9, Along = -1.5, Back = 0.3 },
 	} :: { [string]: { Motor: string, Drop: number, Fall: number, Aside: number, Along: number, Back: number } },
-	-- The game's name for each clip, for its fades.
+	-- The game's name for each shared clip, for its fades: the rigs' reactions and the enemies' moves. A Voidkin's own
+	-- clips take theirs from their place in its kit (Definitions.Voidkin, Kit; Definitions.Actions, RoleOf).
 	Roles = {
 		RookIdle = "Idle",
-		RookCombo = "Combo",
-		RookHaymaker = "Haymaker",
 		RookHit = "Hit",
 		RookDown = "Down",
 		RookUp = "Up",
 		PipIdle = "Idle",
-		PipCombo = "Combo",
-		PipLanternBurst = "Signature",
 		PipHit = "Hit",
 		PipDown = "Down",
 		PipUp = "Up",
-		PipSkip = "Skip",
-		LyricIdle = "Idle",
-		LyricCombo = "Combo",
-		LyricHeldNote = "Signature",
-		LyricSkip = "Skip",
 		ShadeIdle = "Idle",
 		ShadeWalk = "Walk",
 		ShadeAttack = "Swipe",
@@ -88,7 +74,6 @@ return {
 		ShadeHitLeft = "Hit",
 		ShadeBurst = "Burst",
 		LamplighterIdle = "Idle",
-		LamplighterReady = "Idle",
 		LamplighterChallenge = "Challenge",
 		LamplighterWalk = "Walk",
 		LamplighterSwing = "Swipe",

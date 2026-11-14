@@ -1,9 +1,21 @@
 --!strict
 -- Voidkin (shared, content): the thirty-one fighters, one row each, keyed by an id that never changes and never shows to
 -- players. Generated from docs/roster.md, "The thirty-one", on 2026-11-12: the roster is the design, these rows are what the
--- game reads. A row changes in both, the roster first. Kits (combo, signature, passive) join as each fighter is built.
+-- game reads. A row changes in both, the roster first. A kit (Kit here; its passive in Definitions.Passives) joins as each
+-- fighter is built.
 -- Zone is the first ground (Definitions.Grounds, by Order) whose shards hold it. Aptitude is its work in a bay, 1 to 3.
--- Model is the build's, not the roster's: the fighter's own body, once it's installed.
+-- Model and Kit are the build's, not the roster's: the fighter's own body and moves, once they're installed.
+
+-- A Voidkin's moves (Definitions.Actions ids), written once here: every other table reads them (Actions.KitOf, SkipOf,
+-- IdleOf, RoleOf). Each clip's role, for its fades (Config.Animations.Fades), is its place in the kit.
+export type Kit = {
+	Signature: string, -- tried first, so it goes as soon as it's ready
+	Combo: string,
+	-- A ranged lead's skip back, a Mage's or a Healer's: never chosen as an attack, taken on its own rule
+	-- (Rules.Fight.ShouldSkip; docs/design.md, "Combat")
+	Skip: string?,
+	Idle: string?, -- its own stance's clip, when it isn't its rig's Idle (Config.Animations.Rigs)
+}
 
 export type Row = {
 	Id: string,
@@ -19,12 +31,14 @@ export type Row = {
 	Model: string?,
 	-- Its body's shared reactions, a set in Config.Animations.Rigs: "R6" (open legs, the default) or "Robe".
 	Rig: string?,
+	-- Its moves, once built; without them a lead fights with the stand-in's (Actions.StandIn) on the grey R6 rig
+	Kit: Kit?,
 }
 
 local rows: { Row } = {
-	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2, Model = "Rook" },
+	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2, Model = "Rook", Kit = { Signature = "RookHaymaker", Combo = "RookCombo" } },
 	{ Id = "kirra", Name = "Kirra", Rarity = "Common", Type = "Agility", Class = "Assassin", Element = "", Zone = 1, Aptitude = 1 },
-	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2, Model = "Pip", Rig = "Robe" },
+	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2, Model = "Pip", Rig = "Robe", Kit = { Signature = "PipLanternBurst", Combo = "PipCombo", Skip = "PipSkip" } },
 	{ Id = "watt", Name = "Watt", Rarity = "Common", Type = "Endurance", Class = "Tank", Element = "Storm", Zone = 1, Aptitude = 3 },
 	{ Id = "patch", Name = "Patch", Rarity = "Common", Type = "Technique", Class = "Healer", Element = "", Zone = 2, Aptitude = 2 },
 	{ Id = "tumble", Name = "Tumble", Rarity = "Common", Type = "Agility", Class = "Warrior", Element = "", Zone = 2, Aptitude = 1 },
@@ -36,7 +50,7 @@ local rows: { Row } = {
 	{ Id = "rill", Name = "Rill", Rarity = "Uncommon", Type = "Agility", Class = "Mage", Element = "Frost", Zone = 3, Aptitude = 1 },
 	{ Id = "dirge", Name = "Dirge", Rarity = "Uncommon", Type = "Technique", Class = "Tank", Element = "Void", Zone = 3, Aptitude = 2 },
 	{ Id = "juno", Name = "Juno", Rarity = "Uncommon", Type = "Intelligence", Class = "Warrior", Element = "Storm", Zone = 3, Aptitude = 2 },
-	{ Id = "lyric", Name = "Lyric", Rarity = "Rare", Type = "Technique", Class = "Healer", Element = "Storm", Zone = 1, Aptitude = 2, Model = "Lyric", Rig = "Robe" },
+	{ Id = "lyric", Name = "Lyric", Rarity = "Rare", Type = "Technique", Class = "Healer", Element = "Storm", Zone = 1, Aptitude = 2, Model = "Lyric", Rig = "Robe", Kit = { Signature = "LyricHeldNote", Combo = "LyricCombo", Skip = "LyricSkip", Idle = "LyricIdle" } },
 	{ Id = "mirage", Name = "Mirage", Rarity = "Rare", Type = "Agility", Class = "Assassin", Element = "Fire", Zone = 3, Aptitude = 1 },
 	{ Id = "bulwark", Name = "Bulwark", Rarity = "Rare", Type = "Endurance", Class = "Tank", Element = "Frost", Zone = 3, Aptitude = 3 },
 	{ Id = "sliptail", Name = "Sliptail", Rarity = "Rare", Type = "Intelligence", Class = "Mage", Element = "Void", Zone = 3, Aptitude = 2 },

@@ -36,16 +36,6 @@ local player = Players.LocalPlayer
 local CATCH = { OwnPace = 0.08, Over = 0.12, Limit = 0.25 }
 local WALK_SMOOTHING = 10 -- a second's share the walk's speed follows the body by: about a tenth of a second
 
--- The effects that hang on an action's beats, by its id. A landed hit's spark is every action's.
-local EFFECTS: { [string]: (beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action) -> Effects.Running } = {
-	RookHaymaker = Effects.Haymaker,
-	PipLanternBurst = Effects.LanternBurst,
-	PipCombo = Effects.LanternShots,
-	LyricHeldNote = Effects.HeldNote,
-	LyricCombo = Effects.SpeakerShots,
-	KeeperSignature = Effects.KeeperSignature,
-}
-
 -- The look of a heal (Actions.Hit.Heal) on the body it mends, by the healer's action.
 local HEALS: { [string]: (root: BasePart) -> () } = {
 	LyricHeldNote = Effects.HealRing,
@@ -367,7 +357,9 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 			view.Current = t
 		end
 	end
-	local make = EFFECTS[action.Id]
+	-- Its effect on its beats (Action.Effect): its rows, or an older signature's function. A landed hit's spark is every action's.
+	local effectName = action.Effect
+	local make = if effectName then Effects.Older[effectName] or Effects.Play else nil
 	if make then
 		local effect = make(action.Beats, view.Model, function(): BasePart?
 			local target = targetOf(view)
@@ -628,7 +620,7 @@ local function add(model: Instance)
 	if propSpec and propMotor and propMotor:IsA("Motor6D") then
 		view.Prop = { Motor = propMotor, Home = propMotor.C0, Def = def :: string, Phase = "Held", From = CFrame.identity, To = CFrame.identity, At = 0 }
 	end
-	local idleClip = (if type(def) == "string" then Animations.Idles[def] else nil) or (if reactions then reactions.Idle else nil)
+	local idleClip = (if type(def) == "string" then Actions.IdleOf(def) else nil) or (if reactions then reactions.Idle else nil)
 	if idleClip then
 		local idle = track(view, idleClip)
 		if idle then

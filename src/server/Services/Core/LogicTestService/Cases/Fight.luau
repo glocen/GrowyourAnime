@@ -27,6 +27,59 @@ end
 
 return {
 	{
+		-- docs/engineering-plan.md, "Content at scale", item 4: a Voidkin's moves are written once, on its row, and every
+		-- other table reads them there.
+		Name = "Fight: a Voidkin's kit is on its row: its attacks, its skip, its idle and each clip's role are read from there",
+		Run = function(t: any)
+			local built = 0
+			for _, row in Voidkin.List do
+				local kit = row.Kit
+				if row.Model then
+					t.Check(`{row.Id}: a body installed has its moves`, kit ~= nil)
+				end
+				if kit then
+					built += 1
+					local slots: { [string]: string? } = { Signature = kit.Signature, Combo = kit.Combo, Skip = kit.Skip }
+					for slot, id in slots do
+						local action = Actions.ById[id :: string]
+						t.Check(`{row.Id}.{slot}: {id} is an action`, action ~= nil)
+						local clip = if action then action.Clip else nil
+						if clip then
+							t.Equal(`{row.Id}.{slot}: its clip's role is its place in the kit`, Actions.RoleOf(clip), slot)
+							t.Check(`{row.Id}.{slot}: named once, never also a shared clip`, Animations.Roles[clip] == nil, clip)
+							t.Check(`{row.Id}.{slot}: its role has fades`, (Animations.Fades :: any)[slot] ~= nil)
+						end
+					end
+					local attacks = Actions.KitOf(row.Id)
+					t.Equal(`{row.Id}: its kit reads from the row, the signature first`, attacks[1].Id, kit.Signature)
+					t.Equal(`{row.Id}: then its combo`, attacks[2].Id, kit.Combo)
+					t.Equal(`{row.Id}: two attacks`, #attacks, 2)
+					local skip = Actions.SkipOf(row.Id)
+					t.Equal(`{row.Id}: its skip reads from the row`, if skip then skip.Id else nil, kit.Skip)
+					t.Equal(`{row.Id}: its idle reads from the row`, Actions.IdleOf(row.Id), kit.Idle)
+					if kit.Idle then
+						t.Equal(`{row.Id}: its own stance's role`, Actions.RoleOf(kit.Idle), "Idle")
+						local rig = Animations.Rigs[row.Rig or "R6"]
+						t.Check(`{row.Id}: its stance isn't its rig's Idle, or it needn't be named`, rig == nil or rig.Idle ~= kit.Idle)
+					end
+				else
+					t.Equal(`{row.Id}: unbuilt, the stand-in's kit`, Actions.KitOf(row.Id)[1].Id, Actions.KitOf(Actions.StandIn)[1].Id)
+					t.Check(`{row.Id}: unbuilt, no skip`, Actions.SkipOf(row.Id) == nil)
+					t.Check(`{row.Id}: unbuilt, its rig's idle`, Actions.IdleOf(row.Id) == nil)
+				end
+			end
+			t.Check("Rook, Pip and Lyric are built", built >= 3, `{built}`)
+			t.Check("the stand-in is built", Voidkin.ById[Actions.StandIn].Kit ~= nil)
+			-- An enemy's stance is on its row too; the shared clips keep theirs in Config.Animations.Roles.
+			t.Equal("the keeper fights in its Ready", Actions.IdleOf("lamplighter"), "LamplighterReady")
+			t.Equal("its Ready's role", Actions.RoleOf("LamplighterReady"), "Idle")
+			t.Check("a Shade's is its rig's", Actions.IdleOf("brawler") == nil)
+			t.Equal("a rig's reaction keeps its shared role", Actions.RoleOf(Animations.Rigs.Robe.Hit), "Hit")
+			t.Check("an unknown clip has none", Actions.RoleOf("NoSuchClip") == nil)
+			t.Check("an unknown def has no idle", Actions.IdleOf("nobody") == nil)
+		end,
+	},
+	{
 		Name = "Fight: every action row holds together",
 		Run = function(t: any)
 			local seen = {}
@@ -54,7 +107,7 @@ return {
 				t.Equal(`{action.Id} is heavy exactly when a hit is`, action.Heavy, heavy)
 				t.Check(`{action.Id} names its levers`, #action.Levers > 0)
 				if action.Clip then
-					t.Check(`{action.Id}'s clip has a role for its fades`, Animations.Roles[action.Clip] ~= nil)
+					t.Check(`{action.Id}'s clip has a role for its fades`, Actions.RoleOf(action.Clip) ~= nil)
 				end
 			end
 			for def, ids in Actions.Kits do
@@ -760,7 +813,7 @@ return {
 					end
 					t.Check(`{action.Id}: no hit, no cooldown, no range`, hits == 0 and action.Cooldown == 0 and action.Range == 0)
 					t.Check(`{action.Id}: lands about 0.35 s in, cut from there`, land ~= nil and math.abs(land - 0.35) < 0.05 and action.CancelFrom == land and land < action.Length, `{land}`)
-					t.Equal(`{action.Id}: its clip's role`, Animations.Roles[action.Clip :: string], "Skip")
+					t.Equal(`{action.Id}: its clip's role`, Actions.RoleOf(action.Clip :: string), "Skip")
 					for _, id in Actions.Kits[row.Id] or {} do
 						t.Check(`{action.Id}: not in the kit`, id ~= action.Id, id)
 					end

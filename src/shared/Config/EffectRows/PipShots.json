@@ -1,0 +1,13 @@
+{
+  "Schema": "rows/1",
+  "Effect": "PipShots",
+  "Why": "Pip's shots (PipCombo), a grey block, the builder's: a streak from his lantern to the target on each shot.",
+  "Area": 1,
+  "Grey": true,
+  "Action": "PipCombo",
+  "Rows": {
+    "Shot1": { "Kind": "Streak", "Body": "Lantern", "From": "Shot1", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} },
+    "Shot2": { "Kind": "Streak", "Body": "Lantern", "From": "Shot2", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} },
+    "Shot3": { "Kind": "Streak", "Body": "Lantern", "From": "Shot3", "Color": { "Color3": [225, 225, 225] }, "Tracks": {} }
+  }
+}

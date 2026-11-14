@@ -4,7 +4,7 @@
 -- A spawn gives the level and, for a Shade, the type: the outline's colour (ground 1's are Endurance, Strength, Technique).
 -- A Shade wears AR2's rig (Rig "Shade": ServerStorage.Templates.Shade, one mask kept by its role, scaled by Scale). The
 -- Lamplighter wears its own (Rig "Lamplighter": ServerStorage.Templates.Lamplighter, AR7), scaled by Scale, and holds its
--- Challenge as a try starts (Enter). The dummy stays a target, TR2's grey box with a mask shape (Size, in studs). No
+-- Challenge as a try starts (Enter), and fights in its Ready (Idle) over the doze it's built in. The dummy stays a target, TR2's grey box with a mask shape (Size, in studs). No
 -- Roblox API: it runs with Studio closed.
 
 export type Kind = "Ordinary" | "Elite" | "Keeper" | "Dummy"
@@ -22,6 +22,7 @@ export type Row = {
 	Scale: number?, -- a rig's size against an ordinary Shade's (the elite's is its box's height over the ordinary's)
 	Size: { number }?, -- Box: width, height, depth
 	Enter: string?, -- an action it holds as it's spawned, to its end, before it does anything else (Definitions.Actions)
+	Idle: string?, -- its own stance's clip, over its rig's Idle (Config.Animations.Rigs; Actions.IdleOf)
 }
 
 local rows: { Row } = {
@@ -29,7 +30,7 @@ local rows: { Row } = {
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Strength", Rig = "Shade", Mask = "Brawler", Scale = 1.35 },
 	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)
-	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Type = "Intelligence", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge" },
+	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Type = "Intelligence", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady" },
 	-- The replay's and the self-test's target: takes every hit, never answers.
 	{ Id = "dummy", Name = "Dummy", Kind = "Dummy", Action = nil, Type = "", Rig = "Box", Mask = "Round", Size = { 2.6, 4.6, 1.6 } },
 }

@@ -2,6 +2,7 @@
 logic_offline.luau - runs rule-math cases with Studio closed, under Lune.
 
 	lune run tools/checks/logic_offline.luau <cases.luau or a folder of them> [default.project.json]
+	lune run tools/checks/logic_offline.luau --json <a module's path from game> [argument]
 
 It reads the Rojo project file, so `game:GetService("ReplicatedStorage").Shared.Simulation.PetRule` and
 `require(script.Parent.Parent.Config.X)` find the same files they find in Studio, and the game's modules load unchanged.
@@ -14,6 +15,8 @@ methods, Instance.new, a player, physics, time on the server. Such a module fail
 engine's name in the error, and its case is reported as "needs Studio", never as a pass.
 This never proves the engine does what a rule assumes. Cases about players, attributes, remotes and saves stay in Studio.
 
+With --json it loads the one module the same way, calls it with the argument when it returns a function, and prints
+what comes back as JSON (tools/fx/rows_export.py uses it with tools/studio/RowsExport).
 Exit code: 0 when every case passes, 1 when a case fails or needs Studio, 2 when the run itself broke.
 Needs Lune (free, MPL-2.0): `rokit trust lune-org/lune`, then `rokit add lune-org/lune`.
 ]]
@@ -32,8 +35,9 @@ local function fail(message: string)
 	process.exit(2)
 end
 
-local casesPath = process.args[1]
-local projectPath = process.args[2] or "default.project.json"
+local jsonMode = process.args[1] == "--json"
+local casesPath = if jsonMode then process.args[2] else process.args[1]
+local projectPath = if jsonMode then "default.project.json" else process.args[2] or "default.project.json"
 if not casesPath then
 	fail("usage: lune run logic_offline.luau <cases.luau> [default.project.json]")
 end
@@ -300,6 +304,29 @@ function requireNode(node: Node): any
 	end
 	loaded[node] = value
 	return value
+end
+
+-- ---------------------------------------------------------------- --json: one module's value, printed
+
+if jsonMode then
+	local at: any = game.Proxy
+	for _, name in string.split(casesPath, ".") do
+		local node = nodeOf[at]
+		local child = node and kids(node)[name]
+		if not child then
+			fail(`no {name} in {if node then path(node) else "game"}`)
+		end
+		at = child.Proxy
+	end
+	local okRun, value = pcall(function()
+		local loadedValue = requireNode(nodeOf[at])
+		return if type(loadedValue) == "function" then loadedValue(process.args[3]) else loadedValue
+	end)
+	if not okRun then
+		fail(`{casesPath} failed: {tostring(value)}`)
+	end
+	print(serde.encode("json", value, true))
+	process.exit(0)
 end
 
 -- ---------------------------------------------------------------- the run

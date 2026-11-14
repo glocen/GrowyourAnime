@@ -749,7 +749,10 @@ return {
 			t.Check("the column plays on", column.Enabled)
 			again.Destroy()
 			t.Check("and ends with nothing left", column.Parent == nil)
-			-- The camera's lift through the hold, when the lead it's aimed at is the player's own.
+			-- As a fight plays it (Action.Effect, through Effects.Play): the camera never moves (the director, 2026-11-14:
+			-- only the hit's shake does), even aimed at the player's own lead; ended in the hold it all goes at once, the paper
+			-- put back; ended after the Slam, the column plays out, then nothing is left.
+			t.Check("its effect is its rows", action.Effect == "KeeperSignature", tostring(action.Effect))
 			local lead = Instance.new("Model")
 			lead:SetAttribute("Owner", Players.LocalPlayer.UserId)
 			local chest = Instance.new("Part")
@@ -757,25 +760,35 @@ return {
 			chest.CFrame = anchor * CFrame.new(0, 3, -7.5)
 			chest.Parent = lead
 			lead.Parent = workspace
-			local lift = EffectsConfig.KeeperSignature.Lift
-			local base = Effects.Lift()
-			local running = Effects.KeeperSignature(action.Beats, body, function(): BasePart?
+			local camera = workspace.CurrentCamera
+			local function rowsLeft(): number
+				local folder = workspace:FindFirstChild("NL_Rows")
+				return if folder then #folder:GetChildren() else 0
+			end
+			local left = rowsLeft()
+			lantern.CFrame = held
+			local looked = camera.CFrame.LookVector
+			local inHold = Effects.Play(action.Beats, body, function(): BasePart?
 				return chest
 			end, action)
-			running.Step(action.Beats.Light + lift.Rise)
-			t.Near("lifted through the hold", Effects.Lift() - base, lift.Degrees, 1e-6)
-			running.Step(action.Beats.Slam + lift.Fall)
-			t.Near("and down again after the Slam", Effects.Lift() - base, 0, 1e-6)
-			local early = Effects.KeeperSignature(action.Beats, body, function(): BasePart?
+			inHold.Step(action.Beats.Light + 0.6)
+			RunService.RenderStepped:Wait()
+			RunService.RenderStepped:Wait()
+			t.Check("the camera never turned in the hold", camera.CFrame.LookVector:FuzzyEq(looked, 1e-3))
+			t.Check("the paper lit in the hold", look.EmissiveStrength > 1.2 + 1e-3, string.format("%.2f", look.EmissiveStrength))
+			inHold.Destroy()
+			t.Near("ended in the hold: the paper put back at once", look.EmissiveStrength, 1.2, 1e-6)
+			t.Check("and nothing left", rowsLeft() == left, `{rowsLeft()} {left}`)
+			lantern.CFrame = landing
+			local afterSlam = Effects.Play(action.Beats, body, function(): BasePart?
 				return chest
 			end, action)
-			early.Step(action.Beats.Light + lift.Rise)
-			early.Destroy()
-			t.Near("ended mid-hold: still lifted on that frame", Effects.Lift() - base, lift.Degrees, 1e-6)
-			t.Wait(lift.Fall + 0.2)
-			t.Near("then eased back down over Fall", Effects.Lift() - base, 0, 1e-6)
-			running.Destroy()
-			t.Near("and the paper as it was, both put back", look.EmissiveStrength, 1.2, 1e-6)
+			afterSlam.Step(action.Beats.Slam + 0.05)
+			afterSlam.Destroy()
+			t.Near("ended after the Slam: the paper back at once", look.EmissiveStrength, 1.2, 1e-6)
+			t.Check("the column plays on", rowsLeft() > left, `{rowsLeft()} {left}`)
+			t.Wait(4)
+			t.Check("then nothing is left", rowsLeft() == left, `{rowsLeft()} {left}`)
 			body:Destroy()
 			lead:Destroy()
 		end,
@@ -1351,9 +1364,9 @@ return {
 			t.Check("at full health", lead:GetAttribute("Health") == lead:GetAttribute("MaxHealth"))
 			local humanoid = lead:FindFirstChildOfClass("Humanoid")
 			local animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
-			-- Its own idle: its Voidkin's stance, else its rig's (Config.Animations.Idles, Rigs).
+			-- Its own idle: its Voidkin's stance, else its rig's (Definitions.Actions, IdleOf; Config.Animations.Rigs).
 			local rig = Animations.Rigs[tostring(lead:GetAttribute("Rig"))] or Animations.Rigs.R6
-			local want = Animations.Idles[tostring(lead:GetAttribute("Def"))] or rig.Idle
+			local want = Actions.IdleOf(tostring(lead:GetAttribute("Def"))) or rig.Idle
 			local idle: AnimationTrack? = nil
 			for _, playing in (if animator then animator:GetPlayingAnimationTracks() else {}) do
 				if playing.Animation and playing.Animation.Name == want then
@@ -1480,7 +1493,7 @@ return {
 	{
 		Name = "Fight: a ranged lead skips back when a Shade closes: away from it by Land, facing it, into its next action (TR7)",
 		Run = function(t: any)
-			-- Each Voidkin with a skip leads in turn (Actions.Skips: Pip, Lyric); the save's own lead is put back after.
+			-- Each Voidkin with a skip leads in turn (its Kit's Skip, Actions.Skips: Pip, Lyric); the save's own lead is put back after.
 			local view = t.Server("Data")
 			local owned = if type(view) == "table" and type(view.Voidkin) == "table" then view.Voidkin else {}
 			local was = if type(view) == "table" and type(view.Roles) == "table" then view.Roles.Lead else nil
@@ -2214,7 +2227,7 @@ return {
 			end
 			t.Check("and stands where it was through it", drift < 0.3, string.format("%.2f studs", drift))
 			t.Check("its stance under everything is its Ready", waitFor(t, 1, function(): boolean
-				return playing(keeper)[Animations.Idles.lamplighter] == true
+				return playing(keeper)[Actions.IdleOf("lamplighter") :: string] == true
 			end))
 			-- its walk: its own speed, the clip near rate 1 (research's tier 2, AR7, section 4)
 			local walked = waitFor(t, 2, function(): boolean

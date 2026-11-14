@@ -8,6 +8,9 @@
 -- No Roblox API: it runs with Studio closed.
 
 local Tune = require(script.Parent.Parent.Util.Tune)
+local Voidkin = require(script.Parent.Voidkin)
+local Enemies = require(script.Parent.Enemies)
+local Animations = require(script.Parent.Parent.Config.Animations)
 
 export type Hit = {
 	Coefficient: number, -- times Attack (docs/balance.md, "One hit")
@@ -35,6 +38,9 @@ export type Hit = {
 export type Action = {
 	Id: string,
 	Clip: string?, -- the clip a client plays (Config.Animations); nil: a box rig's stand-in motion on the same beats
+	-- Its effect on its beats: a Config.Effects.Rows entry (FighterController/Effects, Play), or one of the three older
+	-- signatures (Config.Effects.Older) until the finish pass; nil: a landed hit's spark only
+	Effect: string?,
 	Length: number, -- seconds the action holds its fighter, unless the next starts from CancelFrom
 	CancelFrom: number, -- the next action may start from here: the chain's rhythm
 	Cooldown: number, -- seconds from its start before it may start again; 0 for none
@@ -77,6 +83,7 @@ local rows: { Action } = {
 		-- AR8, "B5"; the director's planned rework, 2026-11-12). One target, as in TR2's block.
 		Id = "RookHaymaker",
 		Clip = "RookHaymaker",
+		Effect = "Haymaker",
 		Length = 2.0,
 		CancelFrom = 1.7,
 		Cooldown = 10,
@@ -104,6 +111,7 @@ local rows: { Action } = {
 		-- lands where it's drawn to. Coefficients a second as Rook's combo's (a seed: docs/asset-requests.md, AR4, section 8).
 		Id = "PipCombo",
 		Clip = "PipCombo",
+		Effect = "PipShots",
 		Length = 1.6667,
 		CancelFrom = 1.5, -- the next flick: Shot3 to Shot1 is 0.63 s
 		Cooldown = 0,
@@ -125,6 +133,7 @@ local rows: { Action } = {
 		-- fights 13.5 studs off (Range - Approach), so it stops a stud and a half short of the target's middle, as drawn.
 		Id = "PipLanternBurst",
 		Clip = "PipLanternBurst",
+		Effect = "LanternBurst",
 		Length = 2.2,
 		CancelFrom = 2.0,
 		Cooldown = 10,
@@ -150,6 +159,7 @@ local rows: { Action } = {
 		-- worth as Rook's combo's), from her signature's spacing (docs/asset-requests.md, AR4, section 9).
 		Id = "LyricCombo",
 		Clip = "LyricCombo",
+		Effect = "LyricShots",
 		Length = 1.75,
 		CancelFrom = 1.5, -- the next stamp: Shot3 to Shot1 is 0.75 s
 		Cooldown = 0,
@@ -206,6 +216,7 @@ local rows: { Action } = {
 		-- (Range - Approach), where the cone's middle meets her target, as the block-in framed it.
 		Id = "LyricHeldNote",
 		Clip = "LyricHeldNote",
+		Effect = "HeldNote",
 		Length = 2.5,
 		CancelFrom = 2.3,
 		Cooldown = 10,
@@ -293,6 +304,7 @@ local rows: { Action } = {
 		-- keeper's fight, its cooldown and its coefficient are a seed, signed with the fight's rotation.
 		Id = "KeeperSignature",
 		Clip = "LamplighterSignature",
+		Effect = "KeeperSignature",
 		Length = 3.0333,
 		CancelFrom = 3.0333,
 		Cooldown = 12,
@@ -325,21 +337,56 @@ for _, row in rows do
 end
 Actions.EnemyPerSecond = ENEMY_PER_SECOND
 
--- Each Voidkin's kit, in the order a fighter tries them: the signature first, so it goes as soon as it's ready. A lead
--- whose kit isn't built yet fights with Rook's on the R6 stand-in (docs/test-requests.md, TR2).
-Actions.Kits = {
-	rook = { "RookHaymaker", "RookCombo" },
-	pip = { "PipLanternBurst", "PipCombo" },
-	lyric = { "LyricHeldNote", "LyricCombo" },
-} :: { [string]: { string } }
+-- Each Voidkin's kit is on its row (Definitions.Voidkin, Kit), written once. These are read from the rows, never edited:
+--   Kits[def]   its attacks, in the order a fighter tries them: the signature first, so it goes as soon as it's ready.
+--               A lead whose kit isn't built yet fights with the stand-in's on the R6 rig (docs/test-requests.md, TR2).
+--   Skips[def]  a ranged lead's skip back (a Mage's or a Healer's): never in Kits, so never chosen as an attack; the
+--               lead takes it on its own rule (Rules.Fight.ShouldSkip)
+--   RoleOf(clip)  the game's name for a clip, for its fades: its place in a kit (Signature, Combo, Skip, Idle), else
+--               the shared clips' (Config.Animations.Roles: the rigs' reactions, the enemies')
+--   IdleOf(def)   a fighter's own stance, a Voidkin's (its Kit) or an enemy's (its row), over its rig's Idle; nil: none
+Actions.Kits = {} :: { [string]: { string } }
+Actions.Skips = {} :: { [string]: string }
 Actions.StandIn = "rook"
 
--- A ranged lead's skip back, by its def: a Mage's or a Healer's (docs/design.md, "Combat"). Never in a kit, so never
--- chosen as an attack: the lead takes it on its own rule (Rules.Fight.ShouldSkip).
-Actions.Skips = {
-	pip = "PipSkip",
-	lyric = "LyricSkip",
-} :: { [string]: string }
+local kitRoles: { [string]: string } = {}
+local function role(id: string?, as: string)
+	local action = if id then Actions.ById[id] else nil
+	if action and action.Clip then
+		kitRoles[action.Clip] = as
+	end
+end
+for _, row in Voidkin.List do
+	local kit = row.Kit
+	if kit then
+		Actions.Kits[row.Id] = { kit.Signature, kit.Combo }
+		Actions.Skips[row.Id] = kit.Skip
+		role(kit.Signature, "Signature")
+		role(kit.Combo, "Combo")
+		role(kit.Skip, "Skip")
+		if kit.Idle then
+			kitRoles[kit.Idle] = "Idle"
+		end
+	end
+end
+for _, row in Enemies.List do
+	if row.Idle then
+		kitRoles[row.Idle] = "Idle"
+	end
+end
+
+function Actions.RoleOf(clip: string): string?
+	return kitRoles[clip] or Animations.Roles[clip]
+end
+
+function Actions.IdleOf(def: string): string?
+	local voidkin = Voidkin.ById[def]
+	if voidkin then
+		return if voidkin.Kit then voidkin.Kit.Idle else nil
+	end
+	local enemy = Enemies.ById[def]
+	return if enemy then enemy.Idle else nil
+end
 
 function Actions.SkipOf(def: string): Action?
 	local id = Actions.Skips[def]

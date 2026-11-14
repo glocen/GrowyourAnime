@@ -5,8 +5,10 @@
 -- the clock: Step(frames) takes frames after the effect's marker at the clip's 60 a second, fractions and all, and says
 -- whether the effect still lives. The tracks are read every step, so a Tune shows at once; an emitter's properties and the
 -- kit's parts are set when it plays, so a Tune there shows on the next.
--- An action's effect (the keeper's signature) passes its body and its beats: a row's From names the beat its keys count
--- from, a Body row rides a point of the body, and a Glow row lights one of its parts, put back as it was at the end.
+-- An action's effect (Effects.Play) passes its body, its beats, its target, its hits and its cooldown: a row's From names
+-- the beat its keys count from, a Body row rides a point of the body, a Glow row lights one of its parts, put back as it
+-- was at the end, a Streak row is thrown at the target, a Sound row plays its cue, and a Relight row relights a part
+-- over the cooldown. A streak and a relight, once begun, run their own time (Options.Run), past the effect's end.
 -- A look is a SurfaceAppearance template, its texture its own emissive mask, cloned onto the part: a script can't set a
 -- look's maps. It can't be preloaded either, so Warm draws every kit mesh and look once, unseen, at load, and the first
 -- effect never pops in late (handbook/visuals/vfx-engine-facts.md, "Preloading").
@@ -18,6 +20,8 @@ local RunService = game:GetService("RunService")
 local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
 local FxKit = require(ReplicatedStorage.Shared.Config.FxKit)
 local Track = require(ReplicatedStorage.Shared.Rules.Track)
+local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
+local Sounds = require(script.Parent.Sounds)
 
 local Rows = {}
 
@@ -41,6 +45,12 @@ export type Player = {
 export type Options = {
 	Body: Model?, -- what Body rows ride and Glow rows light
 	Marks: { [string]: number }?, -- the frames of its action's beats from the action's start, for each row's From
+	Target: (() -> BasePart?)?, -- where its action's target stands, for a Streak row
+	Hits: { [string]: Actions.Hit }?, -- its action's hits by beat: a Streak row's on its From beat sets its width
+	Cooldown: number?, -- seconds from its action's start until it may start again, for a Relight row
+	-- Runs a step each frame with the seconds since it began, until it says false, then `done`: what a streak or a
+	-- relight lives on (Effects' own, which a capture's TimeScale holds); none: on Heartbeat
+	Run: ((step: (age: number) -> boolean, done: () -> ()) -> ())?,
 }
 
 local kit: Folder? = nil
@@ -198,6 +208,8 @@ type Piece = {
 	Glow: SurfaceAppearance?, -- a Glow row's look on the body, and its strength before
 	GlowWas: number,
 	Touched: boolean,
+	Fired: boolean, -- a Streak, Sound or Relight row, once it has gone
+	Lit: SurfaceAppearance?, -- a Relight row's look on the body
 }
 
 -- The row a ref names: "Shaft.High" is the Shaft's.
@@ -274,6 +286,7 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean, optio
 		High = Vector3.zero,
 		GlowWas = 0,
 		Touched = false,
+		Fired = false,
 	}
 	if row.Body then
 		piece.Rides = pointOf(options.Body, row.Body)
@@ -289,7 +302,12 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean, optio
 			piece.Glow, piece.GlowWas = look, look.EmissiveStrength
 		end
 		return piece
-	elseif row.Kind == "Point" then -- a place, for the rows that hang on it
+	elseif row.Kind == "Point" or row.Kind == "Streak" or row.Kind == "Sound" then -- a place; what fires there is made then
+		return piece
+	elseif row.Kind == "Relight" then
+		local body = options.Body
+		local part = if body and row.Part then body:FindFirstChild(row.Part[1], true) else nil
+		piece.Lit = if part then part:FindFirstChildOfClass("SurfaceAppearance") else nil
 		return piece
 	end
 	if row.Kind == "Mesh" then
@@ -364,6 +382,89 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean, optio
 		end
 	end
 	return piece
+end
+
+-- What a streak or a relight lives on: the effect's own runner, or Heartbeat.
+local function runOn(options: Options, step: (age: number) -> boolean, done: () -> ())
+	local given = options.Run
+	if given then
+		given(step, done)
+		return
+	end
+	local age = 0
+	local connection: RBXScriptConnection
+	connection = RunService.Heartbeat:Connect(function(dt: number)
+		age += dt
+		local ok, alive = pcall(step, age)
+		if not ok or not alive then
+			connection:Disconnect()
+			done()
+		end
+	end)
+end
+
+-- A Streak row's streak, from `from` to the target as it stands now (Config.Effects.Shot), over its Life.
+local function throwStreak(row: EffectsConfig.Row, from: Vector3, scale: number, greyed: boolean, options: Options)
+	local aim = if options.Target then options.Target() else nil
+	if aim == nil then
+		return
+	end
+	local to = aim.Position
+	local length = (to - from).Magnitude
+	if length < 0.1 then
+		return
+	end
+	local hit = if options.Hits and row.From then options.Hits[row.From] else nil
+	local heavy = hit ~= nil and hit.Heavy
+	local bar = Instance.new("Part")
+	bar.Name = "NL_RowStreak"
+	bar.Anchored, bar.CanCollide, bar.CanQuery, bar.CanTouch, bar.CastShadow = true, false, false, false, false
+	bar.Material = Enum.Material.Neon
+	local colour = row.Color or Color3.new(1, 1, 1)
+	bar.Color = if greyed then grey(colour) else colour
+	bar.Size = Vector3.one * CARRIER
+	bar.Transparency = 1
+	bar.Parent = home()
+	local placed = CFrame.lookAt((from + to) / 2, to)
+	runOn(options, function(age: number): boolean
+		local shot = EffectsConfig.Shot
+		local u = age / math.max(FRAME, shot.Life)
+		if u >= 1 then
+			return false
+		end
+		local width = (if heavy then shot.Heavy else shot.Width) * scale * (1 - u)
+		bar.Size = Vector3.new(width, width, length)
+		bar.CFrame = placed
+		bar.Transparency = u
+		return true
+	end, function()
+		bar:Destroy()
+	end)
+end
+
+-- A Relight row's look: dark now, back to its Glow over the rest of the action's cooldown from `frames` after its start.
+local relit: { [SurfaceAppearance]: number } = {}
+local function relight(row: EffectsConfig.Row, look: SurfaceAppearance?, frames: number, options: Options)
+	local spec = row.Relight
+	if look == nil or spec == nil then
+		return
+	end
+	local token = (relit[look] or 0) + 1
+	relit[look] = token
+	local seconds = (options.Cooldown or 0) - frames * FRAME
+	if seconds <= 0 then
+		look.EmissiveStrength = spec.Glow
+		return
+	end
+	look.EmissiveStrength = 0
+	runOn(options, function(age: number): boolean
+		if relit[look] ~= token or look.Parent == nil then
+			return false
+		end
+		local u = math.clamp(age / seconds, 0, 1)
+		look.EmissiveStrength = spec.Glow * u ^ spec.Power
+		return u < 1
+	end, function() end)
 end
 
 -- The frames an emitter's particles live past its last key.
@@ -589,6 +690,18 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 				beam.Width0, beam.Width1 = width * studs, width * (row.Taper or 1) * studs
 				beam.Enabled = on
 			elseif row.Kind == "Point" then
+				continue
+			elseif row.Kind == "Streak" or row.Kind == "Sound" or row.Kind == "Relight" then
+				if shown and not piece.Fired then
+					piece.Fired = true
+					if row.Kind == "Streak" then
+						throwStreak(row, piece.Frame.Position, scale, greyed, given)
+					elseif row.Kind == "Sound" then
+						Sounds.Play(row.Cue :: string, piece.Frame.Position)
+					elseif not let then
+						relight(row, piece.Lit, frames, given)
+					end
+				end
 				continue
 			else
 				local holder = piece.Carrier :: Part

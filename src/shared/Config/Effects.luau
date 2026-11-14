@@ -12,7 +12,12 @@
 --            of numbers is a range; a list of { time, value } a sequence; a string an Enum item). "Light": a PointLight.
 --            "Glow": the body's own look on its Part, its strength from the Glow track, put back at the end. "Point": a
 --            place only, for the rows that hang on it. "Beam": a Beam in Image (or Grey's in the block-in; "" none there),
---            with Beam's properties as Roblox names them, between its two ends (below).
+--            with Beam's properties as Roblox names them, between its two ends (below). "Streak": on its frame, a
+--            streak from where it stands (a Body point) to the action's target as it stands then, its look Shot's (a
+--            heavy hit on its From beat the wider), living Shot.Life on its own time, so a hold or the action's end
+--            never cuts it. "Sound": its Cue (Config.Sounds) played once on its frame, from where it stands.
+--            "Relight": its body's Part goes dark on its frame and its glow comes back over the action's cooldown
+--            from there, to Relight's Glow along u^Power, the move's readout; a newer relight on that part takes over.
 --   On       another row it rides: its place, spin and tilt, and its scale for At and Radius. None: the effect's foot.
 --   Body     a point of the action's body it rides instead (an attachment by that name, else a part).
 --   From     the beat of the effect's action its keys count from; none: the effect's marker.
@@ -28,6 +33,9 @@
 --            Transparency it takes when it has none (footed on its top, the width there). FootFade: studs from Low over
 --            which it fades in. Taper: the width at High as a share of the width at Low.
 --   Bands    a Mesh row's tracks for one of its parts, over the row's own.
+-- Free (an effect's): the beat from which its rows run on the free clock, so a hold on its hit never stills them, and an
+-- early end lets what it left play out (FighterController/Effects, Play); none: the action's clock, and an early end
+-- takes it all at once.
 --   Emit     { frame, count }: an emitter's particles let go at once.
 -- Area: the hit's area the rows are written at, or for an action's own effect the body's scale; another scales the places
 -- and sizes (not the particles). Grey: the block-in, every look grey and every colour its own grey. Action: the action
@@ -58,8 +66,10 @@ export type Row = {
 	Like: string?,
 	FootFade: number?,
 	Taper: number?,
+	Cue: string?,
+	Relight: { Glow: number, Power: number }?,
 }
-export type Rows = { Area: number, Grey: boolean, Action: string?, Rows: { [string]: Row } }
+export type Rows = { Area: number, Grey: boolean, Action: string?, Free: string?, Rows: { [string]: Row } }
 
 -- A coil band's burn (B1's exit): it holds whole, flaring from 1.5 to 4 from `from`, and is cut two frames in, its front
 -- covering the cut (build/handoff/Pip/fx/pip_burst_rows.json). Never a fade: half-gone fire over a dark Shade or a dusk sky
@@ -88,7 +98,9 @@ local COIL_SCALE: { Key } = {
 	{ 18.5, Vector3.new(3.265, 5.6, 3.265) },
 }
 
-return {
+local EffectRows = require(script.Parent.EffectRows)
+
+local Effects = {
 	-- Rook's Haymaker (docs/asset-requests.md, AR1, section 5; tools/blender/rook_haymaker_art.py): one bar, drawn once, for
 	-- the charge's square and the strike's square, eaten as it cools. Then B5's stamp (AR8, "B5"), in its art (Stamp.Art).
 	Haymaker = {
@@ -215,15 +227,12 @@ return {
 		-- picture, the before. The heat and the trail stay.
 		Exit = "LanternExit",
 	},
-	-- Pip's shots (PipCombo) and Lyric's (LyricCombo): a grey block, the builder's. A streak from the lantern, or from a
-	-- speaker's ring, to the target on each shot's beat, Life seconds; a heavy shot's is wider. Speakers: the rings each of
-	-- Lyric's shots fires from (AR4, section 6: she stamps the base and the right one fires, cuts her free hand at you and
-	-- the left one fires, then drives the stand down and both fire).
+	-- A Streak row's look (Rows: Pip's shots and Lyric's, a grey block, the builder's): Width studs across, Heavy on a
+	-- heavy hit, thinning and fading over Life seconds.
 	Shot = {
 		Width = 0.2,
 		Heavy = 0.45,
 		Life = 0.12,
-		Speakers = { Shot1 = { "RingR" }, Shot2 = { "RingL" }, Shot3 = { "RingR", "RingL" } } :: { [string]: { string } },
 	},
 
 	-- Lyric's Held Note (LyricHeldNote): AR4's art sheet (section 10; build/handoff/Lyric/fx/lyric_note_art.json) on the
@@ -352,12 +361,9 @@ return {
 	-- Width across, narrowing and fading as it rises Rise studs over Seconds.
 	LeadLeaves = { Seconds = 0.5, Rise = 5, Width = 3, High = 7 },
 
-	-- The keeper's signature (AR7, sections 6 and 7; AR8, "The keeper's signature in the engine"): its rows on the action's
-	-- beats, and the camera's lift through the hold when the lead it's aimed at is the player's own: Degrees up, eased in
-	-- over Rise seconds from Light, held, and back over Fall from Slam (AR7, section 6: from the fight's camera the wrench
-	-- stands over a phone's top edge). 18 tried by playing (2026-11-13): at 6 the lantern stayed over the top edge through
-	-- the whole hold with the keeper about 20 studs off; at 18 it's in the frame, under the edge, from the Light on.
-	KeeperSignature = { Rows = "KeeperSignature", Lift = { Degrees = 18, Rise = 0.6, Fall = 0.3 } },
+	-- The three older signatures, still functions in FighterController/Effects, by the name an action's Effect gives: they
+	-- move to rows at the finish pass (docs/engineering-plan.md, "Content at scale", item 1). Every other effect is rows.
+	Older = { Haymaker = true, LanternBurst = true, HeldNote = true } :: { [string]: boolean },
 
 	-- The passives' grey cues (Definitions.Passives, Cue; TR7, part 3), the builder's numbers, 2026-11-13, to tune by playing.
 	-- Shell: a faint ball round the body while a Reduction holds (Rook's Second Wind), Size studs across, faded in and out
@@ -376,7 +382,8 @@ return {
 		lamplighter_column_halo = "rbxassetid://71122841157536",
 	} :: { [string]: string },
 
-	-- The effects as rows (the header). Tuned live: "Effects.Rows.LanternExit.Rows.Coil.Tracks.Spin.2.2".
+	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:
+	-- "Effects.Rows.LanternExit.Rows.Coil.Tracks.Spin.2.2".
 	Rows = {
 		-- Pip's Lantern Burst, its exit (AR8, B1; Modulo's rows, build/handoff/Pip/fx/pip_burst_rows.json), from the Burst
 		-- (frame 66) on the ground under the lantern's stop, facing along the throw. The lantern's flame let out as the kit's
@@ -524,6 +531,7 @@ return {
 			Area = 1.5,
 			Grey = false,
 			Action = "KeeperSignature",
+			Free = "Slam", -- the column runs through the hold on the hit, and plays out if the keeper falls
 			Rows = {
 			-- The light gathers in the paper through the hold, flares on the Wrench, dims on the Slam: the lantern's own glow.
 			Paper = {
@@ -1089,3 +1097,12 @@ return {
 		} :: Rows,
 	} :: { [string]: Rows },
 }
+
+-- The effects whose rows are a JSON file (Config.EffectRows; docs/engineering-plan.md, "The rows contract"), beside
+-- the ones written here, as one map: the player, a Tune and the checks never tell them apart.
+for name, rows in EffectRows.Effects do
+	assert(Effects.Rows[name] == nil, `effect "{name}" is written both here and in a rows file`)
+	Effects.Rows[name] = rows :: Rows
+end
+
+return Effects

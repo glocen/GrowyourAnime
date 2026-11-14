@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Animations = require(ReplicatedStorage.Shared.Config.Animations)
+local Actions = require(ReplicatedStorage.Shared.Definitions.Actions)
 
 local FOLDER = "NL_Clips"
 local WAIT = 10 -- seconds to wait for the server's copies in a Studio run
@@ -49,9 +50,9 @@ function Clips.Animation(clip: string): Animation?
 	return animation
 end
 
--- The fades for `clip`, by its role (Config.Animations.Roles).
+-- The fades for `clip`, by its role (Definitions.Actions, RoleOf).
 function Clips.Fades(clip: string): (number, number)
-	local role = Animations.Roles[clip]
+	local role = Actions.RoleOf(clip)
 	local fades = if role then (Animations.Fades :: any)[role] else nil
 	if fades then
 		return fades.In, fades.Out

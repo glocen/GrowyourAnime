@@ -6,16 +6,121 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Track = require(Shared.Rules.Track)
 local EffectsConfig = require(Shared.Config.Effects)
+local SoundsConfig = require(Shared.Config.Sounds)
+local EffectRows = require(Shared.Config.EffectRows)
 local FxKit = require(Shared.Config.FxKit)
 local Actions = require(Shared.Definitions.Actions)
 
-local KINDS = { Mesh = true, Card = true, Emitter = true, Light = true, Glow = true, Point = true, Beam = true }
+local KINDS = { Mesh = true, Card = true, Emitter = true, Light = true, Glow = true, Point = true, Beam = true, Streak = true, Sound = true, Relight = true }
 
 local function near(a: number, b: number): boolean
 	return math.abs(a - b) <= 1e-9 * math.max(1, math.abs(b))
 end
 
 return {
+	{
+		-- docs/engineering-plan.md, "The rows contract" (Content at scale, item 3): every effect written in Luau goes into a
+		-- rows file and back unchanged, so the contract holds all of it, and the files the game reads decode whole.
+		Name = "Track: the rows contract: every effect makes a rows file and comes back the same, and the files decode whole",
+		Run = function(t: any)
+			local function same(a: any, b: any, where: string): (boolean, string?)
+				local kind = typeof(a)
+				if kind ~= typeof(b) then
+					return false, `{where}: {kind} against {typeof(b)}`
+				elseif kind == "number" then
+					return math.abs(a - b) <= 1e-9 * math.max(1, math.abs(b)), where
+				elseif kind == "Vector3" then
+					return (a - b).Magnitude <= 1e-6, where
+				elseif kind == "Color3" then
+					return math.abs(a.R - b.R) + math.abs(a.G - b.G) + math.abs(a.B - b.B) <= 1e-6, where
+				elseif kind == "table" then
+					for key, value in a do
+						local ok, at = same(value, b[key], `{where}.{tostring(key)}`)
+						if not ok then
+							return false, at
+						end
+					end
+					for key in b do
+						if a[key] == nil then
+							return false, `{where}.{tostring(key)}: only after`
+						end
+					end
+					return true, nil
+				end
+				return a == b, where
+			end
+			local count = 0
+			for name, effect in EffectsConfig.Rows do
+				count += 1
+				local file = EffectRows.Encode(effect, name)
+				t.Check(`{name}: its file names its schema and itself`, file.Schema == EffectRows.Schema and file.Effect == name)
+				local back = EffectRows.Decode(file, name)
+				local ok, at = same(back.Rows, effect.Rows, name)
+				t.Check(`{name}: back from its file the same`, ok, at)
+				t.Check(`{name}: its area, grey, action and free the same`, back.Area == effect.Area and back.Grey == effect.Grey
+					and back.Action == effect.Action and back.Free == effect.Free)
+			end
+			t.Check("every effect went round", count >= 4, `{count}`)
+			for name in EffectRows.Effects do
+				t.Check(`{name}: from its file, in Config.Effects.Rows`, EffectsConfig.Rows[name] ~= nil)
+			end
+			t.Check("Pip's and Lyric's shots are files", EffectRows.Effects.PipShots ~= nil and EffectRows.Effects.LyricShots ~= nil)
+			local colour = EffectRows.Effects.PipShots.Rows.Shot1.Color
+			t.Check("a colour decodes to a Color3", typeof(colour) == "Color3" and math.abs(colour.R - 225 / 255) < 1e-6)
+			-- what a file may not hold
+			t.Check("an unknown row field is refused", not pcall(EffectRows.Decode, {
+				Schema = EffectRows.Schema, Effect = "X", Area = 1, Rows = { A = { Kind = "Point", Tracks = {}, Colour = 1 } },
+			}, "X"))
+			t.Check("a file without its schema is refused", not pcall(EffectRows.Decode, { Effect = "X", Area = 1, Rows = {} }, "X"))
+			t.Check("a file named for another effect is refused", not pcall(EffectRows.Decode, { Schema = EffectRows.Schema, Effect = "Y", Area = 1, Rows = {} }, "X"))
+			t.Check("a Vector3 is three numbers", not pcall(EffectRows.Decode, {
+				Schema = EffectRows.Schema, Effect = "X", Area = 1, Rows = { A = { Kind = "Point", Turn = { Vector3 = { 1, 2 } }, Tracks = {} } },
+			}, "X"))
+			local why = EffectRows.Decode({
+				Schema = EffectRows.Schema, Effect = "X", Why = "a note", Area = 1, Rows = { A = { Kind = "Point", Why = "a note" } },
+			}, "X")
+			t.Check("a Why is a note, dropped; Tracks given when none", why.Rows.A.Why == nil and type(why.Rows.A.Tracks) == "table")
+		end,
+	},
+	{
+		-- docs/engineering-plan.md, "Content at scale", item 1: an action names its effect, and the rows say whose they are.
+		Name = "Track: every action's effect is its own rows, or one of the three older signatures until the finish pass",
+		Run = function(t: any)
+			local named = 0
+			for _, action in Actions.List do
+				local name = action.Effect
+				if name == nil then
+					continue
+				end
+				named += 1
+				local rows = EffectsConfig.Rows[name]
+				local older = EffectsConfig.Older[name] == true
+				t.Check(`{action.Id}: {name} is rows or an older signature, not both`, (rows ~= nil) ~= older)
+				if rows then
+					t.Equal(`{action.Id}: its rows say they're its`, rows.Action, action.Id)
+				end
+			end
+			t.Check("the six effects of the old table, named", named >= 6, `{named}`)
+			for effectName, effect in EffectsConfig.Rows do
+				local action = if effect.Action then Actions.ById[effect.Action] else nil
+				if action then
+					t.Equal(`{effectName}: its action plays it`, action.Effect, effectName)
+				end
+			end
+			for name in EffectsConfig.Older do
+				t.Check(`{name}: an older signature an action still plays`, (function()
+					for _, action in Actions.List do
+						if action.Effect == name then
+							return true
+						end
+					end
+					return false
+				end)())
+			end
+			t.Check("the keeper's signature runs free from its Slam", EffectsConfig.Rows.KeeperSignature.Free == "Slam")
+			t.Check("no camera move left in a fight's effect (the director, 2026-11-14)", (EffectsConfig :: any).KeeperSignature == nil)
+		end,
+	},
 	{
 		Name = "Track: the eases by Roblox's names",
 		Run = function(t: any)
@@ -79,6 +184,7 @@ return {
 				t.Check(`{effectName} is written at an area`, effect.Area > 0)
 				local action = if effect.Action then Actions.ById[effect.Action] else nil
 				t.Check(`{effectName}: its action is one`, effect.Action == nil or action ~= nil, tostring(effect.Action))
+				t.Check(`{effectName}: runs free from a beat of its action`, effect.Free == nil or (action ~= nil and action.Beats[effect.Free] ~= nil), tostring(effect.Free))
 				for rowName, row in effect.Rows do
 					local label = `{effectName}.{rowName}`
 					t.Check(`{label}: a kind the player plays`, KINDS[row.Kind] == true, row.Kind)
@@ -102,6 +208,16 @@ return {
 						t.Check(`{label}: a taper is a share of its foot's width`, row.Taper == nil or (row.Taper > 0 and row.Taper <= 1), tostring(row.Taper))
 					elseif row.Kind == "Glow" then
 						t.Check(`{label}: one part of its body`, action ~= nil and row.Part ~= nil and #row.Part == 1)
+					elseif row.Kind == "Streak" then
+						t.Check(`{label}: thrown from a point of its body`, action ~= nil and row.Body ~= nil)
+						t.Check(`{label}: on a beat that hits`, action ~= nil and row.From ~= nil and action.Hits[row.From :: string] ~= nil, tostring(row.From))
+					elseif row.Kind == "Sound" then
+						t.Check(`{label}: a cue that's one`, row.Cue ~= nil and (SoundsConfig.Cues :: any)[row.Cue] ~= nil, tostring(row.Cue))
+					elseif row.Kind == "Relight" then
+						t.Check(`{label}: one part of its body`, action ~= nil and row.Part ~= nil and #row.Part == 1)
+						local spec = row.Relight
+						t.Check(`{label}: its glow and its curve`, spec ~= nil and spec.Glow >= 0 and spec.Power > 0)
+						t.Check(`{label}: over a cooldown`, action ~= nil and action.Cooldown > 0)
 					end
 					if row.Kind == "Mesh" then
 						t.Check(`{label}: has parts`, row.Part ~= nil and #row.Part > 0)
@@ -174,7 +290,7 @@ return {
 		Name = "Track: the keeper's signature on its beats, as its content check passed it",
 		Run = function(t: any)
 			local action = Actions.ById.KeeperSignature
-			local effect = EffectsConfig.Rows[EffectsConfig.KeeperSignature.Rows]
+			local effect = EffectsConfig.Rows[action.Effect :: string]
 			t.Check("its rows are its action's", effect ~= nil and effect.Action == action.Id)
 			local rows = effect.Rows
 			local mark: { [string]: number } = {}

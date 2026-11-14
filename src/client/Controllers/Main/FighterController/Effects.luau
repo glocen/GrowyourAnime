@@ -10,10 +10,9 @@
 --             flame let out over the target, and the lantern relit over the cooldown as its readout
 --             (Config.Effects.LanternBurst; docs/asset-requests.md, AR4, section 8). The flame let out is its exit's rows
 --             (AR8, B1; Config.Effects.Rows, played by Rows), or the burst's picture when Exit is "".
---   KeeperSignature  the Lamplighter's, its rows on the action's beats (Config.Effects.Rows.KeeperSignature; AR8), and
---             the camera lifted through the hold when the lead it's aimed at is the player's own.
---   LanternShots  Pip's combo, a grey block: a streak from the lantern to the target on each shot (Config.Effects.Shot).
---   SpeakerShots  Lyric's combo, the same from her speakers' rings, the ones each shot names.
+--   Play      every other action's effect: its rows (Action.Effect; Config.Effects.Rows) on its beats, played by Rows:
+--             the keeper's signature (AR8), Pip's and Lyric's shots. Older: the three above, by the name an Effect gives,
+--             until they move to rows at the finish pass.
 --   HeldNote  Lyric's signature, AR4's art sheet (Config.Effects.HeldNote; AR4, section 10): the flash in her rings, a
 --             crest thrown across the cone on every half-beat (a ribbon over a veil that falls away), and the hit's
 --             cells on each Shade it reaches. HealRing: the heal's ring rising round each body it mends.
@@ -109,28 +108,9 @@ local function run(step: (age: number) -> boolean, done: () -> ())
 	table.insert(timed, { Age = 0, Step = step, Done = done })
 end
 
--- The camera's lift (Config.Effects.KeeperSignature.Lift): degrees the player's camera is turned up about its focus, after
--- the camera module has placed it. The default camera reads its own look each frame, so only the change since the last
--- frame is turned in: what was turned before is already in its look. Only the player's own camera, and only while the
--- camera module drives it.
-local lift = { Wanted = 0, Turned = 0 }
-local function turnLift()
-	local change = lift.Wanted - lift.Turned
-	lift.Turned = lift.Wanted
-	local camera = workspace.CurrentCamera
-	if math.abs(change) < 1e-6 or camera == nil or camera.CameraType ~= Enum.CameraType.Custom then
-		return
-	end
-	local focus = camera.Focus.Position
-	local view = camera.CFrame
-	local turn = CFrame.fromAxisAngle(view.RightVector, math.rad(change)) -- positive: the look goes up
-	camera.CFrame = CFrame.new(focus) * turn * CFrame.new(-focus) * view
-end
-
 -- After the camera and before the World layer places its plates (Camera + 2), so a plate's rise and size this frame are
 -- what the World layer keeps under the top band.
 RunService:BindToRenderStep("NL_Effects", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-	turnLift()
 	for index = #timed, 1, -1 do
 		local item = timed[index]
 		item.Age += dt * Effects.TimeScale
@@ -1002,164 +982,6 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 	return running
 end
 
--- The keeper's signature (Config.Effects.KeeperSignature; AR7, sections 6 and 7; AR8): its rows on the action's beats,
--- from the keeper's foot, facing as it does. Up to the Slam they run on the action's clock, which the hold pauses, so the
--- lantern's glow and streak stay on the clip; from the Slam on the free clock, so the hold on the hit never stills the
--- column. The camera's lift through the hold, for the player's own lead. Ended early (its keeper fell), what it left in the
--- street plays out and what rides the body goes.
-function Effects.KeeperSignature(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
-	local look = EffectsConfig.KeeperSignature
-	local LIGHT, SLAM, LENGTH = beats.Light, beats.Slam, action.Length
-	local written = (EffectsConfig.Rows :: any)[look.Rows]
-	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
-	local bodyScale = attacker:GetScale()
-	local marks: { [string]: number } = {}
-	for beat, at in beats do
-		marks[beat] = math.floor(at / FRAME + 0.5) -- the clip's markers stand on whole frames; the beats are written to 4 places
-	end
-	local stand = if root then root.CFrame else attacker:GetPivot()
-	local foot = stand.Position - Vector3.new(0, if root then R6_ROOT_HEIGHT * bodyScale else 0, 0)
-	local facing = Vector3.new(stand.LookVector.X, 0, stand.LookVector.Z)
-	facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
-	local rows = Rows.Play(look.Rows, CFrame.lookAt(foot, foot + facing), bodyScale / (if written then written.Area else bodyScale), {
-		Body = attacker,
-		Marks = marks,
-	})
-	local slamFree: number? = nil
-	local frames = 0
-	local lifted = 0
-	local done = false
-
-	local function mine(): boolean
-		local struck = target()
-		local body = if struck then struck.Parent else nil
-		return body ~= nil and body:GetAttribute("Owner") == Players.LocalPlayer.UserId
-	end
-
-	local running: Running
-	running = {
-		Step = function(clock: number, given: number?): boolean
-			if done then
-				return false
-			end
-			if clock >= LENGTH then
-				running.Destroy()
-				return false
-			end
-			local free = given or clock
-			if slamFree == nil and clock >= SLAM then
-				slamFree = free - (clock - SLAM)
-			end
-			local seconds = if slamFree then SLAM + free - (slamFree :: number) else clock
-			frames = seconds / FRAME
-			-- The lift: eased up from the Light over Rise, back from the Slam over Fall.
-			local up = look.Lift
-			local u = 0
-			if seconds >= SLAM then
-				u = 1 - math.clamp((seconds - SLAM) / up.Fall, 0, 1)
-			elseif seconds >= LIGHT then
-				u = math.clamp((seconds - LIGHT) / up.Rise, 0, 1)
-			end
-			local want = if mine() then up.Degrees * smooth(u) else 0
-			lift.Wanted += want - lifted
-			lifted = want
-			rows.Step(frames)
-			return true
-		end,
-		Destroy = function()
-			if done then
-				return
-			end
-			done = true
-			if frames >= SLAM / FRAME and frames < rows.End then -- the column plays out; the body's rows go
-				rows.Let()
-				local from = frames
-				run(function(age: number): boolean
-					return rows.Step(from + age / FRAME)
-				end, rows.Destroy)
-			else
-				rows.Destroy()
-			end
-			if lifted ~= 0 then -- eased back over Fall, never snapped
-				local was = lifted
-				lifted = 0
-				local fall = look.Lift.Fall
-				local given = 0
-				run(function(age: number): boolean
-					local want = was * (1 - smooth(math.clamp(age / fall, 0, 1)))
-					lift.Wanted += want - (was - given)
-					given = was - want
-					return age < fall
-				end, function()
-					lift.Wanted -= was - given
-				end)
-			end
-		end,
-	} :: Running
-	return running
-end
-
--- For the self-test: the degrees the camera is lifted by now.
-function Effects.Lift(): number
-	return lift.Wanted
-end
-
--- A grey streak from `from` to `to` (Config.Effects.Shot), over its Life; a heavy shot's is wider.
-local function streak(from: Vector3, to: Vector3, heavy: boolean)
-	local length = (to - from).Magnitude
-	if length < 0.1 then
-		return
-	end
-	local bar = part(LIGHT, Enum.Material.Neon)
-	local placed = CFrame.lookAt((from + to) / 2, to)
-	run(function(age: number): boolean
-		local shot = EffectsConfig.Shot
-		local t = age / math.max(FRAME, shot.Life)
-		if t >= 1 then
-			return false
-		end
-		local width = (if heavy then shot.Heavy else shot.Width) * (1 - t)
-		bar.Size = Vector3.new(width, width, length)
-		bar.CFrame = placed
-		bar.Transparency = t
-		return true
-	end, function()
-		bar:Destroy()
-	end)
-end
-
--- A streak to the target on each beat that hits, from each of the points `from` gives for that beat.
-local function shots(beats: { [string]: number }, target: () -> BasePart?, action: Actions.Action, from: (beat: string) -> { Attachment }): Running
-	local fired: { [string]: boolean } = {}
-	return {
-		Step = function(clock: number, _free: number?): boolean
-			for name, at in beats do
-				local hit = action.Hits[name]
-				if hit and not fired[name] and clock >= at then
-					fired[name] = true
-					local aim = target()
-					if aim then
-						for _, point in from(name) do
-							streak(point.WorldPosition, aim.Position, hit.Heavy)
-						end
-					end
-				end
-			end
-			return clock < action.Length
-		end,
-		Destroy = function() end,
-	}
-end
-
--- Pip's shots (PipCombo), a grey block: a streak from the lantern to the target on each beat that hits.
-function Effects.LanternShots(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
-	local lamp = attacker:FindFirstChild("Pip_Lamp")
-	local lantern = if lamp then lamp:FindFirstChild("Lantern") :: Attachment? else nil
-	return shots(beats, target, action, function(_beat: string): { Attachment }
-		return if lantern then { lantern } else {}
-	end)
-end
-
 -- Lyric's speakers' rings, by name (tools/studio/Models/Lyric.luau: RingR and RingL).
 local function rings(attacker: Model): { [string]: Attachment }
 	local found: { [string]: Attachment } = {}
@@ -1169,22 +991,6 @@ local function rings(attacker: Model): { [string]: Attachment }
 		end
 	end
 	return found
-end
-
--- Lyric's shots (LyricCombo), a grey block: a streak from a speaker's ring to the target on each shot, from the rings
--- Config.Effects.Shot.Speakers names for it.
-function Effects.SpeakerShots(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
-	local found = rings(attacker)
-	return shots(beats, target, action, function(beat: string): { Attachment }
-		local out = {}
-		for _, name in EffectsConfig.Shot.Speakers[beat] or {} do
-			local point = found[name]
-			if point then
-				table.insert(out, point)
-			end
-		end
-		return out
-	end)
 end
 
 -- One crest of the Held Note, thrown on `Beat` at `Born` for `Life` seconds from where she stood, along the line to her
@@ -1524,6 +1330,86 @@ function Effects.HeldNote(beats: { [string]: number }, attacker: Model, target: 
 		end,
 	}
 end
+
+-- An action's effect as rows (Action.Effect; Config.Effects.Rows): the one player for every effect but the three older
+-- signatures (Config.Effects.Older). Its rows play on the action's beats from its fighter's foot, facing as it does, at its
+-- body's scale over the size they're written at. Up to their Free beat they run on the action's clock, which a hold
+-- pauses, so what rides the body stays on the clip; from Free on, on the free clock, so a hold on the hit never stills
+-- them. Ended early from Free on (its fighter fell), what it left in the street plays out and what rides the body goes;
+-- before Free, or with none, it all goes at once, though a streak already thrown or a relight begun runs out its own time.
+-- It never moves the camera: only the hit's shake does (the director, 2026-11-14).
+function Effects.Play(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
+	local name = action.Effect :: string
+	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows
+	assert(written, `{action.Id}: no rows "{name}"`)
+	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local bodyScale = attacker:GetScale()
+	local marks: { [string]: number } = {}
+	for beat, at in beats do
+		marks[beat] = math.floor(at / FRAME + 0.5) -- the clip's markers stand on whole frames; the beats are written to 4 places
+	end
+	local stand = if root then root.CFrame else attacker:GetPivot()
+	local foot = stand.Position - Vector3.new(0, if root then R6_ROOT_HEIGHT * bodyScale else 0, 0)
+	local facing = Vector3.new(stand.LookVector.X, 0, stand.LookVector.Z)
+	facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
+	local rows = Rows.Play(name, CFrame.lookAt(foot, foot + facing), bodyScale / written.Area, {
+		Body = attacker,
+		Marks = marks,
+		Target = target,
+		Hits = action.Hits,
+		Cooldown = action.Cooldown,
+		Run = run,
+	})
+	local FREE = if written.Free then beats[written.Free] else nil
+	local LENGTH = action.Length
+	local freeFrom: number? = nil
+	local frames = 0
+	local done = false
+
+	local running: Running
+	running = {
+		Step = function(clock: number, given: number?): boolean
+			if done then
+				return false
+			end
+			if clock >= LENGTH then
+				running.Destroy()
+				return false
+			end
+			local free = given or clock
+			if FREE and freeFrom == nil and clock >= FREE then
+				freeFrom = free - (clock - FREE)
+			end
+			local seconds = if FREE and freeFrom then FREE + free - (freeFrom :: number) else clock
+			frames = seconds / FRAME
+			rows.Step(frames)
+			return true
+		end,
+		Destroy = function()
+			if done then
+				return
+			end
+			done = true
+			if FREE and frames >= FREE / FRAME and frames < rows.End then -- what it left plays out; the body's rows go
+				rows.Let()
+				local from = frames
+				run(function(age: number): boolean
+					return rows.Step(from + age / FRAME)
+				end, rows.Destroy)
+			else
+				rows.Destroy()
+			end
+		end,
+	} :: Running
+	return running
+end
+
+-- The three older signatures, by the name an action's Effect gives (Config.Effects.Older), until the finish pass.
+Effects.Older = {
+	Haymaker = Effects.Haymaker,
+	LanternBurst = Effects.LanternBurst,
+	HeldNote = Effects.HeldNote,
+} :: { [string]: (beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action) -> Running }
 
 -- A box's lean on its action's clock: back to the strike, a lunge on it, and back. Rotates about the box's foot.
 function Effects.BoxPose(beats: { [string]: number }, clock: number, height: number): CFrame

@@ -1,6 +1,7 @@
 --!strict
 -- Passive cases (pure): every passive row is whole and points at what exists, each Voidkin with a kit has one, the three
--- seeds (TR7, part 3), and each kind's rule at its edges, the Reduction through a whole hit.
+-- seeds (TR7, part 3) and Kirra's First Strike, and each kind's rule at its edges, the Reduction and the Opener through a
+-- whole hit.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -34,7 +35,11 @@ return {
 			for _, row in Passives.List do
 				t.Check(`{row.Id}: a Voidkin`, Voidkin.ById[row.Id] ~= nil)
 				t.Check(`{row.Id}: a name`, #row.Name > 0)
-				t.Check(`{row.Id}: a share between 0 and 1`, row.Share > 0 and row.Share < 1, `{row.Share}`)
+				if row.Kind == "Opener" then
+					t.Check(`{row.Id}: a critical chance, up to always`, row.Share > 0 and row.Share <= 1, `{row.Share}`)
+				else
+					t.Check(`{row.Id}: a share between 0 and 1`, row.Share > 0 and row.Share < 1, `{row.Share}`)
+				end
 				if row.Kind == "Reduction" then
 					t.Check(`{row.Id}: a health share below which it holds`, row.Below ~= nil and row.Below > 0 and row.Below < 1)
 				elseif row.Kind == "Extra" then
@@ -44,6 +49,8 @@ return {
 				elseif row.Kind == "Cooldown" then
 					local action = Actions.ById[row.Action or ""]
 					t.Check(`{row.Id}: its action in its kit, with a cooldown`, action ~= nil and inKit(row.Id, action.Id) and action.Cooldown > 0, row.Action)
+				elseif row.Kind == "Opener" then
+					t.Check(`{row.Id}: no action, beat or threshold: every hit's first`, row.Action == nil and row.Beat == nil and row.Below == nil)
 				else
 					t.Check(`{row.Id}: a known kind`, false, row.Kind)
 				end
@@ -105,6 +112,31 @@ return {
 			t.Equal("another's signature: unchanged", Passive.Cooldown(lyric, "PipLanternBurst", 10), 10)
 			t.Equal("no row: unchanged", Passive.Cooldown(nil, "LyricHeldNote", held), held)
 			t.Equal("another kind: unchanged", Passive.Cooldown(pip, "LyricHeldNote", held), held)
+		end,
+	},
+	{
+		Name = "Passive: First Strike crits Kirra's first hit to land on a target, past the critical's cap, and nothing after",
+		Run = function(t: any)
+			local kirra = Passives.ById.kirra
+			t.Check("Kirra: an Opener that always crits, its number its cue", kirra ~= nil and kirra.Name == "First Strike" and kirra.Kind == "Opener" and kirra.Share == 1 and kirra.Cue == nil)
+			t.Equal("the first hit: always", Passive.Critical(kirra, true), 1)
+			t.Equal("after it: nothing", Passive.Critical(kirra, false), 0)
+			t.Equal("no row: nothing", Passive.Critical(nil, true), 0)
+			t.Equal("another kind: nothing", Passive.Critical(Passives.ById.rook, true), 0)
+			local a = Stats.Empty(1)
+			a.Attack = 100
+			local d = Stats.Empty(1)
+			d.CriticalResist = 1e9 -- a defender no hit crits against
+			local plain = Hit.Resolve(a, d, 1, NONE, { Critical = Passive.Critical(kirra, false) })
+			local first = Hit.Resolve(a, d, 1, NONE, { Critical = Passive.Critical(kirra, true) })
+			t.Check("after the first: no critical on the worst roll", not plain.Critical and plain.ChanceCritical < 1)
+			t.Check("the first: a critical on the worst roll, past the cap", first.Critical and first.ChanceCritical == 1 and first.Total > plain.Total, `{first.Total} against {plain.Total}`)
+			local quick = Stats.Empty(1)
+			quick.Dodge = 1e9 -- a defender at its dodge's cap
+			local dodged = Hit.Resolve(a, quick, 1, { Dodge = 0, Critical = 0.999999, Block = 0.999999 }, { Critical = 1 })
+			t.Check("a dodged swing deals nothing and doesn't crit", dodged.Dodged and not dodged.Critical and dodged.Total == 0)
+			local half = Hit.Resolve(a, d, 1, { Dodge = 0.999999, Critical = 0.6, Block = 0.999999 }, { Critical = 0.5 })
+			t.Check("a floor below one rolls as a chance", not half.Critical and half.ChanceCritical == 0.5)
 		end,
 	},
 }

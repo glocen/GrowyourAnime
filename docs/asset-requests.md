@@ -5012,6 +5012,30 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **No fix. Accepted: deliver to `build/handoff/Kirra/clips/`.**
 - **At the install, research's verdict in the engine at phone size:** Scarf Step's 35° landing, the line through the chest from the player's camera, and the Combo's X with its trails.
 
+### The install (Faber)
+
+**Status:** First Strike built offline, 2026-11-14 (Faber). The model, the clips and the kit wait on the Studio MCP. Time: about 30 minutes, my estimate, not measured.
+- **Implemented: First Strike as data** (`docs/roster.md`: "her first hit on a new target always crits").
+  - **A fourth kind of passive, `Opener`** (`Definitions.Passives`). Its Share is the critical chance on the first hit to land on a target. Kirra's is 1, so it always crits, past the critical's cap. Tuned live: `Passives.kirra.Share`.
+  - **The rule:** `Rules.Passive.Critical` gives that floor. `Rules.Hit`'s effects take it as `Critical`, a floor under the hit's chance.
+  - **In the fight** (`FightService`): each fighter remembers, by Id, the fighters whose hit has landed on it.
+  - **My calls, tier 1:**
+    - A dodged swing hasn't landed, so the next one is still the first.
+    - A Shade that walks home at full health is fought anew, so the first hit crits again.
+    - No cue of its own: the critical's own number is the cue.
+- **Tested.**
+  - The type check: 0 new. The logic: 5382 passing offline.
+  - A new passive case covers the row, the rule's edges, a critical on the worst roll past the cap against a defender no hit crits on, a dodged swing dealing nothing, and a floor below one rolling as a chance.
+  - The row check takes the new kind.
+  - Its self-test, Kirra's first hit on a Shade, comes with her kit at the install.
+- **Next, on the MCP:**
+  - the model from the recipe;
+  - the eight clips registered;
+  - her kit (`KirraCombo`, `KirraScarfStep`) on her row, with the tail layers over the open set;
+  - Work's post, with 6 studs clear;
+  - TR14's verdict in motion;
+  - research's verdict at phone size.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

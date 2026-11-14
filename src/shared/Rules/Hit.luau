@@ -14,7 +14,9 @@ local Growth = require(Shared.Rules.Growth)
 local Hit = {}
 
 export type Rolls = { Dodge: number, Critical: number, Block: number } -- each in [0, 1)
-export type Effects = { Bonus: number?, Reduction: number? } -- Damage Bonus and Damage Reduction from effects in the fight
+-- Damage Bonus and Damage Reduction from effects in the fight; Critical, a floor under the hit's critical chance, past its
+-- cap (an Opener passive's: 1 always crits).
+export type Effects = { Bonus: number?, Reduction: number?, Critical: number? }
 
 export type Result = {
 	Dodged: boolean,
@@ -67,6 +69,7 @@ end
 function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: number, rolls: Rolls, effects: Effects?): Result
 	local buckets = StatsConfig.Buckets
 	local dodge, critical, block, penetration, mitigation = Hit.Odds(attacker, defender)
+	critical = math.max(critical, math.clamp(if effects then effects.Critical or 0 else 0, 0, 1))
 	local relation = Hit.TypeRelation(attacker.Type, defender.Type)
 	local result: Result = {
 		Dodged = rolls.Dodge < dodge,

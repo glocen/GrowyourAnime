@@ -1,17 +1,19 @@
 --!strict
 -- Passives (shared, content): each Voidkin's passive, one row of data keyed by its id (docs/roster.md, "Passive"). Common to
--- Epic, a passive is one plain effect with at most one plain condition (the director, 2026-11-13), so three kinds cover
+-- Epic, a passive is one plain effect with at most one plain condition (the director, 2026-11-13), so four kinds cover
 -- them, each read by one rule (Rules.Passive):
 --   Reduction: it takes Share less damage while its health is under Below of its most.
 --   Extra: one beat of one action adds Share of that hit's damage again, in the Voidkin's element, as its own coloured number.
 --   Cooldown: one action's cooldown is Share shorter.
+--   Opener: its first hit to land on a target crits at Share at least (1: always), past the critical's cap. A dodged swing
+--   hasn't landed; a Shade walked home is fought anew. The critical's own number is its cue.
 -- A new Voidkin's passive is a row, and its cue a look the client already has (FighterController/Passives). The numbers
 -- are research's seeds (docs/test-requests.md, TR7, part 3; tier 2), tuned by playing: "Passives.rook.Share".
 -- No Roblox API: it runs with Studio closed.
 
 local Tune = require(script.Parent.Parent.Util.Tune)
 
-export type Kind = "Reduction" | "Extra" | "Cooldown"
+export type Kind = "Reduction" | "Extra" | "Cooldown" | "Opener"
 
 export type Row = {
 	Id: string, -- the Voidkin's id
@@ -34,6 +36,8 @@ local rows: { Row } = {
 	{ Id = "pip", Name = "Kindle", Kind = "Extra", Share = 0.4, Action = "PipCombo", Beat = "Shot3", Cue = "Flare", At = "Lantern" },
 	-- Tempo: Held Note's cooldown is 20% shorter. No cue: the song comes round more often.
 	{ Id = "lyric", Name = "Tempo", Kind = "Cooldown", Share = 0.2, Action = "LyricHeldNote" },
+	-- First Strike: her first hit on a new target always crits (docs/roster.md). No cue of its own: the critical's number.
+	{ Id = "kirra", Name = "First Strike", Kind = "Opener", Share = 1 },
 }
 
 local Passives = {}

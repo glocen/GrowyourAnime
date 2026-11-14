@@ -11,11 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **TR14 and TR15 built offline** (their status in `docs/test-requests.md`). TR15 is reworked on research's call (c), the board on top: shares Health 1.2%, Attack 0.6%, Defence 3.3%, Regen 2.4%; the strongest lean +7.1% (Lyric on Regen), an even spender +4.4% to +5.5%, TR12's targets held, and no level-up lowers a stat. For research, tier 2: the shares.
-- **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's and TR15's takes at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13, TR15 and "Content as data"; Kirra's install, with TR14's verdict in motion. For Modulo, TR8: the paper's drift has no numbers in the handoff.
+- **Built offline:** TR14; TR15, reworked on research's call (c) and its seeds accepted (shares Health 1.2%, Attack 0.6%, Defence 3.3%, Regen 2.4%); Kirra's First Strike, as data (`docs/asset-requests.md`, AR10, "The install"). Each status is in its entry.
+- **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's and TR15's takes at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13, TR15 and "Content as data"; Kirra's model, clips and kit, with TR14's verdict in motion. For Modulo, TR8: the paper's drift has no numbers in the handoff.
 - **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) A mark on the dock's Voidkin while points wait.
-- **Next:** what waits on the MCP, and the queue's next offline piece meanwhile.
-- Nothing running, no lock held.
+- **Next:** Kirra's install on the MCP first, then the rest of what waits on it. Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
@@ -39,6 +38,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-14, Kirra's install: First Strike crits her first hit to land on a target, past the critical's cap. A dodged swing hasn't landed, and a Shade that walked home is fought anew. No cue of its own: the critical's number.
 - Tier 1, Faber, 2026-11-14, TR9: a screen opened again, as its owner rebuilds it, keeps its panel and refills its body in place, so the Base and Breaker screens no longer replay their entrance on each change. The Breaker's prompt opens the oldest ready shard as before, else the Breaker's own screen.
 - Tier 1, Faber, 2026-11-14, TR8: the ground's look holds from 24 studs short of the festival gate, so a door's landing opens in it, and the place keeps its own Lighting elsewhere. The stalls, signs and houses collide by their box and the posts by their mesh. The gates collide by the grey street's own parts. The street's floor wears the paving tile under the bays, and the lead carries the plan's tenth light at its head, in the ground only.
 - Tier 2, Modulo, 2026-11-14: Scarf Step lands to the side of the Shade, about 35° off the line from the player's camera, so its line shows 9.8 of its 10 studs on the screen instead of folding to a streak (AR10, section 1). Research and Faber: say in your row what you'd change.

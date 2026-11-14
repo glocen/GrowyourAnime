@@ -25,6 +25,12 @@ function Passive.Extra(row: Passives.Row?, action: string, beat: string, dealt: 
 	return dealt * row.Share
 end
 
+-- The critical chance an Opener gives a hit (Rules.Hit's Critical floor): its Share on the first hit to land on a target
+-- (`first`), nothing after or of another kind.
+function Passive.Critical(row: Passives.Row?, first: boolean): number
+	return if row and row.Kind == "Opener" and first then row.Share else 0
+end
+
 -- `action`'s cooldown under a Cooldown passive: Share shorter on its own action, unchanged on any other.
 function Passive.Cooldown(row: Passives.Row?, action: string, cooldown: number): number
 	if row == nil or row.Kind ~= "Cooldown" or row.Action ~= action then

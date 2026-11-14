@@ -66,6 +66,7 @@ export type Fighter = {
 	Pack: string?,
 	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
+	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
 	-- A lead watching a keeper it felled, standing and facing where it fell, until its Down's Gone (AR7, section 5, fix 2).
 	Watch: Vector3?,
@@ -448,6 +449,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Pack = nil,
 		Ground = nil,
 		Hitters = {},
+		Struck = {},
 		Alone = block.Health,
 		WatchUntil = 0,
 		Forced = nil,
@@ -682,12 +684,18 @@ end
 
 -- One target's share of a hit: rolled, dealt, pushed along `line` (from the attacker), and shown to every client. The
 -- target's passive may take less (Rook's Second Wind); the attacker's may add to it in its element (Pip's Kindle), shown in
--- the element's number.
+-- the element's number, or crit its first hit to land on the target (Kirra's First Strike).
 local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: string, hit: Actions.Hit, at: number, line: Vector3)
 	local rolls = { Dodge = rng:NextNumber(), Critical = rng:NextNumber(), Block = rng:NextNumber() }
-	local effects: Hit.Effects = { Reduction = Passive.Reduction(passiveOf(target), target.Health, target.Block.Health) }
-	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
 	local own = passiveOf(f)
+	local effects: Hit.Effects = {
+		Reduction = Passive.Reduction(passiveOf(target), target.Health, target.Block.Health),
+		Critical = Passive.Critical(own, not target.Struck[f.Id]),
+	}
+	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
+	if not result.Dodged then
+		target.Struck[f.Id] = true
+	end
 	local extra = Passive.Extra(own, action.Id, beat, result.Physical)
 	if extra > 0 then
 		result.Elemental += extra
@@ -1090,6 +1098,7 @@ local function thinkShade(f: Fighter, at: number)
 	if f.State == "Reset" then
 		if fromHome < 2 then
 			f.Hitters = {}
+			f.Struck = {} -- fought anew: an Opener's first hit again
 			crowd(f) -- back to its health alone
 			setHealth(f, f.Block.Health)
 			if f.Pack then

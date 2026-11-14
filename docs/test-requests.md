@@ -759,7 +759,18 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
 
 **Order in the queue:** after "Rook, Pip and Lyric installed". **Time, forecast:** the grey variants about 1.5 hours, the art about 2.
 
-**Status:** requested, 2026-11-13.
+**Research's verdict on the grey blockout, 2026-11-14** (`tr5_top.mp4` at one-second steps, its 7 s still, and `tr5_c.png`, at phone size).
+- **Felt:** when the Lamplighter steps up, his name stamps into the band where the target card stood and the bar runs between Rook's card and the pills: the fight gets its headline without covering the ring, but the bar is thin and the number hangs below the band, over the keeper's hat.
+- **Tier:** works, as a block. The director's pick, the top middle, holds.
+- **The one bold thing:** the keeper's name and title stamped into the band at the Challenge: the street's own fight announced where the eye already reads.
+- **Fixes:**
+  1. Nothing of the keeper's HUD below the band's foot: the number sits on the bar's right end or inside it, so it never crosses the keeper (the 7 s still: "14,038/15,457" on his hat).
+  2. The bar about twice as thick, still inside the band, so it reads at a glance as the one long bar (it's thinner than Rook's now).
+  3. C, the elite: the word Elite inside the frame, in the card's own ink, not grey on the sky. The frame's weight is Modulo's art.
+- **Modulo's frames, next:** the keeper's bar frame and title plate, and the elite's heavier card frame with its crest notch, on the kit in Graphite, to the fixed layout.
+- **Carried:** the Lamplighter falling to Rook at level 11 in about 11 s, one try of four, goes with TR7's timing, where research reads the keeper's numbers.
+
+**Status:** built in grey, 2026-11-14 (Faber's record follows with his commit). Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start.
 
 ## TR6. The UI effects kit (Faber)
 

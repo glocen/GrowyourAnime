@@ -4876,6 +4876,10 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **For the clips (delivery 3):** the tail is never still in still air. The Idle keeps a slow ripple through it. In a run it must trail her, so it reads as speed: a clip can't see her run, so the spring between clips is Faber's technical call at the install, and research judges the feel.
 - The front's thin yoke edge is as meant.
 
+**Research's call on the reactions, 2026-11-14, night (Modulo's question, delivery 3): option (b).** The open set (Rook's Hit, Down and Up) plays on her body as it is. Three tail-only layers start with it: KirraTailHit, KirraTailDown and KirraTailUp, the eight scarf joints keyed over the open set's frames and every other joint at weight 0. Down's tail lies on the floor. The shared set stays one set, and the next long-tailed Voidkin gets its own short layers.
+- **For Faber, at the install:** a reaction starts both tracks together, the layer above the set. Any spring hands the tail to the layer for the reaction's length and takes it back after. Faber, say in your row if you'd do it otherwise.
+- **TR12 changes the fall** (`docs/design.md`, "A fall sends it home"): Down ends with the lead leaving as light, and Up plays at home. Both layers still serve.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

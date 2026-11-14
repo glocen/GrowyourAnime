@@ -1,0 +1,53 @@
+{
+ "Why": "The Lamplighter's install (AR7): its meshes and maps as published under the group on 2026-11-13 (docs/asset-log.md). Each glow says what it is (the attribute Glow): a spawn sets Body's and Mask's tint and strength as a Shade's (Config.Shades); the lantern's is the keeper's fall's to put out (Config.Effects.LamplighterFall). The lantern casts no shadow, being a light, and carries one: Lantern Row's cyan, which the fall dims with its glow, at the template's size (the spawn's ScaleTo scales its Range; the recipe leaves it to the builder). Collar, where the burst starts, is the builder's point, the Shade's own. Its name and health never show over it.",
+ "Meshes": {
+  "Lamplighter_Torso": 123568546012950,
+  "Lamplighter_Head": 127642879641804,
+  "Lamplighter_RightArm": 96231224846300,
+  "Lamplighter_LeftArm": 101300623559846,
+  "Lamplighter_RightLeg": 97600147317949,
+  "Lamplighter_LeftLeg": 87843109491262,
+  "Lamplighter_Pole": 121025717290785,
+  "Lamplighter_Lantern": 138604065235609
+ },
+ "Maps": {
+  "Color": "rbxassetid://139338625939450",
+  "Roughness": "rbxassetid://120919633010805",
+  "Metalness": "rbxassetid://127686612155796",
+  "Emissive": "rbxassetid://114291313636166"
+ },
+ "NoShadow": [
+  "Lamplighter_Lantern"
+ ],
+ "GlowNames": {
+  "body": "Body",
+  "head": "Mask",
+  "lantern": "Lantern"
+ },
+ "Points": [
+  {
+   "name": "Collar",
+   "on": "Torso",
+   "at": [
+    0,
+    4.5,
+    -0.1
+   ],
+   "note": "where the burst starts: the Shade's own"
+  }
+ ],
+ "Lights": [
+  {
+   "Part": "Lamplighter_Lantern",
+   "Point": "Lantern",
+   "Name": "Light",
+   "Color": "7FE6FF",
+   "Brightness": 1.2,
+   "Range": 9
+  }
+ ],
+ "Humanoid": {
+  "DisplayDistanceType": "None",
+  "HealthDisplayType": "AlwaysOff"
+ }
+}

@@ -982,7 +982,7 @@ function Effects.LanternBurst(beats: { [string]: number }, attacker: Model, targ
 	return running
 end
 
--- Lyric's speakers' rings, by name (tools/studio/Models/Lyric.luau: RingR and RingL).
+-- Lyric's speakers' rings, by name (points of her recipe: RingR and RingL).
 local function rings(attacker: Model): { [string]: Attachment }
 	local found: { [string]: Attachment } = {}
 	for _, point in attacker:GetDescendants() do

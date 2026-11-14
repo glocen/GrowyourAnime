@@ -118,26 +118,52 @@ A module is worth it when its second user exists in the design. Building for one
 
 ## Content at scale
 
-The director's word, 2026-11-13: "foundation / well made module script on everything to produce content at massive scales very fast". The runtime already keeps no `if id ==` branch: what follows is what one more item still costs, read from the code on 2026-11-13.
+The director's word, 2026-11-13: "foundation / well made module script on everything to produce content at massive scales very fast". The runtime already keeps no `if id ==` branch: what follows is what one more item still costs, read from the code on 2026-11-13, and again after "Content as data" on 2026-11-14.
 
 | Kind | Data today | Art today | Code still written per item |
 |---|---|---|---|
-| **A Voidkin** | its row (`Definitions/Voidkin`), 2 or 3 `Actions` rows, its `Kits` and `Skips` entries, its `Idles`, `Roles` and `Props` in `Config/Animations`, two portraits in `Config/UIKit` | Modulo's model, sheet and clips scripts, to `build/handoff/<Name>/` | an assembly script (`tools/studio/Models/<Name>.luau`, 112 to 140 lines, the same skeleton each time), its `HELD` lines in `Animations/Author`, its signature's effect (below), and its self-test cases |
-| **An effect** | a `Rows` entry in `Config/Effects` (the newer ones: the keeper's signature, the lantern's exit) | the effect's art and rows scripts, to `*_rows.json` | the older signatures are functions in `FighterController/Effects.luau`: Haymaker about 335 lines, Lantern Burst 250, Held Note 190 plus its crest; one line each in `EFFECTS`; any sound on a beat is in its function |
+| **A Voidkin** | its row (`Definitions/Voidkin`, its kit on it: `Kit`), 2 or 3 `Actions` rows, a `Props` entry if it lets go of a prop, two portraits in `Config/UIKit` | Modulo's model, sheet and clips scripts, to `build/handoff/<Name>/`, with its recipe | its install (`tools/studio/Models/<Name>.json`: the published ids, below, "The recipe contract"), and its signature's rows (below). Its self-test cases are the loops of item 5 |
+| **An effect** | its rows, named by its action (`Action.Effect`): in `Config/Effects`, or a rows file in `Config/EffectRows` (Pip's and Lyric's shots) | the effect's art and rows scripts, to `<effect>.rows.json` (below, "The rows contract") | none. The three older signatures stay functions in `FighterController/Effects.luau` (`Config.Effects.Older`: Haymaker, Lantern Burst, Held Note) until the finish pass |
 | **A Shade** | its row in `Definitions/Enemies` (rig, mask, action, type, scale); a new move needs an `Actions` row | its mask on the shared Shade rig; an elite's second mask needs its own entry and a fresh `Shade.rbxm` | none |
-| **A keeper** | its `Enemies` row, 3 `Actions` rows, its `Animations` and `Falls` entries, its look and `Rows` | about six Blender scripts and an assembly script | its fall assumes a lantern and a pole (`LanternOut`), and an enemy has one action, so a signature never joins its fight (it plays only through `KeeperForce`) |
+| **A keeper** | its `Enemies` row, 3 `Actions` rows, its `Animations` and `Falls` entries, its look and `Rows` | about six Blender scripts, and its install as a Voidkin's | its fall assumes a lantern and a pole (`LanternOut`), and an enemy has one action, so a signature never joins its fight (it plays only through `KeeperForce`) |
 | **A ground** | its `Grounds` row and shard factor exist for all six; one Standard shard row | the street kit | `WorldService.lay` lays one street from one `World.Row`; nine world tags are one per world; one ring, one door target, and Lantern Row named in code. Lantern Row is the only ground at launch (the director, 2026-11-13), so this waits until after it |
 
-**To become data,** in the order they pay at launch:
-1. **Effects as rows.** `Rows` gains the four things the older functions do by hand: a streak from a body point on a beat, a camera move, a sound on a beat, and a relight over the cooldown. An action names its rows (`Action.Effect`), which replaces the `EFFECTS` table. The three older signatures move over at the finish pass, where they're remade anyway.
-2. **One model assembler** reading Modulo's `<Name>.recipe.json`, in place of one script per model, deriving `HELD` from it too.
-3. **Rows generated from `*_rows.json`,** never copied by hand into `Config/Effects`.
-4. **A Voidkin's entries on its row:** its kit, skip, idle and clip roles, read from one place instead of four tables in two files.
-5. **One self-test per kind, looped over every item:** "its look keeps its frames and leaves nothing" once for every effect, the markers for every clip (already so), the model's parts for every model.
+**To become data,** in the order they pay at launch. Items 1 to 5 are in code since 2026-11-14 and pass their checks with Studio closed; their self-test cases wait on Studio.
+1. **Effects as rows.** `Rows` gains what the older functions do by hand: a streak from a body point to the target on a beat (`Streak`), a sound on its frame (`Sound`), and a part's glow back over the cooldown (`Relight`). An action names its effect (`Action.Effect`), played through one player (`Effects.Play`), which replaced the `EFFECTS` table. The camera move is out, on the director's word of 2026-11-14: the camera never moves in a fight but for the hit's shake (`docs/decisions.md`). The three older signatures move over at the finish pass, where they're remade anyway.
+2. **One model assembler.** `tools/studio/ModelRecipe.luau` builds every model from Modulo's recipe and the builder's install, in place of one script per model (below, "The recipe contract"). Author's `HELD` is read from the templates that ship. The Shade keeps its own script: one rig for every Shade, its masks by role.
+3. **Rows from their file,** never copied by hand into `Config/Effects` (below, "The rows contract").
+4. **A Voidkin's entries on its row:** its kit (`Kit`: Signature, Combo, Skip, Idle) on its `Definitions/Voidkin` row, which `Actions.Kits`, `Skips`, `RoleOf` and `IdleOf` read. `Config/Animations` keeps the shared clips' roles.
+5. **One self-test per kind, looped over every item.** Every effect plays on a stand-in body: each of its rows shows, it lives to its end and ends on its frame, its streaks and relights run out, and it leaves nothing and puts its looks back, destroyed halfway too. Every Voidkin with a model is made the lead in turn: its R6 hidden, each piece held to the body, and each point and glow its effects use on it. The markers for every clip were already so.
 6. **An enemy's kit,** as a lead's, so a keeper's signature joins its fight, and a fall built from any kept parts.
 7. **After launch, streets by ground:** `World.Row` per ground, the one-per-world tags per ground, a ring and a door each.
 
 The piece that does 1 to 5 is "Content as data" in `docs/production-plan.md`.
+
+### The rows contract
+
+An effect's rows are data: the asset maker's rows script writes them, and the game takes them as they are.
+- **The file:** `build/handoff/<Name>/fx/<effect>.rows.json`, schema `rows/1`. It holds `Config.Effects`' Rows type as JSON, with "Schema" and "Effect" (its name) on top.
+  - A Vector3 is `{"Vector3": [x, y, z]}`, and a Color3 is `{"Color3": [r, g, b]}`, from 0 to 255.
+  - A missing value is null or left out.
+  - A "Why" on the effect or a row is a note for the reader, dropped at load. A field the game doesn't know is refused.
+- **Taking it:** `py tools/fx/rows_take.py <file>` copies it byte for byte to `src/shared/Config/EffectRows/<Effect>.json`, then runs the decoder and the rows' logic cases. A file they refuse is taken back out. A taken file is never edited: change the script that wrote it, and take it again.
+- **In the game:** `Config.EffectRows` decodes each file once, at load, and `Config.Effects.Rows` takes them beside its own Luau rows. The player, a Tune and the checks see one kind of effect.
+- **The reverse:** `py tools/fx/rows_export.py <Effect> <out.json>` writes an effect from `Config.Effects` as its file, tuned values and all. The keeper's signature and the lantern's exit can start a rows script this way. The logic case "the rows contract" takes every effect through its file and back.
+
+### The recipe contract
+
+A model is the asset maker's recipe and the builder's install, built by one assembler.
+- **The recipe** (`build/handoff/<Name>/<Name>.recipe.json`, written by Modulo's model script) is in Roblox studs, Y up, the model facing -Z with its HumanoidRootPart at (0, 3, 0).
+  - Each piece has its mesh file, its centre, and `on`: a rig part, or a piece before it.
+  - A piece on a joint of its own has `motor`, the name the clips key, and `pivot`. Any other piece is welded. `edge` marks a shell that casts no shadow.
+  - Its points: `name`, `on`, `at`.
+  - Its glow (`emissive`): one, with its pieces, tint and `cold`; or groups, each with its pieces, tint, and `strength` or `cold`.
+- **The install** (`tools/studio/Models/<Name>.json`, the builder's) holds the published ids (`Meshes` by piece, `Maps`), and what the recipe leaves to the builder: `NoShadow`, `GlowNames` (the attribute each glow group carries for the code), `Points`, `Lights` and `Humanoid`. The fields are listed in `ModelRecipe.Build`'s header.
+- **The steps:**
+  1. `py tools/upload/stage_model.py <Name>` copies the recipe and the meshes to `build/import`.
+  2. Each new mesh is published once (`Assembly.PublishMesh`), and its id goes into the install.
+  3. `Assembly.Build("<Name>")` builds the model in Studio, serialized into `src/storage/<Name>.rbxm`.
+- **The check, Studio closed:** `lune run tools/checks/models_offline.luau` builds every installed model. It compares each with the template that ships, instance by instance, and the held parts with the templates'. `--recipe <Name>` checks that a new delivery builds, before its install. On 2026-11-14, Rook, Pip, Lyric and the Lamplighter build the same as their templates.
 
 ## How each system is tested
 

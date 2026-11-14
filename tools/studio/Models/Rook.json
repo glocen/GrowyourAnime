@@ -1,0 +1,19 @@
+{
+ "Why": "Rook's install (AR1): his meshes and maps as published under the group on 2026-11-12 (docs/asset-log.md). The recipe gives the rest: the glow on the knuckles and the piston, cold 0, Haymaker's wind-up raising it.",
+ "Meshes": {
+  "Rook_Torso": 75072828358670,
+  "Rook_Head": 83536541785353,
+  "Rook_RightArm": 110459521531466,
+  "Rook_LeftArm": 139750633315555,
+  "Rook_RightLeg": 83301661579419,
+  "Rook_LeftLeg": 119264728641413,
+  "Rook_Piston": 137575387200022,
+  "Rook_Tape": 126440446567363
+ },
+ "Maps": {
+  "Color": "rbxassetid://88102000312353",
+  "Roughness": "rbxassetid://91126705261926",
+  "Metalness": "rbxassetid://119731333943757",
+  "Emissive": "rbxassetid://101673823251221"
+ }
+}

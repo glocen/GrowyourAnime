@@ -11,12 +11,13 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **In code, offline checks passing, Studio waiting on the MCP:** TR5's frames, TR6, TR7's ease taken out, TR11 (spectate), TR12 (health carries, its numbers settled in ea661cb), TR13 (the ring's three looks), and TR10 (the cooldowns, with their grey marker in three layouts). Type check 0 new, logic 4440 offline. Every self-test run and capture waits on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
+- **In code, offline checks passing, Studio waiting on the MCP:** TR5's frames, TR6, TR7's ease taken out, TR10 to TR13, and "Content as data" (`docs/engineering-plan.md`, "Content at scale", items 1 to 5, with "The rows contract" and "The recipe contract"). Offline: type check 0 new, logic 4688, and the four models built the same as their templates. Every self-test run and capture waits on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
 - **For research, TR10's numbers** (`docs/test-requests.md`, TR10's status): with the seeds, the Jewels' sources (elite and keeper kills) fall 21% alone and 35% on a full server. The keeper's 5 minutes halves its kills; 3 minutes is under a lap.
-- **Next:** "Content as data", then TR8 and TR9. TR14 rides with Kirra's install, and TR15 comes after TR9.
+- **For Modulo, AR10:** each blade on one Torso joint, and Scarf Step's landing 35° off the line, are fine as they are. The handoff's `Kirra.recipe.json` is still the older blade form (wrist, grip, stow). Re-export it, and `lune run tools/checks/models_offline.luau --recipe Kirra` checks that it builds.
+- **Next:** TR8, then TR9. TR14 rides with Kirra's install, and TR15 comes after TR9.
 - **What I'd change:**
-  1. The keeper's signature turns the player's camera up 18° through its hold (`Effects.KeeperSignature.Lift`), a camera move in a fight: ask the director with the shake and the fade's turn.
-  2. A player who owns one Voidkin is alone on Lantern Row after a fall: a chip pointing to the gate's door home.
+  1. A player who owns one Voidkin is alone on Lantern Row after a fall: a chip pointing to the gate's door home.
+  2. TR15: the points come out of the own base, so a point left unspent should count as spread evenly until it's spent. Otherwise a player who never opens the board is weaker than today's Voidkin. TR14: nothing.
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.

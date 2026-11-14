@@ -22,6 +22,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local Animations = require(ReplicatedStorage.Shared.Config.Animations)
+local ModelRecipe = require(ServerStorage:WaitForChild("NL_Tools"):WaitForChild("ModelRecipe"):Clone()) :: any
 
 export type Pose = { number }
 export type Frame = { number | { [string]: Pose } | { string }? }
@@ -33,26 +34,21 @@ local LEGS = { ["Right Leg"] = true, ["Left Leg"] = true }
 -- The weapon wrists (Simulation/Equipment): each hand's held part, named for its grip, turns on a joint in its arm, so
 -- a clip's grip Pose nests under that arm's Pose.
 local GRIPS = { GripR = "Right Arm", GripL = "Left Arm" }
--- Parts a rig carries on a joint of their own in an arm, keyed like a grip: a creature's claws (their
--- Motor6Ds ClawR and ClawL), Rook's piston and tape (AR1: tools/studio/Models/Rook.luau). Their Poses nest under their
--- arms and follow the arm's weight; they get no rest keys.
+-- Parts a rig carries on a joint of their own, keyed like a grip: their Poses nest under the part they turn on and
+-- follow its weight; they get no rest keys. A creature's claws (their Motor6Ds ClawR and ClawL) are written here; each
+-- model's own are read from the templates that ship (ModelRecipe.Held: Rook's piston and tape, Pip's hat and lamp,
+-- Lyric's stand and speakers, the Lamplighter's pole and the lantern on it, a held part on a held part), so a new
+-- model's come with its template.
 local HELD: { [string]: string } = {
 	GripR = "Right Arm",
 	GripL = "Left Arm",
 	Creature_ClawsR = "Right Arm",
 	Creature_ClawsL = "Left Arm",
-	Rook_Piston = "Right Arm",
-	Rook_Tape = "Left Arm",
-	Lyric_Staff = "Right Arm", -- Lyric's (AR4: tools/studio/Models/Lyric.luau): her mic stand in her right fist, her speakers on the Torso
-	Lyric_SpeakerR = "Torso",
-	Lyric_SpeakerL = "Torso",
-	Pip_Hat = "Head", -- Pip's (AR4: tools/studio/Models/Pip.luau): his hat on the Head, his lamp on the Torso
-	Pip_Lamp = "Torso",
-	-- The Lamplighter's (AR7: tools/studio/Models/Lamplighter.luau): its pole in the right hand, and the lantern on the
-	-- pole's hook, a held part on a held part: its Pose nests under the pole's.
-	Lamplighter_Pole = "Right Arm",
-	Lamplighter_Lantern = "Lamplighter_Pole",
 }
+for part, on in ModelRecipe.Held(ServerStorage:WaitForChild("Templates"):GetChildren()) do
+	assert(HELD[part] == nil or HELD[part] == on, `{part}: held on {HELD[part]} here, on {on} in a template`)
+	HELD[part] = on
+end
 local LEANS = { Torso = true, Head = true } -- pitch flips on these: their bases face the other way from an arm's
 
 local Author = {}

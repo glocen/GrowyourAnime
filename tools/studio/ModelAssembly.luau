@@ -10,11 +10,20 @@
 -- children, each [name, the parent's index or -1, x, y, z, nine rotation numbers] in the space of "p"; "vb", four bone
 -- indices a point; "vw", their four weights. The published mesh carries that skeleton and its weights, but a MeshPart
 -- made from it has no Bone under it (measured on a two-bone bar): Assembly.Bones makes them, and a clip then moves them.
+-- A model the asset maker hands off as a recipe is built by Assembly.Build(name), through ModelRecipe (one assembler for
+-- every model: docs/engineering-plan.md, "Content at scale", item 2):
+--   py tools/upload/stage_model.py <Name>   -- the recipe and the meshes to build/import, for NL_Import
+--   local model = Assembly.Build("<Name>") -- from NL_Import.<Name>.recipe and NL_Tools.Models.<Name> (its install)
+-- then Assembly.Serialize(model) into src/storage/<Name>.rbxm (ServerStorage.Templates.<Name>), and check it with
+-- lune run tools/checks/models_offline.luau <Name>.
 
 local AssetService = game:GetService("AssetService")
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
 local SerializationService = game:GetService("SerializationService")
 local ServerStorage = game:GetService("ServerStorage")
+
+local ModelRecipe = require(ServerStorage:WaitForChild("NL_Tools"):WaitForChild("ModelRecipe"):Clone()) :: any
 
 type MeshData = {
 	p: { number },
@@ -34,7 +43,7 @@ local FACE_BATCH = 2000 -- triangles added between yields, so Studio stays respo
 local BONE_SLOTS = 4 -- bones a point may follow: Roblox's limit, and the width of "vb" and "vw"
 local BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
-local function import(name: string): MeshData
+local function import(name: string): any
 	local value = ServerStorage:WaitForChild("NL_Import"):WaitForChild(name, 10)
 	assert(value and value:IsA("StringValue"), `No import {name} (build/import/{name}.txt)`)
 	return HttpService:JSONDecode(value.Value)
@@ -136,20 +145,40 @@ function Assembly.New(className: string, parent: Instance, props: { [string]: an
 	return instance
 end
 
--- A MeshPart of a published mesh at a model-space position, with no physics or queries (a held or worn prop).
-function Assembly.MeshPart(model: Model, name: string, meshId: number, position: Vector3, props: { [string]: any }?): MeshPart
-	local part = AssetService:CreateMeshPartAsync(Content.fromAssetId(meshId), {
+-- A published mesh as a MeshPart, its box for collisions and its triangles drawn whole.
+local function meshPart(meshId: number): MeshPart
+	return AssetService:CreateMeshPartAsync(Content.fromAssetId(meshId), {
 		CollisionFidelity = Enum.CollisionFidelity.Box,
 		RenderFidelity = Enum.RenderFidelity.Precise,
 	})
-	part.Name = name
-	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.Massless = false, false, false, false, true
-	part.CFrame = CFrame.new(position)
-	for key, value in props or {} do
-		(part :: any)[key] = value
+end
+
+-- A MeshPart of a published mesh at a model-space position, with no physics or queries (a held or worn prop).
+function Assembly.MeshPart(model: Model, name: string, meshId: number, position: Vector3, props: { [string]: any }?): MeshPart
+	return ModelRecipe.Place(meshPart(meshId), model, name, position, props)
+end
+
+-- Roblox's plain R6, cleaned of what a body of ours never wears (its scripts, face, meshes, colours, clothes), standing
+-- with its root at (0, 3, 0): the recipe's frame.
+function Assembly.R6(): Model
+	local model = Players:CreateHumanoidModelFromDescriptionAsync(Instance.new("HumanoidDescription"), Enum.HumanoidRigType.R6)
+	for _, item in model:GetDescendants() do
+		if item:IsA("LuaSourceContainer") or item:IsA("Decal") or item:IsA("SpecialMesh") or item:IsA("BodyColors") or item:IsA("Clothing") or item:IsA("Accessory") or item:IsA("HumanoidDescription") then
+			item:Destroy()
+		end
 	end
-	part.Parent = model
-	return part
+	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart
+	model:PivotTo(CFrame.new(0, 3, 0))
+	return model
+end
+
+-- A model from its recipe (NL_Import.<name>.recipe: tools/upload/stage_model.py copies it from the handoff) and its
+-- install (NL_Tools.Models.<name>, tools/studio/Models/<name>.json: the published ids and the builder's calls).
+function Assembly.Build(name: string): Model
+	local installs = ServerStorage:WaitForChild("NL_Tools"):WaitForChild("Models")
+	local install = installs:FindFirstChild(name)
+	assert(install and install:IsA("ModuleScript"), `No install {name} (tools/studio/Models/{name}.json)`)
+	return ModelRecipe.Build(import(`{name}.recipe`), require(install:Clone()) :: any, { Rig = Assembly.R6, Mesh = meshPart })
 end
 
 -- The Bones of a skinned import under its MeshPart, nested as the skeleton is, each at its rest frame; returns them by
@@ -180,20 +209,12 @@ end
 -- Holds `part` to `to` where it stands now: a Weld with an explicit C0 (WeldConstraints in a cloned model don't hold
 -- under Server Authority).
 function Assembly.Weld(to: BasePart, part: BasePart): Weld
-	local weld = Instance.new("Weld")
-	weld.Part0, weld.Part1 = to, part
-	weld.C0 = to.CFrame:ToObjectSpace(part.CFrame)
-	weld.Parent = part
-	return weld
+	return ModelRecipe.Weld(to, part)
 end
 
 -- An Attachment on `part` at a model-space position.
 function Assembly.Attach(part: BasePart, name: string, position: Vector3): Attachment
-	local attachment = Instance.new("Attachment")
-	attachment.Name = name
-	attachment.Position = part.CFrame:PointToObjectSpace(position)
-	attachment.Parent = part
-	return attachment
+	return ModelRecipe.Attach(part, name, position)
 end
 
 -- The model as .rbxm bytes in base64; decode it into src/shared/Assets/... (py -c "import base64 ...").

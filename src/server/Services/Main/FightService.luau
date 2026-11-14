@@ -378,7 +378,7 @@ local function buildShade(row: Enemies.Row, name: string, type: string): Model
 	return model
 end
 
--- An enemy in a rig of its own (ServerStorage.Templates.<Rig>: the Lamplighter's, tools/studio/Models/Lamplighter.luau),
+-- An enemy in a rig of its own (ServerStorage.Templates.<Rig>: the Lamplighter's, built by ModelRecipe),
 -- built on the Shade's frame: each surface's glow says what it is (its attribute Glow), so the body's lit seams take its
 -- type's colour and the mask a mask's, as a Shade's (Config.Shades); any other glow is its own. At the row's scale.
 local function buildRig(row: Enemies.Row, name: string, type: string): Model

@@ -1,0 +1,23 @@
+{
+ "Why": "Lyric's install (AR4): her meshes and maps as published under the group on 2026-11-12 (docs/asset-log.md). Her three edges cast no shadow by the recipe's 'edge'.",
+ "Meshes": {
+  "Lyric_Torso": 83405819418439,
+  "Lyric_Head": 135033691595468,
+  "Lyric_RightArm": 131401144430748,
+  "Lyric_LeftArm": 121544870162581,
+  "Lyric_RightLeg": 139229358507076,
+  "Lyric_LeftLeg": 113962717969748,
+  "Lyric_Staff": 123959196363788,
+  "Lyric_SpeakerR": 105223464605018,
+  "Lyric_SpeakerL": 83001463402296,
+  "Lyric_HeadEdge": 93435411458784,
+  "Lyric_RightLegEdge": 71049506909669,
+  "Lyric_LeftLegEdge": 126825078346082
+ },
+ "Maps": {
+  "Color": "rbxassetid://126747193692154",
+  "Roughness": "rbxassetid://96342815225839",
+  "Metalness": "rbxassetid://88274199900467",
+  "Emissive": "rbxassetid://138261768870090"
+ }
+}

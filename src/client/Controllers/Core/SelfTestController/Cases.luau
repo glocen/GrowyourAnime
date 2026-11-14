@@ -628,6 +628,226 @@ return {
 		end,
 	},
 	{
+		Name = "Effects: every effect's rows play on a body to their last frame, and leave nothing",
+		Stay = true,
+		Run = function(t: any)
+			-- docs/engineering-plan.md, "Content at scale", item 5: one case for every effect in Config.Effects.Rows, written
+			-- in Luau or a rows file, so a new effect is checked the day it lands. Each plays through Rows on a stand-in body
+			-- with the points and the looks its rows name, on its action's beats, stepped by hand every half frame, its
+			-- streaks and relights on a clock of the case's own: nothing shows before its first frame, each row that makes a
+			-- part shows on some frame, it lives to its End and ends a frame past it, and leaves nothing (the rows' folder as it
+			-- was, the body's looks put back, a relit one at its Glow). Then once more, ended halfway, as a fight ends one.
+			local root = t.Character():FindFirstChild("HumanoidRootPart") :: BasePart
+			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
+			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
+			t.Wait(2.5)
+			t.Check("the warm pass ran and is over", Rows.Warmed())
+			local COLD = 1.2 -- a stand-in look's glow before the effect
+			local function rowsLeft(): number
+				local folder = workspace:FindFirstChild("NL_Rows")
+				return if folder then #folder:GetChildren() else 0
+			end
+			local function stand(at: CFrame, name: string): MeshPart
+				local part = Instance.new("MeshPart") -- a look sits only on a MeshPart
+				part.Name = name
+				part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+				part.Size = Vector3.one
+				part.Transparency = 1
+				part.CFrame = at
+				return part
+			end
+			-- What a made part shows, by its row's kind, as Rows shows it: a mesh by its transparency, a card by its image, a
+			-- beam by Enabled, a light by its brightness, an emitter by its rate.
+			local function showing(kind: string, made: Instance): boolean
+				if kind == "Mesh" then
+					return (made :: BasePart).Transparency < 1
+				elseif kind == "Card" then
+					local label = made:FindFirstChildWhichIsA("ImageLabel", true)
+					return label ~= nil and label.ImageTransparency < 1
+				elseif kind == "Beam" then
+					local beam = made:FindFirstChildOfClass("Beam")
+					return beam ~= nil and beam.Enabled
+				elseif kind == "Light" then
+					local light = made:FindFirstChildOfClass("PointLight")
+					return light ~= nil and light.Brightness > 0
+				elseif kind == "Emitter" then
+					local emitter = made:FindFirstChildOfClass("ParticleEmitter")
+					return emitter ~= nil and emitter.Rate > 0
+				end
+				return false
+			end
+			-- Whether a row shows on a still stand-in: a beam blank in grey never does, nor a trail whose point never moves,
+			-- and an emitter of bursts alone has no rate to read.
+			local function shows(effect: EffectsConfig.Rows, row: EffectsConfig.Row): boolean
+				if row.Kind == "Beam" then
+					return not (effect.Grey and row.Grey == "") and row.Trail == nil
+				elseif row.Kind == "Emitter" then
+					return row.Tracks.Rate ~= nil
+				end
+				return row.Kind == "Mesh" or row.Kind == "Card" or row.Kind == "Light"
+			end
+			local names: { string } = {}
+			for name in EffectsConfig.Rows do
+				table.insert(names, name)
+			end
+			table.sort(names)
+			t.Check("every effect, one by one", #names >= 4, `{#names}`)
+			for _, name in names do
+				local effect = EffectsConfig.Rows[name]
+				local action = if effect.Action then Actions.ById[effect.Action] else nil
+				local marks: { [string]: number } = {}
+				for beat, at in (if action then action.Beats else {}) :: { [string]: number } do
+					marks[beat] = math.floor(at / FRAME + 0.5)
+				end
+				-- The stand-in: a part with a look for each its rows light, an attachment for each place they ride.
+				local body = Instance.new("Model")
+				body.Name = "NL_TestBody"
+				local trunk = stand(anchor * CFrame.new(0, 3, -2), "NL_TestTrunk")
+				trunk.Parent = body
+				local looks: { [SurfaceAppearance]: number } = {} -- each look, and where it's left
+				for _, row in effect.Rows do
+					local lit = if row.Part and (row.Kind == "Glow" or row.Kind == "Relight") then row.Part[1] else nil
+					local part = if lit then body:FindFirstChild(lit) else nil
+					if lit and part == nil then
+						local made = stand(anchor * CFrame.new(1.5, 5, -2), lit)
+						local look = Instance.new("SurfaceAppearance")
+						look.EmissiveStrength = COLD
+						look.Parent = made
+						made.Parent = body
+						looks[look] = COLD
+						part = made
+					end
+					local relit = row.Relight
+					if row.Kind == "Relight" and relit and part then
+						looks[part:FindFirstChildOfClass("SurfaceAppearance") :: SurfaceAppearance] = relit.Glow
+					end
+				end
+				for _, row in effect.Rows do
+					local point = row.Body
+					if point and body:FindFirstChild(point, true) == nil then
+						local attachment = Instance.new("Attachment")
+						attachment.Name = point
+						attachment.Position = Vector3.new(0.5, 1, -0.5)
+						attachment.Parent = trunk
+					end
+				end
+				local aim = stand(anchor * CFrame.new(0, 3, -12), "NL_TestTarget")
+				aim.Parent = workspace
+				body.Parent = workspace
+				local runs: { { Step: (number) -> boolean, Done: () -> () } } = {}
+				local options: Rows.Options = {
+					Body = body,
+					Marks = marks,
+					Target = function(): BasePart?
+						return aim
+					end,
+					Hits = if action then action.Hits else nil,
+					Cooldown = if action then action.Cooldown else nil,
+					Run = function(step: (number) -> boolean, done: () -> ())
+						table.insert(runs, { Step = step, Done = done })
+					end,
+				}
+				-- A streak's or a relight's own clock, run out at once: each to its end, then let go.
+				local function runOut(): boolean
+					local whole = true
+					for _, run in runs do
+						local age, alive = 0, true
+						while alive and age < 120 do
+							age += FRAME
+							local ok, more = pcall(run.Step, age)
+							alive = ok and more
+						end
+						whole = whole and not alive
+						run.Done()
+					end
+					table.clear(runs)
+					return whole
+				end
+				local function stayed(player: any): string
+					local left: { string } = {}
+					for rowName in effect.Rows do
+						for _, made in player.Parts(rowName) do
+							if made.Parent ~= nil then
+								table.insert(left, rowName)
+								break
+							end
+						end
+					end
+					return table.concat(left, ", ")
+				end
+				local function looksOff(): string
+					local off: { string } = {}
+					for look, want in looks do
+						if math.abs(look.EmissiveStrength - want) > 1e-6 then
+							table.insert(off, string.format("%s at %.2f, not %.2f", (look.Parent :: Instance).Name, look.EmissiveStrength, want))
+						end
+					end
+					return table.concat(off, ", ")
+				end
+				local before = rowsLeft()
+				local ok, played = pcall(Rows.Play, name, anchor, 1, options)
+				t.Check(`{name}: plays on its body and its beats`, ok, if ok then nil else tostring(played))
+				if ok then
+					local player = played :: any
+					player.Step(-1)
+					local early: { string } = {}
+					for rowName, row in effect.Rows do
+						for _, made in player.Parts(rowName) do
+							if showing(row.Kind, made) then
+								table.insert(early, rowName)
+								break
+							end
+						end
+					end
+					t.Check(`{name}: nothing shown before its first frame`, #early == 0, table.concat(early, ", "))
+					local seen: { [string]: boolean } = {}
+					local alive, frames = true, 0
+					while alive and frames <= player.End do
+						alive = player.Step(frames)
+						for rowName, row in effect.Rows do
+							if not seen[rowName] then
+								for _, made in player.Parts(rowName) do
+									if showing(row.Kind, made) then
+										seen[rowName] = true
+										break
+									end
+								end
+							end
+						end
+						frames += 0.5
+					end
+					t.Check(`{name}: lives to its End`, alive, string.format("ended on %.1f of %.1f", frames - 0.5, player.End))
+					local never: { string } = {}
+					for rowName, row in effect.Rows do
+						if shows(effect, row) and not seen[rowName] then
+							table.insert(never, rowName)
+						end
+					end
+					table.sort(never)
+					t.Check(`{name}: each row that makes a part shows on a frame of it`, #never == 0, table.concat(never, ", "))
+					t.Check(`{name}: and ends a frame past it`, not player.Step(player.End + 1))
+					t.Check(`{name}: its streaks and relights run out`, runOut())
+					local left = stayed(player)
+					t.Check(`{name}: leaving nothing`, left == "" and rowsLeft() == before, `{left} ({rowsLeft()} parts, {before} before)`)
+					t.Check(`{name}: the body's looks as they were, a relit one at its Glow`, looksOff() == "", looksOff())
+					-- ended halfway: all of it at once
+					local again = Rows.Play(name, anchor, 1, options)
+					local half = math.floor(again.End / 2)
+					for frame = 0, half do
+						again.Step(frame)
+					end
+					again.Destroy()
+					runOut()
+					local leftHalf = stayed(again)
+					t.Check(`{name}: ended halfway, nothing left`, leftHalf == "" and rowsLeft() == before, `{leftHalf} ({rowsLeft()} parts, {before} before)`)
+					t.Check(`{name}: and its looks put back`, looksOff() == "", looksOff())
+				end
+				body:Destroy()
+				aim:Destroy()
+			end
+		end,
+	},
+	{
 		Name = "Effects: the keeper's signature plays its rows on its beats, on a body, and leaves the body as it was",
 		Stay = true,
 		Run = function(t: any)
@@ -1394,7 +1614,7 @@ return {
 				t.Row(`the lead is {tostring(lead:GetAttribute("Def"))}, not Rook: his checks wait for a Rook lead`, nil, nil, nil, "")
 				return
 			end
-			-- AR1 (tools/studio/Models/Rook.luau): R6's seven parts hidden, his eight pieces riding them
+			-- AR1 (his recipe, built by ModelRecipe): R6's seven parts hidden, his eight pieces riding them
 			local hidden, shown = 0, 0
 			for _, part in lead:GetChildren() do
 				if part:IsA("BasePart") then
@@ -1442,6 +1662,125 @@ return {
 				end
 				t.Check("the tape swings through the idle", swing > TAPE_SWING, string.format("%.1f degrees", swing))
 				t.Near("the piston rests home", out, 0, 0.01)
+			end
+		end,
+	},
+	{
+		Name = "Fight: every Voidkin with a model wears it as the lead, with the points and the looks its effects use",
+		Run = function(t: any)
+			-- docs/engineering-plan.md, "Content at scale", item 5: each row of Definitions.Voidkin that names a Model
+			-- (ServerStorage.Templates.<Model>) leads in turn, one owned or given, and its body is read as the lead wears it:
+			-- R6's seven parts hidden; every <Model>_ piece shown, held by a weld or a joint with both its ends set (a synced
+			-- .rbxm can drop a new part's Part0) and riding the body; every point a Body row of its kit's effects rides, and
+			-- every look a Glow or a Relight row lights, on it. Rook's own case keeps his piston, his tape and his Haymaker.
+			local view = ProfileController.Get()
+			local was = if view then view.Roles.Lead else nil
+			local count = 0
+			for _, row in Voidkin.List do
+				local modelName = row.Model
+				if modelName == nil then
+					continue
+				end
+				count += 1
+				local def = row.Id
+				local function leading(): Model?
+					local found = myLead()
+					return if found and found:GetAttribute("Def") == def then found else nil
+				end
+				if leading() == nil then
+					local now = ProfileController.Get()
+					local id: string? = nil
+					for owned, voidkin in (if now then now.Voidkin else {}) :: { [string]: any } do
+						if voidkin.Def == def and Read.Role(now :: any, owned) == "" then
+							id = owned
+							break
+						end
+					end
+					if id == nil then
+						local given = t.Server("VoidkinGive", def)
+						local newId = if type(given) == "table" and given.Ok == true then given.Id else nil
+						local arrived = type(newId) == "string" and waitFor(t, 2, function(): boolean
+							local latest = ProfileController.Get()
+							return latest ~= nil and latest.Voidkin[newId] ~= nil
+						end)
+						if arrived then
+							id = newId
+						end
+					end
+					t.Check(`{def}: one free to lead`, id ~= nil)
+					if id == nil then
+						continue
+					end
+					local answer = t.Server("Act", "SetLead", { Voidkin = id })
+					t.Check(`{def}: made the lead`, type(answer) == "table" and answer.Ok == true, if type(answer) == "table" then tostring(answer.Error) else tostring(answer))
+				end
+				local stood = waitFor(t, LEAD_SETTLE * 2, function(): boolean
+					return leading() ~= nil
+				end)
+				local lead = leading()
+				t.Check(`{def} leads in the world`, stood and lead ~= nil)
+				if lead == nil then
+					continue
+				end
+				local prefix = `{modelName}_`
+				local rigParts, hidden, pieces, shown = 0, 0, 0, 0
+				local loose: { string } = {}
+				local rootPart = lead:FindFirstChild("HumanoidRootPart") :: BasePart?
+				local reach = 8 * lead:GetScale()
+				for _, part in lead:GetChildren() do
+					if not part:IsA("BasePart") then
+						continue
+					end
+					if string.sub(part.Name, 1, #prefix) ~= prefix then
+						rigParts += 1
+						hidden += if part.Transparency >= 1 then 1 else 0
+						continue
+					end
+					pieces += 1
+					shown += if part.Transparency == 0 then 1 else 0
+					local held = false
+					for _, joint in lead:GetDescendants() do
+						if joint:IsA("JointInstance") and joint.Part1 == part and joint.Part0 ~= nil then
+							held = true
+						elseif joint:IsA("WeldConstraint") and joint.Part1 == part and joint.Part0 ~= nil then
+							held = true
+						end
+					end
+					local near = rootPart ~= nil and (part.Position - rootPart.Position).Magnitude < reach
+					if not (held and near) then
+						table.insert(loose, part.Name)
+					end
+				end
+				t.Check(`{def}: R6's seven parts hidden`, rigParts == 7 and hidden == 7, `{hidden} of {rigParts}`)
+				t.Check(`{def}: its pieces show`, pieces > 0 and shown == pieces, `{shown} of {pieces}`)
+				table.sort(loose)
+				t.Check(`{def}: each piece held to the body and riding it`, #loose == 0, table.concat(loose, ", "))
+				local kit = Actions.KitOf(def)
+				local skip = Actions.SkipOf(def)
+				if skip then
+					table.insert(kit, skip)
+				end
+				local missing: { string } = {}
+				for _, action in kit do
+					local effect = if action.Effect then EffectsConfig.Rows[action.Effect] else nil
+					for rowName, effectRow in (if effect then effect.Rows else {}) :: { [string]: EffectsConfig.Row } do
+						local point = effectRow.Body
+						if point and lead:FindFirstChild(point, true) == nil then
+							table.insert(missing, `{action.Effect}.{rowName}: {point}`)
+						end
+						local lit = if effectRow.Part and (effectRow.Kind == "Glow" or effectRow.Kind == "Relight") then effectRow.Part[1] else nil
+						local part = if lit then lead:FindFirstChild(lit, true) else nil
+						if lit and (part == nil or part:FindFirstChildOfClass("SurfaceAppearance") == nil) then
+							table.insert(missing, `{action.Effect}.{rowName}: {lit}'s look`)
+						end
+					end
+				end
+				table.sort(missing)
+				t.Check(`{def}: every point and look its effects use is on it`, #missing == 0, table.concat(missing, ", "))
+			end
+			t.Check("every Voidkin with a model, in turn", count >= 3, `{count}`)
+			if was then
+				t.Server("Act", "SetLead", { Voidkin = was })
 			end
 		end,
 	},

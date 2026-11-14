@@ -7755,6 +7755,169 @@ return {
 		end,
 	},
 	{
+		Name = "Take: TR9, the Breaker's three layouts at home with shards breaking, for research's verdict",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR9's evidence (docs/test-requests.md, TR9): the Breaker's screen in grey from the player's camera, at home, its
+			-- prompt tapped after a walk, its chambers cracking with their time left and a line waiting. In Machine a chamber
+			-- tapped and a shard in the line infused a little; in List a row's odds; in Sheet a chamber's odds over the
+			-- machine and Back. Not played, and their rows say so: the shards and the full battery given before the walk,
+			-- the Breaker's ready shards opened first (its prompt would open them), and each switch of layout (a Tune on the
+			-- open screen, as the blockout's verdict takes them side by side).
+			local view = ProfileController.Get()
+			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+			if view == nil or view.Progress.Starter == "" then
+				return
+			end
+			local shard = "lanternrow_standard"
+			local layout = HudConfig.Breaker.Layout
+			local battery = view.Base.Battery
+			local held = view.Bag.Shards[shard] or 0
+			local before = readyCount(shard)
+			-- Nothing ready, so the prompt opens the screen.
+			local readyDefs: { [string]: boolean } = {}
+			for _, work in view.Base.Ready do
+				readyDefs[work.Def] = true
+			end
+			for def in readyDefs do
+				openReadyDown(t, def, 0)
+			end
+			before = readyCount(shard)
+			-- Every chamber filled, two in the line and one left in the bag.
+			local open = #(ProfileController.Get() :: Profile.View).Base.Chambers
+			local busy = 0
+			for _, chamber in (ProfileController.Get() :: Profile.View).Base.Chambers do
+				busy += if chamber.Work then 1 else 0
+			end
+			local feed = open - busy + 2
+			t.Server("BaseGive", shard, feed + 1)
+			t.Check("the server gives the take's shards", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + feed + 1
+			end))
+			for _ = 1, feed do
+				ProfileController.Act("AddShard", { Shard = shard })
+			end
+			t.Check("the chambers full and two in the line", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and #now.Base.Line >= 2 and (now.Bag.Shards[shard] or 0) == held + 1
+			end))
+			t.Server("BaseSkip", ShardConfig.Grades.Standard.BreakSeconds * 0.4) -- cracked partway, each with its time left
+			t.Server("BaseBattery", BaseConfig.Battery.Capacity)
+			t.Server("Tune", "Hud.Breaker.Layout", "Machine")
+			Screen.Close()
+			local player = Players.LocalPlayer
+			local old = player.Character
+			t.Server("Respawn")
+			t.Check("the avatar arrives on its plot, facing the Breaker", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+				local character = player.Character
+				local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+				return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+			end))
+			t.Wait(WorldConfig.Arrive + 1)
+			local prompt = BaseController.Parts().BreakerPrompt :: ProximityPrompt?
+			local anchor = prompt and prompt.Parent
+			t.Check("the Breaker has its prompt", anchor ~= nil and anchor:IsA("BasePart"))
+			if prompt == nil or anchor == nil or not anchor:IsA("BasePart") then
+				return
+			end
+			take(t, function(kit: Take)
+				local moment = kit.Moment
+				kit.Zero()
+				moment("zero: at home, the Breaker ahead, its chambers cracking")
+				moment("not played: the shards, the full battery and the opened ready shards given before the walk")
+				local here = t.Root().Position
+				local toward = Vector3.new(anchor.Position.X - here.X, 0, anchor.Position.Z - here.Z)
+				local stand = anchor.Position - toward.Unit * 6
+				moment("the walk to the Breaker")
+				kit.WalkTo(Vector3.new(stand.X, here.Y, stand.Z))
+				t.Wait(0.6)
+				moment("the prompt tapped: the Breaker in Machine")
+				prompt:InputHoldBegin()
+				prompt:InputHoldEnd()
+				t.Check("Machine opens on its prompt", waitFor(t, 2, function(): boolean
+					return Screen.Current() == BreakerScreen.Name and breakerPart("Machine") ~= nil
+				end))
+				t.Wait(TAKE_READ)
+				local now = ProfileController.Get() :: Profile.View
+				if now.Base.Chambers[2] and now.Base.Chambers[2].Work then
+					moment("Machine: chamber 2 tapped, its odds")
+					BreakerScreen.Select({ Kind = "Chamber", Index = 2, Def = shard })
+					t.Wait(2)
+				end
+				moment("Machine: the line's first shard tapped, its odds and infusion's two levels")
+				BreakerScreen.Select({ Kind = "Line", Index = 1, Def = shard })
+				t.Wait(2.5)
+				-- The battery also feeds the breaking chambers, so the shard's own lift is what's read.
+				local little, locked = infuseButton(1)
+				moment("Machine: infused a little, its price spent and the rarest tier lifted")
+				t.Check("a little can be pressed", little ~= nil and not locked)
+				t.Check("a little infused", little ~= nil and Button.Press(little) and waitFor(t, ANSWER, function(): boolean
+					local work = chosenWork(BreakerScreen.Selected())
+					return work ~= nil and work.Luck > 0
+				end), (function(): string
+					local item = BreakerScreen.Selected()
+					return if item then `{item.Kind} {item.Index}` else "nothing chosen"
+				end)())
+				t.Wait(TAKE_READ)
+				moment("not played: the layout switched to List on the open screen")
+				t.Server("Tune", "Hud.Breaker.Layout", "List")
+				t.Check("List built", waitFor(t, 2, function(): boolean
+					return breakerPart("Shards") ~= nil
+				end))
+				t.Wait(TAKE_READ)
+				local bag = bagItem(shard)
+				local odds = bag and screenButton(BreakerScreen.Name, "Shards", `Bag{bag.Index}`)
+				moment("List: the bag's shard, its row's Odds tapped")
+				t.Check("its odds chosen", odds ~= nil and Button.Press(odds) and waitFor(t, 1, function(): boolean
+					local item = BreakerScreen.Selected()
+					return item ~= nil and item.Kind == "Bag"
+				end))
+				t.Wait(TAKE_READ)
+				moment("not played: the layout switched to Sheet, the choice cleared as a fresh screen")
+				t.Server("Tune", "Hud.Breaker.Layout", "Sheet")
+				t.Check("Sheet built", waitFor(t, 2, function(): boolean
+					return breakerPart("Chambers") ~= nil and breakerPart("Machine") == nil
+				end))
+				BreakerScreen.Select(nil)
+				t.Wait(TAKE_READ)
+				moment("Sheet: chamber 1 tapped, its odds a sheet over the machine")
+				BreakerScreen.Select({ Kind = "Chamber", Index = 1, Def = shard })
+				t.Check("the sheet over the machine", waitFor(t, 1, function(): boolean
+					return breakerPart("Odds") ~= nil
+				end))
+				t.Wait(TAKE_READ)
+				local back = breakerPart("Back")
+				moment("Sheet: Back, the machine again")
+				t.Check("Back takes the sheet away", back ~= nil and back:IsA("TextButton") and Button.Press(back) and waitFor(t, 1, function(): boolean
+					return breakerPart("Odds") == nil
+				end))
+				t.Wait(2)
+				local frame = Screen.Frame(BreakerScreen.Name)
+				local close = frame and frame:FindFirstChild("Close", true)
+				moment("Close")
+				t.Check("Close shuts it", close ~= nil and close:IsA("TextButton") and Button.Press(close) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == nil
+				end))
+				t.Wait(1.5)
+				moment("end")
+			end)
+			-- As it found it: the layout, the battery, the bag's extra shard back, the rest broken and opened.
+			t.Server("Tune", "Hud.Breaker.Layout", layout)
+			Screen.Close()
+			if ((ProfileController.Get() :: Profile.View).Bag.Shards[shard] or 0) > held then
+				t.Server("BaseGive", shard, -1)
+			end
+			t.Server("BaseSkip", SKIP_ALL)
+			waitFor(t, ANSWER, function(): boolean
+				return readyCount(shard) > before
+			end)
+			openReadyDown(t, shard, before)
+			t.Server("BaseBattery", battery)
+		end,
+	},
+	{
 		Name = "Take: the Lamplighter's fall, for TR2's close",
 		Manual = true,
 		Stay = true,

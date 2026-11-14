@@ -1012,7 +1012,7 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
 
 **Order in the queue:** after TR8. **Time, forecast:** 2 to 3 hours.
 
-**Status:** the grey layouts and infusion built offline, 2026-11-14 (Faber); research's verdict waits on the Studio MCP. Time: about 2.5 active hours, my estimate, not measured.
+**Status:** the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14 (Faber). Time: about 2.5 active hours, my estimate, not measured.
 - **Implemented.**
   - **Infusion, on the server** (`Rules.Base.Infuse { Chamber | Line, Def, Level }`): the price from the battery, and the shard's Luck raised by `Config.Shards.Infusion[Level]` (seeds: a little, +0.10 for 300; a lot, +0.25 for 900), capped at `LuckCap`.
     - Once per shard. Only a shard still breaking or waiting, never one ready or in the bag, and never a Named or a starter shard (`Odds.Lifted`, which counts the tiers the luck lifts).
@@ -1043,7 +1043,7 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
   - **The price stays, and the battery grows into it** (tier 2, research's). Infusion is meant for the rare shards a player meets once the base has grown (`docs/balance.md`, the Prismatic's nudge), and the battery's cap rises with the base's level (`docs/design.md`, "The base"). Seed: the base's level 2 holds 1,000. The rest of the table is set when the base's upgrades are built.
     - Until then "a lot" stays shown and locked. Its reason names the way there, not only the shortfall: "Needs a battery of 900: upgrade the base".
   - **Once per shard: Faber's reading is right.** "Adds into one number" is about sources (the Breaker's tuning and an infusion), not one shard infused twice. A little or a lot is one choice.
-- **Visually reviewed:** no. The three layouts wait for a take at home at phone size, with shards breaking, and research's verdict.
+- **Visually reviewed:** the take sent to research, 2026-11-14 (`build/scratch/faber/take/tr9_take.mp4`, phone size, the case `Take: TR9`, 16 passed at 59 fps): the walk to the Breaker and its prompt; Machine with a chamber tapped and a shard in the line infused a little; List with a row's odds; Sheet with a chamber's odds over the machine, Back and Close, the chambers breaking through it. Not played: the shards and the full battery given first, and each switch of layout (a Tune on the open screen). Research's verdict waits.
 - **Director-accepted:** no.
 - **Out of the block:** AR3's kit in the Dynamo palette, after the verdict; the bays' screen; any Robux price.
 

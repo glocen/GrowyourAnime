@@ -1,0 +1,325 @@
+{
+ "pixelsPerPoint": 4,
+ "geometry": {
+  "bar": {
+   "height": 20.0,
+   "cap": [
+    12.0,
+    29.0
+   ],
+   "mark": [
+    7.0,
+    26.0
+   ],
+   "rim": 2.2,
+   "rule": {
+    "width": 1.5,
+    "tip": [
+     11.0,
+     6.4
+    ],
+    "gap": 1.0,
+    "taper": 24.0
+   },
+   "crest": [
+    24.0,
+    11.0
+   ]
+  },
+  "elite": {
+   "size": [
+    216.0,
+    45.8
+   ],
+   "housing": [
+    -0.054999999999999716,
+    16.0,
+    215.0,
+    45.8
+   ],
+   "health": [
+    16.245000000000005,
+    19.4,
+    204.63000000000005,
+    23.0
+   ],
+   "fillFrom": 16.245000000000005,
+   "stud": [
+    6.650000000000006,
+    30.9
+   ],
+   "tab": [
+    [
+     169.85000000000002,
+     3.0
+    ],
+    [
+     215.85000000000002,
+     3.0
+    ],
+    [
+     208.92000000000002,
+     18.4
+    ],
+    [
+     162.92000000000002,
+     18.4
+    ]
+   ],
+   "word": [
+    189.925,
+    9.5
+   ],
+   "nameTabEnd": 165.85000000000002,
+   "artTop": -7.299999999999999
+  }
+ },
+ "images": {
+  "BossBarRim": {
+   "file": "images/BossBarRim.png",
+   "pixels": [
+    264,
+    104
+   ],
+   "points": [
+    66.0,
+    26.0
+   ],
+   "pad": 3.0,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the bar's rim, white, tinted Rim: sliced, its box the channel's (20 high); outside it a band of metal and a hairline, inside a dark line over the fill's edge",
+   "cut": [
+    8.0,
+    8.0,
+    8.0,
+    8.0
+   ]
+  },
+  "BossBarCap": {
+   "file": "images/BossBarCap.png",
+   "pixels": [
+    60,
+    128
+   ],
+   "points": [
+    15.0,
+    32.0
+   ],
+   "pad": 1.5,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "an end cap, white, tinted Rim: centred on the channel's end, both ends"
+  },
+  "BossBarMark": {
+   "file": "images/BossBarMark.png",
+   "pixels": [
+    40,
+    116
+   ],
+   "points": [
+    10.0,
+    29.0
+   ],
+   "pad": 1.5,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "a phase mark, white, tinted Rim: centred on the channel at its share"
+  },
+  "BossTitleRuleLeft": {
+   "file": "images/BossTitleRuleLeft.png",
+   "pixels": [
+    332,
+    38
+   ],
+   "points": [
+    83.0,
+    9.5
+   ],
+   "pad": 1.5,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the left rule, white, tinted Rim: sliced across; its box from the tip's outer point to the taper's end, centred on the title's middle",
+   "cut": [
+    15.5,
+    4.5,
+    26.5,
+    4.5
+   ]
+  },
+  "BossTitleRuleRight": {
+   "file": "images/BossTitleRuleRight.png",
+   "pixels": [
+    332,
+    38
+   ],
+   "points": [
+    83.0,
+    9.5
+   ],
+   "pad": 1.5,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the right rule, the left's mirror",
+   "cut": [
+    26.5,
+    4.5,
+    15.5,
+    4.5
+   ]
+  },
+  "BossTitleCrest": {
+   "file": "images/BossTitleCrest.png",
+   "pixels": [
+    108,
+    56
+   ],
+   "points": [
+    27.0,
+    14.0
+   ],
+   "pad": 1.5,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the crest, white, tinted Rim: 24 by 11, its foot's middle on the title's top middle"
+  },
+  "CardTargetEliteHousing": {
+   "file": "images/CardTargetEliteHousing.png",
+   "pixels": [
+    908,
+    167
+   ],
+   "points": [
+    227.0,
+    41.75
+   ],
+   "pad": 6.0,
+   "at": [
+    41.305,
+    34.0
+   ],
+   "use": "the elite's blade, 6 taller, sliced across; its box from its foot's left, in the lead's points",
+   "cut": [
+    25.83,
+    20.625,
+    25.83,
+    20.625
+   ]
+  },
+  "CardTargetEliteHousingRim": {
+   "file": "images/CardTargetEliteHousingRim.png",
+   "pixels": [
+    908,
+    167
+   ],
+   "points": [
+    227.0,
+    41.75
+   ],
+   "pad": 6.0,
+   "at": [
+    41.305,
+    34.0
+   ],
+   "use": "its rim: white, tinted TargetTrim",
+   "cut": [
+    25.83,
+    20.625,
+    25.83,
+    20.625
+   ]
+  },
+  "CardLightHealthElite": {
+   "file": "images/CardLightHealthElite.png",
+   "pixels": [
+    297,
+    92
+   ],
+   "points": [
+    74.25,
+    23.0
+   ],
+   "pad": 0.0,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the elite's light, 23 high, sliced across: its box from its foot's left to its glow",
+   "cut": [
+    10.85,
+    11.25,
+    15.85,
+    11.25
+   ]
+  },
+  "CardTargetEliteFrame": {
+   "file": "images/CardTargetEliteFrame.png",
+   "pixels": [
+    944,
+    251
+   ],
+   "points": [
+    236.0,
+    62.75
+   ],
+   "pad": 10.0,
+   "at": [
+    41.305,
+    21.0
+   ],
+   "use": "the heavier frame round the blade and the Elite tab, the crest notch on the tab: white, tinted; sliced across, the tab in its right cap; its box from the blade's foot's left and the tab's top, in the lead's points; under the name's tab",
+   "cut": [
+    29.509999999999998,
+    31.125,
+    69.03,
+    31.125
+   ]
+  },
+  "CardTargetEliteTab": {
+   "file": "images/CardTargetEliteTab.png",
+   "pixels": [
+    252,
+    102
+   ],
+   "points": [
+    63.0,
+    25.5
+   ],
+   "pad": 5.0,
+   "at": [
+    204.28000000000003,
+    21.0
+   ],
+   "use": "the Elite tab at the blade's right end; its box from its foot's left, in the lead's points; the word Elite in the card's ink on it"
+  },
+  "CardTargetEliteTabRim": {
+   "file": "images/CardTargetEliteTabRim.png",
+   "pixels": [
+    252,
+    102
+   ],
+   "points": [
+    63.0,
+    25.5
+   ],
+   "pad": 5.0,
+   "at": [
+    204.28000000000003,
+    21.0
+   ],
+   "use": "its rim: white, tinted TargetTrim"
+  }
+ }
+}

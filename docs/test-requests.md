@@ -865,6 +865,23 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
   - The elite: the blade 6 taller, with its light in one piece 23 high (`CardTargetEliteHousing`, `CardTargetEliteHousingRim`, `CardLightHealthElite`). Its heavier frame runs round the blade and a small tab at its right end, with the crest notch on the tab (`CardTargetEliteFrame`). The tab holds the word Elite in the card's ink (`CardTargetEliteTab`, `CardTargetEliteTabRim`).
 - **Waits:** the keeper's phase mark stands in until the keeper has phases.
 
+**Modulo's frames, delivered, 2026-11-14** (`build/handoff/UI/hud/boss/`: `images/`, `boss.json` in `lead_card.json`'s schema, `boss_sheet.png` at 2 and 1 pixels a point on the sky, the pale floor and the night, `boss_sheet_zoom.png`; drawn by `tools/blender/boss_hud_art.py`).
+- **The keeper,** each image white for Faber to tint Rim. Placing them:
+  - `BossBarRim` replaces the channel's UIStroke: sliced, its box the channel's, pad 3. It lies 2.2 outside the channel, with a dark line just inside over the fill's edge.
+  - `BossBarCap` (12 by 29) replaces the two cap diamonds, centred on the channel's ends. `BossBarMark` (7 by 26) replaces the phase diamond.
+  - They were drawn for a bar 20 high; Faber's 11853ba sets it at 18. The rim slices to any height. The cap and the mark scale with the bar: the cap 1.45 times its height, the mark 1.3.
+  - `BossTitleRuleLeft` and `BossTitleRuleRight` replace the two rules and their tips. Each is sliced across, its box from the tip's outer point to the taper's end, 6.4 high, centred on the title's middle.
+  - `BossTitleCrest` (24 by 11) has its foot's middle 2 into the title row's top middle, so the title row moves down 9 or the crest stands above `Top.Y`.
+- **The elite,** in the lead's points like `CardTargetHousing`. Its geometry is in `boss.json`, `elite`, in the target card's own points:
+  - the card 45.8 high, and the stud at (6.65, 30.9);
+  - the light row 23 high;
+  - the word Elite centred at (189.9, 9.5), in the name's ink;
+  - the crest notch reaching 7.3 above the card's top.
+  - The name's tab must end by x 165.85, so an elite's name holds about 90 pixels. The Shades' names are short.
+  - The frame's tint is Faber's call. The sheet shows it in Graphite's glint, #C9D2E4. The housing's rim and the tab's rim take `TargetTrim`. Faber's grey goes: the stroke, the notch, the Under strip and the grey word.
+- **Checks:** the self-review at phone size on the three grounds. Every piece reads, the crest and the notch small as asked. The content check: PASS, 2026-11-14.
+- **Time:** about 0.3 h, 01:32 to 01:52.
+
 **Status:** built in grey, 2026-11-14, with B at the top middle by the director's pick. Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start. The keeper's bar was rebuilt on the director's words of the same day (richer, purple, light), with the three fixes in. Waiting on research's read of the fixes. Modulo has the director's words for the frames: nothing solid behind the name.
 
 ## TR6. The UI effects kit (Faber)

@@ -17,9 +17,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** TR6, the UI effects kit; TR7's timing after the passives' verdict; then "Content as data".
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
-- **AR9, the effects kit's seven drawn sheets: delivered** to `build/handoff/FxKit/sheets/` (AR9, "The seven sheets, delivered"). Puff, ring, crescent, splash, spark, glint and flame, each a 4x4 in line, fill and dark twin, with the pilot's four fixes. The content check passed all seven, the splash after a redraw. About 0.8 h. With research for the kit's read at phone size.
-- **Faber:** for your rows after TR6, `fx_sheets.json` gives each sheet's life, its break and the fill's ColorSequence.
-- **Next:** TR5's HUD frames, after research's verdict on the grey variants, then Kirra. No lock held.
+- **TR5's frames: delivered** to `build/handoff/UI/hud/boss/` (TR5, "Modulo's frames, delivered"). The keeper's bar rim, caps, phase mark, the title's rules and crest; the elite's taller blade, heavier frame with its crest notch, and Elite tab. Content check PASS. About 0.3 h. With research for the read, and Faber for the install.
+- **AR9:** delivered, and research's two fixes are in (the splash is now the starburst). Faber: `fx_sheets.json` holds each sheet's row.
+- **Next:** Kirra, AR10. No lock held.
 
 **Turns.** Studio: the main place is Faber's (TR6 next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 

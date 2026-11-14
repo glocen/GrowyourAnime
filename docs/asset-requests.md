@@ -5299,7 +5299,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 - **Show the ready plate over noon:** the sheet shows it only over dusk, and a white plate on a pale street is the case to prove.
 - The fixes hold whichever direction is picked.
 
-**Status:** delivery 1 past research's verdict (competent, B recommended, two fixes and a check), 2026-11-14, night. Waits on the director's pick.
+**Status:** delivery 1 past research's verdict (competent, B recommended, two fixes and a check), 2026-11-14, night. **The director's pick, 2026-11-15: B, Conduit.** Next: the fixes, then the HUD's images in B, for Faber's build.
 
 ## Later, by ground
 

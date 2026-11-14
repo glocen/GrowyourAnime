@@ -4478,6 +4478,16 @@ return {
 			local numberMiddle = number.AbsolutePosition.Y + number.AbsoluteSize.Y / 2
 			t.Check("its number on the bar", numberMiddle >= channel.AbsolutePosition.Y and numberMiddle <= channel.AbsolutePosition.Y + channel.AbsoluteSize.Y
 				and number.AbsolutePosition.X + number.AbsoluteSize.X <= channel.AbsolutePosition.X + channel.AbsoluteSize.X)
+			-- In the bar's middle, and no mark across it (the director, 2026-11-14).
+			local numberCentre = number.AbsolutePosition.X + number.AbsoluteSize.X / 2
+			local channelCentre = channel.AbsolutePosition.X + channel.AbsoluteSize.X / 2
+			t.Check("its number in the bar's middle", math.abs(numberCentre - channelCentre) <= 1 and (number :: TextLabel).TextXAlignment == Enum.TextXAlignment.Center,
+				string.format("the number's centre %.1f, the bar's %.1f", numberCentre, channelCentre))
+			t.Check("no mark across the bar", parts.Keeper:FindFirstChild("Phase1") == nil)
+			-- Its name in the keeper's purple, never white (the director, 2026-11-14).
+			local nameLabel = parts.KeeperHead:FindFirstChild("Name", true) :: TextLabel?
+			local lit = if nameLabel then nameLabel:FindFirstChildOfClass("UIGradient") else nil
+			t.Check("its name in the keeper's purple", lit ~= nil and lit.Color.Keypoints[1].Value == boss.Name[1] and lit.Color.Keypoints[#lit.Color.Keypoints].Value == boss.Name[2])
 			-- Its health purple (the director's word, 2026-11-14), and a pale trail behind the fill that holds after a hit.
 			t.Check("its health in the keeper's purple", (parts.KeeperFill:FindFirstChildOfClass("UIGradient") :: UIGradient).Color.Keypoints[2].Value == boss.Health)
 			local under = false

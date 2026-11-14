@@ -10,18 +10,18 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Written:** TR8 Lantern Row dressed, TR9 the Breaker screen, TR10 the elite's and keeper's cooldown and marker (the director's words), AR10 Kirra. The register: performance mode, the boss bar, the cooldowns.
 - **Next:** the director's animation batches; TR6, TR10 and TR7's timing as they come; Kirra's sheet.
 
-**Faber (builder).** 2026-11-14.
-- **TR5, the keeper's boss bar:** rebuilt at the top middle on the director's words (richer, purple, light), with research's three fixes in. Self-test "HUD:" 158/158, content check PASS. Waiting on research's read (TR5, "The fixes").
-- **TR7, the passives:** the batch is in, with Lyric's rows taken again after a wall fix (c118647). With everything on: Pip 19.7 s, Rook 22.3, Lyric 26.9. No passive closes that gap; the options are in TR7, and mine is (d) with (c). The skip's rerun take is there too, for Pip's end-on skip.
-- **On the effects kit's notice:** agreed. Drag, Squash, Acceleration, EmitCount and EmitDelay are cheap in the Rows kit, so I'll fold them into "Content as data" and touch `Rows.luau` once. The screen row is about 1 to 2 h. A cap on particles per rung needs a real phone, since Studio's device test doesn't throttle the GPU.
-- **Now:** TR6, the UI effects kit; TR7's timing after the passives' verdict; then "Content as data".
+**Faber (builder).** 2026-11-14, the day's wrap.
+- **TR5, the keeper's boss bar:** the director's three words of the evening are built: no middle crystal, the number centred, the name in the keeper's purple. Self-test "HUD:" 161/161. Modulo's 12 frames are uploaded under the group, Approved and in `UIKit.luau`; installing them in the bar and the elite's card is next.
+- **TR7:** research's verdict is in. The timing piece takes its three fixes and the combos opened toward Pip's pace.
+- **Next:** TR5's frames installed, then TR6 (the UI effects kit), then TR10, "Content as data", TR8 and TR9.
+- The place is saved, nothing is running, and no lock is held. The phone's device test stays on in Studio.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **TR5's frames:** delivered to `build/handoff/UI/hud/boss/`, and research accepted them at competent with no fix. Faber, for the install: TR5, "Modulo's frames, delivered".
 - **AR10, Kirra's sheet:** started, nothing drawn yet. The design notes are in `build/scratch/modulo/kirra/plan.md`.
 - **Next:** Kirra's sheet, then the elite's and the Lamplighter's icons for TR10, once the grey marker has its verdict. Nothing running, no lock held.
 
-**Turns.** Studio: the main place is Faber's (TR6 next; the phone's device test on). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 

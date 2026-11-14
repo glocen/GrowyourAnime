@@ -178,8 +178,8 @@ return {
 	-- false the plain card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
 	-- lands, From times its size down to its own over Seconds; the rest comes in over Fill with a shine across the bar
 	-- (Shine); the whole leaves over Leave from the fall's Gone. Drain: after a hit the pale trail holds Hold seconds, then
-	-- drains Rate of the bar a second. Look: transparencies, 0 solid. Phases: the shares of its health its segments part
-	-- at, a stand-in (the keeper has no phases yet). Sizes in authored pixels. The builder's seeds, 2026-11-13 and 14.
+	-- drains Rate of the bar a second. Look: transparencies, 0 solid. Sizes in authored pixels. The builder's seeds,
+	-- 2026-11-13 and 14.
 	Boss = {
 		Keeper = "B",
 		Elite = true,
@@ -187,7 +187,6 @@ return {
 		-- scale's floor, 17), and about twice the grey block's 8 (research's verdict, 2026-11-14, fix 2).
 		Foot = { Width = 400, Bar = 18, Above = 14 }, -- Above: the bar's foot over the screen's; Width clears the jump button on the smallest phone
 		Top = { Most = 400, Bar = 18, Y = 17 }, -- Y: the title's top, the band's top line; the bar's foot at 86 (the lead card's at 113)
-		Phases = { 0.5 },
 		Stamp = { From = 1.6, Seconds = 0.14, Fill = 0.25 }, -- Fill: seconds the title and the bar take to come in after it
 		Shine = { Seconds = 0.6 },
 		Leave = 0.3,
@@ -197,7 +196,9 @@ return {
 		Deep = Color3.fromHex("#5A27C9"), -- its foot
 		Trail = Color3.fromHex("#F3E9FF"), -- the health just lost, draining
 		Rim = Color3.fromHex("#DCCBFF"), -- the bar's rim, the rules and the diamonds
-		Title = Color3.fromHex("#D9CFEA"), -- "Keeper of ...", a lilac grey under the white name
+		Title = Color3.fromHex("#D9CFEA"), -- "Keeper of ...", a lilac grey over the name
+		-- The keeper's name, lit from above like its bar, never white (the director, 2026-11-14: "not white"): its top, its foot.
+		Name = { Color3.fromHex("#D7B5FF"), Color3.fromHex("#A066FF") },
 		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 }, -- Channel: the bar's empty part, the world through it
 		EliteHealth = Color3.fromHex("#EE4E3A"), -- the elite's bar: the Ember light's middle, flat
 		Grey = Color3.fromHex("#A7ADB8"), -- the elite's heavier frame and notch

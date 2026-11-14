@@ -1,7 +1,8 @@
 --!strict
 -- UIKit (shared config): the UI kit's images and palettes, as the game reads them. Written by
 -- tools/ui/kit_config.py from Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3,
--- sections 2 and 3) and the lead card's build/handoff/UI/hud/lead_card/lead_card.json (tools/blender/lead_card_art.py),
+-- sections 2 and 3), the lead card's build/handoff/UI/hud/lead_card/lead_card.json (tools/blender/lead_card_art.py)
+-- and TR5's build/handoff/UI/hud/boss/boss.json (tools/blender/boss_hud_art.py),
 -- with each image's group upload id: run it again after a re-cut, never edit by hand.
 -- A slice is white where a palette colours it. Cut is left, top, right, bottom in points; Pad is how far an image
 -- reaches past its piece's box on every side; At, a lead card image's box's top left in the card's points. The kit
@@ -265,6 +266,18 @@ return {
 		CardFaceUnknownEpic = { Id = "rbxassetid://126963605272336", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 		CardFaceUnknownLegendary = { Id = "rbxassetid://96161984645975", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 		CardFaceUnknownMythical = { Id = "rbxassetid://92887772643085", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		BossBarRim = { Id = "rbxassetid://84019552871233", Pixels = Vector2.new(264, 104), Points = Vector2.new(66, 26), Cut = { 8, 8, 8, 8 }, Pad = 3, At = Vector2.new(0, 0) },
+		BossBarCap = { Id = "rbxassetid://135937492808825", Pixels = Vector2.new(60, 128), Points = Vector2.new(15, 32), Pad = 1.5, At = Vector2.new(0, 0) },
+		BossBarMark = { Id = "rbxassetid://119368842212768", Pixels = Vector2.new(40, 116), Points = Vector2.new(10, 29), Pad = 1.5, At = Vector2.new(0, 0) },
+		BossTitleRuleLeft = { Id = "rbxassetid://77054786951922", Pixels = Vector2.new(332, 38), Points = Vector2.new(83, 9.5), Cut = { 15.5, 4.5, 26.5, 4.5 }, Pad = 1.5, At = Vector2.new(0, 0) },
+		BossTitleRuleRight = { Id = "rbxassetid://135958650684018", Pixels = Vector2.new(332, 38), Points = Vector2.new(83, 9.5), Cut = { 26.5, 4.5, 15.5, 4.5 }, Pad = 1.5, At = Vector2.new(0, 0) },
+		BossTitleCrest = { Id = "rbxassetid://82822133176116", Pixels = Vector2.new(108, 56), Points = Vector2.new(27, 14), Pad = 1.5, At = Vector2.new(0, 0) },
+		CardTargetEliteHousing = { Id = "rbxassetid://110169608852719", Pixels = Vector2.new(908, 167), Points = Vector2.new(227, 41.75), Cut = { 25.83, 20.625, 25.83, 20.625 }, Pad = 6, At = Vector2.new(41.305, 34) },
+		CardTargetEliteHousingRim = { Id = "rbxassetid://114582915220049", Pixels = Vector2.new(908, 167), Points = Vector2.new(227, 41.75), Cut = { 25.83, 20.625, 25.83, 20.625 }, Pad = 6, At = Vector2.new(41.305, 34) },
+		CardLightHealthElite = { Id = "rbxassetid://91757496196552", Pixels = Vector2.new(297, 92), Points = Vector2.new(74.25, 23), Cut = { 10.85, 11.25, 15.85, 11.25 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardTargetEliteFrame = { Id = "rbxassetid://131459324902931", Pixels = Vector2.new(944, 251), Points = Vector2.new(236, 62.75), Cut = { 29.51, 31.125, 69.03, 31.125 }, Pad = 10, At = Vector2.new(41.305, 21) },
+		CardTargetEliteTab = { Id = "rbxassetid://84901917471180", Pixels = Vector2.new(252, 102), Points = Vector2.new(63, 25.5), Pad = 5, At = Vector2.new(204.28, 21) },
+		CardTargetEliteTabRim = { Id = "rbxassetid://91860580642050", Pixels = Vector2.new(252, 102), Points = Vector2.new(63, 25.5), Pad = 5, At = Vector2.new(204.28, 21) },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {
@@ -288,5 +301,28 @@ return {
 		Health = { 16.245, 19.4, 204.63, 17 }, -- the light's top edge: its left end, its y, its full right end; its height
 		FillFrom = 16.245, -- the light's empty point along its top edge
 		Stud = Vector2.new(8, 27.9), -- the type's stud, on the blade's left end
+	},
+	-- The keeper's bar's frames as drawn (TR5): the bar's height they were drawn for, a cap's and a phase mark's box,
+	-- the rim's reach past the channel, the title's rules (their line, a tip's box, the gap, the taper) and its crest.
+	BossBar = {
+		Height = 20,
+		Cap = Vector2.new(12, 29),
+		Mark = Vector2.new(7, 26),
+		Rim = 2.2,
+		Rule = { Width = 1.5, Tip = Vector2.new(11, 6.4), Gap = 1, Taper = 24 },
+		Crest = Vector2.new(24, 11),
+	},
+	-- The elite's card, in the target card's own points (TR5): its size, its blade, its light row, the stud, the Elite
+	-- tab's corners and the word's centre, where the name's tab must end, and how far its crest notch rises above its top.
+	EliteCard = {
+		Size = Vector2.new(216, 45.8),
+		Housing = { -0.055, 16, 215, 45.8 },
+		Health = { 16.245, 19.4, 204.63, 23 },
+		FillFrom = 16.245,
+		Stud = Vector2.new(6.65, 30.9),
+		Tab = { Vector2.new(169.85, 3), Vector2.new(215.85, 3), Vector2.new(208.92, 18.4), Vector2.new(162.92, 18.4) },
+		Word = Vector2.new(189.925, 9.5),
+		NameTabEnd = 165.85,
+		ArtTop = -7.3,
 	},
 }

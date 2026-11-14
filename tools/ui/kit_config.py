@@ -1,7 +1,7 @@
 """Writes src/shared/Config/UIKit.luau: the UI kit's images and palettes as the game reads them.
 
-From Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3, sections 2 and 3), with each
-image's group upload id. The ids come from a JSON-lines file of tools/upload/upload_asset.py's answers
+From Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3, sections 2 and 3), the lead
+card's lead_card.json and TR5's boss.json (the keeper's bar and the elite's card), with each image's group upload id. The ids come from a JSON-lines file of tools/upload/upload_asset.py's answers
 ({"name": ..., "result": {"assetId": ...}}), a name's last line winning, and an image it doesn't name keeps the id the
 Config already has, so a re-cut uploads only what changed and runs this again. What research tunes live (the critical's
 stroke and digits) isn't written here: it lives in src/shared/Config/Hud.luau.
@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 KIT = ROOT / "build" / "handoff" / "UI" / "kit" / "kit.json"
 HUD = ROOT / "build" / "handoff" / "UI" / "hud" / "hud_art.json"
 LEAD = ROOT / "build" / "handoff" / "UI" / "hud" / "lead_card" / "lead_card.json"  # tools/blender/lead_card_art.py
+BOSS = ROOT / "build" / "handoff" / "UI" / "hud" / "boss" / "boss.json"  # tools/blender/boss_hud_art.py
 OUT = ROOT / "src" / "shared" / "Config" / "UIKit.luau"
 
 PALETTE_NAMES = {"Graphite Dark": "Graphite", "Pearl Light": "Pearl", "Dynamo": "Dynamo", "Void Violet": "Void"}
@@ -70,8 +71,9 @@ def main() -> None:
     kit = json.loads(KIT.read_text(encoding="utf-8"))
     hud = json.loads(HUD.read_text(encoding="utf-8"))
     lead = json.loads(LEAD.read_text(encoding="utf-8"))
+    boss = json.loads(BOSS.read_text(encoding="utf-8"))
     ids = old_ids() | new_ids(Path(sys.argv[1]))
-    images = kit["images"] | hud["images"] | lead["images"]
+    images = kit["images"] | hud["images"] | lead["images"] | boss["images"]
     missing = [name for name in images if name not in ids]
     if missing:
         sys.exit(f"no upload id for {len(missing)}: {', '.join(missing[:8])}")
@@ -80,7 +82,8 @@ def main() -> None:
         "--!strict",
         "-- UIKit (shared config): the UI kit's images and palettes, as the game reads them. Written by",
         "-- tools/ui/kit_config.py from Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3,",
-        "-- sections 2 and 3) and the lead card's build/handoff/UI/hud/lead_card/lead_card.json (tools/blender/lead_card_art.py),",
+        "-- sections 2 and 3), the lead card's build/handoff/UI/hud/lead_card/lead_card.json (tools/blender/lead_card_art.py)",
+        "-- and TR5's build/handoff/UI/hud/boss/boss.json (tools/blender/boss_hud_art.py),",
         "-- with each image's group upload id: run it again after a re-cut, never edit by hand.",
         "-- A slice is white where a palette colours it. Cut is left, top, right, bottom in points; Pad is how far an image",
         "-- reaches past its piece's box on every side; At, a lead card image's box's top left in the card's points. The kit",
@@ -175,6 +178,33 @@ def main() -> None:
         f"\t\tHealth = {light(t['health'])}, -- the light's top edge: its left end, its y, its full right end; its height",
         f"\t\tFillFrom = {rounded(t['fillFrom'])}, -- the light's empty point along its top edge",
         f"\t\tStud = Vector2.new({rounded(t['stud'][0])}, {rounded(t['stud'][1])}), -- the type's stud, on the blade's left end",
+        "\t},",
+    ]
+    b, e = boss["geometry"]["bar"], boss["geometry"]["elite"]
+    pair = lambda row: f"Vector2.new({rounded(row[0])}, {rounded(row[1])})"  # noqa: E731
+    out += [
+        "\t-- The keeper's bar's frames as drawn (TR5): the bar's height they were drawn for, a cap's and a phase mark's box,",
+        "\t-- the rim's reach past the channel, the title's rules (their line, a tip's box, the gap, the taper) and its crest.",
+        "\tBossBar = {",
+        f"\t\tHeight = {rounded(b['height'])},",
+        f"\t\tCap = {pair(b['cap'])},",
+        f"\t\tMark = {pair(b['mark'])},",
+        f"\t\tRim = {rounded(b['rim'])},",
+        f"\t\tRule = {{ Width = {rounded(b['rule']['width'])}, Tip = {pair(b['rule']['tip'])}, Gap = {rounded(b['rule']['gap'])}, Taper = {rounded(b['rule']['taper'])} }},",
+        f"\t\tCrest = {pair(b['crest'])},",
+        "\t},",
+        "\t-- The elite's card, in the target card's own points (TR5): its size, its blade, its light row, the stud, the Elite",
+        "\t-- tab's corners and the word's centre, where the name's tab must end, and how far its crest notch rises above its top.",
+        "\tEliteCard = {",
+        f"\t\tSize = {pair(e['size'])},",
+        f"\t\tHousing = {light(e['housing'])},",
+        f"\t\tHealth = {light(e['health'])},",
+        f"\t\tFillFrom = {rounded(e['fillFrom'])},",
+        f"\t\tStud = {pair(e['stud'])},",
+        "\t\tTab = { " + ", ".join(pair(c) for c in e["tab"]) + " },",
+        f"\t\tWord = {pair(e['word'])},",
+        f"\t\tNameTabEnd = {rounded(e['nameTabEnd'])},",
+        f"\t\tArtTop = {rounded(e['artTop'])},",
         "\t},",
         "}",
         "",

@@ -900,7 +900,19 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
 - **The one bold thing:** the tapering rules with diamond tips and the winged crest: a title card made of line, so the fight stays visible through it.
 - **No fix.** One watch at install: the number over the pale trail (at about 80% health it sits on it); its dark edge carries it in the sheet, so check it in the take.
 
-**Status:** built in grey, 2026-11-14, with B at the top middle by the director's pick. Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start. The keeper's bar was rebuilt on the director's words of the same day (richer, purple, light), with the three fixes in. Research's read of the fixes and pass on Modulo's frames, 2026-11-14: competent, accepted. Next: the frames installed (Faber).
+**The director's words on the purple bar, 2026-11-14 (evening),** said to Faber:
+- "we should remove the middle crystal in the hp middle bar of the boss then it perfecg";
+- "and make the hp text value be in the center of the hp frame";
+- "also the boss name be in a black or redish or purplish or something better text not white".
+
+They cover the keeper's bar: the phase mark, the health number's place, and the name's colour. Built the same evening (Faber):
+- **The middle crystal:** gone. It was the phase mark, a stand-in, since the keeper has no phases; `Config.Hud.Boss.Phases` goes with it, and Modulo's `BossBarMark` stays unused.
+- **The number:** centred on the bar. It sits on the pale trail only after a hit crosses the middle, and its dark edge carries it there. That answers research's watch, checked in `tr5_centre_zoom.png`.
+- **The name:** the keeper's purple, lit from above like the fill (#D7B5FF to #A066FF, `Config.Hud.Boss.Name`), keeping its dark edge; the level stays the cards' gold.
+- **Checks:** type check 0 new. Self-test "HUD:" 161/161 at 60 fps, with three new checks: the number in the bar's middle, no mark across the bar, the name in the keeper's purple. The first run had one flake: a toast's message caught sliding in just after the start; the rerun passed.
+- **Stills:** `tr5_centre_trail.jpg` (a try, the number on the trail at about a quarter health) and `tr5_centre_zoom.png`. The frames' install still to come: the 12 images are uploaded under the group, Approved and in `UIKit.luau`.
+
+**Status:** built in grey, 2026-11-14, with B at the top middle by the director's pick. Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start. The keeper's bar was rebuilt on the director's words of the same day (richer, purple, light), with the three fixes in. Research's read of the fixes and pass on Modulo's frames, 2026-11-14: competent, accepted. The director's three words of the evening are built (no middle mark, the number centred, the name purple). The frames are uploaded and in the kit. Next: the frames installed in the bar and the elite's card (Faber).
 
 ## TR6. The UI effects kit (Faber)
 

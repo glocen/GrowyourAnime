@@ -2,10 +2,12 @@
 -- BossBar (client UI): the keeper's HUD in a try (TR5; Config.Hud.Boss). A title card, light over the fight: no plate
 -- behind it (the director, 2026-11-14: "much better ... this is so empty", the health "purpleish", "well compose", and "very
 -- light too else we see nothing"). Its title small between two thin rules, each ending in a diamond; its name large, its
--- type's gem before it and its level after; one framed bar in the keeper's purple, lit from above, on a faint glow, a pale
--- trail behind the fill that holds a moment after a hit and drains, a diamond cap at each end and a diamond at each phase;
--- its health inside the bar's right end. Nothing below the bar (research's verdict on the grey block, 2026-11-14, fixes 1
--- and 2: the bar about twice as thick, its number on it, nothing of it over the keeper).
+-- type's gem before it and its level after, the name in the keeper's purple lit from above (the director, 2026-11-14: "not
+-- white"); one framed bar in the keeper's purple, lit from above, on a faint glow, a pale
+-- trail behind the fill that holds a moment after a hit and drains, a diamond cap at each end; its health in the bar's
+-- middle, and no mark across it (the director, 2026-11-14: "remove the middle crystal", "the hp text value ... in the
+-- center"). Nothing below the bar (research's verdict on the grey block, 2026-11-14, fixes 1 and 2: the bar about twice
+-- as thick, its number on it, nothing of it over the keeper).
 -- B, the top middle (the director's pick, 2026-11-14): in the band's middle, the target card's place, as wide as the room
 -- between the lead's card and the pills (HudController measures it). A, at the foot: wide across the bottom centre (the
 -- dock steps out for the try: HudController). The name stamps on as the keeper's Challenge lands (its Stamp beat), the
@@ -50,7 +52,6 @@ export type Bar = {
 	Shine: Frame,
 	ShineGradient: UIGradient,
 	Caps: { Frame },
-	Marks: { Frame },
 	Fades: { Fade },
 	Keeper: Model?, -- the one it shows
 	Done: Model?, -- the one it last showed out: never opened again
@@ -75,8 +76,7 @@ local TITLE = 16 -- the title's row, authored pixels
 local GEM, GAP = 20, 6 -- the type's gem; between the gem, the name and the level
 local INSET = 9 -- the bar's ends in from the piece's, room for its caps
 local GLOW = 4 -- the glow past the bar, above and below
-local CAP, MARK, RULE_CAP = 0.66, 0.5, 5 -- the diamonds' sides: the caps' and the phases' of the bar's height, the rules' tips'
-local NUMBER_IN = 12 -- the number in from the bar's right end, clear of its cap
+local CAP, RULE_CAP = 0.66, 5 -- the diamonds' sides: the caps' of the bar's height, the rules' tips'
 local RULE = 1.5 -- the rules' thickness
 local RULE_GAP = 8 -- between a rule and the title
 local EDGE = 0.25 -- the dark edge's transparency on the words
@@ -192,8 +192,12 @@ function BossBar.new(parent: Instance): Bar
 	gem.Size = UDim2.fromOffset(GEM, GEM)
 	gem.Parent = row
 	fade(gem, "ImageTransparency", 0, true)
-	local name = Text.new({ Name = "Name", Size = Theme.Text.Title, Font = Theme.Font.Strong, Parent = row })
+	local name = Text.new({ Name = "Name", Size = Theme.Text.Title, Font = Theme.Font.Strong, Colour = Color3.new(1, 1, 1), Parent = row })
 	edged(name, 2, true)
+	local purple = Instance.new("UIGradient") -- on the words; the dark edge keeps its own colour
+	purple.Rotation = 90
+	purple.Color = ColorSequence.new(boss.Name[1], boss.Name[2])
+	purple.Parent = name
 	local level = Text.new({ Name = "Level", Size = Theme.Text.Caption, Colour = HudConfig.Card.Level, Parent = row })
 	edged(level, 1.5, true)
 
@@ -272,11 +276,7 @@ function BossBar.new(parent: Instance): Bar
 	})
 	sweep.Parent = shine
 	local caps = { diamond(frame, "CapLeft", 1, 5), diamond(frame, "CapRight", 1, 5) }
-	local marks: { Frame } = {}
-	for i in boss.Phases do
-		table.insert(marks, diamond(frame, `Phase{i}`, 1, 5))
-	end
-	local number = Text.new({ Name = "Number", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Parent = frame })
+	local number = Text.new({ Name = "Number", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Center, Parent = frame })
 	number.ZIndex = 6
 	edged(number, 1.5)
 
@@ -298,7 +298,6 @@ function BossBar.new(parent: Instance): Bar
 		Shine = shine,
 		ShineGradient = sweep,
 		Caps = caps,
-		Marks = marks,
 		Fades = fades,
 		Keeper = nil,
 		Done = nil,
@@ -348,7 +347,7 @@ local function fit(bar: Bar)
 end
 
 -- Laid for a variant, as two pieces of the HUD that never overlap another (the UI lint): the title and the name over
--- the bar, the number inside the bar's right end. A at the foot; B in the band's middle, all inside the band.
+-- the bar, the number in the bar's middle. A at the foot; B in the band's middle, all inside the band.
 local function lay(bar: Bar, variant: string, room: number?)
 	local boss = HudConfig.Boss
 	local width = if variant == "A" then boss.Foot.Width else math.floor(math.clamp(room or boss.Top.Most, 160, boss.Top.Most))
@@ -374,17 +373,13 @@ local function lay(bar: Bar, variant: string, room: number?)
 	bar.Channel.Size = UDim2.fromOffset(long, high)
 	bar.Channel.Position = UDim2.fromOffset(INSET, GLOW)
 	local middle = GLOW + high / 2
-	local cap, mark = math.round(high * CAP), math.round(high * MARK)
+	local cap = math.round(high * CAP)
 	for i, d in bar.Caps do
 		d.Size = UDim2.fromOffset(cap, cap)
 		d.Position = UDim2.fromOffset(if i == 1 then INSET else width - INSET, middle)
 	end
-	for i, d in bar.Marks do
-		d.Size = UDim2.fromOffset(mark, mark)
-		d.Position = UDim2.fromOffset(INSET + long * boss.Phases[i], middle)
-	end
-	bar.Number.Size = UDim2.fromOffset(long / 2, high)
-	bar.Number.Position = UDim2.fromOffset(INSET + long / 2 - NUMBER_IN, GLOW)
+	bar.Number.Size = UDim2.fromOffset(long, high)
+	bar.Number.Position = UDim2.fromOffset(INSET, GLOW)
 	if variant == "A" then
 		frame.AnchorPoint = Vector2.new(0.5, 1)
 		frame.Position = UDim2.new(0.5, 0, 1, -boss.Foot.Above)

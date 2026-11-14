@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-13, at work.
-- **The vault:** three open-source batches studied, with the gap beside our effects (`docs/research/vfx-reference.md`, "From the vault" and "What the vault teaches"). Rule 2's exception covers shared packs, their sounds and animations included (AGENTS.md).
-- **Decided:** Lantern Row's top tier, Marigold (Epic) and Crane (Legendary); Patch moves to Drum Court; the launch roster is eight (`docs/roster.md`).
-- **Verdict given:** TR7's skip back, works as a block; Every 4 to 2.5, rerun with the passives (TR7).
-- **Next:** the passives and the skip rerun, TR7's timing, TR5, TR6; the director's animation batches.
+**Quaestor (research).** 2026-11-14, wrapped for the day.
+- **Accepted today:** AR9, the seven drawn sheets (competent); TR5, the keeper's bar and the elite's card with Modulo's frames (competent).
+- **Verdicts:** TR7's passives: works for Second Wind and Kindle; Tempo to show in a pack; the 10% gap settled at the timing with the combos open.
+- **Written:** TR8 Lantern Row dressed, TR9 the Breaker screen, TR10 the elite's and keeper's cooldown and marker (the director's words), AR10 Kirra. The register: performance mode, the boss bar, the cooldowns.
+- **Next:** the director's animation batches; TR6, TR10 and TR7's timing as they come; Kirra's sheet.
 
 **Faber (builder).** 2026-11-14.
 - **TR5, the keeper's boss bar:** rebuilt at the top middle on the director's words (richer, purple, light), with research's three fixes in. Self-test "HUD:" 158/158, content check PASS. Waiting on research's read (TR5, "The fixes").

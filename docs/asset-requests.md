@@ -5324,7 +5324,20 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 - **Content check: PASS,** all nine sheets, as review sheets (eight in one run, the deuteranopia sheet in its own). Its notes: the stage's floor stays a soft light for every element (a flat dark-red disc could read as a pool); Combat Power's finish keeps its own shape; before any upload the new icons need their sheet at full size and 64 px, and their rows in `docs/asset-log.md`. One for research's eye: under deuteranopia the red health bars land on an olive gold near Power's yellow, so a Shade's bar and the kW pill sit in one hue family there, parted by shape and place only.
 - **Time:** about 45 minutes by the clock, 8 of them renders (two runs: 955 MB and 1,092 MB at peak, lowest free 2.15 GB).
 
-**Status:** delivery 2, the vivid sheets, waits for research's verdict: which strength for the HUD, the rooms, the two new colours. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.
+**Research's verdict on delivery 2,** 2026-11-15, read on `vivid_glance` at true size, `vivid_ui` and `vivid_voidkin`:
+- **Felt:** colour at last, each system known at a glance by its hue. Block keeps the colour pure in small saturated slices, while Deep turns Power's yellow into olive over noon.
+- **Tier:** competent. **The one bold thing:** the rooms' rule. The dock button and the screen it opens share one colour, and the screen's one main action is filled in it, so every screen has an identity and a place to tap.
+- **The HUD's strength: V2, Block,** research's call inside the director's "vivid" (2026-11-15). The colour sits in small blocks, so the fight and the ivory ready plate stay louder. Deep's dark yellow is olive, and B is what the director asked to go past.
+- **Indigo and rose:** accepted, with the frame rule: neither goes on a portrait's or an item's frame, where they'd be taken for Rare, Intelligence or Mythical. Measure rose against failed red. In the Pearl room, the filled rose action stands beside a red-rimmed failure. If it's under 10, shift rose before any image.
+- **The rooms:** accepted, Tide included. Which screen takes which room stays Modulo's (the director, 2026-11-12). Graphite-Voidkin and Void Violet vivid sit close, so keep the reveal the deeper of the two.
+- **The deuteranopia note:** accepted as it stands. The health bars and the kW pill part by shape, icon and place.
+- **The Voidkin mock:**
+  - It reads as a character sheet: the figure in its rarity's light, between its slots, with its power at its feet.
+  - **Fix:** the menu's wide word buttons take the width the figure needs. Make them icon buttons with a short label, as narrow as 44 pt allows, so the figure and its slots move left and grow.
+  - The 31-point slots stand as read targets, and a tap on a column opens the gear page (TR17's fallback).
+  - The aim of 0.70 of the height predates the strip, so it's dropped. The figure fills the stage between the top bar and the strip, and Faber's take shows how tall that is.
+
+**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. Next: the HUD's images in V2, for Faber's build. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.
 
 ## Later, by ground
 

@@ -5001,6 +5001,17 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - The scarf on the floor reads as cloth.
 - **Four facts:** timed; self-reviewed, with the numbers above; content check PASS. The recipe is delivered. The clips wait on research's read in motion before delivery. Not accepted.
 
+**Research's verdict on the timed clips, 2026-11-14, night** (the eight packs, their strips and timings; Studio is down, so the in-engine look comes at the install).
+- **Felt:** quick from the first frame. The Combo leaves on a sprinting lunge and its cuts come at 0.2, 0.43 and 0.93 s. Scarf Step blinks at 0.22 s and cuts at 0.3, so she's past the Shade before you see her go, as the feel line asks. The line holds 0.4 s through its chest, then lets go from the tip.
+- **Tier:** competent.
+- **The one bold thing:** Scarf Step's held line, the frame the whole character was built toward.
+- **The Reveal's settle lands:** the tail arcs over her left shoulder with its tip falling, a banner and not a spike.
+- **The two frames you named:**
+  - The Reveal's arm straight up at 60, for about 4 frames: it reads as a reach back to the grip in passing, not a pose. Kept.
+  - Work's bare tiles at 36 and 60: the tile's framing, not the clip (`bare_Work.png` covers it). No fix.
+- **No fix. Accepted: deliver to `build/handoff/Kirra/clips/`.**
+- **At the install, research's verdict in the engine at phone size:** Scarf Step's 35° landing, the line through the chest from the player's camera, and the Combo's X with its trails.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -4867,6 +4867,15 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **Time:** about 25 minutes in this session, from 12:17 to 12:42 local, over three runs (the yoke twice), on Opus 5.5 xhigh. Pip's model took about 1.1 hours.
 - **Four facts:** made; self-reviewed; content check PASS; with research for its verdict. Not delivered.
 
+**Research's verdict on the model, 2026-11-14, night.**
+- **Felt:** the sheet's courier stands up on R6 whole: from the player's camera her back is now a bone V under the dark X, so she reads as a body and not only a scarf, and the keyed-straight tail through the Shade is the Step's line already.
+- **Tier:** competent.
+- **The one bold thing:** still the scarf in its two states. The yoke makes the body worth it.
+- **Both fixes land.** The yoke holds at 64 px over dark and at dusk (the doubled panel). The three swept points part the crop from the round cap in outline, from behind and from the player's camera.
+- **No fix.** Accepted: deliver to `build/handoff/Kirra/`.
+- **For the clips (delivery 3):** the tail is never still in still air. The Idle keeps a slow ripple through it. In a run it must trail her, so it reads as speed: a clip can't see her run, so the spring between clips is Faber's technical call at the install, and research judges the feel.
+- The front's thin yoke edge is as meant.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

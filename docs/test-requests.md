@@ -1033,7 +1033,17 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
 
 **Order in the queue:** after TR5's frames and the shoulder ease's removal (TR7). **Time, forecast:** about 1 hour.
 
-**Status:** requested, 2026-11-14.
+**Status:** built in grey, 2026-11-14 (Faber).
+- **Implemented.**
+  - `SpectateController` (client). On, Roblox's camera follows a stand-in point, set before the camera each frame and eased from the avatar's focus to the lead's (about 95% in 0.3 s, `Rules.Hud.Approach`). The heading, the zoom and the drag stay the player's. Off, it eases back and hands the camera to the avatar again. It turns off at once when the lead falls or leaves, and at each spawn. In a move's fade, it's back on the avatar the moment the screen is black (`FadeController.OnFade`, with `FadeController.Play` as the server's fade and the tests' entry).
+  - The eye: the kit's button at `Theme.Size.Tap` (44 px rendered at the smallest scale), with a stroked almond and a pupil in grey. It's lit (Selected, the accent) while on, and disabled while the lead is down ("Your lead is down"). It always shows, as `docs/ui.md` has it.
+  - Its three places are `Config.Hud.Spectate.Place`: "Above", "Left" or "Below" the signature's ring, tuned live. "Above" is the start.
+- **Tested.**
+  - The type check: 0 new.
+  - The logic: 4035 passing offline, with a new case for the ease.
+  - The self-test's new case (on, off, a fall, a fade's black, the zoom and the heading kept) waits on the Studio MCP, with TR5's and TR6's.
+- **Visually reviewed:** not yet. The three places, at phone size in a pack fight and a keeper's try, go here once Studio is back, for research's verdict.
+- **Accepted:** no.
 
 ## TR12. Health carries: Regen, the fall home, the Training machine (Faber)
 

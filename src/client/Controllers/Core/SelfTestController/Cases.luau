@@ -48,6 +48,7 @@ local Track = require(Shared.Rules.Track)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
+local SpectateController = require(script.Parent.Parent.Parent.Main.SpectateController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -3652,6 +3653,81 @@ return {
 			watch:Disconnect()
 			t.Check("the lead had a target", fought)
 			t.Check("no offset, in the fight or after it", most < 1e-3, string.format("%.3f studs at most", most))
+		end,
+	},
+	{
+		-- TR11 (the director, 2026-11-14, night): the player's camera is never moved in a fight; a small eye follows the lead
+		-- instead. On, the camera's point eases onto the lead with the player's own heading and distance; off, or on the
+		-- lead's fall, it eases back onto the avatar; in a fade's black it's back at once.
+		Name = "Camera: TR11, the eye follows the lead and comes back: off, on a fall, and in a fade's black",
+		Run = function(t: any)
+			local look = HudConfig.Spectate
+			local eye = HudController.Parts().Spectate :: TextButton
+			local camera = workspace.CurrentCamera
+			local humanoid = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+			local lead = myLead()
+			local leadRoot = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+			t.Check("the eye is on the HUD", eye ~= nil and eye.Visible and eye.Parent ~= nil)
+			t.Check("a whole tap target", eye.Size.X.Offset >= Theme.Size.Tap and eye.Size.Y.Offset >= Theme.Size.Tap, tostring(eye.Size))
+			t.Check("by the signature's ring, at its place", eye:GetAttribute("Place") == look.Place, tostring(eye:GetAttribute("Place")))
+			t.Check("off at the start", not SpectateController.On() and eye:GetAttribute("On") == false)
+			if humanoid == nil or leadRoot == nil or lead == nil then
+				t.Check("the avatar and its lead are out", false)
+				return
+			end
+			local function distance(): number
+				return (camera.CFrame.Position - camera.Focus.Position).Magnitude
+			end
+			local before, heading = distance(), camera.CFrame.LookVector
+			t.Check("a tap turns it on", Button.Press(eye))
+			t.Wait(0.1)
+			t.Check("lit while on", SpectateController.On() and eye:GetAttribute("On") == true and Button.State(eye) == "Selected", Button.State(eye))
+			local point = SpectateController.Point()
+			t.Check("the camera follows its stand-in", point ~= nil and camera.CameraSubject == point)
+			local early = SpectateController.Share()
+			t.Check("eased, not snapped: part way at a tenth of a second", early > 0.2 and early < 0.9, string.format("%.2f", early))
+			t.Wait(look.Ease + 0.2)
+			t.Check("on the lead by its ease", SpectateController.Share() >= 0.95, string.format("%.3f", SpectateController.Share()))
+			local want = leadRoot.Position + Vector3.new(0, look.Height, 0)
+			local at = SpectateController.Point()
+			t.Check("its point at the lead's focus", at ~= nil and (at.Position - want).Magnitude < 1, if at then string.format("%.2f studs off", (at.Position - want).Magnitude) else "none")
+			t.Check("the zoom is the player's", math.abs(distance() - before) < 1, string.format("%.2f, was %.2f", distance(), before))
+			t.Check("and so is the heading", camera.CFrame.LookVector:Dot(heading) > 0.99, string.format("%.3f", camera.CFrame.LookVector:Dot(heading)))
+			t.Check("a second tap turns it off", Button.Press(eye))
+			t.Check("back on the avatar by its ease", waitFor(t, look.Ease + 0.5, function(): boolean
+				return camera.CameraSubject == humanoid and SpectateController.Share() == 0
+			end), string.format("%.3f", SpectateController.Share()))
+			t.Check("unlit", eye:GetAttribute("On") == false and Button.State(eye) ~= "Selected", Button.State(eye))
+			t.Check("at the distance it had", math.abs(distance() - before) < 1, string.format("%.2f, was %.2f", distance(), before))
+			-- The lead's fall: off, the eye says why, and it can't be turned on while the lead is down.
+			SpectateController.Set(true)
+			t.Wait(look.Ease + 0.1)
+			t.Check("the lead falls", t.Server("FightHealth", 0).Ok == true)
+			t.Check("a fall turns it off", waitFor(t, 1, function(): boolean
+				return not SpectateController.On()
+			end))
+			t.Check("the eye says why", waitFor(t, 1, function(): boolean
+				return Button.State(eye) == "Disabled"
+			end), Button.State(eye))
+			SpectateController.Set(true)
+			t.Check("never on while the lead is down", not SpectateController.On())
+			t.Check("and the camera's back on the avatar", waitFor(t, look.Ease + 0.5, function(): boolean
+				return camera.CameraSubject == humanoid
+			end))
+			t.Check("the lead is back", waitFor(t, Combat.Lead.DownSeconds + 3, function(): boolean
+				local back = myLead()
+				return back ~= nil and back:GetAttribute("State") ~= "Down"
+			end))
+			t.Check("and the eye takes a tap again", waitFor(t, 1, function(): boolean
+				return Button.State(eye) ~= "Disabled"
+			end), Button.State(eye))
+			-- A move's fade: back on the avatar at once, in the black.
+			SpectateController.Set(true)
+			t.Wait(look.Ease + 0.1)
+			FadeController.Play(0.2, 0.3, 0.2)
+			t.Wait(0.3)
+			t.Check("a fade's black takes it back at once", not SpectateController.On() and SpectateController.Share() == 0 and camera.CameraSubject == humanoid, string.format("%.3f", SpectateController.Share()))
+			t.Wait(0.6)
 		end,
 	},
 	{

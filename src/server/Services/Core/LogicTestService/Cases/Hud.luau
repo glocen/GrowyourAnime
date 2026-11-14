@@ -2,7 +2,7 @@
 -- Hud cases (pure): the flurry's one counting number, a number placed clear of its neighbours', the type edge's arrow for
 -- every pair, the digits, and what a control says (docs/test-requests.md, TR3, "Checks"); the interface's motion: a
 -- press's squeeze, a reward's pop, a number's size by its rung and its giving way (AR8 C); the effects kit's count, its
--- flock and its arc (TR6).
+-- flock and its arc (TR6); the spectate's ease (TR11).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -343,6 +343,35 @@ return {
 			t.Check("the other way with the bend's other sign", (Hud.Arc(from, to, -0.35, 0.5).Y > 0) ~= (mid.Y > 0))
 			t.Check("a bend of 0 is the straight line", Hud.Arc(from, to, 0, 0.5).Y == 0)
 			t.Check("half way along at half its time", math.abs(mid.X - 50) < 1e-9)
+		end,
+	},
+	{
+		Name = "Hud: TR11, the spectate's ease: about 95% of the way by its seconds, never past, and smooth both ways",
+		Run = function(t: any)
+			local ease = HudConfig.Spectate.Ease
+			local function run(share: number, want: number, seconds: number, dt: number): number
+				local left = seconds
+				while left > 1e-9 do
+					local step = math.min(dt, left)
+					share = Hud.Approach(share, want, step, ease)
+					left -= step
+				end
+				return share
+			end
+			local frame = 1 / 60
+			t.Check("the entry's about 0.3 s", ease >= 0.2 and ease <= 0.45, `{ease}`)
+			local there = run(0, 1, ease, frame)
+			t.Check("on the lead by its ease", there >= 0.94 and there < 1, `{there}`)
+			local early = run(0, 1, ease / 4, frame)
+			t.Check("eased, not snapped: part way at a quarter of it", early > 0.3 and early < 0.75, `{early}`)
+			local back = run(1, 0, ease, frame)
+			t.Check("back by its ease too", back <= 0.06 and back >= 0, `{back}`)
+			local turned = run(run(0, 1, ease / 2, frame), 0, frame, frame)
+			t.Check("a change of mind turns it on the next frame, never a jump", turned < run(0, 1, ease / 2, frame), `{turned}`)
+			local long = Hud.Approach(0, 1, 5, ease)
+			t.Check("a long frame never overshoots", long > 0.99 and long <= 1, `{long}`)
+			t.Equal("nothing in no time", Hud.Approach(0.4, 1, 0, ease), 0.4)
+			t.Check("the eye a whole tap target (Theme.Size.Tap, 52)", HudConfig.Spectate.Size >= 52)
 		end,
 	},
 }

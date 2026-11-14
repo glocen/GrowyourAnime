@@ -299,6 +299,14 @@ function Hud.Arc(from: Vector2, to: Vector2, bend: number, u: number): Vector2
 	return from * ((1 - t) * (1 - t)) + control * (2 * (1 - t) * t) + to * (t * t)
 end
 
+-- A share's way toward `want`, `dt` seconds on from `share`: a spring with no overshoot, about 95% of the way in `seconds`
+-- (three time constants), so a long frame never jumps it and a change of mind turns it smoothly (TR11, the spectate's
+-- ease).
+function Hud.Approach(share: number, want: number, dt: number, seconds: number): number
+	local k = 1 - math.exp(-math.max(dt, 0) * 3 / math.max(seconds, 1e-3))
+	return share + (want - share) * k
+end
+
 -- How full the signature's ring is: 0 the moment it fires, 1 once it's ready again.
 function Hud.Ready(readyAt: number, cooldown: number, now: number): number
 	if cooldown <= 0 then

@@ -52,6 +52,7 @@ local Count = require(UI.Kit.Count)
 local Burst = require(UI.Kit.Burst)
 local Fade = require(UI.Kit.Fade)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
+local SpectateController = require(script.Parent.SpectateController)
 local Effects = require(script.Parent.FighterController.Effects)
 local FadeController = require(script.Parent.FadeController)
 
@@ -102,6 +103,7 @@ local charge: Frame
 local chip: Frame
 local chipText: TextLabel
 local ring: Ring
+local eye: TextButton -- the spectate toggle (TR11)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
 local keeperBar: BossBar.Bar
@@ -331,6 +333,81 @@ local function signatureRing(): Ring
 		FoughtAt = -math.huge,
 		Seen = 0,
 	}
+end
+
+-- The spectate toggle (TR11; Config.Hud.Spectate): a small eye beside the signature's ring, a whole tap target, lit while
+-- it's on. In grey: the kit's button with an eye of a stroked almond and its pupil; the finished look waits for TR13's
+-- frames. A tap turns it on or off (SpectateController).
+local EYE_PLACES: { [string]: (number, number, number, number) -> UDim2 } = {
+	Above = function(ring: number, size: number, gap: number, edge: number): UDim2
+		return UDim2.new(1, -edge - ring / 2, 0.6, -(ring / 2 + gap + size / 2))
+	end,
+	Left = function(ring: number, size: number, gap: number, edge: number): UDim2
+		return UDim2.new(1, -edge - ring - gap - size / 2, 0.6, 0)
+	end,
+	Below = function(ring: number, size: number, gap: number, edge: number): UDim2
+		return UDim2.new(1, -edge - ring / 2, 0.6, ring / 2 + gap + size / 2)
+	end,
+}
+
+local function placeEye()
+	local look = HudConfig.Spectate
+	local place = EYE_PLACES[tostring(look.Place)] or EYE_PLACES.Above
+	eye.Position = place(HudConfig.Ring.Size, look.Size, look.Gap, PAD + 6) -- the ring's own edge (signatureRing)
+	eye.Size = UDim2.fromOffset(look.Size, look.Size)
+	eye:SetAttribute("Place", tostring(look.Place))
+end
+
+local function eyeButton(): TextButton
+	local look = HudConfig.Spectate
+	local button = Button.new({
+		Name = "Spectate",
+		Text = "",
+		Size = UDim2.fromOffset(look.Size, look.Size),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Parent = Layers.Get("Hud"),
+		OnPress = function()
+			SpectateController.Set(not SpectateController.On())
+		end,
+	})
+	local skin = Skin.Of(button) -- in the face, so it squeezes with it
+	local almond = Instance.new("Frame")
+	almond.Name = "Eye"
+	almond.BackgroundTransparency = 1
+	almond.AnchorPoint = Vector2.new(0.5, 0.5)
+	almond.Position = UDim2.fromScale(0.5, 0.5)
+	almond.Size = UDim2.fromOffset(24, 14)
+	almond.ZIndex = 12
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.5, 0)
+	corner.Parent = almond
+	local stroke = Instance.new("UIStroke")
+	stroke.Name = "Lid"
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Thickness = 2
+	stroke.Color = GRAPHITE.Text
+	stroke.Parent = almond
+	local pupil = Instance.new("Frame")
+	pupil.Name = "Pupil"
+	pupil.BackgroundColor3 = GRAPHITE.Text
+	pupil.AnchorPoint = Vector2.new(0.5, 0.5)
+	pupil.Position = UDim2.fromScale(0.5, 0.5)
+	pupil.Size = UDim2.fromOffset(8, 8)
+	pupil.ZIndex = 13
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = pupil
+	pupil.Parent = almond
+	almond.Parent = skin
+	SpectateController.Changed:Connect(function(on: boolean)
+		Button.Set(button, { Selected = on })
+		local ink = if on then GRAPHITE.Accent else GRAPHITE.Text
+		stroke.Color = ink
+		pupil.BackgroundColor3 = ink
+		button:SetAttribute("On", on)
+	end)
+	button:SetAttribute("On", false)
+	return button
 end
 
 -- How full the ring is, 0 to 1: the right half, then the left (each half's gradient turns its light in).
@@ -741,6 +818,11 @@ local function step(dt: number)
 			showHealth(lead.Health, lead.HealthText, model)
 		end
 		lead.Frame:SetAttribute("Down", down)
+		local why = if down then "Your lead is down" else nil
+		if eye:GetAttribute("Why") ~= why then
+			eye:SetAttribute("Why", why)
+			Button.Set(eye, { Disabled = why or false })
+		end
 		local view = ProfileController.Get()
 		local owned = if view then view.Voidkin[view.Roles.Lead] else nil
 		if owned then
@@ -770,6 +852,7 @@ local function step(dt: number)
 		point(targetArrow, Hud.Arrow(mine, theirs))
 	end
 	stepRing(model, foe ~= nil, dt)
+	placeEye() -- Config.Hud.Spectate.Place, tuned live
 	band()
 	seeThrough(dt)
 	for name, button in dock do
@@ -825,6 +908,7 @@ function HudController.Start()
 	local value, extra, thread, boltMark = pill("Electricity", 2, ELECTRICITY, "Bolt")
 	electricity, rate, charge, bolt = value, extra, thread :: Frame, boltMark
 	ring = signatureRing()
+	eye = eyeButton()
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -950,6 +1034,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		XpGlint = glint,
 		ElectricityRate = rate,
 		Signature = ring.Frame,
+		Spectate = eye,
 		Chip = chip,
 		ChipText = chipText,
 		Voidkin = dock.Voidkin,

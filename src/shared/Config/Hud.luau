@@ -142,6 +142,12 @@ return {
 		Linger = 1,
 		FadeOut = 0.35,
 	},
+	-- The spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never moved in a fight, and a small
+	-- button follows the lead instead). The eye: Size authored pixels square (Theme.Size.Tap: a whole 44 px target at the
+	-- layer's smallest scale), Gap from the signature's ring, at Place: "Above", "Left" or "Below" the ring, the three
+	-- judged at phone size. On, the camera's point eases from the avatar's focus to the lead's, Height studs over the lead's root, about 95% of the way in Ease seconds
+	-- (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
+	Spectate = { Size = 52, Gap = 8, Place = "Above", Ease = 0.3, Height = 1.5 },
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
 	-- The cards' colours (TR3's verdict, 2026-11-13, fixes 1 to 3, with the director's notes). Health is the Ember light on
 	-- both cards, and no other bar takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's

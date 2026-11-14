@@ -25,6 +25,9 @@ local OPEN_MOST = 8 -- seconds the join's black waits at most for the screen to 
 local OPEN_BACK = 0.6 -- seconds the black lifts over when no arrival's fade came to lift it
 
 local startedAt = os.clock()
+local cover: Frame? = nil
+local current = 0
+local listeners: { (out: number) -> () } = {}
 local wholeAt: number? = nil -- when HudController said the screen is whole, by os.clock()
 local opened: { At: number, Whole: boolean }? = nil -- the first lift: when, and whether the screen was whole then
 
@@ -67,44 +70,62 @@ local function behind()
 	CameraTurn.To(CFrame.lookAt(focus + back, focus))
 end
 
+-- Something that must know a move's fade is coming (the spectate's camera goes back in the black): `listener(out)` as
+-- each starts, `out` its seconds to black.
+function FadeController.OnFade(listener: (out: number) -> ())
+	table.insert(listeners, listener)
+end
+
+-- A fade: to black over `out`, held `hold`, back over `back`. The server's Net "Fade", and tests'.
+function FadeController.Play(out: number, hold: number, back: number)
+	local black = cover
+	if black == nil then
+		return
+	end
+	current += 1
+	local mine = current
+	for _, listener in listeners do
+		task.spawn(listener, out)
+	end
+	TweenService:Create(black, TweenInfo.new(out, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 0 }):Play()
+	task.delay(out + hold, function()
+		untilWhole()
+		if current == mine then
+			behind()
+			TweenService:Create(black, TweenInfo.new(back, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { BackgroundTransparency = 1 }):Play()
+		end
+	end)
+end
+
 function FadeController.Start()
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "Fade"
 	gui.IgnoreGuiInset = true
 	gui.ResetOnSpawn = false
 	gui.DisplayOrder = 100 -- over every screen
-	local cover = Instance.new("Frame")
-	cover.Name = "Cover"
-	cover.Size = UDim2.fromScale(1, 1)
-	cover.BackgroundColor3 = BLACK
-	cover.BackgroundTransparency = 0 -- black from the first frame: the join opens whole or not at all
-	cover.BorderSizePixel = 0
-	cover.Active = false
-	cover.Parent = gui
+	local black = Instance.new("Frame")
+	cover = black
+	black.Name = "Cover"
+	black.Size = UDim2.fromScale(1, 1)
+	black.BackgroundColor3 = BLACK
+	black.BackgroundTransparency = 0 -- black from the first frame: the join opens whole or not at all
+	black.BorderSizePixel = 0
+	black.Active = false
+	black.Parent = gui
 	gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 
-	local current = 0
 	Net.Client.On("Fade", function(out: any, hold: any, back: any)
 		if type(out) ~= "number" or type(hold) ~= "number" or type(back) ~= "number" then
 			return
 		end
-		current += 1
-		local mine = current
-		TweenService:Create(cover, TweenInfo.new(out, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 0 }):Play()
-		task.delay(out + hold, function()
-			untilWhole()
-			if current == mine then
-				behind()
-				TweenService:Create(cover, TweenInfo.new(back, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { BackgroundTransparency = 1 }):Play()
-			end
-		end)
+		FadeController.Play(out, hold, back)
 	end)
 	-- No arrival's fade to lift the join's black (a client that started after it was sent): lift it here.
 	task.spawn(function()
 		untilWhole()
 		task.wait(OPEN_BACK)
 		if current == 0 then
-			TweenService:Create(cover, TweenInfo.new(OPEN_BACK, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { BackgroundTransparency = 1 }):Play()
+			TweenService:Create(black, TweenInfo.new(OPEN_BACK, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { BackgroundTransparency = 1 }):Play()
 		end
 	end)
 end

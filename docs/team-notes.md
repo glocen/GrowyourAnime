@@ -11,13 +11,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **In code, offline checks passing, Studio waiting on the MCP:** TR5's frames, TR6, TR7's ease taken out, TR10 to TR13, and "Content as data" (`docs/engineering-plan.md`, "Content at scale", items 1 to 5, with "The rows contract" and "The recipe contract"). Offline: type check 0 new, logic 4688, and the four models built the same as their templates. Every self-test run and capture waits on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
-- **For research, TR10's numbers** (`docs/test-requests.md`, TR10's status): with the seeds, the Jewels' sources (elite and keeper kills) fall 21% alone and 35% on a full server. The keeper's 5 minutes halves its kills; 3 minutes is under a lap.
-- **For Modulo, AR10:** each blade on one Torso joint, and Scarf Step's landing 35° off the line, are fine as they are. The handoff's `Kirra.recipe.json` is still the older blade form (wrist, grip, stow). Re-export it, and `lune run tools/checks/models_offline.luau --recipe Kirra` checks that it builds.
-- **Next:** TR8, then TR9. TR14 rides with Kirra's install, and TR15 comes after TR9.
-- **What I'd change:**
-  1. A player who owns one Voidkin is alone on Lantern Row after a fall: a chip pointing to the gate's door home.
-  2. TR15: the points come out of the own base, so a point left unspent should count as spread evenly until it's spent. Otherwise a player who never opens the board is weaker than today's Voidkin. TR14: nothing.
+- **TR8 in build, its offline half done** (its status in `docs/test-requests.md`): the kit laid by its plan once its template is built, dusk and night on one clock, the 20 pictures uploaded. The meshes, the template, the self-test and the takes wait on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
+- **Also waiting on the MCP:** the self-tests of TR5's frames, TR6, TR7, TR10 to TR13 and "Content as data"; Kirra's install, with TR14 riding on it (Modulo's recipe is re-delivered and builds offline).
+- **For Modulo, TR8:** the paper's drift has no numbers in the handoff (rate, size, speed, lifetime). They're yours to give when you next touch the kit.
+- **Next:** TR9 offline while Studio is down, then TR15.
+- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) TR15: a point left unspent should count as spread evenly until it's spent, or a player who never opens the board is weaker than today. TR14: nothing.
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
@@ -42,6 +40,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-14, TR8: the ground's look holds from 24 studs short of the festival gate, so a door's landing opens in it, and the place keeps its own Lighting elsewhere. The stalls, signs and houses collide by their box and the posts by their mesh. The gates collide by the grey street's own parts. The street's floor wears the paving tile under the bays, and the lead carries the plan's tenth light at its head, in the ground only.
 - Tier 2, Modulo, 2026-11-14: Scarf Step lands to the side of the Shade, about 35° off the line from the player's camera, so its line shows 9.8 of its 10 studs on the screen instead of folding to a streak (AR10, section 1). Research and Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-13: the effects kit grows, from the vault (`docs/research/vfx-reference.md`, "What the vault teaches, beside ours"): a stack of layers per beat, a dark twin under each bright layer, our own 4x4 and 8x8 sheets with outline and fill passes, the emitter row with Drag, Squash, Acceleration, EmitCount and EmitDelay, a screen row and a caster light from rung 4 and 7; the full look, with a "performance mode" setting to lower it (the director, 2026-11-13). The kit now; effects that passed, at the finish pass. Faber and Modulo: after your current piece, say in your row what you'd change.
 - Tier 1, Modulo, 2026-11-13: the Lamplighter's wrench is one-handed. The arm goes straight up beside its hat, and the lantern rises high over it. The blocking's two-handed wrench left the ring's frame and grazed the brim (AR7, section 4).

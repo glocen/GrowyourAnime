@@ -145,12 +145,17 @@ function Assembly.New(className: string, parent: Instance, props: { [string]: an
 	return instance
 end
 
--- A published mesh as a MeshPart, its box for collisions and its triangles drawn whole.
-local function meshPart(meshId: number): MeshPart
+-- A published mesh as a MeshPart, its box for collisions (or `fidelity`) and its triangles drawn whole.
+local function meshPart(meshId: number, fidelity: Enum.CollisionFidelity?): MeshPart
 	return AssetService:CreateMeshPartAsync(Content.fromAssetId(meshId), {
-		CollisionFidelity = Enum.CollisionFidelity.Box,
+		CollisionFidelity = fidelity or Enum.CollisionFidelity.Box,
 		RenderFidelity = Enum.RenderFidelity.Precise,
 	})
+end
+
+-- The same, bare: a world kit's piece (KitAssembly).
+function Assembly.Mesh(meshId: number, fidelity: Enum.CollisionFidelity?): MeshPart
+	return meshPart(meshId, fidelity)
 end
 
 -- A MeshPart of a published mesh at a model-space position, with no physics or queries (a held or worn prop).

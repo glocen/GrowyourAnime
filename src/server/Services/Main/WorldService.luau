@@ -5,14 +5,27 @@
 --   Laid tells whatever stands on a marker to find it again.
 -- * It gives each player a plot at join, the lowest free one, as the player attribute "Plot" (docs/engineering-plan.md,
 --   "Who owns what": the server, at join), and sets them down on its spawn, facing the Breaker.
--- Studio's WorldReport checks the place's markers against the contract.
+-- * Lantern Row wears its kit (TR8; AR5, section 2) once the kit's template is built (ServerStorage.Templates.
+--   LanternRowKit, tools/studio/KitAssembly): each piece where its plan says (Config.Kits.LanternRow, Shared.World.Kit)
+--   and the plan's lights, over the grey street, whose markers stay where they are and whose walls, gates and square
+--   stay as unseen colliders under the look; the street's floor carries the walking and wears the kit's paving under
+--   the bays. With no template, or a plan off the street's markers (a tuned street),
+--   the street stays grey and says why. The world's folder carries GateZ, the festival gate's line, for the ground's
+--   look (LightingController).
+-- Studio's WorldReport checks the place's markers against the contract, DressReport the dressing against its plan, and
+-- Night jumps the server's turn of dusk and night to a phase (Rules.Night), for the takes.
 -- North is -Z. The crossing's centre is the origin; the Strip runs east-west; Lantern Row runs north from the gate.
 
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage.Shared
 local WorldConfig = require(Shared.Config.World)
+local LightingConfig = require(Shared.Config.Lighting)
+local Kit = require(Shared.World.Kit)
+local Night = require(Shared.Rules.Night)
 local Net = require(Shared.Net)
 local Markers = require(Shared.World.Markers)
 local Log = require(Shared.Util.Log)
@@ -31,6 +44,9 @@ local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so 
 local PAVED_TOP = 0.6 -- the Strip, the streets and the plots stand a tenth higher, for the same reason
 local OVERLAY = 0.1 -- a mark on a paved floor: the kept back of a plot, a Tower's footprint
 local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
+local DRESS = "LanternRow" -- the kit Lantern Row wears: Config.Kits.LanternRow, ServerStorage.Templates.LanternRowKit
+local DRESS_LIFT = 0.05 -- the kit's floors stand a hair over the paving they cover, so the two never fight at a distance
+local LIGHT_CEILING = 14 -- round 2's lights, the ceiling the kit keeps (AR5, section 2)
 -- World numbers read when used, not laid
 local READ_LIVE = {
 	["World.Row.Respawn"] = true,
@@ -125,19 +141,93 @@ local function door(parent: Instance, name: string, at: CFrame): Model
 end
 
 -- A wall along z from z0 to z1 at x, `high` tall.
-local function wallZ(parent: Instance, x: number, z0: number, z1: number, high: number)
+local function wallZ(parent: Instance, x: number, z0: number, z1: number, high: number): Part?
 	if math.abs(z1 - z0) < 0.5 then
-		return
+		return nil
 	end
-	block(parent, "Wall", Vector3.new(2, high, math.abs(z1 - z0)), CFrame.new(x, PAVED_TOP + high / 2, (z0 + z1) / 2), GREY.Wall)
+	return block(parent, "Wall", Vector3.new(2, high, math.abs(z1 - z0)), CFrame.new(x, PAVED_TOP + high / 2, (z0 + z1) / 2), GREY.Wall)
 end
 
 -- A wall along x from x0 to x1 at z.
-local function wallX(parent: Instance, z: number, x0: number, x1: number, high: number)
+local function wallX(parent: Instance, z: number, x0: number, x1: number, high: number): Part?
 	if math.abs(x1 - x0) < 0.5 then
-		return
+		return nil
 	end
-	block(parent, "Wall", Vector3.new(math.abs(x1 - x0), high, 2), CFrame.new((x0 + x1) / 2, PAVED_TOP + high / 2, z), GREY.Wall)
+	return block(parent, "Wall", Vector3.new(math.abs(x1 - x0), high, 2), CFrame.new((x0 + x1) / 2, PAVED_TOP + high / 2, z), GREY.Wall)
+end
+
+-- The kit's pieces as a template (src/storage/<Kit>Kit.rbxm, built by tools/studio/KitAssembly), or nil until then.
+local function kitTemplate(): Instance?
+	local templates = ServerStorage:FindFirstChild("Templates")
+	return if templates then templates:FindFirstChild(`{DRESS}Kit`) else nil
+end
+
+local function kitFiles(): (any, any)
+	local home = (Shared.Config :: any).Kits[DRESS]
+	return require(home.Manifest) :: any, require(home.Plan) :: any
+end
+
+-- Why the kit can't be laid on a street whose stops stand `stops` studs up from its gate: none when it can.
+local function dressProblems(stops: { number }): { string }
+	local template = kitTemplate()
+	if template == nil then
+		return { `the kit's template isn't built (ServerStorage.Templates.{DRESS}Kit: tools/studio/KitAssembly)` }
+	end
+	local manifest, plan = kitFiles()
+	local problems = Kit.Problems(manifest.pieces, plan, stops, LIGHT_CEILING)
+	for name in manifest.pieces do
+		local piece = template:FindFirstChild(name)
+		if piece == nil or not piece:IsA("BasePart") then
+			table.insert(problems, `the template has no part {name}`)
+		end
+	end
+	return problems
+end
+
+-- The street's kit (TR8): each piece at its plan's place, and the plan's lights, Shadows off. Every piece and light is
+-- tagged (Kit.Tag) for the client, which keeps their glow and brightness with Config.Lighting and the night.
+local function dress(street: Instance, gateZ: number)
+	local template = kitTemplate() :: Instance
+	local manifest, plan = kitFiles()
+	local folder = Instance.new("Folder")
+	folder.Name = "Dressing"
+	local floorY = PAVED_TOP + DRESS_LIFT
+	for _, placement in plan.placements do
+		local part = (template:FindFirstChild(placement.piece) :: BasePart):Clone()
+		part.Anchored = true
+		part.CFrame = Kit.Place(placement, manifest.pieces[placement.piece], gateZ, floorY)
+		part:SetAttribute("Piece", placement.piece)
+		CollectionService:AddTag(part, Kit.Tag)
+		part.Parent = folder
+	end
+	for _, light in plan.lights do
+		local holder = Instance.new("Part")
+		holder.Name = light.name
+		holder.Size = Vector3.new(0.2, 0.2, 0.2)
+		holder.Transparency = 1
+		holder.Anchored, holder.CanCollide, holder.CanQuery, holder.CanTouch, holder.CastShadow = true, false, false, false, false
+		holder.CFrame = Kit.Light(light, gateZ, floorY)
+		local spot = light.kind == "spot"
+		local made: Light
+		if spot then
+			local cone = Instance.new("SpotLight")
+			cone.Face = Enum.NormalId.Front -- the holder looks straight down
+			cone.Angle = light.cone
+			made = cone
+		else
+			made = Instance.new("PointLight")
+		end
+		local numbers = if spot then LightingConfig.Pools else LightingConfig.Lamp
+		made.Color = Color3.fromHex(light.colour)
+		made.Brightness = numbers.Brightness;
+		(made :: any).Range = numbers.Range
+		made.Shadows = false
+		made.Parent = holder
+		holder:SetAttribute("Light", if spot then "Pool" else "Lamp")
+		CollectionService:AddTag(holder, Kit.Tag)
+		holder.Parent = folder
+	end
+	folder.Parent = street
 end
 
 -- One plot, `at` its centre on its floor, looking out of its front onto the Strip.
@@ -228,13 +318,23 @@ local function lay(folder: Folder)
 	local farZ = ringZ - ringRadius
 	local shutZ = farZ - studs(row.Beyond)
 	local high = c.Grey.Wall
+	folder:SetAttribute("GateZ", gateZ)
+	-- The grey look the kit replaces: the street's stall fronts, the square, the two gates. Kept as unseen
+	-- colliders when the kit is laid; the ring and beyond stay grey (their dressing waits).
+	local looks: { Instance } = {}
+	local function under(item: Instance?)
+		if item then
+			table.insert(looks, item)
+		end
+	end
 
 	-- The ground, under all of it.
 	slab(folder, "Ground", -stripEnd, stripEnd, towers, shutZ - 24, GROUND_TOP, GREY.Ground)
 	-- The Strip, the side street to the gate, and Lantern Row to the keeper's gate.
 	slab(folder, "Strip", -stripEnd, stripEnd, -stripHalf, stripHalf, PAVED_TOP, GREY.Paved)
 	slab(folder, "Side street", -rowHalf, rowHalf, gateZ, -stripHalf, PAVED_TOP, GREY.Paved)
-	slab(folder, "Lantern Row", -rowHalf, rowHalf, keeperZ, gateZ, PAVED_TOP, GREY.Paved)
+	-- The street's own floor carries the walking; dressed, it wears the kit's paving under the bays (AR5's manifest).
+	local streetFloor = slab(folder, "Lantern Row", -rowHalf, rowHalf, keeperZ, gateZ, PAVED_TOP, GREY.Paved)
 
 	-- The plots: two rows, numbered west to east, the north row first; each opens onto the Strip.
 	local plotFolder = Instance.new("Folder")
@@ -264,7 +364,9 @@ local function lay(folder: Folder)
 	-- The festival gate, open.
 	local north = Vector3.new(0, 0, -1)
 	local gateAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, gateZ), Vector3.new(0, PAVED_TOP, gateZ) + north)
-	Markers.Stamp(gate(folder, "Festival gate", gateAt, studs(row.Wide), high, false), "FestivalGate")
+	local festivalGate = gate(folder, "Festival gate", gateAt, studs(row.Wide), high, false)
+	under(festivalGate)
+	Markers.Stamp(festivalGate, "FestivalGate")
 	-- Its twin, inside the gate against the east stall front, takes the player home; the plots' doors land them before
 	-- the gate in the street's middle, looking through it.
 	local doors = c.Grey.Door
@@ -280,24 +382,28 @@ local function lay(folder: Folder)
 	local squareHalf = studs(row.Square) / 2
 	local openings: { { number } } = {} -- z ranges the stall fronts leave open
 	local pack = 0
+	local stopsAlong: { number } = {} -- each stop in studs up from the gate, for the kit's plan
 	for index, stop in stops do
 		local z = stopZ(index)
+		table.insert(stopsAlong, gateZ - z)
 		local at = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + Vector3.new(0, 0, 1)) -- facing the way the player comes
 		if stop.Kind == "Pack" then
 			pack += 1
 			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1, Ground = row.Ground })
 		elseif stop.Kind == "Elite" then
-			slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot)
+			under(slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot))
 			table.insert(openings, { z - squareHalf, z + squareHalf })
 			for _, side in { -1, 1 } do
-				wallZ(street, side * (squareHalf + 1), z - squareHalf, z + squareHalf, high)
-				wallX(street, z - squareHalf - 1, side * (rowHalf + 1), side * (squareHalf + 2), high)
-				wallX(street, z + squareHalf + 1, side * (rowHalf + 1), side * (squareHalf + 2), high)
+				under(wallZ(street, side * (squareHalf + 1), z - squareHalf, z + squareHalf, high))
+				under(wallX(street, z - squareHalf - 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
+				under(wallX(street, z + squareHalf + 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
 			end
 			Markers.Stamp(spot(street, "Elite", at), "Elite", { Def = stop.Def, Level = stop.Level, Ground = row.Ground })
 		elseif stop.Kind == "Keeper" then
 			local keeperAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + north)
-			Markers.Stamp(gate(street, "Keeper's gate", keeperAt, studs(row.Wide), high, true), "KeeperGate")
+			local keeperGate = gate(street, "Keeper's gate", keeperAt, studs(row.Wide), high, true)
+			under(keeperGate)
+			Markers.Stamp(keeperGate, "KeeperGate")
 			-- The ring behind it: a floor and a low wall round it.
 			local ringAt = CFrame.new(0, PAVED_TOP, ringZ)
 			local ring = model(street, "Ring", ringAt)
@@ -324,10 +430,10 @@ local function lay(folder: Folder)
 	for _, side in { -1, 1 } do
 		local from = gateZ
 		for _, opening in openings do
-			wallZ(street, side * (rowHalf + 1), from, opening[2] + 2, high)
+			under(wallZ(street, side * (rowHalf + 1), from, opening[2] + 2, high))
 			from = opening[1] - 2
 		end
-		wallZ(street, side * (rowHalf + 1), from, keeperZ, high)
+		under(wallZ(street, side * (rowHalf + 1), from, keeperZ, high))
 		wallX(street, keeperZ, side * (rowHalf + 1), side * (ringRadius + 2), high)
 		wallZ(street, side * (ringRadius + 2), keeperZ, shutZ, high)
 	end
@@ -346,6 +452,28 @@ local function lay(folder: Folder)
 	Markers.Stamp(shortcut, "Shortcut")
 	local exitAt = CFrame.lookAt(Vector3.new(-(rowHalf - 4), PAVED_TOP, beyondZ), Vector3.new(-(rowHalf - 4), PAVED_TOP, beyondZ) + north)
 	Markers.Stamp(spot(street, "Ring exit", exitAt), "RingExit")
+
+	-- The kit, over the grey street: its look hidden, its colliders kept.
+	folder:SetAttribute("Stops", table.concat(stopsAlong, ","))
+	local problems = dressProblems(stopsAlong)
+	if #problems > 0 then
+		Log.Info("WorldService", `Lantern Row stays grey: {table.concat(problems, "; ")}`)
+		return
+	end
+	dress(street, gateZ)
+	local paving = (kitTemplate() :: Instance):FindFirstChild("Paving")
+	if paving then
+		paving:Clone().Parent = streetFloor
+	end
+	for _, item in looks do
+		local parts = if item:IsA("BasePart") then { item } else item:GetDescendants()
+		for _, part in parts do
+			if part:IsA("BasePart") then
+				part.Transparency = 1
+			end
+		end
+	end
+	folder:SetAttribute("Dressed", DRESS)
 end
 
 local function build(): Folder
@@ -421,6 +549,62 @@ function WorldService.Init()
 	end
 	DebugService.Register("WorldReport", function(): { string }
 		return Markers.Report(WorldConfig.Plots.Count)
+	end)
+	-- The dressing against its plan: every piece laid as often as the plan has it, each with its look, the plan's lights,
+	-- and the grey look under it hidden. Empty when it's whole; one line when the street is grey, and why.
+	DebugService.Register("DressReport", function(): { string }
+		local world = workspace:FindFirstChild(WORLD)
+		if world == nil then
+			return { "no world" }
+		end
+		if world:GetAttribute("Dressed") ~= DRESS then
+			local stops: { number } = {}
+			for _, along in string.split(tostring(world:GetAttribute("Stops") or ""), ",") do
+				table.insert(stops, tonumber(along) or 0)
+			end
+			return { `grey: {table.concat(dressProblems(stops), "; ")}` }
+		end
+		local _, plan = kitFiles()
+		local want: { [string]: number } = {}
+		for _, placement in plan.placements do
+			want[placement.piece] = (want[placement.piece] or 0) + 1
+		end
+		local got: { [string]: number } = {}
+		local lights, problems = 0, {}
+		for _, item in CollectionService:GetTagged(Kit.Tag) do
+			if not item:IsDescendantOf(world) then
+				continue
+			end
+			local piece = item:GetAttribute("Piece")
+			if type(piece) == "string" then
+				got[piece] = (got[piece] or 0) + 1
+				if item:FindFirstChildOfClass("SurfaceAppearance") == nil then
+					table.insert(problems, `{item:GetFullName()}: no look`)
+				end
+			elseif item:FindFirstChildWhichIsA("Light") then
+				lights += 1
+			end
+		end
+		for piece, count in want do
+			if got[piece] ~= count then
+				table.insert(problems, `{piece}: {got[piece] or 0} laid, the plan has {count}`)
+			end
+		end
+		if lights ~= #plan.lights then
+			table.insert(problems, `{lights} lights, the plan has {#plan.lights}`)
+		end
+		local row = world:FindFirstChild("Lantern Row")
+		if row == nil or row:FindFirstChild("Paving") == nil then
+			table.insert(problems, "the street's floor wears no paving")
+		end
+		table.sort(problems)
+		return problems
+	end)
+	-- A jump of the server's turn of dusk and night to a phase's start (Rules.Night), every client with it.
+	DebugService.Register("Night", function(_who: any, phase: any): string
+		local name = tostring(phase)
+		workspace:SetAttribute(Night.Attribute, Night.From(name, workspace:GetServerTimeNow(), LightingConfig.Cycle))
+		return name
 	end)
 	-- A fresh arrival, as after a fall or a reset: Respawn (the bridge passes the caller first).
 	DebugService.Register("Respawn", function(who: any): boolean

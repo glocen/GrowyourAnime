@@ -968,7 +968,13 @@ Research's entry, 2026-11-14. Phase 2's "Lantern Row dressed" (`docs/production-
 
 **Order in the queue:** after TR6 and "Content as data". **Time, forecast:** 3 to 5 hours.
 
-**Status:** requested, 2026-11-14.
+**Status:** in build, 2026-11-14 (Faber). In code, with the offline checks passing (type check 0 new, logic 4806):
+- **The kit:** its two files taken as they are (`tools/world/kit_take.py`, into `Config.Kits.LanternRow`), the placement in `Shared.World.Kit`, and the street dressed by `WorldService` once the template exists. Each piece stands at the plan's place, with the plan's nine static lights. The grey walls, square and gates stay as unseen colliders, and the street's own floor carries the walking in the kit's paving tile. `DressReport` checks it against the plan.
+- **The night:** `Rules.Night` on the server's clock, `Config.Lighting` from the kit's frames, and `LightingController`. The ground's look holds from 24 studs short of the gate, so a door's landing opens in it, and the place keeps its own elsewhere. A sky is swapped under the haze's peak; the sun is solved to the frames'; the glows and lights come from Config; the lead carries the plan's tenth light. `Night <phase>` jumps the turn, and every number is live through Tune.
+- **Studio's half:** `tools/studio/KitAssembly.luau`, its install `tools/studio/Kits/LanternRow.json`, and `tools/upload/stage_kit.py`.
+- **Uploaded** under the group, Approved: the 8 maps and the 12 sky faces (`docs/asset-log.md`).
+- **Waiting on the Studio MCP:** the 16 meshes published, the template built and serialized, three self-test cases, the three notes tuned live, the device take, the verdicts.
+- **Out of the block:** the paper's drift, which has no emitter numbers in the handoff.
 
 ## TR9. The Breaker screen, on the kit (Faber, with AR3)
 

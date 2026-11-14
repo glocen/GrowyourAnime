@@ -28,6 +28,8 @@ local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
 local WorldConfig = require(Shared.Config.World)
 local BaseConfig = require(Shared.Config.Base)
 local Markers = require(Shared.World.Markers)
+local Kit = require(Shared.World.Kit)
+local LightingConfig = require(Shared.Config.Lighting)
 local Parts = require(Shared.Util.Parts)
 local CameraTurn = require(Shared.Util.CameraTurn)
 local Drops = require(Shared.Rules.Drops)
@@ -49,6 +51,7 @@ local FighterController = require(script.Parent.Parent.Parent.Main.FighterContro
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
 local SpectateController = require(script.Parent.Parent.Parent.Main.SpectateController)
+local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local DownController = require(script.Parent.Parent.Parent.Main.DownController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -1053,6 +1056,122 @@ return {
 			local problems = t.Server("WorldReport")
 			local first = if type(problems) == "table" then problems[1] else nil
 			t.Check("the world report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+		end,
+	},
+	{
+		Name = "World: TR8, Lantern Row wears its kit whole, the plan's lights with it, the grey look under it hidden",
+		Stay = true,
+		Run = function(t: any)
+			local problems = t.Server("DressReport")
+			local first = if type(problems) == "table" then problems[1] else nil
+			t.Check("the dressing report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+		end,
+	},
+	{
+		Name = "Lighting: TR8, the ground's sun stands where the kit's frames have it, at a day clock",
+		Stay = true,
+		Run = function(t: any)
+			local sun = LightingController.Sun()
+			t.Check("within 2 degrees of the frames' sun", sun.Off <= 2, string.format("%.2f degrees off", sun.Off))
+			t.Check("at a day clock (the handbook's pseudo-night)", sun.Clock >= 6 and sun.Clock <= 18, tostring(sun.Clock))
+		end,
+	},
+	{
+		Name = "Lighting: TR8, north of the festival gate the ground's dusk or night holds, outside it the place's own; a walk eases in, a jump lands",
+		Run = function(t: any)
+			local world = workspace:FindFirstChild("World")
+			local gateZ = if world then world:GetAttribute("GateZ") else nil
+			t.Check("the world says where its gate stands", type(gateZ) == "number")
+			if type(gateZ) ~= "number" then
+				return
+			end
+			local from = LightingConfig.From
+			local up = Vector3.new(0, 3.6, 0) -- an R6 root over the paving
+			local function stand(z: number)
+				t.Server("TestStandAt", Vector3.new(0, 0, z) + up, Vector3.new(0, 0, z - 10) + up)
+			end
+			local function near(a: Color3, b: Color3): boolean
+				return math.abs(a.R - b.R) + math.abs(a.G - b.G) + math.abs(a.B - b.B) < 3e-3
+			end
+			local Atmosphere = game:GetService("Lighting"):FindFirstChildOfClass("Atmosphere")
+			local Bloom = game:GetService("Lighting"):FindFirstChildOfClass("BloomEffect")
+			local function holds(name: string)
+				local phase = (LightingConfig.Phases :: any)[name]
+				local look = LightingController.Look()
+				local lighting = game:GetService("Lighting")
+				t.Check(`{name}: all the way in`, look.Area == 1, tostring(look.Area))
+				t.Equal(`{name}: the turn's phase`, look.Phase, name)
+				t.Check(`{name}: its sky`, lighting:FindFirstChild(`LanternRow{name}`) ~= nil)
+				local skies = 0
+				for _, child in lighting:GetChildren() do
+					skies += if child:IsA("Sky") then 1 else 0
+				end
+				t.Equal(`{name}: one sky`, skies, 1)
+				t.Check(`{name}: its fill`, near(lighting.Ambient, phase.Ambient) and near(lighting.OutdoorAmbient, phase.Ambient), tostring(lighting.Ambient))
+				t.Near(`{name}: its brightness`, lighting.Brightness, phase.Brightness, 1e-3)
+				t.Check(`{name}: its sun's colour`, near(lighting.ColorShift_Top, phase.Sun))
+				t.Near(`{name}: its haze, no veil`, Atmosphere and Atmosphere.Density or -1, phase.Atmosphere.Density, 1e-3)
+				t.Near(`{name}: its bloom`, Bloom and Bloom.Intensity or -1, phase.Bloom.Intensity, 1e-3)
+			end
+			-- Outside: the place's own.
+			t.Server("Night", "Night")
+			stand(gateZ + from + 40)
+			t.Wait(0.3)
+			t.Check("outside: none of the ground's look", LightingController.Look().Area == 0)
+			t.Check("outside: the place's own sky", game:GetService("Lighting"):FindFirstChild("LanternRowNight") == nil
+				and game:GetService("Lighting"):FindFirstChild("LanternRowDusk") == nil)
+			local function leadLit(): boolean?
+				local light = LightingController.LeadLight()
+				return if light then light.Enabled and light.Brightness > 0 else nil
+			end
+			t.Check("outside: the lead's light off", leadLit() ~= true)
+			-- A jump in lands in the night at once.
+			stand(gateZ - 60)
+			t.Wait(0.3)
+			holds("Night")
+			t.Check("inside: the lead carries its light", leadLit() == true)
+			-- The turn jumped to dusk.
+			t.Server("Night", "Dusk")
+			t.Wait(0.3)
+			holds("Dusk")
+			-- The pieces round the avatar glow by Config, and a tune shows at once.
+			local function glows(): (number, { string })
+				local count, off = 0, {}
+				for _, item in CollectionService:GetTagged(Kit.Tag) do
+					local piece = item:GetAttribute("Piece")
+					local surface = item:FindFirstChildOfClass("SurfaceAppearance")
+					if type(piece) ~= "string" or surface == nil then
+						continue
+					end
+					count += 1
+					local want = if Kit.Floors[piece] then LightingConfig.Phases.Dusk.Floor
+						elseif LightingConfig.Houses[piece] then LightingConfig.Glow.Houses
+						else LightingConfig.Glow.Kit
+					if math.abs(surface.EmissiveStrength - want) > 1e-3 then
+						table.insert(off, string.format("%s at %.2f, not %.2f", piece, surface.EmissiveStrength, want))
+					end
+				end
+				return count, off
+			end
+			local count, off = glows()
+			t.Check("pieces streamed in round the avatar", count > 0, tostring(count))
+			t.Check("each at its glow", #off == 0, off[1])
+			local before = LightingConfig.Glow.Kit
+			t.Server("Tune", "Lighting.Glow.Kit", before + 1)
+			t.Wait(0.3)
+			count, off = glows()
+			t.Check("a tuned glow shows at once", count > 0 and #off == 0, off[1])
+			t.Server("Tune", "Lighting.Glow.Kit", before)
+			t.Wait(0.3)
+			-- A walk out eases: half way through Enter, between the two looks; after it, out.
+			stand(gateZ + from - 8)
+			t.Wait(0.3)
+			stand(gateZ + from + 8) -- 16 studs: a walk, not a jump
+			t.Wait(LightingConfig.Enter / 2)
+			local mid = LightingController.Look().Area
+			t.Check("half way out, between the looks", mid > 0 and mid < 1, tostring(mid))
+			t.Wait(LightingConfig.Enter / 2 + 0.3)
+			t.Check("and out", LightingController.Look().Area == 0, tostring(LightingController.Look().Area))
 		end,
 	},
 	{

@@ -5147,7 +5147,7 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 
 **Time it:** each delivery records what it took, beside Kirra's.
 
-**Status:** requested, 2026-11-14, night. The sheet is drawn and passed the content check (section 1). It waits for research's verdict. Scarf Step's blockout with Faber goes first, when Faber gives the turn.
+**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). The model is next, after Scarf Step's blockout with Faber, when Faber gives the turn.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -5203,6 +5203,43 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
   - The workshop comedy stays at his competence, never at his expense. Watch for this in Reveal and Work.
   - The mesh, the textures and each clip get their own check before any upload.
 - **Time:** about 1 hour 40 minutes in all. The plan and the script took about 55 minutes. The draft, the two fixes and the sheet took about 45 more (22:04 to 22:50 local), with the renders waiting on memory in between. On Opus 5.5. Kirra's sheet took about 45 minutes in its session, plus a plan written in the session before.
+
+**Research's verdict on the sheet,** 2026-11-14, night, read whole at full size:
+- **Felt:** a stocky worker with a generator on his back and a spanner as big as a door, pleased with himself; at 64 px he's the coil posts and the crescent before he's anything else.
+- **Tier:** competent, no obvious issue.
+- **The one bold thing:** the crescent wrench. One tool is his weapon, his shield and his ground rod, and the sheet's black row parts him from Rook by it and the two posts, where the overlap number can't. That measure is accepted as blind for two broad R6 bodies; the black row is the read.
+- **Take A,** stood: the head stands as the shield the feel line names. B's head lies flat from the player's camera and reads as a long stick, as Modulo found.
+- **Storm** reads away from Kirra's Sky at a glance, in every row.
+- **Fix, at the model (delivery 2):** in the dark row, the shirt, gloves and sleeves fuse into one Graphite mass, so the arms that swing the wrench vanish on a night street. Lift the shirt one value step, or give it a cream rolled cuff, so the arms part from dusk; the pack and the legs already do. Serves the Combo's read.
+- **Note for delivery 4:** from the player's camera, the hold is the lit pack, with the wall mostly hidden, so Ground Wire reads by the ring and the coils' arc. The effect carries the shield's read from behind, never the pose alone.
+- The content check's two notes stand for the clips.
+
+## AR12. The HUD's colour (Modulo, then Faber)
+
+Research's request, 2026-11-14, night, on the director's word (`docs/decisions.md`, 2026-11-14, night, (2)): the HUD "lack colors and personality, i like this mature but it lack a bit of colors"; "Now, in parallel" with TR17. The director picks the direction.
+
+**Feel line:** the same mature dark HUD, but each system has a colour you'd know from across the screen (power hums in its own, credits in its own, the lead's rarity burns in its frame), so the frame feels alive and stays quieter than the fight.
+
+**Holds:** Graphite Dark stays the base. Rule 3 holds (`docs/ui.md`): the cut, the frames, the gems and marks don't change, and a colour that already means something is never reused as an accent: the six rarities, the five type hues, the four elements (`Config.UIKit`, Storm `#FF6FD8` included), and green and red for succeeded and failed. Dynamo's yellow stays off portrait frames (AR3, section 2, fix 5).
+
+**Delivers,** each shown before the next:
+1. **A direction sheet:** two or three directions, side by side, over the HUD as the game lays it out (`Config.Hud`; the kit in `build/handoff/UI/kit/`, the HUD art in `build/handoff/UI/hud/`). If you need a capture of the live HUD, ask Faber at a turn's end. Each direction shows:
+   - an accent per system, at least Power and Credits, each with its own icon, so they part without colour too;
+   - the new Power pill: generation against demand in kW (`docs/design.md`, "Power"), at rest, and when demand is over generation and the battery is covering it;
+   - the dock's icons in colour;
+   - the lead's card with a stronger rarity glow and type gem, Common and Mythical both;
+   - the hint pill with an icon;
+   - the signature's readout and the spectate eye.
+   Show each over a dusk street and a noon street at phone landscape, plus the glance strip at true size. The axis to explore is how far the colour goes: accents only, coloured edges and channels, or a coloured light field behind a piece. That call is yours.
+2. **After the director's pick:** the HUD's images changed in the chosen direction, delivered to `build/handoff/UI/` for Faber's build.
+
+**Waits:** the Power pill's live numbers (TR18). The Voidkin screen's look is drawn with its own layout pick (TR17), not here.
+
+**Checks:** the content check; legible at phone size over bright and dark; the accents read apart in a deuteranopia view; research's verdict, then the director's pick.
+
+**Time it:** forecast 2 to 3 hours for the sheet.
+
+**Status:** requested, 2026-11-14, night.
 
 ## Later, by ground
 

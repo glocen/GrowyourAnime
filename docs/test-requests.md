@@ -1431,3 +1431,45 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
 **Waits:** the look (Modulo, with Faber, after the pick); sorting, filtering and comparing two; another player's view of your lead; the skill tree; evolution.
 
 **Done when:** a take per layout at phone size: open from the dock, turn the figure, tap it, switch three Voidkin by the strip and by a swipe, each tab, and Lead and Send to work once each. Then research's verdict in motion and the director's pick. The UI lint runs first, at both scales.
+
+## TR18. The base as a power plant (Faber, then Modulo's generator)
+
+Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`, 2026-11-14, night, (1); "Yes, as restated"). The design: `docs/design.md`, "Power: the base is a power plant". The HUD's pill and screen 7: `docs/ui.md`.
+
+**Feel line:** a player stands at their generator, drags one bar, and hears the Breaker spin up as the training slows. The base is a plant they run, and every kW they make goes where they chose.
+
+**Order in the queue:** after TR17. **Time, forecast:** 4 to 6 active hours.
+
+**The block contains,** in grey:
+- **The rule** (`Rules/Power`, pure, with logic cases):
+  - generation from the bays' workers;
+  - each machine's draw: its share of generation over its rating, up to full speed, never stopping dead;
+  - Auto's split by demand;
+  - the battery: charging from what isn't routed, covering routed demand above generation, offline too, to its cap.
+- **The save** (server-owned):
+  - the shares and Auto, validated on the server: each share 0 or more, the total never over the whole;
+  - the battery in kWh;
+  - a migration step from the stored counter to kWh.
+- **The machines run at their factor:** the Breaker's speed, the Condenser's rate, the Training machine's pace. Infusion is paid in kWh.
+- **The generator:** a grey block at the base, with generation and demand on its face. Its prompt opens the Power screen.
+- **The Power screen** in grey:
+  - one horizontal bar, split by handles;
+  - +/- on each share, and Auto;
+  - each machine's row: its kW against its rating, and its speed in %;
+  - the battery's kWh, its cap, and the hours of work it holds.
+- **The HUD pill:** generation against demand in kW, in grey until AR12's pick, with a state for demand over generation.
+- **When it shows:** the screen opens once a second machine draws. Until then, Auto runs it unseen.
+
+**The numbers:** ratings, kW per worker, the battery's kWh and cap, infusion's price, and the floor that stops a machine stopping dead. Research sets them in the simulation (`tools/balance/sim.py`) before the build and writes them here. Faber puts them in `Config`.
+
+**Waits:**
+- the generator's model (Modulo, requested once the block is judged);
+- the screen's and the pill's look (AR12, then the machine room's Dynamo);
+- the plant's sounds.
+
+**Done when:**
+- the logic cases pass: split, Auto, the floor, the battery's charge, drain, cap and offline, the migration and a refused share;
+- a take at phone size: walk to the generator and open it, drag a handle, then Auto, the Breaker's progress slowing and speeding with it, and the HUD pill changing;
+- research's verdict in motion. The UI lint runs first, at both scales.
+
+**Status:** requested, 2026-11-14, night. Waits on the numbers from the sim, and on TR17.

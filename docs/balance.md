@@ -37,7 +37,7 @@ Shares of a full launch build's stat points, at level 60:
 | Research | 3 | Research Points |
 
 - **Rarity** multiplies a Voidkin's own base only, from 1.00 for a Common to 1.50 for a Mythical. Since the base is about a third of a build, a Mythical at a full build has about 19% more of each stat than a Common at a full build.
-- **Skill points** (`docs/design.md`, "Skill points") take part of the own base's 35: the player chooses where it goes among Health, Attack, Defence and Regen. The split is a seed, set by the simulation when the board is built.
+- **Skill points** (`docs/design.md`, "Skill points") add a fixed share of each stat's own base on top of it, placed by the player among Health, Attack, Defence and Regen. With none spent, a Voidkin is as the table above. The share is seeded by the simulation (TR15), and the fights' targets are checked with the board spent evenly.
 - **Class** shifts a Voidkin's own base between health, attack and defence. It doesn't touch gear.
 - **Gear is the account's,** so most of a build carries over to whichever Voidkin leads.
 

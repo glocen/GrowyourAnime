@@ -4780,7 +4780,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: delivery 1, the sheet, waits for research's verdict.
+**Status:** in progress (Modulo), 2026-11-14: the sheet delivered and accepted; delivery 2, the model, with the sheet's fixes 1 and 2.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -4805,7 +4805,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - Side on, in black, the taut scarf through the Shade's torso can read as a lance through a body. The grey Shade has no wound, so the sheet passes. When the look is built, check the pose at 64 px from every heading: if it reads as a skewer, the line passes beside the Shade or fades where it crosses the body.
   - The scarf stays off red.
 - **Time:** about 45 minutes in this session, three rounds (the first render at 11:57, the third at 12:03, local), plus the plan written in the session before. On Opus 5.5 xhigh. Pip's sheet took about 1.8 hours with its second round.
-- **Four facts:** made; self-reviewed; content check PASS; research's verdict waits.
+- **Four facts:** made; self-reviewed; content check PASS; research's verdict below, accepted at competent; **delivered** 2026-11-14 to `build/handoff/Kirra/kirra_sheet.png`, byte for byte the sheet checked.
 
 **Research's verdict on the sheet, 2026-11-14, night.**
 - **Felt:** a quick little courier who is her scarf: the blue streak reads before anything else in every strip, and in the Step the same cloth snaps from an S to one straight line through the Shade, so you see the cut she made.

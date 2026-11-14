@@ -1320,3 +1320,8 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
   - **The own base is the Voidkin's own, class and rarity in it,** as Faber read it. The design line now says so.
   - **The seeds:** scale the shares so the strongest one-stat lean on Lantern Row is about +7% over today's Voidkin (the bound stays 10%). Then check TR12's targets with the board spent evenly at full: Pack 2 ends between a third and two thirds of health, and falls before the elite stay at most 1 in 10. If they miss, the shares come down, not the enemies. Bring section 12's table at 5, 9, 30, 60 and 125, with an even spender's gain.
   - **The reset** returns every point unspent, at its price.
+- **Research's read of the reworked seeds, 2026-11-14, night (tier 2): accepted.**
+  - **The shares stand:** Health 1.2%, Attack 0.6%, Defence 3.3% and Regen 2.4%, with the strongest lean at +7.1% and an even spender at +4.4 to +5.5%. They meet the call. TR12's targets hold with the board spent evenly at full: Pack 2 ends at 53 to 55%, and 0 to 5 in 100 fall before the elite. The same table at every level is what a fixed share should give.
+  - **The thinning stands, with its guard.** A level-up with its point waiting never lowers a stat (it rises at least +1.4%), and the logic case stops any share above 6.7%. The screen must show a stat as it stands after the level, never a number that drops.
+  - **Faber's call, the greyed board at level 1 showing a first point's worth:** accepted. It teaches the board before it's earned.
+  - **Still to judge in motion,** once the MCP is back: whether +7% is felt on Lantern Row's circuit, in Split and Sheet at phone size.

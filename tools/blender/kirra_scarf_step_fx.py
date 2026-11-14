@@ -3,15 +3,18 @@
 py tools/blender/kirra_scarf_step_fx.py rows <out_dir>
 blender.exe -b --factory-startup --python tools/blender/kirra_scarf_step_fx.py -- <out_dir> preview
 
-- rows (plain Python, no Blender): KirraScarfStep.rows.json, take A, the line on the scarf through the Shade, and
-  KirraScarfStepFlank.rows.json, take B, the line turned past the Shade's flank (research's technique check: both in
-  the first block, judged at 64 px from the player's camera). Schema rows/1 (docs/engineering-plan.md, "The rows
+- rows (plain Python, no Blender): KirraScarfStep.rows.json. Schema rows/1 (docs/engineering-plan.md, "The rows
   contract"), in grey. Its numbers come from the delivered clip, build/handoff/Kirra/clips/Kirra_ScarfStep.json, the
   Transforms the game plays, chained on the recipe's joints: the scarf's knot and tip in her root's frame, frame by frame.
   The Shade's chest is the clip's, in the effect's foot's frame as the game sets it (Effects.Play: her root at the
-  action's start, set down to the floor, facing as she does; she faces the Shade).
-- preview (in Blender, on the clip's rig): the line drawn in grey from the player's camera, A then B, alone and then with
-  the crescent (motion before layers), full size and at 64 px: scarf_step_line.png and scarf_step_crescent.png. The
+  action's start, set down to the floor, facing as she does; she faces the Shade). The skewer's two takes (research's
+  technique check) are one file: A, her path through the Shade, and B, her path turned past its flank on the camera's
+  side, the game's number (FLANK_PATH); the line rides her root, so it goes with her either way.
+- screen (plain Python): what the Shade's body, as boxes from its recipe, hides of the line from cameras round the fight,
+  by the light's turn at her knot and by her path's turn at her spot. Hidden is the skewer's read: the line going into
+  the body and out of it. Drawn over the body is the line passing in front of it.
+- preview (in Blender, on the clip's rig): the line drawn in grey from the replay's camera, alone and then with the
+  crescent (motion before layers), full size and at 64 px: scarf_step_line.png and scarf_step_crescent.png. The
   particles, the light, a Beam's fade and the self-lit look aren't drawn: the engine's take judges those. Needs
   kirra_model.py's output, as kirra_clips.py does, and about 1 GB.
 
@@ -40,10 +43,11 @@ KEYS = (16, 20, 24, 32, 40, 44, 46)  # the frames the line's place and aim are k
 ROOT_HEIGHT = 3.0  # R6: the HumanoidRootPart's centre over the floor, and the Torso at it at rest
 GONE, PAST = 5.0, 3.8  # the clip's Shade ahead of her start, and how far past it she lands (kirra_clips, kirra_sheet)
 CHEST = 3.0  # the Shade's chest over the floor, where the clip aims her line (kirra_clips.scarf_step's at_shade)
-CAMERA_SIDE = 1.0  # the player's camera stands to her right of the line (+x of the effect's foot): the clip's crossing
-# runs 35 degrees right of the camera's line (AR10, section 1's tier 2). A crossing mirrored in the game flips it.
-FLANK = 1.5  # take B: studs off the Shade's middle at which the line passes it, on the camera's side (the grey
-# Shade's coat is 2.2 across at its chest: 0.4 clear)
+CAMERA_SIDE = -1.0  # the replay's camera stands on her left of her line (-x of the effect's foot): Config.Combat puts
+# the lead beyond its target turned 45 degrees toward its side, the avatar behind the target, the camera behind the
+# avatar (REPLAY_HEADING). The keeper's ring puts the lead on the avatar's left and flips it; the crescent's roll follows.
+FLANK_PATH = 3.5  # take B: studs off the Shade's middle at which her path passes it, on the camera's side; from her spot
+# 5 studs out that's her path turned 44 degrees. The Shade at rest is 2.48 across each side, its arms included: 1 clear.
 TAPER = 0.45  # the line's width where she was, as a share of its width at her knot
 WIDTH = ((0, 0.3, "Quad Out"), (2, 0.75, "Quad Out"), (10, 0.34, "Sine InOut"), (22, 0.3, "Linear"), (30, 0.18))  # from Land
 ROLL = 35.0  # the crescent rolled about her line, its face tipped up toward the camera's side
@@ -229,13 +233,12 @@ def landed(p):
 
 # --- the rows -----------------------------------------------------------------------------------------------------------
 
-def line_row(n, turn_deg):
-    """The line: one Beam on her root, from her knot along the scarf; turned `turn_deg` about up at the knot (take B)."""
+def line_row(n):
+    """The line: one Beam on her root, from her knot along the scarf."""
     at, tilt, lengths = [], [], []
-    turn = turned_about_up(turn_deg)
     for f in KEYS:
         knot, tip = n["line"][f]["knot"], n["line"][f]["tip"]
-        d = rot(turn, sub(tip, knot))
+        d = sub(tip, knot)
         lengths.append(length(d))
         at.append([f - LAND, v3(knot), "Sine InOut"])
         if f <= HOLD_TO:  # the aim holds from 40: the light stays straight as the cloth lets go off it
@@ -249,7 +252,7 @@ def line_row(n, turn_deg):
     top = round(min(lengths[i] for i, f in enumerate(KEYS) if f <= HOLD_TO), 2)
     return {
         "Kind": "Beam", "Body": "HumanoidRootPart", "From": "Land", "Image": "fx_beam", "Grey": "fx_beam", "Color": WHITE,
-        "Why": "The hero: the light on the scarf, from her knot back through the Shade toward where she was. It rides her "
+        "Why": "The hero: the light on the scarf, from her knot back past the Shade toward where she was. It rides her "
                "root, so it stays on the scarf wherever the game lands her: At and Tilt are the scarf's knot and aim in "
                "her root's frame, from the clip. It swells on the Cut, narrows toward where she was, and burns off from "
                "its far end into her knot from 38 to 46, slow then fast. The cloth lets go from its tip at 44.",
@@ -267,8 +270,8 @@ def line_row(n, turn_deg):
     }, lengths
 
 
-def effect(n, name, why, turn_deg):
-    line, lengths = line_row(n, turn_deg)
+def effect(n, name, why):
+    line, lengths = line_row(n)
     rows = {
         "Line": line,
         "Puff": {
@@ -363,49 +366,137 @@ def write_rows(out):
     knot16 = landed(n["line"][LAND]["knot"])
     shade = n["shade"]
     reach = math.hypot(shade[0] - knot16[0], shade[2] - knot16[2])
-    flank = math.degrees(math.atan2(FLANK, reach))
-
-    def far_x(deg):  # the scarf's far end, turned, in the effect's foot's frame: its x
-        s = n["line"][24]
-        return landed(add(s["knot"], rot(turned_about_up(deg), sub(s["tip"], s["knot"]))))[0]
-
-    turn_b = max((flank, -flank), key=lambda deg: far_x(deg) * CAMERA_SIDE)
-    why_a = ("Kirra's Scarf Step, the grey block, take A: the line on the scarf, through the Shade's chest (AR10, "
-             "section 5, and research's technique check). Written by tools/blender/kirra_scarf_step_fx.py from the clip.")
-    why_b = ("Kirra's Scarf Step, the grey block, take B: the line turned past the Shade's flank on the player's camera's "
-             f"side ({FLANK} studs off its middle); the rest is take A. Judged beside A at 64 px: if either reads as a "
-             "skewer, the flank is taken and the clip's aim follows. Written by tools/blender/kirra_scarf_step_fx.py.")
-    rows_a, lengths = effect(n, ACTION, why_a, 0.0)
-    rows_b, _ = effect(n, ACTION + "Flank", why_b, turn_b)
+    why = ("Kirra's Scarf Step, the grey block (AR10, section 5, and research's technique check). The skewer's two takes "
+           "are this one file: A, her path through the Shade; B, her path turned past its flank on the camera's side, "
+           f"{FLANK_PATH} studs off its middle (the game's number). The line rides her root, so it goes with her either "
+           "way. Written by tools/blender/kirra_scarf_step_fx.py from the clip.")
+    rows, lengths = effect(n, ACTION, why)
+    problems = check(rows)
+    if problems:
+        raise SystemExit("; ".join(problems))
     out.mkdir(parents=True, exist_ok=True)
-    for eff in (rows_a, rows_b):
-        problems = check(eff)
-        if problems:
-            raise SystemExit(f"{eff['Effect']}: " + "; ".join(problems))
-        path = out / f"{eff['Effect']}.rows.json"
-        path.write_text(json.dumps(eff, indent=2) + "\n", encoding="utf-8")
-        print(f"wrote {path}")
+    path = out / f"{ACTION}.rows.json"
+    path.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
+    print(f"wrote {path}")
     print("in her root's frame (x right, y up from the root's centre, z back):")
     for f in KEYS:
         s = n["line"][f]
         d = sub(s["tip"], s["knot"])
         print(f"  {f}: knot ({s['knot'][0]:.2f}, {s['knot'][1]:.2f}, {s['knot'][2]:.2f}), knot to tip {length(d):.2f} studs,"
               f" aim ({unit(d)[0]:.2f}, {unit(d)[1]:.2f}, {unit(d)[2]:.2f})")
-    for label, deg in (("A", 0.0), ("B", turn_b)):
-        s = n["line"][24]
-        d = unit(rot(turned_about_up(deg), sub(s["tip"], s["knot"])))
-        k = landed(s["knot"])
-        far = landed(add(s["knot"], mul(d, 1.0)))
-        step = sub(far, k)
-        u = (shade[2] - k[2]) / step[2]
-        at = add(k, mul(step, u))
-        print(f"  take {label}: turned {deg:+.1f} degrees at her knot; it passes the Shade's middle {at[0] - shade[0]:+.2f} "
-              f"studs to the side, {at[1]:.2f} up (its chest {shade[1]:.2f}), {u:.2f} studs from her knot")
+    s = n["line"][24]
+    k = landed(s["knot"])
+    step = sub(landed(s["tip"]), k)
+    u = (shade[2] - k[2]) / step[2]
+    at = add(k, mul(step, u))
+    print(f"  on her path through the Shade (take A), the line passes its middle {at[0] - shade[0]:+.2f} studs to the "
+          f"side, {at[1]:.2f} up (its chest {shade[1]:.2f}), {length(mul(step, u)):.2f} studs from her knot")
     print(f"  her knot at Land, in the effect's foot's frame: ({knot16[0]:.2f}, {knot16[1]:.2f}, {knot16[2]:.2f}); "
           f"the Shade's chest ({shade[0]:.2f}, {shade[1]:.2f}, {shade[2]:.2f}), {reach:.2f} studs on")
-    print(f"  the line's Top, held: {rows_a['Rows']['Line']['Tracks']['Top'][0][1]} studs; its lengths keyed "
+    print(f"  the line's Top, held: {rows['Rows']['Line']['Tracks']['Top'][0][1]} studs; its lengths keyed "
           + ", ".join(f"{v:.2f}" for v in lengths))
-    return n, rows_a, rows_b
+    return n, rows
+
+
+# --- what the Shade hides of the line, from cameras round the fight ------------------------------------------------------
+
+SHADE_RECIPE = ROOT / "build" / "handoff" / "Shade" / "Shade.recipe.json"
+MASK = "Brawler"  # the widest of the four masks
+# The replay's camera (Config.Combat.Replay and Lead): the avatar 9 studs behind the target and 3.5 to its left, Roblox's
+# camera 12.5 studs behind its head (the default zoom, an assumption), looking down 20 degrees; the lead beyond the
+# target, turned 45 degrees round toward its side. In the effect's foot's frame that puts the camera at heading 215
+# (below), 21 studs out from the Shade's chest and 5.8 over it. The clip's own review camera (kirra_clips, GAME) is at 28.
+REPLAY_HEADING, REVIEW_HEADING, CAMERA_OUT, CAMERA_UP = 215, 28, 21.0, 5.8
+
+
+def shade_boxes():
+    """The Shade's parts at rest as boxes (centre, half size) in the effect's foot's frame: on the floor GONE ahead of her
+    start, facing her start (the Shade's model faces -Z; here it's turned to face +Z). Its pose at the Cut moves its arms:
+    the rest pose is what this reads."""
+    recipe = json.loads(SHADE_RECIPE.read_text(encoding="utf-8"))
+    parts = [p for p in recipe["pieces"] if "centre" in p] + [recipe["masks"][MASK]]
+    boxes = []
+    for p in parts:
+        c, s = p["centre"], p["size"]
+        boxes.append(([-c[0], c[1], -c[2] - GONE], [s[0] / 2, s[1] / 2, s[2] / 2]))
+    if len(boxes) < 6:
+        raise SystemExit("the Shade's recipe lost a part's centre")
+    return boxes
+
+
+def entering(eye, way, box):
+    """Where a ray from `eye` along the unit `way` enters and leaves an upright box, or None."""
+    lo, hi = -math.inf, math.inf
+    for i in range(3):
+        a, b = box[0][i] - box[1][i] - eye[i], box[0][i] + box[1][i] - eye[i]
+        if abs(way[i]) < 1e-12:
+            if a > 0 or b < 0:
+                return None
+            continue
+        t0, t1 = sorted((a / way[i], b / way[i]))
+        lo, hi = max(lo, t0), min(hi, t1)
+    return (lo, hi) if lo <= hi and hi > 0 else None
+
+
+def hidden(n, boxes, turn_deg, heading, up=CAMERA_UP, frame=24, samples=120, path_deg=0.0):
+    """Studs of the line (held, at `frame`) the Shade hides from a camera at `heading` degrees round its chest (0 behind
+    where she started, 90 on her right), and studs drawn over it. `path_deg` turns her whole path about her spot (the
+    game's lever: her path past the Shade's flank), the Shade staying where it is."""
+    s = n["line"][frame]
+    path = turned_about_up(path_deg)
+    knot = rot(path, landed(s["knot"]))
+    aim = unit(rot(path, rot(turned_about_up(180.0), rot(turned_about_up(turn_deg), sub(s["tip"], s["knot"])))))
+    top = length(sub(s["tip"], s["knot"]))
+    chest = n["shade"]
+    h = math.radians(heading)
+    eye = add(chest, [math.sin(h) * CAMERA_OUT, up, math.cos(h) * CAMERA_OUT])
+    start = 0.6  # clear of her own body
+    step = (top - start) / samples
+    gone = over = 0.0
+    for k in range(samples):
+        p = add(knot, mul(aim, start + (k + 0.5) * step))
+        to = sub(p, eye)
+        far = length(to)
+        way = mul(to, 1 / far)
+        hits = [e for e in (entering(eye, way, b) for b in boxes) if e]
+        if any(lo < far for lo, _ in hits):
+            gone += step
+        elif hits:
+            over += step
+    return gone, over
+
+
+def screen():
+    """Two tables: the light turned at her knot alone (the cloth staying through the Shade), and her whole path turned at
+    her spot, the side picked by the camera (the light on the cloth). Headings are every 5 degrees round the fight."""
+    n = measure()
+    boxes = shade_boxes()
+    shade = n["shade"]
+    xs = [b[0][0] + sgn * b[1][0] for b in boxes for sgn in (-1, 1)]
+    print(f"The Shade at rest is {min(xs):+.2f} to {max(xs):+.2f} studs across its middle. Studs of the 9.4-stud line it "
+          "hides (and draws it over), held at frame 24.")
+    print("The light turned at her knot (- toward her left):")
+    print("  turn   off its middle   replay (215)     review (28)      headings hiding none (of 72)")
+    for turn in range(-50, 55, 5):
+        s = n["line"][24]
+        k = landed(s["knot"])
+        d = unit(rot(turned_about_up(180.0), rot(turned_about_up(turn), sub(s["tip"], s["knot"]))))
+        u = (shade[2] - k[2]) / d[2]
+        side = k[0] + d[0] * u - shade[0]
+        rows = [hidden(n, boxes, turn, h) for h in (REPLAY_HEADING, REVIEW_HEADING)]
+        clear = sum(1 for h in range(0, 360, 5) if hidden(n, boxes, turn, h, samples=60)[0] == 0)
+        print(f"  {turn:+4d}   {side:+6.2f}           " + "   ".join(f"{g:4.1f} ({o:4.1f})   " for g, o in rows)
+              + f"  {clear}")
+    print("Her path turned at her spot, past the Shade on the camera's side of the line from her spot to it:")
+    print("  off its middle   turn   replay (215)   headings hiding none (of 72)   the rest, by heading")
+    for off in (0.0, 2.5, 3.0, FLANK_PATH, 4.0):
+        a = math.degrees(math.asin(off / GONE))
+        found = [hidden(n, boxes, 0, h, samples=60, path_deg=a if math.sin(math.radians(h)) < 0 else -a)[0]
+                 for h in range(0, 360, 5)]
+        g, o = hidden(n, boxes, 0, REPLAY_HEADING, path_deg=a * -CAMERA_SIDE)
+        rest = " ".join(f"{i * 5}:{x:.1f}" for i, x in enumerate(found) if x > 0)
+        print(f"  {off:4.1f}             {a:4.0f}   {g:4.1f} ({o:3.1f})     {sum(1 for x in found if x == 0):2d}"
+              f"                             {rest if len(rest) < 120 else rest[:117] + '...'}")
 
 
 # --- the preview, in Blender --------------------------------------------------------------------------------------------
@@ -424,7 +515,7 @@ def preview(out):
     import r6anim as r6
     import rook_clips as rc
 
-    n, rows_a, rows_b = write_rows(out)
+    n, rows_a = write_rows(out)
     scene, rig, costume, undress, feet, ctl, motors, rest, extra = kc.build()
     take = kc.Take(rig, feet, ctl, "ScarfStep", 1000 * list(kc.CLIPS).index("ScarfStep"), rest)
     kc.scarf_step(take)
@@ -432,7 +523,6 @@ def preview(out):
     rc.lift(rig, ctl["lift"], [take])
     kc.props(rig, ctl, motors, rest, [take])
     kc.stand_ins([take])
-    cam = kc.cameras(scene, [take])[take.name, "game"]
     scene.frame_set(take.start)
     m0 = r6.to_roblox(rig.root.matrix_world)
     foot = m0.to_translation() - Vector((0, ROOT_HEIGHT, 0))
@@ -441,6 +531,10 @@ def preview(out):
     look.normalize()
     right = look.cross(Vector((0, 1, 0))).normalized()
     basis = Matrix((right, (0, 1, 0), -look)).transposed()
+    h = math.radians(REPLAY_HEADING)
+    chest = Vector(n["shade"])
+    eye = chest + Vector((math.sin(h) * CAMERA_OUT, CAMERA_UP, math.cos(h) * CAMERA_OUT))
+    cam = r6.fixed_camera(scene, foot + basis @ eye, foot + basis @ chest, 70.0, "Replay")  # Roblox's default field
 
     line_mesh = bpy.data.meshes.new("Fx.Line")
     line_mesh.materials.append(r6.flat_material("ScarfStepLine", (0.95, 0.95, 0.95), roughness=1.0, emission=(0.95, 0.95, 0.95)))
@@ -496,18 +590,17 @@ def preview(out):
     def sheet(path, with_crescent):
         state["crescent"] = with_crescent
         parts = []
-        for size, labelled in (((220, 250), True), ((56, 64), False)):
-            for name, eff in (("A", rows_a), ("B", rows_b)):
-                state["rows"] = eff
-                scene.render.resolution_x, scene.render.resolution_y = size
-                tmp = out / f"_{path.stem}_{name}_{size[1]}.png"
-                r6.render_shots(scene, [(cam, take.start + f, f"{name} {f}" if labelled else "") for f in STRIP], tmp,
-                                columns=len(STRIP))
-                scene.render.stamp_font_size = 13
-                image = bpy.data.images.load(str(tmp))
-                parts.append(np.array(image.pixels[:], dtype=np.float32).reshape(image.size[1], image.size[0], 4))
-                bpy.data.images.remove(image)
-                tmp.unlink()
+        state["rows"] = rows_a
+        for size, labelled in (((220, 250), True), ((56, 64), False)):  # take A, on the clip's path through the Shade
+            scene.render.resolution_x, scene.render.resolution_y = size
+            tmp = out / f"_{path.stem}_{size[1]}.png"
+            r6.render_shots(scene, [(cam, take.start + f, f"A {f}" if labelled else "") for f in STRIP], tmp,
+                            columns=len(STRIP))
+            scene.render.stamp_font_size = 13
+            image = bpy.data.images.load(str(tmp))
+            parts.append(np.array(image.pixels[:], dtype=np.float32).reshape(image.size[1], image.size[0], 4))
+            bpy.data.images.remove(image)
+            tmp.unlink()
         full = max(p.shape[1] for p in parts)
         parts = [np.concatenate([p, np.zeros((p.shape[0], full - p.shape[1], 4), np.float32)], axis=1) for p in parts]
         whole = np.concatenate(list(reversed(parts)), axis=0)
@@ -530,6 +623,9 @@ def main():
             write_rows(out)
         else:
             preview(out)
+        return
+    if sys.argv[1:2] == ["screen"]:
+        screen()
         return
     if len(sys.argv) < 3 or sys.argv[1] != "rows":
         print(__doc__)

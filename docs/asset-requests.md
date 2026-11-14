@@ -4792,7 +4792,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: the sheet, the model and the clips delivered and accepted (the clips in section 4, the recipe re-delivered with the blades' joints); next, delivery 4, Scarf Step's look, with Faber through `/ga-action`.
+**Status:** in progress (Modulo), 2026-11-14: the sheet, the model and the clips delivered and accepted (the clips in section 4, the recipe re-delivered with the blades' joints); delivery 4's grey rows delivered (section 5); next, its blockout with Faber in the replay, once Studio is back.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -5063,31 +5063,46 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **The sparks** (18): a burst of `fx_spark` off the crescent, thrown along her line, away from where she was. Particles.
 - **The light** (18 to 34): a PointLight on the cut, lit at once and eased out.
 - **Not rows:** the hit at rung 7 (the hold, the flash, the tremble and the trauma come from AR8's ladder on the Cut's hit), and the caster's light (AR9's waits).
-- **The skewer** (the content check's note): judged at 64 px from the player's camera in the blockout.
-  - If the line through the Shade reads as a skewer, the first lever is the line's aim off the axis, so the light passes the Shade's flank. It's take B, below.
-  - If the scarf itself still reads as one, its aim in the clip moves to the flank too: a clip re-export, mine.
-  - The second lever, the light split at the Shade's body, needs the Shade's place (below).
-- **The block contains,** in grey (`Grey` true, `Action` `KirraScarfStep`, `Free` `Cut`), seven rows: `Line`, the puff, the slide, `CutAt` (the Shade's chest), the crescent, the sparks and the light. They come as two takes, two effects in `build/handoff/Kirra/fx/`:
-  - **A,** `KirraScarfStep.rows.json`, on the axis: the line passes 0.04 studs off the Shade's middle at 3.12 up (its chest 3.0), 3.3 studs from her knot.
-  - **B,** `KirraScarfStepFlank.rows.json`, the line turned 24.9 degrees about her knot: it passes 1.48 studs off the Shade's middle on the player's camera's side (the grey Shade's coat is 2.2 across), the rest as A. The side assumes the clip's crossing, on the camera's right; a mirrored crossing flips it.
-  - Written and checked by `tools/blender/kirra_scarf_step_fx.py rows` (plain `py`, from the clip). Its `preview` mode draws the line and the crescent from the player's camera at 64 px in Blender, and it waits for memory: Studio holds 3.6 GB.
+- **The skewer, measured before the block** (`tools/blender/kirra_scarf_step_fx.py screen`). The measure casts rays from cameras every 5 degrees round the fight. It tests them against the Shade's parts at rest, as boxes from its recipe. "Hidden" is the line going into the body and out of it, the skewer's read.
+  - **The replay's camera stands on her left.** `Config.Combat` puts the lead beyond its target, turned 45 degrees, and the camera behind the avatar. That's heading 215 round the Shade. The clip's review camera stood on her right, at 28.
+  - **A, her path through the Shade,** hides 4.9 of the line's 9.4 studs from the replay's camera. It hides some of the line from every heading.
+  - **The B first delivered is withdrawn.** It was the light turned 24.9 degrees to her right, 1.48 studs off the Shade's middle. It passed on the far side and through the Shade's arm, hiding 7.2 studs: the Shade is 2.48 across each side with its arms, not the coat's 1.1. 9ba7d65 delivered it; nothing installed it.
+  - **Turning the light alone** needs 40 degrees toward the camera to hide none from the replay. It also leaves the cloth through the Shade.
+  - **B is now her path turned at her spot,** past the Shade on the camera's side, with the cloth and the light together. At 3.5 studs off the Shade's middle (44 degrees from a 5-stud spot, 1 stud clear of its arm), the replay's camera sees none of the line hidden and none drawn over the body. 56 of 72 headings hide none.
+  - The other 16 headings look from beyond the Shade back at her spot, and her spot itself is behind the Shade from there. `Lead.Frame`'s 45 degrees keeps the play camera just outside them.
+  - The line and the scarf ride her root, so B needs no clip re-export.
+- **The block contains,** in grey (`Grey` true, `Action` `KirraScarfStep`, `Free` `Cut`), seven rows in one file for both takes, `build/handoff/Kirra/fx/KirraScarfStep.rows.json`: `Line`, the puff, the slide, `CutAt` (the Shade's chest), the crescent, the sparks and the light.
+  - On A's path the line passes 0.04 studs off the Shade's middle at 3.12 up (its chest 3.0), 3.3 studs from her knot.
+  - The crescent rolls its face 35 degrees toward the camera's side: her left in the replay. The keeper's ring flips it.
+  - Written and checked by `tools/blender/kirra_scarf_step_fx.py rows` (plain `py`, from the clip). Its `preview` mode draws the line and the crescent from the replay's camera at 64 px in Blender. It waits for memory: Studio holds 3.6 GB.
 - **Waits for the build:**
   - **Her blue** (`#47A6F5`), off red as the content check asks. The grey ramps get the blue by the rows' `Color` first, and a blue ramp is drawn only if the core needs its own hue (my call, tier 1).
   - AR9's drawn puff and spark, once Faber's kit rows take the sheets.
   - The sound (Faber's, one library cue). Anything new to upload.
 - **For Faber, at the blockout** (his calls):
-  1. **How the game moves her** at Blink: the clip has her land 3.8 studs past the Shade, facing it. The rows don't depend on how she's moved.
-  2. **The Shade's place.** The crescent, the sparks and the light are written 5 studs ahead of her start, the clip's distance. That holds if Scarf Step always starts 5 studs from its target. If it doesn't, the rows need to ride the target, as `Body` rides the attacker: his code.
+  1. **How the game moves her** at Blink. The clip has her land 3.8 studs past the Shade, facing back along her path. A is that path through the Shade.
+     - B is her path turned 44 degrees at her spot, passing the Shade 3.5 studs off its middle (a seed, to tune in the replay).
+     - The turn goes toward the camera's side of the line from her to the target. The server doesn't see the camera, but the avatar's side of that line is the camera's side, since the camera stands behind the avatar.
+     - The rows don't depend on how she's moved.
+  2. **The Shade's place.** The crescent, the sparks and the light are written 5 studs ahead of the effect's foot, the clip's distance. That holds if Scarf Step always starts 5 studs from its target and she faces it at the start.
+     - On B, the effect faces where she faces at the start. If she turns to her path first, the crescent lies along her line, and the cut's rows need to ride the target, as `Body` rides the attacker: his code.
   3. **`Free` on the Cut,** so the hit's hold never stills the crescent. It also runs the line's tracks through the hold while her clip is frozen, so the burn runs about 8 frames ahead of the cloth. The light goes first either way.
-  4. **The install order:** `rows_take` checks the action and its beats, so `KirraScarfStep` with Blink, Land and Cut goes in first. A and B are switched on the action for the two takes.
+  4. **The install order:** `rows_take` checks the action and its beats, so `KirraScarfStep` with Blink, Land and Cut goes in first. A and B are one effect. The take is her path, 0 or 3.5 studs off.
+  5. **The crescent's roll** follows the camera's side: `Turn` Z +35 with the camera on her left (the replay), -35 on her right (the keeper's ring).
 - **Content check, 2026-11-14: PASS for the grey block** (the dev build, nothing uploaded), on the numbers alone, with no render yet. Its conditions:
   - A reaches a public build only if the 64 px replay shows no read of a body run through, from any heading. The lean is to B.
   - B must clear the body on screen, not just in plan: 1.48 studs is 0.38 past the coat's edge. If it overlaps at 64 px, the offset grows or the clip's aim moves to the flank.
   - The skewer verdict counts once the cut's rows ride the target.
   - The crescent stays light and short-lived.
   - A review sheet of the chosen take, the line alone and then with the crescent, from the player's camera at full size and at 64 px on dark, before the finish or any upload. A new drawn sheet or ramp is checked again.
-- **Time:** the rows took about 25 minutes after the check, against 45 forecast. The blockout with Faber in the replay is still about an hour, once Studio is back.
-- **Four facts:** the rows are made. They're self-checked: the file's own checks, and the line measured through the Shade from the clip. Not drawn: the Blender preview waits for memory. Delivered to the handoff. Not accepted: the blockout's verdict.
+  - B's condition is answered by the measure above: B is now her path, and the replay's camera sees none of the line on the body.
+- **Time:** the rows took about 25 minutes after the check, against 45 forecast. The skewer's measure, B's correction and A's roll took about 50 more, before anything was installed. The blockout with Faber in the replay is still about an hour, once Studio is back.
+- **Four facts:**
+  - **Made:** the rows are made, one file for both takes.
+  - **Self-checked:** the file's own checks, the line measured from the clip, and the skewer measured from cameras round the fight.
+  - **Not drawn:** the Blender preview waits for memory.
+  - **Delivered:** to the handoff.
+  - **Not accepted:** that's the blockout's verdict.
 - **Research's technique check, 2026-11-14, night: passed, build the grey rows.**
   - **Each part has the right technique.** The line is a Beam, which is right because it runs along itself and has no depth. The crescent is a mesh, for its near and far side. The puff, the dust and the sparks are particles, and the cut gets a light. No shape with depth sits on a card.
   - **The hero is right: one line, with a direction and an acceleration.** The burn-off carries the acceleration, slow then fast into her knot. The draw is 3 frames, so it reads as the blink itself, not as a draw, and that's fine.

@@ -1,7 +1,7 @@
 {
   "Schema": "rows/1",
   "Effect": "KirraScarfStep",
-  "Why": "Kirra's Scarf Step, the grey block, take A: the line on the scarf, through the Shade's chest (AR10, section 5, and research's technique check). Written by tools/blender/kirra_scarf_step_fx.py from the clip.",
+  "Why": "Kirra's Scarf Step, the grey block (AR10, section 5, and research's technique check). The skewer's two takes are this one file: A, her path through the Shade; B, her path turned past its flank on the camera's side, 3.5 studs off its middle (the game's number). The line rides her root, so it goes with her either way. Written by tools/blender/kirra_scarf_step_fx.py from the clip.",
   "Area": 1,
   "Grey": true,
   "Action": "KirraScarfStep",
@@ -20,7 +20,7 @@
           255
         ]
       },
-      "Why": "The hero: the light on the scarf, from her knot back through the Shade toward where she was. It rides her root, so it stays on the scarf wherever the game lands her: At and Tilt are the scarf's knot and aim in her root's frame, from the clip. It swells on the Cut, narrows toward where she was, and burns off from its far end into her knot from 38 to 46, slow then fast. The cloth lets go from its tip at 44.",
+      "Why": "The hero: the light on the scarf, from her knot back past the Shade toward where she was. It rides her root, so it stays on the scarf wherever the game lands her: At and Tilt are the scarf's knot and aim in her root's frame, from the clip. It swells on the Cut, narrows toward where she was, and burns off from its far end into her knot from 38 to 46, slow then fast. The cloth lets go from its tip at 44.",
       "Beam": {
         "FaceCamera": true,
         "TextureMode": "Stretch",
@@ -368,7 +368,7 @@
         "Vector3": [
           0,
           0,
-          -35.0
+          35.0
         ]
       },
       "Why": "The crescent on the way out: laid along her line, head toward where she lands, rolled open to the player's camera, swept head first as it grows. Its Glow peaks under the line's swell.",

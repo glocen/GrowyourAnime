@@ -584,7 +584,7 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
    - **Rook's Second Wind:** below 30% health he takes 20% less damage. Its cue is a faint shell round him while it holds.
    - **Pip's Kindle:** his combo's third shot adds Fire damage worth 40% of that shot, as its own coloured number. Its cue is the lantern flaring on the shot.
    - **Lyric's Tempo:** Held Note's cooldown is 20% shorter. It needs no cue: the song comes round more often.
-   - The three must leave the balance check within 10% of each other's time to clear Lantern Row's first pack at their level. If one isn't, its passive's number moves, not its combo's.
+   - The three must leave the balance check within 10% of each other's time to clear Lantern Row's first pack at their level. A passive can't close a gap in the combos, so the band is settled at the timing (part 4), with the combos open (research's verdict, 2026-11-14).
 4. **Timed:** each lead plays its whole kit in real fights, not the replay: combo, signature on its cooldown, passive. Haymaker's hitstop and camera numbers get set by playing (B5's "Not done").
 
 **Waits:**
@@ -776,7 +776,18 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
   - The gap was there before the passives: without them, Pip 21.1 s and Lyric 26.9 s. It's in the combos, which the rule keeps fixed.
   - **For research, the options:** (a) a passive of another kind for Lyric, one that pays across a whole pack (a tier 2 change to the seeds); (b) the check judged on another measure for a ranged lead, since hers is the only one that keeps its distance; (c) the combos' numbers opened for this one check, Lyric's and Rook's; (d) accepted for the block, settled at TR7's timing (part 4), which touches the combos' beats anyway. Mine is (d) with (c) inside it: the timing piece already moves the combos' beats, so the gap closes there with one batch, not two.
 
-**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The hang's fixes are in, with (d) against the keeper after the content check's block, 2026-11-13: the framing closes. The skip back's blockout is in, with its balance check within 10%; research's verdict: works, Every to 2.5, rerun with the passives in place, 2026-11-13. The passives are built, and the batch with the skip's rerun is in (Lyric's rows taken again after the wall fix), 2026-11-14. The skip's rerun take is in. Waiting on research's verdict on the passives, the gap (options (a) to (d)) and Pip's end-on skip.
+**Research's verdict on the passives and the gap, 2026-11-14** (the batch above; `passives.mp4` and its stills; the skip's rerun strips).
+- **Felt:** Rook's shell and Pip's flare are cues you can catch at phone size, and Kindle's Fire as its own number is a small treat on the third shot. Tempo is felt nowhere in a pack: 3.0 casts against 2.9.
+- **Tier:** works, as blocks, for Second Wind and Kindle. Tempo fails its own line ("the song comes round more often").
+- **The one bold thing:** Kindle's Fire, its own number on the shot, a passive you see every few seconds.
+- **The gap: (d) with (c), Faber's pick.** My rule, "its passive's number moves, not its combo's", assumed a passive could close the gap; the batch shows none can, so the rule is corrected: the 10% band is settled at TR7's timing (part 4), with Rook's and Lyric's combos open. They come up toward Pip, not Pip down, checked against `tools/balance/sim.py`'s pace. A Rare that clears a third slower than a Common is the wrong first lesson of the ladder.
+- **Fixes:**
+  1. Tempo must show in a pack: Held Note no longer waits for the combo in hand (the same kind, no new cue), the shorter cooldown kept. If the timing batch still shows nothing, research brings another kind.
+  2. Kindle's Fire moves its tone away from a received hit's red, kept clear of the critical's gold; Faber's call on the value, checked side by side in the timing take.
+  3. The shell stays faint, as asked.
+- **Pip's end-on skip:** seen in the rerun (the 8 s strip), no lever, as fix 2 said. The take at the timing shows it again in a real fight.
+
+**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The hang's fixes are in, with (d) against the keeper after the content check's block, 2026-11-13: the framing closes. The skip back's blockout is in, with its balance check within 10%; research's verdict: works, Every to 2.5, rerun with the passives in place, 2026-11-13. The passives are built, and the batch with the skip's rerun is in (Lyric's rows taken again after the wall fix), 2026-11-14. The skip's rerun take is in. Research's verdict on the passives, 2026-11-14: works for two, Tempo to show in a pack; the gap settled at the timing with the combos open. Next: the timing.
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 
@@ -882,7 +893,14 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
 - **Checks:** the self-review at phone size on the three grounds. Every piece reads, the crest and the notch small as asked. The content check: PASS, 2026-11-14.
 - **Time:** about 0.3 h, 01:32 to 01:52.
 
-**Status:** built in grey, 2026-11-14, with B at the top middle by the director's pick. Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start. The keeper's bar was rebuilt on the director's words of the same day (richer, purple, light), with the three fixes in. Waiting on research's read of the fixes. Modulo has the director's words for the frames: nothing solid behind the name.
+**Research's read of the fixes and pass on Modulo's frames, 2026-11-14** (`tr5_fixed_10s.png`, `tr5_c_fixed.png`, `boss_sheet.png` at 2 and 1 px a point on three grounds).
+- **The fixes landed:** the purple bar at 18 px with its number inside, nothing below the band's foot, clear of the keeper; the title between its rules; Elite in the tab, in the card's ivory.
+- **Felt:** the keeper's bar now announces the fight like a title card drawn in line, light over the ring as the director asked, and the elite's card is plainly heavier at a glance.
+- **Tier:** competent, accepted. The director's words hold: nothing solid behind the name.
+- **The one bold thing:** the tapering rules with diamond tips and the winged crest: a title card made of line, so the fight stays visible through it.
+- **No fix.** One watch at install: the number over the pale trail (at about 80% health it sits on it); its dark edge carries it in the sheet, so check it in the take.
+
+**Status:** built in grey, 2026-11-14, with B at the top middle by the director's pick. Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start. The keeper's bar was rebuilt on the director's words of the same day (richer, purple, light), with the three fixes in. Research's read of the fixes and pass on Modulo's frames, 2026-11-14: competent, accepted. Next: the frames installed (Faber).
 
 ## TR6. The UI effects kit (Faber)
 

@@ -1,6 +1,6 @@
 --!strict
--- VoidkinService (server): what a player may ask of the Voidkin they own: the lead and the stars (Shared.Rules.Collection),
--- registered with the save's one door.
+-- VoidkinService (server): what a player may ask of the Voidkin they own: the lead, the stars and the stat board's points
+-- (Shared.Rules.Collection, Rules.Board), registered with the save's one door.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 

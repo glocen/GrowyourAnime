@@ -9,6 +9,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Profile = require(Shared.Data.Profile)
+local Board = require(Shared.Rules.Board)
 
 local Collection = {}
 
@@ -61,6 +62,7 @@ function Collection.Uncover(data: Profile.Data, def: string, now: number): { [st
 			Favourite = false,
 			Locked = false,
 			Born = now,
+			Points = {},
 		}
 		return { Ok = true, Outcome = "New", Id = id, Def = def, Credits = 0 }
 	end
@@ -122,12 +124,20 @@ end
 -- What a client may ask, by name, with the same shape as Rules.Base's actions (VoidkinService registers them).
 --   SetLead { Voidkin }       the lead
 --   SpendCopies { Voidkin }   the next star
+--   SpendPoint { Voidkin, Stat }  one skill point on a board stat (Rules.Board)
+--   ResetPoints { Voidkin }   every skill point back, for Credits
 Collection.Actions = {
 	SetLead = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SetLead(data, voidkinArg(args))
 	end,
 	SpendCopies = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SpendCopies(data, voidkinArg(args))
+	end,
+	SpendPoint = function(data: Profile.Data, args: any): { [string]: any }
+		return Board.Spend(data, voidkinArg(args), if type(args) == "table" then args.Stat else nil)
+	end,
+	ResetPoints = function(data: Profile.Data, args: any): { [string]: any }
+		return Board.Reset(data, voidkinArg(args))
 	end,
 } :: { [string]: (data: Profile.Data, args: any, now: number, u: number) -> { [string]: any } }
 

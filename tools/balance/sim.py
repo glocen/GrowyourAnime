@@ -749,6 +749,139 @@ def report_cooldowns(runs=40):
                  f"{mean['Elite']:.1f}", f"{mean['Keeper']:.1f}", f"{mean['Elite'] + mean['Keeper']:.1f}", rel, f"{shards:.1f}", w=15)
 
 
+# ---------------------------------------------------------------- the stat board (TR15)
+
+BOARD = ("hp", "atk", "def", "regen")
+BOARD_NAMES = {"hp": "Health", "atk": "Attack", "def": "Defence", "regen": "Regen"}
+BOARD_LEADS = (("Rook", "Warrior"), ("Kirra", "Assassin"), ("Pip", "Mage"), ("Lyric", "Healer"))
+
+
+def board_config():
+    """The board's numbers in the game, from src/shared/Config/Stats.luau (their home)."""
+    import re
+    stats = lua("src/shared/Config/Stats.luau")
+    m = re.search(r"Point = \{ Health = ([\d.]+), Attack = ([\d.]+), Defence = ([\d.]+), Regen = ([\d.]+) \}", stats)
+    reset = re.search(r"ResetPerG = ([\d.]+)", stats)
+    return dict(point={"hp": float(m[1]), "atk": float(m[2]), "def": float(m[3]), "regen": float(m[4])},
+                reset=float(reset[1]))
+
+
+def figure(k, gm):
+    """A Common Warrior's level-1 figure of a board stat."""
+    return gm["regen"] if k == "regen" else S["base"][k]
+
+
+def even_points(earned):
+    """The even spread in whole points: a quarter each, the remainder in the board's order."""
+    q, r = divmod(earned, 4)
+    return {k: q + (1 if i < r else 0) for i, k in enumerate(BOARD)}
+
+
+def boarded(cls, level, spend, point, gm):
+    """A bare lead at `level`, its points spent as `spend` (stat -> points), each point adding point[stat] x G. The board
+    takes each stat's even part (a quarter of the points earned) out of its own base, so an even spread is the lead
+    without the board. Class and rarity touch neither. Returns the build and its Regen a second."""
+    me = build(level, 1, 0.0, cls=cls)
+    g, earned = G(level), max(0, level - 1)
+    regen = gm["regen"] * gm["regen_class"].get(cls, 1.0) * g
+    for k in BOARD:
+        delta = point[k] * g * (spend.get(k, 0) - earned / 4)
+        if k == "regen":
+            regen = max(0.0, regen + delta)
+        else:
+            me[k] = max(0.0, me[k] + delta)
+    return me, regen
+
+
+def pack(me, regen, level, gm):
+    """One of Lantern Row's packs at the lead's level: three Ordinary Shades on it at once, killed one by one, then the
+    walk to the next. Returns the seconds a pack takes and the share of health it costs."""
+    foe = shade("Ordinary", level, gm)
+    t = foe["hp"] / dps(me, foe)
+    walk = (gm["spacing"] - gm["notice"]) / 16 + 2.25
+    lost = 6 * t * dps(foe, me) - regen * (3 * t + walk)
+    return 3 * t + walk, lost / me["hp"]
+
+
+def strength(seconds, lost):
+    """Packs a second times packs a health bar: a lead twice as fast, or lasting twice as long, is twice as strong.
+    None: it heals faster than it's hurt."""
+    return None if lost <= 0 else 1 / (seconds * lost)
+
+
+def report_board():
+    import math
+    gm = game()
+    cfg = board_config()
+    point = cfg["point"]
+    print("\n== 12. The stat board (TR15): skill points out of the own base ==")
+    print("A model, not a measurement. One point a level from level 2; a point adds Config.Stats.Board.Point of its stat")
+    print("times G, whatever the class or rarity; the board takes each stat's even part (a quarter of the points earned)")
+    print("out of the own base, so an even spread is the Voidkin without the board. A bare lead on one of Lantern Row's")
+    print("packs at its own level (three Ordinary Shades at once, then the walk): strength is packs a second times packs a")
+    print("health bar, against the even spread.")
+    # What a point of each stat is worth at the even spread, priced as a share of its Common Warrior's level-1 figure.
+    probe = {k: figure(k, gm) * 0.01 for k in BOARD}
+    worth = {}
+    for k in BOARD:
+        logs = []
+        for _, cls in BOARD_LEADS:
+            e = {kk: 8 / 4 for kk in BOARD}
+            base = strength(*pack(*boarded(cls, 9, e, probe, gm), 9, gm))
+            e[k] += 1
+            logs.append(math.log(strength(*pack(*boarded(cls, 9, e, probe, gm), 9, gm)) / base))
+        worth[k] = sum(logs) / len(logs)
+    print("Worth of a point of 1% of each figure (Health 800, Attack 100, Defence 50, Regen 4 at level 1), the four leads'")
+    print("mean, the same at every level: " + ", ".join(f"{BOARD_NAMES[k]} {worth[k]:.2%}" for k in BOARD))
+    print("So a point of each is worth one of Health at: " + ", ".join(f"{BOARD_NAMES[k]} x{worth['hp'] / worth[k]:.2f}" for k in BOARD))
+    print("The game's points (Config.Stats.Board.Point), per G: " + ", ".join(f"{BOARD_NAMES[k]} {point[k]:g}" for k in BOARD)
+          + "; as a share of the figure: " + ", ".join(f"{point[k] / figure(k, gm):.3%}" for k in BOARD))
+    # An even spread in whole points against the Voidkin without the board, every class, rarity and level.
+    worst, at = 0.0, None
+    for cls, mult in S["classMult"].items():
+        for rarity in RARITIES:
+            for level in range(2, 126):
+                g, earned = G(level), level - 1
+                spread = even_points(earned)
+                for k in BOARD:
+                    own = (gm["regen"] * gm["regen_class"].get(cls, 1.0) if k == "regen"
+                           else S["base"][k] * S["rarityBase"][rarity] * mult[k]) * g
+                    gap = abs(point[k] * g * (spread[k] - earned / 4)) / own
+                    if gap > worst:
+                        worst, at = gap, f"a {rarity} {cls} at level {level}, {BOARD_NAMES[k]}"
+    print(f"An even spread in whole points is within {worst:.2%} of the Voidkin without the board (worst: {at}).")
+    low = {k: min(c[k] for c in S["classMult"].values()) for k in ("hp", "atk", "def")}
+    kept = {k: 1 - 124 / 4 * point[k] / (S["base"][k] * low[k]) for k in low}
+    kept["regen"] = 1 - 124 / 4 * point["regen"] / gm["regen"]
+    print("At level 125, every point elsewhere, the leanest class keeps of its own: "
+          + ", ".join(f"{BOARD_NAMES[k]} {kept[k]:.0%}" for k in BOARD))
+    print("\nEvery point on one stat, against the even spread: strength (pace, health a pack). Lantern Row is levels 1 to 9;")
+    print("30 and 60 are the same pack scaled, for reference: gear isn't counted, and the grounds there aren't built.")
+    line("lead", "level", *[f"all {BOARD_NAMES[k]}" for k in BOARD], w=22)
+    strongest = (-1.0, "")
+    for name, cls in BOARD_LEADS:
+        for level in (3, 6, 9, 30, 60):
+            earned = level - 1
+            s0, l0 = pack(*boarded(cls, level, even_points(earned), point, gm), level, gm)
+            cells = []
+            for k in BOARD:
+                s1, l1 = pack(*boarded(cls, level, {k: earned}, point, gm), level, gm)
+                st0, st1 = strength(s0, l0), strength(s1, l1)
+                if st0 is None or st1 is None:
+                    cells.append("holds" if st1 is None else "behind")
+                    continue
+                ahead = st1 / st0 - 1
+                if level <= 9 and ahead > strongest[0]:
+                    strongest = (ahead, f"{name} at {level}, all {BOARD_NAMES[k]}")
+                cells.append(f"{ahead:+.1%} ({s0 / s1 - 1:+.0%}, {l1 / l0 - 1:+.0%})")
+            line(name, level, *cells, w=22)
+    print(f"The strongest one-stat spread on Lantern Row: {strongest[0]:+.1%} ({strongest[1]}).")
+    print("\nWhat one point adds, by level (the board shows it before a tap); a reset's price in Credits:")
+    line("level", *[BOARD_NAMES[k] for k in BOARD], "reset", w=12)
+    for level in (2, 5, 9, 20, 40, 60, 125):
+        line(level, *[f"+{point[k] * G(level):.2f}" for k in BOARD], math.ceil(cfg["reset"] * G(level) - 1e-9), w=12)
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -765,3 +898,4 @@ if __name__ == "__main__":
     report_carry()
     report_training()
     report_cooldowns()
+    report_board()

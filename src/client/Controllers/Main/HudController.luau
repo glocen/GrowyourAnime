@@ -43,9 +43,9 @@ local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
 local RingLooks = require(UI.RingLooks)
 local LeadCard = require(UI.LeadCard)
+local VoidkinScreen = require(UI.VoidkinScreen)
 local TargetCard = require(UI.TargetCard)
 local BossBar = require(UI.BossBar)
-local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Pop = require(UI.Kit.Pop)
@@ -550,47 +550,14 @@ local function ownsAnother(): boolean
 	return false
 end
 
--- What a refused lead change says (LeadService.Refusal, Rules.Carry).
-local REFUSED: { [string]: string } = { InCombat = "Not during a fight", Healing = "Still healing at home" }
-
--- The Voidkin screen: the collection, the lead first; any other can be made the lead, out of combat, a fallen one once
--- it's whole (TR12). A row says when one is healing at home, or training on the machine.
+-- The Voidkin screen (UI/VoidkinScreen): the collection, the lead set out of combat (TR12), and each one's stat board
+-- (TR15).
 local function voidkinScreen()
 	local view = ProfileController.Get()
 	if view == nil then
 		return
 	end
-	local wholeAt, now = healing(), workspace:GetServerTimeNow()
-	local fighting = player:GetAttribute("InCombat") == true
-	local onMachine = player:GetAttribute("Training")
-	local body = Screen.Open("Voidkin", "Voidkin", Vector2.new(440, 300))
-	local list = Row.List(body, "List")
-	local roster = Read.Roster(view)
-	if #roster == 0 then
-		Row.new({ Parent = list, Order = 1, Text = "No Voidkin yet", Detail = "Break a shard at the Breaker", Colour = Theme.Colour.TextDim })
-	end
-	for index, owned in roster do
-		local role = Read.Role(view, owned.Id)
-		local whole = wholeAt[owned.Id]
-		local status = if whole and whole > now then `Healing at home {Hud.Clock(whole - now)}`
-			elseif onMachine == owned.Id then "Training"
-			else role
-		Row.new({
-			Name = owned.Id,
-			Parent = list,
-			Order = index,
-			Text = Read.VoidkinName(owned),
-			Detail = `Lv {owned.Level}{if status ~= "" then " · " .. status else ""}`,
-			Action = "Lead",
-			Disabled = Hud.LeadReason(role, whole, now, fighting),
-			OnPress = function()
-				local answer = ProfileController.Act("SetLead", { Voidkin = owned.Id })
-				if answer.Ok ~= true then
-					Toast.Show(`Can't lead: {REFUSED[tostring(answer.Error)] or tostring(answer.Error)}`, Theme.Colour.TextDim)
-				end
-			end,
-		})
-	end
+	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing })
 end
 
 local function avatarAt(): Vector3?
@@ -878,6 +845,7 @@ local function bandRoom(): number
 end
 
 local function step(dt: number)
+	VoidkinScreen.Tick() -- a tuned layout, or a reset left unconfirmed
 	local model = myLead()
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil

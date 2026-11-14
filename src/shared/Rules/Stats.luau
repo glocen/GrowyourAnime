@@ -1,8 +1,11 @@
 --!strict
 -- Stats (shared, pure): the one place a fighter's stats are added up (docs/engineering-plan.md, "The resolver";
 -- docs/balance.md, "The one rule"). Every source gives flat points, and the breakdown says which source gave each one:
---   Base     the Voidkin's own Health, Attack and Defence: its rarity and its class times G(level)
---   Stars    a share of that own base per star, linear, never of the total
+--   Base     the Voidkin's own Health, Attack and Defence: its rarity and its class times G(level), less the board's part
+--   Stars    a share of that own base per star, linear, never of the total; the board's part counted, so it never moves them
+--   Level    Regen, from the level alone, less the board's part
+--   Board    the skill points spent on each board stat (Rules.Board): the board takes each stat's even part out of Base and
+--            Level, so an even spread adds up to the Voidkin without the board
 --   Item     each line of the item in each of the preset's slots, as it is
 -- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
 -- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
@@ -18,6 +21,7 @@ local Enemies = require(Shared.Definitions.Enemies)
 local EnemiesConfig = require(Shared.Config.Enemies)
 local Profile = require(Shared.Data.Profile)
 local Growth = require(Shared.Rules.Growth)
+local Board = require(Shared.Rules.Board)
 
 local Stats = {}
 
@@ -123,12 +127,15 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	local stars = math.clamp(owned.Stars, 0, VoidkinConfig.MaxStars)
 	for _, stat in OWN do
 		local own = StatsConfig.Base[stat] * rarity * (if shift then shift[stat] else 1) * g
-		add("Base", stat, own)
+		add("Base", stat, math.max(0, own - Board.Taken(stat, level)))
 		add("Stars", stat, own * VoidkinConfig.StarShareOfBase * stars)
 	end
 	-- Regen comes from the level alone, its own source, so the own base's share (stars) never touches it.
 	local regen = StatsConfig.Regen
-	add("Level", "Regen", regen.Base * (regen.Class[row.Class] or 1) * g)
+	add("Level", "Regen", math.max(0, regen.Base * (regen.Class[row.Class] or 1) * g - Board.Taken("Regen", level)))
+	for _, stat in StatsConfig.Board.Stats do
+		add("Board", stat, Board.On(owned, stat) * Board.Gain(stat, level))
+	end
 	if preset and data then
 		for slot, itemId in preset.Slots do
 			local item = data.Items[itemId]

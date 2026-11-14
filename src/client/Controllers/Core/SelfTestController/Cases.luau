@@ -35,6 +35,9 @@ local CameraTurn = require(Shared.Util.CameraTurn)
 local Drops = require(Shared.Rules.Drops)
 local Odds = require(Shared.Rules.Odds)
 local Breaker = require(Shared.Rules.Breaker)
+local Board = require(Shared.Rules.Board)
+local Stats = require(Shared.Rules.Stats)
+local StatsConfig = require(Shared.Config.Stats)
 local Profile = require(Shared.Data.Profile)
 local ShardConfig = require(Shared.Config.Shards)
 local Hud = require(Shared.Rules.Hud)
@@ -63,6 +66,7 @@ local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local BreakerScreen = require(UI.BreakerScreen)
+local VoidkinScreen = require(UI.VoidkinScreen)
 local World = require(UI.World)
 local Read = require(UI.Read)
 local RingLooks = require(UI.RingLooks)
@@ -199,6 +203,20 @@ local function screenButton(screen: string, list: string, row: string): TextButt
 	local found = scroll and scroll:FindFirstChild(row)
 	local button = found and found:FindFirstChild("Action")
 	return if button and button:IsA("TextButton") then button else nil
+end
+
+-- The Lead button for Voidkin `id` on the open Voidkin screen: on its row in the Sheet layout, else on its board, which a
+-- tap on its name brings (TR15, Config.Hud.Board.Layout).
+local function leadButton(id: string): TextButton?
+	if HudConfig.Board.Layout == "Sheet" then
+		return screenButton(VoidkinScreen.Name, "List", id)
+	end
+	VoidkinScreen.Choose(id)
+	local frame = Screen.Frame(VoidkinScreen.Name)
+	local body = frame and frame:FindFirstChild("Body")
+	local board = body and body:FindFirstChild("Board")
+	local found = board and board:FindFirstChild("Lead")
+	return if found and found:IsA("TextButton") then found else nil
 end
 
 -- How many shards of `def` wait ready to open, in the save's copy.
@@ -5237,10 +5255,10 @@ return {
 			t.Check("the button opens the Voidkin screen", Button.Press(parts.Next :: TextButton) and waitFor(t, 1, function(): boolean
 				return Screen.Current() == "Voidkin"
 			end), tostring(Screen.Current()))
-			local fallenRow = screenButton("Voidkin", "List", was)
-			t.Check("the fallen one's row can't be pressed", fallenRow ~= nil and Button.State(fallenRow) == "Disabled", if fallenRow then Button.State(fallenRow) else "no row")
-			local free = screenButton("Voidkin", "List", other)
-			t.Check("another's can", free ~= nil and Button.State(free) ~= "Disabled", if free then Button.State(free) else "no row")
+			local fallenRow = leadButton(was)
+			t.Check("the fallen one's Lead can't be pressed", fallenRow ~= nil and Button.State(fallenRow) == "Disabled", if fallenRow then Button.State(fallenRow) else "no button")
+			local free = leadButton(other)
+			t.Check("another's can", free ~= nil and Button.State(free) ~= "Disabled", if free then Button.State(free) else "no button")
 			if free then
 				Button.Press(free)
 			end
@@ -5262,6 +5280,216 @@ return {
 			t.Check("back by the avatar", waitFor(t, 2, function(): boolean
 				local now = myLead()
 				return now ~= nil and now:GetAttribute("Voidkin") == was
+			end))
+		end,
+	},
+	{
+		Name = "Board: a Voidkin's stat board in two layouts shows its stats, the points to spend and each gain; a tap spends one, once; a level adds one; the reset asks twice and costs its price",
+		Run = function(t: any)
+			-- TR15 (docs/design.md, "Skill points"; Rules.Board): the board in grey on the Voidkin screen, in its two layouts
+			-- for the verdict (Config.Hud.Board.Layout), each linted at this screen's scale and the smallest phone's.
+			local view = ProfileController.Get()
+			local id = if view then view.Roles.Lead else ""
+			local start = if view then view.Voidkin[id] else nil
+			t.Check("the save names a lead", start ~= nil)
+			if view == nil or start == nil then
+				return
+			end
+			local level, xp, credits = start.Level, start.Xp, view.Currency.Credits
+			local kept = table.clone(start.Points)
+			local layout = HudConfig.Board.Layout
+			local hud = HudController.Parts()
+			local function lead(): Profile.OwnedVoidkin
+				local now = ProfileController.Get()
+				return (if now then now.Voidkin[id] else start) :: Profile.OwnedVoidkin
+			end
+			local function boardPart(name: string): Instance?
+				local frame = Screen.Frame(VoidkinScreen.Name)
+				local body = frame and frame:FindFirstChild("Body")
+				local board = body and body:FindFirstChild("Board")
+				return if board then board:FindFirstChild(name, true) else nil
+			end
+			local function text(name: string): string
+				local found = boardPart(name)
+				return if found and found:IsA("TextLabel") then found.Text else ""
+			end
+			local function rowPart(name: string, part: string): Instance?
+				local row = boardPart(name)
+				return if row then row:FindFirstChild(part) else nil
+			end
+			local function button(name: string): TextButton?
+				local found = rowPart(name, "Action")
+				return if found and found:IsA("TextButton") then found else nil
+			end
+			local function detail(name: string): string
+				local found = rowPart(name, "Detail")
+				return if found and found:IsA("TextLabel") then found.Text else ""
+			end
+			local function labelOf(found: TextButton?): string
+				local inner = found and found:FindFirstChild("Label")
+				return if inner and inner:IsA("TextLabel") then inner.Text else ""
+			end
+			local function gain(stat: string, at: number): string
+				return "+" .. VoidkinScreen.Amount(Board.Gain(stat, at))
+			end
+			local function credit(to: number)
+				local now = ProfileController.Get()
+				local have = if now then now.Currency.Credits else 0
+				t.Server("DataCredits", to - have)
+				waitFor(t, ANSWER, function(): boolean
+					local later = ProfileController.Get()
+					return later ~= nil and later.Currency.Credits == to
+				end)
+			end
+			local function lintBoth(where: string)
+				for _, at in { { Name = "this screen", Scale = nil }, { Name = "the smallest phone", Scale = Theme.Scale.Floor } } do
+					Layers.Force(at.Scale)
+					t.Wait(0.1) -- laid out again
+					lintClean(t, `{where}, at {at.Name}'s scale`)
+				end
+				Layers.Force(nil)
+			end
+			local function tune(name: string): boolean
+				t.Server("Tune", "Hud.Board.Layout", name)
+				return waitFor(t, 2, function(): boolean
+					return HudConfig.Board.Layout == name and VoidkinScreen.Built() == name
+				end)
+			end
+			-- A known start: level 5, nothing spent, four points to spend.
+			t.Server("LeadPoints", {})
+			t.Server("LeadLevel", 5)
+			t.Check("level 5, nothing spent", waitFor(t, ANSWER, function(): boolean
+				local now = lead()
+				return now.Level == 5 and next(now.Points) == nil
+			end))
+			for _, name in { "Split", "Sheet" } do
+				Screen.Close()
+				t.Server("Tune", "Hud.Board.Layout", name)
+				waitFor(t, 2, function(): boolean
+					return HudConfig.Board.Layout == name
+				end)
+				t.Check(`{name}: the dock opens the Voidkin screen`, Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name and VoidkinScreen.Built() == name
+				end), tostring(VoidkinScreen.Built()))
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
+				if name == "Sheet" then
+					t.Check("Sheet: the collection first, no board", VoidkinScreen.Chosen() == nil and boardPart("Title") == nil)
+					local frame = Screen.Frame(VoidkinScreen.Name)
+					local list = frame and frame:FindFirstChild("Body") and (frame :: any).Body:FindFirstChild("List")
+					local row = list and list:FindFirstChild(id)
+					local line = row and row:FindFirstChild("Detail")
+					local said = if line and line:IsA("TextLabel") then line.Text else ""
+					t.Check("Sheet: the lead's row says its points to spend", string.find(said, " · 4 to spend$") ~= nil, said)
+					t.Check("Sheet: a tap on its name opens its board", row ~= nil and row:FindFirstChild("Choose") ~= nil)
+					lintBoth("Sheet, the collection")
+					VoidkinScreen.Choose(id)
+				end
+				t.Check(`{name}: the lead's board shows`, VoidkinScreen.Chosen() == id and boardPart("Title") ~= nil, tostring(VoidkinScreen.Chosen()))
+				local owned = lead()
+				t.Equal(`{name}: its name and level`, text("Title"), `{Read.VoidkinName(owned)} · Lv 5`)
+				t.Equal(`{name}: the points to spend`, text("Points"), VoidkinScreen.ToSpend(4))
+				local block = Stats.Resolve(owned, Stats.PresetOf(ProfileController.Get() :: Profile.View, owned), ProfileController.Get())
+				for _, stat in StatsConfig.Board.Stats do
+					local found = button(stat)
+					t.Check(`{name}: {stat}'s gain on its button before a tap`, found ~= nil and labelOf(found) == gain(stat, 5) and found:GetAttribute("Disabled") == "", labelOf(found))
+					local value = VoidkinScreen.Amount((block :: any)[stat]) .. (if stat == "Regen" then " a second" else "")
+					t.Equal(`{name}: {stat} as it stands`, detail(stat), value)
+				end
+				t.Equal(`{name}: nothing to reset`, detail("Reset"), "Nothing spent yet")
+				t.Check(`{name}: the reset can't be pressed`, button("Reset") ~= nil and (button("Reset") :: TextButton):GetAttribute("Disabled") ~= "")
+				local leadButton = boardPart("Lead")
+				t.Check(`{name}: the lead's board says it leads`, leadButton ~= nil and leadButton:IsA("TextButton") and leadButton:GetAttribute("Disabled") == "Leading")
+				lintBoth(`{name}, the lead's board`)
+				if name == "Sheet" then
+					local back = boardPart("Back")
+					t.Check("Sheet: Back takes the board away", back ~= nil and back:IsA("TextButton") and Button.Press(back) and waitFor(t, 1, function(): boolean
+						return boardPart("Title") == nil and VoidkinScreen.Chosen() == nil
+					end))
+				end
+			end
+			-- Spending, in the Split layout.
+			t.Check("Split, again", tune("Split") and VoidkinScreen.Chosen() == id)
+			local model = myLead()
+			local most = if model then model:GetAttribute("MaxHealth") else nil
+			local health = button("Health")
+			t.Check("a tap on Health's gain", health ~= nil and Button.Press(health))
+			t.Check("a second tap while it's answered does nothing", health ~= nil and not Button.Press(health))
+			t.Check("one point spent", waitFor(t, ANSWER, function(): boolean
+				return Board.On(lead(), "Health") == 1
+			end))
+			t.Check("the board shows it", waitFor(t, 1, function(): boolean
+				return text("Points") == VoidkinScreen.ToSpend(3) and string.find(detail("Health"), " · 1 point$") ~= nil
+			end), `{text("Points")} / {detail("Health")}`)
+			t.Equal("only once", Board.Spent(lead()), 1)
+			t.Check("the lead in the world holds the gain", type(most) == "number" and waitFor(t, ANSWER, function(): boolean
+				local now = myLead()
+				local after = if now then now:GetAttribute("MaxHealth") else nil
+				return type(after) == "number" and math.abs(after - ((most :: number) + Board.Gain("Health", 5))) < 1
+			end), tostring(most))
+			-- A level gained with the board open.
+			t.Server("LeadLevel", 6)
+			t.Check("a level gained with the board open adds one to spend", waitFor(t, ANSWER, function(): boolean
+				return text("Points") == VoidkinScreen.ToSpend(4) and string.find(text("Title"), "Lv 6$") ~= nil
+			end), text("Points"))
+			t.Equal("its gains at the new level", labelOf(button("Attack")), gain("Attack", 6))
+			t.Equal("the point kept", Board.On(lead(), "Health"), 1)
+			for _, stat in { "Attack", "Defence", "Regen", "Health" } do
+				local was = Board.Spent(lead())
+				local found = button(stat)
+				t.Check(`{stat} takes one`, found ~= nil and Button.Press(found) and waitFor(t, ANSWER, function(): boolean
+					return Board.Spent(lead()) == was + 1
+				end))
+				waitFor(t, 1, function(): boolean
+					return text("Points") == VoidkinScreen.ToSpend(Board.Left(lead()))
+				end)
+			end
+			t.Equal("none left to spend", text("Points"), VoidkinScreen.ToSpend(0))
+			for _, stat in StatsConfig.Board.Stats do
+				local found = button(stat)
+				t.Check(`{stat}: greyed, its gain kept on it`, found ~= nil and found:GetAttribute("Disabled") == gain(stat, 6) and labelOf(found) == gain(stat, 6), labelOf(found))
+				t.Check(`{stat}: a tap does nothing`, found ~= nil and not Button.Press(found))
+			end
+			lintBoth("Split, every point spent")
+			-- The reset: its price, too little, then twice to be sure.
+			local price = Board.ResetCost(lead())
+			credit(price - 1)
+			t.Check("too few Credits: it says what it needs", waitFor(t, 1, function(): boolean
+				return detail("Reset") == `Needs {Read.Number(price)} Credits`
+			end), detail("Reset"))
+			t.Check("and can't be pressed", button("Reset") ~= nil and not Button.Press(button("Reset") :: TextButton))
+			credit(price + 7)
+			t.Check("enough: its price", waitFor(t, 1, function(): boolean
+				return detail("Reset") == `Every point back for {Read.Number(price)} Credits`
+			end), detail("Reset"))
+			t.Check("the first tap asks to be sure", Button.Press(button("Reset") :: TextButton) and waitFor(t, 1, function(): boolean
+				return labelOf(button("Reset")) == "Sure?"
+			end), labelOf(button("Reset")))
+			t.Wait(0.3)
+			t.Check("and spends nothing", Board.Spent(lead()) == 5 and (ProfileController.Get() :: Profile.View).Currency.Credits == price + 7)
+			t.Check("left alone, it asks again", waitFor(t, 4, function(): boolean
+				return labelOf(button("Reset")) == "Reset"
+			end), labelOf(button("Reset")))
+			Button.Press(button("Reset") :: TextButton)
+			waitFor(t, 1, function(): boolean
+				return labelOf(button("Reset")) == "Sure?"
+			end)
+			t.Check("the second tap gives every point back", Button.Press(button("Reset") :: TextButton) and waitFor(t, ANSWER, function(): boolean
+				return Board.Spent(lead()) == 0
+			end))
+			t.Equal("for its price", (ProfileController.Get() :: Profile.View).Currency.Credits, 7)
+			t.Check("the board shows them to spend", waitFor(t, 1, function(): boolean
+				return text("Points") == VoidkinScreen.ToSpend(5)
+			end), text("Points"))
+			lintBoth("Split, after the reset")
+			-- The save as it was.
+			Screen.Close()
+			t.Server("LeadPoints", kept)
+			t.Server("LeadLevel", level, xp)
+			credit(credits)
+			t.Server("Tune", "Hud.Board.Layout", layout)
+			t.Check("the lead as it was", waitFor(t, ANSWER, function(): boolean
+				local now = lead()
+				return now.Level == level and now.Xp == xp and Board.Spent(now) == Board.Spent(start)
 			end))
 		end,
 	},

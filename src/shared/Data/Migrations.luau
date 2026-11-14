@@ -8,6 +8,15 @@ local Migrations = {}
 
 local STEPS: { (data: any) -> () } = {
 	function(_data: any) end, -- 1: the first shape (TR2, 2026-11-12)
+	-- 2: the stat board (TR15, 2026-11-14). Touches Voidkin[id]: each owned Voidkin gains Points, nothing spent, so its
+	-- points earned wait to be spent.
+	function(data: any)
+		for _, owned in data.Voidkin or {} do
+			if type(owned) == "table" and type(owned.Points) ~= "table" then
+				owned.Points = {}
+			end
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

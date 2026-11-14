@@ -1259,4 +1259,26 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
 
 **Order in the queue:** after TR9. **Time, forecast:** 2 to 3 hours.
 
-**Status:** requested, 2026-11-14.
+**Status:** the rule, the save and the board in grey built offline, 2026-11-14 (Faber); research's verdict on the layouts waits on the Studio MCP. Time: about 3 active hours, my estimate, not measured.
+- **Implemented.**
+  - **The rule** (`Rules/Board`, pure): one point a level from level 2 (`Config.Stats.Board`), each Voidkin's own, on Health, Attack, Defence or Regen. A point adds `Point[stat] × G` at the Voidkin's level now, whatever its class or rarity, so an early point keeps its worth as it grows.
+    - `SpendPoint { Voidkin, Stat }` and `ResetPoints { Voidkin }` go through `Collection.Actions` on the server, once each by op id. The refusals are NoPoints, Stat, Nothing, Short and Unknown.
+    - The reset gives every point back for `ResetPerG × G` Credits (57 at level 2, 111 at 9).
+  - **The share** (`Rules/Stats`): the board takes each stat's even part (a quarter of the points earned, times its gain) out of the own base, and Regen's out of its Level line. The spent points come back as a "Board" line. So an even spread is today's Voidkin, and stars stay a share of the whole own base. A point not spent adds nothing, as designed: my proposal (2) isn't built.
+  - **The save:** each owned Voidkin has `Points`, and migration step 2 gives old saves an empty table.
+  - **The screen** (`UI/VoidkinScreen`, out of `HudController`), in two layouts tuned live through `Config.Hud.Board.Layout`:
+    - **Split:** the collection beside the chosen Voidkin's board, the lead's first. A tap on a name chooses it. Lead moves onto the board, because the narrow list can't hold a row's detail and a button.
+    - **Sheet:** the collection as it was, with Lead on each row. A tap on a name opens its board over it, with Back.
+    - **The board:** the name and level, and the points to spend ("No points to spend: each level gives one" at none). Each stat shows as it stands, with its gain on its button before a tap ("+9.26" Health at level 5), greyed with the gain kept when no points are left. The reset shows its price, and its first tap asks "Sure?" for 3 s. A row in the collection says "· N to spend".
+  - **Studio adds `LeadPoints`** (the lead's spent points, set), for the tests.
+- **The sim** (`tools/balance/sim.py`, section 12; a model, not a measurement):
+  - Each stat's point is priced to its worth. At 1% of its level-1 figure, a point is worth 1.07% strength for Health, 1.82% for Attack, 0.38% for Defence and 0.43% for Regen, so the weights are Health 6, Attack 0.44, Defence 1.05 and Regen 0.075 per G.
+  - An even spread in whole points is within 1.41% of the Voidkin without the board (the worst case is a Common Warrior at 12, on Regen).
+  - The strongest one-stat spread on Lantern Row is +1.2% (Lyric at 9, all Attack). At 60 the spreads run from −10.5% to +4.9%.
+  - At 125, with every point elsewhere, the leanest class keeps 23% of its own Defence.
+- **Tested.**
+  - The type check: 0 new. The logic: 5059 passing offline. The board has 8 cases: earning, a point's gain blind to class and rarity, the even spread with stars unmoved, the four stats only, a repeated or interrupted spend, the reset, nothing below zero at the cap, and the migration. The Stats, Fight and Data cases count the board's part.
+  - The self-test's new case waits on the Studio MCP. It covers both layouts at both scales with the UI lint; a tap spent once and the lead in the world growing by its gain; a level gained mid-screen; every point spent; the reset when short, at its price, with "Sure?" lapsing, and on two taps. TR12's case now finds Lead in either layout.
+  - **The content check** on the screen's text: PASS. Its note is done: a refusal with no line of its own says "Not now", and the output names its code.
+- **For research, tier 2:** the weights; the scale (Health's point is 0.75% of its figure, with room to about 0.95% before the leanest Defence runs out at 125); `ResetPerG` 50; Lead on the board in Split; the reset's two taps.
+- **One finding:** on Lantern Row the board is felt as "which number grows" more than as power. A Voidkin has 8 points by level 9, each about 0.75% of a stat.

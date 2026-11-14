@@ -269,4 +269,10 @@ return {
 		Layout = "Machine",
 		Cell = 112,
 	},
+	-- TR15's stat board in grey on the Voidkin screen (UI/VoidkinScreen; research's entry, 2026-11-14), two layouts for
+	-- the blockout's verdict, tuned live ("Hud.Board.Layout"): "Split" (the collection beside the chosen Voidkin's board,
+	-- the lead set from the board) or "Sheet" (the collection as it was, a Voidkin's board a sheet over it on a tap).
+	Board = {
+		Layout = "Split",
+	},
 }

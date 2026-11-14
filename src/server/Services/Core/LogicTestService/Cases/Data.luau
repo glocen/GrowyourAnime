@@ -208,6 +208,7 @@ return {
 					Favourite = false,
 					Locked = false,
 					Born = 0,
+					Points = {},
 				}
 				return { Ok = true, Voidkin = draft.Voidkin[id] }
 			end, KEEP)

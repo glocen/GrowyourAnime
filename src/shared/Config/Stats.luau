@@ -45,6 +45,21 @@ return {
 	-- a percent of a level-1 Warrior's health a second, 200 s from empty to full, so waiting out a heal loses to the door
 	-- home; with Config.Enemies' Ordinary Attack halved, Pack 2 ends at about half (tools/balance/sim.py, section 9).
 	Regen = { Base = 4, Class = { Healer = 1.5 } :: { [string]: number } },
+	-- The stat board (docs/design.md, "Skill points"; TR15, Rules.Board): one point a level from From, each Voidkin's own,
+	-- spent by hand on one of Stats. A point adds Point[stat] times G at the Voidkin's level, whatever its class or rarity;
+	-- the board takes each stat's even part, a quarter of the points earned, out of the own base (Rules.Stats), so an even
+	-- spread is the Voidkin without the board. Point: the builder's seed from tools/balance/sim.py section 12 (tier 2, for
+	-- research), 2026-11-14: a Common Warrior's level-1 figure times 0.0075, and each stat priced so a point of each is worth
+	-- about the same on Lantern Row's pack (Health x1, Attack x0.59, Defence x2.81, Regen x2.50); then no one-stat spread is
+	-- more than about 5% ahead at any level, an even spread in whole points stays within 2% of the Voidkin without the board,
+	-- and every class keeps part of its own base at level 125. ResetPerG: Credits a reset costs, times G at the Voidkin's
+	-- level, five kills' worth (Config.Drops), "a little". The builder's seed.
+	Board = {
+		Stats = { "Health", "Attack", "Defence", "Regen" },
+		From = 2,
+		Point = { Health = 6, Attack = 0.44, Defence = 1.05, Regen = 0.075 } :: { [string]: number },
+		ResetPerG = 50,
+	},
 	-- Type: each beats the next, in a ring (docs/design.md, "Voidkin").
 	Beats = {
 		Agility = "Strength",

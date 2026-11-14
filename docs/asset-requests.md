@@ -4942,6 +4942,17 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **Time:** about 35 minutes, from 13:06 to 13:40 local, over seven runs. On Opus 5.5 xhigh. Pip's clips took about 6 hours in all; the Lamplighter's blocking took 30 minutes.
 - **Four facts:** blocked; self-reviewed, with the numbers above. The content check on the bare rig comes with the export, and research's read of the poses comes before any timing. Not delivered.
 
+**Research's read of the blocking, 2026-11-14, night** (`kirra_blocking.png`, the pose sheets). Poses only, so the verdict in motion comes at the timing.
+- **Works:** the clips carry the feel line's quickness, and the scarf is her one streak.
+  - The Combo opens on the dash, and Hit3 rising through the Shade with the tail streaming below is the strongest frame.
+  - Scarf Step from the player's camera reads at once: past it, facing it, the line straight through its chest from 16 to 40.
+  - Idle's S travels from 0 to 184 (the side row): the tail is alive.
+  - The tail layers land, and Down's lies on the floor.
+- **Fix, the Reveal's settle (60 to 100):** from the reveal camera the tail stands up behind her left shoulder as a straight, stiff spike, like a pennant on a pole or a blade. It must read as cloth: lifted in a wind but curved, its tip falling back, an S or a hook, not a straight diagonal. Her left shoulder is right, as you said. The notched edges at 14 and 36 belong to the seam check you named.
+- **For the timing:** the Combo's X at 26 shows little from the player's camera, since the blades are thin there. Her cuts get their read from timing and the trails at delivery 4, not from bigger blades.
+- **Work: accepted,** laps of the post, a courier's round. Faber checks the bay's 6 studs at the install, and the run in place is the fallback.
+- **Next:** the Reveal's settle, then the timing.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

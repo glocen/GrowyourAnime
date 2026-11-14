@@ -1067,7 +1067,48 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
 
 **Order in the queue:** after TR11. It's the loop, so it comes before TR6. **Time, forecast:** 3 to 4 hours, the sim's run included.
 
-**Status:** requested, 2026-11-14.
+**Status:** built in grey, 2026-11-14 (Faber), c0f0478 and 1be04e6. Time: about 4 active hours, my estimate, not measured.
+- **Implemented.**
+  - **Regen:** a stat from the level (`Config.Stats.Regen`: Base 20 at level 1 times G, a Healer ×1.5, its own "Level" source, so rarity and stars leave it alone). A lead heals it every second, always, in a fight too (`Rules.Fight.Regen`). On its own plot it also heals from nothing to full in `Combat.Lead.Home.Full` (30 s; `Markers.OnPlot`). `Combat.Heal` and `DownSeconds` are gone.
+  - **The fall:**
+    - The lead is down for `Combat.Lead.Leave` (1.6 s), then leaves as light: a grey column where it lay (`Config.Effects.LeadLeaves`), its prop back in hand.
+    - It's home on its plot, 6 studs before the Training machine, and heals from nothing to full in `Lead.Home.Fallen` (90 s).
+    - It follows again once it's whole and the player is on their plot (`Rules.Carry.Fallen`). I read "heals slowly to full, then waits" literally: a fallen lead never leaves the plot half healed.
+    - In a keeper's ring a fall ends the try, as before.
+  - **The next lead:**
+    - The lead never changes in a fight: a keeper's try, a target, or a Shade on it (`FightService.InCombat`).
+    - A fallen Voidkin goes out again only once it's whole (`Carry.Refusal`, the SetLead guard).
+    - A Voidkin taken in keeps its share and heals at home's rates while it isn't out.
+    - The card says "Down", then "Healing at home m:ss" with its bar filling, then "Training" or "At home" (`Hud.LeadStatus`).
+    - A "Send another" button under the card opens the Voidkin screen. Its rows say "Healing at home m:ss" or "Training", and a refused row says why.
+  - **The Training machine,** a grey box and pad on each plot (`Tags.Training`), with its plate:
+    - It trains one Voidkin at a time (`Rules.Training.Who`): the lead while the player is away from the plot or offline, a fallen one once it's healed, nobody while the player is home.
+    - It earns `Config.Growth.Training.Share` (0.33) of a fight's experience a second at the Voidkin's level, with no cap.
+    - The server credits it every 30 s in the game, and whenever who trains changes. At a join it credits the lead's time away (`Training.Advance`, `Profile.Training.Stamp`).
+  - Studio adds `LeadHeal` (every Voidkin whole, a fallen lead up beside the avatar) and `TrainingSkip`.
+- **Tested.**
+  - The type check: 0 new.
+  - The logic: 4391 passing offline. New cases cover Regen in and out of a fight, healing at home, the carry, the fall's trip home and following again, the next lead's refusals, the training rate and gain, who trains, and a leave (a night, the same night in steps, 400 days reaching the last level, a worker, a clock gone back).
+  - The self-test's new case and the two cases updated for the fall home (the keeper's loss, spectate's fall) wait on the Studio MCP. The new case walks the card's states, the button, the Voidkin screen, the next lead out, and the fallen one refused.
+- **The numbers** (`tools/balance/sim.py`, sections 9 and 10). A model, not a measurement: the game's own Config, a bare lead, every Shade of a pack on it at once.
+  - **Regen 20 meets the entry's target and misses its feel line.**
+    - A new account ends Pack 2 with 62% [51 to 70%], and 1 to 3 runs in 100 fall before the elite. Lyric, a Healer, ends with 93%.
+    - But 2.5% a second is 40 s from empty to full, so health doesn't "creep back a little at a time", and home's 30 s is barely faster.
+    - It's this high because a pack of three costs a bare lead about 72% of its health. The old quick heal hid that.
+    - The alternative, tier 2: Ordinary Shades' Attack ×0.5 with Regen 4 (200 s from empty to full) gives about 54%, and 2 to 3 runs in 100 fall. Or ×0.6 with Regen 8: about 58%, and none fall. It touches the Shades' tuning, so it's research's and the fights' call.
+  - **Training at 0.33 with no cap is fast all the way up.**
+
+    | From level | A night (8 h) | A day | A week |
+    |---|---|---|---|
+    | 1 | 15.9 | 26.8 | 60, the last |
+    | 5 | 17.0 | 27.4 | 60 |
+    | 15 | 21.9 | 30.5 | 60 |
+
+    - A level's minutes grow only with the ground's pace (20 min a level on ground 1, 360 on ground 6), not with G. So "slow at high level" doesn't happen.
+    - The launch's whole 57 h of fighting comes in 171 h away.
+    - The alternatives: a share that falls by ground, or training capped at the next unbeaten keeper's level. The second touches "no cap", so it's the director's call.
+- **Visually reviewed:** not yet. Research's verdict in motion at phone size (a circuit with a fall, the next lead out, the trip home) goes here once Studio is back.
+- **Accepted:** no.
 
 ## TR13. The signature's ring, reworked (Faber, with Modulo's frames)
 

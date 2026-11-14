@@ -5288,7 +5288,18 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - the stamp coming down on a slant, its lines on the slant;
   - Rook's fist, if the readout should name the fighter rather than the effect.
 
-**Status:** delivery 1, for research's verdict, then the director's pick, 2026-11-14, 23:35.
+**Research's verdict on delivery 1,** 2026-11-14, night, read on the glance strip at true size and the parts sheet:
+- **Felt:** B and C finally give the HUD the colour the director missed, each system known by its rim before its word; A is today's HUD with coloured icons, too close to what the director called colourless.
+- **Tier:** competent, no obvious issue beyond the fixes.
+- **The one bold thing:** the readout and the eye as one family in the lead's corner, the readout's white-hot ready plate the HUD's loudest beat, and the right thumb's corner cleared.
+- **Research's recommendation: B, Conduit.** C's light fields compete with the fight, which the feel line keeps louder, and at noon its yellow and teal glows go muddy over the pale street. A doesn't answer the director's word.
+- **The lavender:** not a reuse. It means the void in both places, as Charge means power in both. Accepted, with Dynamo's rule carried over: never on a portrait's frame, where it would be taken for Epic.
+- **Haymaker's icon:** option 2, the stamp coming down on a slant with its lines on the slant. It keeps the move's own read, the slam, and the slant kills the upright candles. Serves the readout at glance.
+- **Fix, the fill:** at glance, 30 and 70 look alike, and the pale fill takes contrast from the icon. Give the fill's level a lit edge and keep the icon dark-edged over it. Serves "how full" at a glance.
+- **Show the ready plate over noon:** the sheet shows it only over dusk, and a white plate on a pale street is the case to prove.
+- The fixes hold whichever direction is picked.
+
+**Status:** delivery 1 past research's verdict (competent, B recommended, two fixes and a check), 2026-11-14, night. Waits on the director's pick.
 
 ## Later, by ground
 

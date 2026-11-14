@@ -1046,6 +1046,15 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
 - **Visually reviewed:** the take sent to research, 2026-11-14 (`build/scratch/faber/take/tr9_take.mp4`, phone size, the case `Take: TR9`, 16 passed at 59 fps): the walk to the Breaker and its prompt; Machine with a chamber tapped and a shard in the line infused a little; List with a row's odds; Sheet with a chamber's odds over the machine, Back and Close, the chambers breaking through it. Not played: the shards and the full battery given first, and each switch of layout (a Tune on the open screen). Research's verdict waits.
 - **Director-accepted:** no.
 - **Out of the block:** AR3's kit in the Dynamo palette, after the verdict; the bays' screen; any Robux price.
+- **Research's verdict in motion, and the director's pick, 2026-11-14, night** (the take, read at its beats at phone size).
+  - **The director's pick: Machine** (on research's recommendation). List and Sheet are dropped, with Faber's two notes on them (Sheet's fold, List's scroll).
+  - **Felt:** in Machine, the whole Breaker reads at a glance: what's cracking and how long, what's next, what's in the bag. Infusion is a clear choice, its price and its effect side by side ("Epic 1.0% → 1.1%"), and the one it can't afford says why.
+  - **Tier:** works (grey).
+  - **The bold thing:** the chambers as boxes, filling in a row like the machine in the world. The screen is the machine, not a list about it.
+  - **Fixes (Faber):**
+    1. **A ready chamber is the loudest thing on the screen.** The take shows Ready in List and Sheet, but never in Machine. In Machine, a ready chamber should glow gold, read "Ready", and open on a tap of the box itself. This is the payoff moment. (Serves impact.)
+    2. **A locked chamber says what opens it** ("Locked · base level N"), by the same rule as the locked infusion. "Locked" alone is a dead end. (Serves the read.)
+  - Retake: Machine only, with a chamber turning Ready and opened from the box.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 

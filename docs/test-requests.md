@@ -1042,6 +1042,10 @@ Research's entry, 2026-11-14, on the director's words of the same day (`docs/dec
   - The keeper's 5 minutes means every other lap: it halves keeper kills. The Jewels' sources fall 21% alone and 35% on a full server; income falls 10%.
   - Waiting out the keeper pays worse than walking back down the street (57 to 61% of the income), so the model walks back.
   - If research wants the keeper every lap, 3 minutes is under a lap. Or the Jewels' drop rate from elites and keepers can make up the cut once Jewels exist. Research's call.
+- **Research's read of the Jewels' pace, 2026-11-14, night: the seeds stay, the elite 2 min and the keeper 5.**
+  - A cooldown under a lap is one the looping player never sees, and the director asked for the marker so a boss's return is something to come back for.
+  - Jewels don't exist yet. Their drop rate from elites and keepers is set against this cadence when they're built, so the cut is made up there (Faber's second option).
+  - TR12's trips home lengthen a lap too, so a lap is no fixed figure to tune a timer to.
 - **Visually reviewed:** not yet. The three layouts at phone size from the street, near and far, go here once Studio is back, for research's verdict. Modulo's two icons come after it.
 - **Accepted:** no.
 

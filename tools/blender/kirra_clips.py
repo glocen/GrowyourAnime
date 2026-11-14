@@ -4,7 +4,10 @@ blender.exe -b --factory-startup --python tools/blender/kirra_clips.py -- <out_d
 
 - poses (the default): one sheet a clip, its key poses from the player's camera and from her side (the Reveal and
   Work from her front too), and kirra_blocking.png, every clip's key poses from the player's camera, a row a clip.
-- export: Kirra_<Clip>.json for the builder (r6anim.export, with its audit) and Kirra.clips.json.
+- export: Kirra_<Clip>.json for the builder (r6anim.export, with its audit) and Kirra.clips.json; and for the review,
+  a clip's pack (pack_<Clip>.png and .txt: its beats, on the bare rig, at 64 px, and its numbers), its arcs
+  (arcs_<Clip>.png, one dot a frame) and the bare rig stepped through (bare_<Clip>.png; not for the tail layers,
+  whose body is the open set's).
 - audit: the export's audit alone.
 
 Needs kirra_model.py's output (kirra_model.blend and Kirra.recipe.json) in MODEL. The keying is rook_clips.py's: every
@@ -25,6 +28,8 @@ Beside the body, three tracks a clip, keyed apart and solved on every frame once
 
 How she moves: small and fast, already leaving. The cloth tells you where she's been.
 """
+import contextlib
+import io
 import json
 import math
 import sys
@@ -61,6 +66,8 @@ STEEL = np.linspace(-0.31, 1.74, 9)  # the blade's length, pommel to point, from
 EDGE = 0.08  # the blade's half width, for its clearance
 PULL = 1.3  # studs a blade slides out of its sheath along its length, at the middle of a draw, before it turns
 NEAR = 1.5  # studs from its sheathed grip inside which a blade in her fist turns to lie along its sheath
+BEND = math.radians(22.0)  # the most one tail link turns from the one before: the model's seam test showed no gap to 22
+# degrees, and past it the link's edges notch (research's read of the blocking, the Reveal at 14 and 36)
 STILL, HELD = 45.0, 6  # degrees a second under which an arm counts as held, and the frames it may be (Pip's)
 # Her body as boxes in each part's frame, for what the blades and the tail must clear: R6's, the head with its hair.
 BOXES = {"Torso": ((0, 0, 0), (1.0, 1.0, 0.5)), "Head": ((0, 0.05, 0.05), (0.72, 0.72, 0.72)),
@@ -153,7 +160,7 @@ def tail_rest(recipe) -> dict:
 # --- keying ---------------------------------------------------------------------------------------------------------
 
 HUB = {
-    "T": (12, -10, 0), "feet": {"Right Leg": (0.5, 0.45), "Left Leg": (-0.55, -0.42)}, "RL": (0, 0, 0), "LL": (0, 0, 0),
+    "T": (12, -10, 0), "feet": {"Right Leg": (0.6, 0.45), "Left Leg": (-0.65, -0.42)}, "RL": (0, 0, 0), "LL": (0, 0, 0),
     "crouch": 0.12, "look": EYES, "H": (0, 0, 0), "RA": (16, 0, 9), "LA": (-22, 0, -7), "lift": 0.0,
 }
 TAIL = {"aim": 0.0, "curl": 0.0, "flat": 90.0, "dir": (-0.2, -1.0, 0.15), "ripple": 8.0, "swing": 5.0, "wave": 5.0,
@@ -292,8 +299,19 @@ class Take(rc.Take):
             else:
                 out[rc.SHORT[arm]] = a
         r6._key_parts(rig, frame, out, *interp)
+        self.solved = out  # the angles keyed, a reach's solved: for a breakdown that steers between it and its neighbour
         if label:
             self.beats.append((f, label))
+        return self
+
+
+    def arm(self, f, ease=None, **arms):
+        """A breakdown for an arm alone at clip frame `f` (RA / LA angles), between two keys, so it goes the way it's
+        sent: a joint takes the short way round, which from low to over the shoulder is backward, through her back.
+        Call it in frame order between the keys it sits between; the body's state is left as the last key set it."""
+        frame = self.start + f
+        bpy.context.scene.frame_set(frame)
+        r6._key_parts(self.rig, frame, {rc.SHORT[a]: v for a, v in arms.items()}, *rc.EASE[ease])
         return self
 
 
@@ -400,6 +418,9 @@ def solve_tail(rest, base, knot, v, q_root, trail_dir=None):
         s = 2 * math.pi * (phase - k / max(wave, 0.5))
         R = (share(aimed, w) @ Quaternion(tail["across"][k], math.radians(ripple * g * math.sin(s)))
              @ Quaternion(tail["normal"][k], math.radians(swing * g * math.cos(s))))
+        turned = 2 * math.acos(min(1.0, abs(R.w)))
+        if k and turned > BEND:  # held to the seams' bend: a tighter curve is spread, not kinked
+            R = share(R, BEND / turned)
         q = parent @ R
         e = q @ c
         lifted = held_down(e, P, back)
@@ -529,10 +550,14 @@ def audit(rig, take) -> dict:
 
 # --- the clips ------------------------------------------------------------------------------------------------------
 # Performance lines, one a clip, written before its poses. Her stance is the sheet's: weight forward on the balls of
-# her feet, one foot well ahead, the left hand at the satchel, the right loose by her grip. R6's arm is straight, so a
-# hand reaches the grip over a shoulder only as an arm raised up and back: it's there for two or three frames, never
-# held (the salute line). The left arm never rolls toward the body (its roll stays at or under 0). The blades come out
-# for the Combo, Scarf Step and the Reveal's turn, and go home over the shoulders.
+# her feet, one foot well ahead, the left hand at the satchel, the right loose by her grip. R6's arm is straight and
+# its shoulder sits a stud from the grip, so no hand can hold a sheathed grip without the arm going into her head or
+# chest. A draw is the arm raised straight up and a little back (RAISED, LIFTED), never tipped in over her head, and
+# the blade slides up its sheath's line into the fist, which is where that line runs; a sheathing is the same, back
+# down it. A raised arm is up 74 degrees over level, out of the salute line's band, and an arm sent from low to raised
+# goes up in front of her (Take.arm's breakdowns), never back through her. The left arm never rolls toward the body
+# (its roll stays at or under 0). The blades come out for the Combo, Scarf Step and the Reveal's turn.
+RAISED, LIFTED = (195, 0, 6), (195, 0, -6)  # the right arm and the left, raised to draw or sheathe
 
 def idle(t):
     """She can't stand still: up on the balls of her feet, a small bounce twice a breath, and once a loop she looks
@@ -569,41 +594,45 @@ def combo(t):
     for side in "RL":
         t.blade(0, side, grip=(-40, 0, 0))
     t.key(0, "the dash", T=(32, -12, 0), crouch=0.26, look=shade, H=(0, 0, 0), feet={"Right Leg": None, "Left Leg": None},
-          RL=(42, 0, 2), LL=(-36, 0, -2), RA=("grip", "R", (150, 0, 10)), LA=(-46, 0, -14))
+          RL=(42, 0, 2), LL=(-36, 0, -2), RA=(160, 0, 12), LA=(-46, 0, -14))
     t.mark(0, "Dash")
-    t.key(5, ease="lin", T=(30, -20, 0), lift=0.22, RL=(48, 0, 2), LL=(-44, 0, -2), LA=(-54, 0, -18))
-    t.key(9, "on the grip, in", ease="in", T=(26, -28, 0), crouch=0.32, lift=0.0, feet={"Right Leg": (0.55, 0.3), "Left Leg": (-0.6, -0.95)},
+    t.key(5, ease="lin", T=(30, -20, 0), lift=0.22, RL=(48, 0, 2), LL=(-44, 0, -2), RA=RAISED, LA=(-54, 0, -18))
+    t.key(9, "on the grip, in", ease="in", T=(26, -28, 0), crouch=0.32, lift=0.0, feet={"Right Leg": (0.75, 0.3), "Left Leg": (-0.8, -0.95)},
           LA=(-30, 0, -24))
     t.blade(9, "R", ease="out")
     t.blade(11, "R", w=1.0)
     t.key(12, "1: the draw is the cut", T=(22, 24, 0, 0, 0, 0.15), RA=(46, 0, 6), LA=(-12, 0, -30))
     t.mark(12, "Hit1")
-    t.key(16, ease="out", T=(22, 32, 0, 0, 0, 0.12), RA=(22, 0, 10), LA=("grip", "L", (150, 0, -10)))
+    t.arm(14, ease="out", LA=(96, 0, -18))  # the left goes up in front of her, to its grip
+    t.key(16, ease="out", T=(22, 32, 0, 0, 0, 0.12), RA=(22, 0, 10), LA=LIFTED)
     t.blade(20, "L", ease="out")
     t.key(21, "the left on its grip", ease="in", T=(22, 36, 0, 0, 0, 0.1), RA=(14, 0, 18))
     t.blade(23, "L", w=1.0)
-    t.key(26, "2: the X", T=(22, -26, 0, 0, 0, 0.16), LA=(48, 0, -6), RA=(-8, 0, 30))
+    t.key(26, "2: the X", T=(22, -26, 0, 0, 0, 0.16), LA=(48, 0, -6), RA=(-8, 0, 30),
+          feet={"Right Leg": (1.0, 0.3)})  # her right foot steps out into the twist, so the legs don't cross
     t.mark(26, "Hit2")
     t.key(31, ease="out", T=(20, -32, 0, 0, 0, 0.12), LA=(22, 0, -14), RA=(-16, 0, 32))
     t.key(44, "both low behind her", ease="in", T=(36, -4, 0, 0, 0, -0.05), crouch=0.44, RA=(-50, 0, 22), LA=(-50, 0, -22))
     t.key(56, "3: up through it", T=(-6, 0, 0, 0, 0, 0.25), crouch=0.0, lift=0.34, RA=(112, 0, 14), LA=(112, 0, -14))
     t.mark(56, "Hit3")
-    t.key(61, "over the shoulders", ease="out", T=(-8, -2, 0, 0, 0, 0.2), lift=0.14,
-          RA=("grip", "R", (160, 0, 12)), LA=("grip", "L", (160, 0, -12)))
+    t.key(61, "over the shoulders", ease="out", T=(-8, -2, 0, 0, 0, 0.2), lift=0.14, RA=RAISED, LA=LIFTED)
     for side in "RL":
         t.blade(61, side, ease="in")
         t.blade(64, side, w=0.0)
     t.mark(64, "Sheathe")
+    t.arm(64, ease="in", RA=RAISED, LA=LIFTED)  # raised till the blades are home
+    t.arm(66, ease="out", RA=(128, 0, 18), LA=(128, 0, -18))  # then down in front of her, off the grips
     t.key(70, ease="out", T=(20, -8, 0), crouch=0.3, lift=0.0, RA=(22, 0, 14), LA=(-14, 0, -12))
     t.key(84, "low and ready", ease="sine", T=(18, -12, 0), crouch=0.22, RA=(18, 0, 10), LA=(-22, 0, -8))
     t.key(100, T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"], feet=HUB["feet"])
     t.tail(0, aim=0.85, curl=0.6, dir=(-0.15, -1.0, 0.12), ripple=11.0, swing=6.0, wave=4.0, phase=0.0)
     t.tail(9, ease="out", aim=0.6, dir=(-0.85, -0.35, 0.45), phase=2.0)  # she stops; it doesn't, out past her left
     t.tail(13, ease="out", aim=0.55, dir=(0.55, -0.8, 0.3))  # the cut throws it to her right
-    t.tail(27, ease="out", aim=0.55, dir=(-0.85, -0.45, 0.25))  # and the X back to her left
+    t.tail(25, ease="out")  # held there while her left arm is up for its grip and on its way down
+    t.tail(31, ease="out", aim=0.55, dir=(-0.85, -0.45, 0.25))  # and the X whips it back to her left, a beat behind
     t.tail(44, ease="sine", aim=0.4, dir=(-0.3, -0.9, -0.05))
     t.tail(57, ease="out", aim=0.75, dir=(-0.2, -0.85, -0.35), phase=5.0)  # it streams down as she goes up
-    t.tail(64, ease="out", aim=0.6, dir=(-0.3, -0.6, 0.7))  # and flicks up as she comes down
+    t.tail(64, ease="out", aim=0.6, dir=(0.1, -0.7, 0.7))  # and flicks up behind her as she comes down, off her raised arm
     t.tail(72, ease="back")
     t.tail(92, aim=0.0, curl=1.0, ripple=TAIL["ripple"], swing=TAIL["swing"], wave=TAIL["wave"])
     t.tail(100, phase=6.0)
@@ -623,13 +652,17 @@ def scarf_step(t):
     at_shade = (*shade, 3.0)
     t.place(0, at=(0.0, 0.0), heading=STEP)
     t.key(0, "the stance", look=at_shade, H=(0, 0, 0))
-    t.key(8, "sets", ease="cubic", T=(28, -22, 0), crouch=0.34, feet={"Right Leg": (0.62, 0.2), "Left Leg": (-0.62, -0.95)},
-          RA=("grip", "R", (155, 0, 10)), LA=(40, 0, -12))
+    t.arm(4, ease="cubic", RA=(104, 0, 14))  # up in front of her to the grip
+    t.key(8, "sets", ease="cubic", T=(28, -22, 0), crouch=0.34, feet={"Right Leg": (0.74, 0.2), "Left Leg": (-0.76, -0.95)},
+          RA=RAISED, LA=(40, 0, -12))
     t.key(12, ease="in", T=(34, -24, 0, 0, 0, 0.12), crouch=0.4, LA=(46, 0, -10))
     t.key(13, ease="hold", T=(38, -24, 0, 0, 0, 0.3), feet={"Right Leg": None, "Left Leg": None}, RL=(34, 0, 2), LL=(-30, 0, -2))
     t.mark(13, "Blink")
-    t.blade(12, "R", grip=(-30, 180, 0))  # out of the back of her fist and down: it trails behind her, clear of her legs
-    t.blade(16, "R", w=1.0)  # out of its sheath while she's gone
+    # out of the back of her fist and down, so it trails behind her clear of her legs: out of its sheath while she's
+    # gone, in her hand as she lands
+    t.blade(13, "R", ease="hold", grip=(-30, 180, 0))
+    t.blade(14, "R", w=1.0)
+    t.arm(13, ease="lin", RA=RAISED)  # the arm goes on through the blink, not in one frame on landing
     t.place(14, at=land, heading=STEP + 180.0)
     t.key(15, ease="out", T=(34, 16, -6, 0, 0, 0.3), crouch=0.44, look=at_shade, RL=(40, 0, 4), LL=(-50, 0, -4),
           RA=(-58, 0, 26), LA=(56, 0, -16))
@@ -640,9 +673,12 @@ def scarf_step(t):
     t.key(24, ease="sine", T=(28, 12, -5, 0, 0, 0.1), crouch=0.36)
     t.key(40, "the line holds", ease="sine", T=(24, 10, -4, 0, 0, 0.05), crouch=0.32, RA=(-48, 0, 30), LA=(52, 0, -14))
     t.key(54, "it lets go", ease="sine", T=(20, 6, -2), crouch=0.26, RA=(-42, 0, 40), LA=(30, 0, -12))  # the arm stays back: the blade clear of her leg
-    t.key(62, ease="in", T=(18, 0, 0), crouch=0.22, RA=("grip", "R", (155, 0, 10)), LA=(4, 0, -12))
+    t.arm(58, ease="in", RA=(74, 0, 26))  # the blade comes up in front of her, not back through her
+    t.key(62, ease="in", T=(18, 0, 0), crouch=0.22, RA=RAISED, LA=(4, 0, -12))
     t.blade(62, "R", ease="in")
-    t.blade(65, "R", w=0.0)
+    t.blade(64, "R", w=0.0)
+    t.arm(64, ease="in", RA=RAISED)  # raised till it's home
+    t.arm(66, ease="out", RA=(120, 0, 16))  # then off the grip, down in front
     t.key(68, "home", ease="out", T=(16, -6, 0), crouch=0.2, RA=(20, 0, 12))
     t.key(96, ease="sine", T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"], feet=HUB["feet"])
     knot_to_shade = (0.72 / (GONE + ks.PAST - GONE), 1.0, -0.12)  # from the knot at her left, through the Shade's chest
@@ -664,28 +700,33 @@ def reveal(t):
     you = (6.0, 8.5, 4.6)  # the reveal's camera, out front and to her right
     t.key(0, "it comes down", T=(6, 0, 0), crouch=0.0, lift=4.6, feet={"Right Leg": None, "Left Leg": None},
           RL=(28, 0, 4), LL=(-8, 0, -4), H=(26, 0, 0), RA=(30, 0, 64), LA=(30, 0, -64))
-    t.key(14, "lands", ease="in", T=(38, -6, 0), crouch=0.52, lift=0.0, feet={"Right Leg": (0.5, 0.45), "Left Leg": (-0.62, -0.35)},
+    t.key(14, "lands", ease="in", T=(38, -6, 0), crouch=0.52, lift=0.0, feet={"Right Leg": (0.62, 0.45), "Left Leg": (-0.72, -0.35)},
           H=(22, 0, 0), RA=(-38, 0, 34), LA=(28, 0, -22))
     t.mark(14, "Land")
     t.key(20, ease="out", T=(42, -6, 0), crouch=0.58, RA=(-46, 0, 38), LA=(20, 0, -24))
     t.key(36, "and rises", ease="sine", T=(12, -8, 0), crouch=0.14, look=you, H=(0, 0, 0), RA=(14, 0, 12), LA=(-20, 0, -8))
     t.key(52, ease="sine", T=(10, -10, 0), crouch=0.1, LA=(-22, 0, -7))
-    t.key(60, "reaches back", ease="in", T=(6, -16, 0), RA=("grip", "R", (155, 0, 10)))
+    t.arm(56, ease="in", RA=(104, 0, 14))  # up in front of her
+    t.key(60, "reaches back", ease="in", T=(6, -16, 0), RA=RAISED)
     t.blade(60, "R", grip=(-20, 0, 0))
     t.blade(61, "R", ease="out")
     t.blade(64, "R", w=1.0)
+    t.arm(63, RA=(150, 0, 30))  # out to her side as it comes down, clear of her chest
     t.key(66, ease="out", T=(8, -14, 0), RA=(50, 0, 44))
     t.key(72, "turns it once", ease="sine", T=(8, -12, 0), RA=(24, 0, 48))
     t.blade(72, "R", ease="lin")
     t.blade(86, "R", grip=(-20, 360, 0))  # once round her forearm in her fist, out at her side
     t.key(86, ease="sine", T=(8, -12, 0), RA=(28, 0, 46))
-    t.key(94, ease="in", T=(6, -16, 0), RA=("grip", "R", (155, 0, 10)))
+    t.arm(90, ease="in", RA=(112, 0, 28))
+    t.key(94, ease="in", T=(6, -16, 0), RA=RAISED)
     t.blade(94, "R", ease="in")
-    t.blade(97, "R", w=0.0)
+    t.blade(96, "R", w=0.0)
+    t.arm(96, ease="in", RA=RAISED)  # raised till it's home
+    t.arm(98, ease="out", RA=(118, 0, 14))  # then off the grip, down in front
     t.key(100, "and home, for her name", ease="out", T=(10, -10, 0), crouch=0.1, RA=(16, 0, 10), H=(0, 0, -6), look=you)
     t.mark(100, "Name")
     t.key(150, T=(11, -10, 0), crouch=0.12)
-    t.tail(0, aim=0.9, curl=0.8, dir=(0.1, -0.25, 1.0), ripple=12.0, swing=6.0, wave=4.0, phase=0.0)
+    t.tail(0, aim=0.9, curl=0.8, dir=(0.1, -0.4, 1.0), ripple=12.0, swing=6.0, wave=4.0, phase=0.0)  # up and back, off her head
     t.tail(14, ease="sine", phase=1.6)
     # it settles lifted behind her left shoulder, up into your view of her (hanging as it rests, it'd be hidden behind
     # her), and clear of the right shoulder her hand draws from: cloth in a wind, rising and arcing over, its tip
@@ -700,37 +741,60 @@ def work(t):
     passes, and the scarf trails her round it, a blue ring wound on the post while she runs. It loops on two laps.
     The laps are the clip's (her torso goes round on the root), so the game keeps her root where it stands."""
     t.loop = True
-    post, radius, lap, steps, laps = (0.3, 3.0), 2.0, 84, 7, 2
+    # short quick steps, nine a lap: a planted foot sweeps an arc round the post, which bends in toward it at both ends,
+    # so a long step on so tight a circle tips the outer leg in under her (seven a lap crossed her legs)
+    post, radius, lap, steps, laps = (0.3, 3.0), 2.0, 108, 9, 2
     beat, lean, roll = lap // steps, 14.0, -8.0
     half = 180.0 / steps  # at each key the new foot is half a step ahead of its hip, the other half a step behind its own
     back = math.sin(math.radians(lean))  # the lean carries her hips back of her torso's middle
-    out = math.sin(math.radians(-roll))  # and leaning into the turn carries them out from the post
+    # and leaning into the turn carries her legs out from the post: in line with her lean, a foot three studs under her
+    # torso's middle is this far out of it
+    out = 3.0 * math.sin(math.radians(-roll))
 
     def at(phi, r=radius):
         return (post[0] + r * math.cos(math.radians(phi)), post[1] + r * math.sin(math.radians(phi)))
 
     labels = {0: "laps of the post", 3: "a slap as she passes", 5: "on round"}
-    lands = {}
+    lands = {}  # each footfall: the leg, its line's radius, and its angle round the post
     for i in range(-2, laps * steps + 2):
         phi = -90.0 - 360.0 * i / steps  # her place round the post, clockwise from in front of her root
         side = "Right Leg" if i % 2 == 0 else "Left Leg"
-        r = radius + out + (-0.5 if side == "Right Leg" else 0.5)  # the inner line or the outer, the outer's steps longer
-        lands[i] = (side, at(phi - half + math.degrees(back / r), r))
+        r = radius + out + (-0.5 if side == "Right Leg" else 0.72)  # the inner line or the outer, the outer's steps longer
+        lands[i] = (side, r, phi - half + math.degrees(back / r))
     # keyed a step past each end, so the path is a smooth circle through the loop's seam and the arms swing on curves
     for i in range(-1, laps * steps + 2):
         phi = -90.0 - 360.0 * i / steps
         x, y = at(phi)
         turn = 90.0 - 360.0 * i / steps
-        side, place = lands[i]
-        other, before = lands[i - 1]
+        side, r, a = lands[i]
+        other, r0, a0 = lands[i - 1]
+        place, before = at(a, r), at(a0, r0)
         right_step = i % 2 == 0
         slap = i % steps == 3
-        arms = dict(RA=(-34, 0, 12) if right_step else (40, 0, 8), LA=(42, 0, -8) if right_step else (-36, 0, -12))
-        if slap:  # the flat of her palm on the post's cap, a little ahead, as she goes by
-            arms["RA"] = ("reach", (*at(phi - 12.0, 0.2), 3.0), (30, 0, 60))
+        # the right arm swings a little wide: she leans into the post, so a hanging arm tips toward her right leg
+        arms = dict(RA=(-34, 0, 18) if right_step else (40, 0, 14), LA=(42, 0, -8) if right_step else (-36, 0, -12))
+        if slap:  # the flat of her palm on the post's cap, ahead, as she goes by: swung forward to it, not out sideways
+            arms["RA"] = ("reach", (*at(phi - 24.0, 0.2), 3.0), (50, 0, 40))
         t.key(i * beat, labels.get(i % steps) if 0 <= i < steps else None, feet_ease="sine",
               T=body(turn, lean=lean, roll=roll, right=x, forward=y), crouch=0.16,
               feet={side: place, other: before}, H=(4, -12, 0), **arms)
+        if slap:  # half-way poses to and from the post, so the arm swings there and back without twisting into her side
+            hit = t.solved["Right Arm"]
+            nxt = (40, 0, 14) if right_step else (-34, 0, 18)
+            t.arm(i * beat - beat // 2, RA=tuple((p + q) / 2 for p, q in zip(nxt, hit)))
+            t.arm(i * beat + beat // 2, RA=tuple((p + q) / 2 for p, q in zip(hit, nxt)))
+    # the foot stepping between key i and the next goes round its own line, keyed on every frame of the step: eased
+    # straight between its footfalls it would cut the chord, two steps of arc, about a stud in at the outer line and
+    # through her other leg
+    for i in range(-1, laps * steps + 1):
+        leg, r, a0 = lands[i - 1]
+        a1 = lands[i + 1][2]
+        empty = t.feet[leg]
+        for k in range(1, beat):
+            s = (1.0 - math.cos(math.pi * k / beat)) / 2.0  # the feet's sine ease
+            empty.location.x, empty.location.y = t.world(at(a0 + (a1 - a0) * s, r))
+            for axis in (0, 1):
+                empty.keyframe_insert("location", index=axis, frame=t.start + i * beat + k)
     t.end = laps * lap
     t.mark(3 * beat, "Pump")
     t.mark((steps + 3) * beat, "Pump")
@@ -846,6 +910,61 @@ def blocking_sheet(scene, cams, takes, out):
     print(f"wrote {path}")
 
 
+def arc_sheet(scene, rig, cams, take, rest, drawn, out):
+    """One dot a frame where the tail's tip (cyan) and each drawn blade's point (amber the right, pale the left) are
+    through the clip, over the body at its middle beat, from its first two views: the arcs and their spacing."""
+    frames = range(take.start, take.start + take.end + 1)
+    bpy.context.scene.frame_set(take.start)
+    home = r6.to_roblox(rig.root.matrix_world).to_translation()
+
+    def at(rig, joint):  # path_dots carries a dot back by the root's travel (a treadmill); the dash and the blink are seen
+        travel = r6.to_roblox(rig.root.matrix_world).to_translation() - home
+        return Matrix.Translation(travel) @ r6.to_roblox(rig.parts[joint].matrix_world)
+
+    # each point in its joint's own frame, which at rest is the world's axes at the joint's pivot
+    dots = r6.path_dots(rig, frames, [(SCARF[-1], tuple(rest["tail"]["chords"][-1]))], colour=(0.35, 0.9, 0.95),
+                        radius=0.07, name="Tip", at=at)
+    for side, colour in (("R", (1.0, 0.82, 0.25)), ("L", (0.92, 0.9, 0.82))):
+        if side in drawn:
+            name = SIDES[side][0]
+            G, J = rest["blades"][name]["G"], rest["blades"][name]["J"]
+            point = (J.inverted() @ G @ Vector((0, STEEL[-1], 0, 1))).to_3d()
+            dots += r6.path_dots(rig, frames, [(name, tuple(point))], colour=colour, radius=0.05, name=f"Point{side}", at=at)
+    beat = take.start + (take.beats[len(take.beats) // 2][0] if take.beats else 0)
+    scene.render.resolution_x, scene.render.resolution_y = 640, 560
+    path = r6.render_shots(scene, [(cams[take.name, view], beat, f"{take.name}: one dot a frame, {view}")
+                                   for view in VIEWS[take.name][2][:2]], out / f"arcs_{take.name}.png", columns=2)
+    for dot in dots:
+        bpy.data.objects.remove(dot, do_unlink=True)
+    print(f"wrote {path}")
+
+
+def bare_sheet(scene, rig, take, undress, out, tiles=20):
+    """What the content check asks of every clip: stepped through on the bare rig, the costume off, from her side and
+    the three-quarter."""
+    step = max(1, math.ceil((take.end + 1) / tiles))
+    frames = list(range(0, take.end + 1, step))
+
+    def camera(frame, azimuth, elevation, name, distance=14.0):
+        """Turned with her root, aimed at her torso where it is: Work's laps and the Reveal's drop stay in frame."""
+        scene.frame_set(frame)
+        root, torso = r6.to_roblox(rig.root.matrix_world), r6.to_roblox(rig.parts["Torso"].matrix_world)
+        look = Vector((-root[0][2], 0.0, -root[2][2])).normalized()
+        side = look.cross(Vector((0, 1, 0))).normalized()
+        a, e = math.radians(azimuth), math.radians(elevation)
+        focus = torso.to_translation() + Vector((0, 0.2, 0))
+        eye = focus + (look * math.cos(a) + side * math.sin(a)) * distance * math.cos(e) + Vector((0, distance * math.sin(e), 0))
+        return r6.fixed_camera(scene, eye, focus, 38.0, name)
+
+    undress(True)
+    shots = [(camera(take.start + f, az, el, f"bare {view} {f}"), take.start + f, f"{f}")
+             for view, (az, el) in (("side", SIDE), ("quarter", QUARTER)) for f in frames]
+    scene.render.resolution_x, scene.render.resolution_y = 190, 230
+    path = r6.render_shots(scene, shots, out / f"bare_{take.name}.png", columns=len(frames))  # each from where she is
+    undress(False)
+    print(f"wrote {path} (every {step} frames; her side, then the three-quarter)")
+
+
 def report(name, take, n, checks):
     near = lambda d: "; ".join(f"{part} {v:.2f} at {f}" for part, (v, f) in d.items())  # noqa: E731
     blades = "\n".join(f"  the {side} blade out of its sheath, nearest her body (studs): {near(n['blade_near'][side])}"
@@ -901,10 +1020,26 @@ def main():
         joints = rig.extra_joints
         if take.layer:  # the eight scarf joints alone, every body part at weight 0
             rig.extra_joints = lambda: [(on, j) for on, j in extra if j in SCARF]
-        r6.export(rig, out / f"Kirra_{name}.json", "Kirra", f"Kirra{name}", take.start, take.start + take.end,
-                  markers=take.markers, source="tools/blender/kirra_clips.py", extra={"Loop": take.loop},
-                  legs=0.0 if take.layer else 1.0, weights={p: 0.0 for p in r6rig.PARTS} if take.layer else None)
+        heard = io.StringIO()  # the export audits itself aloud: the pack's notes keep what it said
+        with contextlib.redirect_stdout(heard):
+            # the Name is the game's: Author.SaveBaked reads Anim_Kirra<Clip> and checks the clip is named the same
+            r6.export(rig, out / f"Kirra_{name}.json", "Kirra", f"Kirra{name}", take.start, take.start + take.end,
+                      markers=take.markers, source="tools/blender/kirra_clips.py", extra={"Loop": take.loop},
+                      legs=0.0 if take.layer else 1.0, weights={p: 0.0 for p in r6rig.PARTS} if take.layer else None)
         rig.extra_joints = joints
+        print(heard.getvalue(), end="")
+        if mode == "audit":
+            continue
+        drawn = [side for side in SIDES if min(v for v, _ in numbers[name]["blade_near"][side].values()) < 9.0]
+        arc_sheet(scene, rig, cams, take, rest, drawn, out)
+        if not take.layer:
+            bare_sheet(scene, rig, take, undress, out)
+        view = cams[name, VIEWS[name][2][0]]
+        strip = [take.start + round(i * take.end / 11) for i in range(12)]
+        r6.review_pack(scene, rig, out / f"pack_{name}", [(take.start + f, f"{name} {f}: {label}") for f, label in take.beats],
+                       lambda frame, view=view: view, bare=SIDE[0], strip=strip, undress=undress,
+                       notes=notes + heard.getvalue())
+        print(f"wrote {out / f'pack_{name}.png'}")
     if mode == "poses" and len(takes) > 1:
         blocking_sheet(scene, cams, list(takes.values()), out)
     if mode != "poses" and len(takes) == len(CLIPS):

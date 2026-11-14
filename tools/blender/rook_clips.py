@@ -242,8 +242,12 @@ def ground(rig, feet, takes):
         rig.last.pop(part, None)
     for take in takes:
         for f in range(take.end + 1):
+            scene.frame_set(take.start + f)  # the root as it stands then: a clip that moves it (a dash) solves on it
             poses, places = sampled[take.name, f]
-            before, after = sampled[take.name, max(f - 1, 0)][1], sampled[take.name, min(f + 1, take.end)][1]
+            if take.loop:  # its last frame is its first: a foot's speed at the seam is read across it
+                before, after = sampled[take.name, (f - 1) % take.end][1], sampled[take.name, (f + 1) % take.end][1]
+            else:
+                before, after = sampled[take.name, max(f - 1, 0)][1], sampled[take.name, min(f + 1, take.end)][1]
             planted, heights = {}, {}
             for leg in take.planted_at(f):
                 planted[leg] = W(places[leg][0], places[leg][1])

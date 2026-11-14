@@ -167,4 +167,40 @@ return {
 		Hold = 0.25,
 		Parts = { Lamplighter = { "Lamplighter_Head", "Lamplighter_Lantern" } } :: { [string]: { string } }, -- the hat, the lantern
 	},
+	-- The elite's and the keeper's HUD (TR5, the director's word of 2026-11-13: "mini boss and boss should have a different
+	-- HUD"): judged in motion at phone size before Modulo's frames (UI.BossBar; UI.TargetCard.Elite).
+	-- Keeper: "B" at the top middle, the director's pick of 2026-11-14 ("it should be at the top middle"): its title, its
+	-- name and its bar in the band's middle, the target card's place, as wide as the room between the lead's card and the
+	-- pills (Top.Most at most); "A" its bar wide at the foot, the dock stepped out for the try; "Off" the target card as
+	-- before. Its look, the director's words of 2026-11-14: richer and composed, its health purple, and light over the
+	-- fight ("it does need to looks very light too else we see nothing"): no plate behind it, a thin framed bar on a faint
+	-- glow. Elite: C, the target card with a heavier frame, a crest notch, the word Elite and a thicker bar, in EliteHealth;
+	-- false the plain card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
+	-- lands, From times its size down to its own over Seconds; the rest comes in over Fill with a shine across the bar
+	-- (Shine); the whole leaves over Leave from the fall's Gone. Drain: after a hit the pale trail holds Hold seconds, then
+	-- drains Rate of the bar a second. Look: transparencies, 0 solid. Phases: the shares of its health its segments part
+	-- at, a stand-in (the keeper has no phases yet). Sizes in authored pixels. The builder's seeds, 2026-11-13 and 14.
+	Boss = {
+		Keeper = "B",
+		Elite = true,
+		-- Bar: the bar's height, its number inside it: at least the number's line on the smallest phone (Caption at the
+		-- scale's floor, 17), and about twice the grey block's 8 (research's verdict, 2026-11-14, fix 2).
+		Foot = { Width = 400, Bar = 18, Above = 14 }, -- Above: the bar's foot over the screen's; Width clears the jump button on the smallest phone
+		Top = { Most = 400, Bar = 18, Y = 17 }, -- Y: the title's top, the band's top line; the bar's foot at 86 (the lead card's at 113)
+		Phases = { 0.5 },
+		Stamp = { From = 1.6, Seconds = 0.14, Fill = 0.25 }, -- Fill: seconds the title and the bar take to come in after it
+		Shine = { Seconds = 0.6 },
+		Leave = 0.3,
+		Drain = { Hold = 0.45, Rate = 0.5 },
+		Health = Color3.fromHex("#9150FF"), -- the keeper's purple, the fill's middle and its glow
+		Light = Color3.fromHex("#CDA6FF"), -- the fill's top edge, lit
+		Deep = Color3.fromHex("#5A27C9"), -- its foot
+		Trail = Color3.fromHex("#F3E9FF"), -- the health just lost, draining
+		Rim = Color3.fromHex("#DCCBFF"), -- the bar's rim, the rules and the diamonds
+		Title = Color3.fromHex("#D9CFEA"), -- "Keeper of ...", a lilac grey under the white name
+		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 }, -- Channel: the bar's empty part, the world through it
+		EliteHealth = Color3.fromHex("#EE4E3A"), -- the elite's bar: the Ember light's middle, flat
+		Grey = Color3.fromHex("#A7ADB8"), -- the elite's heavier frame and notch
+		Frame = { Stroke = 3, Notch = 11, Under = 6 }, -- the elite's: the frame's line, the crest notch's side, the bar's added thickness
+	},
 }

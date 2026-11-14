@@ -8,10 +8,11 @@ export type Row = {
 	Order: number, -- 1 for the first ground; a Voidkin's Zone is this number
 	LevelFrom: number,
 	LevelTo: number,
+	Keeper: string?, -- its keeper's Enemies id (docs/roster.md): its title on the keeper's HUD names this ground (UI.BossBar)
 }
 
 local rows: { Row } = {
-	{ Id = "lanternrow", Name = "Lantern Row", Order = 1, LevelFrom = 1, LevelTo = 9 },
+	{ Id = "lanternrow", Name = "Lantern Row", Order = 1, LevelFrom = 1, LevelTo = 9, Keeper = "lamplighter" },
 	{ Id = "drumcourt", Name = "Drum Court", Order = 2, LevelFrom = 10, LevelTo = 19 },
 	{ Id = "maskparade", Name = "Mask Parade", Order = 3, LevelFrom = 20, LevelTo = 29 },
 	{ Id = "kiteheights", Name = "Kite Heights", Order = 4, LevelFrom = 30, LevelTo = 39 },

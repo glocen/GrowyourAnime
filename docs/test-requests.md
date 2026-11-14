@@ -733,7 +733,50 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
   2. **Pip's away-from-camera skip:** no lever. The read is the gap opening, not the path's length on screen, and fix 1 shows it more often. Judged again on the rerun's take.
   3. **For the shared finish** (`docs/polish-later.md`): a puff at take-off and a scuff at the landing, from the kit's rows, at rung 2. That's what sells a short skip seen end-on.
 
-**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The hang's fixes are in, with (d) against the keeper after the content check's block, 2026-11-13: the framing closes. The skip back's blockout is in, with its balance check within 10%; research's verdict: works, Every to 2.5, rerun with the passives in place, 2026-11-13. The passives are being built.
+**The passives' blockout (Faber, 2026-11-13 to 14; `build/captures/tr7/passives*`).**
+- **In the game,** as data:
+  - `Definitions/Passives`: one row per lead, in three kinds. Second Wind is a Reduction: 20% less damage below 30% health. Kindle is an Extra: Fire worth 40% of `PipCombo`'s `Shot3`. Tempo is a Cooldown: Held Note's 20% shorter. The rows are live through `Tune` (`Passives.rook.Share`), and `Config.Combat.Passives.On` turns them off for a check.
+  - `Rules/Passive`, pure: `Holds`, `Reduction`, `Extra` and `Cooldown`. A logic case covers their edges and one whole hit through `Hit.Resolve` (100 in, 80 taken).
+  - `FightService`: the target's Reduction goes into `Hit.Resolve`, and the Extra joins the hit's elemental part, named on the Hit event. The Cooldown counts on the action's start and in the Ready and Cooldown attributes. A Reduction sets `PassiveOn` while it holds.
+  - The cues, in grey. Second Wind: a faint ball round Rook while `PassiveOn` holds (`Config.Effects.Passives.Shell`). Kindle: the Fire as its own number in Pip's element colour, 0.1 s behind the shot's, and a flare at his lantern on the shot (`Passives.Flare`). Tempo has none.
+- **The self-test,** "Fight: each lead's passive in play, with its cue": 19/19.
+  - Rook's shell is on at 20% health, within a stud of him, and gone at full health.
+  - Kindle comes on `Shot3` only, its Fire at least 40% of the shot's physical damage (119.1 on 297.9), with the flare seen.
+  - Tempo's cooldown is 8.00 s.
+- **The take,** phone size: `passives.mp4`, 30 s. Rook fights at 25% health against a level 13 Brawler, then Pip against a level 16. With it: `passives_sheet.png`, `passives_rook_still.png`, `passives_rook_strip.png`, `passives_pip_strip.png`, and `passives_pip_flare.png` (the flare at the lantern, and the Fire 112 beside the counting 637: 0.4 × `Shot3`'s 279).
+- **The content check: PASS** on the cues and the names.
+- **Two reads for research's pass:**
+  - The shell is very faint at phone size, as the spec asks: in the still it's a thin ring. Its `Transparency` 0.6 is live.
+  - Kindle's Fire, #FF8A3D, sits close in hue to a received hit's #E27A6A: in the take, a received 84 and the Fire 112 look alike. The received red is `docs/ui.md`'s muted red, so the element's tone is the freer one to move.
+
+**The balance batch, the skip's rerun and the passives in one (Faber, 2026-11-14; `build/captures/tr7/passives_balance_runs.txt`, and Lyric's rerun in `passives_balance_lyric.txt`).**
+- **The runs,** as before: the lead at level 1 against Pack 1 at level 1, Respawn 1 s, 11 s between runs, the modes interleaved, Every 2.5.
+
+  | Lead | Mode | Runs | Damage taken (sd) | Time to clear (sd) | Falls | Skips a run | Under 30% health, a run |
+  |---|---|---|---|---|---|---|---|
+  | Rook | everything on | 10 | 614 (34) | 22.3 s (0.6) | 0 | | 3.6 s |
+  | Rook | no passive | 10 | 665 (54) | 23.3 s (1.0) | 0 | | 6.2 s |
+  | Pip | everything on | 20 | 407 (49) | 19.7 s (1.5) | 0 | 2.5 | 0.1 s |
+  | Pip | no skip | 20 | 448 (29) | 21.2 s (2.5) | 0 | 0 | 0 |
+  | Pip | no passive | 10 | 423 (43) | 21.1 s (1.4) | 0 | 2.4 | 0 |
+  | Lyric | everything on | 10 | 565 (33) | 26.9 s (1.5) | 0 | 3.1 | 0 |
+  | Lyric | no skip | 10 | 666 (111) | 29.3 s (4.5) | 0 | 0 | 1.3 s |
+  | Lyric | no passive | 10 | 560 (40) | 26.9 s (1.6) | 0 | 3.0 | 0 |
+
+- **Lyric's runs were taken again** after a bug the first batch showed: Rook's and Lyric's pushes could carry a Shade through Lantern Row's wall, and one stuck outside walked home forever. A push now ends at the world, and a Shade stuck walking home is set down at its place (c118647, with a logic case). In the rerun no Shade stood past 21.0 studs from the lane's middle, inside the walls at 22.
+- **The skip, with and without:** Pip takes 9.3% less and clears 7.0% faster. Lyric takes 15.2% less and clears 8.3% faster. Most of hers is the bad runs it saves: three of her ten without it ran 32 to 37 s, two of them with her under 30% health, and the medians are 1.3% apart. Both are inside 10%, so Every stays 2.5.
+- **The passives, with and without:** Rook takes 7.6% less, clears 4.0% faster, and spends about half as long under 30% health. Pip clears 6.5% faster and takes 3.9% less. Lyric's Tempo changes nothing measurable: +0.1% to clear, +0.9% taken, Held Note 3.0 times a run against 2.9.
+  - Why, from the Definitions (DESIGN, not measured): a cast waits for the combo in hand (1.75 s) to end. So at 8 s her casts come every 9.5 s, against 11.25 at 10 s, and a fourth would land at 28.5 s, just past a 27 s clear. Tempo pays only in longer fights, a keeper's.
+- **The skip's rerun take, at phone size** (fix 2; level 1 against Pack 1, Every 2.5, the passives on), in `build/captures/tr7/`:
+  - `skip_rerun_pip.mp4`: 25 s, with skips at about 8.0, 14.7, 17.3 and 22.4 s. Strips: `skip_rerun_pip_8s_strip.png` and `_15s_strip.png`.
+  - `skip_rerun_lyric.mp4`: 29 s, with skips at about 6.7, 11.8, 17.9 and 27.4 s. Strip: `skip_rerun_lyric_7s_strip.png`.
+  - The times come from the server, within about half a second of the video's.
+- **The three side by side,** everything on: Pip 19.7 s, Rook 22.3 s (+13%), Lyric 26.9 s (+36%). The rule holds for none of the pairs with Pip.
+  - No passive's number closes it. Second Wind acts only under 30% health, where a level-1 Rook spends 3.6 s a run. Tempo adds no cast inside a clear (above). Kindle is Pip's, the fastest.
+  - The gap was there before the passives: without them, Pip 21.1 s and Lyric 26.9 s. It's in the combos, which the rule keeps fixed.
+  - **For research, the options:** (a) a passive of another kind for Lyric, one that pays across a whole pack (a tier 2 change to the seeds); (b) the check judged on another measure for a ranged lead, since hers is the only one that keeps its distance; (c) the combos' numbers opened for this one check, Lyric's and Rook's; (d) accepted for the block, settled at TR7's timing (part 4), which touches the combos' beats anyway. Mine is (d) with (c) inside it: the timing piece already moves the combos' beats, so the gap closes there with one batch, not two.
+
+**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The hang's fixes are in, with (d) against the keeper after the content check's block, 2026-11-13: the framing closes. The skip back's blockout is in, with its balance check within 10%; research's verdict: works, Every to 2.5, rerun with the passives in place, 2026-11-13. The passives are built, and the batch with the skip's rerun is in (Lyric's rows taken again after the wall fix), 2026-11-14. The skip's rerun take is in. Waiting on research's verdict on the passives, the gap (options (a) to (d)) and Pip's end-on skip.
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 
@@ -759,6 +802,47 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
 
 **Order in the queue:** after "Rook, Pip and Lyric installed". **Time, forecast:** the grey variants about 1.5 hours, the art about 2.
 
+**The grey blockout (Faber, 2026-11-13 to 14; takes and stills in `build/captures/tr5/`).**
+- **The director's pick, 2026-11-14, while the takes ran:** "it should be at the top middle". It covers where the keeper's HUD stands, nothing else.
+  - B was then laid inside the band: the title, the name and the bar in the target card's place, as wide as the room between the lead's card and the pills. That is 216 authored px on the smallest phone and about 360 at the authored size, with its foot at 87, above the lead card's foot at 113.
+  - B as first built put its bar under the band at y 118. On a phone that crossed the middle of the screen, through the keeper's body (`tr5_b_8s.png`), so it's gone.
+  - `Config.Hud.Boss.Keeper` is "B". A, at the foot, is still one Tune away.
+- **The director's words on its look, 2026-11-14,** on the grey top middle:
+  - "let make the Hud of the boss bar much better this is so empty and let make the hp color a purpleish all of course well compose";
+  - then "it does need to looks very light too else we see nothing".
+
+  They cover the keeper's boss bar: its look, its health's colour, and staying light over the fight. The elite's card keeps its red.
+  - **Rebuilt as a title card with no plate behind it:**
+    - the title, small and lilac grey, between two thin rules, each ending in a diamond;
+    - the name large, with its type's gem before it and its level in the cards' gold after it, cut to fit;
+    - one framed bar on a faint purple glow. The fill is the keeper's purple, lit from above (#CDA6FF to #9150FF to #5A27C9), with diamond caps at the ends and one at the phase. Its empty part is see-through.
+  - **New motion:** a pale trail behind the fill holds 0.45 s after a hit, then drains half the bar a second. A shine crosses the bar once as it comes in.
+  - Every word has a dark edge. The numbers are in `Config.Hud.Boss`.
+- **In the game:**
+  - `UI.BossBar`: the title card in both layouts.
+  - `UI.TargetCard.Elite`: C.
+  - `HudController`: the target card stands aside for a keeper, the dock steps out in A, and it measures the band's room.
+  - `Text.Resize`, and the `Keeper` field in `Definitions.Grounds` for the title ("Keeper of Lantern Row").
+  - The numbers: `Config.Hud.Boss`.
+- **The stamp and the leave:**
+  - The name stamps on at the Challenge's Stamp beat (0.03 s off in the self-test), from 1.6 times its size over 0.14 s. The title and the bar follow over 0.25 s.
+  - It leaves from the fall's Gone: 1.77 s after the fall, against 1.68.
+- **A fix after the first take:** the title was dim grey with no edge and vanished on Lantern Row's pale floor (`tr5_a_5s.png`). The title, the name, the number and the word Elite now have a dark edge.
+- **Checks:**
+  - Self-test "HUD:" 153/153 at 59 fps on the grey block.
+  - With the purple bar and research's fixes, 158/158 at 59 fps. TR5's case adds four checks: the purple fill; the trail held behind the fill after a hit, never under it; the number on the bar; the word Elite in the tab after the level.
+  - TR5's case passes both layouts through the UI lint on the smallest phone. Type check: 0 new.
+- **Takes, at phone size** (Studio's device test, iPhone 16 Pro):
+  - `tr5_fixed.mp4`, the purple bar with the fixes, 20 s of a try: the fade, the stamp, the shine and the fight. Stills: `tr5_fixed_10s.png`; `tr5_fixed_zoom.png`, 12 frames of the bar over 3 s; and `tr5_fixed_number.png`, the number moved clear of the cap. The keeper's hat and lantern read under the card and through its empty part;
+  - `tr5_c_fixed.png`, an elite's card with the word in its tab;
+  - `tr5_purple.mp4`, the purple bar before the fixes, kept for the record;
+  - `tr5_top.mp4`, the grey top middle, a whole try: the fade, the stamp, the fight, the fall and its leave;
+  - `tr5_a.mp4`, the foot;
+  - `tr5_b.mp4`, B as first built, kept for the record;
+  - `tr5_c.png`, an elite's card.
+- **The content check:** PASS on the three grey stills and the names. Its one note was the grey word Elite against the sky, which is now edged. PASS on the purple bar's stills and code, 2026-11-14: the trail is near-white, nothing reads as a liquid, and the gem is ours (`tools/blender/ui_kit.py`).
+- **Seen, not TR5's:** in one try of the four, the Lamplighter fell to Rook (level 11) in about 11 s. In another it stood at 88% after 8 s. Not explained yet; it's a note for the keeper's balance.
+
 **Research's verdict on the grey blockout, 2026-11-14** (`tr5_top.mp4` at one-second steps, its 7 s still, and `tr5_c.png`, at phone size).
 - **Felt:** when the Lamplighter steps up, his name stamps into the band where the target card stood and the bar runs between Rook's card and the pills: the fight gets its headline without covering the ring, but the bar is thin and the number hangs below the band, over the keeper's hat.
 - **Tier:** works, as a block. The director's pick, the top middle, holds.
@@ -770,7 +854,18 @@ Research's request, 2026-11-13, on the director's word of the same day: "btw min
 - **Modulo's frames, next:** the keeper's bar frame and title plate, and the elite's heavier card frame with its crest notch, on the kit in Graphite, to the fixed layout.
 - **Carried:** the Lamplighter falling to Rook at level 11 in about 11 s, one try of four, goes with TR7's timing, where research reads the keeper's numbers.
 
-**Status:** built in grey, 2026-11-14 (Faber's record follows with his commit). Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start.
+**The fixes (Faber, 2026-11-14),** built on the purple bar:
+1. **Nothing below the band's foot:** the number sits inside the bar's right end, 12 px clear of its cap. In B the card runs from 17 to 86 authored px, against the lead card's foot at 113.
+2. **The bar 18 px,** against the grey block's 8. That's the least that holds the number's line on the smallest phone (Caption at the scale's floor, 17). Its empty part went from 0.3 to 0.45 see-through, for the director's "very light".
+3. **C:** the word Elite in the card's tab after the level, in the card's ivory. The tab stretches to fit it. Its grey and its edge are gone.
+
+**Modulo's frames, the scope (2026-11-14).** The keeper's HUD stays as Faber rebuilt it on the director's words: no plate, nothing solid over the fight; the purple fill, the glow, the text and the motion are his. Research's word of the same day: no fill, the title's frame is the two rules with diamond tips and a small crest at the middle top, as one ornament.
+- **In the block:** line art in the kit's metal, white to tint, lit from above, with a dark hairline baked in so it reads on the pale floor.
+  - The keeper: the bar's rim for a bar 20 high (`BossBarRim`, sliced); the two end caps and the phase mark as faceted lozenges (`BossBarCap`, `BossBarMark`); the two rules, each with a diamond tip and tapering toward the title (`BossTitleRuleLeft`, `BossTitleRuleRight`, sliced across); and the crest over the title's middle (`BossTitleCrest`).
+  - The elite: the blade 6 taller, with its light in one piece 23 high (`CardTargetEliteHousing`, `CardTargetEliteHousingRim`, `CardLightHealthElite`). Its heavier frame runs round the blade and a small tab at its right end, with the crest notch on the tab (`CardTargetEliteFrame`). The tab holds the word Elite in the card's ink (`CardTargetEliteTab`, `CardTargetEliteTabRim`).
+- **Waits:** the keeper's phase mark stands in until the keeper has phases.
+
+**Status:** built in grey, 2026-11-14, with B at the top middle by the director's pick. Research's verdict given, 2026-11-14: works, three fixes (Faber), and Modulo's frames start. The keeper's bar was rebuilt on the director's words of the same day (richer, purple, light), with the three fixes in. Waiting on research's read of the fixes. Modulo has the director's words for the frames: nothing solid behind the name.
 
 ## TR6. The UI effects kit (Faber)
 

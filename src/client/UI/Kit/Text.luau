@@ -63,6 +63,12 @@ function Text.new(props: Props): TextLabel
 	return label
 end
 
+-- A kit label's authored size changed: a piece laid two ways (UI.BossBar's variants).
+function Text.Resize(label: TextLabel, authored: number)
+	label:SetAttribute(AUTHORED, authored)
+	apply(label, Layers.Scale())
+end
+
 -- A label's authored size, for the lint: nil for a label the kit didn't make.
 function Text.Authored(label: TextLabel): number?
 	local authored = label:GetAttribute(AUTHORED)

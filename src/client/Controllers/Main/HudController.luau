@@ -9,6 +9,8 @@
 -- and flashes when it fires. Bottom centre, the dock: Voidkin and Base, selected while their screen is open, and the
 -- chip over it while a shard waits. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
+-- A keeper's try and an elite take their own HUD (TR5's grey variants, Config.Hud.Boss): the keeper's title card
+-- (UI.BossBar) at the foot or the top in the target card's stead, and an elite's heavier frame on the target card.
 
 local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
@@ -19,6 +21,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local EffectsConfig = require(Shared.Config.Effects)
 local HudConfig = require(Shared.Config.Hud)
+local Combat = require(Shared.Config.Combat)
 local UIKit = require(Shared.Config.UIKit)
 local Profile = require(Shared.Data.Profile)
 local BaseConfig = require(Shared.Config.Base)
@@ -39,6 +42,7 @@ local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
 local LeadCard = require(UI.LeadCard)
 local TargetCard = require(UI.TargetCard)
+local BossBar = require(UI.BossBar)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -94,6 +98,8 @@ local chip: Frame
 local chipText: TextLabel
 local ring: Ring
 local dock: { [string]: TextButton } = {}
+local dockHolder: Frame
+local keeperBar: BossBar.Bar
 local lastView: Profile.View? = nil
 local glint: Frame -- experience's pop: a light over the thread's
 local lastStored: number? = nil -- the battery at the last read, for its jump
@@ -431,6 +437,24 @@ end
 -- The chip over the dock while the bag holds a shard: the hook home stays in view until it's in the Breaker, and names
 -- the step that's next: in the field "break it at home", at home "into the Breaker" (research's verdict on TR2 and its
 -- read of the fixes, 2026-11-12).
+-- This try's keeper: the one nearest the avatar, in its own copy of the ring (KeeperService), while the avatar is in a try.
+local function keeperNear(): Model?
+	if player:GetAttribute("Try") == nil then
+		return nil
+	end
+	local at = avatarAt()
+	local best: Model?, nearest = nil, math.huge
+	for _, model in fighters() do
+		if model:IsA("Model") and model:GetAttribute("Kind") == "Keeper" then
+			local distance = if at then (model:GetPivot().Position - at).Magnitude else 0
+			if distance < nearest then
+				best, nearest = model, distance
+			end
+		end
+	end
+	return if nearest <= Combat.Keeper.Notice then best else nil
+end
+
 local function showChip(view: Profile.View)
 	local kinds, total, first = 0, 0, nil :: string?
 	for shard, count in view.Bag.Shards do
@@ -655,6 +679,16 @@ local function seeThrough(dt: number)
 end
 
 -- Every frame: the cards from the fighters' attributes, the ring, the dock's selection, the electricity as it stands now.
+-- The band's middle, in authored pixels: twice the nearer of the lead's card and the pills from the screen's middle, a
+-- gap clear of each (the keeper's title card in B stands there, TR5).
+local function bandRoom(): number
+	local root = lead.Frame.Parent :: GuiObject
+	local middle = root.AbsolutePosition.X + root.AbsoluteSize.X / 2
+	local left = lead.Frame.AbsolutePosition.X + lead.Frame.AbsoluteSize.X
+	local right = math.min((credits.Parent :: GuiObject).AbsolutePosition.X, (electricity.Parent :: GuiObject).AbsolutePosition.X)
+	return 2 * (math.min(middle - left, right - middle) / math.max(Layers.Scale(), 0.01) - Theme.Size.Gap)
+end
+
 local function step(dt: number)
 	local model = myLead()
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
@@ -688,8 +722,17 @@ local function step(dt: number)
 		local id = model:GetAttribute("Target")
 		foe = if type(id) == "string" and id ~= "" then fighterById(id) else nil
 	end
-	target.Frame.Visible = foe ~= nil
+	-- A keeper's own bar stands in the target card's stead (TR5, A and B); an elite's card wears its heavier frame (C).
+	local boss = HudConfig.Boss
+	local variant = tostring(boss.Keeper)
+	local trying = player:GetAttribute("Try") ~= nil
+	BossBar.Step(keeperBar, if trying then keeperNear() else nil, variant, if variant == "B" then bandRoom() else nil)
+	local foeKind = if foe then foe:GetAttribute("Kind") else nil
+	target.Frame.Visible = foe ~= nil and not (foeKind == "Keeper" and (variant == "A" or variant == "B"))
+	banded[5] = if variant == "B" then keeperBar.Frame else nil
 	if foe then
+		local health, most = healthOf(foe)
+		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true, if most > 0 then health / most else 0)
 		showHealth(target.Health, target.HealthText, foe)
 		TargetCard.Name(target, tostring(foe:GetAttribute("Title") or ""), `Lv {tostring(foe:GetAttribute("Level") or "")}`)
 		local theirs = kindOf(foe)
@@ -729,6 +772,12 @@ local function step(dt: number)
 		end
 		showChip(view) -- home or the field, as the avatar moves
 	end
+	-- A, the keeper at the foot: the dock and its chip step out for the try, since their buttons don't serve a fight.
+	local away = variant == "A" and trying
+	dockHolder.Visible = not away
+	if away then
+		chip.Visible = false
+	end
 end
 
 -- Opens the Base screen: BaseController's, set by it at Start.
@@ -740,6 +789,7 @@ function HudController.Start()
 	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP - UIKit.TargetCard.Offset.Y))
 	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)
 	targetArrow.ZIndex = 6 -- over the tab
+	TargetCard.Elite(target, false, 0) -- C's frame, built hidden
 	local creditsValue = pill("Credits", 1, 120, "Coin")
 	credits = creditsValue
 	local value, extra, thread = pill("Electricity", 2, ELECTRICITY, "Bolt")
@@ -779,6 +829,8 @@ function HudController.Start()
 	holder.Size = UDim2.fromOffset(DOCK.X * 2 + Theme.Size.Gap, DOCK.Y)
 	Panel.List(holder, Enum.FillDirection.Horizontal)
 	holder.Parent = Layers.Get("Hud")
+	dockHolder = holder
+	keeperBar = BossBar.new(Layers.Get("Hud"))
 	for order, name in { "Voidkin", "Base" } do
 		dock[name] = Button.new({
 			Name = name,
@@ -831,6 +883,16 @@ function HudController.SeeThrough(): { [string]: number }
 	return table.clone(opacities)
 end
 
+-- For tests: the keeper's bar (UI.BossBar.Shown): 0 hidden to 1 whole, and what's showing.
+function HudController.Keeper(): (number, string)
+	return BossBar.Shown(keeperBar)
+end
+
+-- For tests: the keeper's bar's trail and fill, shares of the bar (UI.BossBar.Trail).
+function HudController.KeeperTrail(): (number, number)
+	return BossBar.Trail(keeperBar)
+end
+
 -- For tests: the HUD's parts by name.
 function HudController.Parts(): { [string]: GuiObject }
 	return {
@@ -846,6 +908,13 @@ function HudController.Parts(): { [string]: GuiObject }
 		TargetHealth = target.Health,
 		TargetArrow = targetArrow,
 		TargetGem = target.Gem,
+		TargetElite = target.Frame:FindFirstChild("Elite") :: GuiObject,
+		Keeper = keeperBar.Frame,
+		KeeperHead = keeperBar.Head,
+		KeeperName = keeperBar.Name,
+		KeeperTitle = keeperBar.Title,
+		KeeperFill = keeperBar.Fill,
+		Dock = dockHolder,
 		Credits = credits,
 		Electricity = electricity,
 		XpGlint = glint,

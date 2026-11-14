@@ -129,6 +129,8 @@ local LANDED = 0.3 -- seconds after a keeper's fall by which a lead's step under
 local CAMERA_BACK = 12.5 -- studs behind the avatar the player's camera stands at Roblox's default zoom (the takes' camera)
 local KEEPER_TRADES = 6 -- seconds after that by which each has hit the other
 local REPLICATE = 1 -- seconds a server-set attribute may take to reach this client
+local BOSS_STAMP = 0.1 -- seconds a keeper's name may stamp on off its Challenge's Stamp: a frame and the clocks' sync (TR5)
+local BOSS_GONE = 0.25 -- seconds its bar may leave off its fall's Gone: the State's replication and a frame
 local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: inside its notice and the lead's leash
 local CARD_SLACK = 0.1 -- seconds past reveal.json's Card the reveal's card may come: its frame, and the spawn that builds it
 local FPS_FLOOR = 50 -- frames a second the Mythical's reveal holds: the self-test's own warning line
@@ -4336,6 +4338,176 @@ return {
 			t.Check("and hides once it's gone", waitFor(t, 2, function(): boolean
 				return not parts.Target.Visible
 			end))
+		end,
+	},
+	{
+		Name = "HUD: a keeper's try and an elite take their own HUD: the keeper's title card at the foot or the top, an elite's heavier frame (TR5)",
+		Stay = true, -- it moves the avatar itself (a try); the next case's reset takes it back to the pad
+		Run = function(t: any)
+			local boss = HudConfig.Boss
+			local keeper = Combat.Keeper
+			local moved = keeper.Fade.Out + keeper.Fade.Hold / 2 + MOVE_SLACK
+			local wasKeeper, wasElite = boss.Keeper, boss.Elite
+			local parts = HudController.Parts()
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if lead == nil or type(level) ~= "number" then
+				return
+			end
+			-- C: an elite's card wears its heavier frame, the word Elite on it; switched off, the plain card. A Shade's, none.
+			t.Server("Tune", "Hud.Boss.Elite", true)
+			local elite = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
+			t.Check("the elite spawns", type(elite) == "table" and elite.Ok == true)
+			if type(elite) == "table" and elite.Ok == true then
+				t.Check("C: the elite's card wears its frame", waitFor(t, SHADE_TIMEOUT, function(): boolean
+					return lead:GetAttribute("Target") == elite.Id and parts.Target.Visible and parts.TargetElite.Visible
+				end))
+				local word = parts.TargetElite:FindFirstChild("Word")
+				t.Check("with the word Elite", word ~= nil and word:IsA("TextLabel") and word.Text == "Elite")
+				-- In the card's own tab after the level, never on the sky (research's verdict, 2026-11-14, fix 3).
+				local tab = parts.Target:FindFirstChild("Tab") :: GuiObject?
+				local levelLabel = parts.Target:FindFirstChild("Level") :: GuiObject?
+				if word and word:IsA("TextLabel") and tab and levelLabel then
+					local wordLeft, wordRight = word.AbsolutePosition.X, word.AbsolutePosition.X + word.TextBounds.X
+					t.Check("in the tab, after the level", wordLeft >= levelLabel.AbsolutePosition.X + 1 and wordRight <= tab.AbsolutePosition.X + tab.AbsoluteSize.X
+						and word.AbsolutePosition.Y >= tab.AbsolutePosition.Y - 1, string.format("the word %d to %d, the tab's right %d", wordLeft, wordRight, tab.AbsolutePosition.X + tab.AbsoluteSize.X))
+				end
+				t.Server("Tune", "Hud.Boss.Elite", false)
+				t.Check("switched off, the plain card", waitFor(t, REPLICATE, function(): boolean
+					return parts.Target.Visible and not parts.TargetElite.Visible
+				end))
+				t.Server("Tune", "Hud.Boss.Elite", wasElite)
+				t.Server("FightSpawn") -- clears it
+			end
+			local plain = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
+			if type(plain) == "table" and plain.Ok == true then
+				local met = waitFor(t, SHADE_TIMEOUT, function(): boolean
+					return lead:GetAttribute("Target") == plain.Id and parts.Target.Visible
+				end)
+				t.Check("a Shade's card wears none", met and not parts.TargetElite.Visible)
+				t.Server("FightSpawn")
+			end
+			-- A: the keeper's title card at the foot, its name stamped on as the Challenge's Stamp lands; the dock steps out and
+			-- the target card stands aside for it.
+			t.Server("Tune", "Hud.Boss.Keeper", "A")
+			local def = nil
+			for _, stop in WorldConfig.Row.Stops do
+				def = if stop.Kind == "Keeper" then stop.Def else def
+			end
+			local stampedAt: number? = nil
+			local watch = RunService.Heartbeat:Connect(function()
+				local _, phase = HudController.Keeper()
+				if phase == "Stamp" and stampedAt == nil then
+					stampedAt = workspace:GetServerTimeNow()
+				end
+			end)
+			local function restore()
+				watch:Disconnect()
+				t.Server("Tune", "Hud.Boss.Keeper", wasKeeper)
+			end
+			local start = t.Server("KeeperTry")
+			t.Check("a try starts", start.Ok == true, tostring(start.Error))
+			if start.Ok ~= true then
+				restore()
+				return
+			end
+			t.Wait(moved)
+			local inside = t.Server("Keeper")
+			local them: Model? = nil
+			waitFor(t, REPLICATE, function(): boolean
+				them = fighterModel(inside.Keeper)
+				return them ~= nil
+			end)
+			local challenge = Actions.ById[Enemies.ById[def :: string].Enter :: string]
+			local at = if them then them:GetAttribute("ActionAt") else nil
+			local holding = them ~= nil and them:GetAttribute("Action") == challenge.Id and type(at) == "number"
+			t.Check("the keeper holds its Challenge as the avatar arrives", holding)
+			t.Check("A: its name stamps on", waitFor(t, challenge.Length, function(): boolean
+				return stampedAt ~= nil
+			end))
+			if holding and stampedAt then
+				t.Near("as the Challenge's Stamp lands (seconds off)", (stampedAt :: number) - ((at :: number) + challenge.Beats.Stamp), 0, BOSS_STAMP)
+			end
+			t.Check("the title card comes in whole", waitFor(t, boss.Stamp.Seconds + boss.Stamp.Fill + 0.3, function(): boolean
+				local shown, phase = HudController.Keeper()
+				return shown == 1 and phase == "Whole"
+			end))
+			local name = (parts.KeeperName :: TextLabel).Text
+			local row = Enemies.ById[def :: string]
+			t.Check("its name, capitalised", name == string.upper(string.sub(row.Name, 1, 1)) .. string.sub(row.Name, 2), name)
+			local title = (parts.KeeperTitle :: TextLabel).Text
+			t.Check("its title names its ground", title == "Keeper of Lantern Row", title)
+			local screen = parts.Keeper.Parent :: GuiObject
+			local foot = parts.Keeper.AbsolutePosition.Y + parts.Keeper.AbsoluteSize.Y
+			t.Check("A: at the foot of the screen", foot > screen.AbsolutePosition.Y + screen.AbsoluteSize.Y * 0.85, string.format("its foot at %d of %d", foot, screen.AbsoluteSize.Y))
+			t.Check("the dock steps out for the try", not parts.Dock.Visible)
+			t.Check("the target card stands aside for it", waitFor(t, KEEPER_MEETS, function(): boolean
+				return lead:GetAttribute("Target") == inside.Keeper
+			end) and not parts.Target.Visible)
+			-- Each variant at the smallest phone's size, by the UI lint: on screen, apart, clear of the thumbs.
+			local function lintPhone(where: string)
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				t.Wait(0.1) -- laid out again
+				lintClean(t, where)
+				Layers.Box(nil)
+				Layers.Force(nil)
+			end
+			lintPhone("A, the keeper at the foot, on the smallest phone")
+			-- B, the top middle (the director's pick, 2026-11-14): the same keeper's title card in the band, between the
+			-- lead's card and the pills, never lower than the lead card's foot; the dock back.
+			t.Server("Tune", "Hud.Boss.Keeper", "B")
+			local band = parts.Lead.AbsolutePosition.Y + parts.Lead.AbsoluteSize.Y -- the lead card's foot
+			local head = parts.KeeperHead
+			local function inBand(): boolean
+				local bar = parts.Keeper
+				local leadRight = parts.Lead.AbsolutePosition.X + parts.Lead.AbsoluteSize.X
+				local pills = math.min((parts.Credits.Parent :: GuiObject).AbsolutePosition.X, (parts.Electricity.Parent :: GuiObject).AbsolutePosition.X)
+				return bar.AbsolutePosition.Y + bar.AbsoluteSize.Y <= band + 1
+					and head.AbsolutePosition.Y >= parts.Lead.AbsolutePosition.Y - 1
+					and math.min(bar.AbsolutePosition.X, head.AbsolutePosition.X) >= leadRight
+					and math.max(bar.AbsolutePosition.X + bar.AbsoluteSize.X, head.AbsolutePosition.X + head.AbsoluteSize.X) <= pills
+			end
+			t.Check("B: the top middle, in the band between the lead's card and the pills", waitFor(t, REPLICATE, inBand),
+				string.format("its foot at %d, the band's foot at %d", parts.Keeper.AbsolutePosition.Y + parts.Keeper.AbsoluteSize.Y, band))
+			t.Check("the dock stays in B", parts.Dock.Visible)
+			-- Its number on the bar, nothing of it below (research's verdict, 2026-11-14, fix 1).
+			local number = parts.Keeper:FindFirstChild("Number") :: GuiObject
+			local channel = parts.Keeper:FindFirstChild("Channel") :: GuiObject
+			local numberMiddle = number.AbsolutePosition.Y + number.AbsoluteSize.Y / 2
+			t.Check("its number on the bar", numberMiddle >= channel.AbsolutePosition.Y and numberMiddle <= channel.AbsolutePosition.Y + channel.AbsoluteSize.Y
+				and number.AbsolutePosition.X + number.AbsoluteSize.X <= channel.AbsolutePosition.X + channel.AbsoluteSize.X)
+			-- Its health purple (the director's word, 2026-11-14), and a pale trail behind the fill that holds after a hit.
+			t.Check("its health in the keeper's purple", (parts.KeeperFill:FindFirstChildOfClass("UIGradient") :: UIGradient).Color.Keypoints[2].Value == boss.Health)
+			local under = false
+			t.Check("a hit leaves the trail behind the fill", waitFor(t, KEEPER_MEETS + 3, function(): boolean
+				local trail, share = HudController.KeeperTrail()
+				under = under or trail < share - 1e-4
+				return trail > share + 1e-3
+			end))
+			t.Check("and never under it", not under)
+			t.Check("and the target card stands aside", not parts.Target.Visible)
+			lintPhone("B, the keeper at the top, on the smallest phone")
+			-- The keeper falls: the bar leaves from its fall's Gone.
+			t.Check("the keeper falls", t.Server("KeeperEnd", "Win").Ok == true)
+			local fellClock = os.clock()
+			local fall = EffectsConfig.Falls[row.Rig :: string]
+			local leftAt: number? = nil
+			t.Check("the bar leaves", waitFor(t, fall.Gone / 60 + REPLICATE, function(): boolean
+				local _, phase = HudController.Keeper()
+				leftAt = if phase == "Leave" then os.clock() else nil
+				return leftAt ~= nil
+			end))
+			if leftAt then
+				t.Near("from the fall's Gone (seconds after the fall)", (leftAt :: number) - fellClock, fall.Gone / 60, BOSS_GONE)
+			end
+			t.Check("and is gone", waitFor(t, boss.Leave + 0.3, function(): boolean
+				return not parts.Keeper.Visible
+			end))
+			restore()
+			t.Wait(math.max(0, keeper.WinPause + moved - (os.clock() - fellClock)))
+			t.Check("the try is over", Players.LocalPlayer:GetAttribute("Try") == nil)
 		end,
 	},
 	{

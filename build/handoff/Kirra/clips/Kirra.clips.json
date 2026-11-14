@@ -1,0 +1,121 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Idle": {
+      "File": "Kirra_Idle.json",
+      "Frames": 241,
+      "Seconds": 4.0,
+      "Loop": true,
+      "Markers": []
+    },
+    "Combo": {
+      "File": "Kirra_Combo.json",
+      "Frames": 101,
+      "Seconds": 1.667,
+      "Loop": false,
+      "Markers": [
+        [
+          0,
+          "Dash"
+        ],
+        [
+          12,
+          "Hit1"
+        ],
+        [
+          26,
+          "Hit2"
+        ],
+        [
+          56,
+          "Hit3"
+        ],
+        [
+          64,
+          "Sheathe"
+        ]
+      ]
+    },
+    "ScarfStep": {
+      "File": "Kirra_ScarfStep.json",
+      "Frames": 97,
+      "Seconds": 1.6,
+      "Loop": false,
+      "Markers": [
+        [
+          13,
+          "Blink"
+        ],
+        [
+          16,
+          "Land"
+        ],
+        [
+          18,
+          "Cut"
+        ]
+      ]
+    },
+    "Reveal": {
+      "File": "Kirra_Reveal.json",
+      "Frames": 151,
+      "Seconds": 2.5,
+      "Loop": false,
+      "Markers": [
+        [
+          14,
+          "Land"
+        ],
+        [
+          100,
+          "Name"
+        ]
+      ]
+    },
+    "Work": {
+      "File": "Kirra_Work.json",
+      "Frames": 217,
+      "Seconds": 3.6,
+      "Loop": true,
+      "Markers": [
+        [
+          36,
+          "Pump"
+        ],
+        [
+          144,
+          "Pump"
+        ]
+      ]
+    },
+    "TailHit": {
+      "File": "Kirra_TailHit.json",
+      "Frames": 19,
+      "Seconds": 0.3,
+      "Loop": false,
+      "Markers": [],
+      "Over": "the open set's Hit"
+    },
+    "TailDown": {
+      "File": "Kirra_TailDown.json",
+      "Frames": 67,
+      "Seconds": 1.1,
+      "Loop": false,
+      "Markers": [
+        [
+          34,
+          "Land"
+        ]
+      ],
+      "Over": "the open set's Down"
+    },
+    "TailUp": {
+      "File": "Kirra_TailUp.json",
+      "Frames": 55,
+      "Seconds": 0.9,
+      "Loop": false,
+      "Markers": [],
+      "Over": "the open set's Up"
+    }
+  }
+}

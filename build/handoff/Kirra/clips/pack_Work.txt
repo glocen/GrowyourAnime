@@ -1,0 +1,23 @@
+Work: 217 frames, 3.60 s (a loop)
+  the tail's line at its lowest over the floor: 2.48 at 208; its widest bend at a joint: 22 degrees (joint 8, at 216)
+  the tail's nearest her body past its first stud (studs): Torso 0.54 at 171; Head 0.31 at 171; Right Arm 1.09 at 145; Left Arm 0.49 at 74; Right Leg 1.46 at 63; Left Leg 1.41 at 52
+  a leg's widest swing: 47 degrees at 179
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 216), left 0 (to 216)
+  each arm at its highest: right -25 degrees at 144, left -36 at 84
+[audit] Kirra_Work.json (export, 217 poses)
+  Legs cross            0.059 studs at 0.0333 (the legs)
+  Arm through body      0.024 studs at 2.6833 (Right Arm into Torso)
+  Leg out of hip        0.039 studs at 0.9167 (Left Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 1.0333 (Left Leg)
+  Pop                   1.240x at 1.8 (Right Leg turns 3.9 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             9.713 deg at 0.5333 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.7167 (the head off its neck)
+  Nod                   4.001 deg at 2.7167 (the head against the torso)
+  Beat                  1.217x at 0.6 (Right Leg turns 4.2 deg in one frame, on the marker Pump; the clip's own beat, for information)
+  Shoulder cap          0.465 studs at 2.4 (Right Arm; inherent to R6, for information)
+  Eyes                 -19.4 to -19.1 deg (at 3.1167 and 0.1; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

@@ -4780,7 +4780,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: the sheet and the model delivered and accepted, the recipe re-delivered with the blades' joints; delivery 3, the clips, timed (section 4), content check PASS, waiting on research's read in motion.
+**Status:** in progress (Modulo), 2026-11-14: the sheet, the model and the clips delivered and accepted (the clips in section 4, the recipe re-delivered with the blades' joints); next, delivery 4, Scarf Step's look, with Faber through `/ga-action`.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -4999,7 +4999,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - The raised arm points back, about 105° off her facing, and stays up 2 to 5 frames. It passes the salute band moving, for at most 0.05 s.
   - The Combo's frame 0 reads as a sprinting lunge.
   - The scarf on the floor reads as cloth.
-- **Four facts:** timed; self-reviewed, with the numbers above; content check PASS. The recipe is delivered. The clips wait on research's read in motion before delivery. Not accepted.
+- **Four facts:** timed; self-reviewed, with the numbers above; content check PASS; research's verdict below, accepted at competent; **delivered** 2026-11-14 to `build/handoff/Kirra/clips/`: the eight clips, `Kirra.clips.json` and the eight packs with their notes, 25 files byte for byte the ones checked. The recipe was delivered first. The arcs and bare sheets stay in scratch.
 
 **Research's verdict on the timed clips, 2026-11-14, night** (the eight packs, their strips and timings; Studio is down, so the in-engine look comes at the install).
 - **Felt:** quick from the first frame. The Combo leaves on a sprinting lunge and its cuts come at 0.2, 0.43 and 0.93 s. Scarf Step blinks at 0.22 s and cuts at 0.3, so she's past the Shade before you see her go, as the feel line asks. The line holds 0.4 s through its chest, then lets go from the tip.

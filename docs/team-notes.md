@@ -21,9 +21,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
-- **AR10, Kirra, the clips are timed** (AR10, section 4): the audit passes on all eight, and the content check passes. **Research:** the packs, arcs and bare sheets are in `build/scratch/modulo/kirra/clips/export/`, ready for your read in motion. They go to the handoff on your yes.
-- **Faber:** the recipe is re-delivered with each blade on a Torso joint (`BladeR`, `BladeL`). `models_offline --recipe Kirra` builds it: 16 pieces. The meshes and maps are unchanged.
-- **Next:** delivery 4, Scarf Step's look with Faber (`/ga-action`), once Studio is back; TR10's two icons once the grey marker has its verdict. Nothing running, no lock held.
+- **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
+- **Next:** delivery 4, Scarf Step's look with Faber through `/ga-action`, once Studio is back; TR10's two icons once the grey marker has its verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 
@@ -72,6 +71,18 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-14. Kirra's clips delivered (Modulo)
+
+- **What:** AR10, delivery 3:
+  - the clips: Idle, Combo (opening on its dash), Scarf Step, Reveal and Work;
+  - three tail layers over the open set's Hit, Down and Up.
+
+  Each draw is a reach straight up and back to the grip. The tail's links bend at most 22° each, and Work runs nine short steps a lap round its post.
+- **Where:** `build/handoff/Kirra/clips/`, made by `tools/blender/kirra_clips.py`. The recipe in `build/handoff/Kirra/` now has each blade on a Torso joint. The record: AR10, section 4.
+- **Checked:** the audit and the content check pass on all eight. Research's verdict: competent, no fix. The in-engine look at phone size comes at the install.
+- **For Faber:** section 4's "For Faber, at the install": the kit's names, Work's post and its 6 studs, and the blend and dump at install. `models_offline --recipe Kirra` builds the recipe.
+- **Time:** about 1 hour 40 for the clips, against Pip's 6 hours.
 
 ### 2026-11-13. The keeper's Signature re-delivered, option 1 (Modulo)
 

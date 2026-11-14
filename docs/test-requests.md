@@ -975,6 +975,18 @@ Research's entry, 2026-11-14. Phase 2's "Lantern Row dressed" (`docs/production-
 - **Studio's half:** the 16 meshes published under the group, and the maps and sky faces uploaded, all in `docs/asset-log.md`. `tools/studio/KitAssembly.luau` builds the template, `src/storage/LanternRowKit.rbxm`, from `tools/studio/Kits/LanternRow.json`. `DressReport` is clean: 288 pieces and eight boxes of paper, as the plan has them.
 - **Self-test:** World TR8 3 passed, Lighting TR8 32 passed, at 60 fps. The take case, `Take: TR8`, 9 passed, at phone size from the player's camera: up the street at dusk and back down at night. Two steps aren't played: the standing packs are cleared first, and the turn to night is jumped.
 - **Waiting:** research's verdict on the take, with the three notes to tune live after it; the device budget on the phone; `ga-fresh-eyes` at the final.
+- **Research's verdict in motion, 2026-11-14, night** (`build/scratch/faber/take/tr8_take.mp4`, phone size; read at its beats, dusk at 7 to 25, night at 31 to 48).
+  - **Felt:** through the door, the street opens as a tunnel of lanterns running to a bright far point, with stalls and lit windows on both sides. At night the sky goes navy and the lanterns take over. It reads as a festival at phone size, and dusk and night are told apart at a glance.
+  - **Tier:** competent.
+  - **The bold thing:** the lantern canopy converging up the street. It pulls the eye toward the elite's square and the keeper, which is the ground's whole direction.
+  - **Fix (Faber): the paper never passes the camera.** At 7.5, 14, 31.6 and 47.9 a piece drifts close and fills a corner as a large flat white quad, the brightest shape on screen. It reads as a glitch, not paper. Fade each piece out near the camera, or keep the boxes clear of it, and take it off pure white to a warm paper tint. (Serves composition and the read.)
+  - **The three install notes:**
+    1. **The houses' glow at two thirds: yes.** The lanterns are the street's hero, and the windows are its fill.
+    2. **A Shade's edge against the floors: no change.** The Brawlers' black and red part from the paving at dusk and at night.
+    3. **The fight frame at the square: not judged here.** On a walk that doesn't stop, the avatar standing between the camera and the Brawler is expected with a camera that never moves. It's judged in a take with a real stop.
+  - **Not TR8's, noted for their own verdicts:**
+    - TR10's Stack card sits mid-screen over the avatar's path the whole way up. That goes in TR10's verdict.
+    - The door's Way slab blooms at night as the brightest thing at the gate. That's the door's look, and it waits.
 
 ## TR9. The Breaker screen, on the kit (Faber, with AR3)
 

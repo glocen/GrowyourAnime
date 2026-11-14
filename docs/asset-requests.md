@@ -5147,20 +5147,21 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 
 **Time it:** each delivery records what it took, beside Kirra's.
 
-**Status:** requested, 2026-11-14, night. The sheet's plan is written (section 1). The sheet is drawn when memory allows headless Blender. Until then, Scarf Step's blockout with Faber goes first, now that Studio is back.
+**Status:** requested, 2026-11-14, night. The sheet is drawn and passed the content check (section 1). It waits for research's verdict. Scarf Step's blockout with Faber goes first, when Faber gives the turn.
 
-### 1. The sheet: the plan, before Blender (Modulo, 2026-11-14)
+### 1. The sheet (Modulo, 2026-11-14)
 
-This was written offline while memory keeps headless Blender shut (0.88 GB free, with Studio holding 3.4 GB). The sheet tests it, and nothing here is settled before the sheet's measures and research's verdict.
+**Where:** `build/handoff/Watt/watt_sheet.png`. `tools/blender/watt_sheet.py` rebuilds it with `-- <out> small`. Its `check` mode builds every pose without rendering, and `draft` renders the takes at half the pixels a stud. The plan was written offline while memory kept headless Blender shut. The draft found two misses, both fixed as tier 1 before the sheet: the wrench's size and its jaw (below). Nothing here is settled before research's verdict.
 
 - **The idea:** a man and his tool, wired in one line. The current runs one way through him: from the generator on his back, out of its two coils, into the wrench, and down into the street. Ground Wire is that path made visible, so the props explain the signature before it plays.
 - **The wrench, the hero prop:**
-  - An open-end wrench whose head is wider than he is: 2.6 studs across (R6's torso is 2) and 1.6 tall, with the jaw's open gap 0.9 wide at the top.
+  - An open-end wrench whose head is wider than his chest: 3.6 studs across (R6's torso is 2) and 2.4 tall, rounded. The jaw's gap is 1.5 wide and cuts 1.45 below the shorter jaw. It leans 15° off the handle, as a spanner's does, so one jaw stands longer.
+  - Why these: in the draft, at 2.6 by 1.6, it read as a big wrench, never a shield, and his outline stayed 0.71 to 0.74 of Rook's. With a square, narrow gap, the head had two even lobes and read as a double axe three-quarter on. The leaning gap reads as a spanner in black and at 64 px.
   - Its handle ends in a short copper spike, a ground rod, so "plants the wrench" (his row) is literal. He drives it in spike first, and the head stands before him as the shield.
-  - 4.75 studs end to end. Steel, with copper at the spike and one rubber band at the grip.
+  - 5.39 studs end to end. Steel, with copper at the spike and one rubber band at the grip.
 - **The pack:**
   - A squat generator housing on a frame. Steel, so it's the back's one light mass from the player's camera: Kirra's fix 1, applied before it's asked.
-  - Two coils on short posts rise from its top corners, about 0.7 studs above his shoulders: copper windings, each with a cap. They're the two places an effect starts, and they make his top outline: a head between two posts, where Rook's is one collar wall.
+  - Two coils on short posts rise from its top corners: copper windings a stud tall, each with a cap, the caps over his crown at 5.68 studs. They're the two places an effect starts, and they make his top outline: a head between two posts, where Rook's is one collar wall. The draft's coils, 0.56 tall, barely changed the outline.
   - A small round gauge on the housing, on the camera's side.
 - **No cable, tier 1:** a cord from the pack to the wrench would dangle through every clip and need joints of its own. Instead the coils arc to the wrench in Ground Wire's effect (delivery 4), so the path still reads.
 - **The visor:**
@@ -5179,23 +5180,29 @@ This was written offline while memory keeps headless Blender shut (0.88 GB free,
   - **Storm `#FF6FD8`** (`Config.UIKit`'s Elements), only on what's lit: the coil caps, the visor's lens, the gauge's needle, and the jaw's edge in Ground Wire. It's magenta, 109° of hue from Kirra's Sky `#47A6F5`, and the sheet's chip row sets the two side by side.
   - **Neutrals:** Graphite `#2E3035` (rubber and shirt), Copper `#B5713C` (windings and spike), Cream `#E8DCC4` (headband and stitching), Skin `#6A4330`.
 - **How he stands,** two takes for the 64 px measure:
-  - **A, stood:** the wrench planted on its spike at his right, its head at his chest, his right hand on its grip, his left hand by the knot.
+  - **A, stood:** the wrench planted on its spike ahead of his right side, broadside, its head at his chest, his right hand on its grip, his left hand by the knot.
   - **B, leant:** the wrench's head on the street ahead of his right foot, its handle leaning back into his right hand, the spike past his wrist.
-  - I'll recommend the take that parts more from Rook at 64 px from the player's camera. Both are on the sheet, and research picks.
+  - I recommend A. From the player's camera, it parts more from Rook (0.66 against B's 0.70), and its head stands as the shield the feel line names. From that camera, B's head lies flat, and the wrench reads as a long stick. Both are on the sheet, and research picks.
 - **Ground Wire's key pose,** the hold after the slam:
   - The wrench stands spike-down in the street before him, its head at his chest.
   - He's hunched behind it, one foot braced back, both hands on the head's edges, chin down. The lit lens shows through the jaw's gap: a slot of Storm in a steel wall.
-  - R6's legs don't bend, and spreading them lifts the body: its soles' edges go lowest. So the head comes down by a lean of 22° over the wrench with the chin down. The script's geometry check puts the lens at 4.26 studs up, inside the gap's 3.59 to 4.44, with the rod 0.3 into the street.
+  - R6's legs don't bend, and spreading them lifts the body: its soles' edges go lowest. So the head comes down by a lean of 22° over the wrench with the chin down. The script's geometry check puts the lens at 4.26 studs up, inside the gap's 3.49 to 4.89. Across, the wrench is set so the leaning gap's middle passes through the lens, and the rod is 0.3 into the street.
   - Both coil caps are lit.
   - On the sheet, the ring is a grey disc round the spike at its key radius, with one grey Shade mid-step inside it.
   - Three views: from the enemy's side (the wall and the slot); side on; and from the player's camera (the lit pack, with the head's edges standing out past his shoulders on both sides).
 - **The measures,** printed and on the sheet:
-  - At 64 px over noon, Lantern Row's dusk and night, and in black: beside Rook, front and from the player's camera. The outlines' overlap is the sheets' own measure (1 is the same outline), for takes A and B.
-  - Sizes to the crown and to the coil tops, the wrench's head against his torso, and the triangles.
-- **The script:** `tools/blender/watt_sheet.py`, written and run in its `check` mode, which builds every pose without rendering (213 MB peak). It uses Kirra's render and measures, with Rook drawn beside him by Rook's own builder. It's a Workbench blockout, with no GPU turn. The sheet's renders need about 1 GB more than the guard's floor, so they wait for memory.
-- **The blockout's size:** 6,580 triangles standing, against Rook's 5,092.
-- **Content check** before the sheet goes to research.
-- **Time:** the plan and the script, about 55 minutes.
+  - At 64 px over noon, Lantern Row's dusk and night, and in black, beside Rook, front and from the player's camera.
+  - The outlines' overlap is the sheets' own measure (1 is the same outline). Take A, stood: 0.66 from the player's camera, 0.65 front. Take B, leant: 0.70 and 0.59.
+  - For scale, by the same measure: Pip against Rook is 0.71 and 0.65, and Lyric 0.63 and 0.57. Two broad R6 bodies share most of their pixels whatever they carry, so this measure can't part them as it parted Kirra from Pip (0.35). The number misses what parts him at 64 px: the two coil posts over his head and the wrench's crescent at his side. Both are clear in the black row.
+  - Storm is 109° of hue from Kirra's Sky, and the chip row sets them side by side.
+  - Sizes: 5 studs to the crown, 5.68 to the visor's top at rest, 8.49 across with the wrench beside him.
+- **The script:** it uses Kirra's render and measures. Rook, Pip and Lyric are drawn by their own builders. It's a Workbench blockout, with no GPU turn. `check` peaks at 213 MB, the draft at about 0.8 GB, and the full sheet at 1.5 GB.
+- **The blockout's size:** 6,764 triangles standing, against Rook's 5,092.
+- **Content check:** PASS, 2026-11-14, for the sheet only. Two notes for the clips:
+  - In Ground Wire's hold, the jaw frames his face from the Shades' side. In the clip, the gap stays clear of his head and neck from every heading.
+  - The workshop comedy stays at his competence, never at his expense. Watch for this in Reveal and Work.
+  - The mesh, the textures and each clip get their own check before any upload.
+- **Time:** about 1 hour 40 minutes in all. The plan and the script took about 55 minutes. The draft, the two fixes and the sheet took about 45 more (22:04 to 22:50 local), with the renders waiting on memory in between. On Opus 5.5. Kirra's sheet took about 45 minutes in its session, plus a plan written in the session before.
 
 ## Later, by ground
 

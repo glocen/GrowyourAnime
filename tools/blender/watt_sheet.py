@@ -26,6 +26,7 @@ from mathutils import Matrix, Quaternion, Vector
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
 import kirra_sheet as ks  # noqa: E402
+import lyric_sheet as lys  # noqa: E402
 import pip_sheet as ps  # noqa: E402
 import rook_sheet as rs  # noqa: E402
 
@@ -45,9 +46,14 @@ PACK_Y = -1.04  # the generator housing's middle, behind him
 COIL_X = 0.9  # the coils' posts, either side: clear of his head's outline from behind
 VISOR_UP = 100.0  # degrees the visor turns up about its pivots, at rest
 VISOR_PIVOT = Vector((0, 0.1, 4.8))
-HEAD_W, HEAD_H, HEAD_Z = 2.6, 1.6, 3.95  # the wrench's head: across, tall, its middle up the handle from the rod's tip
-JAW_W, JAW_DEPTH = 0.9, 0.85  # the jaw's open gap at the head's top
-GRIP_AT = 2.55  # the rubber grip's middle, up the handle from the tip: where a hand closes, stood
+HEAD_W, HEAD_H, HEAD_Z = 3.6, 2.4, 4.2  # the wrench's head: across (wider than his chest, a tower shield), tall, its
+#                                          middle up the handle from the rod's tip. The draft's 2.6 by 1.6 read as a big
+#                                          wrench, never a shield, and left his outline 0.71 to 0.74 of Rook's.
+JAW_W, JAW_DEPTH = 1.5, 1.45  # the jaw's open gap, and how deep it cuts below the shorter jaw's tip
+JAW_TILT = 15.0  # degrees the gap leans off the handle's line, as a spanner's does: one jaw stands longer. Square and
+#                 narrow, the gap left two even lobes, and three-quarter on the head read as a double axe
+HEAD_N = 2.6  # the head's roundness: 2 an ellipse; boxier corners read as blades
+GRIP_AT = 2.45  # the rubber grip's middle, up the handle from the tip: where a hand closes, stood
 PLANTED = 0.3  # how deep the rod stands in the street, planted
 WIRE_LEAN = 22.0  # Ground Wire's lean over the wrench, degrees: R6's legs don't bend, so the head comes down this way
 LOW_GRIP = 1.0  # where his hand holds it, leant
@@ -94,41 +100,68 @@ def turned(objs, about, axis, degrees):
 
 # --- the wrench -----------------------------------------------------------------------------------------------
 
-def head_outline(steps=40, round_steps=12, n=3.0):
-    """The wrench head's outline, (across, up the handle): a superellipse HEAD_W by HEAD_H with the jaw's gap cut
-    from its top, straight-walled and round at the bottom. Returns the points and the gap's bottom and top."""
-    hw, hh, r = HEAD_W / 2, HEAD_H / 2, JAW_W / 2
-    t0 = math.acos((r / hw) ** (n / 2))
-    span = math.pi + 2 * t0
-    pts = []
-    for i in range(steps + 1):
-        t = t0 - span * i / steps
+def head_outline():
+    """The wrench head's outline, (across, up the handle), and the gap's bottom and its mouth at the shorter jaw, up
+    the handle along the gap's middle line."""
+    pts, bottom, mouth, _ = head()
+    return pts, bottom, mouth
+
+
+def jaw_walls():
+    """Each of the gap's two walls, as (its middle point, (across, up), just inside the gap; its length)."""
+    return head()[3]
+
+
+def head(steps=48, round_steps=12):
+    """A superellipse HEAD_W by HEAD_H with the jaw's gap cut from its top, straight-walled and round at the bottom,
+    leaning JAW_TILT off the handle's line: the outline, the gap's bottom and mouth, and its walls."""
+    hw, hh, r, n = HEAD_W / 2, HEAD_H / 2, JAW_W / 2, HEAD_N
+    tilt = math.radians(JAW_TILT)
+    o = Vector((0, HEAD_Z))
+    a = Vector((math.sin(tilt), math.cos(tilt)))  # the gap's middle line, out through the top
+    b = Vector((a.y, -a.x))  # across the gap
+
+    def rim(t):
         c, s = math.cos(t), math.sin(t)
-        pts.append((hw * math.copysign(abs(c) ** (2 / n), c), HEAD_Z + hh * math.copysign(abs(s) ** (2 / n), s)))
-    top = pts[0][1]
-    bottom = top - JAW_DEPTH
-    middle = bottom + r
-    pts.append((-r, middle))
-    for k in range(1, round_steps):
-        a = math.pi + math.pi * k / round_steps
-        pts.append((r * math.cos(a), middle + r * math.sin(a)))
-    pts.append((r, middle))
-    return pts, bottom, top
+        return Vector((hw * math.copysign(abs(c) ** (2 / n), c), HEAD_Z + hh * math.copysign(abs(s) ** (2 / n), s)))
+
+    def crossing(v):  # where the head's upper rim meets the gap's wall at `v` across; the rim runs +b to -b
+        lo, hi = 0.0, math.pi
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if (rim(mid) - o).dot(b) > v else (lo, mid)
+        return (lo + hi) / 2
+
+    t_r, t_l = crossing(r), crossing(-r)
+    span = t_r - (t_l - 2 * math.pi)
+    pts = [rim(t_r - span * i / steps) for i in range(steps + 1)]
+    mouth = min((rim(t) - o).dot(a) for t in (t_r, t_l))
+    middle = mouth - JAW_DEPTH + r
+    for k in range(round_steps + 1):
+        angle = math.pi + math.pi * k / round_steps
+        pts.append(o + a * (middle + r * math.sin(angle)) + b * (r * math.cos(angle)))
+    walls = [(o + a * ((middle + top) / 2) + b * (e * (r - 0.01)), top - middle)
+             for e, top in ((1, (rim(t_r) - o).dot(a)), (-1, (rim(t_l) - o).dot(a)))]
+    return [tuple(p) for p in pts], HEAD_Z + (middle - r) * a.y, HEAD_Z + mouth * a.y, walls
+
+
+def gap_across(up):
+    """Where the gap's middle line runs across the head (the wrench's own x) at `up` along the handle."""
+    return -(up - HEAD_Z) * math.tan(math.radians(JAW_TILT))  # the head is drawn across Y and turned 90: across is -x
 
 
 def wrench(m, lit=False):
     """The wrench in its own frame: the rod's tip at the origin, the handle up +Z, the head's width along X and its
     broad face toward +Y. Steel, the grip rubber, the rod copper. Lit, the jaw's inner walls carry Storm."""
-    outline, _, top = head_outline()
+    outline = head_outline()[0]
     pieces = [bl.place(bl.cylinder("Rod", 0.02, 0.55, 12, m["Copper"], radius_top=0.13), location=(0, 0, 0.275)),
               bl.place(bl.cylinder("Ferrule", 0.17, 0.16, 16, m["SteelDeep"]), location=(0, 0, 0.63)),
-              slab("Handle", (0, 0, 1.85), (0.42, 0.24, 2.3), m["Steel"]),
-              slab("Grip", (0, 0, GRIP_AT), (0.5, 0.32, 0.62), m["GraphiteDeep"]),
-              bl.place(bl.profile("Neck", [(-0.21, 2.92), (0.21, 2.92), (0.7, 3.42), (-0.7, 3.42)], 0.3, m["Steel"]), rotation=(0, 0, 90)),
-              bl.place(bl.profile("WrenchHead", outline, 0.32, m["Steel"]), rotation=(0, 0, 90))]
-    if lit:
-        middle = top - JAW_DEPTH + JAW_W / 2
-        pieces += [slab("JawLit", (e * (JAW_W / 2 - 0.01), 0, (middle + top) / 2), (0.03, 0.34, top - middle), m["Storm"]) for e in (-1, 1)]
+              slab("Handle", (0, 0, 1.85), (0.48, 0.28, 2.3), m["Steel"]),
+              slab("Grip", (0, 0, GRIP_AT), (0.56, 0.36, 0.6), m["GraphiteDeep"]),
+              bl.place(bl.profile("Neck", [(-0.25, 2.8), (0.25, 2.8), (0.95, 3.25), (-0.95, 3.25)], 0.34, m["Steel"]), rotation=(0, 0, 90)),
+              bl.place(bl.profile("WrenchHead", outline, 0.36, m["Steel"]), rotation=(0, 0, 90))]
+    if lit:  # each wall's line, inside the gap; the drawing's across is the wrench's -x, so the lean turns about Y by -tilt
+        pieces += [slab("JawLit", (-p.x, 0, p.y), (0.03, 0.4, length), m["Storm"], rot=(0, -JAW_TILT, 0)) for p, length in jaw_walls()]
     for o in pieces:
         o["wrench"] = True
     return pieces
@@ -221,10 +254,10 @@ def build(scene, visor_up=True, lit=False):
         x = e * COIL_X
         on("root",
            bl.place(bl.cylinder("Post", 0.08, 0.3, 12, m["GraphiteDeep"]), location=(x, PACK_Y, 4.2)),
-           bl.place(bl.cylinder("Coil", 0.24, 0.56, 20, m["Copper"]), location=(x, PACK_Y, 4.62)),
-           *[bl.place(bl.cylinder("Winding", 0.255, 0.05, 20, m["CopperDeep"]), location=(x, PACK_Y, z)) for z in (4.46, 4.6, 4.74)],
-           bl.place(bl.cylinder("CoilCollar", 0.2, 0.06, 16, m["SteelDeep"]), location=(x, PACK_Y, 4.92)),
-           bl.place(bl.sphere("Cap", 0.15, 16, 8, m["Storm"]), location=(x, PACK_Y, 5.06)))
+           bl.place(bl.cylinder("Coil", 0.26, 1.0, 20, m["Copper"]), location=(x, PACK_Y, 4.85)),
+           *[bl.place(bl.cylinder("Winding", 0.275, 0.05, 20, m["CopperDeep"]), location=(x, PACK_Y, z)) for z in (4.5, 4.7, 4.9, 5.1)],
+           bl.place(bl.cylinder("CoilCollar", 0.21, 0.06, 16, m["SteelDeep"]), location=(x, PACK_Y, 5.38)),
+           bl.place(bl.sphere("Cap", 0.16, 16, 8, m["Storm"]), location=(x, PACK_Y, 5.52)))
 
     # the arms: the shirt's short sleeves, bare upper arms, rubber gloves to mid-forearm with a flared cuff
     for part, e in (("rs", 1), ("ls", -1)):
@@ -294,23 +327,23 @@ def pose_square(joints):
     rs.aim(joints["rs"], Quaternion(), (0.3, 0.0, -1.0))
     rs.aim(joints["ls"], Quaternion(), (-0.3, 0.0, -1.0))
     rs.stand_on_floor(joints)
-    set_wrench(wrench(joints["m"]), Matrix.Translation((3.7, 0, -0.35)))
+    set_wrench(wrench(joints["m"]), Matrix.Translation((4.3, 0, -0.35)))
 
 
 def pose_stood(joints):
-    """Take A, how he stands: the wrench planted on its rod at his right, his hand on its grip, the head at his chest;
-    the left hand by the knot; the chin up a touch, pleased with the job before it starts."""
+    """Take A, how he stands: the wrench planted on its rod ahead of his right side, broadside, his hand on its grip,
+    the head at his chest; the left hand by the knot; the chin up a touch, pleased with the job before it starts."""
     body = ks.turn(-10)
     joints["root"].rotation_quaternion = body
-    rs.aim(joints["rs"], body, (0.32, 0.12, -1.0), stage=False)
+    rs.aim(joints["rs"], body, (0.36, 0.42, -1.0), stage=False)
     rs.aim(joints["ls"], body, (-0.12, 0.16, -1.0), stage=False)
     joints["neck"].rotation_quaternion = body.inverted() @ ks.turn(-4, 3)
     rs.aim(joints["rh"], body, (0.14, -0.06, -1.0))
     rs.aim(joints["lh"], body, (-0.16, 0.1, -1.0), twist=8)
     rs.stand_on_floor(joints)
     hand = point_on(joints, "rs", (1.5, 0, 2.1))
-    tip = Vector((hand.x + 0.08, hand.y + 0.02, -PLANTED))
-    set_wrench(wrench(joints["m"]), Matrix.Translation(tip) @ Matrix.Rotation(math.radians(15), 4, "Z"))
+    tip = Vector((hand.x + 0.1, hand.y + 0.1, -PLANTED))
+    set_wrench(wrench(joints["m"]), Matrix.Translation(tip) @ Matrix.Rotation(math.radians(-20), 4, "Z"))
     joints["wrench"] = ("stood", tip)
 
 
@@ -362,7 +395,8 @@ def pose_wire(joints):
     rs.stand_on_floor(joints)
     lens = point_on(joints, "neck", (0, 0.775, 4.5))
     ends = [point_on(joints, part, (e * 1.5, 0, 1.82)) for part, e in (("rs", 1), ("ls", -1))]
-    tip = Vector((0, max(p.y for p in ends) + 0.18, min(lens.z - slot_middle(), -PLANTED)))
+    down = min(lens.z - slot_middle(), -PLANTED)
+    tip = Vector((lens.x - gap_across(lens.z - down), max(p.y for p in ends) + 0.18, down))  # the gap leans: its middle on the lens
     set_wrench(wrench(joints["m"], lit=True), Matrix.Translation(tip))
     m = joints["m"]
     ring = bl.place(bl.torus("Ring", RING, 0.18, 96, 6, m["Ghost"]), location=(0, tip.y, 0.06), scale=(1, 1, 0.35))
@@ -453,8 +487,10 @@ def check():
         if pose == "wire":
             _, bottom, top = head_outline()
             tip, lens = joints["wrench"][1], joints["wrench"][2]
+            across = tip.x + gap_across(lens.z - tip.z)
             print(f"  the lens at {lens.z:.2f} high, the jaw's gap from {tip.z + bottom:.2f} to {tip.z + top:.2f}; "
-                  f"the rod {-tip.z:.2f} into the street; the lens {tip.y - 0.16 - lens.y:.2f} behind the head's back face")
+                  f"the rod {-tip.z:.2f} into the street; the lens {tip.y - 0.18 - lens.y:.2f} behind the head's back face; "
+                  f"across, the lens at {lens.x:.2f} and the gap's middle at {across:.2f}, {JAW_W / 2:.2f} each side")
         print(f"  tris {sum(len(f.vertices) - 2 for o in meshes for f in o.data.polygons)}")
     print(f"Storm {hue(PALETTE['Storm']):.0f} deg of hue, Kirra's Sky {hue(SKY):.0f}: {abs(hue(PALETTE['Storm']) - hue(SKY)):.0f} apart")
 
@@ -480,9 +516,23 @@ def measures(s):
             measured[take, view] = ks.overlap(watt, rook)
             print(f"at 64 px, {take} {view}: Watt {watt.shape[1]}x{watt.shape[0]} px, cover {watt.mean():.2f}; "
                   f"Rook {rook.shape[1]}x{rook.shape[0]} px, cover {rook.mean():.2f}; overlap {measured[take, view]:.2f}")
+    measured.update(baseline(s))
     apart = abs(hue(PALETTE["Storm"]) - hue(SKY))
     print(f"Storm and Kirra's Sky: {apart:.0f} degrees of hue apart")
     return measured, apart
+
+
+def baseline(s):
+    """Pip and Lyric, leads already drawn, against Rook by the same measure: how far two R6 leads part at 64 px, so
+    Watt's number has a scale. Two broad R6 bodies share most of their pixels whatever they carry."""
+    f = 64 / (5 * 100)  # their takes draw 1000 px over 10 studs: 100 px a stud, whatever this run's RUN_PX
+    out = {}
+    for name, mod in (("Pip", ps), ("Lyric", lys)):
+        p = mod.takes({"idle": {view: (*angle, mod.MID) for view, angle in (("game", GAME), ("front", FRONT))}})
+        for view in ("game", "front"):
+            out[name, view] = ks.overlap(rs.shrink(rs.trim(p["idle", view]), f)[..., 3], ks.silhouette(s["rook", view]))
+        print(f"at 64 px, {name} against Rook: game {out[name, 'game']:.2f}, front {out[name, 'front']:.2f}")
+    return out
 
 
 def draft():
@@ -531,13 +581,13 @@ def sheet(small):
     ks.fit_row(page, text, [(s["square", "close front"], "up close, front"), (s["square", "close back"], "and back"),
                             (s["leant", "front"], "B, leant"), (s["leant", "game"], "B, the player's camera")],
                30, 1300, 860, 400, soft, gap=36)
-    _, bottom, top = head_outline()
-    notes = [f"The wrench: its head {HEAD_W} studs across, wider than he is,",
-             f"{top:.2f} end to end. The handle ends in a copper ground rod:",
-             "he plants it, and the head stands up as his shield.",
-             "The generator: a steel housing, the back's light mass.",
-             "Two copper coils on posts over his shoulders, capped",
-             "in Storm: the places an effect starts.",
+    length = max(p[1] for p in head_outline()[0])  # the rod's tip to the longer jaw's
+    notes = [f"The wrench: its head {HEAD_W} studs across, wider than his chest,",
+             f"{length:.2f} end to end, the jaw leaning {JAW_TILT:.0f} degrees, a spanner's.",
+             "A copper ground rod ends the handle: he plants it, and",
+             "the head stands up as his shield. The generator: a steel",
+             "housing, the back's light mass. Two copper coils on posts",
+             "over his shoulders, capped in Storm: where an effect starts.",
              "No cable: the coils arc to the wrench in Ground Wire.",
              "A welding visor on a cream band, up at rest. In a fight",
              "it comes down, its lens lit Storm. One hinge.",
@@ -548,7 +598,9 @@ def sheet(small):
     text += [(1330, 470 + len(notes) * 30 + 16, 17, f"Against Rook at 64 px: A {measured['stood', 'game']:.2f} from the camera, "
                                                     f"{measured['stood', 'front']:.2f} front;", ink),
              (1330, 470 + len(notes) * 30 + 44, 17, f"B {measured['leant', 'game']:.2f} and {measured['leant', 'front']:.2f} "
-                                                    "(1 is the same outline).", ink)]
+                                                    "(1 is the same outline).", ink),
+             (1330, 470 + len(notes) * 30 + 72, 17, f"For scale: Pip {measured['Pip', 'game']:.2f} and {measured['Pip', 'front']:.2f}, "
+                                                    f"Lyric {measured['Lyric', 'game']:.2f} and {measured['Lyric', 'front']:.2f}.", soft)]
     rs.fill(page, 30, 862, 1860, 2, rs.rgb("#BDB8AE"))
 
     # row B: Ground Wire's key pose
@@ -574,7 +626,7 @@ def sheet(small):
     for i, (code, label) in enumerate(((PALETTE["Storm"], "Storm"), (SKY, "Kirra's Sky"))):
         rs.fill(page, x + 320 + i * 60, y + 172, 56, 56, rs.rgb(code))
     text += [(x + 320, y + 234, 12, f"Storm, Kirra's Sky: {apart:.0f} deg apart", soft),
-             (x + 320, y + 262, 16, "Reads, in order:", ink), (x + 320, y + 286, 16, "1 the wrench, wider than him", soft),
+             (x + 320, y + 262, 16, "Reads, in order:", ink), (x + 320, y + 286, 16, "1 the wrench, a shield at his side", soft),
              (x + 320, y + 308, 16, "2 two coils over his shoulders", soft), (x + 320, y + 330, 16, "3 orange under a steel pack", soft)]
 
     x0, y0 = 620, 1410
@@ -609,7 +661,7 @@ def sheet(small):
 
 
 if __name__ == "__main__":
-    OUT = rs.OUT = ks.OUT = bl.out_dir()
+    OUT = rs.OUT = ks.OUT = ps.OUT = lys.OUT = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     if "check" in args:
         check()

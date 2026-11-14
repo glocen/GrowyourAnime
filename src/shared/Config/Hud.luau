@@ -265,14 +265,16 @@ return {
 		Icon = 40,
 		Width = 176,
 	},
-	-- TR9's Breaker screen in grey (UI/BreakerScreen; research's entry, 2026-11-14), three layouts for the blockout's
-	-- verdict, tuned live ("Hud.Breaker.Layout"): "Machine" (the chambers side by side over a strip of what's ready,
-	-- waiting and in the bag, the chosen shard's odds beside them), "List" (one list of every shard beside its odds) or
-	-- "Sheet" (the machine across the screen, a shard's odds a sheet over it on a tap). Cell: a chamber's authored height,
-	-- room under its time for an infusion's level on two lines ("Infused, / a little" in a narrow chamber).
+	-- TR9's Breaker screen in grey (UI/BreakerScreen), Machine by the director's pick (2026-11-14, night): the chambers
+	-- side by side over a strip of what's ready, waiting and in the bag, the chosen shard's odds beside them. Cell: a
+	-- chamber's authored height, room under its time for an infusion's level on two lines ("Infused, / a little" in a
+	-- narrow chamber). Flash: a chamber whose shard finishes flashes gold "Ready" this long, seconds ("about 1.5 s",
+	-- research's fix (b)), held at full for Hold of them, then fading; Pop, the scale it lands from. Glow: a ready chip's
+	-- gold fill breathing between Low and High (its alpha) every Period seconds, there and back (fix (a)).
 	Breaker = {
-		Layout = "Machine",
 		Cell = 124,
+		Flash = { Seconds = 1.5, Hold = 0.35, Pop = 1.08 },
+		Glow = { Low = 0.18, High = 0.4, Period = 0.9 },
 	},
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen; research's entry, 2026-11-14, night): one Voidkin at a time, its
 	-- own model live on a small stage, three layouts for the blockout's verdict, tuned live ("Hud.Voidkin.Layout"):

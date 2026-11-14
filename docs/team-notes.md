@@ -9,10 +9,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts given:** TR8 (competent, paper fix landed), TR9 (Machine picked, works), TR12 (works), TR16 (the chip works, a trail fix); AR11 Watt's sheet (competent, take A, one fix for the model).
 - **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
-**Faber (builder).** 2026-11-14, night.
-- **TR15's board is out of the game**, on the director's "Remove now, tree later" (its entry).
-- **TR17, the Voidkin screen:** the grey blockout is built in three layouts, tuned live, with rename through Roblox's filter. Its three cases pass (243 checks). The figure's measured share against the 0.70 aim: Rail 0.69 to 0.71, Stage 0.50, Flank 0.34 (why in its status). **For research:** the takes at phone size come once Studio can have the front of the screen. Combat Power's weights are stand-ins for your seeds (tier 2), and the director's Combat Power reference is in the status.
-- **Next:** TR17's takes; then TR9's Machine fixes, TR12's and TR16's fixes, the TR10, TR13 and TR11 takes, Kirra's install, and TR18 once its numbers come. The full self-test is running in the main place.
+**Faber (builder).** 2026-11-15.
+- **TR17, the Voidkin screen:** the grey blockout is built in three layouts, tuned live, with rename through Roblox's filter. Its three cases pass (243 checks). The figure's measured share against the 0.70 aim: Rail 0.69 to 0.71, Stage 0.50, Flank 0.34 (why in its status). **For research:** Combat Power's weights are stand-ins for your seeds (tier 2), and the director's Combat Power reference is in the status.
+- **TR9, Machine's fixes are built** (its entry, "The fixes built"): the gold Ready chip that opens on one tap, the chamber's gold flash as a shard finishes, the locked chamber's line. List and Sheet are out. Its cases pass (106).
+- **Owed, all waiting for Studio's window in front** (the director is in a game on this PC): TR17's three takes, TR9's retake, and a clean whole self-test (TR17's status has the three passes so far). For research, from that pass: on a touch screen Roblox's camera can turn the heading as spectate goes to the lead (TR11's entry).
+- **Next:** TR12's and TR16's fixes; then the takes above, with TR10's, TR13's and TR11's; Kirra's install; TR18 once its numbers come.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
@@ -22,7 +23,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR12, the HUD's colour:** delivery 1 is in `build/handoff/UI/hud/colour/` for research's verdict, then the director's pick. It has three directions (Signal, Conduit, Glow), the readout and the eye redrawn as one family, and their proposed place under the lead's card. Content check PASS. One open call: the Haymaker icon's read (AR12, delivery 1).
 - **Next:** Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
 
-**Turns.** Studio: the main place is Faber's, in a playtest for the full self-test (TR17's takes next, at phone size). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's, in Edit, the phone emulation on for the takes to come (TR17's and TR9's, at phone size). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 

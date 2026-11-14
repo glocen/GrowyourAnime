@@ -3,6 +3,7 @@
 -- Theme.Time.Toast seconds, at most Theme.Time.Toasts stacked: a newer one pushes the oldest out (handbook/visuals/ui.md,
 -- "HUD behaviour"). It shows only what the server has already said. It slides in from the screen's right edge, eased
 -- out, and leaves that way, eased in, a little quicker (Config.Hud.Motion.Toast; rule 4; AR8 C).
+--   Toast.Show(message, colour?)   Toast.Stack()   Toast.Shown()   Toast.Riding(), for tests
 
 local TweenService = game:GetService("TweenService")
 
@@ -107,6 +108,18 @@ function Toast.Shown(): { string }
 		end
 	end
 	return messages
+end
+
+-- Whether a notice is on its way in or out: for the tests' lint, which reads the screen at rest.
+function Toast.Riding(): boolean
+	local held = stack
+	for _, slot in (if held then held:GetChildren() else {}) do
+		local plate = slot:FindFirstChild("Toast")
+		if plate and plate:IsA("GuiObject") and plate.Position ~= UDim2.new() then
+			return true
+		end
+	end
+	return false
 end
 
 return Toast

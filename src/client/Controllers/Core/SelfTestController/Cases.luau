@@ -340,8 +340,12 @@ local function revealAt(at: number, seconds: number): boolean
 	return false
 end
 
--- The UI lint on whatever shows now.
+-- The UI lint on whatever shows now. A toast rides in from off the screen and leaves that way (Kit.Toast), so the lint
+-- reads once none is mid-ride: a gain's toast caught on its way in failed "on screen" under load (2026-11-15).
 local function lintClean(t: any, where: string)
+	waitFor(t, 1, function(): boolean
+		return not Toast.Riding()
+	end)
 	local report = UiLint.Run()
 	t.Check(`{where}: every label fits its box`, #report.Fit == 0, UiLint.Detail(report.Fit, report.Checked))
 	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))
@@ -4216,7 +4220,15 @@ local cases = {
 			local at = SpectateController.Point()
 			t.Check("its point at the lead's focus", at ~= nil and (at.Position - want).Magnitude < 1, if at then string.format("%.2f studs off", (at.Position - want).Magnitude) else "none")
 			t.Check("the zoom is the player's", math.abs(distance() - before) < 1, string.format("%.2f, was %.2f", distance(), before))
-			t.Check("and so is the heading", camera.CFrame.LookVector:Dot(heading) > 0.99, string.format("%.3f", camera.CFrame.LookVector:Dot(heading)))
+			local kept = camera.CFrame.LookVector:Dot(heading)
+			if game:GetService("UserInputService").TouchEnabled then
+				-- A touch screen's camera follows (Util.CameraTurn): it turns with its subject's travel to the lead, by
+				-- Roblox's own rule, and the player's camera is left as it is (the director, TR11). Measured for research's
+				-- verdict, not held to the mouse's bar.
+				t.Row("the heading on a touch screen, turned by the follow camera on the way to the lead", nil, nil, math.deg(math.acos(math.clamp(kept, -1, 1))), "degrees")
+			else
+				t.Check("and so is the heading", kept > 0.99, string.format("%.3f", kept))
+			end
 			t.Check("a second tap turns it off", Button.Press(eye))
 			t.Check("back on the avatar by its ease", waitFor(t, look.Ease + 0.5, function(): boolean
 				return camera.CameraSubject == humanoid and SpectateController.Share() == 0
@@ -6084,13 +6096,17 @@ local cases = {
 			local function stand(at: Vector3, look: Vector3)
 				t.Server("TestStandAt", at + Vector3.new(0, 3, 0), look)
 				t.Wait(0.1) -- the camera's focus follows the avatar
-				-- The camera keeps its own look (FadeController): turned to the avatar's, a little down, as a player would.
+				-- The camera keeps its own look (FadeController): turned to the avatar's, a little down, as a player would,
+				-- at the distance it had. Through CameraTurn: a phone's camera undoes a turn written straight to it, and
+				-- the plates then stood behind it (the full pass in the phone emulation, 2026-11-15).
 				local camera = workspace.CurrentCamera
 				local along = Vector3.new(look.X - at.X, 0, look.Z - at.Z)
 				if camera and along.Magnitude > 1e-3 then
-					local from = camera.CFrame.Position
+					local focus = camera.Focus.Position
+					local far = (camera.CFrame.Position - focus).Magnitude
 					local down = math.rad(15)
-					camera.CFrame = CFrame.lookAt(from, from + along.Unit * math.cos(down) - Vector3.new(0, math.sin(down), 0))
+					local toward = along.Unit * math.cos(down) - Vector3.new(0, math.sin(down), 0)
+					CameraTurn.To(CFrame.lookAt(focus - toward * far, focus))
 				end
 				t.Wait(PLATE_TICK + 0.3) -- the plates read at 4 Hz
 			end
@@ -6494,9 +6510,9 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Breaker: with nothing ready its prompt opens its own screen, and each layout shows the chambers, what waits and the chosen shard's odds, rarest first",
+		Name = "Breaker: with nothing ready its prompt opens its own screen, Machine: the chambers, what waits and the chosen shard's odds, rarest first, and what opens a locked chamber",
 		Run = function(t: any)
-			-- TR9's grey screen in its three layouts (Config.Hud.Breaker.Layout), at this screen's scale and the smallest
+			-- TR9's screen in Machine, the director's pick (2026-11-14, night), at this screen's scale and the smallest
 			-- phone's: the chambers as they stand, what's ready, waiting and in the bag, and one tap to a shard's odds.
 			local view = ProfileController.Get()
 			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
@@ -6530,15 +6546,6 @@ local cases = {
 			local before = readyCount(shard) -- the one put in is still breaking
 			local first = BreakerScreen.Selected()
 			t.Check("it opens on a chamber's shard", first ~= nil and first.Kind == "Chamber", if first then `{first.Kind} {first.Index}` else "none")
-			local layout = HudConfig.Breaker.Layout
-			local function built(name: string): boolean
-				if name == "List" then
-					return breakerPart("Shards") ~= nil
-				elseif name == "Sheet" then
-					return breakerPart("Chambers") ~= nil and breakerPart("Machine") == nil
-				end
-				return breakerPart("Machine") ~= nil
-			end
 			-- The chosen shard's pane: its name, and every chance as the server rolls it, rarest first.
 			local function oddsShown(where: string)
 				local item = BreakerScreen.Selected()
@@ -6571,77 +6578,151 @@ local cases = {
 					local left = cell and cell:FindFirstChild("Left") :: TextLabel?
 					local chamber = now.Base.Chambers[index]
 					local want = if chamber == nil then "Locked" elseif chamber.Work == nil then "Empty" else nil
+					local opens = cell and cell:FindFirstChild("Opens") :: TextLabel?
 					if cell == nil or label == nil then
 						table.insert(wrong, `chamber {index} missing`)
 					elseif want and label.Text ~= want then
 						table.insert(wrong, `chamber {index} says {label.Text}, not {want}`)
+					elseif chamber == nil and (opens == nil or opens.Text ~= BreakerScreen.Locked) then
+						table.insert(wrong, `locked chamber {index} doesn't say what opens it: {if opens then opens.Text else "nothing"}`)
 					elseif want == nil and (cell:FindFirstChild("Crack") == nil or left == nil or string.find(left.Text, " left$") == nil) then
 						table.insert(wrong, `chamber {index} lacks its crack or its time`)
 					end
 				end
-				t.Check(`{where}: each chamber as it stands, up to {most}, the rest locked`, #wrong == 0, wrong[1])
+				t.Check(`{where}: each chamber as it stands, up to {most}, the rest locked, saying what opens them`, #wrong == 0, wrong[1])
 				local bag = bagItem(shard)
 				local detail = if bag then breakerText(`Bag{bag.Index}`, "Detail") else ""
 				t.Check(`{where}: the bag's shard on the strip, with its count`, string.find(detail, "^In the bag · ") ~= nil, detail)
 			end
-			for _, name in { "Machine", "List", "Sheet" } do
-				t.Server("Tune", "Hud.Breaker.Layout", name)
-				t.Check(`{name}: built`, waitFor(t, 2, function(): boolean
-					return HudConfig.Breaker.Layout == name and built(name)
-				end))
-				t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
-				if name == "List" then
-					local now = ProfileController.Get() :: Profile.View
-					local shards = #now.Base.Ready + #now.Base.Line
-					for _, chamber in now.Base.Chambers do
-						shards += if chamber.Work then 1 else 0
-					end
-					for _, count in now.Bag.Shards do
-						shards += if count > 0 then 1 else 0
-					end
-					local rows = 0
-					for _, child in (breakerPart("Shards") :: Instance):GetChildren() do
-						rows += if string.find(child.Name, "^%a+%d+$") then 1 else 0
-					end
-					t.Check("List: a row for every shard and every kind in the bag", rows == shards, `{rows} rows, {shards} shards`)
-					oddsShown("List")
-					local bag = bagItem(shard)
-					local odds = bag and screenButton(BreakerScreen.Name, "Shards", `Bag{bag.Index}`)
-					t.Check("List: a row's Odds chooses its shard", odds ~= nil and Button.Press(odds) and waitFor(t, 1, function(): boolean
-						local item = BreakerScreen.Selected()
-						return item ~= nil and item.Kind == "Bag" and item.Def == shard
-					end))
-					oddsShown("List, the bag's shard")
-				else
-					machineShown(name)
-					if name == "Sheet" then
-						BreakerScreen.Select(nil) -- List's choice outlives a live switch of layouts; a player's screen opens fresh
-						t.Check("Sheet: no odds before a tap", breakerPart("Odds") == nil)
-						BreakerScreen.Select(first)
-						t.Check("Sheet: a tap on a shard brings its odds over the machine", breakerPart("Odds") ~= nil)
-					end
-					oddsShown(name)
-				end
-				for _, at in { { Name = "this screen", Scale = nil }, { Name = "the smallest phone", Scale = Theme.Scale.Floor } } do
-					Layers.Force(at.Scale)
-					t.Wait(0.1) -- laid out again
-					lintClean(t, `{name}, at {at.Name}'s scale`)
-				end
-				Layers.Force(nil)
-				if name == "Sheet" then
-					local back = breakerPart("Back")
-					t.Check("Sheet: Back takes the odds away", back ~= nil and back:IsA("TextButton") and Button.Press(back) and waitFor(t, 1, function(): boolean
-						return breakerPart("Odds") == nil
-					end))
-				end
+			t.Check("Machine: built", waitFor(t, 2, function(): boolean
+				return breakerPart("Machine") ~= nil
+			end))
+			t.Wait(HudConfig.Motion.Screen.Enter + 0.1) -- laid out, and in
+			machineShown("Machine")
+			oddsShown("Machine")
+			local bag = bagItem(shard)
+			local chip = if bag then breakerPart(`Bag{bag.Index}`) else nil
+			t.Check("a tap on the bag's chip chooses its shard", chip ~= nil and BreakerScreen.Tap(chip:FindFirstChild("Tap")) and waitFor(t, 1, function(): boolean
+				local item = BreakerScreen.Selected()
+				return item ~= nil and item.Kind == "Bag" and item.Def == shard
+			end))
+			oddsShown("Machine, the bag's shard")
+			for _, at in { { Name = "this screen", Scale = nil }, { Name = "the smallest phone", Scale = Theme.Scale.Floor } } do
+				Layers.Force(at.Scale)
+				t.Wait(0.1) -- laid out again
+				lintClean(t, `Machine, at {at.Name}'s scale`)
 			end
-			t.Server("Tune", "Hud.Breaker.Layout", layout)
+			Layers.Force(nil)
 			Screen.Close()
 			-- Leaves the Breaker as it found it: the bag's shard taken back, the one put in broken and opened.
 			t.Server("BaseGive", shard, -1)
 			t.Server("BaseSkip", SKIP_ALL)
 			waitFor(t, ANSWER, function(): boolean
 				return readyCount(shard) > before
+			end)
+			openReadyDown(t, shard, before)
+		end,
+	},
+	{
+		Name = "Breaker: a shard finishing flashes its chamber gold \"Ready\" as it goes to the strip, where its chip glows gold and opens on one tap",
+		Run = function(t: any)
+			-- TR9's fixes (a) and (b), research's verdict as corrected on the builder's facts (2026-11-14, night): a chamber
+			-- never holds a ready shard, so the payoff shows in the machine as the chamber hands it over, and the strip's
+			-- ready chip is the loudest thing on the screen (Config.Hud.Breaker.Flash, .Glow).
+			local view = ProfileController.Get()
+			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+			if view == nil or view.Progress.Starter == "" then
+				return
+			end
+			local shard = "lanternrow_standard"
+			local held = view.Bag.Shards[shard] or 0
+			local before = readyCount(shard)
+			t.Server("BaseGive", shard, 1)
+			t.Check("the server gives one", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 1
+			end))
+			t.Check("it goes into the Breaker", ProfileController.Act("AddShard", { Shard = shard }).Ok == true)
+			t.Check("the save shows it", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Bag.Shards[shard] or 0) == held
+			end))
+			Screen.Close()
+			BaseController.OpenBreaker()
+			t.Check("the Breaker's screen is open", waitFor(t, 2, function(): boolean
+				return Screen.Current() == BreakerScreen.Name and breakerPart("Machine") ~= nil
+			end))
+			-- The chamber nearest done, brought to a second short of it, so its end is watched on the open screen.
+			local base = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow())
+			local nearest, left = 0, math.huge
+			for index, chamber in base.Data.Base.Chambers do
+				local work = chamber.Work
+				if work and Read.Left(base, work) < left then
+					nearest, left = index, Read.Left(base, work)
+				end
+			end
+			t.Check("a chamber is breaking", nearest > 0)
+			if nearest == 0 then
+				return
+			end
+			local readyBefore = #base.Data.Base.Ready
+			local SHORT = 1
+			if left > SHORT then
+				t.Server("BaseSkip", left - SHORT)
+			end
+			local flash = HudConfig.Breaker.Flash
+			t.Check(`chamber {nearest} flashes as its shard finishes`, waitFor(t, SHORT + ANSWER + 1, function(): boolean
+				return BreakerScreen.Flashing()[nearest] == true
+			end))
+			local began = os.clock()
+			local cell = breakerPart(`Chamber{nearest}`)
+			local over = cell and cell:FindFirstChild("Flash")
+			local word = over and over:FindFirstChild("Ready") :: TextLabel?
+			local fill = over and over:FindFirstChild("Fill", true) :: ImageLabel?
+			t.Check("gold, \"Ready\" across the box", word ~= nil and word.Text == "Ready" and fill ~= nil and fill.ImageColor3 == Theme.Colour.Ready,
+				if word then word.Text else "no flash over the chamber")
+			t.Check("the shard reaches the strip", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and #now.Base.Ready > readyBefore
+			end))
+			local index = #(ProfileController.Get() :: Profile.View).Base.Ready
+			local chip: Instance? = nil
+			t.Check("its chip is on the strip", waitFor(t, 1, function(): boolean
+				chip = breakerPart(`Ready{index}`)
+				return chip ~= nil
+			end))
+			local glow = chip and chip:FindFirstChild("Glow", true) :: ImageLabel?
+			t.Check("the chip glows gold, \"Ready\" its first word", chip ~= nil and glow ~= nil and glow.ImageColor3 == Theme.Colour.Ready
+				and chip:GetAttribute("Trim") == Theme.Colour.Ready and breakerText(`Ready{index}`, "Name") == "Ready", breakerText(`Ready{index}`, "Name"))
+			lintClean(t, "the Breaker with a chamber flashing")
+			t.Check("the flash ends in about its time", waitFor(t, flash.Seconds + 0.5, function(): boolean
+				return BreakerScreen.Flashing()[nearest] == nil
+			end))
+			t.Row("the flash, from its first look to its end (looks 0.25 s apart at most)", nil, nil, os.clock() - began, "s")
+			t.Wait(0.1)
+			local shown = breakerPart(`Chamber{nearest}`)
+			local after = shown and shown:FindFirstChild("Flash")
+			local faded = after and after:FindFirstChild("Fill", true) :: ImageLabel?
+			t.Check("and its gold is gone", after == nil or (faded ~= nil and faded.ImageTransparency > 0.95))
+			chip = breakerPart(`Ready{index}`)
+			t.Check("one tap on the chip opens it", chip ~= nil and BreakerScreen.Tap((chip :: Instance):FindFirstChild("Tap")) and waitFor(t, ANSWER, function(): boolean
+				return BaseController.Revealed() ~= nil
+			end))
+			BaseController.Dismiss()
+			-- Leaves the Breaker as it found it: the one put in broken and opened.
+			Screen.Close()
+			t.Server("BaseSkip", SKIP_ALL)
+			waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				if now == nil then
+					return false
+				end
+				for _, chamber in now.Base.Chambers do
+					if chamber.Work then
+						return false
+					end
+				end
+				return #now.Base.Line == 0
 			end)
 			openReadyDown(t, shard, before)
 		end,
@@ -6663,8 +6744,6 @@ local cases = {
 			local heldWatt = view.Bag.Shards.named_watt or 0
 			local before = readyCount(shard)
 			local capacity = BaseConfig.Battery.Capacity
-			local layout = HudConfig.Breaker.Layout
-			t.Server("Tune", "Hud.Breaker.Layout", "Machine")
 			t.Server("BaseGive", shard, 1)
 			t.Server("BaseGive", "named_watt", 1)
 			t.Check("the server gives a shard and Watt's", waitFor(t, ANSWER, function(): boolean
@@ -6772,7 +6851,6 @@ local cases = {
 			end))
 			BaseController.Dismiss()
 			-- Leaves the base as it found it: Watt's shard taken back, the rest opened, the battery as it was.
-			t.Server("Tune", "Hud.Breaker.Layout", layout)
 			Screen.Close()
 			t.Server("BaseGive", "named_watt", -1)
 			openReadyDown(t, shard, before)

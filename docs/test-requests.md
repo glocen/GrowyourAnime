@@ -1012,7 +1012,7 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
 
 **Order in the queue:** after TR8. **Time, forecast:** 2 to 3 hours.
 
-**Status:** the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14 (Faber). Time: about 2.5 active hours, my estimate, not measured.
+**Status:** Machine picked, and research's fixes built, 2026-11-15 (Faber, "The fixes built" below); the retake waits for Studio's window in front. Before: the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14. Time: about 2.5 active hours, my estimate, not measured.
 - **Implemented.**
   - **Infusion, on the server** (`Rules.Base.Infuse { Chamber | Line, Def, Level }`): the price from the battery, and the shard's Luck raised by `Config.Shards.Infusion[Level]` (seeds: a little, +0.10 for 300; a lot, +0.25 for 900), capped at `LuckCap`.
     - Once per shard. Only a shard still breaking or waiting, never one ready or in the bag, and never a Named or a starter shard (`Odds.Lifted`, which counts the tiers the luck lifts).
@@ -1061,6 +1061,15 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
        - (b) as a shard finishes, its chamber flashes gold "Ready" for about 1.5 s as it hands the shard to the strip, so the payoff shows in the machine.
     2. **A chamber's unlock is the Breaker's own level** (`docs/design.md`, "The base"). The text is "Locked · upgrade the Breaker", with the level once the Breaker's upgrades are seeded.
   - Retake: Machine, with a shard finishing in a chamber (b) and opened from its chip (a).
+- **The fixes built, 2026-11-15 (Faber).** Time: about 1.5 active hours, my estimate, not measured.
+  - **Implemented.** `UI/BreakerScreen` is Machine only: List, Sheet and `Hud.Breaker.Layout` are gone.
+    - (a) A ready shard's chip has a bold gold edge over a gold fill that breathes (`Config.Hud.Breaker.Glow`). "Ready" is its first word, in gold, with the shard's name under it. One tap opens it, into the reveal.
+    - (b) A chamber whose shard finishes flashes gold with "Ready" across the box for 1.5 s: held 0.35 s, then fading, with a small pop as it lands (`Config.Hud.Breaker.Flash`, tuned live). The chip it hands over lands lit and settles into its breath. The screen tells a finish from the base as it stands each quarter second, so the flash comes with the shard, whether the server's copy or the screen's own clock sees it first. A shard that finished while the screen was shut doesn't flash: its chip waits, gold.
+    - A locked chamber reads "Locked" with "Upgrade the Breaker" under it. Tier 1: the dot is a line break, since a chamber is about 90 px wide.
+    - Lever: anticipation is the crack's bar filling, and the payoff is the flash and the hand-off to the strip.
+  - **Tested.** The Breaker's cases: 106 passed, 0 failed, 59 fps, in the phone emulation. One is new: a shard finishing flashes its chamber, reaches the strip as a gold chip, and opens on one tap of it (the flash measured at 1.45 to 1.55 s). The screen's case is Machine only and checks each locked chamber's line. The type check: 0 new. Logic offline: 5440 passed.
+  - **The take is rebuilt for the retake** (`Take: TR9, the Breaker in Machine, a shard finishing in its chamber and opened from its chip`): the walk, the prompt, the line's shard and its odds, a chamber finishing with its flash, the chip, one tap, the reveal. Not recorded yet: it needs Studio's window in front.
+  - **Visually reviewed:** no. **Director-accepted:** no.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1149,6 +1158,7 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
   - The type check: 0 new.
   - The logic: 4035 passing offline, with a new case for the ease.
   - The self-test's new case (on, off, a fall, a fade's black, the zoom and the heading kept) waits on the Studio MCP, with TR5's and TR6's.
+  - 2026-11-15, in the phone emulation: the case passes, 28 checks. One finding for research's verdict: on a touch screen Roblox's camera follows, and it turned the heading by about 14° on the way to the lead in one run and by 0° in another. With a mouse the heading holds, and the case holds it there. On a touch screen the case now measures the turn instead. The player's camera is left as it is, by the director's word.
 - **Visually reviewed:** not yet. The three places, at phone size in a pack fight and a keeper's try, go here once Studio is back, for research's verdict.
 - **Accepted:** no.
 
@@ -1439,6 +1449,8 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
 - **Combat Power.** The director, mid-build, 2026-11-14, night: "combat power need to really look like taichi panda dragon hunter in design but like us visually". It covers Combat Power's display. The block holds its structure in grey: a plate in its rarity's light that fades out at both ends, an emblem, the caption and large digits. When it rises, the digits count up and the gain floats off the plate (`Config.Hud.Voidkin.Power`). For research: that reference's Combat Power, studied for Modulo's look after the pick. The number is `Rules.Stats.Power` on stand-in weights (`Config.Stats.Power`). Tier 2: research's seeds replace them.
 - **Measured.** The figure's share of the screen's height, aim 0.70, in this window and then on the smallest phone: Stage 0.50 and 0.48, Flank 0.34 and 0.34, Rail 0.69 and 0.71. Each stage frames its figure as tall as it has room for; the framing equals the measure. At a phone's height of about 320 authored px, Stage's strip and Combat Power's plate take 42%, and Flank's name row takes more again. The cheapest lever for Stage is its strip under the panel instead of under the figure. Flank has none that reaches 0.70 at that height.
 - **Tested.** The three cases, `Voidkin screen (TR17)` in `SelfTestController/VoidkinCases.luau`: 243 passed, 0 failed, 54 fps. They cover the open from the dock, the figure whole, Combat Power from its stats, each tab on the save's numbers, Lead and Send to work and the marks in view, favourite and lock, a rename through the filter and off again, send to work and bring home, the strip, a flick each way, a tap's flourish, a turn, and the UI lint in this window and on the smallest phone. The cases the change touched pass: TR12's fallen lead, the dock's screens, the world's plates and the kept scroll (77). Logic offline: 5440 passed. Type check: 0 new.
+  - **The whole self-test, 2026-11-15, in the phone emulation, covering TR15's removal too:** 1705 passed, 3 failed (273 s, 59 fps). None came from the screen. All three were the tests' own on a phone's camera, which undoes a turn written straight to it: the plot's plates case turned the camera that way (2 checks, now through `CameraTurn`), and TR11's heading (its entry). Both cases pass since.
+  - **A clean whole pass is still owed.** The second pass: 1683 passed, 2 failed. One was a gain's toast caught mid-slide by the lint (the lint now waits for a toast to land). The other was the reveal's frame rate, 41 fps. The third pass ran with Studio behind another window at 15 to 16 fps: 14 timing and on-screen checks failed. Those are not verified, by the testing rule. It runs again with Studio in front.
 - **Not yet:** the takes, one per layout (`Take: TR17, the Voidkin screen in ...`, in `Takes.luau`), recorded at phone size. Visually reviewed: no. Director-accepted: no.
 - **Tier 1 notices.** A fresh open starts on the lead's Overview. In Flank, Hide sits beside the close, and Lead and Send to work stand on the panel's foot while it's in. A nickname holds at most 20 characters (`Config.Voidkin.Nickname`, from `docs/ui.md`).
 - **Time:** about 3 active hours so far, my estimate, not measured.

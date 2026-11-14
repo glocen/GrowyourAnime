@@ -141,6 +141,19 @@ return {
 		FadeIn = 0.2,
 		Linger = 1,
 		FadeOut = 0.35,
+		-- TR13's looks in grey (UI.RingLooks; research's entry, 2026-11-14): Look puts "Rim", "Pool" or "Pips" in the
+		-- ring's place ("Current" keeps today's ring); Beside shows the three in a row left of the ring, Gap apart, on the
+		-- same cooldown, for one capture at phone size. Both tuned live. The looks' numbers are the builder's: Rim's head
+		-- Head pixels across and its pulse out to Pulse of the rim; Pool's bright line Band of the well tall; Pips' Count
+		-- segments, Long by Short pixels.
+		Look = "Current",
+		Beside = false,
+		Gap = 22,
+		Looks = {
+			Rim = { Head = 7, Pulse = 1.5 },
+			Pool = { Band = 0.08 },
+			Pips = { Count = 8, Long = 10, Short = 5 },
+		},
 	},
 	-- The spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never moved in a fight, and a small
 	-- button follows the lead instead). The eye: Size authored pixels square (Theme.Size.Tap: a whole 44 px target at the

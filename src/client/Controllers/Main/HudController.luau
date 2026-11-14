@@ -41,6 +41,7 @@ local Text = require(UI.Kit.Text)
 local Bar = require(UI.Kit.Bar)
 local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
+local RingLooks = require(UI.RingLooks)
 local LeadCard = require(UI.LeadCard)
 local TargetCard = require(UI.TargetCard)
 local BossBar = require(UI.BossBar)
@@ -90,6 +91,8 @@ type Ring = {
 	Full: boolean,
 	FoughtAt: number, -- os.clock() the lead last had a target
 	Seen: number, -- 0 hidden to 1 shown: it fades in as a fight starts, out a moment after it ends
+	InPlace: { [string]: RingLooks.Look }, -- TR13's looks in the ring's place, made when first picked
+	Beside: { [string]: RingLooks.Look }, -- and beside it, for the comparison
 }
 
 local lead: LeadCard.Card
@@ -334,7 +337,51 @@ local function signatureRing(): Ring
 		Full = true,
 		FoughtAt = -math.huge,
 		Seen = 0,
+		InPlace = {},
+		Beside = {},
 	}
+end
+
+-- TR13's looks in grey (UI.RingLooks): the one picked in the ring's place, today's ring hidden under it; and, with Beside,
+-- the three in a row left of the ring, on the same state, each with its name.
+local function ringLooks(state: RingLooks.State): boolean
+	local config = HudConfig.Ring
+	local pick = tostring(config.Look)
+	local current = not RingLooks.Has(pick)
+	for _, child in ring.Frame:GetChildren() do
+		if child:IsA("GuiObject") and child:GetAttribute("Look") == nil then
+			child.Visible = current
+		end
+	end
+	for _, name in RingLooks.Names do
+		local look = ring.InPlace[name]
+		if name == pick and look == nil then
+			look = RingLooks.new(name, config.Size, config.Weight, ring.Frame, false)
+			ring.InPlace[name] = look
+		end
+		if look then
+			look.Frame.Visible = name == pick
+			if name == pick then
+				RingLooks.Step(look, state)
+			end
+		end
+	end
+	for index, name in RingLooks.Names do
+		local look = ring.Beside[name]
+		if config.Beside == true and look == nil then
+			look = RingLooks.new(name, config.Size, config.Weight, Layers.Get("Hud"), true)
+			ring.Beside[name] = look
+		end
+		if look then
+			look.Frame.AnchorPoint = ring.Frame.AnchorPoint
+			look.Frame.Position = ring.Frame.Position - UDim2.fromOffset(index * (config.Size + config.Gap), 0)
+			look.Frame.Visible = config.Beside == true and ring.Frame.Visible
+			if look.Frame.Visible then
+				RingLooks.Step(look, state)
+			end
+		end
+	end
+	return current
 end
 
 -- The spectate toggle (TR11; Config.Hud.Spectate): a small eye beside the signature's ring, a whole tap target, lit while
@@ -436,6 +483,9 @@ local function stepRing(model: Model?, fighting: boolean, dt: number)
 	ring.Seen = if can then math.clamp(ring.Seen + (if want then by else -by), 0, 1) else 0
 	ring.Frame.Visible = ring.Seen > 0
 	ring.Frame:SetAttribute("Seen", ring.Seen)
+	for _, look in ring.Beside do -- TR13's comparison goes with the ring
+		look.Frame.Visible = look.Frame.Visible and ring.Frame.Visible
+	end
 	if not can or model == nil then
 		return
 	end
@@ -470,7 +520,8 @@ local function stepRing(model: Model?, fighting: boolean, dt: number)
 	ring.Flash.Transparency = faded(1 - flash)
 	local swell = now - ring.ReadyAt
 	local back = if swell < config.Ready then math.sin(math.pi * swell / config.Ready) else 0
-	ring.Scale.Scale = 1 + 0.25 * flash + 0.12 * back
+	local current = ringLooks({ Share = share, Full = full, Flash = flash, Swell = back, Since = if full then swell else math.huge, Seen = seen, Class = class })
+	ring.Scale.Scale = if current then 1 + 0.25 * flash + 0.12 * back else 1 -- a look swells on its own
 	ring.Frame:SetAttribute("Flash", flash)
 end
 

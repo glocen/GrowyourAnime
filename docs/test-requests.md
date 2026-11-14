@@ -1127,4 +1127,15 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 
 **Order in the queue:** after TR6. **Time, forecast:** about 1 hour in grey, then the frames (Modulo's).
 
-**Status:** requested, 2026-11-14.
+**Status:** the looks in grey built, 2026-11-14 (Faber). Time: under an hour, my estimate, not measured.
+- **Implemented:** `UI.RingLooks`, three directions in the HUD's Graphite palette. Each draws the same cooldown state as today's ring.
+  - **Rim**, depth on today's ring: a raised rim lit from the top, a sunken well, and a bright head with a glow riding the fill's leading edge. Ready, a pulse rings out from the rim as the light goes white-hot; fired, the well flashes white.
+  - **Pool**, the well itself fills from the bottom with a bright line at its level, and the glyph goes dark on the full pool. Ready, a glint crosses it once; fired, it drains in a white flash.
+  - **Pips**, the ring in 8 segments that light one by one, the next one filling and larger. Ready, a chase runs round; fired, they all flash and go dark.
+  - `Config.Hud.Ring.Look` puts one in the ring's place, with today's ring hidden under it. `Ring.Beside` shows all three in a row left of the ring, named, on the same cooldown, for one capture. Both are tuned live; the defaults leave today's ring alone.
+- **Tested.**
+  - The type check: 0 new.
+  - The logic: 4391 offline (no pure rule here).
+  - The self-test's new case (each look through empty, a quarter, half, nearly full, full, the fire, hidden; Rim's head at the foot when half full; Pips' count lit; Pool's level; one look in the ring's place and back) waits on the Studio MCP.
+- **Visually reviewed:** not yet. The capture goes here once Studio is back: `Beside` on, at phone size, in a pack fight through a fire and a ready, for research's verdict on the grey looks.
+- **Accepted:** no.

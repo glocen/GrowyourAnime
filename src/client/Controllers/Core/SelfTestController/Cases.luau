@@ -56,6 +56,7 @@ local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local World = require(UI.World)
 local Read = require(UI.Read)
+local RingLooks = require(UI.RingLooks)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -5011,6 +5012,65 @@ return {
 			t.Near("it fills with the cooldown", second - first, (os.clock() - at) / action.Cooldown, 0.03)
 			t.Server("Replay")
 			t.Wait(0.3)
+		end,
+	},
+	{
+		-- TR13 (research's entry, 2026-11-14): the ring's three looks in grey, each through the states it must show; and one
+		-- picked in the ring's place hides today's ring under it, which comes back when it's put back.
+		Name = "HUD: TR13, the ring's grey looks each draw their states, and one picked takes the ring's place",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local config = HudConfig.Ring
+			local holder = Instance.new("Frame")
+			holder.Name = "SelfTestRingLooks"
+			holder.BackgroundTransparency = 1
+			holder.Size = UDim2.fromOffset(config.Size, config.Size)
+			holder.Position = UDim2.fromOffset(-500, -500) -- off the screen
+			holder.Parent = Layers.Get("Hud")
+			local function state(share: number, flash: number?, since: number?, seen: number?): RingLooks.State
+				return { Share = share, Full = share >= 1, Flash = flash or 0, Swell = 0, Since = since or math.huge, Seen = seen or 1, Class = "Warrior" }
+			end
+			for _, name in RingLooks.Names do
+				local look = RingLooks.new(name, config.Size, config.Weight, holder, true)
+				for _, share in { 0, 0.25, 0.5, 0.99, 1 } do
+					RingLooks.Step(look, state(share))
+					t.Near(`{name} at {share}: it says how full`, look.Frame:GetAttribute("Share") :: number, share, 1e-6)
+				end
+				RingLooks.Step(look, state(1, 1, 0))
+				t.Check(`{name}: as it fires it swells`, look.Scale.Scale > 1.1, string.format("%.2f", look.Scale.Scale))
+				RingLooks.Step(look, state(0.5, 0, math.huge, 0))
+				t.Check(`{name}: hidden, its glyph is too`, look.Glyph.ImageTransparency > 0.99)
+				t.Check(`{name}: with its name under it, beside the ring`, look.Frame:FindFirstChild("Caption") ~= nil)
+				look.Frame:Destroy()
+			end
+			-- Each look's own sign of how full.
+			local rim = RingLooks.new("Rim", config.Size, config.Weight, holder, false)
+			RingLooks.Step(rim, state(0.5))
+			t.Near("Rim: the head rides the fill's leading edge, at the foot when half full (degrees)", rim.Frame:GetAttribute("Head") :: number, 180, 0.5)
+			RingLooks.Step(rim, state(1))
+			t.Equal("Rim: no head once full", rim.Frame:GetAttribute("Head"), -1)
+			local pips = RingLooks.new("Pips", config.Size, config.Weight, holder, false)
+			local count = config.Looks.Pips.Count
+			for _, share in { 0, 0.5, 0.6, 1 } do
+				RingLooks.Step(pips, state(share))
+				t.Equal(`Pips: {math.floor(share * count)} of {count} lit at {share}`, pips.Frame:GetAttribute("Lit"), math.floor(share * count))
+			end
+			local pool = RingLooks.new("Pool", config.Size, config.Weight, holder, false)
+			RingLooks.Step(pool, state(0.3))
+			t.Near("Pool: its level stands at its share", pool.Frame:GetAttribute("Level") :: number, 0.3, 1e-6)
+			holder:Destroy()
+			-- One picked in the ring's place, and back.
+			local signature = HudController.Parts().Signature
+			local was = config.Look
+			config.Look = "Pips"
+			t.Wait(0.1)
+			local inPlace = signature:FindFirstChild("LookPips") :: GuiObject?
+			local well = signature:FindFirstChild("Well") :: GuiObject?
+			t.Check("a look picked stands in the ring's place", inPlace ~= nil and inPlace.Visible)
+			t.Check("over today's ring, hidden", well ~= nil and not well.Visible)
+			config.Look = was
+			t.Wait(0.1)
+			t.Check("put back, today's ring shows again", well ~= nil and well.Visible and (inPlace == nil or not inPlace.Visible))
 		end,
 	},
 	{

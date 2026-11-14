@@ -17,7 +17,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
-- **Next:** delivery 4, Scarf Step's look with Faber through `/ga-action`, once Studio is back; TR10's two icons once the grey marker has its verdict. Nothing running, no lock held.
+- **For Faber, TR8:** the paper's drift is delivered, as `paper` in `build/handoff/LanternRow/plan.json` (AR5, "The paper's emitter"; 8902d2c).
+- **Delivery 4, Scarf Step's look:** research's check passed. The grey rows are delivered as two takes for the skewer, A on the axis and B past the flank, in `build/handoff/Kirra/fx/` (AR10, section 5, with Faber's four points). The blockout with Faber follows once Studio is back, and the Blender preview at 64 px follows once there's memory.
+- **Next:** TR10's two icons, once the grey marker has its verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 

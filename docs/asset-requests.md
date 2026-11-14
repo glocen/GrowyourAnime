@@ -5048,6 +5048,54 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - TR14's verdict in motion;
   - research's verdict at phone size.
 
+### 5. Scarf Step's look: the parts and their techniques (Modulo, 2026-11-14)
+
+`/ga-action` step 1, for research's technique check before any block-in. A signature, named as one: it gets the time it needs, and `ga-fresh-eyes` reads it at the blockout and the final (the checks above).
+- **The beats it hangs on,** from the clip (60 fps): **Blink** 13 (0.22 s), **Land** 16, **Cut** 18 (0.3 s). The scarf holds straight 16 to 40, lets go from its tip at 44, and has settled by 70.
+- **The hero shape, the line:** the scarf itself, which the clip lays straight from her knot back through the Shade, and a **Beam** of light along it. A Beam because the line moves along itself (AR8's rule: anything that scrolls or burns along a shape).
+  - **Its direction:** from where she was to where she is. It's there as she lands (16), and it burns off toward her (38 to 46), its far end running up the line into her knot, slow, then fast (the acceleration). The light goes first and the cloth after, since the scarf lets go at 44.
+  - **Its beat:** thin as she lands (0.3 stud), it swells on the Cut (0.75 in two frames), eases back by 26, and thins as it burns. The swell lands the cut on the line as well as on the Shade.
+  - **In rows, as built:** one Beam, `Line`, on her `HumanoidRootPart`. Its `At` is her knot and its `Tilt` is the scarf's aim, both in her root's frame and both measured from the delivered clip, so it stays on the scarf wherever the game lands her. `Top` is the knot to the tip (9.95 studs), held, and then it runs into her knot from 38 to 46 (Quad In): that's the burn. `Taper` 0.45 narrows it toward where she was. The aim holds from 40, so the light stays straight as the cloth lets go off it.
+  - **What changed from the check, tier 1:** there's no draw and no `Start`, `Head` or `Knot` rows. An end held on the effect's foot leaves the light off the scarf whenever she doesn't start 5 studs out, and a row can only hang on a Beam's end, so the burn rides `Top`. The 3 frames of draw were the blink anyway (the check).
+- **The blink-out** (13): a small puff at her feet where she was, kicked along the line. Particles. It's kept quiet, so the line is what you see her go by.
+- **The slide** (16 to 30): low dust at her feet as she brakes, sprayed along her slide. Particles, on her root set down to the ground.
+- **The crescent on the way out** (Cut 18): the kit's `FxCrescent` on the Shade's chest, laid along the cut, sweeping head first as it grows and fading by 32 (0.23 s). A **mesh**, AR8's rule for a shape with a near and a far side. Its Glow peaks on the Cut and goes out with it.
+- **The sparks** (18): a burst of `fx_spark` off the crescent, thrown along her line, away from where she was. Particles.
+- **The light** (18 to 34): a PointLight on the cut, lit at once and eased out.
+- **Not rows:** the hit at rung 7 (the hold, the flash, the tremble and the trauma come from AR8's ladder on the Cut's hit), and the caster's light (AR9's waits).
+- **The skewer** (the content check's note): judged at 64 px from the player's camera in the blockout.
+  - If the line through the Shade reads as a skewer, the first lever is the line's aim off the axis, so the light passes the Shade's flank. It's take B, below.
+  - If the scarf itself still reads as one, its aim in the clip moves to the flank too: a clip re-export, mine.
+  - The second lever, the light split at the Shade's body, needs the Shade's place (below).
+- **The block contains,** in grey (`Grey` true, `Action` `KirraScarfStep`, `Free` `Cut`), seven rows: `Line`, the puff, the slide, `CutAt` (the Shade's chest), the crescent, the sparks and the light. They come as two takes, two effects in `build/handoff/Kirra/fx/`:
+  - **A,** `KirraScarfStep.rows.json`, on the axis: the line passes 0.04 studs off the Shade's middle at 3.12 up (its chest 3.0), 3.3 studs from her knot.
+  - **B,** `KirraScarfStepFlank.rows.json`, the line turned 24.9 degrees about her knot: it passes 1.48 studs off the Shade's middle on the player's camera's side (the grey Shade's coat is 2.2 across), the rest as A. The side assumes the clip's crossing, on the camera's right; a mirrored crossing flips it.
+  - Written and checked by `tools/blender/kirra_scarf_step_fx.py rows` (plain `py`, from the clip). Its `preview` mode draws the line and the crescent from the player's camera at 64 px in Blender, and it waits for memory: Studio holds 3.6 GB.
+- **Waits for the build:**
+  - **Her blue** (`#47A6F5`), off red as the content check asks. The grey ramps get the blue by the rows' `Color` first, and a blue ramp is drawn only if the core needs its own hue (my call, tier 1).
+  - AR9's drawn puff and spark, once Faber's kit rows take the sheets.
+  - The sound (Faber's, one library cue). Anything new to upload.
+- **For Faber, at the blockout** (his calls):
+  1. **How the game moves her** at Blink: the clip has her land 3.8 studs past the Shade, facing it. The rows don't depend on how she's moved.
+  2. **The Shade's place.** The crescent, the sparks and the light are written 5 studs ahead of her start, the clip's distance. That holds if Scarf Step always starts 5 studs from its target. If it doesn't, the rows need to ride the target, as `Body` rides the attacker: his code.
+  3. **`Free` on the Cut,** so the hit's hold never stills the crescent. It also runs the line's tracks through the hold while her clip is frozen, so the burn runs about 8 frames ahead of the cloth. The light goes first either way.
+  4. **The install order:** `rows_take` checks the action and its beats, so `KirraScarfStep` with Blink, Land and Cut goes in first. A and B are switched on the action for the two takes.
+- **Content check, 2026-11-14: PASS for the grey block** (the dev build, nothing uploaded), on the numbers alone, with no render yet. Its conditions:
+  - A reaches a public build only if the 64 px replay shows no read of a body run through, from any heading. The lean is to B.
+  - B must clear the body on screen, not just in plan: 1.48 studs is 0.38 past the coat's edge. If it overlaps at 64 px, the offset grows or the clip's aim moves to the flank.
+  - The skewer verdict counts once the cut's rows ride the target.
+  - The crescent stays light and short-lived.
+  - A review sheet of the chosen take, the line alone and then with the crescent, from the player's camera at full size and at 64 px on dark, before the finish or any upload. A new drawn sheet or ramp is checked again.
+- **Time:** the rows took about 25 minutes after the check, against 45 forecast. The blockout with Faber in the replay is still about an hour, once Studio is back.
+- **Four facts:** the rows are made. They're self-checked: the file's own checks, and the line measured through the Shade from the clip. Not drawn: the Blender preview waits for memory. Delivered to the handoff. Not accepted: the blockout's verdict.
+- **Research's technique check, 2026-11-14, night: passed, build the grey rows.**
+  - **Each part has the right technique.** The line is a Beam, which is right because it runs along itself and has no depth. The crescent is a mesh, for its near and far side. The puff, the dust and the sparks are particles, and the cut gets a light. No shape with depth sits on a card.
+  - **The hero is right: one line, with a direction and an acceleration.** The burn-off carries the acceleration, slow then fast into her knot. The draw is 3 frames, so it reads as the blink itself, not as a draw, and that's fine.
+  - **Motion before layers, in the block:** judge the line alone first in the replay at full speed, then add the crescent, then the rest. A layer that doesn't add to the line's read at 64 px comes out.
+  - **The line stays the brightest thing.** The crescent's Glow peaks below the line's swell on the Cut, so the eye goes to the line and the crescent marks where it cut.
+  - **The skewer, tried in the first block, not after it:** two takes in the replay, A on the axis and B with `Start` off the axis past the Shade's flank. Both are judged at 64 px from the player's camera. If either reads as a skewer, take the flank, and the clip's aim follows (your re-export).
+  - **For Faber's question 2, research's view:** auto-combat doesn't hold 5 studs, so the crescent, the sparks and the light should ride the target, as `Body` rides the attacker. How is Faber's code.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -1282,3 +1282,9 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
   - **The content check** on the screen's text: PASS. Its note is done: a refusal with no line of its own says "Not now", and the output names its code.
 - **For research, tier 2:** the weights; the scale (Health's point is 0.75% of its figure, with room to about 0.95% before the leanest Defence runs out at 125); `ResetPerG` 50; Lead on the board in Split; the reset's two taps.
 - **One finding:** on Lantern Row the board is felt as "which number grows" more than as power. A Voidkin has 8 points by level 9, each about 0.75% of a stat.
+- **Research's call on the seeds, 2026-11-14, night (tier 2).**
+  - **The finding decides it: the board must be felt where the launch is played.** Launch is Lantern Row, levels 1 to 9, with training past it. A point worth 0.75%, with the strongest lean at +1.2%, makes the director's choice invisible there, and 1.3× doesn't change that.
+  - **The cause is the shape, not the scale.** The slice the board takes grows with the count of points, so at 125 it eats the leanest stat's base, and that ceiling holds every level down.
+  - **The change: the board holds a fixed share of each stat's own base at every level.** The points spread that share. A point's gain is worth more early and less as points pile up, and the screen keeps showing it live before a tap. Nothing then runs out at 125.
+  - **Seed the share with the sim** so the strongest one-stat lean on Lantern Row's circuit is about +7% (the bound stays 10%) and an even spread stays within 2% of today's Voidkin. Bring research the share and section 12's table at levels 5, 9, 30, 60 and 125.
+  - **The weights' pricing to equal worth, ResetPerG 50, Lead on the board in Split, and the reset's two taps: accepted.**

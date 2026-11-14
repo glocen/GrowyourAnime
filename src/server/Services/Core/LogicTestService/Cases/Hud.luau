@@ -230,10 +230,8 @@ return {
 		end,
 	},
 	{
-		Name = "Hud: a fallen lead's seconds and the signature's ring",
+		Name = "Hud: the signature's ring",
 		Run = function(t: any)
-			t.Equal("rounded up", Hud.Back(10.2, 5), 6)
-			t.Equal("never below one while down", Hud.Back(10, 10.5), 1)
 			t.Equal("empty the moment it fires", Hud.Ready(20, 10, 10), 0)
 			t.Equal("half way", Hud.Ready(20, 10, 15), 0.5)
 			t.Equal("full once ready", Hud.Ready(20, 10, 20), 1)

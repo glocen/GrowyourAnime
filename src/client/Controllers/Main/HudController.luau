@@ -14,6 +14,7 @@
 
 local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -104,6 +105,7 @@ local chip: Frame
 local chipText: TextLabel
 local ring: Ring
 local eye: TextButton -- the spectate toggle (TR11)
+local nextButton: TextButton -- under a fallen lead's card: sends out the next (TR12)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
 local keeperBar: BossBar.Bar
@@ -472,12 +474,44 @@ local function stepRing(model: Model?, fighting: boolean, dt: number)
 	ring.Frame:SetAttribute("Flash", flash)
 end
 
--- The Voidkin screen: the collection, the lead first; any other can be made the lead.
+-- A fallen Voidkin's Id to the server time it's whole (LeadService's "Healing"), or empty.
+local function healing(): { [string]: number }
+	local text = player:GetAttribute("Healing")
+	if type(text) ~= "string" or text == "" then
+		return {}
+	end
+	local ok, map = pcall(function(): any
+		return HttpService:JSONDecode(text)
+	end)
+	return if ok and type(map) == "table" then map else {}
+end
+
+-- Whether the player owns a Voidkin besides the lead, to send out when it falls.
+local function ownsAnother(): boolean
+	local view = ProfileController.Get()
+	local count = 0
+	for _ in (if view then view.Voidkin else {}) do
+		count += 1
+		if count > 1 then
+			return true
+		end
+	end
+	return false
+end
+
+-- What a refused lead change says (LeadService.Refusal, Rules.Carry).
+local REFUSED: { [string]: string } = { InCombat = "Not during a fight", Healing = "Still healing at home" }
+
+-- The Voidkin screen: the collection, the lead first; any other can be made the lead, out of combat, a fallen one once
+-- it's whole (TR12). A row says when one is healing at home, or training on the machine.
 local function voidkinScreen()
 	local view = ProfileController.Get()
 	if view == nil then
 		return
 	end
+	local wholeAt, now = healing(), workspace:GetServerTimeNow()
+	local fighting = player:GetAttribute("InCombat") == true
+	local onMachine = player:GetAttribute("Training")
 	local body = Screen.Open("Voidkin", "Voidkin", Vector2.new(440, 300))
 	local list = Row.List(body, "List")
 	local roster = Read.Roster(view)
@@ -486,18 +520,22 @@ local function voidkinScreen()
 	end
 	for index, owned in roster do
 		local role = Read.Role(view, owned.Id)
+		local whole = wholeAt[owned.Id]
+		local status = if whole and whole > now then `Healing at home {Hud.Clock(whole - now)}`
+			elseif onMachine == owned.Id then "Training"
+			else role
 		Row.new({
 			Name = owned.Id,
 			Parent = list,
 			Order = index,
 			Text = Read.VoidkinName(owned),
-			Detail = `Lv {owned.Level}{if role ~= "" then " · " .. role else ""}`,
+			Detail = `Lv {owned.Level}{if status ~= "" then " · " .. status else ""}`,
 			Action = "Lead",
-			Disabled = Hud.LeadReason(role),
+			Disabled = Hud.LeadReason(role, whole, now, fighting),
 			OnPress = function()
 				local answer = ProfileController.Act("SetLead", { Voidkin = owned.Id })
 				if answer.Ok ~= true then
-					Toast.Show(`Can't lead: {tostring(answer.Error)}`, Theme.Colour.TextDim)
+					Toast.Show(`Can't lead: {REFUSED[tostring(answer.Error)] or tostring(answer.Error)}`, Theme.Colour.TextDim)
 				end
 			end,
 		})
@@ -799,19 +837,27 @@ local function step(dt: number)
 		local def = tostring(model:GetAttribute("Def") or "")
 		local kind, class = kindOf(model)
 		mine = kind
-		local down = model:GetAttribute("State") == "Down"
+		local state = tostring(model:GetAttribute("State") or "")
+		local down = state == "Down" or state == "Home"
 		LeadCard.Who(lead, if Voidkin.ById[def] then def else nil, down)
 		LeadCard.Kind(lead, kind, class)
+		local status: string? = nil
 		if down then
-			-- Fallen: the portrait dims (never a red wash) and the health says when it's back.
+			-- Fallen (TR12): the portrait dims (never a red wash); the bar fills as it heals at home, and the line says how
+			-- long, then whether it's training on the machine.
 			local untilTime = model:GetAttribute("StateUntil")
-			local back = if type(untilTime) == "number" and untilTime > 0 then Hud.Back(untilTime, workspace:GetServerTimeNow()) else 1
-			LeadCard.Fill(lead.Health, 0)
-			lead.HealthText.Text = `Back in {Read.Seconds(back)}`
+			local training = player:GetAttribute("Training") == model:GetAttribute("Voidkin")
+			status = Hud.LeadStatus(state, if type(untilTime) == "number" then untilTime else 0, workspace:GetServerTimeNow(), training)
+			local health, most = model:GetAttribute("Health"), model:GetAttribute("MaxHealth")
+			LeadCard.Fill(lead.Health, if state == "Home" and type(health) == "number" and type(most) == "number" and most > 0 then health / most else 0)
+			lead.HealthText.Text = status or ""
 		else
 			showHealth(lead.Health, lead.HealthText, model)
 		end
 		lead.Frame:SetAttribute("Down", down)
+		lead.Frame:SetAttribute("Status", status or "")
+		nextButton.Visible = down and ownsAnother()
+		nextButton.Position = UDim2.new(lead.Frame.Position.X.Scale, lead.Frame.Position.X.Offset, lead.Frame.Position.Y.Scale, lead.Frame.Position.Y.Offset + lead.Frame.Size.Y.Offset + Theme.Size.Gap)
 		local why = if down then "Your lead is down" else nil
 		if eye:GetAttribute("Why") ~= why then
 			eye:SetAttribute("Why", why)
@@ -903,6 +949,18 @@ function HudController.Start()
 	electricity, rate, charge, bolt = value, extra, thread :: Frame, boltMark
 	ring = signatureRing()
 	eye = eyeButton()
+	-- A fallen lead's card offers the next (TR12; docs/design.md, "The next lead"): it opens the Voidkin screen, where any
+	-- whole one goes out at once, out of combat. In grey: the kit's button under the card.
+	nextButton = Button.new({
+		Name = "Next",
+		Text = "Send another",
+		Size = UDim2.fromOffset(180, Theme.Size.Tap),
+		Parent = Layers.Get("Hud"),
+		OnPress = function()
+			voidkinScreen()
+		end,
+	})
+	nextButton.Visible = false
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -1029,6 +1087,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		ElectricityRate = rate,
 		Signature = ring.Frame,
 		Spectate = eye,
+		Next = nextButton,
 		Chip = chip,
 		ChipText = chipText,
 		Voidkin = dock.Voidkin,

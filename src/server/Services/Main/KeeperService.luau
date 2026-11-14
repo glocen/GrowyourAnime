@@ -98,7 +98,7 @@ local function setDown(player: Player, at: CFrame)
 	root.AssemblyLinearVelocity = Vector3.zero
 	character:PivotTo(stand)
 	local lead = FightService.LeadOf(player)
-	if lead and lead.State ~= "Down" then
+	if lead and FightService.Standing(lead) then -- a fallen lead is home on its plot (TR12)
 		lead.Root.AssemblyLinearVelocity = Vector3.zero
 		local side = if player:GetAttribute("Try") ~= nil then Combat.Keeper.Side else Combat.Lead.Side
 		lead.Root.CFrame = stand * CFrame.new(side, 0, 1)
@@ -235,7 +235,7 @@ function KeeperService.Try(player: Player): { [string]: any }
 		return { Ok = false, Error = "InTry" }
 	elseif ring == nil or plot == nil or copy == nil then
 		return { Ok = false, Error = "NoRing" }
-	elseif lead == nil or lead.State == "Down" then
+	elseif lead == nil or not FightService.Standing(lead) then
 		return { Ok = false, Error = "NoLead" }
 	end
 	local try: Try = { Plot = plot :: number, Keeper = nil, Ending = false }

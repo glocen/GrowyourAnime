@@ -71,5 +71,8 @@ return {
 		-- door sets the player down Landing studs before the gate, facing through it: out of the lead's leash of the first
 		-- pack (Combat.Lead.Leash), so the arrival is a look up the street before the first fight.
 		Door = { Wide = 6, High = 9, DoorAt = 34, AtGate = 10, Landing = 4 },
+		-- The Training machine (TR12): left of the Breaker, as the door is right of it (DoorAt), a box Size, and its pad
+		-- Spot studs behind it on the spawn's side, where a fallen lead comes home, facing the machine.
+		Training = { Size = Vector3.new(6, 4, 5), Spot = 6 },
 	},
 }

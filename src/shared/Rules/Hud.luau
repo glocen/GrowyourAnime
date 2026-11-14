@@ -188,23 +188,41 @@ function Hud.Says(label: string, disabled: string?, pending: boolean): string
 end
 
 -- Why a Voidkin can't be made the lead, or nil when it can: its role in the save ("Lead", "Worker", or "").
-function Hud.LeadReason(role: string): string?
+function Hud.LeadReason(role: string, healingUntil: number?, now: number?, inCombat: boolean?): string?
 	if role == "Lead" then
 		return "Leading"
 	elseif role ~= "" then
 		return "At work"
+	elseif inCombat then
+		return "In a fight" -- the lead never changes in a fight (TR12)
+	elseif healingUntil and now and healingUntil > now then
+		return `Healing {Hud.Clock(healingUntil - now)}` -- a fallen one, healing at home
 	end
 	return nil
+end
+
+-- Seconds as minutes and seconds, rounded up: "1:05", "0:09".
+function Hud.Clock(seconds: number): string
+	local s = if seconds == seconds then math.max(0, math.ceil(seconds - 1e-9)) else 0
+	return string.format("%d:%02d", s // 60, s % 60)
+end
+
+-- What the lead's card says while its lead has fallen (TR12), or nil while it stands: "Down" as it falls; at home, its
+-- healing and the time left; then "Training" on the machine, or "At home" waiting.
+function Hud.LeadStatus(state: string, untilAt: number, now: number, training: boolean): string?
+	if state == "Down" then
+		return "Down"
+	elseif state ~= "Home" then
+		return nil
+	elseif untilAt > now then
+		return `Healing at home {Hud.Clock(untilAt - now)}`
+	end
+	return if training then "Training" else "At home"
 end
 
 -- Why the dock's Voidkin button can't be pressed, or nil when it can.
 function Hud.VoidkinReason(owned: number): string?
 	return if owned > 0 then nil else "No Voidkin"
-end
-
--- The seconds a fallen lead's card shows until it's back: whole seconds, rounded up, never below 1 while it's down.
-function Hud.Back(untilAt: number, now: number): number
-	return math.max(1, math.ceil(untilAt - now))
 end
 
 -- AR8 C, the interface's motion (Config.Hud.Motion and Pop; docs/research/vfx-reference.md, rule 4).

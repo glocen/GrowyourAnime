@@ -37,10 +37,13 @@ return {
 		CatchUpSpeed = 26, -- once it's CatchUpFrom away, so it keeps up with a running avatar
 		CatchUpFrom = 18,
 		TeleportFrom = 90, -- past this it reappears at the avatar's side
-		DownSeconds = 4, -- down, then up at the avatar's side at full health, with nothing lost
+		-- A fall sends it home (TR12; docs/design.md, "A fall sends it home"): down Leave seconds, its fall seen, then it
+		-- leaves as light and is home on its plot, on the Training machine's pad (Config.World.Grey.Training).
+		Leave = 1.6,
 		-- Health carries (TR12; docs/design.md): a lead heals only its Regen a second (Config.Stats.Regen), in a fight or
-		-- out; on its own plot it heals from nothing to full in Home.Full seconds besides. Research's seed, 2026-11-14.
-		Home = { Full = 30 },
+		-- out; on its own plot it heals from nothing to full in Home.Full seconds besides, and so does one at home that isn't
+		-- out. One that fell heals from nothing to full in Home.Fallen seconds, then waits. Research's seeds, 2026-11-14.
+		Home = { Full = 30, Fallen = 90 },
 	},
 
 	-- Shades (docs/test-requests.md, TR2, "the builder's read"): a pack notices a lead within 20 studs and gives up past 40

@@ -99,6 +99,9 @@ export type Data = {
 		Lead: string, -- the lead's Id, or ""
 	},
 	Base: Base,
+	Training: {
+		Stamp: number, -- server time the Training machine was last worked out to (Rules.Training); 0 before the first
+	},
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
@@ -142,6 +145,7 @@ function Profile.Template(): Data
 			Ready = {},
 			Bays = bays,
 		},
+		Training = { Stamp = 0 },
 		Progress = { Starter = "", Grounds = {}, Kills = 0 },
 	}
 end

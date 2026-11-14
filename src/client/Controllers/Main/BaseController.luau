@@ -63,6 +63,7 @@ local PLATE_LINE = 20 -- authored pixels a plate's line takes
 local BREAKER_WIDTH = 232
 local BAY_WIDTH = 204
 local BATTERY_WIDTH = 80
+local MACHINE_WIDTH = 204 -- "Trains while you're away", as a bay's
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178 and "Chamber 2 · 1 min 59 s" at 164.
 local SCREEN = Vector2.new(660, 320)
@@ -85,6 +86,7 @@ local folder: Folder? = nil
 local plot: number? = nil
 local breaker: Spot? = nil
 local battery: Spot? = nil
+local machine: Spot? = nil -- the Training machine (TR12)
 local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
@@ -196,10 +198,11 @@ end
 local function clearAll()
 	clearSpot(breaker)
 	clearSpot(battery)
+	clearSpot(machine)
 	for _, spot in bays do
 		clearSpot(spot)
 	end
-	breaker, battery, bays = nil, nil, {}
+	breaker, battery, machine, bays = nil, nil, nil, {}
 	for _, part in starters do
 		part:Destroy()
 	end
@@ -535,6 +538,7 @@ local function find()
 	end
 	local breakerMarker = Markers.Find("Breaker", { Plot = number })
 	local batteryMarker = Markers.Find("Battery", { Plot = number })
+	local machineMarker = Markers.Find("Training", { Plot = number })
 	local bayMarkers: { [number]: Instance } = {}
 	for _, marker in Markers.All("Bay") do
 		local index = marker:GetAttribute("Bay")
@@ -543,6 +547,7 @@ local function find()
 		end
 	end
 	local changed = number ~= plot or stale(breaker, breakerMarker) or stale(battery, batteryMarker)
+		or (machineMarker ~= nil and stale(machine, machineMarker))
 	for index, marker in bayMarkers do
 		changed = changed or stale(bays[index], marker)
 	end
@@ -564,6 +569,9 @@ local function find()
 	breaker = b
 	if batteryMarker then
 		battery = spotFor(batteryMarker, "Battery", BAY_UP, 1, BATTERY_WIDTH)
+	end
+	if machineMarker then
+		machine = spotFor(machineMarker, "Training", BAY_UP, 2, MACHINE_WIDTH)
 	end
 	for index, marker in bayMarkers do
 		local spot = spotFor(marker, `Bay{index}`, BAY_UP, 1, BAY_WIDTH)
@@ -657,6 +665,13 @@ function BaseController.Refresh()
 	if battery then
 		setLines(battery.Plate, { "Battery" })
 	end
+	if machine then
+		-- Who's on it, at what level; nobody while the player is home, so it says what it's for (docs/design.md, "The
+		-- Training machine").
+		local on = player:GetAttribute("Training")
+		local trainee = if type(on) == "string" and on ~= "" then view.Voidkin[on] else nil
+		setLines(machine.Plate, { "Training machine", if trainee then `{Read.VoidkinName(trainee)} · Lv {trainee.Level}` else "Trains while you're away" })
+	end
 	-- Someone neither leading nor working, whom an empty bay could take.
 	local free = false
 	for id in view.Voidkin do
@@ -705,6 +720,9 @@ function BaseController.Parts(): { [string]: Instance }
 	if battery then
 		parts.BatteryPlate = battery.Plate
 	end
+	if machine then
+		parts.TrainingPlate = machine.Plate
+	end
 	for index, spot in bays do
 		parts[`Bay{index}Plate`] = spot.Plate
 		if spot.Prompt then
@@ -730,6 +748,7 @@ function BaseController.Says(): { [string]: { Near: boolean, News: boolean, Grou
 	end
 	add("Breaker", breaker)
 	add("Battery", battery)
+	add("Training", machine)
 	for index, spot in bays do
 		add(`Bay{index}`, spot)
 	end

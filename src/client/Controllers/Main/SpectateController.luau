@@ -48,7 +48,8 @@ end
 
 local function standing(lead: Model?): BasePart?
 	local root = Parts.Root(lead)
-	return if lead and root and lead:GetAttribute("State") ~= "Down" then root else nil
+	local state = if lead then lead:GetAttribute("State") else nil
+	return if lead and root and state ~= "Down" and state ~= "Home" then root else nil -- a fallen lead is home (TR12)
 end
 
 local function set(want: boolean)

@@ -347,6 +347,10 @@ return {
 	-- sends you home, seen). A grey block, the builder's: it hops up, arcs over Seconds as high as Height, spinning, and lands
 	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.
 	ShardLeap = { Seconds = 0.8, Height = 7, Size = 1.4, Spin = 9, From = 60, Flash = { Seconds = 0.3, To = 4 } },
+	-- A fallen lead leaving as light for home (TR12; docs/design.md, "A fall sends it home": never a body left lying). The
+	-- builder's grey stand-in, 2026-11-14, until its look is designed: a column of light where it lay, High studs tall and
+	-- Width across, narrowing and fading as it rises Rise studs over Seconds.
+	LeadLeaves = { Seconds = 0.5, Rise = 5, Width = 3, High = 7 },
 
 	-- The keeper's signature (AR7, sections 6 and 7; AR8, "The keeper's signature in the engine"): its rows on the action's
 	-- beats, and the camera's lift through the hold when the lead it's aimed at is the player's own: Degrees up, eased in

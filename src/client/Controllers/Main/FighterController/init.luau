@@ -92,6 +92,7 @@ type View = {
 	Collar: Attachment?, -- where a Shade's burst starts
 	Current: AnimationTrack?, -- the action's
 	Reaction: AnimationTrack?, -- Hit, Down or Up
+	FellAt: Vector3?, -- where a lead fell, for the light it leaves as (TR12)
 	Action: Actions.Action?,
 	ActionAt: number,
 	Clock: number,
@@ -413,6 +414,8 @@ local function burst(view: View, down: AnimationTrack?)
 	end
 end
 
+local letGo: (prop: Prop, out: boolean) -> ()
+
 local function onState(view: View)
 	local state = view.Model:GetAttribute("State")
 	if type(state) ~= "string" or state == view.State then
@@ -432,6 +435,7 @@ local function onState(view: View)
 			view.FlinchAt = os.clock() + wait
 		end
 	elseif state == "Down" then
+		view.FellAt = view.Root.Position
 		endAction(view)
 		for _, running in view.Running do
 			running.Effect.Destroy()
@@ -445,6 +449,21 @@ local function onState(view: View)
 		if prop then
 			prop.Phase, prop.At = "Down", os.clock()
 		end
+	elseif state == "Home" then
+		-- A fallen lead leaves as light where it lay and stands home on its plot (TR12): no body left lying, its prop back
+		-- in its hand.
+		local reaction = view.Reaction
+		if reaction then
+			reaction:Stop(0)
+			view.Reaction = nil
+		end
+		local prop = view.Prop
+		if prop and prop.Phase ~= "Held" then
+			letGo(prop, false)
+			prop.Phase = "Held"
+		end
+		Effects.LeadLeaves(view.FellAt or view.Root.Position)
+		view.FellAt = nil
 	elseif state == "Idle" and was == "Down" then
 		playReaction(view, "Up") -- a rig with no Up (a Shade's, a box) plays none
 		local prop = view.Prop
@@ -464,7 +483,7 @@ end
 
 -- Out of the hand, the piece leaves its joint on this screen only (the motor off, the piece anchored), so the clip's arm
 -- can't carry it: the server's copy never changes.
-local function letGo(prop: Prop, out: boolean)
+function letGo(prop: Prop, out: boolean)
 	local piece = prop.Motor.Part1 :: BasePart
 	if out then
 		prop.Motor.Enabled = false
@@ -581,6 +600,7 @@ local function add(model: Instance)
 		Collar = model:FindFirstChild("Collar", true) :: Attachment?,
 		Current = nil,
 		Reaction = nil,
+		FellAt = nil,
 		Action = nil,
 		ActionAt = 0,
 		Clock = 0,

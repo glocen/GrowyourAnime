@@ -2294,6 +2294,25 @@ local trauma = 0
 local shaken = 0 -- seconds the noise has run
 local SEED = math.random() * 100
 
+-- A fallen lead leaving as light where it lay (TR12; Config.Effects.LeadLeaves), the builder's grey stand-in: a column
+-- standing on the floor at `at` (a root's place), narrowing and fading as it rises.
+function Effects.LeadLeaves(at: Vector3)
+	local look = EffectsConfig.LeadLeaves
+	local column = part(HOT, Enum.Material.Neon)
+	local floor = at.Y - R6_ROOT_HEIGHT
+	run(function(age: number): boolean
+		local u = math.clamp(age / math.max(look.Seconds, 0.01), 0, 1)
+		local wide = math.max(look.Width * (1 - u), 0.05)
+		local high = look.High * (1 - 0.5 * u)
+		column.Size = Vector3.new(wide, high, wide)
+		column.CFrame = CFrame.new(at.X, floor + high / 2 + look.Rise * easeOut(u), at.Z)
+		column.Transparency = u
+		return u < 1
+	end, function()
+		column:Destroy()
+	end)
+end
+
 function Effects.Jolt(add: number)
 	trauma = Fight.Trauma(trauma, add)
 end

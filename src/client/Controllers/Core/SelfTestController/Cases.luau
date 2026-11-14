@@ -1121,14 +1121,15 @@ return {
 			t.Check("the try is over", lost.InTry == false)
 			t.Near("the avatar stands before the keeper's gate (studs off)", lost.FromBefore, 0, SET_DOWN)
 			t.Check("a loss saves nothing", lost.Wins == before.Wins + 1, `{lost.Wins} wins`)
-			-- The lead back up before the next case needs it.
-			local deadline = os.clock() + Combat.Lead.DownSeconds + 2
-			repeat
-				t.Wait(0.2)
-				local lead = myLead()
-			until (lead and lead:GetAttribute("State") ~= "Down") or os.clock() > deadline
+			-- The fallen lead goes home to its plot (TR12); Studio's heal brings it back before the next case needs it.
+			t.Check("the fallen lead goes home", waitFor(t, Combat.Lead.Leave + 2, function(): boolean
+				local fallen = myLead()
+				return fallen ~= nil and fallen:GetAttribute("State") == "Home"
+			end))
+			t.Server("LeadHeal")
 			local lead = myLead()
-			t.Check("the lead is back up after its fall", lead ~= nil and lead:GetAttribute("State") ~= "Down")
+			local state = if lead then lead:GetAttribute("State") else nil
+			t.Check("the lead is back up after its fall", state ~= nil and state ~= "Down" and state ~= "Home", tostring(state))
 		end,
 	},
 	{
@@ -3721,9 +3722,17 @@ return {
 			t.Check("and the camera's back on the avatar", waitFor(t, look.Ease + 0.5, function(): boolean
 				return camera.CameraSubject == humanoid
 			end))
-			t.Check("the lead is back", waitFor(t, Combat.Lead.DownSeconds + 3, function(): boolean
+			t.Check("it goes home, and the eye stays off", waitFor(t, Combat.Lead.Leave + 2, function(): boolean
+				local fallen = myLead()
+				return fallen ~= nil and fallen:GetAttribute("State") == "Home"
+			end) and Button.State(eye) == "Disabled", Button.State(eye))
+			SpectateController.Set(true)
+			t.Check("never on while it's home", not SpectateController.On())
+			t.Server("LeadHeal") -- Studio's: the way home takes a walk to the plot
+			t.Check("the lead is back", waitFor(t, 1, function(): boolean
 				local back = myLead()
-				return back ~= nil and back:GetAttribute("State") ~= "Down"
+				local state = if back then back:GetAttribute("State") else nil
+				return state ~= nil and state ~= "Down" and state ~= "Home"
 			end))
 			t.Check("and the eye takes a tap again", waitFor(t, 1, function(): boolean
 				return Button.State(eye) ~= "Disabled"
@@ -4551,6 +4560,106 @@ return {
 			local opened = FadeController.Opened()
 			t.Check("the join's black lifted on a whole screen", opened ~= nil and opened.Whole, if opened then `{math.floor(opened.At * 100 + 0.5) / 100} s after the client started` else "not lifted")
 			lintClean(t, "the HUD")
+		end,
+	},
+	{
+		-- TR12 (docs/design.md, "A fall sends it home", "The next lead"): the card through a fall, and another Voidkin sent
+		-- out at once from the button under it; the fallen one stays home until it's whole.
+		Name = "HUD: TR12, a fallen lead's card says it's down, then healing at home with its time, and sends out the next",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local parts = HudController.Parts()
+			local lead = myLead()
+			local view = ProfileController.Get()
+			t.Check("the lead is in the world and the save's copy is here", lead ~= nil and view ~= nil)
+			if lead == nil or view == nil then
+				return
+			end
+			local was = lead:GetAttribute("Voidkin") :: string
+			local def = lead:GetAttribute("Def")
+			-- A second Voidkin free to lead: one owned, or one given.
+			local other: string? = nil
+			for id in view.Voidkin do
+				if id ~= was and Read.Role(view, id) == "" then
+					other = id
+					break
+				end
+			end
+			for _, give in { "pip", "kirra", "rook" } do
+				if other ~= nil or give == def then
+					continue
+				end
+				local given = t.Server("VoidkinGive", give)
+				local id = if type(given) == "table" and given.Ok == true then given.Id else nil
+				local arrived = type(id) == "string" and waitFor(t, 2, function(): boolean
+					local now = ProfileController.Get()
+					return now ~= nil and now.Voidkin[id] ~= nil
+				end)
+				local now = ProfileController.Get()
+				if arrived and now and Read.Role(now, id) == "" then
+					other = id
+				end
+			end
+			t.Check("a second Voidkin, free to lead", other ~= nil)
+			if other == nil then
+				return
+			end
+			t.Check("no button for the next while the lead stands", not parts.Next.Visible)
+			-- The fall: down, then home on its plot, healing, with its time.
+			t.Check("the lead falls", t.Server("FightHealth", 0).Ok == true)
+			t.Check("the card says it's down", waitFor(t, 1, function(): boolean
+				return parts.Lead:GetAttribute("Status") == "Down"
+			end), tostring(parts.Lead:GetAttribute("Status")))
+			t.Check("then it's home", waitFor(t, Combat.Lead.Leave + 1, function(): boolean
+				local fallen = myLead()
+				return fallen ~= nil and fallen:GetAttribute("State") == "Home"
+			end))
+			local plot = Players.LocalPlayer:GetAttribute("Plot")
+			local fallen = myLead()
+			t.Check("on its plot", fallen ~= nil and Markers.OnPlot(if type(plot) == "number" then plot else nil, fallen:GetPivot().Position))
+			t.Check("the card says it's healing at home, with its time", waitFor(t, 1, function(): boolean
+				local status = parts.Lead:GetAttribute("Status")
+				return type(status) == "string" and status:match("^Healing at home %d+:%d%d$") ~= nil
+			end), tostring(parts.Lead:GetAttribute("Status")))
+			local line = (parts.LeadHealthText :: TextLabel).Text
+			t.Check("in its health line", line == parts.Lead:GetAttribute("Status"), line)
+			local first = parts.LeadHealth:GetAttribute("Share") :: number
+			t.Wait(1.2)
+			local later = parts.LeadHealth:GetAttribute("Share") :: number
+			t.Check("its bar fills as it heals", later > first, string.format("%.3f to %.3f", first, later))
+			local foot = parts.Lead.AbsolutePosition.Y + parts.Lead.AbsoluteSize.Y
+			t.Check("the button for the next shows under the card", parts.Next.Visible and parts.Next.AbsolutePosition.Y >= foot - 1, string.format("%.0f, the card's foot %.0f", parts.Next.AbsolutePosition.Y, foot))
+			lintClean(t, "a fallen lead's card")
+			-- The next lead: the button opens the Voidkin screen, where another goes out at once.
+			t.Check("the button opens the Voidkin screen", Button.Press(parts.Next :: TextButton) and waitFor(t, 1, function(): boolean
+				return Screen.Current() == "Voidkin"
+			end), tostring(Screen.Current()))
+			local fallenRow = screenButton("Voidkin", "List", was)
+			t.Check("the fallen one's row can't be pressed", fallenRow ~= nil and Button.State(fallenRow) == "Disabled", if fallenRow then Button.State(fallenRow) else "no row")
+			local free = screenButton("Voidkin", "List", other)
+			t.Check("another's can", free ~= nil and Button.State(free) ~= "Disabled", if free then Button.State(free) else "no row")
+			if free then
+				Button.Press(free)
+			end
+			t.Check("the next lead goes out at once", waitFor(t, 2, function(): boolean
+				local now = myLead()
+				return now ~= nil and now:GetAttribute("Voidkin") == other and now:GetAttribute("State") ~= "Home"
+			end))
+			Screen.Close()
+			t.Check("the card is the new lead's, standing", waitFor(t, 1, function(): boolean
+				return parts.Lead:GetAttribute("Status") == "" and parts.Lead:GetAttribute("Down") == false
+			end), tostring(parts.Lead:GetAttribute("Status")))
+			t.Check("and the button's gone", not parts.Next.Visible)
+			local back = t.Server("Act", "SetLead", { Voidkin = was })
+			t.Check("the fallen one can't go out until it's whole", type(back) == "table" and back.Ok == false and back.Error == "Healing", if type(back) == "table" then tostring(back.Error) else "")
+			-- The first lead back for the next case.
+			t.Server("LeadHeal")
+			local put = t.Server("Act", "SetLead", { Voidkin = was })
+			t.Check("whole, it leads again", type(put) == "table" and put.Ok == true, if type(put) == "table" then tostring(put.Error) else "")
+			t.Check("back by the avatar", waitFor(t, 2, function(): boolean
+				local now = myLead()
+				return now ~= nil and now:GetAttribute("Voidkin") == was
+			end))
 		end,
 	},
 	{

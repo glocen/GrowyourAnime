@@ -172,6 +172,14 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 	Markers.Stamp(battery, "Battery", { Plot = number })
 	-- The Festival Door, right of the Breaker and level with it, in view from the spawn.
 	Markers.Stamp(door(m, "Festival Door", at * CFrame.new(WorldConfig.Grey.Door.DoorAt, 0, front + 12)), "FestivalDoor", { Plot = number })
+	-- The Training machine (TR12), left of the Breaker as the door is right of it: a box, and its pad on the spawn's side,
+	-- where a fallen lead comes home and trains (FightService).
+	local training = WorldConfig.Grey.Training
+	local machineAt = at * CFrame.new(-WorldConfig.Grey.Door.DoorAt, 0, front + 12)
+	local machine = model(m, "Training machine", machineAt)
+	block(machine, "Body", training.Size, machineAt * CFrame.new(0, training.Size.Y / 2, 0), GREY.Machine)
+	block(machine, "Pad", Vector3.new(4, 0.4, 4), machineAt * CFrame.new(0, 0.2, training.Spot), GREY.Bay)
+	Markers.Stamp(machine, "Training", { Plot = number })
 	-- The owner arrives behind it all, facing the Breaker.
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "Spawn"

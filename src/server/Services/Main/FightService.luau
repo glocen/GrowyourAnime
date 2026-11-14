@@ -24,15 +24,18 @@ local Enemies = require(Shared.Definitions.Enemies)
 local Passives = require(Shared.Definitions.Passives)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Combat = require(Shared.Config.Combat)
+local WorldConfig = require(Shared.Config.World)
 local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
 local Stats = require(Shared.Rules.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
+local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 
-export type State = "Idle" | "Flinch" | "Down" | "Reset"
+-- "Home": a fallen lead on its plot, healing and waiting for its player (TR12), never in a fight.
+export type State = "Idle" | "Flinch" | "Down" | "Reset" | "Home"
 
 export type Fighter = {
 	Id: string,
@@ -79,7 +82,7 @@ local FightService = {
 }
 
 FightService.Fell = Signal.new() -- (fighter, hitters: { Player }) once a fighter falls; a Shade is gone FadeSeconds later
-FightService.Rose = Signal.new() -- (fighter) a lead back up at its avatar's side
+FightService.Rose = Signal.new() -- (fighter) a lead up again: home with its player, or brought back by a test
 
 local GROUP_FIGHTERS = "Fighters"
 local GROUP_AVATARS = "Avatars"
@@ -110,7 +113,7 @@ local function distance(a: BasePart, b: BasePart): number
 end
 
 local function standing(f: Fighter?): boolean
-	return f ~= nil and fighters[f.Id] == f and f.State ~= "Down" and f.State ~= "Reset"
+	return f ~= nil and fighters[f.Id] == f and f.State ~= "Down" and f.State ~= "Reset" and f.State ~= "Home"
 end
 
 local function setState(f: Fighter, state: State, untilTime: number?)
@@ -134,7 +137,7 @@ local function setHealth(f: Fighter, health: number)
 	-- A Reduction passive's cue holds while its condition does (FighterController/Passives): Rook's shell under 30%.
 	local row = passiveOf(f)
 	if row and row.Kind == "Reduction" then
-		f.Model:SetAttribute("PassiveOn", Passive.Holds(row, health, f.Block.Health))
+		f.Model:SetAttribute("PassiveOn", f.State ~= "Home" and Passive.Holds(row, health, f.Block.Health))
 	end
 end
 
@@ -824,7 +827,7 @@ function fall(f: Fighter, at: number)
 		end
 	end
 	if f.Side == "Lead" then
-		setState(f, "Down", at + Combat.Lead.DownSeconds)
+		setState(f, "Down", at + Combat.Lead.Leave) -- then home on its plot (goHome)
 	else
 		setState(f, "Down")
 		task.delay(if f.Kind == "Keeper" then Combat.Keeper.FadeSeconds else Combat.Shade.FadeSeconds, remove, f)
@@ -855,6 +858,56 @@ local function rise(f: Fighter, at: number)
 	f.Model:SetAttribute("Ready", 0)
 	setState(f, "Idle")
 	FightService.Rose:Fire(f)
+end
+
+-- Where a fallen lead waits on its plot (TR12): on the Training machine's pad (Config.World.Grey.Training), facing it;
+-- else on the plot's spawn; nil when its player has no plot (it then waits where it fell).
+local function homeSpot(f: Fighter): CFrame?
+	local plot = if f.Owner then f.Owner:GetAttribute("Plot") else nil
+	if type(plot) ~= "number" then
+		return nil
+	end
+	local machine = Markers.Find("Training", { Plot = plot })
+	if machine then
+		local at = Markers.At(machine)
+		local spot = (at * CFrame.new(0, 0, WorldConfig.Grey.Training.Spot)).Position + Vector3.new(0, LEAD_ROOT_HEIGHT, 0)
+		return CFrame.lookAt(spot, Vector3.new(at.Position.X, spot.Y, at.Position.Z))
+	end
+	local spawn = Markers.Find("Spawn", { Plot = plot })
+	return if spawn then Markers.At(spawn) + Vector3.new(0, LEAD_ROOT_HEIGHT, 0) else nil
+end
+
+-- The fall's end (docs/design.md, "A fall sends it home"): it leaves as light (the client's), and is home on its plot,
+-- healing from nothing to full in Home.Fallen seconds. StateUntil is when it's whole, for the card's time.
+local function goHome(f: Fighter, at: number)
+	local spot = homeSpot(f)
+	if spot then
+		f.Root.AssemblyLinearVelocity = Vector3.zero
+		f.Root.CFrame = spot
+	end
+	f.ReadyAt = {}
+	f.Model:SetAttribute("Ready", 0)
+	setHealth(f, 0)
+	setState(f, "Home", at + Combat.Lead.Home.Fallen)
+end
+
+-- Whether a player stands on their own plot (Markers.OnPlot).
+local function playerHome(player: Player?): boolean
+	local plot = if player then player:GetAttribute("Plot") else nil
+	local root = if player then Parts.Root(player.Character) else nil
+	return Markers.OnPlot(if type(plot) == "number" then plot else nil, if root then root.Position else nil)
+end
+
+-- A lead at home: it heals to full at the fallen rate, then waits; once it's whole and its player is on their plot, it's
+-- up and follows them.
+local function thinkHome(f: Fighter, at: number, dt: number)
+	local most = f.Block.Health
+	local share = Carry.Mend(if most > 0 then f.Health / most else 0, dt, Combat.Lead.Home.Fallen)
+	setHealth(f, share * most)
+	if Carry.Fallen(f.State, 0, playerHome(f.Owner), Combat.Lead.Leave, share >= 1) == "Idle" then
+		setState(f, "Idle")
+		FightService.Rose:Fire(f)
+	end
 end
 
 -- The replay's hold (FightService.Force): true while `f` is held, facing its target and pressing its action on time. A
@@ -1117,8 +1170,16 @@ local function step()
 	local at = now()
 	for _, f in fighters do
 		if f.State == "Down" then
-			if f.Side == "Lead" and at >= f.StateUntil then
-				rise(f, at)
+			if f.Side == "Lead" and Carry.Fallen("Down", at - (f.StateUntil - Combat.Lead.Leave), false, Combat.Lead.Leave, false) == "Home" then
+				goHome(f, at)
+			end
+			continue
+		end
+		if f.State == "Home" then
+			if at >= f.NextThink then
+				local dt = Combat.Think + (at - f.NextThink)
+				f.NextThink = at + Combat.Think
+				thinkHome(f, at, dt)
 			end
 			continue
 		end
@@ -1155,8 +1216,9 @@ local function step()
 	end
 end
 
--- A lead for `player`, from its stat block, beside the avatar. Replaces any lead the player had.
-function FightService.SpawnLead(player: Player, block: Stats.Block, title: string): Fighter
+-- A lead for `player`, from its stat block, beside the avatar, at `share` of its most health (what it carried in: TR12;
+-- whole when nil). Replaces any lead the player had.
+function FightService.SpawnLead(player: Player, block: Stats.Block, title: string, share: number?): Fighter
 	local old = leads[player]
 	if old then
 		remove(old)
@@ -1165,6 +1227,9 @@ function FightService.SpawnLead(player: Player, block: Stats.Block, title: strin
 	local avatar = Parts.Root(player.Character)
 	model:PivotTo(if avatar then besideAvatar(avatar, player) else CFrame.new(0, 10, 0))
 	local f = register(model, "Lead", "Lead", block.Def, block, Actions.KitOf(block.Def), title, player, rig)
+	if share and share < 1 then
+		setHealth(f, block.Health * math.clamp(share, 0, 1))
+	end
 	leads[player] = f
 	return f
 end
@@ -1214,6 +1279,40 @@ function FightService.Defeat(f: Fighter)
 	if fighters[f.Id] == f and f.State ~= "Down" then
 		setHealth(f, 0)
 		fall(f, now())
+	end
+end
+
+-- Whether `f` is up and in the world: not down, not at home, not walking home after giving up.
+function FightService.Standing(f: Fighter?): boolean
+	return standing(f)
+end
+
+-- Whether `player` is in combat (TR12: the lead never changes in one): in a keeper's try, or their lead standing with a
+-- target, or a Shade's target.
+function FightService.InCombat(player: Player): boolean
+	if player:GetAttribute("Try") ~= nil then
+		return true
+	end
+	local lead = leads[player]
+	if lead == nil or not standing(lead) then
+		return false
+	end
+	if standing(lead.Target) then
+		return true
+	end
+	for _, other in fighters do
+		if other.Side == "Shade" and other.Target == lead and standing(other) then
+			return true
+		end
+	end
+	return false
+end
+
+-- Studio's tests: a fallen lead back up at its avatar's side at once, whole, as the old quick return was (the way home
+-- takes a walk to the plot, which a case on the test pad can't make).
+function FightService.Recall(f: Fighter)
+	if fighters[f.Id] == f and f.Side == "Lead" and (f.State == "Down" or f.State == "Home") then
+		rise(f, now())
 	end
 end
 

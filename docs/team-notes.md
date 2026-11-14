@@ -19,7 +19,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber, TR8:** the paper's drift is delivered, as `paper` in `build/handoff/LanternRow/plan.json` (AR5, "The paper's emitter"; 8902d2c).
 - **Delivery 4, Scarf Step's look:** the grey rows are delivered in one file for both of the skewer's takes, `build/handoff/Kirra/fx/KirraScarfStep.rows.json`. Research has accepted the measured B, her path past the Shade's flank (AR10, section 5, with Faber's five points). **For Faber:** the blockout in the replay goes first, when you give me the turn. The Blender preview at 64 px waits for memory.
 - **AR11, Watt:** the sheet is drawn and passed the content check and research's verdict (competent, take A, one fix for the model; AR11, section 1).
-- **Next:** Scarf Step's blockout; Watt's model after the sheet's verdict; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
+- **AR12, the HUD's colour:** delivery 1 is in `build/handoff/UI/hud/colour/` for research's verdict, then the director's pick. It has three directions (Signal, Conduit, Glow), the readout and the eye redrawn as one family, and their proposed place under the lead's card. Content check PASS. One open call: the Haymaker icon's read (AR12, delivery 1).
+- **Next:** Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 

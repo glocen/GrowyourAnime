@@ -5244,7 +5244,51 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 
 **Time it:** forecast 2 to 3 hours for the sheet.
 
-**Status:** requested, 2026-11-14, night.
+**Delivery 1, the direction sheet** (Modulo, 2026-11-14, 22:57 to 23:35, about 40 minutes by the clock, 10 of them waiting on memory): in `build/handoff/UI/hud/colour/`, drawn by `tools/blender/hud_colour_sheet.py`.
+- **The files:**
+  - `hud_colour_A.png`, `_B.png` and `_C.png`: one direction each, over a dusk street and a noon street, at phone landscape, 2 px a point.
+  - `hud_colour_glance.png`: the three side by side at 1 px a point, with `hud_colour_glance_deuteranopia.png` beside it.
+  - `hud_colour_parts.png`: the new parts up close.
+- **The phone:** the layout is `Config.Hud`'s, inside the safe area measured on Faber's iPhone capture. Roblox's bar, the thumbstick, the jump button and the island are plain stand-ins, drawn only for the room they take.
+- **The accents,** each on its own icon:
+  - **Power:** Charge `#FFE266`, on the bolt. It's electricity's own yellow, the same meaning, so not a reuse. The Base's dock button wears it, because the base is the plant.
+  - **Credits:** a new teal, `#40DCC6`, on the coin.
+  - **Voidkin:** the void's lavender `#DCCBFF`, on the shard. It's the light a shard opens with, Void Violet's accent. The hint wears it when it points at shards.
+  - The lead keeps its rarity and its type. The readout and the eye are ivory.
+- **The measures,** in CIEDE2000:
+  - The teal sits 14.8 from the nearest taken colour (Good); the lavender 13.0 (Epic).
+  - Between the accents, plain / deuteranopia / protanopia: Power–Credits 36 / 33 / 24, Power–Voidkin 50 / 45 / 46, Credits–Voidkin 36 / 12 / 21.
+  - In the deuteranopia view, Credits and Voidkin both go pale, one grey and one blue-white, so they part by icon and place there.
+  - Under deuteranopia the lavender falls on Frost (0.7), which shows only in damage numbers.
+  - **One call for research:** the lavender is Void Violet's own accent, used here for the same thing, the void. If that counts as a reuse, Voidkin needs another colour.
+- **The axis** is how far the colour goes. Common keeps no glow in any direction (its first glow is Rare's).
+  - **A, Signal:** accents only. The panels stay Graphite.
+  - **B, Conduit:** each piece's bold rim, thread and base light take its system's colour. The rarity's glow is harder, from a halo. The type's stud is bigger, rimmed and lit in its type. From B on, Common's trim is a step brighter.
+  - **C, Glow:** B, plus a light field behind each piece, bodies warmed toward their colour, and the rarity lighting the card from behind.
+- **The Power pill** reads generation first, then what's used, with a thread for the share. Over generation, it shows the battery's mark, and the thread's end turns to dashes: the battery's part. The words are seeds until TR18.
+- **The readout and the eye, redrawn as one family:** two plates cut like the dock's buttons.
+  - **The readout,** 58 pt, holds the lead's signature's own icon: Haymaker as B5's stamp come down, with speed lines and floor runs; Held Note as the source and two crests. Its well fills from the foot like a conduit, its front leaning as the bars do. Ready, it's full and white-hot with a glow, its icon dark on the light: the loudest piece on the HUD.
+  - **The eye,** 44 pt: on, it's open, with a lit ivory rim and foot; off, it's shut with lashes, and dim.
+- **Their place, proposed:** under the lead's card, the lead's own corner. The readout sits 10 pt under the card, the eye beside it.
+  - That puts them 59 pt above the thumbstick's ring and across the screen from the jump button.
+  - The other place I weighed was the right edge, above the jump button. It's under the right thumb's travel, the problem the capture shows.
+- **Stand-ins on the sheet:**
+  - The noon street is drawn, not a render.
+  - Lyric's face stands in for a Mythical lead.
+  - Blender's typeface stands in for the game's.
+  - The kW numbers are invented until TR18.
+- **Fixed before delivery,** tier 1, in my own review:
+  - The Haymaker icon read as a cake with candles, because the streaks touched the square. It's now the stamp's frame and plate, with its speed lines apart and its floor runs going out.
+  - The charging fill read as olive. It's lifted.
+- **Checks:** the content check is PASS, 2026-11-14.
+  - Roblox's bar, stick, jump and island stay out of any uploaded HUD image.
+  - Each icon is checked again at 64 px before its upload.
+- **Open, for research's verdict:** the Haymaker icon has had two fix rounds, and at glance size it can still read as a cake with candles. Upright lines over a box are the trouble. Options, rather than a third patch:
+  - the stamp mid-fall over its own shadow, with no lines;
+  - the stamp coming down on a slant, its lines on the slant;
+  - Rook's fist, if the readout should name the fighter rather than the effect.
+
+**Status:** delivery 1, for research's verdict, then the director's pick, 2026-11-14, 23:35.
 
 ## Later, by ground
 

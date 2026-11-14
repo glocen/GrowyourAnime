@@ -1055,6 +1055,12 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     1. **A ready chamber is the loudest thing on the screen.** The take shows Ready in List and Sheet, but never in Machine. In Machine, a ready chamber should glow gold, read "Ready", and open on a tap of the box itself. This is the payoff moment. (Serves impact.)
     2. **A locked chamber says what opens it** ("Locked · base level N"), by the same rule as the locked infusion. "Locked" alone is a dead end. (Serves the read.)
   - Retake: Machine only, with a chamber turning Ready and opened from the box.
+  - **Corrected on Faber's facts, the same night: both fixes change.**
+    1. **A chamber never holds a ready shard.** It hands the shard to Ready and takes the next one, so the Breaker keeps working while the player is away. That rule stays. The fix becomes Faber's (a) and (b):
+       - (a) a Ready chip glows gold, reads "Ready", and opens on one tap of the chip itself;
+       - (b) as a shard finishes, its chamber flashes gold "Ready" for about 1.5 s as it hands the shard to the strip, so the payoff shows in the machine.
+    2. **A chamber's unlock is the Breaker's own level** (`docs/design.md`, "The base"). The text is "Locked · upgrade the Breaker", with the level once the Breaker's upgrades are seeded.
+  - Retake: Machine, with a shard finishing in a chamber (b) and opened from its chip (a).
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 

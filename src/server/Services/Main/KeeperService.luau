@@ -8,8 +8,12 @@
 --   lead down at RingExit, by the shortcut. The lead's fall loses it: after LossPause a fade sets them back before the
 --   keeper's gate. A leave or a respawn ends it with nothing saved.
 -- * The shortcut pad sets whoever steps on it down on their own plot. It's reached only beyond the ring, so only by a win.
+-- * A win rests this player's keeper Config.World.Row.Back.Keeper, kept in their save (TR10, Rules.Progress): a try asked
+--   meanwhile is refused "Resting". The client hides the gate's Challenge (workspace.Keeper.Challenge) for them meanwhile
+--   and shows the time left at the gate (DownController). A loss rests nothing.
 -- Studio: NL_Debug:Invoke("Keeper", who) the try's state; ("KeeperTry", who) a try as if the gate were asked;
--- ("KeeperEnd", who, "Win" | "Loss") the keeper or the lead falls at once; ("KeeperForce", who, action, every?) the try's
+-- ("KeeperEnd", who, "Win" | "Loss") the keeper or the lead falls at once; ("KeeperRest", who, seconds) this player's
+-- keeper resting that long from now, 0 to have it back at once; ("KeeperForce", who, action, every?) the try's
 -- keeper pressing it every `every` seconds (6) where it stands, its lead set back to the action's Range and held still
 -- facing it, kept over half its health, for a take (AR8, the keeper's signature); ("KeeperForce", who) lets both go.
 
@@ -27,6 +31,7 @@ local Combat = require(Shared.Config.Combat)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Progress = require(Shared.Rules.Progress)
+local Profile = require(Shared.Data.Profile)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -235,6 +240,11 @@ function KeeperService.Try(player: Player): { [string]: any }
 		return { Ok = false, Error = "InTry" }
 	elseif ring == nil or plot == nil or copy == nil then
 		return { Ok = false, Error = "NoRing" }
+	end
+	local data = DataService.Get(player)
+	local resting = if data then Progress.Resting(data, (ring :: any).Ground, os.time()) else 0
+	if resting > 0 then
+		return { Ok = false, Error = "Resting", Left = resting }
 	elseif lead == nil or not FightService.Standing(lead) then
 		return { Ok = false, Error = "NoLead" }
 	end
@@ -349,6 +359,7 @@ local function state(who: any): any
 		FromBefore = from(before),
 		FromHome = from(WorldService.SpawnOf(player)),
 		Wins = if record then record.KeeperWins else 0,
+		Resting = if data and ring then Progress.Resting(data, (ring :: any).Ground, os.time()) else 0,
 		Radius = if ring then (ring :: any).Radius else 0,
 	}
 end
@@ -410,6 +421,28 @@ function KeeperService.Start()
 		DebugService.Register("KeeperTry", function(who: any): any
 			local player = DebugService.ResolvePlayer(who)
 			return if player then KeeperService.Try(player) else { Ok = false, Error = "NoPlayer" }
+		end)
+		DebugService.Register("KeeperRest", function(who: any, seconds: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil then
+				return { Ok = false, Error = "NoPlayer" }
+			elseif ring == nil then
+				return { Ok = false, Error = "NoRing" }
+			elseif type(seconds) ~= "number" or seconds < 0 then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			local ground = (ring :: any).Ground
+			return DataService.Change(player, "KeeperRest", function(draft)
+				local record = draft.Progress.Grounds[ground]
+				if record == nil and seconds > 0 then
+					record = { Opened = os.time(), KeeperWins = 0, Back = nil } :: Profile.GroundProgress
+					draft.Progress.Grounds[ground] = record
+				end
+				if record then
+					record.Back = if seconds > 0 then os.time() + seconds else nil
+				end
+				return { Ok = true, Resting = Progress.Resting(draft, ground, os.time()) }
+			end)
 		end)
 		DebugService.Register("KeeperEnd", function(who: any, how: any): any
 			local player = DebugService.ResolvePlayer(who)

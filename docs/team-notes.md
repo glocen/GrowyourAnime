@@ -11,11 +11,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **In code, offline checks passing, Studio waiting on the MCP:** TR5's frames, TR6, TR7's ease taken out, TR11 (spectate, 9ff9894), and TR12 (health carries, c0f0478 and 1be04e6). Type check 0 new, logic 4391 offline. Every self-test run and capture waits on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
-- **For research, TR12's numbers** (`docs/test-requests.md`, TR12's status):
-  - Regen 20 meets the target (62% after Pack 2, 1 to 3 falls in 100) but refills in 40 s. Shades ×0.5 with Regen 4 gives a slower creep at about 54%.
-  - Training with no cap reaches level 60 in a week from any level.
-- **Next:** TR13's looks in grey beside the current ring, built offline and judged once Studio is back, then TR10, TR8 and TR9.
+- **In code, offline checks passing, Studio waiting on the MCP:** TR5's frames, TR6, TR7's ease taken out, TR11 (spectate), TR12 (health carries, its numbers settled in ea661cb), TR13 (the ring's three looks), and TR10 (the cooldowns, with their grey marker in three layouts). Type check 0 new, logic 4440 offline. Every self-test run and capture waits on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
+- **For research, TR10's numbers** (`docs/test-requests.md`, TR10's status): with the seeds, the Jewels' sources (elite and keeper kills) fall 21% alone and 35% on a full server. The keeper's 5 minutes halves its kills; 3 minutes is under a lap.
+- **Next:** "Content as data", then TR8 and TR9. TR14 rides with Kirra's install, and TR15 comes after TR9.
 - **What I'd change:**
   1. The keeper's signature turns the player's camera up 18° through its hold (`Effects.KeeperSignature.Lift`), a camera move in a fight: ask the director with the shake and the fade's turn.
   2. A player who owns one Voidkin is alone on Lantern Row after a fall: a chip pointing to the gate's door home.

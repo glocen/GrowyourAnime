@@ -34,6 +34,15 @@ export type Drop = {
 	Shard: string, -- the shard the roll won, or ""
 }
 
+-- One line of a kind's loot card (TR10): Kind "Credits", "Xp" or "Shard"; Shard, the shard's id on its line, else "".
+export type Line = { Kind: string, Amount: number, Chance: number, Shard: string }
+
+-- The chance a kind of enemy drops its ground's Standard shard, as Roll draws it: ShardChance times its share, at most 1.
+function Drops.Chance(kind: string): number
+	local share = DropsConfig.Share[kind]
+	return if share then math.min(1, DropsConfig.ShardChance * share) else 0
+end
+
 -- What a kind of enemy at `level` in ground `ground` drops for a `roll` in [0, 1), or nil and why not. Pure: nothing is
 -- written. The first kill's shard is added by Give, which knows the save.
 function Drops.Roll(kind: any, level: any, ground: any, roll: any): (Drop?, string?)
@@ -47,9 +56,24 @@ function Drops.Roll(kind: any, level: any, ground: any, roll: any): (Drop?, stri
 	local drop: Drop = {
 		Credits = round(DropsConfig.CreditsPerKillPerG * g * share),
 		Xp = round(GrowthConfig.XpPerKillPerG * g * share),
-		Shard = if roll < math.min(1, DropsConfig.ShardChance * share) then shard else "",
+		Shard = if roll < Drops.Chance(kind) then shard else "",
 	}
 	return drop, nil
+end
+
+-- What a kind of enemy at `level` in ground `ground` drops, each line with its chance, for the card shown while it's down
+-- (TR10): Roll's own numbers, never copied into the UI. Credits go to every player whose lead hit it, the experience to
+-- their lead. Empty when Roll would give nothing.
+function Drops.Card(kind: any, level: any, ground: any): { Line }
+	local drop = Drops.Roll(kind, level, ground, 0)
+	if drop == nil then
+		return {}
+	end
+	return {
+		{ Kind = "Credits", Amount = drop.Credits, Chance = 1, Shard = "" },
+		{ Kind = "Xp", Amount = drop.Xp, Chance = 1, Shard = "" },
+		{ Kind = "Shard", Amount = 1, Chance = Drops.Chance(kind), Shard = drop.Shard },
+	}
 end
 
 -- The fall written into one player's save: Credits, the lead's experience (levels as far as it goes), the shard the roll

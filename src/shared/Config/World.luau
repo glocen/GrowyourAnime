@@ -57,7 +57,12 @@ return {
 		Ring = 5, -- the Lamplighter's ring, 80 studs across, behind the keeper's gate
 		Beyond = 1.5, -- from the ring's far edge to Drum Court's gate, shut, in view
 		Spread = 7, -- studs between a pack's Shades at its spawn (inside Combat.Shade.Notice, so one notices for all)
-		Respawn = 15, -- seconds after a pack's last Shade falls until it's back, the elite's too (the builder's seed, 2026-11-12)
+		Respawn = 15, -- seconds after a pack's last Shade falls until it's back (the builder's seed, 2026-11-12)
+		-- TR10 (the director, 2026-11-14: "mini boss/boss need a server cooldown", the keeper's "Per player"): seconds before
+		-- the elite and the keeper are back (Rules.Cooldown). The elite's is the server's, from its fall, since its fight is
+		-- shared; the keeper's is each player's own, from their win, kept with their save (a lost try may try again at
+		-- once). Research's seeds (tier 2), tuned by playing.
+		Back = { Elite = 120, Keeper = 300 },
 	},
 
 	-- How the grey build stands up: studs, not times.

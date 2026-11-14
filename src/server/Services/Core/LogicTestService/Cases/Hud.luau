@@ -372,4 +372,18 @@ return {
 			t.Check("the eye a whole tap target (Theme.Size.Tap, 52)", HudConfig.Spectate.Size >= 52)
 		end,
 	},
+	{
+		Name = "HUD: TR10, a drop's chance as the loot card writes it, never rounded up",
+		Run = function(t: any)
+			t.Equal("certain", Hud.Chance(1), "100%")
+			t.Equal("the keeper's shard", Hud.Chance(0.36), "36%")
+			t.Equal("the elite's shard, cut", Hud.Chance(0.144), "14%")
+			t.Equal("short of certain never reads 100%", Hud.Chance(0.999), "99%")
+			t.Equal("under 10, a tenth", Hud.Chance(0.036), "3.6%")
+			t.Equal("a whole one under 10", Hud.Chance(0.04), "4%")
+			t.Equal("a chance there is never reads 0%", Hud.Chance(0.0001), "<0.1%")
+			t.Equal("none", Hud.Chance(0), "0%")
+			t.Equal("not a number", Hud.Chance(0 / 0), "0%")
+		end,
+	},
 }

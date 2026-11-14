@@ -473,12 +473,18 @@ def game():
     growth = lua("src/shared/Config/Growth.luau")
     early = [int(x) for x in re.search(r"Early = \{([\d, ]*)\}", growth)[1].replace(" ", "").split(",") if x]
     training = re.search(r"Training = \{ Share = ([\d.]+)", growth)
-    drops = re.search(r"Share = \{ Ordinary = ([\d.]+), Elite = ([\d.]+)", lua("src/shared/Config/Drops.luau"))
+    back = re.search(r"Back = \{ Elite = ([\d.]+), Keeper = ([\d.]+) \}", world)
+    respawn = re.search(r"Respawn = ([\d.]+)", world)
+    drops_lua = lua("src/shared/Config/Drops.luau")
+    drops = re.search(r"Share = \{ Ordinary = ([\d.]+), Elite = ([\d.]+), Keeper = ([\d.]+)", drops_lua)
     return dict(kinds=kinds, stops=stops, spacing=float(row[2]) * 16, notice=notice, early=early,
                 regen=float(regen[1]) if regen else None,
                 regen_class={k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)", regen[2])} if regen else {},
                 training=float(training[1]) if training else None,
                 drops={"Pack": float(drops[1]), "Elite": float(drops[2])},
+                keeper_share=float(drops[3]), shard_chance=float(re.search(r"ShardChance = ([\d.]+)", drops_lua)[1]),
+                back={"Elite": float(back[1]), "Keeper": float(back[2])} if back else None,
+                respawn=float(respawn[1]),
                 xp_per_g=float(re.search(r"XpPerKillPerG = ([\d.]+)", growth)[1]))
 
 
@@ -648,6 +654,101 @@ def report_training():
     print(f"From level 1 to the last level, {top}: {high} hours in the machine ({high / 24:.0f} days).")
 
 
+# ---------------------------------------------------------------- the elite's and the keeper's cooldowns (TR10)
+
+HOME_AND_BACK = 10  # the builder's guess: the shortcut home after a win, then the plot's Festival Door back to the gate
+
+
+def laps(players, hours, elite_back, keeper_back, gm, rng, wait_keeper=False, warm=1):
+    """Players running Lantern Row at once, each from a random start within a lap, for `hours` after `warm` hours (so
+    the start's bunching is gone): every pack up when reached (their
+    Respawn is short against a lap), the elite shared on the server's one timer (one that finds it fighting joins and is
+    paid in full; one that finds it down goes on), each player's own keeper resting from their win (one that finds it
+    resting walks back down the street, or with wait_keeper waits it out). Kill times are the seeds' (enemy.ttk), a pack's
+    Shades one after another; the walks are section 9's. Returns per player an hour: laps, pack, elite and keeper kills."""
+    import heapq
+    ttk = S["enemy"]["ttk"]
+    fade = 4.0  # a keeper's try: its fades and its win's pause
+    street = (gm["spacing"] * 0.4 + gm["spacing"] * (len(gm["stops"]) - 1)) / 16
+    begin, end = warm * 3600, (warm + hours) * 3600
+    events = [(rng.uniform(0, 240), p, 0) for p in range(players)]
+    heapq.heapify(events)
+    elite_fight, elite_down = -1.0, -1.0
+    rest = [-1.0] * players
+    count = [dict(laps=0, Pack=0, Elite=0, Keeper=0) for _ in range(players)]
+
+    def walk(index):
+        return (gm["spacing"] * (0.4 if index == 0 else 1) - gm["notice"]) / 16 + rng.uniform(0.5, 4)
+
+    while events:
+        t, p, i = heapq.heappop(events)
+        if t >= end:
+            continue
+        stop = gm["stops"][i]
+        nxt = (i + 1) % len(gm["stops"])
+        on = 1 if t >= begin else 0
+        if stop["kind"] == "Pack":
+            count[p]["Pack"] += stop["count"] * on
+            t += stop["count"] * ttk["ordinary"]
+        elif stop["kind"] == "Elite":
+            if t < elite_fight:  # joins the fight under way
+                count[p]["Elite"] += on
+                t = elite_fight
+            elif t >= elite_down:
+                count[p]["Elite"] += on
+                elite_fight = t + ttk["elite"]
+                elite_down = elite_fight + elite_back
+                t = elite_fight
+        else:  # the keeper
+            count[p]["laps"] += on
+            if t < rest[p] and wait_keeper:
+                t = rest[p]
+            if t >= rest[p]:
+                count[p]["Keeper"] += on
+                t += ttk["keeperByGround"][0] + fade
+                rest[p] = t + keeper_back
+                t += HOME_AND_BACK
+            else:
+                t += street
+            heapq.heappush(events, (t + walk(0), p, 0))
+            continue
+        heapq.heappush(events, (t + walk(nxt), p, nxt))
+    return [{k: v / hours for k, v in c.items()} for c in count]
+
+
+def report_cooldowns(runs=40):
+    import random
+    gm = game()
+    seeds = gm["back"] or {"Elite": 120, "Keeper": 300}
+    share = {"Pack": gm["drops"]["Pack"], "Elite": gm["drops"]["Elite"], "Keeper": gm["keeper_share"]}
+    shard = gm["shard_chance"]
+    print("\n== 11. The elite's and the keeper's cooldowns (TR10): what an hour on Lantern Row gives ==")
+    print("A model, not a measurement: the seeds' kill times, section 9's walks, every pack up when reached; the elite on the")
+    print(f"server's one timer, each player's keeper on their own. A win's way home and back: {HOME_AND_BACK} s, the builder's guess.")
+    print("Each player starts within a lap of the others; an hour is counted after an hour's warm-up. Income: Credits, against before.")
+    print(f"Today's seeds: the elite back {seeds['Elite']:.0f} s after its fall, the keeper {seeds['Keeper']:.0f} s after each player's win.")
+    print("Elite and keeper kills are the Jewels' source (docs/balance.md), so they're the Jewels' pace; income in Credits.")
+    line("players", "cooldowns", "keeper rests", "laps /h", "elite /h", "keeper /h", "jewel kills /h", "income", "shards /h", w=15)
+    base = {}
+    for players in (1, 4, 8):
+        for name, elite_back, keeper_back, wait in (("before", gm["respawn"], 0, False),
+                                                     ("seeds", seeds["Elite"], seeds["Keeper"], False),
+                                                     ("seeds", seeds["Elite"], seeds["Keeper"], True)):
+            rng = random.Random(11 + players)
+            rows = []
+            for _ in range(runs):
+                rows += laps(players, 1, elite_back, keeper_back, gm, rng, wait_keeper=wait)
+            mean = {k: sum(r[k] for r in rows) / len(rows) for k in rows[0]}
+            income = sum(mean[k] * share[k] for k in share)
+            shards = sum(mean[k] * min(1, shard * share[k]) for k in share)
+            key = players
+            if name == "before":
+                base[key] = (income, mean["Elite"] + mean["Keeper"])
+            rel = f"{income / base[key][0]:.0%}" if key in base else ""
+            line(players, name, "waits" if wait else ("walks back" if keeper_back else "-"), f"{mean['laps']:.1f}",
+                 f"{mean['Elite']:.1f}", f"{mean['Keeper']:.1f}", f"{mean['Elite'] + mean['Keeper']:.1f}", rel, f"{shards:.1f}", w=15)
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -663,3 +764,4 @@ if __name__ == "__main__":
     report_pace()
     report_carry()
     report_training()
+    report_cooldowns()

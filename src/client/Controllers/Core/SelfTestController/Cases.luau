@@ -50,6 +50,7 @@ local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
 local SpectateController = require(script.Parent.Parent.Parent.Main.SpectateController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
+local DownController = require(script.Parent.Parent.Parent.Main.DownController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -919,6 +920,7 @@ return {
 			for _, stop in WorldConfig.Row.Stops do
 				def = if stop.Kind == "Keeper" then stop.Def else def
 			end
+			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper five minutes; this case tries it now.
 			local before = t.Server("Keeper")
 			t.Check("no try yet", before.Ok == true and before.InTry == false)
 			local start = t.Server("KeeperTry")
@@ -1109,7 +1111,9 @@ return {
 				t.Wait(moved + 0.3)
 				t.Near("the shortcut sets the avatar down on its plot (studs off)", t.Server("Keeper").FromHome, 0, SET_DOWN)
 			end
-			-- A loss: the lead falls.
+			-- A loss: the lead falls. The win rested the keeper (TR10): a try meanwhile is refused, then it's back.
+			t.Equal("the win rests the keeper: a try now is refused", t.Server("KeeperTry").Error, "Resting")
+			t.Server("KeeperRest", 0)
 			local again = t.Server("KeeperTry")
 			t.Check("a second try starts", again.Ok == true, tostring(again.Error))
 			if again.Ok ~= true then
@@ -4774,6 +4778,7 @@ return {
 				watch:Disconnect()
 				t.Server("Tune", "Hud.Boss.Keeper", wasKeeper)
 			end
+			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper five minutes; this case tries it now.
 			local start = t.Server("KeeperTry")
 			t.Check("a try starts", start.Ok == true, tostring(start.Error))
 			if start.Ok ~= true then
@@ -5071,6 +5076,116 @@ return {
 			config.Look = was
 			t.Wait(0.1)
 			t.Check("put back, today's ring shows again", well ~= nil and well.Visible and (inPlace == nil or not inPlace.Visible))
+		end,
+	},
+	{
+		-- TR10 (research's entry, 2026-11-14): the elite down shows its marker over its square, with the server's time left
+		-- and its loot's chances from Rules.Drops, in each layout, and the three side by side; this player's keeper resting
+		-- shows at its gate, its Challenge hidden for them, and a try asked meanwhile is refused.
+		Name = "World: TR10, the elite's and the keeper's markers while they're down, and a resting keeper refuses a try",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local config = HudConfig.Down
+			local was = { Layout = config.Layout, Compare = config.Compare, Near = config.Near }
+			local function restore()
+				config.Layout, config.Compare, config.Near = was.Layout, was.Compare, was.Near
+				t.Server("PackBack", "Elite")
+				t.Server("KeeperRest", 0)
+			end
+			local elite = Markers.Find("Elite")
+			t.Check("the elite's square", elite ~= nil)
+			if elite == nil then
+				return
+			end
+			local felled = t.Server("PackDefeat", "Elite")
+			t.Check("the elite falls", felled.Ok == true, tostring(felled.Error))
+			local function plateOf(kind: string, layout: string?): Frame?
+				return DownController.Plate(kind, layout)
+			end
+			local function shows(kind: string, layout: string?): boolean
+				local plate = plateOf(kind, layout)
+				return plate ~= nil and World.Where(plate) ~= nil and ((plate:GetAttribute("Left") or 0) :: number) > 0
+			end
+			t.Check("its marker shows over its square", waitFor(t, REPLICATE, function(): boolean
+				return shows("Elite")
+			end))
+			local plate = plateOf("Elite")
+			if plate == nil then
+				restore()
+				return
+			end
+			local back = WorldConfig.Row.Back.Elite
+			local left = plate:GetAttribute("Left") :: number
+			t.Check("the time left is the server's, from its fall", left > back - 5 and left <= back, `{left} of {back}`)
+			local where = World.Where(plate) :: Vector3
+			local square = Markers.At(elite).Position
+			t.Near("over the square (studs off, flat)", Vector3.new(where.X - square.X, 0, where.Z - square.Z).Magnitude, 0, 0.01)
+			t.Check("above it", where.Y > square.Y + 4)
+			local level = elite:GetAttribute("Level")
+			local ground = elite:GetAttribute("Ground")
+			local chances = {}
+			for _, line in Drops.Card("Elite", level, if type(ground) == "string" then ground else WorldConfig.Row.Ground) do
+				table.insert(chances, tostring(line.Chance))
+			end
+			t.Equal("its card's chances are Rules.Drops'", plate:GetAttribute("Chances"), table.concat(chances, ","))
+			t.Equal("Credits, experience and the shard", plate:GetAttribute("Lines"), 3)
+			t.Wait(1.2)
+			t.Check("it counts down", (plate:GetAttribute("Left") :: number) < left)
+			-- Each layout in the marker's place; the badge's card only near.
+			for _, layout in { "Stack", "Row", "Badge" } do
+				config.Layout = layout
+				t.Check(`{layout}: it shows`, waitFor(t, 0.5, function(): boolean
+					return shows("Elite", layout)
+				end))
+				local each = plateOf("Elite", layout)
+				if each then
+					t.Check(`{layout}: its card`, each:GetAttribute("Card") == (layout ~= "Badge"))
+					t.Check(`{layout}: as tall as it holds`, each.Size.Y.Offset > config.Icon and each.Size.Y.Offset < 260, `{each.Size.Y.Offset}`)
+				end
+			end
+			config.Near = 1e6
+			t.Wait(0.1)
+			local badge = plateOf("Elite", "Badge")
+			t.Check("Badge: its card shows near", badge ~= nil and badge:GetAttribute("Card") == true)
+			config.Near = was.Near
+			-- The three side by side, for one capture.
+			config.Layout = "Stack"
+			config.Compare = true
+			t.Wait(0.1)
+			t.Check("compared: the three show at once", shows("Elite", "Stack") and shows("Elite", "Row") and shows("Elite", "Badge"))
+			config.Compare = false
+			t.Wait(0.1)
+			t.Check("one again", shows("Elite", "Stack") and not shows("Elite", "Row") and not shows("Elite", "Badge"))
+			-- Back: its marker goes.
+			t.Check("the elite is back at once for the test", t.Server("PackBack", "Elite").Ok == true)
+			t.Check("its marker goes", waitFor(t, REPLICATE, function(): boolean
+				return not shows("Elite")
+			end))
+			-- This player's keeper, resting.
+			local rest = t.Server("KeeperRest", WorldConfig.Row.Back.Keeper)
+			t.Check("the keeper rests", rest.Ok == true and (rest.Resting or 0) > 0, tostring(rest.Error))
+			t.Check("its marker shows at the gate", waitFor(t, REPLICATE, function(): boolean
+				return shows("Keeper")
+			end))
+			local keeper = plateOf("Keeper")
+			local gate = Markers.Find("KeeperGate")
+			if keeper and gate then
+				local at = World.Where(keeper) :: Vector3
+				local foot = Markers.At(gate).Position
+				t.Near("over the gate (studs off, flat)", Vector3.new(at.X - foot.X, 0, at.Z - foot.Z).Magnitude, 0, 0.01)
+				t.Check("five minutes left", (keeper:GetAttribute("Left") :: number) > WorldConfig.Row.Back.Keeper - 5)
+				t.Equal("its card", keeper:GetAttribute("Lines"), 3)
+			end
+			local prompt = DownController.Challenge()
+			t.Check("its Challenge hidden for this player", prompt ~= nil and prompt.Enabled == false)
+			t.Equal("a try meanwhile is refused", t.Server("KeeperTry").Error, "Resting")
+			t.Check("the keeper's state says so", (t.Server("Keeper").Resting or 0) > 0)
+			t.Server("KeeperRest", 0)
+			t.Check("back: its marker goes and its Challenge shows", waitFor(t, REPLICATE, function(): boolean
+				local p = DownController.Challenge()
+				return not shows("Keeper") and p ~= nil and p.Enabled
+			end))
+			restore()
 		end,
 	},
 	{
@@ -6017,6 +6132,7 @@ return {
 				local camera = workspace.CurrentCamera
 				camera.CFrame = CFrame.lookAt(start - along * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
 				local prompt: ProximityPrompt? = nil
+				t.Server("KeeperRest", 0) -- TR10: a win earlier in the run hides the Challenge five minutes
 				t.Check("the keeper's gate streams in", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
 					for _, item in workspace:GetDescendants() do
 						if item:IsA("ProximityPrompt") and item.ActionText == "Challenge" then

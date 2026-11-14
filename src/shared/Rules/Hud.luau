@@ -207,6 +207,25 @@ function Hud.Clock(seconds: number): string
 	return string.format("%d:%02d", s // 60, s % 60)
 end
 
+-- A drop's chance as a loot card writes it (TR10): whole percents from 10 up, a tenth under, cut, never rounded up, so a
+-- chance short of certain never reads "100%" and one there is never reads "0%": "100%", "36%", "14%", "3.6%", "<0.1%".
+function Hud.Chance(p: number): string
+	if p ~= p or p <= 0 then
+		return "0%"
+	elseif p >= 1 then
+		return "100%"
+	end
+	local percent = p * 100 + 1e-9
+	if percent >= 10 then
+		return `{math.floor(percent)}%`
+	end
+	local tenths = math.floor(percent * 10)
+	if tenths <= 0 then
+		return "<0.1%"
+	end
+	return if tenths % 10 == 0 then `{tenths // 10}%` else string.format("%.1f%%", tenths / 10)
+end
+
 -- What the lead's card says while its lead has fallen (TR12), or nil while it stands: "Down" as it falls; at home, its
 -- healing and the time left; then "Training" on the machine, or "At home" waiting.
 function Hud.LeadStatus(state: string, untilAt: number, now: number, training: boolean): string?

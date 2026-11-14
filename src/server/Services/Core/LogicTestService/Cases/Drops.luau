@@ -131,4 +131,25 @@ return {
 			t.Check("nothing changed", data.Currency.Credits == credits and data.Progress.Kills == kills and bagCount(data) == bag)
 		end,
 	},
+	{
+		-- TR10: the card shown while the elite or the keeper is down reads Roll's own numbers, never copies.
+		Name = "Drops: TR10, the loot card is Roll's own numbers, each drop with its chance",
+		Run = function(t: any)
+			for _, case in { { "Elite", 4 }, { "Keeper", 9 } } do
+				local kind, level = case[1] :: string, case[2] :: number
+				local card = Drops.Card(kind, level, GROUND)
+				local drop = Drops.Roll(kind, level, GROUND, MISS) :: Drops.Drop
+				t.Equal(`{kind}: three lines`, #card, 3)
+				t.Check(`{kind}: Credits, certain`, card[1].Kind == "Credits" and card[1].Amount == drop.Credits and card[1].Chance == 1)
+				t.Check(`{kind}: experience, certain`, card[2].Kind == "Xp" and card[2].Amount == drop.Xp and card[2].Chance == 1)
+				local chance = math.min(1, DropsConfig.ShardChance * DropsConfig.Share[kind])
+				t.Check(`{kind}: the Standard shard at its chance`, card[3].Kind == "Shard" and card[3].Shard == STANDARD and math.abs(card[3].Chance - chance) < 1e-12, `{card[3].Chance}`)
+				t.Equal(`{kind}: a roll just under it wins the shard`, (Drops.Roll(kind, level, GROUND, chance - 1e-9) :: Drops.Drop).Shard, STANDARD)
+				t.Equal(`{kind}: one at it doesn't`, (Drops.Roll(kind, level, GROUND, chance) :: Drops.Drop).Shard, "")
+			end
+			t.Check("the elite's shard, about one in seven", math.abs(Drops.Chance("Elite") - 0.144) < 1e-9)
+			t.Equal("a kind that drops nothing: no card", #Drops.Card("Nobody", 4, GROUND), 0)
+			t.Equal("a level out of range: no card", #Drops.Card("Elite", 0, GROUND), 0)
+		end,
+	},
 }

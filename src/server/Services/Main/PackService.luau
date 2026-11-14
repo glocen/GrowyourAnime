@@ -2,11 +2,13 @@
 -- PackService (server): the Shades of Lantern Row (docs/design.md, "The world, in grey"). Each Pack marker stands Count
 -- Shades of its Def at its Level round it (Rules.Fight.PackRing, Config.World.Row.Spread apart), and the Elite marker one.
 -- A pack belongs to everyone: FightService shares its notice and keeps every hitter. When a pack's last Shade falls it's
--- back Config.World.Row.Respawn seconds later, the elite too. The world laid again (WorldService.Laid) stands every pack
--- anew on its moved marker.
+-- back Config.World.Row.Respawn seconds later; the elite, Config.World.Row.Back.Elite later, one timer for the whole server
+-- (TR10, Rules.Cooldown). While a group is down its marker's BackAt attribute holds the server time it's back, so every
+-- client shows when (DownController). The world laid again (WorldService.Laid) stands every pack anew on its moved marker.
 -- Studio:
 --   NL_Debug:Invoke("Packs")                  each pack: its marker, Shades standing, the gap between them, when it's back
 --   NL_Debug:Invoke("PackDefeat", "Pack 1")   fells that pack's Shades at once, for tests
+--   NL_Debug:Invoke("PackBack", "Elite")      stands a group that's down at once, its timer cut short
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -15,6 +17,7 @@ local Shared = ReplicatedStorage.Shared
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Fight = require(Shared.Rules.Fight)
+local Cooldown = require(Shared.Rules.Cooldown)
 local Log = require(Shared.Util.Log)
 local Core = script.Parent.Parent.Core
 local DebugService = require(Core.DebugService)
@@ -47,6 +50,7 @@ local function stand(group: Group)
 		return
 	end
 	group.BackAt = nil
+	marker:SetAttribute("BackAt", nil)
 	local at = Markers.At(marker)
 	for _, offset in Fight.PackRing(if type(count) == "number" then count else 1, WorldConfig.Row.Spread) do
 		local f = FightService.SpawnEnemy(def, level, at * CFrame.new(offset[1], 0, offset[2]), {
@@ -70,8 +74,9 @@ function PackService.Down(group: Group)
 	if next(group.Alive) ~= nil or group.BackAt ~= nil or groups[group.Name] ~= group then
 		return
 	end
-	local wait = WorldConfig.Row.Respawn
+	local wait = Cooldown.Wait(if group.Name == "Elite" then "Elite" else "Pack")
 	group.BackAt = workspace:GetServerTimeNow() + wait
+	group.Marker:SetAttribute("BackAt", group.BackAt)
 	task.delay(wait, function()
 		if groups[group.Name] == group and group.BackAt ~= nil and next(group.Alive) == nil then
 			stand(group)
@@ -141,6 +146,18 @@ local function packs(who: any): any
 	return list
 end
 
+local function packBack(_who: any, name: any): any
+	local group = if type(name) == "string" then groups[name] else nil
+	if group == nil then
+		return { Ok = false, Error = "NoPack" }
+	elseif group.BackAt == nil then
+		return { Ok = false, Error = "Standing" }
+	end
+	local left = math.max(0, group.BackAt - workspace:GetServerTimeNow())
+	stand(group)
+	return { Ok = true, Left = left }
+end
+
 local function packDefeat(_who: any, name: any): any
 	local group = if type(name) == "string" then groups[name] else nil
 	if group == nil then
@@ -169,6 +186,7 @@ function PackService.Start()
 	if RunService:IsStudio() then
 		DebugService.Register("Packs", packs)
 		DebugService.Register("PackDefeat", packDefeat)
+		DebugService.Register("PackBack", packBack)
 	end
 end
 

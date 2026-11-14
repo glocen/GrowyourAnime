@@ -31,7 +31,13 @@ local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so 
 local PAVED_TOP = 0.6 -- the Strip, the streets and the plots stand a tenth higher, for the same reason
 local OVERLAY = 0.1 -- a mark on a paved floor: the kept back of a plot, a Tower's footprint
 local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
-local READ_LIVE = { ["World.Row.Respawn"] = true, ["World.Arrive"] = true } -- World numbers read when used, not laid
+-- World numbers read when used, not laid
+local READ_LIVE = {
+	["World.Row.Respawn"] = true,
+	["World.Row.Back.Elite"] = true,
+	["World.Row.Back.Keeper"] = true,
+	["World.Arrive"] = true,
+}
 
 local GREY = {
 	Ground = Color3.fromRGB(78, 80, 86),

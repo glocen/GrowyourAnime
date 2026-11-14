@@ -1013,7 +1013,37 @@ Research's entry, 2026-11-14, on the director's words of the same day (`docs/dec
 
 **Order in the queue:** after TR6. **Time, forecast:** the timers and the grey marker about 2 hours, the icons about 1.
 
-**Status:** requested, 2026-11-14.
+**Status:** the timers and the marker built in grey, 2026-11-14 (Faber). Time: about 1.5 active hours, my estimate, not measured.
+- **Implemented.**
+  - **The elite's timer, the server's:** `Config.World.Row.Back.Elite` (120 s) from its fall, through `Rules.Cooldown`. The packs keep `Row.Respawn` (15 s). PackService writes the server time it's back on the Elite marker (`BackAt`), so every client shows the same time.
+  - **The keeper's, each player's:**
+    - `Row.Back.Keeper` (300 s) from each win, kept in the save (`Progress.Grounds[ground].Back`, os.time) and written in the win's own step (`Progress.KeeperWon`).
+    - A try meanwhile is refused "Resting" (`KeeperService.Try`, `Progress.Resting`). A loss rests nothing.
+    - A clock behind the one that set it (another server's) never lengthens it.
+  - **The marker, in grey** (`DownController`, client): over the elite's square while its timer runs, and at the keeper's gate while this player's runs, the gate's Challenge hidden for them meanwhile.
+    - It shows a stand-in icon (the name's letter on a grey tile), the name and the time counting down.
+    - Its card lists Credits, experience and the Standard shard, each with its chance from `Rules.Drops.Card`. `Hud.Chance` writes them: "100%", "14%", "36%", never rounded up.
+  - **Three layouts** in `Config.Hud.Down.Layout`, tuned live: "Stack", "Row", and "Badge", whose card shows only within `Near` (60 studs). `Compare` shows the three side by side over the elite's square for one capture.
+  - Studio adds `PackBack` (a group that's down stands at once) and `KeeperRest` (this player's keeper resting that many seconds, 0 for back now).
+- **Tested.**
+  - The type check: 0 new.
+  - The logic: 4440 passing offline. New cases cover each timer (the server's, a player's, a rejoin across it), the loot card against Roll's own numbers, and the chance's text.
+  - The self-test's new case waits on the Studio MCP, with the UI lint on the smallest phone. It covers the elite down (its marker, time, card and the three layouts), the keeper resting (its marker, the Challenge hidden, a try refused), and both coming back. The four keeper tries in other cases now clear an earlier win's rest first.
+- **The numbers** (`tools/balance/sim.py`, section 11). A model, not a measurement: the seeds' kill times, section 9's walks, every pack up when reached, and 10 s for a win's way home and back, my guess.
+
+    | Players on the server | Elite kills an hour | Keeper kills | Both: the Jewels' sources | Income | Standard shards |
+    |---|---|---|---|---|---|
+    | 1, before | 16.9 | 17.0 | 33.9 | 100% | 20.8 |
+    | 1, the seeds | 17.9 | 8.9 | 26.8 | 90% | 18.7 |
+    | 4, the seeds | 15.7 | 9.2 | 24.9, from 34.0 | 90% | 18.9 |
+    | 8, the seeds | 12.9 | 9.4 | 22.3, from 34.2 | 89% | 18.8 |
+
+  - A lap takes about 3.3 minutes. So the elite's 2 minutes costs a player alone nothing, and costs a full server about a quarter of its elite kills.
+  - The keeper's 5 minutes means every other lap: it halves keeper kills. The Jewels' sources fall 21% alone and 35% on a full server; income falls 10%.
+  - Waiting out the keeper pays worse than walking back down the street (57 to 61% of the income), so the model walks back.
+  - If research wants the keeper every lap, 3 minutes is under a lap. Or the Jewels' drop rate from elites and keepers can make up the cut once Jewels exist. Research's call.
+- **Visually reviewed:** not yet. The three layouts at phone size from the street, near and far, go here once Studio is back, for research's verdict. Modulo's two icons come after it.
+- **Accepted:** no.
 
 ## TR11. Spectate, a toggle on the HUD (Faber)
 

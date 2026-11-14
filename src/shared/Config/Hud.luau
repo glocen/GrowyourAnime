@@ -245,4 +245,20 @@ return {
 		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 },
 		EliteFrame = Color3.fromHex("#C9D2E4"), -- the elite's heavier frame: Graphite's glint, as Modulo's sheet shows it
 	},
+	-- TR10's marker while the elite, or this player's keeper, is down (DownController; research's entry, 2026-11-14), in
+	-- grey: its icon (a stand-in until Modulo's), the time left, and a small card of its loot with each drop's chance
+	-- (Rules.Drops.Card). Layout: "Stack" (the icon over its name and the time, the card under), "Row" (the icon beside
+	-- its name and the time, the card under) or "Badge" (the icon with the time on it, the card only within Near studs of
+	-- it). Compare shows the three side by side over the elite's square, for one capture. Up: studs over its marker it
+	-- stands. Reach: studs from the camera it shows, the street's length. Icon and Width, authored pixels. The builder's
+	-- numbers, tuned live.
+	Down = {
+		Layout = "Stack",
+		Compare = false,
+		Near = 60,
+		Reach = 320,
+		Up = { Elite = 9, Keeper = 11 },
+		Icon = 40,
+		Width = 176,
+	},
 }

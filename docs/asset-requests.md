@@ -4780,7 +4780,32 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** requested, 2026-11-14. After TR5's frames.
+**Status:** in progress (Modulo), 2026-11-14: delivery 1, the sheet, waits for research's verdict.
+
+### 1. The sheet (Modulo, 2026-11-14)
+
+- **Where:** `build/scratch/modulo/kirra/kirra_sheet.png`, 1920 by 1920, with a half-size copy beside it. It's delivered to `build/handoff/Kirra/` on research's yes. `tools/blender/kirra_sheet.py` draws it in headless Blender in about a minute and a half: `-- <out dir> [small]`. It's a Workbench blockout, no GPU turn; Pip beside her is drawn by his own sheet's builder.
+- **The idea:** a small body with a long streak. The scarf is the hero shape: wound once to her chin and knotted at her left. Its tail is 10 studs and floats in an S behind her even at rest. Its last half-stud is bone, so the line's end reads.
+- **The request's pieces:**
+  - The two short blades, a forearm long, sit in leather sheaths crossed in an X on her back. Their saffron grips stand over her shoulders, where the player's camera looks.
+  - The satchel hangs at her left hip, behind, with its strap across her chest and a paper parcel tied with cord in its mouth.
+- **My calls:**
+  - Courier's goggles pushed up on her brow, with amber lenses, so she reads as a courier before a ninja.
+  - A short choppy crop swept back, as if she's always running into wind, with a jaw-length lock before each ear. Blue eyes under a lash line that flicks up at the outer corner.
+  - Sleeves pushed up, and bone wraps on the forearms and shins: four light bands that carry her limbs' motion at a distance, on a dark body the scarf stands out from.
+- **Colours:** Sky `#47A6F5` the scarf; Navy `#283459` the jacket and trousers; Saffron `#F0A830` the grips, cords and buckle. Never a red scarf.
+- **Scarf Step's key pose, leaving:** she has gone through the Shade and lands past it, sliding on along her line but already turned to face it, low. The back leg brakes long, the blade trails low on the cut, and the other hand reaches toward the Shade. The scarf runs from her neck in one straight line back through it. The Shade is grey on the sheet.
+- **Tier 2, for research and Faber: she crosses 35° right of the line from the player's camera.** Straight away from the camera, the line folds to a short streak. At 35° it's 79° off the camera's axis, and 9.8 of its 10 studs show on the screen. So I'd have the game pick her landing point to the side of the Shade, away from the camera's line, with room. The pose works on either side. It's settled at delivery 4, with the builder.
+- **At 64 px beside Pip** (the sheet's lowest block, over night, Lantern Row's dusk, day, and in black):
+  - From the player's camera she's 153 by 69 px, wide and low; he's 65 by 95, tall. Their outlines overlap 0.35 (1 is the same outline).
+  - From the front, 0.59: both are R6 bodies, so the scarf and his hat carry the difference.
+- **For the model:** the tail becomes a chain of six to eight joints the clips carry. The blades come out of their sheaths into her hands for the Combo and Scarf Step.
+- **Sizes:** 5 studs to the crown, 5.3 to the hair's top, 9.6 across with the scarf at rest; the blockout is 5,836 triangles.
+- **Content check, 2026-11-14: PASS.** Rules 2, 3 and 4 and Roblox's, the names against `docs/ip-list.md`. Two notes, carried to delivery 4:
+  - Side on, in black, the taut scarf through the Shade's torso can read as a lance through a body. The grey Shade has no wound, so the sheet passes. When the look is built, check the pose at 64 px from every heading: if it reads as a skewer, the line passes beside the Shade or fades where it crosses the body.
+  - The scarf stays off red.
+- **Time:** about 45 minutes in this session, three rounds (the first render at 11:57, the third at 12:03, local), plus the plan written in the session before. On Opus 5.5 xhigh. Pip's sheet took about 1.8 hours with its second round.
+- **Four facts:** made; self-reviewed; content check PASS; research's verdict waits.
 
 ## Later, by ground
 

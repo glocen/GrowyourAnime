@@ -11,10 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **TR9 built offline** (its status in `docs/test-requests.md`): infusion on the server, and the Breaker's own screen in three grey layouts (`Hud.Breaker.Layout`: Machine, List, Sheet). A screen now refills in place instead of flashing. TR8's offline half was done before it.
+- **TR9 built offline** (its status in `docs/test-requests.md`): infusion on the server, and the Breaker's own screen in three grey layouts (`Hud.Breaker.Layout`: Machine, List, Sheet). A screen now refills in place instead of flashing. Research's calls on the price are in.
 - **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's take at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13 and "Content as data"; Kirra's install, with TR14. For Modulo, TR8: the paper's drift has no numbers in the handoff.
 - **Next:** TR15 offline.
-- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) TR15: a point left unspent should count as spread evenly until it's spent. (3) TR9, tier 2 for research: "a lot" costs 900 and the battery holds 600, so it can't be paid. I also read infusion as once per shard, though luck adds from every source; say if two should stack.
+- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) TR15: a point left unspent should count as spread evenly until it's spent.
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.

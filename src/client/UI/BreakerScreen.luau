@@ -346,34 +346,64 @@ local function strip(parent: Instance, view: Profile.View, y: number)
 	end
 end
 
--- Why infusion at `level` can't go into the chosen shard now, or nil.
-local function infuseBlock(item: Selection, now: Read.Base, level: { Lift: number, Energy: number }): string?
-	if Shards.ById[item.Def] and Shards.ById[item.Def].Holds ~= "" then
-		return "Holds one Voidkin"
+-- Why infusion can't go in, as the lines a player reads (BreakerScreen.Reasons, for tests). A whole shard's reason
+-- stands over the levels; a level's own beside its button, which keeps its price on it, veiled.
+local REASONS = {
+	Holds = "It holds one Voidkin: no odds to lift",
+	OneTier = "One tier only: no odds to lift",
+	Bag = "Put it in first, then infuse it",
+	Ready = "Already broken: open it",
+	Infused = "%s: once a shard",
+	Short = "Needs %s Electricity",
+	Battery = "Needs a battery of %s: upgrade the base", -- research's words, TR9, 2026-11-14
+}
+
+-- Why the chosen shard takes no infusion at all, or nil.
+local function blockShard(item: Selection, now: Read.Base): string?
+	local row = Shards.ById[item.Def]
+	if row and row.Holds ~= "" then
+		return REASONS.Holds
 	elseif Odds.Lifted(item.Def) == 0 then
-		return "One tier only"
+		return REASONS.OneTier
 	elseif item.Kind == "Bag" then
-		return "Put it in first"
+		return REASONS.Bag
 	elseif item.Kind == "Ready" then
-		return "Already broken"
+		return REASONS.Ready
 	end
 	local work = workOf(now.Data, item)
 	if work and work.Luck > 0 then
-		return "Infused"
-	elseif level.Energy > BaseConfig.Battery.Capacity then
-		return "More than the battery holds"
-	elseif now.Data.Base.Battery < level.Energy then
-		return `Needs {Read.Number(level.Energy)}`
+		return string.format(REASONS.Infused, infused(work.Luck))
 	end
 	return nil
 end
 
--- The chosen shard: its name and place, the one thing to do with it, its odds, and infusion.
+-- Why one level can't be paid now, or nil: a battery too small to hold its price, or too little stored in it.
+local function blockLevel(now: Read.Base, level: { Lift: number, Energy: number }): string?
+	if level.Energy > BaseConfig.Battery.Capacity then
+		return string.format(REASONS.Battery, Read.Number(level.Energy))
+	elseif now.Data.Base.Battery < level.Energy then
+		return string.format(REASONS.Short, Read.Number(level.Energy))
+	end
+	return nil
+end
+
+-- A line that wraps and grows to its words, in a column.
+local function lines(parent: Instance, name: string, text: string, box: UDim2, order: number, colour: Color3?): TextLabel
+	local made = label(parent, name, text, Theme.Text.Caption, box, UDim2.new(), { Colour = colour or Theme.Colour.TextDim })
+	made.TextWrapped = true
+	made.AutomaticSize = Enum.AutomaticSize.Y
+	made.LayoutOrder = order
+	return made
+end
+
+-- The chosen shard: its name and place over one column that scrolls: the one thing to do with it, infusion, and its
+-- odds, every chance as the server rolls it.
 local function pane(parent: Instance, item: Selection?, view: Profile.View, now: Read.Base, on: On, box: UDim2, position: UDim2, back: boolean)
 	local frame = Panel.new({ Name = "Odds", Size = box, Position = position, Parent = parent })
 	frame.ZIndex = 10
 	frame.Active = true -- a tap on the pane stays on it, never reaching a chamber under the sheet
 	local pad = Theme.Size.Pad
+	local gap = Theme.Size.Gap
 	if item == nil then
 		label(frame, "Empty", "No shard yet. They drop on Lantern Row.", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad), { Colour = Theme.Colour.TextDim })
 		return
@@ -393,8 +423,9 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 			rebuild()
 		end })
 	end
+	local top = pad + math.max(22 + LINE, if back then Theme.Size.Tap else 0) + gap
+	local column = Row.List(frame, "Pane", UDim2.new(1, -pad, 1, -(top + pad)), UDim2.fromOffset(pad, top))
 	-- The one thing to do with it.
-	local y = pad + 22 + LINE + Theme.Size.Gap
 	local action: string?, press: (() -> ...any)?, primary: boolean? = nil, nil, nil
 	if it.Kind == "Ready" then
 		action, primary = "Open", true
@@ -421,40 +452,64 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		end
 	end
 	if action then
-		Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Tap), Position = UDim2.fromOffset(pad, y), Parent = frame, OnPress = press :: () -> ...any })
-		y += Theme.Size.Tap + Theme.Size.Gap
+		local button = Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(1, -gap, 0, Theme.Size.Tap), Parent = column, OnPress = press :: () -> ...any })
+		button.LayoutOrder = 1
 	end
-	-- Infusion, at the foot: a little or a lot, each with its price and what it does to the rarest tier.
-	local levels = ShardConfig.Infusion
-	local foot = Theme.Size.Tap + LINE + pad
-	local tier, before = rarest(it.Def, 0)
+	-- Infusion: why none goes in, if so; then a little or a lot, each with its price and, beside it, what it does to
+	-- the rarest tier, or why that level can't be paid.
+	local whole = blockShard(it, now)
+	if whole then
+		lines(column, "Why", whole, UDim2.new(1, -gap, 0, LINE), 2, Theme.Colour.Text)
+	end
 	local work = workOf(now.Data, it)
 	local luck = if work then work.Luck else 0
-	for index, level in levels do
-		local share = UDim2.new(1 / #levels, -(pad * (#levels + 1)) / #levels, 0, Theme.Size.Tap)
-		local x = UDim2.new((index - 1) / #levels, pad + (index - 1) * (pad - (pad * (#levels + 1)) / #levels), 1, -foot)
+	local tier, before = rarest(it.Def, luck)
+	local lifts = tier ~= "" and Odds.Lifted(it.Def) > 0
+	for index, level in ShardConfig.Infusion do
+		local row = Instance.new("Frame")
+		row.Name = `Level{index}`
+		row.BackgroundTransparency = 1
+		row.Size = UDim2.new(1, -gap, 0, Theme.Size.Tap)
+		row.AutomaticSize = Enum.AutomaticSize.Y
+		row.LayoutOrder = 2 + index
+		row.Parent = column
+		local text = `{LEVELS[index] or `Level {index}`} · {Read.Number(level.Energy)}`
 		local button = Button.new({
 			Name = `Infuse{index}`,
-			Text = `{LEVELS[index] or `Level {index}`} · {Read.Number(level.Energy)}`,
-			Size = share,
-			Position = x,
-			Parent = frame,
+			Text = text,
+			Size = UDim2.new(0.5, -gap / 2, 0, Theme.Size.Tap),
+			Parent = row,
 			OnPress = function()
 				local args: { [string]: any } = { Def = it.Def, Level = index }
 				args[it.Kind] = it.Index
 				return on.Act("Infuse", args).Ok == true
 			end,
 		})
-		local why = infuseBlock(it, now, level)
-		if why then
-			Button.Set(button, { Disabled = why })
+		local short = blockLevel(now, level)
+		if whole or short then
+			Button.Set(button, { Disabled = text }) -- veiled with its price still on it; the reason is the line beside it
 		end
 		local _, after = rarest(it.Def, math.min(ShardConfig.LuckCap, luck + level.Lift))
-		local effect = if tier ~= "" and Odds.Lifted(it.Def) > 0 then `{tier} {percent(before)} → {percent(after)}` else "No odds to lift"
-		label(frame, `Effect{index}`, effect, Theme.Text.Caption, UDim2.new(share.X, UDim.new(0, LINE)), UDim2.new(x.X, UDim.new(1, -LINE - pad / 2)), { Colour = Theme.Colour.TextDim, Truncate = true })
+		local says = if not lifts then "No odds to lift"
+			elseif whole == nil and short then short
+			elseif luck > 0 then nil -- infused: no second lift to show
+			else `{tier} {percent(before)} → {percent(after)}`
+		if says then
+			local beside = lines(row, `Effect{index}`, says, UDim2.new(0.5, -gap / 2, 0, Theme.Size.Tap), 0)
+			beside.Position = UDim2.new(0.5, gap / 2, 0, 0)
+			beside.TextYAlignment = Enum.TextYAlignment.Center
+		end
 	end
-	-- The odds between, rarest first: who it can hold and the chance of each, as the server will roll them.
-	local list = Row.List(frame, "Chances", UDim2.new(1, -pad * 2, 1, -(y + foot + Theme.Size.Gap)), UDim2.fromOffset(pad, y))
+	-- The odds, rarest first: who it can hold and the chance of each, as the server will roll them.
+	lines(column, "ChancesTitle", "Who it can hold", UDim2.new(1, -gap, 0, LINE), 10).FontFace = Theme.Font.Strong
+	local list = Instance.new("Frame")
+	list.Name = "Chances"
+	list.BackgroundTransparency = 1
+	list.Size = UDim2.new(1, -gap, 0, 0)
+	list.AutomaticSize = Enum.AutomaticSize.Y
+	list.LayoutOrder = 11
+	list.Parent = column
+	Panel.List(list, nil, 2)
 	local entries = Odds.Table(it.Def, luck)
 	for index = #entries, 1, -1 do
 		local entry = entries[index]
@@ -462,7 +517,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		local line = Instance.new("Frame")
 		line.Name = entry.Id
 		line.BackgroundTransparency = 1
-		line.Size = UDim2.new(1, -6, 0, LINE + 2)
+		line.Size = UDim2.new(1, 0, 0, LINE + 2)
 		line.LayoutOrder = #entries - index + 1
 		line.Parent = list
 		label(line, "Who", `{row.Name} · {row.Rarity}`, Theme.Text.Caption, UDim2.new(1, -64, 1, 0), UDim2.new(), { Truncate = true })
@@ -572,5 +627,6 @@ function BreakerScreen.Select(item: Selection?)
 end
 
 BreakerScreen.Name = NAME
+BreakerScreen.Reasons = REASONS
 
 return BreakerScreen

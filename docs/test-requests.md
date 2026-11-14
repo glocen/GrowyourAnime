@@ -1005,9 +1005,10 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
       - **Machine:** the chambers side by side, each with its shard, its crack as a conduit filling and its time left, and the rest locked up to `Breaker.MostChambers` (4). A strip below holds what's ready, waiting and in the bag. The chosen shard's pane is on the right.
       - **List:** one row per shard, beside the pane.
       - **Sheet:** the machine across the screen, and the pane comes over it on a tap, with Back.
-    - **The pane:** the shard's name and place, its one action (Open, Take out, Put it in), and every chance from `Rules.Odds`, rarest first.
-      - The two infusion buttons sit at its foot, each with its price. Under each is what it does to the rarest tier: the tier, its chance now, and its chance after.
-      - A button that can't be pressed says why: holds one Voidkin, one tier only, put it in first, already broken, infused, needs 300, more than the battery holds.
+    - **The pane:** the shard's name and place over one column that scrolls: its one action (Open, Take out, Put it in), infusion, and every chance from `Rules.Odds`, rarest first.
+      - When the whole shard takes no infusion, one line over the levels says why: it holds one Voidkin, one tier only, put it in first, already broken, or "Infused, a little: once a shard".
+      - Each level is a button with its price, "A little · 300" and "A lot · 900", kept on it when it's locked. The line beside it says what the level does to the rarest tier (the tier, its chance now, its chance after), or why that level can't be paid: "Needs 300 Electricity", or research's "Needs a battery of 900: upgrade the base".
+      - The first build put the reasons on the buttons themselves, but the kit writes a disabled button's reason as its label, and the longer reasons overflowed a 112-pixel button. The odds list kept barely 56 pixels at the foot. The column fixes both.
   - **The screens' kit:** a screen opened again as its owner rebuilds it now refills its body in place: no second entrance, and Closed doesn't fire. The Base screen rebuilt the same way on each change of the save, and flashed.
   - **Studio adds `BaseBattery`** (the battery set within its capacity), for the price tests.
 - **Tested.**
@@ -1018,14 +1019,13 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - each layout at this screen's scale and the smallest phone's, with the UI lint: the chambers as they stand, the strip, a row per shard, the odds rarest first, a tap to a shard, and the sheet's Back;
     - infusion's every refusal and its text, its price, its effect, one press spent once, the odds lifted, and the broken shard opened;
     - the kit's refill in place.
-  - **The content check** on the screen's text: PASS. Two of its three notes are done: an infused shard is named by its level ("Infused, a little"), not by its luck as a number, which reads as a chance; and a chance under 0.01% shows as "<0.01%", never "0.00%". The third, naming Electricity beside the price, goes to the kit's pass.
+  - **The content check** on the screen's text: PASS. Two of its three notes are done: an infused shard is named by its level ("Infused, a little"), not by its luck as a number, which reads as a chance; and a chance under 0.01% shows as "<0.01%", never "0.00%". The third is done for a level short of Electricity ("Needs 300 Electricity"). The reworked pane's text had a second check: PASS.
 - **Research's calls, 2026-11-14, night.**
   - **The price stays, and the battery grows into it** (tier 2, research's). Infusion is meant for the rare shards a player meets once the base has grown (`docs/balance.md`, the Prismatic's nudge), and the battery's cap rises with the base's level (`docs/design.md`, "The base"). Seed: the base's level 2 holds 1,000. The rest of the table is set when the base's upgrades are built.
     - Until then "a lot" stays shown and locked. Its reason names the way there, not only the shortfall: "Needs a battery of 900: upgrade the base".
   - **Once per shard: Faber's reading is right.** "Adds into one number" is about sources (the Breaker's tuning and an infusion), not one shard infused twice. A little or a lot is one choice.
 - **Visually reviewed:** no. The three layouts wait for a take at home at phone size, with shards breaking, and research's verdict.
 - **Director-accepted:** no.
-- **For research, tier 2:** "a lot" costs 900, but the battery holds 600 (`Config.Base.Battery.Capacity`, my seed from TR2), so it can never be paid, and the screen says "More than the battery holds". Either the battery grows or the price comes down; the choice is yours.
 - **Out of the block:** AR3's kit in the Dynamo palette, after the verdict; the bays' screen; any Robux price.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)

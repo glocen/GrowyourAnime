@@ -275,11 +275,11 @@ local function chosenWork(item: BreakerScreen.Selection?): Profile.ShardWork?
 	return nil
 end
 
--- The Breaker screen's infusion button at `level`, and why it's off: "" when it takes a press.
-local function infuseButton(level: number): (TextButton?, string)
+-- The Breaker screen's infusion button at `level`, and whether it's locked (its reason is the line beside it).
+local function infuseButton(level: number): (TextButton?, boolean)
 	local found = breakerPart(`Infuse{level}`)
 	local button = if found and found:IsA("TextButton") then found else nil
-	return button, if button then tostring(button:GetAttribute("Disabled") or "") else "no button"
+	return button, button ~= nil and tostring(button:GetAttribute("Disabled") or "") ~= ""
 end
 
 -- A chance as the Breaker's screen writes it, and the rarest tier of a shard's odds at `luck` with its whole share.
@@ -6546,7 +6546,9 @@ return {
 	{
 		Name = "Breaker: infusion shows its price and what it does to the rarest tier, says why when it can't, and spends once",
 		Run = function(t: any)
-			-- TR9 (docs/design.md, "Infusion"; Rules.Base.Infuse): a little or a lot, each with its Electricity price.
+			-- TR9 (docs/design.md, "Infusion"; Rules.Base.Infuse): a little or a lot, each with its Electricity price. Why a
+			-- whole shard takes none stands over the levels; a level's own reason beside its button (BreakerScreen.Reasons).
+			local reasons = BreakerScreen.Reasons
 			local view = ProfileController.Get()
 			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
 			if view == nil or view.Progress.Starter == "" then
@@ -6570,13 +6572,14 @@ return {
 			BaseController.OpenBreaker()
 			-- Watt's shard holds him alone: no odds to lift.
 			BreakerScreen.Select(bagItem("named_watt"))
-			local _, why = infuseButton(1)
-			t.Check("a Named shard can't be infused, and says why", why == "Holds one Voidkin", why)
-			t.Check("and says so under the button", breakerText("Odds", "Effect1") == "No odds to lift", breakerText("Odds", "Effect1"))
+			local _, locked = infuseButton(1)
+			t.Check("a Named shard can't be infused", locked)
+			t.Check("and says why over the levels", breakerText("Odds", "Why") == reasons.Holds, breakerText("Odds", "Why"))
+			t.Check("and beside each: no odds to lift", breakerText("Odds", "Effect1") == "No odds to lift", breakerText("Odds", "Effect1"))
 			-- A shard in the bag: in first, and the screen keeps it chosen where it lands.
 			BreakerScreen.Select(bagItem(shard))
-			_, why = infuseButton(1)
-			t.Check("a shard in the bag: put it in first", why == "Put it in first", why)
+			_, locked = infuseButton(1)
+			t.Check("a shard in the bag: put it in first", locked and breakerText("Odds", "Why") == reasons.Bag, breakerText("Odds", "Why"))
 			local action = breakerPart("Action")
 			local label = action and action:FindFirstChild("Label") :: TextLabel?
 			t.Check("its one thing to do: Put it in", label ~= nil and label.Text == "Put it in", if label then label.Text else "none")
@@ -6587,7 +6590,8 @@ return {
 				return item ~= nil and (item.Kind == "Chamber" or item.Kind == "Line") and work ~= nil and work.Def == shard and work.Luck == 0
 			end))
 			local chosen = BreakerScreen.Selected() :: BreakerScreen.Selection
-			-- An empty battery: each level says what it needs, or that the battery can't hold it.
+			t.Check("in, nothing stands over the levels", breakerText("Odds", "Why") == "", breakerText("Odds", "Why"))
+			-- An empty battery: each level says beside it what it needs, or the battery it needs, its price still on it.
 			t.Server("BaseBattery", 0)
 			t.Check("the battery emptied", waitFor(t, ANSWER, function(): boolean
 				local now = ProfileController.Get()
@@ -6596,36 +6600,45 @@ return {
 			t.Wait(0.1) -- rebuilt from the save's copy
 			for index, level in ShardConfig.Infusion do
 				local button, off = infuseButton(index)
-				local want = if level.Energy > capacity then "More than the battery holds" else `Needs {Read.Number(level.Energy)}`
-				t.Check(`level {index}, the battery empty: "{want}"`, off == want, off)
+				local n = Read.Number(level.Energy)
+				local want = if level.Energy > capacity then string.format(reasons.Battery, n) else string.format(reasons.Short, n)
+				local beside = breakerText("Odds", `Effect{index}`)
+				t.Check(`level {index}, the battery empty: locked, "{want}" beside it`, off and beside == want, beside)
 				local text = button and button:FindFirstChild("Label") :: TextLabel?
-				t.Check(`level {index}: its price on the button`, text ~= nil and string.find(text.Text, Read.Number(level.Energy), 1, true) ~= nil, if text then text.Text else "none")
-				local tier, low = rarestShare(shard, 0)
-				local _, high = rarestShare(shard, math.min(ShardConfig.LuckCap, level.Lift))
-				local effect = breakerText("Odds", `Effect{index}`)
-				t.Check(`level {index}: what it does to the rarest tier`, high > low and effect == `{tier} {percentOf(low)} → {percentOf(high)}`, effect)
+				t.Check(`level {index}: its price still on it`, text ~= nil and string.find(text.Text, n, 1, true) ~= nil, if text then text.Text else "none")
 			end
-			-- A full battery: a little takes a press, and the server takes its price once.
+			lintClean(t, "the Breaker with infusion locked")
+			-- A full battery: each level it holds shows what it does to the rarest tier; a little takes a press, spent once.
 			local little = ShardConfig.Infusion[1]
 			t.Server("BaseBattery", capacity)
 			t.Check("a little can be pressed with the battery full", waitFor(t, ANSWER, function(): boolean
 				local _, off = infuseButton(1)
-				return off == ""
+				return not off
 			end))
+			for index, level in ShardConfig.Infusion do
+				local tier, low = rarestShare(shard, 0)
+				local _, high = rarestShare(shard, math.min(ShardConfig.LuckCap, level.Lift))
+				local beside = breakerText("Odds", `Effect{index}`)
+				local holds = level.Energy <= capacity
+				local want = if holds then `{tier} {percentOf(low)} → {percentOf(high)}` else string.format(reasons.Battery, Read.Number(level.Energy))
+				t.Check(`level {index}: {if holds then "what it does to the rarest tier" else "still the battery it needs"}`, high > low and beside == want, beside)
+			end
+			lintClean(t, "the Breaker with infusion open")
 			local button = infuseButton(1)
-			t.Check("and is pressed", button ~= nil and Button.Press(button))
+			t.Check("a little is pressed", button ~= nil and Button.Press(button))
 			local slack = Breaker.Production(ProfileController.Get() :: any) * (ANSWER + 1) + 1e-3
 			t.Check("the server takes its price and lifts the shard", waitFor(t, ANSWER, function(): boolean
 				local work = chosenWork(chosen)
 				local now = ProfileController.Get()
 				return work ~= nil and math.abs(work.Luck - little.Lift) < 1e-6 and now ~= nil and now.Base.Battery <= capacity - little.Energy + slack
 			end))
-			t.Check("the screen says it's infused", waitFor(t, 1, function(): boolean
+			local infused = string.format(reasons.Infused, "Infused, a little")
+			t.Check("the screen says it's infused, once a shard", waitFor(t, 1, function(): boolean
 				local _, off = infuseButton(1)
-				return off == "Infused" and string.find(breakerText("Odds", "Place"), "infused, a little", 1, true) ~= nil
-			end), breakerText("Odds", "Place"))
+				return off and breakerText("Odds", "Why") == infused and string.find(breakerText("Odds", "Place"), "infused, a little", 1, true) ~= nil
+			end), `{breakerText("Odds", "Why")}; {breakerText("Odds", "Place")}`)
 			local again, off = infuseButton(#ShardConfig.Infusion)
-			t.Check("and takes no second infusion", off == "Infused" and again ~= nil and not Button.Press(again), off)
+			t.Check("and takes no second infusion", off and again ~= nil and not Button.Press(again))
 			local entries = Odds.Table(shard, little.Lift)
 			local last = entries[#entries]
 			local chance = if last then breakerText(last.Id, "Chance") else ""
@@ -6647,8 +6660,7 @@ return {
 				end
 			end
 			BreakerScreen.Select({ Kind = "Ready", Index = at, Def = shard })
-			_, why = infuseButton(1)
-			t.Check("a shard broken: already broken", at > 0 and why == "Already broken", why)
+			t.Check("a shard broken: already broken", at > 0 and breakerText("Odds", "Why") == reasons.Ready, breakerText("Odds", "Why"))
 			action = breakerPart("Action")
 			label = action and action:FindFirstChild("Label") :: TextLabel?
 			t.Check("its one thing to do: Open", label ~= nil and label.Text == "Open", if label then label.Text else "none")

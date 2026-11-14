@@ -1115,6 +1115,8 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
     - Lyric, a Healer, keeps her class's larger Regen.
   - **Training: the director's word, 2026-11-14, night: "Fixed rate, no cap".** Training earns a fixed amount of experience a minute that never grows, a third of what fighting earns in Lantern Row. Each level costs more, so it slows as levels rise. Faber: run it through section 10 and bring research what a night, a day and a week give from levels 1, 5, 15 and 30, before it settles.
   - **Faber's tier 1, a fallen lead follows only once whole and the player is home: agreed.** That's the director's own words.
+  - **The fixed rate's table, research's read: settled.** 39.2 a minute: a level costs 1 minute at level 1, 120 at 15, 895 at 30, and the last level takes 58 days in the machine. It's fast at the start and slow at high level, as the director expected. A first night carries a new account about 13 levels, the start of the ground's climb. Gear, shards and the keeper's win still come only from fighting. Retaken in play at the verdict.
+  - **Lyric at level 1, 11 falls in 100: no change.** It's one over the line on 100 runs of a model, and she's no starter, so she rarely leads at level 1. Her Regen stays ×1.5, and her own heal comes with her signature (`docs/design.md`, "Voidkin", the Healer). Retaken at the verdict in motion.
 - **Visually reviewed:** not yet. Research's verdict in motion at phone size (a circuit with a fall, the next lead out, the trip home) goes here once Studio is back.
 - **Accepted:** no.
 

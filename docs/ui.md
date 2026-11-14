@@ -20,6 +20,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 | Top left | the lead's card [D, 2026-11-12, from a reference; its place may move]: the portrait in its rarity frame, the level on a badge on the frame; beside it a long health bar with current and maximum written inside, and a thinner experience bar beneath (its width and colour ours); name or nickname, type gem, class icon | always, small |
 | Top centre | the target's card, built like the lead's: name above, type gem, health, a keeper's phases | only in a fight |
 | Top right | two pills: Credits and Electricity (stored over cap, and the rate). A tap opens the rest | always |
+| Beside the signature's readout | the spectate toggle [D, 2026-11-14]: a small eye; on, the camera follows the lead. Its place is set at TR11's blockout | always, small |
 | Under the pills | event chips: the Void Shop's countdown, the Rift, the Calamity | only inside the last minutes before and during |
 | Right edge, low | the signature's readout: a ring that fills, flashes when it fires | always, small |
 | Bottom centre | the dock: Voidkin, Regalia, Base, Map, and one more at most | always |
@@ -27,7 +28,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 
 - **Damage numbers** [D, 2026-11-12, from a reference: `docs/research/hud-reference.md`] are outlined and widely spaced, with thousands separators, so they read over any background: a hit dealt pale ivory and upright; an element's second number the same, in its element's colour, a beat behind; damage your lead receives the same face in muted red, a size larger; healing as damage received, in green; a critical gold, heavy, slanted forward, larger, on a swept stroke of our own behind it; a dodge, a block or an absorb a short grey word on a pointer [D]: Absorb when a shield takes the hit whole, and the shield's bar loses what it took. They rise from the body that was hit and never stack into a wall: a flurry merges into one counting number.
 - **The type edge** shows on the target's card as a small arrow, up or down, before the first hit lands. The player learns the ring by seeing it, not by reading a chart.
-- **A fallen lead** dims its card and shows the seconds until it's back.
+- **A fallen lead** dims its card and shows it's healing at home, with the time left, then that it's training (`docs/design.md`, "A fall sends it home").
 
 ## The screens of the first loop
 

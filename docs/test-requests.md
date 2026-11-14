@@ -787,7 +787,7 @@ Research's entry, 2026-11-13, at Faber's request. Phase 2's "Rook, Pip and Lyric
   3. The shell stays faint, as asked.
 - **Pip's end-on skip:** seen in the rerun (the 8 s strip), no lever, as fix 2 said. The take at the timing shows it again in a real fight.
 
-**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The hang's fixes are in, with (d) against the keeper after the content check's block, 2026-11-13: the framing closes. The skip back's blockout is in, with its balance check within 10%; research's verdict: works, Every to 2.5, rerun with the passives in place, 2026-11-13. The passives are built, and the batch with the skip's rerun is in (Lyric's rows taken again after the wall fix), 2026-11-14. The skip's rerun take is in. Research's verdict on the passives, 2026-11-14: works for two, Tempo to show in a pack; the gap settled at the timing with the combos open. Next: the timing.
+**Status:** requested, 2026-11-13. The framing's blockout is judged: A with Turn 40. The framing is built, with its take, and accepted. Research's call on the hang: SeeThrough on a Shade, the cap against the keeper. The hang's fixes are in, with (d) against the keeper after the content check's block, 2026-11-13: the framing closes. The skip back's blockout is in, with its balance check within 10%; research's verdict: works, Every to 2.5, rerun with the passives in place, 2026-11-13. The passives are built, and the batch with the skip's rerun is in (Lyric's rows taken again after the wall fix), 2026-11-14. The skip's rerun take is in. Research's verdict on the passives, 2026-11-14: works for two, Tempo to show in a pack; the gap settled at the timing with the combos open. The director, 2026-11-14, night: framing A's shoulder ease is scrapped ("simply do not touch player camera"); the placement (Lead.Frame, Lead.Beside, Keeper.Turn) stays, its two checks retaken without the ease (`docs/decisions.md`). Next: the ease out, then the timing.
 
 ## TR5. The elite's and the keeper's HUD (Faber, with Modulo's frames)
 
@@ -996,5 +996,68 @@ Research's entry, 2026-11-14, on the director's words of the same day (`docs/dec
 **Checks:** a logic case for each timer (the server's, a player's, a rejoin across it); the self-test for the marker's states; the UI lint on the smallest phone; the content check on the icons and the text; research's verdict on the grey marker, then its pass.
 
 **Order in the queue:** after TR6. **Time, forecast:** the timers and the grey marker about 2 hours, the icons about 1.
+
+**Status:** requested, 2026-11-14.
+
+## TR11. Spectate, a toggle on the HUD (Faber)
+
+Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."
+
+**Feel line:** mid-fight, the player taps a small eye low on the right and the camera glides onto their Voidkin, so they watch its combo and its signature up close; one more tap and it's back on their avatar, as they left it.
+
+**The block contains:**
+- **The toggle,** in grey: a small eye beside the signature's ring, a whole 44 px target, lit while on. Off at every join; never a setting.
+- **On:** the camera follows the lead, eased in about 0.3 s; the player's drag and zoom work as ever; the avatar still walks, and the lead still follows it.
+- **Off, or when the lead falls, or at a move's black fade:** back on the avatar at the distance and angle the player had.
+- Two or three places for the eye, judged at phone size in a pack fight and a keeper's try.
+
+**Waits:** the eye's finished look (with TR13's frames); a sound.
+
+**Checks:** a self-test case for each state (on, off, the lead's fall, a fade); the UI lint on the smallest phone; research's verdict in motion at phone size.
+
+**Order in the queue:** after TR5's frames and the shoulder ease's removal (TR7). **Time, forecast:** about 1 hour.
+
+**Status:** requested, 2026-11-14.
+
+## TR12. Health carries: Regen, the fall home, the Training machine (Faber)
+
+Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`; the design: `docs/design.md`, "Combat", "Health carries" to "The next lead", and "The base", "The Training machine"). It replaces `Config.Combat.Heal` and the fall's `DownSeconds`.
+
+**Feel line:** on Lantern Row your Voidkin fights on what it carries: each pack leaves a mark and its health creeps back only a little at a time, so you push one more pack or head home. If it falls, it's gone home in a flash of light, and you send out your next fighter while it heals and trains on your plot, waiting for you to come back.
+
+**The block contains:**
+1. **Regen** replaces `Combat.Heal`: a value a second, always, in a fight too. In the block it comes from the level (`Rules/Stats`, as a stat with its source), with the Healer's class carrying more. The gear source waits for Regalia's stats.
+2. **Healing at home:** on its plot a lead heals to full in about 30 s.
+3. **The fall:** the lead leaves as light (the grey stand-in, no body left), is home on its plot, heals to full in about 90 s, and waits there. It follows the player again once the player is on their plot. In a keeper's ring, a fall ends the try.
+4. **The next lead:** once the lead has fallen, the player sends out another healthy Voidkin they own, from the lead's card or the Voidkin screen, anywhere out of combat. The fallen one's card shows "healing at home" with its time, then "training".
+5. **The Training machine,** in grey (a box with its plate) on the plot: it trains one Voidkin at a time, the one at home without the player, or the lead while the player is offline. A pure rule in `Rules/`, worked out on the server at the next join from the leave time, as the Breaker's and the battery's are. No cap.
+6. **The numbers,** through `tools/balance/sim.py` before they settle (tier 2, research's seeds, tuned by playing):
+   - Regen: on Regen alone, a lead at its level ends Lantern Row's Pack 2 with between a third and two thirds of its health; it falls before the elite in at most one run in ten.
+   - Training: about a third of a fight's experience a minute at its level. Bring research what a night (8 h) and a week away give at levels 1, 5 and 15.
+
+**Waits:** Regen's gear source (Regalia's stats); the machine's model and the training clip; the fall's finished effect; the "at home" card's finished look.
+
+**Checks:** logic cases: Regen in and out of a fight; healing at home; a fall, the trip home and following again; the next lead; training across a leave, a long one included. The self-test for the lead's card states; research's verdict in motion at phone size: a circuit with a fall, the next lead out, and the trip home.
+
+**Order in the queue:** after TR11. It's the loop, so it comes before TR6. **Time, forecast:** 3 to 4 hours, the sim's run included.
+
+**Status:** requested, 2026-11-14.
+
+## TR13. The signature's ring, reworked (Faber, with Modulo's frames)
+
+Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`): the ring looks cheap and flat. What it does and where it sits stay (TR3, part 5; `docs/ui.md`); its look is new.
+
+**Feel line:** low on the right edge, the lead's signature sits in a jewel of the HUD: its light fills round the class's glyph over the cooldown, empties in a flash as the move fires, and swells once when it's ready, so the big move reads as a charge you can see coming.
+
+**The block contains:**
+- Two or three looks in grey at phone size, beside the current ring: depth (a rim, a well under the fill, a light on the fill's leading edge), the ready swell, the empty flash.
+- The picked one on Modulo's frames, as TR5's were, with its motion from TR6's kit.
+- The spectate eye (TR11) drawn on the same frames.
+
+**Waits:** a sound for the ready swell.
+
+**Checks:** the HUD's self-test and the UI lint; the content check on the frames; research's verdict on the grey looks, then its pass in motion at phone size.
+
+**Order in the queue:** after TR6. **Time, forecast:** about 1 hour in grey, then the frames (Modulo's).
 
 **Status:** requested, 2026-11-14.

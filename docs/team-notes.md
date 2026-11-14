@@ -4,11 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-14, wrapped for the day.
-- **Accepted today:** AR9, the seven drawn sheets (competent); TR5, the keeper's bar and the elite's card with Modulo's frames (competent).
-- **Verdicts:** TR7's passives: works for Second Wind and Kindle; Tempo to show in a pack; the 10% gap settled at the timing with the combos open.
-- **Written:** TR8 Lantern Row dressed, TR9 the Breaker screen, TR10 the elite's and keeper's cooldown and marker (the director's words), AR10 Kirra. The register: performance mode, the boss bar, the cooldowns.
-- **Next:** the director's animation batches; TR6, TR10 and TR7's timing as they come; Kirra's sheet.
+**Quaestor (research).** 2026-11-14, night, back on.
+- **The director's words of the night, in the register:** the player's camera is never moved in a fight (TR7's shoulder ease scrapped now, the hit shake and the fade's turn kept); a spectate toggle (TR11); health carries: Regen, healing at home, a fall sends the lead home, the next lead at once, a Training machine with no cap, replacing D02's quick return (TR12); the signature's ring reworked (TR13); a listening sheet for the sounds, later.
+- **Faber's queue, research's order:** the shoulder ease out, TR11, TR12 (the loop, before TR6), then as before; TR13 after TR6.
+- **Next:** AR10's sheet verdict (Kirra); TR5's installed frames; TR12's sim numbers.
 
 **Faber (builder).** 2026-11-14, the day's wrap.
 - **TR5, the keeper's boss bar:** the director's three words of the evening are built: no middle crystal, the number centred, the name in the keeper's purple. Self-test "HUD:" 161/161. Modulo's 12 frames are uploaded under the group, Approved and in `UIKit.luau`; installing them in the bar and the elite's card is next.

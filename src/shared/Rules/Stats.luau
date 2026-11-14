@@ -70,6 +70,7 @@ export type Block = {
 	CriticalGuard: number,
 	Lifesteal: number,
 	Regen: number, -- health a second, always (Config.Stats.Regen)
+	Speed: number, -- a lead's walk in a fight, studs a second (Stats.SpeedOf); 0 for an enemy, which walks at its kind's (Config.Combat)
 }
 
 export type Line = { Source: string, Stat: string, Value: number }
@@ -98,7 +99,16 @@ function Stats.Empty(level: number): Block
 		CriticalGuard = 0,
 		Lifesteal = 0,
 		Regen = 0,
+		Speed = 0,
 	}
+end
+
+-- A Voidkin row's walk speed in a fight (TR14; Config.Stats.Speed): its class's figure, moved by the row's own Speed up
+-- to Nudge either way. Nothing else changes it: it isn't one of Names, so no source adds to it. 0 for an unknown class.
+function Stats.SpeedOf(row: Voidkin.Row): number
+	local speed = StatsConfig.Speed
+	local class = speed.Class[row.Class]
+	return if class then class + math.clamp(row.Speed or 0, -speed.Nudge, speed.Nudge) else 0
 end
 
 local OWN = { "Health", "Attack", "Defence" }
@@ -121,6 +131,7 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	end
 	block.Def, block.Type, block.Class, block.Element = row.Id, row.Type, row.Class, row.Element
 	block.Poise = StatsConfig.Poise[row.Class] or 0
+	block.Speed = Stats.SpeedOf(row)
 	local g = Growth.G(level)
 	local rarity = StatsConfig.Rarity[row.Rarity] or 1
 	local shift = StatsConfig.Class[row.Class]

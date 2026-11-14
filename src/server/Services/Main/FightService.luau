@@ -1053,7 +1053,8 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 			start(f, action, at)
 		else
 			endAction(f, at)
-			moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), Fight.FollowSpeed(toAvatar, Combat.Lead))
+			local walk = if f.Block.Speed > 0 then f.Block.Speed else Combat.Lead.FollowWalk -- its Speed (TR14)
+			moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), Fight.LeadSpeed(toAvatar, walk, Combat.Lead))
 		end
 		return
 	end
@@ -1072,7 +1073,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	face(f, nil)
 	if toAvatar > Combat.Lead.Follow then
 		endAction(f, at)
-		moveTo(f, besideAvatar(avatar, f.Owner).Position, Fight.FollowSpeed(toAvatar, Combat.Lead))
+		moveTo(f, besideAvatar(avatar, f.Owner).Position, Fight.LeadSpeed(toAvatar, Combat.Lead.FollowWalk, Combat.Lead))
 	end
 end
 

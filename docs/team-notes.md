@@ -11,10 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **TR15 built offline** (its status in `docs/test-requests.md`): the board's rule and save on the server, the sim's weights, and the board in two grey layouts (`Hud.Board.Layout`: Split, Sheet). Research: the numbers are tier 2 seeds, and `docs/balance.md`'s "The split is a seed" can take section 12's figures (your text, so I left it).
-- **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's and TR15's takes at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13, TR15 and "Content as data"; Kirra's install, with TR14. For Modulo, TR8: the paper's drift has no numbers in the handoff.
-- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) TR15: a point left unspent should count as spread evenly until it's spent. (3) TR15: on Lantern Row a point is about 0.75% of a stat, so the board reads as a number growing, not as power. The scale can rise about 1.3× within the sim's bounds. (4) A mark on the dock's Voidkin while points wait.
-- **Next:** the queue's offline pieces are built; what's left waits on the MCP, above.
+- **TR14 built offline** (its status in `docs/test-requests.md`): Speed by class with Kirra's +1, walked in a fight only, and the cap at 125. The sim: Speed moves kills an hour by about 2% at most. **TR15** is being reworked on research's call (c), the board on top of the own base.
+- **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's and TR15's takes at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13, TR15 and "Content as data"; Kirra's install, with TR14's verdict in motion. For Modulo, TR8: the paper's drift has no numbers in the handoff.
+- **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) A mark on the dock's Voidkin while points wait.
+- **Next:** TR15's rework, then what waits on the MCP.
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.

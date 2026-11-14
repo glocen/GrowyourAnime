@@ -1240,7 +1240,13 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
 
 **Order in the queue:** with Kirra's install, after "Content as data". **Time, forecast:** about 1 hour.
 
-**Status:** requested, 2026-11-14.
+**Status:** the code built offline, 2026-11-14 (Faber); research's verdict in motion waits on the Studio MCP, with Kirra's install. Time: about 1 active hour, my estimate, not measured.
+- **Implemented.**
+  - **Speed** (`Config.Stats.Speed`): Tank 14, Warrior, Mage and Healer 16, Assassin 19, and a Voidkin row's own `Speed` nudge, clamped to 1 either way (`Definitions.Voidkin`; Kirra +1, so 20). `Rules.Stats.SpeedOf` puts it in the block. It isn't one of `Stats.Names`, so no item, board or later source adds to it.
+  - **The walk:** in a fight a lead walks at its Speed (`FightService`, closing on its slot). Following the avatar, every lead walks `Combat.Lead.FollowWalk` (16, the avatar's own), whatever its Speed, so a Tank never trails and an Assassin never stutters ahead. The catch-up stays for both, never slower than the walk (`Rules.Fight.LeadSpeed`, which replaces `FollowSpeed`). `Combat.Lead.WalkSpeed` is gone. The walk clip already plays at the body's ground speed, so a Tank's stride slows with it.
+  - **The cap:** `Growth.MaxLevel` 125, the same curve on (G about 77.4 at 125). A level past 60 takes Mirror Pavilion's kills a level until the grounds that reach those levels are designed. The training machine runs to 125, and ten years in it reach the cap.
+- **The sim** (`tools/balance/sim.py`, section 13; a model, not a measurement; the player waits for each pack, an upper bound): Speed changes only the closing and the steps between Shades, about 1.3 to 1.7 s of a 22 s pack. Kills an hour against today's 16: Kirra +1.2%, a Tank −0.8%, Pip and Lyric unchanged, Kirra against a Tank +2.1%. Speed is felt in the pack, not counted.
+- **Tested.** The type check: 0 new. The logic: 5272 passing offline. Two new cases: the cap (125, the curve, levels past 60 at the last ground's pace, 60 to 61, the cap resolving), and Speed (every row's class walk and nudge, the same at the cap and every star, Kirra, a Tank, Rook, never from an item or the board, 0 for an enemy). `LeadSpeed` has its cases. Two cases had 60 written in and now read the cap.
 
 ## TR15. The stat board: skill points (Faber)
 

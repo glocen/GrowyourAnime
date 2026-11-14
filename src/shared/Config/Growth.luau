@@ -4,10 +4,13 @@
 -- their home. Rules.Growth reads them when it runs, so a tune reaches the next call.
 
 return {
-	-- G(level) = 1 + A x (level - 1) + B x (level - 1)^2: 1 at level 1, about 22 at level 60.
+	-- G(level) = 1 + A x (level - 1) + B x (level - 1)^2: 1 at level 1, about 22 at level 60, about 77 at 125.
 	A = 0.12,
 	B = 0.004,
-	MaxLevel = 60,
+	-- The cap (TR14; the director, 2026-11-14, night: "the level cap is 125 but the launch is designed for level 60").
+	-- Past 60 the same curve runs on, and a level takes the last ground's kills (Rules.Growth.GroundOf) until the grounds
+	-- that reach those levels are designed.
+	MaxLevel = 125,
 	-- Experience. A kill at level L gives XpPerKillPerG x G(L); a level takes the kills its ground's pace allows:
 	-- PaceHours x KillsPerHour spread over the ground's levels (Definitions.Grounds), so ground 1 is 50 kills a level.
 	-- The derivation is the builder's, 2026-11-12, from the seeds' pace table ("Everything else is derived from that table").

@@ -33,11 +33,14 @@ export type Row = {
 	Rig: string?,
 	-- Its moves, once built; without them a lead fights with the stand-in's (Actions.StandIn) on the grey R6 rig
 	Kit: Kit?,
+	-- Its own nudge to its class's walk speed in a fight, 1 either way at most (TR14; Config.Stats.Speed; docs/design.md,
+	-- "Speed"): research's seeds, not the roster's columns.
+	Speed: number?,
 }
 
 local rows: { Row } = {
 	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2, Model = "Rook", Kit = { Signature = "RookHaymaker", Combo = "RookCombo" } },
-	{ Id = "kirra", Name = "Kirra", Rarity = "Common", Type = "Agility", Class = "Assassin", Element = "", Zone = 1, Aptitude = 1 },
+	{ Id = "kirra", Name = "Kirra", Rarity = "Common", Type = "Agility", Class = "Assassin", Element = "", Zone = 1, Aptitude = 1, Speed = 1 },
 	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2, Model = "Pip", Rig = "Robe", Kit = { Signature = "PipLanternBurst", Combo = "PipCombo", Skip = "PipSkip" } },
 	{ Id = "watt", Name = "Watt", Rarity = "Common", Type = "Endurance", Class = "Tank", Element = "Storm", Zone = 1, Aptitude = 3 },
 	{ Id = "patch", Name = "Patch", Rarity = "Common", Type = "Technique", Class = "Healer", Element = "", Zone = 2, Aptitude = 2 },

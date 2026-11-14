@@ -882,6 +882,64 @@ def report_board():
         line(level, *[f"+{point[k] * G(level):.2f}" for k in BOARD], math.ceil(cfg["reset"] * G(level) - 1e-9), w=12)
 
 
+# ---------------------------------------------------------------- Speed (TR14)
+
+SPEED_LEADS = (("Rook", "Warrior", 4.5), ("Kirra", "Assassin", 4.5), ("a Tank", "Tank", 4.5), ("Pip", "Mage", 14.5),
+               ("Lyric", "Healer", 12))  # each kit's combo reach (Definitions.Actions); a Tank fights in reach as Rook does
+STEP = 3  # studs a lead steps to its next slot after a kill, twice a pack: the builder's guess
+
+
+def speed_config():
+    """Speed's seeds and the lead's walks, from src/shared/Config (their home)."""
+    import re
+    stats = lua("src/shared/Config/Stats.luau")
+    m = re.search(r"Speed = \{ Class = \{([^}]*)\}.*?Nudge = ([\d.]+)", stats)
+    combat = lua("src/shared/Config/Combat.luau")
+    return dict(cls={k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)", m[1])}, nudge=float(m[2]),
+                follow=float(re.search(r"FollowWalk = ([\d.]+)", combat)[1]),
+                leash=float(re.search(r"Leash = ([\d.]+)", combat)[1]),
+                shade=float(re.search(r"Shade = \{.*?WalkSpeed = ([\d.]+)", combat, re.S)[1]))
+
+
+def pack_cycle(speed, reach, cfg, gm):
+    """One of Lantern Row's packs and the walk to the next, in seconds: the lead walks in from its leash alone until the
+    pack notices it, then they close together to its reach; the three Shades fall at the seeds' kill time, the lead
+    stepping to its next slot twice; then the player walks on at 16. Returns the cycle and its closing part."""
+    alone = max(0.0, cfg["leash"] - gm["notice"]) / speed
+    together = max(0.0, gm["notice"] - reach) / (speed + cfg["shade"])
+    steps = 2 * STEP / speed
+    fight = 3 * S["enemy"]["ttk"]["ordinary"]
+    walk = (gm["spacing"] - cfg["leash"]) / 16 + 2.25
+    return alone + together + steps + fight + walk, alone + together + steps
+
+
+def report_speed():
+    gm = game()
+    cfg = speed_config()
+    print("\n== 13. Speed (TR14): kills an hour by class on Lantern Row's packs ==")
+    print("A model, not a measurement. A lead walks at its Speed in a fight only: in from the leash "
+          f"({cfg['leash']:g} studs) alone until the pack")
+    print(f"notices it ({gm['notice']:g}), then with the Shades walking in ({cfg['shade']:g}) to its reach; "
+          f"{STEP} studs to its next slot twice a pack. Kill time is")
+    print(f"the seeds' ({S['enemy']['ttk']['ordinary']:g} s an Ordinary), the same for every class, so only Speed "
+          "differs. The player waits for each pack (an")
+    print(f"upper bound on what Speed gives), then walks on at 16. Following, every lead walks {cfg['follow']:g}, "
+          "whatever its Speed.")
+    print("Seeds: " + ", ".join(f"{k} {v:g}" for k, v in cfg["cls"].items()) + f"; a Voidkin's own nudge up to {cfg['nudge']:g}.")
+    line("lead", "Speed", "closing s", "at 16 s", "kills /h", "at 16", "ahead", w=12)
+    for name, cls, reach in SPEED_LEADS:
+        speed = cfg["cls"][cls] + (1 if name == "Kirra" else 0)
+        cycle, closing = pack_cycle(speed, reach, cfg, gm)
+        base, base_closing = pack_cycle(16, reach, cfg, gm)
+        kills, kills16 = 3 * 3600 / cycle, 3 * 3600 / base
+        line(name, f"{speed:g}", f"{closing:.2f}", f"{base_closing:.2f}", f"{kills:.0f}", f"{kills16:.0f}",
+             f"{kills / kills16 - 1:+.1%}", w=12)
+    slow, fast = pack_cycle(cfg["cls"]["Tank"], 4.5, cfg, gm)[0], pack_cycle(cfg["cls"]["Assassin"] + 1, 4.5, cfg, gm)[0]
+    print(f"Kirra against a Tank: {slow / fast - 1:+.1%} kills an hour; the closing is "
+          f"{pack_cycle(cfg['cls']['Tank'], 4.5, cfg, gm)[1]:.2f} s against "
+          f"{pack_cycle(cfg['cls']['Assassin'] + 1, 4.5, cfg, gm)[1]:.2f} s a pack.")
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -899,3 +957,4 @@ if __name__ == "__main__":
     report_training()
     report_cooldowns()
     report_board()
+    report_speed()

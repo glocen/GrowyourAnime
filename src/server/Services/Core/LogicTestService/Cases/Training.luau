@@ -164,7 +164,7 @@ return {
 			end
 			t.Check("the same night in steps gives the same", copy.Voidkin[same].Level == level and math.abs(copy.Voidkin[same].Xp - data.Voidkin[lead].Xp) <= 8, `{copy.Voidkin[same].Level}/{copy.Voidkin[same].Xp} and {level}/{data.Voidkin[lead].Xp}`)
 			-- A long leave: no cap but the last level.
-			who, gained = Training.Advance(data, night + 400 * 24 * 3600, lead)
+			who, gained = Training.Advance(data, night + 10 * 365 * 24 * 3600, lead) -- ten years: past the cap at 125 (TR14)
 			t.Check("a long leave: no cap but the last level", data.Voidkin[lead].Level == GrowthConfig.MaxLevel, `{data.Voidkin[lead].Level}`)
 			-- Nobody training, and a worker, move the stamp and give nothing.
 			local later = night + 401 * 24 * 3600

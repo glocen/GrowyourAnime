@@ -33,7 +33,9 @@ return {
 		-- avatar's left, never walks across the camera's line to the keeper, and the fight comes off the frame's edge
 		-- (research's call on AR7's fix 4, option A, 2026-11-13).
 		Near = { Keeper = true },
-		WalkSpeed = 16,
+		-- Its walk after the avatar, whatever its Speed: Roblox's own walk, the avatar's, so every lead keeps up on the street.
+		-- In a fight it walks at its Speed (TR14; Config.Stats.Speed), which replaced the one walk speed every lead had.
+		FollowWalk = 16,
 		CatchUpSpeed = 26, -- once it's CatchUpFrom away, so it keeps up with a running avatar
 		CatchUpFrom = 18,
 		TeleportFrom = 90, -- past this it reappears at the avatar's side

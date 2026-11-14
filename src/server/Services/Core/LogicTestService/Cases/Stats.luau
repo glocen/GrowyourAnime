@@ -122,6 +122,55 @@ return {
 		end,
 	},
 	{
+		-- TR14 (the director, 2026-11-14, night: "the level cap is 125 but the launch is designed for level 60").
+		Name = "Stats: the cap is 125, the same curve on past 60, a level there at the last ground's pace",
+		Run = function(t: any)
+			t.Equal("the last level", GrowthConfig.MaxLevel, 125)
+			t.Check("G(125), the curve run on", near(Growth.G(125), 77.384), `{Growth.G(125)}`)
+			for _, level in { 60, 61, 90, 124 } do
+				t.Check(`a level past {level}`, type(Growth.XpToNext(level)) == "number" and (Growth.XpToNext(level) :: number) > (Growth.XpToNext(level - 1) :: number))
+				t.Equal(`level {level} at the last ground's kills`, Growth.KillsPerLevel(level), Growth.KillsPerLevel(55))
+			end
+			local data = fresh()
+			local owned = own(data, "rook", 60, 0)
+			t.Equal("60 goes on to 61", Growth.AddXp(owned, Growth.XpToNext(60) :: number), 1)
+			t.Check("at 61, nothing carried", owned.Level == 61 and owned.Xp == 0)
+			owned.Level = GrowthConfig.MaxLevel
+			t.Equal("a Voidkin at the cap resolves there", Stats.Resolve(owned, nil, nil).Level, 125)
+		end,
+	},
+	{
+		-- TR14 (docs/design.md, "Speed"): a lead's walk in a fight, by class with a nudge of its own, from nothing else.
+		Name = "Stats: Speed is the class's walk with the Voidkin's own nudge, at any level, and nothing else adds to it",
+		Run = function(t: any)
+			local speed = StatsConfig.Speed
+			local data = fresh()
+			for _, row in Voidkin.List do
+				local class = speed.Class[row.Class]
+				local nudge = row.Speed or 0
+				t.Check(`{row.Id}: its class has a walk`, class ~= nil, row.Class)
+				t.Check(`{row.Id}: its nudge is whole and at most {speed.Nudge} either way`, nudge == math.floor(nudge) and math.abs(nudge) <= speed.Nudge, `{nudge}`)
+				local owned = own(data, row.Id, 1, 0)
+				local at1 = Stats.Resolve(owned, nil, nil).Speed
+				t.Equal(`{row.Id}: its Speed`, at1, (class or 0) + nudge)
+				owned.Level, owned.Stars = GrowthConfig.MaxLevel, VoidkinConfig.MaxStars
+				t.Equal(`{row.Id}: the same at the cap, with every star`, Stats.Resolve(owned, nil, nil).Speed, at1)
+			end
+			t.Equal("Kirra: the Assassin's and one", Stats.Resolve(own(data, "kirra", 5, 0), nil, nil).Speed, speed.Class.Assassin + 1)
+			t.Equal("a Tank plods", Stats.Resolve(own(data, first("Common", "Tank") :: string, 5, 0), nil, nil).Speed, speed.Class.Tank)
+			t.Equal("Rook walks a Warrior's", Stats.Resolve(own(data, "rook", 5, 0), nil, nil).Speed, speed.Class.Warrior)
+			t.Check("the Assassin closes fastest, the Tank slowest", speed.Class.Assassin > speed.Class.Warrior and speed.Class.Warrior > speed.Class.Tank)
+			-- Nothing else: no source names it, gear's line is dropped, and the board never takes it.
+			t.Check("not a stat any source adds to", table.find(Stats.Names, "Speed") == nil)
+			local rook = own(data, "rook", 5, 0)
+			give(data, "Weapon", { { Stat = "Speed", Value = 50 } })
+			t.Equal("an item's Speed line adds nothing", Stats.Resolve(rook, data.Presets[1], data).Speed, speed.Class.Warrior)
+			t.Check("the board takes no Speed", not Board.Takes("Speed"))
+			t.Equal("an enemy walks its kind's, not a Speed", Stats.Enemy("brawler", 5).Speed, 0)
+			t.Equal("an unknown class walks nothing of its own", Stats.SpeedOf({ Id = "x", Name = "X", Rarity = "Common", Type = "Strength", Class = "Nobody", Element = "", Zone = 1, Aptitude = 1, Speed = 1 }), 0)
+		end,
+	},
+	{
 		Name = "Stats: a Common Warrior at level 1 is the seeds' base",
 		Run = function(t: any)
 			local def = first("Common", "Warrior")

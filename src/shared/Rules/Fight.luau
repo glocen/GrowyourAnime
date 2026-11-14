@@ -114,9 +114,10 @@ function Fight.LeadMode(toAvatar: number, hasTarget: boolean, lead: { TeleportFr
 	return if hasTarget then "Fight" else "Follow"
 end
 
--- How fast a lead walks after its avatar: its walk, or faster once it's far behind.
-function Fight.FollowSpeed(toAvatar: number, lead: { WalkSpeed: number, CatchUpSpeed: number, CatchUpFrom: number }): number
-	return if toAvatar >= lead.CatchUpFrom then lead.CatchUpSpeed else lead.WalkSpeed
+-- How fast a lead walks: `walk` (its Speed in a fight; Config.Combat.Lead.FollowWalk after its avatar), or the catch-up
+-- once it's far behind its avatar, never slower than its walk, so every lead keeps up with a running avatar (TR14).
+function Fight.LeadSpeed(toAvatar: number, walk: number, lead: { CatchUpSpeed: number, CatchUpFrom: number }): number
+	return if toAvatar >= lead.CatchUpFrom then math.max(walk, lead.CatchUpSpeed) else walk
 end
 
 -- Whether a hit reaches at its beat: the target within `reach`, and inside `arc` degrees either side of the facing.

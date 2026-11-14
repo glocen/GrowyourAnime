@@ -13,6 +13,7 @@ local Board = require(Shared.Rules.Board)
 local Hit = require(Shared.Rules.Hit)
 local Growth = require(Shared.Rules.Growth)
 local Combat = require(Shared.Config.Combat)
+local GrowthConfig = require(Shared.Config.Growth)
 local EnemiesConfig = require(Shared.Config.Enemies)
 local Animations = require(Shared.Config.Animations)
 local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
@@ -186,7 +187,7 @@ return {
 				t.Equal(`level {level} keeper's own type`, keeper.Type, "Intelligence")
 			end
 			t.Equal("an unknown enemy is empty", Stats.Enemy("nobody", 3).Health, 0)
-			t.Equal("past the top level it's the top level", Stats.Enemy("brawler", 999).Level, Stats.Enemy("brawler", 60).Level)
+			t.Equal("past the top level it's the top level", Stats.Enemy("brawler", 999).Level, GrowthConfig.MaxLevel)
 		end,
 	},
 	{
@@ -289,8 +290,10 @@ return {
 			t.Equal("with a target, it fights", Fight.LeadMode(10, true, lead), "Fight")
 			t.Equal("without, it follows", Fight.LeadMode(10, false, lead), "Follow")
 			t.Equal("far gone, it reappears", Fight.LeadMode(lead.TeleportFrom + 1, true, lead), "Teleport")
-			t.Equal("near, it walks", Fight.FollowSpeed(lead.CatchUpFrom - 1, lead), lead.WalkSpeed)
-			t.Equal("far, it catches up", Fight.FollowSpeed(lead.CatchUpFrom, lead), lead.CatchUpSpeed)
+			t.Equal("near, it walks at its walk", Fight.LeadSpeed(lead.CatchUpFrom - 1, 14, lead), 14)
+			t.Equal("far, it catches up", Fight.LeadSpeed(lead.CatchUpFrom, 14, lead), lead.CatchUpSpeed)
+			t.Equal("the catch-up never slows a walk faster than it", Fight.LeadSpeed(lead.CatchUpFrom, lead.CatchUpSpeed + 4, lead), lead.CatchUpSpeed + 4)
+			t.Check("after the avatar, every lead walks as fast as the avatar's own walk", lead.FollowWalk >= 16)
 		end,
 	},
 	{

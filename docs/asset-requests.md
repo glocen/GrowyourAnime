@@ -5337,7 +5337,19 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - The 31-point slots stand as read targets, and a tap on a column opens the gear page (TR17's fallback).
   - The aim of 0.70 of the height predates the strip, so it's dropped. The figure fills the stage between the top bar and the strip, and Faber's take shows how tall that is.
 
-**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. Next: the HUD's images in V2, for Faber's build.
+**After the verdict** (Modulo, 2026-11-15):
+- **Rose against failed red:** 18.6 in plain sight (13.8 under deuteranopia, 26.6 under protanopia); the filled button's two ends 19.1 and 21.0. Over 10, so rose stays `#FF5C93` (research accepted it).
+- **The Voidkin mock, redrawn** (`vivid_voidkin.png`, replaced), on the director's words to Modulo over the first one, 2026-11-15 (TR17 holds them), research's fix and its two studies (`docs/research/voidkin-screen.md`, "The rail, ours"; `docs/research/gear-icons.md`, DESIGN):
+  - **The rail:** a thin line down the left with a round button for each page. At rest a button is a small cut ring, 26 points across; chosen, it's 42, its ring lit in the room's colour, with light on the line beside it. Each has a plain mark and a short word, and the line stops for the word.
+  - **The gear:** twelve slots at 40 points in two columns of six; Main Hand and Off Hand at 46, at the figure's feet either side of Combat Power. A slot shows its rarity in layers: the rim, an inner light behind the object, the object large. The forge rank is a badge on the slot's square corner.
+  - **The frame's step:** a Legendary slot has lit facets on its two cuts, a second rim of light and a small crown on its top edge; a Mythical one keeps the form with a broken crown and red light. Helmet and Main Hand show Legendary, Chest Armor Mythical, beside the lower tiers.
+  - **The figure** is 232 points tall, 0.62 of the screen's height, with the name on one line over its head, clear of Roblox's bar.
+  - **Stand-ins still:** the gear's marks are plain shapes until AR6's modelled icons; the numbers; the strip's empty frames.
+  - **Self-review:** made and looked at, at sheet size and at phone size. Two faults found and fixed: the line ran through the rail's words, and a rank's number sat on a lit facet.
+  - **Content check: PASS,** as a review sheet. Its notes: when the modelled gear comes, body-shaped pieces on a Mythical tile keep their material's colour, never pink on red; a later round that takes more of the reference's arrangement needs a check of the whole composition; the rail's and the high frames' slices need their own check at 64 px before any upload.
+  - **Time:** about 50 minutes by the clock, two guarded renders (1,015 and 1,100 MB at peak, lowest free 2.66 GB).
+
+**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and waits for research's eye beside Faber's take. Next: the HUD's images in V2, for Faber's build.
 
 **Delivery 3, the older screens, vivid** (research, 2026-11-15, on the director's word over the Breaker screen: "we need to add more colors and appealing to each old full dark ui, like the epic chance text should be purple, the battery text need a rework also like it energy colors"). After the HUD's images:
 - **Every screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the Breaker and the bays in Dynamo vivid first, then the reveal, Regalia, the map, and each screen with a reward or a confirm.

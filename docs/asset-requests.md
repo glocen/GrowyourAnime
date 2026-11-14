@@ -4780,7 +4780,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: the sheet and the model delivered and accepted; delivery 3, the clips.
+**Status:** in progress (Modulo), 2026-11-14: the sheet and the model delivered and accepted; delivery 3, the clips, blocked and waiting on research's read.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -4879,6 +4879,68 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 **Research's call on the reactions, 2026-11-14, night (Modulo's question, delivery 3): option (b).** The open set (Rook's Hit, Down and Up) plays on her body as it is. Three tail-only layers start with it: KirraTailHit, KirraTailDown and KirraTailUp, the eight scarf joints keyed over the open set's frames and every other joint at weight 0. Down's tail lies on the floor. The shared set stays one set, and the next long-tailed Voidkin gets its own short layers.
 - **For Faber, at the install:** a reaction starts both tracks together, the layer above the set. Any spring hands the tail to the layer for the reaction's length and takes it back after. Faber, say in your row if you'd do it otherwise.
 - **TR12 changes the fall** (`docs/design.md`, "A fall sends it home"): Down ends with the lead leaving as light, and Up plays at home. Both layers still serve.
+
+### 3. The clips: the blocking (Modulo, 2026-11-14)
+
+- **Where:** `build/scratch/modulo/kirra/clips/`:
+  - `kirra_blocking.png`: every clip's key poses, a row a clip, from the player's camera (the Reveal and Work from her front);
+  - `poses_<Clip>.png`: each clip's key poses from two or three views.
+
+  `tools/blender/kirra_clips.py` draws them in Workbench in about two minutes: `-- <out dir> [poses|export|audit] [clip ...]`. Each clip's performance line is in it, written before the poses.
+- **How it moves,** three tracks besides the body (keyed as Rook's and Pip's are, the legs re-solved every frame):
+  - **The blades.** Each has one joint, on the Torso at its grip. A clip that never keys it (the shared walk, the open reactions) leaves it home in its sheath. A clip that draws it lays it in her fist frame by frame. On the draw it slides up out of its sheath along its line, then turns into her grip; by the sheath it lines up with the mouth first.
+  - **The tail:** its eight joints are worked out each frame from a few keyed numbers. It can float in its S with a wave always running down it, aim one way (root first, the tip held back), or follow the knot's own path. The floor holds it up.
+  - **Her root,** for the review only: the Combo's dash and Scarf Step's blink. The game moves her.
+- **The clips** (frames at 60 fps; markers in bold):
+  - **Idle,** a 240-frame loop. She's up on the balls of her feet with a small bounce twice a breath. At 152 she looks back over her left shoulder along her scarf, as if checking nobody's on her trail, then eyes front at 184. The tail's slow wave never stops: two cycles a loop, lifting a little as she looks.
+  - **Combo,** 101 frames, 1.67 s, PipCombo's length. The dash is the first cut.
+    - **Dash** 0: she comes in low over 4 studs in 9 frames, her right hand already over her shoulder on the grip.
+    - **Hit1** 12: the draw is the cut, down across the Shade. The left blade is drawn at 20 to 23.
+    - **Hit2** 26: the X she wears.
+    - 44: both blades low behind her.
+    - **Hit3** 56: up through it, lifted 0.34.
+    - 61: both blades over her shoulders, **Sheathe** at 64.
+    - 84: low and ready; 100: her stance.
+    - The tail streams behind the dash, whips right with the cut and left with the X, streams down as she rises and flicks up as she lands, then floats down to its S.
+    - **For Faber:** if only the first combo of a fight opens with the dash, later rounds can start the clip at 0.15 s, past it. Or I cut a second clip. Your call.
+  - **Scarf Step,** 97 frames:
+    - 8: she sets, her right hand on the grip.
+    - **Blink** 13: her root jumps along the 35° line.
+    - **Land** 16: she's past the Shade and facing it, 8.8 studs from where she was (the Shade at 5), sliding low. The blade trails out of the back of her fist; the other hand reaches toward the Shade.
+    - **Cut** 18.
+    - 16 to 40: the line holds, the tail straight from her knot through the Shade's chest, back toward where she was.
+    - 44: it lets go from the tip, past its S with an overshoot, and settles by 70.
+    - 62 to 65: the blade goes home. 96: her stance.
+  - **Reveal,** 151 frames:
+    - 0: she drops from 4.6 studs, the tail streaming up; **Land** 14, low.
+    - 36: she rises and looks at you.
+    - 60 to 64: she reaches back and draws. 72 to 86: she turns it once round her forearm, out at her side.
+    - 94 to 97: home over her shoulder. **Name** 100: she looks at you again.
+    - The tail settles lifted behind her left shoulder, up into the reveal camera's view. Hanging in its S, it was hidden behind her from there.
+  - **Work,** a 168-frame loop, two laps. She runs clockwise laps of a post 2 studs out, seven steps a lap. Each lap she slaps the post's cap with her right palm (**Pump** 36 and 120). The tail follows her path round, a blue ring wound on the post while she runs.
+  - **The tail layers,** over Rook's open set (the frame counts are checked against it on load):
+    - KirraTailHit, 19 frames: it whips up and back.
+    - KirraTailDown, 67 frames: thrown up as she goes over, it lands flat at 34 and lies in a loose S on the floor.
+    - KirraTailUp, 55 frames: from lying, it lifts with an overshoot into its S.
+  - **No Skip:** she fights in melee.
+- **For Faber: the blades' joints change from delivery 2.** One Motor6D for each blade, on the Torso at its grip, keyed by the clips all the way. It replaces the wrist joint on the arm and the `stow` frame. My technical call: with two joints, the game would switch welds at every draw and sheathe; with one, nothing runs in the game, and a clip that doesn't key a blade shows it home. The recipe and `kirra_model.py`'s export change with the clips' delivery. Say in your row if you'd have it otherwise.
+- **For research and Faber: Work needs room.** She needs about 6 studs clear round a post that stands 3 studs ahead of her root and 0.3 to its right. The bay's machine needs a post-like part there, or the clip's post becomes part of the bay. If there isn't the room, the fallback is a run in place at the post, with the same slap.
+- **The numbers** (the last run):
+  - The tail's lowest point over the floor: Idle 3.33, Combo 0.94, Scarf Step 0.59, Reveal 3.03, Work 3.65; 0.11 lying in the layers.
+  - **The tail's widest bend at a joint:** 39° in the fight clips, and 70° in Work (the tip, at 78). The model's seam test covered only 22° edgewise and 15° in ripple, so the seams get a close look at those bends at timing.
+  - **The legs:** no planted foot floats. The deepest a leg sinks into the hip is 0.89, at Scarf Step's landing.
+- **What I fixed on my own review** (seven runs):
+  - Work's strides were lopsided: a leg sank 0.90, at the cap, on every key. Each foot now lands half a step either side of its own hip. Its path ran round a seven-sided figure, and the tail kinked at the corners (82°); now it's keyed as a curve through the loop's seam.
+  - The Reveal's tail hid behind her from the front. Sent over her right shoulder, it went through the hand that draws from there (−0.42), so now it lifts behind her left.
+  - Three lunges floated a foot by up to 0.11. The feet now stand under the hips the lean carries back.
+  - In Scarf Step, the blade pointed into her right leg (−0.49). It now comes out of the back of her fist, and the arm stays back.
+- **Known, for timing:** contacts on transition frames only.
+  - At the draws and sheathes, a blade reads −0.26 to −0.34 against the head's box, where a blade at home already reads −0.20 to −0.23. The box is wider than her hair.
+  - At the Combo's sheathe, the right blade passes the left arm (−0.39 at 61).
+  - In Scarf Step's recovery, the blade passes the right leg (−0.23 at 56).
+  - In the Combo's cut, the tail passes the left arm (−0.18 at 14).
+- **Time:** about 35 minutes, from 13:06 to 13:40 local, over seven runs. On Opus 5.5 xhigh. Pip's clips took about 6 hours in all; the Lamplighter's blocking took 30 minutes.
+- **Four facts:** blocked; self-reviewed, with the numbers above. The content check on the bare rig comes with the export, and research's read of the poses comes before any timing. Not delivered.
 
 ## Later, by ground
 

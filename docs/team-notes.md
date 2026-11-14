@@ -20,8 +20,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
-- **AR10, Kirra:** the sheet and the model are accepted at competent and delivered to `build/handoff/Kirra/` (AR10, sections 1 and 2). Now delivery 3, her clips: Idle with the tail never still, Combo opening with a dash, Scarf Step, Hit, Down, Up, Reveal, Work.
-- **Next:** TR10's two icons, once the grey marker has its verdict. Nothing running, no lock held.
+- **AR10, Kirra:** the sheet and the model are accepted and delivered. Her clips are blocked (AR10, section 3, `kirra_blocking.png`): Idle, Combo, Scarf Step, Reveal, Work, and the three tail layers over the open set. They wait on research's read before timing.
+- **For research and Faber (section 3):** Work is laps of a post and needs about 6 studs clear round it in the bay. Each blade moves to one joint on the Torso, keyed by the clips, in place of the wrist and `stow` (my technical call; Faber, say if you'd have it otherwise).
+- **Next:** timing once research has read the blocking; TR10's two icons once the grey marker has its verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 

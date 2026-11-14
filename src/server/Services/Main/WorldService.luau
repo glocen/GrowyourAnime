@@ -125,8 +125,8 @@ local function gate(parent: Instance, name: string, at: CFrame, wide: number, hi
 end
 
 -- The Festival Door: a frame with a way of light through it, its pivot on the floor at `at`, the way's face along `at`'s
--- look. Walking into the way takes the player through (DoorService).
-local function door(parent: Instance, name: string, at: CFrame): Model
+-- look. Walking into the way takes the player through (DoorService). `material`: the way's, Neon unless given.
+local function door(parent: Instance, name: string, at: CFrame, material: string?): Model
 	local d = WorldConfig.Grey.Door
 	local m = model(parent, name, at)
 	for _, side in { -1, 1 } do
@@ -134,7 +134,7 @@ local function door(parent: Instance, name: string, at: CFrame): Model
 	end
 	block(m, "Lintel", Vector3.new(d.Wide + 3, 1.5, 1.5), at * CFrame.new(0, d.High + 0.75, 0), GREY.Gate)
 	local way = block(m, "Way", Vector3.new(d.Wide, d.High, 0.4), at * CFrame.new(0, d.High / 2, 0), GREY.Pad)
-	way.Material = Enum.Material.Neon
+	way.Material = (Enum.Material :: any)[material or "Neon"]
 	way.Transparency = 0.35
 	way.CanCollide = false
 	return m
@@ -394,7 +394,7 @@ local function lay(folder: Folder)
 	-- the gate in the street's middle, looking through it.
 	local doors = c.Grey.Door
 	local homeDoorAt = CFrame.lookAt(Vector3.new(rowHalf - 4, PAVED_TOP, gateZ - doors.AtGate), Vector3.new(0, PAVED_TOP, gateZ - doors.AtGate))
-	Markers.Stamp(door(folder, "Home door", homeDoorAt), "GroundDoor", { Ground = row.Ground })
+	Markers.Stamp(door(folder, "Home door", homeDoorAt, WorldConfig.Grey.Door.HomeWay), "GroundDoor", { Ground = row.Ground })
 	-- Where the trail home goes (TR16), and the street it keeps to (its middle's X, its half width), on the folder that
 	-- never streams out, as the door's own model may.
 	folder:SetAttribute("HomeDoor", homeDoorAt.Position)

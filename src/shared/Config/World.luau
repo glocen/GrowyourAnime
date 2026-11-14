@@ -75,7 +75,9 @@ return {
 		-- Breaker's line and level with it; at a ground's gate, AtGate studs inside it, against the east stall front. A plot's
 		-- door sets the player down Landing studs before the gate, facing through it: out of the lead's leash of the first
 		-- pack (Combat.Lead.Leash), so the arrival is a look up the street before the first fight.
-		Door = { Wide = 6, High = 9, DoorAt = 34, AtGate = 10, Landing = 4 },
+		-- HomeWay: the door home's way, in the ground's look, is lit by the street, no brighter than its lanterns (research's
+		-- read of TR8's round 1, 2026-11-14: a Neon block outshone them at the gate); its dressing waits for the door pass.
+		Door = { Wide = 6, High = 9, DoorAt = 34, AtGate = 10, Landing = 4, HomeWay = "SmoothPlastic" },
 		-- The Training machine (TR12): left of the Breaker, as the door is right of it (DoorAt), a box Size, and its pad
 		-- Spot studs behind it on the spawn's side, where a fallen lead comes home, facing the machine.
 		Training = { Size = Vector3.new(6, 4, 5), Spot = 6 },

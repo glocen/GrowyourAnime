@@ -1252,6 +1252,10 @@ return {
 				end
 			end
 			t.Check("the paper's boxes in the band over the camera, in the paper's tint", seen > 0 and #off == 0, off[1] or `{seen} boxes streamed in`)
+			local home = streamed(t, "GroundDoor", { Ground = WorldConfig.Row.Ground })
+			local way = home and home:FindFirstChild("Way")
+			t.Check("the door home's way lit by the street, not Neon", way ~= nil and way:IsA("BasePart")
+				and way.Material == (Enum.Material :: any)[WorldConfig.Grey.Door.HomeWay], if way and way:IsA("BasePart") then tostring(way.Material) else "none")
 		end,
 	},
 	{

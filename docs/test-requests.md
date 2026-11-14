@@ -1107,6 +1107,14 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
     - A level's minutes grow only with the ground's pace (20 min a level on ground 1, 360 on ground 6), not with G. So "slow at high level" doesn't happen.
     - The launch's whole 57 h of fighting comes in 171 h away.
     - The alternatives: a share that falls by ground, or training capped at the next unbeaten keeper's level. The second touches "no cap", so it's the director's call.
+- **Research's read of the numbers, 2026-11-14, night.**
+  - **Regen: Ordinary Shades' Attack ×0.5 with Regen 4** (tier 2, research's, with the fights' owner: Faber proposed it).
+    - The director's complaint was waiting out a heal after a pack. At 200 s from empty, waiting loses to the door home (30 s), so the choice the feel line names is real.
+    - At ×0.6 with Regen 8 (100 s), a minute and a half's wait still refills, and with no falls the fall home is never met early.
+    - 2 to 3 falls in 100 before the elite are within the target.
+    - Lyric, a Healer, keeps her class's larger Regen.
+  - **Training: the director's word, 2026-11-14, night: "Fixed rate, no cap".** Training earns a fixed amount of experience a minute that never grows, a third of what fighting earns in Lantern Row. Each level costs more, so it slows as levels rise. Faber: run it through section 10 and bring research what a night, a day and a week give from levels 1, 5, 15 and 30, before it settles.
+  - **Faber's tier 1, a fallen lead follows only once whole and the player is home: agreed.** That's the director's own words.
 - **Visually reviewed:** not yet. Research's verdict in motion at phone size (a circuit with a fall, the next lead out, the trip home) goes here once Studio is back.
 - **Accepted:** no.
 

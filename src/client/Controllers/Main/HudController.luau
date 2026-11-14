@@ -55,6 +55,7 @@ local Burst = require(UI.Kit.Burst)
 local Fade = require(UI.Kit.Fade)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local SpectateController = require(script.Parent.SpectateController)
+local WayHomeController = require(script.Parent.WayHomeController)
 local Effects = require(script.Parent.FighterController.Effects)
 local FadeController = require(script.Parent.FadeController)
 
@@ -109,6 +110,7 @@ local chipText: TextLabel
 local ring: Ring
 local eye: TextButton -- the spectate toggle (TR11)
 local nextButton: TextButton -- under a fallen lead's card: sends out the next (TR12)
+local homeButton: TextButton -- in its place when none other is ready: the way home (TR16)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
 local keeperBar: BossBar.Bar
@@ -537,17 +539,36 @@ local function healing(): { [string]: number }
 	return if ok and type(map) == "table" then map else {}
 end
 
--- Whether the player owns a Voidkin besides the lead, to send out when it falls.
-local function ownsAnother(): boolean
+-- The other Voidkin the player owns besides the fallen `fallen`, as its card weighs them (Rules.Hud.AfterFall).
+local function others(fallen: string): { Hud.Other }
 	local view = ProfileController.Get()
-	local count = 0
-	for _ in (if view then view.Voidkin else {}) do
-		count += 1
-		if count > 1 then
-			return true
+	local list: { Hud.Other } = {}
+	if view == nil then
+		return list
+	end
+	local heals = healing()
+	for id in view.Voidkin do
+		if id ~= fallen and id ~= view.Roles.Lead then
+			table.insert(list, { Role = Read.Role(view, id), Healing = heals[id] })
 		end
 	end
-	return false
+	return list
+end
+
+-- The chip under a fallen lead's card (TR12, TR16): the next lead's or the way home's, never both, and the trail with it.
+local function offer(down: boolean, fallen: string)
+	local now = workspace:GetServerTimeNow()
+	local which = Hud.AfterFall(down, if down then others(fallen) else {}, now, down and WayHomeController.Away())
+	nextButton.Visible = which == "Send"
+	homeButton.Visible = which == "Home"
+	if which ~= "Home" and WayHomeController.On() then
+		WayHomeController.Set(false) -- the lead's back, another is ready, or the player is home
+	end
+	local lit = WayHomeController.On()
+	if homeButton:GetAttribute("Lit") ~= lit then
+		homeButton:SetAttribute("Lit", lit)
+		Button.Set(homeButton, { Selected = lit })
+	end
 end
 
 -- The Voidkin screen (UI/VoidkinScreen): the collection, the lead set out of combat (TR12), and each one's stat board
@@ -875,8 +896,10 @@ local function step(dt: number)
 		end
 		lead.Frame:SetAttribute("Down", down)
 		lead.Frame:SetAttribute("Status", status or "")
-		nextButton.Visible = down and ownsAnother()
-		nextButton.Position = UDim2.new(lead.Frame.Position.X.Scale, lead.Frame.Position.X.Offset, lead.Frame.Position.Y.Scale, lead.Frame.Position.Y.Offset + lead.Frame.Size.Y.Offset + Theme.Size.Gap)
+		offer(down, tostring(model:GetAttribute("Voidkin") or ""))
+		local under = UDim2.new(lead.Frame.Position.X.Scale, lead.Frame.Position.X.Offset, lead.Frame.Position.Y.Scale, lead.Frame.Position.Y.Offset + lead.Frame.Size.Y.Offset + Theme.Size.Gap)
+		nextButton.Position = under
+		homeButton.Position = under -- the two share the place: one shows at a time
 		local why = if down then "Your lead is down" else nil
 		if eye:GetAttribute("Why") ~= why then
 			eye:SetAttribute("Why", why)
@@ -980,6 +1003,19 @@ function HudController.Start()
 		end,
 	})
 	nextButton.Visible = false
+	-- Alone after a fall (TR16; docs/test-requests.md): with no other Voidkin ready, the card offers the way home in its
+	-- place, a trail on the street to the gate's door (WayHomeController). A tap draws it, a second clears it, lit while
+	-- it's drawn; it never moves the player. In grey: the same button.
+	homeButton = Button.new({
+		Name = "Home",
+		Text = "Go home",
+		Size = UDim2.fromOffset(180, Theme.Size.Tap),
+		Parent = Layers.Get("Hud"),
+		OnPress = function()
+			WayHomeController.Toggle()
+		end,
+	})
+	homeButton.Visible = false
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -1107,6 +1143,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		Signature = ring.Frame,
 		Spectate = eye,
 		Next = nextButton,
+		Home = homeButton,
 		Chip = chip,
 		ChipText = chipText,
 		Voidkin = dock.Voidkin,

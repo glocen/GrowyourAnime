@@ -239,6 +239,26 @@ function Hud.LeadStatus(state: string, untilAt: number, now: number, training: b
 	return if training then "Training" else "At home"
 end
 
+-- Another Voidkin the player owns, as a fallen lead's card weighs it: its role ("Lead", "Bay 1" or "", UI.Read.Role) and,
+-- after a fall of its own, the server time it's whole (LeadService's "Healing").
+export type Other = { Role: string, Healing: number? }
+
+-- What a fallen lead's card offers under it (docs/test-requests.md, TR12 and TR16), or nil while the lead stands: "Send"
+-- while another Voidkin could lead now (the next lead, whom Hud.LeadReason refuses nothing but the fight the fall just
+-- ended), else "Home" while the player is out in a ground (`away`): the way home, the trail to the gate's door; else
+-- nothing, the player already home. A worker can't lead, so a Voidkin at work never makes it "Send".
+function Hud.AfterFall(down: boolean, others: { Other }, now: number, away: boolean): ("Send" | "Home")?
+	if not down then
+		return nil
+	end
+	for _, other in others do
+		if Hud.LeadReason(other.Role, other.Healing, now, false) == nil then
+			return "Send"
+		end
+	end
+	return if away then "Home" else nil
+end
+
 -- Why the dock's Voidkin button can't be pressed, or nil when it can.
 function Hud.VoidkinReason(owned: number): string?
 	return if owned > 0 then nil else "No Voidkin"

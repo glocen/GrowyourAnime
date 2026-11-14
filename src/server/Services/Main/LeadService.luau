@@ -10,7 +10,8 @@
 -- The Training machine (Rules.Training): one Voidkin trains while the player is in the game (Training.Who), credited
 -- every Config.Growth.Training.Every seconds and whenever who trains changes; at a join, the lead's time away. Studio
 -- adds TrainingSkip, as if `seconds` passed away, and LeadHeal: every Voidkin whole at once, a fallen lead back up
--- beside the avatar (the way home takes a walk to the plot, which a case on the test pad can't make).
+-- beside the avatar (the way home takes a walk to the plot, which a case on the test pad can't make), and VoidkinFallen:
+-- every Voidkin but the lead fallen just now, so a lead falls alone (TR16).
 
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -283,6 +284,25 @@ function LeadService.Start()
 			end
 			tick(player)
 			return { Ok = true, State = if lead then lead.State else "" }
+		end)
+		-- Studio only: every Voidkin of the player but the lead fallen just now, healing at home, so none is ready to lead
+		-- (TR16: a lead alone after its fall, on an account that owns several). LeadHeal makes them whole again.
+		DebugService.Register("VoidkinFallen", function(who: any): any
+			local player = DebugService.ResolvePlayer(who)
+			local data = if player then DataService.Get(player) else nil
+			if not player or data == nil then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			local mine = carriedOf(player)
+			local count = 0
+			for id in data.Voidkin do
+				if id ~= data.Roles.Lead then
+					mine[id] = { Share = 0, At = now(), Fallen = true }
+					count += 1
+				end
+			end
+			tick(player)
+			return { Ok = true, Count = count }
 		end)
 		-- Studio only: the Training machine as if `seconds` passed away, the lead on it (Rules.Training).
 		DebugService.Register("TrainingSkip", function(who: any, seconds: any): any

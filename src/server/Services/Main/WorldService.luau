@@ -372,6 +372,10 @@ local function lay(folder: Folder)
 	local doors = c.Grey.Door
 	local homeDoorAt = CFrame.lookAt(Vector3.new(rowHalf - 4, PAVED_TOP, gateZ - doors.AtGate), Vector3.new(0, PAVED_TOP, gateZ - doors.AtGate))
 	Markers.Stamp(door(folder, "Home door", homeDoorAt), "GroundDoor", { Ground = row.Ground })
+	-- Where the trail home goes (TR16), and the street it keeps to (its middle's X, its half width), on the folder that
+	-- never streams out, as the door's own model may.
+	folder:SetAttribute("HomeDoor", homeDoorAt.Position)
+	folder:SetAttribute("Street", Vector2.new(0, rowHalf))
 	local landingAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, gateZ + doors.Landing), Vector3.new(0, PAVED_TOP, gateZ + doors.Landing) + north)
 	Markers.Stamp(spot(folder, "Door landing", landingAt), "DoorLanding", { Ground = row.Ground })
 

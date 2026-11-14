@@ -1341,3 +1341,18 @@ Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now b
 **Waits:** the trail's look, past grey (the HUD's shared finish); a chip for anything else.
 
 **Done when:** a logic case covers when the chip shows (one Voidkin fallen, none ready; none when a second is ready; gone at the lead's return). The self-test covers the chip at both scales with the UI lint, and the trail from the elite's square to the door. Research's verdict in motion at phone size.
+
+**Status:** built offline, 2026-11-14 (Faber); the self-test and research's verdict in motion wait on the Studio MCP. Time: about 1.5 active hours, my estimate, not measured.
+- **Implemented.**
+  - **When** (`Rules.Hud.AfterFall`, pure): a fallen lead's card offers "Send" while another Voidkin could lead now (`Hud.LeadReason` refuses it nothing), else "Home" while the player is out in a ground, else nothing. "Out in a ground" is the night's own line (`Rules.Night.Inside`, 24 studs short of the gate), never during a keeper's try.
+  - **The chips share one place under the card,** and only one shows. "Send another" now shows only when someone could go out (tier 1): a Voidkin at work can't lead, so before this it showed a button that sent no one.
+  - **"Go home"** (`HudController`): the kit's grey button, 180 by a whole tap, lit while the trail is drawn. A tap draws the trail and a second clears it. It never moves the player.
+  - **The trail** (`Rules.WayHome`, pure; `Controllers.Main.WayHomeController`): a thin light-grey line on the floor from the avatar to the home door, redrawn as the avatar walks. The street is a straight walled lane, so the line runs straight to the door; from the elite's square, wider than the street, it first steps square into the lane, 4 studs in from the stall fronts. It's gone within 6 studs of the door, out of the ground, at a respawn, on a second tap, and when the card stops offering it. Its numbers are `Config.Hud.WayHome`, tuned live.
+  - **The world** (`WorldService`) writes the door's point and the street (`HomeDoor`, `Street`) on its folder, which never streams out. One ground today, so one door; a second ground's door joins the folder with it.
+  - **Studio adds `VoidkinFallen`** (`LeadService`): every Voidkin but the lead fallen just now, so a lead falls alone on an account that owns several. `LeadHeal` makes them whole again.
+- **Tested.** The type check: 0 new. The logic: 5414 passing offline. Two new cases (`Cases/WayHome`):
+  - When the chip shows: one fallen out in a ground, none at the base, the next lead with a second ready, healing, healed, at work, among several, and gone at the lead's return.
+  - The route on Lantern Row's own geometry: from the square's middle, its two edges and the landing, on the floor, inside the street, ending at the door; the reach at the door.
+  - Each bites: with the base check or the lane's clamp removed, five checks fail.
+- **The content check:** PASS on "Go home" and on the grey trail (rules 2 to 4), judged from the code; its look on screen is research's verdict.
+- **Waiting on the MCP.** The self-test case is written ("HUD: TR16"): the chip under the card and never the next's, at both scales with the UI lint, the trail from the elite's square to the door, following a walk, cleared on a second tap, gone at the door and at the lead's return. Then research's verdict in motion at phone size.

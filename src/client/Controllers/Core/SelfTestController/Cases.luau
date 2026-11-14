@@ -58,6 +58,7 @@ local FighterController = require(script.Parent.Parent.Parent.Main.FighterContro
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
 local SpectateController = require(script.Parent.Parent.Parent.Main.SpectateController)
+local WayHomeController = require(script.Parent.Parent.Parent.Main.WayHomeController)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local DownController = require(script.Parent.Parent.Parent.Main.DownController)
@@ -5281,6 +5282,113 @@ return {
 				local now = myLead()
 				return now ~= nil and now:GetAttribute("Voidkin") == was
 			end))
+		end,
+	},
+	{
+		-- TR16 (docs/test-requests.md, "Alone after a fall: the way home"): a lead that falls with no other Voidkin ready
+		-- offers the way home under its card, never the next lead; a tap draws a grey trail from the elite's square to the
+		-- gate's door, a second clears it, and it's gone at the door and at the lead's return. It never moves the player.
+		Name = "HUD: TR16, a lead fallen alone offers the way home, a trail from the elite's square to the gate's door, gone at the door and at its return",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local parts = HudController.Parts()
+			local home = parts.Home :: TextButton
+			local door = WayHomeController.Door()
+			local elite = Markers.Find("Elite")
+			t.Check("the world says where its home door stands", door ~= nil)
+			t.Check("the elite's square", elite ~= nil)
+			if door == nil or elite == nil then
+				return
+			end
+			local marker = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
+			if marker then
+				t.Near("the trail's door is the door's own marker (studs off)", (Markers.At(marker).Position - door).Magnitude, 0, 0.01)
+			end
+			local look = HudConfig.WayHome
+			local function flat(a: Vector3, b: Vector3): number
+				return Vector3.new(a.X - b.X, 0, a.Z - b.Z).Magnitude
+			end
+			local function legs(): { Instance }
+				local camera = workspace.CurrentCamera
+				local folder = if camera then camera:FindFirstChild("NL_WayHome") else nil
+				return if folder then folder:GetChildren() else {}
+			end
+			local function restore()
+				WayHomeController.Set(false)
+				t.Server("LeadHeal")
+				t.Server("PackBack", "Elite")
+			end
+			t.Check("the elite's square is cleared", t.Server("PackDefeat", "Elite").Ok == true)
+			-- On the square, alone: every other Voidkin fallen just now, so none is ready to lead.
+			local square = Markers.At(elite).Position
+			t.Root().CFrame = CFrame.new(square + Vector3.new(0, R6_ROOT_HEIGHT, 0))
+			t.Wait(LEAD_SETTLE)
+			t.Check("the square is out in the ground", WayHomeController.Away())
+			local alone = t.Server("VoidkinFallen")
+			t.Check("none other ready", type(alone) == "table" and alone.Ok == true)
+			t.Check("no chip while the lead stands", not home.Visible and not parts.Next.Visible)
+			t.Check("the lead falls", t.Server("FightHealth", 0).Ok == true)
+			t.Check("then it's home", waitFor(t, Combat.Lead.Leave + 1, function(): boolean
+				local fallen = myLead()
+				return fallen ~= nil and fallen:GetAttribute("State") == "Home"
+			end))
+			local foot = parts.Lead.AbsolutePosition.Y + parts.Lead.AbsoluteSize.Y
+			t.Check("the way home's chip shows under the card", waitFor(t, REPLICATE, function(): boolean
+				return home.Visible
+			end) and home.AbsolutePosition.Y >= foot - 1, string.format("%.0f, the card's foot %.0f", home.AbsolutePosition.Y, foot))
+			t.Check("and never the next lead's", not parts.Next.Visible)
+			for _, at in { { Name = "this window", Scale = nil :: number? }, { Name = "the smallest phone", Scale = Theme.Scale.Floor } } do
+				Layers.Force(at.Scale)
+				t.Wait(0.1) -- laid out again
+				t.Check(`the chip is a whole tap, in {at.Name}`, home.AbsoluteSize.Y >= Theme.Size.Touch - 0.5, `{home.AbsoluteSize.Y} px`)
+				lintClean(t, `a lead fallen alone, in {at.Name}`)
+			end
+			Layers.Force(nil)
+			-- A tap: the trail from the avatar to the door, on the floor, and the avatar where it was.
+			local here = t.Root().Position
+			t.Check("a tap draws the trail", Button.Press(home) and waitFor(t, 1, WayHomeController.On))
+			local points = WayHomeController.Points()
+			t.Check("it starts under the avatar", #points >= 2 and flat(points[1], here) < 0.5, if #points > 0 then `{points[1]}` else "no points")
+			t.Check("it ends at the gate's door", #points >= 2 and (points[#points] - door).Magnitude < 0.01)
+			local drawn = legs()
+			t.Equal("a leg between each two points", #drawn, math.max(#points - 1, 0))
+			local thin = #drawn > 0
+			for _, leg in drawn do
+				thin = thin and leg:IsA("BasePart") and math.abs(leg.Size.X - look.Width) < 1e-3 and leg.Color == look.Colour and not leg.CanCollide and not leg.CanQuery and not leg.CanTouch
+			end
+			t.Check("a thin grey line nothing in the world feels", thin)
+			t.Check("on the floor, just over it", #drawn > 0 and (drawn[1] :: BasePart).Position.Y > door.Y and (drawn[1] :: BasePart).Position.Y < door.Y + 1)
+			t.Check("the chip lit while it's drawn", waitFor(t, 0.5, function(): boolean
+				return Button.State(home) == "Selected"
+			end), Button.State(home))
+			t.Check("the player wasn't moved", flat(t.Root().Position, here) < 0.5)
+			-- It follows the avatar as it walks.
+			local ahead = here + Vector3.new(0, 0, 10 * math.sign(door.Z - here.Z)) -- ten studs on toward the gate
+			t.Root().CFrame = CFrame.new(ahead)
+			t.Check("it's redrawn from where the avatar now stands", waitFor(t, 0.5, function(): boolean
+				local now = WayHomeController.Points()
+				return #now >= 2 and flat(now[1], ahead) < 0.5
+			end))
+			-- A second tap clears it.
+			Button.Press(home)
+			t.Check("a second tap clears it", waitFor(t, 1, function(): boolean
+				return not WayHomeController.On() and #WayHomeController.Points() == 0 and #legs() == 0
+			end))
+			-- Gone at the door: set down within its reach, beside it, off its way.
+			t.Check("a third tap draws it again", Button.Press(home) and waitFor(t, 1, WayHomeController.On))
+			t.Root().CFrame = CFrame.new(door + Vector3.new(-2, R6_ROOT_HEIGHT, -(look.Reach - 1)))
+			t.Check("gone at the door", waitFor(t, 1, function(): boolean
+				return not WayHomeController.On() and #legs() == 0
+			end))
+			-- Gone at the lead's return.
+			t.Root().CFrame = CFrame.new(square + Vector3.new(0, R6_ROOT_HEIGHT, 0))
+			t.Wait(0.5)
+			t.Check("drawn once more from the square", Button.Press(home) and waitFor(t, 1, WayHomeController.On))
+			t.Server("LeadHeal")
+			t.Check("at the lead's return the chip and the trail are gone", waitFor(t, 2, function(): boolean
+				return not home.Visible and not WayHomeController.On() and #legs() == 0
+			end))
+			restore()
 		end,
 	},
 	{

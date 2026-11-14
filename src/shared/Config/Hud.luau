@@ -162,6 +162,10 @@ return {
 	-- (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
 	Spectate = { Size = 52, Gap = 8, Place = "Above", Ease = 0.3, Height = 1.5 },
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
+	-- The way home after a lone fall (TR16), in grey: the trail is a line Width studs wide and Thick high, Lift over the
+	-- door's floor (over the elite's square's 0.1 mark), in Colour at Transparency, keeping Lane studs in from the stall
+	-- fronts. It's gone within Reach studs of the door. Its look past grey waits for the HUD's shared finish.
+	WayHome = { Width = 0.35, Thick = 0.05, Lift = 0.15, Colour = Color3.fromRGB(190, 190, 190), Transparency = 0.25, Lane = 4, Reach = 6 },
 	-- The cards' colours (TR3's verdict, 2026-11-13, fixes 1 to 3, with the director's notes). Health is the Ember light on
 	-- both cards, and no other bar takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's
 	-- experience light is a cool colour of its own against the red. The trim round the lead card's bars and its level's badge is

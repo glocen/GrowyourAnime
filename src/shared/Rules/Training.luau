@@ -1,10 +1,11 @@
 --!strict
 -- Training (shared, pure): the Training machine (docs/design.md, "The base", "The Training machine"; TR12). One Voidkin at
--- a time earns experience at Config.Growth.Training.Share of what fighting earns a second at its own level (KillsPerHour
--- kills an hour), with no cap: each level's own cost slows it, so it's fast only at the start. Its time is worked out from
+-- a time earns a fixed amount of experience a second, at any level, with no cap (the director, 2026-11-14: "Fixed rate,
+-- no cap"): Config.Growth.Training.Share of what fighting earns in Lantern Row, KillsPerHour kills an hour of its packs
+-- and its elite, each kill as Rules.Drops pays it. Each level costs more, so it slows as levels rise. Its time is worked out from
 -- a stamp (Profile's Training.Stamp), as the Breaker's is: on the server's clock while the player is in the game, and at a
 -- join for the time away, when the lead trained. It draws nothing.
---   Training.Rate(level)                 experience a second at `level`
+--   Training.Rate()                      experience a second, at any level
 --   Training.Gain(owned, seconds)        trains `owned` for `seconds`: the levels gained, and the seconds left over
 --   Training.Who(playerHome, lead, leadWaiting, healed)   who trains while the player is in the game, or nil
 --   Training.Advance(data, now, trainee) trains `trainee` from the stamp to `now`, and moves the stamp
@@ -12,12 +13,28 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local GrowthConfig = require(Shared.Config.Growth)
+local WorldConfig = require(Shared.Config.World)
+local DropsConfig = require(Shared.Config.Drops)
 local Growth = require(Shared.Rules.Growth)
 
 local Training = {}
 
-function Training.Rate(level: number): number
-	return GrowthConfig.Training.Share * GrowthConfig.KillsPerHour / 3600 * Growth.XpPerKill(level)
+-- What a kill in Lantern Row pays on average: its packs' and its elite's, each kill as Rules.Drops pays it.
+local function rowXpPerKill(): number
+	local kills, xp = 0, 0
+	for _, stop in WorldConfig.Row.Stops do
+		local share = if stop.Kind == "Pack" then DropsConfig.Share.Ordinary elseif stop.Kind == "Elite" then DropsConfig.Share.Elite else nil
+		if share then
+			local count = if stop.Kind == "Pack" then stop.Count or 1 else 1
+			kills += count
+			xp += count * GrowthConfig.XpPerKillPerG * Growth.G(stop.Level) * share
+		end
+	end
+	return if kills > 0 then xp / kills else 0
+end
+
+function Training.Rate(): number
+	return GrowthConfig.Training.Share * GrowthConfig.KillsPerHour / 3600 * rowXpPerKill()
 end
 
 -- Trains `owned` for `seconds`, level by level, each at its own level's rate. Returns the levels gained and the seconds
@@ -29,7 +46,7 @@ function Training.Gain(owned: Profile.OwnedVoidkin, seconds: number): (number, n
 	local gained, left = 0, seconds
 	for _ = 1, GrowthConfig.MaxLevel do
 		local need = Growth.XpToNext(owned.Level)
-		local rate = Training.Rate(owned.Level)
+		local rate = Training.Rate()
 		if need == nil or not (rate > 0) then
 			owned.Xp = if need == nil then 0 else owned.Xp
 			return gained, 0

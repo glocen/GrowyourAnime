@@ -12,6 +12,8 @@ local Collection = require(Shared.Rules.Collection)
 local Hud = require(Shared.Rules.Hud)
 local Combat = require(Shared.Config.Combat)
 local GrowthConfig = require(Shared.Config.Growth)
+local WorldConfig = require(Shared.Config.World)
+local DropsConfig = require(Shared.Config.Drops)
 
 local NOW = 1_800_000_000
 
@@ -29,7 +31,7 @@ end
 
 -- Seconds of training from the start of `level` to the start of `level + 1`.
 local function levelSeconds(level: number): number
-	return (Growth.XpToNext(level) :: number) / Training.Rate(level)
+	return (Growth.XpToNext(level) :: number) / Training.Rate()
 end
 
 return {
@@ -93,22 +95,32 @@ return {
 		end,
 	},
 	{
-		Name = "Training: TR12, the machine trains at a third of a fight's pace, level by level, and keeps what's left",
+		Name = "Training: TR12, the machine trains at a fixed third of Lantern Row's pace, level by level, and keeps what's left",
 		Run = function(t: any)
 			local share = GrowthConfig.Training.Share
 			t.Check("about a third", share >= 0.25 and share <= 0.4, `{share}`)
-			for _, level in { 1, 5, 15, 40 } do
-				local fight = GrowthConfig.KillsPerHour / 3600 * Growth.XpPerKill(level)
-				t.Check(`a third of a fight's experience at {level}`, near(Training.Rate(level), share * fight))
+			-- Lantern Row's fighting, a second: its packs' and its elite's kills, each as Drops pays it (the director,
+			-- 2026-11-14: "Fixed rate, no cap").
+			local kills, xp = 0, 0
+			for _, stop in WorldConfig.Row.Stops do
+				local kind = if stop.Kind == "Pack" then "Ordinary" elseif stop.Kind == "Elite" then "Elite" else nil
+				if kind then
+					local count = if stop.Kind == "Pack" then stop.Count or 1 else 1
+					kills += count
+					xp += count * GrowthConfig.XpPerKillPerG * Growth.G(stop.Level) * DropsConfig.Share[kind]
+				end
 			end
+			local fight = GrowthConfig.KillsPerHour / 3600 * xp / kills
+			t.Check("a third of what fighting earns in Lantern Row", near(Training.Rate(), share * fight), string.format("%.4f a second, fighting %.4f", Training.Rate(), fight))
+			t.Check("about 39 a minute, today's numbers", Training.Rate() * 60 > 30 and Training.Rate() * 60 < 50, string.format("%.1f", Training.Rate() * 60))
 			local one = owned(5)
 			local gained, left = Training.Gain(one, levelSeconds(5) / 2)
 			t.Check("half a level's time: half its experience", gained == 0 and math.abs(one.Xp - (Growth.XpToNext(5) :: number) / 2) <= 1, `{one.Xp}`)
-			t.Check("what isn't a whole point is kept", left >= 0 and left * Training.Rate(5) < 1, `{left}`)
+			t.Check("what isn't a whole point is kept", left >= 0 and left * Training.Rate() < 1, `{left}`)
 			one = owned(5)
 			gained = Training.Gain(one, levelSeconds(5) + levelSeconds(6) + 1)
 			t.Check("two levels, each at its own rate", gained == 2 and one.Level == 7, `{gained}, level {one.Level}`)
-			t.Check("the second is slower than the first: no cap, each level's cost slows it", levelSeconds(15) > levelSeconds(5))
+			t.Check("no cap: each level's rising cost slows it", levelSeconds(15) > levelSeconds(5) and levelSeconds(30) > levelSeconds(15))
 			one = owned(GrowthConfig.MaxLevel)
 			gained, left = Training.Gain(one, 1e6)
 			t.Check("nothing past the last level", gained == 0 and one.Level == GrowthConfig.MaxLevel and one.Xp == 0 and left == 0)
@@ -140,7 +152,7 @@ return {
 			who, gained = Training.Advance(data, night, lead)
 			local level = data.Voidkin[lead].Level
 			t.Check("a night away trains the lead", who == lead and gained > 0 and level > 1, `level {level}`)
-			t.Check("the stamp keeps only what wasn't a whole point", data.Training.Stamp <= night and night - data.Training.Stamp < 1 / Training.Rate(level) + 1e-6)
+			t.Check("the stamp keeps only what wasn't a whole point", data.Training.Stamp <= night and night - data.Training.Stamp < 1 / Training.Rate() + 1e-6)
 			local copy = Profile.Template()
 			local same = Collection.Uncover(copy, "rook", NOW).Id
 			copy.Voidkin[same].Level = 1

@@ -151,8 +151,9 @@ return {
 				end
 				return mean * (1 - odds.ChanceDodge) * coefficientPerSecond
 			end
+			-- The brawler's share is research's read of the sim, 2026-11-14 (TR12): an Ordinary Shade's Attack halved, so 0.06.
 			local targets = { -- seeds enemy: ttk and the health share a kill costs
-				{ "brawler", 5, 0.12 },
+				{ "brawler", 5, 0.06 },
 				{ "brawler_elite", 18, 0.35 },
 				{ "lamplighter", 45, 0.7 },
 			}

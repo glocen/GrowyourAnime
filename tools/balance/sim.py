@@ -473,10 +473,13 @@ def game():
     growth = lua("src/shared/Config/Growth.luau")
     early = [int(x) for x in re.search(r"Early = \{([\d, ]*)\}", growth)[1].replace(" ", "").split(",") if x]
     training = re.search(r"Training = \{ Share = ([\d.]+)", growth)
+    drops = re.search(r"Share = \{ Ordinary = ([\d.]+), Elite = ([\d.]+)", lua("src/shared/Config/Drops.luau"))
     return dict(kinds=kinds, stops=stops, spacing=float(row[2]) * 16, notice=notice, early=early,
                 regen=float(regen[1]) if regen else None,
                 regen_class={k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)", regen[2])} if regen else {},
-                training=float(training[1]) if training else None)
+                training=float(training[1]) if training else None,
+                drops={"Pack": float(drops[1]), "Elite": float(drops[2])},
+                xp_per_g=float(re.search(r"XpPerKillPerG = ([\d.]+)", growth)[1]))
 
 
 def kills_per_level(level, early):
@@ -588,15 +591,31 @@ def report_carry(runs=400, sweep=None, starts=(1, 3)):
             line(f"{base}{mark_now}", f"{base / S['base']['hp']:.2%}", f"{S['base']['hp'] / base:.0f}s" if base else "never", *cells, w=21)
 
 
+def row_xp_per_kill(gm):
+    """What a kill in Lantern Row pays on average: its packs' and its elite's, each as Config.Drops shares it (the
+    game's Rules.Training does the same)."""
+    kills = xp = 0.0
+    for s in gm["stops"]:
+        if s["kind"] in gm["drops"]:
+            kills += s["count"]
+            xp += s["count"] * gm["xp_per_g"] * G(s["level"]) * gm["drops"][s["kind"]]
+    return xp / kills
+
+
+def train_rate(gm):
+    """The Training machine's experience a second: a fixed Share of what fighting earns in Lantern Row (the director,
+    2026-11-14: "Fixed rate, no cap")."""
+    return gm["training"] * S["pace"]["killsPerHour"] / 3600 * row_xp_per_kill(gm)
+
+
 def train(level, seconds, gm):
-    """Levels the Training machine gives across `seconds`, from the start of `level`: its rate is Share of what fighting
-    earns a second at the Voidkin's own level (pace.killsPerHour kills an hour), no cap."""
+    """Levels the Training machine gives across `seconds`, from the start of `level`, at its fixed rate, no cap."""
     xp = 0.0
+    rate = train_rate(gm)
     while seconds > 0:
         need = xp_to_next(level, gm["early"])
         if need is None:
             break
-        rate = gm["training"] * S["pace"]["killsPerHour"] / 3600 * xp_per_kill(level)
         t = (need - xp) / rate
         if t > seconds:
             xp += rate * seconds
@@ -610,15 +629,23 @@ def report_training():
     gm = game()
     share = gm["training"] or 1 / 3
     gm["training"] = share
+    rate = train_rate(gm) * 60
     print("\n== 10. The Training machine (TR12): what time away gives ==")
-    print(f"A Voidkin in the machine earns {share:.2f} of what fighting earns a minute at its own level, with no cap.")
-    print("Each level's own cost slows it; the minutes a level takes don't grow with G, only with the ground's pace.")
+    print(f"A fixed {rate:.1f} experience a minute at any level, with no cap (the director, 2026-11-14): {share:.2f} of what")
+    print(f"fighting earns in Lantern Row, {row_xp_per_kill(gm):.1f} a kill on average over its packs and elite, "
+          f"{S['pace']['killsPerHour']} kills an hour. Each level costs more, so it slows as levels rise.")
     line("from level", "a level here", "1 hour", "a night (8 h)", "a day (24 h)", "a week (168 h)", w=15)
-    for level in (1, 5, 9, 15, 30):
-        per = kills_per_level(level, gm["early"]) / (share * S["pace"]["killsPerHour"] / 60)
+    for level in (1, 5, 15, 30):
+        per = xp_to_next(level, gm["early"]) / rate
         line(level, f"{per:.0f} min", *[f"{train(level, h * 3600, gm):.1f}" for h in (1, 8, 24, 168)], w=15)
-    total = sum(g["paceHours"] for g in S["grounds"])
-    print(f"The launch's whole pace is {total} hours of fighting; the machine reaches it in {total / share:.0f} hours away.")
+    top = max(g["to"] for g in S["grounds"])
+    low, high = 0, 1
+    while train(1, high * 3600, gm) < top:
+        high *= 2
+    while high - low > 1:
+        mid = (low + high) // 2
+        low, high = (mid, high) if train(1, mid * 3600, gm) < top else (low, mid)
+    print(f"From level 1 to the last level, {top}: {high} hours in the machine ({high / 24:.0f} days).")
 
 
 if __name__ == "__main__":

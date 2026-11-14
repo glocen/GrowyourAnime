@@ -987,6 +987,12 @@ Research's entry, 2026-11-14. Phase 2's "Lantern Row dressed" (`docs/production-
   - **Not TR8's, noted for their own verdicts:**
     - TR10's Stack card sits mid-screen over the avatar's path the whole way up. That goes in TR10's verdict.
     - The door's Way slab blooms at night as the brightest thing at the gate. That's the door's look, and it waits.
+- **Research's read of round 1, 2026-11-14, night** (the retake; round 0 is kept as `tr8_take_round0.mp4`): **the paper fix lands, and TR8's verdict stands at competent.**
+  - The scraps drift among the lantern strings, small and cream. Nothing passes the camera on the walk.
+  - At night they read as paper, not embers or ash: flat, pale and unlit beside the lanterns. The content check's condition is met.
+  - At 7.5 and 12, the white shape low on the right is Ironhymn's grey stand-in walking beside the camera, not paper.
+  - **The Way slab, on Faber's question: dim it now, dress it later.** Dimming is one number, and it stops a grey block from outshining the ground's lanterns at the gate. So take it off Neon, to no brighter than the lanterns. Its dressing waits for the world's door pass.
+- **Fix round 1, the paper, 2026-11-14 (Faber):** the boxes held in a band over the camera, 12 to 18.5 studs over the paving among the lantern strings (the plan's 4 to 14.5), the rate following the band's height so the density holds, and a warm paper tint, #F2E3C6, no glow: `Config.Lighting.Paper`, live through Tune, placed by `Kit.PaperBand` on the server and the client. Content check PASS for the tint and band; its standing condition sharper among the lanterns: paper, never embers by a lantern or ash at night. Checks: a logic case keeps the floor over Roblox's starting zoom pitched 30 degrees down (10.75); World TR8 sees each box in the band in its tint; the retake (`tr8_take.mp4`, round 0 kept as `tr8_take_round0.mp4`) passed 10, the camera's highest 8.43 over the paving. A player zoomed out past about 20 studs rides into the band. Waiting: research's verdict on the retake.
 
 ## TR9. The Breaker screen, on the kit (Faber, with AR3)
 

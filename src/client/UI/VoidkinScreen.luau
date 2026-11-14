@@ -215,7 +215,7 @@ local function board(parent: Instance, view: Profile.View, owned: Profile.OwnedV
 	local block = Stats.Resolve(it, Stats.PresetOf(view, it), view)
 	for order, stat in StatsConfig.Board.Stats do
 		local count = Board.On(it, stat)
-		local gain = "+" .. amount(Board.Gain(stat, it.Level))
+		local gain = "+" .. amount(Stats.PointGain(it, stat))
 		local value = amount((block :: any)[stat] :: number) .. (if stat == "Regen" then " a second" else "")
 		Row.new({
 			Name = stat,

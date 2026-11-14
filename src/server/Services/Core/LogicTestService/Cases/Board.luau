@@ -1,8 +1,10 @@
 --!strict
 -- Board cases (pure): the stat board, a Voidkin's skill points (docs/design.md, "Skill points"; TR15). Earning one a
--- level, spending it on one of four stats and never another, its worth sized by G and blind to class and rarity, an even
--- spread matching the Voidkin without the board, a spend or a reset repeated or interrupted never counting twice, the
--- reset's price, a level gained with the board open, and an old save gaining its points.
+-- level, spending it on one of four stats and never another, the board on top of the own base (research's call (c)): a
+-- point's gain a part of the stat's own figure, class and rarity in it, and what the board shows the same as what a tap
+-- adds; nothing spent is today's Voidkin, an even full spend adds each stat's Share, every point on one four times it;
+-- no spread lowers a stat, and no level-up does either with its point waiting; a spend or a reset repeated or interrupted
+-- never counting twice, the reset's price, a level gained with the board open, and an old save gaining its points.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -105,76 +107,105 @@ return {
 		end,
 	},
 	{
-		Name = "Board: a point adds its gain, sized by G at the Voidkin's level, the same whatever its class or rarity",
+		Name = "Board: a point adds its gain on top, a part of the stat's own figure with class and rarity in it, and the board shows what a tap adds",
 		Run = function(t: any)
 			local data = fresh()
 			for _, def in { first("Common", "Warrior"), first("Common", "Tank"), first("Mythical", "Assassin"), "pip", "lyric" } do
 				local id = own(data, def, 9).Id
-				for _, stat in FOUR do
+				local mine = plain(def, 9)
+				for index, stat in FOUR do
 					local before = Stats.Resolve(data.Voidkin[id], nil, nil)
+					local shown = Stats.PointGain(data.Voidkin[id], stat)
+					local gain = StatsConfig.Board.Share[stat] * 4 * mine[stat] / Board.Earned(9)
 					t.Check(`{def} {stat}`, act(data, "SpendPoint", { Voidkin = id, Stat = stat }).Ok == true)
 					local after, lines = Stats.Resolve(data.Voidkin[id], nil, nil)
-					local gain = StatsConfig.Board.Point[stat] * Growth.G(9)
-					t.Check(`{def} {stat}: one point adds its gain`, near((after :: any)[stat] - (before :: any)[stat], gain), `{(after :: any)[stat] - (before :: any)[stat]}, wanted {gain}`)
-					t.Check(`{def} {stat}: the gain the board shows`, near(Board.Gain(stat, 9), gain))
+					local added = (after :: any)[stat] - (before :: any)[stat]
+					t.Check(`{def} {stat}: four times its Share of the own figure, over the points earned`, near(added, gain), `{added}, wanted {gain}`)
+					t.Check(`{def} {stat}: the gain the board showed is what the tap added`, near(shown, added))
 					t.Check(`{def} {stat}: one line, from the board`, near(lineOf(lines, "Board", stat), gain))
-					for _, other in FOUR do
-						if other ~= stat then
-							t.Check(`{def} {stat}: {other} doesn't move`, near((after :: any)[other], (before :: any)[other]))
+					for other, value in FOUR do
+						if other ~= index then
+							t.Check(`{def} {stat}: {value} doesn't move`, near((after :: any)[value], (before :: any)[value]))
 						end
 					end
 				end
 			end
-			local id = own(data, "rook", 2).Id
-			act(data, "SpendPoint", { Voidkin = id, Stat = "Health" })
-			local rook = data.Voidkin[id]
-			rook.Level = 30
-			local _, lines = Stats.Resolve(rook, nil, nil)
-			t.Check("an early point keeps its worth: sized by G at today's level", near(lineOf(lines, "Board", "Health"), Board.Gain("Health", 30)))
+			-- Rarity and class in the own figure: a Mythical's point is worth its rarity's times a Common's of its class.
+			local common, mythical = own(data, first("Common", "Assassin"), 9), own(data, first("Mythical", "Assassin"), 9)
+			local ratio = StatsConfig.Rarity.Mythical / StatsConfig.Rarity.Common
+			t.Check("a Mythical's point, its rarity's times a Common's", near(Stats.PointGain(mythical, "Attack") / Stats.PointGain(common, "Attack"), ratio))
+			-- A point's part of the share falls as points pile up: the first, spent at 2, places half as much of the own
+			-- figure at 3 with the new point waiting. A save of its own: the first Common Warrior above may be Rook.
+			local alone = fresh()
+			local id = own(alone, "rook", 2).Id
+			act(alone, "SpendPoint", { Voidkin = id, Stat = "Health" })
+			local rook = alone.Voidkin[id]
+			local _, two = Stats.Resolve(rook, nil, nil)
+			t.Check("at 2, one point: four times Health's Share", near(lineOf(two, "Board", "Health"), 4 * StatsConfig.Board.Share.Health * plain("rook", 2).Health))
+			rook.Level = 3
+			local _, three = Stats.Resolve(rook, nil, nil)
+			t.Check("at 3, the new point waiting: half that part, of a larger own", near(lineOf(three, "Board", "Health"), 2 * StatsConfig.Board.Share.Health * plain("rook", 3).Health))
+			t.Check("the greyed board at level 1 shows a first point's worth", Stats.PointGain(own(data, "pip", 1), "Health") > 0)
 		end,
 	},
 	{
-		Name = "Board: an even spread is the Voidkin without the board, within 2% in whole points, and stars never move",
+		Name = "Board: nothing spent is today's Voidkin, an even full spend adds each Share, every point on one four times it, and stars never move",
 		Run = function(t: any)
 			local data = fresh()
-			local worst = 0
+			local share = StatsConfig.Board.Share
+			local failed = 0
+			local function expect(what: string, got: number, want: number)
+				if not near(got, want, 1e-9) then
+					failed += 1
+					if failed <= 20 then
+						t.Check(what, false, `{got}, wanted {want}`)
+					end
+				end
+			end
 			for _, row in Voidkin.List do
 				local owned = own(data, row.Id, 1)
 				for level = 1, GrowthConfig.MaxLevel do
 					owned.Level, owned.Stars = level, 0
 					local want = plain(row.Id, level)
-					-- A quarter each, as the board counts it: exactly the Voidkin without the board.
-					local quarter = Board.Earned(level) / 4
+					local earned = Board.Earned(level)
+					table.clear(owned.Points)
+					local today = Stats.Resolve(owned, nil, nil)
 					for _, stat in FOUR do
-						owned.Points[stat] = quarter
+						expect(`{row.Id} at {level}: {stat} with nothing spent`, (today :: any)[stat], want[stat])
 					end
-					local exact = Stats.Resolve(owned, nil, nil)
-					for _, stat in FOUR do
-						if not near((exact :: any)[stat], want[stat], 1e-9) then
-							t.Check(`{row.Id} at {level}: {stat} a quarter each`, false, `{(exact :: any)[stat]}, wanted {want[stat]}`)
+					if earned > 0 then
+						for _, stat in FOUR do
+							owned.Points[stat] = earned / 4
+						end
+						local even = Stats.Resolve(owned, nil, nil)
+						for _, stat in FOUR do
+							expect(`{row.Id} at {level}: {stat} spent evenly at full`, (even :: any)[stat], want[stat] * (1 + share[stat]))
+						end
+						for _, stat in FOUR do
+							table.clear(owned.Points)
+							owned.Points[stat] = earned
+							local lean = Stats.Resolve(owned, nil, nil)
+							expect(`{row.Id} at {level}: every point on {stat}`, (lean :: any)[stat], want[stat] * (1 + 4 * share[stat]))
 						end
 					end
-					-- In whole points: the remainder goes in the board's order.
-					local whole, rest = Board.Earned(level) // 4, Board.Earned(level) % 4
-					for index, stat in FOUR do
-						owned.Points[stat] = whole + (if index <= rest then 1 else 0)
-					end
-					local block = Stats.Resolve(owned, nil, nil)
-					for _, stat in FOUR do
-						worst = math.max(worst, math.abs((block :: any)[stat] - want[stat]) / want[stat])
-					end
 					owned.Stars = 3
+					table.clear(owned.Points)
+					owned.Points.Health = earned
 					local _, lines = Stats.Resolve(owned, nil, nil)
 					table.clear(owned.Points)
 					local _, bare = Stats.Resolve(owned, nil, nil)
 					for _, stat in { "Health", "Attack", "Defence" } do
-						if not near(lineOf(lines, "Stars", stat), lineOf(bare, "Stars", stat)) then
-							t.Check(`{row.Id} at {level}: stars on {stat} don't move with points`, false)
-						end
+						expect(`{row.Id} at {level}: stars on {stat} don't move with points`, lineOf(lines, "Stars", stat), lineOf(bare, "Stars", stat))
 					end
 				end
 			end
-			t.Check(`whole points within 2% ({string.format("%.2f%%", worst * 100)})`, worst <= 0.02)
+			t.Check(`every Voidkin at every level ({failed} off)`, failed == 0)
+			-- More spent than earned (a test's or a tune's): the whole board still adds no more than its share.
+			local rook = own(data, "rook", 5)
+			rook.Points.Health, rook.Points.Attack = 4, 4
+			local _, lines = Stats.Resolve(rook, nil, nil)
+			local want = plain("rook", 5)
+			t.Check("eight spent of four earned: each half the board, twice its Share", near(lineOf(lines, "Board", "Health"), 2 * share.Health * want.Health) and near(lineOf(lines, "Board", "Attack"), 2 * share.Attack * want.Attack))
 		end,
 	},
 	{
@@ -251,26 +282,35 @@ return {
 		end,
 	},
 	{
-		Name = "Board: no spread takes a stat below nothing, and each class keeps part of its own base at the last level",
+		Name = "Board: no spread lowers a stat, and a level-up with its point waiting never leaves one lower than before",
 		Run = function(t: any)
 			local data = fresh()
+			local failed = 0
 			for _, row in Voidkin.List do
-				local owned = own(data, row.Id, GrowthConfig.MaxLevel)
+				local owned = own(data, row.Id, 1)
 				for _, stat in FOUR do
-					table.clear(owned.Points)
-					owned.Points[stat] = Board.Earned(GrowthConfig.MaxLevel)
-					local block, lines = Stats.Resolve(owned, nil, nil)
-					for _, other in FOUR do
-						if other ~= stat then
-							local kept = lineOf(lines, if other == "Regen" then "Level" else "Base", other)
-							if not (kept > 0 and (block :: any)[other] > 0) then
-								t.Check(`{row.Id}, every point on {stat}: {other} keeps part of its own`, false, `{kept}`)
+					for level = 1, GrowthConfig.MaxLevel - 1 do
+						owned.Level = level
+						table.clear(owned.Points)
+						owned.Points[stat] = Board.Earned(level)
+						local now = Stats.Resolve(owned, nil, nil)
+						local want = plain(row.Id, level)
+						owned.Level = level + 1 -- the new point waits
+						local later = Stats.Resolve(owned, nil, nil)
+						for _, other in FOUR do
+							local low = (now :: any)[other] < want[other] - 1e-9
+							local fell = (later :: any)[other] < (now :: any)[other]
+							if low or fell then
+								failed += 1
+								if failed <= 20 then
+									t.Check(`{row.Id} at {level}, every point on {stat}: {other}`, false, if low then "below today's" else `lower at {level + 1}`)
+								end
 							end
 						end
 					end
 				end
 			end
-			t.Check("checked every Voidkin", #Voidkin.List > 0)
+			t.Check(`every Voidkin, every stat, every level ({failed} off)`, failed == 0 and #Voidkin.List > 0)
 		end,
 	},
 	{

@@ -9,7 +9,6 @@ local Enemies = require(Shared.Definitions.Enemies)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Fight = require(Shared.Rules.Fight)
 local Stats = require(Shared.Rules.Stats)
-local Board = require(Shared.Rules.Board)
 local Hit = require(Shared.Rules.Hit)
 local Growth = require(Shared.Rules.Growth)
 local Combat = require(Shared.Config.Combat)
@@ -213,10 +212,8 @@ return {
 				{ "lamplighter", 45, 0.7 },
 			}
 			for _, level in { 1, 5, 9 } do
-				-- Bare: the Voidkin without the board, its points spread evenly (a quarter each, TR15).
-				local even = Board.Earned(level) / 4
-				local points = { Health = even, Attack = even, Defence = even, Regen = even }
-				local lead = Stats.Resolve({ Id = "k", Def = "rook", Level = level, Xp = 0, Stars = 0, Copies = 0, Nickname = "", Preset = "", Favourite = false, Locked = false, Born = 0, Points = points } :: any)
+				-- Bare: nothing on the board, today's Voidkin (TR15).
+				local lead = Stats.Resolve({ Id = "k", Def = "rook", Level = level, Xp = 0, Stars = 0, Copies = 0, Nickname = "", Preset = "", Favourite = false, Locked = false, Born = 0, Points = {} } :: any)
 				for _, target in targets do
 					local enemy = Stats.Enemy(target[1] :: string, level)
 					local ttk = enemy.Health / perSecond(lead, enemy, Actions.EnemyPerSecond)

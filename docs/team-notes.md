@@ -11,10 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
-- **TR14 built offline** (its status in `docs/test-requests.md`): Speed by class with Kirra's +1, walked in a fight only, and the cap at 125. The sim: Speed moves kills an hour by about 2% at most. **TR15** is being reworked on research's call (c), the board on top of the own base.
+- **TR14 and TR15 built offline** (their status in `docs/test-requests.md`). TR15 is reworked on research's call (c), the board on top: shares Health 1.2%, Attack 0.6%, Defence 3.3%, Regen 2.4%; the strongest lean +7.1% (Lyric on Regen), an even spender +4.4% to +5.5%, TR12's targets held, and no level-up lowers a stat. For research, tier 2: the shares.
 - **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's and TR15's takes at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13, TR15 and "Content as data"; Kirra's install, with TR14's verdict in motion. For Modulo, TR8: the paper's drift has no numbers in the handoff.
 - **What I'd change:** (1) a player who owns one Voidkin is alone on Lantern Row after a fall, so a chip should point to the gate's door home. (2) A mark on the dock's Voidkin while points wait.
-- **Next:** TR15's rework, then what waits on the MCP.
+- **Next:** what waits on the MCP, and the queue's next offline piece meanwhile.
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.

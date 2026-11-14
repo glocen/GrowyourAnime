@@ -1,11 +1,12 @@
 --!strict
 -- Board (shared, pure): the stat board, a Voidkin's skill points (docs/design.md, "Skill points"; TR15). One point a level
 -- from Config.Stats.Board.From, each Voidkin's own, spent by hand on one of the board's stats: Health, Attack, Defence and
--- Regen. A point adds its stat's Point times G at the Voidkin's level, whatever its class or rarity, so an early point
--- keeps its worth. No free power: the board takes each stat's even part, a quarter of the points earned, out of the own
--- base (Rules.Stats), so an even spread is the Voidkin without the board and a chosen spread leans it. A point left
--- unspent adds nothing. A reset gives every point back for a little Credits. Each function changes a draft inside one
--- Transaction and returns its answer, so a spend or a reset asked twice with one op id happens once.
+-- Regen. The board adds on top of the own base (research's call (c), 2026-11-14, night): spent evenly at full it adds a
+-- fixed Share of each stat's own figure, rarity and class in it, at every level, and a stat's points, as a part of those
+-- earned, place that part of the board's stat count times its Share. A point waiting adds nothing, so a Voidkin whose
+-- points wait is today's Voidkin and a spent point is a gain. A point's gain is worth more early and less as points pile
+-- up; the board shows it live before a tap. A reset gives every point back, unspent, for a little Credits. Each spend or
+-- reset changes a draft inside one Transaction and returns its answer, so one asked twice with one op id happens once.
 -- No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -55,22 +56,26 @@ function Board.Left(owned: Profile.OwnedVoidkin): number
 	return math.max(0, Board.Earned(levelOf(owned)) - Board.Spent(owned))
 end
 
--- What one point on `stat` adds at `level`: the gain the board shows before a tap.
-function Board.Gain(stat: string, level: number): number
-	return (StatsConfig.Board.Point[stat] or 0) * Growth.G(math.clamp(level, 1, GrowthConfig.MaxLevel))
+-- The points a Voidkin's shares are spread over: those earned, or those spent if more (a test's or a tune's), so the whole
+-- board never adds more than its share.
+function Board.Over(owned: Profile.OwnedVoidkin): number
+	return math.max(Board.Earned(levelOf(owned)), Board.Spent(owned))
 end
 
--- What the board takes out of `stat`'s own base at `level`: the even part of the points earned, a quarter each.
-function Board.Taken(stat: string, level: number): number
-	if not Board.Takes(stat) then
+-- What `on` points of `over` add to `stat` whose own figure is `own` (Rules.Stats: rarity and class in it, times G):
+-- each point places its part of the board's stat count times the stat's Share, so spent evenly at full each stat gains its
+-- Share of its own, every point on one stat gains it that many times its Share, and a point waiting adds nothing.
+function Board.Added(stat: string, own: number, on: number, over: number): number
+	if not Board.Takes(stat) or on <= 0 or over <= 0 or not (own > 0) then
 		return 0
 	end
-	return Board.Earned(level) / #StatsConfig.Board.Stats * Board.Gain(stat, level)
+	return (StatsConfig.Board.Share[stat] or 0) * #StatsConfig.Board.Stats * own * math.min(on, over) / over
 end
 
--- What the points spent on `stat` add.
-function Board.Added(owned: Profile.OwnedVoidkin, stat: string): number
-	return Board.On(owned, stat) * Board.Gain(stat, levelOf(owned))
+-- What one more point on `stat` adds, its own figure `own`, over `over` points: the gain the board shows before a tap.
+-- A tap needs a point left, so `over` is the points earned and stays so after it: the shown gain is what the tap adds.
+function Board.Gain(stat: string, own: number, over: number): number
+	return Board.Added(stat, own, 1, over)
 end
 
 -- The Credits a reset costs: whole, sized by G at the Voidkin's level.

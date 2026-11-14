@@ -5329,8 +5329,8 @@ return {
 				local inner = found and found:FindFirstChild("Label")
 				return if inner and inner:IsA("TextLabel") then inner.Text else ""
 			end
-			local function gain(stat: string, at: number): string
-				return "+" .. VoidkinScreen.Amount(Board.Gain(stat, at))
+			local function gain(stat: string): string -- the live gain one more point adds the lead now (Rules.Board)
+				return "+" .. VoidkinScreen.Amount(Stats.PointGain(lead(), stat))
 			end
 			local function credit(to: number)
 				local now = ProfileController.Get()
@@ -5391,7 +5391,7 @@ return {
 				local block = Stats.Resolve(owned, Stats.PresetOf(ProfileController.Get() :: Profile.View, owned), ProfileController.Get())
 				for _, stat in StatsConfig.Board.Stats do
 					local found = button(stat)
-					t.Check(`{name}: {stat}'s gain on its button before a tap`, found ~= nil and labelOf(found) == gain(stat, 5) and found:GetAttribute("Disabled") == "", labelOf(found))
+					t.Check(`{name}: {stat}'s gain on its button before a tap`, found ~= nil and labelOf(found) == gain(stat) and found:GetAttribute("Disabled") == "", labelOf(found))
 					local value = VoidkinScreen.Amount((block :: any)[stat]) .. (if stat == "Regen" then " a second" else "")
 					t.Equal(`{name}: {stat} as it stands`, detail(stat), value)
 				end
@@ -5411,6 +5411,7 @@ return {
 			t.Check("Split, again", tune("Split") and VoidkinScreen.Chosen() == id)
 			local model = myLead()
 			local most = if model then model:GetAttribute("MaxHealth") else nil
+			local shown = Stats.PointGain(lead(), "Health") -- what the button says a tap adds
 			local health = button("Health")
 			t.Check("a tap on Health's gain", health ~= nil and Button.Press(health))
 			t.Check("a second tap while it's answered does nothing", health ~= nil and not Button.Press(health))
@@ -5424,14 +5425,14 @@ return {
 			t.Check("the lead in the world holds the gain", type(most) == "number" and waitFor(t, ANSWER, function(): boolean
 				local now = myLead()
 				local after = if now then now:GetAttribute("MaxHealth") else nil
-				return type(after) == "number" and math.abs(after - ((most :: number) + Board.Gain("Health", 5))) < 1
+				return type(after) == "number" and math.abs(after - ((most :: number) + shown)) < 1
 			end), tostring(most))
 			-- A level gained with the board open.
 			t.Server("LeadLevel", 6)
 			t.Check("a level gained with the board open adds one to spend", waitFor(t, ANSWER, function(): boolean
 				return text("Points") == VoidkinScreen.ToSpend(4) and string.find(text("Title"), "Lv 6$") ~= nil
 			end), text("Points"))
-			t.Equal("its gains at the new level", labelOf(button("Attack")), gain("Attack", 6))
+			t.Equal("its gains at the new level", labelOf(button("Attack")), gain("Attack"))
 			t.Equal("the point kept", Board.On(lead(), "Health"), 1)
 			for _, stat in { "Attack", "Defence", "Regen", "Health" } do
 				local was = Board.Spent(lead())
@@ -5446,7 +5447,7 @@ return {
 			t.Equal("none left to spend", text("Points"), VoidkinScreen.ToSpend(0))
 			for _, stat in StatsConfig.Board.Stats do
 				local found = button(stat)
-				t.Check(`{stat}: greyed, its gain kept on it`, found ~= nil and found:GetAttribute("Disabled") == gain(stat, 6) and labelOf(found) == gain(stat, 6), labelOf(found))
+				t.Check(`{stat}: greyed, its gain kept on it`, found ~= nil and found:GetAttribute("Disabled") == gain(stat) and labelOf(found) == gain(stat), labelOf(found))
 				t.Check(`{stat}: a tap does nothing`, found ~= nil and not Button.Press(found))
 			end
 			lintBoth("Split, every point spent")

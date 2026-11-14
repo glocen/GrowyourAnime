@@ -198,8 +198,7 @@ return {
 				for _, level in { 1, 9, 30 } do
 					local owned = own(data, row.Id, level, 0)
 					local block, lines = Stats.Resolve(owned, nil, nil)
-					-- Less the board's part (TR15): no point is spent here.
-					local want = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(level) - Board.Taken("Regen", level)
+					local want = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(level)
 					t.Check(`{row.Id} at {level}`, near(block.Regen, want), `{block.Regen}, wanted {want}`)
 					t.Check(`{row.Id} at {level}: one line, from the level`, near(from(lines, "Level").Regen or 0, want))
 					owned.Stars = VoidkinConfig.MaxStars
@@ -207,7 +206,7 @@ return {
 				end
 			end
 			local rook = Stats.Resolve(own(data, "rook", 15, 0), nil, nil)
-			t.Check("a value, not a share: the same Regen whatever the health", rook.Regen > 0 and near(rook.Regen, regen.Base * Growth.G(15) - Board.Taken("Regen", 15)))
+			t.Check("a value, not a share: the same Regen whatever the health", rook.Regen > 0 and near(rook.Regen, regen.Base * Growth.G(15)))
 			t.Equal("an enemy has none", Stats.Enemy("brawler", 5).Regen, 0)
 		end,
 	},
@@ -222,8 +221,8 @@ return {
 				local g = Growth.G(9)
 				for _, stat in { "Health", "Attack", "Defence" } do
 					local expected = StatsConfig.Base[stat] * StatsConfig.Rarity[row.Rarity] * StatsConfig.Class[row.Class][stat] * g
-					-- The Base line is that own base less the board's part (TR15), which the points spent give back.
-					t.Check(`{row.Id} {stat} base`, near(from(lines, "Base")[stat] + Board.Taken(stat, 9), expected))
+					t.Check(`{row.Id} {stat} base`, near(from(lines, "Base")[stat], expected))
+					t.Check(`{row.Id} {stat}: the same as Stats.Own`, near(Stats.Own(row, stat, 9), expected))
 				end
 				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Main Hand"), { Attack = 40, Critical = 12 }))
 				t.Equal(`{row.Id} critical is the item's`, block.Critical, 12)
@@ -238,9 +237,6 @@ return {
 			give(data, "Chest Armor", { { Stat = "Health", Value = 500 } })
 			local _, none = Stats.Resolve(owned, data.Presets[1], data)
 			local base = from(none, "Base")
-			for stat, value in base do
-				base[stat] = value + Board.Taken(stat, 12) -- the own base whole: stars are a share of it, the board's part counted
-			end
 			for stars = 1, VoidkinConfig.MaxStars do
 				owned.Stars = stars
 				local _, lines = Stats.Resolve(owned, data.Presets[1], data)

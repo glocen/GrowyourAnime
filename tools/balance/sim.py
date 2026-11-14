@@ -514,11 +514,22 @@ def shade(kind, level, gm):
     return e
 
 
-def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05):
+def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05, board=None):
     """One walk down Lantern Row on what the lead carries: each stop in turn, every Shade of a pack on it at once.
+    `board`, if given, is level -> the stat board's multipliers at that level (section 12), or None for none.
     Returns the health share at the end of each pack, and the stop it fell at (None if it reached the elite)."""
     level, xp = start, 0
-    me = build(level, 1, 0.0, cls=cls)
+    up = {}
+
+    def lead(level):
+        me = build(level, 1, 0.0, cls=cls)
+        up.clear()
+        up.update((board(level) if board else None) or {})
+        for k in ("hp", "atk", "def"):
+            me[k] *= up.get(k, 1.0)
+        return me
+
+    me = lead(level)
     hp = me["hp"]
     mult = gm["regen_class"].get(cls, 1.0)
     shares, fell = [], None
@@ -527,7 +538,7 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05):
             break
         # The walk in: from the gate, or from the last stop, until the pack notices; the player's own pace added.
         walk = (gm["spacing"] * (0.4 if index == 0 else 1) - gm["notice"]) / 16 + rng.uniform(0.5, 4)
-        hp = min(me["hp"], hp + regen_base * mult * G(level) * walk)
+        hp = min(me["hp"], hp + regen_base * mult * up.get("regen", 1.0) * G(level) * walk)
         foes = [dict(e=shade("Ordinary", stop["level"], gm), late=rng.uniform(0.3, 2.0), next=0.0) for _ in range(stop["count"])]
         for f in foes:
             f["hp"] = f["e"]["hp"]
@@ -549,7 +560,7 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05):
                         xp -= need
                         level += 1
                         share = hp / me["hp"]
-                        me = build(level, 1, 0.0, cls=cls)
+                        me = lead(level)
                         hp = share * me["hp"]
                         need = xp_to_next(level, gm["early"])
             for f in live:
@@ -559,7 +570,7 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05):
                     hp -= theirs / (1 + S["ratings"]["caps"]["critFloor"] * 0.5) * (1.5 if crit else 1)
                     f["next"] = t + swing
             if hp > 0:
-                hp = min(me["hp"], hp + regen_base * mult * G(level) * dt)
+                hp = min(me["hp"], hp + regen_base * mult * up.get("regen", 1.0) * G(level) * dt)
         if hp <= 0:
             fell = index
             break
@@ -754,42 +765,42 @@ def report_cooldowns(runs=40):
 BOARD = ("hp", "atk", "def", "regen")
 BOARD_NAMES = {"hp": "Health", "atk": "Attack", "def": "Defence", "regen": "Regen"}
 BOARD_LEADS = (("Rook", "Warrior"), ("Kirra", "Assassin"), ("Pip", "Mage"), ("Lyric", "Healer"))
+ROW_LEVELS = range(2, 10)  # Lantern Row, from the first point
+LEAN_TARGET = 0.07  # research's call, 2026-11-14, night: the strongest one-stat lean on Lantern Row, about +7% over today's
+EVEN = {k: 0.25 for k in BOARD}
 
 
 def board_config():
-    """The board's numbers in the game, from src/shared/Config/Stats.luau (their home)."""
+    """The board's numbers in the game, from src/shared/Config/Stats.luau (their home): its share, if set, and the reset."""
     import re
     stats = lua("src/shared/Config/Stats.luau")
-    m = re.search(r"Point = \{ Health = ([\d.]+), Attack = ([\d.]+), Defence = ([\d.]+), Regen = ([\d.]+) \}", stats)
+    m = re.search(r"Share = \{ Health = ([\d.]+), Attack = ([\d.]+), Defence = ([\d.]+), Regen = ([\d.]+) \}", stats)
     reset = re.search(r"ResetPerG = ([\d.]+)", stats)
-    return dict(point={"hp": float(m[1]), "atk": float(m[2]), "def": float(m[3]), "regen": float(m[4])},
-                reset=float(reset[1]))
+    start = re.search(r"Board = \{.*?From = (\d+)", stats, re.S)
+    return dict(share={"hp": float(m[1]), "atk": float(m[2]), "def": float(m[3]), "regen": float(m[4])} if m else None,
+                reset=float(reset[1]), start=int(start[1]))
 
 
-def figure(k, gm):
-    """A Common Warrior's level-1 figure of a board stat."""
-    return gm["regen"] if k == "regen" else S["base"][k]
+def board_lift(part, share):
+    """What the board adds, as a multiplier of each stat's own: a stat's points, as a part of those earned, place four times
+    that part of its share on top (research's call (c), 2026-11-14, night). Spent evenly at full, each stat gains its share;
+    every point on one stat, four times its share there; none spent, nothing."""
+    return {k: 1 + 4 * share[k] * part.get(k, 0) for k in BOARD}
 
 
-def even_points(earned):
-    """The even spread in whole points: a quarter each, the remainder in the board's order."""
-    q, r = divmod(earned, 4)
-    return {k: q + (1 if i < r else 0) for i, k in enumerate(BOARD)}
-
-
-def boarded(cls, level, spend, point, gm):
-    """A bare lead at `level`, its points spent as `spend` (stat -> points), each point adding point[stat] x G. The board
-    takes each stat's even part (a quarter of the points earned) out of its own base, so an even spread is the lead
-    without the board. Class and rarity touch neither. Returns the build and its Regen a second."""
+def boarded(cls, level, part, share, gm, bump=None):
+    """A bare lead at `level` whose points spread as `part` (stat -> its part of the points earned, summing to 1 or less),
+    on top of its own figures (rarity and class in them). `bump` (a stat) raises that stat by 1%, for the worth probe.
+    Returns the build and its Regen a second."""
     me = build(level, 1, 0.0, cls=cls)
-    g, earned = G(level), max(0, level - 1)
-    regen = gm["regen"] * gm["regen_class"].get(cls, 1.0) * g
+    regen = gm["regen"] * gm["regen_class"].get(cls, 1.0) * G(level)
+    lift = board_lift(part, share)
     for k in BOARD:
-        delta = point[k] * g * (spend.get(k, 0) - earned / 4)
+        f = lift[k] * (1.01 if k == bump else 1.0)
         if k == "regen":
-            regen = max(0.0, regen + delta)
+            regen *= f
         else:
-            me[k] = max(0.0, me[k] + delta)
+            me[k] *= f
     return me, regen
 
 
@@ -809,77 +820,146 @@ def strength(seconds, lost):
     return None if lost <= 0 else 1 / (seconds * lost)
 
 
-def report_board():
+def power(cls, level, part, share, gm, bump=None):
+    return strength(*pack(*boarded(cls, level, part, share, gm, bump), level, gm))
+
+
+def ahead(cls, level, part, share, gm):
+    """A spread against today's Voidkin (nothing spent): the strength ahead; None if either holds."""
+    s0, s1 = power(cls, level, {}, share, gm), power(cls, level, part, share, gm)
+    return None if s0 is None or s1 is None else s1 / s0 - 1
+
+
+def worth(gm):
+    """What 1% more of each stat's own figure is worth in strength: the four leads' mean over Lantern Row's levels."""
     import math
+    none = {k: 0.0 for k in BOARD}
+    out = {}
+    for k in BOARD:
+        logs = [math.log(power(cls, level, {}, none, gm, k) / power(cls, level, {}, none, gm))
+                for _, cls in BOARD_LEADS for level in ROW_LEVELS]
+        out[k] = sum(logs) / len(logs)
+    return out
+
+
+def strongest(share, gm, levels=ROW_LEVELS):
+    best = (-1.0, "")
+    for name, cls in BOARD_LEADS:
+        for level in levels:
+            for k in BOARD:
+                got = ahead(cls, level, {k: 1.0}, share, gm)
+                if got is not None and got > best[0]:
+                    best = (got, f"{name} at {level}, all {BOARD_NAMES[k]}")
+    return best
+
+
+def seed_share(gm):
+    """The share, priced to equal worth (each stat's share times its worth the same), scaled by bisection so the strongest
+    one-stat lean on Lantern Row is LEAN_TARGET over today's Voidkin. Returns the worth, the shape and the seed, to a
+    tenth of a percent."""
+    w = worth(gm)
+    shape = {k: w["hp"] / w[k] for k in BOARD}
+    lo, hi = 0.0, 1.0
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        if strongest({k: mid * shape[k] for k in BOARD}, gm)[0] < LEAN_TARGET:
+            lo = mid
+        else:
+            hi = mid
+    return w, shape, {k: round(lo * shape[k], 3) for k in BOARD}
+
+
+def report_board(runs=400):
+    import math
+    import random
     gm = game()
     cfg = board_config()
-    point = cfg["point"]
-    print("\n== 12. The stat board (TR15): skill points out of the own base ==")
-    print("A model, not a measurement. One point a level from level 2; a point adds Config.Stats.Board.Point of its stat")
-    print("times G, whatever the class or rarity; the board takes each stat's even part (a quarter of the points earned)")
-    print("out of the own base, so an even spread is the Voidkin without the board. A bare lead on one of Lantern Row's")
-    print("packs at its own level (three Ordinary Shades at once, then the walk): strength is packs a second times packs a")
-    print("health bar, against the even spread.")
-    # What a point of each stat is worth at the even spread, priced as a share of its Common Warrior's level-1 figure.
-    probe = {k: figure(k, gm) * 0.01 for k in BOARD}
-    worth = {}
-    for k in BOARD:
-        logs = []
-        for _, cls in BOARD_LEADS:
-            e = {kk: 8 / 4 for kk in BOARD}
-            base = strength(*pack(*boarded(cls, 9, e, probe, gm), 9, gm))
-            e[k] += 1
-            logs.append(math.log(strength(*pack(*boarded(cls, 9, e, probe, gm), 9, gm)) / base))
-        worth[k] = sum(logs) / len(logs)
-    print("Worth of a point of 1% of each figure (Health 800, Attack 100, Defence 50, Regen 4 at level 1), the four leads'")
-    print("mean, the same at every level: " + ", ".join(f"{BOARD_NAMES[k]} {worth[k]:.2%}" for k in BOARD))
-    print("So a point of each is worth one of Health at: " + ", ".join(f"{BOARD_NAMES[k]} x{worth['hp'] / worth[k]:.2f}" for k in BOARD))
-    print("The game's points (Config.Stats.Board.Point), per G: " + ", ".join(f"{BOARD_NAMES[k]} {point[k]:g}" for k in BOARD)
-          + "; as a share of the figure: " + ", ".join(f"{point[k] / figure(k, gm):.3%}" for k in BOARD))
-    # An even spread in whole points against the Voidkin without the board, every class, rarity and level.
-    worst, at = 0.0, None
-    for cls, mult in S["classMult"].items():
-        for rarity in RARITIES:
-            for level in range(2, 126):
-                g, earned = G(level), level - 1
-                spread = even_points(earned)
-                for k in BOARD:
-                    own = (gm["regen"] * gm["regen_class"].get(cls, 1.0) if k == "regen"
-                           else S["base"][k] * S["rarityBase"][rarity] * mult[k]) * g
-                    gap = abs(point[k] * g * (spread[k] - earned / 4)) / own
-                    if gap > worst:
-                        worst, at = gap, f"a {rarity} {cls} at level {level}, {BOARD_NAMES[k]}"
-    print(f"An even spread in whole points is within {worst:.2%} of the Voidkin without the board (worst: {at}).")
-    low = {k: min(c[k] for c in S["classMult"].values()) for k in ("hp", "atk", "def")}
-    kept = {k: 1 - 124 / 4 * point[k] / (S["base"][k] * low[k]) for k in low}
-    kept["regen"] = 1 - 124 / 4 * point["regen"] / gm["regen"]
-    print("At level 125, every point elsewhere, the leanest class keeps of its own: "
-          + ", ".join(f"{BOARD_NAMES[k]} {kept[k]:.0%}" for k in BOARD))
-    print("\nEvery point on one stat, against the even spread: strength (pace, health a pack). Lantern Row is levels 1 to 9;")
-    print("30 and 60 are the same pack scaled, for reference: gear isn't counted, and the grounds there aren't built.")
-    line("lead", "level", *[f"all {BOARD_NAMES[k]}" for k in BOARD], w=22)
-    strongest = (-1.0, "")
+    w, shape, seeded = seed_share(gm)
+    share = cfg["share"] or seeded
+    print("\n== 12. The stat board (TR15): a fixed share of each stat's own base, on top, placed by the points ==")
+    print("A model, not a measurement. One point a level from level 2. Spent evenly at full, the board adds a share of each")
+    print("stat's own figure (rarity and class in it) on top of it, at every level; a stat's points, as a part of those")
+    print("earned, place four times that part of its share. A point waiting adds nothing: the Voidkin as it was without the")
+    print("board (research's call (c), 2026-11-14, night). A bare lead on one of Lantern Row's packs at its own level (three")
+    print("Ordinary Shades at once, then the walk): strength is packs a second times packs a health bar.")
+    print("Worth of 1% more of each stat, the four leads' mean on Lantern Row: "
+          + ", ".join(f"{BOARD_NAMES[k]} {w[k]:.2%}" for k in BOARD))
+    print("Priced to equal worth, each share against Health's: " + ", ".join(f"{BOARD_NAMES[k]} x{shape[k]:.2f}" for k in BOARD))
+    print(f"Seeded so the strongest one-stat lean on Lantern Row is {LEAN_TARGET:+.0%} over today's: "
+          + ", ".join(f"{BOARD_NAMES[k]} {seeded[k]:.1%}" for k in BOARD))
+    print(("The game's share (Config.Stats.Board.Share): " if cfg["share"] else "Not in the game yet; the run uses the seed: ")
+          + ", ".join(f"{BOARD_NAMES[k]} {share[k]:.1%}" for k in BOARD))
+    best = strongest(share, gm)
+    print(f"The strongest one-stat lean on Lantern Row: {best[0]:+.1%} ({best[1]}).")
+    print("\nOver today's Voidkin: every point on one stat, and spent evenly at full: strength (pace, health a pack). 30, 60")
+    print("and 125 are the same pack scaled, for reference: gear isn't counted, and the grounds there aren't built.")
+    line("lead", "level", *[f"all {BOARD_NAMES[k]}" for k in BOARD], "even", w=20)
     for name, cls in BOARD_LEADS:
-        for level in (3, 6, 9, 30, 60):
-            earned = level - 1
-            s0, l0 = pack(*boarded(cls, level, even_points(earned), point, gm), level, gm)
+        for level in (5, 9, 30, 60, 125):
+            s0, l0 = pack(*boarded(cls, level, {}, share, gm), level, gm)
             cells = []
-            for k in BOARD:
-                s1, l1 = pack(*boarded(cls, level, {k: earned}, point, gm), level, gm)
+            for part in [{k: 1.0} for k in BOARD] + [EVEN]:
+                s1, l1 = pack(*boarded(cls, level, part, share, gm), level, gm)
                 st0, st1 = strength(s0, l0), strength(s1, l1)
                 if st0 is None or st1 is None:
                     cells.append("holds" if st1 is None else "behind")
                     continue
-                ahead = st1 / st0 - 1
-                if level <= 9 and ahead > strongest[0]:
-                    strongest = (ahead, f"{name} at {level}, all {BOARD_NAMES[k]}")
-                cells.append(f"{ahead:+.1%} ({s0 / s1 - 1:+.0%}, {l1 / l0 - 1:+.0%})")
-            line(name, level, *cells, w=22)
-    print(f"The strongest one-stat spread on Lantern Row: {strongest[0]:+.1%} ({strongest[1]}).")
-    print("\nWhat one point adds, by level (the board shows it before a tap); a reset's price in Credits:")
+                cells.append(f"{st1 / st0 - 1:+.1%} ({s0 / s1 - 1:+.0%}, {l1 / l0 - 1:+.0%})")
+            line(name, level, *cells, w=20)
+    print("The share is fixed and the pack grows with G, so a spread's lead over today's is the same at every level.")
+    # A level-up with its new point waiting thins the points already spent: its own figure must outgrow that.
+    worst, at = math.inf, None
+    for level in range(2, 125):
+        earned = level - 1
+        for k in BOARD:
+            after = G(level + 1) / G(level) * (1 + 4 * share[k] * earned / (earned + 1)) / (1 + 4 * share[k])
+            if after < worst:
+                worst, at = after, f"level {level} to {level + 1}, every point on {BOARD_NAMES[k]}"
+    print(f"\nA level-up, its new point still waiting, thins the points spent; the least a stat rises: {worst - 1:+.1%} ({at}).")
+    print("Class and rarity multiply both sides alike, so this holds for every Voidkin. Level 2 to 3 binds: a share above")
+    print(f"{share_bound():.1%} would let a level-up lower a stat that holds every point.")
+    # TR12's targets with the board spent evenly at full (research's check): section 9's circuit on the lifted lead.
+    lift = board_lift(EVEN, share)
+    print("\nTR12's targets with the board spent evenly at full (section 9's circuit, the game's Regen): Pack 2's end, median")
+    print("[10th to 90th], and falls before the elite in 100 runs; the target is a third to two thirds, and at most 10 falls.")
+    line("start", "board", *[f"{n} ({c})" for n, c in BOARD_LEADS], w=21)
+    for start in (1, 3):
+        for label, use in (("none", None), ("even, full", lift)):
+            cells = []
+            for name, cls in BOARD_LEADS:
+                rng = random.Random(f"{name}{start}{gm['regen']}")
+                ends, falls = [], 0
+                for _ in range(runs):
+                    shares, fell = circuit(cls, start, gm["regen"], gm, rng,
+                                           board=(lambda level: use if level >= cfg["start"] else None) if use else None)
+                    falls += fell is not None
+                    ends.append(shares[1] if len(shares) > 1 else 0.0)
+                ends.sort()
+                q = lambda p: ends[min(len(ends) - 1, int(p * len(ends)))]
+                cells.append(f"{q(0.5):.0%} [{q(0.1):.0%}-{q(0.9):.0%}] {100 * falls / runs:.0f}")
+            line(start, label, *cells, w=21)
+    print("\nWhat one point adds to a Common Warrior's stat, by level (a point's part of the share falls as points pile up),")
+    print("and a reset's price in Credits:")
     line("level", *[BOARD_NAMES[k] for k in BOARD], "reset", w=12)
-    for level in (2, 5, 9, 20, 40, 60, 125):
-        line(level, *[f"+{point[k] * G(level):.2f}" for k in BOARD], math.ceil(cfg["reset"] * G(level) - 1e-9), w=12)
+    for level in (2, 5, 9, 30, 60, 125):
+        earned = level - 1
+        me, regen = boarded("Warrior", level, {}, share, gm)
+        own = dict(me, regen=regen)
+        line(level, *[f"+{4 * share[k] * own[k] / earned:.2f}" for k in BOARD],
+             math.ceil(cfg["reset"] * G(level) - 1e-9), w=12)
+
+
+def share_bound():
+    """The largest share a stat can hold with a level-up never lowering it, every point on it and the new one waiting:
+    G's growth from level L to L+1 must outgrow the thinning, (1 + 4s) / (1 + 4s(L-1)/L). Level 2 to 3 binds."""
+    best = 1.0
+    for level in range(2, 125):
+        r, keep = G(level + 1) / G(level), (level - 1) / level
+        if r * keep < 1:
+            best = min(best, (r - 1) / (4 * (1 - r * keep)))
+    return best
+
+
 
 
 # ---------------------------------------------------------------- Speed (TR14)

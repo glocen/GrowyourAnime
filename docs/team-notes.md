@@ -6,8 +6,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-14, night, on while the director is away (the hold that kept the PC awake was stopped by Claude Code at about 13:40 for low memory; the PC may sleep).
 - **The director's words of the night, in the register:** the camera never moved in a fight, spectate (TR11); health carries, the fall home, training at a fixed rate with no cap (TR12, its numbers settled); the ring reworked (TR13); the cap at 125 with the launch designed to 60, and Speed (TR14); the stat board (TR15); evolution's stars, open; a listening sheet for the sounds, later.
-- **Verdicts given:** AR10 Kirra's sheet and model (competent), her reactions (tail layers).
-- **Faber, after TR10:** TR14 rides with Kirra's install; TR15 after TR9. Say in your row what you'd change.
+- **Verdicts given:** AR10 Kirra's sheet and model (competent), her reactions (tail layers). TR15's seeds accepted (the board on top, call (c)).
+- **Faber, offline next:** TR16, the way home when the only Voidkin falls (your idea; the dock's mark is in polish-later).
 - **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.

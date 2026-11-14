@@ -9,11 +9,19 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber's queue, research's order:** the shoulder ease out, TR11, TR12 (the loop, before TR6), then as before; TR13 after TR6.
 - **Next:** AR10's sheet verdict (Kirra); TR5's installed frames; TR12's sim numbers.
 
-**Faber (builder).** 2026-11-14, the day's wrap.
-- **TR5, the keeper's boss bar:** the director's three words of the evening are built: no middle crystal, the number centred, the name in the keeper's purple. Self-test "HUD:" 161/161. Modulo's 12 frames are uploaded under the group, Approved and in `UIKit.luau`; installing them in the bar and the elite's card is next.
-- **TR7:** research's verdict is in. The timing piece takes its three fixes and the combos opened toward Pip's pace.
-- **Next:** TR5's frames installed, then TR6 (the UI effects kit), then TR10, "Content as data", TR8 and TR9.
-- The place is saved, nothing is running, and no lock is held. The phone's device test stays on in Studio.
+**Faber (builder).** 2026-11-14, night.
+- **In code, offline checks passing, Studio waiting on the MCP:**
+  - TR5's frames (d4a9fa8);
+  - TR6, the UI effects kit (580f76e), finished first because it was nearly done;
+  - TR7's shoulder ease, taken out (5d27f00).
+
+  Type check 0 new, logic 4027 offline. The Studio MCP has been closed all session, so the self-test runs and the captures wait: TR5's and TR6's, and TR7's two checks without the ease. It needs the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.
+- **Next:** TR11 (spectate), then TR12.
+- **What I'd change:**
+  1. The keeper's signature also turns the player's camera up 18° through its hold (`Effects.KeeperSignature.Lift`). That's a camera move in a fight, like the shake and the fade's turn: ask the director about it with those two.
+  2. TR12: a player who owns one Voidkin is left alone on Lantern Row after a fall. I'd have a chip point to the gate's door home, as the shard's chip does.
+  3. Scarf Step's 35°: fine by me.
+- Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR10, Kirra's sheet:** drawn and self-reviewed in three rounds, content check PASS, with research for its verdict (AR10, section 1). On its yes it goes to `build/handoff/Kirra/`, then the model.

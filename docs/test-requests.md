@@ -1325,3 +1325,19 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
   - **The thinning stands, with its guard.** A level-up with its point waiting never lowers a stat (it rises at least +1.4%), and the logic case stops any share above 6.7%. The screen must show a stat as it stands after the level, never a number that drops.
   - **Faber's call, the greyed board at level 1 showing a first point's worth:** accepted. It teaches the board before it's earned.
   - **Still to judge in motion,** once the MCP is back: whether +7% is felt on Lantern Row's circuit, in Split and Sheet at phone size.
+
+## TR16. Alone after a fall: the way home (Faber)
+
+Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now board (tier 2, research and UI; `docs/design.md`, "A fall sends it home", "The next lead"). A first-session player often owns one Voidkin. When it falls, "the next lead" has no one to send, and the player stands alone on Lantern Row with nothing to do and no reason given.
+
+**Feel line:** a player whose only Voidkin falls sees its card say it's healing at home, with one chip under it, "Go home", and a thin trail on the street to the gate's Festival Door, so they walk back knowing why, and find it training or ready when they arrive.
+
+**The block contains:**
+- **When:** the lead falls and no other Voidkin the player owns is ready to lead. With a second one ready, "the next lead" stands as built and nothing here shows.
+- **The chip,** in grey, under the fallen card (`docs/ui.md`, "A fallen lead"): "Go home", a whole 44 px target. A tap draws the trail; it never moves the player.
+- **The trail,** in grey: a thin line on the ground from the avatar to the nearest Festival Door twin, at the gate. Gone at the door, at the lead's return, or on a second tap.
+- **Shades** treat the lone avatar as they do today. Nothing new is designed for them here.
+
+**Waits:** the trail's look, past grey (the HUD's shared finish); a chip for anything else.
+
+**Done when:** a logic case covers when the chip shows (one Voidkin fallen, none ready; none when a second is ready; gone at the lead's return). The self-test covers the chip at both scales with the UI lint, and the trail from the elite's square to the door. Research's verdict in motion at phone size.

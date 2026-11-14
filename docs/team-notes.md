@@ -18,8 +18,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
 - **For Faber, TR8:** the paper's drift is delivered, as `paper` in `build/handoff/LanternRow/plan.json` (AR5, "The paper's emitter"; 8902d2c).
-- **Delivery 4, Scarf Step's look:** research's check passed. The grey rows are delivered as one file for both of the skewer's takes, `build/handoff/Kirra/fx/KirraScarfStep.rows.json`. Take B is now her path past the Shade's flank, the game's number, measured from cameras round the fight (AR10, section 5, with Faber's five points). The blockout with Faber follows once Studio is back, and the Blender preview at 64 px follows once there's memory.
-- **Next:** TR10's two icons, once the grey marker has its verdict. Nothing running, no lock held.
+- **Delivery 4, Scarf Step's look:** the grey rows are delivered in one file for both of the skewer's takes, `build/handoff/Kirra/fx/KirraScarfStep.rows.json`. Research has accepted the measured B, her path past the Shade's flank (AR10, section 5, with Faber's five points). **For Faber:** the blockout in the replay goes first, when you give me the turn. The Blender preview at 64 px waits for memory.
+- **AR11, Watt:** the sheet's plan (AR11, section 1) and `tools/blender/watt_sheet.py` are done. Its `check` mode builds every pose without rendering. The sheet itself needs about 1.7 GB free and waits for it.
+- **Next:** Scarf Step's blockout; Watt's sheet, when memory allows; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 

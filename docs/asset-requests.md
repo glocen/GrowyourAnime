@@ -5147,7 +5147,55 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 
 **Time it:** each delivery records what it took, beside Kirra's.
 
-**Status:** requested, 2026-11-14, night. The sheet starts when memory allows headless Blender. Until then, Scarf Step's blockout with Faber goes first, now that Studio is back.
+**Status:** requested, 2026-11-14, night. The sheet's plan is written (section 1). The sheet is drawn when memory allows headless Blender. Until then, Scarf Step's blockout with Faber goes first, now that Studio is back.
+
+### 1. The sheet: the plan, before Blender (Modulo, 2026-11-14)
+
+This was written offline while memory keeps headless Blender shut (0.88 GB free, with Studio holding 3.4 GB). The sheet tests it, and nothing here is settled before the sheet's measures and research's verdict.
+
+- **The idea:** a man and his tool, wired in one line. The current runs one way through him: from the generator on his back, out of its two coils, into the wrench, and down into the street. Ground Wire is that path made visible, so the props explain the signature before it plays.
+- **The wrench, the hero prop:**
+  - An open-end wrench whose head is wider than he is: 2.6 studs across (R6's torso is 2) and 1.6 tall, with the jaw's open gap 0.9 wide at the top.
+  - Its handle ends in a short copper spike, a ground rod, so "plants the wrench" (his row) is literal. He drives it in spike first, and the head stands before him as the shield.
+  - 4.75 studs end to end. Steel, with copper at the spike and one rubber band at the grip.
+- **The pack:**
+  - A squat generator housing on a frame. Steel, so it's the back's one light mass from the player's camera: Kirra's fix 1, applied before it's asked.
+  - Two coils on short posts rise from its top corners, about 0.7 studs above his shoulders: copper windings, each with a cap. They're the two places an effect starts, and they make his top outline: a head between two posts, where Rook's is one collar wall.
+  - A small round gauge on the housing, on the camera's side.
+- **No cable, tier 1:** a cord from the pack to the wrench would dangle through every clip and need joints of its own. Instead the coils arc to the wrench in Ground Wire's effect (delivery 4), so the path still reads.
+- **The visor:**
+  - A welding visor on a cream headband, flipped up on his brow at rest.
+  - In a fight it comes down, its lens slot lit Storm.
+  - One hinge on the head: up and down are one joint's two keys, and "flipped up after a win" is a clip's last beat.
+- **The body, stocky on R6's blocks:**
+  - A Kiln coverall with its top half pulled down and its sleeves knotted at his left hip, their ends hanging, over a Graphite work shirt. The back panel hangs over his seat, an orange mass under the steel pack.
+  - A cream canvas harness: straps over his shoulders and down his chest to the belt, the front's light lines.
+  - Graphite rubber gloves to mid-forearm, and boots with thick soles, so Insulated is in the clothes.
+  - Clothes are thin shells on the blocks, like Rook's, Pip's and Kirra's.
+- **The face:** R6's round head, deep brown skin, a close crop under a cream headband, a shadow of stubble on a strong jaw, heavy level brows, a broad nose, and a mouth set in a small crooked line: pleased with himself before anything's done.
+- **Colours,** three chips:
+  - **Kiln `#C46A2A`,** the coverall. It's Endurance's orange (the type's `#F4902A`) taken deep, so it holds at noon. It's 28° of hue off Rook's Oxblood and nearly twice as light (luma 0.47 against 0.25).
+  - **Steel `#A8ACB2`,** the wrench and the housing: the machine's colour, and the light mass the camera sees.
+  - **Storm `#FF6FD8`** (`Config.UIKit`'s Elements), only on what's lit: the coil caps, the visor's lens, the gauge's needle, and the jaw's edge in Ground Wire. It's magenta, 109° of hue from Kirra's Sky `#47A6F5`, and the sheet's chip row sets the two side by side.
+  - **Neutrals:** Graphite `#2E3035` (rubber and shirt), Copper `#B5713C` (windings and spike), Cream `#E8DCC4` (headband and stitching), Skin `#6A4330`.
+- **How he stands,** two takes for the 64 px measure:
+  - **A, stood:** the wrench planted on its spike at his right, its head at his chest, his right hand on its grip, his left hand by the knot.
+  - **B, leant:** the wrench's head on the street ahead of his right foot, its handle leaning back into his right hand, the spike past his wrist.
+  - I'll recommend the take that parts more from Rook at 64 px from the player's camera. Both are on the sheet, and research picks.
+- **Ground Wire's key pose,** the hold after the slam:
+  - The wrench stands spike-down in the street before him, its head at his chest.
+  - He's hunched behind it, one foot braced back, both hands on the head's edges, chin down. The lit lens shows through the jaw's gap: a slot of Storm in a steel wall.
+  - R6's legs don't bend, and spreading them lifts the body: its soles' edges go lowest. So the head comes down by a lean of 22° over the wrench with the chin down. The script's geometry check puts the lens at 4.26 studs up, inside the gap's 3.59 to 4.44, with the rod 0.3 into the street.
+  - Both coil caps are lit.
+  - On the sheet, the ring is a grey disc round the spike at its key radius, with one grey Shade mid-step inside it.
+  - Three views: from the enemy's side (the wall and the slot); side on; and from the player's camera (the lit pack, with the head's edges standing out past his shoulders on both sides).
+- **The measures,** printed and on the sheet:
+  - At 64 px over noon, Lantern Row's dusk and night, and in black: beside Rook, front and from the player's camera. The outlines' overlap is the sheets' own measure (1 is the same outline), for takes A and B.
+  - Sizes to the crown and to the coil tops, the wrench's head against his torso, and the triangles.
+- **The script:** `tools/blender/watt_sheet.py`, written and run in its `check` mode, which builds every pose without rendering (213 MB peak). It uses Kirra's render and measures, with Rook drawn beside him by Rook's own builder. It's a Workbench blockout, with no GPU turn. The sheet's renders need about 1 GB more than the guard's floor, so they wait for memory.
+- **The blockout's size:** 6,580 triangles standing, against Rook's 5,092.
+- **Content check** before the sheet goes to research.
+- **Time:** the plan and the script, about 55 minutes.
 
 ## Later, by ground
 

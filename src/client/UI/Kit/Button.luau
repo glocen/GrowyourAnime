@@ -10,7 +10,8 @@
 -- TR6). No state moves the layout.
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
 --   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false })
---   Button.Press(button)                             what a tap does, for tests: false when disabled or pending
+--   Button.Press(button)                             what a tap does, for tests: false when disabled or pending; an icon's
+--                                                    button (Text "") says its reason in a toast, never in its face
 --   Button.Touch(button, down)                       a finger going down on it or coming off, for tests
 --   Button.State(button)                             the state it shows
 --   Button.Haptic(button)                            a touch's tick under the thumb; true when it ticked, for tests
@@ -25,6 +26,7 @@ local Theme = require(script.Parent.Parent.Theme)
 local Text = require(script.Parent.Text)
 local Skin = require(script.Parent.Skin)
 local Panel = require(script.Parent.Panel)
+local Toast = require(script.Parent.Toast)
 
 export type Props = {
 	Name: string,
@@ -120,7 +122,8 @@ local function paint(button: TextButton, state: State)
 	end
 	waiting[button] = if now == "Waiting" then true else nil
 	state.Tick.Visible = now == "Succeeded"
-	state.Label.Text = Hud.Says(state.Text, state.Disabled, false)
+	-- An icon's button (no text) keeps its face: a reason never fits in it, so a tap says it instead (Button.Press).
+	state.Label.Text = if state.Text == "" then "" else Hud.Says(state.Text, state.Disabled, false)
 	state.Label.Visible = now ~= "Waiting"
 	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else 0, 0.5, 0)
 	state.Label.TextColor3 = if now == "Disabled" then p.Soft elseif inked then (p.SelectedText or p.Text) else p.Text
@@ -183,6 +186,9 @@ end
 
 function Button.Press(button: TextButton): boolean
 	local state = states[button]
+	if state and state.Disabled and not state.Pending and state.Text == "" then
+		Toast.Show(state.Disabled) -- an icon's button says why on a tap (docs/ui.md, rule 4)
+	end
 	if state == nil or state.Disabled or state.Pending then
 		return false
 	end

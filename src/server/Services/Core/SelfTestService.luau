@@ -10,6 +10,7 @@ local ScriptContext = game:GetService("ScriptContext")
 
 local Shared = ReplicatedStorage.Shared
 local Parts = require(Shared.Util.Parts)
+local Markers = require(Shared.World.Markers)
 local DebugService = require(script.Parent.DebugService)
 
 local PAD_NAME = "NL_TestPad"
@@ -128,6 +129,19 @@ function SelfTestService.Init()
 		root.AssemblyLinearVelocity = Vector3.zero
 		root.CFrame = CFrame.lookAt(at, if (toward - at).Magnitude > 1e-3 then toward else at + Vector3.new(0, 0, -1))
 		return true
+	end)
+	-- A far marker streamed in to the player while the avatar stays where it is: the live `name` marker whose attributes
+	-- match `where`, found here (a client on the test pad may not have it), and the place streamed round it. Its
+	-- position, or nil.
+	DebugService.Register("TestStream", function(who: any, name: any, where: any): Vector3?
+		local player = assert(DebugService.ResolvePlayer(who), "no such player")
+		local marker = Markers.Find(tostring(name), if type(where) == "table" then where else nil)
+		if marker == nil then
+			return nil
+		end
+		local at = Markers.At(marker).Position
+		player:RequestStreamAroundAsync(at)
+		return at
 	end)
 end
 

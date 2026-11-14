@@ -42,6 +42,7 @@ export type Test = {
 	Reset: () -> (),
 	Check: (label: string, ok: boolean, detail: string?) -> (),
 	Near: (label: string, actual: number, expected: number, tolerance: number) -> (),
+	Equal: (label: string, actual: any, expected: any) -> (),
 	Row: (label: string, low: number?, high: number?, ours: number?, unit: string) -> (), -- the Scorecard's: target, ours, pass or miss
 }
 
@@ -124,6 +125,10 @@ local function run(filter: string?): string
 		end,
 		Near = function(label: string, actual: number, expected: number, tolerance: number)
 			record(math.abs(actual - expected) <= tolerance, label, `got {string.format("%.2f", actual)}, want {string.format("%.2f", expected)} ±{tolerance}`)
+		end,
+		-- The logic cases' own (LogicTestService), so a check moves between the two as it is.
+		Equal = function(label: string, actual: any, expected: any)
+			record(actual == expected, label, `got {tostring(actual)}, want {tostring(expected)}`)
 		end,
 		Row = function(label: string, low: number?, high: number?, ours: number?, unit: string)
 			local reading = if ours then string.format("%.3g", ours) else "not measured"

@@ -5,15 +5,15 @@
 -- and VoidkinGive, to try a Voidkin no shard of the built grounds holds yet (Lyric's is the second ground's).
 -- Health carries (TR12; docs/design.md, "Combat", "Health carries" to "The next lead"): a Voidkin taken in keeps what it
 -- had and heals at home (Rules.Carry), in memory for the session; the lead never changes in a fight, and a fallen one goes
--- out again only once it's whole (VoidkinService asks LeadService.Refusal). The client reads the player's attributes:
--- Healing (JSON, a fallen one's Id to when it's whole), InCombat, and Training (who's on the machine, or "").
+-- out again only once it's whole (VoidkinService asks LeadService.Refusal). The client reads the player's folder Healing
+-- (an attribute a fallen one, by its Id, the server time it's whole: an attribute's string holds 50 characters, too few
+-- for several) and the player's attributes InCombat and Training (who's on the machine, or "").
 -- The Training machine (Rules.Training): one Voidkin trains while the player is in the game (Training.Who), credited
 -- every Config.Growth.Training.Every seconds and whenever who trains changes; at a join, the lead's time away. Studio
 -- adds TrainingSkip, as if `seconds` passed away, and LeadHeal: every Voidkin whole at once, a fallen lead back up
 -- beside the avatar (the way home takes a walk to the plot, which a case on the test pad can't make), and VoidkinFallen:
 -- every Voidkin but the lead fallen just now, so a lead falls alone (TR16).
 
-local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -38,6 +38,8 @@ local FightService = require(script.Parent.FightService)
 local LeadService = {
 	Priority = 40, -- after FightService
 }
+
+local HEALING = "Healing" -- the player's folder of fallen Voidkin healing at home (HudController reads it)
 
 local function same(a: Stats.Block, b: Stats.Block): boolean
 	for _, stat in Stats.Names do
@@ -112,9 +114,9 @@ local function settle(player: Player, who: string?, label: string)
 	end)
 end
 
-local function setAttribute(player: Player, name: string, value: any)
-	if player:GetAttribute(name) ~= value then
-		player:SetAttribute(name, value)
+local function setAttribute(holder: Instance, name: string, value: any)
+	if holder:GetAttribute(name) ~= value then
+		holder:SetAttribute(name, value)
 	end
 end
 
@@ -140,7 +142,22 @@ local function tick(player: Player)
 			healing[id], any = whole, true
 		end
 	end
-	setAttribute(player, "Healing", if any then HttpService:JSONEncode(healing) else "")
+	local folder = player:FindFirstChild(HEALING)
+	if folder == nil and any then
+		folder = Instance.new("Folder")
+		folder.Name = HEALING
+		folder.Parent = player
+	end
+	if folder then
+		for id in folder:GetAttributes() do
+			if healing[id] == nil then
+				folder:SetAttribute(id, nil)
+			end
+		end
+		for id, whole in healing do
+			setAttribute(folder, id, whole)
+		end
+	end
 	setAttribute(player, "InCombat", FightService.InCombat(player))
 	local who = trainee(player) or ""
 	local was = training[player] or ""

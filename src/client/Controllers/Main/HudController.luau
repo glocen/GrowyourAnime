@@ -14,7 +14,6 @@
 
 local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
-local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -527,16 +526,16 @@ local function stepRing(model: Model?, fighting: boolean, dt: number)
 	ring.Frame:SetAttribute("Flash", flash)
 end
 
--- A fallen Voidkin's Id to the server time it's whole (LeadService's "Healing"), or empty.
+-- A fallen Voidkin's Id to the server time it's whole (LeadService's folder "Healing", an attribute each), or empty.
 local function healing(): { [string]: number }
-	local text = player:GetAttribute("Healing")
-	if type(text) ~= "string" or text == "" then
-		return {}
+	local folder = player:FindFirstChild("Healing")
+	local map: { [string]: number } = {}
+	for id, whole in (if folder then folder:GetAttributes() else {}) :: { [string]: any } do
+		if type(whole) == "number" then
+			map[id] = whole
+		end
 	end
-	local ok, map = pcall(function(): any
-		return HttpService:JSONDecode(text)
-	end)
-	return if ok and type(map) == "table" then map else {}
+	return map
 end
 
 -- The other Voidkin the player owns besides the fallen `fallen`, as its card weighs them (Rules.Hud.AfterFall).

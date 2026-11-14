@@ -153,7 +153,12 @@ local PACK_STAND = 10 -- studs short of a pack's marker the avatar stands: insid
 local CARD_SLACK = 0.1 -- seconds past reveal.json's Card the reveal's card may come: its frame, and the spawn that builds it
 local FPS_FLOOR = 50 -- frames a second the Mythical's reveal holds: the self-test's own warning line
 local DROP_BACK = 3 -- seconds a felled pack takes to come back in the drops case: time to leave the street first
+local PACK_SETTLE = 10 -- seconds Shades drawn out by an earlier case's walk may take to stand home again
 local ANSWER = 3 -- seconds a request through a screen may take to come back in the save's copy
+local STREAM_IN = 3 -- seconds a far place may take to stream in to this client once the server asks
+-- Where TR10's case watches the elite's square from: Past studs beyond the badge's Near, toward the gate, by the square of
+-- Pack, felled for the case (Lantern Row: Pack 3 stands 80 studs short of the elite).
+local ELITE_STAND = { Past = 10, Pack = "Pack 3" }
 local PLATE_TICK = 0.4 -- seconds for the plates and pills to show a change (BaseController and HudController read at 4 Hz)
 local SKIP_ALL = 3600 -- seconds of base time a case skips, past any shard's work even at the floor's speed
 local TAKE_READ = 3 -- seconds the take leaves a screen or a card up, as a player reads it
@@ -165,6 +170,13 @@ local DOOR_RUN = 4 -- studs before a Festival Door the avatar starts its walk in
 local DOOR_THROUGH = 4 -- seconds from the walk's start to the fade's move: a step in, then the fade's middle
 local DOOR_GONE = 40 -- studs from a door that count as set down on its other side
 local TAKE_ZOOM = 12.5 -- studs from the avatar the take's camera holds: where Roblox's camera starts a player
+local TAKE_HEAL = 25 -- seconds a fallen lead heals at home in TR12's take, for Combat.Lead.Home.Fallen's 90
+local TAKE_BEFORE_FALL = 1.5 -- seconds of the fight before a take holds its lead's health low
+local TAKE_LOW = 0.002 -- the share of its health a take holds its lead at, at most: a sliver, a hit from falling
+local TAKE_HIT = 8 -- seconds a take waits for a hit to down its held lead before it downs it outright
+local TAKE_GATE_SHORT = 8 -- studs short of the gate's door TR8's take stops, back down the street
+local TAKE_ALONE = { Pack = "Pack 2", Short = 40 } -- TR16's take: the pack its lead falls at, and how far short of it
+-- toward the gate the avatar is set down (past its notice and the lead's leash, so the walk up shows)
 local TAKE_KEEPER = 150 -- seconds the keeper's take watches its fight
 local TAKE_KEEPER_LEVEL = 14 -- the lead's level in the keeper's take: it wins bare, where gear will carry it in play
 local KEEPER_SHORT = 55 -- studs past Pack 6 the keeper's take starts: out of its notice and the lead's leash, 25 short of the gate
@@ -194,6 +206,21 @@ local function waitFor(t: any, seconds: number, ok: () -> boolean): boolean
 		t.Wait(0.1)
 	end
 	return ok()
+end
+
+-- A marker this client may not have: the avatar on the test pad is far from the map, so the server streams the place in
+-- round it (TestStream) and the case waits for it. The marker, or nil.
+local function streamed(t: any, name: string, where: { [string]: any }?): Instance?
+	local found = Markers.Find(name, where)
+	if found then
+		return found
+	end
+	t.Server("TestStream", name, where)
+	waitFor(t, STREAM_IN, function(): boolean
+		found = Markers.Find(name, where)
+		return found ~= nil
+	end)
+	return found
 end
 
 -- The button of row `row` in list `list` of the open screen `screen`, or nil.
@@ -547,6 +574,32 @@ local function myLead(): Model?
 		end
 	end
 	return nil
+end
+
+-- A take's fall (not played, and its rows say so): the player's lead's health held at most TAKE_LOW of its whole from now,
+-- so its regen (Config.Stats.Regen) can't outlast the pack, until a hit downs it; downed outright after TAKE_HIT seconds
+-- without one (a lead levels over the pack takes next to nothing a hit). True once it's down.
+local function fallHeld(t: any, moment: (string) -> ()): boolean
+	local lead = myLead()
+	if lead == nil then
+		return false
+	end
+	local function down(): boolean
+		return lead:GetAttribute("State") == "Down"
+	end
+	if waitFor(t, TAKE_HIT, function(): boolean
+		if down() then
+			return true
+		end
+		t.Server("FightHealth", TAKE_LOW, true)
+		return false
+	end) then
+		moment("a hit downs it")
+		return true
+	end
+	t.Server("FightHealth", 0)
+	moment(`not played: downed, no hit having downed it in {TAKE_HIT} s`)
+	return waitFor(t, REPLICATE, down)
 end
 
 -- The highest pixel row any of `parts` reaches on screen (the smallest viewport Y over their boxes' eight corners).
@@ -1239,8 +1292,15 @@ return {
 				return if light then light.Enabled and light.Brightness > 0 else nil
 			end
 			t.Check("outside: the lead's light off", leadLit() ~= true)
-			-- A jump in lands in the night at once.
-			stand(gateZ - 60)
+			-- A jump in lands in the night at once: halfway between the first two packs, past the lead's Leash of either, so
+			-- no fight starts (one drew Pack 1's Shades out, and the packs case read them walking home).
+			local packZ: { number } = {}
+			for _, row in t.Server("Packs") do
+				if row.Name == "Pack 1" or row.Name == "Pack 2" then
+					table.insert(packZ, row.At.Z)
+				end
+			end
+			stand(if #packZ == 2 then (packZ[1] + packZ[2]) / 2 else gateZ - 60)
 			t.Wait(0.3)
 			holds("Night")
 			t.Check("inside: the lead carries its light", leadLit() == true)
@@ -1333,7 +1393,17 @@ return {
 		Name = "Packs: each stop stands its Shades, and a fallen pack comes back",
 		Stay = true,
 		Run = function(t: any)
-			local rows = t.Server("Packs")
+			-- Shades an earlier case's walk drew out walk home first.
+			local rows: { any } = {}
+			waitFor(t, PACK_SETTLE, function(): boolean
+				rows = t.Server("Packs")
+				for _, row in rows do
+					if row.Standing ~= row.Count or (row.Count > 1 and math.abs(row.Gap - WorldConfig.Row.Spread) > 0.5) then
+						return false
+					end
+				end
+				return true
+			end)
 			local byName: { [string]: any } = {}
 			for _, row in rows do
 				byName[row.Name] = row
@@ -1468,8 +1538,12 @@ return {
 			end
 			-- Research's call on fix 4, option B (Config.Hud.SeeThrough): the camera held so the keeper's hat stands under a piece
 			-- of the top band, then turned to the sky. Under it, the piece fades to its floor and no lower, the Target card's bar
-			-- held readable; out of view, all of it whole again, each part exactly as it was.
+			-- held readable; out of view, all of it whole again, each part exactly as it was. The keeper's own bar (Config.Hud.Boss,
+			-- A and B) stands in the Target card's stead, so the card is put back for it ("Off") while this looks, as before TR5.
 			do
+				local wasBoss = HudConfig.Boss.Keeper
+				t.Server("Tune", "Hud.Boss.Keeper", "Off")
+				t.Wait(0.1)
 				local see = HudConfig.SeeThrough
 				local hud = HudController.Parts()
 				local camera = workspace.CurrentCamera
@@ -1527,6 +1601,7 @@ return {
 				RunService:UnbindFromRenderStep("NL_SeeThroughCamera")
 				camera.CFrame = was
 				camera.CameraType = wasType
+				t.Server("Tune", "Hud.Boss.Keeper", wasBoss)
 				t.Check("never past research's floors", (lowest.Target or 1) >= see.Target - 1e-3 and (lowest.TargetBar or 1) >= see.Bar - 1e-3 and (lowest.Credits or 1) >= see.Economy - 1e-3 and (lowest.Electricity or 1) >= see.Economy - 1e-3, string.format("target %.2f, bar %.2f", lowest.Target or 1, lowest.TargetBar or 1))
 				if not ok then
 					error(problem, 0)
@@ -1542,7 +1617,9 @@ return {
 			local watched = fall.Gone / 60 + FightRule.LongestHold(Combat.Hitstop)
 			local drift, offKeeper, saved = 0, 0, nil
 			while os.clock() - fellClock < watched - 0.15 do
-				if ours and ours.Parent and os.clock() - fellClock > LANDED then
+				-- held from where a swing under way at the fall ends: its clip's own lunge and recovery are its, not a step
+				local acting = ours ~= nil and (ours:GetAttribute("Action") or "") ~= ""
+				if ours and ours.Parent and os.clock() - fellClock > LANDED and (leadFrom or not acting) then
 					local pivot = ours:GetPivot()
 					local from = leadFrom or pivot.Position
 					leadFrom = from
@@ -1909,6 +1986,7 @@ return {
 			local view = ProfileController.Get()
 			local was = if view then view.Roles.Lead else nil
 			local count = 0
+			local benched: { { Bay: number, Voidkin: string } } = {} -- workers taken out of their bay to lead, put back after
 			for _, row in Voidkin.List do
 				local modelName = row.Model
 				if modelName == nil then
@@ -1927,6 +2005,16 @@ return {
 						if voidkin.Def == def and Read.Role(now :: any, owned) == "" then
 							id = owned
 							break
+						end
+					end
+					if id == nil then -- the only one works in a bay (a copy given would join it): out of the bay for its turn
+						for owned, voidkin in (if now then now.Voidkin else {}) :: { [string]: any } do
+							local bay = if voidkin.Def == def then tonumber(string.match(Read.Role(now :: any, owned), "^Bay (%d+)$")) else nil
+							if bay and t.Server("Act", "SetWorker", { Bay = bay, Voidkin = "" }).Ok == true then
+								table.insert(benched, { Bay = bay, Voidkin = owned })
+								id = owned
+								break
+							end
 						end
 					end
 					if id == nil then
@@ -2014,6 +2102,9 @@ return {
 			t.Check("every Voidkin with a model, in turn", count >= 3, `{count}`)
 			if was then
 				t.Server("Act", "SetLead", { Voidkin = was })
+			end
+			for _, worker in benched do
+				t.Server("Act", "SetWorker", worker)
 			end
 		end,
 	},
@@ -4307,6 +4398,10 @@ return {
 			t.Check("the eye says why", waitFor(t, 1, function(): boolean
 				return Button.State(eye) == "Disabled"
 			end), Button.State(eye))
+			local face = eye:FindFirstChild("Label", true) :: TextLabel?
+			local why = tostring(eye:GetAttribute("Disabled"))
+			t.Check("in a toast on a tap, its face only the eye", not Button.Press(eye) and table.find(Toast.Shown(), why) ~= nil
+				and face ~= nil and face.Text == "", why)
 			SpectateController.Set(true)
 			t.Check("never on while the lead is down", not SpectateController.On())
 			t.Check("and the camera's back on the avatar", waitFor(t, look.Ease + 0.5, function(): boolean
@@ -5238,6 +5333,7 @@ return {
 			end))
 			local plot = Players.LocalPlayer:GetAttribute("Plot")
 			local fallen = myLead()
+			streamed(t, "Plot", { Plot = plot })
 			t.Check("on its plot", fallen ~= nil and Markers.OnPlot(if type(plot) == "number" then plot else nil, fallen:GetPivot().Position))
 			t.Check("the card says it's healing at home, with its time", waitFor(t, 1, function(): boolean
 				local status = parts.Lead:GetAttribute("Status")
@@ -5294,7 +5390,7 @@ return {
 			local parts = HudController.Parts()
 			local home = parts.Home :: TextButton
 			local door = WayHomeController.Door()
-			local elite = Markers.Find("Elite")
+			local elite = streamed(t, "Elite")
 			t.Check("the world says where its home door stands", door ~= nil)
 			t.Check("the elite's square", elite ~= nil)
 			if door == nil or elite == nil then
@@ -6025,11 +6121,22 @@ return {
 			local function restore()
 				config.Layout, config.Compare, config.Near = was.Layout, was.Compare, was.Near
 				t.Server("PackBack", "Elite")
+				t.Server("PackBack", ELITE_STAND.Pack)
 				t.Server("KeeperRest", 0)
 			end
-			local elite = Markers.Find("Elite")
+			-- Down the street from the square, past the badge's Near, so the place stays streamed in (the test pad is too
+			-- far to keep it) and its card waits: the pack there felled first, so nothing notices the avatar.
+			local served = t.Server("TestStream", "Elite")
+			if typeof(served) == "Vector3" then
+				t.Server("PackDefeat", ELITE_STAND.Pack)
+				local at = served + Vector3.new(0, R6_ROOT_HEIGHT + 0.6, config.Near + ELITE_STAND.Past)
+				t.Server("TestStandAt", at, served)
+			end
+			local elite = streamed(t, "Elite")
 			t.Check("the elite's square", elite ~= nil)
+			t.Check("the keeper's gate and its ring", streamed(t, "KeeperGate") ~= nil and streamed(t, "Ring") ~= nil)
 			if elite == nil then
+				restore()
 				return
 			end
 			local felled = t.Server("PackDefeat", "Elite")
@@ -6100,7 +6207,9 @@ return {
 			local rest = t.Server("KeeperRest", WorldConfig.Row.Back.Keeper)
 			t.Check("the keeper rests", rest.Ok == true and (rest.Resting or 0) > 0, tostring(rest.Error))
 			t.Check("its marker shows at the gate", waitFor(t, REPLICATE, function(): boolean
-				return shows("Keeper")
+				local plate = plateOf("Keeper")
+				-- this rest's, not one an earlier case's win left
+				return shows("Keeper") and plate ~= nil and (plate:GetAttribute("Left") :: number) > WorldConfig.Row.Back.Keeper - 5
 			end))
 			local keeper = plateOf("Keeper")
 			local gate = Markers.Find("KeeperGate")
@@ -6347,7 +6456,8 @@ return {
 				for id in now.Voidkin do
 					free = free or Read.Role(now, id) == ""
 				end
-				local out: { [string]: boolean } = { Breaker = bagged or #now.Base.Ready > 0, Battery = false }
+				-- the battery and the Training machine (TR12) only say what they are
+				local out: { [string]: boolean } = { Breaker = bagged or #now.Base.Ready > 0, Battery = false, Training = false }
 				for name in BaseController.Says() do
 					local index = tonumber(name:match("^Bay(%d+)$"))
 					if index then
@@ -6850,6 +6960,7 @@ return {
 				else
 					machineShown(name)
 					if name == "Sheet" then
+						BreakerScreen.Select(nil) -- List's choice outlives a live switch of layouts; a player's screen opens fresh
 						t.Check("Sheet: no odds before a tap", breakerPart("Odds") == nil)
 						BreakerScreen.Select(first)
 						t.Check("Sheet: a tap on a shard brings its odds over the machine", breakerPart("Odds") ~= nil)
@@ -7304,6 +7415,299 @@ return {
 				t.Wait(6)
 				moment("end")
 			end)
+		end,
+	},
+	{
+		Name = "Take: TR12, a fall, the next lead, Rook training at home and the walk home, for research's verdict",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR12's evidence (docs/test-requests.md, TR12): one circuit from the player's camera. Rook leads out of the
+			-- Festival Door to Pack 1 and falls there; it leaves as light and heals at home, the card says so with its time,
+			-- and "Send another" opens the Voidkin screen, where Ironhymn goes out. Rook, whole at home without the player,
+			-- trains (its row says so), and the walk home through the door ends it. Two steps aren't played, and their rows
+			-- say so: Rook's health held low from the fight's first moments (fallHeld), and Combat.Lead.Home.Fallen tuned to
+			-- TAKE_HEAL for the take (90 s would hold it that long), put back after.
+			local view = ProfileController.Get()
+			local first, second = nil :: string?, nil :: string?
+			for id, owned in (if view then view.Voidkin else {}) :: { [string]: any } do
+				local role = Read.Role(view :: any, id)
+				local free = role == "" or role == "Lead"
+				if owned.Def == "rook" and free then
+					first = first or id
+				elseif owned.Def == "ironhymn" and free then
+					second = second or id
+				end
+			end
+			t.Check("Rook and Ironhymn owned", first ~= nil and second ~= nil)
+			if first == nil or second == nil then
+				return
+			end
+			local heal = Combat.Lead.Home.Fallen
+			take(t, function(kit: Take)
+				local player = Players.LocalPlayer
+				local moment, walkTo = kit.Moment, kit.WalkTo
+				local hud = HudController.Parts()
+				local up = Vector3.new(0, R6_ROOT_HEIGHT, 0)
+				local function standing(name: string): number
+					for _, row in t.Server("Packs") do
+						if row.Name == name then
+							return row.Standing
+						end
+					end
+					return 0
+				end
+				t.Server("LeadHeal")
+				t.Check("Rook leads", t.Server("Act", "SetLead", { Voidkin = first }).Ok == true)
+				t.Server("Tune", "Combat.Lead.Home.Fallen", TAKE_HEAL)
+				local old = player.Character
+				t.Server("Respawn")
+				t.Check("the avatar arrives on its plot", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local character = player.Character
+					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+				end))
+				t.Wait(WorldConfig.Arrive + 1)
+				t.Check("Rook by the avatar", waitFor(t, 5, function(): boolean
+					local lead = myLead()
+					return lead ~= nil and lead:GetAttribute("Voidkin") == first
+				end))
+				kit.Zero()
+				moment("zero: on the plot, Rook leading")
+				t.Wait(2)
+				local plot = player:GetAttribute("Plot")
+				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+				t.Check("the plot has its Festival Door", door ~= nil)
+				if door == nil then
+					return
+				end
+				moment("the walk to the Festival Door")
+				walkTo(Markers.At(door).Position - Markers.At(door).LookVector * DOOR_RUN + up)
+				t.Check("through it", walkThrough(t, door, false))
+				moment("through the door: Lantern Row's gate")
+				t.Wait(1)
+				local pack: any = nil
+				for _, row in t.Server("Packs") do
+					if row.Name == "Pack 1" then
+						pack = row
+					end
+				end
+				t.Check("Pack 1 stands", pack ~= nil and pack.Standing > 0)
+				if pack == nil then
+					return
+				end
+				moment("the walk to Pack 1")
+				t.Check("the avatar walks to Pack 1", walkTo(pack.At + up + Vector3.new(0, 0, PACK_STAND)))
+				moment("at Pack 1: the fight")
+				t.Wait(TAKE_BEFORE_FALL)
+				moment(`not played: Rook's health held at {TAKE_LOW * 100}% or under from here`)
+				local lead = myLead()
+				t.Check("Rook falls", fallHeld(t, moment))
+				moment("Rook is down: the card says so")
+				t.Check("it leaves as light, home", waitFor(t, Combat.Lead.Leave + 1, function(): boolean
+					return lead ~= nil and lead:GetAttribute("State") == "Home"
+				end))
+				moment(`Rook home, healing (not played: its heal tuned to {TAKE_HEAL} s)`)
+				t.Wait(TAKE_READ)
+				local nextButton = hud.Next :: TextButton
+				t.Check("Send another shows", nextButton.Visible)
+				t.Check("and opens the Voidkin screen", Button.Press(nextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name
+				end))
+				moment("the Voidkin screen: Rook healing")
+				t.Wait(TAKE_READ)
+				local out = leadButton(second :: string)
+				t.Check("Ironhymn's Lead", out ~= nil and Button.Press(out))
+				moment("Ironhymn goes out")
+				t.Wait(1.5)
+				Screen.Close()
+				t.Check("Ironhymn by the avatar", waitFor(t, 5, function(): boolean
+					local now = myLead()
+					return now ~= nil and now:GetAttribute("Voidkin") == second and now:GetAttribute("State") ~= "Home"
+				end))
+				moment("Ironhymn fights on")
+				t.Check("Pack 1 falls", waitFor(t, TAKE_FIGHT, function(): boolean
+					return standing("Pack 1") == 0
+				end))
+				moment("Pack 1 down")
+				t.Check("Rook, whole at home without the player, trains", waitFor(t, TAKE_HEAL + 10, function(): boolean
+					return player:GetAttribute("Training") == first
+				end), tostring(player:GetAttribute("Training")))
+				moment("Rook trains at home")
+				t.Check("the dock opens the Voidkin screen", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name
+				end))
+				moment("the Voidkin screen: Rook training")
+				t.Wait(TAKE_READ)
+				Screen.Close()
+				local homeDoor = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
+				t.Check("Lantern Row has its door home", homeDoor ~= nil)
+				if homeDoor then
+					moment("the walk back to the door home")
+					walkTo(Markers.At(homeDoor).Position + Markers.At(homeDoor).LookVector * DOOR_RUN + up)
+					t.Check("the avatar is home", walkThrough(t, homeDoor, false))
+					moment("home through the door: the machine stops for the player")
+				end
+				t.Wait(6)
+				moment("end")
+			end)
+			t.Server("Tune", "Combat.Lead.Home.Fallen", heal)
+		end,
+	},
+	{
+		Name = "Take: TR16, alone after a fall, the way home's chip and its trail walked to the door, for research's verdict",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR16's evidence (docs/test-requests.md, TR16), the extra take after TR12's, from the player's camera: on Lantern
+			-- Row's street the lead walks up to a pack and falls there with no other Voidkin ready; the card says so, the
+			-- "Go home" chip shows in the next lead's place, a tap draws the trail, the avatar walks it to the gate's door,
+			-- where it's gone, and goes home through it. Three steps aren't played, and their rows say so: the set-down on the
+			-- street, every other Voidkin fallen just before, and the lead's health set low.
+			take(t, function(kit: Take)
+				local moment, walkTo = kit.Moment, kit.WalkTo
+				local home = HudController.Parts().Home :: TextButton
+				local up = Vector3.new(0, R6_ROOT_HEIGHT, 0)
+				t.Server("LeadHeal")
+				local pack: any = nil
+				for _, row in t.Server("Packs") do
+					if row.Name == TAKE_ALONE.Pack then
+						pack = row
+					end
+				end
+				local marker = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
+				t.Check(`{TAKE_ALONE.Pack} stands`, pack ~= nil and pack.Standing > 0)
+				t.Check("Lantern Row has its door home", marker ~= nil)
+				if pack == nil or marker == nil then
+					return
+				end
+				local door = Markers.At(marker)
+				local toward = Vector3.new(door.Position.X - pack.At.X, 0, door.Position.Z - pack.At.Z).Unit -- up the street to the gate
+				local start = pack.At + toward * TAKE_ALONE.Short + up
+				t.Root().CFrame = CFrame.lookAt(start, start - toward)
+				RunService.RenderStepped:Wait()
+				workspace.CurrentCamera.CFrame = CFrame.lookAt(start + toward * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
+				t.Check("none other ready", t.Server("VoidkinFallen").Ok == true)
+				t.Check("the lead by the avatar", waitFor(t, 5, function(): boolean
+					local lead = myLead()
+					local root = if lead then Parts.Root(lead) else nil
+					return root ~= nil and (root.Position - start).Magnitude < 12
+				end))
+				t.Wait(LEAD_SETTLE)
+				kit.Zero()
+				moment("zero: the white frame")
+				moment(`set down on the street short of {TAKE_ALONE.Pack}, every other Voidkin fallen (both set, not played)`)
+				t.Wait(1)
+				moment(`the walk up to {TAKE_ALONE.Pack}`)
+				t.Check(`the avatar walks to {TAKE_ALONE.Pack}`, walkTo(pack.At + toward * PACK_STAND + up))
+				moment("the fight")
+				t.Wait(TAKE_BEFORE_FALL)
+				moment(`not played: the lead's health held at {TAKE_LOW * 100}% or under from here`)
+				local lead = myLead()
+				t.Check("the lead falls", fallHeld(t, moment))
+				moment("the lead is down: the card says so")
+				t.Check("it leaves as light, home", waitFor(t, Combat.Lead.Leave + 1, function(): boolean
+					return lead ~= nil and lead:GetAttribute("State") == "Home"
+				end))
+				t.Check("the Go home chip shows", waitFor(t, REPLICATE, function(): boolean
+					return home.Visible
+				end))
+				moment("home, healing: the Go home chip")
+				t.Wait(TAKE_READ)
+				t.Check("a tap draws the trail", Button.Press(home) and waitFor(t, 1, WayHomeController.On))
+				moment("a tap: the trail to the gate's door")
+				t.Wait(TAKE_READ)
+				-- Walked as drawn: its corners, then the door's step, where it's gone.
+				local points = WayHomeController.Points()
+				moment("the walk along the trail")
+				for i = 2, #points - 1 do
+					walkTo(points[i] + up)
+				end
+				walkTo(door.Position + door.LookVector * DOOR_RUN + up)
+				t.Check("gone at the door", waitFor(t, 1, function(): boolean
+					return not WayHomeController.On()
+				end))
+				moment("at the door: the trail gone")
+				t.Wait(1)
+				t.Check("the avatar is home", walkThrough(t, marker, false))
+				moment("home through the door")
+				t.Wait(6)
+				moment("end")
+			end)
+			t.Server("LeadHeal")
+		end,
+	},
+	{
+		Name = "Take: TR8, Lantern Row dressed, up the street at dusk and back at night, for research's verdict",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			-- TR8's evidence (docs/test-requests.md, TR8): the dressed street from the player's camera, from the plot through
+			-- the Festival Door, up the street to the elite's square at dusk, and back down to the gate at night, the lead at
+			-- the avatar's side. Two steps aren't played, and their rows say so: the street's packs cleared before the walk
+			-- (each fight would stop it), and the turn to night jumped (Config.Lighting.Cycle's own takes minutes).
+			local cleared: { string } = {}
+			take(t, function(kit: Take)
+				local player = Players.LocalPlayer
+				local moment, walkTo = kit.Moment, kit.WalkTo
+				local up = Vector3.new(0, R6_ROOT_HEIGHT, 0)
+				for _, row in t.Server("Packs") do
+					if row.Standing > 0 and t.Server("PackDefeat", row.Name).Ok == true then
+						table.insert(cleared, row.Name)
+					end
+				end
+				t.Server("Night", "Dusk")
+				local old = player.Character
+				t.Server("Respawn")
+				t.Check("the avatar arrives on its plot", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local character = player.Character
+					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+				end))
+				t.Wait(WorldConfig.Arrive + 1)
+				local plot = player:GetAttribute("Plot")
+				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+				t.Check("the plot has its Festival Door", door ~= nil)
+				if door == nil then
+					return
+				end
+				kit.Zero()
+				moment("zero: on the plot, at dusk")
+				moment(`not played: the street's packs cleared ({#cleared}), so the walk never stops for a fight`)
+				t.Wait(1)
+				moment("the walk to the Festival Door")
+				walkTo(Markers.At(door).Position - Markers.At(door).LookVector * DOOR_RUN + up)
+				t.Check("through it", walkThrough(t, door, false))
+				moment("through the door: Lantern Row's gate at dusk")
+				t.Wait(2)
+				local elite = streamed(t, "Elite")
+				t.Check("the elite's square", elite ~= nil)
+				if elite == nil then
+					return
+				end
+				local square = Markers.At(elite).Position
+				moment("the walk up the street")
+				t.Check("the avatar walks up to the elite's square", walkTo(square + up))
+				moment("the elite's square at dusk")
+				t.Wait(TAKE_READ)
+				t.Server("Night", "Night")
+				moment("not played: the turn to night jumped")
+				t.Wait(TAKE_READ + 1)
+				local marker = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
+				t.Check("Lantern Row has its door home", marker ~= nil)
+				if marker == nil then
+					return
+				end
+				local home = Markers.At(marker)
+				moment("the walk back down the street at night")
+				t.Check("the avatar walks back to the gate", walkTo(home.Position + home.LookVector * (DOOR_RUN + TAKE_GATE_SHORT) + up))
+				moment("the gate at night")
+				t.Wait(TAKE_READ + 1)
+				moment("end")
+			end)
+			for _, name in cleared do
+				t.Server("PackBack", name)
+			end
 		end,
 	},
 	{

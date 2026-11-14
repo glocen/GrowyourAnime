@@ -10,6 +10,7 @@
 --   NL_Debug:Invoke("FightDefeat", who, id)                 one of those falls at once, its fall seen whole
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
 --   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
+--   NL_Debug:Invoke("FightHealth", who, 0.05, true)         at most that share: lowered to it, never raised (a take's held fall)
 -- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
 -- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
 -- beyond the dummy at the action's own spacing (Replay.Distance), turned Lead.Frame degrees toward the avatar's right,
@@ -176,13 +177,15 @@ local function fightDefeat(_who: any, id: any): any
 	return { Ok = false, Error = "NotSpawned" }
 end
 
-local function fightHealth(who: any, share: any): any
+local function fightHealth(who: any, share: any, cap: any): any
 	local player = DebugService.ResolvePlayer(who)
 	local lead = if player then FightService.LeadOf(player) else nil
 	if lead == nil or type(share) ~= "number" or not (share >= 0 and share <= 1) then
 		return { Ok = false, Error = "BadArgs" }
 	end
-	if share == 0 then
+	if cap == true and lead.Health <= lead.Block.Health * share then
+		-- already as low: left as it is
+	elseif share == 0 then
 		FightService.Defeat(lead)
 	else
 		FightService.SetHealthShare(lead, share)

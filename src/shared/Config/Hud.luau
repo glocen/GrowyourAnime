@@ -268,10 +268,11 @@ return {
 	-- TR9's Breaker screen in grey (UI/BreakerScreen; research's entry, 2026-11-14), three layouts for the blockout's
 	-- verdict, tuned live ("Hud.Breaker.Layout"): "Machine" (the chambers side by side over a strip of what's ready,
 	-- waiting and in the bag, the chosen shard's odds beside them), "List" (one list of every shard beside its odds) or
-	-- "Sheet" (the machine across the screen, a shard's odds a sheet over it on a tap). Cell: a chamber's authored height.
+	-- "Sheet" (the machine across the screen, a shard's odds a sheet over it on a tap). Cell: a chamber's authored height,
+	-- room under its time for an infusion's level on two lines ("Infused, / a little" in a narrow chamber).
 	Breaker = {
 		Layout = "Machine",
-		Cell = 112,
+		Cell = 124,
 	},
 	-- TR15's stat board in grey on the Voidkin screen (UI/VoidkinScreen; research's entry, 2026-11-14), two layouts for
 	-- the blockout's verdict, tuned live ("Hud.Board.Layout"): "Split" (the collection beside the chosen Voidkin's board,

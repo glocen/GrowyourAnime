@@ -225,6 +225,7 @@ local function label(parent: Instance, name: string, text: string, size: number,
 		Box = box,
 		Position = position,
 		Truncate = p.Truncate,
+		Wrap = p.Wrap,
 		Parent = parent,
 	})
 	made.Text = text
@@ -258,7 +259,8 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local bar = Bar.new({ Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, pad + LINE + 30), Colour = Theme.Colour.Electricity, Parent = frame })
 	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad + LINE + 42), { Colour = Theme.Colour.TextDim })
 	if w.Luck > 0 then
-		label(frame, "Infused", infused(w.Luck), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad + LINE + 60), { Colour = Theme.Colour.Electricity })
+		-- two lines' room: a narrow chamber wraps the level under the word
+		label(frame, "Infused", infused(w.Luck), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad + LINE + 60), { Colour = Theme.Colour.Electricity, Wrap = true })
 	end
 	table.insert(tickers, function(now: Read.Base)
 		local current = now.Data.Base.Chambers[index]

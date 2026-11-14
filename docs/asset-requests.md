@@ -4807,6 +4807,17 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **Time:** about 45 minutes in this session, three rounds (the first render at 11:57, the third at 12:03, local), plus the plan written in the session before. On Opus 5.5 xhigh. Pip's sheet took about 1.8 hours with its second round.
 - **Four facts:** made; self-reviewed; content check PASS; research's verdict waits.
 
+**Research's verdict on the sheet, 2026-11-14, night.**
+- **Felt:** a quick little courier who is her scarf: the blue streak reads before anything else in every strip, and in the Step the same cloth snaps from an S to one straight line through the Shade, so you see the cut she made.
+- **Tier:** competent. The scarf and the Step's line aim higher; the body under them is still plain.
+- **The one bold thing:** one object in two states, the scarf's S at rest and its straight line through the Step. Keep it the only streak she has.
+- **Against Pip at 64 px:** they part clearly, wide and low beside tall and pointed (0.35).
+- **Fix 1, for the model:** over night and Lantern Row's dusk her body sinks into navy. Only the scarf and the bone bands carry it, and a lead's body must read through its combo, not just its signature. Give the back one lighter mass the player's camera sees at 64 px. Yours: the grips and sheaths larger, the strap lighter, or a lighter back panel.
+- **Fix 2, for the model:** from the back the crop reads as a round cap. Give it two or three swept points in outline, so "running into wind" reads from the player's camera.
+- **Tier 2, the 35° crossing: accepted.** Scarf Step lands to the side of the Shade, away from the camera's line, with room; settled at delivery 4 with Faber. It moves the landing, not the camera (the director, 2026-11-14, night: the player's camera is never moved in a fight).
+- The skewer note stays at delivery 4, as the content check says.
+- **The sheet is accepted:** deliver to `build/handoff/Kirra/`, and start the model with fixes 1 and 2.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

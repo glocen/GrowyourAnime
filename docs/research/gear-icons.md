@@ -27,12 +27,19 @@ From the third screenshot, `2026-11-12_view-character-might.png` (another player
 14. **The same screen is what other players see** of you: the slots, the figure and the number, beside social buttons. The number is a thing to show off.
 
 The director: "we can choose where we show combat power".
+15. **The frame's form steps at Legendary** (the director, 2026-11-15: "from common to epic it same but at legendary it has a new border this is great"). Read on crops at full size, 2532 px wide, of `2026-11-12_character-slots.png` and `2026-11-12_view-character-might.png`, enlarged 2 to 3 times (`build/scratch/quaestor/ref/slots-both.png`, `red-a.png`, `red-b.png`):
+    - **Below Legendary** (green, purple, and a pale tan one): one frame. It's a square with its four corners cut, a single thin rim a step lighter than the fill, and a flat vignette fill. Only the colour changes.
+    - **Legendary** (orange-gold): a new frame. The corners are square, not cut, and a double rim runs round, thin and copper. A small pyramid stud stands on each corner, sitting over the rim's crossing and reaching just past the edge.
+    - **The red above it:** the Legendary form again, with each stud a faceted red gem. The rank's row of small crowns sits inside the foot. On a weapon, the fill carries a painted scene behind the object, with a glowing band along the foot.
+    - So the form changes once, at the rarity a player chases, then gains jewels above it. Up to Epic, the colour alone carries rarity.
+    - The rank's digits are blue at +10 and violet at +11 and +12 (`slots-both.png`). What that colour means isn't known.
 
 ## DESIGN (ours)
 
 - **Rarity in three layers,** each readable alone: the kit's frame (AR3), the inner light, and the object's own material, from plain iron to gilt. A Common item is still a well-made object, just plainer.
 - **A top series reads as a set:** one material family and one accent shared by every piece, so Dawn is recognised before its name is read. Dawn's own material and accent come from our world, on AR6's sheet.
 - **Fill and pose:** the object fills about 85% of the square; long weapons on one diagonal for every class; small pieces widened by their own ornament. One light and one camera for every icon, so the bag reads as one family.
+- **The frame steps at Legendary** (the director's liking, 2026-11-15; OBSERVED 15). Common to Epic share one gear frame, our kit's cut in the rarity's colour (the director's green, blue, purple). Legendary gets a frame of its own, in our kit's language: the cuts become lit facets, a second rim of light runs inside, and a small crown rises from the top edge, the same crown that marks a Legendary portrait (AR3). Never square corners with studs. Mythical keeps Legendary's form, with its crown broken and its light reddish, as on its portrait. Dawn's frame is set on AR6's sheet. Each step must show at the slot's size on the Voidkin screen (about 38 pt).
 - **Badges on the frame only:** forge rank, lock, upgrade arrow, count. The object is never covered.
 - **Modelled, then rendered** (`docs/design.md`, "Regalia: gear"): what gives these icons their depth is light on real form, which a model gives for free and a flat drawing fakes.
 - **Combat Power where the figure stands:** on Regalia and on one Voidkin, at the Voidkin's feet between the slot columns, so the number belongs to the character. The same view is what a visiting player sees of your lead, so it's worth showing off. When it changes: a small pop, the gain in green, the counter rolling in gold.

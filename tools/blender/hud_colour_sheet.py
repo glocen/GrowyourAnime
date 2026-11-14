@@ -1,33 +1,37 @@
-"""AR12, the HUD's colour (docs/asset-requests.md, AR12): three directions for the director's pick, over the HUD as the
-game lays it out on a phone in landscape, over a dusk street and a noon one, with the glance strip at true size and the
-new parts up close.
+"""AR12, the HUD's and the UI's colour (docs/asset-requests.md, AR12), round 2: the director picked B, Conduit (each
+piece's rim, thread and base light in its system's colour), then asked for the colour to go vivid across the HUD and
+the UI, with more colours in the palette. This draws B as picked beside two vivid strengths on the same structure, for
+research's verdict before any image is made. Round 1's three directions are this file at 77c591e.
 
-What every direction holds:
-  - a colour per system, each with its own icon so they part without colour too: Power keeps electricity's yellow (the
-    same meaning, not a reuse) on a bolt; Credits takes a new teal on a coin; Voidkin takes the void's lavender, the light
-    a shard opens with (Void Violet's accent), on a shard. The Base's dock button wears Power's yellow: the base is the
-    power plant. The hint wears the icon and colour of the system it points to.
+What every column holds:
+  - a colour per system, each with its own icon so they part without colour too: Power keeps electricity's yellow on a
+    bolt; Credits a teal on a coin; Voidkin the void's lavender on a shard; Regalia an indigo on a crest; the Map a rose
+    on a folded map. The Base's dock button wears Power's yellow: the base is the power plant. A button's colour is its
+    screen's colour.
   - the Power pill in kW: generation, then what's used, a thread for the share; over generation, the battery's mark and
     the thread's last part drawn in dashes, from the battery.
   - the lead's card: the type's stud bigger, the rarity's glow harder (Common keeps no glow: its first glow is Rare's).
-  - the signature's readout and the spectate eye redrawn as one family, cut as the dock's buttons are: the readout is a
-    plate holding the signature's own icon, its well filling with light like a conduit, slanted as the bars are; ready,
-    it's full, white-hot, and its icon turns dark on the light. The eye opens when spectate is on and shuts when it's
-    off. Both sit under the lead's card, the lead's own corner, clear of both thumbs.
-How far the colour goes is the axis: A, accents only; B, edges and channels; C, a light field behind each piece.
+  - the signature's readout and the spectate eye as one family, cut as the dock's buttons are, under the lead's card.
+    They stay ivory: among coloured pieces, the white-hot ready plate is the one white thing.
+How vivid is the axis: B, as picked, on Graphite; Deep, each piece's body a saturated dark of its colour and its words
+in its pale; Block, Deep with the icon in ink on a block of its colour.
+
+`ui` draws the screens' side: the kit's four palettes as they are, then the vivid rows, each screen wearing its system's
+colour, with a filled main button.
 
 The phone: the HUD lives inside the safe area measured on Faber's capture of an iPhone in landscape (Roblox's bar above,
 the island's inset at each side). The thumbstick, the jump button, Roblox's bar and the island are drawn as plain stand-ins
 for the room they take. The dusk street is Lantern Row's look (tools/blender/lantern_row_look.py, `M`); the noon street is
 ui_sheet's drawn stand-in. Text is Blender's face standing in for the game's.
 
-    blender -b --factory-startup --python tools/blender/hud_colour_sheet.py -- build/handoff/UI/hud/colour
+    blender -b --factory-startup --python tools/blender/hud_colour_sheet.py -- build/handoff/UI/hud/colour [hud|ui]
 """
 import ctypes
 import gc
 import json
 import math
 import sys
+import textwrap
 from ctypes import wintypes
 from pathlib import Path
 
@@ -55,20 +59,26 @@ PAD, TOP, GAP, PILL = 8.0, 17.0, 6.0, 30.0
 IVORY, INK, STROKE = ui.LIGHT, "#14161B", ui.STROKE
 GRAPHITE = kit.PALETTES["Graphite Dark"]
 
-POWER, CREDITS, VOIDKIN = ui.CHARGE, "#40DCC6", "#DCCBFF"
-PALE = {POWER: "#FFF7C2", CREDITS: "#D6FFF7", VOIDKIN: "#FAF7FF"}
-DEEP = {POWER: "#B88A14", CREDITS: "#13867A", VOIDKIN: "#7C66CC"}
+# A system's colour: measured apart from every colour that already means something, and from each other in plain sight
+# and under deuteranopia and protanopia (build/scratch/modulo/hud/colours.py; the numbers are in AR12's record).
+POWER, CREDITS, VOIDKIN, REGALIA, MAP = ui.CHARGE, "#40DCC6", "#DCCBFF", "#6C7BFF", "#FF5C93"
+PALE = {POWER: "#FFF7C2", CREDITS: "#D6FFF7", VOIDKIN: "#FAF7FF", REGALIA: "#E2E6FF", MAP: "#FFE3EE"}
+DEEP = {POWER: "#B88A14", CREDITS: "#13867A", VOIDKIN: "#7C66CC", REGALIA: "#3340B8", MAP: "#B8245C"}
+NIGHT = {POWER: ("#4D3711", "#211605"), CREDITS: ("#0E4541", "#071E1F"), VOIDKIN: ("#35286B", "#171033"),
+         REGALIA: ("#1D2A6E", "#0C1233"), MAP: ("#5A1D3F", "#260B1B")}  # a piece's body from Deep on: top, foot
 
-TRIM = {"Common": ("#666C78", "#8E95A3"), "Mythical": ("#FF8794", "#FF8794")}  # at reach 1, and from reach 2
+TRIM = {"Common": "#8E95A3", "Mythical": "#FF8794"}
 GLOW = {"Common": None, "Mythical": "#FF2848"}  # the frames' own glow colours (ui_sheet.RARITIES)
 NAME_W = {"Rook": 40.0, "Lyric": 41.0}  # the names' widths in Blender's face, which stands in for the game's here
 
+B, DEEPER, BLOCK = 0, 1, 2  # how vivid: a column's level
 DIRECTIONS = (
-    ("A", "Signal", 1, "Accents only. Each system's icon and its words carry its colour; the panels stay Graphite."),
-    ("B", "Conduit", 2, "The colour reaches the edges and channels: each piece's rim, its thread and its base light take "
-                        "its system's colour; the rarity's glow and the type's stud burn harder."),
-    ("C", "Glow", 3, "A coloured light field behind each piece, its body warmed toward its colour, and the lead's rarity "
-                     "lighting the card from behind."),
+    ("B", "Conduit, as picked", B, "The director's pick: each piece's rim, its thread and its base light take its "
+                                   "system's colour, on Graphite. Research's three fixes are in."),
+    ("V1", "Vivid, Deep", DEEPER, "B's structure. Each piece's body is a saturated dark of its own colour, its glint "
+                                  "and its words take the colour's pale."),
+    ("V2", "Vivid, Block", BLOCK, "Deep, and each icon sits in ink on a block of its system's colour: the HUD's five "
+                                  "colours as five solid marks."),
 )
 # The three screens: who leads, the readout's state, the eye's, and the Power pill's.
 ROOK = dict(who="Rook", rarity="Common", type_="Strength", class_="Warrior", level=12, hp="1,204 / 1,543", health=0.78,
@@ -92,15 +102,15 @@ def mix(a, b, t):
     return "#" + "".join(f"{int(round(min(max(x, 0.0), 1.0) * 255)):02X}" for x in v[:3])
 
 
-def palette(accent, reach):
-    """Graphite, with the system's colour as far as the direction takes it."""
-    p = dict(GRAPHITE)
-    if reach >= 2:  # the kit's bold rim, in the system's colour
-        p.update(edge=accent, border=1.6, glint=mix(GRAPHITE["glint"], accent, 0.6),
-                 channel=mix(GRAPHITE["channel"], accent, 0.1), accent=accent)
-    if reach >= 3:
-        p.update(panel=(mix(GRAPHITE["panel"][0], accent, 0.3), mix(GRAPHITE["panel"][1], accent, 0.12)),
-                 button=(mix(GRAPHITE["button"][0], accent, 0.3), mix(GRAPHITE["button"][1], accent, 0.12)))
+def palette(accent, level):
+    """Graphite with the kit's bold rim in the system's colour: B. From Deep on, the body is the colour's own night."""
+    p = dict(GRAPHITE, edge=accent, border=1.6, glint=mix(GRAPHITE["glint"], accent, 0.6),
+             channel=mix(GRAPHITE["channel"], accent, 0.1), accent=accent)
+    if level >= DEEPER:
+        top, foot = NIGHT[accent]
+        p.update(panel=(top, foot), button=(mix(top, accent, 0.14), mix(foot, accent, 0.08)), pressed=(foot, top),
+                 glint=PALE[accent], channel=mix(GRAPHITE["channel"], accent, 0.16), text=PALE[accent],
+                 soft=mix(GRAPHITE["soft"], accent, 0.45))
     return p
 
 
@@ -131,12 +141,20 @@ def halo(alpha, colour, radius_pts, strength):
     return out
 
 
-def field(st, x, y, w, h, colour, radius, strength, cut=8.0):
-    """A light field behind a piece: its colour spilling into the world round it."""
-    m = radius * 3
-    t = kit.blank(w + 2 * m, h + 2 * m)
-    t.glow(t.poly(cut_box(m, m, m + w, m + h, cut, 0, cut, 0)), radius, c(colour), strength)
-    rs.paste(st.px, t.px, round((x - m) * K4), round((y - m) * K4))
+def block(st, slice_name, x, y, w, h, accent, width):
+    """Block's mark: the piece's own body slice again, in its system's colour, kept to its left end, its right side
+    leaning as the bars' fronts do. In the engine it's the same slice, clipped."""
+    def past(rows, cols):  # how far a pixel is past the block's leaning side, in points
+        return np.arange(cols)[None, :] / K4 - (width + (h / 2 - np.arange(rows)[:, None] / K4) * 0.3)
+
+    def window(rows, cols):
+        return np.clip(0.5 - past(rows, cols) * K4, 0, 1).astype(np.float32)
+
+    def seam(rows, cols):  # a dark line down that side, so the block ends on a cut and not on a blur
+        return np.clip(0.5 - (np.abs(past(rows, cols) - 0.5) - 0.6) * K4, 0, 1).astype(np.float32)
+
+    st.lay(slice_name, x, y, w, h, tint=(mix(accent, PALE[accent], 0.35), mix(accent, DEEP[accent], 0.3)), window=window)
+    st.lay(slice_name, x, y, w, h, tint=INK, alpha=0.7, window=seam)
 
 
 def seg(t, a, b, w):
@@ -201,6 +219,39 @@ def g_plant(t, cx, cy, r):
 BOLT = ((0.25, -1), (-0.55, 0.12), (-0.05, 0.12), (-0.3, 1), (0.55, -0.2), (0.05, -0.2))
 
 
+def g_bolt(t, cx, cy, r):
+    return t.poly([(cx + r * u, cy + r * v) for u, v in BOLT])
+
+
+def g_coin(t, cx, cy, r):
+    return t.poly([(cx + r * math.cos(a), cy + r * math.sin(a)) for a in (math.radians(22.5 + 45 * i) for i in range(8))])
+
+
+def g_diamond(t, cx, cy, rx, ry):
+    return t.poly([(cx, cy - ry), (cx + rx, cy), (cx, cy + ry), (cx - rx, cy)])
+
+
+def g_crest(t, cx, cy, r):
+    """Regalia: a crown's three points over a shield's foot."""
+    return t.poly([(cx + r * u, cy + r * v) for u, v in ((-0.88, -0.84), (-0.42, -0.42), (0.0, -0.98), (0.42, -0.42),
+                                                          (0.88, -0.84), (0.88, 0.18), (0.0, 1.0), (-0.88, 0.18))])
+
+
+MAP_FOLD = 0.34  # where the map folds, as a share of its half width
+
+
+def g_map(t, cx, cy, r):
+    """The Map: a sheet folded in three, each fold a step."""
+    return t.poly([(cx + r * u, cy + r * v) for u, v in ((-1.0, -0.62), (-MAP_FOLD, -0.9), (MAP_FOLD, -0.62), (1.0, -0.9),
+                                                          (1.0, 0.62), (MAP_FOLD, 0.9), (-MAP_FOLD, 0.62), (-1.0, 0.9))])
+
+
+def map_route(t, cx, cy, r, w):
+    """The way across it: two legs and where it ends."""
+    a, b, e = (cx - 0.68 * r, cy + 0.34 * r), (cx - 0.08 * r, cy - 0.2 * r), (cx + 0.5 * r, cy + 0.22 * r)
+    return np.minimum.reduce([seg(t, a, b, w), seg(t, b, e, w), g_diamond(t, e[0] + 0.1 * r, e[1], 0.24 * r, 0.3 * r)])
+
+
 def lens(t, cx, cy, a, b):
     rad = (a * a + b * b) / (2 * b)
     k = rad - b
@@ -230,6 +281,9 @@ def eye_shut(t, cx, cy, r, colour):
 
 # --- the icons, kept as the kit keeps its own ------------------------------------------------------------------------
 
+INK_ICON = {"Bolt": "InkBolt", "CoinMint": "InkCoin", "Shard": "InkShard", "Plant": "InkPlant", "Crest": "InkCrest",
+            "Route": "InkRoute"}  # a system's icon, and its mark on Block's block
+
 def icons():
     m, r = BOX / 2, 12.0
 
@@ -238,11 +292,40 @@ def icons():
         t.paint(d, ramp3(t, PALE[accent], accent, DEEP[accent], (t.y - m + r) / (2 * r)))
 
     t = kit.blank(BOX, BOX)  # Credits: a minted coin
-    d = t.poly([(m + r * math.cos(a), m + r * math.sin(a)) for a in (math.radians(22.5 + 45 * i) for i in range(8))])
+    d = g_coin(t, m, m, r)
     body(t, d, CREDITS)
     t.line(d + 1.7, 1.0, c(DEEP[CREDITS]), 0.9)
-    t.paint(t.poly([(m, m - r * 0.44), (m + r * 0.32, m), (m, m + r * 0.44), (m - r * 0.32, m)]), c(DEEP[CREDITS]))
+    t.paint(g_diamond(t, m, m, r * 0.32, r * 0.44), c(DEEP[CREDITS]))
     kit.keep("CoinMint", t, use="Credits")
+
+    t = kit.blank(BOX, BOX)  # Regalia: a crest, a gem set in it
+    d = g_crest(t, m, m, r)
+    body(t, d, REGALIA)
+    t.line(d + 1.9, 1.0, c(DEEP[REGALIA]), 0.9)
+    gem = g_diamond(t, m, m + 0.14 * r, r * 0.3, r * 0.4)
+    t.paint(gem - 1.0, c(DEEP[REGALIA]))
+    t.paint(gem, c(PALE[REGALIA]))
+    kit.keep("Crest", t, use="Regalia")
+
+    t = kit.blank(BOX, BOX)  # the Map: folded in three, its middle fold in shade, a way drawn across it
+    d = g_map(t, m, m, r)
+    body(t, d, MAP)
+    t.paint(np.maximum(d, np.abs(t.x - m) - MAP_FOLD * r), c(DEEP[MAP]), 0.45)
+    t.paint(np.maximum(d, map_route(t, m, m, r, 1.5)), c(INK))
+    kit.keep("Route", t, use="the Map")
+
+    # Block's marks: the same five shapes and the plant, in ink, what's inside them cut clean through to the colour
+    for name, d in (("InkBolt", lambda t: g_bolt(t, m, m, r * 1.02)),
+                    ("InkCoin", lambda t: np.maximum(g_coin(t, m, m, r), -g_diamond(t, m, m, r * 0.34, r * 0.48))),
+                    ("InkShard", lambda t: np.maximum(g_shard(t, m, m, r), -np.minimum(
+                        seg(t, (m + 0.12 * r, m - 0.66 * r), (m, m + 0.12 * r), 1.7),
+                        seg(t, (m, m + 0.12 * r), (m - 0.14 * r, m + 0.66 * r), 1.7)))),
+                    ("InkPlant", lambda t: np.maximum(g_plant(t, m, m, r), -g_bolt(t, m, m + r * 0.22, r * 0.6))),
+                    ("InkCrest", lambda t: np.maximum(g_crest(t, m, m, r), -g_diamond(t, m, m + 0.14 * r, r * 0.3, r * 0.4))),
+                    ("InkRoute", lambda t: np.maximum(g_map(t, m, m, r), -map_route(t, m, m, r, 1.9)))):
+        t = kit.blank(BOX, BOX)
+        t.paint(d(t), c(INK))
+        kit.keep(name, t, use="Block: on a block of its system's colour")
 
     t = kit.blank(BOX, BOX)  # Voidkin: a shard, its far facet in shade, a crack of light down its ridge
     d = g_shard(t, m, m, r)
@@ -273,24 +356,29 @@ def icons():
 
 # --- the pieces -----------------------------------------------------------------------------------------------------
 
-def pill(st, x, y, w, accent, reach, icon, value, extra=None, extra_colour=None, fill=None, drain=0.0, mark=None):
-    p = palette(accent, reach)
-    if reach >= 3:
-        field(st, x, y, w, PILL, accent, 11.0, 0.55, cut=9)
+def pill(st, x, y, w, accent, level, icon, value, extra=None, extra_colour=None, fill=None, drain=0.0, mark=None):
+    p = palette(accent, level)
+    solid = level >= BLOCK
     st.lay("PanelShadow", x, y, w, PILL)
     st.lay("PanelFill", x, y, w, PILL, tint=p["panel"], alpha=p["alpha"])
-    st.lay("PanelEdge" + ("Bold" if reach >= 2 else ""), x, y, w, PILL, tint=p["edge"], alpha=0.95 if reach < 2 else 1.0)
+    if solid:
+        block(st, "PanelFill", x, y, w, PILL, accent, 31.0)
+    st.lay("PanelEdgeBold", x, y, w, PILL, tint=p["edge"])
     st.lay("PanelGlint", x, y, w, PILL, tint=p["glint"])
     lift = 2 if fill is not None else 0
-    st.icon(icon, x + 17, y + PILL / 2 - lift / 2, 21.0)
+    left = 41.0 if solid else 31.0  # where the words start
+    if solid:
+        st.icon(INK_ICON[icon], x + 16.5, y + PILL / 2, 20.0)
+    else:
+        st.icon(icon, x + 17, y + PILL / 2 - lift / 2, 21.0)
     ty = y + (PILL - 14 * ui.CAP) / 2 - lift
-    st.text(x + 31, ty, 14, value, p["text"])
+    st.text(x + left, ty, 14, value, p["text"])
     if extra:
         st.text(x + w - 10, ty, 14, extra, extra_colour or p["soft"], "RIGHT")
     if mark:
-        st.icon(mark[0], x + mark[1], y + PILL / 2 - lift / 2, 17.0)
+        st.icon(mark[0], x + mark[1] + (left - 31.0) * 0.6, y + PILL / 2 - lift / 2, 17.0)
     if fill is not None:
-        tx, tw = x + 31, w - 40
+        tx, tw = x + left, w - left - 9
         kit.bar(st, tx, y + PILL - 8, tw, 3.0, fill, p, accent)
         if drain:  # the share the battery covers: the light in dashes, from the battery's end
             x0 = tx + tw * (1 - drain)
@@ -301,42 +389,58 @@ def pill(st, x, y, w, accent, reach, icon, value, extra=None, extra_colour=None,
             rs.paste(st.px, dash, round(x0 * K4), round((y + PILL - 8) * K4))
 
 
-def dock(st, x, y, label, icon, accent, reach):
-    p = palette(accent, reach)
-    if reach >= 3:
-        field(st, x, y, 96, 52, accent, 12.0, 0.5)
-    kit.button(st, x, y, 96, 52, "", p, "rest")
-    st.icon(icon, x + 22, y + 25, 24.0)
-    st.text(x + 38, y + (52 - 14 * ui.CAP) / 2 - 1, 14, label, p["text"])
+def dock(st, x, y, label, icon, accent, level):
+    """A dock button, as kit.button lays one at rest; on Block, its block goes in between the body and the rim."""
+    p = palette(accent, level)
+    w, h = 96.0, 52.0
+    st.lay("ButtonShadow", x, y, w, h)
+    st.lay("ButtonFill", x, y, w, h, tint=p["button"])
+    if level >= BLOCK:
+        block(st, "ButtonFill", x, y, w, h, accent, 32.0)
+    st.lay("ButtonEdgeBold", x, y, w, h, tint=p["edge"])
+    st.lay("ButtonBase", x, y, w, h, tint=accent)
+    st.lay("ButtonBaseGlow", x, y, w, h, tint=accent, alpha=0.45)
+    if level >= BLOCK:
+        st.icon(INK_ICON[icon], x + 17.5, y + 24.5, 23.0)
+        st.text(x + 40, y + (h - 14 * ui.CAP) / 2 - 1, 14, label, p["text"])
+    else:
+        st.icon(icon, x + 22, y + 25, 24.0)
+        st.text(x + 38, y + (h - 14 * ui.CAP) / 2 - 1, 14, label, p["text"])
 
 
-def hint(st, x, y, w, text, reach):
-    p = palette(VOIDKIN, reach)
-    if reach >= 3:
-        field(st, x, y, w, PILL, VOIDKIN, 10.0, 0.4, cut=9)
-    kit.panel(st, x, y, w, PILL, p)
-    st.icon("Shard", x + 18, y + PILL / 2, 20.0)
-    st.text(x + w / 2 + 10, y + (PILL - 14 * ui.CAP) / 2, 14, text, IVORY, "CENTER")
+def hint(st, x, y, w, text, level):
+    """The hint wears the icon and the colour of the system it points to: here, shards, so Voidkin's."""
+    p = palette(VOIDKIN, level)
+    st.lay("PanelShadow", x, y, w, PILL)
+    st.lay("PanelFill", x, y, w, PILL, tint=p["panel"], alpha=p["alpha"])
+    if level >= BLOCK:
+        block(st, "PanelFill", x, y, w, PILL, VOIDKIN, 31.0)
+    st.lay("PanelEdgeBold", x, y, w, PILL, tint=p["edge"])
+    st.lay("PanelGlint", x, y, w, PILL, tint=p["glint"])
+    if level >= BLOCK:
+        st.icon("InkShard", x + 16.5, y + PILL / 2, 20.0)
+    else:
+        st.icon("Shard", x + 18, y + PILL / 2, 20.0)
+    st.text(x + w / 2 + 10, y + (PILL - 14 * ui.CAP) / 2, 14, text, p["text"] if level >= DEEPER else IVORY, "CENTER")
 
 
 def plate(t, o, s, cut):
     return t.poly(cut_box(o, o, o + s, o + s, cut, 0, cut, 0))
 
 
-def readout(st, x, y, s, share, signature, reach):
+def readout(st, x, y, s, share, signature):
     """The signature's readout: a plate cut as the dock's buttons are, its well a conduit that fills with light from the
     foot, its front slanted as the bars' is, the signature's own icon over it. Ready, it's full and white-hot, it glows,
-    and its icon turns dark on the light: the loudest thing on the HUD."""
+    and its icon turns dark on the light: the loudest thing on the HUD. It stays ivory at every level: it belongs to the
+    fight, not to a system."""
     ready = share >= 1.0
     g = 26.0
-    if ready and reach >= 3:
-        field(st, x, y, s, s, IVORY, 13.0, 0.42, cut=s * 0.2)
     t = kit.blank(s + 2 * g, s + 2 * g)
     cut, inset = s * 0.2, 4.0
     outer = plate(t, g, s, cut)
     inner = plate(t, g + inset, s - 2 * inset, cut * 0.75)
     if ready:
-        t.glow(outer, (7.0, 9.0, 11.0)[reach - 1], c(IVORY), (0.6, 0.72, 0.85)[reach - 1])
+        t.glow(outer, 9.0, c(IVORY), 0.72)
     t.glow(outer, 4.0, ui.BLACK, 0.35)
     t.paint(outer, t.ramp(GRAPHITE["button"][0], GRAPHITE["button"][1], (t.y - g) / s), 0.96)
     t.paint(inner, c(GRAPHITE["channel"]))
@@ -353,8 +457,7 @@ def readout(st, x, y, s, share, signature, reach):
         within = np.clip(0.5 - inner * K4, 0, 1)
         ui.over(t.px, c(IVORY), within * np.clip(1 - (np.abs(t.y - level) - 1.3) / 4.5, 0, 1) * 0.55)
         t.paint(np.maximum(inner, np.abs(t.y - level) - 1.3), c("#FFFFFF"))
-    if reach >= 2 or ready:
-        t.line(inner, 0.8, c(IVORY), 0.35 if not ready else 0.9)
+    t.line(inner, 0.8, c(IVORY), 0.35 if not ready else 0.9)
     t.line(outer, 1.0, c(IVORY if ready else GRAPHITE["edge"]))
     d = SIGNATURES[signature](t, g + s / 2, g + s / 2 + 1, s * 0.27)
     if ready:
@@ -366,14 +469,14 @@ def readout(st, x, y, s, share, signature, reach):
     place(st, t, x - g, y - g)
 
 
-def spectate(st, x, y, s, on, reach):
+def spectate(st, x, y, s, on):
     """The spectate eye, the readout's small sibling: open and lit when on, shut and dim when off."""
     g = 20.0
     t = kit.blank(s + 2 * g, s + 2 * g)
     cut = s * 0.2
     outer = plate(t, g, s, cut)
     if on:
-        t.glow(outer, 5.0, c(IVORY), 0.45 if reach < 3 else 0.6)
+        t.glow(outer, 5.0, c(IVORY), 0.45)
     t.glow(outer, 4.0, ui.BLACK, 0.35)
     t.paint(outer, t.ramp(GRAPHITE["button"][0], GRAPHITE["button"][1], (t.y - g) / s) * (1.0 if on else 0.8), 0.96)
     t.line(outer, 1.0, c(GRAPHITE["edge"]))
@@ -397,7 +500,8 @@ def card_images():
     IMG = {n: rs.load(CARD / e["file"]) for n, e in DATA["images"].items()}
 
 
-def lead(st, x, y, sc, reach):
+def lead(st, x, y, sc):
+    """The lead's card as B has it. Its colours are its rarity's and its type's, so no level changes it."""
     e = DATA["images"]
 
     def at(name, px=None):
@@ -406,12 +510,8 @@ def lead(st, x, y, sc, reach):
                  round((y + en["at"][1] - en["pad"]) * K4))
 
     rarity, who = sc["rarity"], sc["who"]
-    trim, glow = TRIM[rarity][0 if reach < 2 else 1], GLOW[rarity]
+    trim, glow = TRIM[rarity], GLOW[rarity]
     fx, fy, fw, fh = lc.FRAME
-    if glow and reach >= 3:  # the rarity lights the card from behind
-        t = kit.blank(fw + 120, fh + 120)
-        t.glow(np.hypot(t.x - 60 - fw / 2, (t.y - 60 - fh / 2) * 1.1) - fw * 0.45, 16.0, c(glow), 0.5)
-        place(st, t, x + fx - 60, y + fy - 60)
     at("CardHousing")
     at("CardHousingRim", lc.tinted(IMG["CardHousingRim"], trim))
     rows = lc.light_rows()
@@ -429,23 +529,22 @@ def lead(st, x, y, sc, reach):
         at(n, lc.tinted(px, trim) if n.endswith("Rim") else px)
     at(f"CardFace{who}")
     frame = IMG[f"CardFrame{rarity}"]
-    if glow and reach >= 2:  # the frame's own glow, burned harder
-        at(f"CardFrame{rarity}", halo(frame[..., 3], glow, 5.0, (1.3, 1.7)[reach - 2]))
+    if glow:  # the frame's own glow, burned harder
+        at(f"CardFrame{rarity}", halo(frame[..., 3], glow, 5.0, 1.3))
     at(f"CardFrame{rarity}")
     if f"CardHead{who}" in e:
         at(f"CardHead{who}")
     at("CardBadge")
     at("CardBadgeRim", lc.tinted(IMG["CardBadgeRim"], trim))
-    # the type's stud, where the bars meet the frame: bigger, its rim in the type's own colour from reach 2
+    # the type's stud, where the bars meet the frame: bigger, its rim and its glow in the type's own colour
     type_colour = ss.TYPES[sc["type_"]]
     r = 8.5
     cx, cy = x + fx + fw + 0.5, y + DATA["geometry"]["mid"]
     t = kit.blank(2 * r + 24, 2 * r + 24)
     d = np.hypot(t.x - r - 12, t.y - r - 12) - r
-    if reach >= 2:
-        t.glow(d, (3.5, 5.0)[reach - 2], c(type_colour), (0.55, 0.75)[reach - 2])
+    t.glow(d, 3.5, c(type_colour), 0.55)
     t.paint(d, c("#000000"))
-    t.line(d, 1.6, c(type_colour if reach >= 2 else trim))
+    t.line(d, 1.6, c(type_colour))
     place(st, t, cx - r - 12, cy - r - 12)
     st.icon(f"Gem{sc['type_']}", cx, cy, 2 * r * 0.8 + 1)
     st.icon(f"Class{sc['class_']}", x + 66 + name_w + 11, y + 26, 13.0)
@@ -541,7 +640,7 @@ def street(kind):
     return px
 
 
-def phone(st):
+def phone(st, controls=True):
     """The room the phone's own things take: Roblox's bar, the thumbstick, the jump button, the island, the corners.
     Each on a small tile of its own, in the screen's points."""
     shade, pale = c("#101116"), c("#D9DADF")
@@ -582,8 +681,9 @@ def phone(st):
         t.paint(rr - np.hypot(qx, qy), c("#000000"))
 
     tile(70, 10, 218, 56, bar)
-    tile(84, 286, 158, 360, stick)
-    tile(667, 287, 739, 359, jump)
+    if controls:  # a full screen hides the thumbstick and the jump button
+        tile(84, 286, 158, 360, stick)
+        tile(667, 287, 739, 359, jump)
     tile(768, 142, 806, 232, island)
     for x0, y0 in ((0, 0), (W - rr, 0), (0, H - rr), (W - rr, H - rr)):
         tile(x0, y0, x0 + rr, y0 + rr, corners)
@@ -600,29 +700,30 @@ def halve(px):
     return pm
 
 
-def screen(sc, reach):
+def screen(sc, level):
+    """The HUD as the game lays it out today: the dock's two buttons that exist. The dock of four is on the parts' sheet."""
     st = kit.Stage.__new__(kit.Stage)  # its ground is the street, not a fill
     st.w, st.h, st.items = W, H, []
     st.px = backdrop(sc["kind"])
     l, tp, r, b = SAFE
     phone(st)
     target(st, (l + r) / 2 - 108, tp + TOP + 18, 0.56)
-    lead(st, l + PAD, tp + TOP, sc, reach)
+    lead(st, l + PAD, tp + TOP, sc)
     card_foot = tp + TOP + 89
-    readout(st, l + PAD + 2, card_foot + 10, 58.0, sc["share"], sc["signature"], reach)
-    spectate(st, l + PAD + 2 + 58 + 10, card_foot + 10 + 7, 44.0, sc["eye"], reach)
+    readout(st, l + PAD + 2, card_foot + 10, 58.0, sc["share"], sc["signature"])
+    spectate(st, l + PAD + 2 + 58 + 10, card_foot + 10 + 7, 44.0, sc["eye"])
     px = r - PAD
-    pill(st, px - 120, tp + TOP, 120, CREDITS, reach, "CoinMint", "35,170")
+    pill(st, px - 120, tp + TOP, 120, CREDITS, level, "CoinMint", "35,170")
     py = tp + TOP + PILL + GAP
     if sc["covering"]:
-        pill(st, px - 200, py, 200, POWER, reach, "Bolt", "30 kW", "34 kW used", POWER, 1.0, drain=4 / 34,
+        pill(st, px - 200, py, 200, POWER, level, "Bolt", "30 kW", "34 kW used", POWER, 1.0, drain=4 / 34,
              mark=("Battery", 96))
     else:
-        pill(st, px - 200, py, 200, POWER, reach, "Bolt", "30 kW", "24 kW used", None, 24 / 30)
+        pill(st, px - 200, py, 200, POWER, level, "Bolt", "30 kW", "24 kW used", None, 24 / 30)
     mid = (l + r) / 2
-    hint(st, mid - 144, b - PAD - 52 - GAP - PILL, 288, "65 shards: into the Breaker", reach)
-    dock(st, mid - 99, b - PAD - 52, "Voidkin", "Shard", VOIDKIN, reach)
-    dock(st, mid + 3, b - PAD - 52, "Base", "Plant", POWER, reach)
+    hint(st, mid - 144, b - PAD - 52 - GAP - PILL, 288, "65 shards: into the Breaker", level)
+    dock(st, mid - 99, b - PAD - 52, "Voidkin", "Shard", VOIDKIN, level)
+    dock(st, mid + 3, b - PAD - 52, "Base", "Plant", POWER, level)
     return bytes8(halve(st.px)), st.items  # kept in 8 bits till the sheets: a quarter of the memory
 
 
@@ -649,44 +750,44 @@ def direction_sheet(out, key, name, note, shots):
     m, cap = 20.0, 28.0
     sheet = ui.Sheet(W + 2 * m, 62 + len(SCENES) * (H + cap) + 8, GROUND)
     t = sheet.tile(0, 0, sheet.w, 60)
-    t.text(m, 14, 17, f"Grow your Anime: the HUD's colour, direction {key}, {name}", HEAD)
+    t.text(m, 14, 17, f"Grow your Anime: the HUD's colour, {key}: {name}", HEAD)
     t.text(m, 40, 10, note, NOTE)
     for i, ((px, items), sc) in enumerate(zip(shots, SCENES)):
         y = 62 + i * (H + cap)
         add(sheet, px, items, m, y)
         sheet.tile(m, y + H + 8, W, 16).text(0, 0, 10, sc["caption"], NOTE)
-    kit.finish(sheet, out / f"hud_colour_{key}.png")
+    kit.finish(sheet, out / f"vivid_{key}.png")
 
 
-STRIP_H = 96.0  # the readout at true size, under each direction's screens on the glance strip
+STRIP_H = 96.0  # the readout at true size, under the screens on the glance strip
 PALE_GROUND = "#E9DFC4"  # about the noon street's sand
 
 
-def readout_strip(reach):
+def readout_strip():
     """The readout at 30 and 70 in 100 and ready, over a dark ground and a pale one, drawn at the kit's 4 pixels a point
-    and brought down to 1: how full it is must read at a phone's size."""
+    and brought down to 1: how full it is must read at a phone's size. The same at every level."""
     st = kit.Stage(W, STRIP_H, "#241B33")
     st.px[:, round(W / 2 * K4):, :3] = c(PALE_GROUND)
-    st.text(8, 4, 10, "The readout at true size: 30 and 70 in 100, then ready.", HEAD)
+    st.text(8, 4, 10, "The readout at true size, the same in all three: 30 and 70 in 100, then ready.", HEAD)
     for half, x0 in enumerate((14.0, W / 2 + 14)):
         for i, share in enumerate((0.3, 0.7, 1.0)):
-            readout(st, x0 + i * 72, 26, 58.0, share, "Haymaker", reach)
+            readout(st, x0 + i * 72, 26, 58.0, share, "Haymaker")
     return bytes8(rs.shrink(st.px, 1 / K4)), st.items
 
 
-def glance_sheet(out, shots, strips):
-    """The three directions side by side at 1 pixel a point: about a phone's size on a monitor."""
+def glance_sheet(out, shots, strip):
+    """The three side by side at 1 pixel a point: about a phone's size on a monitor."""
     ui.K = 1
     m, head = 16.0, 30.0
     rows = len(SCENES)
     sheet = ui.Sheet(3 * W + 4 * m, head + rows * (H + m) + STRIP_H + m, GROUND)
     for j, (key, name, _, _) in enumerate(DIRECTIONS):
         x = m + j * (W + m)
-        sheet.tile(x, 0, W, head).text(0, 10, 14, f"{key}, {name}", HEAD)
+        sheet.tile(x, 0, W, head).text(0, 10, 14, f"{key}: {name}", HEAD)
         for i, (px, items) in enumerate(shots[key]):
             add(sheet, halve(floats(px)), items, x, head + i * (H + m))
-        add(sheet, *strips[key], x, head + rows * (H + m))
-    kit.finish(sheet, out / "hud_colour_glance.png")
+    add(sheet, *strip, m, head + rows * (H + m))
+    kit.finish(sheet, out / "vivid_glance.png")
 
 
 DEUTERANOPIA = np.array([[0.367322, 0.860646, -0.227968], [0.280085, 0.672501, 0.047413],
@@ -695,53 +796,472 @@ DEUTERANOPIA = np.array([[0.367322, 0.860646, -0.227968], [0.280085, 0.672501, 0
 
 def deuteranopia_sheet(out):
     """The glance again as deuteranopia sees it, for AR12's check: the accents must still part, and they part by icon."""
-    px = rs.load(out / "hud_colour_glance.png")
+    px = rs.load(out / "vivid_glance.png")
     rgb = px[..., :3]
     lin = np.where(rgb <= 0.04045, rgb / 12.92, ((rgb + 0.055) / 1.055) ** 2.4)
     lin = np.clip(lin @ DEUTERANOPIA.T, 0, 1)
     px[..., :3] = np.where(lin <= 0.0031308, lin * 12.92, 1.055 * lin ** (1 / 2.4) - 0.055)
-    rs.save(px, out / "hud_colour_glance_deuteranopia.png")
+    rs.save(px, out / "vivid_glance_deuteranopia.png")
 
 
 PARTS_K = 3  # the parts sheet's pixels a point: each row is drawn at the kit's 4, then brought down
+PARTS_W, PARTS_ROW = 860.0, 104.0
+PARTS_GROUND = "#1C1A26"
 
 
 def parts_rows():
-    """The new parts up close, one row a direction, drawn at the kit's 4 pixels a point and kept at 3."""
-    rowh, rows = 150.0, []
-    for key, name, reach, _ in DIRECTIONS:
-        st = kit.Stage(860, rowh, "#1C1A26")
-        st.text(12, 6, 11, f"{key}, {name}", HEAD)
-        for i, share in enumerate((0.3, 0.7, 1.0)):
-            readout(st, 14 + i * 70, 26, 58.0, share, "Haymaker", reach)
-        spectate(st, 232, 33, 44.0, False, reach)
-        spectate(st, 288, 33, 44.0, True, reach)
-        dock(st, 350, 29, "Voidkin", "Shard", VOIDKIN, reach)
-        dock(st, 452, 29, "Base", "Plant", POWER, reach)
-        readout(st, 568, 26, 58.0, 0.55, "HeldNote", reach)
-        readout(st, 638, 26, 58.0, 1.0, "HeldNote", reach)
-        pill(st, 14, 102, 200, POWER, reach, "Bolt", "30 kW", "24 kW used", None, 24 / 30)
-        pill(st, 222, 102, 200, POWER, reach, "Bolt", "30 kW", "34 kW used", POWER, 1.0, drain=4 / 34, mark=("Battery", 96))
-        pill(st, 430, 102, 120, CREDITS, reach, "CoinMint", "35,170")
-        hint(st, 558, 102, 288, "65 shards: into the Breaker", reach)
+    """The parts up close, drawn at the kit's 4 pixels a point and kept at 3: the readout and the eye once, since no
+    level changes them, then a row a level with the dock of four as it will be, the pills and the hint."""
+    rows = []
+    st = kit.Stage(PARTS_W, PARTS_ROW, PARTS_GROUND)
+    st.px[:, round(PARTS_W / 2 * K4):, :3] = c(PALE_GROUND)
+    st.text(12, 6, 11, "The readout and the eye, ivory in all three: 30, 70, ready; off, on.", HEAD)
+    st.text(PARTS_W / 2 + 12, 6, 11, "On a pale ground: Held Note at 55 and ready; Haymaker at 30 and 70; the eye on.", INK)
+    for i, share in enumerate((0.3, 0.7, 1.0)):
+        readout(st, 14 + i * 70, 30, 58.0, share, "Haymaker")
+    spectate(st, 240, 37, 44.0, False)
+    spectate(st, 296, 37, 44.0, True)
+    readout(st, PARTS_W / 2 + 20, 30, 58.0, 0.55, "HeldNote")
+    readout(st, PARTS_W / 2 + 90, 30, 58.0, 1.0, "HeldNote")
+    readout(st, PARTS_W / 2 + 180, 30, 58.0, 0.3, "Haymaker")
+    readout(st, PARTS_W / 2 + 250, 30, 58.0, 0.7, "Haymaker")
+    spectate(st, PARTS_W / 2 + 330, 37, 44.0, True)
+    rows.append((bytes8(rs.shrink(st.px, PARTS_K / K4)), st.items))
+    for key, name, level, _ in DIRECTIONS:
+        st = kit.Stage(PARTS_W, PARTS_ROW, PARTS_GROUND)
+        st.text(12, 6, 11, f"{key}: {name}", HEAD)
+        for i, (label, icon, accent) in enumerate((("Voidkin", "Shard", VOIDKIN), ("Regalia", "Crest", REGALIA),
+                                                   ("Base", "Plant", POWER), ("Map", "Route", MAP))):
+            dock(st, 14 + i * 102, 30, label, icon, accent, level)
+        pill(st, 432, 26, 200, POWER, level, "Bolt", "30 kW", "24 kW used", None, 24 / 30)
+        pill(st, 640, 26, 200, POWER, level, "Bolt", "30 kW", "34 kW used", POWER, 1.0, drain=4 / 34, mark=("Battery", 96))
+        pill(st, 432, 62, 120, CREDITS, level, "CoinMint", "35,170")
+        hint(st, 560, 62, 288, "65 shards: into the Breaker", level)
         rows.append((bytes8(rs.shrink(st.px, PARTS_K / K4)), st.items))
-    return rows, rowh
+    return rows
 
 
-def parts_sheet(out, rows, rowh):
+def parts_sheet(out, rows):
     ui.K = PARTS_K
-    sheet = ui.Sheet(860, 24 + len(rows) * rowh, "#1C1A26")
-    sheet.tile(0, 0, 860, 24).text(12, 8, 12, "The new parts up close. The readout filling, at 30 and 70 in 100, and "
-                                   "ready; the eye off and on; the dock; the Power pill at rest and covering; Credits; the hint.", NOTE)
+    sheet = ui.Sheet(PARTS_W, 24 + len(rows) * PARTS_ROW, PARTS_GROUND)
+    sheet.tile(0, 0, PARTS_W, 24).text(12, 8, 12, "The parts up close. The dock as it will be, four buttons, each in its "
+                                       "screen's colour; the Power pill at rest and covering; Credits; the hint.", NOTE)
     for j, (px, items) in enumerate(rows):
-        add(sheet, px, items, 0, 24 + j * rowh)
-    kit.finish(sheet, out / "hud_colour_parts.png")
+        add(sheet, px, items, 0, 24 + j * PARTS_ROW)
+    kit.finish(sheet, out / "vivid_parts.png")
+
+
+# --- the screens' side: a room's colour ------------------------------------------------------------------------------
+
+PEARL = kit.PALETTES["Pearl Light"]
+
+
+def toward(accent, t):
+    """Graphite leaning to a system's colour: the body stays near neutral, so a rarity's own colour still reads true on
+    it; the rim, the glint and the lights are the system's."""
+    top, foot = NIGHT[accent]
+    return dict(GRAPHITE, panel=(mix(GRAPHITE["panel"][0], top, t), mix(GRAPHITE["panel"][1], foot, t)),
+                button=(mix(GRAPHITE["button"][0], top, t), mix(GRAPHITE["button"][1], foot, t)),
+                edge=mix(GRAPHITE["edge"], accent, 0.5), facet=mix(GRAPHITE["facet"], accent, 0.6),
+                glint=mix(GRAPHITE["glint"], accent, 0.7), soft=mix(GRAPHITE["soft"], accent, 0.25), accent=accent)
+
+
+# A room is a palette row, as kit.PALETTES holds them. The four above the line on the sheet are the kit's, as they are.
+ROOMS = {
+    "Graphite, Voidkin": toward(VOIDKIN, 0.6),
+    "Pearl, the Map": dict(PEARL, accent=MAP),
+    "Dynamo, vivid": dict(kit.PALETTES["Dynamo"], panel=("#3E2E0E", "#1A1306"), edge="#9A7A22", facet="#D9B85A",
+                          glint="#FFE9A0", soft="#C9B787", faint="#8F7F52", button=("#57421A", "#33260F"),
+                          pressed=("#241A08", "#3E2E0E"), ground="#3A311C"),
+    "Void Violet, vivid": dict(kit.PALETTES["Void Violet"], panel=("#30226A", "#150D33"), edge="#7A5FE0",
+                               facet="#B49CFF", glint="#E6DCFF", soft="#BDB0E6", faint="#8577B8",
+                               button=("#47348F", "#2B1F5C"), pressed=("#1F1547", "#30226A"), ground="#2F2752"),
+    "Graphite, Regalia": toward(REGALIA, 0.6),
+    "Tide": dict(kit.PALETTES["Dynamo"], panel=("#0E3B3C", "#061A1D"), edge="#1E8F86", facet="#5FD9CC", glint="#C8FFF6",
+                 soft="#9CC9C3", faint="#5F8F8A", channel="#04090A", well="#07100F", button=("#165052", "#0D3133"),
+                 pressed=("#082527", "#0E3B3C"), ground="#1F3537", accent=CREDITS),
+}
+ROOM_USE = {
+    "Graphite, Voidkin": "Voidkin, one Voidkin: lavender, the dock button's colour",
+    "Pearl, the Map": "the map, and what's read like a page: Pearl, its lights in the Map's rose",
+    "Dynamo, vivid": "the Breaker, the base's bays: a richer amber iron, Power's yellow",
+    "Void Violet, vivid": "the reveal, later the Void Shop: a deeper, more saturated violet",
+    "Graphite, Regalia": "Regalia: indigo, the dock button's colour",
+    "Tide": "new: where Credits are earned and spent (rewards, a shop's counter): Credits' teal",
+}
+TODAY = (("Graphite Dark", "Legendary"), ("Pearl Light", "Epic"), ("Dynamo", "Rare"), ("Void Violet", "Mythical"))
+VIVID = (("Graphite, Voidkin", "Legendary"), ("Pearl, the Map", "Epic"), ("Dynamo, vivid", "Rare"),
+         ("Void Violet, vivid", "Mythical"))
+MORE = (("Graphite, Regalia", "Epic"), ("Tide", "Legendary"))
+
+
+def main_button(st, x, y, w, h, label, p, pressed=False):
+    """A screen's one main action: the button filled with the room's colour, its label in ink. The kit's own slices."""
+    accent = p["accent"]
+    y += 1.0 if pressed else 0.0
+    top, foot = mix(accent, PALE[accent], 0.3), mix(accent, DEEP[accent], 0.4)
+    if not pressed:
+        st.lay("ButtonShadow", x, y, w, h)
+        st.lay("ButtonRingGlow", x, y, w, h, tint=accent, alpha=0.5)
+    st.lay("ButtonFill", x, y, w, h, tint=(foot, top) if pressed else (top, foot))
+    st.lay("ButtonEdgeBold", x, y, w, h, tint=INK if p.get("border", 1.0) > 1.0 else DEEP[accent])
+    if pressed:
+        st.lay("ButtonPressedShade", x, y, w, h)
+    st.lay("ButtonBase", x, y, w, h, tint=PALE[accent])
+    st.text(x + w / 2, y + (h - 14 * ui.CAP) / 2, 14, label, INK, "CENTER")
+
+
+def room(p, face, rarity, filled):
+    """kit.demo's corner of a screen; with `filled`, its main action is the filled button, at rest and pressed."""
+    st = kit.Stage(*kit.BLOCK, "#23262D")
+    st.px[: round(40 * K4), :, :3] = c("#3B3350")  # a strip of dusk behind the pills
+    kit.pill(st, 8, 6, 100, p, "Coin", "12,480")
+    kit.pill(st, 114, 6, 162, p, "Bolt", "8,240 / 9,000", "+12/s", 0.9)
+    kit.panel(st, 8, 46, 268, 212, p)
+    st.text(20, 58, 14, "Bay 2", p["text"])
+    st.text(264, 58, 14, "Lv 12", p["soft"], "RIGHT")
+    kit.frame(st, 20, 92, rarity, p, face)
+    st.icon("GemStrength", 118, 89, BOX * 6.0 / 12.0)
+    st.icon("ClassWarrior", 133, 89, BOX * 5.5 / 13.0)
+    st.icon("ElementFire", 148, 89, BOX * 6.0 / 12.0)
+    st.text(160, 84, 14, "Rook", p["text"])
+    for i, (fill, word) in enumerate(((1.0, "full"), (0.22, "low"), (0.0, "empty"))):
+        kit.bar(st, 112, 108 + i * 20, 152, 10.0, fill, p)
+        st.text(264, 120 + i * 20, 8, word, p["faint"], "RIGHT")
+    kit.bar(st, 112, 170, 152, 4.0, 0.6, p, "#C9B8FF")
+    if filled:
+        main_button(st, 20, 204, 118, 44, "Break", p)
+    else:
+        kit.button(st, 20, 204, 118, 44, "Break", p)
+    kit.button(st, 146, 204, 118, 44, "Voidkin", p, "selected")
+    kit.panel(st, 8, 268, 268, 136, p)
+    for i, (state, label) in enumerate((("pressed", "Break"), ("disabled", "Break"), ("waiting", ""))):
+        if filled and state == "pressed":
+            main_button(st, 18, 278, 78, 44, label, p, pressed=True)
+        else:
+            kit.button(st, 18 + i * 84, 278, 78, 44, label, p, state, "Needs 200" if state == "disabled" else None)
+    kit.button(st, 18, 340, 120, 44, "Done", p, "succeeded")
+    kit.button(st, 146, 340, 120, 44, "Break", p, "failed", "No free chamber")
+    return bytes8(rs.shrink(st.px, kit.SK / K4)), st.items
+
+
+def rooms_sheet(out, name, title, note, rows):
+    """Rows of rooms at 2 pixels a point; `rows` is (a row's heading, its (room's name, its words, its picture))."""
+    ui.K = kit.SK
+    bw, bh = kit.BLOCK
+    gap, head = 16.0, 34.0
+    cols = max(len(blocks) for _, blocks in rows)
+    pitch = head + bh + 42
+    width = gap + cols * (bw + gap)
+    lines = textwrap.wrap(note, int(width / 5.2))
+    first = 48 + 14 * len(lines)
+    sheet = ui.Sheet(width, first + len(rows) * pitch, "#33363E")
+    t = sheet.tile(0, 0, sheet.w, sheet.h)
+    t.text(gap, 12, 17, title, HEAD)
+    for k, line in enumerate(lines):
+        t.text(gap, 38 + 14 * k, 10, line, NOTE)
+    for j, (heading, blocks) in enumerate(rows):
+        y = first + j * pitch
+        t.text(gap, y + 2, 12, heading, HEAD)
+        for i, (label, words, (px, items)) in enumerate(blocks):
+            x = gap + i * (bw + gap)
+            t.text(x, y + 20, 11, label, HEAD)
+            add(sheet, px, items, x, y + head)
+            for k, line in enumerate(textwrap.wrap(words, 64)[:2]):
+                t.text(x, y + head + bh + 6 + k * 11, 8, line, NOTE)
+    kit.finish(sheet, out / name)
+
+
+# --- one Voidkin, full screen (the director, 2026-11-15) -----------------------------------------------------------------
+# The whole screen is the Voidkin's room. The gear's slots stand in two columns round the figure, Combat Power between
+# them at its feet; each Voidkin's menu is a column on the left; the Voidkin to choose from scroll along the foot.
+# The gear is the account's, and each Voidkin's screen shows its own set: the preset it's linked to, the twelve shared
+# slots and its class's weapon pair (docs/design.md, "Presets"; research, 2026-11-15).
+
+def _poly(t, cx, cy, r, pts):
+    return t.poly([(cx + r * u, cy + r * v) for u, v in pts])
+
+
+def _ring(t, cx, cy, radius, width):
+    return np.abs(np.hypot(t.x - cx, t.y - cy) - radius) - width / 2
+
+
+GEAR = {  # a slot's own mark, plain shapes: stand-ins until the gear has its icons
+    "Helmet": lambda t, x, y, r: np.minimum(np.maximum(np.hypot(t.x - x, t.y - y - 0.1 * r) - 0.82 * r, t.y - y - 0.2 * r),
+                                            _poly(t, x, y, r, ((-0.98, 0.2), (0.98, 0.2), (0.98, 0.5), (-0.98, 0.5)))),
+    "Shoulders": lambda t, x, y, r: _poly(t, x, y, r, ((-1, 0.5), (-0.6, -0.5), (0, -0.15), (0.6, -0.5), (1, 0.5),
+                                                       (0.55, 0.2), (0, 0.5), (-0.55, 0.2))),
+    "Chest Armor": lambda t, x, y, r: _poly(t, x, y, r, ((-0.85, -0.8), (-0.35, -0.8), (0, -0.45), (0.35, -0.8), (0.85, -0.8),
+                                                         (0.7, 0.9), (-0.7, 0.9))),
+    "Gloves": lambda t, x, y, r: _poly(t, x, y, r, ((-0.5, -0.9), (0.45, -0.9), (0.45, -0.1), (0.85, -0.3), (0.95, 0.1),
+                                                    (0.45, 0.45), (0.4, 0.95), (-0.5, 0.95))),
+    "Bracers": lambda t, x, y, r: np.maximum(_poly(t, x, y, r, ((-0.62, -0.9), (0.62, -0.9), (0.42, 0.9), (-0.42, 0.9))),
+                                             0.09 * r - np.minimum(np.abs(t.y - y + 0.4 * r), np.abs(t.y - y - 0.35 * r))),
+    "Boots": lambda t, x, y, r: _poly(t, x, y, r, ((-0.5, -0.95), (0.15, -0.95), (0.15, 0.2), (0.9, 0.45), (0.9, 0.9),
+                                                   (-0.5, 0.9))),
+    "Cloak": lambda t, x, y, r: _poly(t, x, y, r, ((-0.3, -0.95), (0.3, -0.95), (0.9, 0.7), (0.45, 0.95), (0, 0.7),
+                                                   (-0.45, 0.95), (-0.9, 0.7))),
+    "Main Hand": lambda t, x, y, r: np.minimum(seg(t, (x - 0.75 * r, y + 0.75 * r), (x + 0.78 * r, y - 0.78 * r), 0.3 * r),
+                                               seg(t, (x - 0.62 * r, y - 0.02 * r), (x + 0.02 * r, y + 0.62 * r), 0.22 * r)),
+    "Off Hand": lambda t, x, y, r: _poly(t, x, y, r, ((-0.8, -0.85), (0.8, -0.85), (0.8, 0.1), (0, 0.95), (-0.8, 0.1))),
+    "Amulet": lambda t, x, y, r: np.minimum.reduce([seg(t, (x - 0.7 * r, y - 0.9 * r), (x, y + 0.05 * r), 0.15 * r),
+                                                    seg(t, (x + 0.7 * r, y - 0.9 * r), (x, y + 0.05 * r), 0.15 * r),
+                                                    g_diamond(t, x, y + 0.42 * r, 0.4 * r, 0.52 * r)]),
+    "Ring": lambda t, x, y, r: np.minimum(_ring(t, x, y + 0.22 * r, 0.56 * r, 0.26 * r),
+                                          g_diamond(t, x, y - 0.56 * r, 0.32 * r, 0.36 * r)),
+    "Earring": lambda t, x, y, r: np.minimum(_ring(t, x, y - 0.62 * r, 0.24 * r, 0.16 * r),
+                                             g_diamond(t, x, y + 0.3 * r, 0.36 * r, 0.62 * r)),
+}
+ITEM = {"Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777"}  # an item's rarity, its rim
+# The fourteen (docs/design.md, "Regalia"), a column each side: the slot, what's in it for the sheet, its forge rank.
+SLOTS = ((("Helmet", "Rare", 3), ("Shoulders", "Uncommon", 1), ("Chest Armor", "Epic", 4), ("Gloves", None, 0),
+          ("Bracers", "Uncommon", 0), ("Boots", "Rare", 2), ("Cloak", None, 0)),
+         (("Main Hand", "Legendary", 5), ("Off Hand", "Rare", 2), ("Amulet", "Epic", 1), ("Ring I", "Uncommon", 0),
+          ("Ring II", None, 0), ("Earring I", "Rare", 1), ("Earring II", None, 0)))
+
+
+def slot(st, x, y, s, p, name, rarity, rank):
+    """One gear slot: the kit's button cut, small. Filled, its rim is its item's rarity; empty, its mark is faint."""
+    st.lay("ButtonShadow", x, y, s, s)
+    st.lay("ButtonFill", x, y, s, s, tint=(p["well"], p["channel"]))
+    st.lay("ButtonEdge" + ("Bold" if rarity else ""), x, y, s, s, tint=ITEM[rarity] if rarity else p["edge"],
+           alpha=1.0 if rarity else 0.7)
+    t = kit.blank(s, s)
+    d = GEAR[name.split(" I")[0]](t, s / 2, s / 2, s * 0.27)
+    if rarity:
+        t.paint(d, t.ramp(IVORY, mix(IVORY, ITEM[rarity], 0.55), t.y / s))
+    else:
+        t.paint(d, c(p["faint"]), 0.45)
+    place(st, t, x, y)
+    if rank:
+        st.text(x + s - 4.5, y + s - 11.5, 8, f"+{rank}", IVORY, "RIGHT")
+
+
+def stand_in(st, cx, foot, height):
+    """A plain figure where the Voidkin's live model stands, when its render isn't to hand."""
+    u = height / 10.0
+    t = kit.blank(8 * u, height)
+    parts = [cut_box(4 * u - w, y0 * u, 4 * u + w, y1 * u, 0.3 * u, 0, 0.3 * u, 0) for w, y0, y1 in
+             ((1.1 * u, 0.0, 2.1), (1.7 * u, 2.3, 6.0), (1.5 * u, 6.2, 10.0))]
+    parts += [cut_box(4 * u + s * 2.0 * u - 0.55 * u, 2.4 * u, 4 * u + s * 2.0 * u + 0.55 * u, 6.2 * u) for s in (-1.3, 1.3)]
+    d = np.minimum.reduce([t.poly(pts) for pts in parts])
+    t.paint(d, t.ramp("#B9AEDB", "#6F6592", t.y / height))
+    place(st, t, cx - 4 * u, foot - height)
+
+
+def mark_button(st, x, y, s, p, draw):
+    """Favourite, lock, rename: small, beside the name."""
+    kit.button(st, x, y, s, s, "", p)
+    t = kit.blank(s, s)
+    t.paint(draw(t, s / 2, s / 2 - 1, s * 0.24), c(p["text"]))
+    place(st, t, x, y)
+
+
+MARKS = (
+    lambda t, x, y, r: _poly(t, x, y, r, [(math.sin(a) * k, -math.cos(a) * k) for a, k in
+                                         ((math.radians(36 * i), 1.15 if i % 2 == 0 else 0.5) for i in range(10))]),
+    lambda t, x, y, r: np.minimum(_poly(t, x, y, r, ((-0.85, -0.1), (0.85, -0.1), (0.85, 1.0), (-0.85, 1.0))),
+                                  np.maximum(_ring(t, x, y - 0.25 * r, 0.52 * r, 0.26 * r), t.y - y + 0.1 * r)),
+    lambda t, x, y, r: np.minimum(seg(t, (x - 0.45 * r, y + 0.45 * r), (x + 0.75 * r, y - 0.75 * r), 0.46 * r),
+                                  _poly(t, x, y, r, ((-1.0, 1.0), (-0.86, 0.36), (-0.36, 0.86)))),
+)
+TABS = ("Overview", "Stats", "Kit", "Stars")
+STRIP = ("Legendary", "Mythical", "Epic", "Rare", "Epic", "Uncommon", "Rare", "Common", "Uncommon", "Common", "Rare",
+         "Common", "Uncommon", "Common", "Common")  # the strip's frames, the shown Voidkin first
+
+
+def voidkin_screen(p, figure=None, faces=()):
+    """One Voidkin, full screen, at a phone's size in landscape. `figure`: the Voidkin's render; `faces`: portraits for
+    the strip. The Voidkin's rarity lights its stage and its floor takes its element, as TR17's stage does."""
+    st = kit.Stage(W, H, "#000000")
+    accent = p["accent"]
+    top, foot = NIGHT[accent]
+    st.px[..., :3] = kit.shade((mix(top, accent, 0.1), mix(NIGHT[REGALIA][1], "#000000", 0.15)), st.px.shape[0])
+    l, r = SAFE[0] + PAD, SAFE[2] - PAD
+    rarity, element = "#FFD777", ui.ELEMENTS["Fire"]
+    cx, floor = 341.0, 262.0
+    # the stage: the rarity's light behind the figure, the element's on the floor
+    t = kit.blank(420, 300)
+    t.glow(np.hypot((t.x - 210) * 0.8, t.y - 140) - 60, 50.0, c(rarity), 0.5)
+    t.glow(np.hypot((t.x - 210) * 0.9, t.y - 150) - 30, 26.0, c(mix(rarity, "#FFFFFF", 0.4)), 0.3)
+    t.glow(np.hypot((t.x - 210) / 4.6, t.y - 268) - 9, 9.0, c(element), 0.6)
+    t.paint(np.hypot((t.x - 210) / 5.2, t.y - 268) - 7.5, c(mix(element, "#FFFFFF", 0.35)), 0.5)
+    place(st, t, cx - 210, floor - 268 + 2)
+    if figure is None:
+        stand_in(st, cx, floor + 2, 196.0)
+    else:
+        fig = rs.shrink(figure, 204.0 * K4 / figure.shape[0])
+        rs.paste(st.px, fig, round(cx * K4 - fig.shape[1] / 2), round((floor + 4) * K4) - fig.shape[0])
+    # the gear, a column each side of the figure
+    s, pitch, y0 = 31.0, 34.6, 60.0
+    for column, x in zip(SLOTS, (166.0, 485.0)):
+        for i, (name, item, rank) in enumerate(column):
+            slot(st, x, y0 + i * pitch, s, p, name, item, rank)
+    # Combat Power, at its feet between the columns: a plate in the rarity's light that fades at both ends
+    t = kit.blank(280, 34)
+    band = np.clip(1 - np.abs(t.x - 140) / 138, 0, 1) ** 1.4
+    ui.over(t.px, c("#000000"), band * 0.55)
+    ui.over(t.px, c(rarity), band * np.clip(1 - np.abs(t.y - 33) / 1.6, 0, 1) * 0.9)
+    ui.over(t.px, c(rarity), band * np.clip(1 - np.abs(t.y - 1) / 1.2, 0, 1) * 0.45)
+    em = g_diamond(t, 78, 17, 9.5, 11.5)
+    t.paint(em, c(STROKE))
+    t.line(em, 1.6, c(rarity))
+    t.paint(g_diamond(t, 78, 17, 4.2, 5.2), c(rarity))
+    place(st, t, cx - 140, 270)
+    st.text(cx - 46, 273, 8, "COMBAT POWER", mix(rarity, IVORY, 0.4))
+    st.text(cx - 47, 282, 20, "27,433", IVORY)
+    # the name, its marks, the close
+    st.text(232, 17, 18, "Rook", p["text"])
+    st.text(232, 39, 10, "Legendary", rarity)
+    for i, mark in enumerate(("GemStrength", "ClassWarrior", "ElementFire")):
+        st.icon(mark, 304 + i * 17, 43.5, 14.0)
+    st.text(356, 39, 10, "Lv 12", p["soft"])
+    # the preset this Voidkin is linked to, in Regalia's colour: the gear is Regalia's
+    gear = palette(REGALIA, DEEPER)
+    st.lay("PanelShadow", 440, 16, 104, 28)
+    st.lay("PanelFill", 440, 16, 104, 28, tint=gear["panel"], alpha=gear["alpha"])
+    st.lay("PanelEdgeBold", 440, 16, 104, 28, tint=gear["edge"])
+    st.lay("PanelGlint", 440, 16, 104, 28, tint=gear["glint"])
+    st.icon("Crest", 456, 30, 19.0)
+    st.text(470, 16 + (28 - 12 * ui.CAP) / 2, 12, "Preset 1", gear["text"])
+    for i, draw in enumerate(MARKS):
+        mark_button(st, 566 + i * 38, 14, 32.0, p, draw)
+    kit.button(st, r - 62, 14, 62, 32, "Close", p)
+    # the menu, a column on the left: this Voidkin's own
+    for i, tab in enumerate(TABS):
+        kit.button(st, l, 62 + i * 46, 92, 40, tab, p, "selected" if tab == "Stats" else "rest")
+    # the chosen menu's panel
+    px, pw = 526.0, r - 526.0
+    kit.panel(st, px, 56, pw, 248, p)
+    st.text(px + 12, 66, 13, "Stats", p["text"])
+    # each stat in a colour of its own: health's red and the heal's green as the fight has them, a plain hit's ivory
+    # for attack, steel for defence; the thread shows the Voidkin's own share, the rest is its gear's
+    for i, (name, value, own, share, colour) in enumerate((
+            ("Health", "1,847", "Own 1,543, gear 304", 1543 / 1847, "#EE4E3A"), ("Attack", "295", "Own 241, gear 54", 241 / 295, IVORY),
+            ("Defence", "212", "Own 180, gear 32", 180 / 212, "#9FB4D9"), ("Regen", "14", "Own 14", 1.0, "#6FE695"))):
+        y = 90 + i * 38
+        t = kit.blank(14, 14)
+        d = g_diamond(t, 7, 7, 4.6, 5.8)
+        t.paint(d - 1.2, c(STROKE))
+        t.paint(d, c(colour))
+        place(st, t, px + 9, y - 1)
+        st.text(px + 26, y, 13, name, p["text"])
+        st.text(px + pw - 12, y, 13, value, mix(colour, IVORY, 0.35), "RIGHT")
+        st.text(px + 26, y + 17, 9, own, p["soft"])
+        kit.bar(st, px + 12, y + 30, pw - 24, 3.0, share, p, colour)
+    main_button(st, px + 10, 254, (pw - 26) / 2, 40, "Lead", p)
+    kit.button(st, px + 16 + (pw - 26) / 2, 254, (pw - 26) / 2, 40, "Send to work", p)
+    # the Voidkin to choose from, scrolling along the foot
+    kit.panel(st, l - 2, 308, r - l + 4, 58, p)
+    for i, frame_rarity in enumerate(STRIP):
+        x = l + 2 + i * 46.0
+        if x + 40 > r:
+            break
+        face = faces[i] if i < len(faces) else None
+        kit.IMAGES.pop("_FaceFrame" + frame_rarity + "Small", None)  # cut_face keeps one face a frame: let it go
+        kit.frame(st, x, 312 - (2 if i == 0 else 0), frame_rarity, p, face, small=True)
+        if i == 0:  # the one shown: lifted, a light under it
+            st.lay("ButtonBase", x, 314, 40, 48, tint=accent)
+    kit.bar(st, l + 2, 363, r - l - 4, 3.0, 0.0, p)
+    thumb = kit.blank(150, 3)
+    thumb.paint(thumb.poly(cut_box(0, 0, 150, 3)), c(accent), 0.9)
+    place(st, thumb, l + 2, 363)
+    phone(st, controls=False)
+    return bytes8(halve(st.px)), st.items
+
+
+def figure_render():
+    """Rook's model, whole, three-quarter on, as ui.portrait takes his face."""
+    scene = bl.reset_scene()
+    scene.world = bpy.data.worlds.new("Figure")
+    with bpy.data.libraries.load(str(ui.ROOK / "rook_model.blend")) as (src, dst):
+        dst.objects = list(src.objects)
+    for o in dst.objects:
+        if o.type == "MESH":
+            scene.collection.objects.link(o)
+    ui.rm.eevee(scene, 760, 900)
+    ui.rm.sun_for(scene, 158)
+    path = bl.out_dir() / "_figure.png"
+    shot = rs.trim(rs.shoot(scene, path, 158, 6, (0, 0, 2.7), 6.4))
+    path.unlink()
+    return shot
+
+
+def voidkin_sheet(out, shot):
+    ui.K = 2
+    m = 20.0
+    notes = (
+        "The director, 2026-11-15: the Voidkin's screen is the full screen; the gear's slots show round the figure; each "
+        "Voidkin's menu is a column on the left; the Voidkin to choose from scroll along the foot.",
+        "The room is Graphite leaning to Voidkin's lavender. The filled button is the screen's one main action; the "
+        "selected menu button wears the kit's ring. The stage's light is the Voidkin's rarity, its floor its element.",
+        "Stand-ins: the gear's marks (plain shapes), the numbers, the strip's empty frames, Blender's face for the text; "
+        "Rook is shown as a Legendary for the light. The slots are this Voidkin's own set: its preset's twelve and its class's pair.",
+        "More colours, each with a meaning: a slot's rim is its item's rarity; the preset is Regalia's indigo; health's "
+        "red, attack's ivory, defence's steel, the heal's green; the stage in the rarity's gold over the element's orange.",
+        "To judge on a phone: a slot is 31 points, under the 44 a thumb likes; the figure stands at about 0.54 of the "
+        "screen's height against TR17's aim of 0.70.",
+    )
+    notes = [line for note in notes for line in textwrap.wrap(note, 150)]
+    sheet = ui.Sheet(W + 2 * m, 44 + H + 14 + len(notes) * 15 + 12 + H / 2 + 30, GROUND)
+    t = sheet.tile(0, 0, sheet.w, sheet.h)
+    t.text(m, 14, 17, "Grow your Anime: one Voidkin, full screen, in its room's colour", HEAD)
+    add(sheet, *shot, m, 44)
+    y = 44 + H + 14
+    for i, line in enumerate(notes):
+        t.text(m, y + i * 15, 10, line, NOTE)
+    y += len(notes) * 15 + 12
+    t.text(m, y, 10, "At a phone's size, 1 pixel a point:", NOTE)
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    small = rs.shrink(sheet.px[44 * 2:round((44 + H) * 2), round(m * 2):round((m + W) * 2)].copy(), 0.5)
+    kit.put(sheet, small, m * 2, (y + 16) * 2)
+    rs.save(sheet.px, out / "vivid_voidkin.png")
+
+
+def ui_main(out):
+    """The screens' side. Today's four palettes, then the same screens in their rooms' colours, then the two new rooms."""
+    figure = figure_render()
+    stage("Rook's figure")
+    ui.K = K4
+    kit.panels()
+    kit.buttons()
+    kit.bars()
+    kit.frames()
+    kit.icons()
+    icons()
+    images = REPO / "build" / "handoff" / "UI" / "hud" / "images"
+    faces = [rs.load(images / f"Portrait{who}.png")[244:584, 198:538].copy() for who in ("Rook", "Lyric", "Pip")]
+    face = faces[0]
+    stage("the kit's slices")
+    shot = voidkin_screen(ROOMS["Graphite, Voidkin"], figure, faces)
+    del figure
+    stage("one Voidkin, full screen")
+    today = [(n, kit.SCREENS[n], room(kit.PALETTES[n], face, rarity, False)) for n, rarity in TODAY]
+    vivid = [(n, ROOM_USE[n], room(ROOMS[n], face, rarity, True)) for n, rarity in VIVID]
+    more = [(n, ROOM_USE[n], room(ROOMS[n], face, rarity, True)) for n, rarity in MORE]
+    kit.IMAGES.clear()
+    stage("the rooms, the slices let go")
+    voidkin_sheet(out, shot)
+    del shot
+    stage("the Voidkin's sheet")
+    rule = ("A room's colour is its system's: the button that opens a screen and the screen wear the same colour. "
+            "Each screen's one main action is a filled button in that colour. Frames, gems, marks, green and red: unchanged.")
+    rooms_sheet(out, "vivid_ui.png", "Grow your Anime: the screens' colour, today and vivid", rule,
+                (("Today: the kit's four palettes, as they are", today), ("Vivid: the same four, each in its room's colour", vivid)))
+    stage("the screens' sheet")
+    rooms_sheet(out, "vivid_ui_more.png", "Grow your Anime: the screens' colour, the two rooms more", rule,
+                (("Vivid: two rooms the kit doesn't have yet", more),))
+    stage("the two rooms more")
 
 
 def main():
     out = bl.out_dir()
+    mode = (sys.argv[sys.argv.index("--") + 2:] or ["hud"])[0]
     ui.K = K4
     stage("started")
+    if mode == "ui":
+        return ui_main(out)
     kit.panels()
     kit.buttons()
     kit.bars()
@@ -751,24 +1271,24 @@ def main():
     stage("the kit's slices and the card's images")
     # Every picture is composed first and kept in 8 bits; the text comes after, since its render brings up the GPU.
     shots = {}
-    for key, name, reach, note in DIRECTIONS:
+    for key, name, level, note in DIRECTIONS:
         shots[key] = []
         for sc in SCENES:
-            shots[key].append(screen(sc, reach))
+            shots[key].append(screen(sc, level))
             stage(f"{key}, {sc['kind']}")
-    rows, rowh = parts_rows()
-    strips = {key: readout_strip(reach) for key, _, reach, _ in DIRECTIONS}
+    rows = parts_rows()
+    strip = readout_strip()
     BACKDROPS.clear()
     kit.IMAGES.clear()
     IMG.clear()
-    stage("the parts' rows and the strips, the slices let go")
-    parts_sheet(out, rows, rowh)
+    stage("the parts' rows and the strip, the slices let go")
+    parts_sheet(out, rows)
     del rows
     stage("the parts' sheet")
-    for key, name, reach, note in DIRECTIONS:
+    for key, name, level, note in DIRECTIONS:
         direction_sheet(out, key, name, note, shots[key])
         stage(f"sheet {key}")
-    glance_sheet(out, shots, strips)
+    glance_sheet(out, shots, strip)
     stage("the glance")
     deuteranopia_sheet(out)
 

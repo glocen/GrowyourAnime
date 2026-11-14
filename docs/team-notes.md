@@ -15,13 +15,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Owed, all waiting for Studio's window in front** (the director is in a game on this PC): TR17's three takes, TR9's retake, and a clean whole self-test (TR17's status has the three passes so far). For research, from that pass: on a touch screen Roblox's camera can turn the heading as spectate goes to the lead (TR11's entry).
 - **Next:** TR12's and TR16's fixes; then the takes above, with TR10's, TR13's and TR11's; Kirra's install; TR18 once its numbers come.
 
-**Modulo (assets).** 2026-11-14, on Opus 5.5.
-- **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
-- **For Faber, TR8:** the paper's drift is delivered, as `paper` in `build/handoff/LanternRow/plan.json` (AR5, "The paper's emitter"; 8902d2c).
-- **Delivery 4, Scarf Step's look:** the grey rows are delivered in one file for both of the skewer's takes, `build/handoff/Kirra/fx/KirraScarfStep.rows.json`. Research has accepted the measured B, her path past the Shade's flank (AR10, section 5, with Faber's five points). **For Faber:** the blockout in the replay goes first, when you give me the turn. The Blender preview at 64 px waits for memory.
-- **AR11, Watt:** the sheet is drawn and passed the content check and research's verdict (competent, take A, one fix for the model; AR11, section 1).
-- **AR12, the HUD's colour:** delivery 1 is in `build/handoff/UI/hud/colour/` for research's verdict, then the director's pick. It has three directions (Signal, Conduit, Glow), the readout and the eye redrawn as one family, and their proposed place under the lead's card. Content check PASS. One open call: the Haymaker icon's read (AR12, delivery 1).
-- **Next:** Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
+**Modulo (assets).** 2026-11-15, on Fable 5.2.
+- **AR12, the HUD's and the screens' colour:** delivery 2, the vivid sheets, is in `build/handoff/UI/hud/colour/` (`vivid_*.png`) for research's verdict before any image is made: B as picked beside two vivid strengths, five system colours (indigo for Regalia and rose for the Map are new), the screens' rooms, and a drawn mock of the director's full-screen Voidkin layout (AR12, "Delivery 2"). Content check PASS. **For Faber:** `vivid_voidkin.png` is the look to hold beside TR17's rebuild; nothing in it is an image to install yet.
+- **AR10, Kirra:** delivered and accepted through the clips. **Scarf Step's look:** the grey rows are in `build/handoff/Kirra/fx/KirraScarfStep.rows.json`; its blockout in the replay goes first, when Faber gives the turn (AR10, section 5).
+- **AR11, Watt:** the sheet is past the content check and research's verdict (competent, take A, one fix for the model).
+- **Next:** AR12's images after the verdict; Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, in Edit, the phone emulation on for the takes to come (TR17's and TR9's, at phone size). Blender: nobody. Timing tests: nobody.
 

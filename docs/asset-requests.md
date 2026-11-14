@@ -5299,7 +5299,32 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 - **Show the ready plate over noon:** the sheet shows it only over dusk, and a white plate on a pale street is the case to prove.
 - The fixes hold whichever direction is picked.
 
-**Status:** delivery 1 past research's verdict (competent, B recommended, two fixes and a check), 2026-11-14, night. **The director's pick, 2026-11-15: B, Conduit.** Next: the fixes, then the HUD's images in B, for Faber's build.
+**Delivery 2, the vivid sheets** (Modulo, 2026-11-15, on Fable 5.2), for research's verdict before any image is made. On the director's words of 2026-11-15 (`docs/decisions.md`): B picked; then vivid colour across the HUD and the UI with more colours; then, to Modulo, "we can really use more palette of colors", and the Voidkin screen's layout (TR17, "The director's layout").
+- **Where:** `build/handoff/UI/hud/colour/`, the nine `vivid_*.png`. Script: `tools/blender/hud_colour_sheet.py` (`hud` and `ui`). Delivery 1's six sheets stay beside them as its record.
+- **The three fixes are in,** all three columns: Haymaker's icon as the slanted stamp; the fill's level a white lit edge with a glow, the icon dark-edged; the ready plate over noon (each column's third screen). The readout at 30, 70 and ready is at true size under the glance, over dark and pale.
+- **The HUD, three strengths on B's structure** (`vivid_B`, `vivid_V1`, `vivid_V2`, `vivid_glance`, `vivid_parts`):
+  - **B, as picked.**
+  - **V1, Deep:** each piece's body is a saturated dark of its own colour; its glint and words take the colour's pale.
+  - **V2, Block:** Deep, and each icon sits in ink on a block of its system's colour. The block is the piece's own body slice laid again and clipped, so it needs no new slice.
+  - The readout, the eye and the lead's card are the same in all three: ivory belongs to the fight, and the card's colours are its rarity's and type's.
+- **Five system colours, each with its icon:** Power `#FFE266` (bolt), Credits `#40DCC6` (coin), Voidkin `#DCCBFF` (shard), and two new ones for the dock of four: Regalia indigo `#6C7BFF` (a crest) and the Map rose `#FF5C93` (a folded map).
+  - **Measured** (CIEDE2000; `build/scratch/modulo/hud/colours.py`): indigo's nearest taken colour is Intelligence at 11.3; rose's is Mythical's light at 10.2, so rose never goes on a portrait's frame.
+  - **Between the five,** the lowest pair in plain sight is Voidkin and indigo at 27. Under deuteranopia the lowest are Credits and Voidkin at 12 and Credits and rose at 16, which is why each keeps its own icon (`vivid_glance_deuteranopia`).
+  - **Tried and left out:** lime (it falls onto Power under deuteranopia, 3.0), lilac, orchid, cyan, peach, copper and amber (each too near a taken colour).
+- **The screens** (`vivid_ui`, `vivid_ui_more`). The rule proposed: a room's colour is its system's, so the dock button and the screen it opens wear the same colour, and a screen's one main action is a filled button in that colour with ink words.
+  - Today's four palettes above the same four vivid: Graphite leaning to Voidkin's lavender; Pearl with the Map's rose; Dynamo as a richer amber iron; Void Violet deeper and more saturated.
+  - Two rooms the kit doesn't have: Graphite leaning to Regalia's indigo, and Tide, teal, for where Credits are earned and spent.
+  - Frames, gems, marks, green and red are unchanged. The rows are `ROOMS` in the script; none is in `kit.json` yet.
+- **One Voidkin, full screen** (`vivid_voidkin`), a drawn mock of the director's layout in the Voidkin room, for research to judge beside Faber's take:
+  - the menu as a column on the left; the linked preset's fourteen slots in two columns round the figure, a filled slot's rim in its item's rarity; Combat Power at the feet; the chosen menu's panel on the right with Lead filled; the strip along the foot;
+  - more colours with meanings: the preset chip in Regalia's indigo; health's red, attack's ivory, defence's steel, the heal's green; the stage in the rarity's gold over the element's orange;
+  - **to judge:** a slot is 31 points, under the 44 a thumb likes; the figure stands at about 0.54 of the screen's height against the aim of 0.70;
+  - **stand-ins:** the gear's marks, the numbers, the strip's empty frames, and Rook shown as a Legendary for the light.
+- **Self-review:** made and looked at, at sheet size and at phone size. The three strengths part at a glance; over noon the Deep bodies hold better than B's Graphite. Not yet seen in the engine.
+- **Content check: PASS,** all nine sheets, as review sheets (eight in one run, the deuteranopia sheet in its own). Its notes: the stage's floor stays a soft light for every element (a flat dark-red disc could read as a pool); Combat Power's finish keeps its own shape; before any upload the new icons need their sheet at full size and 64 px, and their rows in `docs/asset-log.md`. One for research's eye: under deuteranopia the red health bars land on an olive gold near Power's yellow, so a Shade's bar and the kW pill sit in one hue family there, parted by shape and place only.
+- **Time:** about 45 minutes by the clock, 8 of them renders (two runs: 955 MB and 1,092 MB at peak, lowest free 2.15 GB).
+
+**Status:** delivery 2, the vivid sheets, waits for research's verdict: which strength for the HUD, the rooms, the two new colours. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.
 
 ## Later, by ground
 

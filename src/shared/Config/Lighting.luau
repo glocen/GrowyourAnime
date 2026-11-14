@@ -73,4 +73,10 @@ return {
 	-- turned up with it, Shadows off. The stalls' lamp colour; Brightness and Range the builder's seeds against the lead's
 	-- target (at least 1.3 times what's round him), tuned in the engine.
 	Lead = { Brightness = 1, Range = 10, Colour = hex("FFD49A") },
+	-- The drifting paper (AR5, "The paper's emitter"), after research's TR8 verdict (2026-11-14): a scrap the camera
+	-- passed filled a corner as a big flat white quad. The plan's boxes, 4 to 14.5 studs over the paving, held the
+	-- camera; a band over it keeps them clear. Roblox's starting zoom (12.5) behind the head (4.5 up) rides 6.65 up
+	-- pitched 10 degrees down, as the takes do, and 10.75 at 30. Floor and Top over the paving; the rate follows the
+	-- band's height, so the density holds (Kit.PaperBand). Colour: a warm paper's tint over the picture's white.
+	Paper = { Floor = 12, Top = 18.5, Colour = hex("F2E3C6") },
 }

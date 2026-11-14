@@ -227,18 +227,25 @@ local function dress(street: Instance, gateZ: number)
 		CollectionService:AddTag(holder, Kit.Tag)
 		holder.Parent = folder
 	end
-	-- The drifting paper (AR5, "The paper's emitter"): a box of air each, seen by nothing but its emitter.
-	local paper = template:FindFirstChild("Paper")
+	-- The drifting paper (AR5, "The paper's emitter"): a box of air each, seen by nothing but its emitter, in the band
+	-- over the camera (Config.Lighting.Paper), its rate and tint from it. The client keeps it to a tuned band live.
+	local paper = template:FindFirstChild("Paper") :: ParticleEmitter?
 	if plan.paper and paper then
+		local band = LightingConfig.Paper
 		for index, box in plan.paper.boxes do
+			local _, tall, share = Kit.PaperBand(box, band)
 			local air = Instance.new("Part")
 			air.Name = `Paper{index}`
-			air.Size = Vector3.new(box.size[1], box.size[2], box.size[3])
+			air.Size = Vector3.new(box.size[1], tall, box.size[3])
 			air.Transparency = 1
 			air.Anchored, air.CanCollide, air.CanQuery, air.CanTouch, air.CastShadow = true, false, false, false, false
-			air.CFrame = Kit.Paper(box, gateZ, floorY)
-			paper:Clone().Parent = air
-			air:SetAttribute("Paper", true)
+			air.CFrame = Kit.Paper(box, gateZ, floorY, band)
+			local emitter = paper:Clone()
+			emitter.Rate = plan.paper.emitter.Rate * share
+			emitter.Color = ColorSequence.new(band.Colour)
+			emitter.Parent = air
+			air:SetAttribute("Paper", index) -- its box in the plan
+			air:SetAttribute("FloorY", floorY)
 			CollectionService:AddTag(air, Kit.Tag)
 			air.Parent = folder
 		end

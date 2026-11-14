@@ -1232,6 +1232,26 @@ return {
 			local problems = t.Server("DressReport")
 			local first = if type(problems) == "table" then problems[1] else nil
 			t.Check("the dressing report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+			-- The paper as this client shows it (research's TR8 verdict): each box streamed in stands in Config.Lighting.Paper's
+			-- band over the paving, in its tint (its rate is the logic case's).
+			streamed(t, "Elite")
+			local band = LightingConfig.Paper
+			local seen, off = 0, {}
+			for _, item in CollectionService:GetTagged(Kit.Tag) do
+				local floorY = item:GetAttribute("FloorY")
+				if type(item:GetAttribute("Paper")) ~= "number" or type(floorY) ~= "number" or not item:IsA("BasePart") then
+					continue
+				end
+				seen += 1
+				local emitter = item:FindFirstChildOfClass("ParticleEmitter")
+				local bottom, top = item.Position.Y - item.Size.Y / 2 - floorY, item.Position.Y + item.Size.Y / 2 - floorY
+				if math.abs(bottom - band.Floor) > 0.01 or math.abs(top - band.Top) > 0.01 then
+					table.insert(off, `{item.Name} from {string.format("%.2f", bottom)} to {string.format("%.2f", top)}`)
+				elseif emitter == nil or emitter.Color.Keypoints[1].Value ~= band.Colour then
+					table.insert(off, `{item.Name}: not the paper's tint`)
+				end
+			end
+			t.Check("the paper's boxes in the band over the camera, in the paper's tint", seen > 0 and #off == 0, off[1] or `{seen} boxes streamed in`)
 		end,
 	},
 	{
@@ -7679,10 +7699,26 @@ return {
 				walkTo(Markers.At(door).Position - Markers.At(door).LookVector * DOOR_RUN + up)
 				t.Check("through it", walkThrough(t, door, false))
 				moment("through the door: Lantern Row's gate at dusk")
+				-- The camera's highest over the paving from here on, against the paper's floor (research's verdict).
+				local floorY: number? = nil
+				for _, item in CollectionService:GetTagged(Kit.Tag) do
+					local y = item:GetAttribute("FloorY")
+					if type(y) == "number" then
+						floorY = y
+						break
+					end
+				end
+				local highest = -math.huge
+				local camera = RunService.RenderStepped:Connect(function()
+					if floorY then
+						highest = math.max(highest, workspace.CurrentCamera.CFrame.Position.Y - floorY)
+					end
+				end)
 				t.Wait(2)
 				local elite = streamed(t, "Elite")
 				t.Check("the elite's square", elite ~= nil)
 				if elite == nil then
+					camera:Disconnect()
 					return
 				end
 				local square = Markers.At(elite).Position
@@ -7696,6 +7732,7 @@ return {
 				local marker = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
 				t.Check("Lantern Row has its door home", marker ~= nil)
 				if marker == nil then
+					camera:Disconnect()
 					return
 				end
 				local home = Markers.At(marker)
@@ -7704,6 +7741,9 @@ return {
 				moment("the gate at night")
 				t.Wait(TAKE_READ + 1)
 				moment("end")
+				camera:Disconnect()
+				t.Check("the camera rides under the paper's floor", floorY ~= nil and highest < LightingConfig.Paper.Floor,
+					`highest {string.format("%.2f", highest)} over the paving, the paper from {LightingConfig.Paper.Floor}`)
 			end)
 			for _, name in cleared do
 				t.Server("PackBack", name)

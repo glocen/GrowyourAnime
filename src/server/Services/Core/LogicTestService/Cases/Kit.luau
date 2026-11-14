@@ -7,6 +7,7 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Kit = require(Shared.World.Kit)
 local WorldConfig = require(Shared.Config.World)
+local LightingConfig = require(Shared.Config.Lighting)
 local Manifest = require(Shared.Config.Kits.LanternRow.Manifest) :: any
 local Plan = require(Shared.Config.Kits.LanternRow.Plan) :: any
 
@@ -104,6 +105,32 @@ return {
 			t.Check("each box's floor over the paving", over)
 			t.Check("end to end up the street", joined)
 			t.Equal("its picture the published one's", paper.emitter.Texture, string.match(paper.picture, "[^/]+$"))
+		end,
+	},
+	{
+		Name = "Kit: TR8, the paper's band: over the camera's height, the density held, the plan's own without one",
+		Run = function(t: any)
+			-- Research's TR8 verdict (2026-11-14): a scrap the camera passed filled a corner. Config.Lighting.Paper holds the
+			-- boxes in a band over Roblox's starting zoom behind the head, pitched 30 degrees down.
+			local paper = Plan.paper
+			if paper == nil then
+				t.Check("the plan has its paper", false)
+				return
+			end
+			local HEAD, ZOOM, PITCH = 4.5, 12.5, 30 -- an R6 head over the paving, Roblox's starting zoom, a steep look down
+			local camera = HEAD + ZOOM * math.sin(math.rad(PITCH))
+			local band = LightingConfig.Paper
+			t.Check("its floor over the camera's height", band.Floor > camera, `{band.Floor} over {camera}`)
+			t.Check("a band, not a sheet", band.Top > band.Floor)
+			local box = paper.boxes[1]
+			local up, tall, share = Kit.PaperBand(box, band)
+			t.Check("its floor and top the band's", near(up - tall / 2, band.Floor) and near(up + tall / 2, band.Top), `{up} {tall}`)
+			t.Check("as many scraps in each stud of air", near(paper.emitter.Rate * share / tall, paper.emitter.Rate / box.size[2]))
+			local gateZ, floorY = -272, 0.6
+			t.Check("the box stands in the band", closeTo(Kit.Paper(box, gateZ, floorY, band).Position,
+				Vector3.new(box.across, floorY + band.Floor + tall / 2, gateZ - box.along)))
+			local planUp, planTall, planShare = Kit.PaperBand(box, nil)
+			t.Check("without a band, the plan's own", planUp == box.up and planTall == box.size[2] and planShare == 1)
 		end,
 	},
 	{

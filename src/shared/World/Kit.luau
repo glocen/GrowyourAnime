@@ -7,7 +7,10 @@
 -- runs with Studio closed.
 --   Kit.Place(placement, piece, gateZ, floorY)  a piece's MeshPart CFrame: its place times its centre
 --   Kit.Light(light, gateZ, floorY)             a static light's CFrame, a SpotLight's shining straight down
---   Kit.Paper(box, gateZ, floorY)               a box of the drifting paper's air: its centre, unturned (the plan's paper)
+--   Kit.Paper(box, gateZ, floorY, band?)        a box of the drifting paper's air: its centre, unturned (the plan's paper)
+--   Kit.PaperBand(box, band?)                   the box in a band over the paving (Config.Lighting.Paper): its centre's
+--                                              height, its own, and its rate's share, the density held; the plan's own
+--                                              without one
 --   Kit.Stops(plan)                             the plan's stops in street order, studs from the gate (packs, square, keeper)
 --   Kit.Problems(manifest, plan, stops, ceiling) what keeps a kit off a street: a piece the manifest lacks, a stop away
 --                                              from the street's marker (`stops`, studs from the gate, in street order), more
@@ -24,6 +27,7 @@ export type Piece = { centre: { number }, size: { number }?, glowStrength: numbe
 export type Placement = { piece: string, across: number, along: number, turn: number }
 export type Light = { name: string, across: number, along: number, up: number, colour: string, kind: string, cone: number? }
 export type PaperBox = { across: number, along: number, up: number, size: { number } }
+export type PaperBand = { Floor: number, Top: number }
 export type Plan = {
 	placements: { Placement },
 	lights: { Light },
@@ -48,8 +52,18 @@ function Kit.Light(light: Light, gateZ: number, floorY: number): CFrame
 end
 
 -- A box of the paper's air (AR5, "The paper's emitter"): `up` is its centre over the paving, its size the box's own.
-function Kit.Paper(box: PaperBox, gateZ: number, floorY: number): CFrame
-	return CFrame.new(box.across, floorY + box.up, gateZ - box.along)
+-- A band moves its floor and top, and its rate follows its height, so as many scraps drift in each stud of air.
+function Kit.PaperBand(box: PaperBox, band: PaperBand?): (number, number, number)
+	if band == nil then
+		return box.up, box.size[2], 1
+	end
+	local tall = band.Top - band.Floor
+	return band.Floor + tall / 2, tall, tall / box.size[2]
+end
+
+function Kit.Paper(box: PaperBox, gateZ: number, floorY: number, band: PaperBand?): CFrame
+	local up = Kit.PaperBand(box, band)
+	return CFrame.new(box.across, floorY + up, gateZ - box.along)
 end
 
 function Kit.Stops(plan: Plan): { number }

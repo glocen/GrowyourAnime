@@ -11,7 +11,8 @@
 -- * The sun stands where the kit's frames have it (Config.Lighting.Toward) at a day clock, solved once for this engine's
 --   sun (Lighting:GetSunDirection()), so the painted moon and the shadows agree.
 -- * The kit's pieces (tagged Kit.Tag by WorldService) glow by Config.Lighting.Glow, the houses less, the floors by the
---   phase; the street's lights shine by Config.Lighting.Pools and Lamp. Each piece streamed in takes its value at once.
+--   phase; the street's lights shine by Config.Lighting.Pools and Lamp; the paper's boxes stand in Config.Lighting.Paper's
+--   band with its rate and tint (Kit.PaperBand). Each piece streamed in takes its value at once.
 -- * The player's lead carries the plan's tenth light at its head (Config.Lighting.Lead), turned up with the ground's look
 --   and off out of it.
 -- Every number is read from Config each frame, so a Tune shows at once (a new Toward is solved again).
@@ -32,6 +33,7 @@ local Shared = ReplicatedStorage.Shared
 local LightingConfig = require(Shared.Config.Lighting)
 local Night = require(Shared.Rules.Night)
 local Kit = require(Shared.World.Kit)
+local Plan: Kit.Plan = require(Shared.Config.Kits.LanternRow.Plan) :: any -- the kit Lantern Row wears (WorldService's DRESS)
 local Parts = require(Shared.Util.Parts)
 
 local LightingController = {}
@@ -187,6 +189,23 @@ local function dressOne(item: Instance, floor: number)
 		end
 		return
 	end
+	-- A box of the paper's air: the band, its rate and its tint, set here only, so a Tune shows at once.
+	local index = item:GetAttribute("Paper")
+	if type(index) == "number" then
+		local paper = Plan.paper
+		local box = if paper then paper.boxes[index] else nil
+		local floorY, z = item:GetAttribute("FloorY"), gateZ()
+		local emitter = item:FindFirstChildOfClass("ParticleEmitter")
+		if paper and box and type(floorY) == "number" and z and emitter and item:IsA("BasePart") then
+			local band = LightingConfig.Paper
+			local _, tall, share = Kit.PaperBand(box, band)
+			item.Size = Vector3.new(box.size[1], tall, box.size[3])
+			item.CFrame = Kit.Paper(box, z, floorY, band)
+			emitter.Rate = paper.emitter.Rate * share
+			emitter.Color = ColorSequence.new(band.Colour)
+		end
+		return
+	end
 	local kind = item:GetAttribute("Light")
 	local numbers = if kind == "Pool" then LightingConfig.Pools elseif kind == "Lamp" then LightingConfig.Lamp else nil
 	local light = item:FindFirstChildWhichIsA("Light")
@@ -197,8 +216,8 @@ local function dressOne(item: Instance, floor: number)
 end
 
 local function dressAll(floor: number)
-	local glow, pools, lamp = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp
-	local now = `{glow.Kit},{glow.Houses},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range}`
+	local glow, pools, lamp, paper = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp, LightingConfig.Paper
+	local now = `{glow.Kit},{glow.Houses},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour}`
 	if now ~= stamp then
 		stamp = now
 		for _, item in CollectionService:GetTagged(Kit.Tag) do

@@ -28,7 +28,6 @@ local CameraTurn = require(Shared.Util.CameraTurn)
 local Clips = require(script.Clips)
 local Effects = require(script.Effects)
 local Rows = require(script.Rows)
-local Shoulder = require(script.Shoulder)
 local Sounds = require(script.Sounds)
 
 local player = Players.LocalPlayer
@@ -1060,17 +1059,6 @@ function FighterController.Start()
 			end
 		end
 		Effects.TimeScale = if frozen then 0 else 1 -- the replay's freeze holds the sparks and numbers with the lead
-	end)
-	-- The shoulder camera (Shoulder; Config.Combat.Shoulder), stepped before the camera reads the offset.
-	RunService:BindToRenderStep("NL_Shoulder", Enum.RenderPriority.Camera.Value - 1, function(dt: number)
-		local engaged = false
-		for model, view in views do
-			if isMine(view) and model:GetAttribute("Side") == "Lead" then
-				local target = model:GetAttribute("Target")
-				engaged = type(target) == "string" and target ~= ""
-			end
-		end
-		Shoulder.Step(dt, engaged, os.clock())
 	end)
 end
 

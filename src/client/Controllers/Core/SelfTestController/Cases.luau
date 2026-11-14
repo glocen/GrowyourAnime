@@ -43,7 +43,6 @@ local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local Sounds = require(script.Parent.Parent.Parent.Main.FighterController.Sounds)
 local Rows = require(script.Parent.Parent.Parent.Main.FighterController.Rows)
-local Shoulder = require(script.Parent.Parent.Parent.Main.FighterController.Shoulder)
 local FxKit = require(Shared.Config.FxKit)
 local Track = require(Shared.Rules.Track)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
@@ -3630,29 +3629,29 @@ return {
 		end,
 	},
 	{
-		-- TR7, the framing (research's verdict, 2026-11-13: A): Config.Combat.Shoulder through FighterController/Shoulder.
-		Name = "Camera: in a fight the shoulder eases right and up, holds after it, then eases back",
+		-- The director, 2026-11-14, night: "simply do not touch player camera" (TR7's shoulder ease scrapped; the hit shake
+		-- and the fade's turn aren't named, and stay). A fight never offsets the player's camera, in it or after it.
+		Name = "Camera: a fight never offsets the player's camera, in it or after it",
 		Run = function(t: any)
-			local shoulder = Combat.Shoulder
 			local humanoid = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 			t.Check("the avatar is in the world", humanoid ~= nil, "no humanoid")
 			if humanoid == nil then
 				return
 			end
-			local full = Vector3.new(shoulder.Right, shoulder.Up, 0)
-			local action = Actions.ById.RookCombo
-			t.Server("Replay", action.Id, 1.2)
-			t.Wait(shoulder.Ease + 0.35)
-			local lead = myLead()
-			local aimed = if lead then lead:GetAttribute("Target") else nil
-			t.Check("the lead has a target", type(aimed) == "string" and aimed ~= "", tostring(aimed))
-			t.Check("eased in by its ease", (humanoid.CameraOffset - full).Magnitude < 0.15, tostring(humanoid.CameraOffset))
+			local most, fought = 0, false
+			local watch = RunService.RenderStepped:Connect(function()
+				most = math.max(most, humanoid.CameraOffset.Magnitude)
+				local lead = myLead()
+				local aimed = if lead then lead:GetAttribute("Target") else nil
+				fought = fought or (type(aimed) == "string" and aimed ~= "")
+			end)
+			t.Server("Replay", Actions.ById.RookCombo.Id, 1.2)
+			t.Wait(1.2)
 			t.Server("Replay")
-			t.Wait(shoulder.Hold * 0.6)
-			t.Check("held after the fight", (humanoid.CameraOffset - full).Magnitude < 0.15, tostring(humanoid.CameraOffset))
-			t.Wait(shoulder.Hold * 0.4 + shoulder.Ease + 0.35)
-			t.Check("eased back once the hold is over", humanoid.CameraOffset.Magnitude < 0.15, tostring(humanoid.CameraOffset))
-			t.Check("its share at rest", Shoulder.Share() < 0.05, string.format("%.3f", Shoulder.Share()))
+			t.Wait(2) -- past where the old ease would have held and come back
+			watch:Disconnect()
+			t.Check("the lead had a target", fought)
+			t.Check("no offset, in the fight or after it", most < 1e-3, string.format("%.3f studs at most", most))
 		end,
 	},
 	{

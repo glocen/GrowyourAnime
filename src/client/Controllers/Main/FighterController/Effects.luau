@@ -45,6 +45,8 @@ local World = require(UI.World)
 local Layers = require(UI.Layers)
 local Text = require(UI.Kit.Text)
 local Digits = require(UI.Kit.Digits)
+local Rays = require(UI.Kit.Rays)
+local Shine = require(UI.Kit.Shine)
 local Hud = require(ReplicatedStorage.Shared.Rules.Hud)
 local HudConfig = require(ReplicatedStorage.Shared.Config.Hud)
 local UIKit = require(ReplicatedStorage.Shared.Config.UIKit)
@@ -2103,7 +2105,7 @@ local BEAM_SEGMENTS = 20
 -- wider, fainter sleeve of the same light climbs the body, over it. Each is a beam facing the camera, sized by the
 -- lead, soft at its foot and fading to nothing at its top, so it reads as light and never as a solid. The new level
 -- pops in clear over the lead's head as the column peaks, bright and edged in the blue, and rises, held long enough to
--- read. All of it follows a walking lead. Returns the column, the word and the sleeve, for the self-test; each beam's
+-- read, a sunburst behind it and one light band across it (TR6). All of it follows a walking lead. Returns the column, the word and the sleeve, for the self-test; each beam's
 -- "Opaque" attribute is how opaque it is now.
 function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	local look = EffectsConfig.LevelUp
@@ -2173,6 +2175,13 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	local swell = Instance.new("UIScale")
 	swell.Scale = w.From
 	swell.Parent = label
+	local wordAt = c.Peak * c.Seconds
+	-- A reward of rung 5 (TR6; docs/research/vfx-reference.md, "UI effects", DESIGN 3): a sunburst behind the word as it
+	-- lands, and one light band sweeping across its fill and its edge together.
+	local motion = HudConfig.Motion
+	Rays.Play(plate, Vector2.new(wide, size * 1.6) / 2, size * motion.Rays.Size, white:Lerp(xp, 0.35), wordAt + motion.Rays.Delay)
+	Shine.Play(Shine.Lay(label, fill), wordAt)
+	Shine.Play(Shine.Lay(edge, xp), wordAt)
 	-- A shaft of light standing over `at`: its foot and top in studs above, its width, how opaque at its fullest. Along
 	-- it: soft at its foot, full a fifth of the way up, and fading to nothing over its top's Fade.
 	local function lay(beam: Beam, at: Vector3, foot: number, top: number, width: number, opaque: number)
@@ -2198,7 +2207,6 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 		local u = math.clamp((t - c.Peak) / (1 - c.Peak), 0, 1)
 		return top * u * u, top, width * (1 - narrow * u * u), Hud.Pop(t, c.Peak)
 	end
-	local wordAt = c.Peak * c.Seconds
 	local last = math.max(c.Seconds, s.Delay + s.Seconds, wordAt + look.Seconds)
 	run(function(age: number): boolean
 		if age >= last then

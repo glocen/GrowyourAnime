@@ -47,6 +47,9 @@ local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Pop = require(UI.Kit.Pop)
+local Fly = require(UI.Kit.Fly)
+local Count = require(UI.Kit.Count)
+local Burst = require(UI.Kit.Burst)
 local Fade = require(UI.Kit.Fade)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local Effects = require(script.Parent.FighterController.Effects)
@@ -91,7 +94,9 @@ local lead: LeadCard.Card
 local target: TargetCard.Card
 local targetArrow: Frame
 local credits: TextLabel
+local coin: ImageLabel -- the Credits pill's icon, where a kill's Credits fly to (TR6)
 local electricity: TextLabel
+local bolt: ImageLabel -- the Electricity pill's, where the battery's jump flies to
 local rate: TextLabel
 local charge: Frame
 local chip: Frame
@@ -200,7 +205,7 @@ local function point(holder: Frame, way: string)
 end
 
 -- A pill (tools/blender/ui_kit.py, `pill`): its icon, its value, what's after it in soft ink, and for electricity a thread.
-local function pill(name: string, order: number, width: number, image: string): (TextLabel, TextLabel, Frame?)
+local function pill(name: string, order: number, width: number, image: string): (TextLabel, TextLabel, Frame?, ImageLabel)
 	local frame = Panel.new({
 		Name = name,
 		Size = UDim2.fromOffset(width, PILL),
@@ -208,7 +213,7 @@ local function pill(name: string, order: number, width: number, image: string): 
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = Layers.Get("Hud"),
 	})
-	icon(frame, image, 17, PILL / 2, 21)
+	local mark = icon(frame, image, 17, PILL / 2, 21)
 	local threaded = name == "Electricity"
 	local up = if threaded then -2 else 0
 	local value = Text.new({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Box = UDim2.fromOffset(width - 33 - 8, PILL), Position = UDim2.fromOffset(31, up), Parent = frame })
@@ -220,7 +225,30 @@ local function pill(name: string, order: number, width: number, image: string): 
 		frame.Visible = value.Text ~= ""
 	end)
 	Pop.Centre(frame) -- it swells in place
-	return value, extra, thread
+	return value, extra, thread, mark
+end
+
+-- A reward won into a pill (TR6; docs/research/vfx-reference.md, "UI effects", DESIGN 3): from `from` (on the HUD layer,
+-- or nil when it came from nowhere on screen) its icons fly to the pill's, and as the first lands its number starts
+-- counting, the pill pops at Fly's rung and its "+N" rises. With nowhere to fly from, the number counts and the pill
+-- pops at once, at its own rung.
+local function reward(value: TextLabel, mark: ImageLabel, from: Vector2?, image: string, old: number, new: number, format: (number) -> string, rung: number, tint: Color3, gainFormat: (number) -> string)
+	local pillFrame = value.Parent :: GuiObject
+	local won = new - old
+	Count.Run(value, old, new, format, from ~= nil)
+	local function land(fly: boolean)
+		Count.Start(value)
+		Pop.Play(pillFrame, if fly then HudConfig.Pop.Rungs.Fly else rung)
+		Pop.Gain(pillFrame, won, tint, gainFormat)
+	end
+	local flown = if from then Fly.Send(from, mark, image, won, function(i: number)
+		if i == 1 then
+			land(true)
+		end
+	end) else 0
+	if flown == 0 then
+		land(false)
+	end
 end
 
 -- The signature's ring: a channel round the class's glyph, and two halves of light that fill it clockwise from the top.
@@ -485,11 +513,10 @@ local function notice(old: Profile.View?, new: Profile.View)
 		end
 	end
 	local pops = HudConfig.Pop.Rungs
-	local won = new.Currency.Credits - old.Currency.Credits
-	if won > 0 then
-		local pillFrame = credits.Parent :: GuiObject
-		Pop.Play(pillFrame, pops.Credits)
-		Pop.Gain(pillFrame, won, HudConfig.Card.Level, Read.Number)
+	if new.Currency.Credits > old.Currency.Credits then
+		-- A kill's Credits fly from where it fell (TR6); any other win pops at once.
+		local fell = fallenNear()
+		reward(credits, coin, if fell then Fly.From(fell) else nil, "Coin", old.Currency.Credits, new.Currency.Credits, Read.Number, pops.Credits, HudConfig.Card.Level, Read.Number)
 	end
 	local id = new.Roles.Lead
 	local was, now = old.Voidkin[id], new.Voidkin[id]
@@ -506,11 +533,12 @@ local function notice(old: Profile.View?, new: Profile.View)
 		Pop.Play(lead.Level, pops.Level, { Paint = function(p: number)
 			lead.Level.TextColor3 = HudConfig.Card.Level:Lerp(Color3.new(1, 1, 1), HudConfig.Pop.Glow * p)
 		end })
+		Burst.Play(Fly.Middle(lead.Level), HudConfig.Card.Level) -- rung 5: sparks off the badge (TR6)
 	end
 end
 
 local function showView(view: Profile.View)
-	credits.Text = Read.Number(view.Currency.Credits)
+	Count.Show(credits, view.Currency.Credits, Read.Number) -- a count under way heads there
 	showChip(view)
 	local owned = 0
 	for _ in view.Voidkin do
@@ -758,13 +786,16 @@ local function step(dt: number)
 		local stored = base.Data.Base.Battery
 		local cap = BaseConfig.Battery.Capacity
 		-- A jump (a return from away) pops; the bays' steady flow never does.
+		local function shown(amount: number): string
+			return `{Read.Stored(amount)} / {Read.Number(cap)}`
+		end
+		-- A jump (a return from away) flies in from the screen's middle and counts up (TR6); the steady flow just shows.
 		if lastStored and cap > 0 and stored - lastStored >= HudConfig.Pop.Jump * cap then
-			local pillFrame = electricity.Parent :: GuiObject
-			Pop.Play(pillFrame, HudConfig.Pop.Rungs.Electricity)
-			Pop.Gain(pillFrame, stored - lastStored, UIKit.Charge, Read.Stored)
+			reward(electricity, bolt, Fly.Centre(), "Bolt", lastStored, stored, shown, HudConfig.Pop.Rungs.Electricity, UIKit.Charge, Read.Stored)
+		else
+			Count.Show(electricity, stored, shown)
 		end
 		lastStored = stored
-		electricity.Text = `{Read.Stored(stored)} / {Read.Number(cap)}`
 		rate.Text = if stored >= cap - 1e-6 then "full" else Read.Rate(base.Rates.Net)
 		if charge then
 			Bar.Set(charge, if cap > 0 then stored / cap else 0)
@@ -789,10 +820,10 @@ function HudController.Start()
 	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)
 	targetArrow.ZIndex = 6 -- over the tab
 	TargetCard.Elite(target, false) -- C's parts, built hidden
-	local creditsValue = pill("Credits", 1, 120, "Coin")
-	credits = creditsValue
-	local value, extra, thread = pill("Electricity", 2, ELECTRICITY, "Bolt")
-	electricity, rate, charge = value, extra, thread :: Frame
+	local creditsValue, _, _, coinMark = pill("Credits", 1, 120, "Coin")
+	credits, coin = creditsValue, coinMark
+	local value, extra, thread, boltMark = pill("Electricity", 2, ELECTRICITY, "Bolt")
+	electricity, rate, charge, bolt = value, extra, thread :: Frame, boltMark
 	ring = signatureRing()
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")

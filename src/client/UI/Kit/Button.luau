@@ -6,12 +6,14 @@
 -- answers, and refuses a second press meanwhile, so nothing is asked twice. It flashes succeeded or failed only on the
 -- server's answer (rule 4: the interface never lies). A touch squeezes its face and label about their middle within
 -- 0.05 s, and a let-go brings them back over full size for a moment (Config.Hud.Motion.Press, Rules.Hud.Squeeze; AR8 C);
--- a press with no touch (a pad, a key) squeezes as a tap. No state moves the layout.
+-- a press with no touch (a pad, a key) squeezes as a tap. A touch also ticks under the thumb (Roblox's UIClick haptic;
+-- TR6). No state moves the layout.
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
 --   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false })
 --   Button.Press(button)                             what a tap does, for tests: false when disabled or pending
 --   Button.Touch(button, down)                       a finger going down on it or coming off, for tests
 --   Button.State(button)                             the state it shows
+--   Button.Haptic(button)                            a touch's tick under the thumb; true when it ticked, for tests
 
 local RunService = game:GetService("RunService")
 
@@ -125,6 +127,34 @@ local function paint(button: TextButton, state: State)
 	button:SetAttribute("Disabled", state.Disabled or "")
 	button:SetAttribute("Pending", state.Pending)
 	button:SetAttribute("State", now)
+end
+
+-- A press's tick under the thumb (TR6; the study's DESIGN 2, ClickHaptic): Roblox's UIClick haptic, on a touch going down
+-- on a button that takes it (Config.Hud.Motion.Haptic). One effect, made on first use; a device with no haptics ignores it.
+local haptic: HapticEffect? = nil
+local function click(): boolean
+	if not HudConfig.Motion.Haptic then
+		return false
+	end
+	if haptic == nil then
+		local made = Instance.new("HapticEffect")
+		made.Name = "NL_Click"
+		made.Type = Enum.HapticEffectType.UIClick
+		made.Parent = workspace
+		haptic = made
+	end
+	return (pcall(function()
+		(haptic :: HapticEffect):Play()
+	end))
+end
+
+-- A touch going down on the button: its tick, when the button takes the press (not disabled, not waiting on the server).
+function Button.Haptic(button: TextButton): boolean
+	local state = states[button]
+	if state == nil or state.Disabled ~= nil or state.Pending then
+		return false
+	end
+	return click()
 end
 
 -- What a finger or the mouse does going down on the button (`down`) and coming off it: the held look. The tap itself is
@@ -288,6 +318,9 @@ function Button.new(props: Props): TextButton
 	button.InputBegan:Connect(function(input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			Button.Touch(button, true)
+		end
+		if input.UserInputType == Enum.UserInputType.Touch then
+			Button.Haptic(button)
 		end
 	end)
 	button.InputEnded:Connect(function(input: InputObject)

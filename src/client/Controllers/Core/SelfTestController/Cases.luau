@@ -60,6 +60,9 @@ local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Pop = require(UI.Kit.Pop)
+local Fly = require(UI.Kit.Fly)
+local Count = require(UI.Kit.Count)
+local Burst = require(UI.Kit.Burst)
 local UiLint = require(script.Parent.UiLint)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
@@ -3142,8 +3145,20 @@ return {
 			local xp = HudConfig.Card.Xp
 			local column, word, sleeve = Effects.LevelUp(root, 7)
 			local edge = word:FindFirstChildOfClass("UIStroke")
-			local fill = word.TextColor3
-			t.Check("the word is edged in the thread's blue", edge ~= nil and edge.Color:ToHex() == xp:ToHex(), if edge then edge.Color:ToHex() else "no edge")
+			-- TR6: the word and its edge are white under their shine, which carries their colour off its band.
+			local function shone(object: Instance?, own: Color3): Color3
+				local shine = object and object:FindFirstChild("Shine")
+				return if shine and shine:IsA("UIGradient") then shine.Color.Keypoints[1].Value else own
+			end
+			local fill = shone(word, word.TextColor3)
+			local edgeColour = if edge then shone(edge, edge.Color) else Color3.new()
+			t.Check("the word is edged in the thread's blue", edge ~= nil and edgeColour:ToHex() == xp:ToHex(), edgeColour:ToHex())
+			local plate = word.Parent
+			local rays = plate and plate:FindFirstChild("Rays")
+			t.Check("TR6: a sunburst behind the word", rays ~= nil and rays:IsA("ImageLabel") and rays.ZIndex < word.ZIndex and rays:FindFirstChildOfClass("UIGradient") ~= nil, if rays then "" else "none")
+			local band = word:FindFirstChild("Shine")
+			t.Check("TR6: one light band across its fill and its edge", band ~= nil and edge ~= nil and edge:FindFirstChild("Shine") ~= nil and word.TextColor3 == Color3.new(1, 1, 1))
+			t.Check("TR6: the band waits off the word until it sweeps", band ~= nil and band:IsA("UIGradient") and band.Offset.X <= -1 + 1e-3)
 			t.Check("its edge drawn at its authored width", edge ~= nil and math.abs(edge.Thickness - look.Word.Edge * Layers.Scale()) < 0.01)
 			t.Check("its fill is bright, near white", math.min(fill.R, fill.G, fill.B) >= 0.8, fill:ToHex())
 			t.Check("and of the same blue's hue", (fill.B - fill.R) * (xp.B - xp.R) > 0, `{fill:ToHex()} against {xp:ToHex()}`)
@@ -4185,6 +4200,156 @@ return {
 				t.Check("the thread glinted", glinted >= cfg.Glow - 0.05, string.format("%.2f opaque", glinted))
 				t.Check("and the glint's gone after", not glint.Visible)
 			end
+		end,
+	},
+	{
+		Name = "HUD: TR6, a reward's icons fly into its pill and its number counts up; the level's badge bursts; a touch ticks",
+		Run = function(t: any)
+			-- TR6 (docs/research/vfx-reference.md, "UI effects", DESIGN 2 to 5): the kit's pieces alone, then in the HUD. The
+			-- level's rays and shine are the level-up's case. With the player's reduced motion on, nothing flies or counts.
+			local motion = HudConfig.Motion
+			local still = GuiService.ReducedMotionEnabled
+			local parts = HudController.Parts()
+			local value = parts.Credits :: TextLabel
+			local pill = value.Parent :: GuiObject
+			local mark = pill:FindFirstChild("Coin")
+			t.Check("the Credits pill wears its icon", mark ~= nil and mark:IsA("ImageLabel"))
+			if mark == nil or not mark:IsA("ImageLabel") then
+				return
+			end
+			-- The fly, from the screen's middle into the pill's icon.
+			local look = motion.Fly
+			local landings: { number } = {}
+			local began = os.clock()
+			local into = Fly.Middle(mark)
+			local nearest, aloft = math.huge, 0
+			local watch = RunService.RenderStepped:Connect(function()
+				local holder = Layers.Get("Hud"):FindFirstChild("NL_Fly")
+				local shown = 0
+				for _, icon in if holder then holder:GetChildren() else {} do
+					if icon:IsA("ImageLabel") and icon.Name == "Coin" and icon.Visible then
+						shown += 1
+						nearest = math.min(nearest, (Vector2.new(icon.Position.X.Offset, icon.Position.Y.Offset) - into).Magnitude)
+					end
+				end
+				aloft = math.max(aloft, shown)
+			end)
+			local n = Fly.Send(Fly.Centre(), mark, "Coin", 250, function(k: number)
+				landings[k] = os.clock() - began
+			end)
+			t.Check("a flock by the reward's size", n == Hud.Flock(250, look.Least, look.Most), `{n}`)
+			if still then
+				t.Check("reduced motion: each lands at once, none flies", #landings == n and Fly.Flying() == 0)
+			else
+				t.Check("they're on their way", Fly.Flying() == n, `{Fly.Flying()}`)
+				local by = look.Seconds * 1.1 + look.Stagger * (n - 1) + 0.3
+				t.Check("all land", waitFor(t, by, function(): boolean
+					return #landings == n
+				end), `{#landings} of {n}`)
+				local first, last = landings[1] or 0, landings[n] or 0
+				t.Check("the first lands in about its flight's seconds", first >= look.Seconds * 0.85 and first <= look.Seconds * 1.15 + 0.05, string.format("%.2f s", first))
+				t.Check("staggered: the last lands after", last - first >= look.Stagger * 0.5, string.format("%.2f s after", last - first))
+				t.Check("several in the air at once", aloft >= 2, `{aloft}`)
+				local reach = math.max(16, 0.12 * (into - Fly.Centre()).Magnitude)
+				t.Check("into the icon", nearest <= reach, string.format("%.1f px, within %.1f", nearest, reach))
+				t.Check("and gone after", Fly.Flying() == 0)
+			end
+			watch:Disconnect()
+			-- The count, on a stand-in label: from the old to the new, Expo out, never back down.
+			local label = Instance.new("TextLabel")
+			label.Name = "CountProbe"
+			label.Visible = false
+			label.Parent = Layers.Get("Hud")
+			local function whole(x: number): string
+				return tostring(math.floor(x + 0.5))
+			end
+			local seen: { number } = {}
+			local probe = RunService.RenderStepped:Connect(function()
+				table.insert(seen, tonumber(label.Text) or -1)
+			end)
+			Count.Run(label, 0, 1000, whole)
+			if still then
+				t.Check("reduced motion: the new value at once", label.Text == "1000", label.Text)
+			else
+				t.Check("it starts from the old value", label.Text == "0", label.Text)
+				t.Wait(motion.Count.Seconds * 0.5)
+				local half = tonumber(label.Text) or 0
+				t.Check("most of the way by half its seconds, its end eased", half >= 900 and half < 1000, label.Text)
+				t.Check("and lands on the new", waitFor(t, motion.Count.Seconds, function(): boolean
+					return label.Text == "1000" and not Count.Counting(label)
+				end), label.Text)
+				local rising = true
+				for i = 2, #seen do
+					rising = rising and seen[i] >= seen[i - 1]
+				end
+				t.Check("never down on its way up", rising)
+				Count.Run(label, 1000, 1200, whole, true)
+				t.Wait(0.3)
+				t.Check("a count waiting for its landing holds the old value", label.Text == "1000" and Count.Counting(label), label.Text)
+				Count.Start(label)
+				t.Check("and counts once it lands", waitFor(t, motion.Count.Seconds + 0.3, function(): boolean
+					return label.Text == "1200"
+				end), label.Text)
+				Count.Run(label, 1200, 1300, whole, true)
+				t.Check("one that never lands starts by its latest", waitFor(t, motion.Count.Latest + motion.Count.Seconds + 0.3, function(): boolean
+					return label.Text == "1300"
+				end), label.Text)
+			end
+			probe:Disconnect()
+			label:Destroy()
+			-- In the HUD: Credits from nowhere on screen (the server's DataCredits) count up in the pill.
+			local view = ProfileController.Get()
+			local had = if view then view.Currency.Credits else 0
+			local shownValues: { [string]: boolean } = {}
+			local reading = RunService.RenderStepped:Connect(function()
+				shownValues[value.Text] = true
+			end)
+			t.Check("credits given", t.Server("DataCredits", 500).Ok == true)
+			t.Check("the pill counts up to the save's", waitFor(t, look.Seconds + motion.Count.Latest + motion.Count.Seconds + 0.5, function(): boolean
+				return value.Text == Read.Number(had + 500)
+			end), value.Text)
+			reading:Disconnect()
+			local steps = 0
+			for _ in shownValues do
+				steps += 1
+			end
+			t.Check("through numbers between, not one jump", still or steps >= 4, `{steps} numbers shown`)
+			t.Server("DataCredits", -500)
+			t.Check("a spend shows at once", waitFor(t, 1, function(): boolean
+				return value.Text == Read.Number(had)
+			end), value.Text)
+			-- A level: sparks off the badge, round it, gone by their seconds.
+			local owned = if view then view.Voidkin[view.Roles.Lead] else nil
+			if owned and not still then
+				local badge = Fly.Middle(parts.LeadLevel :: GuiObject)
+				local sparks, farthest = 0, 0
+				local burst = RunService.RenderStepped:Connect(function()
+					sparks = math.max(sparks, Burst.Sparks())
+					local holder = Layers.Get("Hud"):FindFirstChild("NL_Fly")
+					for _, spark in if holder then holder:GetChildren() else {} do
+						if spark:IsA("ImageLabel") and spark.Name == "Spark" then
+							farthest = math.max(farthest, (Vector2.new(spark.Position.X.Offset, spark.Position.Y.Offset) - badge).Magnitude)
+						end
+					end
+				end)
+				t.Check("a level gained", t.Server("LeadLevel", owned.Level + 1).Ok == true)
+				t.Check("the badge bursts", waitFor(t, 2, function(): boolean
+					return sparks >= motion.Burst.Count
+				end), `{sparks} sparks`)
+				t.Check("its sparks stay round the badge", farthest <= motion.Burst.Reach + 1, string.format("%.1f px out", farthest))
+				t.Check("and go by their seconds", waitFor(t, motion.Burst.Seconds + 0.3, function(): boolean
+					return Burst.Sparks() == 0
+				end), `{Burst.Sparks()}`)
+				burst:Disconnect()
+				t.Server("LeadLevel", owned.Level)
+			end
+			-- A touch's tick (Roblox's UIClick haptic): on a button that takes the press, never on a disabled one. The
+			-- thumb's feel itself is the device's, by hand.
+			local button = Button.new({ Name = "SelfTestHaptic", Text = "Lead", Size = UDim2.fromOffset(120, Theme.Size.Tap), Parent = Layers.Get("Hud"), OnPress = function() end })
+			t.Check("a touch ticks on a button that takes it", motion.Haptic and Button.Haptic(button))
+			Button.Set(button, { Disabled = "for the test" })
+			t.Check("never on a disabled one", not Button.Haptic(button))
+			button:Destroy()
 		end,
 	},
 	{

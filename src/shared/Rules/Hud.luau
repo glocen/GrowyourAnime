@@ -1,8 +1,8 @@
 --!strict
 -- Hud (pure): the HUD's rules that need no engine, so they're tested with Studio closed (docs/ui.md, "The HUD, in the
 -- world"; docs/test-requests.md, TR3). The flurry's one counting number, a number placed clear of its neighbours', the
--- type edge's arrow, a number's digits, and what a control says while it waits or can't be pressed. The client draws
--- them (src/client/UI); nothing here decides what a player owns.
+-- type edge's arrow, a number's digits, and what a control says while it waits or can't be pressed; the UI effects'
+-- shapes (TR6). The client draws them (src/client/UI); nothing here decides what a player owns.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Hit = require(Shared.Rules.Hit)
@@ -268,6 +268,35 @@ end
 function Hud.Yield(since: number, seconds: number): (number, number)
 	local u = if seconds > 0 then math.clamp(since / seconds, 0, 1) else 1
 	return u * u, Hud.Ease(u)
+end
+
+-- The UI effects kit's shapes (TR6; docs/research/vfx-reference.md, "UI effects", DESIGN). The client draws them
+-- (src/client/UI/Kit: Fly, Count, Rays, Shine, Burst).
+
+-- Expo out: most of a count done fast and only its end eased (the study's countUp.js); exactly 1 at its end.
+function Hud.ExpoOut(u: number): number
+	local c = math.clamp(u, 0, 1)
+	return if c >= 1 then 1 else 1 - 2 ^ (-10 * c)
+end
+
+-- How many icons a reward sends flying: `least` for a gain under 10, one more for each power of ten, at most `most`;
+-- none for nothing.
+function Hud.Flock(amount: number, least: number, most: number): number
+	if amount <= 0 then
+		return 0
+	end
+	local tens = math.floor(math.log10(math.max(amount, 1)) + 1e-9)
+	return math.clamp(least + tens, least, math.max(least, most))
+end
+
+-- Where a flying icon is at `u` of its way (0 to 1): on a curve from `from` to `to`, bowed to one side by `bend` of the
+-- way's length at its control point (the other side when negative), so its middle stands half that off the straight
+-- line. A quadratic Bézier.
+function Hud.Arc(from: Vector2, to: Vector2, bend: number, u: number): Vector2
+	local t = math.clamp(u, 0, 1)
+	local along = to - from
+	local control = from + along / 2 + Vector2.new(-along.Y, along.X) * bend
+	return from * ((1 - t) * (1 - t)) + control * (2 * (1 - t) * t) + to * (t * t)
 end
 
 -- How full the signature's ring is: 0 the moment it fires, 1 once it's ready again.

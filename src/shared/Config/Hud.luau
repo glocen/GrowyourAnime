@@ -86,19 +86,42 @@ return {
 		Screen = { Enter = 0.2, Exit = 0.16, From = 0.94, To = 0.97 },
 		-- A toast slides in from the screen's right edge over Enter, eased out, and leaves that way over Exit, eased in.
 		Toast = { Enter = 0.2, Exit = 0.16 },
+		-- The UI effects kit (TR6; docs/research/vfx-reference.md, "UI effects", DESIGN, its starting numbers, tuned by
+		-- playing). The tokens live here, beside the press's, so Tune reaches them live (UI/Theme.Motion keeps the tweens).
+		-- Haptic: a press's click under the thumb on a phone (ClickHaptic's UIClick).
+		Haptic = true,
+		-- Fly: a reward's icons (Rules.Hud.Flock: Least for under 10, one more each power of ten, Most at most), Size
+		-- authored pixels, each from within Spread of where it was won, on an arc bowed Bend of its way to either side
+		-- (Rules.Hud.Arc), over Seconds, gathering speed into its counter; Stagger apart. From 0.9 of their size, never
+		-- from nothing; Land, their size as they reach the counter.
+		Fly = { Least = 4, Most = 8, Size = 22, Spread = 16, Bend = 0.35, Seconds = 0.5, Stagger = 0.04, Land = 0.75 },
+		-- Count: a counter counts from its old value to its new over Seconds, Expo out (Rules.Hud.ExpoOut), from the first
+		-- icon's landing; it starts by Latest seconds whatever lands.
+		Count = { Seconds = 0.6, Latest = 1.2 },
+		-- Rays: a sunburst behind a reward of rung 5 and up, Size times its word's height across, Count rays, coming in
+		-- Delay after the word from 0.9 of its size to 1.1 over Seconds, at its fullest Alpha at Peak of its life
+		-- (Rules.Hud.Pop), turning Spin degrees a second.
+		Rays = { Size = 3.6, Count = 12, Delay = 0.08, Seconds = 0.9, Peak = 0.2, Alpha = 0.55, Spin = 40 },
+		-- Shine: a light band Width of its piece across, turned Angle degrees, sweeping once over Seconds, Delay after its
+		-- piece comes in (only on what's rare).
+		Shine = { Width = 0.12, Angle = 20, Seconds = 0.4, Delay = 0.15 },
+		-- Burst: Count sparks flung out from a point, Reach authored pixels, slowing over Seconds and shrinking, Size each.
+		Burst = { Count = 6, Reach = 30, Size = 14, Seconds = 0.45 },
 	},
 	-- A reward pops at its rung (rule 4): it swells to 1 + Swell × (rung − 1) of its size, at its peak at Peak of Seconds
 	-- (eased out), and settles by Seconds (eased in and out). A Credits or Electricity win also sends a "+N" up off its pill,
 	-- Rise authored pixels over the first half of Gain seconds, fading over the last third after its last win; wins within
 	-- its life count up as one, over Count seconds. Electricity pops only on a jump of Jump of the battery's capacity or
 	-- more in one read (a return from away), never the bays' flow. Experience: a glint over the thread's light, Glow opaque
-	-- at its peak, brightest at its new end; a level: its number swells and goes Glow of the way to white.
+	-- at its peak, brightest at its new end; a level: its number swells and goes Glow of the way to white. A reward that
+	-- flies to its pill (TR6: a kill's Credits, the battery's jump) pops at Fly's rung as its first icon lands: about 1.25
+	-- (the study's DESIGN 3, rung 4 to 5); the level's badge bursts as it pops.
 	Pop = {
 		Seconds = 0.35,
 		Peak = 0.25,
 		Swell = 0.06,
 		Glow = 0.6,
-		Rungs = { Xp = 2, Credits = 3, Electricity = 3, Level = 5 } :: { [string]: number },
+		Rungs = { Xp = 2, Credits = 3, Electricity = 3, Level = 5, Fly = 5 } :: { [string]: number },
 		Gain = 0.9,
 		Rise = 12,
 		Jump = 0.05,

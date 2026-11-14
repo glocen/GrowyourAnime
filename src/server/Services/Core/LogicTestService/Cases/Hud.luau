@@ -1,7 +1,8 @@
 --!strict
 -- Hud cases (pure): the flurry's one counting number, a number placed clear of its neighbours', the type edge's arrow for
 -- every pair, the digits, and what a control says (docs/test-requests.md, TR3, "Checks"); the interface's motion: a
--- press's squeeze, a reward's pop, a number's size by its rung and its giving way (AR8 C).
+-- press's squeeze, a reward's pop, a number's size by its rung and its giving way (AR8 C); the effects kit's count, its
+-- flock and its arc (TR6).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -310,6 +311,38 @@ return {
 			t.Equal("gone by its seconds", fade1, 1)
 			t.Equal("all the way aside", aside1, 1)
 			t.Check("it leaves within a tenth (research's fix 1)", HudConfig.Numbers.Yield.Seconds <= 0.1)
+		end,
+	},
+	{
+		Name = "Hud: TR6, a count is Expo out, a reward's flock grows with its size, and each icon's arc bows off the line",
+		Run = function(t: any)
+			t.Equal("a count starts at its old value", Hud.ExpoOut(0), 0)
+			t.Equal("and ends exactly on its new", Hud.ExpoOut(1), 1)
+			t.Equal("never before its start", Hud.ExpoOut(-1), 0)
+			t.Equal("nor past its end", Hud.ExpoOut(2), 1)
+			t.Check("most of it fast: past 95% by half its seconds", Hud.ExpoOut(0.5) > 0.95)
+			local rising = true
+			for i = 1, 100 do
+				rising = rising and Hud.ExpoOut(i / 100) >= Hud.ExpoOut((i - 1) / 100)
+			end
+			t.Check("never back down", rising)
+			local fly = HudConfig.Motion.Fly
+			t.Equal("nothing won, nothing flies", Hud.Flock(0, fly.Least, fly.Most), 0)
+			t.Equal("a spend, nothing", Hud.Flock(-5, fly.Least, fly.Most), 0)
+			t.Equal("a small win flies its least", Hud.Flock(3, fly.Least, fly.Most), fly.Least)
+			t.Equal("ten, one more", Hud.Flock(10, fly.Least, fly.Most), fly.Least + 1)
+			t.Equal("a hundred, two more", Hud.Flock(100, fly.Least, fly.Most), fly.Least + 2)
+			t.Equal("a thousand, exactly three more (no rounding below)", Hud.Flock(1000, fly.Least, fly.Most), fly.Least + 3)
+			t.Equal("never past its most", Hud.Flock(1e12, fly.Least, fly.Most), fly.Most)
+			t.Check("the study's 4 to 8 (DESIGN 3)", fly.Least >= 4 and fly.Most <= 8 and fly.Least <= fly.Most)
+			local from, to = Vector2.new(0, 0), Vector2.new(100, 0)
+			t.Check("an arc leaves from its start", (Hud.Arc(from, to, 0.35, 0) - from).Magnitude < 1e-9)
+			t.Check("and lands on its end", (Hud.Arc(from, to, 0.35, 1) - to).Magnitude < 1e-9)
+			local mid = Hud.Arc(from, to, 0.35, 0.5)
+			t.Check("it bows off the straight line", math.abs(mid.Y) > 10)
+			t.Check("the other way with the bend's other sign", (Hud.Arc(from, to, -0.35, 0.5).Y > 0) ~= (mid.Y > 0))
+			t.Check("a bend of 0 is the straight line", Hud.Arc(from, to, 0, 0.5).Y == 0)
+			t.Check("half way along at half its time", math.abs(mid.X - 50) < 1e-9)
 		end,
 	},
 }

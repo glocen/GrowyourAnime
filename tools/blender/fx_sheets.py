@@ -1,7 +1,7 @@
 """The effects kit's drawn sheets (AR9, docs/asset-requests.md): flipbooks of our own, each in two passes and a dark twin,
 for particles, beside fx_kit.py's meshes and 2x2 textures.
 
-blender.exe -b --factory-startup --python tools/blender/fx_sheets.py -- <out_dir> [puff ring crescent splash spark glint
+blender.exe -b --factory-startup --python tools/blender/fx_sheets.py -- <out_dir> [puff ring crescent starburst spark glint
 flame]
 blender.exe -b --factory-startup --python tools/blender/fx_sheets.py -- <out_dir> movie
 
@@ -222,6 +222,8 @@ LOBES = (                     # each billow: its heading in degrees, how far out
 KNOT = 0.18                   # the size it starts at (of its full size)
 RISE, CURL = 0.1, 8.0         # how far it rises over its life (half widths), and how far it turns (degrees)
 SEAM = 0.012                  # a seam's width, in half widths
+FAN, FAN_FROM = 16, 0.6       # the break's pieces: how many round, and how far under the centre they fan from (of R)
+PUFF_TEAR = Noise(57, nx=FAN)  # wrapped once round, so the pieces have no seam
 
 
 def grown(t, fast=0.8, ease=4.5):
@@ -249,13 +251,16 @@ def puff(t, e, f, x, y, noise):
         d = np.hypot(px - cx, py - cy) - r
         dist = d if dist is None else smin(dist, d, 0.1 * R * size)
 
-    # the break: long pieces round the cloud's curl, twisted a little as they go out, so wisps, never lumps; the edges
-    # and the top first, raggedly
+    # the break: long pieces pointing outward and up, as smoke leaves (research's pass on the kit: pieces long round
+    # the centre tore it as a whirlpool). They fan from a point under the cloud, so the top's point up and the sides'
+    # out; narrow across, long along, bent a little with the curl. The edges and the top first, raggedly
     off_x, off_y = px - centres[0][0], py - centres[0][1]
     out_ = np.hypot(off_x, off_y) / (R * size)
-    turn = (np.arctan2(off_y, off_x) / (2 * math.pi) + 0.5) * WRAP - CURL * t / 360 * WRAP + 0.8 * out_
+    fx_, fy_ = off_x, off_y + FAN_FROM * R * size
+    fan = ((np.arctan2(fy_, fx_) / (2 * math.pi) + 0.5) * FAN - CURL * t / 360 * FAN
+           + 0.6 * np.hypot(fx_, fy_) / (R * size))
     hole = (0.25 * noise[4](u * 2.4, v * 2.4) + 0.1 * noise[6](u * 6.5, v * 6.5)
-            + 0.65 * noise[7](turn, out_ * 10)) * 0.9 + 0.5
+            + 0.65 * PUFF_TEAR(fan, np.hypot(fx_, fy_) / (R * size) * 1.6)) * 0.9 + 0.5
     up = np.clip(off_y / (R * size), -1, 1)
     first = np.clip(0.55 * out_ + 0.45 * (0.5 + 0.5 * up) + 0.25 * (noise[4](u * 3.1, v * 3.1) - 0.5), 0, 1)
 
@@ -322,27 +327,28 @@ def crescent(t, e, f, x, y, noise):
     return {"d": d, "hole": hole, "first": first, "depth": big, "bevel": np.maximum(w, 0.01), "ink": 0.8}
 
 
-# --- the splash: an impact's burst, a nine-pointed star at the middle that throws out nine hooked tongues, each widest
-# near its root and drawn to a sharp point; they let go of the middle and fly on, and break into flecks along their
-# length. Nothing liquid in it (the content check, 2026-11-14): no round tips, no thrown drops, no beads as it breaks,
+# --- the starburst: an impact's burst, a nine-pointed star at the middle that throws out nine hooked tongues, each
+# widest near its root and drawn to a sharp point; they let go of the middle and fly on, and break into flecks along
+# their length. Named for what it is (research's pass on the kit), so nobody builds a liquid on it: it was first drawn
+# as a splash. Nothing liquid in it (the content check, 2026-11-14): no round tips, no thrown drops, no beads as it breaks,
 # because a drop or spray shape reads as a stain once tinted (handbook/platform/rules-and-moderation.md, "Traps"). Its
 # PASS holds while the hooks stay mixed in direction and uneven in length: made uniform and all turning one way, a ring
 # of hooked arms needs a new check against the hate-symbol line
 
-SPLASH = [(k * 2 * math.pi / 9 + j, length, width, hook)
+STARBURST = [(k * 2 * math.pi / 9 + j, length, width, hook)
           for k, (j, length, width, hook) in enumerate(zip(
               np.random.default_rng(41).uniform(-0.12, 0.12, 9), np.random.default_rng(42).uniform(0.52, 0.8, 9),
               np.random.default_rng(43).uniform(0.085, 0.115, 9), np.random.default_rng(44).uniform(-0.45, 0.45, 9)))]
 
 
-def splash(t, e, f, x, y, noise):
+def starburst(t, e, f, x, y, noise):
     rho, th = np.hypot(x, y), np.arctan2(y, x)
     a = (th / (2 * math.pi) + 0.5) * WRAP
     reach = 1 - (1 - min(t / 0.3, 1.0)) ** 3
     points = 1 - np.abs(wrap(9 * th)) / math.pi               # 1 toward each of the star's nine points, 0 between
     core = 0.24 * (1 - smooth(t / 0.4)) * (0.6 + 0.6 * points) - 0.02
     d = rho - core                                            # the burst's middle, a star, gone by frame 7
-    for heading, length, width, hook in SPLASH:
+    for heading, length, width, hook in STARBURST:
         tip = length * (0.2 + 0.8 * reach) + 0.06 * e
         neck = tip * 0.7 * smooth((t - 0.25) / 0.6)         # the tongue lets go of the middle, from the inside out
         delta = wrap(th - heading - hook * np.clip(rho / length, 0, 1.3) ** 2)
@@ -454,7 +460,7 @@ SHEETS = {  # each: its shape, its noise's seed, a particle's life in seconds, a
     "puff": Sheet(puff, 31, 0.6, (0.45, 0.2, 0.37)),
     "ring": Sheet(ring, 61, 0.5, (0.34, 0.25, 0.37)),
     "crescent": Sheet(crescent, 71, 0.4, (0.3, 0.3, 0.37)),
-    "splash": Sheet(splash, 81, 0.55, (0.36, 0.25, 0.37)),
+    "starburst": Sheet(starburst, 81, 0.55, (0.36, 0.25, 0.37)),
     "spark": Sheet(spark, 91, 0.3, (0.3, 0.3, 0.4)),
     "glint": Sheet(glint, 101, 0.35, (0.85, 0.0, 0.15)),
     "flame": Sheet(flame, 111, 0.7, (0.36, 0.25, 0.37)),

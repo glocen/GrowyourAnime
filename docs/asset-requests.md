@@ -4754,6 +4754,10 @@ The looping preview at 128 and 64 px on both skies, with the line alone, is `bui
   1. The puff's last frames (12 to 14) tear in a ring round the centre, so the end reads as a whirlpool. Tear outward and up, as smoke leaves.
   2. "Splash" is now a star of hooked blades, rightly: name its files and its json row for what it is (`starburst`), so nobody builds a liquid on it.
 
+**The pass's two fixes, done 2026-11-14 (Modulo),** in `build/handoff/FxKit/sheets/`:
+1. **The puff:** its break's pieces now point outward and up, fanned from a point under the cloud; they used to run round the centre. Frames 11 to 14 tear into rising wisps. The content check passed it again, 2026-11-14.
+2. **The splash is now `starburst`:** its files are `fx_starburst_*.png` and its json row is `starburst`. The textures are byte for byte the drawing that passed, so its check and its condition stand.
+
 ## AR10. Kirra, the courier (Modulo, then Faber)
 
 Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three starters (`docs/roster.md`, her row: Common, Agility, Assassin, Zone 1). The four deliveries of AR1, measured against Rook, Pip and Lyric. Her install waits for "Content as data" (`docs/production-plan.md`); her art doesn't.

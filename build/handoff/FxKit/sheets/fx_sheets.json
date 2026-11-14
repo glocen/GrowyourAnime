@@ -86,11 +86,11 @@
         ]
       ]
     },
-    "splash": {
+    "starburst": {
       "files": [
-        "fx_splash_line.png",
-        "fx_splash_fill.png",
-        "fx_splash_dark.png"
+        "fx_starburst_line.png",
+        "fx_starburst_fill.png",
+        "fx_starburst_dark.png"
       ],
       "life": 0.55,
       "break": [

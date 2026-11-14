@@ -29,7 +29,7 @@ Research, 2026-11-14, night. This study is for TR17, the Voidkin screen remade (
   - A tap on the figure plays a short flourish of its own, the end of its Reveal. It costs nothing new and makes the character feel alive.
   - The stage's light is the rarity's light (`docs/ui.md`, rule 3; Mythical reddish), and the floor glow takes its element. So a Mythical's screen looks different before a word is read.
 - **Combat Power at its feet,** as already designed (`docs/design.md`, "Combat Power"; `docs/research/gear-icons.md`).
-- **Gear isn't on this screen.** Gear is the account's, in Regalia, so the columns around the figure hold this Voidkin's own things: its kit (signature, combo, passive) as three icons, and its stars as a row. A tap on any of them opens it in the panel.
+- **Gear's slots stand round the figure** (corrected, 2026-11-15: `docs/design.md` already put Combat Power between the slot columns, and the director asked for them). They show the preset this Voidkin is linked to, so gear stays the account's. The kit and the stars live in the menu's pages. The director's layout is in TR17.
 - **One panel beside the figure,** with a few tabs:
   - **Overview:** name and nickname, rarity, type, class, element, level and experience, its role now;
   - **Stats:** the honest stat sheet (`docs/ui.md`, "Stats, shown honestly");

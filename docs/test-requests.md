@@ -1440,6 +1440,15 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
   - switching by the strip and by a swipe on the figure.
 - The dock's Voidkin opens the lead's screen.
 
+**The director's layout, 2026-11-15, "change it now"** (`docs/decisions.md`): "the ui of the voidkin should be the FULL SCREEN and dont forget it need to showe the gears slot just like taichi panda dragon all the menu button on the left like taichi panda for each voidkins and the voidskins selection scroll bar below". It replaces Stage, Flank and Rail: their takes aren't recorded. The block is rebuilt to it, in grey:
+- **Full screen:** the screen covers the world and the HUD. A thin top bar: back and the screen's name on the left, the currencies on the right.
+- **The menu, a column on the far left:** Overview, Stats, Kit and Stars as icon buttons, the selected one larger and lit. It opens its page in the panel on the right.
+- **The figure with its gear slots:** the figure stands left of centre, between two columns of slots. They show the slots of the preset this Voidkin is linked to: the twelve shared, and its class's weapon pair (`docs/design.md`, "Presets"). Gear stays the account's, and "for each Voidkin" is the link that's already designed. The slots are empty and grey until gear is built. Combat Power sits at its feet, between the columns (`docs/design.md`, "Combat Power").
+- **The Voidkin strip along the bottom,** scrolling. A swipe on the figure still switches.
+- **Kept from the block:** the live figure, the drag to turn, the tap's flourish, the stage's light by rarity and element, the real data in each page, Lead and Send to work in view, and favourite, lock and rename by the name.
+- **Watch, at phone landscape:** seven slots a column over the strip leaves about 36 pt a slot. The block shows whether they hold. If they don't, a slot is a read target, and a tap anywhere on a column opens the gear page. Taps stay 44 pt.
+- **Done when:** one take at phone size (open, turn, tap, three switches by the strip and by a swipe, each menu button, Lead and Send to work), then research's verdict in motion. Modulo's vivid mock of this layout (AR12) is judged beside it.
+
 **Waits:** the look (Modulo, with Faber, after the pick); sorting, filtering and comparing two; another player's view of your lead; the skill tree; evolution.
 
 **Done when:** a take per layout at phone size: open from the dock, turn the figure, tap it, switch three Voidkin by the strip and by a swipe, each tab, and Lead and Send to work once each. Then research's verdict in motion and the director's pick. The UI lint runs first, at both scales.

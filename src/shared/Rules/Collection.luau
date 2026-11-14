@@ -9,7 +9,6 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Profile = require(Shared.Data.Profile)
-local Board = require(Shared.Rules.Board)
 
 local Collection = {}
 
@@ -18,6 +17,8 @@ Collection.Unknown = "Unknown" -- no such Voidkin definition, or no such owned V
 Collection.MaxStars = "MaxStars"
 Collection.NotEnough = "NotEnough"
 Collection.Working = "Working" -- a worker can't also lead
+Collection.BadName = "BadName" -- a nickname that isn't text, or holds a control character
+Collection.TooLong = "TooLong" -- a nickname past Config.Voidkin.Nickname.Max characters
 
 -- The owned Voidkin of a definition, or nil. Owned once each, so the first match is the only one.
 function Collection.Owned(data: Profile.Data, def: string): Profile.OwnedVoidkin?
@@ -62,7 +63,6 @@ function Collection.Uncover(data: Profile.Data, def: string, now: number): { [st
 			Favourite = false,
 			Locked = false,
 			Born = now,
-			Points = {},
 		}
 		return { Ok = true, Outcome = "New", Id = id, Def = def, Credits = 0 }
 	end
@@ -117,6 +117,55 @@ function Collection.SetLead(data: Profile.Data, id: any): { [string]: any }
 	return { Ok = true, Id = owned.Id }
 end
 
+-- Marks an owned Voidkin a favourite, or locks it, or takes either off: { Ok, Id, Favourite, Locked }. Neither changes
+-- its strength: a favourite sorts first, and a lock keeps it from being spent (docs/design.md, "Voidkin"; TR17).
+function Collection.SetMark(data: Profile.Data, id: any, mark: any, on: any): { [string]: any }
+	local owned = if type(id) == "string" then data.Voidkin[id] else nil
+	if not owned or (mark ~= "Favourite" and mark ~= "Locked") or type(on) ~= "boolean" then
+		return { Ok = false, Error = Collection.Unknown }
+	end
+	if mark == "Favourite" then
+		owned.Favourite = on
+	else
+		owned.Locked = on
+	end
+	return { Ok = true, Id = owned.Id, Favourite = owned.Favourite, Locked = owned.Locked }
+end
+
+-- A nickname as typed, made tidy: its ends trimmed and each run of spaces made one; "" takes it off. Nil and the reason
+-- when it can't be one. The text filter is the server's, before the rule runs (VoidkinService; docs/roblox-rules.md).
+function Collection.CleanName(raw: any): (string?, string?)
+	if type(raw) ~= "string" or string.find(raw, "%c") then
+		return nil, Collection.BadName
+	end
+	local tidy = string.gsub(raw, "^%s+", "")
+	tidy = string.gsub(tidy, "%s+$", "")
+	tidy = string.gsub(tidy, "%s+", " ")
+	local length = utf8.len(tidy)
+	if length == nil then
+		return nil, Collection.BadName
+	end
+	if length > VoidkinConfig.Nickname.Max then
+		return nil, Collection.TooLong
+	end
+	return tidy, nil
+end
+
+-- Gives an owned Voidkin its nickname, stored as the player wrote it, tidied: { Ok, Id, Nickname }. Each viewer sees it
+-- filtered (engineering plan, "An owned Voidkin").
+function Collection.SetNickname(data: Profile.Data, id: any, raw: any): { [string]: any }
+	local owned = if type(id) == "string" then data.Voidkin[id] else nil
+	if not owned then
+		return { Ok = false, Error = Collection.Unknown }
+	end
+	local name, why = Collection.CleanName(raw)
+	if name == nil then
+		return { Ok = false, Error = why }
+	end
+	owned.Nickname = name
+	return { Ok = true, Id = owned.Id, Nickname = name }
+end
+
 local function voidkinArg(args: any): any
 	return if type(args) == "table" then args.Voidkin else nil
 end
@@ -124,8 +173,8 @@ end
 -- What a client may ask, by name, with the same shape as Rules.Base's actions (VoidkinService registers them).
 --   SetLead { Voidkin }       the lead
 --   SpendCopies { Voidkin }   the next star
---   SpendPoint { Voidkin, Stat }  one skill point on a board stat (Rules.Board)
---   ResetPoints { Voidkin }   every skill point back, for Credits
+--   SetMark { Voidkin, Mark, On }   Mark "Favourite" or "Locked", On true or false
+--   SetNickname { Voidkin, Name }   "" takes it off; the server's filter passes it first
 Collection.Actions = {
 	SetLead = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SetLead(data, voidkinArg(args))
@@ -133,11 +182,13 @@ Collection.Actions = {
 	SpendCopies = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SpendCopies(data, voidkinArg(args))
 	end,
-	SpendPoint = function(data: Profile.Data, args: any): { [string]: any }
-		return Board.Spend(data, voidkinArg(args), if type(args) == "table" then args.Stat else nil)
+	SetMark = function(data: Profile.Data, args: any): { [string]: any }
+		local given = if type(args) == "table" then args else {}
+		return Collection.SetMark(data, given.Voidkin, given.Mark, given.On)
 	end,
-	ResetPoints = function(data: Profile.Data, args: any): { [string]: any }
-		return Board.Reset(data, voidkinArg(args))
+	SetNickname = function(data: Profile.Data, args: any): { [string]: any }
+		local given = if type(args) == "table" then args else {}
+		return Collection.SetNickname(data, given.Voidkin, given.Name)
 	end,
 } :: { [string]: (data: Profile.Data, args: any, now: number, u: number) -> { [string]: any } }
 

@@ -45,21 +45,6 @@ return {
 	-- a percent of a level-1 Warrior's health a second, 200 s from empty to full, so waiting out a heal loses to the door
 	-- home; with Config.Enemies' Ordinary Attack halved, Pack 2 ends at about half (tools/balance/sim.py, section 9).
 	Regen = { Base = 4, Class = { Healer = 1.5 } :: { [string]: number } },
-	-- The stat board (docs/design.md, "Skill points"; TR15, Rules.Board): one point a level from From, each Voidkin's own,
-	-- spent by hand on one of Stats, on top of the own base (research's call (c), 2026-11-14, night). Share: what the board
-	-- adds to each stat's own figure (rarity and class in it) spent evenly at full, at every level; every point on one stat
-	-- adds four times its Share there, and a point waiting adds nothing. Seeded by tools/balance/sim.py section 12 (tier 2,
-	-- for research), 2026-11-14: priced to equal worth on Lantern Row's pack (Health x1, Attack x0.54, Defence x2.88, Regen
-	-- x2.05), scaled so the strongest one-stat lean there is about +7% over today's Voidkin (the bound 10%); spent evenly a
-	-- lead gains 4.4% to 5.5%, and TR12's targets hold. A share above 6.7% would let a level-up, its point still waiting, lower a
-	-- stat that holds every point. ResetPerG: Credits a reset costs, times G at the Voidkin's level, five kills' worth
-	-- (Config.Drops), "a little"; accepted by research.
-	Board = {
-		Stats = { "Health", "Attack", "Defence", "Regen" },
-		From = 2,
-		Share = { Health = 0.012, Attack = 0.006, Defence = 0.033, Regen = 0.024 } :: { [string]: number },
-		ResetPerG = 50,
-	},
 	-- Type: each beats the next, in a ring (docs/design.md, "Voidkin").
 	Beats = {
 		Agility = "Strength",
@@ -73,8 +58,32 @@ return {
 	Poise = { Warrior = 100, Tank = 150, Assassin = 70, Mage = 80, Healer = 90 } :: { [string]: number },
 	-- Speed (TR14; docs/design.md, "Speed"): a lead's walk speed in a fight, in studs a second, closing on its targets and
 	-- moving between them. Its class's figure, moved by its own row's Speed (Definitions.Voidkin) up to Nudge either way.
-	-- Never from the board or gear: it isn't one of Rules.Stats' Names, so no source adds to it. Following the avatar,
+	-- Never from gear: it isn't one of Rules.Stats' Names, so no source adds to it. Following the avatar,
 	-- every lead walks at Config.Combat.Lead.FollowWalk whatever its Speed, and the catch-up stays. Research's seeds, tier 2,
 	-- 2026-11-14, night.
 	Speed = { Class = { Tank = 14, Warrior = 16, Mage = 16, Healer = 16, Assassin = 19 } :: { [string]: number }, Nudge = 1 },
+	-- Combat Power (docs/design.md, "Combat Power"): one number for how strong a Voidkin is, a weighted sum of its resolved
+	-- stats times Scale, rounded (Rules.Stats.Power); for reading, never for damage. Critical damage counts only above the
+	-- base every fighter has. STAND-IN weights, so TR17's blockout has its number (Faber, 2026-11-14): the sim fits the
+	-- real ones, so that with no type edge the higher number wins more often (research's seeds, tier 2).
+	Power = {
+		Scale = 10,
+		Weights = {
+			Health = 0.5,
+			Attack = 4,
+			Defence = 4,
+			Regen = 25,
+			Hit = 2,
+			Dodge = 2,
+			Critical = 2,
+			CriticalResist = 2,
+			Block = 2,
+			Penetration = 2,
+			ElementalAttack = 2,
+			ElementalResist = 2,
+			CriticalDamage = 200,
+			CriticalGuard = 2,
+			Lifesteal = 500,
+		} :: { [string]: number },
+	},
 }

@@ -201,6 +201,22 @@ function Hud.LeadReason(role: string, healingUntil: number?, now: number?, inCom
 	return nil
 end
 
+-- Why a Voidkin can't be sent to work, or nil and the bay it would go to, the first one empty (TR17's Send to work). The
+-- lead fights and never works (Rules.Base, SetWorker); a worker is already at work, and its button brings it home.
+function Hud.WorkReason(role: string, bays: { { Worker: string } }): (string?, number?)
+	if role == "Lead" then
+		return "Leading", nil
+	elseif role ~= "" then
+		return "At work", nil
+	end
+	for index, bay in bays do
+		if bay.Worker == "" then
+			return nil, index
+		end
+	end
+	return if #bays == 0 then "No bay open yet" else "Every bay is busy", nil
+end
+
 -- Seconds as minutes and seconds, rounded up: "1:05", "0:09".
 function Hud.Clock(seconds: number): string
 	local s = if seconds == seconds then math.max(0, math.ceil(seconds - 1e-9)) else 0

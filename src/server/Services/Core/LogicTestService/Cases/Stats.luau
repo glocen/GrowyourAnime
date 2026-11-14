@@ -8,7 +8,6 @@ local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
-local Board = require(Shared.Rules.Board)
 local Collection = require(Shared.Rules.Collection)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local StatsConfig = require(Shared.Config.Stats)
@@ -160,14 +159,13 @@ return {
 			t.Equal("a Tank plods", Stats.Resolve(own(data, first("Common", "Tank") :: string, 5, 0), nil, nil).Speed, speed.Class.Tank)
 			t.Equal("Rook walks a Warrior's", Stats.Resolve(own(data, "rook", 5, 0), nil, nil).Speed, speed.Class.Warrior)
 			t.Check("the Assassin closes fastest, the Tank slowest", speed.Class.Assassin > speed.Class.Warrior and speed.Class.Warrior > speed.Class.Tank)
-			-- Nothing else: no source names it, gear's line is dropped, and the board never takes it.
+			-- Nothing else: no source names it, and gear's line is dropped.
 			t.Check("not a stat any source adds to", table.find(Stats.Names, "Speed") == nil)
 			local rook = own(data, "rook", 5, 0)
 			give(data, "Weapon", { { Stat = "Speed", Value = 50 } })
 			t.Equal("an item's Speed line adds nothing", Stats.Resolve(rook, data.Presets[1], data).Speed, speed.Class.Warrior)
-			t.Check("the board takes no Speed", not Board.Takes("Speed"))
 			t.Equal("an enemy walks its kind's, not a Speed", Stats.Enemy("brawler", 5).Speed, 0)
-			t.Equal("an unknown class walks nothing of its own", Stats.SpeedOf({ Id = "x", Name = "X", Rarity = "Common", Type = "Strength", Class = "Nobody", Element = "", Zone = 1, Aptitude = 1, Speed = 1 }), 0)
+			t.Equal("an unknown class walks nothing of its own", Stats.SpeedOf({ Id = "x", Name = "X", Rarity = "Common", Type = "Strength", Class = "Nobody", Element = "", Zone = 1, Aptitude = 1, Speed = 1, Words = { Signature = "", Passive = "" } }), 0)
 		end,
 	},
 	{
@@ -302,6 +300,35 @@ return {
 			t.Check("an opposing rating pulls it down", Stats.Chance(0.4, 100, 100, 5) < Stats.Chance(0.4, 100, 0, 5))
 			t.Check("higher levels need more", Stats.Chance(0.4, 100, 0, 30) < Stats.Chance(0.4, 100, 0, 5))
 			t.Check("by hand", near(Stats.Chance(0.4, 100, 0, 1), 0.4 * 100 / (100 + StatsConfig.RatingK)))
+		end,
+	},
+	{
+		Name = "Stats: Combat Power is a whole number that rises with every stat, a level and a star, and a critical's base adds none",
+		Run = function(t: any)
+			-- docs/design.md, "Combat Power": every real gain moves it by a whole, visible number. TR17 shows it at the feet.
+			local data = fresh()
+			local id = Collection.Uncover(data, "rook", NOW).Id
+			local owned = data.Voidkin[id]
+			local base = Stats.Resolve(owned, nil, data)
+			local power = Stats.Power(base)
+			t.Check("a whole number above zero", power > 0 and power == math.floor(power), tostring(power))
+			t.Equal("an empty block has only its critical's base, which adds none", Stats.Power(Stats.Empty(1)), 0)
+			for stat in StatsConfig.Power.Weights do
+				local more = table.clone(base) :: any
+				more[stat] += if stat == "CriticalDamage" or stat == "Lifesteal" then 0.01 else 1
+				t.Check(`more {stat}, more power`, Stats.Power(more) > power, `{Stats.Power(more)} over {power}`)
+			end
+			owned.Level = 10
+			local levelled = Stats.Power((Stats.Resolve(owned, nil, data)))
+			t.Check("a level raises it", levelled > power, `{levelled} over {power}`)
+			owned.Stars = 1
+			local starred = Stats.Power((Stats.Resolve(owned, nil, data)))
+			t.Check("a star raises it", starred > levelled, `{starred} over {levelled}`)
+			local mythic = first("Mythical", "Warrior")
+			if mythic then
+				local mid = Collection.Uncover(data, mythic, NOW).Id
+				t.Check("a Mythical stands over a Common at the same level", Stats.Power((Stats.Resolve(data.Voidkin[mid], nil, data))) > power)
+			end
 		end,
 	},
 }

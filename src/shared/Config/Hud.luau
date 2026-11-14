@@ -274,10 +274,32 @@ return {
 		Layout = "Machine",
 		Cell = 124,
 	},
-	-- TR15's stat board in grey on the Voidkin screen (UI/VoidkinScreen; research's entry, 2026-11-14), two layouts for
-	-- the blockout's verdict, tuned live ("Hud.Board.Layout"): "Split" (the collection beside the chosen Voidkin's board,
-	-- the lead set from the board) or "Sheet" (the collection as it was, a Voidkin's board a sheet over it on a tap).
-	Board = {
-		Layout = "Split",
+	-- TR17's Voidkin screen in grey (UI/VoidkinScreen; research's entry, 2026-11-14, night): one Voidkin at a time, its
+	-- own model live on a small stage, three layouts for the blockout's verdict, tuned live ("Hud.Voidkin.Layout"):
+	-- "Stage" (the figure left, the panel right, the portraits along the bottom), "Flank" (the figure in the middle, its
+	-- kit and stars either side, the panel sliding in on a tap) or "Rail" (the portraits down the left edge).
+	--   Size     authored; the screen takes all the room it's given, up to this
+	--   Figure   Height: the figure's share of the screen's height, as far as its stage has room (its crown under the
+	--            stage's top, its soles over Power's band); Fov: the stage camera's; Turn: degrees a dragged authored
+	--            pixel turns it; Back: seconds the next one takes to slide in, from Slide authored pixels to its side
+	--   Swipe    a flick on the figure that goes to the next or the one before: at least Distance authored pixels across
+	--            in at most Time seconds; a touch that moves less than Tap pixels in at most TapTime is a tap
+	--   Stage    the stand-in stage: Glow the floor's transparency, Light how far the rarity tints the light
+	--   Power    Combat Power's plate under the soles, the MMORPG's showpiece (the director, 2026-11-14, night: "combat
+	--            power need to really look like taichi panda dragon hunter in design but like us visually"): Width and
+	--            Height authored, Number its digits' authored size; when it rises, the digits Roll up from the old number
+	--            over that many seconds and the gain rises Gain authored pixels over Hold seconds as it fades
+	--   Strip    a portrait's cell, authored; Panel the panel's share of the width (Flank's when it's in); Ease: seconds
+	--            Flank's panel takes to slide in or out
+	Voidkin = {
+		Layout = "Stage",
+		Size = Vector2.new(1400, 900),
+		Figure = { Height = 0.7, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48 },
+		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
+		Stage = { Glow = 0.35, Light = 0.45 },
+		Power = { Width = 236, Height = 56, Number = 36, Roll = 0.6, Gain = 26, Hold = 1.2 },
+		Strip = 56,
+		Panel = 0.5,
+		Ease = 0.25,
 	},
 }

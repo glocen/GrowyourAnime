@@ -17,6 +17,15 @@ local STEPS: { (data: any) -> () } = {
 			end
 		end
 	end,
+	-- 3: the stat board taken out, on the director's word (2026-11-14, night: "Remove now, tree later"). Touches
+	-- Voidkin[id]: each owned Voidkin's Points goes, with every point spent on it; skill points come back in the tree.
+	function(data: any)
+		for _, owned in data.Voidkin or {} do
+			if type(owned) == "table" then
+				owned.Points = nil
+			end
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

@@ -84,6 +84,26 @@ return {
 		end,
 	},
 	{
+		Name = "Data: step 3 takes the stat board's points out of a save, and a save from before the board passes clean",
+		Run = function(t: any)
+			-- The director's word, 2026-11-14, night: "Remove now, tree later" (TR15's board out of the game).
+			local spent = fresh()
+			spent.Version = 2
+			spent.Voidkin.a = { Id = "a", Def = "rook", Level = 9, Points = { Health = 3, Regen = 5 } } :: any
+			spent.Voidkin.b = { Id = "b", Def = "pip", Level = 1, Points = {} } :: any
+			local ran = Migrations.Run(spent)
+			t.Equal("one step ran", ran, Migrations.Latest - 2)
+			t.Check("the points spent are gone", (spent.Voidkin.a :: any).Points == nil and (spent.Voidkin.b :: any).Points == nil)
+			t.Equal("the rest kept", (spent.Voidkin.a :: any).Level, 9)
+			local older = fresh()
+			older.Version = 1
+			older.Voidkin.c = { Id = "c", Def = "rook", Level = 4 } :: any
+			Migrations.Run(older)
+			t.Check("a save from before the board has none", (older.Voidkin.c :: any).Points == nil)
+			t.Equal("at the latest", older.Version, Migrations.Latest)
+		end,
+	},
+	{
 		Name = "Data: a newer save is left alone",
 		Run = function(t: any)
 			local data = fresh()
@@ -208,7 +228,6 @@ return {
 					Favourite = false,
 					Locked = false,
 					Born = 0,
-					Points = {},
 				}
 				return { Ok = true, Voidkin = draft.Voidkin[id] }
 			end, KEEP)

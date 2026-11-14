@@ -570,8 +570,7 @@ local function offer(down: boolean, fallen: string)
 	end
 end
 
--- The Voidkin screen (UI/VoidkinScreen): the collection, the lead set out of combat (TR12), and each one's stat board
--- (TR15).
+-- The Voidkin screen (UI/VoidkinScreen): one Voidkin at a time, on the lead first (TR17).
 local function voidkinScreen()
 	local view = ProfileController.Get()
 	if view == nil then
@@ -865,7 +864,7 @@ local function bandRoom(): number
 end
 
 local function step(dt: number)
-	VoidkinScreen.Tick() -- a tuned layout, or a reset left unconfirmed
+	VoidkinScreen.Tick() -- its clocks, Combat Power's count, a layout tuned live
 	local model = myLead()
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil

@@ -9,6 +9,7 @@ local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
 local Collection = require(Shared.Rules.Collection)
 local VoidkinConfig = require(Shared.Config.Voidkin)
+local Voidkin = require(Shared.Definitions.Voidkin)
 
 local NOW = 1_800_000_000
 
@@ -106,6 +107,68 @@ return {
 			t.Equal("not owned", Collection.SpendCopies(data, "k99").Error, Collection.Unknown)
 			local problems = Saveable.Problems(data, "profile")
 			t.Check("saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Collection: a Voidkin is marked a favourite or locked and unmarked, and nothing else about it changes",
+		Run = function(t: any)
+			-- TR17: favourite and lock beside the name on one Voidkin's screen.
+			local data = fresh()
+			local id = Collection.Uncover(data, "rook", NOW).Id
+			local before = Profile.DeepCopy(data.Voidkin[id])
+			local answer = Collection.Actions.SetMark(data, { Voidkin = id, Mark = "Favourite", On = true }, NOW, 0)
+			t.Check("a favourite", answer.Ok == true and data.Voidkin[id].Favourite == true and answer.Favourite == true)
+			t.Check("again, the same", Collection.SetMark(data, id, "Favourite", true).Ok == true and data.Voidkin[id].Favourite)
+			t.Check("locked", Collection.SetMark(data, id, "Locked", true).Ok == true and data.Voidkin[id].Locked == true)
+			t.Check("the favourite unmarked, the lock kept", Collection.SetMark(data, id, "Favourite", false).Ok == true
+				and data.Voidkin[id].Favourite == false and data.Voidkin[id].Locked == true)
+			Collection.SetMark(data, id, "Locked", false)
+			local after = data.Voidkin[id]
+			t.Check("the rest as it was", after.Level == before.Level and after.Stars == before.Stars and after.Copies == before.Copies
+				and after.Nickname == before.Nickname and after.Favourite == false and after.Locked == false)
+			t.Equal("an unknown mark", Collection.SetMark(data, id, "Level", true).Error, Collection.Unknown)
+			t.Equal("not a yes or no", Collection.SetMark(data, id, "Locked", "yes").Error, Collection.Unknown)
+			t.Equal("not owned", Collection.SetMark(data, "k99", "Locked", true).Error, Collection.Unknown)
+			t.Equal("no args", Collection.Actions.SetMark(data, nil, NOW, 0).Error, Collection.Unknown)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Collection: a nickname is kept tidy as written, up to its length, and taken off with an empty one",
+		Run = function(t: any)
+			-- TR17's rename: stored raw (tidied), filtered by the server before the rule and for each viewer when shown.
+			local data = fresh()
+			local id = Collection.Uncover(data, "rook", NOW).Id
+			local max = VoidkinConfig.Nickname.Max
+			local answer = Collection.Actions.SetNickname(data, { Voidkin = id, Name = "  Iron   Fist " }, NOW, 0)
+			t.Check("given, its ends trimmed and its spaces one", answer.Ok == true and data.Voidkin[id].Nickname == "Iron Fist" and answer.Nickname == "Iron Fist", tostring(data.Voidkin[id].Nickname))
+			t.Equal("its length counted in characters, not bytes", Collection.CleanName(string.rep("é", max)), string.rep("é", max))
+			t.Equal("one past the most", select(2, Collection.CleanName(string.rep("a", max + 1))), Collection.TooLong)
+			t.Equal("a line break is no name", select(2, Collection.CleanName("Iron\nFist")), Collection.BadName)
+			t.Equal("nor broken text", select(2, Collection.CleanName("\255\254")), Collection.BadName)
+			t.Equal("nor a number", Collection.SetNickname(data, id, 7).Error, Collection.BadName)
+			t.Equal("a refused one leaves the old", data.Voidkin[id].Nickname, "Iron Fist")
+			t.Check("an empty one takes it off", Collection.SetNickname(data, id, "   ").Ok == true and data.Voidkin[id].Nickname == "")
+			t.Equal("not owned", Collection.SetNickname(data, "k99", "Fist").Error, Collection.Unknown)
+			t.Equal("no args", Collection.Actions.SetNickname(data, nil, NOW, 0).Error, Collection.Unknown)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Collection: every Voidkin names its signature and its passive in plain words, and Kirra's and Rook's are the roster's",
+		Run = function(t: any)
+			-- One Voidkin's screen reads them in its Kit tab (TR17): "Name: what it does", the roster's columns.
+			for _, row in Voidkin.List do
+				for _, kind in { "Signature", "Passive" } do
+					local said = (row.Words :: any)[kind]
+					local name, words = string.match(said, "^([^:]+): (.+)$")
+					t.Check(`{row.Id}'s {kind}`, name ~= nil and words ~= nil and #words > 8, said)
+				end
+			end
+			t.Equal("Rook's", Voidkin.ById.rook.Words.Passive, "Second Wind: takes less damage below 30% health")
+			t.Equal("Kirra's", Voidkin.ById.kirra.Words.Signature, "Scarf Step: vanishes, crosses the target, cuts on the way out")
 		end,
 	},
 }

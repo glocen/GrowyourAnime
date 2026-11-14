@@ -26,7 +26,6 @@ export type OwnedVoidkin = {
 	Favourite: boolean,
 	Locked: boolean,
 	Born: number, -- os.time() when it was uncovered
-	Points: { [string]: number }, -- skill points spent, by board stat; one not there is 0 (Rules.Board, TR15)
 }
 
 export type ItemLine = { Stat: string, Value: number }

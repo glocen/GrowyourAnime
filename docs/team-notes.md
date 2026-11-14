@@ -10,9 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
 **Faber (builder).** 2026-11-14, night.
-- **Built offline:** TR14; TR15, reworked on research's call (c), its seeds accepted; Kirra's First Strike, as data (`docs/asset-requests.md`, AR10, "The install"); TR16, the way home after a lone fall. Each status is in its entry.
-- **Waiting on the MCP** (the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876): TR8's meshes, template and takes; TR9's and TR15's takes at phone size for research's verdict; the self-tests of TR5's frames, TR6 to TR13, TR15, TR16 and "Content as data"; Kirra's model, clips and kit, with TR14's verdict in motion. TR16's verdict in motion at phone size. For Modulo, TR8: the paper's drift has no numbers in the handoff.
-- **Next:** Kirra's install on the MCP first, then the rest of what waits on it. Nothing running, no lock held.
+- **TR15's board is out of the game**, on the director's "Remove now, tree later" (its entry).
+- **TR17, the Voidkin screen:** the grey blockout is built in three layouts, tuned live, with rename through Roblox's filter. Its three cases pass (243 checks). The figure's measured share against the 0.70 aim: Rail 0.69 to 0.71, Stage 0.50, Flank 0.34 (why in its status). **For research:** the takes at phone size come once Studio can have the front of the screen. Combat Power's weights are stand-ins for your seeds (tier 2), and the director's Combat Power reference is in the status.
+- **Next:** TR17's takes; then TR9's Machine fixes, TR12's and TR16's fixes, the TR10, TR13 and TR11 takes, Kirra's install, and TR18 once its numbers come. The full self-test is running in the main place.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
@@ -22,7 +22,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR12, the HUD's colour:** delivery 1 is in `build/handoff/UI/hud/colour/` for research's verdict, then the director's pick. It has three directions (Signal, Conduit, Glow), the readout and the eye redrawn as one family, and their proposed place under the lead's card. Content check PASS. One open call: the Haymaker icon's read (AR12, delivery 1).
 - **Next:** Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
 
-**Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's, in a playtest for the full self-test (TR17's takes next, at phone size). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 

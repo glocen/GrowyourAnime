@@ -4,8 +4,6 @@
 --   Base     the Voidkin's own Health, Attack and Defence: its rarity and its class times G(level)
 --   Stars    a share of that own base per star, linear, never of the total
 --   Level    Regen, from the level alone
---   Board    the skill points spent on each board stat (Rules.Board), on top: a part of that stat's own figure (Base's, or
---            Level's for Regen), so a Voidkin whose points wait is the Voidkin without the board
 --   Item     each line of the item in each of the preset's slots, as it is
 -- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
 -- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
@@ -21,7 +19,6 @@ local Enemies = require(Shared.Definitions.Enemies)
 local EnemiesConfig = require(Shared.Config.Enemies)
 local Profile = require(Shared.Data.Profile)
 local Growth = require(Shared.Rules.Growth)
-local Board = require(Shared.Rules.Board)
 
 local Stats = {}
 
@@ -129,17 +126,6 @@ function Stats.Own(row: Voidkin.Row, stat: string, level: number): number
 	return base * (StatsConfig.Rarity[row.Rarity] or 1) * (if shift then shift[stat] else 1) * g
 end
 
--- What one more point on `stat` would add to an owned Voidkin now (Rules.Board): the gain its board shows before a tap.
--- With no point earned yet, a first point's, so the greyed board still says what a point is worth. 0 for an unknown
--- Voidkin or a stat the board doesn't take.
-function Stats.PointGain(owned: Profile.OwnedVoidkin, stat: string): number
-	local row = Voidkin.ById[owned.Def]
-	if row == nil then
-		return 0
-	end
-	return Board.Gain(stat, Stats.Own(row, stat, owned.Level), math.max(1, Board.Over(owned)))
-end
-
 -- The full stat block of an owned Voidkin wearing `preset` (nil: nothing worn), and where each point came from.
 -- `data` holds the items the preset names; an item that isn't there, or a line naming no stat, adds nothing.
 function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, data: Profile.Data?): (Block, { Line })
@@ -167,10 +153,6 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	end
 	-- Regen comes from the level alone, its own source, so the own base's share (stars) never touches it.
 	add("Level", "Regen", Stats.Own(row, "Regen", level))
-	local over = Board.Over(owned)
-	for _, stat in StatsConfig.Board.Stats do
-		add("Board", stat, Board.Added(stat, Stats.Own(row, stat, level), Board.On(owned, stat), over))
-	end
 	if preset and data then
 		for slot, itemId in preset.Slots do
 			local item = data.Items[itemId]
@@ -182,6 +164,20 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 		end
 	end
 	return block, lines
+end
+
+-- A block's Combat Power (docs/design.md, "Combat Power"; Config.Stats.Power): its stats weighted, critical damage above
+-- its base, times the scale, rounded to a whole. For reading only: nothing in a fight reads it.
+function Stats.Power(block: Block): number
+	local power = StatsConfig.Power
+	local sum = 0
+	for stat, weight in power.Weights do
+		local value = (block :: any)[stat]
+		if type(value) == "number" and value == value then
+			sum += weight * (if stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value)
+		end
+	end
+	return math.floor(sum * power.Scale + 0.5)
 end
 
 -- An enemy's stat block at `level`: its Kind's numbers in Config.Enemies times G, nothing else. `type` is the spawn's,

@@ -7,8 +7,12 @@
 -- its entrance (Config.Hud.Motion.Screen; rule 4; AR8 C): the panel in a group the size of the room, which fades and
 -- scales as one. A closed screen is closed at once (Current is nil, Closed fires, nothing in it takes a tap) while it
 -- leaves. The same screen opened again, as its owner rebuilds it on a change, keeps its panel and refills its body in
--- place: no second entrance, and Closed doesn't fire.
---   Screen.Open(name, title, size) -> the body frame to fill
+-- place: no second entrance, and Closed doesn't fire. Its lists keep where they were scrolled, found again by name, so a
+-- tap low on a list that rebuilds the screen never throws the row tapped out of view (TR15's take, 2026-11-14). A list
+-- whose rows are one thing's (a shard's pane) carries that thing as its "Keep" attribute, and starts at its
+-- top when the thing changes. A bare screen (one Voidkin's, TR17) has no head row: its body is the whole panel, the
+-- close button over its top right corner, so a figure can stand the screen's full height.
+--   Screen.Open(name, title, size, bare?) -> the body frame to fill
 --   Screen.Close()
 --   Screen.Current() -> the open screen's name, or nil
 
@@ -39,6 +43,42 @@ local function fit(frame: Frame, size: Vector2)
 end
 
 local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2 }? = nil
+
+type Kept = { [string]: { At: Vector2, Keep: any } }
+
+-- Where each list in a body is scrolled, by its path under the body, with what it shows.
+local function scrolled(body: Instance): Kept
+	local kept: Kept = {}
+	local from = #body:GetFullName() + 2
+	for _, item in body:GetDescendants() do
+		if item:IsA("ScrollingFrame") and item.CanvasPosition ~= Vector2.zero then
+			kept[string.sub(item:GetFullName(), from)] = { At = item.CanvasPosition, Keep = item:GetAttribute("Keep") }
+		end
+	end
+	return kept
+end
+
+-- Once the owner has refilled the body, its lists back where they were: when it's filled, and again once the lists have
+-- grown to their rows, so a position past a list not yet sized holds.
+local function rescroll(body: Instance, kept: Kept)
+	if next(kept) == nil then
+		return
+	end
+	local function apply()
+		if body.Parent == nil then
+			return
+		end
+		local from = #body:GetFullName() + 2
+		for _, item in body:GetDescendants() do
+			local was = if item:IsA("ScrollingFrame") then kept[string.sub(item:GetFullName(), from)] else nil
+			if was and item:IsA("ScrollingFrame") and item:GetAttribute("Keep") == was.Keep then
+				item.CanvasPosition = was.At
+			end
+		end
+	end
+	task.defer(apply)
+	task.delay(0, apply)
+end
 
 local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyle, direction: Enum.EasingDirection, see: number, size: number): Tween
 	local info = TweenInfo.new(seconds, style, direction)
@@ -81,11 +121,12 @@ function Screen.Stage(name: string): CanvasGroup?
 	return (root:FindFirstChild(`{name}Stage`) or root:FindFirstChild(`{name}Leaving`)) :: CanvasGroup?
 end
 
-function Screen.Open(name: string, title: string, size: Vector2): Frame
+function Screen.Open(name: string, title: string, size: Vector2, bare: boolean?): Frame
 	local current = open
 	local again = current and current.Name == name and current.Frame:FindFirstChild("Body")
 	local named = current and current.Frame:FindFirstChild("Title")
 	if current and again and named and named:IsA("TextLabel") then
+		rescroll(again, scrolled(again))
 		again:ClearAllChildren()
 		named.Text = title
 		current.Size = size
@@ -133,7 +174,8 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 		Parent = frame,
 	})
 	heading.Text = title
-	Button.new({
+	heading.Visible = bare ~= true
+	local close = Button.new({
 		Name = "Close",
 		Text = "Close",
 		Size = UDim2.fromOffset(72, Theme.Size.Tap),
@@ -142,11 +184,16 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 		Parent = frame,
 		OnPress = Screen.Close,
 	})
+	close.ZIndex = 3 -- over a bare body's corner
 	local body = Instance.new("Frame")
 	body.Name = "Body"
 	body.BackgroundTransparency = 1
-	body.Position = UDim2.fromOffset(Theme.Size.Pad * 2, HEAD)
-	body.Size = UDim2.new(1, -Theme.Size.Pad * 4, 1, -(HEAD + Theme.Size.Pad))
+	if bare then
+		body.Size = UDim2.fromScale(1, 1)
+	else
+		body.Position = UDim2.fromOffset(Theme.Size.Pad * 2, HEAD)
+		body.Size = UDim2.new(1, -Theme.Size.Pad * 4, 1, -(HEAD + Theme.Size.Pad))
+	end
 	body.Parent = frame
 	stage.Parent = Layers.Get("Menus")
 	tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1)

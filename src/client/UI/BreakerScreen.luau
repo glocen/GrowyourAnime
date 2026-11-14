@@ -427,6 +427,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 	end
 	local top = pad + math.max(22 + LINE, if back then Theme.Size.Tap else 0) + gap
 	local column = Row.List(frame, "Pane", UDim2.new(1, -pad, 1, -(top + pad)), UDim2.fromOffset(pad, top))
+	column:SetAttribute("Keep", `{it.Kind}{it.Index}{it.Def}`) -- another shard's pane starts at its top (Screen)
 	-- The one thing to do with it.
 	local action: string?, press: (() -> ...any)?, primary: boolean? = nil, nil, nil
 	if it.Kind == "Ready" then

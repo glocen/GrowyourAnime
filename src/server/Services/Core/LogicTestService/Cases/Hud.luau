@@ -386,4 +386,17 @@ return {
 			t.Equal("not a number", Hud.Chance(0 / 0), "0%")
 		end,
 	},
+	{
+		Name = "Hud: a Voidkin goes to work in the first empty bay, never the lead, never a worker twice, and says why not",
+		Run = function(t: any)
+			-- TR17: Send to work on one Voidkin's screen.
+			local bays = { { Worker = "k1" }, { Worker = "" }, { Worker = "" } }
+			local why, bay = Hud.WorkReason("", bays)
+			t.Check("the first empty bay", why == nil and bay == 2, `{why} {bay}`)
+			t.Equal("the lead fights", (Hud.WorkReason("Lead", bays)), "Leading")
+			t.Equal("a worker is at work", (Hud.WorkReason("Bay 1", bays)), "At work")
+			t.Equal("every bay busy", (Hud.WorkReason("", { { Worker = "k1" } })), "Every bay is busy")
+			t.Equal("no bay yet", (Hud.WorkReason("", {})), "No bay open yet")
+		end,
+	},
 }

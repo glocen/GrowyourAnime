@@ -4,6 +4,8 @@
 
 return {
 	MaxStars = 7, -- seeds "maxStars", the director's word of 2026-11-12
+	-- A nickname's most characters: docs/ui.md, "Nicknames" ("about twenty characters"). The builder's, TR17.
+	Nickname = { Max = 20 },
 	-- Copies each star costs, the first star first: each twice the one before (seeds "shards.starCopies", the same for
 	-- every rarity, so one list).
 	StarCopies = { 1, 2, 4, 8, 16, 32, 64 },

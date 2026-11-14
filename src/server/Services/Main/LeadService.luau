@@ -29,7 +29,6 @@ local Markers = require(Shared.World.Markers)
 local Stats = require(Shared.Rules.Stats)
 local Parts = require(Shared.Util.Parts)
 local Collection = require(Shared.Rules.Collection)
-local Board = require(Shared.Rules.Board)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -262,30 +261,6 @@ function LeadService.Start()
 				end
 				owned.Level, owned.Xp = level, if xp == nil then 0 else xp
 				return { Ok = true, Level = level }
-			end)
-		end)
-		-- Studio only: the lead's skill points set to `points` ({ [board stat]: count }), a test putting a save back (TR15).
-		DebugService.Register("LeadPoints", function(who: any, points: any): any
-			local player = DebugService.ResolvePlayer(who)
-			if not player or type(points) ~= "table" then
-				return { Ok = false, Error = "BadArgs" }
-			end
-			local clean: { [string]: number } = {}
-			for stat, count in points do
-				if not Board.Takes(stat) or type(count) ~= "number" or count ~= math.floor(count) or count < 0 then
-					return { Ok = false, Error = "BadArgs" }
-				end
-				if count > 0 then
-					clean[stat] = count
-				end
-			end
-			return DataService.Change(player, "LeadPoints", function(draft: Profile.Data): { [string]: any }
-				local owned = draft.Voidkin[draft.Roles.Lead]
-				if owned == nil then
-					return { Ok = false, Error = "NoLead" }
-				end
-				owned.Points = clean
-				return { Ok = true }
 			end)
 		end)
 		-- Studio only: every Voidkin of the player whole at once, and a fallen lead up beside the avatar.

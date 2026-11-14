@@ -4,7 +4,8 @@
 -- write one player's data. Studio saves to the "Test" store and live servers to "Live", so a test never touches a player.
 -- Every write is a Transaction: a client's request through the Act remote (an action registered here by its system's
 -- service), or the server's own change (Change). Reading is free: Get, WaitFor. A client holds a read copy, sent whole after
--- each change (the Profile remote) and fetched once at start (ProfileGet).
+-- each change (the Profile remote) and fetched once at start (ProfileGet), shaped for its owner first (Shape: a nickname
+-- filtered for them, TR17). An action may have a step before it (Action's `before`) that may yield, such as the text filter.
 
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -26,6 +27,10 @@ local DebugService = require(script.Parent.DebugService)
 
 -- A client's request: the draft to change, the client's arguments (untrusted: the action checks them), and who asked.
 export type Action = (draft: Profile.Data, args: any, player: Player) -> Transaction.Answer
+-- What runs before an action, outside its transaction, and may yield: a refusal's code, or nil to go on.
+export type Before = (player: Player, args: any) -> string?
+-- A change to the owner's copy before it's sent, never to the save: no yields.
+export type Shaper = (player: Player, view: Profile.View) -> ()
 
 type Session = {
 	Profile: any, -- ProfileStore's profile. Its Data is read from it every time, never kept elsewhere: one reference to the save
@@ -48,13 +53,27 @@ DataService.Changed = Signal.new() -- (player, data, answer) after every committ
 local store: any = nil
 local sessions: { [Player]: Session } = {}
 local actions: { [string]: Action } = {}
+local befores: { [string]: Before } = {}
+local shapers: { Shaper } = {}
 
 -- Refusal codes the save layer gives itself.
 DataService.NoAction = "NoAction" -- no action by that name
 DataService.NoProfile = "NoProfile" -- the player's save isn't open (still loading past the wait, or gone)
 
+-- The owner's copy, shaped.
+local function viewFor(player: Player, data: Profile.Data): Profile.View
+	local view = Profile.View(data)
+	for _, shape in shapers do
+		local ok, err = pcall(shape, player, view)
+		if not ok then
+			Log.Error("DataService", `a view's shaper errored for {player.Name}: {err}`)
+		end
+	end
+	return view
+end
+
 local function push(player: Player, data: Profile.Data)
-	Net.Server.Fire("Profile", player, Profile.View(data))
+	Net.Server.Fire("Profile", player, viewFor(player, data))
 end
 
 -- Runs a change through the save's one door, then tells the client and the server's listeners.
@@ -96,9 +115,24 @@ function DataService.Change(player: Player, label: string, change: Transaction.C
 end
 
 -- Registers what a client may ask for by name through the Act remote. Each system's service registers its own in Init.
-function DataService.Action(name: string, action: Action)
+-- `before`, if given, runs first, outside the transaction, and may yield; a code it returns refuses the request.
+function DataService.Action(name: string, action: Action, before: Before?)
 	assert(actions[name] == nil, `action "{name}" registered twice`)
 	actions[name] = action
+	befores[name] = before
+end
+
+-- Registers a change every owner's copy gets before it's sent (never the save's). It must not yield.
+function DataService.Shape(shaper: Shaper)
+	table.insert(shapers, shaper)
+end
+
+-- Sends a player their copy again, as after a change: for a shaper whose answer has come in since.
+function DataService.Push(player: Player)
+	local session = sessions[player]
+	if session then
+		push(player, session.Profile.Data)
+	end
 end
 
 local function onAct(player: Player, opId: any, name: any, args: any): Transaction.Answer
@@ -108,6 +142,11 @@ local function onAct(player: Player, opId: any, name: any, args: any): Transacti
 	end
 	if DataService.WaitFor(player) == nil then
 		return { Ok = false, Error = DataService.NoProfile }
+	end
+	local before = befores[name :: string]
+	local refusal = if before then before(player, args) else nil
+	if refusal then
+		return { Ok = false, Error = refusal }
 	end
 	return run(player, opId, name, function(draft: Profile.Data): Transaction.Answer
 		return action(draft, args, player)
@@ -222,7 +261,7 @@ function DataService.Init()
 	Net.Server.Handle("Act", onAct)
 	Net.Server.Handle("ProfileGet", function(player: Player): Profile.View?
 		local data = DataService.WaitFor(player)
-		return if data then Profile.View(data) else nil
+		return if data then viewFor(player, data) else nil
 	end)
 	if RunService:IsStudio() then
 		registerDebug()

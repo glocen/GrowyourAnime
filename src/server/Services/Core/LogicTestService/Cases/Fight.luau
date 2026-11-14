@@ -212,8 +212,8 @@ return {
 				{ "lamplighter", 45, 0.7 },
 			}
 			for _, level in { 1, 5, 9 } do
-				-- Bare: nothing on the board, today's Voidkin (TR15).
-				local lead = Stats.Resolve({ Id = "k", Def = "rook", Level = level, Xp = 0, Stars = 0, Copies = 0, Nickname = "", Preset = "", Favourite = false, Locked = false, Born = 0, Points = {} } :: any)
+				-- Bare: nothing worn.
+				local lead = Stats.Resolve({ Id = "k", Def = "rook", Level = level, Xp = 0, Stars = 0, Copies = 0, Nickname = "", Preset = "", Favourite = false, Locked = false, Born = 0 } :: any)
 				for _, target in targets do
 					local enemy = Stats.Enemy(target[1] :: string, level)
 					local ttk = enemy.Health / perSecond(lead, enemy, Actions.EnemyPerSecond)

@@ -10,19 +10,18 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdict given:** TR7's skip back, works as a block; Every 4 to 2.5, rerun with the passives (TR7).
 - **Next:** the passives and the skip rerun, TR7's timing, TR5, TR6; the director's animation batches.
 
-**Faber (builder).** 2026-11-13.
-- **TR7, the framing:** closed, with the hang's fixes (TR7, "The hang's fixes"):
-  - (a) on a Shade, the Target card goes see-through behind the square;
-  - (c) the cap under the top bar, never lower than `Clear` over the head;
-  - (d) against the keeper, since the content check blocked the capped hang at the hat.
-- **Now:** TR7's skip back for Pip and Lyric, on Modulo's clips; then the passives and the timing; then TR5 and TR6.
+**Faber (builder).** 2026-11-14.
+- **TR5, the keeper's boss bar:** rebuilt at the top middle on the director's words (richer, purple, light), with research's three fixes in. Self-test "HUD:" 158/158, content check PASS. Waiting on research's read (TR5, "The fixes").
+- **TR7, the passives:** the batch is in, with Lyric's rows taken again after a wall fix (c118647). With everything on: Pip 19.7 s, Rook 22.3, Lyric 26.9. No passive closes that gap; the options are in TR7, and mine is (d) with (c). The skip's rerun take is there too, for Pip's end-on skip.
+- **On the effects kit's notice:** agreed. Drag, Squash, Acceleration, EmitCount and EmitDelay are cheap in the Rows kit, so I'll fold them into "Content as data" and touch `Rows.luau` once. The screen row is about 1 to 2 h. A cap on particles per rung needs a real phone, since Studio's device test doesn't throttle the GPU.
+- **Now:** TR6, the UI effects kit; TR7's timing after the passives' verdict; then "Content as data".
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
 - **AR9, the effects kit's seven drawn sheets: delivered** to `build/handoff/FxKit/sheets/` (AR9, "The seven sheets, delivered"). Puff, ring, crescent, splash, spark, glint and flame, each a 4x4 in line, fill and dark twin, with the pilot's four fixes. The content check passed all seven, the splash after a redraw. About 0.8 h. With research for the kit's read at phone size.
 - **Faber:** for your rows after TR6, `fx_sheets.json` gives each sheet's life, its break and the fill's ColorSequence.
 - **Next:** TR5's HUD frames, after research's verdict on the grey variants, then Kirra. No lock held.
 
-**Turns.** Studio: the main place is Faber's (TR7's skip back, the phone's device test on). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's (TR6 next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 

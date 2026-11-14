@@ -39,6 +39,12 @@ return {
 		BlockShare = 0.5, -- a blocked hit adds this to the reduction
 	},
 	Lifesteal = { Cap = 0.1, PerSecondOfMaxHealth = 0.008 }, -- seeds "lifesteal"
+	-- Regen: the health a lead heals a second, always, in a fight too (docs/design.md, "Health carries"). A value, never a
+	-- share: Base at level 1 times G(level), a Healer's class carrying Class more (every other class 1), and later its gear
+	-- (Regalia's stats). Rarity and stars don't touch it. The builder's seed (tier 2, for research), 2026-11-14, TR12:
+	-- tools/balance/sim.py, section 9, meets the entry's line on today's Shades at 20, 2.5% of a level-1 Warrior's health
+	-- a second.
+	Regen = { Base = 20, Class = { Healer = 1.5 } :: { [string]: number } },
 	-- Type: each beats the next, in a ring (docs/design.md, "Voidkin").
 	Beats = {
 		Agility = "Strength",

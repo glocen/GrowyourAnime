@@ -133,6 +133,31 @@ return {
 			t.Equal("no rating from nowhere", block.Critical + block.Dodge + block.Hit, 0)
 			t.Equal("the critical's base extra", block.CriticalDamage, StatsConfig.CriticalDamage)
 			t.Equal("a Warrior's poise", block.Poise, StatsConfig.Poise.Warrior)
+			t.Equal("its Regen, the seed's at level 1", block.Regen, StatsConfig.Regen.Base)
+		end,
+	},
+	{
+		-- TR12: Regen is a value a second from the level (G), never a share; a Healer's class carries more; rarity and
+		-- stars leave it alone (docs/design.md, "Health carries").
+		Name = "Stats: TR12, Regen grows with the level, a Healer carries more, and rarity and stars leave it alone",
+		Run = function(t: any)
+			local data = fresh()
+			local regen = StatsConfig.Regen
+			t.Check("a Healer's class carries more", (regen.Class.Healer or 1) > 1)
+			for _, row in Voidkin.List do
+				for _, level in { 1, 9, 30 } do
+					local owned = own(data, row.Id, level, 0)
+					local block, lines = Stats.Resolve(owned, nil, nil)
+					local want = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(level)
+					t.Check(`{row.Id} at {level}`, near(block.Regen, want), `{block.Regen}, wanted {want}`)
+					t.Check(`{row.Id} at {level}: one line, from the level`, near(from(lines, "Level").Regen or 0, want))
+					owned.Stars = VoidkinConfig.MaxStars
+					t.Check(`{row.Id} at {level}: stars leave it alone`, near(Stats.Resolve(owned, nil, nil).Regen, want))
+				end
+			end
+			local rook = Stats.Resolve(own(data, "rook", 15, 0), nil, nil)
+			t.Check("a value, not a share: the same Regen whatever the health", rook.Regen > 0 and near(rook.Regen, regen.Base * Growth.G(15)))
+			t.Equal("an enemy has none", Stats.Enemy("brawler", 5).Regen, 0)
 		end,
 	},
 	{

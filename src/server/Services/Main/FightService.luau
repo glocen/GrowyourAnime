@@ -29,6 +29,7 @@ local EffectsConfig = require(Shared.Config.Effects)
 local Stats = require(Shared.Rules.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
+local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 
 export type State = "Idle" | "Flinch" | "Down" | "Reset"
@@ -54,7 +55,6 @@ export type Fighter = {
 	ActionAt: number,
 	Checked: number, -- the action's clock at the last beat check
 	ReadyAt: { [string]: number },
-	LastHurt: number, -- it last took a hit (Combat.Lead.Heal)
 	ResetClosest: number, -- walking home: the nearest it has come, and when (Rules.Fight.ResetStuck)
 	ResetSince: number,
 	SkippedAt: number, -- a ranged lead's last skip back (Combat.Skip)
@@ -437,7 +437,6 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ActionAt = 0,
 		Checked = -1,
 		ReadyAt = {},
-		LastHurt = -math.huge,
 		ResetClosest = math.huge,
 		ResetSince = 0,
 		SkippedAt = -math.huge,
@@ -693,7 +692,6 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	local left, fell = Fight.Damage(target.Health, result.Total)
 	setHealth(target, left)
-	target.LastHurt = at
 	if target.Side == "Shade" and f.Side == "Lead" then
 		if f.Owner and not target.Hitters[f.Owner] then
 			target.Hitters[f.Owner] = true
@@ -855,7 +853,6 @@ local function rise(f: Fighter, at: number)
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
 	f.Model:SetAttribute("Ready", 0)
-	f.LastHurt = -math.huge
 	setState(f, "Idle")
 	FightService.Rose:Fire(f)
 end
@@ -961,11 +958,10 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		stop(f)
 		return
 	end
-	local engaged = false -- a Shade has it for its target
-	for _, other in fighters do
-		engaged = engaged or (other.Side == "Shade" and other.Target == f and standing(other))
-	end
-	setHealth(f, Fight.Heal(f.Health, f.Block.Health, at - f.LastHurt, dt, Combat.Lead.Heal, engaged))
+	-- Health carries (TR12): its Regen always, and on its owner's plot the heal at home besides.
+	local plot = if f.Owner then f.Owner:GetAttribute("Plot") else nil
+	local home = Markers.OnPlot(if type(plot) == "number" then plot else nil, f.Root.Position)
+	setHealth(f, Fight.Regen(f.Health, f.Block.Health, Fight.RegenRate(f.Block.Regen, f.Block.Health, home, Combat.Lead.Home.Full), dt))
 	local toAvatar = (avatar.Position - f.Root.Position).Magnitude -- in three dimensions: an avatar teleported straight up still pulls its lead
 	local candidates: { Fight.Candidate } = {}
 	for _, other in fighters do

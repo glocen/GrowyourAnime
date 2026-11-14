@@ -37,6 +37,7 @@ Stats.Names = {
 	"CriticalDamage",
 	"CriticalGuard",
 	"Lifesteal",
+	"Regen",
 }
 local KNOWN: { [string]: boolean } = {}
 for _, name in Stats.Names do
@@ -64,6 +65,7 @@ export type Block = {
 	CriticalDamage: number,
 	CriticalGuard: number,
 	Lifesteal: number,
+	Regen: number, -- health a second, always (Config.Stats.Regen)
 }
 
 export type Line = { Source: string, Stat: string, Value: number }
@@ -91,6 +93,7 @@ function Stats.Empty(level: number): Block
 		CriticalDamage = StatsConfig.CriticalDamage,
 		CriticalGuard = 0,
 		Lifesteal = 0,
+		Regen = 0,
 	}
 end
 
@@ -123,6 +126,9 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 		add("Base", stat, own)
 		add("Stars", stat, own * VoidkinConfig.StarShareOfBase * stars)
 	end
+	-- Regen comes from the level alone, its own source, so the own base's share (stars) never touches it.
+	local regen = StatsConfig.Regen
+	add("Level", "Regen", regen.Base * (regen.Class[row.Class] or 1) * g)
 	if preset and data then
 		for slot, itemId in preset.Slots do
 			local item = data.Items[itemId]

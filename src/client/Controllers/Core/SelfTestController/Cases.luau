@@ -1236,14 +1236,21 @@ return {
 			t.Reset()
 			t.Wait(DROP_BACK)
 			t.Server("Tune", RESPAWN_PATH, wait)
-			local heal = Combat.Lead.Heal
-			local healBy = os.clock() + heal.After + 1 / heal.PerSecond + 1
+			-- Health carries (TR12): out of the fight it heals its Regen, a little at a time; then whole for the next case.
 			local lead = myLead()
-			while lead and lead:GetAttribute("Health") ~= lead:GetAttribute("MaxHealth") and os.clock() < healBy do
-				t.Wait(0.25)
-				lead = myLead()
+			local was = if lead then lead:GetAttribute("Health") :: number else 0
+			local most = if lead then lead:GetAttribute("MaxHealth") :: number else 0
+			if lead and was < most then
+				t.Check("its Regen heals it out of the fight", waitFor(t, 3, function(): boolean
+					local now = myLead()
+					return now ~= nil and (now:GetAttribute("Health") :: number) > was
+				end))
 			end
-			t.Check("the lead heals to full out of the fight", lead ~= nil and lead:GetAttribute("Health") == lead:GetAttribute("MaxHealth"))
+			t.Check("whole again for the next case", t.Server("FightHealth", 1).Ok == true)
+			t.Check("the lead at full", waitFor(t, 1, function(): boolean
+				local now = myLead()
+				return now ~= nil and now:GetAttribute("Health") == now:GetAttribute("MaxHealth")
+			end))
 		end,
 	},
 	{

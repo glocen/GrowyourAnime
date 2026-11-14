@@ -530,13 +530,7 @@ end
 -- Whether the avatar stands on its own plot.
 local function atHome(): boolean
 	local plot = player:GetAttribute("Plot")
-	local floor = if type(plot) == "number" then Markers.Find("Plot", { Plot = plot }) else nil
-	local at = avatarAt()
-	if floor == nil or not floor:IsA("BasePart") or at == nil then
-		return false
-	end
-	local offset = floor.CFrame:PointToObjectSpace(at)
-	return math.abs(offset.X) <= floor.Size.X / 2 and math.abs(offset.Z) <= floor.Size.Z / 2
+	return Markers.OnPlot(if type(plot) == "number" then plot else nil, avatarAt())
 end
 
 -- The chip over the dock while the bag holds a shard: the hook home stays in view until it's in the Breaker, and names

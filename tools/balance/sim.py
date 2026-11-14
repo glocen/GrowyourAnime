@@ -448,6 +448,179 @@ def report_pace():
           ", ".join(f"{x} pays x{max(c['ratioMin'], min(c['ratioMax'], x)):.1f}" for x in (0.1, 0.5, 1.0, 1.5, 3.0)))
 
 
+# ---------------------------------------------------------------- health carries (TR12)
+
+def lua(path):
+    return (ROOT / path).read_text(encoding="utf-8")
+
+
+def game():
+    """The game's own numbers, read from src/shared/Config (their home), so the run follows every tune."""
+    import re
+    en = lua("src/shared/Config/Enemies.luau")
+    kinds = {}
+    for kind in ("Ordinary", "Elite"):
+        m = re.search(kind + r" = \{ Health = ([\d.]+), Attack = ([\d.]+), Defence = ([\d.]+)", en)
+        kinds[kind] = dict(hp=float(m[1]), atk=float(m[2]), df=float(m[3]))
+    world = lua("src/shared/Config/World.luau")
+    stops = [dict(kind=m[1], count=int(m[2] or 1), level=int(m[3])) for m in
+             re.finditer(r'\{ Kind = "(\w+)", Def = "\w+"(?:, Count = (\d+))?, Level = (\d+) \}', world)]
+    row = re.search(r"Row = \{.*?FirstPack = ([\d.]+).*?Spacing = ([\d.]+)", world, re.S)
+    combat = lua("src/shared/Config/Combat.luau")
+    notice = float(re.search(r"Shade = \{\s*Notice = ([\d.]+)", combat)[1])
+    stats = lua("src/shared/Config/Stats.luau")
+    regen = re.search(r"Regen = \{ Base = ([\d.]+), Class = \{([^}]*)\}", stats)
+    growth = lua("src/shared/Config/Growth.luau")
+    early = [int(x) for x in re.search(r"Early = \{([\d, ]*)\}", growth)[1].replace(" ", "").split(",") if x]
+    training = re.search(r"Training = \{ Share = ([\d.]+)", growth)
+    return dict(kinds=kinds, stops=stops, spacing=float(row[2]) * 16, notice=notice, early=early,
+                regen=float(regen[1]) if regen else None,
+                regen_class={k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)", regen[2])} if regen else {},
+                training=float(training[1]) if training else None)
+
+
+def kills_per_level(level, early):
+    if level <= len(early):
+        return early[level - 1]
+    for i, g in enumerate(S["grounds"]):
+        if level <= g["to"]:
+            return g["paceHours"] * S["pace"]["killsPerHour"] / (g["to"] - g["from"] + 1)
+    return None
+
+
+def xp_per_kill(level):
+    return round(10 * G(level))
+
+
+def xp_to_next(level, early):
+    if level >= S["growth"]["maxLevel"]:
+        return None
+    return round(kills_per_level(level, early) * xp_per_kill(level))
+
+
+def shade(kind, level, gm):
+    k = gm["kinds"][kind]
+    e = enemy(level, hp=k["hp"] * G(level), atk=k["atk"] * G(level))
+    e["def"] = k["df"] * G(level)
+    return e
+
+
+def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05):
+    """One walk down Lantern Row on what the lead carries: each stop in turn, every Shade of a pack on it at once.
+    Returns the health share at the end of each pack, and the stop it fell at (None if it reached the elite)."""
+    level, xp = start, 0
+    me = build(level, 1, 0.0, cls=cls)
+    hp = me["hp"]
+    mult = gm["regen_class"].get(cls, 1.0)
+    shares, fell = [], None
+    for index, stop in enumerate(gm["stops"]):
+        if stop["kind"] != "Pack":
+            break
+        # The walk in: from the gate, or from the last stop, until the pack notices; the player's own pace added.
+        walk = (gm["spacing"] * (0.4 if index == 0 else 1) - gm["notice"]) / 16 + rng.uniform(0.5, 4)
+        hp = min(me["hp"], hp + regen_base * mult * G(level) * walk)
+        foes = [dict(e=shade("Ordinary", stop["level"], gm), late=rng.uniform(0.3, 2.0), next=0.0) for _ in range(stop["count"])]
+        for f in foes:
+            f["hp"] = f["e"]["hp"]
+        pace = min(1.25, max(0.75, rng.gauss(1, 0.12)))  # time lost to walking, slots, skips and flinches
+        t, lead_next = 0.0, 0.0
+        while any(f["hp"] > 0 for f in foes) and hp > 0:
+            t += dt
+            live = [f for f in foes if f["hp"] > 0]
+            target = min(live, key=lambda f: f["late"])
+            if t >= lead_next and t >= target["late"]:
+                mine = dps(me, target["e"]) * beat * pace
+                crit = rng.random() < S["ratings"]["caps"]["critFloor"]
+                target["hp"] -= mine / (1 + S["ratings"]["caps"]["critFloor"] * 0.5) * (1.5 if crit else 1)
+                lead_next = t + beat
+                if target["hp"] <= 0:
+                    xp += xp_per_kill(stop["level"])
+                    need = xp_to_next(level, gm["early"])
+                    while need is not None and xp >= need:
+                        xp -= need
+                        level += 1
+                        share = hp / me["hp"]
+                        me = build(level, 1, 0.0, cls=cls)
+                        hp = share * me["hp"]
+                        need = xp_to_next(level, gm["early"])
+            for f in live:
+                if t >= f["late"] and t >= f["next"]:
+                    theirs = dps(f["e"], me) * swing
+                    crit = rng.random() < S["ratings"]["caps"]["critFloor"]
+                    hp -= theirs / (1 + S["ratings"]["caps"]["critFloor"] * 0.5) * (1.5 if crit else 1)
+                    f["next"] = t + swing
+            if hp > 0:
+                hp = min(me["hp"], hp + regen_base * mult * G(level) * dt)
+        if hp <= 0:
+            fell = index
+            break
+        shares.append(hp / me["hp"])
+    return shares, fell
+
+
+def report_carry(runs=400, sweep=None, starts=(1, 3)):
+    gm = game()
+    print("\n== 9. Health carries (TR12): Lantern Row on what the lead carries ==")
+    print("A model, not a measurement: the game's own enemy and street numbers (src/shared/Config), a bare lead, every")
+    print("Shade of a pack on it at once after a walk in of 0.3 to 2 s, its kill time spread 12% for movement, the walk")
+    print("between stops at 16 studs a second plus 0.5 to 4 s of the player's own pace. Regen a second, always.")
+    print(f"Regen in the game now: Base {gm['regen']} a second at level 1, times G; class {gm['regen_class']}.")
+    print("Each cell: health share at Pack 2's end, median [10th to 90th]; falls before the elite, in 100 runs.")
+    import random
+    sweep = sorted(set(sweep or (0, 4, 8, 12, 16, 20, 24)) | ({gm["regen"]} if gm["regen"] else set()))
+    leads = (("Rook", "Warrior"), ("Kirra", "Assassin"), ("Pip", "Mage"), ("Lyric", "Healer"))
+    for start in starts:
+        print(f"\nA lead starting the street at level {start}" + (" (a new account: level 2 at its second kill)" if start == 1 else " (a later circuit)") + ":")
+        line("regen /s L1", "of max /s", "empty->full", *[f"{n} ({c})" for n, c in leads], w=21)
+        for base in sweep:
+            cells = []
+            for name, cls in leads:
+                rng = random.Random(f"{name}{start}{base}")
+                ends, falls = [], 0
+                for _ in range(runs):
+                    shares, fell = circuit(cls, start, base, gm, rng)
+                    falls += fell is not None
+                    ends.append(shares[1] if len(shares) > 1 else 0.0)
+                ends.sort()
+                q = lambda p: ends[min(len(ends) - 1, int(p * len(ends)))]
+                cells.append(f"{q(0.5):.0%} [{q(0.1):.0%}-{q(0.9):.0%}] {100 * falls / runs:.0f}")
+            mark_now = " <" if base == gm["regen"] else ""
+            line(f"{base}{mark_now}", f"{base / S['base']['hp']:.2%}", f"{S['base']['hp'] / base:.0f}s" if base else "never", *cells, w=21)
+
+
+def train(level, seconds, gm):
+    """Levels the Training machine gives across `seconds`, from the start of `level`: its rate is Share of what fighting
+    earns a second at the Voidkin's own level (pace.killsPerHour kills an hour), no cap."""
+    xp = 0.0
+    while seconds > 0:
+        need = xp_to_next(level, gm["early"])
+        if need is None:
+            break
+        rate = gm["training"] * S["pace"]["killsPerHour"] / 3600 * xp_per_kill(level)
+        t = (need - xp) / rate
+        if t > seconds:
+            xp += rate * seconds
+            break
+        seconds -= t
+        xp, level = 0.0, level + 1
+    return level + xp / (xp_to_next(level, gm["early"]) or 1)
+
+
+def report_training():
+    gm = game()
+    share = gm["training"] or 1 / 3
+    gm["training"] = share
+    print("\n== 10. The Training machine (TR12): what time away gives ==")
+    print(f"A Voidkin in the machine earns {share:.2f} of what fighting earns a minute at its own level, with no cap.")
+    print("Each level's own cost slows it; the minutes a level takes don't grow with G, only with the ground's pace.")
+    line("from level", "a level here", "1 hour", "a night (8 h)", "a day (24 h)", "a week (168 h)", w=15)
+    for level in (1, 5, 9, 15, 30):
+        per = kills_per_level(level, gm["early"]) / (share * S["pace"]["killsPerHour"] / 60)
+        line(level, f"{per:.0f} min", *[f"{train(level, h * 3600, gm):.1f}" for h in (1, 8, 24, 168)], w=15)
+    total = sum(g["paceHours"] for g in S["grounds"])
+    print(f"The launch's whole pace is {total} hours of fighting; the machine reaches it in {total / share:.0f} hours away.")
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -461,3 +634,5 @@ if __name__ == "__main__":
     report_ownership()
     report_energy()
     report_pace()
+    report_carry()
+    report_training()

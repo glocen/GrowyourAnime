@@ -148,13 +148,20 @@ function Fight.Damage(health: number, amount: number): (number, boolean)
 	return left, left <= 0
 end
 
--- Health after `seconds` of healing. `since` is how long since it last took a hit; healing starts After that, and never
--- while an enemy is `engaged` with it (research's read of TR2's fixes, 2026-11-12).
-function Fight.Heal(health: number, maxHealth: number, since: number, seconds: number, heal: { After: number, PerSecond: number }, engaged: boolean): number
-	if engaged or since < heal.After or health <= 0 or not (seconds > 0) then
+-- Health after `seconds` of healing at `perSecond`: its Regen, always, in a fight too, and on its own plot what heals it
+-- to full in Combat.Lead.Home.Full seconds (docs/design.md, "Health carries"). Never past the most; a body that's down
+-- stays down; a bad rate or time does nothing.
+function Fight.Regen(health: number, maxHealth: number, perSecond: number, seconds: number): number
+	if health <= 0 or not (perSecond > 0) or perSecond == math.huge or not (seconds > 0) or seconds == math.huge then
 		return health
 	end
-	return math.min(maxHealth, health + maxHealth * heal.PerSecond * seconds)
+	return math.min(maxHealth, health + perSecond * seconds)
+end
+
+-- What a lead heals a second: its Regen, and on its own plot (`home`) what takes it from nothing to full in `full`
+-- seconds besides.
+function Fight.RegenRate(regen: number, maxHealth: number, home: boolean, full: number): number
+	return math.max(0, regen) + (if home and full > 0 then maxHealth / full else 0)
 end
 
 -- Health after a hit's heal of `share` of the most (Actions.Hit.Heal): never past the most, and a body that's down

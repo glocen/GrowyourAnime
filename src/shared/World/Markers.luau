@@ -57,6 +57,17 @@ function Markers.At(marker: Instance): CFrame
 	error(`marker {marker:GetFullName()} is neither a part nor a model`)
 end
 
+-- Whether `position` stands over plot `plot`'s floor (its "Plot" marker), at any height: a player's home, for the
+-- HUD's chips and a lead's heal at home (docs/design.md, "Health carries"). No plot, no floor, or no position: false.
+function Markers.OnPlot(plot: number?, position: Vector3?): boolean
+	local floor = if plot then Markers.Find("Plot", { Plot = plot }) else nil
+	if floor == nil or not floor:IsA("BasePart") or position == nil then
+		return false
+	end
+	local offset = floor.CFrame:PointToObjectSpace(position)
+	return math.abs(offset.X) <= floor.Size.X / 2 and math.abs(offset.Z) <= floor.Size.Z / 2
+end
+
 -- Marks `item` as a `name` marker with `attributes`, each checked against the contract.
 function Markers.Stamp(item: Instance, name: string, attributes: { [string]: any }?)
 	local s = spec(name)

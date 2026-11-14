@@ -38,9 +38,9 @@ return {
 		CatchUpFrom = 18,
 		TeleportFrom = 90, -- past this it reappears at the avatar's side
 		DownSeconds = 4, -- down, then up at the avatar's side at full health, with nothing lost
-		-- It heals After seconds from the last hit it took, PerSecond of its health a second, but never while a Shade is
-		-- engaged with it: so it walks into the next pack whole (research's read of TR2's fixes, 2026-11-12; tier 2).
-		Heal = { After = 2, PerSecond = 0.25 },
+		-- Health carries (TR12; docs/design.md): a lead heals only its Regen a second (Config.Stats.Regen), in a fight or
+		-- out; on its own plot it heals from nothing to full in Home.Full seconds besides. Research's seed, 2026-11-14.
+		Home = { Full = 30 },
 	},
 
 	-- Shades (docs/test-requests.md, TR2, "the builder's read"): a pack notices a lead within 20 studs and gives up past 40

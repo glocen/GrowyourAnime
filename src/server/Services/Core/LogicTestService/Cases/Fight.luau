@@ -375,14 +375,42 @@ return {
 			for _, bad in { 0, -5, 0 / 0, math.huge } do
 				t.Equal(`{bad} does nothing`, (Fight.Damage(100, bad)), 100)
 			end
-			local heal = Combat.Lead.Heal
-			t.Equal("just hit, no healing", Fight.Heal(50, 100, heal.After - 0.01, 1, heal, false), 50)
-			t.Check("After seconds from the last hit taken, a share a second", near(Fight.Heal(50, 100, heal.After, 1, heal, false), 50 + 100 * heal.PerSecond))
-			t.Equal("never while an enemy is engaged with it", Fight.Heal(50, 100, 60, 1, heal, true), 50)
-			t.Equal("never past the maximum", Fight.Heal(99, 100, 60, 60, heal, false), 100)
-			t.Equal("down, no healing", Fight.Heal(0, 100, 60, 1, heal, false), 0)
+			-- Health carries (TR12): its Regen a second, the same in a fight as out of one; nothing waits for a quiet moment.
+			local regen = 20
+			t.Equal("its Regen a second", Fight.Regen(50, 1000, regen, 1), 70)
+			t.Check("frame by frame as by the second", near(Fight.Regen(50, 1000, regen, 1 / 60), 50 + regen / 60))
+			t.Equal("never past the maximum", Fight.Regen(990, 1000, regen, 60), 1000)
+			t.Equal("down, no healing", Fight.Regen(0, 1000, regen, 1), 0)
+			for _, bad in { 0, -5, 0 / 0, math.huge } do
+				t.Equal(`a rate of {bad} does nothing`, Fight.Regen(50, 1000, bad, 1), 50)
+				t.Equal(`a time of {bad} does nothing`, Fight.Regen(50, 1000, regen, bad), 50)
+			end
 			t.Check("a new maximum keeps the share", near(Fight.Rescale(40, 80, 200), 100))
 			t.Equal("from nothing, full", Fight.Rescale(0, 0, 200), 200)
+		end,
+	},
+	{
+		-- TR12, "Health carries" (docs/design.md, "Combat"): away from its plot a lead heals its Regen alone, so a pack's
+		-- damage stays; on its plot, from nothing to full in about Home.Full seconds.
+		Name = "Fight: TR12, a lead heals its Regen alone away from home, and to full in about 30 s on its plot",
+		Run = function(t: any)
+			local full = Combat.Lead.Home.Full
+			t.Check("home's heal is about 30 s", full >= 20 and full <= 40, `{full}`)
+			local regen, most = 20, 1000
+			t.Equal("away from home: its Regen alone", Fight.RegenRate(regen, most, false, full), regen)
+			t.Check("at home: nothing to full in Home.Full seconds besides", near(Fight.RegenRate(regen, most, true, full), regen + most / full))
+			t.Equal("a bad Regen adds nothing", Fight.RegenRate(-5, most, false, full), 0)
+			local function heal(home: boolean, seconds: number): number
+				local health, frame = 1, 1 / 60
+				for _ = 1, math.floor(seconds / frame + 0.5) do
+					health = Fight.Regen(health, most, Fight.RegenRate(regen, most, home, full), frame)
+				end
+				return health
+			end
+			t.Check("at home: full by Home.Full", heal(true, full) == most, string.format("%.1f", heal(true, full)))
+			t.Check("and not long before it", heal(true, full * 0.6) < most, string.format("%.1f", heal(true, full * 0.6)))
+			local away = heal(false, full)
+			t.Check("away, the same time heals only its Regen's worth", near(away, 1 + regen * full, 1e-6), string.format("%.1f", away))
 		end,
 	},
 	{

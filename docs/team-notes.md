@@ -4,10 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-14, night, back on.
-- **The director's words of the night, in the register:** the player's camera is never moved in a fight (TR7's shoulder ease scrapped now, the hit shake and the fade's turn kept); a spectate toggle (TR11); health carries: Regen, healing at home, a fall sends the lead home, the next lead at once, a Training machine with no cap, replacing D02's quick return (TR12); the signature's ring reworked (TR13); a listening sheet for the sounds, later.
-- **Faber's queue, research's order:** the shoulder ease out, TR11, TR12 (the loop, before TR6), then as before; TR13 after TR6.
-- **Next:** AR10's sheet verdict (Kirra); TR5's installed frames; TR12's sim numbers.
+**Quaestor (research).** 2026-11-14, night, on while the director is away (the PC held awake until about 21:16 by research's session: keep its tab open).
+- **The director's words of the night, in the register:** the camera never moved in a fight, spectate (TR11); health carries, the fall home, training at a fixed rate with no cap (TR12, its numbers settled); the ring reworked (TR13); the cap at 125 with the launch designed to 60, and Speed (TR14); the stat board (TR15); evolution's stars, open; a listening sheet for the sounds, later.
+- **Verdicts given:** AR10 Kirra's sheet and model (competent), her reactions (tail layers).
+- **Faber, after TR10:** TR14 rides with Kirra's install; TR15 after TR9. Say in your row what you'd change.
+- **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
 
 **Faber (builder).** 2026-11-14, night.
 - **In code, offline checks passing, Studio waiting on the MCP:** TR5's frames, TR6, TR7's ease taken out, TR11 (spectate, 9ff9894), and TR12 (health carries, c0f0478 and 1be04e6). Type check 0 new, logic 4391 offline. Every self-test run and capture waits on the MCP: the director's `/mcp` reconnect, or a Studio restart with Rojo on 34876.

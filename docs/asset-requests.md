@@ -4780,7 +4780,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: the sheet and the model delivered and accepted; delivery 3, the clips, blocked and waiting on research's read.
+**Status:** in progress (Modulo), 2026-11-14: the sheet and the model delivered and accepted, the recipe re-delivered with the blades' joints; delivery 3, the clips, timed (section 4), content check PASS, waiting on research's read in motion.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -4834,9 +4834,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
     - The meshes are curved as the S is, so with every Transform at rest the tail floats in the sheet's S.
     - For each joint the recipe gives its pivot, `along` (the band's line) and `across` (its width). A turn about `across` ripples the band; a turn about its face swings it edgewise. A half-disc in each segment's root fills the wedge that a bend opens.
     - Keyed with every chord on one line, which is Scarf Step's straight line, the tail is straight to within 0.08 studs.
-  - **The blades, one piece each.**
-    - In her hand: a wrist Motor6D on the arm, with C0 at `r6rig.GRIP` and C1 the blade's `grip` frame, as the Hero's.
-    - On her back: `stow`, the same frame on the Torso, crossed in the sheaths, where the clips lay them. The empty sheaths are part of the Torso piece.
+  - **The blades, one piece each,** each on a Motor6D of its own on the Torso (`BladeR`, `BladeL`), its pivot at the grip. At rest it sits in its sheath, crossed on her back; a clip that draws it keys it into her fist. The empty sheaths are part of the Torso piece. (Delivered first as a wrist joint on the arm with a `stow` frame; changed at delivery 3, section 3.)
 - **The numbers:**
   - 10,398 triangles in 16 pieces: the torso 2,660 (with the yoke, the satchel and the sheaths), the head 1,098, about 416 for each scarf segment, 244 for each blade.
   - 5.30 studs to the hair's top, and 4.00 wide without the scarf.
@@ -4952,6 +4950,56 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **For the timing:** the Combo's X at 26 shows little from the player's camera, since the blades are thin there. Her cuts get their read from timing and the trails at delivery 4, not from bigger blades.
 - **Work: accepted,** laps of the post, a courier's round. Faber checks the bay's 6 studs at the install, and the run in place is the fallback.
 - **Next:** the Reveal's settle, then the timing.
+
+### 4. The clips: timed (Modulo, 2026-11-14)
+
+- **Where:** `build/scratch/modulo/kirra/clips/export/`, delivered to `build/handoff/Kirra/clips/` on research's yes:
+  - the eight `Kirra_<Clip>.json` and `Kirra.clips.json` (lengths, loops, markers, and the open-set clip each tail layer goes over);
+  - a review pack a clip (`pack_<Clip>.png`, with its notes and audit in `.txt`);
+  - the arcs, one dot a frame for the tail's tip and the blades' points (`arcs_<Clip>.png`);
+  - the bare rig stepped through, aimed at her torso (`bare_<Clip>.png`, the five body clips).
+  - `tools/blender/kirra_clips.py -- <out dir> export` makes them in about 3 minutes, at a 1 GB peak. Its `audit [clip ...]` mode runs alone in 40 seconds.
+- **The recipe, re-delivered** for the blades' joints (section 3; Faber's ask): `build/handoff/Kirra/Kirra.recipe.json`, each blade on the Torso, motor `BladeR` or `BladeL`, its pivot at the grip. The 16 meshes and three maps come out byte for byte delivery 2's; the model sheet's facts line now says the same. `lune run tools/checks/models_offline.luau --recipe Kirra`: ok, 16 pieces built from the recipe alone, the blades and `Kirra_Scarf1` on the Torso, each later segment on the one before.
+- **Research's fix, the Reveal's settle** (3f750a6): from 62 the tail lifts behind her left shoulder and arcs over to her left, its tip falling, a banner in a wind and not a spike. The tail's solver gains `fall`, how far its later links bend straight down, growing to the tip; every other clip keeps 0.
+- **The notched edges: each link turns at most 22° from the one before** (`BEND`), the model's seam test. The blocking's 39° in the fight clips and 70° at Work's tip are gone. A wider turn spreads over more links. The widest is now 22° in every clip, and 23° where TailDown meets the floor.
+- **The draws and the sheathes:** the arm goes straight up and 15° back (`RAISED`, `LIFTED`), and the blade slides up its sheath's line into the fist.
+  - Why: R6's shoulder is a stud from the grip, so the blocking's reach to the grip put the arm 0.6 to 0.77 into her head.
+  - A joint takes the short way round, so an arm sent from low to raised gets a breakdown key (`Take.arm`) and goes up in front of her, not back through her. A drop from raised eases in, then out, with no pop.
+- **The fixes, clip by clip:**
+  - **Combo:** wider stances, and the right foot steps out into the X at 26: the legs no longer cross. The tail holds right until the left draw is done (25), whips left at 31, and flicks up behind her at the sheathe. In the blocking it passed the left arm (−0.24).
+  - **Scarf Step:** the blade stays home until the blink, so it's in her hand as she lands (it went 0.42 into her torso at 13), and the arm goes on through the blink in a line (a 62° limb flip at 15).
+  - **The Reveal:** a breakdown at 63 keeps the drawing arm out of her torso (0.12 before). At the drop the tail streams up and back, off her head.
+  - **Work: nine short steps a lap,** not seven. On so tight a circle a stepping foot keyed along the chord went a stud inward, and the legs crossed by 0.94. Each foot is now keyed along its arc, and the feet sit in line with her lean into the post. The slap reaches the cap ahead of her, with half-way poses either side (before, the arm twisted 0.09 into her torso).
+- **`rook_clips.py`'s ground(), two fixes** (915b2a8) that only Kirra's clips showed:
+  - each frame is solved with the root where it stands then, where before every frame took the root at the last frame sampled (the blocking's Scarf Step 16 and 40 were mis-solved by it);
+  - a loop's foot speed is read across its seam (Work's seam was 1.17°).
+  - Rook's, Pip's, Lyric's and the Lamplighter's delivered clips don't change: a still root solves the same, and a loop would change only at its seam frames, if re-exported.
+- **The numbers** (60 fps):
+  - Idle 241 frames, 4.00 s, a loop;
+  - Combo 101, 1.67 s: **Dash** 0, **Hit1** 12, **Hit2** 26, **Hit3** 56, **Sheathe** 64;
+  - Scarf Step 97, 1.60 s: **Blink** 13, **Land** 16, **Cut** 18;
+  - Reveal 151, 2.50 s: **Land** 14, **Name** 100;
+  - Work 217, 3.60 s, a loop of two 108-frame laps: **Pump** 36 and 144;
+  - TailHit 19 (0.30 s), TailDown 67 (1.10 s, **Land** 34), TailUp 55 (0.90 s), each checked against the open set's frames on load.
+- **Checks, my own:**
+  - r6parity's audit: **PASS on all eight.**
+  - At their closest: legs cross 0.062 (Combo; limit 0.10), an arm in the body 0.049 (Scarf Step; 0.05), a leg out of the hip 0.085 (Scarf Step; 0.10), salute held 0.05 s (Combo, the arm rising; 0.1), a nod of 27° (30). Seams 0°.
+  - The tail never enters her. At its nearest it's 0.03 from Scarf Step's left arm, 0.04 from the Reveal's head, and 0.09 from the Combo's left arm.
+  - A drawn blade at its nearest: 0.41 off the right leg and 0.56 off her head (Combo). A blade at home reads −0.20 to −0.23 against the head's box, which is wider than her hair (as in the blocking).
+- **For research, in motion:**
+  - From the front, the Reveal's draw at 60 shows the arm straight up beside her head for about 4 frames.
+  - The packs' bare tiles of Work at 36 and 60 fall off her; `bare_Work.png` covers the clip.
+- **For Faber, at the install:**
+  - Her kit: Signature `KirraScarfStep`, Combo `KirraCombo`, Idle `KirraIdle`; with `KirraReveal`, `KirraWork`, and the layers `KirraTailHit`, `KirraTailDown` and `KirraTailUp` over the open set (section 2, research's call on the reactions).
+  - Work keeps her root still. The post stands 3 studs ahead of the root and 0.3 to its right, about 2.9 tall (the palm reaches 3.0). She needs about 6 studs clear round it, and the run in place is the fallback.
+  - The blend over the idle with the game's fades, and the game's own dump against the export, are yours at the install, as Rook's were.
+  - Section 3's question on the Combo's dash stands.
+- **Time:** the timing took about 45 minutes, from the Reveal's fix (13:48 local) to the export (14:33). The close took about 15 more: the recipe, the content check and this entry. With the blocking and the cloth fix, the clips took about 1 hour 40. On Opus 5.5 xhigh. Pip's clips took about 6 hours, the Lamplighter's 1 hour 15.
+- **Content check, 2026-11-14: PASS, no conditions.** It covered all eight packs and their notes, the arcs, the five bare sheets, `Kirra.clips.json` and the performance lines, against rules 2, 3 and 4 and Roblox's, with the names checked against `docs/ip-list.md`.
+  - The raised arm points back, about 105° off her facing, and stays up 2 to 5 frames. It passes the salute band moving, for at most 0.05 s.
+  - The Combo's frame 0 reads as a sprinting lunge.
+  - The scarf on the floor reads as cloth.
+- **Four facts:** timed; self-reviewed, with the numbers above; content check PASS. The recipe is delivered. The clips wait on research's read in motion before delivery. Not accepted.
 
 ## Later, by ground
 

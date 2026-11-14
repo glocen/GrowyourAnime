@@ -120,32 +120,17 @@
     0.22
    ],
    "tris": 244,
-   "wrist": {
-    "arm": "Right Arm",
-    "motor": "GripR"
-   },
+   "on": "Torso",
+   "motor": "BladeR",
+   "pivot": [
+    0.5914,
+    4.204,
+    0.68
+   ],
    "grip": {
     "at": [
      0.5914,
      4.204,
-     0.68
-    ],
-    "length": [
-     -0.6083,
-     -0.7937,
-     -0.0
-    ],
-    "back": [
-     -0.7937,
-     0.6083,
-     -0.0
-    ]
-   },
-   "stow": {
-    "on": "Torso",
-    "at": [
-     0.5914,
-     1.204,
      0.68
     ],
     "length": [
@@ -174,32 +159,17 @@
     0.22
    ],
    "tris": 244,
-   "wrist": {
-    "arm": "Left Arm",
-    "motor": "GripL"
-   },
+   "on": "Torso",
+   "motor": "BladeL",
+   "pivot": [
+    -0.5914,
+    4.204,
+    0.84
+   ],
    "grip": {
     "at": [
      -0.5914,
      4.204,
-     0.84
-    ],
-    "length": [
-     0.6083,
-     -0.7937,
-     -0.0
-    ],
-    "back": [
-     -0.7937,
-     -0.6083,
-     -0.0
-    ]
-   },
-   "stow": {
-    "on": "Torso",
-    "at": [
-     -0.5914,
-     1.204,
      0.84
     ],
     "length": [
@@ -487,7 +457,7 @@
   "note": "The tail is a chain: each segment rides a Motor6D at its root, named as the piece, on the segment before it (the first on the Torso, at the knot), so they're made root to tip. A joint's frame is its pivot with the model's axes at rest, as Pip's. With every Transform at rest the tail floats in its S. 'along' is the band's line at the pivot and 'across' its width: a turn about 'across' ripples the band, one about its face swings it edgewise, and a half-disc in each segment fills the wedge that opens. Keyed with every segment's chord on one line (Scarf Step), the scarf is straight to within 'straight_within' studs. The clips key the shapes they mean; whether a spring in code trails it through the world between them is the builder's call (a clip can't see her run). It casts a shadow."
  },
  "blades": {
-  "note": "Each blade is one piece. In her hand: a wrist Motor6D on the arm (r6rig.WRISTS), C0 r6rig.GRIP (0, -1, 0 on the arm, the grip's axes), C1 the blade's 'grip' frame with its 'length' on the grip's +Y and its 'back' (the spine) on +Z, so unkeyed it points ahead out of the fist, edge down, as the Hero's right hand holds. In its sheath: 'stow' is the same frame on the Torso, crossed on her back, where the clips lay it (r6anim.stow). The export has each mesh in its sheath; the empty sheaths are on the Torso piece."
+  "note": "Each blade is one piece on a Motor6D of its own on the Torso, named in 'motor', its frame at 'pivot' (the grip's middle) with the model's axes at rest, as the scarf's joints are. With its Transform at rest it sits in its sheath, crossed on her back; a clip that draws it keys it into her fist frame by frame, wherever the hand is, and puts it back. A clip that never keys it (the shared walk, the open reactions) leaves it home. 'grip' is the blade's frame at rest: 'length' from pommel to point, 'back' its spine. The empty sheaths are on the Torso piece."
  },
  "points": [
   {

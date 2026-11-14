@@ -11,7 +11,7 @@
 --   LeadCard.Kind(card, type, class)      the stud's gem and the class mark
 --   LeadCard.Name(card, text)             the name, its tab cut to fit it
 --   LeadCard.Fill(bar, share)             a light's share, 0 to 1 (card.Health, card.Xp, a target card's Health)
--- UI.TargetCard is built from the same parts: Lay, Image, Light, Stud and Digits below.
+-- UI.TargetCard is built from the same parts: Lay, Image, Light, Relight, Stud and Digits below.
 
 local TextService = game:GetService("TextService")
 
@@ -76,22 +76,28 @@ local function image(parent: Instance, name: string, kit: string, z: number, ori
 	return made
 end
 
--- A light in its slot: `row` is its top edge (its left end, its y, its right end when full) and its height; `from`, its
--- empty point along that edge (the lead's: the frame's right side, its left end under the frame).
-local function light(card: Frame, name: string, kit: string, row: { number }, from: number, z: number): Frame
+-- A light's slot and art: `row` is its top edge (its left end, its y, its right end when full) and its height; `from`, its
+-- empty point along that edge (the lead's: the frame's right side, its left end under the frame). Laid again at the next
+-- Fill (an elite's card swaps its light for the elite's, taller: UI.TargetCard).
+local function relight(bar: Frame, kit: string, row: { number }, from: number)
 	local y, right, h = row[2], row[3], row[4]
-	local bar = Instance.new("Frame")
-	bar.Name = name
-	bar.BackgroundTransparency = 1
 	bar.Position = UDim2.fromOffset(from, y) -- the share that shows: the empty point to the light's full end
 	bar.Size = UDim2.fromOffset(right - from, h)
-	bar.ZIndex = z
 	bar:SetAttribute("Kit", kit)
 	bar:SetAttribute("Share", -1)
 	bar:SetAttribute("Left", row[1])
 	bar:SetAttribute("Right", right)
 	bar:SetAttribute("From", from)
 	bar:SetAttribute("Height", h)
+end
+
+-- A light in its slot (relight, above).
+local function light(card: Frame, name: string, kit: string, row: { number }, from: number, z: number): Frame
+	local bar = Instance.new("Frame")
+	bar.Name = name
+	bar.BackgroundTransparency = 1
+	bar.ZIndex = z
+	relight(bar, kit, row, from)
 	bar.Parent = card
 	local lit = Instance.new("ImageLabel")
 	lit.Name = "Light"
@@ -159,6 +165,7 @@ end
 LeadCard.Lay = at
 LeadCard.Image = image
 LeadCard.Light = light
+LeadCard.Relight = relight
 LeadCard.Stud = stud
 LeadCard.Digits = digits
 

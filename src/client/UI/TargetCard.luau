@@ -8,10 +8,12 @@
 --   TargetCard.new(parent, position)      the card, hidden; its top centre at `position`
 --   TargetCard.Name(card, name, level)    the name and the level, the tab cut to fit them
 --   TargetCard.ArrowAt                    the type edge's arrow's centre, in the card's points
---   TargetCard.Elite(card, on, share)     an elite's heavier frame, in grey (TR5's variant C; Config.Hud.Boss): a thicker
---                                         line round the blade, a crest notch on its top, the word Elite in the tab after
---                                         the level, in the card's ink (research's verdict, 2026-11-14, fix 3), and the
---                                         health thickened by a strip under the light at its share
+--   TargetCard.Elite(card, on)            an elite's card (TR5's variant C), in Modulo's frames (TR5, "Modulo's frames,
+--                                         delivered"; Config.UIKit's CardTargetElite* images and EliteCard): its blade 6
+--                                         taller with its light 23 high, the stud moved down with it, the heavier frame
+--                                         round the blade in Config.Hud.Boss.EliteFrame, and at the blade's right end a tab
+--                                         of its own with the crest notch and the word Elite in the card's ink (research's
+--                                         verdict, 2026-11-14, fix 3). The name's tab ends before it. Off, the plain card.
 
 local TextService = game:GetService("TextService")
 
@@ -34,6 +36,7 @@ export type Card = {
 local TargetCard = {}
 
 local T = UIKit.TargetCard
+local E = UIKit.EliteCard -- an elite's, in the same points
 local L = UIKit.LeadCard
 local ORIGIN = -T.Offset -- where the shared images, placed in the lead's points, land in this card's
 local TAB_TOP, TAB_FOOT, TAB_LEFT = L.Tab[1], L.Tab[2], L.Tab[4] -- the lead's points: its top, its foot, its top's left end
@@ -99,43 +102,44 @@ function TargetCard.new(parent: Instance, position: UDim2): Card
 end
 
 -- The name and the level after it, and the tab cut to fit both: measured at the sizes the labels draw (they grow on a
--- small phone). Nothing when unchanged.
+-- small phone). On an elite's card the name's tab ends by the Elite tab (Config.UIKit.EliteCard.NameTabEnd), so its name
+-- holds what's left. The tab's top edge's right end is the card's TabEnd attribute, in its points. Nothing when unchanged.
 function TargetCard.Name(card: Card, text: string, level: string)
-	local holder = card.Frame:FindFirstChild("Elite")
-	local word = if holder and (holder :: Frame).Visible then holder:FindFirstChild("Word") :: TextLabel? else nil
-	local key = `{text}\0{level}\0{card.Name.TextSize}\0{word ~= nil}`
+	local elite = card.Frame:GetAttribute("Elite") == true
+	local key = `{text}\0{level}\0{card.Name.TextSize}\0{elite}`
 	if card.Frame:GetAttribute("Fitted") == key then
 		return
 	end
 	card.Frame:SetAttribute("Fitted", key)
 	card.Name.Text = text
 	card.Level.Text = level
-	local wide = math.min(TextService:GetTextSize(text, card.Name.TextSize, NAME_FONT, Vector2.new(1000, 100)).X, NAME_ROOM)
 	local after = TextService:GetTextSize(level, card.Level.TextSize, LEVEL_FONT, Vector2.new(1000, 100)).X
+	local room = NAME_ROOM
+	if elite then
+		local most = E.NameTabEnd - T.Offset.X - TAB_LEFT -- the tab's top edge's longest, in the lead's points
+		room = math.max(0, math.min(NAME_ROOM, most - (NAME_X - TAB_LEFT) - GAP - after - TAB_AFTER))
+	end
+	card.Name.Size = UDim2.fromOffset(room, card.Name.Size.Y.Offset)
+	local wide = math.min(TextService:GetTextSize(text, card.Name.TextSize, NAME_FONT, Vector2.new(1000, 100)).X, room)
 	card.Level.Position = UDim2.fromOffset(NAME_X + wide + GAP + T.Offset.X, card.Level.Position.Y.Offset)
 	local reach = NAME_X + wide + GAP + after + TAB_AFTER - TAB_LEFT -- the tab's top edge's width, in the lead's points
-	if word then -- an elite's word after the level
-		local wordWide = TextService:GetTextSize(word.Text, word.TextSize, NAME_FONT, Vector2.new(1000, 100)).X + 2
-		word.Size = UDim2.fromOffset(wordWide, word.Size.Y.Offset)
-		word.Position = UDim2.fromOffset(NAME_X + wide + GAP + after + GAP + T.Offset.X, word.Position.Y.Offset)
-		reach += GAP + wordWide
-	end
 	local run = (TAB_FOOT - TAB_TOP) * L.Slant
 	local size = Vector2.new(reach + run, TAB_FOOT - TAB_TOP)
 	for _, name in { "Tab", "TabRim" } do
 		LeadCard.Lay(card.Frame:FindFirstChild(name) :: ImageLabel, `Card{name}`, ORIGIN, size)
 	end
+	card.Frame:SetAttribute("TabEnd", TAB_LEFT + reach + T.Offset.X)
 end
 
--- C's grey block over the card: built the first time it's asked for, then shown or hidden.
-local function eliteFrame(card: Card): Frame
+-- An elite's own parts, built hidden the first time they're asked for: the heavier frame under the name's tab, and the
+-- Elite tab, its rim and its word over the rest (the holder named Elite).
+local function eliteParts(card: Card): (ImageLabel, Frame)
 	local found = card.Frame:FindFirstChild("Elite")
 	if found and found:IsA("Frame") then
-		return found
+		return card.Frame:FindFirstChild("EliteFrame") :: ImageLabel, found
 	end
-	local look = HudConfig.Boss.Frame
-	local grey = HudConfig.Boss.Grey
-	local left, top, right, foot = T.Housing[1], T.Housing[2], T.Housing[3], T.Housing[4] + look.Under
+	local frame = LeadCard.Image(card.Frame, "EliteFrame", "CardTargetEliteFrame", 3, ORIGIN)
+	frame.Visible = false
 	local holder = Instance.new("Frame")
 	holder.Name = "Elite"
 	holder.BackgroundTransparency = 1
@@ -143,64 +147,46 @@ local function eliteFrame(card: Card): Frame
 	holder.ZIndex = 7
 	holder.Visible = false
 	holder.Parent = card.Frame
-	local line = Instance.new("Frame")
-	line.Name = "Line"
-	line.BackgroundTransparency = 1
-	line.Position = UDim2.fromOffset(left - 2, top - 2)
-	line.Size = UDim2.fromOffset(right - left + 4, foot - top + 4)
-	line.ZIndex = 7
-	line.Parent = holder
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = grey
-	stroke.Thickness = look.Stroke
-	stroke.Parent = line
-	local notch = Instance.new("Frame")
-	notch.Name = "Notch"
-	notch.BackgroundColor3 = grey
-	notch.BorderSizePixel = 0
-	notch.AnchorPoint = Vector2.new(0.5, 0.5)
-	notch.Position = UDim2.fromOffset((left + right) / 2, top - 2)
-	notch.Size = UDim2.fromOffset(look.Notch, look.Notch)
-	notch.Rotation = 45
-	notch.ZIndex = 8
-	notch.Parent = holder
-	local word = Text.new({ -- in the tab after the level, laid by TargetCard.Name
+	LeadCard.Image(holder, "EliteTab", "CardTargetEliteTab", 1, ORIGIN)
+	local rim = LeadCard.Image(holder, "EliteTabRim", "CardTargetEliteTabRim", 2, ORIGIN)
+	rim.ImageColor3 = HudConfig.Card.TargetTrim
+	local tab = E.Tab -- its top's left and right, its foot's right and left
+	local word = Text.new({
 		Name = "Word",
 		Size = Theme.Text.Caption,
 		Font = Theme.Font.Strong,
-		Box = UDim2.fromOffset(40, TAB_FOOT - TAB_TOP - 2.4),
-		Position = UDim2.fromOffset(0, TAB_TOP + T.Offset.Y),
+		Align = Enum.TextXAlignment.Center,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Box = UDim2.fromOffset(tab[2].X - tab[1].X, TAB_FOOT - TAB_TOP - 2.4),
+		Position = UDim2.fromOffset(E.Word.X, E.Word.Y),
 		Parent = holder,
 	})
 	word.Text = "Elite"
-	word.ZIndex = 8
-	local h = T.Health
-	local under = Instance.new("Frame")
-	under.Name = "Under"
-	under.BackgroundColor3 = Theme.Colour.Channel
-	under.BorderSizePixel = 0
-	under.Position = UDim2.fromOffset(h[1], h[2] + h[4])
-	under.Size = UDim2.fromOffset(h[3] - h[1], look.Under)
-	under.ZIndex = 7
-	under.Parent = holder
-	local fill = Instance.new("Frame")
-	fill.Name = "Fill"
-	fill.BackgroundColor3 = HudConfig.Boss.EliteHealth
-	fill.BorderSizePixel = 0
-	fill.Size = UDim2.fromScale(1, 1)
-	fill.ZIndex = 7
-	fill.Parent = under
-	return holder
+	word.ZIndex = 3
+	return frame, holder
 end
 
-function TargetCard.Elite(card: Card, on: boolean, share: number)
-	local holder = eliteFrame(card)
-	if holder.Visible ~= on then
-		holder.Visible = on
-		card.Frame:SetAttribute("Fitted", nil) -- the tab fits the word, or lets it go
+function TargetCard.Elite(card: Card, on: boolean)
+	local frame, holder = eliteParts(card)
+	if card.Frame:GetAttribute("Elite") == on then
+		return
 	end
-	local fill = (holder:FindFirstChild("Under") :: Frame):FindFirstChild("Fill") :: Frame
-	fill.Size = UDim2.fromScale(math.clamp(if share == share then share else 0, 0, 1), 1)
+	card.Frame:SetAttribute("Elite", on)
+	card.Frame:SetAttribute("Fitted", nil) -- the name's tab makes room for the Elite tab, or takes it back
+	holder.Visible = on
+	frame.Visible = on
+	frame.ImageColor3 = HudConfig.Boss.EliteFrame
+	-- The blade, its light and the stud: the elite's or the plain card's. The card's box follows its blade's foot.
+	local shape = if on then E else T
+	local box = shape.Housing
+	local length = Vector2.new(box[3] - box[1], box[4] - box[2])
+	for _, name in { "Housing", "HousingRim" } do
+		LeadCard.Lay(card.Frame:FindFirstChild(name) :: ImageLabel, `CardTarget{if on then "Elite" else ""}{name}`, ORIGIN, length)
+	end
+	LeadCard.Relight(card.Health, if on then "CardLightHealthElite" else "CardLightHealth", shape.Health, shape.FillFrom)
+	local stud = card.Gem.Parent :: Frame
+	stud.Position = UDim2.fromOffset(shape.Stud.X, shape.Stud.Y)
+	card.Frame.Size = UDim2.fromOffset(shape.Size.X, shape.Size.Y)
 end
 
 return TargetCard

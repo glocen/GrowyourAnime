@@ -4,10 +4,14 @@
 -- light too else we see nothing"). Its title small between two thin rules, each ending in a diamond; its name large, its
 -- type's gem before it and its level after, the name in the keeper's purple lit from above (the director, 2026-11-14: "not
 -- white"); one framed bar in the keeper's purple, lit from above, on a faint glow, a pale
--- trail behind the fill that holds a moment after a hit and drains, a diamond cap at each end; its health in the bar's
+-- trail behind the fill that holds a moment after a hit and drains, a faceted cap at each end; its health in the bar's
 -- middle, and no mark across it (the director, 2026-11-14: "remove the middle crystal", "the hp text value ... in the
 -- center"). Nothing below the bar (research's verdict on the grey block, 2026-11-14, fixes 1 and 2: the bar about twice
 -- as thick, its number on it, nothing of it over the keeper).
+-- Its line art is Modulo's (TR5, "Modulo's frames, delivered"; Config.UIKit's Boss* images and BossBar, drawn by
+-- tools/blender/boss_hud_art.py), white and tinted Config.Hud.Boss.Rim: the bar's rim, sliced to the channel; its two caps,
+-- scaled with the bar's height; the title's two tapering rules with their diamond tips, sliced across; the crest over the
+-- title's middle, standing above the title row's top.
 -- B, the top middle (the director's pick, 2026-11-14): in the band's middle, the target card's place, as wide as the room
 -- between the lead's card and the pills (HudController measures it). A, at the foot: wide across the bottom centre (the
 -- dock steps out for the try: HudController). The name stamps on as the keeper's Challenge lands (its Stamp beat), the
@@ -31,6 +35,7 @@ local Grounds = require(Shared.Definitions.Grounds)
 local Hud = require(Shared.Rules.Hud)
 local Theme = require(script.Parent.Theme)
 local Text = require(script.Parent.Kit.Text)
+local Skin = require(script.Parent.Kit.Skin)
 
 type Fade = { Object: Instance, Property: string, Base: number, Name: boolean }
 
@@ -38,7 +43,8 @@ export type Bar = {
 	Frame: Frame, -- the bar and its number: a piece of the HUD of its own
 	Head: Frame, -- the title and the name, another
 	Title: TextLabel,
-	Rules: { Frame }, -- the title's two rules
+	Rules: { ImageLabel }, -- the title's two rules
+	Crest: ImageLabel, -- over the title's middle
 	NameRow: Frame, -- the gem, the name and the level, stamped on together
 	NameScale: UIScale,
 	Gem: ImageLabel,
@@ -47,11 +53,12 @@ export type Bar = {
 	Number: TextLabel,
 	Glow: Frame,
 	Channel: Frame,
+	Rim: ImageLabel, -- the channel's rim, over the fill's edge
 	Trail: Frame,
 	Fill: Frame,
 	Shine: Frame,
 	ShineGradient: UIGradient,
-	Caps: { Frame },
+	Caps: { ImageLabel },
 	Fades: { Fade },
 	Keeper: Model?, -- the one it shows
 	Done: Model?, -- the one it last showed out: never opened again
@@ -76,9 +83,10 @@ local TITLE = 16 -- the title's row, authored pixels
 local GEM, GAP = 20, 6 -- the type's gem; between the gem, the name and the level
 local INSET = 9 -- the bar's ends in from the piece's, room for its caps
 local GLOW = 4 -- the glow past the bar, above and below
-local CAP, RULE_CAP = 0.66, 5 -- the diamonds' sides: the caps' of the bar's height, the rules' tips'
-local RULE = 1.5 -- the rules' thickness
-local RULE_GAP = 8 -- between a rule and the title
+local ART = UIKit.BossBar -- the frames as drawn: the bar's height they were drawn for, a cap's box, the crest's
+local RULES = { "BossTitleRuleLeft", "BossTitleRuleRight" }
+local RULE_GAP = 8 -- between a rule's taper and the title
+local CREST_INTO = 2 -- the crest's foot this far into the title row's top
 local EDGE = 0.25 -- the dark edge's transparency on the words
 local DARK = Theme.Colour.Backing
 local NAME_FONT = Enum.Font.BuilderSansBold -- Theme.Font.Strong, for measuring
@@ -124,24 +132,19 @@ function BossBar.new(parent: Instance): Bar
 		fade(label, "TextTransparency", 0, name)
 		fade(edge, "Transparency", EDGE, name)
 	end
-	-- A diamond: a square turned a quarter, in the rim's lilac, with a dark hairline so it reads on a pale floor.
-	local function diamond(holder: Instance, name: string, side: number, z: number): Frame
-		local d = Instance.new("Frame")
-		d.Name = name
-		d.AnchorPoint = Vector2.new(0.5, 0.5)
-		d.Size = UDim2.fromOffset(side, side)
-		d.Rotation = 45
-		d.BackgroundColor3 = boss.Rim
-		d.BorderSizePixel = 0
-		d.ZIndex = z
-		d.Parent = holder
-		local line = Instance.new("UIStroke")
-		line.Color = DARK
-		line.Thickness = 1
-		line.Parent = d
-		fade(d, "BackgroundTransparency", look.Rim)
-		fade(line, "Transparency", 0.45)
-		return d
+	-- One of Modulo's frames, white tinted the rim's lilac; its dark hairline is baked in, so it reads on a pale floor.
+	-- Laid where `lay` and `fit` put it.
+	local function art(holder: Instance, name: string, kit: string, z: number, base: number): ImageLabel
+		local image = Instance.new("ImageLabel")
+		Skin.Set(image, kit, {})
+		image.Name = name
+		image.BackgroundTransparency = 1
+		image.BorderSizePixel = 0
+		image.ImageColor3 = boss.Rim
+		image.ZIndex = z
+		image.Parent = holder
+		fade(image, "ImageTransparency", base)
+		return image
 	end
 
 	local frame = Instance.new("Frame")
@@ -155,27 +158,14 @@ function BossBar.new(parent: Instance): Bar
 	head.Visible = false
 	head.Parent = parent
 
-	-- The title between its rules.
+	-- The title between its rules, the crest over its middle: one ornament.
 	local title = Text.new({ Name = "Title", Size = Theme.Text.Caption, Colour = boss.Title, Align = Enum.TextXAlignment.Center, Parent = head })
 	edged(title, 1.5)
-	local rules: { Frame } = {}
-	for i = 1, 2 do
-		local rule = Instance.new("Frame")
-		rule.Name = `Rule{i}`
-		rule.AnchorPoint = Vector2.new(if i == 1 then 0 else 1, 0.5)
-		rule.BackgroundColor3 = boss.Rim
-		rule.BorderSizePixel = 0
-		rule.Parent = head
-		local line = Instance.new("UIStroke")
-		line.Color = DARK
-		line.Thickness = 1
-		line.Parent = rule
-		fade(rule, "BackgroundTransparency", look.Rule)
-		fade(line, "Transparency", 0.6)
-		local tip = diamond(rule, "Tip", RULE_CAP, 2)
-		tip.Position = UDim2.fromScale(if i == 1 then 0 else 1, 0.5)
-		table.insert(rules, rule)
+	local rules: { ImageLabel } = {}
+	for i, kit in RULES do
+		table.insert(rules, art(head, `Rule{i}`, kit, 1, look.Rule))
 	end
+	local crest = art(head, "Crest", "BossTitleCrest", 2, look.Rule)
 
 	-- The gem, the name and the level, one row that stamps on.
 	local row = Instance.new("Frame")
@@ -201,7 +191,7 @@ function BossBar.new(parent: Instance): Bar
 	local level = Text.new({ Name = "Level", Size = Theme.Text.Caption, Colour = HudConfig.Card.Level, Parent = row })
 	edged(level, 1.5, true)
 
-	-- The bar: its glow, its channel and rim, the trail, the fill lit from above, the shine; its caps and phase marks.
+	-- The bar: its glow, its channel, the trail, the fill lit from above, the shine; its rim and its caps over them.
 	local glow = Instance.new("Frame")
 	glow.Name = "Glow"
 	glow.BackgroundColor3 = boss.Health
@@ -227,13 +217,6 @@ function BossBar.new(parent: Instance): Bar
 	channel.ZIndex = 2
 	channel.Parent = frame
 	fade(channel, "BackgroundTransparency", look.Channel)
-	local rim = Instance.new("UIStroke")
-	rim.Name = "Rim"
-	rim.Color = boss.Rim
-	rim.Thickness = 1.5
-	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	rim.Parent = channel
-	fade(rim, "Transparency", look.Rim)
 	local trail = Instance.new("Frame")
 	trail.Name = "Trail"
 	trail.BackgroundColor3 = boss.Trail
@@ -275,7 +258,9 @@ function BossBar.new(parent: Instance): Bar
 		NumberSequenceKeypoint.new(1, 1),
 	})
 	sweep.Parent = shine
-	local caps = { diamond(frame, "CapLeft", 1, 5), diamond(frame, "CapRight", 1, 5) }
+	-- The rim over the channel and all in it (its dark inner line lies over the fill's edge), the caps over the rim.
+	local rim = art(frame, "Rim", "BossBarRim", 4, look.Rim)
+	local caps = { art(frame, "CapLeft", "BossBarCap", 5, look.Rim), art(frame, "CapRight", "BossBarCap", 5, look.Rim) }
 	local number = Text.new({ Name = "Number", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Center, Parent = frame })
 	number.ZIndex = 6
 	edged(number, 1.5)
@@ -285,6 +270,7 @@ function BossBar.new(parent: Instance): Bar
 		Head = head,
 		Title = title,
 		Rules = rules,
+		Crest = crest,
 		NameRow = row,
 		NameScale = scale,
 		Gem = gem,
@@ -293,6 +279,7 @@ function BossBar.new(parent: Instance): Bar
 		Number = number,
 		Glow = glow,
 		Channel = channel,
+		Rim = rim,
 		Trail = trail,
 		Fill = fill,
 		Shine = shine,
@@ -338,11 +325,18 @@ local function fit(bar: Bar)
 	bar.Level.Size = UDim2.fromOffset(levelled, high)
 	bar.Level.Position = UDim2.fromOffset(gem + named + GAP, 1)
 	bar.Fit = math.min(1, (bar.Width - 8) / math.max(total, 1))
-	local reach = (bar.Width - measure(bar.Title, BODY_FONT)) / 2 - RULE_GAP - RULE_CAP
+	-- Each rule's box: from its tip's outer point at the piece's edge to its taper's end, RULE_GAP short of the title; it
+	-- shows while the box holds its tip and its taper unstretched.
+	local reach = (bar.Width - measure(bar.Title, BODY_FONT)) / 2 - RULE_GAP
 	for i, rule in bar.Rules do
-		rule.Visible = reach > 12
-		rule.Size = UDim2.fromOffset(math.max(reach, 0), RULE)
-		rule.Position = if i == 1 then UDim2.fromOffset(RULE_CAP, TITLE / 2) else UDim2.new(1, -RULE_CAP, 0, TITLE / 2)
+		local kit = RULES[i]
+		local im = UIKit.Images[kit]
+		local cut = im.Cut :: { number }
+		local tall = im.Points.Y - 2 * im.Pad
+		rule.Visible = reach >= cut[1] + cut[3] - 2 * im.Pad
+		if rule.Visible then
+			Skin.Set(rule, kit, { X = if i == 1 then 0 else bar.Width - reach, Y = (TITLE - tall) / 2, W = reach, H = tall })
+		end
 	end
 end
 
@@ -372,12 +366,16 @@ local function lay(bar: Bar, variant: string, room: number?)
 	local long = width - INSET * 2
 	bar.Channel.Size = UDim2.fromOffset(long, high)
 	bar.Channel.Position = UDim2.fromOffset(INSET, GLOW)
+	Skin.Set(bar.Rim, "BossBarRim", { X = INSET, Y = GLOW, W = long, H = high })
+	-- The caps scale with the bar from the height they were drawn for, centred on the channel's ends.
 	local middle = GLOW + high / 2
-	local cap = math.round(high * CAP)
-	for i, d in bar.Caps do
-		d.Size = UDim2.fromOffset(cap, cap)
-		d.Position = UDim2.fromOffset(if i == 1 then INSET else width - INSET, middle)
+	local s = high / ART.Height
+	for i, cap in bar.Caps do
+		local x = if i == 1 then INSET else width - INSET
+		Skin.Set(cap, "BossBarCap", { X = x - ART.Cap.X * s / 2, Y = middle - ART.Cap.Y * s / 2, Scale = s })
 	end
+	-- The crest's foot's middle CREST_INTO down into the title row's top middle: it stands above the head's box.
+	Skin.Set(bar.Crest, "BossTitleCrest", { X = (width - ART.Crest.X) / 2, Y = CREST_INTO - ART.Crest.Y })
 	bar.Number.Size = UDim2.fromOffset(long, high)
 	bar.Number.Position = UDim2.fromOffset(INSET, GLOW)
 	if variant == "A" then

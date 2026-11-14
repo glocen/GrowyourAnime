@@ -731,8 +731,7 @@ local function step(dt: number)
 	target.Frame.Visible = foe ~= nil and not (foeKind == "Keeper" and (variant == "A" or variant == "B"))
 	banded[5] = if variant == "B" then keeperBar.Frame else nil
 	if foe then
-		local health, most = healthOf(foe)
-		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true, if most > 0 then health / most else 0)
+		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true) -- before its health: it swaps the light
 		showHealth(target.Health, target.HealthText, foe)
 		TargetCard.Name(target, tostring(foe:GetAttribute("Title") or ""), `Lv {tostring(foe:GetAttribute("Level") or "")}`)
 		local theirs = kindOf(foe)
@@ -789,7 +788,7 @@ function HudController.Start()
 	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP - UIKit.TargetCard.Offset.Y))
 	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)
 	targetArrow.ZIndex = 6 -- over the tab
-	TargetCard.Elite(target, false, 0) -- C's frame, built hidden
+	TargetCard.Elite(target, false) -- C's parts, built hidden
 	local creditsValue = pill("Credits", 1, 120, "Coin")
 	credits = creditsValue
 	local value, extra, thread = pill("Electricity", 2, ELECTRICITY, "Bolt")

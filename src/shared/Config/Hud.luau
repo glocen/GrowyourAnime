@@ -174,8 +174,8 @@ return {
 	-- pills (Top.Most at most); "A" its bar wide at the foot, the dock stepped out for the try; "Off" the target card as
 	-- before. Its look, the director's words of 2026-11-14: richer and composed, its health purple, and light over the
 	-- fight ("it does need to looks very light too else we see nothing"): no plate behind it, a thin framed bar on a faint
-	-- glow. Elite: C, the target card with a heavier frame, a crest notch, the word Elite and a thicker bar, in EliteHealth;
-	-- false the plain card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
+	-- glow, its line art Modulo's frames tinted Rim. Elite: C, the target card in Modulo's frames, its blade and light
+	-- taller, a heavier frame tinted EliteFrame, a tab of its own with a crest notch and the word Elite; false the plain card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
 	-- lands, From times its size down to its own over Seconds; the rest comes in over Fill with a shine across the bar
 	-- (Shine); the whole leaves over Leave from the fall's Gone. Drain: after a hit the pale trail holds Hold seconds, then
 	-- drains Rate of the bar a second. Look: transparencies, 0 solid. Sizes in authored pixels. The builder's seeds,
@@ -195,13 +195,12 @@ return {
 		Light = Color3.fromHex("#CDA6FF"), -- the fill's top edge, lit
 		Deep = Color3.fromHex("#5A27C9"), -- its foot
 		Trail = Color3.fromHex("#F3E9FF"), -- the health just lost, draining
-		Rim = Color3.fromHex("#DCCBFF"), -- the bar's rim, the rules and the diamonds
+		Rim = Color3.fromHex("#DCCBFF"), -- the tint of the bar's rim, its caps, the title's rules and its crest
 		Title = Color3.fromHex("#D9CFEA"), -- "Keeper of ...", a lilac grey over the name
 		-- The keeper's name, lit from above like its bar, never white (the director, 2026-11-14: "not white"): its top, its foot.
 		Name = { Color3.fromHex("#D7B5FF"), Color3.fromHex("#A066FF") },
-		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 }, -- Channel: the bar's empty part, the world through it
-		EliteHealth = Color3.fromHex("#EE4E3A"), -- the elite's bar: the Ember light's middle, flat
-		Grey = Color3.fromHex("#A7ADB8"), -- the elite's heavier frame and notch
-		Frame = { Stroke = 3, Notch = 11, Under = 6 }, -- the elite's: the frame's line, the crest notch's side, the bar's added thickness
+		-- Channel: the bar's empty part, the world through it; Rim: the bar's rim and caps; Rule: the title's rules and crest.
+		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 },
+		EliteFrame = Color3.fromHex("#C9D2E4"), -- the elite's heavier frame: Graphite's glint, as Modulo's sheet shows it
 	},
 }

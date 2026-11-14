@@ -4365,18 +4365,29 @@ return {
 				end))
 				local word = parts.TargetElite:FindFirstChild("Word")
 				t.Check("with the word Elite", word ~= nil and word:IsA("TextLabel") and word.Text == "Elite")
-				-- In the card's own tab after the level, never on the sky (research's verdict, 2026-11-14, fix 3).
-				local tab = parts.Target:FindFirstChild("Tab") :: GuiObject?
-				local levelLabel = parts.Target:FindFirstChild("Level") :: GuiObject?
-				if word and word:IsA("TextLabel") and tab and levelLabel then
-					local wordLeft, wordRight = word.AbsolutePosition.X, word.AbsolutePosition.X + word.TextBounds.X
-					t.Check("in the tab, after the level", wordLeft >= levelLabel.AbsolutePosition.X + 1 and wordRight <= tab.AbsolutePosition.X + tab.AbsoluteSize.X
-						and word.AbsolutePosition.Y >= tab.AbsolutePosition.Y - 1, string.format("the word %d to %d, the tab's right %d", wordLeft, wordRight, tab.AbsolutePosition.X + tab.AbsoluteSize.X))
+				-- In a tab of its own after the level, in the card's ink, never on the sky (research's verdict, 2026-11-14, fix 3;
+				-- Modulo's frames): the name's tab ends before it.
+				local eliteTab = parts.TargetElite:FindFirstChild("EliteTab") :: GuiObject?
+				local levelLabel = parts.Target:FindFirstChild("Level") :: TextLabel?
+				if word and word:IsA("TextLabel") and eliteTab and levelLabel then
+					local wordLeft, wordRight = word.AbsolutePosition.X + (word.AbsoluteSize.X - word.TextBounds.X) / 2, word.AbsolutePosition.X + (word.AbsoluteSize.X + word.TextBounds.X) / 2
+					local tabLeft, tabRight = eliteTab.AbsolutePosition.X, eliteTab.AbsolutePosition.X + eliteTab.AbsoluteSize.X
+					t.Check("in its own tab, after the level", wordLeft >= levelLabel.AbsolutePosition.X + levelLabel.TextBounds.X and wordLeft >= tabLeft and wordRight <= tabRight
+						and word.TextColor3 == (parts.TargetName :: TextLabel).TextColor3, string.format("the word %d to %d, its tab %d to %d", wordLeft, wordRight, tabLeft, tabRight))
 				end
+				local tabEnd = parts.Target:GetAttribute("TabEnd")
+				t.Check("the name's tab ends before the Elite tab", type(tabEnd) == "number" and tabEnd <= UIKit.EliteCard.NameTabEnd + 0.01, tostring(tabEnd))
+				-- The elite's frames: its own blade and frame, its light the elite's, taller.
+				local housing = parts.Target:FindFirstChild("Housing") :: ImageLabel?
+				local frame = parts.Target:FindFirstChild("EliteFrame") :: ImageLabel?
+				t.Check("its blade and its heavier frame", housing ~= nil and housing:GetAttribute("Kit") == "CardTargetEliteHousing" and frame ~= nil and frame.Visible)
+				t.Check("its light the elite's, taller", parts.TargetHealth:GetAttribute("Kit") == "CardLightHealthElite" and parts.TargetHealth:GetAttribute("Height") == UIKit.EliteCard.Health[4])
 				t.Server("Tune", "Hud.Boss.Elite", false)
 				t.Check("switched off, the plain card", waitFor(t, REPLICATE, function(): boolean
 					return parts.Target.Visible and not parts.TargetElite.Visible
 				end))
+				t.Check("with the plain blade and light", housing ~= nil and housing:GetAttribute("Kit") == "CardTargetHousing" and frame ~= nil and not frame.Visible
+					and parts.TargetHealth:GetAttribute("Kit") == "CardLightHealth")
 				t.Server("Tune", "Hud.Boss.Elite", wasElite)
 				t.Server("FightSpawn") -- clears it
 			end
@@ -4484,6 +4495,22 @@ return {
 			t.Check("its number in the bar's middle", math.abs(numberCentre - channelCentre) <= 1 and (number :: TextLabel).TextXAlignment == Enum.TextXAlignment.Center,
 				string.format("the number's centre %.1f, the bar's %.1f", numberCentre, channelCentre))
 			t.Check("no mark across the bar", parts.Keeper:FindFirstChild("Phase1") == nil)
+			-- Its line art Modulo's frames (TR5, "Modulo's frames, delivered"): the rim round the channel, a cap on each end,
+			-- the two rules either side of the title and the crest over its middle.
+			local function framed(holder: Instance, name: string, kit: string): boolean
+				local image = holder:FindFirstChild(name)
+				return image ~= nil and image:IsA("ImageLabel") and image:GetAttribute("Kit") == kit and image.Image == UIKit.Images[kit].Id
+			end
+			local rimmed = framed(parts.Keeper, "Rim", "BossBarRim") and framed(parts.Keeper, "CapLeft", "BossBarCap") and framed(parts.Keeper, "CapRight", "BossBarCap")
+			local rim = parts.Keeper:FindFirstChild("Rim") :: GuiObject?
+			t.Check("its rim and caps Modulo's, the rim round the channel", rimmed and rim ~= nil and rim.AbsolutePosition.X < channel.AbsolutePosition.X
+				and rim.AbsolutePosition.X + rim.AbsoluteSize.X > channel.AbsolutePosition.X + channel.AbsoluteSize.X)
+			local crest = parts.KeeperHead:FindFirstChild("Crest") :: GuiObject?
+			local titleLabel = parts.KeeperTitle :: GuiObject
+			t.Check("its title's rules and crest Modulo's, the crest over the title's middle", framed(parts.KeeperHead, "Rule1", "BossTitleRuleLeft") and framed(parts.KeeperHead, "Rule2", "BossTitleRuleRight")
+				and framed(parts.KeeperHead, "Crest", "BossTitleCrest") and crest ~= nil
+				and math.abs(crest.AbsolutePosition.X + crest.AbsoluteSize.X / 2 - (titleLabel.AbsolutePosition.X + titleLabel.AbsoluteSize.X / 2)) <= 1
+				and crest.AbsolutePosition.Y < titleLabel.AbsolutePosition.Y)
 			-- Its name in the keeper's purple, never white (the director, 2026-11-14).
 			local nameLabel = parts.KeeperHead:FindFirstChild("Name", true) :: TextLabel?
 			local lit = if nameLabel then nameLabel:FindFirstChildOfClass("UIGradient") else nil

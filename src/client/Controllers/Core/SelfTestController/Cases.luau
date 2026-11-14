@@ -17,6 +17,7 @@ local Net = require(Shared.Net)
 local Tune = require(Shared.Util.Tune)
 local TestInput = require(Shared.Util.TestInput)
 local Actions = require(Shared.Definitions.Actions)
+local Passives = require(Shared.Definitions.Passives)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
 local HudConfig = require(Shared.Config.Hud)
@@ -82,6 +83,9 @@ local SKIP_MIN_TRAVEL = 2 -- studs farther from the Shade's spot it must land
 local SKIP_FACING = 30 -- degrees off the Shade at worst through the travel, once turned onto it
 local SKIP_TURN = 0.1 -- seconds into the skip it has turned onto the Shade: it may start off it, from a Shade that ran in
 local SKIP_NEXT = 0.3 -- seconds after Land its next action may wait for the next think
+local PASSIVE_LOW = 0.2 -- the health share a test sets to bring a Reduction on (Rook's Second Wind holds under 0.3)
+local PASSIVE_CUE = 1 -- seconds a passive's cue may take to show or go, the server's attribute and a fade included
+local PASSIVE_NEAR = 1 -- studs from the body a shell's middle stands
 local FRAME = 1 / 60 -- the clip's frame, which the art sheets count in
 local SQUARE = 4 -- bars in a square
 local GONE_BY = 19 * FRAME -- the art sheet: Haymaker's look is over by frame 76, Strike (57) + 19
@@ -1573,6 +1577,150 @@ return {
 			t.Server("Act", "SetLead", { Voidkin = was })
 			if next(tried) == nil then
 				t.Row("no Pip or Lyric free to lead: the skip's checks wait for one", nil, nil, nil, "")
+			end
+		end,
+	},
+	{
+		Name = "Fight: each lead's passive in play, with its cue: Second Wind's shell, Kindle's Fire and flare, Tempo's cooldown (TR7)",
+		Run = function(t: any)
+			-- Each Voidkin with a passive that this save can lead, in turn (Definitions.Passives: Rook, Pip, Lyric); the
+			-- save's own lead is put back after.
+			local view = t.Server("Data")
+			local owned = if type(view) == "table" and type(view.Voidkin) == "table" then view.Voidkin else {}
+			local was = if type(view) == "table" and type(view.Roles) == "table" then view.Roles.Lead else nil
+			local ids: { string } = {}
+			for id, row in owned do
+				if type(row) == "table" and Passives.ById[row.Def] then
+					table.insert(ids, id)
+				end
+			end
+			table.sort(ids)
+			local function effects(name: string): { BasePart }
+				local found = {}
+				local folder = workspace:FindFirstChild("NL_Effects")
+				for _, child in if folder then folder:GetChildren() else {} do
+					if child:IsA("BasePart") and child.Name == name then
+						table.insert(found, child)
+					end
+				end
+				return found
+			end
+			local function shellRound(root: BasePart): boolean
+				for _, shell in effects("NL_PassiveShell") do
+					if (shell.Position - root.Position).Magnitude <= PASSIVE_NEAR and shell.Transparency < 1 then
+						return true
+					end
+				end
+				return false
+			end
+			local trials: { [string]: (body: Model, root: BasePart) -> () } = {}
+			trials.rook = function(body: Model, root: BasePart)
+				t.Check("rook: Second Wind off at full health", body:GetAttribute("PassiveOn") == false)
+				t.Server("FightHealth", PASSIVE_LOW)
+				t.Check("rook: under 30%, it holds", waitFor(t, PASSIVE_CUE, function(): boolean
+					return body:GetAttribute("PassiveOn") == true
+				end))
+				t.Check("rook: its shell round him", waitFor(t, PASSIVE_CUE, function(): boolean
+					return shellRound(root)
+				end))
+				t.Server("FightHealth", 1)
+				t.Check("rook: back over it, it's off", waitFor(t, PASSIVE_CUE, function(): boolean
+					return body:GetAttribute("PassiveOn") == false
+				end))
+				t.Check("rook: and the shell fades away", waitFor(t, PASSIVE_CUE, function(): boolean
+					return not shellRound(root)
+				end))
+			end
+			trials.pip = function(body: Model, _root: BasePart)
+				local row = Passives.ById.pip
+				local seen: { [string]: { Passive: any, Physical: number, Elemental: number } } = {}
+				local flared = false
+				local connection = Net.Client.On("Hit", function(hit: any)
+					if type(hit) ~= "table" or hit.A ~= body or hit.Action ~= row.Action or hit.Dodged then
+						return
+					end
+					local elemental = if type(hit.Elemental) == "number" then hit.Elemental else 0
+					seen[hit.Beat] = { Passive = hit.Passive, Physical = hit.Total - elemental, Elemental = elemental }
+					if hit.Beat == row.Beat then
+						task.spawn(function()
+							local began = os.clock()
+							while not flared and os.clock() - began < PASSIVE_CUE do
+								flared = #effects("NL_PassiveFlare") > 0
+								RunService.Heartbeat:Wait()
+							end
+						end)
+					end
+				end)
+				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
+				t.Check("pip: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
+				waitFor(t, SHADE_TIMEOUT, function(): boolean
+					return seen[row.Beat :: string] ~= nil and seen.Shot1 ~= nil
+				end)
+				t.Wait(PASSIVE_CUE)
+				connection:Disconnect()
+				t.Server("FightSpawn")
+				local third = seen[row.Beat :: string]
+				t.Check("pip: his third shot lands", third ~= nil)
+				if third then
+					t.Check("pip: it carries Kindle", third.Passive == "pip", tostring(third.Passive))
+					-- its Fire is 40% of the shot, past whatever Fire his gear adds
+					t.Check("pip: Fire worth 40% of the shot, as its own number", third.Elemental >= row.Share * third.Physical - 1e-6, string.format("%.1f of %.1f", third.Elemental, third.Physical))
+				end
+				if seen.Shot1 then
+					t.Check("pip: his first shot carries none", seen.Shot1.Passive == nil)
+				end
+				t.Check("pip: the lantern flares on it", flared)
+			end
+			trials.lyric = function(body: Model, _root: BasePart)
+				local row = Passives.ById.lyric
+				local held = Actions.ById[row.Action :: string]
+				local expected = held.Cooldown * (1 - row.Share)
+				local ring = body:GetAttribute("Cooldown")
+				t.Check("lyric: the ring's cooldown is Tempo's", type(ring) == "number" and math.abs(ring - expected) < 1e-6, `{ring} of {expected}`)
+				local readyIn: number? = nil
+				local connection = body:GetAttributeChangedSignal("ActionAt"):Connect(function()
+					if body:GetAttribute("Action") == held.Id then
+						local ready, at = body:GetAttribute("Ready"), body:GetAttribute("ActionAt")
+						if type(ready) == "number" and type(at) == "number" then
+							readyIn = ready - at
+						end
+					end
+				end)
+				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
+				t.Check("lyric: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
+				waitFor(t, SHADE_TIMEOUT, function(): boolean
+					return readyIn ~= nil
+				end)
+				connection:Disconnect()
+				t.Server("FightSpawn")
+				t.Check("lyric: Held Note comes back 20% sooner", readyIn ~= nil and math.abs((readyIn :: number) - expected) < 1e-3, if readyIn then string.format("%.2f s", readyIn) else "not seen")
+			end
+			local tried: { [string]: boolean } = {}
+			for _, id in ids do
+				local def = owned[id].Def
+				if tried[def] or trials[def] == nil then
+					continue
+				end
+				local answer = t.Server("Act", "SetLead", { Voidkin = id })
+				if type(answer) ~= "table" or answer.Ok ~= true then -- a worker can't lead: another of its kind may
+					continue
+				end
+				tried[def] = true
+				local lead: Model? = nil
+				waitFor(t, LEAD_SETTLE * 2, function(): boolean
+					local found = myLead()
+					lead = if found and found:GetAttribute("Def") == def then found else nil
+					return lead ~= nil
+				end)
+				local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+				t.Check(`{def} leads`, lead ~= nil and root ~= nil)
+				if lead and root then
+					trials[def](lead :: Model, root)
+				end
+			end
+			t.Server("Act", "SetLead", { Voidkin = was })
+			if next(tried) == nil then
+				t.Row("no Rook, Pip or Lyric free to lead: the passives' checks wait for one", nil, nil, nil, "")
 			end
 		end,
 	},

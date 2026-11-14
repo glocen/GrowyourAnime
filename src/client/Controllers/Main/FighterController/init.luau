@@ -5,6 +5,7 @@
 -- A hit is shown on the frame its beat comes on screen, when the target stands in reach there: the hold, the spark and the
 -- camera. The server's Hit event brings the number, and the hold and spark too if the screen didn't see it coming.
 -- A late action starts from its first frame and catches up (handbook/feel/combat.md, "Hit confirmation").
+-- A passive's cue (Definitions.Passives, Cue): the shell while the server's PassiveOn holds, the flare on a hit it marks.
 -- Children: Clips (an Animation per clip name), Effects (the stand-ins).
 
 local CollectionService = game:GetService("CollectionService")
@@ -15,6 +16,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Actions = require(Shared.Definitions.Actions)
+local Passives = require(Shared.Definitions.Passives)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
@@ -624,6 +626,24 @@ local function add(model: Instance)
 	table.insert(view.Connections, model:GetAttributeChangedSignal("State"):Connect(function()
 		onState(view)
 	end))
+	-- A Reduction passive's shell (Rook's Second Wind), while the server says it holds; one at a time.
+	local passive = if type(def) == "string" then Passives.ById[def] else nil
+	if passive and passive.Cue == "Shell" then
+		local shelled = false
+		local function holds(): boolean
+			return model:GetAttribute("PassiveOn") == true
+		end
+		local function shell()
+			if not shelled and holds() then
+				shelled = true
+				Effects.Shell(root :: BasePart, holds, function()
+					shelled = false
+				end)
+			end
+		end
+		table.insert(view.Connections, model:GetAttributeChangedSignal("PassiveOn"):Connect(shell))
+		shell()
+	end
 	local level = model:GetAttribute("Level")
 	table.insert(view.Connections, model:GetAttributeChangedSignal("Level"):Connect(function()
 		local now = model:GetAttribute("Level")
@@ -896,6 +916,16 @@ local function onHit(hit: any)
 	local function land()
 		if attacker and not hit.Dodged then
 			knockOf(attacker, struck, hit)
+		end
+		-- The attacker's passive on this hit (Pip's Kindle): its flare at the body's attachment the row names.
+		local passive = if attacker and type(hit.Passive) == "string" then Passives.ById[hit.Passive] else nil
+		if attacker and passive and passive.Cue == "Flare" and passive.At then
+			for _, child in attacker.Model:GetDescendants() do
+				if child:IsA("Attachment") and child.Name == passive.At then
+					Effects.Flare(child)
+					break
+				end
+			end
 		end
 		local mine, onMine = isMine(attacker), isMine(struck)
 		if not (mine or onMine) then

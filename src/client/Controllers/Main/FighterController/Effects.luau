@@ -2316,6 +2316,59 @@ RunService:BindToRenderStep("NL_FightShake", Enum.RenderPriority.Camera.Value + 
 		* CFrame.Angles(wobble(t, 2.5, SEED) * angle * 0.5, wobble(3.5, t, SEED) * angle * 0.5, wobble(SEED, 4.5, t) * angle)
 end)
 
+-- A passive's shell (Config.Effects.Passives.Shell; Rook's Second Wind): a faint ball round `root` while `holds()` says
+-- so, faded in and out. It ends once faded out; the caller starts another when the passive holds again.
+function Effects.Shell(root: BasePart, holds: () -> boolean, done: () -> ())
+	local look = EffectsConfig.Passives.Shell
+	local shell = part(look.Colour, Enum.Material.ForceField)
+	shell.Name = "NL_PassiveShell"
+	shell.Shape = Enum.PartType.Ball
+	shell.Size = Vector3.one * look.Size
+	shell.Transparency = 1
+	local shown, last = 0, 0
+	run(function(age: number): boolean
+		local dt = age - last
+		last = age
+		local on = root.Parent ~= nil and holds()
+		local fade = math.max(look.Fade, 1e-3)
+		shown = math.clamp(shown + (if on then dt else -dt) / fade, 0, 1)
+		shell.Size = Vector3.one * look.Size
+		shell.CFrame = root.CFrame
+		shell.Transparency = lerp(1, look.Transparency, shown)
+		return on or shown > 0
+	end, function()
+		shell:Destroy()
+		done()
+	end)
+end
+
+-- A passive's flare (Config.Effects.Passives.Flare; Pip's Kindle): a hot ball swelling at `at` and fading, with its light.
+function Effects.Flare(at: Attachment)
+	local look = EffectsConfig.Passives.Flare
+	local ball = part(look.Colour, Enum.Material.Neon)
+	ball.Name = "NL_PassiveFlare"
+	ball.Shape = Enum.PartType.Ball
+	local light = Instance.new("PointLight")
+	light.Color = look.Colour
+	light.Range = look.Range
+	light.Parent = ball
+	run(function(age: number): boolean
+		if at.Parent == nil then
+			return false
+		end
+		local grow = math.max(look.Grow, 1e-3)
+		local swell = easeOut(age / grow)
+		local fade = math.clamp((age - grow) / math.max(look.Fade, 1e-3), 0, 1)
+		ball.Size = Vector3.one * look.Size * lerp(0.2, 1, swell)
+		ball.CFrame = CFrame.new(at.WorldPosition)
+		ball.Transparency = fade
+		light.Brightness = look.Brightness * (1 - fade)
+		return fade < 1
+	end, function()
+		ball:Destroy()
+	end)
+end
+
 Effects.HeldEnd = HELD_END
 
 return Effects

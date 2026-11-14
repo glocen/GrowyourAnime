@@ -21,6 +21,7 @@ local Signal = require(Shared.Util.Signal)
 local Parts = require(Shared.Util.Parts)
 local Actions = require(Shared.Definitions.Actions)
 local Enemies = require(Shared.Definitions.Enemies)
+local Passives = require(Shared.Definitions.Passives)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Combat = require(Shared.Config.Combat)
 local Shades = require(Shared.Config.Shades)
@@ -28,6 +29,7 @@ local EffectsConfig = require(Shared.Config.Effects)
 local Stats = require(Shared.Rules.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
+local Passive = require(Shared.Rules.Passive)
 
 export type State = "Idle" | "Flinch" | "Down" | "Reset"
 
@@ -116,9 +118,24 @@ local function setState(f: Fighter, state: State, untilTime: number?)
 	f.Model:SetAttribute("State", state)
 end
 
+-- A lead's passive (Definitions.Passives), while Combat.Passives is on; a Shade has none.
+local function passiveOf(f: Fighter): Passives.Row?
+	return if f.Side == "Lead" and Combat.Passives.On then Passives.ById[f.Def] else nil
+end
+
 local function setHealth(f: Fighter, health: number)
 	f.Health = health
 	f.Model:SetAttribute("Health", health)
+	-- A Reduction passive's cue holds while its condition does (FighterController/Passives): Rook's shell under 30%.
+	local row = passiveOf(f)
+	if row and row.Kind == "Reduction" then
+		f.Model:SetAttribute("PassiveOn", Passive.Holds(row, health, f.Block.Health))
+	end
+end
+
+-- An action's cooldown for this fighter: its passive may shorten its own (Lyric's Tempo).
+local function cooldownOf(f: Fighter, action: Actions.Action): number
+	return Passive.Cooldown(passiveOf(f), action.Id, action.Cooldown)
 end
 
 -- Who the client sees a fighter aimed at (an effect's line through it): the replay's held target first, then its own.
@@ -169,10 +186,11 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	f.Action = action
 	f.ActionAt = at
 	f.Checked = -1
-	if action.Cooldown > 0 then
-		f.ReadyAt[action.Id] = at + action.Cooldown
+	local cooldown = cooldownOf(f, action)
+	if cooldown > 0 then
+		f.ReadyAt[action.Id] = at + cooldown
 		-- The signature's ring on the HUD fills from here (docs/ui.md; TR3): when it's ready again, in server time.
-		f.Model:SetAttribute("Ready", at + action.Cooldown)
+		f.Model:SetAttribute("Ready", at + cooldown)
 	end
 	stop(f)
 	f.Model:SetAttribute("Action", action.Id)
@@ -435,12 +453,13 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 	model:SetAttribute("Rig", rig or (if side == "Lead" then "R6" else "Box"))
 	model:SetAttribute("Title", title)
 	model:SetAttribute("Level", block.Level)
-	-- The signature: the kit's action with a cooldown, for the HUD's ring (TR3). 0 without one.
+	-- The signature: the kit's action with a cooldown, for the HUD's ring (TR3), after its passive. 0 without one.
 	local cooldown = 0
 	for _, action in kit do
-		cooldown = math.max(cooldown, action.Cooldown)
+		cooldown = math.max(cooldown, cooldownOf(f, action))
 	end
 	model:SetAttribute("Cooldown", cooldown)
+	model:SetAttribute("PassiveOn", false)
 	model:SetAttribute("Ready", 0)
 	model:SetAttribute("Owner", if owner then owner.UserId else 0)
 	model:SetAttribute("MaxHealth", block.Health)
@@ -632,10 +651,19 @@ local function crowd(f: Fighter)
 	end
 end
 
--- One target's share of a hit: rolled, dealt, pushed along `line` (from the attacker), and shown to every client.
+-- One target's share of a hit: rolled, dealt, pushed along `line` (from the attacker), and shown to every client. The
+-- target's passive may take less (Rook's Second Wind); the attacker's may add to it in its element (Pip's Kindle), shown in
+-- the element's number.
 local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: string, hit: Actions.Hit, at: number, line: Vector3)
 	local rolls = { Dodge = rng:NextNumber(), Critical = rng:NextNumber(), Block = rng:NextNumber() }
-	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls)
+	local effects: Hit.Effects = { Reduction = Passive.Reduction(passiveOf(target), target.Health, target.Block.Health) }
+	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
+	local own = passiveOf(f)
+	local extra = Passive.Extra(own, action.Id, beat, result.Physical)
+	if extra > 0 then
+		result.Elemental += extra
+		result.Total += extra
+	end
 	local left, fell = Fight.Damage(target.Health, result.Total)
 	setHealth(target, left)
 	target.LastHurt = at
@@ -676,6 +704,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Health = left,
 		MaxHealth = target.Block.Health,
+		Passive = if extra > 0 and own then own.Id else nil, -- its cue on the attacker (FighterController/Passives)
 	})
 	if fell then
 		fall(target, at)

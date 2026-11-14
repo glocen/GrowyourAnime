@@ -113,8 +113,11 @@ return {
 	-- if that spot isn't clear, the nearest that is, Step degrees round the target at a time; with none clear, it fights
 	-- where it stands. Clear: on the ground (Ground studs of drop at most), no wall on the way (Body studs wide), within the
 	-- leash, no enemy within Close of it, and the way never nearer an enemy than Body. It travels from its start to Land.
-	-- On: off for the balance check's runs without it (Tune "Combat.Skip.On").
-	Skip = { On = true, Close = 5, Every = 4, Step = 30, Body = 1.5, Ground = 2 },
+	-- On: off for the balance check's runs without it (Tune "Combat.Skip.On"). Every 2.5 from 4 (research's verdict on the
+	-- blockout, 2026-11-13: at 4 the Shade was back within half a second and the leads shot point-blank most of the take).
+	Skip = { On = true, Close = 5, Every = 2.5, Step = 30, Body = 1.5, Ground = 2 },
+	-- The leads' passives (Definitions.Passives; Rules.Passive): off for the balance check's runs without them.
+	Passives = { On = true },
 	-- Damage numbers over the target: they rise this many studs over this many seconds. A flurry, one press's hits on one
 	-- body, is one counting number (docs/ui.md, "Damage numbers"): each hit after the first counts it up to the new total
 	-- over Count seconds, swelling it Pop times and settling, and its fade starts over from that hit. The builder's

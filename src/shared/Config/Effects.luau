@@ -355,6 +355,15 @@ return {
 	-- the whole hold with the keeper about 20 studs off; at 18 it's in the frame, under the edge, from the Light on.
 	KeeperSignature = { Rows = "KeeperSignature", Lift = { Degrees = 18, Rise = 0.6, Fall = 0.3 } },
 
+	-- The passives' grey cues (Definitions.Passives, Cue; TR7, part 3), the builder's numbers, 2026-11-13, to tune by playing.
+	-- Shell: a faint ball round the body while a Reduction holds (Rook's Second Wind), Size studs across, faded in and out
+	-- over Fade seconds. Flare: a hot ball swelling at the body's attachment as an Extra lands (Pip's Kindle, at his
+	-- lantern), from a fifth of Size to Size over Grow, then fading over Fade, lighting Range studs round it.
+	Passives = {
+		Shell = { Size = 7.5, Colour = Color3.fromRGB(255, 226, 168), Transparency = 0.6, Fade = 0.2 },
+		Flare = { Size = 2.4, Colour = Color3.fromRGB(255, 160, 60), Grow = 0.06, Fade = 0.3, Brightness = 6, Range = 10 },
+	},
+
 	-- The effects' own pictures, by name, for rows that use one outside the kit: the group's uploads (docs/asset-log.md),
 	-- "" until uploaded, which a block-in in grey doesn't need.
 	Pictures = {

@@ -50,6 +50,9 @@ return {
 		GiveUp = 40,
 		WalkSpeed = 12,
 		ResetSpeed = 24, -- walking home after giving up, untouchable
+		-- Walking home, it's stuck once it has come no Gain studs nearer for Seconds (a wall between it and home: TR7's
+		-- balance batch saw a push carry one through Lantern Row's east wall), and it's set down at home. The builder's seeds.
+		ResetStuck = { Gain = 0.5, Seconds = 3 },
 		FadeSeconds = 1.2, -- a fallen Shade bursts into light and paper, then is gone
 	},
 

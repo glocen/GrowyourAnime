@@ -95,6 +95,15 @@ function Fight.GivesUp(fromHome: number, giveUp: number): boolean
 	return fromHome > giveUp
 end
 
+-- A Shade walking home: whether it's stuck. `closest` is the nearest it has come and `since` when it got there; it's
+-- stuck once it has come no `gain` nearer for `seconds`. Returns them updated, and whether it's stuck.
+function Fight.ResetStuck(closest: number, since: number, fromHome: number, now: number, gain: number, seconds: number): (number, number, boolean)
+	if fromHome < closest - gain then
+		return fromHome, now, false
+	end
+	return closest, since, now - since > seconds
+end
+
 export type LeadMode = "Fight" | "Follow" | "Teleport"
 
 -- What a lead does, given how far its avatar is and whether it has a target.

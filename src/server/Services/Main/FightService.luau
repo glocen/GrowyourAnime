@@ -55,6 +55,8 @@ export type Fighter = {
 	Checked: number, -- the action's clock at the last beat check
 	ReadyAt: { [string]: number },
 	LastHurt: number, -- it last took a hit (Combat.Lead.Heal)
+	ResetClosest: number, -- walking home: the nearest it has come, and when (Rules.Fight.ResetStuck)
+	ResetSince: number,
 	SkippedAt: number, -- a ranged lead's last skip back (Combat.Skip)
 	NextThink: number,
 	Home: CFrame?, -- a Shade's spawn
@@ -112,6 +114,9 @@ local function standing(f: Fighter?): boolean
 end
 
 local function setState(f: Fighter, state: State, untilTime: number?)
+	if state == "Reset" and f.State ~= "Reset" then
+		f.ResetClosest, f.ResetSince = math.huge, now()
+	end
 	f.State = state
 	f.StateUntil = untilTime or 0
 	f.Model:SetAttribute("StateUntil", f.StateUntil) -- before State: a client reads both on State's change
@@ -433,6 +438,8 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Checked = -1,
 		ReadyAt = {},
 		LastHurt = -math.huge,
+		ResetClosest = math.huge,
+		ResetSince = 0,
 		SkippedAt = -math.huge,
 		NextThink = at + rng:NextNumber() * Combat.Think, -- spread over the tick
 		Home = nil,
@@ -576,6 +583,22 @@ end
 -- (FighterController, Combat.Push.Shown). A newer push takes over from one still running; a wall ends it after
 -- Seconds × PUSH_GIVE_UP.
 local PUSH_GIVE_UP = 3
+local PUSH_SKIN = 0.5 -- studs past the body's side a push looks ahead for the world, so it ends at a wall, never through one
+
+-- Rays that see only the world: never a fighter or an avatar.
+local function worldRays(): RaycastParams
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local skipped: { Instance } = { folder }
+	for _, player in Players:GetPlayers() do
+		if player.Character then
+			table.insert(skipped, player.Character)
+		end
+	end
+	params.FilterDescendantsInstances = skipped
+	params.RespectCanCollide = true
+	return params
+end
 local pushing: { [Fighter]: number } = {}
 -- The body carried `amount` studs along `unit`, flat, at a steady pace over `seconds`: a hit's push, or a skip's travel.
 -- A skip passes `facing`, re-aimed at each frame and held rigid: the think's tick and the Align's responsiveness both
@@ -587,6 +610,8 @@ local function glide(f: Fighter, unit: Vector3, amount: number, seconds: number,
 	local from = f.Root.Position
 	local speed = amount / seconds
 	local started = os.clock()
+	local world = worldRays()
+	local side = math.max(f.Root.Size.X, f.Root.Size.Z) / 2 + PUSH_SKIN
 	f.Push.VectorVelocity = unit * speed
 	f.Push.Enabled = true
 	local connection: RBXScriptConnection
@@ -601,7 +626,9 @@ local function glide(f: Fighter, unit: Vector3, amount: number, seconds: number,
 			return
 		end
 		local left = amount - (f.Root.Position - from):Dot(unit)
-		if left <= 0.02 or os.clock() - started > seconds * PUSH_GIVE_UP then
+		local step = math.min(speed, left / math.max(dt, 1 / 240)) * math.max(dt, 1 / 240)
+		local wall = left > 0.02 and workspace:Raycast(f.Root.Position, unit * (side + step), world) ~= nil
+		if left <= 0.02 or wall or os.clock() - started > seconds * PUSH_GIVE_UP then
 			connection:Disconnect()
 			pushing[f] = nil
 			f.Push.Enabled = false
@@ -868,16 +895,7 @@ local function skipClear(f: Fighter, spot: Vector3, avatar: BasePart, enemies: {
 			return false
 		end
 	end
-	local ignore = RaycastParams.new()
-	ignore.FilterType = Enum.RaycastFilterType.Exclude
-	local skipped: { Instance } = { folder }
-	for _, player in Players:GetPlayers() do
-		if player.Character then
-			table.insert(skipped, player.Character)
-		end
-	end
-	ignore.FilterDescendantsInstances = skipped
-	ignore.RespectCanCollide = true
+	local ignore = worldRays()
 	local from = f.Root.Position
 	local way = flat(spot - from)
 	if way.Magnitude > 1e-3 and workspace:Spherecast(from, skip.Body / 2, way, ignore) then
@@ -1030,7 +1048,16 @@ local function thinkShade(f: Fighter, at: number)
 			setState(f, "Idle")
 			face(f, home.Position + home.LookVector)
 		else
-			moveTo(f, home.Position, Combat.Shade.ResetSpeed)
+			local stuck
+			f.ResetClosest, f.ResetSince, stuck = Fight.ResetStuck(f.ResetClosest, f.ResetSince, fromHome, at, Combat.Shade.ResetStuck.Gain, Combat.Shade.ResetStuck.Seconds)
+			if stuck then
+				-- a wall between it and home that a straight walk can't pass: it's set down there, out of the fight
+				stop(f)
+				f.Model:PivotTo(home)
+				f.ResetClosest, f.ResetSince = 0, at
+			else
+				moveTo(f, home.Position, Combat.Shade.ResetSpeed)
+			end
 		end
 		return
 	end

@@ -250,6 +250,21 @@ return {
 		end,
 	},
 	{
+		-- TR7's balance batch: a push carried a Shade through Lantern Row's east wall, and it walked into the wall for good.
+		Name = "Fight: a Shade walking home that comes no nearer for a while is stuck",
+		Run = function(t: any)
+			local stuck = Combat.Shade.ResetStuck
+			local closest, since, isStuck = Fight.ResetStuck(math.huge, 0, 30, 1, stuck.Gain, stuck.Seconds)
+			t.Check("its first step home counts as nearer", closest == 30 and since == 1 and not isStuck)
+			closest, since, isStuck = Fight.ResetStuck(closest, since, 25, 2, stuck.Gain, stuck.Seconds)
+			t.Check("nearer: on its way", closest == 25 and since == 2 and not isStuck)
+			closest, since, isStuck = Fight.ResetStuck(closest, since, 25 - stuck.Gain / 2, 2 + stuck.Seconds - 0.1, stuck.Gain, stuck.Seconds)
+			t.Check("a hair nearer isn't progress, and not stuck yet", closest == 25 and since == 2 and not isStuck)
+			closest, since, isStuck = Fight.ResetStuck(closest, since, 25, 2 + stuck.Seconds + 0.1, stuck.Gain, stuck.Seconds)
+			t.Check("no nearer for Seconds: stuck", isStuck)
+		end,
+	},
+	{
 		Name = "Fight: a hit reaches ahead, not behind",
 		Run = function(t: any)
 			local arc = Combat.Arc

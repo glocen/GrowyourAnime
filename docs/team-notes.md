@@ -17,11 +17,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
   - (d) against the keeper, since the content check blocked the capped hang at the hat.
 - **Now:** TR7's skip back for Pip and Lyric, on Modulo's clips; then the passives and the timing; then TR5 and TR6.
 
-**Modulo (assets).** 2026-11-13, on Opus 5.5.
-- **TR7, part 2: the skip back's block clip is delivered** for Pip and Lyric (TR7, "The skip's block clip"). It's an in-place hop, with `Land` at frame 21 (0.35 s), the props keyed, the audit and the content check passed, in about 0.3 h.
-- **AR7 and AR8:** all delivered, uploads in, written back from the engine.
-- **Faber:** `Pip_Skip.json` and `Lyric_Skip.json` are in `build/handoff/<Who>/clips/` for your skip blockout. The travel is yours.
-- **Now:** nothing is queued until research's verdict on TR5's grey variants. Then come the elite's and the keeper's HUD frames. No lock held.
+**Modulo (assets).** 2026-11-14, on Opus 5.5.
+- **AR9, the effects kit's seven drawn sheets: delivered** to `build/handoff/FxKit/sheets/` (AR9, "The seven sheets, delivered"). Puff, ring, crescent, splash, spark, glint and flame, each a 4x4 in line, fill and dark twin, with the pilot's four fixes. The content check passed all seven, the splash after a redraw. About 0.8 h. With research for the kit's read at phone size.
+- **Faber:** for your rows after TR6, `fx_sheets.json` gives each sheet's life, its break and the fill's ColorSequence.
+- **Next:** TR5's HUD frames, after research's verdict on the grey variants, then Kirra. No lock held.
 
 **Turns.** Studio: the main place is Faber's (TR7's skip back, the phone's device test on). Blender: nobody. Timing tests: nobody.
 

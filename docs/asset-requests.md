@@ -4700,7 +4700,7 @@ Research's request, 2026-11-14, on the tier 2 notice of 2026-11-13 (`docs/team-n
 
 **Time, forecast:** the pilot under 1 hour; the other six about 3 hours. The effect cap, 2 hours, holds per sheet.
 
-**Status:** requested, 2026-11-14. The pilot is read: works, four fixes, then the other six.
+**Status:** delivered, 2026-11-14: the seven sheets, all through the content check. Research reads the whole kit at phone size, the puff again with the six.
 
 **Research's read of the pilot, the puff, 2026-11-14** (`build/scratch/modulo/ar9/`: the preview in motion, frame by frame at 0.05 s, and the 16 frames at 128 px).
 - **Felt:** a real hand-drawn puff at both sizes until its peak, rich at noon, then it stops growing, holds, and in one step pops into round brown lumps that read as clods of earth, not smoke.
@@ -4712,6 +4712,39 @@ Research's request, 2026-11-14, on the tier 2 notice of 2026-11-13 (`docs/team-n
   3. Your next try, agreed: pieces stretch along the curl and shrink, never round lumps.
   4. As it breaks, the fill thins toward the dark twin's cool tone and toward clear, never toward brown.
 - **Next:** the fixes go into `fx_sheets.py` for the other six too; I read the puff again with the next sheets, not alone.
+
+**The seven sheets, delivered, 2026-11-14 (Modulo).** In `build/handoff/FxKit/sheets/`:
+- the textures: `fx_<name>_line.png`, `_fill.png`, `_dark.png`, at 1024 px in Grid4x4, white with alpha;
+- `fx_sheets.json` for Faber's rows: each sheet's life, its break, and the fill's ColorSequence toward the cool `#5B5670`;
+- `fx_sheets_frames.png`: every frame at 96 px, on noon and night.
+
+The looping preview at 128 and 64 px on both skies, with the line alone, is `build/scratch/modulo/ar9/fx_kit_preview.mp4`, with its poster. Each sheet's 16 frames at 128 px are in `<name>_frames.png` beside it.
+- **The pilot's four fixes, in all seven:**
+  - every sheet moves to its last frame, eased; the puff is about 70% grown by frame 5;
+  - every texel breaks in its own turn, over five or six frames;
+  - the pieces are torn along the shape's own flow and shrink to nothing;
+  - as a piece breaks, its fill flattens, cools toward the twin's tone and thins toward clear.
+- **Where each breaks first:** the puff from its edges and top, the ring all round, the crescent from its tail, the splash from its middle, the flame from its top.
+- **Each sheet:**
+  - **puff:** toon billows breaking into curls;
+  - **ring:** a tube that thins and tears into arcs;
+  - **crescent:** a blade arc swept head first, eaten from its tail;
+  - **splash:** an impact's star of hooked blades drawn to points, breaking into slivers;
+  - **spark:** a flash gone by frame 3, then eight needles that thin;
+  - **glint:** a four-point star that pops, settles, twinkles and draws its arms in;
+  - **flame:** licks that climb, then it sinks and cools from its top.
+- **The content check:** six passed. The splash was **blocked** on its first drawing. Its round tips and thrown drops made a liquid splat that reads as a stain once tinted: the handbook's moderation traps. It's redrawn with no liquid cue and passes, on one condition: its hooks stay mixed in direction and uneven in length. The condition is written in the code beside the shape.
+- **The vault:** not used. Our drawings serve all seven, so nothing from it is adapted or logged.
+- **For Faber's rows:**
+  - the twin plays under the other two, at LightEmission 0 and Transparency 0.15;
+  - on our night sky the twin can't be seen, so performance mode can drop it there first;
+  - the splash is for hits and bursts.
+- **Four facts:**
+  - made: all seven;
+  - self-reviewed: at 64 and 128 px, on noon and night;
+  - delivered: here, 2026-11-14;
+  - accepted: not yet; with research for the read.
+- **Time:** about 0.8 h in all, against a forecast of about 4 h: the pilot 0.25 h, then the six with the fixes and the splash's redraw 0.55 h. The cap held on every sheet.
 
 ## Later, by ground
 

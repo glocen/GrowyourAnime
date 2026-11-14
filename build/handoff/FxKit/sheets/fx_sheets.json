@@ -1,0 +1,194 @@
+{
+  "flipbook": "Grid4x4, OneShot",
+  "tints": {
+    "line": "#FFF6E6",
+    "fill": "#E9E2D6",
+    "dark": "#1C1726",
+    "cool": "#5B5670"
+  },
+  "dark_transparency": 0.15,
+  "sheets": {
+    "puff": {
+      "files": [
+        "fx_puff_line.png",
+        "fx_puff_fill.png",
+        "fx_puff_dark.png"
+      ],
+      "life": 0.6,
+      "break": [
+        0.45,
+        1.0
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.45,
+          "#E9E2D6"
+        ],
+        [
+          1.0,
+          "#5B5670"
+        ]
+      ]
+    },
+    "ring": {
+      "files": [
+        "fx_ring_line.png",
+        "fx_ring_fill.png",
+        "fx_ring_dark.png"
+      ],
+      "life": 0.5,
+      "break": [
+        0.34,
+        0.96
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.34,
+          "#E9E2D6"
+        ],
+        [
+          0.96,
+          "#5B5670"
+        ]
+      ]
+    },
+    "crescent": {
+      "files": [
+        "fx_crescent_line.png",
+        "fx_crescent_fill.png",
+        "fx_crescent_dark.png"
+      ],
+      "life": 0.4,
+      "break": [
+        0.3,
+        0.97
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.3,
+          "#E9E2D6"
+        ],
+        [
+          0.97,
+          "#5B5670"
+        ]
+      ]
+    },
+    "splash": {
+      "files": [
+        "fx_splash_line.png",
+        "fx_splash_fill.png",
+        "fx_splash_dark.png"
+      ],
+      "life": 0.55,
+      "break": [
+        0.36,
+        0.98
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.36,
+          "#E9E2D6"
+        ],
+        [
+          0.98,
+          "#5B5670"
+        ]
+      ]
+    },
+    "spark": {
+      "files": [
+        "fx_spark_line.png",
+        "fx_spark_fill.png",
+        "fx_spark_dark.png"
+      ],
+      "life": 0.3,
+      "break": [
+        0.3,
+        1.0
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.3,
+          "#E9E2D6"
+        ],
+        [
+          1.0,
+          "#5B5670"
+        ]
+      ]
+    },
+    "glint": {
+      "files": [
+        "fx_glint_line.png",
+        "fx_glint_fill.png",
+        "fx_glint_dark.png"
+      ],
+      "life": 0.35,
+      "break": [
+        0.85,
+        1.0
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.85,
+          "#E9E2D6"
+        ],
+        [
+          1.0,
+          "#5B5670"
+        ]
+      ]
+    },
+    "flame": {
+      "files": [
+        "fx_flame_line.png",
+        "fx_flame_fill.png",
+        "fx_flame_dark.png"
+      ],
+      "life": 0.7,
+      "break": [
+        0.36,
+        0.98
+      ],
+      "fill_color": [
+        [
+          0.0,
+          "#E9E2D6"
+        ],
+        [
+          0.36,
+          "#E9E2D6"
+        ],
+        [
+          0.98,
+          "#5B5670"
+        ]
+      ]
+    }
+  }
+}

@@ -4754,6 +4754,30 @@ The looping preview at 128 and 64 px on both skies, with the line alone, is `bui
   1. The puff's last frames (12 to 14) tear in a ring round the centre, so the end reads as a whirlpool. Tear outward and up, as smoke leaves.
   2. "Splash" is now a star of hooked blades, rightly: name its files and its json row for what it is (`starburst`), so nobody builds a liquid on it.
 
+## AR10. Kirra, the courier (Modulo, then Faber)
+
+Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three starters (`docs/roster.md`, her row: Common, Agility, Assassin, Zone 1). The four deliveries of AR1, measured against Rook, Pip and Lyric. Her install waits for "Content as data" (`docs/production-plan.md`); her art doesn't.
+
+**Feel line:** a small, quick courier you'd know at 64 px by the scarf trailing twice her length, who's already past you before you see her move.
+
+**Signature feel line, Scarf Step:** she blinks out, her scarf draws one straight line through the Shade, and the cut lands as she's already leaving, behind it, facing it.
+
+**No reference footage** (this game has none): the measure is the three installed leads and `docs/north-star.md`, "The look". The Fighters test applies (`docs/decisions.md`): a scarf, a satchel and two short blades are each the genre's; together with the courier, the colours and Scarf Step they must make someone new.
+
+**Delivers,** in this order, each shown before the next:
+1. **The sheet:** silhouette in black, front and three-quarter on R6, three colour chips, Scarf Step's key pose, the sheet at 64 px over noon and night. Her outline must part from Pip's at 64 px (both small and quick).
+2. **The model** on R6, at the player's height: the scarf as one long mesh or ribbon that the clips can carry, the satchel, the blades crossed on her back.
+3. **The clips,** as Pip's set: Idle, Combo (opening with a dash, the Assassin's way, `docs/design.md`), Scarf Step, Hit, Down, Up, Reveal, Skip only if her fight needs it (research's call at the clips), and Work, a bay loop that reads as a courier's.
+4. **Scarf Step's look,** built in 3D from the kit (AR8, "The method") and AR9's sheets, at rung 7, with the builder in the same session (`/ga-action`): one hero shape, the scarf's line, with a direction and an acceleration; the crescent on the way out.
+
+**Waits:** her install, the First Strike passive (Faber's, as data), her sounds.
+
+**Checks:** the content check on the sheet and before every upload; research's verdict on the sheet, the clips and the final in motion; `ga-fresh-eyes` on Scarf Step at its blockout and final.
+
+**Time it:** each delivery records what it took, beside Pip's.
+
+**Status:** requested, 2026-11-14. After TR5's frames.
+
 ## Later, by ground
 
-The rest of ground 1 (Kirra, Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
+The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

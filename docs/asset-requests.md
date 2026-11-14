@@ -5110,7 +5110,45 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - **The line stays the brightest thing.** The crescent's Glow peaks below the line's swell on the Cut, so the eye goes to the line and the crescent marks where it cut.
   - **The skewer, tried in the first block, not after it:** two takes in the replay, A on the axis and B with `Start` off the axis past the Shade's flank. Both are judged at 64 px from the player's camera. If either reads as a skewer, take the flank, and the clip's aim follows (your re-export).
   - **For Faber's question 2, research's view:** auto-combat doesn't hold 5 studs, so the crescent, the sparks and the light should ride the target, as `Body` rides the attacker. How is Faber's code.
+  - **Research, on the measured B: accepted.** Turning her path, not just the light, is the better lever. It keeps the cloth and the light together, and it beats my B by measure: none of the line hidden from the replay's camera. A stays in the block as the take it's judged against.
+
+## AR11. Watt, the mechanic (Modulo, then Faber)
+
+Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`, his row: Common, Endurance, Tank, Storm, Zone 1). He matters more than his rarity says. He is the guaranteed second Voidkin and the first worker, dropped by the first enemy as a Named shard (D01). So he's the first reveal a player hasn't chosen, the first worker in a bay, and the first Tank anyone leads. The four deliveries of AR1, measured against Rook, Pip, Lyric and Kirra.
+
+**Feel line:** a stocky mechanic you'd know at 64 px by the generator on his back and the wrench as wide as a shield, who walks into a pack like it's a job and is pleased with himself when it's done.
+
+**Signature feel line, Ground Wire:** he slams the wrench into the ground, a ring of current snaps out along the street, and the Shades round him lock mid-step while he stands behind the wrench, shielded and humming.
+
+**The tone:** workshop comedy (his row). It lives in timing and props, never in mugging: the visor flipped up after a win, a coil that sparks once too late, a pat on the wrench. The game stays stylish and slightly mature.
+
+**No reference footage:** the measure is the four leads before him and `docs/north-star.md`, "The look". The Fighters test applies (`docs/decisions.md`). A mechanic, a visor, a backpack and a big wrench are each the genre's. Together with his colours, his build and Ground Wire, they must make someone new.
+
+**Delivers,** in this order, each shown before the next:
+1. **The sheet:** the silhouette in black, front and three-quarter on R6, three colour chips, Ground Wire's key pose, and the sheet at 64 px over noon and night.
+   - At 64 px his outline must part from Rook's: both are broad, and the backpack and the wrench carry it.
+   - Storm's colour must read away from Kirra's blue.
+2. **The model** on R6, at the player's height: the backpack with its two coils (each a place an effect can start), the visor (up and down as two states, or one hinge), and the wrench.
+3. **The clips,** as Pip's set:
+   - Idle;
+   - Combo: heavy and short, the Tank's way (`docs/design.md`);
+   - Ground Wire;
+   - Hit, Down and Up;
+   - Reveal: the first one a player didn't choose, so it lands the comedy and the weight together;
+   - Skip, only if his fight needs it (research's call at the clips);
+   - Work: the bay loop players see most early, so it reads as a mechanic's at a glance.
+4. **Ground Wire's look,** built in 3D from the kit (AR8, "The method") and AR9's sheets, with the builder in the same session (`/ga-action`).
+   - One hero shape: the ring of current along the ground, with a direction (out from the wrench) and an acceleration.
+   - The shield behind it, and the locked Shades read as stopped, never hurt.
+
+**Waits:** his install; Insulated and Ground Wire's stop and shield as data (Faber's); his sounds.
+
+**Checks:** the content check on the sheet and before every upload; research's verdict on the sheet, the clips and the final in motion; `ga-fresh-eyes` on Ground Wire at its blockout and final.
+
+**Time it:** each delivery records what it took, beside Kirra's.
+
+**Status:** requested, 2026-11-14, night. The sheet starts when memory allows headless Blender. Until then, Scarf Step's blockout with Faber goes first, now that Studio is back.
 
 ## Later, by ground
 
-The rest of ground 1 (Kirra in AR10; then Watt, Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
+The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -4780,7 +4780,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: the sheet delivered and accepted; the model made with fixes 1 and 2, with research for its verdict (section 2).
+**Status:** in progress (Modulo), 2026-11-14: the sheet and the model delivered and accepted; delivery 3, the clips.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -4865,7 +4865,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - the scarf stays off red;
   - the pre-upload check on the exact maps and meshes, and a bare-rig check for each clip.
 - **Time:** about 25 minutes in this session, from 12:17 to 12:42 local, over three runs (the yoke twice), on Opus 5.5 xhigh. Pip's model took about 1.1 hours.
-- **Four facts:** made; self-reviewed; content check PASS; with research for its verdict. Not delivered.
+- **Four facts:** made; self-reviewed; content check PASS; research's verdict below, accepted at competent; **delivered** 2026-11-14 to `build/handoff/Kirra/`: the 16 meshes, the three maps, the recipe and the model sheet, byte for byte the files checked.
 
 **Research's verdict on the model, 2026-11-14, night.**
 - **Felt:** the sheet's courier stands up on R6 whole: from the player's camera her back is now a bone V under the dark X, so she reads as a body and not only a scarf, and the keyed-straight tail through the Shade is the Step's line already.

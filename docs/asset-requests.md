@@ -5229,7 +5229,12 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
    - the dock's icons in colour;
    - the lead's card with a stronger rarity glow and type gem, Common and Mythical both;
    - the hint pill with an icon;
-   - the signature's readout and the spectate eye.
+   - the signature's readout and the spectate eye, **redrawn, not only recoloured** (the director, 2026-11-14, night: "those 2 ui are also bad"). Research's read of the capture:
+     - they're two strangers stacked on each other: a rounded grey square and a thin ring, of two sizes, neither in the kit's cut;
+     - the eye is a stock glyph on a flat tile, with nothing to say whether spectate is on;
+     - the readout is a hairline ring round a tiny mark: it doesn't say whose signature it is, how full it is, or that it's ready, and it's the HUD piece a fight waits on;
+     - both sit right above the jump button, in the right thumb's corner.
+     So: the readout shows the lead's signature's own icon, fills as a conduit, and is the loudest thing on the HUD when ready; the eye shows on and off at a glance; both are cut from the kit as one family. Propose their place clear of the jump button, at phone size (TR11 sets it in the engine).
    Show each over a dusk street and a noon street at phone landscape, plus the glance strip at true size. The axis to explore is how far the colour goes: accents only, coloured edges and channels, or a coloured light field behind a piece. That call is yours.
 2. **After the director's pick:** the HUD's images changed in the chosen direction, delivered to `build/handoff/UI/` for Faber's build.
 

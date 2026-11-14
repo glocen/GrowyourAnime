@@ -1190,7 +1190,15 @@ Research's entry, 2026-11-14, night, on the director's words of the same night (
   - **Faber's tier 1, a fallen lead follows only once whole and the player is home: agreed.** That's the director's own words.
   - **The fixed rate's table, research's read: settled.** 39.2 a minute: a level costs 1 minute at level 1, 120 at 15, 895 at 30, and the last level takes 58 days in the machine. It's fast at the start and slow at high level, as the director expected. A first night carries a new account about 13 levels, the start of the ground's climb. Gear, shards and the keeper's win still come only from fighting. Retaken in play at the verdict.
   - **Lyric at level 1, 11 falls in 100: no change.** It's one over the line on 100 runs of a model, and she's no starter, so she rarely leads at level 1. Her Regen stays ×1.5, and her own heal comes with her signature (`docs/design.md`, "Voidkin", the Healer). Retaken at the verdict in motion.
-- **Visually reviewed:** not yet. Research's verdict in motion at phone size (a circuit with a fall, the next lead out, the trip home) goes here once Studio is back.
+- **Visually reviewed: research's verdict in motion, 2026-11-14, night** (`build/scratch/faber/take/tr12_take.mp4`, phone size, at dusk; read at its beats).
+  - **Felt:** the lead drops, its card says Down and then "Healing at home 0:24" where its health was, "Send another" sits under it, and a second lead is out and fighting within eight seconds. Later the first one shows as Training without the player doing a thing. The loop never stalls.
+  - **Tier:** works (grey).
+  - **The bold thing:** the card's own line turning from health to "Healing at home" with its clock. It answers "where did it go, when is it back" in the one place the player already looks.
+  - **Fixes (Faber):**
+    1. **The fallen card dims,** as `docs/ui.md` "A fallen lead" says. The portrait stays in full colour today, so at a glance the card still reads as fighting. (Serves the read at phone size.)
+    2. **Lead keeps its label while it waits.** At 18.3 the button is an empty outlined box for a moment. Show the pressed state with the word in it. (Serves responsiveness.)
+  - **Waits, not a fix:** the column the lead leaves as is a flat white slab, the brightest thing on screen, standing beside the electricity bar. It's grey and goes to the effects pass. When it's drawn, it must not outshine the HUD.
+  - The 25 s heal and the held health were the take's, not the game's, and they are noted as such.
 - **Accepted:** no.
 
 ## TR13. The signature's ring, reworked (Faber, with Modulo's frames)
@@ -1356,3 +1364,12 @@ Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now b
   - Each bites: with the base check or the lane's clamp removed, five checks fail.
 - **The content check:** PASS on "Go home" and on the grey trail (rules 2 to 4), judged from the code; its look on screen is research's verdict.
 - **Waiting on the MCP.** The self-test case is written ("HUD: TR16"): the chip under the card and never the next's, at both scales with the UI lint, the trail from the elite's square to the door, following a walk, cleared on a second tap, gone at the door and at the lead's return. Then research's verdict in motion at phone size.
+- **Research's verdict in motion, 2026-11-14, night** (`build/scratch/faber/take/tr16_take.mp4`, phone size, at dusk; read at its beats).
+  - **Felt:** the chip arrives in the right place and says the right thing. But after the tap, nothing in view answers for about five seconds. The trail starts under the avatar and runs behind the camera, under the Voidkin and Base buttons, so the tap reads as a dead button until the walk turns round.
+  - **Tier:** the chip works; the trail doesn't yet.
+  - **The bold thing:** "Go home" in "Send another"'s place. After a fall, the one place to look always says what to do next.
+  - **Fix, round 1 (Faber): the tap is answered in view, at once.** The camera is never moved (the director's word), so the answer is in the world:
+    - chevrons flow along the trail toward the door, so even the sliver at the screen's bottom reads as "this way, back";
+    - for about 2 s after the tap, an arrow stands over the avatar's head, pointing along the trail's first leg.
+    - Judge it from the same take's start. The test: the player knows which way to turn within half a second of the tap.
+  - **The Brawlers idling beside the lone avatar:** as designed ("Shades treat the lone avatar as they do today"). No change.

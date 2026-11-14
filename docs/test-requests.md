@@ -1407,3 +1407,27 @@ Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now b
     - for about 2 s after the tap, an arrow stands over the avatar's head, pointing along the trail's first leg.
     - Judge it from the same take's start. The test: the player knows which way to turn within half a second of the tap.
   - **The Brawlers idling beside the lone avatar:** as designed ("Shades treat the lone avatar as they do today"). No change.
+
+## TR17. The Voidkin screen, remade (Faber, then Modulo's look)
+
+Research's entry, 2026-11-14, night, on the director's word of the same night (`docs/decisions.md`: "it need to looks insanely good like ammorpg character but for each voidkin ... to make it easy"; then "Next, now"). It replaces the collection screen built through TR15, and it's `docs/ui.md`'s screens 4 and 5 at the bar. The study: `docs/research/voidkin-screen.md`.
+
+**Feel line:** a player opens one Voidkin and it stands there full size, alive in its own light, turning under their thumb, its power at its feet and everything about it one tap to the side. A character you want to show off, not a list you scroll, and the next one a swipe away.
+
+**The block contains,** in grey, at phone size, in three layouts to judge in motion:
+- **Stage:** the figure on the left half, the panel on the right with its tabs along the top, the portrait strip along the bottom.
+- **Flank:** the figure in the middle, the kit's three icons in a column on one side and the stars on the other, and the panel sliding in from the right on a tap, the figure easing left to make room.
+- **Rail:** the portraits in a column on the left edge, the figure left of centre, the panel on the right.
+- **In all three:**
+  - the Voidkin's own model, live, playing Idle at about 70% of the screen's height; a drag turns it, and a tap plays the end of its Reveal;
+  - a grey stage whose light takes the rarity and whose floor glow takes the element (stand-in colours);
+  - Combat Power at its feet;
+  - the panel's tabs, Overview, Stats, Kit and Stars, on real data;
+  - Lead (or Leading) and Send to work, always in view;
+  - favourite, lock and rename beside the name;
+  - switching by the strip and by a swipe on the figure.
+- The dock's Voidkin opens the lead's screen.
+
+**Waits:** the look (Modulo, with Faber, after the pick); sorting, filtering and comparing two; another player's view of your lead; the skill tree; evolution.
+
+**Done when:** a take per layout at phone size: open from the dock, turn the figure, tap it, switch three Voidkin by the strip and by a swipe, each tab, and Lead and Send to work once each. Then research's verdict in motion and the director's pick. The UI lint runs first, at both scales.

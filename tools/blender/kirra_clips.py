@@ -157,7 +157,8 @@ HUB = {
     "crouch": 0.12, "look": EYES, "H": (0, 0, 0), "RA": (16, 0, 9), "LA": (-22, 0, -7), "lift": 0.0,
 }
 TAIL = {"aim": 0.0, "curl": 0.0, "flat": 90.0, "dir": (-0.2, -1.0, 0.15), "ripple": 8.0, "swing": 5.0, "wave": 5.0,
-        "phase": 0.0, "level": 1.0, "trail": 0.0}
+        "phase": 0.0, "level": 1.0, "trail": 0.0, "fall": 0.0}
+FALL = (0.0, 0.0, -1.0)  # where an aimed tail's tip falls with 'fall' (her right, forward, up): straight down
 
 
 class Take(rc.Take):
@@ -221,12 +222,14 @@ class Take(rc.Take):
         """Keys the tail at clip frame `f` (TAIL's names): aim, how far it turns toward `dir` (her right, forward, up)
         with `curl` holding the tip back and `flat` the band's width laid flat (0) or on edge (90); ripple and swing,
         the wave's degrees at the tip, `wave` its length in segments; level, how far its root keeps her heading over
-        her lean (1) or rides her chest (0); trail, how far it follows the knot's own path. The phase (cycles) is keyed
-        linear whatever `ease` says, so the wave runs at an even speed between its keys."""
+        her lean (1) or rides her chest (0); trail, how far it follows the knot's own path; fall, how far an aimed
+        tail's later segments bend toward FALL (growing to the tip), so a tail lifted in a wind arcs over like cloth
+        instead of standing straight. The phase (cycles) is keyed linear whatever `ease` says, so the wave runs at an
+        even speed between its keys."""
         p = self.props["tail"]
         p.update(changes)
         self._hold(f, ease, {"tailaim": (p["aim"], p["curl"], p["flat"]), "taildir": p["dir"],
-                             "tailwave": (p["ripple"], p["swing"], p["wave"]), "tailmode": (p["level"], p["trail"], 0.0)})
+                             "tailwave": (p["ripple"], p["swing"], p["wave"]), "tailmode": (p["level"], p["trail"], p["fall"])})
         if "phase" in changes or f == 0:  # keyed only where it's given, so it runs on evenly between
             self._hold(f, "lin", {"tailphase": (p["phase"], 0.0, 0.0)})
         return self
@@ -372,16 +375,17 @@ def solve_tail(rest, base, knot, v, q_root, trail_dir=None):
     tail = rest["tail"]
     aim, curl, flat = v["tailaim"]
     ripple, swing, wave = v["tailwave"]
-    level, trail, _ = v["tailmode"]
+    level, trail, fall = v["tailmode"]
     phase = v["tailphase"][0]
     right, back = q_root @ Vector((1, 0, 0)), q_root @ Vector((0, 0, 1))
     d = q_root @ W(*v["taildir"])
     d = d.normalized() if d.length > 1e-6 else back
+    falls = q_root @ W(*FALL)
     parent, P = base, knot.copy()
     turns, points = [], [P.copy()]
     for k in range(LINKS):
         c = tail["chords"][k]
-        dk = d
+        dk = (d + falls * fall * k / (LINKS - 1)).normalized() if fall > 1e-3 else d
         if trail > 1e-3 and trail_dir is not None:
             td = trail_dir(k, P)
             if td is not None:
@@ -684,8 +688,10 @@ def reveal(t):
     t.tail(0, aim=0.9, curl=0.8, dir=(0.1, -0.25, 1.0), ripple=12.0, swing=6.0, wave=4.0, phase=0.0)
     t.tail(14, ease="sine", phase=1.6)
     # it settles lifted behind her left shoulder, up into your view of her (hanging as it rests, it'd be hidden behind
-    # her), and clear of the right shoulder her hand draws from
-    t.tail(62, aim=0.7, curl=1.2, dir=(-0.8, -0.4, 0.55), ripple=TAIL["ripple"], swing=TAIL["swing"], wave=TAIL["wave"])
+    # her), and clear of the right shoulder her hand draws from: cloth in a wind, rising and arcing over, its tip
+    # falling back (research's fix: a straight one read as a pennant or a blade)
+    t.tail(62, aim=0.85, curl=0.3, dir=(-0.85, -0.35, 0.75), fall=0.9, ripple=TAIL["ripple"], swing=TAIL["swing"],
+           wave=TAIL["wave"])
     t.tail(150, phase=4.0)
 
 

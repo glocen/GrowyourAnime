@@ -9,9 +9,9 @@ are hidden and the Head's face decal goes; and ten pieces on joints of their own
   clip playing, and a stretch bends so little that, keyed in a line, the chain draws Scarf Step's straight line. A bend
   at a joint opens no gap: each segment carries a thin half-disc back into the one before, hidden inside the band at
   rest, and the segments are by turns a little thinner, so where two overlap they never draw on one plane.
-- The two blades, a piece each, at rest in their sheaths crossed on her back. The recipe gives each one's grip, for a
-  wrist joint in her hand (r6rig.WRISTS, as the Hero's weapons), and its place in the sheath on the Torso, where the
-  clips stow it (r6rig.STOWS). The empty sheaths stay on the Torso.
+- The two blades, a piece each, at rest in their sheaths crossed on her back. Each rides a joint of its own on the
+  Torso at its grip, as Pip's lantern does: the clips that draw it key it into her fist, and any other clip leaves it
+  home. The recipe gives each one's pivot and grip frame. The empty sheaths stay on the Torso.
 Everything shares one 1024 px atlas: colour with the contact shading baked in, roughness, metalness (the steel). No
 glow and no normal map: the low mesh is the form.
 
@@ -242,7 +242,6 @@ def take_pieces(joints, made):
 def export(made, paths, out, density, rings, sag):
     """Each piece as JSON for Studio, and the recipe's facts. Points are Roblox's: studs, Y up, the model standing
     on y = 0 and facing -Z, its HumanoidRootPart at (0, 3, 0)."""
-    torso = Vector((0, 3, 0))
     pieces, total = [], 0
     for piece, o in made.items():
         tris = bl.export_mesh_json(o, out / f"{o.name}.json")
@@ -252,12 +251,10 @@ def export(made, paths, out, density, rings, sag):
         entry = {"name": o.name, "mesh": f"{o.name}.json", "centre": json.loads((out / f"{o.name}.json").read_text())["c"],
                  "size": size, "tris": tris}
         if piece in BLADES:
-            side, arm, motor, _ = BLADES[piece]
+            side = BLADES[piece][0]
             at, length, back = blade_grip(side)
-            entry.update({"wrist": {"arm": arm, "motor": motor},
-                          "grip": {"at": rm.roblox(at), "length": rm.roblox(length), "back": rm.roblox(back)},
-                          "stow": {"on": "Torso", "at": [round(c, 4) for c in Vector(rm.roblox(at)) - torso],
-                                   "length": rm.roblox(length), "back": rm.roblox(back)}})
+            entry.update({"on": "Torso", "motor": piece, "pivot": rm.roblox(at),
+                          "grip": {"at": rm.roblox(at), "length": rm.roblox(length), "back": rm.roblox(back)}})
         elif piece in SCARF:
             j = SCARF.index(piece)
             _, p, t, w, _, _ = rings[j * RINGS]
@@ -288,12 +285,12 @@ def export(made, paths, out, density, rings, sag):
                     "trails it through the world between them is the builder's call (a clip can't see her run). It "
                     "casts a shadow."},
         "blades": {
-            "note": "Each blade is one piece. In her hand: a wrist Motor6D on the arm (r6rig.WRISTS), C0 r6rig.GRIP "
-                    "(0, -1, 0 on the arm, the grip's axes), C1 the blade's 'grip' frame with its 'length' on the "
-                    "grip's +Y and its 'back' (the spine) on +Z, so unkeyed it points ahead out of the fist, edge down, "
-                    "as the Hero's right hand holds. In its sheath: 'stow' is the same frame on the Torso, crossed on her "
-                    "back, where the clips lay it (r6anim.stow). The export has each mesh in its sheath; the empty "
-                    "sheaths are on the Torso piece."},
+            "note": "Each blade is one piece on a Motor6D of its own on the Torso, named in 'motor', its frame at "
+                    "'pivot' (the grip's middle) with the model's axes at rest, as the scarf's joints are. With its "
+                    "Transform at rest it sits in its sheath, crossed on her back; a clip that draws it keys it into her "
+                    "fist frame by frame, wherever the hand is, and puts it back. A clip that never keys it (the shared "
+                    "walk, the open reactions) leaves it home. 'grip' is the blade's frame at rest: 'length' from pommel "
+                    "to point, 'back' its spine. The empty sheaths are on the Torso piece."},
         "points": [{"name": "Knot", "on": "Torso", "at": rm.roblox(ks.KNOT), "note": "the scarf's knot: Scarf Step's line leaves from here"},
                    {"name": "ScarfTip", "on": f"Kirra_{SCARF[-1]}", "at": rm.roblox(rings[-1][1]), "note": "the tail's bone end"},
                    {"name": "Chest", "on": "Torso", "at": rm.roblox((0, 0.6, 3.2)), "note": "where a hit lands"},
@@ -686,7 +683,7 @@ def main():
     wide = max(p.x for p in body) - min(p.x for p in body)
     facts = [f"{recipe['tris']} triangles in {len(pieces)} pieces", f"{tall:.2f} studs to the hair's top, {wide:.2f} wide",
              f"one {SIZE} px atlas, {density:.0f} px per stud", f"the tail: {LINKS} joints, a chain from the knot,",
-             f"each segment within {sag:.2f} studs of its chord", "the blades: a wrist each, and their sheaths",
+             f"each segment within {sag:.2f} studs of its chord", "the blades: a joint each on the Torso, at the grip",
              "maps: colour, roughness, metalness", "no glow, no normal map"]
     print("; ".join(facts))
     pivots = {**ks.PIVOTS, **chain(joints, rings)}

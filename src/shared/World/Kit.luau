@@ -7,6 +7,7 @@
 -- runs with Studio closed.
 --   Kit.Place(placement, piece, gateZ, floorY)  a piece's MeshPart CFrame: its place times its centre
 --   Kit.Light(light, gateZ, floorY)             a static light's CFrame, a SpotLight's shining straight down
+--   Kit.Paper(box, gateZ, floorY)               a box of the drifting paper's air: its centre, unturned (the plan's paper)
 --   Kit.Stops(plan)                             the plan's stops in street order, studs from the gate (packs, square, keeper)
 --   Kit.Problems(manifest, plan, stops, ceiling) what keeps a kit off a street: a piece the manifest lacks, a stop away
 --                                              from the street's marker (`stops`, studs from the gate, in street order), more
@@ -22,10 +23,12 @@ Kit.Floors = { StreetBay = true, SquareFloor = true } :: { [string]: boolean }
 export type Piece = { centre: { number }, size: { number }?, glowStrength: number?, glowTint: string? }
 export type Placement = { piece: string, across: number, along: number, turn: number }
 export type Light = { name: string, across: number, along: number, up: number, colour: string, kind: string, cone: number? }
+export type PaperBox = { across: number, along: number, up: number, size: { number } }
 export type Plan = {
 	placements: { Placement },
 	lights: { Light },
 	stops: { packs: { number }, square: number, keeper: number },
+	paper: { boxes: { PaperBox }, picture: string, emitter: { [string]: any } }?,
 }
 
 local NEAR = 0.01 -- studs: a stop on its marker
@@ -42,6 +45,11 @@ end
 -- A light's place; its frame looks straight down, so a SpotLight on a part's Front face shines onto the street.
 function Kit.Light(light: Light, gateZ: number, floorY: number): CFrame
 	return CFrame.lookAt(Vector3.new(light.across, floorY + light.up, gateZ - light.along), Vector3.new(light.across, floorY, gateZ - light.along), Vector3.zAxis)
+end
+
+-- A box of the paper's air (AR5, "The paper's emitter"): `up` is its centre over the paving, its size the box's own.
+function Kit.Paper(box: PaperBox, gateZ: number, floorY: number): CFrame
+	return CFrame.new(box.across, floorY + box.up, gateZ - box.along)
 end
 
 function Kit.Stops(plan: Plan): { number }

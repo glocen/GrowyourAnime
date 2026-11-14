@@ -21,13 +21,13 @@ local Assembly = require(ServerStorage:WaitForChild("NL_Tools"):WaitForChild("Mo
 
 local KitAssembly = {}
 
-local function files(kit: string): (any, any)
+local function files(kit: string): (any, any, any)
 	local home = (ReplicatedStorage.Shared.Config :: any).Kits[kit]
 	local manifest = require(home.Manifest:Clone()) :: any
 	local installs = ServerStorage:WaitForChild("NL_Tools"):WaitForChild("Kits")
 	local install = installs:FindFirstChild(kit)
 	assert(install and install:IsA("ModuleScript"), `No install {kit} (tools/studio/Kits/{kit}.json)`)
-	return manifest, require(install:Clone()) :: any
+	return manifest, require(install:Clone()) :: any, require(home.Plan:Clone()) :: any
 end
 
 -- A map's published id by its file's name ("maps/LanternRow_Kit_Color.png" -> the install's Maps entry).
@@ -52,10 +52,48 @@ function KitAssembly.Publish(kit: string): { [string]: number }
 	return out
 end
 
+-- A ParticleEmitter from a plan's emitter (the plan's paper): each property by its own type, a NumberSequence as
+-- [time, value] or [time, value, envelope], a NumberRange as [min, max], a colour as hex, an enum by its item's name.
+local function emitter(spec: { [string]: any }, texture: string): ParticleEmitter
+	local made = Instance.new("ParticleEmitter")
+	local props = made :: any
+	for key, value in spec do
+		local current = props[key]
+		local kind = typeof(current)
+		local set: any
+		if key == "Texture" then
+			set = texture
+		elseif kind == "EnumItem" then
+			set = ((current :: EnumItem).EnumType :: any)[value]
+		elseif kind == "NumberRange" then
+			set = NumberRange.new(value[1], value[2])
+		elseif kind == "NumberSequence" then
+			local points = {}
+			for _, row in value do
+				table.insert(points, NumberSequenceKeypoint.new(row[1], row[2], row[3] or 0))
+			end
+			set = NumberSequence.new(points)
+		elseif kind == "ColorSequence" then
+			set = ColorSequence.new(Color3.fromHex(value))
+		elseif kind == "Vector2" then
+			set = Vector2.new(value[1], value[2])
+		elseif kind == "Vector3" then
+			set = Vector3.new(value[1], value[2], value[3])
+		else
+			set = value
+		end
+		assert(set ~= nil, `the emitter's {key}: no {tostring(value)}`)
+		props[key] = set
+	end
+	made.Enabled = true
+	return made
+end
+
 -- The kit as a Model named <Kit>Kit: one MeshPart a piece, anchored, with its look (one SurfaceAppearance: the colour,
--- the glow's mask, tint and strength), its shadow and its collision; and the paving as a Texture, Paving.
+-- the glow's mask, tint and strength), its shadow and its collision; the paving as a Texture, Paving; and the plan's
+-- drifting paper, when it has one, as a ParticleEmitter, Paper, which the game clones into each of its boxes.
 function KitAssembly.Build(kit: string): Model
-	local manifest, install = files(kit)
+	local manifest, install, plan = files(kit)
 	local model = Instance.new("Model")
 	model.Name = `{kit}Kit`
 	local noShadow: { [string]: boolean } = {}
@@ -94,6 +132,11 @@ function KitAssembly.Build(kit: string): Model
 		paving.StudsPerTileU = install.Paving.Tile
 		paving.StudsPerTileV = install.Paving.Tile
 		paving.Parent = model
+	end
+	if plan.paper then
+		local paper = emitter(plan.paper.emitter, map(install, plan.paper.picture))
+		paper.Name = "Paper"
+		paper.Parent = model
 	end
 	return model
 end

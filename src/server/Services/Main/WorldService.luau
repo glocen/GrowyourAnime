@@ -227,6 +227,22 @@ local function dress(street: Instance, gateZ: number)
 		CollectionService:AddTag(holder, Kit.Tag)
 		holder.Parent = folder
 	end
+	-- The drifting paper (AR5, "The paper's emitter"): a box of air each, seen by nothing but its emitter.
+	local paper = template:FindFirstChild("Paper")
+	if plan.paper and paper then
+		for index, box in plan.paper.boxes do
+			local air = Instance.new("Part")
+			air.Name = `Paper{index}`
+			air.Size = Vector3.new(box.size[1], box.size[2], box.size[3])
+			air.Transparency = 1
+			air.Anchored, air.CanCollide, air.CanQuery, air.CanTouch, air.CastShadow = true, false, false, false, false
+			air.CFrame = Kit.Paper(box, gateZ, floorY)
+			paper:Clone().Parent = air
+			air:SetAttribute("Paper", true)
+			CollectionService:AddTag(air, Kit.Tag)
+			air.Parent = folder
+		end
+	end
 	folder.Parent = street
 end
 
@@ -574,7 +590,7 @@ function WorldService.Init()
 			want[placement.piece] = (want[placement.piece] or 0) + 1
 		end
 		local got: { [string]: number } = {}
-		local lights, problems = 0, {}
+		local lights, paper, problems = 0, 0, {}
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
 			if not item:IsDescendantOf(world) then
 				continue
@@ -585,6 +601,8 @@ function WorldService.Init()
 				if item:FindFirstChildOfClass("SurfaceAppearance") == nil then
 					table.insert(problems, `{item:GetFullName()}: no look`)
 				end
+			elseif item:GetAttribute("Paper") then
+				paper += if item:FindFirstChildOfClass("ParticleEmitter") then 1 else 0
 			elseif item:FindFirstChildWhichIsA("Light") then
 				lights += 1
 			end
@@ -596,6 +614,10 @@ function WorldService.Init()
 		end
 		if lights ~= #plan.lights then
 			table.insert(problems, `{lights} lights, the plan has {#plan.lights}`)
+		end
+		local boxes = if plan.paper then #plan.paper.boxes else 0
+		if paper ~= boxes then
+			table.insert(problems, `{paper} boxes of drifting paper, the plan has {boxes}`)
 		end
 		local row = world:FindFirstChild("Lantern Row")
 		if row == nil or row:FindFirstChild("Paving") == nil then

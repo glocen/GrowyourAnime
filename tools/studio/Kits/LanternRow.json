@@ -1,6 +1,23 @@
 {
  "Why": "Lantern Row's install (TR8; AR5, section 2): the maps as published under the group on 2026-11-14 (docs/asset-log.md), the meshes' ids once KitAssembly.Publish has run. Collision: the stalls, the corner stall, the signs and the houses keep their box, so the camera stops at a stall's face as at any wall; the posts follow their mesh, so a rope's line stays a low wall. The gates collide by the grey street's own posts, lintel and door, kept unseen under them; the strings, the banners and the floors are look only (the street's floor carries the walking). No shadow from the strings or the floors, as the manifest's shadows say. The paving is the manifest's tile, 8 studs square, on the street's own floor.",
- "Meshes": {},
+ "Meshes": {
+  "Banner": 121721341841714,
+  "FestivalGate": 86024864672027,
+  "HouseLow": 102270987690487,
+  "HouseTall": 76436413569979,
+  "KeepersDoor": 126637759498129,
+  "KeepersGate": 107974956593341,
+  "LanternString": 113160085496283,
+  "SignBoard": 135068305933091,
+  "SquareFloor": 111321068069675,
+  "SquarePost": 98464297696301,
+  "SquarePostEnd": 115097994133851,
+  "SquareStrings": 98221236238210,
+  "StallA": 88103827228123,
+  "StallB": 108836126562375,
+  "StallCorner": 129783250325973,
+  "StreetBay": 122929449327140
+ },
  "Maps": {
   "LanternRow_Kit_Color.png": "rbxassetid://120420905525678",
   "LanternRow_Kit_Glow.png": "rbxassetid://136129473641345",

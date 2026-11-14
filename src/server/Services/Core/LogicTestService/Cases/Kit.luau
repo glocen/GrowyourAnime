@@ -77,6 +77,36 @@ return {
 		end,
 	},
 	{
+		Name = "Kit: TR8, the drifting paper's air: eight boxes from the festival gate up the street, end to end, over the paving",
+		Run = function(t: any)
+			-- AR5, "The paper's emitter": the plan's boxes as the look's numbers lay them.
+			local paper = Plan.paper
+			t.Check("the plan has its paper", paper ~= nil and type(paper.emitter) == "table")
+			if paper == nil then
+				return
+			end
+			local boxes = paper.boxes
+			t.Equal("eight boxes", #boxes, 8)
+			local gateZ, floorY = -272, 0.6
+			local first = boxes[1]
+			t.Check("the first starts at the gate", near(first.along - first.size[3] / 2, 0), tostring(first.along))
+			local at = Kit.Paper(first, gateZ, floorY)
+			t.Check("its centre at its place, unturned", closeTo(at.Position, Vector3.new(first.across, floorY + first.up, gateZ - first.along))
+				and closeTo(at.LookVector, -Vector3.zAxis), tostring(at.Position))
+			local over, joined = true, true
+			for index, box in boxes do
+				over = over and box.up - box.size[2] / 2 > 0
+				local nextBox = boxes[index + 1]
+				if nextBox then
+					joined = joined and near(nextBox.along - nextBox.size[3] / 2, box.along + box.size[3] / 2)
+				end
+			end
+			t.Check("each box's floor over the paving", over)
+			t.Check("end to end up the street", joined)
+			t.Equal("its picture the published one's", paper.emitter.Texture, string.match(paper.picture, "[^/]+$"))
+		end,
+	},
+	{
 		Name = "Kit: TR8, a stop off its marker, a piece the manifest lacks, lights over the ceiling: each keeps the kit off the street",
 		Run = function(t: any)
 			local stops = streetStops()

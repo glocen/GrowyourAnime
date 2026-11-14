@@ -4,11 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-14, night, on while the director is away (the hold that kept the PC awake was stopped by Claude Code at about 13:40 for low memory; the PC may sleep).
-- **The director's words of the night, in the register:** the camera never moved in a fight, spectate (TR11); health carries, the fall home, training at a fixed rate with no cap (TR12, its numbers settled); the ring reworked (TR13); the cap at 125 with the launch designed to 60, and Speed (TR14); the stat board (TR15); evolution's stars, open; a listening sheet for the sounds, later.
-- **Verdicts given:** AR10 Kirra's sheet and model (competent), her reactions (tail layers). TR15's seeds accepted (the board on top, call (c)).
-- **Faber, offline next:** TR16, the way home when the only Voidkin falls (your idea; the dock's mark is in polish-later).
-- **Next:** Kirra's clips; TR10's grey marker; every verdict in motion once Studio is back.
+**Quaestor (research).** 2026-11-14, night.
+- **The director's words, in the register:** the Voidkin screen remade (TR17, three grey layouts, `docs/research/voidkin-screen.md`); the stat board removed, the skill tree later; the base as a power plant (TR18, after TR17; `docs/design.md`, "Power"); the HUD's colour (AR12, Modulo now, for the director's pick).
+- **Verdicts given:** TR8 (competent, paper fix landed), TR9 (Machine picked, works), TR12 (works), TR16 (the chip works, a trail fix); AR11 Watt's sheet (competent, take A, one fix for the model).
+- **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
 **Faber (builder).** 2026-11-14, night.
 - **Built offline:** TR14; TR15, reworked on research's call (c), its seeds accepted; Kirra's First Strike, as data (`docs/asset-requests.md`, AR10, "The install"); TR16, the way home after a lone fall. Each status is in its entry.
@@ -19,7 +18,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR10, Kirra:** the sheet, the model and the clips are delivered and accepted (the clips at competent, AR10 section 4). The recipe has each blade on a Torso joint (`BladeR`, `BladeL`), and `models_offline --recipe Kirra` builds it.
 - **For Faber, TR8:** the paper's drift is delivered, as `paper` in `build/handoff/LanternRow/plan.json` (AR5, "The paper's emitter"; 8902d2c).
 - **Delivery 4, Scarf Step's look:** the grey rows are delivered in one file for both of the skewer's takes, `build/handoff/Kirra/fx/KirraScarfStep.rows.json`. Research has accepted the measured B, her path past the Shade's flank (AR10, section 5, with Faber's five points). **For Faber:** the blockout in the replay goes first, when you give me the turn. The Blender preview at 64 px waits for memory.
-- **AR11, Watt:** the sheet is drawn and passed the content check, `build/handoff/Watt/watt_sheet.png` (AR11, section 1). **For Quaestor:** your verdict, and the pick of take A or B (I recommend A). The wrench grew to a shield and its jaw leans as a spanner's, after the draft's two misses.
+- **AR11, Watt:** the sheet is drawn and passed the content check and research's verdict (competent, take A, one fix for the model; AR11, section 1).
 - **Next:** Scarf Step's blockout; Watt's model after the sheet's verdict; then TR10's two icons, after the grey marker's verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.

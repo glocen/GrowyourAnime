@@ -46,6 +46,9 @@ STEP_ANGLE = 35.0  # Scarf Step crosses the Shade this far right of the line fro
 #                    has length on the screen (straight away from the camera it'd fold to a streak)
 TARGET = Vector((0, 5, 0))  # the Shade's feet, in Scarf Step
 PAST = 3.8  # how far beyond the Shade she lands
+# The sheaths crossed on her back, (the throat's top, the tip): the right one's grip over her right shoulder
+SHEATHS = {"Right": ((0.78, -0.68, 4.45), (-0.5, -0.68, 2.78)), "Left": ((-0.78, -0.84, 4.45), (0.5, -0.84, 2.78))}
+GRIP = 0.31  # the grip's middle, studs down the blade's line from the pommel's end: where the fist closes
 
 
 def materials():
@@ -182,9 +185,21 @@ def ghost(m, at):
     return pieces
 
 
-def build(scene, drawn=False):
+def yoke_low(t):
+    """The yoke's lower edge, round her (t in radians, the front at 90 degrees): a point low at the middle of her
+    back, up to her shoulder line at the sides, a thin edge over the front of the shoulders."""
+    s, c = math.sin(t), math.cos(t)
+    if s < 0:
+        return 3.5 - 0.8 * (1 - abs(c)) ** 0.8
+    return 3.5 + 0.48 * s ** 0.6
+
+
+def build(scene, drawn=False, model=False):
     """Kirra, standing square. Returns the joints: empties at R6's pivots. `drawn`: the blade over her right shoulder
-    is in her hand. The scarf's long tail isn't here: each pose lays it from the knot once the body is posed."""
+    is in her hand. The scarf's long tail isn't here: each pose lays it from the knot once the body is posed.
+    `model` is the build kirra_model.py finishes, with research's two fixes on the sheet (2026-11-14): a bone yoke
+    across her back and shoulders, under the crossed sheaths, the light mass the player's camera reads at night; and
+    three swept points in the crop's outline from behind. Its sheaths are empty: the blades are pieces of their own."""
     m = materials()
     joints = {}
     for name, at in PIVOTS.items():
@@ -213,6 +228,9 @@ def build(scene, drawn=False):
                        (4.03, 0, 0, 1.9, 1.0)], m["Navy"], n=B),
        loft("JacketHem", [(2.38, 0, 0, 2.14, 1.2), (2.52, 0, 0, 2.12, 1.18)], m["NavyLift"], n=B),
        slab("Placket", (0.14, 0.575, 3.22), (0.1, 0.03, 1.56), m["NavyLift"]))
+    if model:  # fix 1: a courier's canvas yoke, bone, over the shoulders and to a point down her back
+        on("root", loft("Yoke", [(yoke_low, 0, 0, 2.13, 1.15), (lambda t: max(yoke_low(t) + 0.02, 3.97), 0, 0, 2.13, 1.15),
+                                 (4.05, 0, 0, 1.93, 1.03)], m["Bone"], n=B))
     # the satchel's strap, from her right shoulder across her chest to the left hip, and down her back to the satchel
     on("root",
        bar("Strap", (0.72, 0.6, 3.98), (-0.95, 0.6, 2.42), 0.2, 0.05, m["LeatherDeep"]),
@@ -230,8 +248,8 @@ def build(scene, drawn=False):
     on("root", *[bl.place(o, location=(-0.62, -0.74, 2.3), rotation=(0, 0, 20)) for o in satchel])
     # the blades on her back, crossed in an X, their grips over her shoulders: what the player's camera sees
     on("root",
-       *sheathed("Right", (0.78, -0.68, 4.45), (-0.5, -0.68, 2.78), m, drawn=drawn),
-       *sheathed("Left", (-0.78, -0.84, 4.45), (0.5, -0.84, 2.78), m))
+       *sheathed("Right", *SHEATHS["Right"], m, drawn=drawn or model),
+       *sheathed("Left", *SHEATHS["Left"], m, drawn=model))
     # the scarf: wound once to her chin, knotted at the left of her neck, a short end down her chest; the long tail
     on("root",
        loft("Wrap", [(3.92, 0, 0.0, 1.56, 1.42), (4.06, 0, 0.02, 1.64, 1.48), (4.2, 0, 0.04, 1.5, 1.36), (4.2, 0, 0.04, 1.28, 1.12),
@@ -271,10 +289,17 @@ def build(scene, drawn=False):
         return Vector((math.cos(a) * r, math.sin(a) * r, z)), Vector((math.cos(a), math.sin(a), 0))
 
     pieces = []
-    for t, z, reach in ((185, 4.62, 0.36), (208, 4.5, 0.46), (234, 4.44, 0.54), (262, 4.42, 0.58), (290, 4.44, 0.54),
-                        (316, 4.5, 0.46), (340, 4.62, 0.36)):
+    locks = ((185, 4.62, 0.36), (208, 4.5, 0.46), (234, 4.44, 0.54), (262, 4.42, 0.58), (290, 4.44, 0.54),
+             (316, 4.5, 0.46), (340, 4.62, 0.36))
+    for t, z, reach in locks[1:-1] if model else locks:
         base, out = around(t, z, 0.66)
         pieces.append(spike("Lock", base, base + out * 0.22 + Vector((0, -reach, -0.06)), 0.15, m["Soot"]))
+    if model:  # fix 2: three points that leave the outline from behind, swept back and out, more to her left, as the
+        # fringe is: the wind's from ahead, and she's always leaning into a turn. They point out and down, never up.
+        for t, z, r, out_by, back, drop, half in ((198, 4.64, 0.68, 0.66, 0.32, 0.16, 0.2), (224, 5.0, 0.62, 0.58, 0.3, 0.04, 0.18),
+                                                  (340, 4.6, 0.68, 0.5, 0.32, 0.18, 0.19)):
+            base, out = around(t, z, r)
+            pieces.append(spike("Swept", base, base + out * out_by + Vector((0, -back, -drop)), half, m["Soot"]))
     for t, reach in ((215, 0.32), (250, 0.4), (290, 0.4), (325, 0.32)):
         base, out = around(t, 5.08, 0.52)
         pieces.append(spike("Crown", base, base + out * 0.2 + Vector((0, -reach, -0.04)), 0.17, m["Soot"]))

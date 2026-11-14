@@ -4780,7 +4780,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 **Time it:** each delivery records what it took, beside Pip's.
 
-**Status:** in progress (Modulo), 2026-11-14: the sheet delivered and accepted; delivery 2, the model, with the sheet's fixes 1 and 2.
+**Status:** in progress (Modulo), 2026-11-14: the sheet delivered and accepted; the model made with fixes 1 and 2, with research for its verdict (section 2).
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -4817,6 +4817,55 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 - **Tier 2, the 35° crossing: accepted.** Scarf Step lands to the side of the Shade, away from the camera's line, with room; settled at delivery 4 with Faber. It moves the landing, not the camera (the director, 2026-11-14, night: the player's camera is never moved in a fight).
 - The skewer note stays at delivery 4, as the content check says.
 - **The sheet is accepted:** deliver to `build/handoff/Kirra/`, and start the model with fixes 1 and 2.
+
+### 2. The model on R6 (Modulo, 2026-11-14)
+
+- **Where:** `build/scratch/modulo/kirra/model/` until research's yes, then `build/handoff/Kirra/`. The files:
+  - `Kirra_<Piece>.json`, 16 pieces;
+  - `Kirra_Color.png`, `Kirra_Roughness.png` and `Kirra_Metalness.png`;
+  - `Kirra.recipe.json`;
+  - `kirra_model_sheet.png`, with a half-size copy;
+  - `kirra_atlas_check.png`.
+
+  `tools/blender/kirra_model.py` makes them in about 25 seconds, with a Cycles bake under the lock: `blender -b --factory-startup --python tools/blender/kirra_model.py -- <out dir>`. Her body comes from `kirra_sheet.build(model=True)`, so the sheet and the model share one source.
+- **How she sits on R6:** as Pip does. Each of the six parts is a rigid mesh that carries the body's surface; the rig's blocks are hidden and the face decal goes. Ten pieces have joints of their own:
+  - **The tail, a chain of eight.** `Kirra_Scarf1` to `Kirra_Scarf8` are 1.25 studs each, 10 studs in all, and the last 0.55 studs are bone.
+    - Each segment rides a Motor6D at its root, on the segment before it; the first sits on the Torso, at the knot.
+    - The meshes are curved as the S is, so with every Transform at rest the tail floats in the sheet's S.
+    - For each joint the recipe gives its pivot, `along` (the band's line) and `across` (its width). A turn about `across` ripples the band; a turn about its face swings it edgewise. A half-disc in each segment's root fills the wedge that a bend opens.
+    - Keyed with every chord on one line, which is Scarf Step's straight line, the tail is straight to within 0.08 studs.
+  - **The blades, one piece each.**
+    - In her hand: a wrist Motor6D on the arm, with C0 at `r6rig.GRIP` and C1 the blade's `grip` frame, as the Hero's.
+    - On her back: `stow`, the same frame on the Torso, crossed in the sheaths, where the clips lay them. The empty sheaths are part of the Torso piece.
+- **The numbers:**
+  - 10,398 triangles in 16 pieces: the torso 2,660 (with the yoke, the satchel and the sheaths), the head 1,098, about 416 for each scarf segment, 244 for each blade.
+  - 5.30 studs to the hair's top, and 4.00 wide without the scarf.
+  - One 1024 px atlas, at 86 px per stud.
+  - Maps: colour with the contact shading baked in, roughness, and metalness (the steel, at 0.55). No glow and no normal map.
+- **Fix 1, a light mass on her back:** a courier's canvas yoke in bone. It lies over both shoulders, under the crossed sheaths, and comes down to a point in the middle of her back, 2.7 studs up (the torso runs from 2 to 4).
+  - I chose it over lighter sheaths: a dark X on a light ground keeps the X. Light sheaths on navy would read as three thin lines at 64 px, not as a mass.
+  - The measure is the share of figure pixels lighter than half, at 64 px from the player's camera, over dark:
+    - flat in Workbench: the sheet's 21%, the model's 27%;
+    - her back without the tail, lit as the maps draw it: 30% by day, 16% when lit as Lantern Row's dusk.
+  - A first yoke that stopped at mid-back gave 23%.
+  - In the sheet's doubled panel, it's one bone V behind the dark X.
+- **Fix 2, the swept points:** three points in the crop's outline from behind, two at the left of her nape and one at the right. Each is swept back and out, and down, never up. The sheet's two outermost back locks give way to them. The sheet's black outlines show the sheet's round cap beside the model's points, from behind and from the player's camera.
+- **For the builder:**
+  - The chain is made root to tip, and the clips' poses nest the same way: Torso, `Kirra_Scarf1`, and on to `Kirra_Scarf8`.
+  - Whether a spring in code trails the tail through the world between the clips is your call. A clip can't see her run; without a spring she runs with the S as keyed.
+  - Five points: `Knot`, where Scarf Step's line leaves; `ScarfTip`; `Chest`; and `TipR` and `TipL`, the blades' points, for a cut's arc.
+- **What I see wrong:**
+  - At rest the tail is an S held in still air at shoulder height. Only the clips, or your spring, move it.
+  - The seam test bends every joint 22° edgewise and 15° in ripple, and no gap shows. Further bends are untested. A clip that needs more spreads the bend over more joints.
+  - About 2,700 faces (the bevels and small parts) sit on the atlas's swatches and take one flat colour each, as Pip's do.
+  - Lit as dusk, the navy still sinks. The yoke, the bone bands and the scarf hold her.
+  - From the front the yoke shows only as a thin bone edge over the shoulders. It's meant as a mass on her back.
+- **Content check, 2026-11-14: PASS** on the model sheet, the atlas check and the recipe: rules 2, 3 and 4, and the names against `docs/ip-list.md`. It carries three notes:
+  - the skewer note at delivery 4;
+  - the scarf stays off red;
+  - the pre-upload check on the exact maps and meshes, and a bare-rig check for each clip.
+- **Time:** about 25 minutes in this session, from 12:17 to 12:42 local, over three runs (the yoke twice), on Opus 5.5 xhigh. Pip's model took about 1.1 hours.
+- **Four facts:** made; self-reviewed; content check PASS; with research for its verdict. Not delivered.
 
 ## Later, by ground
 

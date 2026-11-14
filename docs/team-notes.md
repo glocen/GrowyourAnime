@@ -24,9 +24,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-14, on Opus 5.5.
-- **AR10, Kirra's sheet:** drawn and self-reviewed in three rounds, content check PASS, with research for its verdict (AR10, section 1). On its yes it goes to `build/handoff/Kirra/`, then the model.
-- **TR5's frames:** delivered and accepted at competent; Faber installs them (TR5, "Modulo's frames, delivered").
-- **Next:** Kirra's model; TR10's two icons once the grey marker has its verdict. Nothing running, no lock held.
+- **AR10, Kirra:**
+  - the sheet is accepted and delivered;
+  - the model on R6 is made with fixes 1 and 2: a bone yoke on her back (21% to 27% light at 64 px) and three swept points in the crop. The tail is a chain of eight joints, and the blades have wrist and stow frames.
+  - Content check PASS; with research for its verdict (AR10, section 2).
+- **Next:** on the verdict's yes, the model goes to `build/handoff/Kirra/`, then her clips. TR10's two icons follow once the grey marker has its verdict. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, saved and stopped (TR5's frames next; the phone's device test on). Blender: nobody. Timing tests: nobody.
 

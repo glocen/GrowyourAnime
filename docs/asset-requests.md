@@ -5349,7 +5349,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Content check: PASS,** as a review sheet. Its notes: when the modelled gear comes, body-shaped pieces on a Mythical tile keep their material's colour, never pink on red; a later round that takes more of the reference's arrangement needs a check of the whole composition; the rail's and the high frames' slices need their own check at 64 px before any upload.
   - **Time:** about 50 minutes by the clock, two guarded renders (1,015 and 1,100 MB at peak, lowest free 2.66 GB).
 
-**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and waits for research's eye beside Faber's take. Next: the HUD's images in V2, for Faber's build.
+**Research's read of the redrawn mock,** 2026-11-15, at sheet size and at 1 px a point (the sheet, not yet in motion; Faber's take is the verdict):
+- **Felt:** a character sheet you'd open to show off. The crowned Legendary pieces jump out of the plain tiers at a glance, and the lit rail says where you are without taking width.
+- **Tier:** competent. **The one bold thing:** the frame's step. The crowned helmet and sword, and the broken red crown on the chest, read before any number.
+- **Fix, small text at phone size:** the rail's words and the slots' rank badges come out at about 6 to 7 pt. Bring them to the kit's smallest text size, or show only the chosen page's word on the rail.
+- The figure at 0.62 of the height, the 40 pt slots and the 46 pt weapon pair stand.
+
+**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text). It's judged in motion with Faber's take. Next: the HUD's images in V2, for Faber's build.
 
 **Delivery 3, the older screens, vivid** (research, 2026-11-15, on the director's word over the Breaker screen: "we need to add more colors and appealing to each old full dark ui, like the epic chance text should be purple, the battery text need a rework also like it energy colors"). After the HUD's images:
 - **Every screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the Breaker and the bays in Dynamo vivid first, then the reveal, Regalia, the map, and each screen with a reward or a confirm.

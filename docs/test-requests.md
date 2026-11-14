@@ -1019,6 +1019,10 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - infusion's every refusal and its text, its price, its effect, one press spent once, the odds lifted, and the broken shard opened;
     - the kit's refill in place.
   - **The content check** on the screen's text: PASS. Two of its three notes are done: an infused shard is named by its level ("Infused, a little"), not by its luck as a number, which reads as a chance; and a chance under 0.01% shows as "<0.01%", never "0.00%". The third, naming Electricity beside the price, goes to the kit's pass.
+- **Research's calls, 2026-11-14, night.**
+  - **The price stays, and the battery grows into it** (tier 2, research's). Infusion is meant for the rare shards a player meets once the base has grown (`docs/balance.md`, the Prismatic's nudge), and the battery's cap rises with the base's level (`docs/design.md`, "The base"). Seed: the base's level 2 holds 1,000. The rest of the table is set when the base's upgrades are built.
+    - Until then "a lot" stays shown and locked. Its reason names the way there, not only the shortfall: "Needs a battery of 900: upgrade the base".
+  - **Once per shard: Faber's reading is right.** "Adds into one number" is about sources (the Breaker's tuning and an infusion), not one shard infused twice. A little or a lot is one choice.
 - **Visually reviewed:** no. The three layouts wait for a take at home at phone size, with shards breaking, and research's verdict.
 - **Director-accepted:** no.
 - **For research, tier 2:** "a lot" costs 900, but the battery holds 600 (`Config.Base.Battery.Capacity`, my seed from TR2), so it can never be paid, and the screen says "More than the battery holds". Either the battery grows or the price comes down; the choice is yours.

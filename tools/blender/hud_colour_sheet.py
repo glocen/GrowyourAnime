@@ -70,12 +70,18 @@ DIRECTIONS = (
     ("C", "Glow", 3, "A coloured light field behind each piece, its body warmed toward its colour, and the lead's rarity "
                      "lighting the card from behind."),
 )
-# The two screens: who leads, the readout's state, the eye's, and the Power pill's.
+# The three screens: who leads, the readout's state, the eye's, and the Power pill's.
+ROOK = dict(who="Rook", rarity="Common", type_="Strength", class_="Warrior", level=12, hp="1,204 / 1,543", health=0.78,
+            xp=0.42, signature="Haymaker")
 SCENES = (
-    dict(kind="dusk", who="Rook", rarity="Common", type_="Strength", class_="Warrior", level=12, hp="1,204 / 1,543",
-         health=0.78, xp=0.42, share=1.0, eye=False, covering=False, signature="Haymaker"),
+    dict(ROOK, kind="dusk", share=1.0, eye=False, covering=False,
+         caption="Dusk, in a fight: Rook leads (Common), his Haymaker ready; spectate off; Power at rest, 24 of 30 kW used."),
     dict(kind="noon", who="Lyric", rarity="Mythical", type_="Technique", class_="Healer", level=48, hp="9,870 / 14,200",
-         health=0.69, xp=0.8, share=0.62, eye=True, covering=True, signature="HeldNote"),
+         health=0.69, xp=0.8, share=0.62, eye=True, covering=True, signature="HeldNote",
+         caption="Noon (a drawn stand-in street): a Mythical lead (Lyric's face, for the sheet), her Held Note filling; "
+                 "spectate on; demand over generation, the battery covering 4 kW."),
+    dict(ROOK, kind="noon", share=1.0, eye=False, covering=False,
+         caption="Noon again, for the white plate on a pale street: Rook's Haymaker ready; spectate off; Power at rest."),
 )
 
 
@@ -144,19 +150,28 @@ def place(st, t, x, y):
 # --- glyphs: shapes as distances, negative inside --------------------------------------------------------------------
 
 def g_haymaker(t, cx, cy, r):
-    """Rook's Haymaker by its hero shape, B5's stamp: the square's frame round its plate, come down and squashed on the
-    floor, the floor's two runs going out from its foot, and the fall's speed lines above it, apart from it."""
-    x0, y0, x1, y1 = cx - 0.66 * r, cy - 0.12 * r, cx + 0.66 * r, cy + 0.56 * r
+    """Rook's Haymaker by its hero shape, B5's stamp, coming down on a slant: the square's frame round its plate,
+    leaning into its fall, its speed lines behind it on the same slant, and the floor it comes down on."""
+    lean = math.radians(28)
+    ax, ay = math.cos(lean), -math.sin(lean)  # the stamp's own right
+    dx, dy = math.sin(lean), math.cos(lean)  # its own down: the way it falls
+    ox, oy = cx + 0.2 * r, cy + 0.1 * r
+
+    def at(u, v):
+        return ox + u * ax + v * dx, oy + u * ay + v * dy
 
     def box_in(i):
-        return t.poly(cut_box(x0 + i, y0 + i, x1 - i, y1 - i, 0.14 * r, 0.14 * r, 0, 0))
+        hw, hh, k = 0.58 * r - i, 0.44 * r - i, 0.14 * r
+        return t.poly([at(u, v) for u, v in ((-hw + k, -hh), (hw - k, -hh), (hw, -hh + k), (hw, hh), (-hw, hh),
+                                             (-hw, -hh + k))])
     frame = np.maximum(box_in(0.0), -box_in(0.15 * r))
     plate = box_in(0.27 * r)
-    runs = [t.poly([(cx + s * 0.58 * r, y1 - 0.2 * r), (cx + s * 1.24 * r, y1 - 0.02 * r), (cx + s * 0.58 * r, y1)])
-            for s in (1, -1)]
-    lines = [seg(t, (cx + dx * r, y0 - 0.24 * r), (cx + dx * r, y0 - (0.24 + length) * r), 0.13 * r)
-             for dx, length in ((-0.42, 0.42), (0.0, 0.66), (0.42, 0.42))]
-    return np.minimum.reduce([frame, plate] + runs + lines)
+    lines = [seg(t, at(u, -(0.44 + gap) * r), at(u, -(0.44 + gap + length) * r), 0.13 * r)
+             for u, gap, length in ((-0.36, 0.2, 0.5), (0.0, 0.26, 0.78), (0.36, 0.2, 0.42))]
+    yf = cy + 0.98 * r
+    floor = t.poly([(cx - 1.15 * r, yf), (cx - 0.5 * r, yf - 0.07 * r), (cx + 0.5 * r, yf - 0.07 * r), (cx + 1.15 * r, yf),
+                    (cx + 0.5 * r, yf + 0.07 * r), (cx - 0.5 * r, yf + 0.07 * r)])
+    return np.minimum.reduce([frame, plate, floor] + lines)
 
 
 def g_heldnote(t, cx, cy, r):
@@ -331,11 +346,13 @@ def readout(st, x, y, s, share, signature, reach):
     if ready:
         t.paint(inner, t.ramp("#FFFDF6", IVORY, (t.y - top) / (low - top)))
         t.paint(np.maximum(inner, np.abs(t.x - g - s / 2) - s * 0.16), c("#FFFFFF"), 0.5)
-    else:  # dim light below its front, brightest just under it, the front a bright line
-        t.paint(lit, c(IVORY), 0.34)
-        under = np.clip(1 - (t.y - level) / 11.0, 0, 1)
-        ui.over(t.px, c(IVORY), np.clip(0.5 - lit * K4, 0, 1) * under * 0.5)
-        t.paint(np.maximum(inner, np.abs(t.y - level) - 0.9), c(IVORY), 0.95)
+    else:  # light below its level, the level itself a lit edge with its own small glow, so how full reads at a glance
+        t.paint(lit, c(IVORY), 0.28)
+        under = np.clip(1 - (t.y - level) / 8.0, 0, 1)
+        ui.over(t.px, c(IVORY), np.clip(0.5 - lit * K4, 0, 1) * under * 0.4)
+        within = np.clip(0.5 - inner * K4, 0, 1)
+        ui.over(t.px, c(IVORY), within * np.clip(1 - (np.abs(t.y - level) - 1.3) / 4.5, 0, 1) * 0.55)
+        t.paint(np.maximum(inner, np.abs(t.y - level) - 1.3), c("#FFFFFF"))
     if reach >= 2 or ready:
         t.line(inner, 0.8, c(IVORY), 0.35 if not ready else 0.9)
     t.line(outer, 1.0, c(IVORY if ready else GRAPHITE["edge"]))
@@ -343,8 +360,8 @@ def readout(st, x, y, s, share, signature, reach):
     if ready:
         t.paint(d - 1.4, c("#FFFFFF"))
         t.paint(d, c(INK))
-    else:
-        t.paint(d - 1.6, c(STROKE))
+    else:  # dark-edged, so it holds over the light as it rises
+        t.paint(d - 2.3, c(STROKE))
         t.paint(d, c(IVORY), 0.92)
     place(st, t, x - g, y - g)
 
@@ -497,7 +514,16 @@ def resize(px, w, h):
     return np.flip(out.reshape(h, w, 4), 0)  # row 0 = the top, as a view: no second copy
 
 
+BACKDROPS = {}  # each street drawn once, kept in 8 bits
+
+
 def backdrop(kind):
+    if kind not in BACKDROPS:
+        BACKDROPS[kind] = bytes8(street(kind))
+    return floats(BACKDROPS[kind])
+
+
+def street(kind):
     if kind == "dusk":
         src = rs.load(DUSK)
         sh, sw = src.shape[:2]
@@ -621,31 +647,45 @@ def add(sheet, px, items, x, y):
 def direction_sheet(out, key, name, note, shots):
     ui.K = 2
     m, cap = 20.0, 28.0
-    sheet = ui.Sheet(W + 2 * m, 62 + 2 * (H + cap) + 8, GROUND)
+    sheet = ui.Sheet(W + 2 * m, 62 + len(SCENES) * (H + cap) + 8, GROUND)
     t = sheet.tile(0, 0, sheet.w, 60)
     t.text(m, 14, 17, f"Grow your Anime: the HUD's colour, direction {key}, {name}", HEAD)
     t.text(m, 40, 10, note, NOTE)
     for i, ((px, items), sc) in enumerate(zip(shots, SCENES)):
         y = 62 + i * (H + cap)
         add(sheet, px, items, m, y)
-        words = ("Dusk, in a fight: Rook leads (Common), his Haymaker ready; spectate off; Power at rest, 24 of 30 kW used."
-                 if sc["kind"] == "dusk" else
-                 "Noon (a drawn stand-in street): a Mythical lead (Lyric's face, for the sheet), her Held Note filling; "
-                 "spectate on; demand over generation, the battery covering 4 kW.")
-        sheet.tile(m, y + H + 8, W, 16).text(0, 0, 10, words, NOTE)
+        sheet.tile(m, y + H + 8, W, 16).text(0, 0, 10, sc["caption"], NOTE)
     kit.finish(sheet, out / f"hud_colour_{key}.png")
 
 
-def glance_sheet(out, shots):
+STRIP_H = 96.0  # the readout at true size, under each direction's screens on the glance strip
+PALE_GROUND = "#E9DFC4"  # about the noon street's sand
+
+
+def readout_strip(reach):
+    """The readout at 30 and 70 in 100 and ready, over a dark ground and a pale one, drawn at the kit's 4 pixels a point
+    and brought down to 1: how full it is must read at a phone's size."""
+    st = kit.Stage(W, STRIP_H, "#241B33")
+    st.px[:, round(W / 2 * K4):, :3] = c(PALE_GROUND)
+    st.text(8, 4, 10, "The readout at true size: 30 and 70 in 100, then ready.", HEAD)
+    for half, x0 in enumerate((14.0, W / 2 + 14)):
+        for i, share in enumerate((0.3, 0.7, 1.0)):
+            readout(st, x0 + i * 72, 26, 58.0, share, "Haymaker", reach)
+    return bytes8(rs.shrink(st.px, 1 / K4)), st.items
+
+
+def glance_sheet(out, shots, strips):
     """The three directions side by side at 1 pixel a point: about a phone's size on a monitor."""
     ui.K = 1
     m, head = 16.0, 30.0
-    sheet = ui.Sheet(3 * W + 4 * m, head + 2 * H + 3 * m, GROUND)
+    rows = len(SCENES)
+    sheet = ui.Sheet(3 * W + 4 * m, head + rows * (H + m) + STRIP_H + m, GROUND)
     for j, (key, name, _, _) in enumerate(DIRECTIONS):
         x = m + j * (W + m)
         sheet.tile(x, 0, W, head).text(0, 10, 14, f"{key}, {name}", HEAD)
         for i, (px, items) in enumerate(shots[key]):
             add(sheet, halve(floats(px)), items, x, head + i * (H + m))
+        add(sheet, *strips[key], x, head + rows * (H + m))
     kit.finish(sheet, out / "hud_colour_glance.png")
 
 
@@ -684,7 +724,7 @@ def parts_rows():
         pill(st, 222, 102, 200, POWER, reach, "Bolt", "30 kW", "34 kW used", POWER, 1.0, drain=4 / 34, mark=("Battery", 96))
         pill(st, 430, 102, 120, CREDITS, reach, "CoinMint", "35,170")
         hint(st, 558, 102, 288, "65 shards: into the Breaker", reach)
-        rows.append((rs.shrink(st.px, PARTS_K / K4), st.items))
+        rows.append((bytes8(rs.shrink(st.px, PARTS_K / K4)), st.items))
     return rows, rowh
 
 
@@ -709,6 +749,7 @@ def main():
     icons()
     card_images()
     stage("the kit's slices and the card's images")
+    # Every picture is composed first and kept in 8 bits; the text comes after, since its render brings up the GPU.
     shots = {}
     for key, name, reach, note in DIRECTIONS:
         shots[key] = []
@@ -716,14 +757,18 @@ def main():
             shots[key].append(screen(sc, reach))
             stage(f"{key}, {sc['kind']}")
     rows, rowh = parts_rows()
-    stage("the parts' rows")
+    strips = {key: readout_strip(reach) for key, _, reach, _ in DIRECTIONS}
+    BACKDROPS.clear()
+    kit.IMAGES.clear()
+    IMG.clear()
+    stage("the parts' rows and the strips, the slices let go")
     parts_sheet(out, rows, rowh)
     del rows
     stage("the parts' sheet")
     for key, name, reach, note in DIRECTIONS:
         direction_sheet(out, key, name, note, shots[key])
         stage(f"sheet {key}")
-    glance_sheet(out, shots)
+    glance_sheet(out, shots, strips)
     stage("the glance")
     deuteranopia_sheet(out)
 

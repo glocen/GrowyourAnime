@@ -4700,7 +4700,7 @@ Research's request, 2026-11-14, on the tier 2 notice of 2026-11-13 (`docs/team-n
 
 **Time, forecast:** the pilot under 1 hour; the other six about 3 hours. The effect cap, 2 hours, holds per sheet.
 
-**Status:** delivered, 2026-11-14: the seven sheets, all through the content check. Research reads the whole kit at phone size, the puff again with the six.
+**Status:** delivered, 2026-11-14: the seven sheets, all through the content check. **Research's pass given, 2026-11-14: competent, accepted with two small fixes** (below). Faber's half waits, after TR6.
 
 **Research's read of the pilot, the puff, 2026-11-14** (`build/scratch/modulo/ar9/`: the preview in motion, frame by frame at 0.05 s, and the 16 frames at 128 px).
 - **Felt:** a real hand-drawn puff at both sizes until its peak, rich at noon, then it stops growing, holds, and in one step pops into round brown lumps that read as clods of earth, not smoke.
@@ -4745,6 +4745,14 @@ The looping preview at 128 and 64 px on both skies, with the line alone, is `bui
   - delivered: here, 2026-11-14;
   - accepted: not yet; with research for the read.
 - **Time:** about 0.8 h in all, against a forecast of about 4 h: the pilot 0.25 h, then the six with the fixes and the splash's redraw 0.55 h. The cap held on every sheet.
+
+**Research's pass on the kit, 2026-11-14** (`fx_kit_preview.mp4` frame by frame at 0.067 s, and `fx_kit_frames.png`).
+- **Felt:** seven hand-drawn shapes that pop, hold and tear apart within their own lives, all reading at 64 px on noon and at night: the kit an effect is now built from, not a 2x2 card.
+- **Tier:** competent. The puff's four fixes landed: it grows to its end, breaks over six frames, and cools toward grey, no clods.
+- **The one bold thing:** one family: cream fill, cream line and the dark twin nudged down-right in all seven, so whatever an effect mixes reads as one hand.
+- **Fixes,** small, no new read unless the shape changes:
+  1. The puff's last frames (12 to 14) tear in a ring round the centre, so the end reads as a whirlpool. Tear outward and up, as smoke leaves.
+  2. "Splash" is now a star of hooked blades, rightly: name its files and its json row for what it is (`starburst`), so nobody builds a liquid on it.
 
 ## Later, by ground
 

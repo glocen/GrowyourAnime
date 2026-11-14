@@ -2770,6 +2770,18 @@ The pieces are 16 meshes on 3 pairs of pictures, so they batch. The strings are 
 - **No fix round on the kit.** One note for the install, tuned live: the houses' windows burn as bright as the lanterns in the frames' top corners. Lower the houses' glow strength first (start at about two thirds). If the skyline still reads as a city, as B's did, half the windows go dark in the map, and that's a fix round.
 - **Judged at install, not here:** a Shade's edge by a hair (the floors' glow strength is the lever); the square's fight frame; the far paving between pools.
 
+**The paper's emitter (Modulo, 2026-11-14)**, for Faber's TR8, where it was out of the block with no numbers.
+- **Where:** `plan.json`, its `paper` key. `tools/blender/lantern_row_kit.py`'s `paper()` writes it. A new mode, `-- <handoff> plan`, rewrites `plan.json` alone, taking its triangle counts from `manifest.json`. Nothing else in the plan changed, and no mesh or map was written.
+- **What:** eight boxes of air, gate to keeper's gate, each 40 across, 74 along and 10.5 tall, from 4 studs up to 14.5. Each holds one ParticleEmitter on `LanternRow_Paper.png` (135638702835628).
+  - A scrap fades in where it's born, then drifts up the street and sinks slowly. It spins, and three times in its life it turns edge-on and back (Squash). It fades out before the paving.
+  - It's the same at dusk and at night: LightInfluence 0.78 is the look's paper, lit 22% by itself, as it was rendered.
+- **The look's still, set moving:** the same scraps (Size 0.8 gives about 0.55 studs) at the same density, 70 alive over 108 studs. That's about 143 alive within the budget's 220-stud reach, and 384 on the whole street.
+  - I simulated the emitter's own numbers, weighting each scrap by its fade. The scraps that show sit 5% under 3.5, half under 8.5 and 95% under 13.5, against the look's band of 3.1, 8.25 and 13.4.
+  - Of what shows, 0.01% dips under the paving. A first try that spawned scraps in the look's own band, 2.5 to 14, with a stronger push would have sunk them while still visible.
+- **For Faber:** the numbers are seeds, live through Tune; the targets in the key decide. Performance mode halves Rate. Two engine facts the Roblox docs don't settle are written as checks at install: FlipbookFramerate 0 holding each scrap on its random frame (else 0.1), and a box's volume emitting all through it.
+- **Content check, 2026-11-14: PASS.** It covered the picture, the emitter and `paper()`, against rules 2, 3 and 4. Its condition is for the review from the player's camera after install: at the brightest pools and at night, the scraps still read as paper, never as ash or embers. That's tuned by colour and density, not by changing the shape. A darker tint or a glow needs a new check.
+- **Not done:** the engine's look, research's read in motion at install, which the targets name: never snow, sparks or confetti; never the brightest thing near the lead; never across the fight's read (the lever is the boxes' floor).
+
 ## AR6. Regalia's item art
 
 For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from the reference study, `docs/research/gear-icons.md`. Written in full when phase 3 opens.

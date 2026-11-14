@@ -28,6 +28,7 @@ Run (Eevee, no lock), each `blender.exe -b --factory-startup --python tools/blen
   sheet                            the review sheet, from those files
   export                           <out> is the handoff folder: meshes, maps, manifest.json, plan.json, and the plan
                                    drawn from above, lantern_row_plan.png
+  plan                             plan.json alone, beside the handoff's manifest.json (the paper's emitters, paper())
   sky <M> [N]                      each phase's six sky faces, lighting.json and the sky's sheet, into <out>
 
 Dusk is the look script's merge with the verdict's notes; night is the same kit under another sky and other lights
@@ -1305,7 +1306,89 @@ def budget(facts, reach=220.0):
     return dict(reach_studs=reach, whole_street=total, worst_within_reach=worst, counts=counts)
 
 
+# --- the drifting paper ----------------------------------------------------------------------------------------------
+
+PAPER_BOXES = 8                 # boxes of air, gate to keeper's gate, each with one emitter
+PAPER_UP = (4.0, 14.5)          # where scraps are born: the look's band, 2.5 to 14 (lantern_row_look.paper_in_air),
+                                # raised by what a scrap sinks in a life, so the scraps that show fill the look's band
+                                # (simulated, weighted by the fade: 5% under 3.5, half under 8.5, 95% under 13.5,
+                                # against the look's 3.1, 8.25, 13.4; 0.01% of what shows is under the paving)
+PAPER_PER_STUD = 70 / 108.0     # the look's still: 70 scraps alive over 108 studs of street
+PAPER_LIFE = (7.0, 10.0)        # seconds
+PAPER_SPEED = (0.2, 0.7)        # the launch's push, any way, studs/s
+PAPER_DRAG = 0.3                # the push halves every 1 / 0.3 s
+PAPER_WIND = (0.04, -0.1, -0.16)  # studs/s², world: a little across, down, and up the street (-Z on this plan)
+
+
+def paper():
+    """The drifting paper's emitters for the builder (TR8): the look's scraps, set moving. Each box of air over the
+    street holds one ParticleEmitter on LanternRow_Paper.png, emitting through its volume. A scrap fades in where it is,
+    drifts up the street and down at a walk's tenth, spins, turns edge-on now and then, and fades before the paving."""
+    span = STOPS["keeper"]
+    length = span / PAPER_BOXES
+    life = sum(PAPER_LIFE) / 2
+    rate = PAPER_PER_STUD * length / life
+    tau = 1 / (PAPER_DRAG * math.log(2))  # Drag as the docs give it: speed halves every 1 / Drag seconds
+    carried = tau * (1 - math.exp(-life / tau))  # how far a launch's 1 stud/s carries in a mean life
+    blown = [a * tau * (life - carried) for a in PAPER_WIND]  # and how far the wind takes it
+    worst = PAPER_UP[0] + blown[1] - PAPER_SPEED[1] * carried
+    flips = [[0, 0], [0.08, 0], [0.13, 1], [0.18, 0], [0.4, 0], [0.45, 1], [0.5, 0], [0.7, 0], [0.75, 1], [0.8, 0], [1, 0]]
+    return dict(
+        note="One anchored Part a box, invisible, colliding with nothing, at CFrame.new(across, floor + up, gateZ - along), "
+             "size [across, up, along] as `size`; one ParticleEmitter in it with `emitter`. The numbers are the look's "
+             "still in motion and are seeds, live through Tune: the targets below decide. The same at dusk and at "
+             "night: LightInfluence 0.78 is the look's paper, lit 22% by itself, so a scrap catches the pools and "
+             "never vanishes between them. Performance mode halves Rate.",
+        picture="maps/LanternRow_Paper.png",
+        boxes=[dict(across=0.0, along=round(length * (i + 0.5), 2), up=round(sum(PAPER_UP) / 2, 2),
+                    size=[2 * (look.HALF - 2), round(PAPER_UP[1] - PAPER_UP[0], 2), round(length, 2)])
+               for i in range(PAPER_BOXES)],
+        emitter=dict(
+            Texture="LanternRow_Paper.png", FlipbookLayout="Grid2x2", FlipbookMode="Loop", FlipbookStartRandom=True,
+            FlipbookFramerate=[0, 0], Shape="Box", ShapeStyle="Volume", EmissionDirection="Top",
+            Rate=round(rate, 2), Lifetime=list(PAPER_LIFE), Speed=list(PAPER_SPEED), SpreadAngle=[180, 180],
+            Acceleration=list(PAPER_WIND), Drag=PAPER_DRAG, WindAffectsDrag=False,
+            Rotation=[0, 360], RotSpeed=[-60, 60], Orientation="FacingCamera",
+            Size=[[0, 0.8, 0.2], [1, 0.8, 0.2]], Squash=flips,
+            Transparency=[[0, 1], [0.12, 0], [0.85, 0], [1, 1]],
+            Color="#FFFFFF", LightInfluence=0.78, LightEmission=0, Brightness=1, ZOffset=0, LockedToPart=False),
+        keys="A NumberSequence is [time, value] or [time, value, envelope]; a NumberRange is [min, max].",
+        reads=[f"about {PAPER_PER_STUD * span:.0f} scraps alive on the whole street, {PAPER_PER_STUD * 220:.0f} within "
+               "the budget's 220-stud reach",
+               f"over a mean life of {life:g} s the wind takes a scrap {-blown[2]:.1f} studs up the street, "
+               f"{blown[0]:.1f} across, and down {-blown[1]:.1f}; its launch adds up to {PAPER_SPEED[1] * carried:.1f} "
+               f"any way. So at worst a scrap born lowest, at {PAPER_UP[0]:g}, ends "
+               f"{abs(worst):.1f} studs {'under' if worst < 0 else 'over'} the paving, by then faded",
+               "Size 0.8 shows a scrap about 0.55 studs long, as the look's (a scrap fills about 70% of its cell)",
+               "Squash above 0 narrows a scrap (the Roblox docs): three times a life it turns edge-on and back"],
+        targets=["it reads as paper in the air, never as snow, sparks or confetti, at dusk and at night",
+                 "never the brightest thing near the lead; it never crosses the fight's read. If a scrap at head height "
+                 "does, the boxes' floor rises, over a fighter's head",
+                 "no scrap sinks visibly into the paving: it has faded first"],
+        install_checks=["FlipbookFramerate 0 should hold each scrap on its random first frame. If the engine changes "
+                        "frames anyway, 0.1: a scrap turns over at most once a life",
+                        "a box's volume emits all through it, and SpreadAngle 180 throws a scrap any way, whatever "
+                        "the face"])
+
+
 # --- the handoff -----------------------------------------------------------------------------------------------------
+
+def write_plan(out: Path, facts):
+    places, lights = plan()
+    (out / "plan.json").write_text(json.dumps(dict(
+        origin="the festival gate's middle at pavement level",
+        axes="`across` is + to the right walking in (Roblox +X when the street runs toward -Z); `along` is studs up the "
+             "street from the gate; `turn` is degrees anticlockwise seen from above",
+        toRoblox="CFrame.new(across, 0, gateZ - along) * CFrame.Angles(0, math.rad(turn), 0)",
+        spacing=SPACING, bay=round(BAY, 4), stops=STOPS,
+        placements=[dict(piece=n, across=x, along=y, turn=t) for n, x, y, t in places],
+        lights=[dict(name=n, across=x, along=y, up=z, colour=c, kind=k, cone=POOL_CONE if k == "spot" else None)
+                for n, x, y, z, c, k in lights],
+        lightsNote="Every static light the street has: a SpotLight straight down (Face Bottom, Angle = cone) or a "
+                   "PointLight, Shadows off. Every other pool is painted in a floor's glow picture. The lead carries "
+                   "one PointLight more. Brightness and Range are tuned in the engine against the two targets.",
+        budget=budget(facts), paper=paper()), indent=1), encoding="utf-8")
+
 
 def export(out: Path, key="M"):
     d = look.DIRECTIONS[key]
@@ -1344,20 +1427,7 @@ def export(out: Path, key="M"):
               "LanternRow_Paper.png": "drifting paper: a 2 by 2 flipbook for a ParticleEmitter"},
         pieces=listing)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
-    places, lights = plan()
-    (out / "plan.json").write_text(json.dumps(dict(
-        origin="the festival gate's middle at pavement level",
-        axes="`across` is + to the right walking in (Roblox +X when the street runs toward -Z); `along` is studs up the "
-             "street from the gate; `turn` is degrees anticlockwise seen from above",
-        toRoblox="CFrame.new(across, 0, gateZ - along) * CFrame.Angles(0, math.rad(turn), 0)",
-        spacing=SPACING, bay=round(BAY, 4), stops=STOPS,
-        placements=[dict(piece=n, across=x, along=y, turn=t) for n, x, y, t in places],
-        lights=[dict(name=n, across=x, along=y, up=z, colour=c, kind=k, cone=POOL_CONE if k == "spot" else None)
-                for n, x, y, z, c, k in lights],
-        lightsNote="Every static light the street has: a SpotLight straight down (Face Bottom, Angle = cone) or a "
-                   "PointLight, Shadows off. Every other pool is painted in a floor's glow picture. The lead carries "
-                   "one PointLight more. Brightness and Range are tuned in the engine against the two targets.",
-        budget=budget(facts)), indent=1), encoding="utf-8")
+    write_plan(out, facts)
     print(json.dumps(budget(facts), indent=1))
 
 
@@ -1535,6 +1605,9 @@ def main():
     elif mode == "export":
         export(out)
         plan_picture(out)
+    elif mode == "plan":  # plan.json alone, its triangle counts from the handoff's manifest: no mesh or map rewritten
+        pieces_now = json.loads((out / "manifest.json").read_text(encoding="utf-8"))["pieces"]
+        write_plan(out, {name: dict(triangles=p["triangles"]) for name, p in pieces_now.items()})
     elif mode == "sky":
         for key in args[1:]:
             skies(out, key)

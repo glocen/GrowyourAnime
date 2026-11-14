@@ -960,3 +960,29 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
 **Order in the queue:** after TR8. **Time, forecast:** 2 to 3 hours.
 
 **Status:** requested, 2026-11-14.
+
+## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
+
+Research's entry, 2026-11-14, on the director's words of the same day (`docs/decisions.md`): a cooldown kept by the server before the elite and the keeper come back, and while they're down, their icon, the time left and a small card of their loot with its drop rates. A new piece: TR5 stays as it is.
+
+**Feel line:** when the elite falls, its square keeps its place: its icon hangs over the empty square with the time counting down and what it drops beside it, so you know when to come back and why; the keeper's gate does the same for your own Lamplighter.
+
+**The block contains:**
+- **The cooldown, on the server.**
+  - The elite: one timer for the whole server, since its fight is shared. It replaces the elite's share of `Config.World` `Respawn`; the packs keep theirs.
+  - The keeper: each player's own timer (the director's pick, 2026-11-14), since each player has their own fight. It starts when that player beats him; a lost try can be tried again at once.
+  - A rejoin or a server hop never resets a player's keeper timer: it's kept with the player's state.
+  - Seeds, tier 2, research's, tuned by playing: the elite 2 minutes, the keeper 5 minutes. Faber checks their effect on the Jewels' pace in `tools/balance/sim.py` before they settle, and brings research the numbers.
+- **The marker, while it's down,** in grey first: over the elite's square, and at the keeper's gate for the player whose timer runs.
+  - Its icon, the time left as it counts down, and a small card of its loot with each drop's rate.
+  - The rates come from `Rules/Drops`, never copied into the UI.
+  - Two or three layouts, judged at phone size from the street, near and far.
+- **The icons:** the elite's and the Lamplighter's, Modulo's, on the kit, after the verdict on the grey marker.
+
+**Waits:** the other grounds' elites and keepers; the marker's sounds; a marker for packs.
+
+**Checks:** a logic case for each timer (the server's, a player's, a rejoin across it); the self-test for the marker's states; the UI lint on the smallest phone; the content check on the icons and the text; research's verdict on the grey marker, then its pass.
+
+**Order in the queue:** after TR6. **Time, forecast:** the timers and the grey marker about 2 hours, the icons about 1.
+
+**Status:** requested, 2026-11-14.

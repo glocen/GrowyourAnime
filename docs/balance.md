@@ -20,7 +20,7 @@ A new system joins by adding points to a stat or a number to a bucket. If it can
 
 ## Growth
 
-One curve, `G(level)`, gives the size of everything at a level: a Voidkin's base stats, an item tier's stats, an enemy's health, a reward. Launch levels are 1 to 60, and G runs from 1 to 22. Because rewards, costs and enemies follow the same curve, a higher level changes what a player fights, not how fast the numbers run.
+One curve, `G(level)`, gives the size of everything at a level: a Voidkin's base stats, an item tier's stats, an enemy's health, a reward. The level cap is 125, and the launch is designed to 60, where G is 22 [D, 2026-11-14, night: "the level cap is 125 but the launch is designed for level 60 simple is as that"]. Past 60 the same curve runs on (G about 77 at 125); the pace there is designed with the grounds that reach it. Because rewards, costs and enemies follow the same curve, a higher level changes what a player fights, not how fast the numbers run.
 
 ## Where power comes from
 
@@ -37,6 +37,7 @@ Shares of a full launch build's stat points, at level 60:
 | Research | 3 | Research Points |
 
 - **Rarity** multiplies a Voidkin's own base only, from 1.00 for a Common to 1.50 for a Mythical. Since the base is about a third of a build, a Mythical at a full build has about 19% more of each stat than a Common at a full build.
+- **Skill points** (`docs/design.md`, "Skill points") take part of the own base's 35: the player chooses where it goes among Health, Attack, Defence and Regen. The split is a seed, set by the simulation when the board is built.
 - **Class** shifts a Voidkin's own base between health, attack and defence. It doesn't touch gear.
 - **Gear is the account's,** so most of a build carries over to whichever Voidkin leads.
 
@@ -45,6 +46,8 @@ Shares of a full launch build's stat points, at level 60:
 | Stat | Kind | What it does |
 |---|---|---|
 | Health, Attack, Defence | points | the three every source adds to |
+| Regen | points | health a second, always, in a fight too (`docs/design.md`, "Health carries") |
+| Speed | studs a second | a lead's walk speed in a fight, by class and Voidkin (`docs/design.md`, "Speed") |
 | Hit | rating | against the target's Dodge and Block |
 | Dodge | rating | chance to avoid a hit entirely |
 | Critical | rating | chance of a critical hit, against the target's Critical Resist |

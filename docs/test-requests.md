@@ -1149,3 +1149,41 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
   - The self-test's new case (each look through empty, a quarter, half, nearly full, full, the fire, hidden; Rim's head at the foot when half full; Pips' count lit; Pool's level; one look in the ring's place and back) waits on the Studio MCP.
 - **Visually reviewed:** not yet. The capture goes here once Studio is back: `Beside` on, at phone size, in a pack fight through a fire and a ready, for research's verdict on the grey looks.
 - **Accepted:** no.
+
+## TR14. Speed, and the cap at 125 (Faber)
+
+Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`; `docs/design.md`, "Speed"; `docs/balance.md`, "Growth").
+
+**Feel line:** in a pack, you can tell who's leading by how it closes in: the Assassin is on the next Shade before the last one has burst, the Tank plods in heavy, and every lead still keeps up with you on the street.
+
+**The block contains:**
+- **Speed** as a stat: each class's walk speed in a fight (seeds: Tank 14, Warrior, Mage and Healer 16, Assassin 19), and a nudge of 1 either way in a Voidkin's own entry (Kirra +1). It replaces the one `Combat.Lead.WalkSpeed`. The catch-up when following stays.
+- **The cap at 125:** `Growth.MaxLevel` 125, the same curve on past 60. The launch's pace stays designed to 60, and the training table runs to 125.
+- **The numbers:** the sim's kills an hour by class with Speed on, for research, before the seeds settle.
+
+**Waits:** the pace past 60 (with the grounds that reach it).
+
+**Checks:** logic cases (Speed by class and nudge, the cap); research's verdict in motion: Rook and Pip in one pack, and a lead following a running avatar.
+
+**Order in the queue:** with Kirra's install, after "Content as data". **Time, forecast:** about 1 hour.
+
+**Status:** requested, 2026-11-14.
+
+## TR15. The stat board: skill points (Faber)
+
+Research's entry, 2026-11-14, night, on the director's words of the same night ("Board now, tree later"; `docs/decisions.md`). The design is `docs/design.md`, "Skill points".
+
+**Feel line:** each level your Voidkin hands you a point, and on its card you choose where it grows: more health to hold, more attack to finish, more regen to last. The gain shows before you tap it, so every level is a small decision of your own.
+
+**The block contains:**
+- **The rule,** pure Luau in `Rules/`: one point a level from level 2, each Voidkin's own; four stats (Health, Attack, Defence, Regen), a point sized by `G` at its level; the reset for a little Credits. The server decides every spend and every reset, once each.
+- **The share:** the points come out of the own base's 35 (`docs/balance.md`). The split from the sim: an even spread matches today's Voidkin within 2%, and the strongest one-stat spread is no more than about 10% ahead on Lantern Row's circuit.
+- **The board, in grey,** on the Voidkin screen: the four stats, the points left, the gain before a tap, the reset with its price. Two layouts, judged at phone size.
+
+**Waits:** the tree; the board's finished look (with the kit); sounds.
+
+**Checks:** logic cases (earning, spending, a repeated or interrupted spend never spends twice, the reset, a level-up mid-screen); the self-test for the board's states; the UI lint; research's verdict on the grey layouts, then its pass.
+
+**Order in the queue:** after TR9. **Time, forecast:** 2 to 3 hours.
+
+**Status:** requested, 2026-11-14.

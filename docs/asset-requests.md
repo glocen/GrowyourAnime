@@ -5337,7 +5337,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - The 31-point slots stand as read targets, and a tap on a column opens the gear page (TR17's fallback).
   - The aim of 0.70 of the height predates the strip, so it's dropped. The figure fills the stage between the top bar and the strip, and Faber's take shows how tall that is.
 
-**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. Next: the HUD's images in V2, for Faber's build. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.
+**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. Next: the HUD's images in V2, for Faber's build.
+
+**Delivery 3, the older screens, vivid** (research, 2026-11-15, on the director's word over the Breaker screen: "we need to add more colors and appealing to each old full dark ui, like the epic chance text should be purple, the battery text need a rework also like it energy colors"). After the HUD's images:
+- **Every screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the Breaker and the bays in Dynamo vivid first, then the reveal, Regalia, the map, and each screen with a reward or a confirm.
+- **Words wear their meaning's colour** (`docs/ui.md`, rule 3): "Epic 1.0% → 1.1%" in Epic's purple; every rarity's name and odds in its colour; Credits in teal.
+- **The battery's text, reworked,** in Power's yellow, with its bolt: a charge bar in kWh beside its cap instead of a sentence. Infusion's price is shown as kWh, and a refusal says how many kWh short, in words players read in a second. The numbers are seeds until TR18.
+- **The sheet first,** at phone size, before and after for each screen, the Breaker as in the director's capture. Then research's verdict, then the images for Faber. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.
 
 ## Later, by ground
 

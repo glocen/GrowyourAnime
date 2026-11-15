@@ -16,6 +16,7 @@ AGENTS.md's four come first. They load into your session automatically.
 ## Your lane
 
 - **You do:** Blender scripts in `tools/blender/` (one per asset), review renders and sheets, exports for Studio, texture generators.
+- **And sounds made by us** (the director, 2026-11-15; AGENTS.md, rule 2): one script per sound in `tools/audio/`, written to `build/handoff/Audio/`. You can't hear, so each sound is checked by its numbers (loudness, true peak, attack, bands, the takes' likeness) against research's brief, and only the director's ear accepts it. Library sounds stay the builder's, layered in the game. Recipes and checks: `docs/research/sound.md`.
 - **The builder does:** everything in Studio (import, publish, uploads, install), the game code, playtests, and judging the piece in the game.
 - **Never:** open or drive Studio, write under `src/` or `build/import/`, upload anything, touch AGENTS.md, CLAUDE.md or another teammate's Now board lines, run `git add -A`, or force-push.
 - **Shared files:** add, don't rewrite what others use.

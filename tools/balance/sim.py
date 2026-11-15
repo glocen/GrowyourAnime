@@ -864,6 +864,97 @@ def report_power():
           f"{pw['minSpeed']:.0%}: a Standard shard then takes {30 / max(pw['minSpeed'], 0.01):.0f} s at worst.")
 
 
+# ---------------------------------------------------------------- the base's levels and its machines' (TR21)
+
+def on_budget_level(hours):
+    """The Voidkin level an on-budget player stands at after this many hours of play, levels spread evenly in a ground."""
+    t = 0.0
+    for g in S["grounds"]:
+        if hours <= t + g["paceHours"]:
+            n = g["to"] - g["from"] + 1
+            return g["from"] + (hours - t) / g["paceHours"] * n
+        t += g["paceHours"]
+    return S["grounds"][-1]["to"]
+
+
+def earned(h0, h1, step=1 / 60):
+    """Credits from kills between two marks of play time, on budget, before any bonus (seeds "pace")."""
+    p = S["pace"]
+    total, h = 0.0, h0
+    while h < h1 - 1e-9:
+        dh = min(step, h1 - h)
+        total += p["killsPerHour"] * p["creditsPerKillPerG"] * G(int(on_budget_level(h + dh / 2))) * dh
+        h += dh
+    return total
+
+
+def nice(x):
+    """Rounded to two significant figures, as a price reads."""
+    if x <= 0:
+        return 0
+    k = 10 ** max(0, len(str(int(x))) - 2)
+    return int(round(x / k) * k)
+
+
+def base_prices():
+    """The base's levels at launch and every machine level under them, priced on the Credits earned in time windows."""
+    b = S["base"]
+    launch = sum(g["paceHours"] for g in S["grounds"])
+    marks = {1: 0.0}
+    marks.update({int(k): v for k, v in b["atHours"].items()})
+    levels = {}
+    for lv in range(2, b["launchCap"] + 1):
+        window = earned(marks[lv - 1], marks[lv])
+        levels[lv] = dict(at=marks[lv], window=window, price=nice(window * b["shareOfWindow"][str(lv)]))
+    # A machine's ceiling is set by the base's level. Its levels under each base level are spread evenly over that base
+    # level's time (the last band runs to the launch's end), and each costs its share of the machines' budget over its
+    # own slice of time, split across the machines standing at that base level.
+    cap = {int(k): v for k, v in b["machineCeiling"].items()}
+    count = {int(k): v for k, v in b["machines"].items()}
+    ends = [marks[lv] for lv in range(1, b["launchCap"] + 1)] + [launch]
+    machine = {}
+    for lv in range(1, b["launchCap"] + 1):
+        first = 2 if lv == 1 else cap[lv - 1] + 1
+        last = cap[lv]
+        span = (ends[lv] - ends[lv - 1]) / (last - first + 1)
+        for m in range(first, last + 1):
+            h1 = ends[lv - 1] + (m - first + 1) * span
+            h0 = h1 - span
+            cost = earned(h0, h1) * b["machineShareOfIncome"] / count[lv]
+            machine[m] = dict(at=h1, level=on_budget_level(h1), price=nice(cost), n=count[lv])
+    return levels, machine, launch
+
+
+def report_base():
+    b = S["base"]
+    print("\n== 15. The base's levels and its machines' at launch (TR21): Credits ==")
+    levels, machine, launch = base_prices()
+    total = earned(0, launch)
+    print(f"Kills' Credits over the launch's {launch:g} h, on budget, before bonuses: {total:,.0f}.")
+    line("base level", "lands at", "Voidkin lv", "earned in window", "share", "price", "bays", w=17)
+    for lv, d in levels.items():
+        line(lv, f"{d['at'] * 60:.0f} min" if d['at'] < 1 else f"{d['at']:.1f} h", f"{on_budget_level(d['at']):.0f}",
+             f"{d['window']:,.0f}", f"{b['shareOfWindow'][str(lv)]:.0%}", f"{d['price']:,}", b["bays"][str(lv)], w=17)
+    print("A machine's ceiling by the base's level: " +
+          ", ".join(f"{k}: {v}" for k, v in b["machineCeiling"].items()) +
+          f". The machines take {b['machineShareOfIncome']:.0%} of the income between them, priced as if " +
+          ", ".join(f"{v} stand at base level {k}" for k, v in b["machines"].items()) + ".")
+    line("machine lv", "bought at", "Voidkin lv", "price", "x machines", w=13)
+    spent = 0
+    for m, d in machine.items():
+        spent += d["price"] * d["n"]
+        when = f"{d['at'] * 60:.0f} min" if d["at"] < 1 else f"{d['at']:.1f} h"
+        line(m, when, f"{d['level']:.0f}", f"{d['price']:,}", f"{d['price'] * d['n']:,}", w=13)
+    base_spent = sum(d["price"] for d in levels.values())
+    forge = total * S["pace"]["forgeShareOfIncome"]
+    print(f"Spent over the launch: the base {base_spent:,} ({base_spent / total:.0%}), the machines {spent:,} "
+          f"({spent / total:.0%}), the forge {forge:,.0f} ({S['pace']['forgeShareOfIncome']:.0%}); "
+          f"left for the shop and the rest {1 - (base_spent + spent + forge) / total:.0%}.")
+    first = levels[2]
+    by = earned(0, first["at"])
+    print(f"Level 2 in the first session: {by:,.0f} Credits earned by {first['at'] * 60:.0f} min, the price "
+          f"{first['price']:,}, so {by - first['price']:,.0f} are left for the forge and the machines by then.")
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -882,3 +973,4 @@ if __name__ == "__main__":
     report_cooldowns()
     report_speed()
     report_power()
+    report_base()

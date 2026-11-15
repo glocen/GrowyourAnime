@@ -113,5 +113,18 @@
     "startKwh": 2,
     "creditsPerKwh": 0.5,
     "voltage": { "_": "Infusion is voltage (the director, 2026-11-15, 'Faster break'): Low halves a shard's time left, High breaks it at once; once per shard; odds untouched. Research's price: the energy its chamber would still draw over the time saved, times the premium, times the ground's factor; rounded up to a whole kWh; not offered when it saves under minSavedSeconds.", "lowTimeLeft": 0.5, "highTimeLeft": 0, "premium": 1.3333, "minSavedSeconds": 60 }
+  },
+
+  "base": {
+    "_": "TR21, the base's levels at launch and its machines' (docs/design.md, 'The base'). Research's seeds, 2026-11-15, night. A base level costs a share of the Credits earned since the last; a machine level costs the machines' share of what its slice of time earns, split across the machines.",
+    "launchCap": 3,
+    "atHours": { "2": 0.33, "3": 5 },
+    "shareOfWindow": { "2": 0.5, "3": 0.25 },
+    "bays": { "1": 2, "2": 4, "3": 6 },
+    "machineCeiling": { "1": 2, "2": 6, "3": 30 },
+    "machines": { "1": 3, "2": 5, "3": 8 },
+    "machineShareOfIncome": 0.30,
+    "batteryKwh": { "1": 60, "2": 150, "3": 400 },
+    "gains": { "_": "What one machine level gives. The Training machine has none: its rate is fixed (the director, 2026-11-14).", "bayOutputPerLevel": 0.04, "breakerSpeedPerLevel": 0.02, "breakerChambersAt": { "3": 8, "4": 20 } }
   }
 }

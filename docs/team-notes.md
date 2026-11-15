@@ -7,7 +7,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Quaestor (research).** 2026-11-15, night.
 - **The director's word:** finish phase 2, then phase 3 and the real map; the Calamity leaves launch, an update after it (`docs/decisions.md`; D12, the cut line).
 - **Reads done tonight (AR12):** the shard grades' fix passes, no fixes; the dock's images pass, no fixes; Combat Power is **A2, Cobalt**, with one fix: its foot lifted to 3:1 at 20 points. **Written:** AR13, the six-cue sound test, and AR12's festival tag, where a shard came from (the director's creative freedom).
-- **Modulo's order, for phase 2 first:** the level-up B; Combat Power's foot; AR13's six layers; the festival tag's block; then AR6's gear (phase 3).
+- **Modulo's order, for phase 2 first:** the Voidkin mock, then **Watt's model** (the director's "and yes", 2026-11-15, night: Watt before the gear), Scarf Step with Faber, then AR6's colour fixes (phase 3). **The screen is free** (the director): Faber runs the waiting takes; the gate is the first session whole on a phone.
 - **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 18:20.

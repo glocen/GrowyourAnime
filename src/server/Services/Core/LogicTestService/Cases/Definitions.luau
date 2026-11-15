@@ -48,7 +48,7 @@ return {
 				t.Check(`{name} has an asset id`, string.find(image.Id, "^rbxassetid://%d+$") ~= nil, image.Id)
 			end
 			t.Equal("the kit's 28 meshes", meshes, 28)
-			t.Equal("its 20 images", images, 20)
+			t.Equal("its 41 images: AR8's 20 and AR9's seven sheets in three passes", images, 41)
 			for coil, fronts in ({ FxCoil2 = 5, FxCoil3 = 0 } :: { [string]: number }) do
 				local bands, edges = 0, 0
 				for _, mesh in FxKit.Meshes do

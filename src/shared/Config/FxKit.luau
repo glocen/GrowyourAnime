@@ -11,9 +11,20 @@
 -- white ones are tinted by Color, for Beams, Trails and particles, set as Use says. The content check's conditions:
 -- fx_ember is never tinted red or maroon, and never shed from a struck body falling under gravity; fx_flame is never
 -- tinted red or dark.
+-- Sheets (AR9, uploaded under the group on 2026-11-14, from build/handoff/FxKit/sheets/fx_sheets.json): seven flipbooks
+-- in Grid4x4, each in three passes drawn white, its line on top, its fill and its dark twin under both, played as one
+-- particle by an Emitter row's Sheet (Config.Effects). Sheet holds their tints, as the json gives them, and Layer, the
+-- studs of ZOffset between passes. A sheet's Life is its drawn life in seconds, Break where it starts and ends tearing
+-- (a share of its life), and FillColor the fill's colour over its life toward the cool tone, the last colour held to 1.
+-- The content check's conditions (2026-11-14): no pass tinted in the red to maroon range, the fill only as FillColor
+-- fades; the dark twin never plays alone, and performance mode drops it, never a bright pass; the starburst keeps its
+-- nine uneven arms, never tinted dark as its main colour, never a fixed ground decal; the flame and the puff face the
+-- camera, never laid flat; a hit's starburst or spark is a flash at the impact, never sprayed out of a body; no fixed
+-- emblem from the crescent and the glint.
 
 export type Mesh = { Id: string, Size: Vector3, Centre: Vector3, Texture: string, Of: string?, Band: number?, Front: number?, Offset: Vector3?, Tail: Vector3?, Head: Vector3? }
 export type Image = { Id: string, Use: string }
+export type Sheet = { Line: string, Fill: string, Dark: string, Life: number, Break: { number }, FillColor: { { any } } }
 
 return {
 	Meshes = {
@@ -67,7 +78,38 @@ return {
 		fx_ember = { Id = "rbxassetid://89537844986662", Use = "ParticleEmitter: embers, one blob each; FlipbookMode Loop, FlipbookStartRandom on, FlipbookFramerate 0; Grid4" },
 		fx_glow = { Id = "rbxassetid://94939686233018", Use = "ParticleEmitter or a card: a soft round light" },
 		fx_flame = { Id = "rbxassetid://91223745290707", Use = "ParticleEmitter: a small flame, three tongues licking up from an open foot; FlipbookMode OneShot; Lifetime .3 to .5 s; frame 1 reads alone; Grid4" },
+		fx_puff_line = { Id = "rbxassetid://80015808536826", Use = "ParticleEmitter: the puff sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_puff_fill = { Id = "rbxassetid://104897900818095", Use = "ParticleEmitter: the puff sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_puff_dark = { Id = "rbxassetid://75238188380938", Use = "ParticleEmitter: the puff sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
+		fx_ring_line = { Id = "rbxassetid://87712839763842", Use = "ParticleEmitter: the ring sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_ring_fill = { Id = "rbxassetid://83666517993335", Use = "ParticleEmitter: the ring sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_ring_dark = { Id = "rbxassetid://128252841840506", Use = "ParticleEmitter: the ring sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
+		fx_crescent_line = { Id = "rbxassetid://90373812318062", Use = "ParticleEmitter: the crescent sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_crescent_fill = { Id = "rbxassetid://133187725108594", Use = "ParticleEmitter: the crescent sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_crescent_dark = { Id = "rbxassetid://128621985420483", Use = "ParticleEmitter: the crescent sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
+		fx_starburst_line = { Id = "rbxassetid://131453068509308", Use = "ParticleEmitter: the starburst sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_starburst_fill = { Id = "rbxassetid://109794962011122", Use = "ParticleEmitter: the starburst sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_starburst_dark = { Id = "rbxassetid://84399803865674", Use = "ParticleEmitter: the starburst sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
+		fx_spark_line = { Id = "rbxassetid://111646557963038", Use = "ParticleEmitter: the spark sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_spark_fill = { Id = "rbxassetid://97944193181411", Use = "ParticleEmitter: the spark sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_spark_dark = { Id = "rbxassetid://126162968625202", Use = "ParticleEmitter: the spark sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
+		fx_glint_line = { Id = "rbxassetid://127281761210366", Use = "ParticleEmitter: the glint sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_glint_fill = { Id = "rbxassetid://98662090313268", Use = "ParticleEmitter: the glint sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_glint_dark = { Id = "rbxassetid://102947252250145", Use = "ParticleEmitter: the glint sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
+		fx_flame_line = { Id = "rbxassetid://89644885567823", Use = "ParticleEmitter: the flame sheet, its line pass, on top; Grid4x4, OneShot (Sheets)" },
+		fx_flame_fill = { Id = "rbxassetid://121992633153804", Use = "ParticleEmitter: the flame sheet, its fill pass, under the line; Grid4x4, OneShot (Sheets)" },
+		fx_flame_dark = { Id = "rbxassetid://96115015773612", Use = "ParticleEmitter: the flame sheet, its dark twin, under both, never alone; Grid4x4, OneShot (Sheets)" },
 	} :: { [string]: Image },
+	Sheet = { Layout = "Grid4x4", Mode = "OneShot", Line = Color3.fromHex("#FFF6E6"), Fill = Color3.fromHex("#E9E2D6"), Dark = Color3.fromHex("#1C1726"), Cool = Color3.fromHex("#5B5670"), DarkTransparency = 0.15, Layer = 0.05 },
+	Sheets = {
+		puff = { Line = "fx_puff_line", Fill = "fx_puff_fill", Dark = "fx_puff_dark", Life = 0.6, Break = { 0.45, 1 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.45, Color3.fromHex("#E9E2D6") }, { 1, Color3.fromHex("#5B5670") } } },
+		ring = { Line = "fx_ring_line", Fill = "fx_ring_fill", Dark = "fx_ring_dark", Life = 0.5, Break = { 0.34, 0.96 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.34, Color3.fromHex("#E9E2D6") }, { 0.96, Color3.fromHex("#5B5670") }, { 1, Color3.fromHex("#5B5670") } } },
+		crescent = { Line = "fx_crescent_line", Fill = "fx_crescent_fill", Dark = "fx_crescent_dark", Life = 0.4, Break = { 0.3, 0.97 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.3, Color3.fromHex("#E9E2D6") }, { 0.97, Color3.fromHex("#5B5670") }, { 1, Color3.fromHex("#5B5670") } } },
+		starburst = { Line = "fx_starburst_line", Fill = "fx_starburst_fill", Dark = "fx_starburst_dark", Life = 0.55, Break = { 0.36, 0.98 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.36, Color3.fromHex("#E9E2D6") }, { 0.98, Color3.fromHex("#5B5670") }, { 1, Color3.fromHex("#5B5670") } } },
+		spark = { Line = "fx_spark_line", Fill = "fx_spark_fill", Dark = "fx_spark_dark", Life = 0.3, Break = { 0.3, 1 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.3, Color3.fromHex("#E9E2D6") }, { 1, Color3.fromHex("#5B5670") } } },
+		glint = { Line = "fx_glint_line", Fill = "fx_glint_fill", Dark = "fx_glint_dark", Life = 0.35, Break = { 0.85, 1 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.85, Color3.fromHex("#E9E2D6") }, { 1, Color3.fromHex("#5B5670") } } },
+		flame = { Line = "fx_flame_line", Fill = "fx_flame_fill", Dark = "fx_flame_dark", Life = 0.7, Break = { 0.36, 0.98 }, FillColor = { { 0, Color3.fromHex("#E9E2D6") }, { 0.36, Color3.fromHex("#E9E2D6") }, { 0.98, Color3.fromHex("#5B5670") }, { 1, Color3.fromHex("#5B5670") } } },
+	} :: { [string]: Sheet },
 	-- Each palette's four colours, core to edge: a light or a tint that matches a mesh texture.
 	Palettes = {
 		Grey = { Core = Color3.fromHex("#F2F2F2"), Mid = Color3.fromHex("#C4C4C4"), Deep = Color3.fromHex("#8E8E8E"), Edge = Color3.fromHex("#55575C") },

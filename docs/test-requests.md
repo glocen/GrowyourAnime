@@ -2017,3 +2017,23 @@ Research's entry, 2026-11-15, night, on the director's words (`docs/decisions.md
 - **Numbers:** the costs come from research's sim (`docs/balance.md`). Stand-ins in `Config` until then.
 - **Tests, in proportion to risk:** the cases on the spend and the rules, plus one take.
 - **Order:** after Overview's stat sheet.
+
+## TR22. The base shows its owner (Faber, with Modulo's plinth)
+
+Research's entry, 2026-11-15, night. It answers the director's word to Modulo at about 22:04, "dont forget the base need to show of each players etc" (the register). What a base shows is research's call, tier 2. The design: `docs/design.md`, "The base".
+
+- **Feel line:** walking the Strip, a player reads each base as someone's. The gate says whose it is and how far along. Inside it, their best Voidkin turns on a lit plinth, and their workers' rarity glows in the bays. They want theirs to look like that.
+- **The block contains:**
+  - **The gate's plate:** the owner's display name and the base's level, on both faces (Faber's text on AR14's plate).
+  - **The showcase:** a lit plinth just inside the gate, seen from the Strip.
+    - One Voidkin stands on it in its idle, turning slowly, with its Combat Power above it.
+    - It's the one the player picks with "Show at the gate" on its character screen. Until a pick is made, it's the player's strongest.
+  - **Each working bay** is lit in its worker's rarity colour (`docs/ui.md`, rule 3), and unlit while empty.
+  - **Modulo's part:** the plinth's model in AR14's kit, and the bay's light as part of AR15's bay.
+  - **Cases:** a logic case for the pick and its default.
+- **Waits:**
+  - a tap on the plinth that opens that Voidkin's sheet as a visitor sees it (TCP3's View Character);
+  - visiting another player's base;
+  - more on the plate.
+- **Tests:** the cases, plus one take from the Strip of a base that isn't the player's own.
+- **Order:** Faber's call, after TR21's blockout.

@@ -5437,6 +5437,11 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - The clip, its frame sheet and its row are made again with the new words.
   - **For research:** a rarity's total is shared evenly among its Voidkin here, an assumption. A Lantern Row Prismatic's drop rates aren't drawn: its pool gives Mythical 4%, and the ground's eight hold no Mythical.
   - Made and self-reviewed. The content check wasn't run again: the words are research's, the look the one it passed.
+  - **Research's read, 2026-11-15:**
+    - **The words pass.** Voltage reads as its price with the time it saves, and the one it can't pay still says how many kWh short. Drop rates open as rarity totals in their colours, with each Voidkin's share under them, adding to 100%.
+    - **Fix: the chosen shard can't exist.** Lantern Row has only Standards: Enriched starts at ground 2 and Prismatic at ground 3 (`seeds.json`). So draw a Drum Court Enriched, 15 min, factor 1.5: "Low voltage · 4 kWh · −7 min 30" and "High voltage · 8 kWh · breaks now". A price rounds up to a whole kWh. Research's own TR18 line had the same slip and is corrected.
+    - **The share inside a rarity:** even on ground 1 is right, since all eight are its own. From ground 2, a Voidkin of the shard's own ground or the one before weighs 3 against an older one (`Config.Shards.FeaturedWeight`), so the list's numbers come from `Rules.Odds`, never drawn by hand.
+    - **A tier no Voidkin reaches** is dropped, and the rest keep their proportions (`Config.Shards.Pools`). The Mythical 4% has nothing to give before ground 6, so it's shared among the tiers that do.
 
 ## Later, by ground
 

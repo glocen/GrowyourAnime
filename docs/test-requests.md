@@ -1563,6 +1563,15 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
   - **For research, to rule:** the favourite's heart is lit in the Map's rose on the sheet, the one warm mark on the name's line; the room's lavender is the other way. Combat Power is shards, not a weapon.
   - **For Faber:** each image's tint and the plate's `cut` are in the json. Nothing is uploaded. The mock's rail (`hud_colour_sheet.py`, `rail`) now gives the chosen page's word its room (the pages after it stand 16 pt lower) and greys a page not built.
   - **Made:** yes. **Self-reviewed:** at 48, 24 and 14 pt on dark, in ink on a pale ground, and in place. **Content check:** PASS for delivery; before the upload it wants each exact file at 128 and 64 px over dark, the two plates alone. **Research's verdict:** not yet. **Director-accepted:** no. **Time:** about 1 active hour, my estimate, not measured.
+  - **Research's verdict on the marks, 2026-11-15**, from `voidkin_marks.png` at 48, 24 and 14 pt and in place:
+    - **Felt:** one family. The rail reads as seven distinct pages at 14 pt, and the chosen one's lit ring says where you are.
+    - **Tier:** competent. **The one bold thing:** Combat Power as three rising shards, the middle one white-hot. Power is what you broke out of the void, not a borrowed sword.
+    - **Rulings:**
+      - **The favourite's heart is lit in rose,** accepted. It's a mark, not a room. It stays the only rose on this screen, and never on a portrait or an item frame (AR12's rule).
+      - **Combat Power as shards,** accepted.
+    - **The level's mark** (the director's note) passes: a leaning plate, the chevrons and a large number.
+    - No fix. Faber builds from the json. The upload check wants each file at 128 and 64 px, as the content check says.
+    - **"Do we need more?"** Yes, in this order, each when the screen that uses it is built: the bag's tab marks (Shards, Items, Emblems, Jewels, Stones), then each gear slot's empty mark (the twelve and the two hands, AR6's family).
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 
@@ -1598,7 +1607,7 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - **A shard's cost is derived,** never set: its chamber's rating times its break time. A Standard costs 0.125 kWh, an Enriched 3.75, a Prismatic 45. `Config.Shards.Grades[...].Energy` goes.
 - **The floor:** 0.25 of full speed, as `MinSpeed` today.
 - **The battery:** 60 kWh, starting at 2. Overflow sells at 0.5 Credits a kWh. Away hours are as now.
-- **Infusion is voltage** (the director, 2026-11-15, "Faster break"; `docs/design.md`): Low halves a shard's time left, and High breaks it at once. The price is the energy its chamber would still draw over the time saved, times 1.33, times the ground's factor (`seeds.json`, "voltage"). On ground 1, a Prismatic's Low costs 30 kWh and its High 60; an Enriched's Low 2.5 and its High 5. Not offered when it saves under a minute, so never on a Standard.
+- **Infusion is voltage** (the director, 2026-11-15, "Faster break"; `docs/design.md`): Low halves a shard's time left, and High breaks it at once. The price is the energy its chamber would still draw over the time saved, times 1.33, times the ground's factor (`seeds.json`, "voltage"). A price rounds up to a whole kWh. It's not offered when it saves under a minute, so never on a Standard, and Lantern Row has only Standards: voltage first appears with Drum Court's Enriched (factor 1.5: Low 4 kWh, High 8). A Mask Parade Prismatic (factor 2) asks 60 and 120, more than today's 60 kWh battery holds, so the battery's cap must grow with the base before ground 3.
 - **Migration:** an old save's electricity divides by 10 into kWh, so a full old battery (600) is a full new one (60).
 - **Auto and the split,** read from the design's "the battery covers routed demand above generation":
   - Under Auto, each machine's routed demand is its full rating, so the battery tops them all up to full speed while it holds charge.

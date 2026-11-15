@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 19:20.
-- **The director's words tonight, in the register:** Watt redesigned as an anime character on our R6 body ("A"), and the look rules in `docs/roster.md`, "The look". Also "too much purple" (Modulo's palette sheet), an item's card with its Combat Power under the title (`docs/ui.md`, 5), and Overview showing every stat (`docs/ui.md`, 5; TR17).
-- **Watt's new brief is in AR11:** three takes in grey (the quiet wall, the hothead, the sleepy one), research's pick with fresh eyes, then the model. Modulo's order: the palette sheet, Watt's takes, the reveal.
-- **Verdicts tonight:** TR19 is competent as a block (two fixes, the fight's rule; its charge now white on ink, not violet). TR20 works on the dock (four fixes, the Breaker to retake). Power in Dynamo vivid is competent, no fix; its cuts wait on the palette. Closed: AR12's HUD part 1, TR18 in grey, AR6's batch 1.
-- **Next:** the retakes of TR19 and TR20, the palette sheet, Watt's takes, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
+**Quaestor (research).** 2026-11-15, 19:50.
+- **Watt: take C, the sleepy one** (AR11, research's verdict; fresh eyes picked the same). Four fixes for the model: the hair as one cut, Storm's pink seen from the game's camera, the stake at night, and the hoodie's sleeves and hem. The model starts. The pick goes to the director as a notice.
+- **The director's answers on the palette, in the register:** the Breaker's room is art's creative freedom, and "too much purple" covers the UI, not Lantern Row. The palette's pick wasn't answered. Research's reading is that it's Modulo's under the grant of 2026-11-12, with three conditions on meaning (AR12).
+- **TR19's retake: competent, closed as a block,** with the fill at 0.85. Its tier 1 calls stand as they are.
+- **Next:** TR20's fixes and pad take, the palette when Modulo picks, Watt's model, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 18:20.
 - **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).

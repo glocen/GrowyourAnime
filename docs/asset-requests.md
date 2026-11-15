@@ -5470,6 +5470,20 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
     - **Whichever is picked:** the blade, spike or stake goes into the street only, never into or through a body, and locked Shades read as stopped, never hurt. The weapon never points at or passes his own head, neck or torso: A's spear is slung so its head clears his head and neck with a gap seen at 64 px from every heading (on the sheet its discs sit against the back of his head from the game's camera), and B's spike stays clear of his own leg and foot. The clips are stepped through from the side and three-quarter, with no held straight raised arm. The model, the clips and Ground Wire's look each get their own check in colour before any upload.
   - **Time:** by the clock, 19:19 to 19:30: the script, two renders, one round of fixes and the content check; the clock reads short against the work. Forecast: 1 to 2 hours.
   - **Four facts:** made, yes. Self-reviewed, yes: the sheet whole and the 64 px block at three times its size. Delivered, yes, for research's pick. Accepted, no.
+  - **Research's verdict** (2026-11-15, 19:40; the sheet whole and its 64 px rows. Fresh eyes read it blind beside and picked the same take.)
+    - **Felt:**
+      - **A** is a believable side character, but his face is hidden and he's black on black. Over night he's his pink tips and nothing else, and his slung spear says carried, not planted.
+      - **B** is a grin and a gauntlet, the closest of the three to the Roblox avatar the director rejected. His slab is lost in his arm's outline.
+      - **C** is someone: a half-asleep boy leaning on an iron stake taller than he is, unhurried before he moves.
+    - **Tier:** C competent, near exceptional. A competent. B works.
+    - **The one bold thing:** C's stake, planted and taller than him. It's the one upright line in the row beside Rook, Kirra, Pip and Lyric, it reads at 64 px over noon, over night and in black, and it is already Ground Wire: the weapon he plants, as the feel line says.
+    - **The pick: C, the sleepy one.** He wears clothes, not a costume. His face has a mood, he carries one weapon, and his element is in his body, the hair the static lifts, not in a prop. A Common's weight: four elements and one accent.
+    - **Fixes for the model** (the content check's conditions for C stand):
+      1. **The hair, his identity, becomes one deliberate cut.** Today it's a cloud with spikes stuck on top, read as a cauliflower or a wig: the one thing that tips him toward corny. Make it soft clumps that taper, falling forward over the half-lidded eyes in one sweep, the crown lifted by the static in a few strands, with no spikes set on top. Its colour is his own, not white or silver-blue, at a middle value, so it reads over noon's cream as well as at night. Today's pale grey sinks into the noon ground.
+      2. **Storm's pink, seen from the game's camera.** Today it's a thin ring at the collar. Make the hood larger and lay it down on his back, its lining open to the camera.
+      3. **The stake over night.** Today only its ring survives. Pale tape keeps its line at night too.
+      4. **The hoodie, an anime character's, not an avatar's.** An oversized hoodie is the commonest avatar there is. The sleeves fall past his hands and the hem hangs below the torso: two meshes, no new proportion.
+    - **Then:** the model in colour, at the bar. The clips come next: the lean is his idle, and Work is his own way of making power. Then Ground Wire's look. The pick goes to the director as a notice, not a gate.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
@@ -6249,6 +6263,15 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - the palette;
       - the Breaker's galaxy room, violet today (silver on black under A, blue with a warm core under B);
       - whether "too much purple" also means Lantern Row's violet dusk, which isn't on the sheet.
+  - **The director's answers** (2026-11-15, night; the register):
+    1. **The Breaker's room:** "something appealing, ART so creative freedom to cook something good". Its colours are Modulo's to choose, held to be appealing. The room of its own, its stars and its slow motion stand (`docs/ui.md`, rule 3).
+    2. **Lantern Row's dusk:** "i didnt talked about this". "Too much purple" covers the UI only, and the world's light stays as it is.
+    - **The palette's pick itself wasn't answered.** Research's reading: under the director's grant of 2026-11-12 ("You will and should i give you creativity for it… it just need to be all compose"), the UI's palettes are the asset maker's creativity. So the pick is Modulo's, with research's verdict on the result, unless the director says they'll pick it. Research's case for A stays on record above.
+    - **Whichever Modulo picks, three things that carry meaning hold:**
+      - a reveal's room stays a neutral dark, so a rarity's light is the only colour in it;
+      - the dock's three tiles read apart, so the Voidkin's colour isn't a warm one beside Base's yellow;
+      - no system colour sits near Legendary's gold.
+    - B with those three met is a good pick. Power's cuts and the reveal card resume on Modulo's pick.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

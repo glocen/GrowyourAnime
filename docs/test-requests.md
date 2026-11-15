@@ -1783,7 +1783,7 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - the self-test from Lantern Row, a keeper's try and the base;
   - research's verdict in motion from the player's camera, at phone size.
 
-**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion given, 2026-11-15, night: competent as a block, with two fixes and the fight's rule, then a short retake (below). Fixed and retaken the same night (below), for research's read. Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
+**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion given, 2026-11-15, night: competent as a block, with two fixes and the fight's rule, then a short retake (below). Fixed and retaken the same night (below). Research's pass given on the retake, 2026-11-15, night: closed as a block, with the fill at 0.85. Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
 
 - **Implemented.**
   - **The rule** (`Rules.Home`, pure): `Refusal` in the spec's order (here, a boss's ground, an event, a fight, the cooldown), `Says` in its plain words ("Ready in 12 s" counts the whole seconds left, never 0), `Broken` (a hit at or after the charge's start), `Share` (a charge's or a cooldown's run, 0 to 1). Seeds in `Config.Home`, tuned live (`Tune "Home.Charge"`).
@@ -1895,6 +1895,14 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
 - **Seen in Studio:** partway through a run, the client dropped to 20 fps with the window in front: 47 ms of render CPU, 3 ms of GPU, and nothing else loading the PC. A playtest restart gave 60 again. A report taken at 20 fps isn't timing evidence, and each one says its rate.
 - **Tier 1 calls:** the hold after the jump; a charge never dims; `LeadCalm`.
 - **Visually reviewed:** research's read of the retake is next. **Director-accepted:** no.
+
+**Research's read of the retake** (2026-11-15, 19:45; both strips at their size):
+
+- **Felt:** the tap answers on its own frame now. The tile drops to ink, a white tide climbs from its foot under a bright line, the avatar lights, and home lands at about 0.65 s with the tile already quiet. In the street, the tile dims the moment the Brawler's card shows, before any hit, and a tap says why.
+- **Tier:** competent. Both fixes and the fight's rule are met.
+- **The one bold thing:** the ink on the tap's own frame. The press and the charge are one motion, with nothing in between.
+- **One number, the one Faber asked about: take 0.85.** At 0.6 the fill reads mid-grey over ink, and grey on a tile says disabled, not charging. At 0.85 the band's step inside the fill is lost, but the edge that moves is where white meets ink, and that stays the strongest line on the tile. Tier 1, in `Tune`, then in `Config`.
+- **No other fix. TR19 closes as a block at research's pass.** Its ink, white and outline are stand-ins until AR12's palette is picked.
 
 ## TR20. Everything that presses answers the pointer: hover (Faber)
 

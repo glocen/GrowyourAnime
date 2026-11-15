@@ -8,6 +8,11 @@ up and to the right. A rarity keeps the ladder's rule (dark iron; bright steel a
 stone, engraving; a darker metal with filigree and a glowing stone; gilt and ivory with one new form). Research's fix 1
 on the ladder is in: an Epic's guard is a clear step larger than a Rare's, so the two part by shape.
 
+Research's two fixes on this sheet are in (AR6, its verdict of 2026-11-15). Every Legendary's one new form changes the
+silhouette at 38 points, away from the guard's crossing: Akari's wings, Kiribi's lantern grown to a real lantern,
+Inabikari's blade forked (the hoop is gone). The ring stays on Scrap Sword alone: Stallguard's bar ends in brass acorns,
+Gales has a fishtail pommel, Nightloom a bar with shuttle ends and a spool pommel.
+
     blender -b --factory-startup --python tools/blender/gear_sword_sets.py -- build/handoff/Gear/sword_sets
 
 Writes the sheet gear_sword_sets.png. Workbench only: no GPU turn.
@@ -39,6 +44,9 @@ FLARE = [(0.0, 0.15), (0.85, 0.13), (1.14, 0.27), (1.36, 0.25), (1.36, -0.25), (
 CURLED = [(0.0, 0.2), (0.45, 0.2), (1.0, 0.3), (1.28, 0.55), (1.34, 0.92), (1.12, 1.12), (1.2, 1.34), (1.56, 1.16),
           (1.72, 0.72), (1.66, 0.3), (1.2, -0.06), (0.45, -0.24), (0.0, -0.28)]
 TINES = [(0.11, 0.2), (0.3, 0.2), (0.3, 1.0), (0.2, 1.55), (0.11, 1.0)]
+# Inabikari's fork, drawn on the right: a branch leaves the blade above the guard, turns, and runs on beside it to a point
+# of its own. The first and last points sit inside the blade.
+FORK = [(0.3, 0.9), (1.4, 1.7), (1.46, 2.6), (1.3, 3.7), (1.06, 2.6), (1.04, 1.95), (0.3, 1.42)]
 
 
 def scaled(outline, sx, sz=1.0):
@@ -49,9 +57,9 @@ def design(name, rarity, note, mats, **more):
     blade, guard, grip, pommel = mats
     return dict(dict(name=name, rarity=rarity, note=note, blade=blade, guard_mat=guard, grip=grip, pommel_mat=pommel,
                      length=6.4, width=0.86, profile="taper", tip="point", section="fuller", guard="bar", span=2.3,
-                     ends=None, trim=guard, stone=None, bezel=None, foot=None, collar=False, wings=False, halo=False,
+                     ends=None, trim=guard, stone=None, bezel=None, foot=None, collar=False, wings=False, fork=False,
                      wraps=0, bands=(), band_mat=guard, pommel="wheel", rim=None, stud=None, pommel_stone=None,
-                     lines=(), edge=False), **more)
+                     lines=(), edge=False, grip_len=GRIP), **more)
 
 
 IRON, STEEL, BLUED, RICH, GILT = (("iron", "iron", "wood", "iron"), ("steel", "steel", "leather", "steel"),
@@ -75,8 +83,8 @@ DESIGNS = (
     design("Rowsmith Sword", "Uncommon", "A ridge, a guard slanted toward the point, brass bands and a brass lozenge "
            "pommel.", ("steel", "steel", "leather", "brass"), section="ridge", guard=VEE, bands=(0.08, 0.92),
            band_mat="brass", pommel="lozenge"),
-    design("Stallguard Sword", "Uncommon", "A broad even blade, a bar that ends in brass scrolls, a pear pommel.", STEEL,
-           width=0.92, profile="parallel", span=2.2, ends="scroll", trim="brass", wraps=7, pommel="pear"),
+    design("Stallguard Sword", "Uncommon", "A broad even blade, a bar that ends in brass acorns, a pear pommel.", STEEL,
+           width=0.92, profile="parallel", span=2.2, ends="acorn", trim="brass", wraps=7, pommel="pear"),
 
     design("Blade of Embers*", "Rare", "The ladder's own: a guard turned to the point, one small stone, a line in the "
            "fuller.", BLUED, guard=g.TURNED, stone=("stone", 0.17), wraps=7, bands=(0.05, 0.95), pommel="facet",
@@ -84,9 +92,9 @@ DESIGNS = (
     design("Blade of Hoarfrost", "Rare", "An even blade, a straight guard with spade ends, the stone at its middle, a "
            "pear pommel.", BLUED, profile="parallel", guard=FLARE, stone=("stone", 0.17), wraps=7, pommel="pear",
            lines=((0.0, 0.36, 0.44),)),
-    design("Brand of Gales", "Rare", "A leaf blade with a rib and two lines, an S guard, the stone set in the pommel.",
-           BLUED, length=6.2, width=0.92, profile="leaf", section="ridge", guard="s", wraps=7, bands=(0.05,),
-           pommel_stone=("stone", 0.14), lines=((-0.17, 0.4, 0.3), (0.17, 0.4, 0.3))),
+    design("Brand of Gales", "Rare", "A leaf blade with a rib and two lines, an S guard, a fishtail pommel with the "
+           "stone set in it.", BLUED, length=6.2, width=0.92, profile="leaf", section="ridge", guard="s", wraps=7,
+           bands=(0.05,), pommel="tail", pommel_stone=("stone", 0.14), lines=((-0.17, 0.4, 0.3), (0.17, 0.4, 0.3))),
 
     design("Stormcall Blade*", "Epic", "The ladder's own, its guard a step larger: the hooks curl back. A filigree foot, "
            "the stone in a bezel.", RICH, guard=CURLED, trim="filigree", stone=("glow", 0.22), bezel="ring", foot="plate",
@@ -95,20 +103,20 @@ DESIGNS = (
            "a lozenge pommel.", RICH, profile="parallel", guard=scaled(VEE, 1.4, 1.25), trim="filigree",
            stone=("glow", 0.22), bezel="lozenge", foot="tines", wraps=9, bands=(0.05, 0.95), band_mat="filigree",
            pommel="lozenge", stud="filigree"),
-    design("Nightloom Brand", "Epic", "A leaf blade with two filigree lines, a long bar ending in scrolls, the stone "
-           "in a bezel, a ring pommel.", ("rich", "rich", "leather", "filigree"), length=6.2, width=0.92, profile="leaf",
-           section="ridge", span=3.0, ends="scroll", trim="filigree", stone=("glow", 0.22), bezel="ring", wraps=9,
-           bands=(0.05, 0.95), pommel="ring", lines=((-0.17, 0.42, 0.36), (0.17, 0.42, 0.36))),
+    design("Nightloom Brand", "Epic", "A leaf blade with two filigree lines, a long bar with a shuttle at each end, "
+           "the stone in a bezel, a spool pommel.", ("rich", "rich", "leather", "filigree"), length=6.2, width=0.92,
+           profile="leaf", section="ridge", span=3.0, ends="shuttle", trim="filigree", stone=("glow", 0.22), bezel="ring",
+           wraps=9, bands=(0.05, 0.95), pommel="spool", lines=((-0.17, 0.42, 0.36), (0.17, 0.42, 0.36))),
 
     design("Akari, the First Light*", "Legendary", "The ladder's own. Its one new form: a small wing each side of the "
            "guard.", GILT, guard=g.TURNED, trim="ivory", stone=("lit", 0.22), bezel="ring", foot="plate", wings=True,
            bands=(0.05, 0.5, 0.95), pommel="facet", stud="ivory", lines=((0.0, 0.42, 0.34),), edge=True),
-    design("Hibana, the Struck Spark", "Legendary", "Its one new form: the pommel is a small lantern, with a second "
-           "light caged in it.", GILT, guard=g.HOOKED, trim="ivory", stone=("lit", 0.22), bezel="ring", foot="tines",
+    design("Kiribi, the Struck Spark", "Legendary", "Its one new form: the pommel is a lantern, roof and cage, with a "
+           "second light inside it.", GILT, length=5.3, guard=g.HOOKED, trim="ivory", stone=("lit", 0.22), bezel="ring", foot="tines",
            bands=(0.05, 0.95), pommel="lantern", edge=True),
-    design("Inabikari, the Far Flash", "Legendary", "Its one new form: an ivory hoop rings the blade above the guard. A "
-           "long bar with lozenge ends, a pear pommel.", GILT, profile="parallel", span=2.6, ends="lozenge", trim="ivory",
-           stone=("lit", 0.22), halo=True, bands=(0.05, 0.95), pommel="pear", lines=((0.0, 0.4, 0.4),), edge=True),
+    design("Inabikari, the Far Flash", "Legendary", "Its one new form: the blade forks. A branch leaves it above the "
+           "guard and runs on to a point of its own. Lozenge ends, a pear pommel.", GILT, profile="parallel", span=2.6,
+           ends="lozenge", trim="ivory", stone=("lit", 0.22), fork=True, bands=(0.05, 0.95), pommel="pear", lines=((0.0, 0.4, 0.4),), edge=True),
 )
 assert all(len(d["name"].rstrip("*")) <= 24 for d in DESIGNS), "a name is over 24 characters"
 RARITIES = ("Common", "Uncommon", "Rare", "Epic", "Legendary")
@@ -119,7 +127,7 @@ RARITIES = ("Common", "Uncommon", "Rare", "Epic", "Legendary")
 def outline(d):
     """The blade's two edges at u of its length, for this design's outline and point."""
     kind, clip = d["profile"], d["tip"] == "clip"
-    start = 0.86 if kind == "parallel" else 0.8
+    start = d.get("start") or dict(parallel=0.86, wedge=0.72).get(kind, 0.8)  # where the point begins
 
     def half(u):
         t = min(u, start) / start
@@ -127,6 +135,8 @@ def outline(d):
             return d["width"] / 2 * (1 - 0.2 * t)
         if kind == "parallel":
             return d["width"] / 2 * (1 - 0.05 * t)
+        if kind == "wedge":  # broad at the foot, straight to its point
+            return d["width"] / 2 * (1 - 0.42 * t)
         return d["width"] / 2 * (0.86 + 0.2 * math.sin(math.pi * t ** 1.25))  # a leaf: a waist, a swell, then the point
 
     def edges(u):
@@ -193,8 +203,14 @@ def guard(d):
                 parts.append(bl.bevel(bl.place(head, (x, 0, 0), (90, 0, 0)), 0.035, segments=1))
             elif d["ends"] == "lozenge":
                 parts.append(g.plate("End", [(x, 0.3), (x + 0.22, 0.0), (x, -0.3), (x - 0.22, 0.0)], 0.36, key, bevel=0.04))
-            elif d["ends"] == "scroll":  # the bar's end rolled into a ring, toward the point
-                parts.append(bl.place(bl.torus("End", 0.17, 0.07, 18, 8, mat(trim)), (x + side * 0.04, 0, 0.16), (90, 0, 0)))
+            elif d["ends"] == "acorn":  # a cup on the bar's end and a nut in it
+                parts.append(bl.place(bl.cylinder("Cup", 0.2, 0.12, segments=12, material=mat(trim)), (x, 0, 0), (0, 90, 0)))
+                nut = bl.sphere("End", 0.19, 12, 8, mat(trim))
+                parts.append(bl.smooth_by_angle(bl.place(nut, (x + side * 0.16, 0, 0), (0, 0, 0), (1.35, 1, 1)), 40.0))
+            elif d["ends"] == "shuttle":  # a loom's shuttle: a long pointed oval, lying along the bar
+                a, b = x - side * 0.3, x + side * 0.62
+                parts.append(g.plate("End", [(a, 0.0), ((a + b) / 2, 0.24), (b, 0.0), ((a + b) / 2, -0.24)], 0.36, trim,
+                                     bevel=0.05))
     elif d["guard"] == "s":  # one arm turned to the point, the other to the hand
         half = g.TURNED
         parts.append(g.plate("Guard", half + [(-x, -z) for x, z in half if x > 1e-6], 0.34, key, bevel=0.045))
@@ -223,25 +239,25 @@ def guard(d):
         for side in (-1, 1):
             parts.append(g.plate("Wing", [(side * x, z) for x, z in (g.WING if side > 0 else g.WING[::-1])], 0.18, key,
                                  bevel=0.035))
-    if d["halo"]:  # a hoop of the trim's metal round the blade, above the guard and tilted to the eye
-        parts.append(bl.place(bl.torus("Halo", 0.64, 0.055, 40, 8, mat(trim)), (0, 0, 0.8), (40, 0, 0)))
+    if d["fork"]:  # one branch, on the side that lies upper left in the square
+        parts.append(g.plate("Fork", [(-x, z) for x, z in FORK[::-1]], 0.2, d["blade"], bevel=0.06))
     return parts
 
 
 def grip(d):
-    key, parts = d["grip"], []
-    body = bl.cylinder("Grip", 0.15, GRIP, segments=20, material=mat(key), radius_top=0.175)
-    parts.append(bl.smooth_by_angle(bl.place(body, (0, 0, TOP - GRIP / 2)), 40.0))
+    key, parts, long = d["grip"], [], d["grip_len"]
+    body = bl.cylinder("Grip", 0.15, long, segments=20, material=mat(key), radius_top=0.175)
+    parts.append(bl.smooth_by_angle(bl.place(body, (0, 0, TOP - long / 2)), 40.0))
     for i in range(d["wraps"]):  # the wrap: turns of cord, each a little tilted
-        z = TOP - 0.2 - (GRIP - 0.4) * i / (d["wraps"] - 1)
+        z = TOP - 0.2 - (long - 0.4) * i / (d["wraps"] - 1)
         parts.append(bl.place(bl.torus("Wrap", 0.17, 0.04, 18, 6, mat(key)), (0, 0, z), (10, 6, 0)))
     for u in d["bands"]:
-        parts.append(bl.place(bl.torus("Band", 0.175, 0.05, 20, 8, mat(d["band_mat"])), (0, 0, TOP - GRIP * u)))
+        parts.append(bl.place(bl.torus("Band", 0.175, 0.05, 20, 8, mat(d["band_mat"])), (0, 0, TOP - long * u)))
     return parts
 
 
 def pommel(d):
-    kind, key, z = d["pommel"], d["pommel_mat"], TOP - GRIP
+    kind, key, z = d["pommel"], d["pommel_mat"], TOP - d["grip_len"]
     if kind == "wheel":
         parts = [bl.bevel(bl.place(bl.cylinder("Pommel", 0.3, 0.22, segments=20, material=mat(key)), (0, 0, z - 0.22),
                                    (90, 0, 0)), 0.04, segments=1)]
@@ -262,15 +278,26 @@ def pommel(d):
                         (180, 0, 0))
         dome = bl.place(bl.sphere("Dome", 0.3, 16, 8, mat(key)), (0, 0, z - 0.4), (0, 0, 0), (1, 1, 0.55))
         parts = [bl.smooth_by_angle(body, 40.0), bl.smooth_by_angle(dome, 40.0)]
-    elif kind == "lantern":  # two caps, six bars between them, a light inside
-        parts = [bl.place(bl.cylinder("Cap", 0.3, 0.1, segments=6, material=mat(key)), (0, 0, z - 0.05)),
-                 bl.place(bl.cylinder("Cap", 0.3, 0.1, segments=6, material=mat(key)), (0, 0, z - 0.81)),
-                 bl.place(bl.sphere("Finial", 0.1, 10, 6, mat(key)), (0, 0, z - 0.93)),
-                 bl.place(bl.sphere("Light", 0.2, 10, 6, mat("lit")), (0, 0, z - 0.43), (0, 0, 0), (1, 1, 1.45))]
+    elif kind == "tail":  # a fish's tail: it flares from the grip and ends in a notch
+        parts = [g.plate("Pommel", [(-0.14, z), (0.14, z), (0.42, z - 0.6), (0.0, z - 0.4), (-0.42, z - 0.6)], 0.24, key,
+                         bevel=0.05)]
+        if d["pommel_stone"]:
+            parts += stone(d["pommel_stone"][0], d["pommel_stone"][1], 0.13, z - 0.24)
+    elif kind == "spool":  # a bobbin: two flanges and a waist
+        parts = [bl.place(bl.cylinder("Flange", 0.31, 0.09, segments=16, material=mat(key)), (0, 0, z - 0.05)),
+                 bl.place(bl.cylinder("Waist", 0.15, 0.36, segments=12, material=mat(d["guard_mat"])), (0, 0, z - 0.27)),
+                 bl.place(bl.cylinder("Flange", 0.31, 0.09, segments=16, material=mat(key)), (0, 0, z - 0.49)),
+                 bl.place(bl.sphere("Stud", 0.1, 10, 6, mat(key)), (0, 0, z - 0.56))]
+    elif kind == "lantern":  # a real lantern: a roof with eaves, six bars, a light inside, a base and a drop under it
+        parts = [bl.place(bl.cylinder("Roof", 0.64, 0.36, segments=6, material=mat(key), radius_top=0.2), (0, 0, z - 0.18)),
+                 bl.place(bl.cylinder("Base", 0.5, 0.12, segments=6, material=mat(key)), (0, 0, z - 1.32)),
+                 bl.place(bl.cylinder("Drop", 0.09, 0.22, segments=6, material=mat(key), radius_top=0.32), (0, 0, z - 1.49)),
+                 bl.place(bl.sphere("Finial", 0.1, 10, 6, mat(key)), (0, 0, z - 1.64)),
+                 bl.place(bl.sphere("Light", 0.3, 12, 8, mat("lit")), (0, 0, z - 0.82), (0, 0, 0), (1, 1, 1.35))]
         for i in range(6):
             a = math.radians(60 * i + 30)
-            parts.append(bl.place(bl.cylinder("Bar", 0.036, 0.68, segments=6, material=mat(key)),
-                                  (0.27 * math.cos(a), 0.27 * math.sin(a), z - 0.43)))
+            parts.append(bl.place(bl.cylinder("Bar", 0.045, 0.92, segments=6, material=mat(key)),
+                                  (0.44 * math.cos(a), 0.44 * math.sin(a), z - 0.82)))
     else:  # cut in facets: it widens down from the grip, then closes
         parts = [bl.place(bl.cylinder("Pommel", 0.17, 0.36, segments=8, material=mat(key), radius_top=0.3), (0, 0, z - 0.18),
                           (180, 0, 0)),
@@ -293,30 +320,36 @@ def extras(d):
         for side in (0, 1):
             path = [Vector((edges(u)[side], 0, u * d["length"])) for u in np.linspace(0.05, 0.995, 28)]
             parts.append(bl.tube_along("Edge", path, [0.03] * len(path), sides=6, material=mat("lit")))
+        if d["fork"]:  # the branch's own edge, lit round its point
+            path = [Vector((-x, 0, z)) for x, z in FORK[1:6]]
+            parts.append(bl.tube_along("Edge", path, [0.035] * len(path), sides=6, material=mat("lit")))
     return parts
 
 
-def sword(d):
-    """The sword in a scene of its own, laid on the diagonal."""
+def sword(d, more=None):
+    """The sword in a scene of its own, laid on the diagonal. `more(d, parts)` is another kind's own parts: it may cut
+    the blade (parts[0]) and returns what it adds."""
     scene = bl.reset_scene()
     scene.world = bpy.data.worlds.new("Room")
     parts = [blade(d)] + guard(d) + grip(d) + pommel(d) + extras(d)
+    if more:
+        parts += more(d, parts)
     lay = Matrix.Rotation(math.radians(g.LEAN), 4, "Y") @ Matrix.Rotation(math.radians(g.SPIN), 4, "Z")
     for obj in parts:
         obj.data.transform(lay)
     return scene, parts
 
 
-def renders(out):
+def renders(out, designs=DESIGNS, more=None):
     """All fifteen at one scale, set by the largest, each centred in its square."""
     sizes = []
-    for d in DESIGNS:
-        x0, x1, z0, z1 = g.bounds(sword(d)[1])
+    for d in designs:
+        x0, x1, z0, z1 = g.bounds(sword(d, more)[1])
         sizes.append(max(x1 - x0, z1 - z0))
     span = max(sizes) / g.FILL
     shots = {}
-    for d, size in zip(DESIGNS, sizes):
-        scene, parts = sword(d)
+    for d, size in zip(designs, sizes):
+        scene, parts = sword(d, more)
         x0, x1, z0, z1 = g.bounds(parts)
         shots[d["name"]] = g.shoot(scene, out, ((x0 + x1) / 2, (z0 + z1) / 2), span)
         print(f"{d['name']}: fills {size / span:.2f} of the square")
@@ -325,18 +358,35 @@ def renders(out):
 
 # --- the sheet ---------------------------------------------------------------------------------------------------------
 
-def sheet(out, shots):
+WORDS = dict(
+    file="gear_sword_sets.png",
+    title="Grow your Anime: the Sword in three designs at each rarity, in grey (AR6, batch 1)",
+    lead="Fifteen long swords from one set of parts, at one scale, one camera and one light. A grey is its material's value. "
+         "A rarity keeps the ladder's rule; a design changes the blade's outline, the guard and the pommel.",
+    notes=(
+        "Three at each rarity is the batch's count (the director's yes, 2026-11-15). A set is its word, carried across the kinds: "
+        "Iron, Bronze, Scrap; Lanternsteel, Rowsmith, Stallguard; of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom.",
+        "A Legendary is named alone, in the family of lights. A star is research's own name. Kiribi: the sparks struck from flint "
+        "for luck at a door. Inabikari: a flash of lightning.",
+        "Research's two fixes are in. Each Legendary's one new form shows at 38 points: Akari's wings, Kiribi's lantern grown, "
+        "Inabikari's blade forked (its hoop is gone). The ring stays on Scrap Sword alone: acorns, a fishtail, shuttles and a spool.",
+        "Not here yet: colour, frames, the class mark.",
+    ),
+)
+
+
+def sheet(out, shots, designs=DESIGNS, words=WORDS, beside=None):
+    """The fifteen at 220 points, at the slot's 38, and as silhouettes. Another kind's script passes its own designs
+    and words, and `beside`: a label and five shots of a kind it must not be taken for."""
     ui.K = K = 2
     w, pitch_x, pitch_y, top = 220.0, 230.0, 272.0, 94.0
     sh = ui.Sheet(1180, top + 3 * pitch_y + 232, g.GROUND)
     t = sh.tile(0, 0, sh.w, sh.h)
-    t.text(20, 12, 15, "Grow your Anime: the Sword in three designs at each rarity, in grey (AR6, batch 1)", g.INK)
+    t.text(20, 12, 15, words["title"], g.INK)
     t.text(20, 36, 9.5, "The director, 2026-11-15: \"there need to be multiple commons, rares, epics, legendarys like multiples "
            "sets of each rarity anything from common to epic is simple anyways legendary too\".", g.SOFT_INK)
-    t.text(20, 50, 9.5, "Fifteen long swords from one set of parts, at one scale, one camera and one light. A grey is its "
-           "material's value. A rarity keeps the ladder's rule; a design changes the blade's outline, the guard and the "
-           "pommel.", g.SOFT_INK)
-    by = {r: [d for d in DESIGNS if d["rarity"] == r] for r in RARITIES}
+    t.text(20, 50, 9.5, words["lead"], g.SOFT_INK)
+    by = {r: [d for d in designs if d["rarity"] == r] for r in RARITIES}
     for i, r in enumerate(RARITIES):
         t.text(20 + i * pitch_x, top - 20, 12, r, g.NOTE)
         for j, d in enumerate(by[r]):
@@ -352,36 +402,33 @@ def sheet(out, shots):
     y = top + 3 * pitch_y + 4
     t.text(20, y, 10, "At the Voidkin screen's slot, 38 points; under it each silhouette alone at 32 pixels (shown at twice its "
            "size). A rarity's three stand together.", g.SOFT_INK)
+    def slot(x, shot):
+        tile = sh.tile(x, y + 18, 44, 44)
+        tile.paint(tile.poly(ui.cut_box(0, 0, 44, 44, 4, 0, 4, 0)), c(g.DARK))
+        rs.paste(sh.px, rs.shrink(shot, 38 * K / g.SIZE), round((x + 3) * K), round((y + 21) * K))
+        tile = sh.tile(x, y + 68, 44, 44)
+        tile.paint(tile.poly(ui.cut_box(0, 0, 44, 44, 4, 0, 4, 0)), c("#8A8F9C"))
+        tiny = rs.shrink(rs.black(shot), 32 / g.SIZE)
+        rs.paste(sh.px, np.repeat(np.repeat(tiny, 2, axis=0), 2, axis=1), round((x + 6) * K), round((y + 74) * K))
+
     n = 0
     for i, r in enumerate(RARITIES):
         for d in by[r]:
-            x = 20 + n * 50 + i * 26
-            tile = sh.tile(x, y + 18, 44, 44)
-            tile.paint(tile.poly(ui.cut_box(0, 0, 44, 44, 4, 0, 4, 0)), c(g.DARK))
-            rs.paste(sh.px, rs.shrink(shots[d["name"]], 38 * K / g.SIZE), round((x + 3) * K), round((y + 21) * K))
-            tile = sh.tile(x, y + 68, 44, 44)
-            tile.paint(tile.poly(ui.cut_box(0, 0, 44, 44, 4, 0, 4, 0)), c("#8A8F9C"))
-            tiny = rs.shrink(rs.black(shots[d["name"]]), 32 / g.SIZE)
-            rs.paste(sh.px, np.repeat(np.repeat(tiny, 2, axis=0), 2, axis=1), round((x + 6) * K), round((y + 74) * K))
+            slot(20 + n * 50 + i * 26, shots[d["name"]])
             n += 1
         t.text(20 + (n - 3) * 50 + i * 26, y + 116, 8, r, g.SOFT_INK)
+    if beside:  # another kind's five, to tell the two apart at the slot's size
+        label, others = beside
+        for k, shot in enumerate(others):
+            slot(926 + k * 50, shot)
+        t.text(926, y + 116, 8, label, g.SOFT_INK)
     y += 136
-    notes = (
-        "Three at each rarity is this sheet's number, to judge the idea: the real count is the director's and research's. A design "
-        "is about ten lines of the script, so a rarity can hold more.",
-        "A set could be its word, carried across the kinds: Iron, Bronze, Scrap; Lanternsteel, Rowsmith, Stallguard; of Embers, of "
-        "Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom. A Legendary is named alone, in the family of lights.",
-        "Research's fix 1 on the ladder is in: each Epic's guard is a clear step larger than a Rare's. A star is research's own "
-        "name; the ten others are proposed, for its check. Hibana: a spark. Inabikari: a flash of lightning.",
-        "For the verdict: does each read as the Sword, and apart from its two neighbours, at 38 points? Is each Legendary's one new "
-        "form (wings, a lantern pommel, a hoop round the blade) the right size? Not here yet: colour, frames, the class mark.",
-    )
-    for i, line in enumerate(notes):
+    for i, line in enumerate(words["notes"]):
         t.text(20, y + i * 15, 9, line, g.SOFT_INK)
     layers = ui.text_layers(sh.px.shape[1], sh.px.shape[0], sh.items)
     for layer in layers.values():
         rs.paste(sh.px, layer, 0, 0)
-    rs.save(sh.px, out / "gear_sword_sets.png")
+    rs.save(sh.px, out / words["file"])
 
 
 def main():

@@ -62,10 +62,12 @@ def mark(kind, u, v):
     if kind == "lantern":  # a paper lantern: its round body, a cap at each end, a tassel
         return np.minimum.reduce([ellipse(u, v, 0, -0.3, 3.7, 3.6), box(u, v, -1.9, -4.9, 1.9, -3.5),
                                   box(u, v, -1.9, 2.9, 1.9, 3.9), box(u, v, -0.45, 3.9, 0.45, 5.4)])
-    # a drum on its side stand: its barrel, its two heads wider than its waist, two sticks crossed over it
+    # a drum: its barrel, wider at its waist, and two sticks held over it. The sticks stand apart: crossed on red,
+    # they read as a cancel mark.
     barrel = ui.sd_polygon(u, v, [(-4.2, -1.6), (4.2, -1.6), (4.8, 1.2), (4.2, 4.6), (-4.2, 4.6), (-4.8, 1.2)])
-    sticks = np.minimum(ui.sd_segment(u, v, (-4.6, -5.2), (1.4, -2.2)), ui.sd_segment(u, v, (4.6, -5.2), (-1.4, -2.2))) - 0.55
-    return np.minimum(barrel, sticks)
+    sticks = np.minimum(ui.sd_segment(u, v, (-4.2, -5.0), (-1.1, -2.5)), ui.sd_segment(u, v, (4.2, -5.0), (1.1, -2.5))) - 0.55
+    heads = np.minimum(ellipse(u, v, -4.2, -5.0, 1.0, 1.0), ellipse(u, v, 4.2, -5.0, 1.0, 1.0))
+    return np.minimum.reduce([barrel, sticks, heads])
 
 
 def cuts(kind, u, v):
@@ -194,7 +196,7 @@ def sheet(out, big, small, tags, discs):
     for name in FESTIVALS:
         t.text(x, y + 10, 11, name, INK)
         rs.paste(sh.px, rs.shrink(tags[name][0], 5.0 * ui.K / DRAWN), round((x - 8) * ui.K), round((y + 30) * ui.K))
-        t.text(x + 30, y + 232, 8.5, "the tag, five times its size at 96 pt", SOFT_INK, "CENTER")
+        t.text(x + 77, y + 232, 8.5, "the tag, five times its size at 96 pt", SOFT_INK, "CENTER")
         put(sh, rs.shrink(discs[name], 5.0 * 13.0 / 13.2 * ui.K / DRAWN), x + 222, y + 110)
         t.text(x + 222, y + 232, 8.5, "its mark for 40 pt, five times", SOFT_INK, "CENTER")
         tile.glow(tile.poly([(x + 400, 120), (x + 401, 120), (x + 401, 121)]), 70.0, c(rb.VIOLET["ground"]), 0.8)
@@ -253,10 +255,11 @@ def sheet(out, big, small, tags, discs):
     notes = (
         "The tag hangs off the crystal's right shoulder, on the ground beside it, so it never covers a spire.",
         "At a quarter, 50 points leaves the mark about 6 points high: the colour tells the ground, the mark confirms it.",
-        "Lantern Row's cyan stands 8 from Frost's blue and Drum Court's red 6 from health's (CIEDE2000): the tag's "
-        "shape and place carry it.",
+        "Lantern Row's cyan stands 8 from Frost's blue and Drum Court's red 6 from health's (CIEDE2000):",
+        "the tag's shape and place carry it.",
         "Drum Court's cream is this block's: the roster names red alone.",
-        "Still to draw: the other four grounds' marks. Mask Parade's violet will sit on a violet shard in a violet room.",
+        "Still to draw: the other four grounds' marks. Mask Parade's violet will sit on a violet shard",
+        "in a violet room.",
     )
     for i, line in enumerate(notes):
         t.text(x + 16, y + 44 + i * 15, 9, line, SOFT_INK)

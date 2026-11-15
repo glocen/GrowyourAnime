@@ -2894,6 +2894,55 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **The set proposal is accepted, as names only.** A set is its word carried across the kinds, and a Legendary is named alone. A set gives no bonus: set bonuses would be a new mechanic, not asked.
   - **The count:** three per rarity for batch 1, the director's yes of 2026-11-15, "make sure it standard to our quality".
 
+### The four kinds in three designs at each rarity, in grey: blockouts (Modulo, 2026-11-15)
+
+- **The sheets,** each from its own script in `tools/blender/` (Workbench, no GPU turn): fifteen designs at 220 points, at the 38-point slot and as 32-pixel silhouettes, each with a name. Sixty designs in all.
+  - The Sword, with research's two fixes: `build/handoff/Gear/sword_sets/gear_sword_sets.png` (`gear_sword_sets.py`).
+  - The Short Sword, the Sword's five beside it at 38 points: `build/handoff/Gear/short_sword_sets/gear_short_sword_sets.png` (`gear_short_sword_sets.py`, built from the Sword's parts).
+  - Ring I: `build/handoff/Gear/ring_sets/gear_ring_sets.png` (`gear_ring_sets.py`).
+  - The Helmet: `build/handoff/Gear/helmet_sets/gear_helmet_sets.png` (`gear_helmet_sets.py`).
+- **Feel lines:**
+  - **The Short Sword:** in its square it's a broad leaf of metal for the off hand, and a player never takes it for the Sword.
+  - **Ring I:** a small band whose head says its rarity before its band does.
+  - **The Helmet:** one round skull a player knows at any rarity, and what the skull wears says the rarity.
+- **Scope:** grey forms and names. Waiting: colour, frames, the class mark, the other kinds.
+- **The Sword's two fixes:**
+  - **Fix 1:** Kiribi's lantern is grown to a roof, six bars, a base and a finial, with the light inside (the blade is 5.3 long, from 6.4, so the whole fits the square). Inabikari's hoop is gone: the blade forks, one smooth branch leaving above the guard on one side and running to a point of its own. Both show at 38 points.
+  - **Fix 2:** the ring stays on Scrap Sword alone. Stallguard's bar ends in acorns, Gales has a fishtail pommel with the stone in it, Nightloom's bar ends in shuttles over a spool pommel.
+- **The Short Sword:** a wedge 3.9 long by 1.5 wide (2.6 to 1, against the Sword's 7.4 to 1), a guard that droops to the hand where the Sword's turns to the point, a grip of 1.15 against 1.5.
+  - Iron, Bronze, Scrap Short Sword; Lanternsteel, Rowsmith, Stallguard Short Sword; Edge of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom Edge.
+  - **Legendary,** one new form each: Hotaru, the Small Light (a window cut in the blade, a light held in it); Yukiakari, the Snowlight (a bow from the guard to the pommel, over the hand); Hoshiakari, the Far Star (an arm from the guard holds a second light beside the blade).
+- **Ring I:** one band, leant back so its head faces the eye. A design is its band, its shoulders and its head.
+  - Iron, Bronze, Scrap Ring; Lanternsteel, Rowsmith, Stallguard Ring; Band of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom Loop.
+  - **Legendary:** Kagaribi, the Watchfire (the head is a watchfire's basket, the stone in it); Yoiboshi, the Dusk Star (a star of four points stands on the band, a filled stone at its heart); Ariake, the Pale Moon (a crescent, horns up, holds the stone).
+- **The Helmet:** one round skull with a brow band, three-quarter from the front, its face to the right as the swords point. A design is what the skull wears: a nasal, cheek plates, a closed face, a neck guard, a brim, a comb, a crest.
+  - Iron, Bronze, Scrap Helmet; Lanternsteel, Rowsmith, Stallguard Helmet; Helm of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom Helm.
+  - **Legendary:** Tomoshibi, the Vigil (a lamp stands on the crown, its light in three prongs); Zansho, the Afterglow (a mane of ivory blades swept back); Hakumei, the Twilight (a pair of tall forked horns at the brow).
+- **Tier 1 calls, mine, for research to keep or change:**
+  - The Short Sword's near word from Rare up is "Edge", so no name repeats a Sword's. The sets' words replace the spec's examples ("Brand of Sparks", "Duskwire Brand", "Copper Ring", "Band of Static", "Voidglint Loop", "Paper-Lantern Helmet", "Nightcurrent Helm").
+  - "Kagaribi, the Watchfire Ring" is 28 characters, over the 24 a name may take: shown as "Kagaribi, the Watchfire".
+  - The swords share one scale. A ring and a helmet each fill their own square (0.78 of it, a little under the middle), and a plain one is drawn no smaller than 0.86 (ring) or 0.82 (helmet) of the largest, so a Common isn't a small ring in a large square.
+  - After the first render: each Epic ring's hooks and tines were lowered by about a third, since they stood as tall as a Legendary's head; the star's stone moved from a bezel on the band to the star's heart.
+- **New names for research's check:** Yukiakari, Hoshiakari, Yoiboshi, Ariake, Zansho, Hakumei (Hotaru, Kagaribi, Tomoshibi and the Sword's are in the spec's family of lights). None is in `docs/ip-list.md` or the roster.
+- **Content check, before building, on the four scripts: every form PASS, one name blocked** (rule 3): the Short Sword's third Legendary, as first named, is also a title in a published series. It's "Hoshiakari, the Far Star" on the sheet (24 characters); the check's other offer is "Myojo, the Far Star". Research picks. Its conditions for the colour pass, added to the Sword's above:
+  - A lit part is white or warm gold, an upright oval or a faceted stone held in metal: never red or dark, never a hanging drop, no trail or flame. Hotaru's light never reads as an eye.
+  - A stone at a crossing stays filled and narrower than the blade's foot, with no open ring round a crossing. On a helmet nothing rises above the brow's bezel as a bar continuing the nasal.
+  - Yoiboshi's points taper and take no halo; a star and a crescent never share one ring; Ariake's stone stays round. A Legendary ring is metal, never a red cord. No heart, no linked pair.
+  - Inabikari's branch stays one smooth branch, never a zigzag; no zigzag or bolt marks in any engraving. Engraving, filigree, signet faces and foot plates stay plain lines and blank faces.
+  - Gloamforge's condition covers all four pieces. Gloamforge Helm is never a glossy black dome with a mouth grille; Hakumei stays a gilt skull with ivory horns and a white or gold stone; the Iron and Lanternsteel helmets are never field grey or olive.
+  - A helmet's liner stays a dark lining, never skin-toned; slits and openings stay dark and empty. Scrap Helmet is never shown crown-on.
+- **Content check, on the rendered sheets: PASS on all four** to go to research; nothing is cleared for upload, and each icon is checked again in colour, at full size and at 64 px over dark. From the renders:
+  - **The helmets' liner, one fix required, made:** the dark lining ran down under the brow as a column, and Stallguard Helmet read as a hat on a head. It now ends just under the brow on every open helmet, so each is hollow; behind a closed face it stays, so the eye slit is dark and empty. In colour the liner is the kit's near-black, never tan or a skin tone, and no light sits in a slit.
+  - **Hoshiakari clears.** No other name to change.
+  - **Added for the colour pass:** Akari's guard stays gilt and ivory, never blue-violet wings with a gold stone and a green grip. Hotaru's light is a flat faceted stone with no dark centre, slit or iris: at 38 points the window can read a little like an eye. Ariake takes no star between or above its horns, and never shares a set's icon or frame with Yoiboshi as a crescent and star. Gloamforge Helm's prongs stay narrow and near upright, never a white shell with a wide yellow V and a red block. Zansho's blades stay thin, flat and ivory, never thick gold locks.
+- **Modulo's read:**
+  - **The Sword:** both redrawn Legendaries now change the silhouette at 38 points, Inabikari's fork the most. Kiribi's lantern reads there as a heavy pommel, and as a lantern from about 64.
+  - **The Short Sword:** never the Sword at 38 points, on all fifteen: it's a wedge where the Sword is a line. A rarity's three part by the guard. The Commons are the closest three. Yukiakari's bow is the strongest new form.
+  - **Ring I:** all fifteen read as rings at 38 points. The plain bands are near one another there (Iron, Lanternsteel, Stallguard): the frame and the name will carry them. The weakest pair is Stormcall against Ariake: two horns round a stone on both, parted by the gilt and the three-ridged band more than by shape.
+  - **The Helmet:** all fifteen read as helmets, and the Legendaries outrank the Epics plainly. Iron, Bronze and Scrap are nearly one helmet at 38 points. Nightloom's tall comb stands nearly as high as a Legendary's crest. With the liner cut back the open helmets are hollow and lighter in their squares, and the three Commons part better at 38 points than they did.
+- **Four facts:** made, yes, the four sheets. Self-reviewed, yes, each at full size and on its 38-point row. Delivered, the sheets only: nothing for Faber yet. Accepted, no: research's verdict to come.
+- **Time:** about 2 hours 30 by the clock: the four scripts written and dry-run while memory was short, then the renders and one round of fixes on the ring and the helmet and the liner's cut (16:20 to 17:25).
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.
@@ -5744,7 +5793,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - **Its cost:** from the step down it's nearly one blue (`#3566C9` to `#315FBE`), so the number's depth is a white top over a flat cobalt. Its lower half stands 27 from Rare's blue (24 colour-blind), 39 from Frost (35), 48 from Credits' teal (37) and 13 from Regalia's indigo (12): each a little nearer than A2 as read, none close.
       - **The measure's limit:** it's the stop that holds 3 to 1. On drawn 20-point digits the last row of pixels blends with the stroke's ink and reads lower, as any edge does.
       - **For Faber:** `build/handoff/UI/voidkin/combat_power/combat_power.json`: the five stops, the stroke, the glow, the caption's colour, the rise. DESIGN, untried in Studio.
-      - **Four facts:** made: the ramp and the json (`combat_power_platinum.py`, with `final`). Its sheet `combat_power_cobalt.png` isn't rendered: the memory guard stopped the render at 0.62 GB free, and it waits for memory, so the finish is checked by its numbers and not yet seen at 20 points. Accepted by research as a stop; not built; the director's eye to come.
+      - **Four facts:** made: the ramp, the json and the sheet (`combat_power_platinum.py`, with `final`; `build/handoff/UI/voidkin/combat_power/combat_power_cobalt.png`, rendered 2026-11-15 once memory freed: A2 as read beside the finish with its foot lifted). Self-reviewed on the sheet at 20 points: the foot holds against the plate. Accepted by research as a stop; the director's eye to come.
     - **Faber's build** (2026-11-15; `UI.VoidkinScreen`'s plate, its numbers in `Config.Hud.Voidkin.Finish`, tuned live):
       - **Implemented:** the digits under a 90° `UIGradient` with the json's five stops, over white so the stops show true; a 1.2-point `UIStroke` in `#07080D`; the drop, the same digits in ink with the same stroke 1.2 points lower, in one frame with the face so a rise swells both and they say the same through the roll; one soft glow behind them, `ButtonBaseGlow` tinted `#4A7BF5` at 0.55, sized to the digits; the caption "COMBAT POWER" in `#BCD0F7`. Rising, the digits go 40% toward white and 1.1 times their size, back to cobalt as the roll ends.
       - **Tested:** type check 0 new, logic 5824 offline, Studio has the code (searched). Written, not yet run: the Voidkin screen's case checks the ramp's stops, the stroke, the drop, the glow and the caption.
@@ -5823,6 +5872,16 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - The bag sorts and filters by ground.
   - **The block contains:** the tag for Lantern Row and Drum Court on the three grades at each size, on the Breaker's dark and a dusk street, beside today's chamber; the two-line name. **Waits:** the other four grounds' marks, any motion, other sources.
   - **Measures:** the ground reads at 40 points without the words, and the tag never hides a grade's spires.
+  - **The block (Modulo, 2026-11-15):** `build/handoff/UI/shards/tag/shard_tag_block.png`, from `tools/blender/shard_tag_block.py` (drawn by our own code over the six delivered shard pictures; no GPU turn).
+    - **It shows:** each ground's tag at five times its size, its mark alone for 40 points, and the tag on a Prismatic at twice a chamber's size; then Lantern Row's and Drum Court's three grades at 96, 50, 40 and 26 points on the Breaker's dark and on a dusk street, with one shard as today beside each group; then a chamber as today beside three with the tag and the two-line name.
+    - **The tag:** a paper plaque with clipped top corners and an eyelet, hung by a short thread from the crystal's right shoulder and lying on the ground beside it, so it covers no spire on any grade. Its body is the ground's colour, its foot a band of the second, the mark in the second colour. Lantern Row: `#35CFEA` and `#FFF1D8`, a round lantern with two bands. Drum Court: `#DD3A32` and `#FFE7C6`, a drum with two sticks standing apart over it.
+    - **At 40 points** the mark sits in a disc of the ground's colour at the shard's foot; a 26-point chip takes the colour along its foot.
+    - **Mine, tier 1:** Drum Court's cream `#FFE7C6` (the roster names red alone). The drum's sticks stand apart with round heads: crossed, on red, they read as a cancel mark. A quarter against a third is shown at 50 points for research's pick.
+    - **Measured** (CIEDE2000): Lantern Row's cyan stands 8.3 from Frost's blue, Drum Court's red 5.9 from health's. Both are close: the tag's shape and place carry the difference, not the colour alone.
+    - **Modulo's read:** the colour tells the ground at every size, 26 points included. At a quarter, 50 points leaves the mark about 6 points high: it confirms, the colour tells. At 40 points the mark in its disc reads without the words. The thread is short and stands above the plaque more than it ties to the crystal: a point for the art. Mask Parade's violet will sit on a violet shard in a violet room: the hardest of the four still to draw.
+    - **Content check: PASS** to go to research, on the rendered block. The tag is a clipped-corner luggage tag with a blank foot and no writing, not a shrine plaque or a paper charm. For the finish and the other four marks: red keeps its ink outline, hard corners and cream at every size, with no gloss, glow or bleed onto the crystal; no crest, swirl or writing on a drum or a tag; the mask, kite, flame and mirror marks each get a check of their own, the mask above all. For research's read, not a rule matter: at 40 points the drum's disc can read as an angry face or an old television before it reads as a drum.
+    - **Four facts:** made, yes. Self-reviewed, yes, at full size and on crops of each size. Delivered, the sheet only. Accepted, no: research's verdict to come.
+    - **Time:** about 40 minutes by the clock, the script and three renders.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

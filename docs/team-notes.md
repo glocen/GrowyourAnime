@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 21:20.
-- **Stats: the director said yes** (the register; `docs/balance.md`, "One hit"; `docs/ui.md`, "Stats, shown honestly"). Critical Damage has no ceiling and multiplies a critical on its own, so over the updates it can reach 20,000%. The sheet shows totals, never "up to", and a tap gives a stat's sources with the chance last. Faber builds it after AR14's level 1, before TR21.
-- **TR21's prices are seeded** (the sim's section 15). The base's level 2 costs 840 Credits and level 3 costs 18,000. A machine's ceiling is 2, 6 and 30. **AR15** gives the machines models, the Breaker first. AR12's battery in the head is closed.
-- **The director, tonight:** no day-and-night checks, one take per piece, and the full suite at a phase's close. Launch caps the base at 3, and the base is a power yard (AR14, delivery 2).
-- **Next:** AR14's level 1 in the game; TR21's blockout; Watt in the game; Power's cuts and the reveal's card in Eclipse; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.
+**Quaestor (research).** 2026-11-15, 22:45.
+- **Combat Power's weights are seeded** (TR17 fix 10; the sim's section 16; the seeds' "combatPower"). The higher number wins 97% of same-level duels with no type edge, against 90% for the stand-ins. A percent's weight grows with G, which is one line in `Rules.Stats.Power` for Faber. My old line in fix 10, that rarity must count for more than four levels, is withdrawn: Combat Power follows the fight.
+- **Stats: the director said yes** (the register; `docs/balance.md`, "One hit"; `docs/ui.md`, "Stats, shown honestly"). Critical Damage has no ceiling, and the sheet shows totals. **TR21's prices are seeded** (section 15): level 2 costs 840 Credits and level 3 costs 18,000.
+- **The director, tonight:** no day-and-night checks, one take per piece, and the full suite at a phase's close. Launch caps the base at 3: a power yard, 200 by 200, under construction at level 1.
+- **Next:** the reveal's card in Eclipse (Modulo's three calls); AR14's level 1, AR15's machines and the plinth in the game; TR21's blockout; Watt; Power's cuts; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 21:05.
 - **The battery is in the Power screen's head** (AR12, "The battery in the head, built"): its mark, its kWh in Power's yellow, the work it holds as its soft line (measured: it fits at the smallest phone), its charge as a bar. Its row leaves the list. Power 71 of 71. The whole suite: 2,051 passed, and 2 frame-timing checks NOT VERIFIED at 33 to 47 fps with memory near its end. **For research:** the pass on `build/captures/power/battery_plate_smallest_phone.png`.
@@ -49,6 +49,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-15, night, TR17 fix 10: Combat Power's weights (the sim's section 16; the seeds' "combatPower"; TR17, "Research's seeds for fix 10"). Faber puts them in `Config.Stats.Power.Weights`, and a percent's weight multiplies by G in `Rules.Stats.Power`. The higher number wins 97% of same-level duels; between two spends of one budget it's near a coin, a sum's limit (`docs/polish-later.md`).
 - Tier 2, research, 2026-11-15, night, TR21's prices (the sim's section 15; `docs/balance.md`, "Earning"; the seeds' "baseLevels"). The base's level 2 costs 840 Credits and lands at about 20 minutes; level 3 costs 18,000 and lands at about 5 hours. A machine's ceiling is 2, 6 and 30 at the base's levels 1 to 3, which replaces "a machine never passes its base". Each machine level is priced by the sim, from 170 at level 2 to 8,000 at level 30. A bay gives +4% output a level. The Breaker gives +2% speed a level, with its third chamber at level 8 and its fourth at 20. The Training machine has no level. The battery holds 60, 150 and 400 kWh. Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-15, night, AR15: the base's machines get models in AR14's power-yard language, one at a time. The Breaker comes first, keeping TR9's chambers where they are, then a bay, then the generator. Modulo finishes Power's cuts first, and the reveal's card in Eclipse comes after the bay. Faber: before the Breaker, send Modulo the stand-ins' footprints and the chambers' anchors.
 - Tier 1, Modulo, 2026-11-15, night, AR15: a bay's collector ring stands on its outer side, so the worker is seen against it from the court and the gate; the bay's rarity light is a piece of its own, shown only while a worker works there (AR15, section 2). Research and Faber: say in your row what you'd change.

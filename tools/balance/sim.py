@@ -5,7 +5,7 @@ Reads tools/balance/seeds.json and the table in docs/roster.md.
 Prints a report. Nothing here is a measurement of play: it tests the
 structure of the math and the seed numbers against each other.
 """
-import json, random
+import json, math, random
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -956,6 +956,109 @@ def report_base():
     print(f"Level 2 in the first session: {by:,.0f} Credits earned by {first['at'] * 60:.0f} min, the price "
           f"{first['price']:,}, so {by - first['price']:,.0f} are left for the forge and the machines by then.")
 
+
+# ---------------------------------------------------------------- 16. Combat Power's weights (TR17, fix 10)
+
+CP_NAMES = {"hp": "Health", "atk": "Attack", "def": "Defence", "regen": "Regen", "hit": "Hit", "dodge": "Dodge",
+            "crit": "Critical", "critres": "CriticalResist", "block": "Block", "pen": "Penetration",
+            "elem": "ElementalAttack", "eres": "ElementalResist", "critdmg": "CriticalDamage",
+            "critguard": "CriticalGuard", "lifesteal": "Lifesteal"}
+CP_PERCENTS = ("critdmg", "critguard", "lifesteal")
+CP_STANDIN = {"hp": 0.5, "atk": 4, "def": 4, "regen": 25, "hit": 2, "dodge": 2, "crit": 2, "critres": 2, "block": 2,
+              "pen": 2, "elem": 2, "eres": 2, "critdmg": 200, "critguard": 2, "lifesteal": 500}
+
+
+def fighter(level, frac, rarity="Common", cls="Warrior", spec="balanced", lifesteal=0.0):
+    st = build(level, next(x["id"] for x in S["grounds"] if x["from"] <= level <= x["to"]), frac, rarity, cls, spec)
+    st["regen"] = 4 * G(level) * (1.5 if cls == "Healer" else 1)   # Config.Stats.Regen
+    st["lifesteal"] = lifesteal
+    return st
+
+
+def edge(a, b):
+    """How much faster a beats b than b beats a, in logs (above 0, a wins): duel() with each side's regen healing too."""
+    da, db = dps(a, b), dps(b, a)
+    cap = S["lifesteal"]["perSecondCapOfMaxHp"]
+    ta = b["hp"] / max(1e-9, da - min(db * b["lifesteal"], cap * b["hp"]) - b["regen"])
+    tb = a["hp"] / max(1e-9, db - min(da * a["lifesteal"], cap * a["hp"]) - a["regen"])
+    return math.log(tb / ta)
+
+
+def panel(level, frac):
+    return [fighter(level, frac, spec=sp, lifesteal=ls) for sp in SPECS for ls in (0.0, S["lifesteal"]["typical"])]
+
+
+def cp_fit(level, attack=4.0):
+    """Each stat's weight a point, Attack's held at `attack`: what a point adds to the edge, averaged over every spec on
+    budget, with and without typical lifesteal, as the fighter and as its foe. A percent's is given at level 1."""
+    ps = panel(level, S["onBudget"])
+    m = {k: 0.0 for k in CP_NAMES}
+    for a in ps:
+        for k in CP_NAMES:
+            step = 0.01 if k in CP_PERCENTS else max(0.5, 0.01 * max(a[k], G(level) * 10))
+            b = dict(a)
+            b[k] += step
+            m[k] += sum(edge(b, p) - edge(a, p) for p in ps) / step
+    return {k: attack * v / m["atk"] / (G(level) if k in CP_PERCENTS else 1) for k, v in m.items()}
+
+
+def cp(st, w, percents_by_g=True):
+    """Rules.Stats.Power: the weighted sum times Scale, Critical Damage above its base, a percent times G when asked."""
+    total = 0.0
+    for k, x in w.items():
+        v = max(0.0, st[k] - (S["crit"]["baseDamage"] if k == "critdmg" else 0.0))
+        total += x * v * (G(st["level"]) if percents_by_g and k in CP_PERCENTS else 1)
+    return total * S["combatPower"]["scale"]
+
+
+def report_cp(pairs=4000, seed=7):
+    print("\n== 16. Combat Power's weights (TR17, fix 10) ==")
+    seeds = {k: S["combatPower"]["weights"][n] for k, n in CP_NAMES.items()}
+    levels = (5, 15, 30, 45, 60)
+    fits = {L: cp_fit(L) for L in levels}
+    line("stat", *[f"fit lv {L}" for L in levels], "seeds", "stand-in", w=15)
+    for k in CP_NAMES:
+        line(CP_NAMES[k], *[f"{fits[L][k]:.3g}" for L in levels], seeds[k], CP_STANDIN[k], w=15)
+    print("A weight a point, Attack's held at 4. A percent's (Critical Damage above +50%, Critical Guard, Lifesteal) is "
+          "its weight at level 1, and Power multiplies it by G at the Voidkin's level: a percent multiplies points, "
+          "which grow with G. The seeds are the five levels' mean, rounded.")
+    rng = random.Random(seed)
+
+    def someone(level, frac):
+        return fighter(level, frac, rng.choice(RARITIES), rng.choice(list(S["classMult"])), rng.choice(list(SPECS)),
+                       rng.choice((0.0, 0.0, S["lifesteal"]["typical"], 0.06)))
+
+    duels, spends = [], []
+    for _ in range(pairs):
+        L, f = rng.randint(1, 60), rng.uniform(0.2, 1.0)
+        a, b = someone(L, f), someone(L, min(1.0, max(0.0, f + rng.uniform(-0.1, 0.1))))
+        duels.append((a, b, edge(a, b)))
+        # One Voidkin with one budget, spent two ways: which does better against a panel of every spec at its build.
+        cls, rar, ls = rng.choice(list(S["classMult"])), rng.choice(RARITIES), rng.choice((0.0, 0.03))
+        s1, s2 = rng.sample(list(SPECS), 2)
+        x, y = fighter(L, f, rar, cls, s1, ls), fighter(L, f, rar, cls, s2, ls)
+        ps = panel(L, f)
+        spends.append((x, y, sum(edge(x, p) - edge(y, p) for p in ps) / len(ps)))
+
+    def right(rows, rank, least):
+        n = ok = 0
+        for a, b, e in rows:
+            if abs(e) >= least:
+                n += 1
+                ok += (rank(a) > rank(b)) == (e > 0)
+        return f"{ok / n:.0%} of {n}"
+
+    against_panel = lambda st: sum(edge(st, p) for p in panel(st["level"], S["onBudget"]))
+    for label, rank in (("seeds", lambda st: cp(st, seeds)), ("stand-in", lambda st: cp(st, CP_STANDIN, False)),
+                        ("a panel, not a sum", against_panel)):
+        print(f"{label}: the higher wins {right(duels, rank, 0.02)} same-level duels with no type edge "
+              f"({right(duels, rank, 0.10)} where one wins 10% faster); of one budget spent two ways, it picks the "
+              f"better {right(spends, rank, 0.005)} ({right(spends, rank, 0.02)} where it's 2% better).")
+    worst = max(abs(e) for _, _, e in spends)
+    print(f"A sum can't see that spreading points beats stacking them, so between two spends of one budget (at most "
+          f"{worst:.0%} apart) it's near a coin. Every refit tried traded duels away for it.")
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -975,3 +1078,4 @@ if __name__ == "__main__":
     report_speed()
     report_power()
     report_base()
+    report_cp()

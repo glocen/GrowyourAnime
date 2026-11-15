@@ -63,7 +63,7 @@ Shares of a full launch build's stat points, at level 60:
 
 **Ratings** all convert the same way: `chance = ceiling x mine / (mine + theirs + K x G(level))`. A rating never reaches its ceiling, an opposing rating always pulls it down, and it needs more points at higher levels to hold the same chance. That shape is what keeps a stat from being solved.
 
-**Combat Power** is one number shown to the player: a weighted sum of the stats, its weights fitted by the simulation so the higher number wins more often with no type edge. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage. How it's shown: `docs/design.md`, "Combat Power".
+**Combat Power** is one number shown to the player: a weighted sum of the stats, its weights fitted by the simulation so the higher number wins more often with no type edge. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage. How it's shown: `docs/design.md`, "Combat Power". Its weights (`tools/balance/seeds.json`, "combatPower"; the sim's section 16) are what a point adds to winning, Attack's held at 4. A percent's weight is given at level 1 and multiplies by G at the Voidkin's level, since a percent multiplies points that grow with G. With them the higher number wins 97% of same-level duels with no type edge, and every duel where one side wins 10% faster. Its limit is a sum's: it can't see that spreading points beats stacking them, so of one budget spent two ways it picks the better about half the time (`docs/polish-later.md`).
 
 ## One hit
 

@@ -13,7 +13,9 @@ is lit along its lines; a Prismatic splits the light it holds, its inner facets 
 
     blender -b --factory-startup --python tools/blender/shard_grade_art.py -- build/handoff/UI/shards [images]
 
-Writes the sheet shard_grade_art.png, and with `images` each grade's picture, shard_<grade>.png, 1024 pixels square.
+Writes the sheet shard_grade_art.png. With `images`: each grade's picture, shard_<grade>.png, 1024 pixels square; its
+small picture for 40 points and under, shard_<grade>_small.png, 256 pixels square; and the content check's sheet,
+shard_grade_check.png.
 Workbench only: no GPU turn.
 """
 import math
@@ -49,6 +51,7 @@ BODY = ((-1.0, "#080618"), (-0.3, "#0F0A28"), (0.05, "#1A1340"), (0.36, "#2B2068
         (0.86, "#8472DC"), (1.05, "#A998F5"), (1.3, "#D2C6FF"))
 EDGE = ((0.0, "#5646BE"), (0.5, "#A493F0"), (1.0, "#F5F0FF"))
 RIM, INNER, HALO = "#A26BFF", "#7C68E8", "#8E78F0"
+KEYLINE = "#0B0820"  # the small picture's outer line
 SPECTRUM = ("#58E6FF", "#6F8BFF", "#B06BFF", "#FF70E0", "#FF9CC8", "#9C8CFF", "#58E6FF")  # cool only: no gold, no red
 
 # A grade's charge: how lit it is inside, how lit its lines are, and how far it splits its light.
@@ -190,8 +193,10 @@ def unit(v):
     return v / np.maximum(np.linalg.norm(v, axis=-1, keepdims=True), 1e-6)
 
 
-def picture(s, grade):
-    """The grade's picture: straight colour and cover, its own light spilling a little past its outline."""
+def picture(s, grade, small=False):
+    """The grade's picture: straight colour and cover, its own light spilling a little past its outline. `small` is the
+    picture for 40 points and under (research's fix, 2026-11-15): a body a step paler and a rim wide enough to be a
+    pixel or two at a chip's size, on every face of the outline, so the shape holds on a dark ground."""
     g = GRADES[grade]
     alpha, n, p = s["alpha"], unit(s["normal"]), s["place"]
     facet, bevel = s["kind"][..., 0], s["kind"][..., 1]
@@ -206,7 +211,7 @@ def picture(s, grade):
     # plane, and the whole crystal deepens away from the light.
     across = unit(sun[None, None, :] - lit[..., None] * n)
     px = np.zeros((SIZE, SIZE, 4), dtype=np.float32)
-    px[..., :3] = ramp(0.84 * lit + 0.2 * (p @ sun) / 2.4 + 0.17 * np.sum(p * across, axis=-1) / 1.3 - 0.07, BODY)
+    px[..., :3] = ramp(0.84 * lit + 0.2 * (p @ sun) / 2.4 + 0.17 * np.sum(p * across, axis=-1) / 1.3 - 0.07 + (0.24 if small else 0.0), BODY)
 
     # Inside: the far facets that catch the light, and their cuts, through every face that isn't in full light; then
     # the shard's own light, low in its middle.
@@ -221,8 +226,13 @@ def picture(s, grade):
     # The rim: light from behind, along the outline, strongest on the faces that turn from the eye.
     near = (1 - step(blur(alpha, 9), 0.54, 0.96)) * 0.85 + (1 - step(blur(alpha, 26), 0.56, 0.97)) * 0.15
     turned = near * (0.3 + 0.7 * step(n @ np.array(BEHIND, dtype=np.float32), -0.2, 0.6)) * facet
+    strength = 0.62 + 0.3 * prism
+    if small:
+        near = 1 - step(blur(alpha, 30), 0.5, 0.98)
+        turned = near * (0.65 + 0.35 * step(n @ np.array(BEHIND, dtype=np.float32), -0.2, 0.6)) * alpha
+        strength = 0.95
     rim = c(RIM) * (1 - prism) + spectrum(1.1 * gy + 0.5 * gx + 0.4 * (n @ np.array((0.3, 0.2, 0.9), dtype=np.float32))) * prism
-    light(px, rim, turned * (0.62 + 0.3 * prism))
+    light(px, rim, turned * strength)
 
     # The table: a streak of light across the flat that faces the eye, a wide band and a thin one.
     table = facet * step(facing, 0.9, 0.95)
@@ -245,18 +255,22 @@ def picture(s, grade):
         light(px, WHITE, blur(lines, 1) * g["lines"] * 0.9)
 
     # Past its outline: its own light, a little.
-    halo = np.clip(soft(alpha, 34) * (0.12 + 0.26 * g["charge"]) + soft(lines, 20) * g["lines"] * 0.8, 0, 1) * (1 - alpha)
-    cover = alpha + halo
-    px[..., :3] = (px[..., :3] * alpha[..., None] + c(HALO) * halo[..., None]) / np.maximum(cover, 1e-6)[..., None]
-    px[..., 3] = cover
+    halo = np.clip(soft(alpha, 34) * (0.12 + 0.26 * g["charge"] + (0.14 if small else 0.0)) + soft(lines, 20) * g["lines"] * 0.8, 0, 1) * (1 - alpha)
+    # The small picture also gets a thin dark line outside its rim, as the HUD's marks have, so it holds on a pale ground.
+    key = step(blur(alpha, 16), 0.04, 0.35) * (1 - alpha) * 0.8 if small else np.zeros_like(alpha)
+    glow = halo * (1 - key)
+    cover = alpha + key + glow
+    px[..., :3] = (px[..., :3] * alpha[..., None] + c(KEYLINE) * key[..., None] + c(HALO) * glow[..., None])         / np.maximum(cover, 1e-6)[..., None]
+    px[..., 3] = np.clip(cover, 0, 1)
     return px
 
 
 def pictures(out):
-    made = {}
+    made, small = {}, {}
     for grade in GRADES:
-        made[grade] = picture(Shard(grade).shots(out), grade)
-    return made
+        shots = Shard(grade).shots(out)
+        made[grade], small[grade] = picture(shots, grade), picture(shots, grade, small=True)
+    return made, small
 
 
 # --- the sheet ---------------------------------------------------------------------------------------------------------
@@ -290,7 +304,7 @@ def todays(out):
     return mark, flat
 
 
-def sheet(out, made, mark, flat):
+def sheet(out, made, small, mark, flat):
     ui.K = K = 2
     sh = ui.Sheet(1180, 1010, GROUND)
     t = sh.tile(0, 0, sh.w, sh.h)
@@ -299,7 +313,8 @@ def sheet(out, made, mark, flat):
            "like a small icon\". AR3's own model from the reveal's front, painted: the far facets through it, a rim "
            "from behind, a streak on its table, its own light inside.", SOFT_INK)
     t.text(20, 50, 9.5, "A grade is told by its spires, as on the model, and by its charge. Each is one picture, 1024 "
-           "pixels square, its light spilling a little past its outline.", SOFT_INK)
+           "pixels square, its light spilling a little past its outline. At 40 points and under a second picture is used: "
+           "a stronger rim, a paler body, a thin dark line outside (research's fix).", SOFT_INK)
 
     # Today's, then the three, large.
     y, th = 72.0, 356.0
@@ -326,27 +341,29 @@ def sheet(out, made, mark, flat):
     y = 446.0
     t.text(20, y, 10, "At the sizes it's seen at, on the Breaker's dark and on a dusk street. Left to right in each: Standard, "
            "Enriched, Prismatic; then today's mark at that size.", SOFT_INK)
-    sizes = (("a chamber's window, 96 pt", 96.0), ("a chamber as drawn today, 50 pt", 50.0), ("the bag, 40 pt", 40.0),
-             ("a waiting chip, 26 pt", 26.0))
+    sizes = (("a chamber's window, 96 pt", 96.0, made, True), ("a chamber as drawn today, 50 pt", 50.0, made, True),
+             ("the bag, 40 pt (small)", 40.0, small, True), ("a chip, 26 pt (small)", 26.0, small, True),
+             ("40 pt, before the fix", 40.0, made, False))
     for j, (name, code) in enumerate((("the Breaker's dark", ROOM), ("a dusk street", DUSK))):
         ty = y + 18 + j * 176
         tile = sh.tile(20, ty, 1140, 168)
         tile.paint(tile.poly(ui.cut_box(0, 0, 1140, 168)), c(code))
         ink = INK if j == 0 else "#17141F"
         t.text(28, ty + 6, 9, name, ink)
-        x = 50.0
-        for what, tall in sizes:
+        x = 40.0
+        for what, tall, which, with_mark in sizes:
             wide = tall * 0.78
             x0 = x
-            for px in made.values():
+            for px in which.values():
                 put(sh, at(px, tall), x + wide / 2, ty + 138 - tall / 2)
                 x += wide + (10 if tall > 60 else 8)
-            x += 8
-            size = tall * 1.15  # the mark's box holds its shard at about 0.87 of its height
-            put(sh, rs.shrink(mark, size * K / mark.shape[0]), x + size * 0.4, ty + 138 - tall / 2)
-            x += size * 0.8
+            if with_mark:
+                x += 8
+                size = tall * 1.15  # the mark's box holds its shard at about 0.87 of its height
+                put(sh, rs.shrink(mark, size * K / mark.shape[0]), x + size * 0.4, ty + 138 - tall / 2)
+                x += size * 0.8
             t.text((x0 + x) / 2, ty + 150, 8.5, what, ink, "CENTER")
-            x += 34
+            x += 24
 
     # In a chamber: the window, the name on its plate.
     y = 822.0
@@ -378,14 +395,39 @@ def sheet(out, made, mark, flat):
     rb.finish(sh, out / "shard_grade_art.png")
 
 
+def check(out, made, small):
+    """The content check's sheet: each image as it's written, at its full size and at exactly 64 pixels, on a dark
+    ground (its light past its outline is in its cover, so it shows only over a ground)."""
+    ui.K = 1
+    sh = ui.Sheet(3 * 1040 + 40, 1500, "#0D0A1C")
+    t = sh.tile(0, 0, sh.w, sh.h)
+    t.text(24, 14, 22, "Grow your Anime: the Void Shard grades' images, for the content check before upload (AR12)", INK)
+    t.text(24, 44, 15, "Each grade's picture at its full 1024 pixels and at exactly 64; under it the small picture, for 40 points "
+           "and under, at its full 256 pixels and at exactly 64.", SOFT_INK)
+    for i, grade in enumerate(GRADES):
+        x = 28 + i * 1040
+        t.text(x, 76, 18, f"{grade}: shard_{grade.lower()}.png, shard_{grade.lower()}_small.png", INK)
+        rs.paste(sh.px, made[grade], x, 100)
+        rs.paste(sh.px, rs.shrink(made[grade], 64 / SIZE), x + 40, 1180)
+        little = rs.shrink(small[grade], 0.25)
+        rs.paste(sh.px, little, x + 200, 1150)
+        rs.paste(sh.px, rs.shrink(little, 64 / little.shape[0]), x + 520, 1180)
+        t.text(x + 40, 1260, 13, "64 px", SOFT_INK)
+        t.text(x + 200, 1420, 13, "the small picture, 256 px", SOFT_INK)
+        t.text(x + 520, 1260, 13, "the small picture, 64 px", SOFT_INK)
+    rb.finish(sh, out / "shard_grade_check.png")
+
+
 def main():
     out = bl.out_dir()
-    made = pictures(out)
-    if "images" in sys.argv:
-        for grade, px in made.items():
-            rs.save(px, out / f"shard_{grade.lower()}.png")
+    made, small = pictures(out)
+    if "images" in sys.argv:  # the picture at 1024 pixels, the small one at 256 for 40 points and under, and their check
+        for grade in GRADES:
+            rs.save(made[grade], out / f"shard_{grade.lower()}.png")
+            rs.save(rs.shrink(small[grade], 0.25), out / f"shard_{grade.lower()}_small.png")
+        check(out, made, small)
     mark, flat = todays(out)
-    sheet(out, made, mark, flat)
+    sheet(out, made, small, mark, flat)
 
 
 if __name__ == "__main__":

@@ -5689,6 +5689,16 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       4. The grades' names (Standard, Enriched, Prismatic) are plain words, clear of the list. They need no row.
     - **Fix, at 40 points and under:** the dark body sinks into the dusk street and the Breaker's dark (Standard most). Give the small sizes a stronger rim light and a body a step paler, so the outline holds as today's mark does. At the 26-point chip, use that small-size picture, not today's mark: the spires still tell the grade.
     - **Next:** the fix, then each grade's picture with its own content check before upload.
+  - **The fix and the images (Modulo, 2026-11-15):**
+    - **The fix:** a second picture for 40 points and under. Its body is a step paler, and its rim is wide enough to be a pixel or two at a chip's size, on every face of the outline. One thing added past the verdict's words, Modulo's call: a thin dark line outside the rim, as the HUD's marks have. The paler body alone held on the Breaker's dark but sank into the dusk street's mauve; with the line it holds on both.
+    - **On the sheet:** `build/handoff/UI/shards/shard_grade_art.png`, the size rows. 96 and 50 points use the picture; 40 and 26 use the small one, beside today's mark; the last group is 40 points before the fix.
+    - **Delivered for Faber's upload,** `build/handoff/UI/shards/`, six images in straight colour, each with its light in its cover:
+      - `shard_standard.png`, `shard_enriched.png`, `shard_prismatic.png`: 1024 pixels square, for 50 points and up (a chamber's window at 96).
+      - `shard_standard_small.png`, `shard_enriched_small.png`, `shard_prismatic_small.png`: 256 pixels square, for 40 points and under and the 26-point chip.
+      - Every image holds its shard in the same place and at the same scale, so one swaps for another with no move. The body is 0.72 of the image's height.
+    - **Content check: PASS for upload, all six** (`shard_grade_check.png`: each at full size and at exactly 64 pixels on dark). Prismatic's pink stays magenta-pink on straight facets, with cyan beside it, and nothing is pooled at the foot. The asset log has its row; the ids go in at upload.
+    - **Not done here:** Named and Starter shards (they take Standard's picture until a ruling); motion.
+    - **Four facts:** made; self-reviewed on the sheet's size rows from crops, on both grounds; delivered as six images; research's look at the fix and the director's eye to come. About 10 minutes by the clock (14:51 to 14:56).
 
 ## Later, by ground
 

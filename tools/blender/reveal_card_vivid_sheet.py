@@ -15,6 +15,10 @@ has just set, over the held frame undimmed, so the Voidkin and its frame stay se
 for the game's.
 
     blender -b --factory-startup --python tools/blender/reveal_card_vivid_sheet.py -- build/handoff/UI/hud/colour
+
+With `eclipse` after the folder, the same two sheets in the palette picked since (AR12, "The pick: A, Eclipse",
+palette_compose_sheet.py): the reveal's room is Eclipse, a neutral dark with a pale rim, and a Voidkin kept is silver.
+They're written as eclipse_reveal_card.png and eclipse_reveal_card_offer.png.
 """
 import sys
 from pathlib import Path
@@ -30,7 +34,13 @@ import screens_vivid_sheet as sv  # noqa: E402
 kit, ui, rs, c = h.kit, h.ui, h.rs, h.c
 W, H, K4 = h.W, h.H, h.K4
 STILLS = h.REPO / "build" / "scratch" / "modulo" / "d3r"
-ROOM = dict(h.ROOMS["Void Violet, vivid"], alpha=1.0)  # solid here: the mock is drawn over the built card
+ECLIPSE = "--" in sys.argv and "eclipse" in sys.argv[sys.argv.index("--") + 2:]
+if ECLIPSE:
+    import palette_compose_sheet as pc  # noqa: E402
+    ROOM, KEPT, ROOM_NAME, KEPT_NAME, PREFIX = pc.ECLIPSE, pc.SILVER, "Eclipse", "silver", "eclipse"
+else:
+    ROOM = dict(h.ROOMS["Void Violet, vivid"], alpha=1.0)  # solid here: the mock is drawn over the built card
+    KEPT, ROOM_NAME, KEPT_NAME, PREFIX = h.VOIDKIN, "Void Violet, vivid", "lavender", "vivid3"
 SMALL = sv.SMALL
 STAR = ui.LIGHT  # a star's light: ivory, so it's no rarity's gold
 CARD = (246.0, 100.0, 322.0, 178.0)  # the build's card, measured on the still (2 points over, to cover it)
@@ -39,8 +49,8 @@ PLATE = (113.0, 256.0, 320.0, 84.0)  # the offered place: under the name's line,
 # What the card's fourth line says, by what the shard gave (the build's own words), each in its meaning's colour beside
 # its mark: a Voidkin kept is the Voidkin's lavender, a copy is a star's light, a sale is Credits' teal.
 NOTES = {
-    "New": ("Shard", "In your collection", h.VOIDKIN),
-    "Lead": ("Shard", "Your lead: it fights beside you", h.VOIDKIN),
+    "New": ("Shard", "In your collection", KEPT),
+    "Lead": ("Shard", "Your lead: it fights beside you", KEPT),
     "Copy": ("Star", "One more toward its next star", STAR),
     "Sold": ("CoinMint", "Sold for 120 Credits", h.CREDITS),
 }
@@ -81,7 +91,7 @@ def card(p, world, rarity, outcome):
     st = pv.stage_over(world)
     x, y, w, hh = CARD
     kit.panel(st, x, y, w, hh, p)
-    pv.breath(st, x + 96, y + 52, 150.0, 60.0, h.VOIDKIN, 0.12)  # a breath of the void's light behind the name
+    pv.breath(st, x + 96, y + 52, 150.0, 60.0, KEPT, 0.12)  # a breath of the void's light behind the name
     pv.word(st, x + 20, y + 27.5, SMALL, KINDS[outcome], p["soft"])
     pv.word(st, x + 20, y + 59, 21, "Rook", p["text"])
     line(st, x + 20, y + 90, 13, rarity, p)
@@ -126,7 +136,7 @@ def rarities_strip(p):
 
 def measures(p):
     for ground_name, ground in (("the panel's top", p["panel"][0]), ("its middle", h.mix(*p["panel"], 0.5))):
-        words = (("text", p["text"]), ("soft", p["soft"]), ("faint", p["faint"]), ("the Voidkin's lavender", h.VOIDKIN),
+        words = (("text", p["text"]), ("soft", p["soft"]), ("faint", p["faint"]), (f"the Voidkin's {KEPT_NAME}", KEPT),
                  ("a star's light", STAR), ("Credits", h.CREDITS)) + tuple(sv.WORD.items())
         said = ", ".join(f"{name} {pv.contrast(colour, ground):.1f}" for name, colour in words)
         print(f"contrast on {ground_name} ({ground}): {said}")
@@ -135,9 +145,9 @@ def measures(p):
 CARD_NOTES = (
     "Delivery 3 (the director, 2026-11-15: \"we need to add more colors and appealing to each old full dark ui\"): after the "
     "bays, the reveal. The ceremony is already the reveal's own art; what's still all dark is the card that follows it. "
-    "Here it stands where the build puts it, with the build's five lines, in the reveal's room: Void Violet, vivid.",
+    f"Here it stands where the build puts it, with the build's five lines, in the reveal's room: {ROOM_NAME}.",
     "Words wear their meaning's colour: the rarity's word in its colour beside its pip, type and class soft; the fourth "
-    "line beside its mark, in the Voidkin's lavender when it's kept, a star's ivory light for a copy, Credits' teal for a "
+    f"line beside its mark, in the Voidkin's {KEPT_NAME} when it's kept, a star's ivory light for a copy, Credits' teal for a "
     "sale. The card has no button, so nothing is filled: a tap anywhere goes on.",
     "The take's own card shows no third line (the test's show has no definition's row); a real shard's reads as drawn.",
     "Stand-ins: Blender's face for the game's text; \"120\" on the sale's line; the world behind is the still's own.",
@@ -178,11 +188,11 @@ def main():
     strips_card = (("The fourth line, for each thing a shard can give:", notes_strip(p)),
                    ("Each rarity's word on this room's panel:", rarities_strip(p)))
     kit.IMAGES.clear()
-    pv.sheet(out, "vivid3_reveal_card.png", "Grow your Anime: the card after the reveal, today and in Void Violet vivid. A Common, new",
-             ("Today: Faber's take of the build (TR4), the card in Graphite", "Void Violet, vivid: the same card in the reveal's room"),
+    pv.sheet(out, f"{PREFIX}_reveal_card.png", f"Grow your Anime: the card after the reveal, today and in {ROOM_NAME}. A Common, new",
+             ("Today: Faber's take of the build (TR4), the card in Graphite", f"{ROOM_NAME}: the same card in the reveal's room"),
              h.floats(before_common), shot_card, CARD_NOTES, strips_card)
     h.stage("the card's sheet")
-    pv.sheet(out, "vivid3_reveal_card_offer.png", "Grow your Anime: the card after the reveal, today and an offered place. A Mythical, new",
+    pv.sheet(out, f"{PREFIX}_reveal_card_offer.png", "Grow your Anime: the card after the reveal, today and an offered place. A Mythical, new",
              ("Today: Faber's take of the build (TR4)", "Offered (tier 2, not built): a low plate under the name, the held frame undimmed"),
              h.floats(before_mythical), shot_plate, PLATE_NOTES, ())
     h.stage("the offer's sheet")

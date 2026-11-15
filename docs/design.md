@@ -191,7 +191,7 @@ Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of o
 
 - **The Void Shop** [D]: stock changes every five minutes, the same in every server, with a limit per player. It sells for Credits: shards, stones, emblems. The rare offer is the reason to look up at the clock.
 - **The Void Rift** [D]: a short burst on a schedule, the same everywhere. While it's open, the Breakers of everyone online run many times faster. Speed only, never luck [D].
-- **The Calamity** [D]: a great boss that arrives on a schedule in each server. Everyone who does a minimum share of the damage is rewarded, the top three most [D]. One claim per arrival per account.
+- **The Calamity** [D], after launch (the director, 2026-11-15): a great boss that arrives on a schedule in each server. Everyone who does a minimum share of the damage is rewarded, the top three most [D]. One claim per arrival per account.
 - **The Clash Grounds** (the director's Void Clash [D]): an arena where every player may station one champion. Champions fight each other on their own, all day, in the open, and the players watch. Beating another champion pays the winner's owner: Credits and progress on a daily track [D: rewards when their Voidkin beats another]. A stronger champion beating a far weaker one earns little, and the same pair pays only so often. A beaten champion goes home and can be sent again after a short wait. Echoes, server-run stand-ins, keep the arena busy when few players have a champion out. The server's best champion wears a crown.
 
 ## The Tower

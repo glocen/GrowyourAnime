@@ -85,13 +85,13 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 4. Breadth.** The Void Shop, the Rift. Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
 
-**Phase 5. The Strip.** The Clash Grounds, the Calamity.
+**Phase 5. The Strip.** The Clash Grounds; the Calamity after launch (the director, 2026-11-15).
 
 **Phase 6. Launch.** First the finish pass: `docs/polish-later.md`, "The finish pass", with Fable if its one-effect trial earns it. Then the director's approval of the store (its design is done before phase 4's Voidkin), the game page, a real phone, a soft opening, then public on the director's go.
 
 ## The cut line
 
-**One ground at launch** (the director, 2026-11-13, `docs/decisions.md`): the Festival of Battles opens on Lantern Row alone. Drum Court and grounds 3 to 6, with their Voidkin, are updates after launch. Short on content and roster is fine; what launches is at the bar, and built on a foundation that makes a new ground, Voidkin or effect mostly data and art, fast (`docs/engineering-plan.md`, its own section, Faber's). Research's recommendation for the rest, until phase 2 is judged: launch needs phases 0 to 4 and the Tower. The Clash Grounds and the Calamity launch if they're at the bar, and are the first update if they aren't. A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is a floor, not a cap (the director, 2026-11-12, `docs/decisions.md`). The roster at launch is what Lantern Row's shards hold and is finished: Rook, Kirra, Pip, Watt, Sable, Lyric, Marigold (Epic) and Crane (Legendary); Patch moves to Drum Court (research's call on the director's "Your call", 2026-11-13, `docs/roster.md`). Updates follow soon after launch. A faster launch comes from cutting systems here, not the roster.
+**One ground at launch** (the director, 2026-11-13, `docs/decisions.md`): the Festival of Battles opens on Lantern Row alone. Drum Court and grounds 3 to 6, with their Voidkin, are updates after launch. Short on content and roster is fine; what launches is at the bar, and built on a foundation that makes a new ground, Voidkin or effect mostly data and art, fast (`docs/engineering-plan.md`, its own section, Faber's). Research's recommendation for the rest, until phase 2 is judged: launch needs phases 0 to 4 and the Tower. The Clash Grounds launch if they're at the bar, and are the first update if they aren't. The Calamity comes after launch, in an update (the director, 2026-11-15, `docs/decisions.md`). A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is a floor, not a cap (the director, 2026-11-12, `docs/decisions.md`). The roster at launch is what Lantern Row's shards hold and is finished: Rook, Kirra, Pip, Watt, Sable, Lyric, Marigold (Epic) and Crane (Legendary); Patch moves to Drum Court (research's call on the director's "Your call", 2026-11-13, `docs/roster.md`). Updates follow soon after launch. A faster launch comes from cutting systems here, not the roster.
 
 ## The date
 

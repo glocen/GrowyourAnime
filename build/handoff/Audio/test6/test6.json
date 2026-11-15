@@ -1,0 +1,921 @@
+{
+ "note": "AR13, the sound test: Modulo's layers, made by script (tools/audio/). 48 kHz mono OGG. Every number is measured on the file read back. truePeak in dBTP; loudness is the loudest 0.4 s, K-weighted, in LUFS; toPeakMs is where the envelope tops; headMs is the time before the sound is within 40 dB of its peak; low, mid and high are energy shares split at 250 and 2,500 Hz; above150 is the share a phone can play; centre is the spectrum's middle in Hz. A pair's `alike` is 0 to 1 (colour times shape), `semitones` how far apart the two takes' middles sit.",
+ "layers": [
+  {
+   "cue": "ShadeSwipe",
+   "layer": "ShadeTell",
+   "takes": [
+    {
+     "file": "ShadeTell_1.ogg",
+     "seconds": 0.25,
+     "truePeak": -3.74,
+     "loudness": -18.0,
+     "toPeakMs": 195.6,
+     "headMs": 0.4,
+     "low": 0.0,
+     "mid": 0.089,
+     "high": 0.911,
+     "above150": 1.0,
+     "centre": 4565
+    },
+    {
+     "file": "ShadeTell_2.ogg",
+     "seconds": 0.25,
+     "truePeak": -2.25,
+     "loudness": -18.0,
+     "toPeakMs": 192.4,
+     "headMs": 3.17,
+     "low": 0.0,
+     "mid": 0.015,
+     "high": 0.985,
+     "above150": 1.0,
+     "centre": 5135
+    },
+    {
+     "file": "ShadeTell_3.ogg",
+     "seconds": 0.25,
+     "truePeak": -1.97,
+     "loudness": -18.0,
+     "toPeakMs": 187.1,
+     "headMs": 0.81,
+     "low": 0.0,
+     "mid": 0.043,
+     "high": 0.957,
+     "above150": 1.0,
+     "centre": 5096
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.843,
+     "semitones": -2.04
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.84,
+     "semitones": -1.9
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.751,
+     "semitones": 0.13
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 90% of its energy above 150 Hz",
+   "made": "noise through a band-pass climbing from about 1.9 to 5.2 kHz, a thinner band a fifth over it, a 27 to 38 Hz flutter",
+   "use": "under the library's paper rustle, from the wind-up; it ends on the hit. Faint: about 0.35 of the swipe's volume (DESIGN, for the ear)"
+  },
+  {
+   "cue": "ShadeSwipe",
+   "layer": "ShadeSwipe",
+   "takes": [
+    {
+     "file": "ShadeSwipe_1.ogg",
+     "seconds": 0.32,
+     "truePeak": -1.83,
+     "loudness": -16.8,
+     "toPeakMs": 207.0,
+     "headMs": 1.71,
+     "low": 0.0,
+     "mid": 0.847,
+     "high": 0.153,
+     "above150": 1.0,
+     "centre": 2149
+    },
+    {
+     "file": "ShadeSwipe_2.ogg",
+     "seconds": 0.32,
+     "truePeak": -1.48,
+     "loudness": -16.7,
+     "toPeakMs": 169.0,
+     "headMs": 2.31,
+     "low": 0.0,
+     "mid": 0.946,
+     "high": 0.054,
+     "above150": 1.0,
+     "centre": 1934
+    },
+    {
+     "file": "ShadeSwipe_3.ogg",
+     "seconds": 0.32,
+     "truePeak": -2.49,
+     "loudness": -16.8,
+     "toPeakMs": 224.1,
+     "headMs": 0.79,
+     "low": 0.0,
+     "mid": 0.669,
+     "high": 0.331,
+     "above150": 1.0,
+     "centre": 2507
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.874,
+     "semitones": 1.82
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.923,
+     "semitones": -2.67
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.817,
+     "semitones": -4.49
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 90% of its energy above 150 Hz",
+   "made": "noise through a band-pass sweeping 600 to 2,500 Hz in 0.25 s, a dry edge of noise over 4.2 kHz",
+   "use": "its top on the hit frame: start it `peakAtMs` before the hit. Quieter than the lead's hits",
+   "peakAtMs": [
+    207.0,
+    169.0,
+    224.1
+   ]
+  },
+  {
+   "cue": "ShadeHurt",
+   "layer": "ShadeHurtSpark",
+   "takes": [
+    {
+     "file": "ShadeHurtSpark_1.ogg",
+     "seconds": 0.07,
+     "truePeak": -2.08,
+     "loudness": -27.8,
+     "toPeakMs": 1.5,
+     "headMs": 0.12,
+     "low": 0.0,
+     "mid": 0.001,
+     "high": 0.999,
+     "above150": 1.0,
+     "centre": 2848
+    },
+    {
+     "file": "ShadeHurtSpark_2.ogg",
+     "seconds": 0.06,
+     "truePeak": -1.71,
+     "loudness": -27.8,
+     "toPeakMs": 1.5,
+     "headMs": 0.04,
+     "low": 0.0,
+     "mid": 0.0,
+     "high": 1.0,
+     "above150": 1.0,
+     "centre": 3177
+    },
+    {
+     "file": "ShadeHurtSpark_3.ogg",
+     "seconds": 0.075,
+     "truePeak": -4.82,
+     "loudness": -27.8,
+     "toPeakMs": 1.5,
+     "headMs": 0.02,
+     "low": 0.0,
+     "mid": 0.847,
+     "high": 0.153,
+     "above150": 1.0,
+     "centre": 2607
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.795,
+     "semitones": -1.89
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.663,
+     "semitones": 1.53
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.227,
+     "semitones": 3.43
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 95% of its energy above 150 Hz",
+   "made": "a 3 to 10 kHz click a few milliseconds long, and three ringing partials from 2.4 to 5.1 kHz",
+   "use": "with the library's paper crumple, on the Shade's hurt"
+  },
+  {
+   "cue": "ShadeBurst",
+   "layer": "ShadeBurstShimmer",
+   "takes": [
+    {
+     "file": "ShadeBurstShimmer_1.ogg",
+     "seconds": 0.7,
+     "truePeak": -2.26,
+     "loudness": -15.7,
+     "toPeakMs": 21.0,
+     "headMs": 1.98,
+     "low": 0.0,
+     "mid": 0.763,
+     "high": 0.237,
+     "above150": 1.0,
+     "centre": 1852
+    },
+    {
+     "file": "ShadeBurstShimmer_2.ogg",
+     "seconds": 0.6,
+     "truePeak": -1.64,
+     "loudness": -15.7,
+     "toPeakMs": 48.0,
+     "headMs": 2.04,
+     "low": 0.0,
+     "mid": 0.632,
+     "high": 0.368,
+     "above150": 1.0,
+     "centre": 2105
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.238,
+     "semitones": -2.22
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 95% of its energy above 150 Hz",
+   "key": "A",
+   "made": "A and E in pairs 4 to 9 cents apart, from 880 Hz up, staggered 12 to 18 ms, with air from 6 to 11 kHz",
+   "use": "the burst's tail, started with the pop. The seed key for every reward sound until music sets it"
+  },
+  {
+   "cue": "ShadeBurst",
+   "layer": "ShadeBurstTicks",
+   "takes": [
+    {
+     "file": "ShadeBurstTicks_1.ogg",
+     "seconds": 0.31,
+     "truePeak": -2.07,
+     "loudness": -22.6,
+     "toPeakMs": 1.6,
+     "headMs": 0.0,
+     "low": 0.0,
+     "mid": 0.0,
+     "high": 1.0,
+     "above150": 1.0,
+     "centre": 5339
+    },
+    {
+     "file": "ShadeBurstTicks_2.ogg",
+     "seconds": 0.31,
+     "truePeak": -1.37,
+     "loudness": -22.6,
+     "toPeakMs": 1.3,
+     "headMs": 0.0,
+     "low": 0.0,
+     "mid": 0.026,
+     "high": 0.974,
+     "above150": 1.0,
+     "centre": 4191
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.283,
+     "semitones": 4.19
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 95% of its energy above 150 Hz",
+   "key": "A",
+   "made": "five or six sparks of 30 ms on A and E, scattered over 0.28 s, thinning",
+   "use": "over the burst's first 0.3 s, with the library's flutter"
+  },
+  {
+   "cue": "LightHit",
+   "layer": "LightHitSpark",
+   "takes": [
+    {
+     "file": "LightHitSpark_1.ogg",
+     "seconds": 0.1,
+     "truePeak": -1.7,
+     "loudness": -27.5,
+     "toPeakMs": 1.3,
+     "headMs": 0.02,
+     "low": 0.0,
+     "mid": 1.0,
+     "high": 0.0,
+     "above150": 1.0,
+     "centre": 1392
+    },
+    {
+     "file": "LightHitSpark_2.ogg",
+     "seconds": 0.11,
+     "truePeak": -3.8,
+     "loudness": -27.4,
+     "toPeakMs": 1.3,
+     "headMs": 0.08,
+     "low": 0.0,
+     "mid": 1.0,
+     "high": 0.0,
+     "above150": 1.0,
+     "centre": 1230
+    },
+    {
+     "file": "LightHitSpark_3.ogg",
+     "seconds": 0.095,
+     "truePeak": -1.92,
+     "loudness": -27.4,
+     "toPeakMs": 1.5,
+     "headMs": 0.17,
+     "low": 0.0,
+     "mid": 0.992,
+     "high": 0.008,
+     "above150": 1.0,
+     "centre": 1517
+    },
+    {
+     "file": "LightHitSpark_4.ogg",
+     "seconds": 0.105,
+     "truePeak": -2.54,
+     "loudness": -27.3,
+     "toPeakMs": 1.6,
+     "headMs": 0.02,
+     "low": 0.0,
+     "mid": 1.0,
+     "high": 0.0,
+     "above150": 1.0,
+     "centre": 1297
+    },
+    {
+     "file": "LightHitSpark_5.ogg",
+     "seconds": 0.1,
+     "truePeak": -2.22,
+     "loudness": -27.4,
+     "toPeakMs": 1.8,
+     "headMs": 0.02,
+     "low": 0.0,
+     "mid": 0.991,
+     "high": 0.009,
+     "above150": 1.0,
+     "centre": 1464
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.739,
+     "semitones": 2.13
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.775,
+     "semitones": -1.5
+    },
+    {
+     "takes": [
+      1,
+      4
+     ],
+     "alike": 0.811,
+     "semitones": 1.22
+    },
+    {
+     "takes": [
+      1,
+      5
+     ],
+     "alike": 0.708,
+     "semitones": -0.88
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.314,
+     "semitones": -3.63
+    },
+    {
+     "takes": [
+      2,
+      4
+     ],
+     "alike": 0.917,
+     "semitones": -0.92
+    },
+    {
+     "takes": [
+      2,
+      5
+     ],
+     "alike": 0.431,
+     "semitones": -3.01
+    },
+    {
+     "takes": [
+      3,
+      4
+     ],
+     "alike": 0.346,
+     "semitones": 2.72
+    },
+    {
+     "takes": [
+      3,
+      5
+     ],
+     "alike": 0.916,
+     "semitones": 0.62
+    },
+    {
+     "takes": [
+      4,
+      5
+     ],
+     "alike": 0.461,
+     "semitones": -2.1
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 95% of its energy above 150 Hz",
+   "made": "a 1.5 to 6 kHz click, and three ringing partials from 1.2 to 2.7 kHz",
+   "use": "with the library's snap and mid body, on the lead's basic attacks"
+  },
+  {
+   "cue": "HeavyHit",
+   "layer": "HeavyRiser",
+   "takes": [
+    {
+     "file": "HeavyRiser_1.ogg",
+     "seconds": 0.18,
+     "truePeak": -2.62,
+     "loudness": -20.9,
+     "toPeakMs": 172.0,
+     "headMs": 0.42,
+     "low": 0.017,
+     "mid": 0.92,
+     "high": 0.064,
+     "above150": 1.0,
+     "centre": 1009
+    },
+    {
+     "file": "HeavyRiser_2.ogg",
+     "seconds": 0.15,
+     "truePeak": -2.36,
+     "loudness": -20.8,
+     "toPeakMs": 141.5,
+     "headMs": 0.54,
+     "low": 0.008,
+     "mid": 0.917,
+     "high": 0.075,
+     "above150": 1.0,
+     "centre": 991
+    },
+    {
+     "file": "HeavyRiser_3.ogg",
+     "seconds": 0.2,
+     "truePeak": -1.72,
+     "loudness": -20.9,
+     "toPeakMs": 190.2,
+     "headMs": 0.67,
+     "low": 0.042,
+     "mid": 0.908,
+     "high": 0.05,
+     "above150": 1.0,
+     "centre": 909
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.898,
+     "semitones": 0.31
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.894,
+     "semitones": 1.8
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.873,
+     "semitones": 1.5
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 90% of its energy above 150 Hz",
+   "made": "noise through a band-pass climbing from 320 Hz to 3.2 kHz, and a tone climbing two octaves under it",
+   "use": "before the hit, ending on its frame: start it its own length early. Or leave 100 to 200 ms of near-silence instead, for the ear to choose"
+  },
+  {
+   "cue": "HeavyHit",
+   "layer": "HeavySub",
+   "takes": [
+    {
+     "file": "HeavySub_1.ogg",
+     "seconds": 0.42,
+     "truePeak": -1.64,
+     "loudness": -20.5,
+     "toPeakMs": 7.0,
+     "headMs": 0.42,
+     "low": 0.986,
+     "mid": 0.014,
+     "high": 0.0,
+     "above150": 0.568,
+     "centre": 145
+    },
+    {
+     "file": "HeavySub_2.ogg",
+     "seconds": 0.36,
+     "truePeak": -1.44,
+     "loudness": -20.5,
+     "toPeakMs": 6.5,
+     "headMs": 0.42,
+     "low": 0.965,
+     "mid": 0.035,
+     "high": 0.0,
+     "above150": 0.627,
+     "centre": 162
+    },
+    {
+     "file": "HeavySub_3.ogg",
+     "seconds": 0.48,
+     "truePeak": -2.09,
+     "loudness": -20.5,
+     "toPeakMs": 7.5,
+     "headMs": 0.38,
+     "low": 0.991,
+     "mid": 0.009,
+     "high": 0.0,
+     "above150": 0.501,
+     "centre": 126
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.93,
+     "semitones": -1.94
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.947,
+     "semitones": 2.46
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.864,
+     "semitones": 4.4
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 50% of its energy above 115 Hz",
+   "made": "a sine falling from about 104 to 60 Hz in 0.12 s, driven off-centre, its 115 to 260 Hz band lifted",
+   "use": "on the hit frame, under the library's heavy body",
+   "harmonics": [
+    0.635,
+    0.672,
+    0.532
+   ]
+  },
+  {
+   "cue": "HeavyHit",
+   "layer": "HeavyImpacts",
+   "takes": [
+    {
+     "file": "HeavyImpacts_1.ogg",
+     "seconds": 0.205,
+     "truePeak": -3.03,
+     "loudness": -25.4,
+     "toPeakMs": 1.8,
+     "headMs": 0.12,
+     "low": 0.538,
+     "mid": 0.445,
+     "high": 0.017,
+     "above150": 0.965,
+     "centre": 496
+    },
+    {
+     "file": "HeavyImpacts_2.ogg",
+     "seconds": 0.183,
+     "truePeak": -3.58,
+     "loudness": -25.4,
+     "toPeakMs": 3.1,
+     "headMs": 0.19,
+     "low": 0.205,
+     "mid": 0.788,
+     "high": 0.007,
+     "above150": 0.985,
+     "centre": 444
+    },
+    {
+     "file": "HeavyImpacts_3.ogg",
+     "seconds": 0.251,
+     "truePeak": -1.53,
+     "loudness": -25.4,
+     "toPeakMs": 1.7,
+     "headMs": 0.08,
+     "low": 0.682,
+     "mid": 0.307,
+     "high": 0.011,
+     "above150": 0.941,
+     "centre": 430
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.422,
+     "semitones": 1.91
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.521,
+     "semitones": 2.48
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.502,
+     "semitones": 0.57
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 60% of its energy above 150 Hz",
+   "made": "three to five 50 ms knocks (a tone falling from near 310 Hz and noise from 250 to 1,400 Hz), each softer",
+   "use": "on the hit frame: the cluster that makes one hit read as heavy"
+  },
+  {
+   "cue": "HeavyHit",
+   "layer": "HeavyTail",
+   "takes": [
+    {
+     "file": "HeavyTail_1.ogg",
+     "seconds": 0.7,
+     "truePeak": -4.4,
+     "loudness": -20.9,
+     "toPeakMs": 17.7,
+     "headMs": 0.48,
+     "low": 0.028,
+     "mid": 0.965,
+     "high": 0.007,
+     "above150": 0.999,
+     "centre": 850
+    },
+    {
+     "file": "HeavyTail_2.ogg",
+     "seconds": 0.7,
+     "truePeak": -1.41,
+     "loudness": -20.9,
+     "toPeakMs": 30.8,
+     "headMs": 0.52,
+     "low": 0.014,
+     "mid": 0.98,
+     "high": 0.007,
+     "above150": 0.998,
+     "centre": 856
+    },
+    {
+     "file": "HeavyTail_3.ogg",
+     "seconds": 0.7,
+     "truePeak": -5.81,
+     "loudness": -21.0,
+     "toPeakMs": 23.0,
+     "headMs": 0.44,
+     "low": 0.029,
+     "mid": 0.966,
+     "high": 0.005,
+     "above150": 0.999,
+     "centre": 785
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.888,
+     "semitones": -0.12
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.923,
+     "semitones": 1.38
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.845,
+     "semitones": 1.5
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 85% of its energy above 150 Hz",
+   "made": "noise through a wide band-pass closing from 1.3 kHz to 240 Hz, kept under 1.6 kHz, with a slow roll",
+   "use": "from the hit frame; its volume by the hit's strength (DESIGN: nothing at a light hit, full at the heaviest)"
+  },
+  {
+   "cue": "Critical",
+   "layer": "CritShing",
+   "takes": [
+    {
+     "file": "CritShing_1.ogg",
+     "seconds": 0.26,
+     "truePeak": -2.22,
+     "loudness": -16.7,
+     "toPeakMs": 20.2,
+     "headMs": 0.1,
+     "low": 0.0,
+     "mid": 0.001,
+     "high": 0.999,
+     "above150": 1.0,
+     "centre": 4557
+    },
+    {
+     "file": "CritShing_2.ogg",
+     "seconds": 0.28,
+     "truePeak": -1.87,
+     "loudness": -16.6,
+     "toPeakMs": 15.3,
+     "headMs": 0.17,
+     "low": 0.0,
+     "mid": 0.001,
+     "high": 0.999,
+     "above150": 1.0,
+     "centre": 4272
+    },
+    {
+     "file": "CritShing_3.ogg",
+     "seconds": 0.24,
+     "truePeak": -1.54,
+     "loudness": -16.7,
+     "toPeakMs": 2.5,
+     "headMs": 0.0,
+     "low": 0.0,
+     "mid": 0.004,
+     "high": 0.996,
+     "above150": 1.0,
+     "centre": 4935
+    }
+   ],
+   "pairs": [
+    {
+     "takes": [
+      1,
+      2
+     ],
+     "alike": 0.41,
+     "semitones": 1.12
+    },
+    {
+     "takes": [
+      1,
+      3
+     ],
+     "alike": 0.541,
+     "semitones": -1.38
+    },
+    {
+     "takes": [
+      2,
+      3
+     ],
+     "alike": 0.0,
+     "semitones": -2.5
+    }
+   ],
+   "checks": {
+    "truePeak": true,
+    "head": true,
+    "takesDiffer": true,
+    "weight": true
+   },
+   "weightCheck": "at least 95% of its energy above 150 Hz",
+   "made": "two FM carriers from 3.9 to 6 kHz with modulators at ratios near 1.41 and 0.7, the bend dying in 90 ms, kept between 2.8 and 7.5 kHz",
+   "use": "over the hit's own layers on a critical: it adds the top. The cue's loudness stays the hit's"
+  }
+ ]
+}

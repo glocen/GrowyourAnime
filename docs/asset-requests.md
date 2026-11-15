@@ -5835,6 +5835,38 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
 **Waits:** the steps, the world's beds, rewards and the UI (pass 1's other cues), and music.
 **Four facts:** brief written. Nothing made, tested or heard yet.
 
+**Modulo's layers, delivered (Modulo, 2026-11-15).** Eleven layers, 33 takes, in `build/handoff/Audio/test6/`, each a 48 kHz mono OGG made from nothing by its own script in `tools/audio/` (numpy, scipy, pedalboard and pyloudnorm only; no sample is read in). `py tools/audio/test6.py` writes them all again, the same every time.
+- **The numbers:** `test6_numbers.md` to read and `test6.json` for the build, every take measured on its file read back; `test6_layers.png` shows each layer's first take as a wave over its spectrum.
+- **The four checks pass on all 33:** true peak from -5.8 to -1.4 dBTP; the head's silence at most 3.2 ms; no two takes of a layer alike (the closest pair is the sub's, 0.95 of 1, 2.5 semitones apart); weight above 150 Hz, the sub's check apart (below).
+- **The layers, by cue:**
+
+| Cue | Layer, takes | Length, s | Top at, ms | Where its energy is | What it is |
+|---|---|---|---|---|---|
+| 1 | `ShadeTell`, 3 | 0.25 | 187 to 196 | 91 to 99% over 2.5 kHz | noise through a narrow band climbing from 1.9 to about 5.2 kHz, a thinner band a fifth over it, a flutter |
+| 1 | `ShadeSwipe`, 3 | 0.32 | 169, 207, 224 | 67 to 95% from 250 Hz to 2.5 kHz | noise through a band sweeping 600 to 2,500 Hz in 0.25 s, a dry edge over 4.2 kHz |
+| 2 | `ShadeHurtSpark`, 3 | 0.06 to 0.075 | 1.5 | its ring from 2.4 to 5.1 kHz | a click and three ringing partials |
+| 3 | `ShadeBurstShimmer`, 2 | 0.6, 0.7 | 21, 48 | 63 to 76% mid, the rest high | A and E only, in pairs a few cents apart, from 880 Hz up, with air on top |
+| 3 | `ShadeBurstTicks`, 2 | 0.31 | 1.5 | 97 to 100% high | five and six 30 ms sparks on A and E over 0.28 s, thinning |
+| 4 | `LightHitSpark`, 5 | 0.095 to 0.11 | 1.3 to 1.8 | 99% mid, its ring from 1.2 to 2.7 kHz | the hurt's spark an octave lower |
+| 5 | `HeavyRiser`, 3 | 0.15, 0.18, 0.2 | at its end | 91% mid | noise and a tone climbing into the hit, cut off on it |
+| 5 | `HeavySub`, 3 | 0.36 to 0.48 | 7 | 53 to 67% from 120 to 250 Hz | a sine falling to about 60 Hz, driven so its harmonics hold through the decay |
+| 5 | `HeavyImpacts`, 3 | 0.18 to 0.25 | 2 to 3 | 94 to 99% over 150 Hz | three, four and five 50 ms knocks, each softer |
+| 5 | `HeavyTail`, 3 | 0.7 | 18 to 31 | 97% mid, its middle near 830 Hz | dark air closing from 1.3 kHz to 240 Hz |
+| 6 | `CritShing`, 3 | 0.24 to 0.28 | 3 to 20 | all over 2.8 kHz, its middle at 4.3 to 4.9 kHz | two FM carriers with modulators at ratios that aren't whole numbers |
+
+- **For Faber:**
+  - **The swipe's top is the hit:** start each `ShadeSwipe` take its own `peakAtMs` (in the json) before the hit frame. The tell tops about 0.19 s in and ends at 0.25 s: start it 0.2 s before the hit.
+  - **The riser ends on the hit:** start it its own length before the hit frame. The near-silence the brief offers instead needs no file; both are there for the ear.
+  - **The tail** is one length. Its volume follows the hit's strength (DESIGN: none at a light hit, full at the heaviest).
+  - **Levels:** inside a layer the takes are matched in loudness, so the runtime's 0.85 to 1 is the only spread. Between layers nothing is mixed: every layer is written near full scale, and the cue's balance is set by ear in the game. Seeds (DESIGN, unheard): the tell at about a third of the swipe; the shing under the hit's own layers.
+- **Calls of mine inside the brief (tier 1):**
+  - The sub's weight check is the share from 120 to 250 Hz, the band the brief names, not the share over 150 Hz: its harmonics at 112 to 128 Hz are part of the weight. Over 150 Hz alone it holds 50 to 63%.
+  - The shimmer and the ticks use A and E only, the open fifth, so the seed key is neither major nor minor until music sets it.
+  - The hurt's third take rings from 2.4 kHz, so the tool's bands (split at 2.5 kHz) call it mid where the other two are high. It's inside the brief's 2 to 5 kHz.
+- **What the numbers can't say:** whether any of it sounds good, or like stock. Loudness is the loudest 0.4 s, so the ticks under 0.1 s read low (-27 LUFS) against the long layers (-16 to -21): compare loudness inside a layer only. "Alike" is my own measure (the takes' third-octave colours times their envelopes), not a standard one.
+- **Content check:** clean on rules 2, 3 and 4 by the scripts, the numbers and the picture (2026-11-15): only seeded noise and sines, the four approved packages, nothing read in, no work named, plain file names. Its answer is ASK DIRECTOR, because the handbook's pre-upload step 7 leaves the listening to the director and nobody else can hear them: **the upload waits on the director playing the 33 files** from the folder (under 10 seconds in all), or saying they go up unheard. Its conditions: upload exactly what `py tools/audio/test6.py` writes with "every check passes"; plain titles, the file names. It notes pedalboard is GPLv3 and only encodes the OGG here, research's account in `docs/research/sound.md`.
+- **Four facts:** made (11 layers, 33 takes, by script). Self-reviewed by their numbers and their picture, never by ear. Delivered to Faber for the cues; the upload waits on the director's listening. Not heard, not accepted: the director's ear in a fight decides.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

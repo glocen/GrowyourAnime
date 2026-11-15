@@ -6731,7 +6731,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1) and a bay (section 2) are delivered, 2026-11-15, 22:12 (Modulo), for Faber's install and research's verdict in the game. Next, the showcase's plinth (TR22), then the reveal's card in Eclipse and the generator.
+**Status:** the Breaker's model (section 1), a bay (section 2) and the generator (section 3) are delivered, 2026-11-15, 22:23 (Modulo), for Faber's install and research's verdict in the game. Next, the battery as a bank, then the Training machine and the Festival Door.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -6787,6 +6787,28 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **How it's made:** `tools/blender/base_machines.py` (`ring`, `bay`, `bay_halo`); `base_plan.py` (`BAY_LOTS`, `machines` with a turn, the views `bay` and `bays`).
 - **Checks:** the maker's own, above. The content check on the two meshes and the looks: **PASS, for delivery and for the upload of the two meshes, with four conditions.** It read both meshes against their source, the atlas, the three looks and the plan's entries; no 64 pixel sheet was given, so it judged the small look from the Strip's and the spawn's views. The ring reads as a machine's collector ring, clamped, stayed and fed; lit, it also reads as a nimbus behind the head, which crosses no line. Nothing touches or closes on the worker: a platform with a backdrop, not a cage. The conditions: (1) Mythical's red (`#FF2848`) goes on `BayHalo` only, as a lit line and a soft light, never the frame's dark crimson as a matte face, never a filled red face or decal on the deck, nothing that drips, pools or stains; it's looked at once in the game from the spawn and the Strip, and if the red light leaves a red patch on the deck under the worker it's lowered, lifted toward `#FF8794`, or dropped for Mythical with the lines kept; (2) the bay stays open and hands-off: no bar, strap, beam or arc that touches or closes on the worker, and the working effect shows the worker making the power, never the machine striking the figure; (3) the working clip and its effect get their own check, and avoid a held, still, arms-out pose seen square against the ring and the frame; (4) the asset log's row before the upload: done. The kit's earlier holds stand.
 - **Time:** by the clock, 22:08 to 22:12: the pieces, one fast look of three views, the export, three final renders, the content check.
+- **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+
+### 3. The generator (Modulo, 2026-11-15, 22:19 to 22:23 by the clock)
+
+- **Feel line:** left of the Breaker a dynamo turns in the open, its rotor's yellow bars streaking faster as the plant makes more, and its meter climbs on the face the owner sees from the spawn: the machine that says this base makes power.
+- **Scope.** The block: the machine and its rotor, on the kit's atlas, at level 1. Waiting: a picture of its own; the meter's bars as separate lights that follow generation and demand (today they're one drawn meter, and Faber's plate above says the numbers); a larger body, which needs a larger stand-in; levels 2 and 3's looks.
+- **What it is, two pieces** (`tools/blender/base_machines.py`):
+  - **`Generator`:** on the stand-in's footprint, 6 studs by 5: a steel housing on a concrete plinth with a hazard band, a meter of four rising yellow bars in a dark window on both long faces, two bone end bells on girder saddles, and over them a girder yoke with a yellow line each side and three ribbed bushings, to 8.55 studs. Both long faces are fronts: the spawn sees one, the Strip the other.
+  - **`GeneratorRotor`:** the rotor, a piece by itself, its origin on its axle: a copper winding between two bone rims, six bars of the current's yellow along it. It stands open to view between the end bells.
+- **Its working state is motion:** the rotor turns about its own X, faster as the plant generates more, still when it makes nothing. Its yellow follows the piece's own strength.
+- **For Faber:**
+  - **To publish:** `meshes/Generator.json` and `meshes/GeneratorRotor.json` (750 and 176 triangles), on `Base_Kit_Color` and `Base_Kit_Glow`, already up.
+  - **Where:** `plan.json`, `machines`: `Generator` on the stand-in, `GeneratorRotor` at the same place, `up` 5.3, its axle along the plot's across. It turns clear of everything: 1.75 at its widest, 3.5 long.
+  - **The turning:** a CFrame spun about the rotor's own X each frame on the client is enough; nothing collides with it. Untried in Studio.
+  - **Your plate** (`GENERATOR_UP`, 9 over the marker) clears the bushings' tips, at 8.55.
+  - **Collision:** the stand-in's box, 6 by 5 and 8 high, so nobody stands in the rotor.
+- **For research:** the verdict in the game, from the spawn. Your call: the design's line names the generator "the plant's heart", and on the stand-in's footprint it stands smaller than the Breaker beside it; a larger generator is a larger stand-in, Faber's and yours.
+- **The target:** `build/handoff/Base/base_1_generator.png` (close, from the court) and `base_1_home.png` (the spawn's camera). The maker's look in Blender; not a sheet and not a verdict.
+- **Seen, the maker's eye and not a verdict** (one fast look, no fix round): it reads as a dynamo at a glance, and its meter and the rotor's bars read from the spawn. Still, in a picture, the rotor's turning is only promised.
+- **How it's made:** `tools/blender/base_machines.py` (`laid`, `generator`, `generator_rotor`); `base_plan.py` (`machines`, the view `generator`).
+- **Checks:** the maker's own, above. The content check on the two meshes and the looks: **PASS, for delivery and for the upload of the two meshes, with five conditions.** It read both meshes against their source, the atlas and the two looks; no 64 pixel sheet was given, so it judged the small look from the spawn's view. A generic dynamo in the kit's own language, with a plain level meter; nothing red, nothing that drips or stains, no symbol, no weapon reading. The conditions: (1) the asset log's row before the upload: done; (2) the rotor stays look only: no collision, touch, damage, knockback or pull, and the generator's collision box stays at least the manifest's, so no character, Voidkin or worker ever stands in or against the turning rotor, and any staging of a figure on or in the machine gets its own check; (3) the colours stay the atlas's: the winding and the bars are never tinted red or coral, and a meter that shows demand over generation does it by its light's strength or the atlas's yellow, or the new colour is checked; (4) any effect added later (the spin's streak, an overload, an upgrade) is light, sparks or streaks, with no drop, spray or stain shape in any colour; (5) the kit's earlier holds stand, and the meter stays wordless: text or numbers on its face are a new check.
+- **Time:** by the clock, 22:19 to 22:23: the pieces, one fast look of two views, the export, two final renders, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
 
 ## Later, by ground

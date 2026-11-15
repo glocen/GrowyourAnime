@@ -1028,6 +1028,22 @@
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 2's light, while a worker works there"
+   },
+   {
+    "piece": "Generator",
+    "across": -17.0,
+    "along": -12.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the generator"
+   },
+   {
+    "piece": "GeneratorRotor",
+    "across": -17.0,
+    "along": -12.0,
+    "up": 5.3,
+    "turn": 0.0,
+    "standsFor": "the generator's rotor, turning about its own X"
    }
   ]
  },

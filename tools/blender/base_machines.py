@@ -13,9 +13,14 @@ base has, so each can be lit by itself: bright while it breaks a shard, low when
 An extraction bay (`Bay`, `BayHalo`): a steel deck with a copper collector ring stood behind the worker. The bay's
 own light is a piece by itself, in one pale swatch, so the builder gives it the worker's rarity colour (TR22).
 
+The generator (`Generator`, `GeneratorRotor`): a dynamo on a steel housing, its rotor open to view between two end
+bells under a yoke of three bushings. The rotor is its own piece, its origin on its axle, so the builder turns it:
+faster as the plant generates more.
+
 Not run by itself: base_kit.py takes PIECES into its own.
 """
 
+import math
 import sys
 from pathlib import Path
 
@@ -32,6 +37,8 @@ CHAMBERS = (3.5, 7.0, 4.0)       # a chamber's middle: across (each side), up; a
 GAP = (5.85, 8.35)               # the shard's room in a chamber, between the two points: from, to (up from the floor)
 BAY = (10.0, 0.4)                # a bay's stand-in, its pad: its side and its height
 HALO = (4.9, 2.0, 2.6)           # a bay's collector ring: its middle up from the floor, its inner and outer radius
+PLANT = (6.0, 5.0, 8.0)          # the generator's stand-in: across, deep, high
+AXLE = 5.3                       # the generator's rotor: its axle, up from the floor, along X
 
 
 def post(m, x, y, z0, z1, t, sw, ink=False):
@@ -199,5 +206,66 @@ def bay_halo():
                       "plot's lights weigh. Look only")
 
 
+def laid(m, turned, z):
+    """A shape turned about Z, laid along X: its heights become its places across, its axle `z` up."""
+    for face, uv in zip(turned.f, turned.uv):
+        m.face([(turned.v[i][2], turned.v[i][1], z - turned.v[i][0]) for i in face], uv)
+
+
+def generator():
+    """The generator: on the stand-in's footprint, 6 studs by 5, a steel housing with the plant's meter on both its
+    faces, two bone end bells on girder saddles holding the rotor open to view between them, and over it a yoke with
+    three bushings, to 8.5 studs. Both long faces are fronts: the spawn sees one, the Strip the other."""
+    m = Mesh()
+    wide, deep, _ = PLANT
+    m.box((wide + 0.4, deep + 0.4, 0.5), (0, 0, 0.25), "concrete", ink=True)
+    m.box((wide + 0.2, deep + 0.2, 0.4), (0, 0, 0.7), "yellow", pics={k: "hazard" for k in ROUND})
+    m.box((wide, deep, 2.4), (0, 0, 2.1), "steel", pics={"+y": "panel", "-y": "panel"}, ink=True)
+    m.box((wide + 0.3, deep + 0.3, 0.3), (0, 0, 3.35), "bone", ink=True)
+    for sy in (-1, 1):
+        y = sy * (deep / 2 + 0.03)
+        m.box((2.6, 0.14, 1.2), (0, y, 2.2), "dark")                                  # the meter's window
+        for k, tall in enumerate((0.35, 0.55, 0.75, 0.95)):                           # and its bars, rising
+            m.box((0.32, 0.18, tall), (-0.84 + 0.56 * k, y + sy * 0.02, 1.72 + tall / 2), "power")
+        for sx in (-1, 1):
+            m.box((0.2, 0.14, 1.5), (sx * 2.4, y, 2.0), "power")                      # the current, down to the floor's lines
+    bells = Mesh(None)
+    for sx in (-1, 1):
+        m.box((0.9, 3.6, 1.0), (sx * 2.2, 0, 4.0), "girder", ink=True)                # a saddle
+        bells.lathe([(1.6, sx * 2.2 + 0.45), (1.6, sx * 2.2 - 0.45)], (0, 0, 0), 10, "bone")
+        bells.lathe([(0.5, sx * 2.2 + sx * 0.6 + 0.15), (0.5, sx * 2.2 + sx * 0.6 - 0.15)], (0, 0, 0), 6, "power")   # the axle's eye
+        post(m, sx * 2.2, 0, AXLE + 1.5, 7.35, 0.5, "girder")                         # the yoke's post
+        m.tube([(sx * 2.85, 0, 7.4), (sx * 3.05, 1.6, 3.5)], 0.1, "rubber")
+        m.tube([(sx * 2.85, 0, 7.4), (sx * 3.05, -1.6, 3.5)], 0.1, "rubber")
+    laid(m, bells, AXLE)
+    m.box((wide, 0.8, 0.45), (0, 0, 7.57), "girder", ink=True)                        # the yoke, over the rotor
+    m.box((wide - 0.6, 0.14, 0.14), (0, 0.42, 7.57), "power")
+    m.box((wide - 0.6, 0.14, 0.14), (0, -0.42, 7.57), "power")
+    for x in (-1.6, 0.0, 1.6):                                                        # three bushings
+        insulator(m, (x, 0, 7.8), 0.55, r=0.36, ribs=2)
+        m.box((0.26, 0.26, 0.2), (x, 0, 8.45), "power")
+    return Piece("Generator", m, solid="a box, 6 by 5, 8 high",
+                 note=f"on the stand-in's footprint, 8.55 high with its bushings. Its rotor is GeneratorRotor, its axle "
+                      f"along X, {AXLE:g} up at the machine's middle: it turns clear of everything, 1.75 at its widest")
+
+
+def generator_rotor():
+    """The generator's rotor, a piece by itself, its origin on its axle (along X): a copper winding between two bone
+    rims, six bars of the current's yellow along it, which streak when it turns."""
+    m = Mesh(None)
+    turned = Mesh(None)
+    turned.lathe([(1.5, 1.4), (1.5, -1.4)], (0, 0, 0), 10, "copper", caps=False)
+    for sx in (-1, 1):
+        turned.lathe([(1.75, sx * 1.55 + 0.15), (1.75, sx * 1.55 - 0.15)], (0, 0, 0), 10, "bone")
+    turned.lathe([(0.4, 1.75), (0.4, -1.75)], (0, 0, 0), 6, "girder", caps=False)     # the axle
+    laid(m, turned, 0.0)
+    for k in range(6):
+        a = math.tau * k / 6
+        m.box((2.8, 0.34, 0.2), (0, -1.58 * math.sin(a), 1.58 * math.cos(a)), "power", rot=(a, 0.0, 0.0))
+    return Piece("GeneratorRotor", m,
+                 note=f"its origin is its axle's middle: it stands {AXLE:g} up at the generator's middle and turns "
+                      f"about its own X, faster as the plant generates more. Look only")
+
+
 PIECES = {"Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
-          "Bay": bay, "BayHalo": bay_halo}
+          "Bay": bay, "BayHalo": bay_halo, "Generator": generator, "GeneratorRotor": generator_rotor}

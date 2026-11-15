@@ -84,6 +84,8 @@ def machines(level=1):
         turn = 0.0 if x < 0 else 180.0                              # the ring on the outer side
         made.append(("Bay", x, inward, 0.0, turn, f"bay {index + 1}"))
         made.append(("BayHalo", x, inward, 0.0, turn, f"bay {index + 1}'s light, while a worker works there"))
+    made.append(("Generator", base.GENERATOR, BREAKER, 0.0, 0.0, "the generator"))
+    made.append(("GeneratorRotor", base.GENERATOR, BREAKER, base.machines.AXLE, 0.0, "the generator's rotor, turning about its own X"))
     return made
 
 
@@ -310,7 +312,7 @@ class Yard:
         f, level = self.flat, self.level
         tag = "A" if face > 0 else "B"
         b = lambda name, size, x, i, z, mat: self.box(front, face, f"{name}{tag}", size, x, i, z, f[mat] if isinstance(mat, str) else mat)  # noqa: E731
-        door, generator = base.DOOR, base.GENERATOR
+        door = base.DOOR
         b("Lot", (PLOT, PLOT, 0.4), 0, PLOT / 2, -0.23, "lot")
         for x in (-3.5, 3.5):                                      # a shard in each chamber, the builder's own
             b("Shard", (1.0, 1.0, 1.7), x, BREAKER, sum(base.machines.GAP) / 2, "chamber")
@@ -322,8 +324,6 @@ class Yard:
         wx, wy, _ = self.at(front, face, *SHOWCASE)                # and the owner's Voidkin on the showcase
         self.person((wx, wy), f"Shown{tag}", base.show.TOP)
         b("Battery", (6, 4, 3), 0, BATTERY, 1.5, "battery")
-        b("Generator", (6, 5, 8), generator, BREAKER, 4, "machine")
-        b("GeneratorFace", (4.4, 0.2, 3), generator, BREAKER + 2.6, 5.5, "generator")
         b("Training", (6, 5, 4), -door, BREAKER, 2, "machine")
         b("TrainingTop", (6.2, 5.2, 0.5), -door, BREAKER, 4.2, "training")
         b("TrainingPad", (4, 4, 0.4), -door, BREAKER + 6, 0.2, "bay")
@@ -409,6 +409,7 @@ def see(out: Path, level, fast, clear, only=()):
              "across": ((-88.0, -6.0, 11.0), (30.0, -130.0, 4.0)),
              "breaker": ((9.0, -29.0, 9.5), (0.0, -BREAKER, 6.0)), "strip": ((-8.0, 9.0, 7.5), (0.0, -BREAKER, 6.5)),
              "bay": ((-7.0, -35.0, 6.0), (-22.0, -26.0, 4.2)), "bays": ((-10.0, 9.0, 6.5), (22.0, -26.0, 4.0)),
+             "generator": ((-8.5, -27.0, 6.5), (base.GENERATOR, -BREAKER, 4.6)),
              "show": ((6.0, 22.0, 6.0), (SHOWCASE[0], -SHOWCASE[1], 4.5)), "shown": ((21.5, -13.5, 5.5), (SHOWCASE[0], -SHOWCASE[1], 3.6)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:

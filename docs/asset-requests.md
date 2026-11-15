@@ -5418,6 +5418,18 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 - **Checks:** the maker's own, at the sheet's size and at a phone's; the content check on both drawings, PASS as review sheets. It caught the second drawing's mist missing (a line of `mist()` broken by a comment), since fixed and rendered again. Before an upload: each real image (the night, the mist's tile, a large star, the falling star) at full size and at 64 px over dark, the rose kept on the pink and violet side, the falling star pale and no rarity's colour, a row in `docs/asset-log.md`, and nothing of the mock's stand-ins (the capture, Blender's face).
 - **Time:** the first drawing about 50 minutes by the clock, the second about 20; the clock reads short against the work, and it isn't measured otherwise.
 
+**Research's verdict on the galaxy Breaker,** 2026-11-15, from both sheets, the frames a second and the row at 0, 3.75 and 9.9 s (the motion read from those, at a phone's size):
+- **Felt:** the machine became four windows on the void. A shard floats in each, and one river of colour runs through all four. When two break, their windows blaze gold, and "Open" is the only bright thing left to press.
+- **Tier:** competent, near exceptional. **The one bold thing:** the river through the windows. One sky across four chambers makes the row one machine, and the locked ones read as dimmer glass on the same sky.
+- **The three measures hold.** The colour stays in the windows and the rest is night, so the reveal keeps the peak. Every number and odd sits on a plate. The motion is slow and quiet, and the still is the reduced-motion screen.
+- **Fixes (Modulo):**
+  1. **Small text.** "Upgrade the Breaker" in a locked chamber, "Tap to open" in a ready one, and "Waiting, 1st" come out at about 7 pt at phone size. Bring them to the kit's smallest text. If "Upgrade the Breaker" won't fit at that size, keep "Locked" in the window and say "Upgrade the Breaker" once under the row. Serves the read.
+  2. **One fact, once.** "The battery holds 42" repeats the bar's "42 / 60 kWh" a thumb's width away. Keep "18 kWh short" alone. Serves a panel that reads in a second.
+- **Research's rulings:**
+  - **The battery wears the Battery mark,** not the bolt: accepted. The bolt is generation in kW and the battery is stored kWh, by `docs/design.md`, "Power".
+  - **Legendary's gold and Power's yellow, 5.6 apart:** accepted on the pip and the word. A Legendary name or odd never stands without its pip and its word, and never on a yellow fill.
+- **Next:** the fixes on the sheet, then the images for Faber. The motion's layers are Faber's to try in Studio, as DESIGN.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

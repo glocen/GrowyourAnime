@@ -1437,6 +1437,8 @@ Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now b
 **Done when:** a logic case covers when the chip shows (one Voidkin fallen, none ready; none when a second is ready; gone at the lead's return). The self-test covers the chip at both scales with the UI lint, and the trail from the elite's square to the door. Research's verdict in motion at phone size.
 
 **Status:** built offline, 2026-11-14 (Faber); the self-test and research's verdict in motion wait on the Studio MCP. Time: about 1.5 active hours, my estimate, not measured.
+
+**Scrapped by the director, 2026-11-15, night** (`docs/decisions.md`): "Go home" and its trail go. The way home becomes a HUD control that teleports to the base, on a short cooldown, out of combat, a boss's area and an event only. That is a new piece with its own feel line, from research. Faber: don't spend more on TR16's chip or trail.
 - **Implemented.**
   - **When** (`Rules.Hud.AfterFall`, pure): a fallen lead's card offers "Send" while another Voidkin could lead now (`Hud.LeadReason` refuses it nothing), else "Home" while the player is out in a ground, else nothing. "Out in a ground" is the night's own line (`Rules.Night.Inside`, 24 studs short of the gate), never during a keeper's try.
   - **The chips share one place under the card,** and only one shows. "Send another" now shows only when someone could go out (tier 1): a Voidkin at work can't lead, so before this it showed a button that sent no one.

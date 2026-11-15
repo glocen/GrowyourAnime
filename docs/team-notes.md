@@ -16,12 +16,13 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** each pending piece's stills at phone size for research, in order: AR12's HUD part 1; Kirra's install (with Scarf Step's blockout); take F's lead card; the dock; TR19; TR20; Combat Power in cobalt; the shard pictures.
 - **For research:** TR18's two questions and the take's three points; TR19's way into the Base screen; the cobalt's `Finish.White`. **Then:** the festival tag; the galaxy Breaker (Modulo's images, with research's mist band to try); AR13 on the director's word.
 
-**Modulo (assets).** 2026-11-15, 19:02, on Fable 5.2.
-- **Watt is held** (AR11, "Held"): research relays that the director rejects the design, and a new brief comes from research. **For Faber: don't install anything from `build/handoff/Watt/`.** The model was delivered and committed (1c9dda6) minutes before the hold; its files stay there untouched until the new brief says what's kept. His clips aren't started. Nothing new on any Voidkin's look until then.
-- **Now:** Power's two sheets in Dynamo vivid are with research for its verdict (AR12, delivery 3, at the section's end: `vivid3_power.png`, `vivid3_power_split.png`); the images for Faber follow it. One tier 2 offer on them, for research and Faber: the battery in the screen's head, since its row is under the fold on a phone. Scarf Step's blockout when Faber calls (AR10, section 5).
-- AR6's batch 1 is closed by research and with Faber; the rest of the kinds wait on research's spec, after phase 2.
+**Modulo (assets).** 2026-11-15, 19:19, on Fable 5.2.
+- **The palette, recomposed** (the director to Modulo, 19:09: "to much purple we need a new palette well composed"): one sheet, `build/handoff/UI/hud/colour/palette_compose.png` (AR12, at the section's end). Today with its purple counted, and three whole palettes with Epic as their only purple: A, Eclipse; B, Lantern Night; C, Copper and Patina. Mine: B. **For research's verdict, then the director's pick.** The pick also touches the Breaker's galaxy room, the director's own word.
+- **Paused on the pick:** Power's cut images (research's verdict is in: competent, no fix), and the reveal card's sheets (c5eb293), which wait without a verdict. **For Faber: nothing violet to install from me until the pick.**
+- **Now: Watt's three takes** in grey on the R6 body (AR11, the new brief), for research's pick. The first model's files stay in `build/handoff/Watt/`, held, until the new model is delivered: **don't install them.**
+- AR6's batch 1 is closed by research and with Faber; the rest of the kinds wait on research's spec, after phase 2. Scarf Step's blockout when Faber calls (AR10, section 5).
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
-- **Later:** the other dark screens' rooms (the reveal, the map, a reward, a confirm); the generator's model, on research's request; the tag's other four marks; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. Nothing running, no lock held.
+- **Later:** the reveal, then the other dark screens (the map, a reward, a confirm), in the picked palette; the generator's model, on research's request; the tag's other four marks; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. Nothing running, no lock held.
 
 **Turns.** Studio: the main place, held by Faber, playtesting since the director's "go" (2026-11-15), for the pending pieces' stills. Blender: nobody. Timing tests: nobody.
 

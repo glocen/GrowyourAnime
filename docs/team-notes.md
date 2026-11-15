@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** each pending piece's stills at phone size for research, in order: AR12's HUD part 1; Kirra's install (with Scarf Step's blockout); take F's lead card; the dock; TR19; TR20; Combat Power in cobalt; the shard pictures.
 - **For research:** TR18's two questions and the take's three points; TR19's way into the Base screen; the cobalt's `Finish.White`. **Then:** the festival tag; the galaxy Breaker (Modulo's images, with research's mist band to try); AR13 on the director's word.
 
-**Modulo (assets).** 2026-11-15, 18:35, on Fable 5.2.
-- **The Voidkin mock is redrawn on TR17's block, for research's read:** `build/handoff/UI/hud/colour/vivid_voidkin.png` (AR12, "The Voidkin mock, on TR17's block"): the real gear in spaced slots, Legendary's border with no crown, the marks, the level's mark, "Items". **For research's call:** Lead and Send to work don't fit the band (14 points short at 812, far more on the smallest phone); the mock ends the foot's row with them.
-- **AR6's two colour fixes are already made** (63dd7a8; AR6, "The two fixes, made"): Rare as blued steel, Epic as violet gunmetal, Legendary's slot on umber. Content check PASS for upload on the 24. Research's pass whenever it suits: gear is phase 3. **For Faber, when phase 3 opens:** Common and Uncommon are cleared now, Rare to Legendary after that pass; `build/handoff/UI/gear/`, laid by `gear_icons.json` (Legendary has its own ground and a smaller light).
-- **Now: Watt's model,** with the shirt fix (AR11, delivery 2), research's order for phase 2. **Then:** Scarf Step's blockout when Faber calls (AR10, section 5).
+**Modulo (assets).** 2026-11-15, 18:42, on Fable 5.2.
+- **Watt's model is delivered** (AR11, section 2, "Delivered"): `build/handoff/Watt/`, research's verdict competent, content check PASS. **For Faber:** eight meshes, four maps (a glow mask among them) and `Watt.recipe.json`; the visor is a hinge on the Head, the wrench a joint on the Torso; three pieces need their own SurfaceAppearance for the glow. The upload needs its own check first.
+- **Now: Watt's clips** (AR11, delivery 3): Idle, Combo, Ground Wire, Reveal, Work, and the wrench over the open set's Hit, Down and Up. The blocking goes to research first.
+- **Then:** Scarf Step's blockout when Faber calls (AR10, section 5). AR6's fixes are made (63dd7a8); Common and Uncommon are cleared for Faber when phase 3 opens.
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
 - **Later:** the bays' sheet in Dynamo vivid; the tag's other four marks; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. Nothing running, no lock held.
 
@@ -97,6 +97,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, evening. Watt's model delivered (Modulo)
+
+- **What:** Watt on R6 (AR11, delivery 2): eight rigid pieces, 8,532 triangles, one 1024 px atlas. The generator and its two coils ride the Torso. The visor is one hinge on the Head (up is its mesh, -100 degrees brings it down). The wrench is one piece on a Torso joint at its grip, planted ahead of his right side with no clip playing. Research's fix from the sheet is in: cream rolled cuffs, so the arms part from a dusk street.
+- **What lights:** one glow mask; the coil caps and the gauge's needle (low at rest), the visor's lens and the jaw's inner walls (off at rest), each piece with its own strength and tint in the recipe. Untried in Studio.
+- **Where:** `build/handoff/Watt/` (meshes, maps, `Watt.recipe.json`, `watt_model_sheet.png`), from `tools/blender/watt_model.py` on `watt_sheet.build(model=True)`. The record: AR11, section 2.
+- **Checked:** research's verdict, competent; content check PASS for delivery (one atlas island turned on its note, then checked again).
+- **Open:** the install; the upload's own check, with the glow seen in Studio first; the clips, which are next.
+- **For:** Faber, research.
 
 ### 2026-11-15, evening. TR18 built: the base as a power plant (Faber)
 

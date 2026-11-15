@@ -1,0 +1,284 @@
+{
+ "name": "Watt",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1), and the Head's face decal is removed. His face is on the Head piece. The generator and its coils are the Torso piece's.",
+ "maps": {
+  "Color": "Watt_Color.png",
+  "Roughness": "Watt_Roughness.png",
+  "Metalness": "Watt_Metalness.png",
+  "Emissive": "Watt_Emissive.png"
+ },
+ "texels_per_stud": 74,
+ "emissive": {
+  "pieces": {
+   "Watt_Torso": {
+    "tint": "#FFFFFF",
+    "cold": 0.5,
+    "hot": 2.0,
+    "lit": "the two coil caps and the gauge's needle"
+   },
+   "Watt_Visor": {
+    "tint": "#FFFFFF",
+    "cold": 0.0,
+    "hot": 7.0,
+    "lit": "the lens"
+   },
+   "Watt_Wrench": {
+    "tint": "#FF6FD8",
+    "cold": 0.0,
+    "hot": 3.0,
+    "lit": "the jaw's two inner walls"
+   }
+  },
+  "note": "One mask for all three pieces; each takes its own EmissiveTint and EmissiveStrength: cold as he stands, hot in Ground Wire's hold. Roblox multiplies the glow by the colour map, so the caps and the lens glow white through their own Storm (the lens is a dark Storm glass with its light out), and the jaw's steel takes Storm from its tint. The other five pieces take no glow, and the face none, ever. DESIGN: the strengths are the review sheet's, untried in Studio."
+ },
+ "pieces": [
+  {
+   "name": "Watt_Torso",
+   "mesh": "Watt_Torso.json",
+   "on": "Torso",
+   "centre": [
+    -0.0075,
+    3.645,
+    0.435
+   ],
+   "size": [
+    2.365,
+    4.07,
+    2.25
+   ],
+   "tris": 3280
+  },
+  {
+   "name": "Watt_Head",
+   "mesh": "Watt_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.5275,
+    -0.02823
+   ],
+   "size": [
+    1.56,
+    1.305,
+    1.426
+   ],
+   "tris": 1064
+  },
+  {
+   "name": "Watt_RightArm",
+   "mesh": "Watt_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.5,
+    2.94,
+    0.0
+   ],
+   "size": [
+    1.12,
+    2.24,
+    1.12
+   ],
+   "tris": 656
+  },
+  {
+   "name": "Watt_LeftArm",
+   "mesh": "Watt_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.5,
+    2.94,
+    0.0
+   ],
+   "size": [
+    1.12,
+    2.24,
+    1.12
+   ],
+   "tris": 656
+  },
+  {
+   "name": "Watt_RightLeg",
+   "mesh": "Watt_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    -0.1
+   ],
+   "size": [
+    1.04,
+    2.0,
+    1.34
+   ],
+   "tris": 760
+  },
+  {
+   "name": "Watt_LeftLeg",
+   "mesh": "Watt_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    -0.1
+   ],
+   "size": [
+    1.04,
+    2.0,
+    1.34
+   ],
+   "tris": 760
+  },
+  {
+   "name": "Watt_Visor",
+   "mesh": "Watt_Visor.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    5.17961,
+    -0.32814
+   ],
+   "size": [
+    1.517,
+    0.751,
+    0.876
+   ],
+   "tris": 164,
+   "motor": "Visor",
+   "pivot": [
+    0.0,
+    4.8,
+    -0.1
+   ]
+  },
+  {
+   "name": "Watt_Wrench",
+   "mesh": "Watt_Wrench.json",
+   "on": "Torso",
+   "centre": [
+    2.02,
+    2.394,
+    -0.63
+   ],
+   "size": [
+    3.59,
+    5.388,
+    0.962
+   ],
+   "tris": 1192,
+   "motor": "Wrench",
+   "pivot": [
+    2.02,
+    2.15,
+    -0.63
+   ]
+  }
+ ],
+ "motors": {
+  "Visor": {
+   "axis": [
+    1,
+    0,
+    0
+   ],
+   "down": -100.0,
+   "note": "A hinge on the Head at his temples. With no turn it's up on his brow, which is its mesh. Turned `down` degrees about `axis` at its pivot, it covers his eyes: down for a fight, up again after a win. The clips key it."
+  },
+  "Wrench": {
+   "along": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "across": [
+    0.9848,
+    0.0,
+    0.1736
+   ],
+   "note": "One piece on the Torso, its pivot at the grip's middle. With no turn it stands planted ahead of his right side, its rod 0.3 studs under y = 0. `along` is the handle's line, from the rod to the head; `across` is the head's width. The clips key it into his hands, and into the street for Ground Wire."
+  }
+ },
+ "points": [
+  {
+   "name": "CoilR",
+   "on": "Torso",
+   "at": [
+    0.9,
+    5.52,
+    1.04
+   ],
+   "note": "the right coil's cap: where an arc starts"
+  },
+  {
+   "name": "CoilL",
+   "on": "Torso",
+   "at": [
+    -0.9,
+    5.52,
+    1.04
+   ],
+   "note": "the left coil's cap"
+  },
+  {
+   "name": "Gauge",
+   "on": "Torso",
+   "at": [
+    0.46,
+    3.62,
+    1.54
+   ],
+   "note": "the gauge's face, on the camera's side"
+  },
+  {
+   "name": "Chest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.2,
+    -0.62
+   ],
+   "note": "where a hit lands"
+  },
+  {
+   "name": "Lens",
+   "on": "Watt_Visor",
+   "at": [
+    0.0,
+    5.5415,
+    -0.2739
+   ],
+   "note": "the lens's middle on the mesh as it is, the visor up: it turns with the hinge, to (0, 4.5, -0.8) with the visor down"
+  },
+  {
+   "name": "Jaw",
+   "on": "Watt_Wrench",
+   "at": [
+    1.9429,
+    4.1923,
+    -0.6436
+   ],
+   "note": "the middle of the jaw's gap: where the coils' arcs land"
+  },
+  {
+   "name": "Rod",
+   "on": "Watt_Wrench",
+   "at": [
+    2.02,
+    0.0,
+    -0.63
+   ],
+   "note": "where the rod meets the street, planted: where Ground Wire's ring starts"
+  },
+  {
+   "name": "Grip",
+   "on": "Watt_Wrench",
+   "at": [
+    2.02,
+    2.15,
+    -0.63
+   ],
+   "note": "the grip's middle: the joint's pivot"
+  }
+ ],
+ "tris": 8532
+}

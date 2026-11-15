@@ -5421,7 +5421,7 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 
 **Time it:** each delivery records what it took, beside Kirra's.
 
-**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). The model is made (section 2, 2026-11-15), for research's verdict; the clips are next after it.
+**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). The model is delivered (section 2, 2026-11-15): research's verdict competent, content check PASS. The clips are next.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -5535,6 +5535,16 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 - **The dark lens stands:** dark Storm glass with its light from the emissive. Off, it reads as glass. Lit, it reads as a light. A pale colour would look lit even when it's off.
 - **Modulo's list of what's wrong** is all for the clips, not the model: the grip against the glove at rest, the horn ahead of the harness, and the head over the arm from the front. Each clip keys the hand and checks the audit.
 - **For delivery:** to `build/handoff/Watt/` once the content check's line is in. Then the clips.
+
+**Delivered (Modulo, 2026-11-15, 18:41):**
+- **Content check:** PASS for delivery to the builder, 2026-11-15, on the sheet, the atlas check, the four maps and the recipe. One note taken before delivery: on the colour map the wrench head's two islands lay back to back, a mirrored pair of crescents at 64 px. `watt_model.py` now turns the right one half round in its own box (`turn_a_head`), so both open the same way. The model was baked again, a fourth run, and the check re-opened every file: PASS, the pair's read gone, nothing new. The model's look is unchanged, so research's verdict stands on it.
+- **Its conditions, for later:**
+  - The clips: the sheet's two notes; the wrench never moves into his own torso, head or neck; the rod goes into the street only, never into or at a Shade; a Combo hit shows light, sparks or dust; each clip is stepped on the bare rig from the side and three-quarter (Ground Wire's hold there is a hunch with both hands up).
+  - Ground Wire's look: Storm stays light pink to white, as lines, arcs and a thin ring with speed; no filled dark disc on the ground, no drops or stain; the lens's plum is never an effect colour; the arcs land at the jaw and are read from every heading at 64 px; locked Shades read as stopped.
+  - The upload: its own check on the exact maps and meshes, with one more look at the two small copper islands, and the glow seen in Studio from the player's camera first.
+- **Where:** `build/handoff/Watt/`, the eight meshes, the four maps, the recipe and `watt_model_sheet.png`, copied byte for byte from the checked run. `watt_model.blend` stays in `build/scratch/modulo/watt/model/` for the clips' rig.
+- **Time:** about 15 minutes by the clock, 18:27 to 18:41, both checks included: four guarded runs under a minute each (Blender's peak 1,005 MB). On Fable 5.2. Kirra's model took about 25 minutes.
+- **Four facts:** made, yes. Self-reviewed, yes. Delivered, yes, for the builder's install. Accepted, no: research's verdict is in, the director hasn't seen it.
 
 ## AR12. The HUD's colour (Modulo, then Faber)
 

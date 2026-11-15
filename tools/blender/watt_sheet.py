@@ -59,11 +59,19 @@ WIRE_LEAN = 22.0  # Ground Wire's lean over the wrench, degrees: R6's legs don't
 LOW_GRIP = 1.0  # where his hand holds it, leant
 SHADE_AT = 5.0  # the grey Shade in Ground Wire, ahead of him: a lead stands about this far from its target
 RING = 5.6  # the ring's radius on the sheet, round the rod: a sheet number until Ground Wire's reach is data
+# The model (AR11, delivery 2). Its lit surfaces, each in the colour it has with its light out: Roblox draws
+# (mask x strength x tint + light) x colour map, so the colour under a glow carries the glow's hue. The caps and the
+# needle are Storm, lit or not; the lens is a dark Storm glass that the strength lifts to Storm; the jaw's walls are
+# steel, and their piece's tint is Storm.
+MODEL_PALETTE = {**{k: v for k, v in PALETTE.items() if k not in ("Storm", "Ghost")},
+                 "LitCap": PALETTE["Storm"], "LitLens": "#752E63", "LitJaw": PALETTE["Steel"]}
+REST_TIP, REST_YAW = Vector((2.02, 0.63, -PLANTED)), -10.0  # the wrench with no clip playing: planted ahead of his
+#                                                              right side as take A has it, the body square
 
 
-def materials(lit=False):
+def materials(lit=False, model=False):
     made = {}
-    for name, code in {**PALETTE, "Lens": PALETTE["Storm" if lit else "Ink"]}.items():
+    for name, code in (MODEL_PALETTE if model else {**PALETTE, "Lens": PALETTE["Storm" if lit else "Ink"]}).items():
         m = bpy.data.materials.new(name)
         m.diffuse_color = rs.srgb(code)
         m.roughness = 1.0
@@ -152,7 +160,8 @@ def gap_across(up):
 
 def wrench(m, lit=False):
     """The wrench in its own frame: the rod's tip at the origin, the handle up +Z, the head's width along X and its
-    broad face toward +Y. Steel, the grip rubber, the rod copper. Lit, the jaw's inner walls carry Storm."""
+    broad face toward +Y. Steel, the grip rubber, the rod copper. Lit, the jaw's inner walls carry Storm; the model
+    always has those walls, as a surface of their own that its glow mask covers."""
     outline = head_outline()[0]
     pieces = [bl.place(bl.cylinder("Rod", 0.02, 0.55, 12, m["Copper"], radius_top=0.13), location=(0, 0, 0.275)),
               bl.place(bl.cylinder("Ferrule", 0.17, 0.16, 16, m["SteelDeep"]), location=(0, 0, 0.63)),
@@ -161,7 +170,8 @@ def wrench(m, lit=False):
               bl.place(bl.profile("Neck", [(-0.25, 2.8), (0.25, 2.8), (0.95, 3.25), (-0.95, 3.25)], 0.34, m["Steel"]), rotation=(0, 0, 90)),
               bl.place(bl.profile("WrenchHead", outline, 0.36, m["Steel"]), rotation=(0, 0, 90))]
     if lit:  # each wall's line, inside the gap; the drawing's across is the wrench's -x, so the lean turns about Y by -tilt
-        pieces += [slab("JawLit", (-p.x, 0, p.y), (0.03, 0.4, length), m["Storm"], rot=(0, -JAW_TILT, 0)) for p, length in jaw_walls()]
+        pieces += [slab("JawLit", (-p.x, 0, p.y), (0.03, 0.4, length), m.get("LitJaw") or m["Storm"], rot=(0, -JAW_TILT, 0))
+                   for p, length in jaw_walls()]
     for o in pieces:
         o["wrench"] = True
     return pieces
@@ -184,6 +194,26 @@ def frame(u, w):
     return Matrix((w, n, u)).transposed().to_4x4()
 
 
+def rest_wrench():
+    """Where the model's wrench stands with no clip playing, from its own frame."""
+    return Matrix.Translation(REST_TIP) @ Matrix.Rotation(math.radians(REST_YAW), 4, "Z")
+
+
+def rest_grip():
+    """The wrench's joint on the model: the grip's middle, at rest."""
+    return rest_wrench() @ Vector((0, 0, GRIP_AT))
+
+
+def stand_wrench(joints, matrix, lit=False):
+    """Sets the wrench in the world by `matrix`, from its own frame. On the sheet it's drawn there. On the model it's
+    one piece on a joint of its own on the torso ("tool"), which is keyed so the piece stands there."""
+    if "tool" in joints:
+        bpy.context.view_layer.update()
+        joints["tool"].matrix_world = matrix @ rest_wrench().inverted() @ Matrix.Translation(rest_grip())
+    else:
+        set_wrench(wrench(joints["m"], lit=lit), matrix)
+
+
 # --- the body -------------------------------------------------------------------------------------------------
 
 def point_on(joints, part, p):
@@ -192,26 +222,34 @@ def point_on(joints, part, p):
     return joints[part].matrix_world @ (Vector(p) - Vector(PIVOTS[part]))
 
 
-def build(scene, visor_up=True, lit=False):
+def build(scene, visor_up=True, lit=False, model=False):
     """Watt, standing square, without the wrench. Returns the joints: empties at R6's pivots. `visor_up`: flipped up
-    on his brow, as at rest; down, it covers his eyes. `lit`: the lens in Storm, as in a fight's peak."""
-    m = materials(lit)
+    on his brow, as at rest; down, it covers his eyes. `lit`: the lens in Storm, as in a fight's peak.
+    `model`: as the model is cut (watt_model.py). The visor is up in its mesh, on a hinge of its own on the head
+    ("visor"); the wrench stands at its rest, on a joint of its own on the torso ("tool"); the lit surfaces are their
+    own; and the short sleeves end in a cream rolled cuff (research's fix: the arms part from a dusk street)."""
+    m = materials(lit, model)
+    pivots = dict(PIVOTS)
+    hinges = {"visor": (tuple(VISOR_PIVOT), "neck"), "tool": (tuple(rest_grip()), "root")} if model else {}
     joints = {}
-    for name, at in PIVOTS.items():
+    for name, at in [*PIVOTS.items(), *((name, at) for name, (at, _) in hinges.items())]:
         j = bpy.data.objects.new(name, None)
         scene.collection.objects.link(j)
         j.location = at
         j.rotation_mode = "QUATERNION"
         if name != "root":
-            j.parent = joints["root"]
-            j.matrix_parent_inverse = Matrix.Translation(-Vector(PIVOTS["root"]))
+            parent = hinges[name][1] if name in hinges else "root"
+            j.parent = joints[parent]
+            j.matrix_parent_inverse = Matrix.Translation(-Vector(PIVOTS[parent]))
         joints[name] = j
+        pivots[name] = at
     joints["m"] = m
+    storm = m["LitCap" if model else "Storm"]
 
     def on(part, *objs):
         for o in objs:
             o.parent = joints[part]
-            o.matrix_parent_inverse = Matrix.Translation(-Vector(PIVOTS[part]))
+            o.matrix_parent_inverse = Matrix.Translation(-Vector(pivots[part]))
 
     # the waist: the coverall's top half pulled down, its sleeves knotted round him at his left hip and their ends
     # hanging, the back panel over his seat; a rubber belt with a steel buckle
@@ -249,7 +287,7 @@ def build(scene, visor_up=True, lit=False):
        *[slab("Vent", (-0.3, PACK_Y - 0.455, z), (0.9, 0.03, 0.07), m["SteelDeep"]) for z in (2.9, 3.08, 3.26)],
        bl.place(bl.cylinder("GaugeRim", 0.24, 0.06, 20, m["GraphiteDeep"]), location=(0.46, PACK_Y - 0.47, 3.62), rotation=(90, 0, 0)),
        bl.place(bl.cylinder("GaugeFace", 0.19, 0.04, 20, m["Cream"]), location=(0.46, PACK_Y - 0.49, 3.62), rotation=(90, 0, 0)),
-       slab("Needle", (0.5, PACK_Y - 0.515, 3.66), (0.03, 0.01, 0.15), m["Storm"], rot=(0, -35, 0)))
+       slab("Needle", (0.5, PACK_Y - 0.515, 3.66), (0.03, 0.01, 0.15), storm, rot=(0, -35, 0)))
     for e in (-1, 1):
         x = e * COIL_X
         on("root",
@@ -257,13 +295,14 @@ def build(scene, visor_up=True, lit=False):
            bl.place(bl.cylinder("Coil", 0.26, 1.0, 20, m["Copper"]), location=(x, PACK_Y, 4.85)),
            *[bl.place(bl.cylinder("Winding", 0.275, 0.05, 20, m["CopperDeep"]), location=(x, PACK_Y, z)) for z in (4.5, 4.7, 4.9, 5.1)],
            bl.place(bl.cylinder("CoilCollar", 0.21, 0.06, 16, m["SteelDeep"]), location=(x, PACK_Y, 5.38)),
-           bl.place(bl.sphere("Cap", 0.16, 16, 8, m["Storm"]), location=(x, PACK_Y, 5.52)))
+           bl.place(bl.sphere("Cap", 0.16, 16, 8, storm), location=(x, PACK_Y, 5.52)))
 
     # the arms: the shirt's short sleeves, bare upper arms, rubber gloves to mid-forearm with a flared cuff
     for part, e in (("rs", 1), ("ls", -1)):
         cx = e * 1.5
         on(part,
            loft("Sleeve", [(3.34, cx, 0, 1.04, 1.04), (4.0, cx, 0, 1.04, 1.04), (4.06, e * 1.46, 0, 0.88, 0.9)], m["Graphite"], n=B),
+           loft("SleeveHem", [(3.26, cx, 0, 1.1, 1.1), (3.46, cx, 0, 1.1, 1.1)], m["Cream"], n=B) if model else
            loft("SleeveHem", [(3.3, cx, 0, 1.08, 1.08), (3.42, cx, 0, 1.08, 1.08)], m["GraphiteDeep"], n=B),
            loft("Arm", [(2.7, cx, 0, 0.96, 0.96), (3.36, cx, 0, 0.98, 0.98)], m["Skin"], n=B),
            loft("Glove", [(1.82, cx, 0.02, 0.9, 0.94), (2.24, cx, 0.02, 0.94, 0.98), (2.5, cx, 0, 0.98, 1.0),
@@ -284,9 +323,15 @@ def build(scene, visor_up=True, lit=False):
 
     visor = [arc_shell("Visor", 0.7, 10, 170, 4.12, 4.9, 0.07, m["Steel"]),
              slab("LensRim", (0, 0.765, 4.5), (0.72, 0.04, 0.24), m["GraphiteDeep"]),
-             slab("Lens", (0, 0.775, 4.5), (0.62, 0.05, 0.16), m["Lens"])]
-    if visor_up:
+             slab("Lens", (0, 0.775, 4.5), (0.62, 0.05, 0.16), m["LitLens" if model else "Lens"])]
+    if visor_up or model:
         turned(visor, VISOR_PIVOT, "X", VISOR_UP)
+    if model:
+        on("visor", *visor)
+        tool = wrench(m, lit=True)
+        set_wrench(tool, rest_wrench())
+        on("tool", *tool)
+        visor = []
     on("neck",
        loft("Head", [(3.875, 0, 0, 0.95, 0.95), (3.92, 0, 0, 1.14, 1.14), (4.02, 0, 0, 1.25, 1.25), (4.98, 0, 0, 1.25, 1.25),
                      (5.08, 0, 0, 1.14, 1.14), (5.125, 0, 0, 0.95, 0.95)], m["Skin"], n=2),
@@ -327,7 +372,8 @@ def pose_square(joints):
     rs.aim(joints["rs"], Quaternion(), (0.3, 0.0, -1.0))
     rs.aim(joints["ls"], Quaternion(), (-0.3, 0.0, -1.0))
     rs.stand_on_floor(joints)
-    set_wrench(wrench(joints["m"]), Matrix.Translation((4.3, 0, -0.35)))
+    if "tool" not in joints:  # the model's wrench stays at its rest
+        set_wrench(wrench(joints["m"]), Matrix.Translation((4.3, 0, -0.35)))
 
 
 def pose_stood(joints):
@@ -343,7 +389,7 @@ def pose_stood(joints):
     rs.stand_on_floor(joints)
     hand = point_on(joints, "rs", (1.5, 0, 2.1))
     tip = Vector((hand.x + 0.1, hand.y + 0.1, -PLANTED))
-    set_wrench(wrench(joints["m"]), Matrix.Translation(tip) @ Matrix.Rotation(math.radians(-20), 4, "Z"))
+    stand_wrench(joints, Matrix.Translation(tip) @ Matrix.Rotation(math.radians(-20), 4, "Z"))
     joints["wrench"] = ("stood", tip)
 
 
@@ -397,12 +443,14 @@ def pose_wire(joints):
     ends = [point_on(joints, part, (e * 1.5, 0, 1.82)) for part, e in (("rs", 1), ("ls", -1))]
     down = min(lens.z - slot_middle(), -PLANTED)
     tip = Vector((lens.x - gap_across(lens.z - down), max(p.y for p in ends) + 0.18, down))  # the gap leans: its middle on the lens
-    set_wrench(wrench(joints["m"], lit=True), Matrix.Translation(tip))
+    stand_wrench(joints, Matrix.Translation(tip), lit=True)
+    joints["wrench"] = ("wire", tip, lens)
+    if "tool" in joints:  # the model: no grey ring or Shade
+        return
     m = joints["m"]
     ring = bl.place(bl.torus("Ring", RING, 0.18, 96, 6, m["Ghost"]), location=(0, tip.y, 0.06), scale=(1, 1, 0.35))
     ring["ghost"] = True
     ks.ghost(m, Vector((0, SHADE_AT, 0)))
-    joints["wrench"] = ("wire", tip, lens)
 
 
 POSES = {"square": pose_square, "stood": pose_stood, "leant": pose_leant, "wire": pose_wire}

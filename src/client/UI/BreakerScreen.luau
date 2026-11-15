@@ -49,6 +49,12 @@ local SIZE = Vector2.new(660, 320)
 local CHIP = Vector2.new(144, 52) -- its shard's picture (Config.Hud.ShardArt.Chip) and a gap left of 112 for its words
 local HEADING = 20
 local LINE = 18
+local TOP = 4 -- a working chamber's picture under its top edge
+
+-- The room a working chamber's words take under its picture: its name, its crack, its time and, infused, its line.
+local function chamberWords(infused: boolean): number
+	return 2 + 22 + 2 + Theme.Size.Bar + 2 + LINE + (if infused then LINE else 0) + 2
+end
 local LOCKED = "Upgrade the Breaker" -- under "Locked": what opens a chamber (research, TR9, 2026-11-14, night)
 
 local selected: Selection? = nil
@@ -354,7 +360,7 @@ end
 -- A chamber as it stands: its shard's name, the crack's progress as a conduit filling, the time left; empty or locked.
 -- While gold fades over it, what it holds next waits under it: its words show once the gold is gone, never through
 -- "Ready" (TR9's retake, research's fix, 2026-11-15).
-local function cell(parent: Instance, index: number, view: Profile.View, width: UDim, height: number)
+local function cell(parent: Instance, index: number, view: Profile.View, width: UDim, height: number, side: number)
 	local open = index <= #view.Base.Chambers
 	local chamber = if open then view.Base.Chambers[index] else nil
 	local work = if chamber then chamber.Work else nil
@@ -370,7 +376,9 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	})
 	local pad = Theme.Size.Pad
 	local inner = UDim2.new(1, -pad * 2, 0, 22)
-	label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad), { Colour = Theme.Colour.TextDim })
+	if work == nil then -- a working chamber's picture takes its number's place
+		label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad), { Colour = Theme.Colour.TextDim })
+	end
 	local flash = flashes[index]
 	local gold = if flash then flashLeft(flash) else nil
 	if flash then
@@ -398,14 +406,26 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 		return
 	end
 	local w = work :: Profile.ShardWork
-	later(label(frame, "Name", shortName(w.Def), Theme.Text.Body, inner, UDim2.fromOffset(pad, pad + LINE + 2), { Font = Theme.Font.Strong, Truncate = true }))
-	local bar = Bar.new({ Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, pad + LINE + 30), Colour = Theme.Colour.Electricity, Parent = frame })
+	-- Its shard's picture at the top, `side` points (AR12, research's call); under it, never over its foot, its name,
+	-- its crack, its time, and, infused, one line saying so: the level is the pane's and the odds', as on a chip.
+	local art = HudConfig.ShardArt
+	local row = Shards.ById[w.Def]
+	local picture = Skin.Icon(frame, Hud.ShardPicture(if row then row.Grade else "Standard", side, art.Large), 0, 0, side)
+	picture.Name = "Picture"
+	picture.AnchorPoint = Vector2.new(0.5, 0)
+	picture.Position = UDim2.new(0.5, 0, 0, TOP)
+	later(picture)
+	local y = TOP + side + 2
+	local centre = { Font = Theme.Font.Strong, Truncate = true, Align = Enum.TextXAlignment.Center }
+	later(label(frame, "Name", shortName(w.Def), Theme.Text.Body, inner, UDim2.fromOffset(pad, y), centre))
+	y += 22 + 2
+	local bar = Bar.new({ Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, y), Colour = Theme.Colour.Electricity, Parent = frame })
 	later(bar)
-	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad + LINE + 42), { Colour = Theme.Colour.TextDim })
+	y += Theme.Size.Bar + 2
+	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Center })
 	later(left)
 	if w.Luck > 0 then
-		-- two lines' room: a narrow chamber wraps the level under the word
-		later(label(frame, "Infused", infused(w.Luck), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad + LINE + 60), { Colour = Theme.Colour.Electricity, Wrap = true }))
+		later(label(frame, "Infused", "Infused", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y + LINE), { Colour = Theme.Colour.Electricity, Align = Enum.TextXAlignment.Center }))
 	end
 	table.insert(tickers, function(now: Read.Base)
 		local current = now.Data.Base.Chambers[index]
@@ -509,8 +529,16 @@ local function machine(parent: Instance, view: Profile.View, height: number)
 	row.Parent = parent
 	Panel.List(row, Enum.FillDirection.Horizontal, Theme.Size.Gap)
 	local most = math.max(BaseConfig.Breaker.MostChambers, #view.Base.Chambers)
+	-- One picture size for the row, so the words line up across it: as large as fits up to Chamber, giving way to Least
+	-- where a chamber's infusion takes its line (Config.Hud.ShardArt).
+	local infusedRow = false
+	for _, chamber in view.Base.Chambers do
+		infusedRow = infusedRow or (chamber.Work ~= nil and (chamber.Work :: Profile.ShardWork).Luck > 0)
+	end
+	local art = HudConfig.ShardArt
+	local side = math.clamp(height - TOP - chamberWords(infusedRow), art.Least, art.Chamber)
 	for index = 1, most do
-		cell(row, index, view, UDim.new(1 / most, -Theme.Size.Gap * (most - 1) / most), height)
+		cell(row, index, view, UDim.new(1 / most, -Theme.Size.Gap * (most - 1) / most), height, side)
 	end
 end
 

@@ -6818,6 +6818,18 @@ local cases = {
 						table.insert(wrong, `locked chamber {index} doesn't say what opens it: {if opens then opens.Text else "nothing"}`)
 					elseif want == nil and (cell:FindFirstChild("Crack") == nil or left == nil or string.find(left.Text, " left$") == nil) then
 						table.insert(wrong, `chamber {index} lacks its crack or its time`)
+					elseif want == nil then
+						-- AR12, research's call: its grade's picture at the top, Least to Chamber points, its words under it.
+						local picture = cell:FindFirstChild("Picture") :: ImageLabel?
+						local work = (chamber :: Profile.Chamber).Work :: Profile.ShardWork
+						local art = HudConfig.ShardArt
+						local side = if picture then picture.Size.X.Offset else 0
+						local grade = if ShardDefs.ById[work.Def] then ShardDefs.ById[work.Def].Grade else "Standard"
+						if picture == nil or picture:GetAttribute("Kit") ~= Hud.ShardPicture(grade, side, art.Large) or side < art.Least - 1e-3 or side > art.Chamber + 1e-3 then
+							table.insert(wrong, `chamber {index}'s picture: {if picture then tostring(picture:GetAttribute("Kit")) else "none"} at {side}`)
+						elseif picture.AbsolutePosition.Y + picture.AbsoluteSize.Y > (label :: TextLabel).AbsolutePosition.Y + 0.5 then
+							table.insert(wrong, `chamber {index}'s name crosses its picture`)
+						end
 					end
 				end
 				t.Check(`{where}: each chamber as it stands, up to {most}, the rest locked, saying what opens them`, #wrong == 0, wrong[1])
@@ -7076,7 +7088,8 @@ local cases = {
 				return breakerPart("Chances") == nil
 			end))
 			if chosen.Kind == "Chamber" then
-				t.Check("its chamber says so, by the level put in", breakerText(`Chamber{chosen.Index}`, "Infused") == "Infused · Low voltage", breakerText(`Chamber{chosen.Index}`, "Infused"))
+				-- One line in the chamber; the level is the pane's, checked above (AR12, the chamber's picture over its words).
+				t.Check("its chamber says so", breakerText(`Chamber{chosen.Index}`, "Infused") == "Infused", breakerText(`Chamber{chosen.Index}`, "Infused"))
 			end
 			lintClean(t, "the Breaker with an infused shard chosen")
 			-- Broken: nothing more goes in, and the one thing to do is open it.

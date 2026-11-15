@@ -327,12 +327,12 @@ return {
 	},
 	-- TR9's Breaker screen in grey (UI/BreakerScreen), Machine by the director's pick (2026-11-14, night): the chambers
 	-- side by side over a strip of what's ready, waiting and in the bag, the chosen shard's odds beside them. Cell: a
-	-- chamber's authored height, room under its time for an infusion's level on two lines ("Infused, / a little" in a
-	-- narrow chamber). Flash: a chamber whose shard finishes flashes gold "Ready" this long, seconds ("about 1.5 s",
+	-- chamber's authored height: its shard's picture over its name, its crack, its time and, infused, one line saying so
+	-- (Config.Hud.ShardArt, AR12). Flash: a chamber whose shard finishes flashes gold "Ready" this long, seconds ("about 1.5 s",
 	-- research's fix (b)), held at full for Hold of them, then fading; Pop, the scale it lands from. Glow: a ready chip's
 	-- gold fill breathing between Low and High (its alpha) every Period seconds, there and back (fix (a)).
 	Breaker = {
-		Cell = 124,
+		Cell = 138,
 		Flash = { Seconds = 1.5, Hold = 0.35, Pop = 1.08 },
 		Glow = { Low = 0.18, High = 0.4, Period = 0.9 },
 		-- A rarity's heading in the drop rates where its trim is too dim to head a list: Common's metal grey, lifted
@@ -343,7 +343,10 @@ return {
 	-- small one under that (a step paler, its rim wider, a dark line round it, so the outline holds at a chip's size).
 	-- Modulo drew the large for 50 and up and the small for 40 and under; between them the small one holds the outline.
 	--   Chip: the picture's side on a Breaker chip; Cell: its share of a Voidkin bag cell's side
-	ShardArt = { Large = 50, Chip = 26, Cell = 0.78 },
+	--   Chamber: its side at the top of a Breaker chamber, its words under it, never over its foot, where Enriched's and
+	--            Prismatic's spires grow (research's call, AR12, 2026-11-15, night); Least: the side it gives way to
+	--            first, in a row where a chamber's infusion takes a line, before anything overlaps
+	ShardArt = { Large = 50, Chip = 26, Cell = 0.78, Chamber = 72, Least = 60 },
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
 	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live
 	-- between two columns of gear slots, its two hands and Combat Power at its feet, the chosen page on the right, the

@@ -5797,6 +5797,11 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - **If 124 doesn't hold all three:** the picture gives way first, down to 60 points, before anything overlaps.
       - The festival tag hangs off the picture's shoulder later, inside the same box.
       - **Measure:** at phone size, each grade is told by its spires in a chamber with the words showing, and nothing crosses the crystal.
+    - **Faber's build, the chambers** (2026-11-15, night, on research's call):
+      - **Implemented:** a working chamber wears its grade's large picture at its top, centred, 4 points under its edge. Under it, centred: the grade's name, the crack, the time. The picture's side is `Config.Hud.ShardArt.Chamber` (72) and gives way to `Least` (60) in a row where a chamber is infused, before anything overlaps. A chamber is now 138 points tall (`Config.Hud.Breaker.Cell`, was 124), so the column holds 248 of the body's 252 points. An empty or locked chamber is as it was.
+      - **Tested:** type check 0 new; logic 5840 offline. Studio has the code (searched). Written, not yet run: the Breaker case checks each working chamber's picture (its grade's, between 60 and 72 points) and that its name starts under the crystal's foot.
+      - **Visually reviewed:** no, it waits for the screen, with the measure above. **Director-accepted:** no.
+      - **Tier 1 calls:** an infused chamber says "Infused" on one line, and the level stays in the pane and its place line, as on a chip. "Infused · High voltage" needs two lines in an 89-point chamber, and two lines push the picture under 60. The row takes one picture size, so the words line up across it. A working chamber's "Chamber 2" gives its place to the picture; an empty one keeps it.
     - **Waits:** the Base screen's bag rows, since a kit row has no picture yet; the pane's title.
 
 - **Where a shard came from: the festival tag** (research's design, 2026-11-15, on the director's word and creative freedom: "it need to be more intuitive to know where it came from", `docs/decisions.md`). For Modulo after the six sounds' layers (AR13), then Faber.

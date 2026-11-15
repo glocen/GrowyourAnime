@@ -6773,7 +6773,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. The battery's install, the Training machine and the Festival Door follow AR16.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16. The battery's install follows AR16's.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -6876,6 +6876,24 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **Time:** by the clock, 22:22 to 22:29: the pieces, one fast look of two views, the export, two final renders, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
 
+### 5. The Festival Door and the Training machine (Modulo, 2026-11-16, 00:11 to 00:19 by the clock)
+
+In `build/handoff/Base/`, with the rest (`tools/blender/base_machines.py`). Built as void machines, like sections 1 to 3 as AR16 remade them: Modulo's reading of the director's words on the bay, the generator and the Breaker, not his word on these two. **Nothing was seen in Studio.**
+
+- **The Festival Door** (`Door`, 416 triangles; `DoorWay`, 28): a door torn open in the void and held.
+  - Two standing stones of void stone on a steel threshold, a vein of the void's light on each one's inner edge. The arch over them is broken into four stones that float in its line, with a shard of the void's light for its keystone, 14.6 up.
+  - A festival lantern hangs from a peg at each stone's shoulder, in the kit's warm `beacon`: the one warm light among the machines.
+  - `DoorWay` is the way of light, a piece by itself: a sheet in a pointed arch, 6 wide as the stand-in's and 11.6 up at its point, in one pale swatch. Its colour and its glow are Faber's: a tint, and low while no ground is open to go to. The player walks through it.
+  - **It stands turned 90**, so its way looks down the plot's way in and the spawn sees it. The stand-in faced the Strip. Solid: the threshold and the two stones.
+- **The Training machine** (`Training`, 500; `TrainingCrown`, 496): a sparring stone.
+  - A standing stone of void stone on a steel deck, two bands of the void's light round it, three blunt pegs toward the one who trains, and a target (a dot in a ring, four ticks) floating before its face at a Voidkin's chest.
+  - **The pad is in the piece**, 6 studs toward its front, where the stand-in's pad is: a small dais like a bay's, and a line of light on the floor from it to the stone.
+  - `TrainingCrown` is a piece by itself, its origin its middle: a ring of void stone lying flat with eight marks of light and four weights floating round it. It floats **8 up** round the stone's spark and **turns about its own upright** while a Voidkin trains, still when none does.
+- **The outline:** each has its hull, 0.11 studs, one a shape (by script).
+- **The look:** `base_1_door.png`, `base_1_training.png`, and `base_1_home.png` (the spawn's camera, now with no grey box in it).
+- **Content check:** PASS with four conditions (2026-11-16, judged from the code and the renders). The target stays on the stone, a dot in a ring: never on or over a fighter, never with lines through its centre. The crown stays the machine's: never over or behind a fighter, with no spokes, hub or handles. For Faber: the pad's inner disc reads dark violet in Studio, never red or glossy (it looked warm in one render). No fighter is shown against or on the pegs, and the way of light stays a flat sheet.
+- **Four facts:** implemented, yes. Tested: the export and the looks ran in Blender; not in Studio. Visually reviewed: Modulo, in Blender's renders; research's verdict comes in the game. Director-accepted: no; the two were sent to the director at 00:19.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.
@@ -6975,6 +6993,44 @@ In `build/handoff/Base/`, exported and rendered in Blender (the director to Modu
   - Tested: the spread's check by script; the kit's export, the plan and the look ran in Blender; one hull a shape. **Not tested in Studio.**
   - Visually reviewed: Modulo, in Blender's renders. Research's verdict comes in the game after the install.
   - Director-accepted: no. The placement was shown at 23:55 and the three machines at 00:04, with no word on either yet.
+
+### Delivery 2: the star pulled in, and what the base will wake, asleep (Modulo, 2026-11-16, 00:19 to 00:31)
+
+Research's answer built ("Filled by what it will become", above). **It replaces delivery 1's places**; Faber hadn't installed them. Exported and rendered in Blender. **Nothing was seen in Studio.** The director's question came at 00:16 by the PC's clock; "about 00:35" above was Modulo's wrong estimate.
+
+- **Where everything stands now** (`plan.json`, `layout`; across, then studs in from the front edge):
+
+| Thing | Delivery 1 | Now |
+|---|---|---|
+| Generator, arrival, showcase | 0, 72; 0, 10; 14, 4.9 | the same |
+| Void Breaker | 34, 38 | 26, 46 |
+| Festival Door | -34, 38 | -26, 46, **turned 90** (AR15, section 5) |
+| Bays 1 and 2 | -68 and 68, 72 | -50 and 50, 72 |
+| Battery | 34, 106 | 26, 98 |
+| Training machine | -34, 106 | -26, 98 |
+| Bays 3 and 4 (level 2), asleep | -68 and 68, 120 | -82 and 82, 72: the bus's line on outward |
+| Bays 5 and 6 (level 3), asleep | -28 and 28, 168 | -82 and 82, 108: back along the side walls |
+| The Forge, the Condenser, the Lab, asleep | none | -36, 132; 36, 132; 0, 136 (`layout.sleeping`) |
+
+- **The measure** (`layout.check`, the sleeping places counted): the nearest two are 32 apart (a bay and the next), the machines of the star 35.4 to 36.8, against 25. Nothing stands in the way in. The outer bays' pads end 13 studs inside the side walls; the line had no room for a third bay, so the last pair turns back along the wall, 36 from the pair before.
+- **Two new pieces, asleep** (`base_machines.py`). Nothing on either glows, and neither has a light.
+  - **`BaySleeping`** (324 triangles): a bay closed, on a bay's own pad and turn. The same deck and dais, dark; the crescent folded low, its tips together, over the shard resting on its foot. 5.7 high. Four stand at level 1. **When a level wakes a bay, `Bay` takes its place.**
+  - **`SleepingStone`** (300): for a machine with no model yet. A steel pad, 9 square, and a seal on it: four fangs risen from the corners and closed over a dark shard, 6.6 high. Three stand, on the Forge's, the Condenser's and the Lab's places, until each has its model and its phase.
+- **The floor** (`base_kit.py`): a grey frame under each sleeping place, and dead lines to them, casings with no current: the bus on from each open bay to the next and back along the wall; the main line from the ring's back to the Lab and on to the back wall; a spoke from the main line's node, 112 in, to the Forge and to the Condenser. Lighting a line out to its place when it wakes is a level's look, which waits.
+  - **`WingsBack` is a new floor piece**, the wings' block 96 in, on `Wings`' own mesh with its own two pictures.
+  - For the upload: **seven** colour and glow pairs (`Court1`, `Yard`, `Wings`, `YardLive`, `YardBack`, `WingsLive`, `WingsBack`). All but `Yard` and `Wings` changed since delivery 1.
+- **`BayHalo`'s motes moved up**, on Faber's measure (Pip is 7.37 tall and its hat reaches 1.88 behind its middle): they now run at 8.05 to 8.25 up, into the ring, the lowest point 7.98. That closes the content check's second condition in delivery 1.
+- **What else moves with the star:** the transformers (34 across each side, 77.5 in), the Breaker's lamp (26, 46). The floods stay.
+- **Triangles on a plot at level 1:** the yard's 82 placements 21,384, as before; the machines about 9,640 (the two new machines 1,440, the seven sleeping pieces 2,196). Real lights: 5.
+- **The look:** `base_1_gate.png` and `base_1_above_clear.png` are the two research asked for, with stand-in Voidkin in the two working bays, on the plinth and on the Training machine's pad; `base_1_home.png` and `base_1_back.png` beside them. All nineteen were rendered again.
+- **Seen, for the verdict:** the plain blocks (the wings' front block, the wings' and the yard's last block) still carry AR14's marked lot with its pilot lamp. Those frames now mark places nothing will stand on, beside the frames that do hold a sleeper. Taking the marks off is a small change to two pictures (`Base_Yard`, `Base_Wings`), if research asks.
+- **Content check:** PASS with conditions (2026-11-16, judged from the code, the pictures and distant renders). Only a shard ever sits in a sleeping bay or a sleeping stone, never a fighter or a figure. Nothing on either is lit, least of all the space inside the closed crescent in a warm colour; a waking effect or the dead lines lighting is a new asset with its own check. The back's three dead lines stay wiring under machines, never lifted out as a mark of their own (an icon, a minimap glyph, a badge) without a new check. For research's verdict: seen edge-on along the bus, a sleeping bay is a dark upright slab at the end of its pad, the nearest thing here to a headstone; read it once at 64 px with a Voidkin beside it, and if it reads so, a slight turn or tips left a little apart is the fix. The renders stay internal: the lit stand-in figures read as crosses.
+- **Time:** 00:19 to 00:31.
+- **Four facts:**
+  - Implemented: yes, as plan, pictures and meshes in the handoff.
+  - Tested: the spread's check by script; the export, the plan and the looks ran in Blender; one hull a shape. **Not tested in Studio.**
+  - Visually reviewed: Modulo, in Blender's renders. Research's verdict comes in the game after the install.
+  - Director-accepted: no. The renders went to the director at 00:28, with no word yet.
 
 ## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
 

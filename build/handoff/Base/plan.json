@@ -46,7 +46,7 @@
      "turn": 0.0
     },
     {
-     "piece": "Wings",
+     "piece": "WingsBack",
      "across": 0,
      "along": -96,
      "turn": 0.0
@@ -485,13 +485,13 @@
     },
     {
      "piece": "Transformer",
-     "across": -52.0,
+     "across": -34.0,
      "along": -77.5,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": 52.0,
+     "across": 34.0,
      "along": -77.5,
      "turn": 0
     },
@@ -523,8 +523,8 @@
     },
     {
      "name": "BreakerLamp",
-     "across": 34.0,
-     "along": -38.0,
+     "across": 26.0,
+     "along": -46.0,
      "up": 10.0,
      "colour": "#8CF6FF",
      "kind": "point",
@@ -568,10 +568,11 @@
     "counts": {
      "Court1": 1,
      "Gate1": 1,
-     "Wings": 3,
+     "Wings": 2,
      "YardLive": 1,
      "WingsLive": 1,
      "YardBack": 1,
+     "WingsBack": 1,
      "Yard": 1,
      "Wall": 42,
      "WallHalf": 6,
@@ -603,7 +604,7 @@
   "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One steel body for every machine and one accent each; the chambers glow (Neon)."
  },
  "layout": {
-  "note": "AR16, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's ends, the battery and the Training machine on the two slants toward the back. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn. Bays 3 to 6 are seeds for levels 2 and 3, on the dormant lots.",
+  "note": "AR16, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's ends, the battery and the Training machine on the two slants toward the back. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn. What the base will wake stands asleep where it will stand, dark, on a dead line that lights out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along the side walls (level 3), and in the back half the Lab on the main line with the Forge and the Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator.",
   "avenue": 20.0,
   "least": 25.0,
   "ring": 18.0,
@@ -622,53 +623,67 @@
     "inward": 72.0
    },
    "breaker": {
-    "across": 34.0,
-    "inward": 38.0
+    "across": 26.0,
+    "inward": 46.0
    },
    "door": {
-    "across": -34.0,
-    "inward": 38.0
+    "across": -26.0,
+    "inward": 46.0
    },
    "battery": {
-    "across": 34.0,
-    "inward": 106.0
+    "across": 26.0,
+    "inward": 98.0
    },
    "training": {
-    "across": -34.0,
-    "inward": 106.0
+    "across": -26.0,
+    "inward": 98.0
    },
    "bay1": {
-    "across": -68.0,
+    "across": -50.0,
     "inward": 72.0
    },
    "bay2": {
-    "across": 68.0,
+    "across": 50.0,
     "inward": 72.0
    }
   },
   "laterBays": [
    {
-    "across": -68.0,
-    "inward": 120.0
+    "across": -82.0,
+    "inward": 72.0
    },
    {
-    "across": 68.0,
-    "inward": 120.0
+    "across": 82.0,
+    "inward": 72.0
    },
    {
-    "across": -28.0,
-    "inward": 168.0
+    "across": -82.0,
+    "inward": 108.0
    },
    {
-    "across": 28.0,
-    "inward": 168.0
+    "across": 82.0,
+    "inward": 108.0
    }
   ],
+  "sleeping": {
+   "forge": {
+    "across": -36.0,
+    "inward": 132.0
+   },
+   "condenser": {
+    "across": 36.0,
+    "inward": 132.0
+   },
+   "lab": {
+    "across": 0.0,
+    "inward": 136.0
+   }
+  },
   "check": {
    "nearest": [
-    48.1,
-    "battery",
-    "bay2"
+    32.0,
+    "bay1",
+    "bay3"
    ],
    "least": 25.0,
    "inTheWay": []
@@ -700,7 +715,7 @@
    {
     "across": [
      18.0,
-     61.8
+     43.8
     ],
     "along": [
      -72.0,
@@ -710,7 +725,7 @@
    {
     "across": [
      -18.0,
-     -61.8
+     -43.8
     ],
     "along": [
      -72.0,
@@ -720,41 +735,41 @@
    {
     "across": [
      12.73,
-     28.8
+     20.8
     ],
     "along": [
      -59.27,
-     -43.2
+     -51.2
     ]
    },
    {
     "across": [
      -12.73,
-     -28.8
+     -20.8
     ],
     "along": [
      -59.27,
-     -43.2
+     -51.2
     ]
    },
    {
     "across": [
      12.73,
-     28.8
+     20.8
     ],
     "along": [
      -84.73,
-     -100.8
+     -92.8
     ]
    },
    {
     "across": [
      -12.73,
-     -28.8
+     -20.8
     ],
     "along": [
      -84.73,
-     -100.8
+     -92.8
     ]
    },
    {
@@ -781,55 +796,55 @@
   "placements": [
    {
     "piece": "Breaker",
-    "across": 34.0,
-    "along": -38.0,
+    "across": 26.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Breaker's body"
    },
    {
     "piece": "BreakerChamber",
-    "across": 30.5,
-    "along": -38.0,
+    "across": 22.5,
+    "along": -46.0,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 1"
    },
    {
     "piece": "BreakerChamber",
-    "across": 37.5,
-    "along": -38.0,
+    "across": 29.5,
+    "along": -46.0,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 2"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 43.0,
-    "along": -38.0,
+    "across": 35.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 1"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 46.0,
-    "along": -38.0,
+    "across": 38.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 2"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 49.0,
-    "along": -38.0,
+    "across": 41.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 3"
    },
    {
     "piece": "Bay",
-    "across": -68.0,
+    "across": -50.0,
     "along": -72.0,
     "up": 0.0,
     "turn": 0.0,
@@ -837,7 +852,7 @@
    },
    {
     "piece": "BayHalo",
-    "across": -68.0,
+    "across": -50.0,
     "along": -72.0,
     "up": 0.0,
     "turn": 0.0,
@@ -845,7 +860,7 @@
    },
    {
     "piece": "Bay",
-    "across": 68.0,
+    "across": 50.0,
     "along": -72.0,
     "up": 0.0,
     "turn": 180.0,
@@ -853,11 +868,67 @@
    },
    {
     "piece": "BayHalo",
-    "across": 68.0,
+    "across": 50.0,
     "along": -72.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 2's light, while a worker works there"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": -82.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "bay 3, asleep until level 2"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": 82.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 180.0,
+    "standsFor": "bay 4, asleep until level 2"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": -82.0,
+    "along": -108.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "bay 5, asleep until level 3"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": 82.0,
+    "along": -108.0,
+    "up": 0.0,
+    "turn": 180.0,
+    "standsFor": "bay 6, asleep until level 3"
+   },
+   {
+    "piece": "SleepingStone",
+    "across": -36.0,
+    "along": -132.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Forge's place, asleep"
+   },
+   {
+    "piece": "SleepingStone",
+    "across": 36.0,
+    "along": -132.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Condenser's place, asleep"
+   },
+   {
+    "piece": "SleepingStone",
+    "across": 0.0,
+    "along": -136.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Lab's place, asleep"
    },
    {
     "piece": "Generator",
@@ -885,27 +956,59 @@
    },
    {
     "piece": "BatteryRack",
-    "across": 34.0,
-    "along": -106.0,
+    "across": 26.0,
+    "along": -98.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the battery"
    },
    {
     "piece": "BatteryCell",
-    "across": 33.25,
-    "along": -106.95,
+    "across": 25.25,
+    "along": -98.95,
     "up": 0.6,
     "turn": 0.0,
     "standsFor": "the battery's cell 1"
    },
    {
     "piece": "BatteryCell",
-    "across": 34.75,
-    "along": -106.95,
+    "across": 26.75,
+    "along": -98.95,
     "up": 0.6,
     "turn": 0.0,
     "standsFor": "the battery's cell 2"
+   },
+   {
+    "piece": "Door",
+    "across": -26.0,
+    "along": -46.0,
+    "up": 0.0,
+    "turn": 90.0,
+    "standsFor": "the Festival Door, its way looking down the way in"
+   },
+   {
+    "piece": "DoorWay",
+    "across": -26.0,
+    "along": -46.0,
+    "up": 0.0,
+    "turn": 90.0,
+    "standsFor": "the Door's way of light"
+   },
+   {
+    "piece": "Training",
+    "across": -26.0,
+    "along": -98.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Training machine, its pad toward the front"
+   },
+   {
+    "piece": "TrainingCrown",
+    "across": -26.0,
+    "along": -98.0,
+    "up": 8.0,
+    "turn": 0.0,
+    "standsFor": "the Training machine's crown, turning about its own upright while a Voidkin trains"
    }
   ],
   "battery": {
@@ -918,36 +1021,36 @@
    "up": 0.6,
    "seats": [
     {
-     "across": 33.25,
-     "along": -106.95
+     "across": 25.25,
+     "along": -98.95
     },
     {
-     "across": 34.75,
-     "along": -106.95
+     "across": 26.75,
+     "along": -98.95
     },
     {
-     "across": 33.25,
-     "along": -105.05
+     "across": 25.25,
+     "along": -97.05
     },
     {
-     "across": 34.75,
-     "along": -105.05
+     "across": 26.75,
+     "along": -97.05
     },
     {
-     "across": 31.75,
-     "along": -106.95
+     "across": 23.75,
+     "along": -98.95
     },
     {
-     "across": 36.25,
-     "along": -106.95
+     "across": 28.25,
+     "along": -98.95
     },
     {
-     "across": 31.75,
-     "along": -105.05
+     "across": 23.75,
+     "along": -97.05
     },
     {
-     "across": 36.25,
-     "along": -105.05
+     "across": 28.25,
+     "along": -97.05
     }
    ]
   }

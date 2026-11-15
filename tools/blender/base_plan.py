@@ -75,6 +75,7 @@ STAND_INS = {"machine": "#7E8AB0", "chamber": "#BFEFF5", "waiting": "#A2A7BC", "
 
 
 BAY_LOTS = base.BAYS       # in the order they open
+SLEEPING = dict(forge=base.FORGE, condenser=base.CONDENSER, lab=base.LAB)   # what the base wakes in later phases
 
 
 def machines(level=1):
@@ -90,12 +91,21 @@ def machines(level=1):
         turn = 0.0 if x < 0 else 180.0                              # the ring on the outer side
         made.append(("Bay", x, inward, 0.0, turn, f"bay {index + 1}"))
         made.append(("BayHalo", x, inward, 0.0, turn, f"bay {index + 1}'s light, while a worker works there"))
+    for index, (x, inward) in enumerate(BAY_LOTS):
+        if index >= base.BAYS_AT[level]:
+            made.append(("BaySleeping", x, inward, 0.0, 0.0 if x < 0 else 180.0, f"bay {index + 1}, asleep until level {index // 2 + 1}"))
+    for name, (x, inward) in SLEEPING.items():
+        made.append(("SleepingStone", x, inward, 0.0, 0.0, f"the {name.capitalize()}'s place, asleep"))
     made.append(("Generator", *GENERATOR, 0.0, 0.0, "the generator"))
     made.append(("GeneratorRotor", *GENERATOR, base.machines.AXLE, 0.0, "the generator's rotor, turning about its own X"))
     made.append(("GeneratorRing", *GENERATOR, base.machines.AXLE, 90.0, "the generator's great ring, turning about its own X, slowly, against the rotor"))
     made.append(("BatteryRack", *BATTERY, 0.0, 0.0, "the battery"))
     for index, (x, y) in enumerate(base.machines.SEATS[:base.machines.CELLS_AT[level]]):
         made.append(("BatteryCell", BATTERY[0] + x, BATTERY[1] - y, base.machines.SEAT, 0.0, f"the battery's cell {index + 1}"))
+    made.append(("Door", *DOOR, 0.0, 90.0, "the Festival Door, its way looking down the way in"))
+    made.append(("DoorWay", *DOOR, 0.0, 90.0, "the Door's way of light"))
+    made.append(("Training", *TRAINING, 0.0, 0.0, "the Training machine, its pad toward the front"))
+    made.append(("TrainingCrown", *TRAINING, base.machines.CROWN, 0.0, "the Training machine's crown, turning about its own upright while a Voidkin trains"))
     return made
 
 
@@ -107,14 +117,17 @@ def stations(level=1):
 
 
 def spread(level=1):
-    """The spread's own check: the nearest two stations, and whether anything stands in the way in."""
+    """The spread's own check: the nearest two places, the sleeping ones counted, and whether anything stands in the
+    way in."""
     named = stations(level)
+    named.update({f"bay{i + 1}": at for i, at in enumerate(BAY_LOTS)})
+    named.update(SLEEPING)
     names = sorted(named)
     near = min((math.dist(named[a], named[b]), a, b) for i, a in enumerate(names) for b in names[i + 1:])
     reach = {"Showcase": 3.05, "FloodMast": 1.7, "Transformer": 1.95}   # half a piece's width, of what stands near the way
     inside = [name for name, x, along, _ in plan(level)[0]
               if name in reach and abs(x) - reach[name] < base.AVENUE / 2 and -along < GENERATOR[1]]
-    inside += [name for name, at in named.items() if name != "generator" and abs(at[0]) < base.AVENUE / 2 + 5.0]
+    inside += [name for name, at in named.items() if abs(at[0]) < base.AVENUE / 2 + 5.0 and at[1] < GENERATOR[1]]
     return dict(nearest=[round(near[0], 1), near[1], near[2]], least=APART, inTheWay=inside)
 
 
@@ -132,7 +145,7 @@ def plan(level=1):
     for inward in floors:
         if inward >= deep:                                          # the yard behind the court, block after block:
             put({deep: "YardLive", deep + block: "YardBack"}.get(inward, "Yard"), 0, inward)   # the heart's, the battery's, then dormant
-        put("WingsLive" if inward == block else "Wings", 0, inward)   # and the deck each side: the bus's block live, the rest plain
+        put({block: "WingsLive", 2 * block: "WingsBack"}.get(inward, "Wings"), 0, inward)   # and the deck each side: the bus's block, the last bays', the rest plain
     # the wall, on the plot's own edge, the same on both sides of the middle line: each post carries the panel to the
     # next, and a half panel closes a run on the plot's 200. The sides run in from the front corners' posts; the back
     # runs in from its corners' posts to the way out at its middle; the front runs out from the gate's shoulders
@@ -214,12 +227,16 @@ def write_plan(out: Path):
                  "ends, the battery and the Training machine on the two slants toward the back. The way in is "
                  "`avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's "
                  "chambers and waiting places keep their offsets from its body, and every machine keeps its turn. "
-                 "Bays 3 to 6 are seeds for levels 2 and 3, on the dormant lots.",
+                 "What the base will wake stands asleep where it will stand, dark, on a dead line that lights "
+                 "out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along "
+                 "the side walls (level 3), and in the back half the Lab on the main line with the Forge and the "
+                 "Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator.",
             avenue=base.AVENUE, least=APART, ring=base.RING,
             spawn=dict(across=SPAWN[0], inward=SPAWN[1], facing="into the plot"),
             showcase=dict(across=SHOWCASE[0], inward=SHOWCASE[1]),
             stations={name: dict(across=x, inward=i) for name, (x, i) in stations().items()},
             laterBays=[dict(across=x, inward=i) for x, i in BAY_LOTS[base.BAYS_AT[1]:]],
+            sleeping={name: dict(across=x, inward=i) for name, (x, i) in SLEEPING.items()},
             check=spread()),
         current=dict(
             note="the live conduits drawn in the floor, each from the generator's end outward: where the current "
@@ -286,7 +303,6 @@ class Yard:
         self.stock = base.Stock(maps, scene, self.kit)
         flat = {name: look.painted(f"Flat{name}", code, code) for name, code in {**STAND_INS, **GROUND}.items()
                 if name != "note"}
-        flat["light"] = look.glowing("DoorLight", "#8CF6FF", 1.2)
         flat["chamber"] = look.glowing("Chamber", STAND_INS["chamber"], 1.0)
         flat["lot"] = tile_material("Lot", maps / "Base_Deck_Color.png", base.DECK[1], GROUND["lot"])
         self.flat, self.stone = flat, tile_material("Stones", STREET, kit.PAVING[1])
@@ -301,7 +317,6 @@ class Yard:
         f, level = self.flat, self.level
         tag = "A" if face > 0 else "B"
         b = lambda name, size, x, i, z, mat: self.box(front, face, f"{name}{tag}", size, x, i, z, f[mat] if isinstance(mat, str) else mat)  # noqa: E731
-        (door, door_in), (train, train_in) = DOOR, TRAINING
         b("Lot", (PLOT, PLOT, 0.4), 0, PLOT / 2, -0.23, "lot")
         for x in (-3.5, 3.5):                                      # a shard in each chamber, the builder's own
             b("Shard", (1.0, 1.0, 1.7), BREAKER[0] + x, BREAKER[1], sum(base.machines.GAP) / 2, "chamber")
@@ -312,13 +327,8 @@ class Yard:
             self.person((wx, wy), f"Worker{tag}{index}")
         wx, wy, _ = self.at(front, face, *SHOWCASE)                # and the owner's Voidkin on the showcase
         self.person((wx, wy), f"Shown{tag}", base.show.TOP)
-        b("Training", (6, 5, 4), train, train_in, 2, "machine")
-        b("TrainingTop", (6.2, 5.2, 0.5), train, train_in, 4.2, "training")
-        b("TrainingPad", (4, 4, 0.4), train, train_in - 6, 0.2, "bay")
-        for x in (-3.5, 3.5):
-            b("DoorPost", (1, 1, 10), door + x, door_in, 5, "machine")
-        b("DoorLintel", (8, 1, 1), door, door_in, 9.5, "machine")
-        b("DoorWay", (6, 0.2, 9), door, door_in, 4.5, "light")
+        wx, wy, _ = self.at(front, face, TRAINING[0], TRAINING[1] - base.machines.TRAINEE)   # and one who trains
+        self.person((wx, wy), f"Trainee{tag}", 0.56)
         b("Spawn", (6, 6, 0.2), *SPAWN, 0.1, "spawn")
         places, lights = plan(level)
         _, watts, _ = look.DIRECTIONS["M"]["string_light"]
@@ -403,6 +413,8 @@ def see(out: Path, level, fast, clear, only=()):
              "generator": ((gx - 15.0, -(gi - 34.0), 8.0), (gx, -gi, 11.5)),
              "battery": ((tx - 5.5, -(ti - 9.5), 4.6), (tx, -ti, 1.4)),
              "show": ((6.0, 22.0, 6.0), (SHOWCASE[0], -SHOWCASE[1], 4.5)), "shown": ((21.5, -13.5, 5.5), (SHOWCASE[0], -SHOWCASE[1], 3.6)),
+             "door": ((DOOR[0] + 20.0, -(DOOR[1] - 9.0), 6.0), (DOOR[0], -DOOR[1], 6.6)),
+             "training": ((TRAINING[0] + 11.0, -(TRAINING[1] - 17.0), 5.5), (TRAINING[0], -(TRAINING[1] - 2.0), 4.2)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:
         views = {name: views[name] for name in only}

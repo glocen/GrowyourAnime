@@ -32,6 +32,20 @@ middle, and a cell a seat as the battery's cap grows with the base's level (rese
 kWh), two, four and eight. A cell is its own piece, so the bank is its own meter: the builder lights the cells one
 after another as the charge rises.
 
+The Festival Door (`Door`, `DoorWay`): a door torn open in the void and held. Two standing stones on a threshold,
+the arch over them broken into stones that float in its line, a shard of the void's light for its keystone, and a
+festival lantern hung at each stone's shoulder, the one warm light in the base. The way of light between them is a
+piece by itself in one pale swatch, the builder's to tint and to dim.
+
+The Training machine (`Training`, `TrainingCrown`): a sparring stone. A standing stone of void stone with blunt pegs
+toward the one who trains, a target of the void's light floating before its face, and a pad out in front where the
+Voidkin stands. Over the stone floats its crown, a ring with four weights of void stone round a spark, a piece by
+itself that the builder turns while a Voidkin trains.
+
+What the base will wake stands asleep where it will stand (`BaySleeping`, `SleepingStone`; research, 2026-11-16):
+dark and unlit, never a building site. A sleeping bay is a bay closed: its crescent folded low over its shard. A
+sleeping stone is a seal, four fangs closed over a shard, for a machine that has no model yet.
+
 Not run by itself: base_kit.py takes PIECES into its own.
 """
 
@@ -65,6 +79,9 @@ SEAT = 0.6                       # a cell's seat on the rack, up from the floor
 # the middle out
 SEATS = [(-0.75, -0.95), (0.75, -0.95), (-0.75, 0.95), (0.75, 0.95), (-2.25, -0.95), (2.25, -0.95), (-2.25, 0.95), (2.25, 0.95)]
 CELLS_AT = {1: 2, 2: 4, 3: 8}    # cells by the base's level, with the battery's cap
+WAY = (3.0, 11.6)                # the Door's way of light: its half width, and its point's height
+CROWN = 8.0                      # the Training machine's crown: its middle, up from the floor
+TRAINEE = 6.0                    # the Training machine's pad: its middle, out from the stone's toward the piece's front
 
 
 def post(m, x, y, z0, z1, t, sw, ink=False):
@@ -126,13 +143,15 @@ def vein(m, points, radii, heart, sw="void", r=0.1):
     m.tube([Vector(p) + (heart - Vector(p)).normalized() * q * 0.97 for p, q in zip(points, radii)], r, sw)
 
 
-def hoop(m, at, r0, r1, thick, sides, sw, ink=True):
-    """A ring about X, its middle at `at`: a band from `r0` out to `r1`, `thick` along its axle. With `ink`, its
-    drawn edge."""
+def hoop(m, at, r0, r1, thick, sides, sw, ink=True, lying=False):
+    """A ring about X, or about Z when `lying`, its middle at `at`: a band from `r0` out to `r1`, `thick` along its
+    axle. With `ink`, its drawn edge."""
     at = Vector(at)
     edge = m.ink_t if ink and m.ink is not None else None
 
     def corner(r, h, a):
+        if lying:
+            return at + Vector((r * math.cos(a), r * math.sin(a), h))
         return at + Vector((h, -r * math.sin(a), r * math.cos(a)))
 
     for grow, hull in ((0.0, False),) + (((edge, True),) if edge else ()):
@@ -279,7 +298,7 @@ def bay():
 
 def bay_halo():
     """A working bay's own light, a piece by itself: a ring round the worker's feet on the dais, a ring in the eye
-    round its shard, and three motes rising from over the worker's head to the eye, growing as they near it: the
+    round its shard, and three motes drawn from over the worker's head into the eye, growing as they near it: the
     worker's power, drawn out. Every face is one pale swatch, so the builder gives it the worker's rarity colour
     (docs/test-requests.md, TR22) and takes it away when the bay is empty."""
     m = Mesh(None)
@@ -287,13 +306,50 @@ def bay_halo():
     back, eye = -(side / 2 - 0.55), HALO[0]
     ring(m, back + 0.02, eye, HALO[1] - 0.42, HALO[1] - 0.08, 0.14, 12, "lamp")
     m.lathe([(2.75, 0.2), (3.05, 0.2)], (0, 0, top), 12, "lamp", caps=False)
-    for x, z, r in ((-1.5, 6.5, 0.16), (-2.5, 7.1, 0.22), (-3.4, 7.6, 0.28)):
+    for x, z, r in ((-1.5, 8.25, 0.16), (-2.4, 8.15, 0.22), (-3.3, 8.05, 0.28)):   # over the tallest Voidkin's hat (Pip, 7.37: Faber's measure)
         shard(m, (x, 0, z), r, r * 3.4, "lamp")
     return Piece("BayHalo", m, lights=[("Rarity", (back + 1.4, 0.0, eye - 0.6), "#F6FCFF")],
                  note="stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on "
                       "every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without "
                       "the kit's pictures). Its light is a PointLight in the same colour, the first to go if the "
                       "plot's lights weigh. Look only")
+
+
+def bay_sleeping():
+    """A bay asleep, on a bay's own pad and turn: the same deck and dais, dark, and the crescent closed, its two
+    horns folded low with their tips together over the shard, which rests dark on the crescent's foot. Nothing in it
+    is lit. It opens into a Bay when its level wakes it."""
+    m = Mesh()
+    side, top = BAY
+    back = -(side / 2 - 0.55)
+    m.box((side, side, top), (0, 0, top / 2), "girder", ink=True)
+    m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, top), 12, "abyss")
+    m.lathe([(2.6, 0.19), (2.6, 0.16)], (0, 0, top), 12, "dark")
+    m.box((1.3, side - 1.2, 0.6), (back, 0, top + 0.3), "abyss", ink=True)
+    for sy in (-1, 1):
+        horn(m, [(back, sy * 3.7, top + 0.5), (back, sy * 4.3, 2.7), (back, sy * 3.0, 4.7), (back, sy * 0.3, 5.7)],
+             [0.8, 0.72, 0.5, 0.05], "abyss", flat=(1.0, 0.0, 0.0), deep=0.75)
+        horn(m, [(4.35, sy * 4.35, top), (4.0, sy * 4.0, top + 0.9)], [0.42, 0.05], "abyss", flat=(sy, -1.0, 0.0))
+    shard(m, (back, 0, 2.6), 0.7, 2.7, "abyss", lean=0.55, ink=True)
+    return Piece("BaySleeping", m, solid="a box, 10 square, 0.4 high, and the crescent's two feet",
+                 note="stands where a Bay will stand, the same turn, until the base's level wakes that bay; then the "
+                      "Bay takes its place. 5.7 high. Nothing on it glows")
+
+
+def sleeping_stone():
+    """A machine asleep, for one that has no model yet: a steel pad with a dais of void stone, and on it a seal, four
+    fangs risen from the corners and closed together over a dark shard. Nothing in it is lit."""
+    m = Mesh()
+    m.box((9.0, 9.0, 0.4), (0, 0, 0.2), "girder", ink=True)
+    m.lathe([(3.7, 0.16), (3.9, 0.0)], (0, 0, 0.4), 12, "abyss")
+    m.lathe([(2.2, 0.19), (2.2, 0.16)], (0, 0, 0.4), 12, "dark")
+    for sx, sy in SIGNS:
+        horn(m, [(sx * 3.3, sy * 3.3, 0.4), (sx * 2.9, sy * 2.9, 3.6), (sx * 0.3, sy * 0.3, 6.6)], [0.8, 0.62, 0.05],
+             "abyss", flat=(sy, -sx, 0.0))
+    shard(m, (0, 0, 2.5), 0.85, 3.2, "abyss", lean=0.55, ink=True)
+    return Piece("SleepingStone", m, solid="a box, 9 square, 0.4 high, and the four fangs' feet",
+                 note="stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until "
+                      "that machine has its model and its phase. 6.6 high. Nothing on it glows")
 
 
 # --- the generator -----------------------------------------------------------------------------------------------------
@@ -415,6 +471,119 @@ def battery_cell():
                       f"charge: the builder lights the cells in the seats' order as the battery fills. Look only")
 
 
-PIECES = {"Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
-          "Bay": bay, "BayHalo": bay_halo, "Generator": generator, "GeneratorRotor": generator_rotor,
+# --- the Festival Door -------------------------------------------------------------------------------------------------
+
+def door():
+    """The Festival Door's frame: a steel threshold with a line of the void's light round it, two standing stones of
+    void stone leaning a little apart, a vein on each one's inner edge, and over them the arch in four floating
+    stones and a keystone of the void's light. A festival lantern hangs from a peg at each stone's shoulder. Both
+    faces are fronts."""
+    m = Mesh()
+    half, point = WAY
+    m.box((10.4, 2.8, 0.4), (0, 0, 0.2), "girder", ink=True)
+    m.box((10.5, 2.9, 0.1), (0, 0, 0.2), "void")
+    m.box((half * 2, 1.7, 0.1), (0, 0, 0.43), "dark")                                 # the sill, under the way
+    for sx in (-1, 1):
+        stone = [(sx * 4.0, 0, 0.4), (sx * 4.45, 0, 5.0), (sx * 4.1, 0, 9.4)]
+        widths = [1.0, 0.9, 0.6]
+        horn(m, stone, widths, "abyss", deep=0.9)
+        vein(m, stone, widths, (0, 0, 5.0), r=0.09)
+        horn(m, [(sx * 3.45, 0, 10.5), (sx * 2.2, 0, 12.0)], [0.5, 0.4], "abyss", deep=0.8)      # the arch, floating
+        horn(m, [(sx * 1.75, 0, 12.4), (sx * 0.75, 0, 12.95)], [0.34, 0.26], "abyss", deep=0.8)
+        horn(m, [(sx * 4.85, 0, 7.75), (sx * 5.95, 0, 8.05)], [0.2, 0.15], "abyss", ink=False)   # the lantern's peg
+        m.box((0.1, 0.1, 0.34), (sx * 5.8, 0, 7.72), "girder")
+        m.box((0.74, 0.74, 0.14), (sx * 5.8, 0, 7.5), "girder")
+        m.box((0.6, 0.6, 0.86), (sx * 5.8, 0, 7.0), "beacon")
+        m.box((0.74, 0.74, 0.14), (sx * 5.8, 0, 6.5), "girder")
+        m.box((0.2, 0.2, 0.3), (sx * 5.8, 0, 6.28), "copper")
+    shard(m, (0, 0, 13.6), 0.5, 2.0, "void")
+    return Piece("Door", m, solid="the threshold, 10.4 by 2.8 and 0.4 high, and the two stones on it, each about 2 by "
+                                  "1.8 and 9.4 high; the way between them stays open",
+                 note=f"its middle on the stand-in's, 14.6 high at its keystone. Turned 90, so its way looks down the "
+                      f"plot's way in. The way is {half * 2:g} wide between the stones, as the stand-in's")
+
+
+def door_way():
+    """The Door's way of light, a piece by itself: a sheet in a pointed arch between the stones, pale at its foot and
+    brighter toward its point, seen from both sides."""
+    m = Mesh(None)
+    half, point = WAY
+    edge = [(half, 0.5), (half, 7.6), (half - 0.7, 9.4), (half - 1.8, 10.8), (0.0, point)]
+    for (x0, z0), (x1, z1) in zip(edge, edge[1:]):
+        shade = 0.85 - 0.7 * (z0 + z1) / 2 / point
+        for sx in (-1, 1):
+            pts = [(0, 0, z0), (sx * x0, 0, z0), (sx * x1, 0, z1)] + ([(0, 0, z1)] if x1 else [])
+            m.flat(pts, "lamp", t=shade)
+    return Piece("DoorWay", m,
+                 note=f"stands where its Door stands, the same turn: {half * 2:g} wide, from 0.5 to {point:g} up at its "
+                      f"point. One pale swatch on every face: its colour is the builder's (a tint, or the mesh in Neon "
+                      f"without the kit's pictures), and its glow is the Door's state, low while no ground is open to "
+                      f"go to. Look only: the player walks through it")
+
+
+# --- the Training machine ----------------------------------------------------------------------------------------------
+
+def target(m, at, r0, r1, sides, sw):
+    """A flat ring facing the piece's front and its back, its middle at `at`."""
+    at = Vector(at)
+    for i in range(sides):
+        a, b = math.tau * i / sides, math.tau * (i + 1) / sides
+        m.flat([at + Vector((r * math.sin(t), 0, r * math.cos(t))) for r, t in ((r0, a), (r1, a), (r1, b), (r0, b))], sw)
+
+
+def training():
+    """The Training machine: a sparring stone. A standing stone of void stone on a steel deck, two bands of the
+    void's light round it, three blunt pegs toward the one who trains, and a target of the void's light floating
+    before its face at a Voidkin's chest. Out in front, 6 studs toward the piece's front, the pad where the Voidkin
+    stands, a small dais like a bay's, and a line of light on the floor from it to the stone."""
+    m = Mesh()
+    q = math.sqrt(0.5)
+    m.box((6.0, 4.6, 0.5), (0, 0, 0.25), "girder", ink=True)
+    m.box((6.1, 4.7, 0.1), (0, 0, 0.25), "void")
+    horn(m, [(0, 0, 0.5), (0, 0, 3.4), (0, 0, 6.6)], [2.0, 1.8, 1.25], "abyss", flat=(q, q, 0.0))
+    m.box((2.86, 2.86, 0.14), (0, 0, 1.4), "void")
+    m.box((2.06, 2.06, 0.14), (0, 0, 5.8), "void")
+    m.box((1.5, 1.5, 0.3), (0, 0, 6.75), "bone", ink=True)
+    shard(m, (0, 0, CROWN), 0.42, 1.7, "void")
+    for sx in (-1, 1):                                                                # the pegs, blunt
+        horn(m, [(sx * 0.7, 0.9, 5.0), (sx * 1.3, 2.2, 5.25)], [0.3, 0.2], "abyss", flat=(0.0, 0.0, 1.0))
+    horn(m, [(0, 1.15, 1.95), (0, 2.4, 1.8)], [0.3, 0.2], "abyss", flat=(1.0, 0.0, 0.0))
+    face = 1.72                                                                       # the target, floating before the stone
+    target(m, (0, face, 3.55), 0.02, 0.3, 8, "void")
+    target(m, (0, face, 3.55), 0.72, 0.92, 12, "void")
+    for sx, sz in EDGES:
+        m.box((0.12 + 0.3 * abs(sx), 0.06, 0.12 + 0.3 * abs(sz)), (sx * 1.3, face, 3.55 + sz * 1.3), "void")
+    m.box((4.0, 4.0, 0.4), (0, TRAINEE, 0.2), "girder", ink=True)                     # the pad
+    m.box((4.1, 4.1, 0.1), (0, TRAINEE, 0.2), "void")
+    m.lathe([(1.75, 0.16), (1.9, 0.0)], (0, TRAINEE, 0.4), 12, "abyss")
+    m.lathe([(1.42, 0.17), (1.6, 0.17)], (0, TRAINEE, 0.4), 12, "void", caps=False)
+    m.lathe([(1.12, 0.19), (1.12, 0.16)], (0, TRAINEE, 0.4), 12, "dark")
+    m.box((0.3, TRAINEE - 4.3, 0.08), (0, (TRAINEE + 0.3) / 2, 0.04), "void")
+    return Piece("Training", m, solid=f"the deck, 6 by 4.6 and 0.5 high, the stone on it, about 2.8 square and 6.9 high, "
+                                      f"and the pad, 4 square and 0.4 high, {TRAINEE:g} toward the piece's front",
+                 note=f"its middle on the stand-in's; the pad is in the piece, {TRAINEE:g} toward its front, where the "
+                      f"stand-in's pad is. The one who trains stands at the pad's middle, facing the stone. Its crown "
+                      f"is TrainingCrown, floating {CROWN:g} up")
+
+
+def training_crown():
+    """The Training machine's crown, a piece by itself, its origin its middle: a ring of void stone lying flat, eight
+    marks of the void's light on its rim, and four weights of void stone floating round it."""
+    m = Mesh()
+    hoop(m, (0, 0, 0), 2.3, 2.75, 0.34, 16, "abyss", lying=True)
+    for k in range(8):
+        a = math.tau * k / 8
+        m.box((0.3, 0.5, 0.42), (2.77 * math.cos(a), 2.77 * math.sin(a), 0), "void", rot=(0.0, 0.0, a))
+    for k in range(4):
+        a = math.tau * (k + 0.5) / 4
+        shard(m, (3.55 * math.cos(a), 3.55 * math.sin(a), 0.1), 0.5, 2.0, "abyss", lean=0.35, ink=True)
+    return Piece("TrainingCrown", m,
+                 note=f"its origin is its middle: it floats {CROWN:g} up at the Training machine's middle, round the "
+                      f"stone's spark, and turns about its own upright while a Voidkin trains, still when none does. "
+                      f"7.6 across at its weights. Look only")
+
+
+PIECES = {"Door": door, "DoorWay": door_way, "Training": training, "TrainingCrown": training_crown,
+          "Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
+          "Bay": bay, "BayHalo": bay_halo, "BaySleeping": bay_sleeping, "SleepingStone": sleeping_stone, "Generator": generator, "GeneratorRotor": generator_rotor,
           "GeneratorRing": generator_ring, "BatteryRack": battery_rack, "BatteryCell": battery_cell}

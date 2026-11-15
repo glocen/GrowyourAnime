@@ -4,7 +4,7 @@
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel.",
  "ink": "the drawn edge is a hull 0.11 studs out (base_ink.py); Lantern Row's is 0.14",
- "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive).",
+ "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack).",
  "maps": {
   "Base_Deck_Color.png": "the plain deck, a tile 8 studs square (four plates), for a Texture on a Part"
  },
@@ -135,6 +135,28 @@
    ],
    "colour": "maps/Base_WingsLive_Color.png",
    "glow": "maps/Base_WingsLive_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+  },
+  "WingsBack": {
+   "mesh": "meshes/WingsBack.json",
+   "triangles": 4,
+   "vertices": 8,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    200.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_WingsBack_Color.png",
+   "glow": "maps/Base_WingsBack_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
@@ -327,6 +349,94 @@
    "lights": [],
    "note": ""
   },
+  "Door": {
+   "mesh": "meshes/Door.json",
+   "triangles": 416,
+   "vertices": 284,
+   "centre": [
+    0.0,
+    7.245,
+    0.0
+   ],
+   "size": [
+    12.34,
+    14.71,
+    3.02
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the threshold, 10.4 by 2.8 and 0.4 high, and the two stones on it, each about 2 by 1.8 and 9.4 high; the way between them stays open",
+   "lights": [],
+   "note": "its middle on the stand-in's, 14.6 high at its keystone. Turned 90, so its way looks down the plot's way in. The way is 6 wide between the stones, as the stand-in's"
+  },
+  "DoorWay": {
+   "mesh": "meshes/DoorWay.json",
+   "triangles": 28,
+   "vertices": 13,
+   "centre": [
+    0.0,
+    6.05,
+    -0.0
+   ],
+   "size": [
+    6.0,
+    11.1,
+    0.0
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "stands where its Door stands, the same turn: 6 wide, from 0.5 to 11.6 up at its point. One pale swatch on every face: its colour is the builder's (a tint, or the mesh in Neon without the kit's pictures), and its glow is the Door's state, low while no ground is open to go to. Look only: the player walks through it"
+  },
+  "Training": {
+   "mesh": "meshes/Training.json",
+   "triangles": 500,
+   "vertices": 316,
+   "centre": [
+    0.0,
+    4.37,
+    -2.85
+   ],
+   "size": [
+    6.22,
+    8.96,
+    10.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 6 by 4.6 and 0.5 high, the stone on it, about 2.8 square and 6.9 high, and the pad, 4 square and 0.4 high, 6 toward the piece's front",
+   "lights": [],
+   "note": "its middle on the stand-in's; the pad is in the piece, 6 toward its front, where the stand-in's pad is. The one who trains stands at the pad's middle, facing the stone. Its crown is TrainingCrown, floating 8 up"
+  },
+  "TrainingCrown": {
+   "mesh": "meshes/TrainingCrown.json",
+   "triangles": 496,
+   "vertices": 288,
+   "centre": [
+    0.0,
+    -0.2,
+    0.0
+   ],
+   "size": [
+    6.24,
+    2.22,
+    6.24
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its middle: it floats 8 up at the Training machine's middle, round the stone's spark, and turns about its own upright while a Voidkin trains, still when none does. 7.6 across at its weights. Look only"
+  },
   "Breaker": {
    "mesh": "meshes/Breaker.json",
    "triangles": 682,
@@ -446,6 +556,50 @@
     }
    ],
    "note": "stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without the kit's pictures). Its light is a PointLight in the same colour, the first to go if the plot's lights weigh. Look only"
+  },
+  "BaySleeping": {
+   "mesh": "meshes/BaySleeping.json",
+   "triangles": 324,
+   "vertices": 200,
+   "centre": [
+    -0.075,
+    2.88912,
+    0.0
+   ],
+   "size": [
+    10.37,
+    5.998,
+    10.233
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
+   "lights": [],
+   "note": "stands where a Bay will stand, the same turn, until the base's level wakes that bay; then the Bay takes its place. 5.7 high. Nothing on it glows"
+  },
+  "SleepingStone": {
+   "mesh": "meshes/SleepingStone.json",
+   "triangles": 300,
+   "vertices": 184,
+   "centre": [
+    0.0,
+    3.34176,
+    0.0
+   ],
+   "size": [
+    9.22,
+    6.904,
+    9.22
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 9 square, 0.4 high, and the four fangs' feet",
+   "lights": [],
+   "note": "stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until that machine has its model and its phase. 6.6 high. Nothing on it glows"
   },
   "Generator": {
    "mesh": "meshes/Generator.json",

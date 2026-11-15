@@ -6,8 +6,7 @@ py tools/blockout/base_yard.py <out_dir> [views]
   <out>/yard_<view>.png   `gate` walking in from the Strip, `court` from where the player arrives, `heart` near the
                           generator, `generator` close on it, `bay` toward a bay from the way in, `down` from above. Naming views draws those.
 
-The machines with no model yet stand as plain boxes: the Festival Door and the Training machine. People are bone
-stand-ins. It is a look at the layout, the floor and the drawn edges, not the game's light.
+People are bone stand-ins. It is a look at the layout, the floor and the drawn edges, not the game's light.
 """
 import json
 import sys
@@ -51,17 +50,10 @@ def scene(level=1, spin=25.0):
     for name, x, inward, up, turn, _ in plan.machines(level):
         stand(name, (x, -inward, up), turn, spin if name == "GeneratorRotor" else 0.0)
     flat = pt.Parts()
-    tone = plan.STAND_INS
     flat.block("Ground", 900, 700, 0.4, (0, -100, -0.5), plan.GROUND["ground"], "ground")
     flat.block("Strip", 700, base.STRIP, 0.4, (0, base.STRIP / 2, -0.3), "#4E4A66", "ground")
     flat.block("Lot", base.PLOT, base.PLOT, 0.4, (0, -base.PLOT / 2, -0.25), "#3C4160", "ground")
-    (dx, di), (tx, ti) = plan.DOOR, plan.TRAINING
-    for side in (-3.5, 3.5):
-        flat.block("DoorPost", 1, 1, 10, (dx + side, -di, 5), tone["machine"], "standIn")
-    flat.block("DoorLintel", 8, 1, 1, (dx, -di, 9.5), tone["machine"], "standIn")
-    flat.block("DoorWay", 6, 0.2, 9, (dx, -di, 4.5), "#8CF6FF", "standIn", glow=0.8)
-    flat.block("Training", 6, 5, 4, (tx, -ti, 2), tone["machine"], "standIn")
-    flat.block("TrainingTop", 6.2, 5.2, 0.5, (tx, -ti, 4.25), tone["training"], "standIn")
+    flat.figure("Trainee", (plan.TRAINING[0], -(plan.TRAINING[1] - base.machines.TRAINEE), 0.56))
     for x, inward in plan.BAY_LOTS[:base.BAYS_AT[level]]:
         flat.figure("Worker", (x, -inward, 0.3))
     flat.figure("Shown", (plan.SHOWCASE[0], -plan.SHOWCASE[1], base.show.TOP))

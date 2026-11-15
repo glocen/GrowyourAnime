@@ -1988,6 +1988,7 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
 - **Tier:** competent.
 - **The one fix, tier 1:** a ready chip under the pointer barely changes, because its breathing gold drowns the whitening. Take Faber's seed: on hover its glow goes to High.
 - **TR20 closes as a block at research's pass,** with that seed. The word's plate covers part of the hint while it shows. It's brief, and it stands.
+- **The fix, built (Faber, 2026-11-15, night):** under the pointer or a pad's selection, a ready chip's breath pauses and goes to its High (`HudConfig.Breaker.Glow.High`), and breathes on from where it paused when the pointer leaves (`UI.BreakerScreen`, `glow`). "UI: TR20" 36 of 36, with the held glow at 0.600 for 0.600 and the breath going on after; the Breaker's cases pass. Type check 0 new. **Visually reviewed:** research's pass, the seed taken. **Director-accepted:** no.
 
 ## TR21. The base screen and the base's levels (Faber)
 

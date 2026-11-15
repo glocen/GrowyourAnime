@@ -261,7 +261,7 @@ end
 
 -- A tap target over a whole frame: the cell or chip is the button, its look the panel under it, which answers a pointer.
 local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied at each build
-local function tapOver(frame: GuiObject, name: string, onTap: () -> ())
+local function tapOver(frame: GuiObject, name: string, onTap: () -> (), also: ((share: number) -> ())?)
 	local tap = Instance.new("TextButton")
 	tap.Name = name
 	tap.Text = ""
@@ -277,6 +277,9 @@ local function tapOver(frame: GuiObject, name: string, onTap: () -> ())
 	Hover.On(tap, function(share: number, pad: boolean)
 		Hover.Lift(frame, share, tap)
 		Panel.Hover(frame, share, pad)
+		if also then
+			also(share)
+		end
 	end)
 end
 
@@ -419,8 +422,10 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 end
 
 -- A ready shard's chip, the loudest thing on the screen (TR9, fix (a)): a gold edge, bold, over a gold fill that breathes,
--- and, as it arrives from a chamber, a pop. "Ready" is its first word.
-local function glow(frame: GuiObject, item: Selection)
+-- and, as it arrives from a chamber, a pop. "Ready" is its first word. Returns its hover's paint: under the pointer or
+-- a pad's selection the breath holds at its High, since the body's whitening is lost under its gold (TR20's verdict), and
+-- it breathes on from where it paused when the pointer leaves.
+local function glow(frame: GuiObject, item: Selection): (share: number) -> ()
 	Panel.Trim(frame, Theme.Colour.Ready)
 	local folder = frame:FindFirstChild("NL_Skin")
 	local edge = if folder then folder:FindFirstChild("Edge", true) :: ImageLabel? else nil
@@ -430,9 +435,12 @@ local function glow(frame: GuiObject, item: Selection)
 	end
 	local tune = HudConfig.Breaker.Glow
 	local fill = Skin.Lay(Skin.Of(frame), "PanelFill", { Name = "Glow", Tint = Theme.Colour.Ready, Alpha = tune.Low, Z = 3 })
+	local active: Tween? = nil -- the breath, or the settle after an arrival
 	local function breathe()
 		local period = TweenInfo.new(math.max(tune.Period, 0.05), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-		TweenService:Create(fill, period, { ImageTransparency = 1 - tune.High }):Play()
+		local breath = TweenService:Create(fill, period, { ImageTransparency = 1 - tune.High })
+		active = breath
+		breath:Play()
 	end
 	local came = arrivals[item.Index]
 	if came and flashLeft(came) then
@@ -440,6 +448,7 @@ local function glow(frame: GuiObject, item: Selection)
 		arrivals[item.Index] = nil -- once: a rebuild shows it as it stands
 		fill.ImageTransparency = 0.1
 		local settle = TweenService:Create(fill, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { ImageTransparency = 1 - tune.Low })
+		active = settle
 		settle.Completed:Connect(function(state: Enum.PlaybackState)
 			if state == Enum.PlaybackState.Completed and fill.Parent then
 				breathe()
@@ -448,6 +457,25 @@ local function glow(frame: GuiObject, item: Selection)
 		settle:Play()
 	else
 		breathe()
+	end
+	local paused: number? = nil -- the breath's transparency when the pointer came
+	return function(share: number)
+		if share > 0 then
+			if paused == nil then
+				paused = fill.ImageTransparency
+				if active then
+					active:Pause()
+				end
+			end
+			local from = paused :: number
+			fill.ImageTransparency = from + (1 - tune.High - from) * share
+		elseif paused ~= nil then
+			fill.ImageTransparency = paused
+			paused = nil
+			if active and fill.Parent then
+				active:Play()
+			end
+		end
 	end
 end
 
@@ -482,10 +510,10 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 	local detail = label(frame, "Detail", under, Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6 + LINE + 2), { Colour = if ready then Theme.Colour.Text else Theme.Colour.TextDim, Truncate = true })
 	detail.ZIndex = 2
 	if ready then
-		glow(frame, item)
+		local held = glow(frame, item)
 		tapOver(frame, "Tap", function()
 			on.Open(item.Index)
-		end)
+		end, held)
 		return
 	end
 	Panel.Lit(frame, same(item, selected))

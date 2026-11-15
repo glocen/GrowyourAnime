@@ -460,7 +460,22 @@ function HudCases.Cases(given: Given): { any }
 					Hover.Force(readyTap, true)
 					t.Wait(settle)
 					t.Check("its gold edge goes lighter under the pointer, never duller", light(readyEdge.ImageColor3) > light(restEdge) + 0.1, `{restEdge:ToHex()} to {readyEdge.ImageColor3:ToHex()}`)
+					-- Its breath holds at its High while hovered, since the whitening is lost under its gold (TR20's verdict), and
+					-- breathes on once the pointer leaves.
+					local readyFrame = readyTap.Parent
+					local glowFill = if readyFrame then readyFrame:FindFirstChild("Glow", true) else nil
+					local high = 1 - HudConfig.Breaker.Glow.High
+					local held = glowFill ~= nil and glowFill:IsA("ImageLabel") and math.abs(glowFill.ImageTransparency - high) < 0.01
+					t.Wait(0.2)
+					held = held and glowFill ~= nil and glowFill:IsA("ImageLabel") and math.abs(glowFill.ImageTransparency - high) < 0.01
+					t.Check("its glow holds at its High under the pointer", held, if glowFill and glowFill:IsA("ImageLabel") then string.format("%.3f for %.3f", glowFill.ImageTransparency, high) else "no glow")
 					Hover.Force(readyTap, nil)
+					if glowFill and glowFill:IsA("ImageLabel") then
+						t.Wait(HudConfig.Motion.Hover.Out + 0.05)
+						local left = glowFill.ImageTransparency
+						t.Wait(0.25)
+						t.Check("and breathes on once the pointer leaves", math.abs(glowFill.ImageTransparency - left) > 0.005, string.format("%.3f then %.3f", left, glowFill.ImageTransparency))
+					end
 				end
 				Screen.Close()
 				t.Wait(HudConfig.Motion.Screen.Exit + 0.1)

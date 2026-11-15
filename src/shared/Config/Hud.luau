@@ -83,9 +83,11 @@ return {
 		Press = { Squeeze = 0.92, In = 0.05, Least = 0.08, Out = 0.14, Back = 2.4 },
 		-- Hover (TR20; UI.Kit.Hover), seeds, UNVERIFIED: a pointer over a pressable thing, or a pad's selection, eases it
 		-- in over In seconds and out over Out. A tile or a panel lifts Lift points, its colours White of the way toward
-		-- white, its halo (or its edge, toward its accent) at Halo; a card scales to Card and its rarity rim lifts; a pad's
-		-- selection wears a rim of ours, Rim points. Over a dock tile Word seconds, its word (or why it's refused) shows.
-		Hover = { In = 0.08, Out = 0.12, Lift = 2, White = 0.12, Halo = 0.4, Card = 1.03, Rim = 1.5, Word = 0.35 },
+		-- white, its halo (or its edge, toward its accent) at Halo; a card scales to Card and its rarity rim lifts, Rim
+		-- points, RimLight of the way from its rarity's trim toward white (research's verdict on TR20, fix 3: 1.03 and the
+		-- trim alone couldn't be seen); a pad's selection wears that rim whole. Over a dock tile Word seconds, its word (or
+		-- why it's refused) shows.
+		Hover = { In = 0.08, Out = 0.12, Lift = 2, White = 0.12, Halo = 0.4, Card = 1.06, Rim = 2, RimLight = 0.5, Word = 0.35 },
 		-- A screen comes in from From of its size, see-through, eased out over Enter; it leaves to To, eased in, over Exit:
 		-- about 0.8 of its entrance (rule 4).
 		Screen = { Enter = 0.2, Exit = 0.16, From = 0.94, To = 0.97 },
@@ -196,7 +198,7 @@ return {
 		-- A charge (research's verdict on TR19, corrected 2026-11-15): the tile goes to Ink at the tap, and the fill rises
 		-- over it in Colour at Alpha, its rising edge a band Edge of the tile's height in Bright at full. White is a stand-in
 		-- until the palette is picked (the director, 2026-11-15: nothing new goes violet). Seeds, tuned live.
-		Charge = { Ink = Color3.fromHex("#0B0B12"), Colour = Color3.new(1, 1, 1), Bright = Color3.new(1, 1, 1), Edge = 0.1, Alpha = 0.6 },
+		Charge = { Ink = Color3.fromHex("#0B0B12"), Colour = Color3.new(1, 1, 1), Bright = Color3.new(1, 1, 1), Edge = 0.1, Alpha = 0.85 },
 		Shake = 4,
 		Shook = 0.25,
 	},

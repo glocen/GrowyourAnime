@@ -108,10 +108,25 @@ function HudCases.Cases(given: Given): { any }
 					return base:GetAttribute("Look") == "Quiet"
 				end), tostring(base:GetAttribute("Look")))
 				t.Equal("and the server says here", state().Refusal, "Here")
-				local still = shakes()
+				-- Research's verdict on TR20, fix 2: the word says why a tap does nothing, and the tap stays silent.
+				local word = (parts.Dock :: Frame):FindFirstChild("BaseWord", true) :: TextLabel
+				Hover.Pretend("Mouse")
+				Hover.Force(base, true)
+				t.Check("its word says you're home", waitFor(t, HudConfig.Motion.Hover.Word + 0.4, function(): boolean
+					return word.Visible
+				end) and word.Text == "You're home", word.Text)
+				Hover.Force(base, nil)
+				Hover.Pretend(nil)
+				local still, shownBefore = shakes(), Toast.Shown()
 				Button.Press(base)
 				t.Wait(0.4)
-				t.Check("a tap does nothing: no charge, nothing said", player:GetAttribute("HomeCharge") == nil and shakes() == still)
+				local new = {}
+				for _, message in Toast.Shown() do
+					if not table.find(shownBefore, message) then
+						table.insert(new, message)
+					end
+				end
+				t.Check("a tap does nothing: no charge, no shake, nothing said", player:GetAttribute("HomeCharge") == nil and shakes() == still and #new == 0, table.concat(new, "; "))
 				-- Out on Lantern Row, nothing in the way: a tap charges, then home.
 				t.Root().CFrame = CFrame.new(square)
 				t.Wait(LEAD_SETTLE)
@@ -312,7 +327,7 @@ function HudCases.Cases(given: Given): { any }
 				local tile = dock:FindFirstChild("InventoryTile") :: ImageLabel
 				local halo = dock:FindFirstChild("InventoryHalo") :: ImageLabel
 				local edge = dock:FindFirstChild("InventoryEdge") :: ImageLabel
-				local word = dock:FindFirstChild("InventoryWord") :: TextLabel
+				local word = dock:FindFirstChild("InventoryWord", true) :: TextLabel
 				local others = { dock:FindFirstChild("BaseTile") :: ImageLabel, dock:FindFirstChild("MapTile") :: ImageLabel }
 				local function at(piece: GuiObject): Vector2
 					return piece.AbsolutePosition
@@ -337,13 +352,26 @@ function HudCases.Cases(given: Given): { any }
 				t.Check("its word shows after a moment", waitFor(t, motion.Word + 0.3, function(): boolean
 					return word.Visible
 				end) and word.Text == "Inventory", word.Text)
+				-- Fix 1 (research's verdict on TR20): the word on a plate of its own, centred on its tile, over everything
+				-- round it in its layer, the chip among them.
+				local plate = word.Parent :: Frame
+				local middle = tile.AbsolutePosition.X + tile.AbsoluteSize.X / 2 -- the tile the eye sees, not its tap (rounded wider)
+				t.Check("its word stands on a plate of its own, centred on its tile", plate:IsA("Frame") and plate.Visible and plate:FindFirstChild("Fill", true) ~= nil and math.abs(plate.AbsolutePosition.X + plate.AbsoluteSize.X / 2 - middle) < 1, string.format("%.1f off", plate.AbsolutePosition.X + plate.AbsoluteSize.X / 2 - middle))
+				t.Check("the plate holds its words whole", word.TextFits and plate.AbsoluteSize.X >= word.TextBounds.X, string.format("%d for %d", plate.AbsoluteSize.X, word.TextBounds.X))
+				local over = {}
+				for _, other in (dock.Parent :: Instance):GetChildren() do
+					if other ~= dock and other:IsA("GuiObject") and other.ZIndex >= dock.ZIndex then
+						table.insert(over, `{other.Name} {other.ZIndex}`)
+					end
+				end
+				t.Check("the dock, its word with it, draws over every other piece in its layer, the chip among them", #over == 0 and (parts.Chip :: GuiObject).Parent == dock.Parent, table.concat(over, ", "))
 				Hover.Force(inventory, false)
 				t.Wait(settle)
 				t.Near("off it, it eases out", Hover.Share(inventory), 0, 1e-3)
 				t.Check("back in its place, its word gone", (at(tile) - restTile).Magnitude < 0.5 and not word.Visible)
 				-- A refused tile's word says why.
 				local map = parts.Map :: TextButton
-				local mapWord = dock:FindFirstChild("MapWord") :: TextLabel
+				local mapWord = dock:FindFirstChild("MapWord", true) :: TextLabel
 				Hover.Force(map, true)
 				t.Check("a refused tile's word is its reason", waitFor(t, motion.Word + 0.3, function(): boolean
 					return mapWord.Visible
@@ -407,6 +435,33 @@ function HudCases.Cases(given: Given): { any }
 					t.Check("off it, its words are back", (at(piece) - restWords).Magnitude < 0.5)
 					Hover.Force(tap, nil)
 				end
+				-- A ready chip's gold edge goes toward its full light under the pointer: toward the panel's accent it dulled,
+				-- and the hovered chip read weaker than its neighbour (TR20's retake). One is made if none is ready.
+				local function readyChip(): (GuiObject?, ImageLabel?)
+					local frame = Screen.Frame(BreakerScreen.Name)
+					local ready = if frame then frame:FindFirstChild("Ready1", true) else nil
+					local skin = if ready then ready:FindFirstChild("NL_Skin") else nil
+					return if ready then ready:FindFirstChild("Tap") :: GuiObject? else nil, if skin then skin:FindFirstChild("Edge", true) :: ImageLabel? else nil
+				end
+				local readyTap, readyEdge = readyChip()
+				if readyTap == nil then
+					t.Server("BaseSkip", 120)
+					waitFor(t, 3, function(): boolean
+						readyTap, readyEdge = readyChip()
+						return readyTap ~= nil
+					end)
+				end
+				t.Check("a ready chip to hover", readyTap ~= nil and readyEdge ~= nil)
+				if readyTap and readyEdge then
+					local function light(c: Color3): number
+						return c.R + c.G + c.B
+					end
+					local restEdge = readyEdge.ImageColor3
+					Hover.Force(readyTap, true)
+					t.Wait(settle)
+					t.Check("its gold edge goes lighter under the pointer, never duller", light(readyEdge.ImageColor3) > light(restEdge) + 0.1, `{restEdge:ToHex()} to {readyEdge.ImageColor3:ToHex()}`)
+					Hover.Force(readyTap, nil)
+				end
 				Screen.Close()
 				t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
 				-- A Voidkin card on the strip: it scales in its own place and its rim lifts.
@@ -437,8 +492,25 @@ function HudCases.Cases(given: Given): { any }
 					Hover.Force(card, true)
 					t.Wait(settle)
 					t.Check("a card scales to its seed", grow ~= nil and math.abs(grow.Scale - motion.Card) < 1e-3 and math.abs(Button.Squeeze(card) - motion.Card) < 1e-3, if grow then string.format("%.3f", grow.Scale) else "no scale")
-					t.Check("its rarity's rim lifts", rim ~= nil and rim.Transparency < 0.05)
+					t.Check("its rarity's rim lifts, at full light (research's verdict on TR20, fix 3)", rim ~= nil and rim.Transparency < 0.05 and math.abs(rim.Thickness - motion.Rim) < 1e-3 and math.min(rim.Color.R, rim.Color.G, rim.Color.B) >= motion.RimLight - 0.01, if rim then rim.Color:ToHex() else "no rim")
 					t.Check("in its own place", (at(card) - restCard).Magnitude < 0.5)
+					-- It grows into its gap, never over a neighbour: the grown face and the rim round it clear every other card.
+					local face = card:FindFirstChild("Face") :: GuiObject
+					local reach = (if rim then rim.Thickness else 0) * card.AbsoluteSize.X / HudConfig.Voidkin.Strip
+					local lo = Vector2.new(math.min(face.AbsolutePosition.X, card.AbsolutePosition.X - reach), math.min(face.AbsolutePosition.Y, card.AbsolutePosition.Y - reach))
+					local hi = Vector2.new(math.max(face.AbsolutePosition.X + face.AbsoluteSize.X, card.AbsolutePosition.X + card.AbsoluteSize.X + reach), math.max(face.AbsolutePosition.Y + face.AbsoluteSize.Y, card.AbsolutePosition.Y + card.AbsoluteSize.Y + reach))
+					local crossed, cards = {}, 0
+					for _, near in (card.Parent :: Instance):GetChildren() do
+						if near ~= card and near:IsA("TextButton") and near.Visible then
+							cards += 1
+							local nearFace = (near:FindFirstChild("Face") or near) :: GuiObject
+							local a, b = nearFace.AbsolutePosition, nearFace.AbsolutePosition + nearFace.AbsoluteSize
+							if lo.X < b.X - 0.5 and a.X < hi.X - 0.5 and lo.Y < b.Y - 0.5 and a.Y < hi.Y - 0.5 then
+								table.insert(crossed, near.Name)
+							end
+						end
+					end
+					t.Check("it grows into its gap, never over a neighbour's face", cards > 0 and #crossed == 0, `{cards} beside it, over {table.concat(crossed, ", ")}; {math.floor(hi.X - lo.X + 0.5)} wide`)
 					Hover.Force(card, nil)
 					t.Wait(settle)
 					t.Check("off it, back to its size", grow ~= nil and math.abs(grow.Scale - 1) < 1e-3 and math.abs(Button.Squeeze(card) - 1) < 1e-3)

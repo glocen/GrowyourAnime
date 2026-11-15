@@ -1965,6 +1965,23 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
 - **Then:** the pad take as planned, its rows saying the input kind is pretended. A still of fixes 1 and 2, and a short retake of fixes 3 and 4.
 - **Amended the same night, on the director's words on playtests** (the register): no still and no retake of fixes 1 to 3, since the cases cover them and research sees them at the first session's review. One take only: the pointer on a ready chip and on a chamber with a shard breaking, and the pad, never seen yet.
 
+**Fixes built, 2026-11-15, night (Faber).** The take: `build/captures/tr20/fixes_take_sheet.jpg`, four stills at computer size, held step by step: a ready chip and a breaking chamber under the pointer, then the pad's selection on that chamber and on a dock tile. The stills of fixes 1 to 3 stay beside it, not required.
+
+- **Implemented.**
+  1. **The word's plate** (`UI.Dock`): the word is a label on a small `Panel` plate, fitted to its text, centred over its tile, above the HUD's other pieces, and drawn with the toasts' skin. No stroke.
+  2. **"You're home"** (`Rules.Home.Word`): the tile's word for a hover or a long press; the tap stays silent. TR21 retires it with TR19's quiet tile at home, when the tile opens the base screen.
+  3. **The cards:** 1.06, and the rim goes to its full light (`Hover.RimLight`, 0.5 toward white).
+  4. **A ready chip and a breaking chamber** answer the pointer and the pad, in the take.
+  - **The charge fill's body** at 0.85 alpha (TR19's verdict, `Charge.Alpha`).
+- **Tested.** Type check 0 new. Logic 5925 offline, with "You're home" as a case. "UI: TR20" 34 of 34 at 59 fps: the plate centred on its tile within a pixel, its words whole, drawn over the chip; a ready chip's gold edge lighter under the pointer; a hovered card's rim at full light and clear of its neighbours' faces. "HUD: TR19" 53 of 53 at 60 fps. The take's six checks pass. The whole suite ran 2018 passed and 4 failed, in 306 s at 59 fps: the four were the Breaker's drop rates, whose case still wanted voltage on Lantern Row's 30-second shards, which TR18's verdict took off (f5c2927). The case now asks for voltage only where `Rules.Power.Offered` offers it, and passes 57 of 57.
+- **Found on the way:**
+  - **A hovered ready chip read duller than its neighbour:** `Panel.Hover` leaned a trimmed edge (its gold) toward the palette's accent. A trimmed edge now goes toward white.
+  - **TR19's fill came up 0.07 to 0.08 s late after TR20's case:** the synced clock can stall a few frames after server load. A tap's fill now runs from the client's own clock too, and the later of the two wins: 0.019 s.
+  - **Studio passed 7 GB of memory** after many playtests and stalled the MCP's client calls. The director restarted it.
+- **Open, for research:** a hovered ready chip's answer is faint: its breathing gold covers the body's whitening. A seed if it should read more: on hover, the glow goes to its High.
+- **Visually reviewed:** no. **Director-accepted:** no.
+- **Tier 1 calls:** a trimmed edge whitens toward white, never the accent; a tap's fill runs from the client's clock as well as the server's; the plate draws above the HUD's other pieces in its layer.
+
 ## TR21. The base screen and the base's levels (Faber)
 
 Research's entry, 2026-11-15, night, on the director's words (`docs/decisions.md`, the two rows on the base). The design: `docs/design.md`, "The base", and `docs/ui.md`, 7. The looks: AR14.

@@ -9,6 +9,7 @@
 -- the same state from the same inputs (HudController).
 --   Home.Refusal(situation, rules)   nil when a tap goes home, else "Here" | "Boss" | "Event" | "Fight" | "Cooldown"
 --   Home.Says(refusal, situation)    the refusal in plain words; nil for "Here", where a tap does nothing
+--   Home.Word(refusal, situation)    the tile's word on a hover or a long press: Says, and "You're home" for "Here"
 --   Home.Broken(chargedAt, hitAt)    a hit since the charge began cancels it, and nothing is spent
 --   Home.Share(from, seconds, now)   how far a charge or a cooldown has run, 0 to 1
 
@@ -53,6 +54,15 @@ function Home.Says(refusal: Refusal?, s: Situation): string?
 		return `Ready in {math.max(math.ceil(s.ReadyAt - s.Now - 1e-6), 1)} s`
 	end
 	return nil
+end
+
+-- The Base tile's word, on a hover or a long press (TR20): why a tap does nothing or is refused. At home it's the reason a
+-- tap stays silent (research's verdict on TR20, fix 2), where Says has nothing to say.
+function Home.Word(refusal: Refusal?, s: Situation): string?
+	if refusal == "Here" then
+		return "You're home"
+	end
+	return Home.Says(refusal, s)
 end
 
 function Home.Broken(chargedAt: number, hitAt: number?): boolean

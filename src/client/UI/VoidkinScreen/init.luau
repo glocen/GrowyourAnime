@@ -1281,6 +1281,7 @@ local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }
 			Button.Grow(press, scale)
 			if rim then
 				rim.Thickness = HudConfig.Motion.Hover.Rim
+				rim.Color = trim:Lerp(Color3.new(1, 1, 1), HudConfig.Motion.Hover.RimLight) -- its rarity at full light
 				rim.Transparency = if state == "Selected" then 1 else 1 - share
 			end
 		end)

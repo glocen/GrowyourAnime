@@ -6781,7 +6781,13 @@ local cases = {
 				local title = breakerText("Odds", "Title")
 				t.Check(`{where}: the pane names the chosen shard`, item ~= nil and string.find(title, Read.ShardName(item.Def), 1, true) ~= nil, title)
 				local fold = breakerPart("Rates")
-				t.Check(`{where}: Drop rates is one tap away, its voltage shown until then`, fold ~= nil and fold:IsA("TextButton") and Button.State(fold) == "Rest" and breakerPart("Chances") == nil and breakerPart("Level1") ~= nil)
+				-- Its voltage, where the kind is ever offered it (Rules.Power.Offered; research, TR18): none on Lantern Row's
+				-- 30-second shards.
+				local offered = item ~= nil and Power.Offered(item.Def)
+				local function voltageBack(): boolean
+					return (breakerPart("Level1") ~= nil) == offered
+				end
+				t.Check(`{where}: Drop rates is one tap away, its voltage shown until then`, fold ~= nil and fold:IsA("TextButton") and Button.State(fold) == "Rest" and breakerPart("Chances") == nil and voltageBack(), if offered then "voltage offered" else "no voltage on this kind")
 				local beside = fold and fold.Parent
 				local base = fold and fold:FindFirstChild("Base", true)
 				t.Check(`{where}: a secondary press: half its row at most, a list's mark, never the action's light`, fold ~= nil and fold:IsA("GuiObject") and beside ~= nil and beside:IsA("GuiObject")
@@ -6816,7 +6822,7 @@ local cases = {
 				lintClean(t, `{where}, its drop rates open`)
 				local lit = breakerPart("Rates")
 				t.Check(`{where}: a second tap closes them, its voltage back`, lit ~= nil and lit:IsA("TextButton") and Button.Press(lit) and waitFor(t, 1, function(): boolean
-					return breakerPart("Chances") == nil and breakerPart("Level1") ~= nil
+					return breakerPart("Chances") == nil and voltageBack()
 				end))
 			end
 			-- The chambers as they stand, up to the most a Breaker has, and the bag's shard on the strip.
@@ -7362,7 +7368,7 @@ local cases = {
 			Screen.Close()
 			t.Check("and at rest once it closes", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
 			t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
-			local word = dock:FindFirstChild("InventoryWord") :: TextLabel
+			local word = dock:FindFirstChild("InventoryWord", true) :: TextLabel
 			Dock.Hold(inventory, true)
 			t.Check("a long press shows its word", waitFor(t, HudConfig.Dock.LongPress + 0.3, function(): boolean
 				return word.Visible

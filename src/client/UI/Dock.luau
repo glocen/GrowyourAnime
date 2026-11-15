@@ -41,6 +41,7 @@ local Skin = require(script.Parent.Kit.Skin)
 local Text = require(script.Parent.Kit.Text)
 local Button = require(script.Parent.Kit.Button)
 local Hover = require(script.Parent.Kit.Hover)
+local Panel = require(script.Parent.Kit.Panel)
 
 type Def = typeof(UIKit.Dock.Buttons[1])
 type Gradient = { Stops: { number }, Colours: { Color3 } }
@@ -65,6 +66,7 @@ export type Tile = {
 	Hover: number, -- the pointer's share over it (Kit.Hover)
 	Pad: boolean, -- a pad's selection
 	Reason: string?, -- why it's refused, its owner's words, shown as its word
+	WordEpoch: number, -- the faces' epoch its plate was fitted at (Text.Epoch)
 	Charges: boolean, -- its fill is a charge: ink from the tap while it runs, and no press of its own (Dock.Charges)
 }
 export type Mood = "Quiet" | "Dim"
@@ -74,8 +76,10 @@ local Dock = {}
 
 -- One stack for the whole dock (hud_dock.json, "stack"): the body; every halo, glow and light; then every tile with its
 -- sheen or rim, its mark and its pip; the words; the taps over all.
-local Z = { Body = 1, Halo = 2, Glow = 3, Light = 4, Tile = 5, Over = 6, Fill = 7, Veil = 8, Mark = 9, Pip = 10, Word = 11, Tap = 12 }
+local Z = { Body = 1, Halo = 2, Glow = 3, Light = 4, Tile = 5, Over = 6, Fill = 7, Veil = 8, Mark = 9, Pip = 10, Word = 13, Tap = 12 }
 local WORD_INK = Color3.fromHex("#0B0B12")
+local WORD = { Tall = 20, Across = 7 } -- the word's plate, authored points: its height, and its words' room either side
+local OVER_HUD = 10 -- the dock over the HUD's other pieces in its layer (the chip above it), so its word stands over them
 
 -- Each tile by its button, for Dock.Hold. Held until the dock is destroyed, as the kit's buttons are (Button's note).
 local byButton: { [TextButton]: Tile } = {}
@@ -234,24 +238,31 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 		end
 		layers.Pip.Visible = false
 		local box = def.Box
+		-- The word on a plate of its own, the toasts' plate made small, centred over its tile (research's verdict on TR20,
+		-- fix 1: bare text with a stroke ran into the chip above). The dock draws over the HUD's other pieces, so while it
+		-- shows it may cover the chip: the pointer says where the player's eye is. It moves nothing.
+		local plate = Panel.new({
+			Name = `{def.Name}WordPlate`,
+			Size = UDim2.fromOffset(WORD.Across * 2 + 40, WORD.Tall),
+			Position = UDim2.fromOffset(box[1] + box[3] / 2, box[2] - HudConfig.Dock.Rise),
+			AnchorPoint = Vector2.new(0.5, 1),
+			Parent = frame,
+		})
+		plate.ZIndex = Z.Word
+		plate.Visible = false
+		Panel.Pad(plate, 0, WORD.Across)
 		local word = Text.new({
 			Name = `{def.Name}Word`,
 			Size = Theme.Text.Caption,
 			Font = Theme.Font.Strong,
 			Colour = UIKit.Palettes.Graphite.Text,
 			Align = Enum.TextXAlignment.Center,
-			Box = UDim2.fromOffset(240, 18), -- room for a refusal's words; it draws over the HUD, so it moves nothing
-			Position = UDim2.fromOffset(box[1] + box[3] / 2, box[2] - HudConfig.Dock.Rise),
-			AnchorPoint = Vector2.new(0.5, 1),
-			Parent = frame,
+			Box = UDim2.fromScale(1, 1),
+			Parent = plate,
 		})
 		word.Text = def.Name
-		word.ZIndex = Z.Word
+		word.ZIndex = 2
 		word.Visible = false
-		local outline = Instance.new("UIStroke")
-		outline.Color = WORD_INK
-		outline.Thickness = 1.5
-		outline.Parent = word
 		local tile: Tile
 		-- The tap: the tile's Box grown round its middle to Theme.Size.Tap on a short side, so it holds Theme.Size.Touch
 		-- at the scale's floor (the wings' boxes are 44 points tall, 37 rendered on the smallest phone).
@@ -294,6 +305,7 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Hover = 0,
 			Pad = false,
 			Reason = nil :: string?,
+			WordEpoch = -1,
 			Charges = false,
 		}
 		for name, layer in layers do
@@ -327,6 +339,7 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 		paint(tile, "Rest")
 		dock.Tiles[def.Name] = tile
 	end
+	frame.ZIndex = OVER_HUD
 	frame.Parent = parent
 	-- Each tile's pressed twin, loaded before its first press: unloaded, a pressed tile drew nothing for a moment, the
 	-- dock's body showing through as a black frame (research's verdict on TR19).
@@ -476,11 +489,16 @@ function Dock.Paint(dock: Dock)
 		local shows = (held ~= nil and tile.Long) or now < tile.WordUntil or Hover.Since(tile.Button) >= HudConfig.Motion.Hover.Word
 		local disabled = tile.Button:GetAttribute("Disabled")
 		local said = tile.Reason or (if type(disabled) == "string" and disabled ~= "" then disabled else tile.Def.Name)
-		if tile.Word.Text ~= said then
-			tile.Word.Text = said
+		local word = tile.Word
+		local plate = word.Parent :: Frame
+		if shows and (word.Text ~= said or tile.WordEpoch ~= Text.Epoch()) then
+			word.Text = said
+			tile.WordEpoch = Text.Epoch()
+			plate.Size = UDim2.fromOffset(math.ceil(Text.Wide(word, said)) + WORD.Across * 2 + 2, WORD.Tall)
 		end
-		if tile.Word.Visible ~= shows then
-			tile.Word.Visible = shows
+		if word.Visible ~= shows then
+			word.Visible = shows
+			plate.Visible = shows
 		end
 	end
 end

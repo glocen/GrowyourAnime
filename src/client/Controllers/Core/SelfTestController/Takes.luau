@@ -1005,6 +1005,127 @@ return function(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: TR20's fixes, stills held step by step: the word's plate over the chip, You're home, a card, a ready chip and a breaking chamber, for research's verdict",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's verdict on TR20 (docs/test-requests.md, TR20): each state is held until the driver moves
+				-- ReplicatedStorage.NL_TakeStep on ("Word", "Home", "Card", "Chip", "Chamber", "PadChamber", "PadDock", "End")
+				-- and captures it. The pointer is the take's (Hover.Force, the input kind pretended a mouse, then a pad): the
+				-- engine's own pointer was the first take's evidence.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 120, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				local parts = HudController.Parts()
+				local inventory, base = parts.Voidkin :: TextButton, parts.Base :: TextButton
+				t.Server("LeadCalm")
+				t.Server("HomeReady")
+				Screen.Close()
+				t.Check("at home, the Base tile quiet", waitFor(t, 2, function(): boolean
+					return base:GetAttribute("Look") == "Quiet"
+				end), tostring(base:GetAttribute("Look")))
+				Hover.Pretend("Mouse")
+				local forced: GuiObject? = nil
+				local function force(target: GuiObject?)
+					if forced then
+						Hover.Force(forced, nil)
+					end
+					forced = target
+					if target then
+						Hover.Force(target, true)
+					end
+				end
+				if await("Word") then
+					force(inventory) -- the word's plate over the chip
+				end
+				if await("Home") then
+					force(base) -- "You're home"
+				end
+				if await("Card") then
+					force(nil)
+					Button.Press(inventory)
+					waitFor(t, 1, function(): boolean
+						return Screen.Current() == VoidkinScreen.Name
+					end)
+					t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+					local view = ProfileController.Get()
+					for id in (if view then view.Voidkin else {}) do
+						local cell = VoidkinScreen.Find(id)
+						if id ~= VoidkinScreen.Chosen() and cell and cell:IsA("TextButton") then
+							force(cell)
+							break
+						end
+					end
+				end
+				if await("Chip") then
+					force(nil)
+					Screen.Close()
+					t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+					BaseController.OpenBreaker()
+					waitFor(t, 1, function(): boolean
+						return Screen.Current() == BreakerScreen.Name
+					end)
+					t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+					local screen = Screen.Frame(BreakerScreen.Name)
+					local ready = if screen then screen:FindFirstChild("Ready1", true) else nil
+					t.Check("a ready chip", ready ~= nil)
+					force(if ready then ready:FindFirstChild("Tap") :: GuiObject? else nil)
+				end
+				-- A shard breaking in the first chamber, put in at the step so it's still breaking when it's captured (a
+				-- standard shard breaks in about 30 s); its tap.
+				local function breaking(): GuiObject?
+					local function firstWorks(): boolean
+						local now = ProfileController.Get()
+						local first = if now then now.Base.Chambers[1] else nil
+						return first ~= nil and first.Work ~= nil
+					end
+					if not firstWorks() then
+						local shard = "lanternrow_standard"
+						t.Server("BaseGive", shard, 1)
+						t.Wait(0.5)
+						ProfileController.Act("AddShard", { Shard = shard })
+						waitFor(t, 2, firstWorks)
+						t.Wait(0.5) -- the screen's rebuild
+					end
+					local screen = Screen.Frame(BreakerScreen.Name)
+					local chamber = if screen then screen:FindFirstChild("Chamber1", true) else nil
+					return if chamber then chamber:FindFirstChild("Tap") :: GuiObject? else nil
+				end
+				if await("Chamber") then
+					force(nil)
+					local tap = breaking()
+					t.Check("a breaking chamber", tap ~= nil)
+					force(tap)
+				end
+				if await("PadChamber") then
+					force(nil)
+					Hover.Pretend("Pad") -- pretended: a pad's selection, its rim of our own
+					local tap = breaking()
+					GuiService.SelectedObject = tap
+					t.Wait(0.5)
+					t.Check("a pad's selection holds on a breaking chamber", tap ~= nil and GuiService.SelectedObject == tap, tostring(GuiService.SelectedObject))
+				end
+				if await("PadDock") then
+					GuiService.SelectedObject = nil
+					Screen.Close()
+					t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+					GuiService.SelectedObject = inventory
+				end
+				await("End")
+				GuiService.SelectedObject = nil
+				force(nil)
+				Hover.Pretend(nil)
+				Screen.Close()
+				step:Destroy()
+			end,
+		},
+		{
 			Name = "Take: TR18, the Power screen from the generator: the Breaker's handle dragged down and the Breaker slowing, then Auto, for research's verdict",
 			Manual = true,
 			Stay = true,

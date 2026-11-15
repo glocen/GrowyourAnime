@@ -136,9 +136,12 @@ function Panel.Hover(frame: GuiObject, share: number, pad: boolean)
 	end
 	local edge = folder:FindFirstChild("Edge", true)
 	if edge and edge:IsA("ImageLabel") and frame:GetAttribute("Lit") ~= true then
+		-- An edge in a colour of its own (a ready chip's gold, a card's trim) goes toward its full light, white: toward the
+		-- accent it dulled, and a hovered ready chip read weaker than its neighbour (TR20's retake, 2026-11-15).
 		local trim = frame:GetAttribute("Trim")
-		local base = if typeof(trim) == "Color3" then trim else p.Edge
-		edge.ImageColor3 = base:Lerp(p.Accent, (if pad then 1 else HudConfig.Motion.Hover.Halo) * share)
+		local own = typeof(trim) == "Color3"
+		local base: Color3 = if own then trim :: Color3 else p.Edge
+		edge.ImageColor3 = base:Lerp(if own then Color3.new(1, 1, 1) else p.Accent, (if pad then 1 else HudConfig.Motion.Hover.Halo) * share)
 	end
 end
 

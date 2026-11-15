@@ -445,8 +445,11 @@ end
 local homeOutline: Highlight? = nil
 local flashAt: number? = nil -- the jump's light at the screen's edges, from this os.clock()
 -- A tap's charge, from its server time, while the server's answer is on its way: the press goes straight into the fill
--- (research's verdict on TR19). Seen: the server's own charge came, so its end ends this one.
+-- (research's verdict on TR19). Seen: the server's own charge came, so its end ends this one. Its fill runs on this
+-- client's own clock from the tap (tappedAt): the synced server clock can stand still for a few frames after a load,
+-- and the ink then waited up to 0.08 s after the tap (the self-test, TR19 after TR20's case, 2026-11-15).
 local charging: number? = nil
+local tappedAt = 0
 local chargeSeen = false
 local landedAt: number? = nil -- the last jump's landing, from this os.clock(): the full tile holds a moment after it
 local settleAt: number? = nil -- the arrival's field of view, eased back from this os.clock()
@@ -555,8 +558,11 @@ local function stepHome()
 		mood = nil -- a charge under way is broken only by a hit (HomeService): it never dims while it runs
 	end
 	Dock.Mood(dockUi, "Base", mood)
-	Dock.Reason(dockUi, "Base", Home.Says(refusal, s)) -- a refused tile's word says why (TR20)
+	Dock.Reason(dockUi, "Base", Home.Word(refusal, s)) -- a refused tile's word says why, at home "You're home" (TR20)
 	local share = if began then Home.Share(began, HomeConfig.Charge, s.Now) elseif holding then 1 else nil
+	if share and charging then
+		share = math.max(share, Home.Share(tappedAt, HomeConfig.Charge, os.clock()))
+	end
 	Dock.Fill(dockUi, "Base", share)
 	Dock.Sweep(dockUi, "Base", if refusal == "Cooldown" and not holding then Home.Share(s.ReadyAt - HomeConfig.Cooldown, HomeConfig.Cooldown, s.Now) else nil)
 	outline(if began then share else nil)
@@ -571,7 +577,7 @@ local function goHome(): ...any
 		return nil
 	end
 	if refusal == nil and attribute("HomeCharge") == nil then
-		charging, chargeSeen = s.Now, false
+		charging, tappedAt, chargeSeen = s.Now, os.clock(), false
 	end
 	local ok, answer = pcall(Net.Client.Invoke, "Home")
 	if not ok or type(answer) ~= "table" or answer.Ok == false then

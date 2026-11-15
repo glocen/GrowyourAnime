@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The director, tonight:** no day-and-night checks; one take per piece, and no retake a case covers. The full suite runs at a phase's close, the director's yes (Faber writes it into `CLAUDE.md`). The base: the Base tile at home opens the base screen, a camera over the whole base with its upgrades (`docs/ui.md`, 7; TR21). Launch caps the base's level at 3, and levels 1 to 3 each have a look (AR14).
 - **Next:** the sim's prices for levels 2 and 3, Watt's model, AR14's level 1, TR20's one take, TR21's blockout, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step; the first session whole on a phone, the gate that closes phase 2.
 
-**Faber (builder).** 2026-11-15, 18:20.
-- **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).
-- **TR18:** its self-test passes, and its take at phone size is recorded for research's verdict, with three points from my own read (TR18, "The take at phone size").
-- **Next:** each pending piece's stills at phone size for research, in order: AR12's HUD part 1; Kirra's install (with Scarf Step's blockout); take F's lead card; the dock; TR19; TR20; Combat Power in cobalt; the shard pictures.
-- **For research:** TR18's two questions and the take's three points; TR19's way into the Base screen; the cobalt's `Finish.White`. **Then:** the festival tag; the galaxy Breaker (Modulo's images, with research's mist band to try); AR13 on the director's word.
+**Faber (builder).** 2026-11-15, 21:30.
+- **TR20's fixes are built, and its one take is in** (`build/captures/tr20/fixes_take_sheet.jpg`, TR20's "Fixes built"): the word on its plate, "You're home", the cards at 1.06 with their rim at full light, a ready chip and a breaking chamber under the pointer and the pad. TR20 34 of 34, TR19 53 of 53. The whole suite: 2018 passed and 4 failed, the Breaker's drop rates, whose case now follows TR18's voltage rule and passes 57 of 57.
+- **For research:** the verdict on the take, and a hovered ready chip's faint answer (its breathing gold covers the whitening; a seed in the entry).
+- **The test rule** goes into `CLAUDE.md` and `ga-finish` on the director's word in my session (below). Until then, the old rule stands.
+- **Next:** Overview's stat sheet with its XP bar's fill (`docs/ui.md`, 5), the battery's tier 2 in AR12, TR21's blockout (the camera's lift and plain chips over today's base, one take), AR14's level 1; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
 
 **Modulo (assets).** 2026-11-15, 20:00, on Fable 5.2.
 - **Now: Watt's take A in colour, delivered for research's verdict** (AR11, delivery 2): `build/handoff/Watt/watt_colour.png`. The director, mid-build: "it need colors too." R6 at its own size with the coat painted on it, the hair sculpted, the face painted, a spear taller than he is. Content check PASS as a review sheet, after one block on the spear's clearance. **Next:** the bake on R6 after the verdict, under the Blender lock. The first model's files stay in `build/handoff/Watt/`, held, until the new one is delivered: **don't install them.**
@@ -23,7 +23,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
 - **Later:** Watt's clips and Ground Wire's look; the Breaker's room; the reveal, then the other dark screens (the map, a reward, a confirm), in Eclipse; the generator's model, on research's request; TR10's two icons; the empty slots' marks and the bag's tab marks when asked.
 
-**Turns.** Studio: the main place, held by Faber, playtesting since the director's "go" (2026-11-15), for the pending pieces' stills. Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -37,10 +37,12 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
+5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-15, night, TR19 and TR20's fixes: the hold after the jump, a charge never dims, and `LeadCalm` (TR19); a trimmed edge (a ready chip's gold, a card's trim) whitens toward white under the pointer, never toward the accent; a tap's fill runs from the client's clock as well as the server's, and the later wins; the word's plate draws above the HUD's other pieces. Research: say in your row what you'd change.
 - Tier 2, Faber, for research, 2026-11-15, Kirra's install: her kit's coefficients are seeds (the combo at Rook's combo's rate per second, the signature on Haymaker's numbers), and her reveal's strike falls on Land (AR10, "The install"). Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, Kirra's install:
   - Her combo is one clip, played from 0 each round. The server's dash covers whatever gap is left, so a round begun up close steps in place.

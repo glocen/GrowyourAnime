@@ -2984,7 +2984,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - `images/`: sixty pictures, `Gear<Name>.png`, 256 pixels, the object alone; `GearLight.png`, the slot's light, white, to tint; `GearFrameLegendary.png`, Legendary's border, sliced like the kit's boxes.
   - `gear_icons.json`: the slot's layers in order with their numbers, each rarity's rim colour, and every design's name, rarity and image by slot.
   - Four sheets, one a kind: `gear_sword_colour.png`, `gear_short_colour.png`, `gear_ring_colour.png`, `gear_helmet_colour.png`. Each design in its slot seen close, at 64 and 38 points as the build lays it, and alone at 64 pixels over dark.
-- **The materials,** one table for all sixty: dark blue-grey iron, copper-bronze, raw grey scrap; bright steel with brass; blued steel; a violet metal with pale filigree; orange gilt with ivory. Wood, leather, and a near-black lining in every helmet.
+- **The materials,** one table for all sixty: dark blue-grey iron, copper-bronze, raw grey scrap; bright steel with brass; blued steel (steel-white in its highlights, blue in its shade); a near-black violet gunmetal with pale filigree; orange gilt with ivory. Wood, leather, and a near-black lining in every helmet.
 - **The stones take their set's tone:** Embers amber, Hoarfrost ice, Gales sea green, Stormcall warm white, Gloamforge pale cyan, Nightloom lilac. A Legendary's lit part is warm white with a small gold light round it. No flame, cloud or particle.
 - **The finish,** in numpy after two Workbench renders (the design lit, then flat as a mask of what glows): a warm key from above, a light on the upper left edge and a shade on the lower right, the light of the stone and the edge.
 - **The slot's layers, from the back:** the kit's button fill as the well; the rarity's tint over it (0.14); the rarity's light, brightest a little above the middle and gone before the corners, so it needs no cutting; the rim; the picture at 0.94 of the slot; on a weapon, the kit's class mark in its seat on the bottom cut.
@@ -3026,6 +3026,19 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - Modulo's tier 1 calls stand: the stones' six tones, scrap as raw grey, and Common's light at 0.8.
     - Legendary's glow stays within the grid's gutter, so it never lies over a neighbour's slot.
   - **Next:** the two fixes on Rare, Epic and Legendary's slot, then the images to Faber. Common and Uncommon are ready now.
+- **The two fixes, made** (Modulo, 2026-11-15), on the four sheets, the json and the 24 Rare and Epic pictures. The other 38 images are unchanged, byte for byte.
+  - **Fix 1, the two metals.** A tempered metal is now rendered as plain steel, and the finish gives it its own tones by how bright the steel is (`gear_icons.py`, `TEMPER`, `tempered`): a third flat render marks where the metal is.
+    - **Rare, blued steel:** near-black blue in its shade, a blue temper in the low mid-tones, grey-blue steel across its lit faces, steel-white highlights.
+    - **Epic, gunmetal:** near-black violet across most of it, a grey-violet sheen where the light falls, pale highlights. Its colour is its pale filigree and its glowing stone.
+  - **Fix 2, Legendary's slot.** The ground is a deep warm umber, `#34200E` to `#1A1007`, in place of the well and the tint. The light is the same image laid at 0.72 of the slot round the same middle, so the umber stands round it and the gilt keeps its edge. Both are in `gear_icons.json`, under the well and the light.
+  - **Against the measure, Modulo's read:**
+    - At 64 pixels alone over dark, a Rare or Epic object reads as metal, and its mid-tones stay under the frame's colour.
+    - At 38 points the three of a rarity part by their fittings on the short swords, the rings and the helmets. The three long Rare swords part least: one blade's outline, and their guards are small at that size.
+    - A Rare helmet's dome still leans blue: it's the widest lit face in the batch. The lever, if it must go greyer, is the tone at 0.42 in `TEMPER`.
+  - **Three renders,** each seen whole: the first two left the Rare helmets and rings a flat mid blue, since Workbench holds a metal's lit faces lower than the tones assumed.
+  - **Four facts:** made, yes. Self-reviewed, yes: the four sheets whole and their small rows. Delivered, the sheets for research's pass. Accepted, no.
+  - **Content check, again: PASS** for delivery and for upload (2026-11-15): the four sheets, the 24 and the json, as they are. A picture rendered again, or a change to `TEMPER`, is checked again. Every earlier condition carries on, and one is restated, since the Epic helm is no longer "clearly violet": Gloamforge Helm's face plate stays blank (no grille, vent lines, lenses or snout), its prongs and cyan stone stay, and its metal keeps a violet sheen, never a neutral black. Its note for research, not a rule matter: alone over dark at 64 pixels the Epic bodies nearly vanish and the pale fittings and the stone carry them, most on the two Epic loops; in the slot the violet light holds them.
+  - **Time:** about 12 minutes by the clock, three guarded renders.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

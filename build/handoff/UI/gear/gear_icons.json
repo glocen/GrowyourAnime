@@ -4,18 +4,27 @@
  "layers": [
   {
    "what": "the well",
-   "how": "the kit's ButtonFill, tinted from `well` to `channel`, top to foot",
+   "how": "the kit's ButtonFill, tinted from `well` to `channel`, top to foot. Legendary: tinted from `legendary`'s first colour to its second instead, a deep warm umber",
    "well": "#0B0C10",
-   "channel": "#07080B"
+   "channel": "#07080B",
+   "legendary": [
+    "#34200E",
+    "#1A1007"
+   ]
   },
   {
    "what": "the rarity's tint",
-   "how": "the same ButtonFill over it in the rarity's `rim`, covering 0.14 (Common 0.112)"
+   "how": "the same ButtonFill over it in the rarity's `rim`, covering 0.14 (Common 0.112). Legendary: none, its ground is already its own"
   },
   {
    "what": "the rarity's light",
    "image": "images/GearLight.png",
-   "how": "white, tinted the rarity's `rim` mixed a fifth toward white; laid over the whole slot, covering 1 (Common 0.8); it fades out before the corners, so it needs no cutting"
+   "how": "white, tinted the rarity's `rim` mixed a fifth toward white; laid over the whole slot, covering 1 (Common 0.8); it fades out before the corners, so it needs no cutting. Legendary: laid at `legendary` of the slot's size, its top left corner `legendaryAt` of the slot's size in from the slot's own, so the light keeps its middle and leaves the umber round it",
+   "legendary": 0.72,
+   "legendaryAt": [
+    0.14,
+    0.129
+   ]
   },
   {
    "what": "the rim",

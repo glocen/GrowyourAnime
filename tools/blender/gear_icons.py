@@ -50,10 +50,17 @@ RARITIES = s.RARITIES
 # finish adds the light. The lining is the kit's near-black, never a skin tone (the content check, 2026-11-15).
 PAINT = dict(
     iron=("#626877", 0.35, 0.45), steel=("#D8DFE9", 0.3, 0.42), bronze=("#BC7C44", 0.35, 0.4), scrap=("#827A76", 0.3, 0.55),
-    brass=("#DDA050", 0.35, 0.32), blued=("#4572B6", 0.4, 0.28), rich=("#7340B0", 0.25, 0.3), filigree=("#F0E9FA", 0.2, 0.3),
+    brass=("#DDA050", 0.35, 0.32), blued=("#C6CCD6", 0.3, 0.36), rich=("#C6CCD6", 0.3, 0.3), filigree=("#F0E9FA", 0.2, 0.3),
     gilt=("#FFBF45", 0.3, 0.26), ivory=("#F6EEDC", 0.0, 0.5), wood=("#875C3D", 0.0, 0.7), leather=("#4C382E", 0.0, 0.75),
     liner=("#0E0F13", 0.0, 0.9))
 LIT = "#FFF6DC"  # a lit part: warm white, never red or dark
+# A tempered metal is rendered as plain steel, and the finish gives it its own tones from shade to highlight (research,
+# 2026-11-15: the frame and the slot's light carry the rarity, the object only agrees with it). Rare is steel first:
+# its highlights steel-white, the blue a temper in its mid-tones. Epic is a near-black violet gunmetal: its colour is
+# carried by its pale filigree and its glowing stone. Each: its tones by how bright the steel is, from shade to
+# highlight, and how far the mid-tones are held down (over 1 keeps more of the metal dark).
+TEMPER = dict(blued=(((0.0, "#10151F"), (0.2, "#2C456E"), (0.42, "#7688A6"), (0.7, "#C2CCDA"), (1.0, "#F4F7FB")), 1.0),
+              rich=(((0.0, "#0D0B15"), (0.5, "#2E2642"), (0.8, "#6A5F86"), (1.0, "#D8D0EC")), 1.25))
 # A set's word gives its stone its tone. Stormcall's is warm white and small; Gloamforge's is never yellow or gold
 # beside its violet metal (the content check's conditions for this pass).
 TONES = (("Embers", "#FF9E45"), ("Hoarfrost", "#BDEBFF"), ("Gales", "#7FE8C8"), ("Stormcall", "#FFF3D0"),
@@ -62,6 +69,8 @@ TONES = (("Embers", "#FF9E45"), ("Hoarfrost", "#BDEBFF"), ("Gales", "#7FE8C8"), 
 RIM = dict(Common="#8A909C", Uncommon="#7CF0A0", Rare="#6FB6FF", Epic="#D29CFF", Legendary="#FFD777")
 GLINT = "#FFF3C4"  # Legendary's border: its light
 WELL, CHANNEL = "#0B0C10", "#07080B"
+# Legendary's slot (research, 2026-11-15): a deep warm umber ground, the light kept to the centre, so gilt keeps its edge.
+UMBER, LEGEND_LIGHT = ("#34200E", "#1A1007"), 0.72
 NOW = dict(tone=LIT)  # the design being built
 
 
@@ -120,10 +129,27 @@ def shoot(scene, out, centre, span):
     lit = render(scene, out)
     for m in bpy.data.materials:
         key = m.name[5:]
-        m.diffuse_color = (1, 0, 0, 1) if key == "lit" else (0, 1, 0, 1) if key == "glow" else (0, 0, 0, 1)
+        m.diffuse_color = ((1, 0, 0, 1) if key == "lit" else (0, 1, 0, 1) if key == "glow" else
+                           (0, 0, 1, 1) if key in TEMPER else (0, 0, 0, 1))
+    metal = next((TEMPER[m.name[5:]] for m in bpy.data.materials if m.users and m.name[5:] in TEMPER), None)
     rs.workbench(scene, SIZE, SIZE, flat=True)
     mask = render(scene, out)
+    if metal:
+        lit = tempered(lit, mask[..., 2] * mask[..., 3], metal)
     return finish(lit, mask[..., 0] * mask[..., 3], mask[..., 1] * mask[..., 3], NOW["tone"])
+
+
+def tempered(px, where, metal):
+    """A tempered metal's own tones laid over its steel, by how bright the steel is. A design holds one tempered
+    metal, never two."""
+    stops, hold = metal
+    grey = px[..., :3] @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    v = np.clip((grey - 0.2) / 0.72, 0, 1) ** hold
+    at, tones = [s[0] for s in stops], np.array([c(s[1])[:3] for s in stops])
+    tone = np.stack([np.interp(v, at, tones[:, i]) for i in range(3)], axis=-1).astype(np.float32)
+    px = px.copy()
+    px[..., :3] += (tone - px[..., :3]) * where[..., None]
+    return px
 
 
 def finish(px, lit, glow, stone):
@@ -193,11 +219,17 @@ def slot(sh, x, y, side, rarity, icon, z=1.0, mark=None):
     t = sh.tile(x - pad, y - pad, side + 2 * pad, side + 2 * pad)
     box = t.poly(ui.cut_box(pad, pad, pad + side, pad + side, 8.0 * z, 0.0, 8.0 * z, 0.0))
     t.glow(box, 4.0 * z, ui.BLACK, 0.22)
-    t.paint(box, t.ramp(WELL, CHANNEL, (t.y - pad) / side))
     tint, strength = RIM[rarity], 0.8 if rarity == "Common" else 1.0
     inside = np.clip(0.5 - box * ui.K, 0, 1)
-    ui.over(t.px, c(tint), inside * 0.14 * strength)
-    ui.over(t.px, mix(tint, "#FFFFFF", 0.2), inside * light(t, pad, pad, side) * strength)
+    if rarity == "Legendary":  # its own ground, and the light smaller round the same middle
+        t.paint(box, t.ramp(*UMBER, (t.y - pad) / side))
+        small = side * LEGEND_LIGHT
+        glow = light(t, pad + (side - small) * 0.5, pad + (side - small) * 0.46, small)
+    else:
+        t.paint(box, t.ramp(WELL, CHANNEL, (t.y - pad) / side))
+        ui.over(t.px, c(tint), inside * 0.14 * strength)
+        glow = light(t, pad, pad, side)
+    ui.over(t.px, mix(tint, "#FFFFFF", 0.2), inside * glow * strength)
     if rarity == "Legendary":
         border(t, pad, pad, side, z)
     else:
@@ -260,7 +292,7 @@ def sheet(out, kind, shots, designs, name):
     t.text(20, 12, 15, f"Grow your Anime: {kind['title']} in colour, in its slot (AR6, batch 1, the finish)", g.INK)
     t.text(20, 36, 9.5, "Flat pictures for the gear slots only (the director, 2026-11-15). Rarity in three layers: the "
            "object's own material, the slot's light, the frame. Common to Epic share one frame in the rarity's colour; "
-           "Legendary's border is its own, with no crown.", g.SOFT_INK)
+           "Legendary's border is its own, with no crown, on a deep umber ground.", g.SOFT_INK)
     t.text(20, 50, 9.5, "Each: its slot seen close; beside it the slot at 64 and at 38 points as the build lays it; under "
            "them the picture alone at 64 pixels over dark." + (" A weapon's class mark sits on the bottom cut."
                                                                if kind["mark"] else ""), g.SOFT_INK)
@@ -315,13 +347,17 @@ def manifest(out, pad):
              "slice carries them. DESIGN, untried in Studio.",
         slot=SLOT,
         layers=[
-            dict(what="the well", how="the kit's ButtonFill, tinted from `well` to `channel`, top to foot", well=WELL,
-                 channel=CHANNEL),
+            dict(what="the well", how="the kit's ButtonFill, tinted from `well` to `channel`, top to foot. Legendary: "
+                 "tinted from `legendary`'s first colour to its second instead, a deep warm umber", well=WELL,
+                 channel=CHANNEL, legendary=list(UMBER)),
             dict(what="the rarity's tint", how="the same ButtonFill over it in the rarity's `rim`, covering 0.14 (Common "
-                 "0.112)"),
+                 "0.112). Legendary: none, its ground is already its own"),
             dict(what="the rarity's light", image="images/GearLight.png", how="white, tinted the rarity's `rim` mixed a "
                  "fifth toward white; laid over the whole slot, covering 1 (Common 0.8); it fades out before the corners, "
-                 "so it needs no cutting"),
+                 "so it needs no cutting. Legendary: laid at `legendary` of the slot's size, its top left corner "
+                 "`legendaryAt` of the slot's size in from the slot's own, so the light keeps its middle and leaves the "
+                 "umber round it", legendary=LEGEND_LIGHT,
+                 legendaryAt=[round((1 - LEGEND_LIGHT) * 0.5, 3), round((1 - LEGEND_LIGHT) * 0.46, 3)]),
             dict(what="the rim", how="Common to Epic: the kit's ButtonEdgeBold in the rarity's `rim`. Legendary: "
                  "images/GearFrameLegendary.png in its place, sliced: it reaches `pad` points past the slot on every "
                  "side, and its corners are `corner` points from the image's edge", pad=pad, corner=pad + 14.0),

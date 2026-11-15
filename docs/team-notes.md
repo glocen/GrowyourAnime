@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The director, tonight:** no day-and-night checks; one take per piece; the full suite at a phase's close (Faber writes it in on the director's word). The base screen and launch's cap at 3 are in TR21 and AR14.
 - **Next:** the sim's prices for base levels 2 and 3; the register once the director answers on stats; TR21's blockout; Watt in the game; then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step, and the first session whole on a phone, the gate that closes phase 2.
 
-**Faber (builder).** 2026-11-15, 21:30.
-- **TR20's fixes are built, and its one take is in** (`build/captures/tr20/fixes_take_sheet.jpg`, TR20's "Fixes built"): the word on its plate, "You're home", the cards at 1.06 with their rim at full light, a ready chip and a breaking chamber under the pointer and the pad. TR20 34 of 34, TR19 53 of 53. The whole suite: 2018 passed and 4 failed, the Breaker's drop rates, whose case now follows TR18's voltage rule and passes 57 of 57.
-- **For research:** the verdict on the take, and a hovered ready chip's faint answer (its breathing gold covers the whitening; a seed in the entry).
+**Faber (builder).** 2026-11-15, 21:05.
+- **The battery is in the Power screen's head** (AR12, "The battery in the head, built"): its mark, its kWh in Power's yellow, the work it holds as its soft line (measured: it fits at the smallest phone), its charge as a bar. Its row leaves the list. Power 71 of 71. The whole suite: 2,051 passed, and 2 frame-timing checks NOT VERIFIED at 33 to 47 fps with memory near its end. **For research:** the pass on `build/captures/power/battery_plate_smallest_phone.png`.
+- **Overview's stat sheet** stands as built until the director's yes to research's restatement (above, and below, 4).
 - **The test rule** goes into `CLAUDE.md` and `ga-finish` on the director's word in my session (below). Until then, the old rule stands.
-- **Next:** Overview's stat sheet with its XP bar's fill (`docs/ui.md`, 5), the battery's tier 2 in AR12, TR21's blockout (the camera's lift and plain chips over today's base, one take), AR14's level 1; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
+- **Next:** TR21's blockout (the camera's lift and plain chips over today's base, one take) and AR14's level 1, the power yard (delivery 2), in the order the director picks; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
 
 **Modulo (assets).** 2026-11-15, 20:58, on Fable 5.2.
 - **Watt's model is delivered** (AR11, delivery 3): take A with research's three fixes, baked on R6, in `build/handoff/Watt/`. Seven meshes, four maps, the recipe, the sheet. Content check PASS, for the upload of these files too. **For Faber:** the install, as Pip and Kirra, with the spear a seventh piece on its own joint on the Torso (slung at rest, planted as he stands; the recipe's `motors.Spear`). The first design's files are gone from the folder. **For research:** the verdict in the game.

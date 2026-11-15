@@ -1057,6 +1057,47 @@ return function(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: the Power screen's battery plate at the smallest phone's size, held for a still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's still of AR12's tier 2 (docs/asset-requests.md, AR12, "The battery in the head"): the screen opened
+				-- for the take (PowerOpen), the battery a third full, held until the driver sets ReplicatedStorage.NL_TakeStep
+				-- to "End". The plant's door is left as it was found.
+				local view = ProfileController.Get()
+				t.Check("the save's copy is here", view ~= nil)
+				if view == nil then
+					return
+				end
+				local wasOpen = view.Base.Power.Open
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				t.Server("BaseBattery", BaseConfig.Battery.Capacity / 3)
+				t.Server("PowerOpen", true)
+				waitFor(t, ANSWER, function(): boolean
+					local seen = ProfileController.Get()
+					return seen ~= nil and seen.Base.Power.Open
+				end)
+				Screen.Close()
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				BaseController.OpenPower()
+				t.Check("the Power screen opens", Screen.Current() == PowerScreen.Name, tostring(Screen.Current()))
+				waitFor(t, 120, function(): boolean
+					return step.Value == "End"
+				end)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Screen.Close()
+				if not wasOpen then
+					t.Server("PowerOpen", false)
+				end
+				step:Destroy()
+			end,
+		},
+		{
 			Name = "Take: TR20's fixes, stills held step by step: the word's plate over the chip, You're home, a card, a ready chip and a breaking chamber, for research's verdict",
 			Manual = true,
 			Stay = true,

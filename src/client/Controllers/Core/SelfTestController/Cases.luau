@@ -63,7 +63,6 @@ local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local BreakerScreen = require(UI.BreakerScreen)
-local PowerScreen = require(UI.PowerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local World = require(UI.World)
 local Read = require(UI.Read)
@@ -82,6 +81,7 @@ local UiLint = require(script.Parent.UiLint)
 local Takes = require(script.Parent.Takes)
 local VoidkinCases = require(script.Parent.VoidkinCases)
 local HudCases = require(script.Parent.HudCases)
+local PowerCases = require(script.Parent.PowerCases)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -7009,159 +7009,6 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Power: the generator shows generation and demand, opens the Power screen once it's open, and its split is asked of the server",
-		Run = function(t: any)
-			-- TR18 (docs/design.md, "Power"; UI/PowerScreen; Rules.Base.SetPower): the generator's face, its prompt only once
-			-- a second machine has drawn (PowerOpen stands for that here), the screen's bar dragged by its handles, +/- on a
-			-- share, Auto again. Leaves the plant as it found it.
-			local view = ProfileController.Get()
-			t.Check("the save's copy is here", view ~= nil)
-			if view == nil then
-				return
-			end
-			local was = { Open = view.Base.Power.Open, Auto = view.Base.Power.Auto, Shares = table.clone(view.Base.Power.Shares) }
-			local function plant(): Profile.Power?
-				local now = ProfileController.Get()
-				return if now then now.Base.Power else nil
-			end
-			local function line(plate: Instance?, index: number): string
-				local found = plate and plate:FindFirstChild(`Line{index}`, true)
-				return if found and found:IsA("TextLabel") then found.Text else ""
-			end
-			local function part(name: string): Instance?
-				return PowerScreen.Parts()[name]
-			end
-			local function said(name: string): string
-				local found = part(name)
-				return if found and found:IsA("TextLabel") then found.Text else ""
-			end
-			local ok, err = pcall(function()
-				Screen.Close()
-				-- Shut: the face says the plant, no prompt, and the screen won't open.
-				t.Server("PowerOpen", false)
-				t.Check("the Power screen shut", waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and not p.Open and BaseController.Parts().GeneratorPrompt == nil
-				end))
-				local parts = BaseController.Parts()
-				local face = parts.GeneratorPlate
-				t.Check("the generator has its plate", face ~= nil)
-				t.Wait(PLATE_TICK)
-				local now = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow())
-				t.Equal("its face: generation", line(face, 1), `Generation {Read.Kw(now.Rates.Generation)}`)
-				t.Equal("and demand", line(face, 2), `Demand {Read.Kw(now.Rates.Demand)}`)
-				BaseController.OpenPower()
-				t.Check("shut, the screen doesn't open", Screen.Current() ~= PowerScreen.Name, tostring(Screen.Current()))
-				-- Open: its prompt, and the screen under Auto.
-				t.Server("PowerOpen", true)
-				t.Check("open: the generator's prompt", waitFor(t, ANSWER, function(): boolean
-					local prompt = BaseController.Parts().GeneratorPrompt
-					return prompt ~= nil and prompt:IsA("ProximityPrompt") and prompt.ActionText == "Power"
-				end))
-				BaseController.OpenPower()
-				t.Check("the Power screen opens", Screen.Current() == PowerScreen.Name, tostring(Screen.Current()))
-				now = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow())
-				t.Equal("generation against demand at its head", said("Plant"), `Generation {Read.Kw(now.Rates.Generation)} · Demand {Read.Kw(now.Rates.Demand)}`)
-				t.Check("one bar, three segments, two handles", part("Track") ~= nil and part("Segment3") ~= nil and part("Handle1") ~= nil and part("Handle2") ~= nil)
-				t.Check("Auto, as it starts", Button.State(part("Auto") :: TextButton) == "Selected", Button.State(part("Auto") :: TextButton))
-				for index, machine in PowerScreen.Machines do
-					local rating = now.Rates.Flow.Demand[machine.Id] or 0
-					local reading = said(`Reading{index}`)
-					t.Check(`{machine.Name}: its kW against its rating and its speed, or idle`, if rating > 0 then string.find(reading, " kW · %d+%%$") ~= nil else reading == "Idle", reading)
-				end
-				t.Check("the battery: its kWh, its cap and the work it holds", string.find(said("BatteryReading"), `^[%d%.]+ / {BaseConfig.Battery.Capacity} kWh · `) ~= nil, said("BatteryReading"))
-				lintClean(t, "the Power screen under Auto")
-				-- Two handles dragged: the split asked once at each let-go, the bar's shares in the save. The first goes to the
-				-- bar's start first, wherever Auto had it, so the second has the room.
-				local start = PowerScreen.Drag(1, 0)
-				t.Check("the first handle to the start: asked and taken", start.Ok == true and waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and not p.Auto and (p.Shares.Breaker or 0) == 0
-				end), start.Error)
-				local second = PowerScreen.Drag(2, 0.6)
-				t.Check("the second handle let go at 60%: asked and taken", second.Ok == true and second.Auto == false, second.Error)
-				t.Check("the bar keeps it while the save's copy comes", waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and not p.Auto and math.abs((p.Shares.Training or 0) - 0.6) < 1e-6
-				end) and math.abs(PowerScreen.Cuts()[2] - 0.6) < 1e-6, `{PowerScreen.Cuts()[1]}, {PowerScreen.Cuts()[2]}`)
-				-- The Void Breaker's handle keeps the Training machine's share: what it takes or gives up is the battery's
-				-- (research, TR18).
-				local first = PowerScreen.Drag(1, 0.3)
-				t.Check("the first at 30%: asked and taken", first.Ok == true, first.Error)
-				t.Check("the save holds the bar's split, the Training machine's 60% kept", waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and not p.Auto and math.abs((p.Shares.Breaker or 0) - 0.3) < 1e-6 and math.abs((p.Shares.Training or 0) - 0.6) < 1e-6
-				end))
-				t.Check("the screen shows it: 30%, 60% and the battery's 10%", waitFor(t, 1, function(): boolean
-					return said("Share1") == "30%" and said("Share2") == "60%" and said("Share3") == "10%"
-				end), `{said("Share1")}, {said("Share2")}, {said("Share3")}`)
-				local flow = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow()).Rates.Flow
-				for index, machine in PowerScreen.Machines do
-					local segment = part(`Segment{index}`)
-					local busy = (flow.Demand[machine.Id] or 0) > 0
-					local colour = if busy then machine.Colour else Theme.Colour.Electricity
-					t.Check(`{machine.Name}'s share in its colour, or the battery's while it's idle ({if busy then "working" else "idle"})`, segment ~= nil and segment:IsA("Frame") and segment.BackgroundColor3 == colour)
-				end
-				local line = part("Over")
-				t.Check("under a split, the head's line is plain: never the warning colour", line ~= nil and line:IsA("TextLabel") and line.TextColor3 ~= Theme.Colour.Over and (part("Body") :: Instance):GetAttribute("Over") ~= true, if line and line:IsA("TextLabel") then line.Text else "none")
-				-- +/-: a step of the whole on one share.
-				local step = HudConfig.Power.Step
-				t.Check("+ on the Breaker", Button.Press(part("Plus1") :: TextButton))
-				t.Check(`a step up: {math.floor((0.3 + step) * 100 + 0.5)}%`, waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and math.abs((p.Shares.Breaker or 0) - (0.3 + step)) < 1e-6
-				end))
-				t.Check("- on the Training machine", Button.Press(part("Minus2") :: TextButton))
-				t.Check("a step down", waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and math.abs((p.Shares.Training or 0) - (0.6 - step)) < 1e-6
-				end))
-				-- The whole given: + can't give more.
-				local full = PowerScreen.Drag(2, 1)
-				t.Check("the second handle at the end: the whole given", full.Ok == true and waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and math.abs((p.Shares.Breaker or 0) + (p.Shares.Training or 0) - 1) < 1e-6
-				end))
-				t.Check("and + gives no more", waitFor(t, 1, function(): boolean
-					local plus = part("Plus1")
-					return plus ~= nil and plus:IsA("TextButton") and not Button.Press(plus)
-				end))
-				-- The UI lint in this window and on the smallest phone (TR18's done-when: both scales).
-				local top = GuiService.TopbarInset.Height
-				for _, at in { { Name = "this window", Scale = nil :: number?, Box = nil :: Vector2? }, { Name = "the smallest phone", Scale = Theme.Scale.Floor, Box = Theme.Smallest - Vector2.new(0, top) } } do
-					Layers.Force(at.Scale)
-					Layers.Box(at.Box)
-					t.Wait(0.1) -- laid out again
-					lintClean(t, `the Power screen with a split, in {at.Name}`)
-				end
-				Layers.Force(nil)
-				Layers.Box(nil)
-				-- Auto again, the shares kept for later.
-				t.Check("Auto pressed", Button.Press(part("Auto") :: TextButton))
-				t.Check("Auto again, the split kept", waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and p.Auto and (p.Shares.Breaker or 0) > 0
-				end))
-			end)
-			-- The plant as it was found.
-			Screen.Close()
-			if was.Open then
-				t.Server("PowerOpen", true)
-				waitFor(t, ANSWER, function(): boolean
-					local p = plant()
-					return p ~= nil and p.Open
-				end)
-				local back = ProfileController.Act("SetPower", if was.Auto then { Auto = true } else { Auto = false, Shares = was.Shares })
-				t.Check("the split put back", back.Ok == true, back.Error)
-			else
-				t.Server("PowerOpen", false)
-			end
-			if not ok then
-				error(err, 0)
-			end
-		end,
-	},
-	{
 		Name = "Breaker: voltage shows its price in kWh and the time it saves, says why when it can't, and spends once",
 		Run = function(t: any)
 			-- TR18 (docs/design.md, "Power"; Rules.Power.Voltage, Rules.Base.Infuse): Low or High voltage, each with its price
@@ -7636,6 +7483,10 @@ for _, case in HudCases.Cases({
 	lintClean = lintClean,
 	myLead = myLead,
 }) do
+	table.insert(cases, case)
+end
+-- The Power screen's, given theirs (TR18; AR12's battery plate).
+for _, case in PowerCases.Cases({ ANSWER = ANSWER, PLATE_TICK = PLATE_TICK, waitFor = waitFor, lintClean = lintClean }) do
 	table.insert(cases, case)
 end
 -- The Voidkin screen's, given theirs (TR17).

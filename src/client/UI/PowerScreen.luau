@@ -2,8 +2,9 @@
 -- PowerScreen (client): the Power screen, in grey (TR18; docs/ui.md, "The screens of the first loop", 7; docs/design.md,
 -- "Power"). The plant as it stands now, from the server's own rules run on the client's copy (UI.Read): generation
 -- against demand; one bar that is the whole generation, split among the machines by its handles, what's left charging
--- the battery; +/- on each share, and Auto; each machine's kW against its rating and its speed; the battery's kWh, its
--- cap and the hours of work it holds. Every change is asked of the server (Rules.Base.SetPower) through the owner's Act,
+-- the battery; +/- on each share, and Auto; each machine's kW against its rating and its speed; and the battery on a
+-- plate in the head, the screen's one store above the fold: its kWh against its cap, the work it holds, its charge as a
+-- bar (AR12's tier 2, research's ruling, 2026-11-15). Every change is asked of the server (Rules.Base.SetPower) through the owner's Act,
 -- and the screen is rebuilt from the server's copy. A handle drags here and asks once, when it's let go; a change of the
 -- save while it's held waits for the let-go. The generator's prompt opens it (BaseController), once a second machine
 -- has drawn (Profile's Base.Power.Open). Its look waits on AR12's pick and the machine room's Dynamo.
@@ -30,6 +31,8 @@ local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
 local Row = require(UI.Kit.Row)
+local Panel = require(UI.Kit.Panel)
+local Bar = require(UI.Kit.Bar)
 
 local PowerScreen = {}
 
@@ -45,6 +48,10 @@ local NAME_LINE = 24
 local STEP = Theme.Size.Tap -- a +/- button, square
 local SHARE = 56 -- the share's words between a row's - and +
 local AUTO = 96
+local PLATE = Vector2.new(400, Theme.Size.Tap - Theme.Size.Pad) -- the battery's plate in the head, authored
+local LINE = 20 -- the plate's reading line, authored high
+local CHARGE = 8 -- the plate's charge bar, authored high
+local MARK = Vector2.new(20, 12) -- the battery's mark, drawn from frames: a stand-in until AR12's mark is cut
 
 -- The machines in the bar's order (Rules.Power.Machines), by name, each in a grey colour until AR12's pick; the battery
 -- takes what's left, in Power's.
@@ -417,26 +424,55 @@ local function machineRow(list: ScrollingFrame, index: number, now: Read.Base)
 	step("Minus", -HudConfig.Power.Step, STEP + SHARE + gap * 2)
 end
 
--- The battery's row: its kWh against its cap, the hours of work it holds at today's demand, and its share: the rest.
-local function batteryRow(list: ScrollingFrame)
-	local gap = Theme.Size.Gap
-	local row = Instance.new("Frame")
-	row.Name = "Battery"
-	row.BackgroundTransparency = 1
-	row.Size = UDim2.new(1, -gap, 0, STEP)
-	row.LayoutOrder = #MACHINES + 1
-	row.Parent = list
-	chip(row, BATTERY)
-	local right = STEP + SHARE + gap
-	label(row, "Name", "Battery", Theme.Text.Body, UDim2.new(1, -(right + CHIP + gap), 0, NAME_LINE), UDim2.fromOffset(CHIP + gap, 0), { Font = Theme.Font.Strong })
-	local reading = label(row, "Reading", "", Theme.Text.Caption, UDim2.new(1, -(right + CHIP + gap), 0, STEP - NAME_LINE), UDim2.fromOffset(CHIP + gap, NAME_LINE), { Colour = Theme.Colour.TextDim })
-	parts.BatteryReading = reading
-	parts.Share3 = label(row, "Share3", "", Theme.Text.Body, UDim2.fromOffset(SHARE, STEP), UDim2.new(1, -(STEP + gap), 0, 0), { Font = Theme.Font.Number, Align = Enum.TextXAlignment.Center, AnchorPoint = Vector2.new(1, 0) })
+-- The battery's plate, in the head between the title and Close: its mark; its kWh against its cap in Power's yellow
+-- (docs/ui.md, rule 3), the work it holds at today's demand as its soft line beside it; its charge as a bar under them.
+-- Its share of the generation is the bar's yellow rest, so it has no row of its own. It lives in the body, above its
+-- top, so a rebuild makes it again with the rest.
+local function plate(body: Frame)
+	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
+	local frame = Panel.new({
+		Name = "BatteryPlate",
+		Size = UDim2.fromOffset(PLATE.X, PLATE.Y),
+		-- Centred in the head's row, its right a gap short of Close (the body stands two pads in, Close one).
+		Position = UDim2.new(1, -(Screen.Exit - pad + gap), 0, -(Screen.Head + PLATE.Y) / 2),
+		AnchorPoint = Vector2.new(1, 0),
+		Edge = false,
+		Parent = body,
+	})
+	parts.BatteryPlate = frame
+	local mark = Instance.new("Frame")
+	mark.Name = "Mark"
+	mark.BackgroundTransparency = 1
+	mark.AnchorPoint = Vector2.new(0, 0.5)
+	mark.Position = UDim2.new(0, pad, 0.5, 0)
+	mark.Size = UDim2.fromOffset(MARK.X, MARK.Y)
+	mark.Parent = frame
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 2
+	stroke.Color = BATTERY
+	stroke.Parent = mark
+	local nub = Instance.new("Frame")
+	nub.Name = "Nub"
+	nub.BorderSizePixel = 0
+	nub.BackgroundColor3 = BATTERY
+	nub.AnchorPoint = Vector2.new(0, 0.5)
+	nub.Position = UDim2.new(1, 2, 0.5, 0)
+	nub.Size = UDim2.fromOffset(3, MARK.Y / 2)
+	nub.Parent = mark
+	local left = pad + MARK.X + 5 + gap -- past the mark and its nub
+	local inner = PLATE.X - left - pad
+	local top = (PLATE.Y - LINE - gap - CHARGE) / 2
+	local reading = label(frame, "BatteryReading", "", Theme.Text.Body, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Font = Theme.Font.Number, Colour = BATTERY })
+	local holds = label(frame, "BatteryHolds", "", Theme.Text.Caption, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Right })
+	local charge = Bar.new({ Name = "Charge", Size = UDim2.fromOffset(inner, CHARGE), Position = UDim2.fromOffset(left, top + LINE + gap), Colour = BATTERY, Parent = frame })
+	parts.BatteryReading, parts.BatteryHolds, parts.BatteryCharge = reading, holds, charge
+	local capacity = BaseConfig.Battery.Capacity
 	table.insert(tickers, function(at: Read.Base)
 		local kwh = at.Data.Base.Charge
 		local demand = at.Rates.Demand
-		local holds = if demand > 1e-9 then `holds {Read.Hours(kwh / demand)} of work` else "nothing draws now"
-		reading.Text = `{Read.Kwh(kwh)} / {Read.Number(BaseConfig.Battery.Capacity)} kWh · {holds}`
+		reading.Text = `{Read.Kwh(kwh)} / {Read.Number(capacity)} kWh`
+		holds.Text = if demand > 1e-9 then `holds {Read.Hours(kwh / demand)} of work` else "nothing draws now"
+		Bar.Set(charge, if capacity > 0 then math.clamp(kwh / capacity, 0, 1) else 0)
 	end)
 end
 
@@ -453,6 +489,7 @@ build = function(view: Profile.View)
 	local body = Screen.Open(NAME, "Power", SIZE)
 	local gap = Theme.Size.Gap
 	head(body, now)
+	plate(body)
 	local top = STEP + gap
 	bar(body, top)
 	top += HANDLE + gap
@@ -461,7 +498,6 @@ build = function(view: Profile.View)
 	for index in MACHINES do
 		machineRow(list, index, now)
 	end
-	batteryRow(list)
 	parts.Body = body
 	cuts = cutsOf(sharesNow(now))
 	lay()

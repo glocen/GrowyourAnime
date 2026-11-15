@@ -6309,6 +6309,17 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
          - "Holds N min of work" goes onto the plate as its soft line if it fits at phone size (Faber measures). Otherwise it waits.
     - **No fix.** The caution's orange stands apart from Power's yellow only just, in this warm room, but the battery's mark beside it carries the meaning: accepted.
     - **Next:** Modulo cuts the images for Faber, and Faber installs them in his queue's order.
+  - **The battery in the head, built** (Faber, 2026-11-15, night; ruling 3; `src/client/UI/PowerScreen.luau`, `plate`):
+    - A plate stands in the head between the title and Close, 400 by 44 points, a row's body. It holds the battery's mark, a stand-in drawn from frames until the images are cut. Then "20.05 / 60 kWh" in Power's yellow, the work it holds as its soft line at the plate's right ("holds 38 min of work", or "nothing draws now"), and its charge as a bar under them.
+    - The battery's row leaves the list: its share is the bar's yellow rest. The kit's head sizes are named once (`Screen.Head`, `Screen.Exit`).
+    - **Measured at phone size: the soft line fits.** Probes of the widest words each line says ("88.88 / 60 kWh", "holds 88 h 58 min of work") stay at least a gap apart. That holds in the window and at the smallest phone, where the kit draws both at its legible floor. The plate sits in the head's row, clear of the title's words and of Close.
+    - **Checks:**
+      - type check 0 new;
+      - logic offline 5,971 passed;
+      - the Power case 71 of 71. It now lives in `SelfTestController/PowerCases.luau`, since Cases' one table had passed what the type solver checks;
+      - the whole suite 2,051 passed and 2 failed. Both failures are frame-timing checks (the Reveal's Mythical at 50 fps, TR19's fill on the tap's frame). The client ran at 33 to 47 fps with the PC's memory near its end, so both are NOT VERIFIED. Neither reaches this change;
+      - a still at the smallest phone: `build/captures/power/battery_plate_smallest_phone.png`, from the take "Take: the Power screen's battery plate at the smallest phone's size, held for a still, for research".
+    - **Four facts:** implemented, yes. Tested, yes, as above. Visually reviewed: the still waits for research's pass. Director-accepted: no.
 
 - **Delivery 3, the card after the reveal in Void Violet vivid** (Modulo, 2026-11-15, evening; "then the reveal"), in `build/handoff/UI/hud/colour/`: `vivid3_reveal_card.png` (a Common, new: the build's card where it stands; under it the fourth line for each thing a shard gives, and each rarity's word) and `vivid3_reveal_card_offer.png` (a Mythical, new: one offer of a place for it). The ceremony is already the reveal's own art (AR3, TR4); what's still all dark is the card that follows it (`BaseController.luau`, "The card that's there today"). Today's side is Faber's takes (`build/captures/tr4/`).
   - **Feel line:** the ceremony lands, and a small violet card says what the player just got, in the void's own colours, without taking the Voidkin off the screen.

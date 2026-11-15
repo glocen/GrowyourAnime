@@ -41,6 +41,9 @@ Screen.BandLeft = Theme.Size.Pad + Screen.Back.X + Theme.Size.Gap -- where the b
 
 local TITLE = 32 -- authored height of the title's line
 local HEAD = Theme.Size.Tap + Theme.Size.Pad -- the head row: the close button, a tap high, and half a pad over and under
+local EXIT = 72 -- authored width of a panel's Close
+Screen.Head = HEAD -- a panel's head row, authored high: its body starts under it, two pads in
+Screen.Exit = EXIT -- a panel's Close, authored wide, a pad in from the panel's right
 local MARGIN = 8 -- authored pixels kept between a screen and the edge of its room
 
 -- As large as authored, or as the room allows; a full screen (no size) takes the room.
@@ -273,7 +276,7 @@ local function show(name: string, title: string, size: Vector2?): Frame
 		Name = "Title",
 		Size = Theme.Text.Title,
 		Font = Theme.Font.Strong,
-		Box = UDim2.new(1, -(Theme.Size.Pad * 3 + 72), 0, TITLE),
+		Box = UDim2.new(1, -(Theme.Size.Pad * 3 + EXIT), 0, TITLE),
 		Position = UDim2.fromOffset(Theme.Size.Pad * 2, (HEAD - TITLE) / 2),
 		Parent = frame,
 	})
@@ -282,7 +285,7 @@ local function show(name: string, title: string, size: Vector2?): Frame
 	local exit = Button.new({
 		Name = if full then "Back" else "Close",
 		Text = if full then "Back" else "Close",
-		Size = UDim2.fromOffset(72, Theme.Size.Tap),
+		Size = UDim2.fromOffset(EXIT, Theme.Size.Tap),
 		Position = UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2),
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = band or frame,

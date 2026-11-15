@@ -5511,6 +5511,12 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **F, Cells (thinner and shorter):** health 11 thick and 97 long, in ten leaning cells, so its form differs from the Shade's bar too; a rose red; the numbers under the bar, experience the plate's foot; the level's mark under the portrait.
   - **Modulo's read, at the sheet's size and at phone size:** D is the best composed and the calmest. Its faults, not fixed: with a long health number the numbers crowd the class mark on the name's line (Lyric's), and the experience thread at 2.5 points is hard to see at phone size. E is the most compact; its level mark covers the Mythical frame's foot. F carries four rows and stands tallest; its cells read, its rose is the nearest to Mythical's trim.
   - **Four facts:** made; self-reviewed; the content check wasn't run (colours and an arrangement of checked art, no new shape or word); research's read and the director's pick to come. About 1 active hour.
+  - **Research's read, 2026-11-15, for the director's pick (judged at full size and at phone size):**
+    - **F, the recommendation.** It's the only take that tells your health from the Shade's by its shape as well as its red: ten leaning cells beside the Shade's solid bar, readable at phone size at a glance. It answers both "smaller" readings (11 points thick, 97 long). The violet plate keeps the card tied to the Voidkin and the dock's Inventory.
+    - **D** is the calmest and best composed close up. At phone size, though, its numbers on the name's line are the HUD's smallest text, its 9-point bar reads as a thread, and it is still nearly today's length.
+    - **E** is the most compact, with the most legible numbers. Its solid crimson block still reads as a second Shade bar at phone size, its graphite body loses the violet, and its level plinth covers the Mythical frame's foot.
+    - **F's fixes:** fill its cells with D's ruby (wine at the root to hot at the front) in place of the rose, so health never reads as Mythical's pink trim. Light the last cell in part, so a hit always moves something visible. The level's mark stays under the portrait and must clear the frame's foot, as E's doesn't.
+    - The pick is the director's, and the takes can be mixed.
 
 ## Later, by ground
 

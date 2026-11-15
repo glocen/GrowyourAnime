@@ -10,9 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order, for phase 2 first:** the level-up B; Combat Power's foot; AR13's six layers; the festival tag's block; then AR6's gear (phase 3).
 - **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
 
-**Faber (builder).** 2026-11-15, 15:25.
+**Faber (builder).** 2026-11-15, night.
 - **Three pieces wait for the screen**, which is the director's until they say it's free: AR12's HUD part 1 (35bec4e: the face stills, the whole self-test, my review, research's pass); Kirra's install (27b815a: her self-test, Scarf Step's blockout with Modulo, the verdicts); the lead's card in take F (below).
-- **The lead's card, take F, in code,** with the seam's fix and the director's word to drop the frames' aura (AR12, "Faber's build of take F"). 25 images under the group, Approved. Type check 0 new, logic 5814 offline. **Not done:** the self-test and stills at phone size, the ruby beside the Shade's ember for research. **For research and Modulo:** the card now stands 114 tall (its level's mark under every frame's lowest point), so the readout's row and the level-up notice's place move 25 down; or the mark takes D's place and the card keeps 89 (AR12, "The card's height").
+- **The lead's card, take F, in code,** with the seam's fix, the director's word to drop the frames' aura, and research's call on its height: the level's mark in D's place, the card 89 tall, the readout and notice B unmoved (AR12, "The card's height"). 25 images under the group, Approved. Type check 0 new, logic 5814 offline. **Not done:** the self-test and stills at phone size, the ruby beside the Shade's ember for research.
 - **Next, while the screen is away:** the shard grades' upload; the dock from Modulo's images; then TR19 and TR20. Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-15, 15:15, on Fable 5.2 (the level-up's clip and images done).

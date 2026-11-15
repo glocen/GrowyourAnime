@@ -351,7 +351,8 @@ return {
 		Health = { 70.475, 43.5, 162.625, 11 }, -- a light's top edge: its root (empty), its y, its full right end; its height
 		Xp = { 59.963, 68.5, 151.375, 2.5 },
 		Stud = { 60.5, 49, 8.5 }, -- the type's stud: its centre and radius
-		FrameFoot = 89.975, -- the lowest point of any rarity's frame: the level's mark clears it
+		FrameRight = 65, -- how far right any rarity's frame reaches, its side points included
+		Level = { 67, 75, 22 }, -- the level's mark in D's place: its left (2 clear of FrameRight), its top, its height
 	},
 	-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.
 	TargetCard = {

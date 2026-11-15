@@ -441,10 +441,16 @@ def lead_light(name):
     return image, across(image, run + 0.5, run + 1.5 + GLOW + (P_HOT * length if along else 0.0))
 
 
-def frame_foot():
-    """The lowest point of any rarity's frame: its base points fall below its foot (the level's mark clears them)."""
-    x0, y0, w, h = FRAME
-    return y0 + h + max((hh for r in ui.RARITIES.values() for _, _, hh in r.get("base", ())), default=0) * w / 80.0
+LEVEL_CLEAR = 2.0  # the level's mark stands this far clear of every frame at its widest (research's measure, AR12)
+LEVEL_GAP = 1.5  # and this far under the plate's foot, off the experience line
+LEVEL_H = 22.0  # TR17's LevelPlate
+
+
+def rim_right(px):
+    """How far right a frame's rim reaches, in the card's points: alpha past its shadow's (0.4 at most), so the Epic and
+    Mythical side points count."""
+    cols = np.where((px[..., 3] > 0.45).any(axis=0))[0]
+    return FRAME[0] - FRAME_PAD + (cols.max() + 1) / K
 
 
 # --- the portrait ---------------------------------------------------------------------------------------------------
@@ -604,8 +610,11 @@ def make(out: Path):
     b_px, b_rim, pad = badge(pal)
     keep("CardBadge", b_px, BADGE[0] - BADGE[2] / 2, BADGE[1] - BADGE[3] / 2, pad, "the level's badge")
     keep("CardBadgeRim", b_rim, BADGE[0] - BADGE[2] / 2, BADGE[1] - BADGE[3] / 2, pad, "the badge's rim: tinted")
+    frame_right = 0.0
     for rarity in RARITIES:
-        keep(f"CardFrame{rarity}", frame(rarity), FRAME[0], FRAME[1], FRAME_PAD, f"the portrait's frame, {rarity}")
+        px = frame(rarity)
+        frame_right = max(frame_right, rim_right(px))
+        keep(f"CardFrame{rarity}", px, FRAME[0], FRAME[1], FRAME_PAD, f"the portrait's frame, {rarity}")
     p_px, p_rim, pad = plate(VIOLET)
     keep("CardPlate", p_px, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "take F's plate, Violet; its box from its foot's left")
     keep("CardPlateRim", p_rim, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "the plate's rim: white, tinted the rarity's colour")
@@ -628,7 +637,8 @@ def make(out: Path):
                     lights=lights, fillFrom=FILL_FROM, step=STEP, tab=[TAB_TOP, TAB_FOOT, TAB_REF, left(TAB_TOP)],
                     glow=GLOW, badge=list(BADGE), mid=MID, target=target_geometry(),
                     plate=dict(plate=[P_LEFT, P_TOP, P_END, P_BOTTOM], name=P_NAME, health=lead_row("Health"),
-                               xp=lead_row("Xp"), stud=list(P_STUD), frameFoot=frame_foot()))
+                               xp=lead_row("Xp"), stud=list(P_STUD), frameRight=frame_right,
+                               level=[frame_right + LEVEL_CLEAR, P_BOTTOM + LEVEL_GAP, LEVEL_H]))
     (out / "lead_card.json").write_text(json.dumps(dict(pixelsPerPoint=K, geometry=geometry, images=listing), indent=1),
                                         encoding="utf-8", newline="\n")
     print(f"wrote {out / 'lead_card.json'}: {len(listing)} images")
@@ -665,15 +675,15 @@ def mix(a, b, t):
     return "#" + "".join(f"{min(max(round(float(x) * 255), 0), 255):02X}" for x in c(a) * (1 - t) + c(b) * t)
 
 
-def level_mark(digits):
-    """The level's mark under the portrait (UI.LeadCard): its width by the level's digits (Modulo's mock, round two),
-    its left on the frame's middle but never past the frame's left, its top clear of every rarity's lowest point."""
-    w = {1: 56.0, 2: 64.0, 3: 73.0}[digits]
-    return max(FRAME[0], FRAME[0] + FRAME[2] / 2 - w / 2), frame_foot() + 1.0, w
+def level_mark(geometry, digits):
+    """The level's mark in D's place, beside the portrait under the plate (research's call, AR12, "The card's height"):
+    its width by the level's digits (Modulo's mock, round two), its left 2 points clear of every frame at its widest."""
+    x, y, _ = geometry["plate"]["level"]
+    return x, y, {1: 56.0, 2: 64.0, 3: 73.0}[digits]
 
 
 def compose_f(data, img, marks, geometry, face, head, rarity, kind, health, xp, digits, ground):
-    """The lead's card, take F, as UI.LeadCard lays it: the plate and its rim, the two lights, the frame's halo, the
+    """The lead's card, take F, as UI.LeadCard lays it: the plate and its rim, the two lights, the
     face, the frame, the head, the type's stud and the level's mark. The text is the game's own, not drawn here."""
     g = geometry["plate"]
     canvas = rs.canvas(round((W + 2 * M) * K), round((H + 2 * M) * K), tuple(c(ground)))
@@ -705,12 +715,12 @@ def compose_f(data, img, marks, geometry, face, head, rarity, kind, health, xp, 
         put(tint(marks[name], TYPES[kind]), cx - 20.5, cy - 20.5)
     gem = rs.shrink(marks[f"Gem{kind}"], 14.6 * K / marks[f"Gem{kind}"].shape[1])
     put(gem, cx - gem.shape[1] / K / 2, cy - gem.shape[0] / K / 2)
-    x, y, w = level_mark(digits)
+    x, y, w = level_mark(geometry, digits)
     put(tint(sliced(marks["LevelPlate"], (24.0, 0, 8.0, 0), w), *VIOLET["tab"]), x, y)
     put(tint(sliced(marks["LevelPlateEdge"], (24.0, 0, 8.0, 0), w), mix(trim, "#FFFFFF", 0.6), trim), x, y)
     chevrons = tint(rs.shrink(marks["LevelChevrons"], 14.0 * K / marks["LevelChevrons"].shape[1]), VIOLET["body"][1])
     put(chevrons, x + 11.0 - 7.0, y + 11.0 - 7.0)
-    return canvas[round((M - 8) * K):round((M + y + 22.0 + 6.0) * K), round((M - 8) * K):round((M + W - 40.0) * K)]
+    return canvas[round((M - 8) * K):round((M + max(H, y + LEVEL_H) + 6.0) * K), round((M - 8) * K):round((M + W - 40.0) * K)]
 
 
 def compose_target(data, img, geometry, health, text_w, ground):

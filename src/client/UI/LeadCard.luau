@@ -49,16 +49,20 @@ local NAME_ROOM = 81 -- the longest name, authored pixels: past it, it's cut wit
 local CLASS_AFTER = 10.5 -- the class mark's centre past the name
 local CLASS = 12 -- the class mark's size
 local GEM = 14.6 -- the type's gem on its stud
-local LEVEL_H = 22 -- the level's plate (TR17's LevelPlate): its height, its lit cap with the chevrons, its end past the number
+-- The level's plate (TR17's LevelPlate) in D's place, beside the portrait under the plate (research's call, AR12, "The
+-- card's height"): its left 2 clear of every rarity's frame at its widest, its top under the experience line, its height;
+-- then its lit cap with the chevrons, its end past the number, its least width.
+local LEVEL_X, LEVEL_Y, LEVEL_H = P.Level[1], P.Level[2], P.Level[3]
 local LEVEL_CAP, LEVEL_AFTER, LEVEL_MIN = 24, 8, 54
-local LEVEL_Y = P.FrameFoot + 1 -- its top: clear of every rarity's lowest point
 local CHEVRONS = 14
 -- The level plate's body in the plate's name row's violet, and the chevrons in its deep (lead_card_art.VIOLET).
 local LEVEL_BODY = { Color3.fromHex("#5545A6"), Color3.fromHex("#211849") }
 local CHEVRON_INK = Color3.fromHex("#150F30")
--- The box the card answers for (the HUD's overlap and band checks): the plate's end, and the level plate's foot. Its art
--- reaches a little past it (the shadow, the head, a high rarity's crest).
-local BOX = Vector2.new(P.Plate[3], LEVEL_Y + LEVEL_H + 1)
+-- The box the card answers for (the HUD's corner, its overlap and band checks): the plate's end, and 89 tall, take E's
+-- height kept (research's call, AR12), so the readout, the eye and notice B stay where they were. Its art reaches a little
+-- past it: the shadow, the head, a high rarity's crest and points, and the level's mark to 97, clear of the readout's
+-- corner (from 99) and the eye (from 102).
+local BOX = Vector2.new(P.Plate[3], 89)
 local STUD = 6.5 -- take E's stud's radius (the target's card)
 local INK = Color3.fromHex("#000000") -- take E's stud's well, Midnight's ink
 local DIGITS_INK = Color3.fromHex("#0B0C10") -- the outline of the health digits on a light (the target's card)
@@ -184,13 +188,13 @@ LeadCard.Relight = relight
 LeadCard.Stud = stud
 LeadCard.Digits = digits
 
--- The level's plate cut to fit "Lv" and the number, centred under the portrait (never left of the frame), the number's
--- label anchored at its middle so the level-up's pop swells it in place (Pop.Centre).
+-- The level's plate cut to fit "Lv" and the number, its left fixed in D's place so it grows rightward under the plate,
+-- the number's label anchored at its middle so the level-up's pop swells it in place (Pop.Centre).
 local function fitLevel(card: Frame, level: TextLabel)
 	local word = card:FindFirstChild("LevelWord") :: TextLabel
 	local wordW, numberW = Text.Wide(word, word.Text), Text.Wide(level, level.Text)
 	local w = math.max(LEVEL_CAP + 2 + wordW + 3 + numberW + LEVEL_AFTER, LEVEL_MIN)
-	local x = math.max(FRAME[1], FRAME[1] + FRAME[3] / 2 - w / 2)
+	local x = LEVEL_X
 	for _, name in { "LevelPlate", "LevelPlateEdge" } do
 		Skin.Set(card:FindFirstChild(name) :: ImageLabel, name, { X = x, Y = LEVEL_Y, W = w, H = LEVEL_H })
 	end

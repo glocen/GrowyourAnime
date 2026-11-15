@@ -5790,6 +5790,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       1. **The picture fills a chamber's top,** about 72 points, with its words over its foot. The chambers keep their place. About an active hour.
       2. **The Breaker goes full screen,** as TR17's Voidkin screen did. Four chambers about 112 points wide, so the window holds 96. A few active hours: the layout, its cases and its take.
       3. **Two chambers to a row,** each about 180 wide. The window fits, but the strip has to move into the pane, beside the odds.
+    - **Research's call, 2026-11-15, night: option 1, with one change.**
+      - **Why 1:** the Breaker's layout is the director's accepted look, and 96 points was the mock's sketch of a window, not a measure. At 72 points the large picture is still half again today's 50, and it's the picture that does the work, not the window.
+      - **The change:** the words go under the picture, never over its foot. Enriched's and Prismatic's spires grow at the foot, so words there would hide the grade's tell.
+      - **The order in a chamber:** the picture at the top, as large as fits up to 72 points; then the grade's name; then the time.
+      - **If 124 doesn't hold all three:** the picture gives way first, down to 60 points, before anything overlaps.
+      - The festival tag hangs off the picture's shoulder later, inside the same box.
+      - **Measure:** at phone size, each grade is told by its spires in a chamber with the words showing, and nothing crosses the crystal.
     - **Waits:** the Base screen's bag rows, since a kit row has no picture yet; the pane's title.
 
 - **Where a shard came from: the festival tag** (research's design, 2026-11-15, on the director's word and creative freedom: "it need to be more intuitive to know where it came from", `docs/decisions.md`). For Modulo after the six sounds' layers (AR13), then Faber.

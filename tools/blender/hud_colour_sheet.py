@@ -297,6 +297,20 @@ def eye_shut(t, cx, cy, r, colour):
 
 # --- the icons, kept as the kit keeps its own ------------------------------------------------------------------------
 
+def shard_icon(name, accent, use):
+    """A shard in a system's colour, its far facet in shade, a crack of light down its ridge."""
+    m, r = BOX / 2, 12.0
+    t = kit.blank(BOX, BOX)
+    d = g_shard(t, m, m, r)
+    t.paint(d - 2.0, c(STROKE))
+    t.paint(d, ramp3(t, PALE[accent], accent, DEEP[accent], (t.y - m + r) / (2 * r)))
+    shade = t.poly([(m + r * u, m + r * v) for u, v in ((0.12, -1.0), (0.0, 0.12), (-0.22, 1.0), (-0.62, 0.14), (-0.3, -0.56))])
+    t.paint(np.maximum(d, shade), c(DEEP[accent]), 0.55)
+    t.paint(np.maximum(d, np.minimum(seg(t, (m + 0.12 * r, m - 0.9 * r), (m, m + 0.12 * r), 1.1),
+                                     seg(t, (m, m + 0.12 * r), (m - 0.18 * r, m + 0.9 * r), 1.1))), c("#FFFFFF"), 0.9)
+    kit.keep(name, t, use=use)
+
+
 INK_ICON = {"Bolt": "InkBolt", "CoinMint": "InkCoin", "Shard": "InkShard", "Plant": "InkPlant", "Crest": "InkCrest",
             "Route": "InkRoute"}  # a system's icon, and its mark on Block's block
 
@@ -343,14 +357,7 @@ def icons():
         t.paint(d(t), c(INK))
         kit.keep(name, t, use="Block: on a block of its system's colour")
 
-    t = kit.blank(BOX, BOX)  # Voidkin: a shard, its far facet in shade, a crack of light down its ridge
-    d = g_shard(t, m, m, r)
-    body(t, d, VOIDKIN)
-    shade = t.poly([(m + r * u, m + r * v) for u, v in ((0.12, -1.0), (0.0, 0.12), (-0.22, 1.0), (-0.62, 0.14), (-0.3, -0.56))])
-    t.paint(np.maximum(d, shade), c(DEEP[VOIDKIN]), 0.55)
-    t.paint(np.maximum(d, np.minimum(seg(t, (m + 0.12 * r, m - 0.9 * r), (m, m + 0.12 * r), 1.1),
-                                     seg(t, (m, m + 0.12 * r), (m - 0.18 * r, m + 0.9 * r), 1.1))), c("#FFFFFF"), 0.9)
-    kit.keep("Shard", t, use="Voidkin; a hint that points to shards")
+    shard_icon("Shard", VOIDKIN, "Voidkin; a hint that points to shards")
 
     t = kit.blank(BOX, BOX)  # the Base: the plant, a bolt cut through it
     d = g_plant(t, m, m, r)

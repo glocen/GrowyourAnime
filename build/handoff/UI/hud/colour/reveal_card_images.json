@@ -1,0 +1,187 @@
+{
+ "pixelsPerPoint": 4,
+ "palette": "A, Eclipse (AR12, the pick of 2026-11-15)",
+ "room": "Eclipse",
+ "note": "The plate after the reveal, on research's verdict (AR12, \"Research's verdict on the reveal's card, in Eclipse\"). The plate is the kit's panel (build/handoff/UI/kit/kit.json) in `colours`; the four images here are its marks, and CoinMint is the HUD's own (hud_colour.json). A white image takes its tint; a dark part baked into one stays dark. Every measure is in points from the plate's top left; a line's `middle` is the height its text and its mark are centred on. Words are the build's own; their widths here were measured in Blender's face, so `room` is a seed. DESIGN, untried in Studio.",
+ "colours": {
+  "panel": [
+   "#1C1F2A",
+   "#090A10"
+  ],
+  "alpha": 1.0,
+  "edge": "#8F98AE",
+  "facet": "#C6CCDA",
+  "glint": "#FFFFFF",
+  "text": "#F3EFE6",
+  "soft": "#AEB4C2",
+  "faint": "#787E8C",
+  "kept": "#D9E1F0",
+  "star": "#FFF4D6",
+  "credits": "#40DCC6"
+ },
+ "rarityWords": {
+  "Common": "#AEB4C0",
+  "Uncommon": "#7CF0A0",
+  "Rare": "#6FB6FF",
+  "Epic": "#D29CFF",
+  "Legendary": "#FFD777",
+  "Mythical": "#FF8794"
+ },
+ "plate": {
+  "size": [
+   320.0,
+   84.0
+  ],
+  "anchor": "under the ceremony's name, left-aligned with it, never to the screen, so it holds on the smallest phone; the held frame stays undimmed behind it. On the accepted sheet it stood at 113, 256 of an 812 by 375 screen. The gap under the name's line is the builder's, from the build's own name.",
+  "stack": [
+   "PanelShadow",
+   "PanelFill tinted `panel` top to foot at `alpha`",
+   "PanelFacet tinted `facet` at 0.07",
+   "PanelEdge tinted `edge` at 0.95",
+   "PanelGlint tinted `glint`"
+  ],
+  "inset": 16.0,
+  "lines": [
+   {
+    "name": "kind",
+    "middle": 18.0,
+    "size": 11,
+    "colour": "soft",
+    "words": {
+     "New": "A new Voidkin",
+     "Lead": "A new Voidkin",
+     "Copy": "A copy",
+     "Sold": "Already at its last star"
+    }
+   },
+   {
+    "name": "rarity",
+    "middle": 40.0,
+    "size": 13.0,
+    "pip": {
+     "images": [
+      "RarityPip",
+      "RarityPipFacet"
+     ],
+     "box": [
+      14.0,
+      14.0
+     ],
+     "middle": 21.0,
+     "tint": "the rarity's word colour",
+     "facetAlpha": 0.55
+    },
+    "wordsFrom": 30.0,
+    "gap": 5.2,
+    "runs": [
+     "the rarity, in its word colour",
+     "a dot, faint",
+     "the type, soft",
+     "a dot, faint",
+     "the class, soft"
+    ]
+   },
+   {
+    "name": "outcome",
+    "middle": 64.0,
+    "size": 13.0,
+    "mark": {
+     "box": [
+      16.25,
+      16.25
+     ],
+     "middle": 23.15
+    },
+    "wordsFrom": 33.55,
+    "note": "one colour a line: its mark and its words together",
+    "outcomes": {
+     "New": {
+      "mark": "ShardSilver",
+      "words": "In your collection",
+      "colour": "#D9E1F0",
+      "room": 108.5
+     },
+     "Lead": {
+      "mark": "ShardSilver",
+      "words": "Your lead: it fights beside you",
+      "colour": "#D9E1F0",
+      "room": 44.1
+     },
+     "Copy": {
+      "mark": "Star",
+      "words": "One more toward its next star",
+      "colour": "#FFF4D6",
+      "room": 36.1
+     },
+     "Sold": {
+      "mark": "CoinMint",
+      "words": "Sold for 120 Credits",
+      "colour": "#40DCC6",
+      "room": 92.7
+     }
+    }
+   },
+   {
+    "name": "tap",
+    "middle": 64.0,
+    "size": 11,
+    "colour": "soft",
+    "words": "Tap to continue",
+    "align": "right",
+    "right": 16.0,
+    "note": "`room` on an outcome is what Blender's face leaves between its words and this line; if the game's face leaves under about 12, this line goes under the plate's foot, centred"
+   }
+  ]
+ },
+ "images": {
+  "RarityPip": {
+   "file": "images/RarityPip.png",
+   "pixels": [
+    56,
+    56
+   ],
+   "points": [
+    14.0,
+    14.0
+   ],
+   "tint": "the rarity's word colour",
+   "use": "beside a rarity's word, its middle on the line's"
+  },
+  "RarityPipFacet": {
+   "file": "images/RarityPipFacet.png",
+   "pixels": [
+    56,
+    56
+   ],
+   "points": [
+    14.0,
+    14.0
+   ],
+   "use": "on the pip's own box, over it, white at 0.55"
+  },
+  "Star": {
+   "file": "images/Star.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "a copy's line: one more toward its next star; its colour is its own"
+  },
+  "ShardSilver": {
+   "file": "images/ShardSilver.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "a Voidkin kept, on the reveal's plate; its colours are its own"
+  }
+ }
+}

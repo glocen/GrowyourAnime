@@ -2818,6 +2818,34 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Legendary:** a proper name with an epithet, such as "Akari, the Last Lantern". Japanese and other languages are welcome, as with the Voidkin (`docs/ip-list.md`).
   - Modulo proposes the twenty names on the sheet, and research checks each against `docs/ip-list.md` and the roster before it's kept.
 
+### The Sword's ladder, in grey: for research's verdict (Modulo, 2026-11-15)
+
+- **The sheet:** `build/handoff/Gear/sword_ladder/gear_sword_ladder.png`, from `tools/blender/gear_sword_ladder.py` (Workbench, no GPU turn). One sword family, Common to Legendary, at 220 points, at the 38-point slot on dark, and each silhouette alone at 32 pixels, with the twenty names.
+- **Feel line:** a sword in a slot is a long, grown-up blade a player would want to hold, and its rarity is seen in its metal and its guard before its frame is read.
+- **Scope:** the Sword's five steps in grey, and the names. Waiting: colour and finish, the kit's frames, the class mark, the rendered light, the other three kinds.
+- **The director's words on it, 2026-11-15, with Modulo's reading of each** (a reading, not a ruling; research records them in the register):
+  - "take geniune inspiration from tcp 3 draw", written while the first grey try stood. Read as: the gear art takes how the reference draws its gear, as principles (register, the gear line of 2026-11-15). It covers the gear art.
+  - "no it can be the long mature sword you did before js smaller and better", on the broad icon sword Modulo drew next. Read as: the Sword keeps a long sword's own proportions, a little shorter than the first try, and better drawn. It covers the Sword. The broad sword is dropped, and it isn't on the sheet.
+- **From the reference, principles only** (`docs/research/gear-icons.md`; one enlarged crop of the slots looked at, nothing taken): values set well apart, one stone as the accent, a clear light on the bevels. The forms are ours: a long sword's proportions, a guard that turns toward the point, the stone cut like the kit's gems.
+- **The steps:**
+  - **Common:** dark iron and wood. A ridge down the blade, a plain bar, a wheel pommel.
+  - **Uncommon:** bright steel with a fuller. End blocks on the bar, a wrapped grip, a brass collar and pommel rim.
+  - **Rare:** blued steel. The guard turns toward the point with one small set stone, a line of engraving in the fuller, the pommel cut in facets.
+  - **Epic:** a darker metal. A pale filigree plate up the blade's foot, the guard's ends hooked, a larger stone in a bezel.
+  - **Legendary:** gilt and ivory. A small feathered wing each side of the guard as its one new form, the stone lit, a light along both edges.
+- **The names** are in the script's `NAMES` table and on the sheet: research's five examples kept, fifteen proposed. After the content check's notes, two were changed before the sheet: "Hotaru, the Small Light" (it was "the Small Flame") and "Musubi, the Bound Cord" (it was "the Tied Knot", which reads as a wedding band on a ring).
+- **Modulo's read:**
+  - Each step shows at 220 points. At 38, Common to Uncommon is a step of value, Rare and Epic are told by the guard, and Legendary by its wings and its light.
+  - Rare and Epic are the closest pair at 38 points in grey. Colour should part them: blue against a dark violet metal with pale filigree.
+  - A long sword is a thin shape in a square: about a fifth of the tile is blade. That's the price of the proportions the director asked for, and the frame and the rarity's colour will carry part of the read.
+- **For research to rule:** each step at 38 points; Legendary's wing as the one new element, with room left for Mythical and Dawn; the names, and three echoes inside the game: "Helm of Rime" beside Bulwark's passive "Rime", "the Last Lantern" beside Ashen's "Last Ember", "Voidglint" beside Aegir's "Glint Drive".
+- **Content check:** PASS as a grey review sheet, names as proposals (rules 2, 3 and 4; the sheet and the script read twice, the second time after the redraw). Its conditions for the colour pass, which gets a check of its own:
+  - Legendary stays what it is: three short separate feathers a side, a round stone in a ring, a straight blade with no flare above the guard, no emblem on the foot plate, gilt and ivory.
+  - The edge's light stays a clean white or gold line.
+  - Ring I's Legendary is a metal ring, never a red braided cord.
+- **Four facts:** made, yes. Self-reviewed, yes, on the sheet at each size. Delivered, the sheet only, for the verdict. Accepted, no: research's verdict and the director's eye to come.
+- **Time:** about 18 minutes by the clock (14:19 to 14:37), three tries: a thin sword, a broad icon sword, this one.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

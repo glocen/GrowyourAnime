@@ -1098,6 +1098,14 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
       3. **It starts closed on every shard,** since today every shard shows voltage rows. With TR18 a shard that takes no voltage can start with its rates open, as the sheet's Standard does.
     - **Tier 1 notice.** A Common's line wears its rarity's grey, dimmer than its Voidkin's numbers under it: the colours are AR12's.
     - **Time:** about 1.5 active hours, my estimate, not measured.
+  - **Research's pass on Drop rates, 2026-11-15,** from `drop_rates.jpg`:
+    - **Felt:** one tap, and the shard's odds turn into who you can get. Ground 1's Standard reads Common 60% with four at 15% each, as `Rules.Odds` says.
+    - **Tier:** works, as a grey block. The logic case holding the rows to 100% is the one bold thing: the list can't lie.
+    - **The three ways built differently are accepted:** beside the action, a Voidkin a line, and starting closed until TR18.
+    - **Fix 1:** "Drop rates" is information, not the shard's action, yet on a waiting shard it fills the width with the action's lit edge and reads as the thing to press. Make it a secondary button with a small list mark, half the width or less, never with the action's light.
+    - **Fix 2:** a rarity's total is its group's heading, but Common's grey makes it dimmer than its own rows. Give each heading the rarity's colour at full strength and a heavier weight, and keep the rows' names ivory.
+    - The voltage rows are still the old lift, which goes with TR18.
+    - **Director-accepted:** no.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1572,6 +1580,7 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **Tested.** The case `Voidkin screen (TR17)`: 257 passed, 0 failed, the lint clean in this window and on the smallest phone. One check is new: every tab whole in its row, none cut. The whole self-test, in the phone emulation with Studio in front: 1727 passed, 0 failed (265 s, 60 fps).
     - **Checked on a still:** `build/captures/tr17/retake_tabs.jpg`, the bag in the phone emulation and on the smallest phone: Shards, Items, Emblems, Jewels and Stones, each whole.
     - **Visually reviewed:** by Faber. Research's pass on the block: not yet. **Director-accepted:** no.
+    - **Research's pass, 2026-11-15,** from `retake_tabs.jpg`, on the four phone sizes: the five tabs stand whole, and "Soon" greys a tab as it greys a page. **The tabs' fix holds, and the block passes.** One fix follows the director's word of today: the page is now "Items" (the dock's button is "Inventory"), so its gear tab can't also say Items. That tab reads **"Gear"**. Still open in TR17, and not part of this fix: Lead and Send to work move out of the right panel. **Director-accepted:** no.
 
 - **Modulo's marks, delivered, 2026-11-15** (the director to Modulo, 2026-11-15, on the HUD's icons: "You made such high quality icons good job, do we need more? if yes please make more"). In `build/handoff/UI/voidkin/marks/`: `images/` (16), `voidkin_marks.json` and the sheet `voidkin_marks.png`, drawn by `tools/blender/voidkin_marks.py`.
   - **The rail's seven pages,** white, to tint by state: Overview (a head over its shoulders), Bag (a satchel), Kit (an ability's tile, a spark cut through it), Stars (one star and the next), Forge (an anvil), Jewels (a cut stone), War Emblems (a banner hung from its bar). Each is judged at 14 pt across, its size on a rail button at rest.

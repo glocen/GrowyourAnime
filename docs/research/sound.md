@@ -1,6 +1,6 @@
 # Sound: how we make it good
 
-Research, 2026-11-15, on the director's ask (`docs/decisions.md`, 2026-11-15: "the game lack environnement sfx ... we should study how to make good sfx like jujusu infinite"). The studio's method stays `handbook/visuals/audio.md`; this file is what the game needs and the changes to how we pick. Labels: SOURCED (read at the link), UNVERIFIED (nobody acts on it yet). Nothing here is tested in Studio.
+Research, 2026-11-15, on the director's two asks (`docs/decisions.md`, 2026-11-15: "the game lack environnement sfx ... we should study how to make good sfx like jujusu infinite"; then "research about pro sfx, anime sfx like fire force, pro roblox dev sfx and if we need an app such as audacity"). The studio's method stays `handbook/visuals/audio.md`; this file is what the game needs and the changes to how we pick. Labels: SOURCED (read at the link), UNVERIFIED (nobody acts on it yet). Nothing here is tested in Studio.
 
 ## Where we are
 
@@ -22,6 +22,67 @@ The director's example, Jujutsu Infinite, has nothing written about its sound: n
 6. **Nothing sounds the same twice.** Pitch spread about ±10% and volume 0.85 to 1, with at least three takes for steps. UNVERIFIED: tutorials only, though they agree with each other and with Diablo IV. **Ours:** the handbook's pitch spread on every cue, and three takes for each step surface and each common impact.
 7. **Phones are the target.** A phone speaker gives very little low end, so weight has to live above it. UNVERIFIED on numbers. It agrees with the handbook's "keep a cue's weight above 250 Hz". **Ours:** the director's acceptance pass is on a phone.
 8. **Loudness has a target.** Sony's guidance was −18 LUFS for portable devices, ±2 LU. SOURCED: [Designing Sound, 2012](https://designingsound.org/2012/07/30/video-games-and-loudness-standards-interview-with-sonys-garry-taylor/). **Ours:** the handbook's levelling to −14 dBFS per cue stays. The whole mix's level is measured offline, as the reveal's was.
+
+## Pro and anime craft, in recipes
+
+The director's second ask, 2026-11-15: "research about pro sfx, anime sfx like fire force, pro roblox dev sfx". What the professionals say, as checks we can run.
+
+- **A hit is two sounds:** the attacker's and the target's, chosen by material. At contact the swing ducks a few dB, so the impact punches through. SOURCED: Ghost of Yōtei, [A Sound Effect](https://www.asoundeffect.com/ghost-of-yotei-game-audio/).
+- **Weight is low end plus the transient.** God of War Ragnarök gave a bowshot "more bass and transient at the beginning". A filter that moves on every attack breaks repetition. The tail grows with the hit's strength. SOURCED: [A Sound Effect](https://asoundeffect.com/god-of-war-ragnarok-game-audio).
+- **One big hit is several tiny ones:** 3 to 8 impacts within a second, each a few frames long (Randy Thom, Skywalker Sound). SOURCED: [Sound Ideas, 2025](https://sound-ideas.com/blogs/sound-ideas/the-sound-design-power-of-single-events-composed-of-multiple-closely).
+- **A heavy impact is built from the bottom up:** a distorted kick or taiko, then percussion, a processed cymbal, the sub and an atmosphere. Each layer gets its own EQ and compression, and the sum a limiter. A riser leads into the hit, or into a brief silence before it (Richard Veenstra). SOURCED: [Ableton, 2021](https://www.ableton.com/fr/blog/learn-how-to-make-high-impact-sounds-for-movies-and-trailers).
+- **Elements, from named pros:**
+  - Fire: whooshes from a burning staff swung past the microphones, cut into a cast, a travel loop and an impact (Diablo IV). SOURCED: [Blizzard](https://news.blizzard.com/en-us/article/23731236/diablo-iv-quarterly-updateoctober-2021).
+  - Ice: metal scraped on ice, crunches, ice pings and wind chimes through reverb, always with one realistic layer (Frozen 2). SOURCED: [A Sound Effect](https://www.asoundeffect.com/frozen-2-sound/).
+  - Frost: "resonated metal with dry ice" (Hearthstone). SOURCED: [Blizzard](https://hearthstone.blizzard.com/en-us/blog/23964694/).
+  - Electricity: arcs, discharges and a low thump. SOURCED: [Designing Sound](https://designingsound.org/2011/01/13/tonsturm-releases-electricity-sfx-library-qa-included/).
+- **A palette per character.** Riot gives each champion a sonic palette that all its spells share, and makes a sound's clarity match its importance. SOURCED: [Riot](https://www.leagueoflegends.com/en-gb/news/dev/ask-riot-let-s-talk-clarity/). **Ours:** each Voidkin's kit shares a palette, and its class and element set the palette's base.
+- **Anime.**
+  - Fire Force's sound effects are by Yasumasa Koyama, also of JoJo's Bizarre Adventure and Dr. Stone. SOURCED: [ANN](https://www.animenewsnetwork.com/encyclopedia/people.php?id=57426). Nothing is written about its fire sounds.
+  - Koyama works with very low bass for weight, dubstep, trap and 80s-synth tones, and near-silence on slow motion. He notes that weak speakers lose his bass. SOURCED: [Febri interview, 2022, translated](https://jojowiki.com/Interview:Febri_(September_2022)).
+  - The classic anime kit: a phaser, a harmonizer and a synthesizer for an aura, sounds reversed, short sounds tuned to the music's key, and "the lie's sound" over reality (Fizz Sound Creation). SOURCED: [CEDEC 2011](https://gigazine.net/gsc_news/en/20110911_anime_soundeffect_cedec2011).
+  - Anime keeps a "hard FX" family for unreal sounds, the shing and the zing. Sounds enter one at a time, and the mix stays lean, with quiet after a battle. SOURCED: [AV Watch, 2025](https://av.watch.impress.co.jp/docs/topic/2062061.html), [Yasunori Honda](https://www.philipbrophy.com/projects/cinesonic/yasunorihonda.html).
+- **Pro, not stock:** eight checks on every pick.
+  1. Layers, each with a role in its band.
+  2. A shared palette.
+  3. Variation, with a cap on repeats.
+  4. Ducking by priority.
+  5. No silence at the file's head.
+  6. Weight carried by harmonics a phone can play.
+  7. Headroom: true peak under −1 dBTP.
+  8. Reward and UI sounds in the music's key.
+  - The sources are above, and Sony's loudness slides for headroom. Pitch spread and tight heads are UNVERIFIED (practitioner guides).
+
+**Six recipes,** layer roles SOURCED as cited, lengths UNVERIFIED (the ear accepts them):
+
+| Cue | Layers | Processing |
+|---|---|---|
+| Light hit | a snap (10–30 ms), a mid body (80–150 ms), a spark tick (~100 ms) | sharp transient, no sub; pitch and volume spread; 3–5 takes |
+| Heavy hit | a riser or a brief silence (100–250 ms), then 3–8 micro-impacts in under 1 s, a kick body with highs cut, a dry sub (300–500 ms), a metal top, a tail by strength | each layer EQ'd to its band; the sub saturated so a phone hears it; swings and ambience ducked on contact |
+| Fire ability | a cast whoosh (300–600 ms), a travel loop, an impact, a darker tail; an aura bed (phaser, harmonizer) | spread on every re-trigger; voice cap; pitched down for weight |
+| Frost or storm | frost: a metal-on-ice scrape, a crunch, pings or chimes in reverb, one real layer; storm: an arc crackle, a discharge snap, a low thump | a short reverse swell into the cast; band-limited hiss |
+| A Shade bursts | a paper rip (150–300 ms), a distorted cardboard thump as the pop, a bright shimmer tail (400–800 ms), scattered paper ticks | the shimmer in the music's key; short tail so a pack doesn't pile up; voice cap |
+| A reward | 2–3 rising tones in the key, on the beat, a crystal sparkle, a soft swell; the reveal: a riser, a short silence, the chime | gentle compression; reverb tail about 1–1.5 s |
+
+## Roblox's rules for sounds we make
+
+- **Library sounds are used inside Roblox only.** Edits are allowed "solely within your game", through Studio's sound properties. No Roblox source permits downloading, editing and re-uploading one, and an upload requires that we hold its rights. SOURCED: [Roblox, 2018](https://devforum.roblox.com/t/upcoming-music-changes-and-copyright-related-action/130570), [audio assets](https://create.roblox.com/docs/audio/assets). **So "mix if needed" means layering at runtime:** several library slices, pitch, EQ and timing through the audio graph. Only material we hold the rights to is mixed offline and uploaded.
+- **Uploading our own sounds is free:** .ogg, .mp3, .wav or .flac, under 7 minutes, up to 48 kHz. The quota is 2,000 a month for an ID-verified uploader per the audio page, and 100 per the Open Cloud guide, so read the real number from the quota endpoint. An upload can't be updated in place: a fix is a new id. SOURCED: [audio assets](https://create.roblox.com/docs/audio/assets), [Open Cloud usage](https://create.roblox.com/docs/cloud/guides/usage-assets).
+- **Copyright takedowns are final,** with no appeal. SOURCED: [Roblox staff](https://devforum.roblox.com/t/editing-copyrighted-audio/2176521). Every sound sits behind one Config id.
+- **Roblox's own showcases layer at runtime,** from field recordings and synthesis, mixed through sidechained groups. SOURCED: [Beyond the Dark](https://create.roblox.com/docs/resources/beyond-the-dark/sound-design). SoundGroups are now discouraged in favour of audio objects. SOURCED: [docs](https://create.roblox.com/docs/sound/groups).
+- **Roblox has no sound-effect generator,** only text-to-speech. SOURCED: [docs](https://create.roblox.com/docs/ai/accelerated-workflows).
+
+## Tools and making our own
+
+- **Audacity isn't needed.** 4.0 removed scripting, so it's a tool for a human's hands only. SOURCED: [4.0.0 notes](https://www.audacityteam.org/changelog/4.0.0/).
+- **The toolset that needs no human at the controls:** Python, already installed, plus these from PyPI with no account:
+  - numpy and scipy (BSD): synthesis, filters, spectra.
+  - Spotify's pedalboard (GPLv3): compression, limiting, saturation, filters, reverb, pitch and time, reading and writing OGG and MP3. No VST plugins.
+  - pyloudnorm (MIT): loudness.
+  - Optional: FFmpeg, whose Windows builds come from third-party builders linked by ffmpeg.org.
+  - SOURCED: each package's PyPI page, as read on 2026-11-15.
+- **Synthesis is good for some layers, poor for others.** A sound engineer at Sony: a "very convincing wind" from filtered noise, but for realistic physical sounds "very few models would support a blind test with recordings". Pros mix synthesis and recordings. SOURCED: [Designing Sound, 2012](https://designingsound.org/2012/06/04/procedural-audio-an-interview-with-nicolas-fournel/). **Ours:** library recordings carry the realism (the impact's body, paper, cloth, steps). Our own code makes the sub, the whooshes, risers, shimmers, the aura, arcs, the UI and the Breaker's hum. They're layered at runtime.
+- **Local AI sound models don't meet the director's conditions.** The ones whose licence allows a monetized game (Stability's Stable Audio Open and Stable Audio 3 Small SFX) are downloaded behind an account, and their free licence ends past $1M a year in revenue. The rest are non-commercial (Meta's AudioGen, Sony's Woosh, MMAudio, TangoFlux, AudioLDM2). SOURCED: each model's card or licence, as read on 2026-11-15.
 
 ## Picking by the director's ear
 
@@ -98,7 +159,13 @@ Pass 1 is what a first session hears in its first ten minutes, in the order it h
 
 ## Next
 
-1. **The director:** this plan, and whether pass 1 goes before Faber's next fixes (research recommends it: sound is the cheapest large gain in feel left).
-2. **Faber:** the steps test in our place, then `tools/studio/Audio` moved to `SearchAudioAsync`, with each result's creator and a playability check. Then pass 1's shortlists, five per cue, into the Audition panel.
-3. **Research:** one brief per pass 1 cue (search words, length, attack, the bands), in TR's entry when the piece opens.
-4. **The director's ear:** a listening session per family (steps and world; the Shades; hits; rewards and UI), about 15 minutes each, picks recorded in the panel.
+1. **The director:**
+   - the change to rule 2: sounds made by us on the PC, restated in research's chat on 2026-11-15 and waiting on the yes;
+   - each install (numpy, scipy, pedalboard, pyloudnorm);
+   - whether a test of six cues goes first, after Faber's HUD.
+2. **The test, six cues:** a Shade's swipe, its hurt and its burst, and a light hit, a heavy hit and a critical. Each is a stack of library slices layered at runtime, plus Modulo's synthesized layers once the rule's yes is in. Five candidates each, for the director's ear in a fight. If it still sounds like slop, the approach changes before the other 39.
+3. **Faber:**
+   - the steps test in our place;
+   - `tools/studio/Audio` moved to `SearchAudioAsync`, with each result's creator and a playability check;
+   - layers on one clock through the audio graph, with a priority duck.
+4. **Research:** each test cue's brief, from the recipes above, in the piece's entry when it opens.

@@ -6915,7 +6915,7 @@ Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's 
 
 ## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
 
-Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). It starts once AR16 and the rest of AR15 (the battery, the Training machine and the Festival Door) are in the game.
+Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). It starts after the first session's run on a phone, which comes once AR16 and the rest of AR15 (the battery, the Training machine and the Festival Door) are in the game (research's order, on the director's word "we work on the priority you believe we need to do first"; the register).
 
 - **What it covers, research's reading:** the walk a first session takes outside its base.
   - The Strip and its crossing.

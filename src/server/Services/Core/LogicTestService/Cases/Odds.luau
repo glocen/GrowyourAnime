@@ -1,12 +1,15 @@
 --!strict
 -- Odds cases (pure): every table sums to one, a Named shard is certain, ground 1's Standard, Enriched and Prismatic shards
 -- match the seeds by hand, luck lifts the top two tiers and stops at its cap, featured Voidkin weigh more, and a large
--- sample of rolls lands on the odds shown. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- sample of rolls lands on the odds shown; the drop rates the player reads hold every Voidkin under its rarity's total and
+-- add to 100%. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Odds = require(Shared.Rules.Odds)
 local Shards = require(Shared.Definitions.Shards)
 local ShardConfig = require(Shared.Config.Shards)
+local Rarity = require(Shared.Definitions.Rarity)
+local Voidkin = require(Shared.Definitions.Voidkin)
 
 local STANDARD = "lanternrow_standard"
 
@@ -160,6 +163,62 @@ return {
 			t.Equal("u near 0 gives the first", Odds.Roll(STANDARD, 0, 0), entries[1].Id)
 			t.Equal("u near 1 gives the last", Odds.Roll(STANDARD, 0, 0.9999999), entries[#entries].Id)
 			t.Equal("an unknown shard gives nothing", Odds.Roll("nothing", 0, 0.5), nil)
+		end,
+	},
+	{
+		Name = "Odds: drop rates hold every Voidkin under its rarity's total, the commonest first, and add to 100%",
+		Run = function(t: any)
+			for _, shard in Shards.List do
+				for _, luck in { 0, 0.2, ShardConfig.LuckCap } do
+					local entries = Odds.Table(shard.Id, luck)
+					local groups = Odds.Rates(shard.Id, luck)
+					local where = `{shard.Id} at luck {luck}`
+					local sum, rows, off = 0, 0, ""
+					local below = 0
+					for _, group in groups do
+						local rank = Rarity.Rank[group.Rarity]
+						if rank <= below then
+							off = `{group.Rarity} out of order`
+						end
+						below = rank
+						local own, chance = 0, 0
+						for _, rate in group.Rates do
+							rows += 1
+							own += rate.Parts
+							chance += rate.Chance
+							if Voidkin.ById[rate.Id].Rarity ~= group.Rarity then
+								off = `{rate.Id} under {group.Rarity}`
+							elseif not near(rate.Chance, chanceOf(entries, rate.Id)) then
+								off = `{rate.Id}: not the table's chance`
+							elseif rate.Parts < 1 or math.abs(rate.Parts - rate.Chance * Odds.Parts) > 1 then
+								off = `{rate.Id}: {rate.Parts} parts for {rate.Chance}`
+							end
+						end
+						if own ~= group.Parts or not near(chance, group.Chance) then
+							off = `{group.Rarity}: {group.Parts} isn't its rows' {own}`
+						end
+						sum += group.Parts
+					end
+					t.Check(`{where}: every Voidkin once, under its own rarity, the commonest first`, rows == #entries and off == "", off)
+					t.Equal(`{where}: the rows add to 100%`, sum, Odds.Parts)
+				end
+			end
+			-- Ground 1's Standard shard, by hand: Common 60 in four of 15, Uncommon 30, Rare 9, Epic 1.
+			local groups = Odds.Rates(STANDARD, 0)
+			local read: { string } = {}
+			for _, group in groups do
+				table.insert(read, `{group.Rarity} {Odds.Percent(group.Parts)} x{#group.Rates}`)
+			end
+			t.Equal("ground 1's Standard", table.concat(read, ", "), "Common 60% x4, Uncommon 30% x1, Rare 9% x1, Epic 1% x1")
+			local commons = groups[1]
+			t.Equal("Rook, the first Common, at 15%", if commons then `{commons.Rates[1].Id} {Odds.Percent(commons.Rates[1].Parts)}` else "", "rook 15%")
+			t.Equal("a Named shard: one rarity, one Voidkin, 100%", Odds.Percent(Odds.Rates("named_watt", 0)[1].Rates[1].Parts), "100%")
+			t.Equal("an unknown shard: none", #Odds.Rates("nothing", 0), 0)
+			t.Equal("whole", Odds.Percent(6000), "60%")
+			t.Equal("a tenth", Odds.Percent(1050), "10.5%")
+			t.Equal("a hundredth", Odds.Percent(675), "6.75%")
+			t.Equal("under one", Odds.Percent(33), "0.33%")
+			t.Equal("a part", Odds.Percent(1), "0.01%")
 		end,
 	},
 }

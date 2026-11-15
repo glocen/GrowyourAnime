@@ -52,6 +52,7 @@ local LOCKED = "Upgrade the Breaker" -- under "Locked": what opens a chamber (re
 local selected: Selection? = nil
 local pending: Selection? = nil -- a shard just put in, chosen where the server says it stands once the save shows it
 local pendingUntil = 0
+local rates = false -- the chosen shard's drop rates open in the pane, in place of its voltage
 local PENDING = 3 -- seconds a shard put in waits to be chosen
 local tickers: { (now: Read.Base) -> () } = {}
 local rebuild: () -> () = function() end
@@ -154,6 +155,8 @@ local function percent(chance: number): string
 	end
 	return if p < 1 then string.format("%.2f%%", p) else string.format("%.1f%%", p)
 end
+
+local RATE_INDENT = 10 -- a Voidkin's row under its rarity's line, in the drop rates
 
 -- The infusion levels by name, Config.Shards.Infusion's order (the director, 2026-11-15: "real electrician words").
 local LEVELS = { "Low voltage", "High voltage" }
@@ -562,6 +565,8 @@ local function blockLevel(now: Read.Base, level: { Lift: number, Energy: number 
 	return nil
 end
 
+local chances: (column: Instance, def: string, luck: number) -> ()
+
 -- A line that wraps and grows to its words, in a column.
 local function lines(parent: Instance, name: string, text: string, box: UDim2, order: number, colour: Color3?): TextLabel
 	local made = label(parent, name, text, Theme.Text.Caption, box, UDim2.new(), { Colour = colour or Theme.Colour.TextDim })
@@ -571,8 +576,9 @@ local function lines(parent: Instance, name: string, text: string, box: UDim2, o
 	return made
 end
 
--- The chosen shard: its name and place over one column that scrolls: the one thing to do with it, infusion, and its
--- odds, every chance as the server rolls it.
+-- The chosen shard: its name and place over one column that scrolls. First a row: the one thing to do with it, and
+-- "Drop rates" beside it, one tap away (docs/ui.md, screen 3). Under the row, its voltage; or, Drop rates lit, every
+-- Voidkin it can give under its rarity's total, as the server rolls them.
 local function pane(parent: Instance, item: Selection?, view: Profile.View, now: Read.Base, on: On, box: UDim2, position: UDim2)
 	local frame = Panel.new({ Name = "Odds", Size = box, Position = position, Parent = parent })
 	frame.ZIndex = 10
@@ -619,9 +625,33 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 			return answer.Ok == true
 		end
 	end
+	local first = Instance.new("Frame")
+	first.Name = "Do"
+	first.BackgroundTransparency = 1
+	first.Size = UDim2.new(1, -gap, 0, Theme.Size.Tap)
+	first.LayoutOrder = 1
+	first.Parent = column
 	if action then
-		local button = Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(1, -gap, 0, Theme.Size.Tap), Parent = column, OnPress = press :: () -> ...any })
-		button.LayoutOrder = 1
+		Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = first, OnPress = press :: () -> ...any })
+	end
+	local fold = Button.new({
+		Name = "Rates",
+		Text = "Drop rates",
+		TextSize = Theme.Text.Caption,
+		Size = if action then UDim2.new(0.5, -gap / 2, 1, 0) else UDim2.fromScale(1, 1),
+		Position = if action then UDim2.new(0.5, gap / 2, 0, 0) else UDim2.new(),
+		Parent = first,
+		OnPress = function()
+			rates = not rates
+			rebuild()
+			return true
+		end,
+	})
+	Button.Set(fold, { Selected = rates })
+	if rates then
+		local held = workOf(now.Data, it)
+		chances(column, it.Def, if held then held.Luck else 0)
+		return
 	end
 	-- Infusion: why none goes in, if so; then its two levels, each with its price and, beside it, what it does to
 	-- the rarest tier, or why that level can't be paid.
@@ -669,28 +699,36 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 			beside.TextYAlignment = Enum.TextYAlignment.Center
 		end
 	end
-	-- The odds, rarest first: who it can hold and the chance of each, as the server will roll them.
-	lines(column, "ChancesTitle", "Who it can hold", UDim2.new(1, -gap, 0, LINE), 10).FontFace = Theme.Font.Strong
+end
+
+-- Drop rates: every Voidkin the shard can give under its rarity's total, the commonest first, as the server will roll
+-- them. The rows shown add to 100% (Rules.Odds.Rates).
+chances = function(column: Instance, def: string, luck: number)
 	local list = Instance.new("Frame")
 	list.Name = "Chances"
 	list.BackgroundTransparency = 1
-	list.Size = UDim2.new(1, -gap, 0, 0)
+	list.Size = UDim2.new(1, -Theme.Size.Gap, 0, 0)
 	list.AutomaticSize = Enum.AutomaticSize.Y
 	list.LayoutOrder = 11
 	list.Parent = column
 	Panel.List(list, nil, 2)
-	local entries = Odds.Table(it.Def, luck)
-	for index = #entries, 1, -1 do
-		local entry = entries[index]
-		local row = Voidkin.ById[entry.Id]
+	local order = 0
+	local function rate(name: string, who: string, parts: number, indent: number, colour: Color3?, font: Font?)
+		order += 1
 		local line = Instance.new("Frame")
-		line.Name = entry.Id
+		line.Name = name
 		line.BackgroundTransparency = 1
 		line.Size = UDim2.new(1, 0, 0, LINE + 2)
-		line.LayoutOrder = #entries - index + 1
+		line.LayoutOrder = order
 		line.Parent = list
-		label(line, "Who", `{row.Name} · {row.Rarity}`, Theme.Text.Caption, UDim2.new(1, -64, 1, 0), UDim2.new(), { Truncate = true })
-		label(line, "Chance", percent(entry.Chance), Theme.Text.Caption, UDim2.new(0, 60, 1, 0), UDim2.new(1, -60, 0, 0), { Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right })
+		label(line, "Who", who, Theme.Text.Caption, UDim2.new(1, -(64 + indent), 1, 0), UDim2.fromOffset(indent, 0), { Truncate = true, Colour = colour, Font = font })
+		label(line, "Chance", Odds.Percent(parts), Theme.Text.Caption, UDim2.new(0, 60, 1, 0), UDim2.new(1, -60, 0, 0), { Font = Theme.Font.Number, Colour = colour, Align = Enum.TextXAlignment.Right })
+	end
+	for _, group in Odds.Rates(def, luck) do
+		rate(`Tier{group.Rarity}`, group.Rarity, group.Parts, 0, HudConfig.Card.Trim[group.Rarity], Theme.Font.Strong)
+		for _, each in group.Rates do
+			rate(each.Id, Voidkin.ById[each.Id].Name, each.Parts, RATE_INDENT, Theme.Colour.TextDim)
+		end
 	end
 end
 
@@ -726,6 +764,7 @@ end
 function BreakerScreen.Open(view: Profile.View, on: On)
 	if Screen.Current() ~= NAME then -- a fresh open starts on the chambers, never on a choice left from before
 		selected, pending = nil, nil
+		rates = false
 		seen, flashes, arrivals = nil, {}, {} -- what finished while it was shut waits on the strip, unflashed
 	end
 	build(view, on)

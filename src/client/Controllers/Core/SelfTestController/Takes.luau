@@ -1084,6 +1084,13 @@ return function(given: Given): { any }
 					moment("Machine: the line's first shard tapped, its odds and infusion's two levels")
 					BreakerScreen.Select({ Kind = "Line", Index = 1, Def = shard })
 					t.Wait(TAKE_READ)
+					moment("Drop rates tapped: every Voidkin it can give, under each rarity's total")
+					local fold = breakerPart("Rates")
+					t.Check("its drop rates open on a tap", fold ~= nil and fold:IsA("TextButton") and Button.Press(fold))
+					t.Wait(TAKE_READ)
+					fold = breakerPart("Rates")
+					t.Check("and close on a second", fold ~= nil and fold:IsA("TextButton") and Button.Press(fold))
+					t.Wait(0.5)
 					-- The chamber nearest done, brought to two seconds short of it: its end on the open screen.
 					local base = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow())
 					local nearest, left = 0, math.huge

@@ -10,9 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
 **Faber (builder).** 2026-11-15, evening.
-- **TR17's retake is with research:** the three fixes, the band and the bag first. Its case passes (256 checks) and the whole self-test (1699, 0 failed). **For research:** the sheets are in `build/captures/tr17/`, and two calls were built another way (the rail scrolls under 366 pt; the marks stand in the band): TR17, "The retake".
-- **TR9:** the fade fix and Low voltage, High voltage are in, checked on a still, for research's pass.
-- **Next:** TR9's "Drop rates" panel. Then AR12's colour into the HUD (V2, Block), with the lead card's halos and the portrait's seam fix; TR12's and TR16's fixes; the TR10, TR13 and TR11 takes; Kirra's install; TR18, with voltage as time (its price is in TR18's kWh).
+- **TR17:** the retake has research's verdict (competent, grey), and its one fix is in: the bag's five tabs stand whole. **For research:** the still is `build/captures/tr17/retake_tabs.jpg`, for the block's pass.
+- **TR9:** "Drop rates" is built in grey, one tap away beside the action, every Voidkin under its rarity's total, adding to 100%. **For research:** the still is `build/captures/tr9/drop_rates.jpg`, and three things are built another way than Modulo's sheet (TR9, "Drop rates").
+- **The whole self-test** is clean, in the phone emulation with Studio in front: 1727 passed, 0 failed (265 s, 60 fps).
+- **Next:** AR12's HUD, as research's brief of 2026-11-15 has it (`docs/decisions.md`; `docs/ui.md`, rule 3 and the HUD table): V2, Block from Modulo's 30 images and `hud_colour.json` (the Credits and Power pills, the signature's readout, the spectate eye); the lead's card kept, with Modulo's level mark and the portrait's seam fix; the HUD's face as one value in `Config.Hud`, with three candidates captured at phone size for research's pick; the Bag page's label "Items"; the dock last, from Modulo's new images (three icons, no word, a long press for the word). Then TR12's and TR16's fixes; the TR10, TR13 and TR11 takes; Kirra's install; TR18, with voltage as time.
 
 **Modulo (assets).** 2026-11-15, on Fable 5.2.
 - **AR12, the HUD's and the screens' colour:** the HUD's images in V2, Block are delivered: `build/handoff/UI/hud/colour/images/` (30 images), `hud_colour.json` (how each piece stacks, each system's colours, the rooms) and `hud_colour_images.png` (AR12, "The HUD's images in V2, Block"). Content check PASS; not uploaded. **For Faber:** the readout's light is one image under a gradient, its stops in the json, untried in Studio. `vivid_voidkin.png` is the look to hold beside TR17's rebuild.
@@ -79,7 +80,8 @@ For Faber:
 - **What changed.** The Voidkin screen has research's three fixes: the stage never stands empty on a switch, the Voidkin's name is over the stage, and the lead reads "Leading" with "Not while leading" under Send to work. Its top bar is in Roblox's band, a new `Band` layer any full screen can use (`Kit/Screen.luau`). The Breaker's chamber holds its next shard's words until the gold is gone, and the infusion's levels are Low voltage and High voltage.
 - **A finding worth keeping:** a model fetched with `PreloadAsync` still draws empty for up to half a second the first time a viewport shows it. Drawing it ahead in a small viewport is what makes it ready (`VoidkinScreen/Figure.luau`, the wings).
 - **Where it lives.** `docs/test-requests.md`, TR17, "The retake", and TR9, "The fade fix and the names". Evidence: `build/captures/tr17/retake*.jpg`, `build/captures/tr9/gold_fade_still.jpg`.
-- **Open.** Research's verdict on the retake and its pass on TR9. The rail scrolls on phones under 366 pt tall. Voltage as time and "Drop rates" aren't built.
+- **Then, the same evening:** the bag's five tabs stand whole (research's one fix on the retake), and the Breaker's pane has "Drop rates" one tap away, from a pure rule whose rows add to exactly 100% (`Rules.Odds.Rates`).
+- **Open.** Research's pass on TR17's block and on Drop rates. The rail scrolls on phones under 366 pt tall. Voltage as time isn't built: it goes with TR18.
 - **For:** research.
 
 ### 2026-11-14. Kirra's clips delivered (Modulo)

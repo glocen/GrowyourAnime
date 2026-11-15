@@ -73,6 +73,8 @@ local HELD: { [string]: boolean } = { Shards = true } -- the kinds the save hold
 local ROW = Theme.Size.Tap -- a row of buttons, authored
 local BAR = 28 -- a currency's chip, in the band, authored
 local TITLE = 24 -- the name's line over the stage, authored
+local TAB_GAP = 2 -- between the bag's tabs, authored: five stand whole in the smallest phone's panel, each a tap wide
+local TAB_LETTERS = 6 -- a bag tab is as wide as a name of at least this many letters
 local LABEL = 16 -- a rail button's label, under its circle, authored
 local WORD = 64 -- Save and Cancel, in the band, each, authored
 local WARM = 12 -- bodies drawn ahead at the open, the roster's first; one past them is drawn when it's asked for
@@ -710,16 +712,33 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 	end
 end
 
--- The bag's kinds as tabs along `parent`'s top: the held ones to pick, the rest greyed until they're built.
+-- The bag's kinds as tabs along `parent`'s top: the held ones to pick, the rest greyed with "Soon" under their name
+-- until they're built. Every tab stands whole in the row, each as wide as its name's share of it and never under a
+-- tap's width on the smallest phone (TR17's retake, research's fix, 2026-11-15: a scrolling row cut a tab mid-word).
 local function bagTabs(parent: Instance, top: number)
-	local tabs = scroller("Kinds", parent, UDim2.fromOffset(0, top), UDim2.new(1, 0, 0, ROW), true)
-	tabs.ScrollBarThickness = 0
+	local tabs = Instance.new("Frame")
+	tabs.Name = "Kinds"
+	tabs.BackgroundTransparency = 1
+	tabs.Position = UDim2.fromOffset(0, top)
+	tabs.Size = UDim2.new(1, 0, 0, ROW)
+	tabs.Parent = parent
+	local layout = Instance.new("UIListLayout")
+	layout.FillDirection = Enum.FillDirection.Horizontal
+	layout.Padding = UDim.new(0, TAB_GAP)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Parent = tabs
+	local letters = 0
+	for _, name in KINDS do
+		letters += math.max(#name, TAB_LETTERS)
+	end
+	local gaps = TAB_GAP * (#KINDS - 1)
 	for index, name in KINDS do
-		local said = if HELD[name] then name else `{name} soon`
+		local share = math.max(#name, TAB_LETTERS) / letters
 		local tab = Button.new({
 			Name = name,
 			Text = name,
-			Size = UDim2.fromOffset(#said * 10 + 24, ROW),
+			Under = true,
+			Size = UDim2.new(share, -math.ceil(gaps * share), 0, ROW),
 			LayoutOrder = index,
 			Parent = tabs,
 			TextSize = Theme.Text.Caption,
@@ -728,7 +747,7 @@ local function bagTabs(parent: Instance, top: number)
 				rebuild()
 			end,
 		})
-		Button.Set(tab, { Selected = name == kind, Disabled = if HELD[name] then false else said })
+		Button.Set(tab, { Selected = name == kind, Disabled = if HELD[name] then false else "Soon" })
 	end
 end
 

@@ -6554,25 +6554,46 @@ local cases = {
 			local before = readyCount(shard) -- the one put in is still breaking
 			local first = BreakerScreen.Selected()
 			t.Check("it opens on a chamber's shard", first ~= nil and first.Kind == "Chamber", if first then `{first.Kind} {first.Index}` else "none")
-			-- The chosen shard's pane: its name, and every chance as the server rolls it, rarest first.
+			-- The chosen shard's pane: its name, and its drop rates one tap away: every Voidkin under its rarity's total, the
+			-- commonest first, in place of its voltage until a second tap.
 			local function oddsShown(where: string)
 				local item = BreakerScreen.Selected()
 				local title = breakerText("Odds", "Title")
 				t.Check(`{where}: the pane names the chosen shard`, item ~= nil and string.find(title, Read.ShardName(item.Def), 1, true) ~= nil, title)
+				local fold = breakerPart("Rates")
+				t.Check(`{where}: Drop rates is one tap away, its voltage shown until then`, fold ~= nil and fold:IsA("TextButton") and Button.State(fold) == "Rest" and breakerPart("Chances") == nil and breakerPart("Level1") ~= nil)
+				t.Check(`{where}: a tap opens them, in place of its voltage`, fold ~= nil and fold:IsA("TextButton") and Button.Press(fold) and waitFor(t, 1, function(): boolean
+					local lit = breakerPart("Rates")
+					return lit ~= nil and lit:IsA("TextButton") and Button.State(lit) == "Selected" and breakerPart("Chances") ~= nil and breakerPart("Level1") == nil
+				end))
 				local list = breakerPart("Chances")
 				local work = chosenWork(item)
-				local entries = if item then Odds.Table(item.Def, if work then work.Luck else 0) else {}
+				local groups = if item then Odds.Rates(item.Def, if work then work.Luck else 0) else {}
 				local off: { string } = {}
-				for index, entry in entries do
-					local line = list and list:FindFirstChild(entry.Id)
+				local order = 0
+				local function row(name: string, parts: number)
+					order += 1
+					local line = list and list:FindFirstChild(name)
 					local chance = line and line:FindFirstChild("Chance") :: TextLabel?
 					if line == nil or chance == nil or not line:IsA("GuiObject") then
-						table.insert(off, `{entry.Id} missing`)
-					elseif chance.Text ~= percentOf(entry.Chance) or line.LayoutOrder ~= #entries - index + 1 then
-						table.insert(off, `{entry.Id}: {chance.Text} at {line.LayoutOrder}`)
+						table.insert(off, `{name} missing`)
+					elseif chance.Text ~= Odds.Percent(parts) or line.LayoutOrder ~= order then
+						table.insert(off, `{name}: {chance.Text} at {line.LayoutOrder}`)
 					end
 				end
-				t.Check(`{where}: every chance as the server rolls it, rarest first`, #entries > 0 and #off == 0, off[1] or `{#entries} chances`)
+				for _, group in groups do
+					row(`Tier{group.Rarity}`, group.Parts)
+					for _, each in group.Rates do
+						row(each.Id, each.Parts)
+					end
+				end
+				local shown = if list then #list:GetChildren() - 1 else 0 -- its layout aside
+				t.Check(`{where}: every Voidkin under its rarity's total, the commonest first, as the server rolls them`, #groups > 0 and #off == 0 and shown == order, off[1] or `{shown} rows for {order}`)
+				lintClean(t, `{where}, its drop rates open`)
+				local lit = breakerPart("Rates")
+				t.Check(`{where}: a second tap closes them, its voltage back`, lit ~= nil and lit:IsA("TextButton") and Button.Press(lit) and waitFor(t, 1, function(): boolean
+					return breakerPart("Chances") == nil and breakerPart("Level1") ~= nil
+				end))
 			end
 			-- The chambers as they stand, up to the most a Breaker has, and the bag's shard on the strip.
 			local function machineShown(where: string)
@@ -6834,10 +6855,18 @@ local cases = {
 			end), `{breakerText("Odds", "Why")}; {breakerText("Odds", "Place")}`)
 			local again, off = infuseButton(#ShardConfig.Infusion)
 			t.Check("and takes no second infusion", off and again ~= nil and not Button.Press(again))
-			local entries = Odds.Table(shard, little.Lift)
-			local last = entries[#entries]
-			local chance = if last then breakerText(last.Id, "Chance") else ""
-			t.Check("its odds show the lift", last ~= nil and chance == percentOf(last.Chance), chance)
+			local lifted, unlifted = Odds.Rates(shard, little.Lift), Odds.Rates(shard, 0)
+			local top, plain = lifted[#lifted], unlifted[#unlifted]
+			local fold = breakerPart("Rates")
+			t.Check("its drop rates open", fold ~= nil and fold:IsA("TextButton") and Button.Press(fold) and waitFor(t, 1, function(): boolean
+				return breakerPart("Chances") ~= nil
+			end))
+			local total = if top then breakerText(`Tier{top.Rarity}`, "Chance") else ""
+			t.Check("and show the lift on its rarest tier", top ~= nil and plain ~= nil and top.Parts > plain.Parts and total == Odds.Percent(top.Parts), total)
+			fold = breakerPart("Rates")
+			t.Check("then close", fold ~= nil and fold:IsA("TextButton") and Button.Press(fold) and waitFor(t, 1, function(): boolean
+				return breakerPart("Chances") == nil
+			end))
 			if chosen.Kind == "Chamber" then
 				t.Check("its chamber says so, by the level put in", breakerText(`Chamber{chosen.Index}`, "Infused") == "Infused · Low voltage", breakerText(`Chamber{chosen.Index}`, "Infused"))
 			end

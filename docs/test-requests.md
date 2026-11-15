@@ -1012,7 +1012,7 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
 
 **Order in the queue:** after TR8. **Time, forecast:** 2 to 3 hours.
 
-**Status:** the retake's fix and the two names are in, 2026-11-15, for research's pass (Faber, "The fade fix and the names" below). Not built yet: "Drop rates", next, and voltage as time, which goes with TR18, whose kWh price it. Machine picked, and research's fixes built, 2026-11-15 ("The fixes built" below). Before: the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14. Time: about 2.5 active hours, my estimate, not measured.
+**Status:** "Drop rates" is built, 2026-11-15, for research's pass (Faber, "Drop rates" below). Machine and its payoff have research's pass, with the fade fix and the two names. Not built yet: voltage as time, which goes with TR18, whose kWh price it. Machine picked, and research's fixes built, 2026-11-15 ("The fixes built" below). Before: the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14. Time: about 2.5 active hours, my estimate, not measured.
 - **Implemented.**
   - **Infusion, on the server** (`Rules.Base.Infuse { Chamber | Line, Def, Level }`): the price from the battery, and the shard's Luck raised by `Config.Shards.Infusion[Level]` (seeds: a little, +0.10 for 300; a lot, +0.25 for 900), capped at `LuckCap`.
     - Once per shard. Only a shard still breaking or waiting, never one ready or in the bag, and never a Named or a starter shard (`Odds.Lifted`, which counts the tiers the luck lifts).
@@ -1085,6 +1085,19 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - **Visually reviewed:** by Faber. Research's pass: not yet. **Director-accepted:** no.
     - **Not built:** voltage as time, its price, and "Drop rates". Until they are, Low and High voltage still lift the odds as the old levels did. Tier 1 notice: the place line reads "· infused, low voltage".
   - **Research's pass on TR9, 2026-11-15:** the fade fix holds on the still. "Ready" stands alone on the gold, the box is bare for a beat, then the next shard comes in. **TR9's Machine and its payoff pass.** The still predates the names ("A little · 300"), and the two-line buttons were read on their case's frame. Voltage as time, its kWh price and "Drop rates" are their own work: Drop rates next, and voltage with TR18. Neither reopens this pass. **Director-accepted:** no.
+  - **Drop rates, Faber, 2026-11-15.** In grey, to Modulo's sheet (`build/handoff/UI/hud/colour/vivid3_breaker_ready.png`).
+    - **Implemented.**
+      - **The rule,** pure: `Rules.Odds.Rates` gives a shard's table grouped by rarity, the commonest first, each chance also in whole hundredths of a percent. They're rounded by largest remainder, so the rows shown add to exactly 100% and a rarity's total is the sum of its rows. `Odds.Percent` writes them ("60%", "6.75%").
+      - **The pane:** "Drop rates" is a button beside the shard's one action, one tap away. Lit, it shows every Voidkin under its rarity's total in place of the voltage, a Voidkin a line. A second tap brings the voltage back. It starts closed each time the screen opens.
+    - **Tested.** Logic offline: 5552 passed, with a new case on every shard at three lucks (every Voidkin once under its own rarity, the rows adding to 100%, ground 1's Standard by hand). The Breaker's cases: 189 passed, 0 failed, 60 fps, in the phone emulation, the lint clean with the rates open. The take's case: 15 passed. Type check: 0 new.
+    - **Checked on a still:** `build/captures/tr9/drop_rates.jpg`: closed with the voltage under it, then open on "Common 60%" and its four at 15%, the list going on under a scroll bar.
+    - **Visually reviewed:** by Faber. Research's pass: not yet. **Director-accepted:** no.
+    - **For research, built another way than the sheet, with why:**
+      1. **"Drop rates" stands beside the action, not under the voltage.** At 44 pt taps the pane's column holds about 150 authored px: the action and two voltage rows fill it, and a button under them would sit below the fold. The sheet's rows are drawn smaller than a tap.
+      2. **A Voidkin a line, not two a line.** Half the pane is about 87 authored px, and "Marigold" beside "0.33%" at the kit's caption needs about 93. Five rows show before a scroll.
+      3. **It starts closed on every shard,** since today every shard shows voltage rows. With TR18 a shard that takes no voltage can start with its rates open, as the sheet's Standard does.
+    - **Tier 1 notice.** A Common's line wears its rarity's grey, dimmer than its Voidkin's numbers under it: the colours are AR12's.
+    - **Time:** about 1.5 active hours, my estimate, not measured.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1554,6 +1567,11 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
       - **The marks in the band, right of Back,** as the mock's top row. Rename's Save and Cancel take the band while the field is open.
     - **Fix (Faber), small:** the bag's tab row cuts its third tab mid-word ("Embler"). Make every tab fit, or let the row scroll with a fade at its edge. Serves the read. Check it on a still.
     - **Research's pass on the block is given once that's in.** TR17 stays open for its look, with Modulo's mock and AR12's colour (the level's mark included), then the director's eye.
+  - **The tabs' fix, Faber, 2026-11-15.**
+    - **Implemented.** The bag's five tabs stand whole in a row that no longer scrolls. Each is as wide as its name's share of the row, never under a 44 pt tap on the smallest phone, 2 px apart. A tab not built yet keeps its name, greyed, with "Soon" under it, as the rail's pages do (`VoidkinScreen/init.luau`, `bagTabs`).
+    - **Tested.** The case `Voidkin screen (TR17)`: 257 passed, 0 failed, the lint clean in this window and on the smallest phone. One check is new: every tab whole in its row, none cut. The whole self-test, in the phone emulation with Studio in front: 1727 passed, 0 failed (265 s, 60 fps).
+    - **Checked on a still:** `build/captures/tr17/retake_tabs.jpg`, the bag in the phone emulation and on the smallest phone: Shards, Items, Emblems, Jewels and Stones, each whole.
+    - **Visually reviewed:** by Faber. Research's pass on the block: not yet. **Director-accepted:** no.
 
 - **Modulo's marks, delivered, 2026-11-15** (the director to Modulo, 2026-11-15, on the HUD's icons: "You made such high quality icons good job, do we need more? if yes please make more"). In `build/handoff/UI/voidkin/marks/`: `images/` (16), `voidkin_marks.json` and the sheet `voidkin_marks.png`, drawn by `tools/blender/voidkin_marks.py`.
   - **The rail's seven pages,** white, to tint by state: Overview (a head over its shoulders), Bag (a satchel), Kit (an ability's tile, a spark cut through it), Stars (one star and the next), Forge (an anvil), Jewels (a cut stone), War Emblems (a banner hung from its bar). Each is judged at 14 pt across, its size on a rail button at rest.

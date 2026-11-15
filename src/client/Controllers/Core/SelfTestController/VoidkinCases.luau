@@ -420,12 +420,20 @@ function VoidkinCases.Cases(given: Given): { any }
 					elseif name == "Bag" then
 						local kinds = VoidkinScreen.Find("Kinds")
 						local tabs = true
+						local cut = ""
 						for _, kind in VoidkinScreen.Kinds do
 							local tab = kinds and kinds:FindFirstChild(kind)
-							local want = if VoidkinScreen.Held[kind] then "" else `{kind} soon`
+							local want = if VoidkinScreen.Held[kind] then "" else "Soon"
 							tabs = tabs and tab ~= nil and tab:IsA("TextButton") and tab:GetAttribute("Disabled") == want
+							if kinds and kinds:IsA("GuiObject") and tab and tab:IsA("GuiObject") then
+								local left = tab.AbsolutePosition.X - kinds.AbsolutePosition.X
+								if left < -0.5 or left + tab.AbsoluteSize.X > kinds.AbsoluteSize.X + 0.5 then
+									cut = kind
+								end
+							end
 						end
-						t.Check("Bag: a tab for each kind, those not held yet greyed with soon", tabs)
+						t.Check("Bag: a tab for each kind, those not held yet greyed with Soon", tabs)
+						t.Check("Bag: every tab whole in its row, none cut", kinds ~= nil and not kinds:IsA("ScrollingFrame") and cut == "", cut)
 						local shards = kinds and kinds:FindFirstChild("Shards")
 						t.Check("Bag: on Shards", shards ~= nil and shards:IsA("TextButton") and Button.State(shards) == "Selected")
 						local bag = (ProfileController.Get() :: Profile.View).Bag.Shards

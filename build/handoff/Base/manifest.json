@@ -555,6 +555,38 @@
     }
    ],
    "note": "stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without the kit's pictures). Its light is a PointLight in the same colour, the first to go if the plot's lights weigh. Look only"
+  },
+  "Showcase": {
+   "mesh": "meshes/Showcase.json",
+   "triangles": 220,
+   "vertices": 152,
+   "centre": [
+    0.0,
+    0.85,
+    0.0
+   ],
+   "size": [
+    6.098,
+    1.7,
+    6.098
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "an eight-sided block, 6.6 across and 1.2 high, or its box",
+   "lights": [
+    {
+     "name": "Show",
+     "at": [
+      0.0,
+      3.2,
+      -2.6
+     ],
+     "colour": "#F6FCFF"
+    }
+   ],
+   "note": "the Voidkin stands at its middle, 1.2 up, and turns there: the plinth doesn't. Its Combat Power sits above the figure. Its light is a PointLight on the Strip's side of the figure, at chest height"
   }
  }
 }

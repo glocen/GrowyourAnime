@@ -27,6 +27,7 @@ from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_machines as machines  # noqa: E402
+import base_show as show  # noqa: E402
 import base_site as site  # noqa: E402
 import blcommon as bl  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
@@ -524,7 +525,8 @@ PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "Wall": wall, "WallH
           "WallEnd": lambda: wall(0.0), "Gate1": gate, "Pylon": pylon,
           "PowerSpan": power_span, "FloodMast": flood_mast, "Transformer": transformer,
           **site.PIECES,           # and the building site's, level 1's (base_site.py)
-          **machines.PIECES}       # and the machines' own models (AR15, base_machines.py)
+          **machines.PIECES,       # and the machines' own models (AR15, base_machines.py)
+          **show.PIECES}           # and the showcase's plinth (TR22, base_show.py)
 
 
 def build(name):

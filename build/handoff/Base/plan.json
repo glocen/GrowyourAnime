@@ -538,6 +538,12 @@
      "turn": 0
     },
     {
+     "piece": "Showcase",
+     "across": 14.0,
+     "along": -4.9,
+     "turn": 0
+    },
+    {
      "piece": "Barrier",
      "across": -46,
      "along": -18,
@@ -855,6 +861,15 @@
      "cone": null
     },
     {
+     "name": "Showcase",
+     "across": 14.0,
+     "along": -2.3,
+     "up": 3.2,
+     "colour": "#F6FCFF",
+     "kind": "point",
+     "cone": null
+    },
+    {
      "name": "SiteLeft",
      "across": -27.378700000000002,
      "along": -66.6213,
@@ -886,9 +901,9 @@
     "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text"
    },
    "budget": {
-    "pieces": 136,
-    "triangles": 32280,
-    "lights": 5,
+    "pieces": 137,
+    "triangles": 32500,
+    "lights": 6,
     "counts": {
      "Court1": 1,
      "Gate1": 1,
@@ -902,6 +917,7 @@
      "PowerSpan": 8,
      "FloodMast": 4,
      "Transformer": 2,
+     "Showcase": 1,
      "Foundation": 5,
      "Scaffold": 5,
      "Stack": 8,

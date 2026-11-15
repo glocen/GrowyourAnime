@@ -53,6 +53,7 @@ REPO = Path(__file__).resolve().parents[2]
 STREET = REPO / "build" / "handoff" / "LanternRow" / "maps" / "LanternRow_Paving_Color.png"   # the Strip's own stones
 
 PLOT, STRIP, SPAWN, BREAKER, BATTERY = base.PLOT, base.STRIP, base.SPAWN, base.BREAKER, base.BATTERY
+SHOWCASE = (14.0, 4.9)     # the showcase's plinth, just inside the gate: across, in from the front edge (TR22)
 LAMP = ("BreakerLamp", 0.0, BREAKER, 10.0, "#8CF6FF")   # the heart's own light, over the chambers
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
@@ -151,6 +152,11 @@ def plan(level=1):
         for side in (-1, 1):
             put("Transformer", side * across, inward, 0)
     lights.append((*LAMP[:2], -LAMP[2], *LAMP[3:], "point"))
+    # the showcase: the owner's Voidkin on its plinth, on the gate's right, off the way in and clear of the Breaker's
+    # line, so the Strip sees it through the gate and the spawn sees it over the waiting places
+    _, (sx, sy, sz), colour = base.show.LIGHT
+    put("Showcase", SHOWCASE[0], SHOWCASE[1], 0)
+    lights.append(("Showcase", SHOWCASE[0] + sx, round(-(SHOWCASE[1] - sy), 2), sz, colour, "point"))
     if level == 1:
         building_site(put, lights)
     return places, lights
@@ -313,6 +319,8 @@ class Yard:
         for index, (x, inward) in enumerate(BAY_LOTS[:base.BAYS_AT[level]]):   # a worker's size, on each bay
             wx, wy, _ = self.at(front, face, x, inward)
             self.person((wx, wy), f"Worker{tag}{index}")
+        wx, wy, _ = self.at(front, face, *SHOWCASE)                # and the owner's Voidkin on the showcase
+        self.person((wx, wy), f"Shown{tag}", base.show.TOP)
         b("Battery", (6, 4, 3), 0, BATTERY, 1.5, "battery")
         b("Generator", (6, 5, 8), generator, BREAKER, 4, "machine")
         b("GeneratorFace", (4.4, 0.2, 3), generator, BREAKER + 2.6, 5.5, "generator")
@@ -330,16 +338,17 @@ class Yard:
             self.stock.stand(name, f"{tag}{i}", self.at(front, face, x, -along), turn + (0 if face > 0 else 180))
         for name, x, along, z, code, kind in lights:
             lamp = look.light(self.kit, self.scene, f"{name}{tag}", self.at(front, face, x, -along, z), code,
-                              watts * kit.REAL_LIGHT, 40.0, kind="SPOT" if kind == "spot" else "POINT")
+                              watts * kit.REAL_LIGHT * (0.1 if name == "Showcase" else 1.0), 40.0,   # a near light
+                              kind="SPOT" if kind == "spot" else "POINT")
             lamp.data.use_shadow = False
             if kind == "spot":
                 lamp.data.spot_size, lamp.data.spot_blend = math.radians(kit.POOL_CONE), 0.7
 
-    def person(self, at, name="Avatar"):
+    def person(self, at, name="Avatar", up=0.0):
         """A player's size, in bone: where they stand."""
         x, y = at
         for part, size, z in (("Legs", (2, 1, 2), 1), ("Body", (4, 1, 2), 3), ("Head", (1.2, 1.2, 1.2), 4.6)):
-            self.kit.block(f"{name}{part}", size, (x, y, z), self.flat["spawn"])
+            self.kit.block(f"{name}{part}", size, (x, y, z + up), self.flat["spawn"])
 
 
 def camera(scene, name, eye, target):
@@ -400,6 +409,7 @@ def see(out: Path, level, fast, clear, only=()):
              "across": ((-88.0, -6.0, 11.0), (30.0, -130.0, 4.0)),
              "breaker": ((9.0, -29.0, 9.5), (0.0, -BREAKER, 6.0)), "strip": ((-8.0, 9.0, 7.5), (0.0, -BREAKER, 6.5)),
              "bay": ((-7.0, -35.0, 6.0), (-22.0, -26.0, 4.2)), "bays": ((-10.0, 9.0, 6.5), (22.0, -26.0, 4.0)),
+             "show": ((6.0, 22.0, 6.0), (SHOWCASE[0], -SHOWCASE[1], 4.5)), "shown": ((21.5, -13.5, 5.5), (SHOWCASE[0], -SHOWCASE[1], 3.6)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:
         views = {name: views[name] for name in only}

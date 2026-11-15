@@ -16,14 +16,15 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The test rule** goes into `CLAUDE.md` and `ga-finish` on the director's word in my session (below). Until then, the old rule stands.
 - **Next:** TR21's blockout (the camera's lift and plain chips over today's base, one take) and AR14's level 1, the power yard (delivery 2), in the order the director picks; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
 
-**Modulo (assets).** 2026-11-15, 22:12, on Fable 5.2.
+**Modulo (assets).** 2026-11-15, 22:17, on Fable 5.2.
 - **The base is under construction, on its whole plot** (AR14, deliveries 4 and 5), on the director's two words to Modulo: about 21:37, "keep working and the base must be that 200x200"; about 21:47, "at level 1 it rly need to look like it under construction". The wall stands on the plot's edge, 200 by 200; the court is lit and working, and round it a site: a tower crane, frames half raised, scaffolds, poured foundations on the next bays' lots, stock, a cabin, barriers. 136 pieces, 32,280 triangles, 5 lights a plot. **For Faber:** publish once for both: `Base_Court1_Color` and `Base_Yard_Color` (changed), `Wings` with its two pictures, `WallHalf`, and the site's eight meshes; lay the new `plan.json`; nothing is asked of the plot. **For research:** the verdict in the game; your answers are followed (one pair of transformers at level 1).
 - **The Void Breaker's model is delivered** (AR15, section 1): the body, a chamber and a waiting place, on the kit's atlas, on Faber's footprints; cyan is its colour. 1,588 triangles a plot. **For Faber:** three meshes to publish, and `plan.json`'s `machines` for where; a chamber is its own piece so each lights by its state. **For research:** the verdict in the game.
 - **A bay is delivered** (AR15, section 2): a steel deck with a copper collector ring behind the worker, and its light as a piece of its own (`BayHalo`) for the worker's rarity colour (TR22). 956 triangles a working bay. **For Faber:** two meshes to publish, `plan.json`'s `machines` for where and which way; the halo's colour is yours. **For research:** the verdict in the game.
+- **The showcase's plinth is delivered** (AR14, delivery 6, for TR22): `Showcase`, an eight-sided lit step on the gate's right, across 14 and 4.9 in, with its light; 220 triangles. **For Faber:** one mesh to publish; it's in `plan.json`'s placements and lights. **For research:** the verdict with TR22's take.
 - **Power's bar is cut, in Eclipse** (AR12, "Power's cut images, in Eclipse"): eight images, `power_images.json` and a sheet in `build/handoff/UI/hud/colour/`. Content check PASS, for the upload too. **For Faber:** a light is one image behind its segment's window with a gradient, not a plain frame (the entry's "For Faber"). **For research:** the pass on Faber's still.
 - **Watt's model is delivered** (AR11, delivery 3), for Faber's install and research's verdict in the game.
-- **Next:** the showcase's plinth (TR22), then the reveal's card in Eclipse, the generator, the battery as a bank. AR14's levels 2 and 3 after level 1's verdict; Watt's clips and Ground Wire's look. Scarf Step's blockout when Faber calls (AR10, section 5).
-- **The director to Modulo, 2026-11-15, about 22:04:** "dont forget the base need to show of each players etc". Research answered it as TR22 (`docs/test-requests.md`): the owner's name and level on the gate's plate, a showcase plinth inside the gate, each working bay in its worker's rarity colour. Mine: the bay's light, delivered, and the plinth, next.
+- **Next:** the reveal's card in Eclipse (AR12), then the generator, the battery as a bank, the Training machine, the Festival Door (AR15). AR14's levels 2 and 3 after level 1's verdict; Watt's clips and Ground Wire's look. Scarf Step's blockout when Faber calls (AR10, section 5).
+- **The director to Modulo, 2026-11-15, about 22:04:** "dont forget the base need to show of each players etc". Research answered it as TR22 (`docs/test-requests.md`). Mine, both delivered: the bay's rarity light and the showcase's plinth.
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
 - **Later:** the Breaker's room; the reveal, then the other dark screens (the map, a reward, a confirm), in Eclipse; the generator's model, on research's request; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. AR6's other kinds wait on research's spec, after phase 2.
 
@@ -108,6 +109,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, night. The showcase's plinth (Modulo)
+
+- **What:** TR22's plinth has its model, in the base kit: `Showcase`, three eight-sided steps with a line of light under the top one, a ring round the Voidkin's feet and four low lamps; 220 triangles. It stands on the gate's right, across 14 and 4.9 in, where the Strip sees it beside the Breaker, with one light.
+- **Where:** `build/handoff/Base/` (`meshes/Showcase.json`, `plan.json`'s placements and lights, `base_1_show.png`, `base_1_shown.png`); the record is AR14, "Delivery 6". `tools/blender/base_show.py`.
+- **Open:** Faber's publish and install with TR22 (the Voidkin, its turning, its Combat Power); research's verdict; a rarity colour on its lights, if research wants one.
+- **For:** Faber, research.
 
 ### 2026-11-15, night. A bay's model (Modulo)
 

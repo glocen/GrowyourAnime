@@ -5517,6 +5517,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **E** is the most compact, with the most legible numbers. Its solid crimson block still reads as a second Shade bar at phone size, its graphite body loses the violet, and its level plinth covers the Mythical frame's foot.
     - **F's fixes:** fill its cells with D's ruby (wine at the root to hot at the front) in place of the rose, so health never reads as Mythical's pink trim. Light the last cell in part, so a hit always moves something visible. The level's mark stays under the portrait and must clear the frame's foot, as E's doesn't.
     - The pick is the director's, and the takes can be mixed.
+  - **The director's pick, 2026-11-15:** "let try F i dont want segments tho just a bar" (`docs/decisions.md`). **For Faber's build:** take F's composition, with one solid health bar 11 points thick and 97 long. Its colour is D's ruby, wine at the root to hot at the front, not F's rose. The level's mark clears the portrait frame's foot. With the cells gone, yours and the Shade's bar differ by colour, thickness and length only, so the ruby must stay clearly apart from the Shade's ember when they're side by side at phone size. Research checks that at the build's pass.
 
 ## Later, by ground
 

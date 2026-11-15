@@ -16,10 +16,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Waiting on Modulo:** AR16's new plan (research: delivery 1's places aren't installed). Then the install, with TR22's plate, plinth and bays' light on its places.
 - **Next, in research's order:** AR15's battery, Training machine and Festival Door; then the first session on a phone with research, Studio's device simulator driven by me.
 
-**Modulo (assets).** 2026-11-16, 00:31, on Fable 5.2.
-- **AR16: delivered** (deliveries 1 and 2), and **AR15's Door and Training machine** (section 5), for Faber's install and research's one verdict in the game. The base is a star round the generator, pulled in on research's answer to the director's "the base feel empty now"; what it will wake stands asleep. Exported and rendered in Blender; **not seen in Studio.** The director has the renders and hasn't spoken on them yet.
+**Modulo (assets).** 2026-11-16, 00:59, on Fable 5.2.
+- **AR16: delivered** (deliveries 1 and 2, and 2's amendment: the sleeping places lie low and the plain blocks carry no mark), and **AR15's Door and Training machine** (section 5), for Faber's install and research's one verdict in the game. Exported and rendered in Blender; **not seen in Studio.** The director has the renders and hasn't spoken on the star or the sleeping places.
+- **Now: the Door says festival, and the Tower stands asleep** (the director's word read at 00:43; research's call in AR15 and AR16): `DoorWay` in the festival's warm white and cyan, a string of paper lanterns across the arch, and one dark silhouette of the Tower behind the back wall. Then the gate's view with both, to research.
 - **Cut in Eclipse, for Faber's build and research's pass** (AR12): Power's bar (`power_images.json`) and the reveal's plate (`reveal_card_images.json`).
-- **Next:** Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5); AR17 with research after AR16's verdict.
+- **Next, after those:** Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5); AR17 with research after AR16's verdict.
 - **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked; AR6's other kinds on research's spec, after phase 2.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
@@ -132,11 +133,11 @@ For Faber:
 
 ### 2026-11-16, 00:31. The base as a star, void machines, and what it will wake, asleep (Modulo)
 
-- **What changed:** AR16's deliveries 1 and 2, and AR15's section 5. The generator stands at the plot's heart in a ring of current, the machines on a star round it, about 36 studs apart, with a clear way in. The generator, the Void Breaker, the bays, the Festival Door and the Training machine are void machines; the rest keeps the yard's look. Bays 3 to 6 and the Forge's, the Condenser's and the Lab's places stand asleep and dark on dead lines. The building site is gone, and every base hull is 0.11 studs.
+- **What changed:** AR16's deliveries 1 and 2, and AR15's section 5. The generator stands at the plot's heart in a ring of current, the machines on a star round it, about 36 studs apart, with a clear way in. The generator, the Void Breaker, the bays, the Festival Door and the Training machine are void machines; the rest keeps the yard's look. Bays 3 to 6 and the Forge's, the Condenser's and the Lab's places lie asleep, low and dark, on dead lines. The building site is gone, and every base hull is 0.11 studs.
 - **Where:** `build/handoff/Base/` (`plan.json` with `layout`, `machines` and `current`, `manifest.json`, `maps/`, `meshes/`, `base_1_*.png`); `tools/blender/base_machines.py`, `base_ink.py`, `base_kit.py`, `base_plan.py`; `tools/blockout/` (a view of a handoff with Studio and Blender closed).
-- **For Faber:** delivery 2's places replace delivery 1's. Seven floor picture pairs and the kit's atlas pair; every hulled mesh published again; new pieces `GeneratorRing`, `Door`, `DoorWay`, `Training`, `TrainingCrown`, `BaySleeping`, `SleepingStone`; four new floors on meshes already published. The records list the rest (AR16, "Delivery 1" and "Delivery 2"; AR15, section 5).
+- **For Faber:** delivery 2's places replace delivery 1's, and its amendment's four meshes and two picture pairs replace delivery 2's (`BaySleeping`, `SleepingStone`, `Bay`, `Training`; `Base_Yard`, `Base_Wings`); no place moved. Seven floor picture pairs and the kit's atlas pair; every hulled mesh published again; new pieces `GeneratorRing`, `Door`, `DoorWay`, `Training`, `TrainingCrown`, `BaySleeping`, `SleepingStone`; four new floors on meshes already published. The records list the rest (AR16, "Delivery 1" and "Delivery 2"; AR15, section 5).
 - **For research:** one verdict in the game after the install.
-- **Open:** the director has the renders and hasn't spoken on the tighter star, the sleeping places, the Door or the Training machine.
+- **Open:** the director hasn't spoken on the tighter star or the sleeping places. Their word on the Door and the Tower, which must say where they lead, is research's call in AR15 and AR16 and Modulo's next build.
 
 ### 2026-11-15, night. The base installed, and the bare lots (Faber)
 

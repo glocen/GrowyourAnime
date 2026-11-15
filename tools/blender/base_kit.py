@@ -55,7 +55,7 @@ RING = 18.0                        # the ring of current round the well, open to
 ARM = 26.0                         # a slant's reach from the heart, the same across and in
 BREAKER, DOOR = (ARM, ROW - ARM), (-ARM, ROW - ARM)
 BATTERY, TRAINING = (ARM, ROW + ARM), (-ARM, ROW + ARM)
-OUTER, LOT = 50.0, 28.0            # the bus's ends, on the wings' lots' line; a yard block's lot
+OUTER = 50.0                       # the bus's ends: level 1's bays
 FAR, BACK = 82.0, 108.0            # the later bays: the bus's line on outward, then back along the side wall
 BAYS = ([(side * OUTER, ROW) for side in (-1, 1)] + [(side * FAR, ROW) for side in (-1, 1)]
         + [(side * FAR, BACK) for side in (-1, 1)])   # in the order they open: level 1's, level 2's, level 3's
@@ -404,8 +404,8 @@ def spine(x, along, px):
 
 def yard_pictures(kind=None):
     """A yard block, half of it, laid again and again behind the court to the back wall: the deck with its lanes, the
-    main conduit down the middle, a branch to a lot each side, and a joint across its far edge. Dead, it is plain on
-    purpose: the lot marked and dormant, pilot lamps alone. `live` is the block behind the court, the heart's: the
+    main conduit down the middle and a joint across its far edge. Dead, it is plain on purpose: nothing is marked on
+    it, since nothing will stand on it (research, 2026-11-16). `live` is the block behind the court, the heart's: the
     way in's last studs, the well, the ring and the lines leaving it. `back` is the block behind that: the slant
     arriving at the battery's ground (the Training machine's, mirrored), and the main line going on, dormant."""
     n = 1024
@@ -427,35 +427,14 @@ def yard_pictures(kind=None):
         front = COURT[1] + deep * ("live", "back").index(kind)  # the block's own front edge, in from the plot's
         way_in(page, x, y + front, px)
         return page, grey(marks(page, glow, x, y + front, px))
-    lot = (LOT, deep / 2)
-    e = np.maximum(np.abs(x), np.abs(y - lot[1]))               # the junction box where the branch meets the main line
-    # a lot each side, marked and dormant: a grey frame, heavy at its corners, a cross on its middle
-    dx, dy = np.abs(x - lot[0]), np.abs(y - lot[1])
-    box = np.maximum(dx, dy)
-    corner = (np.minimum(dx, dy) > 5.2).astype(np.float32)
-    page[..., :3] *= (1.0 - 0.16 * np.clip((8.0 - box) / px + 0.5, 0, 1))[..., None]
-    _mix(page, "#7A84A6", np.maximum(band(box - 8.0, 0.1), band(box - 8.0, 0.28) * corner) * 0.6)
-    _mix(page, "#7A84A6", np.maximum(band(dx, 0.07) * (dy < 1.4), band(dy, 0.07) * (dx < 1.4)) * 0.5)
-    # the main conduit and the lot's branch, as casings; a junction box where they meet, a pilot lamp on it
-    casing = spine(x, y + PLATE, px)
-    d = np.hypot(y - lot[1], x - np.clip(x, 0.0, lot[0] - 8.0))
-    casing = np.maximum(casing, np.maximum(band(d, 0.55), band(d, 0.8) * ((x % PLATE) < 0.4)))
-    casing = np.maximum(casing, band(e, 1.5))
-    _mix(page, "#141724", casing)
-    _mix(page, "#3A4266", band(e, 1.5) * (1 - band(e, 1.15)))
-    pilot = band(np.hypot(x, y - lot[1]), 0.34)
-    _mix(page, "#8CF6FF", pilot)
-    stud = band(np.hypot(x - (lot[0] - 8.0), y - lot[1]), 0.26)
-    _mix(page, "#8CF6FF", stud)
-    glow += pilot + 0.8 * stud + 0.2 * np.exp(-(x ** 2 + (y - lot[1]) ** 2) / 3.0 ** 2)
+    _mix(page, "#141724", spine(x, y + PLATE, px))              # the main line, as its casing alone
     return page, grey(glow)
 
 
 def wings_pictures(kind=None):
     """A wing block, one side's: the deck from the middle strip's edge out to the side wall (the picture's left to
     its right), laid again and again from the front wall back. Dead, the plainest ground of the base, kept for its
-    later levels: a service lane each side of one marked lot, a pilot lamp on the lot's box, the wall's foot, and the
-    block's joint. `live` is the heart's block, the second from the front: the bus runs in from the ring to an open
+    later levels: two service lanes, the wall's foot, and the block's joint, with nothing marked on it. `live` is the heart's block, the second from the front: the bus runs in from the ring to an open
     bay's frame, and on, dead, to the next bay's place, asleep. `back` is the block behind it: the last bay's place."""
     n = 1024
     wide, deep = HALF - COURT[0], BLOCK
@@ -477,21 +456,6 @@ def wings_pictures(kind=None):
     _mix(page, "#C9D2E6", band(y - (deep - 0.55), 0.07) * (x < wide - 3.0) * 0.5)
     if kind:
         return page, grey(marks(page, glow, x + COURT[0], y + BLOCK * (1 + ("live", "back").index(kind)), px))
-    # the lot, marked and dormant: the yard's own mark, a grey frame heavy at its corners and a bare plus
-    lot = (24.0, deep / 2)
-    dx, dy = np.abs(x - lot[0]), np.abs(y - lot[1])
-    box = np.maximum(dx, dy)
-    corner = (np.minimum(dx, dy) > 6.6).astype(np.float32)
-    page[..., :3] *= (1.0 - 0.16 * np.clip((10.0 - box) / px + 0.5, 0, 1))[..., None]
-    _mix(page, "#7A84A6", np.maximum(band(box - 10.0, 0.1), band(box - 10.0, 0.28) * corner) * 0.6)
-    _mix(page, "#7A84A6", np.maximum(band(dx, 0.07) * (dy < 1.4), band(dy, 0.07) * (dx < 1.4)) * 0.5)
-    # the lot's box on its inner edge, a pilot lamp on it: the line reaches it at a later level
-    e = np.maximum(np.abs(x - (lot[0] - 10.0)), np.abs(y - lot[1]))
-    _mix(page, "#141724", band(e, 1.2))
-    _mix(page, "#3A4266", band(e, 1.2) * (1 - band(e, 0.9)))
-    pilot = band(np.hypot(x - (lot[0] - 10.0), y - lot[1]), 0.34)
-    _mix(page, "#8CF6FF", pilot)
-    glow += pilot + 0.2 * np.exp(-((x - (lot[0] - 10.0)) ** 2 + (y - lot[1]) ** 2) / 3.0 ** 2)
     return page, grey(glow)
 
 

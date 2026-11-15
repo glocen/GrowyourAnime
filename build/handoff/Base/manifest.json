@@ -395,8 +395,8 @@
   },
   "Training": {
    "mesh": "meshes/Training.json",
-   "triangles": 500,
-   "vertices": 316,
+   "triangles": 466,
+   "vertices": 304,
    "centre": [
     0.0,
     4.37,
@@ -505,8 +505,8 @@
   },
   "Bay": {
    "mesh": "meshes/Bay.json",
-   "triangles": 648,
-   "vertices": 412,
+   "triangles": 614,
+   "vertices": 400,
    "centre": [
     -0.07,
     5.0,
@@ -559,47 +559,47 @@
   },
   "BaySleeping": {
    "mesh": "meshes/BaySleeping.json",
-   "triangles": 324,
-   "vertices": 200,
+   "triangles": 370,
+   "vertices": 212,
    "centre": [
-    -0.075,
-    2.88912,
+    -0.05,
+    0.6725,
     0.0
    ],
    "size": [
-    10.37,
-    5.998,
-    10.233
+    10.32,
+    1.565,
+    10.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
+   "collision": "a box, 10 square, 0.4 high; the rest is under a stud high",
    "lights": [],
-   "note": "stands where a Bay will stand, the same turn, until the base's level wakes that bay; then the Bay takes its place. 5.7 high. Nothing on it glows"
+   "note": "stands where a Bay will stand, the same turn, until the base's level wakes that bay; then the Bay takes its place. It lies low, about 1.5 high. Nothing on it glows"
   },
   "SleepingStone": {
    "mesh": "meshes/SleepingStone.json",
-   "triangles": 300,
-   "vertices": 184,
+   "triangles": 230,
+   "vertices": 148,
    "centre": [
     0.0,
-    3.34176,
+    0.667,
     0.0
    ],
    "size": [
     9.22,
-    6.904,
+    1.554,
     9.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box, 9 square, 0.4 high, and the four fangs' feet",
+   "collision": "a box, 9 square, 0.4 high; the rest is under a stud high",
    "lights": [],
-   "note": "stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until that machine has its model and its phase. 6.6 high. Nothing on it glows"
+   "note": "stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until that machine has its model and its phase. It lies low, about 1.5 high. Nothing on it glows"
   },
   "Generator": {
    "mesh": "meshes/Generator.json",

@@ -43,8 +43,8 @@ Voidkin stands. Over the stone floats its crown, a ring with four weights of voi
 itself that the builder turns while a Voidkin trains.
 
 What the base will wake stands asleep where it will stand (`BaySleeping`, `SleepingStone`; research, 2026-11-16):
-dark and unlit, never a building site. A sleeping bay is a bay closed: its crescent folded low over its shard. A
-sleeping stone is a seal, four fangs closed over a shard, for a machine that has no model yet.
+dark and unlit, lying low, never a building site. A sleeping bay is a bay folded down: its horns and its eye's hoop
+lie on its dais. A sleeping stone is four fangs folded flat in two bars on a pad, for a machine that has no model yet.
 
 Not run by itself: base_kit.py takes PIECES into its own.
 """
@@ -129,6 +129,14 @@ def horn(m, points, radii, sw, flat=(0.0, 1.0, 0.0), deep=1.0, ink=True):
             if hull or radii[k] > 0.08:
                 uvs = [(0, 0)] * 4 if hull else [kit.sw_uv(sw, 0.5, k / last)] * 4
                 m.out(rings[k], uvs, inside, ink=hull)
+
+
+def well(m, at, r, sides=12, sw="dark"):
+    """A well's dark floor on a dais, `at` the dais's foot: one flat face a hair over the dais's top. It has no wall:
+    a wall that thin maps the whole swatch onto a sliver, which a distance blurs into its lit neighbours."""
+    x, y, z = at
+    m.face([Vector((x + r * math.cos(math.tau * i / sides), y + r * math.sin(math.tau * i / sides), z + 0.19))
+            for i in range(sides)], [kit.sw_uv(sw, 0.5, 1.0)] * sides)
 
 
 def shard(m, at, r, high, sw, lean=0.5, ink=False):
@@ -276,7 +284,7 @@ def bay():
     m.box((side + 0.1, side + 0.1, 0.1), (0, 0, 0.2), "void")
     m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, top), 12, "abyss")
     m.lathe([(3.55, 0.17), (3.85, 0.17)], (0, 0, top), 12, "void", caps=False)        # the dais's line of light
-    m.lathe([(2.6, 0.19), (2.6, 0.16)], (0, 0, top), 12, "dark")                      # the well under the worker's feet
+    well(m, (0, 0, top), 2.6)                      # the well under the worker's feet
     m.box((1.3, side - 1.2, 0.6), (back, 0, top + 0.3), "abyss", ink=True)            # the crescent's foot, along the back
     for sy in (-1, 1):
         arm = [(back, sy * 3.7, top + 0.5), (back, sy * 4.9, 3.6), (back, sy * 4.3, 6.9), (back, sy * 2.3, 9.4)]
@@ -316,40 +324,42 @@ def bay_halo():
 
 
 def bay_sleeping():
-    """A bay asleep, on a bay's own pad and turn: the same deck and dais, dark, and the crescent closed, its two
-    horns folded low with their tips together over the shard, which rests dark on the crescent's foot. Nothing in it
-    is lit. It opens into a Bay when its level wakes it."""
+    """A bay asleep, on a bay's own pad and turn, lying low: the same deck and dais, dark, and what the bay raises
+    folded down on it. The crescent's two horns lie along its foot at the pad's back, tip to tip; the eye's hoop
+    lies flat round the well, empty: its shard forms when the bay wakes. Nothing stands upright and nothing is lit
+    (research, 2026-11-16). It lifts and lights into a Bay when its level wakes it."""
     m = Mesh()
     side, top = BAY
-    back = -(side / 2 - 0.55)
+    back, lies = -(side / 2 - 0.55), top + 0.16
     m.box((side, side, top), (0, 0, top / 2), "girder", ink=True)
     m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, top), 12, "abyss")
-    m.lathe([(2.6, 0.19), (2.6, 0.16)], (0, 0, top), 12, "dark")
+    well(m, (0, 0, top), 2.6)
     m.box((1.3, side - 1.2, 0.6), (back, 0, top + 0.3), "abyss", ink=True)
     for sy in (-1, 1):
-        horn(m, [(back, sy * 3.7, top + 0.5), (back, sy * 4.3, 2.7), (back, sy * 3.0, 4.7), (back, sy * 0.3, 5.7)],
-             [0.8, 0.72, 0.5, 0.05], "abyss", flat=(1.0, 0.0, 0.0), deep=0.75)
-        horn(m, [(4.35, sy * 4.35, top), (4.0, sy * 4.0, top + 0.9)], [0.42, 0.05], "abyss", flat=(sy, -1.0, 0.0))
-    shard(m, (back, 0, 2.6), 0.7, 2.7, "abyss", lean=0.55, ink=True)
-    return Piece("BaySleeping", m, solid="a box, 10 square, 0.4 high, and the crescent's two feet",
+        horn(m, [(back + 1.25, sy * 4.3, lies + 0.4), (back + 1.45, sy * 2.6, lies + 0.4), (back + 1.3, sy * 0.25, lies + 0.4)],
+             [0.7, 0.58, 0.05], "abyss", flat=(0.0, 0.0, 1.0), deep=0.55)
+    hoop(m, (0.6, 0, lies + 0.2), HALO[1], HALO[2], 0.4, 12, "abyss", lying=True)
+    return Piece("BaySleeping", m, solid="a box, 10 square, 0.4 high; the rest is under a stud high",
                  note="stands where a Bay will stand, the same turn, until the base's level wakes that bay; then the "
-                      "Bay takes its place. 5.7 high. Nothing on it glows")
+                      "Bay takes its place. It lies low, about 1.5 high. Nothing on it glows")
 
 
 def sleeping_stone():
-    """A machine asleep, for one that has no model yet: a steel pad with a dais of void stone, and on it a seal, four
-    fangs risen from the corners and closed together over a dark shard. Nothing in it is lit."""
+    """A machine asleep, for one that has no model yet, lying low: a steel pad with a dais of void stone round a dark
+    well, and four fangs folded flat on it in two bars, one along each side of the pad, each two fangs laid tip to
+    tip. Nothing stands upright and nothing is lit (research, 2026-11-16). The fangs never lie as spokes: from
+    above, four spokes through the dais are a cross in a ring (Modulo's read of the view from straight above)."""
     m = Mesh()
+    lies = 0.56
     m.box((9.0, 9.0, 0.4), (0, 0, 0.2), "girder", ink=True)
-    m.lathe([(3.7, 0.16), (3.9, 0.0)], (0, 0, 0.4), 12, "abyss")
-    m.lathe([(2.2, 0.19), (2.2, 0.16)], (0, 0, 0.4), 12, "dark")
+    m.lathe([(2.9, 0.16), (3.1, 0.0)], (0, 0, 0.4), 12, "abyss")
+    well(m, (0, 0, 0.4), 1.9)
     for sx, sy in SIGNS:
-        horn(m, [(sx * 3.3, sy * 3.3, 0.4), (sx * 2.9, sy * 2.9, 3.6), (sx * 0.3, sy * 0.3, 6.6)], [0.8, 0.62, 0.05],
-             "abyss", flat=(sy, -sx, 0.0))
-    shard(m, (0, 0, 2.5), 0.85, 3.2, "abyss", lean=0.55, ink=True)
-    return Piece("SleepingStone", m, solid="a box, 9 square, 0.4 high, and the four fangs' feet",
+        horn(m, [(sx * 3.75, sy * 4.1, lies + 0.4), (sx * 3.8, sy * 2.3, lies + 0.4), (sx * 3.75, sy * 0.2, lies + 0.4)],
+             [0.68, 0.56, 0.05], "abyss", flat=(0.0, 0.0, 1.0), deep=0.55)
+    return Piece("SleepingStone", m, solid="a box, 9 square, 0.4 high; the rest is under a stud high",
                  note="stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until "
-                      "that machine has its model and its phase. 6.6 high. Nothing on it glows")
+                      "that machine has its model and its phase. It lies low, about 1.5 high. Nothing on it glows")
 
 
 # --- the generator -----------------------------------------------------------------------------------------------------
@@ -557,7 +567,7 @@ def training():
     m.box((4.1, 4.1, 0.1), (0, TRAINEE, 0.2), "void")
     m.lathe([(1.75, 0.16), (1.9, 0.0)], (0, TRAINEE, 0.4), 12, "abyss")
     m.lathe([(1.42, 0.17), (1.6, 0.17)], (0, TRAINEE, 0.4), 12, "void", caps=False)
-    m.lathe([(1.12, 0.19), (1.12, 0.16)], (0, TRAINEE, 0.4), 12, "dark")
+    well(m, (0, TRAINEE, 0.4), 1.12)
     m.box((0.3, TRAINEE - 4.3, 0.08), (0, (TRAINEE + 0.3) / 2, 0.04), "void")
     return Piece("Training", m, solid=f"the deck, 6 by 4.6 and 0.5 high, the stone on it, about 2.8 square and 6.9 high, "
                                       f"and the pad, 4 square and 0.4 high, {TRAINEE:g} toward the piece's front",

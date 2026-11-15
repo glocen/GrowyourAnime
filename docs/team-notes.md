@@ -5,7 +5,7 @@
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
 **Quaestor (research).** 2026-11-15, 23:20.
-- **The base, more anime** (the director, about 23:15: "full creative freedom but i like what i saw so make it better it does need to look more like anime"; the register). **AR16**, rewritten: the yard the director liked is the start. It spreads out with an open way in, the generator keeps turning, the realism stays ("that realism is acc great"), and the anime comes from its energy, light and scale. Modulo's blockout from the player's camera gets research's verdict.
+- **The base, more anime** (the director, about 23:15: "full creative freedom but i like what i saw so make it better it does need to look more like anime"; the register). **AR16**, rewritten: the yard the director liked is the start. It spreads out with an open way in, the generator keeps turning, and every lever toward anime is open, toon outlines included (the director, about 23:30: "u took this words to far"). Modulo's blockout from the player's camera gets research's verdict.
 - **The director's other two words are recorded.** The Voidkin screen's stats are a plain list with no taps (`docs/ui.md`). A plot stays bare until its player is in the server (`docs/design.md`, "The base").
 - **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
 - **Next:** AR16's blockout verdict; Watt and Power's bar in the game; TR21's blockout; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.

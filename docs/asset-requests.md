@@ -6894,25 +6894,26 @@ The look is reopened since (AR16), so this install stands in the dev build until
 
 ## AR16. The base, more anime (Modulo, then Faber)
 
-Research's entry, 2026-11-15, night, rewritten at about 23:20 on the director's latest word (the register): "not a small change actually a change or you know what: full creative freedom but i like what i saw so make it better it does need to look more like anime". It follows the night's three earlier words on the base, each in the register. The yard as it stands in the game is the start: the director liked it ("ok ok this is very great"), and the team has full creative freedom to make it better and more anime. Then, at about 23:25: "But that realism is acc great". The realism stays, and the anime goes on top of it.
+Research's entry, 2026-11-15, night, rewritten at about 23:20 on the director's latest word (the register): "not a small change actually a change or you know what: full creative freedom but i like what i saw so make it better it does need to look more like anime". It follows the night's three earlier words on the base, each in the register. The yard as it stands in the game is the start: the director liked it ("ok ok this is very great"), and the team has full creative freedom to make it better and more anime. At about 23:25 they added "But that realism is acc great". Research read it as a ban on toon outlines and flat colour, and the director corrected that at about 23:30: "u can keep the toon outline to be honest same for the rest u took this words to far". Every lever below is open, and the realism they liked is a start, not a limit.
 
 - **What the director liked, the start:**
   - the yard's ground;
   - the current running in the floor ("the electricity wired stuff is great");
   - the generator turning ("i alove love the generator rotating"), which stays;
-  - the realism of the machines and the ground ("that realism is acc great"), which stays. No toon outlines or flat colours in place of their surfaces.
+  - the realism of the machines and the ground ("that realism is acc great"), a start, not a limit.
 - **The night's asks, which stand:**
   - the machines spread across the whole 200 by 200, less clustered;
   - an open way in from the gate, nothing across it;
   - never a construction game: unopened lots read dormant, not as building sites.
 - **What stands besides:** every machine's job, the plot with its wall and gate, the levels, the owner's showcase (TR22), the bays' rarity light, and Power's names and numbers.
-- **Feel line:** through the gate, the player walks into their own anime power plant. Real, heavy machines stand apart across the yard. Between them the current crackles as bright anime lightning, and the generator's rotor whirls at the heart. Real machines, anime power.
+- **Feel line:** through the gate, the player walks into their own anime power plant. Heavy machines stand apart across the yard with anime edges. Between them the current crackles as bright anime lightning, and the generator's rotor whirls at the heart. It looks like a frame from an anime.
 - **Research's levers for "more anime".** Modulo picks and designs; these are a start, not a spec:
-  1. **Anime energy, the strongest lever:** the current as anime lightning, jagged arcs with a white core and a coloured glow. Pulses run along the floor's lines and sparks fly at the machines, never a plain glowing strip. The generator throws arcs as it whirls faster.
-  2. **Light and air:** rim light, glow on the lit edges, drifting motes, and the dusk sky's drama. The base is lit like a scene, not a site.
-  3. **Hero scale:** a few oversized details on the real machines, such as the generator's rotor and the Breaker's points, so each reads from the gate. Their surfaces stay real.
-  4. **The void:** its light in the machines' cores and past the plot's edge.
-  5. **Our own marks beside the real ones:** emblems and an invented script on the plates and panels, next to the hazard stripes, which stay.
+  1. **Drawn edges:** toon outlines on the machines and the big shapes (an inverted hull from Blender), and flat colour bands where they help the drawn read.
+  2. **Anime energy:** the current as anime lightning, jagged arcs with a white core and a coloured glow. Pulses run along the floor's lines and sparks fly at the machines, never a plain glowing strip. The generator throws arcs as it whirls faster.
+  3. **Shape language:** bolder hero shapes, one a machine, and a few oversized details such as the generator's rotor and the Breaker's points, so each reads from the gate.
+  4. **Light and air:** rim light, glow on the lit edges, drifting motes, and the dusk sky's drama. The base is lit like a scene, not a site.
+  5. **Our own marks:** emblems and an invented script on the plates and panels, beside or in place of the hazard stripes, Modulo's call.
+  6. **The void:** its light in the machines' cores and past the plot's edge.
 - **The blockout:**
   - the yard reworked, judged from the player's camera at phone size: walking in through the gate, from the court, and the base screen's look down (TR21);
   - two takes side by side if Modulo wants to compare levers;

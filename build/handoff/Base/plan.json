@@ -931,7 +931,7 @@
   "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One steel body for every machine and one accent each; the chambers glow (Neon)."
  },
  "machines": {
-  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty).",
+  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the lots at 72 and 120 in, across 22 each side.",
   "placements": [
    {
     "piece": "Breaker",
@@ -980,6 +980,38 @@
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 3"
+   },
+   {
+    "piece": "Bay",
+    "across": -22.0,
+    "along": -26.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "bay 1"
+   },
+   {
+    "piece": "BayHalo",
+    "across": -22.0,
+    "along": -26.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "bay 1's light, while a worker works there"
+   },
+   {
+    "piece": "Bay",
+    "across": 22.0,
+    "along": -26.0,
+    "up": 0.0,
+    "turn": 180.0,
+    "standsFor": "bay 2"
+   },
+   {
+    "piece": "BayHalo",
+    "across": 22.0,
+    "along": -26.0,
+    "up": 0.0,
+    "turn": 180.0,
+    "standsFor": "bay 2's light, while a worker works there"
    }
   ]
  },

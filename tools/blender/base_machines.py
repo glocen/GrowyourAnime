@@ -10,6 +10,9 @@ The Void Breaker (`Breaker`, `BreakerChamber`, `BreakerWaiting`): a gantry over 
 along the housing; the break is cyan, the Breaker's own colour. A chamber is its own piece, stood once a chamber the
 base has, so each can be lit by itself: bright while it breaks a shard, low when it's empty.
 
+An extraction bay (`Bay`, `BayHalo`): a steel deck with a copper collector ring stood behind the worker. The bay's
+own light is a piece by itself, in one pale swatch, so the builder gives it the worker's rarity colour (TR22).
+
 Not run by itself: base_kit.py takes PIECES into its own.
 """
 
@@ -27,6 +30,8 @@ ROUND = ("+x", "-x", "+y", "-y")
 BODY = (14.0, 6.0, 5.0)          # across, deep, high
 CHAMBERS = (3.5, 7.0, 4.0)       # a chamber's middle: across (each side), up; and its cube's side
 GAP = (5.85, 8.35)               # the shard's room in a chamber, between the two points: from, to (up from the floor)
+BAY = (10.0, 0.4)                # a bay's stand-in, its pad: its side and its height
+HALO = (4.9, 2.0, 2.6)           # a bay's collector ring: its middle up from the floor, its inner and outer radius
 
 
 def post(m, x, y, z0, z1, t, sw, ink=False):
@@ -128,4 +133,71 @@ def breaker_waiting():
                  note="on the stand-in's pad, 2.5 square and 1 high; a waiting shard stands on its tray, 0.9 up")
 
 
-PIECES = {"Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting}
+def ring(m, x, z, r0, r1, thick, sides, sw):
+    """A flat ring stood on its edge, its axle along X, its middle at (x, 0, z): seen from both sides."""
+    turned = Mesh(None)
+    turned.lathe([(r0, 0.0), (r0, thick), (r1, thick), (r1, 0.0), (r0, 0.0)], (0, 0, 0), sides, sw, caps=False)
+    for face, uv in zip(turned.f, turned.uv):                      # the lathe's Z laid along X
+        m.face([(x + turned.v[i][2] - thick / 2, turned.v[i][1], z - turned.v[i][0]) for i in face], uv)
+
+
+def bay():
+    """An extraction bay: the stand-in's pad, 10 studs square and 0.4 high, as a steel deck where the worker stands,
+    and on its outer side (-X) a frame holding a copper collector ring behind the worker, so the court and the gate
+    see the worker against it. The current the worker makes leaves in yellow, along the deck to the ring's foot.
+    The other three sides stay open: two low posts mark the inner corners."""
+    m = Mesh()
+    side, top = BAY
+    back, mid = -(side / 2 - 0.55), HALO[0]
+    m.box((side, side, top), (0, 0, top / 2), "concrete", ink=True)
+    m.box((side + 0.1, side + 0.1, 0.22), (0, 0, 0.2), "yellow", pics={k: "hazard" for k in ROUND})
+    m.box((7.8, 7.8, 0.06), (0.3, 0, top + 0.03), "steel", pics={"+z": "plate"})
+    for sy in (-1, 1):
+        m.box((1.5, 0.2, 0.05), (back + 1.2, sy * 0.5, top + 0.085), "power")         # the current, out to the ring's foot
+        # an inner corner's post: low, so nothing stands between the court and the worker
+        m.box((0.7, 0.7, 0.8), (side / 2 - 0.6, sy * (side / 2 - 0.6), top + 0.4), "girder", ink=True)
+        insulator(m, (side / 2 - 0.6, sy * (side / 2 - 0.6), top + 0.8), 0.6, r=0.3, ribs=2)
+        m.box((0.3, 0.3, 0.26), (side / 2 - 0.6, sy * (side / 2 - 0.6), top + 1.5), "power")
+        # the frame's post, its insulator and its tip
+        y = sy * (side / 2 - 0.65)
+        m.box((1.0, 1.0, 0.5), (back, y, top + 0.25), "girder", ink=True)
+        post(m, back, y, top + 0.5, 8.0, 0.5, "bone", ink=True)
+        insulator(m, (back, y, 8.0), 1.0)
+        m.box((0.3, 0.3, 0.3), (back, y, 9.15), "power")
+        # the ring's stays, to the post
+        reach = HALO[2] * 0.7071
+        for sz in (-1, 1):
+            m.tube([(back, sy * reach, mid + sz * reach), (back, y - sy * 0.2, mid + sz * 2.5)], 0.11, "girder")
+    m.box((0.45, side - 0.8, 0.45), (back, 0, 7.75), "girder", ink=True)              # the frame's head
+    m.box((0.12, side - 2.0, 0.14), (back + 0.25, 0, 7.75), "power")
+    m.box((0.6, 0.7, 0.36), (back, 0, mid + HALO[2] - 0.08), "girder")                # the ring's clamp under it
+    ring(m, back, mid, HALO[1], HALO[2], 0.36, 12, "copper")
+    m.box((0.9, 1.6, 1.0), (back, 0, top + 0.5), "girder", ink=True)                  # the ring's foot: where the current leaves
+    m.box((0.1, 1.0, 0.2), (back + 0.48, 0, top + 0.6), "power")
+    post(m, back, 0, top + 1.0, mid - HALO[2] + 0.05, 0.3, "rubber")
+    return Piece("Bay", m, solid="a box, 10 square, 0.4 high, and the frame's two posts",
+                 note=f"on the stand-in's pad. Its ring stands on -X: turn 0 on the plot's left, 180 on its right, so "
+                      f"the ring is on the outer side and the worker is seen against it from the court and the gate. "
+                      f"The worker stands at the pad's middle; the ring's middle is {mid:g} up")
+
+
+def bay_halo():
+    """A working bay's own light, a piece by itself: a ring of light inside the collector ring and a square on the
+    deck round the worker's feet. Every face is one pale swatch, so the builder gives it the worker's rarity colour
+    (docs/test-requests.md, TR22) and takes it away when the bay is empty."""
+    m = Mesh(None)
+    side, top = BAY
+    back, mid = -(side / 2 - 0.55), HALO[0]
+    ring(m, back, mid, HALO[1] - 0.42, HALO[1] - 0.04, 0.14, 12, "lamp")
+    for s in (-1, 1):
+        m.box((4.6, 0.18, 0.05), (0, s * 2.21, top + 0.085), "lamp")
+        m.box((0.18, 4.24, 0.05), (s * 2.21, 0, top + 0.085), "lamp")
+    return Piece("BayHalo", m, lights=[("Rarity", (back + 1.4, 0.0, mid + 0.4), "#F6FCFF")],
+                 note="stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on "
+                      "every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without "
+                      "the kit's pictures). Its light is a PointLight in the same colour, the first to go if the "
+                      "plot's lights weigh. Look only")
+
+
+PIECES = {"Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
+          "Bay": bay, "BayHalo": bay_halo}

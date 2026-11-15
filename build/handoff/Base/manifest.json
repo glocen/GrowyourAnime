@@ -501,6 +501,60 @@
    "collision": "a box, 2.5 square, 1 high",
    "lights": [],
    "note": "on the stand-in's pad, 2.5 square and 1 high; a waiting shard stands on its tray, 0.9 up"
+  },
+  "Bay": {
+   "mesh": "meshes/Bay.json",
+   "triangles": 812,
+   "vertices": 490,
+   "centre": [
+    0.0,
+    4.58,
+    0.0
+   ],
+   "size": [
+    10.28,
+    9.44,
+    10.28
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 square, 0.4 high, and the frame's two posts",
+   "lights": [],
+   "note": "on the stand-in's pad. Its ring stands on -X: turn 0 on the plot's left, 180 on its right, so the ring is on the outer side and the worker is seen against it from the court and the gate. The worker stands at the pad's middle; the ring's middle is 4.9 up"
+  },
+  "BayHalo": {
+   "mesh": "meshes/BayHalo.json",
+   "triangles": 144,
+   "vertices": 72,
+   "centre": [
+    -1.11,
+    3.66,
+    0.0
+   ],
+   "size": [
+    6.82,
+    6.4,
+    4.6
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [
+    {
+     "name": "Rarity",
+     "at": [
+      -3.05,
+      5.3,
+      -0.0
+     ],
+     "colour": "#F6FCFF"
+    }
+   ],
+   "note": "stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without the kit's pictures). Its light is a PointLight in the same colour, the first to go if the plot's lights weigh. Look only"
   }
  }
 }

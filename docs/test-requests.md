@@ -1070,6 +1070,11 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
   - **Tested.** The Breaker's cases: 106 passed, 0 failed, 59 fps, in the phone emulation. One is new: a shard finishing flashes its chamber, reaches the strip as a gold chip, and opens on one tap of it (the flash measured at 1.45 to 1.55 s). The screen's case is Machine only and checks each locked chamber's line. The type check: 0 new. Logic offline: 5440 passed.
   - **The retake is recorded, 2026-11-15:** `build/captures/tr9/machine_retake.mkv` (phone size; the action is in its first 30 s), with `retake_sheet.jpg`. The case `Take: TR9, the Breaker in Machine, a shard finishing in its chamber and opened from its chip`: the walk, the prompt, the line's shard and its odds, two chambers finishing in gold, their two gold Ready chips, one tap, the shard, the reveal, and the Breaker again with one chip left.
   - **Visually reviewed:** by Faber on the sheet. The gold chips and the chambers' gold read at phone size. In the sheet's frame of the flash, the chamber already holds the next shard's line, and whether "Ready" reads across it is for the verdict in motion. Research's verdict: not yet. **Director-accepted:** no.
+  - **Research's verdict on the retake, 2026-11-15.** Read at 10 fps across the finish (14.4 to 16.4 s), and from the sheet.
+    - **Felt:** both chambers turn solid gold and say Ready, and their chips drop into the strip lit. The payoff lands where the work was, then the machine takes the next shard.
+    - **Tier:** competent (grey). **The one bold thing:** the gold flash handing over to the chip.
+    - **Fix (Faber):** while the gold fades, from about 15.4 to 15.9 s, the next shard's "Chamber 1 · Standard · 29 s left" shows through "Ready", two texts on top of each other. Hold the next shard's words until the gold is gone, then let them in. Serves the read. Check it on a still; no retake.
+    - **Research's pass on TR9 is given once that fix is in.** The infusion's numbers, "A little · 300" and "Needs a battery of 900", become kWh with TR18 (20 and 60), and the screen's look is AR12's galaxy room: both are other pieces.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1495,6 +1500,21 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
   10. Combat Power's weights are stand-ins (tier 2).
 - **Tier 1 notices.** A fresh open starts on the lead's Overview. Overview's stat sheet comes before "Now" and the gear line. A bag cell's mark takes the light of the Voidkin its shard holds. A nickname holds at most 20 characters (`Config.Voidkin.Nickname`, from `docs/ui.md`).
 - **Time:** about 3 active hours for the three layouts, then about 4 for the rebuild and the notes, my estimates, not measured.
+- **Research's verdict in motion, 2026-11-15.** From `full_take.mkv`, cropped to the phone: the open at 4 fps, two switches at 8 fps (13.5 to 15.5 s, 18.5 to 20.5 s), and both sheets.
+  - **Felt:** a character sheet you flip through. Every Voidkin turns on its stage with its number at its feet, and the panel answers at once. But in grey the stage is boxed in by its columns, and the name is said twice.
+  - **Tier:** works (grey). **The one bold thing:** the live figure between its gear columns, with Combat Power at its feet. It's the reason to open the screen, and it reads at phone size.
+  - **Fixes (Faber):**
+    1. **Never an empty stage.** On a switch, the stage stands empty under its circle for about 0.25 s (13.9 to 14.1 s) before the figure pops in, while the panel has already changed. Keep the old figure until the new one is ready, then change both in one beat. Serves responsiveness.
+    2. **The Voidkin's name over the stage, where "Voidkin" stands.** Use one line, with its rarity in its colour (`docs/ui.md`, rule 3), and favourite, lock and rename as small marks beside it at 44 pt taps. The panel loses its name row and the truncated "Epic · Enduran…" line, which repeats the line under it. This answers findings 4, 5 and 6: the page gains the row, and the figure stands under the name. Serves the mock and the read.
+    3. **A disabled button says why** (`docs/ui.md`, rule 4). The lead shows Lead lit as "Leading", and Send to work greyed with "not while leading" under it, not "Leading" twice. Serves the read.
+  - **Faber's questions, research's calls:**
+    - **1 and 3, the rail.** Take the band. The top bar (Back, the currencies) moves into Roblox's top-bar band, right of Roblox's own buttons, and Back leaves the rail's column. The rail then holds the seven 44 pt taps whole, with no scroll, since the director asked for every page on it. If a few points are still short, tighten the gaps between the circles, never the taps. It's a Screen kit change, so the lint's safe area moves with it. The technique is Faber's.
+    - **2.** Lead and Send to work on their own line over the panel: accepted, as built.
+    - **4 and 8. The screen opens on the bag.** The director's words were "the stats should instead be the players inventory": the panel that showed the stats now shows the bag. Overview is one tap away on the rail. This is research's reading, and the director can turn it around.
+    - **9.** No count of the bag's space, since no capacity is designed. It's an open question, not built.
+    - **10.** Combat Power's weights: research's seeds are owed (tier 2), and stand-ins stay until then. Pip, a Common at level 12, shows 32,151 over Ironhymn, an Epic at level 8, at 27,433. The seeds must make rarity count for more than four levels.
+  - **Not judged:** the look (Modulo's mock and AR12's colour), the slots' art, and the level's mark (the director's later note).
+  - **Retake:** the three fixes and the band, with one switch at 8 fps and the rail whole on the smallest phone.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 

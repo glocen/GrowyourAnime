@@ -86,13 +86,27 @@ def plan(level=1):
     # the wall, on the plot's own edge, the same on both sides of the middle line: each post carries the panel to the
     # next, and a half panel closes a run on the plot's 200. The sides run in from the front corners' posts; the back
     # runs in from its corners' posts to the way out at its middle; the front runs out from the gate's shoulders
+    # At level 1 the back right corner isn't hung yet: its posts stand, and barriers close it (`open_`)
+    open_ = level == 1
     for side in (-1, 1):
-        for inward in range(0, int(yard) - 8, 16):
+        hung = int(yard) - 8 - (16 if open_ and side > 0 else 0)
+        for inward in range(0, hung, 16):
             put("Wall", side * half, inward, -90)
-        put("WallHalf", side * half, yard - 8, -90)
+        if hung < yard - 8:
+            for inward in (hung, yard - 8):
+                put("WallEnd", side * half, inward, 0)
+            for inward in (hung + 4, hung + 12, yard - 4):
+                put("Barrier", side * half, inward, 90)
+        else:
+            put("WallHalf", side * half, yard - 8, -90)
         turn = 0 if side < 0 else 180                               # along the back, toward the middle
         for k in range(5):
-            put("Wall", side * (half - 16 * k), yard, turn)
+            if open_ and side > 0 and k < 2:
+                put("WallEnd", side * (half - 16 * k), yard, 0)
+                for step in (4, 12):
+                    put("Barrier", side * (half - 16 * k - step), yard, 0)
+            else:
+                put("Wall", side * (half - 16 * k), yard, turn)
         put("WallHalf", side * 20, yard, turn)
         put("WallEnd", side * 12, yard, 0)
         turn = 180 if side < 0 else 0                               # along the front, toward the corner
@@ -114,11 +128,70 @@ def plan(level=1):
         lights.append((f"Flood{name}", side * base.LANE, -(inward - reach), height, "#EAF6FF", "spot"))
     # the transformers: one each side of the battery's line to the Breaker, clear of the bays' conduit so the spawn
     # sees the current run, and one each side of the Breaker's rail
-    for side in (-1, 1):
-        put("Transformer", side * 5.6, BATTERY - 6.0, 0)
-        put("Transformer", side * 25.5, BREAKER, 0)
+    # a pair for every two open bays (research, 2026-11-15, AR14): level 1 has the battery's pair
+    for across, inward in ((5.6, BATTERY - 6.0), (25.5, BREAKER))[:base.BAYS_AT[level] // 2]:
+        for side in (-1, 1):
+            put("Transformer", side * across, inward, 0)
     lights.append((*LAMP[:2], -LAMP[2], *LAMP[3:], "point"))
+    if level == 1:
+        building_site(put, lights)
     return places, lights
+
+
+def building_site(put, lights):
+    """Level 1: the plant is still going up (the director, 2026-11-15: "at level 1 it rly need to look like it under
+    construction"). Everything stands on a marked lot or along a wall, and the nearer the court, the further along:
+    the next bays' foundations are poured and scaffolded under a work light, the ones behind them are poured, and the
+    far end is stock on the ground. A level finishes its sites into what it opens."""
+    reach = base.FLOOD[1]
+    for side, name in ((-1, "Left"), (1, "Right")):
+        # the court, fenced from the site: barriers down its sides and at its back corners, the lanes left open
+        for inward in (18, 34):
+            put("Barrier", side * 46, inward, 90)
+        for across in (30, 38):
+            put("Barrier", side * across, 50, 0)
+        # bays 3 and 4's lots, at 72: poured, scaffolded, lit
+        put("Foundation", side * 22, 72, 0)
+        put("Scaffold", side * 31.5, 72, 90)
+        for across in (18, 26):
+            put("Barrier", side * across, 62, 0)
+        turn = -135 * side
+        put("FloodMast", side * 29.5, 64.5, -turn)
+        lights.append((f"Site{name}", side * (29.5 - reach * 0.7071), -(64.5 + reach * 0.7071), base.FLOOD[2], "#EAF6FF", "spot"))
+        # bays 5 and 6's lots, at 120: poured
+        put("Foundation", side * 22, 120, 0)
+        for across in (18, 26):
+            put("Barrier", side * across, 110, 0)
+        put("Stack", side * 34, 120, 90)
+    # scaffolds on the inside of the front wall, where the spawn's camera finds them
+    put("Scaffold", -40, 2.4, 0)
+    put("Scaffold", 52, 2.4, 0)
+    # the crane, at the left wing's edge, its load over bay 3's foundation
+    crane, target = (-50.0, 84.0), (-22.0, 72.0)
+    put("Crane", *crane, round(math.degrees(math.atan2(crane[1] - target[1], target[0] - crane[0])), 1))
+    # the cable, not pulled yet: drums along the dead conduit and at the far lots
+    put("Drum", 5, 98, 0)
+    put("Drum", -5, 146, 0)
+    put("Drum", 22, 166, 0)
+    put("Drum", 25.5, 170.5, 30)
+    put("Stack", -22, 168, 0)
+    # the wings. Right: the cabin by the gate, a hall's frame, a foundation, a low frame at the far end
+    put("Cabin", 62, 22, 90)
+    put("Stack", 72, 31, 0)
+    put("Frame", 68, 72, 90)
+    put("Foundation", 68, 120, 0)
+    put("Barrier", 68, 108, 0)
+    put("Frame", 68, 166, 0)
+    # left: the stock by the gate, the crane's stock, a hall's frame
+    put("Stack", -64, 18, 0)
+    put("Stack", -73, 29, 90)
+    put("Drum", -59, 30, 20)
+    put("Drum", -56, 25.5, 75)
+    put("Stack", -66, 70, 0)
+    put("Frame", -68, 120, 0)
+    # the open corner at the back right: the wall's panels stacked, a scaffold at the posts
+    put("Scaffold", 84, 196.6, 0)
+    put("Stack", 82, 186, 90)
 
 
 def write_plan(out: Path):

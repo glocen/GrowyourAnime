@@ -259,6 +259,182 @@
    "collision": "a box, 3.6 by 3 by 3.4",
    "lights": [],
    "note": ""
+  },
+  "Crane": {
+   "mesh": "meshes/Crane.json",
+   "triangles": 1344,
+   "vertices": 1208,
+   "centre": [
+    14.1425,
+    27.205,
+    0.0
+   ],
+   "size": [
+    56.165,
+    54.69,
+    7.28
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box round its foot, 7 square, 3 high",
+   "lights": [],
+   "note": "the jib runs 42 studs along +X at 45.4 up, the load hangs 30.5 out and 14 over the floor; 54.6 studs to its beacon"
+  },
+  "Frame": {
+   "mesh": "meshes/Frame.json",
+   "triangles": 576,
+   "vertices": 392,
+   "centre": [
+    0.0,
+    7.05,
+    0.0
+   ],
+   "size": [
+    18.08,
+    14.38,
+    14.08
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box round each column's foot, 1.8 square",
+   "lights": [],
+   "note": "16 by 12, 14 high: a machine hall's frame before its walls"
+  },
+  "Scaffold": {
+   "mesh": "meshes/Scaffold.json",
+   "triangles": 312,
+   "vertices": 212,
+   "centre": [
+    0.0,
+    6.07398,
+    -0.015
+   ],
+   "size": [
+    8.3,
+    12.252,
+    3.23
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 8 by 3, 11 high",
+   "lights": [],
+   "note": "8 studs along X, 3 deep: stand it along a wall or a site's edge"
+  },
+  "Foundation": {
+   "mesh": "meshes/Foundation.json",
+   "triangles": 344,
+   "vertices": 248,
+   "centre": [
+    0.0,
+    1.33,
+    0.0
+   ],
+   "size": [
+    12.4,
+    2.94,
+    12.4
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 12 square, 1 high, and a box round each corner's bars, 1 square and 2.8 high, 4.2 from the middle each way: nobody stands in the bars",
+   "lights": [],
+   "note": "12 studs square: on a lot, where the level that opens it stands its machine"
+  },
+  "Stack": {
+   "mesh": "meshes/Stack.json",
+   "triangles": 240,
+   "vertices": 160,
+   "centre": [
+    -0.1,
+    1.04,
+    -0.155
+   ],
+   "size": [
+    10.0,
+    2.08,
+    7.29
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 8 by 7, 2 high",
+   "lights": [],
+   "note": "about 9 studs by 8"
+  },
+  "Drum": {
+   "mesh": "meshes/Drum.json",
+   "triangles": 116,
+   "vertices": 76,
+   "centre": [
+    0.0,
+    1.7,
+    0.0
+   ],
+   "size": [
+    2.2,
+    3.4,
+    3.234
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 2.2 by 3.4, 3.4 high",
+   "lights": [],
+   "note": "its axle lies along X: it rolls along Y"
+  },
+  "Barrier": {
+   "mesh": "meshes/Barrier.json",
+   "triangles": 84,
+   "vertices": 56,
+   "centre": [
+    0.0,
+    1.7625,
+    0.0
+   ],
+   "size": [
+    7.6,
+    3.525,
+    1.6
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a wall, 8 long and 3 high",
+   "lights": [],
+   "note": "8 studs along X, centred on its place"
+  },
+  "Cabin": {
+   "mesh": "meshes/Cabin.json",
+   "triangles": 192,
+   "vertices": 128,
+   "centre": [
+    0.0,
+    3.75,
+    -0.33
+   ],
+   "size": [
+    10.68,
+    7.5,
+    5.34
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 by 4, 4.7 high",
+   "lights": [],
+   "note": "its door and its window face +Y"
   }
  }
 }

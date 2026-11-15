@@ -44,7 +44,9 @@ GENERATOR, DOOR = -17.0, 34.0      # across, level with the Breaker; the Trainin
 
 # --- the yard ------------------------------------------------------------------------------------------------------------
 
-COURT = (44.0, 48.0)   # the walled court: half across, and how far in from the front edge
+COURT = (44.0, 48.0)   # the lit court at the front: half across, and how far in from the front edge
+YARD = 192.0           # how far in the wall runs: the whole base (the director, 2026-11-15: "much much longer")
+BLOCK = 48.0           # a yard block behind the court, one picture laid again to the back wall
 LANE = 12.5            # a lane's middle, between the Breaker's line and the bays
 GATE = 22.0            # a gate tower's place, across
 WING = 28.0            # where a front wall ends and the gate's shoulder begins
@@ -53,7 +55,7 @@ ARMS = ((16.5, 5.2), (20.0, 3.8))   # a pylon's arms: how high, and how far each
 HANG = 1.9             # an insulator's drop under its arm
 FLOOD = (45.5, 3.0, 12.0)   # a flood mast: in from the front; its head's reach toward the front, and its height
 COURT_GLOW = 1.0       # the court's glow picture's white, as emission strength (EmissiveStrength)
-MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW)}   # each pair's tint and strength
+MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard": ("#FFFFFF", COURT_GLOW)}   # each pair's tint and strength
 
 # Swatches: the colour at the head, at the foot, and how much it glows. Steel and bone under the dusk, the current in
 # Power's yellow (the HUD's own), the Breaker's light in cyan.
@@ -166,17 +168,17 @@ def court_pictures(level=1):
     band = lambda dist, reach: np.clip((reach - np.abs(dist)) / px + 0.5, 0, 1)   # noqa: E731
     page = plates(x, y, 14 + level, px)
     glow = np.zeros((n, n), np.float32)
-    # the wall's foot: a darker margin inside a pale line, at the side and at the back
-    margin = np.clip((np.maximum(x - (half - 3.0), y - (deep - 3.0))) / px + 0.5, 0, 1)
+    # the wall's foot: a darker margin inside a pale line, down the side; the court runs on into the yard at its back
+    margin = np.clip((x - (half - 3.0)) / px + 0.5, 0, 1)
     page[..., :3] *= (1.0 - 0.38 * margin)[..., None]
-    _mix(page, "#C9D2E6", np.maximum(band(x - (half - 3.0), 0.09) * (y < deep - 3.0), band(y - (deep - 3.0), 0.09) * (x < half - 3.0)) * 0.6)
+    _mix(page, "#C9D2E6", band(x - (half - 3.0), 0.09) * 0.6)
     # the threshold under the gate, between its towers' feet: hazard on the slant
     sill = (band(y - 0.9, 0.7) * (x < GATE - 2.6)).astype(np.float32)
     stripe = (((x + y) // 0.9) % 2).astype(np.float32)
     _mix(page, "#FFD23E", sill * (1 - stripe))
     _mix(page, "#1F2233", sill * stripe)
     # the lanes: a pale dashed line down each, front to back
-    _mix(page, "#D4DCEE", band(x - LANE, 0.11) * ((y % 4.0) < 2.0) * (y > 3.0) * (y < deep - 4.0) * 0.45)
+    _mix(page, "#D4DCEE", band(x - LANE, 0.11) * ((y % 4.0) < 2.0) * (y > 3.0) * 0.45)
     # the bays: a frame of Power's yellow round each pad, heavy at its corners; lit where the bay is open
     for index, (bx, by) in enumerate(BAYS):
         if bx < 0 or by + 7.0 > deep:
@@ -218,11 +220,65 @@ def court_pictures(level=1):
             e = np.hypot(x - ex, y - ey)
             casing = np.maximum(casing, band(e, 1.3))
             core = np.maximum(core, band(e - 0.75, 0.16))
+    casing = np.maximum(casing, spine(x, y - (BATTERY + 2.0), px))   # the yard's line, dead until its level
     _mix(page, "#141724", casing)
     _mix(page, "#FFF1A8", core)
     glow = np.maximum(glow + 0.3 * halo * (1 - casing), core)
     # the floods' pools on the lanes, behind the arrival
     glow += 0.3 * np.exp(-((x - LANE) ** 2 + (y - (FLOOD[0] - FLOOD[1])) ** 2) / 9.0 ** 2)
+    return page, grey(glow)
+
+
+def spine(x, along, px):
+    """The yard's main conduit down the plot's middle line, as its casing alone: no current in it yet. `along` is
+    studs from where it starts; it runs on off the picture."""
+    d = np.hypot(x, np.minimum(along, 0.0))
+    clamp = ((along % PLATE) < 0.4).astype(np.float32)
+    band = lambda dist, reach: np.clip((reach - np.abs(dist)) / px + 0.5, 0, 1)   # noqa: E731
+    return np.maximum(band(d, 0.8), band(d, 1.05) * clamp)
+
+
+def yard_pictures():
+    """A yard block, half of it, laid again and again behind the court to the back wall: the deck with its lanes, the
+    main conduit dead down the middle, a branch to a lot each side marked and not yet built, and a joint across its
+    far edge. Plain on purpose: the base grows into it by its levels. The glow is the pilot lamps alone."""
+    n = 1024
+    half, deep = COURT[0], BLOCK
+    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
+    x, y = (xx + 0.5) / n * half, (yy + 0.5) / n * deep
+    px = (half + deep) / 2 / n
+    band = lambda dist, reach: np.clip((reach - np.abs(dist)) / px + 0.5, 0, 1)   # noqa: E731
+    page = plates(x, y, 31, px)
+    page[..., :3] *= 0.9                                        # a shade under the court: nothing here is lit
+    glow = np.zeros((n, n), np.float32)
+    margin = np.clip((x - (half - 3.0)) / px + 0.5, 0, 1)
+    page[..., :3] *= (1.0 - 0.38 * margin)[..., None]
+    _mix(page, "#C9D2E6", band(x - (half - 3.0), 0.09) * 0.6)
+    _mix(page, "#D4DCEE", band(x - LANE, 0.11) * ((y % 4.0) < 2.0) * 0.45)
+    # the joint across the block's far edge: where one block of the yard ends
+    _mix(page, "#252B44", band(y - (deep - 0.2), 0.2) * (x < half - 3.0))
+    _mix(page, "#C9D2E6", band(y - (deep - 0.55), 0.07) * (x < half - 3.0) * 0.5)
+    # a lot each side, marked and not yet built: a grey frame, heavy at its corners, a cross on its middle
+    lot = (22.0, deep / 2)
+    dx, dy = np.abs(x - lot[0]), np.abs(y - lot[1])
+    box = np.maximum(dx, dy)
+    corner = (np.minimum(dx, dy) > 5.2).astype(np.float32)
+    page[..., :3] *= (1.0 - 0.16 * np.clip((8.0 - box) / px + 0.5, 0, 1))[..., None]
+    _mix(page, "#7A84A6", np.maximum(band(box - 8.0, 0.1), band(box - 8.0, 0.28) * corner) * 0.6)
+    _mix(page, "#7A84A6", np.maximum(band(dx, 0.07) * (dy < 1.4), band(dy, 0.07) * (dx < 1.4)) * 0.5)
+    # the main conduit and the lot's branch, as casings; a junction box where they meet, a pilot lamp on it
+    casing = spine(x, y + PLATE, px)
+    d = np.hypot(y - lot[1], x - np.clip(x, 0.0, lot[0] - 8.0))
+    casing = np.maximum(casing, np.maximum(band(d, 0.55), band(d, 0.8) * ((x % PLATE) < 0.4)))
+    e = np.maximum(np.abs(x), np.abs(y - lot[1]))
+    casing = np.maximum(casing, band(e, 1.5))
+    _mix(page, "#141724", casing)
+    _mix(page, "#3A4266", band(e, 1.5) * (1 - band(e, 1.15)))
+    pilot = band(np.hypot(x, y - lot[1]), 0.34)
+    _mix(page, "#8CF6FF", pilot)
+    stud = band(np.hypot(x - (lot[0] - 8.0), y - lot[1]), 0.26)
+    _mix(page, "#8CF6FF", stud)
+    glow += pilot + 0.8 * stud + 0.2 * np.exp(-(x ** 2 + (y - lot[1]) ** 2) / 3.0 ** 2)
     return page, grey(glow)
 
 
@@ -235,6 +291,9 @@ def write_pictures(out: Path):
     colour, lit = court_pictures(1)
     rs.save(colour, out / "Base_Court1_Color.png")
     rs.save(lit, out / "Base_Court1_Glow.png")
+    colour, lit = yard_pictures()
+    rs.save(colour, out / "Base_Yard_Color.png")
+    rs.save(lit, out / "Base_Yard_Glow.png")
 
 
 # --- the pieces ------------------------------------------------------------------------------------------------------
@@ -262,6 +321,19 @@ def court(level):
         return Piece(f"Court{level}", m, maps=f"Court{level}", solid="floor",
                      note="lies 0.06 over the deck, its front edge on the plot's; a Part under it carries the walking")
     return make
+
+
+def yard():
+    """A yard block's floor, 88 studs by 48, its front edge at the piece's place: one picture, laid mirrored about the
+    middle. Three stand behind the court, to the back wall."""
+    m = Mesh(None)
+    half, deep = COURT[0], BLOCK
+    m.face([Vector((0, -deep, 0.06)), Vector((half, -deep, 0.06)), Vector((half, 0, 0.06)), Vector((0, 0, 0.06))],
+           [(0, 0), (1, 0), (1, 1), (0, 1)])
+    m.face([Vector((-half, -deep, 0.06)), Vector((0, -deep, 0.06)), Vector((0, 0, 0.06)), Vector((-half, 0, 0.06))],
+           [(1, 0), (0, 0), (0, 1), (1, 1)])
+    return Piece("Yard", m, maps="Yard", solid="floor",
+                 note="lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking")
 
 
 def wall(run=True):
@@ -386,7 +458,7 @@ def transformer():
     return Piece("Transformer", m, solid="a box, 3.6 by 3 by 3.4")
 
 
-PIECES = {"Court1": court(1), "Wall": wall, "WallEnd": lambda: wall(False), "Gate1": gate, "Pylon": pylon,
+PIECES = {"Court1": court(1), "Yard": yard, "Wall": wall, "WallEnd": lambda: wall(False), "Gate1": gate, "Pylon": pylon,
           "PowerSpan": power_span, "FloodMast": flood_mast, "Transformer": transformer}
 
 
@@ -445,7 +517,7 @@ def export(out: Path):
         surface="one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint "
                 "`glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink "
                 "is in its mesh, a hull turned inside out on the atlas's ink texel.",
-        shadows="CastShadow off on PowerSpan and the court's floor.",
+        shadows="CastShadow off on PowerSpan and the floors (Court1, Yard).",
         maps={"Base_Deck_Color.png": f"the plain deck, a tile {DECK[1]:g} studs square (four plates), for a Texture on a Part"},
         pieces=listing)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")

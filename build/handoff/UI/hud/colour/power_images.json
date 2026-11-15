@@ -1,0 +1,421 @@
+{
+ "pixelsPerPoint": 4,
+ "palette": "A, Eclipse (AR12, the pick of 2026-11-15)",
+ "room": "Dynamo, vivid",
+ "note": "Power's bar, cut. A white image takes its tint; a dark part baked into one stays dark. `cut` is a slice's insets in points (left, top, right, bottom): the slice's centre is the image less its cut, at 4 pixels a point. `pad` is how far an image reaches past its piece's box on every side. PowerEmber is drawn at one pixel a point and shown at its points' size. The stack is DESIGN, untried in Studio.",
+ "colours": {
+  "breaker": "#E6ECF7",
+  "training": "#4FD1FF",
+  "battery": "#FFE266",
+  "ember": "#F2A63B",
+  "caution": "#FF9A4D",
+  "channel": "#080705",
+  "edge": "#9A7A22",
+  "faint": "#8F7F52",
+  "well": "#0E0C09"
+ },
+ "lights": {
+  "Breaker": {
+   "colour": "#E6ECF7",
+   "gradient": [
+    [
+     0.0,
+     "#989CA3"
+    ],
+    [
+     0.0625,
+     "#9FA3AA"
+    ],
+    [
+     0.125,
+     "#A8ACB4"
+    ],
+    [
+     0.1875,
+     "#B6BAC1"
+    ],
+    [
+     0.25,
+     "#C7CBD1"
+    ],
+    [
+     0.3125,
+     "#D3D6DD"
+    ],
+    [
+     0.375,
+     "#D7DCE3"
+    ],
+    [
+     0.4375,
+     "#DFE3EC"
+    ],
+    [
+     0.5,
+     "#EAEFF8"
+    ],
+    [
+     0.5625,
+     "#DDE2EC"
+    ],
+    [
+     0.625,
+     "#D2D6DF"
+    ],
+    [
+     0.6875,
+     "#C6CBD3"
+    ],
+    [
+     0.75,
+     "#BBC0C8"
+    ],
+    [
+     0.8125,
+     "#B1B5BD"
+    ],
+    [
+     0.875,
+     "#A7ABB3"
+    ],
+    [
+     0.9375,
+     "#9FA3AA"
+    ],
+    [
+     1.0,
+     "#989CA3"
+    ]
+   ]
+  },
+  "Training": {
+   "colour": "#4FD1FF",
+   "gradient": [
+    [
+     0.0,
+     "#348AA8"
+    ],
+    [
+     0.0625,
+     "#3990B0"
+    ],
+    [
+     0.125,
+     "#409AB9"
+    ],
+    [
+     0.1875,
+     "#50A8C7"
+    ],
+    [
+     0.25,
+     "#69BAD6"
+    ],
+    [
+     0.3125,
+     "#77C6E2"
+    ],
+    [
+     0.375,
+     "#6DC9E9"
+    ],
+    [
+     0.4375,
+     "#65CEF3"
+    ],
+    [
+     0.5,
+     "#68D8FF"
+    ],
+    [
+     0.5625,
+     "#60CCF2"
+    ],
+    [
+     0.625,
+     "#59C1E6"
+    ],
+    [
+     0.6875,
+     "#51B6DA"
+    ],
+    [
+     0.75,
+     "#4BACCE"
+    ],
+    [
+     0.8125,
+     "#44A2C3"
+    ],
+    [
+     0.875,
+     "#3E99B9"
+    ],
+    [
+     0.9375,
+     "#3890AF"
+    ],
+    [
+     1.0,
+     "#348AA8"
+    ]
+   ]
+  },
+  "Battery": {
+   "colour": "#FFE266",
+   "gradient": [
+    [
+     0.0,
+     "#A89543"
+    ],
+    [
+     0.0625,
+     "#B09C48"
+    ],
+    [
+     0.125,
+     "#B9A550"
+    ],
+    [
+     0.1875,
+     "#C7B35F"
+    ],
+    [
+     0.25,
+     "#D6C478"
+    ],
+    [
+     0.3125,
+     "#E2D085"
+    ],
+    [
+     0.375,
+     "#E9D57E"
+    ],
+    [
+     0.4375,
+     "#F3DB78"
+    ],
+    [
+     0.5,
+     "#FFE67C"
+    ],
+    [
+     0.5625,
+     "#F2DA73"
+    ],
+    [
+     0.625,
+     "#E6CE6B"
+    ],
+    [
+     0.6875,
+     "#DAC363"
+    ],
+    [
+     0.75,
+     "#CEB85C"
+    ],
+    [
+     0.8125,
+     "#C3AE55"
+    ],
+    [
+     0.875,
+     "#B9A44E"
+    ],
+    [
+     0.9375,
+     "#AF9C48"
+    ],
+    [
+     1.0,
+     "#A89543"
+    ]
+   ]
+  }
+ },
+ "bar": {
+  "height": 24.0,
+  "rim": 2.0,
+  "gap": 1.0,
+  "stack": [
+   "PowerEmber: behind the well, tinted `ember`, its middle on the bar's",
+   "the well: the kit's ButtonFill tinted `well` at 0.6 and ButtonEdge tinted `edge` at 0.4, 13 past the bar above and 15 under it, 26 past each end",
+   "PowerBusChannel: on the bar's box, tinted `channel`",
+   "PowerBusGlow: one a light, on the light's own box (the bar's height less the rim top and foot), tinted the light's colour, under every light and outside any clip",
+   "a light: a plain clipping frame from cut to cut (upright sides, the gap left each side of a cut between two lights), holding PowerBusLight at the bar's whole size and place, with a UIGradient turned 90 degrees set to its `gradient`",
+   "a light's arriving end: PowerBusLight again in the same frame, white, with a UIGradient whose Transparency goes from 1 to 0.7 over `arrive.points` ending at the light's right side",
+   "PowerBusEdge: on the bar's box, tinted `edge`",
+   "the ticks: plain frames under the bar, in `faint`",
+   "PowerHandle: its box's middle on each cut, above everything"
+  ],
+  "lights": "from `rim` inside the bar's left to `rim` inside its right; a cut at share s stands at rim + (width - 2 * rim) * s; an idle machine's light wears the battery's gradient",
+  "glowAlpha": 0.42,
+  "edgeAlpha": 0.95,
+  "emberAlpha": 0.16,
+  "arrive": {
+   "points": 38.400000000000006,
+   "transparency": [
+    1.0,
+    0.7
+   ]
+  },
+  "ticks": {
+   "at": [
+    0.25,
+    0.5,
+    0.75
+   ],
+   "size": [
+    1.0,
+    4.0
+   ],
+   "under": 3.5,
+   "alpha": 0.8
+  },
+  "handle": {
+   "box": [
+    9.0,
+    40.0
+   ]
+  },
+  "chip": {
+   "box": [
+    12.0,
+    12.0
+   ]
+  }
+ },
+ "images": {
+  "PowerBusChannel": {
+   "file": "images/PowerBusChannel.png",
+   "pixels": [
+    224,
+    224
+   ],
+   "points": [
+    56.0,
+    56.0
+   ],
+   "tint": "channel",
+   "cut": [
+    24.0,
+    24.0,
+    24.0,
+    24.0
+   ],
+   "pad": 16.0,
+   "use": "the bar's bed, under everything; sliced"
+  },
+  "PowerBusGlow": {
+   "file": "images/PowerBusGlow.png",
+   "pixels": [
+    352,
+    336
+   ],
+   "points": [
+    88.0,
+    84.0
+   ],
+   "tint": "its light's colour",
+   "cut": [
+    40.0,
+    40.0,
+    40.0,
+    40.0
+   ],
+   "pad": 32.0,
+   "use": "on each light's own box, under every light, at 0.42; sliced"
+  },
+  "PowerBusLight": {
+   "file": "images/PowerBusLight.png",
+   "pixels": [
+    96,
+    96
+   ],
+   "points": [
+    24.0,
+    24.0
+   ],
+   "cut": [
+    8.0,
+    8.0,
+    8.0,
+    8.0
+   ],
+   "use": "a light: the bar's whole size, shown through its segment's window, coloured by its gradient; sliced"
+  },
+  "PowerBusEdge": {
+   "file": "images/PowerBusEdge.png",
+   "pixels": [
+    96,
+    96
+   ],
+   "points": [
+    24.0,
+    24.0
+   ],
+   "tint": "edge",
+   "cut": [
+    8.0,
+    8.0,
+    8.0,
+    8.0
+   ],
+   "use": "over the lights, at 0.95; sliced"
+  },
+  "PowerHandle": {
+   "file": "images/PowerHandle.png",
+   "pixels": [
+    100,
+    224
+   ],
+   "points": [
+    25.0,
+    56.0
+   ],
+   "pad": 8.0,
+   "use": "a handle's upright, its middle on the cut; its colours are its own"
+  },
+  "PowerChipBreaker": {
+   "file": "images/PowerChipBreaker.png",
+   "pixels": [
+    88,
+    88
+   ],
+   "points": [
+    22.0,
+    22.0
+   ],
+   "pad": 5.0,
+   "use": "the Breaker row's chip; its colour is its own"
+  },
+  "PowerChipTraining": {
+   "file": "images/PowerChipTraining.png",
+   "pixels": [
+    88,
+    88
+   ],
+   "points": [
+    22.0,
+    22.0
+   ],
+   "pad": 5.0,
+   "use": "the Training row's chip; its colour is its own"
+  },
+  "PowerEmber": {
+   "file": "images/PowerEmber.png",
+   "pixels": [
+    580,
+    168
+   ],
+   "points": [
+    580.0,
+    168.0
+   ],
+   "tint": "ember",
+   "use": "behind the bar's well, its middle on the bar's, at 0.16"
+  }
+ }
+}

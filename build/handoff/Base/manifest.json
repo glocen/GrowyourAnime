@@ -3,7 +3,7 @@
  "unit": "1 = 1 stud",
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel.",
- "shadows": "CastShadow off on PowerSpan and the court's floor.",
+ "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard).",
  "maps": {
   "Base_Deck_Color.png": "the plain deck, a tile 8 studs square (four plates), for a Texture on a Part"
  },
@@ -29,6 +29,28 @@
    "collision": "floor",
    "lights": [],
    "note": "lies 0.06 over the deck, its front edge on the plot's; a Part under it carries the walking"
+  },
+  "Yard": {
+   "mesh": "meshes/Yard.json",
+   "triangles": 4,
+   "vertices": 6,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    88.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_Yard_Color.png",
+   "glow": "maps/Base_Yard_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
   },
   "Wall": {
    "mesh": "meshes/Wall.json",

@@ -2,9 +2,10 @@
 -- HomeService (server): home in one tap, the dock's Base tile (docs/test-requests.md, TR19; it replaces TR16's chip and
 -- trail). The tile asks (Net "Home") and the server decides (Rules.Home): refused, it answers why in plain words; else
 -- the charge begins (the player's HomeCharge attribute: its start, server time) and runs Config.Home.Charge seconds. A
--- hit the player's side deals or takes in it (FightService's HitAt) cancels it, and nothing is spent. Then the player and
--- their lead are set down at their plot's spawn facing its Breaker (KeeperService.Place, no fade: the jump's light is the
--- client's), the cooldown starts (HomeReady: its end, server time) and the client is told (Net "HomeJump").
+-- fight is FightService.InCombat, or a hit in the last few seconds while the lead stands (research's verdict on TR19). A
+-- hit the player's side deals or takes in the charge (FightService's HitAt) cancels it, and nothing is spent. Then the
+-- player and their lead are set down at their plot's spawn facing its Breaker (KeeperService.Place, no fade: the jump's
+-- light is the client's), the cooldown starts (HomeReady: its end, server time) and the client is told (Net "HomeJump").
 -- In Studio: HomeState reads it all, HomeHit stamps a hit now, HomeReady ends the cooldown.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -20,6 +21,7 @@ local Net = require(Shared.Net)
 local Core = script.Parent.Parent.Core
 local DebugService = require(Core.DebugService)
 local KeeperService = require(script.Parent.KeeperService)
+local FightService = require(script.Parent.FightService)
 local WorldService = require(script.Parent.WorldService)
 
 local HomeService = {
@@ -40,6 +42,8 @@ function HomeService.Situation(player: Player): Home.Situation
 	return {
 		Now = now(),
 		HitAt = number(player, "HitAt"),
+		Engaged = FightService.InCombat(player),
+		Standing = FightService.Standing(FightService.LeadOf(player)),
 		Try = player:GetAttribute("Try") ~= nil,
 		Event = false, -- no event exists yet: the rule keeps its place (TR19)
 		ReadyAt = number(player, "HomeReady") or 0,

@@ -287,6 +287,15 @@ function LeadService.Start()
 			tick(player)
 			return { Ok = true, State = if lead then lead.State else "" }
 		end)
+		-- Studio only: the lead out of any fight at once (FightService.Calm), for a case that starts after one.
+		DebugService.Register("LeadCalm", function(who: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if not player then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			FightService.Calm(player)
+			return { Ok = true }
+		end)
 		-- Studio only: every Voidkin of the player but the lead fallen just now, healing at home, so none is ready to lead
 		-- (TR16: a lead alone after its fall, on an account that owns several). LeadHeal makes them whole again.
 		DebugService.Register("VoidkinFallen", function(who: any): any

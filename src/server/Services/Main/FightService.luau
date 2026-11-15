@@ -1380,11 +1380,45 @@ function FightService.InCombat(player: Player): boolean
 	return false
 end
 
+-- InCombat for the client's Base tile (TR19, research's verdict: "In a fight" is InCombat or a hit's tail), as the
+-- player's Engaged attribute, written only when it changes.
+local function publishEngaged()
+	for _, player in Players:GetPlayers() do
+		local engaged = FightService.InCombat(player)
+		if (player:GetAttribute("Engaged") == true) ~= engaged then
+			player:SetAttribute("Engaged", if engaged then true else nil)
+		end
+	end
+end
+
 -- Studio's tests: a fallen lead back up at its avatar's side at once, whole, as the old quick return was (the way home
 -- takes a walk to the plot, which a case on the test pad can't make).
 function FightService.Recall(f: Fighter)
 	if fighters[f.Id] == f and f.Side == "Lead" and (f.State == "Down" or f.State == "Home") then
 		rise(f, now())
+	end
+end
+
+-- Studio's tests: `player`'s lead out of any fight at once: its target dropped, every Shade on it sent back to its post,
+-- and the lead set down beside its avatar (a case that starts after a fight: TR19's after its take, since a lead with a
+-- target is "In a fight").
+function FightService.Calm(player: Player)
+	local lead = leads[player]
+	if lead == nil or fighters[lead.Id] ~= lead then
+		return
+	end
+	setTarget(lead, nil)
+	for _, other in fighters do
+		if other.Side == "Shade" and other.Target == lead then
+			setTarget(other, nil)
+			if standing(other) then
+				setState(other, "Reset")
+			end
+		end
+	end
+	local avatar = Parts.Root(player.Character)
+	if avatar and standing(lead) then
+		lead.Model:PivotTo(besideAvatar(avatar, player))
 	end
 end
 
@@ -1480,6 +1514,7 @@ function FightService.Start()
 		end
 	end)
 	RunService.Heartbeat:Connect(step)
+	RunService.Heartbeat:Connect(publishEngaged)
 end
 
 return FightService

@@ -189,11 +189,14 @@ return {
 		Dim = 0.45,
 		LongPress = 0.4,
 		Rise = 6,
-		-- TR19's seeds, UNVERIFIED: a quiet tile at Quiet of itself; a charge's fill in white at Fill, a cooldown's veil in
-		-- ink at Veil; a refused tap's shake, Shake points either way over Shook seconds, three times, dying away.
+		-- TR19's seeds, UNVERIFIED: a quiet tile at Quiet of itself; a cooldown's veil in ink at Veil; a refused tap's
+		-- shake, Shake points either way over Shook seconds, three times, dying away.
 		Quiet = 0.8,
-		Fill = 0.45,
 		Veil = 0.5,
+		-- A charge (research's verdict on TR19, corrected 2026-11-15): the tile goes to Ink at the tap, and the fill rises
+		-- over it in Colour at Alpha, its rising edge a band Edge of the tile's height in Bright at full. White is a stand-in
+		-- until the palette is picked (the director, 2026-11-15: nothing new goes violet). Seeds, tuned live.
+		Charge = { Ink = Color3.fromHex("#0B0B12"), Colour = Color3.new(1, 1, 1), Bright = Color3.new(1, 1, 1), Edge = 0.1, Alpha = 0.6 },
 		Shake = 4,
 		Shook = 0.25,
 	},

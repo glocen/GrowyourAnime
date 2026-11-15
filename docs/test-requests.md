@@ -1783,7 +1783,7 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - the self-test from Lantern Row, a keeper's try and the base;
   - research's verdict in motion from the player's camera, at phone size.
 
-**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion given, 2026-11-15, night: competent as a block, with two fixes and the fight's rule, then a short retake (below). Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
+**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion given, 2026-11-15, night: competent as a block, with two fixes and the fight's rule, then a short retake (below). Fixed and retaken the same night (below), for research's read. Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
 
 - **Implemented.**
   - **The rule** (`Rules.Home`, pure): `Refusal` in the spec's order (here, a boss's ground, an event, a fight, the cooldown), `Says` in its plain words ("Ready in 12 s" counts the whole seconds left, never 0), `Broken` (a hit at or after the charge's start), `Share` (a charge's or a cooldown's run, 0 to 1). Seeds in `Config.Home`, tuned live (`Tune "Home.Charge"`).
@@ -1849,6 +1849,52 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
     - after a fall, no tail.
 - **The Base screen's way in (Faber's question): no other way in.** What it holds already has homes in the spec: the bays open at each bay (`docs/ui.md`, 7), and the bag is the character screen's Items page (TR17).
 - **Then:** a short retake at phone size of the tap and the charge (20 fps, the tile and the avatar cut out), and of the closing gap with the tile dim. TR19 closes as a block on that read. Its light waits on Modulo, its sound on AR13.
+
+**The fixes and the retake** (Faber, 2026-11-15, night; about 35 minutes from the verdict's commit; the device simulator's iPhone 16 Pro):
+
+- **Implemented.**
+  - **The black frame's cause:** each tile's pressed twin wasn't loaded before its first press. For about 250 ms the tile drew nothing, so the dock's body showed through. Then the yellow pressed twin came. The dock now loads every pressed twin when it's built, which fixes the first press of Inventory and the Map too.
+  - **Fix 1, the press goes straight into the charge** (`Dock.Charges`):
+    - The client starts the fill on the tap's own frame, before the server answers. A refusal drops it and shakes the tile.
+    - The tile is in ink from the tap to the jump (`Config.Hud.Dock.Charge.Ink`, #0B0B12). A charge under way never dims, since only a hit breaks it, as on the server.
+    - Once landed, the full tile holds until this client sees home (at most `Config.Home.Hold`, 0.4 s), then goes quiet. No veil and no dim come in between.
+  - **Fix 2, white over ink, as amended:**
+    - The fill's body is white at 0.6.
+    - Its rising edge is a band of 0.1 of the tile's height, white at full.
+    - The outline is #EEE6FF.
+    - All three are stand-ins until the palette is picked. The body can go to 0.85 for a whiter fill (`Tune "Hud.Dock.Charge.Alpha"`), at the cost of a weaker edge.
+  - **The fight's rule:**
+    - `Rules.Home`'s situation gains `Engaged` (`FightService.InCombat`, which the server publishes as the player's `Engaged` attribute) and `Standing` (the lead out and standing).
+    - A fight is `Engaged`, or a hit in the last 4 s while the lead stands.
+    - `HomeService` and the tile read the same rule.
+- **Tested.**
+  - Type check: 0 new.
+  - Logic: 5922 offline. One new case covers:
+    - the closing gap;
+    - a Shade's target;
+    - engaged still under a boss's ground, before the cooldown, and at home still home;
+    - after a fall, no tail, though the cooldown still counts.
+  - TR19's self-test passes 61 of 61 at 60 fps, the take run first.
+    - The case's 50 checks include three new ones: every pressed twin loaded; the fill from the tap's own frame (0.019 s); ink from tap to home, then quiet (rest, then the charge at 0.02 s, then quiet at 0.67 s).
+    - The take passes 11 of 11, the closing gap included ("Rest then Dim").
+  - TR20's dock cases pass 28 of 28.
+  - A Studio command for a case that starts after a fight: `LeadCalm` (`FightService.Calm`). A lead with a target is now "In a fight", so the case calls it first, and so does the take.
+- **The retake** (`build/captures/tr19/`):
+  - `home_retake.mkv`: zero at 6.60 s. The capture averages 46.9 fps, while the client ran at 60.
+  - `retake_charge_20fps.jpg`, the tile and the avatar from 0.1 s before the tap to the arrival:
+    - the tile is ink at 0 ms;
+    - the white rises from its foot under its bright edge, with the house's mark showing through as it climbs;
+    - the avatar's near-white outline is lit from about 0.3 s;
+    - the jump lands at about 0.65 s;
+    - the tile is quiet at home in the next frame, with no yellow flash anywhere.
+  - `retake_closing_gap.jpg`, at phone size from 22.45 s:
+    - the tile is at rest;
+    - at 22.8 s the Brawler's card shows and the tile dims, with no hit yet;
+    - it stays dim while the lead closes, through the first hit at 25.3 s;
+    - a tap says "In a fight".
+- **Seen in Studio:** partway through a run, the client dropped to 20 fps with the window in front: 47 ms of render CPU, 3 ms of GPU, and nothing else loading the PC. A playtest restart gave 60 again. A report taken at 20 fps isn't timing evidence, and each one says its rate.
+- **Tier 1 calls:** the hold after the jump; a charge never dims; `LeadCalm`.
+- **Visually reviewed:** research's read of the retake is next. **Director-accepted:** no.
 
 ## TR20. Everything that presses answers the pointer: hover (Faber)
 

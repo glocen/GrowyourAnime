@@ -9,6 +9,7 @@
 --   pressed   its pressed twin under pressed's gradient, its mark Sink points down its lean, its light in its deep
 --   open      while its screen is (the button Selected): white-hot, its rim over it, its halo under it, its light white
 --   dim       while it can't be used (the button Disabled): its tile and mark at Dim of themselves, its light deep
+--   charge    while a charging tile's fill runs (Dock.Charges): its tile in ink, its light deep, the fill rising over it
 -- and the pip over its far corner while it has something new, in any state. A touch held LongPress seconds shows the
 -- tile's word over it, and lifting it then doesn't press (Config.Hud.Dock). A pointer over a tile at rest lifts it, its
 -- gradient toward white and its halo part lit, and after a moment shows its word; a pad's selection wears its rim (TR20,
@@ -22,12 +23,16 @@
 --   Dock.Pip(dock, name, on)           something new on a tile
 --   Dock.Mood(dock, name, mood?)       "Quiet", "Dim", or nil for its button's own look
 --   Dock.Reason(dock, name, why?)      why it's refused, its word on a long press or a hover; nil for its name
---   Dock.Fill(dock, name, share?)      a charge's share, 0 to 1; nil or 0 shows none
+--   Dock.Fill(dock, name, share?)      a charge's share, 0 to 1, in white under a brighter rising edge; nil or 0 shows
+--                                      none
+--   Dock.Charges(dock, name, on)       its fill is a charge: the tile wears its pressed ink while the fill runs, and a
+--                                      press alone shows nothing (TR19's Base tile: the tap is the charge's first frame)
 --   Dock.Sweep(dock, name, share?)     a cooldown's run, 0 to 1; nil or 1 shows none
 --   Dock.Shake(dock, name)             a refused tap: the tile shakes Shake points side to side over Shook seconds
 --   Dock.Hold(button, down)            a touch going down on a tile's button or coming off, as a finger's (for tests)
 --   Dock.Paint(dock)                   each frame: a tile repaints only when its look changes
 
+local ContentProvider = game:GetService("ContentProvider")
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
 local HudConfig = require(Shared.Config.Hud)
@@ -60,6 +65,7 @@ export type Tile = {
 	Hover: number, -- the pointer's share over it (Kit.Hover)
 	Pad: boolean, -- a pad's selection
 	Reason: string?, -- why it's refused, its owner's words, shown as its word
+	Charges: boolean, -- its fill is a charge: ink from the tap while it runs, and no press of its own (Dock.Charges)
 }
 export type Mood = "Quiet" | "Dim"
 export type Dock = { Frame: Frame, Tiles: { [string]: Tile } }
@@ -88,7 +94,9 @@ local function look(tile: Tile): string
 		return "Dim"
 	elseif tile.Mood then
 		return tile.Mood
-	elseif state == "Pressed" or state == "Waiting" then
+	elseif tile.Charges and (tile.Shares.Fill or -1) > 0 then
+		return "Charge"
+	elseif (state == "Pressed" or state == "Waiting") and not tile.Charges then
 		return "Pressed"
 	elseif state == "Selected" then
 		return "Open"
@@ -124,7 +132,7 @@ local function paint(tile: Tile, now: string)
 	tile.Rest.Tile = layers.Tile.Position
 	-- Hover (TR20) answers a tile at rest: its gradient toward white, its halo part lit; a pad's selection wears its rim.
 	local hover = if now == "Rest" then tile.Hover else 0
-	Skin.Tint(layers.Tile, Hover.Whites(tile.Looks[now] or tile.Looks.Rest, hover))
+	Skin.Tint(layers.Tile, if now == "Charge" then { HudConfig.Dock.Charge.Ink } else Hover.Whites(tile.Looks[now] or tile.Looks.Rest, hover))
 	layers.Tile.ImageTransparency = 1 - shade
 	layers.Sheen.Visible = now == "Rest"
 	local rim = tile.Pad and tile.Hover > 0 and now ~= "Open"
@@ -286,6 +294,7 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Hover = 0,
 			Pad = false,
 			Reason = nil :: string?,
+			Charges = false,
 		}
 		for name, layer in layers do
 			if name ~= "Mark" then
@@ -319,6 +328,22 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 		dock.Tiles[def.Name] = tile
 	end
 	frame.Parent = parent
+	-- Each tile's pressed twin, loaded before its first press: unloaded, a pressed tile drew nothing for a moment, the
+	-- dock's body showing through as a black frame (research's verdict on TR19).
+	task.spawn(function()
+		local probes: { Instance } = {}
+		for _, tile in dock.Tiles do
+			local probe = Skin.Lay(frame, tile.Def.TilePressed.Image, { X = 0, Y = 0 })
+			probe.Visible = false
+			table.insert(probes, probe)
+		end
+		pcall(function()
+			ContentProvider:PreloadAsync(probes)
+		end)
+		for _, probe in probes do
+			probe:Destroy()
+		end
+	end)
 	return dock
 end
 
@@ -362,12 +387,49 @@ function Dock.Mood(dock: Dock, name: string, mood: Mood?)
 	end
 end
 
--- The fill rises from the tile's foot: its gradient runs top to bottom, so the share past 1 - share is lit.
+-- The fill rises from the tile's foot: its gradient runs top to bottom, so the share past 1 - share is lit, in Colour at
+-- Alpha under a band Edge of the tile's height in Bright at full (research's verdict on TR19, corrected 2026-11-15: white
+-- over the tile's ink, high contrast, apart from the cooldown's sideways veil; a stand-in until the palette is picked).
 function Dock.Fill(dock: Dock, name: string, share: number?)
 	local tile = dock.Tiles[name]
 	if tile then
 		local s = math.clamp(share or 0, 0, 1)
-		measure(tile, "Fill", Z.Fill, Color3.new(1, 1, 1), 90, s, s > 0, 1 - s, HudConfig.Dock.Fill)
+		local charge = HudConfig.Dock.Charge
+		local unchanged = tile.Shares.Fill == (if s > 0 then s else -1)
+		measure(tile, "Fill", Z.Fill, Color3.new(1, 1, 1), 90, s, s > 0, 1 - s, charge.Alpha)
+		local layer = tile.Layers.Fill
+		if unchanged or layer == nil or s <= 0 then
+			return
+		end
+		local top = math.min(1 - s, 0.995) -- keypoints stay in order at the thinnest fill
+		local band = math.min(math.max(top + charge.Edge, top + 2e-3), 1)
+		local colours = { ColorSequenceKeypoint.new(0, charge.Bright) }
+		local alphas = { NumberSequenceKeypoint.new(0, if top > 1e-3 then 1 else 0) }
+		if top > 1e-3 then
+			table.insert(alphas, NumberSequenceKeypoint.new(top, 1))
+			table.insert(alphas, NumberSequenceKeypoint.new(math.min(top + 1e-3, 1 - 2e-3), 0))
+		end
+		if band < 1 - 2e-3 then
+			table.insert(colours, ColorSequenceKeypoint.new(band, charge.Bright))
+			table.insert(colours, ColorSequenceKeypoint.new(band + 1e-3, charge.Colour))
+			table.insert(colours, ColorSequenceKeypoint.new(1, charge.Colour))
+			table.insert(alphas, NumberSequenceKeypoint.new(band, 0))
+			table.insert(alphas, NumberSequenceKeypoint.new(band + 1e-3, 1 - charge.Alpha))
+			table.insert(alphas, NumberSequenceKeypoint.new(1, 1 - charge.Alpha))
+		else
+			table.insert(colours, ColorSequenceKeypoint.new(1, charge.Bright))
+			table.insert(alphas, NumberSequenceKeypoint.new(1, 0))
+		end
+		local gradient = layer:FindFirstChildOfClass("UIGradient") :: UIGradient
+		gradient.Color = ColorSequence.new(colours)
+		gradient.Transparency = NumberSequence.new(alphas)
+	end
+end
+
+function Dock.Charges(dock: Dock, name: string, on: boolean)
+	local tile = dock.Tiles[name]
+	if tile then
+		tile.Charges = on
 	end
 end
 

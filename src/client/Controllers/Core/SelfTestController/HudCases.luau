@@ -3,6 +3,7 @@
 -- as it joins VoidkinCases (Cases' one table had passed what the type solver checks in one piece). The dock's Base tile
 -- as the way home (TR19), everything that presses answering the pointer (TR20), and a plate kept clear of the lead's corner.
 
+local ContentProvider = game:GetService("ContentProvider")
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -96,6 +97,7 @@ function HudCases.Cases(given: Given): { any }
 					t.Server("PackBack", "Elite")
 				end
 				t.Server("HomeReady")
+				t.Server("LeadCalm") -- out of any fight a case before left it in: a lead with a target is "In a fight"
 				t.Check("the elite's square is cleared", t.Server("PackDefeat", "Elite").Ok == true)
 				local square = Markers.At(elite).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0)
 				local home = Markers.At(spawn).Position
@@ -118,7 +120,34 @@ function HudCases.Cases(given: Given): { any }
 				end), tostring(base:GetAttribute("Look")))
 				t.Equal("and the server would take them home", state().Refusal, "")
 				local fov = workspace.CurrentCamera.FieldOfView
+				-- Unloaded, a pressed twin drew nothing for a moment: the black frame research saw in TR19's take.
+				local unloaded = {}
+				for _, def in UIKit.Dock.Buttons do
+					local id = UIKit.Images[def.TilePressed.Image].Id
+					if ContentProvider:GetAssetFetchStatus(id) ~= Enum.AssetFetchStatus.Success then
+						table.insert(unloaded, def.Name)
+					end
+				end
+				t.Check("every tile's pressed twin is loaded before its first press", #unloaded == 0, table.concat(unloaded, ", "))
+				-- Research's verdict on TR19: the press goes straight into the charge, ink from the tap to the jump and the fill
+				-- rising white over it, never a flash back to rest.
+				local looks: { string } = {}
+				local lookTimes: { string } = {}
+				local filledAt: number? = nil
 				local pressed = os.clock()
+				local function sample()
+					local shown = tostring(base:GetAttribute("Look"))
+					if looks[#looks] ~= shown then
+						table.insert(looks, shown)
+						table.insert(lookTimes, string.format("%s %.2f%s", shown, os.clock() - pressed, if player:GetAttribute("Engaged") then " engaged" else ""))
+					end
+					local fill = base:GetAttribute("Fill")
+					if filledAt == nil and type(fill) == "number" and fill > 0 then
+						filledAt = os.clock()
+					end
+				end
+				local watch = RunService.RenderStepped:Connect(sample)
+				pressed = os.clock()
 				t.Check("a tap begins the charge", Button.Press(base) and waitFor(t, REPLICATE, function(): boolean
 					return player:GetAttribute("HomeCharge") ~= nil
 				end))
@@ -128,11 +157,33 @@ function HudCases.Cases(given: Given): { any }
 				end), tostring(base:GetAttribute("Fill")))
 				local character = player.Character
 				local glow = if character then character:FindFirstChild("NL_HomeCharge") else nil
+				local first = if filledAt then filledAt - pressed else math.huge
+				t.Check("the fill rises from the tap's own frame", first <= 0.05, string.format("%.3f s", first))
+				waitFor(t, HomeConfig.Charge, function(): boolean -- past the bright band, so the body shows under it
+					return (tonumber(base:GetAttribute("Fill")) or 0) > HudConfig.Dock.Charge.Edge + 0.05
+				end)
+				local gui = base:FindFirstAncestorOfClass("ScreenGui")
+				local fillLayer = if gui then gui:FindFirstChild("BaseFill", true) else nil
+				local ramp = if fillLayer then fillLayer:FindFirstChildOfClass("UIGradient") else nil
+				local alphas: { NumberSequenceKeypoint } = if ramp then ramp.Transparency.Keypoints else {}
+				local edgeLit = false
+				for _, key in alphas do
+					edgeLit = edgeLit or key.Value == 0
+				end
+				local body = alphas[#alphas]
+				t.Check("its rising edge at full over a softer body", edgeLit and body ~= nil and math.abs(body.Value - (1 - HudConfig.Dock.Charge.Alpha)) < 1e-3, `{#alphas} keys`)
 				t.Check("and the avatar's outline lifts in void light", glow ~= nil and glow:IsA("Highlight") and glow.Enabled and glow.OutlineColor == HomeConfig.Outline)
 				t.Check("then it lands", waitFor(t, HomeConfig.Charge + REPLICATE + 0.5, function(): boolean
 					local landed = player:GetAttribute("HomeLanded")
 					return type(landed) == "number" and landed >= pressed
 				end))
+				waitFor(t, HomeConfig.Hold + 0.2, function(): boolean
+					return base:GetAttribute("Look") == "Quiet"
+				end)
+				sample() -- the dock may paint after the watch in the frame the wait ends
+				watch:Disconnect()
+				local inked = table.find(looks, "Charge")
+				t.Check("ink from the tap to home, then quiet: no flash of rest or dim between", inked ~= nil and looks[inked + 1] == "Quiet" and #looks == inked + 1, table.concat(lookTimes, " then "))
 				local took = (tonumber(player:GetAttribute("HomeLanded")) or pressed) - pressed
 				t.Check("after the whole charge", took >= HomeConfig.Charge - 0.05, string.format("%.2f s", took))
 				t.Wait(0.3) -- physics settles the set-down

@@ -38,6 +38,7 @@ local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local Screen = require(UI.Kit.Screen)
+local Hover = require(UI.Kit.Hover)
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 
@@ -859,6 +860,7 @@ return function(given: Given): { any }
 					local base = HudController.Parts().Base :: TextButton
 					local up = Vector3.new(0, R6_ROOT_HEIGHT, 0)
 					t.Server("LeadHeal")
+					t.Server("LeadCalm")
 					t.Server("HomeReady")
 					local pack: any = nil
 					for _, row in t.Server("Packs") do
@@ -919,17 +921,25 @@ return function(given: Given): { any }
 						local hit = Players.LocalPlayer:GetAttribute("HitAt")
 						return type(hit) == "number" and hit >= since
 					end
+					-- The closing gap (research's verdict on TR19): the lead has its target before any hit, and that's a fight.
 					local closing: { string } = {}
+					local engaged, dimBefore = false, false
 					t.Check("a real hit, dealt or taken", waitFor(t, 15, function(): boolean
 						local look = tostring(base:GetAttribute("Look"))
 						if closing[#closing] ~= look then
 							table.insert(closing, look)
 						end
-						return hitSince()
+						local hit = hitSince()
+						if not engaged and Players.LocalPlayer:GetAttribute("Engaged") == true then
+							engaged = true
+							moment("the lead has its target, no hit yet: the tile dims")
+						end
+						dimBefore = dimBefore or (engaged and not hit and look == "Dim")
+						return hit
 					end))
-					t.Check("the tile before the first hit", true, table.concat(closing, " then "))
-					moment("the first hit: the tile dims")
-					t.Check("dim from the first hit", waitFor(t, 0.5, function(): boolean
+					t.Check("the closing gap: dim once the lead has its target, before the first hit", dimBefore, table.concat(closing, " then "))
+					moment("the first hit: the tile stays dim")
+					t.Check("dim at the first hit", waitFor(t, 0.5, function(): boolean
 						return base:GetAttribute("Look") == "Dim"
 					end), tostring(base:GetAttribute("Look")))
 					t.Wait(TAKE_READ)
@@ -949,6 +959,49 @@ return function(given: Given): { any }
 					moment("end")
 				end)
 				t.Server("HomeReady")
+			end,
+		},
+		{
+			Name = "Take: TR20, a pointer from outside crosses the dock, the Voidkin screen's cards and the Breaker's chambers, for research's verdict",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- TR20's evidence in motion (docs/test-requests.md, TR20): the engine's own mouse, or a pad, driven from outside
+				-- the game (Studio's input tools), crosses the dock, then the Voidkin screen's cards, then the Breaker's chambers.
+				-- The take moves nothing: it marks each moment and opens what the driver asks for through
+				-- ReplicatedStorage.NL_TakeStep ("Voidkin", "Breaker", "End"), since the Breaker's prompt opens a ready shard
+				-- first. Opened for the take, the Breaker's screen isn't played, and its row says so.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Dock"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 90, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end)
+				end
+				take(t, function(kit: Take)
+					local moment = kit.Moment
+					kit.Zero()
+					moment("zero: the white frame")
+					moment(`the dock, by {Hover.Kind()}`)
+					t.Check("the driver moves on to the Voidkin screen", await("Voidkin"))
+					if Screen.Current() ~= VoidkinScreen.Name then
+						t.Wait(1) -- the driver's own click on the dock's tile opens it
+					end
+					moment(`the Voidkin screen's cards, by {Hover.Kind()} ({Screen.Current() or "no screen"})`)
+					t.Check("the driver moves on to the Breaker's chambers", await("Breaker"))
+					if step.Value ~= "End" then
+						Screen.Close()
+						t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+						BaseController.OpenBreaker()
+						moment(`the Breaker's chambers, by {Hover.Kind()} (the screen opened for the take, not played)`)
+						await("End")
+					end
+					Screen.Close()
+					moment("end")
+				end)
+				step:Destroy()
 			end,
 		},
 		{

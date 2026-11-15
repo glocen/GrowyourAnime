@@ -11,9 +11,9 @@ local HomeConfig = require(Shared.Config.Home)
 
 local NOW = 1_800_000_000
 
--- Out on the street, nothing in the way.
+-- Out on the street, the lead standing beside the avatar, nothing in the way.
 local function out(change: { [string]: any }?): Home.Situation
-	local s: Home.Situation = { Now = NOW, HitAt = nil, Try = false, Event = false, ReadyAt = 0, OnPlot = false }
+	local s: Home.Situation = { Now = NOW, HitAt = nil, Engaged = false, Standing = true, Try = false, Event = false, ReadyAt = 0, OnPlot = false }
 	for key, value in change or {} do
 		(s :: any)[key] = value
 	end
@@ -48,6 +48,23 @@ return {
 			t.Equal("an event before a fight", Home.Refusal(out({ Event = true, HitAt = NOW }), RULES), "Event")
 			t.Equal("a fight before the cooldown", Home.Refusal(out({ HitAt = NOW, ReadyAt = NOW + 5 }), RULES), "Fight")
 			t.Equal("the config's fight is the spec's 4 s", HomeConfig.Fight, 4)
+		end,
+	},
+	{
+		Name = "Home: TR19, a fight is the game's one meaning of it, or a hit's tail while the lead stands (research's verdict)",
+		Run = function(t: any)
+			-- Research's verdict in motion on TR19 (2026-11-15): "In a fight" is FightService.InCombat or a hit in the last
+			-- 4 s, the tail only while the lead stands. InCombat's two ways in (the lead's target, a Shade's) are one fact here.
+			t.Equal("the closing gap: the lead has its target and no hit yet", Home.Refusal(out({ Engaged = true }), RULES), "Fight")
+			t.Equal("a Shade has the lead and no hit yet", Home.Refusal(out({ Engaged = true, HitAt = NOW - 30 }), RULES), "Fight")
+			t.Equal("its words", Home.Says("Fight", out({ Engaged = true })), "In a fight")
+			t.Equal("engaged, still under a boss's ground", Home.Refusal(out({ Engaged = true, Try = true }), RULES), "Boss")
+			t.Equal("engaged before the cooldown", Home.Refusal(out({ Engaged = true, ReadyAt = NOW + 5 }), RULES), "Fight")
+			t.Equal("engaged at home is still home", Home.Refusal(out({ Engaged = true, OnPlot = true }), RULES), "Here")
+			t.Equal("after a fall, a hit just now leaves no tail", Home.Refusal(out({ Standing = false, HitAt = NOW }), RULES), nil)
+			t.Equal("after a fall, the cooldown still counts", Home.Refusal(out({ Standing = false, HitAt = NOW, ReadyAt = NOW + 5 }), RULES), "Cooldown")
+			t.Equal("no lead out: no tail either", Home.Refusal(out({ Standing = false, HitAt = NOW - 1 }), RULES), nil)
+			t.Equal("standing, the tail holds", Home.Refusal(out({ HitAt = NOW - 1 }), RULES), "Fight")
 		end,
 	},
 	{

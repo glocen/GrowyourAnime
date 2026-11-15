@@ -2,8 +2,11 @@
 -- Home (pure rule): home in one tap, the dock's Base tile (docs/test-requests.md, TR19; the director, 2026-11-15, night:
 -- "there should be a Ui to tp back to base with a small CD and only when out of combat/boss area event etc"). Whether a
 -- tap takes the player home, and if not, why, in the order a player most needs to hear it: they're home already; they're
--- in a boss's ground (a keeper's try); an event is on; their side dealt or took a hit in the last Fight seconds; the
--- cooldown. The server decides by it (HomeService); the dock shows the same state from the same inputs (HudController).
+-- in a boss's ground (a keeper's try); an event is on; a fight; the cooldown. A fight is the game's one meaning of it
+-- (FightService.InCombat, TR12: the lead has a target, or a Shade has the lead), or a hit the player's side dealt or took
+-- in the last Fight seconds while the lead stands: a fall ends the fight at once, so the pip after a lone fall never
+-- points at a dim tile (research's verdict on TR19, 2026-11-15). The server decides by it (HomeService); the dock shows
+-- the same state from the same inputs (HudController).
 --   Home.Refusal(situation, rules)   nil when a tap goes home, else "Here" | "Boss" | "Event" | "Fight" | "Cooldown"
 --   Home.Says(refusal, situation)    the refusal in plain words; nil for "Here", where a tap does nothing
 --   Home.Broken(chargedAt, hitAt)    a hit since the charge began cancels it, and nothing is spent
@@ -12,6 +15,8 @@
 export type Situation = {
 	Now: number, -- server time
 	HitAt: number?, -- the last hit the player's side dealt or took, server time
+	Engaged: boolean, -- FightService.InCombat: the lead has a target, or a Shade has the lead
+	Standing: boolean, -- the lead is out and stands: neither down nor gone home
 	Try: boolean, -- a keeper's try under way
 	Event: boolean,
 	ReadyAt: number, -- the cooldown's end, server time; 0 when there's none
@@ -29,7 +34,7 @@ function Home.Refusal(s: Situation, rules: Rules): Refusal?
 		return "Boss"
 	elseif s.Event then
 		return "Event"
-	elseif s.HitAt ~= nil and s.Now - s.HitAt < rules.Fight then
+	elseif s.Engaged or (s.Standing and s.HitAt ~= nil and s.Now - s.HitAt < rules.Fight) then
 		return "Fight"
 	elseif s.Now < s.ReadyAt then
 		return "Cooldown"

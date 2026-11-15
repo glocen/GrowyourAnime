@@ -444,6 +444,11 @@ end
 -- charge and wears the cooldown's veil; the avatar's outline lifts in void light over the charge.
 local homeOutline: Highlight? = nil
 local flashAt: number? = nil -- the jump's light at the screen's edges, from this os.clock()
+-- A tap's charge, from its server time, while the server's answer is on its way: the press goes straight into the fill
+-- (research's verdict on TR19). Seen: the server's own charge came, so its end ends this one.
+local charging: number? = nil
+local chargeSeen = false
+local landedAt: number? = nil -- the last jump's landing, from this os.clock(): the full tile holds a moment after it
 local settleAt: number? = nil -- the arrival's field of view, eased back from this os.clock()
 local settledFov = 70 -- the camera's own field of view under the arrival's
 local edges: { Frame } = {}
@@ -453,10 +458,19 @@ local function attribute(name: string): number?
 	return if type(value) == "number" then value else nil
 end
 
+-- The lead out and standing: neither down nor gone home (FightService's standing, as its model's State shows it).
+local function leadStands(): boolean
+	local lead = myLead()
+	local state = if lead then lead:GetAttribute("State") else nil
+	return lead ~= nil and state ~= "Down" and state ~= "Home" and state ~= "Reset"
+end
+
 local function homeSituation(): Home.Situation
 	return {
 		Now = workspace:GetServerTimeNow(),
 		HitAt = attribute("HitAt"),
+		Engaged = player:GetAttribute("Engaged") == true, -- FightService.InCombat, as the server publishes it
+		Standing = leadStands(),
 		Try = player:GetAttribute("Try") ~= nil,
 		Event = false, -- no event exists yet (HomeService)
 		ReadyAt = attribute("HomeReady") or 0,
@@ -523,23 +537,46 @@ end
 local function stepHome()
 	local s = homeSituation()
 	local refusal = Home.Refusal(s, HomeConfig)
-	local began = attribute("HomeCharge")
+	local served = attribute("HomeCharge")
+	if charging and served then
+		chargeSeen = true
+	end
+	if charging and ((chargeSeen and served == nil) or s.Now - charging > HomeConfig.Charge + 1) then
+		charging, chargeSeen = nil, false -- the server's charge ended, or never came
+	end
+	local began = if charging and served then math.min(charging, served) else served or charging
+	-- Landed, the tile stays full until this client sees home (its avatar's set-down replicates a moment after the jump).
+	if refusal == "Here" or (landedAt and os.clock() - landedAt >= HomeConfig.Hold) then
+		landedAt = nil -- home seen once ends the hold
+	end
+	local holding = began == nil and landedAt ~= nil
 	local mood: Dock.Mood? = if refusal == "Here" then "Quiet" elseif refusal == "Boss" or refusal == "Event" or refusal == "Fight" then "Dim" else nil
+	if began or holding then
+		mood = nil -- a charge under way is broken only by a hit (HomeService): it never dims while it runs
+	end
 	Dock.Mood(dockUi, "Base", mood)
 	Dock.Reason(dockUi, "Base", Home.Says(refusal, s)) -- a refused tile's word says why (TR20)
-	local share = if began then Home.Share(began, HomeConfig.Charge, s.Now) else nil
+	local share = if began then Home.Share(began, HomeConfig.Charge, s.Now) elseif holding then 1 else nil
 	Dock.Fill(dockUi, "Base", share)
-	Dock.Sweep(dockUi, "Base", if refusal == "Cooldown" then Home.Share(s.ReadyAt - HomeConfig.Cooldown, HomeConfig.Cooldown, s.Now) else nil)
-	outline(share)
+	Dock.Sweep(dockUi, "Base", if refusal == "Cooldown" and not holding then Home.Share(s.ReadyAt - HomeConfig.Cooldown, HomeConfig.Cooldown, s.Now) else nil)
+	outline(if began then share else nil)
 	stepFlash()
 end
 
 -- A tap on the Base tile: at home nothing; else the server's answer, which on a refusal says why and shakes the tile.
 local function goHome(): ...any
-	if Home.Refusal(homeSituation(), HomeConfig) == "Here" then
+	local s = homeSituation()
+	local refusal = Home.Refusal(s, HomeConfig)
+	if refusal == "Here" then
 		return nil
 	end
+	if refusal == nil and attribute("HomeCharge") == nil then
+		charging, chargeSeen = s.Now, false
+	end
 	local ok, answer = pcall(Net.Client.Invoke, "Home")
+	if not ok or type(answer) ~= "table" or answer.Ok == false then
+		charging, chargeSeen = nil, false
+	end
 	if ok and type(answer) == "table" and answer.Ok == false then
 		if type(answer.Says) == "string" then
 			Toast.Show(answer.Says)
@@ -551,6 +588,7 @@ end
 
 -- The jump's answer: landed, the light at the edges, the arrival's field of view and the puff at the feet; else why not.
 local function jumped(landed: boolean, says: string?)
+	charging, chargeSeen = nil, false
 	if not landed then
 		if type(says) == "string" then
 			Toast.Show(says)
@@ -559,6 +597,7 @@ local function jumped(landed: boolean, says: string?)
 		return
 	end
 	flashAt = os.clock()
+	landedAt = flashAt
 	local camera = workspace.CurrentCamera
 	if camera then
 		settledFov = if settleAt then settledFov else camera.FieldOfView
@@ -1067,6 +1106,7 @@ function HudController.Start()
 		Inventory = toggle("Voidkin", voidkinScreen),
 		Base = goHome,
 	})
+	Dock.Charges(dockUi, "Base", true) -- its tap is the charge's first frame: ink while it fills, no flash (TR19)
 	dockHolder = dockUi.Frame
 	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
 	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)

@@ -314,6 +314,7 @@ end
 
 -- The Standard's break time, tuned by the voltage case (Config.Shards): voltage is never offered on its own 30 seconds.
 local BREAK_PATH = "Shards.Grades.Standard.BreakSeconds"
+local NAMED_PATH = "Shards.Grades.Named.BreakSeconds" -- and a Named shard's, a Standard's 30 too
 
 -- Rook's reveal at `rarity`, on his body, as the NL_RevealTest bridge's Show plays it: display only, nothing owned.
 local function showReveal(rarity: string)
@@ -5327,8 +5328,11 @@ local cases = {
 			local hue = if def then HudConfig.Card.Types[def.Type] else nil
 			t.Check("its stud in its type's colour", stud ~= nil and hue ~= nil and stud.ImageColor3 == hue, if stud then stud.ImageColor3:ToHex() else "no stud")
 			local text, bar, xpBar = parts.LeadHealthText :: GuiObject, parts.LeadHealth :: GuiObject, parts.Lead:FindFirstChild("Xp") :: GuiObject
-			t.Check("its digits between the health bar and the experience", text.AbsolutePosition.Y >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y - 1
-				and text.AbsolutePosition.Y + text.AbsoluteSize.Y <= xpBar.AbsolutePosition.Y + 1, string.format("%.0f to %.0f", text.AbsolutePosition.Y, text.AbsolutePosition.Y + text.AbsoluteSize.Y))
+			-- The digits' line, not its box: the box is centred on the gap and held at the text's floor (UI.LeadCard).
+			local middle = text.AbsolutePosition.Y + text.AbsoluteSize.Y / 2
+			local lineHalf = (text :: TextLabel).TextBounds.Y / 2
+			t.Check("its digits between the health bar and the experience", middle - lineHalf >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y - 1
+				and middle + lineHalf <= xpBar.AbsolutePosition.Y + 1, string.format("%.0f to %.0f", middle - lineHalf, middle + lineHalf))
 			local scale = parts.Lead.AbsoluteSize.X / parts.Lead.Size.X.Offset
 			local mark = parts.Lead:FindFirstChild("LevelPlate") :: GuiObject
 			local plate = UIKit.LeadPlate
@@ -5345,8 +5349,8 @@ local cases = {
 			local shown = (parts.Electricity :: TextLabel).Text
 			local now = Read.Base(view, workspace:GetServerTimeNow())
 			t.Equal("the Power pill: generation against demand", shown, Read.Against(now.Rates.Generation, now.Rates.Demand))
-			local over = now.Rates.Demand > now.Rates.Generation + 1e-9
-			t.Check("its over state is demand over generation's", ((parts.Electricity :: TextLabel).Parent :: GuiObject):GetAttribute("Over") == over, `{now.Rates.Demand} against {now.Rates.Generation}`)
+			local over = now.Rates.Flow.Net < -1e-9
+			t.Check("its warning only while the battery covers a shortfall", ((parts.Electricity :: TextLabel).Parent :: GuiObject):GetAttribute("Over") == over, `{now.Rates.Flow.Net} kW into the battery`)
 			local after = (parts.PowerStored :: TextLabel).Text
 			local kwh = tonumber(after:match("^([%d%.]+) kWh$") or "")
 			t.Check("the battery's kWh after it", after == "full" or kwh ~= nil, after)
@@ -7074,15 +7078,26 @@ local cases = {
 					local p = plant()
 					return p ~= nil and not p.Auto and math.abs((p.Shares.Training or 0) - 0.6) < 1e-6
 				end) and math.abs(PowerScreen.Cuts()[2] - 0.6) < 1e-6, `{PowerScreen.Cuts()[1]}, {PowerScreen.Cuts()[2]}`)
+				-- The Void Breaker's handle keeps the Training machine's share: what it takes or gives up is the battery's
+				-- (research, TR18).
 				local first = PowerScreen.Drag(1, 0.3)
 				t.Check("the first at 30%: asked and taken", first.Ok == true, first.Error)
-				t.Check("the save holds the bar's split", waitFor(t, ANSWER, function(): boolean
+				t.Check("the save holds the bar's split, the Training machine's 60% kept", waitFor(t, ANSWER, function(): boolean
 					local p = plant()
-					return p ~= nil and not p.Auto and math.abs((p.Shares.Breaker or 0) - 0.3) < 1e-6 and math.abs((p.Shares.Training or 0) - 0.3) < 1e-6
+					return p ~= nil and not p.Auto and math.abs((p.Shares.Breaker or 0) - 0.3) < 1e-6 and math.abs((p.Shares.Training or 0) - 0.6) < 1e-6
 				end))
-				t.Check("the screen shows it: 30%, 30% and the battery's 40%", waitFor(t, 1, function(): boolean
-					return said("Share1") == "30%" and said("Share2") == "30%" and said("Share3") == "40%"
+				t.Check("the screen shows it: 30%, 60% and the battery's 10%", waitFor(t, 1, function(): boolean
+					return said("Share1") == "30%" and said("Share2") == "60%" and said("Share3") == "10%"
 				end), `{said("Share1")}, {said("Share2")}, {said("Share3")}`)
+				local flow = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow()).Rates.Flow
+				for index, machine in PowerScreen.Machines do
+					local segment = part(`Segment{index}`)
+					local busy = (flow.Demand[machine.Id] or 0) > 0
+					local colour = if busy then machine.Colour else Theme.Colour.Electricity
+					t.Check(`{machine.Name}'s share in its colour, or the battery's while it's idle ({if busy then "working" else "idle"})`, segment ~= nil and segment:IsA("Frame") and segment.BackgroundColor3 == colour)
+				end
+				local line = part("Over")
+				t.Check("under a split, the head's line is plain: never the warning colour", line ~= nil and line:IsA("TextLabel") and line.TextColor3 ~= Theme.Colour.Over and (part("Body") :: Instance):GetAttribute("Over") ~= true, if line and line:IsA("TextLabel") then line.Text else "none")
 				-- +/-: a step of the whole on one share.
 				local step = HudConfig.Power.Step
 				t.Check("+ on the Breaker", Button.Press(part("Plus1") :: TextButton))
@@ -7093,7 +7108,7 @@ local cases = {
 				t.Check("- on the Training machine", Button.Press(part("Minus2") :: TextButton))
 				t.Check("a step down", waitFor(t, ANSWER, function(): boolean
 					local p = plant()
-					return p ~= nil and math.abs((p.Shares.Training or 0) - (0.3 - step)) < 1e-6
+					return p ~= nil and math.abs((p.Shares.Training or 0) - (0.6 - step)) < 1e-6
 				end))
 				-- The whole given: + can't give more.
 				local full = PowerScreen.Drag(2, 1)
@@ -7145,8 +7160,9 @@ local cases = {
 		Run = function(t: any)
 			-- TR18 (docs/design.md, "Power"; Rules.Power.Voltage, Rules.Base.Infuse): Low or High voltage, each with its price
 			-- in kWh, and the time it saves beside it. Why a whole shard takes none stands over the levels; a level's own
-			-- reason beside its button (BreakerScreen.Reasons). Voltage is never offered on Lantern Row's 30-second Standard,
-			-- so the case tunes it an Enriched's 900 seconds, and puts it back however the case ends.
+			-- reason beside its button (BreakerScreen.Reasons). Voltage is never offered on Lantern Row's 30-second shards, so
+			-- none shows there (research, TR18); the case then tunes the Standard and the Named an Enriched's 900 seconds, and
+			-- puts them back however the case ends.
 			local reasons = BreakerScreen.Reasons
 			local view = ProfileController.Get()
 			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
@@ -7156,15 +7172,17 @@ local cases = {
 			local shard = "lanternrow_standard"
 			local seconds = BREAK_PATH
 			local plain = Tune.Read(seconds) :: number
+			local plainNamed = Tune.Read(NAMED_PATH) :: number
 			local charge = view.Base.Charge
 			local held = view.Bag.Shards[shard] or 0
 			local heldWatt = view.Bag.Shards.named_watt or 0
 			local before = readyCount(shard)
 			local capacity = BaseConfig.Battery.Capacity
-			local function tuned(value: number): boolean
+			local function tuned(value: number, named: number): boolean
 				t.Server("Tune", seconds, value)
+				t.Server("Tune", NAMED_PATH, named)
 				return waitFor(t, ANSWER, function(): boolean
-					return Tune.Read(seconds) == value
+					return Tune.Read(seconds) == value and Tune.Read(NAMED_PATH) == named
 				end)
 			end
 			local ok, err = pcall(function()
@@ -7176,6 +7194,14 @@ local cases = {
 				end))
 				Screen.Close()
 				BaseController.OpenBreaker()
+				-- Lantern Row's 30 seconds: voltage is never offered on its shards, so none shows.
+				for _, def in { shard, "named_watt" } do
+					BreakerScreen.Select(bagItem(def))
+					local button = infuseButton(1)
+					t.Check(`{def} at Lantern Row's 30 seconds: no voltage shown`, button == nil and breakerText("Odds", "Why") == "", breakerText("Odds", "Why"))
+				end
+				-- An Enriched's 900 seconds from here: voltage is offered, and each reason stands.
+				t.Check("tuned to 900 seconds", tuned(900, 900))
 				-- Watt's shard holds him alone: no voltage.
 				BreakerScreen.Select(bagItem("named_watt"))
 				local _, locked = infuseButton(1)
@@ -7196,14 +7222,7 @@ local cases = {
 				end))
 				local chosen = BreakerScreen.Selected() :: BreakerScreen.Selection
 				t.Check("in, nothing stands over the levels", breakerText("Odds", "Why") == "", breakerText("Odds", "Why"))
-				-- Its own 30 seconds: each level would save under a minute, so neither is offered, and neither shows a price.
-				for index in ShardConfig.Voltage.Levels do
-					local button, off = infuseButton(index)
-					local text = button and button:FindFirstChild("Label") :: TextLabel?
-					t.Check(`level {index} on a 30-second shard: not offered, no price`, off and breakerText("Odds", `Effect{index}`) == reasons.Brief and text ~= nil and string.find(text.Text, "kWh", 1, true) == nil, breakerText("Odds", `Effect{index}`))
-				end
-				-- An Enriched's 900 seconds, the battery empty: each level says beside it what it needs, its price on it.
-				t.Check("tuned to 900 seconds", tuned(900))
+				-- The battery empty: each level says beside it what it needs, its price on it.
 				t.Server("BaseBattery", 0)
 				t.Check("the battery emptied", waitFor(t, ANSWER, function(): boolean
 					local now = ProfileController.Get()
@@ -7296,7 +7315,7 @@ local cases = {
 			-- Leaves the base as it found it: the break time put back, Watt's shard taken back, the rest opened, the
 			-- battery as it was.
 			Screen.Close()
-			t.Check("the break time put back", tuned(plain))
+			t.Check("the break times put back", tuned(plain, plainNamed))
 			t.Server("BaseGive", "named_watt", -1)
 			openReadyDown(t, shard, before)
 			t.Server("BaseBattery", charge)

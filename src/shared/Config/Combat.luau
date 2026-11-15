@@ -53,6 +53,10 @@ return {
 	Shade = {
 		Notice = 20,
 		GiveUp = 40,
+		-- A lead further than this from a Shade is let go, even one that hit its pack: one gone home through a door left
+		-- two of Pack 1 pinned at the gate's wall, short of GiveUp, holding it, so the player stayed in a fight at home and
+		-- couldn't change the lead (TR12's take, 2026-11-15). Past any reach in a fight. The builder's seed.
+		Lose = 100,
 		WalkSpeed = 12,
 		ResetSpeed = 24, -- walking home after giving up, untouchable
 		-- Walking home, it's stuck once it has come no Gain studs nearer for Seconds (a wall between it and home: TR7's

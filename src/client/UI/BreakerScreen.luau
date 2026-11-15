@@ -697,8 +697,12 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		chances(column, it.Def, if held then held.Luck else 0)
 		return
 	end
-	-- Voltage: why none goes in, if so; then its two levels, each with its price in kWh and, beside it, the time it
-	-- saves at the Breaker's speed now, or why that level can't be paid. A shard in the bag is priced from its start.
+	-- Voltage: none at all on a kind it's never offered on (Rules.Power.Offered; research, TR18). Else why none goes in,
+	-- if so; then its two levels, each with its price in kWh and, beside it, the time it saves at the Breaker's speed
+	-- now, or why that level can't be paid. A shard in the bag is priced from its start.
+	if not Power.Offered(it.Def) then
+		return
+	end
 	local whole = blockShard(it, now)
 	if whole then
 		lines(column, "Why", whole, UDim2.new(1, -gap, 0, LINE), 2, Theme.Colour.Text)

@@ -938,10 +938,11 @@ local function step(dt: number)
 		local kwh = base.Data.Base.Charge
 		local cap = BaseConfig.Battery.Capacity
 		-- TR18: the pill says power, never a stock: generation against demand, the battery after it and in the thread.
-		-- Demand over generation turns the value Power's warning colour, the frame's Over attribute set for the tests.
+		-- The value turns Power's warning colour only while the battery covers a shortfall (research's verdict), never
+		-- for a split generation covers; the frame's Over attribute is set for the tests.
 		local generation, demand = base.Rates.Generation, base.Rates.Demand
 		local against = Read.Against(generation, demand)
-		local over = demand > generation + 1e-9
+		local over = base.Rates.Flow.Net < -1e-9
 		local function shown(_: number): string
 			return against
 		end

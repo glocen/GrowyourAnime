@@ -399,6 +399,8 @@ return {
 		Run = function(t: any)
 			local fresh30 = work(STANDARD)
 			t.Check("a Standard's 30 s: never offered", Power.Voltage(fresh30, 1) == nil and Power.Voltage(fresh30, 2) == nil)
+			t.Check("so a Standard's kind is never offered: the Breaker shows no voltage", not Power.Offered(STANDARD))
+			t.Check("nor an unknown shard's", not Power.Offered("nope"))
 			-- Drum Court's Enriched, as TR18 states it: 900 s at a factor of 1.5, Low 4 kWh, High 8.
 			withConfig(ShardConfig.Grades.Standard :: any, "BreakSeconds", 900, function()
 				withConfig(ShardConfig.RegionFactor :: any, "lanternrow", 1.5, function()
@@ -409,6 +411,7 @@ return {
 					local late, lateSaved = Power.Voltage(work(STANDARD, 820), 2)
 					t.Check("from what it has left: 80 s, 1 kWh", late == 1 and near(lateSaved, 80), `{late}, {lateSaved}`)
 					t.Check("Low on 80 s left saves 40: not offered", Power.Voltage(work(STANDARD, 820), 1) == nil)
+					t.Check("at 900 s its kind is offered, nearly done or not", Power.Offered(STANDARD))
 				end)
 			end)
 			t.Check("an unknown level or shard", Power.Voltage(fresh30, 3) == nil and Power.Voltage(work("nope"), 1) == nil)

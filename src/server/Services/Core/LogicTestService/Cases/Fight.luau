@@ -326,6 +326,11 @@ return {
 			t.Equal("who hit its pack comes first, wherever", Fight.ShadeTarget(list, nil, notice), "hitter")
 			t.Equal("it keeps its target", Fight.ShadeTarget(list, "near", notice), "near")
 			t.Check("a target gone is dropped", Fight.ShadeTarget({ candidate("other", 50, 0) }, "gone", notice) == nil)
+			local lose = Combat.Shade.Lose
+			t.Check("it lets go of a lead past Lose: one gone home through a door", Fight.ShadeTarget({ candidate("home", lose + 1, 0) }, "home", notice, lose) == nil)
+			t.Check("even one that hit its pack", Fight.ShadeTarget({ candidate("home", lose + 1, 0, true) }, nil, notice, lose) == nil)
+			t.Equal("at Lose it keeps it", Fight.ShadeTarget({ candidate("chased", lose, 0) }, "chased", notice, lose), "chased")
+			t.Check("Lose is past the give-up and the notice, so a chase never trips it", lose > Combat.Shade.GiveUp + Combat.Shade.Notice)
 			t.Check("inside its ground it fights on", not Fight.GivesUp(Combat.Shade.GiveUp, Combat.Shade.GiveUp))
 			t.Check("past it, it gives up", Fight.GivesUp(Combat.Shade.GiveUp + 0.1, Combat.Shade.GiveUp))
 		end,

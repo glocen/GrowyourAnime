@@ -698,19 +698,30 @@ return function(given: Given): { any }
 				-- TAKE_HEAL for the take (90 s would hold it that long), put back after.
 				local view = ProfileController.Get()
 				local first, second = nil :: string?, nil :: string?
+				local working = {} :: { [number]: string } -- bays the take empties for Rook or Ironhymn, filled again after it
 				for id, owned in (if view then view.Voidkin else {}) :: { [string]: any } do
 					local role = Read.Role(view :: any, id)
-					local free = role == "" or role == "Lead"
-					if owned.Def == "rook" and free then
-						first = first or id
-					elseif owned.Def == "ironhymn" and free then
-						second = second or id
+					local bay = tonumber(string.match(role, "^Bay (%d+)$"))
+					local free = role == "" or role == "Lead" or bay ~= nil
+					if owned.Def == "rook" and free and first == nil then
+						first = id
+					elseif owned.Def == "ironhymn" and free and second == nil then
+						second = id
+					else
+						continue
+					end
+					if bay then
+						working[bay] = id
 					end
 				end
 				t.Check("Rook and Ironhymn owned", first ~= nil and second ~= nil)
 				if first == nil or second == nil then
 					return
 				end
+				for bay in working do
+					t.Check(`bay {bay}'s worker steps out for the take`, t.Server("Act", "SetWorker", { Bay = bay, Voidkin = "" }).Ok == true)
+				end
+				local before = (view :: Profile.View).Roles.Lead
 				local heal = Combat.Lead.Home.Fallen
 				take(t, function(kit: Take)
 					local player = Players.LocalPlayer
@@ -820,6 +831,14 @@ return function(given: Given): { any }
 					moment("end")
 				end)
 				t.Server("Tune", "Combat.Lead.Home.Fallen", heal)
+				if before ~= nil and before ~= "" then
+					t.Check("the lead before the take back, once out of the fight", waitFor(t, 20, function(): boolean
+						return t.Server("Act", "SetLead", { Voidkin = before }).Ok == true
+					end))
+				end
+				for bay, id in working do
+					t.Check(`bay {bay}'s worker back at work`, t.Server("Act", "SetWorker", { Bay = bay, Voidkin = id }).Ok == true)
+				end
 			end,
 		},
 		{

@@ -75,17 +75,28 @@ function Fight.LeadTarget(candidates: { Candidate }, current: string?, leash: nu
 end
 
 -- A Shade's target: the lead it has while that one stands; else the nearest lead that hit it or its pack, wherever it is;
--- else the nearest within `notice`. Nil: it stays home.
-function Fight.ShadeTarget(candidates: { Candidate }, current: string?, notice: number): string?
-	for _, candidate in candidates do
+-- else the nearest within `notice`. Nil: it stays home. A lead further than `lose` is let go and never picked, even one
+-- that hit its pack: one gone home through a door, while the Shade stands pinned at a wall short of its give-up (nil:
+-- never let go, as a keeper's).
+function Fight.ShadeTarget(candidates: { Candidate }, current: string?, notice: number, lose: number?): string?
+	local near = candidates
+	if lose then
+		near = {}
+		for _, candidate in candidates do
+			if candidate.Distance <= lose then
+				table.insert(near, candidate)
+			end
+		end
+	end
+	for _, candidate in near do
 		if candidate.Id == current then
 			return current
 		end
 	end
-	local struck = nearest(candidates, function(candidate: Candidate): boolean
+	local struck = nearest(near, function(candidate: Candidate): boolean
 		return candidate.Aggrieved == true
 	end)
-	return struck or nearest(candidates, function(candidate: Candidate): boolean
+	return struck or nearest(near, function(candidate: Candidate): boolean
 		return candidate.Distance <= notice
 	end)
 end

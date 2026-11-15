@@ -59,7 +59,9 @@ local lastOn: On? = nil
 local parts: { [string]: Instance } = {}
 local tickers: { (now: Read.Base) -> () } = {}
 local cuts: { number } = { 0, 0 } -- the bar's cuts, 0 to 1: after the Breaker's share, after the Training machine's
-local held: { Handle: number, Input: InputObject?, StartX: number, From: number }? = nil
+-- A held handle: Keep, the Training machine's share as the hold began; Pick, the two handles on one spot, so the first
+-- move says which is held.
+local held: { Handle: number, Input: InputObject?, StartX: number, From: number, Keep: number, Pick: boolean }? = nil
 local waiting = false -- a rebuild asked while a handle was held
 local sent = false -- a let-go's split asked, the save's copy not back yet: the bar keeps it rather than jump back
 local wired = false
@@ -144,14 +146,22 @@ local function lay()
 	end
 end
 
--- A handle moved to `to` of the bar, kept between its neighbours.
+-- A handle moved to `to` of the bar. The Void Breaker's keeps the Training machine's share behind it, squeezing it only
+-- at the bar's end, so what it gives up goes to the battery (research, TR18); the Training machine's stays past it.
 local function move(handle: number, to: number)
 	if handle == 1 then
-		cuts[1] = math.clamp(to, 0, cuts[2])
+		local keep = if held then held.Keep else cuts[2] - cuts[1]
+		cuts[1] = math.clamp(to, 0, 1)
+		cuts[2] = math.min(cuts[1] + keep, 1)
 	else
 		cuts[2] = math.clamp(to, cuts[1], 1)
 	end
 	lay()
+end
+
+-- A hold on `handle` from `x`, a finger's or the mouse's (`input` a touch's, nil for the mouse).
+local function grab(handle: number, input: InputObject?, x: number)
+	held = { Handle = handle, Input = input, StartX = x, From = cuts[handle], Keep = cuts[2] - cuts[1], Pick = math.abs(cuts[2] - cuts[1]) < 1e-6 }
 end
 
 local function ask(args: { [string]: any }): { [string]: any }
@@ -200,8 +210,14 @@ local function wire()
 		end
 		local moving = input.UserInputType == Enum.UserInputType.MouseMovement or (hold.Input ~= nil and input == hold.Input)
 		if moving then
-			-- By how far the finger went, never where it is: the same in every layer's inset.
-			move(hold.Handle, hold.From + (input.Position.X - hold.StartX) / track.AbsoluteSize.X)
+			-- By how far the finger went, never where it is: the same in every layer's inset. Two handles on one spot: a
+			-- move left holds the Void Breaker's, a move right the Training machine's.
+			local by = (input.Position.X - hold.StartX) / track.AbsoluteSize.X
+			if hold.Pick and math.abs(by) > 1e-6 then
+				hold.Pick = false
+				hold.Handle = if by < 0 then 1 else 2
+			end
+			move(hold.Handle, hold.From + by)
 		end
 	end)
 	UserInputService.InputEnded:Connect(function(input: InputObject)
@@ -233,7 +249,9 @@ local function chip(parent: Instance, colour: Color3)
 	mark.Parent = parent
 end
 
--- The head: generation against demand, demand in the warning colour while it's over generation; Auto at its right.
+-- The head: generation against demand; Auto at its right. Under Auto, demand over generation in the warning colour: the
+-- battery covering it, or the machines slowing. Under a split the player made, the fact plainly, with no warning
+-- (research, TR18): each machine its share slows, at its speed.
 local function head(body: Frame, now: Read.Base)
 	local gap = Theme.Size.Gap
 	local says = label(body, "Plant", "", Theme.Text.Body, UDim2.new(1, -(AUTO + gap), 0, NAME_LINE), UDim2.fromOffset(0, (STEP - NAME_LINE) / 2), { Font = Theme.Font.Strong })
@@ -242,11 +260,26 @@ local function head(body: Frame, now: Read.Base)
 	table.insert(tickers, function(at: Read.Base)
 		local rates = at.Rates
 		says.Text = `Generation {Read.Kw(rates.Generation)} · Demand {Read.Kw(rates.Demand)}`
-		local short = rates.Demand > rates.Generation + 1e-9
-		over.Text = if not short then ""
-			elseif at.Data.Base.Power.Auto and at.Data.Base.Charge > 1e-9 then "The battery covers the rest"
-			else "Demand over generation: the machines slow"
-		body:SetAttribute("Over", short)
+		local flow = rates.Flow
+		local warn, text = false, ""
+		if at.Data.Base.Power.Auto then
+			warn = rates.Demand > rates.Generation + 1e-9
+			text = if not warn then ""
+				elseif at.Data.Base.Charge > 1e-9 then "The battery covers the rest"
+				else "Demand over generation: the machines slow"
+		else
+			local slow: { string } = {}
+			for _, machine in MACHINES do
+				local speed = flow.Speed[machine.Id] or 1
+				if (flow.Demand[machine.Id] or 0) > 0 and speed < 1 - 1e-6 then
+					table.insert(slow, `The {machine.Name} at {math.floor(speed * 100 + 0.5)}%`)
+				end
+			end
+			text = table.concat(slow, " · ")
+		end
+		over.Text = text
+		over.TextColor3 = if warn then Theme.Colour.Over else Theme.Colour.TextDim
+		body:SetAttribute("Over", warn)
 	end)
 	local auto = now.Data.Base.Power.Auto
 	parts.Auto = Button.new({
@@ -317,11 +350,20 @@ local function bar(body: Frame, top: number)
 		handle.InputBegan:Connect(function(input: InputObject)
 			local kind = input.UserInputType
 			if kind == Enum.UserInputType.MouseButton1 or kind == Enum.UserInputType.Touch then
-				held = { Handle = index, Input = if kind == Enum.UserInputType.Touch then input else nil, StartX = input.Position.X, From = cuts[index] }
+				grab(index, if kind == Enum.UserInputType.Touch then input else nil, input.Position.X)
 			end
 		end)
 		parts[`Handle{index}`] = handle
 	end
+	-- An idle machine's share charges the battery whole, so it's drawn as the battery's (research, TR18).
+	table.insert(tickers, function(at: Read.Base)
+		for index, machine in MACHINES do
+			local segment = parts[`Segment{index}`] :: Frame?
+			if segment then
+				segment.BackgroundColor3 = if (at.Rates.Flow.Demand[machine.Id] or 0) > 0 then machine.Colour else BATTERY
+			end
+		end
+	end)
 end
 
 -- A machine's row: its chip and name, its kW against its rating and its speed under them, and its share between - and +.
@@ -455,14 +497,14 @@ function PowerScreen.Cuts(): { number }
 end
 
 function PowerScreen.Drag(handle: number, to: number): { [string]: any }
-	held = { Handle = handle, Input = nil, StartX = 0, From = cuts[handle] }
+	grab(handle, nil, 0)
 	move(handle, to)
 	return release()
 end
 
 function PowerScreen.Slide(handle: number, to: number, seconds: number): { [string]: any }
 	local from = cuts[handle]
-	held = { Handle = handle, Input = nil, StartX = 0, From = from }
+	grab(handle, nil, 0)
 	local start = os.clock()
 	while true do
 		local share = math.clamp((os.clock() - start) / math.max(seconds, 1e-3), 0, 1)

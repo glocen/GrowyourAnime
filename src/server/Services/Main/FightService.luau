@@ -1205,7 +1205,7 @@ local function thinkShade(f: Fighter, at: number)
 		end
 	end
 	local notice = if keeper then Combat.Keeper.Notice else Combat.Shade.Notice
-	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice)
+	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice, if keeper then nil else Combat.Shade.Lose)
 	setTarget(f, if targetId then fighters[targetId] else nil)
 	local target = f.Target
 	if target == nil then

@@ -144,6 +144,18 @@ function Power.Voltage(work: Profile.ShardWork, level: number): (number?, number
 	return math.ceil(rating * saved / 3600 * voltage.Premium - EPSILON), saved
 end
 
+-- Whether voltage is ever offered on a shard of this kind: some level saves at least MinSavedSeconds of a whole shard's
+-- work. Where it can't be, the Breaker shows no voltage at all (research, TR18: a pane that can only say "not offered"
+-- is noise, as on Lantern Row's 30-second shards). False for an unknown shard.
+function Power.Offered(shardId: string): boolean
+	for level in ShardConfig.Voltage.Levels do
+		if (Power.Voltage({ Def = shardId, Luck = 0, Done = 0 }, level)) ~= nil then
+			return true
+		end
+	end
+	return false
+end
+
 -- A split a client asked for, checked: each share a machine's, 0 or more, the whole never over 1. Returns the shares,
 -- or nil and a refusal code (Rules.Base's): "BadArgs" for the wrong shape, "Over" for a whole over 1.
 function Power.Shares(asked: any): ({ [string]: number }?, string?)

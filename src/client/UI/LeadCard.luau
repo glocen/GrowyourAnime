@@ -244,14 +244,18 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	mark.Parent = card
 	local class = Skin.Icon(mark, "ClassWarrior", CLASS / 2, CLASS / 2, CLASS, nil, 1)
 	class.Name = "Class"
-	-- The health's digits under its bar, between the two slots, in the ivory of the name.
+	-- The health's digits under its bar, between the two slots, in the ivory of the name. Its box is centred on the gap
+	-- and never shorter than the text's floor at the smallest scale (Theme.Text.Minimum over Theme.Scale.Floor): at 0.85
+	-- the gap's 13 points drew 11 under a 14-point line.
 	local below = P.Health[2] + P.Health[4]
+	local gap = P.Xp[2] - below
+	local tall = math.max(gap, math.ceil(Theme.Text.Minimum / Theme.Scale.Floor))
 	local healthText = Text.new({
 		Name = "HealthText",
 		Size = Theme.Text.Caption,
 		Font = Theme.Font.Strong,
-		Box = UDim2.fromOffset(P.Health[3] - NAME_X, P.Xp[2] - below),
-		Position = UDim2.fromOffset(NAME_X, below),
+		Box = UDim2.fromOffset(P.Health[3] - NAME_X, tall),
+		Position = UDim2.fromOffset(NAME_X, below - math.floor((tall - gap) / 2)),
 		Parent = card,
 	})
 	healthText.ZIndex = 6

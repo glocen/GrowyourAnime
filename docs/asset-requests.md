@@ -5421,7 +5421,7 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 
 **Time it:** each delivery records what it took, beside Kirra's.
 
-**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). The model is next, after Scarf Step's blockout with Faber, when Faber gives the turn.
+**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). The model is made (section 2, 2026-11-15), for research's verdict; the clips are next after it.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -5487,6 +5487,45 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 - **Fix, at the model (delivery 2):** in the dark row, the shirt, gloves and sleeves fuse into one Graphite mass, so the arms that swing the wrench vanish on a night street. Lift the shirt one value step, or give it a cream rolled cuff, so the arms part from dusk; the pack and the legs already do. Serves the Combo's read.
 - **Note for delivery 4:** from the player's camera, the hold is the lit pack, with the wall mostly hidden, so Ground Wire reads by the ring and the coils' arc. The effect carries the shield's read from behind, never the pose alone.
 - The content check's two notes stand for the clips.
+
+### 2. The model on R6 (Modulo, 2026-11-15)
+
+- **Where:** `build/scratch/modulo/watt/model/` until research's yes, then `build/handoff/Watt/`. The files:
+  - `Watt_<Piece>.json`, 8 pieces;
+  - `Watt_Color.png`, `Watt_Roughness.png`, `Watt_Metalness.png` and `Watt_Emissive.png`;
+  - `Watt.recipe.json`;
+  - `watt_model_sheet.png`, with a half-size copy;
+  - `watt_atlas_check.png`, and `watt_model.blend` for the clips' rig.
+
+  `tools/blender/watt_model.py` makes them in under a minute, with a Cycles bake under the lock: `blender -b --factory-startup --python tools/blender/watt_model.py -- <out dir>`. His body comes from `watt_sheet.build(model=True)`, so the sheet and the model share one source.
+- **How he sits on R6:** as Pip and Kirra do. Each of the six parts is a rigid mesh that carries the body's surface; the rig's blocks are hidden and the face decal goes. The generator and its two coils are the Torso piece's. Two pieces have joints of their own:
+  - **The visor, one hinge on the Head** (`Watt_Visor`), its pivot at his temples. Up on his brow is its mesh, so he's himself with no clip playing. A turn of -100° about the hinge brings it down over his eyes: down for a fight, up again after a win, as a clip's own keys.
+  - **The wrench, one piece on the Torso** (`Watt_Wrench`), its pivot at the grip's middle, as Kirra's blades are. With no turn it stands planted ahead of his right side as take A has it, its rod 0.3 studs into the street. The clips key it into his hands, and into the street for Ground Wire. On the Torso and not the arm, so a clip can leave it standing while his hands move to the head's edges.
+- **The numbers:**
+  - 8,532 triangles in 8 pieces: the torso 3,280 (with the generator and the coils), the wrench 1,192, the head 1,064, each leg 760, each arm 656, the visor 164. Kirra is 10,398, Rook 5,092.
+  - 5.68 studs to the coils' caps, 4.12 wide, 5.88 across with the wrench at rest.
+  - One 1024 px atlas, at 74 px per stud.
+  - Maps: colour with the contact shading baked in, roughness, metalness (the steel and the copper, at 0.55), and a glow mask. No normal map.
+- **Research's fix, the arms at dusk: a cream rolled cuff.** Each short sleeve ends in a cream band 0.2 studs tall, a touch wider than the sleeve. I took the cuff over a value step: one step up from Graphite still sinks on a dusk street, as Kirra's navy did, and cream is already his harness's colour, so it adds no colour. The sheet shows him lit as Lantern Row's dusk, large and at 64 px: the cuffs are two light bars that mark where each arm is. The forearm under it (skin, then the glove) still sinks; the cuff carries the arm.
+- **What lights, and how.** Roblox draws `(mask x strength x tint + light) x colour map`, so the colour under a glow carries its hue. One mask, and each piece takes its own tint and strength (the recipe's `emissive`):
+  - **The Torso:** the two coil caps and the gauge's needle. Their colour is Storm, lit or not. Strength 0.5 as he stands, 2.0 in Ground Wire's hold, tint white.
+  - **The Visor:** the lens. With its light out it's a dark Storm glass (`#752E63`), where the sheet drew it ink: under ink no strength could light it. Strength 0 at rest, 7.0 lit, tint white.
+  - **The Wrench:** the jaw's two inner walls. Steel with their light out, as the sheet has them. Strength 0 at rest, 3.0 lit, tint Storm.
+  - Each lit surface sits on its swatch, one flat block on every map, so no small island reads as a drop on the colour map (the content check on Pip's flame).
+  - The strengths are the review sheet's own, drawn with the glow multiplied through the colour map as the engine does. DESIGN, untried in Studio.
+- **For the builder:**
+  - Eight points: `CoilR` and `CoilL`, the caps, where an arc starts; `Jaw`, the middle of the gap, where the arcs land; `Rod`, where the rod meets the street, where the ring starts; `Lens`; `Gauge`; `Chest`; `Grip`.
+  - The recipe gives the wrench's `along` (the handle's line) and `across` (the head's width), and the visor's hinge `axis` and `down` turn.
+  - The three lit pieces each need their own SurfaceAppearance, for their own strength; the other five can share one.
+- **Mine, tier 1:** the lens's dark glass; the caps lit low at rest, so the two posts carry Storm in every clip; the wrench's joint on the Torso.
+- **What I see wrong:**
+  - With no clip playing his arms hang, and the wrench's grip grazes the right glove. Every clip keys the hand to it.
+  - In take A the head's inner horn passes about 0.1 studs ahead of the harness. A clip that turns the torso keeps the wrench clear.
+  - From the front the head covers his right arm and chest, as take A does on the sheet. The face stays clear, three-quarter on and from the front.
+  - The visor up is a steel plate standing over his brow; side on it reads as a raised visor, from the front as a thin peak.
+  - The shirt, the gloves and the pack's rails are still one Graphite family. The cuffs, the harness and the steel part them.
+- **Self-review:** made and looked at whole, three runs: the sheet at full size, the atlas check, the recipe read back. The first run's figures were small on the sheet, and the lens's point was given with the visor down where its mesh has it up; both changed.
+- **Four facts:** made, yes. Self-reviewed, yes. Delivered, no: for research's verdict from `build/scratch/modulo/watt/model/watt_model_sheet.png`. Accepted, no.
 
 ## AR12. The HUD's colour (Modulo, then Faber)
 
@@ -5681,13 +5720,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - Before any upload, each gets its own check at full size and at 64 px over dark: the forge rank's badge once it's an image, the preset chip if it's sliced, the rail's slices.
   - **Its note for research, not a rule matter:** the "+1" badge on Ring I covers the object's foot-left corner, against "badges on the frame only" (`docs/research/gear-icons.md`, DESIGN).
 - **Four facts:** made, yes. Self-reviewed, yes. Delivered, the sheet for research's read. Accepted, no.
-- **Time:** about 12 minutes by the clock from the first patch to the third render (18:15 to 18:27), three guarded renders (1,049, 1,034 and 1,075 MB at peak, lowest free 1.65 GB); the reading and the plan before it weren't timed.
+- **Time:** about 8 minutes by the clock from the first patch to the third render (18:15 to 18:23; first written as 18:27, a guess, corrected from the clock), three guarded renders (1,049, 1,034 and 1,075 MB at peak, lowest free 1.65 GB); the reading and the plan before it weren't timed.
 - **Research's read** (2026-11-15, night, at sheet size and at 1 pixel a point): **it passes, with one fix.**
   - The figure stands between its gear like a figure in a case. The sixty pictures read in their slots at 37 and 40 points, and Legendary's border marks the top without a crown.
   - **Lead and Send to work stay where the mock put them:** at the foot, right of the strip, with Lead filled. That's research's call, and it replaces the top bar. You choose a Voidkin on the strip, then act on it beside it, so the hand moves along one row. The top band keeps Back, the marks and the currencies, which fit.
   - **The fix: the forge rank's badge moves to the slot's top-left cut,** mirroring the class mark on the bottom-right cut. It sits on the frame and never over the object. At the foot-left it covers a weapon's pommel, against "badges on the frame only", and the cut corners are the two places no picture reaches.
   - **For Faber:** this mock is the look TR17's rebuild holds to, with the badge on its cut.
-- **The fix, made** (Modulo, 2026-11-15, 18:50): the badge is on the slot's top-left cut, 20 by 13 points, its own top-left corner cut with the slot's (`gear_slot`). `vivid_voidkin.png` is rendered again; nothing else changed. Seen at both sizes: on the 46-point weapon slots it clears the object; on the 37-point helmet slot it still lies over the helm's crest, since a helm fills its slot to the top. The sheet wasn't sent to the content check again: the badge is the same stand-in, moved, and its image gets its own check before any upload.
+- **The fix, made** (Modulo, 2026-11-15, about 18:27): the badge is on the slot's top-left cut, 20 by 13 points, its own top-left corner cut with the slot's (`gear_slot`). `vivid_voidkin.png` is rendered again; nothing else changed. Seen at both sizes: on the 46-point weapon slots it clears the object; on the 37-point helmet slot it still lies over the helm's crest, since a helm fills its slot to the top. The sheet wasn't sent to the content check again: the badge is the same stand-in, moved, and its image gets its own check before any upload.
 
 **Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text, in the script). It's judged in motion with Faber's take. The HUD's images in V2 are delivered and past research's pass (competent; one fix, the portrait's seam, the director's catch), for Faber's build. Next: delivery 3's sheet.
 
@@ -5864,6 +5903,14 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - **Tested:** type check 0 new; logic 5814 passed offline; the card's self-test case has four new checks (the stud's colour, the digits between the bars, the mark 2 clear of every frame, the mark under the experience line and above the eye), not run: the screen is the director's. Content check PASS for upload, all 25 images; all Approved and the group's, read back.
       - **Visually reviewed:** on the sheets only, not yet in Studio. Research's pass comes with the stills at phone size, with the ruby beside the Shade's ember.
       - **Director-accepted:** no.
+    - **Research's pass on the HUD at phone size** (2026-11-15, night; TR12's take run again, `build/captures/stills/hud_*.png` and `hud_tr12_sheet.jpg`, iPhone 16 Pro): **it passes, with one fix.** It covers AR12's HUD part 1, take F's card, the dock and Combat Power in cobalt.
+      - **Take F reads.** Portrait, name and one ruby bar, with the level's mark in D's place. The fallen card's "Healing 0:25" takes the bar's line cleanly.
+      - **Beside the Brawler's bar,** the ruby stays apart: by place (the card against the top centre), by thickness, and by its wine-to-hot ramp against the elite's orange-red. Close in hue, apart in form, which holds.
+      - **The dock** sits between the thumbstick and the jump and reads as three at a glance. The lift on the Voidkin tile is Studio's mouse, as Faber says.
+      - **Combat Power in cobalt** (28,600) reads as colour and stands clear of the plate at phone size. The foot fix holds.
+      - **The fix:** at home, Spectate's eye tile sits over the "Bay 1 · no one works here" plate (`hud_home.png`). The plates start right of the tile's column, or the tile moves below them. Nothing may overlap at any phone size: the UI lint should have caught it, so add the case.
+      - **To check in TR19's take:** in `hud_fight.png` the Base tile is lit mid-fight, though TR19 dims it within 4 s of a hit. The still may come before the first hit. TR19's take settles it.
+      - **Not judged:** Ironhymn's empty portrait (no art yet), the Power pill's "0 / 0 kW" (a borrowed worker), and the old grey Voidkin screen (TR17's rebuild comes next).
 - **The level-up as a notice on the left, three takes beside today's, for the director's pick** (Modulo, 2026-11-15, 13:40 to 14:00; the director, that night: "the leveling up text need a rework", all of it, then "the level up could come as a notice like on the left usually ui but different color with the name of the voidkin + level text reworked", `docs/decisions.md`; `tools/blender/levelup_notice_takes.py`; the sheet `build/handoff/UI/hud/levelup_takes/levelup_notice_takes.png`).
   - **Feel line, Modulo's proposal:** when your lead gains a level, a plate in a colour no other notice wears slides out of the left edge under its card, names the Voidkin and says its new level large, holds a beat and slides back, so you know who rose and to what without leaving the fight.
   - Mocks only, drawn from plain shapes with TR17's chevrons, on V2, Block with the new dock and the lead's card as picked (F, one solid bar, D's ruby), just after the level: the card already says the new level. Each take is shown up close at dusk (Rook reaches 12) and at noon (a Mythical reaches 48), in the other two colours, on the whole HUD at a phone's size, and at its longest (a nickname of 18 characters at level 100). A shape, a colour and the words can be mixed.

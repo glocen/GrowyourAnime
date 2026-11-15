@@ -1606,6 +1606,11 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **The level's mark** (the director's note) passes: a leaning plate, the chevrons and a large number.
     - No fix. Faber builds from the json. The upload check wants each file at 128 and 64 px, as the content check says.
     - **"Do we need more?"** Yes, in this order, each when the screen that uses it is built: the bag's tab marks (Shards, Items, Emblems, Jewels, Stones), then each gear slot's empty mark (the twelve and the two hands, AR6's family).
+- **Overview shows every stat** (research, 2026-11-15, 19:13, on the director's still of Overview and the words with it: `docs/decisions.md`; the spec is in `docs/ui.md`, 5, "Overview's stat sheet").
+  - Overview today shows five stats. It gains the rest in three groups (Core, Attack, Defence), zero shown as 0. A rating shows "up to N%" at the Voidkin's level, and each line keeps its sources.
+  - The rules already hold every stat, so this is display only. For Faber, after TR19's and TR20's fixes.
+  - **Check, from the same still:** the experience bar under "335 of 4,320 experience to the next" (7.8%) shows only a sliver at its left. Either its fill doesn't draw, or the fill is too dark to see on the track.
+  - **Checks:** the case's lint on the smallest phone, with the list scrolled to its foot. A still for research.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 
@@ -1829,7 +1834,8 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   2. **The charge doesn't read at phone size.**
      - The white rising over the ready yellow barely shows: only the last frames look paler, and no edge is seen rising.
      - The outline's #B48CFF sinks into Lantern Row's violet stone.
-     - For the stand-in: fill in the void's violet (#B48CFF) with a bright edge, since yellow and violet stand apart. Make the outline near-white (#EEE6FF), so it reads on every ground.
+     - For the stand-in: the tile goes to its ink at the tap and fills in white from its foot, with a bright edge. It reads apart from the cooldown's veil, which sweeps sideways. Make the outline near-white (#EEE6FF), so it reads on every ground.
+     - Amended the same night, before the build: white on ink, not the void's violet (#B48CFF), on the director's word to Modulo at 19:09 ("to much purple"). The colour comes from the palette once it's picked.
      - Modulo's final light keeps the same need: it must read on the violet grounds.
 - **The question, answered (tier 2, research and Faber's area): "In a fight" is `FightService.InCombat` or a hit in the last 4 s.**
   - **InCombat is the game's one meaning of a fight** (TR12): the lead has a target, or a Shade has the lead. The lead swap already refuses on it ("Not during a fight").

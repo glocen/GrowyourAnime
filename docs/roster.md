@@ -16,6 +16,22 @@ The thirty-one Voidkin of launch, the enemies, and the six grounds of the Festiv
 - **Passive,** Common to Epic: one plain effect in a few words, with at most one plain condition (the director, 2026-11-13, `docs/decisions.md`). Those not yet written so are rewritten when their Voidkin is built.
 - **Roots** are genre-level only, for the team. They name no work and no character.
 
+## The look
+
+Every Voidkin is drawn as a character from a real anime's cast (the director, 2026-11-15, night, `docs/decisions.md`). It's judged against that bar, at the game's camera, never against its own sheet's brief.
+
+- **A character, not a job.** Its silhouette comes from fashion: a coat, a jacket, a uniform's cut, layers, a scarf or a wrap, with one asymmetry. Never an occupation's costume or a working tool.
+- **Hair is the identity:** a hairstyle with a silhouette of its own, in sharp clumps, and a colour of its own. It's read first at the game's camera.
+- **An anime face,** drawn for the character's personality: eyes with highlights, sharp brows, a small mouth. No two Voidkin share a face.
+- **One weapon or focus with style,** sized to the body. Never a cartoon prop.
+- **The element is a motif:** a colour accent, a light, a charm, a pattern, its effects. Never a trade's gear.
+- **The body is our R6** (the director's "A", 2026-11-15). Hair, face, clothes and the weapon carry the look, with no custom proportions.
+- **Rarity sets the detail.**
+  - A Common or Uncommon has three or four elements and a plain palette with one accent. Its signature and passive are modest. Like an anime's side character, it's simple, never corny.
+  - Each rarity up adds layers, trims, light, and pieces that move.
+- **Already made:** Rook, Kirra, Pip, Lyric, the Shade and the Lamplighter stay as they are until an overhaul much later.
+- **The "Look" column below was written before this rule.** A row whose look is a trade's costume is designed again at its sheet. It keeps its rarity, type, class, element and its signature's function.
+
 ## The thirty-one
 
 | id | Name | Rarity | Type | Class | Element | Zone | Apt | Look | Signature | Passive | Roots |
@@ -23,7 +39,7 @@ The thirty-one Voidkin of launch, the enemies, and the six grounds of the Festiv
 | rook | Rook | Common | Strength | Warrior | - | 1 | 2 | Street brawler: cropped jacket with a high collar, taped fists, one oversized gauntlet | Haymaker: a long wind-up, one straight punch, a shockwave along the ground | Second Wind: takes less damage below 30% health | fighting manga |
 | kirra | Kirra | Common | Agility | Assassin | - | 1 | 1 | Courier ninja: a scarf twice her length, a satchel, two short blades crossed on her back | Scarf Step: vanishes, crosses the target, cuts on the way out | First Strike: her first hit on a new target always crits | ninja action |
 | pip | Pip | Common | Intelligence | Mage | Fire | 1 | 2 | Apprentice: a hat too big, sleeves too long, a lantern that floats beside him | Lantern Burst: the lantern flies out and bursts over a small area | Kindle: his third shot adds Fire damage | fantasy school |
-| watt | Watt | Common | Endurance | Tank | Storm | 1 | 3 | Mechanic: a generator backpack with two coils, a welding visor, a wrench as wide as a shield | Ground Wire: plants the wrench, shields himself, and a pulse stops nearby enemies for a moment | Insulated: takes less elemental damage | workshop comedy |
+| watt | Watt | Common | Endurance | Tank | Storm | 1 | 3 | Designed again (AR11, 2026-11-15): an anime character, never a tradesman | Ground Wire: plants his weapon, shields himself, and a pulse stops nearby enemies for a moment | Insulated: takes less elemental damage | workshop comedy |
 | patch | Patch | Common | Technique | Healer | - | 2 | 2 | Field medic: a cross-strap satchel, bandage ribbons from both wrists, round glasses | Quick Fix: heals the ally with the least health, herself when alone | Triage: her heals are stronger on a target under half health | medical drama |
 | tumble | Tumble | Common | Agility | Warrior | - | 2 | 1 | Acrobat: wide trousers, wrapped forearms, bells at the ankles | Cartwheel Kick: a spinning double kick that hits all around | Momentum: each hit in a row on one target adds damage, up to a cap | street dance |
 | brick | Brick | Common | Strength | Tank | - | 2 | 3 | Site worker: a hard hat, heavy boots, a steel door carried as a shield | Door Slam: slams the door down, pushes enemies back and draws them onto him | Hard Hat: blocks the first hit of every fight | working-class hero |

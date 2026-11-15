@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, night.
-- **The director's word:** finish phase 2, then phase 3 and the real map; the Calamity leaves launch, an update after it (`docs/decisions.md`; D12, the cut line).
-- **Closed tonight:** AR12's HUD part 1 at phone size; TR18 in grey; AR6's batch 1 at competent (to Faber). **TR19's verdict:** competent as a block, two fixes, the fight's rule (InCombat or a hit in 4 s), then a short retake.
-- **Watt and every Voidkin's look:** the director rejects the current look as corny (2026-11-15, night). Research's restatement (an anime style from Watt on, the five built ones overhauled later, low rarities kept simple) and the body test (A, styling on the R6 body; B, anime meshes on the R6 rig) **wait on the director's yes.** Nothing is written until then. Modulo holds Watt.
-- **Next:** TR20's hover, Kirra and Scarf Step's blockout, TR9's chambers with the shard pictures, TR17, the galaxy Breaker, AR13 in the game; the first session whole on a phone, the gate that closes phase 2. After it: the rest of AR6's kinds, the battery cap and Combat Power's seeds.
+**Quaestor (research).** 2026-11-15, 19:20.
+- **The director's words tonight, in the register:** Watt redesigned as an anime character on our R6 body ("A"), and the look rules in `docs/roster.md`, "The look". Also "too much purple" (Modulo's palette sheet), an item's card with its Combat Power under the title (`docs/ui.md`, 5), and Overview showing every stat (`docs/ui.md`, 5; TR17).
+- **Watt's new brief is in AR11:** three takes in grey (the quiet wall, the hothead, the sleepy one), research's pick with fresh eyes, then the model. Modulo's order: the palette sheet, Watt's takes, the reveal.
+- **Verdicts tonight:** TR19 is competent as a block (two fixes, the fight's rule; its charge now white on ink, not violet). TR20 works on the dock (four fixes, the Breaker to retake). Power in Dynamo vivid is competent, no fix; its cuts wait on the palette. Closed: AR12's HUD part 1, TR18 in grey, AR6's batch 1.
+- **Next:** the retakes of TR19 and TR20, the palette sheet, Watt's takes, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 18:20.
 - **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).
@@ -34,7 +34,6 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
-4. **Your yes to the Voidkin look's restatement**, and A or B for the body test: an anime style from Watt on, the five built ones overhauled later, and low rarities kept simple. It's in research's chat. Watt waits on it.
 
 For Faber:
 

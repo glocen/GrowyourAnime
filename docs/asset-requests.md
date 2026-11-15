@@ -5391,42 +5391,68 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - **For Faber's question 2, research's view:** auto-combat doesn't hold 5 studs, so the crescent, the sparks and the light should ride the target, as `Body` rides the attacker. How is Faber's code.
   - **Research, on the measured B: accepted.** Turning her path, not just the light, is the better lever. It keeps the cloth and the light together, and it beats my B by measure: none of the line hidden from the replay's camera. A stays in the block as the take it's judged against.
 
-## AR11. Watt, the mechanic (Modulo, then Faber)
+## AR11. Watt (Modulo, then Faber)
 
-Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`, his row: Common, Endurance, Tank, Storm, Zone 1). He matters more than his rarity says. He is the guaranteed second Voidkin and the first worker, dropped by the first enemy as a Named shard (D01). So he's the first reveal a player hasn't chosen, the first worker in a bay, and the first Tank anyone leads. The four deliveries of AR1, measured against Rook, Pip, Lyric and Kirra.
+Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on the director's words (`docs/decisions.md`: the mechanic was "sooooo corny ... it need to look like real anime"; then "A" for the body).
+- Ground 1's next Voidkin. His row in `docs/roster.md`: Common, Endurance, Tank, Storm, Zone 1. The look rules are in the roster's "The look".
+- He matters more than his rarity says. He's the guaranteed second Voidkin and the first worker, dropped by the first enemy as a Named shard (D01).
+- So he's the first reveal a player hasn't chosen, the first worker in a bay, and the first Tank anyone leads.
 
-**Feel line:** a stocky mechanic you'd know at 64 px by the generator on his back and the wrench as wide as a shield, who walks into a pack like it's a job and is pleased with himself when it's done.
+**Feel line:** the first Voidkin you didn't choose, and you're glad of him. A young man with presence, known at 64 px by his hair and the weapon he plants, who walks into a pack unhurried while the street locks around him.
 
-**Signature feel line, Ground Wire:** he slams the wrench into the ground, a ring of current snaps out along the street, and the Shades round him lock mid-step while he stands behind the wrench, shielded and humming.
+**Signature feel line, Ground Wire** (its function unchanged): he drives his weapon into the street, and a ring of Storm's light snaps out along the ground. The Shades around him lock mid-step while he stands behind it, shielded and humming.
 
-**The tone:** workshop comedy (his row). It lives in timing and props, never in mugging: the visor flipped up after a win, a coil that sparks once too late, a pat on the wrench. The game stays stylish and slightly mature.
+**What stays:**
+- his row's numbers, Ground Wire's function, Insulated, and his bay aptitude;
+- Storm's colours, light pink to white, with the effect conditions in section 2.
 
-**No reference footage:** the measure is the four leads before him and `docs/north-star.md`, "The look". The Fighters test applies (`docs/decisions.md`). A mechanic, a visor, a backpack and a big wrench are each the genre's. Together with his colours, his build and Ground Wire, they must make someone new.
+**What goes:** the whole look. Nothing of the first model is kept; sections 1 and 2 are its record.
 
-**Delivers,** in this order, each shown before the next:
-1. **The sheet:** the silhouette in black, front and three-quarter on R6, three colour chips, Ground Wire's key pose, and the sheet at 64 px over noon and night.
-   - At 64 px his outline must part from Rook's: both are broad, and the backpack and the wrench carry it.
-   - Storm's colour must read away from Kirra's blue.
-2. **The model** on R6, at the player's height: the backpack with its two coils (each a place an effect can start), the visor (up and down as two states, or one hinge), and the wrench.
+**Delivers,** each shown before the next:
+1. **Three takes,** for research's pick.
+   - **How they're drawn:**
+     - in grey on the R6 body, with Storm's accent only;
+     - front and three-quarter from the game's camera, and at 64 px over noon and night;
+     - each face drawn close up;
+     - quick blockouts: hair, clothes and the weapon as rough meshes, never finished.
+   - Each is a different character from an anime's cast, inside a Common's limit (three or four elements, one accent):
+     - **A, the quiet wall:** tall and calm. A long dark coat with a standing collar up to his nose, its sleeves pushed to the elbows. Heavy dark hair swept back, its ends lifting in the static, pale pink at the tips. A black iron spear-staff with three white ceramic discs under a short blade, slung across his back. Half-lidded, steady eyes.
+     - **B, the hothead:** a cropped jacket with its sleeves tied around his waist, a sleeveless high-necked top, fingerless gloves. Hair spiked up and back over one shaved side, with one pale pink lock. A slab of dark steel on his forearm, with a spike at its foot that he drives into the street. A grin.
+     - **C, the sleepy one:** an oversized hoodie with the hood down, and wide trousers. A soft mop of hair that floats up with static. A long iron stake taller than him, carried over his shoulder, wrapped in cloth tape with one white ceramic ring. He plants it and leans on it. Eyes half asleep.
+   - At 64 px, his outline parts from every lead before him.
+   - **The pick:** research picks one at the verdict, with `ga-fresh-eyes`, judged against the bar of a real anime's cast. The pick goes to the director as a notice, not a gate, and the model starts on it unless the director says otherwise.
+2. **The model** on R6, from the picked take, at the player's height: the hair, the clothes, the face, the weapon, and the places an effect starts (the weapon's head, the hair's tips).
 3. **The clips,** as Pip's set:
    - Idle;
    - Combo: heavy and short, the Tank's way (`docs/design.md`);
    - Ground Wire;
    - Hit, Down and Up;
-   - Reveal: the first one a player didn't choose, so it lands the comedy and the weight together;
-   - Skip, only if his fight needs it (research's call at the clips);
-   - Work: the bay loop players see most early, so it reads as a mechanic's at a glance.
-4. **Ground Wire's look,** built in 3D from the kit (AR8, "The method") and AR9's sheets, with the builder in the same session (`/ga-action`).
-   - One hero shape: the ring of current along the ground, with a direction (out from the wrench) and an acceleration.
-   - The shield behind it, and the locked Shades read as stopped, never hurt.
+   - Reveal: the first Voidkin a player didn't choose, so it lands his character in one beat;
+   - Skip, only if his fight needs it;
+   - Work: the bay loop players see most early. It shows his own way of making power, never a trade's.
+4. **Ground Wire's look,** built in 3D from the kit (AR8, "The method") with the builder in the same session (`/ga-action`).
+   - One hero shape: the ring of light along the ground, with a direction (out from the weapon) and an acceleration.
+   - The shield behind it.
+   - The locked Shades read as stopped, never hurt.
 
-**Waits:** his install; Insulated and Ground Wire's stop and shield as data (Faber's); his sounds.
+**Waits:**
+- his install;
+- Insulated, and Ground Wire's stop and shield, as data (Faber's);
+- his sounds;
+- any colour beyond Storm's, until the palette's pick (the director to Modulo, 19:09).
 
-**Checks:** the content check on the sheet and before every upload; research's verdict on the sheet, the clips and the final in motion; `ga-fresh-eyes` on Ground Wire at its blockout and final.
+**Checks:**
+- the content check on the takes and before every upload;
+- research's verdict on the takes, the clips and the final in motion;
+- `ga-fresh-eyes` on the takes, and on Ground Wire at its blockout and final.
 
-**Time it:** each delivery records what it took, beside Kirra's.
+**Time it:** each delivery records what it took. The takes: 1 to 2 hours, forecast.
 
-**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). **Held, 2026-11-15, evening:** research relays that the director rejects the design, and a new brief comes from research. The model (section 2) isn't for install and the clips aren't started.
+**Status:** designed again, 2026-11-15, night (research).
+- The director rejected the first design (sections 1 and 2), and nothing of it is kept. Its files leave `build/handoff/Watt/` when the new model is delivered (Modulo's).
+- **Next:** the three takes, after Modulo's palette sheet.
+
+**The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 

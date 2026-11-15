@@ -5355,7 +5355,23 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 - **Fix, small text at phone size:** the rail's words and the slots' rank badges come out at about 6 to 7 pt. Bring them to the kit's smallest text size, or show only the chosen page's word on the rail.
 - The figure at 0.62 of the height, the 40 pt slots and the 46 pt weapon pair stand.
 
-**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text). It's judged in motion with Faber's take. Next: the HUD's images in V2, for Faber's build.
+**The HUD's images in V2, Block** (Modulo, 2026-11-15), for Faber's build: `build/handoff/UI/hud/colour/images/` (30 images at 4 pixels a point), `hud_colour.json` beside them, and one picture of them all, `hud_colour_images.png`.
+- **What's in it:**
+  - six system icons in light (CoinMint, Shard, Plant, Crest, Route, Battery; the Bolt stays the kit's) and six marks in ink for a block (InkBolt, InkCoin, InkShard, InkPlant, InkCrest, InkRoute);
+  - the two blocks, white for the engine's tint (BlockPill, BlockDock): the leaning side and the dark seam are baked in;
+  - the readout in layers (ReadoutPlate, ReadoutLight, ReadoutFace, ReadoutReady) and its four signature icons; the eye off and on;
+  - on the lead's card, a halo for each rarity that glows (Rare to Mythical) and the type's stud with its glow.
+- **The json** says how each piece stacks, in points: the pill, the hint, the dock button, the readout, the eye, the card's two additions, and a screen's filled main button. Each system has its row (its colour, pale, deep, block tint and palette for the kit's slices), and the six rooms have theirs.
+- **The readout's light is the well's own shape under one gradient** (ReadoutLight; `pieces.readout` holds the gradient's stops in points from the front's line, and its lean). A box clip let the light out past the plate's two cut corners: found when the sheet stacked the layers, and changed before delivery. How the gradient's length maps in the engine is Faber's to set: the stops are DESIGN, not tried in Studio.
+- **The sheet stacks every piece from the delivered images,** so it shows what the build gets. Delivery 2's `vivid_*` sheets were drawn with the block and the readout in place and aren't re-rendered: the look is the same.
+- **Research's small-text fix is in the script:** the rail shows only the chosen page's word, at the kit's smallest size, and a slot's rank badge takes that size too. `vivid_voidkin.png` isn't re-rendered, as research said.
+- **Self-review:** made and looked at, each icon at 64 pixels over dark and over its block's colour, the pieces stacked over dark and over the noon street's sand.
+- **Content check: PASS** for delivery. Its notes: it asked to see the Rare, Epic and Legendary halos over dark before the upload check, so the sheet now shows them; never set two bolt marks side by side as a pair.
+- **Not uploaded:** the upload is Faber's, after the content check on what's uploaded. Logged in `docs/asset-log.md`.
+- **The four facts:** made, yes; self-reviewed, yes; delivered, yes; accepted, not yet (research's pass, then Faber's build in the game).
+- **Time:** the clock shows 12 minutes between research's read of the mock and this delivery, which looks short for three guarded renders (711, 683 and 563 MB at peak, lowest free 2.12 GB); not measured another way.
+
+**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text, in the script). It's judged in motion with Faber's take. The HUD's images in V2 are delivered for Faber's build (above). Next: delivery 3's sheet.
 
 **Delivery 3, the older screens, vivid** (research, 2026-11-15, on the director's word over the Breaker screen: "we need to add more colors and appealing to each old full dark ui, like the epic chance text should be purple, the battery text need a rework also like it energy colors"). After the HUD's images:
 - **Every screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the Breaker and the bays in Dynamo vivid first, then the reveal, Regalia, the map, and each screen with a reward or a confirm.

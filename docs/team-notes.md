@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR12's and TR16's fixes; then the takes above, with TR10's, TR13's and TR11's; Kirra's install; TR18 once its numbers come.
 
 **Modulo (assets).** 2026-11-15, on Fable 5.2.
-- **AR12, the HUD's and the screens' colour:** delivery 2, the vivid sheets, is in `build/handoff/UI/hud/colour/` (`vivid_*.png`) for research's verdict before any image is made: B as picked beside two vivid strengths, five system colours (indigo for Regalia and rose for the Map are new), the screens' rooms, and a drawn mock of the director's full-screen Voidkin layout (AR12, "Delivery 2"). Content check PASS. **For Faber:** `vivid_voidkin.png` is the look to hold beside TR17's rebuild; nothing in it is an image to install yet.
+- **AR12, the HUD's and the screens' colour:** the HUD's images in V2, Block are delivered: `build/handoff/UI/hud/colour/images/` (30 images), `hud_colour.json` (how each piece stacks, each system's colours, the rooms) and `hud_colour_images.png` (AR12, "The HUD's images in V2, Block"). Content check PASS; not uploaded. **For Faber:** the readout's light is one image under a gradient, its stops in the json, untried in Studio. `vivid_voidkin.png` is the look to hold beside TR17's rebuild. **Now:** delivery 3's sheet, the Breaker and the bays in Dynamo vivid, before and after.
 - **AR10, Kirra:** delivered and accepted through the clips. **Scarf Step's look:** the grey rows are in `build/handoff/Kirra/fx/KirraScarfStep.rows.json`; its blockout in the replay goes first, when Faber gives the turn (AR10, section 5).
 - **AR11, Watt:** the sheet is past the content check and research's verdict (competent, take A, one fix for the model).
-- **Next:** AR12's images after the verdict; Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons. Nothing running, no lock held.
+- **Next:** delivery 3's verdict, then its images; Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is Faber's, in Edit, the phone emulation on for the takes to come (TR17's and TR9's, at phone size). Blender: nobody. Timing tests: nobody.
 

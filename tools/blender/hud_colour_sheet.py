@@ -24,7 +24,7 @@ the island's inset at each side). The thumbstick, the jump button, Roblox's bar 
 for the room they take. The dusk street is Lantern Row's look (tools/blender/lantern_row_look.py, `M`); the noon street is
 ui_sheet's drawn stand-in. Text is Blender's face standing in for the game's.
 
-    blender -b --factory-startup --python tools/blender/hud_colour_sheet.py -- build/handoff/UI/hud/colour [hud|ui|voidkin]
+    blender -b --factory-startup --python tools/blender/hud_colour_sheet.py -- build/handoff/UI/hud/colour [hud|ui|voidkin|images]
 """
 import ctypes
 import gc
@@ -68,7 +68,6 @@ NIGHT = {POWER: ("#4D3711", "#211605"), CREDITS: ("#0E4541", "#071E1F"), VOIDKIN
          REGALIA: ("#1D2A6E", "#0C1233"), MAP: ("#5A1D3F", "#260B1B")}  # a piece's body from Deep on: top, foot
 
 TRIM = {"Common": "#8E95A3", "Mythical": "#FF8794"}
-GLOW = {"Common": None, "Mythical": "#FF2848"}  # the frames' own glow colours (ui_sheet.RARITIES)
 NAME_W = {"Rook": 40.0, "Lyric": 41.0}  # the names' widths in Blender's face, which stands in for the game's here
 
 B, DEEPER, BLOCK = 0, 1, 2  # how vivid: a column's level
@@ -141,20 +140,37 @@ def halo(alpha, colour, radius_pts, strength):
     return out
 
 
-def block(st, slice_name, x, y, w, h, accent, width):
-    """Block's mark: the piece's own body slice again, in its system's colour, kept to its left end, its right side
-    leaning as the bars' fronts do. In the engine it's the same slice, clipped."""
-    def past(rows, cols):  # how far a pixel is past the block's leaning side, in points
-        return np.arange(cols)[None, :] / K4 - (width + (h / 2 - np.arange(rows)[:, None] / K4) * 0.3)
+BLOCKS = {"BlockPill": ("PanelFill", 30.0, 31.0), "BlockDock": ("ButtonFill", 52.0, 32.0)}  # its slice, height, width
 
-    def window(rows, cols):
-        return np.clip(0.5 - past(rows, cols) * K4, 0, 1).astype(np.float32)
 
-    def seam(rows, cols):  # a dark line down that side, so the block ends on a cut and not on a blur
-        return np.clip(0.5 - (np.abs(past(rows, cols) - 0.5) - 0.6) * K4, 0, 1).astype(np.float32)
+def block_tint(accent):
+    """A block's two colours, top and foot."""
+    return mix(accent, PALE[accent], 0.35), mix(accent, DEEP[accent], 0.3)
 
-    st.lay(slice_name, x, y, w, h, tint=(mix(accent, PALE[accent], 0.35), mix(accent, DEEP[accent], 0.3)), window=window)
-    st.lay(slice_name, x, y, w, h, tint=INK, alpha=0.7, window=seam)
+
+def block_images():
+    """Block's block, an image a piece: the piece's own body slice at the piece's height, kept to its left end, its
+    right side leaning as the bars' fronts do and ending on a dark seam, so it ends on a cut and not on a blur. White,
+    for the engine to tint top to foot; the seam is baked dark and stays dark under any tint."""
+    for name, (slice_name, h, width) in BLOCKS.items():
+        im = kit.IMAGES[slice_name]
+        w = float(math.ceil(width + h * 0.15 + 2.0))
+        px = kit.stretch(im["px"], im["cut"], w + 24.0, h)[:, :round(w * K4)]
+        rows, cols = px.shape[:2]
+        past = np.arange(cols)[None, :] / K4 - (width + (h / 2 - np.arange(rows)[:, None] / K4) * 0.3)
+        body = px[..., 3] * np.clip(0.5 - past * K4, 0, 1)
+        seam = px[..., 3] * 0.7 * np.clip(0.5 - (np.abs(past - 0.5) - 0.6) * K4, 0, 1)
+        t = kit.blank(w, h)
+        cover = body + seam * (1 - body)
+        t.px[..., :3] = ((body * (1 - seam))[..., None] + seam[..., None] * c(INK)[:3]) / np.maximum(cover, 1e-6)[..., None]
+        t.px[..., 3] = cover
+        kit.keep(name, t, "the system's block colours, top to foot",
+                 use=f"Block: over {slice_name}, under its edge, at the piece's left top; {width:g} points of colour")
+
+
+def block(st, name, x, y, accent):
+    """Block's mark on a piece: its block, in its system's colour."""
+    st.lay(name, x, y, tint=block_tint(accent))
 
 
 def seg(t, a, b, w):
@@ -352,6 +368,9 @@ def icons():
     for i in range(2):
         t.paint(t.poly(cut_box(m - 9.6 + i * 6.2, m - 4.4, m - 5.0 + i * 6.2, m + 4.4)), ramp3(t, PALE[POWER], POWER, DEEP[POWER], (t.y - m + 5) / 10))
     kit.keep("Battery", t, use="the battery, when it covers demand over generation")
+    block_images()
+    readout_parts()
+    eye_parts()
 
 
 # --- the pieces -----------------------------------------------------------------------------------------------------
@@ -362,7 +381,7 @@ def pill(st, x, y, w, accent, level, icon, value, extra=None, extra_colour=None,
     st.lay("PanelShadow", x, y, w, PILL)
     st.lay("PanelFill", x, y, w, PILL, tint=p["panel"], alpha=p["alpha"])
     if solid:
-        block(st, "PanelFill", x, y, w, PILL, accent, 31.0)
+        block(st, "BlockPill", x, y, accent)
     st.lay("PanelEdgeBold", x, y, w, PILL, tint=p["edge"])
     st.lay("PanelGlint", x, y, w, PILL, tint=p["glint"])
     lift = 2 if fill is not None else 0
@@ -396,7 +415,7 @@ def dock(st, x, y, label, icon, accent, level):
     st.lay("ButtonShadow", x, y, w, h)
     st.lay("ButtonFill", x, y, w, h, tint=p["button"])
     if level >= BLOCK:
-        block(st, "ButtonFill", x, y, w, h, accent, 32.0)
+        block(st, "BlockDock", x, y, accent)
     st.lay("ButtonEdgeBold", x, y, w, h, tint=p["edge"])
     st.lay("ButtonBase", x, y, w, h, tint=accent)
     st.lay("ButtonBaseGlow", x, y, w, h, tint=accent, alpha=0.45)
@@ -414,7 +433,7 @@ def hint(st, x, y, w, text, level):
     st.lay("PanelShadow", x, y, w, PILL)
     st.lay("PanelFill", x, y, w, PILL, tint=p["panel"], alpha=p["alpha"])
     if level >= BLOCK:
-        block(st, "PanelFill", x, y, w, PILL, VOIDKIN, 31.0)
+        block(st, "BlockPill", x, y, VOIDKIN)
     st.lay("PanelEdgeBold", x, y, w, PILL, tint=p["edge"])
     st.lay("PanelGlint", x, y, w, PILL, tint=p["glint"])
     if level >= BLOCK:
@@ -428,65 +447,111 @@ def plate(t, o, s, cut):
     return t.poly(cut_box(o, o, o + s, o + s, cut, 0, cut, 0))
 
 
-def readout(st, x, y, s, share, signature):
-    """The signature's readout: a plate cut as the dock's buttons are, its well a conduit that fills with light from the
-    foot, its front slanted as the bars' is, the signature's own icon over it. Ready, it's full and white-hot, it glows,
-    and its icon turns dark on the light: the loudest thing on the HUD. It stays ivory at every level: it belongs to the
-    fight, not to a system."""
-    ready = share >= 1.0
-    g = 26.0
-    t = kit.blank(s + 2 * g, s + 2 * g)
-    cut, inset = s * 0.2, 4.0
-    outer = plate(t, g, s, cut)
-    inner = plate(t, g + inset, s - 2 * inset, cut * 0.75)
-    if ready:
-        t.glow(outer, 9.0, c(IVORY), 0.72)
+READOUT, EYE, WELL = 58.0, 44.0, 4.0  # the readout's side, the eye's, and how far the readout's well sits in
+READOUT_PAD, EYE_PAD = 26.0, 20.0  # how far each image reaches past its piece, for its glow
+LEAN = 0.12  # the light's front rises this much a point to the right, as a bar's end leans
+# The light across its front: points below the line (above it is negative), how solid, its colour. Past the last, it holds.
+FRONT = ((-5.8, 0.0, IVORY), (-1.35, 0.55, IVORY), (-1.25, 1.0, "#FFFFFF"), (1.25, 1.0, "#FFFFFF"), (1.35, 0.78, IVORY),
+         (5.8, 0.36, IVORY), (8.0, 0.28, IVORY))
+
+
+def readout_parts():
+    """The signature's readout in layers, as the engine stacks them: a plate cut as the dock's buttons are, its well a
+    conduit that fills with light from the foot, the light's front leaning as a bar's does and lit along its edge, the
+    plate's face over it, then the signature's own icon. Ready, it's one image: full, white-hot, glowing, its icon dark
+    on the light, the loudest thing on the HUD. It's ivory at every strength: it belongs to the fight, not to a system."""
+    s, g = READOUT, READOUT_PAD
+    cut = s * 0.2
+
+    def tile():
+        t = kit.blank(s + 2 * g, s + 2 * g)
+        return t, plate(t, g, s, cut), plate(t, g + WELL, s - 2 * WELL, cut * 0.75)
+
+    def body(t):
+        return t.ramp(GRAPHITE["button"][0], GRAPHITE["button"][1], (t.y - g) / s)
+
+    t, outer, inner = tile()
     t.glow(outer, 4.0, ui.BLACK, 0.35)
-    t.paint(outer, t.ramp(GRAPHITE["button"][0], GRAPHITE["button"][1], (t.y - g) / s), 0.96)
+    t.paint(outer, body(t), 0.96)
     t.paint(inner, c(GRAPHITE["channel"]))
-    top, low = g + inset, g + s - inset
-    level = low - (low - top) * share - (t.x - g - s / 2) * 0.12  # the light's front, leaning as a bar's does
-    lit = np.maximum(inner, level - t.y)
-    if ready:
-        t.paint(inner, t.ramp("#FFFDF6", IVORY, (t.y - top) / (low - top)))
-        t.paint(np.maximum(inner, np.abs(t.x - g - s / 2) - s * 0.16), c("#FFFFFF"), 0.5)
-    else:  # light below its level, the level itself a lit edge with its own small glow, so how full reads at a glance
-        t.paint(lit, c(IVORY), 0.28)
-        under = np.clip(1 - (t.y - level) / 8.0, 0, 1)
-        ui.over(t.px, c(IVORY), np.clip(0.5 - lit * K4, 0, 1) * under * 0.4)
-        within = np.clip(0.5 - inner * K4, 0, 1)
-        ui.over(t.px, c(IVORY), within * np.clip(1 - (np.abs(t.y - level) - 1.3) / 4.5, 0, 1) * 0.55)
-        t.paint(np.maximum(inner, np.abs(t.y - level) - 1.3), c("#FFFFFF"))
-    t.line(inner, 0.8, c(IVORY), 0.35 if not ready else 0.9)
-    t.line(outer, 1.0, c(IVORY if ready else GRAPHITE["edge"]))
-    d = SIGNATURES[signature](t, g + s / 2, g + s / 2 + 1, s * 0.27)
-    if ready:
-        t.paint(d - 1.4, c("#FFFFFF"))
-        t.paint(d, c(INK))
-    else:  # dark-edged, so it holds over the light as it rises
-        t.paint(d - 2.3, c(STROKE))
-        t.paint(d, c(IVORY), 0.92)
-    place(st, t, x - g, y - g)
+    kit.keep("ReadoutPlate", t, pad=g, use="the readout, charging: its plate and dark well, under the light")
+    t, outer, inner = tile()
+    t.paint(np.maximum(outer, -inner), body(t), 0.96)
+    t.line(inner, 0.8, c(IVORY), 0.35)
+    t.line(outer, 1.0, c(GRAPHITE["edge"]))
+    kit.keep("ReadoutFace", t, pad=g, use="the readout, charging: over the light, the plate's face round the well and its rims")
+    w = s - 2 * WELL
+    t = kit.blank(w, w)  # the well's own shape: a box clip would let the light out past the two cut corners
+    t.paint(plate(t, 0.0, w, cut * 0.75), c("#FFFFFF"))
+    kit.keep("ReadoutLight", t, use="the readout, charging: the well's shape, white. The light is this image under a "
+                                    "gradient that carries the front (pieces.readout)")
+    t, outer, inner = tile()
+    top, low = g + WELL, g + s - WELL
+    t.glow(outer, 9.0, c(IVORY), 0.72)
+    t.glow(outer, 4.0, ui.BLACK, 0.35)
+    t.paint(outer, body(t), 0.96)
+    t.paint(inner, t.ramp("#FFFDF6", IVORY, (t.y - top) / (low - top)))
+    t.paint(np.maximum(inner, np.abs(t.x - g - s / 2) - s * 0.16), c("#FFFFFF"), 0.5)
+    t.line(inner, 0.8, c(IVORY), 0.9)
+    t.line(outer, 1.0, c(IVORY))
+    kit.keep("ReadoutReady", t, pad=g, use="the readout, ready: the whole plate, white-hot, with its glow")
+    for name, draw in SIGNATURES.items():
+        for ready in (False, True):
+            t = kit.blank(s, s)
+            d = draw(t, s / 2, s / 2 + 1, s * 0.27)
+            if ready:
+                t.paint(d - 1.4, c("#FFFFFF"))
+                t.paint(d, c(INK))
+            else:  # dark-edged, so it holds over the light as it rises
+                t.paint(d - 2.3, c(STROKE))
+                t.paint(d, c(IVORY), 0.92)
+            kit.keep(f"Signature{name}" + ("Ready" if ready else ""), t,
+                     use=f"{name}'s icon on the readout, " + ("ready: dark on the light" if ready else "charging"))
+
+
+def readout(st, x, y, s, share, signature):
+    """The readout, stacked from its layers as the engine stacks them."""
+    if share >= 1.0:
+        st.lay("ReadoutReady", x, y)
+        return st.lay(f"Signature{signature}Ready", x, y)
+    st.lay("ReadoutPlate", x, y)
+    w = s - 2 * WELL
+    shape = kit.IMAGES["ReadoutLight"]["px"]
+    rows, cols = shape.shape[:2]
+    py, px = (np.mgrid[0:rows, 0:cols] + 0.5) / K4
+    under = py - w * (1 - share) + (px - w / 2) * LEAN  # points below the front's line, as the gradient measures them
+    at = [k[0] for k in FRONT]
+    light = np.zeros((rows, cols, 4), np.float32)
+    for i in range(3):
+        light[..., i] = np.interp(under, at, [c(k[2])[i] for k in FRONT])
+    light[..., 3] = np.interp(under, at, [k[1] for k in FRONT]) * shape[..., 3]
+    rs.paste(st.px, light, round((x + WELL) * K4), round((y + WELL) * K4))
+    st.lay("ReadoutFace", x, y)
+    st.lay(f"Signature{signature}", x, y)
+
+
+def eye_parts():
+    """The spectate eye, the readout's small sibling, an image a state: open and lit when on, shut and dim when off."""
+    s, g = EYE, EYE_PAD
+    for on in (False, True):
+        t = kit.blank(s + 2 * g, s + 2 * g)
+        outer = plate(t, g, s, s * 0.2)
+        if on:
+            t.glow(outer, 5.0, c(IVORY), 0.45)
+        t.glow(outer, 4.0, ui.BLACK, 0.35)
+        t.paint(outer, t.ramp(GRAPHITE["button"][0], GRAPHITE["button"][1], (t.y - g) / s) * (1.0 if on else 0.8), 0.96)
+        t.line(outer, 1.0, c(GRAPHITE["edge"]))
+        if on:
+            t.line(outer + 0.6, 1.4, c(IVORY))
+            t.paint(np.maximum(outer + 0.8, g + s - 2.6 - t.y), c(IVORY))
+            eye_open(t, g + s / 2, g + s / 2, s * 0.32, IVORY, INK)
+        else:
+            eye_shut(t, g + s / 2, g + s / 2, s * 0.32, GRAPHITE["soft"])
+        kit.keep("EyeOn" if on else "EyeOff", t, pad=g, use="the spectate eye, " + ("on" if on else "off"))
 
 
 def spectate(st, x, y, s, on):
-    """The spectate eye, the readout's small sibling: open and lit when on, shut and dim when off."""
-    g = 20.0
-    t = kit.blank(s + 2 * g, s + 2 * g)
-    cut = s * 0.2
-    outer = plate(t, g, s, cut)
-    if on:
-        t.glow(outer, 5.0, c(IVORY), 0.45)
-    t.glow(outer, 4.0, ui.BLACK, 0.35)
-    t.paint(outer, t.ramp(GRAPHITE["button"][0], GRAPHITE["button"][1], (t.y - g) / s) * (1.0 if on else 0.8), 0.96)
-    t.line(outer, 1.0, c(GRAPHITE["edge"]))
-    if on:
-        t.line(outer + 0.6, 1.4, c(IVORY))
-        t.paint(np.maximum(outer + 0.8, g + s - 2.6 - t.y), c(IVORY))
-        eye_open(t, g + s / 2, g + s / 2, s * 0.32, IVORY, INK)
-    else:
-        eye_shut(t, g + s / 2, g + s / 2, s * 0.32, GRAPHITE["soft"])
-    place(st, t, x - g, y - g)
+    st.lay("EyeOn" if on else "EyeOff", x, y)
 
 
 # --- the lead's card and the target's, from their images --------------------------------------------------------------
@@ -498,6 +563,33 @@ def card_images():
     global DATA, IMG
     DATA = json.loads((CARD / "lead_card.json").read_text(encoding="utf-8"))
     IMG = {n: rs.load(CARD / e["file"]) for n, e in DATA["images"].items()}
+    card_parts()
+
+
+STUD, STUD_PAD = 8.5, 12.0  # the type's stud on the lead's card: its radius, and how far its images reach past it
+
+
+def card_parts():
+    """What Conduit adds to the lead's card. A frame's own glow, burned harder: a halo an image for each rarity that
+    glows, white, for the engine to tint. And the type's stud where the bars meet the frame: bigger, its rim and its
+    glow in the type's own colour."""
+    for rarity, r in ui.RARITIES.items():
+        if "glow" in r:
+            en = DATA["images"][f"CardFrame{rarity}"]
+            kit.IMAGES[f"CardFrameHalo{rarity}"] = dict(
+                px=halo(IMG[f"CardFrame{rarity}"][..., 3], "#FFFFFF", 5.0, 1.3), w=en["points"][0], h=en["points"][1],
+                tint="the rarity's glow, " + r["glow"][0], cut=None, pad=en["pad"],
+                use=f"under CardFrame{rarity}, at its place and size", ship=True)
+    size = 2 * STUD + 2 * STUD_PAD
+    t = kit.blank(size, size)
+    t.glow(np.hypot(t.x - size / 2, t.y - size / 2) - STUD, 3.5, c("#FFFFFF"), 0.55)
+    kit.keep("CardStudGlow", t, "the type's colour", pad=STUD_PAD, use="under CardStud")
+    t = kit.blank(size, size)
+    d = np.hypot(t.x - size / 2, t.y - size / 2) - STUD
+    t.paint(d, c("#000000"))
+    t.line(d, 1.6, c("#FFFFFF"))
+    kit.keep("CardStud", t, "the type's colour", pad=STUD_PAD,
+             use="the type's stud, where the bars meet the frame, the type's gem on it at 14.6 points; its dark stays dark")
 
 
 def lead(st, x, y, sc):
@@ -510,7 +602,7 @@ def lead(st, x, y, sc):
                  round((y + en["at"][1] - en["pad"]) * K4))
 
     rarity, who = sc["rarity"], sc["who"]
-    trim, glow = TRIM[rarity], GLOW[rarity]
+    trim, glow = TRIM[rarity], ui.RARITIES[rarity].get("glow")
     fx, fy, fw, fh = lc.FRAME
     at("CardHousing")
     at("CardHousingRim", lc.tinted(IMG["CardHousingRim"], trim))
@@ -528,9 +620,8 @@ def lead(st, x, y, sc):
         px = lc.sliced(IMG[n], et["cut"], tab_w + (lc.TAB_FOOT - lc.TAB_TOP) * lc.SLANT + 2 * et["pad"])
         at(n, lc.tinted(px, trim) if n.endswith("Rim") else px)
     at(f"CardFace{who}")
-    frame = IMG[f"CardFrame{rarity}"]
     if glow:  # the frame's own glow, burned harder
-        at(f"CardFrame{rarity}", halo(frame[..., 3], glow, 5.0, 1.3))
+        at(f"CardFrame{rarity}", lc.tinted(kit.IMAGES[f"CardFrameHalo{rarity}"]["px"], glow[0]))
     at(f"CardFrame{rarity}")
     if f"CardHead{who}" in e:
         at(f"CardHead{who}")
@@ -538,14 +629,10 @@ def lead(st, x, y, sc):
     at("CardBadgeRim", lc.tinted(IMG["CardBadgeRim"], trim))
     # the type's stud, where the bars meet the frame: bigger, its rim and its glow in the type's own colour
     type_colour = ss.TYPES[sc["type_"]]
-    r = 8.5
+    r = STUD
     cx, cy = x + fx + fw + 0.5, y + DATA["geometry"]["mid"]
-    t = kit.blank(2 * r + 24, 2 * r + 24)
-    d = np.hypot(t.x - r - 12, t.y - r - 12) - r
-    t.glow(d, 3.5, c(type_colour), 0.55)
-    t.paint(d, c("#000000"))
-    t.line(d, 1.6, c(type_colour))
-    place(st, t, cx - r - 12, cy - r - 12)
+    st.lay("CardStudGlow", cx - r, cy - r, tint=type_colour)
+    st.lay("CardStud", cx - r, cy - r, tint=type_colour)
     st.icon(f"Gem{sc['type_']}", cx, cy, 2 * r * 0.8 + 1)
     st.icon(f"Class{sc['class_']}", x + 66 + name_w + 11, y + 26, 13.0)
     st.text(x + 66, y + 20.6, 16, who, IVORY)
@@ -1074,10 +1161,10 @@ def slot(st, x, y, s, p, name, rarity, rank):
     else:
         t.paint(d, c(p["faint"]), 0.45)
     if rank:  # the forge rank, a badge on the frame's square corner, never over the object's middle
-        t.paint(t.poly(cut_box(1.6, s - 12.6, 17.0, s - 1.6, 0.0, 3.0, 0.0, 0.0)), c(STROKE), 0.86)
+        t.paint(t.poly(cut_box(1.6, s - 14.6, 21.0, s - 1.6, 0.0, 3.5, 0.0, 0.0)), c(STROKE), 0.88)
     place(st, t, x, y)
     if rank:
-        st.text(x + 3.6, y + s - 11.4, 9, f"+{rank}", "#FFFFFF")
+        st.text(x + 3.8, y + s - 13.2, 11, f"+{rank}", "#FFFFFF")
 
 
 def stand_in(st, cx, foot, height):
@@ -1140,9 +1227,8 @@ def rail(st, x, y0, y1, p, tabs, chosen):
     ys = [y0 + RAIL_REST + 6.0 + i * step for i in range(len(tabs))]
     t = kit.blank(2 * g, span + 2 * g)
     line = np.maximum(np.abs(t.x - g) - 0.8, np.abs(t.y - g - span / 2) - span / 2)
-    for i, y in enumerate(ys):  # the line stops for each button's word
-        word = y - y0 + g + (RAIL_ON if i == chosen else RAIL_REST) + 8.5
-        line = np.maximum(line, 7.0 - np.abs(t.y - word))
+    word = ys[chosen] - y0 + g + RAIL_ON + 9.5  # the line stops for the chosen page's word
+    line = np.maximum(line, 8.5 - np.abs(t.y - word))
     t.paint(line - 1.3, c(STROKE), 0.85)
     t.paint(line, c(p["edge"]), 0.8)
     near = np.clip(1 - np.abs(t.y - g - (ys[chosen] - y0)) / 62.0, 0, 1)
@@ -1177,7 +1263,8 @@ def rail(st, x, y0, y1, p, tabs, chosen):
             t.paint(np.maximum(ring, t.y - m + rad * 0.5), c(p["glint"]), 0.75)
         t.paint(MENU[tab](t, m, m + 0.5, rad * 0.46), c(PALE[accent] if on else p["text"]), 1.0 if on else 0.85)
         place(st, t, x - m, y - m)
-        st.text(x, y + rad + 4.0, 8, tab, PALE[accent] if on else p["soft"], "CENTER")
+        if on:  # the one word on the rail, at a size that reads on a phone: a page at rest is known by its mark
+            st.text(x, y + rad + 4.0, 11, tab, PALE[accent], "CENTER")
 STRIP = ("Legendary", "Mythical", "Epic", "Rare", "Epic", "Uncommon", "Rare", "Common", "Uncommon", "Common", "Rare",
          "Common", "Uncommon", "Common", "Common")  # the strip's frames, the shown Voidkin first
 
@@ -1375,6 +1462,168 @@ def ui_main(out, rooms=True):
     stage("the two rooms more")
 
 
+# --- the HUD's images in Block, for the build ------------------------------------------------------------------------
+
+SYSTEMS = {  # what the HUD colours: its colour, its icon in light, its mark in ink for a block
+    "Power": (POWER, "Bolt", "InkBolt"), "Base": (POWER, "Plant", "InkPlant"), "Credits": (CREDITS, "CoinMint", "InkCoin"),
+    "Voidkin": (VOIDKIN, "Shard", "InkShard"), "Regalia": (REGALIA, "Crest", "InkCrest"), "Map": (MAP, "Route", "InkRoute"),
+}
+PIECES = dict(
+    pill=dict(
+        height=PILL, layers=["PanelShadow", "PanelFill: palette.panel, palette.alpha", "BlockPill: block, top to foot",
+                             "PanelEdgeBold: palette.edge", "PanelGlint: palette.glint"],
+        mark="the system's ink mark, 20 points, its middle 16.5 from the left, at mid height",
+        words="from 41, palette.text; a second value right-aligned 10 from the right, palette.soft",
+        bar="Power's: a thread 3 tall, 8 above the foot, from 41 to 9 short of the right, its light the system's colour; "
+            "the words sit 2 higher. Its fill is demand over generation",
+        covering="when the battery covers demand: the second value in the system's colour, the Battery icon at 17 points "
+                 "102 from the left, and the bar's last share (covered over demand) in dashes, 2 on 2 off, palette.channel"),
+    hint=dict(like="pill, in the colours and with the mark of the system it points to",
+              words="centred 10 right of the middle, palette.text"),
+    dock=dict(size=[96.0, 52.0], layers=["ButtonShadow", "ButtonFill: palette.button", "BlockDock: block, top to foot",
+                                         "ButtonEdgeBold: palette.edge", "ButtonBase: colour",
+                                         "ButtonBaseGlow: colour, 45 in 100"],
+              mark="the system's ink mark, 23 points, its middle at 17.5, 24.5", words="from 40, palette.text"),
+    readout=dict(
+        size=READOUT, well=[WELL, WELL, READOUT - WELL, READOUT - WELL],
+        charging=["ReadoutPlate", "ReadoutLight at the well's box, under one gradient: the light and its front",
+                  "ReadoutFace", "Signature<Name>"],
+        light="one gradient on ReadoutLight carries the light's colour and how solid it is. Its line's middle sits at "
+              "well top + (1 - share) x well height, on the well's middle column; nothing shows above the front, and "
+              "the last stop holds down to the foot. Moving the gradient moves the level. A box clip isn't used: it "
+              "lets the light out past the two cut corners",
+        front=[dict(below=at, solid=solid, colour=colour) for at, solid, colour in FRONT],
+        lean=f"the front's line rises {LEAN:g} of a point for each point to the right (about 6.8 degrees)",
+        ready=["ReadoutReady", "Signature<Name>Ready"],
+        place="under the lead's card: 10 under its foot, 2 right of its left"),
+    eye=dict(size=EYE, images=["EyeOff", "EyeOn"], place="beside the readout: 10 right of it, 7 lower than its top"),
+    card=dict(halo="CardFrameHalo<Rarity> under CardFrame<Rarity>, at its place, tinted its rarity's glow; "
+                   "Common and Uncommon have none",
+              stud="CardStudGlow then CardStud, tinted the type's colour, its middle 0.5 right of the frame's right edge "
+                   "at lead_card.json's geometry.mid; then the type's gem at 14.6 points"),
+    main=dict(what="a screen's one main action, filled with its room's colour",
+              layers=["ButtonShadow", "ButtonRingGlow: colour, 50 in 100", "ButtonFill: main, top to foot",
+                      "ButtonEdgeBold: deep (the palette's ink on a bordered palette)", "ButtonBase: pale"],
+              words="in ink #14161B", pressed="1 lower, no shadow or glow, main foot to top, ButtonPressedShade over the edge"),
+)
+SHEET_ICONS = ("Bolt", "CoinMint", "Shard", "Plant", "Crest", "Route", "Battery")
+
+
+def colour_manifest(out, names):
+    def row(p):
+        return {k: (list(v) if isinstance(v, tuple) else v) for k, v in p.items()}
+
+    def system(accent, lit, ink):
+        p = palette(accent, BLOCK)
+        return dict(colour=accent, pale=PALE[accent], deep=DEEP[accent], night=list(NIGHT[accent]), icon=lit, mark=ink,
+                    block=list(block_tint(accent)), main=[mix(accent, PALE[accent], 0.3), mix(accent, DEEP[accent], 0.4)],
+                    palette=row({k: p[k] for k in ("panel", "alpha", "button", "pressed", "edge", "border", "glint",
+                                                   "channel", "text", "soft")}))
+
+    data = dict(
+        pixelsPerPoint=K4, strength="V2, Block (research's verdict on AR12's delivery 2, 2026-11-15)",
+        note="The HUD's colour, on the kit's slices (build/handoff/UI/kit/kit.json) and the lead's card "
+             "(build/handoff/UI/hud/lead_card/lead_card.json). A piece wears its system's row: `palette` colours the "
+             "kit's slices, `block` tints the piece's block top to foot, `mark` is the ink icon on the block. A white "
+             "image takes its tint; a dark part baked into one stays dark. `pad` is how far an image reaches past its "
+             "piece's box on every side. Indigo and rose never go on a portrait's or an item's frame.",
+        systems={name: system(*v) for name, v in SYSTEMS.items()}, pieces=PIECES,
+        rooms={name: row(p) for name, p in ROOMS.items()}, roomUse=ROOM_USE,
+        images={name: dict(file=f"images/{name}.png", pixels=[im["px"].shape[1], im["px"].shape[0]], points=[im["w"], im["h"]],
+                           **({"tint": im["tint"]} if im["tint"] else {}), **({"pad": im["pad"]} if im["pad"] else {}),
+                           **({"use": im["use"]} if im["use"] else {}))
+                for name, im in ((n, kit.IMAGES[n]) for n in names)})
+    (out / "hud_colour.json").write_text(json.dumps(data, indent=1), encoding="utf-8", newline="\n")
+    print(f"wrote {out / 'hud_colour.json'}: {len(data['images'])} images")
+
+
+def images_shot():
+    """The delivered images on one picture: each icon at the image's own size and at 64 pixels, then the pieces stacked
+    from them as the engine stacks them."""
+    st = kit.Stage(880.0, 648.0, PARTS_GROUND)
+    st.text(12, 8, 11, "The icons: above, 64 points across (on this sheet, the image's own 128 pixels); below, at 64 pixels. "
+            "A mark in ink is shown on its system's block colours.", HEAD)
+    inks = {ink: accent for accent, _, ink in SYSTEMS.values()}
+    for i, name in enumerate(SHEET_ICONS + tuple(inks)):
+        cx = 12 + 33 + i * 66
+        for cy, size in ((68, 64.0), (126, 32.0)):
+            if name in inks:
+                x0, x1 = round((cx - size / 2 - 1) * K4), round((cx + size / 2 + 1) * K4)
+                y0, y1 = round((cy - size / 2 - 1) * K4), round((cy + size / 2 + 1) * K4)
+                st.px[y0:y1, x0:x1, :3] = kit.shade(block_tint(inks[name]), y1 - y0)
+            st.icon(name, cx, cy, size)
+        st.text(cx, 147, 9, name, NOTE, "CENTER")
+    st.text(12, 168, 11, "Block, stacked from the images: the pills, the hint, the dock of four. Right: the two blocks "
+            "as delivered, white, and in each system's colours.", HEAD)
+    pill(st, 12, 190, 120, CREDITS, BLOCK, "CoinMint", "35,170")
+    pill(st, 140, 190, 200, POWER, BLOCK, "Bolt", "30 kW", "24 kW used", None, 24 / 30)
+    pill(st, 348, 190, 200, POWER, BLOCK, "Bolt", "30 kW", "34 kW used", POWER, 1.0, drain=4 / 34, mark=("Battery", 96))
+    hint(st, 556, 190, 288, "65 shards: into the Breaker", BLOCK)
+    for i, (label, icon, accent) in enumerate((("Voidkin", "Shard", VOIDKIN), ("Regalia", "Crest", REGALIA),
+                                               ("Base", "Plant", POWER), ("Map", "Route", MAP))):
+        dock(st, 12 + i * 102, 232, label, icon, accent, BLOCK)
+    for i, accent in enumerate((None, POWER, CREDITS, VOIDKIN, REGALIA, MAP)):
+        st.lay("BlockPill", 440 + i * 46, 232, tint=block_tint(accent) if accent else None)
+        st.lay("BlockDock", 440 + i * 46, 266, tint=block_tint(accent) if accent else None)
+    st.text(12, 330, 11, "The readout's layers (plate, the light's shape, face, ready, the icons), then stacked: Haymaker at "
+            "30, 70 and ready, Held Note at 55 and ready; the eye off and on.", HEAD)
+    for i, name in enumerate(("ReadoutPlate", "ReadoutLight", "ReadoutFace", "ReadoutReady")):
+        st.lay(name, 20 + i * 76 + (WELL if name == "ReadoutLight" else 0), 360 + (WELL if name == "ReadoutLight" else 0))
+    for i, name in enumerate(("SignatureHaymaker", "SignatureHaymakerReady", "SignatureHeldNote", "SignatureHeldNoteReady")):
+        if name.endswith("Ready"):
+            st.px[round(364 * K4):round(414 * K4), round((324 + i * 62) * K4):round((374 + i * 62) * K4), :3] = c(IVORY)
+        st.lay(name, 320 + i * 62, 360)
+    st.px[round(432 * K4):round(520 * K4), round(476 * K4):, :3] = c(PALE_GROUND)
+    for x0 in (20, 488):
+        for i, (share, signature) in enumerate(((0.3, "Haymaker"), (0.7, "Haymaker"), (1.0, "Haymaker"), (0.55, "HeldNote"),
+                                                (1.0, "HeldNote"))):
+            readout(st, x0 + i * 66, 446, READOUT, share, signature)
+        if x0 == 20:
+            spectate(st, x0 + 338, 453, EYE, False)
+        spectate(st, x0 + (336 if x0 > 20 else 392), 453, EYE, True)
+    st.text(12, 530, 11, "The lead's card with its frame's halo and its type's stud: a Common, which has no halo, and a "
+            "Mythical. Right: the Rare, Epic and Legendary frames on their halos.", HEAD)
+    lead(st, 12, 548, SCENES[0])
+    lead(st, 300, 548, SCENES[1])
+    for i, rarity in enumerate(("Rare", "Epic", "Legendary")):
+        en = DATA["images"][f"CardFrame{rarity}"]
+        at = round((590 + i * 96 - en["pad"]) * K4), round((556 - en["pad"]) * K4)
+        rs.paste(st.px, lc.tinted(kit.IMAGES[f"CardFrameHalo{rarity}"]["px"], ui.RARITIES[rarity]["glow"][0]), *at)
+        rs.paste(st.px, IMG[f"CardFrame{rarity}"], *at)
+    return bytes8(halve(st.px)), st.items
+
+
+def images_main(out):
+    """The HUD's images in Block, for the build: images/, hud_colour.json and a sheet of them, in the handoff folder."""
+    kit.panels()
+    kit.buttons()
+    kit.bars()
+    kit.icons()
+    theirs = set(kit.IMAGES)
+    icons()
+    card_images()
+    names = [n for n in kit.IMAGES if n not in theirs and not n.startswith("_")]
+    stage("the kit's slices, the card's images, ours")
+    (out / "images").mkdir(exist_ok=True)
+    for name in names:
+        px = kit.IMAGES[name]["px"].copy()
+        kit.bleed(px)
+        rs.save(px, out / "images" / f"{name}.png")
+    colour_manifest(out, names)
+    shot = images_shot()
+    kit.IMAGES.clear()
+    IMG.clear()
+    stage("the images saved, the sheet's picture drawn")
+    ui.K = 2
+    m = 20.0
+    sheet = ui.Sheet(880 + 2 * m, 44 + 648 + 16, GROUND)
+    t = sheet.tile(0, 0, sheet.w, sheet.h)
+    t.text(m, 14, 17, "Grow your Anime: the HUD's images in Block, as delivered", HEAD)
+    add(sheet, *shot, m, 44)
+    kit.finish(sheet, out / "hud_colour_images.png")
+    stage("the images' sheet")
+
+
 def main():
     out = bl.out_dir()
     mode = (sys.argv[sys.argv.index("--") + 2:] or ["hud"])[0]
@@ -1382,6 +1631,8 @@ def main():
     stage("started")
     if mode in ("ui", "voidkin"):
         return ui_main(out, mode == "ui")
+    if mode == "images":
+        return images_main(out)
     kit.panels()
     kit.buttons()
     kit.bars()

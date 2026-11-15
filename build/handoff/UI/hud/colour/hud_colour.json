@@ -1,0 +1,926 @@
+{
+ "pixelsPerPoint": 4,
+ "strength": "V2, Block (research's verdict on AR12's delivery 2, 2026-11-15)",
+ "note": "The HUD's colour, on the kit's slices (build/handoff/UI/kit/kit.json) and the lead's card (build/handoff/UI/hud/lead_card/lead_card.json). A piece wears its system's row: `palette` colours the kit's slices, `block` tints the piece's block top to foot, `mark` is the ink icon on the block. A white image takes its tint; a dark part baked into one stays dark. `pad` is how far an image reaches past its piece's box on every side. Indigo and rose never go on a portrait's or an item's frame.",
+ "systems": {
+  "Power": {
+   "colour": "#FFE266",
+   "pale": "#FFF7C2",
+   "deep": "#B88A14",
+   "night": [
+    "#4D3711",
+    "#211605"
+   ],
+   "icon": "Bolt",
+   "mark": "InkBolt",
+   "block": [
+    "#FFE986",
+    "#EAC84D"
+   ],
+   "main": [
+    "#FFE882",
+    "#E3BF45"
+   ],
+   "palette": {
+    "panel": [
+     "#4D3711",
+     "#211605"
+    ],
+    "alpha": 0.94,
+    "button": [
+     "#664F1D",
+     "#33260D"
+    ],
+    "pressed": [
+     "#211605",
+     "#4D3711"
+    ],
+    "edge": "#FFE266",
+    "border": 1.6,
+    "glint": "#FFF7C2",
+    "channel": "#2E2A19",
+    "text": "#FFF7C2",
+    "soft": "#CEC594"
+   }
+  },
+  "Base": {
+   "colour": "#FFE266",
+   "pale": "#FFF7C2",
+   "deep": "#B88A14",
+   "night": [
+    "#4D3711",
+    "#211605"
+   ],
+   "icon": "Plant",
+   "mark": "InkPlant",
+   "block": [
+    "#FFE986",
+    "#EAC84D"
+   ],
+   "main": [
+    "#FFE882",
+    "#E3BF45"
+   ],
+   "palette": {
+    "panel": [
+     "#4D3711",
+     "#211605"
+    ],
+    "alpha": 0.94,
+    "button": [
+     "#664F1D",
+     "#33260D"
+    ],
+    "pressed": [
+     "#211605",
+     "#4D3711"
+    ],
+    "edge": "#FFE266",
+    "border": 1.6,
+    "glint": "#FFF7C2",
+    "channel": "#2E2A19",
+    "text": "#FFF7C2",
+    "soft": "#CEC594"
+   }
+  },
+  "Credits": {
+   "colour": "#40DCC6",
+   "pale": "#D6FFF7",
+   "deep": "#13867A",
+   "night": [
+    "#0E4541",
+    "#071E1F"
+   ],
+   "icon": "CoinMint",
+   "mark": "InkCoin",
+   "block": [
+    "#74E8D7",
+    "#32C2AF"
+   ],
+   "main": [
+    "#6DE7D5",
+    "#2EBAA8"
+   ],
+   "palette": {
+    "panel": [
+     "#0E4541",
+     "#071E1F"
+    ],
+    "alpha": 0.94,
+    "button": [
+     "#155A54",
+     "#0C2D2C"
+    ],
+    "pressed": [
+     "#071E1F",
+     "#0E4541"
+    ],
+    "edge": "#40DCC6",
+    "border": 1.6,
+    "glint": "#D6FFF7",
+    "channel": "#0F2928",
+    "text": "#D6FFF7",
+    "soft": "#78C2BF"
+   }
+  },
+  "Voidkin": {
+   "colour": "#DCCBFF",
+   "pale": "#FAF7FF",
+   "deep": "#7C66CC",
+   "night": [
+    "#35286B",
+    "#171033"
+   ],
+   "icon": "Shard",
+   "mark": "InkShard",
+   "block": [
+    "#E7DAFF",
+    "#BFADF0"
+   ],
+   "main": [
+    "#E5D8FF",
+    "#B6A3EB"
+   ],
+   "palette": {
+    "panel": [
+     "#35286B",
+     "#171033"
+    ],
+    "alpha": 0.94,
+    "button": [
+     "#4C3F80",
+     "#271F43"
+    ],
+    "pressed": [
+     "#171033",
+     "#35286B"
+    ],
+    "edge": "#DCCBFF",
+    "border": 1.6,
+    "glint": "#FAF7FF",
+    "channel": "#282631",
+    "text": "#FAF7FF",
+    "soft": "#BEBBD9"
+   }
+  },
+  "Regalia": {
+   "colour": "#6C7BFF",
+   "pale": "#E2E6FF",
+   "deep": "#3340B8",
+   "night": [
+    "#1D2A6E",
+    "#0C1233"
+   ],
+   "icon": "Crest",
+   "mark": "InkCrest",
+   "block": [
+    "#95A0FF",
+    "#5B69EA"
+   ],
+   "main": [
+    "#8F9BFF",
+    "#5563E3"
+   ],
+   "palette": {
+    "panel": [
+     "#1D2A6E",
+     "#0C1233"
+    ],
+    "alpha": 0.94,
+    "button": [
+     "#283582",
+     "#141A43"
+    ],
+    "pressed": [
+     "#0C1233",
+     "#1D2A6E"
+    ],
+    "edge": "#6C7BFF",
+    "border": 1.6,
+    "glint": "#E2E6FF",
+    "channel": "#161A31",
+    "text": "#E2E6FF",
+    "soft": "#8C96D9"
+   }
+  },
+  "Map": {
+   "colour": "#FF5C93",
+   "pale": "#FFE3EE",
+   "deep": "#B8245C",
+   "night": [
+    "#5A1D3F",
+    "#260B1B"
+   ],
+   "icon": "Route",
+   "mark": "InkRoute",
+   "block": [
+    "#FF8BB3",
+    "#EA4B82"
+   ],
+   "main": [
+    "#FF85AE",
+    "#E3467D"
+   ],
+   "palette": {
+    "panel": [
+     "#5A1D3F",
+     "#260B1B"
+    ],
+    "alpha": 0.94,
+    "button": [
+     "#71264B",
+     "#371125"
+    ],
+    "pressed": [
+     "#260B1B",
+     "#5A1D3F"
+    ],
+    "edge": "#FF5C93",
+    "border": 1.6,
+    "glint": "#FFE3EE",
+    "channel": "#2E1520",
+    "text": "#FFE3EE",
+    "soft": "#CE89A8"
+   }
+  }
+ },
+ "pieces": {
+  "pill": {
+   "height": 30.0,
+   "layers": [
+    "PanelShadow",
+    "PanelFill: palette.panel, palette.alpha",
+    "BlockPill: block, top to foot",
+    "PanelEdgeBold: palette.edge",
+    "PanelGlint: palette.glint"
+   ],
+   "mark": "the system's ink mark, 20 points, its middle 16.5 from the left, at mid height",
+   "words": "from 41, palette.text; a second value right-aligned 10 from the right, palette.soft",
+   "bar": "Power's: a thread 3 tall, 8 above the foot, from 41 to 9 short of the right, its light the system's colour; the words sit 2 higher. Its fill is demand over generation",
+   "covering": "when the battery covers demand: the second value in the system's colour, the Battery icon at 17 points 102 from the left, and the bar's last share (covered over demand) in dashes, 2 on 2 off, palette.channel"
+  },
+  "hint": {
+   "like": "pill, in the colours and with the mark of the system it points to",
+   "words": "centred 10 right of the middle, palette.text"
+  },
+  "dock": {
+   "size": [
+    96.0,
+    52.0
+   ],
+   "layers": [
+    "ButtonShadow",
+    "ButtonFill: palette.button",
+    "BlockDock: block, top to foot",
+    "ButtonEdgeBold: palette.edge",
+    "ButtonBase: colour",
+    "ButtonBaseGlow: colour, 45 in 100"
+   ],
+   "mark": "the system's ink mark, 23 points, its middle at 17.5, 24.5",
+   "words": "from 40, palette.text"
+  },
+  "readout": {
+   "size": 58.0,
+   "well": [
+    4.0,
+    4.0,
+    54.0,
+    54.0
+   ],
+   "charging": [
+    "ReadoutPlate",
+    "ReadoutLight at the well's box, under one gradient: the light and its front",
+    "ReadoutFace",
+    "Signature<Name>"
+   ],
+   "light": "one gradient on ReadoutLight carries the light's colour and how solid it is. Its line's middle sits at well top + (1 - share) x well height, on the well's middle column; nothing shows above the front, and the last stop holds down to the foot. Moving the gradient moves the level. A box clip isn't used: it lets the light out past the two cut corners",
+   "front": [
+    {
+     "below": -5.8,
+     "solid": 0.0,
+     "colour": "#FFF4D6"
+    },
+    {
+     "below": -1.35,
+     "solid": 0.55,
+     "colour": "#FFF4D6"
+    },
+    {
+     "below": -1.25,
+     "solid": 1.0,
+     "colour": "#FFFFFF"
+    },
+    {
+     "below": 1.25,
+     "solid": 1.0,
+     "colour": "#FFFFFF"
+    },
+    {
+     "below": 1.35,
+     "solid": 0.78,
+     "colour": "#FFF4D6"
+    },
+    {
+     "below": 5.8,
+     "solid": 0.36,
+     "colour": "#FFF4D6"
+    },
+    {
+     "below": 8.0,
+     "solid": 0.28,
+     "colour": "#FFF4D6"
+    }
+   ],
+   "lean": "the front's line rises 0.12 of a point for each point to the right (about 6.8 degrees)",
+   "ready": [
+    "ReadoutReady",
+    "Signature<Name>Ready"
+   ],
+   "place": "under the lead's card: 10 under its foot, 2 right of its left"
+  },
+  "eye": {
+   "size": 44.0,
+   "images": [
+    "EyeOff",
+    "EyeOn"
+   ],
+   "place": "beside the readout: 10 right of it, 7 lower than its top"
+  },
+  "card": {
+   "halo": "CardFrameHalo<Rarity> under CardFrame<Rarity>, at its place, tinted its rarity's glow; Common and Uncommon have none",
+   "stud": "CardStudGlow then CardStud, tinted the type's colour, its middle 0.5 right of the frame's right edge at lead_card.json's geometry.mid; then the type's gem at 14.6 points"
+  },
+  "main": {
+   "what": "a screen's one main action, filled with its room's colour",
+   "layers": [
+    "ButtonShadow",
+    "ButtonRingGlow: colour, 50 in 100",
+    "ButtonFill: main, top to foot",
+    "ButtonEdgeBold: deep (the palette's ink on a bordered palette)",
+    "ButtonBase: pale"
+   ],
+   "words": "in ink #14161B",
+   "pressed": "1 lower, no shadow or glow, main foot to top, ButtonPressedShade over the edge"
+  }
+ },
+ "rooms": {
+  "Graphite, Voidkin": {
+   "panel": [
+    "#2D2652",
+    "#151229"
+   ],
+   "alpha": 0.94,
+   "edge": "#908BAB",
+   "facet": "#BBB5DB",
+   "glint": "#D6CDF7",
+   "text": "#F3EFE6",
+   "soft": "#B4B5CB",
+   "faint": "#6E7482",
+   "channel": "#06070A",
+   "well": "#0B0C10",
+   "button": [
+    "#342E5C",
+    "#1B1931"
+   ],
+   "pressed": [
+    "#1A1D24",
+    "#20242C"
+   ],
+   "ground": "#2B2E36",
+   "accent": "#DCCBFF",
+   "core": 0.5
+  },
+  "Pearl, the Map": {
+   "panel": [
+    "#FAF7F0",
+    "#E9E4D8"
+   ],
+   "alpha": 0.96,
+   "edge": "#0E0F14",
+   "border": 1.6,
+   "facet": "#FFFFFF",
+   "glint": "#FFFFFF",
+   "text": "#191B21",
+   "soft": "#535967",
+   "faint": "#8C909B",
+   "channel": "#20232B",
+   "well": "#D8D2C4",
+   "button": [
+    "#FFFFFF",
+    "#EFEADF"
+   ],
+   "pressed": [
+    "#DAD4C6",
+    "#E6E1D5"
+   ],
+   "ground": "#CFCBC2",
+   "rim": 2.0,
+   "seat": 1.6,
+   "warm": [
+    1.0,
+    0.7,
+    0.3
+   ],
+   "accent": "#FF5C93",
+   "core": 0.9,
+   "selected": [
+    "#2A2E38",
+    "#14161B"
+   ],
+   "selectedText": "#FAF7F0"
+  },
+  "Dynamo, vivid": {
+   "panel": [
+    "#3E2E0E",
+    "#1A1306"
+   ],
+   "alpha": 0.94,
+   "edge": "#9A7A22",
+   "facet": "#D9B85A",
+   "glint": "#FFE9A0",
+   "text": "#F3EFE6",
+   "soft": "#C9B787",
+   "faint": "#8F7F52",
+   "channel": "#080705",
+   "well": "#0E0C09",
+   "button": [
+    "#57421A",
+    "#33260F"
+   ],
+   "pressed": [
+    "#241A08",
+    "#3E2E0E"
+   ],
+   "ground": "#3A311C",
+   "accent": "#FFE266",
+   "core": 0.5
+  },
+  "Void Violet, vivid": {
+   "panel": [
+    "#30226A",
+    "#150D33"
+   ],
+   "alpha": 0.95,
+   "edge": "#7A5FE0",
+   "facet": "#B49CFF",
+   "glint": "#E6DCFF",
+   "text": "#F3EFE6",
+   "soft": "#BDB0E6",
+   "faint": "#8577B8",
+   "channel": "#07050C",
+   "well": "#0C0914",
+   "button": [
+    "#47348F",
+    "#2B1F5C"
+   ],
+   "pressed": [
+    "#1F1547",
+    "#30226A"
+   ],
+   "ground": "#2F2752",
+   "accent": "#DCCBFF",
+   "core": 0.5
+  },
+  "Graphite, Regalia": {
+   "panel": [
+    "#1E2854",
+    "#0F1329"
+   ],
+   "alpha": 0.94,
+   "edge": "#5862AB",
+   "facet": "#7885DB",
+   "glint": "#8895F7",
+   "text": "#F3EFE6",
+   "soft": "#98A0CB",
+   "faint": "#6E7482",
+   "channel": "#06070A",
+   "well": "#0B0C10",
+   "button": [
+    "#25305E",
+    "#151A31"
+   ],
+   "pressed": [
+    "#1A1D24",
+    "#20242C"
+   ],
+   "ground": "#2B2E36",
+   "accent": "#6C7BFF",
+   "core": 0.5
+  },
+  "Tide": {
+   "panel": [
+    "#0E3B3C",
+    "#061A1D"
+   ],
+   "alpha": 0.94,
+   "edge": "#1E8F86",
+   "facet": "#5FD9CC",
+   "glint": "#C8FFF6",
+   "text": "#F3EFE6",
+   "soft": "#9CC9C3",
+   "faint": "#5F8F8A",
+   "channel": "#04090A",
+   "well": "#07100F",
+   "button": [
+    "#165052",
+    "#0D3133"
+   ],
+   "pressed": [
+    "#082527",
+    "#0E3B3C"
+   ],
+   "ground": "#1F3537",
+   "accent": "#40DCC6",
+   "core": 0.5
+  }
+ },
+ "roomUse": {
+  "Graphite, Voidkin": "Voidkin, one Voidkin: lavender, the dock button's colour",
+  "Pearl, the Map": "the map, and what's read like a page: Pearl, its lights in the Map's rose",
+  "Dynamo, vivid": "the Breaker, the base's bays: a richer amber iron, Power's yellow",
+  "Void Violet, vivid": "the reveal, later the Void Shop: a deeper, more saturated violet",
+  "Graphite, Regalia": "Regalia: indigo, the dock button's colour",
+  "Tide": "new: where Credits are earned and spent (rewards, a shop's counter): Credits' teal"
+ },
+ "images": {
+  "CoinMint": {
+   "file": "images/CoinMint.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Credits"
+  },
+  "Crest": {
+   "file": "images/Crest.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Regalia"
+  },
+  "Route": {
+   "file": "images/Route.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "the Map"
+  },
+  "InkBolt": {
+   "file": "images/InkBolt.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Block: on a block of its system's colour"
+  },
+  "InkCoin": {
+   "file": "images/InkCoin.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Block: on a block of its system's colour"
+  },
+  "InkShard": {
+   "file": "images/InkShard.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Block: on a block of its system's colour"
+  },
+  "InkPlant": {
+   "file": "images/InkPlant.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Block: on a block of its system's colour"
+  },
+  "InkCrest": {
+   "file": "images/InkCrest.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Block: on a block of its system's colour"
+  },
+  "InkRoute": {
+   "file": "images/InkRoute.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Block: on a block of its system's colour"
+  },
+  "Shard": {
+   "file": "images/Shard.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Voidkin; a hint that points to shards"
+  },
+  "Plant": {
+   "file": "images/Plant.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "the Base"
+  },
+  "Battery": {
+   "file": "images/Battery.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "the battery, when it covers demand over generation"
+  },
+  "BlockPill": {
+   "file": "images/BlockPill.png",
+   "pixels": [
+    152,
+    120
+   ],
+   "points": [
+    38.0,
+    30.0
+   ],
+   "tint": "the system's block colours, top to foot",
+   "use": "Block: over PanelFill, under its edge, at the piece's left top; 31 points of colour"
+  },
+  "BlockDock": {
+   "file": "images/BlockDock.png",
+   "pixels": [
+    168,
+    208
+   ],
+   "points": [
+    42.0,
+    52.0
+   ],
+   "tint": "the system's block colours, top to foot",
+   "use": "Block: over ButtonFill, under its edge, at the piece's left top; 32 points of colour"
+  },
+  "ReadoutPlate": {
+   "file": "images/ReadoutPlate.png",
+   "pixels": [
+    440,
+    440
+   ],
+   "points": [
+    110.0,
+    110.0
+   ],
+   "pad": 26.0,
+   "use": "the readout, charging: its plate and dark well, under the light"
+  },
+  "ReadoutFace": {
+   "file": "images/ReadoutFace.png",
+   "pixels": [
+    440,
+    440
+   ],
+   "points": [
+    110.0,
+    110.0
+   ],
+   "pad": 26.0,
+   "use": "the readout, charging: over the light, the plate's face round the well and its rims"
+  },
+  "ReadoutLight": {
+   "file": "images/ReadoutLight.png",
+   "pixels": [
+    200,
+    200
+   ],
+   "points": [
+    50.0,
+    50.0
+   ],
+   "use": "the readout, charging: the well's shape, white. The light is this image under a gradient that carries the front (pieces.readout)"
+  },
+  "ReadoutReady": {
+   "file": "images/ReadoutReady.png",
+   "pixels": [
+    440,
+    440
+   ],
+   "points": [
+    110.0,
+    110.0
+   ],
+   "pad": 26.0,
+   "use": "the readout, ready: the whole plate, white-hot, with its glow"
+  },
+  "SignatureHaymaker": {
+   "file": "images/SignatureHaymaker.png",
+   "pixels": [
+    232,
+    232
+   ],
+   "points": [
+    58.0,
+    58.0
+   ],
+   "use": "Haymaker's icon on the readout, charging"
+  },
+  "SignatureHaymakerReady": {
+   "file": "images/SignatureHaymakerReady.png",
+   "pixels": [
+    232,
+    232
+   ],
+   "points": [
+    58.0,
+    58.0
+   ],
+   "use": "Haymaker's icon on the readout, ready: dark on the light"
+  },
+  "SignatureHeldNote": {
+   "file": "images/SignatureHeldNote.png",
+   "pixels": [
+    232,
+    232
+   ],
+   "points": [
+    58.0,
+    58.0
+   ],
+   "use": "HeldNote's icon on the readout, charging"
+  },
+  "SignatureHeldNoteReady": {
+   "file": "images/SignatureHeldNoteReady.png",
+   "pixels": [
+    232,
+    232
+   ],
+   "points": [
+    58.0,
+    58.0
+   ],
+   "use": "HeldNote's icon on the readout, ready: dark on the light"
+  },
+  "EyeOff": {
+   "file": "images/EyeOff.png",
+   "pixels": [
+    336,
+    336
+   ],
+   "points": [
+    84.0,
+    84.0
+   ],
+   "pad": 20.0,
+   "use": "the spectate eye, off"
+  },
+  "EyeOn": {
+   "file": "images/EyeOn.png",
+   "pixels": [
+    336,
+    336
+   ],
+   "points": [
+    84.0,
+    84.0
+   ],
+   "pad": 20.0,
+   "use": "the spectate eye, on"
+  },
+  "CardFrameHaloRare": {
+   "file": "images/CardFrameHaloRare.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "tint": "the rarity's glow, #6FB6FF",
+   "pad": 24.0,
+   "use": "under CardFrameRare, at its place and size"
+  },
+  "CardFrameHaloEpic": {
+   "file": "images/CardFrameHaloEpic.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "tint": "the rarity's glow, #C98CFF",
+   "pad": 24.0,
+   "use": "under CardFrameEpic, at its place and size"
+  },
+  "CardFrameHaloLegendary": {
+   "file": "images/CardFrameHaloLegendary.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "tint": "the rarity's glow, #FFD777",
+   "pad": 24.0,
+   "use": "under CardFrameLegendary, at its place and size"
+  },
+  "CardFrameHaloMythical": {
+   "file": "images/CardFrameHaloMythical.png",
+   "pixels": [
+    424,
+    440
+   ],
+   "points": [
+    106.0,
+    110.0
+   ],
+   "tint": "the rarity's glow, #FF2848",
+   "pad": 24.0,
+   "use": "under CardFrameMythical, at its place and size"
+  },
+  "CardStudGlow": {
+   "file": "images/CardStudGlow.png",
+   "pixels": [
+    164,
+    164
+   ],
+   "points": [
+    41.0,
+    41.0
+   ],
+   "tint": "the type's colour",
+   "pad": 12.0,
+   "use": "under CardStud"
+  },
+  "CardStud": {
+   "file": "images/CardStud.png",
+   "pixels": [
+    164,
+    164
+   ],
+   "points": [
+    41.0,
+    41.0
+   ],
+   "tint": "the type's colour",
+   "pad": 12.0,
+   "use": "the type's stud, where the bars meet the frame, the type's gem on it at 14.6 points; its dark stays dark"
+  }
+ }
+}

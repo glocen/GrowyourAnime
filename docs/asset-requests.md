@@ -2784,9 +2784,39 @@ The pieces are 16 meshes on 3 pairs of pictures, so they batch. The strings are 
 
 ## AR6. Regalia's item art
 
-For Modulo, when phase 3 opens. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from the reference study, `docs/research/gear-icons.md`. Written in full when phase 3 opens.
+For Modulo. Every item kind modelled in Blender and rendered to its icon: ten weapons (two per class) and the twelve shared slots, on the kit's rarity frames, Dawn with designs of its own (`docs/design.md`, "Regalia: gear"). Starts from the reference study, `docs/research/gear-icons.md`. The rest of the kinds are written when this batch has its verdict.
 
-**Status:** not started.
+**Status:** batch 1 opened, 2026-11-15, by the director's word ("some gears decals like we need art and gears name idea", `docs/decisions.md`). Queued after the Breaker's fix, Combat Power's colour and the shard decals.
+
+### Batch 1, research's spec, 2026-11-15
+
+- **Which kinds:** the Warrior's pair (Sword, Short Sword), the Helmet and Ring I.
+  - Rook and Crane, ground 1's first and top Voidkin, are both Warriors.
+  - The pair is the hardest to tell apart, so it's tested first.
+  - The Helmet is a large piece and the ring a small one, so both fill rules are tested.
+- **Five rarities each,** Common to Legendary: 20 icons. One design per kind per rarity. A kind keeps one silhouette family across its rarities, so a player knows a sword at any rarity. Rarity adds material and ornament, never a new kind. Mythical and Dawn come later.
+- **The ladder, not too much** (the director: "dont make them to sick since it range from common to legendary"). Each rarity is one clear step, and Legendary is the top of this batch with room left above it:
+  - **Common:** dark iron, leather and wood, plain and well made, no gem, no light of its own.
+  - **Uncommon:** bright steel, one fitting in a second material (a wrapped grip, a brass ring).
+  - **Rare:** blued or tempered steel, one small set stone, a line of engraving.
+  - **Epic:** a darker, richer metal with filigree, and a gem that glows softly.
+  - **Legendary:** gilt and ivory, the gem lit from within, a light on the edge. One extra element of form, such as a guard's wing or a second ring of metal.
+  - Never flames, an aura cloud, or particles in the icon. The light lives in the gem and the edge.
+- **Pose, light and fill** (the study's DESIGN):
+  - One camera and one warm key light for all twenty.
+  - The object fills about 85% of the square. The two swords sit on the same diagonal, point up and to the right.
+  - The ring is widened by its own ornament.
+  - The Short Sword is shorter and broader, with its own guard, so it never reads as the Sword at slot size.
+- **Frames:** Common to Epic share the gear frame in their rarity's colour, and Legendary gets its own border (the director's words of 2026-11-15, `docs/research/gear-icons.md`, DESIGN). The class mark is on each weapon's frame.
+- **Read at size:** the 38 pt slot on the Voidkin screen and the bag's cell, and each silhouette alone at 32 px.
+- **First the ladder on the Sword alone:** five grey-lit renders on a sheet, for research's verdict on the steps. The other three kinds follow only after that verdict.
+- **Names, built by rarity.** The slot's name always shows under an item's name, so a name may use a near word for its kind from Rare up (a Sword is a Blade or a Brand; a Helmet a Helm or a Visor; a ring a Band or a Loop). Each name fits 24 characters.
+  - **Common:** its material and its kind, such as "Iron Sword" or "Copper Ring".
+  - **Uncommon:** the craft of the ground it drops on, such as "Lanternsteel Sword" or "Paper-Lantern Helm".
+  - **Rare:** its kind "of" a force, such as "Blade of Embers" or "Band of Static".
+  - **Epic:** a coined compound and its kind, such as "Stormcall Blade" or "Nightcurrent Helm".
+  - **Legendary:** a proper name with an epithet, such as "Akari, the Last Lantern". Japanese and other languages are welcome, as with the Voidkin (`docs/ip-list.md`).
+  - Modulo proposes the twenty names on the sheet, and research checks each against `docs/ip-list.md` and the roster before it's kept.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

@@ -49,6 +49,67 @@ Research, 2026-11-14, night. This study is for TR17, the Voidkin screen remade (
 - **The slots** stand about 12% of the height where they fit. Main Hand and Off Hand sit at the feet, one each side of Combat Power. The icons' art follows `docs/research/gear-icons.md`.
 - **Phone landscape:** the figure takes about 45% of the width and the panel about 45%. Taps are 44 px or more, text 14 px or more, and nothing sits under the thumbs' corners.
 
+## The stat sheet: Dragon Hunter's attributes
+
+Research, 2026-11-15, night, on the director's words to Faber: "no no no no crit can go as far as 20k % ... we need to show all stats like tcp 3 looks how the overview is in tcp 3".
+
+**OBSERVED, with how sure each line is:**
+- **The stats.** Sourced for Dragon Hunter itself, through the director's package of 2026-11-11 (`docs/archive/package-v13/99_REFERENCE_ARCHIVE_V12_4/REFERENCE_FULL_DESIGN_v12/00_CURRENT_DIRECTOR_GEAR_STATS_v11_8/01_SOURCE_VERIFIED_DRAGON_HUNTER.md`, with its links):
+  - Health, Attack and Defence;
+  - Hit (命中) against Dodge (闪避);
+  - Critical (暴击) against Anti-Crit (抗暴);
+  - Critical Damage (暴击伤害) against Critical Damage Reduction (暴免), which is a separate stat from Anti-Crit;
+  - Block (格挡), Damage Reduction and Damage Bonus;
+  - Fire, Wood and Thunder damage and resistance, in class skills;
+  - one power number, Might.
+- **Where stats come from.** Sourced the same way:
+  - gear, and its forge;
+  - jewels in gear sockets;
+  - emblems (纹章, and the later 战纹);
+  - soul stones set on a slot (附魂);
+  - mounts;
+  - pets, though only the first game's guide says so: there, a pet's Might adds to the player's ([AppGamer](https://www.appgamer.com/taichi-panda/strategy-guide/increasing-your-might)).
+- **Points and percents.** Sourced:
+  - a mount's table writes some of its bonuses as percents;
+  - a 2019 patch fixed a "+50% Hit" bug ([App Store, China](https://apps.apple.com/cn/app/id1179678479)).
+- **A pattern only, from the first Taichi Panda and from Taichi Panda: Heroes, not Dragon Hunter:**
+  - Critical Damage is a percent that adds up across gear. One helm, fully refined, gives 37% ([GamerSky](https://shouyou.gamersky.com/gl/201511/687391.shtml)).
+  - In Heroes, a critical multiplies the base damage by it, less the target's Crit Reduction ([its fan wiki](https://taichipandaheroes.fandom.com/wiki/Attributes)).
+  - The formula that circulates, "Hit − Dodge, min 20%", is from that first game too.
+- **Not found: the Attribute page itself.** Nothing shows its layout, which stats it shows as points and which as percents, or its caps and formulas.
+  - None of these had it: the director's package (which says so itself), today's searches in English and Chinese, and our two captures (the Character page and View Character).
+  - Two screenshots of the Attribute page, top and scrolled, would settle it. They go in `build/reference/dragon-hunter/`, kept internal.
+
+**What our sheet does today** (TR17, `2d91c71`; `build/captures/overview/stat_sheet_smallest_phone.png`). Every family above is on it. Three things differ from the director's words:
+1. **Critical reads "0 · up to 5%".** The 5% is the chance every hit has at zero points, a floor and not a cap, but it reads as a cap.
+2. **Critical Damage can't pass +200%.** It's added into the attacker's bonus bucket, whose ceiling is +200% (`Config.Stats.Buckets.BonusCap`). That ceiling covers Damage Bonus and the type edge too. So 20,000% can't happen today.
+3. **"Own" holds the level.** It's the Voidkin's base at its level, so the level isn't a line of its own.
+
+**DESIGN, research's proposal.** It waits on the director's yes and is tier 3, the balance model:
+- **Critical Damage has no ceiling.**
+  - It leaves the capped bucket and multiplies a critical by itself: × (1 + Critical Damage − the target's Critical Guard).
+  - It starts at +50%, and every source adds percents to it.
+  - Over the updates it can reach 20,000%. At launch the sim keeps it in the low hundreds.
+  - Each update that raises it raises the foes' health and Critical Guard on the same curve (`docs/balance.md`, "The one rule").
+- **Critical's chance stays a chance,** so never past 100%. Its points grow without end, and each point adds less as the chance nears its ceiling. The ratings stay as they are, the shape the director's package asked for ("a raw rating is not +75 percentage points"; "Prefer a rating-based model", `02_COMPLETE_STAT_TAXONOMY_AND_HIT_DODGE.md`).
+- **The sheet shows totals, never "up to".**
+  - Each stat is one number, the sum of its sources: a rating as its points, a percent as its percent.
+  - A tap opens the stat's sources, and they add up to it. The sources:
+    - the Voidkin's own base;
+    - its level;
+    - its stars;
+    - gear;
+    - forge;
+    - jewels;
+    - War Emblems;
+    - research;
+    - the skill tree, when it comes.
+  - A source shows once it's in the game.
+  - For a rating, the tap's last line gives the chance against a foe of its level with the same points. That's the honest line `docs/ui.md` asks for, moved off the sheet.
+- **The risk, said out loud.** With no ceiling, Critical Damage is the one stat whose worth keeps growing while the others flatten. At a 60% chance and 20,000%, a critical is 201 times a plain hit and the average hit is about 121 times one, so the other lines on gear look small beside it.
+  - Research accepts this cost for a long-grind power fantasy, as the genre does.
+  - What keeps it fair: Combat Power's weights count it, and each update's sim prices the foes against it.
+
 ## Images looked at
 
 The two Dragon Hunter screenshots above, whole, at 1280 px wide (`build/scratch/quaestor/ref/`). No crops made.

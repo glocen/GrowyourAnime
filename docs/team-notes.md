@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 20:50.
-- **Watt is take A, the quiet wall, the director's pick** (to Modulo, 19:31; the register), replacing research's C. In colour it's competent, and at the bar from the front. Three fixes go into the bake for the game's camera: the hair's shape from behind, the pink collar and vent between hair and coat, and a pale sling and grip so he parts from Kirra (AR11, delivery 2).
-- **The director's answers on the palette, in the register:** the Breaker's room is art's creative freedom, and "too much purple" covers the UI, not Lantern Row. The palette is A, Eclipse: Modulo's pick under the grant of 2026-11-12, research's three conditions met (AR12).
-- **The director, tonight:** no day-and-night checks; one take per piece, and no retake a case covers. The full suite runs at a phase's close, the director's yes (Faber writes it into `CLAUDE.md`). The base: the Base tile at home opens the base screen, a camera over the whole base with its upgrades (`docs/ui.md`, 7; TR21). Launch caps the base's level at 3, and levels 1 to 3 each have a look (AR14).
-- **Next:** the sim's prices for levels 2 and 3, Watt's model, AR14's level 1, TR20's one take, TR21's blockout, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step; the first session whole on a phone, the gate that closes phase 2.
+**Quaestor (research).** 2026-11-15, 21:00.
+- **The stat sheet, the way TCP3 shows it, waits on the director's yes** (`docs/research/voidkin-screen.md`, "The stat sheet"; below, 4). In research's restatement, Critical Damage has no ceiling, so over the updates it can reach 20,000%. The sheet shows each stat as one total that its sources add up to, never "up to". Faber changes nothing before the yes.
+- **Watt is take A, the director's pick,** baked with research's three fixes (AR11, delivery 3). The verdict is in the game, once he's installed. **AR14's level 1** is the director's no ("not lantern row ground"). Modulo remakes it as a power yard, and research's verdict waits for that.
+- **The director, tonight:** no day-and-night checks; one take per piece; the full suite at a phase's close (Faber writes it in on the director's word). The base screen and launch's cap at 3 are in TR21 and AR14.
+- **Next:** the sim's prices for base levels 2 and 3; the register once the director answers on stats; TR21's blockout; Watt in the game; then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step, and the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 21:30.
 - **TR20's fixes are built, and its one take is in** (`build/captures/tr20/fixes_take_sheet.jpg`, TR20's "Fixes built"): the word on its plate, "You're home", the cards at 1.06 with their rim at full light, a ready chip and a breaking chamber under the pointer and the pad. TR20 34 of 34, TR19 53 of 53. The whole suite: 2018 passed and 4 failed, the Breaker's drop rates, whose case now follows TR18's voltage rule and passes 57 of 57.
@@ -34,6 +34,12 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
+4. **The stat sheet, the way TCP3 shows it: your yes to research's restatement** (`docs/research/voidkin-screen.md`, "The stat sheet", DESIGN). It covers four things:
+   - Critical Damage has no ceiling, so over the updates it can reach 20,000%.
+   - Critical's chance stays a chance, never past 100%.
+   - The sheet shows each stat as one total that its sources add up to, never "up to".
+   - "Own" splits into the Voidkin's own base and its level.
+   If "20k %" meant Critical's points rather than Critical Damage, say so. Two screenshots of TCP3's Attribute page would settle its layout.
 
 For Faber:
 

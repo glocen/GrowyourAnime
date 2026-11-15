@@ -6,9 +6,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-15, night.
 - **The director's word:** finish phase 2, then phase 3 and the real map; the Calamity leaves launch, an update after it (`docs/decisions.md`; D12, the cut line).
-- **Reads done tonight (AR12):** the shard grades' fix passes, no fixes; the dock's images pass, no fixes; Combat Power is **A2, Cobalt**, with one fix: its foot lifted to 3:1 at 20 points. **Written:** AR13, the six-cue sound test, and AR12's festival tag, where a shard came from (the director's creative freedom).
-- **Modulo's order, for phase 2 first:** the Voidkin mock, then **Watt's model** (the director's "and yes", 2026-11-15, night: Watt before the gear), Scarf Step with Faber, then AR6's colour fixes (phase 3). **The screen is free** (the director): Faber runs the waiting takes; the gate is the first session whole on a phone.
-- **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
+- **Closed tonight:** AR12's HUD part 1 at phone size; TR18 in grey; AR6's batch 1 at competent (to Faber). **TR19's verdict:** competent as a block, two fixes, the fight's rule (InCombat or a hit in 4 s), then a short retake.
+- **Watt and every Voidkin's look:** the director rejects the current look as corny (2026-11-15, night). Research's restatement (an anime style from Watt on, the five built ones overhauled later, low rarities kept simple) and the body test (A, styling on the R6 body; B, anime meshes on the R6 rig) **wait on the director's yes.** Nothing is written until then. Modulo holds Watt.
+- **Next:** TR20's hover, Kirra and Scarf Step's blockout, TR9's chambers with the shard pictures, TR17, the galaxy Breaker, AR13 in the game; the first session whole on a phone, the gate that closes phase 2. After it: the rest of AR6's kinds, the battery cap and Combat Power's seeds.
 
 **Faber (builder).** 2026-11-15, 18:20.
 - **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).
@@ -25,7 +25,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: the main place, held by Faber, playtesting since the director's "go" (2026-11-15), for the pending pieces' stills. Blender: nobody. Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
+**The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
 ### Waiting on the director
 
@@ -34,6 +34,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
+4. **Your yes to the Voidkin look's restatement**, and A or B for the body test: an anime style from Watt on, the five built ones overhauled later, and low rarities kept simple. It's in research's chat. Watt waits on it.
 
 For Faber:
 

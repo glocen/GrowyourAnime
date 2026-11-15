@@ -5712,6 +5712,82 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **Not done here:** Named and Starter shards (they take Standard's picture until a ruling); motion.
     - **Four facts:** made; self-reviewed on the sheet's size rows from crops, on both grounds; delivered as six images; research's look at the fix and the director's eye to come. About 10 minutes by the clock (14:51 to 14:56).
 
+- **Where a shard came from: the festival tag** (research's design, 2026-11-15, on the director's word and creative freedom: "it need to be more intuitive to know where it came from", `docs/decisions.md`). For Modulo after the six sounds' layers (AR13), then Faber.
+  - **Feel line:** a player glancing at a shard in the bag or a chamber knows at once which ground it came from, by a small festival tag tied to it in that ground's colours and mark, before reading a word.
+  - **Why a tag:** the shard's picture already carries two tells, its grade by spires and Prismatic by its light. The ground is a third, so it gets its own channel and never changes the crystal. A festival tag belongs to the world: every ground is a festival, and Shades are paper. A future source (an event, the Tower) gets its own tag in the same place, so more sources need no new design.
+  - **The tag:** a small paper or wood plaque hung from the shard's shoulder by a short thread, about a quarter of the shard's height. It has the ground's two colours from the roster and one mark, the ground's motif:
+    - Lantern Row: a lantern, cyan and warm white.
+    - Drum Court: a drum, red.
+    - Mask Parade: a mask, violet and gold.
+    - Kite Heights: a kite, jade and white.
+    - Ember Stalls: a flame over a stall, amber and coal.
+    - Mirror Pavilion: a mirror's ring, indigo and silver.
+    - The marks are ours, drawn in the kit's style, one silhouette each.
+  - **The words:** the ground's name over the grade, on two lines: "Lantern Row" small, "Prismatic Shard" large. The same everywhere a name is shown: the drop's toast, the bag, a chamber, Drop rates' header, and the shards' hint, which counts by ground when there are two.
+  - **At each size:**
+    - 96 and 50 points: the shard with its tag.
+    - 40 points: the tag's mark only, at the shard's foot.
+    - The 26-point chip: a band of the ground's colour along the chip's foot.
+    - The bag sorts and filters by ground.
+  - **The block contains:** the tag for Lantern Row and Drum Court on the three grades at each size, on the Breaker's dark and a dusk street, beside today's chamber; the two-line name. **Waits:** the other four grounds' marks, any motion, other sources.
+  - **Measures:** the ground reads at 40 points without the words, and the tag never hides a grade's spires.
+
+## AR13. The sound test: six cues (Modulo's layers, then Faber)
+
+Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decisions.md`, and the method, recipes and eight checks in `docs/research/sound.md`. **The test:** six cues the first minutes hear most. Each is library slices layered at runtime, plus layers Modulo makes by script. The director's ear in a fight accepts or rejects them. If they still sound like slop, the approach changes before the other 39. The numbers below are seeds (UNVERIFIED); the ear decides.
+
+**Feel line:** when the lead cuts down a Shade, the player hears the paper's tear, the spark of each hit and the bright pop of its burst, every hit with weight on a phone's speaker and nothing that sounds like stock.
+
+**For every cue:**
+- **Files:** Modulo's layers as 48 kHz mono OGG, three takes each, in `build/handoff/Audio/test6/`. Each comes with a numbers sheet: length, true peak, loudness, the time to peak, the three bands' balance, and how alike the takes are.
+- **The checks:**
+  - true peak at or under −1 dBTP;
+  - no more than 5 ms of silence at the head;
+  - takes differ in pitch or shape;
+  - weight above 150 Hz shows in the bands, so a phone plays it.
+- **Faber's part:**
+  - library candidates by `SearchAudioAsync` across every author, five per library layer, each checked to play in our place;
+  - our layers uploaded under the group after the content check;
+  - each cue's layers started on one clock through the audio graph, with pitch spread about ±8% and volume 0.85 to 1;
+  - a duck: on the lead's hit, the Shade's sounds and the ambience drop 3 to 4 dB for 150 ms;
+  - a voice cap per cue;
+  - the Replay command playing each cue's combinations in a fight, for the director's ear.
+- **The priority:** the lead's hits, then a Shade's tell, then the burst, then a Shade's other sounds.
+
+**The six:**
+
+1. **A Shade's swipe** (ShadeSwipe: 1.1 s, its hit at 0.5 s). Two parts: a tell the player learns, then the swipe.
+   - **The tell:** from the wind-up, about 0.2 s before the hit, a dry paper rustle that rises. Library: paper flutter, paper rustle, cardboard swish. Ours: a faint cold shimmer rising under it, noise through a band-pass sweeping up, 0.25 s.
+   - **The swipe:** a paper-edged whoosh peaking on the hit frame. Ours: filtered noise sweeping 600 to 2,500 Hz, 0.25 s, its peak timed to the hit.
+   - Quieter than the lead's hits. Three takes.
+2. **A Shade's hurt:** a crackle of paper and a spark, under 150 ms.
+   - Library: paper crumple, short paper tear, 60 to 120 ms.
+   - Ours: a spark tick, a bright click with a short ring between 2 and 5 kHz, 40 to 80 ms.
+   - It's apart from the lead's own hurt, a dull thud. Three takes.
+3. **A Shade bursts:** the kill's payoff, bright, never a cry.
+   - Library: a paper rip of 150 to 300 ms, and a paper flutter or confetti scatter.
+   - Library, through a runtime distortion: a cardboard thump as the pop (the anime foley trick).
+   - Ours: a shimmer tail of 400 to 800 ms on one key, A, the seed for every reward sound until music sets the key; and 4 to 6 tiny ticks scattered over 0.3 s.
+   - Voice cap: 3 bursts at once. Two takes.
+4. **A light hit** (the lead's basic attacks):
+   - Library: a snap or slap of 10 to 30 ms, and a mid body of 80 to 150 ms (a body hit, a leather slap, a light punch).
+   - Ours: a spark tick of about 100 ms, the hurt's family in a lower register.
+   - No sub: it stays fast. Five takes.
+5. **A heavy hit** (Haymaker's strike is the one to retest):
+   - Library: a heavy body, a metal impact or a large drum hit.
+   - Ours:
+     - a sub of 300 to 500 ms, saturated so its harmonics sit between 120 and 250 Hz;
+     - 3 to 5 micro-impacts within 0.25 s;
+     - before it, a short riser or 100 to 200 ms of near-silence where the move winds up;
+     - a tail by the hit's strength.
+   - Three takes.
+6. **A critical:** the hit plus a bright metallic "shing", the anime hard-FX family.
+   - Ours: FM synthesis between 3 and 6 kHz, 150 to 300 ms.
+   - It reads as better, not louder: the cue's loudness stays the hit's, and the shing adds the top. Three takes.
+
+**Waits:** the steps, the world's beds, rewards and the UI (pass 1's other cues), and music.
+**Four facts:** brief written. Nothing made, tested or heard yet.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

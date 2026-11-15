@@ -543,8 +543,9 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 	})
 	local digits = frameOf("Digits", press, UDim2.fromOffset(left, 16), UDim2.new(1, -left, 0, config.Height - 16))
 	digits.ZIndex = 2
+	-- `down` points lower, as Scale of the frame's height: a UDim's Offset is a whole number, and 1.2 drew as 1.
 	local function stroked(name: string, colour: Color3?, down: number): TextLabel
-		local label = text({ Name = name, Size = size, Font = Theme.Font.Number, Align = align, Colour = colour, Position = UDim2.fromOffset(0, down), Parent = digits }, said)
+		local label = text({ Name = name, Size = size, Font = Theme.Font.Number, Align = align, Colour = colour, Position = UDim2.fromScale(0, down / (config.Height - 16)), Parent = digits }, said)
 		local line = Instance.new("UIStroke")
 		line.Color = finish.Stroke
 		line.Thickness = finish.Line

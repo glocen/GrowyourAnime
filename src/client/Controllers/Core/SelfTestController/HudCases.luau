@@ -199,10 +199,17 @@ function HudCases.Cases(given: Given): { any }
 					t.Check("a tap says it's a boss's ground, and shakes", waitFor(t, REPLICATE, function(): boolean
 						return said("Not in a boss's ground") and shakes() > before
 					end))
-					t.Server("KeeperEnd", "Loss")
-					t.Check("the try ends", waitFor(t, 6, function(): boolean
+					-- The keeper stands in its ring only once the try's fade has moved the player (the server says NoTry
+					-- before), so the loss is asked until it's taken, then the try ends after the lead's fall.
+					local fade = Combat.Keeper.Fade
+					local ended: any = nil
+					waitFor(t, fade.Out + fade.Hold + 1, function(): boolean
+						ended = t.Server("KeeperEnd", "Loss")
+						return type(ended) == "table" and ended.Ok == true
+					end)
+					t.Check("the try ends", type(ended) == "table" and ended.Ok == true and waitFor(t, Combat.Keeper.LossPause + fade.Out + fade.Hold + 2, function(): boolean
 						return player:GetAttribute("Try") == nil
-					end))
+					end), if type(ended) == "table" then tostring(ended.Error) else "")
 					t.Server("LeadHeal")
 					t.Wait(LEAD_SETTLE)
 				end
@@ -296,7 +303,26 @@ function HudCases.Cases(given: Given): { any }
 				t.Wait(settle)
 				t.Check("deselected, the rim goes", not edge.Visible)
 				Hover.Pretend("Mouse")
-				-- A Breaker's chamber: its words lift inside it, its place and its neighbour's stay.
+				-- A Breaker's chamber: its words lift inside it, its place and its neighbour's stay. A chamber takes a tap only
+				-- while a shard breaks in it, so one goes in if the first stands empty (and is left breaking, as the Breaker's
+				-- own cases leave theirs).
+				local function firstWorks(): boolean
+					local now = ProfileController.Get()
+					local first = if now then now.Base.Chambers[1] else nil
+					return first ~= nil and first.Work ~= nil
+				end
+				if not firstWorks() then
+					local shard = "lanternrow_standard"
+					local before = ProfileController.Get()
+					local held = if before then before.Bag.Shards[shard] or 0 else 0
+					t.Server("BaseGive", shard, 1)
+					t.Check("a shard for the first chamber", waitFor(t, 2, function(): boolean
+						local now = ProfileController.Get()
+						return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 1
+					end) and ProfileController.Act("AddShard", { Shard = shard }).Ok == true and waitFor(t, 2, firstWorks))
+				end
+				Screen.Close()
+				t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
 				BaseController.OpenBreaker()
 				t.Check("the Breaker's screen opens", waitFor(t, 1, function(): boolean
 					return Screen.Current() == BreakerScreen.Name

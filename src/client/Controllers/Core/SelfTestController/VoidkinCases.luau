@@ -325,7 +325,8 @@ function VoidkinCases.Cases(given: Given): { any }
 				t.Check("its digits wear the cobalt ramp", ramp, `{#keys} stops`)
 				local stroke = if number then number:FindFirstChildOfClass("UIStroke") else nil
 				t.Check("stroked in ink", stroke ~= nil and stroke.Color == finish.Stroke and math.abs(stroke.Thickness - finish.Line) < 1e-3)
-				t.Check("its drop says the same, a stroke lower", drop ~= nil and number ~= nil and drop.Text == said and drop.TextColor3 == finish.Stroke and math.abs(drop.Position.Y.Offset - finish.Drop) < 1e-3)
+				local lower = if drop and number then (drop.AbsolutePosition.Y - (number :: GuiObject).AbsolutePosition.Y) / Layers.Scale() else 0
+				t.Check("its drop says the same, a stroke lower", drop ~= nil and number ~= nil and drop.Text == said and drop.TextColor3 == finish.Stroke and math.abs(lower - finish.Drop) < 0.05, string.format("%.2f points lower", lower))
 				local glow = if plate then plate:FindFirstChild("Glow", true) :: ImageLabel? else nil
 				t.Check("a soft glow behind them", glow ~= nil and glow.ImageColor3 == finish.Glow and math.abs(glow.ImageTransparency - (1 - finish.GlowAlpha)) < 1e-3)
 				local caption = if plate then plate:FindFirstChild("Caption") :: TextLabel? else nil

@@ -198,7 +198,9 @@ return {
 					local block, lines = Stats.Resolve(owned, nil, nil)
 					local want = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(level)
 					t.Check(`{row.Id} at {level}`, near(block.Regen, want), `{block.Regen}, wanted {want}`)
-					t.Check(`{row.Id} at {level}: one line, from the level`, near(from(lines, "Level").Regen or 0, want))
+					local first = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(1)
+				t.Check(`{row.Id} at {level}: its base, the level-1 figure`, near(from(lines, "Base").Regen or 0, first))
+				t.Check(`{row.Id} at {level}: the level adds the rest`, near((from(lines, "Level").Regen or 0) + first, want))
 					owned.Stars = VoidkinConfig.MaxStars
 					t.Check(`{row.Id} at {level}: stars leave it alone`, near(Stats.Resolve(owned, nil, nil).Regen, want))
 				end
@@ -219,7 +221,9 @@ return {
 				local g = Growth.G(9)
 				for _, stat in { "Health", "Attack", "Defence" } do
 					local expected = StatsConfig.Base[stat] * StatsConfig.Rarity[row.Rarity] * StatsConfig.Class[row.Class][stat] * g
-					t.Check(`{row.Id} {stat} base`, near(from(lines, "Base")[stat], expected))
+					local first = StatsConfig.Base[stat] * StatsConfig.Rarity[row.Rarity] * StatsConfig.Class[row.Class][stat] * Growth.G(1)
+					t.Check(`{row.Id} {stat} base, at level 1`, near(from(lines, "Base")[stat], first))
+					t.Check(`{row.Id} {stat}: base and level make the own figure`, near(from(lines, "Base")[stat] + from(lines, "Level")[stat], expected))
 					t.Check(`{row.Id} {stat}: the same as Stats.Own`, near(Stats.Own(row, stat, 9), expected))
 				end
 				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Main Hand"), { Attack = 40, Critical = 12 }))
@@ -234,7 +238,11 @@ return {
 			local owned = own(data, "rook", 12, 0)
 			give(data, "Chest Armor", { { Stat = "Health", Value = 500 } })
 			local _, none = Stats.Resolve(owned, data.Presets[1], data)
-			local base = from(none, "Base")
+			local base = from(none, "Base") -- the own figure: the base and the level's lines
+			for stat, value in from(none, "Level") do
+				base[stat] = (base[stat] or 0) + value
+			end
+			base.Regen = nil -- no star share
 			for stars = 1, VoidkinConfig.MaxStars do
 				owned.Stars = stars
 				local _, lines = Stats.Resolve(owned, data.Presets[1], data)
@@ -264,6 +272,7 @@ return {
 			t.Check("Defence moved by the ring's", near(after.Defence - before.Defence, 21))
 			t.Check("Health didn't move", after.Health == before.Health)
 			t.Check("the own base kept", same(from(afterLines, "Base"), from(beforeLines, "Base")))
+			t.Check("the level's kept", same(from(afterLines, "Level"), from(beforeLines, "Level")))
 			t.Check("the stars kept", same(from(afterLines, "Stars"), from(beforeLines, "Stars")))
 			for _, stat in Stats.Names do
 				local sum = if stat == "CriticalDamage" then StatsConfig.CriticalDamage else 0

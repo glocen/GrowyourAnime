@@ -1,9 +1,9 @@
 --!strict
 -- Stats (shared, pure): the one place a fighter's stats are added up (docs/engineering-plan.md, "The resolver";
 -- docs/balance.md, "The one rule"). Every source gives flat points, and the breakdown says which source gave each one:
---   Base     the Voidkin's own Health, Attack and Defence: its rarity and its class times G(level)
---   Stars    a share of that own base per star, linear, never of the total
---   Level    Regen, from the level alone
+--   Base     the Voidkin's own Health, Attack, Defence and Regen at level 1: its rarity and its class times G(1)
+--   Level    what its level adds to the same figure, times G(level) - G(1): the two make the own figure
+--   Stars    a share of that own figure (base and level) per star, linear, never of the total, never of Regen
 --   Item     each line of the item in each of the preset's slots, as it is
 -- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
 -- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
@@ -146,13 +146,17 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	block.Poise = StatsConfig.Poise[row.Class] or 0
 	block.Speed = Stats.SpeedOf(row)
 	local stars = math.clamp(owned.Stars, 0, VoidkinConfig.MaxStars)
-	for _, stat in OWN do
-		local own = Stats.Own(row, stat, level)
-		add("Base", stat, own)
-		add("Stars", stat, own * VoidkinConfig.StarShareOfBase * stars)
+	-- The own figure in two lines, so the stat sheet can say what the level gave (docs/ui.md, "Stats, shown honestly").
+	local function own(stat: string): number
+		local whole, first = Stats.Own(row, stat, level), Stats.Own(row, stat, 1)
+		add("Base", stat, first)
+		add("Level", stat, whole - first)
+		return whole
 	end
-	-- Regen comes from the level alone, its own source, so the own base's share (stars) never touches it.
-	add("Level", "Regen", Stats.Own(row, "Regen", level))
+	for _, stat in OWN do
+		add("Stars", stat, own(stat) * VoidkinConfig.StarShareOfBase * stars)
+	end
+	own("Regen") -- no star share: Regen is a value a second, never a share of the base
 	if preset and data then
 		for slot, itemId in preset.Slots do
 			local item = data.Items[itemId]

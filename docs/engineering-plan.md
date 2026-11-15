@@ -46,8 +46,8 @@ Made in TR1, 2026-11-12. Each is the builder's technical call (`AGENTS.md`, "Des
 
 The package's D04, and the heart of `docs/balance.md`.
 
-- `Stats.resolve(voidkin, preset, account)` returns the full stat block. It's the only place stats are added up: the Voidkin's row and stars, each slot's item and forge rank, emblems, jewels, research. It returns the breakdown too, so the stat screen shows where each point came from.
-- `Combat.resolveHit(attacker, defender, move, seed)` returns one hit's result: dodged or not, physical and elemental amounts, critical, blocked, lifesteal. It's the only place the two buckets and their ceilings exist.
+- `Stats.resolve(voidkin, preset, account)` returns the full stat block. It's the only place stats are added up: the Voidkin's row and stars, each slot's item and forge rank, emblems, jewels, research. It returns the breakdown too, so the stat screen shows where each point came from: the Voidkin's own figure as two lines, its base (the level-1 figure) and what its level adds, then its stars and each slot (`Rules.Stats`; the tap is `Rules.Sheet`).
+- `Combat.resolveHit(attacker, defender, move, seed)` returns one hit's result: dodged or not, physical and elemental amounts, critical, blocked, lifesteal. It's the only place the two buckets and their ceilings exist. A critical multiplies outside them, with no ceiling (`Rules.Hit`, `CriticalFactor`).
 - Both are pure, both run on the server for truth, and the client may call the first for previews. Neither is copied: a second place that adds stats or computes damage is a bug.
 - A test fails the build if any stat source multiplies another (`docs/balance.md`, "The one rule").
 

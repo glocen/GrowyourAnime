@@ -442,11 +442,11 @@ function VoidkinCases.Cases(given: Given): { any }
 						-- Its whole stat sheet is here: there's no Stats page.
 						local block = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
 						for _, stat in { "Health", "Attack", "Defence" } do
-							local item = scroll:FindFirstChild(stat)
+							local item = scroll:FindFirstChild(stat, true)
 							local right = item and item:FindFirstChild("Right")
 							t.Check(`Overview: its {stat}, resolved`, right ~= nil and (right :: TextLabel).Text == Hud.Digits((block :: any)[stat]), if right then (right :: TextLabel).Text else "none")
 						end
-						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed") ~= nil)
+						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed", true) ~= nil)
 					elseif name == "Bag" then
 						local kinds = VoidkinScreen.Find("Kinds")
 						local tabs = true
@@ -515,7 +515,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			-- Combat Power's tap: where it comes from.
 			t.Check("a tap on Combat Power is taken", VoidkinScreen.Tap(VoidkinScreen.Find("Power")))
 			local shown = VoidkinScreen.Find("Page")
-			t.Check("and shows Overview, where its stats are", shown ~= nil and shown:GetAttribute("Page") == "Overview" and shown:FindFirstChild("Health") ~= nil)
+			t.Check("and shows Overview, where its stats are", shown ~= nil and shown:GetAttribute("Page") == "Overview" and shown:FindFirstChild("Health", true) ~= nil)
 			-- Favourite and lock, set and cleared on the server.
 			for _, mark in { { Name = "Favourite", Field = "Favourite" }, { Name = "Lock", Field = "Locked" } } do
 				local before = ((ProfileController.Get() :: Profile.View).Voidkin[lead] :: any)[mark.Field] == true
@@ -771,6 +771,11 @@ function VoidkinCases.Cases(given: Given): { any }
 			local block, lines = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
 			local wrong: { string } = {}
 			local order = 0
+			-- A cell's place on the page: its row's, the right one half a step on.
+			local function placeOf(item: GuiObject): number
+				local pair = item.Parent
+				return if pair and pair:IsA("GuiObject") and pair.Parent == scroll then pair.LayoutOrder + item.Position.X.Scale else -1
+			end
 			for _, group in Sheet.Rows(block, lines, Passives.ById[owned.Def]) do
 				local head = scroll:FindFirstChild(`Group{group.Name}`)
 				if head == nil or not head:IsA("GuiObject") or head.LayoutOrder <= order then
@@ -779,21 +784,63 @@ function VoidkinCases.Cases(given: Given): { any }
 					order = head.LayoutOrder
 				end
 				for _, want in group.Rows do
-					local item = scroll:FindFirstChild(want.Name)
+					local item = scroll:FindFirstChild(want.Name, true)
 					local right = item and item:FindFirstChild("Right")
-					local under = item and item:FindFirstChild("Under")
 					local said = if right and right:IsA("TextLabel") then right.Text else nil
-					local quiet = if under and under:IsA("TextLabel") then under.Text else nil
-					if item == nil or not item:IsA("GuiObject") or item.LayoutOrder <= order then
+					if item == nil or not item:IsA("GuiObject") or placeOf(item) <= order then
 						table.insert(wrong, `{want.Name} out of its group`)
-					elseif said ~= want.Value or quiet ~= want.Under then
-						table.insert(wrong, `{want.Name}: {said} / {quiet}`)
+					elseif said ~= want.Value or item:FindFirstChild("Under") ~= nil then
+						table.insert(wrong, `{want.Name}: {said}, a line under it`)
 					else
-						order = item.LayoutOrder
+						order = placeOf(item)
 					end
 				end
 			end
-			t.Check("every stat in Core, Attack and Defence, each under its caption with its value and its sources", #wrong == 0, wrong[1])
+			t.Check("every stat in Core, Attack and Defence, two a row in order, each under its caption with its one total, nothing under it", #wrong == 0, wrong[1])
+			-- A tap opens a line's sources and notes; a tap on another moves it there; a tap on the open one closes it.
+			local function tapOf(stat: string): (GuiObject?, Frame?, Sheet.Row?)
+				local want = Sheet.Row(stat, block, lines, Passives.ById[owned.Def])
+				local item = scroll:FindFirstChild(want.Name, true)
+				local press = item and item:FindFirstChild("Press")
+				local tap = item and item:FindFirstChild("Sources")
+				return if press and press:IsA("GuiObject") then press else nil, if tap and tap:IsA("Frame") then tap else nil, want
+			end
+			local function says(tap: Frame?, want: Sheet.Row?): string?
+				if tap == nil or want == nil then
+					return "missing"
+				end
+				for index, source in want.Sources do
+					local each = tap:FindFirstChild(`Source{index}`)
+					local name = each and each:FindFirstChild("Left")
+					local value = each and each:FindFirstChild("Right")
+					if not (name and name:IsA("TextLabel") and name.Text == source.Name and value and value:IsA("TextLabel") and value.Text == source.Value) then
+						return `source {index}`
+					end
+				end
+				for index, note in want.Notes do
+					local each = tap:FindFirstChild(`Note{index}`)
+					if not (each and each:IsA("TextLabel") and each.Text == note) then
+						return `note {index}`
+					end
+				end
+				return nil
+			end
+			local healthPress, healthTap, healthRow = tapOf("Health")
+			local dodgePress, dodgeTap, dodgeRow = tapOf("Dodge")
+			if healthTap and healthTap.Visible or dodgeTap and dodgeTap.Visible then
+				VoidkinScreen.Tap(if healthTap and healthTap.Visible then healthPress else dodgePress) -- one left open from before
+			end
+			t.Check("at rest, no line's sources show", not (healthTap and healthTap.Visible) and not (dodgeTap and dodgeTap.Visible))
+			local before = if healthTap then (healthTap.Parent :: GuiObject).AbsoluteSize.Y else 0
+			t.Check("a tap on Health opens its sources", VoidkinScreen.Tap(healthPress) and healthTap ~= nil and healthTap.Visible)
+			t.Wait(0.05)
+			t.Equal("its base and its level apart, its stars, its slots, as Rules.Sheet lists them", says(healthTap, healthRow), nil)
+			t.Check("Health's base comes first", healthRow ~= nil and healthRow.Sources[1] ~= nil and healthRow.Sources[1].Name == "Base")
+			t.Check("the line grows to hold them", healthTap ~= nil and (healthTap.Parent :: GuiObject).AbsoluteSize.Y > before + 18)
+			t.Check("a tap on Dodge moves it there", VoidkinScreen.Tap(dodgePress) and dodgeTap ~= nil and dodgeTap.Visible and healthTap ~= nil and not healthTap.Visible)
+			t.Equal("Dodge's notes, its chance against a foe of its level with the same points last", says(dodgeTap, dodgeRow), nil)
+			t.Check("the last is the chance", dodgeRow ~= nil and string.find(dodgeRow.Notes[#dodgeRow.Notes], `Against a level {owned.Level} foe with`, 1, true) == 1)
+			t.Check("a tap on the open one closes it", VoidkinScreen.Tap(dodgePress) and dodgeTap ~= nil and not dodgeTap.Visible)
 			local need = Growth.XpToNext(owned.Level)
 			if need and owned.Xp > 0 then
 				local level = scroll:FindFirstChild(`Level {owned.Level}`)
@@ -812,9 +859,32 @@ function VoidkinCases.Cases(given: Given): { any }
 			if small and small:IsA("ScrollingFrame") then
 				small.CanvasPosition = Vector2.new(0, math.max(0, small.AbsoluteCanvasSize.Y - small.AbsoluteWindowSize.Y))
 				t.Wait(0.1)
-				local last = small:FindFirstChild(Sheet.Said.DamageReduction)
+				local last = small:FindFirstChild(Sheet.Said.DamageReduction, true)
 				t.Check("the smallest phone: the list scrolls to Damage Reduction", last ~= nil and last:IsA("GuiObject") and last.AbsolutePosition.Y + last.AbsoluteSize.Y <= small.AbsolutePosition.Y + small.AbsoluteWindowSize.Y + 1)
 				lintClean(t, "the smallest phone, Overview at its foot")
+				local core = small:FindFirstChild("GroupCore")
+				local hint = core and core:FindFirstChild("Hint")
+				local name = core and core:FindFirstChild("Left")
+				t.Check(
+					"the smallest phone: the hint fits beside Core, a gap clear of it",
+					hint ~= nil and hint:IsA("TextLabel") and hint.TextFits and name ~= nil and name:IsA("TextLabel")
+						and name.AbsolutePosition.X + name.TextBounds.X + 8 <= hint.AbsolutePosition.X + hint.AbsoluteSize.X - hint.TextBounds.X
+				)
+				-- The widest tap a phone sees: Hit's chance line, the longest.
+				local hitItem = small:FindFirstChild("Hit", true)
+				local hitPress = hitItem and hitItem:FindFirstChild("Press")
+				local hitTap = hitItem and hitItem:FindFirstChild("Sources")
+				t.Check("the smallest phone: a tap opens Hit", VoidkinScreen.Tap(hitPress) and hitTap ~= nil and hitTap:IsA("Frame") and hitTap.Visible)
+				t.Wait(0.1)
+				local fits = hitTap ~= nil
+				for _, each in if hitTap then hitTap:GetChildren() else {} do
+					if each:IsA("TextLabel") and not each.TextFits then
+						fits = false
+					end
+				end
+				t.Check("the smallest phone: every note in Hit's tap fits, wrapped", fits)
+				lintClean(t, "the smallest phone, Hit's tap open")
+				VoidkinScreen.Tap(hitPress)
 			else
 				t.Check("the smallest phone: Overview", false)
 			end

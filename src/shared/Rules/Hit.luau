@@ -1,7 +1,9 @@
 --!strict
 -- Hit (shared, pure): one hit, the only place damage is computed (docs/balance.md, "One hit"; docs/engineering-plan.md,
--- "The resolver"). It multiplies in three places only, each with a ceiling: the defender's mitigation, the attacker's
--- bonus bucket, the defender's reduction bucket. Everything else adds into one of the two buckets. The server rolls the
+-- "The resolver"). It multiplies in three places with a ceiling: the defender's mitigation, the attacker's bonus bucket,
+-- the defender's reduction bucket. A critical multiplies on its own, outside the bucket, with no ceiling: x (1 + Critical
+-- Damage - the target's Critical Guard), never under x1 (the director, 2026-11-15). Everything else adds into one of the
+-- two buckets. The server rolls the
 -- three chances with its own Random and passes them in, so the same rolls always give the same hit.
 -- Its expected value is tools/balance/sim.py's dps() for one coefficient; a case holds the two together.
 -- No Roblox API: it runs with Studio closed.
@@ -34,6 +36,7 @@ export type Result = {
 	Penetration: number,
 	Mitigation: number,
 	Bonus: number, -- the attacker's bucket as used, after its ceiling
+	CriticalFactor: number, -- what a critical multiplied by, 1 without one; no ceiling
 	Reduction: number, -- the defender's bucket as used, after its ceiling
 }
 
@@ -86,6 +89,7 @@ function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: 
 		Penetration = penetration,
 		Mitigation = mitigation,
 		Bonus = 0,
+		CriticalFactor = 1,
 		Reduction = 0,
 	}
 	if result.Dodged or not (coefficient > 0) then
@@ -95,22 +99,19 @@ function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: 
 	result.Blocked = rolls.Block < block
 	local fxBonus = if effects then effects.Bonus or 0 else 0
 	local fxReduction = if effects then effects.Reduction or 0 else 0
-	local base = math.min(buckets.BonusCap, fxBonus + (if relation > 0 then buckets.TypeAdvantage else 0))
-	local bonus = base
-	if result.Critical then
-		bonus = math.min(buckets.BonusCap, base + math.max(0, attacker.CriticalDamage - defender.CriticalGuard))
-	end
+	local bonus = math.min(buckets.BonusCap, fxBonus + (if relation > 0 then buckets.TypeAdvantage else 0))
+	local factor = if result.Critical then 1 + math.max(0, attacker.CriticalDamage - defender.CriticalGuard) else 1
 	local before = math.min(buckets.ReductionCap, fxReduction + (if relation < 0 then buckets.TypeDisadvantage else 0))
 	local reduction = before
 	if result.Blocked then
 		reduction = math.min(buckets.ReductionCap, before + buckets.BlockShare)
 	end
-	result.Bonus, result.Reduction = bonus, reduction
-	result.Physical = math.max(0, attacker.Attack) * coefficient * (1 - mitigation) * (1 + bonus) * (1 - reduction)
+	result.Bonus, result.CriticalFactor, result.Reduction = bonus, factor, reduction
+	result.Physical = math.max(0, attacker.Attack) * coefficient * (1 - mitigation) * (1 + bonus) * factor * (1 - reduction)
 	if attacker.Element ~= "" and attacker.ElementalAttack > 0 then
 		local resist = Stats.Chance(StatsConfig.Caps.ElementalResist, defender.ElementalResist, 0, attacker.Level)
-		-- Past Defence, never critical: the bonus without the critical's extra.
-		result.Elemental = attacker.ElementalAttack * coefficient * (1 - resist) * (1 + base) * (1 - reduction)
+		-- Past Defence, never critical.
+		result.Elemental = attacker.ElementalAttack * coefficient * (1 - resist) * (1 + bonus) * (1 - reduction)
 	end
 	result.Total = result.Physical + result.Elemental
 	result.LifestealShare = math.clamp(attacker.Lifesteal, 0, StatsConfig.Lifesteal.Cap)

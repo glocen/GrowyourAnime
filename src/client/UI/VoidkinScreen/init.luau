@@ -83,6 +83,9 @@ local LABEL = 16 -- a rail button's label, under its circle, authored
 local WORD = 64 -- Save and Cancel, in the band, each, authored
 local WARM = 12 -- bodies drawn ahead at the open, the roster's first; one past them is drawn when it's asked for
 local SHEET_HEAD = 22 -- a stat group's caption line, the space above it included, authored
+-- A stat's cell (a tap, so the kit's touch size: 44 rendered at the smallest scale), its name's line from Top and its
+-- total's under it, a source's line in its tap, the tap's inset, authored.
+local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Source = 18, Pad = 8 }
 local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, authored; a character's share of its text size; seconds between reads
 
 local player = Players.LocalPlayer
@@ -119,6 +122,7 @@ local measured = { Height = 0, Stage = 0, Slot = 0, Power = 0 }
 local tickers: { () -> () } = {}
 local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied at each build
 local shownPower: { [string]: number } = {} -- the Combat Power last shown for each Voidkin, so a rise counts up from it
+local openStat: string? = nil -- the stat whose sources a tap opened on Overview: kept across rebuilds and Voidkin
 local rebuild: () -> ()
 
 local function refused(what: string, answer: { [string]: any }): boolean
@@ -626,11 +630,86 @@ local function line(parent: Instance, order: number, left: string, right: string
 	return item
 end
 
+-- One stat's cell (docs/ui.md, "Stats, shown honestly"), two a row: each a whole tap at the kit's touch size, and the
+-- sheet as dense as one-line rows. Its name over its one total; under its row, opened by a tap, where each point comes
+-- from, each source's number in a column that adds to the total, then its notes, a rating's chance last. One opens at a
+-- time: a tap on another moves it there, a tap on the open one closes it.
+local function statCell(cells: { Frame }, pair: Frame, side: number, row: Sheet.Row): Frame
+	local open = openStat == row.Stat
+	local item = Instance.new("Frame")
+	item.Name = row.Name
+	item.BackgroundTransparency = 1
+	item.Position = UDim2.fromScale(side * 0.5, 0)
+	item.Size = UDim2.new(0.5, 0, 0, SHEET.Line)
+	item.AutomaticSize = Enum.AutomaticSize.Y
+	item.Parent = pair
+	text({ Name = "Left", Size = Theme.Text.Caption, Colour = if open then Theme.Colour.Primary else Theme.Colour.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Name), Position = UDim2.fromOffset(0, SHEET.Top), Parent = item }, row.Name)
+	text({ Name = "Right", Font = Theme.Font.Number, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Value), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name), Parent = item }, row.Value)
+	local press = Instance.new("TextButton")
+	press.Name = "Press"
+	press.Text = ""
+	press.AutoButtonColor = false
+	press.BackgroundTransparency = 1
+	press.Size = UDim2.new(1, 0, 0, SHEET.Line)
+	press.ZIndex = 2
+	press.Parent = item
+	local tap = Instance.new("Frame")
+	tap.Name = "Sources"
+	tap.BorderSizePixel = 0
+	tap.BackgroundColor3 = Theme.Colour.PlateHigh
+	tap.Position = UDim2.new(-side, 0, 0, SHEET.Line) -- under the whole row, whichever side it opened from
+	tap.Size = UDim2.fromScale(2, 0)
+	tap.AutomaticSize = Enum.AutomaticSize.Y
+	tap.Visible = open
+	tap.Parent = item
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
+	corner.Parent = tap
+	local inset = Instance.new("UIPadding")
+	inset.PaddingLeft, inset.PaddingRight = UDim.new(0, SHEET.Pad), UDim.new(0, SHEET.Pad)
+	inset.PaddingTop, inset.PaddingBottom = UDim.new(0, SHEET.Pad / 2), UDim.new(0, SHEET.Pad / 2)
+	inset.Parent = tap
+	local stack = Instance.new("UIListLayout")
+	stack.SortOrder = Enum.SortOrder.LayoutOrder
+	stack.Padding = UDim.new(0, 2)
+	stack.Parent = tap
+	for index, source in row.Sources do
+		local each = frameOf(`Source{index}`, tap, UDim2.new(), UDim2.new(1, 0, 0, SHEET.Source))
+		each.LayoutOrder = index
+		text({ Name = "Left", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(0.7, 0, 1, 0), Parent = each, Truncate = true }, source.Name)
+		text({ Name = "Right", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(0.3, 0, 1, 0), Position = UDim2.fromScale(0.7, 0), Parent = each }, source.Value)
+	end
+	for index, note in row.Notes do
+		local said = text({ Name = `Note{index}`, Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.fromScale(1, 0), Parent = tap, Wrap = true }, note)
+		said.AutomaticSize = Enum.AutomaticSize.Y
+		said.LayoutOrder = #row.Sources + index
+	end
+	local function onTap()
+		openStat = if openStat == row.Stat then nil else row.Stat
+		for _, other in cells do
+			local sources = other:FindFirstChild("Sources")
+			local name = other:FindFirstChild("Left")
+			if sources and sources:IsA("Frame") and name and name:IsA("TextLabel") then
+				local lit = other:GetAttribute("Stat") == openStat
+				sources.Visible = lit
+				name.TextColor3 = if lit then Theme.Colour.Primary else Theme.Colour.TextDim
+			end
+		end
+	end
+	press.Activated:Connect(onTap)
+	taps[press] = onTap
+	item:SetAttribute("Stat", row.Stat)
+	table.insert(cells, item)
+	return item
+end
+
 -- Its whole stat sheet, from `order` on (docs/ui.md, 5, "Overview's stat sheet"): every stat in its three groups, a zero
--- as 0, each line's words from Rules.Sheet with its sources under it. A group's name is a quiet caption over its lines.
+-- as 0, each stat one total from Rules.Sheet, two a row, its sources a tap away. A group's name is a quiet caption over
+-- its cells; the first one's says a stat can be tapped.
 local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, order: number)
 	local block, lines = resolved(view, owned)
-	for _, group in Sheet.Rows(block, lines, Passives.ById[owned.Def]) do
+	local cells: { Frame } = {}
+	for index, group in Sheet.Rows(block, lines, Passives.ById[owned.Def]) do
 		order += 1
 		local head = Instance.new("Frame")
 		head.Name = `Group{group.Name}`
@@ -638,10 +717,26 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 		head.LayoutOrder = order
 		head.Size = UDim2.new(1, -8, 0, SHEET_HEAD)
 		head.Parent = scroll
-		text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, 0, 0, Theme.Text.Caption + 4), Position = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4)), Parent = head }, group.Name)
-		for _, each in group.Rows do
+		local caption = UDim2.new(1, 0, 0, Theme.Text.Caption + 4)
+		local foot = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4))
+		text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Box = caption, Position = foot, Parent = head }, group.Name)
+		if index == 1 then
+			text({ Name = "Hint", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Right, Box = caption, Position = foot, Parent = head }, "Tap a stat for its sources")
+		end
+		for at = 1, #group.Rows, 2 do
 			order += 1
-			line(scroll, order, each.Name, each.Value, each.Under)
+			local pair = Instance.new("Frame")
+			pair.Name = `Pair{group.Name}{(at + 1) // 2}`
+			pair.BackgroundTransparency = 1
+			pair.LayoutOrder = order
+			pair.Size = UDim2.new(1, -8, 0, 0)
+			pair.AutomaticSize = Enum.AutomaticSize.Y
+			pair.Parent = scroll
+			statCell(cells, pair, 0, group.Rows[at])
+			local second = group.Rows[at + 1]
+			if second then
+				statCell(cells, pair, 1, second)
+			end
 		end
 	end
 end
@@ -1325,7 +1420,7 @@ end
 function VoidkinScreen.Open(view: Profile.View, on: On)
 	local fresh = Screen.Current() ~= NAME
 	if fresh then -- a fresh open starts on the lead and the bag (research's call, 2026-11-15), never on a choice left from before
-		chosen, page, kind, slideFrom, shownPower, litTo = nil, "Bag", "Shards", 0, {}, nil
+		chosen, page, kind, slideFrom, shownPower, litTo, openStat = nil, "Bag", "Shards", 0, {}, nil, nil
 		editing, draft, awaited = false, nil, nil
 	end
 	build(view, on)

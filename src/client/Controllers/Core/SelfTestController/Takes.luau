@@ -1010,7 +1010,8 @@ return function(given: Given): { any }
 			Stay = true,
 			Run = function(t: any)
 				-- Research's still of the sheet (docs/test-requests.md, TR17, "Overview shows every stat"): each view is held
-				-- until the driver moves ReplicatedStorage.NL_TakeStep on ("Top", "Attack", "Foot", "End") and captures it.
+				-- until the driver moves ReplicatedStorage.NL_TakeStep on ("Top", "Attack", "Foot", "Tap", "End") and captures it.
+				-- "Tap" opens Hit's sources, the longest a phone sees, its line at the window's top.
 				local step = Instance.new("StringValue")
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
@@ -1047,6 +1048,15 @@ return function(given: Given): { any }
 					local scroll = VoidkinScreen.Find("Page")
 					if scroll and scroll:IsA("ScrollingFrame") then
 						scroll.CanvasPosition = Vector2.new(0, math.max(0, scroll.AbsoluteCanvasSize.Y - scroll.AbsoluteWindowSize.Y))
+					end
+				end
+				if await("Tap") then
+					local scroll = VoidkinScreen.Find("Page")
+					local hit = scroll and scroll:FindFirstChild("Hit", true)
+					if scroll and scroll:IsA("ScrollingFrame") and hit and hit:IsA("GuiObject") then
+						t.Check("a tap opens Hit's sources", VoidkinScreen.Tap(hit:FindFirstChild("Press")))
+						t.Wait(0.1)
+						scroll.CanvasPosition = Vector2.new(0, hit.AbsolutePosition.Y - scroll.AbsolutePosition.Y + scroll.CanvasPosition.Y)
 					end
 				end
 				await("End")

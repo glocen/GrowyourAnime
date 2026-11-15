@@ -1,6 +1,6 @@
 --!strict
--- Hit cases (pure): one hit worked by hand, each ceiling, the type ring, a critical, a block, the elemental number, and
--- the expected value of a hit against tools/balance/sim.py's dps() for the same two fighters.
+-- Hit cases (pure): one hit worked by hand, each ceiling, the type ring, a critical past the ceiling, a block, the
+-- elemental number, and the expected value of a hit against tools/balance/sim.py's dps() for the same two fighters.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -63,23 +63,35 @@ return {
 			t.Equal("the bonus bucket at its cap", hit.Bonus, buckets.BonusCap)
 			t.Equal("the reduction bucket at its cap", hit.Reduction, buckets.ReductionCap)
 			t.Equal("lifesteal at its cap", hit.LifestealShare, StatsConfig.Lifesteal.Cap)
-			local crit = Hit.Resolve(a, d, 1, { Dodge = 0.999999, Critical = 0, Block = 0.999999 })
-			t.Check("a critical stays in the bucket's cap", crit.Critical and crit.Bonus == buckets.BonusCap)
+			local crit = Hit.Resolve(a, d, 1, { Dodge = 0.999999, Critical = 0, Block = 0.999999 }, { Bonus = 9 })
+			t.Check("a critical leaves the bucket at its cap", crit.Critical and crit.Bonus == buckets.BonusCap)
+			t.Equal("and multiplies past it, with no ceiling", crit.CriticalFactor, 51)
+			t.Check("so the hit is the capped one times 51", near(crit.Total, 51 * Hit.Resolve(a, d, 1, NONE, { Bonus = 9 }).Total))
 			local floor = Hit.Resolve(fighter(1, { Attack = 1 }), fighter(1, {}), 1, NONE)
 			t.Equal("every hit has the critical floor", floor.ChanceCritical, caps.CriticalFloor)
 		end,
 	},
 	{
-		Name = "Hit: a critical adds its extra, less the guard, to the bonus",
+		Name = "Hit: a critical multiplies on its own, by its extra less the guard",
 		Run = function(t: any)
+			local CRIT = { Dodge = 0.999999, Critical = 0, Block = 0.999999 }
 			local a = fighter(1, { Attack = 100 })
 			local d = fighter(1, { CriticalGuard = 0.1 })
-			local crit = Hit.Resolve(a, d, 1, { Dodge = 0.999999, Critical = 0, Block = 0.999999 })
+			local crit = Hit.Resolve(a, d, 1, CRIT)
 			t.Check("critical", crit.Critical)
-			t.Check("bonus is the extra less the guard", near(crit.Bonus, StatsConfig.CriticalDamage - 0.1))
+			t.Equal("the bucket doesn't hold it", crit.Bonus, 0)
+			t.Check("the factor is one and the extra less the guard", near(crit.CriticalFactor, 1 + StatsConfig.CriticalDamage - 0.1))
 			t.Check("by hand", near(crit.Total, 100 * (1 + StatsConfig.CriticalDamage - 0.1)))
-			local guarded = Hit.Resolve(a, fighter(1, { CriticalGuard = 5 }), 1, { Dodge = 0.999999, Critical = 0, Block = 0.999999 })
-			t.Equal("a guard past the extra takes it to nothing, not below", guarded.Total, 100)
+			local typed = Hit.Resolve(fighter(1, { Attack = 100, Type = "Agility" }), fighter(1, { Type = "Strength" }), 1, CRIT)
+			t.Check(
+				"with the type's edge, the two multiply",
+				near(typed.Total, 100 * (1 + StatsConfig.Buckets.TypeAdvantage) * (1 + StatsConfig.CriticalDamage))
+			)
+			local far = Hit.Resolve(fighter(1, { Attack = 100, CriticalDamage = 200 }), fighter(1, {}), 1, CRIT)
+			t.Check("200 times extra, 20,000%, no ceiling", near(far.Total, 100 * 201))
+			local guarded = Hit.Resolve(a, fighter(1, { CriticalGuard = 5 }), 1, CRIT)
+			t.Equal("a guard past the extra takes it to x1, not below", guarded.Total, 100)
+			t.Equal("no critical, x1", Hit.Resolve(a, d, 1, NONE).CriticalFactor, 1)
 		end,
 	},
 	{
@@ -125,8 +137,9 @@ return {
 	{
 		Name = "Hit: on average, the balance simulation's damage",
 		Run = function(t: any)
-			-- tools/balance/sim.py dps(att, dfn, rel) / coef_per_second() for these two, printed 2026-11-12.
-			local expected = { [1] = 297.6942693428971, [0] = 240.98900285488378, [-1] = 203.2984873059928 }
+			-- tools/balance/sim.py dps(att, dfn, rel) / coef_per_second() for these two, printed 2026-11-15 after the critical
+			-- left the bucket (only the type edge's number moves: the other two never reached the cap).
+			local expected = { [1] = 301.2362535686047, [0] = 240.98900285488378, [-1] = 203.2984873059928 }
 			local defenderType = { [1] = "Strength", [0] = "Endurance", [-1] = "Technique" }
 			local a = fighter(5, { Attack = 300, Hit = 50, Critical = 80, Penetration = 40, ElementalAttack = 60, Element = "Fire", Type = "Agility" })
 			for relation, want in expected do

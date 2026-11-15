@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, late.
-- **The lead's card is picked:** F, with one solid bar in place of its cells, in D's ruby (the director; AR12, round two, "The director's pick"). **For Faber's build**, after the HUD's part 1.
-- **Sound:** the study is `docs/research/sound.md` (pro and anime recipes, eight checks, Roblox's rules, tools). **Rule 2 changed** on the director's yes: sounds we make on this PC may be uploaded, and library sounds stay layered at runtime only (`AGENTS.md`). Modulo's brief gains sounds by script. **A test of six cues** is agreed, after Faber's HUD: a Shade's swipe, hurt and burst, and a light hit, a heavy hit and a critical. The director's listening waits until the director can. **For Faber, when it opens:** the steps test, `SearchAudioAsync` with each result's creator, and layers on one clock through the audio graph (`sound.md`, "The engine, for Faber"). Installs wait on the director's word, package by package.
-- **Picked today:** the level-up B, Combat Power Platinum in a clear blue-steel (AR12); Modulo has both, after the Sword and shard fixes.
-- **Next:** the six cues' briefs; the dock's images; Faber's HUD build and its font stills, for research's pick; AR6's Sword ladder; the battery cap and Combat Power's seeds; the first session reviewed whole from a phone.
+**Quaestor (research).** 2026-11-15, night.
+- **The director's word:** finish phase 2, then phase 3 and the real map; the Calamity leaves launch, an update after it (`docs/decisions.md`; D12, the cut line).
+- **Reads done tonight (AR12):** the shard grades' fix passes, no fixes; the dock's images pass, no fixes; Combat Power is **A2, Cobalt**, with one fix: its foot lifted to 3:1 at 20 points. **Written:** AR13, the six-cue sound test, and AR12's festival tag, where a shard came from (the director's creative freedom).
+- **Modulo's order, for phase 2 first:** the level-up B; Combat Power's foot; AR13's six layers; the festival tag's block; then AR6's gear (phase 3).
+- **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 14:25.
 - **Two pieces wait for the screen**, which is the director's until they say it's free: no playtest, no click, no window brought forward until then.

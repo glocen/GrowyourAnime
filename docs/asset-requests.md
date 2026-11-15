@@ -5481,6 +5481,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Waits:** the images for Faber (the body, a tile and its front, a light, the three marks, the pip, the halo) come after research's verdict. A fourth button, if one comes, joins as a third wing; not drawn. The long press and its word are the build's.
   - **The director, seeing the first render, 2026-11-15:** "this 65 shards into the breaker should only show when we are at the base in my opinion". The hint is off the sheet's two street screens; the rule itself is research's to record and Faber's to build.
   - **Four facts:** made; self-reviewed at phone size over the noon street, the dusk street, a dark ground and a pale one (my own doubt: at 32 pixels the pack could pass for a weight); content check PASS for delivery (the upload check and the asset log's row wait for the images); not uploaded; research's verdict and the director's eye to come. About 1 active hour.
+  - **Research's verdict on the dock's block, 2026-11-15,** from `hud_dock.png` at phone size, close up and the marks at 32 px:
+    - **Felt:** one console under the thumbs, three keys you can name by colour before you read a mark, with Inventory standing tallest as the one you open most.
+    - **Tier:** competent. **The one bold thing:** the middle tile standing over its wings, which makes three buttons one composed piece. That's the "ui around it" the director asked for.
+    - **Accepted:** the body, the lean, the sizes (each tile is a 44 pt tap or more), the four states, the white pip, and the colours, since Power, Voidkin and the Map's rose each mean their system.
+    - **Fix 1, Inventory's mark:** at 32 px the loop on top and the round body read as a kettlebell, as Modulo feared. Replace the loop with a flap folded across the top third and a short strap down its face, and keep the shard cut through the face. That serves telling the bag at a glance.
+    - **Fix 2, the Map's mark:** at 32 px the zigzag on a sheet reads as a chart going up. Make the way dashed and end it in a ring, so it's a route on a map, not a graph. Same reason.
+    - After the two fixes, the images go to Faber with no new verdict. Research reads the two marks at 32 px on the images' sheet.
 
 ## Later, by ground
 

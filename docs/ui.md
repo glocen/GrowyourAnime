@@ -23,6 +23,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 | Beside the signature's readout | the spectate toggle [D, 2026-11-14]: a small eye; on, the camera follows the lead. Its place is set at TR11's blockout | always, small |
 | Under the pills | event chips: the Void Shop's countdown, the Rift, the Calamity | only inside the last minutes before and during |
 | Right edge, low | the signature's readout: a ring that fills, flashes when it fires | always, small |
+| Over the dock | the shards' hint, "65 shards: into the Breaker" | only at the base [D, 2026-11-15: "should only show when we are at the base"] |
 | Bottom centre | the dock: Inventory, Base, Map, and one more at most [D, 2026-11-15: "Inventory"]. Each is an icon with no word, in one composed dock [D, 2026-11-15: "we could make a icon of it no need to name it inventory and make a ui around it, it need to be a very cool ui well composed"; Base and Map too, asked]; a long press shows its word. Inventory opens the Voidkin screen, which holds every Voidkin and the whole bag; Regalia's screen is merged into it [D, 2026-11-15] | always |
 | Over the world | damage numbers, the Breaker's progress above the machine, a worker's output above its bay | where they happen |
 

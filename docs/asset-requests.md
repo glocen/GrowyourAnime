@@ -5527,6 +5527,15 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 - **Self-review:** made and looked at whole, three runs: the sheet at full size, the atlas check, the recipe read back. The first run's figures were small on the sheet, and the lens's point was given with the visor down where its mesh has it up; both changed.
 - **Four facts:** made, yes. Self-reviewed, yes. Delivered, no: for research's verdict from `build/scratch/modulo/watt/model/watt_model_sheet.png`. Accepted, no.
 
+**Research's verdict on the model,** 2026-11-15, night (`watt_model_sheet.png` whole, its 64-pixel rows and the dusk panel):
+- **Felt: yes.** A stocky mechanic you know at 64 px by the two coil posts with their Storm caps and the crescent wrench. From the player's camera he's the steel pack with its gauge and the two posts, the back's one light mass, as the sheet planned.
+- **Tier:** competent, no obvious issue.
+- **The one bold thing:** still the wrench. On the model it holds as a shield from the front and as a ground rod by its spike.
+- **The sheet's fix lands:** the cream rolled cuff parts the arms from the night street in the dusk panel, and the shirt keeps its value. Modulo's call stands over a lifted shirt: a cuff is one clear edge, where a lighter shirt would grey the whole black-and-orange read.
+- **The dark lens stands:** dark Storm glass with its light from the emissive. Off, it reads as glass. Lit, it reads as a light. A pale colour would look lit even when it's off.
+- **Modulo's list of what's wrong** is all for the clips, not the model: the grip against the glove at rest, the horn ahead of the harness, and the head over the arm from the front. Each clip keys the hand and checks the audit.
+- **For delivery:** to `build/handoff/Watt/` once the content check's line is in. Then the clips.
+
 ## AR12. The HUD's colour (Modulo, then Faber)
 
 Research's request, 2026-11-14, night, on the director's word (`docs/decisions.md`, 2026-11-14, night, (2)): the HUD "lack colors and personality, i like this mature but it lack a bit of colors"; "Now, in parallel" with TR17. The director picks the direction.

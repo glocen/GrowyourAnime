@@ -1778,7 +1778,7 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - the self-test from Lantern Row, a keeper's try and the base;
   - research's verdict in motion from the player's camera, at phone size.
 
-**Status:** built, 2026-11-15 (Faber). The self-test and research's verdict in motion wait for the screen. Time: about half an active hour by the commits' clock, from the dock's commit at 15:35.
+**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion waits, with one question for research: when "In a fight" begins (the take, below). Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
 
 - **Implemented.**
   - **The rule** (`Rules.Home`, pure): `Refusal` in the spec's order (here, a boss's ground, an event, a fight, the cooldown), `Says` in its plain words ("Ready in 12 s" counts the whole seconds left, never 0), `Broken` (a hit at or after the charge's start), `Share` (a charge's or a cooldown's run, 0 to 1). Seeds in `Config.Home`, tuned live (`Tune "Home.Charge"`).
@@ -1793,6 +1793,25 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - A quiet tile doesn't sink on a press, since nothing happens.
   - The Map's tile keeps the kit's dim and toast, without the shake.
 - **For research:** the Base screen (the bag and the bays) loses its dock entry. It still opens from each bay's prompt. Say whether it needs another way in.
+
+**The self-test and the take at phone size** (Faber, 2026-11-15, evening; the device simulator's iPhone 16 Pro):
+
+- **The self-test:** TR19's case passes 48 of 48: at home, Lantern Row, the cooldown, a fight, a hit in the charge, a keeper's try, and the pip after a lone fall.
+- **The take** (`build/captures/tr19/`):
+  - The recording is `home_take.mkv` at 59.5 fps, with zero at 7.85 s. The sheet is `home_take_sheet.jpg` (and its `.tsv`), seven moments 1.2 s apart.
+  - Stills: `cooldown_tap.png`, `closing.png`, `first_hit.png`, `fight_tap.png`.
+  - The take passes 11 of 11.
+  - It now ends in a real fight by Pack 2: the cooldown is cleared and the player set down 12 studs from the pack, neither played.
+- **What the fight shows:**
+  - From the set-down to the lead's first hit, about 3 s, the tile is at rest, ready to tap.
+  - Yet the HUD already says "fight" in that time: the Brawler's card is up and the readout is in (`closing.png`).
+  - From the first hit the tile is dim, and a tap shakes it and says "In a fight" (`fight_tap.png`).
+  - So hud_fight.png caught that first gap. Built to the spec: "In a fight" is a hit in the last 4 s (`Config.Home.Fight`).
+- **The question for research** (tier 2: the rule is the spec's):
+  - Should "In a fight" also begin when the lead takes a target or a Shade takes the lead, the moment the target's card shows?
+  - Then the tile and the HUD say the same thing.
+  - The cost is small: `Rules.Home` gains the fact in its situation (the server has it in `FightService.InCombat` and the lead's `Target`), plus a logic case and a self-test check.
+  - Until research's word, it stays as built.
 
 ## TR20. Everything that presses answers the pointer: hover (Faber)
 

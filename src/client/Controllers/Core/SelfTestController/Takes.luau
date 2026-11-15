@@ -36,6 +36,7 @@ local VoidkinCases = require(script.Parent.VoidkinCases)
 local Hud = require(Shared.Rules.Hud)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
+local Toast = require(UI.Kit.Toast)
 local Screen = require(UI.Kit.Screen)
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
@@ -842,15 +843,17 @@ return function(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Take: TR19, home in one tap from Lantern Row's street, the charge, the jump and the arrival, then the cooldown refused, for research's verdict",
+			Name = "Take: TR19, home in one tap from Lantern Row's street, the charge, the jump and the arrival, then the cooldown refused, then a real fight, for research's verdict",
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
 				-- TR19's evidence (docs/test-requests.md, TR19), from the player's camera: on Lantern Row's street, out of any
 				-- fight, a tap on the dock's Base tile fills it from its foot as the avatar's outline lifts, the edges flash and
 				-- the player stands at their Breaker with the lead beside them; at home the tile is quiet; set down on the street
-				-- again, its cooldown's veil is on the tile, and a tap shakes it and says how long. The set-downs aren't played,
-				-- and their rows say so.
+				-- again, its cooldown's veil is on the tile, and a tap shakes it and says how long. Then a real fight by the pack
+				-- (research's question from hud_fight.png, 2026-11-15: is the tile lit mid-fight?): the tile as the lead closes,
+				-- dim from the first hit, and a tap mid-fight shakes it and says so. The set-downs and the cooldown's clearing
+				-- aren't played, and their rows say so.
 				take(t, function(kit: Take)
 					local moment = kit.Moment
 					local base = HudController.Parts().Base :: TextButton
@@ -871,10 +874,11 @@ return function(given: Given): { any }
 					local door = Markers.At(marker)
 					local toward = Vector3.new(door.Position.X - pack.At.X, 0, door.Position.Z - pack.At.Z).Unit -- up the street to the gate
 					local start = pack.At + toward * TAKE_HOME.Short + up
-					local function setDown()
-						t.Root().CFrame = CFrame.lookAt(start, start - toward)
+					local function setDown(at: Vector3?)
+						local stand = at or start
+						t.Root().CFrame = CFrame.lookAt(stand, stand - toward)
 						RunService.RenderStepped:Wait()
-						workspace.CurrentCamera.CFrame = CFrame.lookAt(start + toward * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
+						workspace.CurrentCamera.CFrame = CFrame.lookAt(stand + toward * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), stand)
 					end
 					setDown()
 					t.Check("the lead by the avatar", waitFor(t, 5, function(): boolean
@@ -905,6 +909,42 @@ return function(given: Given): { any }
 					t.Wait(TAKE_READ)
 					moment("a tap in the cooldown: the shake and its words")
 					Button.Press(base)
+					t.Wait(TAKE_READ)
+					-- A real fight: the pack notices the lead within Combat.Shade.Notice.
+					t.Server("HomeReady")
+					local since = workspace:GetServerTimeNow()
+					setDown(pack.At + toward * Combat.Shade.Notice * 0.6 + up)
+					moment("the cooldown cleared, set down by the pack (not played): the lead closes")
+					local function hitSince(): boolean
+						local hit = Players.LocalPlayer:GetAttribute("HitAt")
+						return type(hit) == "number" and hit >= since
+					end
+					local closing: { string } = {}
+					t.Check("a real hit, dealt or taken", waitFor(t, 15, function(): boolean
+						local look = tostring(base:GetAttribute("Look"))
+						if closing[#closing] ~= look then
+							table.insert(closing, look)
+						end
+						return hitSince()
+					end))
+					t.Check("the tile before the first hit", true, table.concat(closing, " then "))
+					moment("the first hit: the tile dims")
+					t.Check("dim from the first hit", waitFor(t, 0.5, function(): boolean
+						return base:GetAttribute("Look") == "Dim"
+					end), tostring(base:GetAttribute("Look")))
+					t.Wait(TAKE_READ)
+					moment("a tap mid-fight: the shake and \"In a fight\"")
+					local dimmed = base:GetAttribute("Look")
+					Button.Press(base)
+					t.Check("a tap mid-fight says so", waitFor(t, REPLICATE, function(): boolean
+						for _, shown in Toast.Shown() do
+							if string.find(shown, "In a fight", 1, true) then
+								return true
+							end
+						end
+						return false
+					end), table.concat(Toast.Shown(), " | "))
+					t.Check("still dim as the fight goes on", dimmed == "Dim" and base:GetAttribute("Look") == "Dim", tostring(base:GetAttribute("Look")))
 					t.Wait(TAKE_READ)
 					moment("end")
 				end)

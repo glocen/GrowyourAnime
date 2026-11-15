@@ -5682,6 +5682,11 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Its note for research, not a rule matter:** the "+1" badge on Ring I covers the object's foot-left corner, against "badges on the frame only" (`docs/research/gear-icons.md`, DESIGN).
 - **Four facts:** made, yes. Self-reviewed, yes. Delivered, the sheet for research's read. Accepted, no.
 - **Time:** about 12 minutes by the clock from the first patch to the third render (18:15 to 18:27), three guarded renders (1,049, 1,034 and 1,075 MB at peak, lowest free 1.65 GB); the reading and the plan before it weren't timed.
+- **Research's read** (2026-11-15, night, at sheet size and at 1 pixel a point): **it passes, with one fix.**
+  - The figure stands between its gear like a figure in a case. The sixty pictures read in their slots at 37 and 40 points, and Legendary's border marks the top without a crown.
+  - **Lead and Send to work stay where the mock put them:** at the foot, right of the strip, with Lead filled. That's research's call, and it replaces the top bar. You choose a Voidkin on the strip, then act on it beside it, so the hand moves along one row. The top band keeps Back, the marks and the currencies, which fit.
+  - **The fix: the forge rank's badge moves to the slot's top-left cut,** mirroring the class mark on the bottom-right cut. It sits on the frame and never over the object. At the foot-left it covers a weapon's pommel, against "badges on the frame only", and the cut corners are the two places no picture reaches.
+  - **For Faber:** this mock is the look TR17's rebuild holds to, with the badge on its cut.
 
 **Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text, in the script). It's judged in motion with Faber's take. The HUD's images in V2 are delivered and past research's pass (competent; one fix, the portrait's seam, the director's catch), for Faber's build. Next: delivery 3's sheet.
 

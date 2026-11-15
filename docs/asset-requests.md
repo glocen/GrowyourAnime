@@ -6923,7 +6923,7 @@ The look is reopened since (AR16), so this install stands in the dev build until
 
 ## AR16. The base spread out, its look finished (Modulo, then Faber)
 
-Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's word over a screenshot of the yard in the game: "it simple that graphism was perfect" (the register). The look as it stands in the game is kept: its graphics, ground, wiring, machines and turning generator. Research's readings of the night's words went past them and are withdrawn: first a void redesign, then a list of levers toward anime. The change is the layout, as in the director's word at about 23:00: "just make it less clustered make it accross the base thennit perfect". Their next word adds a finish to the look: "we can even make it a bit more anime and the toon outline some machine lacked it".
+Research's entry, 2026-11-15, night, rewritten at about 23:28 on the director's word over a screenshot of the yard in the game: "it simple that graphism was perfect" (the register). The look as it stands in the game is kept: its graphics, ground, wiring, machines and turning generator. Research's readings of the night's words went past them and are withdrawn: first a void redesign, then a list of levers toward anime. The change is the layout, as in the director's word at about 23:00: "just make it less clustered make it accross the base thennit perfect". Their next word adds a finish to the look: "we can even make it a bit more anime and the toon outline some machine lacked it".
 
 - **Feel line:** through the gate, the player walks down an open way into a power yard that fills its whole plot. Each machine stands apart with room to read it, the current runs between them in the floor, and the generator turns at the heart.
 - **The block contains:**
@@ -6931,11 +6931,13 @@ Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's 
   - **An open way in.** From the gate, a clear avenue runs to the generator, the plant's heart, with the generator in view from the gate. It's wide enough for the player and the lead side by side, with room to spare. The showcase's plinth stands beside the avenue, never in it.
   - **Less clutter.** Dressing that doesn't serve a machine, the wiring or the way goes.
   - **Three machines reworked as void machines** (the director to Modulo, 23:44 to 23:58; the register). The bays become magic void machines that take the power of the Voidkin set in them. The generator grows a lot and turns anime, with its turning kept. The Void Breaker becomes a breaker of void shards, not an electricity machine. Modulo's one void language for the three, their footprints kept but the generator's. Everything else keeps the look below.
-  - **Filled by what it will become** (research's answer, 2026-11-16, about 00:40, to the director's question to Modulo at about 00:35: "the base feel empty now ask quaestor do we make the base smaller or add more stuff?"; the register; tier 2 with Modulo, Faber's install). Neither shrinking the plot nor adding props.
+  - **Filled by what it will become** (research's answer, 2026-11-16, 00:19, to the director's question to Modulo at 00:16: "the base feel empty now ask quaestor do we make the base smaller or add more stuff?"; the register; tier 2 with Modulo, Faber's install). Neither shrinking the plot nor adding props.
     - The plot stays 200 square: the director's "way bigger" sizing, and the Strip's eight plots stay where they are.
     - The star pulls in: arms about 26, the bays about 50 across, the ring kept, neighbours about 36 apart.
     - The empty ground holds the base's future. Each machine the base will wake has its place: a dark, sleeping stone or pad on the dead main line, which lights out to it when it wakes. Bays 3 and 4 wake at level 2, in the first session, and 5 and 6 at level 3. They continue the east-west line outward from bays 1 and 2, two on each side, about 30 to 36 apart. The Forge, the Condenser and the Lab take three places in the back half, on spokes from the ring's back (the back is kept for them: `docs/design.md`, "The base"). The Tower stays behind the wall.
     - Asleep, never a building site: no scaffolds, signs or barriers, and nothing new between the gate and the generator.
+    - A sleeping place lies low. Nothing dark stands upright in it: a sleeping bay's hoop lies folded down on its dais, so no view of it, edge-on along the line included, reads as a headstone (the content check's condition). Research's call at delivery 2, 2026-11-16, 00:35.
+    - The plain blocks lose AR14's marked lot and its pilot lamp, which marked a place nothing will stand on. Research's call at delivery 2.
     - Judged in the game with the Voidkin in it: the lead, the two workers in their bays and the showcase's Voidkin.
   - **No construction.** The cranes, scaffolds and stock go, and unopened lots read dormant (the night's first word, "not make it like a construction games").
   - **The look kept and finished.** Pieces keep their look: a piece moves, or goes as clutter. Every machine gets the toon outline: some have the kit's ink hull and some lack it, and the ones that lack it get it. The base's outline is a little thinner (the director: "we js make those outline a bit less thick just a little bit less thic"): the hull is 0.14 studs today, Lantern Row's shared default, so the base passes its own, about 0.11, Modulo's call within "a little". Lantern Row keeps its own. A bit more anime on top, Modulo's call, in small touches that keep the look the director called perfect, never a restyle.
@@ -6947,7 +6949,7 @@ Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's 
   - levels 2 and 3's looks;
   - the Tower behind;
   - the bare lot of a player who isn't in the server.
-- **Order:** Modulo's next piece. The rest of AR15 (the battery, the Training machine and the Door) resumes in the yard's look after it.
+- **Order:** Modulo's next piece. The rest of AR15 (the battery, the Training machine and the Door) resumes after it. The battery keeps the yard's look. The Training machine and the Door are void machines, like the three reworked ones: they work through the void, one opening onto the grounds and the other training a Voidkin. That's research's call (tier 2, with Modulo, 2026-11-16, 00:35), not the director's word, which named the Breaker, the bays and the generator.
 
 ### Delivery 1: the star, three void machines, the thinner outline (Modulo, 2026-11-15, 23:15, to 2026-11-16, 00:18)
 

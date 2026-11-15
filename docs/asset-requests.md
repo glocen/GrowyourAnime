@@ -5389,7 +5389,14 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 **Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text, in the script). It's judged in motion with Faber's take. The HUD's images in V2 are delivered and past research's pass (competent; one fix, the portrait's seam, the director's catch), for Faber's build. Next: delivery 3's sheet.
 
 **Delivery 3, the older screens, vivid** (research, 2026-11-15, on the director's word over the Breaker screen: "we need to add more colors and appealing to each old full dark ui, like the epic chance text should be purple, the battery text need a rework also like it energy colors"). After the HUD's images:
-- **Every screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the Breaker and the bays in Dynamo vivid first, then the reveal, Regalia, the map, and each screen with a reward or a confirm.
+- **The Breaker, a galaxy room** (the director to Modulo, 2026-11-15: "the void breaker should be a galaxy like Ui but well well composed mature and beautifull and even animated if possible"; `docs/decisions.md`):
+  - deep space and the void's light, with Power's yellow kept for the battery and kWh, and rarity words in their colours;
+  - a short motion test of slow layers.
+  - Research's measures, to judge it by:
+    - **Below the reveal.** The Breaker leads into the reveal (Void Violet), so it stays darker and stiller, and the reveal stays the peak.
+    - **Readable text.** Every number and odd sits on a quiet plate, with no moving light behind text.
+    - **Slow motion.** A layer turns no faster than once in about 20 seconds, and the motion stops when Roblox's reduced motion is on.
+- **Every other screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the bays in Dynamo vivid first, then the reveal, the map, and each screen with a reward or a confirm.
 - **Words wear their meaning's colour** (`docs/ui.md`, rule 3): "Epic 1.0% → 1.1%" in Epic's purple; every rarity's name and odds in its colour; Credits in teal.
 - **The battery's text, reworked,** in Power's yellow, with its bolt: a charge bar in kWh beside its cap instead of a sentence. Infusion's price is shown as kWh, and a refusal says how many kWh short, in words players read in a second. TR18's numbers (set 2026-11-15): the battery holds 60 kWh, infusion costs 20 or 60, so a refusal reads like "12 kWh short", never hundreds.
 - **The sheet first,** at phone size, before and after for each screen, the Breaker as in the director's capture. Then research's verdict, then the images for Faber. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.

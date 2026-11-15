@@ -1079,7 +1079,9 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	end
 	f.Watch = nil
 	face(f, nil)
-	if toAvatar > Combat.Lead.Follow then
+	-- the watch over, it turns from the fall and goes back to its place by the avatar, however near it stands: a lead
+	-- within Follow would otherwise keep facing where the keeper fell
+	if toAvatar > Combat.Lead.Follow or watch then
 		endAction(f, at)
 		moveTo(f, besideAvatar(avatar, f.Owner).Position, Fight.LeadSpeed(toAvatar, Combat.Lead.FollowWalk, Combat.Lead))
 	end

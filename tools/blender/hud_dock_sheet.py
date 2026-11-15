@@ -44,9 +44,15 @@ def plant(t, cx, cy, r):
     return np.maximum(h.g_plant(t, cx, cy, r), -h.g_bolt(t, cx, cy + r * 0.22, r * 0.6))
 
 
+WAY = (((-0.72, 0.42), (-0.48, 0.22)), ((-0.3, 0.12), (-0.02, 0.16)), ((0.14, 0.14), (0.34, -0.04)))
+
+
 def route(t, cx, cy, r):
-    """The Map: the folded sheet, a way cut across it."""
-    return np.maximum(h.g_map(t, cx, cy, r), -h.map_route(t, cx, cy, r, 0.16 * r))
+    """The Map: the folded sheet, a way cut across it in dashes, ending in a ring (research's fix: a whole line read
+    as a chart going up)."""
+    dashes = [h.seg(t, (cx + a[0] * r, cy + a[1] * r), (cx + b[0] * r, cy + b[1] * r), 0.15 * r) for a, b in WAY]
+    ring = np.abs(np.hypot(t.x - cx - 0.56 * r, t.y - cy + 0.26 * r) - 0.19 * r) - 0.055 * r
+    return np.maximum(h.g_map(t, cx, cy, r), -np.minimum.reduce(dashes + [ring]))
 
 
 def _ridge(t, cx, cy, r, w):
@@ -61,17 +67,17 @@ def _pts(t, cx, cy, r, pts):
 SATCHEL = ((-1.0, 0.04), (1.0, 0.04), (0.88, 0.76), (0.62, 1.0), (-0.62, 1.0), (-0.88, 0.76))
 
 
-PACK = ((-0.36, -0.74), (0.36, -0.74), (0.9, -0.2), (0.9, 0.78), (0.66, 1.0), (-0.66, 1.0), (-0.9, 0.78), (-0.9, -0.2))
+FLAP = ((-0.7, -0.86), (0.7, -0.86), (1.0, -0.56), (1.0, -0.2), (0.2, -0.2), (0.2, 0.14), (-0.2, 0.14), (-0.2, -0.2),
+        (-1.0, -0.2), (-1.0, -0.56))  # folded across the top third, wider than the body, its strap down the face
+PACK = ((-0.86, -0.3), (0.86, -0.3), (0.86, 0.78), (0.64, 1.0), (-0.64, 1.0), (-0.86, 0.78))
 
 
 def inventory(t, cx, cy, r):
-    """Your Voidkin and your whole bag: a pack by its outline, sloped at the shoulders, its low grip on top, a shard
-    cut clean through its face over its pocket's flap."""
-    body = _pts(t, cx, cy, r, PACK)
-    grip = np.maximum(np.abs(np.hypot((t.x - cx) / 1.5, t.y - cy + 0.74 * r) - 0.2 * r) - 0.07 * r, t.y - cy + 0.74 * r)
-    shard = h.g_shard(t, cx, cy - 0.06 * r, 0.5 * r)
-    flap = h.seg(t, (cx - 0.44 * r, cy + 0.66 * r), (cx + 0.44 * r, cy + 0.66 * r), 0.11 * r)
-    return np.minimum(np.maximum(body, -np.minimum(shard, flap)), grip)
+    """Your Voidkin and your whole bag: a satchel, its flap folded across its top third with a short strap down its
+    face, a shard cut clean through the face under the strap (research's fix: a grip on top read as a weight)."""
+    flap = _pts(t, cx, cy, r, FLAP)
+    body = np.maximum(_pts(t, cx, cy, r, PACK), -(flap - 0.1 * r))
+    return np.minimum(flap, np.maximum(body, -h.g_shard(t, cx, cy + 0.56 * r, 0.4 * r)))
 
 
 def inventory_standing(t, cx, cy, r):
@@ -238,8 +244,8 @@ def marks_row():
         chip(st, x + 64, 72, 36.0, fn, 16.0, h.INK, h.PALE_GROUND)
         chip(st, x + 104, 80, 20.0, fn, 8.0, h.INK, h.PALE_GROUND)
         st.text(x, 116, 11 if picked else 9, name if picked else name.capitalize(), h.HEAD if picked else h.NOTE)
-    st.text(16, 138, 10, "Inventory: a pack by its outline, a shard cut through its face: your whole bag and your Voidkin "
-            "in one shape. Base keeps the plant and its bolt, the Map its folded sheet and its way.", h.NOTE)
+    st.text(16, 138, 10, "Inventory: a satchel, its flap and strap over a shard cut through its face: your whole bag and "
+            "your Voidkin in one shape. Base keeps the plant and its bolt, the Map its folded sheet and its way.", h.NOTE)
     return h.bytes8(h.halve(st.px)), st.items
 
 

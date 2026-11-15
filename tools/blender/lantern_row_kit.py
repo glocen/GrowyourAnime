@@ -984,16 +984,17 @@ def maps():
     return {"Kit": ("#FFFFFF", GLOWS[key]), "Street": (POOL_TINT, FLOOR_GLOWS[key]), "Square": (POOL_TINT, FLOOR_GLOWS[key])}
 
 
-def kit_material(out: Path, wears):
-    """A piece's pictures as Roblox draws them: the colour, and a glow that is mask x strength x tint x colour."""
-    tint, strength = maps()[wears]
-    mat, p = look._new("Kit" + wears)
+def kit_material(out: Path, wears, prefix="LanternRow", glow=None):
+    """A piece's pictures as Roblox draws them: the colour, and a glow that is mask x strength x tint x colour.
+    Another kit gives its own `prefix` and its `glow`, a tint and a strength."""
+    tint, strength = glow or maps()[wears]
+    mat, p = look._new(prefix + wears)
     mat.use_backface_culling = True                       # as the engine draws a MeshPart: the ink is a hull turned inside out
     nodes, links = mat.node_tree.nodes, mat.node_tree.links
     col = nodes.new("ShaderNodeTexImage")
-    col.image = bpy.data.images.load(str(out / f"LanternRow_{wears}_Color.png"), check_existing=True)
+    col.image = bpy.data.images.load(str(out / f"{prefix}_{wears}_Color.png"), check_existing=True)
     lit = nodes.new("ShaderNodeTexImage")
-    lit.image = bpy.data.images.load(str(out / f"LanternRow_{wears}_Glow.png"), check_existing=True)
+    lit.image = bpy.data.images.load(str(out / f"{prefix}_{wears}_Glow.png"), check_existing=True)
     lit.image.colorspace_settings.name = "Non-Color"
     warm = nodes.new("ShaderNodeMix")
     warm.data_type, warm.blend_type = "RGBA", "MULTIPLY"

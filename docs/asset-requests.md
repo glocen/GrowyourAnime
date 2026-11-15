@@ -6468,7 +6468,7 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **The way:** no sheet. Modulo's design goes straight in the game as a block, and research gives one verdict there from the player's camera at phone size.
 - **Order:** Modulo's next piece after Watt's model. Faber installs it after TR20.
 
-**Status:** level 1 is delivered as a plan, 2026-11-15, 20:45 (Modulo): `build/handoff/Base/plan.json`. For Faber's install; research's verdict is in the game. Levels 2 and 3 aren't made.
+**Status:** level 1 is delivered again as a kit of the base's own, a power yard, 2026-11-15, 20:58 (Modulo; "Delivery 2"): `build/handoff/Base/`. For Faber's upload and install; research's verdict is in the game. Delivery 1, the plan from Lantern Row's kit, is the director's no (20:46: "it need look like an base not lantern row ground"). Levels 2 and 3 aren't made.
 
 **Delivery 1, level 1: the yard** (Modulo, 2026-11-15, 20:31 to 20:45 by the clock).
 - **What it is:** a plan, as Lantern Row's. Every piece is one of Lantern Row's kit, published already, so nothing is uploaded: 19 pieces, 4,732 triangles and 3 lights a plot.
@@ -6496,6 +6496,43 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **Levels 2 and 3, the intent:** each adds to the one before, so nothing a player has seen goes away. Level 2: the court deepens to the second row of bays, stalls and a third string. Level 3: the square's canopy over the heart, tall houses and a gate. Each gets its plan when level 1 has its verdict.
 - **Checks:** no new asset, picture or text: every piece passed its check in AR5 and is published, so no content check was run. The maker's own: two looks from three cameras, one round of fixes (houses, the heart's lamp, the lot's stone, the machines' boxes from indigo to lit wood, the strings' far poles moved out of the spawn's frame).
 - **Time:** by the clock, 20:31 to 20:45. Forecast: none was given; the cap for a block is 90 minutes.
+- **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no: **rejected by the director** (below). Its plan and pictures are replaced in the folder; they're in git at 5e5c46e.
+
+**Delivery 2, level 1: the power yard** (Modulo, 2026-11-15, 20:49 to 20:58 by the clock).
+- **The director, typed to Modulo at 20:46,** on delivery 1: "it need look like an base not lantern row ground". Read at its size: the base's look. It doesn't name the sky, the layout or the levels, so those stand. The request's "built from the festival kit" is what it answers, so nothing of Lantern Row's kit stands on a plot now.
+- **Feel line:** the player steps off the Strip's stones onto their own steel deck, through a gate that carries their base's level, and sees the current run lit through the floor from the bays to the Breaker, under pylons and their lines. It's a power plant, and it's theirs.
+- **The direction:** the base is a power plant (`docs/design.md`, "The base"), so it's dressed as a power yard, in steel and bone with the current in Power's yellow, the HUD's own colour for it. The shapes are a yard's: plates, panels, trusses, lattice, ribbed insulators. Lantern Row keeps wood, cloth and paper.
+- **What it is:** a kit of the base's own, made and laid as Lantern Row's is, in `build/handoff/Base/`: `manifest.json`, `plan.json`, eight meshes in `meshes/`, five pictures in `maps/`. 28 pieces, 9,412 triangles and 3 lights a plot.
+  - **`Court1`:** the court's floor, 88 by 48 from the front edge in, one picture laid mirrored about the middle (`Base_Court1_Color/Glow`): deck plates; a hazard threshold under the gate; a dashed line down each lane; a yellow frame round each bay's pad, lit where the bay is open and a dim ghost where level 2's will be; the Breaker's ground inside a cyan line; a ring where the player arrives; and the conduits, lit: each bay to the battery, the battery to the Breaker, and the Breaker's rail out under the generator and the waiting line toward the two doors.
+  - **`Wall`, `WallEnd`:** a post with a lamp on its cap and a ribbed steel panel 16 studs to the next, a line of light under its coping. 5 studs high, so the sky and the pylons show over it.
+  - **`Gate1`:** two steel towers with a strip of light down their inner faces, a truss between them, the base's plate on the truss, two floods under it. 39 studs clear, so the Breaker shows from the Strip.
+  - **`Pylon`, `PowerSpan`:** a lattice pylon outside each corner, 25 studs, with a beacon; four cables down each side.
+  - **`FloodMast`:** one at the back of each lane, looking down it.
+  - **`Transformer`:** one each side of the battery's line to the Breaker, one each side of the Breaker's rail.
+  - **`Base_Deck_Color`:** the plain deck tile, for the lot beyond the court.
+- **For Faber, the install:**
+  - **Upload** the eight meshes and the five pictures under the group, as Lantern Row's kit (`manifest.json` has the same fields).
+  - **Lay** `plan.json`'s `levels["1"]` in the plot's frame with `Kit.Place` and `Kit.Light`, the front edge as the gate. `across`, `along` and `turn` mean what they did in delivery 1.
+  - **The level:** your text on the gate's plate, both faces, in `#FFD23E` (`levelMark`: 11 by 4.4, 16 up).
+  - **`ground`:** the lot wears the deck tile, tinted; the Strip keeps Lantern Row's stones. **`standIns`:** the boxes' colours in the kit's steel until each machine has its model. Tier 1 seeds, yours to change.
+  - **`lighting`:** the base under Lantern Row's dusk, as delivery 1 asked. The conduits and lamps are drawn for dusk.
+  - **CastShadow off** on `PowerSpan` and `Court1`.
+  - **From above** (TR21's camera): the haze veils the base, as before. `base_1_above_clear.png` is with the haze at 15%.
+- **The target:** `base_1_home.png` (the spawn's camera), `base_1_gate.png` (from the Strip), `base_1_above_clear.png`. The maker's look in Blender, with the machines as boxes; not a sheet and not a verdict.
+- **How it's made:** `tools/blender/base_kit.py` (the pictures, the pieces, `export`) on `lantern_row_kit.py`'s mesh builder with an atlas of its own; `tools/blender/base_plan.py` (`plan`, and `look <level>`). `lantern_row_kit.kit_material` takes another kit's pictures now; Lantern Row's output doesn't change.
+- **Seen, the maker's eye and not a verdict** (two looks, one round of fixes):
+  - From the spawn it's a base: the gate and its plate ahead over the Breaker, pylons at the corners, the bays' yellow frames, the current crossing the lanes to the battery.
+  - Fixed after the first look: the transformers stood on the bays' conduit and hid it, so they moved toward the Breaker; the conduits are wider and brighter.
+  - **What still isn't a base: the machines.** They're the builder's boxes, and they're the middle of every view. The request keeps their looks out of this piece. **For research:** models for the Breaker, a bay, the battery, the generator, the Training machine and the Festival Door in this kit's language are the next lever, more than levels 2 and 3. Say which comes first.
+  - The plate is empty in the pictures: the number is the builder's.
+  - 9,412 triangles a plot is twice delivery 1's. The pylons and their insulators are 3,900 of it, and would thin first.
+- **Levels 2 and 3, the intent:** each adds to the one before. Level 2: the second row of bays lights, the court deepens, the gate gains a second truss. Level 3: a taller gate, more pylons, a stack at the back. Each gets its floor picture and its plan after level 1's verdict.
+- **Checks:** the maker's own, above. The content check (the five pictures, the three looks, the manifest and the two scripts): **PASS, for delivery and for the upload of these exact files.** It read the pictures at full size and the meshes from the looks and their code, not the mesh files. What it holds later work to:
+  - a regenerated file, and each of levels 2 and 3's pieces, gets a new check;
+  - no rust, oil, leak, scorch or grime on the deck or the panels without a check first, in any colour; the beacon's red stays a small solid lamp, never a streak or a patch;
+  - the plate stays empty in the picture, and a word, name or emblem on it is checked against `docs/ip-list.md` first;
+  - the three looks are internal: not uploaded, not for the game page.
+- **Time:** by the clock, 20:49 to 20:58: the two scripts, three renders, the export, the content check. The cap for a block is 90 minutes.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
 
 ## Later, by ground

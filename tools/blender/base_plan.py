@@ -68,6 +68,17 @@ STAND_INS = {"machine": "#7E8AB0", "chamber": "#BFEFF5", "waiting": "#A2A7BC", "
                      "One steel body for every machine and one accent each; the chambers glow (Neon)."}
 
 
+def machines():
+    """The machines that have their model (AR15), each where the builder's stand-in stands: piece, across, in from
+    the front edge, up, and what it stands for."""
+    chamber_x, _, _ = base.machines.CHAMBERS
+    top = base.machines.BODY[2]
+    made = [("Breaker", 0.0, BREAKER, 0.0, "the Breaker's body")]
+    made += [("BreakerChamber", side * chamber_x, BREAKER, top, f"chamber {i + 1}") for i, side in enumerate((-1, 1))]
+    made += [("BreakerWaiting", 9.0 + 3.0 * k, BREAKER, 0.0, f"waiting place {k + 1}") for k in range(3)]
+    return made
+
+
 def plan(level=1):
     """The placements and the real lights of a level, in the plan's frame."""
     places, lights = [], []
@@ -222,6 +233,11 @@ def write_plan(out: Path):
                  "front = -deep / 2: CFrame.new(across, floorY, front - along) * CFrame.Angles(0, math.rad(turn), 0) * "
                  "centre. A light the same way, by Kit.Light.",
         levels=levels, ground=GROUND, standIns=STAND_INS,
+        machines=dict(
+            note="AR15: the machines that have their model, each in place of the builder's stand-in, at every level. "
+                 "Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by "
+                 "its state (EmissiveStrength: full while it breaks a shard, low when empty).",
+            placements=[dict(piece=n, across=x, along=-i, up=z, turn=0.0, standsFor=w) for n, x, i, z, w in machines()]),
         lighting="the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom "
                  "(build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are "
                  "drawn for dusk, and under the place's daylight they don't read.",
@@ -280,11 +296,10 @@ class Yard:
         b = lambda name, size, x, i, z, mat: self.box(front, face, f"{name}{tag}", size, x, i, z, f[mat] if isinstance(mat, str) else mat)  # noqa: E731
         door, generator = base.DOOR, base.GENERATOR
         b("Lot", (PLOT, PLOT, 0.4), 0, PLOT / 2, -0.23, "lot")
-        b("Breaker", (14, 6, 5), 0, BREAKER, 2.5, "machine")
-        for x in (-3.5, 3.5):
-            b("Chamber", (4, 4, 4), x, BREAKER, 7, "chamber")
-        for k in range(3):
-            b("Waiting", (2.5, 2.5, 1), 9 + 3 * k, BREAKER, 0.5, "waiting")
+        for x in (-3.5, 3.5):                                      # a shard in each chamber, the builder's own
+            b("Shard", (1.0, 1.0, 1.7), x, BREAKER, sum(base.machines.GAP) / 2, "chamber")
+        for i, (name, x, inward, up, _) in enumerate(machines()):
+            self.stock.stand(name, f"{tag}m{i}", self.at(front, face, x, inward, up), 0 if face > 0 else 180)
         for index, (x, inward) in enumerate(base.BAYS[:base.BAYS_AT[level]]):
             b("Bay", (10, 10, 0.4), x, inward, 0.2, "bay")
             if index:
@@ -374,6 +389,7 @@ def see(out: Path, level, fast, clear, only=()):
     views = {"home": behind((0, -SPAWN), 1), "gate": behind((0, STRIP / 2), -1),
              "yard": behind((0, -(base.COURT[1] + 8.0)), -1), "back": behind((0, -(base.YARD - 14.0)), 1),
              "across": ((-88.0, -6.0, 11.0), (30.0, -130.0, 4.0)),
+             "breaker": ((9.0, -29.0, 9.5), (0.0, -BREAKER, 6.0)), "strip": ((-8.0, 9.0, 7.5), (0.0, -BREAKER, 6.5)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:
         views = {name: views[name] for name in only}

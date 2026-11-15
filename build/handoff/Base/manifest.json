@@ -435,6 +435,72 @@
    "collision": "a box, 10 by 4, 4.7 high",
    "lights": [],
    "note": "its door and its window face +Y"
+  },
+  "Breaker": {
+   "mesh": "meshes/Breaker.json",
+   "triangles": 796,
+   "vertices": 536,
+   "centre": [
+    0.0,
+    5.68,
+    0.0
+   ],
+   "size": [
+    15.18,
+    11.64,
+    6.88
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 14 by 6, 5 high, and the gantry's two legs",
+   "lights": [],
+   "note": "on the stand-in's footprint. A chamber stands at across 3.5 each side, its foot on the body's top at 5. The lamp is at 11.15 up, a stud over the builder's BreakerLamp"
+  },
+  "BreakerChamber": {
+   "mesh": "meshes/BreakerChamber.json",
+   "triangles": 252,
+   "vertices": 172,
+   "centre": [
+    0.0,
+    1.885,
+    0.0
+   ],
+   "size": [
+    4.48,
+    4.05,
+    4.48
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its place is the chamber's middle across, on the body's top (5 up): the stand-in's cube from 5 to 9. The shard's room is between the points, 5.85 to 8.35 up, its middle at 7.1. Look only"
+  },
+  "BreakerWaiting": {
+   "mesh": "meshes/BreakerWaiting.json",
+   "triangles": 96,
+   "vertices": 60,
+   "centre": [
+    0.0,
+    0.48,
+    0.0
+   ],
+   "size": [
+    2.78,
+    1.24,
+    2.78
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 2.5 square, 1 high",
+   "lights": [],
+   "note": "on the stand-in's pad, 2.5 square and 1 high; a waiting shard stands on its tray, 0.9 up"
   }
  }
 }

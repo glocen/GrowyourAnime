@@ -26,6 +26,7 @@ import numpy as np
 from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import base_machines as machines  # noqa: E402
 import base_site as site  # noqa: E402
 import blcommon as bl  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
@@ -522,7 +523,8 @@ def transformer():
 PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "Wall": wall, "WallHalf": lambda: wall(8.0),
           "WallEnd": lambda: wall(0.0), "Gate1": gate, "Pylon": pylon,
           "PowerSpan": power_span, "FloodMast": flood_mast, "Transformer": transformer,
-          **site.PIECES}           # and the building site's, level 1's (base_site.py)
+          **site.PIECES,           # and the building site's, level 1's (base_site.py)
+          **machines.PIECES}       # and the machines' own models (AR15, base_machines.py)
 
 
 def build(name):

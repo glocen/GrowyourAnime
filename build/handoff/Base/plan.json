@@ -930,6 +930,59 @@
   "spawn": "#E9E2D2",
   "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One steel body for every machine and one accent each; the chambers glow (Neon)."
  },
+ "machines": {
+  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty).",
+  "placements": [
+   {
+    "piece": "Breaker",
+    "across": 0.0,
+    "along": -12.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Breaker's body"
+   },
+   {
+    "piece": "BreakerChamber",
+    "across": -3.5,
+    "along": -12.0,
+    "up": 5.0,
+    "turn": 0.0,
+    "standsFor": "chamber 1"
+   },
+   {
+    "piece": "BreakerChamber",
+    "across": 3.5,
+    "along": -12.0,
+    "up": 5.0,
+    "turn": 0.0,
+    "standsFor": "chamber 2"
+   },
+   {
+    "piece": "BreakerWaiting",
+    "across": 9.0,
+    "along": -12.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "waiting place 1"
+   },
+   {
+    "piece": "BreakerWaiting",
+    "across": 12.0,
+    "along": -12.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "waiting place 2"
+   },
+   {
+    "piece": "BreakerWaiting",
+    "across": 15.0,
+    "along": -12.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "waiting place 3"
+   }
+  ]
+ },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",
  "lightsNote": "a SpotLight straight down from each flood mast's head and a PointLight over the Breaker's chambers, Shadows off; everything else that glows is in a glow picture",
  "collision": "each piece's `collision` in the manifest; the court's floor and the lines are look only"

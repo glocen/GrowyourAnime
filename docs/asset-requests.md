@@ -6701,6 +6701,40 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
+**Status:** the Breaker's model is delivered, 2026-11-15, 22:04 (Modulo; section 1), for Faber's install and research's verdict in the game. Next, a bay.
+
+### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
+
+- **The stand-ins, from Faber** (by message, 2026-11-15, from `WorldService.plot` as it stood; across, in from the front edge, sizes across by up by deep):
+  - **Breaker:** across 0, 12 in. Body 14 by 5 by 6. Two chambers, cubes of 4, their middles at across 3.5 each side and 7 up, on the body's top. Nothing in code reads the chambers' parts: the two middles are the whole contract. Waiting line: three pads 2.5 by 1 by 2.5 at across 9, 12 and 15.
+  - **Generator:** across -17, 12 in, 6 by 8 by 5. **Training machine:** across -34, 12 in, 6 by 4 by 5; its pad 4 by 0.4 by 4 at 18 in, where a fallen lead stands facing the machine.
+  - **Festival Door:** across 34, 12 in. Its way of light 6 wide by 9 high, posts 1.5 square at 3.75 each side, the lintel 9 across from 9 to 10.5 up.
+  - **Bays:** 1 at across -22, 2 at 22, 26 in; pads 10 by 0.4 by 10; a locked bay's wall 10 by 3 by 0.6 on its front edge. Bays 3 to 6 move to the lots at 72 and 120 (AR14, research's call 1).
+  - **Battery:** across 0, 26 in, 6 by 3 by 4. **Spawn:** across 0, 40 in, facing the Breaker.
+- **Feel line:** from the spawn the Breaker is the lit heart of the yard: the current runs into its housing in yellow, and over it two cages hold a shard each between two points, under a cyan lamp. A passer-by on the Strip sees the same through the gate.
+- **Scope.** The block: the body, a chamber, a waiting place, on the kit's atlas, at level 1. Waiting: a picture of its own; any motion or effect of the break (the reveal is AR3's and AR12's); chambers 3 and 4, which need a wider body; levels 2 and 3's looks.
+- **What it is:**
+  - **Three pieces** (`tools/blender/base_machines.py`), so the install follows the stand-in part for part: `Breaker` (the body), `BreakerChamber` (stood once a chamber), `BreakerWaiting` (stood once a waiting place).
+  - **The body** keeps the stand-in's footprint and height, 14 by 6 and 5 high: a steel housing on a concrete plinth with a hazard band. Both long faces are fronts, since the Strip sees one and the spawn the other: lines of current in Power's yellow run in along the housing and up into a dark core window with a cyan slit. Over it a gantry to 10.4 studs: a leg at each end, a bone head with a yellow line down each edge, a copper point reaching down over each chamber, a ribbed insulator stack at the middle, and the Breaker's lamp on top at 11.2.
+  - **A chamber** is an open cage on the body's top, the stand-in's cube: a girder seat with a cyan line round it, four bone posts with a ceramic clamp each, a ring at its head left open for the gantry's point, and its own copper point standing up. **The shard sits between the two points,** from 5.85 to 8.35 up, its middle at 7.1: a tenth of a stud over the stand-in's middle.
+  - **A waiting place** is a low cradle on the stand-in's pad, a cyan mark on its tray, 0.9 up.
+- **The Breaker's colour is cyan** (Modulo's call, the entry's "The look"): the lamp AR14 gave it, the line round its ground in the court's floor, and now its core, its points and its chambers. Power's yellow comes in, cyan is the break.
+- **Its working state:** a chamber's glow is its own, because it's its own piece. Full while it breaks a shard, low when it's empty; the body's lines of current follow the Breaker's share of power.
+- **For Faber:**
+  - **To publish:** `meshes/Breaker.json`, `meshes/BreakerChamber.json`, `meshes/BreakerWaiting.json` (796, 252 and 96 triangles; 1,588 a plot with two chambers and three waiting places). They wear `Base_Kit_Color` and `Base_Kit_Glow`, already up.
+  - **Where:** `plan.json`, `machines`: each piece in place of its stand-in, `up` 5 for a chamber. The stand-in's Neon cubes go; a chamber's shard is yours, between the points (`BreakerChamber`'s note in the manifest).
+  - **State:** a chamber's SurfaceAppearance takes its own EmissiveStrength, so it can be turned down when empty. Untried in Studio: the kit's strength is one number today.
+  - **The chip's anchor** stays the chamber's middle. The gantry's head passes over the chambers from 9.65 to 10.35 up, and the lamp at the middle reaches 11.5: a chip above a chamber wants to sit at 10.6 or more, or in front.
+  - **Collision:** the body's box and the gantry's two legs; the chambers and the waiting places as the stand-ins had them.
+  - **AR14's BreakerLamp** (a PointLight at 10 up) now sits inside the insulator stack's head: raise it to 11.2, the lamp's own place, or keep it; it's the same light.
+- **For research:** the verdict in the game, from the spawn and from the Strip. The block is on the kit's atlas; a picture of its own, and the break's own motion, are the finish.
+- **The target:** `build/handoff/Base/base_1_breaker.png` (close, from the owner's side), `base_1_strip.png` (through the gate), `base_1_home.png` (the spawn's camera), `base_1_gate.png`. The maker's look in Blender; the pale boxes in the chambers are stand-in shards; not a sheet and not a verdict.
+- **Seen, the maker's eye and not a verdict** (one fast look, no fix round): it reads as a machine and as the heart, from the spawn and through the gate, and the two colours read apart: yellow in, cyan at the break. Its lamp's light floods the insulator stack to white in Blender. It stands 11.5 studs under a gate of 20: a heart by its light more than by its size, which the stand-in's footprint sets.
+- **How it's made:** `tools/blender/base_machines.py` (`breaker`, `breaker_chamber`, `breaker_waiting`), taken into `base_kit.py`'s `PIECES`; `base_plan.py` (`machines`, written into `plan.json`; the views `breaker` and `strip`).
+- **Checks:** the maker's own, above. The content check on the three meshes and the looks: **PASS, for delivery and for the upload of the three meshes, with five conditions.** It read the three meshes, their source, the atlas and the four looks; no 64 pixel sheet was given, so it judged the small look from the gate's and the spawn's views. The two points read as a pair of electrodes across a gap with a crystal between them, in the atlas's copper and never its coral; nothing pools, drips or stains, and nothing is red. The conditions: (1) only a shard ever stands between the points, never a character, a Voidkin or the reveal's silhouette on or between them, and the reveal's staging in the chamber gets its own check; (2) the points keep the copper swatch, never tinted red or coral in the engine; (3) the break's effect on these pieces is light, sparks and crack lines, with no drop, spray or stain shape in any colour; (4) the asset log's row before the upload: done; (5) the kit's earlier holds stand.
+- **Time:** by the clock, 22:00 to 22:04: the pieces (written while delivery 5's check ran), one fast look of three views, the export, four final renders, the content check.
+- **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

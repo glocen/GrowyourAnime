@@ -24,7 +24,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 | Under the pills | event chips: the Void Shop's countdown, the Rift, the Calamity | only inside the last minutes before and during |
 | Right edge, low | the signature's readout: a ring that fills, flashes when it fires | always, small |
 | Over the dock | the shards' hint, "65 shards: into the Breaker" | only at the base [D, 2026-11-15: "should only show when we are at the base"] |
-| Bottom centre | the dock: Inventory, Base, Map, and one more at most [D, 2026-11-15: "Inventory"]. Each is an icon with no word, in one composed dock [D, 2026-11-15: "we could make a icon of it no need to name it inventory and make a ui around it, it need to be a very cool ui well composed"; Base and Map too, asked]; a long press shows its word. Inventory opens the Voidkin screen, which holds every Voidkin and the whole bag; Regalia's screen is merged into it [D, 2026-11-15] | always |
+| Bottom centre | the dock: Inventory, Base, Map, and one more at most [D, 2026-11-15: "Inventory"]. Each is an icon with no word, in one composed dock [D, 2026-11-15: "we could make a icon of it no need to name it inventory and make a ui around it, it need to be a very cool ui well composed"; Base and Map too, asked]; a long press shows its word. Inventory opens the Voidkin screen, which holds every Voidkin and the whole bag; Regalia's screen is merged into it [D, 2026-11-15]. Base takes the player home, and at home opens the base screen [D, 2026-11-15, night] | always |
 | Over the world | damage numbers, the Breaker's progress above the machine, a worker's output above its bay | where they happen |
 
 - **Damage numbers** [D, 2026-11-12, from a reference: `docs/research/hud-reference.md`] are outlined and widely spaced, with thousands separators, so they read over any background: a hit dealt pale ivory and upright; an element's second number the same, in its element's colour, a beat behind; damage your lead receives the same face in muted red, a size larger; healing as damage received, in green; a critical gold, heavy, slanted forward, larger, on a swept stroke of our own behind it; a dodge, a block or an absorb a short grey word on a pointer [D]: Absorb when a shield takes the hit whole, and the shield's bar loses what it took. They rise from the body that was hit and never stack into a wall: a flurry merges into one counting number.
@@ -52,7 +52,12 @@ Built first, in this order, each to the bar before the next.
      - Then its details: its main stat, its other stats, its forge rank, its sockets.
      - Opened from a slot, the card also lists what's in the bag for that slot, with the difference as plain up and down numbers and in Combat Power.
 6. *(Merged into 5, 2026-11-15.)*
-7. **The base's bays and the Power screen.** Each bay with its worker, output and level. The Power screen, from the generator: generation and demand, one bar split among the machines by its handles, +/- on each share, Auto, and the battery in kWh (`docs/design.md`, "Power"). Assign workers by dragging or by tap.
+7. **The base screen** [D, 2026-11-15, night: "when they are inside they can click on it and it opena control tab like a really intuitive/exciting ui showing everything like their whole base and can upgrade with credits"]. At home, the dock's Base tile opens it. Away from home, the tile takes the player home (TR19). Its block is `docs/test-requests.md`, TR21.
+   - **The command view:** the camera lifts over the player's own base and looks down on all of it, so the world itself is the screen. Every machine and bay wears a chip: its name, its level, and what it's doing now (a worker's output, the Breaker's time left, the battery's charge).
+   - **A tap on a chip** opens its panel at the side: what it does, its level, the next level's gain in plain numbers, the price, and Upgrade. A bay's panel also assigns its worker, by tap.
+   - **The base's own level** stands at the top: what the next level opens, its price, and Upgrade. When an upgrade lands, the camera holds on the change as it builds in below.
+   - **Power** is a tab of the same screen: generation and demand, one bar split among the machines by its handles, +/- on each share, Auto, and the battery in kWh (`docs/design.md`, "Power"). The generator opens the screen on this tab.
+   - **Closing** brings the camera back behind the lead.
 8. **The map.** The six grounds as a festival route, the keeper's gate on each, what each ground's shards hold.
 9. **Shared pieces:** confirm, error, toast, reward, empty state.
 

@@ -6433,8 +6433,8 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 
 - **Feel line:** the player comes home to a yard that's theirs, under the same festival sky as Lantern Row. The Breaker stands at its heart and the machines hum around it. Nothing in view is grey.
 - **The block contains:** the base's ground, edges, paths and lights, the plots' surroundings and the way to the Festival Door, built from the festival kit (AR5) and recoloured where the base needs its own feel. The machines keep their own looks (TR18's generator, the Breaker, the Training machine). The layout stays as it is: the director's plot sizes of 2026-11-12 stand.
-- **The base's levels** [the director, the same night: "the whole base visuals, changed based of the levels of the base itself"]: five stages, at levels 1, 5, 10, 15 and 20. Each is a new look for the whole base and its machines, and each level in between adds one visible piece (`docs/design.md`, "The base"). Delivery 1 is stage 1, what every new player sees. Stages 2 to 5 follow in order, each straight in the game.
-- **Waits:** other players' plots beyond what's in view, new machines, and the showcase's plinth (after TR21).
+- **The base's levels** [the director, the same night: "the whole base visuals, changed based of the levels of the base itself"; launch caps the level at 3]: at launch, levels 1, 2 and 3 each have a look of their own for the whole base and its machines, readable from the gate (`docs/design.md`, "The base"). Delivery 1 is level 1, what every new player sees. Levels 2 and 3 follow, each straight in the game. The levels past 3 get theirs when the cap rises. The look is also what the base screen's camera looks down on (`docs/ui.md`, 7).
+- **Waits:** other players' plots beyond what's in view, new machines, and the showcase's plinth.
 - **The way:** no sheet. Modulo's design goes straight in the game as a block, and research gives one verdict there from the player's camera at phone size.
 - **Order:** Modulo's next piece after Watt's model. Faber installs it after TR20.
 

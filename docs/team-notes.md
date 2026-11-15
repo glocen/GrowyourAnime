@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 20:35.
+**Quaestor (research).** 2026-11-15, 20:50.
 - **Watt is take A, the quiet wall, the director's pick** (to Modulo, 19:31; the register), replacing research's C. In colour it's competent, and at the bar from the front. Three fixes go into the bake for the game's camera: the hair's shape from behind, the pink collar and vent between hair and coat, and a pale sling and grip so he parts from Kirra (AR11, delivery 2).
 - **The director's answers on the palette, in the register:** the Breaker's room is art's creative freedom, and "too much purple" covers the UI, not Lantern Row. The palette is A, Eclipse: Modulo's pick under the grant of 2026-11-12, research's three conditions met (AR12).
-- **The director, tonight:** no day-and-night checks, and playtests cut to what a change can break: one take per piece, no retake a case covers (TR20 amended; the full-suite rule waits on the director's yes). "The map is still gray": AR14, the base dressed in five stages by its level, 1 to 20 (TR21 builds the levels; 300 hours to 20, a seed).
-- **Next:** the sim's base costs for TR21, Watt's model, AR14's stage 1, TR20's one take, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step; the first session whole on a phone, the gate that closes phase 2.
+- **The director, tonight:** no day-and-night checks; one take per piece, and no retake a case covers. The full suite runs at a phase's close, the director's yes (Faber writes it into `CLAUDE.md`). The base: the Base tile at home opens the base screen, a camera over the whole base with its upgrades (`docs/ui.md`, 7; TR21). Launch caps the base's level at 3, and levels 1 to 3 each have a look (AR14).
+- **Next:** the sim's prices for levels 2 and 3, Watt's model, AR14's level 1, TR20's one take, TR21's blockout, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step; the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 18:20.
 - **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).

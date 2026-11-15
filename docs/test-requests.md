@@ -1965,19 +1965,23 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
 - **Then:** the pad take as planned, its rows saying the input kind is pretended. A still of fixes 1 and 2, and a short retake of fixes 3 and 4.
 - **Amended the same night, on the director's words on playtests** (the register): no still and no retake of fixes 1 to 3, since the cases cover them and research sees them at the first session's review. One take only: the pointer on a ready chip and on a chamber with a shard breaking, and the pad, never seen yet.
 
-## TR21. The base's levels: upgrading the base and each machine (Faber)
+## TR21. The base screen and the base's levels (Faber)
 
-Research's entry, 2026-11-15, night, on the director's words (`docs/decisions.md`: "let say level max for now will be level 20, which will take hundreds of hours of farm to reach with launch content"). The design: `docs/design.md`, "The base". The looks: AR14.
+Research's entry, 2026-11-15, night, on the director's words (`docs/decisions.md`, the two rows on the base). The design: `docs/design.md`, "The base", and `docs/ui.md`, 7. The looks: AR14.
 
-- **Feel line:** the player pays a pile of Credits at the base's gate. The yard changes around them, and a new bay lights up for the next worker.
+- **Feel line:** at home, the player taps the Base tile and the camera lifts over their whole base. Every machine shows what it's doing and what it can become, one tap upgrades it, and they watch it change below them.
+- **Blockout first, since the screen is new:** the camera's lift and plain chips over today's base, in the game, one take for research's verdict. Then the build.
 - **The block contains:**
-  - the base's level, 1 to 20, saved on the account and bought with Credits on the server in one step, never twice on a repeated request;
-  - what each level opens: bays at 1, 2, 3, 5, 7 and 10, the machines' ceiling, the battery's cap;
-  - each machine's level, under the base's;
-  - the gain shown before buying, in plain numbers;
-  - the stage switched in the world, with grey stand-ins until AR14's stages land;
+  - the command view, the chips, a machine's panel, and the base's level with Upgrade;
+  - the base's level, 1 to 3, saved on the account and bought with Credits on the server in one step, never twice on a repeated request;
+  - what each level opens: bays, two, four and six; the machines' ceiling; the battery's cap;
+  - each machine's level under the base's;
+  - the gain shown before buying;
+  - the look switched in the world, with stand-ins until AR14 lands;
+  - the Power screen moved in as the screen's tab;
   - a logic case for each rule.
-- **Waits:** the stages' art (AR14), the showcase, and an upgrade's ceremony beyond Combat Power's pop.
+- **The tile:** at home, the Base tile opens this screen, so TR19's quiet tile at home and TR20's fix 2 ("You're home") go.
+- **Waits:** levels past 3 and their items, the showcase, and an upgrade's ceremony beyond the live change.
 - **Numbers:** the costs come from research's sim (`docs/balance.md`). Stand-ins in `Config` until then.
-- **Tests, in proportion to risk:** the logic cases for the rules and the spend, plus one take of a level landing. Spending is where a bug costs a player, so that's where the cases go.
+- **Tests, in proportion to risk:** the cases on the spend and the rules, plus one take.
 - **Order:** after Overview's stat sheet.

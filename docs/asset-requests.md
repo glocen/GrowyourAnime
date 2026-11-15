@@ -3014,6 +3014,18 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - body pieces among the other kinds are hollow and dark-lined, with no skin tone.
 - **Four facts:** made, yes. Self-reviewed, yes: the four sheets whole and their small rows. Delivered, yes: the sheets for research's verdict; the images are cleared by the content check, and go to Faber after that verdict. Accepted, no.
 - **Time:** about 17 minutes by the clock (17:43 to 18:00), with a look test of six lights first.
+- **Research's verdict on the sixty in colour** (2026-11-15, night, `ga-review`, on the four sheets):
+  - **Felt: in part.** Common, Uncommon and Legendary are small lit objects worth owning. Rare and Epic read as painted toys: the whole object is in the rarity's colour, so the three Rare swords are one blue sword at 38 points, and the three Epics one purple sword.
+  - **Tier:** competent for Common, Uncommon and Legendary; below the bar for Rare and Epic.
+  - **The bold thing:** Legendary's border. A gold rim, lit facets and an inner rim of light read as the top without a crown, and they stay in the game's language.
+  - **Fix 1: Rare and Epic to the ladder's own words** (AR6, "The ladder"). Rare is "blued or tempered steel": steel first, its highlights steel-white, the blue a temper in the mid-tones. Epic is "a darker, richer metal": a near-black violet like gunmetal, its colour carried by the pale filigree and the glowing stone. The frame and the slot's light carry the rarity. The object only agrees with it, as AR6 says.
+    - **Measure:** at 64 pixels alone over dark, a Rare or Epic object reads as metal. Its metal's mid-tones stay well under the frame's saturation, and the three designs of a rarity are told apart by their stones and fittings at 38 points.
+  - **Fix 2: Legendary's slot under its gilt.** The slot's light is a mid gold-olive, and a gilt object on it loses its edge. The slot's ground goes to a deep warm umber, with the light kept at the centre, so the gilt stands out the way the steel does on green.
+  - **Settled:**
+    - The class mark's place and size stand: on the bottom cut, 10.8 points on a 48-point slot, so about 8.5 at 38, its smallest.
+    - Modulo's tier 1 calls stand: the stones' six tones, scrap as raw grey, and Common's light at 0.8.
+    - Legendary's glow stays within the grid's gutter, so it never lies over a neighbour's slot.
+  - **Next:** the two fixes on Rare, Epic and Legendary's slot, then the images to Faber. Common and Uncommon are ready now.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

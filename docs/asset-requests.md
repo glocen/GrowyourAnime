@@ -2857,6 +2857,35 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - "Voidglint Loop" stays: "glint" alone is a common word, and Aegir's is "Glint Drive".
   - **Next:** fix 1 in grey, at 38 points only, then the colour pass.
 
+### The Sword in three designs at each rarity, in grey: a blockout (Modulo, 2026-11-15)
+
+- **The director's words, 2026-11-15, typed to Modulo after the ladder:** "there need to be multiple commons, rares, epics, legendarys like multiples sets of each rarity anything from common to epic is  simple anyways legendary too".
+  - **Modulo's reading** (a reading, not a ruling): a rarity holds several designs of a kind, not one, Legendary included. It replaces the spec's "One design per kind per rarity". How many, and whether a set runs across the kinds, isn't said: that's the director's and research's to set.
+- **The sheet:** `build/handoff/Gear/sword_sets/gear_sword_sets.png`, from `tools/blender/gear_sword_sets.py` (it builds on the ladder's script; Workbench, no GPU turn). Fifteen long swords at one scale, at 220 points, at the 38-point slot and as 32-pixel silhouettes, each with a name.
+- **Feel line:** two swords of one rarity are two different swords a player could prefer, and both still say their rarity first.
+- **Scope:** the Sword only, three per rarity, in grey. Waiting: the count, colour, frames, the class mark, the other kinds.
+- **How a design differs:** the blade's outline (tapered, even, leaf; one point cut on the slant) and section (a ridge, a fuller, flat), the guard, the pommel. The rarity's rule is the ladder's and doesn't change.
+- **The fifteen** (a star is research's own name):
+  - **Common:** Iron Sword*, Bronze Sword (a leaf blade, a short guard), Scrap Sword (a flat bar, bolt heads, a ring to hang it by).
+  - **Uncommon:** Lanternsteel Sword*, Rowsmith Sword (a slanted guard, a brass lozenge pommel), Stallguard Sword (a bar ending in brass scrolls).
+  - **Rare:** Blade of Embers*, Blade of Hoarfrost (a straight guard with spade ends), Brand of Gales (an S guard, the stone in the pommel).
+  - **Epic:** Stormcall Blade*, Gloamforge Blade (a wide slanted guard, two filigree tines), Nightloom Brand (a long bar ending in scrolls).
+  - **Legendary,** each with one new form: Akari, the First Light* (the wings); Hibana, the Struck Spark (a lantern for a pommel, a second light caged in it); Inabikari, the Far Flash (an ivory hoop round the blade, above the guard).
+- **Research's fix 1 is in:** each Epic's guard is a clear step larger than a Rare's (curled hooks; a guard 1.4 times as wide; a bar of 3.0 against 2.3). The ladder's sheet isn't redrawn: this sheet carries the fix.
+- **A proposal for research:** a set is its word, carried across the kinds: Iron, Bronze, Scrap; Lanternsteel, Rowsmith, Stallguard; of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom. A Legendary is named alone. "Helm of Hoarfrost" already fits.
+- **Modulo's read:**
+  - At 220 points each design is its own sword. At 38 points a rarity's three are close: they part by the guard's outline, and only just. The name and the frame will carry the rest, as in the reference.
+  - Epic against Rare now parts by shape at 38 points on all three pairs.
+  - The scroll ends and the ring pommel are the weakest forms: they can read as key rings. The lantern pommel is the form most our own.
+  - What it costs: a design is about ten lines of the script and a minute to draw. Three per rarity takes batch 1 from 20 icons to 60, and the whole of AR6 the same way.
+- **Content check:** PASS as a grey review sheet, names as proposals, on its second read. The first read blocked one design (rule 4): Inabikari's ring faced the eye round the crossing, a circle over a cross. It's now a small tilted hoop round the blade, above the guard, and must stay tilted and off the crossing. "Brand of Squalls" became "Brand of Gales" on its note. Its conditions for the colour pass, which gets a check of its own:
+  - Gloamforge never takes a blue-violet guard with a yellow or gold lozenge stone. Stormcall's stone stays small.
+  - Akari keeps the ladder's conditions, and the edge lights stay clean white or gold lines.
+  - For research's check of the names: "Stallguard" uses ground 5's word (Ember Stalls); Hibana and Inabikari are ordinary words that other works also use.
+- **Modulo's read after the redraw:** Inabikari's hoop is the weakest of the three new forms: at 38 points it's gone, and the sword reads as a plain cross-hilt.
+- **Four facts:** made, yes. Self-reviewed, yes, on the sheet at each size. Delivered, the sheet only. Accepted, no: research's verdict and the director's eye to come.
+- **Time:** about 15 minutes by the clock (14:38 to 14:53).
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

@@ -1,12 +1,14 @@
 --!strict
 -- Logic cases (pure): TR12, "Health carries" (docs/design.md, "Combat", "Health carries" to "The next lead"; "The base",
 -- "The Training machine"): what a Voidkin carries between fights, the fallen lead's way home, the next lead, and the
--- Training machine across time in the game and time away.
+-- Training machine across time in the game and time away, on the base's clock since it draws power (TR18).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local Carry = require(Shared.Rules.Carry)
 local Training = require(Shared.Rules.Training)
+local Breaker = require(Shared.Rules.Breaker)
+local BaseConfig = require(Shared.Config.Base)
 local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
 local Hud = require(Shared.Rules.Hud)
@@ -140,42 +142,40 @@ return {
 		end,
 	},
 	{
-		Name = "Training: TR12, the machine across a leave, a long one included, with no cap",
+		Name = "Training: TR12 and TR18, the machine across a leave on the base's clock: full while the battery lasts, then the floor, with no cap",
 		Run = function(t: any)
 			local data = Profile.Template()
 			local lead = Collection.Uncover(data, "rook", NOW).Id
 			data.Roles.Lead = lead
-			local who, gained = Training.Advance(data, NOW, lead)
-			t.Check("the first call only sets the stamp", who == nil and gained == 0 and data.Training.Stamp == NOW)
+			data.Base.Charge = BaseConfig.Battery.Capacity -- no workers: the battery runs it, then the floor
+			local first = Breaker.Advance(data, NOW, true)
+			t.Check("the first advance only sets the stamp", first.Trained == nil and data.Base.Stamp == NOW)
 			-- A night away: the lead trains from the stamp to the join.
 			local night = NOW + 8 * 3600
-			who, gained = Training.Advance(data, night, lead)
+			local summary = Breaker.Advance(data, night, true)
 			local level = data.Voidkin[lead].Level
-			t.Check("a night away trains the lead", who == lead and gained > 0 and level > 1, `level {level}`)
-			t.Check("the stamp keeps only what wasn't a whole point", data.Training.Stamp <= night and night - data.Training.Stamp < 1 / Training.Rate() + 1e-6)
+			t.Check("a night away trains the lead", summary.Trained == lead and summary.Levels > 0 and level > 1, `level {level}`)
+			local expect = owned(1)
+			local full = math.min(8, BaseConfig.Battery.Capacity / BaseConfig.Training.Kw)
+			Training.Gain(expect, full * 3600 + (8 - full) * 3600 * BaseConfig.Power.MinSpeed)
+			t.Check("at full power while the battery lasts, then at the floor", expect.Level == level and math.abs(expect.Xp - data.Voidkin[lead].Xp) <= 1, `{expect.Level}/{expect.Xp} against {level}/{data.Voidkin[lead].Xp}`)
+			t.Check("the battery spent", data.Base.Charge == 0)
 			local copy = Profile.Template()
 			local same = Collection.Uncover(copy, "rook", NOW).Id
-			copy.Voidkin[same].Level = 1
-			local inSteps = 0
-			copy.Training.Stamp = NOW
+			copy.Roles.Lead = same
+			copy.Base.Charge = BaseConfig.Battery.Capacity
+			Breaker.Advance(copy, NOW, true)
 			for hour = 1, 8 do
-				local _, g = Training.Advance(copy, NOW + hour * 3600, same)
-				inSteps += g
+				Breaker.Advance(copy, NOW + hour * 3600, true)
 			end
 			t.Check("the same night in steps gives the same", copy.Voidkin[same].Level == level and math.abs(copy.Voidkin[same].Xp - data.Voidkin[lead].Xp) <= 8, `{copy.Voidkin[same].Level}/{copy.Voidkin[same].Xp} and {level}/{data.Voidkin[lead].Xp}`)
-			-- A long leave: no cap but the last level.
-			who, gained = Training.Advance(data, night + 10 * 365 * 24 * 3600, lead) -- ten years: past the cap at 125 (TR14)
+			-- A long leave: no cap but the last level, at the floor's pace.
+			Breaker.Advance(data, night + 40 * 365 * 24 * 3600, true) -- forty years at the floor: past the cap at 125 (TR14)
 			t.Check("a long leave: no cap but the last level", data.Voidkin[lead].Level == GrowthConfig.MaxLevel, `{data.Voidkin[lead].Level}`)
-			-- Nobody training, and a worker, move the stamp and give nothing.
-			local later = night + 401 * 24 * 3600
-			who, gained = Training.Advance(data, later, nil)
-			t.Check("nobody: the stamp moves, nothing given", who == nil and gained == 0 and data.Training.Stamp == later)
-			local worker = Collection.Uncover(data, "watt", NOW).Id
-			data.Base.Bays[1].Worker = worker
-			who = Training.Advance(data, later + 3600, worker)
-			t.Check("a worker never trains", who == nil and data.Voidkin[worker].Level == 1 and data.Training.Stamp == later + 3600)
-			who = Training.Advance(data, later, lead)
-			t.Check("a clock gone back only sets the stamp", who == nil and data.Training.Stamp == later)
+			-- Online with nobody on it, nobody trains.
+			data.Training.Trainee = ""
+			local later = Breaker.Advance(data, night + 41 * 365 * 24 * 3600)
+			t.Check("nobody on it: nothing given", later.Trained == nil and later.Levels == 0)
 		end,
 	},
 }

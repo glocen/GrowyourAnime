@@ -1002,7 +1002,7 @@ return function(given: Given): { any }
 					return
 				end
 				local shard = "lanternrow_standard"
-				local battery = view.Base.Battery
+				local battery = view.Base.Charge
 				local held = view.Bag.Shards[shard] or 0
 				-- Nothing ready, so the prompt opens the screen.
 				local readyDefs: { [string]: boolean } = {}
@@ -1365,7 +1365,7 @@ return function(given: Given): { any }
 					moment("the plot: the Breaker at work, Watt at work")
 					t.Wait(8)
 					local base = t.Server("Base")
-					t.Check("the base as it's left", #base.Ready == 0 and base.Bag[REJOIN_SHARD] == nil, `battery {base.Battery}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`)
+					t.Check("the base as it's left", #base.Ready == 0 and base.Bag[REJOIN_SHARD] == nil, `battery {base.Charge}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`)
 					moment("end: the player leaves (the playtest stops)")
 				end)
 			end,
@@ -1382,12 +1382,12 @@ return function(given: Given): { any }
 					kit.Zero()
 					moment("zero: the white frame, after the join")
 					local base = t.Server("Base")
-					local battery = tonumber(string.match(base.Battery, "^[%d%.]+")) or -1
+					local battery = tonumber(string.match(base.Charge, "^[%d%.]+")) or -1
 					local watt = false
 					for _, worker in base.Bays do
 						watt = watt or string.find(worker, "(watt)", 1, true) ~= nil
 					end
-					local detail = `battery {base.Battery}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, ready {#base.Ready}, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`
+					local detail = `battery {base.Charge}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, ready {#base.Ready}, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`
 					t.Check("Watt is still at work", watt, detail)
 					t.Check("the shards left breaking are ready to open", #base.Ready >= 1 and #base.Line == 0, detail)
 					t.Check("the battery paid for them and holds the rest", battery > 0 and battery < BaseConfig.Battery.Capacity, detail)

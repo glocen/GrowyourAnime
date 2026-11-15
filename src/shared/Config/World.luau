@@ -81,5 +81,9 @@ return {
 		-- The Training machine (TR12): left of the Breaker, as the door is right of it (DoorAt), a box Size, and its pad
 		-- Spot studs behind it on the spawn's side, where a fallen lead comes home, facing the machine.
 		Training = { Size = Vector3.new(6, 4, 5), Spot = 6 },
+		-- The generator (TR18): between the Breaker and the Training machine it feeds, At studs left of the Breaker's
+		-- line and level with it, a box Size, taller than both, so the plant's heart reads from the spawn. Its spot
+		-- stands more than BaseController's near (13 studs) from every other: a player at one hears only that one.
+		Generator = { Size = Vector3.new(6, 8, 5), At = -17 },
 	},
 }

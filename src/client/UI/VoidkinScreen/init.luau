@@ -1184,11 +1184,13 @@ local function wallet(band: Frame, left: number, view: Profile.View)
 		return WALLET.Icon + math.ceil(#said * WALLET.Digit * size) + pad
 	end
 	local owns = Read.Number(view.Currency.Credits)
+	-- The battery in kWh (TR18), measured at its widest: a full one.
 	local capacity = Read.Number(BaseConfig.Battery.Capacity)
-	local whole = `{capacity} / {capacity}`
+	local fullest = `{Read.Kwh(BaseConfig.Battery.Capacity)} kWh`
+	local whole = `{Read.Kwh(BaseConfig.Battery.Capacity)} / {capacity} kWh`
 	local room = Layers.Band().X - pad - left - gap
 	local short = wideOf(owns) + gap + wideOf(whole) > room
-	local battery = wideOf(if short then capacity else whole)
+	local battery = wideOf(if short then fullest else whole)
 	local holder = frameOf("Wallet", band, UDim2.new(1, -pad, 0.5, 0), UDim2.fromOffset(wideOf(owns) + gap + battery, BAR))
 	holder.AnchorPoint = Vector2.new(1, 0.5)
 	holder:SetAttribute("Short", short)
@@ -1218,8 +1220,8 @@ local function wallet(band: Frame, left: number, view: Profile.View)
 		end
 		readAt = os.clock()
 		local base = Read.Base(view, workspace:GetServerTimeNow())
-		local stored = Read.Stored(base.Data.Base.Battery)
-		electricity.Text = if short then stored else `{stored} / {capacity}`
+		local stored = Read.Kwh(base.Data.Base.Charge)
+		electricity.Text = if short then `{stored} kWh` else `{stored} / {capacity} kWh`
 	end
 	read()
 	table.insert(tickers, read)

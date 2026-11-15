@@ -19,19 +19,38 @@ local Read = {}
 -- "2,357" (Shared.Rules.Hud: one home for how the HUD writes a number)
 Read.Number = Hud.Digits
 
--- Electricity stored: a tenth shown below 100, so a new battery visibly counts up (research's verdict on TR2,
--- 2026-11-12: "it must visibly count up"; at a bay's +3.0/min the tenth turns every 2 s): "0.4", "86.2", "2,357".
-function Read.Stored(n: number): string
+-- The battery's charge in kWh (TR18): a hundredth shown below 100, so a charging battery visibly counts up (research's
+-- verdict on TR2, 2026-11-12: "it must visibly count up"; one bay's 18 kW turns the hundredth every 2 s): "0.35",
+-- "47.80", "2,357". The unit is the caller's to write.
+function Read.Kwh(n: number): string
 	if math.abs(n) < 100 then
-		return string.format("%.1f", math.floor(n * 10 + 0.5) / 10)
+		return string.format("%.2f", math.floor(n * 100 + 0.5) / 100)
 	end
 	return Read.Number(n)
 end
 
--- Electricity a second as a minute's: "+3.0/min".
-function Read.Rate(perSecond: number): string
-	local perMinute = perSecond * 60
-	return string.format("%s%.1f/min", if perMinute >= 0 then "+" else "", perMinute)
+-- Power in kW: a tenth below 10, whole above: "7.5 kW", "18 kW". `signed` writes a "+" before what charges.
+function Read.Kw(kw: number, signed: boolean?): string
+	local shown = if math.abs(kw) < 10 then string.format("%.1f", math.floor(kw * 10 + 0.5) / 10) else Read.Number(kw)
+	shown = shown:gsub("%.0$", "")
+	return `{if signed and kw > 1e-9 then "+" else ""}{shown} kW`
+end
+
+-- Generation against demand, as the HUD's pill writes it: "30 / 34 kW".
+function Read.Against(generation: number, demand: number): string
+	local made = Read.Kw(generation)
+	return `{made:sub(1, #made - 3)} / {Read.Kw(demand)}`
+end
+
+-- Hours of work as the Power screen writes them: "45 min", "2 h", "2 h 30 min"; under a minute in seconds.
+function Read.Hours(hours: number): string
+	local seconds = math.max(0, hours * 3600)
+	if seconds < 3600 then
+		return if seconds < 60 then Read.Seconds(seconds) else `{math.floor(seconds / 60)} min`
+	end
+	local h = math.floor(seconds / 3600)
+	local m = math.floor((seconds - h * 3600) / 60)
+	return if m == 0 then `{Read.Number(h)} h` else `{Read.Number(h)} h {m} min`
 end
 
 -- Seconds as the screens show them: "4 s", "1 min 20 s".
@@ -82,7 +101,7 @@ end
 
 export type Base = {
 	Data: Profile.View, -- a copy, advanced to now: never sent anywhere
-	Rates: { Speed: number, Production: number, Net: number, Busy: boolean },
+	Rates: Breaker.Rates, -- the plant now: generation, each machine's demand and speed, the battery's kW
 }
 
 -- The base as it stands at server time `now`, from the server's copy `view`.

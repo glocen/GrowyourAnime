@@ -54,6 +54,7 @@ export type ShardWork = {
 	Def: string, -- its row in Definitions.Shards, which names its grade and its ground
 	Luck: number, -- the luck applied when it entered
 	Done: number, -- seconds of work done, at full power
+	Volt: number?, -- the voltage put into it, its level in Config.Shards.Voltage.Levels; absent until then (TR18)
 }
 
 export type Chamber = {
@@ -64,10 +65,19 @@ export type Bay = {
 	Worker: string, -- the Voidkin's Id, or "" when the bay is empty
 }
 
+-- How the generation is split among the machines (Rules.Power; docs/design.md, "Power"). Under Auto, by their demand;
+-- else each machine's share of the whole generation, by name (Rules.Power.Machines), the rest charging the battery.
+export type Power = {
+	Auto: boolean,
+	Shares: { [string]: number }, -- 0 to 1 each, never over 1 together; kept while Auto runs
+	Open: boolean, -- the Power screen opens once a machine beside the Breaker has drawn power; until then Auto runs unseen
+}
+
 export type Base = {
 	Stamp: number, -- os.time() the base was last advanced to (Rules.Breaker); 0 before the first advance
-	Battery: number, -- electricity stored
+	Charge: number, -- the battery's charge, kWh (TR18; Migrations step 4 made it from the old electricity)
 	Spill: number, -- Credits from overflow not yet whole, carried to the next advance (0 to 1)
+	Power: Power,
 	Chambers: { Chamber }, -- one per chamber the Breaker has
 	Line: { ShardWork }, -- the waiting line, in the order it's fed
 	Ready: { ShardWork }, -- broken and waiting to be opened, oldest first
@@ -101,7 +111,10 @@ export type Data = {
 	},
 	Base: Base,
 	Training: {
-		Stamp: number, -- server time the Training machine was last worked out to (Rules.Training); 0 before the first
+		-- Who's on the Training machine while the player is in the game, an owned Voidkin's Id or "" (the server's,
+		-- LeadService, Rules.Training.Who); away, it's the lead. The base's clock trains them (Rules.Breaker, TR18).
+		Trainee: string,
+		Banked: number, -- seconds at full power not yet worth a whole point of experience, kept for the next advance
 	},
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
@@ -139,14 +152,15 @@ function Profile.Template(): Data
 		Roles = { Lead = "" },
 		Base = {
 			Stamp = 0,
-			Battery = BaseConfig.Start.Battery,
+			Charge = BaseConfig.Start.Charge,
 			Spill = 0,
+			Power = { Auto = true, Shares = {}, Open = false },
 			Chambers = chambers,
 			Line = {},
 			Ready = {},
 			Bays = bays,
 		},
-		Training = { Stamp = 0 },
+		Training = { Trainee = "", Banked = 0 },
 		Progress = { Starter = "", Grounds = {}, Kills = 0 },
 	}
 end

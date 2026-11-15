@@ -24,6 +24,8 @@ local specs: { [string]: Spec } = {
 	-- A worker's bay. Bay is its number on the plot, in the order they open.
 	Bay = { Tag = "GA_Bay", Attributes = { Plot = "number", Bay = "number" }, Per = "Plot", Ground = true },
 	Battery = { Tag = "GA_Battery", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	-- The generator (TR18): the plant's heart, with generation and demand on its face; its prompt opens the Power screen.
+	Generator = { Tag = "GA_Generator", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- The Training machine (TR12): one Voidkin at a time trains on it, and a fallen lead comes home before it.
 	Training = { Tag = "GA_Training", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	Shop = { Tag = "GA_Shop", Attributes = {}, Count = 1, Ground = true },

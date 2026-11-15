@@ -84,7 +84,7 @@ function Odds.Table(shardId: string, luck: number?): { Entry }
 end
 
 -- How many of a shard's tiers luck lifts: its top two, its top one when it has two, none when it has one (a Named shard,
--- or a ground whose Voidkin all share a tier). Infusion is offered only where this is above 0.
+-- or a ground whose Voidkin all share a tier). Luck lifts nothing where this is 0.
 function Odds.Lifted(shardId: string): number
 	local tiers: { [string]: boolean } = {}
 	local count = 0

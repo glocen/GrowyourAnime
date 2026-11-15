@@ -59,7 +59,7 @@ The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is wh
 
 **An owned item:** `Id`, `Def`, `Tier`, `Rarity`, `Lines` (the rolled lines), `Sockets` (emblem ids), `Jewel`.
 
-**A profile:** `Version`; `Voidkin` by `Id`; `Index` by definition (first found, count); `Items` by `Id`; `Presets` (fourteen item ids each); `SlotRanks` (forge rank per slot); `Bag` (shards, emblems, jewels, stones by id and count); `Currency`; `Base` (bays with their worker, chambers with their shard, progress and stamp, the waiting line, the battery and its stamp, machine levels); `Research`; `Progress` (grounds opened, keepers beaten, Tower floor); `Shop` (what was bought against the rotation's number); `Claims` (the Calamity's windows, the daily track); `Champion`.
+**A profile:** `Version`; `Voidkin` by `Id`; `Index` by definition (first found, count); `Items` by `Id`; `Presets` (fourteen item ids each); `SlotRanks` (forge rank per slot); `Bag` (shards, emblems, jewels, stones by id and count); `Currency`; `Base` (bays with their worker, chambers with their shard, progress and stamp, the waiting line, the battery's charge in kWh, the plant's split (Auto, each machine's share, whether the Power screen is open: TR18), machine levels); `Research`; `Progress` (grounds opened, keepers beaten, Tower floor); `Shop` (what was bought against the rotation's number); `Claims` (the Calamity's windows, the daily track); `Champion`.
 
 - The profile holds ids and numbers only: no model, part or display name.
 - `Version` and one migration per step, from the first save.

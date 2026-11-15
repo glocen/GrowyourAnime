@@ -19,7 +19,7 @@ local BaseConfig = require(Shared.Config.Base)
 local RevealConfig = require(Shared.Config.Reveal)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
-local Breaker = require(Shared.Rules.Breaker)
+local Power = require(Shared.Rules.Power)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
@@ -33,6 +33,7 @@ local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local RevealStage = require(UI.Reveal)
 local BreakerScreen = require(UI.BreakerScreen)
+local PowerScreen = require(UI.PowerScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 
@@ -65,6 +66,8 @@ local BREAKER_WIDTH = 232
 local BAY_WIDTH = 204
 local BATTERY_WIDTH = 80
 local MACHINE_WIDTH = 204 -- "Trains while you're away", as a bay's
+local GENERATOR_UP = 9 -- studs over the generator's marker its plate and prompt stand: over its face
+local GENERATOR_WIDTH = 180 -- "Generation 30 kW", "Demand 34 kW"
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178 and "Chamber 2 · 1 min 59 s" at 164.
 local SCREEN = Vector2.new(660, 320)
@@ -77,8 +80,11 @@ local REASON: { [string]: string } = {
 	Leading = "The lead can't work too",
 	Working = "A worker can't lead too",
 	Named = "That shard holds one Voidkin",
-	Infused = "That shard is already infused",
-	Short = "Not enough Electricity stored",
+	Infused = "That shard already has its voltage",
+	Short = "Not enough charge in the battery",
+	Brief = "It would save under a minute",
+	Closed = "The Power screen isn't open yet",
+	Over = "The shares come to more than the whole",
 	Moved = "That shard has moved on",
 	BadArgs = "That can't be done",
 	Unknown = "That can't be done",
@@ -92,6 +98,7 @@ local plot: number? = nil
 local breaker: Spot? = nil
 local battery: Spot? = nil
 local machine: Spot? = nil -- the Training machine (TR12)
+local generator: Spot? = nil -- the generator (TR18)
 local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
@@ -204,10 +211,11 @@ local function clearAll()
 	clearSpot(breaker)
 	clearSpot(battery)
 	clearSpot(machine)
+	clearSpot(generator)
 	for _, spot in bays do
 		clearSpot(spot)
 	end
-	breaker, battery, machine, bays = nil, nil, nil, {}
+	breaker, battery, machine, generator, bays = nil, nil, nil, nil, {}
 	for _, part in starters do
 		part:Destroy()
 	end
@@ -325,7 +333,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 			add({
 				Name = owned.Id,
 				Text = Read.VoidkinName(owned),
-				Detail = `Lv {owned.Level} · {Read.Rate(Breaker.Output(owned))}`,
+				Detail = `Lv {owned.Level} · {Read.Kw(Power.Output(owned))}`,
 				Action = "Work",
 				Primary = true,
 				Disabled = if here then "Here" elseif role == "Lead" then "Leading" else nil,
@@ -368,7 +376,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	end
 	for index, bay in view.Base.Bays do
 		local worker = if bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
-		local detail = if worker then `{Read.VoidkinName(worker)} · {Read.Rate(Breaker.Output(worker))}` else "Nobody works here"
+		local detail = if worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}` else "Nobody works here"
 		add({ Name = `Bay{index}`, Text = `Bay {index}`, Detail = detail, Action = "Set", OnPress = function()
 			pickingBay = index
 			build()
@@ -379,8 +387,8 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 			add({ Name = `Bay{index}`, Text = `Bay {index} · locked`, Colour = Theme.Colour.TextDim })
 		end
 	end
-	local stored = now.Data.Base.Battery
-	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Stored(stored)} / {Read.Number(BaseConfig.Battery.Capacity)} · {Read.Rate(now.Rates.Net)}`, Colour = Theme.Colour.Electricity })
+	local charge = now.Data.Base.Charge
+	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Kwh(charge)} / {Read.Number(BaseConfig.Battery.Capacity)} kWh · {Read.Kw(now.Rates.NetKw, true)}`, Colour = Theme.Colour.Electricity })
 end
 
 build = function()
@@ -406,6 +414,15 @@ function BaseController.OpenBreaker()
 	local view = ProfileController.Get()
 	if view then
 		BreakerScreen.Open(view, { Act = act, Open = openShard })
+	end
+end
+
+-- The Power screen (TR18, UI/PowerScreen), from the generator's prompt: only once it's open to the player (the server
+-- refuses a split before). For tests too.
+function BaseController.OpenPower()
+	local view = ProfileController.Get()
+	if view and view.Base.Power.Open then
+		PowerScreen.Open(view, { Act = act })
 	end
 end
 
@@ -563,6 +580,7 @@ local function find()
 	local breakerMarker = Markers.Find("Breaker", { Plot = number })
 	local batteryMarker = Markers.Find("Battery", { Plot = number })
 	local machineMarker = Markers.Find("Training", { Plot = number })
+	local generatorMarker = Markers.Find("Generator", { Plot = number })
 	local bayMarkers: { [number]: Instance } = {}
 	for _, marker in Markers.All("Bay") do
 		local index = marker:GetAttribute("Bay")
@@ -572,6 +590,7 @@ local function find()
 	end
 	local changed = number ~= plot or stale(breaker, breakerMarker) or stale(battery, batteryMarker)
 		or (machineMarker ~= nil and stale(machine, machineMarker))
+		or (generatorMarker ~= nil and stale(generator, generatorMarker))
 	for index, marker in bayMarkers do
 		changed = changed or stale(bays[index], marker)
 	end
@@ -591,6 +610,9 @@ local function find()
 	end
 	if machineMarker then
 		machine = spotFor(machineMarker, "Training", BAY_UP, 2, MACHINE_WIDTH)
+	end
+	if generatorMarker then
+		generator = spotFor(generatorMarker, "Generator", GENERATOR_UP, 2, GENERATOR_WIDTH)
 	end
 	for index, marker in bayMarkers do
 		local spot = spotFor(marker, `Bay{index}`, BAY_UP, 1, BAY_WIDTH)
@@ -684,6 +706,22 @@ function BaseController.Refresh()
 	if battery then
 		setLines(battery.Plate, { "Battery" })
 	end
+	if generator then
+		-- Its face: the owner's generation and demand (TR18). Its prompt only once the Power screen is open to them: until
+		-- a second machine draws, Auto runs the plant unseen.
+		setLines(generator.Plate, { `Generation {Read.Kw(now.Rates.Generation)}`, `Demand {Read.Kw(now.Rates.Demand)}` })
+		local open = view.Base.Power.Open
+		if open and generator.Prompt == nil then
+			local p = prompt(generator.Anchor, "NL_Generator", "Generator", "Power")
+			p.Triggered:Connect(function()
+				BaseController.OpenPower()
+			end)
+			generator.Prompt = p
+		elseif not open and generator.Prompt then
+			generator.Prompt:Destroy()
+			generator.Prompt = nil
+		end
+	end
 	if machine then
 		-- Who's on it, at what level; nobody while the player is home, so it says what it's for (docs/design.md, "The
 		-- Training machine").
@@ -701,7 +739,7 @@ function BaseController.Refresh()
 		local worker = if bay and bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
 		setLines(spot.Plate, {
 			if bay == nil then `Bay {index} · locked`
-			elseif worker then `{Read.VoidkinName(worker)} · {Read.Rate(Breaker.Output(worker))}`
+			elseif worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}`
 			else `Bay {index} · nobody works here`,
 		})
 		spot.News = bay ~= nil and worker == nil and free
@@ -722,6 +760,7 @@ function BaseController.Refresh()
 		end
 	end
 	BreakerScreen.Tick(now)
+	PowerScreen.Tick(now)
 	for _, countdown in countdowns do
 		local work = now.Data.Base.Chambers[countdown.Chamber] and now.Data.Base.Chambers[countdown.Chamber].Work
 		if work and countdown.Label.Parent then
@@ -742,6 +781,10 @@ function BaseController.Parts(): { [string]: Instance }
 	end
 	if machine then
 		parts.TrainingPlate = machine.Plate
+	end
+	if generator then
+		parts.GeneratorPlate = generator.Plate
+		parts.GeneratorPrompt = generator.Prompt :: any
 	end
 	for index, spot in bays do
 		parts[`Bay{index}Plate`] = spot.Plate
@@ -769,6 +812,7 @@ function BaseController.Says(): { [string]: { Near: boolean, News: boolean, Grou
 	add("Breaker", breaker)
 	add("Battery", battery)
 	add("Training", machine)
+	add("Generator", generator)
 	for index, spot in bays do
 		add(`Bay{index}`, spot)
 	end
@@ -811,6 +855,8 @@ function BaseController.Start()
 			build()
 		elseif Screen.Current() == BreakerScreen.Name then
 			BaseController.OpenBreaker()
+		elseif Screen.Current() == PowerScreen.Name then
+			BaseController.OpenPower()
 		end
 	end)
 	task.spawn(function()

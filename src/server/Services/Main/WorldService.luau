@@ -68,6 +68,7 @@ local GREY = {
 	Bay = Color3.fromRGB(132, 133, 138),
 	Locked = Color3.fromRGB(60, 61, 66),
 	Battery = Color3.fromRGB(164, 165, 150),
+	Generator = Color3.fromRGB(140, 141, 132),
 	Pad = Color3.fromRGB(196, 196, 200),
 }
 
@@ -289,6 +290,13 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 	-- Low, so the owner sees the Breaker over it from the spawn.
 	block(battery, "Cell", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), GREY.Battery)
 	Markers.Stamp(battery, "Battery", { Plot = number })
+	-- The generator (TR18), left of the Breaker between it and the Training machine: a tall box, its face toward the
+	-- spawn, where the owner's client writes generation and demand.
+	local generator = WorldConfig.Grey.Generator
+	local generatorAt = at * CFrame.new(generator.At, 0, front + 12)
+	local plant = model(m, "Generator", generatorAt)
+	block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), GREY.Generator)
+	Markers.Stamp(plant, "Generator", { Plot = number })
 	-- The Festival Door, right of the Breaker and level with it, in view from the spawn.
 	Markers.Stamp(door(m, "Festival Door", at * CFrame.new(WorldConfig.Grey.Door.DoorAt, 0, front + 12)), "FestivalDoor", { Plot = number })
 	-- The Training machine (TR12), left of the Breaker as the door is right of it: a box, and its pad on the spawn's side,

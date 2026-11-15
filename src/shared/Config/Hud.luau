@@ -339,6 +339,8 @@ return {
 		-- (research's fix, 2026-11-15). The others head theirs in their trim's colour.
 		Tier = { Common = Color3.fromHex("#C9CED8") } :: { [string]: Color3 },
 	},
+	-- The Power screen (TR18, grey): Step, the share a +/- press moves, of the whole generation; shares snap to Snap.
+	Power = { Step = 0.05, Snap = 0.01 },
 	-- The shard grades' pictures (AR12; Config.UIKit's Shard images): each grade's own from Large authored points up, its
 	-- small one under that (a step paler, its rim wider, a dark line round it, so the outline holds at a chip's size).
 	-- Modulo drew the large for 50 and up and the small for 40 and under; between them the small one holds the outline.

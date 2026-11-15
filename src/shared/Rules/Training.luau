@@ -2,13 +2,13 @@
 -- Training (shared, pure): the Training machine (docs/design.md, "The base", "The Training machine"; TR12). One Voidkin at
 -- a time earns a fixed amount of experience a second, at any level, with no cap (the director, 2026-11-14: "Fixed rate,
 -- no cap"): Config.Growth.Training.Share of what fighting earns in Lantern Row, KillsPerHour kills an hour of its packs
--- and its elite, each kill as Rules.Drops pays it. Each level costs more, so it slows as levels rise. Its time is worked out from
--- a stamp (Profile's Training.Stamp), as the Breaker's is: on the server's clock while the player is in the game, and at a
--- join for the time away, when the lead trained. It draws nothing.
---   Training.Rate()                      experience a second, at any level
---   Training.Gain(owned, seconds)        trains `owned` for `seconds`: the levels gained, and the seconds left over
+-- and its elite, each kill as Rules.Drops pays it. Each level costs more, so it slows as levels rise. It draws power like
+-- every machine (TR18): the base's clock (Rules.Breaker) trains whoever's on it at the machine's speed, the seconds it gets
+-- counted at full power, while the player is in the game and for the time away, when the lead trains.
+--   Training.Rate()                      experience a second at full power, at any level
+--   Training.Gain(owned, seconds)        trains `owned` for `seconds` at full power: the levels gained, and the seconds
+--                                        left over
 --   Training.Who(playerHome, lead, leadWaiting, healed)   who trains while the player is in the game, or nil
---   Training.Advance(data, now, trainee) trains `trainee` from the stamp to `now`, and moves the stamp
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -84,24 +84,6 @@ function Training.Who(playerHome: boolean, lead: string, leadWaiting: boolean, h
 		end
 	end
 	return if best then best.Id else nil
-end
-
--- Trains `trainee` (an owned Voidkin's Id, or nil for nobody) from the stamp to `now`, and moves the stamp. The first call
--- only sets it, and a clock that went back sets it again. A worker never trains. Returns who trained and the levels gained.
-function Training.Advance(data: Profile.Data, now: number, trainee: string?): (string?, number)
-	local training = data.Training
-	if training.Stamp == 0 or now < training.Stamp then
-		training.Stamp = now
-		return nil, 0
-	end
-	local owned = if trainee then data.Voidkin[trainee] else nil
-	if owned == nil or Profile.RoleOf(data, owned.Id) == "Worker" then
-		training.Stamp = now
-		return nil, 0
-	end
-	local gained, left = Training.Gain(owned, now - training.Stamp)
-	training.Stamp = now - left
-	return owned.Id, gained
 end
 
 return Training

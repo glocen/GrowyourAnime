@@ -97,10 +97,10 @@ local target: TargetCard.Card
 local targetArrow: Frame
 local credits: TextLabel
 local coin: ImageLabel -- the Credits pill's icon, where a kill's Credits fly to (TR6)
-local electricity: TextLabel
-local bolt: ImageLabel -- the Electricity pill's, where the battery's jump flies to
-local rate: TextLabel
-local charge: Frame
+local electricity: TextLabel -- the Power pill's value: generation against demand in kW (TR18)
+local bolt: ImageLabel -- the Power pill's mark, where the battery's jump flies to
+local stored: TextLabel -- the Power pill's second value: the battery's kWh
+local charge: Frame -- the Power pill's thread: the battery's fill
 local chip: Frame
 local chipText: TextLabel
 local readout: Signature
@@ -112,7 +112,7 @@ local dockUi: Dock.Dock -- the dock of three icons (AR12; UI.Dock): dock[screen]
 local keeperBar: BossBar.Bar
 local lastView: Profile.View? = nil
 local glint: Frame -- experience's pop: a light over the thread's
-local lastStored: number? = nil -- the battery at the last read, for its jump
+local lastCharge: number? = nil -- the battery at the last read, for its jump
 local baseReadAt = 0
 local seen: { [string]: { Share: number, Over: number } } = {} -- the top band's pieces over a keeper: each one's fade
 local opacities: { [string]: number } = {} -- each piece's opacity now, by name: for tests
@@ -935,22 +935,34 @@ local function step(dt: number)
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
 		baseReadAt = os.clock()
 		local base = Read.Base(view, workspace:GetServerTimeNow())
-		local stored = base.Data.Base.Battery
+		local kwh = base.Data.Base.Charge
 		local cap = BaseConfig.Battery.Capacity
-		-- A jump (a return from away) pops; the bays' steady flow never does.
-		local function shown(amount: number): string
-			return `{Read.Stored(amount)} / {Read.Number(cap)}`
+		-- TR18: the pill says power, never a stock: generation against demand, the battery after it and in the thread.
+		-- Demand over generation turns the value Power's warning colour, the frame's Over attribute set for the tests.
+		local generation, demand = base.Rates.Generation, base.Rates.Demand
+		local against = Read.Against(generation, demand)
+		local over = demand > generation + 1e-9
+		local function shown(_: number): string
+			return against
 		end
-		-- A jump (a return from away) flies in from the screen's middle and counts up (TR6); the steady flow just shows.
-		if lastStored and cap > 0 and stored - lastStored >= HudConfig.Pop.Jump * cap then
-			reward(electricity, bolt, Fly.Centre(), "Bolt", lastStored, stored, shown, HudConfig.Pop.Rungs.Electricity, UIKit.Charge, Read.Stored)
+		-- A jump of the battery (a return from away) flies in from the screen's middle and pops, its "+N kWh" rising
+		-- (TR6); the steady flow just shows.
+		if lastCharge and cap > 0 and kwh - lastCharge >= HudConfig.Pop.Jump * cap then
+			reward(electricity, bolt, Fly.Centre(), "Bolt", lastCharge, kwh, shown, HudConfig.Pop.Rungs.Electricity, UIKit.Charge, function(n: number): string
+				return `{Read.Kwh(n)} kWh`
+			end)
 		else
-			Count.Show(electricity, stored, shown)
+			Count.Show(electricity, kwh, shown)
 		end
-		lastStored = stored
-		rate.Text = if stored >= cap - 1e-6 then "full" else Read.Rate(base.Rates.Net)
+		lastCharge = kwh
+		local pillFrame = electricity.Parent :: GuiObject
+		if pillFrame:GetAttribute("Over") ~= over then
+			pillFrame:SetAttribute("Over", over)
+			electricity.TextColor3 = if over then Theme.Colour.Over else UIKit.Systems.Power.Text
+		end
+		stored.Text = if kwh >= cap - 1e-6 then "full" else `{Read.Kwh(kwh)} kWh`
 		if charge then
-			Bar.Set(charge, if cap > 0 then stored / cap else 0)
+			Bar.Set(charge, if cap > 0 then kwh / cap else 0)
 		end
 		showChip(view) -- home or the field, as the avatar moves
 	end
@@ -975,7 +987,7 @@ function HudController.Start()
 	local creditsPill = pill("Credits", 1, HudConfig.Pills.Credits, "Credits")
 	credits, coin = creditsPill.Value, creditsPill.Mark
 	local power = pill("Electricity", 2, HudConfig.Pills.Power, "Power")
-	electricity, rate, charge, bolt = power.Value, power.Extra :: TextLabel, power.Thread :: Frame, power.Mark
+	electricity, stored, charge, bolt = power.Value, power.Extra :: TextLabel, power.Thread :: Frame, power.Mark
 	readout = {
 		Piece = Readout.new(Layers.Get("Hud")),
 		Ready = 0,
@@ -1137,7 +1149,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		Credits = credits,
 		Electricity = electricity,
 		XpGlint = glint,
-		ElectricityRate = rate,
+		PowerStored = stored,
 		Signature = readout.Piece.Frame,
 		Spectate = eye,
 		Next = nextButton,

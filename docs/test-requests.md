@@ -1663,7 +1663,53 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - a take at phone size: walk to the generator and open it, drag a handle, then Auto, the Breaker's progress slowing and speeding with it, and the HUD pill changing;
 - research's verdict in motion. The UI lint runs first, at both scales.
 
-**Status:** requested, 2026-11-14, night. The numbers are set (2026-11-15). Waits on TR17.
+**Faber's build, 2026-11-15.** About 1 active hour (16:32 to 17:27), against 4 to 6 forecast; the screen-time checks remain.
+- **Where it lives:**
+  - the rule: `Rules/Power` (pure), on the base's one clock in `Rules/Breaker`, which now trains the Training machine's Voidkin too;
+  - voltage and the split as server actions: `Rules/Base` (`Infuse`, `SetPower`);
+  - the save: `Base.Charge` in kWh, `Base.Power { Auto, Shares, Open }`, the Training machine's stamp gone; migration step 4;
+  - the numbers: `Config.Base`, `Config.Shards.Voltage`;
+  - the generator: a grey block left of the Breaker, between it and the Training machine (`Config.World.Grey.Generator`, tag `Generator`);
+  - the screen and the pill: `UI/PowerScreen` and the HUD's Power pill.
+- **Tier 1, my calls:**
+  - **The machines:**
+    - a starter shard's cost is derived like any shard's (0.025 kWh), and the 2 kWh start covers it;
+    - routed power a machine can't use charges the battery;
+    - a machine with no share runs at the floor;
+    - shares over the whole, from an older save, are scaled back to it.
+  - **The Power screen:**
+    - it opens the first time the Training machine draws, the Breaker being the first machine;
+    - a split is refused until then;
+    - Auto keeps the last split for later.
+  - **Voltage:**
+    - it's refused on a shard that holds a stated Voidkin (`Named`) and on one it would save under a minute (`Brief`);
+    - an old save's luck-infused shard keeps its luck, and `Volt` marks voltage.
+  - **Time:**
+    - away, the lead trains at full power while the battery lasts, then at the floor;
+    - the last minute or less online before a leave counts as away.
+  - **The pill:**
+    - "30 / 34 kW" with the battery's kWh after it, and the thread its fill;
+    - over generation, the value turns an amber warning colour (`Theme.Colour.Over`);
+    - a battery's jump on a return still flies in, with "+N kWh".
+  - **The screen:**
+    - under Auto, the bar shows what each machine draws, scaled to the whole while they ask more than is made;
+    - +/- moves 5% (`Config.Hud.Power`), and + is off once the whole is given;
+    - a handle asks once, when it's let go;
+    - the battery's hours are at today's demand.
+  - **Numbers shown:** kWh to the hundredth under 100, so a charging battery visibly counts (one bay turns it every 2 s).
+- **For research:**
+  - **The Training machine:** it draws a flat 10 kW, as this entry says, where `sim.py` multiplies it by the ground's factor. Say which is right.
+  - **Voltage in Lantern Row:** voltage is never offered there, so its pane only ever says "Saves under a minute: not offered". Should it hide until Drum Court?
+- **Tested:**
+  - type check 0 new;
+  - logic 5905 offline: split, Auto, the floor, charge, drain, cap, offline, the migration, a refused share, voltage's price and refusals, training on the clock.
+- **Self-test cases, written and synced to Studio, not yet run:**
+  - "Power: the generator shows generation and demand…";
+  - the voltage case, which tunes the Standard to 900 s for itself and puts it back;
+  - the pill's checks.
+- **Waiting for the screen:** the take at phone size and the UI lint at both scales.
+
+**Status:** implemented, 2026-11-15 (Faber, above). Tested offline; its self-test and take wait for the screen. Not reviewed. Not accepted.
 
 ## TR19. Home in one tap: the dock's Base tile (Faber)
 

@@ -8,9 +8,12 @@
 -- out again only once it's whole (VoidkinService asks LeadService.Refusal). The client reads the player's folder Healing
 -- (an attribute a fallen one, by its Id, the server time it's whole: an attribute's string holds 50 characters, too few
 -- for several) and the player's attributes InCombat and Training (who's on the machine, or "").
--- The Training machine (Rules.Training): one Voidkin trains while the player is in the game (Training.Who), credited
--- every Config.Growth.Training.Every seconds and whenever who trains changes; at a join, the lead's time away. Studio
--- adds TrainingSkip, as if `seconds` passed away, and LeadHeal: every Voidkin whole at once, a fallen lead back up
+-- The Training machine (Rules.Training): one Voidkin trains while the player is in the game (Training.Who). It draws power
+-- (TR18), so the base's clock (Rules.Breaker) trains it: here, whenever who trains changes, the base is advanced to now
+-- with the one that was on it, then the save's Training.Trainee names the next, and every Config.Growth.Training.Every
+-- seconds the base is advanced so its levels show. At a join BaseService's away advance trains the lead for the time away,
+-- before this service's own Ready, so nothing here advances the base until then. Studio adds TrainingSkip, as if `seconds`
+-- passed away, the lead on it, and LeadHeal: every Voidkin whole at once, a fallen lead back up
 -- beside the avatar (the way home takes a walk to the plot, which a case on the test pad can't make), and VoidkinFallen:
 -- every Voidkin but the lead fallen just now, so a lead falls alone (TR16).
 
@@ -25,6 +28,7 @@ local GrowthConfig = require(Shared.Config.Growth)
 local Combat = require(Shared.Config.Combat)
 local Carry = require(Shared.Rules.Carry)
 local Training = require(Shared.Rules.Training)
+local Breaker = require(Shared.Rules.Breaker)
 local Markers = require(Shared.World.Markers)
 local Stats = require(Shared.Rules.Stats)
 local Parts = require(Shared.Util.Parts)
@@ -104,12 +108,13 @@ local function trainee(player: Player): string?
 	return Training.Who(playerHome(player), data.Roles.Lead, waiting, healed)
 end
 
--- The machine credited up to now, to whoever was on it.
-local function settle(player: Player, who: string?, label: string)
+-- The base's clock run to now, the one on the machine trained up to now, then `who` on it from here ("" for nobody).
+local function settle(player: Player, who: string, label: string)
 	settled[player] = now()
 	DataService.Change(player, label, function(draft: Profile.Data): { [string]: any }
-		local id, levels = Training.Advance(draft, now(), who)
-		return { Ok = true, Id = id or "", Levels = levels }
+		local summary = Breaker.Advance(draft, now())
+		draft.Training.Trainee = who
+		return { Ok = true, Id = summary.Trained or "", Levels = summary.Levels }
 	end)
 end
 
@@ -159,9 +164,9 @@ local function tick(player: Player)
 	end
 	setAttribute(player, "InCombat", FightService.InCombat(player))
 	local who = trainee(player) or ""
-	local was = training[player] or ""
-	if who ~= was or now() - (settled[player] or 0) >= GrowthConfig.Training.Every then
-		settle(player, if was ~= "" then was else nil, "Training")
+	local was = training[player]
+	if was ~= nil and (who ~= was or now() - (settled[player] or 0) >= GrowthConfig.Training.Every) then
+		settle(player, who, "Training") -- nil until this service's Ready: the time away is BaseService's, with the lead
 		training[player] = who
 	end
 	setAttribute(player, "Training", who)
@@ -218,8 +223,13 @@ end
 
 function LeadService.Start()
 	DataService.Ready:Connect(function(player: Player)
-		-- The machine's time away, the lead's, before the lead comes out at its level.
-		settle(player, (DataService.Get(player) :: Profile.Data).Roles.Lead, "TrainingReturn")
+		-- BaseService's away advance has trained the lead for the time away (its Ready runs first, Priority 20): from
+		-- here the machine is empty until Training.Who names someone, and the lead comes out at its level.
+		DataService.Change(player, "TrainingReturn", function(draft: Profile.Data): { [string]: any }
+			draft.Training.Trainee = ""
+			return { Ok = true }
+		end)
+		training[player], settled[player] = "", now()
 		sync(player)
 	end)
 	DataService.Changed:Connect(sync)
@@ -303,12 +313,12 @@ function LeadService.Start()
 				return { Ok = false, Error = "BadArgs" }
 			end
 			return DataService.Change(player, "TrainingSkip", function(draft: Profile.Data): { [string]: any }
-				if draft.Training.Stamp == 0 then
+				if draft.Base.Stamp == 0 then
 					return { Ok = false, Error = "NoStamp" }
 				end
-				draft.Training.Stamp -= seconds
-				local id, levels = Training.Advance(draft, now(), draft.Roles.Lead)
-				return { Ok = true, Id = id or "", Levels = levels }
+				draft.Base.Stamp -= seconds
+				local summary = Breaker.Advance(draft, now(), true) -- away: the lead on the machine, the plant as it runs
+				return { Ok = true, Id = summary.Trained or "", Levels = summary.Levels }
 			end)
 		end)
 		-- Studio only: `def` uncovered as a shard's would be (Collection.Uncover): new, or a copy of the one owned.

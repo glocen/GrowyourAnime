@@ -1,16 +1,17 @@
 --!strict
--- Shards (shared): how long each grade of shard takes to break, what it costs, and what it holds. Seeds from
--- tools/balance/seeds.json ("shards", "luck") unless marked as the builder's; once here, this is their home.
+-- Shards (shared): how long each grade of shard takes to break, what it holds, and what voltage does to it. Seeds from
+-- tools/balance/seeds.json ("shards", "luck", "power.voltage") unless marked as the builder's; once here, this is their
+-- home. A shard's energy is never set: its chamber's rating over its break time (Rules.Power.Cost, TR18).
 
 return {
-	-- Seconds of work at full power, and the electricity that work costs before the ground's factor.
+	-- Seconds of work at full power.
 	Grades = {
-		Standard = { BreakSeconds = 30, Energy = 20 },
-		Enriched = { BreakSeconds = 900, Energy = 200 },
-		Prismatic = { BreakSeconds = 10800, Energy = 1500 },
-		Named = { BreakSeconds = 30, Energy = 20 }, -- the builder's seed, 2026-11-12: a Standard's, as Watt's is the first
-		Starter = { BreakSeconds = 6, Energy = 0 }, -- docs/decisions.md, D01: free and fast. The builder's seed for "fast"
-	} :: { [string]: { BreakSeconds: number, Energy: number } },
+		Standard = { BreakSeconds = 30 },
+		Enriched = { BreakSeconds = 900 },
+		Prismatic = { BreakSeconds = 10800 },
+		Named = { BreakSeconds = 30 }, -- the builder's seed, 2026-11-12: a Standard's, as Watt's is the first
+		Starter = { BreakSeconds = 6 }, -- docs/decisions.md, D01: fast. The builder's seed for "fast"
+	} :: { [string]: { BreakSeconds: number } },
 	-- Each grade's weight per rarity. A tier the ground's Voidkin don't reach is dropped and the rest keep their proportions.
 	Pools = {
 		Standard = { Common = 60, Uncommon = 30, Rare = 9, Epic = 1, Legendary = 0, Mythical = 0 },
@@ -19,7 +20,7 @@ return {
 	} :: { [string]: { [string]: number } },
 	-- A Voidkin of the shard's own ground or the one before weighs this much against an older one of its tier.
 	FeaturedWeight = 3,
-	-- The ground's multiplier on a shard's electricity, by ground id.
+	-- The ground's multiplier on a chamber's rating while it breaks the ground's shard, by ground id.
 	RegionFactor = {
 		lanternrow = 1,
 		drumcourt = 1.5,
@@ -30,10 +31,13 @@ return {
 	} :: { [string]: number },
 	-- Luck from every source adds into one lift on the top two tiers a shard can give, up to this.
 	LuckCap = 0.4,
-	-- Infusion (docs/design.md, "Shards and the Void Breaker"): electricity from the battery into one shard before it breaks,
-	-- a little or a lot, lifting its top two tiers by Lift, the price the same whatever the shard (seeds.json, "luck").
-	Infusion = {
-		{ Lift = 0.10, Energy = 300 },
-		{ Lift = 0.25, Energy = 900 },
-	} :: { { Lift: number, Energy: number } },
+	-- Infusion is voltage (the director, 2026-11-15, "Faster break"; docs/design.md, "Shards and the Void Breaker"): stored
+	-- energy into one shard before it breaks, once, its odds never changed. Levels, in order, Low then High: the share of
+	-- its time left that stays (Low halves it, High breaks it at once). The price: the energy its chamber would still draw
+	-- over the time saved, times Premium, rounded up to a whole kWh; never offered when it saves under MinSavedSeconds.
+	Voltage = {
+		Levels = { { TimeLeft = 0.5 }, { TimeLeft = 0 } } :: { { TimeLeft: number } },
+		Premium = 1.3333,
+		MinSavedSeconds = 60,
+	},
 }

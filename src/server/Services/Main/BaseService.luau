@@ -1,9 +1,10 @@
 --!strict
 -- BaseService (server): a player's base keeps time. It registers the base's actions (Shared.Rules.Base) with the save's one
 -- door, advances the base on a return as time away, and wakes it online at its next event, so a shard is Ready the moment it
--- finishes, and at least every Config.Base.Clock.MostSeconds, so the battery and overflow Credits reach the client.
--- Nothing is advanced on leaving: the next load counts from the last stamp as time away. Within the away hours the workers
--- make the same either way, so the most a leave can cost is that many seconds of a long absence's cap.
+-- finishes, and at least every Config.Base.Clock.MostSeconds, so the battery, overflow Credits and the Training machine's
+-- levels reach the client. Nothing is advanced on leaving: the next load counts from the last stamp as time away, with the
+-- lead on the Training machine. Within the away hours the workers generate the same either way, so the most a leave can
+-- cost is that many seconds of a long absence's cap.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -34,7 +35,7 @@ end
 local function advance(player: Player, label: string, away: boolean): { [string]: any }
 	return DataService.Change(player, label, function(draft: Profile.Data): { [string]: any }
 		local summary = Breaker.Advance(draft, now(), away)
-		return { Ok = true, Finished = summary.Finished, Made = summary.Made, Credits = summary.Credits }
+		return { Ok = true, Finished = summary.Finished, Made = summary.Made, Credits = summary.Credits, Trained = summary.Trained or "", Levels = summary.Levels }
 	end)
 end
 
@@ -99,9 +100,15 @@ local function registerDebug()
 		for index, bay in base.Bays do
 			workers[index] = if bay.Worker == "" then "empty" else `{bay.Worker} ({data.Voidkin[bay.Worker].Def})`
 		end
+		local rates = Breaker.Rates(data)
 		return {
-			Battery = `{string.format("%.2f", base.Battery)}/{BaseConfig.Battery.Capacity}`,
-			PerSecond = Breaker.Production(data),
+			Charge = `{string.format("%.3f", base.Charge)}/{BaseConfig.Battery.Capacity} kWh`,
+			Generation = rates.Generation,
+			Demand = rates.Flow.Demand,
+			Speed = rates.Flow.Speed,
+			NetKw = rates.NetKw,
+			Power = { Auto = base.Power.Auto, Shares = base.Power.Shares, Open = base.Power.Open },
+			Trainee = data.Training.Trainee,
 			Chambers = chambers,
 			Line = line,
 			Ready = ready,
@@ -125,10 +132,10 @@ local function registerDebug()
 			end
 			draft.Base.Stamp -= seconds
 			local summary = Breaker.Advance(draft, now(), away == true)
-			return { Ok = true, Finished = summary.Finished, Made = summary.Made, Credits = summary.Credits }
+			return { Ok = true, Finished = summary.Finished, Made = summary.Made, Credits = summary.Credits, Trained = summary.Trained or "", Levels = summary.Levels }
 		end)
 	end)
-	-- The battery set to `amount`, within its capacity: the Breaker screen's prices tried at each side (TR9).
+	-- The battery's charge set to `amount` kWh, within its capacity: the Breaker screen's prices tried at each side (TR9).
 	DebugService.Register("BaseBattery", function(who: any, amount: any): any
 		local player = DebugService.ResolvePlayer(who)
 		if not player or type(amount) ~= "number" or amount ~= amount then
@@ -136,9 +143,25 @@ local function registerDebug()
 		end
 		return DataService.Change(player, "BaseBattery", function(draft: Profile.Data): { [string]: any }
 			Breaker.Advance(draft, now())
-			local before = draft.Base.Battery
-			draft.Base.Battery = math.clamp(amount, 0, BaseConfig.Battery.Capacity)
-			return { Ok = true, Battery = draft.Base.Battery, Before = before }
+			local before = draft.Base.Charge
+			draft.Base.Charge = math.clamp(amount, 0, BaseConfig.Battery.Capacity)
+			return { Ok = true, Charge = draft.Base.Charge, Before = before }
+		end)
+	end)
+	-- The Power screen opened or shut, as if a machine beside the Breaker had drawn power or never had; shut, Auto again
+	-- (TR18's case: the screen and its refusal before it opens).
+	DebugService.Register("PowerOpen", function(who: any, open: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(open) ~= "boolean" then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "PowerOpen", function(draft: Profile.Data): { [string]: any }
+			Breaker.Advance(draft, now())
+			draft.Base.Power.Open = open
+			if not open then
+				draft.Base.Power.Auto = true
+			end
+			return { Ok = true, Open = open }
 		end)
 	end)
 	DebugService.Register("BaseGive", function(who: any, shard: any, count: any): any

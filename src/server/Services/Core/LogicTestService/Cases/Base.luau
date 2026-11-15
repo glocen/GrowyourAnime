@@ -2,7 +2,8 @@
 -- Base action cases (pure): every action a client may send for its base and its Voidkin, run through Transaction as the
 -- server runs it. The first circuit on a fresh account, each action repeated with one op id and interrupted half way,
 -- hostile arguments, one role at a time, a change of workers never reaching back in time, and a return after hours away
--- with work left partly done (the package's gates B and D, docs/test-requests.md, TR2).
+-- with work left partly done (the package's gates B and D, docs/test-requests.md, TR2); voltage and the plant's split
+-- (TR18).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -11,12 +12,12 @@ local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
 local Transaction = require(Shared.Data.Transaction)
 local Breaker = require(Shared.Rules.Breaker)
+local Power = require(Shared.Rules.Power)
 local Base = require(Shared.Rules.Base)
 local Collection = require(Shared.Rules.Collection)
 local Shards = require(Shared.Definitions.Shards)
 local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
-local Odds = require(Shared.Rules.Odds)
 local DataConfig = require(Shared.Config.Data)
 
 local T0 = 1_800_000_000
@@ -36,6 +37,17 @@ local function act(data: Profile.Data, name: string, args: any, now: number, opI
 		return action(draft, args, now, u or 0.5)
 	end, DataConfig.OpsKept)
 	return answer, changed
+end
+
+-- Sets a Config value for one case and puts it back, even when the case errors.
+local function withConfig(node: { [string]: any }, key: string, value: any, run: () -> ())
+	local old = node[key]
+	node[key] = value
+	local ok, err = pcall(run)
+	node[key] = old
+	if not ok then
+		error(err, 0)
+	end
 end
 
 local function count(t: { [any]: any }): number
@@ -85,7 +97,7 @@ return {
 			local watt = act(data, "Open", {}, T0 + 20 + wattSeconds)
 			t.Check("Watt steps out, the lead stays", watt.Ok == true and watt.Def == "watt" and watt.Lead == false)
 			t.Check("Watt to work", act(data, "SetWorker", { Bay = 1, Voidkin = watt.Id }, T0 + 60).Ok == true)
-			t.Check("making electricity", Breaker.Production(data) > 0)
+			t.Check("generating power", Power.Generation(data) > 0)
 			t.Equal("roles", Profile.RoleOf(data, watt.Id), "Worker")
 			saves(t, data, "after the circuit")
 		end,
@@ -234,14 +246,14 @@ return {
 		Name = "Base: a change of workers never reaches back in time",
 		Run = function(t: any)
 			local data = withRook()
-			data.Base.Battery = 0
+			data.Base.Charge = 0
 			local watt = Collection.Uncover(data, "watt", T0).Id
 			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 100)
-			local rate = Breaker.Production(data)
+			local rate = Power.Generation(data) / 3600
 			act(data, "SetWorker", { Bay = 1, Voidkin = "" }, T0 + 400)
-			t.Check("Watt's 300 seconds kept", math.abs(data.Base.Battery - rate * 300) < 1e-6, `{data.Base.Battery}`)
+			t.Check("Watt's 300 seconds kept", math.abs(data.Base.Charge - rate * 300) < 1e-9, `{data.Base.Charge}`)
 			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 1000)
-			t.Check("the empty bay made nothing", math.abs(data.Base.Battery - rate * 300) < 1e-6, `{data.Base.Battery}`)
+			t.Check("the empty bay made nothing", math.abs(data.Base.Charge - rate * 300) < 1e-9, `{data.Base.Charge}`)
 		end,
 	},
 	{
@@ -258,13 +270,13 @@ return {
 			local away = T0 + 30 + 10 * 3600
 			Breaker.Advance(data, away, true) -- as the server does on the return
 			local _, energy = Breaker.Cost(STANDARD)
-			local made = Breaker.Production(data) * BaseConfig.Battery.AwayHours * 3600
+			local made = Power.Generation(data) * BaseConfig.Battery.AwayHours
 			local paid = 0
 			for _, work in data.Base.Ready do
 				paid += if work.Def == STANDARD then energy :: number else 0
 			end
 			t.Equal("all six broke while away", #data.Base.Ready, 6)
-			t.Check("never more than was made and held", paid <= made + 20 + 1e-6, `paid {paid}, made {made}`)
+			t.Check("never more than was made and held", paid <= made + BaseConfig.Start.Charge + 1e-6, `paid {paid}, made {made}`)
 			t.Equal("six in all", #data.Base.Ready + #data.Base.Line + (if data.Base.Chambers[1].Work then 1 else 0) + (if data.Base.Chambers[2].Work then 1 else 0), 6)
 			t.Equal("the stamp is the return", data.Base.Stamp, away)
 			local opened = act(data, "Open", {}, away + 1)
@@ -273,68 +285,103 @@ return {
 		end,
 	},
 	{
-		Name = "Base: TR9, infusion puts the battery's electricity into one shard before it breaks, once, a little or a lot",
+		Name = "Base: TR18, voltage puts the battery's charge into one shard before it breaks, once: Low halves its time left, High breaks it at once",
 		Run = function(t: any)
-			local data = withRook()
-			local now = T0 + 100
-			data.Bag.Shards[STANDARD] = 3
-			act(data, "AddShard", { Shard = STANDARD }, now)
-			act(data, "AddShard", { Shard = STANDARD }, now)
-			act(data, "AddShard", { Shard = STANDARD }, now)
-			t.Check("a shard breaking in chamber 1 and one waiting", data.Base.Chambers[1].Work ~= nil and #data.Base.Line >= 1)
-			local a, b = ShardConfig.Infusion[1], ShardConfig.Infusion[2]
-			data.Base.Battery = a.Energy + b.Energy + 5
-			Breaker.Advance(data, now)
-			local stored = data.Base.Battery
-			local little = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, now, "op-infuse-1")
-			t.Check("a little, into the chamber's shard", little.Ok == true and little.Luck == a.Lift, little.Error)
-			t.Equal("its price from the battery", data.Base.Battery, stored - a.Energy)
-			t.Equal("the shard carries its luck", (data.Base.Chambers[1].Work :: any).Luck, a.Lift)
-			local again = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, now, "op-infuse-1")
-			t.Check("the same op again: its answer, nothing spent twice", again.Ok == true and data.Base.Battery == stored - a.Energy)
-			local twice = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 2 }, now, "op-infuse-2")
-			t.Equal("once a shard", twice.Error, Base.Infused)
-			local lot = act(data, "Infuse", { Line = 1, Def = STANDARD, Level = 2 }, now, "op-infuse-3")
-			t.Check("a lot, into the line's first", lot.Ok == true and lot.Luck == b.Lift, lot.Error)
-			t.Equal("both prices spent", data.Base.Battery, stored - a.Energy - b.Energy)
-			local short = act(data, "Infuse", { Chamber = 2, Def = STANDARD, Level = 1 }, now, "op-infuse-4")
-			t.Equal("short of electricity: refused", short.Error, Base.Short)
-			t.Equal("and nothing spent", data.Base.Battery, stored - a.Energy - b.Energy)
-			-- The luck reaches the roll: the top tier's chance at this luck is the table's.
-			local plain, lifted = Odds.Table(STANDARD, 0), Odds.Table(STANDARD, b.Lift)
-			t.Check("the top tier's chance is lifted", lifted[#lifted].Chance > plain[#plain].Chance)
-			saves(t, data, "after infusing")
+			-- Voltage saves under a minute on Lantern Row's 30-second Standard, so the case gives it an Enriched's 900.
+			withConfig(ShardConfig.Grades.Standard :: any, "BreakSeconds", 900, function()
+				local data = withRook()
+				local now = T0 + 100
+				data.Bag.Shards[STANDARD] = 3
+				act(data, "AddShard", { Shard = STANDARD }, now)
+				act(data, "AddShard", { Shard = STANDARD }, now)
+				act(data, "AddShard", { Shard = STANDARD }, now)
+				t.Check("two breaking and one waiting", data.Base.Chambers[1].Work ~= nil and data.Base.Chambers[2].Work ~= nil and #data.Base.Line == 1)
+				data.Base.Charge = 20
+				Breaker.Advance(data, now)
+				local first = data.Base.Chambers[1].Work :: Profile.ShardWork
+				local low, saved = Power.Voltage(first, 1)
+				local done = first.Done
+				local stored = data.Base.Charge
+				local answer = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, now, "op-volt-1")
+				t.Check("Low, into the chamber's shard", answer.Ok == true and answer.Spent == low and answer.Level == 1 and answer.Ready == false, answer.Error)
+				t.Equal("its price from the battery", data.Base.Charge, stored - (low :: number))
+				first = data.Base.Chambers[1].Work :: Profile.ShardWork -- a transaction commits its draft: read it again
+				t.Check("its time left halved", math.abs(Breaker.Left(first) - (900 - done) / 2) < 1e-6 and math.abs(first.Done - done - saved) < 1e-9, `{Breaker.Left(first)}`)
+				t.Check("the shard knows its voltage, its odds untouched", first.Volt == 1 and first.Luck == 0)
+				local again = act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, now, "op-volt-1")
+				t.Check("the same op again: its answer, nothing spent twice", again.Ok == true and data.Base.Charge == stored - (low :: number))
+				t.Equal("once a shard", act(data, "Infuse", { Chamber = 1, Def = STANDARD, Level = 2 }, now, "op-volt-2").Error, Base.Infused)
+				local waiting = data.Base.Line[1]
+				local high = Power.Voltage(waiting, 2) :: number
+				local spent = data.Base.Charge
+				local broke = act(data, "Infuse", { Line = 1, Def = STANDARD, Level = 2 }, now, "op-volt-3")
+				local last = data.Base.Ready[#data.Base.Ready]
+				t.Check("High, into the line's first: broken at once", broke.Ok == true and broke.Ready == true and last ~= nil and last.Volt == 2 and #data.Base.Line == 0, broke.Error)
+				t.Equal("its price spent", data.Base.Charge, spent - high)
+				data.Base.Charge = 0
+				local short = act(data, "Infuse", { Chamber = 2, Def = STANDARD, Level = 1 }, now, "op-volt-4")
+				t.Equal("short of charge: refused", short.Error, Base.Short)
+				t.Check("and nothing spent or changed", data.Base.Charge == 0 and (data.Base.Chambers[2].Work :: any).Volt == nil)
+				saves(t, data, "after voltage")
+			end)
 		end,
 	},
 	{
-		Name = "Base: TR9, infusion is never offered on a shard that holds a stated Voidkin, nor on one that broke or moved",
+		Name = "Base: TR18, voltage is never offered on a shard that holds a stated Voidkin, one it would save under a minute, nor one that broke or moved",
 		Run = function(t: any)
 			local data = fresh()
 			act(data, "ChooseStarter", { Shard = "starter_pip" }, T0)
-			data.Base.Battery = 5000
+			data.Base.Charge = 50
 			local where = if data.Base.Chambers[1].Work then { Chamber = 1 } else { Line = 1 }
 			local args = table.clone(where) :: any
 			args.Def, args.Level = "starter_pip", 1
-			t.Equal("a starter holds one Voidkin: no odds to lift", act(data, "Infuse", args, T0).Error, Base.Named)
-			t.Equal("Odds says so", Odds.Lifted("starter_pip"), 0)
-			t.Check("a ground's shard lifts its top tiers", Odds.Lifted(STANDARD) > 0)
-			-- The shard broke a moment before the ask reached the server.
+			t.Equal("a starter holds one Voidkin", act(data, "Infuse", args, T0).Error, Base.Named)
+			-- Lantern Row's Standard: 30 seconds, so voltage would save under a minute.
 			local data2 = withRook()
 			data2.Bag.Shards[STANDARD] = 1
 			act(data2, "AddShard", { Shard = STANDARD }, T0 + 50)
-			data2.Base.Battery = 5000
+			data2.Base.Charge = 50
+			t.Equal("a Standard's 30 s: not offered", act(data2, "Infuse", { Chamber = 1, Def = STANDARD, Level = 2 }, T0 + 50).Error, Base.Brief)
+			t.Equal("and nothing spent", data2.Base.Charge, 50)
+			-- The shard broke a moment before the ask reached the server.
 			local cost = Breaker.Cost(STANDARD) :: number
-			local stored = data2.Base.Battery
+			local stored = data2.Base.Charge
 			local late = act(data2, "Infuse", { Chamber = 1, Def = STANDARD, Level = 1 }, T0 + 50 + cost * 20)
 			t.Equal("broken since: refused", late.Error, Base.Moved)
 			local kept = data2.Base.Chambers[1].Work
-			t.Check("a refusal changes nothing: nothing spent, the shard as it was", data2.Base.Battery == stored and kept ~= nil and kept.Luck == 0,
-				`{data2.Base.Battery} of {stored}`)
+			t.Check("a refusal changes nothing", kept == nil or kept.Volt == nil, `{data2.Base.Charge} of {stored}`)
 			t.Equal("a shard that isn't the one seen", act(data2, "Infuse", { Chamber = 1, Def = "lanternrow_enriched", Level = 1 }, T0 + 50 + cost * 20).Error, Base.Moved)
 			t.Equal("no such level", act(data2, "Infuse", { Chamber = 1, Def = STANDARD, Level = 3 }, T0).Error, Base.BadArgs)
 			t.Equal("both places", act(data2, "Infuse", { Chamber = 1, Line = 1, Def = STANDARD, Level = 1 }, T0).Error, Base.BadArgs)
 			t.Equal("neither", act(data2, "Infuse", { Def = STANDARD, Level = 1 }, T0).Error, Base.BadArgs)
 			t.Equal("a fraction", act(data2, "Infuse", { Chamber = 1.5, Def = STANDARD, Level = 1 }, T0).Error, Base.BadArgs)
+		end,
+	},
+	{
+		Name = "Base: TR18, the split is the server's: refused until the Power screen opens, checked, once per op, never reaching back in time",
+		Run = function(t: any)
+			local data = withRook()
+			local watt = Collection.Uncover(data, "watt", T0).Id
+			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 10)
+			local split = { Auto = false, Shares = { Breaker = 0.5, Training = 0.25 } }
+			t.Equal("shut: refused", act(data, "SetPower", split, T0 + 20).Error, Base.Closed)
+			t.Check("still Auto", data.Base.Power.Auto)
+			data.Base.Power.Open = true
+			local before = data.Base.Charge
+			local set = act(data, "SetPower", split, T0 + 100, "op-split-1")
+			t.Check("set", set.Ok == true and set.Auto == false and set.Shares.Breaker == 0.5, set.Error)
+			t.Check("the old split ran up to now", data.Base.Stamp == T0 + 100 and data.Base.Charge > before)
+			t.Check("kept", not data.Base.Power.Auto and data.Base.Power.Shares.Training == 0.25)
+			local again = act(data, "SetPower", { Auto = false, Shares = { Breaker = 1 } }, T0 + 100, "op-split-1")
+			t.Check("the same op again: its first answer, nothing changed", again.Shares.Breaker == 0.5 and data.Base.Power.Shares.Breaker == 0.5)
+			t.Equal("over the whole", act(data, "SetPower", { Auto = false, Shares = { Breaker = 0.8, Training = 0.3 } }, T0 + 110).Error, Base.Over)
+			for _, asked in { {}, { Auto = "no" }, { Auto = false }, { Auto = false, Shares = { Forge = 0.2 } }, { Auto = false, Shares = { Breaker = -1 } } } :: { any } do
+				t.Equal("a malformed split", act(data, "SetPower", asked, T0 + 110).Error, Base.BadArgs)
+			end
+			t.Check("refusals changed nothing", data.Base.Power.Shares.Breaker == 0.5 and not data.Base.Power.Auto)
+			local auto = act(data, "SetPower", { Auto = true }, T0 + 120)
+			t.Check("Auto again, the shares kept for later", auto.Ok == true and data.Base.Power.Auto and data.Base.Power.Shares.Breaker == 0.5)
+			saves(t, data, "after the split")
 		end,
 	},
 }

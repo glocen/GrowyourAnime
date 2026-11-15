@@ -1,8 +1,8 @@
 --!strict
 -- BreakerScreen (client): the Void Breaker's screen, in grey (TR9; docs/ui.md, "The screens of the first loop", 3). The
 -- chambers as they stand, each shard with its crack's progress and its time left; what's ready, what waits and what's in
--- the bag; one tap on a shard shows its odds (Rules.Odds, never copied) and infusion as a clear choice, its Electricity
--- price and what it does to the rarest tier (docs/design.md, "Infusion"; Rules.Base.Infuse). Machine, the director's
+-- the bag; one tap on a shard shows its odds (Rules.Odds, never copied) and voltage as a clear choice, its price in kWh
+-- and the time it saves (TR18; docs/design.md, "Power"; Rules.Power.Voltage, Rules.Base.Infuse). Machine, the director's
 -- pick of the blockout's three (2026-11-14, night), with research's fixes: a ready shard's chip glows gold and opens on
 -- one tap; a chamber whose shard finishes flashes gold "Ready" as it hands the shard to the strip; a locked chamber
 -- says what opens it. Every change is asked of the server through the owner's Act, and the screen is rebuilt from the
@@ -25,6 +25,7 @@ local ShardConfig = require(Shared.Config.Shards)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
+local Power = require(Shared.Rules.Power)
 local Odds = require(Shared.Rules.Odds)
 local Hud = require(Shared.Rules.Hud)
 local UI = script.Parent
@@ -155,36 +156,28 @@ local function fullName(def: string): string
 	return if row and row.Holds == "" then `{Read.ShardName(def)} · {row.Grade}` else Read.ShardName(def)
 end
 
--- A chance as a player reads it: never "0.00%" for one that can happen.
-local function percent(chance: number): string
-	local p = chance * 100
-	if chance > 0 and p < 0.01 then
-		return "<0.01%"
-	end
-	return if p < 1 then string.format("%.2f%%", p) else string.format("%.1f%%", p)
-end
 
 local RATE_INDENT = 10 -- a Voidkin's row under its rarity's line, in the drop rates
 -- The list's mark on the Drop rates button, three bars left of its word: their size, the label's shift right to make
 -- their room, and the mark's middle from the button's, authored ("Drop rates" is about 62 across at the caption's size).
 local RATE_MARK = { Wide = 10, Thick = 2, Pitch = 4, Inset = 7, At = -33 }
 
--- The infusion levels by name, Config.Shards.Infusion's order (the director, 2026-11-15: "real electrician words").
+-- The voltage levels by name, Config.Shards.Voltage.Levels' order (the director, 2026-11-15: "real electrician words").
 local LEVELS = { "Low voltage", "High voltage" }
 
--- The level a shard was infused at, by name, or nil.
-local function levelOf(luck: number): string?
-	for index, level in ShardConfig.Infusion do
-		if math.abs(level.Lift - luck) < 1e-6 and LEVELS[index] then
-			return LEVELS[index]
-		end
-	end
-	return nil
+-- Whether a shard is infused: given its voltage (TR18), or an old save's luck before voltage replaced it.
+local function charged(work: Profile.ShardWork?): boolean
+	return work ~= nil and (work.Volt ~= nil or work.Luck > 0)
 end
 
--- A shard's infusion by the level put in ("Infused · Low voltage"), never its luck as a number, which reads as a chance.
-local function infused(luck: number): string
-	local level = levelOf(luck)
+-- The voltage a shard was given, by name, or nil (none, or an old save's luck, which had no level).
+local function levelOf(work: Profile.ShardWork): string?
+	return if work.Volt then LEVELS[work.Volt] else nil
+end
+
+-- A shard's infusion by the level put in: "Infused · Low voltage".
+local function infused(work: Profile.ShardWork): string
+	local level = levelOf(work)
 	return if level then `Infused · {level}` else "Infused"
 end
 
@@ -198,8 +191,8 @@ end
 local function placeOf(item: Selection, now: Read.Base, view: Profile.View): string
 	local work = workOf(now.Data, item)
 	-- One item of a line whose items a dot parts: its level after a comma.
-	local level = if work and work.Luck > 0 then levelOf(work.Luck) else nil
-	local luck = if level then ` · infused, {string.lower(level)}` elseif work and work.Luck > 0 then " · infused" else ""
+	local level = if work then levelOf(work) else nil
+	local luck = if level then ` · infused, {string.lower(level)}` elseif charged(work) then " · infused" else ""
 	if item.Kind == "Chamber" then
 		return if work then `Chamber {item.Index} · {Read.Seconds(Read.Left(now, work))} left{luck}` else `Chamber {item.Index}`
 	elseif item.Kind == "Line" then
@@ -208,23 +201,6 @@ local function placeOf(item: Selection, now: Read.Base, view: Profile.View): str
 		return `Ready to open{luck}`
 	end
 	return `In the bag · {view.Bag.Shards[item.Def] or 0}`
-end
-
--- The rarest tier's share of a shard's odds at `luck`, and its name.
-local function rarest(def: string, luck: number): (string, number)
-	local entries = Odds.Table(def, luck)
-	local last = entries[#entries]
-	if last == nil then
-		return "", 0
-	end
-	local tier = Voidkin.ById[last.Id].Rarity
-	local share = 0
-	for _, entry in entries do
-		if Voidkin.ById[entry.Id].Rarity == tier then
-			share += entry.Chance
-		end
-	end
-	return tier, share
 end
 
 local function select(item: Selection?)
@@ -424,7 +400,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	y += Theme.Size.Bar + 2
 	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Center })
 	later(left)
-	if w.Luck > 0 then
+	if charged(w) then
 		later(label(frame, "Infused", "Infused", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y + LINE), { Colour = Theme.Colour.Electricity, Align = Enum.TextXAlignment.Center }))
 	end
 	table.insert(tickers, function(now: Read.Base)
@@ -496,7 +472,7 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 	local words = pad + art.Chip + Theme.Size.Gap
 	local ready = item.Kind == "Ready"
 	local work = workOf(view, item)
-	local infusedMark = if work and work.Luck > 0 then " · infused" else ""
+	local infusedMark = if charged(work) then " · infused" else ""
 	local top = if ready then "Ready" else shortName(item.Def)
 	local under = if ready then `{shortName(item.Def)}{infusedMark}`
 		elseif item.Kind == "Line" then `Waiting, {ordinal(item.Index)}{infusedMark}`
@@ -533,7 +509,7 @@ local function machine(parent: Instance, view: Profile.View, height: number)
 	-- where a chamber's infusion takes its line (Config.Hud.ShardArt).
 	local infusedRow = false
 	for _, chamber in view.Base.Chambers do
-		infusedRow = infusedRow or (chamber.Work ~= nil and (chamber.Work :: Profile.ShardWork).Luck > 0)
+		infusedRow = infusedRow or charged(chamber.Work)
 	end
 	local art = HudConfig.ShardArt
 	local side = math.clamp(height - TOP - chamberWords(infusedRow), art.Least, art.Chamber)
@@ -572,40 +548,41 @@ end
 -- Why infusion can't go in, as the lines a player reads (BreakerScreen.Reasons, for tests). A whole shard's reason
 -- stands over the levels; a level's own beside its button, which keeps its price on it, veiled.
 local REASONS = {
-	Holds = "It holds one Voidkin: no odds to lift",
-	OneTier = "One tier only: no odds to lift",
-	Bag = "Put it in first, then infuse it",
+	Holds = "It holds one Voidkin: no voltage",
+	Bag = "Put it in first, then give it voltage",
 	Ready = "Already broken: open it",
 	Infused = "%s: once a shard",
-	Short = "Needs %s Electricity",
-	Battery = "Needs a battery of %s: upgrade the base", -- research's words, TR9, 2026-11-14
+	Brief = "Saves under a minute: not offered",
+	Short = "Needs %s kWh",
+	Battery = "Needs a battery of %s kWh: upgrade the base", -- research's words, TR9, 2026-11-14
 }
 
--- Why the chosen shard takes no infusion at all, or nil.
+-- Why the chosen shard takes no voltage at all, or nil.
 local function blockShard(item: Selection, now: Read.Base): string?
 	local row = Shards.ById[item.Def]
 	if row and row.Holds ~= "" then
 		return REASONS.Holds
-	elseif Odds.Lifted(item.Def) == 0 then
-		return REASONS.OneTier
 	elseif item.Kind == "Bag" then
 		return REASONS.Bag
 	elseif item.Kind == "Ready" then
 		return REASONS.Ready
 	end
 	local work = workOf(now.Data, item)
-	if work and work.Luck > 0 then
-		return string.format(REASONS.Infused, infused(work.Luck))
+	if work and charged(work) then
+		return string.format(REASONS.Infused, infused(work))
 	end
 	return nil
 end
 
--- Why one level can't be paid now, or nil: a battery too small to hold its price, or too little stored in it.
-local function blockLevel(now: Read.Base, level: { Lift: number, Energy: number }): string?
-	if level.Energy > BaseConfig.Battery.Capacity then
-		return string.format(REASONS.Battery, Read.Number(level.Energy))
-	elseif now.Data.Base.Battery < level.Energy then
-		return string.format(REASONS.Short, Read.Number(level.Energy))
+-- Why one level can't be paid now, or nil: it saves under a minute, the battery is too small to hold its price, or
+-- too little is stored in it. `price` is Rules.Power.Voltage's.
+local function blockLevel(now: Read.Base, price: number?): string?
+	if price == nil then
+		return REASONS.Brief
+	elseif price > BaseConfig.Battery.Capacity then
+		return string.format(REASONS.Battery, Read.Number(price))
+	elseif now.Data.Base.Charge < price then
+		return string.format(REASONS.Short, Read.Number(price))
 	end
 	return nil
 end
@@ -720,17 +697,16 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		chances(column, it.Def, if held then held.Luck else 0)
 		return
 	end
-	-- Infusion: why none goes in, if so; then its two levels, each with its price and, beside it, what it does to
-	-- the rarest tier, or why that level can't be paid.
+	-- Voltage: why none goes in, if so; then its two levels, each with its price in kWh and, beside it, the time it
+	-- saves at the Breaker's speed now, or why that level can't be paid. A shard in the bag is priced from its start.
 	local whole = blockShard(it, now)
 	if whole then
 		lines(column, "Why", whole, UDim2.new(1, -gap, 0, LINE), 2, Theme.Colour.Text)
 	end
-	local work = workOf(now.Data, it)
-	local luck = if work then work.Luck else 0
-	local tier, before = rarest(it.Def, luck)
-	local lifts = tier ~= "" and Odds.Lifted(it.Def) > 0
-	for index, level in ShardConfig.Infusion do
+	local fresh: Profile.ShardWork = { Def = it.Def, Luck = 0, Done = 0 }
+	local work = workOf(now.Data, it) or fresh
+	local speed = math.max(now.Rates.Speed, 1e-3)
+	for index, level in ShardConfig.Voltage.Levels do
 		local row = Instance.new("Frame")
 		row.Name = `Level{index}`
 		row.BackgroundTransparency = 1
@@ -739,7 +715,9 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		row.LayoutOrder = 2 + index
 		row.Parent = column
 		-- Its name over its price, two lines: "High voltage" and a price don't fit one line of a phone's button.
-		local text = `{LEVELS[index] or `Level {index}`}\n{Read.Number(level.Energy)}`
+		local price, saved = Power.Voltage(work, index)
+		local name = LEVELS[index] or `Level {index}`
+		local text = if price then `{name}\n{Read.Number(price)} kWh` else name
 		local button = Button.new({
 			Name = `Infuse{index}`,
 			Text = text,
@@ -751,15 +729,15 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 				return on.Act("Infuse", args).Ok == true
 			end,
 		})
-		local short = blockLevel(now, level)
+		local short = blockLevel(now, price)
 		if whole or short then
 			Button.Set(button, { Disabled = text }) -- veiled with its price still on it; the reason is the line beside it
 		end
-		local _, after = rarest(it.Def, math.min(ShardConfig.LuckCap, luck + level.Lift))
-		local says = if not lifts then "No odds to lift"
-			elseif whole == nil and short then short
-			elseif luck > 0 then nil -- infused: no second lift to show
-			else `{tier} {percent(before)} → {percent(after)}`
+		local says = if whole == nil and short then short
+			elseif price == nil then REASONS.Brief
+			elseif charged(workOf(now.Data, it)) then nil -- infused: no second voltage to show
+			elseif level.TimeLeft <= 0 then "Breaks it now"
+			else `Saves {Read.Seconds(saved / speed)}`
 		if says then
 			local beside = lines(row, `Effect{index}`, says, UDim2.new(0.5, -gap / 2, 0, Theme.Size.Tap), 0)
 			beside.Position = UDim2.new(0.5, gap / 2, 0, 0)

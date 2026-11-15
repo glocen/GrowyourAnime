@@ -26,6 +26,20 @@ local STEPS: { (data: any) -> () } = {
 			end
 		end
 	end,
+	-- 4: the base as a power plant (TR18, 2026-11-15). Touches Base and Training: the battery's electricity becomes its
+	-- charge in kWh, a tenth of it, so a full old battery (600) is a full new one (60); the Training machine's stamp goes,
+	-- its time now kept by the base's clock. Reconcile has already added Base.Charge, Base.Power and Training's Trainee
+	-- and Banked; a new profile has no Battery, so its charge stays the template's.
+	function(data: any)
+		local base = data.Base
+		if type(base) == "table" and type(base.Battery) == "number" then
+			base.Charge = base.Battery / 10
+			base.Battery = nil
+		end
+		if type(data.Training) == "table" then
+			data.Training.Stamp = nil
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

@@ -39,6 +39,7 @@ Theme.Colour = {
 	Heal = Color3.fromRGB(120, 222, 130),
 	Dodge = Color3.fromRGB(150, 154, 162),
 	Hurt = Color3.fromRGB(255, 120, 110), -- a hit on the player's own lead
+	Over = Color3.fromRGB(255, 150, 92), -- power: demand over generation (TR18, grey until AR12's pick)
 }
 
 Theme.Transparency = {

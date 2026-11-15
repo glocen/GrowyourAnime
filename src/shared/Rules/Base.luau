@@ -13,10 +13,14 @@
 --                                Voidkin an account ever owns becomes its lead
 --   SetWorker { Bay, Voidkin }   puts a Voidkin to work in an open bay, moving it from another bay; "" empties the bay
 --   Infuse { Chamber | Line, Def, Level }
---                                electricity from the battery into one shard still breaking (Chamber) or waiting (Line),
---                                lifting its top two tiers by Config.Shards.Infusion[Level]: once a shard, never one that
---                                holds a stated Voidkin, the price the same whatever the shard. Def is the shard the
---                                client saw there; a shard that broke or moved since is refused, and nothing is spent
+--                                voltage from the battery into one shard still breaking (Chamber) or waiting (Line): its
+--                                time left cut to Config.Shards.Voltage.Levels[Level]'s share, at once (TR18; the director,
+--                                2026-11-15, "Faster break"), its odds untouched. Once a shard, never one that holds a
+--                                stated Voidkin, never one it saves under a minute; the price is Rules.Power.Voltage's. Def
+--                                is the shard the client saw there; a shard that broke or moved since is refused, and
+--                                nothing is spent
+--   SetPower { Auto, Shares? }   how the generation is split (Rules.Power): Auto, or each machine's share of it, checked
+--                                by Rules.Power.Shares; refused until the Power screen has opened (Base.Power.Open)
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -24,6 +28,7 @@ local Shards = require(Shared.Definitions.Shards)
 local Breaker = require(Shared.Rules.Breaker)
 local Collection = require(Shared.Rules.Collection)
 local Odds = require(Shared.Rules.Odds)
+local Power = require(Shared.Rules.Power)
 local ShardConfig = require(Shared.Config.Shards)
 
 local Base = {}
@@ -38,10 +43,13 @@ Base.Chosen = "Chosen" -- the starter was already chosen
 Base.NoShard = "NoShard" -- none of that shard in the bag
 Base.Empty = "Empty" -- nothing in that chamber, or nothing ready to open
 Base.Leading = "Leading" -- the lead can't also work: one role at a time (docs/design.md, "Roles")
-Base.Named = "Named" -- the shard holds a stated Voidkin: no odds to lift
-Base.Infused = "Infused" -- the shard has had its infusion
-Base.Short = "Short" -- the battery holds less electricity than the price
+Base.Named = "Named" -- the shard holds a stated Voidkin: voltage isn't offered on it
+Base.Infused = "Infused" -- the shard has had its voltage
+Base.Brief = "Brief" -- voltage would save it under Config.Shards.Voltage.MinSavedSeconds: not offered
+Base.Short = "Short" -- the battery holds less charge than the price
 Base.Moved = "Moved" -- the shard isn't there any more: it broke, or the line moved on
+Base.Closed = "Closed" -- the Power screen hasn't opened yet: Auto runs the base unseen
+Base.Over = "Over" -- the shares come to more than the whole generation
 
 local function refuse(code: string): Answer
 	return { Ok = false, Error = code }
@@ -165,7 +173,7 @@ function Base.SetWorker(data: Profile.Data, args: any, now: number): Answer
 end
 
 function Base.Infuse(data: Profile.Data, args: any, now: number): Answer
-	local levelAt = slot(field(args, "Level"), #ShardConfig.Infusion)
+	local levelAt = slot(field(args, "Level"), #ShardConfig.Voltage.Levels)
 	local chamber, line, def = field(args, "Chamber"), field(args, "Line"), field(args, "Def")
 	if levelAt == nil or type(def) ~= "string" or (chamber == nil) == (line == nil) then
 		return refuse(Base.BadArgs)
@@ -188,26 +196,56 @@ function Base.Infuse(data: Profile.Data, args: any, now: number): Answer
 	if work == nil or work.Def ~= def then
 		return refuse(Base.Moved)
 	end
-	if Shards.ById[def] == nil then
+	local row = Shards.ById[def]
+	if row == nil then
 		return refuse(Base.Unknown)
 	end
-	if Odds.Lifted(def) == 0 then
+	if row.Holds ~= "" then
 		return refuse(Base.Named)
 	end
-	if work.Luck > 0 then
+	if work.Volt ~= nil then
 		return refuse(Base.Infused)
 	end
-	Breaker.Advance(data, now) -- the battery as it stands now
+	Breaker.Advance(data, now) -- the battery and the work as they stand now
 	if table.find(data.Base.Ready, work) then
-		return refuse(Base.Moved) -- it broke a moment ago: infusion goes into a shard before it breaks, so nothing is spent
+		return refuse(Base.Moved) -- it broke a moment ago: voltage goes into a shard before it breaks, so nothing is spent
 	end
-	local level = ShardConfig.Infusion[levelAt]
-	if data.Base.Battery < level.Energy then
+	local price, saved = Power.Voltage(work, levelAt)
+	if price == nil then
+		return refuse(Base.Brief)
+	end
+	if data.Base.Charge < price then
 		return refuse(Base.Short)
 	end
-	data.Base.Battery -= level.Energy
-	work.Luck = math.min(ShardConfig.LuckCap, work.Luck + level.Lift)
-	return { Ok = true, Def = def, Level = levelAt, Luck = work.Luck, Spent = level.Energy }
+	data.Base.Charge -= price
+	work.Volt = levelAt
+	work.Done += saved
+	Breaker.Settle(data) -- High breaks it at once: to Ready, and the chamber it frees takes the line's next
+	return { Ok = true, Def = def, Level = levelAt, Spent = price, Saved = saved, Ready = table.find(data.Base.Ready, work) ~= nil }
+end
+
+function Base.SetPower(data: Profile.Data, args: any, now: number): Answer
+	if not data.Base.Power.Open then
+		return refuse(Base.Closed)
+	end
+	local auto = field(args, "Auto")
+	if type(auto) ~= "boolean" then
+		return refuse(Base.BadArgs)
+	end
+	local shares: { [string]: number }? = nil
+	if not auto then
+		local checked, code = Power.Shares(field(args, "Shares"))
+		if checked == nil then
+			return refuse(code or Base.BadArgs)
+		end
+		shares = checked
+	end
+	Breaker.Advance(data, now) -- the old split ran up to now
+	data.Base.Power.Auto = auto
+	if shares then
+		data.Base.Power.Shares = shares
+	end
+	return { Ok = true, Auto = auto, Shares = table.clone(data.Base.Power.Shares) }
 end
 
 Base.Actions = {
@@ -217,6 +255,7 @@ Base.Actions = {
 	Open = Base.Open,
 	SetWorker = Base.SetWorker,
 	Infuse = Base.Infuse,
+	SetPower = Base.SetPower,
 } :: { [string]: Action }
 
 return Base

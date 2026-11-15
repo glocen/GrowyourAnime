@@ -10,11 +10,12 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order, for phase 2 first:** the level-up B; Combat Power's foot; AR13's six layers; the festival tag's block; then AR6's gear (phase 3).
 - **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
 
-**Faber (builder).** 2026-11-15, night.
-- **Eight pieces wait for the screen**, which is the director's until they say it's free. Each needs its self-test, its stills at phone size and research's pass: AR12's HUD part 1 (35bec4e); Kirra's install (27b815a, with Scarf Step's blockout with Modulo); take F's lead card, its level's mark in D's place (9407702); the dock of three icons; TR19, home from the dock's Base tile; TR20, hover; Combat Power in cobalt; the shard pictures in the bag, on the chips and in the chambers (AR12, "Faber's build, the bag and the chips" and "Faber's build, the chambers").
-- **For research:** the Base screen now opens only from a bay's prompt: does it need another way in (TR19)? The cobalt's rise goes 40% toward white, and one number (`Finish.White`) holds the colour if you'd rather.
-- Type check 0 new, logic 5840 offline.
-- **Next:** AR13's cues once the director says the upload can go; until then, the stills when the screen is free. Nothing running, no lock held.
+**Faber (builder).** 2026-11-15, 17:30.
+- **TR18, the base as a power plant, is built in grey:** the rule, the save, voltage, the generator, the Power screen and the pill (TR18, "Faber's build"). Logic 5905 offline, type check 0 new.
+- **Nine pieces wait for the screen:** TR18 and the eight before it, each with its self-test, its stills at phone size and research's pass. Studio is open (the director, 2026-11-15); no playtest until the director says the screen is free.
+  - The eight: AR12's HUD part 1 (35bec4e); Kirra's install (27b815a, with Scarf Step's blockout); take F's lead card (9407702); the dock; TR19; TR20; Combat Power in cobalt; the shard pictures (AR12, the two "Faber's build" blocks).
+- **For research:** TR18's two questions (its build); TR19's way into the Base screen; the cobalt's `Finish.White`.
+- **Next:** the festival tag in the build (AR12, Modulo's images); AR13's cues on the director's word. Nothing running, no lock held.
 
 **Modulo (assets).** 2026-11-15, 17:27, on Fable 5.2.
 - **AR12, the festival tag's images are delivered, for Faber:** `build/handoff/UI/shards/tag/` (four images, `shard_tag.json`, the sheet `shard_tag_images.png`; AR12, "Where a shard came from", "The images for the build"). Sizes are counted on the picture's side, as `Config.Hud.ShardArt` counts it. Content check PASS for upload; logged, the ids to come. The tag's drawing lost a corner at its image's edge: fixed, and the block's sheet rendered again.
@@ -49,6 +50,12 @@ For Faber:
 - Modulo, for research, 2026-11-15, night: the director's words in the asset maker's session, for the register, word for word: "the leveling up text need a rework, the go back home after all our voidkin need to be a teleport in fact it should be scrapped there should be a Ui to tp back to base with a small CD and only when out of combat/boss area event etc". Nothing is changed on them: remarks mid-build. Modulo's reading, not the director's words: the level-up's text is reworked (asked what's wrong with it, the director ticked its look, its words, its motion or place, and "All of it": a fresh take, shown as takes); the fallen card's "Go home" goes; a control on the HUD teleports to the base, on a short cooldown, only out of a fight, a boss area and an event. Then, the same night: "the level up could come as a notice like on the left usually ui but different color with the name of the voidkin + level text reworked". Research: the register and the pieces. Faber: it touches TR16's "Go home" chip.
 - Tier 1, Faber, 2026-11-15, AR12's HUD: the readout takes the ring's place and TR13's grey looks go with the ring. It keeps TR3's fight-only fade (`Config.Hud.Readout.Always` shows it always, to compare), so out of a fight the eye stands alone beside an empty place. It hides while the lead is down, and the eye stays, fainter, and says why on a tap. A fallen card's "Send another" or "Go home" now stands after the eye in the same row. A signature with no icon drawn shows its class's glyph. Credits' flying icon is the mint coin, its gain in teal. The face covers the HUD and the toasts; the screens keep Builder Sans. Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, TR17 and TR9: a switch to a Voidkin whose body isn't drawn yet lights its cell on the strip at once and changes the stage and the panel together. The currencies' chips are sized to their numbers. An infusion button holds its name over its price. The Breaker's place line reads "· infused, low voltage".
+- Tier 1, Faber, 2026-11-15, TR18: my calls are listed in TR18, "Faber's build". The ones you'll see:
+  - the pill reads "30 / 34 kW" with the battery's kWh after it, amber while demand is over generation;
+  - the generator stands left of the Breaker;
+  - the Power screen opens the first time the Training machine draws;
+  - voltage is refused on a shard that holds a stated Voidkin.
+  - Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, night, AR12's chambers: an infused chamber says "Infused" on one line, its level in the pane, as on a chip; a row with one infused takes the 60-point picture for every chamber, so the words line up; a chamber is 138 points tall, from 124. Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, TR20: a Breaker chamber's halo is its edge leaning toward the accent, as it has no halo layer; the Breaker's chips hover with the chambers, as they share its tap; a card's rim is its rarity's trim. The screens' tabs, close buttons and the Voidkin rail take hover at the shared finish. Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, TR19: the cooldown dims only the share still to come, a veil swept away left to right, so the Base tile brightens as it comes back. A quiet tile at home doesn't sink on a press. Research: say in your row what you'd change.
@@ -86,6 +93,18 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, evening. TR18 built: the base as a power plant (Faber)
+
+- **What:** the base runs on kW and kWh, built in grey:
+  - the bays generate, and each machine draws its rating, with Auto or the player's split;
+  - the battery covers what generation can't, to its 60 kWh;
+  - infusion is now voltage, paid in kWh: Low halves a shard's time, High breaks it now;
+  - the Training machine trains on the base's clock;
+  - the generator's prompt opens the Power screen; the HUD's pill says generation against demand.
+- **Where:** `Rules/Power`, `Rules/Breaker`, `Rules/Base`, migration 4, `UI/PowerScreen`; TR18, "Faber's build".
+- **Open:** the self-test, the take at phone size, research's verdict in motion; two questions for research in the build.
+- **For:** research, then the director.
 
 ### 2026-11-15, night. The dock's images delivered (Modulo)
 

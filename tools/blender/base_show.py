@@ -12,9 +12,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import base_ink as ink  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 
-Mesh, Piece = kit.Mesh, kit.Piece
+Mesh, Piece = ink.Mesh, kit.Piece   # the kit's mesh, with the base's thinner hull
 TOP = 1.2                        # where the Voidkin stands, up from the floor
 SIDES = 8
 FLAT = math.pi / SIDES           # a flat side toward the Strip

@@ -6552,7 +6552,7 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **The way:** no sheet. Modulo's design goes straight in the game as a block, and research gives one verdict there from the player's camera at phone size.
 - **Order:** Modulo's next piece after Watt's model. Faber installs it after TR20.
 
-**Status:** deliveries 4 to 6 are installed (AR15, "Faber's install"), in the dev build until AR16's verdict, since the look is reopened. The showcase's plinth is delivered, 2026-11-15, 22:17 (Modulo; "Delivery 6", for TR22). Before it, level 1 is delivered a fifth time, under construction, 2026-11-15, 21:59 (Modulo; "Delivery 5"): the plant is still going up on its whole plot, on the director's word at about 21:47 ("at level 1 it rly need to look like it under construction"). The plot's size is delivery 4's (200 by 200, the director at about 21:37: "the base must be that 200x200"). `build/handoff/Base/`. For Faber's install; research's verdict is in the game. Delivery 2, the power yard, stands as the base's look, and its kit is published; of delivery 3's four published pictures two are stale. Delivery 1, the plan from Lantern Row's kit, is the director's no (20:46: "it need look like an base not lantern row ground"). Levels 2 and 3 aren't made.
+**Status:** deliveries 4 to 6 are installed (AR15, "Faber's install"). The yard's look is kept (the director, 2026-11-15: "it simple that graphism was perfect"); AR16 re-lays it as a star and cuts the building site (AR16, "Delivery 1"). The showcase's plinth is delivered, 2026-11-15, 22:17 (Modulo; "Delivery 6", for TR22). Before it, level 1 is delivered a fifth time, under construction, 2026-11-15, 21:59 (Modulo; "Delivery 5"): the plant is still going up on its whole plot, on the director's word at about 21:47 ("at level 1 it rly need to look like it under construction"). The plot's size is delivery 4's (200 by 200, the director at about 21:37: "the base must be that 200x200"). `build/handoff/Base/`. For Faber's install; research's verdict is in the game. Delivery 2, the power yard, stands as the base's look, and its kit is published; of delivery 3's four published pictures two are stale. Delivery 1, the plan from Lantern Row's kit, is the director's no (20:46: "it need look like an base not lantern row ground"). Levels 2 and 3 aren't made.
 
 **Delivery 1, level 1: the yard** (Modulo, 2026-11-15, 20:31 to 20:45 by the clock).
 - **What it is:** a plan, as Lantern Row's. Every piece is one of Lantern Row's kit, published already, so nothing is uploaded: 19 pieces, 4,732 triangles and 3 lights a plot.
@@ -6762,7 +6762,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below), in the dev build until AR16's verdict, since the look is reopened. The battery, the Training machine and the Festival Door wait for AR16.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. The battery's install, the Training machine and the Festival Door follow AR16.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -6913,6 +6913,51 @@ Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's 
   - the Tower behind;
   - the bare lot of a player who isn't in the server.
 - **Order:** Modulo's next piece. The rest of AR15 (the battery, the Training machine and the Door) resumes in the yard's look after it.
+
+### Delivery 1: the star, three void machines, the thinner outline (Modulo, 2026-11-15, 23:15, to 2026-11-16, 00:18)
+
+In `build/handoff/Base/`, exported and rendered in Blender (the director to Modulo, about 23:40: "pc has room to render anything you want"). **Nothing was seen in Studio.** The director's four words came between 23:44 and 23:58 by the PC's clock; "to 00:15" in the block above was Modulo's wrong estimate.
+
+- **Where everything stands** (`plan.json`, `layout`: Modulo's proposal for `Config.World`; across, then studs in from the front edge; "was" is by Modulo's scripts):
+
+| Thing | Was | Now |
+|---|---|---|
+| Arrival | 0, 40, facing the Strip | 0, 10, facing into the plot |
+| Generator, the heart | -17, 12 | 0, 72, at the end of the way in |
+| Void Breaker (chambers 3.5 either side, waiting places 9, 12 and 15 out from its body, as before) | 0, 12 | 34, 38 |
+| Festival Door | 34, 12 | -34, 38 |
+| Bays 1 and 2 | -22 and 22, 26 | -68 and 68, 72 |
+| Battery (its seats move with it: `machines.battery.seats`) | 0, 26 | 34, 106 |
+| Training machine | -34, 12 | -34, 106 |
+| Bays 3 to 6, seeds for levels 2 and 3, on dormant lots | -22 and 22, at 72 and 120 | -68 and 68 at 120; -28 and 28 at 168 |
+| Showcase | 14, 4.9 | the same, beside the way in |
+
+- **The placement is a star round the generator**, which stands at the plot's heart inside a ring of current, 18 studs in radius, open toward the gate for a quarter of its round. The way in runs into the ring's mouth. The ring's two ends run out on the slant to the Breaker and the Door, nearer the gate; the bus runs out each side to a bay; two slants run back to the battery and the Training machine; the main line goes on to the back wall, dormant. The first try, one straight row 40 in, is the one the director called "a bit to simplish".
+- **The measure** (`layout.check`, by script): every neighbour is 48.1 studs from the next, against 25. The way in is 20 wide and clear from the gate to the generator: the plinth's edge is 0.95 outside it, and a flood mast stands each side of it, 50 in, outside its line.
+- **The floor follows** (`base_kit.py`, `marks`: every mark is drawn in the plot's own studs, so a floor's picture shows whatever falls on it).
+  - `Base_Court1`: redrawn.
+  - `YardLive`, `YardBack` and `WingsLive`: three new floor pieces. `YardLive` is the yard's block 48 in, `YardBack` the block 96 in, `WingsLive` the wings' block 48 in. **Each is `Yard`'s or `Wings`' own mesh** with its own two pictures, so the mesh ids already published serve.
+  - `Base_Yard` and `Base_Wings`: the dormant blocks. The yard's lot moved from 22 to 28 across. The wings' front block is now dormant.
+  - The generator's ground is a well of void, 9 in radius: dark, a few far lights in it, a violet rim inside Power's yellow.
+  - For the upload: six colour and glow pairs (`Court1`, `Yard`, `Wings`, `YardLive`, `YardBack`, `WingsLive`).
+- **Three void machines** (`base_machines.py`), one language set on the yard's steel: horns of dark void stone with a vein of the void's violet, and what they hold floats between them and turns. The atlas has two new swatches for it, `void` and `abyss`, so **`Base_Kit_Color.png` and `Base_Kit_Glow.png` are uploaded again**. The battery, the walls, the gate, the pylons, the floods and the transformers keep the yard's look.
+  - **The generator**, 26 studs high from 8.5. `Generator` is the cradle: two steel feet at 9.2 across each side, the plant's meter on each, and from each a great horn closing over the heart; a spike of the void's light rising from the well; four fangs round the well; the plant's shard over the tips. `GeneratorRotor` is the drum in a flywheel, and floats **11.5 up** (it was 5.3), turning about its own X as before. **`GeneratorRing` is a new piece**: the great ring, 7.6 in radius, at the same place and height, **turned 90** so its face looks at the gate, turning about its own X, slowly, against the rotor. Its footprint outgrew the stand-in's: the two feet are solid, and the well between them shut to walking is Faber's call.
+  - **The Void Breaker**, on the same footprint with the same chambers, waiting places and shard's room: a block of void stone, two jaws closing over the chambers with a fang down into each, and its crystal floating between the jaws' tips, 10.2 up, where the builder's `BreakerLamp` is. Its light stays cyan. `BreakerChamber` is a seat with four claws; its glow is still its state.
+  - **A bay**, on the same pad and the same turn: a dais round a small dark well where the worker stands, and on the outer side a crescent of two horns holding the eye, a ring round a floating shard, 8 up. `BayHalo` keeps its contract (one pale swatch, the worker's rarity colour, stood only while a worker works): a ring round the feet, a ring in the eye, and three motes rising from over the worker's head to the eye. Its light moved with the eye.
+  - Triangles: Breaker 682, chamber 270, waiting place 132, bay 648, halo 168, generator 758, rotor 808, ring 576.
+- **Cut:** the building site whole. Its eight pieces left the kit and their mesh files are removed (`Crane`, `Frame`, `Scaffold`, `Foundation`, `Stack`, `Drum`, `Barrier`, `Cabin`); the wall is hung whole. Placements 137 to 82, the yard's triangles 32,500 to 21,384, real lights 6 to 5.
+- **Kept, where they serve:** a flood mast each side of the way in before the ring; a transformer behind each bay's line; the pylons and their lines; the plinth.
+- **The outline** (`base_ink.py`): the hull is **0.11 studs** on every base piece, from 0.14; Lantern Row keeps 0.14. Every shape of a machine that doesn't glow and is 0.25 by 0.8 or more has one, the round and slanted ones included (checked by script: one hull a shape, none doubled). **Every base mesh with a hull changed, so each is published again.**
+- **For a later effect, not built:** `plan.json`, `current`, has the live conduits' runs and the ring, each from the heart outward, for a pulse of light along them. It is a new effect, so tier 2, research's and Faber's.
+- **The look:** `base_1_*.png`, sixteen views rendered in Blender under the place's dusk; `home`, `gate`, `heart`, `generator`, `breaker`, `bay` and `star` are the ones to read. The Door and the Training machine are still stand-ins.
+- **Content checks:** the floor in its first layout, PASS; the outline's meshes, PASS; the void machines and the star's floor: PASS with four conditions (2026-11-16, judged from the code and the renders). For Faber: the halo is tinted with a rarity's pale light, never Mythical's saturated `#FF2848`, and looked at once at 64 px from the court in that tint; and the tallest Voidkin, hair and back included, stays below the first mote (6.5 up, 1.5 behind the pad's middle), or Modulo moves the motes up. For everyone: only a shard ever sits in a Breaker chamber, never a fighter; and the bay's ring keeps a light crystal in a round hoop, with the word "eye" kept out of anything players see.
+- **Made and withdrawn on the way:** a blockout of the void sanctum (the night's first reading), three pictures of which went to the director before their word changed; and the spread as one row. Neither is in git, and `tools/blender/base_void_blockout.py` and `base_site.py` are removed.
+- **Time:** 23:15 to 00:18. The cap was 2 hours for the spread and the outline; the three machines joined at 23:50.
+- **Four facts:**
+  - Implemented: yes, as plan, pictures and meshes in the handoff.
+  - Tested: the spread's check by script; the kit's export, the plan and the look ran in Blender; one hull a shape. **Not tested in Studio.**
+  - Visually reviewed: Modulo, in Blender's renders. Research's verdict comes in the game after the install.
+  - Director-accepted: no. The placement was shown at 23:55 and the three machines at 00:04, with no word on either yet.
 
 ## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
 

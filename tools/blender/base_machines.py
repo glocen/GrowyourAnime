@@ -1,26 +1,36 @@
-"""AR15: the base's machines (docs/asset-requests.md), one at a time, in the base kit's language: steel and bone,
-plates, trusses and ribbed insulators, the current in Power's yellow. Each stands where the builder's stand-in stands
-(WorldService.plot), on the same footprint, so an install moves no rule.
+"""AR15: the base's machines (docs/asset-requests.md), one at a time. Each stands where the builder's stand-in stands
+(WorldService.plot), on the same footprint, so an install moves no rule; the generator alone outgrows its own.
 
 They are base_kit.py's pieces like the others: on the kit's own atlas, a piece's front toward +Y (the Strip), its
 origin on the floor at the stand-in's middle, one unit a stud. What a machine does shows in its own light, which the
 builder turns up and down by the piece's EmissiveStrength.
 
-The Void Breaker (`Breaker`, `BreakerChamber`, `BreakerWaiting`): a gantry over a steel housing. Power comes in yellow
-along the housing; the break is cyan, the Breaker's own colour. A chamber is its own piece, stood once a chamber the
-base has, so each can be lit by itself: bright while it breaks a shard, low when it's empty.
+Three of them are void machines (the director, 2026-11-15: the bay "should be a magic void like machine cause it
+"take the power" of a voidkin who is placed there"; "the generator should a lot bigger and anime like but i like that
+it keep this 3d animation like moving"; "the void breaker need to turn from that electricity machine into a
+voidbreaker like machines"). One language for the three, set on the yard's steel: horns of dark void stone with a
+vein of the void's violet, and what they hold floats between them and turns. The yard round them stays a power yard.
 
-An extraction bay (`Bay`, `BayHalo`): a steel deck with a copper collector ring stood behind the worker. The bay's
-own light is a piece by itself, in one pale swatch, so the builder gives it the worker's rarity colour (TR22).
+The Void Breaker (`Breaker`, `BreakerChamber`, `BreakerWaiting`): a block of void stone under two jaws that close
+over the chambers, a fang reaching down into each, and the Breaker's crystal floating between the jaws' tips. The
+break is cyan, the Breaker's own colour. A chamber is its own piece, stood once a chamber the base has, so each can
+be lit by itself: bright while it breaks a shard, low when it's empty.
 
-The generator (`Generator`, `GeneratorRotor`): a dynamo on a steel housing, its rotor open to view between two end
-bells under a yoke of three bushings. The rotor is its own piece, its origin on its axle, so the builder turns it:
-faster as the plant generates more.
+An extraction bay (`Bay`, `BayHalo`): a dais over a small well of void where the worker stands, and on its outer
+side a crescent of two horns holding an eye, a ring round a floating shard, over the worker's head: what draws the
+power out. The bay's own light is a piece by itself, in one pale swatch, so the builder gives it the worker's rarity
+colour (TR22): a ring round the worker's feet, a ring in the eye, and motes rising from the worker to it.
 
-The battery (`BatteryRack`, `BatteryCell`): a bank. A low rack with eight seats and a bus bar down its middle, and a
-cell a seat as the battery's cap grows with the base's level (research, 2026-11-15: 60, 150 and 400 kWh), two, four
-and eight. A cell is its own piece, so the bank is its own meter: the builder lights the cells one after another as
-the charge rises.
+The generator (`Generator`, `GeneratorRotor`, `GeneratorRing`): a cradle of two great horns over the well in the
+floor, 23 studs high, and floating in it the rotor, a dynamo's drum in a flywheel, inside a great ring of void stone.
+The rotor and the ring are each their own piece, its origin on its axle, so the builder turns them: the rotor about
+the line across the plot, the ring about the way in's, against each other, faster as the plant generates more. The
+void's power rises from the well to the rotor; the current leaves in yellow at the cradle's feet.
+
+The battery (`BatteryRack`, `BatteryCell`): a bank, the yard's own. A low rack with eight seats and a bus bar down its
+middle, and a cell a seat as the battery's cap grows with the base's level (research, 2026-11-15: 60, 150 and 400
+kWh), two, four and eight. A cell is its own piece, so the bank is its own meter: the builder lights the cells one
+after another as the charge rises.
 
 Not run by itself: base_kit.py takes PIECES into its own.
 """
@@ -29,11 +39,15 @@ import math
 import sys
 from pathlib import Path
 
+from mathutils import Vector
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import base_ink as ink  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 
-Mesh, Piece = kit.Mesh, kit.Piece
+Mesh, Piece = ink.Mesh, kit.Piece   # the kit's mesh, with the base's thinner hull
 SIGNS = ((1, 1), (-1, 1), (-1, -1), (1, -1))
+EDGES = ((1, 0), (0, 1), (-1, 0), (0, -1))
 ROUND = ("+x", "-x", "+y", "-y")
 
 # The Breaker's stand-in, the builder's (Faber, 2026-11-15): the body, and the chambers' middles on its top
@@ -41,9 +55,10 @@ BODY = (14.0, 6.0, 5.0)          # across, deep, high
 CHAMBERS = (3.5, 7.0, 4.0)       # a chamber's middle: across (each side), up; and its cube's side
 GAP = (5.85, 8.35)               # the shard's room in a chamber, between the two points: from, to (up from the floor)
 BAY = (10.0, 0.4)                # a bay's stand-in, its pad: its side and its height
-HALO = (4.9, 2.0, 2.6)           # a bay's collector ring: its middle up from the floor, its inner and outer radius
-PLANT = (6.0, 5.0, 8.0)          # the generator's stand-in: across, deep, high
-AXLE = 5.3                       # the generator's rotor: its axle, up from the floor, along X
+HALO = (8.0, 1.7, 2.0)           # a bay's eye: its middle up from the floor, its ring's inner and outer radius
+PLANT = (9.2, 3.4, 4.6)          # the generator's cradle: a foot's place across (each side), and a foot's size across and deep
+AXLE = 11.5                      # the generator's heart: its rotor's and its ring's middle, up from the floor
+REACH = 7.6                      # the generator's great ring: its outer radius
 BANK = (6.0, 4.0, 3.0)           # the battery's stand-in: across, deep, high
 SEAT = 0.6                       # a cell's seat on the rack, up from the floor
 # a cell's seat on the rack, across and toward the Strip, in the order the bank fills: the spawn's row first, from
@@ -67,88 +82,68 @@ def insulator(m, at, length, r=0.34, ribs=3, sides=5):
     m.lathe(profile, at, sides, "ceramic")
 
 
-def breaker():
-    """The Void Breaker's body: a steel housing on a concrete plinth, 14 studs by 6 and 5 high as the stand-in is, a
-    gantry over it to 10.4 with a point reaching down into each chamber, an insulator stack and the Breaker's lamp at
-    its middle. Both long faces are fronts: the Strip sees one, the spawn the other."""
-    m = Mesh()
-    wide, deep, high = BODY
-    m.box((wide + 0.6, deep + 0.6, 0.6), (0, 0, 0.3), "concrete", ink=True)
-    m.box((wide + 0.2, deep + 0.2, 0.5), (0, 0, 0.85), "yellow", pics={k: "hazard" for k in ROUND})
-    m.box((wide, deep, 3.4), (0, 0, 2.8), "steel", pics={"+y": "panel", "-y": "panel"}, ink=True)
-    m.box((wide + 0.4, deep + 0.4, 0.5), (0, 0, high - 0.25), "bone", ink=True)
-    across, up, side = CHAMBERS
-    for sy in (-1, 1):
-        y = sy * (deep / 2 + 0.03)
-        m.box((2.6, 0.16, 2.4), (0, y, 2.9), "dark")                                 # the core's window, the void in it
-        m.box((0.34, 0.2, 1.9), (0, y + sy * 0.02, 2.9), "cyan")
-        for sx in (-1, 1):
-            m.box((4.6, 0.14, 0.22), (sx * 4.3, y, 4.1), "power")                    # the current, in along the housing
-            m.box((0.22, 0.14, 1.4), (sx * 1.9, y, 3.5), "power")                    # and up into the core
-    for sx in (-1, 1):                                                               # the rail's coupling at each end
-        m.box((0.5, 2.2, 1.8), (sx * (wide / 2 + 0.2), 0, 2.0), "girder", ink=True)
-        m.box((0.14, 1.4, 0.24), (sx * (wide / 2 + 0.47), 0, 2.0), "power")
-    # the gantry: a leg at each end, a bone head over both chambers, a point down into each
-    head = 10.0
-    for sx in (-1, 1):
-        post(m, sx * 6.55, 0, high, head - 0.35, 0.55, "girder", ink=True)
-        m.tube([(sx * 6.55, 0, high + 2.6), (sx * 5.2, 0, head - 0.4)], 0.12, "girder")
-        m.box((0.9, 0.9, 0.5), (sx * across, 0, head - 0.6), "girder")
-        m.lathe([(0.42, 0.75), (0.09, 0.0)], (sx * across, 0, GAP[1] + 0.12), 6, "copper", caps=False)
-        m.box((0.22, 0.22, 0.2), (sx * across, 0, GAP[1] + 0.06), "cyan")
-    m.box((14.0, 1.3, 0.7), (0, 0, head), "bone", ink=True)
-    m.box((13.4, 0.16, 0.16), (0, 0.68, head), "power")
-    m.box((13.4, 0.16, 0.16), (0, -0.68, head), "power")
-    # the middle: the stack between the chambers, up to the head, and the lamp on it
-    m.box((1.7, 1.7, 0.8), (0, 0, high + 0.4), "girder", ink=True)
-    insulator(m, (0, 0, high + 0.8), head - 0.35 - (high + 0.8), r=0.72, ribs=5, sides=6)
-    m.box((1.5, 1.5, 0.45), (0, 0, head + 0.57), "girder", ink=True)
-    m.box((0.9, 0.9, 0.7), (0, 0, head + 1.15), "cyan")
-    for sy in (-1, 1):                                                               # the feed, up the back and the front
-        m.tube([(1.1, sy * 2.6, high), (1.1, sy * 1.5, high + 2.4), (0.5, sy * 0.7, head - 0.4)], 0.1, "rubber")
-        m.tube([(-1.1, sy * 2.6, high), (-1.1, sy * 1.5, high + 2.4), (-0.5, sy * 0.7, head - 0.4)], 0.1, "rubber")
-    return Piece("Breaker", m, solid="a box, 14 by 6, 5 high, and the gantry's two legs",
-                 note=f"on the stand-in's footprint. A chamber stands at across {across:g} each side, its foot on the "
-                      f"body's top at {high:g}. The lamp is at {head + 1.15:g} up, a stud over the builder's BreakerLamp")
+# --- void stone's shapes -----------------------------------------------------------------------------------------------
+
+def horn(m, points, radii, sw, flat=(0.0, 1.0, 0.0), deep=1.0, ink=True):
+    """Void stone's own shape: a four-edged shaft swept along `points`, an edge toward each side, `radii[k]` its half
+    width at each point. The points lie in one plane and `flat` is the line across that plane; the shaft's half depth
+    along it is its half width times `deep`. A point at an end makes a fang or a horn's tip; three points with a wide
+    middle make a shard. With `ink`, its drawn edge."""
+    pts = [Vector(p) for p in points]
+    across = Vector(flat).normalized()
+    last = len(pts) - 1
+    edge = m.ink_t if ink and m.ink is not None else None
+
+    def section(k, grow):
+        along = (pts[min(k + 1, last)] - pts[max(k - 1, 0)]).normalized()
+        n = across.cross(along).normalized()
+        at = pts[k] + along * (grow if k == last else -grow if k == 0 else 0.0)
+        return [at + n * ((radii[k] + grow) * sx) + across * ((radii[k] * deep + grow) * sy) for sx, sy in EDGES]
+
+    for grow, hull in ((0.0, False),) + (((edge, True),) if edge else ()):
+        rings = [section(k, grow) for k in range(len(pts))]
+        for k in range(last):
+            mid = (pts[k] + pts[k + 1]) / 2
+            for i in range(4):
+                j = (i + 1) % 4
+                uvs = [(0, 0)] * 4 if hull else [kit.sw_uv(sw, 0.0, q / last) for q in (k, k, k + 1, k + 1)]
+                m.out([rings[k][i], rings[k][j], rings[k + 1][j], rings[k + 1][i]], uvs, mid, ink=hull)
+        for k, inside in ((0, (pts[0] + pts[1]) / 2), (last, (pts[last] + pts[last - 1]) / 2)):
+            if hull or radii[k] > 0.08:
+                uvs = [(0, 0)] * 4 if hull else [kit.sw_uv(sw, 0.5, k / last)] * 4
+                m.out(rings[k], uvs, inside, ink=hull)
 
 
-def breaker_chamber():
-    """One chamber, its foot on the Breaker's top: a girder seat with a cyan line round it, four bone posts with a
-    ceramic clamp each, a ring at its head left open for the gantry's point, and its own point standing up from the
-    seat. The shard sits between the two points. Its glow is the chamber's state."""
-    m = Mesh()
-    _, up, side = CHAMBERS
-    foot = BODY[2]
-    half = side / 2 - 0.15
-    m.box((side + 0.2, side + 0.2, 0.3), (0, 0, 0.15), "girder", ink=True)
-    m.box((3.0, 3.0, 0.1), (0, 0, 0.35), "dark")
-    for s in (-1, 1):
-        m.box((3.4, 0.14, 0.12), (0, s * 1.75, 0.36), "cyan")
-        m.box((0.14, 3.4, 0.12), (s * 1.75, 0, 0.36), "cyan")
-        m.box((side, 0.22, 0.22), (0, s * half, side - 0.2), "girder")
-        m.box((0.22, side, 0.22), (s * half, 0, side - 0.2), "girder")
-    for sx, sy in SIGNS:
-        post(m, sx * half, sy * half, 0.3, side - 0.1, 0.22, "bone")
-        m.box((0.42, 0.42, 0.34), (sx * half, sy * half, side / 2), "ceramic")
-    m.lathe([(0.09, GAP[0] - foot - 0.12), (0.46, 0.4)], (0, 0, 0.0), 6, "copper", caps=False)
-    m.box((0.22, 0.22, 0.2), (0, 0, GAP[0] - foot - 0.06), "cyan")
-    return Piece("BreakerChamber", m,
-                 note=f"its place is the chamber's middle across, on the body's top ({foot:g} up): the stand-in's cube "
-                      f"from {up - side / 2:g} to {up + side / 2:g}. The shard's room is between the points, "
-                      f"{GAP[0]:g} to {GAP[1]:g} up, its middle at {sum(GAP) / 2:g}. Look only")
+def shard(m, at, r, high, sw, lean=0.5, ink=False):
+    """A floating shard, its widest at `at`: a point up and a point down, the lower one the shorter."""
+    x, y, z = at
+    horn(m, [(x, y, z - high * (1 - lean)), at, (x, y, z + high * lean)], [0.04, r, 0.04], sw, ink=ink)
 
 
-def breaker_waiting():
-    """A place in the waiting line: a low cradle on a concrete foot, a cyan mark on its tray."""
-    m = Mesh()
-    m.box((2.5, 2.5, 0.4), (0, 0, 0.2), "concrete", ink=True)
-    m.box((2.1, 2.1, 0.4), (0, 0, 0.6), "girder", ink=True)
-    m.box((1.5, 1.5, 0.08), (0, 0, 0.84), "dark")
-    for s in (-1, 1):
-        m.box((2.1, 0.2, 0.3), (0, s * 0.95, 0.95), "bone")
-    m.box((0.5, 0.5, 0.06), (0, 0, 0.9), "cyan")
-    return Piece("BreakerWaiting", m, solid="a box, 2.5 square, 1 high",
-                 note="on the stand-in's pad, 2.5 square and 1 high; a waiting shard stands on its tray, 0.9 up")
+def vein(m, points, radii, heart, sw="void", r=0.1):
+    """A line of the void's light along a horn's edge, the one that looks at `heart`."""
+    heart = Vector(heart)
+    m.tube([Vector(p) + (heart - Vector(p)).normalized() * q * 0.97 for p, q in zip(points, radii)], r, sw)
+
+
+def hoop(m, at, r0, r1, thick, sides, sw, ink=True):
+    """A ring about X, its middle at `at`: a band from `r0` out to `r1`, `thick` along its axle. With `ink`, its
+    drawn edge."""
+    at = Vector(at)
+    edge = m.ink_t if ink and m.ink is not None else None
+
+    def corner(r, h, a):
+        return at + Vector((h, -r * math.sin(a), r * math.cos(a)))
+
+    for grow, hull in ((0.0, False),) + (((edge, True),) if edge else ()):
+        near, far, half = r0 - grow, r1 + grow, thick / 2 + grow
+        walls = (((far, -half), (far, half)), ((far, half), (near, half)), ((near, half), (near, -half)), ((near, -half), (far, -half)))
+        for i in range(sides):
+            a, b = math.tau * i / sides, math.tau * (i + 1) / sides
+            core = corner((r0 + r1) / 2, 0.0, (a + b) / 2)
+            for face, ((ra, ha), (rb, hb)) in enumerate(walls):
+                uvs = [(0, 0)] * 4 if hull else [kit.sw_uv(sw, 0.0, (0.9, 0.55, 0.25, 0.55)[face])] * 4
+                m.out([corner(ra, ha, a), corner(rb, hb, a), corner(rb, hb, b), corner(ra, ha, b)], uvs, core, ink=hull)
 
 
 def ring(m, x, z, r0, r1, thick, sides, sw):
@@ -159,124 +154,229 @@ def ring(m, x, z, r0, r1, thick, sides, sw):
         m.face([(x + turned.v[i][2] - thick / 2, turned.v[i][1], z - turned.v[i][0]) for i in face], uv)
 
 
-def bay():
-    """An extraction bay: the stand-in's pad, 10 studs square and 0.4 high, as a steel deck where the worker stands,
-    and on its outer side (-X) a frame holding a copper collector ring behind the worker, so the court and the gate
-    see the worker against it. The current the worker makes leaves in yellow, along the deck to the ring's foot.
-    The other three sides stay open: two low posts mark the inner corners."""
-    m = Mesh()
-    side, top = BAY
-    back, mid = -(side / 2 - 0.55), HALO[0]
-    m.box((side, side, top), (0, 0, top / 2), "concrete", ink=True)
-    m.box((side + 0.1, side + 0.1, 0.22), (0, 0, 0.2), "yellow", pics={k: "hazard" for k in ROUND})
-    m.box((7.8, 7.8, 0.06), (0.3, 0, top + 0.03), "steel", pics={"+z": "plate"})
-    for sy in (-1, 1):
-        m.box((1.5, 0.2, 0.05), (back + 1.2, sy * 0.5, top + 0.085), "power")         # the current, out to the ring's foot
-        # an inner corner's post: low, so nothing stands between the court and the worker
-        m.box((0.7, 0.7, 0.8), (side / 2 - 0.6, sy * (side / 2 - 0.6), top + 0.4), "girder", ink=True)
-        insulator(m, (side / 2 - 0.6, sy * (side / 2 - 0.6), top + 0.8), 0.6, r=0.3, ribs=2)
-        m.box((0.3, 0.3, 0.26), (side / 2 - 0.6, sy * (side / 2 - 0.6), top + 1.5), "power")
-        # the frame's post, its insulator and its tip
-        y = sy * (side / 2 - 0.65)
-        m.box((1.0, 1.0, 0.5), (back, y, top + 0.25), "girder", ink=True)
-        post(m, back, y, top + 0.5, 8.0, 0.5, "bone", ink=True)
-        insulator(m, (back, y, 8.0), 1.0)
-        m.box((0.3, 0.3, 0.3), (back, y, 9.15), "power")
-        # the ring's stays, to the post
-        reach = HALO[2] * 0.7071
-        for sz in (-1, 1):
-            m.tube([(back, sy * reach, mid + sz * reach), (back, y - sy * 0.2, mid + sz * 2.5)], 0.11, "girder")
-    m.box((0.45, side - 0.8, 0.45), (back, 0, 7.75), "girder", ink=True)              # the frame's head
-    m.box((0.12, side - 2.0, 0.14), (back + 0.25, 0, 7.75), "power")
-    m.box((0.6, 0.7, 0.36), (back, 0, mid + HALO[2] - 0.08), "girder")                # the ring's clamp under it
-    ring(m, back, mid, HALO[1], HALO[2], 0.36, 12, "copper")
-    m.box((0.9, 1.6, 1.0), (back, 0, top + 0.5), "girder", ink=True)                  # the ring's foot: where the current leaves
-    m.box((0.1, 1.0, 0.2), (back + 0.48, 0, top + 0.6), "power")
-    post(m, back, 0, top + 1.0, mid - HALO[2] + 0.05, 0.3, "rubber")
-    return Piece("Bay", m, solid="a box, 10 square, 0.4 high, and the frame's two posts",
-                 note=f"on the stand-in's pad. Its ring stands on -X: turn 0 on the plot's left, 180 on its right, so "
-                      f"the ring is on the outer side and the worker is seen against it from the court and the gate. "
-                      f"The worker stands at the pad's middle; the ring's middle is {mid:g} up")
-
-
-def bay_halo():
-    """A working bay's own light, a piece by itself: a ring of light inside the collector ring and a square on the
-    deck round the worker's feet. Every face is one pale swatch, so the builder gives it the worker's rarity colour
-    (docs/test-requests.md, TR22) and takes it away when the bay is empty."""
-    m = Mesh(None)
-    side, top = BAY
-    back, mid = -(side / 2 - 0.55), HALO[0]
-    ring(m, back, mid, HALO[1] - 0.42, HALO[1] - 0.04, 0.14, 12, "lamp")
-    for s in (-1, 1):
-        m.box((4.6, 0.18, 0.05), (0, s * 2.21, top + 0.085), "lamp")
-        m.box((0.18, 4.24, 0.05), (s * 2.21, 0, top + 0.085), "lamp")
-    return Piece("BayHalo", m, lights=[("Rarity", (back + 1.4, 0.0, mid + 0.4), "#F6FCFF")],
-                 note="stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on "
-                      "every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without "
-                      "the kit's pictures). Its light is a PointLight in the same colour, the first to go if the "
-                      "plot's lights weigh. Look only")
-
-
 def laid(m, turned, z):
     """A shape turned about Z, laid along X: its heights become its places across, its axle `z` up."""
     for face, uv in zip(turned.f, turned.uv):
         m.face([(turned.v[i][2], turned.v[i][1], z - turned.v[i][0]) for i in face], uv)
 
 
-def generator():
-    """The generator: on the stand-in's footprint, 6 studs by 5, a steel housing with the plant's meter on both its
-    faces, two bone end bells on girder saddles holding the rotor open to view between them, and over it a yoke with
-    three bushings, to 8.5 studs. Both long faces are fronts: the spawn sees one, the Strip the other."""
+# --- the Void Breaker --------------------------------------------------------------------------------------------------
+
+def breaker():
+    """The Void Breaker's body: a block of void stone on a steel plinth, 14 studs by 6 and 5 high as the stand-in is,
+    a line of the break's cyan round its foot and the void's veins on its faces. Over it two jaws, a horn rising from
+    each end and closing over the chambers to 12.6, a fang reaching down from each into its chamber, and between the
+    jaws' tips the Breaker's crystal, floating. Both long faces are fronts: the Strip sees one, the spawn the other."""
     m = Mesh()
-    wide, deep, _ = PLANT
-    m.box((wide + 0.4, deep + 0.4, 0.5), (0, 0, 0.25), "concrete", ink=True)
-    m.box((wide + 0.2, deep + 0.2, 0.4), (0, 0, 0.7), "yellow", pics={k: "hazard" for k in ROUND})
-    m.box((wide, deep, 2.4), (0, 0, 2.1), "steel", pics={"+y": "panel", "-y": "panel"}, ink=True)
-    m.box((wide + 0.3, deep + 0.3, 0.3), (0, 0, 3.35), "bone", ink=True)
+    wide, deep, high = BODY
+    m.box((wide + 0.6, deep + 0.6, 0.6), (0, 0, 0.3), "girder", ink=True)
+    m.box((wide + 0.2, deep + 0.2, 0.16), (0, 0, 0.74), "cyan")
+    m.box((wide, deep, 3.4), (0, 0, 2.8), "abyss", ink=True)
+    m.box((wide + 0.4, deep + 0.4, 0.5), (0, 0, high - 0.25), "bone", ink=True)
+    across, up, side = CHAMBERS
     for sy in (-1, 1):
         y = sy * (deep / 2 + 0.03)
-        m.box((2.6, 0.14, 1.2), (0, y, 2.2), "dark")                                  # the meter's window
-        for k, tall in enumerate((0.35, 0.55, 0.75, 0.95)):                           # and its bars, rising
-            m.box((0.32, 0.18, tall), (-0.84 + 0.56 * k, y + sy * 0.02, 1.72 + tall / 2), "power")
+        m.box((2.6, 0.16, 2.4), (0, y, 2.9), "dark")                                 # the core's window, the void in it
+        m.box((0.34, 0.2, 1.9), (0, y + sy * 0.02, 2.9), "cyan")
         for sx in (-1, 1):
-            m.box((0.2, 0.14, 1.5), (sx * 2.4, y, 2.0), "power")                      # the current, down to the floor's lines
-    bells = Mesh(None)
+            m.box((4.6, 0.14, 0.2), (sx * 4.3, y, 4.1), "void")                      # the void's veins, in along the block
+            m.box((0.2, 0.14, 1.4), (sx * 1.9, y, 3.5), "void")                      # and down into the core
+            m.box((0.2, 0.14, 1.9), (sx * 6.5, y, 3.25), "void")
+    for sx in (-1, 1):                                                               # the rail's coupling at each end
+        m.box((0.5, 2.2, 1.8), (sx * (wide / 2 + 0.2), 0, 2.0), "girder", ink=True)
+        m.box((0.14, 1.4, 0.24), (sx * (wide / 2 + 0.47), 0, 2.0), "cyan")
+    # the jaws: a horn from each end, closing over the chambers; a fang down into each
     for sx in (-1, 1):
-        m.box((0.9, 3.6, 1.0), (sx * 2.2, 0, 4.0), "girder", ink=True)                # a saddle
-        bells.lathe([(1.6, sx * 2.2 + 0.45), (1.6, sx * 2.2 - 0.45)], (0, 0, 0), 10, "bone")
-        bells.lathe([(0.5, sx * 2.2 + sx * 0.6 + 0.15), (0.5, sx * 2.2 + sx * 0.6 - 0.15)], (0, 0, 0), 6, "power")   # the axle's eye
-        post(m, sx * 2.2, 0, AXLE + 1.5, 7.35, 0.5, "girder")                         # the yoke's post
-        m.tube([(sx * 2.85, 0, 7.4), (sx * 3.05, 1.6, 3.5)], 0.1, "rubber")
-        m.tube([(sx * 2.85, 0, 7.4), (sx * 3.05, -1.6, 3.5)], 0.1, "rubber")
-    laid(m, bells, AXLE)
-    m.box((wide, 0.8, 0.45), (0, 0, 7.57), "girder", ink=True)                        # the yoke, over the rotor
-    m.box((wide - 0.6, 0.14, 0.14), (0, 0.42, 7.57), "power")
-    m.box((wide - 0.6, 0.14, 0.14), (0, -0.42, 7.57), "power")
-    for x in (-1.6, 0.0, 1.6):                                                        # three bushings
-        insulator(m, (x, 0, 7.8), 0.55, r=0.36, ribs=2)
-        m.box((0.26, 0.26, 0.2), (x, 0, 8.45), "power")
-    return Piece("Generator", m, solid="a box, 6 by 5, 8 high",
-                 note=f"on the stand-in's footprint, 8.55 high with its bushings. Its rotor is GeneratorRotor, its axle "
-                      f"along X, {AXLE:g} up at the machine's middle: it turns clear of everything, 1.75 at its widest")
+        jaw = [(sx * 6.6, 0, high), (sx * 7.5, 0, 8.4), (sx * 6.0, 0, 11.4), (sx * 2.0, 0, 12.6)]
+        widths = [0.85, 0.8, 0.6, 0.06]
+        m.box((1.9, 2.2, 0.4), (sx * 6.6, 0, high + 0.2), "girder", ink=True)
+        horn(m, jaw, widths, "abyss", deep=0.8)
+        vein(m, jaw[:3] + [(sx * 3.4, 0, 12.18)], widths[:3] + [0.3], (0, 0, 8.0))
+        horn(m, [(sx * 3.9, 0, 11.9), (sx * across, 0, GAP[1] + 0.12)], [0.5, 0.05], "abyss")
+        m.box((0.22, 0.22, 0.2), (sx * across, 0, GAP[1] + 0.06), "cyan")
+    # the middle: a seat between the chambers, a point standing on it, and the crystal over it, between the jaws' tips
+    m.box((1.7, 1.7, 0.8), (0, 0, high + 0.4), "abyss", ink=True)
+    horn(m, [(0, 0, high + 0.8), (0, 0, high + 2.3)], [0.5, 0.05], "abyss")
+    shard(m, (0, 0, 10.2), 1.15, 5.2, "cyan")
+    return Piece("Breaker", m, solid="a box, 14 by 6, 5 high, and the jaws' two feet",
+                 note=f"on the stand-in's footprint, 12.8 high. A chamber stands at across {across:g} each side, its "
+                      f"foot on the body's top at {high:g}. The crystal is the Breaker's lamp, its middle 10.2 up, where "
+                      f"the builder's BreakerLamp is")
+
+
+def breaker_chamber():
+    """One chamber, its foot on the Breaker's top: a seat of void stone with a cyan line round it, four claws standing
+    from its corners and closing a little over it, and its own point standing up from the seat. The shard sits
+    between that point and the jaw's fang. Its glow is the chamber's state."""
+    m = Mesh()
+    _, up, side = CHAMBERS
+    foot = BODY[2]
+    half = side / 2 - 0.15
+    m.box((side + 0.2, side + 0.2, 0.3), (0, 0, 0.15), "abyss", ink=True)
+    m.box((3.0, 3.0, 0.1), (0, 0, 0.35), "dark")
+    for s in (-1, 1):
+        m.box((3.4, 0.14, 0.12), (0, s * 1.75, 0.36), "cyan")
+        m.box((0.14, 3.4, 0.12), (s * 1.75, 0, 0.36), "cyan")
+    for sx, sy in SIGNS:
+        horn(m, [(sx * half, sy * half, 0.3), (sx * (half + 0.2), sy * (half + 0.2), 2.2), (sx * (half - 0.7), sy * (half - 0.7), side - 0.1)],
+             [0.32, 0.28, 0.05], "abyss", flat=(sx, -sy, 0.0))
+    horn(m, [(0, 0, 0.4), (0, 0, GAP[0] - foot - 0.12)], [0.46, 0.05], "abyss")
+    m.box((0.22, 0.22, 0.2), (0, 0, GAP[0] - foot - 0.06), "cyan")
+    return Piece("BreakerChamber", m,
+                 note=f"its place is the chamber's middle across, on the body's top ({foot:g} up): the stand-in's cube "
+                      f"from {up - side / 2:g} to {up + side / 2:g}. The shard's room is between the points, "
+                      f"{GAP[0]:g} to {GAP[1]:g} up, its middle at {sum(GAP) / 2:g}. Look only")
+
+
+def breaker_waiting():
+    """A place in the waiting line: a low cradle of void stone on a steel foot, a cyan mark on its tray."""
+    m = Mesh()
+    m.box((2.5, 2.5, 0.4), (0, 0, 0.2), "girder", ink=True)
+    m.box((2.1, 2.1, 0.4), (0, 0, 0.6), "abyss", ink=True)
+    m.box((1.5, 1.5, 0.08), (0, 0, 0.84), "dark")
+    for s in (-1, 1):
+        m.box((2.1, 0.2, 0.3), (0, s * 0.95, 0.95), "bone")
+    m.box((0.5, 0.5, 0.06), (0, 0, 0.9), "cyan")
+    return Piece("BreakerWaiting", m, solid="a box, 2.5 square, 1 high",
+                 note="on the stand-in's pad, 2.5 square and 1 high; a waiting shard stands on its tray, 0.9 up")
+
+
+# --- an extraction bay -------------------------------------------------------------------------------------------------
+
+def bay():
+    """An extraction bay: the stand-in's pad, 10 studs square and 0.4 high, as a steel deck with a line of the void's
+    light round its foot; on it a dais of void stone round a small dark well, where the worker stands. On its outer
+    side (-X) a crescent, two horns rising from the deck and closing over the worker's head, holds the eye between
+    its tips: a ring of void stone round a floating shard, which draws the worker's power out. What the eye takes
+    leaves as current, in yellow, at the crescent's foot. The other three sides stay open: a low fang and a mote mark
+    each inner corner."""
+    m = Mesh()
+    side, top = BAY
+    back, eye = -(side / 2 - 0.55), HALO[0]
+    m.box((side, side, top), (0, 0, top / 2), "girder", ink=True)
+    m.box((side + 0.1, side + 0.1, 0.1), (0, 0, 0.2), "void")
+    m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, top), 12, "abyss")
+    m.lathe([(3.55, 0.17), (3.85, 0.17)], (0, 0, top), 12, "void", caps=False)        # the dais's line of light
+    m.lathe([(2.6, 0.19), (2.6, 0.16)], (0, 0, top), 12, "dark")                      # the well under the worker's feet
+    m.box((1.3, side - 1.2, 0.6), (back, 0, top + 0.3), "abyss", ink=True)            # the crescent's foot, along the back
+    for sy in (-1, 1):
+        arm = [(back, sy * 3.7, top + 0.5), (back, sy * 4.9, 3.6), (back, sy * 4.3, 6.9), (back, sy * 2.3, 9.4)]
+        widths = [0.8, 0.72, 0.5, 0.05]
+        horn(m, arm, widths, "abyss", flat=(1.0, 0.0, 0.0), deep=0.75)
+        vein(m, arm[:3] + [(back, sy * 3.2, 8.4)], widths[:3] + [0.25], (back, 0, 5.5), r=0.08)
+        # an inner corner's fang and its mote: low, so nothing stands between the court and the worker
+        horn(m, [(4.35, sy * 4.35, top), (3.75, sy * 3.75, top + 1.7)], [0.42, 0.05], "abyss", flat=(sy, -1.0, 0.0))
+        shard(m, (3.6, sy * 3.6, top + 2.55), 0.24, 0.9, "void")
+    hoop(m, (back, 0, eye), HALO[1], HALO[2], 0.4, 12, "abyss")
+    shard(m, (back, 0, eye), 0.8, 3.0, "void", lean=0.55)
+    m.box((0.9, 1.6, 1.0), (back + 0.3, 0, top + 0.5), "girder", ink=True)            # where the current leaves
+    m.box((0.1, 1.0, 0.2), (back + 0.78, 0, top + 0.6), "power")
+    return Piece("Bay", m, solid="a box, 10 square, 0.4 high, and the crescent's two feet",
+                 note=f"on the stand-in's pad, 9.4 high at its horns' tips. Its crescent stands on -X: turn 0 on the "
+                      f"plot's left, 180 on its right, so the eye is on the outer side and the worker is seen under it "
+                      f"from the court and the gate. The worker stands at the pad's middle; the eye's middle is {eye:g} up")
+
+
+def bay_halo():
+    """A working bay's own light, a piece by itself: a ring round the worker's feet on the dais, a ring in the eye
+    round its shard, and three motes rising from over the worker's head to the eye, growing as they near it: the
+    worker's power, drawn out. Every face is one pale swatch, so the builder gives it the worker's rarity colour
+    (docs/test-requests.md, TR22) and takes it away when the bay is empty."""
+    m = Mesh(None)
+    side, top = BAY
+    back, eye = -(side / 2 - 0.55), HALO[0]
+    ring(m, back + 0.02, eye, HALO[1] - 0.42, HALO[1] - 0.08, 0.14, 12, "lamp")
+    m.lathe([(2.75, 0.2), (3.05, 0.2)], (0, 0, top), 12, "lamp", caps=False)
+    for x, z, r in ((-1.5, 6.5, 0.16), (-2.5, 7.1, 0.22), (-3.4, 7.6, 0.28)):
+        shard(m, (x, 0, z), r, r * 3.4, "lamp")
+    return Piece("BayHalo", m, lights=[("Rarity", (back + 1.4, 0.0, eye - 0.6), "#F6FCFF")],
+                 note="stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on "
+                      "every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without "
+                      "the kit's pictures). Its light is a PointLight in the same colour, the first to go if the "
+                      "plot's lights weigh. Look only")
+
+
+# --- the generator -----------------------------------------------------------------------------------------------------
+
+def generator():
+    """The generator's cradle: two steel feet 18.4 studs apart, each with the plant's meter on both its faces, and
+    from each a great horn of void stone rising round the heart and closing over it to 23, a vein of the void's light
+    on its inner edge. Between the feet the void's power rises from the well in the floor as a spike of light; four
+    fangs stand round the well, leaning in; and over the horns' tips floats the plant's shard. The rotor and the great
+    ring float in the cradle, each its own piece. The current leaves in yellow at each foot's outer face."""
+    m = Mesh()
+    place, wide, deep = PLANT
+    heart = (0, 0, AXLE)
+    for sx in (-1, 1):
+        x = sx * place
+        m.box((wide + 0.4, deep + 0.4, 0.5), (x, 0, 0.25), "concrete", ink=True)
+        m.box((wide, deep, 2.3), (x, 0, 1.65), "girder", ink=True)
+        m.box((wide + 0.3, deep + 0.3, 0.35), (x, 0, 2.97), "bone", ink=True)
+        for sy in (-1, 1):
+            y = sy * (deep / 2 + 0.03)
+            m.box((2.6, 0.14, 1.3), (x, y, 1.7), "dark")                              # the meter's window
+            for k, tall in enumerate((0.35, 0.55, 0.75, 0.95)):                       # and its bars, rising
+                m.box((0.32, 0.18, tall), (x - 0.84 + 0.56 * k, y + sy * 0.02, 1.18 + tall / 2), "power")
+        m.box((0.14, deep - 1.0, 0.24), (x + sx * (wide / 2 + 0.03), 0, 2.2), "power")    # the current, out to the bus
+        m.box((0.14, 0.24, 1.9), (x + sx * (wide / 2 + 0.03), 0, 1.2), "power")
+        arm = [(x, 0, 3.1), (sx * 10.7, 0, 8.5), (sx * 10.5, 0, 14.5), (sx * 8.6, 0, 19.6), (sx * 5.4, 0, 23.0)]
+        widths = [1.5, 1.35, 1.1, 0.75, 0.06]
+        horn(m, arm, widths, "abyss", deep=0.8)
+        vein(m, arm[:4] + [(sx * 6.6, 0, 21.75)], widths[:4] + [0.35], heart, r=0.13)
+    for sx, sy in SIGNS:                                                              # the well's fangs
+        horn(m, [(sx * 5.6, sy * 5.6, 0.0), (sx * 4.5, sy * 4.5, 3.4)], [0.75, 0.05], "abyss", flat=(sy, -sx, 0.0))
+    horn(m, [(0, 0, 0.1), (0, 0, 3.6), (0, 0, AXLE - 2.9)], [1.3, 0.5, 0.05], "void", ink=False)   # the void's power, rising
+    shard(m, (0, 0, 24.0), 0.9, 3.4, "void", lean=0.6)
+    return Piece("Generator", m, solid=f"the two feet, each a box {wide + 0.4:g} by {deep + 0.4:g}, 3 high, at across "
+                                       f"{place:g} each side; and the well between them shut to walking, the builder's call",
+                 note=f"its middle on the well's, 26 high at its shard. Its rotor is GeneratorRotor and its great ring "
+                      f"GeneratorRing, both floating at its heart, {AXLE:g} up: the ring's outer radius is {REACH:g}, "
+                      f"clear of the horns by a stud and of the floor by {AXLE - REACH - 0.4:g}")
 
 
 def generator_rotor():
     """The generator's rotor, a piece by itself, its origin on its axle (along X): a copper winding between two bone
-    rims, six bars of the current's yellow along it, which streak when it turns."""
-    m = Mesh(None)
+    rims with six bars of the current's yellow along it, which streak when it turns, the current's light in its
+    axle's two eyes, and round its middle a flywheel, a bone band on four spokes with eight marks of the current."""
+    m = Mesh()
     turned = Mesh(None)
-    turned.lathe([(1.5, 1.4), (1.5, -1.4)], (0, 0, 0), 10, "copper", caps=False)
+    turned.lathe([(2.0, 1.8), (2.0, -1.8)], (0, 0, 0), 12, "copper", caps=False)
     for sx in (-1, 1):
-        turned.lathe([(1.75, sx * 1.55 + 0.15), (1.75, sx * 1.55 - 0.15)], (0, 0, 0), 10, "bone")
-    turned.lathe([(0.4, 1.75), (0.4, -1.75)], (0, 0, 0), 6, "girder", caps=False)     # the axle
+        turned.lathe([(2.35, sx * 2.0 + 0.2), (2.35, sx * 2.0 - 0.2)], (0, 0, 0), 12, "bone")
+        turned.lathe([(0.75, sx * 2.75 + 0.1), (0.75, sx * 2.75 - 0.1)], (0, 0, 0), 6, "power")   # the axle's eye
+    turned.lathe([(0.55, 2.7), (0.55, -2.7)], (0, 0, 0), 6, "girder", caps=False)     # the axle
     laid(m, turned, 0.0)
     for k in range(6):
         a = math.tau * k / 6
-        m.box((2.8, 0.34, 0.2), (0, -1.58 * math.sin(a), 1.58 * math.cos(a)), "power", rot=(a, 0.0, 0.0))
+        m.box((3.6, 0.44, 0.24), (0, -2.08 * math.sin(a), 2.08 * math.cos(a)), "power", rot=(a, 0.0, 0.0))
+    hoop(m, (0, 0, 0), 4.7, 5.4, 0.7, 16, "bone")
+    for k in range(8):
+        a = math.tau * (k + 0.5) / 8
+        m.box((0.9, 0.5, 0.3), (0, -5.42 * math.sin(a), 5.42 * math.cos(a)), "power", rot=(a, 0.0, 0.0))
+        if k % 2 == 0:                                                                # a spoke, from the winding to the band
+            m.box((0.34, 0.34, 2.8), (0, -3.35 * math.sin(a), 3.35 * math.cos(a)), "girder", rot=(a, 0.0, 0.0))
     return Piece("GeneratorRotor", m,
-                 note=f"its origin is its axle's middle: it stands {AXLE:g} up at the generator's middle and turns "
-                      f"about its own X, faster as the plant generates more. Look only")
+                 note=f"its origin is its axle's middle: it floats {AXLE:g} up at the generator's middle and turns "
+                      f"about its own X, faster as the plant generates more. 5.6 at its widest. Look only")
 
+
+def generator_ring():
+    """The generator's great ring, a piece by itself, its origin its middle, its axle along its own X: a band of void
+    stone, twelve marks of the void's light on its rim, which run round as it turns."""
+    m = Mesh()
+    hoop(m, (0, 0, 0), REACH - 0.8, REACH, 0.8, 24, "abyss")
+    for k in range(12):
+        a = math.tau * k / 12
+        m.box((1.0, 0.55, 0.3), (0, -(REACH + 0.02) * math.sin(a), (REACH + 0.02) * math.cos(a)), "void", rot=(a, 0.0, 0.0))
+        if k % 3 == 0:
+            m.box((0.5, 0.5, 0.3), (0, -(REACH - 0.82) * math.sin(a), (REACH - 0.82) * math.cos(a)), "void", rot=(a, 0.0, 0.0))
+    return Piece("GeneratorRing", m,
+                 note=f"its origin is its middle: it floats {AXLE:g} up at the generator's middle, turned 90 so its "
+                      f"axle lies along the way in and its face looks at the gate, and turns about its own X, slowly, "
+                      f"against the rotor. Look only")
+
+
+# --- the battery -------------------------------------------------------------------------------------------------------
 
 def battery_rack():
     """The battery's rack: on the stand-in's footprint, 6 studs by 4, a girder deck with eight dark seats, a copper
@@ -317,4 +417,4 @@ def battery_cell():
 
 PIECES = {"Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
           "Bay": bay, "BayHalo": bay_halo, "Generator": generator, "GeneratorRotor": generator_rotor,
-          "BatteryRack": battery_rack, "BatteryCell": battery_cell}
+          "GeneratorRing": generator_ring, "BatteryRack": battery_rack, "BatteryCell": battery_cell}

@@ -16,12 +16,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **A plot is a bare lot until its player arrives** (the director's word): the base is built on arrival and cleared on leave. The touched cases all pass in Studio, again after a re-lay, and WorldReport and DressReport are empty.
 - **Next:** the Voidkin screen's stats as a plain list, with Combat Power's weights (TR17 fix 10). Then AR16's positions when Modulo's blockout lands, and AR12's reveal plate (my say on the cost; the four images). Then TR21's blockout; Kirra and Scarf Step, TR9, TR17, AR13, the gate.
 
-**Modulo (assets).** 2026-11-15, 22:51, on Fable 5.2.
-- **The base's look is reopened** (the director to Faber, for Modulo, 2026-11-15, late: "we really need to not make it like a construction games and put some magic/anime like stuff that void need be void like rn it looks like a real world electricity machine which make no sense / we are making a anime game after all tell module it also a bit to clustered yet the basse is huge and it block yhe entrance"). **AR16's blockout**, the base as a sanctum raised out of the void with the way in left open: the script is written (`tools/blender/base_void_blockout.py`) and has never rendered. The guard stopped three tries with under 0.1 GB free at Blender's peak (Studio and a game were open), and at 22:50 Claude Code stopped the waiting run for low memory. **No render starts again until the director says go** ("Waiting on the director", 7). The Training machine and the Festival Door aren't built in the old look. AR14's yard and AR15's four machines stand in the dev build until the verdict.
-- **Cut in Eclipse, for Faber's build and research's pass** (AR12): Power's bar (`power_images.json`) and the reveal's plate on research's verdict (`reveal_card_images.json`: four new images to upload under the group).
-- **Delivered tonight in the look now reopened, each in its entry:** the base on its whole plot and the showcase's plinth (AR14, deliveries 4 to 6); the Void Breaker, a bay with its rarity light, the generator and the battery (AR15, sections 1 to 4). Watt's model (AR11, delivery 3) is with Faber and research.
-- **Next:** after the blockout's verdict, the base's kit and its machines in the picked look (AR16). Then Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5).
-- **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse (the map, a reward, a confirm); TR10's two icons; the empty slots' marks and the bag's tab marks when asked; AR6's other kinds on research's spec, after phase 2.
+**Modulo (assets).** 2026-11-16, 00:18, on Fable 5.2.
+- **AR16: delivered** (delivery 1), for Faber's install and research's one verdict in the game. The base is a star round the generator, three machines are void machines (the generator, the Void Breaker, the bays), the building site is cut, the hull is 0.11 on every base piece. Exported and rendered in Blender; **not seen in Studio.** The director has the renders and hasn't spoken on them yet.
+- **Cut in Eclipse, for Faber's build and research's pass** (AR12): Power's bar (`power_images.json`) and the reveal's plate (`reveal_card_images.json`).
+- **Next:** the rest of AR15 in the base's two looks: the battery's install look, the Training machine and the Festival Door. Then Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5); AR17 with research.
+- **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked; AR6's other kinds on research's spec, after phase 2.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
 
@@ -106,6 +105,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 00:18. The base as a star, three void machines (Modulo)
+
+- **What changed:** AR16's delivery 1. The generator stands at the plot's heart in a ring of current, the machines on a star round it, 48 studs apart, with a clear way in. The generator (26 studs high, a rotor and a great ring turning), the Void Breaker and the bays are void machines now; the rest keeps the yard's look. The building site is gone, and every base hull is 0.11 studs.
+- **Where:** `build/handoff/Base/` (`plan.json` with `layout` and `current`, `manifest.json`, `maps/`, `meshes/`, `base_1_*.png`); `tools/blender/base_machines.py`, `base_ink.py`, `base_kit.py`, `base_plan.py`; `tools/blockout/` (a view of a handoff with Studio and Blender closed).
+- **For Faber:** the new places (`plan.json`, `layout`), six floor picture pairs and the kit's atlas pair, every hulled mesh published again, one new piece (`GeneratorRing`, turned 90, spun against the rotor), three new floors on meshes already published, the rotor now 11.5 up. The record lists them (AR16, "Delivery 1").
+- **For research:** one verdict in the game after the install.
+- **Open:** the director has seen the placement and the three machines in Blender's renders and hasn't spoken on them yet.
 
 ### 2026-11-15, night. The base installed, and the bare lots (Faber)
 

@@ -6535,6 +6535,27 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **Time:** by the clock, 20:49 to 20:58: the two scripts, three renders, the export, the content check. The cap for a block is 90 minutes.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
 
+## AR15. The base's machines (Modulo, then Faber)
+
+Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, "Seen") and serves the director's "it need look like an base" (20:46, to Modulo). Tier 2: a new asset players see that no piece covers. Research's and Faber's areas.
+
+- **Feel line:** from the spawn, every machine in the yard reads at a glance as what it is and that it's working. The Breaker at the heart pulls the current in, the bays hold their workers, and the generator runs beside it. Nothing in view is a box.
+- **Order, one machine at a time, each straight into the game (no sheet):**
+  1. **The Breaker.** It's the heart of every view at home and of the loop, and the middle of TR21's camera.
+     - It keeps TR9's chambers as they are: their count, their places and the chip's anchor, read from Faber's stand-in. So the install moves no rule.
+  2. **A bay.** One model stands six times. It's where a worker stands and works.
+  3. **The generator** (TR18: left of the Breaker).
+  4. **Then** the battery, the Training machine and the Festival Door.
+- **The look:**
+  - AR14's kit's language: steel and bone, plates, trusses and ribbed insulators, the current in Power's yellow.
+  - Each machine shows its working state with its own light or motion, readable from the spawn and from above.
+  - The Breaker's own colour is Modulo's call, apart from Power's yellow.
+- **Waits:** each machine's looks for levels 2 and 3 (with AR14's levels), an upgrade's ceremony, and new states the code doesn't have.
+- **Before it:** Modulo finishes AR12's piece in hand, Power's cuts. Then the Breaker and a bay, then the reveal's card in Eclipse, then the generator and the rest.
+- **The budget:** the plot's triangles are Modulo's and Faber's call. The pylons thin first (AR14).
+- **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
+- **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

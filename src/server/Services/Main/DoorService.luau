@@ -23,6 +23,7 @@ local DoorService = {
 local GAP = 1 -- seconds before a player's next way through
 
 local last: { [Player]: number } = {}
+local hooked: { [Instance]: true } = setmetatable({}, { __mode = "k" }) :: any -- each door's way, once
 
 -- Where a door sets `player` down, or nil when it goes nowhere for them.
 local function goal(player: Player, kind: string): CFrame?
@@ -35,9 +36,10 @@ end
 
 local function hook(door: Instance, kind: string)
 	local way = door:FindFirstChild("Way")
-	if way == nil or not way:IsA("BasePart") then
+	if way == nil or not way:IsA("BasePart") or hooked[way] then
 		return
 	end
+	hooked[way] = true
 	way.Touched:Connect(function(part: BasePart)
 		local player = if part.Parent and part.Parent:IsA("Model") then Players:GetPlayerFromCharacter(part.Parent) else nil
 		local now = os.clock()
@@ -64,6 +66,7 @@ function DoorService.Start()
 		last[player] = nil
 	end)
 	WorldService.Laid:Connect(hookAll)
+	WorldService.Built:Connect(hookAll) -- a plot's base stood for its owner: its door is new
 	hookAll()
 end
 

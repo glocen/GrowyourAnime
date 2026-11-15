@@ -98,8 +98,10 @@ local function standsOnGround(item: Instance): boolean
 	return workspace:Raycast(at + Vector3.new(0, 1, 0), Vector3.new(0, -GROUND_REACH, 0), params) ~= nil
 end
 
--- What's wrong with this place's markers, against the contract and `plots` plots. Empty: the world is whole.
-function Markers.Report(plots: number): { string }
+-- What's wrong with this place's markers, against the contract and `plots` plots. Empty: the world is whole. With
+-- `owned`, a plot's own markers are wanted only on the plots in it, and none on the rest (a bare lot until its owner
+-- arrives); without it, on every plot.
+function Markers.Report(plots: number, owned: { [number]: boolean }?): { string }
 	local problems = {}
 	local function problem(text: string)
 		table.insert(problems, text)
@@ -169,7 +171,11 @@ function Markers.Report(plots: number): { string }
 						count += 1
 					end
 				end
-				if (s.Count and count ~= s.Count) or (s.Count == nil and count == 0) then
+				if owned and not owned[plot] then
+					if count > 0 then
+						problem(`{name}: plot {plot} is no one's and has {count}, wants none`)
+					end
+				elseif (s.Count and count ~= s.Count) or (s.Count == nil and count == 0) then
 					problem(`{name}: plot {plot} has {count}, wants {s.Count or "one at least"}`)
 				end
 			end

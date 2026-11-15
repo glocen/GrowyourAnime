@@ -174,12 +174,27 @@ local function glowOf(piece: string, floor: number): number
 	return if LightingConfig.Houses[piece] then LightingConfig.Glow.Houses else LightingConfig.Glow.Kit
 end
 
+local function floorNow(): number
+	local dusk = LightingConfig.Phases.Dusk.Floor
+	return if applied then applied.Floor or dusk else dusk
+end
+
+-- A piece whose glow follows its state (a Breaker's chamber, "Working", set by the server: AR15), watched once.
+local watched: { [Instance]: true } = setmetatable({}, { __mode = "k" }) :: any
+
 local function dressOne(item: Instance, floor: number)
 	local piece = item:GetAttribute("Piece")
 	if type(piece) == "string" then
 		local look = item:FindFirstChildOfClass("SurfaceAppearance")
+		local working = item:GetAttribute("Working")
+		if working ~= nil and not watched[item] then
+			watched[item] = true
+			item:GetAttributeChangedSignal("Working"):Connect(function()
+				dressOne(item, floorNow())
+			end)
+		end
 		if look then
-			local want = glowOf(piece, floor)
+			local want = glowOf(piece, floor) * (if working == false then LightingConfig.Glow.Empty else 1)
 			if look.EmissiveStrength ~= want then
 				look.EmissiveStrength = want
 			end
@@ -217,7 +232,7 @@ end
 
 local function dressAll(floor: number)
 	local glow, pools, lamp, paper = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp, LightingConfig.Paper
-	local now = `{glow.Kit},{glow.Houses},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour}`
+	local now = `{glow.Kit},{glow.Houses},{glow.Empty},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour}`
 	if now ~= stamp then
 		stamp = now
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
@@ -296,7 +311,7 @@ local function step(dt: number)
 	local camera = workspace.CurrentCamera
 	local focus = if camera then camera.Focus.Position else nil
 	local z = gateZ()
-	local inside = focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From)
+	local inside = LightingConfig.Everywhere or (focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From))
 	local target = if inside then 1 else 0
 	local jumped = focus == nil or lastFocus == nil or (focus - (lastFocus :: Vector3)).Magnitude > JUMP
 	lastFocus = focus
@@ -353,7 +368,7 @@ function LightingController.Start()
 		ContentProvider:PreloadAsync({ skies.Dusk :: Sky, skies.Night :: Sky })
 	end)
 	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(function(item: Instance)
-		dressOne(item, if applied then applied.Floor or LightingConfig.Phases.Dusk.Floor else LightingConfig.Phases.Dusk.Floor)
+		dressOne(item, floorNow())
 	end)
 	RunService:BindToRenderStep("GA_Lighting", Enum.RenderPriority.Camera.Value + 1, step)
 end

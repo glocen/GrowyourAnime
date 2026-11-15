@@ -21,10 +21,10 @@
 local Kit = {}
 
 Kit.Tag = "GA_Dressing"
-Kit.Floors = { StreetBay = true, SquareFloor = true } :: { [string]: boolean }
+Kit.Floors = { StreetBay = true, SquareFloor = true, Court1 = true, Yard = true } :: { [string]: boolean }
 
 export type Piece = { centre: { number }, size: { number }?, glowStrength: number?, glowTint: string? }
-export type Placement = { piece: string, across: number, along: number, turn: number }
+export type Placement = { piece: string, across: number, along: number, turn: number, up: number? } -- up: a machine's (AR15)
 export type Light = { name: string, across: number, along: number, up: number, colour: string, kind: string, cone: number? }
 export type PaperBox = { across: number, along: number, up: number, size: { number } }
 export type PaperBand = { Floor: number, Top: number }
@@ -41,7 +41,7 @@ local NEAR = 0.01 -- studs: a stop on its marker
 -- anticlockwise seen from above; the MeshPart goes at that place times the piece's centre.
 function Kit.Place(placement: Placement, piece: Piece, gateZ: number, floorY: number): CFrame
 	local c = piece.centre
-	return CFrame.new(placement.across, floorY, gateZ - placement.along)
+	return CFrame.new(placement.across, floorY + (placement.up or 0), gateZ - placement.along)
 		* CFrame.Angles(0, math.rad(placement.turn), 0)
 		* CFrame.new(c[1], c[2], c[3])
 end

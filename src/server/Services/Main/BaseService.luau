@@ -16,9 +16,12 @@ local Breaker = require(Shared.Rules.Breaker)
 local BaseRules = require(Shared.Rules.Base)
 local BaseConfig = require(Shared.Config.Base)
 local Shards = require(Shared.Definitions.Shards)
+local Markers = require(Shared.World.Markers)
+local Power = require(Shared.Rules.Power)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
+local WorldService = require(script.Parent.WorldService)
 
 local BaseService = {
 	Priority = 20, -- after DataService
@@ -71,6 +74,53 @@ end
 local function onReady(player: Player)
 	advance(player, "BaseReturn", true)
 	schedule(player)
+end
+
+-- A plot's machines as its owner's base stands (AR15), for every client, so a passer-by sees the plant work: a chamber
+-- that breaks a shard glows full with the shard between its points, an empty one low with none, and the generator's rotor
+-- turns by the plant's generation. Each modelled chamber carries "Working" and the rotor "Generation" (WorldService);
+-- `data` nil stills them all.
+local function showPlot(number: number, data: Profile.Data?)
+	local plant = Markers.Find("Generator", { Plot = number })
+	local rotor = if plant then plant:FindFirstChild("Rotor") else nil
+	if rotor then
+		rotor:SetAttribute("Generation", if data then Power.Generation(data) else 0)
+	end
+	local breaker = Markers.Find("Breaker", { Plot = number })
+	if breaker == nil then
+		return
+	end
+	local index = 1
+	while true do
+		local chamber = breaker:FindFirstChild(`Chamber {index}`)
+		if chamber == nil then
+			break
+		end
+		local held = if data then data.Base.Chambers[index] else nil
+		local working = held ~= nil and held.Work ~= nil
+		if chamber:GetAttribute("Working") ~= nil then
+			chamber:SetAttribute("Working", working)
+		end
+		local shard = breaker:FindFirstChild(`Shard {index}`)
+		if shard and shard:IsA("BasePart") then
+			shard.Transparency = if working then 0 else 1
+		end
+		index += 1
+	end
+end
+
+local shown: { [Player]: number } = {} -- the plot whose machines show each player's base
+
+local function show(player: Player)
+	local number = WorldService.PlotOf(player)
+	local was = shown[player]
+	if was and was ~= number then
+		showPlot(was, nil)
+	end
+	shown[player] = number
+	if number then
+		showPlot(number, DataService.Get(player))
+	end
 end
 
 local function registerDebug()
@@ -193,6 +243,19 @@ function BaseService.Start()
 	DataService.Ready:Connect(onReady)
 	DataService.Changed:Connect(function(player: Player)
 		schedule(player)
+		show(player)
+	end)
+	local function joined(player: Player)
+		player:GetAttributeChangedSignal("Plot"):Connect(function()
+			show(player)
+		end)
+		show(player)
+	end
+	Players.PlayerAdded:Connect(joined)
+	WorldService.Laid:Connect(function() -- the plots were laid again: new chambers
+		for _, player in Players:GetPlayers() do
+			show(player)
+		end
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		local timer = timers[player]
@@ -200,8 +263,14 @@ function BaseService.Start()
 		if timer then
 			task.cancel(timer)
 		end
+		local was = shown[player]
+		shown[player] = nil
+		if was then
+			showPlot(was, nil)
+		end
 	end)
 	for _, player in Players:GetPlayers() do -- a save opened before this Start connected; a second advance is a no-op
+		joined(player)
 		if DataService.Get(player) then
 			onReady(player)
 		end

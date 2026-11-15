@@ -4,7 +4,9 @@
 --   stamping the contract's markers (Shared.World.Tags) as it goes. A World number tuned in a playtest lays it again, and
 --   Laid tells whatever stands on a marker to find it again.
 -- * It gives each player a plot at join, the lowest free one, as the player attribute "Plot" (docs/engineering-plan.md,
---   "Who owns what": the server, at join), and sets them down on its spawn, facing the Breaker.
+--   "Who owns what": the server, at join), and sets them down on its spawn, facing the Breaker. A plot is a bare lot
+--   until a player owns it: its base (the machines, the door, the spawn, the dressing) stands when they arrive and goes
+--   when they leave (the director, 2026-11-15), and Built tells whatever stands on its markers.
 -- * Lantern Row wears its kit (TR8; AR5, section 2) once the kit's template is built (ServerStorage.Templates.
 --   LanternRowKit, tools/studio/KitAssembly): each piece where its plan says (Config.Kits.LanternRow, Shared.World.Kit)
 --   and the plan's lights, over the grey street, whose markers stay where they are and whose walls, gates and square
@@ -12,6 +14,10 @@
 --   the bays. With no template, or a plan off the street's markers (a tuned street),
 --   the street stays grey and says why. The world's folder carries GateZ, the festival gate's line, for the ground's
 --   look (LightingController).
+-- * Every plot wears the base's kit (AR14) once its template is built (ServerStorage.Templates.BaseKit): its plan's level
+--   (Config.Kits.Base) laid in the plot's own frame, the plan's lights and the level's number on the gate's plate. The
+--   lot outside the yard, the Tower's footprint, the ground and the Strip take the plan's colours and tiles, and the grey
+--   machines its stand-ins' colours; the kept back's overlay goes under the yard. With no template, the plots stay grey.
 -- Studio's WorldReport checks the place's markers against the contract, DressReport the dressing against its plan, and
 -- Night jumps the server's turn of dusk and night to a phase (Rules.Night), for the takes.
 -- North is -Z. The crossing's centre is the origin; the Strip runs east-west; Lantern Row runs north from the gate.
@@ -38,6 +44,7 @@ local WorldService = {
 	Priority = 15, -- before anything that stands on a marker
 }
 WorldService.Laid = Signal.new() -- () the grey world was laid again: markers moved
+WorldService.Built = Signal.new() -- (number) a plot's base stood for its new owner: its markers are new
 
 local WORLD = "World"
 local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so the two never fight for a pixel
@@ -47,6 +54,14 @@ local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
 local DRESS = "LanternRow" -- the kit Lantern Row wears: Config.Kits.LanternRow, ServerStorage.Templates.LanternRowKit
 local DRESS_LIFT = 0.05 -- the kit's floors stand a hair over the paving they cover, so the two never fight at a distance
 local LIGHT_CEILING = 14 -- round 2's lights, the ceiling the kit keeps (AR5, section 2)
+local BASE = "Base" -- the kit every plot wears: Config.Kits.Base, ServerStorage.Templates.BaseKit (AR14)
+local BASE_LEVEL = "1" -- the plan's level laid on every plot, until the base has its levels (TR21)
+local LEVEL_FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- the HUD's numbers
+local LEVEL_INK = Color3.fromHex("#FFD23E") -- Power's yellow, as the plan's level mark asks
+local LEVEL_PIXELS = 40 -- the level's number, a SurfaceGui's pixels a stud
+-- The shard a Breaker's chamber breaks, between its two points (AR15: 5.85 to 8.35 up, the middle 7.1), turned an eighth
+-- so it reads as a crystal; seen only while the chamber breaks one (BaseService).
+local SHARD = { Size = Vector3.new(1.1, 2.2, 1.1), Up = 7.1, Turn = 45 }
 -- World numbers read when used, not laid
 local READ_LIVE = {
 	["World.Row.Respawn"] = true,
@@ -157,15 +172,72 @@ local function wallX(parent: Instance, z: number, x0: number, x1: number, high: 
 	return block(parent, "Wall", Vector3.new(math.abs(x1 - x0), high, 2), CFrame.new((x0 + x1) / 2, PAVED_TOP + high / 2, z), GREY.Wall)
 end
 
--- The kit's pieces as a template (src/storage/<Kit>Kit.rbxm, built by tools/studio/KitAssembly), or nil until then.
-local function kitTemplate(): Instance?
+-- A kit's pieces as a template (src/storage/<Kit>Kit.rbxm, built by tools/studio/KitAssembly), or nil until then;
+-- Lantern Row's when no kit is named.
+local function kitTemplate(kit: string?): Instance?
 	local templates = ServerStorage:FindFirstChild("Templates")
-	return if templates then templates:FindFirstChild(`{DRESS}Kit`) else nil
+	return if templates then templates:FindFirstChild(`{kit or DRESS}Kit`) else nil
 end
 
-local function kitFiles(): (any, any)
-	local home = (Shared.Config :: any).Kits[DRESS]
+local function kitFiles(kit: string?): (any, any)
+	local home = (Shared.Config :: any).Kits[kit or DRESS]
 	return require(home.Manifest) :: any, require(home.Plan) :: any
+end
+
+-- Why the base's kit can't be laid on the plots: none when it can.
+local function baseProblems(): { string }
+	local template = kitTemplate(BASE)
+	if template == nil then
+		return { `the base's template isn't built (ServerStorage.Templates.{BASE}Kit: tools/studio/KitAssembly)` }
+	end
+	local manifest, plan = kitFiles(BASE)
+	local level = plan.levels[BASE_LEVEL]
+	if level == nil then
+		return { `the base's plan has no level {BASE_LEVEL}` }
+	end
+	local problems: { string } = {}
+	for index, placement in level.placements do
+		local piece = template:FindFirstChild(placement.piece)
+		if manifest.pieces[placement.piece] == nil then
+			table.insert(problems, `placement {index}: "{tostring(placement.piece)}" isn't in the base's manifest`)
+		elseif piece == nil or not piece:IsA("BasePart") then
+			table.insert(problems, `the base's template has no part {placement.piece}`)
+		end
+	end
+	if template:FindFirstChild("Paving") == nil then
+		table.insert(problems, "the base's template has no Paving")
+	end
+	return problems
+end
+
+-- One of a kit's static lights at `at`, Shadows off, tagged for the client's look: a SpotLight straight down is a pool.
+local function kitLight(light: Kit.Light, at: CFrame, parent: Instance): Part
+	local holder = Instance.new("Part")
+	holder.Name = light.name
+	holder.Size = Vector3.new(0.2, 0.2, 0.2)
+	holder.Transparency = 1
+	holder.Anchored, holder.CanCollide, holder.CanQuery, holder.CanTouch, holder.CastShadow = true, false, false, false, false
+	holder.CFrame = at
+	local spot = light.kind == "spot"
+	local made: Light
+	if spot then
+		local cone = Instance.new("SpotLight")
+		cone.Face = Enum.NormalId.Front -- the holder looks straight down
+		cone.Angle = light.cone or 90
+		made = cone
+	else
+		made = Instance.new("PointLight")
+	end
+	local numbers = if spot then LightingConfig.Pools else LightingConfig.Lamp
+	made.Color = Color3.fromHex(light.colour)
+	made.Brightness = numbers.Brightness;
+	(made :: any).Range = numbers.Range
+	made.Shadows = false
+	made.Parent = holder
+	holder:SetAttribute("Light", if spot then "Pool" else "Lamp")
+	CollectionService:AddTag(holder, Kit.Tag)
+	holder.Parent = parent
+	return holder
 end
 
 -- Why the kit can't be laid on a street whose stops stand `stops` studs up from its gate: none when it can.
@@ -202,31 +274,7 @@ local function dress(street: Instance, gateZ: number)
 		part.Parent = folder
 	end
 	for _, light in plan.lights do
-		local holder = Instance.new("Part")
-		holder.Name = light.name
-		holder.Size = Vector3.new(0.2, 0.2, 0.2)
-		holder.Transparency = 1
-		holder.Anchored, holder.CanCollide, holder.CanQuery, holder.CanTouch, holder.CastShadow = true, false, false, false, false
-		holder.CFrame = Kit.Light(light, gateZ, floorY)
-		local spot = light.kind == "spot"
-		local made: Light
-		if spot then
-			local cone = Instance.new("SpotLight")
-			cone.Face = Enum.NormalId.Front -- the holder looks straight down
-			cone.Angle = light.cone
-			made = cone
-		else
-			made = Instance.new("PointLight")
-		end
-		local numbers = if spot then LightingConfig.Pools else LightingConfig.Lamp
-		made.Color = Color3.fromHex(light.colour)
-		made.Brightness = numbers.Brightness;
-		(made :: any).Range = numbers.Range
-		made.Shadows = false
-		made.Parent = holder
-		holder:SetAttribute("Light", if spot then "Pool" else "Lamp")
-		CollectionService:AddTag(holder, Kit.Tag)
-		holder.Parent = folder
+		kitLight(light, Kit.Light(light, gateZ, floorY), folder)
 	end
 	-- The drifting paper (AR5, "The paper's emitter"): a box of air each, seen by nothing but its emitter, in the band
 	-- over the camera (Config.Lighting.Paper), its rate and tint from it. The client keeps it to a tuned band live.
@@ -254,72 +302,230 @@ local function dress(street: Instance, gateZ: number)
 	folder.Parent = street
 end
 
--- One plot, `at` its centre on its floor, looking out of its front onto the Strip.
-local function plot(parent: Instance, number: number, at: CFrame, across: number, deep: number, kept: number, behind: number, tower: number, bays: number)
-	local m = model(parent, `Plot {number}`, at)
-	local floor = block(m, "Floor", Vector3.new(across, 1, deep), at * CFrame.new(0, -0.5, 0), GREY.Plot)
-	Markers.Stamp(floor, "Plot", { Plot = number })
-	block(m, "Kept", Vector3.new(across, OVERLAY, kept), at * CFrame.new(0, OVERLAY / 2, deep / 2 - kept / 2), GREY.Kept)
-	block(m, "Tower", Vector3.new(across, OVERLAY, tower), at * CFrame.new(0, OVERLAY / 2 - 0.05, deep / 2 + behind + tower / 2), GREY.Tower)
-	local front = -deep / 2 -- local z of its front edge
-	-- The Breaker at the front, so a passer-by sees the shards cracking: two chambers, and its waiting line beside it.
-	local breakerAt = at * CFrame.new(0, 0, front + 12)
-	local breaker = model(m, "Breaker", breakerAt)
-	block(breaker, "Body", Vector3.new(14, 5, 6), breakerAt * CFrame.new(0, 2.5, 0), GREY.Machine)
-	for index, x in { -3.5, 3.5 } do
-		block(breaker, `Chamber {index}`, Vector3.new(4, 4, 4), breakerAt * CFrame.new(x, 7, 0), GREY.Chamber)
+-- The plan's colours while the base's kit is laid (its stand-ins', the lot's and the ground's), or nil: the plots grey.
+local baseLook: { [string]: Color3 }? = nil
+
+-- The base's kit on one plot (AR14): its plan's level in the plot's own frame (the plan's toRoblox: Kit.Place with the
+-- plot's front edge for the gate's line), the level's lights, and the level's number on the gate's plate, on both faces.
+-- Every piece and light is tagged for the client's look and carries its plot. The court's and the yard's floors are
+-- look only: the plot's own floor carries the walking.
+local function dressPlot(m: Model, number: number, at: CFrame, front: number)
+	local template = kitTemplate(BASE) :: Instance
+	local manifest, plan = kitFiles(BASE)
+	local level = plan.levels[BASE_LEVEL]
+	local folder = Instance.new("Folder")
+	folder.Name = "Dressing"
+	for _, placement in level.placements do
+		local part = (template:FindFirstChild(placement.piece) :: BasePart):Clone()
+		part.Anchored = true
+		part.CFrame = at * Kit.Place(placement, manifest.pieces[placement.piece], front, DRESS_LIFT)
+		part:SetAttribute("Piece", placement.piece)
+		part:SetAttribute("Plot", number)
+		CollectionService:AddTag(part, Kit.Tag)
+		part.Parent = folder
 	end
-	for index = 1, 3 do
-		block(breaker, `Waiting {index}`, Vector3.new(2.5, 1, 2.5), breakerAt * CFrame.new(9 + (index - 1) * 3, 0.5, 0), GREY.Chamber)
+	for _, light in level.lights do
+		kitLight(light, at * Kit.Light(light, front, DRESS_LIFT), folder):SetAttribute("Plot", number)
 	end
-	Markers.Stamp(breaker, "Breaker", { Plot = number })
-	-- The bays line its sides, in the order they open; the battery sits between them.
-	for index = 1, bays do
-		local side = if index % 2 == 1 then -1 else 1
-		local row = (index - 1) // 2
-		local bayAt = at * CFrame.new(side * 22, 0, front + 26 + row * 14)
-		local bay = model(m, `Bay {index}`, bayAt)
-		block(bay, "Pad", Vector3.new(10, 0.4, 10), bayAt * CFrame.new(0, 0.2, 0), GREY.Bay)
-		if index > 1 then
-			block(bay, "Locked", Vector3.new(10, 3, 0.6), bayAt * CFrame.new(0, 1.5, -5), GREY.Locked)
+	local mark = level.levelMark
+	if mark then
+		local plate = Instance.new("Part")
+		plate.Name = "LevelMark"
+		plate.Size = Vector3.new(mark.size[1], mark.size[2], mark.depth + 0.04) -- a hair proud of the plate's two faces
+		plate.Transparency = 1
+		plate.Anchored, plate.CanCollide, plate.CanQuery, plate.CanTouch, plate.CastShadow = true, false, false, false, false
+		plate.CFrame = at * CFrame.new(mark.across, DRESS_LIFT + mark.up, front - mark.along)
+		for _, face in { Enum.NormalId.Front, Enum.NormalId.Back } do
+			local gui = Instance.new("SurfaceGui")
+			gui.Name = face.Name
+			gui.Face = face
+			gui.LightInfluence = 0
+			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+			gui.PixelsPerStud = LEVEL_PIXELS
+			local said = Instance.new("TextLabel")
+			said.Name = "Level"
+			said.BackgroundTransparency = 1
+			said.AnchorPoint = Vector2.new(0.5, 0.5)
+			said.Position = UDim2.fromScale(0.5, 0.5)
+			said.Size = UDim2.fromScale(1, 0.84)
+			said.FontFace = LEVEL_FACE
+			said.TextScaled = true
+			said.TextColor3 = LEVEL_INK
+			said.Text = BASE_LEVEL
+			said.Parent = gui
+			gui.Parent = plate
 		end
-		Markers.Stamp(bay, "Bay", { Plot = number, Bay = index })
+		plate:SetAttribute("Plot", number)
+		plate.Parent = folder
 	end
-	local batteryAt = at * CFrame.new(0, 0, front + 26)
-	local battery = model(m, "Battery", batteryAt)
-	-- Low, so the owner sees the Breaker over it from the spawn.
-	block(battery, "Cell", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), GREY.Battery)
-	Markers.Stamp(battery, "Battery", { Plot = number })
-	-- The generator (TR18), left of the Breaker between it and the Training machine: a tall box, its face toward the
-	-- spawn, where the owner's client writes generation and demand.
-	local generator = WorldConfig.Grey.Generator
-	local generatorAt = at * CFrame.new(generator.At, 0, front + 12)
-	local plant = model(m, "Generator", generatorAt)
-	block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), GREY.Generator)
-	Markers.Stamp(plant, "Generator", { Plot = number })
-	-- The Festival Door, right of the Breaker and level with it, in view from the spawn.
-	Markers.Stamp(door(m, "Festival Door", at * CFrame.new(WorldConfig.Grey.Door.DoorAt, 0, front + 12)), "FestivalDoor", { Plot = number })
-	-- The Training machine (TR12), left of the Breaker as the door is right of it: a box, and its pad on the spawn's side,
-	-- where a fallen lead comes home and trains (FightService).
-	local training = WorldConfig.Grey.Training
-	local machineAt = at * CFrame.new(-WorldConfig.Grey.Door.DoorAt, 0, front + 12)
-	local machine = model(m, "Training machine", machineAt)
-	block(machine, "Body", training.Size, machineAt * CFrame.new(0, training.Size.Y / 2, 0), GREY.Machine)
-	block(machine, "Pad", Vector3.new(4, 0.4, 4), machineAt * CFrame.new(0, 0.2, training.Spot), GREY.Bay)
-	Markers.Stamp(machine, "Training", { Plot = number })
-	-- The owner arrives behind it all, facing the Breaker.
-	local spawn = Instance.new("SpawnLocation")
-	spawn.Name = "Spawn"
-	spawn.Anchored = true
-	spawn.Size = Vector3.new(6, 0.2, 6)
-	spawn.CFrame = at * CFrame.new(0, 0.1, front + 40)
-	spawn.Color = GREY.Pad
-	spawn.Material = Enum.Material.SmoothPlastic
-	spawn.Duration = 0 -- no shield
-	spawn.Neutral = true
-	spawn.Parent = m
-	Markers.Stamp(spawn, "Spawn", { Plot = number })
+	folder.Parent = m
 end
+
+-- The base's deck tile on a plot's floor or overlay, in the lot's colour (the plan's ground).
+local function pave(part: BasePart)
+	local paving = (kitTemplate(BASE) :: Instance):FindFirstChild("Paving")
+	if paving and baseLook then
+		local tile = paving:Clone() :: Texture
+		tile.Color3 = baseLook.lot
+		tile.Parent = part
+	end
+end
+
+-- A machine with its model (AR15; the plan's machines) in place of its grey box: the plan's `nth` `piece`, laid as a
+-- placement is and raised by its `up`, named as the box it replaces, tagged for the client's look and carrying its plot.
+-- Nil while the base's kit isn't laid or the plan has no such machine: then the box stands.
+local function machine(parent: Instance, name: string, piece: string, nth: number, number: number, at: CFrame, front: number): BasePart?
+	if baseLook == nil then
+		return nil
+	end
+	local template = kitTemplate(BASE) :: Instance
+	local manifest, plan = kitFiles(BASE)
+	local seen = 0
+	for _, placement in (if plan.machines then plan.machines.placements else {}) do
+		if placement.piece ~= piece then
+			continue
+		end
+		seen += 1
+		local made = template:FindFirstChild(piece)
+		if seen == nth and made and made:IsA("BasePart") then
+			local part = made:Clone()
+			part.Name = name
+			part.CFrame = at * Kit.Place(placement, manifest.pieces[piece], front, DRESS_LIFT)
+			part:SetAttribute("Piece", piece)
+			part:SetAttribute("Plot", number)
+			CollectionService:AddTag(part, Kit.Tag)
+			part.Parent = parent
+			return part
+		end
+	end
+	return nil
+end
+
+-- One plot, `at` its centre on its floor, looking out of its front onto the Strip: its lot, laid with the world, and the
+-- builder of its base, raised when a player owns the plot and cleared when they leave, so a server stands only its
+-- players' bases (the director, 2026-11-15). The base is built whole before it's parented: it reaches clients at once.
+local function plot(parent: Instance, number: number, at: CFrame, across: number, deep: number, kept: number, behind: number, tower: number, bays: number): () -> Model
+	local m = model(parent, `Plot {number}`, at)
+	local look = baseLook
+	-- Each grey box in the base's stand-in colour while its kit is laid (the plan's standIns: one steel body, an accent each).
+	local function tint(name: string, grey: Color3): Color3
+		return if look then look[name] or grey else grey
+	end
+	local floor = block(m, "Floor", Vector3.new(across, 1, deep), at * CFrame.new(0, -0.5, 0), tint("lot", GREY.Plot))
+	Markers.Stamp(floor, "Plot", { Plot = number })
+	local keptBack = block(m, "Kept", Vector3.new(across, OVERLAY, kept), at * CFrame.new(0, OVERLAY / 2, deep / 2 - kept / 2), GREY.Kept)
+	local towerFloor = block(m, "Tower", Vector3.new(across, OVERLAY, tower), at * CFrame.new(0, OVERLAY / 2 - 0.05, deep / 2 + behind + tower / 2), tint("lot", GREY.Tower))
+	if look then
+		-- The lot wears the deck. The kept back takes it unmarked, so its overlay steps aside: the yard's floor runs over
+		-- its middle, lower than the overlay's top.
+		pave(floor)
+		pave(towerFloor)
+		keptBack.Transparency, keptBack.CanCollide, keptBack.CanQuery = 1, false, false
+	end
+	local front = -deep / 2 -- local z of its front edge
+	return function(): Model
+		local base = Instance.new("Model")
+		base.Name = "Base"
+		base.WorldPivot = at
+		-- The Breaker at the front, so a passer-by sees the shards cracking: two chambers, and its waiting line beside it.
+		local breakerAt = at * CFrame.new(0, 0, front + 12)
+		local breaker = model(base, "Breaker", breakerAt)
+		if machine(breaker, "Body", "Breaker", 1, number, at, front) == nil then
+			block(breaker, "Body", Vector3.new(14, 5, 6), breakerAt * CFrame.new(0, 2.5, 0), tint("machine", GREY.Machine))
+		end
+		for index, x in { -3.5, 3.5 } do
+			local chamber = machine(breaker, `Chamber {index}`, "BreakerChamber", index, number, at, front)
+			if chamber then
+				-- Low until it breaks a shard; its shard stands between the points meanwhile (BaseService).
+				chamber:SetAttribute("Working", false)
+				local shard = block(breaker, `Shard {index}`, SHARD.Size, breakerAt * CFrame.new(x, SHARD.Up, 0) * CFrame.Angles(0, math.rad(SHARD.Turn), 0), tint("chamber", GREY.Chamber))
+				shard.Material = Enum.Material.Neon
+				shard.Transparency = 1
+				shard.CanCollide, shard.CanQuery, shard.CanTouch, shard.CastShadow = false, false, false, false
+			else
+				local box = block(breaker, `Chamber {index}`, Vector3.new(4, 4, 4), breakerAt * CFrame.new(x, 7, 0), tint("chamber", GREY.Chamber))
+				if look then
+					box.Material = Enum.Material.Neon
+				end
+			end
+		end
+		for index = 1, 3 do
+			if machine(breaker, `Waiting {index}`, "BreakerWaiting", index, number, at, front) == nil then
+				block(breaker, `Waiting {index}`, Vector3.new(2.5, 1, 2.5), breakerAt * CFrame.new(9 + (index - 1) * 3, 0.5, 0), tint("waiting", GREY.Chamber))
+			end
+		end
+		Markers.Stamp(breaker, "Breaker", { Plot = number })
+		-- The bays line its sides, in the order they open; the battery sits between them.
+		for index = 1, bays do
+			local side = if index % 2 == 1 then -1 else 1
+			local row = (index - 1) // 2
+			local bayAt = at * CFrame.new(side * 22, 0, front + 26 + row * 14)
+			local bay = model(base, `Bay {index}`, bayAt)
+			if machine(bay, "Pad", "Bay", index, number, at, front) == nil then
+				block(bay, "Pad", Vector3.new(10, 0.4, 10), bayAt * CFrame.new(0, 0.2, 0), tint("bay", GREY.Bay))
+			end
+			-- Its light, in the worker's rarity colour while one works there (TR22): out of sight until then, one colour.
+			local halo = machine(bay, "Halo", "BayHalo", index, number, at, front)
+			if halo then
+				halo:ClearAllChildren()
+				halo.Material = Enum.Material.Neon
+				halo.Transparency = 1
+			end
+			if index > 1 then
+				block(bay, "Locked", Vector3.new(10, 3, 0.6), bayAt * CFrame.new(0, 1.5, -5), tint("locked", GREY.Locked))
+			end
+			Markers.Stamp(bay, "Bay", { Plot = number, Bay = index })
+		end
+		local batteryAt = at * CFrame.new(0, 0, front + 26)
+		local battery = model(base, "Battery", batteryAt)
+		-- Low, so the owner sees the Breaker over it from the spawn.
+		block(battery, "Cell", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
+		Markers.Stamp(battery, "Battery", { Plot = number })
+		-- The generator (TR18), left of the Breaker between it and the Training machine: a tall box, its face toward the
+		-- spawn, where the owner's client writes generation and demand.
+		local generator = WorldConfig.Grey.Generator
+		local generatorAt = at * CFrame.new(generator.At, 0, front + 12)
+		local plant = model(base, "Generator", generatorAt)
+		if machine(plant, "Body", "Generator", 1, number, at, front) == nil then
+			block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), tint("generator", GREY.Generator))
+		end
+		local rotor = machine(plant, "Rotor", "GeneratorRotor", 1, number, at, front)
+		if rotor then
+			rotor:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
+		end
+		Markers.Stamp(plant, "Generator", { Plot = number })
+		-- The Festival Door, right of the Breaker and level with it, in view from the spawn.
+		Markers.Stamp(door(base, "Festival Door", at * CFrame.new(WorldConfig.Grey.Door.DoorAt, 0, front + 12)), "FestivalDoor", { Plot = number })
+		-- The Training machine (TR12), left of the Breaker as the door is right of it: a box, and its pad on the spawn's side,
+		-- where a fallen lead comes home and trains (FightService).
+		local training = WorldConfig.Grey.Training
+		local machineAt = at * CFrame.new(-WorldConfig.Grey.Door.DoorAt, 0, front + 12)
+		local machine = model(base, "Training machine", machineAt)
+		block(machine, "Body", training.Size, machineAt * CFrame.new(0, training.Size.Y / 2, 0), tint("training", GREY.Machine))
+		block(machine, "Pad", Vector3.new(4, 0.4, 4), machineAt * CFrame.new(0, 0.2, training.Spot), tint("bay", GREY.Bay))
+		Markers.Stamp(machine, "Training", { Plot = number })
+		-- The owner arrives behind it all, facing the Breaker.
+		local spawn = Instance.new("SpawnLocation")
+		spawn.Name = "Spawn"
+		spawn.Anchored = true
+		spawn.Size = Vector3.new(6, 0.2, 6)
+		spawn.CFrame = at * CFrame.new(0, 0.1, front + 40)
+		spawn.Color = tint("spawn", GREY.Pad)
+		spawn.Material = Enum.Material.SmoothPlastic
+		spawn.Duration = 0 -- no shield
+		spawn.Neutral = true
+		spawn.Parent = base
+		Markers.Stamp(spawn, "Spawn", { Plot = number })
+		if look then
+			dressPlot(base, number, at, front)
+		end
+		base.Parent = m
+		return base
+	end
+end
+
+-- Each plot's base builder, as the last lay left it (plot()).
+local bases: { [number]: () -> Model } = {}
 
 local function lay(folder: Folder)
 	local c = WorldConfig
@@ -359,11 +565,34 @@ local function lay(folder: Folder)
 		end
 	end
 
+	-- The base's kit, if its template is built: its colours for every plot (AR14).
+	local baseHeld = baseProblems()
+	baseLook = nil
+	if #baseHeld == 0 then
+		local _, basePlan = kitFiles(BASE)
+		local colours: { [string]: Color3 } = {}
+		for name, hex in basePlan.standIns do
+			if type(hex) == "string" and string.sub(hex, 1, 1) == "#" then
+				colours[name] = Color3.fromHex(hex)
+			end
+		end
+		colours.lot, colours.ground = Color3.fromHex(basePlan.ground.lot), Color3.fromHex(basePlan.ground.ground)
+		baseLook = colours
+	else
+		Log.Info("WorldService", `the plots stay grey: {table.concat(baseHeld, "; ")}`)
+	end
 	-- The ground, under all of it.
-	slab(folder, "Ground", -stripEnd, stripEnd, towers, shutZ - 24, GROUND_TOP, GREY.Ground)
-	-- The Strip, the side street to the gate, and Lantern Row to the keeper's gate.
-	slab(folder, "Strip", -stripEnd, stripEnd, -stripHalf, stripHalf, PAVED_TOP, GREY.Paved)
-	slab(folder, "Side street", -rowHalf, rowHalf, gateZ, -stripHalf, PAVED_TOP, GREY.Paved)
+	slab(folder, "Ground", -stripEnd, stripEnd, towers, shutZ - 24, GROUND_TOP, if baseLook then baseLook.ground else GREY.Ground)
+	-- The Strip, the side street to the gate, and Lantern Row to the keeper's gate. With the base laid, the Strip and the
+	-- side street wear Lantern Row's paving, as its street does: off the stones onto the plates is coming home (AR14).
+	local strip = slab(folder, "Strip", -stripEnd, stripEnd, -stripHalf, stripHalf, PAVED_TOP, GREY.Paved)
+	local sideStreet = slab(folder, "Side street", -rowHalf, rowHalf, gateZ, -stripHalf, PAVED_TOP, GREY.Paved)
+	local stones = kitTemplate(DRESS)
+	local stone = if baseLook and stones then stones:FindFirstChild("Paving") else nil
+	if stone then
+		stone:Clone().Parent = strip
+		stone:Clone().Parent = sideStreet
+	end
 	-- The street's own floor carries the walking; dressed, it wears the kit's paving under the bays (AR5's manifest).
 	local streetFloor = slab(folder, "Lantern Row", -rowHalf, rowHalf, keeperZ, gateZ, PAVED_TOP, GREY.Paved)
 
@@ -380,7 +609,7 @@ local function lay(folder: Folder)
 		local z = (if south then 1 else -1) * (stripHalf + deep / 2)
 		local centre = Vector3.new(x, PAVED_TOP, z)
 		local at = CFrame.lookAt(centre, centre + Vector3.new(0, 0, if south then -1 else 1))
-		plot(plotFolder, number, at, across, deep, studs(plots.Kept), behind, tower, plots.Bays)
+		bases[number] = plot(plotFolder, number, at, across, deep, studs(plots.Kept), behind, tower, plots.Bays)
 	end
 
 	-- The Shop, south of the crossing: every trip out and back passes its clock.
@@ -523,6 +752,41 @@ end
 -- The plots' owners, and each player's.
 local owners: { [number]: Player } = {}
 
+-- A plot's lot in the world, or nil.
+local function lotOf(number: number): Instance?
+	local world = workspace:FindFirstChild(WORLD)
+	local plots = if world then world:FindFirstChild("Plots") else nil
+	return if plots then plots:FindFirstChild(`Plot {number}`) else nil
+end
+
+-- A plot's base stood for its owner, once; Built tells whatever stands on its markers.
+local function raise(number: number)
+	local lot = lotOf(number)
+	if lot == nil or lot:FindFirstChild("Base") or bases[number] == nil then
+		return
+	end
+	bases[number]()
+	WorldService.Built:Fire(number)
+end
+
+-- A plot no one owns any more back to its bare lot.
+local function clear(number: number)
+	local lot = lotOf(number)
+	local base = if lot then lot:FindFirstChild("Base") else nil
+	if base then
+		base:Destroy()
+	end
+end
+
+-- The owned plots, for the reports.
+local function owned(): { [number]: boolean }
+	local set: { [number]: boolean } = {}
+	for number in owners do
+		set[number] = true
+	end
+	return set
+end
+
 function WorldService.PlotOf(player: Player): number?
 	local plot = player:GetAttribute("Plot")
 	return if type(plot) == "number" then plot else nil
@@ -548,6 +812,7 @@ local function arrive(player: Player)
 	for number = 1, WorldConfig.Plots.Count do
 		if owners[number] == nil then
 			owners[number] = player
+			raise(number) -- before the attribute, so whatever reads the plot finds its base standing
 			player:SetAttribute("Plot", number)
 			respawnOn(player)
 			return
@@ -560,6 +825,7 @@ local function leave(player: Player)
 	for number, owner in owners do
 		if owner == player then
 			owners[number] = nil
+			clear(number)
 		end
 	end
 end
@@ -583,10 +849,12 @@ function WorldService.Init()
 		build()
 	end
 	DebugService.Register("WorldReport", function(): { string }
-		return Markers.Report(WorldConfig.Plots.Count)
+		return Markers.Report(WorldConfig.Plots.Count, owned())
 	end)
 	-- The dressing against its plan: every piece laid as often as the plan has it, each with its look, the plan's lights,
-	-- and the grey look under it hidden. Empty when it's whole; one line when the street is grey, and why.
+	-- and the grey look under it hidden; then each plot against its base level's plan (AR14), its lights and its level's
+	-- number; a plot no one owns, its bare lot. Empty when it's whole; one line when the street or the plots are grey, and
+	-- why.
 	DebugService.Register("DressReport", function(): { string }
 		local world = workspace:FindFirstChild(WORLD)
 		if world == nil then
@@ -607,7 +875,7 @@ function WorldService.Init()
 		local got: { [string]: number } = {}
 		local lights, paper, problems = 0, 0, {}
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
-			if not item:IsDescendantOf(world) then
+			if not item:IsDescendantOf(world) or item:GetAttribute("Plot") ~= nil then
 				continue
 			end
 			local piece = item:GetAttribute("Piece")
@@ -638,6 +906,85 @@ function WorldService.Init()
 		if row == nil or row:FindFirstChild("Paving") == nil then
 			table.insert(problems, "the street's floor wears no paving")
 		end
+		-- The plots: each one's Dressing against its level, and the lot, the Strip and the side street paved.
+		local held = baseProblems()
+		local plots = world:FindFirstChild("Plots")
+		if #held > 0 or plots == nil then
+			table.insert(problems, `plots grey: {table.concat(held, "; ")}`)
+		else
+			local _, basePlan = kitFiles(BASE)
+			local level = basePlan.levels[BASE_LEVEL]
+			local each: { [string]: number } = {}
+			for _, placement in level.placements do
+				each[placement.piece] = (each[placement.piece] or 0) + 1
+			end
+			local standing: { [string]: number } = {}
+			for _, placement in (if basePlan.machines then basePlan.machines.placements else {}) do
+				standing[placement.piece] = (standing[placement.piece] or 0) + 1
+			end
+			for number = 1, WorldConfig.Plots.Count do
+				local lot = plots:FindFirstChild(`Plot {number}`)
+				local floor = if lot then lot:FindFirstChild("Floor") else nil
+				if floor == nil or floor:FindFirstChild("Paving") == nil then
+					table.insert(problems, `Plot {number}: the lot wears no deck`)
+				end
+				local m = if lot then lot:FindFirstChild("Base") else nil
+				if owners[number] == nil then
+					if m then
+						table.insert(problems, `Plot {number}: no one's, but its base stands`)
+					end
+					continue
+				end
+				local dressing = if m then m:FindFirstChild("Dressing") else nil
+				if dressing == nil then
+					table.insert(problems, `Plot {number}: not dressed`)
+					continue
+				end
+				local count: { [string]: number } = {}
+				local plotLights = 0
+				for _, item in dressing:GetChildren() do
+					local piece = item:GetAttribute("Piece")
+					if type(piece) == "string" then
+						count[piece] = (count[piece] or 0) + 1
+						if item:FindFirstChildOfClass("SurfaceAppearance") == nil then
+							table.insert(problems, `Plot {number} {piece}: no look`)
+						end
+					elseif item:FindFirstChildWhichIsA("Light") then
+						plotLights += 1
+					end
+				end
+				for piece, needed in each do
+					if count[piece] ~= needed then
+						table.insert(problems, `Plot {number} {piece}: {count[piece] or 0} laid, level {BASE_LEVEL} has {needed}`)
+					end
+				end
+				if plotLights ~= #level.lights then
+					table.insert(problems, `Plot {number}: {plotLights} lights, level {BASE_LEVEL} has {#level.lights}`)
+				end
+				if level.levelMark and dressing:FindFirstChild("LevelMark") == nil then
+					table.insert(problems, `Plot {number}: no level mark`)
+				end
+				-- The machines with their model, each in place of its box (AR15).
+				local machines: { [string]: number } = {}
+				for _, item in (m :: Instance):GetDescendants() do
+					local piece = item:GetAttribute("Piece")
+					if type(piece) == "string" and item.Parent ~= dressing then
+						machines[piece] = (machines[piece] or 0) + 1
+					end
+				end
+				for piece, needed in standing do
+					if machines[piece] ~= needed then
+						table.insert(problems, `Plot {number} {piece}: {machines[piece] or 0} stand, the plan's machines have {needed}`)
+					end
+				end
+			end
+			for _, name in { "Strip", "Side street" } do
+				local street = world:FindFirstChild(name)
+				if street == nil or street:FindFirstChild("Paving") == nil then
+					table.insert(problems, `the {name} wears no paving`)
+				end
+			end
+		end
 		table.sort(problems)
 		return problems
 	end)
@@ -659,7 +1006,7 @@ function WorldService.Init()
 end
 
 function WorldService.Start()
-	for _, problem in Markers.Report(WorldConfig.Plots.Count) do
+	for _, problem in Markers.Report(WorldConfig.Plots.Count, owned()) do
 		Log.Warn("WorldService", problem)
 	end
 	local function join(player: Player)
@@ -693,6 +1040,9 @@ function WorldService.Start()
 				old:Destroy()
 			end
 			build()
+			for number in owners do
+				raise(number)
+			end
 			for _, player in Players:GetPlayers() do
 				respawnOn(player)
 			end

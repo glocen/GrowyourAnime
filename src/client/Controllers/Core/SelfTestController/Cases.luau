@@ -1038,6 +1038,36 @@ local cases = {
 		end,
 	},
 	{
+		Name = "World: a plot no one owns is a bare lot, and each player's base stands on theirs (the director, 2026-11-15)",
+		Stay = true,
+		Run = function(t: any)
+			local owned: { [number]: boolean } = {}
+			for _, other in Players:GetPlayers() do
+				local number = other:GetAttribute("Plot")
+				if type(number) == "number" then
+					owned[number] = true
+				end
+			end
+			local mine = Players.LocalPlayer:GetAttribute("Plot")
+			t.Check("this player owns a plot", type(mine) == "number" and owned[mine] == true, tostring(mine))
+			local wrong: { string } = {}
+			for number = 1, WorldConfig.Plots.Count do
+				local floor = Markers.Find("Plot", { Plot = number })
+				local lot = if floor then floor.Parent else nil
+				if lot == nil then
+					continue -- not streamed in here
+				end
+				local base = lot:FindFirstChild("Base")
+				if owned[number] and (base == nil or base:FindFirstChild("Breaker") == nil or base:FindFirstChild("Spawn") == nil) then
+					table.insert(wrong, `plot {number} is owned and has no base`)
+				elseif not owned[number] and base ~= nil then
+					table.insert(wrong, `plot {number} is no one's and its base stands`)
+				end
+			end
+			t.Check("every plot as its owner has it", #wrong == 0, table.concat(wrong, "; "))
+		end,
+	},
+	{
 		Name = "World: TR8, Lantern Row wears its kit whole, the plan's lights with it, the grey look under it hidden",
 		Stay = true,
 		Run = function(t: any)
@@ -1080,7 +1110,7 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Lighting: TR8, north of the festival gate the ground's dusk or night holds, outside it the place's own; a walk eases in, a jump lands",
+		Name = "Lighting: TR8, north of the festival gate the ground's dusk or night holds, outside it the place's own unless the base is under it too (AR14); a walk eases in, a jump lands",
 		Run = function(t: any)
 			local world = workspace:FindFirstChild("World")
 			local gateZ = if world then world:GetAttribute("GateZ") else nil
@@ -1116,10 +1146,18 @@ local cases = {
 				t.Near(`{name}: its haze, no veil`, Atmosphere and Atmosphere.Density or -1, phase.Atmosphere.Density, 1e-3)
 				t.Near(`{name}: its bloom`, Bloom and Bloom.Intensity or -1, phase.Bloom.Intensity, 1e-3)
 			end
-			-- Outside: the place's own.
+			-- The base under the ground's sky (AR14): out on the plots it holds as inside. Then the switch off, for the split.
 			t.Server("Night", "Night")
 			stand(gateZ + from + 40)
 			t.Wait(0.3)
+			local everywhere = LightingConfig.Everywhere
+			if everywhere then
+				t.Check("the base: under the ground's look", LightingController.Look().Area == 1, tostring(LightingController.Look().Area))
+				t.Server("Tune", "Lighting.Everywhere", false)
+				stand(gateZ + from + 120) -- a jump, so it lands
+				t.Wait(0.3)
+			end
+			-- Outside: the place's own.
 			t.Check("outside: none of the ground's look", LightingController.Look().Area == 0)
 			t.Check("outside: the place's own sky", game:GetService("Lighting"):FindFirstChild("LanternRowNight") == nil
 				and game:GetService("Lighting"):FindFirstChild("LanternRowDusk") == nil)
@@ -1157,6 +1195,9 @@ local cases = {
 					local want = if Kit.Floors[piece] then LightingConfig.Phases.Dusk.Floor
 						elseif LightingConfig.Houses[piece] then LightingConfig.Glow.Houses
 						else LightingConfig.Glow.Kit
+					if item:GetAttribute("Working") == false then -- an empty chamber, low (AR15)
+						want *= LightingConfig.Glow.Empty
+					end
 					if math.abs(surface.EmissiveStrength - want) > 1e-3 then
 						table.insert(off, string.format("%s at %.2f, not %.2f", piece, surface.EmissiveStrength, want))
 					end
@@ -1182,6 +1223,10 @@ local cases = {
 			t.Check("half way out, between the looks", mid > 0 and mid < 1, tostring(mid))
 			t.Wait(LightingConfig.Enter / 2 + 0.3)
 			t.Check("and out", LightingController.Look().Area == 0, tostring(LightingController.Look().Area))
+			if everywhere then
+				t.Server("Tune", "Lighting.Everywhere", everywhere)
+				t.Wait(0.3)
+			end
 		end,
 	},
 	{
@@ -6443,6 +6488,69 @@ local cases = {
 				end))
 			end
 			quiet("at the end")
+		end,
+	},
+	{
+		Name = "Base: the Breaker's chambers glow and hold their shard while they break, low and empty after; the generator turns by its generation (AR15)",
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			local plot = Players.LocalPlayer:GetAttribute("Plot")
+			local breaker = if type(plot) == "number" then Markers.Find("Breaker", { Plot = plot }) else nil
+			local plant = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
+			local first = if breaker then breaker:FindFirstChild("Chamber 1") else nil
+			if view == nil or view.Progress.Starter == "" or breaker == nil or first == nil or first:GetAttribute("Working") == nil then
+				t.Check("the first shard is chosen and the Breaker stands as its model", false, "a grey box, or no starter yet")
+				return
+			end
+			-- Each chamber as the save has it: its state, its shard, its glow.
+			local function wrong(): string?
+				local now = ProfileController.Get()
+				for index = 1, #(now :: any).Base.Chambers do
+					local chamber = breaker:FindFirstChild(`Chamber {index}`)
+					local shard = breaker:FindFirstChild(`Shard {index}`)
+					local held = (now :: any).Base.Chambers[index]
+					local working = held ~= nil and held.Work ~= nil
+					local look = if chamber then chamber:FindFirstChildOfClass("SurfaceAppearance") else nil
+					local glow = LightingConfig.Glow.Kit * (if working then 1 else LightingConfig.Glow.Empty)
+					if chamber == nil or chamber:GetAttribute("Working") ~= working then
+						return `chamber {index}: Working {tostring(chamber and chamber:GetAttribute("Working"))}, the save {tostring(working)}`
+					elseif shard == nil or not shard:IsA("BasePart") or shard.Transparency ~= (if working then 0 else 1) then
+						return `chamber {index}: its shard {if shard and shard:IsA("BasePart") then shard.Transparency else "missing"}`
+					elseif look == nil or math.abs(look.EmissiveStrength - glow) > 1e-3 then
+						return `chamber {index}: glow {if look then string.format("%.2f", look.EmissiveStrength) else "none"}, not {string.format("%.2f", glow)}`
+					end
+				end
+				return nil
+			end
+			t.Server("BaseSkip", SKIP_ALL)
+			t.Check("all broken: every chamber low, no shard", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now :: any).Base.Chambers[1].Work == nil and wrong() == nil
+			end), wrong())
+			local shard = "named_watt"
+			t.Server("BaseGive", shard, 1)
+			local added = t.Server("Act", "AddShard", { Shard = shard })
+			local wentIn = type(added) == "table" and added.Ok == true
+			t.Check("the shard goes in", wentIn, if wentIn then nil else tostring(type(added) == "table" and added.Reason))
+			t.Check("one in: its chamber full with its shard between the points", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now :: any).Base.Chambers[1].Work ~= nil and wrong() == nil
+			end), wrong())
+			t.Server("BaseSkip", SKIP_ALL)
+			t.Check("broken: low again, the shard gone", waitFor(t, ANSWER, function(): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now :: any).Base.Chambers[1].Work == nil and wrong() == nil
+			end), wrong())
+			-- The rotor: its owner's generation, and turning while there is some.
+			local rotor = if plant then plant:FindFirstChild("Rotor") else nil
+			local kw = if rotor then rotor:GetAttribute("Generation") else nil
+			t.Check("the generator's rotor carries the plant's generation", type(kw) == "number" and math.abs(kw - Power.Generation(ProfileController.Get() :: any)) < 1e-6, tostring(kw))
+			if rotor and rotor:IsA("BasePart") and type(kw) == "number" then
+				local before = rotor.CFrame
+				t.Wait(0.3)
+				local turned = before.Position:FuzzyEq(rotor.CFrame.Position, 1e-3) and not before:FuzzyEq(rotor.CFrame, 1e-4)
+				t.Check(if kw > 0 then "it turns about its axle" else "it stands still at none", if kw > 0 then turned else before:FuzzyEq(rotor.CFrame, 1e-4))
+			end
 		end,
 	},
 	{

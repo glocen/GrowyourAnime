@@ -12,6 +12,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
 
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
@@ -21,6 +22,8 @@ local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
 local Markers = require(Shared.World.Markers)
+local Kit = require(Shared.World.Kit)
+local WorldConfig = require(Shared.Config.World)
 local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -50,7 +53,8 @@ local PROMPT_REACH = 10 -- studs from a prompt's spot it can be pressed
 -- NEAR_SLACK farther out than it takes hold, so it never flickers at the edge.
 local NEAR = PROMPT_REACH + 3
 local NEAR_SLACK = 2
-local BREAKER_UP = 7 -- studs over the Breaker's marker its plate and prompt stand
+local BREAKER_UP = 7 -- studs over the Breaker's marker its prompt stands
+local BREAKER_PLATE = 5.5 -- and its plate that much higher: over the gantry's lamp (11.5), clear of the chambers (AR15)
 local BAY_UP = 4
 local STARTER_OUT = 7 -- studs in front of the Breaker, toward the spawn, the starter shards wait
 local STARTER_APART = 4
@@ -163,10 +167,11 @@ local function speaks(spot: Spot): boolean
 	return spot.News or spot.Near
 end
 
--- A plate over `anchor`: a panel of `lines` text lines, filled by the caller, shown while `shown()`.
-local function plate(name: string, anchor: Part, lines: number, width: number, shown: () -> boolean): Frame
+-- A plate over `anchor`, `lift` studs higher: a panel of `lines` text lines, filled by the caller, shown while `shown()`.
+local function plate(name: string, anchor: Part, lines: number, width: number, shown: () -> boolean, lift: number?): Frame
+	local over = Vector3.new(0, lift or 0, 0)
 	local frame = World.Plate(name, Vector2.new(width, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
-		return if anchor.Parent and shown() then anchor.Position else nil
+		return if anchor.Parent and shown() then anchor.Position + over else nil
 	end, REACH)
 	-- Kept under the top band: a machine high on screen put its news under the lead's card (the phone pack, 2026-11-13).
 	World.Below(frame)
@@ -553,13 +558,13 @@ end
 
 -- The plot -------------------------------------------------------------------------------------------------------------
 
-local function spotFor(marker: Instance, name: string, up: number, lines: number, width: number): Spot
+local function spotFor(marker: Instance, name: string, up: number, lines: number, width: number, lift: number?): Spot
 	local ground = Markers.At(marker).Position
 	local anchor = anchorAt(name, ground + Vector3.new(0, up, 0))
 	local spot: Spot = { Marker = marker, Ground = ground, Anchor = anchor, Prompt = nil, Plate = nil :: any, Near = false, News = false }
 	spot.Plate = plate(name, anchor, lines, width, function(): boolean
 		return speaks(spot)
-	end)
+	end, lift)
 	return spot
 end
 
@@ -599,7 +604,7 @@ local function find()
 	end
 	clearAll()
 	plot = number
-	local b = spotFor(breakerMarker, "Breaker", BREAKER_UP, 4, BREAKER_WIDTH)
+	local b = spotFor(breakerMarker, "Breaker", BREAKER_UP, 4, BREAKER_WIDTH, BREAKER_PLATE)
 	b.Prompt = prompt(b.Anchor, "NL_Breaker", "Void Breaker", "Breaker")
 	;(b.Prompt :: ProximityPrompt).Triggered:Connect(function()
 		BaseController.PressBreaker()
@@ -844,8 +849,37 @@ local function revealBridge()
 	bridge.Parent = ReplicatedStorage
 end
 
+-- The generators' rotors on every plot (AR15), each turning about its own X by its owner's generation (BaseService).
+local rotors: { [BasePart]: { Rest: CFrame, Angle: number } } = {}
+
+local function watchRotor(item: Instance)
+	if item:IsA("BasePart") and item:GetAttribute("Piece") == "GeneratorRotor" then
+		rotors[item] = { Rest = item.CFrame, Angle = 0 }
+	end
+end
+
+local function turnRotors(dt: number)
+	local spin = WorldConfig.Grey.Generator.Rotor
+	for part, turning in rotors do
+		if part.Parent == nil then
+			rotors[part] = nil
+			continue
+		end
+		local kw = part:GetAttribute("Generation")
+		local rate = if type(kw) == "number" then math.min(kw * spin.PerKw, spin.Most) else 0
+		if rate > 0 then
+			turning.Angle = (turning.Angle + rate * 2 * math.pi * dt) % (2 * math.pi)
+			part.CFrame = turning.Rest * CFrame.Angles(turning.Angle, 0, 0)
+		end
+	end
+end
+
 function BaseController.Start()
 	HudController.OpenBase = BaseController.Open
+	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(watchRotor)
+	for _, item in CollectionService:GetTagged(Kit.Tag) do
+		watchRotor(item)
+	end
 	if RunService:IsStudio() then
 		revealBridge()
 	end
@@ -873,6 +907,7 @@ function BaseController.Start()
 		for _, part in starters do
 			part.CFrame = part.CFrame * CFrame.Angles(0, STARTER_SPIN * dt, 0)
 		end
+		turnRotors(dt)
 		if os.clock() - last >= TICK then
 			last = os.clock()
 			BaseController.Refresh()

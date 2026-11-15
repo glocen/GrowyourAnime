@@ -24,6 +24,9 @@ return {
 	-- One turn, from dusk, in seconds: research's seed (tier 2, TR8), tuned by playing. 20 minutes: 13 of dusk, a
 	-- minute's crossing, 5 of night, a minute back.
 	Cycle = { Dusk = 780, Night = 300, Cross = 60 },
+	-- The ground's dusk and night over the whole place, the base's plots and the Strip too (AR14's feel line: "under the
+	-- same festival sky as Lantern Row"). Off, the place keeps its own Lighting outside the ground, as below.
+	Everywhere = true,
 	-- The ground's look begins From studs south of its festival gate, so a door's landing (Config.World.Grey.Door.Landing)
 	-- is already in it, under the door's black, and a walk up the side street turns into it there, over Enter seconds.
 	From = 24,
@@ -62,7 +65,8 @@ return {
 	},
 	-- The kit's glow, the same in both phases (EmissiveStrength): every piece's, and the houses' at about two thirds of it
 	-- (TR8's first note, research's verdict on AR5: their windows burned as bright as the lanterns).
-	Glow = { Kit = 2.4, Houses = 1.6 },
+	-- A Breaker's chamber with no shard in it glows at Empty times the kit's (AR15: full while it breaks, low when empty).
+	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2 },
 	Houses = { HouseLow = true, HouseTall = true } :: { [string]: boolean },
 	-- The street's static lights (the plan's), Shadows off: a pool's SpotLight straight down in its cone, and the keeper's
 	-- lamp. Brightness and Range are the builder's seeds against the two targets (the lead at least 1.3 times what's round

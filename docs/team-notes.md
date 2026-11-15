@@ -10,11 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
 - **Next:** AR16's blockout verdict; Watt and Power's bar in the game; TR21's blockout; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.
 
-**Faber (builder).** 2026-11-15, 21:05.
-- **The battery is in the Power screen's head** (AR12, "The battery in the head, built"): its mark, its kWh in Power's yellow, the work it holds as its soft line (measured: it fits at the smallest phone), its charge as a bar. Its row leaves the list. Power 71 of 71. The whole suite: 2,051 passed, and 2 frame-timing checks NOT VERIFIED at 33 to 47 fps with memory near its end. **For research:** the pass on `build/captures/power/battery_plate_smallest_phone.png`.
-- **Overview's stat sheet** stands as built until the director's yes to research's restatement (above, and below, 4).
-- **The test rule** goes into `CLAUDE.md` and `ga-finish` on the director's word in my session (below). Until then, the old rule stands.
-- **Next:** TR21's blockout (the camera's lift and plain chips over today's base, one take) and AR14's level 1, the power yard (delivery 2), in the order the director picks; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
+**Faber (builder).** 2026-11-15, 22:55.
+- **The base's install is in, in the dev build until AR16's verdict** (AR15, "Faber's install"): AR14's deliveries 4 to 6 and AR15's Breaker, bay and generator stand on the plots, with 27 meshes and four pictures up under the group. A chamber glows and holds its shard while it breaks, and the generator's rotor turns by generation. The battery's rack isn't installed.
+- **A plot is a bare lot until its player arrives** (the director's word): the base is built on arrival and cleared on leave. The touched cases all pass in Studio, again after a re-lay, and WorldReport and DressReport are empty.
+- **Next:** the Voidkin screen's stats as a plain list, with Combat Power's weights (TR17 fix 10). Then AR16's positions when Modulo's blockout lands, and AR12's reveal plate (my say on the cost; the four images). Then TR21's blockout; Kirra and Scarf Step, TR9, TR17, AR13, the gate.
 
 **Modulo (assets).** 2026-11-15, 22:36, on Fable 5.2.
 - **Delivered tonight, each in its entry, for Faber's publish and install and research's verdict in the game:** the base under construction on its whole plot, 200 by 200 (AR14, deliveries 4 and 5); the showcase's plinth (AR14, delivery 6, for TR22); the Void Breaker, a bay with its rarity light, the generator with its rotor, and the battery as a bank (AR15, sections 1 to 4). `build/handoff/Base/plan.json` says where each stands. Watt's model (AR11, delivery 3).
@@ -106,6 +105,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, night. The base installed, and the bare lots (Faber)
+
+- **What changed:** AR14's deliveries 4 to 6 and AR15's Breaker, bay and generator stand on the plots from the base kit (27 meshes and four pictures under the group; `src/storage/BaseKit.rbxm`). A chamber glows and holds its shard while it breaks, and the generator's rotor turns by its owner's generation.
+- **The director's word:** a plot is a bare lot until its player arrives. The base is built on arrival and cleared on leave (`WorldService`, `Markers.Report`; the world contract in `docs/engineering-plan.md`).
+- **Where:** AR15, "Faber's install".
+- **Open:** the look is reopened (AR16), so this stands in the dev build until AR16's verdict. The battery's rack isn't installed.
+- **For:** research and Modulo. AR16's layout comes back to me for the front row's positions.
 
 ### 2026-11-15, night. The reveal's plate, its images (Modulo)
 

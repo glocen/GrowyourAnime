@@ -6552,7 +6552,7 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **The way:** no sheet. Modulo's design goes straight in the game as a block, and research gives one verdict there from the player's camera at phone size.
 - **Order:** Modulo's next piece after Watt's model. Faber installs it after TR20.
 
-**Status:** the showcase's plinth is delivered, 2026-11-15, 22:17 (Modulo; "Delivery 6", for TR22), for Faber's install and research's verdict. Before it, level 1 is delivered a fifth time, under construction, 2026-11-15, 21:59 (Modulo; "Delivery 5"): the plant is still going up on its whole plot, on the director's word at about 21:47 ("at level 1 it rly need to look like it under construction"). The plot's size is delivery 4's (200 by 200, the director at about 21:37: "the base must be that 200x200"). `build/handoff/Base/`. For Faber's install; research's verdict is in the game. Delivery 2, the power yard, stands as the base's look, and its kit is published; of delivery 3's four published pictures two are stale. Delivery 1, the plan from Lantern Row's kit, is the director's no (20:46: "it need look like an base not lantern row ground"). Levels 2 and 3 aren't made.
+**Status:** deliveries 4 to 6 are installed (AR15, "Faber's install"), in the dev build until AR16's verdict, since the look is reopened. The showcase's plinth is delivered, 2026-11-15, 22:17 (Modulo; "Delivery 6", for TR22). Before it, level 1 is delivered a fifth time, under construction, 2026-11-15, 21:59 (Modulo; "Delivery 5"): the plant is still going up on its whole plot, on the director's word at about 21:47 ("at level 1 it rly need to look like it under construction"). The plot's size is delivery 4's (200 by 200, the director at about 21:37: "the base must be that 200x200"). `build/handoff/Base/`. For Faber's install; research's verdict is in the game. Delivery 2, the power yard, stands as the base's look, and its kit is published; of delivery 3's four published pictures two are stale. Delivery 1, the plan from Lantern Row's kit, is the director's no (20:46: "it need look like an base not lantern row ground"). Levels 2 and 3 aren't made.
 
 **Delivery 1, level 1: the yard** (Modulo, 2026-11-15, 20:31 to 20:45 by the clock).
 - **What it is:** a plan, as Lantern Row's. Every piece is one of Lantern Row's kit, published already, so nothing is uploaded: 19 pieces, 4,732 triangles and 3 lights a plot.
@@ -6762,7 +6762,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo), for Faber's install and research's verdict in the game. Next, the Training machine and the Festival Door.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below), in the dev build until AR16's verdict, since the look is reopened. The battery, the Training machine and the Festival Door wait for AR16.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -6864,6 +6864,33 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **Checks:** the maker's own, above. The content check on the two meshes and the looks: PASS, for delivery and for the upload of the two meshes (a fresh-eyes agent, 2026-11-15; it read both mesh files whole, `battery_rack` and `battery_cell`, the two looks at full size and the atlas; no review sheet, so the 64 px look was imagined, and levels 2 and 3 were judged from `SEATS`, not from a render). Ours, in code: the files match the functions, every UV sits in the atlas's swatch row, no picture, no text, no coral. No resemblance found: a capped box with a charge bar is the generic sign for a battery, and the rack is the kit's own language. Nothing of rule 4: hard-edged boxes and ribbed lathes, no red, no body-like form, and from above a plain grid of seats with one straight bar at two, four or eight cells. Conditions: upload only the two files as generated, and a changed shape, seat layout or swatch is a new check; the two looks stay internal, never uploaded or on a game page (the stand-in figure on the plinth reads as a grave marker at a glance); this row in the asset log before the upload; any text, numeral, icon or new effect the builder puts on or over the bank gets its own check.
 - **Time:** by the clock, 22:22 to 22:29: the pieces, one fast look of two views, the export, two final renders, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+
+### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
+
+The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.
+- **Published under the group:** every piece of the kit, 27 meshes, and the four new pictures (the court's, the yard's, the wings' two). Ids are in `tools/studio/Kits/Base.json` and the asset log. The template, `src/storage/BaseKit.rbxm`, has 28 pieces with the paving. The plan is taken from HEAD, `src/shared/Config/Kits/Base/`.
+- **The machines** (`WorldService`, `machine`): each `machines` placement stands in place of its grey box, which comes back when its piece is missing. A placement takes `up` (`Kit.Place`).
+  - Each chamber carries `Working`. The client lights it at full strength while it breaks a shard, and at `Config.Lighting.Glow.Empty` (a fifth) when empty. Its shard stands between the points meanwhile (`BaseService`, from the save, for every client).
+  - The rotor carries its owner's generation, and the client turns it about its X at `Config.World.Grey.Generator.Rotor` (0.02 turns a second a kW, at most 2). It stands still at none.
+  - The bay's halo is laid unseen, for TR22. The Breaker's plate is lifted 5.5 over its gantry, and the prompt's anchor stays low so its reach holds.
+  - The battery's rack isn't installed (AR16's order).
+- **The bare lots** (the director, 2026-11-15: "if there 3 players out of 8 only 3 base are in"): a plot is laid as its floor with its `Plot` marker. Its base (the machines, the door, the training, the spawn, the dressing) is built when a player is given the plot, before the attribute is set, and destroyed when they leave. A re-lay builds only the owned plots.
+  - `WorldService.Built` tells the door its way is new, and a door's way is hooked once.
+  - `Markers.Report` and DressReport want a plot's own markers and dressing on owned plots only, and none on the rest (`docs/engineering-plan.md`, the world contract).
+- **Cases:**
+  - "Base: the Breaker's chambers glow and hold their shard...; the generator turns by its generation (AR15)".
+  - "World: a plot no one owns is a bare lot, and each player's base stands on theirs".
+  - The lighting case reads an empty chamber's glow.
+- **Four facts:**
+  - Implemented: yes.
+  - Tested:
+    - type check 0 new;
+    - the offline cases, 7,331 passed;
+    - in Studio, World 71, Lighting TR8 33, Base 122, Breaker 139 and HUD's shard 20, all passed, again after a re-lay;
+    - WorldReport and DressReport both empty;
+    - one take from the Strip: the lots beside the owner's stand bare.
+  - Visually reviewed: no, and no verdict is asked on this look (AR16).
+  - Director-accepted: no. The look is reopened.
 
 ## AR16. The base, void and anime (Modulo, then Faber)
 

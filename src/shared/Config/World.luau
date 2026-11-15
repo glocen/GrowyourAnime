@@ -84,6 +84,7 @@ return {
 		-- The generator (TR18): between the Breaker and the Training machine it feeds, At studs left of the Breaker's
 		-- line and level with it, a box Size, taller than both, so the plant's heart reads from the spawn. Its spot
 		-- stands more than BaseController's near (13 studs) from every other: a player at one hears only that one.
-		Generator = { Size = Vector3.new(6, 8, 5), At = -17 },
+		-- Its rotor (AR15) turns PerKw turns a second for each kW its owner's plant generates, at most Most, still at none.
+		Generator = { Size = Vector3.new(6, 8, 5), At = -17, Rotor = { PerKw = 0.02, Most = 2 } },
 	},
 }

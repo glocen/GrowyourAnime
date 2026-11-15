@@ -29,6 +29,7 @@ local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local BreakerScreen = require(UI.BreakerScreen)
+local PowerScreen = require(UI.PowerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Figure = require(UI.VoidkinScreen.Figure)
 local VoidkinCases = require(script.Parent.VoidkinCases)
@@ -889,6 +890,121 @@ return function(given: Given): { any }
 					moment("end")
 				end)
 				t.Server("HomeReady")
+			end,
+		},
+		{
+			Name = "Take: TR18, the Power screen from the generator: the Breaker's handle dragged down and the Breaker slowing, then Auto, for research's verdict",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- TR18's evidence (docs/test-requests.md, TR18), from the player's camera: at home, the walk to the generator
+				-- left of the Breaker and its prompt tapped; the Power screen under Auto; the Breaker's handle dragged down,
+				-- its row's kW and speed falling with it and the HUD's pill amber while demand is over generation; then Auto,
+				-- the Breaker back at full speed on the battery. Not played, and their rows say so: the screen opened for the
+				-- take (PowerOpen), a shard in each chamber, the battery a third full. The plant is left as it was found.
+				local view = ProfileController.Get()
+				t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+				if view == nil or view.Progress.Starter == "" then
+					return
+				end
+				local was = { Open = view.Base.Power.Open, Auto = view.Base.Power.Auto, Shares = table.clone(view.Base.Power.Shares) }
+				local function now(): Read.Base
+					return Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow())
+				end
+				t.Check("the bays generate", now().Rates.Generation > 0, Read.Kw(now().Rates.Generation))
+				-- Every chamber working, so the Breaker asks its whole rating.
+				local shard = "lanternrow_standard"
+				local idle = 0
+				for _, chamber in view.Base.Chambers do
+					idle += if chamber.Work then 0 else 1
+				end
+				if idle > 0 then
+					local held = view.Bag.Shards[shard] or 0
+					t.Server("BaseGive", shard, idle)
+					waitFor(t, ANSWER, function(): boolean
+						local seen = ProfileController.Get()
+						return seen ~= nil and (seen.Bag.Shards[shard] or 0) == held + idle
+					end)
+					for _ = 1, idle do
+						ProfileController.Act("AddShard", { Shard = shard })
+					end
+				end
+				t.Server("BaseBattery", BaseConfig.Battery.Capacity / 3)
+				t.Server("PowerOpen", true)
+				t.Check("the generator's prompt", waitFor(t, ANSWER, function(): boolean
+					local seen = ProfileController.Get()
+					return seen ~= nil and seen.Base.Power.Open and BaseController.Parts().GeneratorPrompt ~= nil
+				end))
+				ProfileController.Act("SetPower", { Auto = true })
+				Screen.Close()
+				local player = Players.LocalPlayer
+				local old = player.Character
+				t.Server("Respawn")
+				t.Check("the avatar arrives on its plot", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local character = player.Character
+					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+				end))
+				t.Wait(WorldConfig.Arrive + 1)
+				local prompt = BaseController.Parts().GeneratorPrompt :: ProximityPrompt?
+				local anchor = prompt and prompt.Parent
+				t.Check("the generator has its prompt", anchor ~= nil and anchor:IsA("BasePart"))
+				if prompt == nil or anchor == nil or not anchor:IsA("BasePart") then
+					return
+				end
+				local function said(name: string): string
+					local found = PowerScreen.Parts()[name]
+					return if found and found:IsA("TextLabel") then found.Text else ""
+				end
+				local pill = HudController.Parts().Electricity :: GuiObject?
+				local function readings(when: string)
+					local breaker = said("Reading1")
+					local reads = if pill and pill:IsA("TextLabel") then pill.Text else ""
+					t.Check(`{when}: the Breaker's row`, breaker ~= "", breaker)
+					t.Check(`{when}: the pill`, reads ~= "", reads)
+				end
+				local ok, err = pcall(function()
+					take(t, function(kit: Take)
+						local moment = kit.Moment
+						kit.Zero()
+						moment("zero: at home, the generator left of the Breaker")
+						moment("not played: the screen opened for the take, a shard in each chamber, the battery a third full")
+						local here = t.Root().Position
+						local toward = Vector3.new(anchor.Position.X - here.X, 0, anchor.Position.Z - here.Z)
+						local stand = anchor.Position - toward.Unit * 6
+						moment("the walk to the generator")
+						kit.WalkTo(Vector3.new(stand.X, here.Y, stand.Z))
+						t.Wait(0.6)
+						moment("the prompt tapped: the Power screen under Auto")
+						prompt:InputHoldBegin()
+						prompt:InputHoldEnd()
+						t.Check("the Power screen opens on its prompt", waitFor(t, 2, function(): boolean
+							return Screen.Current() == PowerScreen.Name
+						end))
+						t.Wait(TAKE_READ)
+						readings("under Auto")
+						moment("the Breaker's handle dragged down to a quarter")
+						local answer = PowerScreen.Slide(1, 0.25, 1.2)
+						t.Check("the split is taken", answer.Ok == true, tostring(answer.Error))
+						t.Wait(TAKE_READ)
+						readings("the split")
+						moment("Auto tapped: the Breaker back at full speed")
+						t.Check("Auto pressed", Button.Press(PowerScreen.Parts().Auto :: TextButton))
+						t.Wait(TAKE_READ)
+						readings("Auto again")
+						moment("end")
+					end)
+				end)
+				-- The plant as it was found.
+				Screen.Close()
+				local back = ProfileController.Act("SetPower", if was.Auto then { Auto = true } else { Auto = false, Shares = was.Shares })
+				t.Check("the split put back", back.Ok == true, tostring(back.Error))
+				if not was.Open then
+					t.Server("PowerOpen", false)
+				end
+				if not ok then
+					error(err, 0)
+				end
 			end,
 		},
 		{

@@ -10,12 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order, for phase 2 first:** the level-up B; Combat Power's foot; AR13's six layers; the festival tag's block; then AR6's gear (phase 3).
 - **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
 
-**Faber (builder).** 2026-11-15, 17:30.
-- **TR18, the base as a power plant, is built in grey:** the rule, the save, voltage, the generator, the Power screen and the pill (TR18, "Faber's build"). Logic 5905 offline, type check 0 new.
-- **Nine pieces wait for the screen:** TR18 and the eight before it, each with its self-test, its stills at phone size and research's pass. Studio is open (the director, 2026-11-15); no playtest until the director says the screen is free.
-  - The eight: AR12's HUD part 1 (35bec4e); Kirra's install (27b815a, with Scarf Step's blockout); take F's lead card (9407702); the dock; TR19; TR20; Combat Power in cobalt; the shard pictures (AR12, the two "Faber's build" blocks).
-- **For research:** TR18's two questions (its build); TR19's way into the Base screen; the cobalt's `Finish.White`.
-- **Next:** the festival tag in the build (AR12, Modulo's images); AR13's cues on the director's word. Nothing running, no lock held.
+**Faber (builder).** 2026-11-15, 18:20.
+- **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).
+- **TR18:** its self-test passes, and its take at phone size is recorded for research's verdict, with three points from my own read (TR18, "The take at phone size").
+- **Next:** each pending piece's stills at phone size for research, in order: AR12's HUD part 1; Kirra's install (with Scarf Step's blockout); take F's lead card; the dock; TR19; TR20; Combat Power in cobalt; the shard pictures.
+- **For research:** TR18's two questions and the take's three points; TR19's way into the Base screen; the cobalt's `Finish.White`. **Then:** the festival tag; the galaxy Breaker (Modulo's images, with research's mist band to try); AR13 on the director's word.
 
 **Modulo (assets).** 2026-11-15, 18:00, on Fable 5.2.
 - **AR6, the gear in colour is made, for research's verdict:** sixty flat pictures in their slots, the slot's light and Legendary's border, in `build/handoff/UI/gear/` (four sheets, `gear_<kind>_colour.png`; AR6, "Colour and frames"). Pictures only, as the director said at 17:20. Content check PASS for upload, all 62; the images are for Faber once research's verdict is in.
@@ -23,7 +22,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Delivered earlier, each in its entry:** the HUD's images in V2, Block, the dock's 17 images, TR17's 16 marks and the shard grades' six images (AR12); Combat Power's cobalt sheet; the level-up's notice, B, which waits on research's verdict on its motion, its place research's call; AR13's eleven layers, 33 takes in `build/handoff/Audio/test6/`, never heard: **the upload waits on the director's word.**
 - **Next:** research's fixes on the gear's colour, if any. **Later:** the Voidkin mock's redraw with the marks and "Items"; the bays' sheet in Dynamo vivid; the tag's other four marks when their grounds are built; Scarf Step's blockout when Faber gives the turn (AR10, section 5); Watt's model, with the shirt fix (AR11); TR10's two icons. Nothing running, no lock held.
 
-**Turns.** Studio: the main place, open in Edit, held by Faber for AR12's HUD and Kirra's install (2026-11-15); no playtest until the director frees the screen. Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place, held by Faber, playtesting since the director's "go" (2026-11-15), for the pending pieces' stills. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 
@@ -55,6 +54,11 @@ For Faber:
   - the generator stands left of the Breaker;
   - the Power screen opens the first time the Training machine draws;
   - voltage is refused on a shard that holds a stated Voidkin.
+  - Research: say in your row what you'd change.
+- Tier 1, Faber, 2026-11-15, night, from the self-test:
+  - A fallen lead's card says "Healing 0:24", as a refusal says it: "Healing at home 0:24" ran 1.2 times take F's health line, and 14 points is the floor. The Voidkin screen's rows keep "at home".
+  - The dock's taps grow round their tiles to 52 points, so the wings hold 44 on the smallest phone.
+  - A ranged lead landed from its skip with nothing ready holds where it landed, instead of walking back in.
   - Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, night, AR12's chambers: an infused chamber says "Infused" on one line, its level in the pane, as on a chip; a row with one infused takes the 60-point picture for every chamber, so the words line up; a chamber is 138 points tall, from 124. Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, TR20: a Breaker chamber's halo is its edge leaning toward the accent, as it has no halo layer; the Breaker's chips hover with the chambers, as they share its tap; a card's rim is its rarity's trim. The screens' tabs, close buttons and the Voidkin rail take hover at the shared finish. Research: say in your row what you'd change.

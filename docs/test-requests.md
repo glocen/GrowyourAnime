@@ -1703,13 +1703,18 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - **Tested:**
   - type check 0 new;
   - logic 5905 offline: split, Auto, the floor, charge, drain, cap, offline, the migration, a refused share, voltage's price and refusals, training on the clock.
-- **Self-test cases, written and synced to Studio, not yet run:**
-  - "Power: the generator shows generation and demand…";
-  - the voltage case, which tunes the Standard to 900 s for itself and puts it back;
-  - the pill's checks.
-- **Waiting for the screen:** the take at phone size and the UI lint at both scales.
+- **Self-test, run 2026-11-15:** Power 55 (the UI lint included, in this window and on the smallest phone, with a split), voltage 60 (it tunes the Standard to 900 s for itself and puts it back), the pills 34, the plates 28, the worker 8, all passing at 60 fps. The full suite: 1979 passed and 2 failed, both since fixed and passing alone (cb73de0).
+- **The take at phone size, 2026-11-15** (`build/captures/tr18/power_take.mkv`, 45 s at 59 fps, its zero at 4.48 s; `power_take_sheet.jpg`, a row a moment). The case `Take: TR18, the Power screen from the generator…`: the walk to the generator, its prompt, the screen under Auto, the Breaker's handle slid to a quarter over 1.2 s, then Auto. Not played: the screen opened by `PowerOpen`, a shard in each chamber, the battery a third full. Its readings:
+  - under Auto: the Breaker "30 / 30 kW · 100%", the pill "21 / 30 kW" in amber, the battery draining;
+  - with the split: the Breaker "5.1 / 30 kW · 25%", the pill the same;
+  - Auto again: the Breaker "30 / 30 kW · 100%".
+- **Visually reviewed by Faber, on the sheet.** The Breaker slowing and speeding reads in its row. Three things don't, for research's verdict:
+  1. **The pill doesn't change with the split,** against the done-when. It says what the machines ask, and they ask the same. Proposal: amber only while the battery covers a shortfall, so a split that generation covers turns it plain.
+  2. **The Breaker's share goes to the next machine, not to the battery.** Its handle at a quarter gives the idle Training machine 75% and the battery 0%, while the battery takes the 16 kW left (the rule's `Net`). Proposal: a handle hands what it gives up to the battery, and an idle machine's share is drawn as the battery's.
+  3. **The head warns about a choice.** "Demand over generation: the machines slow" stands in orange under a split the player made. Proposal: under a split it says the fact plainly, "The Breaker at 25%", without the warning colour.
+  - Each changes my own tier 1 calls in this build. I make none before the verdict.
 
-**Status:** implemented, 2026-11-15 (Faber, above). Tested offline; its self-test and take wait for the screen. Not reviewed. Not accepted.
+**Status:** implemented and tested, 2026-11-15 (Faber, above). Its self-test passes, and the take at phone size is recorded. Visually reviewed by Faber only: research's verdict waits, with the three points above. Not accepted.
 
 ## TR19. Home in one tap: the dock's Base tile (Faber)
 

@@ -7105,7 +7105,16 @@ local cases = {
 					local plus = part("Plus1")
 					return plus ~= nil and plus:IsA("TextButton") and not Button.Press(plus)
 				end))
-				lintClean(t, "the Power screen with a split")
+				-- The UI lint in this window and on the smallest phone (TR18's done-when: both scales).
+				local top = GuiService.TopbarInset.Height
+				for _, at in { { Name = "this window", Scale = nil :: number?, Box = nil :: Vector2? }, { Name = "the smallest phone", Scale = Theme.Scale.Floor, Box = Theme.Smallest - Vector2.new(0, top) } } do
+					Layers.Force(at.Scale)
+					Layers.Box(at.Box)
+					t.Wait(0.1) -- laid out again
+					lintClean(t, `the Power screen with a split, in {at.Name}`)
+				end
+				Layers.Force(nil)
+				Layers.Box(nil)
 				-- Auto again, the shares kept for later.
 				t.Check("Auto pressed", Button.Press(part("Auto") :: TextButton))
 				t.Check("Auto again, the split kept", waitFor(t, ANSWER, function(): boolean

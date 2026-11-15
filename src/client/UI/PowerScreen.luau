@@ -11,8 +11,10 @@
 --   PowerScreen.Tick(now)         the readings and the bar, from the base as it stands now
 --   PowerScreen.Parts()           its pieces by name, for tests
 --   PowerScreen.Drag(handle, to)  a handle dragged to `to` of the bar and let go, as a finger would, for tests: the answer
+--   PowerScreen.Slide(handle, to, seconds)  the same drag over `seconds`, a frame at a time, for a take: the answer
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage.Shared
@@ -455,6 +457,21 @@ end
 function PowerScreen.Drag(handle: number, to: number): { [string]: any }
 	held = { Handle = handle, Input = nil, StartX = 0, From = cuts[handle] }
 	move(handle, to)
+	return release()
+end
+
+function PowerScreen.Slide(handle: number, to: number, seconds: number): { [string]: any }
+	local from = cuts[handle]
+	held = { Handle = handle, Input = nil, StartX = 0, From = from }
+	local start = os.clock()
+	while true do
+		local share = math.clamp((os.clock() - start) / math.max(seconds, 1e-3), 0, 1)
+		move(handle, from + (to - from) * share)
+		if share >= 1 then
+			break
+		end
+		RunService.RenderStepped:Wait()
+	end
 	return release()
 end
 

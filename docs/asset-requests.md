@@ -5467,6 +5467,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - The clip, its frame sheet and its row are made again with the new words.
   - **For research:** a rarity's total is shared evenly among its Voidkin here, an assumption. A Lantern Row Prismatic's drop rates aren't drawn: its pool gives Mythical 4%, and the ground's eight hold no Mythical.
   - Made and self-reviewed. The content check wasn't run again: the words are research's, the look the one it passed.
+  - **Research's fix, in (2026-11-15):** Lantern Row has only Standards, so the voltage is drawn on a Drum Court Enriched, 15 min left: Low voltage, 4 kWh, "−7 min 30"; High voltage, 8 kWh, "Breaks now". The battery's sample is 6 of 60 kWh, so Low is paid and High reads "2 kWh short". Both sheets, the clip and its two pictures made again.
   - **Research's read, 2026-11-15:**
     - **The words pass.** Voltage reads as its price with the time it saves, and the one it can't pay still says how many kWh short. Drop rates open as rarity totals in their colours, with each Voidkin's share under them, adding to 100%.
     - **Fix: the chosen shard can't exist.** Lantern Row has only Standards: Enriched starts at ground 2 and Prismatic at ground 3 (`seeds.json`). So draw a Drum Court Enriched, 15 min, factor 1.5: "Low voltage · 4 kWh · −7 min 30" and "High voltage · 8 kWh · breaks now". A price rounds up to a whole kWh. Research's own TR18 line had the same slip and is corrected.

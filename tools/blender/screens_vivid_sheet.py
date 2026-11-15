@@ -36,12 +36,13 @@ POWER = h.POWER
 # word is paler; Mythical's word takes its trim, since its light is too dark to read.
 WORD = {"Common": "#AEB4C0", "Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777",
         "Mythical": "#FF8794"}
-BATTERY = (42, 60)  # stored, the cap, in kWh
+BATTERY = (6, 60)  # stored, the cap, in kWh: a sample that pays Low voltage and falls short of High
 # Voltage (the director, 2026-11-15: "let use real electrician words", then "Faster break"; docs/design.md, "Infusion
 # is voltage"): stored energy buys time, never luck. Low halves a shard's time left, High breaks it now. The prices are
-# research's for a Prismatic on ground 1 (tools/balance/seeds.json, "voltage"); a Standard is offered none, since it
-# would save under a minute. A level: its name, its kWh, what it saves, what that leaves.
-VOLTAGE = (("Low voltage", 30, "\u22121 h 30", "1 h 30 left"), ("High voltage", 60, "Breaks now", ""))
+# research's for a Drum Court Enriched, 15 min, the ground's factor 1.5, rounded up to a whole kWh (research,
+# 2026-11-15; tools/balance/seeds.json, "voltage"). A Standard is offered none, since it would save under a minute, and
+# Lantern Row has only Standards. A level: its name, its kWh, what it saves, what that leaves.
+VOLTAGE = (("Low voltage", 4, "\u22127 min 30", "7 min 30 left"), ("High voltage", 8, "Breaks now", ""))
 # Drop rates (the director, 2026-11-15: "drop rate is that simple", and "it obviously dont contain everything the odd
 # are off"): every Voidkin a shard can give, under each rarity's total, to 100%. A Lantern Row Standard: the pool's
 # totals (seeds.json, "pools") over the ground's Voidkin (docs/roster.md, "Lantern Row's shards at launch"), a rarity's
@@ -241,7 +242,7 @@ def night(st, sky):
 
 
 def breaker(p, world, state, sky):
-    """The Breaker in Machine, as Faber built it, as a galaxy. `state`: "line", a Prismatic chosen in its chamber, its
+    """The Breaker in Machine, as Faber built it, as a galaxy. `state`: "line", an Enriched chosen in its chamber, its
     voltage showing and its drop rates one tap away; "ready", two chambers broken, the first chosen, its drop rates
     open."""
     st = kit.Stage.__new__(kit.Stage)
@@ -255,7 +256,7 @@ def breaker(p, world, state, sky):
     st.text(PX + 14, PY + 44, 11, "Chambers", p["soft"])
     ready = state == "ready"
     cells = ((("ready", 0, "", "Standard"),) * 2 if ready else
-             (("work", 0.02, "3 h left", "Prismatic"), ("work", 0.35, "10 s left", "Standard"))) + (("locked", 0, "", ""),) * 2
+             (("work", 0.02, "15 min left", "Enriched"), ("work", 0.35, "10 s left", "Standard"))) + (("locked", 0, "", ""),) * 2
     for i, (kind, left, seconds, name) in enumerate(cells):
         chamber(st, PX + 14 + i * 103, PY + 60, 96, 144, p, i + 1, kind, left, seconds, name, not ready and i == 0)
     # what's ready, waiting and in the bag
@@ -266,12 +267,12 @@ def breaker(p, world, state, sky):
         chip(st, PX + 14 + i * 137, PY + 232, 131, 50, p, top, under, kind)
     # the chosen shard: its own panel, a step lighter than the screen's
     kit.panel(st, DX, DY, DW, DH, p)
-    st.text(DX + 12, DY + 10, 13, f"Lantern Row shard · {'Standard' if ready else 'Prismatic'}", p["text"])
+    st.text(DX + 12, DY + 10, 13, "Lantern Row shard · Standard" if ready else "Drum Court shard · Enriched", p["text"])
     if ready:  # its chamber says Ready; here, the one filled action, then everything it can give
         h.main_button(st, DX + 12, DY + 30, DW - 24, 44, "Open", p)
         rates(st, DY + 83, p)
     else:
-        st.text(DX + 12, DY + 28, SMALL, "Chamber 1 · 3 h left", p["soft"])
+        st.text(DX + 12, DY + 28, SMALL, "Chamber 1 · 15 min left", p["soft"])
         stored = BATTERY[0]
         for i, (name, price, saves, leaves) in enumerate(VOLTAGE):
             y = DY + 48 + i * 54
@@ -304,8 +305,8 @@ def words_strip(p):
         pip(st, x + 5, 22, colour)
         st.text(x + 15, 16, 12, rarity, colour)
     st.icon("Battery", 490, 22, 20.0)
-    st.text(504, 16, 12, "42 / 60 kWh", POWER)
-    st.text(600, 16, 12, "18 kWh short", POWER)
+    st.text(504, 16, 12, f"{BATTERY[0]} / {BATTERY[1]} kWh", POWER)
+    st.text(600, 16, 12, f"{VOLTAGE[1][1] - BATTERY[0]} kWh short", POWER)
     st.icon("CoinMint", 706, 22, 18.0)
     st.text(718, 16, 12, "1,250", h.CREDITS)
     pip(st, 768, 22, WORD["Legendary"])
@@ -329,8 +330,8 @@ NOTES = (
     "generation in kW; the battery's mark means the store). Voltage (the director, 2026-11-15, \"Faster break\") buys time, "
     "never luck: Low halves the time left, High breaks the shard now. A button holds its name over its price in kWh, and "
     "what it saves stands beside it. One the battery can't pay says how many kWh short. A Standard is offered none (it "
-    "would save under a minute), so the chosen shard is a Prismatic, 3 h left. Numbers: research's seeds (the battery "
-    "60 kWh; a Prismatic's Low 30 and High 60 on ground 1); 42 stored is a sample.",
+    "would save under a minute), and Lantern Row has only Standards, so the chosen shard is a Drum Court Enriched, "
+    "15 min left. Numbers: research's seeds (the battery 60 kWh; that Enriched's Low 4 and High 8); 6 stored is a sample.",
     "Drop rates (the director, 2026-11-15: \"drop rate is that simple\") are one tap away, and on the second sheet they're "
     "open: every Voidkin the shard can give, under each rarity's total, to 100%.",
     "In motion (the test: vivid3_breaker_motion.mp4): a thin mist of the river's colours drifts along the chambers' row, "
@@ -416,7 +417,7 @@ def main():
     strip = words_strip(p)
     kit.IMAGES.clear()
     labels = ("Today: Faber's take of the build (TR9, Machine), all in Graphite", "Galaxy: the same screen, a window on the void")
-    sheet(out, "vivid3_breaker.png", "Grow your Anime: the Breaker, today and as a galaxy. A Prismatic in its chamber, and its voltage",
+    sheet(out, "vivid3_breaker.png", "Grow your Anime: the Breaker, today and as a galaxy. An Enriched in its chamber, and its voltage",
           labels, h.floats(befores["line"]), shots["line"], NOTES, strip)
     h.stage("the Breaker's sheet")
     sheet(out, "vivid3_breaker_ready.png", "Grow your Anime: the Breaker, today and as a galaxy. Two shards broken, the first one's drop rates",

@@ -134,8 +134,10 @@ return {
 	-- id; one not drawn yet shows its class's glyph, Glyph of the plate across). Its well (x0, y0, x1, y1 in the plate's
 	-- points) fills from the foot like a conduit: the well's shape under one gradient, whose line rises Lean of a point
 	-- for each point to the right; Front, the gradient's stops Below that line in points, how Solid and in what Colour
-	-- (Modulo's, DESIGN); Travel, the gradient's offset that carries the line from the well's middle to its foot, found
-	-- in Studio. Ready, the plate is white-hot with its icon dark on the light. It empties over Flash seconds as the move
+	-- (Modulo's, DESIGN); Travel, the carry that takes the line from the well's middle to its foot, in the well's sides,
+	-- found in Studio (2026-11-15, stills at 0 to 0.995: nothing lit when empty, the line in by about 3%, at the top just
+	-- short of ready; 0.5 left a glow at the foot when empty, 0.66 stood still for the first and last tenth). Ready, the
+	-- plate is white-hot with its icon dark on the light. It empties over Flash seconds as the move
 	-- fires, swelling Swell of its size, and swells ReadySwell once over Ready seconds when it's ready again. Only in a
 	-- fight (TR3's verdict, fix 5): FadeIn as the lead takes a target, Linger after it has none, FadeOut; Always shows it
 	-- out of a fight too, to judge its corner whole. The builder's seeds, tuned live.
@@ -154,7 +156,7 @@ return {
 			{ Below = 5.8, Solid = 0.36, Colour = Color3.fromHex("#FFF4D6") },
 			{ Below = 8, Solid = 0.28, Colour = Color3.fromHex("#FFF4D6") },
 		},
-		Travel = 0.5,
+		Travel = 0.58,
 		Icons = { RookHaymaker = "SignatureHaymaker", LyricHeldNote = "SignatureHeldNote" } :: { [string]: string },
 		Glyph = 0.5,
 		Ink = Color3.fromHex("#14161B"), -- a glyph on the ready plate

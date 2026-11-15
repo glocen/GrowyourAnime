@@ -280,6 +280,15 @@ return {
 			t.Check("a quarter: half way to the foot", near(Hud.FrontOffset(0.25, 0.8), 0.4))
 			t.Check("past full holds full", near(Hud.FrontOffset(7, 0.8), -0.8))
 			t.Check("not a number reads empty", near(Hud.FrontOffset(0 / 0, 0.8), 0.8))
+			-- the carry turned with the gradient, since Roblox moves it along its element's own axes
+			local x, y = Hud.FrontShift(0.5, 90)
+			t.Check("top to foot: the carry goes straight down", near(x, 0) and near(y, 0.5), `{x} {y}`)
+			x, y = Hud.FrontShift(0.5, 0)
+			t.Check("left to right: straight across", near(x, 0.5) and near(y, 0), `{x} {y}`)
+			x, y = Hud.FrontShift(Hud.FrontOffset(0, config.Travel), turn)
+			t.Check("empty, leaning: down and a little right, by the whole travel", y > 0 and x > 0 and x < y and near(math.sqrt(x * x + y * y), config.Travel), `{x} {y}`)
+			x, y = Hud.FrontShift(Hud.FrontOffset(1, config.Travel), turn)
+			t.Check("full: up and a little left", y < 0 and x < 0, `{x} {y}`)
 		end,
 	},
 	{

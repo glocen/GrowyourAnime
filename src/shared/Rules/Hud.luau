@@ -418,4 +418,12 @@ function Hud.FrontOffset(share: number, travel: number): number
 	return (0.5 - math.clamp(if share == share then share else 0, 0, 1)) * 2 * travel
 end
 
+-- A carry `along` the gradient's way, as the UIGradient's Offset: Roblox moves a gradient along its element's own axes,
+-- not its turned way (seen in Studio, 2026-11-15: an Offset across a gradient turned 83 degrees barely moved its line), so
+-- the carry is turned with it. `turn` in degrees, as FrontTurn gives it; returns the Offset's x and y.
+function Hud.FrontShift(along: number, turn: number): (number, number)
+	local angle = math.rad(turn)
+	return along * math.cos(angle), along * math.sin(angle)
+end
+
 return Hud

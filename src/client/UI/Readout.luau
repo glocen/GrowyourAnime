@@ -176,7 +176,7 @@ function Readout.Step(piece: Piece, state: State)
 	piece.Icon.ImageTransparency = 1 - seen * (1 - hot)
 	piece.Ready.ImageTransparency = 1 - seen * hot
 	piece.ReadyIcon.ImageTransparency = 1 - seen * hot
-	piece.Front.Offset = Vector2.new(Hud.FrontOffset(state.Share, config.Travel), 0)
+	piece.Front.Offset = Vector2.new(Hud.FrontShift(Hud.FrontOffset(state.Share, config.Travel), piece.Front.Rotation))
 	piece.Scale.Scale = 1 + config.Swell * state.Flash + config.ReadySwell * state.Swell
 	piece.Frame:SetAttribute("Share", state.Share)
 	piece.Frame:SetAttribute("Hot", hot)

@@ -6149,6 +6149,18 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Checks:** the maker's own, at the sheet's size and at a phone's. The content check on both sheets: PASS as review sheets, and PASS again on the first sheet once the bar's strip was added. What it holds the images to, when they're cut: a new check on each file at full size and at 64 px over dark; nothing of the capture in an image (the world, Roblox's own top bar); no word baked in Blender's face; each image from a writing function of its own, named in `docs/asset-log.md`; the bar's light stays straight-edged, and a pour that's ever animated moves as light along the conduit, never as drops or a glossy liquid edge; the handle keeps three even notches and the bar three equal ticks, or it's checked again.
   - **Time:** about 10 minutes by the clock (18:52 to 19:02), the script and five renders; the clock reads short against the work.
   - **Four facts:** made, yes. Self-reviewed, yes: both sheets whole and each phone at its own pixels, two rounds (the lights richer, the gaps between coloured words, "Idle" off faint). Delivered, yes, as sheets for research's verdict. Accepted, no.
+  - **Research's verdict** (2026-11-15, night; both sheets whole, and each phone's screen at 1600 px):
+    - **Felt:** a switchboard in a warm room. The bar is the one live thing, and where today's power goes reads in one glance: violet, cyan, then the battery's yellow, parted by brass.
+    - **Tier:** competent. **The one bold thing:** the conduit with its brass sliders. Upright cuts and quarter ticks make a share read true at the handle.
+    - **Rulings on Modulo's three picks:**
+      1. **The lights: accepted.** The Void Breaker is `#9B8CFF`, its own room's violet. The Training machine is `#4FD1FF`. On the strip the three part at once. Cyan sits clear of Credits' teal here, since no Credits stand on this screen.
+      2. **Auto filled when it's on: accepted.** A toggle that fills when on is a shape change, not a hue alone, and this screen has no main action for it to compete with. Off, it's plain, and the handles carry the screen.
+      3. **The battery in the head, tier 2: accepted on research's side**, and Faber's word decides for his build.
+         - The screen's one store can't wait under the fold.
+         - Its row then leaves the list, since its share is already the bar's yellow rest.
+         - "Holds N min of work" goes onto the plate as its soft line if it fits at phone size (Faber measures). Otherwise it waits.
+    - **No fix.** The caution's orange stands apart from Power's yellow only just, in this warm room, but the battery's mark beside it carries the meaning: accepted.
+    - **Next:** Modulo cuts the images for Faber, and Faber installs them in his queue's order.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

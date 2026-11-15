@@ -17,6 +17,11 @@ The generator (`Generator`, `GeneratorRotor`): a dynamo on a steel housing, its 
 bells under a yoke of three bushings. The rotor is its own piece, its origin on its axle, so the builder turns it:
 faster as the plant generates more.
 
+The battery (`BatteryRack`, `BatteryCell`): a bank. A low rack with eight seats and a bus bar down its middle, and a
+cell a seat as the battery's cap grows with the base's level (research, 2026-11-15: 60, 150 and 400 kWh), two, four
+and eight. A cell is its own piece, so the bank is its own meter: the builder lights the cells one after another as
+the charge rises.
+
 Not run by itself: base_kit.py takes PIECES into its own.
 """
 
@@ -39,6 +44,12 @@ BAY = (10.0, 0.4)                # a bay's stand-in, its pad: its side and its h
 HALO = (4.9, 2.0, 2.6)           # a bay's collector ring: its middle up from the floor, its inner and outer radius
 PLANT = (6.0, 5.0, 8.0)          # the generator's stand-in: across, deep, high
 AXLE = 5.3                       # the generator's rotor: its axle, up from the floor, along X
+BANK = (6.0, 4.0, 3.0)           # the battery's stand-in: across, deep, high
+SEAT = 0.6                       # a cell's seat on the rack, up from the floor
+# a cell's seat on the rack, across and toward the Strip, in the order the bank fills: the spawn's row first, from
+# the middle out
+SEATS = [(-0.75, -0.95), (0.75, -0.95), (-0.75, 0.95), (0.75, 0.95), (-2.25, -0.95), (2.25, -0.95), (-2.25, 0.95), (2.25, 0.95)]
+CELLS_AT = {1: 2, 2: 4, 3: 8}    # cells by the base's level, with the battery's cap
 
 
 def post(m, x, y, z0, z1, t, sw, ink=False):
@@ -267,5 +278,43 @@ def generator_rotor():
                       f"about its own X, faster as the plant generates more. Look only")
 
 
+def battery_rack():
+    """The battery's rack: on the stand-in's footprint, 6 studs by 4, a girder deck with eight dark seats, a copper
+    bus bar down its middle with the current's line on it, and a low terminal post at each end. An empty seat is a
+    cell the base hasn't earned yet."""
+    m = Mesh()
+    wide, deep, _ = BANK
+    m.box((wide + 0.3, deep + 0.3, 0.3), (0, 0, 0.15), "concrete", ink=True)
+    m.box((wide, deep, 0.3), (0, 0, 0.45), "girder", ink=True)
+    for x, y in SEATS:
+        m.box((1.24, 1.5, 0.05), (x, y, SEAT + 0.025), "dark")
+    m.box((wide - 0.5, 0.3, 0.24), (0, 0, SEAT + 0.12), "copper")
+    m.box((wide - 0.9, 0.12, 0.06), (0, 0, SEAT + 0.27), "power")
+    for sx in (-1, 1):
+        post(m, sx * (wide / 2 - 0.22), 0, SEAT, 2.1, 0.3, "girder", ink=True)
+        insulator(m, (sx * (wide / 2 - 0.22), 0, 2.1), 0.55, r=0.3, ribs=2)
+        m.box((0.24, 0.24, 0.2), (sx * (wide / 2 - 0.22), 0, 2.75), "power")
+    return Piece("BatteryRack", m, solid="a box, 6 by 4, 3 high",
+                 note=f"on the stand-in's footprint, 2.85 high at its posts. Its eight seats are {SEAT:g} up; a "
+                      f"BatteryCell stands on each seat the base's level has earned (plan.json, machines, battery)")
+
+
+def battery_cell():
+    """One cell of the bank, its origin on its seat: a steel body with a bone cap and a ceramic terminal, and on the
+    two faces the spawn and the Strip see a dark window with the charge's line in the current's yellow."""
+    m = Mesh()
+    m.box((1.2, 1.44, 1.5), (0, 0, 0.75), "steel", ink=True)
+    m.box((1.3, 1.54, 0.2), (0, 0, 1.6), "bone", ink=True)
+    for sy in (-1, 1):
+        m.box((0.56, 0.08, 1.14), (0, sy * 0.73, 0.76), "dark")
+        m.box((0.26, 0.1, 0.94), (0, sy * 0.75, 0.76), "power")
+    m.box((0.4, 0.4, 0.3), (0, 0, 1.85), "ceramic")
+    m.box((0.22, 0.22, 0.16), (0, 0, 2.08), "power")
+    return Piece("BatteryCell", m,
+                 note=f"its origin is its seat on the rack, {SEAT:g} up; 2.16 high above it. Its glow is its own "
+                      f"charge: the builder lights the cells in the seats' order as the battery fills. Look only")
+
+
 PIECES = {"Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
-          "Bay": bay, "BayHalo": bay_halo, "Generator": generator, "GeneratorRotor": generator_rotor}
+          "Bay": bay, "BayHalo": bay_halo, "Generator": generator, "GeneratorRotor": generator_rotor,
+          "BatteryRack": battery_rack, "BatteryCell": battery_cell}

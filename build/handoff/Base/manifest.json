@@ -600,6 +600,50 @@
    "lights": [],
    "note": "its origin is its axle's middle: it stands 5.3 up at the generator's middle and turns about its own X, faster as the plant generates more. Look only"
   },
+  "BatteryRack": {
+   "mesh": "meshes/BatteryRack.json",
+   "triangles": 372,
+   "vertices": 230,
+   "centre": [
+    0.0,
+    1.355,
+    0.0
+   ],
+   "size": [
+    6.58,
+    2.99,
+    4.58
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 6 by 4, 3 high",
+   "lights": [],
+   "note": "on the stand-in's footprint, 2.85 high at its posts. Its eight seats are 0.6 up; a BatteryCell stands on each seat the base's level has earned (plan.json, machines, battery)"
+  },
+  "BatteryCell": {
+   "mesh": "meshes/BatteryCell.json",
+   "triangles": 120,
+   "vertices": 80,
+   "centre": [
+    0.0,
+    1.01,
+    0.0
+   ],
+   "size": [
+    1.58,
+    2.3,
+    1.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its seat on the rack, 0.6 up; 2.16 high above it. Its glow is its own charge: the builder lights the cells in the seats' order as the battery fills. Look only"
+  },
   "Showcase": {
    "mesh": "meshes/Showcase.json",
    "triangles": 220,

@@ -1044,8 +1044,75 @@
     "up": 5.3,
     "turn": 0.0,
     "standsFor": "the generator's rotor, turning about its own X"
+   },
+   {
+    "piece": "BatteryRack",
+    "across": 0.0,
+    "along": -26.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the battery"
+   },
+   {
+    "piece": "BatteryCell",
+    "across": -0.75,
+    "along": -26.95,
+    "up": 0.6,
+    "turn": 0.0,
+    "standsFor": "the battery's cell 1"
+   },
+   {
+    "piece": "BatteryCell",
+    "across": 0.75,
+    "along": -26.95,
+    "up": 0.6,
+    "turn": 0.0,
+    "standsFor": "the battery's cell 2"
    }
-  ]
+  ],
+  "battery": {
+   "note": "the battery is a bank: a cell a seat, in this order, as its cap grows with the base's level. The builder lights the cells one after another as the charge rises.",
+   "cellsAt": {
+    "1": 2,
+    "2": 4,
+    "3": 8
+   },
+   "up": 0.6,
+   "seats": [
+    {
+     "across": -0.75,
+     "along": -26.95
+    },
+    {
+     "across": 0.75,
+     "along": -26.95
+    },
+    {
+     "across": -0.75,
+     "along": -25.05
+    },
+    {
+     "across": 0.75,
+     "along": -25.05
+    },
+    {
+     "across": -2.25,
+     "along": -26.95
+    },
+    {
+     "across": 2.25,
+     "along": -26.95
+    },
+    {
+     "across": -2.25,
+     "along": -25.05
+    },
+    {
+     "across": 2.25,
+     "along": -25.05
+    }
+   ]
+  }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",
  "lightsNote": "a SpotLight straight down from each flood mast's head and a PointLight over the Breaker's chambers, Shadows off; everything else that glows is in a glow picture",

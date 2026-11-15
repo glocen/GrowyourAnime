@@ -6739,7 +6739,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2) and the generator (section 3) are delivered, 2026-11-15, 22:23 (Modulo), for Faber's install and research's verdict in the game. Next, the battery as a bank, then the Training machine and the Festival Door.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo), for Faber's install and research's verdict in the game. Next, the Training machine and the Festival Door.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -6817,6 +6817,29 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **How it's made:** `tools/blender/base_machines.py` (`laid`, `generator`, `generator_rotor`); `base_plan.py` (`machines`, the view `generator`).
 - **Checks:** the maker's own, above. The content check on the two meshes and the looks: **PASS, for delivery and for the upload of the two meshes, with five conditions.** It read both meshes against their source, the atlas and the two looks; no 64 pixel sheet was given, so it judged the small look from the spawn's view. A generic dynamo in the kit's own language, with a plain level meter; nothing red, nothing that drips or stains, no symbol, no weapon reading. The conditions: (1) the asset log's row before the upload: done; (2) the rotor stays look only: no collision, touch, damage, knockback or pull, and the generator's collision box stays at least the manifest's, so no character, Voidkin or worker ever stands in or against the turning rotor, and any staging of a figure on or in the machine gets its own check; (3) the colours stay the atlas's: the winding and the bars are never tinted red or coral, and a meter that shows demand over generation does it by its light's strength or the atlas's yellow, or the new colour is checked; (4) any effect added later (the spin's streak, an overload, an upgrade) is light, sparks or streaks, with no drop, spray or stain shape in any colour; (5) the kit's earlier holds stand, and the meter stays wordless: text or numbers on its face are a new check.
 - **Time:** by the clock, 22:19 to 22:23: the pieces, one fast look of two views, the export, two final renders, the content check.
+- **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+
+### 4. The battery, a bank (Modulo, 2026-11-15, 22:22 to 22:29 by the clock)
+
+- **Why a bank:** research's answer to delivery 4 (AR14): the battery's bank grows its cells with its cap, 60, 150 and 400 kWh; the count is Modulo's, and each level adds cells a player sees.
+- **Feel line:** in front of the Breaker a low rack of cells fills with light one cell after another as the plant stores power, and its empty seats say there's more to earn.
+- **Scope.** The block: the rack and a cell, on the kit's atlas, and the count by level. Waiting: a picture of its own; a pulse along the bus bar while it charges or feeds an infusion; levels 2 and 3 seen in a look (their cells are in the plan's list of seats, not rendered).
+- **What it is, two pieces** (`tools/blender/base_machines.py`):
+  - **`BatteryRack`:** on the stand-in's footprint, 6 studs by 4: a girder deck on a concrete foot with eight dark seats, two rows of four, a copper bus bar down the middle with the current's line on it, and a low terminal post with an insulator at each end. 2.85 studs at its posts, under the stand-in's 3, so the spawn still sees the Breaker over it.
+  - **`BatteryCell`:** one cell, its origin on its seat: a steel body with a bone cap and a ceramic terminal, and on the two faces the spawn and the Strip see, a dark window with the charge's line in yellow.
+- **The count, Modulo's call:** two cells at level 1, four at level 2, eight at level 3, beside 60, 150 and 400 kWh. They fill the spawn's row first, from the middle out, so every level's bank is the same on both sides of the middle line.
+- **Its working state:** the bank is its own meter. A cell is its own piece, so the builder lights the cells one after another, in the seats' order, as the charge rises: with two cells, half a charge is one cell lit.
+- **For Faber:**
+  - **To publish:** `meshes/BatteryRack.json` and `meshes/BatteryCell.json` (372 and 120 triangles; 612 a plot at level 1, 1,332 at level 3), on `Base_Kit_Color` and `Base_Kit_Glow`, already up.
+  - **Where:** `plan.json`, `machines`: the rack on the stand-in, and level 1's two cells. `machines.battery` holds all eight seats in the order they fill, a cell's `up` (0.6) and the count by level (`cellsAt`).
+  - **The charge:** each cell's own EmissiveStrength, full, low or between for the cell that's filling. Untried in Studio.
+  - **Collision:** the stand-in's box, 6 by 4 and 3 high.
+- **For research:** the verdict in the game, from the spawn. Your call: the count (2, 4, 8), and whether a level 1 bank of two cells on a rack of eight reads as "room to grow" or as unfinished beside the building site round it.
+- **The target:** `build/handoff/Base/base_1_battery.png` (close, from the spawn's side) and `base_1_home.png` (the spawn's camera, with every machine but the Training machine and the Festival Door in its model). The maker's look in Blender; not a sheet and not a verdict.
+- **Seen, the maker's eye and not a verdict** (one fast look, no fix round): two lit cells on a dark rack read as a battery partly built, and the Breaker stands clear over it from the spawn. It's the quietest machine in the court, as the lowest one should be.
+- **How it's made:** `tools/blender/base_machines.py` (`battery_rack`, `battery_cell`; `SEATS`, `CELLS_AT`); `base_plan.py` (`machines`, `machines.battery` in `plan.json`, the view `battery`).
+- **Checks:** the maker's own, above. The content check on the two meshes and the looks: PASS, for delivery and for the upload of the two meshes (a fresh-eyes agent, 2026-11-15; it read both mesh files whole, `battery_rack` and `battery_cell`, the two looks at full size and the atlas; no review sheet, so the 64 px look was imagined, and levels 2 and 3 were judged from `SEATS`, not from a render). Ours, in code: the files match the functions, every UV sits in the atlas's swatch row, no picture, no text, no coral. No resemblance found: a capped box with a charge bar is the generic sign for a battery, and the rack is the kit's own language. Nothing of rule 4: hard-edged boxes and ribbed lathes, no red, no body-like form, and from above a plain grid of seats with one straight bar at two, four or eight cells. Conditions: upload only the two files as generated, and a changed shape, seat layout or swatch is a new check; the two looks stay internal, never uploaded or on a game page (the stand-in figure on the plinth reads as a grave marker at a glance); this row in the asset log before the upload; any text, numeral, icon or new effect the builder puts on or over the bank gets its own check.
+- **Time:** by the clock, 22:22 to 22:29: the pieces, one fast look of two views, the export, two final renders, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
 
 ## Later, by ground

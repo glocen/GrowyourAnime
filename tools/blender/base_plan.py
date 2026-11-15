@@ -86,6 +86,9 @@ def machines(level=1):
         made.append(("BayHalo", x, inward, 0.0, turn, f"bay {index + 1}'s light, while a worker works there"))
     made.append(("Generator", base.GENERATOR, BREAKER, 0.0, 0.0, "the generator"))
     made.append(("GeneratorRotor", base.GENERATOR, BREAKER, base.machines.AXLE, 0.0, "the generator's rotor, turning about its own X"))
+    made.append(("BatteryRack", 0.0, BATTERY, 0.0, 0.0, "the battery"))
+    for index, (x, y) in enumerate(base.machines.SEATS[:base.machines.CELLS_AT[level]]):
+        made.append(("BatteryCell", x, BATTERY - y, base.machines.SEAT, 0.0, f"the battery's cell {index + 1}"))
     return made
 
 
@@ -255,7 +258,12 @@ def write_plan(out: Path):
                  "its own piece in one pale swatch: it stands only while a worker works there, in the worker's "
                  "rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the lots at 72 and "
                  "120 in, across 22 each side.",
-            placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w) for n, x, i, z, t, w in machines()]),
+            placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w) for n, x, i, z, t, w in machines()],
+            battery=dict(
+                note="the battery is a bank: a cell a seat, in this order, as its cap grows with the base's level. "
+                     "The builder lights the cells one after another as the charge rises.",
+                cellsAt=base.machines.CELLS_AT, up=base.machines.SEAT,
+                seats=[dict(across=x, along=round(-(BATTERY - y), 2)) for x, y in base.machines.SEATS])),
         lighting="the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom "
                  "(build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are "
                  "drawn for dusk, and under the place's daylight they don't read.",
@@ -323,7 +331,6 @@ class Yard:
             self.person((wx, wy), f"Worker{tag}{index}")
         wx, wy, _ = self.at(front, face, *SHOWCASE)                # and the owner's Voidkin on the showcase
         self.person((wx, wy), f"Shown{tag}", base.show.TOP)
-        b("Battery", (6, 4, 3), 0, BATTERY, 1.5, "battery")
         b("Training", (6, 5, 4), -door, BREAKER, 2, "machine")
         b("TrainingTop", (6.2, 5.2, 0.5), -door, BREAKER, 4.2, "training")
         b("TrainingPad", (4, 4, 0.4), -door, BREAKER + 6, 0.2, "bay")
@@ -410,6 +417,7 @@ def see(out: Path, level, fast, clear, only=()):
              "breaker": ((9.0, -29.0, 9.5), (0.0, -BREAKER, 6.0)), "strip": ((-8.0, 9.0, 7.5), (0.0, -BREAKER, 6.5)),
              "bay": ((-7.0, -35.0, 6.0), (-22.0, -26.0, 4.2)), "bays": ((-10.0, 9.0, 6.5), (22.0, -26.0, 4.0)),
              "generator": ((-8.5, -27.0, 6.5), (base.GENERATOR, -BREAKER, 4.6)),
+             "battery": ((5.5, -35.5, 4.6), (0.0, -BATTERY, 1.4)),
              "show": ((6.0, 22.0, 6.0), (SHOWCASE[0], -SHOWCASE[1], 4.5)), "shown": ((21.5, -13.5, 5.5), (SHOWCASE[0], -SHOWCASE[1], 3.6)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:

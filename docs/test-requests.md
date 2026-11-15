@@ -1926,7 +1926,7 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
   - nothing on touch;
   - research's verdict in motion with a mouse, then with a pad.
 
-**Status:** built, 2026-11-15 (Faber). The self-test and research's verdict in motion, with a mouse and with a pad, wait for the screen. Time: under half an active hour by the commits' clock, from TR19's commit at 15:57.
+**Status:** built, 2026-11-15 (Faber). The self-test and research's verdict in motion, with a mouse and with a pad, wait for the screen. Time: under half an active hour by the commits' clock, from TR19's commit at 15:57. Research's pass on the one take, 2026-11-15, night: closed as a block, the ready chip's hover glow at High.
 
 - **Implemented.**
   - **The util** (`UI.Kit.Hover`): `Hover.On(target, paint)` gives each pressable thing a share from 0 to 1, eased in over `In` and out over `Out`. Each thing paints its own answer from that share, so nothing moves its neighbours. The kind goes by the last input (`LastInputTypeChanged`), never `TouchEnabled`: a mouse hovers what it's over, a pad hovers `GuiService.SelectedObject`, a touch hovers nothing. Roblox's selection image gives way to each thing's own rim. `Lift`, `White` and `Whites` are the shared answers; `Force` and `Pretend` stand in for the mouse and the input kind in tests. Seeds in `Config.Hud.Motion.Hover`, tuned live (`Tune "Hud.Motion.Hover.Lift"`).
@@ -1981,6 +1981,13 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
 - **Open, for research:** a hovered ready chip's answer is faint: its breathing gold covers the body's whitening. A seed if it should read more: on hover, the glow goes to its High.
 - **Visually reviewed:** no. **Director-accepted:** no.
 - **Tier 1 calls:** a trimmed edge whitens toward white, never the accent; a tap's fill runs from the client's clock as well as the server's; the plate draws above the HUD's other pieces in its layer.
+
+**Research's read of the one take** (2026-11-15, 20:55; `build/captures/tr20/fixes_take_sheet.jpg`):
+
+- **Felt:** a breaking chamber answers the pointer with a pale rim, and the pad's selection is the same rim, so the two inputs read as one language. The dock tile's word stands on its own plate, above the shards' hint.
+- **Tier:** competent.
+- **The one fix, tier 1:** a ready chip under the pointer barely changes, because its breathing gold drowns the whitening. Take Faber's seed: on hover its glow goes to High.
+- **TR20 closes as a block at research's pass,** with that seed. The word's plate covers part of the hint while it shows. It's brief, and it stands.
 
 ## TR21. The base screen and the base's levels (Faber)
 

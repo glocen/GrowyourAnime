@@ -2794,7 +2794,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - Rook and Crane, ground 1's first and top Voidkin, are both Warriors.
   - The pair is the hardest to tell apart, so it's tested first.
   - The Helmet is a large piece and the ring a small one, so both fill rules are tested.
-- **Five rarities each,** Common to Legendary, with several designs at each rarity (the director, 2026-11-15, `docs/decisions.md`; it replaces "one design per kind per rarity"). Three per rarity is research's proposal for batch 1, so 60 icons; the count waits on the director's yes. A kind keeps one silhouette family across its rarities, so a player knows a sword at any rarity. Rarity adds material and ornament, never a new kind. Mythical and Dawn come later.
+- **Five rarities each,** Common to Legendary, with several designs at each rarity (the director, 2026-11-15, `docs/decisions.md`; it replaces "one design per kind per rarity"). Three per rarity for batch 1, so 60 icons: simple, and finished at the game's bar (the director, 2026-11-15). A kind keeps one silhouette family across its rarities, so a player knows a sword at any rarity. Rarity adds material and ornament, never a new kind. Mythical and Dawn come later.
 - **The ladder, not too much** (the director: "dont make them to sick since it range from common to legendary"). Each rarity is one clear step, and Legendary is the top of this batch with room left above it:
   - **Common:** dark iron, leather and wood, plain and well made, no gem, no light of its own.
   - **Uncommon:** bright steel, one fitting in a second material (a wrapped grip, a brass ring).
@@ -2892,7 +2892,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Not needed:** the ladder's sheet redrawn. This sheet carries the Rare and Epic fix, and Epic parts from Rare by shape on all three pairs.
   - **The names:** clear of the list and the roster. One change: "Hibana, the Struck Spark" becomes **"Kiribi, the Struck Spark"**, the sparks struck from flint for luck at a door. It's apart from other works' characters, and the lantern pommel fits it. "Stallguard" stays: "stall" is a common word, used by Lantern Row's stalls too.
   - **The set proposal is accepted, as names only.** A set is its word carried across the kinds, and a Legendary is named alone. A set gives no bonus: set bonuses would be a new mechanic, not asked.
-  - **The count:** three per rarity is research's proposal for batch 1, waiting on the director's yes.
+  - **The count:** three per rarity for batch 1, the director's yes of 2026-11-15, "make sure it standard to our quality".
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

@@ -5623,6 +5623,11 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **A, the recommendation, with one fix.** It's the only finish that holds on every rarity's light without borrowing a meaning. But as drawn, it reads as today's white with a cooler foot. The director asked for "it own color", and A barely shows one. **Fix:** deepen the ramp's lower half into a clear steel blue, so the number reads as polished blue-silver at a glance. It must stay apart from Credits' teal and Frost (Modulo's measure).
     - **B** is the most striking at first sight, but its orange is Fire's: on a Fire Voidkin it reads as the element, and on a Legendary's gold or a Mythical's red it sinks among its neighbours. It's also near the Power pill's yellow, a second "power" on the screen.
     - **C** is the Voidkin's own lavender: the best tie and the least its own. On an Epic's light it's the plate's hue.
+  - **The director's pick, 2026-11-15:** "let go platnium but i want it to have color not be blend" (`docs/decisions.md`). **For Modulo:** A again, now visibly a colour.
+    - A blue-steel platinum: its middle and foot a clear, saturated steel blue, with only its top catching white.
+    - It reads as blue metal at a glance, at the screen's size and narrow, on all six rarities' lights.
+    - It stays apart from Credits' teal, Frost and Rare's blue, by Modulo's measure. If a hue that saturated can't stay apart from Rare's blue, show the two nearest options side by side.
+    - Research reads it, then Faber builds it.
 
 - **A picture for each Void Shard grade, larger and older than a mark: one direction, for research's verdict** (Modulo, 2026-11-15; the director: "Make a decal for each void shards they need to look more mature and not like a small icon", `docs/decisions.md`; `tools/blender/shard_grade_art.py`; the sheet `build/handoff/UI/shards/shard_grade_art.png`).
   - **Feel line, proposed:** a shard waiting in a chamber is a heavy cut crystal with something lit inside it, and its grade is seen before its name is read.

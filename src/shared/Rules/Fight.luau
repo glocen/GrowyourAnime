@@ -421,4 +421,29 @@ function Fight.SkipKeepsClear(from: Vector3, to: Vector3, enemy: Vector3, body: 
 	return closest >= math.min(body, (e - a).Magnitude) - 1e-6
 end
 
+-- Where a move carries its fighter (Definitions.Actions, Move: an Assassin's dash in, Kirra's blink), flat, at `from`'s
+-- height: along its line to `target`, turned Turn degrees at its spot toward the side of that line `avatar` stands on, to
+-- Gap studs short of the target's point on that path (past it when Gap is negative), never back, and at most Most studs.
+-- Returns where it ends and the path's way (a flat unit; zero with its target where it stands). An avatar on the line
+-- turns it to the right of the fighter's line.
+function Fight.MoveEnd(from: Vector3, target: Vector3, avatar: Vector3, move: { Gap: number, Most: number?, Turn: number? }): (Vector3, Vector3)
+	local line = Vector3.new(target.X - from.X, 0, target.Z - from.Z)
+	local gap = line.Magnitude
+	if gap < 1e-3 then
+		return from, Vector3.zero
+	end
+	local unit = line / gap
+	local toAvatar = Vector3.new(avatar.X - from.X, 0, avatar.Z - from.Z)
+	-- which side of the line the avatar stands: + is a positive turn below, the way from `unit` toward (-z, x)
+	local side = if unit.X * toAvatar.Z - unit.Z * toAvatar.X < 0 then -1 else 1
+	local turn = math.rad((move.Turn or 0) * side)
+	local c, s = math.cos(turn), math.sin(turn)
+	local way = Vector3.new(unit.X * c - unit.Z * s, 0, unit.X * s + unit.Z * c)
+	local studs = math.max(0, gap * c - move.Gap) -- the target's point on the path is gap * cos(turn) along it
+	if move.Most then
+		studs = math.min(studs, move.Most)
+	end
+	return from + way * studs, way
+end
+
 return Fight

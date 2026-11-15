@@ -31,6 +31,12 @@ return {
 		Shade = { Idle = "ShadeIdle", Walk = "ShadeWalk", Hit = "ShadeHit", Down = "ShadeBurst" },
 		Lamplighter = { Idle = "LamplighterIdle", Walk = "LamplighterWalk", Hit = "LamplighterHit", Down = "LamplighterDown" },
 	} :: { [string]: { [string]: string } },
+	-- A Voidkin's own layer over its rig's shared reaction, by its def and the reaction's role: it starts with the
+	-- reaction, one priority above it, and keys only what the shared set doesn't. Kirra's key her scarf alone, every body
+	-- joint at weight 0 (AR10, research's call on the reactions, option b), so the open set stays one set.
+	Layers = {
+		kirra = { Hit = "KirraTailHit", Down = "KirraTailDown", Up = "KirraTailUp" },
+	} :: { [string]: { [string]: string } },
 	-- A clip's mirror, picked at random each time it plays, so a pack doesn't swing or reel in step (AR2).
 	Mirrors = {
 		ShadeAttack = "ShadeAttackLeft",
@@ -66,6 +72,9 @@ return {
 		PipHit = "Hit",
 		PipDown = "Down",
 		PipUp = "Up",
+		KirraTailHit = "Hit", -- her layers take their reaction's fades
+		KirraTailDown = "Down",
+		KirraTailUp = "Up",
 		ShadeIdle = "Idle",
 		ShadeWalk = "Walk",
 		ShadeAttack = "Swipe",

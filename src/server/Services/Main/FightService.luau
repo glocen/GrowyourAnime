@@ -76,6 +76,7 @@ export type Fighter = {
 	ForcedEvery: number,
 	ForcedNext: number,
 	ForcedTarget: Fighter?,
+	ForcedHome: CFrame?, -- where it stood when held: an action that carries it (Actions.Moves) starts each press from there
 }
 
 local FightService = {
@@ -456,6 +457,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ForcedEvery = 0,
 		ForcedNext = 0,
 		ForcedTarget = nil,
+		ForcedHome = nil,
 	}
 	model:SetAttribute("Fighter", id)
 	model:SetAttribute("Side", side)
@@ -660,6 +662,45 @@ local function push(f: Fighter, direction: Vector3, studs: number, hold: number)
 		end
 		glide(f, direction.Unit, amount, Combat.Push.Seconds)
 	end)
+end
+
+-- A move's carry from its beat (Definitions.Actions, Move; Rules.Fight.MoveEnd), its clip moving in place: a glide over
+-- its Seconds, facing its target (a dash in), or set down at once, facing back along its path (a blink). A blink stops
+-- short of the first wall on its way and never leaves the ground: over an edge, it stays where it stands.
+local function carry(f: Fighter, move: Actions.Move)
+	local target = f.ForcedTarget or f.Target -- as its strike's (the replay's is forced)
+	if target == nil or not standing(target) then
+		return
+	end
+	local avatar = avatarRoot(f)
+	local from = f.Root.Position
+	local spot, way = Fight.MoveEnd(from, target.Root.Position, if avatar then avatar.Position else from, move)
+	local travel = flat(spot - from)
+	if travel.Magnitude < 0.05 then
+		return
+	end
+	if move.Seconds > 0 then
+		f.Humanoid:MoveTo(spot) -- so it doesn't walk back to where it started
+		glide(f, travel.Unit, travel.Magnitude, move.Seconds, target)
+		return
+	end
+	local world = worldRays()
+	local side = math.max(f.Root.Size.X, f.Root.Size.Z) / 2 + PUSH_SKIN
+	local wall = workspace:Raycast(from, travel.Unit * (travel.Magnitude + side), world)
+	if wall then
+		spot = from + travel.Unit * math.max(0, (wall.Position - from):Dot(travel.Unit) - side)
+	end
+	if workspace:Raycast(spot + Vector3.new(0, 1, 0), Vector3.new(0, -(LEAD_ROOT_HEIGHT + 1 + Combat.Skip.Ground), 0), world) == nil then
+		return
+	end
+	local back = spot - way
+	pushing[f] = nil -- a push still running is over
+	f.Push.Enabled = false
+	f.Align.RigidityEnabled = false
+	f.Root.AssemblyLinearVelocity = Vector3.zero
+	f.Root.CFrame = CFrame.lookAt(spot, Vector3.new(back.X, spot.Y, back.Z))
+	f.Humanoid:MoveTo(spot)
+	face(f, back) -- the Align held its old facing, the way it went
 end
 
 local fall: (f: Fighter, at: number) -> ()
@@ -933,6 +974,10 @@ local function forced(f: Fighter, at: number): boolean
 				target.Root.AssemblyLinearVelocity = Vector3.zero
 				target.Root.CFrame = target.Home
 			end
+			if action.Moves and f.ForcedHome then -- and the last one's carry (start's stop holds it there)
+				f.Root.AssemblyLinearVelocity = Vector3.zero
+				f.Root.CFrame = f.ForcedHome
+			end
 			start(f, action, at)
 		end
 		f.ForcedNext = at + f.ForcedEvery
@@ -1202,6 +1247,10 @@ local function step()
 		if action then
 			local clock = at - f.ActionAt
 			for _, beat in Fight.BeatsBetween(action, f.Checked, clock) do
+				local move = if action.Moves then action.Moves[beat] else nil
+				if move and f.Action == action then
+					carry(f, move)
+				end
 				local hit = action.Hits[beat]
 				if hit and f.Action == action then
 					strike(f, beat, hit, at)
@@ -1354,6 +1403,7 @@ function FightService.Force(f: Fighter, action: string?, every: number?, target:
 	f.ForcedEvery = every or 0
 	f.ForcedNext = now()
 	f.ForcedTarget = target
+	f.ForcedHome = if action then f.Root.CFrame else nil
 	showTarget(f)
 	if action == nil then
 		face(f, nil)

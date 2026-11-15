@@ -82,6 +82,7 @@ type View = {
 	Collar: Attachment?, -- where a Shade's burst starts
 	Current: AnimationTrack?, -- the action's
 	Reaction: AnimationTrack?, -- Hit, Down or Up
+	Layer: AnimationTrack?, -- its Voidkin's own layer over that reaction (Config.Animations.Layers), played with it
 	FellAt: Vector3?, -- where a lead fell, for the light it leaves as (TR12)
 	Action: Actions.Action?,
 	ActionAt: number,
@@ -151,7 +152,7 @@ local function setRate(view: View, rate: number)
 		return
 	end
 	view.Rate = rate
-	for _, t in { view.Current, view.Reaction, view.Idle } do
+	for _, t in { view.Current, view.Reaction, view.Layer, view.Idle } do
 		if t and t.IsPlaying then
 			t:AdjustSpeed(rate)
 		end
@@ -383,6 +384,10 @@ local function playReaction(view: View, role: string): AnimationTrack?
 	if view.Reaction then
 		view.Reaction:Stop(0.05)
 	end
+	if view.Layer then
+		view.Layer:Stop(0.05)
+		view.Layer = nil
+	end
 	local chosen = pick(view, clip)
 	local t = track(view, chosen)
 	if t then
@@ -391,6 +396,17 @@ local function playReaction(view: View, role: string): AnimationTrack?
 		t.Looped = false
 		t:Play(fadeIn, 1, 1)
 		view.Reaction = t
+		-- Its Voidkin's own layer starts with it, above it, and keys only what the shared set doesn't (Kirra's tail)
+		local def = view.Model:GetAttribute("Def")
+		local layers = if type(def) == "string" then Animations.Layers[def] else nil
+		local layerClip = if layers then layers[role] else nil
+		local layer = if layerClip then track(view, layerClip) else nil
+		if layer then
+			layer.Priority = Enum.AnimationPriority.Action3
+			layer.Looped = false
+			layer:Play(fadeIn, 1, 1)
+			view.Layer = layer
+		end
 	end
 	return t
 end
@@ -448,6 +464,10 @@ local function onState(view: View)
 		if reaction then
 			reaction:Stop(0)
 			view.Reaction = nil
+		end
+		if view.Layer then
+			view.Layer:Stop(0)
+			view.Layer = nil
 		end
 		local prop = view.Prop
 		if prop and prop.Phase ~= "Held" then
@@ -794,6 +814,10 @@ local function stepView(view: View, dt: number, now: number): boolean
 	local reaction = view.Reaction
 	if view.State == "Down" and reaction and reaction.IsPlaying and reaction.Length > 0 and reaction.TimePosition >= reaction.Length - Effects.HeldEnd then
 		reaction:AdjustSpeed(0)
+	end
+	local layer = view.Layer
+	if view.State == "Down" and layer and layer.IsPlaying and layer.Length > 0 and layer.TimePosition >= layer.Length - Effects.HeldEnd then
+		layer:AdjustSpeed(0) -- Kirra's tail lies on the floor with her
 	end
 	stepProp(view, now)
 	return frozen

@@ -129,7 +129,9 @@ local function replay(who: any, actionId: any, every: any): any
 	root.CFrame = CFrame.lookAt(stand, stand + ahead)
 	FightService.Force(lead, action.Id, seconds, session.Dummy)
 	player:SetAttribute("Replay", `{action.Id}@{workspace:GetServerTimeNow()}`)
-	return { Ok = true, Action = action.Id, Every = seconds, Level = lead.Block.Level }
+	-- Spot and Target: where the lead and the dummy stand for each press, which a client can't see when its first beat
+	-- moves the lead (Actions.Moves) in the same step as the press puts them back
+	return { Ok = true, Action = action.Id, Every = seconds, Level = lead.Block.Level, Spot = spot, Target = dummyAt }
 end
 
 local spawned: { [FightService.Fighter]: boolean } = {}

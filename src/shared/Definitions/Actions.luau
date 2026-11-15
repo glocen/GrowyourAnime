@@ -35,6 +35,14 @@ export type Hit = {
 	Rung: number?,
 }
 
+-- The server carrying its fighter from a beat (Rules.Fight.MoveEnd; FightService): an Assassin's dash in, Kirra's blink.
+export type Move = {
+	Seconds: number, -- how long the carry takes; 0 sets it down there at once (a blink), facing back along its path
+	Gap: number, -- studs short of its target's point on the path where it ends; negative, past it
+	Most: number?, -- the farthest it's carried, studs
+	Turn: number?, -- degrees its path turns at its spot toward its avatar's side of the line to its target; 0 or nil: straight at it
+}
+
 export type Action = {
 	Id: string,
 	Clip: string?, -- the clip a client plays (Config.Animations); nil: a box rig's stand-in motion on the same beats
@@ -46,6 +54,7 @@ export type Action = {
 	Cooldown: number, -- seconds from its start before it may start again; 0 for none
 	Beats: { [string]: number }, -- named moments, seconds from the start
 	Hits: { [string]: Hit }, -- by the beat each lands on
+	Moves: { [string]: Move }?, -- by the beat each starts on: the server carries the body, the clip moves in place
 	Range: number, -- studs, root to root: its fighter walks this close before it starts it
 	Heavy: boolean, -- it carries a heavy hit
 	State: string?, -- the state it causes, when it names one (Stun, Knockdown): none in TR2
@@ -240,6 +249,63 @@ local rows: { Action } = {
 			"the heal washing over her and her allies",
 		},
 		Signed = "the feel line: Quaestor, 2026-11-12 (docs/asset-requests.md, AR4, section 9)",
+	},
+	{
+		-- Kirra's three cuts (AR10, section 4): the dash is the first cut. She comes in low, her hand already on the grip
+		-- (Dash, frame 0), draws across the Shade (Hit1, 12), wears the X (Hit2, 26), and rises up through it (Hit3, 56),
+		-- sheathing both at 64. The clip moves in place; the server carries her in over the dash's 9 frames to Gap studs
+		-- short of her target, so a later round, already close, steps in place (the builder's call on section 3's question:
+		-- one clip, from 0 every time). Pip's seeds: a second's worth as Rook's combo's, over her 1.4 s chain.
+		Id = "KirraCombo",
+		Clip = "KirraCombo",
+		Length = 1.6667,
+		CancelFrom = 1.4, -- frame 84, low and ready: Hit3 to the next Hit1 is 0.67 s
+		Cooldown = 0,
+		Beats = { Dash = 0, Hit1 = 0.2, Hit2 = 0.4333, Hit3 = 0.9333, Sheathe = 1.0667 },
+		Hits = {
+			Hit1 = { Coefficient = 0.7, Heavy = false, Reach = 6, Push = 0.4 },
+			Hit2 = { Coefficient = 0.7, Heavy = false, Reach = 6, Push = 0.4 },
+			Hit3 = { Coefficient = 1.09, Heavy = false, Reach = 6, Push = 1.2, Rung = 3 }, -- up through it, lifted
+		},
+		Moves = {
+			Dash = { Seconds = 0.15, Gap = 3.5, Most = 4 },
+		},
+		Range = 8, -- she stands 7 off (Range - Approach) and the dash brings her to 3.5, Rook's spacing
+		Heavy = false,
+		State = nil,
+		Levers = { "the dash (movement during: in low over 0.15 s, the first cut on arrival)", "hitstop (light)", "a spark on contact" },
+		Signed = nil,
+	},
+	{
+		-- Kirra's signature (docs/roster.md; AR10's feel line): she blinks out, her scarf draws one straight line through the
+		-- Shade, and the cut lands as she's already leaving, behind it, facing it. She sets with her hand on the grip (to frame
+		-- 8), is gone on Blink (13) and past it on Land (16), and the cut lands on Cut (18). The server sets her down Gap
+		-- studs past her target on Blink, facing back along her path; Turn swings that path off the Shade's middle, toward
+		-- the camera's side (take B, AR10, section 5), and 0 is take A, straight through. Rook's Haymaker's seeds: one target,
+		-- rung 7, a 10 s cooldown.
+		Id = "KirraScarfStep",
+		Clip = "KirraScarfStep",
+		Effect = "KirraScarfStep", -- the grey block's rows (AR10, section 5), both takes in one file
+		Length = 1.6,
+		CancelFrom = 1.25, -- frame 75: the scarf settled (70), the blade home (65)
+		Cooldown = 10,
+		Beats = { Blink = 0.2167, Land = 0.2667, Cut = 0.3 },
+		Hits = {
+			Cut = { Coefficient = 4.0, Heavy = true, Reach = 8, Push = 1.5, Rung = 7 },
+		},
+		Moves = {
+			Blink = { Seconds = 0, Gap = -3.8, Turn = 0 },
+		},
+		Range = 6, -- she sets 5 off (Range - Approach), the clip's spacing
+		Heavy = true,
+		State = nil,
+		Levers = {
+			"anticipation (the set, to frame 8: low, her hand on the grip)",
+			"the blink (gone at 0.22 s, past it at 0.27: no travel shown)",
+			"hitstop (heavy, rung 7) on the Cut, as she's already leaving",
+			"the held line (the scarf straight through its chest, 16 to 40, let go from the tip)",
+		},
+		Signed = "the feel line: Quaestor, 2026-11-14 (docs/asset-requests.md, AR10)",
 	},
 	{
 		-- A Brawler Shade's swing, AR2's Attack: the coat turns away and the sleeve is flung round after it, landing on `Hit`

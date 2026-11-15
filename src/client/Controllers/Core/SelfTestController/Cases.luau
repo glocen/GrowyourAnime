@@ -100,6 +100,9 @@ local SKIP_MIN_TRAVEL = 2 -- studs farther from the Shade's spot it must land
 local SKIP_FACING = 30 -- degrees off the Shade at worst through the travel, once turned onto it
 local SKIP_TURN = 0.1 -- seconds into the skip it has turned onto the Shade: it may start off it, from a Shade that ran in
 local SKIP_NEXT = 0.3 -- seconds after Land its next action may wait for the next think
+-- A move's landing (Actions.Moves, FightService's carry), read SKIP_LAG after its glide or blink as this screen draws it:
+-- this near Rules.Fight.MoveEnd's point, a glide's last frame at a dash's speed (about 27 studs a second) and the lag.
+local MOVE_NEAR = 1 -- studs
 local PASSIVE_LOW = 0.2 -- the health share a test sets to bring a Reduction on (Rook's Second Wind holds under 0.3)
 local PASSIVE_CUE = 1 -- seconds a passive's cue may take to show or go, the server's attribute and a fade included
 local PASSIVE_NEAR = 1 -- studs from the body a shell's middle stands
@@ -2123,9 +2126,173 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Fight: each lead's passive in play, with its cue: Second Wind's shell, Kindle's Fire and flare, Tempo's cooldown (TR7)",
+		Name = "Fight: a move carries its lead on its beat to Rules.Fight.MoveEnd's point, facing its target, into its next hit's reach (AR10)",
 		Run = function(t: any)
-			-- Each Voidkin with a passive that this save can lead, in turn (Definitions.Passives: Rook, Pip, Lyric); the
+			-- Each action with Moves in a Voidkin's kit (Kirra's dash and Scarf Step's blink), pressed once by the replay:
+			-- the lead held at the action's spacing from a dummy (ReplayService), each move watched as this screen draws
+			-- it. No hit comes before a move, so the lead and the dummy stand on the replay's spots until it.
+			local function flat(v: Vector3): Vector3
+				return Vector3.new(v.X, 0, v.Z)
+			end
+			local view = ProfileController.Get()
+			local was = if view then view.Roles.Lead else nil
+			local tried = 0
+			for _, row in Voidkin.List do
+				local carried: { Actions.Action } = {}
+				for _, action in Actions.KitOf(row.Id) do
+					if action.Moves then
+						table.insert(carried, action)
+					end
+				end
+				if #carried == 0 then
+					continue
+				end
+				local def = row.Id
+				local function leading(): Model?
+					local found = myLead()
+					return if found and found:GetAttribute("Def") == def then found else nil
+				end
+				if leading() == nil then -- one free to lead, owned or given
+					local now = ProfileController.Get()
+					local id: string? = nil
+					for owned, voidkin in (if now then now.Voidkin else {}) :: { [string]: any } do
+						if voidkin.Def == def and Read.Role(now :: any, owned) == "" then
+							id = owned
+							break
+						end
+					end
+					if id == nil then
+						local given = t.Server("VoidkinGive", def)
+						local newId = if type(given) == "table" and given.Ok == true then given.Id else nil
+						local arrived = type(newId) == "string" and waitFor(t, 2, function(): boolean
+							local latest = ProfileController.Get()
+							return latest ~= nil and latest.Voidkin[newId] ~= nil
+						end)
+						local latest = ProfileController.Get()
+						if arrived and latest and Read.Role(latest :: any, newId) == "" then
+							id = newId
+						end
+					end
+					if id == nil then -- her only copy works in a bay, and a copy given joins it
+						t.Row(`no {def} free to lead: its moves wait for one`, nil, nil, nil, "")
+						continue
+					end
+					t.Server("Act", "SetLead", { Voidkin = id })
+				end
+				waitFor(t, LEAD_SETTLE * 2, function(): boolean
+					return leading() ~= nil
+				end)
+				local lead = leading()
+				local root = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+				t.Check(`{def} leads`, lead ~= nil and root ~= nil)
+				if lead == nil or root == nil then
+					continue
+				end
+				tried += 1
+				for _, action in carried do
+					local moves = action.Moves :: { [string]: Actions.Move }
+					local beats: { string } = {}
+					for beat in moves do
+						table.insert(beats, beat)
+					end
+					table.sort(beats, function(a: string, b: string): boolean
+						return action.Beats[a] < action.Beats[b]
+					end)
+					local pressedAt: number? = nil
+					local onPress = lead:GetAttributeChangedSignal("ActionAt"):Connect(function()
+						if pressedAt == nil and lead:GetAttribute("Action") == action.Id then
+							pressedAt = os.clock()
+						end
+					end)
+					local struck: { [string]: boolean } = {} -- a whiff sends no Hit: one sent is a hit that reached
+					local onHit = Net.Client.On("Hit", function(hit: any)
+						if type(hit) == "table" and hit.A == lead and hit.Action == action.Id and type(hit.Beat) == "string" then
+							struck[hit.Beat] = true
+						end
+					end)
+					local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE)
+					local ok = type(started) == "table" and started.Ok == true and typeof(started.Spot) == "Vector3" and typeof(started.Target) == "Vector3"
+					t.Check(`{action.Id}: the replay presses it`, ok, if type(started) == "table" then tostring(started.Error) else tostring(started))
+					local foe = if ok then started.Target :: Vector3 else Vector3.zero
+					local from = if ok then started.Spot :: Vector3 else Vector3.zero
+					type Seen = { From: Vector3, Avatar: Vector3, Landed: Vector3?, Look: Vector3?, Settled: Vector3? }
+					local seen: { [string]: Seen } = {}
+					local began = os.clock()
+					while ok and os.clock() - began < action.Length + LEAD_SETTLE do
+						RunService.Heartbeat:Wait()
+						if pressedAt == nil then
+							continue
+						end
+						local since = os.clock() - (pressedAt :: number)
+						for _, beat in beats do
+							local move, at, s = moves[beat], action.Beats[beat], seen[beat]
+							if s == nil and since >= at then
+								local avatar = Parts.Root(Players.LocalPlayer.Character)
+								seen[beat] = { From = from, Avatar = if avatar then avatar.Position else from }
+							elseif s and s.Landed == nil and since >= at + move.Seconds + SKIP_LAG then
+								s.Landed, s.Look = root.Position, root.CFrame.LookVector
+								from = root.Position -- a later move starts where this one left it
+							elseif s and s.Landed and s.Settled == nil and since >= at + move.Seconds + SKIP_LAG + SKIP_SETTLE then
+								s.Settled = root.Position
+							end
+						end
+						local last = seen[beats[#beats]]
+						if last and last.Settled then
+							break
+						end
+					end
+					t.Wait(math.max(0, action.Length - (if pressedAt then os.clock() - pressedAt else 0))) -- its hits all in
+					onPress:Disconnect()
+					onHit:Disconnect()
+					t.Server("Replay")
+					t.Check(`{action.Id}: pressed`, pressedAt ~= nil)
+					for _, beat in beats do
+						local move, s = moves[beat], seen[beat]
+						t.Check(`{action.Id}.{beat}: watched to its landing`, s ~= nil and s.Settled ~= nil)
+						if s == nil or s.Landed == nil or s.Settled == nil then
+							continue
+						end
+						local landed = s.Landed :: Vector3
+						local expected = FightRule.MoveEnd(s.From, foe, s.Avatar, move)
+						local off = flat(landed - expected).Magnitude
+						t.Check(`{action.Id}.{beat}: lands on MoveEnd's point`, off <= MOVE_NEAR, string.format("%.2f studs off", off))
+						t.Row(`{action.Id}.{beat}: studs it carried the lead`, nil, nil, flat(landed - s.From).Magnitude, "studs")
+						if move.Gap < 0 then
+							local past = flat(landed - foe):Dot(flat(foe - s.From).Unit)
+							t.Check(`{action.Id}.{beat}: past its target`, past > 0, string.format("%.1f studs past", past))
+						end
+						local facing = flatAngle(s.Look :: Vector3, foe - landed)
+						t.Check(`{action.Id}.{beat}: facing its target as it lands`, facing <= SKIP_FACING, string.format("%.0f degrees", facing))
+						local drift = flat((s.Settled :: Vector3) - landed).Magnitude
+						t.Check(`{action.Id}.{beat}: and stays there`, drift <= SKIP_SLIDE, string.format("%.2f studs", drift))
+						local hitBeat: string? = nil
+						for name in action.Hits do -- the first hit on or after the move: the one it carries the lead in for
+							local at = action.Beats[name]
+							if at >= action.Beats[beat] and (hitBeat == nil or at < action.Beats[hitBeat :: string]) then
+								hitBeat = name
+							end
+						end
+						if hitBeat then
+							local hit = action.Hits[hitBeat :: string]
+							local gap = flat(landed - foe).Magnitude
+							t.Check(`{action.Id}.{hitBeat}: its target inside its reach from there`, gap <= hit.Reach, string.format("%.1f of %.1f studs", gap, hit.Reach))
+							t.Check(`{action.Id}.{hitBeat}: and it lands`, struck[hitBeat :: string] == true)
+						end
+					end
+				end
+			end
+			if was then
+				t.Server("Act", "SetLead", { Voidkin = was })
+			end
+			if tried == 0 then
+				t.Row("no Voidkin with a move free to lead: the moves' checks wait for one", nil, nil, nil, "")
+			end
+		end,
+	},
+	{
+		Name = "Fight: each lead's passive in play, with its cue: Second Wind's shell, Kindle's Fire and flare, Tempo's cooldown, First Strike's critical (TR7)",
+		Run = function(t: any)
+			-- Each Voidkin with a passive that this save can lead, in turn (Definitions.Passives: Rook, Pip, Lyric, Kirra); the
 			-- save's own lead is put back after.
 			local view = t.Server("Data")
 			local owned = if type(view) == "table" and type(view.Voidkin) == "table" then view.Voidkin else {}
@@ -2237,6 +2404,43 @@ local cases = {
 				t.Server("FightSpawn")
 				t.Check("lyric: Held Note comes back 20% sooner", readyIn ~= nil and math.abs((readyIn :: number) - expected) < 1e-3, if readyIn then string.format("%.2f s", readyIn) else "not seen")
 			end
+			trials.kirra = function(body: Model, _root: BasePart)
+				-- First Strike: her first hit to land on a new Shade crits, whatever her own chance; the ones after roll as
+				-- any hit's (Rules.Passive.Critical; the logic cases keep "nothing after"). A dodged swing hasn't landed.
+				local landed: { any } = {}
+				local connection = Net.Client.On("Hit", function(hit: any)
+					if type(hit) == "table" and hit.A == body and not hit.Dodged and typeof(hit.T) == "Instance" then
+						table.insert(landed, hit)
+					end
+				end)
+				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
+				t.Check("kirra: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
+				local shadeId = if type(spawned) == "table" then spawned.Id else nil
+				local function onIt(): { any }
+					local list = {}
+					for _, hit in landed do
+						if (hit.T :: Instance):GetAttribute("Fighter") == shadeId then
+							table.insert(list, hit)
+						end
+					end
+					return list
+				end
+				waitFor(t, SHADE_TIMEOUT, function(): boolean
+					return #onIt() >= 3
+				end)
+				connection:Disconnect()
+				t.Server("FightSpawn")
+				local hits = onIt()
+				t.Check("kirra: her first hit on it lands", hits[1] ~= nil)
+				if hits[1] then
+					t.Check("kirra: and crits (First Strike)", hits[1].Critical == true, `{hits[1].Action}.{hits[1].Beat}`)
+				end
+				local crits = 0
+				for i = 2, #hits do
+					crits += if hits[i].Critical then 1 else 0
+				end
+				t.Row("kirra: criticals among the hits after it, at her own chance", nil, nil, crits, `of {math.max(0, #hits - 1)}`)
+			end
 			local tried: { [string]: boolean } = {}
 			for _, id in ids do
 				local def = owned[id].Def
@@ -2262,7 +2466,7 @@ local cases = {
 			end
 			t.Server("Act", "SetLead", { Voidkin = was })
 			if next(tried) == nil then
-				t.Row("no Rook, Pip or Lyric free to lead: the passives' checks wait for one", nil, nil, nil, "")
+				t.Row("no Rook, Pip, Lyric or Kirra free to lead: the passives' checks wait for one", nil, nil, nil, "")
 			end
 		end,
 	},

@@ -78,6 +78,16 @@ return {
 			t.Equal("a rig's reaction keeps its shared role", Actions.RoleOf(Animations.Rigs.Robe.Hit), "Hit")
 			t.Check("an unknown clip has none", Actions.RoleOf("NoSuchClip") == nil)
 			t.Check("an unknown def has no idle", Actions.IdleOf("nobody") == nil)
+			-- A Voidkin's own layer over a shared reaction (Kirra's tail): over its own rig's, with that reaction's fades.
+			for def, layers in Animations.Layers do
+				local row = Voidkin.ById[def]
+				t.Check(`{def}'s layers are an installed Voidkin's`, row ~= nil and row.Model ~= nil)
+				local rig = Animations.Rigs[if row then row.Rig or "R6" else "R6"]
+				for role, clip in layers do
+					t.Check(`{def}'s {role} layer goes over its rig's {role}`, rig ~= nil and rig[role] ~= nil)
+					t.Equal(`{def}'s {role} layer takes its reaction's fades`, Actions.RoleOf(clip), role)
+				end
+			end
 		end,
 	},
 	{
@@ -97,11 +107,24 @@ return {
 					t.Check(`{action.Id}.{name} inside the action`, at >= 0 and at <= action.Length)
 				end
 				t.Check(`{action.Id} has beats`, beats > 0)
+				for beat, move in action.Moves or {} do
+					t.Check(`{action.Id} moves on its beat {beat}`, action.Beats[beat] ~= nil)
+					t.Check(`{action.Id}.{beat}'s carry takes 0 s or more`, move.Seconds >= 0)
+					t.Check(`{action.Id}.{beat}'s carry is done inside the action`, (action.Beats[beat] or 0) + move.Seconds <= action.Length)
+				end
 				local heavy = false
 				for beat, hit in action.Hits do
 					t.Check(`{action.Id} hits on its beat {beat}`, action.Beats[beat] ~= nil)
 					t.Check(`{action.Id}.{beat} hits harder than nothing`, hit.Coefficient > 0)
-					t.Check(`{action.Id}.{beat} reaches past where it starts`, hit.Reach >= action.Range)
+					-- from as far as it starts, carried by every move done by the hit's beat (a straight one, its avatar behind it)
+					local at = Vector3.new(0, 0, action.Range)
+					for moveBeat, move in action.Moves or {} do
+						local from = action.Beats[moveBeat]
+						if from and from + move.Seconds <= (action.Beats[beat] or 0) + 1e-6 then
+							at = Fight.MoveEnd(at, Vector3.zero, at * 2, move)
+						end
+					end
+					t.Check(`{action.Id}.{beat} reaches past where it starts`, hit.Reach >= at.Magnitude, `{at.Magnitude}`)
 					t.Check(`{action.Id}.{beat} pushes 0 or more`, hit.Push >= 0)
 					heavy = heavy or hit.Heavy
 				end
@@ -855,6 +878,49 @@ return {
 			t.Equal("from point blank, straight away: clear", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(-10, 0, 0), Vector3.new(0.5, 0, 0), body), true)
 			t.Equal("from point blank, across it: not", Fight.SkipKeepsClear(Vector3.new(0, 0, 0), Vector3.new(0, 0, 10), Vector3.new(0.5, 0, 0.5), body), false)
 			t.Equal("height doesn't count", Fight.SkipKeepsClear(Vector3.new(0, 3, 0), Vector3.new(-10, 3, 0), Vector3.new(2, 0, 0), body), true)
+		end,
+	},
+	{
+		-- Definitions.Actions, Move; Rules.Fight.MoveEnd: an Assassin's dash in (Kirra's Combo) and Kirra's blink (Scarf Step).
+		Name = "Fight: a move carries its fighter along its line to its target: a dash stops short, a blink lands past it, a turn swings toward the avatar",
+		Run = function(t: any)
+			local function close(a: Vector3, b: Vector3): boolean
+				return (a - b).Magnitude < 1e-4 -- Vector3 is single precision
+			end
+			local from, target = Vector3.new(0, 3, 10), Vector3.new(0, 3, 0)
+			local behind = Vector3.new(0, 3, 20) -- the avatar behind the fighter, on its line
+			local dash: Actions.Move = { Seconds = 0.15, Gap = 3.5, Most = 4 }
+			local at, way = Fight.MoveEnd(from, target, behind, dash)
+			t.Check("a dash goes at its Most from far off", close(at, Vector3.new(0, 3, 6)), tostring(at))
+			t.Check("straight at its target", close(way, Vector3.new(0, 0, -1)), tostring(way))
+			t.Check("from near, it stops Gap short", close((Fight.MoveEnd(Vector3.new(0, 3, 5), target, behind, dash)), Vector3.new(0, 3, 3.5)))
+			t.Check("already inside Gap, it stays (never back)", close((Fight.MoveEnd(Vector3.new(0, 3, 2), target, behind, dash)), Vector3.new(0, 3, 2)))
+			local blink: Actions.Move = { Seconds = 0, Gap = -3.8 }
+			t.Check("a blink lands Gap past it, through it", close((Fight.MoveEnd(Vector3.new(0, 3, 5), target, behind, blink)), Vector3.new(0, 3, -3.8)))
+			local turned: Actions.Move = { Seconds = 0, Gap = -3.8, Turn = 44 }
+			local left = Vector3.new(-6, 3, 15) -- the avatar on the fighter's left of its line (it faces -z: left is -x)
+			local spot, path = Fight.MoveEnd(Vector3.new(0, 3, 5), target, left, turned)
+			t.Check("a turn swings the path toward the avatar's side", spot.X < 0, tostring(spot))
+			t.Check("turned Turn degrees off the line", math.abs(math.deg(math.acos(math.clamp(path:Dot(Vector3.new(0, 0, -1)), -1, 1))) - 44) < 1e-3)
+			-- it lands Gap past the target's point on its path, so the target stands gap * sin(Turn) off the path
+			local off = (Vector3.new(0, 3, 5) - target):Cross(path).Magnitude
+			t.Check("the path passes the target 5 sin 44 off its middle", math.abs(off - 5 * math.sin(math.rad(44))) < 1e-4, `{off}`)
+			local right = Vector3.new(6, 3, 15)
+			t.Check("the avatar on the right: the other way", (Fight.MoveEnd(Vector3.new(0, 3, 5), target, right, turned)).X > 0)
+			t.Check("on the line itself: to the right", (Fight.MoveEnd(Vector3.new(0, 3, 5), target, behind, turned)).X > 0)
+			t.Check("at its height", spot.Y == 3)
+			local still, none = Fight.MoveEnd(target, target, behind, blink)
+			t.Check("on its target already: it stays", close(still, target) and none == Vector3.zero)
+			-- Kirra's rows: the dash from her spacing brings her to Rook's, and the blink from hers puts her past the Shade
+			local combo, step = Actions.ById.KirraCombo, Actions.ById.KirraScarfStep
+			local start = Vector3.new(0, 0, combo.Range - Combat.Approach)
+			local dashed = Fight.MoveEnd(start, Vector3.zero, start * 2, (combo.Moves :: any).Dash)
+			t.Check("Kirra's dash ends inside her first cut's reach", dashed.Magnitude <= combo.Hits.Hit1.Reach, `{dashed.Magnitude}`)
+			local set = Vector3.new(0, 0, step.Range - Combat.Approach)
+			local landed = Fight.MoveEnd(set, Vector3.zero, set * 2, (step.Moves :: any).Blink)
+			t.Check("her blink lands behind the Shade", landed.Z < 0, tostring(landed))
+			t.Check("and her cut reaches it from there", landed.Magnitude <= step.Hits.Cut.Reach)
+			t.Check("the blink comes before the cut", step.Beats.Blink < step.Beats.Cut)
 		end,
 	},
 }

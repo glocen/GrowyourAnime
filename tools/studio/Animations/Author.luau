@@ -354,6 +354,11 @@ function Author.SaveBaked(name: string, as: string?): (KeyframeSequence, string)
 			-- too (at weight 1 the blade swings' and the burst lowering's gun wrist took the gun from the burst: B1c)
 			local arm = HELD[part]
 			if arm then
+				-- the Torso at weight 0 is only the container a keyed part needs (a layer that leaves the body to the clips
+				-- under it: Kirra's tail layers over the open set, AR10), so a part held on it keeps its own 1
+				if arm == "Torso" and weight("Torso") <= 0 then
+					return 1
+				end
 				return weight(arm)
 			end
 			return if LEGS[part] then (clip.Legs or 1) else 1

@@ -1,0 +1,26 @@
+{
+ "Why": "Kirra's install (AR10): her meshes and maps as published under the group on 2026-11-15 (docs/asset-log.md). No glow (the recipe: nothing of hers is lit), and every piece casts its shadow, the scarf included: it's her one streak and reads on the ground.",
+ "Meshes": {
+  "Kirra_Torso": 79808039000880,
+  "Kirra_Head": 91913421637517,
+  "Kirra_RightArm": 120891925448825,
+  "Kirra_LeftArm": 137144628073210,
+  "Kirra_RightLeg": 108961301557600,
+  "Kirra_LeftLeg": 93495769202299,
+  "Kirra_BladeR": 74561838613327,
+  "Kirra_BladeL": 73110345949043,
+  "Kirra_Scarf1": 107442783268865,
+  "Kirra_Scarf2": 139790454878412,
+  "Kirra_Scarf3": 81036559377551,
+  "Kirra_Scarf4": 117145353299955,
+  "Kirra_Scarf5": 99201374132675,
+  "Kirra_Scarf6": 88312892006988,
+  "Kirra_Scarf7": 78945785392319,
+  "Kirra_Scarf8": 85838483049628
+ },
+ "Maps": {
+  "Color": "rbxassetid://72136512061563",
+  "Roughness": "rbxassetid://73329145196625",
+  "Metalness": "rbxassetid://101655537072816"
+ }
+}

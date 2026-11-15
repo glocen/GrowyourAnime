@@ -2942,6 +2942,20 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **The Helmet:** all fifteen read as helmets, and the Legendaries outrank the Epics plainly. Iron, Bronze and Scrap are nearly one helmet at 38 points. Nightloom's tall comb stands nearly as high as a Legendary's crest. With the liner cut back the open helmets are hollow and lighter in their squares, and the three Commons part better at 38 points than they did.
 - **Four facts:** made, yes, the four sheets. Self-reviewed, yes, each at full size and on its 38-point row. Delivered, the sheets only: nothing for Faber yet. Accepted, no: research's verdict to come.
 - **Time:** about 2 hours 30 by the clock: the four scripts written and dry-run while memory was short, then the renders and one round of fixes on the ring and the helmet and the liner's cut (16:20 to 17:25).
+- **Research's verdict on batch 1 in grey** (2026-11-15, night, `ga-review`, on the four sheets and their 32-pixel rows):
+  - **Felt: yes.** Sixty designs read as one family, and each kind reads as its kind at 38 points. The Short Sword is never taken for the Sword: the broad wedge against the line does it.
+  - **Tier:** competent, at the bar for grey.
+  - **The bold thing:** each Legendary has one new form that tells a small story of light: a lantern pommel, a window in the blade, a watchfire basket, a lamp on the crown.
+  - **The Sword and the Short Sword pass,** with research's two fixes in. **No fixes.**
+  - **The Ring, one fix:** at 32 pixels, Stormcall Loop's two hooks curling in over the stone read like Ariake's crescent. Turn Stormcall's hooks outward, away from the stone, so the cradle belongs to Ariake alone.
+  - **The Helmet, one fix:** Gloamforge Helm's two prongs and the Twilight's forked horns are the same idea at 32 pixels. The Legendary's horns sweep wider than the skull, out and up like a crescent, so they outrank the Epic by shape. Gloamforge keeps its prongs.
+  - **Names:**
+    - The Short Sword's third Legendary is **Hoshiakari, the Far Star**.
+    - **"Kagaribi, the Watchfire"** stands as drawn: the ring shows its kind.
+    - Yukiakari, Yoiboshi, Ariake and Zansho stand.
+    - The helmet's Twilight is renamed **Hakubo, the Twilight** (research's call).
+  - **Modulo's tier 1 calls stand:** the Short Sword's near word "Edge", and a ring or a helmet filling its own square.
+  - **Next:** the two fixes, then colour and frames on the four kinds, the batch's finish.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 
@@ -5883,6 +5897,17 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **Four facts:** made, yes. Self-reviewed, yes, at full size and on crops of each size. Delivered, the sheet only. Accepted, no: research's verdict to come.
     - **Time:** about 40 minutes by the clock, the script and three renders.
 
+    - **Research's verdict** (2026-11-15, night, `ga-review`, on the block at full size and its crops):
+      - **Felt: yes.** The ground reads by colour before a word at every size, 26 points included. The chamber's two lines, "Lantern Row" over "Prismatic Shard", read as a place and a thing.
+      - **Tier:** competent.
+      - **The bold thing:** it's a luggage tag from the festival, the world's own object, not a badge laid on top. The crystal is untouched, and the tag sits off every spire.
+      - **Settled:**
+        - **Size:** a quarter at 96 points and a third at 50, so the tag's mark stays about the same height on screen.
+        - **Drum Court's cream:** stands, with the sticks apart.
+        - **Mask Parade, for later:** its tag leads with gold and carries the mask in violet, so it never sits violet on a violet shard.
+        - Lantern Row's cyan beside Frost, and Drum Court's red beside health, stand: they never share a place, and the tag's shape carries them.
+      - **Fixes:** none beyond the third at 50.
+      - **Next:** the other four grounds' marks, drawn when their grounds are built (each an update after launch), and the tag's images for Faber's build at the size rows' use.
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 
 Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decisions.md`, and the method, recipes and eight checks in `docs/research/sound.md`. **The test:** six cues the first minutes hear most. Each is library slices layered at runtime, plus layers Modulo makes by script. The director's ear in a fight accepts or rejects them. If they still sound like slop, the approach changes before the other 39. The numbers below are seeds (UNVERIFIED); the ear decides.

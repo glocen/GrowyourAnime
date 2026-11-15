@@ -1110,6 +1110,11 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		local landed = at - f.SkippedAt < Combat.Skip.Every
 		if action and gap <= action.Range and (off <= Combat.Slots.Arc or landed) then
 			start(f, action, at)
+		elseif landed and action == nil then
+			-- landed with nothing ready yet: it holds where it landed, as a walk to its slot would take it back in (the
+			-- skip's case saw it drift 0.8 studs on Land, sometimes, 2026-11-15)
+			endAction(f, at)
+			stop(f)
 		else
 			endAction(f, at)
 			local walk = if f.Block.Speed > 0 then f.Block.Speed else Combat.Lead.FollowWalk -- its Speed (TR14)

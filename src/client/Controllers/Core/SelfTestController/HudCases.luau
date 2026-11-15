@@ -79,9 +79,13 @@ function HudCases.Cases(given: Given): { any }
 				local function said(words: string): boolean
 					return table.find(Toast.Shown(), words) ~= nil
 				end
+				-- Home before the elite comes back: left on its square, the lead fells it again, and it rests Back.Elite
+				-- seconds, past the packs' case (seen 2026-11-15).
 				local function restore()
 					t.Server("HomeReady")
 					t.Server("LeadHeal")
+					t.Root().CFrame = CFrame.new(Markers.At(spawn).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0))
+					t.Wait(0.5)
 					t.Server("PackBack", "Elite")
 				end
 				t.Server("HomeReady")

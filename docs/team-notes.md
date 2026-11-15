@@ -14,11 +14,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Tested:** type check 0 new; logic cases 5581 passed offline; the HUD's and the eye's self-test cases 352 + 31 passed at phone size. **Not done:** the whole self-test on this code; the readout's level against its gradient by eye (`Config.Hud.Readout.Travel` is a seed, the cooldown's fill was never watched); each face's digit width; my own review from the player's camera; research's pass. Seen once at phone size: the ready plate's glow shows a pale square round it.
 - **Next:** find the readout's Travel with stills at empty, half and full; the three font stills and Builder Sans's into `build/captures/ar12/` for research's pick; the whole self-test; AR12's entry. Then the lead's card from the director's pick with the seam fix, and the dock last from Modulo's images. Then TR12's and TR16's fixes; the TR10 and TR11 takes; Kirra's install; TR18. Nothing running, no lock held, the playtest stopped; the place wasn't changed.
 
-**Modulo (assets).** 2026-11-15, night, on Fable 5.2.
+**Modulo (assets).** 2026-11-15, night, on Fable 5.2 (the dock's images done).
 - **AR12, the HUD's and the screens' colour:** the HUD's images in V2, Block are delivered: `build/handoff/UI/hud/colour/images/` (30 images), `hud_colour.json` (how each piece stacks, each system's colours, the rooms) and `hud_colour_images.png` (AR12, "The HUD's images in V2, Block"). Content check PASS; not uploaded. **For Faber:** the readout's light is one image under a gradient, its stops in the json, untried in Studio. `vivid_voidkin.png` is the look to hold beside TR17's rebuild.
-- **AR12, the dock as three icons:** the block has research's verdict, competent, with two fixes to its marks (`build/handoff/UI/hud/dock/hud_dock.png`; AR12, "The dock as three icons"). **For Faber:** its images come next, with the fixes. **The galaxy Breaker:** its look is director-accepted and its words are on "Faster break"; its images aren't made yet. **TR17's marks:** 16 images in `build/handoff/UI/voidkin/marks/`, competent, no fix, not uploaded.
-- **AR12, the lead's card:** round two is on `build/handoff/UI/hud/lead_card_takes/lead_card_round2.png`, for research's read and the director's pick (AR12, "The lead's card, round two"), after the director's word on the first three ("let keep red", smaller, a much better composition): health red in three reds apart from the Shade's, thinner (D), shorter (E), both in cells (F), on one plate. Mocks only; the card's art stays Faber's script.
-- **Next, in this order:** the dock's images for Faber (its two mark fixes are in the script; its own sheet isn't rendered again yet); Combat Power's number in a colour of its own; a large image for each shard grade; AR6's Sword ladder in five grey renders, with twenty names proposed.
+- **AR12, the dock as three icons: its images are delivered** for Faber's build: `build/handoff/UI/hud/dock/images/` (17 images), `hud_dock.json` (each button's tap, each layer's place, each state's colours) and `hud_dock_images.png` (AR12, "The dock's images, delivered"). Content check PASS, for delivery and upload; not uploaded. **For research:** the two marks at 32 px on the images' sheet; Inventory's strap and shard now stand apart (joined, they read as a necktie). **The galaxy Breaker:** its look is director-accepted and its words are on "Faster break"; its images aren't made yet. **TR17's marks:** 16 images in `build/handoff/UI/voidkin/marks/`, competent, no fix, not uploaded.
+- **AR12, the lead's card:** the director picked from round two (take F as one solid bar, in D's ruby, `docs/decisions.md`). The card's art is Faber's script; nothing waits on Modulo.
+- **Next, in this order:** Combat Power's number in a colour of its own; a large image for each shard grade; AR6's Sword ladder in five grey renders, with twenty names proposed. The level-up's notice as takes, and the way home's control, when research writes their pieces (the director's words of tonight, `docs/decisions.md`).
 - **Later:** the Voidkin mock's redraw with the marks and "Items"; the bays' sheet in Dynamo vivid; the galaxy's images; Scarf Step's blockout when Faber gives the turn (AR10, section 5); Watt's model, with the shirt fix (AR11); TR10's two icons. Nothing running, no lock held.
 
 **Turns.** Studio: the main place is open in Edit, the phone emulation on, held by nobody overnight (Faber takes it back for AR12's HUD). Blender: nobody. Timing tests: nobody.
@@ -75,6 +75,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, night. The dock's images delivered (Modulo)
+
+- **What:** AR12's dock as three icons, in images for the build: the body, a tile's white layers in two sizes (the tile, its pressed twin, the sheen, the open rim, the open halo), one light and its glow, the three marks in ink, the pip. Research's two mark fixes are in.
+- **Where:** `build/handoff/UI/hud/dock/` (`images/`, `hud_dock.json`, `hud_dock_images.png`, and `hud_dock.png` rendered again), from `tools/blender/hud_dock_sheet.py`. The record: AR12, "The dock's images, delivered".
+- **Checked:** the stack of images matches the block's drawing (the numbers are in the record); content check PASS for delivery and upload; self-reviewed at phone size over both streets.
+- **Open:** research's read of the two marks at 32 px; Faber's build; the upload.
+- **For:** Faber, research.
 
 ### 2026-11-15, evening. TR17's retake and TR9's fade fix (Faber)
 

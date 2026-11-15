@@ -1,0 +1,772 @@
+{
+ "pixelsPerPoint": 4,
+ "size": [
+  196.0,
+  68.0
+ ],
+ "lean": 0.2,
+ "note": "The dock as three icons (AR12). One piece of a fixed size, bottom centre. Every place is in points from the body's top left; an image's `at` is its own top left, and it's shown at its `points` (or the `size` given, for the light, which stretches between its `cut` ends). A white image takes its tint; the body, the marks and the pip are in colour. A tile leans: its `box` is the box round it, the tap. It replaces the dock of buttons with words (hud_colour.json, pieces.dock, BlockDock).",
+ "stack": [
+  "DockBody at its `at`",
+  "each button: open, its halo in its colour; at rest, its light's glow in its colour; then its light",
+  "each button: its tile under its state's gradient, top to foot; at rest its sheen in its pale; open, its rim; its mark, its middle at `mark.middle`, `mark.size` across; its pip when it has something new"
+ ],
+ "states": {
+  "rest": "the tile's gradient, the sheen, the light and its glow in the system's colour",
+  "pressed": "the tile's pressed image at `tilePressed` (1.6 shorter, its foot where it was) under pressed's gradient, no sheen; the mark 1.6 lower and 0.32 to the left; the light in the system's deep, no glow",
+  "open": "the tile white-hot under its gradient, its rim over it, its halo under it, the light white; the mark stays in ink",
+  "new": "DockPip over the tile's far corner, in any state"
+ },
+ "gradient": "a tile's stops are [share of its height from the top, colour]; the two stops 0.008 apart are the hard step into its front face",
+ "buttons": [
+  {
+   "name": "Base",
+   "system": "Base",
+   "colour": "#FFE266",
+   "pale": "#FFF7C2",
+   "deep": "#B88A14",
+   "box": [
+    6.8,
+    15.0,
+    60.8,
+    44.0
+   ],
+   "tile": {
+    "image": "DockTileWing",
+    "at": [
+     6.5,
+     15.0
+    ]
+   },
+   "tilePressed": {
+    "image": "DockTileWingPressed",
+    "at": [
+     6.5,
+     16.5
+    ]
+   },
+   "sheen": {
+    "image": "DockSheenWing",
+    "at": [
+     6.5,
+     15.0
+    ]
+   },
+   "edge": {
+    "image": "DockEdgeWing",
+    "at": [
+     6.5,
+     15.0
+    ]
+   },
+   "halo": {
+    "image": "DockHaloWing",
+    "at": [
+     -15.5,
+     -7.0
+    ]
+   },
+   "light": {
+    "image": "DockLight",
+    "at": [
+     10.25,
+     62.25
+    ],
+    "size": [
+     43.25,
+     2.75
+    ]
+   },
+   "lightGlow": {
+    "image": "DockLightGlow",
+    "at": [
+     1.25,
+     53.25
+    ],
+    "size": [
+     61.25,
+     20.75
+    ]
+   },
+   "mark": {
+    "image": "DockMarkBase",
+    "middle": [
+     37.44,
+     35.8
+    ],
+    "size": 40.0
+   },
+   "pip": {
+    "image": "DockPip",
+    "at": [
+     53.5,
+     2.0
+    ]
+   },
+   "rest": {
+    "tile": [
+     [
+      0.0,
+      "#FFE77D"
+     ],
+     [
+      0.9233,
+      "#E3C048"
+     ],
+     [
+      0.9313,
+      "#C89F28"
+     ],
+     [
+      1.0,
+      "#C89D26"
+     ]
+    ],
+    "light": "#FFE266",
+    "lightGlow": "#FFE266",
+    "sheen": "#FFF7C2"
+   },
+   "pressed": {
+    "tile": [
+     [
+      0.0,
+      "#D4AD35"
+     ],
+     [
+      0.963,
+      "#ECCB51"
+     ],
+     [
+      0.971,
+      "#CCA32B"
+     ],
+     [
+      1.0,
+      "#CCA32C"
+     ]
+    ],
+    "light": "#B88A14"
+   },
+   "open": {
+    "tile": [
+     [
+      0.0,
+      "#FFFFFF"
+     ],
+     [
+      0.5,
+      "#FFF7C2"
+     ],
+     [
+      0.9233,
+      "#FFEA8B"
+     ],
+     [
+      0.9313,
+      "#E3C45B"
+     ],
+     [
+      1.0,
+      "#E3C256"
+     ]
+    ],
+    "light": "#FFFFFF",
+    "halo": "#FFE266"
+   }
+  },
+  {
+   "name": "Inventory",
+   "system": "Voidkin",
+   "colour": "#DCCBFF",
+   "pale": "#FAF7FF",
+   "deep": "#7C66CC",
+   "box": [
+    62.8,
+    5.0,
+    70.8,
+    54.0
+   ],
+   "tile": {
+    "image": "DockTileMid",
+    "at": [
+     62.5,
+     5.0
+    ]
+   },
+   "tilePressed": {
+    "image": "DockTileMidPressed",
+    "at": [
+     62.5,
+     6.5
+    ]
+   },
+   "sheen": {
+    "image": "DockSheenMid",
+    "at": [
+     62.5,
+     5.0
+    ]
+   },
+   "edge": {
+    "image": "DockEdgeMid",
+    "at": [
+     62.5,
+     5.0
+    ]
+   },
+   "halo": {
+    "image": "DockHaloMid",
+    "at": [
+     40.5,
+     -17.0
+    ]
+   },
+   "light": {
+    "image": "DockLight",
+    "at": [
+     66.25,
+     62.25
+    ],
+    "size": [
+     51.25,
+     2.75
+    ]
+   },
+   "lightGlow": {
+    "image": "DockLightGlow",
+    "at": [
+     57.25,
+     53.25
+    ],
+    "size": [
+     69.25,
+     20.75
+    ]
+   },
+   "mark": {
+    "image": "DockMarkInventory",
+    "middle": [
+     98.44,
+     30.8
+    ],
+    "size": 50.667
+   },
+   "pip": {
+    "image": "DockPip",
+    "at": [
+     119.5,
+     -8.0
+    ]
+   },
+   "rest": {
+    "tile": [
+     [
+      0.0,
+      "#E4D6FF"
+     ],
+     [
+      0.9367,
+      "#B7A4EB"
+     ],
+     [
+      0.9447,
+      "#927ED8"
+     ],
+     [
+      1.0,
+      "#917CD7"
+     ]
+    ],
+    "light": "#DCCBFF",
+    "lightGlow": "#DCCBFF",
+    "sheen": "#FAF7FF"
+   },
+   "pressed": {
+    "tile": [
+     [
+      0.0,
+      "#A28EE0"
+     ],
+     [
+      0.9693,
+      "#C3B1F2"
+     ],
+     [
+      0.9773,
+      "#9782DA"
+     ],
+     [
+      1.0,
+      "#9783DA"
+     ]
+    ],
+    "light": "#7C66CC"
+   },
+   "open": {
+    "tile": [
+     [
+      0.0,
+      "#FFFFFF"
+     ],
+     [
+      0.5,
+      "#FAF7FF"
+     ],
+     [
+      0.9367,
+      "#E7DCFF"
+     ],
+     [
+      0.9447,
+      "#BCADEB"
+     ],
+     [
+      1.0,
+      "#BBAAEB"
+     ]
+    ],
+    "light": "#FFFFFF",
+    "halo": "#DCCBFF"
+   }
+  },
+  {
+   "name": "Map",
+   "system": "Map",
+   "colour": "#FF5C93",
+   "pale": "#FFE3EE",
+   "deep": "#B8245C",
+   "box": [
+    126.8,
+    15.0,
+    60.8,
+    44.0
+   ],
+   "tile": {
+    "image": "DockTileWing",
+    "at": [
+     126.5,
+     15.0
+    ]
+   },
+   "tilePressed": {
+    "image": "DockTileWingPressed",
+    "at": [
+     126.5,
+     16.5
+    ]
+   },
+   "sheen": {
+    "image": "DockSheenWing",
+    "at": [
+     126.5,
+     15.0
+    ]
+   },
+   "edge": {
+    "image": "DockEdgeWing",
+    "at": [
+     126.5,
+     15.0
+    ]
+   },
+   "halo": {
+    "image": "DockHaloWing",
+    "at": [
+     104.5,
+     -7.0
+    ]
+   },
+   "light": {
+    "image": "DockLight",
+    "at": [
+     130.25,
+     62.25
+    ],
+    "size": [
+     43.25,
+     2.75
+    ]
+   },
+   "lightGlow": {
+    "image": "DockLightGlow",
+    "at": [
+     121.25,
+     53.25
+    ],
+    "size": [
+     61.25,
+     20.75
+    ]
+   },
+   "mark": {
+    "image": "DockMarkMap",
+    "middle": [
+     157.44,
+     35.8
+    ],
+    "size": 40.0
+   },
+   "pip": {
+    "image": "DockPip",
+    "at": [
+     173.5,
+     2.0
+    ]
+   },
+   "rest": {
+    "tile": [
+     [
+      0.0,
+      "#FF7EAA"
+     ],
+     [
+      0.9233,
+      "#E3487F"
+     ],
+     [
+      0.9313,
+      "#C83269"
+     ],
+     [
+      1.0,
+      "#C83068"
+     ]
+    ],
+    "light": "#FF5C93",
+    "lightGlow": "#FF5C93",
+    "sheen": "#FFE3EE"
+   },
+   "pressed": {
+    "tile": [
+     [
+      0.0,
+      "#D43A72"
+     ],
+     [
+      0.963,
+      "#EC4D84"
+     ],
+     [
+      0.971,
+      "#CC346B"
+     ],
+     [
+      1.0,
+      "#CC346C"
+     ]
+    ],
+    "light": "#B8245C"
+   },
+   "open": {
+    "tile": [
+     [
+      0.0,
+      "#FFFFFF"
+     ],
+     [
+      0.5,
+      "#FFE3EE"
+     ],
+     [
+      0.9233,
+      "#FF92B7"
+     ],
+     [
+      0.9313,
+      "#E36693"
+     ],
+     [
+      1.0,
+      "#E35E8D"
+     ]
+    ],
+    "light": "#FFFFFF",
+    "halo": "#FF5C93"
+   }
+  }
+ ],
+ "images": {
+  "DockBody": {
+   "file": "images/DockBody.png",
+   "pixels": [
+    896,
+    384
+   ],
+   "points": [
+    224.0,
+    96.0
+   ],
+   "at": [
+    -14.0,
+    -14.0
+   ],
+   "use": "the whole body: shadow, graphite, glint, edge and the three wells. Under everything"
+  },
+  "DockTileWing": {
+   "file": "images/DockTileWing.png",
+   "pixels": [
+    246,
+    176
+   ],
+   "points": [
+    61.5,
+    44.0
+   ],
+   "at": [
+    6.5,
+    15.0
+   ],
+   "tint": "the state's gradient, top to foot (buttons.<state>.tile)",
+   "use": "Base's and the Map's tile, at rest and open"
+  },
+  "DockTileWingPressed": {
+   "file": "images/DockTileWingPressed.png",
+   "pixels": [
+    246,
+    170
+   ],
+   "points": [
+    61.5,
+    42.5
+   ],
+   "at": [
+    6.5,
+    16.5
+   ],
+   "tint": "pressed's gradient, top to foot (buttons.pressed.tile)",
+   "use": "Base's and the Map's tile, pressed: 1.6 shorter, its foot where it was"
+  },
+  "DockSheenWing": {
+   "file": "images/DockSheenWing.png",
+   "pixels": [
+    246,
+    176
+   ],
+   "points": [
+    61.5,
+    44.0
+   ],
+   "at": [
+    6.5,
+    15.0
+   ],
+   "tint": "the system's pale",
+   "use": "at rest only, over the tile: its sheen and its lit top"
+  },
+  "DockEdgeWing": {
+   "file": "images/DockEdgeWing.png",
+   "pixels": [
+    246,
+    176
+   ],
+   "points": [
+    61.5,
+    44.0
+   ],
+   "at": [
+    6.5,
+    15.0
+   ],
+   "use": "open only, over the tile: its white rim"
+  },
+  "DockHaloWing": {
+   "file": "images/DockHaloWing.png",
+   "pixels": [
+    422,
+    376
+   ],
+   "points": [
+    105.5,
+    94.0
+   ],
+   "at": [
+    -15.5,
+    -7.0
+   ],
+   "tint": "the system's colour",
+   "use": "open only, under the light and the tile: the tile's and the light's glow"
+  },
+  "DockTileMid": {
+   "file": "images/DockTileMid.png",
+   "pixels": [
+    286,
+    216
+   ],
+   "points": [
+    71.5,
+    54.0
+   ],
+   "at": [
+    62.5,
+    5.0
+   ],
+   "tint": "the state's gradient, top to foot (buttons.<state>.tile)",
+   "use": "Inventory's tile, at rest and open"
+  },
+  "DockTileMidPressed": {
+   "file": "images/DockTileMidPressed.png",
+   "pixels": [
+    286,
+    210
+   ],
+   "points": [
+    71.5,
+    52.5
+   ],
+   "at": [
+    62.5,
+    6.5
+   ],
+   "tint": "pressed's gradient, top to foot (buttons.pressed.tile)",
+   "use": "Inventory's tile, pressed: 1.6 shorter, its foot where it was"
+  },
+  "DockSheenMid": {
+   "file": "images/DockSheenMid.png",
+   "pixels": [
+    286,
+    216
+   ],
+   "points": [
+    71.5,
+    54.0
+   ],
+   "at": [
+    62.5,
+    5.0
+   ],
+   "tint": "the system's pale",
+   "use": "at rest only, over the tile: its sheen and its lit top"
+  },
+  "DockEdgeMid": {
+   "file": "images/DockEdgeMid.png",
+   "pixels": [
+    286,
+    216
+   ],
+   "points": [
+    71.5,
+    54.0
+   ],
+   "at": [
+    62.5,
+    5.0
+   ],
+   "use": "open only, over the tile: its white rim"
+  },
+  "DockHaloMid": {
+   "file": "images/DockHaloMid.png",
+   "pixels": [
+    462,
+    416
+   ],
+   "points": [
+    115.5,
+    104.0
+   ],
+   "at": [
+    40.5,
+    -17.0
+   ],
+   "tint": "the system's colour",
+   "use": "open only, under the light and the tile: the tile's and the light's glow"
+  },
+  "DockLight": {
+   "file": "images/DockLight.png",
+   "pixels": [
+    173,
+    11
+   ],
+   "points": [
+    43.25,
+    2.75
+   ],
+   "at": [
+    10.25,
+    62.25
+   ],
+   "tint": "rest: the system's colour; pressed: its deep; open: white",
+   "cut": [
+    4.0,
+    0.0,
+    4.0,
+    0.0
+   ],
+   "use": "the light under a tile; it stretches between its cut ends, 8 longer under Inventory"
+  },
+  "DockLightGlow": {
+   "file": "images/DockLightGlow.png",
+   "pixels": [
+    245,
+    83
+   ],
+   "points": [
+    61.25,
+    20.75
+   ],
+   "at": [
+    1.25,
+    53.25
+   ],
+   "tint": "the system's colour",
+   "cut": [
+    13.0,
+    0.0,
+    13.0,
+    0.0
+   ],
+   "use": "at rest only, under the light"
+  },
+  "DockMarkBase": {
+   "file": "images/DockMarkBase.png",
+   "pixels": [
+    256,
+    256
+   ],
+   "points": [
+    64.0,
+    64.0
+   ],
+   "use": "Base's mark, in ink, on its tile"
+  },
+  "DockMarkInventory": {
+   "file": "images/DockMarkInventory.png",
+   "pixels": [
+    256,
+    256
+   ],
+   "points": [
+    64.0,
+    64.0
+   ],
+   "use": "Inventory's mark, in ink, on its tile"
+  },
+  "DockMarkMap": {
+   "file": "images/DockMarkMap.png",
+   "pixels": [
+    256,
+    256
+   ],
+   "points": [
+    64.0,
+    64.0
+   ],
+   "use": "Map's mark, in ink, on its tile"
+  },
+  "DockPip": {
+   "file": "images/DockPip.png",
+   "pixels": [
+    105,
+    112
+   ],
+   "points": [
+    26.25,
+    28.0
+   ],
+   "at": [
+    53.5,
+    2.0
+   ],
+   "use": "something new: over a tile's far corner, over its mark"
+  }
+ }
+}

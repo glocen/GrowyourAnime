@@ -6913,6 +6913,25 @@ Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's 
   - the bare lot of a player who isn't in the server.
 - **Order:** Modulo's next piece. The rest of AR15 (the battery, the Training machine and the Door) resumes in the yard's look after it.
 
+## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
+
+Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). It starts once AR16 and the rest of AR15 (the battery, the Training machine and the Festival Door) are in the game.
+
+- **What it covers, research's reading:** the walk a first session takes outside its base.
+  - The Strip and its crossing.
+  - The side street out to the festival gate.
+  - The plots that stand empty: bare lots (the director's word of the night).
+  - What the player sees past the map's edges.
+  - Lantern Row is already dressed (AR5).
+- **Waits, in their phases** (`docs/production-plan.md`, "Phases"): the Towers, the Shop, the Clash Grounds and the Calamity. Their places stay as they are.
+- **The feel line:** written with Modulo after AR16's verdict, so the Strip carries the base's look out to the gate.
+- **The way:**
+  1. Research lays it out in grey, from the player's camera.
+  2. Modulo makes the blockout, and research gives the verdict.
+  3. Modulo makes the kit's pieces.
+  4. Faber installs them.
+  5. Research gives one verdict in the game.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

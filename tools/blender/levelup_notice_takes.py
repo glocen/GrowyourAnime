@@ -46,6 +46,9 @@ WIDE = dict.fromkeys("iljtfrI1.,·'", 0.36)
 WIDE.update({" ": 0.3, "m": 0.9, "w": 0.82, "M": 0.86, "W": 0.94, "+": 0.6})
 
 
+STEP = (44.0, 40.0)  # B's plate: how tall it is, and how wide its block
+
+
 def est(text, size, space=1.0):
     """A word's width in points, near enough to lay a plate round it: Blender's face stands in for the game's."""
     if text in h.NAME_W and space == 1.0:
@@ -59,8 +62,9 @@ def word(st, x, y, size, text, colour, align="LEFT", bold=0.0, shear=0.0, space=
                          bold=bold, space=space))
 
 
-def plate(st, x, y, w, tall, bw, col):
-    """A leaning plate, as the card's rows lean: its body, a block of its colour at the left end, a rim, one sheen."""
+def plate_tile(w, tall, bw, col):
+    """A leaning plate, as the card's rows lean: its body, a block of its colour at the left end, a rim, one sheen. On a
+    tile of its own, MG wider on every side for its shadow and its glow."""
     t = kit.blank(w + 2 * MG, tall + 2 * MG)
     t.x -= MG
     t.y -= MG
@@ -79,7 +83,11 @@ def plate(st, x, y, w, tall, bw, col):
     t.paint(np.maximum(body, np.abs(t.y - 1.9) - 0.5), c("#FFFFFF"), 0.28)
     t.line(body + 1.1, 0.7, c("#000000"), 0.8)
     t.line(body, 1.1, c(col["rim"]))
-    h.place(st, t, x - MG, y - MG)
+    return t
+
+
+def plate(st, x, y, w, tall, bw, col):
+    h.place(st, plate_tile(w, tall, bw, col), x - MG, y - MG)
 
 
 def slab(st, x, y, col, who, n):
@@ -96,7 +104,7 @@ def slab(st, x, y, col, who, n):
 
 def step(st, x, y, col, who, n):
     """The number first, on the block; the name; then what happened."""
-    tall, bw = 44.0, 40.0
+    tall, bw = STEP
     line = "LEVEL UP"
     w = bw + tall * S + 10 + max(est(who, 16), est(line, 11, 1.14)) + 14
     plate(st, x, y, w, tall, bw, col)

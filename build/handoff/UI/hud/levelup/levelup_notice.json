@@ -1,0 +1,158 @@
+{
+ "pixelsPerPoint": 4,
+ "note": "The level-up's notice (AR12, B). One plate on the left, its top left at `place` on the screen. Every place is in points from the plate's own top left (its body's box, not its image's: the image reaches 16 past it on every side). An image's `at` is its own top left, and it's shown at its `points`.",
+ "place": {
+  "at": [
+   66.0,
+   238.0
+  ],
+  "why": "the lead's card's left edge, under the readout's row (its foot at 230) and over the thumbstick (its top at 289)"
+ },
+ "plate": {
+  "tall": 44.0,
+  "block": 40.0,
+  "lean": 0.45,
+  "width": "83.8 + the wider of the name at 16 points and \"LEVEL UP\" at 11",
+  "leans": "its ends lean `lean` across per down: the top edge starts tall * lean to the right of the foot's"
+ },
+ "stack": [
+  "LevelUpPlate, stretched to the width",
+  "LevelUpFlash, at the landing only",
+  "LevelUpSheen, while it crosses",
+  "the name and the line",
+  "the number"
+ ],
+ "words": {
+  "number": {
+   "middle": [
+    28.9,
+    22.0
+   ],
+   "size": {
+    "1": 27,
+    "2": 25,
+    "3": 19
+   },
+   "colour": "#1D1245",
+   "weight": "bold",
+   "note": "centred on the block; its size by its count of digits"
+  },
+  "name": {
+   "at": [
+    63.95,
+    8.0
+   ],
+   "size": 16,
+   "colour": "#FFFFFF"
+  },
+  "line": {
+   "text": "LEVEL UP",
+   "at": [
+    55.4,
+    28.0
+   ],
+   "size": 11,
+   "colour": "#D8C8FF",
+   "spacing": 1.14
+  },
+  "note": "`at` is a word's left end and its capitals' top"
+ },
+ "motion": {
+  "note": "DESIGN, as the clip shows it (levelup_notice_clip.mp4); untried in Studio. Seconds.",
+  "slideIn": {
+   "seconds": 0.2,
+   "ease": "cubic out",
+   "start": "wholly off the screen's left edge, its glow with it"
+  },
+  "number": {
+   "appears": "as the plate arrives",
+   "fall": 0.12,
+   "fromSize": 1.9,
+   "squash": 0.88,
+   "settle": 0.1,
+   "note": "it falls from `fromSize` times its size to `squash` (quadratic in), fading in over the fall's first third, then settles to 1 (quadratic out)"
+  },
+  "flash": {
+   "image": "LevelUpFlash",
+   "at": "the landing, the fall's end",
+   "strength": 0.75,
+   "seconds": 0.14,
+   "note": "its strength falls to nothing, quadratic out"
+  },
+  "knock": {
+   "points": 1.5,
+   "seconds": 0.12,
+   "note": "the whole notice, to the right and back, at the landing"
+  },
+  "sheen": {
+   "image": "LevelUpSheen",
+   "after": 0.1,
+   "seconds": 0.5,
+   "ease": "smooth step",
+   "travel": "its middle from 30 points left of the plate to 30 past its far end, along the foot; the band's middle at the foot is 27 from its image's left",
+   "note": "in the clip it shows only on the plate's own shape. With a box for a clip it would show past the leaning ends: fade it in over its first 26 points on the plate and out over its last 26, or clip it by the plate's image"
+  },
+  "hold": {
+   "seconds": 2.5,
+   "note": "from its arrival"
+  },
+  "slideOut": {
+   "seconds": 0.2,
+   "ease": "cubic in",
+   "end": "where it came from"
+  },
+  "reducedMotion": "it fades in at its place with the number set, no fall, flash, knock or sheen, and fades out"
+ },
+ "images": {
+  "LevelUpPlate": {
+   "file": "images/LevelUpPlate.png",
+   "pixels": [
+    656,
+    304
+   ],
+   "points": [
+    164.0,
+    76.0
+   ],
+   "at": [
+    -16.0,
+    -16.0
+   ],
+   "cut": [
+    80.0,
+    0.0,
+    74.0,
+    0.0
+   ],
+   "use": "the whole plate: shadow, glow, body, block, rim. Under the words. Its width is `plate.width`"
+  },
+  "LevelUpFlash": {
+   "file": "images/LevelUpFlash.png",
+   "pixels": [
+    247,
+    176
+   ],
+   "points": [
+    61.8,
+    44.0
+   ],
+   "at": [
+    -1.0,
+    0.0
+   ],
+   "use": "the block in white, over the plate and under the number: the flash as the number lands"
+  },
+  "LevelUpSheen": {
+   "file": "images/LevelUpSheen.png",
+   "pixels": [
+    295,
+    176
+   ],
+   "points": [
+    73.8,
+    44.0
+   ],
+   "use": "the sheen: over the plate and under the words, moved across once after the landing"
+  }
+ }
+}

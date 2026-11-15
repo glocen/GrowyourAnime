@@ -8,6 +8,7 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local PathfindingService = game:GetService("PathfindingService")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local Shared = ReplicatedStorage.Shared
@@ -269,14 +270,15 @@ return function(given: Given): { any }
 		return waitFor(t, REPLICATE, down)
 	end
 
-	-- TR17's evidence (docs/test-requests.md, TR17, "Done when"): the Voidkin screen in grey in one layout, at home, from
-	-- the dock: the figure turned and tapped, three Voidkin switched by the strip and by a flick, each tab, one sent to lead
-	-- and one to work. Not played, and their rows say so: the layout (a Tune before the take), a drag's turn (the figure's
-	-- own Turn, frame by frame) and the flicks and the tap (its own gesture handler, given a flick's travel and time). After
-	-- the take, out of it, the lead and the bay go back as they were.
-	local function voidkinTake(layout: string): any
+	-- TR17's evidence (docs/test-requests.md, TR17, "The director's layout", "Done when"): the Voidkin screen in grey, full
+	-- screen, at home, from the dock: the figure turned and tapped, three Voidkin switched by the strip and by a flick, a
+	-- slot column tapped, each menu button of the rail, one sent to lead and one to work, and Back. Not played, and their
+	-- rows say so: a drag's turn (the figure's own Turn, frame by frame), the flicks and the tap (its own gesture handler,
+	-- given a flick's travel and time), and the rail's and the column's taps (their own handlers). After the take, out of
+	-- it, the lead and the bay go back as they were.
+	local function voidkinTake(): any
 		return {
-			Name = `Take: TR17, the Voidkin screen in {layout}, for research's verdict`,
+			Name = "Take: TR17, the Voidkin screen, full screen in the director's layout with the notes on the mock, for research's verdict",
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -285,11 +287,6 @@ return function(given: Given): { any }
 				if #ids < 3 then
 					return
 				end
-				local was = HudConfig.Voidkin.Layout
-				t.Server("Tune", "Hud.Voidkin.Layout", layout)
-				t.Check("the layout tuned on this client", waitFor(t, REPLICATE, function(): boolean
-					return HudConfig.Voidkin.Layout == layout
-				end))
 				Screen.Close()
 				local view = ProfileController.Get() :: Profile.View
 				local lead = view.Roles.Lead
@@ -333,13 +330,13 @@ return function(given: Given): { any }
 				take(t, function(kit: Take)
 					local moment = kit.Moment
 					kit.Zero()
-					moment(`zero: at home, the HUD; not played: {layout} tuned before the take`)
+					moment("zero: at home, the HUD")
 					t.Wait(1.5)
 					moment("the dock's Voidkin tapped")
 					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
-					moment("the lead's screen: its figure on Idle, its power at its feet")
+					moment("the lead's screen, full: the rail, its figure on Idle between its slots, its hands and its power at its feet")
 					t.Wait(TAKE_READ)
 					moment(`not played: a drag, the figure turned {TAKE_SPIN.Degrees}° and back by its own Turn`)
 					spin(TAKE_SPIN.Degrees, TAKE_SPIN.Seconds)
@@ -359,23 +356,35 @@ return function(given: Given): { any }
 					moment("not played: a flick to the right, the one before")
 					t.Check("a flick right", gesture(Vector2.new(swipe.Distance + 60, -6), swipe.Time / 2) == "Swipe")
 					t.Wait(2)
-					if layout == "Flank" then
-						moment("Flank: the kit's Skill tapped, the panel slides in on Kit")
-						t.Check("the kit's Skill", press("Skill"))
-						t.Wait(TAKE_READ - 0.5)
+					moment("not played: a tap on the left slot column, the way to the gear page (not built: a notice)")
+					t.Check("the left column", VoidkinScreen.Tap(VoidkinScreen.Find("LeftSlots")))
+					t.Wait(2)
+					local function railTap(name: string, read: number)
+						moment(`not played: the rail's {name} tapped`)
+						local rail = VoidkinScreen.Find("Rail")
+						t.Check(`the rail's {name}`, VoidkinScreen.Tap(rail and rail:FindFirstChild(name)))
+						t.Wait(read)
 					end
-					for _, name in VoidkinScreen.Tabs do
-						moment(`the {name} tab tapped`)
-						local tabs = VoidkinScreen.Find("Tabs")
-						local tab = tabs and tabs:FindFirstChild(name)
-						t.Check(`the {name} tab`, tab ~= nil and tab:IsA("TextButton") and Button.Press(tab))
-						t.Wait(TAKE_READ - 0.5)
+					-- The rail to its foot or back to its top, as a finger's drag would bring it.
+					local function railTo(foot: boolean)
+						local rail = VoidkinScreen.Find("Rail")
+						if rail and rail:IsA("ScrollingFrame") then
+							local to = if foot then math.max(rail.AbsoluteCanvasSize.Y - rail.AbsoluteWindowSize.Y, 0) else 0
+							TweenService:Create(rail, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CanvasPosition = Vector2.new(0, to) }):Play()
+						end
+						t.Wait(0.9)
 					end
-					if layout == "Flank" then
-						moment("Flank: Hide, the panel slides out")
-						t.Check("Hide", press("Hide"))
-						t.Wait(1.5)
+					for _, name in { "Bag", "Kit", "Stars" } do
+						railTap(name, TAKE_READ - 0.5)
 					end
+					moment("not played: the rail dragged up to the pages not built yet")
+					railTo(true)
+					for _, name in { "Forge", "Jewels", "War Emblems" } do
+						railTap(name, 1.6) -- greyed: a notice, the page stays
+					end
+					moment("not played: the rail dragged back")
+					railTo(false)
+					railTap("Overview", TAKE_READ - 0.5)
 					moment(`Lead: the strip's {free[1]}, then Lead`)
 					press(free[1])
 					t.Wait(1)
@@ -392,22 +401,21 @@ return function(given: Given): { any }
 						return now ~= nil and Read.Role(now, free[2]) == `Bay {bay}`
 					end))
 					t.Wait(TAKE_READ)
-					moment("Close")
-					Screen.Close()
+					moment("Back")
+					local frame = Screen.Frame(VoidkinScreen.Name)
+					local back = frame and frame:FindFirstChild("Back")
+					t.Check("Back", back ~= nil and back:IsA("TextButton") and Button.Press(back))
 					t.Wait(1.5)
 					moment("end")
 				end)
 				t.Server("Act", "SetWorker", { Bay = bay, Voidkin = "" })
 				t.Server("Act", "SetLead", { Voidkin = lead })
-				t.Server("Tune", "Hud.Voidkin.Layout", was)
 			end,
 		}
 	end
 
 	return {
-		voidkinTake("Stage"),
-		voidkinTake("Flank"),
-		voidkinTake("Rail"),
+		voidkinTake(),
 		{
 			Name = "Take: the loop on a new account, for research's verdict",
 			Manual = true,

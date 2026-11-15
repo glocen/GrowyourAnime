@@ -1068,8 +1068,8 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - A locked chamber reads "Locked" with "Upgrade the Breaker" under it. Tier 1: the dot is a line break, since a chamber is about 90 px wide.
     - Lever: anticipation is the crack's bar filling, and the payoff is the flash and the hand-off to the strip.
   - **Tested.** The Breaker's cases: 106 passed, 0 failed, 59 fps, in the phone emulation. One is new: a shard finishing flashes its chamber, reaches the strip as a gold chip, and opens on one tap of it (the flash measured at 1.45 to 1.55 s). The screen's case is Machine only and checks each locked chamber's line. The type check: 0 new. Logic offline: 5440 passed.
-  - **The take is rebuilt for the retake** (`Take: TR9, the Breaker in Machine, a shard finishing in its chamber and opened from its chip`): the walk, the prompt, the line's shard and its odds, a chamber finishing with its flash, the chip, one tap, the reveal. Not recorded yet: it needs Studio's window in front.
-  - **Visually reviewed:** no. **Director-accepted:** no.
+  - **The retake is recorded, 2026-11-15:** `build/captures/tr9/machine_retake.mkv` (phone size; the action is in its first 30 s), with `retake_sheet.jpg`. The case `Take: TR9, the Breaker in Machine, a shard finishing in its chamber and opened from its chip`: the walk, the prompt, the line's shard and its odds, two chambers finishing in gold, their two gold Ready chips, one tap, the shard, the reveal, and the Breaker again with one chip left.
+  - **Visually reviewed:** by Faber on the sheet. The gold chips and the chambers' gold read at phone size. In the sheet's frame of the flash, the chamber already holds the next shard's line, and whether "Ready" reads across it is for the verdict in motion. Research's verdict: not yet. **Director-accepted:** no.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1463,16 +1463,38 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
 
 **Done when:** a take per layout at phone size: open from the dock, turn the figure, tap it, switch three Voidkin by the strip and by a swipe, each tab, and Lead and Send to work once each. Then research's verdict in motion and the director's pick. The UI lint runs first, at both scales.
 
-**Status:** the blockout is built and its cases pass; the takes wait for Studio's window in front. Faber, 2026-11-14, night.
-- **Implemented.** `src/client/UI/VoidkinScreen/` (`init.luau` the screen, `Figure.luau` the live model on its stage). The layout is tuned live: `NL_Debug:Invoke("Tune", "Hud.Voidkin.Layout", "Stage" | "Flank" | "Rail")`. Its numbers are in `Config.Hud.Voidkin`. Each block line is in. Rename stores the name raw: the server passes it through Roblox's filter before keeping it, and the owner's copy carries it filtered for them (`TextFilterService`; DataService's `before` step and `Shape`). A nickname the filter changes is refused, "That name can't be used", and the Voidkin keeps its name. The page was reread on 2026-11-14. Favourite and lock: `Collection.SetMark`. The kit's words: `Definitions.Voidkin`, `Words`, from the roster.
+**Status:** rebuilt to the director's layout, with the notes on the mock in. Its case and its take pass, and the take is with research. Faber, 2026-11-15.
+- **Implemented.** `src/client/UI/VoidkinScreen/init.luau`, a full screen through the kit's `Screen.Full`: a cover on its own layer hides the world and the HUD and takes their taps, and Back is at the top left. Its numbers are in `Config.Hud.Voidkin`. Stage, Flank, Rail and `Hud.Voidkin.Layout` are gone.
+  - **The rail:** seven round buttons on a line. Overview, Bag, Kit and Stars open their page. Forge, Jewels and War Emblems are greyed with "Soon": a tap says so and the page stays. Only the chosen page's word shows. Circles 26 and 42 across, taps 68 by 52 authored.
+  - **The stage:** the live figure between two columns of six slots, 6 apart, the twelve shared in the order of `Definitions.Gear` (new, with its logic cases). Main Hand and Off Hand, its class's pair, stand either side of Combat Power. A tap on a column says gear isn't built.
+  - **The top bar over the panel:** the currencies, then Lead, filled, and Send to work on a line of their own.
+  - **The panel:** the name with favourite, lock and rename, then the chosen page. Overview is its facts and its whole stat sheet, straight under its level. Bag is the inventory with a tab per kind: Shards from the save, and Items, Emblems, Jewels and Stones greyed "soon". A cell is a shard with its count, and a tap names it. Kit and Stars are as before.
+  - **The strip** under the stage. A flick, a drag and a tap on the figure are as before. The dock is Voidkin, Base, Map.
+  - Rename stores the name raw: the server passes it through Roblox's filter before keeping it (`TextFilterService`). A nickname the filter changes is refused, and the Voidkin keeps its name. Favourite and lock: `Collection.SetMark`.
 - **Combat Power.** The director, mid-build, 2026-11-14, night: "combat power need to really look like taichi panda dragon hunter in design but like us visually". It covers Combat Power's display. The block holds its structure in grey: a plate in its rarity's light that fades out at both ends, an emblem, the caption and large digits. When it rises, the digits count up and the gain floats off the plate (`Config.Hud.Voidkin.Power`). For research: that reference's Combat Power, studied for Modulo's look after the pick. The number is `Rules.Stats.Power` on stand-in weights (`Config.Stats.Power`). Tier 2: research's seeds replace them.
-- **Measured.** The figure's share of the screen's height, aim 0.70, in this window and then on the smallest phone: Stage 0.50 and 0.48, Flank 0.34 and 0.34, Rail 0.69 and 0.71. Each stage frames its figure as tall as it has room for; the framing equals the measure. At a phone's height of about 320 authored px, Stage's strip and Combat Power's plate take 42%, and Flank's name row takes more again. The cheapest lever for Stage is its strip under the panel instead of under the figure. Flank has none that reaches 0.70 at that height.
-- **Tested.** The three cases, `Voidkin screen (TR17)` in `SelfTestController/VoidkinCases.luau`: 243 passed, 0 failed, 54 fps. They cover the open from the dock, the figure whole, Combat Power from its stats, each tab on the save's numbers, Lead and Send to work and the marks in view, favourite and lock, a rename through the filter and off again, send to work and bring home, the strip, a flick each way, a tap's flourish, a turn, and the UI lint in this window and on the smallest phone. The cases the change touched pass: TR12's fallen lead, the dock's screens, the world's plates and the kept scroll (77). Logic offline: 5440 passed. Type check: 0 new.
-  - **The whole self-test, 2026-11-15, in the phone emulation, covering TR15's removal too:** 1705 passed, 3 failed (273 s, 59 fps). None came from the screen. All three were the tests' own on a phone's camera, which undoes a turn written straight to it: the plot's plates case turned the camera that way (2 checks, now through `CameraTurn`), and TR11's heading (its entry). Both cases pass since.
-  - **A clean whole pass is still owed.** The second pass: 1683 passed, 2 failed. One was a gain's toast caught mid-slide by the lint (the lint now waits for a toast to land). The other was the reveal's frame rate, 41 fps. The third pass ran with Studio behind another window at 15 to 16 fps: 14 timing and on-screen checks failed. Those are not verified, by the testing rule. It runs again with Studio in front.
-- **Not yet:** the takes, one per layout (`Take: TR17, the Voidkin screen in ...`, in `Takes.luau`), recorded at phone size. Visually reviewed: no. Director-accepted: no.
-- **Tier 1 notices.** A fresh open starts on the lead's Overview. In Flank, Hide sits beside the close, and Lead and Send to work stand on the panel's foot while it's in. A nickname holds at most 20 characters (`Config.Voidkin.Nickname`, from `docs/ui.md`).
-- **Time:** about 3 active hours so far, my estimate, not measured.
+- **Measured,** in this window (750 by 401) and then on the smallest phone:
+  - the figure's share of the screen's height: 0.56 and 0.55 (the mock's 0.62);
+  - a slot: 38.5 and 28.9 rendered px, 36 and 34 authored (the mock's 40, the reference's about 46);
+  - a hand: 49.2 and 39.1 rendered px (the mock's 46);
+  - Combat Power's plate: 107 and 85 authored px wide;
+  - the rail's seven taps need 375 authored px, and its window has 247 and 234.
+- **Tested.** The case `Voidkin screen (TR17)` in `SelfTestController/VoidkinCases.luau`: 217 passed, 0 failed, 58 fps, with the UI lint clean in this window and on the smallest phone on each built page. The take's case: 21 passed. Logic offline: 5513 passed. Type check: 0 new.
+  - **The whole self-test, 2026-11-15, in the phone emulation with Studio in front:** 1660 passed, 0 failed (259 s, 60 fps). It's the clean whole pass that was owed.
+- **The take:** `build/captures/tr17/full_take.mkv` (60 s, phone size, the take starting about 3 s in), with `sheet_a.jpg` and `sheet_b.jpg`. The case `Take: TR17`: the dock, the lead's screen, a turn, a tap, the strip twice, a flick each way, a column's tap, the rail's Bag, Kit and Stars, the rail dragged to Forge, Jewels and War Emblems, Overview, Lead, Send to work, Back. Not played: the drag, the flicks, the rail's taps and its scroll are the test's own calls.
+- **Visually reviewed:** by Faber on the sheets. Research's verdict: not yet. **Director-accepted:** no.
+- **For research, from the build:**
+  1. Seven 44 pt taps don't fit the rail, so it scrolls. The four built pages stand whole before any scroll, and Forge peeks at its foot. Fewer buttons, or the three not built as one, would need no scroll.
+  2. Lead and Send to work stand on a line of their own over the name, not right of it. The panel's column is about 300 authored px, and the name, three marks and two actions at 44 pt need about 560.
+  3. The mock holds its top row in Roblox's top-bar band, which the screens' room leaves out today (54 of 375 authored px). A full screen with its bar in that band gives the panel about 60 px more and the rail one more button. It changes the Screen kit and the lint's safe area, and isn't built.
+  4. The panel's page is about 139 authored px tall under the name's row: Overview shows its type, its level and its first stat before a scroll.
+  5. The name has about 75 px beside its three marks, so its second line truncates.
+  6. The screen's name stands over the stage and touches a tall figure (Lyric's prop, the stand-in's arm). The mock has the Voidkin's name there, and no screen name.
+  7. A lead's two actions both read "Leading": the kit shows on a button's face why it's off.
+  8. The screen opens on the lead's Overview. "The right panel is the bag" could mean the bag first: research's to say.
+  9. The bag holds shards only and shows no count of its space: no capacity is designed yet.
+  10. Combat Power's weights are stand-ins (tier 2).
+- **Tier 1 notices.** A fresh open starts on the lead's Overview. Overview's stat sheet comes before "Now" and the gear line. A bag cell's mark takes the light of the Voidkin its shard holds. A nickname holds at most 20 characters (`Config.Voidkin.Nickname`, from `docs/ui.md`).
+- **Time:** about 3 active hours for the three layouts, then about 4 for the rebuild and the notes, my estimates, not measured.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 

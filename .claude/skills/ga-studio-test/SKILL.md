@@ -22,7 +22,7 @@ description: Test and inspect Grow your Anime in Roblox Studio through the Studi
 ## The tools
 
 - **Regression self-test** (Client context, during a playtest): `NL_SelfTest:Invoke()`. Filter by a name to run only the touched cases. It builds its own pad and dummy, runs every check against Config and Definition numbers, cleans up and returns a PASS or FAIL report.
-- **The whole suite outlasts an MCP call and loses its report.** Run it detached, writing into a `StringValue`, then read the value.
+- **The whole suite outlasts an MCP call and loses its report.** Run it detached, writing into a `StringValue`, then read the value. Store only its FAIL, ERROR and summary lines: the whole report passes a StringValue's 200,000 characters, and the write fails.
 - **Debug bridge** (Server context, Studio only): `NL_Debug:Invoke("Commands")`. `Commands` lists every command.
 - **Live numbers:** `NL_Debug:Invoke("Tune", path, value)`, never a required Config, since a snippet's `require` is its own copy.
 - **Logic tests:** `NL_Debug:Invoke("LogicTests")` check the rule math. **World report:** `NL_Debug:Invoke("WorldReport")` checks the place's tagged markers (empty means sound). Run both with the self-test after a change.

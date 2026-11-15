@@ -3,7 +3,7 @@
 -- Authored at Theme.Author and scaled by height, clamped (handbook/visuals/ui.md, "Phones"). The HUD and the screens keep
 -- clear of Roblox's top bar and the notch (TR2, research's read of the phone take, fix 1: a screen's title sat under
 -- Roblox's own buttons), and so do the toasts, which stood past the notch's side at phone size (AR8 C, research's pass,
--- fix 2); the world's plates and the overlay's cover run full-bleed. Every container is named
+-- fix 2); the world's plates, a full screen's cover and the overlay's run full-bleed. Every container is named
 -- NL_..., which the UI lint reads as ours.
 --   Layers.Get("Hud")      the layer's root frame, made on first use
 --   Layers.Scale()         the scale every layer draws at now
@@ -16,11 +16,12 @@ local Players = game:GetService("Players")
 local Theme = require(script.Parent.Theme)
 local Signal = require(game:GetService("ReplicatedStorage").Shared.Util.Signal)
 
-export type Name = "World" | "Hud" | "Menus" | "Overlay" | "Toasts"
+export type Name = "World" | "Hud" | "Cover" | "Menus" | "Overlay" | "Toasts"
 
 local ORDER: { [string]: number } = {
 	World = 5, -- plates and numbers projected from the world: drawn in captures, unlike a BillboardGui
 	Hud = 10,
+	Cover = 15, -- behind a full screen (Kit.Screen): over the world and the HUD, edge to edge
 	Menus = 20,
 	Overlay = 30,
 	Toasts = 40,

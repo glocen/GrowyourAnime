@@ -276,32 +276,39 @@ return {
 		Flash = { Seconds = 1.5, Hold = 0.35, Pop = 1.08 },
 		Glow = { Low = 0.18, High = 0.4, Period = 0.9 },
 	},
-	-- TR17's Voidkin screen in grey (UI/VoidkinScreen; research's entry, 2026-11-14, night): one Voidkin at a time, its
-	-- own model live on a small stage, three layouts for the blockout's verdict, tuned live ("Hud.Voidkin.Layout"):
-	-- "Stage" (the figure left, the panel right, the portraits along the bottom), "Flank" (the figure in the middle, its
-	-- kit and stars either side, the panel sliding in on a tap) or "Rail" (the portraits down the left edge).
-	--   Size     authored; the screen takes all the room it's given, up to this
-	--   Figure   Height: the figure's share of the screen's height, as far as its stage has room (its crown under the
-	--            stage's top, its soles over Power's band); Fov: the stage camera's; Turn: degrees a dragged authored
-	--            pixel turns it; Back: seconds the next one takes to slide in, from Slide authored pixels to its side
+	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
+	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live
+	-- between two columns of gear slots, its two hands and Combat Power at its feet, the chosen page on the right, the
+	-- portraits along the foot.
+	--   Rail     the menu: Width its column's, authored (each button's tap area is that wide and Theme.Size.Tap high or
+	--            more); Dot and Chosen the drawn circles' widths, at rest and selected; Line the line's thickness;
+	--            Spread the most authored pixels between two buttons; Run seconds the light takes to run along the
+	--            line to a newly chosen one
+	--   Slots    the twelve shared, six a column: Size a slot's side, authored, or as large as six fit Gap apart; the
+	--            two columns stand at most Span of the stage's height apart; Hand the side of the two hands at the
+	--            feet, either side of Combat Power (Modulo's mock of the layout, AR12: 40 and 46)
+	--   Figure   Top: authored pixels kept clear over its crown (it stands from there down to the feet's row); Fov: the
+	--            stage camera's; Turn: degrees a dragged authored pixel turns it; Back: seconds the next one takes to
+	--            slide in, from Slide authored pixels to its side
 	--   Swipe    a flick on the figure that goes to the next or the one before: at least Distance authored pixels across
 	--            in at most Time seconds; a touch that moves less than Tap pixels in at most TapTime is a tap
 	--   Stage    the stand-in stage: Glow the floor's transparency, Light how far the rarity tints the light
 	--   Power    Combat Power's plate under the soles, the MMORPG's showpiece (the director, 2026-11-14, night: "combat
-	--            power need to really look like taichi panda dragon hunter in design but like us visually"): Width and
-	--            Height authored, Number its digits' authored size; when it rises, the digits Roll up from the old number
-	--            over that many seconds and the gain rises Gain authored pixels over Hold seconds as it fades
-	--   Strip    a portrait's cell, authored; Panel the panel's share of the width (Flank's when it's in); Ease: seconds
-	--            Flank's panel takes to slide in or out
+	--            power need to really look like taichi panda dragon hunter in design but like us visually"): Width at
+	--            most (between the hands it takes what's left) and Height, authored; Number its digits' authored size
+	--            at most and Least at least, as many as fit the plate; Emblem the least width that shows its emblem;
+	--            when it rises, the digits Roll up from the old number over that many seconds and the gain rises Gain
+	--            authored pixels over Hold seconds as it fades
+	--   Strip    a portrait's cell, authored
+	--   Panel    the page's panel: Share of the room's width, between Least and Most authored
 	Voidkin = {
-		Layout = "Stage",
-		Size = Vector2.new(1400, 900),
-		Figure = { Height = 0.7, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48 },
+		Rail = { Width = 68, Dot = 26, Chosen = 42, Line = 2, Spread = 20, Run = 0.25 },
+		Slots = { Size = 40, Gap = 6, Span = 1.2, Hand = 46 },
+		Figure = { Top = 8, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
 		Stage = { Glow = 0.35, Light = 0.45 },
-		Power = { Width = 236, Height = 56, Number = 36, Roll = 0.6, Gain = 26, Hold = 1.2 },
-		Strip = 56,
-		Panel = 0.5,
-		Ease = 0.25,
+		Power = { Width = 236, Height = 56, Number = 36, Least = 20, Emblem = 170, Roll = 0.6, Gain = 26, Hold = 1.2 },
+		Strip = 52,
+		Panel = { Share = 0.44, Least = 300, Most = 420 },
 	},
 }

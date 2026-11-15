@@ -1,19 +1,28 @@
 --!strict
--- VoidkinScreen (client): one Voidkin at a time, a character to show off (TR17, research's entry and feel line;
--- docs/research/voidkin-screen.md, "DESIGN"; docs/ui.md, "The screens of the first loop", 4 and 5). In grey, three
--- layouts for the blockout's verdict, tuned live (Config.Hud.Voidkin.Layout): Stage, Flank and Rail. In each:
+-- VoidkinScreen (client): one Voidkin at a time, a character to show off, full screen (TR17, "The director's layout",
+-- 2026-11-15; docs/research/voidkin-screen.md, "DESIGN"; docs/ui.md, "The screens of the first loop", 4 and 5). In grey:
+--   a thin rail down the far left under Back, every page a round button strung on a line: Overview, Bag, Kit and
+--     Stars, then Forge, Jewels and War Emblems, greyed with "Soon" until they're built. The chosen one is larger and
+--     lit, the light running along the line to it, and only its word shows; each opens its page in the panel on the
+--     right. Seven taps are taller than the rail: it scrolls, the built pages in view;
 --   its own model, live, on a stage lit by its rarity, the floor glowing its element (Figure): a drag turns it, a tap
 --     plays the end of its Reveal, a flick goes to the next or the one before;
---   Combat Power at its feet (Rules.Stats.Power; a tap shows the Stats tab);
---   the panel's tabs, Overview, Stats, Kit and Stars, on the save's own numbers;
---   Lead (or Leading) and Send to work (or Bring home), always in view; favourite, lock and rename beside its name;
---   the portraits of every Voidkin owned, a tap on one to switch.
+--   two columns of six gear slots either side of it, a space between each, the twelve every Voidkin shares
+--     (Definitions.Gear), empty until gear is built: a tap anywhere on a column is the way to the gear page;
+--   at its feet, Main Hand and Off Hand, its class's pair, one each side of Combat Power (Rules.Stats.Power; a tap
+--     shows Overview, where its stats are);
+--   along the top, the screen's name by the left column; over the panel the currencies, and under them Lead (or
+--     Leading), the screen's one filled button, with Send to work (or Bring home) beside it (the director on the mock,
+--     2026-11-15: out of the panel);
+--   the panel: its name with favourite, lock and rename, and the chosen page on the save's own numbers: Overview its
+--     facts and its whole stat sheet, Bag the player's whole inventory by kind (only shards exist yet);
+--   the portraits of every Voidkin owned along the foot of the stage, a tap on one to switch.
 -- The dock's Voidkin opens it on the lead. Every change is asked of the server through the owner's Act, and the screen is
 -- rebuilt from the server's copy, the figure kept as long as it's the same Voidkin. TR15's stat board was taken out on
 -- the director's word (2026-11-14, night: "Remove now, tree later").
 --   VoidkinScreen.Open(view, on)   builds it; again on each change of the save
---   VoidkinScreen.Tick()           each frame: a tuned layout, a healing clock
---   For tests and takes: Choose(id), Chosen(), Show(tab), Slide(open), Figure(), Find(name), Measure()
+--   VoidkinScreen.Tick()           each frame: a changed room, a healing clock, the currencies
+--   For tests and takes: Choose(id), Chosen(), Show(page), Tap(piece), Figure(), Find(name), Measure()
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -26,8 +35,11 @@ local Stats = require(Shared.Rules.Stats)
 local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
 local HudConfig = require(Shared.Config.Hud)
+local BaseConfig = require(Shared.Config.Base)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Shards = require(Shared.Definitions.Shards)
+local Gear = require(Shared.Definitions.Gear)
 local Actions = require(Shared.Definitions.Actions)
 local Passives = require(Shared.Definitions.Passives)
 local UI = script.Parent
@@ -41,6 +53,7 @@ local Text = require(UI.Kit.Text)
 local Panel = require(UI.Kit.Panel)
 local Portrait = require(UI.Kit.Portrait)
 local Bar = require(UI.Kit.Bar)
+local Skin = require(UI.Kit.Skin)
 local Figure = require(script.Figure)
 
 local VoidkinScreen = {}
@@ -48,12 +61,16 @@ local VoidkinScreen = {}
 export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing: () -> { [string]: number } }
 
 local NAME = "Voidkin"
-local TABS = { "Overview", "Stats", "Kit", "Stars" }
+local PAGES = { "Overview", "Bag", "Kit", "Stars", "Forge", "Jewels", "War Emblems" }
+local SOON: { [string]: boolean } = { Forge = true, Jewels = true, ["War Emblems"] = true } -- not built yet: greyed
+local KINDS = { "Shards", "Items", "Emblems", "Jewels", "Stones" } -- the bag's tabs (docs/design.md, "The bag")
+local HELD: { [string]: boolean } = { Shards = true } -- the kinds the save holds today
 local ROW = Theme.Size.Tap -- a row of buttons, authored
-local CLOSE = 72 -- the screen's close button's width, authored (UI/Kit/Screen)
-local SIDE = 72 -- Flank's columns, authored
+local BAR = 28 -- the top bar's line: the screen's name, the currencies, authored
+local LABEL = 20 -- a rail button's label, under its circle, authored
 local MARK = 64 -- favourite, lock and rename, each, authored
-local SHOWN = { "Health", "Attack", "Defence", "Regen" } -- always on the Stats tab; a rating shows once it's above 0
+local WALLET = { Credits = 116, Electricity = 152, Every = 0.5 } -- the chips' authored widths; seconds between reads
+local SHOWN = { "Health", "Attack", "Defence", "Regen" } -- always in the stat sheet; a rating shows once it's above 0
 local SOURCES: { [string]: string } = { Base = "Own", Stars = "Stars", Level = "Level" }
 
 local player = Players.LocalPlayer
@@ -73,19 +90,20 @@ local REFUSED: { [string]: string } = {
 }
 
 local chosen: string? = nil
-local tab = "Overview"
-local panelOpen = false -- Flank's panel
+local page = "Overview"
+local kind = "Shards" -- the bag's tab
 local editing = false -- the name's row is a box to type a nickname in
 local draft: string? = nil -- what's typed there, kept across a rebuild
-local built: string? = nil -- the layout built
-local builtRoom = Vector2.zero -- and the room it was built in
+local builtRoom = Vector2.zero -- the room it was built in
 local lastView: Profile.View? = nil
 local lastOn: On? = nil
 local slideFrom = 0 -- where the next figure comes in from
 local figure: Figure.Figure? = nil
-local stage: Frame? = nil -- the figure's stage, in the screen's panel beside its body: kept across rebuilds
-local measured = { Height = 0, Stage = 0 }
+local stage: Frame? = nil -- the figure's stage, in the screen's frame beside its body: kept across rebuilds
+local litTo: number? = nil -- how far down the rail's line the light reached, authored: it runs on from there
+local measured = { Height = 0, Stage = 0, Slot = 0, Power = 0 }
 local tickers: { () -> () } = {}
+local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied at each build
 local shownPower: { [string]: number } = {} -- the Combat Power last shown for each Voidkin, so a rise counts up from it
 local rebuild: () -> ()
 
@@ -141,60 +159,42 @@ local function scroller(name: string, parent: Instance, position: UDim2, size: U
 	return scroll
 end
 
--- Where each piece stands in a layout, in the panel's own frame (a bare screen: the body is the whole panel).
-type Rects = {
-	Stage: { UDim2 },
-	Strip: { UDim2 },
-	Panel: { UDim2 }?,
-	Name: { UDim2 }?, -- the name's row outside the panel (Flank)
-	Kit: { UDim2 }?, -- Flank's columns
-	Stars: { UDim2 }?,
-	Horizontal: boolean, -- the strip's way
-	Top: number, -- authored pixels over the stage kept clear of the figure's crown
-	StageHeight: number, -- authored
+type Box = { X: number, Y: number, Wide: number, Tall: number }
+
+-- Where each piece stands, authored, in the room the Screen kit gives a full screen.
+type Place = {
+	Room: Vector2,
+	Rail: Box,
+	Stage: Box,
+	Panel: Box,
+	Slot: number, -- a slot's side
+	Hand: number, -- a hand's
+	Column: number, -- a column's tap width
+	Group: number, -- where the left column starts in the stage
+	Span: number, -- from the left column's outer edge to the right one's
 }
 
-local function rects(layout: string, size: Vector2, open: boolean): Rects
+local function place(room: Vector2): Place
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	local config = HudConfig.Voidkin
-	local strip, share = config.Strip, config.Panel
-	local fullPanel = { UDim2.new(1 - share, gap / 2, 0, pad), UDim2.new(share, -(pad + gap / 2), 1, -pad * 2) }
-	if layout == "Rail" then
-		return {
-			Strip = { UDim2.fromOffset(pad, pad), UDim2.new(0, strip, 1, -pad * 2) },
-			Stage = { UDim2.fromOffset(pad + strip + gap, pad), UDim2.new(1 - share, -(pad + strip + gap * 1.5), 1, -pad * 2) },
-			Panel = fullPanel,
-			Horizontal = false,
-			Top = pad,
-			StageHeight = size.Y - pad * 2,
-		}
-	elseif layout == "Flank" then
-		local left = pad + SIDE + gap
-		local tall = -(strip + pad * 2 + gap)
-		return {
-			Strip = { UDim2.new(0, pad, 1, -(strip + pad)), UDim2.new(1, -pad * 2, 0, strip) },
-			Stage = if open
-				then { UDim2.fromOffset(left, pad), UDim2.new(1 - share, -(left + gap / 2), 1, tall) }
-				else { UDim2.fromOffset(left, pad), UDim2.new(1, -left * 2, 1, tall) },
-			Panel = if open
-				then { UDim2.new(1 - share, gap / 2, 0, pad), UDim2.new(share, -(pad + gap / 2), 1, tall) }
-				else { UDim2.new(1, pad, 0, pad), UDim2.new(share, -(pad + gap / 2), 1, tall) },
-			Name = { UDim2.fromOffset(pad, pad), UDim2.fromOffset(SIDE + gap + MARK * 3 + gap * 3 + 120, ROW) },
-			Kit = { UDim2.fromOffset(pad, pad + ROW + gap), UDim2.new(0, SIDE, 1, tall - ROW - gap) },
-			Stars = { UDim2.new(1, -(pad + SIDE), 0, pad + ROW + gap), UDim2.new(0, SIDE, 1, tall - ROW - gap) },
-			Horizontal = true,
-			Top = ROW + gap,
-			StageHeight = size.Y + tall,
-		}
-	end
-	local tall = -(strip + pad * 2 + gap)
-	return { -- Stage
-		Strip = { UDim2.new(0, pad, 1, -(strip + pad)), UDim2.new(1 - share, -(pad + gap / 2), 0, strip) },
-		Stage = { UDim2.fromOffset(pad, pad), UDim2.new(1 - share, -(pad + gap / 2), 1, tall) },
-		Panel = fullPanel,
-		Horizontal = true,
-		Top = pad,
-		StageHeight = size.Y + tall,
+	local under = pad + Screen.Back.Y + gap
+	local panelWide = math.clamp(config.Panel.Share * room.X, config.Panel.Least, config.Panel.Most)
+	local stageX = pad + config.Rail.Width + pad
+	local stageWide = math.max(room.X - pad - panelWide - gap - stageX, 1)
+	local stageTall = math.max(room.Y - pad * 2 - config.Strip - gap, 1)
+	local slots = config.Slots
+	local slot = math.max(math.floor(math.min(slots.Size, (stageTall - 5 * slots.Gap) / 6)), 1)
+	local span = math.min(stageWide, slots.Span * stageTall)
+	return {
+		Room = room,
+		Rail = { X = pad, Y = under, Wide = config.Rail.Width, Tall = math.max(room.Y - pad - under, 1) },
+		Stage = { X = stageX, Y = pad, Wide = stageWide, Tall = stageTall },
+		Panel = { X = room.X - pad - panelWide, Y = pad + BAR + gap + ROW + gap, Wide = panelWide, Tall = math.max(room.Y - pad * 2 - BAR - ROW - gap * 2, 1) },
+		Slot = slot,
+		Hand = math.min(slots.Hand, config.Power.Height),
+		Column = math.max(slot, Theme.Size.Tap),
+		Group = (stageWide - span) / 2,
+		Span = span,
 	}
 end
 
@@ -216,13 +216,16 @@ local function resolved(view: Profile.View, owned: Profile.OwnedVoidkin): (Stats
 end
 
 local function show(name: string)
-	tab = name
-	panelOpen = true
+	if SOON[name] then -- never an empty page
+		Toast.Show(`{name}: soon`, Theme.Colour.TextDim)
+		return
+	end
+	page = name
 	rebuild()
 end
 
--- The figure's stage: its backing lit from below by its rarity, kept in the panel across rebuilds.
-local function stageIn(frame: Frame, position: UDim2, size: UDim2, animate: boolean): Frame
+-- The figure's stage: its backing lit from below by its rarity, kept in the screen's frame across rebuilds.
+local function stageIn(frame: Frame, position: UDim2, size: UDim2): Frame
 	local made = stage
 	if made == nil or made.Parent ~= frame then
 		if figure then
@@ -258,11 +261,6 @@ local function stageIn(frame: Frame, position: UDim2, size: UDim2, animate: bool
 		fresh.Parent = frame
 		made = fresh
 		stage = fresh
-	elseif animate then
-		TweenService:Create(made, TweenInfo.new(HudConfig.Voidkin.Ease, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-			Position = position,
-			Size = size,
-		}):Play()
 	else
 		made.Position, made.Size = position, size
 	end
@@ -270,7 +268,7 @@ local function stageIn(frame: Frame, position: UDim2, size: UDim2, animate: bool
 end
 
 -- The stage lit for `def`, and its figure, new when it's another Voidkin's.
-local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, r: Rects)
+local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, at: Place)
 	local row = Voidkin.ById[def]
 	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
 	local light = on:FindFirstChild("Light") :: UIGradient
@@ -278,14 +276,13 @@ local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, r
 	local halo = on:FindFirstChild("Halo") :: Frame
 	halo.BackgroundColor3 = trim
 	halo.BackgroundTransparency = 0.82
+	-- It fills the stage: its crown Figure.Top under the stage's top, its soles over the feet's row.
 	local config = HudConfig.Voidkin
-	local room = Layers.Get("Menus").AbsoluteSize.Y / Layers.Scale() -- the screens' room, as the Screen kit fits them
-	local stageHeight = math.max(r.StageHeight, 1)
+	local stageHeight = at.Stage.Tall
 	local feet = 1 - (config.Power.Height + 2) / stageHeight
-	local top = r.Top / stageHeight
-	local height = math.clamp(config.Figure.Height * room / stageHeight, 0.2, math.max(0.2, feet - top))
+	local height = math.max(0.2, feet - config.Figure.Top / stageHeight)
 	halo.Position = UDim2.fromScale(0.5, feet - height * 0.55)
-	measured = { Height = height * stageHeight / room, Stage = stageHeight }
+	measured.Height, measured.Stage, measured.Slot = height * stageHeight / at.Room.Y, stageHeight, at.Slot
 	local current = figure
 	if current and current.Def == def and current.Stage == on then
 		Figure.Frame(current, height, feet)
@@ -403,18 +400,15 @@ local function nameRow(parent: Instance, position: UDim2, size: UDim2, owned: Pr
 	end)
 end
 
--- Lead (or Leading) and Send to work (or Bring home) along the foot of `parent`: in its two corners when `apart`,
--- else side by side across `share` of its width.
-local function actions(parent: Instance, view: Profile.View, owned: Profile.OwnedVoidkin, on: On, apart: boolean, share: number?)
+-- Lead (or Leading) and Send to work (or Bring home), side by side in `parent`, the top bar's line over the panel.
+local function actions(parent: Instance, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
 	local gap = Theme.Size.Gap
 	local at = Read.Role(view, owned.Id)
-	local half = (share or 1) / 2
-	local width = if apart then UDim2.fromOffset(112, ROW) else UDim2.new(half, -gap / 2, 0, ROW)
+	local width = UDim2.new(0.5, -gap / 2, 0, ROW)
 	local lead = Button.new({
 		Name = "Lead",
 		Text = if at == "Lead" then "Leading" else "Lead",
 		Size = width,
-		Position = UDim2.new(0, 0, 1, -ROW),
 		Parent = parent,
 		Primary = at ~= "Lead",
 		OnPress = function(): boolean
@@ -434,7 +428,7 @@ local function actions(parent: Instance, view: Profile.View, owned: Profile.Owne
 		Name = "Work",
 		Text = if working then "Bring home" else "Send to work",
 		Size = width,
-		Position = if apart then UDim2.new(1, -112, 1, -ROW) else UDim2.new(half, gap / 2, 1, -ROW),
+		Position = UDim2.new(0.5, gap / 2, 0, 0),
 		Parent = parent,
 		OnPress = function(): boolean
 			if working then
@@ -450,9 +444,10 @@ end
 
 -- Combat Power at its feet, the screen's showpiece (the director, 2026-11-14, night): on a plate of its rarity's light
 -- that fades out at both ends, its emblem, its caption and its digits. A rise since it was last shown counts the digits
--- up from the old number and floats the gain off the plate's end. In grey: the look is Modulo's after the pick. A tap
--- shows where it comes from.
-local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats.Block)
+-- up from the old number and floats the gain off the plate's end. Between the hands it's `wide`: a narrow plate drops its
+-- emblem and sets its digits as large as they fit. In grey: the look is Modulo's after the pick. A tap shows where it
+-- comes from.
+local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats.Block, wide: number)
 	local config = HudConfig.Voidkin.Power
 	local row = Voidkin.ById[owned.Def]
 	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
@@ -467,8 +462,9 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 	press.BackgroundColor3 = trim
 	press.AnchorPoint = Vector2.new(0.5, 1)
 	press.Position = UDim2.fromScale(0.5, 1)
-	press.Size = UDim2.fromOffset(config.Width, config.Height)
+	press.Size = UDim2.fromOffset(wide, config.Height)
 	press.Parent = parent
+	local whole = wide >= config.Emblem
 	local fade = Instance.new("UIGradient")
 	fade.Name = "Plate"
 	fade.Transparency = NumberSequence.new({
@@ -498,10 +494,30 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 	core.BorderSizePixel = 0
 	core.BackgroundColor3 = trim
 	core.Parent = emblem
+	emblem.Visible = whole
 	emblem.Parent = press
-	local left = 56
-	text({ Name = "Caption", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, -left, 0, 16), Position = UDim2.fromOffset(left, 2), Parent = press }, "Combat Power")
-	local number = text({ Name = "Number", Size = config.Number, Font = Theme.Font.Number, Box = UDim2.new(1, -left, 0, config.Number + 2), Position = UDim2.fromOffset(left, 16), Parent = press }, Hud.Digits(value))
+	local left = if whole then 56 else 0
+	local align = if whole then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
+	if not whole then -- a narrow plate stands on the floor's glow: a shade under it keeps its caption and digits read
+		local shade = Instance.new("Frame")
+		shade.Name = "Shade"
+		shade.BorderSizePixel = 0
+		shade.BackgroundColor3 = Theme.Colour.Backing
+		shade.BackgroundTransparency = 0.3
+		shade.Size = UDim2.fromScale(1, 1)
+		shade.ZIndex = 0
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
+		corner.Parent = shade
+		shade.Parent = press
+	end
+	-- The caption may run past a narrow plate's ends, over the hands: they stand lower than its line.
+	local caption = text({ Name = "Caption", Size = Theme.Text.Caption, Colour = if whole then Theme.Colour.TextDim else Theme.Colour.Text, Align = align, Box = UDim2.new(1, if whole then -left else 60, 0, 16), Position = UDim2.fromOffset(if whole then left else -30, 1), Parent = press }, "Combat Power")
+	caption.ZIndex = 2
+	-- The digits as large as the plate holds: about 0.62 of their size each.
+	local fits = math.floor((wide - left - Theme.Size.Pad) / (0.62 * math.max(#Hud.Digits(value), 1)))
+	local size = math.clamp(fits, config.Least, config.Number)
+	local number = text({ Name = "Number", Size = size, Font = Theme.Font.Number, Align = align, Box = UDim2.new(1, -left, 0, config.Height - 16), Position = UDim2.fromOffset(left, 16), Parent = press }, Hud.Digits(value))
 	local metal = Instance.new("UIGradient")
 	metal.Rotation = 90
 	metal.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(176, 182, 196))
@@ -527,12 +543,15 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 		end)
 		rise:Play()
 	end
-	press.Activated:Connect(function()
-		show("Stats")
-	end)
+	local function onTap()
+		show("Overview")
+	end
+	press.Activated:Connect(onTap)
+	taps[press] = onTap
+	measured.Power = wide
 end
 
--- One line of a tab: what it is on the left, its number on the right, and under them a quieter line.
+-- One line of a page: what it is on the left, its number on the right, and under them a quieter line.
 local function line(parent: Instance, order: number, left: string, right: string?, under: string?): Frame
 	local item = Instance.new("Frame")
 	item.Name = left
@@ -552,29 +571,8 @@ local function line(parent: Instance, order: number, left: string, right: string
 	return item
 end
 
-local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
-	line(scroll, 1, Read.VoidkinLine(owned.Def, true))
-	local need = Growth.XpToNext(owned.Level)
-	local xp = line(scroll, 2, `Level {owned.Level}`, nil, if need then `{Hud.Digits(owned.Xp)} of {Hud.Digits(need)} experience to the next` else "The last level")
-	if need then
-		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Position = UDim2.fromOffset(0, 44), Parent = xp, Colour = HudConfig.Card.Xp })
-		Bar.Set(bar, math.clamp(owned.Xp / need, 0, 1))
-		local spacer = Instance.new("UIPadding")
-		spacer.PaddingBottom = UDim.new(0, Theme.Size.Bar + 4)
-		spacer.Parent = xp
-	end
-	local now = line(scroll, 3, "Now", nil, role(view, owned, on, workspace:GetServerTimeNow()))
-	local nowLabel = now:FindFirstChild("Under") :: TextLabel
-	table.insert(tickers, function()
-		nowLabel.Text = role(view, owned, on, workspace:GetServerTimeNow())
-	end)
-	if owned.Nickname ~= "" then
-		local own = Voidkin.ById[owned.Def]
-		line(scroll, 4, "Its own name", nil, if own then own.Name else owned.Def)
-	end
-end
-
-local function statsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin)
+-- Its whole stat sheet, each number with where it comes from, from `order` on.
+local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, order: number)
 	local block, lines = resolved(view, owned)
 	local from: { [string]: { [string]: number } } = {}
 	for _, each in lines do
@@ -583,7 +581,6 @@ local function statsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		by[source] = (by[source] or 0) + each.Value
 		from[each.Stat] = by
 	end
-	local order = 0
 	local function stat(name: string, value: number, said: string)
 		order += 1
 		local parts = {}
@@ -606,6 +603,32 @@ local function statsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		if not table.find(SHOWN, name) and name ~= "CriticalDamage" and value > 0 then
 			stat(name, value, Hud.Digits(value))
 		end
+	end
+end
+
+local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
+	line(scroll, 1, Read.VoidkinLine(owned.Def, true))
+	local need = Growth.XpToNext(owned.Level)
+	local xp = line(scroll, 2, `Level {owned.Level}`, nil, if need then `{Hud.Digits(owned.Xp)} of {Hud.Digits(need)} experience to the next` else "The last level")
+	if need then
+		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Position = UDim2.fromOffset(0, 44), Parent = xp, Colour = HudConfig.Card.Xp })
+		Bar.Set(bar, math.clamp(owned.Xp / need, 0, 1))
+		local spacer = Instance.new("UIPadding")
+		spacer.PaddingBottom = UDim.new(0, Theme.Size.Bar + 4)
+		spacer.Parent = xp
+	end
+	statSheet(scroll, view, owned, 2) -- straight under its level: the page's reason
+	local now = line(scroll, 30, "Now", nil, role(view, owned, on, workspace:GetServerTimeNow()))
+	local nowLabel = now:FindFirstChild("Under") :: TextLabel
+	table.insert(tickers, function()
+		nowLabel.Text = role(view, owned, on, workspace:GetServerTimeNow())
+	end)
+	local own = Voidkin.ById[owned.Def]
+	if own then -- the stage has no room for a caption: which preset its slots show, and its class's pair of hands
+		line(scroll, 31, `Gear · preset {owned.Preset}`, nil, `{Gear.Kind("Main Hand", own.Class)} and {Gear.Kind("Off Hand", own.Class)} in hand · nothing worn yet`)
+	end
+	if owned.Nickname ~= "" then
+		line(scroll, 32, "Its own name", nil, if own then own.Name else owned.Def)
 	end
 end
 
@@ -682,42 +705,358 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 	end
 end
 
--- The tabs and the chosen one's content, filling `parent` over a footer row.
-local function panelBody(parent: Frame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On, top: number, right: number, footer: boolean)
-	local gap = Theme.Size.Gap
-	local tabs = frameOf("Tabs", parent, UDim2.fromOffset(0, top), UDim2.new(1, -right, 0, ROW))
-	list(tabs, true)
-	for index, name in TABS do
-		local button = Button.new({
+-- The bag's kinds as tabs along `parent`'s top: the held ones to pick, the rest greyed until they're built.
+local function bagTabs(parent: Instance, top: number)
+	local tabs = scroller("Kinds", parent, UDim2.fromOffset(0, top), UDim2.new(1, 0, 0, ROW), true)
+	tabs.ScrollBarThickness = 0
+	for index, name in KINDS do
+		local said = if HELD[name] then name else `{name} soon`
+		local tab = Button.new({
 			Name = name,
 			Text = name,
-			Size = UDim2.new(1 / #TABS, -gap * (#TABS - 1) / #TABS, 0, ROW),
+			Size = UDim2.fromOffset(#said * 10 + 24, ROW),
 			LayoutOrder = index,
 			Parent = tabs,
 			TextSize = Theme.Text.Caption,
 			OnPress = function()
-				show(name)
+				kind = name
+				rebuild()
 			end,
 		})
-		Button.Set(button, { Selected = name == tab })
+		Button.Set(tab, { Selected = name == kind, Disabled = if HELD[name] then false else said })
 	end
-	local under = top + ROW + gap
-	local scroll = scroller("Tab", parent, UDim2.fromOffset(0, under), UDim2.new(1, 0, 1, -(under + (if footer then ROW + gap else 0))), false)
-	scroll:SetAttribute("Keep", `{owned.Id}{tab}`)
-	if tab == "Stats" then
-		statsTab(scroll, view, owned)
-	elseif tab == "Kit" then
+end
+
+-- The bag: everything owned that isn't a Voidkin, one cell a thing with its count. Shards are what the save holds yet:
+-- each one's mark wears the light of the Voidkin it holds, and a tap names it.
+local function bagTab(scroll: ScrollingFrame, view: Profile.View)
+	local ids = {}
+	local total = 0
+	for id, count in view.Bag.Shards do
+		if count > 0 then
+			table.insert(ids, id)
+			total += count
+		end
+	end
+	table.sort(ids)
+	line(scroll, 1, if total == 1 then "1 shard" else `{Hud.Digits(total)} shards`, nil, if total == 0 then "None yet · the grounds drop them, the Breaker opens them" else nil)
+	if total == 0 then
+		return
+	end
+	local grid = Instance.new("Frame")
+	grid.Name = "Cells"
+	grid.BackgroundTransparency = 1
+	grid.LayoutOrder = 2
+	grid.Size = UDim2.new(1, -8, 0, 0)
+	grid.AutomaticSize = Enum.AutomaticSize.Y
+	grid.Parent = scroll
+	local layout = Instance.new("UIGridLayout")
+	layout.CellSize = UDim2.fromOffset(ROW, ROW)
+	layout.CellPadding = UDim2.fromOffset(Theme.Size.Gap, Theme.Size.Gap)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Parent = grid
+	for index, id in ids do
+		local count = view.Bag.Shards[id]
+		local row = Shards.ById[id]
+		local holds = if row and row.Holds ~= "" then Voidkin.ById[row.Holds] else nil
+		local cell = Instance.new("TextButton")
+		cell.Name = id
+		cell.Text = ""
+		cell.AutoButtonColor = false
+		cell.BorderSizePixel = 0
+		cell.BackgroundColor3 = Theme.Colour.PlateHigh
+		cell.LayoutOrder = index
+		cell:SetAttribute("Count", count)
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
+		corner.Parent = cell
+		local edge = Instance.new("UIStroke")
+		edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		edge.Color = Theme.Colour.Line
+		edge.Parent = cell
+		cell.Parent = grid
+		local mark = Instance.new("Frame")
+		mark.Name = "Mark"
+		mark.BorderSizePixel = 0
+		mark.BackgroundColor3 = if holds then HudConfig.Card.Trim[holds.Rarity] or Theme.Colour.TextDim else Theme.Colour.TextDim
+		mark.AnchorPoint = Vector2.new(0.5, 0.5)
+		mark.Position = UDim2.fromScale(0.5, 0.4)
+		mark.Size = UDim2.fromScale(0.34, 0.34)
+		mark.Rotation = 45
+		mark.Parent = cell
+		text({ Name = "Count", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -6, 0, 20), Position = UDim2.new(0, 0, 1, -21), Parent = cell }, `×{Hud.Digits(count)}`)
+		local function onTap()
+			Toast.Show(`{Read.ShardName(id)} ×{Hud.Digits(count)}`, Theme.Colour.Text)
+		end
+		cell.Activated:Connect(onTap)
+		taps[cell] = onTap
+	end
+end
+
+-- The chosen page, filling `parent` from `top` down.
+local function pageBody(parent: Frame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On, top: number)
+	if page == "Bag" then
+		bagTabs(parent, top)
+		top += ROW + Theme.Size.Gap
+	end
+	local scroll = scroller("Page", parent, UDim2.fromOffset(0, top), UDim2.new(1, 0, 1, -top), false)
+	scroll:SetAttribute("Keep", if page == "Bag" then `Bag{kind}` else `{owned.Id}{page}`)
+	scroll:SetAttribute("Page", page)
+	if page == "Bag" then
+		bagTab(scroll, view)
+	elseif page == "Kit" then
 		kitTab(scroll, owned)
-	elseif tab == "Stars" then
+	elseif page == "Stars" then
 		starsTab(scroll, view, owned, on)
 	else
 		overview(scroll, view, owned, on)
 	end
 end
 
-local function strip(body: Instance, r: Rects, roster: { Profile.OwnedVoidkin }, on: On)
+local function bit(parent: Instance, name: string, size: UDim2, colour: Color3, rotation: number?, position: UDim2?): Frame
+	local made = Instance.new("Frame")
+	made.Name = name
+	made.BorderSizePixel = 0
+	made.BackgroundColor3 = colour
+	made.AnchorPoint = Vector2.new(0.5, 0.5)
+	made.Position = position or UDim2.fromScale(0.5, 0.5)
+	made.Size = size
+	made.Rotation = rotation or 0
+	made.Parent = parent
+	return made
+end
+
+local function round(on: Instance)
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(1, 0)
+	corner.Parent = on
+end
+
+-- A page's mark in its circle, in grey: a head for Overview, a pouch for the bag, a blade for Kit, a star's cut for
+-- Stars, an anvil for the Forge, a pair of stones for Jewels, a shield for War Emblems. The drawn icons are Modulo's.
+local function glyph(dot: Frame, name: string, colour: Color3)
+	if name == "Bag" then
+		bit(dot, "Flap", UDim2.fromScale(0.24, 0.1), colour, 0, UDim2.fromScale(0.5, 0.34))
+		bit(dot, "Pouch", UDim2.fromScale(0.44, 0.32), colour, 0, UDim2.fromScale(0.5, 0.58))
+	elseif name == "Kit" then
+		bit(dot, "Blade", UDim2.fromScale(0.56, 0.1), colour, -45)
+		bit(dot, "Guard", UDim2.fromScale(0.26, 0.09), colour, 45, UDim2.fromScale(0.39, 0.61))
+	elseif name == "Stars" then
+		bit(dot, "Cut", UDim2.fromScale(0.34, 0.34), colour, 45)
+	elseif name == "Forge" then
+		bit(dot, "Face", UDim2.fromScale(0.5, 0.14), colour, 0, UDim2.fromScale(0.5, 0.4))
+		bit(dot, "Foot", UDim2.fromScale(0.22, 0.24), colour, 0, UDim2.fromScale(0.5, 0.58))
+	elseif name == "Jewels" then
+		bit(dot, "Stone1", UDim2.fromScale(0.2, 0.2), colour, 45, UDim2.fromScale(0.37, 0.5))
+		bit(dot, "Stone2", UDim2.fromScale(0.2, 0.2), colour, 45, UDim2.fromScale(0.63, 0.5))
+	elseif name == "War Emblems" then
+		bit(dot, "Field", UDim2.fromScale(0.36, 0.26), colour, 0, UDim2.fromScale(0.5, 0.42))
+		bit(dot, "Point", UDim2.fromScale(0.255, 0.255), colour, 45, UDim2.fromScale(0.5, 0.55))
+	else
+		round(bit(dot, "Head", UDim2.fromScale(0.26, 0.26), colour, 0, UDim2.fromScale(0.5, 0.38)))
+		bit(dot, "Shoulders", UDim2.fromScale(0.44, 0.12), colour, 0, UDim2.fromScale(0.5, 0.66))
+	end
+end
+
+-- The menu: a thin line down the far left with a round button strung on it for each page. The chosen one is larger, its
+-- ring lit, a halo round it, its word under it, and the line is lit from the top down to it: the light runs there from
+-- where it stood. The others show no word; one not built yet is greyed with "Soon" under it, and a tap says so. A
+-- button's tap area is the rail's width and a tap high or more, so every page is taller than the rail: it scrolls, a pad
+-- wider than its buttons each side for the chosen word (the room's edge on the left, the stage's gap on the right).
+local function rail(body: Instance, at: Place)
+	local config = HudConfig.Voidkin.Rail
+	local lit = Theme.Colour.Primary
+	local pad = Theme.Size.Pad
+	local middle = pad + at.Rail.Wide / 2
+	local resting, picked = math.max(ROW, config.Dot + LABEL + 2), math.max(ROW, config.Chosen + LABEL + 2)
+	local between = math.clamp((at.Rail.Tall - resting * (#PAGES - 1) - picked) / (#PAGES - 1), 0, config.Spread)
+	local whole = resting * (#PAGES - 1) + picked + between * (#PAGES - 1)
+	local holder = Instance.new("ScrollingFrame")
+	holder.Name = "Rail"
+	holder.BackgroundTransparency = 1
+	holder.BorderSizePixel = 0
+	holder.Position = UDim2.fromOffset(at.Rail.X - pad, at.Rail.Y)
+	holder.Size = UDim2.fromOffset(at.Rail.Wide + pad * 2, at.Rail.Tall)
+	holder.CanvasSize = UDim2.fromOffset(0, whole)
+	holder.ScrollBarThickness = 0
+	holder.ScrollingDirection = Enum.ScrollingDirection.Y
+	holder.Parent = body
+	local conduit = bit(holder, "Line", UDim2.fromOffset(config.Line, whole), Theme.Colour.Line, 0, UDim2.fromOffset(middle, whole / 2))
+	conduit.ZIndex = 1
+	local light = Instance.new("Frame")
+	light.Name = "Lit"
+	light.BorderSizePixel = 0
+	light.BackgroundColor3 = lit
+	light.AnchorPoint = Vector2.new(0.5, 0)
+	light.Position = UDim2.fromOffset(middle, 0)
+	light.ZIndex = 2
+	light.Parent = holder
+	local y = 0
+	for index, name in PAGES do
+		local on_ = name == page
+		local soon = SOON[name] == true
+		local tall = if on_ then picked else resting
+		local across = if on_ then config.Chosen else config.Dot
+		local press = Instance.new("TextButton")
+		press.Name = name
+		press.Text = ""
+		press.AutoButtonColor = false
+		press.BackgroundTransparency = 1
+		press.Position = UDim2.fromOffset(pad, y)
+		press.Size = UDim2.fromOffset(at.Rail.Wide, tall)
+		press.ZIndex = 3
+		press.LayoutOrder = index
+		press:SetAttribute("Chosen", on_)
+		press:SetAttribute("Soon", soon)
+		press.Parent = holder
+		local centre = at.Rail.Wide / 2
+		if on_ then
+			local halo = bit(press, "Halo", UDim2.fromOffset(across + 10, across + 10), lit, 0, UDim2.fromOffset(centre, 1 + across / 2))
+			halo.BackgroundTransparency = 0.78
+			round(halo)
+		end
+		local dot = bit(press, "Dot", UDim2.fromOffset(across, across), if on_ or soon then Theme.Colour.Plate else Theme.Colour.PlateHigh, 0, UDim2.fromOffset(centre, 1 + across / 2))
+		dot.ZIndex = 2
+		round(dot)
+		local ring = Instance.new("UIStroke")
+		ring.Name = "Ring"
+		ring.Thickness = if on_ then 2.5 else 1.5
+		ring.Color = if on_ then lit else Theme.Colour.Line
+		ring.Transparency = if soon then 0.4 else 0
+		ring.Parent = dot
+		glyph(dot, name, if on_ then Theme.Colour.Text elseif soon then Theme.Colour.Line else Theme.Colour.TextDim)
+		if on_ or soon then
+			-- The line passes behind the word, never through its letters: a cut of the cover's colour under them.
+			local cut = bit(press, "Cut", UDim2.fromOffset(config.Line + 10, LABEL), Theme.Colour.Backing, 0, UDim2.fromOffset(centre, 2 + across + LABEL / 2))
+			cut.ZIndex = 0
+			text({
+				Name = "Label",
+				Size = Theme.Text.Caption,
+				Font = if on_ then Theme.Font.Strong else Theme.Font.Body,
+				Colour = if on_ then Theme.Colour.Text else Theme.Colour.TextDim,
+				Align = Enum.TextXAlignment.Center,
+				Box = UDim2.new(1, pad * 2, 0, LABEL),
+				Position = UDim2.fromOffset(-pad, 2 + across),
+				Parent = press,
+			}, if on_ then name else "Soon")
+		end
+		local function onTap()
+			show(name)
+		end
+		press.Activated:Connect(onTap)
+		taps[press] = onTap
+		if on_ then
+			local to = y + 1 + across / 2
+			local from = litTo or to
+			litTo = to
+			light.Size = UDim2.fromOffset(config.Line, from)
+			if from ~= to then
+				TweenService:Create(light, TweenInfo.new(config.Run, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(config.Line, to) }):Play()
+			end
+		end
+		y += tall + between
+	end
+end
+
+-- One gear slot, empty and grey until gear is built: a read target, named by its slot. A hand's edge is brighter, and
+-- it says which of its class's weapons it takes (its Kind).
+local function slotAt(parent: Instance, name: string, side: number, position: UDim2, kind: string?)
+	local made = Instance.new("Frame")
+	made.Name = name
+	made.BorderSizePixel = 0
+	made.BackgroundColor3 = Theme.Colour.PlateHigh
+	made.BackgroundTransparency = 0.25
+	made.Position = position
+	made.Size = UDim2.fromOffset(side, side)
+	made:SetAttribute("Slot", name)
+	made:SetAttribute("Kind", kind or name)
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
+	corner.Parent = made
+	local edge = Instance.new("UIStroke")
+	edge.Name = "Edge"
+	edge.Thickness = if kind then 1.5 else 1
+	edge.Color = if kind then Theme.Colour.TextDim else Theme.Colour.Line
+	edge.Parent = made
+	local seat = bit(made, "Seat", UDim2.fromScale(0.3, 0.3), Theme.Colour.Line, 45)
+	seat.BackgroundTransparency = 0.5
+	made.Parent = parent
+end
+
+-- The gear round the figure: the twelve shared slots in two columns of six, each column one tap (the way to the gear
+-- page, when gear is built), and at its feet its two hands either side of Combat Power.
+local function gear(over: Frame, at: Place, owned: Profile.OwnedVoidkin, block: Stats.Block)
+	local config = HudConfig.Voidkin
+	local slot, apart = at.Slot, config.Slots.Gap
+	local tall = slot * 6 + apart * 5
+	local function column(name: string, x: number, inset: number, first: number)
+		local press = Instance.new("TextButton")
+		press.Name = name
+		press.Text = ""
+		press.AutoButtonColor = false
+		press.BackgroundTransparency = 1
+		press.Position = UDim2.fromOffset(x, 0)
+		press.Size = UDim2.fromOffset(at.Column, tall)
+		press.Parent = over
+		for index = 1, 6 do
+			slotAt(press, Gear.Shared[first + index], slot, UDim2.fromOffset(inset, (index - 1) * (slot + apart)))
+		end
+		local function onTap()
+			Toast.Show("Gear isn't built yet", Theme.Colour.TextDim)
+		end
+		press.Activated:Connect(onTap)
+		taps[press] = onTap
+	end
+	column("LeftSlots", at.Group, 0, 0)
+	column("RightSlots", at.Group + at.Span - at.Column, at.Column - slot, 6)
+	local row = Voidkin.ById[owned.Def]
+	local class = if row then row.Class else ""
+	local gap, hand = Theme.Size.Gap, at.Hand
+	local wide = math.max(at.Span - (slot + gap) * 2, 1)
+	local feet = frameOf("Feet", over, UDim2.new(0, at.Group + slot + gap, 1, -config.Power.Height), UDim2.fromOffset(wide, config.Power.Height))
+	slotAt(feet, "Main Hand", hand, UDim2.new(0, 0, 1, -hand), Gear.Kind("Main Hand", class))
+	slotAt(feet, "Off Hand", hand, UDim2.new(1, -hand, 1, -hand), Gear.Kind("Off Hand", class))
+	power(feet, owned, block, math.clamp(wide - (hand + apart) * 2, Theme.Size.Tap, config.Power.Width))
+end
+
+-- The currencies at the top bar's right, over the panel: Credits and the battery, read again every WALLET.Every seconds.
+local function wallet(body: Instance, at: Place, view: Profile.View)
+	local holder = frameOf("Wallet", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad), UDim2.fromOffset(at.Panel.Wide, BAR))
+	local function chip(name: string, icon: string, wide: number, right: number): TextLabel
+		local made = Instance.new("Frame")
+		made.Name = name
+		made.BorderSizePixel = 0
+		made.BackgroundColor3 = Theme.Colour.PlateHigh
+		made.BackgroundTransparency = 0.2
+		made.AnchorPoint = Vector2.new(1, 0)
+		made.Position = UDim2.new(1, -right, 0, 0)
+		made.Size = UDim2.fromOffset(wide, BAR)
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
+		corner.Parent = made
+		made.Parent = holder
+		Skin.Icon(made, icon, 16, BAR / 2, 20)
+		return text({ Name = "Value", Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -(30 + Theme.Size.Pad), 1, 0), Position = UDim2.fromOffset(30, 0), Parent = made }, "")
+	end
+	local electricity = chip("Electricity", "Bolt", WALLET.Electricity, 0)
+	local credits = chip("Credits", "Coin", WALLET.Credits, WALLET.Electricity + Theme.Size.Gap)
+	credits.Text = Read.Number(view.Currency.Credits)
+	local readAt = -math.huge
+	local function read()
+		if os.clock() - readAt < WALLET.Every then
+			return
+		end
+		readAt = os.clock()
+		local base = Read.Base(view, workspace:GetServerTimeNow())
+		electricity.Text = `{Read.Stored(base.Data.Base.Battery)} / {Read.Number(BaseConfig.Battery.Capacity)}`
+	end
+	read()
+	table.insert(tickers, read)
+end
+
+local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }, on: On)
 	local cell = HudConfig.Voidkin.Strip
-	local scroll = scroller("Strip", body, r.Strip[1], r.Strip[2], r.Horizontal)
+	local scroll = scroller("Strip", body, UDim2.fromOffset(at.Stage.X, at.Room.Y - Theme.Size.Pad - cell), UDim2.fromOffset(at.Stage.Wide, cell), true)
 	local now = workspace:GetServerTimeNow()
 	local healing = on.Healing()
 	for index, owned in roster do
@@ -746,119 +1085,46 @@ local function strip(body: Instance, r: Rects, roster: { Profile.OwnedVoidkin },
 	end
 end
 
--- Flank's columns: the kit's three, then its stars, each a tap from the panel.
-local function columns(body: Instance, r: Rects, owned: Profile.OwnedVoidkin)
-	local kit = frameOf("KitColumn", body, (r.Kit :: { UDim2 })[1], (r.Kit :: { UDim2 })[2])
-	list(kit, false)
-	for index, name in { "Skill", "Combo", "Passive" } do
-		Button.new({ Name = name, Text = name, Size = UDim2.fromOffset(SIDE, ROW), LayoutOrder = index, Parent = kit, TextSize = Theme.Text.Caption, OnPress = function()
-			show("Kit")
-		end })
-	end
-	local stars = Instance.new("TextButton")
-	stars.Name = "StarsColumn"
-	stars.Text = ""
-	stars.AutoButtonColor = false
-	stars.BackgroundTransparency = 1
-	stars.Position, stars.Size = (r.Stars :: { UDim2 })[1], (r.Stars :: { UDim2 })[2]
-	stars.Parent = body
-	list(stars, false)
-	local row = Voidkin.ById[owned.Def]
-	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
-	for index = 1, VoidkinConfig.MaxStars do
-		local pip = Instance.new("Frame")
-		pip.Name = `Star{index}`
-		pip.LayoutOrder = VoidkinConfig.MaxStars - index
-		pip.Size = UDim2.fromOffset(18, 18)
-		pip.BorderSizePixel = 0
-		pip.Rotation = 45
-		pip.BackgroundColor3 = if index <= owned.Stars then trim else Theme.Colour.PlateHigh
-		pip.Parent = stars
-	end
-	local layout = stars:FindFirstChildOfClass("UIListLayout") :: UIListLayout
-	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	stars.Activated:Connect(function()
-		show("Stars")
-	end)
-end
-
-local function build(view: Profile.View, on: On, animate: boolean?)
+local function build(view: Profile.View, on: On)
 	lastView, lastOn = view, on
 	tickers = {}
-	local config = HudConfig.Voidkin
-	local layout = config.Layout
-	if built ~= layout then
-		panelOpen = false
-	end
-	built = layout
+	taps = {}
 	builtRoom = Layers.Get("Menus").AbsoluteSize
 	local roster = Read.Roster(view)
 	if chosen == nil or view.Voidkin[chosen :: string] == nil then
 		local lead = view.Roles.Lead
 		chosen = if lead ~= "" and view.Voidkin[lead] then lead elseif roster[1] then roster[1].Id else nil
 	end
-	local body = Screen.Open(NAME, "Voidkin", config.Size, true)
+	local body = Screen.Full(NAME, "Voidkin")
 	local frame = Screen.Frame(NAME) :: Frame
+	local at = place(Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset))
 	local owned = if chosen then view.Voidkin[chosen :: string] else nil
+	-- The top bar: Back is the kit's; the screen's name by the left column, the currencies over the panel.
+	text({ Name = "Screen", Size = Theme.Text.Title, Font = Theme.Font.Strong, Box = UDim2.fromOffset(96, BAR), Position = UDim2.fromOffset(at.Stage.X + at.Group + at.Slot + Theme.Size.Pad, Theme.Size.Pad), Parent = body }, "Voidkin")
+	wallet(body, at, view)
 	if owned == nil then
 		if stage then
 			stage:Destroy()
 			stage = nil
 		end
-		text({ Name = "Empty", Size = Theme.Text.Title, Align = Enum.TextXAlignment.Center, Box = UDim2.new(1, -CLOSE * 2, 0, 30), Position = UDim2.new(0, CLOSE, 0.5, -15), Parent = body }, "No Voidkin yet · break a shard at the Breaker")
+		text({ Name = "Empty", Size = Theme.Text.Title, Align = Enum.TextXAlignment.Center, Box = UDim2.new(1, -at.Stage.X * 2, 0, 30), Position = UDim2.new(0, at.Stage.X, 0.5, -15), Parent = body }, "No Voidkin yet · break a shard at the Breaker")
 		return
 	end
-	local size = Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset)
-	local r = rects(layout, size, panelOpen)
-	local on_ = stageIn(frame, r.Stage[1], r.Stage[2], animate == true)
-	dress(on_, owned.Def, roster, r)
-	local block = resolved(view, owned)
-	-- Over the stage, in the body: what stands at the figure's feet.
-	local over = frameOf("Over", body, r.Stage[1], r.Stage[2])
-	if animate then
-		over.Position, over.Size = on_.Position, on_.Size
-		TweenService:Create(over, TweenInfo.new(config.Ease, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Position = r.Stage[1], Size = r.Stage[2] }):Play()
-	end
-	power(over, owned, block)
-	strip(body, r, roster, on)
-	local gap = Theme.Size.Gap
-	if layout == "Flank" and not panelOpen then -- with the panel in, they stand on its foot
-		actions(over, view, owned, on, true)
-	end
-	if layout == "Flank" then
-		nameRow(body, (r.Name :: { UDim2 })[1], (r.Name :: { UDim2 })[2], owned, on)
-		columns(body, r, owned)
-	end
-	local place = r.Panel :: { UDim2 }
-	local sheet = Panel.new({ Name = "Panel", Size = place[2], Position = place[1], Parent = body })
+	rail(body, at)
+	local where, size = UDim2.fromOffset(at.Stage.X, at.Stage.Y), UDim2.fromOffset(at.Stage.Wide, at.Stage.Tall)
+	local on_ = stageIn(frame, where, size)
+	dress(on_, owned.Def, roster, at)
+	-- Over the stage, in the body: its gear round it and what stands at its feet.
+	local over = frameOf("Over", body, where, size)
+	gear(over, at, owned, (resolved(view, owned)))
+	strip(body, at, roster, on)
+	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body })
 	sheet.Active = true -- a tap on the panel stays on it
-	if animate and layout == "Flank" then
-		sheet.Position = (rects(layout, size, not panelOpen).Panel :: { UDim2 })[1]
-		TweenService:Create(sheet, TweenInfo.new(config.Ease, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Position = place[1] }):Play()
-	end
 	local inside = frameOf("Inside", sheet, UDim2.fromOffset(Theme.Size.Pad, Theme.Size.Pad), UDim2.new(1, -Theme.Size.Pad * 2, 1, -Theme.Size.Pad * 2))
-	if layout == "Flank" then
-		-- Hide beside the screen's close, the tabs the panel's width under them, Lead and Send to work on its foot.
-		Button.new({ Name = "Hide", Text = "Hide", Size = UDim2.fromOffset(96, ROW), Parent = inside, OnPress = function()
-			VoidkinScreen.Slide(false)
-		end })
-		panelBody(inside, view, owned, on, ROW + gap, 0, true)
-		if panelOpen then
-			actions(inside, view, owned, on, false)
-		end
-		sheet.Visible = panelOpen or animate == true
-		if animate and not panelOpen then
-			task.delay(config.Ease, function()
-				if sheet.Parent and not panelOpen then
-					sheet.Visible = false
-				end
-			end)
-		end
-	else
-		nameRow(inside, UDim2.new(), UDim2.new(1, -(CLOSE + gap), 0, ROW), owned, on)
-		panelBody(inside, view, owned, on, ROW + gap, 0, true)
-		actions(inside, view, owned, on, false)
-	end
+	nameRow(inside, UDim2.new(), UDim2.new(1, 0, 0, ROW), owned, on)
+	pageBody(inside, view, owned, on, ROW + Theme.Size.Gap)
+	-- The top bar's second line, over the panel: a 44 pt tap is taller than the currencies' line.
+	actions(frameOf("Actions", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad + BAR + Theme.Size.Gap), UDim2.fromOffset(at.Panel.Wide, ROW)), view, owned, on)
 end
 
 rebuild = function()
@@ -869,7 +1135,7 @@ end
 
 function VoidkinScreen.Open(view: Profile.View, on: On)
 	if Screen.Current() ~= NAME then -- a fresh open starts on the lead's Overview, never on a choice left from before
-		chosen, tab, panelOpen, slideFrom, shownPower = nil, "Overview", false, 0, {}
+		chosen, page, kind, slideFrom, shownPower, litTo = nil, "Overview", "Shards", 0, {}, nil
 		editing, draft = false, nil
 	end
 	build(view, on)
@@ -879,7 +1145,7 @@ function VoidkinScreen.Tick()
 	if Screen.Current() ~= NAME then
 		return
 	end
-	if built ~= HudConfig.Voidkin.Layout or Layers.Get("Menus").AbsoluteSize ~= builtRoom then -- tuned, or the room changed
+	if Layers.Get("Menus").AbsoluteSize ~= builtRoom then -- the room changed
 		rebuild()
 		return
 	end
@@ -916,34 +1182,39 @@ function VoidkinScreen.Show(name: string)
 	show(name)
 end
 
--- Flank's panel in or out, sliding, the figure easing to make room.
-function VoidkinScreen.Slide(open: boolean)
-	if open == panelOpen then
-		return
+-- For tests: a tap on a rail button, a slot column, Combat Power or a cell of the bag, as a player's finger would;
+-- false if it takes none.
+function VoidkinScreen.Tap(piece: Instance?): boolean
+	local onTap = if piece then taps[piece] else nil
+	if onTap == nil then
+		return false
 	end
-	panelOpen = open
-	if lastView and lastOn and Screen.Current() == NAME then
-		build(lastView, lastOn, true)
-	end
+	onTap()
+	return true
 end
 
 function VoidkinScreen.Figure(): Figure.Figure?
 	return if Screen.Current() == NAME then figure else nil
 end
 
--- A piece of the open screen by its name, anywhere in it: for tests and takes.
+-- A piece of the open screen by its name, in its body first, then its stage: for tests and takes.
 function VoidkinScreen.Find(name: string): Instance?
 	local frame = Screen.Frame(NAME)
-	return if frame then frame:FindFirstChild(name, true) else nil
+	local body = if frame then frame:FindFirstChild("Body") else nil
+	return if body and frame then body:FindFirstChild(name, true) or frame:FindFirstChild(name, true) else nil
 end
 
--- The figure's share of the screen's height as framed, and its stage's authored height: for tests and takes.
-function VoidkinScreen.Measure(): { Height: number, Stage: number }
+-- As built, authored: the figure's share of the room's height, its stage's height, a slot's side and Combat Power's
+-- width: for tests and takes.
+function VoidkinScreen.Measure(): { Height: number, Stage: number, Slot: number, Power: number }
 	return table.clone(measured)
 end
 
 VoidkinScreen.Name = NAME
 VoidkinScreen.Refused = REFUSED
-VoidkinScreen.Tabs = TABS
+VoidkinScreen.Pages = PAGES
+VoidkinScreen.Soon = SOON
+VoidkinScreen.Kinds = KINDS
+VoidkinScreen.Held = HELD
 
 return VoidkinScreen

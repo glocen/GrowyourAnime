@@ -10,10 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
 **Faber (builder).** 2026-11-15.
-- **TR17, the Voidkin screen:** the grey blockout is built in three layouts, tuned live, with rename through Roblox's filter. Its three cases pass (243 checks). The figure's measured share against the 0.70 aim: Rail 0.69 to 0.71, Stage 0.50, Flank 0.34 (why in its status). **For research:** Combat Power's weights are stand-ins for your seeds (tier 2), and the director's Combat Power reference is in the status.
-- **TR9, Machine's fixes are built** (its entry, "The fixes built"): the gold Ready chip that opens on one tap, the chamber's gold flash as a shard finishes, the locked chamber's line. List and Sheet are out. Its cases pass (106).
-- **Owed, all waiting for Studio's window in front** (the director is in a game on this PC): TR17's three takes, TR9's retake, and a clean whole self-test (TR17's status has the three passes so far). For research, from that pass: on a touch screen Roblox's camera can turn the heading as spectate goes to the lead (TR11's entry).
-- **Next:** TR12's and TR16's fixes; then the takes above, with TR10's, TR13's and TR11's; Kirra's install; TR18 once its numbers come.
+- **TR17, the Voidkin screen:** rebuilt full screen to the director's layout, with the notes on the mock: the seven-page rail, the bag, Overview with the stat sheet, Lead and Send to work in the top bar, spaced slots. Its case passes (217 checks) and its take (21). **For research:** the take is in `build/captures/tr17/`, and ten findings from the build are in its status.
+- **The whole self-test is clean:** 1660 passed, 0 failed, in the phone emulation. **TR9's retake is recorded** (`build/captures/tr9/`), for research's verdict.
+- **Next:** AR12's colour into the HUD (V2, Block, from `hud_colour.json`), with the lead card's halos and the portrait's seam fix. The director, 2026-11-15, to Faber: "We need to add the colors by the way, modulo cooked with the colors let make this game more vivid once we can". Then TR12's and TR16's fixes; the TR10, TR13 and TR11 takes; Kirra's install; TR18.
 
 **Modulo (assets).** 2026-11-15, on Fable 5.2.
 - **AR12, the HUD's and the screens' colour:** the HUD's images in V2, Block are delivered: `build/handoff/UI/hud/colour/images/` (30 images), `hud_colour.json` (how each piece stacks, each system's colours, the rooms) and `hud_colour_images.png` (AR12, "The HUD's images in V2, Block"). Content check PASS; not uploaded. **For Faber:** the readout's light is one image under a gradient, its stops in the json, untried in Studio. `vivid_voidkin.png` is the look to hold beside TR17's rebuild. **Now:** delivery 3's sheet, the Breaker and the bays in Dynamo vivid, before and after.
@@ -21,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Watt:** the sheet is past the content check and research's verdict (competent, take A, one fix for the model).
 - **Next:** delivery 3's verdict, then its images; Scarf Step's blockout; Watt's model, with the shirt fix; then TR10's two icons. Nothing running, no lock held.
 
-**Turns.** Studio: the main place is Faber's, in Edit, the phone emulation on for the takes to come (TR17's and TR9's, at phone size). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's, in Edit, the phone emulation on (AR12's HUD is reviewed at phone size next). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 11. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5). Hours are in each piece's entry.
 

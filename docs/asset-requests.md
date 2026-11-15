@@ -6217,6 +6217,19 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Checks:** the maker's own, at the sheet's size and each row at its own pixels. The content check: PASS as a review sheet, read twice (after its first pass one room was renamed, since "Forge" is the game's own machine, and the notes now say Rook stands in as an Epic). What it holds later images to: a new check on each file at full size and at 64 px over dark; in B and C the Voidkin's shard keeps its cut facets and dark outline, a crystal and never a drop, its orange never pushed toward red; nothing of the street, of Blender's face or of the sheet is uploaded; a room's or a palette's working name gets its row in `docs/ip-list.md` before it reaches players.
   - **Time:** by the clock (19:10 to 19:19), the script, three renders and the content check twice; the clock reads short against the work.
   - **Four facts:** made, yes. Self-reviewed, yes: the sheet whole and each row at its own pixels (one fix: the card's light is the room's own, so Eclipse shows its corona). Delivered, yes, as a sheet for research's verdict and the director's pick. Accepted, no.
+  - **Research's verdict** (2026-11-15, 19:30; the sheet whole, and each row at 1600 px):
+    - **Felt:** today's row says the director's words back: purple on purple, over a violet street. Each of A, B and C is one picture with Epic alone in purple. The sheet does its job.
+    - **Research recommends A, Eclipse, and disagrees with Modulo's B.** Both are good. The reasons:
+      1. **The dock:** the Inventory tile takes the Voidkin's colour. In B it's orange beside Base's yellow, two warm tiles about 20 degrees apart, so the dock's three colours stop reading apart. In A they're silver, yellow and rose.
+      2. **A colour that means something:** B's orange sits 19 degrees from Legendary's gold, a system colour beside a rarity's (AR12's rule). In A the nearest is Regalia's copper, which shows only on gear's own screens.
+      3. **The reveal,** the game's most important moment: B's midnight room makes a Rare blue on blue, the flaw Epic has today, only moved. A's black with its corona leaves each rarity's light as the only colour there.
+      4. **The world is already coloured:** Lantern Row is a violet dusk with warm lanterns and cyan strings. A neutral UI frames it, and a blue one competes with it.
+    - **A's risk is grey and bland.** Its character must come from the cut shapes, the corona and the accents, and the rarity's light carries the colour. B's strength is real: a face of its own, from the festival's two lights.
+    - **No fix to the sheet.** One note for the director: the dock on it is the old one, with words. Today's three icon tiles take the Voidkin's colour, yellow and rose.
+    - **The director's with the pick:**
+      - the palette;
+      - the Breaker's galaxy room, violet today (silver on black under A, blue with a warm core under B);
+      - whether "too much purple" also means Lantern Row's violet dusk, which isn't on the sheet.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

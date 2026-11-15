@@ -5056,7 +5056,7 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
 
 ### The install (Faber)
 
-**Status:** First Strike built offline, 2026-11-14 (Faber). The model, the clips and the kit wait on the Studio MCP. Time: about 30 minutes, my estimate, not measured.
+**Status:** in code, 2026-11-15 (Faber, 27b815a), not yet seen in play. The self-test and the blockout wait on the screen. Time: First Strike about 30 minutes, my estimate. The install about 1 hour 5 minutes, from the session's record (12:18 to 13:21 UTC).
 - **Implemented: First Strike as data** (`docs/roster.md`: "her first hit on a new target always crits").
   - **A fourth kind of passive, `Opener`** (`Definitions.Passives`). Its Share is the critical chance on the first hit to land on a target. Kirra's is 1, so it always crits, past the critical's cap. Tuned live: `Passives.kirra.Share`.
   - **The rule:** `Rules.Passive.Critical` gives that floor. `Rules.Hit`'s effects take it as `Critical`, a floor under the hit's chance.
@@ -5069,14 +5069,36 @@ Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three sta
   - The type check: 0 new. The logic: 5382 passing offline.
   - A new passive case covers the row, the rule's edges, a critical on the worst roll past the cap against a defender no hit crits on, a dodged swing dealing nothing, and a floor below one rolling as a chance.
   - The row check takes the new kind.
-  - Its self-test, Kirra's first hit on a Shade, comes with her kit at the install.
-- **Next, on the MCP:**
-  - the model from the recipe;
-  - the eight clips registered;
-  - her kit (`KirraCombo`, `KirraScarfStep`) on her row, with the tail layers over the open set;
-  - Work's post, with 6 studs clear;
+- **Implemented: the install**, 2026-11-15.
+  - **The model:** the sixteen meshes and three maps are under the group, Approved (`docs/asset-log.md`). They're assembled from `tools/studio/Models/Kirra.json` into `src/storage/Kirra.rbxm`: no glow, and every piece casts its shadow.
+  - **The clips:** all eight are saved in the place (`NL_Kirra<Clip>`).
+    - Her tail layers play over the open set's Hit, Down and Up, one priority above (`Config.Animations.Layers`). Down's holds its last frame while she lies down.
+    - Author now keeps a held part at its own weight when the Torso is at 0 only to carry keys, so the scarf moves in her layers.
+  - **Her kit, on her row:** `KirraCombo` (Dash, Hit1, Hit2, Hit3, Sheathe) and `KirraScarfStep` (Blink, Land, Cut). Scarf Step's rows are taken as delivered (`Config.EffectRows`).
+  - **Moves, new:** an action can carry its fighter on a beat (`Actions.Moves`), to the point `Rules.Fight.MoveEnd` gives.
+    - A glide when the move has Seconds. The dash ends 3.5 studs short of the target, after 4 studs at most.
+    - A blink at 0 Seconds. Scarf Step lands 3.8 studs past the target, facing back. It stops short of a wall and lands only on ground.
+    - The replay starts each press of a move from the same spot.
+  - **My calls, tier 1:**
+    - One combo clip, played from 0 each round. The dash covers whatever gap is left, so a round started up close steps in place (section 3's question).
+    - Scarf Step stays on take A (the Blink's `Turn` 0) until the blockout. Take B is `Turn` 44.
+  - **For research, tier 2:**
+    - The kit's coefficients are seeds: the combo at Rook's combo's rate per second (1.78), the signature on Haymaker's numbers.
+    - Her reveal's strike lands on Land (`Config.Reveal.Strikes`).
+- **Tested:**
+  - Type check: 0 new.
+  - Logic: 5814 passing offline. They cover the move rule, each layer over its rig's reaction, each hit reaching from where the moves leave her, and her reveal's strike.
+  - Two self-test cases are written but not yet run:
+    - the moves, through the replay, to MoveEnd's point, facing the target and in reach of the next hit;
+    - First Strike, her first hit on a Shade.
+  - Studio has the code (its `Source` searched).
+- **Not done:**
+  - the whole self-test;
+  - Work's post: no Voidkin's work clip plays in a bay yet;
+  - Scarf Step's blockout with Modulo, A beside B (section 5), with take A's check at 64 px;
   - TR14's verdict in motion;
   - research's verdict at phone size.
+- **Visually reviewed:** no. **Director-accepted:** no.
 
 ### 5. Scarf Step's look: the parts and their techniques (Modulo, 2026-11-14)
 

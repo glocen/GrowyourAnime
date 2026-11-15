@@ -8,8 +8,9 @@
 -- system's colour (AR12, V2 Block; UI.Kit.Pill): Credits, and
 -- Electricity stored over its cap with the rate and a thread of charge. Under the lead's card, the signature's readout
 -- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
--- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base, Inventory and the Map, a tile open
--- while its screen is, and over it the shards' hint while a shard waits and the player is home. The HUD's text wears one face
+-- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base takes the player home in one tap
+-- (TR19), Inventory opens the Voidkin screen, open while it is, and the Map waits for its screen; over the dock the
+-- shards' hint while a shard waits and the player is home. The HUD's text wears one face
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
 -- A keeper's try and an elite take their own HUD (TR5's grey variants, Config.Hud.Boss): the keeper's title card
@@ -31,9 +32,12 @@ local BaseConfig = require(Shared.Config.Base)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
 local Actions = require(Shared.Definitions.Actions)
+local HomeConfig = require(Shared.Config.Home)
 local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
+local Home = require(Shared.Rules.Home)
 local Markers = require(Shared.World.Markers)
+local Net = require(Shared.Net)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
@@ -59,7 +63,6 @@ local Burst = require(UI.Kit.Burst)
 local Fade = require(UI.Kit.Fade)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local SpectateController = require(script.Parent.SpectateController)
-local WayHomeController = require(script.Parent.WayHomeController)
 local Effects = require(script.Parent.FighterController.Effects)
 local FadeController = require(script.Parent.FadeController)
 
@@ -103,7 +106,6 @@ local chipText: TextLabel
 local readout: Signature
 local eye: TextButton -- the spectate toggle (TR11)
 local nextButton: TextButton -- under a fallen lead's card: sends out the next (TR12)
-local homeButton: TextButton -- in its place when none other is ready: the way home (TR16)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
 local dockUi: Dock.Dock -- the dock of three icons (AR12; UI.Dock): dock[screen] is its tile's button
@@ -300,7 +302,7 @@ local function eyeButton(): TextButton
 end
 
 -- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, the
--- eye beside it, and after the eye what a fallen lead's card offers (the next lead, or the way home).
+-- eye beside it, and after the eye a fallen lead's offer of the next.
 local function placeCorner()
 	local plate, look = HudConfig.Readout, HudConfig.Spectate
 	local card = lead.Frame
@@ -312,9 +314,7 @@ local function placeCorner()
 	local x, y = left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2
 	eye.Size = UDim2.fromOffset(look.Size, look.Size)
 	eye.Position = UDim2.fromOffset(x, y)
-	local offer = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
-	nextButton.Position = offer
-	homeButton.Position = offer -- the two share the place: one shows at a time
+	nextButton.Position = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
 end
 
 -- The readout shows only in a fight (TR3's verdict, fix 5): it fades in as the lead takes a target, and out a moment
@@ -418,20 +418,157 @@ local function others(fallen: string): { Hud.Other }
 	return list
 end
 
--- The chip under a fallen lead's card (TR12, TR16): the next lead's or the way home's, never both, and the trail with it.
+local function avatarAt(): Vector3?
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+	return if root and root.Parent then root.Position else nil
+end
+
+-- Whether the avatar stands on its own plot.
+local function atHome(): boolean
+	local plot = player:GetAttribute("Plot")
+	return Markers.OnPlot(if type(plot) == "number" then plot else nil, avatarAt())
+end
+
+-- What a fallen lead's card offers (TR12; Rules.Hud.AfterFall): the next lead under it while another is ready, else, out
+-- in a ground, the Base tile's pip, since home is where the lead waits (TR19).
 local function offer(down: boolean, fallen: string)
 	local now = workspace:GetServerTimeNow()
-	local which = Hud.AfterFall(down, if down then others(fallen) else {}, now, down and WayHomeController.Away())
+	local which = Hud.AfterFall(down, if down then others(fallen) else {}, now, down and not atHome())
 	nextButton.Visible = which == "Send"
-	homeButton.Visible = which == "Home"
-	if which ~= "Home" and WayHomeController.On() then
-		WayHomeController.Set(false) -- the lead's back, another is ready, or the player is home
+	Dock.Pip(dockUi, "Base", which == "Home")
+end
+
+-- Home in one tap (TR19; Rules.Home, HomeService): the client reads the same situation the server decides by, from the
+-- player's attributes, and only shows it. The Base tile is quiet at home, dim while refused, fills from its foot in the
+-- charge and wears the cooldown's veil; the avatar's outline lifts in void light over the charge.
+local homeOutline: Highlight? = nil
+local flashAt: number? = nil -- the jump's light at the screen's edges, from this os.clock()
+local settleAt: number? = nil -- the arrival's field of view, eased back from this os.clock()
+local settledFov = 70 -- the camera's own field of view under the arrival's
+local edges: { Frame } = {}
+
+local function attribute(name: string): number?
+	local value = player:GetAttribute(name)
+	return if type(value) == "number" then value else nil
+end
+
+local function homeSituation(): Home.Situation
+	return {
+		Now = workspace:GetServerTimeNow(),
+		HitAt = attribute("HitAt"),
+		Try = player:GetAttribute("Try") ~= nil,
+		Event = false, -- no event exists yet (HomeService)
+		ReadyAt = attribute("HomeReady") or 0,
+		OnPlot = atHome(),
+	}
+end
+
+local function outline(share: number?)
+	local character = player.Character
+	local glow = homeOutline
+	if share == nil or character == nil then
+		if glow then
+			glow.Enabled = false
+		end
+		return
 	end
-	local lit = WayHomeController.On()
-	if homeButton:GetAttribute("Lit") ~= lit then
-		homeButton:SetAttribute("Lit", lit)
-		Button.Set(homeButton, { Selected = lit })
+	if glow == nil or glow.Parent ~= character then
+		if glow then
+			glow:Destroy()
+		end
+		local made = Instance.new("Highlight")
+		made.Name = "NL_HomeCharge"
+		made.FillTransparency = 1
+		made.DepthMode = Enum.HighlightDepthMode.Occluded
+		made.Parent = character
+		homeOutline = made
+		glow = made
 	end
+	local lit = glow :: Highlight
+	lit.OutlineColor = HomeConfig.Outline
+	lit.Enabled = true
+	lit.OutlineTransparency = 1 - share
+end
+
+-- The four edges' light: up in the first third of Flash, gone by its end.
+local function stepFlash()
+	local at = flashAt
+	local u = if at then (os.clock() - at) / math.max(HomeConfig.Flash, 0.01) else 1
+	local alpha = if u >= 1 then 0 elseif u < 1 / 3 then u * 3 else (1 - u) * 1.5
+	if u >= 1 then
+		flashAt = nil
+	end
+	for index, frame in edges do
+		frame.Visible = alpha > 0
+		frame.BackgroundTransparency = 1 - alpha * 0.85
+		frame.BackgroundColor3 = HomeConfig.Edge
+		local deep = HomeConfig.Reach
+		frame.Size = if index <= 2 then UDim2.fromScale(1, deep) else UDim2.fromScale(deep * 0.6, 1)
+	end
+	local camera = workspace.CurrentCamera
+	local settle = settleAt
+	if camera and settle then
+		local v = (os.clock() - settle) / math.max(HomeConfig.Settle, 0.01)
+		if v >= 1 then
+			settleAt = nil
+			camera.FieldOfView = settledFov
+		else
+			local eased = 1 - (1 - v) * (1 - v)
+			camera.FieldOfView = settledFov + HomeConfig.Fov * (1 - eased)
+		end
+	end
+end
+
+local function stepHome()
+	local s = homeSituation()
+	local refusal = Home.Refusal(s, HomeConfig)
+	local began = attribute("HomeCharge")
+	local mood: Dock.Mood? = if refusal == "Here" then "Quiet" elseif refusal == "Boss" or refusal == "Event" or refusal == "Fight" then "Dim" else nil
+	Dock.Mood(dockUi, "Base", mood)
+	local share = if began then Home.Share(began, HomeConfig.Charge, s.Now) else nil
+	Dock.Fill(dockUi, "Base", share)
+	Dock.Sweep(dockUi, "Base", if refusal == "Cooldown" then Home.Share(s.ReadyAt - HomeConfig.Cooldown, HomeConfig.Cooldown, s.Now) else nil)
+	outline(share)
+	stepFlash()
+end
+
+-- A tap on the Base tile: at home nothing; else the server's answer, which on a refusal says why and shakes the tile.
+local function goHome(): ...any
+	if Home.Refusal(homeSituation(), HomeConfig) == "Here" then
+		return nil
+	end
+	local ok, answer = pcall(Net.Client.Invoke, "Home")
+	if ok and type(answer) == "table" and answer.Ok == false then
+		if type(answer.Says) == "string" then
+			Toast.Show(answer.Says)
+		end
+		Dock.Shake(dockUi, "Base")
+	end
+	return nil
+end
+
+-- The jump's answer: landed, the light at the edges, the arrival's field of view and the puff at the feet; else why not.
+local function jumped(landed: boolean, says: string?)
+	if not landed then
+		if type(says) == "string" then
+			Toast.Show(says)
+		end
+		Dock.Shake(dockUi, "Base")
+		return
+	end
+	flashAt = os.clock()
+	local camera = workspace.CurrentCamera
+	if camera then
+		settledFov = if settleAt then settledFov else camera.FieldOfView
+		settleAt = os.clock()
+		camera.FieldOfView = settledFov + HomeConfig.Fov
+	end
+	local at = avatarAt()
+	if at then
+		Effects.Arrive(at, HomeConfig.Puff, HomeConfig.Settle + 0.05, HomeConfig.Edge)
+	end
+	player:SetAttribute("HomeLanded", os.clock()) -- for the self-test
 end
 
 -- The Voidkin screen (UI/VoidkinScreen): one Voidkin at a time, on the lead first (TR17).
@@ -441,12 +578,6 @@ local function voidkinScreen()
 		return
 	end
 	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing })
-end
-
-local function avatarAt(): Vector3?
-	local character = player.Character
-	local root = if character then character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
-	return if root and root.Parent then root.Position else nil
 end
 
 -- Where a shard just won leaps from: the nearest fallen Shade to the avatar, within ShardLeap.From.
@@ -464,12 +595,6 @@ local function fallenNear(): Vector3?
 		end
 	end
 	return best
-end
-
--- Whether the avatar stands on its own plot.
-local function atHome(): boolean
-	local plot = player:GetAttribute("Plot")
-	return Markers.OnPlot(if type(plot) == "number" then plot else nil, avatarAt())
 end
 
 -- This try's keeper: the one nearest the avatar, in its own copy of the ring (KeeperService), while the avatar is in a try.
@@ -803,6 +928,7 @@ local function step(dt: number)
 			Button.Set(button, { Selected = open })
 		end
 	end
+	stepHome()
 	Dock.Paint(dockUi)
 	local view = ProfileController.Get()
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
@@ -872,20 +998,6 @@ function HudController.Start()
 		end,
 	})
 	nextButton.Visible = false
-	-- Alone after a fall (TR16; docs/test-requests.md): with no other Voidkin ready, the card offers the way home in its
-	-- place, a trail on the street to the gate's door (WayHomeController). A tap draws it, a second clears it, lit while
-	-- it's drawn; it never moves the player. In grey: the same button.
-	homeButton = Button.new({
-		Name = "Home",
-		Text = "Go home",
-		Size = UDim2.fromOffset(180, Theme.Size.Tap),
-		AnchorPoint = Vector2.new(0, 0.5),
-		Parent = Layers.Get("Hud"),
-		OnPress = function()
-			WayHomeController.Toggle()
-		end,
-	})
-	homeButton.Visible = false
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -914,8 +1026,9 @@ function HudController.Start()
 	})
 	chip, chipText = hint.Frame, hint.Value
 	chip.Visible = false
-	-- The dock of three icons (AR12): Inventory opens the Voidkin screen and Base the base's, each open while its screen
-	-- is; the Map's screen isn't built, so its tile dims and says so on a tap.
+	-- The dock of three icons (AR12): Inventory opens the Voidkin screen, open while it is; Base takes the player home
+	-- (TR19: goHome), and the Base screen opens from a bay's prompt; the Map's screen isn't built, so its tile dims and says
+	-- so on a tap.
 	local function toggle(name: string, open: () -> ())
 		return function()
 			if Screen.Current() == name then
@@ -927,16 +1040,32 @@ function HudController.Start()
 	end
 	dockUi = Dock.new(Layers.Get("Hud"), {
 		Inventory = toggle("Voidkin", voidkinScreen),
-		Base = toggle("Base", function()
-			HudController.OpenBase()
-		end),
+		Base = goHome,
 	})
 	dockHolder = dockUi.Frame
 	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
 	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)
 	dock.Voidkin = dockUi.Tiles.Inventory.Button
-	dock.Base = dockUi.Tiles.Base.Button
 	Button.Set(dockUi.Tiles.Map.Button, { Disabled = "The map isn't open yet" })
+	-- The jump's light (TR19), a stand-in until Modulo's look: one frame on each of the screen's edges, lit at the edge and
+	-- gone Reach in, over everything but the toasts.
+	local overlay = Layers.Get("Overlay")
+	for index, side in { { 0, 0, 90 }, { 0, 1, 270 }, { 0, 0, 0 }, { 1, 0, 180 } } do
+		local frame = Instance.new("Frame")
+		frame.Name = `HomeEdge{index}`
+		frame.BorderSizePixel = 0
+		frame.BackgroundTransparency = 1
+		frame.AnchorPoint = Vector2.new(side[1], side[2])
+		frame.Position = UDim2.fromScale(side[1], side[2])
+		frame.Visible = false
+		local fade = Instance.new("UIGradient")
+		fade.Rotation = side[3]
+		fade.Transparency = NumberSequence.new(0, 1)
+		fade.Parent = frame
+		frame.Parent = overlay
+		table.insert(edges, frame)
+	end
+	Net.Client.On("HomeJump", jumped)
 	keeperBar = BossBar.new(Layers.Get("Hud"))
 	ProfileController.Changed:Connect(function(view: Profile.View)
 		notice(lastView, view)
@@ -1011,12 +1140,12 @@ function HudController.Parts(): { [string]: GuiObject }
 		Signature = readout.Piece.Frame,
 		Spectate = eye,
 		Next = nextButton,
-		Home = homeButton,
 		Chip = chip,
 		ChipText = chipText,
 		Voidkin = dock.Voidkin,
-		Base = dock.Base,
+		Base = dockUi.Tiles.Base.Button,
 		Map = dockUi.Tiles.Map.Button,
+		HomeEdge = edges[1],
 	}
 end
 

@@ -16,6 +16,7 @@ local Shared = ReplicatedStorage.Shared
 local Combat = require(Shared.Config.Combat)
 local HudConfig = require(Shared.Config.Hud)
 local WorldConfig = require(Shared.Config.World)
+local HomeConfig = require(Shared.Config.Home)
 local BaseConfig = require(Shared.Config.Base)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
@@ -24,7 +25,6 @@ local Parts = require(Shared.Util.Parts)
 local Profile = require(Shared.Data.Profile)
 local ShardConfig = require(Shared.Config.Shards)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
-local WayHomeController = require(script.Parent.Parent.Parent.Main.WayHomeController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -50,7 +50,7 @@ local TAKE_BEFORE_FALL = 1.5 -- seconds of the fight before a take holds its lea
 local TAKE_LOW = 0.002 -- the share of its health a take holds its lead at, at most: a sliver, a hit from falling
 local TAKE_HIT = 8 -- seconds a take waits for a hit to down its held lead before it downs it outright
 local TAKE_GATE_SHORT = 8 -- studs short of the gate's door TR8's take stops, back down the street
-local TAKE_ALONE = { Pack = "Pack 2", Short = 40 } -- TR16's take: the pack its lead falls at, and how far short of it
+local TAKE_HOME = { Pack = "Pack 2", Short = 40 } -- TR19's take: the street short of this pack, out of its fight
 -- toward the gate the avatar is set down (past its notice and the lead's leash, so the walk up shows)
 local TAKE_KEEPER = 150 -- seconds the keeper's take watches its fight
 local TAKE_KEEPER_LEVEL = 14 -- the lead's level in the keeper's take: it wins bare, where gear will carry it in play
@@ -822,39 +822,41 @@ return function(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Take: TR16, alone after a fall, the way home's chip and its trail walked to the door, for research's verdict",
+			Name = "Take: TR19, home in one tap from Lantern Row's street, the charge, the jump and the arrival, then the cooldown refused, for research's verdict",
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
-				-- TR16's evidence (docs/test-requests.md, TR16), the extra take after TR12's, from the player's camera: on Lantern
-				-- Row's street the lead walks up to a pack and falls there with no other Voidkin ready; the card says so, the
-				-- "Go home" chip shows in the next lead's place, a tap draws the trail, the avatar walks it to the gate's door,
-				-- where it's gone, and goes home through it. Three steps aren't played, and their rows say so: the set-down on the
-				-- street, every other Voidkin fallen just before, and the lead's health set low.
+				-- TR19's evidence (docs/test-requests.md, TR19), from the player's camera: on Lantern Row's street, out of any
+				-- fight, a tap on the dock's Base tile fills it from its foot as the avatar's outline lifts, the edges flash and
+				-- the player stands at their Breaker with the lead beside them; at home the tile is quiet; set down on the street
+				-- again, its cooldown's veil is on the tile, and a tap shakes it and says how long. The set-downs aren't played,
+				-- and their rows say so.
 				take(t, function(kit: Take)
-					local moment, walkTo = kit.Moment, kit.WalkTo
-					local home = HudController.Parts().Home :: TextButton
+					local moment = kit.Moment
+					local base = HudController.Parts().Base :: TextButton
 					local up = Vector3.new(0, R6_ROOT_HEIGHT, 0)
 					t.Server("LeadHeal")
+					t.Server("HomeReady")
 					local pack: any = nil
 					for _, row in t.Server("Packs") do
-						if row.Name == TAKE_ALONE.Pack then
+						if row.Name == TAKE_HOME.Pack then
 							pack = row
 						end
 					end
 					local marker = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
-					t.Check(`{TAKE_ALONE.Pack} stands`, pack ~= nil and pack.Standing > 0)
-					t.Check("Lantern Row has its door home", marker ~= nil)
+					t.Check("Lantern Row's packs and its gate", pack ~= nil and marker ~= nil)
 					if pack == nil or marker == nil then
 						return
 					end
 					local door = Markers.At(marker)
 					local toward = Vector3.new(door.Position.X - pack.At.X, 0, door.Position.Z - pack.At.Z).Unit -- up the street to the gate
-					local start = pack.At + toward * TAKE_ALONE.Short + up
-					t.Root().CFrame = CFrame.lookAt(start, start - toward)
-					RunService.RenderStepped:Wait()
-					workspace.CurrentCamera.CFrame = CFrame.lookAt(start + toward * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
-					t.Check("none other ready", t.Server("VoidkinFallen").Ok == true)
+					local start = pack.At + toward * TAKE_HOME.Short + up
+					local function setDown()
+						t.Root().CFrame = CFrame.lookAt(start, start - toward)
+						RunService.RenderStepped:Wait()
+						workspace.CurrentCamera.CFrame = CFrame.lookAt(start + toward * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
+					end
+					setDown()
 					t.Check("the lead by the avatar", waitFor(t, 5, function(): boolean
 						local lead = myLead()
 						local root = if lead then Parts.Root(lead) else nil
@@ -863,45 +865,30 @@ return function(given: Given): { any }
 					t.Wait(LEAD_SETTLE)
 					kit.Zero()
 					moment("zero: the white frame")
-					moment(`set down on the street short of {TAKE_ALONE.Pack}, every other Voidkin fallen (both set, not played)`)
-					t.Wait(1)
-					moment(`the walk up to {TAKE_ALONE.Pack}`)
-					t.Check(`the avatar walks to {TAKE_ALONE.Pack}`, walkTo(pack.At + toward * PACK_STAND + up))
-					moment("the fight")
-					t.Wait(TAKE_BEFORE_FALL)
-					moment(`not played: the lead's health held at {TAKE_LOW * 100}% or under from here`)
-					local lead = myLead()
-					t.Check("the lead falls", fallHeld(t, moment))
-					moment("the lead is down: the card says so")
-					t.Check("it leaves as light, home", waitFor(t, Combat.Lead.Leave + 1, function(): boolean
-						return lead ~= nil and lead:GetAttribute("State") == "Home"
-					end))
-					t.Check("the Go home chip shows", waitFor(t, REPLICATE, function(): boolean
-						return home.Visible
-					end))
-					moment("home, healing: the Go home chip")
+					moment(`set down on the street short of {TAKE_HOME.Pack}, out of any fight (not played)`)
 					t.Wait(TAKE_READ)
-					t.Check("a tap draws the trail", Button.Press(home) and waitFor(t, 1, WayHomeController.On))
-					moment("a tap: the trail to the gate's door")
-					t.Wait(TAKE_READ)
-					-- Walked as drawn: its corners, then the door's step, where it's gone.
-					local points = WayHomeController.Points()
-					moment("the walk along the trail")
-					for i = 2, #points - 1 do
-						walkTo(points[i] + up)
-					end
-					walkTo(door.Position + door.LookVector * DOOR_RUN + up)
-					t.Check("gone at the door", waitFor(t, 1, function(): boolean
-						return not WayHomeController.On()
+					moment("a tap on the Base tile: the charge")
+					local pressed = os.clock()
+					t.Check("the charge begins", Button.Press(base) and waitFor(t, REPLICATE, function(): boolean
+						return Players.LocalPlayer:GetAttribute("HomeCharge") ~= nil
 					end))
-					moment("at the door: the trail gone")
-					t.Wait(1)
-					t.Check("the avatar is home", walkThrough(t, marker, false))
-					moment("home through the door")
-					t.Wait(6)
+					t.Check("the jump", waitFor(t, HomeConfig.Charge + REPLICATE + 0.5, function(): boolean
+						local landed = Players.LocalPlayer:GetAttribute("HomeLanded")
+						return type(landed) == "number" and landed >= pressed
+					end))
+					moment("the jump: the edges' light, then home at the Breaker")
+					t.Wait(TAKE_READ)
+					moment("at home: the tile quiet")
+					t.Wait(TAKE_READ)
+					setDown()
+					moment("set down on the street again (not played): the cooldown's veil on the tile")
+					t.Wait(TAKE_READ)
+					moment("a tap in the cooldown: the shake and its words")
+					Button.Press(base)
+					t.Wait(TAKE_READ)
 					moment("end")
 				end)
-				t.Server("LeadHeal")
+				t.Server("HomeReady")
 			end,
 		},
 		{

@@ -2199,6 +2199,24 @@ function Effects.LeadLeaves(at: Vector3)
 	end)
 end
 
+-- Home's arrival (TR19), the builder's stand-in until Modulo's look: a flat ring of light on the floor under `at` (a
+-- root's place), opening to `width` studs across and fading over `seconds`.
+function Effects.Arrive(at: Vector3, width: number, seconds: number, colour: Color3)
+	local disc = part(colour, Enum.Material.Neon)
+	disc.Shape = Enum.PartType.Cylinder
+	local floor = at.Y - R6_ROOT_HEIGHT + 0.1
+	run(function(age: number): boolean
+		local u = math.clamp(age / math.max(seconds, 0.01), 0, 1)
+		local wide = math.max(width * easeOut(u), 0.2)
+		disc.Size = Vector3.new(0.1, wide, wide)
+		disc.CFrame = CFrame.new(at.X, floor, at.Z) * CFrame.Angles(0, 0, math.pi / 2)
+		disc.Transparency = 0.2 + 0.8 * u
+		return u < 1
+	end, function()
+		disc:Destroy()
+	end)
+end
+
 function Effects.Jolt(add: number)
 	trauma = Fight.Trauma(trauma, add)
 end

@@ -1438,7 +1438,7 @@ Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now b
 
 **Status:** built offline, 2026-11-14 (Faber); the self-test and research's verdict in motion wait on the Studio MCP. Time: about 1.5 active hours, my estimate, not measured.
 
-**Scrapped by the director, 2026-11-15, night** (`docs/decisions.md`): "Go home" and its trail go. The way home becomes a HUD control that teleports to the base, on a short cooldown, out of combat, a boss's area and an event only. That is a new piece with its own feel line, from research. Faber: don't spend more on TR16's chip or trail. **The new piece is TR19**, the dock's Base tile.
+**Scrapped by the director, 2026-11-15, night** (`docs/decisions.md`): "Go home" and its trail go. The way home becomes a HUD control that teleports to the base, on a short cooldown, out of combat, a boss's area and an event only. That is a new piece with its own feel line, from research. Faber: don't spend more on TR16's chip or trail. **The new piece is TR19**, the dock's Base tile. Its chip, trail, rule and cases were taken away in TR19's build (Faber, 2026-11-15).
 - **Implemented.**
   - **When** (`Rules.Hud.AfterFall`, pure): a fallen lead's card offers "Send" while another Voidkin could lead now (`Hud.LeadReason` refuses it nothing), else "Home" while the player is out in a ground, else nothing. "Out in a ground" is the night's own line (`Rules.Night.Inside`, 24 studs short of the gate), never during a keeper's try.
   - **The chips share one place under the card,** and only one shows. "Send another" now shows only when someone could go out (tier 1): a Voidkin at work can't lead, so before this it showed a button that sent no one.
@@ -1690,7 +1690,21 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - the self-test from Lantern Row, a keeper's try and the base;
   - research's verdict in motion from the player's camera, at phone size.
 
-**Status:** requested, 2026-11-15, night. With the dock's build, after the lead's card F.
+**Status:** built, 2026-11-15 (Faber). The self-test and research's verdict in motion wait for the screen. Time: about half an active hour by the commits' clock, from the dock's commit at 15:35.
+
+- **Implemented.**
+  - **The rule** (`Rules.Home`, pure): `Refusal` in the spec's order (here, a boss's ground, an event, a fight, the cooldown), `Says` in its plain words ("Ready in 12 s" counts the whole seconds left, never 0), `Broken` (a hit at or after the charge's start), `Share` (a charge's or a cooldown's run, 0 to 1). Seeds in `Config.Home`, tuned live (`Tune "Home.Charge"`).
+  - **The server decides** (`HomeService`, Net `Home`): a refusal answers why; else the charge starts (the player's `HomeCharge`, server time) and the server re-checks at its end. A hit the player's lead dealt or took (`FightService` stamps the owner's `HitAt`) cancels it, and nothing is spent. A try or an event begun in the charge refuses too. Then the player and their lead are set down at the plot's spawn facing its Breaker (`KeeperService.Place`, no fade), `HomeReady` starts the 20 s, and the client is told (`HomeJump`). In Studio: `HomeState`, `HomeHit`, `HomeReady`.
+  - **The tile** (`UI.Dock`: `Mood`, `Fill`, `Sweep`, `Shake`): quiet at home; dim in a fight or a boss's ground, still tappable; fills from its foot in white over the charge; wears the cooldown's veil; shakes 4 points over 0.25 s on a refusal, with the server's words in a toast. The pip after a lone fall is the Base tile's (`Rules.Hud.AfterFall`'s "Home").
+  - **The jump** (stand-ins until Modulo's look): the avatar's outline (a `Highlight`, #B48CFF) lifts over the charge; a white-violet light at the four edges, up and gone in 0.15 s; the field of view 4 wider, eased back over 0.3 s; a flat ring of light opening to 6 studs at the feet (`Effects.Arrive`).
+  - **Taken away:** TR16's chip, `WayHomeController`, `Rules.WayHome`, `Config.Hud.WayHome`, their logic cases, their self-test case and their take.
+- **Tested.** Type check 0 new. Logic 5824 offline (three new cases: every refusal in its order and its words, the charge broken and the shares, the pip). Studio has the code (searched). Written, not yet run: the self-test case (at home, Lantern Row, the cooldown, a fight, a hit in the charge, a keeper's try, the pip after a lone fall) and research's take ("Take: TR19").
+- **Visually reviewed:** no. **Director-accepted:** no.
+- **Tier 1 calls:**
+  - The cooldown's dim is its veil: the share still to come is veiled in ink and swept away left to right, so the tile brightens as it comes back, rather than a whole dim tile under a sweep.
+  - A quiet tile doesn't sink on a press, since nothing happens.
+  - The Map's tile keeps the kit's dim and toast, without the shake.
+- **For research:** the Base screen (the bag and the bays) loses its dock entry. It still opens from each bay's prompt. Say whether it needs another way in.
 
 ## TR20. Everything that presses answers the pointer: hover (Faber)
 

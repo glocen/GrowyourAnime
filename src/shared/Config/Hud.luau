@@ -179,7 +179,19 @@ return {
 	-- The dock of three icons (AR12; UI.Dock; its shape is UIKit.Dock, Modulo's): pressed, a tile's mark sinks Sink points
 	-- along the tile's lean (Modulo's 1.6); a tile that can't be used draws its tile and mark at Dim of themselves; a touch
 	-- held LongPress seconds shows the tile's word Rise points over its tap, and lifting it then doesn't press.
-	Dock = { Sink = 1.6, Dim = 0.45, LongPress = 0.4, Rise = 6 },
+	Dock = {
+		Sink = 1.6,
+		Dim = 0.45,
+		LongPress = 0.4,
+		Rise = 6,
+		-- TR19's seeds, UNVERIFIED: a quiet tile at Quiet of itself; a charge's fill in white at Fill, a cooldown's veil in
+		-- ink at Veil; a refused tap's shake, Shake points either way over Shook seconds, three times, dying away.
+		Quiet = 0.8,
+		Fill = 0.45,
+		Veil = 0.5,
+		Shake = 4,
+		Shook = 0.25,
+	},
 	-- The HUD's face (docs/ui.md, rule 3; the director, 2026-11-15: "the whole main hud of the player need a refont"): Face
 	-- names one of Faces, from Roblox's own font library, for every label on FaceLayers; a label authored under
 	-- FaceSmallUnder takes FaceSmall's when it names one (a face that fails at 14 pt keeps a plainer one for small text).
@@ -198,10 +210,6 @@ return {
 	-- The top right's pills (AR12, V2 Block): each wears its system's row (Config.UIKit.Systems). Widths, authored.
 	Pills = { Credits = 124, Power = 200 },
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
-	-- The way home after a lone fall (TR16), in grey: the trail is a line Width studs wide and Thick high, Lift over the
-	-- door's floor (over the elite's square's 0.1 mark), in Colour at Transparency, keeping Lane studs in from the stall
-	-- fronts. It's gone within Reach studs of the door. Its look past grey waits for the HUD's shared finish.
-	WayHome = { Width = 0.35, Thick = 0.05, Lift = 0.15, Colour = Color3.fromRGB(190, 190, 190), Transparency = 0.25, Lane = 4, Reach = 6 },
 	-- The cards' colours (TR3's verdict, 2026-11-13, fixes 1 to 3, with the director's notes). Health is the Ember light on
 	-- both cards, and no other bar takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's
 	-- experience light is a cool colour of its own against the red. The trim round the lead card's bars and its level's badge is

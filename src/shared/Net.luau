@@ -29,6 +29,9 @@ local REMOTES: { [string]: Spec } = {
 	Heal = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (heal) the health a hit's heal gave a lead, for its number
 	-- The keeper's try (KeeperService).
 	Fade = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (out, hold, back) seconds of a fade to black and back, around a move
+	-- Home in one tap (HomeService, TR19).
+	Home = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Refusal?, Says? }: the charge begins, or why not
+	HomeJump = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (landed, says?) the jump home, or the charge broken and why
 }
 
 local CLASS_FOR_KIND: { [Kind]: string } = {

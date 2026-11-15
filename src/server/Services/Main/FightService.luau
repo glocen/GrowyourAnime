@@ -744,6 +744,12 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	local left, fell = Fight.Damage(target.Health, result.Total)
 	setHealth(target, left)
+	-- A hit dealt or taken, dodged or not, keeps its player "in a fight" a while (Rules.Home, TR19: HomeService reads it).
+	for _, side in { f, target } do
+		if side.Side == "Lead" and side.Owner then
+			side.Owner:SetAttribute("HitAt", at)
+		end
+	end
 	if target.Side == "Shade" and f.Side == "Lead" then
 		if f.Owner and not target.Hitters[f.Owner] then
 			target.Hitters[f.Owner] = true

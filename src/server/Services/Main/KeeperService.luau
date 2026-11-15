@@ -128,6 +128,16 @@ function KeeperService.SetDown(player: Player, at: CFrame): boolean
 	return true
 end
 
+-- Sets the player and their lead down at `at` at once, with no fade: home in one tap (HomeService, TR19), whose jump
+-- is its own light. Not during a try. False when nothing moves.
+function KeeperService.Place(player: Player, at: CFrame): boolean
+	if tries[player] or player.Character == nil then
+		return false
+	end
+	setDown(player, at)
+	return true
+end
+
 -- The copies, one per plot, and the gate's prompt, from the markers as they stand now. A try under way ends.
 local function lay()
 	for player in tries do

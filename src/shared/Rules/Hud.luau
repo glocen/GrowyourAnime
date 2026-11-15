@@ -259,10 +259,10 @@ end
 -- after a fall of its own, the server time it's whole (LeadService's "Healing").
 export type Other = { Role: string, Healing: number? }
 
--- What a fallen lead's card offers under it (docs/test-requests.md, TR12 and TR16), or nil while the lead stands: "Send"
--- while another Voidkin could lead now (the next lead, whom Hud.LeadReason refuses nothing but the fight the fall just
--- ended), else "Home" while the player is out in a ground (`away`): the way home, the trail to the gate's door; else
--- nothing, the player already home. A worker can't lead, so a Voidkin at work never makes it "Send".
+-- What a fallen lead's card offers (docs/test-requests.md, TR12 and TR19), or nil while the lead stands: "Send" while
+-- another Voidkin could lead now (the next lead, whom Hud.LeadReason refuses nothing but the fight the fall just ended),
+-- else "Home" while the player is out in a ground (`away`): the dock's Base tile takes the pip, since home is where the
+-- lead waits; else nothing, the player already home. A worker can't lead, so a Voidkin at work never makes it "Send".
 function Hud.AfterFall(down: boolean, others: { Other }, now: number, away: boolean): ("Send" | "Home")?
 	if not down then
 		return nil

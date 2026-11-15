@@ -5300,14 +5300,26 @@ local cases = {
 			t.Check("the lead's card shows", parts.Lead.Visible)
 			local name, level = (parts.LeadName :: TextLabel).Text, (parts.LeadLevel :: TextLabel).Text
 			t.Check("with the lead's name", name == lead:GetAttribute("Title"), name)
-			t.Check("and its level, on the badge", level == tostring(lead:GetAttribute("Level")), level)
+			t.Check("and its level, on its mark", level == tostring(lead:GetAttribute("Level")), level)
 			local health, most = lead:GetAttribute("Health") :: number, lead:GetAttribute("MaxHealth") :: number
 			t.Near("its health bar is its share of health", parts.LeadHealth:GetAttribute("Share") :: number, health / most, 0.01)
-			local inside = (parts.LeadHealthText :: TextLabel).Text
-			t.Check("with its health and its most inside, set tight", inside == Hud.Health(health, most, nil, true), inside)
+			local under = (parts.LeadHealthText :: TextLabel).Text
+			t.Check("with its health and its most under it, set tight", under == Hud.Health(health, most, nil, true), under)
 			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
 			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
 			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)
+			-- Take F (AR12): the stud in the type's colour, the digits between the two bars, the level's mark clear of every
+			-- rarity's frame (its lowest point, UIKit.LeadPlate.FrameFoot, in the card's points).
+			local stud = parts.Lead:FindFirstChild("Stud") :: ImageLabel?
+			local hue = if def then HudConfig.Card.Types[def.Type] else nil
+			t.Check("its stud in its type's colour", stud ~= nil and hue ~= nil and stud.ImageColor3 == hue, if stud then stud.ImageColor3:ToHex() else "no stud")
+			local text, bar, xpBar = parts.LeadHealthText :: GuiObject, parts.LeadHealth :: GuiObject, parts.Lead:FindFirstChild("Xp") :: GuiObject
+			t.Check("its digits between the health bar and the experience", text.AbsolutePosition.Y >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y - 1
+				and text.AbsolutePosition.Y + text.AbsoluteSize.Y <= xpBar.AbsolutePosition.Y + 1, string.format("%.0f to %.0f", text.AbsolutePosition.Y, text.AbsolutePosition.Y + text.AbsoluteSize.Y))
+			local scale = parts.Lead.AbsoluteSize.X / parts.Lead.Size.X.Offset
+			local mark = parts.Lead:FindFirstChild("LevelPlate") :: GuiObject
+			local lowest = parts.Lead.AbsolutePosition.Y + UIKit.LeadPlate.FrameFoot * scale
+			t.Check("its level's mark under every rarity's frame", mark.AbsolutePosition.Y >= lowest - 1, string.format("%.0f, the frames' lowest %.0f", mark.AbsolutePosition.Y, lowest))
 			local credits = (parts.Credits :: TextLabel).Text
 			t.Check("the Credits pill shows the save's", credits == Read.Number(view.Currency.Credits), credits)
 			t.Wait(PLATE_TICK)

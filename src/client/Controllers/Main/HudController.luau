@@ -538,9 +538,9 @@ local function notice(old: Profile.View?, new: Profile.View)
 	if was and now and now.Level > was.Level then
 		Toast.Show(`{Read.VoidkinName(now)} reached level {now.Level}`, HudConfig.Card.Xp)
 		Pop.Play(lead.Level, pops.Level, { Paint = function(p: number)
-			lead.Level.TextColor3 = HudConfig.Card.Level:Lerp(Color3.new(1, 1, 1), HudConfig.Pop.Glow * p)
+			lead.Level.TextColor3 = HudConfig.Card.LeadLevel:Lerp(Color3.new(1, 1, 1), HudConfig.Pop.Glow * p)
 		end })
-		Burst.Play(Fly.Middle(lead.Level), HudConfig.Card.Level) -- rung 5: sparks off the badge (TR6)
+		Burst.Play(Fly.Middle(lead.Level), HudConfig.Card.Level) -- rung 5: sparks off the level's mark (TR6)
 	end
 end
 

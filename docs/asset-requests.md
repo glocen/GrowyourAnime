@@ -5627,6 +5627,30 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **F's fixes:** fill its cells with D's ruby (wine at the root to hot at the front) in place of the rose, so health never reads as Mythical's pink trim. Light the last cell in part, so a hit always moves something visible. The level's mark stays under the portrait and must clear the frame's foot, as E's doesn't.
     - The pick is the director's, and the takes can be mixed.
   - **The director's pick, 2026-11-15:** "let try F i dont want segments tho just a bar" (`docs/decisions.md`). **For Faber's build:** take F's composition, with one solid health bar 11 points thick and 97 long. Its colour is D's ruby, wine at the root to hot at the front, not F's rose. The level's mark clears the portrait frame's foot. With the cells gone, yours and the Shade's bar differ by colour, thickness and length only, so the ruby must stay clearly apart from the Shade's ember when they're side by side at phone size. Research checks that at the build's pass.
+  - **Faber's build of take F, with the portrait's seam fix** (2026-11-15, by 15:20; about 2 active hours, not clocked exactly).
+    - **Where:** the art in `tools/blender/lead_card_art.py` (its take F section). 20 images in `build/handoff/UI/hud/lead_card/images/`, uploaded under the group with the stud and level-plate images (ids in `docs/asset-log.md`). The game's card in `src/client/UI/LeadCard.luau`, from `Config.UIKit.LeadPlate`, with `Config.Hud.Card.Types` and `LeadLevel`.
+    - **Sheets:** `lead_card_sheet.png` shows Rook, Lyric, Pip and the stand-in at six rarities, over night and noon sand, 1 px a point. `lead_card_portraits_3x_<Who>.png` shows the seam's fix. `lead_card_sheet_2x.png` has two cards.
+    - **The bar:** one solid ruby, 11 thick. Its empty point is the stud's right edge, so 92 points show to its full front. F's mock started it at the frame's side, under the stud, which hid its first 7%. The hot stretch at its front is a fixed 6% of the bar, a saturated red. The pale is only its 1-point front sheen: at a low share the hot stretch is all that shows, and a pale one read as pink.
+    - **The seam's fix:** all four parts. The head's foot ends hard under the rim's inner line. The head covers the frame's top. An ink line runs round the head above the frame. The face is cut to each rarity's inner rim line. Seen on the 3x sheets, over dark and sand.
+    - **The director's word, 2026-11-15, mid-build:** "i think there is a bit to much light like it shine a bit to far from rare to mythical let remove this light aura". It covers the glow round the lead card's portrait frame, Rare to Mythical. Gone are the frames' own outer glow and Modulo's halo under the face (`CardFrameHalo*`, not uploaded). The rim's colour, shape and crests mark the rarity. The frame's shadow is now cast only below its top line: with the glow gone, the crests' shadow showed as a smudge above the hair on sand.
+    - **Tier 1, the builder's:**
+      - The level's number is in the name's ivory, with "Lv" before it in the rarity's trim, lifted. The pop still flashes the number white, and the sparks stay gold.
+      - The stud takes the type's colours from Modulo's mocks.
+      - The health's digits sit under the bar at the name's left.
+      - A name past 81 points is cut with "…".
+      - The lead's lights are anchored at their front; the target's are unchanged.
+      - No hurt trail yet: a candidate for `docs/polish-later.md`.
+      - Take E's images stay in the kit: the target's card and the keeper's HUD are built from them.
+    - **The card's height:** the level's mark sits under every rarity's lowest point (the Mythical's base points, 90 points down), so the card stands 114 tall, not 89. The readout's row moves 25 down. F's mock had the mark at 76, over a Common frame's foot. The alternative is D's place, beside the portrait under the plate, which keeps 89.
+    - **Open, for research's pass:**
+      - The Mythical's tallest crest shows about 2 points above Lyric's hat.
+      - The head's brim is cut straight over the frame's cut corners.
+      - Kirra has no portrait yet (`hud_art.PORTRAITS`, Modulo's), so she shows the stand-in.
+    - **Four facts:**
+      - **Implemented:** yes.
+      - **Tested:** type check 0 new; logic 5814 passed offline; the card's self-test case has three new checks (the stud's colour, the digits between the bars, the mark under the frames), not run: the screen is the director's. Content check PASS for upload, all 25 images; all Approved and the group's, read back.
+      - **Visually reviewed:** on the sheets only, not yet in Studio. Research's pass comes with the stills at phone size, with the ruby beside the Shade's ember.
+      - **Director-accepted:** no.
 - **The level-up as a notice on the left, three takes beside today's, for the director's pick** (Modulo, 2026-11-15, 13:40 to 14:00; the director, that night: "the leveling up text need a rework", all of it, then "the level up could come as a notice like on the left usually ui but different color with the name of the voidkin + level text reworked", `docs/decisions.md`; `tools/blender/levelup_notice_takes.py`; the sheet `build/handoff/UI/hud/levelup_takes/levelup_notice_takes.png`).
   - **Feel line, Modulo's proposal:** when your lead gains a level, a plate in a colour no other notice wears slides out of the left edge under its card, names the Voidkin and says its new level large, holds a beat and slides back, so you know who rose and to what without leaving the fight.
   - Mocks only, drawn from plain shapes with TR17's chevrons, on V2, Block with the new dock and the lead's card as picked (F, one solid bar, D's ruby), just after the level: the card already says the new level. Each take is shown up close at dusk (Rook reaches 12) and at noon (a Mythical reaches 48), in the other two colours, on the whole HUD at a phone's size, and at its longest (a nickname of 18 characters at level 100). A shape, a colour and the words can be mixed.

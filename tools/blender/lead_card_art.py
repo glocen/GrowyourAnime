@@ -5,27 +5,33 @@ transparent not by much"). The rim takes the lead's rarity's colour (TR3's verdi
 tinted. The portrait is the card's biggest thing, the head standing over the frame's top rim.
 
 Drawn by the builder at the director's ask, in Modulo's toolkit (ui_sheet.py) and from its portrait renders
-(hud_art.py); Modulo may re-cut any face (AR3, section 3). The layers, bottom to top, as src/client/UI/LeadCard.luau
-lays them, in the card's own points (232 by 96, its top left at the HUD's PAD, TOP):
+(hud_art.py); Modulo may re-cut any face (AR3, section 3). The lead's card is take F since 2026-11-15 (AR12, "The
+director's pick"). Its layers, bottom to top, as src/client/UI/LeadCard.luau lays them, in the card's own points (its top
+left at the HUD's PAD, TOP):
 
-  CardHousing            the two blades on one slant: the body, the slots, the ink, the shadow
-  CardHousingRim         its rim, white: tinted the rarity's colour
-  CardLightHealth/Xp     a bar's light, sliced across: lit top, sheen, deep foot, a bright front on the slant, a glow ahead
-  CardTab, CardTabRim    the tab under the name, sliced across to fit it; it covers the housing's rim where it sits
-  CardFace<Who>          the face cut to its frame's opening, on Midnight's well, its foot faded
-  CardFrame<Rarity>      the portrait's frame at the card's size: its glow and its rim, the opening clear
-  CardHead<Who>          the head over the frame's top rim, along its straight top, its sides soft
-  CardBadge, CardBadgeRim  the level's badge
-  CardTargetHousing(Rim) the target's card: one blade, the health slot, sliced across (the lead's tab and light on it)
+  CardPlate, CardPlateRim  the plate beside the portrait: the name's row, the two slots, the ink; its rim white, tinted
+  CardLeadHealth           the ruby, one solid bar, wine at its root to hot at its front, sliced across, anchored at its front
+  CardLeadXp               the lavender thread at the plate's foot, sliced across
+  CardFace<Who>            the face cut to its rarity's inner rim line, on Midnight's well, its foot faded
+  CardFrame<Rarity>        the portrait's frame at the card's size: its rim and shadow, no glow round it, the opening clear
+  CardHead<Who>            the head over the frame's top, its foot ended hard, an ink line round it above the frame
+  CardStud(Glow)           Modulo's (hud/colour): the type's stud at the health bar's root, tinted the type, its gem on it
+  LevelPlate(Edge)         Modulo's (voidkin/marks): the level's mark, under the frame's lowest point, with its chevrons
 
-    blender -b --factory-startup --python tools/blender/lead_card_art.py -- build/handoff/UI/hud/lead_card make
-    blender -b --factory-startup --python tools/blender/lead_card_art.py -- build/handoff/UI/hud/lead_card sheet
+The target's card and the keeper's HUD are still built from take E's images, drawn here too: CardHousing(Rim), the two
+blades; CardLightHealth/Xp, a bar's light; CardTab(Rim), the name's tab; CardBadge(Rim); CardTargetHousing(Rim), one blade.
 
-`make` renders the faces (or reuses the uncut renders already in the out folder's renders/, kept out of git), writes
-images/*.png and lead_card.json (tools/ui/kit_config.py reads it); `sheet` composes whole cards from them for review,
-on a pale and a night ground.
+    blender -b --factory-startup --python tools/blender/lead_card_art.py -- <abs path>/build/handoff/UI/hud/lead_card make
+    blender -b --factory-startup --python tools/blender/lead_card_art.py -- <abs path>/build/handoff/UI/hud/lead_card sheet
+
+Give Blender an absolute path: it resolves a relative one from the drive's root. `make` cuts the faces from the uncut
+renders cached in RENDERS (out of git; hud_art shoots any that's missing), writes images/*.png and lead_card.json
+(tools/ui/kit_config.py reads it).
+`sheet` composes whole cards for review: every Voidkin at every rarity over night and noon sand at card size, each at 3x,
+two at 2x, and the target's card.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -334,6 +340,113 @@ def badge(pal):
     return lay.crop(*box), rim.crop(*box), pad
 
 
+# --- the plate: take F (AR12) ---------------------------------------------------------------------------------------
+# The director's pick, 2026-11-15: "let try F i dont want segments tho just a bar". Take F's composition (Modulo's
+# tools/blender/lead_card_round2.py): one plate beside the portrait in place of the tab and the two blades, its rows on
+# one slant, the name's row in the tab's colours; one solid health bar 11 points thick in D's ruby, wine at its root to
+# hot at its front; experience a lavender thread at the plate's foot. The type's stud, the frame's halo and the level's
+# mark are Modulo's images (AR12's colour, TR17's marks). The housing, tab, lights and badge above stay: the target's
+# card and the keeper's HUD are built from them, and Modulo's mocks lay them.
+
+P_LEFT, P_END, P_TOP, P_BOTTOM = 46.0, 176.0, 26.0, 73.5  # the plate: its top line's two ends, its top and its foot
+P_NAME = 42.0  # the name's row reaches down to here, in the tab's colours
+P_INSET = 4.0  # a slot's ends inside the plate's
+P_HEALTH, P_XP = (43.5, 54.5), (68.5, 71.0)  # the slots' tops and feet
+P_FULL = P_END - P_INSET - 1.5  # a light's front when full, on the top line
+# Each light's empty point at its row's middle: health's at the type's stud's right edge, its root's slant tucked under
+# the stud's lower half, so the least share shows (with its root under the stud, the first 5% hid there); experience's
+# under the frame's right side, hidden.
+P_ROOT = {"Health": 68.0, "Xp": 59.4}
+P_STUD = (FRAME[0] + FRAME[2] + 0.5, sum(P_HEALTH) / 2, 8.5)  # centre and radius: Modulo's CardStud, 17 points across
+P_HOT = 0.06  # the ruby's last stretch, hot to its front: this share of the full bar, kept that long at any share
+VIOLET = dict(body=("#43348A", "#150F30"), tab=("#5545A6", "#211849"), glint="#E6DBFF", slot=("#07051A", "#120C2C"),
+              ink="#000000")
+RUBY = dict(ramp=((0.0, "#FF9CAE"), (0.22, "#F2466A"), (0.5, "#D4163F"), (0.56, "#BE1238"), (1.0, "#6E0A26")),
+            along=((0.0, "#6A0A2C"), (0.5, "#C41440"), (0.9, "#F0284E"), (1.0, "#FF4A68")), sheen="#FFD9E0")
+# The ruby's front stays a saturated hot red, the pale only in its 1-point front sheen: at a low share the hot stretch is
+# all that shows, and a pale front then read as pink beside Mythical's trim.
+LAVENDER = dict(ramp=((0.0, "#FFFFFF"), (0.22, "#EDE3FF"), (0.5, "#C9B2FF"), (0.56, "#B79CF5"), (1.0, "#6A52C4")),
+                sheen="#FFFFFF")
+LEAD_LIGHTS = {"Health": (P_HEALTH, RUBY), "Xp": (P_XP, LAVENDER)}
+
+
+def plx(x, y):
+    """A point given on the plate's top line, carried down its slant to y."""
+    return x - (y - P_TOP) * SLANT
+
+
+def para(t, x0, x1, y0, y1):
+    return t.poly([(plx(x0, y0), y0), (plx(x1, y0), y0), (plx(x1, y1), y1), (plx(x0, y1), y1)])
+
+
+def plate(pal):
+    lay = Layer()
+    t = lay.t
+    house = para(t, P_LEFT, P_END, P_TOP, P_BOTTOM)
+    pad = 6.0
+    shadow(t, house, 4.5, 0.5, pad)
+    t.paint(house, stops(t, (t.y - P_TOP) / (P_BOTTOM - P_TOP), ((0, pal["body"][0]), (1, pal["body"][1]))))
+    t.paint(np.maximum(house, t.y - P_NAME), stops(t, (t.y - P_TOP) / (P_NAME - P_TOP), ((0, pal["tab"][0]), (1, pal["tab"][1]))))
+    sweep = ((t.x - (P_END - 44.0)) + (t.y - P_TOP) * SLANT) / np.hypot(1.0, SLANT)  # the lacquer's sheen, on the slant
+    ui.over(t.px, WHITE, cover(house) * np.clip(1 - np.abs(sweep) / 16.0, 0, 1) * 0.1)
+    t.paint(np.maximum(house, np.abs(t.y - (P_TOP + 1.9)) - 0.55), c(pal["glint"]), 0.3)
+    for y0, y1 in (P_HEALTH, P_XP):
+        slot = para(t, P_LEFT + P_INSET, P_END - P_INSET, y0, y1)
+        ui.over(t.px, stops(t, (t.y - y0) / (y1 - y0), ((0, pal["slot"][0]), (1, pal["slot"][1]))), cover(slot) * 0.85)
+        t.paint(np.maximum(slot, np.abs(t.y - y1 + 0.4) - 0.35), c(pal["glint"]), 0.18)  # the slot's lower lip
+    t.line(house + RIM, 0.7, c(pal["ink"]), 0.8)  # dark inside the rim
+    rim = Layer()
+    rim.t.line(para(rim.t, P_LEFT, P_END, P_TOP, P_BOTTOM), RIM, WHITE)
+    box = (plx(P_LEFT, P_BOTTOM) - pad, P_TOP - pad, P_END + pad, P_BOTTOM + pad)
+    return lay.crop(*box), rim.crop(*box), pad
+
+
+def lead_row(name):
+    """A lead light's top edge: its left end (its root, the empty point), its y, its right end when full; its height."""
+    (y0, y1), _ = LEAD_LIGHTS[name]
+    root = P_ROOT[name] + ((y0 + y1) / 2 - P_TOP) * SLANT  # on the top line
+    return [plx(root, y0), y0, plx(P_FULL, y0), y1 - y0]
+
+
+def lead_light(name):
+    """A lead light drawn full, sliced across in the game: its root's slanted end the left cap, its front, its glow
+    ahead and (the ruby) its hot last stretch the right cap, the middle stretching. The ruby runs along it, wine at the
+    root to hot at the front; the lavender is lit at its top, deep at its foot, as the target's light."""
+    (y0, y1), light = LEAD_LIGHTS[name]
+    h = y1 - y0
+    xl, _, xr, _ = lead_row(name)
+    length = xr - xl
+    lay = Layer()
+    t = lay.t
+    ty, tx = 40.0, 40.0  # anywhere on the drawing: the image is the light's own box
+    te = tx + length
+    lit = t.poly([(tx, ty), (te, ty), (te - h * SLANT, ty + h), (tx - h * SLANT, ty + h)])
+    ahead = ((t.x - te) + (t.y - ty) * SLANT) / np.hypot(1.0, SLANT)
+    band_y = np.abs(t.y - (ty + h / 2)) - h / 2
+    glow = np.clip(1 - np.maximum(ahead, 0) / GLOW, 0, 1) * (ahead > 0) * cover(band_y)
+    ui.over(t.px, stops(t, np.full_like(t.y, 0.5), light["ramp"]), glow * 0.35)
+    v = np.clip((t.y - ty) / h, 0, 1)
+    along = light.get("along")
+    if along:
+        col = stops(t, ((t.x - tx) + (t.y - ty) * SLANT) / length, along)
+        col = col + (1 - col) * (np.clip(1 - v / 0.35, 0, 1) * 0.3)[..., None]  # lit toward the top
+        col = col * (1 - np.clip((v - 0.5) / 0.5, 0, 1) * 0.3)[..., None]  # deep toward the foot
+    else:
+        col = stops(t, v, light["ramp"])
+    t.paint(lit, col)
+    t.paint(np.maximum(lit, np.abs(t.y - (ty + h * 0.22)) - max(h * 0.07, 0.3)), c(light["sheen"]), 0.4)
+    t.paint(np.maximum(lit, -ahead - 1.0), c(light["sheen"]), 0.5)
+    run = h * SLANT
+    image = lay.crop(tx - run, ty, te + GLOW, ty + h)
+    return image, across(image, run + 0.5, run + 1.5 + GLOW + (P_HOT * length if along else 0.0))
+
+
+def frame_foot():
+    """The lowest point of any rarity's frame: its base points fall below its foot (the level's mark clears them)."""
+    x0, y0, w, h = FRAME
+    return y0 + h + max((hh for r in ui.RARITIES.values() for _, _, hh in r.get("base", ())), default=0) * w / 80.0
+
+
 # --- the portrait ---------------------------------------------------------------------------------------------------
 
 def frame_geometry(t, rarity):
@@ -353,10 +466,11 @@ def frame(rarity):
     t = lay.t
     x0, y0, w, h = FRAME
     r, d, scale, width = frame_geometry(t, rarity)
-    if "glow" in r:
-        code, radius, strength = r["glow"]
-        ui.over(t.px, c(code), strength * 0.8 * np.exp(-(np.maximum(d, 0) / (radius * scale)) ** 1.4) * outside(d))
-    shadow(t, d, 5.0, 0.4)
+    # No glow round the frame, its rarity's or Modulo's halo (the director, 2026-11-15: "there is a bit to much light
+    # like it shine a bit to far from rare to mythical let remove this light aura"): the rim's colour, its shape and its
+    # crests mark the rarity. Its shadow is cast from below its top line only: the crests stand behind the head, and their
+    # shadow showed as a smudge above the hair on a pale ground.
+    shadow(t, np.maximum(d, y0 - t.y), 5.0, 0.4)
     metal = t.ramp(r["metal"][0], r["metal"][1], (t.y - y0) / h)
     t.line(d, width, metal)
     t.line(d + width, 0.5, BLACK, 0.5)
@@ -387,6 +501,31 @@ def placed(face, rarity, who):
 
 
 HEAD_TOP = FRAME[1] - RISE - 12.0
+HEAD_SIDE = 2.0  # the head's image reaches this far past the frame's sides, for its ink line
+INK_LINE, INK_ALPHA = 1.0, 0.85  # the line round the head above the frame (the seam's fix c)
+
+
+def openings(rarity, width):
+    """Where the face stops inside the frame, and where the head over it ends: the seam's fixes (AR12, the director,
+    2026-11-15: "there is some issue with the portrait see it merging"). The face is clipped at the rim's inner edge, or
+    at the middle of the inner line where the rarity has one (d), and the head ends hard below that line (a)."""
+    inner = ui.RARITIES[rarity].get("inner")
+    return (width + 1.55 if inner else width + 0.25), FRAME[1] + width + (2.2 if inner else 0.9)
+
+
+def dilate(alpha, radius):
+    """An alpha grown by `radius` points: the most of it within a disc."""
+    r = round(radius * K)
+    grown = alpha.copy()
+    h, w = alpha.shape
+    for dy in range(-r, r + 1):
+        for dx in range(-r, r + 1):
+            if dx * dx + dy * dy > r * r or (dx == 0 and dy == 0):
+                continue
+            src = alpha[max(-dy, 0):h - max(dy, 0), max(-dx, 0):w - max(dx, 0)]
+            dst = grown[max(dy, 0):h - max(-dy, 0), max(dx, 0):w - max(-dx, 0)]
+            np.maximum(dst, src, out=dst)
+    return grown
 
 
 def face_and_head(face, rarity, who, pal):
@@ -396,26 +535,36 @@ def face_and_head(face, rarity, who, pal):
     inside = Layer()
     t = inside.t
     r, d, scale, width = frame_geometry(t, rarity)
+    clip, foot = openings(rarity, width)
     t.paint(d, stops(t, (t.y - y0) / h, ((0, pal["well"][0]), (1, pal["well"][1]))))
     behind = np.exp(-(((t.x - (x0 + w / 2)) / 20.0) ** 2 + ((t.y - (y0 + h * 0.38)) / 16.0) ** 2))  # light behind the head
     ui.over(t.px, c(pal["tab"][0]), cover(d) * behind * 0.55)
-    inside.image(img, fx, fy, d + width * 0.5)
+    inside.image(img, fx, fy, d + clip)
     t.paint(np.maximum(d, y1 - h * 0.25 - t.y), BLACK, 0.18)
+    # The head over the frame: everything of the portrait above its foot, across the frame's whole width, so it stands
+    # in front of the frame's top and its crest at every rarity (b); below the frame's top line only inside its sides.
+    head = Layer()
+    o = head.t
+    band = np.maximum(o.y - foot, np.minimum(o.y - y0, np.maximum(x0 - o.x, o.x - x1)))
+    head.image(img, fx, fy, band)
+    # Its ink line (c), above the frame's rim's inner edge only: never along its cut foot, which the face continues.
+    ink = np.clip(dilate(o.px[..., 3], INK_LINE) - o.px[..., 3], 0, 1) * cover(band) * cover(o.y - (y0 + width))
     over = Layer()
-    o = over.t
-    tl, tr = r["cut"][0], r["cut"][1]
-    sx0, sx1 = x0 + max(tl * 0.6, width), x1 - max(tr * 0.6, width)
-    band = o.poly([(sx0, HEAD_TOP - 20), (sx1, HEAD_TOP - 20), (sx1, y0 + width + 0.4), (sx0, y0 + width + 0.4)])
-    over.image(img, fx, fy, band / 6.0)
-    return inside.crop(x0, y0, x1, y1), over.crop(x0, HEAD_TOP, x1, y0 + 6.0)
+    over.t.px[..., 3] = ink * INK_ALPHA  # black: the Layer's colour is 0
+    over.image(o.px, -M, -M)
+    box = (x0 - HEAD_SIDE, HEAD_TOP, x1 + HEAD_SIDE, y0 + 6.0)
+    return inside.crop(x0, y0, x1, y1), over.crop(*box)
 
 
 # --- making ---------------------------------------------------------------------------------------------------------
 
+RENDERS = Path(__file__).resolve().parents[2] / "build" / "scratch" / "faber" / "portraits"  # the uncut renders, out of git
+
+
 def faces(out: Path):
     shots = {}
-    renders = out / "renders"
-    renders.mkdir(exist_ok=True)
+    renders = RENDERS
+    renders.mkdir(parents=True, exist_ok=True)
     for who in list(hud_art.PORTRAITS) + ["Unknown"]:
         path = renders / f"{who}_uncut.png"
         if not path.exists():
@@ -457,12 +606,19 @@ def make(out: Path):
     keep("CardBadgeRim", b_rim, BADGE[0] - BADGE[2] / 2, BADGE[1] - BADGE[3] / 2, pad, "the badge's rim: tinted")
     for rarity in RARITIES:
         keep(f"CardFrame{rarity}", frame(rarity), FRAME[0], FRAME[1], FRAME_PAD, f"the portrait's frame, {rarity}")
+    p_px, p_rim, pad = plate(VIOLET)
+    keep("CardPlate", p_px, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "take F's plate, Violet; its box from its foot's left")
+    keep("CardPlateRim", p_rim, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "the plate's rim: white, tinted the rarity's colour")
+    for name in LEAD_LIGHTS:
+        px, cut = lead_light(name)
+        keep(f"CardLead{name}", px, 0.0, 0.0, 0.0,
+             f"the lead's {name} light on the plate, drawn full, sliced across: its box from its foot's left to its glow", cut)
     shots = faces(out)
     for who in hud_art.PORTRAITS:
         rarity = hud_art.voidkin_rarity(who)
         inside, head = face_and_head(shots[who], rarity, who, pal)
         keep(f"CardFace{who}", inside, FRAME[0], FRAME[1], 0.0, f"{who} in a {rarity} frame's opening, under the frame")
-        keep(f"CardHead{who}", head, FRAME[0], HEAD_TOP, 0.0, f"{who}'s head over the frame's top rim, over the frame")
+        keep(f"CardHead{who}", head, FRAME[0] - HEAD_SIDE, HEAD_TOP, 0.0, f"{who}'s head over the frame's top, over the frame")
     for rarity in RARITIES:
         inside, _ = face_and_head(shots["Unknown"], rarity, "Unknown", pal)
         keep(f"CardFaceUnknown{rarity}", inside, FRAME[0], FRAME[1], 0.0,
@@ -470,7 +626,9 @@ def make(out: Path):
     lights = light_rows()
     geometry = dict(card=[W, H], frame=list(FRAME), housing=[X0, Y0, X1, Y1], slant=SLANT, inset=INSET,
                     lights=lights, fillFrom=FILL_FROM, step=STEP, tab=[TAB_TOP, TAB_FOOT, TAB_REF, left(TAB_TOP)],
-                    glow=GLOW, badge=list(BADGE), mid=MID, target=target_geometry())
+                    glow=GLOW, badge=list(BADGE), mid=MID, target=target_geometry(),
+                    plate=dict(plate=[P_LEFT, P_TOP, P_END, P_BOTTOM], name=P_NAME, health=lead_row("Health"),
+                               xp=lead_row("Xp"), stud=list(P_STUD), frameFoot=frame_foot()))
     (out / "lead_card.json").write_text(json.dumps(dict(pixelsPerPoint=K, geometry=geometry, images=listing), indent=1),
                                         encoding="utf-8", newline="\n")
     print(f"wrote {out / 'lead_card.json'}: {len(listing)} images")
@@ -493,42 +651,66 @@ def sliced(px, cut, width_pts):
     return np.concatenate([px[:, :lc], mid[:, idx], px[:, px.shape[1] - rc:]], axis=1)
 
 
-def compose(data, img, who, rarity, health, xp, name_w, ground):
+def tint(px, top, bottom=None):
+    """The engine's tint: the image's colour times one colour, or two from its top to its foot (Skin.Tint's gradient)."""
+    out = px.copy()
+    a, b = c(top), c(bottom or top)
+    v = ((np.arange(px.shape[0]) + 0.5) / px.shape[0])[:, None, None]
+    out[..., :3] *= a + (b - a) * v
+    return out
+
+
+def mix(a, b, t):
+    """Color3:Lerp, as the game mixes a trim toward white."""
+    return "#" + "".join(f"{min(max(round(float(x) * 255), 0), 255):02X}" for x in c(a) * (1 - t) + c(b) * t)
+
+
+def level_mark(digits):
+    """The level's mark under the portrait (UI.LeadCard): its width by the level's digits (Modulo's mock, round two),
+    its left on the frame's middle but never past the frame's left, its top clear of every rarity's lowest point."""
+    w = {1: 56.0, 2: 64.0, 3: 73.0}[digits]
+    return max(FRAME[0], FRAME[0] + FRAME[2] / 2 - w / 2), frame_foot() + 1.0, w
+
+
+def compose_f(data, img, marks, geometry, face, head, rarity, kind, health, xp, digits, ground):
+    """The lead's card, take F, as UI.LeadCard lays it: the plate and its rim, the two lights, the frame's halo, the
+    face, the frame, the head, the type's stud and the level's mark. The text is the game's own, not drawn here."""
+    g = geometry["plate"]
     canvas = rs.canvas(round((W + 2 * M) * K), round((H + 2 * M) * K), tuple(c(ground)))
 
     def put(px, x, y):  # an opaque ground: rook_sheet's paste keeps the target's alpha
         rs.paste(canvas, px, round((x + M) * K), round((y + M) * K))
 
-    def at(name, px=None, x=None, y=None):
+    def at(name, px=None):
         e = data[name]
-        put(img[name] if px is None else px, (e["at"][0] if x is None else x) - e["pad"], (e["at"][1] if y is None else y) - e["pad"])
+        put(img[name] if px is None else px, e["at"][0] - e["pad"], e["at"][1] - e["pad"])
 
     trim = TRIM[rarity]
-    at("CardHousing")
-    at("CardHousingRim", tinted(img["CardHousingRim"], trim))
-    rows = light_rows()
+    at("CardPlate")
+    at("CardPlateRim", tinted(img["CardPlateRim"], trim))
     for name, share in (("Health", health), ("Xp", xp)):
         if share <= 0:
             continue
-        xl, y0, xr, h = rows[name]
-        name = f"CardLight{name}"
-        e = data[name]
-        front = FILL_FROM + (xr - FILL_FROM) * share
-        width = max(front - xl + h * SLANT + GLOW, e["cut"][0] + e["cut"][2])
-        put(sliced(img[name], e["cut"], width), xl - h * SLANT, y0)
-    tab_w = 66.0 + name_w + 22.0 - left(TAB_TOP)
-    e = data["CardTab"]
-    for name in ("CardTab", "CardTabRim"):
-        px = sliced(img[name], e["cut"], tab_w + (TAB_FOOT - TAB_TOP) * SLANT + 2 * e["pad"])
-        put(tinted(px, trim) if name.endswith("Rim") else px, e["at"][0] - e["pad"], e["at"][1] - e["pad"])
-    face = who if who != "Unknown" else f"Unknown{rarity}"
-    at(f"CardFace{face}")
+        xl, y0, xr, h = g[name.lower()]
+        e = data[f"CardLead{name}"]
+        front = xl + (xr - xl) * share
+        width = max(front - xl + h * SLANT + GLOW, e["cut"][0] + e["cut"][2])  # anchored at its front (LeadCard.Fill)
+        put(sliced(img[f"CardLead{name}"], e["cut"], width), front + GLOW - width, y0)
+    put(face, FRAME[0], FRAME[1])
     at(f"CardFrame{rarity}")
-    if f"CardHead{face}" in data:
-        at(f"CardHead{face}")
-    at("CardBadge")
-    at("CardBadgeRim", tinted(img["CardBadgeRim"], trim))
-    return canvas[round((M - 8) * K):round((M + H) * K), round((M - 8) * K):round((M + W) * K)]
+    if head is not None:
+        put(head, FRAME[0] - HEAD_SIDE, HEAD_TOP)
+    cx, cy, _ = g["stud"]
+    for name in ("CardStudGlow", "CardStud"):
+        put(tint(marks[name], TYPES[kind]), cx - 20.5, cy - 20.5)
+    gem = rs.shrink(marks[f"Gem{kind}"], 14.6 * K / marks[f"Gem{kind}"].shape[1])
+    put(gem, cx - gem.shape[1] / K / 2, cy - gem.shape[0] / K / 2)
+    x, y, w = level_mark(digits)
+    put(tint(sliced(marks["LevelPlate"], (24.0, 0, 8.0, 0), w), *VIOLET["tab"]), x, y)
+    put(tint(sliced(marks["LevelPlateEdge"], (24.0, 0, 8.0, 0), w), mix(trim, "#FFFFFF", 0.6), trim), x, y)
+    chevrons = tint(rs.shrink(marks["LevelChevrons"], 14.0 * K / marks["LevelChevrons"].shape[1]), VIOLET["body"][1])
+    put(chevrons, x + 11.0 - 7.0, y + 11.0 - 7.0)
+    return canvas[round((M - 8) * K):round((M + y + 22.0 + 6.0) * K), round((M - 8) * K):round((M + W - 40.0) * K)]
 
 
 def compose_target(data, img, geometry, health, text_w, ground):
@@ -566,20 +748,57 @@ T_NAME_X = 71.0  # the name's left on the tab, in the lead's points: the type ed
 T_TAB_AFTER = 10.0  # the tab runs on past the level this far
 
 
+TYPES = {"Strength": "#EA4B4F", "Endurance": "#F4902A", "Agility": "#3F9DF2", "Intelligence": "#A470F2",
+         "Technique": "#42CC7E"}  # a type's colour, as Modulo's mocks tint the stud (tools/blender/shade_sheet.py)
+GROUNDS = (("night", "#141925"), ("noon sand", "#D2BC93"))  # the seam's fix is read on both (AR12)
+SHARES = ((0.78, 0.42, 1), (0.35, 0.9, 2), (1.0, 0.05, 2), (0.12, 0.6, 3), (0.04, 0.0, 2), (0.6, 1.0, 1))  # by rarity
+
+
+def voidkin_type(name):
+    text = (hud_art.REPO / "src" / "shared" / "Definitions" / "Voidkin.luau").read_text(encoding="utf-8")
+    return re.search(r'Name = "%s", Rarity = "\w+", Type = "(\w+)"' % name, text).group(1)
+
+
 def sheet(out: Path):
-    """Each card on a pale ground and a night one, at 4 pixels a point: the text is the game's own, not drawn here."""
-    data = json.loads((out / "lead_card.json").read_text(encoding="utf-8"))["images"]
+    """Take F's card, each portrait in all six rarities, on night and on noon sand: whole cards at the game's size (one
+    pixel a point) and the portraits at 3x, for the seam's fix (AR12: "all six rarities are cut, with Rook, Lyric and a
+    pale-haired Voidkin at card size and at 3x, over dark and over the noon sand"); two cards at 2x; then the target's
+    card, unchanged."""
+    listing = json.loads((out / "lead_card.json").read_text(encoding="utf-8"))
+    data, geometry = listing["images"], listing["geometry"]
     img = {n: rs.load(out / e["file"]) for n, e in data.items()}
-    rows = []
-    for who, rarity, health, xp, name_w in (("Rook", "Common", 0.78, 0.42, 29.8), ("Pip", "Common", 0.35, 0.9, 19.2),
-                                            ("Lyric", "Rare", 1.0, 0.05, 29.5), ("Unknown", "Uncommon", 0.5, 0.3, 50.0),
-                                            ("Unknown", "Epic", 0.12, 0.6, 50.0), ("Unknown", "Legendary", 0.6, 0.0, 50.0),
-                                            ("Unknown", "Mythical", 0.01, 1.0, 50.0)):
-        rows.append(np.concatenate([compose(data, img, who, rarity, health, xp, name_w, ground)
-                                    for ground in ("#8C9AB0", "#141925")], axis=1))
-    rs.save(np.concatenate(rows[:3], axis=0), out / "lead_card_sheet.png")
-    rs.save(np.concatenate(rows[3:], axis=0), out / "lead_card_sheet_unknown.png")
-    geometry = json.loads((out / "lead_card.json").read_text(encoding="utf-8"))["geometry"]
+    ui_dir = out.parents[1]  # build/handoff/UI
+    marks = {n: rs.load(ui_dir / "hud" / "colour" / "images" / f"{n}.png") for n in ("CardStud", "CardStudGlow")}
+    marks |= {n: rs.load(ui_dir / "voidkin" / "marks" / "images" / f"{n}.png")
+              for n in ("LevelPlate", "LevelPlateEdge", "LevelChevrons")}
+    marks |= {f"Gem{k}": rs.load(ui_dir / "kit" / "images" / f"Gem{k}.png") for k in TYPES}
+    shots = faces(out)
+
+    def card(who, rarity, kind, health, xp, digits, ground):
+        face, head = face_and_head(shots[who], rarity, who, MIDNIGHT)
+        return compose_f(data, img, marks, geometry, face, None if who == "Unknown" else head, rarity, kind, health, xp,
+                         digits, ground)
+
+    cards = []
+    for who in ("Rook", "Lyric", "Pip", "Unknown"):
+        kind = voidkin_type(who) if who != "Unknown" else "Agility"
+        row, zoom = [], []
+        for _, ground in GROUNDS:
+            line = []
+            for rarity, (health, xp, digits) in zip(RARITIES, SHARES):
+                px = card(who, rarity, kind, health, xp, digits, ground)
+                row.append(rs.shrink(px, 1.0 / K))
+                portrait = px[:round((8 + FRAME[1] + FRAME[3] + 10) * K), :round((8 + FRAME[0] + FRAME[2] + 14) * K)]
+                line.append(rs.shrink(portrait, 3.0 / K))
+            zoom.append(np.concatenate(line, axis=1))
+        cards.append(np.concatenate(row, axis=1))
+        if who != "Unknown":  # the portraits at 3x: night above, noon sand under
+            rs.save(np.concatenate(zoom, axis=0), out / f"lead_card_portraits_3x_{who}.png")
+    rs.save(np.concatenate(cards, axis=0), out / "lead_card_sheet.png")
+    big = [card(who, rarity, voidkin_type(who), health, xp, digits, ground)
+           for who, rarity, health, xp, digits in (("Rook", "Common", 0.78, 0.42, 1), ("Lyric", "Mythical", 0.12, 0.9, 3))
+           for _, ground in GROUNDS]
+    rs.save(np.concatenate([rs.shrink(px, 2.0 / K) for px in big], axis=1), out / "lead_card_sheet_2x.png")
     rows = [np.concatenate([compose_target(data, img, geometry, health, text_w, ground) for ground in ("#8C9AB0", "#141925")], axis=1)
             for health, text_w in ((1.0, 92.0), (0.46, 64.0), (0.08, 120.0))]
     rs.save(np.concatenate(rows, axis=0), out / "target_card_sheet.png")

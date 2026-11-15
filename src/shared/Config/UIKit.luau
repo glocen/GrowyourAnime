@@ -277,22 +277,26 @@ return {
 		CardBadgeRim = { Id = "rbxassetid://110655299972425", Pixels = Vector2.new(136, 96), Points = Vector2.new(34, 24), Pad = 4, At = Vector2.new(1, 72) },
 		CardFrameCommon = { Id = "rbxassetid://137554330922876", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
 		CardFrameUncommon = { Id = "rbxassetid://94150302596043", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
-		CardFrameRare = { Id = "rbxassetid://92670447076457", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
-		CardFrameEpic = { Id = "rbxassetid://137676971880867", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
-		CardFrameLegendary = { Id = "rbxassetid://123699759722658", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
-		CardFrameMythical = { Id = "rbxassetid://106463911460597", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
-		CardFaceRook = { Id = "rbxassetid://111933008720404", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardHeadRook = { Id = "rbxassetid://132363143310985", Pixels = Vector2.new(232, 128), Points = Vector2.new(58, 32), Pad = 0, At = Vector2.new(2, -6) },
-		CardFacePip = { Id = "rbxassetid://92052677835724", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardHeadPip = { Id = "rbxassetid://83027548099474", Pixels = Vector2.new(232, 128), Points = Vector2.new(58, 32), Pad = 0, At = Vector2.new(2, -6) },
-		CardFaceLyric = { Id = "rbxassetid://121086016431391", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardHeadLyric = { Id = "rbxassetid://88976256906496", Pixels = Vector2.new(232, 128), Points = Vector2.new(58, 32), Pad = 0, At = Vector2.new(2, -6) },
-		CardFaceUnknownCommon = { Id = "rbxassetid://104192155118608", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardFaceUnknownUncommon = { Id = "rbxassetid://87875711212129", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardFaceUnknownRare = { Id = "rbxassetid://80324505064838", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardFaceUnknownEpic = { Id = "rbxassetid://126963605272336", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardFaceUnknownLegendary = { Id = "rbxassetid://96161984645975", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardFaceUnknownMythical = { Id = "rbxassetid://92887772643085", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFrameRare = { Id = "rbxassetid://140510343281593", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameEpic = { Id = "rbxassetid://132943964911656", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameLegendary = { Id = "rbxassetid://112718694958800", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardFrameMythical = { Id = "rbxassetid://113716617759470", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
+		CardPlate = { Id = "rbxassetid://72442840086055", Pixels = Vector2.new(654, 238), Points = Vector2.new(163.5, 59.5), Pad = 6, At = Vector2.new(24.625, 26) },
+		CardPlateRim = { Id = "rbxassetid://85184907797588", Pixels = Vector2.new(654, 238), Points = Vector2.new(163.5, 59.5), Pad = 6, At = Vector2.new(24.625, 26) },
+		CardLeadHealth = { Id = "rbxassetid://135563705547760", Pixels = Vector2.new(405, 44), Points = Vector2.new(101.25, 11), Cut = { 5.45, 5.25, 15.979, 5.25 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardLeadXp = { Id = "rbxassetid://105379164637312", Pixels = Vector2.new(386, 10), Points = Vector2.new(96.5, 2.5), Cut = { 1.625, 1, 6.625, 1 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardFaceRook = { Id = "rbxassetid://73187841237944", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadRook = { Id = "rbxassetid://114841540436502", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
+		CardFacePip = { Id = "rbxassetid://80653273610168", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadPip = { Id = "rbxassetid://125043704991003", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
+		CardFaceLyric = { Id = "rbxassetid://106919424501270", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadLyric = { Id = "rbxassetid://127572580180229", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
+		CardFaceUnknownCommon = { Id = "rbxassetid://86301901892230", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownUncommon = { Id = "rbxassetid://106071216508558", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownRare = { Id = "rbxassetid://106543868901081", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownEpic = { Id = "rbxassetid://77272618908050", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownLegendary = { Id = "rbxassetid://93948379470352", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardFaceUnknownMythical = { Id = "rbxassetid://101125149465025", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 		BossBarRim = { Id = "rbxassetid://84019552871233", Pixels = Vector2.new(264, 104), Points = Vector2.new(66, 26), Cut = { 8, 8, 8, 8 }, Pad = 3, At = Vector2.new(0, 0) },
 		BossBarCap = { Id = "rbxassetid://135937492808825", Pixels = Vector2.new(60, 128), Points = Vector2.new(15, 32), Pad = 1.5, At = Vector2.new(0, 0) },
 		BossBarMark = { Id = "rbxassetid://119368842212768", Pixels = Vector2.new(40, 116), Points = Vector2.new(10, 29), Pad = 1.5, At = Vector2.new(0, 0) },
@@ -320,6 +324,11 @@ return {
 		SignatureHeldNoteReady = { Id = "rbxassetid://113427960262970", Pixels = Vector2.new(232, 232), Points = Vector2.new(58, 58), Pad = 0 },
 		EyeOff = { Id = "rbxassetid://124465473852752", Pixels = Vector2.new(336, 336), Points = Vector2.new(84, 84), Pad = 20 },
 		EyeOn = { Id = "rbxassetid://139858137087045", Pixels = Vector2.new(336, 336), Points = Vector2.new(84, 84), Pad = 20 },
+		CardStudGlow = { Id = "rbxassetid://124487950691758", Pixels = Vector2.new(164, 164), Points = Vector2.new(41, 41), Pad = 12 },
+		CardStud = { Id = "rbxassetid://110074874376223", Pixels = Vector2.new(164, 164), Points = Vector2.new(41, 41), Pad = 12 },
+		LevelChevrons = { Id = "rbxassetid://75727116138230", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		LevelPlate = { Id = "rbxassetid://126334652302553", Pixels = Vector2.new(216, 88), Points = Vector2.new(54, 22), Cut = { 24, 0, 8, 0 }, Pad = 0 },
+		LevelPlateEdge = { Id = "rbxassetid://103428031612838", Pixels = Vector2.new(216, 88), Points = Vector2.new(54, 22), Cut = { 24, 0, 8, 0 }, Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {
@@ -334,6 +343,15 @@ return {
 		Glow = 4, -- a light's glow ahead of its front
 		Tab = { 18, 36.4, 80, 61.915 }, -- its top, its foot, its width as drawn, its top edge's left end
 		Badge = { 14, 80, 26, 16 }, -- centre and size
+	},
+	-- Take F's plate beside the portrait (AR12, the director's pick), in the lead card's points.
+	LeadPlate = {
+		Plate = { 46, 26, 176, 73.5 }, -- its top line's left end, its top, its top line's right end, its foot
+		Name = 42, -- the name's row reaches down to here
+		Health = { 70.475, 43.5, 162.625, 11 }, -- a light's top edge: its root (empty), its y, its full right end; its height
+		Xp = { 59.963, 68.5, 151.375, 2.5 },
+		Stud = { 60.5, 49, 8.5 }, -- the type's stud: its centre and radius
+		FrameFoot = 89.975, -- the lowest point of any rarity's frame: the level's mark clears it
 	},
 	-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.
 	TargetCard = {

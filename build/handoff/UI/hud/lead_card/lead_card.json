@@ -75,6 +75,33 @@
     8.0,
     27.9
    ]
+  },
+  "plate": {
+   "plate": [
+    46.0,
+    26.0,
+    176.0,
+    73.5
+   ],
+   "name": 42.0,
+   "health": [
+    70.475,
+    43.5,
+    162.625,
+    11.0
+   ],
+   "xp": [
+    59.962500000000006,
+    68.5,
+    151.375,
+    2.5
+   ],
+   "stud": [
+    60.5,
+    49.0,
+    8.5
+   ],
+   "frameFoot": 89.975
   }
  },
  "images": {
@@ -386,6 +413,86 @@
    ],
    "use": "the portrait's frame, Mythical"
   },
+  "CardPlate": {
+   "file": "images/CardPlate.png",
+   "pixels": [
+    654,
+    238
+   ],
+   "points": [
+    163.5,
+    59.5
+   ],
+   "pad": 6.0,
+   "at": [
+    24.625,
+    26.0
+   ],
+   "use": "take F's plate, Violet; its box from its foot's left"
+  },
+  "CardPlateRim": {
+   "file": "images/CardPlateRim.png",
+   "pixels": [
+    654,
+    238
+   ],
+   "points": [
+    163.5,
+    59.5
+   ],
+   "pad": 6.0,
+   "at": [
+    24.625,
+    26.0
+   ],
+   "use": "the plate's rim: white, tinted the rarity's colour"
+  },
+  "CardLeadHealth": {
+   "file": "images/CardLeadHealth.png",
+   "pixels": [
+    405,
+    44
+   ],
+   "points": [
+    101.25,
+    11.0
+   ],
+   "pad": 0.0,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the lead's Health light on the plate, drawn full, sliced across: its box from its foot's left to its glow",
+   "cut": [
+    5.45,
+    5.25,
+    15.979,
+    5.25
+   ]
+  },
+  "CardLeadXp": {
+   "file": "images/CardLeadXp.png",
+   "pixels": [
+    386,
+    10
+   ],
+   "points": [
+    96.5,
+    2.5
+   ],
+   "pad": 0.0,
+   "at": [
+    0.0,
+    0.0
+   ],
+   "use": "the lead's Xp light on the plate, drawn full, sliced across: its box from its foot's left to its glow",
+   "cut": [
+    1.625,
+    1.0,
+    6.625,
+    1.0
+   ]
+  },
   "CardFaceRook": {
    "file": "images/CardFaceRook.png",
    "pixels": [
@@ -406,19 +513,19 @@
   "CardHeadRook": {
    "file": "images/CardHeadRook.png",
    "pixels": [
-    232,
+    248,
     128
    ],
    "points": [
-    58.0,
+    62.0,
     32.0
    ],
    "pad": 0.0,
    "at": [
-    2.0,
+    0.0,
     -6.0
    ],
-   "use": "Rook's head over the frame's top rim, over the frame"
+   "use": "Rook's head over the frame's top, over the frame"
   },
   "CardFacePip": {
    "file": "images/CardFacePip.png",
@@ -440,19 +547,19 @@
   "CardHeadPip": {
    "file": "images/CardHeadPip.png",
    "pixels": [
-    232,
+    248,
     128
    ],
    "points": [
-    58.0,
+    62.0,
     32.0
    ],
    "pad": 0.0,
    "at": [
-    2.0,
+    0.0,
     -6.0
    ],
-   "use": "Pip's head over the frame's top rim, over the frame"
+   "use": "Pip's head over the frame's top, over the frame"
   },
   "CardFaceLyric": {
    "file": "images/CardFaceLyric.png",
@@ -474,19 +581,19 @@
   "CardHeadLyric": {
    "file": "images/CardHeadLyric.png",
    "pixels": [
-    232,
+    248,
     128
    ],
    "points": [
-    58.0,
+    62.0,
     32.0
    ],
    "pad": 0.0,
    "at": [
-    2.0,
+    0.0,
     -6.0
    ],
-   "use": "Lyric's head over the frame's top rim, over the frame"
+   "use": "Lyric's head over the frame's top, over the frame"
   },
   "CardFaceUnknownCommon": {
    "file": "images/CardFaceUnknownCommon.png",

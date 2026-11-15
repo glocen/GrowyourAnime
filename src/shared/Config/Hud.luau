@@ -214,6 +214,17 @@ return {
 		-- 2026-11-13), a soft gold a step brighter than the soft grey it replaced; the lead's on its badge the same, the
 		-- director leaving it to the builder ("whatever best", 2026-11-13). Experience keeps its blue, the level this gold.
 		Level = Color3.fromHex("#F2CB62"),
+		-- The lead's level in take F (AR12, the builder's call): the number in the name's ivory on its violet plate, "Lv"
+		-- before it in the rarity's trim, lifted; the level-up's pop still flashes it white and its sparks stay this gold.
+		LeadLevel = Color3.fromHex("#F3EFE6"),
+		-- The lead's stud takes its type's colour, as Modulo's mocks tint it (tools/blender/shade_sheet.py, TYPES).
+		Types = {
+			Strength = Color3.fromHex("#EA4B4F"),
+			Endurance = Color3.fromHex("#F4902A"),
+			Agility = Color3.fromHex("#3F9DF2"),
+			Intelligence = Color3.fromHex("#A470F2"),
+			Technique = Color3.fromHex("#42CC7E"),
+		} :: { [string]: Color3 },
 		Xp = Color3.fromHex("#4E9BFF"),
 		Trim = {
 			Common = Color3.fromHex("#666C78"),

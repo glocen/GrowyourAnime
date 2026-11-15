@@ -21,6 +21,7 @@ HUD = ROOT / "build" / "handoff" / "UI" / "hud" / "hud_art.json"
 LEAD = ROOT / "build" / "handoff" / "UI" / "hud" / "lead_card" / "lead_card.json"  # tools/blender/lead_card_art.py
 BOSS = ROOT / "build" / "handoff" / "UI" / "hud" / "boss" / "boss.json"  # tools/blender/boss_hud_art.py
 COLOUR = ROOT / "build" / "handoff" / "UI" / "hud" / "colour" / "hud_colour.json"  # tools/blender/hud_colour_sheet.py
+MARKS = ROOT / "build" / "handoff" / "UI" / "voidkin" / "marks" / "voidkin_marks.json"  # TR17's marks, Modulo's
 OUT = ROOT / "src" / "shared" / "Config" / "UIKit.luau"
 
 PALETTE_NAMES = {"Graphite Dark": "Graphite", "Pearl Light": "Pearl", "Dynamo": "Dynamo", "Void Violet": "Void"}
@@ -75,11 +76,12 @@ def main() -> None:
     lead = json.loads(LEAD.read_text(encoding="utf-8"))
     boss = json.loads(BOSS.read_text(encoding="utf-8"))
     tint = json.loads(COLOUR.read_text(encoding="utf-8"))
+    marks = json.loads(MARKS.read_text(encoding="utf-8"))
     ids = old_ids() | new_ids(Path(sys.argv[1]))
     images = kit["images"] | hud["images"] | lead["images"] | boss["images"]
-    # The HUD's colour images join as they're uploaded: a piece not built yet (the dock, the card's halo) keeps its out.
-    waiting = [name for name in tint["images"] if name not in ids]
-    images |= {name: im for name, im in tint["images"].items() if name in ids}
+    # The HUD's colour images and TR17's marks join as they're uploaded: a piece not built yet (the dock) keeps its out.
+    waiting = [name for name in tint["images"] | marks["images"] if name not in ids]
+    images |= {name: im for name, im in (tint["images"] | marks["images"]).items() if name in ids}
     missing = [name for name in images if name not in ids]
     if missing:
         sys.exit(f"no upload id for {len(missing)}: {', '.join(missing[:8])}")
@@ -186,7 +188,7 @@ def main() -> None:
             f"Points = Vector2.new({num(float(pt[0]))}, {num(float(pt[1]))}){cut}, Pad = {num(float(im.get('pad', 0.0)))}{at} }},"
         )
     g = lead["geometry"]
-    t = g["target"]
+    t, p = g["target"], g["plate"]
     rounded = lambda x: num(round(float(x), 3))  # noqa: E731
     light = lambda row: "{ " + ", ".join(rounded(x) for x in row) + " }"  # noqa: E731
     out += [
@@ -204,6 +206,15 @@ def main() -> None:
         f"\t\tGlow = {rounded(g['glow'])}, -- a light's glow ahead of its front",
         f"\t\tTab = {light(g['tab'])}, -- its top, its foot, its width as drawn, its top edge's left end",
         f"\t\tBadge = {light(g['badge'])}, -- centre and size",
+        "\t},",
+        "\t-- Take F's plate beside the portrait (AR12, the director's pick), in the lead card's points.",
+        "\tLeadPlate = {",
+        f"\t\tPlate = {light(p['plate'])}, -- its top line's left end, its top, its top line's right end, its foot",
+        f"\t\tName = {rounded(p['name'])}, -- the name's row reaches down to here",
+        f"\t\tHealth = {light(p['health'])}, -- a light's top edge: its root (empty), its y, its full right end; its height",
+        f"\t\tXp = {light(p['xp'])},",
+        f"\t\tStud = {light(p['stud'])}, -- the type's stud: its centre and radius",
+        f"\t\tFrameFoot = {rounded(p['frameFoot'])}, -- the lowest point of any rarity's frame: the level's mark clears it",
         "\t},",
         "\t-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.",
         "\tTargetCard = {",

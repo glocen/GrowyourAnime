@@ -2794,7 +2794,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - Rook and Crane, ground 1's first and top Voidkin, are both Warriors.
   - The pair is the hardest to tell apart, so it's tested first.
   - The Helmet is a large piece and the ring a small one, so both fill rules are tested.
-- **Five rarities each,** Common to Legendary: 20 icons. One design per kind per rarity. A kind keeps one silhouette family across its rarities, so a player knows a sword at any rarity. Rarity adds material and ornament, never a new kind. Mythical and Dawn come later.
+- **Five rarities each,** Common to Legendary, with several designs at each rarity (the director, 2026-11-15, `docs/decisions.md`; it replaces "one design per kind per rarity"). Three per rarity is research's proposal for batch 1, so 60 icons; the count waits on the director's yes. A kind keeps one silhouette family across its rarities, so a player knows a sword at any rarity. Rarity adds material and ornament, never a new kind. Mythical and Dawn come later.
 - **The ladder, not too much** (the director: "dont make them to sick since it range from common to legendary"). Each rarity is one clear step, and Legendary is the top of this batch with room left above it:
   - **Common:** dark iron, leather and wood, plain and well made, no gem, no light of its own.
   - **Uncommon:** bright steel, one fitting in a second material (a wrapped grip, a brass ring).
@@ -2885,6 +2885,14 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
 - **Modulo's read after the redraw:** Inabikari's hoop is the weakest of the three new forms: at 38 points it's gone, and the sword reads as a plain cross-hilt.
 - **Four facts:** made, yes. Self-reviewed, yes, on the sheet at each size. Delivered, the sheet only. Accepted, no: research's verdict and the director's eye to come.
 - **Time:** about 15 minutes by the clock (14:38 to 14:53).
+- **Research's verdict, 2026-11-15:**
+  - **Felt:** fifteen swords a player could prefer, each its own at full size, and the ladder's rule holds. **Tier:** competent. **The one bold thing:** Hibana's lantern pommel, the form most our own, from Lantern Row itself.
+  - **Fix 1, every Legendary outranks every Epic by shape at 38 points.** Akari's wings do. Hibana's lantern is too small to read there, and Inabikari's hoop is gone (Modulo's own read): both look plainer than Stormcall. Each Legendary's new form must change the silhouette at 38 points as much as Akari's wings, away from the guard's crossing (the content check's condition).
+  - **Fix 2, one ring, not five.** Ring ends and scroll ends repeat across four rarities (Scrap, Stallguard, Gales, Nightloom), and they read as key rings. Keep the ring on Scrap Sword alone, where hanging it by a ring makes sense, and give the others ends of their own. Nightloom's scrolled bar then stops echoing Stallguard's.
+  - **Not needed:** the ladder's sheet redrawn. This sheet carries the Rare and Epic fix, and Epic parts from Rare by shape on all three pairs.
+  - **The names:** clear of the list and the roster. One change: "Hibana, the Struck Spark" becomes **"Kiribi, the Struck Spark"**, the sparks struck from flint for luck at a door. It's apart from other works' characters, and the lantern pommel fits it. "Stallguard" stays: "stall" is a common word, used by Lantern Row's stalls too.
+  - **The set proposal is accepted, as names only.** A set is its word carried across the kinds, and a Legendary is named alone. A set gives no bonus: set bonuses would be a new mechanic, not asked.
+  - **The count:** three per rarity is research's proposal for batch 1, waiting on the director's yes.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

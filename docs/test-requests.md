@@ -1438,7 +1438,7 @@ Research's entry, 2026-11-14, night, from Faber's "what I'd change" on the Now b
 
 **Status:** built offline, 2026-11-14 (Faber); the self-test and research's verdict in motion wait on the Studio MCP. Time: about 1.5 active hours, my estimate, not measured.
 
-**Scrapped by the director, 2026-11-15, night** (`docs/decisions.md`): "Go home" and its trail go. The way home becomes a HUD control that teleports to the base, on a short cooldown, out of combat, a boss's area and an event only. That is a new piece with its own feel line, from research. Faber: don't spend more on TR16's chip or trail.
+**Scrapped by the director, 2026-11-15, night** (`docs/decisions.md`): "Go home" and its trail go. The way home becomes a HUD control that teleports to the base, on a short cooldown, out of combat, a boss's area and an event only. That is a new piece with its own feel line, from research. Faber: don't spend more on TR16's chip or trail. **The new piece is TR19**, the dock's Base tile.
 - **Implemented.**
   - **When** (`Rules.Hud.AfterFall`, pure): a fallen lead's card offers "Send" while another Voidkin could lead now (`Hud.LeadReason` refuses it nothing), else "Home" while the player is out in a ground, else nothing. "Out in a ground" is the night's own line (`Rules.Night.Inside`, 24 studs short of the gate), never during a keeper's try.
   - **The chips share one place under the card,** and only one shows. "Send another" now shows only when someone could go out (tier 1): a Voidkin at work can't lead, so before this it showed a button that sent no one.
@@ -1664,3 +1664,54 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - research's verdict in motion. The UI lint runs first, at both scales.
 
 **Status:** requested, 2026-11-14, night. The numbers are set (2026-11-15). Waits on TR17.
+
+## TR19. Home in one tap: the dock's Base tile (Faber)
+
+Research, 2026-11-15, night, on the director's word of the same night (`docs/decisions.md`: "there should be a Ui to tp back to base with a small CD and only when out of combat/boss area event etc"). It replaces TR16's chip and trail. **The control is the dock's Base tile:** the dock already has a house that means home, so a second button would say the same thing twice.
+
+- **Feel line:** a player out on Lantern Row taps the house on the dock. After a short charge that tells them it's coming, they fold into void light and step out at their own Breaker with their lead beside them: quick, sure, never a menu.
+- **The beats** (seeds, UNVERIFIED; tuned in play, in `Config`):
+  - **Anticipation:** the tile fills from its foot in 0.6 s, and the avatar's outline lifts in void light. A hit taken or dealt in the charge cancels it, and nothing is spent.
+  - **The jump:** a short white-violet flash at the screen's edges, about 0.15 s. The player arrives at their plot's spawn, facing the Breaker. The lead and anyone following arrive with them.
+  - **Arrival:** a small FOV settle (+4 easing back over 0.3 s) and a puff of light at the feet. Its sound is in AR13's later pass.
+  - **Cooldown:** 20 s, shown as a sweep across the tile, and the tile stays tappable to explain itself.
+- **When it refuses:** the tile dims, and a tap gives a short shake and a toast in plain words:
+  - "In a fight": a hit dealt or taken in the last 4 s;
+  - "Not in a boss's ground": the Lamplighter's or a keeper's try;
+  - "Not during an event";
+  - the cooldown: "Ready in 12 s".
+  - The server decides every refusal. The client only shows the state. The rule goes in pure Luau, next to `Rules.Night.Inside`, with logic cases.
+- **At the base:** the tile reads as "here", quieter, and a tap does nothing. Away from your own plot (another base or the Strip), it takes you home in the same way.
+- **After a fall** (D02): while the lead is down and the player is out alone, the Base tile gets the pip, because home is where the lead waits.
+- **Takes away:** TR16's "Go home" chip and `Rules.WayHome`'s trail, with their cases. The Festival Door and its twins stay as they are.
+- **The block contains:** the tap, the charge, the jump, the refusals, the cooldown and the pip, with stand-in light. **Waits:** the final look of the light (Modulo), and the sound (AR13's later pass).
+- **Checks:**
+  - logic cases for every refusal and the cooldown;
+  - the self-test from Lantern Row, a keeper's try and the base;
+  - research's verdict in motion from the player's camera, at phone size.
+
+**Status:** requested, 2026-11-15, night. With the dock's build, after the lead's card F.
+
+## TR20. Everything that presses answers the pointer: hover (Faber)
+
+Research, 2026-11-15, night, on the director's word of the same night ("we should play with the hover UI maybe we never added it"). Checked: nothing in the game reacts to a pointer today. No `MouseEnter` exists anywhere in `src/client`, and no spec asks for one.
+
+- **Feel line:** on a computer, every button the pointer crosses answers at once by lifting and brightening, so the player knows what a click will do before making it. On a pad, the selection does the same. On a phone nothing changes, because a touch has no hover.
+- **One shared util** in the client, put on every pressable thing: the dock's tiles, the chips, the Breaker's chambers, the screens' tabs, cards and close buttons. Pressed beats hover, and open beats both.
+- **The motion** (seeds, UNVERIFIED; in `Config`, tuned in play):
+  - **in:** 0.08 s, eased out; **out:** 0.12 s;
+  - **a tile or button:** lifts 2 points, its gradient's stops move 12% toward white, and its halo shows at 40%;
+  - **a card:** scales to 1.03 and its rarity rim brightens;
+  - **nothing moves its neighbours.**
+- **The word:** after 0.35 s on a dock tile, its word (the long-press word) shows above it. A refused Base tile shows its reason.
+- **A pad:** the selected thing takes the same lift, with a thin rim of our own in place of Roblox's default selection image.
+- **Touch:** no hover. Go by the last input type, not by `TouchEnabled`, so a laptop with a touchscreen still gets hover from its mouse.
+- **The sound:** a quiet tick on hover, in AR13's UI pass. None until then.
+- **The block contains:** the util, the dock, the Breaker's chambers and the Voidkin screen's cards. Every pressable thing built after it uses the util from the start. **Waits:** hover on things in the world (a bay, a Voidkin at work, the generator), a piece of its own if play asks for it.
+- **Checks:**
+  - it answers within a frame of the pointer's entry;
+  - no layout shift;
+  - nothing on touch;
+  - research's verdict in motion with a mouse, then with a pad.
+
+**Status:** requested, 2026-11-15, night. With the dock's build, beside TR19.

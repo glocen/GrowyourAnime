@@ -69,8 +69,8 @@ Rest, pressed, selected, disabled with its reason, waiting on the server, succee
 
 ## Stats, shown honestly
 
-- The stat sheet lists every stat with its number and, for a rating, the chance it gives against an equal opponent.
-- A tap on a stat says where each point comes from: the Voidkin, each slot, emblems, jewels, research. Since everything adds, the list sums to the total, and the player can see it does.
+- The stat sheet lists every stat as one total, the sum of its sources, never "up to" [D, 2026-11-15, night]: a rating as its points, a percent as its percent.
+- A tap on a stat says where each point comes from: the Voidkin's own base, its level, its stars, each slot, forge, jewels, War Emblems, research, and the skill tree when it comes. A source shows once it's in the game. Since everything adds, the list sums to the total, and the player can see it does. For a rating, the tap's last line is the chance it gives against a foe of its level with the same points.
 - An item's comparison never shows a percent of a percent.
 
 ## Nicknames

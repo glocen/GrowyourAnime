@@ -6324,7 +6324,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **Felt:** the store is the first thing read after the title. A yellow number and a third of a bar say how much is held before the list is reached, and the soft line says why it isn't moving.
     - **Tier:** competent. **The one bold thing:** the charge bar under the numbers, the plate's own conduit in Power's yellow, so the head shows the store the way the big bar shows the flow.
     - **No fix.** The soft line ends a hair before Close at the smallest phone, but Faber's probes measured the widest words a gap apart, so it stands.
-    - **For TR21:** the cap after the slash comes from the base's level once it has one: 60, 150 and 400 kWh (the seeds' "base").
+    - **For TR21:** the cap after the slash comes from the base's level once it has one: 60, 150 and 400 kWh (the seeds' "baseLevels").
     - **Closed** as a block, and the images replace the frame stand-in when Modulo cuts them.
 
 - **Delivery 3, the card after the reveal in Void Violet vivid** (Modulo, 2026-11-15, evening; "then the reveal"), in `build/handoff/UI/hud/colour/`: `vivid3_reveal_card.png` (a Common, new: the build's card where it stands; under it the fourth line for each thing a shard gives, and each rarity's word) and `vivid3_reveal_card_offer.png` (a Mythical, new: one offer of a place for it). The ceremony is already the reveal's own art (AR3, TR4); what's still all dark is the card that follows it (`BaseController.luau`, "The card that's there today"). Today's side is Faber's takes (`build/captures/tr4/`).

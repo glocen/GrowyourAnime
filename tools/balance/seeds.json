@@ -115,7 +115,7 @@
     "voltage": { "_": "Infusion is voltage (the director, 2026-11-15, 'Faster break'): Low halves a shard's time left, High breaks it at once; once per shard; odds untouched. Research's price: the energy its chamber would still draw over the time saved, times the premium, times the ground's factor; rounded up to a whole kWh; not offered when it saves under minSavedSeconds.", "lowTimeLeft": 0.5, "highTimeLeft": 0, "premium": 1.3333, "minSavedSeconds": 60 }
   },
 
-  "base": {
+  "baseLevels": {
     "_": "TR21, the base's levels at launch and its machines' (docs/design.md, 'The base'). Research's seeds, 2026-11-15, night. A base level costs a share of the Credits earned since the last; a machine level costs the machines' share of what its slice of time earns, split across the machines.",
     "launchCap": 3,
     "atHours": { "2": 0.33, "3": 5 },

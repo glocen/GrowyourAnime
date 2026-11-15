@@ -56,7 +56,7 @@ Shares of a full launch build's stat points, at level 60:
 | Penetration | rating | ignores a share of the target's Defence |
 | Elemental Attack | points | a second hit of the Voidkin's element, past Defence |
 | Elemental Resist | rating | lowers elemental damage taken |
-| Critical Damage | percent | the extra a critical adds, from a base of +50% |
+| Critical Damage | percent | the extra a critical adds, from a base of +50%, every source adding to it. No ceiling: over the updates it can reach 20,000% [D, 2026-11-15, night] |
 | Critical Guard | percent | taken off an attacker's Critical Damage |
 | Lifesteal | percent | heals for a share of damage dealt |
 | Damage Bonus, Damage Reduction | percent | from signatures, passives and effects only, never from gear |
@@ -71,9 +71,10 @@ Done by the server, once per attack, by one function (`docs/engineering-plan.md`
 
 1. **Hit or dodged.**
 2. **Physical:** `Attack x the move's coefficient x (1 - mitigation)`. Mitigation comes from Defence, after Penetration, with a ceiling.
-3. **The attacker's bonus bucket,** a sum: Damage Bonus from effects, the type advantage, and on a critical, Critical Damage less the target's Critical Guard. One ceiling.
+3. **The attacker's bonus bucket,** a sum: Damage Bonus from effects and the type advantage. One ceiling.
+   - **A critical** multiplies on its own, outside the bucket: `x (1 + Critical Damage - the target's Critical Guard)`, never under x1, with no ceiling [D, 2026-11-15, night]. Each update that raises Critical Damage raises the foes' health and Critical Guard on the same curve ("The one rule").
 4. **The defender's reduction bucket,** a sum: Damage Reduction from effects, the type disadvantage, and on a block, the block's share. One ceiling.
-5. `final = physical x (1 + bonus) x (1 - reduction)`.
+5. `final = physical x (1 + bonus) x critical x (1 - reduction)`, the critical x1 on a hit that isn't one.
 6. **Elemental,** if the attacker has it: `Elemental Attack x coefficient x (1 - resist)`, through the same two buckets but never critical. Shown as the second, coloured number.
 7. **Lifesteal** heals from the health actually removed, with a ceiling per second.
 
@@ -94,7 +95,7 @@ A lead more than a few levels under the account's highest Voidkin earns experien
 | Electricity | research, an event | x2 |
 | Luck | Breaker tuning from research | +0.40 lift on a shard's top two tiers |
 
-Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3. **The base's level** [D, 2026-11-15, night: max 20 for now, "hundreds of hours of farm"; then launch's cap at 3, with items past it]: at launch, levels 2 and 3 cost Credits, priced so level 2 lands in the first session and 3 at about 5 hours (seeds, set with the sim). The sim's section 15 prices each level on the Credits earned since the one before. Level 2 takes half of the first 20 minutes' Credits, and level 3 a quarter of what's earned from there to 5 hours. **A machine's level** has a ceiling set by the base's level: 2, 6 and 30 at launch. That keeps the machines the sink through the whole launch, while the base's own levels are its gates. Each machine level costs the machines' 30% of the income over that level's slice of time, shared among the machines standing then. Up to 5 hours, the forge's 45%, the machines' 30% and the base's 25% use all of the income. After that, a quarter is left for the shop and the rest. What a level gives, and the battery's cap at each of the base's levels, are research's seeds (`tools/balance/seeds.json`, "base"): a bay +4% output a level; the Breaker +2% speed a level, its third chamber at level 8 and its fourth at 20; the battery's cap holds the dearest shard's full break in the grounds each base level spans. The ladder to 20 keeps a time target in the hundreds of hours, research's first reading 300, and is priced when its items are designed.
+Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3. **The base's level** [D, 2026-11-15, night: max 20 for now, "hundreds of hours of farm"; then launch's cap at 3, with items past it]: at launch, levels 2 and 3 cost Credits, priced so level 2 lands in the first session and 3 at about 5 hours (seeds, set with the sim). The sim's section 15 prices each level on the Credits earned since the one before. Level 2 takes half of the first 20 minutes' Credits, and level 3 a quarter of what's earned from there to 5 hours. **A machine's level** has a ceiling set by the base's level: 2, 6 and 30 at launch. That keeps the machines the sink through the whole launch, while the base's own levels are its gates. Each machine level costs the machines' 30% of the income over that level's slice of time, shared among the machines standing then. Up to 5 hours, the forge's 45%, the machines' 30% and the base's 25% use all of the income. After that, a quarter is left for the shop and the rest. What a level gives, and the battery's cap at each of the base's levels, are research's seeds (`tools/balance/seeds.json`, "baseLevels"): a bay +4% output a level; the Breaker +2% speed a level, its third chamber at level 8 and its fourth at 20; the battery's cap holds the dearest shard's full break in the grounds each base level spans. The ladder to 20 keeps a time target in the hundreds of hours, research's first reading 300, and is priced when its items are designed.
 
 The Stone Condenser is how time away becomes strength (`docs/design.md`, "The base"). Its stones count inside forge ranks' share, not on top of it, and its tray's cap bounds how far a player who checks in often pulls ahead of one who doesn't. Its rate and cap are seeds, set by the simulation before phase 3.
 
@@ -110,13 +111,13 @@ Run it with `py tools/balance/sim.py`. It reads the seeds and `docs/roster.md`.
 
 **Nothing compounds.**
 - A full build against a bare Voidkin of the same level: x2.86 in each stat. The same sources multiplied together would give x4.62.
-- Damage a second, bare Common as 1: on budget x2.6, full and balanced x3.4, full and built for damage x5.6, a Mythical Assassin built for damage x6.9. With the type advantage and the largest effect bonus on top: x10.5. That's the ceiling of the whole game at one level.
-- One hit can't exceed x3 of its plain value or fall under x0.30, by the buckets' ceilings.
+- Damage a second, bare Common as 1: on budget x2.6, full and balanced x3.4, full and built for damage x5.6, a Mythical Assassin built for damage x6.9. With the type advantage and the largest effect bonus on top: x11.9, rerun on 2026-11-15, night, with the critical outside the bucket (x10.5 before). That's the ceiling of the whole game at one level.
+- One hit can't exceed x3 of its plain value before a critical, which has no ceiling, or fall under x0.30, by the buckets' ceilings.
 
 **Builds matter more than rarity.**
 - A Common at a full build beats a Mythical at half a build (16 s against 28 s in the arena).
 - At equal builds the Mythical wins clearly (18 s against 28 s).
-- The type advantage alone, equal builds: 19 s against 28 s. Decisive, not automatic.
+- The type advantage alone, equal builds: 18 s against 28 s. Decisive, not automatic.
 
 **No build wins everything.** Legendary Warriors at full builds, arena health x3:
 

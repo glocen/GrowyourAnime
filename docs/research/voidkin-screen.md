@@ -85,7 +85,7 @@ Research, 2026-11-15, night, on the director's words to Faber: "no no no no crit
 2. **Critical Damage can't pass +200%.** It's added into the attacker's bonus bucket, whose ceiling is +200% (`Config.Stats.Buckets.BonusCap`). That ceiling covers Damage Bonus and the type edge too. So 20,000% can't happen today.
 3. **"Own" holds the level.** It's the Voidkin's base at its level, so the level isn't a line of its own.
 
-**DESIGN, research's proposal.** It waits on the director's yes and is tier 3, the balance model:
+**DESIGN, research's proposal, the director's yes** (2026-11-15, about 21:15, to Faber: "keep working, and yes"; the register):
 - **Critical Damage has no ceiling.**
   - It leaves the capped bucket and multiplies a critical by itself: × (1 + Critical Damage − the target's Critical Guard).
   - It starts at +50%, and every source adds percents to it.

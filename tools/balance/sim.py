@@ -113,7 +113,8 @@ def dps(att, dfn, type_rel=0, bonus=0.0, reduce=0.0):
     pblock = rate(c["block"], dfn["block"], att["hit"], att["level"])
     b0 = min(b["bonusCap"], bonus + (b["typeAdvantage"] if type_rel > 0 else 0))
     r0 = min(b["reduceCap"], reduce + (b["typeDisadvantage"] if type_rel < 0 else 0))
-    off = 1 + min(b["bonusCap"], b0 + pcrit * max(0.0, att["critdmg"] - dfn["critguard"]))
+    # A critical multiplies outside the bucket, with no ceiling (the director, 2026-11-15, night).
+    off = (1 + b0) * (1 + pcrit * max(0.0, att["critdmg"] - dfn["critguard"]))
     dfm = 1 - min(b["reduceCap"], r0 + pblock * b["blockReduce"])
     phys = att["atk"] * (1 - mit) * off * dfm
     eres = rate(c["eres"], dfn["eres"], 0, att["level"])
@@ -182,7 +183,7 @@ def report_extremes():
     top = dps(best, ref_e, +1, bonus=0.5)
     print(f"With the type advantage and the largest effect bonus (+50%) on top: x{top / bare:.2f} of a bare Common.")
     b = S["buckets"]
-    print(f"Hard ceiling of one hit over its plain value: x{1 + b['bonusCap']:.1f} (the bonus bucket's cap). "
+    print(f"Hard ceiling of one hit over its plain value: x{1 + b['bonusCap']:.1f} (the bonus bucket's cap), before a critical, which has none. "
           f"Floor: x{1 - b['reduceCap']:.2f} after the defender's bucket, then mitigation's cap of {S['defense']['cap']:.0%}.")
     caps = S["earnBucketCaps"]
     print("Earning rates, the most every bonus together can reach: " +
@@ -898,7 +899,7 @@ def nice(x):
 
 def base_prices():
     """The base's levels at launch and every machine level under them, priced on the Credits earned in time windows."""
-    b = S["base"]
+    b = S["baseLevels"]
     launch = sum(g["paceHours"] for g in S["grounds"])
     marks = {1: 0.0}
     marks.update({int(k): v for k, v in b["atHours"].items()})
@@ -926,7 +927,7 @@ def base_prices():
 
 
 def report_base():
-    b = S["base"]
+    b = S["baseLevels"]
     print("\n== 15. The base's levels and its machines' at launch (TR21): Credits ==")
     levels, machine, launch = base_prices()
     total = earned(0, launch)

@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 21:00.
-- **The stat sheet, the way TCP3 shows it, waits on the director's yes** (`docs/research/voidkin-screen.md`, "The stat sheet"; below, 4). In research's restatement, Critical Damage has no ceiling, so over the updates it can reach 20,000%. The sheet shows each stat as one total that its sources add up to, never "up to". Faber changes nothing before the yes.
-- **Watt is take A, the director's pick,** baked with research's three fixes (AR11, delivery 3). The verdict is in the game, once he's installed. **AR14's level 1** is the director's no ("not lantern row ground"). Modulo remakes it as a power yard, and research's verdict waits for that.
-- **The director, tonight:** no day-and-night checks; one take per piece; the full suite at a phase's close (Faber writes it in on the director's word). The base screen and launch's cap at 3 are in TR21 and AR14.
-- **Next:** the sim's prices for base levels 2 and 3; the register once the director answers on stats; TR21's blockout; Watt in the game; then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step, and the first session whole on a phone, the gate that closes phase 2.
+**Quaestor (research).** 2026-11-15, 21:20.
+- **Stats: the director said yes** (the register; `docs/balance.md`, "One hit"; `docs/ui.md`, "Stats, shown honestly"). Critical Damage has no ceiling and multiplies a critical on its own, so over the updates it can reach 20,000%. The sheet shows totals, never "up to", and a tap gives a stat's sources with the chance last. Faber builds it after AR14's level 1, before TR21.
+- **TR21's prices are seeded** (the sim's section 15). The base's level 2 costs 840 Credits and level 3 costs 18,000. A machine's ceiling is 2, 6 and 30. **AR15** gives the machines models, the Breaker first. AR12's battery in the head is closed.
+- **The director, tonight:** no day-and-night checks, one take per piece, and the full suite at a phase's close. Launch caps the base at 3, and the base is a power yard (AR14, delivery 2).
+- **Next:** AR14's level 1 in the game; TR21's blockout; Watt in the game; Power's cuts and the reveal's card in Eclipse; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 21:05.
 - **The battery is in the Power screen's head** (AR12, "The battery in the head, built"): its mark, its kWh in Power's yellow, the work it holds as its soft line (measured: it fits at the smallest phone), its charge as a bar. Its row leaves the list. Power 71 of 71. The whole suite: 2,051 passed, and 2 frame-timing checks NOT VERIFIED at 33 to 47 fps with memory near its end. **For research:** the pass on `build/captures/power/battery_plate_smallest_phone.png`.
@@ -34,12 +34,6 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
-4. **The stat sheet, the way TCP3 shows it: your yes to research's restatement** (`docs/research/voidkin-screen.md`, "The stat sheet", DESIGN). It covers four things:
-   - Critical Damage has no ceiling, so over the updates it can reach 20,000%.
-   - Critical's chance stays a chance, never past 100%.
-   - The sheet shows each stat as one total that its sources add up to, never "up to".
-   - "Own" splits into the Voidkin's own base and its level.
-   If "20k %" meant Critical's points rather than Critical Damage, say so. Two screenshots of TCP3's Attribute page would settle its layout.
 
 For Faber:
 
@@ -48,7 +42,7 @@ For Faber:
 
 ### Notices
 
-- Tier 2, research, 2026-11-15, night, TR21's prices (the sim's section 15; `docs/balance.md`, "Earning"; the seeds' "base"). The base's level 2 costs 840 Credits and lands at about 20 minutes; level 3 costs 18,000 and lands at about 5 hours. A machine's ceiling is 2, 6 and 30 at the base's levels 1 to 3, which replaces "a machine never passes its base". Each machine level is priced by the sim, from 170 at level 2 to 8,000 at level 30. A bay gives +4% output a level. The Breaker gives +2% speed a level, with its third chamber at level 8 and its fourth at 20. The Training machine has no level. The battery holds 60, 150 and 400 kWh. Faber: say in your row what you'd change.
+- Tier 2, research, 2026-11-15, night, TR21's prices (the sim's section 15; `docs/balance.md`, "Earning"; the seeds' "baseLevels"). The base's level 2 costs 840 Credits and lands at about 20 minutes; level 3 costs 18,000 and lands at about 5 hours. A machine's ceiling is 2, 6 and 30 at the base's levels 1 to 3, which replaces "a machine never passes its base". Each machine level is priced by the sim, from 170 at level 2 to 8,000 at level 30. A bay gives +4% output a level. The Breaker gives +2% speed a level, with its third chamber at level 8 and its fourth at 20. The Training machine has no level. The battery holds 60, 150 and 400 kWh. Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-15, night, AR15: the base's machines get models in AR14's power-yard language, one at a time. The Breaker comes first, keeping TR9's chambers where they are, then a bay, then the generator. Modulo finishes Power's cuts first, and the reveal's card in Eclipse comes after the bay. Faber: before the Breaker, send Modulo the stand-ins' footprints and the chambers' anchors.
 - Tier 2, Modulo, 2026-11-15, night, AR14's level 1 remade: the base has a kit of its own, a power yard, eight meshes and five pictures to upload (a deck with lit conduits, a panel wall, a gate with the level's plate, pylons and lines, flood masts, transformers); the base takes Lantern Row's dusk (today it keeps the place's own Lighting); the Breaker has a cyan lamp of its own; the grey boxes take the kit's steel until their models come; the base's level is the builder's text on the gate's plate (AR14, "Delivery 2"). Research and Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, night, TR19 and TR20's fixes: the hold after the jump, a charge never dims, and `LeadCalm` (TR19); a trimmed edge (a ready chip's gold, a card's trim) whitens toward white under the pointer, never toward the accent; a tap's fill runs from the client's clock as well as the server's, and the later wins; the word's plate draws above the HUD's other pieces. Research: say in your row what you'd change.

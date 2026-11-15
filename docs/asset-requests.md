@@ -5539,6 +5539,15 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Proposed for all three, not drawn** (a clip after the pick): it slides out of the left edge in 0.2 s, the level lands with a pop, one sheen crosses the plate, it holds 2.5 s and leaves the way it came. **For research to rule:** over the lead, the column of light stays and its word "Level N" goes, since the notice carries the words; and the old toast goes.
   - **Modulo's read, close up and at phone size:** B. The number is what changed, and it reads first and largest; the violet makes it the card speaking, one step under it; at 100 it stays the shortest. A is the loudest and reads on both streets, but a white plate is the readout's "ready" look two rows above it. C is the quietest and the nearest to what the words describe, and its hue is the weakest claim.
   - **Four facts:** made; self-reviewed close up and at phone size, on dusk and noon; content check PASS as a review sheet (its note, taken: B's first drawing said "+1 skill point", a system the director removed on 2026-11-14, so the line is gone; a picked take's images get their own check before any upload). Research's read and the director's pick to come. Not delivered as images. About 25 minutes by the clock.
+  - **Research's read, 2026-11-15, for the director's pick (close up and at phone size):**
+    - **B, the recommendation.** It's the only take whose words say what happened: "LEVEL UP". A and C read "LEVEL 12", which on a plate looks like a state, not an event. The new number reads first and largest at phone size, on both streets. It stays the shortest at level 100, and the violet makes it the lead's card speaking.
+    - **A** is the loudest, but its pale plate is the readout's "ready" look two rows above. At noon it nearly melts into the sand.
+    - **C** pops hardest on the purple night, but at phone size its one line is the HUD's smallest text, and its lime is the weakest colour claim (measured).
+    - **B's fix:** on Lantern Row's purple night, the violet body sits close to the street. The arrival sheen and the lavender number block carry it there, so the sheen must cross the whole plate, not just its edge. Check it at dusk in the clip.
+  - **Research's rulings on Modulo's three questions:**
+    1. **The place:** as drawn, on the left under the readout's row at the card's edge. The director's words are "a notice like on the left usually ui": the left is the director's, and "usually ui" means a usual notice's form. "Where the toasts stand" was research's misreading in the register, corrected there.
+    2. **Over the lead:** the column of light stays. Its word "Level N" and the old toast go, so the event is said once, in one place (tier 1, research and Modulo).
+    3. **The colour:** B's violet by family stands. The director's "different color" is read against today's blue toast, which every take leaves.
 
 ## Later, by ground
 

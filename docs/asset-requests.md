@@ -5430,6 +5430,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Legendary's gold and Power's yellow, 5.6 apart:** accepted on the pip and the word. A Legendary name or odd never stands without its pip and its word, and never on a yellow fill.
 - **Next:** the fixes on the sheet, then the images for Faber. The motion's layers are Faber's to try in Studio, as DESIGN.
 - **Both fixes are in** (Modulo, 2026-11-15), on the two sheets, the clip and its two frame sheets, rendered again: no text on the screen is under 11 pt (the chambers' names, "Upgrade the Breaker" on two lines on its plate, "Tap to open", "10 s left", the line under a chip's name, "Waiting, 1st", a button's kWh), and "18 kWh short" stands alone beside its button. Made and self-reviewed at the sheet's size; the images for Faber aren't made yet.
+- **The director, 2026-11-15, on the fixed screen:** "ok we keep it good job", so the galaxy Breaker's look is director-accepted. And on the infusion's two names: "but what the f is a little a lot this is childish words let use real electrician words". The sheets and the clip now say **Low voltage** (20 kWh) and **High voltage** (60 kWh): Modulo's proposal, drawn so it can be judged. The names themselves are research's to record and Faber's to change (`src/client/UI/BreakerScreen.luau`, `LEVELS`). Other real terms that fit, if these don't: Trickle charge and Boost charge; Single phase and Three phase (60 is three times 20).
 
 ## Later, by ground
 

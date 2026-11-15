@@ -37,7 +37,9 @@ POWER = h.POWER
 WORD = {"Common": "#AEB4C0", "Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777",
         "Mythical": "#FF8794"}
 BATTERY = (42, 60)  # stored, the cap, in kWh
-INFUSION = (("A little", 20, "Epic", "1.0%", "1.1%"), ("A lot", 60, "Epic", "1.0%", "1.3%"))
+# The two levels' names: the build says "A little" and "A lot". The director, 2026-11-15: "this is childish words let
+# use real electrician words". These two are Modulo's proposal, for research's register and Faber's screen.
+INFUSION = (("Low voltage", 20, "Epic", "1.0%", "1.1%"), ("High voltage", 60, "Epic", "1.0%", "1.3%"))
 HOLDS = (("Marigold", "Epic", "1.0%"), ("Lyric", "Rare", "9.0%"))  # the two rows Faber's take shows
 
 PX, PY, PW, PH = vs.PANEL  # the screen's panel: it covers the built one's on the still
@@ -300,6 +302,7 @@ NOTES = (
     "In motion (the test: vivid3_breaker_motion.mp4): a thin mist of the river's colours drifts along the chambers' row, "
     "about 38 s to cross a window; six large stars breathe, each on its own clock; a working shard's light breathes; now and then a falling star crosses a window. "
     "Nothing else moves, and with reduced motion on it's this still. Darker and stiller than the reveal it leads to.",
+    "The infusion's two levels are named Low voltage and High voltage here, a proposal: the build's \"A little\" and \"A lot\" go, on the director's word (2026-11-15: \"let use real electrician words\").",
     "Stand-ins: Blender's face for the game's text; the second infusion's lift (1.3%) and the Legendary 0.1% on the strip. "
     "The odds list is cut to the two rows Faber's take shows: the game's list holds every Voidkin of the shard, to 100%.",
 )

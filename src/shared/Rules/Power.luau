@@ -16,6 +16,7 @@ local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 
 local Power = {}
 
@@ -42,19 +43,20 @@ function Power.Output(worker: Profile.OwnedVoidkin): number
 	return row.Aptitude * bays.KwPerAptitude * (1 + bays.PerLevel * (worker.Level - 1))
 end
 
--- The kW the bays' workers generate.
+-- The kW the bays' workers generate, each times its bay's level's output (TR21).
 function Power.Generation(data: Profile.Data): number
 	local kw = 0
 	for _, bay in data.Base.Bays do
 		local worker = if bay.Worker ~= "" then data.Voidkin[bay.Worker] else nil
 		if worker then
-			kw += Power.Output(worker)
+			kw += Power.Output(worker) * BaseLevels.BayOutput(bay.Level or 1)
 		end
 	end
 	return kw
 end
 
--- The kW a chamber draws breaking a shard: its rating, times the shard's ground factor. Nil for an unknown shard.
+-- The kW a chamber draws breaking a shard at the Breaker's level 1: its rating, times the shard's ground factor. Nil for
+-- an unknown shard. A level past the first raises the draw and the speed together (Power.Demand), so a shard's kWh stay.
 function Power.Rating(shardId: string): number?
 	local shard = Shards.ById[shardId]
 	if shard == nil then
@@ -75,7 +77,8 @@ function Power.Cost(shardId: string): (number?, number?)
 	return grade.BreakSeconds, rating * grade.BreakSeconds / 3600
 end
 
--- What each machine asks now, kW: the Breaker its chambers' ratings, the Training machine its own while someone's on it.
+-- What each machine asks now, kW: the Breaker its chambers' ratings at its level (TR21), the Training machine its own
+-- while someone's on it.
 function Power.Demand(data: Profile.Data, training: boolean): { [string]: number }
 	local breaker = 0
 	for _, chamber in data.Base.Chambers do
@@ -84,6 +87,7 @@ function Power.Demand(data: Profile.Data, training: boolean): { [string]: number
 			breaker += Power.Rating(work.Def) or 0
 		end
 	end
+	breaker *= BaseLevels.BreakerSpeed(data.Base.Machines.Breaker or 1)
 	return { Breaker = breaker, Training = if training then BaseConfig.Training.Kw else 0 }
 end
 

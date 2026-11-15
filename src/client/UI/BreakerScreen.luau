@@ -607,7 +607,7 @@ end
 local function blockLevel(now: Read.Base, price: number?): string?
 	if price == nil then
 		return REASONS.Brief
-	elseif price > BaseConfig.Battery.Capacity then
+	elseif price > now.Rates.Capacity then
 		return string.format(REASONS.Battery, Read.Number(price))
 	elseif now.Data.Base.Charge < price then
 		return string.format(REASONS.Short, Read.Number(price))

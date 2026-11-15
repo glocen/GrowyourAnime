@@ -152,7 +152,7 @@ local function registerDebug()
 		end
 		local rates = Breaker.Rates(data)
 		return {
-			Charge = `{string.format("%.3f", base.Charge)}/{BaseConfig.Battery.Capacity} kWh`,
+			Charge = `{string.format("%.3f", base.Charge)}/{Breaker.Capacity(base)} kWh`,
 			Generation = rates.Generation,
 			Demand = rates.Flow.Demand,
 			Speed = rates.Flow.Speed,
@@ -194,7 +194,7 @@ local function registerDebug()
 		return DataService.Change(player, "BaseBattery", function(draft: Profile.Data): { [string]: any }
 			Breaker.Advance(draft, now())
 			local before = draft.Base.Charge
-			draft.Base.Charge = math.clamp(amount, 0, BaseConfig.Battery.Capacity)
+			draft.Base.Charge = math.clamp(amount, 0, Breaker.Capacity(draft.Base))
 			return { Ok = true, Charge = draft.Base.Charge, Before = before }
 		end)
 	end)

@@ -11,10 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
 - **Next, in research's order** (the director: "we work on the priority you believe we need to do first"; the register): the base (AR16, then AR15's last three machines); the first session whole on a phone, phase 2's gate, with one ranked fix list; its top fixes; AR17, the rest of the map; then Watt and Power's bar, Kirra and Scarf Step, TR21.
 
-**Faber (builder).** 2026-11-15, 22:55.
-- **The base's install is in, in the dev build until AR16's verdict** (AR15, "Faber's install"): AR14's deliveries 4 to 6 and AR15's Breaker, bay and generator stand on the plots, with 27 meshes and four pictures up under the group. A chamber glows and holds its shard while it breaks, and the generator's rotor turns by generation. The battery's rack isn't installed.
-- **A plot is a bare lot until its player arrives** (the director's word): the base is built on arrival and cleared on leave. The touched cases all pass in Studio, again after a re-lay, and WorldReport and DressReport are empty.
-- **Next:** the Voidkin screen's stats as a plain list, with Combat Power's weights (TR17 fix 10). Then AR16's positions when Modulo's blockout lands, and AR12's reveal plate (my say on the cost; the four images). Then TR21's blockout; Kirra and Scarf Step, TR9, TR17, AR13, the gate.
+**Faber (builder).** 2026-11-16, 00:26.
+- **Done, in Studio:** the Voidkin screen's stats as a plain list with Combat Power's weights (TR17 fix 10), and AR12's reveal plate, with its stills at a phone's size. TR21's rules and the command view's blockout, parked with its take, and TR22's rule. Each record holds its tests; research's passes wait on all four.
+- **Waiting on Modulo:** AR16's new plan (research: delivery 1's places aren't installed). Then the install, with TR22's plate, plinth and bays' light on its places.
+- **Next, in research's order:** AR15's battery, Training machine and Festival Door; then the first session on a phone with research, Studio's device simulator driven by me.
 
 **Modulo (assets).** 2026-11-16, 00:18, on Fable 5.2.
 - **AR16: delivered** (delivery 1), for Faber's install and research's one verdict in the game. The base is a star round the generator, three machines are void machines (the generator, the Void Breaker, the bays), the building site is cut, the hull is 0.11 on every base piece. Exported and rendered in Blender; **not seen in Studio.** The director has the renders and hasn't spoken on them yet.
@@ -41,6 +41,8 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-16, AR12's plate: my say on the cost is in AR12, "Faber's install": small, laid as research gave it. The plate starts at the name's rule's left end, 8 under it. It widens for a long line rather than cutting one, and keeps its size on screen. "Tap to continue" drops under the plate when the outcome's line leaves it under 12 points. Research: say in your row what you'd change.
+- Tier 1, Faber, 2026-11-16, TR21's blockout: a chip that would cover another rises to the nearest free place over or under it, never over the base's level at the top (TR21, "The rules and the blockout"). Research: say in your row what you'd change.
 - Tier 2, research with Modulo, 2026-11-16, AR16: the star pulls in to neighbours about 36 apart, and the empty ground gets sleeping places for bays 3 to 6 and for the Forge, the Condenser and the Lab, lit as each wakes. Faber's install takes the new places.
 - Tier 2, research, 2026-11-15, night, AR12: the card after the reveal moves under the name, a low plate over the held frame undimmed, so the Voidkin, its frame and the rarity's light stay whole as it lands (AR12, "Research's verdict on the reveal's card, in Eclipse"). Faber: your say on the cost, the card's place, the dim and the name's line, before the images are installed.
 - Tier 2, research, 2026-11-15, night, TR17 fix 10: Combat Power's weights (the sim's section 16; the seeds' "combatPower"; TR17, "Research's seeds for fix 10"). Faber puts them in `Config.Stats.Power.Weights`, and a percent's weight multiplies by G in `Rules.Stats.Power`. The higher number wins 97% of same-level duels; between two spends of one budget it's near a coin, a sum's limit (`docs/polish-later.md`).
@@ -106,6 +108,27 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 00:26. TR21's rules and the command view, parked; TR22's rule (Faber)
+
+- **What changed:** the base's level and each machine's are bought once each on the server, a repeat never charged twice. The battery's cap comes from the base's level everywhere. At home, the Base tile lifts the camera over the base, a plain chip on each machine and bay, with the base's level at the top. The showcase stands the player's pick, else their strongest.
+- **Where:** TR21, "The rules and the blockout"; TR22, "The rule"; `docs/engineering-plan.md`, "The base's levels" and "The showcase at the gate"; `src/client/UI/BaseView.luau`.
+- **Open:** parked at research's order. The take is `build/captures/tr21/command_view_desktop.jpg`. The phone's look waits for the first session's run, since Studio's tools can't take that camera at phone size. TR22's world parts wait for AR16's places.
+- **For:** research's verdict on the take.
+
+### 2026-11-16, 00:26. The reveal's plate installed (Faber)
+
+- **What changed:** after the reveal, a low plate under the name says what the break gave, over the held frame undimmed. Its four images are up under the group and Approved.
+- **Where:** AR12, "Faber's install"; `src/client/UI/Reveal/Plate.luau`, `Config.Reveal.Plate`.
+- **Open:** research's pass on the four stills at a phone's size (`build/captures/ar12/`). In my look, Mythical's pip stays a diamond at real size, the content check's condition.
+- **For:** research.
+
+### 2026-11-16, 00:26. The stats as a plain list, and Combat Power's weights (Faber)
+
+- **What changed:** a Voidkin's stats read as a name and a number, two a row under quiet captions, with no tap and no description, on the director's word. Combat Power takes research's weights, so the higher number wins 97% of same-level duels.
+- **Where:** TR17, "Fix 10 and the plain list"; `Config.Stats.Power.Weights`, `Rules.Stats`, `Rules.Sheet`.
+- **Open:** research's pass, at the first session's run on a phone.
+- **For:** research and the director.
 
 ### 2026-11-16, 00:18. The base as a star, three void machines (Modulo)
 

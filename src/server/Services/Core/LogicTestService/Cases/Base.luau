@@ -3,7 +3,7 @@
 -- server runs it. The first circuit on a fresh account, each action repeated with one op id and interrupted half way,
 -- hostile arguments, one role at a time, a change of workers never reaching back in time, and a return after hours away
 -- with work left partly done (the package's gates B and D, docs/test-requests.md, TR2); voltage and the plant's split
--- (TR18).
+-- (TR18); the base's levels and its machines', bought once each, and what each level does to the plant (TR21).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -202,7 +202,7 @@ return {
 				t.Equal(`chamber {tostring(chamber)}`, act(data, "TakeOut", { Chamber = chamber }, T0 + 100).Error, Base.BadArgs)
 			end
 			t.Equal("an empty chamber", act(data, "TakeOut", { Chamber = 2 }, T0 + 100).Error, Base.Empty)
-			t.Equal("the locked bay", act(data, "SetWorker", { Bay = 2, Voidkin = "" }, T0 + 100).Error, Base.BadArgs)
+			t.Equal("the locked bay", act(data, "SetWorker", { Bay = #data.Base.Bays + 1, Voidkin = "" }, T0 + 100).Error, Base.BadArgs)
 			t.Equal("not owned", act(data, "SetWorker", { Bay = 1, Voidkin = "k99" }, T0 + 100).Error, Base.Unknown)
 			t.Equal("a shard not held", act(data, "AddShard", { Shard = "named_watt" }, T0 + 100).Error, Base.NoShard)
 			t.Equal("nothing ready", act(data, "Open", {}, T0 + 100).Error, Base.Empty)
@@ -234,7 +234,7 @@ return {
 			local watt = Collection.Uncover(data, "watt", T0 + 50).Id
 			t.Check("Watt works", act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 50).Ok == true)
 			t.Equal("a worker can't lead", act(data, "SetLead", { Voidkin = watt }, T0 + 50).Error, Collection.Working)
-			data.Base.Bays[2] = { Worker = "" } -- a second bay opened
+			data.Base.Bays[2] = { Worker = "", Level = 1 } -- a second bay opened
 			t.Check("moved, not doubled", act(data, "SetWorker", { Bay = 2, Voidkin = watt }, T0 + 50).Ok == true)
 			t.Check("bay 1 emptied", data.Base.Bays[1].Worker == "" and data.Base.Bays[2].Worker == watt)
 			t.Check("emptied by hand", act(data, "SetWorker", { Bay = 2, Voidkin = "" }, T0 + 50).Ok == true)
@@ -382,6 +382,112 @@ return {
 			local auto = act(data, "SetPower", { Auto = true }, T0 + 120)
 			t.Check("Auto again, the shares kept for later", auto.Ok == true and data.Base.Power.Auto and data.Base.Power.Shares.Breaker == 0.5)
 			saves(t, data, "after the split")
+		end,
+	},
+	{
+		Name = "Base: TR21, the base's next level for its Credits, once: the bays it opens join empty, and a repeat charges nothing",
+		Run = function(t: any)
+			local data = fresh()
+			data.Currency.Credits = 839
+			t.Equal("839 Credits are short", act(data, "UpgradeBase", { Level = 2 }, T0 + 10).Error, Base.Short)
+			t.Check("nothing spent, nothing raised", data.Currency.Credits == 839 and data.Base.Level == 1 and #data.Base.Bays == 2)
+			data.Currency.Credits = 1000
+			local up = act(data, "UpgradeBase", { Level = 2 }, T0 + 20, "op-up")
+			t.Check("level 2 for 840", up.Ok == true and up.Level == 2 and up.Spent == 840 and data.Base.Level == 2, `{up.Error}`)
+			t.Equal("its Credits spent", data.Currency.Credits, 160)
+			t.Equal("four bays", #data.Base.Bays, 4)
+			t.Check("the new bays empty, at level 1", data.Base.Bays[3].Worker == "" and data.Base.Bays[4].Level == 1)
+			local again, changed = act(data, "UpgradeBase", { Level = 2 }, T0 + 21, "op-up")
+			t.Check("the same op answered again, nothing changed", again.Ok == true and not changed and data.Currency.Credits == 160)
+			t.Equal("a second tap, a fresh op: refused, not charged", act(data, "UpgradeBase", { Level = 2 }, T0 + 22, "op-up-2").Error, Base.Stale)
+			t.Equal("still 160 Credits", data.Currency.Credits, 160)
+			t.Equal("a level skipped: refused", act(data, "UpgradeBase", { Level = 4 }, T0 + 23).Error, Base.Stale)
+			t.Equal("level 3 short", act(data, "UpgradeBase", { Level = 3 }, T0 + 24).Error, Base.Short)
+			data.Currency.Credits = 20000
+			t.Check("level 3 for 18,000: six bays", act(data, "UpgradeBase", { Level = 3 }, T0 + 25).Ok == true and #data.Base.Bays == 6)
+			t.Equal("the launch's cap ends it", act(data, "UpgradeBase", { Level = 4 }, T0 + 26).Error, Base.Cap)
+			t.Equal("2,000 Credits left", data.Currency.Credits, 2000)
+			for _, bad in { {}, { Level = "4" }, { Level = 3.5 }, { Level = 0 / 0 }, { Level = math.huge } } :: { any } do
+				t.Equal(`hostile level {tostring(bad.Level)}`, act(data, "UpgradeBase", bad, T0 + 27).Error, Base.BadArgs)
+			end
+			t.Equal("no arguments at all", act(data, "UpgradeBase", nil, T0 + 27).Error, Base.BadArgs)
+			saves(t, data, "after the base's levels")
+		end,
+	},
+	{
+		Name = "Base: TR21, a machine's next level for its Credits, never past the base's ceiling; the Breaker's third chamber joins at 8 and takes the line's next",
+		Run = function(t: any)
+			local data = fresh()
+			data.Currency.Credits = 100000
+			local bay = act(data, "UpgradeMachine", { Machine = "Bay", Bay = 1, Level = 2 }, T0 + 10, "op-bay")
+			t.Check("bay 1 to level 2 for 170", bay.Ok == true and bay.Bay == 1 and bay.Spent == 170 and data.Base.Bays[1].Level == 2, `{bay.Error}`)
+			t.Equal("bay 2 untouched", data.Base.Bays[2].Level, 1)
+			local _, changed = act(data, "UpgradeMachine", { Machine = "Bay", Bay = 1, Level = 2 }, T0 + 11, "op-bay")
+			t.Equal("the same op again: once", changed, false)
+			t.Equal("a second tap: refused", act(data, "UpgradeMachine", { Machine = "Bay", Bay = 1, Level = 2 }, T0 + 12).Error, Base.Stale)
+			t.Equal("level 3 waits for the base's level 2", act(data, "UpgradeMachine", { Machine = "Bay", Bay = 1, Level = 3 }, T0 + 13).Error, Base.Ceiling)
+			t.Equal("only 170 spent", data.Currency.Credits, 100000 - 170)
+			for label, bad in {
+				["a bay not open"] = { Machine = "Bay", Bay = 3, Level = 2 },
+				["a bay with no number"] = { Machine = "Bay", Level = 2 },
+				["the Training machine has no level"] = { Machine = "Training", Level = 2 },
+				["the Breaker with a bay"] = { Machine = "Breaker", Bay = 1, Level = 2 },
+				["a level that is no number"] = { Machine = "Breaker", Level = "2" },
+			} :: { [string]: any } do
+				t.Equal(label, act(data, "UpgradeMachine", bad, T0 + 14).Error, Base.BadArgs)
+			end
+			data.Base.Level = 3
+			data.Base.Machines.Breaker = 7
+			data.Bag.Shards[STANDARD] = 3
+			for _ = 1, 3 do
+				act(data, "AddShard", { Shard = STANDARD }, T0 + 15)
+			end
+			t.Check("two chambers busy, one waiting", #data.Base.Chambers == 2 and #data.Base.Line == 1)
+			local credits = data.Currency.Credits
+			local breaker = act(data, "UpgradeMachine", { Machine = "Breaker", Level = 8 }, T0 + 16)
+			t.Check("the Breaker to 8 for 2,400", breaker.Ok == true and breaker.Spent == 2400 and data.Base.Machines.Breaker == 8, `{breaker.Error}`)
+			t.Equal("its Credits spent", data.Currency.Credits, credits - 2400)
+			t.Equal("a third chamber", #data.Base.Chambers, 3)
+			local third = data.Base.Chambers[3].Work
+			t.Check("which took the line's shard", third ~= nil and third.Def == STANDARD and #data.Base.Line == 0)
+			data.Base.Machines.Breaker = 29
+			t.Check("at 30 the chambers stay the Breaker's most", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 30 }, T0 + 17).Ok == true and #data.Base.Chambers == BaseConfig.Breaker.MostChambers)
+			t.Equal("30 is the last", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 31 }, T0 + 18).Error, Base.Cap)
+			saves(t, data, "after the machines' levels")
+		end,
+	},
+	{
+		Name = "Base: TR21, a bay's level raises its worker's kW, the Breaker's its speed and draw alike so a shard costs the same kWh, and the battery holds its base level's cap",
+		Run = function(t: any)
+			local data = withRook()
+			local watt = Collection.Uncover(data, "watt", T0 + 50).Id
+			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 50)
+			local kw = Power.Generation(data)
+			data.Base.Bays[1].Level = 26
+			t.Check("a bay at 26 generates twice", kw > 0 and math.abs(Power.Generation(data) - 2 * kw) < 1e-9, `{Power.Generation(data)} against {kw}`)
+			t.Equal("the battery at level 1", Breaker.Capacity(data.Base), 60)
+			data.Base.Level = 2
+			t.Equal("at level 2", Breaker.Capacity(data.Base), 150)
+			-- One shard, no worker and a battery deep enough, at the Breaker's level 1 and 11.
+			local seconds, kwh = Power.Cost(STANDARD)
+			local function run(level: number, after: number): (Profile.Data, number)
+				local base = fresh()
+				base.Base.Level = 3
+				base.Base.Machines.Breaker = level
+				base.Base.Charge = 300
+				base.Bag.Shards[STANDARD] = 1
+				act(base, "AddShard", { Shard = STANDARD }, T0)
+				Breaker.Advance(base, T0 + after)
+				return base, 300 - base.Base.Charge
+			end
+			local slow, slowKwh = run(1, (seconds :: number) + 1)
+			local fast, fastKwh = run(11, (seconds :: number) / 1.2 + 1)
+			t.Check("level 1 breaks it in its time", #slow.Base.Ready == 1)
+			t.Check("level 11 in a sixth less", #fast.Base.Ready == 1)
+			local early = run(11, (seconds :: number) / 1.2 - 5)
+			t.Check("and not before", #early.Base.Ready == 0)
+			t.Check("the same kWh either way", math.abs(fastKwh - slowKwh) < 1e-6 and math.abs(slowKwh - (kwh :: number)) < 1e-6, `{fastKwh}, {slowKwh}, {kwh}`)
+			t.Check("the Breaker's speed shown", math.abs(Breaker.Rates(early).Speed - 1.2) < 1e-9, `{Breaker.Rates(early).Speed}`)
 		end,
 	},
 }

@@ -9,6 +9,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Profile = require(Shared.Data.Profile)
+local Stats = require(Shared.Rules.Stats)
 
 local Collection = {}
 
@@ -132,6 +133,41 @@ function Collection.SetMark(data: Profile.Data, id: any, mark: any, on: any): { 
 	return { Ok = true, Id = owned.Id, Favourite = owned.Favourite, Locked = owned.Locked }
 end
 
+-- The Voidkin the base's showcase stands (TR22; docs/design.md, "The base"): the one picked with "Show at the gate" while
+-- it's owned, else the strongest, by Combat Power, then level, then Id, so the plinth never flickers between two. Nil
+-- with none owned.
+function Collection.Showcase(data: Profile.Data): Profile.OwnedVoidkin?
+	local picked = data.Voidkin[data.Base.Showcase or ""]
+	if picked then
+		return picked
+	end
+	local best: Profile.OwnedVoidkin?, most = nil, -math.huge
+	for _, owned in data.Voidkin do
+		local power = Stats.Power((Stats.Resolve(owned, Stats.PresetOf(data, owned), data)))
+		local ahead = best == nil
+			or power > most
+			or (power == most and (owned.Level > best.Level or (owned.Level == best.Level and owned.Id < best.Id)))
+		if ahead then
+			best, most = owned, power
+		end
+	end
+	return best
+end
+
+-- Picks the Voidkin the showcase stands, any owned one whatever its role: { Ok, Id }. "" gives it back to the strongest.
+function Collection.SetShowcase(data: Profile.Data, id: any): { [string]: any }
+	if id == "" then
+		data.Base.Showcase = ""
+		return { Ok = true, Id = "" }
+	end
+	local owned = if type(id) == "string" then data.Voidkin[id] else nil
+	if not owned then
+		return { Ok = false, Error = Collection.Unknown }
+	end
+	data.Base.Showcase = owned.Id
+	return { Ok = true, Id = owned.Id }
+end
+
 -- A nickname as typed, made tidy: its ends trimmed and each run of spaces made one; "" takes it off. Nil and the reason
 -- when it can't be one. The text filter is the server's, before the rule runs (VoidkinService; docs/roblox-rules.md).
 function Collection.CleanName(raw: any): (string?, string?)
@@ -175,6 +211,7 @@ end
 --   SpendCopies { Voidkin }   the next star
 --   SetMark { Voidkin, Mark, On }   Mark "Favourite" or "Locked", On true or false
 --   SetNickname { Voidkin, Name }   "" takes it off; the server's filter passes it first
+--   SetShowcase { Voidkin }   the one the showcase at the gate stands (TR22); "" for the strongest
 Collection.Actions = {
 	SetLead = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SetLead(data, voidkinArg(args))
@@ -189,6 +226,9 @@ Collection.Actions = {
 	SetNickname = function(data: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}
 		return Collection.SetNickname(data, given.Voidkin, given.Name)
+	end,
+	SetShowcase = function(data: Profile.Data, args: any): { [string]: any }
+		return Collection.SetShowcase(data, voidkinArg(args))
 	end,
 } :: { [string]: (data: Profile.Data, args: any, now: number, u: number) -> { [string]: any } }
 

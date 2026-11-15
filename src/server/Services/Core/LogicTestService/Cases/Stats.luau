@@ -340,4 +340,25 @@ return {
 			end
 		end,
 	},
+	{
+		Name = "Stats: a percent's Combat Power grows with G at its level, a point's doesn't (TR17 fix 10)",
+		Run = function(t: any)
+			-- Research's seeds: a percent multiplies points, which grow with G, so its weight is its level-1 weight times G.
+			local weights = StatsConfig.Power.Weights
+			for _, level in { 1, 20, 60 } do
+				local g = Growth.G(level)
+				local function alone(stat: string, value: number): number
+					local block = Stats.Empty(level) :: any
+					block[stat] += value
+					return Stats.Power(block)
+				end
+				for stat in StatsConfig.Power.ByLevel do
+					local want = math.floor(weights[stat] * g * 0.1 * StatsConfig.Power.Scale + 0.5)
+					t.Equal(`10% {stat} at level {level}: G times its level-1 power`, alone(stat, 0.1), want)
+				end
+				t.Equal(`100 Attack at level {level}: the same at every level`, alone("Attack", 100), math.floor(weights.Attack * 100 * StatsConfig.Power.Scale + 0.5))
+			end
+			t.Check("a percent's weight is only on the three percents", StatsConfig.Power.ByLevel.Attack == nil and StatsConfig.Power.ByLevel.Health == nil)
+		end,
+	},
 }

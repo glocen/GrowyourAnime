@@ -118,8 +118,8 @@ return {
 	{
 		Name = "Breaker: the battery fills to its cap, then overflow pays Credits",
 		Run = function(t: any)
-			local capacity = BaseConfig.Battery.Capacity
 			local data = fresh(0)
+			local capacity = Breaker.Capacity(data.Base)
 			withWatt(data)
 			local rate = perSecond(Power.Generation(data))
 			local toFull = capacity / rate
@@ -140,7 +140,7 @@ return {
 			local rate = perSecond(Power.Generation(data))
 			local hours = BaseConfig.Battery.AwayHours
 			local summary = Breaker.Advance(data, T0 + (hours + 8) * 3600, true)
-			local made = math.min(rate * hours * 3600, BaseConfig.Battery.Capacity)
+			local made = math.min(rate * hours * 3600, Breaker.Capacity(data.Base))
 			t.Check("made only the away hours", near(summary.Made, rate * hours * 3600, 1e-3), `{summary.Made}`)
 			t.Check("stored", near(data.Base.Charge, made, 1e-3))
 		end,
@@ -425,7 +425,7 @@ return {
 			old.Base.Battery = 600 -- the old save's, beside the Charge that Reconcile filled from the template
 			old.Training.Stamp = T0
 			Migrations.Run(old)
-			t.Check("a full old battery is a full new one", near(old.Base.Charge, BaseConfig.Battery.Capacity) and old.Base.Battery == nil, `{old.Base.Charge}`)
+			t.Check("a full old battery is a full new one", near(old.Base.Charge, Breaker.Capacity(old.Base)) and old.Base.Battery == nil, `{old.Base.Charge}`)
 			t.Check("the machine's stamp is gone", old.Training.Stamp == nil)
 			local new = Profile.Template()
 			Migrations.Run(new)

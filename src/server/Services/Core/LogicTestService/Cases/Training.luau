@@ -147,7 +147,7 @@ return {
 			local data = Profile.Template()
 			local lead = Collection.Uncover(data, "rook", NOW).Id
 			data.Roles.Lead = lead
-			data.Base.Charge = BaseConfig.Battery.Capacity -- no workers: the battery runs it, then the floor
+			data.Base.Charge = Breaker.Capacity(data.Base) -- no workers: the battery runs it, then the floor
 			local first = Breaker.Advance(data, NOW, true)
 			t.Check("the first advance only sets the stamp", first.Trained == nil and data.Base.Stamp == NOW)
 			-- A night away: the lead trains from the stamp to the join.
@@ -156,14 +156,14 @@ return {
 			local level = data.Voidkin[lead].Level
 			t.Check("a night away trains the lead", summary.Trained == lead and summary.Levels > 0 and level > 1, `level {level}`)
 			local expect = owned(1)
-			local full = math.min(8, BaseConfig.Battery.Capacity / BaseConfig.Training.Kw)
+			local full = math.min(8, Breaker.Capacity(data.Base) / BaseConfig.Training.Kw)
 			Training.Gain(expect, full * 3600 + (8 - full) * 3600 * BaseConfig.Power.MinSpeed)
 			t.Check("at full power while the battery lasts, then at the floor", expect.Level == level and math.abs(expect.Xp - data.Voidkin[lead].Xp) <= 1, `{expect.Level}/{expect.Xp} against {level}/{data.Voidkin[lead].Xp}`)
 			t.Check("the battery spent", data.Base.Charge == 0)
 			local copy = Profile.Template()
 			local same = Collection.Uncover(copy, "rook", NOW).Id
 			copy.Roles.Lead = same
-			copy.Base.Charge = BaseConfig.Battery.Capacity
+			copy.Base.Charge = Breaker.Capacity(copy.Base)
 			Breaker.Advance(copy, NOW, true)
 			for hour = 1, 8 do
 				Breaker.Advance(copy, NOW + hour * 3600, true)

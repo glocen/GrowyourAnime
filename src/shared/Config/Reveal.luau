@@ -6,6 +6,33 @@
 return {
 	Skip = 1.0, -- seconds from the tap the skip opens, every rarity (reveal.json, "skip")
 	CardHold = 0.3, -- seconds the card after it stands before a tap closes it, so the tap that skipped doesn't close it too
+	-- The plate after the reveal (AR12, "The reveal's card, its images"; reveal_card_images.json, `plate`), in points from
+	-- its top left. It hangs Gap under the name's rule, from the rule's left end, over the held frame left undimmed, so it
+	-- holds wherever the name stands (research's verdict on the reveal's card in Eclipse, call 1). Its lines stand at the
+	-- sheet's middles; their sizes are the floor's and a step over (Theme.Text.Minimum, docs/ui.md), where the sheet drew
+	-- 11 and 13 (the builder's call, 2026-11-15). The plate widens past Size.X when a line needs it.
+	Plate = {
+		Size = Vector2.new(320, 84),
+		Gap = 8,
+		Inset = 16,
+		Kind = { Middle = 18, Size = 14 },
+		Rarity = { Middle = 40, Size = 16, Pip = 14, PipAt = 21, From = 30, Facet = 0.55 },
+		Outcome = { Middle = 64, Size = 16, Mark = 16.25, MarkAt = 23.15, From = 33.55 },
+		-- "Tap to continue" on the outcome's line, at its right, while Room points stay between them; else under the
+		-- plate's foot, centred, Under below it (Modulo's fallback).
+		Tap = { Size = 14, Room = 12, Under = 4 },
+		Kept = Color3.fromHex("#D9E1F0"), -- a Voidkin kept: its mark and its words (research's call 2)
+		Star = Color3.fromHex("#FFF4D6"), -- a copy toward its star: the conduit's ivory
+		-- Each rarity's word, its pip tinted the same; Mythical's no darker or redder than its content check's #FF8794.
+		Words = {
+			Common = Color3.fromHex("#AEB4C0"),
+			Uncommon = Color3.fromHex("#7CF0A0"),
+			Rare = Color3.fromHex("#6FB6FF"),
+			Epic = Color3.fromHex("#D29CFF"),
+			Legendary = Color3.fromHex("#FFD777"),
+			Mythical = Color3.fromHex("#FF8794"),
+		} :: { [string]: Color3 },
+	},
 	-- Each Voidkin's Reveal clip: the marker his strike lands on, and its time in the clip. His clip is shifted so it falls
 	-- on Rook's Knock, where the ceremony's colours run (RevealArt.Figure.Knock). The self-test reads the times back from
 	-- the clips' own markers.

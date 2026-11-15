@@ -28,7 +28,6 @@ local HudConfig = require(Shared.Config.Hud)
 local Combat = require(Shared.Config.Combat)
 local UIKit = require(Shared.Config.UIKit)
 local Profile = require(Shared.Data.Profile)
-local BaseConfig = require(Shared.Config.Base)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
 local Actions = require(Shared.Definitions.Actions)
@@ -569,11 +568,13 @@ local function stepHome()
 	stepFlash()
 end
 
--- A tap on the Base tile: at home nothing; else the server's answer, which on a refusal says why and shakes the tile.
+-- A tap on the Base tile: at home the base's command view (TR21); else the server's answer, which on a refusal says why
+-- and shakes the tile.
 local function goHome(): ...any
 	local s = homeSituation()
 	local refusal = Home.Refusal(s, HomeConfig)
 	if refusal == "Here" then
+		HudController.OpenView()
 		return nil
 	end
 	if refusal == nil and attribute("HomeCharge") == nil then
@@ -992,7 +993,7 @@ local function step(dt: number)
 		baseReadAt = os.clock()
 		local base = Read.Base(view, workspace:GetServerTimeNow())
 		local kwh = base.Data.Base.Charge
-		local cap = BaseConfig.Battery.Capacity
+		local cap = base.Rates.Capacity
 		-- TR18: the pill says power, never a stock: generation against demand, the battery after it and in the thread.
 		-- The value turns Power's warning colour only while the battery covers a shortfall (research's verdict), never
 		-- for a split generation covers; the frame's Over attribute is set for the tests.
@@ -1033,6 +1034,8 @@ end
 
 -- Opens the Base screen: BaseController's, set by it at Start.
 HudController.OpenBase = function() end
+-- Opens the base's command view (TR21's blockout): BaseController's, set by it at Start.
+HudController.OpenView = function() end
 
 function HudController.Start()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))

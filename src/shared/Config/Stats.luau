@@ -64,26 +64,30 @@ return {
 	Speed = { Class = { Tank = 14, Warrior = 16, Mage = 16, Healer = 16, Assassin = 19 } :: { [string]: number }, Nudge = 1 },
 	-- Combat Power (docs/design.md, "Combat Power"): one number for how strong a Voidkin is, a weighted sum of its resolved
 	-- stats times Scale, rounded (Rules.Stats.Power); for reading, never for damage. Critical damage counts only above the
-	-- base every fighter has. STAND-IN weights, so TR17's blockout has its number (Faber, 2026-11-14): the sim fits the
-	-- real ones, so that with no type edge the higher number wins more often (research's seeds, tier 2).
+	-- base every fighter has. A weight is what a point adds to winning, Attack's held at 4; a percent's (Critical Damage,
+	-- Critical Guard, Lifesteal) is its weight at level 1, multiplied by G at the block's level. With no type edge, the
+	-- higher number wins 97% of same-level duels. Research's seeds (TR17 fix 10; tools/balance/seeds.json, "combatPower",
+	-- fitted by tools/balance/sim.py, section 16), tier 2, 2026-11-15, night.
 	Power = {
 		Scale = 10,
 		Weights = {
-			Health = 0.5,
+			Health = 0.53,
 			Attack = 4,
-			Defence = 4,
-			Regen = 25,
-			Hit = 2,
-			Dodge = 2,
-			Critical = 2,
-			CriticalResist = 2,
-			Block = 2,
-			Penetration = 2,
-			ElementalAttack = 2,
-			ElementalResist = 2,
-			CriticalDamage = 200,
-			CriticalGuard = 2,
-			Lifesteal = 500,
+			Defence = 3.1,
+			Regen = 3.1,
+			Hit = 0.53,
+			Dodge = 2.1,
+			Critical = 1.2,
+			CriticalResist = 0.2,
+			Block = 1.4,
+			Penetration = 0.88,
+			ElementalAttack = 5.2,
+			ElementalResist = 0.34,
+			CriticalDamage = 110,
+			CriticalGuard = 110,
+			Lifesteal = 770,
 		} :: { [string]: number },
+		-- The percents, whose weight multiplies by G at the block's level: a percent multiplies points, which grow with G.
+		ByLevel = { CriticalDamage = true, CriticalGuard = true, Lifesteal = true } :: { [string]: boolean },
 	},
 }

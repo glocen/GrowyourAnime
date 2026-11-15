@@ -1634,6 +1634,10 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **What they give:** the higher number wins 97% of same-level duels with no type edge, and every duel where one side wins 10% faster. The stand-ins managed 90% and 95%.
     - **Its limit:** a sum can't see that spreading points beats stacking them. Of one budget spent two ways, it picks the better about half the time, with the two at most 14% apart. Every refit I tried traded duels away for it. A measure against a panel of every spec picks the better 90% of the time, but it isn't a sum (`docs/polish-later.md`).
     - **My line in fix 10 is withdrawn.** Combat Power can't make rarity count for more than four levels, because it follows the fight. An Epic's x1.26 on its own base is worth about two and a half levels at level 8. Bare, Pip at level 12 beats Ironhymn at level 8 about a third faster, and the seeds show it, 27,640 over 25,222. At the same level the Epic wins clearly. If rarity should be worth more, that's `rarityBase` in `docs/balance.md`, not Combat Power.
+  - **Fix 10 and the plain list, built, 2026-11-16 (Faber),** on research's seeds above and the director's word in the builder's session, 2026-11-15: "dont put any description for stats make it like taichi panda dragon hunter overview!", then "Plain list, no taps" to the builder's question.
+    - **Implemented.** `Config.Stats.Power.Weights` holds the seeds. In `Rules.Stats.Power`, a percent's weight (Critical Damage above its base, Critical Guard, Lifesteal) multiplies by G at the block's level. `Rules.Sheet` and Overview: every stat as a name and its number, two a row, under the groups' quiet captions, with no tap, no sources and no line of what it does.
+    - **Tested.** Type check 0 new. Logic 9,870 passed, offline and in Studio, with the case that a percent gives G(level) times its level-1 power. The self-test "Voidkin screen" passes 300 of its cases. Its 2 fails are TR20's manual pointer take, which the filter picked up and which waits 90 s for an outside driver that wasn't run.
+    - **Visually reviewed:** research's pass waits, at the first session's run on a phone. **Director-accepted:** no.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 
@@ -2033,6 +2037,28 @@ Research's entry, 2026-11-15, night, on the director's words (`docs/decisions.md
 - **Numbers:** the costs come from research's sim (`docs/balance.md`). Stand-ins in `Config` until then.
 - **Tests, in proportion to risk:** the cases on the spend and the rules, plus one take.
 - **Order:** after Overview's stat sheet.
+- **The rules and the blockout, built, 2026-11-16 (Faber); parked at research's order** (phase 2's order, ef83330), with the take waiting for research's verdict.
+  - **Implemented, the rules** (`docs/engineering-plan.md`, "The base's levels"):
+    - The save holds `Base.Level`, `Base.Machines` and each bay's `Level`. Migration 5 gives each bay level 1, and a base with fewer than level 1's two bays gains an empty one.
+    - `Rules.BaseLevels` reads `Config.Base.Levels` and `Machines`. Research's seeds are in for the battery's cap. The prices, the bays, the ceilings and the machines' gains are stand-ins until the sim's.
+    - `Base.UpgradeBase` and `Base.UpgradeMachine` take Credits on the server in one step. Each names the level it buys, so a repeat or a second tap with a fresh operation id is Stale, never charged twice. Past the cap it's Cap, past the base's ceiling it's Ceiling, and fewer Credits than the price is Short.
+    - A base level opens its bays empty. The Breaker's level adds its third chamber at 8 and its fourth at 20. A bay's level raises its worker's kW and the Breaker's raises its speed. The battery's cap comes from the base's level, read by every screen and the server through `Breaker.Capacity`.
+  - **Implemented, the blockout** (`UI/BaseView`, `Config.BaseView`):
+    - At home, the Base tile lifts the camera over the whole base from the gate's side, as far as the machines' box needs, in 0.9 s.
+    - A plain chip hangs over each machine and bay: its name and level, and what it's doing now. A locked bay says which level opens it.
+    - The chips never cover each other or the level panel: the nearest stands at its machine, and each other takes the nearest free place over or under one already placed.
+    - The base's level stands at the top, with what the next one opens and its price, beside Close.
+    - The HUD and the machines' own plates step back, and the avatar stands still. Roblox's PlayerModule now lives under StarterPlayer and takes `ControlModule.Enabled`.
+    - Close brings the camera back behind the lead.
+  - **Not built, the build after the verdict:** the machine's panel, Upgrade, the Power tab, the look switched in the world, and retiring the quiet tile and "You're home".
+  - **Tested.**
+    - Type check 0 new. Logic 9,870 passed, offline and in Studio, with `BaseLevels`' cases and TR21's three: the base's level, a machine's, and what a level does.
+    - In the self-test, "Base view" passes 34 of 34, "HUD: TR19" 53 of 53, "Power" 88 of 88, "Breaker:" 139 of 139 and "Battery" 2 of 2. "Base: the plot's Breaker, bays" passes 28 of 28.
+    - Two cases changed with TR21. A bay beyond the open ones can't show locked until AR16's plot brings its spots, since level 1 opens two bays and today's plot has two. The lift is now measured over the machines' floor, since the self-test's pad stands far above it.
+  - **The take:** `build/captures/tr21/command_view_desktop.jpg`, opened by a real tap on the desktop (1655 by 756), on today's base.
+    - On a phone, Studio's tools can't take it. Under the device simulator, the MCP resets the client's camera between calls, and the viewport doesn't draw while a call runs. Inside one call the game holds the view for 40 s with no change. The phone's look waits for the first session's run.
+    - The take re-runs as "Take: TR21, the base's command view held open from home".
+  - **Visually reviewed:** research's verdict waits. **Director-accepted:** no.
 
 ## TR22. The base shows its owner (Faber, with Modulo's plinth)
 
@@ -2053,3 +2079,7 @@ Research's entry, 2026-11-15, night. It answers the director's word to Modulo at
   - more on the plate.
 - **Tests:** the cases, plus one take from the Strip of a base that isn't the player's own.
 - **Order:** Faber's call, after TR21's blockout.
+- **The rule, built, 2026-11-16 (Faber); the world's parts wait for AR16's places.**
+  - **Implemented.** The save holds `Base.Showcase` (`docs/engineering-plan.md`, "The showcase at the gate"). `Collection.Showcase` gives the pick while it's owned. Otherwise it gives the strongest by Combat Power, then the higher level, then the lower Id, so the plinth never flickers between two. `SetShowcase` takes any owned Voidkin whatever its role, and "" gives it back to the strongest.
+  - **Tested.** The case "Collection: TR22, the showcase at the gate stands the strongest until one is picked" passes in the 9,870.
+  - **Waits:** the gate's plate, the plinth's Voidkin with its Combat Power and the bays' rarity light, on AR16's new plan; "Show at the gate" on the character screen; the take from the Strip.

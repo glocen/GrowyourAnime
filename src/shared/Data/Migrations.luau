@@ -40,6 +40,23 @@ local STEPS: { (data: any) -> () } = {
 			data.Training.Stamp = nil
 		end
 	end,
+	-- 5: the base's levels (TR21, 2026-11-15). Touches Base.Bays: each bay gains its level, 1, and a base with fewer than
+	-- level 1's two bays (TR2 opened one) gains empty ones up to two. Reconcile has already added Base.Level and
+	-- Base.Machines.
+	function(data: any)
+		local base = data.Base
+		if type(base) ~= "table" or type(base.Bays) ~= "table" then
+			return
+		end
+		for _, bay in base.Bays do
+			if type(bay) == "table" and type(bay.Level) ~= "number" then
+				bay.Level = 1
+			end
+		end
+		while #base.Bays < 2 do
+			table.insert(base.Bays, { Worker = "", Level = 1 })
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

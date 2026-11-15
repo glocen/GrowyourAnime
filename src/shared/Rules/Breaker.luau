@@ -17,6 +17,7 @@ local BaseConfig = require(Shared.Config.Base)
 local Profile = require(Shared.Data.Profile)
 local Power = require(Shared.Rules.Power)
 local Training = require(Shared.Rules.Training)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 
 export type Summary = {
 	Finished: number, -- shards that moved to Ready
@@ -33,8 +34,9 @@ export type Rates = {
 	Generation: number, -- kW
 	Demand: number, -- kW every working machine asks together
 	NetKw: number, -- kW into the battery, negative while it covers demand
-	Speed: number, -- the Breaker's, 1 at full power
+	Speed: number, -- the Breaker's: its share of full power times its level's speed (TR21), so 1 at full power at level 1
 	Busy: boolean, -- a chamber is breaking
+	Capacity: number, -- kWh the battery holds at most at the base's level (TR21)
 	Trainee: string?, -- who's on the Training machine
 }
 
@@ -53,6 +55,16 @@ end
 
 -- Seconds of work a shard has left at full power.
 Breaker.Left = remaining
+
+-- The Breaker's speed at full power, against level 1's (TR21): its chambers work this much faster.
+local function pace(base: Profile.Base): number
+	return BaseLevels.BreakerSpeed(base.Machines.Breaker or 1)
+end
+
+-- kWh the battery holds at most: its base's level's (TR21).
+function Breaker.Capacity(base: Profile.Base): number
+	return BaseLevels.Battery(base.Level)
+end
 
 -- Who's on the Training machine over an advance: away, the lead; else Training.Trainee. Nil for nobody, a Voidkin that's
 -- gone, or a worker (one role at a time).
@@ -112,7 +124,7 @@ end
 -- Seconds until the next event in this flow: a shard finishing, the battery emptying, or the battery filling.
 local function nextEvent(base: Profile.Base, flow: Power.Flow): number
 	local soonest = math.huge
-	local speed = flow.Speed.Breaker or 1
+	local speed = (flow.Speed.Breaker or 1) * pace(base)
 	if speed > 0 then
 		for _, chamber in base.Chambers do
 			local work = chamber.Work
@@ -122,7 +134,7 @@ local function nextEvent(base: Profile.Base, flow: Power.Flow): number
 		end
 	end
 	local perSecond = flow.Net / 3600
-	local capacity = BaseConfig.Battery.Capacity
+	local capacity = Breaker.Capacity(base)
 	if perSecond < 0 and base.Charge > EPSILON then
 		soonest = math.min(soonest, base.Charge / -perSecond)
 	elseif perSecond > 0 and base.Charge < capacity - EPSILON then
@@ -139,7 +151,7 @@ local function step(data: Profile.Data, seconds: number, generation: number, tra
 		summary.Steps += 1
 		local flow = flowNow(data, generation, trainee ~= nil)
 		local dt = math.min(left, nextEvent(base, flow))
-		local speed = flow.Speed.Breaker or 1
+		local speed = (flow.Speed.Breaker or 1) * pace(base)
 		for _, chamber in base.Chambers do
 			local work = chamber.Work
 			if work then
@@ -155,7 +167,7 @@ local function step(data: Profile.Data, seconds: number, generation: number, tra
 			base.Power.Open = true -- a machine beside the Breaker has drawn power: the Power screen opens
 		end
 		summary.Made += generation * dt / 3600
-		local capacity = BaseConfig.Battery.Capacity
+		local capacity = Breaker.Capacity(base)
 		local charge = base.Charge + flow.Net * dt / 3600
 		if charge > capacity then
 			summary.Overflow += charge - capacity
@@ -192,8 +204,9 @@ function Breaker.Rates(data: Profile.Data): Rates
 		Generation = generation,
 		Demand = demand,
 		NetKw = flow.Net,
-		Speed = flow.Speed.Breaker or 1,
+		Speed = (flow.Speed.Breaker or 1) * pace(data.Base),
 		Busy = busy,
+		Capacity = Breaker.Capacity(data.Base),
 		Trainee = if trainee then trainee.Id else nil,
 	}
 end

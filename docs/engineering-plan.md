@@ -61,6 +61,8 @@ The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is wh
 
 **A profile:** `Version`; `Voidkin` by `Id`; `Index` by definition (first found, count); `Items` by `Id`; `Presets` (fourteen item ids each); `SlotRanks` (forge rank per slot); `Bag` (shards, emblems, jewels, stones by id and count); `Currency`; `Base` (bays with their worker, chambers with their shard, progress and stamp, the waiting line, the battery's charge in kWh, the plant's split (Auto, each machine's share, whether the Power screen is open: TR18), machine levels); `Research`; `Progress` (grounds opened, keepers beaten, Tower floor); `Shop` (what was bought against the rotation's number); `Claims` (the Calamity's windows, the daily track); `Champion`.
 
+- **The base's levels** (TR21, the builder's contract, 2026-11-15): `Base.Level`, 1 to `Config.Base.Levels.Cap`; `Base.Machines`, each single machine's level by its name (the Breaker's now; the Condenser's, the Forge's and the Lab's when they come; the Training machine has none); and each bay's `Level` on its bay. What a level gives is computed from these by `Rules.BaseLevels`, never stored: the bays open, the battery's cap, a machine's ceiling, the Breaker's speed, rating and chambers, a bay's output. A base level bought opens its bays in the same change, and a Breaker level that brings a chamber adds it. Migration 5 gives each bay its level and opens the bays level 1 holds.
+- **The showcase at the gate** (TR22, the builder's contract, 2026-11-15): `Base.Showcase`, the Id of the Voidkin picked with "Show at the gate", whatever its role, or "". Which one stands is `Rules.Collection.Showcase`'s: the pick while it's owned, else the strongest by Combat Power, then level, then Id. Reconcile fills the key into older saves.
 - The profile holds ids and numbers only: no model, part or display name.
 - `Version` and one migration per step, from the first save.
 - A nickname is stored raw and filtered for each viewer when shown (`docs/roblox-rules.md`).
@@ -97,6 +99,7 @@ The handbook's rule ([the world contract](../handbook/engineering/architecture.m
 - Each change to a valuable is one server function: check, then apply everything to the profile, with no yield between.
 - The client sends an operation id with each request. The profile holds the recent ones with their first answers (`Shared.Rules.OpLedger`), written in the same change as the operation, so a retry can't buy, break or forge twice, even after a crash or a server hop.
 - A break's inputs (the shard, its ground, the luck applied) are fixed when it enters a chamber and can't change after.
+- An upgrade names the level it buys, so a second tap sent with a fresh operation id is refused, never charged twice (TR21).
 - A reward is granted before its animation, never by it.
 - Nothing above Mythical, and nothing Limited, can come from any roll at launch: refused in the rules themselves.
 

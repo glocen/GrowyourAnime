@@ -6,7 +6,7 @@
 -- A plate speaks only near its machine, or while it's lit with something to do (TR2, research's read of the phone take,
 -- fix 2): the Breaker with a shard to put in or to open, a bay that a free Voidkin could work. The Base
 -- screen: the chambers, the line, what's ready, the bag, the bays and who works in them. Opening a shard shows the reveal:
--- the ceremony at its rarity (UI/Reveal, TR4), then one card with the name. Every change is asked of the server (ProfileController.Act) and shown only
+-- the ceremony at its rarity (UI/Reveal, TR4), then the plate under its name (UI/Reveal/Plate, AR12). Every change is asked of the server (ProfileController.Act) and shown only
 -- once it answers; the prompts are this player's alone, so a visitor can look and never touch.
 
 local Players = game:GetService("Players")
@@ -16,7 +16,6 @@ local CollectionService = game:GetService("CollectionService")
 
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
-local BaseConfig = require(Shared.Config.Base)
 local RevealConfig = require(Shared.Config.Reveal)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
@@ -35,8 +34,10 @@ local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local RevealStage = require(UI.Reveal)
+local RevealPlate = require(UI.Reveal.Plate)
 local BreakerScreen = require(UI.BreakerScreen)
 local PowerScreen = require(UI.PowerScreen)
+local BaseView = require(UI.BaseView)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 
@@ -107,7 +108,7 @@ local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
 local countdowns: { { Label: TextLabel, Chamber: number, Prefix: string } } = {}
-type Shown = { Frame: Instance, Stage: RevealStage.Handle, Card: Frame?, Carded: number, Name: string, Outcome: string }
+type Shown = { Frame: Instance, Stage: RevealStage.Handle, Card: Frame?, Carded: number, Name: string, Rarity: string, Outcome: string }
 local reveal: Shown? = nil
 
 local function act(name: string, args: any?): { [string]: any }
@@ -171,7 +172,7 @@ end
 local function plate(name: string, anchor: Part, lines: number, width: number, shown: () -> boolean, lift: number?): Frame
 	local over = Vector3.new(0, lift or 0, 0)
 	local frame = World.Plate(name, Vector2.new(width, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
-		return if anchor.Parent and shown() then anchor.Position + over else nil
+		return if anchor.Parent and shown() and not BaseView.IsOpen() then anchor.Position + over else nil -- the command view's chips stand in
 	end, REACH)
 	-- Kept under the top band: a machine high on screen put its news under the lead's card (the phone pack, 2026-11-13).
 	World.Below(frame)
@@ -393,7 +394,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 		end
 	end
 	local charge = now.Data.Base.Charge
-	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Kwh(charge)} / {Read.Number(BaseConfig.Battery.Capacity)} kWh · {Read.Kw(now.Rates.NetKw, true)}`, Colour = Theme.Colour.Electricity })
+	add({ Name = "Battery", Text = "Battery", Detail = `{Read.Kwh(charge)} / {Read.Number(now.Rates.Capacity)} kWh · {Read.Kw(now.Rates.NetKw, true)}`, Colour = Theme.Colour.Electricity })
 end
 
 build = function()
@@ -420,6 +421,21 @@ function BaseController.OpenBreaker()
 	if view then
 		BreakerScreen.Open(view, { Act = act, Open = openShard })
 	end
+end
+
+-- The base screen's command view (TR21's blockout, UI/BaseView), from the Base tile at home: the camera over the
+-- player's whole base, a chip on each machine and bay.
+function BaseController.OpenView()
+	local number = player:GetAttribute("Plot")
+	local floor = if type(number) == "number" then Markers.Find("Plot", { Plot = number }) else nil
+	if floor == nil or not floor:IsA("BasePart") then
+		return
+	end
+	local spots: { [string]: Vector3 } = {}
+	for name, spot in BaseController.Says() do
+		spots[name] = spot.Ground
+	end
+	BaseView.Open({ Plot = floor, Spots = spots, View = ProfileController.Get })
 end
 
 -- The Power screen (TR18, UI/PowerScreen), from the generator's prompt: only once it's open to the player (the server
@@ -459,38 +475,20 @@ local function tap()
 	end
 end
 
--- The card that's there today, over the ceremony's held frame: new, a copy, or sold for Credits.
-local function card(shown: Shown, answer: { [string]: any }, row: Voidkin.Row?)
-	local cover = shown.Frame :: TextButton
-	cover.BackgroundTransparency = Theme.Transparency.Dim
-	local def = tostring(answer.Def)
-	local cardFrame = Panel.new({ Name = "Card", Size = UDim2.fromOffset(320, 176), Position = UDim2.fromScale(0.5, 0.5), AnchorPoint = Vector2.new(0.5, 0.5), Parent = cover })
-	Panel.Pad(cardFrame, Theme.Size.Pad * 2)
-	Panel.List(cardFrame, nil, 2)
-	local outcome = shown.Outcome
-	type Line = { Name: string, Text: string, Size: number, Colour: Color3, Font: Font }
-	local note = if answer.Lead == true then "Your lead: it fights beside you"
-		elseif outcome == "Copy" then "One more toward its next star"
-		elseif outcome == "Sold" then `Sold for {Read.Number(tonumber(answer.Credits) or 0)} Credits`
-		else "In your collection"
-	local kind = if outcome == "New" then "A new Voidkin" elseif outcome == "Copy" then "A copy" else "Already at its last star"
-	local lines: { Line } = {
-		{ Name = "Kind", Text = kind, Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Font = Theme.Font.Body },
-		{ Name = "Name", Text = shown.Name, Size = Theme.Text.Big, Colour = Theme.Colour.Text, Font = Theme.Font.Strong },
-		{ Name = "Line", Text = Read.VoidkinLine(def), Size = Theme.Text.Body, Colour = Theme.Colour.TextDim, Font = Theme.Font.Body },
-		{ Name = "Note", Text = note, Size = Theme.Text.Body, Colour = Theme.Colour.Ready, Font = Theme.Font.Body },
-		{ Name = "Skip", Text = "", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Font = Theme.Font.Body },
-	}
-	for order, line in lines do
-		local label = Text.new({ Name = line.Name, Size = line.Size, Colour = line.Colour, Font = line.Font, Box = UDim2.new(1, 0, 0, line.Size + 8), Parent = cardFrame })
-		label.LayoutOrder = order
-		label.Text = line.Text
-	end
-	shown.Card, shown.Carded = cardFrame, os.clock()
+-- The plate after the reveal (UI/Reveal/Plate; AR12), under the ceremony's name on its held frame, left undimmed: new,
+-- a copy, or sold for Credits.
+local function card(shown: Shown, answer: { [string]: any })
+	local plate = RevealPlate.new(shown.Stage, {
+		Def = tostring(answer.Def),
+		Rarity = shown.Rarity,
+		Outcome = shown.Outcome,
+		Lead = answer.Lead == true,
+		Credits = tonumber(answer.Credits) or 0,
+	})
+	shown.Card, shown.Carded = plate, os.clock()
 	task.delay(RevealConfig.CardHold, function()
-		local skip = cardFrame:FindFirstChild("Skip") :: TextLabel?
-		if skip and reveal == shown then
-			skip.Text = "Tap to continue"
+		if reveal == shown then
+			RevealPlate.Continue(plate)
 		end
 	end)
 end
@@ -510,7 +508,7 @@ function BaseController.Reveal(answer: { [string]: any }, show: RevealStage.Opti
 	local options: RevealStage.Options = show or { Rarity = if row then row.Rarity else "Common", Name = name, Model = if row then row.Model else nil }
 	local stage = RevealStage.Play(options, function()
 		if reveal == shown then
-			card(shown, answer, row)
+			card(shown, answer)
 		end
 	end)
 	local cover = Instance.new("TextButton")
@@ -523,7 +521,7 @@ function BaseController.Reveal(answer: { [string]: any }, show: RevealStage.Opti
 	cover.BorderSizePixel = 0
 	cover.ZIndex = 10
 	cover.Parent = stage.Root
-	shown = { Frame = cover :: Instance, Stage = stage, Card = nil :: Frame?, Carded = 0, Name = name, Outcome = tostring(answer.Outcome) }
+	shown = { Frame = cover :: Instance, Stage = stage, Card = nil :: Frame?, Carded = 0, Name = name, Rarity = options.Rarity, Outcome = tostring(answer.Outcome) }
 	reveal = shown
 	cover.Activated:Connect(tap)
 end
@@ -876,6 +874,7 @@ end
 
 function BaseController.Start()
 	HudController.OpenBase = BaseController.Open
+	HudController.OpenView = BaseController.OpenView
 	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(watchRotor)
 	for _, item in CollectionService:GetTagged(Kit.Tag) do
 		watchRotor(item)

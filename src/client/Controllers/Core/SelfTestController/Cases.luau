@@ -6300,7 +6300,9 @@ local cases = {
 				t.Check(`bay {index} has its plate, and a prompt only when open`, (parts[`Bay{index}Prompt`] ~= nil) == open)
 				index += 1
 			end
-			t.Check("the plot has a bay beyond the open ones, shown locked", index - 1 > #view.Base.Bays, `{index - 1} bays, {#view.Base.Bays} open`)
+			-- Every open bay has its spot on the plot. A spot beyond the open ones shows locked (the loop above): base level 1
+			-- opens two (TR21), today's plot has two, and AR16's plot brings the later bays' spots.
+			t.Check("the plot has a spot for every open bay", index - 1 >= #view.Base.Bays, `{index - 1} bays, {#view.Base.Bays} open`)
 			local hud = HudController.Parts()
 			for _, name in { "Base", "Voidkin" } do
 				Screen.Close()
@@ -6745,6 +6747,72 @@ local cases = {
 		end,
 	},
 	{
+		Name = "Reveal: the plate after it hangs under the name's rule, the frame undimmed, each line one colour, for each outcome",
+		Run = function(t: any)
+			-- AR12, research's verdict on the reveal's card in Eclipse, and the plate's images: the plate under the name's
+			-- line, from its rule's left end, over the held frame left undimmed; the pip tinted its rarity's word colour; the
+			-- outcome's mark and words in one colour; "Tap to continue" once the card has stood Config.Reveal.CardHold, clear
+			-- of the outcome's words or under the plate; every label legible, whole and on screen (the UI lint).
+			local plate = RevealConfig.Plate
+			local looks = {
+				{ Def = "rook", Rarity = "Common", Outcome = "New", Lead = false, Kind = "A new Voidkin", Mark = "ShardSilver", Words = "In your collection", Colour = plate.Kept },
+				{ Def = "rook", Rarity = "Rare", Outcome = "New", Lead = true, Kind = "A new Voidkin", Mark = "ShardSilver", Words = "Your lead: it fights beside you", Colour = plate.Kept },
+				{ Def = "rook", Rarity = "Mythical", Outcome = "Copy", Lead = false, Kind = "A copy", Mark = "Star", Words = "One more toward its next star", Colour = plate.Star },
+				{ Def = "stellane", Rarity = "Legendary", Outcome = "Sold", Lead = false, Kind = "Already at its last star", Mark = "CoinMint", Words = "Sold for 120 Credits", Colour = UIKit.Systems.Credits.Colour },
+			}
+			for _, look in looks do
+				local row = Voidkin.ById[look.Def]
+				local where = `{look.Rarity}, {look.Outcome}{if look.Lead then ", the lead" else ""}`
+				BaseController.Reveal({ Def = look.Def, Outcome = look.Outcome, Lead = look.Lead, Credits = 120 }, { Rarity = look.Rarity, Name = row.Name, Model = row.Model })
+				BaseController.Seek(RevealArt.Rarities[look.Rarity].Times.Card)
+				t.Check(`{where}: the plate comes`, waitFor(t, 1, function(): boolean
+					local shown = BaseController.Revealed()
+					return shown ~= nil and shown.Card
+				end))
+				local holder = Layers.Get("Overlay"):FindFirstChild("Reveal")
+				local stage = holder and holder:FindFirstChild("Stage", true)
+				local card = stage and stage:FindFirstChild("Card")
+				local rule = stage and stage:FindFirstChild("Rule")
+				local cover = holder and holder:FindFirstChild("RevealTap")
+				if not (card and card:IsA("GuiObject") and rule and rule:IsA("GuiObject") and stage and stage:IsA("GuiObject")) then
+					t.Check(`{where}: the plate on the stage, beside the name's rule`, false)
+					BaseController.Dismiss()
+					continue
+				end
+				t.Check(`{where}: the held frame stays undimmed`, cover ~= nil and cover:IsA("GuiObject") and cover.BackgroundTransparency == 1)
+				local scale = stage.AbsoluteSize.X / RevealArt.Screen.X
+				local foot = rule.AbsolutePosition.Y + rule.AbsoluteSize.Y
+				t.Near(`{where}: from the rule's left end`, card.AbsolutePosition.X, rule.AbsolutePosition.X, 1)
+				t.Near(`{where}: {plate.Gap} points under the rule`, card.AbsolutePosition.Y - foot, plate.Gap * scale, 1)
+				local function says(name: string): TextLabel?
+					local found = card:FindFirstChild(name)
+					return if found and found:IsA("TextLabel") then found else nil
+				end
+				local kind, rarity, outcome, skip = says("Kind"), says("Rarity"), says("Outcome"), says("Skip")
+				t.Equal(`{where}: what the break gave`, if kind then kind.Text else nil, look.Kind)
+				t.Equal(`{where}: its rarity, type and class`, if rarity then rarity.ContentText else nil, `{look.Rarity} · {row.Type} · {row.Class}`)
+				local pip = card:FindFirstChild("Pip")
+				t.Check(`{where}: the pip in its rarity's word colour`, pip ~= nil and pip:IsA("ImageLabel") and pip.ImageColor3:ToHex() == plate.Words[look.Rarity]:ToHex())
+				local mark = card:FindFirstChild("Mark")
+				t.Check(`{where}: the outcome's mark, {look.Mark}`, mark ~= nil and mark:IsA("ImageLabel") and mark.Image == UIKit.Images[look.Mark].Id)
+				t.Equal(`{where}: the outcome's words`, if outcome then outcome.Text else nil, look.Words)
+				t.Check(`{where}: in the mark's colour`, outcome ~= nil and outcome.TextColor3:ToHex() == look.Colour:ToHex())
+				t.Check(`{where}: no "Tap to continue" before the card has stood`, skip ~= nil and not skip.Visible)
+				t.Wait(RevealConfig.CardHold + 0.1)
+				t.Check(`{where}: then "Tap to continue"`, skip ~= nil and skip.Visible and skip.Text == "Tap to continue")
+				if skip and outcome then
+					local beside = math.abs((skip.AbsolutePosition.Y + skip.AbsoluteSize.Y / 2) - (outcome.AbsolutePosition.Y + outcome.AbsoluteSize.Y / 2)) < 1
+					local gap = skip.AbsolutePosition.X + skip.AbsoluteSize.X - skip.TextBounds.X - (outcome.AbsolutePosition.X + outcome.TextBounds.X)
+					local under = skip.AbsolutePosition.Y >= card.AbsolutePosition.Y + card.AbsoluteSize.Y - 0.5
+					t.Check(`{where}: "Tap to continue" clear of the words, or under the plate`, (beside and gap >= plate.Tap.Room * scale - 1) or under, string.format("%s, %.0f px", if beside then "beside" else "under", gap))
+				end
+				lintClean(t, `the plate after the reveal, {where}`)
+				BaseController.Dismiss()
+			end
+			t.Check("it closes", BaseController.Revealed() == nil)
+		end,
+	},
+	{
 		Name = "Reveal: each Voidkin's Reveal clip marks its strike where Config.Reveal.Strikes says",
 		Stay = true,
 		Run = function(t: any)
@@ -7138,7 +7206,7 @@ local cases = {
 			local held = view.Bag.Shards[shard] or 0
 			local heldWatt = view.Bag.Shards.named_watt or 0
 			local before = readyCount(shard)
-			local capacity = BaseConfig.Battery.Capacity
+			local capacity = Breaker.Capacity(view.Base)
 			local function tuned(value: number, named: number): boolean
 				t.Server("Tune", seconds, value)
 				t.Server("Tune", NAMED_PATH, named)

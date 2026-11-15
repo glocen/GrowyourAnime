@@ -13,6 +13,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local OpLedger = require(ReplicatedStorage.Shared.Rules.OpLedger)
 local BaseConfig = require(ReplicatedStorage.Shared.Config.Base)
+local BaseLevels = require(ReplicatedStorage.Shared.Rules.BaseLevels)
 
 export type OwnedVoidkin = {
 	Id: string, -- made by the server when it's uncovered (Profile.NewId), never reused
@@ -63,6 +64,7 @@ export type Chamber = {
 
 export type Bay = {
 	Worker: string, -- the Voidkin's Id, or "" when the bay is empty
+	Level: number, -- the bay's own level (TR21): its output rises with it, never past the base's ceiling (Rules.BaseLevels)
 }
 
 -- How the generation is split among the machines (Rules.Power; docs/design.md, "Power"). Under Auto, by their demand;
@@ -74,6 +76,8 @@ export type Power = {
 }
 
 export type Base = {
+	Level: number, -- the base's level, 1 to Config.Base.Levels.Cap (TR21): its bays, its battery's cap, its machines' ceiling
+	Machines: { [string]: number }, -- each single machine's level by name, the Breaker's now (TR21); a bay's is on the bay
 	Stamp: number, -- os.time() the base was last advanced to (Rules.Breaker); 0 before the first advance
 	Charge: number, -- the battery's charge, kWh (TR18; Migrations step 4 made it from the old electricity)
 	Spill: number, -- Credits from overflow not yet whole, carried to the next advance (0 to 1)
@@ -82,6 +86,7 @@ export type Base = {
 	Line: { ShardWork }, -- the waiting line, in the order it's fed
 	Ready: { ShardWork }, -- broken and waiting to be opened, oldest first
 	Bays: { Bay }, -- one per bay opened
+	Showcase: string, -- the Voidkin the showcase at the gate stands (TR22), whatever its role; "" for the strongest
 }
 
 export type GroundProgress = {
@@ -135,8 +140,8 @@ function Profile.Template(): Data
 		chambers[i] = {}
 	end
 	local bays: { Bay } = {}
-	for i = 1, BaseConfig.Start.Bays do
-		bays[i] = { Worker = "" }
+	for i = 1, BaseLevels.Bays(1) do
+		bays[i] = { Worker = "", Level = 1 }
 	end
 	return {
 		Version = 0, -- so a new profile runs every migration once and takes the same path as an old one
@@ -151,6 +156,9 @@ function Profile.Template(): Data
 		Currency = { Credits = 0, Research = 0 },
 		Roles = { Lead = "" },
 		Base = {
+			Level = 1,
+			Machines = { Breaker = 1 },
+			Showcase = "",
 			Stamp = 0,
 			Charge = BaseConfig.Start.Charge,
 			Spill = 0,

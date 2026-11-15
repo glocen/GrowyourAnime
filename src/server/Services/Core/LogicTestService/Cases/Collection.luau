@@ -1,6 +1,7 @@
 --!strict
 -- Collection cases (pure): the first of a Voidkin is a new record, a duplicate a copy, a copy past the last star sells;
--- stars cost their copies in order, by hand, and the last star sells what's left.
+-- stars cost their copies in order, by hand, and the last star sells what's left; the showcase at the gate stands the
+-- one picked, else the strongest (TR22).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -10,6 +11,7 @@ local Saveable = require(Shared.Data.Saveable)
 local Collection = require(Shared.Rules.Collection)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Stats = require(Shared.Rules.Stats)
 
 local NOW = 1_800_000_000
 
@@ -169,6 +171,42 @@ return {
 			end
 			t.Equal("Rook's", Voidkin.ById.rook.Words.Passive, "Second Wind: takes less damage below 30% health")
 			t.Equal("Kirra's", Voidkin.ById.kirra.Words.Signature, "Scarf Step: vanishes, crosses the target, cuts on the way out")
+		end,
+	},
+	{
+		Name = "Collection: TR22, the showcase at the gate stands the strongest until one is picked, any owned one, and the strongest again once the pick is gone",
+		Run = function(t: any)
+			local data = fresh()
+			t.Equal("none owned, none shown", Collection.Showcase(data), nil)
+			local rook = Collection.Uncover(data, "rook", NOW).Id
+			local watt = Collection.Uncover(data, "watt", NOW + 1).Id
+			data.Voidkin[watt].Level = 12
+			local function power(id: string): number
+				local owned = data.Voidkin[id]
+				return Stats.Power((Stats.Resolve(owned, Stats.PresetOf(data, owned), data)))
+			end
+			local strongest = if power(watt) >= power(rook) then watt else rook
+			local shown = Collection.Showcase(data)
+			t.Check("the strongest by Combat Power, until a pick", shown ~= nil and shown.Id == strongest, `{power(rook)} against {power(watt)}`)
+			local other = if strongest == watt then rook else watt
+			local picked = Collection.Actions.SetShowcase(data, { Voidkin = other }, NOW, 0.5)
+			t.Check("any owned one may be picked", picked.Ok == true and picked.Id == other)
+			t.Equal("and it stands", (Collection.Showcase(data) :: Profile.OwnedVoidkin).Id, other)
+			data.Roles.Lead = other
+			t.Equal("whatever its role", (Collection.Showcase(data) :: Profile.OwnedVoidkin).Id, other)
+			t.Equal("one not owned is refused", Collection.SetShowcase(data, "nobody").Error, Collection.Unknown)
+			t.Equal("a number is refused", Collection.SetShowcase(data, 5).Error, Collection.Unknown)
+			t.Equal("and the pick stays", data.Base.Showcase, other)
+			t.Check("\"\" gives it back to the strongest", Collection.SetShowcase(data, "").Ok == true and (Collection.Showcase(data) :: Profile.OwnedVoidkin).Id == strongest)
+			Collection.SetShowcase(data, other)
+			data.Voidkin[other] = nil
+			t.Equal("a pick that's gone: the strongest again", (Collection.Showcase(data) :: Profile.OwnedVoidkin).Id, strongest)
+			local twin = fresh()
+			local a = Collection.Uncover(twin, "rook", NOW).Id
+			local b = Collection.Uncover(twin, "pip", NOW).Id
+			twin.Voidkin[b].Def = "rook"
+			local first = (Collection.Showcase(twin) :: Profile.OwnedVoidkin).Id
+			t.Check("two alike: always the same one, so it never flickers", first == (if a < b then a else b) and (Collection.Showcase(twin) :: Profile.OwnedVoidkin).Id == first, `{a}, {b}: {first}`)
 		end,
 	},
 }

@@ -13,6 +13,7 @@ local Shared = ReplicatedStorage.Shared
 local Combat = require(Shared.Config.Combat)
 local HomeConfig = require(Shared.Config.Home)
 local HudConfig = require(Shared.Config.Hud)
+local BaseViewConfig = require(Shared.Config.BaseView)
 local UIKit = require(Shared.Config.UIKit)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
@@ -23,6 +24,7 @@ local UI = script.Parent.Parent.Parent.Parent.UI
 local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Button = require(UI.Kit.Button)
+local BaseView = require(UI.BaseView)
 local Hover = require(UI.Kit.Hover)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -101,7 +103,7 @@ function HudCases.Cases(given: Given): { any }
 				t.Check("the elite's square is cleared", t.Server("PackDefeat", "Elite").Ok == true)
 				local square = Markers.At(elite).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0)
 				local home = Markers.At(spawn).Position
-				-- At home: quiet, and a tap does nothing.
+				-- At home: quiet, and a tap opens the base's command view (TR21's blockout; its build retires the quiet look).
 				t.Root().CFrame = CFrame.new(home + Vector3.new(0, R6_ROOT_HEIGHT, 0))
 				t.Wait(0.5)
 				t.Check("at home the tile is quiet", waitFor(t, 1, function(): boolean
@@ -126,7 +128,9 @@ function HudCases.Cases(given: Given): { any }
 						table.insert(new, message)
 					end
 				end
-				t.Check("a tap does nothing: no charge, no shake, nothing said", player:GetAttribute("HomeCharge") == nil and shakes() == still and #new == 0, table.concat(new, "; "))
+				t.Check("a tap opens the base's command view (TR21): no charge, no shake, nothing said", BaseView.IsOpen() and player:GetAttribute("HomeCharge") == nil and shakes() == still and #new == 0, table.concat(new, "; "))
+				BaseView.Close()
+				t.Wait(BaseViewConfig.Lift.Seconds + 0.2)
 				-- Out on Lantern Row, nothing in the way: a tap charges, then home.
 				t.Root().CFrame = CFrame.new(square)
 				t.Wait(LEAD_SETTLE)
@@ -614,6 +618,84 @@ function HudCases.Cases(given: Given): { any }
 				end
 				if type(gave) == "table" and gave.Ok == true then
 					t.Server("BaseGive", shard, -1)
+				end
+			end,
+		},
+		{
+			-- TR21's blockout (docs/ui.md, 7; UI/BaseView): the camera lifts over the player's whole base, each machine and
+			-- bay wears a chip saying its name, its level and what it does, the base's level stands at the top, the HUD and
+			-- the machines' own plates step back, and Close gives the camera back behind the lead.
+			Name = "Base view: TR21's blockout, the camera lifts over the whole base, a chip on every machine and bay, and Close gives it back",
+			Run = function(t: any)
+				Screen.Close()
+				local camera = workspace.CurrentCamera
+				local was = camera.CFrame
+				local seconds = BaseViewConfig.Lift.Seconds
+				HudController.OpenView()
+				t.Check("it opens", BaseView.IsOpen())
+				t.Wait(seconds + 0.3)
+				local ok, err = pcall(function()
+					t.Equal("the camera is the view's", camera.CameraType, Enum.CameraType.Scriptable)
+					-- Over the machines' floor, not over where the camera was: the self-test's pad stands far above the plot.
+					local floor = -math.huge
+					for _, spot in BaseController.Says() do
+						floor = math.max(floor, spot.Ground.Y)
+					end
+					t.Check("lifted over the base", camera.CFrame.Position.Y > floor + 20, `{math.floor(camera.CFrame.Position.Y)} against the floor at {math.floor(floor)}`)
+					local chips = BaseView.Parts().Chips
+					local room = Layers.Get("World").AbsoluteSize
+					local names = 0
+					for name in BaseController.Says() do
+						names += 1
+						local chip = chips[name]
+						local title = chip and chip:FindFirstChild("Title", true)
+						local doing = chip and chip:FindFirstChild("Doing", true)
+						local at = if chip then chip.AbsolutePosition - Layers.Get("World").AbsolutePosition else Vector2.zero
+						local inside = chip ~= nil and at.X >= 0 and at.Y >= 0 and at.X + chip.AbsoluteSize.X <= room.X and at.Y + chip.AbsoluteSize.Y <= room.Y
+						t.Check(`{name}: its chip in view`, chip ~= nil and chip.Visible and inside, if chip then `{math.floor(at.X)}, {math.floor(at.Y)}` else "none")
+						t.Check(`{name}: it says what it is and what it does`, title ~= nil and title:IsA("TextLabel") and title.Text ~= "" and doing ~= nil and doing:IsA("TextLabel") and doing.Text ~= "", if title and title:IsA("TextLabel") then title.Text else "")
+					end
+					t.Check("the base's machines and bays, every one", names >= 5, tostring(names))
+					-- No chip covers another, however close their machines stand: one rises over the other.
+					local crossed: { string } = {}
+					for one, a in chips do
+						for other, b in chips do
+							if one < other and a.Visible and b.Visible then
+								local p, q = a.AbsolutePosition, b.AbsolutePosition
+								local across = p.X < q.X + b.AbsoluteSize.X and q.X < p.X + a.AbsoluteSize.X
+								local up = p.Y < q.Y + b.AbsoluteSize.Y and q.Y < p.Y + a.AbsoluteSize.Y
+								if across and up then
+									table.insert(crossed, `{one} over {other}`)
+								end
+							end
+						end
+					end
+					t.Check("no chip covers another", #crossed == 0, table.concat(crossed, ", "))
+					local level = BaseView.Parts().Level
+					local under: { string } = {}
+					if level then
+						local foot = level.AbsolutePosition.Y + level.AbsoluteSize.Y
+						for name, chip in chips do
+							if chip.Visible and chip.AbsolutePosition.Y < foot then
+								table.insert(under, `{name} {math.floor(foot - chip.AbsolutePosition.Y)} px`)
+							end
+						end
+					end
+					t.Check("nor the base's level at the top", #under == 0, table.concat(under, ", "))
+					local top = level and level:FindFirstChild("Title", true)
+					t.Check("the base's level at the top", top ~= nil and top:IsA("TextLabel") and string.find(top.Text, "^Base · Level %d") ~= nil, if top and top:IsA("TextLabel") then top.Text else "")
+					t.Check("the HUD steps back", not Layers.Get("Hud").Visible)
+					local plate = BaseController.Parts().BreakerPlate
+					t.Check("and the machines' own plates", plate == nil or not (plate :: GuiObject).Visible)
+					lintClean(t, "the base's command view")
+				end)
+				BaseView.Close()
+				t.Wait(seconds + 0.3)
+				t.Equal("Close gives the camera back", camera.CameraType, Enum.CameraType.Custom)
+				t.Check("behind the lead, where it was", (camera.CFrame.Position - was.Position).Magnitude < 2, `{math.floor((camera.CFrame.Position - was.Position).Magnitude)} studs off`)
+				t.Check("the HUD is back", Layers.Get("Hud").Visible)
+				if not ok then
+					error(err, 0)
 				end
 			end,
 		},

@@ -20,7 +20,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
-local BaseConfig = require(Shared.Config.Base)
 local HudConfig = require(Shared.Config.Hud)
 local Power = require(Shared.Rules.Power)
 
@@ -466,9 +465,8 @@ local function plate(body: Frame)
 	local holds = label(frame, "BatteryHolds", "", Theme.Text.Caption, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Right })
 	local charge = Bar.new({ Name = "Charge", Size = UDim2.fromOffset(inner, CHARGE), Position = UDim2.fromOffset(left, top + LINE + gap), Colour = BATTERY, Parent = frame })
 	parts.BatteryReading, parts.BatteryHolds, parts.BatteryCharge = reading, holds, charge
-	local capacity = BaseConfig.Battery.Capacity
 	table.insert(tickers, function(at: Read.Base)
-		local kwh = at.Data.Base.Charge
+		local kwh, capacity = at.Data.Base.Charge, at.Rates.Capacity
 		local demand = at.Rates.Demand
 		reading.Text = `{Read.Kwh(kwh)} / {Read.Number(capacity)} kWh`
 		holds.Text = if demand > 1e-9 then `holds {Read.Hours(kwh / demand)} of work` else "nothing draws now"

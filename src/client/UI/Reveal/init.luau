@@ -6,7 +6,10 @@
 --   local stage = Reveal.Play({ Rarity = "Rare", Name = "Lyric", Model = "Lyric" }, onCard)
 --   stage.Skip()      from 1.0 s, to the held frame
 --   stage.Seek(t)     for tests and captures: the clock pinned at t (nil lets it run on from there)
+--   stage.Hold(scale) a UIScale on a piece laid on the stage (the plate after it, UI/Reveal/Plate), kept so the piece
+--                     never draws smaller than its points where the stage shrinks to fit a small phone
 --   stage.Destroy()
+-- stage.Stage is the frame in the art's points, and stage.Under the name's rule: its left end and its foot.
 -- Its sounds are research's cues (Rules.Reveal.Cues) through one group, the world ducked under them; a skip stops them
 -- and stamps the name. A pinned clock (Seek) is silent.
 
@@ -37,16 +40,20 @@ local LEAK_LABELS = 24
 local SOUND_GROUP = "NL_RevealSounds"
 local LATE = 0.1 -- a cue more than this past its time when the clock reaches it (a skip, a seek) stays silent
 local Z = { Glow = 1, Rings = 2, Rays = 3, Halo = 4, Window = 5, Sill = 6, Frame = 7, Shard = 8, Leak = 9, Figure = 10, Strike = 11, Foot = 12, Flash = 13, Name = 14, Split = 15 }
+local RULE = { X = -12, Y = 10, H = 9 } -- the name's rule from its left and baseline, and its height
 
 local Stage = {}
 
 export type Options = { Rarity: string, Name: string, Model: string? }
 export type Handle = {
 	Root: Frame,
+	Stage: Frame,
+	Under: Vector2,
 	Rarity: Art.Rarity,
 	Time: () -> number,
 	Skip: () -> boolean,
 	Seek: (t: number?) -> (),
+	Hold: (scale: UIScale) -> (),
 	Destroy: () -> (),
 }
 
@@ -258,6 +265,8 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 	local start = os.clock()
 	local pinned: number? = nil
 	local carded = false
+	local held: { UIScale } = {}
+	local fitted = 1 -- the stage's scale on the screen, its last frame
 	local function now(): number
 		return math.min(pinned or (os.clock() - start), r.Times.Card)
 	end
@@ -329,6 +338,10 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 		local whole = math.min(fits.X / screen.X, fits.Y / screen.Y)
 		local layer = Layers.Scale()
 		fit.Scale = whole / layer
+		fitted = whole
+		for _, scale in held do
+			scale.Scale = math.max(1, 1 / math.max(whole, 0.01))
+		end
 		local kick = f.Kick * whole / layer
 		local centre = (corner + fits / 2) / layer
 		stage.Position = UDim2.fromOffset(centre.X, centre.Y + kick)
@@ -403,7 +416,7 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 		if n then
 			slam.Scale = n.Slam
 			nameLabel.TextColor3 = named.Colour:Lerp(WHITE, n.Burn)
-			lay(rule, named.Left - 12, named.Baseline + 10, n.Span + 4, 9, r.Rule, n.Landed)
+			lay(rule, named.Left + RULE.X, named.Baseline + RULE.Y, n.Span + 4, RULE.H, r.Rule, n.Landed)
 			local g = n.Glint
 			glintClip.Visible = g ~= nil
 			if g then
@@ -450,6 +463,8 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 	local handle: Handle
 	handle = {
 		Root = holder,
+		Stage = stage,
+		Under = Vector2.new(named.Left + RULE.X, named.Baseline + RULE.Y + RULE.H),
 		Rarity = r,
 		Time = now,
 		Skip = function(): boolean
@@ -478,6 +493,10 @@ function Stage.Play(options: Options, onCard: (() -> ())?): Handle
 			if t then
 				frameAt(math.min(t, r.Times.Card))
 			end
+		end,
+		Hold = function(scale: UIScale)
+			table.insert(held, scale)
+			scale.Scale = math.max(1, 1 / math.max(fitted, 0.01))
 		end,
 		Destroy = function()
 			connection:Disconnect()

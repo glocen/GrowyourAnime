@@ -21,6 +21,11 @@
 --                                nothing is spent
 --   SetPower { Auto, Shares? }   how the generation is split (Rules.Power): Auto, or each machine's share of it, checked
 --                                by Rules.Power.Shares; refused until the Power screen has opened (Base.Power.Open)
+--   UpgradeBase { Level }        the base's next level for its Credits (TR21; Rules.BaseLevels): the bays it opens join,
+--                                empty. Level names the level bought, so a second tap is refused, never charged twice
+--   UpgradeMachine { Machine, Bay?, Level }
+--                                a machine's next level ("Breaker", or "Bay" with its Bay) for its Credits, never past the
+--                                base's ceiling; the Breaker's chambers join at their levels and take the line's next
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -29,7 +34,9 @@ local Breaker = require(Shared.Rules.Breaker)
 local Collection = require(Shared.Rules.Collection)
 local Odds = require(Shared.Rules.Odds)
 local Power = require(Shared.Rules.Power)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local ShardConfig = require(Shared.Config.Shards)
+local BaseConfig = require(Shared.Config.Base)
 
 local Base = {}
 
@@ -46,10 +53,13 @@ Base.Leading = "Leading" -- the lead can't also work: one role at a time (docs/d
 Base.Named = "Named" -- the shard holds a stated Voidkin: voltage isn't offered on it
 Base.Infused = "Infused" -- the shard has had its voltage
 Base.Brief = "Brief" -- voltage would save it under Config.Shards.Voltage.MinSavedSeconds: not offered
-Base.Short = "Short" -- the battery holds less charge than the price
+Base.Short = "Short" -- less charge in the battery than voltage's price, or fewer Credits than an upgrade's
 Base.Moved = "Moved" -- the shard isn't there any more: it broke, or the line moved on
 Base.Closed = "Closed" -- the Power screen hasn't opened yet: Auto runs the base unseen
 Base.Over = "Over" -- the shares come to more than the whole generation
+Base.Stale = "Stale" -- the level asked isn't the next one: the upgrade was bought already, or the screen was behind
+Base.Cap = BaseLevels.AtCap -- past the last level there is at launch
+Base.Ceiling = BaseLevels.AtCeiling -- a machine at its base's ceiling: the base's level comes first
 
 local function refuse(code: string): Answer
 	return { Ok = false, Error = code }
@@ -248,6 +258,79 @@ function Base.SetPower(data: Profile.Data, args: any, now: number): Answer
 	return { Ok = true, Auto = auto, Shares = table.clone(data.Base.Power.Shares) }
 end
 
+-- The level asked, a whole number, or nil.
+local function wanted(args: any): number?
+	local level = field(args, "Level")
+	return if type(level) == "number" and level == math.floor(level) and level >= 1 and level < math.huge then level else nil
+end
+
+function Base.UpgradeBase(data: Profile.Data, args: any, now: number): Answer
+	local level = wanted(args)
+	if level == nil then
+		return refuse(Base.BadArgs)
+	end
+	local base = data.Base
+	if level ~= base.Level + 1 then
+		return refuse(Base.Stale)
+	end
+	local offer = BaseLevels.Next(base.Level, math.huge)
+	local price = offer.Price
+	if offer.Why ~= nil or price == nil then
+		return refuse(offer.Why or Base.Cap)
+	end
+	Breaker.Advance(data, now) -- the old level's battery and bays ran up to now
+	if data.Currency.Credits < price then
+		return refuse(Base.Short)
+	end
+	data.Currency.Credits -= price
+	base.Level = level
+	for _ = #base.Bays + 1, BaseLevels.Bays(level) do
+		table.insert(base.Bays, { Worker = "", Level = 1 })
+	end
+	return { Ok = true, Level = level, Spent = price, Bays = #base.Bays }
+end
+
+function Base.UpgradeMachine(data: Profile.Data, args: any, now: number): Answer
+	local machine, level = field(args, "Machine"), wanted(args)
+	local base = data.Base
+	local bay: number? = nil
+	if machine == "Bay" then
+		bay = slot(field(args, "Bay"), #base.Bays)
+		if bay == nil then
+			return refuse(Base.BadArgs)
+		end
+	elseif machine ~= "Breaker" or field(args, "Bay") ~= nil then
+		return refuse(Base.BadArgs)
+	end
+	if level == nil then
+		return refuse(Base.BadArgs)
+	end
+	local current = if bay then base.Bays[bay].Level or 1 else base.Machines.Breaker or 1
+	if level ~= current + 1 then
+		return refuse(Base.Stale)
+	end
+	local offer = BaseLevels.NextMachine(machine, current, base.Level, math.huge)
+	local price = offer.Price
+	if offer.Why ~= nil or price == nil then
+		return refuse(offer.Why or Base.Cap)
+	end
+	Breaker.Advance(data, now) -- the machine's old level worked up to now
+	if data.Currency.Credits < price then
+		return refuse(Base.Short)
+	end
+	data.Currency.Credits -= price
+	if bay then
+		base.Bays[bay].Level = level
+		return { Ok = true, Machine = machine, Bay = bay, Level = level, Spent = price }
+	end
+	base.Machines.Breaker = level
+	for _ = #base.Chambers + 1, math.min(BaseLevels.Chambers(level), BaseConfig.Breaker.MostChambers) do
+		table.insert(base.Chambers, {})
+	end
+	Breaker.Settle(data) -- a new chamber takes the line's next shard
+	return { Ok = true, Machine = machine, Level = level, Spent = price, Chambers = #base.Chambers }
+end
+
 Base.Actions = {
 	ChooseStarter = Base.ChooseStarter,
 	AddShard = Base.AddShard,
@@ -256,6 +339,8 @@ Base.Actions = {
 	SetWorker = Base.SetWorker,
 	Infuse = Base.Infuse,
 	SetPower = Base.SetPower,
+	UpgradeBase = Base.UpgradeBase,
+	UpgradeMachine = Base.UpgradeMachine,
 } :: { [string]: Action }
 
 return Base

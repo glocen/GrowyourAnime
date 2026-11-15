@@ -8,7 +8,7 @@ local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
-local BaseConfig = require(Shared.Config.Base)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local HudConfig = require(Shared.Config.Hud)
 local Profile = require(Shared.Data.Profile)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
@@ -53,7 +53,8 @@ local function plateClear(t: any, where: string)
 	t.Check(`{where}: the plate stands in the head's row, over the body`, low.Y >= head - 1 and high.Y <= body.AbsolutePosition.Y + 1, `{math.floor(low.Y)} to {math.floor(high.Y)}, the head {math.floor(head)} to {math.floor(body.AbsolutePosition.Y)}`)
 	local words = title.AbsolutePosition.X + title.TextBounds.X
 	t.Check(`{where}: clear of the title's words and of Close`, low.X >= words and high.X <= close.AbsolutePosition.X, `{math.floor(words)} | {math.floor(low.X)} to {math.floor(high.X)} | {math.floor(close.AbsolutePosition.X)}`)
-	local widest: { [TextLabel]: string } = { [reading] = `88.88 / {Read.Number(BaseConfig.Battery.Capacity)} kWh`, [holds] = "holds 88 h 58 min of work" }
+	-- The widest reading is at the launch's top level, whose cap is the largest (TR21).
+	local widest: { [TextLabel]: string } = { [reading] = `88.88 / {Read.Number(BaseLevels.Battery(BaseLevels.Top()))} kWh`, [holds] = "holds 88 h 58 min of work" }
 	local probes: { [TextLabel]: TextLabel } = {}
 	for label, text in widest do
 		local probe = label:Clone()
@@ -83,7 +84,7 @@ local function batteryPlate(t: any, now: Read.Base)
 		local found = part(name)
 		return if found and found:IsA("TextLabel") then found.Text else ""
 	end
-	local capacity = BaseConfig.Battery.Capacity
+	local capacity = now.Rates.Capacity
 	local reading = part("BatteryReading")
 	t.Check("the battery's plate: its kWh against its cap", string.find(said("BatteryReading"), `^[%d%.,]+ / {Read.Number(capacity)} kWh$`) ~= nil, said("BatteryReading"))
 	t.Check("in Power's yellow", reading ~= nil and reading:IsA("TextLabel") and reading.TextColor3 == Theme.Colour.Electricity)

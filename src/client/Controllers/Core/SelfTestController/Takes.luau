@@ -17,19 +17,23 @@ local Combat = require(Shared.Config.Combat)
 local HudConfig = require(Shared.Config.Hud)
 local WorldConfig = require(Shared.Config.World)
 local HomeConfig = require(Shared.Config.Home)
-local BaseConfig = require(Shared.Config.Base)
+local Breaker = require(Shared.Rules.Breaker)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local LightingConfig = require(Shared.Config.Lighting)
 local Parts = require(Shared.Util.Parts)
 local Profile = require(Shared.Data.Profile)
 local ShardConfig = require(Shared.Config.Shards)
+local RevealArt = require(Shared.Config.RevealArt)
+local VoidkinDefs = require(Shared.Definitions.Voidkin)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local BreakerScreen = require(UI.BreakerScreen)
 local PowerScreen = require(UI.PowerScreen)
+local BaseView = require(UI.BaseView)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Figure = require(UI.VoidkinScreen.Figure)
 local VoidkinCases = require(script.Parent.VoidkinCases)
@@ -41,6 +45,12 @@ local Screen = require(UI.Kit.Screen)
 local Hover = require(UI.Kit.Hover)
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
+
+-- The battery's cap at the base's level now (TR21).
+local function capacity(): number
+	local view = ProfileController.Get()
+	return if view then Breaker.Capacity(view.Base) else BaseLevels.Battery(1)
+end
 
 local TAKE_READ = 3 -- seconds the take leaves a screen or a card up, as a player reads it
 local TAKE_WALK = 45 -- seconds a walk of the take may last
@@ -1010,8 +1020,7 @@ return function(given: Given): { any }
 			Stay = true,
 			Run = function(t: any)
 				-- Research's still of the sheet (docs/test-requests.md, TR17, "Overview shows every stat"): each view is held
-				-- until the driver moves ReplicatedStorage.NL_TakeStep on ("Top", "Attack", "Foot", "Tap", "End") and captures it.
-				-- "Tap" opens Hit's sources, the longest a phone sees, its line at the window's top.
+				-- until the driver moves ReplicatedStorage.NL_TakeStep on ("Top", "Attack", "Foot", "End") and captures it.
 				local step = Instance.new("StringValue")
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
@@ -1050,15 +1059,6 @@ return function(given: Given): { any }
 						scroll.CanvasPosition = Vector2.new(0, math.max(0, scroll.AbsoluteCanvasSize.Y - scroll.AbsoluteWindowSize.Y))
 					end
 				end
-				if await("Tap") then
-					local scroll = VoidkinScreen.Find("Page")
-					local hit = scroll and scroll:FindFirstChild("Hit", true)
-					if scroll and scroll:IsA("ScrollingFrame") and hit and hit:IsA("GuiObject") then
-						t.Check("a tap opens Hit's sources", VoidkinScreen.Tap(hit:FindFirstChild("Press")))
-						t.Wait(0.1)
-						scroll.CanvasPosition = Vector2.new(0, hit.AbsolutePosition.Y - scroll.AbsolutePosition.Y + scroll.CanvasPosition.Y)
-					end
-				end
 				await("End")
 				Layers.Box(nil)
 				Layers.Force(nil)
@@ -1084,7 +1084,7 @@ return function(given: Given): { any }
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
 				step.Parent = ReplicatedStorage
-				t.Server("BaseBattery", BaseConfig.Battery.Capacity / 3)
+				t.Server("BaseBattery", capacity() / 3)
 				t.Server("PowerOpen", true)
 				waitFor(t, ANSWER, function(): boolean
 					local seen = ProfileController.Get()
@@ -1265,7 +1265,7 @@ return function(given: Given): { any }
 						ProfileController.Act("AddShard", { Shard = shard })
 					end
 				end
-				t.Server("BaseBattery", BaseConfig.Battery.Capacity / 3)
+				t.Server("BaseBattery", capacity() / 3)
 				t.Server("PowerOpen", true)
 				t.Check("the generator's prompt", waitFor(t, ANSWER, function(): boolean
 					local seen = ProfileController.Get()
@@ -1485,7 +1485,7 @@ return function(given: Given): { any }
 					return now ~= nil and #now.Base.Line >= 2 and (now.Bag.Shards[shard] or 0) == held + 1
 				end))
 				t.Server("BaseSkip", ShardConfig.Grades.Standard.BreakSeconds * 0.4) -- cracked partway, each with its time left
-				t.Server("BaseBattery", BaseConfig.Battery.Capacity)
+				t.Server("BaseBattery", capacity())
 				Screen.Close()
 				local player = Players.LocalPlayer
 				local old = player.Character
@@ -1842,7 +1842,7 @@ return function(given: Given): { any }
 					local detail = `battery {base.Charge}, chambers {table.concat(base.Chambers, ", ")}, {#base.Line} in line, ready {#base.Ready}, bays {table.concat(base.Bays, ", ")}, credits {base.Credits}, at {os.date("!%H:%M:%S")} UTC`
 					t.Check("Watt is still at work", watt, detail)
 					t.Check("the shards left breaking are ready to open", #base.Ready >= 1 and #base.Line == 0, detail)
-					t.Check("the battery paid for them and holds the rest", battery > 0 and battery < BaseConfig.Battery.Capacity, detail)
+					t.Check("the battery paid for them and holds the rest", battery > 0 and battery < capacity(), detail)
 					t.Wait(1)
 					moment("the plot as the player finds it")
 					t.Wait(6)
@@ -1862,6 +1862,74 @@ return function(given: Given): { any }
 					t.Wait(3)
 					moment("end")
 				end)
+			end,
+		},
+		{
+			Name = "Take: AR12, the reveal's plate held on each outcome, a Mythical copy first, for research's still at phone size",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- AR12's plate (docs/asset-requests.md, "The reveal's card, its images"): research's pass is on the builder's
+				-- still. Each outcome's card stands, past "Tap to continue", until the driver moves ReplicatedStorage.NL_TakeStep
+				-- on ("Common", "Rare", "Legendary", "End") and captures it; the Mythical copy stands first, the content
+				-- check's condition on the tinted pip at a phone's size.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Mythical"
+				step.Parent = ReplicatedStorage
+				local looks = {
+					{ Step = "Mythical", Def = "rook", Rarity = "Mythical", Outcome = "Copy", Lead = false },
+					{ Step = "Common", Def = "rook", Rarity = "Common", Outcome = "New", Lead = false },
+					{ Step = "Rare", Def = "rook", Rarity = "Rare", Outcome = "New", Lead = true },
+					{ Step = "Legendary", Def = "stellane", Rarity = "Legendary", Outcome = "Sold", Lead = false },
+				}
+				Screen.Close()
+				for index, look in looks do
+					local row = VoidkinDefs.ById[look.Def]
+					BaseController.Reveal({ Def = look.Def, Outcome = look.Outcome, Lead = look.Lead, Credits = 120 }, { Rarity = look.Rarity, Name = row.Name, Model = row.Model })
+					BaseController.Seek(RevealArt.Rarities[look.Rarity].Times.Card)
+					t.Check(`{look.Step}: the card stands`, waitFor(t, 2, function(): boolean
+						local shown = BaseController.Revealed()
+						return shown ~= nil and shown.Card
+					end))
+					local after = looks[index + 1]
+					waitFor(t, 120, function(): boolean
+						return step.Value == "End" or (after ~= nil and step.Value == after.Step)
+					end)
+					BaseController.Dismiss()
+					if step.Value == "End" then
+						break
+					end
+				end
+				step:Destroy()
+			end,
+		},
+		{
+			Name = "Take: TR21, the base's command view held open from home, for research's verdict",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- TR21's blockout (docs/test-requests.md, TR21): the Base tile's tap at home, as a player's would, then the view
+				-- held until the driver sets ReplicatedStorage.NL_TakeStep to "End" and has captured it. On a phone too, where
+				-- Studio's input tools don't reach the simulated screen.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "View"
+				step.Parent = ReplicatedStorage
+				Screen.Close()
+				t.Server("HomeReady")
+				local parts = HudController.Parts()
+				t.Check("at home, the Base tile quiet", waitFor(t, 2, function(): boolean
+					return (parts.Base :: TextButton):GetAttribute("Look") == "Quiet"
+				end))
+				t.Check("its tap opens the view", Button.Press(parts.Base :: TextButton) and waitFor(t, 1, function(): boolean
+					return workspace.CurrentCamera.CameraType == Enum.CameraType.Scriptable
+				end))
+				waitFor(t, 120, function(): boolean
+					return step.Value == "End"
+				end)
+				BaseView.Close()
+				step:Destroy()
 			end,
 		},
 	}

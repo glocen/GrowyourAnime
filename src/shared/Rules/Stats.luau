@@ -171,14 +171,17 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 end
 
 -- A block's Combat Power (docs/design.md, "Combat Power"; Config.Stats.Power): its stats weighted, critical damage above
--- its base, times the scale, rounded to a whole. For reading only: nothing in a fight reads it.
+-- its base, a percent's weight times G at the block's level, times the scale, rounded to a whole. For reading only:
+-- nothing in a fight reads it.
 function Stats.Power(block: Block): number
 	local power = StatsConfig.Power
+	local g = Growth.G(math.clamp(block.Level, 1, GrowthConfig.MaxLevel))
 	local sum = 0
 	for stat, weight in power.Weights do
 		local value = (block :: any)[stat]
 		if type(value) == "number" and value == value then
-			sum += weight * (if stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value)
+			local each = if power.ByLevel[stat] then weight * g else weight
+			sum += each * (if stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value)
 		end
 	end
 	return math.floor(sum * power.Scale + 0.5)

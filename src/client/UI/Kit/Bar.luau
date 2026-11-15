@@ -15,7 +15,7 @@ local Panel = require(script.Parent.Panel)
 
 export type Props = {
 	Name: string,
-	Size: UDim2, -- in pixels (offsets)
+	Size: UDim2, -- its height in pixels (an offset); its width an offset, or a share of its parent's
 	Position: UDim2?,
 	AnchorPoint: Vector2?,
 	Parent: Instance?,
@@ -38,7 +38,16 @@ local function light(bar: Frame)
 	local skin = Skin.Of(bar)
 	local inset = bar:GetAttribute("Inset")
 	local from = if type(inset) == "number" then inset else 0
-	local w, h = bar.Size.X.Offset - from, bar.Size.Y.Offset
+	local h = bar.Size.Y.Offset
+	-- A bar sized by its parent (a scale width: Overview's experience, a chamber's crack) measures its own: its drawn width
+	-- over the screen's scale, which its height, always authored, gives. Read as offsets alone, its light stayed a pixel
+	-- whatever its share (research's still of Overview, 2026-11-15).
+	local across = bar.Size.X.Offset
+	if bar.Size.X.Scale ~= 0 then
+		local drawn = bar.AbsoluteSize
+		across = if drawn.Y > 0 then drawn.X * h / drawn.Y else 0
+	end
+	local w = across - from
 	local rim = math.min(p.Rim or 1, h * 0.2)
 	local s = 0.6 * h
 	local lx, ly, lh = from + 1.77 * rim, rim, h - 2 * rim
@@ -102,6 +111,11 @@ function Bar.new(props: Props): Frame
 	Skin.Lay(skin, kind .. "Channel", { Name = "Channel", Tint = p.Channel, Scale = h / base, Z = 1 })
 	Skin.Lay(skin, kind .. "Edge", { Name = "Edge", Tint = p.Edge, Alpha = 0.9, Scale = h / base, Z = 2 })
 	light(bar)
+	if props.Size.X.Scale ~= 0 then
+		bar:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+			light(bar)
+		end)
+	end
 	bar.Parent = props.Parent
 	return bar
 end

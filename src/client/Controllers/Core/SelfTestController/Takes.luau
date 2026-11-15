@@ -1005,6 +1005,58 @@ return function(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: Overview's stat sheet at the smallest phone's size, its top and its foot held for stills, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's still of the sheet (docs/test-requests.md, TR17, "Overview shows every stat"): each view is held
+				-- until the driver moves ReplicatedStorage.NL_TakeStep on ("Top", "Attack", "Foot", "End") and captures it.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 120, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				Screen.Close()
+				local parts = HudController.Parts()
+				t.Check("the dock's Voidkin opens it", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name
+				end))
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				t.Wait(0.1)
+				VoidkinScreen.Show("Overview")
+				if await("Top") then
+					local scroll = VoidkinScreen.Find("Page")
+					if scroll and scroll:IsA("ScrollingFrame") then
+						scroll.CanvasPosition = Vector2.zero
+					end
+				end
+				if await("Attack") then -- the Attack group's caption at the window's top
+					local scroll = VoidkinScreen.Find("Page")
+					local head = scroll and scroll:FindFirstChild("GroupAttack")
+					if scroll and scroll:IsA("ScrollingFrame") and head and head:IsA("GuiObject") then
+						local at = head.AbsolutePosition.Y - scroll.AbsolutePosition.Y + scroll.CanvasPosition.Y
+						scroll.CanvasPosition = Vector2.new(0, at)
+					end
+				end
+				if await("Foot") then
+					local scroll = VoidkinScreen.Find("Page")
+					if scroll and scroll:IsA("ScrollingFrame") then
+						scroll.CanvasPosition = Vector2.new(0, math.max(0, scroll.AbsoluteCanvasSize.Y - scroll.AbsoluteWindowSize.Y))
+					end
+				end
+				await("End")
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Screen.Close()
+				step:Destroy()
+			end,
+		},
+		{
 			Name = "Take: TR20's fixes, stills held step by step: the word's plate over the chip, You're home, a card, a ready chip and a breaking chamber, for research's verdict",
 			Manual = true,
 			Stay = true,

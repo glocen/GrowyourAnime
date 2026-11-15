@@ -1611,6 +1611,12 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
   - The rules already hold every stat, so this is display only. For Faber, after TR19's and TR20's fixes.
   - **Check, from the same still:** the experience bar under "335 of 4,320 experience to the next" (7.8%) shows only a sliver at its left. Either its fill doesn't draw, or the fill is too dark to see on the track.
   - **Checks:** the case's lint on the smallest phone, with the list scrolled to its foot. A still for research.
+  - **Built, 2026-11-15, night (Faber).** The stills: `build/captures/overview/stat_sheet_smallest_phone.png`, at the smallest phone's size, three views: the top (the level, its bar, Core), the middle (Attack) and the foot (Defence, then Now and Gear).
+    - **Implemented.** `Rules.Sheet`, pure, writes every line: the 19 stats in Core, Attack and Defence, a zero as 0. A rating gives its points and "up to N%" at the Voidkin's level against a foe with none, as `Rules.Hit` sums it, and Critical counts its floor. The percents are percents, and each line's sources stand under it. Overview draws the groups under quiet captions.
+    - **The experience bar's sliver was a bug,** in the kit: `Bar` read its width as an offset alone, so a bar sized by its parent lit about a pixel at any share. It now measures its drawn width and relights when it changes. The Breaker's crack bar under a chamber had the same fault, so it now fills as the shard breaks.
+    - **Tested.** Type check 0 new. Logic 5971 offline, with the sheet's four cases. The self-test "Overview's stat sheet" passes 18 of 18: every line's value and sources against the rule, each group in order, a parent-sized bar at 7.8% lit 0.083 of its length, the lead's bar 0.144 for 0.141, and the lint clean on the smallest phone at the list's foot. "Voidkin screen (TR17)" passes 264 of 264. The stills take passes.
+    - **Tier 1 calls:** Hit and Critical Resist have no chance of their own, so each says "Lowers a foe's Dodge and Block" or "Lowers a foe's Critical". A rating at zero reads "0", never "up to 0%". Critical Damage lists its base 50% first. Elemental Attack names its element, or says "No element: no second hit". Lifesteal past its cap says what counts. Damage Bonus reads 0% for now, since no signature or passive gives it; Damage Reduction gives Second Wind's 20% "below 30% health".
+    - **Visually reviewed:** no. **Director-accepted:** no.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 

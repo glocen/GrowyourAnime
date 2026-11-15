@@ -37,6 +37,7 @@ local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local Hud = require(Shared.Rules.Hud)
 local Stats = require(Shared.Rules.Stats)
+local Sheet = require(Shared.Rules.Sheet)
 local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
 local HudConfig = require(Shared.Config.Hud)
@@ -81,9 +82,8 @@ local TAB_LETTERS = 6 -- a bag tab is as wide as a name of at least this many le
 local LABEL = 16 -- a rail button's label, under its circle, authored
 local WORD = 64 -- Save and Cancel, in the band, each, authored
 local WARM = 12 -- bodies drawn ahead at the open, the roster's first; one past them is drawn when it's asked for
+local SHEET_HEAD = 22 -- a stat group's caption line, the space above it included, authored
 local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, authored; a character's share of its text size; seconds between reads
-local SHOWN = { "Health", "Attack", "Defence", "Regen" } -- always in the stat sheet; a rating shows once it's above 0
-local SOURCES: { [string]: string } = { Base = "Own", Stars = "Stars", Level = "Level" }
 
 local player = Players.LocalPlayer
 
@@ -626,37 +626,22 @@ local function line(parent: Instance, order: number, left: string, right: string
 	return item
 end
 
--- Its whole stat sheet, each number with where it comes from, from `order` on.
+-- Its whole stat sheet, from `order` on (docs/ui.md, 5, "Overview's stat sheet"): every stat in its three groups, a zero
+-- as 0, each line's words from Rules.Sheet with its sources under it. A group's name is a quiet caption over its lines.
 local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, order: number)
 	local block, lines = resolved(view, owned)
-	local from: { [string]: { [string]: number } } = {}
-	for _, each in lines do
-		local source = SOURCES[each.Source] or "Gear"
-		local by = from[each.Stat] or {}
-		by[source] = (by[source] or 0) + each.Value
-		from[each.Stat] = by
-	end
-	local function stat(name: string, value: number, said: string)
+	for _, group in Sheet.Rows(block, lines, Passives.ById[owned.Def]) do
 		order += 1
-		local parts = {}
-		for _, source in { "Own", "Level", "Stars", "Gear" } do
-			local amount = (from[name] or {})[source]
-			if amount then
-				table.insert(parts, `{source} {if name == "Regen" then string.format("%.1f", amount) else Hud.Digits(amount)}`)
-			end
-		end
-		line(scroll, order, name, said, if #parts > 0 then table.concat(parts, " · ") else nil)
-	end
-	for _, name in SHOWN do
-		local value = (block :: any)[name] :: number
-		stat(name, value, if name == "Regen" then `{string.format("%.1f", value)} a second` else Hud.Digits(value))
-	end
-	order += 1
-	line(scroll, order, "Speed", `{block.Speed} studs a second`)
-	for _, name in Stats.Names do
-		local value = (block :: any)[name] :: number
-		if not table.find(SHOWN, name) and name ~= "CriticalDamage" and value > 0 then
-			stat(name, value, Hud.Digits(value))
+		local head = Instance.new("Frame")
+		head.Name = `Group{group.Name}`
+		head.BackgroundTransparency = 1
+		head.LayoutOrder = order
+		head.Size = UDim2.new(1, -8, 0, SHEET_HEAD)
+		head.Parent = scroll
+		text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, 0, 0, Theme.Text.Caption + 4), Position = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4)), Parent = head }, group.Name)
+		for _, each in group.Rows do
+			order += 1
+			line(scroll, order, each.Name, each.Value, each.Under)
 		end
 	end
 end

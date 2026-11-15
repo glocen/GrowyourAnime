@@ -17,8 +17,11 @@ local HudConfig = require(Shared.Config.Hud)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Profile = require(Shared.Data.Profile)
 local Stats = require(Shared.Rules.Stats)
+local Sheet = require(Shared.Rules.Sheet)
+local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Passives = require(Shared.Definitions.Passives)
 local Gear = require(Shared.Definitions.Gear)
 local Shards = require(Shared.Definitions.Shards)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
@@ -30,6 +33,7 @@ local Read = require(UI.Read)
 local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
+local Bar = require(UI.Kit.Bar)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Figure = require(UI.VoidkinScreen.Figure)
 
@@ -714,7 +718,115 @@ function VoidkinCases.Cases(given: Given): { any }
 		end,
 	}
 
-	return { case }
+	-- Overview's stat sheet (docs/ui.md, 5, "Overview's stat sheet"; TR17, "Overview shows every stat"): every stat in its
+	-- three groups, each line the rule's words, its experience bar lit as far as its share, and whole on the smallest phone
+	-- with the list scrolled to its foot.
+	local sheet = {
+		Name = "Voidkin screen: Overview's stat sheet, every stat in three groups with its sources, its experience bar lit to its share, whole on the smallest phone at the list's foot",
+		Run = function(t: any)
+			local view = ProfileController.Get()
+			t.Check("the save's copy is here", view ~= nil)
+			if view == nil then
+				return
+			end
+			local owned = view.Voidkin[view.Roles.Lead]
+			t.Check("a lead to read", owned ~= nil)
+			if owned == nil then
+				return
+			end
+			-- A bar sized by its parent lights as far as its share (it stayed a pixel: research's still, 7.8%).
+			local room = Instance.new("Frame")
+			room.Name = "NL_SheetBar"
+			room.BackgroundTransparency = 1
+			room.Size = UDim2.fromOffset(300, 40)
+			room.Parent = Layers.Get("Menus")
+			local probe = Bar.new({ Name = "Probe", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Parent = room, Colour = HudConfig.Card.Xp })
+			Bar.Set(probe, 0.078)
+			t.Wait(0.1)
+			local function lit(bar: Instance): number?
+				local skin = bar:FindFirstChild("NL_Skin")
+				local light = skin and skin:FindFirstChild("Light", true)
+				if light == nil or not light:IsA("GuiObject") or not bar:IsA("GuiObject") or bar.AbsoluteSize.X <= 0 then
+					return nil
+				end
+				return if light.Visible then light.AbsoluteSize.X / bar.AbsoluteSize.X else 0
+			end
+			local share = lit(probe)
+			t.Check("a bar as wide as its parent, at 7.8%, lights about 7.8% of its length", share ~= nil and math.abs(share - 0.078) <= 0.03, if share then string.format("%.3f", share) else "no light")
+			room:Destroy()
+			Screen.Close()
+			local hud = HudController.Parts()
+			t.Check("the dock's Voidkin opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+				return Screen.Current() == VoidkinScreen.Name
+			end))
+			t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+			VoidkinScreen.Show("Overview")
+			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
+			local scroll = VoidkinScreen.Find("Page")
+			t.Check("on Overview", scroll ~= nil and scroll:GetAttribute("Page") == "Overview")
+			if scroll == nil or not scroll:IsA("ScrollingFrame") then
+				Screen.Close()
+				return
+			end
+			local block, lines = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
+			local wrong: { string } = {}
+			local order = 0
+			for _, group in Sheet.Rows(block, lines, Passives.ById[owned.Def]) do
+				local head = scroll:FindFirstChild(`Group{group.Name}`)
+				if head == nil or not head:IsA("GuiObject") or head.LayoutOrder <= order then
+					table.insert(wrong, `{group.Name}'s caption`)
+				else
+					order = head.LayoutOrder
+				end
+				for _, want in group.Rows do
+					local item = scroll:FindFirstChild(want.Name)
+					local right = item and item:FindFirstChild("Right")
+					local under = item and item:FindFirstChild("Under")
+					local said = if right and right:IsA("TextLabel") then right.Text else nil
+					local quiet = if under and under:IsA("TextLabel") then under.Text else nil
+					if item == nil or not item:IsA("GuiObject") or item.LayoutOrder <= order then
+						table.insert(wrong, `{want.Name} out of its group`)
+					elseif said ~= want.Value or quiet ~= want.Under then
+						table.insert(wrong, `{want.Name}: {said} / {quiet}`)
+					else
+						order = item.LayoutOrder
+					end
+				end
+			end
+			t.Check("every stat in Core, Attack and Defence, each under its caption with its value and its sources", #wrong == 0, wrong[1])
+			local need = Growth.XpToNext(owned.Level)
+			if need and owned.Xp > 0 then
+				local level = scroll:FindFirstChild(`Level {owned.Level}`)
+				local xp = level and level:FindFirstChild("Xp")
+				local got = if xp then lit(xp) else nil
+				local want = math.clamp(owned.Xp / need, 0, 1)
+				t.Check("its experience bar lights as far as its share", got ~= nil and math.abs(got - want) <= 0.03, if got then string.format("%.3f for %.3f", got, want) else "no light")
+			end
+			-- The smallest phone, the list at its foot.
+			Layers.Force(Theme.Scale.Floor)
+			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+			t.Wait(0.1)
+			VoidkinScreen.Show("Overview")
+			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
+			local small = VoidkinScreen.Find("Page")
+			if small and small:IsA("ScrollingFrame") then
+				small.CanvasPosition = Vector2.new(0, math.max(0, small.AbsoluteCanvasSize.Y - small.AbsoluteWindowSize.Y))
+				t.Wait(0.1)
+				local last = small:FindFirstChild(Sheet.Said.DamageReduction)
+				t.Check("the smallest phone: the list scrolls to Damage Reduction", last ~= nil and last:IsA("GuiObject") and last.AbsolutePosition.Y + last.AbsoluteSize.Y <= small.AbsolutePosition.Y + small.AbsoluteWindowSize.Y + 1)
+				lintClean(t, "the smallest phone, Overview at its foot")
+			else
+				t.Check("the smallest phone: Overview", false)
+			end
+			Layers.Box(nil)
+			Layers.Force(nil)
+			t.Wait(0.1)
+			Screen.Close()
+			t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+		end,
+	}
+
+	return { case, sheet }
 end
 
 return VoidkinCases

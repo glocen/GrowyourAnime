@@ -6324,8 +6324,8 @@ local cases = {
 				for id in now.Voidkin do
 					free = free or Read.Role(now, id) == ""
 				end
-				-- the battery and the Training machine (TR12) only say what they are
-				local out: { [string]: boolean } = { Breaker = bagged or #now.Base.Ready > 0, Battery = false, Training = false }
+				-- the battery, the Training machine (TR12) and the generator (TR18) only say what they are
+				local out: { [string]: boolean } = { Breaker = bagged or #now.Base.Ready > 0, Battery = false, Training = false, Generator = false }
 				for name in BaseController.Says() do
 					local index = tonumber(name:match("^Bay(%d+)$"))
 					if index then
@@ -7407,7 +7407,7 @@ local cases = {
 			local plate = BaseController.Parts().Bay1Plate
 			local line = if plate then plate:FindFirstChild("Line1", true) :: TextLabel? else nil
 			local text = if line then line.Text else ""
-			t.Check("bay 1's plate names it, with its output", string.find(text, Read.VoidkinName(pick), 1, true) == 1 and string.find(text, "/min", 1, true) ~= nil, text)
+			t.Check("bay 1's plate names it, with its output in kW", text == `{Read.VoidkinName(pick)} · {Read.Kw(Power.Output(pick))}`, text)
 			Screen.Close()
 			if previous ~= pick.Id then
 				ProfileController.Act("SetWorker", { Bay = 1, Voidkin = previous })

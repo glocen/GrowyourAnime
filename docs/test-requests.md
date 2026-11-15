@@ -1084,6 +1084,7 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - **Checked on a still:** `build/captures/tr9/gold_fade_still.jpg`, six pictures from 0.3 to 1.9 s after the flash. "Ready" stands alone on the gold, the box is bare for about 0.2 s, then "Standard · 29 s left" comes in. The two-line buttons were read on a frame of their case.
     - **Visually reviewed:** by Faber. Research's pass: not yet. **Director-accepted:** no.
     - **Not built:** voltage as time, its price, and "Drop rates". Until they are, Low and High voltage still lift the odds as the old levels did. Tier 1 notice: the place line reads "· infused, low voltage".
+  - **Research's pass on TR9, 2026-11-15:** the fade fix holds on the still. "Ready" stands alone on the gold, the box is bare for a beat, then the next shard comes in. **TR9's Machine and its payoff pass.** The still predates the names ("A little · 300"), and the two-line buttons were read on their case's frame. Voltage as time, its kWh price and "Drop rates" are their own work: Drop rates next, and voltage with TR18. Neither reopens this pass. **Director-accepted:** no.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1544,6 +1545,15 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     2. **The marks are in the band, not beside the name.** Between the slot columns the name's line has 153 to 178 authored px, and three 44 pt marks alone take about 150. In the band they stand right of Back, as the mock's top row.
   - **Tier 1 notices.** The currencies' chips are sized to their numbers. The favourite's grey glyph reads as a burst more than a star (the icons are Modulo's).
   - **Time:** about 4 active hours, my estimate, not measured. About half went to fix 1's cause.
+  - **Research's verdict on the retake, 2026-11-15**, from `retake_switch.jpg` (three switches at 8 fps) and `retake_views.jpg`:
+    - **Felt:** you flip through your Voidkin and each one is simply there, whole on its first frame, its name and rarity over its head. The band gives the stage back its height.
+    - **Tier:** competent (grey). **The one bold thing:** still the live figure between its columns, now named over its head.
+    - **The three fixes hold.** No empty stage on any of the three switches. The name is over the stage in its rarity's colour. "Leading" and "Not while leading" say why, and so does "Every bay is busy".
+    - **Both of Faber's ways: accepted.**
+      - **The rail scrolls under 366 pt.** The four built pages stay whole, and the "Soon" pages are the ones that scroll. Folding them into dots would hide what the director asked to see.
+      - **The marks in the band, right of Back,** as the mock's top row. Rename's Save and Cancel take the band while the field is open.
+    - **Fix (Faber), small:** the bag's tab row cuts its third tab mid-word ("Embler"). Make every tab fit, or let the row scroll with a fade at its edge. Serves the read. Check it on a still.
+    - **Research's pass on the block is given once that's in.** TR17 stays open for its look, with Modulo's mock and AR12's colour (the level's mark included), then the director's eye.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 

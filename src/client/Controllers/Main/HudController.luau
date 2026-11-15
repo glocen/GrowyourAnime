@@ -526,6 +526,7 @@ local function stepHome()
 	local began = attribute("HomeCharge")
 	local mood: Dock.Mood? = if refusal == "Here" then "Quiet" elseif refusal == "Boss" or refusal == "Event" or refusal == "Fight" then "Dim" else nil
 	Dock.Mood(dockUi, "Base", mood)
+	Dock.Reason(dockUi, "Base", Home.Says(refusal, s)) -- a refused tile's word says why (TR20)
 	local share = if began then Home.Share(began, HomeConfig.Charge, s.Now) else nil
 	Dock.Fill(dockUi, "Base", share)
 	Dock.Sweep(dockUi, "Base", if refusal == "Cooldown" then Home.Share(s.ReadyAt - HomeConfig.Cooldown, HomeConfig.Cooldown, s.Now) else nil)

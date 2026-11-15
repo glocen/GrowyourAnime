@@ -81,6 +81,11 @@ return {
 		-- A press: the face squeezes to Squeeze within In of the touch, held at least Least, and comes back over Out with a
 		-- small overshoot (Back: the ease's strength; 0 is none). It replaces the pixel's sink.
 		Press = { Squeeze = 0.92, In = 0.05, Least = 0.08, Out = 0.14, Back = 2.4 },
+		-- Hover (TR20; UI.Kit.Hover), seeds, UNVERIFIED: a pointer over a pressable thing, or a pad's selection, eases it
+		-- in over In seconds and out over Out. A tile or a panel lifts Lift points, its colours White of the way toward
+		-- white, its halo (or its edge, toward its accent) at Halo; a card scales to Card and its rarity rim lifts; a pad's
+		-- selection wears a rim of ours, Rim points. Over a dock tile Word seconds, its word (or why it's refused) shows.
+		Hover = { In = 0.08, Out = 0.12, Lift = 2, White = 0.12, Halo = 0.4, Card = 1.03, Rim = 1.5, Word = 0.35 },
 		-- A screen comes in from From of its size, see-through, eased out over Enter; it leaves to To, eased in, over Exit:
 		-- about 0.8 of its entrance (rule 4).
 		Screen = { Enter = 0.2, Exit = 0.16, From = 0.94, To = 0.97 },

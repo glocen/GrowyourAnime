@@ -9,6 +9,8 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
 local Theme = require(script.Parent.Parent.Theme)
 local Skin = require(script.Parent.Skin)
+local HudConfig = require(Shared.Config.Hud)
+local Hover = require(script.Parent.Hover)
 
 export type Props = {
 	Name: string,
@@ -111,6 +113,33 @@ function Panel.Trim(frame: GuiObject, colour: Color3)
 	end
 	frame:SetAttribute("Trim", colour)
 	Panel.Lit(frame, frame:GetAttribute("Lit") == true)
+end
+
+-- A pointer over a panel that presses (TR20; Kit.Hover): its body White of the way toward white, its edge Halo of the way
+-- toward its accent, all the way for a pad's selection, our rim. A lit panel's edge is already its accent: open beats
+-- hover. Share 0 puts both back as made.
+function Panel.Hover(frame: GuiObject, share: number, pad: boolean)
+	local folder = frame:FindFirstChild("NL_Skin")
+	if folder == nil then
+		return
+	end
+	local p = Panel.Palette(frame)
+	local fill = folder:FindFirstChild("Fill", true)
+	if fill and fill:IsA("ImageLabel") then
+		local colour = frame:GetAttribute("Colour")
+		local gradient = fill:FindFirstChildOfClass("UIGradient")
+		if frame:GetAttribute("Row") == true and typeof(colour) == "Color3" then
+			fill.ImageColor3 = Hover.White(colour, share)
+		elseif frame:GetAttribute("Row") ~= true and gradient then -- the body's two colours, top to bottom (Skin.Tint)
+			gradient.Color = Hover.Whites(ColorSequence.new(p.Panel[1], p.Panel[#p.Panel]), share)
+		end
+	end
+	local edge = folder:FindFirstChild("Edge", true)
+	if edge and edge:IsA("ImageLabel") and frame:GetAttribute("Lit") ~= true then
+		local trim = frame:GetAttribute("Trim")
+		local base = if typeof(trim) == "Color3" then trim else p.Edge
+		edge.ImageColor3 = base:Lerp(p.Accent, (if pad then 1 else HudConfig.Motion.Hover.Halo) * share)
+	end
 end
 
 -- A list inside `frame`: its children stack in order, `gap` apart (the skin is never in it).

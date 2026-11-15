@@ -10,7 +10,9 @@
 --   open      while its screen is (the button Selected): white-hot, its rim over it, its halo under it, its light white
 --   dim       while it can't be used (the button Disabled): its tile and mark at Dim of themselves, its light deep
 -- and the pip over its far corner while it has something new, in any state. A touch held LongPress seconds shows the
--- tile's word over it, and lifting it then doesn't press (Config.Hud.Dock). A tile its owner gives a mood keeps it over
+-- tile's word over it, and lifting it then doesn't press (Config.Hud.Dock). A pointer over a tile at rest lifts it, its
+-- gradient toward white and its halo part lit, and after a moment shows its word; a pad's selection wears its rim (TR20,
+-- Kit.Hover). A tile its owner gives a mood keeps it over
 -- its button's states, still tappable, so a tap can say why (TR19, the Base tile):
 --   quiet     nothing to do here: its gradient at Quiet of itself, no sheen, no glow, its light deep; nothing sinks
 --   dim       refused for now: as a disabled tile
@@ -19,6 +21,7 @@
 --   Dock.new(parent, presses)          the dock; presses[name] is each tile's OnPress (Base, Inventory, Map)
 --   Dock.Pip(dock, name, on)           something new on a tile
 --   Dock.Mood(dock, name, mood?)       "Quiet", "Dim", or nil for its button's own look
+--   Dock.Reason(dock, name, why?)      why it's refused, its word on a long press or a hover; nil for its name
 --   Dock.Fill(dock, name, share?)      a charge's share, 0 to 1; nil or 0 shows none
 --   Dock.Sweep(dock, name, share?)     a cooldown's run, 0 to 1; nil or 1 shows none
 --   Dock.Shake(dock, name)             a refused tap: the tile shakes Shake points side to side over Shook seconds
@@ -32,6 +35,7 @@ local Theme = require(script.Parent.Theme)
 local Skin = require(script.Parent.Kit.Skin)
 local Text = require(script.Parent.Kit.Text)
 local Button = require(script.Parent.Kit.Button)
+local Hover = require(script.Parent.Kit.Hover)
 
 type Def = typeof(UIKit.Dock.Buttons[1])
 type Gradient = { Stops: { number }, Colours: { Color3 } }
@@ -53,6 +57,9 @@ export type Tile = {
 	Shift: number, -- the shake's offset now, in points
 	ShakeAt: number?,
 	Shares: { [string]: number }, -- the fill's and the veil's shown last
+	Hover: number, -- the pointer's share over it (Kit.Hover)
+	Pad: boolean, -- a pad's selection
+	Reason: string?, -- why it's refused, its owner's words, shown as its word
 }
 export type Mood = "Quiet" | "Dim"
 export type Dock = { Frame: Frame, Tiles: { [string]: Tile } }
@@ -91,7 +98,8 @@ end
 
 -- Every layer at its place with the shake's offset; the mark Sink points down its lean while pressed.
 local function place(tile: Tile)
-	local shift = UDim2.fromOffset(tile.Shift, 0)
+	local lift = if tile.Shown == "Rest" then HudConfig.Motion.Hover.Lift * tile.Hover else 0
+	local shift = UDim2.fromOffset(tile.Shift, -lift)
 	for name, layer in tile.Layers do
 		local rest = tile.Rest[name]
 		if rest then
@@ -99,7 +107,7 @@ local function place(tile: Tile)
 		end
 	end
 	local sink = if tile.Shown == "Pressed" then HudConfig.Dock.Sink else 0
-	tile.Layers.Mark.Position = tile.Mark + UDim2.fromOffset(tile.Shift - sink * UIKit.Dock.Lean, sink)
+	tile.Layers.Mark.Position = tile.Mark + UDim2.fromOffset(tile.Shift - sink * UIKit.Dock.Lean, sink - lift)
 end
 
 local function paint(tile: Tile, now: string)
@@ -108,11 +116,16 @@ local function paint(tile: Tile, now: string)
 	local placed = if now == "Pressed" then def.TilePressed else def.Tile
 	Skin.Set(layers.Tile, placed.Image, { X = placed.At.X, Y = placed.At.Y })
 	tile.Rest.Tile = layers.Tile.Position
-	Skin.Tint(layers.Tile, tile.Looks[now] or tile.Looks.Rest)
+	-- Hover (TR20) answers a tile at rest: its gradient toward white, its halo part lit; a pad's selection wears its rim.
+	local hover = if now == "Rest" then tile.Hover else 0
+	Skin.Tint(layers.Tile, Hover.Whites(tile.Looks[now] or tile.Looks.Rest, hover))
 	layers.Tile.ImageTransparency = 1 - shade
 	layers.Sheen.Visible = now == "Rest"
-	layers.Edge.Visible = now == "Open"
-	layers.Halo.Visible = now == "Open"
+	local rim = tile.Pad and tile.Hover > 0 and now ~= "Open"
+	layers.Edge.Visible = now == "Open" or rim
+	layers.Edge.ImageTransparency = if rim then 1 - tile.Hover else 0
+	layers.Halo.Visible = now == "Open" or hover > 0
+	layers.Halo.ImageTransparency = if now == "Open" then 0 else 1 - HudConfig.Motion.Hover.Halo * hover
 	layers.Glow.Visible = now == "Rest"
 	Skin.Tint(layers.Light, if now == "Rest" then def.Rest.Light elseif now == "Open" then def.Open.Light else def.Deep)
 	layers.Light.ImageTransparency = 1 - shade
@@ -213,7 +226,7 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Font = Theme.Font.Strong,
 			Colour = UIKit.Palettes.Graphite.Text,
 			Align = Enum.TextXAlignment.Center,
-			Box = UDim2.fromOffset(box[3] + 40, 18),
+			Box = UDim2.fromOffset(240, 18), -- room for a refusal's words; it draws over the HUD, so it moves nothing
 			Position = UDim2.fromOffset(box[1] + box[3] / 2, box[2] - HudConfig.Dock.Rise),
 			AnchorPoint = Vector2.new(0.5, 1),
 			Parent = frame,
@@ -261,6 +274,9 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Shift = 0,
 			ShakeAt = nil :: number?,
 			Shares = {},
+			Hover = 0,
+			Pad = false,
+			Reason = nil :: string?,
 		}
 		for name, layer in layers do
 			if name ~= "Mark" then
@@ -268,6 +284,12 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			end
 		end
 		byButton[button] = tile
+		Hover.On(button, function(share: number, pad: boolean)
+			tile.Hover, tile.Pad = share, pad
+			if tile.Shown ~= "" then
+				paint(tile, tile.Shown)
+			end
+		end)
 		local function pointer(input: InputObject): boolean
 			return input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch
 		end
@@ -312,6 +334,14 @@ function Dock.Pip(dock: Dock, name: string, on: boolean)
 		tile.New = on
 		tile.Layers.Pip.Visible = on
 		tile.Button:SetAttribute("New", on)
+	end
+end
+
+-- Why a tile is refused, in its owner's words: its word says it on a long press or a hover (TR20). Nil for its name.
+function Dock.Reason(dock: Dock, name: string, why: string?)
+	local tile = dock.Tiles[name]
+	if tile then
+		tile.Reason = why
 	end
 end
 
@@ -372,7 +402,12 @@ function Dock.Paint(dock: Dock)
 		if held and now - held >= HudConfig.Dock.LongPress then
 			tile.Long = true
 		end
-		local shows = (held ~= nil and tile.Long) or now < tile.WordUntil
+		local shows = (held ~= nil and tile.Long) or now < tile.WordUntil or Hover.Since(tile.Button) >= HudConfig.Motion.Hover.Word
+		local disabled = tile.Button:GetAttribute("Disabled")
+		local said = tile.Reason or (if type(disabled) == "string" and disabled ~= "" then disabled else tile.Def.Name)
+		if tile.Word.Text ~= said then
+			tile.Word.Text = said
+		end
 		if tile.Word.Visible ~= shows then
 			tile.Word.Visible = shows
 		end

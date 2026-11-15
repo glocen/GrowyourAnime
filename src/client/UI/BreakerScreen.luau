@@ -30,6 +30,7 @@ local UI = script.Parent
 local Theme = require(UI.Theme)
 local Read = require(UI.Read)
 local Panel = require(UI.Kit.Panel)
+local Hover = require(UI.Kit.Hover)
 local Text = require(UI.Kit.Text)
 local Row = require(UI.Kit.Row)
 local Bar = require(UI.Kit.Bar)
@@ -275,7 +276,7 @@ local function flashLeft(started: number?): number?
 	return if left > 0 then left else nil
 end
 
--- A tap target over a whole frame: the cell or chip is the button, its look the panel under it.
+-- A tap target over a whole frame: the cell or chip is the button, its look the panel under it, which answers a pointer.
 local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied at each build
 local function tapOver(frame: GuiObject, name: string, onTap: () -> ())
 	local tap = Instance.new("TextButton")
@@ -289,6 +290,11 @@ local function tapOver(frame: GuiObject, name: string, onTap: () -> ())
 	end)
 	taps[tap] = onTap
 	tap.Parent = frame
+	-- Hover (TR20): the chamber or chip lifts and brightens under the pointer, inside its own place in the list.
+	Hover.On(tap, function(share: number, pad: boolean)
+		Hover.Lift(frame, share, tap)
+		Panel.Hover(frame, share, pad)
+	end)
 end
 
 local function label(parent: Instance, name: string, text: string, size: number, box: UDim2, position: UDim2, props: { [string]: any }?): TextLabel

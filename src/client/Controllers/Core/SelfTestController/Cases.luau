@@ -18,7 +18,6 @@ local Actions = require(Shared.Definitions.Actions)
 local Passives = require(Shared.Definitions.Passives)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
-local HomeConfig = require(Shared.Config.Home)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local Shades = require(Shared.Config.Shades)
@@ -79,6 +78,7 @@ local Burst = require(UI.Kit.Burst)
 local UiLint = require(script.Parent.UiLint)
 local Takes = require(script.Parent.Takes)
 local VoidkinCases = require(script.Parent.VoidkinCases)
+local HudCases = require(script.Parent.HudCases)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -5474,187 +5474,6 @@ local cases = {
 		end,
 	},
 	{
-		-- TR19 (docs/test-requests.md, "Home in one tap: the dock's Base tile"): at home the tile is quiet and a tap does
-		-- nothing; out on Lantern Row a tap charges, the tile filling from its foot and the avatar's outline lifting, then the
-		-- player stands at their plot's spawn facing its Breaker with their lead beside them; the cooldown's veil is on the
-		-- tile away from home; a fight, a hit in the charge and a keeper's try each refuse in plain words and shake the tile;
-		-- a lead fallen alone out in a ground gives the tile its pip.
-		Name = "HUD: TR19, the dock's Base tile takes the player home after its charge, refuses in plain words, is quiet at home, and wears the pip after a lone fall",
-		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
-		Run = function(t: any)
-			t.Wait(LEAD_SETTLE)
-			Screen.Close()
-			local player = Players.LocalPlayer
-			local parts = HudController.Parts()
-			local base = parts.Base :: TextButton
-			local plot = player:GetAttribute("Plot")
-			local where = if type(plot) == "number" then { Plot = plot } else nil
-			local spawn = if where then streamed(t, "Spawn", where) else nil
-			local breaker = if where then streamed(t, "Breaker", where) else nil
-			local elite = streamed(t, "Elite")
-			t.Check("the plot's spawn and Breaker, and the elite's square", spawn ~= nil and breaker ~= nil and elite ~= nil)
-			if not (spawn and breaker and elite) then
-				return
-			end
-			local function flat(a: Vector3, b: Vector3): number
-				return Vector3.new(a.X - b.X, 0, a.Z - b.Z).Magnitude
-			end
-			local function shakes(): number
-				return tonumber(base:GetAttribute("Shakes")) or 0
-			end
-			local function state(): any
-				return t.Server("HomeState")
-			end
-			local function said(words: string): boolean
-				return table.find(Toast.Shown(), words) ~= nil
-			end
-			local function restore()
-				t.Server("HomeReady")
-				t.Server("LeadHeal")
-				t.Server("PackBack", "Elite")
-			end
-			t.Server("HomeReady")
-			t.Check("the elite's square is cleared", t.Server("PackDefeat", "Elite").Ok == true)
-			local square = Markers.At(elite).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0)
-			local home = Markers.At(spawn).Position
-			-- At home: quiet, and a tap does nothing.
-			t.Root().CFrame = CFrame.new(home + Vector3.new(0, R6_ROOT_HEIGHT, 0))
-			t.Wait(0.5)
-			t.Check("at home the tile is quiet", waitFor(t, 1, function(): boolean
-				return base:GetAttribute("Look") == "Quiet"
-			end), tostring(base:GetAttribute("Look")))
-			t.Equal("and the server says here", state().Refusal, "Here")
-			local still = shakes()
-			Button.Press(base)
-			t.Wait(0.4)
-			t.Check("a tap does nothing: no charge, nothing said", player:GetAttribute("HomeCharge") == nil and shakes() == still)
-			-- Out on Lantern Row, nothing in the way: a tap charges, then home.
-			t.Root().CFrame = CFrame.new(square)
-			t.Wait(LEAD_SETTLE)
-			t.Check("out in the ground the tile is at rest", waitFor(t, 1, function(): boolean
-				return base:GetAttribute("Look") == "Rest" and base:GetAttribute("Mood") == nil
-			end), tostring(base:GetAttribute("Look")))
-			t.Equal("and the server would take them home", state().Refusal, "")
-			local fov = workspace.CurrentCamera.FieldOfView
-			local pressed = os.clock()
-			t.Check("a tap begins the charge", Button.Press(base) and waitFor(t, REPLICATE, function(): boolean
-				return player:GetAttribute("HomeCharge") ~= nil
-			end))
-			t.Check("the tile fills from its foot", waitFor(t, HomeConfig.Charge, function(): boolean
-				local fill = base:GetAttribute("Fill")
-				return type(fill) == "number" and fill > 0 and fill < 1
-			end), tostring(base:GetAttribute("Fill")))
-			local character = player.Character
-			local glow = if character then character:FindFirstChild("NL_HomeCharge") else nil
-			t.Check("and the avatar's outline lifts in void light", glow ~= nil and glow:IsA("Highlight") and glow.Enabled and glow.OutlineColor == HomeConfig.Outline)
-			t.Check("then it lands", waitFor(t, HomeConfig.Charge + REPLICATE + 0.5, function(): boolean
-				local landed = player:GetAttribute("HomeLanded")
-				return type(landed) == "number" and landed >= pressed
-			end))
-			local took = (tonumber(player:GetAttribute("HomeLanded")) or pressed) - pressed
-			t.Check("after the whole charge", took >= HomeConfig.Charge - 0.05, string.format("%.2f s", took))
-			t.Wait(0.3) -- physics settles the set-down
-			local root = t.Root()
-			t.Near("at the plot's spawn (studs off)", flat(root.Position, home), 0, SET_DOWN)
-			local toward = Markers.At(breaker).Position - root.Position
-			local look = root.CFrame.LookVector
-			local facing = Vector3.new(look.X, 0, look.Z).Unit:Dot(Vector3.new(toward.X, 0, toward.Z).Unit)
-			t.Check("facing its Breaker", facing > math.cos(math.rad(10)), string.format("%.0f degrees off", math.deg(math.acos(math.clamp(facing, -1, 1)))))
-			local mine = myLead()
-			local beside = if mine then flat(mine:GetPivot().Position, root.Position) else math.huge
-			t.Check("the lead beside them", beside < 5, string.format("%.1f studs", beside))
-			local lit = glow ~= nil and glow:IsA("Highlight") and glow.Enabled
-			t.Check("the charge's fill and outline are gone", base:GetAttribute("Fill") == nil and not lit)
-			t.Check("the field of view settles back", waitFor(t, HomeConfig.Settle + 0.3, function(): boolean
-				return math.abs(workspace.CurrentCamera.FieldOfView - fov) < 0.05
-			end), string.format("%.2f", workspace.CurrentCamera.FieldOfView))
-			-- The cooldown: quiet at home, its veil on the tile out in the ground, and a tap says how long.
-			t.Check("home again, the tile is quiet", waitFor(t, 1, function(): boolean
-				return base:GetAttribute("Look") == "Quiet"
-			end))
-			t.Root().CFrame = CFrame.new(square)
-			t.Wait(0.5)
-			local veil = base:GetAttribute("Veil")
-			t.Check("away, the cooldown's veil covers what's left", type(veil) == "number" and veil > 0 and veil < 1, tostring(veil))
-			t.Check("still tappable, to say why", Button.State(base) ~= "Disabled", Button.State(base))
-			local before = shakes()
-			Button.Press(base)
-			t.Check("a tap says how long, and the tile shakes", waitFor(t, REPLICATE, function(): boolean
-				for _, shown in Toast.Shown() do
-					if string.match(shown, "^Ready in %d+ s$") then
-						return shakes() > before
-					end
-				end
-				return false
-			end), table.concat(Toast.Shown(), " | "))
-			t.Equal("the server agrees", state().Refusal, "Cooldown")
-			-- In a fight: dim, and a tap says so.
-			t.Server("HomeReady")
-			t.Server("HomeHit")
-			t.Check("a hit just now dims the tile", waitFor(t, REPLICATE, function(): boolean
-				return base:GetAttribute("Look") == "Dim"
-			end), tostring(base:GetAttribute("Look")))
-			before = shakes()
-			Button.Press(base)
-			t.Check("a tap says it's in a fight, and shakes", waitFor(t, REPLICATE, function(): boolean
-				return said("In a fight") and shakes() > before
-			end))
-			-- A hit in the charge cancels it, and nothing is spent.
-			t.Server("HomeReady")
-			t.Wait(REPLICATE)
-			before = shakes()
-			local from = t.Root().Position
-			t.Check("a fresh charge", Button.Press(base) and waitFor(t, REPLICATE, function(): boolean
-				return player:GetAttribute("HomeCharge") ~= nil
-			end))
-			t.Server("HomeHit")
-			t.Check("a hit in it cancels it, said and shaken", waitFor(t, HomeConfig.Charge + REPLICATE, function(): boolean
-				return player:GetAttribute("HomeCharge") == nil and shakes() > before
-			end))
-			t.Check("the player wasn't moved", flat(t.Root().Position, from) < SET_DOWN)
-			t.Check("and no cooldown was spent", player:GetAttribute("HomeReady") == nil)
-			-- A keeper's try: dim, and a tap says so.
-			t.Server("HomeReady")
-			t.Server("KeeperRest", 0)
-			local try = t.Server("KeeperTry")
-			local tried = type(try) == "table" and try.Ok == true
-			t.Check("a try starts", tried, if type(try) == "table" then tostring(try.Error) else "")
-			if tried then
-				t.Check("in a boss's ground the tile dims", waitFor(t, REPLICATE + 1, function(): boolean
-					return player:GetAttribute("Try") ~= nil and base:GetAttribute("Look") == "Dim"
-				end), tostring(base:GetAttribute("Look")))
-				before = shakes()
-				Button.Press(base)
-				t.Check("a tap says it's a boss's ground, and shakes", waitFor(t, REPLICATE, function(): boolean
-					return said("Not in a boss's ground") and shakes() > before
-				end))
-				t.Server("KeeperEnd", "Loss")
-				t.Check("the try ends", waitFor(t, 6, function(): boolean
-					return player:GetAttribute("Try") == nil
-				end))
-				t.Server("LeadHeal")
-				t.Wait(LEAD_SETTLE)
-			end
-			-- A lead fallen alone out in a ground: the pip on the tile, gone at its return.
-			t.Root().CFrame = CFrame.new(square)
-			t.Wait(LEAD_SETTLE)
-			t.Check("no pip while the lead stands", base:GetAttribute("New") ~= true)
-			local alone = t.Server("VoidkinFallen")
-			t.Check("none other ready", type(alone) == "table" and alone.Ok == true)
-			t.Check("the lead falls", t.Server("FightHealth", 0).Ok == true)
-			t.Check("then the tile wears its pip", waitFor(t, Combat.Lead.Leave + REPLICATE + 1, function(): boolean
-				return base:GetAttribute("New") == true
-			end))
-			t.Check("and never the next lead's button", not parts.Next.Visible)
-			lintClean(t, "a lead fallen alone, the Base tile's pip")
-			t.Server("LeadHeal")
-			t.Check("at the lead's return the pip is gone", waitFor(t, 2, function(): boolean
-				return base:GetAttribute("New") ~= true
-			end))
-			restore()
-		end,
-	},
-	{
 		Name = "UI kit: a screen rebuilt in place keeps where its lists were scrolled, and a list keyed to another thing starts at its top",
 		Run = function(t: any)
 			-- TR15's take (2026-11-14): a tap low on a list rebuilt its screen and threw the row out of view (UI/Kit/Screen).
@@ -7571,6 +7390,19 @@ local given: Takes.Given = {
 	DOOR_RUN = DOOR_RUN,
 }
 for _, case in Takes(given) do
+	table.insert(cases, case)
+end
+-- The HUD's and the kit's newer ones, given theirs (TR19, TR20).
+for _, case in HudCases.Cases({
+	REPLICATE = REPLICATE,
+	LEAD_SETTLE = LEAD_SETTLE,
+	SET_DOWN = SET_DOWN,
+	R6_ROOT_HEIGHT = R6_ROOT_HEIGHT,
+	waitFor = waitFor,
+	streamed = streamed,
+	lintClean = lintClean,
+	myLead = myLead,
+}) do
 	table.insert(cases, case)
 end
 -- The Voidkin screen's, given theirs (TR17).

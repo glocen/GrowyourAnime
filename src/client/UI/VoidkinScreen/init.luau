@@ -57,6 +57,7 @@ local Button = require(UI.Kit.Button)
 local Text = require(UI.Kit.Text)
 local Panel = require(UI.Kit.Panel)
 local Portrait = require(UI.Kit.Portrait)
+local Hover = require(UI.Kit.Hover)
 local Bar = require(UI.Kit.Bar)
 local Skin = require(UI.Kit.Skin)
 local Figure = require(script.Figure)
@@ -1203,15 +1204,43 @@ local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }
 		Button.Set(press, { Selected = owned.Id == chosen })
 		local face = Portrait.new({ Name = "Face", Small = true, Position = UDim2.fromScale(0.5, 0.5), AnchorPoint = Vector2.new(0.5, 0.5), Parent = press, Voidkin = owned.Def })
 		Portrait.Set(face, owned.Def, (healing[owned.Id] or 0) > now)
+		local row = Voidkin.ById[owned.Def]
+		local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
 		if owned.Id == chosen then
-			local row = Voidkin.ById[owned.Def]
 			local ring = Instance.new("UIStroke")
 			ring.Name = "Chosen"
 			ring.Thickness = 2
 			ring.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-			ring.Color = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
+			ring.Color = trim
 			ring.Parent = press
 		end
+		-- Hover (TR20): a card under the pointer scales to Card in its own place and its rarity's rim lifts; a pad's
+		-- selection wears that rim whole. Pressed beats hover, and the chosen card, open, keeps its ring: it gets no rim,
+		-- as a frame draws one stroke of its own.
+		local grow = Instance.new("UIScale")
+		grow.Name = "Hover"
+		grow.Parent = face
+		local rim: UIStroke? = nil
+		if owned.Id ~= chosen then
+			local made = Instance.new("UIStroke")
+			made.Name = "HoverRim"
+			made.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			made.Color = trim
+			made.Transparency = 1
+			made.Parent = press
+			rim = made
+		end
+		Hover.On(press, function(share: number, pad: boolean)
+			local state = Button.State(press)
+			local k = if state == "Pressed" or state == "Waiting" or state == "Selected" then 0 else share
+			local scale = 1 + (HudConfig.Motion.Hover.Card - 1) * k
+			grow.Scale = scale
+			Button.Grow(press, scale)
+			if rim then
+				rim.Thickness = HudConfig.Motion.Hover.Rim
+				rim.Transparency = if state == "Selected" then 1 else 1 - share
+			end
+		end)
 	end
 end
 

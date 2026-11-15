@@ -1728,4 +1728,17 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
   - nothing on touch;
   - research's verdict in motion with a mouse, then with a pad.
 
-**Status:** requested, 2026-11-15, night. With the dock's build, beside TR19.
+**Status:** built, 2026-11-15 (Faber). The self-test and research's verdict in motion, with a mouse and with a pad, wait for the screen. Time: under half an active hour by the commits' clock, from TR19's commit at 15:57.
+
+- **Implemented.**
+  - **The util** (`UI.Kit.Hover`): `Hover.On(target, paint)` gives each pressable thing a share from 0 to 1, eased in over `In` and out over `Out`. Each thing paints its own answer from that share, so nothing moves its neighbours. The kind goes by the last input (`LastInputTypeChanged`), never `TouchEnabled`: a mouse hovers what it's over, a pad hovers `GuiService.SelectedObject`, a touch hovers nothing. Roblox's selection image gives way to each thing's own rim. `Lift`, `White` and `Whites` are the shared answers; `Force` and `Pretend` stand in for the mouse and the input kind in tests. Seeds in `Config.Hud.Motion.Hover`, tuned live (`Tune "Hud.Motion.Hover.Lift"`).
+  - **The dock** (`UI.Dock`): a tile at rest lifts 2 points, its gradient's stops go 12% toward white, and its halo shows at 40%. A pad's selection also wears the tile's edge as its rim. After 0.35 s its word shows above it, and a refused tile's word is its reason: the Base tile's from `Rules.Home.Says` (`Dock.Reason`), the Map's from its disabled reason. Pressed and open beat hover, and a quiet or dim tile keeps its mood.
+  - **The Breaker's chambers and chips** (`UI.BreakerScreen`'s `tapOver`, through `Panel.Hover`): the words inside a chamber lift 2 points while its tap stays put, its body goes 12% toward white, and its edge leans toward the accent (40%, or whole for a pad). A lit chamber keeps its light.
+  - **The Voidkin screen's cards** (the strip): a card scales to 1.03 in its own place (its portrait, its face and its label, through `Button.Grow`) and its rarity's rim lifts. A press's squeeze beats it, and the chosen card keeps its ring.
+- **Tested.** Type check 0 new. Logic 5824 offline (nothing pure to add: the rule is the util's ease). Studio has the code (searched). Written, not yet run: the self-test case ("UI: TR20"), covering, with a pretended mouse, the dock's answer within a frame, the lift, the halo, the neighbours and the tap still, the word, the Map's reason, nothing on touch, and a pad's selection with its rim; then a Breaker chamber's words lifted with it and its neighbour in place; then a strip card at 1.03 with its rim, in place. TR19's and TR20's cases now live in `SelfTestController/HudCases.luau`, joined to Cases' list as the Voidkin cases are: Cases' one table had passed what the type solver checks in one piece.
+- **Visually reviewed:** no. **Director-accepted:** no.
+- **Tier 1 calls:**
+  - A panel's halo is its edge leaning toward the accent, since a chamber has no halo layer.
+  - The Breaker's chips hover too: they share the chambers' tap.
+  - A card's rim is its rarity's trim, on every card but the chosen one, which keeps its ring: a frame draws one stroke of its own.
+- **Waits, beyond the block's four parts:** the kit's other buttons (the screens' tabs, the close buttons, the Voidkin screen's rail) take the util at the shared finish; things in the world, a piece of their own if play asks for it.

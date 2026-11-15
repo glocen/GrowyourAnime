@@ -11,6 +11,7 @@
 -- TR6). No state moves the layout.
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
 --   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false })
+--   Button.Grow(button, scale)   its face and label at `scale` at rest, a card's hover (TR20)
 --   Button.Press(button)                             what a tap does, for tests: false when disabled or pending; an icon's
 --                                                    button (Text "") says its reason in a toast, never in its face
 --   Button.Touch(button, down)                       a finger going down on it or coming off, for tests
@@ -66,6 +67,7 @@ type State = {
 	DownAt: number?, -- the touch's moment, while its squeeze runs
 	UpAt: number?, -- the let-go's
 	Scales: { UIScale }, -- the face's and the label's
+	Grow: number, -- its owner's scale at rest (Button.Grow: a card under the pointer, TR20); a press's squeeze beats it
 	Flash: string?, -- "Succeeded" or "Failed", for a moment after the server's answer
 	FlashUntil: number,
 	OnPress: () -> ...any,
@@ -200,6 +202,20 @@ function Button.Touch(button: TextButton, down: boolean)
 	end
 	squeezing[button] = if state.DownAt then true else nil
 	paint(button, state)
+end
+
+-- Its face and label at `scale` while no press squeezes them: a card's hover (TR20). 1 puts them back.
+function Button.Grow(button: TextButton, scale: number)
+	local state = states[button]
+	if state == nil or state.Grow == scale then
+		return
+	end
+	state.Grow = scale
+	if not squeezing[button] then
+		for _, s in state.Scales do
+			s.Scale = scale
+		end
+	end
 end
 
 -- How squeezed its face is, a share of its size (1 at rest), for tests.
@@ -352,6 +368,7 @@ function Button.new(props: Props): TextButton
 		Bare = props.Bare == true,
 		Held = false,
 		Scales = scales,
+		Grow = 1,
 		Flash = nil,
 		FlashUntil = 0,
 		OnPress = props.OnPress,
@@ -416,7 +433,7 @@ RunService.RenderStepped:Connect(function()
 			local up = state.UpAt
 			local down = state.DownAt :: number
 			if up and t >= math.max(up, down + press.Least) + press.Out then
-				scale = 1
+				scale = state.Grow
 				state.DownAt, state.UpAt = nil, nil
 				squeezing[button] = nil
 			end

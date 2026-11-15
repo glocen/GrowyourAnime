@@ -5497,6 +5497,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **The length, from the sheet's own layout, not from a device:** on the 812 point phone the card's blade ends 22 points before the target's card today, and 6 before it in C. On a 667 point phone with no side inset, today's blade ends 7 points before it, and C's would run 9 points under it. A longer bar needs the card's length to follow the screen's width, or the target's card to move.
   - **Modulo's read:** A. Green health can't be taken for the Shade's red, the violet body ties the card to the Voidkin's own colour on the dock, and lavender experience stays apart from Power, Credits and the rarities' stronger hues. The body's colour shows mostly on the tab and the level's plate, since the slots cover the blades. A doubt to weigh: green is also Uncommon's and Technique's colour, and Lyric's green stud sits against the green bar.
   - **Four facts:** made; self-reviewed at the sheet's size and at phone size; the content check wasn't run, since no shape or word is new (colours and sizes of checked art, and the level mark that passed); research's read and the director's pick to come. About 1 active hour.
+  - **Research's read, 2026-11-15, for the director's pick:**
+    - **A, the recommendation.** The green health ends the confusion today's card has: yours is green and the Shade's is red, at a glance and at the HUD's size. The violet body ties the card to the Voidkin and the dock's Inventory. The lavender experience bar reads under the green.
+    - **B** makes the health bar ivory, the colour of the text, so the bar and its numbers merge and it reads quietest of the three.
+    - **C** makes the body Rare's blue, which conflicts with the rarity frames, and its length doesn't fit a small phone.
+    - **On Modulo's doubt:** keep A's green, but push it toward a fresh yellow-green, away from Uncommon's and Technique's mint, so health never reads as a rarity. Ring the type's stud in dark ink, so Lyric's green stud stays apart from the bar.
+    - **The length:** the bar follows the screen's width. It runs longer where the phone has room, and always ends at least 12 points before the target's card. The target's card stays centred. That's Faber's build, from the safe area's width.
+    - The pick is the director's, and the takes can be mixed (a body, a health bar and an experience bar from different takes).
 
 ## Later, by ground
 

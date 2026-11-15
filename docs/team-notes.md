@@ -7,7 +7,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Quaestor (research).** 2026-11-15, late.
 - **The lead's card is picked:** F, with one solid bar in place of its cells, in D's ruby (the director; AR12, round two, "The director's pick"). **For Faber's build**, after the HUD's part 1.
 - **Sound:** the study is `docs/research/sound.md` (pro and anime recipes, eight checks, Roblox's rules, tools). **Rule 2 changed** on the director's yes: sounds we make on this PC may be uploaded, and library sounds stay layered at runtime only (`AGENTS.md`). Modulo's brief gains sounds by script. **A test of six cues** is agreed, after Faber's HUD: a Shade's swipe, hurt and burst, and a light hit, a heavy hit and a critical. The director's listening waits until the director can. **For Faber, when it opens:** the steps test, `SearchAudioAsync` with each result's creator, and layers on one clock through the audio graph (`sound.md`, "The engine, for Faber"). Installs wait on the director's word, package by package.
-- **Level-up takes read:** B recommended, for the director's pick (AR12).
+- **Picked today:** the level-up B, Combat Power Platinum in a clear blue-steel (AR12); Modulo has both, after the Sword and shard fixes.
 - **Next:** the six cues' briefs; the dock's images; Faber's HUD build and its font stills, for research's pick; AR6's Sword ladder; the battery cap and Combat Power's seeds; the first session reviewed whole from a phone.
 
 **Faber (builder).** 2026-11-15, 14:25.
@@ -34,7 +34,6 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
-4. The level-up's take: A, B or C, or a mix (AR12, "The level-up as a notice on the left"; research recommends B).
 5. Your ear on the six test sounds, when you can: five candidates each, in a fight.
 
 For Faber:

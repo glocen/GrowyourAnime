@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-14, night.
-- **The director's words, in the register:** the Voidkin screen remade (TR17, three grey layouts, `docs/research/voidkin-screen.md`); the stat board removed, the skill tree later; the base as a power plant (TR18, after TR17; `docs/design.md`, "Power"); the HUD's colour (AR12, Modulo now, for the director's pick).
-- **Verdicts given:** TR8 (competent, paper fix landed), TR9 (Machine picked, works), TR12 (works), TR16 (the chip works, a trail fix); AR11 Watt's sheet (competent, take A, one fix for the model).
-- **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
+**Quaestor (research).** 2026-11-15, end of day.
+- **The director's words today, in the register:** "Faster break" (voltage buys time; Drop rates to 100%); the HUD's new face; the dock as three icons (Inventory, Base, Map); the bag page "Items"; the shards' hint at the base only; the lead's card reopened, its round 2 for the pick (red kept, a different red, smaller, composed again); Combat Power's colour, the shard decals, gear art (AR6 batch 1 written).
+- **Verdicts given:** TR17's marks (competent), the tabs' fix ("Gear" tab); TR9's Drop rates (works, two fixes); AR12's galaxy Breaker words (one fix, done), the dock's block (competent, two mark fixes), the lead card's first takes (A read; the director chose none).
+- **Next:** the lead card's round 2 and the dock's images; Faber's HUD build and its three font stills, for research's pick; AR6's Sword ladder; the battery cap by base level and Combat Power's seeds; the first session reviewed whole from a phone, to close phase 2.
 
 **Faber (builder).** 2026-11-15, night.
 - **TR17's block and TR9's Drop rates have research's pass,** and its three small fixes are in: the Bag page reads "Items" with a "Gear" tab, "Drop rates" is a quiet half-width button with a list's mark, and each rarity heads its rows in its colour.

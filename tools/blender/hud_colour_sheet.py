@@ -1145,7 +1145,8 @@ def delivered():
 def gear_slot(st, x, y, s, p, name, piece=None, rank=0):
     """One gear slot, laid as gear_icons.json tells the build: the well, the rarity's tint and light, the rim (the kit's
     bold button edge; Legendary's own border, sliced, on its umber ground), the picture, a weapon's class mark on the
-    bottom cut. The forge rank is a badge on the square corner: this sheet's own, not drawn as an image yet. Empty, the
+    bottom cut. The forge rank is a badge on the top cut, across from it, so it sits on the frame and never over the
+    object (research's fix, 2026-11-15): this sheet's own, not drawn as an image yet. Empty, the
     slot is quieter: a thinner well, the kit's edge, and its plain mark, faint (`name`; a bag's free cell has none)."""
     well, tint, light = GEAR_SET["layers"][:3]
     st.lay("ButtonShadow", x, y, s, s)
@@ -1180,9 +1181,9 @@ def gear_slot(st, x, y, s, p, name, piece=None, rank=0):
         st.icon("ClassWarrior", x + s - 4.6, y + s - 4.6, BOX * 10.8 / 26.0)
     if rank:
         t = kit.blank(s, s)
-        t.paint(t.poly(cut_box(1.6, s - 14.6, 21.0, s - 1.6, 0.0, 3.5, 0.0, 0.0)), c(STROKE), 0.88)
+        t.paint(t.poly(cut_box(1.2, 1.2, 21.6, 14.2, 5.0, 0.0, 3.5, 0.0)), c(STROKE), 0.88)
         place(st, t, x, y)
-        st.text(x + 3.8, y + s - 13.2, 11, f"+{rank}", "#FFFFFF")
+        st.text(x + 5.2, y + 2.6, 11, f"+{rank}", "#FFFFFF")
 
 
 def stand_in(st, cx, foot, height):
@@ -1419,7 +1420,7 @@ def voidkin_sheet(out, shot):
         "(TR17's marks).",
         "The gear: twelve slots at 37 points with 6 between, the weapon pair at 46, a bag cell at 40 with 5 between. "
         "Legendary changes its border only, on its umber ground: no crown. A weapon wears its class's mark on the "
-        "bottom cut. A forge rank belongs to the slot, on its square corner: a piece in the bag shows none.",
+        "bottom cut. A forge rank belongs to the slot, on its top cut: a piece in the bag shows none.",
         "Lead and Send to work: beside the band's three marks and two currencies they don't fit, by 14 points on this "
         "phone and by more on a smaller one. Here they end the foot's row, right of the strip, Lead filled.",
         "Stand-ins: ten slots stand empty with plain marks (batch 1 has four kinds); the forge rank's badge; the numbers; "

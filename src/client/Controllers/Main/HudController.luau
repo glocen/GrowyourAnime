@@ -706,7 +706,9 @@ end
 -- The top band's lower edge for the world's numbers (UI.World.Band): the lowest of the cards and the pills that show,
 -- plus the margin, in the World layer's authored pixels (TR3's verdict, fix 4: numbers stay below the top band). And each
 -- piece's own span, its margin all round, a toast stack's while it shows, and the top bar's foot: an open plate, the
--- level-up's word, stands clear of only what it crosses (research's pass on AR8 C, fix 1).
+-- level-up's word, stands clear of only what it crosses (research's pass on AR8 C, fix 1). And the lead's corner under its
+-- card, one span over the readout, the eye and the next's offer when it shows: a plate under the band starts right of it
+-- (research's pass on AR12 at phone size: the eye stood over "Bay 1 · no one works here").
 local banded: { GuiObject } = {}
 local function band()
 	local world = Layers.Get("World")
@@ -728,7 +730,16 @@ local function band()
 	if toasts then
 		table.insert(spans, span(toasts))
 	end
-	World.Band(lowest, spans, (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale)
+	local corner: World.Span? = nil
+	for _, frame in { readout.Piece.Frame, eye, nextButton } :: { GuiObject } do
+		if frame.Visible then
+			local piece = span(frame)
+			corner = if corner
+				then { Left = math.min(corner.Left, piece.Left), Right = math.max(corner.Right, piece.Right), Edge = math.max(corner.Edge, piece.Edge) }
+				else piece
+		end
+	end
+	World.Band(lowest, spans, (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale, corner)
 end
 
 -- The top band goes see-through over a keeper and over your own lead's hanging square (Config.Hud.SeeThrough; research's

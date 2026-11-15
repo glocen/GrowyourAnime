@@ -10,8 +10,10 @@
 --                                             between the band's pieces; one it would cross, it slides aside from, eased, or
 --                                             with no room is pushed under; never over the top bar (the level-up's word over
 --                                             the lead's head: research's pass on AR8 C, fix 1)
---   World.Band(edge?, spans?, floor?)         the top band's lower edge, authored pixels from the screen's top; each piece's
---   World.Edge()                              own span; the top bar's foot (the HUD's)
+--   World.Band(edge?, spans?, floor?, corner?) the top band's lower edge, authored pixels from the screen's top; each piece's
+--   World.Edge()                              own span; the top bar's foot (the HUD's); the lead's corner under its card
+--                                             (the readout, the eye, the next's offer): a plate under the band starts right
+--                                             of it (research's pass on AR12: the eye stood over a bay's plate)
 --   World.Ceiling()                           that foot in the viewport's pixels: a shape in the world kept under it
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
@@ -33,6 +35,7 @@ local plates: { [Frame]: Plate } = {}
 local band: number? = nil -- the top band's lower edge, margin included: the cards and the pills that show (HudController)
 local spans: { Span } = {} -- the same pieces one by one, and a toast stack while it shows
 local floor: number? = nil -- the top bar's foot: an open plate never stands over it
+local leadCorner: Span? = nil -- the lead's corner under its card, its margin included: a plate kept under the band keeps right of it
 
 function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: number?): Frame
 	local frame = Instance.new("Frame")
@@ -55,10 +58,11 @@ function World.Below(frame: Frame, open: boolean?)
 	end
 end
 
-function World.Band(edge: number?, pieces: { Span }?, top: number?)
+function World.Band(edge: number?, pieces: { Span }?, top: number?, lead: Span?)
 	band = edge
 	spans = pieces or {}
 	floor = top
+	leadCorner = lead
 	Layers.Get("World"):SetAttribute("Band", edge) -- for the self-test
 end
 
@@ -185,7 +189,22 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 				plate.Drop = drop
 				shift += Vector2.new(slide, drop)
 			else
-				shift += Vector2.new(0, math.max(0, edge - top))
+				-- Under the band, and right of the lead's corner where it would stand over it: pinned at the corner's side, so
+				-- it follows its point out with no jump. It steps aside at once, and eases back once its top is under the
+				-- corner's foot, so it never stands over the eye on the way.
+				local drop = math.max(0, edge - top)
+				local by = 0
+				local side = leadCorner
+				if side then
+					local middle, half = on.X / scale + shift.X, frame.Size.X.Offset * swell / 2
+					if side.Edge > top + drop and side.Left < middle + half and side.Right > middle - half then
+						by = side.Right + half - middle
+					end
+				end
+				local was = plate.Slide
+				local slide = if was and by < was then was + (by - was) * math.min(1, dt * HudConfig.Numbers.Slide.Rate) else by
+				plate.Slide = slide
+				shift += Vector2.new(slide, drop)
 			end
 		end
 		-- The shift too, in the layer's pixels: a UDim's offset is a whole number, and a push of 21.9999 cut to 21 stood an

@@ -1,7 +1,7 @@
 --!strict
 -- HudCases (client, Studio only): the HUD's and the kit's newer cases, a list of their own beside Cases, which joins it
 -- as it joins VoidkinCases (Cases' one table had passed what the type solver checks in one piece). The dock's Base tile
--- as the way home (TR19) and everything that presses answering the pointer (TR20).
+-- as the way home (TR19), everything that presses answering the pointer (TR20), and a plate kept clear of the lead's corner.
 
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
@@ -14,6 +14,7 @@ local HomeConfig = require(Shared.Config.Home)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local Markers = require(Shared.World.Markers)
+local Parts = require(Shared.Util.Parts)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -24,6 +25,8 @@ local Button = require(UI.Kit.Button)
 local Hover = require(UI.Kit.Hover)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
+local Layers = require(UI.Layers)
+local Theme = require(UI.Theme)
 
 local HudCases = {}
 
@@ -31,6 +34,9 @@ local HudCases = {}
 export type Given = {
 	REPLICATE: number,
 	LEAD_SETTLE: number,
+	ANSWER: number,
+	ARRIVE_TIMEOUT: number,
+	PLATE_TICK: number,
 	SET_DOWN: number,
 	R6_ROOT_HEIGHT: number,
 	waitFor: (t: any, seconds: number, ok: () -> boolean) -> boolean,
@@ -42,6 +48,7 @@ export type Given = {
 function HudCases.Cases(given: Given): { any }
 	local REPLICATE, LEAD_SETTLE, SET_DOWN, R6_ROOT_HEIGHT = given.REPLICATE, given.LEAD_SETTLE, given.SET_DOWN, given.R6_ROOT_HEIGHT
 	local waitFor, streamed, lintClean, myLead = given.waitFor, given.streamed, given.lintClean, given.myLead
+	local ANSWER, ARRIVE_TIMEOUT, PLATE_TICK = given.ANSWER, given.ARRIVE_TIMEOUT, given.PLATE_TICK
 
 	return {
 		{
@@ -387,6 +394,89 @@ function HudCases.Cases(given: Given): { any }
 				end
 				Screen.Close()
 				Hover.Pretend(nil)
+			end,
+		},
+		{
+			Name = "HUD: a machine's plate under the lead's card starts right of the readout and the eye, in this window and on the smallest phone",
+			Run = function(t: any)
+				-- Research's pass on AR12 at phone size (2026-11-15): at home, Spectate's eye stood over "Bay 1 · no one works
+				-- here". The camera is turned so the Breaker's point stands over the eye, halfway up the band; its plate must show
+				-- under the band, clear of the readout and the eye, and right beside them, at both sizes (World.Band's corner).
+				local world = Layers.Get("World")
+				local hud = HudController.Parts()
+				local plate: Frame? = nil
+				waitFor(t, ANSWER, function(): boolean
+					plate = BaseController.Parts().BreakerPlate :: Frame?
+					return plate ~= nil and plate:FindFirstChild("Panel") ~= nil
+				end)
+				t.Check("the Breaker's plate", plate ~= nil)
+				if plate == nil then
+					return
+				end
+				local shard = "named_watt"
+				local gave = t.Server("BaseGive", shard, 1)
+				t.Check("a shard in the bag: the plate has news", type(gave) == "table" and gave.Ok == true)
+				local old = Players.LocalPlayer.Character
+				t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+					local character = Players.LocalPlayer.Character
+					local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+				end))
+				t.Wait(PLATE_TICK * 2)
+				local prompt = BaseController.Parts().BreakerPrompt
+				local anchor = if prompt then prompt.Parent :: BasePart? else nil
+				local camera = workspace.CurrentCamera
+				t.Check("its point", anchor ~= nil and camera ~= nil)
+				if anchor and camera then
+					camera.CameraType = Enum.CameraType.Scriptable
+					local from = camera.CFrame.Position
+					local eye, piece = hud.Spectate :: GuiObject, hud.Signature :: GuiObject
+					local high = GuiService.TopbarInset.Height
+					for _, at in { { Name = "this window", Scale = nil :: number?, Box = nil :: Vector2? }, { Name = "the smallest phone", Scale = Theme.Scale.Floor, Box = Theme.Smallest - Vector2.new(0, high) } } do
+						Layers.Force(at.Scale)
+						Layers.Box(at.Box)
+						t.Wait(0.1) -- laid out again, the band and the corner with it
+						local band = world:GetAttribute("Band")
+						local scale = Layers.Scale()
+						if type(band) ~= "number" then
+							t.Check(`{at.Name}: the band`, false)
+							continue
+						end
+						local foot = world.AbsolutePosition.Y + band * scale
+						t.Check(`{at.Name}: the eye reaches below the band`, eye.AbsolutePosition.Y + eye.AbsoluteSize.Y > foot, string.format("its foot %.1f, the band's %.1f", eye.AbsolutePosition.Y + eye.AbsoluteSize.Y, foot))
+						local inset = GuiService:GetGuiInset()
+						local x = eye.AbsolutePosition.X + eye.AbsoluteSize.X / 2 + inset.X
+						local y = world.AbsolutePosition.Y + band * scale * 0.5 + inset.Y
+						camera.CFrame = CFrame.lookAt(from, anchor.Position)
+						local aside = camera.CFrame:VectorToObjectSpace(camera:ViewportPointToRay(x, y).Direction)
+						camera.CFrame *= CFrame.fromRotationBetweenVectors(aside, Vector3.new(0, 0, -1))
+						for _ = 1, 3 do
+							RunService.RenderStepped:Wait()
+						end
+						local point = camera:WorldToViewportPoint(anchor.Position)
+						t.Check(`{at.Name}: the Breaker's point is over the eye`, math.abs(point.X - x) < eye.AbsoluteSize.X / 2, string.format("%.1f against %.1f", point.X, x))
+						t.Check(`{at.Name}: its plate shows`, plate.Visible and plate.Parent ~= nil)
+						local p0, p1 = plate.AbsolutePosition, plate.AbsolutePosition + plate.AbsoluteSize
+						local function clear(frame: GuiObject): (boolean, string)
+							local a0, a1 = frame.AbsolutePosition, frame.AbsolutePosition + frame.AbsoluteSize
+							local ok = p0.X >= a1.X - 0.5 or p1.X <= a0.X + 0.5 or p0.Y >= a1.Y - 0.5 or p1.Y <= a0.Y + 0.5
+							return ok, string.format("the plate %.0f,%.0f to %.0f,%.0f; it %.0f,%.0f to %.0f,%.0f", p0.X, p0.Y, p1.X, p1.Y, a0.X, a0.Y, a1.X, a1.Y)
+						end
+						t.Check(`{at.Name}: clear of the eye`, clear(eye))
+						t.Check(`{at.Name}: clear of the readout`, clear(piece))
+						local under = (p0.Y - world.AbsolutePosition.Y) / scale - band
+						t.Check(`{at.Name}: whole under the band`, under >= -1, string.format("its top %.1f px under the band", under))
+						local gap = (p0.X - (eye.AbsolutePosition.X + eye.AbsoluteSize.X)) / scale
+						t.Check(`{at.Name}: right beside the eye, not lost aside`, gap >= -0.5 and gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+					end
+					Layers.Box(nil)
+					Layers.Force(nil)
+					camera.CameraType = Enum.CameraType.Custom
+					t.Wait(0.1)
+				end
+				if type(gave) == "table" and gave.Ok == true then
+					t.Server("BaseGive", shard, -1)
+				end
 			end,
 		},
 	}

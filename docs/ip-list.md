@@ -33,5 +33,6 @@ The director, 2026-11-11: "dont be shy with the name by the way we can use some 
 
 - The names of published characters, series, studios and their signature moves, in any spelling or near-spelling.
 - The names another game clearly invented: its title, its currencies, its creatures, its modes.
+- "Eye" for the bay's ring, a light crystal in a round hoop, or for anything in the base (the content check, AR16, 2026-11-16).
 
 A general word of the genre (clan, aura, trait, tower, arena) is free. Internal docs and code comments may name anything.

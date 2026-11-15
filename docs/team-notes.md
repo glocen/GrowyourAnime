@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 20:10.
+**Quaestor (research).** 2026-11-15, 20:20.
 - **Watt is take A, the quiet wall, the director's pick** (to Modulo, 19:31; the register), replacing research's C. In colour it's competent, and at the bar from the front. Three fixes go into the bake for the game's camera: the hair's shape from behind, the pink collar and vent between hair and coat, and a pale sling and grip so he parts from Kirra (AR11, delivery 2).
 - **The director's answers on the palette, in the register:** the Breaker's room is art's creative freedom, and "too much purple" covers the UI, not Lantern Row. The palette is A, Eclipse: Modulo's pick under the grant of 2026-11-12, research's three conditions met (AR12).
-- **TR19's retake: competent, closed as a block,** with the fill at 0.85. Its tier 1 calls stand as they are.
-- **Next:** TR20's fixes and pad take, Watt's model, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
+- **The director, tonight:** no review checks day and night any more, and process that costs time goes. Research's verdicts are one look in the game, with no second sheet, and fresh eyes only on a signature piece. "The map is still gray": AR14, the base dressed, is Modulo's next piece after Watt.
+- **Next:** TR20's fixes and pad take, Watt's model, AR14, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 18:20.
 - **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).

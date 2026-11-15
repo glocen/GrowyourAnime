@@ -5542,7 +5542,7 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
         1. **The hair, his identity from behind.** From the game's camera it's a dark mass the size of his head, and from the front its pink ends stand on top like cones set on. Make the swept locks fan back and out past the head's box, their upper planes in the hair's light, so the mass has a direction from behind. The pink is the last part of each lock, curving back with it, the ends varied in length: small pale tips on a dark mass, never a row of points.
         2. **Something between dark hair and dark coat.** The hair and the coat are both dark, so from behind his top half is one mass, and over night it sinks. Show the collar's pink lining from behind, so a pale band parts the head from the body. Open the back's vent on the lining from the waist to the hem, so the coat's back, the most-seen area on him, isn't a flat rectangle. The cuffs narrow to a turned edge, so the pink still adds up to one accent.
         3. **The sling and the spear.** By colour he blurs with Kirra beside him: dark hair, a dark blue body and a brown strap across it. The sling goes pale, the shirt's colour, so a light line crosses his back from the game's camera, and it leaves Kirra's brown. The shaft takes a pale grip wrap and a pale butt cap, so it reads as a line at night and the discs stop floating. Planted in his idle, as Modulo plans.
-      - **No second sheet.** The baked model's verdict, in the game from the player's camera at phone size, over noon and night, covers these fixes. Show the game's camera and 64 px row before the atlas only if the hair's shape leaves you in doubt.
+      - **No second sheet.** The baked model's verdict, in the game from the player's camera at phone size, covers these fixes, in one light, the game's own (the director's words of the same night). Show the game's camera and 64 px row before the atlas only if the hair's shape leaves you in doubt.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
@@ -6426,6 +6426,16 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
   - **One tail, its volume by strength:** simpler, and the ear tunes it.
   - **Watch at the listen:** `CritShing`'s inharmonic ratios. They give the metal, and they're the layer most likely to sound harsh. If it grates, the first fix is ratios nearer whole numbers, not a lower volume.
   - **The upload:** research recommends they go up unheard. They're seeded noise and sines with nothing read in, the uploads are free, and the director's real test is the fight with the Replay command, which needs them in the game. A layer the ear rejects is replaced, never patched. **The director's word decides** (team notes, "Waiting on the director").
+
+## AR14. The base dressed (Modulo, then Faber)
+
+Research's entry, 2026-11-15, night, on the director's words: "the map is still gray" (`docs/decisions.md`). Lantern Row has been dressed since TR8. What's still grey is the base, the plots and the ground around them, and no piece covered them: research's miss. Map building is Modulo's to design (the director, 2026-11-12: "map building, texture etc i trust you").
+
+- **Feel line:** the player comes home to a yard that's theirs, under the same festival sky as Lantern Row. The Breaker stands at its heart and the machines hum around it. Nothing in view is grey.
+- **The block contains:** the base's ground, edges, paths and lights, the plots' surroundings and the way to the Festival Door, built from the festival kit (AR5) and recoloured where the base needs its own feel. The machines keep their own looks (TR18's generator, the Breaker, the Training machine). The layout stays as it is: the director's plot sizes of 2026-11-12 stand.
+- **Waits:** a base upgrade's looks, other players' plots beyond what's in view, and new machines.
+- **The way:** no sheet. Modulo's design goes straight in the game as a block, and research gives one verdict there from the player's camera at phone size.
+- **Order:** Modulo's next piece after Watt's model. Faber installs it after TR20.
 
 ## Later, by ground
 

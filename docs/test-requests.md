@@ -1880,3 +1880,26 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
   - The Breaker's chips hover too: they share the chambers' tap.
   - A card's rim is its rarity's trim, on every card but the chosen one, which keeps its ring: a frame draws one stroke of its own.
 - **Waits, beyond the block's four parts:** the kit's other buttons (the screens' tabs, the close buttons, the Voidkin screen's rail) take the util at the shared finish; things in the world, a piece of their own if play asks for it.
+
+**Research's verdict in motion with a mouse, 2026-11-15, night.** From Faber's take at computer size (`build/captures/tr20/hover_mouse.mkv`, the engine's own pointer, the simulator off) and its three sheets. Cuts at native size: the cards at 10 fps, 29.6 to 30.5 s; the Breaker at 2 fps, 35 to 48 s.
+
+- **Felt:** on the dock, yes. A tile whitens the moment the pointer crosses it, and its word follows, so you know what a click will do before you make it. The cards' answer is too faint to see, and the Breaker isn't in the take.
+- **Tier:** works, on the dock. The block isn't whole until the cards and the Breaker read.
+- **The one bold thing:** the Map tile says "The map isn't open yet" before any click. A refused control explains itself before you try it.
+- **The lift:** the 2 points barely show at computer size. The whitening carries the answer, and that's enough: no change.
+- **Fixes (Faber):**
+  1. **The word collides with the chip above it** (Faber's own find), and it's bare text with a stroke, which is fragile over a chip or the sky.
+     - Fix: the word stands on a plate of its own, the toasts' plate made small, drawn above everything and centred over its tile.
+     - While it shows, it may cover the chip: the pointer says where the player's eye is.
+  2. **At home, the Base tile's word is "You're home",** not "Base". It's the reason its click does nothing (`docs/ui.md`, rule 4; TR19, "a refused Base tile shows its reason"). The tap stays silent, as TR19 says.
+  3. **The cards' answer is too faint to find.**
+     - In the sheet, the green card hovered and at rest look the same. In the native cut, it barely shows.
+     - At 1.03 a card grows about 3 px, and the rim of a card already lit in its rarity hardly changes.
+     - Seed: **1.06, and the rim at its full light** (UNVERIFIED, tuned live with the screen in front).
+     - Neighbours still never move: at 1.06 a card grows about 3.5 px a side into a gap of about 18, never over the next card.
+  4. **The Breaker isn't in the take.**
+     - From 38 to 46 s, the pointer rests on Chamber 2's foot, an empty chamber, and never over a chip.
+     - The chambers that hold a shard aren't shown either.
+     - Retake with the pointer on a ready chip and on a chamber with a shard breaking.
+     - An empty chamber answers only if a click on it does something.
+- **Then:** the pad take as planned, its rows saying the input kind is pretended. A still of fixes 1 and 2, and a short retake of fixes 3 and 4.

@@ -4,8 +4,8 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 22:40.
-- **The base's look is reopened** (the director to Faber; the register). It asks for magic and anime, the void that looks like the void, no clutter, an open way in, and no construction. **AR16** is Modulo's new blockout, judged from the player's camera with research's verdict. The rest of AR15 waits for it. My answers to AR14's delivery 4 (the sites, the transformers) go with the old look.
+**Quaestor (research).** 2026-11-15, 23:10.
+- **The base stays a power yard, spread out** (the director, about 23:00 and 23:10; the register). Its ground, wiring and turning generator stay. The machines spread across the whole plot with an open way in, less clutter, small void touches and no construction. **AR16**, rewritten: Modulo's plan, Faber's install, research's verdict in the game. The rest of AR15 resumes after it.
 - **The director's other two words are recorded.** The Voidkin screen's stats are a plain list with no taps (`docs/ui.md`). A plot stays bare until its player is in the server (`docs/design.md`, "The base").
 - **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
 - **Next:** AR16's blockout verdict; Watt and Power's bar in the game; TR21's blockout; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.

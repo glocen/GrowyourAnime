@@ -6892,49 +6892,43 @@ The look is reopened since (AR16), so this install stands in the dev build until
   - Visually reviewed: no, and no verdict is asked on this look (AR16).
   - Director-accepted: no. The look is reopened.
 
-## AR16. The base, void and anime (Modulo, then Faber)
+## AR16. The base spread out (Modulo, then Faber)
 
-Research's entry, 2026-11-15, night. It answers the director's words to Faber, relayed to Modulo (the register): "we really need to not make it like a construction games and put some magic/anime like stuff that void need be void like rn it looks like a real world electricity machine which make no sense / we are making a anime game after all tell module it also a bit to clustered yet the basse is huge and it block yhe entrance".
+Research's entry, 2026-11-15, night, rewritten at about 23:10 on the director's latest words (the register):
+- to Faber, earlier that night: "we really need to not make it like a construction games and put some magic/anime like stuff that void need be void ... it also a bit to clustered yet the basse is huge and it block yhe entrance";
+- over a screenshot of the yard in the game: "ok ok this is very great just make it less clustered make it accross the base thennit perfect weare getting somewhere!", and to research's question, the pick "Spread it + void touches";
+- then: "the ground is good the electricity wired stuff is great js make a small change i alove love the generator rotating".
 
-The words reopen the look of AR14's yard and of AR15's machines, so this is a new blockout, not a patch. Research's answers to AR14's delivery 4, the construction sites and the transformers, go with it.
+The void-sanctum redesign first written here is withdrawn, and the power yard's look stands.
 
-What stands, since the words don't name it:
+What stands:
+- AR14's ground and kit;
+- AR15's machines;
+- the wiring in the floor;
+- the generator's turning rotor;
 - the plot, 200 by 200, with its wall and gate;
-- the levels and what each opens;
-- every machine's job;
-- Power's numbers and words;
-- the owner's showcase (TR22);
-- the bays' rarity light.
+- the levels;
+- the showcase (TR22);
+- the bays' rarity light;
+- Power's names and numbers.
 
-- **Feel line:** through the gate, the player walks straight into a sanctum carved out of the void. Their Voidkin's power runs as light through the stone into a heart turning in the air, and everything round it glows by what it's doing. It's an anime hero's hideout, never a building site.
-- **What the words ask:**
-  - **Magic and anime, not a real-world plant.** No copper, cables, pylons, transformers, scaffolds, cranes, stock piles or cabins. Power still reads as power: its current shows as light and arcs, never as wires. Names and numbers stay electrical (kW, voltage), since the words name the look.
-  - **The void looks like the void.** It's seen as a place: dark and deep, with light drifting in it, part of the base itself, not a colour on a wall. Not a wash of purple: that's research's call, after the HUD's palette.
-  - **Uncluttered.** A few large shapes that read from the gate, with space between them. Empty ground isn't a problem to fill.
-  - **An open way in.** From the gate, a clear way runs straight to the base's heart. It's wide enough for the player and the lead side by side, with room to spare, and nothing stands across it. The showcase's plinth stands beside it, never in it.
-  - **No construction.** Level 1's construction sites end, so what a level hasn't opened yet needs another read.
-- **Research's seeds for the direction.** Modulo designs it, and these are a start, not a spec:
-  - **The ground:** unopened ground is the void itself, dark, starry and slowly moving. Each level raises more stone out of it: level 1 is the heart's platform, and levels 2 and 3 raise more. That's how the levels read, in place of the sites.
-  - **The machines, as void artifacts:**
-    - the generator is a core turning inside rings in the air, and its rotor's rule stays: faster as the plant makes more;
-    - the Breaker is a ring holding the shard in its light, in cyan;
-    - each bay is a sigil circle under its worker, lit in the worker's rarity colour;
-    - the battery is crystals that fill with light, more of them as its cap grows;
-    - the Festival Door is an arch with the void inside it;
-    - the Training machine is a ring to spar in.
-  - **A bay not open yet** is a dark sigil in the stone: a promise of what's next, not a site.
-- **The blockout:**
-  - Cheap: grey or flat colour, the shapes and the layout only. Two directions on one plot are fine if Modulo has two.
-  - Judged in motion from the player's camera at phone size, in three views: walking in through the gate, from the court, and the base screen's look down (TR21).
-  - Cap: 2 hours.
-  - Research's verdict picks, or the director's pick when present.
-- **Faber's part:** the front row's layout follows the blockout's plan. Nothing more is installed in the current kit's look, which stays in the dev build until the verdict.
+- **Feel line:** through the gate, the player walks down an open way into a power yard that fills its whole plot. Each machine stands apart with room to read it, the current runs between them in the floor, and the generator turns at the heart.
+- **The block contains:**
+  - **Spread across the plot.** The machines move apart over the whole 200 by 200. Each has room round it to be read alone (Modulo's measure: 25 studs or more apart). Nothing stands in a line across the way in, and the wiring follows the machines to their new places.
+  - **An open way in.** From the gate, a clear avenue runs to the generator, the plant's heart. It's wide enough for the player and the lead side by side, with room to spare. The director's favourite piece stays in view from the gate, and the showcase's plinth stands beside the avenue, never in it.
+  - **Less clutter.** Dressing that doesn't serve a machine, the wiring or the way goes.
+  - **No construction.** Level 1's unopened lots read as dormant, never as building sites: the cranes, scaffolds and stock go (the night's first word). Modulo's "unawakened" read fits.
+  - **Void touches, small.** A few accents say the power comes from the void, never changing the ground or the wiring: for example the void seen past the plot's edge, or a machine's core holding void light. Which ones is Modulo's call.
+- **The way:** this moves pieces the yard already has and adds the touches, so there's no separate blockout.
+  - Modulo lays the new plan (`tools/blender/base_plan.py`: `plan.json`'s placements and `machines`), with one look from the gate. Cap: 2 hours.
+  - Faber installs it.
+  - Research gives one verdict in the game, from the gate, from the court and from the base screen's look down (TR21).
+- **Research's answers to AR14's delivery 4:** the construction sites go. The transformers and the battery bank's cells stay where they serve, and how much is clutter is Modulo's call.
 - **Waits:**
-  - the finished look;
-  - levels 2 and 3;
+  - levels 2 and 3's looks;
   - the Tower behind;
-  - the bare lot of a player who isn't in the server (the register, the same night), which the blockout may show if that costs nothing more.
-- **Order:** Modulo's next piece. The rest of AR15, the battery, the Training machine and the Door, waits for its verdict.
+  - the bare lot of a player who isn't in the server.
+- **Order:** Modulo's next piece. The rest of AR15 (the battery, the Training machine and the Door) resumes in the yard's look after it.
 
 ## Later, by ground
 

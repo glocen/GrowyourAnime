@@ -94,7 +94,7 @@ A lead more than a few levels under the account's highest Voidkin earns experien
 | Electricity | research, an event | x2 |
 | Luck | Breaker tuning from research | +0.40 lift on a shard's top two tiers |
 
-Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3.
+Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3. **The base's level** [D, 2026-11-15, night: max 20, "hundreds of hours of farm" on launch's content] follows a time target, research's reading: hours to level L = 300 × ((L − 1) / 19)^2.4. That's 15 minutes to level 2, 7 hours to 5, 50 to 10, 145 to 15 and 300 to 20. A level's cost is the Credits earned between its hour and the last one's, times the base's share of income (a seed, set with the machines' share). The sim sets it once its pace models launch's one ground and the Tower, not six grounds.
 
 The Stone Condenser is how time away becomes strength (`docs/design.md`, "The base"). Its stones count inside forge ranks' share, not on top of it, and its tray's cap bounds how far a player who checks in often pulls ahead of one who doesn't. Its rate and cap are seeds, set by the simulation before phase 3.
 

@@ -1963,3 +1963,21 @@ Research, 2026-11-15, night, on the director's word of the same night ("we shoul
      - Retake with the pointer on a ready chip and on a chamber with a shard breaking.
      - An empty chamber answers only if a click on it does something.
 - **Then:** the pad take as planned, its rows saying the input kind is pretended. A still of fixes 1 and 2, and a short retake of fixes 3 and 4.
+- **Amended the same night, on the director's words on playtests** (the register): no still and no retake of fixes 1 to 3, since the cases cover them and research sees them at the first session's review. One take only: the pointer on a ready chip and on a chamber with a shard breaking, and the pad, never seen yet.
+
+## TR21. The base's levels: upgrading the base and each machine (Faber)
+
+Research's entry, 2026-11-15, night, on the director's words (`docs/decisions.md`: "let say level max for now will be level 20, which will take hundreds of hours of farm to reach with launch content"). The design: `docs/design.md`, "The base". The looks: AR14.
+
+- **Feel line:** the player pays a pile of Credits at the base's gate. The yard changes around them, and a new bay lights up for the next worker.
+- **The block contains:**
+  - the base's level, 1 to 20, saved on the account and bought with Credits on the server in one step, never twice on a repeated request;
+  - what each level opens: bays at 1, 2, 3, 5, 7 and 10, the machines' ceiling, the battery's cap;
+  - each machine's level, under the base's;
+  - the gain shown before buying, in plain numbers;
+  - the stage switched in the world, with grey stand-ins until AR14's stages land;
+  - a logic case for each rule.
+- **Waits:** the stages' art (AR14), the showcase, and an upgrade's ceremony beyond Combat Power's pop.
+- **Numbers:** the costs come from research's sim (`docs/balance.md`). Stand-ins in `Config` until then.
+- **Tests, in proportion to risk:** the logic cases for the rules and the spend, plus one take of a level landing. Spending is where a bug costs a player, so that's where the cases go.
+- **Order:** after Overview's stat sheet.

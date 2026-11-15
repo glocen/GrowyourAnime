@@ -243,14 +243,15 @@ function Hud.Chance(p: number): string
 end
 
 -- What the lead's card says while its lead has fallen (TR12), or nil while it stands: "Down" as it falls; at home, its
--- healing and the time left; then "Training" on the machine, or "At home" waiting.
+-- healing and the time left; then "Training" on the machine, or "At home" waiting. "Healing 0:24", as a refusal says it
+-- (LeadReason): take F's health line holds no more at the smallest phone ("Healing at home 0:24" ran 1.2 of its box).
 function Hud.LeadStatus(state: string, untilAt: number, now: number, training: boolean): string?
 	if state == "Down" then
 		return "Down"
 	elseif state ~= "Home" then
 		return nil
 	elseif untilAt > now then
-		return `Healing at home {Hud.Clock(untilAt - now)}`
+		return `Healing {Hud.Clock(untilAt - now)}`
 	end
 	return if training then "Training" else "At home"
 end

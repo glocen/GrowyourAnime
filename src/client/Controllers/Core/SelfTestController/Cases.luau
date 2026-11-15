@@ -1885,8 +1885,39 @@ local cases = {
 				local prefix = `{modelName}_`
 				local rigParts, hidden, pieces, shown = 0, 0, 0, 0
 				local loose: { string } = {}
-				local rootPart = lead:FindFirstChild("HumanoidRootPart") :: BasePart?
-				local reach = 8 * lead:GetScale()
+				-- Held and riding: each piece's joint holds it to something and it sits where that joint puts it, and its
+				-- chain of joints ends on the body, so a piece riding a loose piece is loose too. Kirra's scarf reaches 9.5
+				-- studs at rest, so a reach from the root can't tell a long piece from a dropped one.
+				local joints: { [BasePart]: Instance } = {}
+				for _, joint in lead:GetDescendants() do
+					if (joint:IsA("JointInstance") or joint:IsA("WeldConstraint")) and joint.Part1 ~= nil and joint.Part0 ~= nil then
+						joints[joint.Part1 :: BasePart] = joint
+					end
+				end
+				local function placed(part: BasePart): boolean
+					local joint = joints[part]
+					if joint == nil then
+						return false
+					elseif joint:IsA("JointInstance") then
+						local motor = if joint:IsA("Motor6D") then joint.Transform else CFrame.identity
+						local at = (joint.Part0 :: BasePart).CFrame * joint.C0 * motor * joint.C1:Inverse()
+						return (at.Position - part.Position).Magnitude < 1
+					end
+					return true -- a WeldConstraint holds its offset as it was made
+				end
+				local function riding(part: BasePart): boolean
+					local at: BasePart? = part
+					for _ = 1, 32 do
+						if at == nil or string.sub(at.Name, 1, #prefix) ~= prefix then
+							return at ~= nil -- the chain reached the body
+						elseif not placed(at) then
+							return false
+						end
+						local joint = joints[at] :: any
+						at = joint.Part0
+					end
+					return false
+				end
 				for _, part in lead:GetChildren() do
 					if not part:IsA("BasePart") then
 						continue
@@ -1898,16 +1929,7 @@ local cases = {
 					end
 					pieces += 1
 					shown += if part.Transparency == 0 then 1 else 0
-					local held = false
-					for _, joint in lead:GetDescendants() do
-						if joint:IsA("JointInstance") and joint.Part1 == part and joint.Part0 ~= nil then
-							held = true
-						elseif joint:IsA("WeldConstraint") and joint.Part1 == part and joint.Part0 ~= nil then
-							held = true
-						end
-					end
-					local near = rootPart ~= nil and (part.Position - rootPart.Position).Magnitude < reach
-					if not (held and near) then
+					if not riding(part) then
 						table.insert(loose, part.Name)
 					end
 				end
@@ -5021,7 +5043,7 @@ local cases = {
 			t.Wait(cfg.Seconds + 0.1) -- anything popping settles
 			local middle = pill.AbsolutePosition + pill.AbsoluteSize / 2
 			local most, moved, levelMost, glinted, whitest = 1, 0, 1, 0, 0
-			local gold = HudConfig.Card.Level
+			local rest = HudConfig.Card.LeadLevel -- the lead's level in take F: the name's ivory, flashed toward white
 			local watch = RunService.RenderStepped:Connect(function()
 				most = math.max(most, Pop.Active(pill))
 				moved = math.max(moved, (pill.AbsolutePosition + pill.AbsoluteSize / 2 - middle).Magnitude)
@@ -5030,7 +5052,7 @@ local cases = {
 					glinted = math.max(glinted, 1 - glint.BackgroundTransparency)
 				end
 				local c = level.TextColor3
-				whitest = math.max(whitest, (c.R + c.G + c.B) - (gold.R + gold.G + gold.B))
+				whitest = math.max(whitest, (c.R + c.G + c.B) - (rest.R + rest.G + rest.B))
 			end)
 			t.Check("credits given", t.Server("DataCredits", 25).Ok == true)
 			t.Check("a +N rises off the pill", waitFor(t, 2, function(): boolean
@@ -5061,8 +5083,10 @@ local cases = {
 			if was then
 				local high = Hud.PopScale(cfg.Rungs.Level, cfg.Swell)
 				t.Check("the level swelled larger, at its rung", math.abs(levelMost - high) < 0.03 and levelMost > most, string.format("%.3f, its rung's %.3f", levelMost, high))
-				t.Check("and brightened toward white", whitest > 0.2, string.format("%.2f", whitest))
-				t.Check("its colour back after", level.TextColor3:ToHex() == gold:ToHex(), level.TextColor3:ToHex())
+				-- At its peak it goes Glow of the way to white: from ivory, little is left to go, so the check is against that.
+				local reach = (3 - (rest.R + rest.G + rest.B)) * cfg.Glow
+				t.Check("and brightened toward white", whitest >= reach * 0.8, string.format("%.3f of its %.3f", whitest, reach))
+				t.Check("its colour back after", level.TextColor3:ToHex() == rest:ToHex(), level.TextColor3:ToHex())
 				t.Check("the thread glinted", glinted >= cfg.Glow - 0.05, string.format("%.2f opaque", glinted))
 				t.Check("and the glint's gone after", not glint.Visible)
 			end
@@ -5417,9 +5441,9 @@ local cases = {
 			local fallen = myLead()
 			streamed(t, "Plot", { Plot = plot })
 			t.Check("on its plot", fallen ~= nil and Markers.OnPlot(if type(plot) == "number" then plot else nil, fallen:GetPivot().Position))
-			t.Check("the card says it's healing at home, with its time", waitFor(t, 1, function(): boolean
+			t.Check("the card says it's healing, with its time", waitFor(t, 1, function(): boolean
 				local status = parts.Lead:GetAttribute("Status")
-				return type(status) == "string" and status:match("^Healing at home %d+:%d%d$") ~= nil
+				return type(status) == "string" and status:match("^Healing %d+:%d%d$") ~= nil
 			end), tostring(parts.Lead:GetAttribute("Status")))
 			local line = (parts.LeadHealthText :: TextLabel).Text
 			t.Check("in its health line", line == parts.Lead:GetAttribute("Status"), line)
@@ -5885,7 +5909,10 @@ local cases = {
 			for _, share in { 0, 0.25, 0.5, 0.99 } do
 				Readout.Step(piece, state(share))
 				t.Near(`at {share}: it says how full`, piece.Frame:GetAttribute("Share") :: number, share, 1e-6)
-				t.Near(`at {share}: the front stands at its level`, piece.Front.Offset.X, Hud.FrontOffset(share, config.Travel), 1e-6)
+				-- Its carry turned with the gradient (Rules.Hud.FrontShift): Roblox moves a gradient along its element's axes.
+				local x, y = Hud.FrontShift(Hud.FrontOffset(share, config.Travel), piece.Front.Rotation)
+				t.Near(`at {share}: the front stands at its level, across`, piece.Front.Offset.X, x, 1e-6)
+				t.Near(`at {share}: the front stands at its level, down`, piece.Front.Offset.Y, y, 1e-6)
 				t.Check(`at {share}: charging, the icon in light and no white-hot plate`, piece.Icon.ImageTransparency < 0.01 and piece.Ready.ImageTransparency > 0.99 and piece.ReadyIcon.ImageTransparency > 0.99)
 			end
 			Readout.Step(piece, state(1))

@@ -48,6 +48,7 @@ GALAXY = dict(kit.PALETTES["Void Violet"], panel=("#17123F", "#0B0926"), alpha=1
               glint="#DDE2FF", text="#F5F2FF", soft="#BDBAE6", faint="#8683BA", channel="#04030C", well="#080616",
               button=("#1F1A55", "#120F36"), pressed=("#0D0A28", "#17123F"), ground="#161238", accent=POWER)
 GLASS = "#0A0824"  # a window's glass
+SMALL = 11  # the smallest text on the screen (research, 2026-11-15: 9 and 10 came out at about 7 pt on a phone)
 EMBER = "#F29A3B"  # the rim of a gold light on the night
 
 
@@ -135,11 +136,11 @@ def chamber(st, x, y, w, hh, p, index, state, left=0.0, seconds=""):
         st.lay("ButtonFill", x, y, w, hh, tint=GLASS,
                window=veil((0, 1.0), (HEAD, 1.0), (HEAD + 0.04, 0.13), (SPLIT - 0.06, 0.13), (SPLIT, 1.0), (1, 1.0)))
         st.lay("ButtonEdge", x, y, w, hh, tint=p["edge"], alpha=0.55)
-        st.text(x + 9, y + 8, 10, f"Chamber {index}", p["faint"])
-        lock(st, cx - 22, plate + 9.5, p["soft"], 11.0)
-        st.text(cx - 13, plate + 6, 11, "Locked", p["soft"])
-        st.text(cx, plate + 21, 9, "Upgrade the", p["faint"], "CENTER")
-        st.text(cx, plate + 32, 9, "Breaker", p["faint"], "CENTER")
+        st.text(x + 9, y + 7, SMALL, f"Chamber {index}", p["faint"])
+        lock(st, cx - 22, plate + 8.5, p["soft"], 11.0)
+        st.text(cx - 13, plate + 4, 12, "Locked", p["soft"])
+        st.text(cx, plate + 18, SMALL, "Upgrade the", p["faint"], "CENTER")
+        st.text(cx, plate + 30, SMALL, "Breaker", p["faint"], "CENTER")
         return
     if state == "ready":  # the glow lies under the glass, so the window stays clear
         st.lay("ButtonRingGlow", x, y, w, hh, tint=p["accent"], alpha=0.8)
@@ -151,21 +152,21 @@ def chamber(st, x, y, w, hh, p, index, state, left=0.0, seconds=""):
         st.lay("ButtonFill", x, y, w, hh, tint=(h.mix(accent, h.PALE[accent], 0.3), h.mix(accent, h.DEEP[accent], 0.4)),
                window=veil((0, 0.0), (SPLIT - 0.004, 0.0), (SPLIT, 1.0), (1, 1.0)))
         st.lay("ButtonRing", x, y, w, hh, tint=accent)
-        st.text(x + 9, y + 8, 10, f"Chamber {index}", h.PALE[accent])
+        st.text(x + 9, y + 7, SMALL, f"Chamber {index}", h.PALE[accent])
         light(st, cx, y + 58, 36.0, EMBER, 0.42)  # amber at its rim: yellow thinned over the night turns olive
         light(st, cx, y + 58, 22.0, accent, 0.5)
         light(st, cx, y + 58, 13.0, h.PALE[accent], 0.7)
         st.icon("Shard", cx, y + 58, 52.0)
         st.text(cx, plate + 6, 15, "Ready", h.INK, "CENTER")
-        st.text(cx, plate + 27, 9, "Tap to open", h.INK, "CENTER")
+        st.text(cx, plate + 26, SMALL, "Tap to open", h.INK, "CENTER")
         return
     st.lay("ButtonEdge", x, y, w, hh, tint=p["edge"])
-    st.text(x + 9, y + 8, 10, f"Chamber {index}", p["soft"])
+    st.text(x + 9, y + 7, SMALL, f"Chamber {index}", p["soft"])
     light(st, cx, y + 58, 27.0, h.VOIDKIN, 0.36)
     st.icon("Shard", cx, y + 58, 50.0)
-    st.text(cx, plate + 5, 11, "Standard", p["text"], "CENTER")
-    kit.bar(st, x + 10, plate + 21, w - 20, 6.0, left, p, POWER)
-    st.text(cx, plate + 31, 10, seconds, h.PALE[POWER], "CENTER")
+    st.text(cx, plate + 4, 11, "Standard", p["text"], "CENTER")
+    kit.bar(st, x + 10, plate + 19.5, w - 20, 6.0, left, p, POWER)
+    st.text(cx, plate + 29, SMALL, seconds, h.PALE[POWER], "CENTER")
 
 
 def chip(st, x, y, w, hh, p, top, under, state="rest"):
@@ -173,7 +174,7 @@ def chip(st, x, y, w, hh, p, top, under, state="rest"):
     box(st, x, y, w, hh, p, "lit" if state != "rest" else "rest")
     st.icon("Shard", x + 19, y + hh / 2, 26.0)
     st.text(x + 36, y + 10, 12, top, POWER if state == "ready" else p["text"])
-    st.text(x + 36, y + 29, 10, under, p["soft"])
+    st.text(x + 36, y + 28, SMALL, under, p["soft"])
 
 
 def battery(st, x, y, p):
@@ -235,11 +236,11 @@ def breaker(p, world, state, sky):
     kit.panel(st, DX, DY, DW, DH, p)
     st.text(DX + 12, DY + 10, 13, "Lantern Row shard · Standard", p["text"])
     if ready:
-        st.text(DX + 12, DY + 28, 10, "Chamber 1 · ready", POWER)
+        st.text(DX + 12, DY + 28, SMALL, "Chamber 1 · ready", POWER)
         h.main_button(st, DX + 12, DY + 48, DW - 24, 44, "Open", p)
         holds(st, DY + 108, p)
     else:
-        st.text(DX + 12, DY + 28, 10, "Waiting, 1st", p["soft"])
+        st.text(DX + 12, DY + 28, SMALL, "Waiting, 1st", p["soft"])
         stored = BATTERY[0]
         for i, (name, price, rarity, base, lifted) in enumerate(INFUSION):
             y = DY + 48 + i * 52
@@ -250,15 +251,14 @@ def breaker(p, world, state, sky):
                 kit.button(st, DX + 12, y, 118, 42, "", p, "disabled")
                 ink = faint = p["faint"]
             st.text(DX + 71, y + 7, 13, name, ink, "CENTER")
-            st.text(DX + 71, y + 24, 10, f"{price} kWh", faint, "CENTER")
+            st.text(DX + 71, y + 23, SMALL, f"{price} kWh", faint, "CENTER")
             if price <= stored:  # what it does to the rarest tier, in that tier's colour
                 st.text(DX + 142, y + 5, 12, rarity, WORD[rarity])
                 st.text(DX + 142, y + 22, 12, base, h.mix(WORD[rarity], p["soft"], 0.45))
                 arrow(st, DX + 178, y + 27, WORD[rarity])
                 st.text(DX + 190, y + 22, 12, lifted, WORD[rarity])
-            else:  # a refusal: how many kWh short, in a second
-                st.text(DX + 142, y + 5, 12, f"{price - stored} kWh short", POWER)
-                st.text(DX + 142, y + 22, 10, f"The battery holds {stored}", p["soft"])
+            else:  # a refusal: how many kWh short, alone (research, 2026-11-15: the bar beside it already says what's held)
+                st.text(DX + 142, y + 14, 12, f"{price - stored} kWh short", POWER)
         holds(st, DY + 160, p)
     return h.bytes8(h.halve(st.px)), st.items
 

@@ -5429,6 +5429,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **The battery wears the Battery mark,** not the bolt: accepted. The bolt is generation in kW and the battery is stored kWh, by `docs/design.md`, "Power".
   - **Legendary's gold and Power's yellow, 5.6 apart:** accepted on the pip and the word. A Legendary name or odd never stands without its pip and its word, and never on a yellow fill.
 - **Next:** the fixes on the sheet, then the images for Faber. The motion's layers are Faber's to try in Studio, as DESIGN.
+- **Both fixes are in** (Modulo, 2026-11-15), on the two sheets, the clip and its two frame sheets, rendered again: no text on the screen is under 11 pt (the chambers' names, "Upgrade the Breaker" on two lines on its plate, "Tap to open", "10 s left", the line under a chip's name, "Waiting, 1st", a button's kWh), and "18 kWh short" stands alone beside its button. Made and self-reviewed at the sheet's size; the images for Faber aren't made yet.
 
 ## Later, by ground
 

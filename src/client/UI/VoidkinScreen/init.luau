@@ -841,20 +841,16 @@ local function bagTab(scroll: ScrollingFrame, view: Profile.View)
 		local corner = Instance.new("UICorner")
 		corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
 		corner.Parent = cell
+		-- Its grade's picture (AR12); a shard that holds one Voidkin wears its light on the cell's edge, as its mark did.
 		local edge = Instance.new("UIStroke")
 		edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		edge.Color = Theme.Colour.Line
+		edge.Color = if holds then HudConfig.Card.Trim[holds.Rarity] or Theme.Colour.Line else Theme.Colour.Line
 		edge.Parent = cell
 		cell.Parent = grid
-		local mark = Instance.new("Frame")
-		mark.Name = "Mark"
-		mark.BorderSizePixel = 0
-		mark.BackgroundColor3 = if holds then HudConfig.Card.Trim[holds.Rarity] or Theme.Colour.TextDim else Theme.Colour.TextDim
-		mark.AnchorPoint = Vector2.new(0.5, 0.5)
-		mark.Position = UDim2.fromScale(0.5, 0.4)
-		mark.Size = UDim2.fromScale(0.34, 0.34)
-		mark.Rotation = 45
-		mark.Parent = cell
+		local art = HudConfig.ShardArt
+		local side = ROW * art.Cell
+		local picture = Skin.Icon(cell, Hud.ShardPicture(if row then row.Grade else "Standard", side, art.Large), ROW / 2, side / 2 + 2, side)
+		picture.Name = "Picture"
 		text({ Name = "Count", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -6, 0, 20), Position = UDim2.new(0, 0, 1, -21), Parent = cell }, `×{Hud.Digits(count)}`)
 		local function onTap()
 			Toast.Show(`{Read.ShardName(id)} ×{Hud.Digits(count)}`, Theme.Colour.Text)

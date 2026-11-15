@@ -10,6 +10,8 @@ local Hud = require(Shared.Rules.Hud)
 local Hit = require(Shared.Rules.Hit)
 local StatsConfig = require(Shared.Config.Stats)
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
+local Shards = require(Shared.Definitions.Shards)
 
 local COUNT = 0.12 -- seconds a number counts over
 local SECONDS = 0.8 -- seconds a number shows after its last amount
@@ -436,6 +438,24 @@ return {
 			t.Equal("a chance there is never reads 0%", Hud.Chance(0.0001), "<0.1%")
 			t.Equal("none", Hud.Chance(0), "0%")
 			t.Equal("not a number", Hud.Chance(0 / 0), "0%")
+		end,
+	},
+	{
+		Name = "Hud: AR12, a shard wears its grade's picture, the small one under the large's least size, Standard's for a grade with none",
+		Run = function(t: any)
+			local large = HudConfig.ShardArt.Large
+			t.Equal("a chamber's window", Hud.ShardPicture("Prismatic", 96, large), "ShardPrismatic")
+			t.Equal("at the large's least", Hud.ShardPicture("Enriched", large, large), "ShardEnriched")
+			t.Equal("a hair under it", Hud.ShardPicture("Enriched", large - 0.5, large), "ShardEnrichedSmall")
+			t.Equal("a chip", Hud.ShardPicture("Standard", HudConfig.ShardArt.Chip, large), "ShardStandardSmall")
+			t.Equal("a Named shard wears Standard's", Hud.ShardPicture("Named", 96, large), "ShardStandard")
+			t.Equal("a Starter's small", Hud.ShardPicture("Starter", 26, large), "ShardStandardSmall")
+			for _, row in Shards.List do
+				for _, points in { 96, HudConfig.ShardArt.Chip } do
+					local name = Hud.ShardPicture(row.Grade, points, large)
+					t.Check(`{row.Id} at {points} points has its picture in the kit`, UIKit.Images[name] ~= nil, name)
+				end
+			end
 		end,
 	},
 	{

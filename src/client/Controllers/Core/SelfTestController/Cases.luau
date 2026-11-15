@@ -35,6 +35,7 @@ local Odds = require(Shared.Rules.Odds)
 local Breaker = require(Shared.Rules.Breaker)
 local Profile = require(Shared.Data.Profile)
 local ShardConfig = require(Shared.Config.Shards)
+local ShardDefs = require(Shared.Definitions.Shards)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Rarity = require(Shared.Definitions.Rarity)
@@ -6823,6 +6824,12 @@ local cases = {
 				local bag = bagItem(shard)
 				local detail = if bag then breakerText(`Bag{bag.Index}`, "Detail") else ""
 				t.Check(`{where}: the bag's shard on the strip, with its count`, string.find(detail, "^In the bag · ") ~= nil, detail)
+				-- AR12: its grade's small picture at a chip's size.
+				local picture = if bag then breakerPart(`Bag{bag.Index}`) else nil
+				picture = if picture then picture:FindFirstChild("Picture") else nil
+				local art = HudConfig.ShardArt
+				local want = Hud.ShardPicture(if ShardDefs.ById[shard] then ShardDefs.ById[shard].Grade else "Standard", art.Chip, art.Large)
+				t.Check(`{where}: the chip wears its grade's picture`, picture ~= nil and picture:GetAttribute("Kit") == want, if picture then tostring(picture:GetAttribute("Kit")) else "none")
 			end
 			t.Check("Machine: built", waitFor(t, 2, function(): boolean
 				return breakerPart("Machine") ~= nil

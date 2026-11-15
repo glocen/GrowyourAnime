@@ -26,6 +26,7 @@ local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
 local Odds = require(Shared.Rules.Odds)
+local Hud = require(Shared.Rules.Hud)
 local UI = script.Parent
 local Theme = require(UI.Theme)
 local Read = require(UI.Read)
@@ -45,7 +46,7 @@ export type On = { Act: (name: string, args: any) -> { [string]: any }, Open: (i
 
 local NAME = "Breaker"
 local SIZE = Vector2.new(660, 320)
-local CHIP = Vector2.new(112, 52)
+local CHIP = Vector2.new(144, 52) -- its shard's picture (Config.Hud.ShardArt.Chip) and a gap left of 112 for its words
 local HEADING = 20
 local LINE = 18
 local LOCKED = "Upgrade the Breaker" -- under "Locked": what opens a chamber (research, TR9, 2026-11-14, night)
@@ -466,6 +467,13 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 		Parent = parent,
 	})
 	local pad = Theme.Size.Pad
+	-- Its grade's picture on the left, the small one at a chip's size (AR12); the words beside it.
+	local art = HudConfig.ShardArt
+	local row = Shards.ById[item.Def]
+	local picture = Skin.Icon(frame, Hud.ShardPicture(if row then row.Grade else "Standard", art.Chip, art.Large), pad + art.Chip / 2, CHIP.Y / 2, art.Chip)
+	picture.Name = "Picture"
+	picture.ZIndex = 2
+	local words = pad + art.Chip + Theme.Size.Gap
 	local ready = item.Kind == "Ready"
 	local work = workOf(view, item)
 	local infusedMark = if work and work.Luck > 0 then " · infused" else ""
@@ -473,9 +481,9 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 	local under = if ready then `{shortName(item.Def)}{infusedMark}`
 		elseif item.Kind == "Line" then `Waiting, {ordinal(item.Index)}{infusedMark}`
 		else `In the bag · {view.Bag.Shards[item.Def] or 0}`
-	local name = label(frame, "Name", top, if ready then Theme.Text.Body else Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, 6), { Font = if ready then Theme.Font.Number else Theme.Font.Strong, Colour = if ready then Theme.Colour.Ready else nil, Truncate = true })
+	local name = label(frame, "Name", top, if ready then Theme.Text.Body else Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6), { Font = if ready then Theme.Font.Number else Theme.Font.Strong, Colour = if ready then Theme.Colour.Ready else nil, Truncate = true })
 	name.ZIndex = 2
-	local detail = label(frame, "Detail", under, Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, 6 + LINE + 2), { Colour = if ready then Theme.Colour.Text else Theme.Colour.TextDim, Truncate = true })
+	local detail = label(frame, "Detail", under, Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6 + LINE + 2), { Colour = if ready then Theme.Colour.Text else Theme.Colour.TextDim, Truncate = true })
 	detail.ZIndex = 2
 	if ready then
 		glow(frame, item)

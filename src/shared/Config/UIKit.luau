@@ -346,6 +346,15 @@ return {
 		DockMarkInventory = { Id = "rbxassetid://105337492622058", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 		DockMarkMap = { Id = "rbxassetid://80343875906913", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 		DockPip = { Id = "rbxassetid://102948105136294", Pixels = Vector2.new(105, 112), Points = Vector2.new(26.25, 28), Pad = 0, At = Vector2.new(53.5, 2) },
+		-- The shard grades' pictures (AR12, Modulo's six, tools/blender/shard_grade_art.py): straight colour, each one's light
+		-- in its cover, its shard in one place and at one scale in all six, its body 0.72 of the image's height. Each grade's
+		-- from Config.Hud.ShardArt.Large points up, its small one under that (Rules.Hud.ShardPicture).
+		ShardStandard = { Id = "rbxassetid://124627303829624", Pixels = Vector2.new(1024, 1024), Points = Vector2.new(96, 96), Pad = 0 },
+		ShardStandardSmall = { Id = "rbxassetid://98664695050270", Pixels = Vector2.new(256, 256), Points = Vector2.new(40, 40), Pad = 0 },
+		ShardEnriched = { Id = "rbxassetid://76658598792416", Pixels = Vector2.new(1024, 1024), Points = Vector2.new(96, 96), Pad = 0 },
+		ShardEnrichedSmall = { Id = "rbxassetid://114618834592539", Pixels = Vector2.new(256, 256), Points = Vector2.new(40, 40), Pad = 0 },
+		ShardPrismatic = { Id = "rbxassetid://113026003699321", Pixels = Vector2.new(1024, 1024), Points = Vector2.new(96, 96), Pad = 0 },
+		ShardPrismaticSmall = { Id = "rbxassetid://137771677810961", Pixels = Vector2.new(256, 256), Points = Vector2.new(40, 40), Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {

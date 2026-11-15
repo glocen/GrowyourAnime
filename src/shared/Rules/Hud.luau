@@ -275,6 +275,14 @@ function Hud.AfterFall(down: boolean, others: { Other }, now: number, away: bool
 	return if away then "Home" else nil
 end
 
+-- The picture a shard of `grade` wears drawn `points` across (AR12, Modulo's six): its grade's own, or Standard's for a
+-- grade with none drawn (Named and Starter, until a ruling); the small one under `large` points.
+local PICTURED = { Standard = true, Enriched = true, Prismatic = true }
+function Hud.ShardPicture(grade: string, points: number, large: number): string
+	local name = `Shard{if PICTURED[grade] then grade else "Standard"}`
+	return if points >= large then name else `{name}Small`
+end
+
 -- Why the dock's Voidkin button can't be pressed, or nil when it can.
 function Hud.VoidkinReason(owned: number): string?
 	return if owned > 0 then nil else "No Voidkin"

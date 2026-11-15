@@ -20,6 +20,7 @@ local Stats = require(Shared.Rules.Stats)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Gear = require(Shared.Definitions.Gear)
+local Shards = require(Shared.Definitions.Shards)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -478,6 +479,12 @@ function VoidkinCases.Cases(given: Given): { any }
 						end
 						t.Check("Bag: a cell for each shard held, with its count", shown == held and right, `{shown} of {held}`)
 						if first then
+							-- AR12: its grade's picture, the size's own (Rules.Hud.ShardPicture).
+							local picture = first:FindFirstChild("Picture", true)
+							local grade = if Shards.ById[first.Name] then Shards.ById[first.Name].Grade else "Standard"
+							local art = HudConfig.ShardArt
+							local want = Hud.ShardPicture(grade, Theme.Size.Tap * art.Cell, art.Large)
+							t.Check("Bag: a cell wears its grade's picture", picture ~= nil and picture:GetAttribute("Kit") == want, if picture then tostring(picture:GetAttribute("Kit")) else "none")
 							local said = `{Read.ShardName(first.Name)} ×{Hud.Digits(bag[first.Name])}`
 							t.Check("Bag: a tap on a cell names it", VoidkinScreen.Tap(first) and table.find(Toast.Shown(), said) ~= nil, table.concat(Toast.Shown(), "; "))
 						end

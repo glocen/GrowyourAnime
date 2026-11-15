@@ -339,6 +339,11 @@ return {
 		-- (research's fix, 2026-11-15). The others head theirs in their trim's colour.
 		Tier = { Common = Color3.fromHex("#C9CED8") } :: { [string]: Color3 },
 	},
+	-- The shard grades' pictures (AR12; Config.UIKit's Shard images): each grade's own from Large authored points up, its
+	-- small one under that (a step paler, its rim wider, a dark line round it, so the outline holds at a chip's size).
+	-- Modulo drew the large for 50 and up and the small for 40 and under; between them the small one holds the outline.
+	--   Chip: the picture's side on a Breaker chip; Cell: its share of a Voidkin bag cell's side
+	ShardArt = { Large = 50, Chip = 26, Cell = 0.78 },
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
 	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live
 	-- between two columns of gear slots, its two hands and Combat Power at its feet, the chosen page on the right, the

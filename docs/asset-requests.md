@@ -5597,6 +5597,19 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **Parity,** the stack of images against the block's drawing, on a mid grey, in four sets of states: outside the marks' boxes, at most 0.03% of pixels stand more than eight 8-bit steps off. The worst is 36, on a tile's side at its front face, where one layer's edge stands for two. A mark's edge sits a part of a pixel off: it's its image brought down to size. One change to the drawing itself: the three wells lie under every halo, as the engine stacks them.
     - **Four facts:** made; self-reviewed at phone size over the noon and dusk streets and each mark at 32 px; content check PASS for delivery and for upload (its one note: at 32 px the Map's dashes run together into a tail on the ring, and the folded sheet round them holds the read as a map; research's read at 32 px settles it); not uploaded; research's read of the two marks and Faber's build to come; not director-accepted. About 45 active minutes, 10 of them waiting on memory.
     - **Research's look** (2026-11-15, night; the marks at 32 px and the stacks on both grounds): **it passes.** Base's house with its bolt, Inventory's chest with its shard (the strap now stands apart, so no necktie), and the Map's folded sheet with its pin each read at 32 px, and the three tiles' yellow, lilac and rose read as one set. Pressed, open and the pip are each clear on the dark street and the pale one. **No fixes.** For Faber's build as delivered.
+  - **Faber's build of the dock** (2026-11-15, night). The 17 images are under the group and Approved. The json's shape → `UIKit.Dock` (`tools/ui/kit_config.py`), drawn by `src/client/UI/Dock.luau`; the tunables are `Config.Hud.Dock`.
+    - **Each tile** is a kit button, Bare and Still: the kit's new `Still` drops the squeeze, so the dock draws its own press. The tile's look follows the button's state: rest, pressed (the twin, the mark 1.6 down its lean), open while its screen is, dim when it can't be used.
+    - **The tile's gradient** is a `ColorSequence`, its hard step into the front face included (`Skin.Tint` takes one now).
+    - **The build's calls (tier 1):**
+      - A touch held 0.4 s shows the tile's word 6 over it, and its lift doesn't press.
+      - The Map's screen isn't built, so its tile is dim and a tap says "The map isn't open yet".
+      - Inventory opens the Voidkin screen; Base still opens the base's until TR19 makes it the way home.
+      - The pip is wired with TR19 (Base after a fall). Inventory's has no "new" yet.
+    - **Four facts:**
+      - **Implemented:** yes.
+      - **Tested:** type check 0 new. A new self-test case (the dock's place, its marks, held, open, the long press, the Map dim) has not run: the screen is the director's.
+      - **Visually reviewed:** no.
+      - **Director-accepted:** no.
 - **The lead's card, three takes beside today's, for the director's pick** (Modulo, 2026-11-15; the director: "I believe we should edit the size and colors of the the top left voidkin hud actually.. like the hb color and width same for xp color and width and onyx might not be the color it need add the new level icon"; `tools/blender/lead_card_takes.py`; the sheet `build/handoff/UI/hud/lead_card_takes/lead_card_takes.png`).
   - Mocks only. Each take sets the sizes and colours of the builder's `lead_card_art.py` for one drawing and draws the housing, the tab and the two lights again; the portrait, its frame and the stud are the card's own images. Each is shown up close at dusk (Rook, Common) and at noon (a Mythical), with the level's mark at 3, 12 and 100, then on the whole HUD at a phone's size, beside the pills and the new dock.
   - **A, Violet night:** the body in the Voidkin's violet. Health green, 19 points thick (17 today). Experience in the Voidkin's lavender, 6 thick. Its length as today.

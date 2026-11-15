@@ -8,8 +8,8 @@
 -- system's colour (AR12, V2 Block; UI.Kit.Pill): Credits, and
 -- Electricity stored over its cap with the rate and a thread of charge. Under the lead's card, the signature's readout
 -- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
--- beside it the spectate eye. Bottom centre, the dock: Inventory and Base, selected while their screen is open, and
--- over it the shards' hint while a shard waits and the player is home. The HUD's text wears one face
+-- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base, Inventory and the Map, a tile open
+-- while its screen is, and over it the shards' hint while a shard waits and the player is home. The HUD's text wears one face
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
 -- A keeper's try and an elite take their own HUD (TR5's grey variants, Config.Hud.Boss): the keeper's title card
@@ -39,7 +39,6 @@ local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local World = require(UI.World)
 local Read = require(UI.Read)
-local Panel = require(UI.Kit.Panel)
 local Pill = require(UI.Kit.Pill)
 local Text = require(UI.Kit.Text)
 local Bar = require(UI.Kit.Bar)
@@ -49,6 +48,7 @@ local Readout = require(UI.Readout)
 local LeadCard = require(UI.LeadCard)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local TargetCard = require(UI.TargetCard)
+local Dock = require(UI.Dock)
 local BossBar = require(UI.BossBar)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -77,7 +77,7 @@ local TOP = 17
 local PILL = Pill.Height
 local BASE_EVERY = 0.25 -- seconds between reads of the base as it stands now: each copies the save
 local SMOOTH = 12 -- frames in a row under 1/30 s before the join's black lifts: a join's stall leaves text undrawn a moment
-local DOCK = Vector2.new(96, Theme.Size.Tap)
+local HINT = 288 -- the shards' hint's width over the dock
 
 type Signature = {
 	Piece: Readout.Piece,
@@ -106,6 +106,7 @@ local nextButton: TextButton -- under a fallen lead's card: sends out the next (
 local homeButton: TextButton -- in its place when none other is ready: the way home (TR16)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
+local dockUi: Dock.Dock -- the dock of three icons (AR12; UI.Dock): dock[screen] is its tile's button
 local keeperBar: BossBar.Bar
 local lastView: Profile.View? = nil
 local glint: Frame -- experience's pop: a light over the thread's
@@ -802,6 +803,7 @@ local function step(dt: number)
 			Button.Set(button, { Selected = open })
 		end
 	end
+	Dock.Paint(dockUi)
 	local view = ProfileController.Get()
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
 		baseReadAt = os.clock()
@@ -904,42 +906,38 @@ function HudController.Start()
 	local hint = Pill.new({
 		Name = "Chip",
 		System = "Voidkin",
-		Width = DOCK.X * 3,
+		Width = HINT,
 		Centred = true,
-		Position = UDim2.new(0.5, 0, 1, -PAD - DOCK.Y - Theme.Size.Gap),
+		Position = UDim2.new(0.5, 0, 1, -PAD - UIKit.Dock.Size.Y - Theme.Size.Gap),
 		AnchorPoint = Vector2.new(0.5, 1),
 		Parent = Layers.Get("Hud"),
 	})
 	chip, chipText = hint.Frame, hint.Value
 	chip.Visible = false
-	local holder = Instance.new("Frame")
-	holder.Name = "Dock"
-	holder.BackgroundTransparency = 1
-	holder.AnchorPoint = Vector2.new(0.5, 1)
-	holder.Position = UDim2.new(0.5, 0, 1, -PAD)
-	holder.Size = UDim2.fromOffset(DOCK.X * 2 + Theme.Size.Gap, DOCK.Y)
-	Panel.List(holder, Enum.FillDirection.Horizontal)
-	holder.Parent = Layers.Get("Hud")
-	dockHolder = holder
-	keeperBar = BossBar.new(Layers.Get("Hud"))
-	for order, name in { "Voidkin", "Base" } do
-		dock[name] = Button.new({
-			Name = name,
-			Text = if name == "Voidkin" then "Inventory" else name, -- the director, 2026-11-15: "Inventory"
-			Size = UDim2.fromOffset(DOCK.X, DOCK.Y),
-			LayoutOrder = order,
-			Parent = holder,
-			OnPress = function()
-				if Screen.Current() == name then
-					Screen.Close()
-				elseif name == "Voidkin" then
-					voidkinScreen()
-				else
-					HudController.OpenBase()
-				end
-			end,
-		})
+	-- The dock of three icons (AR12): Inventory opens the Voidkin screen and Base the base's, each open while its screen
+	-- is; the Map's screen isn't built, so its tile dims and says so on a tap.
+	local function toggle(name: string, open: () -> ())
+		return function()
+			if Screen.Current() == name then
+				Screen.Close()
+			else
+				open()
+			end
+		end
 	end
+	dockUi = Dock.new(Layers.Get("Hud"), {
+		Inventory = toggle("Voidkin", voidkinScreen),
+		Base = toggle("Base", function()
+			HudController.OpenBase()
+		end),
+	})
+	dockHolder = dockUi.Frame
+	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
+	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)
+	dock.Voidkin = dockUi.Tiles.Inventory.Button
+	dock.Base = dockUi.Tiles.Base.Button
+	Button.Set(dockUi.Tiles.Map.Button, { Disabled = "The map isn't open yet" })
+	keeperBar = BossBar.new(Layers.Get("Hud"))
 	ProfileController.Changed:Connect(function(view: Profile.View)
 		notice(lastView, view)
 		lastView = view
@@ -1018,6 +1016,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		ChipText = chipText,
 		Voidkin = dock.Voidkin,
 		Base = dock.Base,
+		Map = dockUi.Tiles.Map.Button,
 	}
 end
 

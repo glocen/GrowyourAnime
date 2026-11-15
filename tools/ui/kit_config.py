@@ -22,6 +22,7 @@ LEAD = ROOT / "build" / "handoff" / "UI" / "hud" / "lead_card" / "lead_card.json
 BOSS = ROOT / "build" / "handoff" / "UI" / "hud" / "boss" / "boss.json"  # tools/blender/boss_hud_art.py
 COLOUR = ROOT / "build" / "handoff" / "UI" / "hud" / "colour" / "hud_colour.json"  # tools/blender/hud_colour_sheet.py
 MARKS = ROOT / "build" / "handoff" / "UI" / "voidkin" / "marks" / "voidkin_marks.json"  # TR17's marks, Modulo's
+DOCK = ROOT / "build" / "handoff" / "UI" / "hud" / "dock" / "hud_dock.json"  # AR12's dock of three icons, hud_dock_sheet.py
 OUT = ROOT / "src" / "shared" / "Config" / "UIKit.luau"
 
 PALETTE_NAMES = {"Graphite Dark": "Graphite", "Pearl Light": "Pearl", "Dynamo": "Dynamo", "Void Violet": "Void"}
@@ -77,11 +78,14 @@ def main() -> None:
     boss = json.loads(BOSS.read_text(encoding="utf-8"))
     tint = json.loads(COLOUR.read_text(encoding="utf-8"))
     marks = json.loads(MARKS.read_text(encoding="utf-8"))
+    dock = json.loads(DOCK.read_text(encoding="utf-8"))
     ids = old_ids() | new_ids(Path(sys.argv[1]))
     images = kit["images"] | hud["images"] | lead["images"] | boss["images"]
-    # The HUD's colour images and TR17's marks join as they're uploaded: a piece not built yet (the dock) keeps its out.
-    waiting = [name for name in tint["images"] | marks["images"] if name not in ids]
-    images |= {name: im for name, im in (tint["images"] | marks["images"]).items() if name in ids}
+    # The HUD's colour images, TR17's marks and the dock's join as they're uploaded; the dock's shape waits for all of its.
+    joining = tint["images"] | marks["images"] | dock["images"]
+    waiting = [name for name in joining if name not in ids]
+    images |= {name: im for name, im in joining.items() if name in ids}
+    docked = all(name in ids for name in dock["images"])
     missing = [name for name in images if name not in ids]
     if missing:
         sys.exit(f"no upload id for {len(missing)}: {', '.join(missing[:8])}")
@@ -253,13 +257,58 @@ def main() -> None:
         f"\t\tNameTabEnd = {rounded(e['nameTabEnd'])},",
         f"\t\tArtTop = {rounded(e['artTop'])},",
         "\t},",
-        "}",
-        "",
     ]
+    if docked:
+        out += dock_lines(dock, rounded, pair)
+    out += ["}", ""]
     OUT.write_text("\n".join(out), encoding="utf-8", newline="\n")
     print(f"wrote {OUT.relative_to(ROOT)}: {len(images)} images, {len(kit['palettes'])} palettes, {len(tint['systems'])} systems")
     if waiting:
         print(f"not uploaded yet, left out: {', '.join(waiting)}")
+
+
+def dock_lines(dock: dict, rounded, pair) -> list:
+    """The dock of three icons (AR12, hud_dock.json): its size and lean, and each button's tap, its layers' places from
+    the body's top left, and each state's colours. A tile's gradient is its stops (a share of its height) and colours."""
+
+    def placed(layer: dict) -> str:
+        return f'{{ Image = "{layer["image"]}", At = {pair(layer["at"])} }}'
+
+    def sized(layer: dict) -> str:
+        return f'{{ Image = "{layer["image"]}", At = {pair(layer["at"])}, Size = {pair(layer["size"])} }}'
+
+    def gradient(stops: list) -> str:
+        return ("{ Stops = { " + ", ".join(rounded(s) for s, _ in stops) + " }, Colours = { "
+                + ", ".join(colour(c) for _, c in stops) + " } }")
+
+    lines = [
+        "\t-- The dock of three icons (AR12; build/handoff/UI/hud/dock/hud_dock.json): one piece of a fixed size, bottom",
+        "\t-- centre. Every place is in points from the body's top left; a button's Box is its tap, round its leaning tile.",
+        "\tDock = {",
+        f"\t\tSize = {pair(dock['size'])},",
+        f"\t\tLean = {rounded(dock['lean'])}, -- a tile leans as a bar's front does",
+        "\t\tButtons = {",
+    ]
+    for b in dock["buttons"]:
+        rest, pressed, open_ = b["rest"], b["pressed"], b["open"]
+        lines += [
+            f'\t\t\t{{ Name = "{b["name"]}", System = "{b["system"]}", Colour = {colour(b["colour"])}, '
+            f'Pale = {colour(b["pale"])}, Deep = {colour(b["deep"])},',
+            "\t\t\t\tBox = { " + ", ".join(rounded(x) for x in b["box"]) + " },",
+            f"\t\t\t\tTile = {placed(b['tile'])}, TilePressed = {placed(b['tilePressed'])},",
+            f"\t\t\t\tSheen = {placed(b['sheen'])}, Edge = {placed(b['edge'])}, Halo = {placed(b['halo'])},",
+            f"\t\t\t\tLight = {sized(b['light'])}, Glow = {sized(b['lightGlow'])},",
+            f'\t\t\t\tMark = {{ Image = "{b["mark"]["image"]}", Middle = {pair(b["mark"]["middle"])}, '
+            f'Size = {rounded(b["mark"]["size"])} }}, Pip = {placed(b["pip"])},',
+            f"\t\t\t\tRest = {{ Tile = {gradient(rest['tile'])}, Light = {colour(rest['light'])}, "
+            f"Glow = {colour(rest['lightGlow'])}, Sheen = {colour(rest['sheen'])} }},",
+            f"\t\t\t\tPressed = {{ Tile = {gradient(pressed['tile'])}, Light = {colour(pressed['light'])} }},",
+            f"\t\t\t\tOpen = {{ Tile = {gradient(open_['tile'])}, Light = {colour(open_['light'])}, "
+            f"Halo = {colour(open_['halo'])} }},",
+            "\t\t\t},",
+        ]
+    lines += ["\t\t},", "\t},"]
+    return lines
 
 
 if __name__ == "__main__":

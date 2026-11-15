@@ -6,7 +6,7 @@
 -- other child (ZIndex 0 against their 1). The Frame undoes the piece's padding, so the skin always covers the whole box.
 --   Skin.Of(piece)                          the piece's skin frame, made on first use
 --   Skin.Lay(holder, image, options?)       one image: filling `holder`'s box, or at X, Y, W, H inside it
---   Skin.Tint(image, tint)                  a colour, or two top to bottom
+--   Skin.Tint(image, tint)                  a colour, two top to bottom, or a ColorSequence top to bottom
 --   Skin.Refit(piece)                       after the piece's padding changes
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -18,7 +18,7 @@ export type Options = {
 	Y: number?,
 	W: number?,
 	H: number?,
-	Tint: (Color3 | { Color3 })?,
+	Tint: (Color3 | { Color3 } | ColorSequence)?, -- a colour, two top to foot, or a gradient's stops top to foot
 	Alpha: number?,
 	Scale: number?, -- the image's points to authored pixels: a slice's corners and pad, an icon's size
 	Size: number?, -- an image with no cut drawn this many pixels across (its height kept in proportion)
@@ -67,21 +67,28 @@ function Skin.Refit(piece: GuiObject)
 	frame.Size = UDim2.new(1, l + r, 1, t + b)
 end
 
-function Skin.Tint(image: ImageLabel, tint: (Color3 | { Color3 })?)
+function Skin.Tint(image: ImageLabel, tint: (Color3 | { Color3 } | ColorSequence)?)
 	local gradient = image:FindFirstChildOfClass("UIGradient")
 	if typeof(tint) == "Color3" then
 		image.ImageColor3 = tint
 		if gradient then
 			gradient:Destroy()
 		end
-	elseif type(tint) == "table" then
+	elseif type(tint) == "table" or typeof(tint) == "ColorSequence" then
 		image.ImageColor3 = Color3.new(1, 1, 1)
 		if gradient == nil then
 			gradient = Instance.new("UIGradient")
 			gradient.Rotation = 90 -- top to bottom
 			gradient.Parent = image
 		end
-		(gradient :: UIGradient).Color = ColorSequence.new(tint[1], tint[#tint])
+		local sequence: ColorSequence
+		if typeof(tint) == "ColorSequence" then
+			sequence = tint
+		else
+			local list = tint :: { Color3 }
+			sequence = ColorSequence.new(list[1], list[#list])
+		end
+		(gradient :: UIGradient).Color = sequence
 	else
 		image.ImageColor3 = Color3.new(1, 1, 1)
 		if gradient then

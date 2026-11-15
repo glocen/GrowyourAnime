@@ -176,6 +176,10 @@ return {
 	-- On, the camera's point eases from the avatar's focus to the lead's, Height studs over the lead's root, about 95% of
 	-- the way in Ease seconds (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
 	Spectate = { Size = 52, Plate = 44, Right = 10, Lower = 7, Off = 0.45, Ease = 0.3, Height = 1.5 },
+	-- The dock of three icons (AR12; UI.Dock; its shape is UIKit.Dock, Modulo's): pressed, a tile's mark sinks Sink points
+	-- along the tile's lean (Modulo's 1.6); a tile that can't be used draws its tile and mark at Dim of themselves; a touch
+	-- held LongPress seconds shows the tile's word Rise points over its tap, and lifting it then doesn't press.
+	Dock = { Sink = 1.6, Dim = 0.45, LongPress = 0.4, Rise = 6 },
 	-- The HUD's face (docs/ui.md, rule 3; the director, 2026-11-15: "the whole main hud of the player need a refont"): Face
 	-- names one of Faces, from Roblox's own font library, for every label on FaceLayers; a label authored under
 	-- FaceSmallUnder takes FaceSmall's when it names one (a face that fails at 14 pt keeps a plainer one for small text).

@@ -44,6 +44,7 @@ export type Props = {
 	Quiet: boolean?, -- a secondary press: no accent's base line at rest, so it never reads as the thing to press
 	Inset: number?, -- its label's middle this many pixels right of the button's, room for a mark its owner lays at its left
 	Bare: boolean?, -- no plate of the kit: its owner lays its own face in its skin (the spectate eye's plate), which squeezes as a face does
+	Still: boolean?, -- no squeeze: its owner draws its own press from its State (the dock's tiles sink, UI.Dock)
 	OnPress: () -> ...any,
 }
 
@@ -204,7 +205,7 @@ end
 -- How squeezed its face is, a share of its size (1 at rest), for tests.
 function Button.Squeeze(button: TextButton): number
 	local state = states[button]
-	return if state then state.Scales[1].Scale else 1
+	return if state and state.Scales[1] then state.Scales[1].Scale else 1
 end
 
 function Button.Press(button: TextButton): boolean
@@ -313,7 +314,7 @@ function Button.new(props: Props): TextButton
 	skin.Position = UDim2.fromScale(0.5, 0.5)
 	label.AnchorPoint = Vector2.new(0.5, 0.5)
 	local scales = {}
-	for _, piece in { skin, label } :: { GuiObject } do
+	for _, piece in (if props.Still then {} else { skin, label }) :: { GuiObject } do
 		local scale = Instance.new("UIScale")
 		scale.Name = "Squeeze"
 		scale.Parent = piece

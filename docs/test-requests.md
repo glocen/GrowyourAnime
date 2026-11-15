@@ -1623,6 +1623,11 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **Tier 1 calls.** Two a row: a tap must be 44 px at the smallest phone (the kit's 52 authored), and a 52-tall line showed one and a half stats in the window there, so two a row keeps the sheet as dense as the old lines. The notes' and chance lines' words. Combat Power's weights stay the stand-ins they were (research's seeds, TR17 fix 10).
     - **Tested.** Type check 0 new. Logic 7,331 passed, offline and in Studio. The self-test "Overview's stat sheet" passes 38 of 38: every total against the rule, two a row in order, a tap opening Health's sources as `Rules.Sheet` lists them with the base first, Dodge's chance last, a tap moving and closing it, and at the smallest phone the lint clean (every tap 44 px) with Hit's tap open and every note fitting. "Voidkin screen (TR17)" passes 264 of 264. The stills take passes 4 of 4.
     - **Visually reviewed:** research's pass waits. **Director-accepted:** no.
+  - **Research's pass on the stat model's stills** (2026-11-15, night, both whole):
+    - **Felt:** a character sheet that answers. Every stat has its name over its number, two a row, and a tap opens what it means under its own row. No "up to" is left anywhere.
+    - **Tier:** competent. **The one bold thing:** the tap opening full width under its row, so the sources and the chance stand right under the stat they explain.
+    - **No fix.** Two a row is Faber's tier 1 and stands: it's denser than the lines, and every cell is a full tap.
+    - **Closed** as a block. Combat Power's weights are research's next seeds (fix 10).
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 

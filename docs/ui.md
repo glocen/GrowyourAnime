@@ -44,9 +44,9 @@ Built first, in this order, each to the bar before the next.
      - **Core:** Health, Attack, Defence, Regen, Speed, Poise.
      - **Attack:** Hit, Critical, Critical Damage, Penetration, Elemental Attack, Lifesteal, Damage Bonus.
      - **Defence:** Dodge, Block, Critical Resist, Critical Guard, Elemental Resist, Damage Reduction.
-     - **A rating** shows its points, then what it gives at the Voidkin's level against a foe with none, as "up to N%". A foe's own rating only lowers it, so "up to" is the truth. Critical counts its floor.
+     - **Each stat is one total** [D, 2026-11-15, night]: a rating shows its points, a percent its percent, never "up to". There are two stats a row, each a tap (Faber's tier 1). A tap opens its sources under the row, with a rating's chance last ("Stats, shown honestly", below).
      - **A percent** shows its percent. Damage Bonus and Damage Reduction show what a signature, a passive or an effect gives, each with its condition ("below 30% health").
-     - **Each line keeps its sources,** as today: Own, Stars, Gear.
+     - **Its sources:** the Voidkin's own base, its level, its stars and gear. Then forge, jewels, War Emblems, research and the skill tree, each as it comes.
    - **An item's card** [D, 2026-11-15, 19:11]: a tap on an item, in a slot or in the bag, opens its card.
      - Its name is the title. Right under it stands the Combat Power it gives the selected Voidkin: Combat Power with it, minus without it (`Rules.Stats.Power`).
      - Then its details: its main stat, its other stats, its forge rank, its sockets.

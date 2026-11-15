@@ -1445,6 +1445,14 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
 - **The menu, a thin rail on the far left** (the director, 2026-11-15, "change it now": "much smaller and more like a line with a circle of the button welll made like art"): a thin line with Overview, Stats, Kit and Stars as round buttons on it, each with a small label under it. The selected one is larger and lit, and opens its page in the panel on the right. Drawn circles may be smaller than 44 pt; the tap area stays 44.
 - **The figure with its gear slots:** the figure stands left of centre, between two columns of six slots, the twelve shared, made bigger (the director, 2026-11-15). Main Hand and Off Hand, its class's pair, sit at the figure's feet, one each side of Combat Power. All are the slots of the preset this Voidkin is linked to (`docs/design.md`, "Presets"). Gear stays the account's, and "for each Voidkin" is the link that's already designed. The slots are empty and grey until gear is built. Combat Power sits at its feet, between the columns (`docs/design.md`, "Combat Power").
 - **The Voidkin strip along the bottom,** scrolling. A swipe on the figure still switches.
+- **The director's notes on the mock, 2026-11-15,** in now, with every later note on this screen until TR17 closes ("Now, and later notes too"):
+  - space between every gear slot;
+  - the right panel is the bag: the player's whole inventory, with tabs by kind (`docs/design.md`, "The bag");
+  - Overview holds the selected Voidkin's whole stat sheet, with its facts;
+  - the rail holds every page: Overview, the bag, Kit, Stars, Forge, Jewels and War Emblems. A system not built yet shows its button greyed with "Soon", never an empty page;
+  - Regalia's screen is merged here, so the dock loses Regalia (`docs/ui.md`, screen 5);
+  - Legendary gear changes its border only, with no crown (`docs/research/gear-icons.md`, DESIGN).
+  - Lead and Send to work move out of the right panel ("the lend and send to work should be moved elsewhere"). Research's placement, to judge in the take: the top bar, right of the name, Lead filled in the room's colour and Send to work beside it. Favourite, lock and rename stay small by the name.
 - **Kept from the block:** the live figure, the drag to turn, the tap's flourish, the stage's light by rarity and element, the real data in each page, Lead and Send to work in view, and favourite, lock and rename by the name.
 - **The figure** fills the stage between the top bar and the strip, and the aim of 70% of the height is dropped, since the strip came after it (research, 2026-11-15, on Modulo's mock, AR12).
 - **Watch, at phone landscape:** six slots a column over the strip leaves about 38 pt a slot (the reference's are about 12% of the screen's height, about 46 pt; `docs/research/voidkin-screen.md`, 10). The block shows whether they hold. If they don't, a tap anywhere on a column opens the gear page. Taps stay 44 pt.

@@ -111,7 +111,7 @@ Real time, in the world, automatic [D: one automatic combat lead].
 - **Odds are shown** on every shard, per Voidkin, before it's broken (`docs/roblox-rules.md`).
 - **Chambers.** The Breaker has two chambers at the start and up to four. Each breaks one shard at a time. Behind them is a waiting line, fed shortest first unless the player reorders it. Taking a shard out keeps the work done on it.
 - **Breaking draws power** ("The base", "Power"). With less than its rated power, the Breaker slows in proportion; it never stops dead and never loses a shard.
-- **Infusion.** Stored energy from the battery put into one shard lifts the odds of its two highest tiers, a little or a lot. The price is the same whatever the shard, so it belongs on the rare ones. Not offered on Named shards. Luck from every source adds into one number with one ceiling [D: luck never comes from the Rift].
+- **Infusion.** Stored energy from the battery put into one shard lifts the odds of its two highest tiers, at Low voltage or High voltage [D, 2026-11-15: "let use real electrician words"]. The price is the same whatever the shard, so it belongs on the rare ones. Not offered on Named shards. Luck from every source adds into one number with one ceiling [D: luck never comes from the Rift].
 - **The Breaker works while the player is away,** as far as the battery lasts.
 - **The reveal** is the game's signature moment: the shard cracks along its own lines, the silhouette shows before the colours, then the name. Rarer is longer and louder, never slower to skip.
 

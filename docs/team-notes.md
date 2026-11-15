@@ -15,11 +15,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **A plot is a bare lot until its player arrives** (the director's word): the base is built on arrival and cleared on leave. The touched cases all pass in Studio, again after a re-lay, and WorldReport and DressReport are empty.
 - **Next:** the Voidkin screen's stats as a plain list, with Combat Power's weights (TR17 fix 10). Then AR16's positions when Modulo's blockout lands, and AR12's reveal plate (my say on the cost; the four images). Then TR21's blockout; Kirra and Scarf Step, TR9, TR17, AR13, the gate.
 
-**Modulo (assets).** 2026-11-15, 22:36, on Fable 5.2.
-- **Delivered tonight, each in its entry, for Faber's publish and install and research's verdict in the game:** the base under construction on its whole plot, 200 by 200 (AR14, deliveries 4 and 5); the showcase's plinth (AR14, delivery 6, for TR22); the Void Breaker, a bay with its rarity light, the generator with its rotor, and the battery as a bank (AR15, sections 1 to 4). `build/handoff/Base/plan.json` says where each stands. Watt's model (AR11, delivery 3).
+**Modulo (assets).** 2026-11-15, 22:51, on Fable 5.2.
+- **The base's look is reopened** (the director to Faber, for Modulo, 2026-11-15, late: "we really need to not make it like a construction games and put some magic/anime like stuff that void need be void like rn it looks like a real world electricity machine which make no sense / we are making a anime game after all tell module it also a bit to clustered yet the basse is huge and it block yhe entrance"). **AR16's blockout**, the base as a sanctum raised out of the void with the way in left open: the script is written (`tools/blender/base_void_blockout.py`) and has never rendered. The guard stopped three tries with under 0.1 GB free at Blender's peak (Studio and a game were open), and at 22:50 Claude Code stopped the waiting run for low memory. **No render starts again until the director says go** ("Waiting on the director", 7). The Training machine and the Festival Door aren't built in the old look. AR14's yard and AR15's four machines stand in the dev build until the verdict.
 - **Cut in Eclipse, for Faber's build and research's pass** (AR12): Power's bar (`power_images.json`) and the reveal's plate on research's verdict (`reveal_card_images.json`: four new images to upload under the group).
-- **The director to Modulo, 2026-11-15:** about 21:37, "keep working and the base must be that 200x200"; about 21:47, "at level 1 it rly need to look like it under construction"; about 22:04, "dont forget the base need to show of each players etc" (research's TR22; my two parts, the bay's light and the plinth, are delivered).
-- **Next:** the Training machine and the Festival Door (AR15). Then AR14's levels 2 and 3 after level 1's verdict; Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5).
+- **Delivered tonight in the look now reopened, each in its entry:** the base on its whole plot and the showcase's plinth (AR14, deliveries 4 to 6); the Void Breaker, a bay with its rarity light, the generator and the battery (AR15, sections 1 to 4). Watt's model (AR11, delivery 3) is with Faber and research.
+- **Next:** after the blockout's verdict, the base's kit and its machines in the picked look (AR16). Then Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5).
 - **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse (the map, a reward, a confirm); TR10's two icons; the empty slots' marks and the bag's tab marks when asked; AR6's other kinds on research's spec, after phase 2.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
@@ -38,6 +38,10 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+
+For Modulo:
+
+7. **Your go to render AR16's blockout** (the base in void and anime, on your word to Faber). Three renders were stopped for memory, and the waiting run was stopped at 22:50. A fast pair of views needs about 0.8 GB free for a few minutes, and the full set about ten minutes: say "render" in Modulo's session when the PC has the room (a game or one Studio closed is enough).
 
 ### Notices
 

@@ -5450,7 +5450,7 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 
 **Status:** designed again, 2026-11-15, night (research).
 - The director rejected the first design (sections 1 and 2), and nothing of it is kept. Its files leave `build/handoff/Watt/` when the new model is delivered (Modulo's).
-- **Next:** research's pick among the three takes, then the model on the picked one.
+- **Next:** the model on take A, the director's pick, built as the comparison's five points say.
 - **Delivery 1, the three takes** (Modulo, 2026-11-15, night): `build/handoff/Watt/watt_takes.png`, for research's pick. In grey on R6, Storm's pale pink the only colour. Each take: three-quarter front, the game's camera, its face close, its outline; then all three at 64 px over noon, night and in black, beside Rook, Kirra, Pip and Lyric.
   - **A, the quiet wall,** as briefed. The pink is on the hair's lifted tips, where an effect starts. The spear's blade and discs stand over his right shoulder, the side the game's camera is on.
   - **B, the hothead,** as briefed. Mine: the slab is on his left forearm, since Rook's ram is on the right, and the pink lock falls over his right brow.
@@ -5484,6 +5484,26 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
       3. **The stake over night.** Today only its ring survives. Pale tape keeps its line at night too.
       4. **The hoodie, an anime character's, not an avatar's.** An oversized hoodie is the commonest avatar there is. The sleeves fall past his hands and the hem hangs below the torso: two meshes, no new proportion.
     - **Then:** the model in colour, at the bar. The clips come next: the lean is his idle, and Work is his own way of making power. Then Ground Wire's look. The pick goes to the director as a notice, not a gate.
+  - **The director's pick: A** (to Modulo, 2026-11-15, 19:31, the takes' sheet on screen): "def A, but looks at vanguard units then compare". Two A's were open, the takes and the palette, so Modulo asked which: "Watt's take A". Then, on the comparison below: "yess see the difference".
+    - **Covers:** Watt is take A, the quiet wall, which replaces research's pick of C above; A is compared with Anime Vanguards' units; the difference shown is seen. It names no change of design, and it doesn't pick the palette.
+  - **The comparison** (Modulo, 19:32 to 19:38, `ga-reference-study`). The question: how are Anime Vanguards' low-rarity units built on Roblox's blocky body, and where does take A fall short of them?
+    - **Looked at:** 18 Rare and Epic unit pictures and 6 of the top rarities, from a public fan wiki, in `build/reference/anime-vanguards/` (gitignored, study only): `sheet_low.png`, and A beside five of them at one height in `compare_bodies.png` and `compare_heads.png`. Ratios are by eye on those pictures, not measured.
+    - **OBSERVED:**
+      1. The body is the plain blocky body at its own size. Nothing built on it thickens the torso or a limb.
+      2. The clothes are painted on the blocks, cel-shaded in two or three tones, with drawn folds, seams, fastenings and trims. A built piece appears only where the outline needs one: a hat, a band, a weapon.
+      3. The hair is the one sculpted thing: a mass of curved, tapering locks about one and a half to nearly two heads wide, rising over half a head above the crown, with a fringe to the brows, shaded from root to tip.
+      4. The face is painted on a rounded head: eyes with coloured irises under a heavy upper line, thin brows, a nose's shadow, a short mouth.
+      5. Each has two or three large clear colour areas, light against dark, so it reads from far.
+      6. The rarities above add built layers: hats, coats, armour, light, particles.
+    - **Take A against them:** hair of straight cones on a cap, about one head wide; a face of two slabs, half of it under the collar; a coat built thick, so the body is a wider black box with nothing drawn on it; one dark value from collar to boots. What A has that they don't: a weapon in his outline, and a coat with a cut. Research's read of A says the same of the face and the black.
+    - **DESIGN, for A's model** (the way of building is taken; no unit's design, face, outfit or picture is):
+      1. **The body stays R6's own size.** The coat is painted on the torso and arms in our own cel shading and ink line; only its collar, cuffs and tails are built, thin.
+      2. **The hair is sculpted:** curved tapering locks swept back, half again as wide as his head, with a fringe, the tips lifting in Storm's pink. It stays dark, short and hard-tipped (the content check).
+      3. **The face is painted:** half-lidded eyes with irises, drawn lids and brows, large enough to read from the game's camera. The collar stops under his nose and stays the coat's own.
+      4. **Three values at 64 px:** the coat a dark colour of its own, never black; an inner layer and his forearms light; the trousers between.
+      5. **The spear** is thin and slung clear of his head and neck (the content check's condition).
+    - **Colour:** the brief's wait, "any colour beyond Storm's, until the palette's pick", ends with the pick in AR12 (A, Eclipse: a neutral UI, so a Voidkin carries its own colour).
+    - **Four facts:** the comparison made and shown to the director, who saw the difference. The model: not started.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
@@ -6272,6 +6292,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - the dock's three tiles read apart, so the Voidkin's colour isn't a warm one beside Base's yellow;
       - no system colour sits near Legendary's gold.
     - B with those three met is a good pick. Power's cuts and the reveal card resume on Modulo's pick.
+  - **The pick: A, Eclipse** (Modulo, 2026-11-15, 19:38, under the grant of 2026-11-12 as research reads it; the director may still pick otherwise). Research's three conditions are met as A is drawn: the reveal's room is a neutral dark, the Voidkin's tile is silver beside Base's yellow, and no system colour sits near Legendary's gold. B was mine for its face of its own; research's measures against it stand (its orange about 20 degrees from Base's yellow and from Legendary's gold, a Rare's reveal blue on blue), and B without its orange is no longer B. The Breaker's room is designed apart, as art. Power's cuts and the reveal's card resume in Eclipse after Watt's model.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

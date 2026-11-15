@@ -2845,6 +2845,17 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - Ring I's Legendary is a metal ring, never a red braided cord.
 - **Four facts:** made, yes. Self-reviewed, yes, on the sheet at each size. Delivered, the sheet only, for the verdict. Accepted, no: research's verdict and the director's eye to come.
 - **Time:** about 18 minutes by the clock (14:19 to 14:37), three tries: a thin sword, a broad icon sword, this one.
+- **Research's verdict, 2026-11-15** (the sheet at full size, the 38-point slots and the 32-pixel silhouettes):
+  - **Felt:** a grown-up sword, and the ladder climbs: the director's "long mature sword", drawn better. **Tier:** competent. **The one bold thing:** Legendary's wings. They're the only form that changes the silhouette, and they read even at 32 pixels.
+  - **Fix 1, Rare and Epic part by shape, not only by colour.** At 38 points and in silhouette they're the same sword: two curved guards of one size. The feel line says rarity is seen "in its guard before its frame is read", and a colour-blind eye gets no help from blue against violet. Give Epic the larger form at the guard: hooks that curl back on themselves, or a crossguard wider than Rare's by a clear step. Keep Legendary's wings the only new element.
+  - **Fix 2, Common and Uncommon** differ by value only at 38 points. That's enough at this step, since Uncommon's bright steel will carry it in colour. No change.
+  - **Room above:** the wing leaves room. Mythical and Dawn can grow it (more feathers, a light between them) without a second new form.
+  - **The names:** all twenty are clear of the IP list and the roster. Three changes:
+    - "Musubi, the Bound Cord" becomes **"Kagaribi, the Watchfire Ring"**: a watchfire, in the Legendary family of lights (akari, hotaru, tomoshibi), and no cord.
+    - "Helm of Rime" becomes **"Helm of Hoarfrost"**, so no gear name repeats a passive's whole name (Bulwark's "Rime").
+    - "Akari, the Last Lantern" becomes **"Akari, the First Light"**, apart from Ashen's "Last Ember". It was research's own example.
+    - "Voidglint Loop" stays: "glint" alone is a common word, and Aegir's is "Glint Drive".
+  - **Next:** fix 1 in grey, at 38 points only, then the colour pass.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 
@@ -5608,6 +5619,10 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Modulo's read:** A by the director's words, since it's the one finish that is a colour of its own by the measure, and it holds the same on every rarity's light. B is the most exciting on this screen and the one I'd expect to be liked at first sight, but it's Fire's hue: on a Fire Voidkin's screen the number would read as its element. C is the best tied to the emblem and the least its own.
   - **For Faber, DESIGN, untried in Studio:** a `UIGradient` at 90° on the digits with the take's five stops, a `UIStroke` in `#07080D`, and one glow image behind. Rising, the digits go 40% toward white and 1.1 times their size.
   - **Four facts:** made; self-reviewed at the sheet's size; the content check wasn't run (colours on checked art: no new shape or word); research's read and the director's pick to come. About 5 minutes by the clock (14:01 to 14:05).
+  - **Research's read, 2026-11-15, for the director's pick:**
+    - **A, the recommendation, with one fix.** It's the only finish that holds on every rarity's light without borrowing a meaning. But as drawn, it reads as today's white with a cooler foot. The director asked for "it own color", and A barely shows one. **Fix:** deepen the ramp's lower half into a clear steel blue, so the number reads as polished blue-silver at a glance. It must stay apart from Credits' teal and Frost (Modulo's measure).
+    - **B** is the most striking at first sight, but its orange is Fire's: on a Fire Voidkin it reads as the element, and on a Legendary's gold or a Mythical's red it sinks among its neighbours. It's also near the Power pill's yellow, a second "power" on the screen.
+    - **C** is the Voidkin's own lavender: the best tie and the least its own. On an Epic's light it's the plate's hue.
 
 - **A picture for each Void Shard grade, larger and older than a mark: one direction, for research's verdict** (Modulo, 2026-11-15; the director: "Make a decal for each void shards they need to look more mature and not like a small icon", `docs/decisions.md`; `tools/blender/shard_grade_art.py`; the sheet `build/handoff/UI/shards/shard_grade_art.png`).
   - **Feel line, proposed:** a shard waiting in a chamber is a heavy cut crystal with something lit inside it, and its grade is seen before its name is read.
@@ -5620,6 +5635,15 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **For Faber, after the verdict:** each grade is one image, 1024 pixels square, straight colour, its glow in its cover (`... -- <out> images` writes them). Nothing to build until then.
   - **Content check: PASS as a review sheet,** not for upload. Each grade's picture needs its own check before upload, on a sheet with it at full size and at exactly 64 px over a dark ground (its halo is in its cover). Its notes: Prismatic's pink stays magenta-pink on straight facets, never toward red, never pooled or soft at the foot; Standard, Enriched and Prismatic have no row in `docs/ip-list.md` (for research); `docs/asset-log.md` takes its entry when the pictures are written for real.
   - **Four facts:** made; self-reviewed at the sheet's size and from crops; delivered as a sheet only, no image; research's verdict to come, then the director's eye. About 10 minutes by the clock (14:08 to 14:18).
+  - **Research's verdict, 2026-11-15:**
+    - **Felt:** a heavy cut crystal with something alive inside it, "more mature and not like a small icon", as the director asked. **Tier:** competent at 96 points, near the bar. **The one bold thing:** the grade as a growing cluster: one spire, two, three. Grade is read by shape, so it holds for a colour-blind eye.
+    - **The rulings:**
+      1. Prismatic's spectrum stands. It tells the grade, never the rarity, and stays on the rim, the far facets and the cuts.
+      2. Enriched's lit lines stand. They're the reveal's own seams: a promise of the reveal, not a spoiler.
+      3. A chamber's window grows to 96 points. Faber checks the Breaker's four chambers still fit a phone's width at that size.
+      4. The grades' names (Standard, Enriched, Prismatic) are plain words, clear of the list. They need no row.
+    - **Fix, at 40 points and under:** the dark body sinks into the dusk street and the Breaker's dark (Standard most). Give the small sizes a stronger rim light and a body a step paler, so the outline holds as today's mark does. At the 26-point chip, use that small-size picture, not today's mark: the spires still tell the grade.
+    - **Next:** the fix, then each grade's picture with its own content check before upload.
 
 ## Later, by ground
 

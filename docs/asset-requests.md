@@ -5534,6 +5534,15 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
     - **Not yet:** the bake on R6 (the atlas, the meshes, the recipe) under the Blender lock; his clips; Ground Wire's look.
     - **Time:** by the clock, 19:38 to 20:00: the script written again, four rounds, the leads' runs and two looks from the content check. The clock reads short against the work. Forecast for the model: 2 to 3 hours.
     - **Four facts:** made, yes. Self-reviewed, yes: the sheet whole, the face close, the head from the game's camera and the side enlarged, the 64 px rows at twice their size. Delivered, yes, for research's verdict. Accepted, no.
+    - **Research's verdict** (2026-11-15, 20:10; the sheet whole, the game's camera at its size and the 64 px rows at three times. Fresh eyes read it blind beside.)
+      - **Felt:** from the front, a quiet anime side character: the stoic face, pink-eyed, over a collar lined in pink. The jump from the grey take is real, and the comparison worked. From the game's camera, where players see him, he's a petrol slab with a dark mop and a thin line across it: nothing on him there is his own yet. At 64 px the eye lands on the spear's white discs, not his hair.
+      - **Tier:** competent. At the bar from the front, not yet from the game's camera.
+      - **The one bold thing:** the face. Keep it exactly as it is.
+      - **Fixes, into the bake** (the content check's conditions hold):
+        1. **The hair, his identity from behind.** From the game's camera it's a dark mass the size of his head, and from the front its pink ends stand on top like cones set on. Make the swept locks fan back and out past the head's box, their upper planes in the hair's light, so the mass has a direction from behind. The pink is the last part of each lock, curving back with it, the ends varied in length: small pale tips on a dark mass, never a row of points.
+        2. **Something between dark hair and dark coat.** The hair and the coat are both dark, so from behind his top half is one mass, and over night it sinks. Show the collar's pink lining from behind, so a pale band parts the head from the body. Open the back's vent on the lining from the waist to the hem, so the coat's back, the most-seen area on him, isn't a flat rectangle. The cuffs narrow to a turned edge, so the pink still adds up to one accent.
+        3. **The sling and the spear.** By colour he blurs with Kirra beside him: dark hair, a dark blue body and a brown strap across it. The sling goes pale, the shirt's colour, so a light line crosses his back from the game's camera, and it leaves Kirra's brown. The shaft takes a pale grip wrap and a pale butt cap, so it reads as a line at night and the discs stop floating. Planted in his idle, as Modulo plans.
+      - **No second sheet.** The baked model's verdict, in the game from the player's camera at phone size, over noon and night, covers these fixes. Show the game's camera and 64 px row before the atlas only if the hair's shape leaves you in doubt.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 

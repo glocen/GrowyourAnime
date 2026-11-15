@@ -1,0 +1,360 @@
+{
+ "note": "Regalia's gear in its slots (AR6, batch 1). Pictures only: nothing here is worn or shown on a Voidkin. Sizes are in points for a slot of `slot` points, and scale with the slot unless a line says the kit's slice carries them. DESIGN, untried in Studio.",
+ "slot": 48.0,
+ "layers": [
+  {
+   "what": "the well",
+   "how": "the kit's ButtonFill, tinted from `well` to `channel`, top to foot",
+   "well": "#0B0C10",
+   "channel": "#07080B"
+  },
+  {
+   "what": "the rarity's tint",
+   "how": "the same ButtonFill over it in the rarity's `rim`, covering 0.14 (Common 0.112)"
+  },
+  {
+   "what": "the rarity's light",
+   "image": "images/GearLight.png",
+   "how": "white, tinted the rarity's `rim` mixed a fifth toward white; laid over the whole slot, covering 1 (Common 0.8); it fades out before the corners, so it needs no cutting"
+  },
+  {
+   "what": "the rim",
+   "how": "Common to Epic: the kit's ButtonEdgeBold in the rarity's `rim`. Legendary: images/GearFrameLegendary.png in its place, sliced: it reaches `pad` points past the slot on every side, and its corners are `corner` points from the image's edge",
+   "pad": 8.0,
+   "corner": 22.0
+  },
+  {
+   "what": "the picture",
+   "how": "its square is 0.94 of the slot, centred; the object already sits in it with its own margin"
+  },
+  {
+   "what": "a weapon's class mark",
+   "how": "the kit's Class<name> in its seat, 10.8 points across, its middle 4.6 points in from the slot's right and foot, on the bottom cut; weapons only"
+  },
+  {
+   "what": "the forge rank, the lock",
+   "how": "on the frame's square corners (foot left, top right), never over the object; not drawn here"
+  }
+ ],
+ "rim": {
+  "Common": "#8A909C",
+  "Uncommon": "#7CF0A0",
+  "Rare": "#6FB6FF",
+  "Epic": "#D29CFF",
+  "Legendary": "#FFD777"
+ },
+ "kinds": {
+  "Main Hand": [
+   {
+    "name": "Iron Sword",
+    "rarity": "Common",
+    "image": "images/GearIronSword.png"
+   },
+   {
+    "name": "Bronze Sword",
+    "rarity": "Common",
+    "image": "images/GearBronzeSword.png"
+   },
+   {
+    "name": "Scrap Sword",
+    "rarity": "Common",
+    "image": "images/GearScrapSword.png"
+   },
+   {
+    "name": "Lanternsteel Sword",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelSword.png"
+   },
+   {
+    "name": "Rowsmith Sword",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithSword.png"
+   },
+   {
+    "name": "Stallguard Sword",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardSword.png"
+   },
+   {
+    "name": "Blade of Embers",
+    "rarity": "Rare",
+    "image": "images/GearBladeOfEmbers.png"
+   },
+   {
+    "name": "Blade of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearBladeOfHoarfrost.png"
+   },
+   {
+    "name": "Brand of Gales",
+    "rarity": "Rare",
+    "image": "images/GearBrandOfGales.png"
+   },
+   {
+    "name": "Stormcall Blade",
+    "rarity": "Epic",
+    "image": "images/GearStormcallBlade.png"
+   },
+   {
+    "name": "Gloamforge Blade",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeBlade.png"
+   },
+   {
+    "name": "Nightloom Brand",
+    "rarity": "Epic",
+    "image": "images/GearNightloomBrand.png"
+   },
+   {
+    "name": "Akari, the First Light",
+    "rarity": "Legendary",
+    "image": "images/GearAkari.png"
+   },
+   {
+    "name": "Kiribi, the Struck Spark",
+    "rarity": "Legendary",
+    "image": "images/GearKiribi.png"
+   },
+   {
+    "name": "Inabikari, the Far Flash",
+    "rarity": "Legendary",
+    "image": "images/GearInabikari.png"
+   }
+  ],
+  "Off Hand": [
+   {
+    "name": "Iron Short Sword",
+    "rarity": "Common",
+    "image": "images/GearIronShortSword.png"
+   },
+   {
+    "name": "Bronze Short Sword",
+    "rarity": "Common",
+    "image": "images/GearBronzeShortSword.png"
+   },
+   {
+    "name": "Scrap Short Sword",
+    "rarity": "Common",
+    "image": "images/GearScrapShortSword.png"
+   },
+   {
+    "name": "Lanternsteel Short Sword",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelShortSword.png"
+   },
+   {
+    "name": "Rowsmith Short Sword",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithShortSword.png"
+   },
+   {
+    "name": "Stallguard Short Sword",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardShortSword.png"
+   },
+   {
+    "name": "Edge of Embers",
+    "rarity": "Rare",
+    "image": "images/GearEdgeOfEmbers.png"
+   },
+   {
+    "name": "Edge of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearEdgeOfHoarfrost.png"
+   },
+   {
+    "name": "Edge of Gales",
+    "rarity": "Rare",
+    "image": "images/GearEdgeOfGales.png"
+   },
+   {
+    "name": "Stormcall Edge",
+    "rarity": "Epic",
+    "image": "images/GearStormcallEdge.png"
+   },
+   {
+    "name": "Gloamforge Edge",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeEdge.png"
+   },
+   {
+    "name": "Nightloom Edge",
+    "rarity": "Epic",
+    "image": "images/GearNightloomEdge.png"
+   },
+   {
+    "name": "Hotaru, the Small Light",
+    "rarity": "Legendary",
+    "image": "images/GearHotaru.png"
+   },
+   {
+    "name": "Yukiakari, the Snowlight",
+    "rarity": "Legendary",
+    "image": "images/GearYukiakari.png"
+   },
+   {
+    "name": "Hoshiakari, the Far Star",
+    "rarity": "Legendary",
+    "image": "images/GearHoshiakari.png"
+   }
+  ],
+  "Ring I": [
+   {
+    "name": "Iron Ring",
+    "rarity": "Common",
+    "image": "images/GearIronRing.png"
+   },
+   {
+    "name": "Bronze Ring",
+    "rarity": "Common",
+    "image": "images/GearBronzeRing.png"
+   },
+   {
+    "name": "Scrap Ring",
+    "rarity": "Common",
+    "image": "images/GearScrapRing.png"
+   },
+   {
+    "name": "Lanternsteel Ring",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelRing.png"
+   },
+   {
+    "name": "Rowsmith Ring",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithRing.png"
+   },
+   {
+    "name": "Stallguard Ring",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardRing.png"
+   },
+   {
+    "name": "Band of Embers",
+    "rarity": "Rare",
+    "image": "images/GearBandOfEmbers.png"
+   },
+   {
+    "name": "Band of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearBandOfHoarfrost.png"
+   },
+   {
+    "name": "Band of Gales",
+    "rarity": "Rare",
+    "image": "images/GearBandOfGales.png"
+   },
+   {
+    "name": "Stormcall Loop",
+    "rarity": "Epic",
+    "image": "images/GearStormcallLoop.png"
+   },
+   {
+    "name": "Gloamforge Loop",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeLoop.png"
+   },
+   {
+    "name": "Nightloom Loop",
+    "rarity": "Epic",
+    "image": "images/GearNightloomLoop.png"
+   },
+   {
+    "name": "Kagaribi, the Watchfire",
+    "rarity": "Legendary",
+    "image": "images/GearKagaribi.png"
+   },
+   {
+    "name": "Yoiboshi, the Dusk Star",
+    "rarity": "Legendary",
+    "image": "images/GearYoiboshi.png"
+   },
+   {
+    "name": "Ariake, the Pale Moon",
+    "rarity": "Legendary",
+    "image": "images/GearAriake.png"
+   }
+  ],
+  "Helmet": [
+   {
+    "name": "Iron Helmet",
+    "rarity": "Common",
+    "image": "images/GearIronHelmet.png"
+   },
+   {
+    "name": "Bronze Helmet",
+    "rarity": "Common",
+    "image": "images/GearBronzeHelmet.png"
+   },
+   {
+    "name": "Scrap Helmet",
+    "rarity": "Common",
+    "image": "images/GearScrapHelmet.png"
+   },
+   {
+    "name": "Lanternsteel Helmet",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelHelmet.png"
+   },
+   {
+    "name": "Rowsmith Helmet",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithHelmet.png"
+   },
+   {
+    "name": "Stallguard Helmet",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardHelmet.png"
+   },
+   {
+    "name": "Helm of Embers",
+    "rarity": "Rare",
+    "image": "images/GearHelmOfEmbers.png"
+   },
+   {
+    "name": "Helm of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearHelmOfHoarfrost.png"
+   },
+   {
+    "name": "Helm of Gales",
+    "rarity": "Rare",
+    "image": "images/GearHelmOfGales.png"
+   },
+   {
+    "name": "Stormcall Helm",
+    "rarity": "Epic",
+    "image": "images/GearStormcallHelm.png"
+   },
+   {
+    "name": "Gloamforge Helm",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeHelm.png"
+   },
+   {
+    "name": "Nightloom Helm",
+    "rarity": "Epic",
+    "image": "images/GearNightloomHelm.png"
+   },
+   {
+    "name": "Tomoshibi, the Vigil",
+    "rarity": "Legendary",
+    "image": "images/GearTomoshibi.png"
+   },
+   {
+    "name": "Zansho, the Afterglow",
+    "rarity": "Legendary",
+    "image": "images/GearZansho.png"
+   },
+   {
+    "name": "Kawatare, the Twilight",
+    "rarity": "Legendary",
+    "image": "images/GearKawatare.png"
+   }
+  ]
+ },
+ "pixels": [
+  256,
+  256
+ ]
+}

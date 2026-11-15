@@ -27,6 +27,7 @@ import gear_sword_ladder as g  # noqa: E402
 import gear_sword_sets as s  # noqa: E402
 
 mat = g.material
+g.GREY.setdefault("liner", g.GREY["leather"])  # the dark lining: leather's grey here, near-black in colour
 DEEP = 1.12                # the skull is a little deeper, front to back, than it's wide
 TILT, SPIN = 14.0, 38.0    # seen a little from above, the face turned to the right
 FILL, DROP = 0.78, 0.025   # its share of the square, and how far under the middle it sits: a tall crest clears the name
@@ -132,7 +133,7 @@ def skull(d):
     # 2026-11-15). Behind a closed face it runs down inside the plates, so the eye slit stays dark and empty.
     low = [(0.88, -0.95), (0.93, -0.4)] if d["visor"] else [(0.92, -0.14)]
     parts = [shell("Skull", [(r, z * tall) for r, z in DOME], key),
-             shell("Liner", low + [(0.93, 0.2), (0.8, 0.6), (0.4, 0.88), (0.03, 0.94)], "leather", thick=0.02)]
+             shell("Liner", low + [(0.93, 0.2), (0.8, 0.6), (0.4, 0.88), (0.03, 0.94)], "liner", thick=0.02)]
     if d["brow"]:
         parts.append(hoop("Brow", 1.03, 0.1, d["brow"], 0.08, high=1.4))
     if d["ribs"]:  # straps over the plates' joins, and their rivets on the brow

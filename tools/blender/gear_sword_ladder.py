@@ -74,13 +74,20 @@ assert all(len(n.rstrip("*")) <= 24 for _, row in NAMES for n in row), "a name i
 
 # --- the parts ---------------------------------------------------------------------------------------------------------
 
+PAINT = None  # the colour pass sets it (gear_icons.py): a key's colour, how metal it is, how rough
+
+
 def material(key):
     name = f"Grey_{key}"
     if name not in bpy.data.materials:
         m = bpy.data.materials.new(name)
-        v = GREY[key] ** 2.2
-        m.diffuse_color = (v, v, v, 1.0)
-        m.metallic, m.roughness = (0.4, 0.36) if key in METAL else (0.0, 0.7)
+        if PAINT:
+            code, m.metallic, m.roughness = PAINT(key)
+            m.diffuse_color = (*(float(v) ** 2.2 for v in c(code)[:3]), 1.0)
+        else:
+            v = GREY[key] ** 2.2
+            m.diffuse_color = (v, v, v, 1.0)
+            m.metallic, m.roughness = (0.4, 0.36) if key in METAL else (0.0, 0.7)
     return bpy.data.materials[name]
 
 

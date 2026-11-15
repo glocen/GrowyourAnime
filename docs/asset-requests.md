@@ -2976,6 +2976,45 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - **Done** (Modulo, 2026-11-15): the sheet says Kawatare, the Twilight, rendered again from the script; nothing else on it changed.
   - **Next:** colour and frames, as flat pictures for the slots only (the director's word, "Pictures only" above).
 
+### Colour and frames: the sixty in their slots (Modulo, 2026-11-15)
+
+- **Feel line:** in its slot a piece of gear is a small lit object a player wants to own: its metal says its rarity, the slot's light says it again, and at Legendary the border itself changes.
+- **Scope:** the four kinds' sixty designs in colour, the slot's light, Legendary's border, the class mark's place on a weapon. Waiting: Mythical and Dawn, the forge rank's badge and the lock, the other kinds, a larger picture for the forge screen.
+- **Where:** `build/handoff/UI/gear/`, from `tools/blender/gear_icons.py` (it paints the grey sheets' own forms; Workbench, no GPU turn).
+  - `images/`: sixty pictures, `Gear<Name>.png`, 256 pixels, the object alone; `GearLight.png`, the slot's light, white, to tint; `GearFrameLegendary.png`, Legendary's border, sliced like the kit's boxes.
+  - `gear_icons.json`: the slot's layers in order with their numbers, each rarity's rim colour, and every design's name, rarity and image by slot.
+  - Four sheets, one a kind: `gear_sword_colour.png`, `gear_short_colour.png`, `gear_ring_colour.png`, `gear_helmet_colour.png`. Each design in its slot seen close, at 64 and 38 points as the build lays it, and alone at 64 pixels over dark.
+- **The materials,** one table for all sixty: dark blue-grey iron, copper-bronze, raw grey scrap; bright steel with brass; blued steel; a violet metal with pale filigree; orange gilt with ivory. Wood, leather, and a near-black lining in every helmet.
+- **The stones take their set's tone:** Embers amber, Hoarfrost ice, Gales sea green, Stormcall warm white, Gloamforge pale cyan, Nightloom lilac. A Legendary's lit part is warm white with a small gold light round it. No flame, cloud or particle.
+- **The finish,** in numpy after two Workbench renders (the design lit, then flat as a mask of what glows): a warm key from above, a light on the upper left edge and a shade on the lower right, the light of the stone and the edge.
+- **The slot's layers, from the back:** the kit's button fill as the well; the rarity's tint over it (0.14); the rarity's light, brightest a little above the middle and gone before the corners, so it needs no cutting; the rim; the picture at 0.94 of the slot; on a weapon, the kit's class mark in its seat on the bottom cut.
+  - **Common to Epic:** the kit's bold button edge in the rarity's colour (grey, the director's green, blue and purple).
+  - **Legendary:** its own border in its place: a gold rim, the two cuts as lit facets, a second rim of light inside. No crown and no studs (the director, 2026-11-15).
+- **Tier 1 calls, mine, for research to keep or change:**
+  - The stones' six tones, and scrap as raw grey metal (in brown it read as wood).
+  - Common gets a grey light at 0.8 of the others', so dark iron shows on the dark well.
+  - The class mark sits on the bottom cut, 10.8 points across on a 48-point slot, as the kit seats a class mark on a frame's bottom cut. The forge rank and the lock keep the two square corners.
+  - A picture is 256 pixels: enough for a slot up to 64 points. The forge screen's enlarged item wants a larger one, rendered from the same script when that screen is built.
+- **Modulo's read:**
+  - The ladder climbs in colour: grey, silver on green, blue, violet, gold. At 38 points the frame's colour does most of the work, and the object's material agrees with it.
+  - Rare is the flattest step: a blue object on a blue light, with only its stone in a second colour.
+  - Legendary's gold on a gold light holds because the well under it stays dark. Ivory renders nearer silver-white than cream.
+  - The long Sword is still a thin shape at 38 points, as in grey.
+  - What Workbench can't give is a metal's reflections. If these need more depth, the lever is a rendered pass on the GPU, which is a turn and the director's go.
+- **Open, for research:** the verdict on the sixty in colour and on the Legendary border; whether the class mark's place and size stand.
+- **Content check, 2026-11-15: PASS** on the four sheets, the 62 images and the json, for delivery and for upload. It covers the files as they are: a picture rendered again, recoloured or given a new tint is checked again. Every earlier condition is met, design by design. It saw the pictures at 256 pixels over white, and the look over dark, the lights and the small sizes from the sheets; the slot's light it judged from the code and from its effect in the slots.
+  - **Its conditions for later:**
+    - every earlier AR6 condition carries over to Mythical, Dawn and the other kinds;
+    - Mythical's reddish light stays in the border and the slot's light as a clean glow: a lit stone or an edge on an object stays white or gold, and a red one is checked before it's built;
+    - the border above Legendary never gains gems or studs on its corners, and never square corners;
+    - Dawn's material and accent come from our world: never white feathered wings with a green oval gem on pale gold;
+    - Embers' stone stays small and amber on blued metal; Ariake keeps its pale crescent on the gilt band with a round white stone;
+    - when Ring II exists, Yoiboshi is checked beside Ariake in two neighbouring slots;
+    - the forge rank's badge, the lock and the larger forge-screen picture each get their own check;
+    - body pieces among the other kinds are hollow and dark-lined, with no skin tone.
+- **Four facts:** made, yes. Self-reviewed, yes: the four sheets whole and their small rows. Delivered, yes: the sheets for research's verdict; the images are cleared by the content check, and go to Faber after that verdict. Accepted, no.
+- **Time:** about 17 minutes by the clock (17:43 to 18:00), with a look test of six lights first.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

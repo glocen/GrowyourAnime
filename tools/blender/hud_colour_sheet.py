@@ -1216,15 +1216,17 @@ MENU = {  # a page's own mark on its round button, plain shapes
                                            _star(t, x + 0.72 * r, y - 0.7 * r, 0.4 * r)),
 }
 RAIL_REST, RAIL_ON = 13.0, 21.0  # a round button's radius: about 7% and 12% of the screen's height across (research)
+RAIL_WORD = 16.0  # the room the chosen page's word takes under its button: the pages after it stand that much lower
 
 
-def rail(st, x, y0, y1, p, tabs, chosen):
+def rail(st, x, y0, y1, p, tabs, chosen, soon=()):
     """The Voidkin's menu (the director, 2026-11-15; docs/research/voidkin-screen.md, "The rail, ours"): a thin conduit
     line down the left, a round button strung on it for each page. At rest a button is a small cut ring round its mark.
-    Chosen, it's larger, its ring lit in the room's colour, and light runs along the line to it."""
+    Chosen, it's larger, its ring lit in the room's colour, and light runs along the line to it. A page in `soon`
+    isn't built yet: its mark is greyed."""
     accent, g, span = p["accent"], 22.0, y1 - y0
-    step = (span - 2 * RAIL_REST - 24.0) / (len(tabs) - 1)
-    ys = [y0 + RAIL_REST + 6.0 + i * step for i in range(len(tabs))]
+    step = (span - 2 * RAIL_REST - 24.0 - RAIL_WORD) / (len(tabs) - 1)
+    ys = [y0 + RAIL_REST + 6.0 + i * step + (RAIL_WORD if i > chosen else 0.0) for i in range(len(tabs))]
     t = kit.blank(2 * g, span + 2 * g)
     line = np.maximum(np.abs(t.x - g) - 0.8, np.abs(t.y - g - span / 2) - span / 2)
     word = ys[chosen] - y0 + g + RAIL_ON + 9.5  # the line stops for the chosen page's word
@@ -1261,7 +1263,8 @@ def rail(st, x, y0, y1, p, tabs, chosen):
             ring = np.maximum(np.abs(d + 1.0) - 0.85, cuts)
             t.paint(ring, c(p["edge"]))
             t.paint(np.maximum(ring, t.y - m + rad * 0.5), c(p["glint"]), 0.75)
-        t.paint(MENU[tab](t, m, m + 0.5, rad * 0.46), c(PALE[accent] if on else p["text"]), 1.0 if on else 0.85)
+        t.paint(MENU[tab](t, m, m + 0.5, rad * 0.5), c(PALE[accent] if on else p["text"]),
+                1.0 if on else 0.34 if tab in soon else 0.85)
         place(st, t, x - m, y - m)
         if on:  # the one word on the rail, at a size that reads on a phone: a page at rest is known by its mark
             st.text(x, y + rad + 4.0, 11, tab, PALE[accent], "CENTER")

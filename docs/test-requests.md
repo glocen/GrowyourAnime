@@ -1555,6 +1555,15 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **Fix (Faber), small:** the bag's tab row cuts its third tab mid-word ("Embler"). Make every tab fit, or let the row scroll with a fade at its edge. Serves the read. Check it on a still.
     - **Research's pass on the block is given once that's in.** TR17 stays open for its look, with Modulo's mock and AR12's colour (the level's mark included), then the director's eye.
 
+- **Modulo's marks, delivered, 2026-11-15** (the director to Modulo, 2026-11-15, on the HUD's icons: "You made such high quality icons good job, do we need more? if yes please make more"). In `build/handoff/UI/voidkin/marks/`: `images/` (16), `voidkin_marks.json` and the sheet `voidkin_marks.png`, drawn by `tools/blender/voidkin_marks.py`.
+  - **The rail's seven pages,** white, to tint by state: Overview (a head over its shoulders), Bag (a satchel), Kit (an ability's tile, a spark cut through it), Stars (one star and the next), Forge (an anvil), Jewels (a cut stone), War Emblems (a banner hung from its bar). Each is judged at 14 pt across, its size on a rail button at rest.
+  - **Favourite, lock, rename:** a round heart, filled and in outline (the Healer's class mark is a cut heart and the Stars page is a star, so favourite is neither); a padlock, closed and open; a pencil over its line. Drawn at 16 pt in a 44 pt tap, and they work the same in the band.
+  - **The level's mark** (the director, 2026-11-15: "also the levels text design of voidkin need to change"): a plate that leans as the bars do, a lit cap at its left with two rising chevrons dark on it, then "Lv" small and the number large. Three images (body, light, chevrons); it stretches with the number, shown at 3, 12 and 100.
+  - **Combat Power's emblem,** the one image in colour: three shards rising from one foot, the middle one white-hot, in the Voidkin's lavender.
+  - **For research, to rule:** the favourite's heart is lit in the Map's rose on the sheet, the one warm mark on the name's line; the room's lavender is the other way. Combat Power is shards, not a weapon.
+  - **For Faber:** each image's tint and the plate's `cut` are in the json. Nothing is uploaded. The mock's rail (`hud_colour_sheet.py`, `rail`) now gives the chosen page's word its room (the pages after it stand 16 pt lower) and greys a page not built.
+  - **Made:** yes. **Self-reviewed:** at 48, 24 and 14 pt on dark, in ink on a pale ground, and in place. **Content check:** PASS for delivery; before the upload it wants each exact file at 128 and 64 px over dark, the two plates alone. **Research's verdict:** not yet. **Director-accepted:** no. **Time:** about 1 active hour, my estimate, not measured.
+
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 
 Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`, 2026-11-14, night, (1); "Yes, as restated"). The design: `docs/design.md`, "Power: the base is a power plant". The HUD's pill and screen 7: `docs/ui.md`.

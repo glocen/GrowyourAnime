@@ -1,0 +1,225 @@
+{
+ "pixelsPerPoint": 4,
+ "note": "The Voidkin screen's marks (TR17). A white image takes its tint from its state; CombatPower is in colour. A rail mark is 14 points across on its button; favourite, lock and rename are 16 beside the name, each inside a 44 point tap. The level's plate stretches between its `cut` ends: body, then rim, then the chevrons, \"Lv\" and the number.",
+ "images": {
+  "PageOverview": {
+   "file": "images/PageOverview.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: the Voidkin's whole sheet"
+  },
+  "PageBag": {
+   "file": "images/PageBag.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: the bag"
+  },
+  "PageKit": {
+   "file": "images/PageKit.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: its abilities"
+  },
+  "PageStars": {
+   "file": "images/PageStars.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: its star rank"
+  },
+  "PageForge": {
+   "file": "images/PageForge.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: the forge"
+  },
+  "PageJewels": {
+   "file": "images/PageJewels.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: jewels"
+  },
+  "PageEmblems": {
+   "file": "images/PageEmblems.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the rail: War Emblems"
+  },
+  "FavouriteOn": {
+   "file": "images/FavouriteOn.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "favourite, set"
+  },
+  "FavouriteOff": {
+   "file": "images/FavouriteOff.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "favourite, not set"
+  },
+  "LockOn": {
+   "file": "images/LockOn.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "locked"
+  },
+  "LockOff": {
+   "file": "images/LockOff.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "not locked"
+  },
+  "Rename": {
+   "file": "images/Rename.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "rename"
+  },
+  "LevelChevrons": {
+   "file": "images/LevelChevrons.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "text",
+   "use": "the level's mark, dark on its plate's lit cap"
+  },
+  "LevelPlate": {
+   "file": "images/LevelPlate.png",
+   "pixels": [
+    216,
+    88
+   ],
+   "points": [
+    54.0,
+    22.0
+   ],
+   "tint": "button",
+   "cut": [
+    24.0,
+    0,
+    8.0,
+    0
+   ],
+   "use": "the level's plate: its body"
+  },
+  "LevelPlateEdge": {
+   "file": "images/LevelPlateEdge.png",
+   "pixels": [
+    216,
+    88
+   ],
+   "points": [
+    54.0,
+    22.0
+   ],
+   "tint": "accent",
+   "cut": [
+    24.0,
+    0,
+    8.0,
+    0
+   ],
+   "use": "the level's plate: its rim and its lit cap, over the body"
+  },
+  "CombatPower": {
+   "file": "images/CombatPower.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "use": "Combat Power, left of its number"
+  }
+ }
+}

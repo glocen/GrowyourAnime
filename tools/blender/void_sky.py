@@ -141,29 +141,41 @@ def ease(t):
     return t * t * (3 - 2 * t)
 
 
-def mist(rows, cols, k, look, shift=0.0, seed=33):
-    """A thin mist of the river's own colours, in the band `look["band"]` (points down the field), moved `shift`
-    points along it. It lies on the river and thins to nothing off it and at the band's two edges, so no line shows
-    where it stops. It repeats across the field's width, so it meets itself when it comes round."""
+def lumps(y0, y1, cols, k, shift=0.0, seed=33):
+    """The mist's own lumps over the rows y0 to y1, 0 to 1, moved `shift` points along: they repeat across the field's
+    width, so the mist meets itself when it comes round. With them, each pixel's place in points."""
     rng = np.random.default_rng(seed)
     gs = lattices(rng, 8)
+    y, x = np.mgrid[y0:y1, 0:cols].astype(np.float32)
+    xp, yp = (x + 0.5) / k, (y + 0.5) / k
+    count = 5
+    cell = cols / k / count
+    u, v = (xp + shift) / cell, yp / cell
+    q = fbm(gs[0:4], u, v, count)
+    n = fbm(gs[4:8], u + 1.4 * q, v * 1.5 + 1.4 * q, count)
+    return ease((n - 0.42) / 0.3) ** 1.3, xp, yp
+
+
+def held(look, xp, yp):
+    """Where the mist lies, 0 to 1: on the river, thinning to nothing off it and at the band's two edges, so no line
+    shows where it stops; and thin round the knot of stars, which stays sharp."""
+    top, foot = look["band"]
+    off = along(look, xp, yp)[1]
+    edge = ease((yp - top) / 40.0) * ease((foot - yp) / 40.0) * np.exp(-(off / (look["width"] * 1.5)) ** 2)
+    return edge * (1 - 0.85 * np.exp(-(np.hypot(xp - look["focus"][0], yp - look["focus"][1]) / 26.0) ** 2))
+
+
+def mist(rows, cols, k, look, shift=0.0, seed=33):
+    """A thin mist of the river's own colours, in the band `look["band"]` (points down the field), moved `shift`
+    points along it: lumps() where held() lets it lie."""
     top, foot = look["band"]
     y0, y1 = max(int(top * k), 0), min(int(foot * k) + 1, rows)
     out = np.zeros((rows, cols, 4), np.float32)
-    y, x = np.mgrid[y0:y1, 0:cols].astype(np.float32)
-    xp, yp = (x + 0.5) / k, (y + 0.5) / k
-    lumps = 5
-    cell = cols / k / lumps
-    u, v = (xp + shift) / cell, yp / cell
-    q = fbm(gs[0:4], u, v, lumps)
-    n = fbm(gs[4:8], u + 1.4 * q, v * 1.5 + 1.4 * q, lumps)
-    s, off = along(look, xp, yp)
-    edge = ease((yp - top) / 40.0) * ease((foot - yp) / 40.0) * np.exp(-(off / (look["width"] * 1.5)) ** 2)
+    n, xp, yp = lumps(y0, y1, cols, k, shift, seed)
     # never paler than the river (the director, 2026-11-15, on the pale strands tried first: "that white gas trail is
     # kinda odd remove it")
-    out[y0:y1, :, :3] = ramp(np.clip(s, 0, 1), look["palette"])
-    clear = 1 - 0.85 * np.exp(-(np.hypot(xp - look["focus"][0], yp - look["focus"][1]) / 26.0) ** 2)  # the knot stays sharp
-    out[y0:y1, :, 3] = ease((n - 0.42) / 0.3) ** 1.3 * edge * clear * look["mist"]
+    out[y0:y1, :, :3] = ramp(np.clip(along(look, xp, yp)[0], 0, 1), look["palette"])
+    out[y0:y1, :, 3] = n * held(look, xp, yp) * look["mist"]
     return out
 
 

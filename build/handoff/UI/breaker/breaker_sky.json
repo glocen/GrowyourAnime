@@ -1,0 +1,450 @@
+{
+ "note": "The galaxy Breaker's sky (AR12, delivery 3). Every place and size is in points from the panel's corner; the panel is 684 by 306 on the 812 by 375 screen, and the night carries the panel's own shape, so it fits that size. Layers from the back: the night, the mist in each window, the stars, the falling star, then a chamber's glass, its light and its shard, and every plate. With reduced motion on, nothing moves and the falling star never falls. DESIGN, untried in Studio.",
+ "images": {
+  "BreakerSkyLeft": {
+   "file": "images/BreakerSkyLeft.png",
+   "pixels": [
+    1024,
+    731
+   ]
+  },
+  "BreakerSkyRight": {
+   "file": "images/BreakerSkyRight.png",
+   "pixels": [
+    628,
+    731
+   ]
+  },
+  "BreakerMist": {
+   "file": "images/BreakerMist.png",
+   "pixels": [
+    1024,
+    214
+   ]
+  },
+  "BreakerStar": {
+   "file": "images/BreakerStar.png",
+   "pixels": [
+    192,
+    192
+   ]
+  },
+  "BreakerFallingStar": {
+   "file": "images/BreakerFallingStar.png",
+   "pixels": [
+    224,
+    192
+   ]
+  },
+  "BreakerLight": {
+   "file": "images/BreakerLight.png",
+   "pixels": [
+    256,
+    256
+   ]
+  }
+ },
+ "night": {
+  "pixelsPerPoint": 2.3889,
+  "left": {
+   "image": "BreakerSkyLeft",
+   "at": [
+    0,
+    0
+   ],
+   "points": [
+    428.651,
+    306.0
+   ]
+  },
+  "right": {
+   "image": "BreakerSkyRight",
+   "at": [
+    421.116,
+    0
+   ],
+   "points": [
+    262.884,
+    306.0
+   ]
+  },
+  "note": "two halves of one picture. They lap by 7.5 points, between the fourth chamber and the chosen shard's panel, and show the same sky there, so either may lie on top. The panel's own fill stays under them."
+ },
+ "mist": {
+  "image": "BreakerMist",
+  "at": [
+   0,
+   61.453
+  ],
+  "points": [
+   684.0,
+   142.945
+  ],
+  "turn": 684.0,
+  "drift": 2.5,
+  "note": "white, tinted. It shows only in a chamber's window: each window clips its own copy, placed as if it lay on the panel at `at`, in that window's `tint`, its cover down the image's height by that window's `down` (a gradient from top to foot: share of the height, cover). It slides left `drift` points a second and comes round every `turn` points, so two copies side by side cover the turn.",
+  "windows": [
+   {
+    "chamber": 1,
+    "at": [
+     14.0,
+     81.0
+    ],
+    "points": [
+     96.0,
+     79.0
+    ],
+    "tint": "#D24FB6",
+    "down": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.1367,
+      0.266
+     ],
+     [
+      0.2058,
+      0.556
+     ],
+     [
+      0.2749,
+      0.788
+     ],
+     [
+      0.344,
+      0.881
+     ],
+     [
+      0.4131,
+      0.949
+     ],
+     [
+      0.4822,
+      0.989
+     ],
+     [
+      0.5512,
+      0.996
+     ],
+     [
+      0.6203,
+      0.97
+     ],
+     [
+      0.6894,
+      0.913
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   {
+    "chamber": 2,
+    "at": [
+     117.0,
+     81.0
+    ],
+    "points": [
+     96.0,
+     79.0
+    ],
+    "tint": "#9950E8",
+    "down": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.1367,
+      0.338
+     ],
+     [
+      0.2058,
+      0.674
+     ],
+     [
+      0.2749,
+      0.911
+     ],
+     [
+      0.344,
+      0.97
+     ],
+     [
+      0.4131,
+      0.996
+     ],
+     [
+      0.4822,
+      0.989
+     ],
+     [
+      0.5512,
+      0.949
+     ],
+     [
+      0.6203,
+      0.88
+     ],
+     [
+      0.6894,
+      0.789
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   {
+    "chamber": 3,
+    "at": [
+     220.0,
+     81.0
+    ],
+    "points": [
+     96.0,
+     79.0
+    ],
+    "tint": "#5581FF",
+    "down": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.1367,
+      0.34
+     ],
+     [
+      0.2058,
+      0.553
+     ],
+     [
+      0.2749,
+      0.62
+     ],
+     [
+      0.344,
+      0.629
+     ],
+     [
+      0.4131,
+      0.705
+     ],
+     [
+      0.4822,
+      0.779
+     ],
+     [
+      0.5512,
+      0.788
+     ],
+     [
+      0.6203,
+      0.73
+     ],
+     [
+      0.6894,
+      0.634
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   {
+    "chamber": 4,
+    "at": [
+     323.0,
+     81.0
+    ],
+    "points": [
+     96.0,
+     79.0
+    ],
+    "tint": "#2CC4DC",
+    "down": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.1367,
+      0.444
+     ],
+     [
+      0.2058,
+      0.801
+     ],
+     [
+      0.2749,
+      0.979
+     ],
+     [
+      0.344,
+      0.947
+     ],
+     [
+      0.4131,
+      0.885
+     ],
+     [
+      0.4822,
+      0.8
+     ],
+     [
+      0.5512,
+      0.698
+     ],
+     [
+      0.6203,
+      0.589
+     ],
+     [
+      0.6894,
+      0.48
+     ],
+     [
+      1.0,
+      0.0
+     ]
+    ]
+   }
+  ]
+ },
+ "stars": {
+  "image": "BreakerStar",
+  "sideForSize": 16,
+  "note": "white, tinted. A star's image is `sideForSize` times its size across, its middle on the star. Its light is 0.775 + 0.225 * sin(2 pi * (t / seconds + start)): the image's transparency is 1 less that.",
+  "each": [
+   {
+    "at": [
+     528.0,
+     21.0
+    ],
+    "size": 1.5,
+    "tint": "#DCE6FF",
+    "seconds": 4.6,
+    "start": 0.0
+   },
+   {
+    "at": [
+     398.0,
+     90.0
+    ],
+    "size": 1.1,
+    "tint": "#FFE9D0",
+    "seconds": 3.4,
+    "start": 0.3
+   },
+   {
+    "at": [
+     38.0,
+     142.0
+    ],
+    "size": 1.0,
+    "tint": "#BFD0FF",
+    "seconds": 5.2,
+    "start": 0.6
+   },
+   {
+    "at": [
+     94.0,
+     84.0
+    ],
+    "size": 0.9,
+    "tint": "#F1D9FF",
+    "seconds": 3.9,
+    "start": 0.8
+   },
+   {
+    "at": [
+     250.0,
+     46.0
+    ],
+    "size": 0.9,
+    "tint": "#DCE6FF",
+    "seconds": 4.2,
+    "start": 0.45
+   },
+   {
+    "at": [
+     300.0,
+     294.0
+    ],
+    "size": 0.9,
+    "tint": "#BFD0FF",
+    "seconds": 5.0,
+    "start": 0.15
+   }
+  ]
+ },
+ "fallingStar": {
+  "image": "BreakerFallingStar",
+  "points": [
+   28.0,
+   24.0
+  ],
+  "head": [
+   4.0,
+   20.0
+  ],
+  "start": [
+   416.0,
+   74.0
+  ],
+  "end": [
+   346.0,
+   132.0
+  ],
+  "seconds": 0.7,
+  "clip": "chamber 4's window, under its glass",
+  "note": "the image's `head` runs from `start` to `end` in `seconds`, at an even speed; its light is sin(pi * s) ^ 0.6, s from 0 to 1. Pale, never tinted. The test clip showed one in ten seconds; how often it falls is open (a proposal: every 20 to 40 seconds, at random, so it stays a surprise)."
+ },
+ "light": {
+  "image": "BreakerLight",
+  "sideForRadius": 4,
+  "note": "white, tinted. The image is `sideForRadius` times the light's radius across, its middle 58 points under the chamber's top, behind the shard. `cover` is 1 less its transparency.",
+  "working": {
+   "tint": "#DCCBFF",
+   "radius": 27,
+   "cover": 0.36,
+   "breath": {
+    "seconds": 2.6,
+    "swell": 0.07
+   },
+   "breathNote": "the cover swells and falls by `swell` round its rest, once in `seconds`"
+  },
+  "ready": [
+   {
+    "tint": "#F29A3B",
+    "radius": 36,
+    "cover": 0.42
+   },
+   {
+    "tint": "#FFE266",
+    "radius": 22,
+    "cover": 0.5
+   },
+   {
+    "tint": "#FFF7C2",
+    "radius": 13,
+    "cover": 0.7
+   }
+  ]
+ },
+ "glass": {
+  "colour": "#0A0824",
+  "nameStrip": 0.1458,
+  "plate": 0.6944,
+  "window": 0.1,
+  "lockedWindow": 0.13,
+  "note": "no image: a chamber's fill in `colour`, solid over its name strip (to `nameStrip` of its height) and its plate (from `plate`), and covering `window` of the sky between them, over 0.04 of the height under the strip and 0.06 above the plate."
+ }
+}

@@ -2919,7 +2919,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Legendary:** Kagaribi, the Watchfire (the head is a watchfire's basket, the stone in it); Yoiboshi, the Dusk Star (a star of four points stands on the band, a filled stone at its heart); Ariake, the Pale Moon (a crescent, horns up, holds the stone).
 - **The Helmet:** one round skull with a brow band, three-quarter from the front, its face to the right as the swords point. A design is what the skull wears: a nasal, cheek plates, a closed face, a neck guard, a brim, a comb, a crest.
   - Iron, Bronze, Scrap Helmet; Lanternsteel, Rowsmith, Stallguard Helmet; Helm of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom Helm.
-  - **Legendary:** Tomoshibi, the Vigil (a lamp stands on the crown, its light in three prongs); Zansho, the Afterglow (a mane of ivory blades swept back); Hakubo, the Twilight (a pair of horns that sweep out wider than the skull and up; first drawn as Hakumei with tall forked horns, changed on research's verdict below).
+  - **Legendary:** Tomoshibi, the Vigil (a lamp stands on the crown, its light in three prongs); Zansho, the Afterglow (a mane of ivory blades swept back); Kawatare, the Twilight (a pair of horns that sweep out wider than the skull and up; first drawn as Hakumei with tall forked horns, changed on research's verdict below).
 - **Tier 1 calls, mine, for research to keep or change:**
   - The Short Sword's near word from Rare up is "Edge", so no name repeats a Sword's. The sets' words replace the spec's examples ("Brand of Sparks", "Duskwire Brand", "Copper Ring", "Band of Static", "Voidglint Loop", "Paper-Lantern Helmet", "Nightcurrent Helm").
   - "Kagaribi, the Watchfire Ring" is 28 characters, over the 24 a name may take: shown as "Kagaribi, the Watchfire".
@@ -2931,7 +2931,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - A stone at a crossing stays filled and narrower than the blade's foot, with no open ring round a crossing. On a helmet nothing rises above the brow's bezel as a bar continuing the nasal.
   - Yoiboshi's points taper and take no halo; a star and a crescent never share one ring; Ariake's stone stays round. A Legendary ring is metal, never a red cord. No heart, no linked pair.
   - Inabikari's branch stays one smooth branch, never a zigzag; no zigzag or bolt marks in any engraving. Engraving, filigree, signet faces and foot plates stay plain lines and blank faces.
-  - Gloamforge's condition covers all four pieces. Gloamforge Helm is never a glossy black dome with a mouth grille; Hakubo (drawn as Hakumei then) stays a gilt skull with ivory horns and a white or gold stone; the Iron and Lanternsteel helmets are never field grey or olive.
+  - Gloamforge's condition covers all four pieces. Gloamforge Helm is never a glossy black dome with a mouth grille; Kawatare (drawn as Hakumei then) stays a gilt skull with ivory horns and a white or gold stone; the Iron and Lanternsteel helmets are never field grey or olive.
   - A helmet's liner stays a dark lining, never skin-toned; slits and openings stay dark and empty. Scrap Helmet is never shown crown-on.
 - **Content check, on the rendered sheets: PASS on all four** to go to research; nothing is cleared for upload, and each icon is checked again in colour, at full size and at 64 px over dark. From the renders:
   - **The helmets' liner, one fix required, made:** the dark lining ran down under the brow as a column, and Stallguard Helmet read as a hat on a head. It now ends just under the brow on every open helmet, so each is hollow; behind a closed face it stays, so the eye slit is dark and empty. In colour the liner is the kit's near-black, never tan or a skin tone, and no light sits in a slit.
@@ -2965,7 +2965,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Modulo's read:** Hakubo outranks every Epic by shape now. Stormcall Helm's two curled horns are the nearest thing left to it: a U half its size, inside the skull's width. For research's eye at 32 pixels.
   - **Content check: PASS** on both sheets, to go back to research; nothing cleared for upload. The name Hakubo passes from memory (an ordinary word for dusk, also a 2019 film's title that shares nothing with a helmet); the handbook's web and Roblox name search is still research's to run before a player sees it. For the colour pass:
     - Stormcall Loop: the stone stays small, white or warm gold and filled, never red or dark; the hooks' tips stay plain curls, nothing hanging or glowing from one; the hooks stay the set's filigree metal, never bone, ivory or red; plain lines, no rune, letter or bolt.
-    - Hakubo: a gilt skull, ivory matte horns, a white or warm-gold stone, small and upright, never red, green, dark or a block; never gold horns on gold with green, never yellow horns on a white or blue skull; no stripes, bands or dark tips, nothing hanging or glowing from a tip; the horns keep springing from the brow at the stone with both tines; no engraved mark; the liner near-black, the opening dark and empty.
+    - Kawatare (Hakubo then): a gilt skull, ivory matte horns, a white or warm-gold stone, small and upright, never red, green, dark or a block; never gold horns on gold with green, never yellow horns on a white or blue skull; no stripes, bands or dark tips, nothing hanging or glowing from a tip; the horns keep springing from the brow at the stone with both tines; no engraved mark; the liner near-black, the opening dark and empty.
   - **Four facts:** made, yes. Self-reviewed, yes, each sheet whole and its small rows. Delivered, the two sheets. Accepted, no: research's read of the two fixes to come.
   - **Time:** about 8 minutes by the clock, beside the tag's images.
 - **Research's read of the two fixes** (2026-11-15, night; the 32-pixel rows): **both pass.**
@@ -2973,6 +2973,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **The Twilight:** its sweep is the largest shape on the helmet row and outranks every Epic. Stormcall Helm's small curl is half its size and one-sided, enough at 32 pixels.
   - **The name:** the web and Roblox search found "Hakubo" already taken, so it becomes **Kawatare, the Twilight** (the hour of dusk at dawn). That search is clean.
   - **For Modulo:** the name on the sheet and in `gear_helmet_sets.py`.
+    - **Done** (Modulo, 2026-11-15): the sheet says Kawatare, the Twilight, rendered again from the script; nothing else on it changed.
   - **Next:** colour and frames, as flat pictures for the slots only (the director's word, "Pictures only" above).
 
 ## AR7. The Lamplighter, Lantern Row's keeper

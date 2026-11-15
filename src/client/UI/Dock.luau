@@ -96,10 +96,16 @@ local function look(tile: Tile): string
 	return "Rest"
 end
 
+-- A shift of x, y points, as Scale against the dock's own size: a UDim's Offset is a whole number, so 1.6 points
+-- there would draw as 1 (the dock's self-test, 2026-11-15).
+local function points(x: number, y: number): UDim2
+	return UDim2.fromScale(x / UIKit.Dock.Size.X, y / UIKit.Dock.Size.Y)
+end
+
 -- Every layer at its place with the shake's offset; the mark Sink points down its lean while pressed.
 local function place(tile: Tile)
 	local lift = if tile.Shown == "Rest" then HudConfig.Motion.Hover.Lift * tile.Hover else 0
-	local shift = UDim2.fromOffset(tile.Shift, -lift)
+	local shift = points(tile.Shift, -lift)
 	for name, layer in tile.Layers do
 		local rest = tile.Rest[name]
 		if rest then
@@ -107,7 +113,7 @@ local function place(tile: Tile)
 		end
 	end
 	local sink = if tile.Shown == "Pressed" then HudConfig.Dock.Sink else 0
-	tile.Layers.Mark.Position = tile.Mark + UDim2.fromOffset(tile.Shift - sink * UIKit.Dock.Lean, sink - lift)
+	tile.Layers.Mark.Position = tile.Mark + points(tile.Shift - sink * UIKit.Dock.Lean, sink - lift)
 end
 
 local function paint(tile: Tile, now: string)
@@ -239,13 +245,16 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 		outline.Thickness = 1.5
 		outline.Parent = word
 		local tile: Tile
+		-- The tap: the tile's Box grown round its middle to Theme.Size.Tap on a short side, so it holds Theme.Size.Touch
+		-- at the scale's floor (the wings' boxes are 44 points tall, 37 rendered on the smallest phone).
+		local wide, tall = math.max(box[3], Theme.Size.Tap), math.max(box[4], Theme.Size.Tap)
 		local button = Button.new({
 			Name = def.Name,
 			Text = "",
 			Bare = true,
 			Still = true,
-			Size = UDim2.fromOffset(box[3], box[4]),
-			Position = UDim2.fromOffset(box[1], box[2]),
+			Size = UDim2.fromOffset(wide, tall),
+			Position = UDim2.fromOffset(box[1] - (wide - box[3]) / 2, box[2] - (tall - box[4]) / 2),
 			Parent = frame,
 			OnPress = function(): ...any
 				if tile.Long then -- a long press showed the word: its lift isn't a tap, and the word stays a moment

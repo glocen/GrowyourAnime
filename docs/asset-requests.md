@@ -6892,43 +6892,38 @@ The look is reopened since (AR16), so this install stands in the dev build until
   - Visually reviewed: no, and no verdict is asked on this look (AR16).
   - Director-accepted: no. The look is reopened.
 
-## AR16. The base spread out (Modulo, then Faber)
+## AR16. The base, more anime (Modulo, then Faber)
 
-Research's entry, 2026-11-15, night, rewritten at about 23:10 on the director's latest words (the register):
-- to Faber, earlier that night: "we really need to not make it like a construction games and put some magic/anime like stuff that void need be void ... it also a bit to clustered yet the basse is huge and it block yhe entrance";
-- over a screenshot of the yard in the game: "ok ok this is very great just make it less clustered make it accross the base thennit perfect weare getting somewhere!", and to research's question, the pick "Spread it + void touches";
-- then: "the ground is good the electricity wired stuff is great js make a small change i alove love the generator rotating".
+Research's entry, 2026-11-15, night, rewritten at about 23:20 on the director's latest word (the register): "not a small change actually a change or you know what: full creative freedom but i like what i saw so make it better it does need to look more like anime". It follows the night's three earlier words on the base, each in the register. The yard as it stands in the game is the start: the director liked it ("ok ok this is very great"), and the team has full creative freedom to make it better and more anime. Then, at about 23:25: "But that realism is acc great". The realism stays, and the anime goes on top of it.
 
-The void-sanctum redesign first written here is withdrawn, and the power yard's look stands.
-
-What stands:
-- AR14's ground and kit;
-- AR15's machines;
-- the wiring in the floor;
-- the generator's turning rotor;
-- the plot, 200 by 200, with its wall and gate;
-- the levels;
-- the showcase (TR22);
-- the bays' rarity light;
-- Power's names and numbers.
-
-- **Feel line:** through the gate, the player walks down an open way into a power yard that fills its whole plot. Each machine stands apart with room to read it, the current runs between them in the floor, and the generator turns at the heart.
-- **The block contains:**
-  - **Spread across the plot.** The machines move apart over the whole 200 by 200. Each has room round it to be read alone (Modulo's measure: 25 studs or more apart). Nothing stands in a line across the way in, and the wiring follows the machines to their new places.
-  - **An open way in.** From the gate, a clear avenue runs to the generator, the plant's heart. It's wide enough for the player and the lead side by side, with room to spare. The director's favourite piece stays in view from the gate, and the showcase's plinth stands beside the avenue, never in it.
-  - **Less clutter.** Dressing that doesn't serve a machine, the wiring or the way goes.
-  - **No construction.** Level 1's unopened lots read as dormant, never as building sites: the cranes, scaffolds and stock go (the night's first word). Modulo's "unawakened" read fits.
-  - **Void touches, small.** A few accents say the power comes from the void, never changing the ground or the wiring: for example the void seen past the plot's edge, or a machine's core holding void light. Which ones is Modulo's call.
-- **The way:** this moves pieces the yard already has and adds the touches, so there's no separate blockout.
-  - Modulo lays the new plan (`tools/blender/base_plan.py`: `plan.json`'s placements and `machines`), with one look from the gate. Cap: 2 hours.
-  - Faber installs it.
-  - Research gives one verdict in the game, from the gate, from the court and from the base screen's look down (TR21).
-- **Research's answers to AR14's delivery 4:** the construction sites go. The transformers and the battery bank's cells stay where they serve, and how much is clutter is Modulo's call.
+- **What the director liked, the start:**
+  - the yard's ground;
+  - the current running in the floor ("the electricity wired stuff is great");
+  - the generator turning ("i alove love the generator rotating"), which stays;
+  - the realism of the machines and the ground ("that realism is acc great"), which stays. No toon outlines or flat colours in place of their surfaces.
+- **The night's asks, which stand:**
+  - the machines spread across the whole 200 by 200, less clustered;
+  - an open way in from the gate, nothing across it;
+  - never a construction game: unopened lots read dormant, not as building sites.
+- **What stands besides:** every machine's job, the plot with its wall and gate, the levels, the owner's showcase (TR22), the bays' rarity light, and Power's names and numbers.
+- **Feel line:** through the gate, the player walks into their own anime power plant. Real, heavy machines stand apart across the yard. Between them the current crackles as bright anime lightning, and the generator's rotor whirls at the heart. Real machines, anime power.
+- **Research's levers for "more anime".** Modulo picks and designs; these are a start, not a spec:
+  1. **Anime energy, the strongest lever:** the current as anime lightning, jagged arcs with a white core and a coloured glow. Pulses run along the floor's lines and sparks fly at the machines, never a plain glowing strip. The generator throws arcs as it whirls faster.
+  2. **Light and air:** rim light, glow on the lit edges, drifting motes, and the dusk sky's drama. The base is lit like a scene, not a site.
+  3. **Hero scale:** a few oversized details on the real machines, such as the generator's rotor and the Breaker's points, so each reads from the gate. Their surfaces stay real.
+  4. **The void:** its light in the machines' cores and past the plot's edge.
+  5. **Our own marks beside the real ones:** emblems and an invented script on the plates and panels, next to the hazard stripes, which stay.
+- **The blockout:**
+  - the yard reworked, judged from the player's camera at phone size: walking in through the gate, from the court, and the base screen's look down (TR21);
+  - two takes side by side if Modulo wants to compare levers;
+  - cap: 2 hours;
+  - research's verdict picks, or the director's pick when present.
+- **Then:** Faber installs the chosen take. The rest of AR15 (the battery, the Training machine and the Door) follows in the chosen look.
 - **Waits:**
   - levels 2 and 3's looks;
   - the Tower behind;
   - the bare lot of a player who isn't in the server.
-- **Order:** Modulo's next piece. The rest of AR15 (the battery, the Training machine and the Door) resumes in the yard's look after it.
+- **Order:** Modulo's next piece.
 
 ## Later, by ground
 

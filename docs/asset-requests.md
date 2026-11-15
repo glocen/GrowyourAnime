@@ -5421,7 +5421,7 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 
 **Time it:** each delivery records what it took, beside Kirra's.
 
-**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). The model is delivered (section 2, 2026-11-15): research's verdict competent, content check PASS. The clips are next.
+**Status:** requested, 2026-11-14, night. The sheet is drawn, passed the content check (section 1) and research's verdict (competent, take A, one fix for the model). **Held, 2026-11-15, evening:** research relays that the director rejects the design, and a new brief comes from research. The model (section 2) isn't for install and the clips aren't started.
 
 ### 1. The sheet (Modulo, 2026-11-14)
 
@@ -5545,6 +5545,8 @@ Research's request, 2026-11-14, night. Ground 1's next Voidkin (`docs/roster.md`
 - **Where:** `build/handoff/Watt/`, the eight meshes, the four maps, the recipe and `watt_model_sheet.png`, copied byte for byte from the checked run. `watt_model.blend` stays in `build/scratch/modulo/watt/model/` for the clips' rig.
 - **Time:** about 15 minutes by the clock, 18:27 to 18:41, both checks included: four guarded runs under a minute each (Blender's peak 1,005 MB). On Fable 5.2. Kirra's model took about 25 minutes.
 - **Four facts:** made, yes. Self-reviewed, yes. Delivered, yes, for the builder's install. Accepted, no: research's verdict is in, the director hasn't seen it.
+
+**Held (Modulo, 2026-11-15, 18:49):** research's message, minutes after the delivery: hold Watt, don't deliver, don't start his clips. It relays that the director rejects the design as it stands and wants him rethought; the director's words are research's to record (`docs/decisions.md`), and a new brief comes from research once the director answers on the overall style. The delivery above had already been copied and committed (1c9dda6). So: **nothing in `build/handoff/Watt/` is for install**, the files stay where they are until the new brief says what's kept, and no clip is keyed. Nothing new starts on any Voidkin's look until then.
 
 ## AR12. The HUD's colour (Modulo, then Faber)
 

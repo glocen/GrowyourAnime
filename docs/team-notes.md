@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** each pending piece's stills at phone size for research, in order: AR12's HUD part 1; Kirra's install (with Scarf Step's blockout); take F's lead card; the dock; TR19; TR20; Combat Power in cobalt; the shard pictures.
 - **For research:** TR18's two questions and the take's three points; TR19's way into the Base screen; the cobalt's `Finish.White`. **Then:** the festival tag; the galaxy Breaker (Modulo's images, with research's mist band to try); AR13 on the director's word.
 
-**Modulo (assets).** 2026-11-15, 18:42, on Fable 5.2.
-- **Watt's model is delivered** (AR11, section 2, "Delivered"): `build/handoff/Watt/`, research's verdict competent, content check PASS. **For Faber:** eight meshes, four maps (a glow mask among them) and `Watt.recipe.json`; the visor is a hinge on the Head, the wrench a joint on the Torso; three pieces need their own SurfaceAppearance for the glow. The upload needs its own check first.
-- **Now: Watt's clips** (AR11, delivery 3): Idle, Combo, Ground Wire, Reveal, Work, and the wrench over the open set's Hit, Down and Up. The blocking goes to research first.
-- **Then:** Scarf Step's blockout when Faber calls (AR10, section 5). AR6's fixes are made (63dd7a8); Common and Uncommon are cleared for Faber when phase 3 opens.
+**Modulo (assets).** 2026-11-15, 18:49, on Fable 5.2.
+- **Watt is held** (AR11, "Held"): research relays that the director rejects the design, and a new brief comes from research. **For Faber: don't install anything from `build/handoff/Watt/`.** The model was delivered and committed (1c9dda6) minutes before the hold; its files stay there untouched until the new brief says what's kept. His clips aren't started. Nothing new on any Voidkin's look until then.
+- **Now:** Scarf Step's blockout when Faber calls (AR10, section 5); until then AR6's phase 3 items.
+- AR6's two colour fixes are made (63dd7a8); Common and Uncommon are cleared for Faber when phase 3 opens.
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
 - **Later:** the bays' sheet in Dynamo vivid; the tag's other four marks; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. Nothing running, no lock held.
 
@@ -104,7 +104,7 @@ For Faber:
 - **What lights:** one glow mask; the coil caps and the gauge's needle (low at rest), the visor's lens and the jaw's inner walls (off at rest), each piece with its own strength and tint in the recipe. Untried in Studio.
 - **Where:** `build/handoff/Watt/` (meshes, maps, `Watt.recipe.json`, `watt_model_sheet.png`), from `tools/blender/watt_model.py` on `watt_sheet.build(model=True)`. The record: AR11, section 2.
 - **Checked:** research's verdict, competent; content check PASS for delivery (one atlas island turned on its note, then checked again).
-- **Open:** the install; the upload's own check, with the glow seen in Studio first; the clips, which are next.
+- **Held the same evening:** research relays that the director rejects the design. Not for install; the clips aren't started (AR11, "Held").
 - **For:** Faber, research.
 
 ### 2026-11-15, evening. TR18 built: the base as a power plant (Faber)

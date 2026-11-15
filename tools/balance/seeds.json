@@ -101,5 +101,17 @@
     "perLevel": 0.02,
     "batteryHoursByGround": [2, 3, 4, 6, 8, 8],
     "chambersByGround": [2, 2, 3, 3, 4, 4]
+  },
+
+  "power": {
+    "_": "TR18, the base as a power plant (docs/design.md, 'Power'). Research's seeds, 2026-11-15. Each machine draws its rating while it works; a shard costs its chamber's rating times its break time, times its ground's factor.",
+    "kwPerAptitude": 6,
+    "breakerKwPerChamber": 15,
+    "trainingKw": 10,
+    "minSpeed": 0.25,
+    "batteryKwh": 60,
+    "startKwh": 2,
+    "creditsPerKwh": 0.5,
+    "infusionKwh": [20, 60]
   }
 }

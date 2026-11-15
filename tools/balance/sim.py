@@ -385,7 +385,7 @@ def report_ownership(n=1500):
 
 
 def report_energy():
-    print("\n== 7. Electricity: what the bays make against what the Breaker asks ==")
+    print("\n== 7. Electricity before TR18 (section 14 replaces it once built) ==")
     sh, bays = S["shards"], S["bays"]
     line("ground", "per min", "factor", *[f"{p} cover" for p in S["profiles"]], *[f"{p} chamber" for p in S["profiles"]], w=15)
     r = S["rift"]
@@ -760,208 +760,6 @@ def report_cooldowns(runs=40):
                  f"{mean['Elite']:.1f}", f"{mean['Keeper']:.1f}", f"{mean['Elite'] + mean['Keeper']:.1f}", rel, f"{shards:.1f}", w=15)
 
 
-# ---------------------------------------------------------------- the stat board (TR15)
-
-BOARD = ("hp", "atk", "def", "regen")
-BOARD_NAMES = {"hp": "Health", "atk": "Attack", "def": "Defence", "regen": "Regen"}
-BOARD_LEADS = (("Rook", "Warrior"), ("Kirra", "Assassin"), ("Pip", "Mage"), ("Lyric", "Healer"))
-ROW_LEVELS = range(2, 10)  # Lantern Row, from the first point
-LEAN_TARGET = 0.07  # research's call, 2026-11-14, night: the strongest one-stat lean on Lantern Row, about +7% over today's
-EVEN = {k: 0.25 for k in BOARD}
-
-
-def board_config():
-    """The board's numbers in the game, from src/shared/Config/Stats.luau (their home): its share, if set, and the reset."""
-    import re
-    stats = lua("src/shared/Config/Stats.luau")
-    m = re.search(r"Share = \{ Health = ([\d.]+), Attack = ([\d.]+), Defence = ([\d.]+), Regen = ([\d.]+) \}", stats)
-    reset = re.search(r"ResetPerG = ([\d.]+)", stats)
-    start = re.search(r"Board = \{.*?From = (\d+)", stats, re.S)
-    return dict(share={"hp": float(m[1]), "atk": float(m[2]), "def": float(m[3]), "regen": float(m[4])} if m else None,
-                reset=float(reset[1]), start=int(start[1]))
-
-
-def board_lift(part, share):
-    """What the board adds, as a multiplier of each stat's own: a stat's points, as a part of those earned, place four times
-    that part of its share on top (research's call (c), 2026-11-14, night). Spent evenly at full, each stat gains its share;
-    every point on one stat, four times its share there; none spent, nothing."""
-    return {k: 1 + 4 * share[k] * part.get(k, 0) for k in BOARD}
-
-
-def boarded(cls, level, part, share, gm, bump=None):
-    """A bare lead at `level` whose points spread as `part` (stat -> its part of the points earned, summing to 1 or less),
-    on top of its own figures (rarity and class in them). `bump` (a stat) raises that stat by 1%, for the worth probe.
-    Returns the build and its Regen a second."""
-    me = build(level, 1, 0.0, cls=cls)
-    regen = gm["regen"] * gm["regen_class"].get(cls, 1.0) * G(level)
-    lift = board_lift(part, share)
-    for k in BOARD:
-        f = lift[k] * (1.01 if k == bump else 1.0)
-        if k == "regen":
-            regen *= f
-        else:
-            me[k] *= f
-    return me, regen
-
-
-def pack(me, regen, level, gm):
-    """One of Lantern Row's packs at the lead's level: three Ordinary Shades on it at once, killed one by one, then the
-    walk to the next. Returns the seconds a pack takes and the share of health it costs."""
-    foe = shade("Ordinary", level, gm)
-    t = foe["hp"] / dps(me, foe)
-    walk = (gm["spacing"] - gm["notice"]) / 16 + 2.25
-    lost = 6 * t * dps(foe, me) - regen * (3 * t + walk)
-    return 3 * t + walk, lost / me["hp"]
-
-
-def strength(seconds, lost):
-    """Packs a second times packs a health bar: a lead twice as fast, or lasting twice as long, is twice as strong.
-    None: it heals faster than it's hurt."""
-    return None if lost <= 0 else 1 / (seconds * lost)
-
-
-def power(cls, level, part, share, gm, bump=None):
-    return strength(*pack(*boarded(cls, level, part, share, gm, bump), level, gm))
-
-
-def ahead(cls, level, part, share, gm):
-    """A spread against today's Voidkin (nothing spent): the strength ahead; None if either holds."""
-    s0, s1 = power(cls, level, {}, share, gm), power(cls, level, part, share, gm)
-    return None if s0 is None or s1 is None else s1 / s0 - 1
-
-
-def worth(gm):
-    """What 1% more of each stat's own figure is worth in strength: the four leads' mean over Lantern Row's levels."""
-    import math
-    none = {k: 0.0 for k in BOARD}
-    out = {}
-    for k in BOARD:
-        logs = [math.log(power(cls, level, {}, none, gm, k) / power(cls, level, {}, none, gm))
-                for _, cls in BOARD_LEADS for level in ROW_LEVELS]
-        out[k] = sum(logs) / len(logs)
-    return out
-
-
-def strongest(share, gm, levels=ROW_LEVELS):
-    best = (-1.0, "")
-    for name, cls in BOARD_LEADS:
-        for level in levels:
-            for k in BOARD:
-                got = ahead(cls, level, {k: 1.0}, share, gm)
-                if got is not None and got > best[0]:
-                    best = (got, f"{name} at {level}, all {BOARD_NAMES[k]}")
-    return best
-
-
-def seed_share(gm):
-    """The share, priced to equal worth (each stat's share times its worth the same), scaled by bisection so the strongest
-    one-stat lean on Lantern Row is LEAN_TARGET over today's Voidkin. Returns the worth, the shape and the seed, to a
-    tenth of a percent."""
-    w = worth(gm)
-    shape = {k: w["hp"] / w[k] for k in BOARD}
-    lo, hi = 0.0, 1.0
-    for _ in range(40):
-        mid = (lo + hi) / 2
-        if strongest({k: mid * shape[k] for k in BOARD}, gm)[0] < LEAN_TARGET:
-            lo = mid
-        else:
-            hi = mid
-    return w, shape, {k: round(lo * shape[k], 3) for k in BOARD}
-
-
-def report_board(runs=400):
-    import math
-    import random
-    gm = game()
-    cfg = board_config()
-    w, shape, seeded = seed_share(gm)
-    share = cfg["share"] or seeded
-    print("\n== 12. The stat board (TR15): a fixed share of each stat's own base, on top, placed by the points ==")
-    print("A model, not a measurement. One point a level from level 2. Spent evenly at full, the board adds a share of each")
-    print("stat's own figure (rarity and class in it) on top of it, at every level; a stat's points, as a part of those")
-    print("earned, place four times that part of its share. A point waiting adds nothing: the Voidkin as it was without the")
-    print("board (research's call (c), 2026-11-14, night). A bare lead on one of Lantern Row's packs at its own level (three")
-    print("Ordinary Shades at once, then the walk): strength is packs a second times packs a health bar.")
-    print("Worth of 1% more of each stat, the four leads' mean on Lantern Row: "
-          + ", ".join(f"{BOARD_NAMES[k]} {w[k]:.2%}" for k in BOARD))
-    print("Priced to equal worth, each share against Health's: " + ", ".join(f"{BOARD_NAMES[k]} x{shape[k]:.2f}" for k in BOARD))
-    print(f"Seeded so the strongest one-stat lean on Lantern Row is {LEAN_TARGET:+.0%} over today's: "
-          + ", ".join(f"{BOARD_NAMES[k]} {seeded[k]:.1%}" for k in BOARD))
-    print(("The game's share (Config.Stats.Board.Share): " if cfg["share"] else "Not in the game yet; the run uses the seed: ")
-          + ", ".join(f"{BOARD_NAMES[k]} {share[k]:.1%}" for k in BOARD))
-    best = strongest(share, gm)
-    print(f"The strongest one-stat lean on Lantern Row: {best[0]:+.1%} ({best[1]}).")
-    print("\nOver today's Voidkin: every point on one stat, and spent evenly at full: strength (pace, health a pack). 30, 60")
-    print("and 125 are the same pack scaled, for reference: gear isn't counted, and the grounds there aren't built.")
-    line("lead", "level", *[f"all {BOARD_NAMES[k]}" for k in BOARD], "even", w=20)
-    for name, cls in BOARD_LEADS:
-        for level in (5, 9, 30, 60, 125):
-            s0, l0 = pack(*boarded(cls, level, {}, share, gm), level, gm)
-            cells = []
-            for part in [{k: 1.0} for k in BOARD] + [EVEN]:
-                s1, l1 = pack(*boarded(cls, level, part, share, gm), level, gm)
-                st0, st1 = strength(s0, l0), strength(s1, l1)
-                if st0 is None or st1 is None:
-                    cells.append("holds" if st1 is None else "behind")
-                    continue
-                cells.append(f"{st1 / st0 - 1:+.1%} ({s0 / s1 - 1:+.0%}, {l1 / l0 - 1:+.0%})")
-            line(name, level, *cells, w=20)
-    print("The share is fixed and the pack grows with G, so a spread's lead over today's is the same at every level.")
-    # A level-up with its new point waiting thins the points already spent: its own figure must outgrow that.
-    worst, at = math.inf, None
-    for level in range(2, 125):
-        earned = level - 1
-        for k in BOARD:
-            after = G(level + 1) / G(level) * (1 + 4 * share[k] * earned / (earned + 1)) / (1 + 4 * share[k])
-            if after < worst:
-                worst, at = after, f"level {level} to {level + 1}, every point on {BOARD_NAMES[k]}"
-    print(f"\nA level-up, its new point still waiting, thins the points spent; the least a stat rises: {worst - 1:+.1%} ({at}).")
-    print("Class and rarity multiply both sides alike, so this holds for every Voidkin. Level 2 to 3 binds: a share above")
-    print(f"{share_bound():.1%} would let a level-up lower a stat that holds every point.")
-    # TR12's targets with the board spent evenly at full (research's check): section 9's circuit on the lifted lead.
-    lift = board_lift(EVEN, share)
-    print("\nTR12's targets with the board spent evenly at full (section 9's circuit, the game's Regen): Pack 2's end, median")
-    print("[10th to 90th], and falls before the elite in 100 runs; the target is a third to two thirds, and at most 10 falls.")
-    line("start", "board", *[f"{n} ({c})" for n, c in BOARD_LEADS], w=21)
-    for start in (1, 3):
-        for label, use in (("none", None), ("even, full", lift)):
-            cells = []
-            for name, cls in BOARD_LEADS:
-                rng = random.Random(f"{name}{start}{gm['regen']}")
-                ends, falls = [], 0
-                for _ in range(runs):
-                    shares, fell = circuit(cls, start, gm["regen"], gm, rng,
-                                           board=(lambda level: use if level >= cfg["start"] else None) if use else None)
-                    falls += fell is not None
-                    ends.append(shares[1] if len(shares) > 1 else 0.0)
-                ends.sort()
-                q = lambda p: ends[min(len(ends) - 1, int(p * len(ends)))]
-                cells.append(f"{q(0.5):.0%} [{q(0.1):.0%}-{q(0.9):.0%}] {100 * falls / runs:.0f}")
-            line(start, label, *cells, w=21)
-    print("\nWhat one point adds to a Common Warrior's stat, by level (a point's part of the share falls as points pile up),")
-    print("and a reset's price in Credits:")
-    line("level", *[BOARD_NAMES[k] for k in BOARD], "reset", w=12)
-    for level in (2, 5, 9, 30, 60, 125):
-        earned = level - 1
-        me, regen = boarded("Warrior", level, {}, share, gm)
-        own = dict(me, regen=regen)
-        line(level, *[f"+{4 * share[k] * own[k] / earned:.2f}" for k in BOARD],
-             math.ceil(cfg["reset"] * G(level) - 1e-9), w=12)
-
-
-def share_bound():
-    """The largest share a stat can hold with a level-up never lowering it, every point on it and the new one waiting:
-    G's growth from level L to L+1 must outgrow the thinning, (1 + 4s) / (1 + 4s(L-1)/L). Level 2 to 3 binds."""
-    best = 1.0
-    for level in range(2, 125):
-        r, keep = G(level + 1) / G(level), (level - 1) / level
-        if r * keep < 1:
-            best = min(best, (r - 1) / (4 * (1 - r * keep)))
-    return best
-
-
-
-
 # ---------------------------------------------------------------- Speed (TR14)
 
 SPEED_LEADS = (("Rook", "Warrior", 4.5), ("Kirra", "Assassin", 4.5), ("a Tank", "Tank", 4.5), ("Pip", "Mage", 14.5),
@@ -1020,6 +818,48 @@ def report_speed():
           f"{pack_cycle(cfg['cls']['Assassin'] + 1, 4.5, cfg, gm)[1]:.2f} s a pack.")
 
 
+# ---------------------------------------------------------------- the base as a power plant (TR18)
+
+def report_power():
+    """Generation against demand in kW, the battery in kWh, per ground (docs/design.md, "Power"). Each machine draws its
+    rating while it works; a shard costs its chamber's rating times its break time, times its ground's factor."""
+    pw, sh, bays = S["power"], S["shards"], S["bays"]
+    print("\n== 14. The base as a power plant (TR18): kW and kWh ==")
+    line("ground", "gen kW", "breaker kW", "train kW", "Auto, no batt", "Std kWh", "Enr kWh", "Pri kWh",
+         *[f"{p} cover" for p in S["profiles"]], w=13)
+    for i, g in enumerate(S["grounds"]):
+        mid = (g["from"] + g["to"]) // 2
+        f = sh["regionFactor"][i]
+        here = [v for v in ROSTER if v["zone"] <= g["id"]]
+        apt = sum(sorted((v["apt"] for v in here), reverse=True)[:bays["workersByGround"][i]]) * 0.85
+        gen = apt * pw["kwPerAptitude"] * (1 + bays["perLevel"] * (mid * 0.8 - 1))
+        brk = bays["chambersByGround"][i] * pw["breakerKwPerChamber"] * f
+        trn = pw["trainingKw"] * f
+        kwh = {k: pw["breakerKwPerChamber"] * f * sh["breakSeconds"][k] / 3600 for k in ("Standard", "Enriched", "Prismatic")}
+        cover = []
+        for pr in S["profiles"].values():
+            online = pr["hoursPerDay"]
+            away = min(24 - online, pr["sessions"] * bays["batteryHoursByGround"][i])
+            supply = gen * (online + away) - trn * (online + away)  # the Training machine runs whenever the plant does
+            n = dict(Standard=sh["perHour"]["Standard"] * online,
+                     Enriched=sh["perHour"]["Enriched"] * online if g["id"] >= sh["enrichedFromGround"] else 0,
+                     Prismatic=pr["prismaticPerDay"] if g["id"] >= sh["prismaticFromGround"] else 0)
+            demand = sum(n[k] * kwh[k] for k in n)
+            cover.append(f"x{supply / demand:.1f}" if demand else "-")
+        line(g["id"], f"{gen:.0f}", f"{brk:.0f}", f"{trn:.0f}", f"{min(1, gen / (brk + trn)):.0%}",
+             f"{kwh['Standard']:.2f}", f"{kwh['Enriched']:.1f}", f"{kwh['Prismatic']:.0f}", *cover, w=13)
+    g1 = (3 * 6 + 2 * 6)  # Watt (3) and Rook (2) at level 1: the director's own example, 30 kW
+    spare = g1 - pw["trainingKw"]
+    print(f"Ground 1 at its start, Watt and Rook at level 1: {g1} kW. With the Training machine at full, {spare} kW spare.")
+    print(f"The battery: {pw['batteryKwh']} kWh, full from empty in {pw['batteryKwh'] / spare:.1f} h of that spare; "
+          f"overflow sells at {pw['creditsPerKwh']} Credits a kWh.")
+    for (lo, hi), o in zip(((pw["infusionKwh"][0], 0), (pw["infusionKwh"][1], 0)), S["luck"]["infusion"]):
+        print(f"Infusion +{o['lift']:.2f}: {lo} kWh, {lo / spare:.1f} h of the spare, "
+              f"{lo / pw['batteryKwh']:.0%} of a full battery.")
+    print(f"Short of power with the battery empty, a machine runs at its share of its rating, never under "
+          f"{pw['minSpeed']:.0%}: a Standard shard then takes {30 / max(pw['minSpeed'], 0.01):.0f} s at worst.")
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -1036,5 +876,5 @@ if __name__ == "__main__":
     report_carry()
     report_training()
     report_cooldowns()
-    report_board()
     report_speed()
+    report_power()

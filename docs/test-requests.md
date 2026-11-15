@@ -1493,7 +1493,23 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - **The HUD pill:** generation against demand in kW, in grey until AR12's pick, with a state for demand over generation.
 - **When it shows:** the screen opens once a second machine draws. Until then, Auto runs it unseen.
 
-**The numbers:** ratings, kW per worker, the battery's kWh and cap, infusion's price, and the floor that stops a machine stopping dead. Research sets them in the simulation (`tools/balance/sim.py`) before the build and writes them here. Faber puts them in `Config`.
+**The numbers,** research's seeds, 2026-11-15: `tools/balance/seeds.json`, "power"; `tools/balance/sim.py`, section 14. Faber puts them in `Config`.
+- **Generation:** a worker makes 6 kW an aptitude point, with +2% a level as now. Watt and Rook at level 1 make 30 kW, the director's own example.
+- **Demand:** each machine draws its rating while it works. A Breaker chamber breaking draws 15 kW, times its shard's ground factor, so two chambers ask 30 kW. The Training machine draws 10 kW.
+- **A shard's cost is derived,** never set: its chamber's rating times its break time. A Standard costs 0.125 kWh, an Enriched 3.75, a Prismatic 45. `Config.Shards.Grades[...].Energy` goes.
+- **The floor:** 0.25 of full speed, as `MinSpeed` today.
+- **The battery:** 60 kWh, starting at 2. Overflow sells at 0.5 Credits a kWh. Away hours are as now.
+- **Infusion:** a little costs 20 kWh, a lot 60, a full battery.
+- **Migration:** an old save's electricity divides by 10 into kWh, so a full old battery (600) is a full new one (60).
+- **Auto and the split,** read from the design's "the battery covers routed demand above generation":
+  - Under Auto, each machine's routed demand is its full rating, so the battery tops them all up to full speed while it holds charge.
+  - Under a manual split, each machine's routed demand is its share, which is never more than generation, so the battery isn't drawn. That's how a player saves power for an infusion.
+- **What the sim says, ground 1:**
+  - Breaking costs almost nothing against generation (cover about 19 to 38 times).
+  - The power goes where the player chooses: the Training machine, the battery and infusion.
+  - With the battery empty and both chambers and the Training machine running, Auto gives each 68%.
+  - The battery fills in 3 hours of the spare 20 kW.
+  - The old energy cover is replaced. A heavy player's Breaker isn't limited by power on ground 1, and it wasn't before either (x1.9).
 
 **Waits:**
 - the generator's model (Modulo, requested once the block is judged);
@@ -1505,4 +1521,4 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - a take at phone size: walk to the generator and open it, drag a handle, then Auto, the Breaker's progress slowing and speeding with it, and the HUD pill changing;
 - research's verdict in motion. The UI lint runs first, at both scales.
 
-**Status:** requested, 2026-11-14, night. Waits on the numbers from the sim, and on TR17.
+**Status:** requested, 2026-11-14, night. The numbers are set (2026-11-15). Waits on TR17.

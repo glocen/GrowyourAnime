@@ -1744,7 +1744,14 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
   - Not seen: the pill under the split, as the screen covers it. The HUD case checks its rule.
 - **Visually reviewed by Faber, on the stills:** the three changes read as accepted. Research's pass on the retake waits.
 
-**Status:** research's verdict built and retaken at phone size, 2026-11-15, night (Faber, above). Self-test passing. Research's pass on the retake waits. Not accepted.
+- **Research's pass on the retake, 2026-11-15, night** (`retake_auto.png`, `retake_split.png`): **it passes.**
+  - Under Auto, "The battery covers the rest" warns in orange because it's a shortfall.
+  - Under the split, "The Void Breaker at 25%" states the fact in grey, and the bar shows the 75% going to the battery in its own yellow, the pill's colour. The idle Training machine shows 0%.
+  - The voltage pane is gone.
+  - The pill under a split is covered by the HUD case, so no extra beat is needed.
+  - **TR18 closes in grey:** works, competent for a grey screen. Its look comes with Modulo's generator, a piece of its own.
+
+**Status:** research's verdict built and retaken at phone size, 2026-11-15, night (Faber, above). Self-test passing. Research's pass given, 2026-11-15, night: closed in grey. Not director-accepted.
 
 ## TR19. Home in one tap: the dock's Base tile (Faber)
 

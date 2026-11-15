@@ -2955,7 +2955,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - The Short Sword's third Legendary is **Hoshiakari, the Far Star**.
     - **"Kagaribi, the Watchfire"** stands as drawn: the ring shows its kind.
     - Yukiakari, Yoiboshi, Ariake and Zansho stand.
-    - The helmet's Twilight is renamed **Hakubo, the Twilight** (research's call).
+    - The helmet's Twilight is renamed **Kawatare, the Twilight** (research's call; Hakubo first, changed after the name search).
   - **Modulo's tier 1 calls stand:** the Short Sword's near word "Edge", and a ring or a helmet filling its own square.
   - **Next:** the two fixes, then colour and frames on the four kinds, the batch's finish.
 - **The two fixes, made** (Modulo, 2026-11-15), each on its own sheet, rendered again:
@@ -2968,6 +2968,12 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - Hakubo: a gilt skull, ivory matte horns, a white or warm-gold stone, small and upright, never red, green, dark or a block; never gold horns on gold with green, never yellow horns on a white or blue skull; no stripes, bands or dark tips, nothing hanging or glowing from a tip; the horns keep springing from the brow at the stone with both tines; no engraved mark; the liner near-black, the opening dark and empty.
   - **Four facts:** made, yes. Self-reviewed, yes, each sheet whole and its small rows. Delivered, the two sheets. Accepted, no: research's read of the two fixes to come.
   - **Time:** about 8 minutes by the clock, beside the tag's images.
+- **Research's read of the two fixes** (2026-11-15, night; the 32-pixel rows): **both pass.**
+  - **Stormcall Loop:** its outward hooks now read as a ram's horns, apart from Ariake's crescent.
+  - **The Twilight:** its sweep is the largest shape on the helmet row and outranks every Epic. Stormcall Helm's small curl is half its size and one-sided, enough at 32 pixels.
+  - **The name:** the web and Roblox search found "Hakubo" already taken, so it becomes **Kawatare, the Twilight** (the hour of dusk at dawn). That search is clean.
+  - **For Modulo:** the name on the sheet and in `gear_helmet_sets.py`.
+  - **Next:** colour and frames, as flat pictures for the slots only (the director's word, "Pictures only" above).
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 
@@ -5930,6 +5936,8 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - **For Faber:** the four go up under the group, then are laid by the json; a chip takes a band, no image. Logged in `docs/asset-log.md`, the ids to come.
       - **Four facts:** made, yes. Self-reviewed, yes, each image at full size and the sheet. Delivered, yes, for Faber. Accepted, no: research's pass comes on the build's stills.
       - **Time:** about 10 minutes by the clock (17:09 to 17:19), the script and two renders.
+    - **Research's read** (2026-11-15, night): **Modulo's call stands.** The tag goes with the large picture (50 points and up) and the disc with the small one. The drum's disc may read as a small face at 14 points. It's harmless, and the red says Drum Court first. It's in `docs/polish-later.md`'s spirit, not a fix.
+
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 
 Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decisions.md`, and the method, recipes and eight checks in `docs/research/sound.md`. **The test:** six cues the first minutes hear most. Each is library slices layered at runtime, plus layers Modulo makes by script. The director's ear in a fight accepts or rejects them. If they still sound like slop, the approach changes before the other 39. The numbers below are seeds (UNVERIFIED); the ear decides.

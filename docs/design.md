@@ -18,7 +18,7 @@ Marks: **[D]** the director's: their own words, or a choice the package records 
 | Champion | the one Voidkin sent to the Clash Grounds |
 | Extraction bay | a work station in the base. Six at most [D] |
 | Electricity | what bays make and the Breaker uses [D] |
-| Regalia | the account's gear: fourteen slots, worn by whichever Voidkin fights |
+| Regalia | the account's gear: fourteen slots, worn by whichever Voidkin fights; worn in its numbers only, a picture in its slot and nothing on the model (the director, 2026-11-15) |
 | Festival of Battles | the grounds where the lead fights [D] |
 | Keeper | the boss at the end of a ground |
 | Shade | the enemies (`docs/roster.md`) |

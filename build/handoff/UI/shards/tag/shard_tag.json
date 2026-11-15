@@ -1,0 +1,131 @@
+{
+ "pixelsPerPoint": 8,
+ "note": "The festival tag (AR12). A shard's picture keeps its place and size; the tag is laid over it. Every size here is in points, and `side` is the side a shard's picture is shown at, as Config.Hud.ShardArt counts it. DESIGN, untried in Studio.",
+ "tag": {
+  "when": "the large picture is shown (the side is Config.Hud.ShardArt.Large or more)",
+  "image": {
+   "points": [
+    24.0,
+    36.0
+   ],
+   "plaque": 24.0,
+   "tie": [
+    15.0,
+    2.0
+   ]
+  },
+  "tieAt": [
+   0.1366,
+   -0.2084
+  ],
+  "tieAtNote": "where the thread's top is tied, from the picture's middle, in sides: right and up of it",
+  "plaque": {
+   "third": {
+    "upToSide": 69.6,
+    "ofSide": 0.2396
+   },
+   "quarter": {
+    "fromSide": 133.6,
+    "ofSide": 0.1797
+   },
+   "between": "a straight line"
+  },
+  "plaqueNote": "the plaque's height in points is side times `ofSide`; the image is shown plaque / 24 times its own points, its `tie` on `tieAt` (research, 2026-11-15: a quarter of the crystal at 96 points and a third at 50, so the mark stays about the same height on screen)",
+  "boxes": {
+   "50": [
+    -0.66,
+    -11.42,
+    11.98,
+    17.97
+   ],
+   "60": [
+    -0.79,
+    -13.7,
+    14.38,
+    21.56
+   ],
+   "72": [
+    -0.85,
+    -16.43,
+    17.09,
+    25.63
+   ],
+   "96": [
+    0.22,
+    -21.73,
+    20.62,
+    30.94
+   ],
+   "134": [
+    3.25,
+    -29.94,
+    24.08,
+    36.12
+   ]
+  },
+  "boxesNote": "worked out for five sides: the image's left and top from the picture's middle, its width, its height"
+ },
+ "mark": {
+  "when": "the small picture is shown, down to a chip",
+  "image": {
+   "points": [
+    16.0,
+    16.0
+   ]
+  },
+  "side": 0.2831,
+  "least": 14.0,
+  "middle": [
+   0.2156,
+   0.2587
+  ],
+  "note": "the image's side is the picture's side times `side`, never under `least` points; its middle lies at `middle`, in sides, from the picture's middle: at the crystal's foot, on the right"
+ },
+ "chip": {
+  "when": "a chip, where the picture is 26 points",
+  "band": 3.6,
+  "note": "no image: a band of the ground's colour along the chip's foot, `band` points high, inside the chip's own edge"
+ },
+ "name": {
+  "lines": [
+   "the ground, small",
+   "the grade and \"Shard\", large"
+  ],
+  "note": "everywhere a shard's name is shown: \"Lantern Row\" over \"Prismatic Shard\""
+ },
+ "grounds": {
+  "Lantern Row": {
+   "colour": "#35CFEA",
+   "second": "#FFF1D8",
+   "tag": "images/ShardTagLanternRow.png",
+   "mark": "images/ShardTagMarkLanternRow.png",
+   "pixels": {
+    "tag": [
+     192,
+     288
+    ],
+    "mark": [
+     128,
+     128
+    ]
+   }
+  },
+  "Drum Court": {
+   "colour": "#DD3A32",
+   "second": "#FFE7C6",
+   "tag": "images/ShardTagDrumCourt.png",
+   "mark": "images/ShardTagMarkDrumCourt.png",
+   "pixels": {
+    "tag": [
+     192,
+     288
+    ],
+    "mark": [
+     128,
+     128
+    ]
+   }
+  }
+ },
+ "later": "the other four grounds' tags are drawn when their grounds are built. Mask Parade's leads with gold and carries the mask in violet (research, 2026-11-15)."
+}

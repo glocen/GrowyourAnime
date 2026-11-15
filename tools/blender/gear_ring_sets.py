@@ -36,8 +36,9 @@ LEAST = 0.86               # a plain ring is drawn no smaller than this share of
 # top is at z = 1.
 SWELL = [(0.0, 1.22), (0.34, 1.2), (0.62, 1.0), (0.8, 0.72), (0.66, 0.62), (0.45, 0.86), (0.0, 0.98)]
 SPADES = [(0.0, 1.24), (0.3, 1.22), (0.62, 1.06), (0.86, 1.12), (1.0, 0.86), (0.8, 0.66), (0.64, 0.66), (0.45, 0.88), (0.0, 0.98)]
-HOOKS = [(0.0, 1.24), (0.34, 1.24), (0.5, 1.35), (0.56, 1.56), (0.46, 1.7), (0.6, 1.79), (0.84, 1.63), (0.9, 1.39), (0.8, 1.05),
-         (0.84, 0.7), (0.68, 0.62), (0.45, 0.86), (0.0, 0.98)]
+# The hooks curl out, away from the stone: a cradle round the stone is Ariake's alone (research, 2026-11-15).
+HOOKS = [(0.0, 1.24), (0.36, 1.24), (0.5, 1.38), (0.62, 1.62), (0.8, 1.8), (1.02, 1.84), (1.2, 1.72), (1.26, 1.5), (1.14, 1.36),
+         (1.1, 1.52), (1.0, 1.62), (0.86, 1.58), (0.78, 1.4), (0.8, 1.05), (0.84, 0.7), (0.68, 0.62), (0.45, 0.86), (0.0, 0.98)]
 TINES = [(0.0, 1.22), (0.36, 1.22), (0.44, 1.42), (0.52, 1.76), (0.64, 1.42), (0.7, 1.2), (0.84, 0.74), (0.68, 0.62), (0.45, 0.86),
          (0.0, 0.98)]
 STAR = [(0.0, 2.3), (0.18, 1.64), (0.92, 1.42), (0.3, 1.2), (0.62, 1.0), (0.8, 0.72), (0.66, 0.62), (0.45, 0.86),
@@ -82,8 +83,8 @@ DESIGNS = (
     design("Band of Gales", "Rare", "The band parts in two, like two streams, with one stone between them.", "blued",
            band="twin", head="bezel", stone=("stone", 0.24)),
 
-    design("Stormcall Loop", "Epic", "Two filigree hooks rise from the shoulders and curl in over a glowing stone.", "rich",
-           wide=1.6, line="filigree", shoulders=HOOKS, trim="filigree", head="bezel", stone=("glow", 0.3)),
+    design("Stormcall Loop", "Epic", "Two filigree hooks rise from the shoulders and curl out, away from a glowing stone.",
+           "rich", wide=1.6, line="filigree", shoulders=HOOKS, trim="filigree", head="bezel", stone=("glow", 0.3)),
     design("Gloamforge Loop", "Epic", "Two filigree tines stand beside a square stone set on its corner.", "rich", wide=1.6,
            shoulders=TINES, trim="filigree", head="square", stone=("glow", 0.3)),
     design("Nightloom Loop", "Epic", "A shuttle lies out along each shoulder, the stone in a bezel between them.", "rich",
@@ -220,9 +221,9 @@ WORDS = dict(
         "A set keeps its word (the spec's examples \"Copper Ring\", \"Band of Static\" and \"Voidglint Loop\" give way to the sets). "
         "A ring's near word is Band at Rare and Loop at Epic.",
         "Each Legendary's one new form: Kagaribi (a watchfire), a basket for a head; Yoiboshi (the evening star), a star of four "
-        "points under the stone; Ariake (the moon still up at daybreak), a crescent that holds it.",
-        "\"Kagaribi, the Watchfire Ring\" is 28 characters, over the 24 a name may take: shown as \"Kagaribi, the Watchfire\", for "
-        "research's call. Yoiboshi and Ariake are new names, for its check.",
+        "points with the stone at its heart; Ariake (the moon still up at daybreak), a crescent that holds it.",
+        "\"Kagaribi, the Watchfire Ring\" is 28 characters, over the 24 a name may take: shown as \"Kagaribi, the Watchfire\", which "
+        "stands: the ring shows its kind (research, 2026-11-15). Stormcall's hooks curl out: a cradle is Ariake's alone.",
         "For the verdict: does each read as a ring, and apart from its two neighbours, at 38 points? Does each Legendary outrank "
         "every Epic by shape? Not here yet: colour, frames.",
     ),

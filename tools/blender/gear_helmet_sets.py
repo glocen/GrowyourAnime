@@ -7,7 +7,7 @@ brass fitting; blued, a small stone, a line; a darker metal with filigree and a 
 new form), and a set keeps its word.
 
 Each Legendary's one new form changes the silhouette: Tomoshibi wears a lamp on its crown, Zansho a mane of ivory blades
-swept back, Hakumei a pair of tall forked horns at the brow. No flame, no cloud: the light is a stone and a line.
+swept back, Hakubo a pair of horns that sweep wider than the skull. No flame, no cloud: the light is a stone and a line.
 
     blender -b --factory-startup --python tools/blender/gear_helmet_sets.py -- build/handoff/Gear/helmet_sets
 
@@ -39,8 +39,11 @@ DOME = [(1.0, 0.0), (0.99, 0.2), (0.93, 0.45), (0.8, 0.68), (0.6, 0.86), (0.34, 
 # Crests that stand at the brow, drawn from the front from the right half, top middle round to foot middle.
 CURL = [(x * 0.75, z * 0.75 + 0.2) for x, z in s.CURLED]
 PRONGS = [(0.0, 0.5), (0.14, 0.5), (0.24, 0.9), (0.32, 1.5), (0.44, 0.9), (0.5, 0.4), (0.3, 0.12), (0.0, 0.06)]
-HORNS = [(0.0, 0.5), (0.2, 0.55), (0.36, 0.9), (0.5, 1.5), (0.58, 1.95), (0.68, 1.5), (0.72, 1.25), (0.9, 1.7), (1.02, 2.35),
-         (1.2, 1.8), (1.14, 1.2), (0.9, 0.6), (0.55, 0.22), (0.2, 0.08), (0.0, 0.05)]
+# The horns sweep wider than the skull, out and up like a crescent, a short tine inside each: by shape they outrank
+# Gloamforge's two prongs (research, 2026-11-15).
+HORNS = [(0.0, 0.5), (0.28, 0.56), (0.52, 0.78), (0.66, 1.05), (0.72, 1.32), (0.84, 1.08), (0.98, 0.98), (1.22, 1.22),
+         (1.4, 1.7), (1.46, 2.1), (1.4, 2.45), (1.62, 2.0), (1.68, 1.55), (1.58, 1.05), (1.3, 0.58), (0.85, 0.24),
+         (0.35, 0.08), (0.0, 0.05)]
 BOSS = [(0.0, 0.42), (0.2, 0.3), (0.2, 0.06), (0.0, -0.04)]  # a small plate for a stone alone
 FIN = [(-0.1, 0.1), (0.9, 0.75), (0.5, 0.1), (0.75, -0.15), (-0.1, -0.2)]  # a side's vane, drawn from the side: (back, up)
 
@@ -84,7 +87,7 @@ DESIGNS = (
            edge=True),
     design("Zansho, the Afterglow", "Legendary", "Its one new form: a mane of ivory blades sweeps back from the crown.",
            "gilt", trim="ivory", brow="ivory", visor=True, crest=BOSS, stone=("lit", 0.2), mane=True, edge=True),
-    design("Hakumei, the Twilight", "Legendary", "Its one new form: a pair of tall forked horns at the brow.", "gilt",
+    design("Hakubo, the Twilight", "Legendary", "Its one new form: a pair of horns sweeping out past the skull and up.", "gilt",
            trim="ivory", brow="ivory", nasal=True, cheeks=True, neck="long", crest=HORNS, stone=("lit", 0.2), edge=True),
 )
 assert all(len(d["name"]) <= 24 for d in DESIGNS), "a name is over 24 characters"
@@ -245,8 +248,8 @@ WORDS = dict(
         "A set keeps its word (the spec's examples \"Paper-Lantern Helmet\" and \"Nightcurrent Helm\" give way to the sets; \"Helm of "
         "Hoarfrost\" already fits). A helmet's near word is Helm from Rare up.",
         "Each Legendary's one new form: Tomoshibi (a lamp's flame), a lamp on the crown; Zansho (the afterglow), a mane of ivory "
-        "blades swept back; Hakumei (twilight), a pair of tall forked horns at the brow.",
-        "Zansho and Hakumei are new names, for research's check. No flame and no cloud anywhere: a light is a stone or a line.",
+        "blades swept back; Hakubo (twilight), a pair of horns that sweep out wider than the skull and up, like a crescent.",
+        "Zansho and Hakubo are research's names. No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as a helmet, and apart from its two neighbours, at 38 points? Does each Legendary outrank "
         "every Epic by shape? Not here yet: colour, frames.",
     ),

@@ -10,7 +10,8 @@ each size, on the Breaker's dark and a dusk street; a chamber as today beside on
 At 96 and 50 points the shard carries its tag; at 40 only the tag's mark, at the shard's foot; the 26-point chip has a
 band of the ground's colour along its foot.
 
-A block: stand-in drawing, nothing for the build. Workbench only, and only for the sheet's words.
+The block passed research's verdict (2026-11-15), and its drawing is the build's: shard_tag_images.py writes the tag's
+images from `tag` and `token`. Workbench only, and only for the sheet's words.
 
     blender -b --factory-startup --python tools/blender/shard_tag_block.py -- build/handoff/UI/shards/tag
 
@@ -47,6 +48,8 @@ DRAWN = 16  # pixels a point the tag is drawn at, before it's brought down to a 
 TILT = math.radians(9.0)  # how far it hangs off the upright
 SHOULDER = (0.19, -0.29)  # where the thread is tied, from the picture's middle, in body heights
 SHARE = 0.25  # the tag's height against the shard's
+TAG, TIE = (24.0, 36.0), (15.0, 2.0)  # the tag's drawing in points, and where its thread is tied in it: hanging off the
+# upright, its foot swings left of its tie
 
 
 def ellipse(u, v, cx, cy, a, b):
@@ -81,10 +84,10 @@ def tag(name):
     """A ground's tag with its thread, drawn large: the pixels, and where its thread is tied, in points at 96."""
     ui.K = DRAWN
     f = FESTIVALS[name]
-    sheet = ui.Sheet(34.0, 40.0, "#000000")
+    sheet = ui.Sheet(*TAG, "#000000")
     sheet.px[:] = 0
-    t = sheet.tile(0, 0, 34.0, 40.0)
-    tie = (11.0, 2.0)
+    t = sheet.tile(0, 0, *TAG)
+    tie = TIE
     x, y = t.x - tie[0], t.y - tie[1]
     u, v = math.cos(TILT) * x + math.sin(TILT) * y, -math.sin(TILT) * x + math.cos(TILT) * y  # the tag's own upright
     plaque = ui.sd_polygon(u, v, [(-4.5, 5), (4.5, 5), (8.5, 9), (8.5, 29), (-8.5, 29), (-8.5, 9)])
@@ -195,7 +198,7 @@ def sheet(out, big, small, tags, discs):
     x = 40.0
     for name in FESTIVALS:
         t.text(x, y + 10, 11, name, INK)
-        rs.paste(sh.px, rs.shrink(tags[name][0], 5.0 * ui.K / DRAWN), round((x - 8) * ui.K), round((y + 30) * ui.K))
+        rs.paste(sh.px, rs.shrink(tags[name][0], 5.0 * ui.K / DRAWN), round((x + 15) * ui.K), round((y + 30) * ui.K))
         t.text(x + 77, y + 232, 8.5, "the tag, five times its size at 96 pt", SOFT_INK, "CENTER")
         put(sh, rs.shrink(discs[name], 5.0 * 13.0 / 13.2 * ui.K / DRAWN), x + 222, y + 110)
         t.text(x + 222, y + 232, 8.5, "its mark for 40 pt, five times", SOFT_INK, "CENTER")

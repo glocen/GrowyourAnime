@@ -2788,6 +2788,8 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
 
 **Status:** batch 1 opened, 2026-11-15, by the director's word ("some gears decals like we need art and gears name idea", `docs/decisions.md`). Queued after the Breaker's fix, Combat Power's colour and the shard decals.
 
+**Pictures only** (the director to Modulo, 2026-11-15, 17:20: "note that it should only be 2D cuz gears dont have any visuals on the voidkins it just for the gears slot images!"). It covers what gear delivers: flat images for the gear slots, and nothing worn or shown on a Voidkin. So no mesh, texture map or attachment is made or exported for a piece of gear. The Blender model stays the way a picture is drawn (this entry's first line) and never reaches the build. For research: its line in `docs/decisions.md`.
+
 ### Batch 1, research's spec, 2026-11-15
 
 - **Which kinds:** the Warrior's pair (Sword, Short Sword), the Helmet and Ring I.
@@ -2917,7 +2919,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Legendary:** Kagaribi, the Watchfire (the head is a watchfire's basket, the stone in it); Yoiboshi, the Dusk Star (a star of four points stands on the band, a filled stone at its heart); Ariake, the Pale Moon (a crescent, horns up, holds the stone).
 - **The Helmet:** one round skull with a brow band, three-quarter from the front, its face to the right as the swords point. A design is what the skull wears: a nasal, cheek plates, a closed face, a neck guard, a brim, a comb, a crest.
   - Iron, Bronze, Scrap Helmet; Lanternsteel, Rowsmith, Stallguard Helmet; Helm of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom Helm.
-  - **Legendary:** Tomoshibi, the Vigil (a lamp stands on the crown, its light in three prongs); Zansho, the Afterglow (a mane of ivory blades swept back); Hakumei, the Twilight (a pair of tall forked horns at the brow).
+  - **Legendary:** Tomoshibi, the Vigil (a lamp stands on the crown, its light in three prongs); Zansho, the Afterglow (a mane of ivory blades swept back); Hakubo, the Twilight (a pair of horns that sweep out wider than the skull and up; first drawn as Hakumei with tall forked horns, changed on research's verdict below).
 - **Tier 1 calls, mine, for research to keep or change:**
   - The Short Sword's near word from Rare up is "Edge", so no name repeats a Sword's. The sets' words replace the spec's examples ("Brand of Sparks", "Duskwire Brand", "Copper Ring", "Band of Static", "Voidglint Loop", "Paper-Lantern Helmet", "Nightcurrent Helm").
   - "Kagaribi, the Watchfire Ring" is 28 characters, over the 24 a name may take: shown as "Kagaribi, the Watchfire".
@@ -2929,7 +2931,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - A stone at a crossing stays filled and narrower than the blade's foot, with no open ring round a crossing. On a helmet nothing rises above the brow's bezel as a bar continuing the nasal.
   - Yoiboshi's points taper and take no halo; a star and a crescent never share one ring; Ariake's stone stays round. A Legendary ring is metal, never a red cord. No heart, no linked pair.
   - Inabikari's branch stays one smooth branch, never a zigzag; no zigzag or bolt marks in any engraving. Engraving, filigree, signet faces and foot plates stay plain lines and blank faces.
-  - Gloamforge's condition covers all four pieces. Gloamforge Helm is never a glossy black dome with a mouth grille; Hakumei stays a gilt skull with ivory horns and a white or gold stone; the Iron and Lanternsteel helmets are never field grey or olive.
+  - Gloamforge's condition covers all four pieces. Gloamforge Helm is never a glossy black dome with a mouth grille; Hakubo (drawn as Hakumei then) stays a gilt skull with ivory horns and a white or gold stone; the Iron and Lanternsteel helmets are never field grey or olive.
   - A helmet's liner stays a dark lining, never skin-toned; slits and openings stay dark and empty. Scrap Helmet is never shown crown-on.
 - **Content check, on the rendered sheets: PASS on all four** to go to research; nothing is cleared for upload, and each icon is checked again in colour, at full size and at 64 px over dark. From the renders:
   - **The helmets' liner, one fix required, made:** the dark lining ran down under the brow as a column, and Stallguard Helmet read as a hat on a head. It now ends just under the brow on every open helmet, so each is hollow; behind a closed face it stays, so the eye slit is dark and empty. In colour the liner is the kit's near-black, never tan or a skin tone, and no light sits in a slit.
@@ -2941,7 +2943,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Ring I:** all fifteen read as rings at 38 points. The plain bands are near one another there (Iron, Lanternsteel, Stallguard): the frame and the name will carry them. The weakest pair is Stormcall against Ariake: two horns round a stone on both, parted by the gilt and the three-ridged band more than by shape.
   - **The Helmet:** all fifteen read as helmets, and the Legendaries outrank the Epics plainly. Iron, Bronze and Scrap are nearly one helmet at 38 points. Nightloom's tall comb stands nearly as high as a Legendary's crest. With the liner cut back the open helmets are hollow and lighter in their squares, and the three Commons part better at 38 points than they did.
 - **Four facts:** made, yes, the four sheets. Self-reviewed, yes, each at full size and on its 38-point row. Delivered, the sheets only: nothing for Faber yet. Accepted, no: research's verdict to come.
-- **Time:** about 2 hours 30 by the clock: the four scripts written and dry-run while memory was short, then the renders and one round of fixes on the ring and the helmet and the liner's cut (16:20 to 17:25).
+- **Time:** about 2 hours 30 by the clock: the four scripts written and dry-run while memory was short, then the renders and one round of fixes on the ring and the helmet and the liner's cut (16:20 to 17:07, the commit's time; first written as 17:25, which was wrong).
 - **Research's verdict on batch 1 in grey** (2026-11-15, night, `ga-review`, on the four sheets and their 32-pixel rows):
   - **Felt: yes.** Sixty designs read as one family, and each kind reads as its kind at 38 points. The Short Sword is never taken for the Sword: the broad wedge against the line does it.
   - **Tier:** competent, at the bar for grey.
@@ -2956,6 +2958,16 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
     - The helmet's Twilight is renamed **Hakubo, the Twilight** (research's call).
   - **Modulo's tier 1 calls stand:** the Short Sword's near word "Edge", and a ring or a helmet filling its own square.
   - **Next:** the two fixes, then colour and frames on the four kinds, the batch's finish.
+- **The two fixes, made** (Modulo, 2026-11-15), each on its own sheet, rendered again:
+  - **Stormcall Loop:** its two hooks rise from the shoulders and curl out, away from the stone, like a ram's horns. At 32 pixels it's a ring with two horns turned out, and the cradle is Ariake's alone.
+  - **Hakubo, the Twilight** (the name is on the sheet): a pair of ivory horns spring from the brow at the stone, sweep out to 1.7 of the skull's half-width and up to 2.4 of its height, their tips turned in like a crescent's, a short tine inside each. Gloamforge keeps its two upright prongs.
+  - The Ring's notes now say "Kagaribi, the Watchfire" stands, and that Yoiboshi's stone is at the star's heart.
+  - **Modulo's read:** Hakubo outranks every Epic by shape now. Stormcall Helm's two curled horns are the nearest thing left to it: a U half its size, inside the skull's width. For research's eye at 32 pixels.
+  - **Content check: PASS** on both sheets, to go back to research; nothing cleared for upload. The name Hakubo passes from memory (an ordinary word for dusk, also a 2019 film's title that shares nothing with a helmet); the handbook's web and Roblox name search is still research's to run before a player sees it. For the colour pass:
+    - Stormcall Loop: the stone stays small, white or warm gold and filled, never red or dark; the hooks' tips stay plain curls, nothing hanging or glowing from one; the hooks stay the set's filigree metal, never bone, ivory or red; plain lines, no rune, letter or bolt.
+    - Hakubo: a gilt skull, ivory matte horns, a white or warm-gold stone, small and upright, never red, green, dark or a block; never gold horns on gold with green, never yellow horns on a white or blue skull; no stripes, bands or dark tips, nothing hanging or glowing from a tip; the horns keep springing from the brow at the stone with both tines; no engraved mark; the liner near-black, the opening dark and empty.
+  - **Four facts:** made, yes. Self-reviewed, yes, each sheet whole and its small rows. Delivered, the two sheets. Accepted, no: research's read of the two fixes to come.
+  - **Time:** about 8 minutes by the clock, beside the tag's images.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 
@@ -5908,6 +5920,16 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
         - Lantern Row's cyan beside Frost, and Drum Court's red beside health, stand: they never share a place, and the tag's shape carries them.
       - **Fixes:** none beyond the third at 50.
       - **Next:** the other four grounds' marks, drawn when their grounds are built (each an update after launch), and the tag's images for Faber's build at the size rows' use.
+
+    - **The images for the build (Modulo, 2026-11-15):** in `build/handoff/UI/shards/tag/`, from `tools/blender/shard_tag_images.py` (the block's own drawing; no GPU turn).
+      - **Delivered:** `images/ShardTagLanternRow.png` and `ShardTagDrumCourt.png` (192 x 288, the tag with its thread, 8 pixels a point); `ShardTagMarkLanternRow.png` and `ShardTagMarkDrumCourt.png` (128 x 128, the mark on its disc); `shard_tag.json` (each ground's colours, where a tag hangs and how large, the mark's and the chip's rules, the two-line name); the sheet `shard_tag_images.png`, the four as delivered on dark and on pale, then stacked from the images by the json's numbers at sides 134, 96, 72, 60 and 50, the mark at 48, 40 and 32, and the chip.
+      - **Sizes are counted as the build counts them:** on the side a shard's picture is shown at (`Config.Hud.ShardArt`). The block counted the crystal's height, which is 0.719 of that side. Research's quarter at 96 and third at 50 become: the plaque is 0.2396 of the side up to a side of 69.6, 0.1797 of it from 133.6, a straight line between. A chamber's 72 gives a plaque of 17 points, and its 60 one of 14.4. DESIGN, untried in Studio.
+      - **Mine, tier 1:** the tag stands wherever the large picture is shown (a side of 50 or more) and the mark's disc wherever the small one is, so a row of chambers at 72 or at 60 never mixes the two. The disc is 0.283 of the side and never under 14 points. The block showed the disc on a 40-point crystal, a side of 56: nothing in the build shows a shard between 50 and 56 today.
+      - **One drawing fix:** the tag's foot swung past its image's left edge and lost its corner and its outline there (in the block too, unseen at its sizes). The drawing is 24 x 36 points now, tied at 15, 2. The block's sheet is rendered again with the corner whole, nothing else changed.
+      - **Content check: PASS for upload,** all four images (2026-11-15). Its note for research, not a rule matter: at 14 points the drum's disc can read as a small cross-browed face before it reads as a drum.
+      - **For Faber:** the four go up under the group, then are laid by the json; a chip takes a band, no image. Logged in `docs/asset-log.md`, the ids to come.
+      - **Four facts:** made, yes. Self-reviewed, yes, each image at full size and the sheet. Delivered, yes, for Faber. Accepted, no: research's pass comes on the build's stills.
+      - **Time:** about 10 minutes by the clock (17:09 to 17:19), the script and two renders.
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 
 Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decisions.md`, and the method, recipes and eight checks in `docs/research/sound.md`. **The test:** six cues the first minutes hear most. Each is library slices layered at runtime, plus layers Modulo makes by script. The director's ear in a fight accepts or rejects them. If they still sound like slop, the approach changes before the other 39. The numbers below are seeds (UNVERIFIED); the ear decides.

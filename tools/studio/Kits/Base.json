@@ -1,0 +1,33 @@
+{
+ "Why": "The base's install (AR14, delivery 2, level 1: the power yard): the maps as published under the group on 2026-11-15 (docs/asset-log.md), the meshes' ids from KitAssembly.Publish the same night. The court's floor (Court1, its mesh and its two pictures) is held for delivery 3, the base made longer (the director to Modulo, 21:10): its delivery-2 ids, published before the hold, aren't used, so the new court publishes fresh. Collision: the wall's posts and panels, the gate's towers, the pylons and the flood masts follow their mesh, so the gate's 39 studs stay open and a panel is a low wall; the transformers keep their box. The court's floor and the lines are look only (the plot's own floor carries the walking). No shadow from the lines or the court's floor, as the manifest's shadows say. The paving is the deck tile, 8 studs square, on the lot beyond the court.",
+ "Meshes": {
+  "FloodMast": 89016700483163,
+  "Gate1": 132753929674051,
+  "PowerSpan": 96285689723377,
+  "Pylon": 104259516281555,
+  "Transformer": 92242037464555,
+  "Wall": 138597163950922,
+  "WallEnd": 137649198927360
+ },
+ "Maps": {
+  "Base_Kit_Color.png": "rbxassetid://128681832560466",
+  "Base_Kit_Glow.png": "rbxassetid://105200301638971",
+  "Base_Deck_Color.png": "rbxassetid://118856253787222"
+ },
+ "Collide": {
+  "Wall": "Default",
+  "WallEnd": "Default",
+  "Gate1": "Default",
+  "Pylon": "Default",
+  "FloodMast": "Default",
+  "Transformer": "Box"
+ },
+ "NoShadow": [
+  "PowerSpan",
+  "Court1"
+ ],
+ "Paving": {
+  "Map": "Base_Deck_Color.png",
+  "Tile": 8
+ }
+}

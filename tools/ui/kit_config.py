@@ -1,7 +1,8 @@
 """Writes src/shared/Config/UIKit.luau: the UI kit's images and palettes as the game reads them.
 
 From Modulo's build/handoff/UI/kit/kit.json and build/handoff/UI/hud/hud_art.json (AR3, sections 2 and 3), the lead
-card's lead_card.json and TR5's boss.json (the keeper's bar and the elite's card), with each image's group upload id. The ids come from a JSON-lines file of tools/upload/upload_asset.py's answers
+card's lead_card.json, TR5's boss.json (the keeper's bar and the elite's card) and AR12's hud_colour.json (the HUD's
+colour: each system's row, and its images once they're uploaded), with each image's group upload id. The ids come from a JSON-lines file of tools/upload/upload_asset.py's answers
 ({"name": ..., "result": {"assetId": ...}}), a name's last line winning, and an image it doesn't name keeps the id the
 Config already has, so a re-cut uploads only what changed and runs this again. What research tunes live (the critical's
 stroke and digits) isn't written here: it lives in src/shared/Config/Hud.luau.
@@ -19,6 +20,7 @@ KIT = ROOT / "build" / "handoff" / "UI" / "kit" / "kit.json"
 HUD = ROOT / "build" / "handoff" / "UI" / "hud" / "hud_art.json"
 LEAD = ROOT / "build" / "handoff" / "UI" / "hud" / "lead_card" / "lead_card.json"  # tools/blender/lead_card_art.py
 BOSS = ROOT / "build" / "handoff" / "UI" / "hud" / "boss" / "boss.json"  # tools/blender/boss_hud_art.py
+COLOUR = ROOT / "build" / "handoff" / "UI" / "hud" / "colour" / "hud_colour.json"  # tools/blender/hud_colour_sheet.py
 OUT = ROOT / "src" / "shared" / "Config" / "UIKit.luau"
 
 PALETTE_NAMES = {"Graphite Dark": "Graphite", "Pearl Light": "Pearl", "Dynamo": "Dynamo", "Void Violet": "Void"}
@@ -72,8 +74,12 @@ def main() -> None:
     hud = json.loads(HUD.read_text(encoding="utf-8"))
     lead = json.loads(LEAD.read_text(encoding="utf-8"))
     boss = json.loads(BOSS.read_text(encoding="utf-8"))
+    tint = json.loads(COLOUR.read_text(encoding="utf-8"))
     ids = old_ids() | new_ids(Path(sys.argv[1]))
     images = kit["images"] | hud["images"] | lead["images"] | boss["images"]
+    # The HUD's colour images join as they're uploaded: a piece not built yet (the dock, the card's halo) keeps its out.
+    waiting = [name for name in tint["images"] if name not in ids]
+    images |= {name: im for name, im in tint["images"].items() if name in ids}
     missing = [name for name in images if name not in ids]
     if missing:
         sys.exit(f"no upload id for {len(missing)}: {', '.join(missing[:8])}")
@@ -87,9 +93,28 @@ def main() -> None:
         "-- with each image's group upload id: run it again after a re-cut, never edit by hand.",
         "-- A slice is white where a palette colours it. Cut is left, top, right, bottom in points; Pad is how far an image",
         "-- reaches past its piece's box on every side; At, a lead card image's box's top left in the card's points. The kit",
-        "-- draws them (src/client/UI/Kit, src/client/UI/LeadCard.luau).",
+        "-- draws them (src/client/UI/Kit, src/client/UI/LeadCard.luau). Systems: AR12's colour, a row a system",
+        "-- (build/handoff/UI/hud/colour/hud_colour.json): a piece of the HUD wears its system's body, edge, block and mark.",
         "",
         "export type Image = { Id: string, Pixels: Vector2, Points: Vector2, Cut: { number }?, Pad: number, At: Vector2? }",
+        "export type System = {",
+        "\tColour: Color3,",
+        "\tPale: Color3,",
+        "\tDeep: Color3,",
+        "\tIcon: string, -- its icon in light",
+        "\tMark: string, -- its mark in ink, on its block",
+        "\tBlock: { Color3 }, -- the block's colours, top to foot",
+        "\tMain: { Color3 }, -- a screen's one main action, filled",
+        "\tPanel: { Color3 },",
+        "\tAlpha: number,",
+        "\tButton: { Color3 },",
+        "\tPressed: { Color3 },",
+        "\tEdge: Color3,",
+        "\tGlint: Color3,",
+        "\tChannel: Color3,",
+        "\tText: Color3,",
+        "\tSoft: Color3,",
+        "}",
         "export type Palette = {",
         "\tPanel: { Color3 }, -- a panel's body, top to bottom",
         "\tAlpha: number,",
@@ -141,7 +166,17 @@ def main() -> None:
             if key in row:
                 out.append(f"\t\t\t{luau} = {value(row[key])},")
         out.append("\t\t},")
-    out += ["\t} :: { [string]: Palette },", "\tImages = {"]
+    out += ["\t} :: { [string]: Palette },", "\tSystems = {"]
+    for name, row in tint["systems"].items():
+        p = row["palette"]
+        out.append(
+            f"\t\t{name} = {{ Colour = {colour(row['colour'])}, Pale = {colour(row['pale'])}, Deep = {colour(row['deep'])}, "
+            f'Icon = "{row["icon"]}", Mark = "{row["mark"]}", Block = {value(row["block"])}, Main = {value(row["main"])}, '
+            f"Panel = {value(p['panel'])}, Alpha = {num(p['alpha'])}, Button = {value(p['button'])}, Pressed = {value(p['pressed'])}, "
+            f"Edge = {colour(p['edge'])}, Glint = {colour(p['glint'])}, Channel = {colour(p['channel'])}, "
+            f"Text = {colour(p['text'])}, Soft = {colour(p['soft'])} }},"
+        )
+    out += ["\t} :: { [string]: System },", "\tImages = {"]
     for name, im in images.items():
         px, pt = im["pixels"], im["points"]
         cut = ", Cut = { " + ", ".join(num(float(x)) for x in im["cut"]) + " }" if im.get("cut") else ""
@@ -210,7 +245,9 @@ def main() -> None:
         "",
     ]
     OUT.write_text("\n".join(out), encoding="utf-8", newline="\n")
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(images)} images, {len(kit['palettes'])} palettes")
+    print(f"wrote {OUT.relative_to(ROOT)}: {len(images)} images, {len(kit['palettes'])} palettes, {len(tint['systems'])} systems")
+    if waiting:
+        print(f"not uploaded yet, left out: {', '.join(waiting)}")
 
 
 if __name__ == "__main__":

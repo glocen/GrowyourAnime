@@ -15,7 +15,6 @@
 --                                         of its own with the crest notch and the word Elite in the card's ink (research's
 --                                         verdict, 2026-11-14, fix 3). The name's tab ends before it. Off, the plain card.
 
-local TextService = game:GetService("TextService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
@@ -45,8 +44,6 @@ local NAME_X = 72 -- the name's left on the tab, in the lead's points: the arrow
 local GAP = 5 -- between the name and the level
 local TAB_AFTER = 10 -- the tab runs on past the level this far
 local NAME_ROOM = 120 -- the longest name, authored pixels: past it, it's cut with "…"
-local NAME_FONT = Enum.Font.BuilderSansBold -- Theme.Font.Strong, for measuring
-local LEVEL_FONT = Enum.Font.BuilderSansMedium -- Theme.Font.Body
 
 -- The arrow just inside the tab's slanted left edge, at the middle of its height.
 TargetCard.ArrowAt = Vector2.new(TAB_LEFT - (TAB_MID - TAB_TOP) * L.Slant + 6.5, TAB_MID) + T.Offset
@@ -106,21 +103,21 @@ end
 -- holds what's left. The tab's top edge's right end is the card's TabEnd attribute, in its points. Nothing when unchanged.
 function TargetCard.Name(card: Card, text: string, level: string)
 	local elite = card.Frame:GetAttribute("Elite") == true
-	local key = `{text}\0{level}\0{card.Name.TextSize}\0{elite}`
+	local key = `{text}\0{level}\0{card.Name.TextSize}\0{elite}\0{card.Name.FontFace.Family}\0{card.Name.FontFace.Weight.Value}\0{Text.Epoch()}`
 	if card.Frame:GetAttribute("Fitted") == key then
 		return
 	end
 	card.Frame:SetAttribute("Fitted", key)
 	card.Name.Text = text
 	card.Level.Text = level
-	local after = TextService:GetTextSize(level, card.Level.TextSize, LEVEL_FONT, Vector2.new(1000, 100)).X
+	local after = Text.Wide(card.Level, level)
 	local room = NAME_ROOM
 	if elite then
 		local most = E.NameTabEnd - T.Offset.X - TAB_LEFT -- the tab's top edge's longest, in the lead's points
 		room = math.max(0, math.min(NAME_ROOM, most - (NAME_X - TAB_LEFT) - GAP - after - TAB_AFTER))
 	end
 	card.Name.Size = UDim2.fromOffset(room, card.Name.Size.Y.Offset)
-	local wide = math.min(TextService:GetTextSize(text, card.Name.TextSize, NAME_FONT, Vector2.new(1000, 100)).X, room)
+	local wide = math.min(Text.Wide(card.Name, text), room)
 	card.Level.Position = UDim2.fromOffset(NAME_X + wide + GAP + T.Offset.X, card.Level.Position.Y.Offset)
 	local reach = NAME_X + wide + GAP + after + TAB_AFTER - TAB_LEFT -- the tab's top edge's width, in the lead's points
 	local run = (TAB_FOOT - TAB_TOP) * L.Slant

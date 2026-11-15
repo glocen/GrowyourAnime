@@ -13,7 +13,6 @@
 --   LeadCard.Fill(bar, share)             a light's share, 0 to 1 (card.Health, card.Xp, a target card's Health)
 -- UI.TargetCard is built from the same parts: Lay, Image, Light, Relight, Stud and Digits below.
 
-local TextService = game:GetService("TextService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
@@ -51,7 +50,6 @@ local CLASS = 12 -- the class mark's size
 local STUD = 6.5 -- the type's stud's radius, where the bars meet the frame
 local INK = Color3.fromHex("#000000") -- the stud's well, Midnight's ink
 local DIGITS_INK = Color3.fromHex("#0B0C10") -- the outline of the health digits on the light
-local NAME_FONT = Enum.Font.BuilderSansBold -- the name's face, for measuring (Theme.Font.Strong)
 
 -- Lays the kit image `name` at its place in the card, in a holder whose top left is at `origin` in the card's points
 -- (`size`: a sliced image's box, past its pad).
@@ -240,16 +238,17 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	return made
 end
 
--- The name, and the tab cut to fit it: Builder Sans Bold at the size the label draws (it grows on a small phone).
+-- The name, and the tab cut to fit it: in the label's own face at the size it draws (it grows on a small phone; the
+-- HUD's face is Config.Hud.Face).
 function LeadCard.Name(card: Card, text: string)
 	local label = card.Name
-	local key = `{text}\0{label.TextSize}`
+	local key = `{text}\0{label.TextSize}\0{label.FontFace.Family}\0{label.FontFace.Weight.Value}\0{Text.Epoch()}`
 	if label:GetAttribute("Fitted") == key then
 		return
 	end
 	label:SetAttribute("Fitted", key)
 	label.Text = text
-	local wide = math.min(TextService:GetTextSize(text, label.TextSize, NAME_FONT, Vector2.new(1000, 100)).X, NAME_ROOM)
+	local wide = math.min(Text.Wide(label, text), NAME_ROOM)
 	local top = G.Tab[4] -- the tab's top edge's left end
 	local reach = NAME_X + wide + TAB_AFTER - top -- its top edge's width
 	local run = (G.Tab[2] - G.Tab[1]) * SLANT

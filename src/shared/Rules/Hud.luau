@@ -388,4 +388,34 @@ function Hud.Ready(readyAt: number, cooldown: number, now: number): number
 	return math.clamp(1 - (readyAt - now) / cooldown, 0, 1)
 end
 
+-- The shards' hint over the dock (docs/ui.md, the HUD): the step that's next while the bag holds a shard, and only at the
+-- base (the director, 2026-11-15: "should only show when we are at the base"). `first`: the one shard's name, when the bag
+-- holds one alone. Nil: no hint.
+function Hud.ShardHint(kinds: number, total: number, first: string?, home: boolean): string?
+	if not home or total <= 0 then
+		return nil
+	end
+	return if kinds == 1 and total == 1 and first then `{first}: into the Breaker` else `{total} shards: into the Breaker`
+end
+
+-- The readout's light (AR12; Config.Hud.Readout): one gradient across the well's square, `side` points each way, turned
+-- so its lines rise `lean` of a point for each point to the right. Returns its turn in degrees (90 is top to foot) and
+-- its length in points: the square's reach along the gradient's way.
+function Hud.FrontTurn(side: number, lean: number): (number, number)
+	local angle = math.atan2(1, lean)
+	return math.deg(angle), side * (math.abs(math.cos(angle)) + math.abs(math.sin(angle)))
+end
+
+-- A stop `below` the front's line, in points (above it: negative), as its place along a gradient `length` points long
+-- whose middle is the line: 0 its top end, 1 its foot. Past either end it holds the end.
+function Hud.FrontAt(below: number, length: number): number
+	return math.clamp(0.5 + below / math.max(length, 1e-6), 0, 1)
+end
+
+-- How far the gradient is carried along its way for the well to stand `share` full: the line at the foot when empty, at
+-- the top when full, in the middle at a half. `travel`: the carry that takes the line from the middle to the foot.
+function Hud.FrontOffset(share: number, travel: number): number
+	return (0.5 - math.clamp(if share == share then share else 0, 0, 1)) * 2 * travel
+end
+
 return Hud

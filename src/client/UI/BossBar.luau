@@ -23,7 +23,6 @@
 --                                               "Whole", "Leave")
 --   BossBar.Trail(bar)                          for tests: the trail's share of the bar, and the fill's
 
-local TextService = game:GetService("TextService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
@@ -89,8 +88,6 @@ local RULE_GAP = 8 -- between a rule's taper and the title
 local CREST_INTO = 2 -- the crest's foot this far into the title row's top
 local EDGE = 0.25 -- the dark edge's transparency on the words
 local DARK = Theme.Colour.Backing
-local NAME_FONT = Enum.Font.BuilderSansBold -- Theme.Font.Strong, for measuring
-local BODY_FONT = Enum.Font.BuilderSansMedium -- Theme.Font.Body
 
 local function capital(s: string): string
 	return string.upper(string.sub(s, 1, 1)) .. string.sub(s, 2)
@@ -111,8 +108,8 @@ local function ease(x: number): number
 	return 1 - (1 - t) ^ 4 -- Quart out, Theme.Motion's curve
 end
 
-local function measure(label: TextLabel, font: Enum.Font): number
-	return TextService:GetTextSize(label.Text, label.TextSize, font, Vector2.new(4000, 400)).X
+local function measure(label: TextLabel): number
+	return Text.Wide(label, label.Text)
 end
 
 function BossBar.new(parent: Instance): Bar
@@ -308,14 +305,14 @@ end
 -- The name row cut to its words, and the title's rules to the room beside the title: measured at the sizes the labels
 -- draw (they grow on a small phone). Nothing when unchanged.
 local function fit(bar: Bar)
-	local key = `{bar.Name.Text}\0{bar.Level.Text}\0{bar.Title.Text}\0{bar.Name.TextSize}\0{bar.Title.TextSize}\0{bar.Width}`
+	local key = `{bar.Name.Text}\0{bar.Level.Text}\0{bar.Title.Text}\0{bar.Name.TextSize}\0{bar.Title.TextSize}\0{bar.Width}\0{bar.Name.FontFace.Family}\0{bar.Name.FontFace.Weight.Value}\0{Text.Epoch()}`
 	if bar.Fitted == key then
 		return
 	end
 	bar.Fitted = key
 	local high = bar.NameRow.Size.Y.Offset
-	local named = measure(bar.Name, NAME_FONT) + 2
-	local levelled = if bar.Level.Text ~= "" then measure(bar.Level, BODY_FONT) + 2 else 0
+	local named = measure(bar.Name) + 2
+	local levelled = if bar.Level.Text ~= "" then measure(bar.Level) + 2 else 0
 	local gem = if bar.Gem.Visible then GEM + GAP else 0
 	local total = gem + named + (if levelled > 0 then GAP + levelled else 0)
 	bar.NameRow.Size = UDim2.fromOffset(total, high)
@@ -327,7 +324,7 @@ local function fit(bar: Bar)
 	bar.Fit = math.min(1, (bar.Width - 8) / math.max(total, 1))
 	-- Each rule's box: from its tip's outer point at the piece's edge to its taper's end, RULE_GAP short of the title; it
 	-- shows while the box holds its tip and its taper unstretched.
-	local reach = (bar.Width - measure(bar.Title, BODY_FONT)) / 2 - RULE_GAP
+	local reach = (bar.Width - measure(bar.Title)) / 2 - RULE_GAP
 	for i, rule in bar.Rules do
 		local kit = RULES[i]
 		local im = UIKit.Images[kit]

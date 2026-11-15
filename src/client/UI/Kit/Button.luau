@@ -43,6 +43,7 @@ export type Props = {
 	Under: boolean?, -- disabled, it keeps its name and says why under it
 	Quiet: boolean?, -- a secondary press: no accent's base line at rest, so it never reads as the thing to press
 	Inset: number?, -- its label's middle this many pixels right of the button's, room for a mark its owner lays at its left
+	Bare: boolean?, -- no plate of the kit: its owner lays its own face in its skin (the spectate eye's plate), which squeezes as a face does
 	OnPress: () -> ...any,
 }
 
@@ -59,6 +60,7 @@ type State = {
 	Primary: boolean,
 	Quiet: boolean,
 	Inset: number,
+	Bare: boolean,
 	Held: boolean,
 	DownAt: number?, -- the touch's moment, while its squeeze runs
 	UpAt: number?, -- the let-go's
@@ -143,6 +145,11 @@ local function paint(button: TextButton, state: State)
 		reason.TextColor3 = p.Soft
 	end
 	state.Label.TextColor3 = if now == "Disabled" then p.Soft elseif inked then (p.SelectedText or p.Text) else p.Text
+	if state.Bare then
+		for _, layer in layers do
+			layer.Visible = false
+		end
+	end
 	button:SetAttribute("Disabled", state.Disabled or "")
 	button:SetAttribute("Pending", state.Pending)
 	button:SetAttribute("State", now)
@@ -341,6 +348,7 @@ function Button.new(props: Props): TextButton
 		Primary = props.Primary == true,
 		Quiet = props.Quiet == true,
 		Inset = props.Inset or 0,
+		Bare = props.Bare == true,
 		Held = false,
 		Scales = scales,
 		Flash = nil,

@@ -129,38 +129,68 @@ return {
 	},
 	-- The type edge's arrow on the target's card (docs/ui.md): up when the lead's type beats the target's.
 	Arrow = { Up = UIKit.Good, Down = Color3.fromHex("#A6ADBA") },
-	-- The signature's ring (docs/ui.md: right edge, low; it fills over the cooldown and flashes when it fires). The builder's
-	-- seed for its blockout, 2026-11-12.
-	Ring = {
-		Size = 46, -- across, authored
-		Weight = 4, -- the ring's width
-		Flash = 0.35, -- seconds of the flash when it fires
-		Ready = 0.6, -- seconds the ring's glow swells when it's ready again
-		-- Only in a fight (TR3's verdict, fix 5): seconds it takes to fade in as the lead takes a target, how long it stays
-		-- after the lead has none, and seconds to fade out. The builder's seeds.
+	-- The signature's readout (AR12, V2 Block; hud_colour.json's pieces.readout): a plate Size across in the lead's corner,
+	-- Under the lead card's foot and Right of its left, holding the lead's signature's own icon (Icons, by the action's
+	-- id; one not drawn yet shows its class's glyph, Glyph of the plate across). Its well (x0, y0, x1, y1 in the plate's
+	-- points) fills from the foot like a conduit: the well's shape under one gradient, whose line rises Lean of a point
+	-- for each point to the right; Front, the gradient's stops Below that line in points, how Solid and in what Colour
+	-- (Modulo's, DESIGN); Travel, the gradient's offset that carries the line from the well's middle to its foot, found
+	-- in Studio. Ready, the plate is white-hot with its icon dark on the light. It empties over Flash seconds as the move
+	-- fires, swelling Swell of its size, and swells ReadySwell once over Ready seconds when it's ready again. Only in a
+	-- fight (TR3's verdict, fix 5): FadeIn as the lead takes a target, Linger after it has none, FadeOut; Always shows it
+	-- out of a fight too, to judge its corner whole. The builder's seeds, tuned live.
+	Readout = {
+		Size = 58,
+		Under = 10,
+		Right = 2,
+		Well = { 4, 4, 54, 54 },
+		Lean = 0.12,
+		Front = {
+			{ Below = -5.8, Solid = 0, Colour = Color3.fromHex("#FFF4D6") },
+			{ Below = -1.35, Solid = 0.55, Colour = Color3.fromHex("#FFF4D6") },
+			{ Below = -1.25, Solid = 1, Colour = Color3.fromHex("#FFFFFF") },
+			{ Below = 1.25, Solid = 1, Colour = Color3.fromHex("#FFFFFF") },
+			{ Below = 1.35, Solid = 0.78, Colour = Color3.fromHex("#FFF4D6") },
+			{ Below = 5.8, Solid = 0.36, Colour = Color3.fromHex("#FFF4D6") },
+			{ Below = 8, Solid = 0.28, Colour = Color3.fromHex("#FFF4D6") },
+		},
+		Travel = 0.5,
+		Icons = { RookHaymaker = "SignatureHaymaker", LyricHeldNote = "SignatureHeldNote" } :: { [string]: string },
+		Glyph = 0.5,
+		Ink = Color3.fromHex("#14161B"), -- a glyph on the ready plate
+		Flash = 0.35,
+		Swell = 0.25,
+		Ready = 0.6,
+		ReadySwell = 0.12,
 		FadeIn = 0.2,
 		Linger = 1,
 		FadeOut = 0.35,
-		-- TR13's looks in grey (UI.RingLooks; research's entry, 2026-11-14): Look puts "Rim", "Pool" or "Pips" in the
-		-- ring's place ("Current" keeps today's ring); Beside shows the three in a row left of the ring, Gap apart, on the
-		-- same cooldown, for one capture at phone size. Both tuned live. The looks' numbers are the builder's: Rim's head
-		-- Head pixels across and its pulse out to Pulse of the rim; Pool's bright line Band of the well tall; Pips' Count
-		-- segments, Long by Short pixels.
-		Look = "Current",
-		Beside = false,
-		Gap = 22,
-		Looks = {
-			Rim = { Head = 7, Pulse = 1.5 },
-			Pool = { Band = 0.08 },
-			Pips = { Count = 8, Long = 10, Short = 5 },
-		},
+		Always = false,
 	},
 	-- The spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never moved in a fight, and a small
-	-- button follows the lead instead). The eye: Size authored pixels square (Theme.Size.Tap: a whole 44 px target at the
-	-- layer's smallest scale), Gap from the signature's ring, at Place: "Above", "Left" or "Below" the ring, the three
-	-- judged at phone size. On, the camera's point eases from the avatar's focus to the lead's, Height studs over the lead's root, about 95% of the way in Ease seconds
-	-- (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
-	Spectate = { Size = 52, Gap = 8, Place = "Above", Ease = 0.3, Height = 1.5 },
+	-- button follows the lead instead). The eye (AR12: one family with the readout): its plate Plate across, open and lit
+	-- while on, shut and dim while off, in a tap box Size square (Theme.Size.Tap: a whole 44 px target at the layer's
+	-- smallest scale); Right of the readout and Lower than its top. Off while it can't be used, it draws at Off of itself.
+	-- On, the camera's point eases from the avatar's focus to the lead's, Height studs over the lead's root, about 95% of
+	-- the way in Ease seconds (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
+	Spectate = { Size = 52, Plate = 44, Right = 10, Lower = 7, Off = 0.45, Ease = 0.3, Height = 1.5 },
+	-- The HUD's face (docs/ui.md, rule 3; the director, 2026-11-15: "the whole main hud of the player need a refont"): Face
+	-- names one of Faces, from Roblox's own font library, for every label on FaceLayers; a label authored under
+	-- FaceSmallUnder takes FaceSmall's when it names one (a face that fails at 14 pt keeps a plainer one for small text).
+	-- A face: its family, the weight each of the kit's three roles draws in, and a digit's width in its text size at
+	-- Strong (a health bar's number takes its compact form by it). Tuned live: Tune("Hud.Face", "Oswald").
+	Face = "BuilderSans",
+	FaceSmall = "",
+	FaceSmallUnder = 16,
+	FaceLayers = { "Hud", "Toasts" },
+	Faces = {
+		BuilderSans = { Family = "rbxasset://fonts/families/BuilderSans.json", Body = "Medium", Strong = "Bold", Number = "ExtraBold", Digit = 0.56 },
+		Sarpanch = { Family = "rbxasset://fonts/families/Sarpanch.json", Body = "Medium", Strong = "Bold", Number = "ExtraBold", Digit = 0.6 },
+		Oswald = { Family = "rbxasset://fonts/families/Oswald.json", Body = "Regular", Strong = "Medium", Number = "SemiBold", Digit = 0.5 },
+		TitilliumWeb = { Family = "rbxasset://fonts/families/TitilliumWeb.json", Body = "SemiBold", Strong = "Bold", Number = "Bold", Digit = 0.52 },
+	} :: { [string]: { Family: string, Body: string, Strong: string, Number: string, Digit: number } },
+	-- The top right's pills (AR12, V2 Block): each wears its system's row (Config.UIKit.Systems). Widths, authored.
+	Pills = { Credits = 124, Power = 200 },
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
 	-- The way home after a lone fall (TR16), in grey: the trail is a line Width studs wide and Thick high, Lift over the
 	-- door's floor (over the elite's square's 0.1 mark), in Colour at Transparency, keeping Lane studs in from the stall

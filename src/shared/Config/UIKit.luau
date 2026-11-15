@@ -6,9 +6,28 @@
 -- with each image's group upload id: run it again after a re-cut, never edit by hand.
 -- A slice is white where a palette colours it. Cut is left, top, right, bottom in points; Pad is how far an image
 -- reaches past its piece's box on every side; At, a lead card image's box's top left in the card's points. The kit
--- draws them (src/client/UI/Kit, src/client/UI/LeadCard.luau).
+-- draws them (src/client/UI/Kit, src/client/UI/LeadCard.luau). Systems: AR12's colour, a row a system
+-- (build/handoff/UI/hud/colour/hud_colour.json): a piece of the HUD wears its system's body, edge, block and mark.
 
 export type Image = { Id: string, Pixels: Vector2, Points: Vector2, Cut: { number }?, Pad: number, At: Vector2? }
+export type System = {
+	Colour: Color3,
+	Pale: Color3,
+	Deep: Color3,
+	Icon: string, -- its icon in light
+	Mark: string, -- its mark in ink, on its block
+	Block: { Color3 }, -- the block's colours, top to foot
+	Main: { Color3 }, -- a screen's one main action, filled
+	Panel: { Color3 },
+	Alpha: number,
+	Button: { Color3 },
+	Pressed: { Color3 },
+	Edge: Color3,
+	Glint: Color3,
+	Channel: Color3,
+	Text: Color3,
+	Soft: Color3,
+}
 export type Palette = {
 	Panel: { Color3 }, -- a panel's body, top to bottom
 	Alpha: number,
@@ -129,6 +148,14 @@ return {
 			Core = 0.5,
 		},
 	} :: { [string]: Palette },
+	Systems = {
+		Power = { Colour = Color3.fromHex("#FFE266"), Pale = Color3.fromHex("#FFF7C2"), Deep = Color3.fromHex("#B88A14"), Icon = "Bolt", Mark = "InkBolt", Block = { Color3.fromHex("#FFE986"), Color3.fromHex("#EAC84D") }, Main = { Color3.fromHex("#FFE882"), Color3.fromHex("#E3BF45") }, Panel = { Color3.fromHex("#4D3711"), Color3.fromHex("#211605") }, Alpha = 0.94, Button = { Color3.fromHex("#664F1D"), Color3.fromHex("#33260D") }, Pressed = { Color3.fromHex("#211605"), Color3.fromHex("#4D3711") }, Edge = Color3.fromHex("#FFE266"), Glint = Color3.fromHex("#FFF7C2"), Channel = Color3.fromHex("#2E2A19"), Text = Color3.fromHex("#FFF7C2"), Soft = Color3.fromHex("#CEC594") },
+		Base = { Colour = Color3.fromHex("#FFE266"), Pale = Color3.fromHex("#FFF7C2"), Deep = Color3.fromHex("#B88A14"), Icon = "Plant", Mark = "InkPlant", Block = { Color3.fromHex("#FFE986"), Color3.fromHex("#EAC84D") }, Main = { Color3.fromHex("#FFE882"), Color3.fromHex("#E3BF45") }, Panel = { Color3.fromHex("#4D3711"), Color3.fromHex("#211605") }, Alpha = 0.94, Button = { Color3.fromHex("#664F1D"), Color3.fromHex("#33260D") }, Pressed = { Color3.fromHex("#211605"), Color3.fromHex("#4D3711") }, Edge = Color3.fromHex("#FFE266"), Glint = Color3.fromHex("#FFF7C2"), Channel = Color3.fromHex("#2E2A19"), Text = Color3.fromHex("#FFF7C2"), Soft = Color3.fromHex("#CEC594") },
+		Credits = { Colour = Color3.fromHex("#40DCC6"), Pale = Color3.fromHex("#D6FFF7"), Deep = Color3.fromHex("#13867A"), Icon = "CoinMint", Mark = "InkCoin", Block = { Color3.fromHex("#74E8D7"), Color3.fromHex("#32C2AF") }, Main = { Color3.fromHex("#6DE7D5"), Color3.fromHex("#2EBAA8") }, Panel = { Color3.fromHex("#0E4541"), Color3.fromHex("#071E1F") }, Alpha = 0.94, Button = { Color3.fromHex("#155A54"), Color3.fromHex("#0C2D2C") }, Pressed = { Color3.fromHex("#071E1F"), Color3.fromHex("#0E4541") }, Edge = Color3.fromHex("#40DCC6"), Glint = Color3.fromHex("#D6FFF7"), Channel = Color3.fromHex("#0F2928"), Text = Color3.fromHex("#D6FFF7"), Soft = Color3.fromHex("#78C2BF") },
+		Voidkin = { Colour = Color3.fromHex("#DCCBFF"), Pale = Color3.fromHex("#FAF7FF"), Deep = Color3.fromHex("#7C66CC"), Icon = "Shard", Mark = "InkShard", Block = { Color3.fromHex("#E7DAFF"), Color3.fromHex("#BFADF0") }, Main = { Color3.fromHex("#E5D8FF"), Color3.fromHex("#B6A3EB") }, Panel = { Color3.fromHex("#35286B"), Color3.fromHex("#171033") }, Alpha = 0.94, Button = { Color3.fromHex("#4C3F80"), Color3.fromHex("#271F43") }, Pressed = { Color3.fromHex("#171033"), Color3.fromHex("#35286B") }, Edge = Color3.fromHex("#DCCBFF"), Glint = Color3.fromHex("#FAF7FF"), Channel = Color3.fromHex("#282631"), Text = Color3.fromHex("#FAF7FF"), Soft = Color3.fromHex("#BEBBD9") },
+		Regalia = { Colour = Color3.fromHex("#6C7BFF"), Pale = Color3.fromHex("#E2E6FF"), Deep = Color3.fromHex("#3340B8"), Icon = "Crest", Mark = "InkCrest", Block = { Color3.fromHex("#95A0FF"), Color3.fromHex("#5B69EA") }, Main = { Color3.fromHex("#8F9BFF"), Color3.fromHex("#5563E3") }, Panel = { Color3.fromHex("#1D2A6E"), Color3.fromHex("#0C1233") }, Alpha = 0.94, Button = { Color3.fromHex("#283582"), Color3.fromHex("#141A43") }, Pressed = { Color3.fromHex("#0C1233"), Color3.fromHex("#1D2A6E") }, Edge = Color3.fromHex("#6C7BFF"), Glint = Color3.fromHex("#E2E6FF"), Channel = Color3.fromHex("#161A31"), Text = Color3.fromHex("#E2E6FF"), Soft = Color3.fromHex("#8C96D9") },
+		Map = { Colour = Color3.fromHex("#FF5C93"), Pale = Color3.fromHex("#FFE3EE"), Deep = Color3.fromHex("#B8245C"), Icon = "Route", Mark = "InkRoute", Block = { Color3.fromHex("#FF8BB3"), Color3.fromHex("#EA4B82") }, Main = { Color3.fromHex("#FF85AE"), Color3.fromHex("#E3467D") }, Panel = { Color3.fromHex("#5A1D3F"), Color3.fromHex("#260B1B") }, Alpha = 0.94, Button = { Color3.fromHex("#71264B"), Color3.fromHex("#371125") }, Pressed = { Color3.fromHex("#260B1B"), Color3.fromHex("#5A1D3F") }, Edge = Color3.fromHex("#FF5C93"), Glint = Color3.fromHex("#FFE3EE"), Channel = Color3.fromHex("#2E1520"), Text = Color3.fromHex("#FFE3EE"), Soft = Color3.fromHex("#CE89A8") },
+	} :: { [string]: System },
 	Images = {
 		PanelFill = { Id = "rbxassetid://86431364719431", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Cut = { 12, 12, 12, 12 }, Pad = 0 },
 		PanelEdge = { Id = "rbxassetid://71604691080995", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Cut = { 12, 12, 12, 12 }, Pad = 0 },
@@ -278,6 +305,21 @@ return {
 		CardTargetEliteFrame = { Id = "rbxassetid://131459324902931", Pixels = Vector2.new(944, 251), Points = Vector2.new(236, 62.75), Cut = { 29.51, 31.125, 69.03, 31.125 }, Pad = 10, At = Vector2.new(41.305, 21) },
 		CardTargetEliteTab = { Id = "rbxassetid://84901917471180", Pixels = Vector2.new(252, 102), Points = Vector2.new(63, 25.5), Pad = 5, At = Vector2.new(204.28, 21) },
 		CardTargetEliteTabRim = { Id = "rbxassetid://91860580642050", Pixels = Vector2.new(252, 102), Points = Vector2.new(63, 25.5), Pad = 5, At = Vector2.new(204.28, 21) },
+		CoinMint = { Id = "rbxassetid://92665593262194", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		InkBolt = { Id = "rbxassetid://120973489160906", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		InkCoin = { Id = "rbxassetid://110751770728491", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		InkShard = { Id = "rbxassetid://118494096156853", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		BlockPill = { Id = "rbxassetid://131973766620714", Pixels = Vector2.new(152, 120), Points = Vector2.new(38, 30), Pad = 0 },
+		ReadoutPlate = { Id = "rbxassetid://116997571158340", Pixels = Vector2.new(440, 440), Points = Vector2.new(110, 110), Pad = 26 },
+		ReadoutFace = { Id = "rbxassetid://80596666737707", Pixels = Vector2.new(440, 440), Points = Vector2.new(110, 110), Pad = 26 },
+		ReadoutLight = { Id = "rbxassetid://78737458587337", Pixels = Vector2.new(200, 200), Points = Vector2.new(50, 50), Pad = 0 },
+		ReadoutReady = { Id = "rbxassetid://104464052769520", Pixels = Vector2.new(440, 440), Points = Vector2.new(110, 110), Pad = 26 },
+		SignatureHaymaker = { Id = "rbxassetid://112987756099774", Pixels = Vector2.new(232, 232), Points = Vector2.new(58, 58), Pad = 0 },
+		SignatureHaymakerReady = { Id = "rbxassetid://121269653698077", Pixels = Vector2.new(232, 232), Points = Vector2.new(58, 58), Pad = 0 },
+		SignatureHeldNote = { Id = "rbxassetid://132368054601171", Pixels = Vector2.new(232, 232), Points = Vector2.new(58, 58), Pad = 0 },
+		SignatureHeldNoteReady = { Id = "rbxassetid://113427960262970", Pixels = Vector2.new(232, 232), Points = Vector2.new(58, 58), Pad = 0 },
+		EyeOff = { Id = "rbxassetid://124465473852752", Pixels = Vector2.new(336, 336), Points = Vector2.new(84, 84), Pad = 20 },
+		EyeOn = { Id = "rbxassetid://139858137087045", Pixels = Vector2.new(336, 336), Points = Vector2.new(84, 84), Pad = 20 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {

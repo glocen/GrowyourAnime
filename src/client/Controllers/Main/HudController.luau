@@ -4,10 +4,13 @@
 -- on its tab with the class mark, the type's stud, a long health light with current and maximum inside, a thin
 -- experience light; fallen, the portrait dims and the health says the seconds until it's back. Top centre, the target's
 -- card (UI.TargetCard), built like the lead's, only in a fight: its stud and gem, the type edge's arrow before the first
--- hit, its name and level on its tab, its health light. Top right, two pills: Credits, and Electricity stored
--- over its cap with the rate and a thread of charge. Right edge, low, the signature's ring: it fills over the cooldown
--- and flashes when it fires. Bottom centre, the dock: Voidkin and Base, selected while their screen is open, and the
--- chip over it while a shard waits. Everything reads the fighters' attributes (FightService) or the save's copy
+-- hit, its name and level on its tab, its health light. Top right, two pills, each in its
+-- system's colour (AR12, V2 Block; UI.Kit.Pill): Credits, and
+-- Electricity stored over its cap with the rate and a thread of charge. Under the lead's card, the signature's readout
+-- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
+-- beside it the spectate eye. Bottom centre, the dock: Inventory and Base, selected while their screen is open, and
+-- over it the shards' hint while a shard waits and the player is home. The HUD's text wears one face
+-- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
 -- A keeper's try and an elite take their own HUD (TR5's grey variants, Config.Hud.Boss): the keeper's title card
 -- (UI.BossBar) at the foot or the top in the target card's stead, and an elite's heavier frame on the target card.
@@ -27,6 +30,7 @@ local Profile = require(Shared.Data.Profile)
 local BaseConfig = require(Shared.Config.Base)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
+local Actions = require(Shared.Definitions.Actions)
 local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
 local Markers = require(Shared.World.Markers)
@@ -36,11 +40,12 @@ local Layers = require(UI.Layers)
 local World = require(UI.World)
 local Read = require(UI.Read)
 local Panel = require(UI.Kit.Panel)
+local Pill = require(UI.Kit.Pill)
 local Text = require(UI.Kit.Text)
 local Bar = require(UI.Kit.Bar)
 local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
-local RingLooks = require(UI.RingLooks)
+local Readout = require(UI.Readout)
 local LeadCard = require(UI.LeadCard)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local TargetCard = require(UI.TargetCard)
@@ -61,7 +66,6 @@ local FadeController = require(script.Parent.FadeController)
 local HudController = {}
 
 local player = Players.LocalPlayer
-local GRAPHITE = UIKit.Palettes.Graphite
 local PAD = Theme.Size.Pad
 -- The cards and the pills fit the smallest phone (Theme.Smallest at the scale's floor, 668 authored across) side by side:
 -- the lead's 8 to 220, the target's centred from 226 to 442, the Electricity pill from 460 (the UI lint's overlap check).
@@ -70,29 +74,19 @@ local PAD = Theme.Size.Pad
 -- frame's crest) stands 6 points under its top, so it clears Roblox's top bar by more than the 5.5 authored px research's
 -- pass on TR3's fix round asked of the crest (call 1).
 local TOP = 17
-local ELECTRICITY = 200 -- the Electricity pill's width: "600 / 600" and the rate, or "full"
-local PILL = 30 -- a pill's height (tools/blender/ui_kit.py, `pill`)
+local PILL = Pill.Height
 local BASE_EVERY = 0.25 -- seconds between reads of the base as it stands now: each copies the save
 local SMOOTH = 12 -- frames in a row under 1/30 s before the join's black lifts: a join's stall leaves text undrawn a moment
 local DOCK = Vector2.new(96, Theme.Size.Tap)
-local WELL = 0.25 -- the signature ring's well, its transparency shown
 
-type Ring = {
-	Frame: Frame,
-	Halves: { UIGradient },
-	Glyph: ImageLabel,
-	Flash: UIStroke,
-	Scale: UIScale,
-	Well: Frame,
-	Strokes: { UIStroke }, -- the channel and the two halves' light, faded with the ring
+type Signature = {
+	Piece: Readout.Piece,
 	Ready: number, -- the server's Ready we last saw
 	FiredAt: number, -- os.clock() of the last flash
 	ReadyAt: number, -- os.clock() it last became ready
 	Full: boolean,
 	FoughtAt: number, -- os.clock() the lead last had a target
 	Seen: number, -- 0 hidden to 1 shown: it fades in as a fight starts, out a moment after it ends
-	InPlace: { [string]: RingLooks.Look }, -- TR13's looks in the ring's place, made when first picked
-	Beside: { [string]: RingLooks.Look }, -- and beside it, for the comparison
 }
 
 local lead: LeadCard.Card
@@ -106,7 +100,7 @@ local rate: TextLabel
 local charge: Frame
 local chip: Frame
 local chipText: TextLabel
-local ring: Ring
+local readout: Signature
 local eye: TextButton -- the spectate toggle (TR11)
 local nextButton: TextButton -- under a fallen lead's card: sends out the next (TR12)
 local homeButton: TextButton -- in its place when none other is ready: the way home (TR16)
@@ -153,11 +147,6 @@ local function kindOf(model: Model): (string, string)
 	local enemy = Enemies.ById[def]
 	local typed = model:GetAttribute("Type")
 	return (if type(typed) == "string" then typed elseif enemy then enemy.Type else ""), ""
-end
-
-local function icon(holder: GuiObject, name: string, cx: number, cy: number, size: number): ImageLabel
-	local image = Skin.Icon(holder, name, cx, cy, size, nil, 2)
-	return image
 end
 
 -- Swaps an icon's picture to another of the kit's, keeping its place and size.
@@ -212,28 +201,26 @@ local function point(holder: Frame, way: string)
 	end
 end
 
--- A pill (tools/blender/ui_kit.py, `pill`): its icon, its value, what's after it in soft ink, and for electricity a thread.
-local function pill(name: string, order: number, width: number, image: string): (TextLabel, TextLabel, Frame?, ImageLabel)
-	local frame = Panel.new({
+-- A pill of the top right, in its system's colour (UI.Kit.Pill): its mark on its block, its value, what's after it in
+-- soft ink, and for electricity a thread.
+local function pill(name: string, order: number, width: number, system: string): Pill.Parts
+	local made = Pill.new({
 		Name = name,
-		Size = UDim2.fromOffset(width, PILL),
+		System = system,
+		Width = width,
 		Position = UDim2.new(1, -PAD, 0, TOP + (order - 1) * (PILL + Theme.Size.Gap)),
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = Layers.Get("Hud"),
+		Thread = name == "Electricity",
 	})
-	local mark = icon(frame, image, 17, PILL / 2, 21)
-	local threaded = name == "Electricity"
-	local up = if threaded then -2 else 0
-	local value = Text.new({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Box = UDim2.fromOffset(width - 33 - 8, PILL), Position = UDim2.fromOffset(31, up), Parent = frame })
-	local extra = Text.new({ Name = "Extra", Size = Theme.Text.Caption, Colour = GRAPHITE.Soft, Align = Enum.TextXAlignment.Right, Box = UDim2.fromOffset(80, PILL), Position = UDim2.new(1, -10, 0, up), AnchorPoint = Vector2.new(1, 0), Parent = frame })
-	local thread = if threaded then Bar.new({ Name = "Charge", Size = UDim2.fromOffset(width - 40, 3), Position = UDim2.fromOffset(31, PILL - 8), Colour = UIKit.Charge, Parent = frame }) else nil
 	-- Shown once it has something to say: at a join the save's copy comes a moment after the HUD (TR2's rejoin take).
+	local frame, value = made.Frame, made.Value
 	frame.Visible = false
 	value:GetPropertyChangedSignal("Text"):Connect(function()
 		frame.Visible = value.Text ~= ""
 	end)
 	Pop.Centre(frame) -- it swells in place
-	return value, extra, thread, mark
+	return made
 end
 
 -- A reward won into a pill (TR6; docs/research/vfx-reference.md, "UI effects", DESIGN 3): from `from` (on the HUD layer,
@@ -259,160 +246,31 @@ local function reward(value: TextLabel, mark: ImageLabel, from: Vector2?, image:
 	end
 end
 
--- The signature's ring: a channel round the class's glyph, and two halves of light that fill it clockwise from the top.
-local function signatureRing(): Ring
-	local config = HudConfig.Ring
-	local frame = Instance.new("Frame")
-	frame.Name = "Signature"
-	frame.BackgroundTransparency = 1
-	frame.Size = UDim2.fromOffset(config.Size, config.Size)
-	frame.AnchorPoint = Vector2.new(1, 0.5)
-	frame.Position = UDim2.new(1, -PAD - 6, 0.6, 0)
-	frame.Visible = false
-	local scale = Instance.new("UIScale")
-	scale.Parent = frame
-	local function circle(name: string, colour: Color3, z: number): (Frame, UIStroke)
-		local disc = Instance.new("Frame")
-		disc.Name = name
-		disc.BackgroundTransparency = 1
-		disc.Size = UDim2.fromScale(1, 1)
-		disc.ZIndex = z
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0.5, 0)
-		corner.Parent = disc
-		local stroke = Instance.new("UIStroke")
-		stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		stroke.Color = colour
-		stroke.Thickness = config.Weight
-		stroke.Parent = disc
-		return disc, stroke
-	end
-	local well, channel = circle("Well", GRAPHITE.Channel, 1)
-	well.BackgroundColor3 = GRAPHITE.Well
-	well.BackgroundTransparency = WELL
-	well.Parent = frame
-	local strokes = { channel }
-	local halves = {}
-	for side = 0, 1 do
-		local clip = Instance.new("Frame")
-		clip.Name = if side == 0 then "LeftHalf" else "RightHalf"
-		clip.BackgroundTransparency = 1
-		clip.ClipsDescendants = true
-		clip.Size = UDim2.fromScale(0.5, 1)
-		clip.Position = UDim2.fromScale(side * 0.5, 0)
-		clip.ZIndex = 2
-		local disc, stroke = circle("Light", GRAPHITE.Accent, 2)
-		disc.Size = UDim2.fromScale(2, 1)
-		disc.Position = UDim2.fromScale(-side, 0)
-		local gradient = Instance.new("UIGradient")
-		gradient.Transparency = NumberSequence.new({
-			NumberSequenceKeypoint.new(0, 0),
-			NumberSequenceKeypoint.new(0.5, 0),
-			NumberSequenceKeypoint.new(0.501, 1),
-			NumberSequenceKeypoint.new(1, 1),
-		})
-		gradient.Parent = stroke
-		table.insert(strokes, stroke)
-		disc.Parent = clip
-		clip.Parent = frame
-		table.insert(halves, gradient)
-	end
-	local _, flash = circle("Flash", Color3.new(1, 1, 1), 4)
-	flash.Thickness = config.Weight * 2
-	flash.Transparency = 1
-	;(flash.Parent :: Frame).Parent = frame
-	local glyph = Skin.Icon(frame, "ClassWarriorGlyph", config.Size / 2, config.Size / 2, config.Size * 0.5, GRAPHITE.Text, 3)
-	glyph.Name = "Glyph"
-	frame.Parent = Layers.Get("Hud")
-	return {
-		Frame = frame,
-		Halves = halves,
-		Glyph = glyph,
-		Flash = flash,
-		Scale = scale,
-		Well = well,
-		Strokes = strokes,
-		Ready = 0,
-		FiredAt = -math.huge,
-		ReadyAt = -math.huge,
-		Full = true,
-		FoughtAt = -math.huge,
-		Seen = 0,
-		InPlace = {},
-		Beside = {},
-	}
-end
-
--- TR13's looks in grey (UI.RingLooks): the one picked in the ring's place, today's ring hidden under it; and, with Beside,
--- the three in a row left of the ring, on the same state, each with its name.
-local function ringLooks(state: RingLooks.State): boolean
-	local config = HudConfig.Ring
-	local pick = tostring(config.Look)
-	local current = not RingLooks.Has(pick)
-	for _, child in ring.Frame:GetChildren() do
-		if child:IsA("GuiObject") and child:GetAttribute("Look") == nil then
-			child.Visible = current
-		end
-	end
-	for _, name in RingLooks.Names do
-		local look = ring.InPlace[name]
-		if name == pick and look == nil then
-			look = RingLooks.new(name, config.Size, config.Weight, ring.Frame, false)
-			ring.InPlace[name] = look
-		end
-		if look then
-			look.Frame.Visible = name == pick
-			if name == pick then
-				RingLooks.Step(look, state)
+-- The lead's signature: its kit's action with a cooldown (Definitions.Actions), by the lead's definition; "" for none.
+local signatures: { [string]: string } = {}
+local function signatureOf(def: string): string
+	local known = signatures[def]
+	if known == nil then
+		known = ""
+		for _, action in Actions.KitOf(def) do
+			if action.Cooldown > 0 then
+				known = action.Id
 			end
 		end
+		signatures[def] = known
 	end
-	for index, name in RingLooks.Names do
-		local look = ring.Beside[name]
-		if config.Beside == true and look == nil then
-			look = RingLooks.new(name, config.Size, config.Weight, Layers.Get("Hud"), true)
-			ring.Beside[name] = look
-		end
-		if look then
-			look.Frame.AnchorPoint = ring.Frame.AnchorPoint
-			look.Frame.Position = ring.Frame.Position - UDim2.fromOffset(index * (config.Size + config.Gap), 0)
-			look.Frame.Visible = config.Beside == true and ring.Frame.Visible
-			if look.Frame.Visible then
-				RingLooks.Step(look, state)
-			end
-		end
-	end
-	return current
+	return known
 end
 
--- The spectate toggle (TR11; Config.Hud.Spectate): a small eye beside the signature's ring, a whole tap target, lit while
--- it's on. In grey: the kit's button with an eye of a stroked almond and its pupil; the finished look waits for TR13's
--- frames. A tap turns it on or off (SpectateController).
-local EYE_PLACES: { [string]: (number, number, number, number) -> UDim2 } = {
-	Above = function(ring: number, size: number, gap: number, edge: number): UDim2
-		return UDim2.new(1, -edge - ring / 2, 0.6, -(ring / 2 + gap + size / 2))
-	end,
-	Left = function(ring: number, size: number, gap: number, edge: number): UDim2
-		return UDim2.new(1, -edge - ring - gap - size / 2, 0.6, 0)
-	end,
-	Below = function(ring: number, size: number, gap: number, edge: number): UDim2
-		return UDim2.new(1, -edge - ring / 2, 0.6, ring / 2 + gap + size / 2)
-	end,
-}
-
-local function placeEye()
-	local look = HudConfig.Spectate
-	local place = EYE_PLACES[tostring(look.Place)] or EYE_PLACES.Above
-	eye.Position = place(HudConfig.Ring.Size, look.Size, look.Gap, PAD + 6) -- the ring's own edge (signatureRing)
-	eye.Size = UDim2.fromOffset(look.Size, look.Size)
-	eye:SetAttribute("Place", tostring(look.Place))
-end
-
+-- The spectate toggle (TR11; Config.Hud.Spectate): the eye beside the signature's readout, one family with it (AR12):
+-- its own plate, open and lit while it's on, shut and dim while off, in a whole tap target. A tap turns it on or off
+-- (SpectateController); while it can't be used it draws fainter and says why on a tap.
 local function eyeButton(): TextButton
 	local look = HudConfig.Spectate
 	local button = Button.new({
 		Name = "Spectate",
 		Text = "",
+		Bare = true,
 		Size = UDim2.fromOffset(look.Size, look.Size),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Parent = Layers.Get("Hud"),
@@ -421,109 +279,114 @@ local function eyeButton(): TextButton
 		end,
 	})
 	local skin = Skin.Of(button) -- in the face, so it squeezes with it
-	local almond = Instance.new("Frame")
-	almond.Name = "Eye"
-	almond.BackgroundTransparency = 1
-	almond.AnchorPoint = Vector2.new(0.5, 0.5)
-	almond.Position = UDim2.fromScale(0.5, 0.5)
-	almond.Size = UDim2.fromOffset(24, 14)
-	almond.ZIndex = 12
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0.5, 0)
-	corner.Parent = almond
-	local stroke = Instance.new("UIStroke")
-	stroke.Name = "Lid"
-	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	stroke.Thickness = 2
-	stroke.Color = GRAPHITE.Text
-	stroke.Parent = almond
-	local pupil = Instance.new("Frame")
-	pupil.Name = "Pupil"
-	pupil.BackgroundColor3 = GRAPHITE.Text
-	pupil.AnchorPoint = Vector2.new(0.5, 0.5)
-	pupil.Position = UDim2.fromScale(0.5, 0.5)
-	pupil.Size = UDim2.fromOffset(8, 8)
-	pupil.ZIndex = 13
-	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0.5, 0)
-	round.Parent = pupil
-	pupil.Parent = almond
-	almond.Parent = skin
-	SpectateController.Changed:Connect(function(on: boolean)
-		Button.Set(button, { Selected = on })
-		local ink = if on then GRAPHITE.Accent else GRAPHITE.Text
-		stroke.Color = ink
-		pupil.BackgroundColor3 = ink
-		button:SetAttribute("On", on)
+	local inset = (look.Size - look.Plate) / 2
+	local off = Skin.Lay(skin, "EyeOff", { Name = "Off", X = inset, Y = inset, Z = 12 })
+	local on = Skin.Lay(skin, "EyeOn", { Name = "On", X = inset, Y = inset, Z = 12 })
+	local function show()
+		local lit = SpectateController.On()
+		local whole = if button:GetAttribute("Why") ~= nil then HudConfig.Spectate.Off else 1
+		on.Visible, off.Visible = lit, not lit
+		on.ImageTransparency, off.ImageTransparency = 1 - whole, 1 - whole
+		button:SetAttribute("On", lit)
+	end
+	SpectateController.Changed:Connect(function(lit: boolean)
+		Button.Set(button, { Selected = lit })
+		show()
 	end)
-	button:SetAttribute("On", false)
+	button:GetAttributeChangedSignal("Why"):Connect(show)
+	show()
 	return button
 end
 
--- How full the ring is, 0 to 1: the right half, then the left (each half's gradient turns its light in).
-local function fillRing(share: number)
-	local a = math.clamp(share * 360, 0, 180)
-	local b = math.clamp(share * 360 - 180, 0, 180)
-	ring.Halves[1].Rotation = 180 + b -- the left half
-	ring.Halves[2].Rotation = a -- the right half
-	ring.Frame:SetAttribute("Share", share)
+-- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, the
+-- eye beside it, and after the eye what a fallen lead's card offers (the next lead, or the way home).
+local function placeCorner()
+	local plate, look = HudConfig.Readout, HudConfig.Spectate
+	local card = lead.Frame
+	local left = card.Position.X.Offset + plate.Right
+	local top = card.Position.Y.Offset + card.Size.Y.Offset + plate.Under
+	local piece = readout.Piece.Frame
+	piece.Size = UDim2.fromOffset(plate.Size, plate.Size)
+	piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
+	local x, y = left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2
+	eye.Size = UDim2.fromOffset(look.Size, look.Size)
+	eye.Position = UDim2.fromOffset(x, y)
+	local offer = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
+	nextButton.Position = offer
+	homeButton.Position = offer -- the two share the place: one shows at a time
 end
 
--- The ring shows only in a fight (TR3's verdict, fix 5): it fades in as the lead takes a target, and out a moment after it
--- has none. Hidden, it still follows the cooldown, so it shows the truth the moment it fades in.
-local function stepRing(model: Model?, fighting: boolean, dt: number)
+-- The readout shows only in a fight (TR3's verdict, fix 5): it fades in as the lead takes a target, and out a moment
+-- after it has none. Hidden, it still follows the cooldown, so it shows the truth the moment it fades in.
+local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	local cooldown = if model then model:GetAttribute("Cooldown") else nil
-	local config = HudConfig.Ring
+	local config = HudConfig.Readout
 	local now = os.clock()
+	local piece = readout.Piece
 	local can = model ~= nil and type(cooldown) == "number" and cooldown > 0 and lead.Frame.Visible
-	if can and fighting then
-		ring.FoughtAt = now
+	if can and (fighting or config.Always == true) then
+		readout.FoughtAt = now
 	end
-	local want = can and now - ring.FoughtAt <= config.Linger
+	local want = can and now - readout.FoughtAt <= config.Linger
 	local by = dt / math.max(if want then config.FadeIn else config.FadeOut, 1e-3)
-	ring.Seen = if can then math.clamp(ring.Seen + (if want then by else -by), 0, 1) else 0
-	ring.Frame.Visible = ring.Seen > 0
-	ring.Frame:SetAttribute("Seen", ring.Seen)
-	for _, look in ring.Beside do -- TR13's comparison goes with the ring
-		look.Frame.Visible = look.Frame.Visible and ring.Frame.Visible
-	end
+	readout.Seen = if can then math.clamp(readout.Seen + (if want then by else -by), 0, 1) else 0
+	piece.Frame.Visible = readout.Seen > 0
+	piece.Frame:SetAttribute("Seen", readout.Seen)
 	if not can or model == nil then
 		return
 	end
-	local seen = ring.Seen
-	local function faded(transparency: number): number
-		return 1 - (1 - transparency) * seen
-	end
 	local readyAt = model:GetAttribute("Ready")
 	local ready = if type(readyAt) == "number" then readyAt else 0
-	if ready > ring.Ready + 1e-3 then
-		ring.FiredAt = now -- it fired: the server set when it's ready again
+	if ready > readout.Ready + 1e-3 then
+		readout.FiredAt = now -- it fired: the server set when it's ready again
 	end
-	ring.Ready = ready
+	readout.Ready = ready
 	local share = Hud.Ready(ready, cooldown :: number, workspace:GetServerTimeNow())
 	local full = share >= 1
-	if full and not ring.Full then
-		ring.ReadyAt = now
+	if full and not readout.Full then
+		readout.ReadyAt = now
 	end
-	ring.Full = full
-	fillRing(share)
-	local _, class = kindOf(model)
-	if class ~= "" then
-		swap(ring.Glyph, `Class{class}Glyph`)
-	end
-	ring.Glyph.ImageTransparency = faded(if full then 0 else 0.55)
-	ring.Well.BackgroundTransparency = faded(WELL)
-	for _, stroke in ring.Strokes do
-		stroke.Transparency = faded(0)
-	end
-	local since = now - ring.FiredAt
+	readout.Full = full
+	local since = now - readout.FiredAt
 	local flash = if since < config.Flash then 1 - since / config.Flash else 0
-	ring.Flash.Transparency = faded(1 - flash)
-	local swell = now - ring.ReadyAt
+	local swell = now - readout.ReadyAt
 	local back = if swell < config.Ready then math.sin(math.pi * swell / config.Ready) else 0
-	local current = ringLooks({ Share = share, Full = full, Flash = flash, Swell = back, Since = if full then swell else math.huge, Seen = seen, Class = class })
-	ring.Scale.Scale = if current then 1 + 0.25 * flash + 0.12 * back else 1 -- a look swells on its own
-	ring.Frame:SetAttribute("Flash", flash)
+	local _, class = kindOf(model)
+	Readout.Step(piece, {
+		Share = share,
+		Full = full,
+		Flash = flash,
+		Swell = back,
+		Seen = readout.Seen,
+		Action = signatureOf(tostring(model:GetAttribute("Def") or "")),
+		Class = class,
+	})
+	piece.Frame:SetAttribute("Flash", flash)
+end
+
+-- The HUD's face (Config.Hud.Face, FaceSmall; docs/ui.md, rule 3): every kit label on the HUD's layers wears it, and
+-- wears another the moment the value changes (Tune).
+local facedAs = ""
+local function face()
+	local name, small = tostring(HudConfig.Face), tostring(HudConfig.FaceSmall)
+	local row = HudConfig.Faces[name] or HudConfig.Faces.BuilderSans
+	local smallRow = HudConfig.Faces[small]
+	local key = `{row.Family}\0{row.Body}\0{row.Strong}\0{row.Number}\0{if smallRow then `{smallRow.Family}\0{smallRow.Body}\0{smallRow.Strong}\0{smallRow.Number}` else ""}\0{HudConfig.FaceSmallUnder}`
+	if key == facedAs then
+		return
+	end
+	facedAs = key
+	local made: Text.Face = {
+		Family = row.Family,
+		Body = row.Body,
+		Strong = row.Strong,
+		Number = row.Number,
+		Small = if smallRow then { Family = smallRow.Family, Body = smallRow.Body, Strong = smallRow.Strong, Number = smallRow.Number } else nil,
+		Under = HudConfig.FaceSmallUnder,
+	}
+	for _, layer in HudConfig.FaceLayers do
+		Text.Face(Layers.Get(layer :: any), made)
+	end
 end
 
 -- A fallen Voidkin's Id to the server time it's whole (LeadService's folder "Healing", an attribute each), or empty.
@@ -608,9 +471,6 @@ local function atHome(): boolean
 	return Markers.OnPlot(if type(plot) == "number" then plot else nil, avatarAt())
 end
 
--- The chip over the dock while the bag holds a shard: the hook home stays in view until it's in the Breaker, and names
--- the step that's next: in the field "break it at home", at home "into the Breaker" (research's verdict on TR2 and its
--- read of the fixes, 2026-11-12).
 -- This try's keeper: the one nearest the avatar, in its own copy of the ring (KeeperService), while the avatar is in a try.
 local function keeperNear(): Model?
 	if player:GetAttribute("Try") == nil then
@@ -629,6 +489,8 @@ local function keeperNear(): Model?
 	return if nearest <= Combat.Keeper.Notice then best else nil
 end
 
+-- The shards' hint over the dock, in the Voidkin's colour: while the bag holds a shard and the player is home, the step
+-- that's next, "into the Breaker" (Rules.Hud.ShardHint; the director, 2026-11-15: only at the base).
 local function showChip(view: Profile.View)
 	local kinds, total, first = 0, 0, nil :: string?
 	for shard, count in view.Bag.Shards do
@@ -638,11 +500,10 @@ local function showChip(view: Profile.View)
 			first = first or shard
 		end
 	end
-	chip.Visible = total > 0
-	if first then
-		local home = atHome()
-		local step = if home then "into the Breaker" elseif total == 1 then "break it at home" else "break them at home"
-		chipText.Text = if kinds == 1 and total == 1 then `{Read.ShardName(first)}: {step}` else `{total} shards: {step}`
+	local said = Hud.ShardHint(kinds, total, if first then Read.ShardName(first) else nil, atHome())
+	chip.Visible = said ~= nil
+	if said then
+		chipText.Text = said
 	end
 end
 
@@ -662,7 +523,7 @@ local function notice(old: Profile.View?, new: Profile.View)
 	if new.Currency.Credits > old.Currency.Credits then
 		-- A kill's Credits fly from where it fell (TR6); any other win pops at once.
 		local fell = fallenNear()
-		reward(credits, coin, if fell then Fly.From(fell) else nil, "Coin", old.Currency.Credits, new.Currency.Credits, Read.Number, pops.Credits, HudConfig.Card.Level, Read.Number)
+		reward(credits, coin, if fell then Fly.From(fell) else nil, UIKit.Systems.Credits.Icon, old.Currency.Credits, new.Currency.Credits, Read.Number, pops.Credits, UIKit.Systems.Credits.Colour, Read.Number)
 	end
 	local id = new.Roles.Lead
 	local was, now = old.Voidkin[id], new.Voidkin[id]
@@ -710,7 +571,8 @@ local function showHealth(bar: Frame, label: TextLabel, model: Model)
 	-- characters its share of the bar holds, a digit's width each (Config.Hud.Card.Room).
 	local inset = bar:GetAttribute("Inset")
 	local shown = bar.Size.X.Offset - (if type(inset) == "number" then inset else 0)
-	local room = math.floor(shown * HudConfig.Card.Room / (label.TextSize * HudConfig.Numbers.Digit))
+	local worn = HudConfig.Faces[tostring(HudConfig.Face)] or HudConfig.Faces.BuilderSans
+	local room = math.floor(shown * HudConfig.Card.Room / (label.TextSize * worn.Digit))
 	label.Text = Hud.Health(health, most, room, true)
 end
 
@@ -852,7 +714,7 @@ local function seeThrough(dt: number)
 	end
 end
 
--- Every frame: the cards from the fighters' attributes, the ring, the dock's selection, the electricity as it stands now.
+-- Every frame: the cards from the fighters' attributes, the readout, the dock's selection, the electricity as it stands now.
 -- The band's middle, in authored pixels: twice the nearer of the lead's card and the pills from the screen's middle, a
 -- gap clear of each (the keeper's title card in B stands there, TR5).
 local function bandRoom(): number
@@ -865,6 +727,7 @@ end
 
 local function step(dt: number)
 	VoidkinScreen.Tick() -- its clocks, Combat Power's count, a layout tuned live
+	face()
 	local model = myLead()
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil
@@ -895,9 +758,6 @@ local function step(dt: number)
 		lead.Frame:SetAttribute("Down", down)
 		lead.Frame:SetAttribute("Status", status or "")
 		offer(down, tostring(model:GetAttribute("Voidkin") or ""))
-		local under = UDim2.new(lead.Frame.Position.X.Scale, lead.Frame.Position.X.Offset, lead.Frame.Position.Y.Scale, lead.Frame.Position.Y.Offset + lead.Frame.Size.Y.Offset + Theme.Size.Gap)
-		nextButton.Position = under
-		homeButton.Position = under -- the two share the place: one shows at a time
 		local why = if down then "Your lead is down" else nil
 		if eye:GetAttribute("Why") ~= why then
 			eye:SetAttribute("Why", why)
@@ -931,8 +791,8 @@ local function step(dt: number)
 		target.Gem.Visible = theirs ~= ""
 		point(targetArrow, Hud.Arrow(mine, theirs))
 	end
-	stepRing(model, foe ~= nil, dt)
-	placeEye() -- Config.Hud.Spectate.Place, tuned live
+	placeCorner()
+	stepReadout(model, foe ~= nil, dt)
 	band()
 	seeThrough(dt)
 	for name, button in dock do
@@ -983,18 +843,27 @@ function HudController.Start()
 	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)
 	targetArrow.ZIndex = 6 -- over the tab
 	TargetCard.Elite(target, false) -- C's parts, built hidden
-	local creditsValue, _, _, coinMark = pill("Credits", 1, 120, "Coin")
-	credits, coin = creditsValue, coinMark
-	local value, extra, thread, boltMark = pill("Electricity", 2, ELECTRICITY, "Bolt")
-	electricity, rate, charge, bolt = value, extra, thread :: Frame, boltMark
-	ring = signatureRing()
+	local creditsPill = pill("Credits", 1, HudConfig.Pills.Credits, "Credits")
+	credits, coin = creditsPill.Value, creditsPill.Mark
+	local power = pill("Electricity", 2, HudConfig.Pills.Power, "Power")
+	electricity, rate, charge, bolt = power.Value, power.Extra :: TextLabel, power.Thread :: Frame, power.Mark
+	readout = {
+		Piece = Readout.new(Layers.Get("Hud")),
+		Ready = 0,
+		FiredAt = -math.huge,
+		ReadyAt = -math.huge,
+		Full = true,
+		FoughtAt = -math.huge,
+		Seen = 0,
+	}
 	eye = eyeButton()
 	-- A fallen lead's card offers the next (TR12; docs/design.md, "The next lead"): it opens the Voidkin screen, where any
-	-- whole one goes out at once, out of combat. In grey: the kit's button under the card.
+	-- whole one goes out at once, out of combat. In grey: the kit's button in the lead's corner, after the eye (placeCorner).
 	nextButton = Button.new({
 		Name = "Next",
 		Text = "Send another",
 		Size = UDim2.fromOffset(180, Theme.Size.Tap),
+		AnchorPoint = Vector2.new(0, 0.5),
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
 			voidkinScreen()
@@ -1008,6 +877,7 @@ function HudController.Start()
 		Name = "Home",
 		Text = "Go home",
 		Size = UDim2.fromOffset(180, Theme.Size.Tap),
+		AnchorPoint = Vector2.new(0, 0.5),
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
 			WayHomeController.Toggle()
@@ -1031,15 +901,17 @@ function HudController.Start()
 	glint.Parent = lead.Xp
 	Pop.Centre(lead.Level) -- it swells about its middle
 	banded = { lead.Frame, target.Frame, credits.Parent :: GuiObject, electricity.Parent :: GuiObject }
-	chip = Panel.new({
+	local hint = Pill.new({
 		Name = "Chip",
-		Size = UDim2.fromOffset(DOCK.X * 3, PILL),
+		System = "Voidkin",
+		Width = DOCK.X * 3,
+		Centred = true,
 		Position = UDim2.new(0.5, 0, 1, -PAD - DOCK.Y - Theme.Size.Gap),
 		AnchorPoint = Vector2.new(0.5, 1),
 		Parent = Layers.Get("Hud"),
 	})
+	chip, chipText = hint.Frame, hint.Value
 	chip.Visible = false
-	chipText = Text.new({ Name = "Value", Font = Theme.Font.Strong, Colour = GRAPHITE.Accent, Align = Enum.TextXAlignment.Center, Truncate = true, Box = UDim2.new(1, -PAD * 2, 1, 0), Position = UDim2.fromOffset(PAD, 0), Parent = chip })
 	local holder = Instance.new("Frame")
 	holder.Name = "Dock"
 	holder.BackgroundTransparency = 1
@@ -1053,7 +925,7 @@ function HudController.Start()
 	for order, name in { "Voidkin", "Base" } do
 		dock[name] = Button.new({
 			Name = name,
-			Text = name,
+			Text = if name == "Voidkin" then "Inventory" else name, -- the director, 2026-11-15: "Inventory"
 			Size = UDim2.fromOffset(DOCK.X, DOCK.Y),
 			LayoutOrder = order,
 			Parent = holder,
@@ -1138,7 +1010,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		Electricity = electricity,
 		XpGlint = glint,
 		ElectricityRate = rate,
-		Signature = ring.Frame,
+		Signature = readout.Piece.Frame,
 		Spectate = eye,
 		Next = nextButton,
 		Home = homeButton,

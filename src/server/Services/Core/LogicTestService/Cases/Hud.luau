@@ -240,6 +240,49 @@ return {
 		end,
 	},
 	{
+		Name = "Hud: the shards' hint shows only at the base, and names the one shard or counts them",
+		Run = function(t: any)
+			-- The director, 2026-11-15: "should only show when we are at the base".
+			t.Equal("home, one shard alone: its name", Hud.ShardHint(1, 1, "Named Watt", true), "Named Watt: into the Breaker")
+			t.Equal("home, two of one kind: counted", Hud.ShardHint(1, 2, "Named Watt", true), "2 shards: into the Breaker")
+			t.Equal("home, several kinds: counted", Hud.ShardHint(3, 65, nil, true), "65 shards: into the Breaker")
+			t.Equal("home, one with no name known: counted", Hud.ShardHint(1, 1, nil, true), "1 shards: into the Breaker")
+			t.Equal("home, an empty bag: no hint", Hud.ShardHint(0, 0, nil, true), nil)
+			t.Equal("in the grounds, never", Hud.ShardHint(3, 65, nil, false), nil)
+			t.Equal("in the grounds, one shard: never", Hud.ShardHint(1, 1, "Named Watt", false), nil)
+		end,
+	},
+	{
+		Name = "Hud: the readout's front: its turn, a stop's place along it, and the carry for each share",
+		Run = function(t: any)
+			-- AR12 (Config.Hud.Readout): one gradient over the well's square, its line rising `lean` for each point right.
+			local flat, long = Hud.FrontTurn(50, 0)
+			t.Check("no lean: top to foot, as long as the well is high", near(flat, 90) and math.abs(long - 50) < 1e-9, `{flat} {long}`)
+			local config = HudConfig.Readout
+			local side = config.Well[4] - config.Well[2]
+			local turn, length = Hud.FrontTurn(side, config.Lean)
+			t.Check("leaning, it turns short of 90 degrees", turn < 90 and turn > 80, tostring(turn))
+			t.Check("and the gradient is longer than the well", length > side and length < side * 1.2, tostring(length))
+			t.Check("the lean is the turn's own", near(math.tan(math.rad(90 - turn)), config.Lean))
+			t.Equal("the line itself is the gradient's middle", Hud.FrontAt(0, length), 0.5)
+			t.Check("a point below it, further along", near(Hud.FrontAt(5, 50), 0.6))
+			t.Check("a point above it, before", near(Hud.FrontAt(-5, 50), 0.4))
+			t.Equal("past the foot, it holds the end", Hud.FrontAt(1000, length), 1)
+			t.Equal("past the top, the start", Hud.FrontAt(-1000, length), 0)
+			local last = -math.huge
+			for _, stop in config.Front do
+				t.Check(`the stop {stop.Below} below stands after the one before`, stop.Below > last)
+				last = stop.Below
+			end
+			t.Equal("half full: no carry", Hud.FrontOffset(0.5, config.Travel), 0)
+			t.Check("empty: carried to the foot", near(Hud.FrontOffset(0, config.Travel), config.Travel))
+			t.Check("full: to the top", near(Hud.FrontOffset(1, config.Travel), -config.Travel))
+			t.Check("a quarter: half way to the foot", near(Hud.FrontOffset(0.25, 0.8), 0.4))
+			t.Check("past full holds full", near(Hud.FrontOffset(7, 0.8), -0.8))
+			t.Check("not a number reads empty", near(Hud.FrontOffset(0 / 0, 0.8), 0.8))
+		end,
+	},
+	{
 		Name = "Hud: a press squeezes at once, holds a quick tap, and comes back over its mark to exactly 1",
 		Run = function(t: any)
 			local press = HudConfig.Motion.Press

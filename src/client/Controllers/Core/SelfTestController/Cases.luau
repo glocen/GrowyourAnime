@@ -65,11 +65,12 @@ local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local World = require(UI.World)
 local Read = require(UI.Read)
-local RingLooks = require(UI.RingLooks)
+local Readout = require(UI.Readout)
 local Button = require(UI.Kit.Button)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
+local Text = require(UI.Kit.Text)
 local Pop = require(UI.Kit.Pop)
 local Fly = require(UI.Kit.Fly)
 local Count = require(UI.Kit.Count)
@@ -4205,7 +4206,15 @@ local cases = {
 			local leadRoot = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
 			t.Check("the eye is on the HUD", eye ~= nil and eye.Visible and eye.Parent ~= nil)
 			t.Check("a whole tap target", eye.Size.X.Offset >= Theme.Size.Tap and eye.Size.Y.Offset >= Theme.Size.Tap, tostring(eye.Size))
-			t.Check("by the signature's ring, at its place", eye:GetAttribute("Place") == look.Place, tostring(eye:GetAttribute("Place")))
+			-- AR12: one family with the readout, its plate Right of it and Lower than its top (authored points).
+			local plate = HudConfig.Readout
+			local signature = HudController.Parts().Signature :: GuiObject
+			local dx = (eye.Position.X.Offset - look.Plate / 2) - (signature.Position.X.Offset + plate.Size / 2)
+			local dy = (eye.Position.Y.Offset - look.Plate / 2) - (signature.Position.Y.Offset - plate.Size / 2)
+			t.Check("beside the signature's readout", math.abs(dx - look.Right) < 0.01 and math.abs(dy - look.Lower) < 0.01, string.format("%.1f right, %.1f lower", dx, dy))
+			local shut, open = eye:FindFirstChild("Off", true), eye:FindFirstChild("On", true)
+			t.Check("shut on its own plate while off", shut ~= nil and shut:IsA("ImageLabel") and shut.Visible and shut:GetAttribute("Kit") == "EyeOff"
+				and open ~= nil and open:IsA("ImageLabel") and not open.Visible and open:GetAttribute("Kit") == "EyeOn")
 			t.Check("off at the start", not SpectateController.On() and eye:GetAttribute("On") == false)
 			if humanoid == nil or leadRoot == nil or lead == nil then
 				t.Check("the avatar and its lead are out", false)
@@ -4218,6 +4227,7 @@ local cases = {
 			t.Check("a tap turns it on", Button.Press(eye))
 			t.Wait(0.1)
 			t.Check("lit while on", SpectateController.On() and eye:GetAttribute("On") == true and Button.State(eye) == "Selected", Button.State(eye))
+			t.Check("open on its plate", open ~= nil and open:IsA("ImageLabel") and open.Visible and shut ~= nil and shut:IsA("ImageLabel") and not shut.Visible)
 			local point = SpectateController.Point()
 			t.Check("the camera follows its stand-in", point ~= nil and camera.CameraSubject == point)
 			local early = SpectateController.Share()
@@ -4253,6 +4263,7 @@ local cases = {
 			t.Check("the eye says why", waitFor(t, 1, function(): boolean
 				return Button.State(eye) == "Disabled"
 			end), Button.State(eye))
+			t.Check("fainter while it can't be used", shut ~= nil and shut:IsA("ImageLabel") and math.abs(shut.ImageTransparency - (1 - look.Off)) < 0.01)
 			local face = eye:FindFirstChild("Label", true) :: TextLabel?
 			local why = tostring(eye:GetAttribute("Disabled"))
 			t.Check("in a toast on a tap, its face only the eye", not Button.Press(eye) and table.find(Toast.Shown(), why) ~= nil
@@ -4784,7 +4795,7 @@ local cases = {
 				for _, name in { "Credits", "Electricity" } do
 					t.Check(`clear of the {name} pill, in {at.Name}`, clear((parts[name] :: GuiObject).Parent :: GuiObject))
 				end
-				t.Check(`clear of the signature's ring, in {at.Name}`, clear(parts.Signature :: GuiObject))
+				t.Check(`clear of the signature's readout, in {at.Name}`, clear(parts.Signature :: GuiObject))
 			end
 			Layers.Box(nil)
 			Layers.Force(nil)
@@ -4875,7 +4886,8 @@ local cases = {
 			local parts = HudController.Parts()
 			local value = parts.Credits :: TextLabel
 			local pill = value.Parent :: GuiObject
-			local mark = pill:FindFirstChild("Coin")
+			local mark = pill:FindFirstChild("Mark")
+			local coin = UIKit.Systems.Credits.Icon
 			t.Check("the Credits pill wears its icon", mark ~= nil and mark:IsA("ImageLabel"))
 			if mark == nil or not mark:IsA("ImageLabel") then
 				return
@@ -4890,14 +4902,14 @@ local cases = {
 				local holder = Layers.Get("Hud"):FindFirstChild("NL_Fly")
 				local shown = 0
 				for _, icon in if holder then holder:GetChildren() else {} do
-					if icon:IsA("ImageLabel") and icon.Name == "Coin" and icon.Visible then
+					if icon:IsA("ImageLabel") and icon.Name == coin and icon.Visible then
 						shown += 1
 						nearest = math.min(nearest, (Vector2.new(icon.Position.X.Offset, icon.Position.Y.Offset) - into).Magnitude)
 					end
 				end
 				aloft = math.max(aloft, shown)
 			end)
-			local n = Fly.Send(Fly.Centre(), mark, "Coin", 250, function(k: number)
+			local n = Fly.Send(Fly.Centre(), mark, coin, 250, function(k: number)
 				landings[k] = os.clock() - began
 			end)
 			t.Check("a flock by the reward's size", n == Hud.Flock(250, look.Least, look.Most), `{n}`)
@@ -5202,6 +5214,9 @@ local cases = {
 			t.Check("its bar fills as it heals", later > first, string.format("%.3f to %.3f", first, later))
 			local foot = parts.Lead.AbsolutePosition.Y + parts.Lead.AbsoluteSize.Y
 			t.Check("the button for the next shows under the card", parts.Next.Visible and parts.Next.AbsolutePosition.Y >= foot - 1, string.format("%.0f, the card's foot %.0f", parts.Next.AbsolutePosition.Y, foot))
+			local eyeEnd = parts.Spectate.AbsolutePosition.X + parts.Spectate.AbsoluteSize.X
+			t.Check("after the eye", parts.Next.AbsolutePosition.X >= eyeEnd - 1, string.format("%.0f, the eye's end %.0f", parts.Next.AbsolutePosition.X, eyeEnd))
+			t.Check("and the readout stands down with the lead", not parts.Signature.Visible)
 			lintClean(t, "a fallen lead's card")
 			-- The next lead: the button opens the Voidkin screen, where another goes out at once.
 			t.Check("the button opens the Voidkin screen", Button.Press(parts.Next :: TextButton) and waitFor(t, 1, function(): boolean
@@ -5619,8 +5634,9 @@ local cases = {
 		Name = "HUD: in a fight with a shard in the bag, on the smallest phone, every piece fits, apart and in the safe area",
 		Run = function(t: any)
 			-- TR3's check: the UI lint at the smallest phone's scale (docs/ui.md, rule 1). The lead's card, the target's, both
-			-- pills, the ring, the chip and the dock all showing at once, laid out in this window's safe area and then in the
-			-- smallest phone's (Theme.Smallest under Roblox's top bar, at the scale's floor).
+			-- pills, the readout, the eye and the dock all showing at once, laid out in this window's safe area and then in the
+			-- smallest phone's (Theme.Smallest under Roblox's top bar, at the scale's floor). The shards' hint stays home (the
+			-- director, 2026-11-15): its own fit is checked at the base, in the Breaker's case.
 			local lead = myLead()
 			local level = if lead then lead:GetAttribute("Level") else nil
 			t.Check("the lead is in the world", type(level) == "number")
@@ -5631,9 +5647,10 @@ local cases = {
 			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 			local gave = t.Server("BaseGive", "named_watt", 1)
 			local shown = waitFor(t, SHADE_TIMEOUT, function(): boolean
-				return parts.Target.Visible and parts.Chip.Visible
+				return parts.Target.Visible and parts.Signature.Visible
 			end)
 			t.Check("a fight, and a shard in the bag", type(spawned) == "table" and spawned.Ok == true and shown)
+			t.Check("no hint in the grounds", not parts.Chip.Visible)
 			local top = GuiService.TopbarInset.Height
 			local sizes = {
 				{ Name = "this window", Scale = nil :: number?, Box = nil :: Vector2? },
@@ -5654,10 +5671,11 @@ local cases = {
 		end,
 	},
 	{
-		Name = "HUD: the signature's ring shows only in a fight, empties and flashes when it fires, and fills over its cooldown",
+		Name = "HUD: the signature's readout shows only in a fight, empties and flashes when it fires, and fills over its cooldown",
 		Run = function(t: any)
-			-- TR3, part 5: at the right edge, low. The server says when the signature is ready again (FightService, Ready);
-			-- the ring flashes the moment it fires, then fills with the cooldown, the class's glyph in its middle.
+			-- TR3, part 5, in AR12's look: in the lead's corner, under its card. The server says when the signature is ready
+			-- again (FightService, Ready); the readout flashes the moment it fires, then fills with the cooldown, the
+			-- signature's own icon on its plate (its class's glyph while none is drawn).
 			t.Wait(LEAD_SETTLE)
 			local lead = myLead()
 			local def = if lead then lead:GetAttribute("Def") else nil
@@ -5669,12 +5687,16 @@ local cases = {
 			end
 			local ring = HudController.Parts().Signature
 			if lead == nil or signature == nil then
-				t.Check("a lead without a signature has no ring", lead ~= nil and not ring.Visible)
+				t.Check("a lead without a signature has no readout", lead ~= nil and not ring.Visible)
 				return
 			end
 			local action = signature :: Actions.Action
 			-- Only in a fight (TR3's verdict, fix 5): hidden out of one, in as the lead takes a target, out a moment after.
-			local config = HudConfig.Ring
+			local config = HudConfig.Readout
+			local card = HudController.Parts().Lead :: GuiObject
+			local dx = (ring.Position.X.Offset - config.Size / 2) - card.Position.X.Offset
+			local dy = (ring.Position.Y.Offset - config.Size / 2) - (card.Position.Y.Offset + card.Size.Y.Offset)
+			t.Check("under the lead's card, at its left", math.abs(dx - config.Right) < 0.01 and math.abs(dy - config.Under) < 0.01, string.format("%.1f right, %.1f under", dx, dy))
 			local function target(): boolean
 				local id = lead:GetAttribute("Target")
 				return type(id) == "string" and id ~= ""
@@ -5682,13 +5704,13 @@ local cases = {
 			waitFor(t, config.Linger + config.FadeOut + 2, function(): boolean
 				return not target() and not ring.Visible
 			end)
-			t.Check("out of a fight, the ring is hidden", not ring.Visible, `target {tostring(lead:GetAttribute("Target"))}`)
+			t.Check("out of a fight, the readout is hidden", not ring.Visible, `target {tostring(lead:GetAttribute("Target"))}`)
 			local level = lead:GetAttribute("Level")
 			local spawned = t.Server("FightSpawn", "brawler", (if type(level) == "number" then level else 1) + SHADE_TOUGHER, SHADE_AHEAD)
 			t.Check("a Shade to fight spawns", type(spawned) == "table" and spawned.Ok == true)
 			t.Check("the lead takes it on", waitFor(t, SHADE_TIMEOUT, target))
 			t.Wait(config.FadeIn + 0.1)
-			t.Check("in a fight, the ring fades in", ring.Visible and ring:GetAttribute("Seen") == 1, `{tostring(ring:GetAttribute("Seen"))} in`)
+			t.Check("in a fight, the readout fades in", ring.Visible and ring:GetAttribute("Seen") == 1, `{tostring(ring:GetAttribute("Seen"))} in`)
 			t.Server("FightSpawn") -- clears it
 			t.Check("the fight ends", waitFor(t, 2, function(): boolean
 				return not target()
@@ -5698,8 +5720,13 @@ local cases = {
 			t.Wait(config.Linger / 2 + config.FadeOut + 0.15)
 			t.Check("then fades out", not ring.Visible, `{tostring(ring:GetAttribute("Seen"))} in`)
 			local row = Voidkin.ById[def :: string]
-			local glyph = ring:FindFirstChild("Glyph")
-			t.Check("with its class's glyph", row ~= nil and glyph ~= nil and glyph:GetAttribute("Kit") == `Class{row.Class}Glyph`, if glyph then `{glyph:GetAttribute("Kit")}` else "no glyph")
+			local own = config.Icons[action.Id]
+			local want = if own and UIKit.Images[own] then own elseif row then `Class{row.Class}Glyph` else ""
+			local icon = ring:FindFirstChild("Icon")
+			t.Check("with its signature's icon, or its class's glyph while none is drawn", icon ~= nil and icon:GetAttribute("Kit") == want and ring:GetAttribute("Icon") == want, `{ring:GetAttribute("Icon")}, wanted {want}`)
+			t.Check("ready, the plate is white-hot", waitFor(t, action.Cooldown + 1, function(): boolean
+				return ring:GetAttribute("Share") == 1 and ring:GetAttribute("Hot") == 1
+			end), `{tostring(ring:GetAttribute("Share"))} full, {tostring(ring:GetAttribute("Hot"))} hot`)
 			local flash = 0
 			local watch = RunService.RenderStepped:Connect(function()
 				flash = math.max(flash, (ring:GetAttribute("Flash") :: number?) or 0)
@@ -5719,6 +5746,7 @@ local cases = {
 			t.Wait(2)
 			local second = (ring:GetAttribute("Share") :: number?) or 0
 			watch:Disconnect()
+			t.Check("charging, the white-hot plate is gone", second >= 1 or ring:GetAttribute("Hot") == 0, tostring(ring:GetAttribute("Hot")))
 			t.Check("it flashed when it fired", flash > 0.5, string.format("%.2f", flash))
 			t.Near("it fills with the cooldown", second - first, (os.clock() - at) / action.Cooldown, 0.03)
 			t.Server("Replay")
@@ -5726,62 +5754,103 @@ local cases = {
 		end,
 	},
 	{
-		-- TR13 (research's entry, 2026-11-14): the ring's three looks in grey, each through the states it must show; and one
-		-- picked in the ring's place hides today's ring under it, which comes back when it's put back.
-		Name = "HUD: TR13, the ring's grey looks each draw their states, and one picked takes the ring's place",
+		-- AR12 (V2, Block): the readout alone, through the states it must show.
+		Name = "HUD: AR12, the readout draws its states: the level, white-hot when ready, the flash, a glyph for a signature not drawn yet",
 		Run = function(t: any)
-			t.Wait(LEAD_SETTLE)
-			local config = HudConfig.Ring
+			local config = HudConfig.Readout
 			local holder = Instance.new("Frame")
-			holder.Name = "SelfTestRingLooks"
+			holder.Name = "SelfTestReadout"
 			holder.BackgroundTransparency = 1
 			holder.Size = UDim2.fromOffset(config.Size, config.Size)
 			holder.Position = UDim2.fromOffset(-500, -500) -- off the screen
 			holder.Parent = Layers.Get("Hud")
-			local function state(share: number, flash: number?, since: number?, seen: number?): RingLooks.State
-				return { Share = share, Full = share >= 1, Flash = flash or 0, Swell = 0, Since = since or math.huge, Seen = seen or 1, Class = "Warrior" }
+			local piece = Readout.new(holder)
+			local drawn = next(config.Icons)
+			local function state(share: number, flash: number?, seen: number?, action: string?): Readout.State
+				return { Share = share, Full = share >= 1, Flash = flash or 0, Swell = 0, Seen = seen or 1, Action = action or drawn or "", Class = "Warrior" }
 			end
-			for _, name in RingLooks.Names do
-				local look = RingLooks.new(name, config.Size, config.Weight, holder, true)
-				for _, share in { 0, 0.25, 0.5, 0.99, 1 } do
-					RingLooks.Step(look, state(share))
-					t.Near(`{name} at {share}: it says how full`, look.Frame:GetAttribute("Share") :: number, share, 1e-6)
-				end
-				RingLooks.Step(look, state(1, 1, 0))
-				t.Check(`{name}: as it fires it swells`, look.Scale.Scale > 1.1, string.format("%.2f", look.Scale.Scale))
-				RingLooks.Step(look, state(0.5, 0, math.huge, 0))
-				t.Check(`{name}: hidden, its glyph is too`, look.Glyph.ImageTransparency > 0.99)
-				t.Check(`{name}: with its name under it, beside the ring`, look.Frame:FindFirstChild("Caption") ~= nil)
-				look.Frame:Destroy()
+			local turn, length = Hud.FrontTurn(config.Well[4] - config.Well[2], config.Lean)
+			Readout.Step(piece, state(0.5))
+			t.Near("the front leans as the bars do (degrees)", piece.Front.Rotation, turn, 1e-3)
+			t.Check("the light is the well's own shape, under one gradient", piece.Light:GetAttribute("Kit") == "ReadoutLight" and piece.Front.Parent == piece.Light)
+			t.Check("its gradient as long as the well's reach along it", length > config.Well[4] - config.Well[2])
+			for _, share in { 0, 0.25, 0.5, 0.99 } do
+				Readout.Step(piece, state(share))
+				t.Near(`at {share}: it says how full`, piece.Frame:GetAttribute("Share") :: number, share, 1e-6)
+				t.Near(`at {share}: the front stands at its level`, piece.Front.Offset.X, Hud.FrontOffset(share, config.Travel), 1e-6)
+				t.Check(`at {share}: charging, the icon in light and no white-hot plate`, piece.Icon.ImageTransparency < 0.01 and piece.Ready.ImageTransparency > 0.99 and piece.ReadyIcon.ImageTransparency > 0.99)
 			end
-			-- Each look's own sign of how full.
-			local rim = RingLooks.new("Rim", config.Size, config.Weight, holder, false)
-			RingLooks.Step(rim, state(0.5))
-			t.Near("Rim: the head rides the fill's leading edge, at the foot when half full (degrees)", rim.Frame:GetAttribute("Head") :: number, 180, 0.5)
-			RingLooks.Step(rim, state(1))
-			t.Equal("Rim: no head once full", rim.Frame:GetAttribute("Head"), -1)
-			local pips = RingLooks.new("Pips", config.Size, config.Weight, holder, false)
-			local count = config.Looks.Pips.Count
-			for _, share in { 0, 0.5, 0.6, 1 } do
-				RingLooks.Step(pips, state(share))
-				t.Equal(`Pips: {math.floor(share * count)} of {count} lit at {share}`, pips.Frame:GetAttribute("Lit"), math.floor(share * count))
+			Readout.Step(piece, state(1))
+			t.Check("ready: the white-hot plate, its icon dark on the light", piece.Ready.ImageTransparency < 0.01 and piece.ReadyIcon.ImageTransparency < 0.01 and piece.Icon.ImageTransparency > 0.99)
+			if drawn then
+				t.Check("the signature's own icon, charging and ready", piece.Icon:GetAttribute("Kit") == config.Icons[drawn] and piece.ReadyIcon:GetAttribute("Kit") == config.Icons[drawn] .. "Ready", tostring(piece.Icon:GetAttribute("Kit")))
 			end
-			local pool = RingLooks.new("Pool", config.Size, config.Weight, holder, false)
-			RingLooks.Step(pool, state(0.3))
-			t.Near("Pool: its level stands at its share", pool.Frame:GetAttribute("Level") :: number, 0.3, 1e-6)
+			Readout.Step(piece, state(0, 1))
+			t.Check("as it fires it swells", piece.Scale.Scale > 1.1, string.format("%.2f", piece.Scale.Scale))
+			t.Check("and the white-hot plate is still whole", piece.Ready.ImageTransparency < 0.01)
+			Readout.Step(piece, state(0.05, 0.5))
+			t.Near("half through the flash, the plate is half gone", piece.Ready.ImageTransparency, 0.5, 0.01)
+			Readout.Step(piece, state(0.5, 0, 0))
+			local hidden = piece.Icon.ImageTransparency > 0.99 and piece.Ready.ImageTransparency > 0.99
+			for _, image in piece.Charging do
+				hidden = hidden and image.ImageTransparency > 0.99
+			end
+			t.Check("faded out, every layer is", hidden)
+			Readout.Step(piece, state(0.5, 0, 1, "SelfTestNoIcon"))
+			t.Check("a signature not drawn yet shows its class's glyph in light", piece.Icon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.Icon.ImageColor3 == UIKit.Light, tostring(piece.Icon:GetAttribute("Kit")))
+			t.Check("and in ink on the white-hot plate", piece.ReadyIcon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.ReadyIcon.ImageColor3 == config.Ink)
 			holder:Destroy()
-			-- One picked in the ring's place, and back.
-			local signature = HudController.Parts().Signature
-			local was = config.Look
-			config.Look = "Pips"
+		end,
+	},
+	{
+		-- AR12 (V2, Block; docs/ui.md, rule 3): each pill in its system's colour, and the HUD's face one value.
+		Name = "HUD: AR12, the pills wear their systems' colours, and the HUD's text takes the face named, at once",
+		Run = function(t: any)
+			t.Wait(LEAD_SETTLE)
+			local parts = HudController.Parts()
+			for name, system in { Credits = "Credits", Electricity = "Power", ChipText = "Voidkin" } :: { [string]: string } do
+				local value = parts[name] :: TextLabel
+				local pill = value.Parent :: GuiObject
+				local row = UIKit.Systems[system]
+				local mark = pill:FindFirstChild("Mark")
+				local block = pill:FindFirstChild("Block", true)
+				t.Check(`{name}: {system}'s pill`, pill:GetAttribute("System") == system, tostring(pill:GetAttribute("System")))
+				t.Check(`{name}: its mark in ink on its block of colour`, mark ~= nil and mark:GetAttribute("Kit") == row.Mark and block ~= nil and block:GetAttribute("Kit") == "BlockPill", if mark then tostring(mark:GetAttribute("Kit")) else "no mark")
+				t.Check(`{name}: its words in its pale ink`, value.TextColor3 == row.Text)
+			end
+			local wasFace, wasSmall = HudConfig.Face, HudConfig.FaceSmall
+			local value, name = parts.Credits :: TextLabel, parts.LeadName :: TextLabel
+			local menu = Text.new({ Name = "SelfTestFace", Font = Theme.Font.Strong, Parent = Layers.Get("Menus") })
+			for face, row in HudConfig.Faces do
+				HudConfig.Face = face
+				t.Wait(0.1)
+				t.Check(`{face}: the pill's value wears it`, value.FontFace.Family == row.Family and value.FontFace.Weight.Name == row.Strong, `{value.FontFace.Family} {value.FontFace.Weight.Name}`)
+				t.Check(`{face}: and the lead's name`, name.FontFace.Family == row.Family, name.FontFace.Family)
+				local joined = Text.new({ Name = "SelfTestFace", Font = Theme.Font.Number, Parent = Layers.Get("Hud") })
+				t.Check(`{face}: a label that joins the HUD wears it too`, joined.FontFace.Family == row.Family and joined.FontFace.Weight.Name == row.Number, `{joined.FontFace.Family} {joined.FontFace.Weight.Name}`)
+				joined:Destroy()
+				t.Check(`{face}: a menu's label keeps the kit's face`, menu.FontFace == Theme.Font.Strong)
+				-- How each candidate fits, for research's pick: a measure, not a bar (only the face in use is held to the lint).
+				t.Wait(0.4) -- its widths arrive (Text.Wide)
+				local report = UiLint.Run()
+				t.Row(`{face}: labels that don't fit their box`, nil, nil, #report.Fit, "labels")
+				t.Row(`{face}: pieces of the HUD that overlap`, nil, nil, #report.Overlap, "pairs")
+			end
+			-- A plainer face for small text, when one's named.
+			local big, small = "Sarpanch", "BuilderSans"
+			HudConfig.Face, HudConfig.FaceSmall = big, small
 			t.Wait(0.1)
-			local inPlace = signature:FindFirstChild("LookPips") :: GuiObject?
-			local well = signature:FindFirstChild("Well") :: GuiObject?
-			t.Check("a look picked stands in the ring's place", inPlace ~= nil and inPlace.Visible)
-			t.Check("over today's ring, hidden", well ~= nil and not well.Visible)
-			config.Look = was
-			t.Wait(0.1)
-			t.Check("put back, today's ring shows again", well ~= nil and well.Visible and (inPlace == nil or not inPlace.Visible))
+			local under = (Text.Authored(value) or math.huge) < HudConfig.FaceSmallUnder
+			t.Check("a small face named: a label authored under its line wears it", under and value.FontFace.Family == HudConfig.Faces[small].Family, `{Text.Authored(value)} pt, {value.FontFace.Family}`)
+			local tall = Text.new({ Name = "SelfTestFace", Size = HudConfig.FaceSmallUnder + 2, Font = Theme.Font.Strong, Parent = Layers.Get("Hud") })
+			t.Check("and a larger one keeps the HUD's", tall.FontFace.Family == HudConfig.Faces[big].Family, tall.FontFace.Family)
+			tall:Destroy()
+			menu:Destroy()
+			HudConfig.Face, HudConfig.FaceSmall = wasFace, wasSmall
+			t.Wait(0.5)
+			local back = HudConfig.Faces[wasFace] or HudConfig.Faces.BuilderSans
+			t.Check("put back, the HUD wears its own face again", value.FontFace.Family == back.Family, value.FontFace.Family)
+			lintClean(t, "the HUD in its own face")
 		end,
 	},
 	{
@@ -5946,11 +6015,19 @@ local cases = {
 				return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
 			end))
 			t.Wait(PLATE_TICK * 2)
-			t.Check("at home, the chip says into the Breaker", hud.Chip.Visible and string.find(text.Text, "into the Breaker", 1, true) ~= nil, text.Text)
+			t.Check("at home, the hint says into the Breaker", hud.Chip.Visible and string.find(text.Text, "into the Breaker", 1, true) ~= nil, text.Text)
+			t.Check("in the Voidkin's colour", hud.Chip:GetAttribute("System") == "Voidkin")
+			Layers.Force(Theme.Scale.Floor)
+			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+			t.Wait(0.1) -- laid out again
+			lintClean(t, "the HUD at home with the hint, on the smallest phone")
+			Layers.Box(nil)
+			Layers.Force(nil)
+			t.Wait(0.1)
 			t.Check("and the Breaker's plate is lit", panel:GetAttribute("Lit") == true) -- its edge bold in the accent (Panel.Lit)
 			t.Reset() -- the test pad, off the plot
 			t.Wait(PLATE_TICK * 2)
-			t.Check("in the field, break it at home", hud.Chip.Visible and string.find(text.Text, "at home", 1, true) ~= nil and string.find(text.Text, "Breaker", 1, true) == nil, text.Text)
+			t.Check("in the field, no hint (the director, 2026-11-15: only at the base)", not hud.Chip.Visible, text.Text)
 			t.Check("the shard comes back out of the bag", t.Server("BaseGive", shard, -1).Ok == true)
 			t.Check("as it was", waitFor(t, ANSWER, function(): boolean
 				return held() == before

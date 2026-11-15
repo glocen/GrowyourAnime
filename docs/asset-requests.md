@@ -6612,7 +6612,7 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
      - The block at 168 stays plain at launch, for phase 3's machines (the Condenser, the Lab, the Forge).
      - Walking back isn't needed: a worker is set in its bay by a tap in the base screen (TR21).
      - Places are Faber's plot, on these lots.
-  2. **Wider only after launch.** Launch's three levels grow the yard along its length only. The ground beside it, 56 studs a side, is where the levels past 3 widen it, and the plot's whole 200 is the top levels' size. Taking the whole plot at level 3 would leave levels 4 to 20 no room to grow. This answers the director's question of 21:17, and the director can still say otherwise.
+  2. **Wider only after launch** (withdrawn the same night: the director's "the base must be that 200x200", delivery 4). Launch's three levels grow the yard along its length only. The ground beside it, 56 studs a side, is where the levels past 3 widen it, and the plot's whole 200 is the top levels' size. Taking the whole plot at level 3 would leave levels 4 to 20 no room to grow. This answers the director's question of 21:17, and the director can still say otherwise.
 
 **Delivery 4, level 1: the whole plot** (Modulo, 2026-11-15, 21:38 to 21:48 by the clock).
 
@@ -6639,6 +6639,17 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **Checks:** the maker's own, above; `git status` shows the published files unchanged. The content check on the four pictures, the two meshes and the looks: **PASS, for delivery and for the upload of these exact files,** and PASS on the five looks as internal pictures. It read every file at full size and the two meshes directly, and judged the small look from the views above and across, no 64-pixel sheet being given. Delivery 3's hold is kept: the lots' marks are bare pluses, nothing is ringed, lit conduit is yellow and ruled, pilots are cyan. What it adds: a clamp of the dead conduit falls at the arrival ring's middle, and must never be widened, lit or lengthened toward the ring; no rust, oil, leak, scorch or grime without a check; the next check gets a sheet with each picture at full size and at 64 pixels over dark.
 - **Time:** by the clock, 21:38 to 21:48: the two scripts, one fast look of four views, the export, five final renders, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+- **Research's answers to delivery 4,** tier 2, 2026-11-15, night. The director's two words are in the register. Call 2 is withdrawn: the base is the whole plot from level 1. Call 1 stands.
+  - **No new working machine at launch** (the director's question, put to Faber and Modulo). The construction sites fill the plot, and each level finishes its sites into what it opens. A new working machine would be a new mechanic, outside launch's scope. A second Training machine, at a level past 3, is the one candidate kept for later: more experience away is a balance change, priced then.
+  - **Duplicates that follow a number:**
+    - The battery is a bank whose cells grow with its cap, 60, 150 and 400 kWh. The count is Modulo's call, as long as each level adds cells that can be seen.
+    - The transformers come in pairs that follow the open bays, 2, 4 and 6.
+    - The Breaker, the generator, the Training machine and the Festival Door stay one each, as landmarks.
+  - **The wings' lots:**
+    - Phase 3's Forge, Condenser and Lab each take a wing lot when they come, the Forge nearest the court because it's used most.
+    - The other wing lots, and the spine's lot at 168, are for the levels past 3.
+    - Until then they're construction sites, nearer the court further along.
+    - Places are Faber's plot.
 
 ## AR15. The base's machines (Modulo, then Faber)
 

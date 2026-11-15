@@ -5642,6 +5642,7 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - No hurt trail yet: a candidate for `docs/polish-later.md`.
       - Take E's images stay in the kit: the target's card and the keeper's HUD are built from them.
     - **The card's height:** the level's mark sits under every rarity's lowest point (the Mythical's base points, 90 points down), so the card stands 114 tall, not 89. The readout's row moves 25 down. F's mock had the mark at 76, over a Common frame's foot. The alternative is D's place, beside the portrait under the plate, which keeps 89.
+      - **Research's call, 2026-11-15, night: D's place.** The level's mark stands beside the portrait, under the plate, so the card keeps 89. The readout's row and the level-up notice B (from 238) stay where Modulo's mocks put them, clear of the thumbstick at 289. The fix "the mark clears the frame's foot" was research's, not the director's, so it's research's to change. Under the frames, the mark costs 25 points of the screen's left edge and pushes the notice into the thumbstick. Beside the portrait it reads as the portrait's caption, which is what a level is. **Measure:** the mark stands at least 2 points clear of every rarity's frame at its widest, the Mythical's side points included, and it never sits over the experience line. Modulo's notice needs no change.
     - **Open, for research's pass:**
       - The Mythical's tallest crest shows about 2 points above Lyric's hat.
       - The head's brim is cut straight over the frame's cut corners.

@@ -1073,7 +1073,7 @@ def _ring(t, cx, cy, radius, width):
     return np.abs(np.hypot(t.x - cx, t.y - cy) - radius) - width / 2
 
 
-GEAR = {  # a slot's own mark, plain shapes: stand-ins until the gear has its icons
+GEAR = {  # an empty slot's own mark, plain shapes: stand-ins until the empty marks are drawn (AR6's family)
     "Helmet": lambda t, x, y, r: np.minimum(np.maximum(np.hypot(t.x - x, t.y - y - 0.1 * r) - 0.82 * r, t.y - y - 0.2 * r),
                                             _poly(t, x, y, r, ((-0.98, 0.2), (0.98, 0.2), (0.98, 0.5), (-0.98, 0.5)))),
     "Shoulders": lambda t, x, y, r: _poly(t, x, y, r, ((-1, 0.5), (-0.6, -0.5), (0, -0.15), (0.6, -0.5), (1, 0.5),
@@ -1101,69 +1101,87 @@ GEAR = {  # a slot's own mark, plain shapes: stand-ins until the gear has its ic
 }
 ITEM = {"Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777",
         "Mythical": "#FF2848"}  # an item's rarity, its rim
-HIGH = {"Legendary": "#FFF3C4", "Mythical": "#FF8794"}  # the tiers whose frame steps, and their light
-CROWN = {  # the crown on a high frame's top edge, in points from the edge's middle: Legendary's whole, Mythical's broken
-    "Legendary": (((-8.0, 0.8), (-8.0, -3.4), (-4.4, -1.2), (0.0, -6.2), (4.4, -1.2), (8.0, -3.4), (8.0, 0.8)),),
-    "Mythical": (((-8.6, 0.8), (-8.6, -4.4), (-5.6, -1.4), (-2.8, -5.8), (-1.2, 0.8)),
-                 ((1.9, 0.8), (3.3, -3.4), (5.5, -1.0), (8.6, -5.0), (8.6, 0.8))),
-}
-# The fourteen (docs/design.md, "Regalia"): the slot, what's in it for the sheet, its forge rank. The twelve shared
+COMMON = "#AEB4C0"  # Common's word and its light on a stage
+MARKS_ART = REPO / "build" / "handoff" / "UI" / "voidkin" / "marks"
+GEAR_ART = REPO / "build" / "handoff" / "UI" / "gear"
+GEAR_SET, GEAR_PIECES = {}, {}  # gear_icons.json read back; a piece by its image's name: its rarity, its slot, its picture
+# The fourteen (docs/design.md, "Regalia"): the slot, the piece in it for the sheet, its forge rank. The twelve shared
 # slots stand a column of six each side of the figure; the class's weapon pair sits at its feet, either side of Combat
-# Power (the director, 2026-11-15).
-SLOTS = ((("Helmet", "Legendary", 3), ("Shoulders", "Uncommon", 1), ("Chest Armor", "Mythical", 4), ("Gloves", None, 0),
-          ("Bracers", "Uncommon", 0), ("Boots", "Rare", 2)),
-         (("Cloak", "Epic", 2), ("Amulet", "Epic", 1), ("Ring I", "Uncommon", 0), ("Ring II", None, 0),
-          ("Earring I", "Rare", 1), ("Earring II", None, 0)))
-WEAPONS = (("Main Hand", "Legendary", 5), ("Off Hand", "Rare", 2))
+# Power (the director, 2026-11-15). Batch 1 has four kinds, so the other ten stand empty.
+SLOTS = ((("Helmet", "GearTomoshibi", 3), ("Shoulders", None, 0), ("Chest Armor", None, 0), ("Gloves", None, 0),
+          ("Bracers", None, 0), ("Boots", None, 0)),
+         (("Cloak", None, 0), ("Amulet", None, 0), ("Ring I", "GearStormcallLoop", 1), ("Ring II", None, 0),
+          ("Earring I", None, 0), ("Earring II", None, 0)))
+WEAPONS = (("Main Hand", "GearAkari", 5), ("Off Hand", "GearEdgeOfEmbers", 2))
+# The bag's gear, best first. A forge rank sits on a slot, never on an item, so a piece in the bag shows none.
+BAG = ("GearKiribi", "GearYoiboshi", "GearZansho", "GearStormcallBlade", "GearGloamforgeHelm", "GearNightloomLoop",
+       "GearGloamforgeEdge", "GearBladeOfHoarfrost", "GearHelmOfGales", "GearBandOfEmbers", "GearEdgeOfGales",
+       "GearHelmOfEmbers", "GearRowsmithSword", "GearStallguardHelmet", "GearLanternsteelRing", "GearRowsmithShortSword",
+       "GearIronSword", "GearBronzeHelmet", "GearScrapRing", "GearBronzeShortSword")
+BAG_CHOSEN = "GearStormcallBlade"
+BAG_TABS = (("Shards", 54.0, True), ("Gear", 46.0, True), ("Emblems", 64.0, False), ("Jewels", 52.0, False),
+            ("Stones", 46.0, False))  # a tab, its width, whether it's built
 
 
-def high_frame(st, x, y, s, rarity):
-    """From Legendary a gear frame steps (docs/research/gear-icons.md, "The frame steps at Legendary"): its two cuts
-    become lit facets, a second rim of light runs inside, and a small crown rises from its top edge, the crown a
-    Legendary portrait wears. Mythical keeps the form, its crown broken and its light red."""
-    rim, light, o = ITEM[rarity], HIGH[rarity], 9.0
-    t = kit.blank(s + 2 * o, s + 2 * o)
-    outer = t.poly(cut_box(o, o, o + s, o + s, 8.0, 0.0, 8.0, 0.0))
-    t.line(t.poly(cut_box(o + 3.6, o + 3.6, o + s - 3.6, o + s - 3.6, 6.0, 0.0, 6.0, 0.0)), 0.9, c(light), 0.9)
-    for a, b in (((o, o + 8.0), (o + 8.0, o)), ((o + s, o + s - 8.0), (o + s - 8.0, o + s))):
-        facet = np.maximum(seg(t, a, b, 5.6), outer - 0.9)
-        t.glow(facet, 2.4, c(rim), 0.6)
-        t.paint(facet, c(light))
-        t.paint(np.maximum(seg(t, a, b, 2.0), outer - 0.9), c("#FFFFFF"))
-    mid = o + s / 2 + 4.0  # the top edge's middle: the edge starts past the cut
-    crown = np.minimum.reduce([t.poly([(mid + u, o + v) for u, v in part]) for part in CROWN[rarity]])
-    t.glow(crown, 2.6, c(rim), 0.55)
-    t.paint(crown - 1.1, c(STROKE))
-    t.paint(crown, t.ramp(light, rim, (t.y - o + 6.0) / 6.0))
-    place(st, t, x - o, y - o)
+def delivered():
+    """What this screen is laid from, read back from the handoff as the build gets it: the Voidkin screen's marks
+    (TR17) and the gear's pictures, light and border (AR6)."""
+    def keep(name, path, w, h, cut=None, pad=0.0):
+        kit.IMAGES[name] = dict(px=rs.load(path), w=w, h=h, tint=None, cut=cut, pad=pad, use="", ship=False)
+
+    marks = json.loads((MARKS_ART / "voidkin_marks.json").read_text(encoding="utf-8"))
+    for name, im in marks["images"].items():
+        keep(name, MARKS_ART / im["file"], *im["points"], cut=tuple(im["cut"]) if "cut" in im else None)
+    GEAR_SET.update(json.loads((GEAR_ART / "gear_icons.json").read_text(encoding="utf-8")))
+    side = GEAR_SET["slot"]
+    rim = next(layer for layer in GEAR_SET["layers"] if "pad" in layer)
+    keep("GearLight", GEAR_ART / "images" / "GearLight.png", side, side)
+    keep("GearFrameLegendary", GEAR_ART / "images" / "GearFrameLegendary.png", side, side, (rim["corner"],) * 4, rim["pad"])
+    for where, designs in GEAR_SET["kinds"].items():
+        for d in designs:
+            GEAR_PIECES[Path(d["image"]).stem] = dict(rarity=d["rarity"], slot=where, path=GEAR_ART / d["image"])
 
 
-def slot(st, x, y, s, p, name, rarity, rank):
-    """One gear slot: the kit's button cut, small. Rarity in layers (docs/research/gear-icons.md, DESIGN): the rim, an
-    inner light that's brighter behind the object, then the object, which fills most of the square; the forge rank sits
-    at the frame's corner. Empty, the slot's mark is faint. The marks are plain stand-ins until the gear has its art."""
+def gear_slot(st, x, y, s, p, name, piece=None, rank=0):
+    """One gear slot, laid as gear_icons.json tells the build: the well, the rarity's tint and light, the rim (the kit's
+    bold button edge; Legendary's own border, sliced, on its umber ground), the picture, a weapon's class mark on the
+    bottom cut. The forge rank is a badge on the square corner: this sheet's own, not drawn as an image yet. Empty, the
+    slot is quieter: a thinner well, the kit's edge, and its plain mark, faint (`name`; a bag's free cell has none)."""
+    well, tint, light = GEAR_SET["layers"][:3]
     st.lay("ButtonShadow", x, y, s, s)
-    st.lay("ButtonFill", x, y, s, s, tint=(p["well"], p["channel"]))
-    if rarity:  # the inner light, kept inside the slot's own cut
-        def light(rows, cols):
-            v = np.hypot((np.arange(cols)[None, :] / cols - 0.5) * 1.15, np.arange(rows)[:, None] / rows - 0.46)
-            return (np.clip(1 - v / 0.62, 0, 1) ** 1.3 * 0.62 + 0.14).astype(np.float32)
-        st.lay("ButtonFill", x, y, s, s, tint=(mix(ITEM[rarity], "#FFFFFF", 0.2), ITEM[rarity]), window=light)
-    st.lay("ButtonEdge" + ("Bold" if rarity else ""), x, y, s, s, tint=ITEM[rarity] if rarity else p["edge"],
-           alpha=1.0 if rarity else 0.7)
-    if rarity in HIGH:
-        high_frame(st, x, y, s, rarity)
-    t = kit.blank(s, s)
-    d = GEAR[name.split(" I")[0]](t, s / 2, s / 2 - 0.02 * s, s * 0.33)
-    if rarity:
-        t.glow(d, 2.2, ui.BLACK, 0.55)
-        t.paint(d, t.ramp("#FFFFFF", mix(IVORY, ITEM[rarity], 0.5), (t.y / s - 0.15) / 0.7))
+    if piece is None:
+        st.lay("ButtonFill", x, y, s, s, tint=(well["well"], well["channel"]), alpha=0.6)
+        st.lay("ButtonEdge", x, y, s, s, tint=p["edge"], alpha=0.7)
+        if name is None:  # a bag's free cell
+            return
+        t = kit.blank(s, s)
+        t.paint(GEAR[name.split(" I")[0]](t, s / 2, s / 2 - 0.02 * s, s * 0.3), c(p["faint"]), 0.4)
+        return place(st, t, x, y)
+    piece = GEAR_PIECES[piece]
+    rarity, rim = piece["rarity"], GEAR_SET["rim"][piece["rarity"]]
+    lit = mix(rim, "#FFFFFF", 0.2)
+    if rarity == "Legendary":
+        st.lay("ButtonFill", x, y, s, s, tint=tuple(well["legendary"]))
+        small, (u, v) = s * light["legendary"], light["legendaryAt"]
+        st.lay("GearLight", x + u * s, y + v * s, tint=lit, scale=small / GEAR_SET["slot"])
+        st.lay("GearFrameLegendary", x, y, s, s)
     else:
-        t.paint(d, c(p["faint"]), 0.45)
-    if rank:  # the forge rank, a badge on the frame's square corner, never over the object's middle
-        t.paint(t.poly(cut_box(1.6, s - 14.6, 21.0, s - 1.6, 0.0, 3.5, 0.0, 0.0)), c(STROKE), 0.88)
-    place(st, t, x, y)
+        strength = 0.8 if rarity == "Common" else 1.0
+        st.lay("ButtonFill", x, y, s, s, tint=(well["well"], well["channel"]))
+        st.lay("ButtonFill", x, y, s, s, tint=rim, alpha=0.14 * strength)
+        st.lay("GearLight", x, y, tint=lit, alpha=strength, scale=s / GEAR_SET["slot"])
+        st.lay("ButtonEdgeBold", x, y, s, s, tint=rim)
+    if "px" not in piece:
+        piece["px"] = rs.load(piece["path"])
+    fit = 0.94
+    o = round(s * (1 - fit) / 2 * K4)
+    rs.paste(st.px, rs.shrink(piece["px"], s * fit * K4 / piece["px"].shape[0]), round(x * K4) + o, round(y * K4) + o)
+    if piece["slot"] in ("Main Hand", "Off Hand"):  # the class the weapon is for, in its seat, 10.8 points across
+        st.icon("ClassWarrior", x + s - 4.6, y + s - 4.6, BOX * 10.8 / 26.0)
     if rank:
+        t = kit.blank(s, s)
+        t.paint(t.poly(cut_box(1.6, s - 14.6, 21.0, s - 1.6, 0.0, 3.5, 0.0, 0.0)), c(STROKE), 0.88)
+        place(st, t, x, y)
         st.text(x + 3.8, y + s - 13.2, 11, f"+{rank}", "#FFFFFF")
 
 
@@ -1179,23 +1197,10 @@ def stand_in(st, cx, foot, height):
     place(st, t, cx - 4 * u, foot - height)
 
 
-def mark_button(st, x, y, s, p, draw):
-    """Favourite, lock, rename: small, beside the name."""
-    kit.button(st, x, y, s, s, "", p)
-    t = kit.blank(s, s)
-    t.paint(draw(t, s / 2, s / 2 - 1, s * 0.24), c(p["text"]))
-    place(st, t, x, y)
-
-
-MARKS = (
-    lambda t, x, y, r: _poly(t, x, y, r, [(math.sin(a) * k, -math.cos(a) * k) for a, k in
-                                         ((math.radians(36 * i), 1.15 if i % 2 == 0 else 0.5) for i in range(10))]),
-    lambda t, x, y, r: np.minimum(_poly(t, x, y, r, ((-0.85, -0.1), (0.85, -0.1), (0.85, 1.0), (-0.85, 1.0))),
-                                  np.maximum(_ring(t, x, y - 0.25 * r, 0.52 * r, 0.26 * r), t.y - y + 0.1 * r)),
-    lambda t, x, y, r: np.minimum(seg(t, (x - 0.45 * r, y + 0.45 * r), (x + 0.75 * r, y - 0.75 * r), 0.46 * r),
-                                  _poly(t, x, y, r, ((-1.0, 1.0), (-0.86, 0.36), (-0.36, 0.86)))),
-)
-TABS = ("Overview", "Stats", "Kit", "Stars")
+# The rail's pages (TR17): a page's word, and its mark among the delivered images. The last three aren't built yet.
+PAGES = (("Overview", "PageOverview"), ("Items", "PageBag"), ("Kit", "PageKit"), ("Stars", "PageStars"),
+         ("Forge", "PageForge"), ("Jewels", "PageJewels"), ("War Emblems", "PageEmblems"))
+SOON = ("Forge", "Jewels", "War Emblems")
 
 
 def _star(t, x, y, r):
@@ -1219,11 +1224,12 @@ RAIL_REST, RAIL_ON = 13.0, 21.0  # a round button's radius: about 7% and 12% of 
 RAIL_WORD = 16.0  # the room the chosen page's word takes under its button: the pages after it stand that much lower
 
 
-def rail(st, x, y0, y1, p, tabs, chosen, soon=()):
+def rail(st, x, y0, y1, p, tabs, chosen, soon=(), images=None):
     """The Voidkin's menu (the director, 2026-11-15; docs/research/voidkin-screen.md, "The rail, ours"): a thin conduit
     line down the left, a round button strung on it for each page. At rest a button is a small cut ring round its mark.
     Chosen, it's larger, its ring lit in the room's colour, and light runs along the line to it. A page in `soon`
-    isn't built yet: its mark is greyed."""
+    isn't built yet: its mark is greyed. `images` names each page's delivered mark; without it a page's mark is its
+    plain shape in MENU."""
     accent, g, span = p["accent"], 22.0, y1 - y0
     step = (span - 2 * RAIL_REST - 24.0 - RAIL_WORD) / (len(tabs) - 1)
     ys = [y0 + RAIL_REST + 6.0 + i * step + (RAIL_WORD if i > chosen else 0.0) for i in range(len(tabs))]
@@ -1263,113 +1269,123 @@ def rail(st, x, y0, y1, p, tabs, chosen, soon=()):
             ring = np.maximum(np.abs(d + 1.0) - 0.85, cuts)
             t.paint(ring, c(p["edge"]))
             t.paint(np.maximum(ring, t.y - m + rad * 0.5), c(p["glint"]), 0.75)
-        t.paint(MENU[tab](t, m, m + 0.5, rad * 0.5), c(PALE[accent] if on else p["text"]),
-                1.0 if on else 0.34 if tab in soon else 0.85)
+        ink, cover = PALE[accent] if on else p["text"], 1.0 if on else 0.34 if tab in soon else 0.85
+        if images is None:
+            t.paint(MENU[tab](t, m, m + 0.5, rad * 0.5), c(ink), cover)
         place(st, t, x - m, y - m)
+        if images is not None:  # a mark's shape is 24 points across on its 32 point image
+            st.icon(images[tab], x, y + 0.5, rad * BOX / 24.0, tint=ink, alpha=cover)
         if on:  # the one word on the rail, at a size that reads on a phone: a page at rest is known by its mark
             st.text(x, y + rad + 4.0, 11, tab, PALE[accent], "CENTER")
-STRIP = ("Legendary", "Mythical", "Epic", "Rare", "Epic", "Uncommon", "Rare", "Common", "Uncommon", "Common", "Rare",
-         "Common", "Uncommon", "Common", "Common")  # the strip's frames, the shown Voidkin first
+STRIP = ("Common", "Rare", "Common", "Epic", "Uncommon", "Legendary", "Rare", "Common", "Uncommon",
+         "Mythical")  # the strip's frames, the shown Voidkin first
 
 
 def voidkin_screen(p, figure=None, faces=()):
-    """One Voidkin, full screen, at a phone's size in landscape. `figure`: the Voidkin's render; `faces`: portraits for
-    the strip. The Voidkin's rarity lights its stage and its floor takes its element, as TR17's stage does."""
+    """One Voidkin, full screen, at a phone's size in landscape, as TR17's block lays it: a band beside Roblox's bar,
+    the rail down the left, the figure between its gear, the chosen page on the right. `figure`: the Voidkin's render;
+    `faces`: portraits for the strip. The Voidkin's rarity lights its stage and its floor takes its element."""
     st = kit.Stage(W, H, "#000000")
     accent = p["accent"]
     top, foot = NIGHT[accent]
     st.px[..., :3] = kit.shade((mix(top, accent, 0.1), mix(NIGHT[REGALIA][1], "#000000", 0.15)), st.px.shape[0])
-    l, r = SAFE[0] + PAD, SAFE[2] - PAD
-    rarity, element = "#FFD777", ui.ELEMENTS["Fire"]
-    cx, floor, tall = 315.0, 264.0, 232.0
+    r = SAFE[2] - PAD
+    rarity, element = COMMON, ui.ELEMENTS["Fire"]
+    cx, floor, tall = 283.0, 258.0, 180.0
     # the stage: the rarity's light behind the figure, the element's on the floor
-    t = kit.blank(420, 300)
-    t.glow(np.hypot((t.x - 210) * 0.8, t.y - 140) - 60, 50.0, c(rarity), 0.5)
-    t.glow(np.hypot((t.x - 210) * 0.9, t.y - 150) - 30, 26.0, c(mix(rarity, "#FFFFFF", 0.4)), 0.3)
-    t.glow(np.hypot((t.x - 210) / 4.6, t.y - 268) - 9, 9.0, c(element), 0.6)
-    t.paint(np.hypot((t.x - 210) / 5.2, t.y - 268) - 7.5, c(mix(element, "#FFFFFF", 0.35)), 0.5)
-    place(st, t, cx - 210, floor - 268 + 2)
+    t = kit.blank(340, 250)
+    t.glow(np.hypot((t.x - 170) * 0.8, t.y - 110) - 48, 44.0, c(rarity), 0.42)
+    t.glow(np.hypot((t.x - 170) * 0.9, t.y - 116) - 24, 22.0, c(mix(rarity, "#FFFFFF", 0.4)), 0.26)
+    t.glow(np.hypot((t.x - 170) / 4.2, t.y - 208) - 8, 8.0, c(element), 0.6)
+    t.paint(np.hypot((t.x - 170) / 4.8, t.y - 208) - 6.5, c(mix(element, "#FFFFFF", 0.35)), 0.5)
+    place(st, t, cx - 170, floor + 2 - 208)
     if figure is None:
         stand_in(st, cx, floor + 2, tall - 8.0)
     else:
         fig = rs.shrink(figure, tall * K4 / figure.shape[0])
         rs.paste(st.px, fig, round(cx * K4 - fig.shape[1] / 2), round((floor + 4) * K4) - fig.shape[0])
-    # the gear: the twelve shared slots, a column of six each side of the figure
-    s, pitch, y0 = 40.0, 41.0, 56.0
-    for column, x in zip(SLOTS, (118.0, 472.0)):
-        for i, (name, item, rank) in enumerate(column):
-            slot(st, x, y0 + i * pitch, s, p, name, item, rank)
-    # Combat Power, at its feet: a plate in the rarity's light that fades at both ends
-    t = kit.blank(204, 34)
-    band = np.clip(1 - np.abs(t.x - 102) / 100, 0, 1) ** 1.2
-    ui.over(t.px, c("#000000"), band * 0.55)
-    ui.over(t.px, c(rarity), band * np.clip(1 - np.abs(t.y - 33) / 1.6, 0, 1) * 0.9)
-    ui.over(t.px, c(rarity), band * np.clip(1 - np.abs(t.y - 1) / 1.2, 0, 1) * 0.45)
-    em = g_diamond(t, 40, 17, 9.5, 11.5)
-    t.paint(em, c(STROKE))
-    t.line(em, 1.6, c(rarity))
-    t.paint(g_diamond(t, 40, 17, 4.2, 5.2), c(rarity))
-    place(st, t, cx - 102, 268)
-    st.text(cx - 46, 271, 8, "COMBAT POWER", mix(rarity, IVORY, 0.4))
-    st.text(cx - 47, 280, 20, "27,433", IVORY)
+    # the gear: the twelve shared slots, a column of six each side of the figure, a gap between every two
+    s, pitch, y0 = 37.0, 43.0, 58.0
+    for column, x in zip(SLOTS, (116.0, 413.0)):
+        for i, (name, piece, rank) in enumerate(column):
+            gear_slot(st, x, y0 + i * pitch, s, p, name, piece, rank)
+    # Combat Power, at its feet: its emblem, its number, on a dark band that fades at both ends
+    t = kit.blank(150, 42)
+    band = np.clip(1 - np.abs(t.x - 75) / 74, 0, 1) ** 1.2
+    ui.over(t.px, c("#000000"), band * 0.5)
+    ui.over(t.px, c(accent), band * np.clip(1 - np.abs(t.y - 41) / 1.4, 0, 1) * 0.8)
+    place(st, t, cx - 75, 264)
+    st.icon("CombatPower", cx - 46, 285, 30.0)
+    st.text(cx - 28, 269, 20, "27,433", IVORY)
+    st.text(cx - 27, 291, 11, "Combat Power", p["soft"])
     # the class's weapon pair, larger, at the figure's feet either side of Combat Power
-    for (name, item, rank), x in zip(WEAPONS, (166.0, 418.0)):
-        slot(st, x, 257.0, 46.0, p, name, item, rank)
-    # the name, its marks and its level on one line, right of Roblox's bar and over the figure's head; the close
-    st.text(226, 14, 18, "Rook", p["text"])
-    for i, mark in enumerate(("GemStrength", "ClassWarrior", "ElementFire")):
-        st.icon(mark, 283 + i * 17, 25.0, 14.0)
-    st.text(336, 20, 10, "Lv 12", p["soft"])
-    st.text(226, 36, 10, "Legendary", rarity)
-    # the preset this Voidkin is linked to, in Regalia's colour: the gear is Regalia's
+    for (name, piece, rank), x in zip(WEAPONS, (160.0, 360.0)):
+        gear_slot(st, x, 262.0, 46.0, p, name, piece, rank)
+    # over its head, one line: the level's mark, the name, its rarity in its colour; the preset its gear belongs to
+    x = 162.0
+    st.lay("LevelPlate", x, 55, 64.0, 22.0, tint=p["button"])
+    st.lay("LevelPlateEdge", x, 55, 64.0, 22.0, tint=(PALE[accent], accent))
+    st.icon("LevelChevrons", x + 11, 66, 14.0, tint=NIGHT[accent][1])
+    st.text(x + 27, 61, 11, "Lv", p["soft"])
+    st.text(x + 41, 59, 15, "12", p["text"])
+    st.text(x + 72, 58, 16, "Rook", p["text"])
+    st.text(x + 118, 62, 11, "Common", COMMON)
     gear = palette(REGALIA, DEEPER)
-    st.lay("PanelShadow", 440, 16, 104, 28)
-    st.lay("PanelFill", 440, 16, 104, 28, tint=gear["panel"], alpha=gear["alpha"])
-    st.lay("PanelEdgeBold", 440, 16, 104, 28, tint=gear["edge"])
-    st.lay("PanelGlint", 440, 16, 104, 28, tint=gear["glint"])
-    st.icon("Crest", 456, 30, 19.0)
-    st.text(470, 16 + (28 - 12 * ui.CAP) / 2, 12, "Preset 1", gear["text"])
-    for i, draw in enumerate(MARKS):
-        mark_button(st, 566 + i * 38, 14, 32.0, p, draw)
-    kit.button(st, r - 62, 14, 62, 32, "Close", p)
+    st.lay("ButtonFill", 334, 55, 70, 22, tint=gear["button"])
+    st.lay("ButtonEdgeBold", 334, 55, 70, 22, tint=gear["edge"])
+    st.icon("Crest", 346, 66, 15.0)
+    st.text(356, 55 + (22 - 11 * ui.CAP) / 2, 11, "Preset 1", gear["text"])
+    # the band, beside Roblox's bar: back, the three marks in their taps, the currencies
+    kit.button(st, 222, 14, 52, 32, "Back", p)
+    for i, (name, tint) in enumerate((("FavouriteOn", MAP), ("LockOff", p["soft"]), ("Rename", p["soft"]))):
+        kit.button(st, 282 + i * 44, 14, 40, 32, "", p)
+        st.icon(name, 302 + i * 44, 30, 16.0, tint=tint)
+    pill(st, 566, 15, 90, CREDITS, BLOCK, "CoinMint", "42,186")
+    pill(st, 660, 15, 90, POWER, DEEPER, "Battery", "42 / 60")
     # the menu, this Voidkin's own: a line down the left, a round button for each page
-    rail(st, l + 22.0, 58.0, 300.0, p, TABS, TABS.index("Stats"))
-    # the chosen menu's panel
-    px, pw = 526.0, r - 526.0
-    kit.panel(st, px, 56, pw, 248, p)
-    st.text(px + 12, 66, 13, "Stats", p["text"])
-    # each stat in a colour of its own: health's red and the heal's green as the fight has them, a plain hit's ivory
-    # for attack, steel for defence; the thread shows the Voidkin's own share, the rest is its gear's
-    for i, (name, value, own, share, colour) in enumerate((
-            ("Health", "1,847", "Own 1,543, gear 304", 1543 / 1847, "#EE4E3A"), ("Attack", "295", "Own 241, gear 54", 241 / 295, IVORY),
-            ("Defence", "212", "Own 180, gear 32", 180 / 212, "#9FB4D9"), ("Regen", "14", "Own 14", 1.0, "#6FE695"))):
-        y = 90 + i * 38
-        t = kit.blank(14, 14)
-        d = g_diamond(t, 7, 7, 4.6, 5.8)
-        t.paint(d - 1.2, c(STROKE))
-        t.paint(d, c(colour))
-        place(st, t, px + 9, y - 1)
-        st.text(px + 26, y, 13, name, p["text"])
-        st.text(px + pw - 12, y, 13, value, mix(colour, IVORY, 0.35), "RIGHT")
-        st.text(px + 26, y + 17, 9, own, p["soft"])
-        kit.bar(st, px + 12, y + 30, pw - 24, 3.0, share, p, colour)
-    main_button(st, px + 10, 254, (pw - 26) / 2, 40, "Lead", p)
-    kit.button(st, px + 16 + (pw - 26) / 2, 254, (pw - 26) / 2, 40, "Send to work", p)
-    # the Voidkin to choose from, scrolling along the foot
-    kit.panel(st, l - 2, 308, r - l + 4, 58, p)
+    words = tuple(word for word, _ in PAGES)
+    rail(st, SAFE[0] + PAD + 22.0, 56.0, 370.0, p, words, words.index("Items"), SOON, dict(PAGES))
+    # the chosen page: the bag, its tabs by kind, the gear in its cells
+    px, pw = 460.0, r - 460.0
+    kit.panel(st, px, 54, pw, 252, p)
+    st.text(px + 12, 62, 13, "Items", p["text"])
+    st.text(px + pw - 12, 63, 11, "20 / 60", p["soft"], "RIGHT")
+    x = px + 10
+    for word, w, built in BAG_TABS:
+        on = word == "Gear"
+        kit.button(st, x, 80, w, 32, "", p, "selected" if on else "rest" if built else "disabled")
+        if built:
+            ink = p["selectedText"] if on and "selected" in p else PALE[accent] if on else p["text"]
+            st.text(x + w / 2, 80 + (32 - 11 * ui.CAP) / 2, 11, word, ink, "CENTER")
+        else:
+            st.text(x + w / 2, 84, 11, word, p["faint"], "CENTER")
+            st.text(x + w / 2, 97, 11, "Soon", p["faint"], "CENTER")
+        x += w + 2
+    cell, gap = 40.0, 5.0
+    x0 = px + (pw - 6 * cell - 5 * gap) / 2
+    for i in range(24):
+        x, y = x0 + (i % 6) * (cell + gap), 120 + (i // 6) * (cell + gap)
+        piece = BAG[i] if i < len(BAG) else None
+        if piece == BAG_CHOSEN:
+            st.lay("ButtonRingGlow", x - 2, y - 2, cell + 4, cell + 4, tint=accent)
+        gear_slot(st, x, y, cell, p, None, piece)
+        if piece == BAG_CHOSEN:
+            st.lay("ButtonRing", x - 2, y - 2, cell + 4, cell + 4, tint=PALE[accent])
+    # the foot's row: the Voidkin to choose from, scrolling, and what the shown one can do, Lead filled as the
+    # screen's one main action
+    kit.panel(st, 112, 313, r - 112, 58, p)
     for i, frame_rarity in enumerate(STRIP):
-        x = l + 2 + i * 46.0
-        if x + 40 > r:
-            break
+        x = 118 + i * 46.0
         face = faces[i] if i < len(faces) else None
         kit.IMAGES.pop("_FaceFrame" + frame_rarity + "Small", None)  # cut_face keeps one face a frame: let it go
-        kit.frame(st, x, 312 - (2 if i == 0 else 0), frame_rarity, p, face, small=True)
+        kit.frame(st, x, 317 - (2 if i == 0 else 0), frame_rarity, p, face, small=True)
         if i == 0:  # the one shown: lifted, a light under it
-            st.lay("ButtonBase", x, 314, 40, 48, tint=accent)
-    kit.bar(st, l + 2, 363, r - l - 4, 3.0, 0.0, p)
-    thumb = kit.blank(150, 3)
-    thumb.paint(thumb.poly(cut_box(0, 0, 150, 3)), c(accent), 0.9)
-    place(st, thumb, l + 2, 363)
+            st.lay("ButtonBase", x, 319, 40, 48, tint=accent)
+    thumb = kit.blank(150, 2.5)
+    thumb.paint(thumb.poly(cut_box(0, 0, 150, 2.5)), c(accent), 0.9)
+    place(st, thumb, 118, 366.5)
+    main_button(st, 586, 320, 60, 44, "Lead", p)
+    kit.button(st, 650, 320, 96, 44, "Send to work", p)
     phone(st, controls=False)
     return bytes8(halve(st.px)), st.items
 
@@ -1395,18 +1411,19 @@ def voidkin_sheet(out, shot):
     ui.K = 2
     m = 20.0
     notes = (
-        "The director, 2026-11-15: the Voidkin's screen is the full screen, its gear round the figure, the Voidkin to "
-        "choose from scrolling along the foot. Then: the gear's slots a bit bigger; the menu much smaller, a line with "
-        "round buttons on it; the two weapon slots at the figure's feet, either side of Combat Power.",
-        "The rail: a thin line, a small cut ring for each page (26 points across), the chosen one larger (42) with its "
-        "ring lit in the room's colour and light on the line beside it. The filled button stays the screen's one main action.",
-        "The gear: twelve slots at 40 points in two columns of six, the weapon pair at 46. Rarity in layers: the rim, an "
-        "inner light behind the object, the object large. From Legendary the frame steps: lit facets on its cuts, a second "
-        "rim of light inside, a small crown on its top edge; Mythical's crown is broken and its light red.",
-        "Stand-ins: the gear's marks (plain shapes until the gear has its modelled art), the numbers, the strip's empty "
-        "frames, Blender's face for the text; Rook is shown as a Legendary for the light.",
-        "Colours with a meaning: a slot's rim is its item's rarity; the preset is Regalia's indigo; health's red, "
-        "attack's ivory, defence's steel, the heal's green; the stage in the rarity's gold over the element's orange.",
+        "The Voidkin's screen in its room's colour, on TR17's block: the band beside Roblox's bar, the rail of seven "
+        "pages, the figure between its gear, the bag on the right, and one row at the foot: the Voidkin to choose from, "
+        "then Lead and Send to work.",
+        "Laid from the delivered images: the gear's sixty pictures, its light and Legendary's border (AR6, as "
+        "gear_icons.json says), the rail's marks, favourite, lock and rename, the level's mark and Combat Power's emblem "
+        "(TR17's marks).",
+        "The gear: twelve slots at 37 points with 6 between, the weapon pair at 46, a bag cell at 40 with 5 between. "
+        "Legendary changes its border only, on its umber ground: no crown. A weapon wears its class's mark on the "
+        "bottom cut. A forge rank belongs to the slot, on its square corner: a piece in the bag shows none.",
+        "Lead and Send to work: beside the band's three marks and two currencies they don't fit, by 14 points on this "
+        "phone and by more on a smaller one. Here they end the foot's row, right of the strip, Lead filled.",
+        "Stand-ins: ten slots stand empty with plain marks (batch 1 has four kinds); the forge rank's badge; the numbers; "
+        "the strip's empty frames; Blender's face for the text. The band's currencies are the HUD's own pieces.",
     )
     notes = [line for note in notes for line in textwrap.wrap(note, 150)]
     sheet = ui.Sheet(W + 2 * m, 44 + H + 14 + len(notes) * 15 + 12 + H / 2 + 30, GROUND)
@@ -1437,6 +1454,7 @@ def ui_main(out, rooms=True):
     kit.frames()
     kit.icons()
     icons()
+    delivered()
     images = REPO / "build" / "handoff" / "UI" / "hud" / "images"
     faces = [rs.load(images / f"Portrait{who}.png")[244:584, 198:538].copy() for who in ("Rook", "Lyric", "Pip")]
     face = faces[0]

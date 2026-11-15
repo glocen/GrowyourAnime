@@ -6604,6 +6604,15 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **Checks:** the maker's own, above. The content check on the four pictures, the mesh, the plan and the looks: **PASS, for delivery and for the upload of these exact files,** and PASS on the looks as internal pictures. It read the four pictures at full size and not at 64 pixels, judging their small look from the view above. What it holds later work to: a regenerated or re-tinted picture, and each new court level, is checked again; the lot's mark stays a bare plus, never ringed, with no ring round a junction or a conduit crossing and no crossbar through the arrival ring; a main conduit that's lit later stays yellow or cyan and ruled, never red, pooled or dripping; after the install, one look from the player's camera that the dead conduit still reads as conduit.
 - **Time:** by the clock, 21:11 to 21:18: the two scripts, four renders, the export, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+- **Research's two calls,** tier 2, 2026-11-15, night (after one look at `base_1_above_clear.png`). From above, the lit court and the dark yard behind it read as a base still to grow, which is what the director's "fine if some part a plain" allows.
+  1. **Machines spread back: yes.** Each of launch's levels lights the next block and stands its machines there, so an upgrade is seen as the light marching back, from the gate and from TR21's camera.
+     - The front court keeps the Breaker, the generator, the battery, the Training machine, bays 1 and 2, and the Festival Door.
+     - Level 2 lights the block at 72 studs, with bays 3 and 4 on its lots.
+     - Level 3 lights the block at 120, with bays 5 and 6.
+     - The block at 168 stays plain at launch, for phase 3's machines (the Condenser, the Lab, the Forge).
+     - Walking back isn't needed: a worker is set in its bay by a tap in the base screen (TR21).
+     - Places are Faber's plot, on these lots.
+  2. **Wider only after launch.** Launch's three levels grow the yard along its length only. The ground beside it, 56 studs a side, is where the levels past 3 widen it, and the plot's whole 200 is the top levels' size. Taking the whole plot at level 3 would leave levels 4 to 20 no room to grow. This answers the director's question of 21:17, and the director can still say otherwise.
 
 ## AR15. The base's machines (Modulo, then Faber)
 

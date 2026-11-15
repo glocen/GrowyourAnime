@@ -215,6 +215,10 @@ local function leadButton(id: string): TextButton?
 		return nil
 	end
 	VoidkinScreen.Choose(id)
+	local limit = os.clock() + 3 -- a body not drawn yet holds the switch until it can stand whole (TR17, fix 1)
+	while VoidkinScreen.Chosen() ~= id and os.clock() < limit do
+		task.wait()
+	end
 	local found = VoidkinScreen.Find("Lead")
 	return if found and found:IsA("TextButton") then found else nil
 end
@@ -1514,8 +1518,12 @@ local cases = {
 				return fallen ~= nil and fallen:GetAttribute("State") == "Home"
 			end))
 			t.Server("LeadHeal")
-			local lead = myLead()
-			local state = if lead then lead:GetAttribute("State") else nil
+			local state: any = nil
+			waitFor(t, REPLICATE, function(): boolean -- its state reaches this client a moment after the server's answer
+				local lead = myLead()
+				state = if lead then lead:GetAttribute("State") else nil
+				return state ~= nil and state ~= "Down" and state ~= "Home"
+			end)
 			t.Check("the lead is back up after its fall", state ~= nil and state ~= "Down" and state ~= "Home", tostring(state))
 		end,
 	},
@@ -5200,9 +5208,9 @@ local cases = {
 				return Screen.Current() == "Voidkin"
 			end), tostring(Screen.Current()))
 			local fallenRow = leadButton(was)
-			t.Check("the fallen one's Lead can't be pressed", fallenRow ~= nil and Button.State(fallenRow) == "Disabled", if fallenRow then Button.State(fallenRow) else "no button")
+			t.Check("the fallen one, the lead still, reads Leading, lit: nothing to press", fallenRow ~= nil and Button.State(fallenRow) == "Selected" and VoidkinScreen.Chosen() == was, if fallenRow then Button.State(fallenRow) else "no button")
 			local free = leadButton(other)
-			t.Check("another's can", free ~= nil and Button.State(free) ~= "Disabled", if free then Button.State(free) else "no button")
+			t.Check("another's can be pressed", free ~= nil and Button.State(free) == "Rest" and VoidkinScreen.Chosen() == other, if free then Button.State(free) else "no button")
 			if free then
 				Button.Press(free)
 			end
@@ -6681,6 +6689,8 @@ local cases = {
 			local fill = over and over:FindFirstChild("Fill", true) :: ImageLabel?
 			t.Check("gold, \"Ready\" across the box", word ~= nil and word.Text == "Ready" and fill ~= nil and fill.ImageColor3 == Theme.Colour.Ready,
 				if word then word.Text else "no flash over the chamber")
+			local under = cell and cell:FindFirstChild("Name")
+			t.Check("what the chamber holds next waits under the gold, its words not shown", under ~= nil and under:IsA("TextLabel") and not under.Visible)
 			t.Check("the shard reaches the strip", waitFor(t, ANSWER, function(): boolean
 				local now = ProfileController.Get()
 				return now ~= nil and #now.Base.Ready > readyBefore
@@ -6704,6 +6714,8 @@ local cases = {
 			local after = shown and shown:FindFirstChild("Flash")
 			local faded = after and after:FindFirstChild("Fill", true) :: ImageLabel?
 			t.Check("and its gold is gone", after == nil or (faded ~= nil and faded.ImageTransparency > 0.95))
+			local words = shown and shown:FindFirstChild("Name")
+			t.Check("then the chamber's words show", words ~= nil and words:IsA("TextLabel") and words.Visible)
 			chip = breakerPart(`Ready{index}`)
 			t.Check("one tap on the chip opens it", chip ~= nil and BreakerScreen.Tap((chip :: Instance):FindFirstChild("Tap")) and waitFor(t, ANSWER, function(): boolean
 				return BaseController.Revealed() ~= nil
@@ -6730,7 +6742,7 @@ local cases = {
 	{
 		Name = "Breaker: infusion shows its price and what it does to the rarest tier, says why when it can't, and spends once",
 		Run = function(t: any)
-			-- TR9 (docs/design.md, "Infusion"; Rules.Base.Infuse): a little or a lot, each with its Electricity price. Why a
+			-- TR9 (docs/design.md, "Infusion"; Rules.Base.Infuse): Low or High voltage, each with its Electricity price. Why a
 			-- whole shard takes none stands over the levels; a level's own reason beside its button (BreakerScreen.Reasons).
 			local reasons = BreakerScreen.Reasons
 			local view = ProfileController.Get()
@@ -6790,10 +6802,10 @@ local cases = {
 				t.Check(`level {index}: its price still on it`, text ~= nil and string.find(text.Text, n, 1, true) ~= nil, if text then text.Text else "none")
 			end
 			lintClean(t, "the Breaker with infusion locked")
-			-- A full battery: each level it holds shows what it does to the rarest tier; a little takes a press, spent once.
+			-- A full battery: each level it holds shows what it does to the rarest tier; Low voltage takes a press, spent once.
 			local little = ShardConfig.Infusion[1]
 			t.Server("BaseBattery", capacity)
-			t.Check("a little can be pressed with the battery full", waitFor(t, ANSWER, function(): boolean
+			t.Check("Low voltage can be pressed with the battery full", waitFor(t, ANSWER, function(): boolean
 				local _, off = infuseButton(1)
 				return not off
 			end))
@@ -6807,17 +6819,18 @@ local cases = {
 			end
 			lintClean(t, "the Breaker with infusion open")
 			local button = infuseButton(1)
-			t.Check("a little is pressed", button ~= nil and Button.Press(button))
+			t.Check("named Low voltage and High voltage, each over its price", button ~= nil and string.find(breakerText("Infuse1", "Label"), "^Low voltage\n") ~= nil and string.find(breakerText("Infuse2", "Label"), "^High voltage\n") ~= nil, breakerText("Infuse1", "Label"))
+			t.Check("Low voltage is pressed", button ~= nil and Button.Press(button))
 			local slack = Breaker.Production(ProfileController.Get() :: any) * (ANSWER + 1) + 1e-3
 			t.Check("the server takes its price and lifts the shard", waitFor(t, ANSWER, function(): boolean
 				local work = chosenWork(chosen)
 				local now = ProfileController.Get()
 				return work ~= nil and math.abs(work.Luck - little.Lift) < 1e-6 and now ~= nil and now.Base.Battery <= capacity - little.Energy + slack
 			end))
-			local infused = string.format(reasons.Infused, "Infused, a little")
+			local infused = string.format(reasons.Infused, "Infused · Low voltage")
 			t.Check("the screen says it's infused, once a shard", waitFor(t, 1, function(): boolean
 				local _, off = infuseButton(1)
-				return off and breakerText("Odds", "Why") == infused and string.find(breakerText("Odds", "Place"), "infused, a little", 1, true) ~= nil
+				return off and breakerText("Odds", "Why") == infused and string.find(breakerText("Odds", "Place"), "infused, low voltage", 1, true) ~= nil
 			end), `{breakerText("Odds", "Why")}; {breakerText("Odds", "Place")}`)
 			local again, off = infuseButton(#ShardConfig.Infusion)
 			t.Check("and takes no second infusion", off and again ~= nil and not Button.Press(again))
@@ -6826,7 +6839,7 @@ local cases = {
 			local chance = if last then breakerText(last.Id, "Chance") else ""
 			t.Check("its odds show the lift", last ~= nil and chance == percentOf(last.Chance), chance)
 			if chosen.Kind == "Chamber" then
-				t.Check("its chamber says so, by the level put in", breakerText(`Chamber{chosen.Index}`, "Infused") == "Infused, a little", breakerText(`Chamber{chosen.Index}`, "Infused"))
+				t.Check("its chamber says so, by the level put in", breakerText(`Chamber{chosen.Index}`, "Infused") == "Infused · Low voltage", breakerText(`Chamber{chosen.Index}`, "Infused"))
 			end
 			lintClean(t, "the Breaker with an infused shard chosen")
 			-- Broken: nothing more goes in, and the one thing to do is open it.

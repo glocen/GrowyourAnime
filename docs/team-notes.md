@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts given:** TR8 (competent, paper fix landed), TR9 (Machine picked, works), TR12 (works), TR16 (the chip works, a trail fix); AR11 Watt's sheet (competent, take A, one fix for the model).
 - **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
-**Faber (builder).** 2026-11-15.
-- **TR17, the Voidkin screen:** rebuilt full screen to the director's layout, with the notes on the mock: the seven-page rail, the bag, Overview with the stat sheet, Lead and Send to work in the top bar, spaced slots. Its case passes (217 checks) and its take (21). **For research:** the take is in `build/captures/tr17/`, and ten findings from the build are in its status.
-- **The whole self-test is clean:** 1660 passed, 0 failed, in the phone emulation. **TR9's retake is recorded** (`build/captures/tr9/`), for research's verdict.
-- **Next:** AR12's colour into the HUD (V2, Block, from `hud_colour.json`), with the lead card's halos and the portrait's seam fix. The director, 2026-11-15, to Faber: "We need to add the colors by the way, modulo cooked with the colors let make this game more vivid once we can". Then TR12's and TR16's fixes; the TR10, TR13 and TR11 takes; Kirra's install; TR18.
+**Faber (builder).** 2026-11-15, evening.
+- **TR17's retake is with research:** the three fixes, the band and the bag first. Its case passes (256 checks) and the whole self-test (1699, 0 failed). **For research:** the sheets are in `build/captures/tr17/`, and two calls were built another way (the rail scrolls under 366 pt; the marks stand in the band): TR17, "The retake".
+- **TR9:** the fade fix and Low voltage, High voltage are in, checked on a still, for research's pass.
+- **Next:** TR9's "Drop rates" panel. Then AR12's colour into the HUD (V2, Block), with the lead card's halos and the portrait's seam fix; TR12's and TR16's fixes; the TR10, TR13 and TR11 takes; Kirra's install; TR18, with voltage as time (its price is in TR18's kWh).
 
 **Modulo (assets).** 2026-11-15, on Fable 5.2.
 - **AR12, the HUD's and the screens' colour:** the HUD's images in V2, Block are delivered: `build/handoff/UI/hud/colour/images/` (30 images), `hud_colour.json` (how each piece stacks, each system's colours, the rooms) and `hud_colour_images.png` (AR12, "The HUD's images in V2, Block"). Content check PASS; not uploaded. **For Faber:** the readout's light is one image under a gradient, its stops in the json, untried in Studio. `vivid_voidkin.png` is the look to hold beside TR17's rebuild.
@@ -39,6 +39,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-15, TR17 and TR9: a switch to a Voidkin whose body isn't drawn yet lights its cell on the strip at once and changes the stage and the panel together. The currencies' chips are sized to their numbers. An infusion button holds its name over its price. The Breaker's place line reads "· infused, low voltage".
 - Tier 1, Faber, 2026-11-14, TR16: a fallen card's two chips share one place under it, and only one shows. "Send another" now shows only when another Voidkin could go out at once: a Voidkin at work can't lead, so it used to show a button that sent no one. The trail keeps 4 studs in from the stall fronts and is gone within 6 studs of the door.
 - Tier 1, Faber, 2026-11-14, Kirra's install: First Strike crits her first hit to land on a target, past the critical's cap. A dodged swing hasn't landed, and a Shade that walked home is fought anew. No cue of its own: the critical's number.
 - Tier 1, Faber, 2026-11-14, TR9: a screen opened again, as its owner rebuilds it, keeps its panel and refills its body in place, so the Base and Breaker screens no longer replay their entrance on each change. The Breaker's prompt opens the oldest ready shard as before, else the Breaker's own screen.
@@ -72,6 +73,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, evening. TR17's retake and TR9's fade fix (Faber)
+
+- **What changed.** The Voidkin screen has research's three fixes: the stage never stands empty on a switch, the Voidkin's name is over the stage, and the lead reads "Leading" with "Not while leading" under Send to work. Its top bar is in Roblox's band, a new `Band` layer any full screen can use (`Kit/Screen.luau`). The Breaker's chamber holds its next shard's words until the gold is gone, and the infusion's levels are Low voltage and High voltage.
+- **A finding worth keeping:** a model fetched with `PreloadAsync` still draws empty for up to half a second the first time a viewport shows it. Drawing it ahead in a small viewport is what makes it ready (`VoidkinScreen/Figure.luau`, the wings).
+- **Where it lives.** `docs/test-requests.md`, TR17, "The retake", and TR9, "The fade fix and the names". Evidence: `build/captures/tr17/retake*.jpg`, `build/captures/tr9/gold_fade_still.jpg`.
+- **Open.** Research's verdict on the retake and its pass on TR9. The rail scrolls on phones under 366 pt tall. Voltage as time and "Drop rates" aren't built.
+- **For:** research.
 
 ### 2026-11-14. Kirra's clips delivered (Modulo)
 

@@ -393,7 +393,7 @@ return {
 			local bays = { { Worker = "k1" }, { Worker = "" }, { Worker = "" } }
 			local why, bay = Hud.WorkReason("", bays)
 			t.Check("the first empty bay", why == nil and bay == 2, `{why} {bay}`)
-			t.Equal("the lead fights", (Hud.WorkReason("Lead", bays)), "Leading")
+			t.Equal("the lead fights", (Hud.WorkReason("Lead", bays)), "Not while leading")
 			t.Equal("a worker is at work", (Hud.WorkReason("Bay 1", bays)), "At work")
 			t.Equal("every bay busy", (Hud.WorkReason("", { { Worker = "k1" } })), "Every bay is busy")
 			t.Equal("no bay yet", (Hud.WorkReason("", {})), "No bay open yet")

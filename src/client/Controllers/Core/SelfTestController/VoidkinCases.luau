@@ -1,12 +1,14 @@
 --!strict
 -- VoidkinCases (client, Studio only): the Voidkin screen's case (TR17, the director's full-screen layout), a list of its
 -- own beside Cases, which joins it as it joins Takes. On the screen as it stands at home (Stay): opened from the dock,
--- full screen over a cover that hides the world and the HUD, the figure whole in its stage at its measured share, the
--- twelve shared slots in two columns of six and its class's two hands either side of Combat Power, each page from its
--- rail button (the chosen one larger and lit), on the save's numbers, Lead and Send to work and the marks in view,
--- favourite and lock set and cleared, a switch by the strip and by a flick, a tap's flourish, a turn, one sent to work
--- and brought home, a rename, the UI lint in this window and on the smallest phone, and Back. VoidkinCases.Own gives the
--- account Rook, Pip and Lyric when it lacks them, for this and the takes.
+-- full screen over a cover that hides the world and the HUD, Back, its marks and the currencies in Roblox's band, its
+-- name and rarity on one line over the stage, the figure whole under it at its measured share, the twelve shared slots
+-- in two columns of six and its class's two hands either side of Combat Power, the rail's seven taps whole where they
+-- fit, each page from its rail button (the chosen one larger and lit), on the save's numbers, Lead and Send to work over
+-- the panel (the lead's lit, its work off with why under its name), favourite and lock set and cleared, a switch by the
+-- strip and by a flick, a switch to a body still being fetched (the one shown stays with its panel), a tap's flourish,
+-- a turn, one sent to work and brought home, a rename, the UI lint in this window and on the smallest phone, and Back.
+-- VoidkinCases.Own gives the account Rook, Pip and Lyric when it lacks them, for this and the takes.
 
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -82,12 +84,16 @@ local function framed(figure: Figure.Figure): (number, number)
 	return share(at.Position.Y + size.Y / 2), share(at.Position.Y - size.Y / 2)
 end
 
--- A piece of the open screen that shows, whole, inside the screen's frame.
+-- A piece of the open screen that shows, whole, inside the screen's frame, or inside the band when it stands there.
 local function inView(name: string): boolean
-	local frame = Screen.Frame(VoidkinScreen.Name)
+	local frame: GuiObject? = Screen.Frame(VoidkinScreen.Name)
 	local piece = VoidkinScreen.Find(name)
 	if frame == nil or piece == nil or not piece:IsA("GuiObject") then
 		return false
+	end
+	local band = Layers.Get("Band")
+	if piece:IsDescendantOf(band) then
+		frame = band
 	end
 	local up: Instance? = piece
 	while up and up ~= frame do
@@ -148,6 +154,13 @@ function VoidkinCases.Cases(given: Given): { any }
 		local stage = figure.Stage
 		local solesAt = stage.AbsolutePosition.Y + soles * stage.AbsoluteSize.Y
 		t.Check(`{where}: its crown under the stage's top`, crown >= 0, string.format("%.3f", crown))
+		local name = VoidkinScreen.Find("Name")
+		if name and name:IsA("GuiObject") then
+			local crownAt, foot = stage.AbsolutePosition.Y + crown * stage.AbsoluteSize.Y, name.AbsolutePosition.Y + name.AbsoluteSize.Y
+			t.Check(`{where}: its crown under its name's line`, crownAt >= foot - 1, string.format("%.0f against %.0f", crownAt, foot))
+		else
+			t.Check(`{where}: its name's line over the stage`, false)
+		end
 		t.Check(`{where}: its soles over Combat Power`, solesAt <= plate.AbsolutePosition.Y + 1, string.format("%.0f against %.0f", solesAt, plate.AbsolutePosition.Y))
 		local room = Layers.Get("Menus").AbsoluteSize.Y
 		t.Row(`{where}: the figure's share of the screen's height`, nil, nil, (soles - crown) * stage.AbsoluteSize.Y / room, "")
@@ -203,8 +216,40 @@ function VoidkinCases.Cases(given: Given): { any }
 		end
 	end
 
+	-- Its name over the stage: one line between the two slot columns, its rarity after it, whole, in the rarity's colour.
+	local function nameLine(t: any, where: string, owned: Profile.OwnedVoidkin?)
+		local name = VoidkinScreen.Find("Name")
+		local title, rarity = name and name:FindFirstChild("Title"), name and name:FindFirstChild("Rarity")
+		local row = if owned then Voidkin.ById[owned.Def] else nil
+		if not (owned and row and name and name:IsA("GuiObject") and title and title:IsA("TextLabel") and rarity and rarity:IsA("TextLabel")) then
+			t.Check(`{where}: its name and its rarity over the stage`, false)
+			return
+		end
+		t.Check(`{where}: its name`, title.Text == Read.VoidkinName(owned), title.Text)
+		t.Check(`{where}: its rarity, in the rarity's colour`, rarity.Text == row.Rarity and rarity.TextColor3 == HudConfig.Card.Trim[row.Rarity], rarity.Text)
+		local left, right = VoidkinScreen.Find("LeftSlots"), VoidkinScreen.Find("RightSlots")
+		local from = if left and left:IsA("GuiObject") then left.AbsolutePosition.X + left.AbsoluteSize.X else math.huge
+		local to = if right and right:IsA("GuiObject") then right.AbsolutePosition.X else -math.huge
+		t.Check(`{where}: on one line between the slot columns`, name.AbsolutePosition.X >= from - 1 and name.AbsolutePosition.X + name.AbsoluteSize.X <= to + 1, string.format("%.0f to %.0f in %.0f to %.0f", name.AbsolutePosition.X, name.AbsolutePosition.X + name.AbsoluteSize.X, from, to))
+		t.Check(`{where}: the name first, its rarity after it, whole in the line`, title.AbsolutePosition.X + title.AbsoluteSize.X <= rarity.AbsolutePosition.X + 1 and rarity.TextFits and rarity.AbsolutePosition.X + rarity.AbsoluteSize.X <= name.AbsolutePosition.X + name.AbsoluteSize.X + 1, string.format("%.0f, %.0f, %.0f", title.AbsoluteSize.X, rarity.AbsoluteSize.X, name.AbsoluteSize.X))
+		t.Row(`{where}: the name's line, authored px wide (its name {if title.TextFits then "whole" else "cut"})`, nil, nil, name.AbsoluteSize.X / Layers.Scale(), "")
+	end
+
+	-- The lead's Send to work: off, its own name kept and why under it, both whole on its face.
+	local function leadsWork(t: any, where: string)
+		local work = button("Work")
+		local label, reason = work and work:FindFirstChild("Label", true), work and work:FindFirstChild("Reason", true)
+		if work and label and label:IsA("TextLabel") and reason and reason:IsA("TextLabel") then
+			t.Check(`{where}: the lead's Send to work is off`, Button.State(work) == "Disabled", Button.State(work))
+			t.Check(`{where}: it keeps its name`, label.Text == "Send to work" and label.TextFits, label.Text)
+			t.Check(`{where}: and says why under it`, reason.Visible and reason.Text == "Not while leading" and reason.TextFits and reason.AbsolutePosition.Y >= label.AbsolutePosition.Y and reason.AbsolutePosition.Y + reason.AbsoluteSize.Y <= work.AbsolutePosition.Y + work.AbsoluteSize.Y + 1, reason.Text)
+		else
+			t.Check(`{where}: the lead's Send to work, its name and why`, false)
+		end
+	end
+
 	local case = {
-		Name = "Voidkin screen (TR17): full screen, one Voidkin between its gear slots, the rail's seven pages, the bag, its power and its actions in the top bar, switched by the strip and a flick",
+		Name = "Voidkin screen (TR17): full screen, Back, its marks and the currencies in Roblox's band, its name over one Voidkin between its gear slots, the rail's seven pages, the bag, its power, its actions over the panel, switched by the strip and a flick",
 		Stay = true,
 		Run = function(t: any)
 			local ids = VoidkinCases.Own(t, waitFor, ANSWER)
@@ -227,8 +272,27 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("a cover behind it, opaque", cover ~= nil and cover.BackgroundTransparency <= 0.01, if cover then string.format("%.2f", cover.BackgroundTransparency) else "none")
 			t.Check("over the whole window", cover ~= nil and cover.AbsoluteSize.X >= window.X - 1 and cover.AbsoluteSize.Y >= window.Y - 1 and cover.AbsolutePosition.X <= 1 and cover.AbsolutePosition.Y <= 1, if cover then `{cover.AbsoluteSize} of {window}` else "none")
 			t.Check("and it takes the taps of what it hides", cover ~= nil and cover.Active)
-			local back = frame and frame:FindFirstChild("Back")
-			t.Check("Back at its top left", back ~= nil and back:IsA("TextButton") and back.AbsolutePosition.X - room.AbsolutePosition.X < 20 and back.AbsolutePosition.Y - room.AbsolutePosition.Y < 20)
+			-- Roblox's band: Back first, the marks beside it, the currencies at its right, none over another.
+			local band = Layers.Get("Band")
+			local inset = GuiService.TopbarInset
+			t.Check("the band is the top bar's free room", math.abs(band.AbsoluteSize.X - inset.Width) <= 2 and math.abs(band.AbsoluteSize.Y - inset.Height) <= 2 and band.AbsoluteSize.Y > 0, `{band.AbsoluteSize} of {inset.Width}, {inset.Height}`)
+			local across: { GuiObject } = {}
+			for _, name in { "Back", "Favourite", "Lock", "Rename", "Wallet" } do
+				local piece = VoidkinScreen.Find(name)
+				t.Check(`{name} in the band, whole`, piece ~= nil and piece:IsDescendantOf(band) and inView(name))
+				if piece and piece:IsA("GuiObject") then
+					table.insert(across, piece)
+				end
+			end
+			local order, touch = #across == 5, true
+			for at = 2, #across do
+				order = order and across[at - 1].AbsolutePosition.X + across[at - 1].AbsoluteSize.X <= across[at].AbsolutePosition.X + 1
+			end
+			for at = 1, math.min(#across, 4) do
+				touch = touch and across[at].AbsoluteSize.X >= Theme.Size.Touch - 0.5 and across[at].AbsoluteSize.Y >= Theme.Size.Touch - 0.5
+			end
+			t.Check("Back, favourite, lock, rename, then the currencies, left to right, none over another", order)
+			t.Check(`Back and each mark a touch or more, {Theme.Size.Touch} rendered px`, touch)
 			local view = ProfileController.Get() :: Profile.View
 			local lead = view.Roles.Lead
 			t.Check("on the lead", VoidkinScreen.Chosen() == lead, tostring(VoidkinScreen.Chosen()))
@@ -246,22 +310,46 @@ function VoidkinCases.Cases(given: Given): { any }
 				local said = if number and number:IsA("TextLabel") then number.Text else "none"
 				t.Check("Combat Power at its feet, from its stats", said == Hud.Digits(Stats.Power(block)), said)
 			end
-			for _, name in { "Rail", "Screen", "Wallet", "Panel", "Strip", "Lead", "Work", "Favourite", "Lock", "Rename" } do
+			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
 				t.Check(`{name} in view`, inView(name))
+			end
+			local opened = VoidkinScreen.Find("Page")
+			t.Check("it opens on the bag", opened ~= nil and opened:GetAttribute("Page") == "Bag", tostring(opened and opened:GetAttribute("Page")))
+			-- Its name over the stage: one line between the slot columns, its rarity after it in the rarity's colour.
+			nameLine(t, "this window", owned)
+			-- The rail: all seven taps whole, each a touch or more, and no scroll.
+			local strung = VoidkinScreen.Find("Rail")
+			if strung and strung:IsA("ScrollingFrame") then
+				local top, foot = strung.AbsolutePosition.Y, strung.AbsolutePosition.Y + strung.AbsoluteSize.Y
+				local fits, taps, last = true, true, top
+				for _, name in VoidkinScreen.Pages do
+					local each = railButton(name)
+					fits = fits and each ~= nil and each.AbsolutePosition.Y >= last - 1 and each.AbsolutePosition.Y + each.AbsoluteSize.Y <= foot + 1
+					taps = taps and each ~= nil and each.AbsoluteSize.Y >= Theme.Size.Touch - 0.5
+					last = if each then each.AbsolutePosition.Y + each.AbsoluteSize.Y else last
+				end
+				t.Check("the rail holds all seven taps whole, one under another", fits and strung:GetAttribute("Whole") == true)
+				t.Check("with no scroll", not strung.ScrollingEnabled)
+				t.Check(`each a touch or more tall, {Theme.Size.Touch} rendered px`, taps)
+			else
+				t.Check("the rail", false)
 			end
 			local leads, works, panel = button("Lead"), button("Work"), VoidkinScreen.Find("Panel")
 			if leads and works and panel and panel:IsA("GuiObject") then
 				local top, left, right = panel.AbsolutePosition.Y, panel.AbsolutePosition.X, panel.AbsolutePosition.X + panel.AbsoluteSize.X
-				t.Check("Lead and Send to work out of the panel, in the top bar over it", leads.AbsolutePosition.Y + leads.AbsoluteSize.Y <= top + 1 and works.AbsolutePosition.Y + works.AbsoluteSize.Y <= top + 1)
+				t.Check("Lead and Send to work out of the panel, on the line over it", leads.AbsolutePosition.Y + leads.AbsoluteSize.Y <= top + 1 and works.AbsolutePosition.Y + works.AbsoluteSize.Y <= top + 1)
 				t.Check("Lead first, Send to work beside it, in the panel's column", leads.AbsolutePosition.X >= left - 1 and leads.AbsolutePosition.X + leads.AbsoluteSize.X <= works.AbsolutePosition.X and works.AbsolutePosition.X + works.AbsoluteSize.X <= right + 1)
 			else
-				t.Check("Lead and Send to work out of the panel, in the top bar over it", false)
+				t.Check("Lead and Send to work out of the panel, on the line over it", false)
 			end
 			local wallet = VoidkinScreen.Find("Wallet")
 			local credits = wallet and wallet:FindFirstChild("Credits")
 			local value = credits and credits:FindFirstChild("Value")
-			t.Check("the top bar's Credits, the save's", value ~= nil and value:IsA("TextLabel") and value.Text == Read.Number(view.Currency.Credits), if value and value:IsA("TextLabel") then value.Text else "none")
-			t.Check("the lead's own reads Leading", labelOf(button("Lead")) == "Leading", labelOf(button("Lead")))
+			t.Check("the band's Credits, the save's", value ~= nil and value:IsA("TextLabel") and value.Text == Read.Number(view.Currency.Credits), if value and value:IsA("TextLabel") then value.Text else "none")
+			-- The lead: its Lead lit and reading Leading, its Send to work off, its name kept and why under it.
+			t.Check("the lead's own reads Leading", labelOf(leads) == "Leading", labelOf(leads))
+			t.Check("lit, not greyed", leads ~= nil and Button.State(leads) == "Selected", if leads then Button.State(leads) else "none")
+			leadsWork(t, "this window")
 			-- A tap on a column: the way to the gear page, which isn't built.
 			t.Check("a tap on the left column is taken", VoidkinScreen.Tap(VoidkinScreen.Find("LeftSlots")) and table.find(Toast.Shown(), "Gear isn't built yet") ~= nil, table.concat(Toast.Shown(), "; "))
 			-- Each page from its rail button, on the save's numbers; one not built yet says so and keeps the page.
@@ -399,6 +487,34 @@ function VoidkinCases.Cases(given: Given): { any }
 					end))
 				end
 			end
+			-- Never an empty stage: a switch to a body still being fetched keeps the one shown, with its panel, and both
+			-- change once it's in memory.
+			for _, def in DEFS do
+				waitFor(t, 5, function(): boolean
+					return Figure.Ready(def)
+				end)
+				t.Check(`{def}'s body in memory behind the screen, within 5 s of the open`, Figure.Ready(def))
+			end
+			do
+				local id = ids[3]
+				local def = (ProfileController.Get() :: Profile.View).Voidkin[id].Def
+				local leadDef = (ProfileController.Get() :: Profile.View).Voidkin[lead].Def
+				local title = VoidkinScreen.Find("Title")
+				local was = if title and title:IsA("TextLabel") then title.Text else ""
+				Figure.Hold(def)
+				VoidkinScreen.Choose(id)
+				t.Wait(0.2)
+				local held, kept = VoidkinScreen.Figure(), VoidkinScreen.Find("Title")
+				t.Check("a body being fetched: the one shown stays on the stage", VoidkinScreen.Chosen() == lead and held ~= nil and held.Def == leadDef and held.Body.Parent ~= nil, tostring(VoidkinScreen.Chosen()))
+				t.Check("with its own name, and the next one awaited", VoidkinScreen.Awaited() == id and kept ~= nil and kept:IsA("TextLabel") and kept.Text == was, tostring(VoidkinScreen.Awaited()))
+				local asked = button(id)
+				t.Check("the tap answered: the awaited one's cell lit on the strip", asked ~= nil and Button.State(asked) == "Selected", if asked then Button.State(asked) else "none")
+				Figure.Release(def)
+				local next, named = VoidkinScreen.Figure(), VoidkinScreen.Find("Title")
+				t.Check("fetched: the figure and its name change in the one beat", VoidkinScreen.Chosen() == id and VoidkinScreen.Awaited() == nil and next ~= nil and next.Def == def and named ~= nil and named:IsA("TextLabel") and named.Text == Read.VoidkinName((ProfileController.Get() :: Profile.View).Voidkin[id]), tostring(VoidkinScreen.Chosen()))
+				VoidkinScreen.Choose(lead)
+				t.Wait(HudConfig.Voidkin.Figure.Back + 0.1)
+			end
 			-- The strip: the second, then the third.
 			for index = 2, 3 do
 				local id = ids[index]
@@ -475,7 +591,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			else
 				t.Check("a Voidkin to send or to bring home", false)
 			end
-			-- A rename: tidied, through the filter, its own name beneath; then taken off.
+			-- A rename: the line a box, Save and Cancel in the band; tidied, through the filter; then taken off.
 			VoidkinScreen.Choose(lead)
 			local own = (Voidkin.ById[(ProfileController.Get() :: Profile.View).Voidkin[lead].Def] :: Voidkin.Row).Name
 			for _, try in { { Typed = "  Test   Name ", Want = "Test Name" }, { Typed = "", Want = "" } } do
@@ -483,6 +599,7 @@ function VoidkinCases.Cases(given: Given): { any }
 					return VoidkinScreen.Find("NameBox") ~= nil
 				end))
 				local box = VoidkinScreen.Find("NameBox")
+				t.Check("Save and Cancel in the band, in the marks' place", inView("Save") and inView("Cancel") and VoidkinScreen.Find("Rename") == nil)
 				if box and box:IsA("TextBox") then
 					box:ReleaseFocus()
 					box.Text = try.Typed
@@ -496,12 +613,9 @@ function VoidkinCases.Cases(given: Given): { any }
 					end))
 					local named = VoidkinScreen.Find("Name")
 					local title = named and named:FindFirstChild("Title")
-					local under = named and named:FindFirstChild("Under")
 					local read = if title and title:IsA("TextLabel") then title.Text else "none"
 					t.Check(`the name reads {if try.Want == "" then own else try.Want}`, read == (if try.Want == "" then own else try.Want), read)
-					if try.Want ~= "" then
-						t.Check("its own name beneath", under ~= nil and under:IsA("TextLabel") and under.Text == own, if under and under:IsA("TextLabel") then under.Text else "none")
-					end
+					t.Check("the marks back in the band", inView("Rename") and VoidkinScreen.Find("Save") == nil)
 				end
 			end
 			-- The UI lint, in this window and on the smallest phone, on every page.
@@ -520,6 +634,13 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			whole(t, "the smallest phone")
 			gear(t, "the smallest phone", if leadRow then leadRow.Class else "")
+			nameLine(t, "the smallest phone", (ProfileController.Get() :: Profile.View).Voidkin[lead])
+			leadsWork(t, "the smallest phone")
+			for _, name in { "Back", "Favourite", "Lock", "Rename", "Wallet" } do
+				t.Check(`the smallest phone: {name} in the band, whole`, inView(name))
+			end
+			local purse = VoidkinScreen.Find("Wallet")
+			t.Row(`the smallest phone: the band, authored px wide (the battery {if purse and purse:GetAttribute("Short") then "without" else "with"} its capacity)`, nil, nil, Layers.Band().X, "")
 			-- Seven taps are taller than the rail: the built pages stand whole in it before any scroll, the rest a scroll down.
 			local holder = VoidkinScreen.Find("Rail")
 			if holder and holder:IsA("ScrollingFrame") then
@@ -544,13 +665,12 @@ function VoidkinCases.Cases(given: Given): { any }
 			Layers.Force(nil)
 			t.Wait(0.1)
 			-- Back: closed at once, the HUD's taps its own again, the cover gone with the screen.
-			local out = Screen.Frame(VoidkinScreen.Name)
-			local exit = out and out:FindFirstChild("Back")
-			t.Check("Back closes it", exit ~= nil and exit:IsA("TextButton") and Button.Press(exit) and Screen.Current() == nil)
+			local exit = button("Back")
+			t.Check("Back closes it", exit ~= nil and Button.Press(exit) and Screen.Current() == nil)
 			local leaving = Screen.Cover(VoidkinScreen.Name)
 			t.Check("the cover lets taps through at once", leaving == nil or not leaving.Active)
 			t.Wait(HudConfig.Motion.Screen.Exit + 0.15)
-			t.Check("and is gone with the screen", Screen.Cover(VoidkinScreen.Name) == nil and Screen.Stage(VoidkinScreen.Name) == nil)
+			t.Check("and is gone with the screen, its band too", Screen.Cover(VoidkinScreen.Name) == nil and Screen.Stage(VoidkinScreen.Name) == nil and Screen.Band(VoidkinScreen.Name) == nil)
 		end,
 	}
 

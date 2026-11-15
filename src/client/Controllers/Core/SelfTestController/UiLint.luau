@@ -23,7 +23,7 @@ local Theme = require(UI.Theme)
 local OURS = "NL_"
 local WORLD = "NL_World"
 local HUD = "NL_Hud"
-local INSET: { [string]: boolean } = { NL_Hud = true, NL_Menus = true } -- laid out inside the safe area (Layers)
+local INSET: { [string]: boolean } = { NL_Hud = true, NL_Menus = true, NL_Band = true } -- laid out inside the safe area, or the top bar's free room (Layers)
 local THUMBS: { [string]: boolean } = { JumpButton = true, ThumbstickFrame = true } -- Roblox's touch controls, by name
 local TOLERANCE = 1 -- pixels
 local FIT_TOLERANCE = 2 -- pixels a line box may overrun its frame

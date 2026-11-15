@@ -1012,7 +1012,7 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
 
 **Order in the queue:** after TR8. **Time, forecast:** 2 to 3 hours.
 
-**Status:** Machine picked, and research's fixes built, 2026-11-15 (Faber, "The fixes built" below); the retake waits for Studio's window in front. Before: the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14. Time: about 2.5 active hours, my estimate, not measured.
+**Status:** the retake's fix and the two names are in, 2026-11-15, for research's pass (Faber, "The fade fix and the names" below). Not built yet: "Drop rates", next, and voltage as time, which goes with TR18, whose kWh price it. Machine picked, and research's fixes built, 2026-11-15 ("The fixes built" below). Before: the grey layouts and infusion built, and their take with research for its verdict, 2026-11-14. Time: about 2.5 active hours, my estimate, not measured.
 - **Implemented.**
   - **Infusion, on the server** (`Rules.Base.Infuse { Chamber | Line, Def, Level }`): the price from the battery, and the shard's Luck raised by `Config.Shards.Infusion[Level]` (seeds: a little, +0.10 for 300; a lot, +0.25 for 900), capped at `LuckCap`.
     - Once per shard. Only a shard still breaking or waiting, never one ready or in the bag, and never a Named or a starter shard (`Odds.Lifted`, which counts the tiers the luck lifts).
@@ -1078,6 +1078,12 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - **The two names change** (the director, 2026-11-15: "what the f is a little a lot this is childish words let use real electrician words"). "A little" becomes **Low voltage** and "a lot" **High voltage**, each with its price in kWh on its button. An infused shard reads "Infused · Low voltage" or "Infused · High voltage". This goes in with the fix above, and the content check passes the new text.
     - **Then the effect changes** (the director, 2026-11-15, asked: "Faster break"). Voltage buys time, not luck: Low halves the time left, and High breaks the shard at once, priced by the time saved (TR18's numbers). `Config.Shards.Infusion`'s lifts go. A shard it would save under a minute shows no voltage, so a Standard shows none. The button reads its price and what it saves ("High voltage · 60 kWh · breaks now").
     - **"Who it can hold" becomes "Drop rates"** ("drop rate is that simple"). It lists every Voidkin the shard can give, grouped under each rarity's total, to 100% ("it obviously dont contain everything the odd are off").
+  - **The fade fix and the names, Faber, 2026-11-15.**
+    - **Implemented.** While gold fades over a chamber, what it holds next waits hidden under it: its name, its bar, its time left and its infusion show once the gold is gone (`BreakerScreen.luau`, `cell`). The chamber's own number stays. The levels are Low voltage and High voltage (`LEVELS`), and an infused shard reads "Infused · Low voltage". A button holds its name over its price on two lines: "High voltage · 900" on one line didn't fit the smallest phone's button.
+    - **Tested.** The Breaker's cases: 163 passed, 0 failed, 59 fps, the lint clean on the smallest phone. Two checks are new: the next shard's words aren't shown under the gold, and show once it's gone. Type check: 0 new.
+    - **Checked on a still:** `build/captures/tr9/gold_fade_still.jpg`, six pictures from 0.3 to 1.9 s after the flash. "Ready" stands alone on the gold, the box is bare for about 0.2 s, then "Standard · 29 s left" comes in. The two-line buttons were read on a frame of their case.
+    - **Visually reviewed:** by Faber. Research's pass: not yet. **Director-accepted:** no.
+    - **Not built:** voltage as time, its price, and "Drop rates". Until they are, Low and High voltage still lift the odds as the old levels did. Tier 1 notice: the place line reads "· infused, low voltage".
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1471,7 +1477,7 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
 
 **Done when:** a take per layout at phone size: open from the dock, turn the figure, tap it, switch three Voidkin by the strip and by a swipe, each tab, and Lead and Send to work once each. Then research's verdict in motion and the director's pick. The UI lint runs first, at both scales.
 
-**Status:** rebuilt to the director's layout, with the notes on the mock in. Its case and its take pass, and the take is with research. Faber, 2026-11-15.
+**Status:** research's three fixes and the band are built, and the retake is with research ("The retake" below). Before: rebuilt to the director's layout, with the notes on the mock in. Faber, 2026-11-15.
 - **Implemented.** `src/client/UI/VoidkinScreen/init.luau`, a full screen through the kit's `Screen.Full`: a cover on its own layer hides the world and the HUD and takes their taps, and Back is at the top left. Its numbers are in `Config.Hud.Voidkin`. Stage, Flank, Rail and `Hud.Voidkin.Layout` are gone.
   - **The rail:** seven round buttons on a line. Overview, Bag, Kit and Stars open their page. Forge, Jewels and War Emblems are greyed with "Soon": a tap says so and the page stays. Only the chosen page's word shows. Circles 26 and 42 across, taps 68 by 52 authored.
   - **The stage:** the live figure between two columns of six slots, 6 apart, the twelve shared in the order of `Definitions.Gear` (new, with its logic cases). Main Hand and Off Hand, its class's pair, stand either side of Combat Power. A tap on a column says gear isn't built.
@@ -1518,6 +1524,26 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **10.** Combat Power's weights: research's seeds are owed (tier 2), and stand-ins stay until then. Pip, a Common at level 12, shows 32,151 over Ironhymn, an Epic at level 8, at 27,433. The seeds must make rarity count for more than four levels.
   - **Not judged:** the look (Modulo's mock and AR12's colour), the slots' art, and the level's mark (the director's later note).
   - **Retake:** the three fixes and the band, with one switch at 8 fps and the rail whole on the smallest phone.
+- **The retake, Faber, 2026-11-15.** Research's three fixes, the band and the bag first.
+  - **Implemented.**
+    - **The band.** A new layer, `Band`, in Roblox's top-bar band, right of Roblox's own buttons (`GuiService.TopbarInset`; `UI/Layers.luau`, `Kit/Screen.luau`: `Screen.Band`, `Screen.BandLeft`). A full screen holds Back, the three marks and the currencies there. The lint's safe area moved with it.
+    - **Fix 1, never an empty stage.** A switch asked before a body can be drawn keeps the one shown with its panel, lights the asked cell on the strip at once, and changes both in one beat once it's ready (`VoidkinScreen.Choose`, `Figure.Warm`, `Figure.Ready`).
+    - **Fix 2, the name over the stage:** one line, its rarity in its colour, where "Voidkin" stood. The panel's name row is gone. Favourite, lock and rename are 44 pt marks in the band, right of Back.
+    - **Fix 3.** The lead's Lead reads "Leading", lit, and Send to work is greyed with "Not while leading" under it (the kit button's `Under`; `Rules.Hud.WorkReason`).
+    - The screen opens on the bag.
+  - **Measured.**
+    - **Fix 1's cause is the renderer, not the fetch.** `PreloadAsync` on a body ends in about 0.01 s with every mesh fetched, and its first draw in a viewport still stood empty for 0.25 to 0.53 s, then grey for a frame. The engine readies a mesh only once something draws it, and gives no signal. So the stage has wings: a viewport 8 px a side where each of the roster's first twelve bodies is drawn ahead at the open. A body counts ready 0.8 s after it stands there (`Config.Hud.Voidkin.Figure.Draw`; the dev PC's measure, no phone measured). At worst a switch waits about 0.8 s after the open, with its cell lit.
+    - **The rail isn't whole on the smallest phone.** Seven 44 pt taps need 308 pt. Under the band the phone emulation leaves 343 pt (whole, no scroll), a 360 pt phone 302 pt, and the smallest phone 262 pt. No gap is left to tighten: the taps touch.
+    - The figure's share of the height: 0.51 and 0.49 (it was 0.56 and 0.55). The name's line takes 24 authored px over the crown.
+    - The name's line: 178 and 153 authored px wide, so a long name is cut on the smallest phone. The smallest phone's band is 475 authored px, and the battery drops its capacity there.
+  - **Tested.** The case `Voidkin screen (TR17)`: 255 or 256 passed by the run, 0 failed, the lint clean in this window and on the smallest phone. It holds a body back, asks for it, and checks the figure and the name kept, the asked cell lit, then both changed. The retake's case: 14 passed. The whole self-test, in the phone emulation with Studio in front: 1699 passed, 0 failed (266 s, 60 fps). Type check: 0 new. Logic offline: 5513 passed.
+  - **The take:** `build/captures/tr17/retake.mkv` (44 s, phone size, its zero at 4.55 s), with `retake_switch.jpg` (three switches at 8 fps from 0.125 s before each tap: the next figure is whole on the first frame it shows) and `retake_views.jpg` (the lead's screen, favourite lit, lock lit, rename with the phone's keyboard, the smallest phone's room, its rail at its foot). The case `Take: TR17's retake`.
+  - **Visually reviewed:** by Faber on both sheets. Research's verdict on the retake: not yet. **Director-accepted:** no.
+  - **For research, two calls built another way, with why:**
+    1. **The rail scrolls on phones under 366 pt tall,** the four built pages whole before any scroll. The other way to no scroll: the three pages not built as small greyed dots under one "Soon", with no tap, until they're built.
+    2. **The marks are in the band, not beside the name.** Between the slot columns the name's line has 153 to 178 authored px, and three 44 pt marks alone take about 150. In the band they stand right of Back, as the mock's top row.
+  - **Tier 1 notices.** The currencies' chips are sized to their numbers. The favourite's grey glyph reads as a burst more than a star (the icons are Modulo's).
+  - **Time:** about 4 active hours, my estimate, not measured. About half went to fix 1's cause.
 
 ## TR18. The base as a power plant (Faber, then Modulo's generator)
 

@@ -6,6 +6,15 @@
 -- Elements): stand-in colours, the look is Modulo's after the pick. A drag turns it; a tap plays the end of its Reveal,
 -- from the strike on; a flick across goes to the next or the one before (Config.Hud.Voidkin.Swipe). A Voidkin without
 -- its own body stands as the grey stand-in, on the stand-in's clips.
+-- A body never drawn yet isn't ready to draw: its first stage stood empty for 0.25 to 0.53 s, then grey before its
+-- textures (TR17's takes, 2026-11-15; research's fix 1). Fetching it ahead (PreloadAsync) isn't enough: measured, the
+-- engine makes a mesh ready only once something draws it, and says nothing when it has. So the stage has wings: a
+-- viewport a few pixels wide in its corner where each body is drawn ahead, counted ready Config.Hud.Voidkin.Figure.Draw
+-- seconds after it's fetched and standing there. Ready says so, and the screen keeps the one it shows until the next one
+-- can stand whole. The wings and what they made ready last as long as their stage.
+--   Figure.Wings(stage)               the wings in `stage`, new when it's another stage (nothing counted ready then)
+--   Figure.Warm(def, done?)           its body fetched and drawn in the wings; `done` once it's ready (at once if so)
+--   Figure.Ready(def) -> boolean      true once it is, or it has no body to draw
 --   Figure.new(def, stage, height, feet, onSwipe) -> figure   built in `stage`, a frame its owner places and sizes
 --   Figure.Frame(figure, height, feet)  framed again, for a stage of another size
 --   Figure.Turn(figure, degrees)
@@ -14,6 +23,7 @@
 --   Figure.Gesture(figure, delta, took) -> "Tap" | "Swipe" | "Turn"   what a touch did, by its travel and its time
 --   Figure.Destroy(figure)
 
+local ContentProvider = game:GetService("ContentProvider")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -68,6 +78,104 @@ local function pick(def: string): (Model?, string?, string?)
 	end
 	local standIn = figures:FindFirstChild("StandIn")
 	return if standIn and standIn:IsA("Model") then standIn else nil, AnimationsConfig.Rigs.R6.Idle, RevealConfig.Fallback
+end
+
+-- Each body's way to ready: true once it is, else those waiting on it.
+local warmed: { [Model]: true | { () -> () } } = {}
+local wings: WorldModel? = nil
+
+local WINGS = 8 -- authored pixels a side: enough for the engine to draw it, too small and too faint to be seen
+
+function Figure.Wings(stage: Frame)
+	local world = wings
+	if world and world:IsDescendantOf(stage) then
+		return
+	end
+	if world and world.Parent then
+		world.Parent:Destroy()
+	end
+	warmed = {} -- what another stage's wings drew may be out of memory by now
+	local view = Instance.new("ViewportFrame")
+	view.Name = "Wings"
+	view.BackgroundTransparency = 1
+	view.ImageTransparency = 0.98
+	view.Size = UDim2.fromOffset(WINGS, WINGS)
+	view.ZIndex = 0
+	local made = Instance.new("WorldModel")
+	made.Parent = view
+	local camera = Instance.new("Camera")
+	camera.FieldOfView = 40
+	camera.CFrame = CFrame.lookAt(Vector3.new(0, HIP, -16), Vector3.new(0, HIP, 0))
+	camera.Parent = view
+	view.CurrentCamera = camera
+	view.Parent = stage
+	wings = made
+end
+
+-- For tests: a body's fetch held open (Hold), then let go (Release), as a slow network would.
+function Figure.Hold(def: string)
+	local source = pick(def)
+	if source then
+		warmed[source] = {}
+	end
+end
+
+function Figure.Release(def: string)
+	local source = pick(def)
+	local state = if source then warmed[source] else nil
+	if source and type(state) == "table" then
+		warmed[source] = true
+		for _, each in state do
+			each()
+		end
+	end
+end
+
+function Figure.Ready(def: string): boolean
+	local source = pick(def)
+	return source == nil or warmed[source] == true
+end
+
+function Figure.Warm(def: string, done: (() -> ())?)
+	local source = pick(def)
+	local state = if source then warmed[source] else true
+	if source == nil or state == true then
+		if done then
+			done()
+		end
+		return
+	end
+	if type(state) == "table" then
+		if done then
+			table.insert(state, done)
+		end
+		return
+	end
+	local waiting: { () -> () } = { done :: any }
+	warmed[source] = waiting
+	task.spawn(function()
+		pcall(function()
+			ContentProvider:PreloadAsync({ source })
+		end)
+		local world = wings
+		if world and world.Parent and warmed[source] == waiting then
+			local body = source:Clone()
+			local root = body:FindFirstChild("HumanoidRootPart")
+			if root and root:IsA("BasePart") then
+				root.Anchored = true
+			end
+			body:PivotTo(CFrame.new(0, HIP, 0))
+			body.Parent = world
+			task.wait(HudConfig.Voidkin.Figure.Draw)
+		end
+		if warmed[source] ~= waiting then
+			return -- another stage's wings since, or a test holds it
+		end
+		warmed[source] = true -- drawn, or it can't be: either way nothing more to wait for
+		for _, each in waiting do
+			each()
+		end
+	end)
 end
 
 local function load(body: Model, clip: string?, looped: boolean, priority: Enum.AnimationPriority): AnimationTrack?

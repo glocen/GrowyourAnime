@@ -12,10 +12,14 @@
 -- whose rows are one thing's (a shard's pane) carries that thing as its "Keep" attribute, and starts at its
 -- top when the thing changes.
 -- A full screen (one Voidkin's, TR17; the director, 2026-11-15) takes the whole room with no panel of its own, over a
--- cover that hides the world and the HUD edge to edge and takes their taps (the Cover layer). Its exit is Back, at its
--- top left; its body is the whole room, laid out by its owner round Back (Screen.Back), the screen's name included.
+-- cover that hides the world and the HUD edge to edge and takes their taps (the Cover layer). Its bar stands in Roblox's
+-- top bar, right of Roblox's own buttons (the Band layer; TR17, research's call, 2026-11-15): its exit, Back, at the
+-- band's left, then whatever its owner sets beside it (Screen.Band, from Screen.BandLeft on). Back is as tall as the band
+-- lets it be, a touch or more. Its body is the whole room under the band, laid out by its owner.
 --   Screen.Open(name, title, size) -> the body frame to fill
 --   Screen.Full(name, title) -> the body frame to fill, the whole room
+--   Screen.Band(name) -> a full screen's band to fill, Back in it; nil for any other
+--   Screen.Row() -> how tall a button stands in the band now, authored
 --   Screen.Close()
 --   Screen.Current() -> the open screen's name, or nil
 
@@ -32,7 +36,8 @@ local HudConfig = require(Shared.Config.Hud)
 
 local Screen = {}
 Screen.Closed = Signal.new() -- (name)
-Screen.Back = Vector2.new(68, Theme.Size.Tap) -- a full screen's Back, authored, Theme.Size.Pad from its top left
+Screen.Back = Vector2.new(68, Theme.Size.Tap) -- a full screen's Back, authored, at the most; Theme.Size.Pad from the band's left
+Screen.BandLeft = Theme.Size.Pad + Screen.Back.X + Theme.Size.Gap -- where the band is free, authored from its left
 
 local TITLE = 32 -- authored height of the title's line
 local HEAD = Theme.Size.Tap + Theme.Size.Pad -- the head row: the close button, a tap high, and half a pad over and under
@@ -50,7 +55,16 @@ local function fit(frame: Frame, size: Vector2?)
 	frame.Size = UDim2.fromOffset(wide, tall)
 end
 
-local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2?, Cover: Frame? }? = nil
+local BAND_MARGIN = 3 -- authored pixels a button keeps from the band's top and foot
+
+local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2?, Cover: Frame?, Band: CanvasGroup? }? = nil
+
+-- A button's height in the band: the band's, less its margins, never under a touch nor over a tap.
+function Screen.Row(): number
+	local scale = Layers.Scale()
+	local tall = Layers.Band().Y
+	return math.clamp(tall - BAND_MARGIN * 2, math.min(math.ceil(Theme.Size.Touch / scale), Theme.Size.Tap), Theme.Size.Tap)
+end
 
 type Kept = { [string]: { At: Vector2, Keep: any } }
 
@@ -88,12 +102,15 @@ local function rescroll(body: Instance, kept: Kept)
 	task.delay(0, apply)
 end
 
-local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyle, direction: Enum.EasingDirection, see: number, size: number, cover: Frame?): Tween
+local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyle, direction: Enum.EasingDirection, see: number, size: number, cover: Frame?, band: CanvasGroup?): Tween
 	local info = TweenInfo.new(seconds, style, direction)
 	local scale = stage:FindFirstChildOfClass("UIScale") :: UIScale
 	TweenService:Create(scale, info, { Scale = size }):Play()
 	if cover then
 		TweenService:Create(cover, info, { BackgroundTransparency = see }):Play()
+	end
+	if band then
+		TweenService:Create(band, info, { GroupTransparency = see }):Play()
 	end
 	local fade = TweenService:Create(stage, info, { GroupTransparency = see })
 	fade:Play()
@@ -106,19 +123,26 @@ function Screen.Close()
 		return
 	end
 	open = nil
-	local stage, cover = current.Stage, current.Cover
+	local stage, cover, band = current.Stage, current.Cover, current.Band
 	stage.Interactable = false
 	stage.Name = `{current.Name}Leaving`
 	if cover then
 		cover.Active = false -- the HUD takes taps again at once
 		cover.Name = `{current.Name}CoverLeaving`
 	end
+	if band then
+		band.Interactable = false
+		band.Name = `{current.Name}BandLeaving`
+	end
 	local motion = HudConfig.Motion.Screen
-	tween(stage, motion.Exit, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1, motion.To, cover)
+	tween(stage, motion.Exit, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1, motion.To, cover, band)
 	task.delay(motion.Exit, function()
 		stage:Destroy()
 		if cover then
 			cover:Destroy()
+		end
+		if band then
+			band:Destroy()
 		end
 	end)
 	Screen.Closed:Fire(current.Name)
@@ -145,6 +169,19 @@ function Screen.Cover(name: string): Frame?
 	return (root:FindFirstChild(`{name}Cover`) or root:FindFirstChild(`{name}CoverLeaving`)) :: Frame?
 end
 
+-- A full screen's band to fill, right of Back (Screen.BandLeft); emptied when its owner builds the screen again.
+function Screen.Band(name: string): Frame?
+	local band = if open and open.Name == name then open.Band else nil
+	return if band then band:FindFirstChild("Body") :: Frame? else nil
+end
+
+-- Back, as tall as the band lets it be now, at the band's left, in its middle.
+local function back(exit: TextButton)
+	exit.Size = UDim2.fromOffset(Screen.Back.X, Screen.Row())
+	exit.Position = UDim2.new(0, Theme.Size.Pad, 0.5, 0)
+	exit.AnchorPoint = Vector2.new(0, 0.5)
+end
+
 -- `size` nil: a full screen.
 local function show(name: string, title: string, size: Vector2?): Frame
 	local full = size == nil
@@ -157,11 +194,17 @@ local function show(name: string, title: string, size: Vector2?): Frame
 		named.Text = title
 		current.Size = size
 		fit(current.Frame, size)
+		local bar = current.Band
+		if bar then
+			(bar:FindFirstChild("Body") :: Frame):ClearAllChildren()
+			back(bar:FindFirstChild("Back") :: TextButton) -- the band's height may have changed
+		end
 		return again :: Frame
 	end
 	Screen.Close()
 	local motion = HudConfig.Motion.Screen
 	local cover: Frame? = nil
+	local band: CanvasGroup? = nil
 	if full then
 		local made = Instance.new("Frame")
 		made.Name = `{name}Cover`
@@ -172,6 +215,18 @@ local function show(name: string, title: string, size: Vector2?): Frame
 		made.Active = true -- a tap on it never reaches the HUD under it
 		made.Parent = Layers.Get("Cover")
 		cover = made
+		local bar = Instance.new("CanvasGroup")
+		bar.Name = `{name}Band`
+		bar.BackgroundTransparency = 1
+		bar.BorderSizePixel = 0
+		bar.Size = UDim2.fromScale(1, 1)
+		bar.GroupTransparency = 1
+		local inside = Instance.new("Frame")
+		inside.Name = "Body"
+		inside.BackgroundTransparency = 1
+		inside.Size = UDim2.fromScale(1, 1)
+		inside.Parent = bar
+		band = bar
 	end
 	local stage = Instance.new("CanvasGroup")
 	stage.Name = `{name}Stage`
@@ -204,7 +259,7 @@ local function show(name: string, title: string, size: Vector2?): Frame
 	end
 	frame.Active = true -- a tap on the screen stays on it
 	fit(frame, size)
-	local record = { Name = name, Frame = frame, Stage = stage, Size = size, Cover = cover }
+	local record = { Name = name, Frame = frame, Stage = stage, Size = size, Cover = cover, Band = band }
 	local refit = function()
 		fit(frame, record.Size)
 	end
@@ -227,13 +282,17 @@ local function show(name: string, title: string, size: Vector2?): Frame
 	local exit = Button.new({
 		Name = if full then "Back" else "Close",
 		Text = if full then "Back" else "Close",
-		Size = if full then UDim2.fromOffset(Screen.Back.X, Screen.Back.Y) else UDim2.fromOffset(72, Theme.Size.Tap),
-		Position = if full then UDim2.fromOffset(Theme.Size.Pad, Theme.Size.Pad) else UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2),
-		AnchorPoint = if full then Vector2.zero else Vector2.new(1, 0),
-		Parent = frame,
+		Size = UDim2.fromOffset(72, Theme.Size.Tap),
+		Position = UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2),
+		AnchorPoint = Vector2.new(1, 0),
+		Parent = band or frame,
 		OnPress = Screen.Close,
 	})
-	exit.ZIndex = 3 -- over a full screen's body
+	exit.ZIndex = 3
+	if band then
+		back(exit)
+		band.Parent = Layers.Get("Band")
+	end
 	local body = Instance.new("Frame")
 	body.Name = "Body"
 	body.BackgroundTransparency = 1
@@ -245,7 +304,7 @@ local function show(name: string, title: string, size: Vector2?): Frame
 	end
 	body.Parent = frame
 	stage.Parent = Layers.Get("Menus")
-	tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1, cover)
+	tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1, cover, band)
 	open = record
 	return body
 end

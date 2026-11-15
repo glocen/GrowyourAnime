@@ -205,7 +205,7 @@ end
 -- lead fights and never works (Rules.Base, SetWorker); a worker is already at work, and its button brings it home.
 function Hud.WorkReason(role: string, bays: { { Worker: string } }): (string?, number?)
 	if role == "Lead" then
-		return "Leading", nil
+		return "Not while leading", nil
 	elseif role ~= "" then
 		return "At work", nil
 	end

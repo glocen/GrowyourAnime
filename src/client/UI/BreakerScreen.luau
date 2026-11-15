@@ -155,17 +155,23 @@ local function percent(chance: number): string
 	return if p < 1 then string.format("%.2f%%", p) else string.format("%.1f%%", p)
 end
 
--- The infusion levels by name, Config.Shards.Infusion's order.
-local LEVELS = { "A little", "A lot" }
+-- The infusion levels by name, Config.Shards.Infusion's order (the director, 2026-11-15: "real electrician words").
+local LEVELS = { "Low voltage", "High voltage" }
 
--- A shard's infusion by the level put in ("Infused, a little"), never its luck as a number, which reads as a chance.
-local function infused(luck: number): string
+-- The level a shard was infused at, by name, or nil.
+local function levelOf(luck: number): string?
 	for index, level in ShardConfig.Infusion do
 		if math.abs(level.Lift - luck) < 1e-6 and LEVELS[index] then
-			return `Infused, {string.lower(LEVELS[index])}`
+			return LEVELS[index]
 		end
 	end
-	return "Infused"
+	return nil
+end
+
+-- A shard's infusion by the level put in ("Infused · Low voltage"), never its luck as a number, which reads as a chance.
+local function infused(luck: number): string
+	local level = levelOf(luck)
+	return if level then `Infused · {level}` else "Infused"
 end
 
 local function ordinal(n: number): string
@@ -177,7 +183,9 @@ end
 -- Where a shard stands, in a line: "Chamber 1 · 12 s left", "Waiting, 2nd", "In the bag · 3", "Ready to open".
 local function placeOf(item: Selection, now: Read.Base, view: Profile.View): string
 	local work = workOf(now.Data, item)
-	local luck = if work and work.Luck > 0 then ` · {string.lower(infused(work.Luck))}` else ""
+	-- One item of a line whose items a dot parts: its level after a comma.
+	local level = if work and work.Luck > 0 then levelOf(work.Luck) else nil
+	local luck = if level then ` · infused, {string.lower(level)}` elseif work and work.Luck > 0 then " · infused" else ""
 	if item.Kind == "Chamber" then
 		return if work then `Chamber {item.Index} · {Read.Seconds(Read.Left(now, work))} left{luck}` else `Chamber {item.Index}`
 	elseif item.Kind == "Line" then
@@ -331,6 +339,8 @@ local function flashOver(frame: GuiObject, started: number)
 end
 
 -- A chamber as it stands: its shard's name, the crack's progress as a conduit filling, the time left; empty or locked.
+-- While gold fades over it, what it holds next waits under it: its words show once the gold is gone, never through
+-- "Ready" (TR9's retake, research's fix, 2026-11-15).
 local function cell(parent: Instance, index: number, view: Profile.View, width: UDim, height: number)
 	local open = index <= #view.Base.Chambers
 	local chamber = if open then view.Base.Chambers[index] else nil
@@ -349,15 +359,24 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local inner = UDim2.new(1, -pad * 2, 0, 22)
 	label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad), { Colour = Theme.Colour.TextDim })
 	local flash = flashes[index]
+	local gold = if flash then flashLeft(flash) else nil
 	if flash then
-		if flashLeft(flash) then
+		if gold then
 			flashOver(frame, flash)
 		else
 			flashes[index] = nil
 		end
 	end
+	local function later(piece: GuiObject)
+		if gold then
+			piece.Visible = false
+			task.delay(gold * HudConfig.Breaker.Flash.Seconds, function()
+				piece.Visible = true
+			end)
+		end
+	end
 	if work == nil then
-		label(frame, "Name", if open then "Empty" else "Locked", Theme.Text.Body, inner, UDim2.fromOffset(pad, pad + LINE + 4), { Colour = Theme.Colour.Disabled })
+		later(label(frame, "Name", if open then "Empty" else "Locked", Theme.Text.Body, inner, UDim2.fromOffset(pad, pad + LINE + 4), { Colour = Theme.Colour.Disabled }))
 		if not open then
 			-- What opens it, by research's rule for the locked infusion: the Breaker's own level (TR9, fix 2). The level
 			-- joins the words once the Breaker's upgrades are seeded. "Locked · upgrade the Breaker" over two lines.
@@ -366,12 +385,14 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 		return
 	end
 	local w = work :: Profile.ShardWork
-	label(frame, "Name", shortName(w.Def), Theme.Text.Body, inner, UDim2.fromOffset(pad, pad + LINE + 2), { Font = Theme.Font.Strong, Truncate = true })
+	later(label(frame, "Name", shortName(w.Def), Theme.Text.Body, inner, UDim2.fromOffset(pad, pad + LINE + 2), { Font = Theme.Font.Strong, Truncate = true }))
 	local bar = Bar.new({ Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, pad + LINE + 30), Colour = Theme.Colour.Electricity, Parent = frame })
+	later(bar)
 	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad + LINE + 42), { Colour = Theme.Colour.TextDim })
+	later(left)
 	if w.Luck > 0 then
 		-- two lines' room: a narrow chamber wraps the level under the word
-		label(frame, "Infused", infused(w.Luck), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad + LINE + 60), { Colour = Theme.Colour.Electricity, Wrap = true })
+		later(label(frame, "Infused", infused(w.Luck), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad + LINE + 60), { Colour = Theme.Colour.Electricity, Wrap = true }))
 	end
 	table.insert(tickers, function(now: Read.Base)
 		local current = now.Data.Base.Chambers[index]
@@ -602,7 +623,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		local button = Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(1, -gap, 0, Theme.Size.Tap), Parent = column, OnPress = press :: () -> ...any })
 		button.LayoutOrder = 1
 	end
-	-- Infusion: why none goes in, if so; then a little or a lot, each with its price and, beside it, what it does to
+	-- Infusion: why none goes in, if so; then its two levels, each with its price and, beside it, what it does to
 	-- the rarest tier, or why that level can't be paid.
 	local whole = blockShard(it, now)
 	if whole then
@@ -620,7 +641,8 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		row.AutomaticSize = Enum.AutomaticSize.Y
 		row.LayoutOrder = 2 + index
 		row.Parent = column
-		local text = `{LEVELS[index] or `Level {index}`} · {Read.Number(level.Energy)}`
+		-- Its name over its price, two lines: "High voltage" and a price don't fit one line of a phone's button.
+		local text = `{LEVELS[index] or `Level {index}`}\n{Read.Number(level.Energy)}`
 		local button = Button.new({
 			Name = `Infuse{index}`,
 			Text = text,

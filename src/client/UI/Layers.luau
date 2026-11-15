@@ -3,10 +3,12 @@
 -- Authored at Theme.Author and scaled by height, clamped (handbook/visuals/ui.md, "Phones"). The HUD and the screens keep
 -- clear of Roblox's top bar and the notch (TR2, research's read of the phone take, fix 1: a screen's title sat under
 -- Roblox's own buttons), and so do the toasts, which stood past the notch's side at phone size (AR8 C, research's pass,
--- fix 2); the world's plates, a full screen's cover and the overlay's run full-bleed. Every container is named
--- NL_..., which the UI lint reads as ours.
+-- fix 2); the world's plates, a full screen's cover and the overlay's run full-bleed. The Band is the room Roblox's
+-- top bar leaves free, right of its own buttons (GuiService.TopbarInset, read live): a full screen's bar stands in it
+-- (Kit.Screen; TR17, research's call, 2026-11-15). Every container is named NL_..., which the UI lint reads as ours.
 --   Layers.Get("Hud")      the layer's root frame, made on first use
 --   Layers.Scale()         the scale every layer draws at now
+--   Layers.Band()          the band's size now, authored
 --   Layers.Changed         (scale) after a refit
 --   Layers.Force(scale?), Layers.Box(size?)   for tests: a phone's scale and its box
 
@@ -16,13 +18,14 @@ local Players = game:GetService("Players")
 local Theme = require(script.Parent.Theme)
 local Signal = require(game:GetService("ReplicatedStorage").Shared.Util.Signal)
 
-export type Name = "World" | "Hud" | "Cover" | "Menus" | "Overlay" | "Toasts"
+export type Name = "World" | "Hud" | "Cover" | "Menus" | "Band" | "Overlay" | "Toasts"
 
 local ORDER: { [string]: number } = {
 	World = 5, -- plates and numbers projected from the world: drawn in captures, unlike a BillboardGui
 	Hud = 10,
 	Cover = 15, -- behind a full screen (Kit.Screen): over the world and the HUD, edge to edge
 	Menus = 20,
+	Band = 21, -- Roblox's top bar, right of its buttons: a full screen's Back and what its owner sets beside it
 	Overlay = 30,
 	Toasts = 40,
 	-- The fade (FadeController) is 100, over all of them.
@@ -36,10 +39,25 @@ local scales: { UIScale } = {}
 local scale = 1
 local forced: number? = nil -- a test's scale, in place of the screen's
 local boxed: Vector2? = nil -- a test's phone, in rendered pixels: the inset layers laid out in it
+
+-- The top bar's free room, authored: read from the inset itself, so it's right before its layer is laid out.
+function Layers.Band(): Vector2
+	local free = GuiService.TopbarInset
+	local wide = if boxed then math.min(free.Width, boxed.X - free.Min.X) else free.Width
+	return Vector2.new(math.max(wide, 0), free.Height) / scale
+end
 local INSET: { [string]: boolean } = { Hud = true, Menus = true, Toasts = true } -- kept clear of Roblox's top bar and the notch
 
--- An inset layer's root fills its safe area, or a test's phone box from the safe area's top left.
+-- An inset layer's root fills its safe area, or a test's phone box from the safe area's top left. The Band's fills the
+-- top bar's free room, cut at a test's phone box's right edge: its layer starts at the screen's top, at the safe
+-- area's left, where TopbarInset is measured from.
 local function size(name: string, root: Frame)
+	if name == "Band" then
+		local free, band = GuiService.TopbarInset, Layers.Band()
+		root.Position = UDim2.fromOffset(free.Min.X / scale, free.Min.Y / scale)
+		root.Size = UDim2.fromOffset(band.X, band.Y)
+		return
+	end
 	local box = if INSET[name] then boxed else nil
 	root.Size = if box then UDim2.fromOffset(box.X / scale, box.Y / scale) else UDim2.fromScale(1, 1)
 end
@@ -100,7 +118,7 @@ function Layers.Get(name: Name): Frame
 	gui.DisplayOrder = ORDER[name]
 	local inset = INSET[name] == true
 	gui.IgnoreGuiInset = not inset
-	gui.ScreenInsets = if inset then Enum.ScreenInsets.CoreUISafeInsets else Enum.ScreenInsets.None
+	gui.ScreenInsets = if inset then Enum.ScreenInsets.CoreUISafeInsets elseif name == "Band" then Enum.ScreenInsets.DeviceSafeInsets else Enum.ScreenInsets.None
 	local uiScale = Instance.new("UIScale")
 	uiScale.Scale = scale
 	uiScale.Parent = gui
@@ -114,6 +132,13 @@ function Layers.Get(name: Name): Frame
 	roots[name] = frame
 	return frame
 end
+
+GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
+	local band = roots.Band
+	if band then
+		size("Band", band)
+	end
+end)
 
 scale = fit()
 local function watch(camera: Camera?)

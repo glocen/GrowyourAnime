@@ -5,6 +5,7 @@
 -- live here. Split out of Cases on 2026-11-14, when the one file grew past what the type check can follow.
 
 local CollectionService = game:GetService("CollectionService")
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -35,6 +36,8 @@ local Hud = require(Shared.Rules.Hud)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
+local Theme = require(UI.Theme)
+local Layers = require(UI.Layers)
 
 local TAKE_READ = 3 -- seconds the take leaves a screen or a card up, as a player reads it
 local TAKE_WALK = 45 -- seconds a walk of the take may last
@@ -402,9 +405,7 @@ return function(given: Given): { any }
 					end))
 					t.Wait(TAKE_READ)
 					moment("Back")
-					local frame = Screen.Frame(VoidkinScreen.Name)
-					local back = frame and frame:FindFirstChild("Back")
-					t.Check("Back", back ~= nil and back:IsA("TextButton") and Button.Press(back))
+					t.Check("Back", press("Back"))
 					t.Wait(1.5)
 					moment("end")
 				end)
@@ -414,8 +415,98 @@ return function(given: Given): { any }
 		}
 	end
 
+	-- TR17's retake (docs/test-requests.md, TR17, research's verdict of 2026-11-15): its three fixes and the band. The
+	-- lead's screen as it opens (Back, the marks and the currencies in Roblox's band, its name over the stage, Leading,
+	-- Send to work off with why), two switches by the strip and one by a flick (never an empty stage), each mark tapped,
+	-- a rename opened and left, then the same screen in the smallest phone's room, its rail dragged to its foot and
+	-- back. Not played, and their rows say so: the flick (the figure's own gesture handler), the smallest phone's room
+	-- (the layers' own test box, in this window's corner) and the rail's drag.
+	local function voidkinRetake(): any
+		return {
+			Name = "Take: TR17's retake, the three fixes and the band, with the rail on the smallest phone",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				local ids = VoidkinCases.Own(t, waitFor, ANSWER)
+				t.Check("three Voidkin to switch between", #ids >= 3, `{#ids}`)
+				if #ids < 3 then
+					return
+				end
+				Screen.Close()
+				local lead = (ProfileController.Get() :: Profile.View).Roles.Lead
+				local function press(name: string): boolean
+					local found = VoidkinScreen.Find(name)
+					return found ~= nil and found:IsA("TextButton") and Button.Press(found)
+				end
+				local swipe = HudConfig.Voidkin.Swipe
+				local hud = HudController.Parts()
+				take(t, function(kit: Take)
+					local moment = kit.Moment
+					kit.Zero()
+					moment("zero: at home, the HUD")
+					t.Wait(1.5)
+					moment("the dock's Voidkin tapped")
+					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+						return Screen.Current() == VoidkinScreen.Name
+					end))
+					moment("the lead's screen: the band, its name over the stage, Leading, Send to work off with why")
+					t.Wait(TAKE_READ)
+					for index = 2, 3 do
+						moment(`the strip: Voidkin {index} tapped, its body's first draw`)
+						t.Check(`the strip's cell {index}`, press(ids[index]))
+						t.Wait(2.5)
+					end
+					moment("not played: a flick to the left, the next")
+					local figure = VoidkinScreen.Figure()
+					t.Check("a flick left", figure ~= nil and Figure.Gesture(figure, Vector2.new(-(swipe.Distance + 60), 8), swipe.Time / 2) == "Swipe")
+					t.Wait(2)
+					for _, mark in { "Favourite", "Lock" } do
+						moment(`{mark} tapped, then tapped again`)
+						t.Check(mark, press(mark))
+						t.Wait(1.2)
+						t.Check(`{mark} again`, press(mark))
+						t.Wait(1)
+					end
+					moment("Rename tapped: the line a box, Save and Cancel in the band")
+					t.Check("Rename", press("Rename"))
+					t.Wait(1.8)
+					moment("Cancel")
+					t.Check("Cancel", press("Cancel"))
+					t.Wait(1)
+					moment("not played: the smallest phone's room, 568 by 320 with Roblox's band, in the window's corner")
+					Layers.Force(Theme.Scale.Floor)
+					Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+					t.Wait(TAKE_READ)
+					local rail = VoidkinScreen.Find("Rail")
+					for _, foot in { true, false } do
+						moment(if foot then "not played: its rail dragged to its foot" else "not played: and back")
+						if rail and rail:IsA("ScrollingFrame") then
+							local to = if foot then math.max(rail.AbsoluteCanvasSize.Y - rail.AbsoluteWindowSize.Y, 0) else 0
+							TweenService:Create(rail, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CanvasPosition = Vector2.new(0, to) }):Play()
+						end
+						t.Wait(1.5)
+					end
+					Layers.Box(nil)
+					Layers.Force(nil)
+					moment("this window's room again")
+					t.Wait(1.2)
+					moment("Back")
+					t.Check("Back", press("Back"))
+					t.Wait(1.5)
+					moment("end")
+				end)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				if (ProfileController.Get() :: Profile.View).Roles.Lead ~= lead then
+					t.Server("Act", "SetLead", { Voidkin = lead })
+				end
+			end,
+		}
+	end
+
 	return {
 		voidkinTake(),
+		voidkinRetake(),
 		{
 			Name = "Take: the loop on a new account, for research's verdict",
 			Manual = true,

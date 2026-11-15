@@ -289,7 +289,9 @@ return {
 	--            feet, either side of Combat Power (Modulo's mock of the layout, AR12: 40 and 46)
 	--   Figure   Top: authored pixels kept clear over its crown (it stands from there down to the feet's row); Fov: the
 	--            stage camera's; Turn: degrees a dragged authored pixel turns it; Back: seconds the next one takes to
-	--            slide in, from Slide authored pixels to its side
+	--            slide in, from Slide authored pixels to its side; Draw: seconds a body stands in the stage's wings,
+	--            fetched, before it counts as ready to show (its first draw measured 0.25 to 0.53 s on the dev PC,
+	--            2026-11-15; no phone measured yet)
 	--   Swipe    a flick on the figure that goes to the next or the one before: at least Distance authored pixels across
 	--            in at most Time seconds; a touch that moves less than Tap pixels in at most TapTime is a tap
 	--   Stage    the stand-in stage: Glow the floor's transparency, Light how far the rarity tints the light
@@ -304,7 +306,7 @@ return {
 	Voidkin = {
 		Rail = { Width = 68, Dot = 26, Chosen = 42, Line = 2, Spread = 20, Run = 0.25 },
 		Slots = { Size = 40, Gap = 6, Span = 1.2, Hand = 46 },
-		Figure = { Top = 8, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48 },
+		Figure = { Top = 24, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48, Draw = 0.8 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
 		Stage = { Glow = 0.35, Light = 0.45 },
 		Power = { Width = 236, Height = 56, Number = 36, Least = 20, Emblem = 170, Roll = 0.6, Gain = 26, Hold = 1.2 },

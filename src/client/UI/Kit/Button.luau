@@ -4,7 +4,8 @@
 -- `button`): the shadow, a lit ring's glow, the body, the disabled veil, the edge, the pressed shade, the lit ring, and the
 -- accent's base line at rest. A press that waits (an Act) shows the light running round its edge and three dots until it
 -- answers, and refuses a second press meanwhile, so nothing is asked twice. It flashes succeeded or failed only on the
--- server's answer (rule 4: the interface never lies). A touch squeezes its face and label about their middle within
+-- server's answer (rule 4: the interface never lies). Disabled, its face says why in place of its name; one made with
+-- Under keeps its name and says why in a smaller line under it (TR17, research's fix 3). A touch squeezes its face and label about their middle within
 -- 0.05 s, and a let-go brings them back over full size for a moment (Config.Hud.Motion.Press, Rules.Hud.Squeeze; AR8 C);
 -- a press with no touch (a pad, a key) squeezes as a tap. A touch also ticks under the thumb (Roblox's UIClick haptic;
 -- TR6). No state moves the layout.
@@ -39,11 +40,13 @@ export type Props = {
 	Palette: string?,
 	LayoutOrder: number?,
 	TextSize: number?,
+	Under: boolean?, -- disabled, it keeps its name and says why under it
 	OnPress: () -> ...any,
 }
 
 type State = {
 	Label: TextLabel,
+	Reason: TextLabel?, -- why it's off, under its name (Under)
 	Tick: ImageLabel,
 	Layers: { [string]: ImageLabel },
 	Dots: { ImageLabel },
@@ -64,6 +67,8 @@ type State = {
 local Button = {}
 
 Button.FlashSeconds = 0.6
+
+local UNDER = 9 -- authored pixels its name rises, and its reason sinks, when the reason stands under it
 
 -- Held until the button is destroyed: a weak table keyed by an instance can lose a live one (Text's note).
 local states: { [TextButton]: State } = {}
@@ -123,9 +128,16 @@ local function paint(button: TextButton, state: State)
 	waiting[button] = if now == "Waiting" then true else nil
 	state.Tick.Visible = now == "Succeeded"
 	-- An icon's button (no text) keeps its face: a reason never fits in it, so a tap says it instead (Button.Press).
-	state.Label.Text = if state.Text == "" then "" else Hud.Says(state.Text, state.Disabled, false)
+	local reason = state.Reason
+	local under = reason ~= nil and now == "Disabled" and state.Text ~= ""
+	state.Label.Text = if state.Text == "" then "" elseif under then state.Text else Hud.Says(state.Text, state.Disabled, false)
 	state.Label.Visible = now ~= "Waiting"
-	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else 0, 0.5, 0)
+	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else 0, 0.5, if under then -UNDER else 0)
+	if reason then
+		reason.Visible = under
+		reason.Text = if under then state.Disabled or "" else ""
+		reason.TextColor3 = p.Soft
+	end
 	state.Label.TextColor3 = if now == "Disabled" then p.Soft elseif inked then (p.SelectedText or p.Text) else p.Text
 	button:SetAttribute("Disabled", state.Disabled or "")
 	button:SetAttribute("Pending", state.Pending)
@@ -296,11 +308,25 @@ function Button.new(props: Props): TextButton
 		scale.Parent = piece
 		table.insert(scales, scale)
 	end
+	local reason: TextLabel? = nil
+	if props.Under then
+		reason = Text.new({
+			Name = "Reason",
+			Size = Theme.Text.Caption,
+			Colour = p.Soft,
+			Align = Enum.TextXAlignment.Center,
+			Box = UDim2.new(1, -4, 0, 18),
+			Position = UDim2.new(0.5, 0, 0.5, UNDER + 2),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Parent = button,
+		})
+	end
 	local tick = Skin.Icon(button, "Tick", 29, 0, 20, UIKit.Good, 2)
 	centred(tick, 0)
 	tick.Name = "Tick"
 	local state: State = {
 		Label = label,
+		Reason = reason,
 		Tick = tick,
 		Layers = layers,
 		Dots = dots,

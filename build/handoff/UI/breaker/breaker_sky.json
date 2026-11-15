@@ -1,5 +1,5 @@
 {
- "note": "The galaxy Breaker's sky (AR12, delivery 3). Every place and size is in points from the panel's corner; the panel is 684 by 306 on the 812 by 375 screen, and the night carries the panel's own shape, so it fits that size. Layers from the back: the night, the mist in each window, the stars, the falling star, then a chamber's glass, its light and its shard, and every plate. With reduced motion on, nothing moves and the falling star never falls. DESIGN, untried in Studio.",
+ "note": "The galaxy Breaker's sky (AR12, delivery 3). Every place and size is in points from the panel's corner; the panel is 684 by 306 on the 812 by 375 screen, and the night carries the panel's own shape, so it fits that size. Layers from the back: the night, the mist (see `mist`), the stars, the falling star, then a chamber's glass, its light and its shard, and every plate. With reduced motion on, nothing moves and the falling star never falls. DESIGN, untried in Studio.",
  "images": {
   "BreakerSkyLeft": {
    "file": "images/BreakerSkyLeft.png",
@@ -82,7 +82,101 @@
   ],
   "turn": 684.0,
   "drift": 2.5,
-  "note": "white, tinted. It shows only in a chamber's window: each window clips its own copy, placed as if it lay on the panel at `at`, in that window's `tint`, its cover down the image's height by that window's `down` (a gradient from top to foot: share of the height, cover). It slides left `drift` points a second and comes round every `turn` points, so two copies side by side cover the turn.",
+  "note": "white, tinted. Placed as if it lay on the panel at `at`; it slides left `drift` points a second and comes round every `turn` points, so two copies side by side cover the turn. Two ways to show it. `band`, tried first (research, 2026-11-15): one band along the row of chambers, behind them, gaps included; the copies slide inside a group that holds still and carries `band.tint` as one gradient from left to right, so the colour stays put while the lumps move. `windows`, the fallback: each window clips its own copy in that window's one `tint`. In both, `down` is the cover down the image's height (share of the height, cover): a gradient from top to foot, which sliding sideways never changes.",
+  "band": {
+   "at": [
+    14.0,
+    81.0
+   ],
+   "points": [
+    405.0,
+    79.0
+   ],
+   "tint": [
+    [
+     0.0,
+     "#D44FB4"
+    ],
+    [
+     0.125,
+     "#D14FB7"
+    ],
+    [
+     0.25,
+     "#B54FD0"
+    ],
+    [
+     0.375,
+     "#9850E9"
+    ],
+    [
+     0.5,
+     "#7768F4"
+    ],
+    [
+     0.625,
+     "#5580FF"
+    ],
+    [
+     0.75,
+     "#41A1EE"
+    ],
+    [
+     0.875,
+     "#2DC2DD"
+    ],
+    [
+     1.0,
+     "#2FCCD4"
+    ]
+   ],
+   "down": [
+    [
+     0.0,
+     0.0
+    ],
+    [
+     0.1367,
+     0.347
+    ],
+    [
+     0.2058,
+     0.647
+    ],
+    [
+     0.2749,
+     0.827
+    ],
+    [
+     0.344,
+     0.859
+    ],
+    [
+     0.4131,
+     0.886
+    ],
+    [
+     0.4822,
+     0.89
+    ],
+    [
+     0.5512,
+     0.858
+    ],
+    [
+     0.6203,
+     0.792
+    ],
+    [
+     0.6894,
+     0.704
+    ],
+    [
+     1.0,
+     0.0
+    ]
+   ]
+  },
   "windows": [
    {
     "chamber": 1,
@@ -405,7 +499,15 @@
   ],
   "seconds": 0.7,
   "clip": "chamber 4's window, under its glass",
-  "note": "the image's `head` runs from `start` to `end` in `seconds`, at an even speed; its light is sin(pi * s) ^ 0.6, s from 0 to 1. Pale, never tinted. The test clip showed one in ten seconds; how often it falls is open (a proposal: every 20 to 40 seconds, at random, so it stays a surprise)."
+  "note": "the image's `head` runs from `start` to `end` in `seconds`, at an even speed; its light is sin(pi * s) ^ 0.6, s from 0 to 1. Pale, never tinted. The first falls `first` seconds after the screen opens, then one every `every` seconds, each drawn at random between the two (research, 2026-11-15: seeds, tuned in play).",
+  "first": [
+   3,
+   6
+  ],
+  "every": [
+   15,
+   30
+  ]
  },
  "light": {
   "image": "BreakerLight",

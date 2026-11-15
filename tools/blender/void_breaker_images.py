@@ -114,6 +114,22 @@ def tints():
             for x, y, w, hh in WINDOWS]
 
 
+def band(top, tall):
+    """The mist as one band along the row of chambers, gaps included (research, 2026-11-15): where it lies, the
+    river's colours across it, and how much shows down the mist's image, as the windows' ramps give it for one."""
+    x0, x1 = WINDOWS[0][0], WINDOWS[-1][0] + WINDOWS[-1][2]
+    y, tall_w = WINDOWS[0][1], WINDOWS[0][3]
+    across = [float(v) for v in np.linspace(0.0, 1.0, 9)]
+    xs = np.array([x0 + s * (x1 - x0) for s in across], np.float32)
+    s_river = np.clip(vs.along(LOOK, xs, np.full_like(xs, y + tall_w / 2))[0], 0, 1)
+    tint = [[round(s, 4), hexed(col)] for s, col in zip(across, vs.ramp(s_river, LOOK["palette"]))]
+    first, last = ((y + d - top) / tall for d in (0.0, tall_w))
+    shares = [0.0] + [float(v) for v in np.linspace(first, last, 9)] + [1.0]
+    xp, yp = np.meshgrid(np.linspace(x0, x1, 96), [top + s * tall for s in shares])
+    down = [(round(s, 4), round(float(v), 3)) for s, v in zip(shares, vs.held(LOOK, xp, yp).mean(axis=1))]
+    return dict(at=[x0, round(y, 2)], points=[x1 - x0, round(tall_w, 2)], tint=tint, down=down)
+
+
 def star():
     side = round(STAR * K_SMALL)
     return vs.glints(side, side, K_SMALL, ((STAR / 2, STAR / 2, STAR / 16, "#FFFFFF", 1.0, 0.25),))  # at its full light
@@ -145,7 +161,7 @@ def manifest(out, images, top, tall, keys, colours):
     data = dict(
         note="The galaxy Breaker's sky (AR12, delivery 3). Every place and size is in points from the panel's corner; "
              "the panel is 684 by 306 on the 812 by 375 screen, and the night carries the panel's own shape, so it fits "
-             "that size. Layers from the back: the night, the mist in each window, the stars, the falling star, then a "
+             "that size. Layers from the back: the night, the mist (see `mist`), the stars, the falling star, then a "
              "chamber's glass, its light and its shard, and every plate. With reduced motion on, nothing moves and the "
              "falling star never falls. DESIGN, untried in Studio.",
         images={name: dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]]) for name, px in images.items()},
@@ -157,10 +173,15 @@ def manifest(out, images, top, tall, keys, colours):
                  "panel, and show the same sky there, so either may lie on top. The panel's own fill stays under them."),
         mist=dict(
             image="BreakerMist", at=[0, round(top, 3)], points=[PW, round(tall, 3)], turn=PW, drift=LOOK["drift"],
-            note="white, tinted. It shows only in a chamber's window: each window clips its own copy, placed as if it "
-                 "lay on the panel at `at`, in that window's `tint`, its cover down the image's height by that window's "
-                 "`down` (a gradient from top to foot: share of the height, cover). It slides left `drift` points a "
-                 "second and comes round every `turn` points, so two copies side by side cover the turn.",
+            note="white, tinted. Placed as if it lay on the panel at `at`; it slides left `drift` points a second and "
+                 "comes round every `turn` points, so two copies side by side cover the turn. Two ways to show it. "
+                 "`band`, tried first (research, 2026-11-15): one band along the row of chambers, behind them, gaps "
+                 "included; the copies slide inside a group that holds still and carries `band.tint` as one gradient "
+                 "from left to right, so the colour stays put while the lumps move. `windows`, the fallback: each "
+                 "window clips its own copy in that window's one `tint`. In both, `down` is the cover down the image's "
+                 "height (share of the height, cover): a gradient from top to foot, which sliding sideways never "
+                 "changes.",
+            band=band(top, tall),
             windows=[dict(chamber=i + 1, at=[x, round(y, 2)], points=[w, round(hh, 2)], tint=colours[i], down=keys[i])
                      for i, (x, y, w, hh) in enumerate(WINDOWS)]),
         stars=dict(
@@ -173,8 +194,10 @@ def manifest(out, images, top, tall, keys, colours):
             image="BreakerFallingStar", points=list(FALL["points"]), head=list(FALL["head"]),
             start=[ax, ay], end=[bx, by], seconds=vm.FALLS, clip="chamber 4's window, under its glass",
             note="the image's `head` runs from `start` to `end` in `seconds`, at an even speed; its light is "
-                 "sin(pi * s) ^ 0.6, s from 0 to 1. Pale, never tinted. The test clip showed one in ten seconds; how "
-                 "often it falls is open (a proposal: every 20 to 40 seconds, at random, so it stays a surprise)."),
+                 "sin(pi * s) ^ 0.6, s from 0 to 1. Pale, never tinted. The first falls `first` seconds after the "
+                 "screen opens, then one every `every` seconds, each drawn at random between the two (research, "
+                 "2026-11-15: seeds, tuned in play).",
+            first=[3, 6], every=[15, 30]),
         light=dict(
             image="BreakerLight", sideForRadius=4,
             note="white, tinted. The image is `sideForRadius` times the light's radius across, its middle 58 points "

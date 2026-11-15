@@ -22,7 +22,19 @@
      "turn": 0.0
     },
     {
+     "piece": "Wings",
+     "across": 0,
+     "along": 0,
+     "turn": 0.0
+    },
+    {
      "piece": "Yard",
+     "across": 0,
+     "along": -48,
+     "turn": 0.0
+    },
+    {
+     "piece": "Wings",
      "across": 0,
      "along": -48,
      "turn": 0.0
@@ -34,309 +46,429 @@
      "turn": 0.0
     },
     {
+     "piece": "Wings",
+     "across": 0,
+     "along": -96,
+     "turn": 0.0
+    },
+    {
      "piece": "Yard",
      "across": 0,
      "along": -144,
      "turn": 0.0
     },
     {
+     "piece": "Wings",
+     "across": 0,
+     "along": -144,
+     "turn": 0.0
+    },
+    {
      "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": 0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -192.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -16,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -176.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -32,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -160.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -48,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -144.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -64,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -128.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -80,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -112.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -96,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -96.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -112,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -80.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -128,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -64.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -144,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -48.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -160,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -32.0,
-     "turn": 90
-    },
-    {
-     "piece": "Wall",
-     "across": -44.0,
+     "across": -100.0,
      "along": -176,
      "turn": -90
     },
     {
+     "piece": "WallHalf",
+     "across": -100.0,
+     "along": -192.0,
+     "turn": -90
+    },
+    {
      "piece": "Wall",
-     "across": 44.0,
-     "along": -16.0,
-     "turn": 90
+     "across": -100.0,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "Wall",
+     "across": -84.0,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "Wall",
+     "across": -68.0,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "Wall",
+     "across": -52.0,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "Wall",
+     "across": -36.0,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "WallHalf",
+     "across": -20,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "WallEnd",
+     "across": -12,
+     "along": -200.0,
+     "turn": 0
+    },
+    {
+     "piece": "Wall",
+     "across": -28.0,
+     "along": 0,
+     "turn": 180
     },
     {
      "piece": "Wall",
      "across": -44.0,
-     "along": -192.0,
-     "turn": 0
+     "along": 0,
+     "turn": 180
     },
     {
      "piece": "Wall",
-     "across": 12.0,
-     "along": -192.0,
-     "turn": 0
+     "across": -60.0,
+     "along": 0,
+     "turn": 180
     },
     {
      "piece": "Wall",
-     "across": -28.0,
+     "across": -76.0,
+     "along": 0,
+     "turn": 180
+    },
+    {
+     "piece": "WallHalf",
+     "across": -92.0,
+     "along": 0,
+     "turn": 180
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": 0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -16,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -32,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -48,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -64,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -80,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -96,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -112,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -128,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -144,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -160,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -176,
+     "turn": -90
+    },
+    {
+     "piece": "WallHalf",
+     "across": 100.0,
      "along": -192.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 100.0,
+     "along": -200.0,
+     "turn": 180
+    },
+    {
+     "piece": "Wall",
+     "across": 84.0,
+     "along": -200.0,
+     "turn": 180
+    },
+    {
+     "piece": "Wall",
+     "across": 68.0,
+     "along": -200.0,
+     "turn": 180
+    },
+    {
+     "piece": "Wall",
+     "across": 52.0,
+     "along": -200.0,
+     "turn": 180
+    },
+    {
+     "piece": "Wall",
+     "across": 36.0,
+     "along": -200.0,
+     "turn": 180
+    },
+    {
+     "piece": "WallHalf",
+     "across": 20,
+     "along": -200.0,
+     "turn": 180
+    },
+    {
+     "piece": "WallEnd",
+     "across": 12,
+     "along": -200.0,
      "turn": 0
     },
     {
      "piece": "Wall",
      "across": 28.0,
-     "along": -192.0,
-     "turn": 0
-    },
-    {
-     "piece": "WallEnd",
-     "across": -12.0,
-     "along": -192.0,
-     "turn": 0
-    },
-    {
-     "piece": "Wall",
-     "across": -28.0,
      "along": 0,
-     "turn": 180
+     "turn": 0
     },
     {
      "piece": "Wall",
      "across": 44.0,
      "along": 0,
-     "turn": 180
+     "turn": 0
     },
     {
-     "piece": "WallEnd",
-     "across": 28.0,
+     "piece": "Wall",
+     "across": 60.0,
+     "along": 0,
+     "turn": 0
+    },
+    {
+     "piece": "Wall",
+     "across": 76.0,
+     "along": 0,
+     "turn": 0
+    },
+    {
+     "piece": "WallHalf",
+     "across": 92.0,
      "along": 0,
      "turn": 0
     },
     {
      "piece": "Pylon",
-     "across": -48.5,
-     "along": 0,
+     "across": -93.0,
+     "along": -4,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -48.5,
-     "along": -48,
+     "across": -93.0,
+     "along": -52,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -48.5,
-     "along": -48,
+     "across": -93.0,
+     "along": -52,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -48.5,
-     "along": -96,
+     "across": -93.0,
+     "along": -100,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -48.5,
-     "along": -96,
+     "across": -93.0,
+     "along": -100,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -48.5,
-     "along": -144,
+     "across": -93.0,
+     "along": -148,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -48.5,
-     "along": -144,
+     "across": -93.0,
+     "along": -148,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -48.5,
-     "along": -192,
+     "across": -93.0,
+     "along": -196,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -48.5,
-     "along": -192,
+     "across": -93.0,
+     "along": -196,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": 48.5,
-     "along": 0,
+     "across": 93.0,
+     "along": -4,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": 48.5,
-     "along": -48,
+     "across": 93.0,
+     "along": -52,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": 48.5,
-     "along": -48,
+     "across": 93.0,
+     "along": -52,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": 48.5,
-     "along": -96,
+     "across": 93.0,
+     "along": -100,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": 48.5,
-     "along": -96,
+     "across": 93.0,
+     "along": -100,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": 48.5,
-     "along": -144,
+     "across": 93.0,
+     "along": -148,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": 48.5,
-     "along": -144,
+     "across": 93.0,
+     "along": -148,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": 48.5,
-     "along": -192,
+     "across": 93.0,
+     "along": -196,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": 48.5,
-     "along": -192,
+     "across": 93.0,
+     "along": -196,
      "turn": 90
     },
     {
@@ -418,14 +550,16 @@
     "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text"
    },
    "budget": {
-    "pieces": 61,
-    "triangles": 19456,
+    "pieces": 83,
+    "triangles": 22064,
     "lights": 3,
     "counts": {
      "Court1": 1,
      "Gate1": 1,
+     "Wings": 4,
      "Yard": 3,
-     "Wall": 30,
+     "Wall": 42,
+     "WallHalf": 6,
      "WallEnd": 2,
      "Pylon": 10,
      "PowerSpan": 8,
@@ -438,7 +572,7 @@
  "ground": {
   "lot": "#7C7C8E",
   "ground": "#1A1D2E",
-  "note": "the lot is the plot's floor outside the yard's wall: the deck tile (Base_Deck_Color.png), its Texture's Color3 at `lot`, so the yard is the brighter deck (the Kept and Tower overlays take it too, unmarked). The ground is the slab between plots, a flat colour. The Strip and the side street wear Lantern Row's paving tile, as its street does: stepping off the stones onto the plates is coming home."
+  "note": "the lot is the plot's own floor under the kit's floors: the deck tile (Base_Deck_Color.png), its Texture's Color3 at `lot`. It shows only as the last 8 studs under the back wall, the darker foot of that wall (the Kept and Tower overlays take it too, unmarked). The ground is the slab between plots, a flat colour. The Strip and the side street wear Lantern Row's paving tile, as its street does: stepping off the stones onto the plates is coming home."
  },
  "standIns": {
   "machine": "#7E8AB0",

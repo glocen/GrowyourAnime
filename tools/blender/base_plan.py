@@ -6,8 +6,9 @@ blender.exe -b --factory-startup --python tools/blender/base_plan.py -- <out_dir
   look <level> [fast] [clear] [views]
                         <out>/base_<level>_<view>.png: the plot dressed, its machines as coloured boxes, under Lantern
                         Row's dusk, from the spawn's camera (`home`), from the Strip (`gate`), from the court's back
-                        looking down the yard (`yard`), from the yard's end looking home (`back`) and from above
-                        (`above`). Naming views renders those alone.
+                        looking down the yard (`yard`), from the yard's end looking home (`back`), from a front
+                        corner across the whole base (`across`) and from above (`above`). Naming views renders those
+                        alone.
                         The kit's pictures are written into <out>/maps first. `clear`: from above alone with the haze
                         thinned, to read the layout
 
@@ -22,13 +23,14 @@ above, a piece's front (+Y) toward the Strip at 0. In the plot's own frame, a pi
 it with the front edge as its gate.
 
 The levels (launch caps the base at 3):
-  1, the yard    a long walled yard of deck plates, 88 studs across and 192 deep (the director, 2026-11-15: "the base
-                 should be much much longer, it fine if some part a plain due to being low levels"). Its front 48 is
-                 the lit court round the machines: the gate on the Strip with the level on its plate, the current lit
-                 in the floor from each bay to the battery and the Breaker, a pylon at each of the court's corners
-                 with its lines down the sides, two flood masts at its back, a transformer each side of the battery's
-                 line and of the Breaker's rail. Behind it three plain blocks run to the back wall: the main conduit
-                 dead down the middle, a lot marked each side, a pilot lamp at each junction.
+  1, the yard    the whole plot walled, 200 studs by 200 (the director, 2026-11-15: "the base must be that 200x200",
+                 after "the base should be much much longer, it fine if some part a plain due to being low levels").
+                 At the front's middle the lit court round the machines, 88 across and 48 deep: the gate on the Strip
+                 with the level on its plate, the current lit in the floor from each bay to the battery and the
+                 Breaker, two flood masts at its back, a transformer each side of the battery's line and of the
+                 Breaker's rail. Behind it three plain blocks: the main conduit dead down the middle, a lot marked
+                 each side, a pilot lamp at each junction. Each side of both, the wings out to the walls: plain deck,
+                 a lot marked a block, and the pylons with their lines down the inside of each side wall.
   2 and 3        not made yet: each lights the yard a block further, so nothing a player has seen goes away.
 """
 
@@ -54,9 +56,10 @@ PLOT, STRIP, SPAWN, BREAKER, BATTERY = base.PLOT, base.STRIP, base.SPAWN, base.B
 LAMP = ("BreakerLamp", 0.0, BREAKER, 10.0, "#8CF6FF")   # the heart's own light, over the chambers
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
-GROUND = {"lot": "#7C7C8E", "ground": "#1A1D2E", "note": "the lot is the plot's floor outside the yard's wall: the deck tile "
-          "(Base_Deck_Color.png), its Texture's Color3 at `lot`, so the yard is the brighter deck (the Kept and Tower "
-          "overlays take it too, unmarked). The ground is the slab between plots, a flat colour. The Strip and the "
+GROUND = {"lot": "#7C7C8E", "ground": "#1A1D2E", "note": "the lot is the plot's own floor under the kit's floors: the deck tile "
+          "(Base_Deck_Color.png), its Texture's Color3 at `lot`. It shows only as the last 8 studs under the back "
+          "wall, the darker foot of that wall (the Kept and Tower overlays take it too, unmarked). The ground is "
+          "the slab between plots, a flat colour. The Strip and the "
           "side street wear Lantern Row's paving tile, as its street does: stepping off the stones onto the plates "
           "is coming home."}
 STAND_INS = {"machine": "#7E8AB0", "chamber": "#BFEFF5", "waiting": "#A2A7BC", "bay": "#56628C", "locked": "#1F2233",
@@ -72,30 +75,38 @@ def plan(level=1):
     def put(name, x, inward, turn=0.0):
         places.append((name, round(x, 2), round(-inward, 2), turn))
 
-    (half, deep), yard = base.COURT, base.YARD
+    deep, half, yard, block = base.COURT[1], base.HALF, base.YARD, int(base.BLOCK)
     put("Court1", 0, 0)
     put("Gate1", 0, 0)
-    for inward in range(int(deep), int(yard), int(base.BLOCK)):     # the plain yard behind the court, block after block
-        put("Yard", 0, inward)
-    # the wall: each post carries the panel to the next. The left side runs in from the front, the back runs to the
-    # way out at its middle, the right side runs out to the front, and a wing closes each front corner to the gate
-    for inward in range(0, int(yard), 16):
-        put("Wall", -half, inward, -90)
-        put("Wall", half, yard - inward, 90)
-    for x in (-half, -half + 16):
-        put("Wall", x, yard, 0)
-        put("Wall", x + 56, yard, 0)
-    put("WallEnd", -half + 32, yard, 0)
-    put("Wall", -base.WING, 0, 180)
-    put("Wall", half, 0, 180)
-    put("WallEnd", base.WING, 0, 0)
-    # the lines: a pylon outside the wall every span, from the front to the back, and its lines down each side: the
-    # base's length seen from the Strip, over everything
+    floors = range(0, int(yard) - block + 1, block)                 # as many whole blocks as the plot takes
+    for inward in floors:
+        if inward >= deep:
+            put("Yard", 0, inward)                                  # the plain yard behind the court, block after block
+        put("Wings", 0, inward)                                     # and the deck each side, out to the walls
+    # the wall, on the plot's own edge, the same on both sides of the middle line: each post carries the panel to the
+    # next, and a half panel closes a run on the plot's 200. The sides run in from the front corners' posts; the back
+    # runs in from its corners' posts to the way out at its middle; the front runs out from the gate's shoulders
     for side in (-1, 1):
-        for inward in range(0, int(yard) + 1, int(base.SPAN)):
-            put("Pylon", side * (half + 4.5), inward, 90)
-            if inward:
-                put("PowerSpan", side * (half + 4.5), inward, 90)
+        for inward in range(0, int(yard) - 8, 16):
+            put("Wall", side * half, inward, -90)
+        put("WallHalf", side * half, yard - 8, -90)
+        turn = 0 if side < 0 else 180                               # along the back, toward the middle
+        for k in range(5):
+            put("Wall", side * (half - 16 * k), yard, turn)
+        put("WallHalf", side * 20, yard, turn)
+        put("WallEnd", side * 12, yard, 0)
+        turn = 180 if side < 0 else 0                               # along the front, toward the corner
+        for k in range(4):
+            put("Wall", side * (base.WING + 16 * k), 0, turn)
+        put("WallHalf", side * (half - 8), 0, turn)
+    # the lines: a pylon every span down the inside of each side wall, from the front to the back, and its lines:
+    # the base's length and its width seen from the Strip, over everything
+    across, first = base.PYLON
+    for side in (-1, 1):
+        for inward in range(int(first), int(yard), int(base.SPAN)):
+            put("Pylon", side * across, inward, 90)
+            if inward > first:
+                put("PowerSpan", side * across, inward, 90)
     # the floods: a mast at the back of each lane, looking down the lane toward the front
     inward, reach, height = base.FLOOD
     for side, name in ((-1, "Left"), (1, "Right")):
@@ -266,8 +277,9 @@ def see(out: Path, level, fast, clear, only=()):
     yard.kit.block("Ground", (5 * PLOT, 4 * PLOT, 0.4), (0, STRIP / 2, -0.3), yard.flat["ground"])
     yard.person((0, -SPAWN))
     yard.person((6.0, -120.0), "Walker")
+    yard.person((66.0, -40.0), "Hand")
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard")):
+        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)
@@ -288,6 +300,7 @@ def see(out: Path, level, fast, clear, only=()):
             pass
     views = {"home": behind((0, -SPAWN), 1), "gate": behind((0, STRIP / 2), -1),
              "yard": behind((0, -(base.COURT[1] + 8.0)), -1), "back": behind((0, -(base.YARD - 14.0)), 1),
+             "across": ((-88.0, -6.0, 11.0), (30.0, -130.0, 4.0)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:
         views = {name: views[name] for name in only}

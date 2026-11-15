@@ -3,7 +3,7 @@
  "unit": "1 = 1 stud",
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel.",
- "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard).",
+ "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings).",
  "maps": {
   "Base_Deck_Color.png": "the plain deck, a tile 8 studs square (four plates), for a Texture on a Part"
  },
@@ -52,6 +52,28 @@
    "lights": [],
    "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
   },
+  "Wings": {
+   "mesh": "meshes/Wings.json",
+   "triangles": 4,
+   "vertices": 8,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    200.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_Wings_Color.png",
+   "glow": "maps/Base_Wings_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+  },
   "Wall": {
    "mesh": "meshes/Wall.json",
    "triangles": 144,
@@ -73,6 +95,28 @@
    "collision": "the post, and the panel as a wall 5 studs high",
    "lights": [],
    "note": "the panel runs 16 studs along +X to the next post"
+  },
+  "WallHalf": {
+   "mesh": "meshes/WallHalf.json",
+   "triangles": 144,
+   "vertices": 96,
+   "centre": [
+    3.23,
+    3.68,
+    0.0
+   ],
+   "size": [
+    8.74,
+    7.64,
+    2.28
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the post, and the panel as a wall 5 studs high",
+   "lights": [],
+   "note": "the panel runs 8 studs along +X to the next post"
   },
   "WallEnd": {
    "mesh": "meshes/WallEnd.json",

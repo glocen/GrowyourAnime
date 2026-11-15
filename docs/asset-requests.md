@@ -5450,7 +5450,7 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 
 **Status:** designed again, 2026-11-15, night (research).
 - The director rejected the first design (sections 1 and 2), and nothing of it is kept. Its files leave `build/handoff/Watt/` when the new model is delivered (Modulo's).
-- **Next:** the model on take A, the director's pick, built as the comparison's five points say.
+- **Next:** research's verdict on take A in colour (delivery 2), then the bake on R6.
 - **Delivery 1, the three takes** (Modulo, 2026-11-15, night): `build/handoff/Watt/watt_takes.png`, for research's pick. In grey on R6, Storm's pale pink the only colour. Each take: three-quarter front, the game's camera, its face close, its outline; then all three at 64 px over noon, night and in black, beside Rook, Kirra, Pip and Lyric.
   - **A, the quiet wall,** as briefed. The pink is on the hair's lifted tips, where an effect starts. The spear's blade and discs stand over his right shoulder, the side the game's camera is on.
   - **B, the hothead,** as briefed. Mine: the slab is on his left forearm, since Rook's ram is on the right, and the pink lock falls over his right brow.
@@ -5504,6 +5504,36 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
       5. **The spear** is thin and slung clear of his head and neck (the content check's condition).
     - **Colour:** the brief's wait, "any colour beyond Storm's, until the palette's pick", ends with the pick in AR12 (A, Eclipse: a neutral UI, so a Voidkin carries its own colour).
     - **Four facts:** the comparison made and shown to the director, who saw the difference. The model: not started.
+  - **Delivery 2, take A in colour** (Modulo, 2026-11-15, 19:38 to 20:00 by the clock): `build/handoff/Watt/watt_colour.png`, for research's verdict before the bake. The director, mid-build: "it need colors too." It covers this build: in colour, not grey.
+    - **On the sheet:** the front, the three-quarter front, his right side and the game's camera; his face close; the grey take's face and body beside; his outline; his colours; then 64 px over noon and night from four headings, beside the grey take and Rook, Kirra, Pip and Lyric.
+    - **Built as the comparison's five points say:**
+      1. **The body** is R6's six blocks at their own size. The coat with its shade and light, the shirt, the belt, three ceramic toggles, the strap and the trousers are flat shapes painted a layer off the blocks' faces. Built: the collar, the rolled cuffs, the tape on his left forearm, an iron band on his right, the boots' soles.
+      2. **The hair** is 25 flat curved locks on a cap. Seven sweep up off his brow and back over the crown, and the middle four flick up behind it in Storm's pink. Five lie down the back of his head, the sides turn out, and the fringe is parted over his right brow, one long lock down the bridge of his nose.
+      3. **The face** is painted on the head: half-lidded eyes with Storm's irises, lids, brows, the fringe's shadow, a nose and a short mouth. The collar stops at his jaw, notched in front, so his whole face shows.
+      4. **Three values:** the coat a deep petrol; the shirt, the tape and the discs pale; the trousers between. The boots are near ink.
+      5. **The spear** is thin and taller than he is: 7.7 studs to his 6.04. It runs from behind his left calf to over his right shoulder and leans back, so its discs and blade stand above his hair and outside it.
+    - **His colours** (all in the script's `PALETTE`): Coat `#1F4954`, Storm `#FFB3E8`, Shirt `#EFE9DE`, Trouser `#B4AEA2`, Leather `#A9683A`, Hair `#232738` with its light `#4A5478`, Skin `#F3CFB1`. One accent, Storm's pale pink: the hair's lifted ends, his eyes, and the coat's lining where it turns out (cuffs, edges, vent, collar).
+    - **Measured:** 4.8 x 2.27 x 7.71 studs with the spear, 4091 triangles. At 64 px from the game's camera, his outline against Rook 0.74, Kirra 0.33, Pip 0.65, Lyric 0.68 (the grey take: 0.75, 0.33, 0.65, 0.70).
+    - **Seen, the maker's eye and not a verdict:**
+      - From the front and the three-quarter he reads as a character: a face with a mood, a mass of hair, a coat with a cut. Over noon and over night he holds by the petrol coat, the pink cuffs and his pale forearms.
+      - From the game's camera the hair is a dark mass with a rim of pink points: less of a shape than from the front.
+      - From the front the lifted ends stand in a row, which may read as set on.
+      - Over night the iron shaft is lost and the discs and blade float.
+      - In the render the pink reads a little deeper than its chip, under Workbench's shading.
+    - **How it's made:** `tools/blender/watt_sheet.py`, written again for this design, Workbench, no GPU turn. It runs in stages (`new`, `old`, a lead a run, `sheet`): with Studio open the PC's memory was short, and the guard stopped four runs before the split. Four rounds on the maker's own read and the check: the hair from fat straight locks to curved ones; the head smoothed, the eyes larger, the collar lowered from a mask's height to his jaw; the pink ends flicked up for the game's camera; the spear moved. The first design's `tools/blender/watt_model.py` is removed, since it built on the first sheet's shapes. The baker is written again at the bake.
+    - **Checks:** the content check (`ga-content-check`, the sheet whole, its parts and the 64 px rows at twice their size; likeness from memory).
+      - **First look: BLOCK, on one condition.** The spear's head sat against the back of his head from the side, and its discs touched the collar from the game's camera. The other five conditions for A, rule 3 in colour, rule 4's pinks, rule 2 and the names passed.
+      - **Second look, the spear moved and four 64 px headings added: PASS, as a review sheet.** The discs and blade keep ground from his head, hair and collar from all four headings, noon and night. Only the blunt shaft lies on his back. The hair's row of pink ends changes neither read.
+      - **Its conditions, added to the ones above:**
+        - The accent stays at `#FFB3E8` or paler in game, in hard-edged bands and wedges, never a drip or fleck below the collar or the vent. The tape stays clean.
+        - The pink ends stay small pale tips on a rounded dark mass: never a magenta rim on large star-shaped points, and no blond or yellow in the fringe.
+        - The toggles stay pale, never gold or brass, never a centre row. The coat never closes to the collar and never goes navy or black.
+        - The fringe's shadow stays soft and symmetric. The collar never rises over his mouth or nose in a clip.
+        - In every clip, the draw and the return included, the blade and discs never pass his head or neck, even for a frame. The butt stays a blunt cap.
+        - This PASS covers the sheet, not an upload.
+    - **Not yet:** the bake on R6 (the atlas, the meshes, the recipe) under the Blender lock; his clips; Ground Wire's look.
+    - **Time:** by the clock, 19:38 to 20:00: the script written again, four rounds, the leads' runs and two looks from the content check. The clock reads short against the work. Forecast for the model: 2 to 3 hours.
+    - **Four facts:** made, yes. Self-reviewed, yes: the sheet whole, the face close, the head from the game's camera and the side enlarged, the 64 px rows at twice their size. Delivered, yes, for research's verdict. Accepted, no.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 

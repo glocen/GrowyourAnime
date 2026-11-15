@@ -1,0 +1,213 @@
+{
+ "what": "AR14, the base dressed: where Lantern Row's kit stands on a plot, by the base's level",
+ "kit": "build/handoff/LanternRow/manifest.json: every piece named here is one of its pieces, published already",
+ "origin": "the middle of the plot's front edge (the edge on the Strip), on the plot's floor",
+ "axes": "`across` is the plot's own +X, to the right as the spawn looks; `along` is studs out of the front edge toward the Strip, so everything on the plot is negative; `turn` is degrees anticlockwise seen from above",
+ "toRoblox": "in the plot's own frame (WorldService.plot's `at`), Kit.Place(placement, piece, front, floorY) with front = -deep / 2: CFrame.new(across, floorY, front - along) * CFrame.Angles(0, math.rad(turn), 0) * centre. A light the same way, by Kit.Light.",
+ "levels": {
+  "1": {
+   "name": "the yard",
+   "idea": "a paved court round the machines, between two low houses a side: two lantern strings run in from the front, one down each lane beside the Breaker; roped lamp posts at the court's sides; banners at the Festival Door",
+   "bays": 2,
+   "placements": [
+    {
+     "piece": "StreetBay",
+     "across": -12.5,
+     "along": -25.0,
+     "turn": 90
+    },
+    {
+     "piece": "LanternString",
+     "across": -12.5,
+     "along": -25.0,
+     "turn": 90
+    },
+    {
+     "piece": "StreetBay",
+     "across": 12.5,
+     "along": -25.0,
+     "turn": 90
+    },
+    {
+     "piece": "LanternString",
+     "across": 12.5,
+     "along": -25.0,
+     "turn": 90
+    },
+    {
+     "piece": "SquarePost",
+     "across": -44.0,
+     "along": 0,
+     "turn": -90
+    },
+    {
+     "piece": "SquarePostEnd",
+     "across": -44.0,
+     "along": -16,
+     "turn": -90
+    },
+    {
+     "piece": "SquarePost",
+     "across": -44.0,
+     "along": -32,
+     "turn": -90
+    },
+    {
+     "piece": "SquarePostEnd",
+     "across": -44.0,
+     "along": -48.0,
+     "turn": -90
+    },
+    {
+     "piece": "SquarePost",
+     "across": 44.0,
+     "along": -48.0,
+     "turn": 90
+    },
+    {
+     "piece": "SquarePostEnd",
+     "across": 44.0,
+     "along": -32,
+     "turn": 90
+    },
+    {
+     "piece": "SquarePost",
+     "across": 44.0,
+     "along": -16,
+     "turn": 90
+    },
+    {
+     "piece": "SquarePostEnd",
+     "across": 44.0,
+     "along": 0,
+     "turn": 90
+    },
+    {
+     "piece": "HouseLow",
+     "across": -46.0,
+     "along": -9.5,
+     "turn": -90
+    },
+    {
+     "piece": "HouseLow",
+     "across": -46.0,
+     "along": -38.5,
+     "turn": -90
+    },
+    {
+     "piece": "HouseLow",
+     "across": 46.0,
+     "along": -9.5,
+     "turn": 90
+    },
+    {
+     "piece": "HouseLow",
+     "across": 46.0,
+     "along": -38.5,
+     "turn": 90
+    },
+    {
+     "piece": "Banner",
+     "across": 38.5,
+     "along": -12.0,
+     "turn": 0
+    },
+    {
+     "piece": "Banner",
+     "across": 29.5,
+     "along": -12.0,
+     "turn": 180
+    },
+    {
+     "piece": "SignBoard",
+     "across": 22.0,
+     "along": -2.5,
+     "turn": 0
+    }
+   ],
+   "lights": [
+    {
+     "name": "LaneLeftPool",
+     "across": -12.5,
+     "along": -25.0,
+     "up": 14.2,
+     "colour": "#FFD49A",
+     "kind": "spot",
+     "cone": 66.0
+    },
+    {
+     "name": "LaneRightPool",
+     "across": 12.5,
+     "along": -25.0,
+     "up": 14.2,
+     "colour": "#FFD49A",
+     "kind": "spot",
+     "cone": 66.0
+    },
+    {
+     "name": "BreakerLamp",
+     "across": 0.0,
+     "along": -12.0,
+     "up": 10.0,
+     "colour": "#8CF6FF",
+     "kind": "point",
+     "cone": null
+    }
+   ],
+   "paving": [
+    {
+     "across": [
+      -44.0,
+      44.0
+     ],
+     "along": [
+      -48.0,
+      0.0
+     ]
+    }
+   ],
+   "levelMark": {
+    "piece": "SignBoard",
+    "across": 22.0,
+    "along": -2.5,
+    "up": 6.2,
+    "note": "the level's number over the board's script, on both faces, in cream (#E8D8C0): the builder's text until the gate has a piece of its own"
+   },
+   "budget": {
+    "pieces": 19,
+    "triangles": 4732,
+    "lights": 3,
+    "counts": {
+     "StreetBay": 2,
+     "LanternString": 2,
+     "SquarePost": 4,
+     "SquarePostEnd": 4,
+     "HouseLow": 4,
+     "Banner": 2,
+     "SignBoard": 1
+    }
+   }
+  }
+ },
+ "pavingNote": "each rectangle wears the kit's paving tile (LanternRow_Paving_Color.png, 8 studs square), as the street's own floor does; the StreetBay runners lie over it, as in Lantern Row",
+ "ground": {
+  "lot": "#8E86A6",
+  "ground": "#2A2540",
+  "note": "the lot is the plot's floor beyond the court: the paving tile too, its Texture's Color3 at `lot`, so the court is the brighter stone (the Kept and Tower overlays take it too, unmarked). The ground is the slab between plots, a flat colour. The Strip and the side street wear the paving tile untinted, as Lantern Row's floor does."
+ },
+ "standIns": {
+  "machine": "#B07A5A",
+  "chamber": "#BFEFF5",
+  "waiting": "#8A8098",
+  "bay": "#3E8E8E",
+  "locked": "#1E1426",
+  "battery": "#D8A24A",
+  "generator": "#D8A848",
+  "training": "#C86A8A",
+  "spawn": "#E8D8C0",
+  "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One lit-wood body for every machine, the stalls' own, and one accent each; the chambers glow (Neon)."
+ },
+ "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). Under the place's daylight the lanterns don't read.",
+ "lightsNote": "as Lantern Row's: a SpotLight straight down from each lane string's middle and a PointLight over the Breaker's chambers, Shadows off; every other pool is painted in a runner's glow picture",
+ "collision": "as Lantern Row's kit: the strings, the banners and the runners are look only; a post follows its mesh and its rope is a low wall; the sign keeps its box"
+}

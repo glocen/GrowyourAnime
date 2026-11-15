@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The test rule** goes into `CLAUDE.md` and `ga-finish` on the director's word in my session (below). Until then, the old rule stands.
 - **Next:** Overview's stat sheet with its XP bar's fill (`docs/ui.md`, 5), the battery's tier 2 in AR12, TR21's blockout (the camera's lift and plain chips over today's base, one take), AR14's level 1; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
 
-**Modulo (assets).** 2026-11-15, 20:35, on Fable 5.2.
+**Modulo (assets).** 2026-11-15, 20:45, on Fable 5.2.
 - **Watt's model is delivered** (AR11, delivery 3): take A with research's three fixes, baked on R6, in `build/handoff/Watt/`. Seven meshes, four maps, the recipe, the sheet. Content check PASS, for the upload of these files too. **For Faber:** the install, as Pip and Kirra, with the spear a seventh piece on its own joint on the Torso (slung at rest, planted as he stands; the recipe's `motors.Spear`). The first design's files are gone from the folder. **For research:** the verdict in the game.
-- **Now: AR14, the base dressed, level 1** (the director through Faber: "tell modulo to keep working"). Straight for the game, no sheet: a kit and a plan as Lantern Row's, for Faber's install.
-- **Next:** AR14's levels 2 and 3; Power's cut images and the reveal's card in Eclipse (AR12; nothing violet from me before); Watt's clips and Ground Wire's look. Scarf Step's blockout when Faber calls (AR10, section 5).
+- **AR14's level 1 is delivered as a plan** (AR14, delivery 1): `build/handoff/Base/plan.json`, 19 of Lantern Row's published pieces a plot, nothing to upload. **For Faber:** it lays with `Kit.Place` in the plot's frame; it also asks for the dusk over the base, the paving tile on the court, the lot and the Strip, and colours for the grey boxes (the entry's "For Faber"). **For research:** the verdict in the game; levels 2 and 3 come after it.
+- **Next:** Power's cut images and the reveal's card in Eclipse (AR12; nothing violet from me before); AR14's levels 2 and 3 after level 1's verdict; Watt's clips and Ground Wire's look. Scarf Step's blockout when Faber calls (AR10, section 5).
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
 - **Later:** the Breaker's room; the reveal, then the other dark screens (the map, a reward, a confirm), in Eclipse; the generator's model, on research's request; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. AR6's other kinds wait on research's spec, after phase 2.
 
@@ -42,6 +42,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, Modulo, 2026-11-15, night, AR14's level 1: the base takes Lantern Row's dusk (today it keeps the place's own Lighting); two low houses a side stand on each plot, beside the court; the Breaker has a cyan lamp of its own; the grey boxes take the kit's colours until their models come; the base's level is the builder's text on a sign board (AR14, "Delivery 1"). Research and Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, night, TR19 and TR20's fixes: the hold after the jump, a charge never dims, and `LeadCalm` (TR19); a trimmed edge (a ready chip's gold, a card's trim) whitens toward white under the pointer, never toward the accent; a tap's fill runs from the client's clock as well as the server's, and the later wins; the word's plate draws above the HUD's other pieces. Research: say in your row what you'd change.
 - Tier 2, Faber, for research, 2026-11-15, Kirra's install: her kit's coefficients are seeds (the combo at Rook's combo's rate per second, the signature on Haymaker's numbers), and her reveal's strike falls on Land (AR10, "The install"). Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-15, Kirra's install:
@@ -99,6 +100,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, night. The base dressed, level 1: a plan (Modulo)
+
+- **What:** the base as a small court off the Strip, from Lantern Row's published kit: two lantern strings down the lanes beside the Breaker, a lamp over its chambers, roped lamp posts and two low houses a side, banners at the Festival Door, the level on a sign. 19 pieces, 4,732 triangles, 3 lights a plot; nothing to upload.
+- **Where:** `build/handoff/Base/plan.json` with three pictures of the target; `tools/blender/base_plan.py`; the record is AR14, "Delivery 1".
+- **Open:** Faber's install (the plot's frame, the dusk over the base, the paving, the boxes' colours; from above the dusk's haze veils the base, for TR21's camera); research's verdict in the game; levels 2 and 3 after it.
+- **For:** Faber, research.
 
 ### 2026-11-15, night. Watt's model delivered again: take A (Modulo)
 

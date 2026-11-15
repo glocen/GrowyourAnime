@@ -6468,6 +6468,36 @@ Research's entry, 2026-11-15, night, on the director's words: "the map is still 
 - **The way:** no sheet. Modulo's design goes straight in the game as a block, and research gives one verdict there from the player's camera at phone size.
 - **Order:** Modulo's next piece after Watt's model. Faber installs it after TR20.
 
+**Status:** level 1 is delivered as a plan, 2026-11-15, 20:45 (Modulo): `build/handoff/Base/plan.json`. For Faber's install; research's verdict is in the game. Levels 2 and 3 aren't made.
+
+**Delivery 1, level 1: the yard** (Modulo, 2026-11-15, 20:31 to 20:45 by the clock).
+- **What it is:** a plan, as Lantern Row's. Every piece is one of Lantern Row's kit, published already, so nothing is uploaded: 19 pieces, 4,732 triangles and 3 lights a plot.
+- **The design:** the base is a small court off the Strip, the Breaker at its heart.
+  - **The lanes:** two lantern strings run in from the front edge, one down each lane between the Breaker's line and the bays, each over a runner of street stones with its painted pool. From the spawn the two lines of lanterns lead the eye to the Breaker and out to the Strip. Their poles stand clear of every machine and of all six bays, so levels 2 and 3 keep them.
+  - **The heart:** a cyan lamp over the Breaker's chambers, so the heart is the brightest thing on the plot.
+  - **The court:** the paving tile from the front edge to 48 studs in, 88 across, with the machines, the two bays and the spawn on it. The rest of the lot wears the same tile, darker.
+  - **The sides:** roped lamp posts, their lanterns hanging in, with a gap mid-side; behind them two low houses a side with lit windows, a way out between them. They make it a yard and give the view an edge: without them the court was a slab in a field (the first look).
+  - **The way to the Festival Door:** a banner each side of it.
+  - **The level:** on a sign board at the front, right of the lanes' mouth. Its number is the builder's text over the board until the gate has a piece of its own.
+- **For Faber, the install** (the plan's own notes say the same):
+  - **The frame:** the plot's own. `across` is the plot's +X, `along` is studs out of the front edge, so it's negative on the plot. `Kit.Place` and `Kit.Light` lay it unchanged with the front edge as the gate: `at * Kit.Place(placement, piece, front, floorY)`.
+  - **`levels["1"]`:** `placements`, `lights`, `paving` (the court's rectangle), `levelMark`, `bays` and the budget.
+  - **`ground`:** the lot's tint, the flat colour between plots, and the paving tile on the Strip and the side street.
+  - **`standIns`:** colours from the kit's swatches for the grey boxes until each machine has its model: one lit-wood body, an accent each, the chambers glowing. Tier 1 seeds, yours to change.
+  - **`lighting`: the base needs Lantern Row's dusk.** Today the look starts 24 studs before the festival gate and the base keeps the place's own Lighting (`Config.Lighting`). Under daylight the lanterns don't read, and the feel line asks for the same festival sky.
+  - **From above** (TR21's camera): at the dusk's haze the base is veiled from 110 studs up; my look from above thins the haze to 15% to read at all. The base screen may need to thin it while it's open.
+  - **The target:** `base_1_home.png` (the spawn's camera), `base_1_gate.png` (from the Strip) and `base_1_above.png` (haze thinned), with the machines as boxes in the stand-in colours. They're the maker's look in Blender, not a sheet and not a verdict.
+- **How it's made:** `tools/blender/base_plan.py` (`plan`, and `look <level>` for the pictures). The machines' places in it are copies of `WorldService.plot`, for the look only.
+- **Seen, the maker's eye and not a verdict:**
+  - From the spawn it reads as a place: the lit Breaker ahead under two lines of lanterns, warm pools on the lanes, windows either side, the door's light to the right.
+  - The court's floor is dark between the pools, and the bays and the Training machine sit in the dimmest part.
+  - Behind the spawn the lot is 150 studs of empty dark stone: levels 2 and 3 grow into it.
+  - The plot across the Strip is drawn dressed the same; neighbours beside aren't drawn.
+- **Levels 2 and 3, the intent:** each adds to the one before, so nothing a player has seen goes away. Level 2: the court deepens to the second row of bays, stalls and a third string. Level 3: the square's canopy over the heart, tall houses and a gate. Each gets its plan when level 1 has its verdict.
+- **Checks:** no new asset, picture or text: every piece passed its check in AR5 and is published, so no content check was run. The maker's own: two looks from three cameras, one round of fixes (houses, the heart's lamp, the lot's stone, the machines' boxes from indigo to lit wood, the strings' far poles moved out of the spawn's frame).
+- **Time:** by the clock, 20:31 to 20:45. Forecast: none was given; the cap for a block is 90 minutes.
+- **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

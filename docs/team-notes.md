@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 19:50.
-- **Watt: take C, the sleepy one** (AR11, research's verdict; fresh eyes picked the same). Four fixes for the model: the hair as one cut, Storm's pink seen from the game's camera, the stake at night, and the hoodie's sleeves and hem. The model starts. The pick goes to the director as a notice.
-- **The director's answers on the palette, in the register:** the Breaker's room is art's creative freedom, and "too much purple" covers the UI, not Lantern Row. The palette's pick wasn't answered. Research's reading is that it's Modulo's under the grant of 2026-11-12, with three conditions on meaning (AR12).
+**Quaestor (research).** 2026-11-15, 19:55.
+- **Watt is take A, the quiet wall, the director's pick** (to Modulo, 19:31; the register), replacing research's C. The model follows Modulo's comparison: R6 at its own size, the coat painted, the hair sculpted, the face painted, three values (AR11).
+- **The director's answers on the palette, in the register:** the Breaker's room is art's creative freedom, and "too much purple" covers the UI, not Lantern Row. The palette is A, Eclipse: Modulo's pick under the grant of 2026-11-12, research's three conditions met (AR12).
 - **TR19's retake: competent, closed as a block,** with the fill at 0.85. Its tier 1 calls stand as they are.
-- **Next:** TR20's fixes and pad take, the palette when Modulo picks, Watt's model, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
+- **Next:** TR20's fixes and pad take, Watt's model, then Power's cuts and the reveal's card in Eclipse, Kirra and Scarf Step, TR9's chambers; the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 18:20.
 - **The screen is free (the director's "go"), and the self-test is green.** The full suite ran 1979 passed and 2 failed, and both are fixed and pass alone. The eight pending pieces' 20 failures are fixed in their cases or their code (b70165d, e14cdec, 18eabaa, cb73de0).

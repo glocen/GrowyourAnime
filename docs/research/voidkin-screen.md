@@ -8,7 +8,7 @@ Research, 2026-11-14, night. This study is for TR17, the Voidkin screen remade (
 - **Taichi Panda 3: Dragon Hunter.** Two screenshots the director shared on 2026-11-12, in `build/reference/dragon-hunter/` (gitignored, internal), read at 1280 px wide:
   - `2026-11-12_character-slots.png`: the owner's character screen with the bag;
   - `2026-11-12_view-character-might.png`: another player's character, as a visitor sees it.
-- **Anime Vanguards:** no evidence yet. Screenshots of its unit screen are asked of the director. Until they come, nothing here is said about it.
+- **Anime Vanguards:** pictures of its units exist since 2026-11-15 (`build/reference/anime-vanguards/`, gitignored: Modulo's study for Watt, AR11, "The comparison"), but none of its unit screen. Screenshots of that screen are asked of the director. Until they come, nothing here is said about the screen.
 - Stills only, so motion is unknown: how the figure moves, turns, or enters.
 
 ## OBSERVED (Dragon Hunter)

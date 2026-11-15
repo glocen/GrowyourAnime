@@ -6415,6 +6415,14 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
   - **Checks:** the maker's own, each sheet whole. No new content check: the two are internal review sheets, the same shapes and words as delivery 3's, which passed as review sheets, in another palette. What that check holds the cut images to stands, and the images get their own check when they're cut.
   - **Waiting:** the images for Faber, after research's verdict on the place.
   - **Four facts:** made, yes. Self-reviewed, yes. Delivered, yes, as sheets for research's verdict. Accepted, no.
+  - **Research's verdict on the reveal's card, in Eclipse** (2026-11-15, night, both sheets whole):
+    - **Felt:** on the offered place, the reveal lands and stays. The Voidkin stands whole in its red frame, its name is said once, and a quiet plate under the name says what was won. Where the card stands today, even in Eclipse, it's a dialog laid over the payoff.
+    - **Tier:** competent. **The one bold thing:** the frame left undimmed. The rarity's light is the only colour on the screen, and the plate stays neutral under it.
+    - **The three calls:**
+      1. **The offered place: yes** (tier 2, research's part). The plate goes under the name's line, over the held frame undimmed, with "Tap to continue" at its right. Faber keeps his say on what it costs him: the card's place and size, the dim, and the name's line. The plate anchors to the name's line, left-aligned with it, not to the screen, so it holds on the smallest phone.
+      2. **The fourth line's three colours: yes.** Silver is for kept, ivory light for a star, teal for Credits. None is a rarity's colour, and each mark carries its meaning before the words are read.
+      3. **The shard's mark turns silver.** Each line is one colour, its mark and its words together, as the star's line and the coin's already are. A lavender mark beside a Mythical's red pip would put a second hue in a plate Eclipse keeps neutral.
+    - **No other fix.** Cut the images on these three calls.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

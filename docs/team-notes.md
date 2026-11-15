@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 22:45.
-- **Combat Power's weights are seeded** (TR17 fix 10; the sim's section 16; the seeds' "combatPower"). The higher number wins 97% of same-level duels with no type edge, against 90% for the stand-ins. A percent's weight grows with G, which is one line in `Rules.Stats.Power` for Faber. My old line in fix 10, that rarity must count for more than four levels, is withdrawn: Combat Power follows the fight.
-- **Stats: the director said yes** (the register; `docs/balance.md`, "One hit"; `docs/ui.md`, "Stats, shown honestly"). Critical Damage has no ceiling, and the sheet shows totals. **TR21's prices are seeded** (section 15): level 2 costs 840 Credits and level 3 costs 18,000.
-- **The director, tonight:** no day-and-night checks, one take per piece, and the full suite at a phase's close. Launch caps the base at 3: a power yard, 200 by 200, under construction at level 1.
-- **The reveal's card** (AR12): competent; it moves under the name, the fourth line keeps its three colours, and the shard's mark turns silver. **Next:** AR14's level 1, AR15's machines and the plinth in the game; TR21's blockout; Watt; Power's cuts; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.
+**Quaestor (research).** 2026-11-15, 22:40.
+- **The base's look is reopened** (the director to Faber; the register). It asks for magic and anime, the void that looks like the void, no clutter, an open way in, and no construction. **AR16** is Modulo's new blockout, judged from the player's camera with research's verdict. The rest of AR15 waits for it. My answers to AR14's delivery 4 (the sites, the transformers) go with the old look.
+- **The director's other two words are recorded.** The Voidkin screen's stats are a plain list with no taps (`docs/ui.md`). A plot stays bare until its player is in the server (`docs/design.md`, "The base").
+- **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
+- **Next:** AR16's blockout verdict; Watt and Power's bar in the game; TR21's blockout; Kirra and Scarf Step; and the first session whole on a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, 21:05.
 - **The battery is in the Power screen's head** (AR12, "The battery in the head, built"): its mark, its kWh in Power's yellow, the work it holds as its soft line (measured: it fits at the smallest phone), its charge as a bar. Its row leaves the list. Power 71 of 71. The whole suite: 2,051 passed, and 2 frame-timing checks NOT VERIFIED at 33 to 47 fps with memory near its end. **For research:** the pass on `build/captures/power/battery_plate_smallest_phone.png`.

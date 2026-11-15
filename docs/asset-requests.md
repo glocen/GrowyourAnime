@@ -6865,6 +6865,50 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **Time:** by the clock, 22:22 to 22:29: the pieces, one fast look of two views, the export, two final renders, the content check.
 - **Four facts:** made, yes. Self-reviewed, yes, in Blender only: not seen in the game. Delivered, yes. Accepted, no.
 
+## AR16. The base, void and anime (Modulo, then Faber)
+
+Research's entry, 2026-11-15, night. It answers the director's words to Faber, relayed to Modulo (the register): "we really need to not make it like a construction games and put some magic/anime like stuff that void need be void like rn it looks like a real world electricity machine which make no sense / we are making a anime game after all tell module it also a bit to clustered yet the basse is huge and it block yhe entrance".
+
+The words reopen the look of AR14's yard and of AR15's machines, so this is a new blockout, not a patch. Research's answers to AR14's delivery 4, the construction sites and the transformers, go with it.
+
+What stands, since the words don't name it:
+- the plot, 200 by 200, with its wall and gate;
+- the levels and what each opens;
+- every machine's job;
+- Power's numbers and words;
+- the owner's showcase (TR22);
+- the bays' rarity light.
+
+- **Feel line:** through the gate, the player walks straight into a sanctum carved out of the void. Their Voidkin's power runs as light through the stone into a heart turning in the air, and everything round it glows by what it's doing. It's an anime hero's hideout, never a building site.
+- **What the words ask:**
+  - **Magic and anime, not a real-world plant.** No copper, cables, pylons, transformers, scaffolds, cranes, stock piles or cabins. Power still reads as power: its current shows as light and arcs, never as wires. Names and numbers stay electrical (kW, voltage), since the words name the look.
+  - **The void looks like the void.** It's seen as a place: dark and deep, with light drifting in it, part of the base itself, not a colour on a wall. Not a wash of purple: that's research's call, after the HUD's palette.
+  - **Uncluttered.** A few large shapes that read from the gate, with space between them. Empty ground isn't a problem to fill.
+  - **An open way in.** From the gate, a clear way runs straight to the base's heart. It's wide enough for the player and the lead side by side, with room to spare, and nothing stands across it. The showcase's plinth stands beside it, never in it.
+  - **No construction.** Level 1's construction sites end, so what a level hasn't opened yet needs another read.
+- **Research's seeds for the direction.** Modulo designs it, and these are a start, not a spec:
+  - **The ground:** unopened ground is the void itself, dark, starry and slowly moving. Each level raises more stone out of it: level 1 is the heart's platform, and levels 2 and 3 raise more. That's how the levels read, in place of the sites.
+  - **The machines, as void artifacts:**
+    - the generator is a core turning inside rings in the air, and its rotor's rule stays: faster as the plant makes more;
+    - the Breaker is a ring holding the shard in its light, in cyan;
+    - each bay is a sigil circle under its worker, lit in the worker's rarity colour;
+    - the battery is crystals that fill with light, more of them as its cap grows;
+    - the Festival Door is an arch with the void inside it;
+    - the Training machine is a ring to spar in.
+  - **A bay not open yet** is a dark sigil in the stone: a promise of what's next, not a site.
+- **The blockout:**
+  - Cheap: grey or flat colour, the shapes and the layout only. Two directions on one plot are fine if Modulo has two.
+  - Judged in motion from the player's camera at phone size, in three views: walking in through the gate, from the court, and the base screen's look down (TR21).
+  - Cap: 2 hours.
+  - Research's verdict picks, or the director's pick when present.
+- **Faber's part:** the front row's layout follows the blockout's plan. Nothing more is installed in the current kit's look, which stays in the dev build until the verdict.
+- **Waits:**
+  - the finished look;
+  - levels 2 and 3;
+  - the Tower behind;
+  - the bare lot of a player who isn't in the server (the register, the same night), which the blockout may show if that costs nothing more.
+- **Order:** Modulo's next piece. The rest of AR15, the battery, the Training machine and the Door, waits for its verdict.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

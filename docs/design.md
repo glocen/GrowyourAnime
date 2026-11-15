@@ -117,7 +117,7 @@ Real time, in the world, automatic [D: one automatic combat lead].
 
 ## The base
 
-Eight bases in two rows, a Tower behind each [D]. A plot is given at join and the base itself is saved on the account.
+Eight bases in two rows, a Tower behind each [D]. A plot is given at join and the base itself is saved on the account. A plot stays a bare lot until a player in the server owns it [D, 2026-11-15, night: "if there 3 players out of 8 only 3 base are in"]: the base is built when its player arrives and cleared when they leave.
 
 - **Extraction bays:** up to six [D], opened by the base's level. A worker's output comes from its aptitude and its level, and the bay's own level adds to it.
 - **Power: the base is a power plant** [D, 2026-11-14, night: "not showing electricity "600" but power generation 30Kw, power demand 30Kw ... with generator output control to slide a scroll bar horizontal and select where to spend this power ... the more power the highest effects it has the less power the less effects/speed"; "Yes, as restated" to research's restatement]. Tier 3, the director's.
@@ -134,7 +134,7 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
     - **The price:** levels 2 and 3 cost Credits. Higher levels also need items [D], designed when the cap rises.
     - **The pace at launch** (seeds): level 2 in the first session, 3 at about 5 hours of play. The ladder to 20 keeps its "hundreds of hours" [D] once its items exist, and its pace is set then (`docs/balance.md`).
     - **Bays** (seeds, research's, so launch keeps the six [D]): two at level 1, four at 2, six at 3.
-    - **The look:** at launch, levels 1, 2 and 3 each have a look of their own for the whole base and its machines, readable from the gate. The levels past 3 get theirs when the cap rises. The base's level stands on its gate (`docs/asset-requests.md`, AR14).
+    - **The look:** at launch, levels 1, 2 and 3 each have a look of their own for the whole base and its machines, readable from the gate. Its direction is reopened [D, 2026-11-15, night]: magic and anime, the void looking like the void, never a building site or a real-world plant, uncluttered, with an open way in from the gate (`docs/asset-requests.md`, AR16). The levels past 3 get theirs when the cap rises. The base's level stands on its gate (`docs/asset-requests.md`, AR14).
     - **Where it's bought:** the base screen (`docs/ui.md`, 7).
     - **The base shows off its owner** [D, 2026-11-15, about 22:04, to Modulo: "dont forget the base need to show of each players etc"]. At launch, by research's call (tier 2; TR22), a passer-by on the Strip sees three things. The gate's plate carries the owner's name and the base's level. The showcase, research's idea brought into launch, is a lit plinth just inside the gate: a Voidkin the player picks stands on it, turning, with its Combat Power, and it's their strongest until they pick one. Each working bay is lit in its worker's rarity colour. A tap on the plinth to see that Voidkin as a visitor comes later.
   - **A machine's level** raises its own work (the Training machine has none, since its rate is fixed [D]): the Breaker its speed, then its third and fourth chambers; a bay its output; the Condenser its rate, its grade and its tray; the Forge and the Lab their later uses.

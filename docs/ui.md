@@ -44,9 +44,8 @@ Built first, in this order, each to the bar before the next.
      - **Core:** Health, Attack, Defence, Regen, Speed, Poise.
      - **Attack:** Hit, Critical, Critical Damage, Penetration, Elemental Attack, Lifesteal, Damage Bonus.
      - **Defence:** Dodge, Block, Critical Resist, Critical Guard, Elemental Resist, Damage Reduction.
-     - **Each stat is one total** [D, 2026-11-15, night]: a rating shows its points, a percent its percent, never "up to". There are two stats a row, each a tap (Faber's tier 1). A tap opens its sources under the row, with a rating's chance last ("Stats, shown honestly", below).
-     - **A percent** shows its percent. Damage Bonus and Damage Reduction show what a signature, a passive or an effect gives, each with its condition ("below 30% health").
-     - **Its sources:** the Voidkin's own base, its level, its stars and gear. Then forge, jewels, War Emblems, research and the skill tree, each as it comes.
+     - **A plain list** [D, 2026-11-15, night: "dont put any description for stats", then "Plain list, no taps"]: each stat its name and its total, never "up to", two stats a row, and nothing opens.
+     - **A percent** shows its percent. Damage Bonus and Damage Reduction show only what holds at all times.
    - **An item's card** [D, 2026-11-15, 19:11]: a tap on an item, in a slot or in the bag, opens its card.
      - Its name is the title. Right under it stands the Combat Power it gives the selected Voidkin: Combat Power with it, minus without it (`Rules.Stats.Power`).
      - Then its details: its main stat, its other stats, its forge rank, its sockets.
@@ -70,7 +69,7 @@ Rest, pressed, selected, disabled with its reason, waiting on the server, succee
 ## Stats, shown honestly
 
 - The stat sheet lists every stat as one total, the sum of its sources, never "up to" [D, 2026-11-15, night]: a rating as its points, a percent as its percent.
-- A tap on a stat says where each point comes from: the Voidkin's own base, its level, its stars, each slot, forge, jewels, War Emblems, research, and the skill tree when it comes. A source shows once it's in the game. Since everything adds, the list sums to the total, and the player can see it does. For a rating, the tap's last line is the chance it gives against a foe of its level with the same points.
+- On the Voidkin screen, the sheet is a plain list and nothing opens [D, 2026-11-15, night: "Plain list, no taps"]: no notes, no chance, no sources. What each source gives shows in Combat Power's tap, whose parts sum to its total (`docs/design.md`, "Combat Power").
 - An item's comparison never shows a percent of a percent.
 
 ## Nicknames

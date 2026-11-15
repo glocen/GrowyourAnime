@@ -315,6 +315,10 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			local opened = VoidkinScreen.Find("Page")
 			t.Check("it opens on the bag", opened ~= nil and opened:GetAttribute("Page") == "Bag", tostring(opened and opened:GetAttribute("Page")))
+			local pages = VoidkinScreen.Find("Rail")
+			local bagPage = pages and pages:FindFirstChild("Bag", true)
+			local word = bagPage and bagPage:FindFirstChild("Label")
+			t.Check("whose page reads Items on the rail, its gear tab Gear", word ~= nil and word:IsA("TextLabel") and word.Text == "Items" and table.find(VoidkinScreen.Kinds, "Gear") ~= nil and table.find(VoidkinScreen.Kinds, "Items") == nil, if word and word:IsA("TextLabel") then word.Text else "no word")
 			-- Its name over the stage: one line between the slot columns, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
 			-- The rail: all seven taps whole, each a touch or more, and no scroll.
@@ -381,7 +385,7 @@ function VoidkinCases.Cases(given: Given): { any }
 						larger = larger and dot.AbsoluteSize.X > restDot.AbsoluteSize.X + 4
 						alone = alone and rest:GetAttribute("Chosen") == false
 					end
-					words = words and labelOf(rest) == (if other == name then name elseif VoidkinScreen.Soon[other] then "Soon" else "")
+					words = words and labelOf(rest) == (if other == name then VoidkinScreen.Said[name] or name elseif VoidkinScreen.Soon[other] then "Soon" else "")
 				end
 				t.Check(`larger than the six at rest, and the only one chosen`, larger and alone)
 				t.Check(`only its word shows, and Soon under those not built`, words)

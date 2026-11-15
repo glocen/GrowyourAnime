@@ -275,6 +275,9 @@ return {
 		Cell = 124,
 		Flash = { Seconds = 1.5, Hold = 0.35, Pop = 1.08 },
 		Glow = { Low = 0.18, High = 0.4, Period = 0.9 },
+		-- A rarity's heading in the drop rates where its trim is too dim to head a list: Common's metal grey, lifted
+		-- (research's fix, 2026-11-15). The others head theirs in their trim's colour.
+		Tier = { Common = Color3.fromHex("#C9CED8") } :: { [string]: Color3 },
 	},
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
 	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live

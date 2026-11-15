@@ -157,6 +157,9 @@ local function percent(chance: number): string
 end
 
 local RATE_INDENT = 10 -- a Voidkin's row under its rarity's line, in the drop rates
+-- The list's mark on the Drop rates button, three bars left of its word: their size, the label's shift right to make
+-- their room, and the mark's middle from the button's, authored ("Drop rates" is about 62 across at the caption's size).
+local RATE_MARK = { Wide = 10, Thick = 2, Pitch = 4, Inset = 7, At = -33 }
 
 -- The infusion levels by name, Config.Shards.Infusion's order (the director, 2026-11-15: "real electrician words").
 local LEVELS = { "Low voltage", "High voltage" }
@@ -634,11 +637,15 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 	if action then
 		Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = first, OnPress = press :: () -> ...any })
 	end
+	-- A secondary press, half the row whether or not an action stands beside it, with a list's mark and never the
+	-- action's light (research's fix, 2026-11-15).
 	local fold = Button.new({
 		Name = "Rates",
 		Text = "Drop rates",
 		TextSize = Theme.Text.Caption,
-		Size = if action then UDim2.new(0.5, -gap / 2, 1, 0) else UDim2.fromScale(1, 1),
+		Quiet = true,
+		Inset = RATE_MARK.Inset,
+		Size = UDim2.new(0.5, -gap / 2, 1, 0),
 		Position = if action then UDim2.new(0.5, gap / 2, 0, 0) else UDim2.new(),
 		Parent = first,
 		OnPress = function()
@@ -648,6 +655,24 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		end,
 	})
 	Button.Set(fold, { Selected = rates })
+	local mark = Instance.new("Frame")
+	mark.Name = "Mark"
+	mark.BackgroundTransparency = 1
+	mark.AnchorPoint = Vector2.new(0.5, 0.5)
+	mark.Position = UDim2.new(0.5, RATE_MARK.At, 0.5, 0)
+	mark.Size = UDim2.fromOffset(RATE_MARK.Wide, RATE_MARK.Pitch * 2 + RATE_MARK.Thick)
+	mark.ZIndex = 12
+	mark.Parent = fold
+	for index = 0, 2 do
+		local bar = Instance.new("Frame")
+		bar.Name = `Bar{index + 1}`
+		bar.BorderSizePixel = 0
+		bar.BackgroundColor3 = Theme.Colour.TextDim
+		bar.Position = UDim2.fromOffset(0, index * RATE_MARK.Pitch)
+		bar.Size = UDim2.fromOffset(RATE_MARK.Wide, RATE_MARK.Thick)
+		bar.ZIndex = 12
+		bar.Parent = mark
+	end
 	if rates then
 		local held = workOf(now.Data, it)
 		chances(column, it.Def, if held then held.Luck else 0)
@@ -722,12 +747,13 @@ chances = function(column: Instance, def: string, luck: number)
 		line.LayoutOrder = order
 		line.Parent = list
 		label(line, "Who", who, Theme.Text.Caption, UDim2.new(1, -(64 + indent), 1, 0), UDim2.fromOffset(indent, 0), { Truncate = true, Colour = colour, Font = font })
-		label(line, "Chance", Odds.Percent(parts), Theme.Text.Caption, UDim2.new(0, 60, 1, 0), UDim2.new(1, -60, 0, 0), { Font = Theme.Font.Number, Colour = colour, Align = Enum.TextXAlignment.Right })
+		label(line, "Chance", Odds.Percent(parts), Theme.Text.Caption, UDim2.new(0, 60, 1, 0), UDim2.new(1, -60, 0, 0), { Font = font, Colour = colour, Align = Enum.TextXAlignment.Right })
 	end
 	for _, group in Odds.Rates(def, luck) do
-		rate(`Tier{group.Rarity}`, group.Rarity, group.Parts, 0, HudConfig.Card.Trim[group.Rarity], Theme.Font.Strong)
+		-- A rarity heads its rows in its own colour, heavier than them; their names are the text's ivory.
+		rate(`Tier{group.Rarity}`, group.Rarity, group.Parts, 0, HudConfig.Breaker.Tier[group.Rarity] or HudConfig.Card.Trim[group.Rarity], Theme.Font.Number)
 		for _, each in group.Rates do
-			rate(each.Id, Voidkin.ById[each.Id].Name, each.Parts, RATE_INDENT, Theme.Colour.TextDim)
+			rate(each.Id, Voidkin.ById[each.Id].Name, each.Parts, RATE_INDENT, Theme.Colour.Text, Theme.Font.Body)
 		end
 	end
 end

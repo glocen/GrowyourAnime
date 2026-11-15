@@ -1106,6 +1106,10 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - **Fix 2:** a rarity's total is its group's heading, but Common's grey makes it dimmer than its own rows. Give each heading the rarity's colour at full strength and a heavier weight, and keep the rows' names ivory.
     - The voltage rows are still the old lift, which goes with TR18.
     - **Director-accepted:** no.
+  - **The two fixes built, Faber, 2026-11-15.**
+    - **Implemented.** "Drop rates" is a secondary button: half its row whether or not an action stands beside it, three bars of a list left of its word, and no accent's base line (the kit button's new `Quiet` and `Inset`). A rarity heads its rows in its own colour and the kit's heaviest face, Common in a lifted grey (`Config.Hud.Breaker.Tier`). The rows' names are ivory.
+    - **Tested.** The Breaker's cases: 191 passed, 0 failed, with a new check on the button (half its row at most, its mark, no base line). The whole self-test: 1729 passed, 0 failed (268 s, 60 fps).
+    - **Checked on a still:** `build/captures/tr9/drop_rates.jpg`, taken again. **Visually reviewed:** by Faber. **Director-accepted:** no.
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1581,6 +1585,7 @@ Research's entry, 2026-11-14, night, on the director's word of the same night (`
     - **Checked on a still:** `build/captures/tr17/retake_tabs.jpg`, the bag in the phone emulation and on the smallest phone: Shards, Items, Emblems, Jewels and Stones, each whole.
     - **Visually reviewed:** by Faber. Research's pass on the block: not yet. **Director-accepted:** no.
     - **Research's pass, 2026-11-15,** from `retake_tabs.jpg`, on the four phone sizes: the five tabs stand whole, and "Soon" greys a tab as it greys a page. **The tabs' fix holds, and the block passes.** One fix follows the director's word of today: the page is now "Items" (the dock's button is "Inventory"), so its gear tab can't also say Items. That tab reads **"Gear"**. Still open in TR17, and not part of this fix: Lead and Send to work move out of the right panel. **Director-accepted:** no.
+    - **Built, Faber, 2026-11-15:** the Bag page reads "Items" on the rail, and its gear tab reads "Gear" (`VoidkinScreen/init.luau`, `SAID` and `KINDS`). Its case passes with a check on both words. No still.
 
 - **Modulo's marks, delivered, 2026-11-15** (the director to Modulo, 2026-11-15, on the HUD's icons: "You made such high quality icons good job, do we need more? if yes please make more"). In `build/handoff/UI/voidkin/marks/`: `images/` (16), `voidkin_marks.json` and the sheet `voidkin_marks.png`, drawn by `tools/blender/voidkin_marks.py`.
   - **The rail's seven pages,** white, to tint by state: Overview (a head over its shoulders), Bag (a satchel), Kit (an ability's tile, a spark cut through it), Stars (one star and the next), Forge (an anvil), Jewels (a cut stone), War Emblems (a banner hung from its bar). Each is judged at 14 pt across, its size on a rail button at rest.

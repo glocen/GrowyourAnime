@@ -41,6 +41,8 @@ export type Props = {
 	LayoutOrder: number?,
 	TextSize: number?,
 	Under: boolean?, -- disabled, it keeps its name and says why under it
+	Quiet: boolean?, -- a secondary press: no accent's base line at rest, so it never reads as the thing to press
+	Inset: number?, -- its label's middle this many pixels right of the button's, room for a mark its owner lays at its left
 	OnPress: () -> ...any,
 }
 
@@ -55,6 +57,8 @@ type State = {
 	Pending: boolean,
 	Selected: boolean,
 	Primary: boolean,
+	Quiet: boolean,
+	Inset: number,
 	Held: boolean,
 	DownAt: number?, -- the touch's moment, while its squeeze runs
 	UpAt: number?, -- the let-go's
@@ -116,7 +120,7 @@ local function paint(button: TextButton, state: State)
 	if gradient then
 		gradient.Enabled = now == "Waiting"
 	end
-	local base = now == "Rest" or pressed
+	local base = (now == "Rest" or pressed) and not state.Quiet
 	layers.Base.Visible = base
 	layers.BaseGlow.Visible = base
 	Skin.Tint(layers.Base, if pressed then Color3.new(1, 1, 1) else p.Accent)
@@ -132,7 +136,7 @@ local function paint(button: TextButton, state: State)
 	local under = reason ~= nil and now == "Disabled" and state.Text ~= ""
 	state.Label.Text = if state.Text == "" then "" elseif under then state.Text else Hud.Says(state.Text, state.Disabled, false)
 	state.Label.Visible = now ~= "Waiting"
-	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else 0, 0.5, if under then -UNDER else 0)
+	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else state.Inset, 0.5, if under then -UNDER else 0)
 	if reason then
 		reason.Visible = under
 		reason.Text = if under then state.Disabled or "" else ""
@@ -335,6 +339,8 @@ function Button.new(props: Props): TextButton
 		Pending = false,
 		Selected = false,
 		Primary = props.Primary == true,
+		Quiet = props.Quiet == true,
+		Inset = props.Inset or 0,
 		Held = false,
 		Scales = scales,
 		Flash = nil,

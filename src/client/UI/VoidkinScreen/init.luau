@@ -68,7 +68,9 @@ export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing:
 local NAME = "Voidkin"
 local PAGES = { "Overview", "Bag", "Kit", "Stars", "Forge", "Jewels", "War Emblems" }
 local SOON: { [string]: boolean } = { Forge = true, Jewels = true, ["War Emblems"] = true } -- not built yet: greyed
-local KINDS = { "Shards", "Items", "Emblems", "Jewels", "Stones" } -- the bag's tabs (docs/design.md, "The bag")
+local KINDS = { "Shards", "Gear", "Emblems", "Jewels", "Stones" } -- the bag's tabs (docs/design.md, "The bag")
+-- A page's word where it isn't its name: the Bag page reads "Items" (the director, 2026-11-15), so its gear tab is "Gear".
+local SAID: { [string]: string } = { Bag = "Items" }
 local HELD: { [string]: boolean } = { Shards = true } -- the kinds the save holds today
 local ROW = Theme.Size.Tap -- a row of buttons, authored
 local BAR = 28 -- a currency's chip, in the band, authored
@@ -1050,7 +1052,7 @@ local function rail(body: Instance, at: Place)
 				Box = UDim2.new(1, pad * 2, 0, LABEL),
 				Position = UDim2.fromOffset(-pad, 2 + across),
 				Parent = press,
-			}, if on_ then name else "Soon")
+			}, if on_ then SAID[name] or name else "Soon")
 		end
 		local function onTap()
 			show(name)
@@ -1390,6 +1392,7 @@ VoidkinScreen.Name = NAME
 VoidkinScreen.Refused = REFUSED
 VoidkinScreen.Pages = PAGES
 VoidkinScreen.Soon = SOON
+VoidkinScreen.Said = SAID
 VoidkinScreen.Kinds = KINDS
 VoidkinScreen.Held = HELD
 

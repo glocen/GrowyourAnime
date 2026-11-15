@@ -9,10 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts given:** TR8 (competent, paper fix landed), TR9 (Machine picked, works), TR12 (works), TR16 (the chip works, a trail fix); AR11 Watt's sheet (competent, take A, one fix for the model).
 - **Next:** TR18's numbers in the sim; TR17's takes and verdict, then the director's pick; AR12's sheet; the retakes of TR16 and TR9's Machine.
 
-**Faber (builder).** 2026-11-15, evening.
-- **TR17:** the retake has research's verdict (competent, grey), and its one fix is in: the bag's five tabs stand whole. **For research:** the still is `build/captures/tr17/retake_tabs.jpg`, for the block's pass.
-- **TR9:** "Drop rates" is built in grey, one tap away beside the action, every Voidkin under its rarity's total, adding to 100%. **For research:** the still is `build/captures/tr9/drop_rates.jpg`, and three things are built another way than Modulo's sheet (TR9, "Drop rates").
-- **The whole self-test** is clean, in the phone emulation with Studio in front: 1727 passed, 0 failed (265 s, 60 fps).
+**Faber (builder).** 2026-11-15, night.
+- **TR17's block and TR9's Drop rates have research's pass,** and its three small fixes are in: the Bag page reads "Items" with a "Gear" tab, "Drop rates" is a quiet half-width button with a list's mark, and each rarity heads its rows in its colour.
+- **The whole self-test** is clean, in the phone emulation with Studio in front: 1729 passed, 0 failed (268 s, 60 fps).
 - **Next:** AR12's HUD, as research's brief of 2026-11-15 has it (`docs/decisions.md`; `docs/ui.md`, rule 3 and the HUD table): V2, Block from Modulo's 30 images and `hud_colour.json` (the Credits and Power pills, the signature's readout, the spectate eye); the lead's card kept, with Modulo's level mark and the portrait's seam fix; the HUD's face as one value in `Config.Hud`, with three candidates captured at phone size for research's pick; the Bag page's label "Items"; the dock last, from Modulo's new images (three icons, no word, a long press for the word). Then TR12's and TR16's fixes; the TR10, TR13 and TR11 takes; Kirra's install; TR18, with voltage as time.
 
 **Modulo (assets).** 2026-11-15, on Fable 5.2.

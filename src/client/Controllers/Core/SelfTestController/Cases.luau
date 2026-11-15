@@ -6562,6 +6562,10 @@ local cases = {
 				t.Check(`{where}: the pane names the chosen shard`, item ~= nil and string.find(title, Read.ShardName(item.Def), 1, true) ~= nil, title)
 				local fold = breakerPart("Rates")
 				t.Check(`{where}: Drop rates is one tap away, its voltage shown until then`, fold ~= nil and fold:IsA("TextButton") and Button.State(fold) == "Rest" and breakerPart("Chances") == nil and breakerPart("Level1") ~= nil)
+				local beside = fold and fold.Parent
+				local base = fold and fold:FindFirstChild("Base", true)
+				t.Check(`{where}: a secondary press: half its row at most, a list's mark, never the action's light`, fold ~= nil and fold:IsA("GuiObject") and beside ~= nil and beside:IsA("GuiObject")
+					and fold.AbsoluteSize.X <= beside.AbsoluteSize.X / 2 + 0.5 and fold:FindFirstChild("Mark") ~= nil and base ~= nil and base:IsA("GuiObject") and not base.Visible)
 				t.Check(`{where}: a tap opens them, in place of its voltage`, fold ~= nil and fold:IsA("TextButton") and Button.Press(fold) and waitFor(t, 1, function(): boolean
 					local lit = breakerPart("Rates")
 					return lit ~= nil and lit:IsA("TextButton") and Button.State(lit) == "Selected" and breakerPart("Chances") ~= nil and breakerPart("Level1") == nil

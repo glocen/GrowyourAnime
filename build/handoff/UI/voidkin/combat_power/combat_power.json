@@ -1,0 +1,47 @@
+{
+ "note": "Combat Power's digits (AR12): Platinum as a cobalt blue-steel, research's read of 2026-11-15 on the director's pick. One finish at every size. DESIGN, untried in Studio.",
+ "digits": {
+  "gradient": [
+   [
+    0.0,
+    "#FFFFFF"
+   ],
+   [
+    0.2,
+    "#C9DBFF"
+   ],
+   [
+    0.5,
+    "#5F90EA"
+   ],
+   [
+    0.56,
+    "#3566C9"
+   ],
+   [
+    1.0,
+    "#315FBE"
+   ]
+  ],
+  "gradientNote": "top to foot over the capitals' height, as a UIGradient at 90 degrees; the two stops 0.06 apart are the kit's step",
+  "stroke": {
+   "colour": "#07080D",
+   "points": 1.2,
+   "drop": "the same stroke again, 1.2 points lower"
+  },
+  "glow": {
+   "colour": "#4A7BF5",
+   "note": "one soft image behind the digits, at about 0.55 of full strength"
+  }
+ },
+ "caption": {
+  "text": "COMBAT POWER",
+  "colour": "#BCD0F7"
+ },
+ "rising": {
+  "toWhite": 0.4,
+  "size": 1.1,
+  "note": "while the number rolls: the digits 40% toward white and 1.1 times their size, the gain beside it in green. Research may rule a smaller lift"
+ },
+ "plate": "unchanged: the band of the rarity's light, TR17's emblem"
+}

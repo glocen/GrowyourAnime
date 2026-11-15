@@ -5371,12 +5371,19 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
 - **The four facts:** made, yes; self-reviewed, yes; delivered, yes; accepted, not yet (research's pass, then Faber's build in the game).
 - **Time:** the clock shows 12 minutes between research's read of the mock and this delivery, which looks short for three guarded renders (711, 683 and 563 MB at peak, lowest free 2.12 GB); not measured another way.
 
-**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text, in the script). It's judged in motion with Faber's take. The HUD's images in V2 are delivered for Faber's build (above). Next: delivery 3's sheet.
+**Research's pass on the HUD's images,** 2026-11-15, from `hud_colour_images.png` at sheet size and at 64 px (stills; the verdict in motion is Faber's build):
+- **Felt:** every system owns a block of colour you can name from across the room, and the readout fills like a charge, not a pie.
+- **Tier:** competent. **The one bold thing:** the ink marks on their blocks. Bolt, coin, shard and route each read at 64 px on their own colour without a word.
+- **Passed:** the pills (the over-demand pill shows the battery's mark, so "34 kW used" over 30 says where the rest comes from); the readout's light held inside the cut corners; the ready plate keeps its dark rim over the noon sand (delivery 1's fix holds); the halos over dark.
+- **Since the merge (the director, 2026-11-15, "Merge into Voidkin"):** the dock is Voidkin, Base, Map. The Regalia dock button isn't built; Crest, InkCrest and indigo stay in the kit, unspent, not deleted.
+- No fix. Faber builds from the json; the gradient's mapping is tried in Studio.
+
+**Status:** delivery 2 past research's verdict (competent; V2 Block; indigo and rose accepted with the frame rule and one measure; the rooms accepted; one fix to the Voidkin mock), 2026-11-15. The mock is redrawn and read (one fix: small text, in the script). It's judged in motion with Faber's take. The HUD's images in V2 are delivered and past research's pass (competent, no fix), for Faber's build. Next: delivery 3's sheet.
 
 **Delivery 3, the older screens, vivid** (research, 2026-11-15, on the director's word over the Breaker screen: "we need to add more colors and appealing to each old full dark ui, like the epic chance text should be purple, the battery text need a rework also like it energy colors"). After the HUD's images:
 - **Every screen built all dark** gets its room (delivery 2's rule: its system's colour, its one main action filled): the Breaker and the bays in Dynamo vivid first, then the reveal, Regalia, the map, and each screen with a reward or a confirm.
 - **Words wear their meaning's colour** (`docs/ui.md`, rule 3): "Epic 1.0% → 1.1%" in Epic's purple; every rarity's name and odds in its colour; Credits in teal.
-- **The battery's text, reworked,** in Power's yellow, with its bolt: a charge bar in kWh beside its cap instead of a sentence. Infusion's price is shown as kWh, and a refusal says how many kWh short, in words players read in a second. The numbers are seeds until TR18.
+- **The battery's text, reworked,** in Power's yellow, with its bolt: a charge bar in kWh beside its cap instead of a sentence. Infusion's price is shown as kWh, and a refusal says how many kWh short, in words players read in a second. TR18's numbers (set 2026-11-15): the battery holds 60 kWh, infusion costs 20 or 60, so a refusal reads like "12 kWh short", never hundreds.
 - **The sheet first,** at phone size, before and after for each screen, the Breaker as in the director's capture. Then research's verdict, then the images for Faber. Delivery 1 is past research's verdict; **the director's pick, 2026-11-15: B, Conduit.** Then the HUD's images in the chosen strength, for Faber's build.
 
 ## Later, by ground

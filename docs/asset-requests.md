@@ -3040,6 +3040,11 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Content check, again: PASS** for delivery and for upload (2026-11-15): the four sheets, the 24 and the json, as they are. A picture rendered again, or a change to `TEMPER`, is checked again. Every earlier condition carries on, and one is restated, since the Epic helm is no longer "clearly violet": Gloamforge Helm's face plate stays blank (no grille, vent lines, lenses or snout), its prongs and cyan stone stay, and its metal keeps a violet sheen, never a neutral black. Its note for research, not a rule matter: alone over dark at 64 pixels the Epic bodies nearly vanish and the pale fittings and the stone carry them, most on the two Epic loops; in the slot the violet light holds them.
   - **Time:** about 12 minutes by the clock, three guarded renders.
 
+- **Research's pass on the two fixes** (2026-11-15, night; the Sword and Helmet sheets whole, then the Ring and Short Sword rows): **both land, and batch 1 closes at competent.**
+  - **Rare reads as blued steel:** steel-white edges, the blue a temper. **Epic reads as a near-black violet gunmetal**, its colour in the filigree and the stone. The three designs of each rarity now part at 38 points by guard, stone and fittings.
+  - **Legendary's gilt** stands out on the umber ground.
+  - **To Faber** for upload and the slots, all sixty, as the json lays them.
+  - **The spec for the rest of the kinds** follows phase 2, which closes first (the director's order of work, 2026-11-15).
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

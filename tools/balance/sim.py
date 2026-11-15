@@ -410,24 +410,16 @@ def report_energy():
             busy.append(f"{work / capacity:.0%}")
         line(g["id"], f"{rate_min:.1f}", sh["regionFactor"][i], *cover, *busy, w=15)
     print(f"The Rift, for a player online all the time: x{online_speed:.2f} Breaker speed on average.")
-    print("\nInfusion: worth gained for the extra electricity (worth uses the value per rarity in the seeds).")
+    print("\nLuck at its cap (Breaker tuning; infusion is voltage since 2026-11-15 and leaves the odds alone).")
     by = {v["id"]: v for v in ROSTER}
-
-    def worth(p):
-        return sum(c * sh["value"][by[v]["rarity"]] for v, c in p.items())
-    line("shard", "plain worth, cost", *[f"+{o['lift']:.2f} lift" for o in S["luck"]["infusion"]], "top tier odds", w=22)
+    line("shard", "top tier odds", w=22)
     for gid, grade in ((3, "Standard"), (6, "Standard"), (4, "Enriched"), (6, "Enriched"), (4, "Prismatic"), (6, "Prismatic")):
-        plain = worth(pool(gid, grade))
-        cells = [f"{plain:.1f} for {sh['energy'][grade] * sh['regionFactor'][gid - 1]:.0f}"]
-        for o in S["luck"]["infusion"]:
-            extra = o["energy"] * sh["regionFactor"][gid - 1]
-            cells.append(f"+{worth(pool(gid, grade, o['lift'])) - plain:.2f} for {extra:.0f}")
         p0, p1 = pool(gid, grade), pool(gid, grade, S["luck"]["cap"])
         top = max(p0, key=lambda v: RARITIES.index(by[v]["rarity"]))
         tr = by[top]["rarity"]
         s0 = sum(c for v, c in p0.items() if by[v]["rarity"] == tr)
         s1 = sum(c for v, c in p1.items() if by[v]["rarity"] == tr)
-        line(f"g{gid} {grade}", *cells, f"{tr[:3]} {s0:.1%} to {s1:.1%} at cap", w=22)
+        line(f"g{gid} {grade}", f"{tr[:3]} {s0:.1%} to {s1:.1%} at cap", w=22)
 
 
 def report_pace():
@@ -853,9 +845,21 @@ def report_power():
     print(f"Ground 1 at its start, Watt and Rook at level 1: {g1} kW. With the Training machine at full, {spare} kW spare.")
     print(f"The battery: {pw['batteryKwh']} kWh, full from empty in {pw['batteryKwh'] / spare:.1f} h of that spare; "
           f"overflow sells at {pw['creditsPerKwh']} Credits a kWh.")
-    for (lo, hi), o in zip(((pw["infusionKwh"][0], 0), (pw["infusionKwh"][1], 0)), S["luck"]["infusion"]):
-        print(f"Infusion +{o['lift']:.2f}: {lo} kWh, {lo / spare:.1f} h of the spare, "
-              f"{lo / pw['batteryKwh']:.0%} of a full battery.")
+    v = pw["voltage"]
+    print(f"Voltage (infusion): Low halves a shard's time left, High breaks it now. The price: the energy its chamber "
+          f"would still draw over the time saved, x{v['premium']:.2f}, x the ground's factor; none under "
+          f"{v['minSavedSeconds']} s saved. A fresh shard at full power, ground 1, against hours of the spare:")
+    line("grade", "break", "Low saves", "kWh", "High saves", "kWh", "High, g6", w=12)
+    for grade in ("Standard", "Enriched", "Prismatic"):
+        t = sh["breakSeconds"][grade] / 3600
+        cells = []
+        for left in (v["lowTimeLeft"], v["highTimeLeft"]):
+            saved = t * (1 - left)
+            kwh = saved * pw["breakerKwPerChamber"] * v["premium"]
+            cells += [f"{saved:.2f} h", f"{kwh:.1f}" if saved * 3600 >= v["minSavedSeconds"] else "not offered"]
+        g6 = t * pw["breakerKwPerChamber"] * v["premium"] * sh["regionFactor"][5]
+        line(grade, f"{t:.2f} h", *cells, f"{g6:.0f}" if t * 3600 >= v["minSavedSeconds"] else "-", w=12)
+    print(f"The battery holds {pw['batteryKwh']} kWh today; its cap grows with the base (docs/design.md, 'The base').")
     print(f"Short of power with the battery empty, a machine runs at its share of its rating, never under "
           f"{pw['minSpeed']:.0%}: a Standard shard then takes {30 / max(pw['minSpeed'], 0.01):.0f} s at worst.")
 

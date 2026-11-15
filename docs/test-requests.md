@@ -1076,6 +1076,8 @@ Research's entry, 2026-11-14. Phase 2's "the Breaker screen on the real kit" (`d
     - **Fix (Faber):** while the gold fades, from about 15.4 to 15.9 s, the next shard's "Chamber 1 · Standard · 29 s left" shows through "Ready", two texts on top of each other. Hold the next shard's words until the gold is gone, then let them in. Serves the read. Check it on a still; no retake.
     - **Research's pass on TR9 is given once that fix is in.** The infusion's numbers, "A little · 300" and "Needs a battery of 900", become kWh with TR18 (20 and 60), and the screen's look is AR12's galaxy room: both are other pieces.
     - **The two names change** (the director, 2026-11-15: "what the f is a little a lot this is childish words let use real electrician words"). "A little" becomes **Low voltage** and "a lot" **High voltage**, each with its price in kWh on its button. An infused shard reads "Infused · Low voltage" or "Infused · High voltage". This goes in with the fix above, and the content check passes the new text.
+    - **Then the effect changes** (the director, 2026-11-15, asked: "Faster break"). Voltage buys time, not luck: Low halves the time left, and High breaks the shard at once, priced by the time saved (TR18's numbers). `Config.Shards.Infusion`'s lifts go. A shard it would save under a minute shows no voltage, so a Standard shows none. The button reads its price and what it saves ("High voltage · 60 kWh · breaks now").
+    - **"Who it can hold" becomes "Drop rates"** ("drop rate is that simple"). It lists every Voidkin the shard can give, grouped under each rarity's total, to 100% ("it obviously dont contain everything the odd are off").
 
 ## TR10. The elite's and the keeper's cooldown, with their marker (Faber, Modulo's icons)
 
@@ -1551,7 +1553,7 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
 - **A shard's cost is derived,** never set: its chamber's rating times its break time. A Standard costs 0.125 kWh, an Enriched 3.75, a Prismatic 45. `Config.Shards.Grades[...].Energy` goes.
 - **The floor:** 0.25 of full speed, as `MinSpeed` today.
 - **The battery:** 60 kWh, starting at 2. Overflow sells at 0.5 Credits a kWh. Away hours are as now.
-- **Infusion:** Low voltage costs 20 kWh, High voltage 60, a full battery.
+- **Infusion is voltage** (the director, 2026-11-15, "Faster break"; `docs/design.md`): Low halves a shard's time left, and High breaks it at once. The price is the energy its chamber would still draw over the time saved, times 1.33, times the ground's factor (`seeds.json`, "voltage"). On ground 1, a Prismatic's Low costs 30 kWh and its High 60; an Enriched's Low 2.5 and its High 5. Not offered when it saves under a minute, so never on a Standard.
 - **Migration:** an old save's electricity divides by 10 into kWh, so a full old battery (600) is a full new one (60).
 - **Auto and the split,** read from the design's "the battery covers routed demand above generation":
   - Under Auto, each machine's routed demand is its full rating, so the battery tops them all up to full speed while it holds charge.

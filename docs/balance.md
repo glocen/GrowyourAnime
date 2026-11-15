@@ -92,7 +92,7 @@ A lead more than a few levels under the account's highest Voidkin earns experien
 | Credits | research, an event, a pass if one is ever sold, the daily track | x2.5 |
 | Experience | catch-up, an event, research | x2.5 |
 | Electricity | research, an event | x2 |
-| Luck | Breaker tuning from research, infusion | +0.40 lift on a shard's top two tiers |
+| Luck | Breaker tuning from research | +0.40 lift on a shard's top two tiers |
 
 Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3.
 
@@ -138,7 +138,7 @@ Balanced is the safe build and the others are matchup builds. Two defence builds
 **The Breaker and electricity.**
 - Bays cover what the Breaker asks x1.5 to x1.7 for a player on half an hour a day, x1.35 to x1.45 on an hour and a half, and x0.85 to x0.98 on four hours. The heaviest players are the ones who feel electricity, and research and better workers are their answer.
 - Chambers are never the limit (under 12% busy). Break time is anticipation, electricity is the cost.
-- Infusion on a Standard shard costs fifteen times the shard for almost nothing. On a Prismatic of the last ground it takes the Mythical chance from 4.0% to at most 5.1%. A nudge, where it's meant to be.
+- Infusion is voltage since 2026-11-15 and buys time, not luck (sim.py, section 14). On ground 1, a Prismatic's High voltage costs 60 kWh, a full battery, to save 3 hours; an Enriched's costs 5. A Prismatic of the last ground would cost 420, so the battery's cap must grow with the base before then.
 
 **What players own** (1,500 simulated players each, every shard broken):
 

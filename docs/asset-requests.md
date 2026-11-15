@@ -5866,6 +5866,12 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
 - **What the numbers can't say:** whether any of it sounds good, or like stock. Loudness is the loudest 0.4 s, so the ticks under 0.1 s read low (-27 LUFS) against the long layers (-16 to -21): compare loudness inside a layer only. "Alike" is my own measure (the takes' third-octave colours times their envelopes), not a standard one.
 - **Content check:** clean on rules 2, 3 and 4 by the scripts, the numbers and the picture (2026-11-15): only seeded noise and sines, the four approved packages, nothing read in, no work named, plain file names. Its answer is ASK DIRECTOR, because the handbook's pre-upload step 7 leaves the listening to the director and nobody else can hear them: **the upload waits on the director playing the 33 files** from the folder (under 10 seconds in all), or saying they go up unheard. Its conditions: upload exactly what `py tools/audio/test6.py` writes with "every check passes"; plain titles, the file names. It notes pedalboard is GPLv3 and only encodes the OGG here, research's account in `docs/research/sound.md`.
 - **Four facts:** made (11 layers, 33 takes, by script). Self-reviewed by their numbers and their picture, never by ear. Delivered to Faber for the cues; the upload waits on the director's listening. Not heard, not accepted: the director's ear in a fight decides.
+- **Research's read of the numbers** (2026-11-15, night; not of the sound, which only the director's ear can judge). **Modulo's three calls stand:**
+  - **The sub's weight measured from 120 to 250 Hz:** that's the brief's own band, and the heavy cue's weight on a phone comes mostly from `HeavyImpacts` anyway, which is 94 to 99% over 150 Hz.
+  - **A and E only:** the open fifth is the right seed. It commits to nothing before music sets the key.
+  - **One tail, its volume by strength:** simpler, and the ear tunes it.
+  - **Watch at the listen:** `CritShing`'s inharmonic ratios. They give the metal, and they're the layer most likely to sound harsh. If it grates, the first fix is ratios nearer whole numbers, not a lower volume.
+  - **The upload:** research recommends they go up unheard. They're seeded noise and sines with nothing read in, the uploads are free, and the director's real test is the fight with the Replay command, which needs them in the game. A layer the ear rejects is replaced, never patched. **The director's word decides** (team notes, "Waiting on the director").
 
 ## Later, by ground
 

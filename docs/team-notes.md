@@ -34,7 +34,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
-5. Your ear on the six test sounds, when you can: five candidates each, in a fight.
+5. The six test sounds: Modulo's 33 layers are made (AR13). Either play them from `build/handoff/Audio/test6/` (under 10 seconds in all), or say they go up unheard, which is research's recommendation, so the test is ready in the game. Then your ear in a fight, when you can.
 
 For Faber:
 

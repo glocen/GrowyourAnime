@@ -1,36 +1,30 @@
 {
  "name": "Watt",
  "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
- "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1), and the Head's face decal is removed. His face is on the Head piece. The generator and its coils are the Torso piece's.",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1), and the Head's face decal is removed. His face is on the Head piece.",
  "maps": {
   "Color": "Watt_Color.png",
   "Roughness": "Watt_Roughness.png",
   "Metalness": "Watt_Metalness.png",
   "Emissive": "Watt_Emissive.png"
  },
- "texels_per_stud": 74,
+ "texels_per_stud": 92,
  "emissive": {
   "pieces": {
-   "Watt_Torso": {
+   "Watt_Head": {
     "tint": "#FFFFFF",
-    "cold": 0.5,
-    "hot": 2.0,
-    "lit": "the two coil caps and the gauge's needle"
-   },
-   "Watt_Visor": {
-    "tint": "#FFFFFF",
-    "cold": 0.0,
-    "hot": 7.0,
-    "lit": "the lens"
-   },
-   "Watt_Wrench": {
-    "tint": "#FF6FD8",
     "cold": 0.0,
     "hot": 3.0,
-    "lit": "the jaw's two inner walls"
+    "lit": "the hair's pale ends"
+   },
+   "Watt_Spear": {
+    "tint": "#FFB3E8",
+    "cold": 0.0,
+    "hot": 2.5,
+    "lit": "the three ceramic discs"
    }
   },
-  "note": "One mask for all three pieces; each takes its own EmissiveTint and EmissiveStrength: cold as he stands, hot in Ground Wire's hold. Roblox multiplies the glow by the colour map, so the caps and the lens glow white through their own Storm (the lens is a dark Storm glass with its light out), and the jaw's steel takes Storm from its tint. The other five pieces take no glow, and the face none, ever. DESIGN: the strengths are the review sheet's, untried in Studio."
+  "note": "One mask for both pieces; each takes its own EmissiveTint and EmissiveStrength: cold as he stands, hot in Ground Wire's hold. Roblox multiplies the glow by the colour map, so the hair's ends glow in their own pale pink, and the discs take Storm from their tint. The other five pieces take no glow, and his face none, ever. DESIGN: the strengths are the review's, untried in Studio. The glow stays at Storm's pale end, never deeper (the content check)."
  },
  "pieces": [
   {
@@ -38,16 +32,16 @@
    "mesh": "Watt_Torso.json",
    "on": "Torso",
    "centre": [
-    -0.0075,
-    3.645,
-    0.435
+    -0.02,
+    3.2025,
+    0.05
    ],
    "size": [
-    2.365,
-    4.07,
-    2.25
+    2.082,
+    2.405,
+    1.7
    ],
-   "tris": 3280
+   "tris": 576
   },
   {
    "name": "Watt_Head",
@@ -55,15 +49,15 @@
    "on": "Head",
    "centre": [
     0.0,
-    4.5275,
-    -0.02823
+    4.71337,
+    0.35015
    ],
    "size": [
-    1.56,
-    1.305,
-    1.426
+    2.31,
+    1.677,
+    2.2
    ],
-   "tris": 1064
+   "tris": 2948
   },
   {
    "name": "Watt_RightArm",
@@ -71,15 +65,15 @@
    "on": "Right Arm",
    "centre": [
     1.5,
-    2.94,
+    3.0,
     0.0
    ],
    "size": [
-    1.12,
-    2.24,
-    1.12
+    1.104,
+    2.0,
+    1.104
    ],
-   "tris": 656
+   "tris": 90
   },
   {
    "name": "Watt_LeftArm",
@@ -87,15 +81,15 @@
    "on": "Left Arm",
    "centre": [
     -1.5,
-    2.94,
+    3.0,
     0.0
    ],
    "size": [
-    1.12,
-    2.24,
-    1.12
+    1.104,
+    2.0,
+    1.104
    ],
-   "tris": 656
+   "tris": 126
   },
   {
    "name": "Watt_RightLeg",
@@ -104,14 +98,14 @@
    "centre": [
     0.5,
     1.0,
-    -0.1
+    -0.06
    ],
    "size": [
-    1.04,
+    1.06,
     2.0,
-    1.34
+    1.18
    ],
-   "tris": 760
+   "tris": 208
   },
   {
    "name": "Watt_LeftLeg",
@@ -120,114 +114,115 @@
    "centre": [
     -0.5,
     1.0,
-    -0.1
+    -0.06
    ],
    "size": [
-    1.04,
+    1.06,
     2.0,
-    1.34
+    1.18
    ],
-   "tris": 760
+   "tris": 208
   },
   {
-   "name": "Watt_Visor",
-   "mesh": "Watt_Visor.json",
-   "on": "Head",
-   "centre": [
-    0.0,
-    5.17961,
-    -0.32814
-   ],
-   "size": [
-    1.517,
-    0.751,
-    0.876
-   ],
-   "tris": 164,
-   "motor": "Visor",
-   "pivot": [
-    0.0,
-    4.8,
-    -0.1
-   ]
-  },
-  {
-   "name": "Watt_Wrench",
-   "mesh": "Watt_Wrench.json",
+   "name": "Watt_Spear",
+   "mesh": "Watt_Spear.json",
    "on": "Torso",
    "centre": [
-    2.02,
-    2.394,
-    -0.63
+    1.03614,
+    4.1828,
+    1.03187
    ],
    "size": [
-    3.59,
-    5.388,
-    0.962
+    3.428,
+    7.044,
+    0.883
    ],
-   "tris": 1192,
-   "motor": "Wrench",
+   "tris": 582,
+   "motor": "Spear",
    "pivot": [
-    2.02,
-    2.15,
-    -0.63
+    0.5237,
+    3.0495,
+    0.8911
    ]
   }
  ],
  "motors": {
-  "Visor": {
-   "axis": [
-    1,
-    0,
-    0
-   ],
-   "down": -100.0,
-   "note": "A hinge on the Head at his temples. With no turn it's up on his brow, which is its mesh. Turned `down` degrees about `axis` at its pivot, it covers his eyes: down for a fight, up again after a win. The clips key it."
-  },
-  "Wrench": {
+  "Spear": {
    "along": [
-    0.0,
-    1.0,
-    -0.0
+    0.43,
+    0.8992,
+    0.0808
    ],
-   "across": [
-    0.9848,
-    0.0,
-    0.1736
-   ],
-   "note": "One piece on the Torso, its pivot at the grip's middle. With no turn it stands planted ahead of his right side, its rod 0.3 studs under y = 0. `along` is the handle's line, from the rod to the head; `across` is the head's width. The clips key it into his hands, and into the street for Ground Wire."
+   "stood": {
+    "grip": [
+     1.7484,
+     2.6129,
+     -0.77
+    ],
+    "along": [
+     0,
+     1,
+     0
+    ],
+    "right_arm": [
+     0.1998,
+     -0.7592,
+     -0.6194
+    ]
+   },
+   "note": "One piece on the Torso, its pivot at the grip's middle. With no turn it lies slung on his back, from behind his left calf to over his right shoulder: `along` is the shaft's line, from the butt to the blade. `stood` is how he stands, which his idle keys: the grip at his right fist, the shaft upright with its butt on y = 0, and his Right Arm turned from hanging to point along `right_arm`. In every clip the blade and discs stay clear of his head and neck, and the blade goes into the street only."
   }
  },
  "points": [
   {
-   "name": "CoilR",
-   "on": "Torso",
+   "name": "SpearHead",
+   "on": "Watt_Spear",
    "at": [
-    0.9,
-    5.52,
-    1.04
+    2.2383,
+    6.6346,
+    1.2133
    ],
-   "note": "the right coil's cap: where an arc starts"
+   "note": "the middle disc, on the mesh as it lies, slung: where Storm gathers on the weapon"
   },
   {
-   "name": "CoilL",
-   "on": "Torso",
+   "name": "Blade",
+   "on": "Watt_Spear",
    "at": [
-    -0.9,
-    5.52,
-    1.04
+    2.75,
+    7.7046,
+    1.3094
    ],
-   "note": "the left coil's cap"
+   "note": "the blade's point"
   },
   {
-   "name": "Gauge",
-   "on": "Torso",
+   "name": "Butt",
+   "on": "Watt_Spear",
    "at": [
-    0.46,
-    3.62,
-    1.54
+    -0.6,
+    0.7,
+    0.68
    ],
-   "note": "the gauge's face, on the camera's side"
+   "note": "the blunt cap: where it meets the street, planted, and where Ground Wire's ring starts"
+  },
+  {
+   "name": "Grip",
+   "on": "Watt_Spear",
+   "at": [
+    0.5237,
+    3.0495,
+    0.8911
+   ],
+   "note": "the grip's middle: the joint's pivot"
+  },
+  {
+   "name": "HairEnds",
+   "on": "Head",
+   "at": [
+    0,
+    5.35,
+    1.2
+   ],
+   "note": "behind his crown, where the hair's pale ends lift: where static starts"
   },
   {
    "name": "Chest",
@@ -235,50 +230,10 @@
    "at": [
     0,
     3.2,
-    -0.62
+    -0.52
    ],
    "note": "where a hit lands"
-  },
-  {
-   "name": "Lens",
-   "on": "Watt_Visor",
-   "at": [
-    0.0,
-    5.5415,
-    -0.2739
-   ],
-   "note": "the lens's middle on the mesh as it is, the visor up: it turns with the hinge, to (0, 4.5, -0.8) with the visor down"
-  },
-  {
-   "name": "Jaw",
-   "on": "Watt_Wrench",
-   "at": [
-    1.9429,
-    4.1923,
-    -0.6436
-   ],
-   "note": "the middle of the jaw's gap: where the coils' arcs land"
-  },
-  {
-   "name": "Rod",
-   "on": "Watt_Wrench",
-   "at": [
-    2.02,
-    0.0,
-    -0.63
-   ],
-   "note": "where the rod meets the street, planted: where Ground Wire's ring starts"
-  },
-  {
-   "name": "Grip",
-   "on": "Watt_Wrench",
-   "at": [
-    2.02,
-    2.15,
-    -0.63
-   ],
-   "note": "the grip's middle: the joint's pivot"
   }
  ],
- "tris": 8532
+ "tris": 4738
 }

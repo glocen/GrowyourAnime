@@ -24,8 +24,8 @@ from pathlib import Path
 
 import bmesh
 import bpy
-from mathutils import Vector
-from mathutils.geometry import tessellate_polygon
+from mathutils import Matrix, Vector
+from mathutils.geometry import delaunay_2d_cdt, tessellate_polygon
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
@@ -42,13 +42,12 @@ PALETTE = {
     "Shirt": "#EFE9DE", "ShirtShade": "#CBC2B5",
     "Trouser": "#B4AEA2", "TrouserShade": "#8E887E",
     "Boot": "#252932", "Sole": "#DAD4C8",
-    "Leather": "#A9683A", "LeatherShade": "#7C4826",
     "Skin": "#F3CFB1", "SkinShade": "#DDAB8B",
     "Hair": "#232738", "HairLight": "#4A5478",
     "Iron": "#262A32", "Ceramic": "#F5F2EB", "Steel": "#C9D2DC", "White": "#FFFFFF",
 }
-CHIPS = (("Coat", "the coat"), ("Storm", "its lining, the hair's ends, his eyes"), ("Shirt", "shirt, wrap, ceramic"),
-         ("Trouser", "trousers"), ("Leather", "strap, belt"), ("Hair", "hair"), ("Skin", "skin"))
+CHIPS = (("Coat", "the coat"), ("Storm", "its lining, the hair's ends, his eyes"), ("Shirt", "shirt, sling, tape, ceramic"),
+         ("Trouser", "trousers"), ("Boot", "boots, belt"), ("Hair", "hair"), ("Skin", "skin"))
 PIVOTS = rs.PIVOTS
 slab, loft, spike = rs.slab, rs.loft, ks.spike
 on, rod = wt.on, wt.rod
@@ -98,7 +97,13 @@ def paint(name, plane, pts, material, layer=1):
         f.normal_update()
         if f.normal.dot(n) < 0:
             f.normal_flip()
-    return bl.object_from_bmesh(name, bm, material)
+    return tag(bl.object_from_bmesh(name, bm, material), "layer", layer)
+
+
+def tag(obj, name, value):
+    """Marks a painted shape's faces with their layer: the model cuts them into the surface under them (flatten)."""
+    obj.data.attributes.new(name, "INT", "FACE").data.foreach_set("value", [value] * len(obj.data.polygons))
+    return obj
 
 
 def on_head(name, pts, material, layer=1, cuts=2):
@@ -119,7 +124,7 @@ def on_head(name, pts, material, layer=1, cuts=2):
         c = f.calc_center_median()
         if f.normal.dot(Vector((c.x, c.y, 0))) < 0:
             f.normal_flip()
-    return bl.object_from_bmesh(name, bm, material)
+    return tag(bl.object_from_bmesh(name, bm, material), "skin", layer)
 
 
 def mirror(pts):
@@ -150,6 +155,163 @@ def fuse(base, *others):
     bpy.context.view_layer.objects.active = base
     bpy.ops.object.join()
     return base
+
+
+# --- the model: what's painted, cut into the surface under it -----------------------------------------------------
+# On the sheet a painted shape lies a layer off its block. In the game that would flicker at a distance and hide faces
+# the atlas would still pay for, so the model has one flat surface a face: every spot takes its top layer's colour, and
+# the shapes' edges stay edges of the mesh, as sharp up close as from far.
+
+def values(mesh, name):
+    out = [0] * len(mesh.polygons)
+    if name in mesh.attributes:
+        mesh.attributes[name].data.foreach_get("value", out)
+    return out
+
+
+def inside(q, pts):
+    """Whether a point lies in a flat shape: a ray to the right crosses its outline an odd number of times."""
+    odd = False
+    for (ax, ay), (bx, by) in zip(pts, pts[1:] + pts[:1]):
+        if (ay > q.y) != (by > q.y) and q.x < ax + (q.y - ay) * (bx - ax) / (by - ay):
+            odd = not odd
+    return odd
+
+
+def cut(name, shapes, lift, outward, m, split):
+    """One surface from overlapping flat shapes, [(points, surface, layer)]: the top layer shows. `lift` takes a point
+    of the plane to its place; `outward` gives the way a face there looks; `split` parts the surfaces' edges, so each
+    is an island of its own in the atlas."""
+    verts, faces, kept = [], [], []
+    for pts, surface, layer in shapes:
+        area = sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(pts, pts[1:] + pts[:1]))
+        if abs(area) < 1e-7:  # a sliver with no area: the cut takes everything to be inside it
+            continue
+        pts = pts if area > 0 else pts[::-1]
+        kept.append((pts, surface, layer))
+        faces.append(list(range(len(verts), len(verts) + len(pts))))
+        verts += [Vector(q) for q in pts]
+    shapes = kept
+    # every outline as an edge of one triangulation; which shape a triangle lies in is asked of its middle, since the
+    # cut's own record of it leaked a thin band's colour over a whole face where outlines ran along each other
+    out_verts, _, out_faces, _, _, _ = delaunay_2d_cdt(verts, [], faces, 0, 1e-5, True)
+    boxes = [(min(q[0] for q in pts), max(q[0] for q in pts), min(q[1] for q in pts), max(q[1] for q in pts)) for pts, _, _ in shapes]
+    bm = bmesh.new()
+    made = [bm.verts.new(lift(v.x, v.y)) for v in out_verts]
+    names = []
+    for f in out_faces:
+        if len(set(f)) < 3:
+            continue
+        mid = sum((out_verts[i] for i in f), Vector((0, 0))) / len(f)
+        sources = [k for k, (pts, _, _) in enumerate(shapes)
+                   if boxes[k][0] <= mid.x <= boxes[k][1] and boxes[k][2] <= mid.y <= boxes[k][3] and inside(mid, pts)]
+        if not sources:
+            continue
+        surface = shapes[max(sources, key=lambda k: (shapes[k][2], k))][1]
+        if surface not in names:
+            names.append(surface)
+        try:
+            face = bm.faces.new([made[i] for i in f])
+        except ValueError:
+            continue
+        face.material_index = names.index(surface)
+        face.normal_update()
+        if face.normal.dot(outward(face.calc_center_median())) < 0:
+            face.normal_flip()
+    bmesh.ops.dissolve_limit(bm, angle_limit=math.radians(0.5), verts=bm.verts[:], edges=bm.edges[:], delimit={"MATERIAL"})
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    if split:
+        bmesh.ops.split_edges(bm, edges=[e for e in bm.edges if len(e.link_faces) == 2
+                                         and e.link_faces[0].material_index != e.link_faces[1].material_index])
+    obj = bl.object_from_bmesh(name, bm, m[names[0]])
+    for surface in names[1:]:
+        obj.data.materials.append(m[surface])
+    return obj
+
+
+def drop_faces(obj, indices):
+    """Removes faces from a mesh. True when none are left."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.faces.ensure_lookup_table()
+    bmesh.ops.delete(bm, geom=[bm.faces[i] for i in indices], context="FACES")
+    left = len(bm.faces)
+    bm.to_mesh(obj.data)
+    bm.free()
+    return not left
+
+
+def flatten(joints, part, m):
+    """A part's painted shapes, cut into its blocks' faces."""
+    objs = [o for o in joints[part].children if o.type == "MESH"]
+    planes, drop = {}, {o.name: set() for o in objs}
+    for o in objs:
+        for poly, layer in zip(o.data.polygons, values(o.data, "layer")):
+            if layer:
+                n = poly.normal
+                key = (round(n.x), round(n.y), round(n.z), round(poly.center.dot(n) - LIFT * layer, 3))
+                planes.setdefault(key, []).append(([o.data.vertices[i].co.copy() for i in poly.vertices],
+                                                   o.data.materials[poly.material_index].name, layer))
+                drop[o.name].add(poly.index)
+    for k, (key, shapes) in enumerate(planes.items()):
+        n, d = Vector(key[:3]), key[3]
+        for o in objs:
+            for poly, layer in zip(o.data.polygons, values(o.data, "layer")):
+                if not layer and poly.normal.dot(n) > 0.999 and abs(poly.center.dot(n) - d) < 2e-3:
+                    shapes.append(([o.data.vertices[i].co.copy() for i in poly.vertices],
+                                   o.data.materials[poly.material_index].name, 0))
+                    drop[o.name].add(poly.index)
+        u = Vector((0, 1, 0)) if abs(n.x) > 0.5 else Vector((1, 0, 0))
+        v = Vector((0, 1, 0)) if abs(n.z) > 0.5 else Vector((0, 0, 1))
+        flat = [([(q.dot(u), q.dot(v)) for q in pts], surface, layer) for pts, surface, layer in shapes]
+        on(joints, part, cut(f"Painted{k}", flat, lambda x, y: u * x + v * y + n * d, lambda c: n, m, split=True))
+    for o in objs:
+        if drop[o.name] and drop_faces(o, drop[o.name]):
+            bpy.data.objects.remove(o, do_unlink=True)
+
+
+BAND = (4.02, 4.98)  # the head's upright wall, where his face is painted
+
+
+def flatten_head(joints, m):
+    """His face, cut into the head's wall: the wall is a prism of rook_sheet.SEGS flat strips, and each strip is cut."""
+    objs = [o for o in joints["neck"].children if o.type == "MESH"]
+    head = next(o for o in objs if o.name.split(".")[0] == "Head")
+    z0, z1 = BAND
+    shapes, drop = [], {o.name: set() for o in objs}
+    for o in objs:
+        for poly, layer in zip(o.data.polygons, values(o.data, "skin")):
+            if layer:
+                pts = [o.data.vertices[i].co for i in poly.vertices]
+                shapes.append(([(R * math.atan2(q.x, q.y), min(z1, max(z0, q.z))) for q in pts],
+                               o.data.materials[poly.material_index].name, layer))
+                drop[o.name].add(poly.index)
+    for poly, layer in zip(head.data.polygons, values(head.data, "skin")):
+        zs = [head.data.vertices[i].co.z for i in poly.vertices]
+        if not layer and abs(poly.normal.z) < 1e-3 and min(zs) > z0 - 1e-4 and max(zs) < z1 + 1e-4:
+            drop[head.name].add(poly.index)
+    ring = [Vector((x, y, 0)) for x, y, _ in rs.ring(0, 0, 2 * R, 2 * R, 2)]
+    ring.append(ring[0])
+    edge = [R * (math.pi / 2 - 2 * math.pi * k / rs.SEGS) for k in range(rs.SEGS + 1)]  # each strip's edge along the wall
+    for k in range(rs.SEGS):
+        shapes.append(([(edge[k + 1], z0), (edge[k], z0), (edge[k], z1), (edge[k + 1], z1)], "Skin", 0))
+
+    def lift(a, z):
+        k = min(rs.SEGS - 1, max(0, int((edge[0] - a) / (edge[0] - edge[1]))))
+        q = ring[k].lerp(ring[k + 1], (edge[k] - a) / (edge[k] - edge[k + 1]))
+        return Vector((q.x, q.y, z))
+
+    wall = cut("Face", shapes, lift, lambda c: Vector((c.x, c.y, 0)), m, split=False)
+    for o in objs:
+        if drop[o.name] and drop_faces(o, drop[o.name]):
+            bpy.data.objects.remove(o, do_unlink=True)
+    smooth(fuse(head, wall))
+    bm = bmesh.new()
+    bm.from_mesh(head.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=1e-4)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    bm.to_mesh(head.data)
+    bm.free()
 
 
 # --- the hair --------------------------------------------------------------------------------------------------------
@@ -185,7 +347,7 @@ def lock(name, root, c1, c2, tip, width, thick, m, pink=0.0, seg=9):
     for f, (i, k) in where.items():
         if pink and i >= first_pink:
             f.material_index = 1
-        elif k in (0, 1) and f.normal.dot(LIGHT) > 0.45:
+        elif k in (0, 1) and (f.normal.dot(LIGHT) > 0.45 or f.normal.z > 0.5):  # its upper planes, from behind too
             f.material_index = 2
     obj = bl.object_from_bmesh(name, bm, m["Hair"])
     obj.data.materials.append(m["Storm"])
@@ -199,30 +361,40 @@ def smooth(obj):
     return obj
 
 
+# the sweep's locks: where across his brow, how far back its end reaches, how far the static lifts it, its share in Storm
+SWEEP = ((-0.66, 0.35, 0.15, 0.2), (-0.44, 0.9, 0.5, 0.26), (-0.22, 0.5, 0.3, 0.2), (0.0, 1.0, 0.75, 0.3), (0.22, 0.4, 0.2, 0.2),
+         (0.44, 0.8, 0.6, 0.26), (0.66, 0.3, 0.1, 0.2))
+CROWN = ((-0.58, 0.6, 0.2), (-0.34, 1.0, 0.0), (-0.1, 0.5, 0.0), (0.12, 0.9, 0.0), (0.36, 0.4, 0.0), (0.58, 0.8, 0.2))
+
+
 def hair(m):
     def hairline(t):  # high over his brow, long at the nape
-        return 4.64 + 0.26 * max(0.0, math.sin(t)) ** 1.5 - 0.3 * max(0.0, -math.sin(t))
+        return 4.64 + 0.26 * max(0.0, math.sin(t)) ** 1.5 - 0.44 * max(0.0, -math.sin(t))
 
     made = [smooth(loft("HairCap", [(hairline, 0, -0.02, 1.33, 1.33), (5.0, 0, -0.04, 1.38, 1.38), (5.15, 0, -0.06, 1.2, 1.2),
                                     (5.2, 0, -0.08, 0.7, 0.7)], m["Hair"], n=2))]
-    # the sweep: up off his brow in a wave, back over the crown. The static lifts the middle ends: they flick up behind
-    # the crown in a row, so the game's camera, behind him, sees pink points standing and not ends pointing at it
-    for x, lift in ((-0.62, 0.1), (-0.42, 0.34), (-0.2, 0.56), (0.02, 0.42), (0.22, 0.64), (0.42, 0.3), (0.62, 0.1)):
-        made.append(lock("Sweep", (x * 0.9, 0.52 - 0.28 * abs(x), 4.92), (x * 1.1, 0.64 - 0.3 * abs(x), 5.55 - 0.12 * abs(x) + 0.14 * lift),
-                         (x * 1.35, -0.6, 5.5 + 0.1 * lift), (x * 1.5, -0.86 - 0.1 * lift, 5.3 + 1.15 * lift), 0.54, 0.075, m,
-                         pink=0.32 if lift > 0.25 else 0.0))
-    for x, drop in ((-0.5, 0.0), (-0.25, 0.12), (0.04, 0.04), (0.3, 0.14), (0.52, 0.0)):  # behind the crown, lying down his head
-        made.append(lock("Crown", (x, -0.15, 5.1), (x * 1.1, -0.5, 5.32), (x * 1.3, -0.98, 5.12), (x * 1.42, -1.14, 4.78 - drop),
-                         0.5, 0.07, m))
+    # the sweep: up off his brow in a wave, back over the crown and out past the head's box. From behind, where the
+    # game's camera is, the locks fan from the crown like spread fingers: their upper planes take the hair's light, and
+    # the last part of each is Storm's, curving back with it, no two ends the same length (research's fix 1)
+    for x, far, lift, pink in SWEEP:
+        made.append(lock("Sweep", (x * 0.9, 0.52 - 0.28 * abs(x), 4.92), (x * 1.12, 0.66 - 0.3 * abs(x), 5.76 - 0.2 * abs(x)),
+                         (x * 1.45, -0.7 - 0.1 * far, 5.42 - 0.14 * abs(x)), (x * 1.75, -1.05 - 0.4 * far, 5.2 + 0.4 * lift),
+                         0.54, 0.075, m, pink=pink))
+    for x, far, pink in CROWN:  # under them, from the crown down the back of his head, the ends turned out
+        made.append(lock("Crown", (x, -0.15, 5.1), (x * 1.15, -0.62, 5.3), (x * 1.5, -1.08, 4.98 - 0.1 * far),
+                         (x * 1.8, -1.2 - 0.22 * far, 4.86 + 0.06 * far), 0.5, 0.07, m, pink=pink))
+    for x, far in ((-0.42, 0.6), (-0.14, 0.0), (0.16, 0.8), (0.44, 0.2)):  # and a last row over the nape
+        made.append(lock("Back", (x, -0.48, 4.98), (x * 1.15, -0.8, 5.0), (x * 1.4, -1.0, 4.72), (x * 1.7, -1.1 - 0.1 * far, 4.64),
+                         0.46, 0.065, m))
     for e in (1, -1):  # over his ears, back, the ends turned out
-        made.append(lock("Side", (e * 0.6, 0.3, 4.8), (e * 0.82, 0.1, 4.96), (e * 0.9, -0.45, 4.86), (e * 1.08, -0.9, 5.14),
-                         0.46, 0.07, m, pink=0.22))
-        made.append(lock("SideLow", (e * 0.62, 0.05, 4.63), (e * 0.8, -0.15, 4.67), (e * 0.84, -0.55, 4.58), (e * 0.84, -0.95, 4.76),
+        made.append(lock("Side", (e * 0.6, 0.3, 4.8), (e * 0.84, 0.1, 4.98), (e * 0.96, -0.5, 4.86), (e * 1.08, -1.04, 4.96),
+                         0.46, 0.07, m, pink=0.2))
+        made.append(lock("SideLow", (e * 0.62, 0.05, 4.63), (e * 0.8, -0.15, 4.67), (e * 0.86, -0.55, 4.6), (e * 0.98, -0.98, 4.74),
                          0.38, 0.06, m))
         made.append(lock("Burn", (e * 0.58, 0.3, 4.86), (e * 0.68, 0.36, 4.72), (e * 0.67, 0.37, 4.56), (e * 0.62, 0.38, 4.42),
                          0.2, 0.05, m, seg=6))
     for x in (-0.38, 0.0, 0.38):  # the nape, over the collar
-        made.append(lock("Nape", (x, -0.55, 4.62), (x * 1.1, -0.75, 4.57), (x * 1.3, -0.92, 4.55), (x * 1.5, -1.05, 4.7),
+        made.append(lock("Nape", (x, -0.55, 4.66), (x * 1.1, -0.72, 4.62), (x * 1.3, -0.86, 4.6), (x * 1.5, -0.96, 4.7),
                          0.36, 0.06, m, seg=6))
     # the fringe, parted over his right brow: one long lock down the bridge of his nose
     for pts, w in ((((0.12, 0.52, 4.98), (-0.02, 0.74, 4.96), (-0.1, 0.74, 4.76), (-0.05, 0.66, 4.5)), 0.3),
@@ -283,7 +455,85 @@ def collar_top(t):
     return 4.33 - 0.05 * s - 0.24 * max(0.0, s) ** 10
 
 
-def build(scene):
+def collar_turn(m):
+    """The collar's top turned out and down, behind and at his sides, so its lining shows from the game's camera: a pale
+    band between the dark hair and the dark coat (research's fix 2). Nothing of it in front, where his face is."""
+    bm = bmesh.new()
+    rows = []
+    for x, y, t in rs.ring(0, 0, 1.66, 1.6, 2.5):
+        g = min(1.0, max(0.0, (0.25 - math.sin(t)) / 0.6))
+        g = g * g * (3 - 2 * g)
+        out, top = Vector((x, y, 0)).normalized(), Vector((x, y, collar_top(t)))
+        rows.append((g, [bm.verts.new(top), bm.verts.new(top + out * (0.07 * g) + Vector((0, 0, 0.025 * g))),
+                         bm.verts.new(top + out * (0.1 * g) - Vector((0, 0, TURN * g)))]))
+    for (ga, a), (gb, b) in zip(rows, rows[1:] + rows[:1]):
+        if ga + gb > 0:
+            bm.faces.new((a[0], b[0], b[1], a[1]))
+            bm.faces.new((a[1], b[1], b[2], a[2]))
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")  # the front's, where nothing turns
+    bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=1e-5)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for f in bm.faces:
+        c = f.calc_center_median()
+        if f.normal.dot(Vector((c.x, c.y, 0.3))) < 0:
+            f.normal_flip()
+    return smooth(bl.object_from_bmesh("CollarTurn", bm, m["Storm"]))
+
+
+TURN = 0.2      # how far down the collar's back its turned top hangs, studs
+SPEAR = 7.67    # the spear's length to its blade's socket, studs: taller than he is
+HOLD = Vector((0.2, 0.62, -0.76)).normalized()  # his right arm as he stands, its fist on the planted spear
+SLUNG = (Vector((-0.6, -0.68, 0.7)), Vector((2.7, -1.3, 7.6)))  # the spear on his back: its butt, and where it points
+
+
+def hand():
+    """The middle of his right fist as he stands, the spear planted: where the spear's joint is."""
+    return Vector(PIVOTS["rs"]) + rs.DOWN.rotation_difference(HOLD) @ Vector((0.5, 0, -1.3))
+
+
+def slung():
+    """The spear on his back: its butt, its line, and where his fist takes it (the joint's rest)."""
+    butt, top = SLUNG
+    u = (top - butt).normalized()
+    return butt, u, butt + u * hand().z
+
+
+def spear(m):
+    """The spear-staff, slung on his back from behind his left calf to over his right shoulder: how its mesh lies, so
+    with no clip it rides on him. Pale where it's wrapped (the grip, a band under the discs, the butt's cap), so its
+    line holds at night and the discs don't float (research's fix 3)."""
+    butt, u, _ = slung()
+    grip = hand().z
+    made = [rod("Shaft", (0, 0, 0.1), (0, 0, SPEAR - 0.62), 0.06, m["Iron"]),
+            *[bl.place(bl.cylinder("Disc", 0.24, 0.06, 16, m["Ceramic"]), location=(0, 0, SPEAR - at)) for at in (0.84, 1.07, 1.3)],
+            spike("Blade", (0, 0, SPEAR - 0.64), (0, 0, SPEAR + 0.12), 0.105, m["Steel"]),
+            rod("Butt", (0, 0, 0), (0, 0, 0.24), 0.09, m["Shirt"]),
+            rod("Grip", (0, 0, grip - 0.85), (0, 0, grip + 0.85), 0.078, m["Shirt"]),
+            *[rod("GripLine", (0, 0, grip + k * 0.2 - 0.012), (0, 0, grip + k * 0.2 + 0.012), 0.081, m["ShirtShade"]) for k in range(-3, 4)],
+            rod("Ferrule", (0, 0, SPEAR - 1.8), (0, 0, SPEAR - 1.5), 0.078, m["Shirt"])]
+    lie = Matrix.Translation(butt) @ Vector((0, 0, 1)).rotation_difference(u).to_matrix().to_4x4()
+    for o in made:
+        o.data.transform(lie)
+    return made
+
+
+def pose_stood(j):
+    """How he stands: the spear planted ahead of his right side, its butt on the street, his fist on it."""
+    j["rs"].rotation_quaternion = rs.DOWN.rotation_difference(HOLD)
+    j["spear"].location, j["spear"].rotation_quaternion = hand(), slung()[1].rotation_difference(Vector((0, 0, 1)))
+
+
+def pose_slung(j):
+    """The spear on his back, his arms down: every joint at rest."""
+    j["rs"].rotation_quaternion = (1, 0, 0, 0)
+    j["spear"].location, j["spear"].rotation_quaternion = slung()[2], (1, 0, 0, 0)
+
+
+POSES = {"stood": pose_stood, "slung": pose_slung}
+
+
+def build(scene, pose="stood", model=False):
+    """`model`: for the bake, what's painted cut into the blocks, and every joint at rest."""
     m, j = materials(), wt.rig(scene)
     f, b = front(), back()
 
@@ -305,18 +555,18 @@ def build(scene):
                  paint("ShirtShade", f, [(-0.13, 4.0), (0.13, 4.0), (0.14, 3.7), (0.0, 3.56), (-0.14, 3.7)], m["ShirtShade"], 3),
                  paint("ShirtFold", f, [(0.06, 2.9), (0.19, 2.3), (0.15, 2.22), (0.02, 2.22)], m["ShirtShade"], 3))
     edge = [(0.13, 4.0), (0.2, 4.0), (0.27, 2.0), (0.2, 2.0)]
-    belt = fuse(paint("Belt", f, [(-0.2, 2.0), (0.2, 2.0), (0.2, 2.22), (-0.2, 2.22)], m["Leather"], 3),
-                paint("BeltShade", f, [(-0.2, 2.0), (0.2, 2.0), (0.2, 2.06), (-0.2, 2.06)], m["LeatherShade"], 4))
+    belt = fuse(paint("Belt", f, [(-0.2, 2.0), (0.2, 2.0), (0.2, 2.22), (-0.2, 2.22)], m["Boot"], 3),
+                paint("BeltShade", f, [(-0.2, 2.0), (0.2, 2.0), (0.2, 2.06), (-0.2, 2.06)], m["Ink"], 4))
     toggles = [paint("Toggle", f, disc(x, z, 0.062), m["Ceramic"], 3) for x, z in ((0.47, 3.45), (0.49, 3.0), (0.51, 2.55))]
     loops = [paint("Loop", f, band((-0.5, z), (-0.3, z), 0.035), m["Ink"], 3) for z in (3.45, 3.0, 2.55)]
-    strap = [fuse(paint("Strap", face_, band((0.96, 4.0), (-1.0, 2.5), 0.2), m["Leather"], 5),
-                  paint("StrapShade", face_, band((0.99, 3.94), (-0.97, 2.44), 0.06), m["LeatherShade"], 6))
+    strap = [fuse(paint("Strap", face_, band((0.96, 4.0), (-1.0, 2.5), 0.2), m["Shirt"], 5),
+                  paint("StrapShade", face_, band((0.99, 3.94), (-0.97, 2.44), 0.06), m["ShirtShade"], 6))
              for face_ in (f, b)]
-    buckle = fuse(paint("Buckle", f, band((0.42, 3.59), (0.22, 3.435), 0.26), m["Ceramic"], 7),
-                  paint("BuckleBar", f, band((0.36, 3.545), (0.28, 3.48), 0.3), m["Iron"], 8))
+    buckle = fuse(paint("Buckle", f, band((0.42, 3.59), (0.22, 3.435), 0.26), m["Iron"], 7),
+                  paint("BuckleBar", f, band((0.36, 3.545), (0.28, 3.48), 0.3), m["Ceramic"], 8))
     collar = [smooth(loft("Collar", [(3.96, 0, 0, 1.52, 1.46), (collar_top, 0, 0, 1.66, 1.6)], m["Coat"], n=2.5, caps=False)),
               loft("CollarLining", [(collar_top, 0, 0, 1.66, 1.6), (collar_top, 0, 0, 1.56, 1.5), (3.96, 0, 0, 1.44, 1.38)],
-                   m["Storm"], n=2.5, caps=False)]
+                   m["Storm"], n=2.5, caps=False), collar_turn(m)]
     on(j, "root", torso, shirt, paint("Lining", f, edge, m["Storm"], 4), paint("Lining", f, mirror(edge), m["Storm"], 4), belt,
        paint("BeltBuckle", f, [(-0.075, 2.04), (0.075, 2.04), (0.075, 2.19), (-0.075, 2.19)], m["Ceramic"], 5),
        *toggles, *loops, *strap, buckle, *collar)
@@ -335,8 +585,8 @@ def build(scene):
              paint("Fold", b, x([(1.2, 3.0), (1.74, 3.0), (1.4, 3.3)]), m["CoatShade"]),
              paint("Fold", side(e * 2.0), [(-0.3, 3.0), (0.32, 3.0), (0.1, 3.34)], m["CoatShade"]),
              paint("Lit", side(e * 2.0), [(-0.5, 4.0), (0.5, 4.0), (0.5, 3.78), (-0.5, 3.7)], m["CoatLight"]))
-        cuff = fuse(slab("Cuff", (e * 1.5, 0, 3.0), (1.1, 1.1, 0.19), m["Storm"]),
-                    slab("CuffShade", (e * 1.5, 0, 2.93), (1.104, 1.104, 0.05), m["StormShade"]))
+        cuff = fuse(slab("Cuff", (e * 1.5, 0, 3.0), (1.1, 1.1, 0.19), m["CoatLight"]),  # the roll, its lining a turned edge
+                    slab("CuffEdge", (e * 1.5, 0, 2.935), (1.104, 1.104, 0.06), m["Storm"]))
         arm = slab("Forearm", (e * 1.5, 0, 2.44), (1, 1, 0.88), m["Skin"])
         fuse(arm, paint("Shade", f, x([(1.0, 2.88), (1.2, 2.88), (1.12, 2.0), (1.0, 2.0)]), m["SkinShade"]),
              paint("Shade", b, x([(1.0, 2.88), (1.24, 2.88), (1.14, 2.0), (1.0, 2.0)]), m["SkinShade"]),
@@ -361,7 +611,8 @@ def build(scene):
              paint("Hem", f, x([(0.48, 0.85), (1.0, 0.85), (1.0, 0.93), (0.465, 0.93)]), m["CoatLight"], 2),
              paint("Shade", b, x([(0.8, 2.0), (1.0, 2.0), (1.0, 0.85), (0.88, 0.85)]), m["CoatShade"]),
              paint("Fold", b, x([(0.4, 2.0), (0.5, 2.0), (0.56, 0.85), (0.5, 0.85)]), m["CoatShade"]),
-             paint("Hem", b, x([(0.16, 0.85), (1.0, 0.85), (1.0, 0.93), (0.14, 0.93)]), m["CoatLight"], 2),
+             paint("VentEdge", b, x([(0.0, 2.0), (0.27, 0.85), (0.2, 0.85)]), m["CoatShade"]),
+             paint("Hem", b, x([(0.2, 0.85), (1.0, 0.85), (1.0, 0.93), (0.186, 0.93)]), m["CoatLight"], 2),
              paint("Hem", side(e * 1.0), [(-0.5, 0.85), (0.5, 0.85), (0.5, 0.93), (-0.5, 0.93)], m["CoatLight"], 2),
              paint("Fold", side(e * 1.0), [(-0.1, 2.0), (0.06, 2.0), (0.16, 0.93), (0.06, 0.93)], m["CoatShade"]))
         trouser = fuse(paint("Trouser", f, x([(0.0, 2.0), (0.2, 2.0), (0.42, 0.85), (0.0, 0.85)]), m["Trouser"], 2),
@@ -372,10 +623,11 @@ def build(scene):
              paint("Shade", side(e * 1.0), [(-0.5, 0.85), (0.5, 0.85), (0.5, 0.77), (-0.5, 0.77)], m["TrouserShade"]))
         on(j, part, skirt, trouser, shin,
            paint("Lining", f, x([(0.2, 2.0), (0.27, 2.0), (0.49, 0.85), (0.42, 0.85)]), m["Storm"], 3),
-           paint("Vent", b, x([(0.0, 1.5), (0.16, 0.85), (0.0, 0.85)]), m["Storm"], 2),
-           slab("Boot", (e * 0.5, 0.06, 0.3), (1.0, 1.12, 0.44), m["Boot"]),
-           slab("BootCuff", (e * 0.5, 0.02, 0.49), (1.04, 1.08, 0.07), m["Iron"]),
-           slab("Sole", (e * 0.5, 0.06, 0.04), (1.02, 1.16, 0.08), m["Sole"]))
+           paint("Vent", b, x([(0.0, 2.0), (0.2, 0.85), (0.0, 0.85)]), m["Storm"], 2),  # open on its lining, waist to hem
+           paint("VentIn", b, x([(0.0, 1.35), (0.07, 0.85), (0.0, 0.85)]), m["TrouserShade"], 3),
+           slab("Boot", (e * 0.5, 0.06, 0.3), (1.02, 1.14, 0.44), m["Boot"]),  # a hair proud of the leg: no face of it lies in the leg's
+           slab("BootCuff", (e * 0.5, 0.02, 0.49), (1.06, 1.1, 0.07), m["Iron"]),
+           slab("Sole", (e * 0.5, 0.06, 0.04), (1.04, 1.18, 0.08), m["Sole"]))
 
     # the head: a painted face under sculpted hair
     head = smooth(loft("Head", [(3.875, 0, 0, 0.95, 0.95), (3.92, 0, 0, 1.14, 1.14), (4.02, 0, 0, 1.25, 1.25), (4.98, 0, 0, 1.25, 1.25),
@@ -383,17 +635,22 @@ def build(scene):
     soft, hard = face(m)
     on(j, "neck", fuse(head, *soft), *hard, *hair(m))
 
-    # the spear-staff, taller than he is, slung from behind his left calf to over his right shoulder and leaning back:
-    # its discs and blade stand above his hair and outside it, with ground between from every heading (the content check)
-    a, top = Vector((-0.6, -0.68, 0.7)), Vector((2.7, -1.3, 7.6))
-    u, length = (top - a).normalized(), (top - a).length
-    lean = math.degrees(math.atan2(u.x, u.z))
-    on(j, "root",
-       rod("Shaft", a, a + u * (length - 0.62), 0.055, m["Iron"]),
-       *[bl.place(bl.cylinder("Disc", 0.24, 0.06, 16, m["Ceramic"]), location=a + u * (length - s), rotation=(0, lean, 0))
-         for s in (0.84, 1.07, 1.3)],
-       spike("Blade", a + u * (length - 0.64), top + u * 0.12, 0.105, m["Steel"]),
-       rod("Butt", a - u * 0.1, a + u * 0.12, 0.085, m["Leather"]))
+    # the spear-staff on a joint of its own, at his right fist: planted as he stands, or slung on his back. Either way its
+    # discs and blade keep ground from his head, hair and collar from every heading (the content check)
+    rest = slung()[2]
+    grip = bpy.data.objects.new("spear", None)
+    scene.collection.objects.link(grip)
+    grip.location, grip.rotation_mode, grip.parent = rest, "QUATERNION", j["root"]
+    grip.matrix_parent_inverse = Matrix.Translation(-Vector(PIVOTS["root"]))
+    j["spear"] = grip
+    for o in spear(m):
+        o.parent, o.matrix_parent_inverse = grip, Matrix.Translation(-rest)
+    if model:
+        flatten_head(j, m)
+        for part in PIVOTS:
+            flatten(j, part, m)
+    else:
+        POSES[pose](j)
     return j
 
 
@@ -421,7 +678,7 @@ def figure(build_it, views):
     return out
 
 
-NEW = {"front": (180, 4), "three": FRONT, "side": (96, 6), "game": GAME, "flat": (180, 0), "face": (168, 4)}
+NEW = {"front": (180, 4), "three": FRONT, "side": (96, 6), "game": GAME, "back": (0, 8), "flat": (180, 0), "face": (168, 4)}
 OLD = {"three": FRONT, "game": GAME, "face": (166, 4)}
 
 

@@ -16,12 +16,12 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The test rule** goes into `CLAUDE.md` and `ga-finish` on the director's word in my session (below). Until then, the old rule stands.
 - **Next:** Overview's stat sheet with its XP bar's fill (`docs/ui.md`, 5), the battery's tier 2 in AR12, TR21's blockout (the camera's lift and plain chips over today's base, one take), AR14's level 1; then Kirra and Scarf Step, TR9, TR17, the builds, AR13, the gate.
 
-**Modulo (assets).** 2026-11-15, 20:00, on Fable 5.2.
-- **Now: Watt's take A in colour, delivered for research's verdict** (AR11, delivery 2): `build/handoff/Watt/watt_colour.png`. The director, mid-build: "it need colors too." R6 at its own size with the coat painted on it, the hair sculpted, the face painted, a spear taller than he is. Content check PASS as a review sheet, after one block on the spear's clearance. **Next:** the bake on R6 after the verdict, under the Blender lock. The first model's files stay in `build/handoff/Watt/`, held, until the new one is delivered: **don't install them.**
-- **The palette's pick: A, Eclipse** (AR12, Modulo's under the grant, research's three conditions met). The Breaker's room is designed apart, as art. **For Faber:** Power's cut images and the reveal's card come in Eclipse after Watt's model; nothing violet from me before.
-- AR6's batch 1 is closed by research and with Faber; the rest of the kinds wait on research's spec, after phase 2. Scarf Step's blockout when Faber calls (AR10, section 5).
+**Modulo (assets).** 2026-11-15, 20:35, on Fable 5.2.
+- **Watt's model is delivered** (AR11, delivery 3): take A with research's three fixes, baked on R6, in `build/handoff/Watt/`. Seven meshes, four maps, the recipe, the sheet. Content check PASS, for the upload of these files too. **For Faber:** the install, as Pip and Kirra, with the spear a seventh piece on its own joint on the Torso (slung at rest, planted as he stands; the recipe's `motors.Spear`). The first design's files are gone from the folder. **For research:** the verdict in the game.
+- **Now: AR14, the base dressed, level 1** (the director through Faber: "tell modulo to keep working"). Straight for the game, no sheet: a kit and a plan as Lantern Row's, for Faber's install.
+- **Next:** AR14's levels 2 and 3; Power's cut images and the reveal's card in Eclipse (AR12; nothing violet from me before); Watt's clips and Ground Wire's look. Scarf Step's blockout when Faber calls (AR10, section 5).
 - **Delivered earlier, each in its entry:** the galaxy Breaker's six images and the festival tag's four (ids to come); the HUD's images, the dock's, TR17's marks, the shard grades (AR12); Combat Power's cobalt sheet; the level-up's notice, B (its place research's call); AR13's eleven layers: **the upload waits on the director's word.**
-- **Later:** Watt's clips and Ground Wire's look; the Breaker's room; the reveal, then the other dark screens (the map, a reward, a confirm), in Eclipse; the generator's model, on research's request; TR10's two icons; the empty slots' marks and the bag's tab marks when asked.
+- **Later:** the Breaker's room; the reveal, then the other dark screens (the map, a reward, a confirm), in Eclipse; the generator's model, on research's request; TR10's two icons; the empty slots' marks and the bag's tab marks when asked. AR6's other kinds wait on research's spec, after phase 2.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
 
@@ -99,6 +99,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-15, night. Watt's model delivered again: take A (Modulo)
+
+- **What:** Watt as the director picked him, take A, with research's three fixes: the hair fanned back past the head with small pale ends, the collar's pink lining and the open vent between hair and coat, a pale sling and a planted spear with a pale grip and cap. Baked on R6: seven meshes, four maps, one atlas, 4,738 triangles.
+- **Where:** `build/handoff/Watt/`; `tools/blender/watt_model.py` and `watt_sheet.py`; the record is AR11, "Delivery 3". It replaces the entry below: the first design's visor, wrench and sheet are gone from the folder.
+- **New in the scripts:** what a sheet paints a layer off a block is cut into the block's face for the model (`watt_sheet.flatten`), so a painted coat costs no hidden faces and can't flicker. The bake has a `cpu` mode for when Studio holds the PC's memory.
+- **Open:** Faber's install (the spear's joint, the held pose until his Idle exists, the glow's strengths untried in Studio); research's verdict in the game; his clips and Ground Wire's look.
+- **For:** Faber, research.
 
 ### 2026-11-15, evening. Watt's model delivered (Modulo)
 

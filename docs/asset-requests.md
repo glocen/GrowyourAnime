@@ -5448,9 +5448,9 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 
 **Time it:** each delivery records what it took. The takes: 1 to 2 hours, forecast.
 
-**Status:** designed again, 2026-11-15, night (research).
-- The director rejected the first design (sections 1 and 2), and nothing of it is kept. Its files leave `build/handoff/Watt/` when the new model is delivered (Modulo's).
-- **Next:** research's verdict on take A in colour (delivery 2), then the bake on R6.
+**Status:** the model is delivered, 2026-11-15, 20:30 (Modulo): take A with research's three fixes, baked on R6, in `build/handoff/Watt/` (delivery 3, below). For Faber's install, and research's verdict in the game.
+- The director rejected the first design (sections 1 and 2), and nothing of it is kept. Its files have left `build/handoff/Watt/` (the visor, the wrench and its sheet removed, the rest replaced; they stay in git, 1c9dda6).
+- **Next:** Faber's install; research's verdict in the game from the player's camera at phone size; then his clips and Ground Wire's look (Modulo's, after AR14's level 1).
 - **Delivery 1, the three takes** (Modulo, 2026-11-15, night): `build/handoff/Watt/watt_takes.png`, for research's pick. In grey on R6, Storm's pale pink the only colour. Each take: three-quarter front, the game's camera, its face close, its outline; then all three at 64 px over noon, night and in black, beside Rook, Kirra, Pip and Lyric.
   - **A, the quiet wall,** as briefed. The pink is on the hair's lifted tips, where an effect starts. The spear's blade and discs stand over his right shoulder, the side the game's camera is on.
   - **B, the hothead,** as briefed. Mine: the slab is on his left forearm, since Rook's ram is on the right, and the pink lock falls over his right brow.
@@ -5543,6 +5543,36 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
         2. **Something between dark hair and dark coat.** The hair and the coat are both dark, so from behind his top half is one mass, and over night it sinks. Show the collar's pink lining from behind, so a pale band parts the head from the body. Open the back's vent on the lining from the waist to the hem, so the coat's back, the most-seen area on him, isn't a flat rectangle. The cuffs narrow to a turned edge, so the pink still adds up to one accent.
         3. **The sling and the spear.** By colour he blurs with Kirra beside him: dark hair, a dark blue body and a brown strap across it. The sling goes pale, the shirt's colour, so a light line crosses his back from the game's camera, and it leaves Kirra's brown. The shaft takes a pale grip wrap and a pale butt cap, so it reads as a line at night and the discs stop floating. Planted in his idle, as Modulo plans.
       - **No second sheet.** The baked model's verdict, in the game from the player's camera at phone size, covers these fixes, in one light, the game's own (the director's words of the same night). Show the game's camera and 64 px row before the atlas only if the hair's shape leaves you in doubt.
+  - **Delivery 3, the model on R6** (Modulo, 2026-11-15, 20:10 to 20:30 by the clock): `build/handoff/Watt/`, for Faber's install and research's verdict in the game.
+    - **The files:**
+      - seven meshes, `Watt_<Piece>.json`: Torso, Head, RightArm, LeftArm, RightLeg, LeftLeg and Spear;
+      - four maps at 1024 px: `Watt_Color.png`, `Watt_Roughness.png`, `Watt_Metalness.png`, `Watt_Emissive.png`;
+      - `Watt.recipe.json`: the pieces, the spear's joint, the glow and the points;
+      - `watt_model_sheet.png`, the baked model in Lantern Row's dusk, and `watt_atlas_check.png`, the maps as uploads.
+    - **Research's three fixes, as built:**
+      1. **The hair.** Seven swept locks fan back and out past the head's box, their upper planes in the hair's light, uneven in length, each ending in a small pale tip that curves back with it. Six shorter locks stand on the crown behind them, and the nape's hairline sits inside the collar.
+      2. **Between hair and coat.** The collar's top is turned out and down behind and at his sides, so its pink lining is a pale band between head and body from the game's camera; nothing of it is in front. The back's vent is open on the lining from waist to hem. The cuffs are the coat's light with a narrow turned edge in pink.
+      3. **The sling and the spear.** The sling is the shirt's pale, and no brown is left on him (the belt is the boots' dark). The shaft has a pale grip wrap, a pale band under the discs and a pale butt cap. He stands with the spear planted.
+      - The face is as research saw it.
+    - **Measured:** 4,738 triangles in 7 pieces (the Head 2,948, its hair and face). 5.55 studs to his hair's top, 4.10 wide; the spear 7.79 long. One atlas at 92 px a stud. The glow mask holds the hair's pale ends and the three discs, each on its swatch.
+    - **How it's made:** `tools/blender/watt_model.py`, from `watt_sheet.py`'s shapes (`build(model=True)`). What the sheet paints a layer off a block is cut into the block's face (`flatten`, and `flatten_head` for his face): one flat surface a face, so nothing flickers at a distance. The bake is Cycles on the CPU (`cpu`), under the lock: with Studio open the GPU's start was stopped by the memory guard. Blender's peak 855 MB.
+    - **For Faber, the install:**
+      - As Pip and Kirra: every piece carries the body's own surface, the rig's six parts hidden, the Head's decal removed. His face is on the Head piece.
+      - **The spear is one piece on a joint of its own on the Torso** (`motors.Spear`), its pivot at the grip's middle. With no clip it lies slung on his back. **He stands with it planted,** which his Idle will key. Until the clips come, `motors.Spear.stood` gives a held pose: the grip at his right fist, the shaft upright with its butt on y = 0, his Right Arm turned to point along `right_arm`.
+      - **The glow:** one mask for two pieces, each with its own tint and strength (`emissive.pieces`): cold 0 as he stands, hot in Ground Wire's hold. The strengths are the review's, untried in Studio.
+      - **The points:** SpearHead, Blade, Butt, Grip, HairEnds and Chest.
+      - **Check in Studio:** each piece's size against the recipe; the face's edges up close and from far (it's cut into the head's wall); the collar's band and the vent from the player's camera; the spear's joint in both poses.
+    - **Seen, the maker's eye and not a verdict:**
+      - From the game's camera he's no longer one dark mass: the fan of hair with its pale ends, the pink band at the collar, the pale sling across the petrol coat, the vent's wedge, and the spear upright beside him.
+      - Planted, the grip's wrap is mostly inside his fist and forearm from the game's camera: it shows below the fist from the front, and whole when the spear is slung. The shaft's line holds by the discs, the band under them and the butt's cap.
+      - In the dusk the pink reads as a pale lilac.
+    - **Checks:** the content check (`ga-content-check`; the model's sheet, the atlas check and the four maps at full size, likeness from memory): **PASS, for delivery and for the upload of these exact files.** Take A's conditions hold on the bake. Three things it carries forward:
+      1. Slung, the discs clear the fanned hair by little from the game's camera: the clips' check shows the slung pose from the side and the back at 64 px, and the hair grows no further toward the spear.
+      2. The baked contact shade leaves plum bands on the skin's islands, under the cuffs and the collar, covered on the model. A later bake that makes them redder or ragged goes back for a check.
+      3. The vent's wedge stays Storm's pale with its trouser-shade inner, never a skin tone.
+    - **Not yet:** his clips, Ground Wire's look; the glow and the face seen in Studio.
+    - **Time:** by the clock, 20:10 to 20:30: the three fixes in four light looks, the cut of what's painted into the blocks, three bakes (the face's colour, the legs' bands and stray vertices in the collar found and fixed between them) and the content check. Forecast was 2 to 3 hours.
+    - **Four facts:** made, yes. Self-reviewed, yes: the sheet whole, the row of bodies, the face close, the glow and the 64 px row enlarged, the atlas. Delivered, yes. Accepted, no: research's verdict is in the game.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 

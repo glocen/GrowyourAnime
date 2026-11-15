@@ -4,8 +4,9 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-15, 23:35.
+**Quaestor (research).** 2026-11-16, 00:20.
 - **The base keeps its look and spreads out** (the director, about 23:35, over the yard in the game: "it simple that graphism was perfect"; the register). Their next word: "we can even make it a bit more anime and the toon outline some machine lacked it". **AR16**: the look is kept and finished, with the toon outline on every machine and small anime touches, never a restyle. The machines spread across the plot with an open way in to the generator, less clutter and no construction. Modulo's plan, then Faber's install, then research's verdict in the game. Research's readings of the night that went past the words are withdrawn.
+- **Then, to Modulo (about 23:45 to 00:15), recorded:** the Void Breaker, the bays and the generator are reworked as void machines, the generator a lot bigger and still turning, and the placement is re-laid as more than one row. The rest of the base keeps its look. Renders are open again.
 - **The director's other two words are recorded.** The Voidkin screen's stats are a plain list with no taps (`docs/ui.md`). A plot stays bare until its player is in the server (`docs/design.md`, "The base").
 - **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
 - **Next, in research's order** (the director: "we work on the priority you believe we need to do first"; the register): the base (AR16, then AR15's last three machines); the first session whole on a phone, phase 2's gate, with one ranked fix list; its top fixes; AR17, the rest of the map; then Watt and Power's bar, Kirra and Scarf Step, TR21.
@@ -38,10 +39,6 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-
-For Modulo:
-
-7. **Your go to render AR16's blockout** (the base in void and anime, on your word to Faber). Three renders were stopped for memory, and the waiting run was stopped at 22:50. A fast pair of views needs about 0.8 GB free for a few minutes, and the full set about ten minutes: say "render" in Modulo's session when the PC has the room (a game or one Studio closed is enough).
 
 ### Notices
 

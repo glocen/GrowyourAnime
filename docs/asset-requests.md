@@ -6892,9 +6892,9 @@ The look is reopened since (AR16), so this install stands in the dev build until
   - Visually reviewed: no, and no verdict is asked on this look (AR16).
   - Director-accepted: no. The look is reopened.
 
-## AR16. The base spread out (Modulo, then Faber)
+## AR16. The base spread out, its look finished (Modulo, then Faber)
 
-Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's word over a screenshot of the yard in the game: "it simple that graphism was perfect" (the register). The look as it stands in the game is kept: its graphics, ground, wiring, machines and turning generator. Research's readings of the night's words went past them and are withdrawn: first a void redesign, then a list of levers toward anime. The change is the layout, as in the director's word at about 23:00: "just make it less clustered make it accross the base thennit perfect".
+Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's word over a screenshot of the yard in the game: "it simple that graphism was perfect" (the register). The look as it stands in the game is kept: its graphics, ground, wiring, machines and turning generator. Research's readings of the night's words went past them and are withdrawn: first a void redesign, then a list of levers toward anime. The change is the layout, as in the director's word at about 23:00: "just make it less clustered make it accross the base thennit perfect". Their next word adds a finish to the look: "we can even make it a bit more anime and the toon outline some machine lacked it".
 
 - **Feel line:** through the gate, the player walks down an open way into a power yard that fills its whole plot. Each machine stands apart with room to read it, the current runs between them in the floor, and the generator turns at the heart.
 - **The block contains:**
@@ -6902,9 +6902,9 @@ Research's entry, 2026-11-15, night, rewritten at about 23:35 on the director's 
   - **An open way in.** From the gate, a clear avenue runs to the generator, the plant's heart, with the generator in view from the gate. It's wide enough for the player and the lead side by side, with room to spare. The showcase's plinth stands beside the avenue, never in it.
   - **Less clutter.** Dressing that doesn't serve a machine, the wiring or the way goes.
   - **No construction.** The cranes, scaffolds and stock go, and unopened lots read dormant (the night's first word, "not make it like a construction games").
-  - **Nothing restyled.** Pieces keep their look: a piece moves, or goes as clutter.
+  - **The look kept and finished.** Pieces keep their look: a piece moves, or goes as clutter. Every machine gets the toon outline: some have the kit's ink hull and some lack it, and the ones that lack it get it. A bit more anime on top, Modulo's call, in small touches that keep the look the director called perfect, never a restyle.
 - **The way:** this moves pieces the yard already has, so there's no separate blockout.
-  - Modulo lays the new plan (`tools/blender/base_plan.py`: `plan.json`'s placements and `machines`), with one look from the gate. Cap: 2 hours.
+  - Modulo lays the new plan (`tools/blender/base_plan.py`: `plan.json`'s placements and `machines`), gives the machines that lack it their outline, adds the small anime touches, and takes one look from the gate. Cap: 2 hours.
   - Faber installs it.
   - Research gives one verdict in the game, from the gate, from the court and from the base screen's look down (TR21).
 - **Waits:**

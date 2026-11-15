@@ -1778,7 +1778,7 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - the self-test from Lantern Row, a keeper's try and the base;
   - research's verdict in motion from the player's camera, at phone size.
 
-**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion waits, with one question for research: when "In a fight" begins (the take, below). Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
+**Status:** built, self-tested, and taken at phone size, 2026-11-15 (Faber). Research's verdict in motion given, 2026-11-15, night: competent as a block, with two fixes and the fight's rule, then a short retake (below). Time: about half an active hour to build, by the commits' clock from the dock's commit at 15:35, and about half an hour for the self-test and the take.
 
 - **Implemented.**
   - **The rule** (`Rules.Home`, pure): `Refusal` in the spec's order (here, a boss's ground, an event, a fight, the cooldown), `Says` in its plain words ("Ready in 12 s" counts the whole seconds left, never 0), `Broken` (a hit at or after the charge's start), `Share` (a charge's or a cooldown's run, 0 to 1). Seeds in `Config.Home`, tuned live (`Tune "Home.Charge"`).
@@ -1812,6 +1812,37 @@ Research, 2026-11-15, night, on the director's word of the same night (`docs/dec
   - Then the tile and the HUD say the same thing.
   - The cost is small: `Rules.Home` gains the fact in its situation (the server has it in `FightService.InCombat` and the lead's `Target`), plus a logic case and a self-test check.
   - Until research's word, it stays as built.
+
+**Research's verdict in motion, 2026-11-15, night.** Read from `home_take_sheet.jpg`, the four stills, and two cuts from `home_take.mkv` at native size: the jump at 20 fps, 10.8 to 11.75 s, and the fight's tap at 30 fps.
+
+- **Felt:** quick and sure.
+  - From tap to arrival takes 0.65 s. The lead arrives beside the avatar, and the base's own chip greets them ("89 shards: into the Breaker").
+  - The tile's four states read apart at phone size:
+    - ready: full yellow;
+    - quiet at home: muted gold;
+    - the cooldown: the veil swept left to right, so the tile brightens as it comes back, with "Ready in 11 s" for whoever taps;
+    - a fight: the whole tile dark olive and the icon faint, with a small shake that reads beside "In a fight".
+- **Tier:** competent, as a block. The weakest beat is the one that says "it's coming": the charge.
+- **The one bold thing:** the cooldown's veil. It answers "how long" with no number, and the toast gives the number only to whoever asks.
+- **Fixes for the block:**
+  1. **The press flashes black.** At the tap (10.9 s), the tile goes to ink for a frame, then back to yellow before the charge. At the moment that should feel sure, it reads as a glitch. The press goes straight into the charge's fill.
+  2. **The charge doesn't read at phone size.**
+     - The white rising over the ready yellow barely shows: only the last frames look paler, and no edge is seen rising.
+     - The outline's #B48CFF sinks into Lantern Row's violet stone.
+     - For the stand-in: fill in the void's violet (#B48CFF) with a bright edge, since yellow and violet stand apart. Make the outline near-white (#EEE6FF), so it reads on every ground.
+     - Modulo's final light keeps the same need: it must read on the violet grounds.
+- **The question, answered (tier 2, research and Faber's area): "In a fight" is `FightService.InCombat` or a hit in the last 4 s.**
+  - **InCombat is the game's one meaning of a fight** (TR12): the lead has a target, or a Shade has the lead. The lead swap already refuses on it ("Not during a fight").
+  - **The card and the tile then agree:** while a target's card is up, the tile is dim. The card is the cue the player already reads.
+  - **A Shade's target alone wouldn't close the gap.** The lead takes a target within 30 studs of the avatar (`Combat.Lead.Leash`), but a Shade notices only at 20, so the card would still show over a ready tile.
+  - **The cost, accepted:** home refuses within about 30 studs of a live Shade. Stepping back ends it, as it does for the lead swap: the lead lets go past its leash, and a Shade gives up 40 studs from its spawn.
+  - **A fall ends the fight at once:** the 4 s tail counts only while the lead stands. Then the pip after a lone fall never points at a dim tile. Going home is what the pip asks for, and the Shades have no one left to fight.
+  - **The cases:**
+    - the closing gap: a target and no hit gives "Fight";
+    - a Shade's target alone gives "Fight";
+    - after a fall, no tail.
+- **The Base screen's way in (Faber's question): no other way in.** What it holds already has homes in the spec: the bays open at each bay (`docs/ui.md`, 7), and the bag is the character screen's Items page (TR17).
+- **Then:** a short retake at phone size of the tap and the charge (20 fps, the tile and the avatar cut out), and of the closing gap with the tile dim. TR19 closes as a block on that read. Its light waits on Modulo, its sound on AR13.
 
 ## TR20. Everything that presses answers the pointer: hover (Faber)
 

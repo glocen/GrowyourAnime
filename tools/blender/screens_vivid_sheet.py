@@ -37,10 +37,17 @@ POWER = h.POWER
 WORD = {"Common": "#AEB4C0", "Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777",
         "Mythical": "#FF8794"}
 BATTERY = (42, 60)  # stored, the cap, in kWh
-# The two levels' names: the build says "A little" and "A lot". The director, 2026-11-15: "this is childish words let
-# use real electrician words". These two are Modulo's proposal, for research's register and Faber's screen.
-INFUSION = (("Low voltage", 20, "Epic", "1.0%", "1.1%"), ("High voltage", 60, "Epic", "1.0%", "1.3%"))
-HOLDS = (("Marigold", "Epic", "1.0%"), ("Lyric", "Rare", "9.0%"))  # the two rows Faber's take shows
+# Voltage (the director, 2026-11-15: "let use real electrician words", then "Faster break"; docs/design.md, "Infusion
+# is voltage"): stored energy buys time, never luck. Low halves a shard's time left, High breaks it now. The prices are
+# research's for a Prismatic on ground 1 (tools/balance/seeds.json, "voltage"); a Standard is offered none, since it
+# would save under a minute. A level: its name, its kWh, what it saves, what that leaves.
+VOLTAGE = (("Low voltage", 30, "\u22121 h 30", "1 h 30 left"), ("High voltage", 60, "Breaks now", ""))
+# Drop rates (the director, 2026-11-15: "drop rate is that simple", and "it obviously dont contain everything the odd
+# are off"): every Voidkin a shard can give, under each rarity's total, to 100%. A Lantern Row Standard: the pool's
+# totals (seeds.json, "pools") over the ground's Voidkin (docs/roster.md, "Lantern Row's shards at launch"), a rarity's
+# total shared evenly among its Voidkin.
+RATES = (("Common", 60, ("Rook", "Kirra", "Pip", "Watt")), ("Uncommon", 30, ("Sable",)), ("Rare", 9, ("Lyric",)),
+         ("Epic", 1, ("Marigold",)))
 
 PX, PY, PW, PH = vs.PANEL  # the screen's panel: it covers the built one's on the still
 DX, DY, DW, DH = PX + 430.0, PY + 40.0, PW - 442.0, PH - 52.0  # the chosen shard's panel
@@ -129,7 +136,7 @@ def sky_box(st, x, y, w, hh):
     return px
 
 
-def chamber(st, x, y, w, hh, p, index, state, left=0.0, seconds=""):
+def chamber(st, x, y, w, hh, p, index, state, left=0.0, seconds="", name="Standard", chosen=False):
     """A chamber is a window on the sky, with a strip at its top for its name and a plate at its foot: the shard floats
     in the window, the words and the numbers sit on the plate. Strip and plate are solid."""
     cx, plate = x + w / 2, y + hh * SPLIT
@@ -163,10 +170,12 @@ def chamber(st, x, y, w, hh, p, index, state, left=0.0, seconds=""):
         st.text(cx, plate + 26, SMALL, "Tap to open", h.INK, "CENTER")
         return
     st.lay("ButtonEdge", x, y, w, hh, tint=p["edge"])
-    st.text(x + 9, y + 7, SMALL, f"Chamber {index}", p["soft"])
+    if chosen:  # the room's ring, and no glow: a glow would cloud its window
+        st.lay("ButtonRing", x, y, w, hh, tint=p["accent"])
+    st.text(x + 9, y + 7, SMALL, f"Chamber {index}", h.PALE[p["accent"]] if chosen else p["soft"])
     light(st, cx, y + 58, 27.0, h.VOIDKIN, 0.36)
     st.icon("Shard", cx, y + 58, 50.0)
-    st.text(cx, plate + 4, 11, "Standard", p["text"], "CENTER")
+    st.text(cx, plate + 4, 11, name, p["text"], "CENTER")
     kit.bar(st, x + 10, plate + 19.5, w - 20, 6.0, left, p, POWER)
     st.text(cx, plate + 29, SMALL, seconds, h.PALE[POWER], "CENTER")
 
@@ -188,14 +197,34 @@ def battery(st, x, y, p):
     st.text(x + 167, y + 1, 13, f"{stored} / {cap} kWh", POWER)
 
 
-def holds(st, y, p):
-    st.text(DX + 12, y, 12, "Who it can hold", p["text"])
-    for i, (who, rarity, odds) in enumerate(HOLDS):
-        ry = y + 23 + i * 23
-        pip(st, DX + 18, ry + 5.5, WORD[rarity])
-        st.text(DX + 29, ry, 12, who, p["text"])
-        st.text(DX + 108, ry, 12, rarity, WORD[rarity])
-        st.text(DX + DW - 12, ry, 12, odds, WORD[rarity], "RIGHT")
+def chevron(st, cx, cy, colour, down=False):
+    t = kit.blank(12, 12)
+    pts = ((2.4, 4.0), (6.0, 7.6), (9.6, 4.0)) if down else ((4.4, 2.4), (8.0, 6.0), (4.4, 9.6))
+    t.paint(np.minimum(h.seg(t, pts[0], pts[1], 1.5), h.seg(t, pts[1], pts[2], 1.5)), c(colour))
+    h.place(st, t, cx - 6, cy - 6)
+
+
+def rates(st, y, p):
+    """Drop rates, open: each rarity's total in its colour beside its pip, its Voidkin under it in two columns, each
+    with its own chance. The totals add to 100%."""
+    st.text(DX + 12, y, 12, "Drop rates", p["text"])
+    chevron(st, DX + DW - 18, y + 6, p["soft"], True)
+    y += 17.0
+    half = (DW - 24) / 2
+    for rarity, total, who in RATES:
+        colour = WORD[rarity]
+        pip(st, DX + 18, y + 5.5, colour)
+        st.text(DX + 29, y, 12, rarity, colour)
+        st.text(DX + DW - 12, y, 12, f"{total}%", colour, "RIGHT")
+        t = kit.blank(DW - 24, 2)
+        t.paint(np.abs(t.y - 1) - 0.4, c(colour), 0.3)
+        h.place(st, t, DX + 12, y + 14.0)
+        y += 17.5
+        for i, name in enumerate(who):
+            x, ry = DX + 29 + (i % 2) * half, y + (i // 2) * 14.5
+            st.text(x, ry, SMALL, name, p["text"])
+            st.text(x + half - 25, ry, SMALL, f"{total / len(who):g}%", p["soft"], "RIGHT")
+        y += ((len(who) + 1) // 2) * 14.5 + 0.5
 
 
 def night(st, sky):
@@ -212,8 +241,9 @@ def night(st, sky):
 
 
 def breaker(p, world, state, sky):
-    """The Breaker in Machine, as Faber built it, as a galaxy. `state`: "line", a waiting shard chosen, its infusion and
-    its odds showing; "ready", two chambers broken, the first chosen."""
+    """The Breaker in Machine, as Faber built it, as a galaxy. `state`: "line", a Prismatic chosen in its chamber, its
+    voltage showing and its drop rates one tap away; "ready", two chambers broken, the first chosen, its drop rates
+    open."""
     st = kit.Stage.__new__(kit.Stage)
     st.w, st.h, st.items = W, H, []
     st.px = world if world is not None else rs.canvas(round(W * K4), round(H * K4), tuple(c("#5B7FA6")))
@@ -224,44 +254,43 @@ def breaker(p, world, state, sky):
     # the chambers
     st.text(PX + 14, PY + 44, 11, "Chambers", p["soft"])
     ready = state == "ready"
-    for i, (kind, left, seconds) in enumerate((("ready" if ready else "work", 0.35, "10 s left"),
-                                               ("ready" if ready else "work", 0.35, "10 s left"),
-                                               ("locked", 0, ""), ("locked", 0, ""))):
-        chamber(st, PX + 14 + i * 103, PY + 60, 96, 144, p, i + 1, kind, left, seconds)
+    cells = ((("ready", 0, "", "Standard"),) * 2 if ready else
+             (("work", 0.02, "3 h left", "Prismatic"), ("work", 0.35, "10 s left", "Standard"))) + (("locked", 0, "", ""),) * 2
+    for i, (kind, left, seconds, name) in enumerate(cells):
+        chamber(st, PX + 14 + i * 103, PY + 60, 96, 144, p, i + 1, kind, left, seconds, name, not ready and i == 0)
     # what's ready, waiting and in the bag
     st.text(PX + 14, PY + 214, 11, "Ready, waiting and in the bag", p["soft"])
     row = ((("Ready", "Standard", "ready"), ("Ready", "Standard", "ready")) if ready else
-           (("Standard", "Waiting, 1st", "lit"), ("Standard", "Waiting, 2nd", "rest"))) + (("Standard", "In the bag · 72", "rest"),)
+           (("Standard", "Waiting, 1st", "rest"), ("Standard", "Waiting, 2nd", "rest"))) + (("Standard", "In the bag · 72", "rest"),)
     for i, (top, under, kind) in enumerate(row):
         chip(st, PX + 14 + i * 137, PY + 232, 131, 50, p, top, under, kind)
     # the chosen shard: its own panel, a step lighter than the screen's
     kit.panel(st, DX, DY, DW, DH, p)
-    st.text(DX + 12, DY + 10, 13, "Lantern Row shard · Standard", p["text"])
-    if ready:
-        st.text(DX + 12, DY + 28, SMALL, "Chamber 1 · ready", POWER)
-        h.main_button(st, DX + 12, DY + 48, DW - 24, 44, "Open", p)
-        holds(st, DY + 108, p)
+    st.text(DX + 12, DY + 10, 13, f"Lantern Row shard · {'Standard' if ready else 'Prismatic'}", p["text"])
+    if ready:  # its chamber says Ready; here, the one filled action, then everything it can give
+        h.main_button(st, DX + 12, DY + 30, DW - 24, 44, "Open", p)
+        rates(st, DY + 83, p)
     else:
-        st.text(DX + 12, DY + 28, SMALL, "Waiting, 1st", p["soft"])
+        st.text(DX + 12, DY + 28, SMALL, "Chamber 1 · 3 h left", p["soft"])
         stored = BATTERY[0]
-        for i, (name, price, rarity, base, lifted) in enumerate(INFUSION):
-            y = DY + 48 + i * 52
+        for i, (name, price, saves, leaves) in enumerate(VOLTAGE):
+            y = DY + 48 + i * 54
             if price <= stored:  # the one the battery can pay is the screen's main action
-                filled(st, DX + 12, y, 118, 42, p)
-                ink = faint = h.INK
+                filled(st, DX + 12, y, 118, 44, p)
+                ink = h.INK
             else:
-                kit.button(st, DX + 12, y, 118, 42, "", p, "disabled")
-                ink = faint = p["faint"]
-            st.text(DX + 71, y + 7, 13, name, ink, "CENTER")
-            st.text(DX + 71, y + 23, SMALL, f"{price} kWh", faint, "CENTER")
-            if price <= stored:  # what it does to the rarest tier, in that tier's colour
-                st.text(DX + 142, y + 5, 12, rarity, WORD[rarity])
-                st.text(DX + 142, y + 22, 12, base, h.mix(WORD[rarity], p["soft"], 0.45))
-                arrow(st, DX + 178, y + 27, WORD[rarity])
-                st.text(DX + 190, y + 22, 12, lifted, WORD[rarity])
-            else:  # a refusal: how many kWh short, alone (research, 2026-11-15: the bar beside it already says what's held)
-                st.text(DX + 142, y + 14, 12, f"{price - stored} kWh short", POWER)
-        holds(st, DY + 160, p)
+                kit.button(st, DX + 12, y, 118, 44, "", p, "disabled")
+                ink = p["faint"]
+            st.text(DX + 71, y + 8, 13, name, ink, "CENTER")
+            st.text(DX + 71, y + 24, SMALL, f"{price} kWh", ink, "CENTER")
+            if price <= stored:  # what it buys: time, in Power's light
+                st.text(DX + 142, y + 7, 14, saves, h.PALE[POWER])
+                st.text(DX + 142, y + 26, SMALL, leaves, p["soft"])
+            else:  # what it would buy, and the refusal: how many kWh short (research, 2026-11-15)
+                st.text(DX + 142, y + 7, 13, saves, p["soft"])
+                st.text(DX + 142, y + 25, 12, f"{price - stored} kWh short", POWER)
+        kit.button(st, DX + 12, DY + 166, DW - 24, 44, "Drop rates", p)  # one tap away (docs/ui.md, screen 3)
+        chevron(st, DX + DW - 28, DY + 188, p["soft"])
     return h.bytes8(h.halve(st.px)), st.items
 
 
@@ -293,18 +322,22 @@ NOTES = (
     "through the chambers' row, so the four windows hold rose, violet, blue and teal of one sky, and a knot of stars in "
     "the third is where the eye rests. A chamber is a window with a plate at its foot: the shard floats in the window, in the void's lavender. A locked "
     "chamber is a dimmer window. Every number and every odd sits on a solid plate; nothing moves behind a word.",
-    "The lights are Power's yellow, the one warm colour in a cool sky: the battery's charge, the infusion the battery can "
+    "The lights are Power's yellow, the one warm colour in a cool sky: the battery's charge, the voltage the battery can "
     "pay (the screen's one filled action), a chamber that's ready. Words wear their meaning's colour: a rarity's name and "
-    "odds in its colour beside a pip of it; kWh in Power's yellow.",
+    "total in its colour beside a pip of it; kWh and time saved in Power's yellow.",
     "The battery: a charge bar in kWh on its own plate, with the battery's mark (on the HUD the bolt already means "
-    "generation in kW; the battery's mark means the store). Infusion's price is on its button in kWh. One the battery "
-    "can't pay says how many kWh short. Numbers: research's seeds (the battery 60 kWh, infusion 20 and 60); 42 stored is a sample.",
+    "generation in kW; the battery's mark means the store). Voltage (the director, 2026-11-15, \"Faster break\") buys time, "
+    "never luck: Low halves the time left, High breaks the shard now. A button holds its name over its price in kWh, and "
+    "what it saves stands beside it. One the battery can't pay says how many kWh short. A Standard is offered none (it "
+    "would save under a minute), so the chosen shard is a Prismatic, 3 h left. Numbers: research's seeds (the battery "
+    "60 kWh; a Prismatic's Low 30 and High 60 on ground 1); 42 stored is a sample.",
+    "Drop rates (the director, 2026-11-15: \"drop rate is that simple\") are one tap away, and on the second sheet they're "
+    "open: every Voidkin the shard can give, under each rarity's total, to 100%.",
     "In motion (the test: vivid3_breaker_motion.mp4): a thin mist of the river's colours drifts along the chambers' row, "
     "about 38 s to cross a window; six large stars breathe, each on its own clock; a working shard's light breathes; now and then a falling star crosses a window. "
     "Nothing else moves, and with reduced motion on it's this still. Darker and stiller than the reveal it leads to.",
-    "The infusion's two levels are named Low voltage and High voltage here, a proposal: the build's \"A little\" and \"A lot\" go, on the director's word (2026-11-15: \"let use real electrician words\").",
-    "Stand-ins: Blender's face for the game's text; the second infusion's lift (1.3%) and the Legendary 0.1% on the strip. "
-    "The odds list is cut to the two rows Faber's take shows: the game's list holds every Voidkin of the shard, to 100%.",
+    "Stand-ins: Blender's face for the game's text; the Legendary 0.1% on the strip; a rarity's total shared evenly among "
+    "its Voidkin (15% for each of four Commons). Today's still predates the names and voltage as time.",
 )
 
 
@@ -383,13 +416,17 @@ def main():
     strip = words_strip(p)
     kit.IMAGES.clear()
     labels = ("Today: Faber's take of the build (TR9, Machine), all in Graphite", "Galaxy: the same screen, a window on the void")
-    sheet(out, "vivid3_breaker.png", "Grow your Anime: the Breaker, today and as a galaxy. A shard waiting, its infusion and its odds",
+    sheet(out, "vivid3_breaker.png", "Grow your Anime: the Breaker, today and as a galaxy. A Prismatic in its chamber, and its voltage",
           labels, h.floats(befores["line"]), shots["line"], NOTES, strip)
     h.stage("the Breaker's sheet")
-    sheet(out, "vivid3_breaker_ready.png", "Grow your Anime: the Breaker, today and as a galaxy. Two shards broken",
+    sheet(out, "vivid3_breaker_ready.png", "Grow your Anime: the Breaker, today and as a galaxy. Two shards broken, the first one's drop rates",
           labels, h.floats(befores["ready"]), shots["ready"],
           ("A ready chamber: its window blazes gold round the shard and its plate is filled in Power's yellow with ink words. "
-           "Open is the screen's one filled button; the ready shards in the line wear the room's ring.",))
+           "Open is the screen's one filled button; the ready shards in the line wear the room's ring.",
+           "Drop rates, open (the director, 2026-11-15: \"drop rate is that simple\", and \"it obviously dont contain everything "
+           "the odd are off\"): each rarity's total in its colour beside its pip, its Voidkin under it, each with its own "
+           "chance. A Lantern Row Standard: Common 60, Uncommon 30, Rare 9, Epic 1, to 100% (research's seeds, the roster's "
+           "eight for the ground; an even share inside a rarity is assumed). A longer list scrolls inside this panel."))
     h.stage("the ready sheet")
 
 

@@ -1714,6 +1714,16 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
   3. **The head warns about a choice.** "Demand over generation: the machines slow" stands in orange under a split the player made. Proposal: under a split it says the fact plainly, "The Breaker at 25%", without the warning colour.
   - Each changes my own tier 1 calls in this build. I make none before the verdict.
 
+- **Research's verdict, 2026-11-15, night** (`power_take_sheet.jpg`, a row a moment at phone size):
+  - **Works in grey.** The split bar reads at a glance, and the Breaker slowing and speeding reads in its row. The screen is the kit's grey, as a grey build should be; its look comes with Modulo's generator.
+  - **Faber's three proposals are accepted** (tier 2, research for design):
+    1. The pill turns amber only while the battery covers a shortfall.
+    2. A handle hands what it gives up to the battery, and an idle machine's share is drawn as the battery's.
+    3. Under a split the player made, the head states the fact plainly ("The Breaker at 25%"), with no warning colour.
+  - **The Training machine:** a flat 10 kW at launch, as built. `sim.py` scales it by the ground's factor so it stays a real share of later plants. That rule joins with Drum Court, and at Lantern Row's factor both give 10.
+  - **Voltage in Lantern Row:** hidden. A pane that can only say "not offered" is noise, and at launch no ground offers it. It shows from the first ground that offers it.
+  - **Next:** the three changes and the hidden pane; then a retake at phone size, the same case, for research's pass.
+
 **Status:** implemented and tested, 2026-11-15 (Faber, above). Its self-test passes, and the take at phone size is recorded. Visually reviewed by Faber only: research's verdict waits, with the three points above. Not accepted.
 
 ## TR19. Home in one tap: the dock's Base tile (Faber)

@@ -1723,8 +1723,28 @@ Research's entry, 2026-11-14, night, on the director's word (`docs/decisions.md`
   - **The Training machine:** a flat 10 kW at launch, as built. `sim.py` scales it by the ground's factor so it stays a real share of later plants. That rule joins with Drum Court, and at Lantern Row's factor both give 10.
   - **Voltage in Lantern Row:** hidden. A pane that can only say "not offered" is noise, and at launch no ground offers it. It shows from the first ground that offers it.
   - **Next:** the three changes and the hidden pane; then a retake at phone size, the same case, for research's pass.
+- **Built, 2026-11-15, night** (Faber, f5c2927):
+  - **The pill** turns amber only while the battery covers a shortfall (`Flow.Net` under 0).
+  - **The Void Breaker's handle** keeps the Training machine's share, squeezing it only at the bar's end, so what it gives up goes to the battery. With both handles on one spot, the first move picks the side: left moves the Breaker's, right the Training machine's.
+  - **An idle machine's segment** is drawn in the battery's colour.
+  - **The head:**
+    - under Auto it still warns, in the warning colour ("The battery covers the rest", or "Demand over generation: the machines slow");
+    - under a split it says each slowed machine plainly, in the dim text colour: "The Void Breaker at 25%".
+  - **Voltage:** none shows on a kind it's never offered on (`Rules.Power.Offered`), so Lantern Row's shards show no pane.
+  - **Tested:**
+    - logic 5912 offline (`Offered`: the 30-second Standard never, at 900 s always, an unknown shard never);
+    - Power 58: the handle keeps the 60%, the idle segment, the plain head under a split;
+    - voltage 60: the 30-second shards show none, then the case tunes both 30-second grades to 900 s;
+    - the HUD's pills 34.
+- **The retake at phone size, 2026-11-15, night** (`build/captures/tr18/power_retake.mkv`, 55 s at 59 fps, its zero at 5.25 s; `power_retake_sheet.jpg`, a row a moment). The same case, 17 passing at 60 fps. The stills:
+  - `retake_pill_auto.png`: before the screen opens, the pill "21 / 30 kW" in amber, the battery covering;
+  - `retake_auto.png`: under Auto, the head's "The battery covers the rest" in the warning colour;
+  - `retake_split.png`: the handle at a quarter. The Breaker 25%, the battery's 75% beside it, the Training machine idle at 0%. The head says "The Void Breaker at 25%" in grey;
+  - `retake_auto_again.png`: Auto again.
+  - Not seen: the pill under the split, as the screen covers it. The HUD case checks its rule.
+- **Visually reviewed by Faber, on the stills:** the three changes read as accepted. Research's pass on the retake waits.
 
-**Status:** implemented and tested, 2026-11-15 (Faber, above). Its self-test passes, and the take at phone size is recorded. Visually reviewed by Faber only: research's verdict waits, with the three points above. Not accepted.
+**Status:** research's verdict built and retaken at phone size, 2026-11-15, night (Faber, above). Self-test passing. Research's pass on the retake waits. Not accepted.
 
 ## TR19. Home in one tap: the dock's Base tile (Faber)
 

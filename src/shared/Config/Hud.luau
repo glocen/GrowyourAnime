@@ -364,6 +364,11 @@ return {
 	--            at most and Least at least, as many as fit the plate; Emblem the least width that shows its emblem;
 	--            when it rises, the digits Roll up from the old number over that many seconds and the gain rises Gain
 	--            authored pixels over Hold seconds as it fades
+	--   Finish   its digits in cobalt blue-steel (AR12: the director's "let go platnium but i want it to have color not
+	--            be blend", research's read A2 with its foot lifted to 3 to 1 at 20 points; Modulo's combat_power.json,
+	--            DESIGN, untried in Studio): the Colours at the Stops top to foot; a Line-point Stroke round them and the
+	--            same again Drop points lower; a Glow behind them at GlowAlpha; the caption in Caption. Rising, they go
+	--            White of the way toward white and Swell times their size, easing back over the roll
 	--   Strip    a portrait's cell, authored
 	--   Panel    the page's panel: Share of the room's width, between Least and Most authored
 	Voidkin = {
@@ -373,6 +378,18 @@ return {
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
 		Stage = { Glow = 0.35, Light = 0.45 },
 		Power = { Width = 236, Height = 56, Number = 36, Least = 20, Emblem = 170, Roll = 0.6, Gain = 26, Hold = 1.2 },
+		Finish = {
+			Stops = { 0, 0.2, 0.5, 0.56, 1 },
+			Colours = { Color3.fromHex("#FFFFFF"), Color3.fromHex("#C9DBFF"), Color3.fromHex("#5F90EA"), Color3.fromHex("#3566C9"), Color3.fromHex("#315FBE") },
+			Stroke = Color3.fromHex("#07080D"),
+			Line = 1.2,
+			Drop = 1.2,
+			Glow = Color3.fromHex("#4A7BF5"),
+			GlowAlpha = 0.55,
+			Caption = Color3.fromHex("#BCD0F7"),
+			White = 0.4,
+			Swell = 1.1,
+		},
 		Strip = 52,
 		Panel = { Share = 0.44, Least = 300, Most = 420 },
 	},

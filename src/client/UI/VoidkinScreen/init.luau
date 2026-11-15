@@ -522,26 +522,70 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 		shade.Parent = press
 	end
 	-- The caption may run past a narrow plate's ends, over the hands: they stand lower than its line.
-	local caption = text({ Name = "Caption", Size = Theme.Text.Caption, Colour = if whole then Theme.Colour.TextDim else Theme.Colour.Text, Align = align, Box = UDim2.new(1, if whole then -left else 60, 0, 16), Position = UDim2.fromOffset(if whole then left else -30, 1), Parent = press }, "Combat Power")
+	local finish = HudConfig.Voidkin.Finish
+	local caption = text({ Name = "Caption", Size = Theme.Text.Caption, Colour = finish.Caption, Align = align, Box = UDim2.new(1, if whole then -left else 60, 0, 16), Position = UDim2.fromOffset(if whole then left else -30, 1), Parent = press }, "COMBAT POWER")
 	caption.ZIndex = 2
 	-- The digits as large as the plate holds: about 0.62 of their size each.
-	local fits = math.floor((wide - left - Theme.Size.Pad) / (0.62 * math.max(#Hud.Digits(value), 1)))
+	local said = Hud.Digits(value)
+	local fits = math.floor((wide - left - Theme.Size.Pad) / (0.62 * math.max(#said, 1)))
 	local size = math.clamp(fits, config.Least, config.Number)
-	local number = text({ Name = "Number", Size = size, Font = Theme.Font.Number, Align = align, Box = UDim2.new(1, -left, 0, config.Height - 16), Position = UDim2.fromOffset(left, 16), Parent = press }, Hud.Digits(value))
+	-- In cobalt (Config.Hud.Voidkin.Finish): one soft glow behind them, their drop under them, the face over it, each
+	-- stroked in ink. The drop and the face sit in one frame, so a rise swells both and says the same in each.
+	local drawn = math.min(0.62 * size * #said, wide - left)
+	Skin.Lay(Skin.Of(press), "ButtonBaseGlow", {
+		Name = "Glow",
+		X = if whole then left else (wide - drawn) / 2,
+		Y = 16 + (config.Height - 16 - size) / 2,
+		W = drawn,
+		H = size,
+		Tint = finish.Glow,
+		Alpha = finish.GlowAlpha,
+	})
+	local digits = frameOf("Digits", press, UDim2.fromOffset(left, 16), UDim2.new(1, -left, 0, config.Height - 16))
+	digits.ZIndex = 2
+	local function stroked(name: string, colour: Color3?, down: number): TextLabel
+		local label = text({ Name = name, Size = size, Font = Theme.Font.Number, Align = align, Colour = colour, Position = UDim2.fromOffset(0, down), Parent = digits }, said)
+		local line = Instance.new("UIStroke")
+		line.Color = finish.Stroke
+		line.Thickness = finish.Line
+		line.Parent = label
+		return label
+	end
+	local drop = stroked("Drop", finish.Stroke, finish.Drop)
+	local number = stroked("Number", Color3.new(1, 1, 1), 0) -- white under its gradient, so the stops show true
+	number.ZIndex = 2
+	local stops: { ColorSequenceKeypoint } = {}
+	for index, at in finish.Stops do
+		table.insert(stops, ColorSequenceKeypoint.new(at, finish.Colours[index]))
+	end
 	local metal = Instance.new("UIGradient")
 	metal.Rotation = 90
-	metal.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(176, 182, 196))
+	metal.Color = ColorSequence.new(stops)
 	metal.Parent = number
 	if from and value > from then
 		local started = os.clock()
-		number.Text = Hud.Digits(from)
+		number.Text, drop.Text = Hud.Digits(from), Hud.Digits(from)
 		local swell = Instance.new("UIScale")
-		swell.Scale = 1.12
-		swell.Parent = number
+		swell.Scale = finish.Swell
+		swell.Parent = digits
 		TweenService:Create(swell, TweenInfo.new(config.Roll, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		local rolled = false
 		table.insert(tickers, function()
+			if rolled then
+				return
+			end
 			local t = math.clamp((os.clock() - started) / config.Roll, 0, 1)
-			number.Text = Hud.Digits(math.floor(from + (value - from) * (1 - (1 - t) ^ 4) + 0.5))
+			rolled = t >= 1
+			local eased = 1 - (1 - t) ^ 4
+			local now = Hud.Digits(math.floor(from + (value - from) * eased + 0.5))
+			number.Text, drop.Text = now, now
+			-- Lit toward white as it rises, back to its cobalt as the roll ends.
+			local lift = finish.White * (1 - eased)
+			local lit: { ColorSequenceKeypoint } = {}
+			for index, at in finish.Stops do
+				table.insert(lit, ColorSequenceKeypoint.new(at, finish.Colours[index]:Lerp(Color3.new(1, 1, 1), lift)))
+			end
+			metal.Color = ColorSequence.new(lit)
 		end)
 		local gain = text({ Name = "Gain", Font = Theme.Font.Number, Colour = Theme.Colour.Heal, Box = UDim2.fromOffset(96, 22), Position = UDim2.new(1, 4, 0, 20), Parent = press }, `+{Hud.Digits(value - from)}`)
 		local rise = TweenService:Create(gain, TweenInfo.new(config.Hold, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {

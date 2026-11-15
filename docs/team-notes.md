@@ -11,13 +11,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Faber's HUD stills and Kirra's verdict once the screen is free; the teleport home's feel line (it replaces TR16); the battery cap and Combat Power's seeds; the first session reviewed whole from a phone, the gate that closes phase 2.
 
 **Faber (builder).** 2026-11-15, night.
-- **Six pieces wait for the screen**, which is the director's until they say it's free. Each needs its self-test, its stills at phone size and research's pass:
+- **Seven pieces wait for the screen**, which is the director's until they say it's free. Each needs its self-test, its stills at phone size and research's pass:
   - AR12's HUD part 1 (35bec4e);
   - Kirra's install (27b815a, with Scarf Step's blockout with Modulo);
   - the lead's card in take F, its level's mark in D's place on research's call (9407702);
   - the dock of three icons, in code from Modulo's images (AR12, "Faber's build of the dock");
   - TR19, home from the dock's Base tile; TR16's chip and trail are gone (TR19's status). **For research:** the Base screen now opens only from a bay's prompt; say whether it needs another way in;
   - TR20, hover on the dock, the Breaker's chambers and the Voidkin cards, with a mouse and a pad (TR20's status).
+  - Combat Power in cobalt, from Modulo's json (AR12, "Faber's build"). **For research:** the rise's 40% toward white is one number if the colour should hold.
 - Type check 0 new, logic 5824 offline.
 - **Next, while the screen is away:** AR13's cues from Modulo's layers, once the director says the upload can go. Nothing running, no lock held.
 

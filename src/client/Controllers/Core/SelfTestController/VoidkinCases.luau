@@ -309,6 +309,26 @@ function VoidkinCases.Cases(given: Given): { any }
 				local number = VoidkinScreen.Find("Number")
 				local said = if number and number:IsA("TextLabel") then number.Text else "none"
 				t.Check("Combat Power at its feet, from its stats", said == Hud.Digits(Stats.Power(block)), said)
+				-- Its digits in cobalt (AR12; Config.Hud.Voidkin.Finish): the ramp's stops, the stroke, the drop saying the
+				-- same a stroke lower, the glow behind, the caption's colour.
+				local finish = HudConfig.Voidkin.Finish
+				local plate = VoidkinScreen.Find("Power")
+				local drop = if number then (number.Parent :: Instance):FindFirstChild("Drop") :: TextLabel? else nil
+				local metal = if number then number:FindFirstChildOfClass("UIGradient") else nil
+				local keys = if metal then metal.Color.Keypoints else {}
+				local ramp = #keys == #finish.Stops
+				for index, key in keys do
+					local want = finish.Colours[index]
+					ramp = ramp and want ~= nil and math.abs(key.Time - finish.Stops[index]) < 1e-3 and (Vector3.new(key.Value.R, key.Value.G, key.Value.B) - Vector3.new(want.R, want.G, want.B)).Magnitude < 1e-2
+				end
+				t.Check("its digits wear the cobalt ramp", ramp, `{#keys} stops`)
+				local stroke = if number then number:FindFirstChildOfClass("UIStroke") else nil
+				t.Check("stroked in ink", stroke ~= nil and stroke.Color == finish.Stroke and math.abs(stroke.Thickness - finish.Line) < 1e-3)
+				t.Check("its drop says the same, a stroke lower", drop ~= nil and number ~= nil and drop.Text == said and drop.TextColor3 == finish.Stroke and math.abs(drop.Position.Y.Offset - finish.Drop) < 1e-3)
+				local glow = if plate then plate:FindFirstChild("Glow", true) :: ImageLabel? else nil
+				t.Check("a soft glow behind them", glow ~= nil and glow.ImageColor3 == finish.Glow and math.abs(glow.ImageTransparency - (1 - finish.GlowAlpha)) < 1e-3)
+				local caption = if plate then plate:FindFirstChild("Caption") :: TextLabel? else nil
+				t.Check("its caption in its colour", caption ~= nil and caption.TextColor3 == finish.Caption and caption.Text == "COMBAT POWER")
 			end
 			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
 				t.Check(`{name} in view`, inView(name))

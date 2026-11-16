@@ -131,7 +131,7 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
   - A crash leaves `Run` in the save at its last saved floor. The next join ends it then, so nothing doubles and nothing won and saved is lost.
   - `Results` opens the screen once and is cleared by an `Act` with its op id.
   - A run never resumes.
-- **The rules, pure, `Rules.Tower`:** `Foe(floor, seed)` gives the Voidkin row and the level, and `Block(foe)` its stat block: its own figure lifted to the seeds' build (`Config.Tower.Lift`, read from the model), since the engine has no build share (TR29). `Reward(floor, best, seed)` gives a floor's Credits and chest roll. `HealCap(maxHealth)` gives the most healed in one floor.
+- **The rules, pure, `Rules.Tower`:** `Foe(floor, seed)` gives the Voidkin row and the level, and `Block(foe)` its stat block: its own figure lifted to the seeds' build (`Config.Tower.Lift`, read from the model), since the engine has no build share (TR29). `Reward(floor, best, seed, fast)` gives a floor's Credits and chest roll, nothing for a fast floor, and its chest is the Tower's own tier, which rolls by `Config.Chests.Tower` (research's fit, TR29). `HealCap(maxHealth)` gives the most healed in one floor.
 - **FightService:**
   - The foe is a Voidkin row fought as a rival for one player (`SpawnRival`): only that player's lead fights it, and its strikes touch no one else.
   - Healing passes one function that counts each floor's healing against the cap, so Lifesteal, when wired, is capped there too.

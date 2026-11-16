@@ -2608,6 +2608,26 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
 - **The run's length:** about a minute at launch, nearly all of it hard floors. It's judged at the first capture.
 - **Refit when Drum Court opens:** past launch, the Tower's Credits fall to 7% to 26% of a ground's at the lead's level.
 
+**Faber's carry of the fit (2026-11-16, 20:40).**
+- **Config:**
+  - `Config.Tower`: `Credits = { Share = 0.34, Record = 2 }` and `Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5 }`, with `Tier` gone.
+  - `Config.Chests.Tower` is the Tower's row.
+- **The rule:** `Tower.Reward` and `Tower.Won` take whether the floor fell fast, and a fast floor pays nothing. TowerService passes the fight's own `run.Fast`, so the pay matches how the floor was fought.
+- **The chest:**
+  - The Tower's is a fourth chest tier, "Tower Chest of <ground>", one for each ground. It belongs to the ground the foe's level stands in, since an item's worth comes from that ground.
+  - Its odds and its roll read `Chests.Weights`: the Tower's row for a Tower chest, the ladder's row for any other.
+  - On the bag's cell it says "Tower Chest".
+- **The checks:**
+  - Type check: 0 new.
+  - Logic, offline and in Studio: 23,240 passed, 0 failed. The new checks:
+    - a fast floor pays nothing, at every floor;
+    - forty fast floors leave the ledger empty, then a hard one pays;
+    - the Tower's chest reads its own row in every ground;
+    - 20,000 rolls of Lantern Row's land near each share, Legendary included, which its ladder rows never give.
+  - The Tower's self-test case: 44 passed, 0 failed, its ledger counting only hard floors.
+  - `tools/balance/tower.py`'s T6 reads the new Config: 15 chests an hour and 50% of Lantern Row's Credits at level 10, and 18 and 48% at 15.
+- **For research:** a chest's cell takes the frame of the best rarity it can give (`Rules.Bag`), so a Tower chest is framed Legendary in the bag, even at Lantern Row. It's tier 1 to keep, or a word to change.
+
 ## TR30. The generator's stages (Faber, on AR19)
 
 Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/design.md`, "The base", "Three stages for every machine"), on the director's yes of 2026-11-16, 16:50. Research's answer is (a): the generator takes the stage of a machine at the base's ceiling. Modulo's pieces and swap table are AR19, "Stages II and III as kit pieces" (e516da7).

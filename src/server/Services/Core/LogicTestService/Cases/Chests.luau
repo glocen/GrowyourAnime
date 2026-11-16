@@ -114,7 +114,8 @@ return {
 	{
 		Name = "Chests: one row a tier in every ground, its odds summing to one, nothing above Legendary",
 		Run = function(t: any)
-			t.Equal("three tiers", ChestRows.Tiers, 3)
+			t.Equal("four tiers, the Tower's the fourth", ChestRows.Tiers, 4)
+			t.Equal("the Tower's tier", ChestRows.Tower, 4)
 			for _, ground in Grounds.List do
 				for tier = 1, ChestRows.Tiers do
 					local row = ChestRows.Of(ground.Id, tier)
@@ -136,6 +137,44 @@ return {
 			t.Equal("the rarities stop at Legendary", ChestsConfig.Rarities[#ChestsConfig.Rarities], "Legendary")
 			t.Equal("one ladder row a rarity each", #ChestsConfig.Ladder[1], #ChestsConfig.Rarities)
 			t.Equal("Lantern Row's Shade chest never gives a Rare", Chests.Odds(ChestRows.Of("lanternrow", 1) :: any).Rare, 0)
+		end,
+	},
+	{
+		Name = "Chests: the Tower's chest reads its own row in every ground, never the ladder, and rolls by it",
+		Run = function(t: any)
+			local own = ChestsConfig.Tower
+			t.Equal("the Tower's row, a rarity each", #own, #ChestsConfig.Rarities)
+			local total = 0
+			for _, weight in own do
+				total += weight
+			end
+			for _, ground in Grounds.List do
+				local row = ChestRows.Of(ground.Id, ChestRows.Tower)
+				t.Check(`{ground.Id}: a Tower chest, named for its ground`, row ~= nil and string.find(row.Name, "Tower Chest", 1, true) == 1 and string.find(row.Name, ground.Name, 1, true) ~= nil, if row then row.Name else "none")
+				if row then
+					local odds = Chests.Odds(row)
+					for i, name in ChestsConfig.Rarities do
+						if math.abs((odds[name] or 0) - own[i] / total) > 1e-12 then
+							t.Check(`{row.Id}: {name} at the Tower's row`, false, `{odds[name]}`)
+						end
+					end
+				end
+			end
+			-- Lantern Row's Tower chest can give what its ladder row can't: rolled, each rarity near its share.
+			local row = ChestRows.Of("lanternrow", ChestRows.Tower) :: ChestRows.Row
+			local draw = sequence(77)
+			local counts: { [string]: number } = {}
+			local rolls = 20_000
+			for _ = 1, rolls do
+				local rarity = Chests.Roll(row, { Warrior = 1 }, draw).Rarity
+				counts[rarity] = (counts[rarity] or 0) + 1
+			end
+			for i, name in ChestsConfig.Rarities do
+				local want = rolls * own[i] / total
+				local got = counts[name] or 0
+				t.Check(`Lantern Row's Tower chest: {name} near its share`, math.abs(got - want) <= 4 * math.sqrt(want) + 1, `{got} against {want}`)
+			end
+			t.Check("it can give a Legendary, as no ladder row of Lantern Row's can", (counts.Legendary or 0) > 0 and Chests.Odds(ChestRows.Of("lanternrow", 2) :: any).Legendary == 0)
 		end,
 	},
 	{

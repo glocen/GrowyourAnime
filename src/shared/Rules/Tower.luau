@@ -117,10 +117,10 @@ function Tower.Capped(before: number, wanted: number, room: number): (number, nu
 	return before + taken, room - taken
 end
 
--- The chest a floor won may give: the elite's of the ground its foe's level stands in.
+-- The chest a hard floor won may give: the Tower's own, of the ground its foe's level stands in.
 local function chestOf(floor: number): string?
 	local ground = Grounds.List[Growth.GroundOf(Tower.Level(floor))]
-	local row = if ground then ChestRows.Of(ground.Id, TowerConfig.Chest.Tier) else nil
+	local row = if ground then ChestRows.Of(ground.Id, ChestRows.Tower) else nil
 	return if row then row.Id else nil
 end
 
@@ -130,8 +130,12 @@ function Tower.ChestChance(floor: number): number
 	return math.clamp(chest.Base + chest.PerFloor * floor, 0, chest.Most)
 end
 
--- What winning floor `floor` adds to the ledger of a run whose record before it was `best`.
-function Tower.Reward(floor: number, best: number, seed: number): Reward
+-- What winning floor `floor` adds to the ledger of a run whose record before it was `best`: nothing when it fell `fast`
+-- (Tower.Fast, as it was fought), since only hard floors pay.
+function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?): Reward
+	if fast then
+		return { Credits = 0, Chest = nil }
+	end
 	local credits = DropsConfig.CreditsPerKillPerG * Growth.G(Tower.Level(floor)) * TowerConfig.Credits.Share
 	if floor > best then
 		credits *= TowerConfig.Credits.Record
@@ -153,14 +157,14 @@ function Tower.Start(data: Profile.Data, id: string, seed: number, now: number):
 	return run
 end
 
--- Floor `floor` won in run `id`: its reward into the ledger, the run's floor moved on. Nil (nothing changed) for another
--- run, or for a floor that isn't the next one, so a repeated claim is a no-op.
-function Tower.Won(data: Profile.Data, id: string, floor: number): Reward?
+-- Floor `floor` won in run `id`, `fast` or hard as it was fought: its reward into the ledger, the run's floor moved on.
+-- Nil (nothing changed) for another run, or for a floor that isn't the next one, so a repeated claim is a no-op.
+function Tower.Won(data: Profile.Data, id: string, floor: number, fast: boolean?): Reward?
 	local run = data.Progress.Tower.Run
 	if run == nil or run.Id ~= id or floor ~= run.Floor + 1 then
 		return nil
 	end
-	local reward = Tower.Reward(floor, run.Best, run.Seed)
+	local reward = Tower.Reward(floor, run.Best, run.Seed, fast)
 	run.Floor = floor
 	run.Credits += reward.Credits
 	if reward.Chest then

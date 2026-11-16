@@ -155,9 +155,14 @@ function TowerCases.Cases(): { any }
 				if saved == nil then
 					return
 				end
+				-- Only hard floors pay: a floor is fast by the lead's level against its foe's, as TowerService fights it.
+				local function fastAt(floor: number): boolean
+					local lead = view().Voidkin[view().Roles.Lead]
+					return lead ~= nil and Tower.Fast(lead.Level, Tower.Level(floor))
+				end
 				local ledger = 0
 				for floor = 1, saved.Floor do
-					ledger += Tower.Reward(floor, best0, seed).Credits
+					ledger += Tower.Reward(floor, best0, seed, fastAt(floor)).Credits
 				end
 				t.Equal("the ledger holds each floor's reward once", saved.Credits, ledger)
 				t.Equal("nothing granted mid-run", view().Currency.Credits, credits0)
@@ -187,7 +192,7 @@ function TowerCases.Cases(): { any }
 				end
 				local total = 0
 				for floor = 1, results.Floor do
-					total += Tower.Reward(floor, best0, seed).Credits
+					total += Tower.Reward(floor, best0, seed, fastAt(floor)).Credits
 				end
 				t.Equal("their Credits are the ledger's", results.Credits, total)
 				t.Equal("granted once", view().Currency.Credits, credits0 + results.Credits)

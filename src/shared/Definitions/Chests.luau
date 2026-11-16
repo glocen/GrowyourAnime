@@ -5,6 +5,7 @@
 --   Tier 1  a Shade's
 --   Tier 2  an elite's, and a keeper's after its first win
 --   Tier 3  a keeper's first win
+--   Tier 4  the Tower's, a hard floor's: its own rarity row (Config.Chests.Tower), not the ladder's
 -- The tier names are the builder's, for research (TR27). No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -12,7 +13,7 @@ local Grounds = require(Shared.Definitions.Grounds)
 
 export type Row = { Id: string, Ground: string, Tier: number, Name: string }
 
-local TIERS = { "Common Chest", "Elite Chest", "Keeper's Chest" }
+local TIERS = { "Common Chest", "Elite Chest", "Keeper's Chest", "Tower Chest" }
 
 local List: { Row } = {}
 local ById: { [string]: Row } = {}
@@ -34,4 +35,5 @@ return {
 	ById = ById,
 	Of = Of,
 	Tiers = #TIERS,
+	Tower = 4, -- the Tower's tier
 }

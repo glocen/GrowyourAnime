@@ -137,7 +137,7 @@ return {
 		end,
 	},
 	{
-		Name = "Tower: a floor's Credits rise with it, a floor past the record pays the bonus, and its chest is its ground's elite's",
+		Name = "Tower: a hard floor's Credits rise with it, a floor past the record pays the bonus, its chest is the Tower's own of its ground, and a fast floor pays nothing",
 		Run = function(t: any)
 			local last = 0
 			for floor = 1, 120 do
@@ -150,11 +150,15 @@ return {
 				if reward.Chest then
 					local ground = Grounds.List[Growth.GroundOf(Tower.Level(floor))]
 					local row = ChestRows.ById[reward.Chest]
-					t.Check(`floor {floor}: the elite chest of its foe's ground`, row ~= nil and row.Ground == ground.Id and row.Tier == TowerConfig.Chest.Tier)
+					t.Check(`floor {floor}: the Tower's chest of its foe's ground`, row ~= nil and row.Ground == ground.Id and row.Tier == ChestRows.Tower)
 				end
-				local same = Tower.Reward(floor, 10_000, SEED)
+				local same = Tower.Reward(floor, 10_000, SEED, false)
 				if same.Credits ~= reward.Credits or same.Chest ~= reward.Chest then
 					t.Check(`floor {floor}: the same seed, the same reward`, false)
+				end
+				local fast = Tower.Reward(floor, 0, SEED, true)
+				if fast.Credits ~= 0 or fast.Chest ~= nil then
+					t.Check(`floor {floor}: a fast floor pays nothing, past the record or not`, false, `{fast.Credits}, {fast.Chest}`)
 				end
 			end
 			local plain, record = Tower.Reward(30, 30, SEED), Tower.Reward(30, 29, SEED)
@@ -223,6 +227,18 @@ return {
 			t.Equal("a new start drops results not seen", data.Progress.Tower.Results, nil)
 			local none = Tower.End(data, "k903") :: Profile.TowerResults
 			t.Check("no floor won: nothing", none.Floor == 0 and none.Credits == 0 and next(none.Chests) == nil)
+			-- Fast floors (only hard floors pay): the run moves on through them, its ledger taking nothing.
+			local quick = fresh()
+			Tower.Start(quick, "k904", SEED, NOW)
+			for floor = 1, 40 do
+				Tower.Won(quick, "k904", floor, true)
+			end
+			local ran = quick.Progress.Tower.Run :: any
+			t.Check("forty fast floors: the run at floor 40", ran ~= nil and ran.Floor == 40)
+			t.Check("and its ledger empty", ran ~= nil and ran.Credits == 0 and next(ran.Chests) == nil)
+			t.Equal("floor 40 again, hard: a no-op", Tower.Won(quick, "k904", 40, false), nil)
+			local hard = Tower.Won(quick, "k904", 41, false)
+			t.Check("then a hard floor pays", hard ~= nil and hard.Credits > 0 and ran.Credits == hard.Credits)
 		end,
 	},
 	{

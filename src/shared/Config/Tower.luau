@@ -2,7 +2,9 @@
 -- The Tower (shared Config; docs/design.md, "The Tower"; docs/balance.md, "The Tower"; TR29): one Voidkin climbs behind
 -- its base, one foe a floor, its health carried. The foe's numbers are research's seeds (tools/balance/seeds.json,
 -- "tower", on the director's yes of 2026-11-16), modelled by tools/balance/tower.py; once here, this is their home.
--- The rewards are the builder's seeds (tier 2, for research's fit, TR29). Rules.Tower reads them when it runs.
+-- The rewards are research's fit (TR29, "Research's fit and feel line", 2026-11-16, 20:34; tools/balance/tower.py reads
+-- them from here): only hard floors pay, half Lantern Row's Credits an hour at levels 10 to 15, about 15 chests an hour
+-- of runs at level 10. Rules.Tower reads them when it runs.
 
 return {
 	-- Floor f's foe stands at level 1 + (f - 1) x LevelPerFloor, rounded, never past Growth's last level.
@@ -22,12 +24,13 @@ return {
 	-- A fast floor (design: "a floor far below the lead's power falls in one hit and the rise quickens"): a foe this many
 	-- levels under the lead falls to the first hit that lands, and the next rise takes Rise seconds instead. Builder's.
 	Fast = { Gap = 10, Rise = 0.8 },
-	-- A floor's Credits: a kill's at the foe's level (Config.Drops.CreditsPerKillPerG x G) times Share, and times Record
-	-- again on a floor past the run's record before it (the first-time bonus).
-	Credits = { Share = 2, Record = 2 },
-	-- A chest a floor won: Base + PerFloor x the floor, at most Most. It's the chest of the ground the foe's level
-	-- stands in, at Tier (an elite's), so deep floors give the rarities their grounds' elites do.
-	Chest = { Base = 0, PerFloor = 0.01, Most = 0.5, Tier = 2 },
+	-- Only a hard floor pays: a fast floor gives no Credits and no chest, the free ride to where it gets hard.
+	-- A hard floor's Credits: a kill's at the foe's level (Config.Drops.CreditsPerKillPerG x G) times Share, and times
+	-- Record again on a floor past the run's record before it (the first-time bonus).
+	Credits = { Share = 0.34, Record = 2 },
+	-- A chest a hard floor won: Base + PerFloor x the floor, at most Most. It's the Tower's own (Config.Chests.Tower, its
+	-- own rarity row), of the ground the foe's level stands in, which an item's worth is read from.
+	Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5 },
 	-- The world, in studs (builder's, tuned by playing). The ring lies on its lot's crossing end, where the sleeping
 	-- Tower stood; stepping within Ring of its middle starts a run. Floor f's platform stands f x Height over it.
 	Ring = 5,

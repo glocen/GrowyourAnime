@@ -30,6 +30,9 @@ return {
 		{ 53.8, 28.7, 10.5, 6.2, 0.8 },
 		{ 35.4, 29.6, 19.6, 13.5, 1.9 },
 	},
+	-- The Tower's chest reads this row in every ground, never the ladder (research's fit, TR29, 2026-11-16, 20:34): with
+	-- half of play after the first hour in the Tower, a first Rare at 3.5 h, Epic 12.5, Legendary 39.9 (medians).
+	Tower = { 60, 36.32, 2.86, 0.57, 0.24 },
 
 	-- A weapon is for the lead's class this often; else for one of the other classes the player owns.
 	ClassLean = 0.6,

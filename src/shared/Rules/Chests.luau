@@ -103,15 +103,20 @@ function Chests.Price(stat: string): number
 	return weights[stat] or 0
 end
 
--- The rarity ladder's row a chest reads.
+-- The rarity ladder's row a chest reads. A Tower chest reads its own row (Chests.Weights); its step only orders the bag.
 function Chests.Step(chest: ChestRows.Row): number
 	local ground = Grounds.ById[chest.Ground]
 	return math.clamp((if ground then ground.Order else 1) + chest.Tier - 1, 1, #ChestsConfig.Ladder)
 end
 
+-- The rarity weights a chest rolls by, Common to Legendary: the Tower's own row for a Tower chest, else its ladder row.
+function Chests.Weights(chest: ChestRows.Row): { number }
+	return if chest.Tier == ChestRows.Tower then ChestsConfig.Tower else ChestsConfig.Ladder[Chests.Step(chest)]
+end
+
 -- Each rarity's chance from a chest, as its roll draws it.
 function Chests.Odds(chest: ChestRows.Row): { [string]: number }
-	local row = ChestsConfig.Ladder[Chests.Step(chest)]
+	local row = Chests.Weights(chest)
 	local total = 0
 	for _, weight in row do
 		total += weight
@@ -167,7 +172,7 @@ function Chests.Roll(chest: ChestRows.Row, classes: { [string]: number }, draw: 
 	local ground = Grounds.ById[chest.Ground]
 	local tier = if ground then ground.Order else 1
 	local top = if ground then ground.LevelTo else 1
-	local ladder = ChestsConfig.Ladder[Chests.Step(chest)]
+	local ladder = Chests.Weights(chest)
 	local weights: { [string]: number } = {}
 	for i, name in ChestsConfig.Rarities do
 		weights[name] = ladder[i] or 0

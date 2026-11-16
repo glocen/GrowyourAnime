@@ -242,7 +242,7 @@ local function won(player: Player, run: Run)
 		FightService.SetHealRoom(lead, 0)
 	end
 	local answer = DataService.Change(player, "TowerWon", function(draft: Profile.Data)
-		local reward = Tower.Won(draft, run.Id, floor)
+		local reward = Tower.Won(draft, run.Id, floor, run.Fast) -- only a hard floor pays
 		if reward == nil then
 			return { Ok = false, Error = "Stale" }
 		end

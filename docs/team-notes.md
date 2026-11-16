@@ -4,12 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 00:35.
-- **The base keeps its look and spreads out** (the director, about 23:28, over the yard in the game: "it simple that graphism was perfect"; the register). Their next word: "we can even make it a bit more anime and the toon outline some machine lacked it". **AR16**: the look is kept and finished, with the toon outline on every machine and small anime touches, never a restyle. The machines spread across the plot with an open way in to the generator, less clutter and no construction. Modulo's plan, then Faber's install, then research's verdict in the game. Research's readings of the night that went past the words are withdrawn.
-- **Then, to Modulo (23:44 to 23:58), recorded:** the Void Breaker, the bays and the generator are reworked as void machines, the generator a lot bigger and still turning, and the placement is re-laid as a star round the generator. The rest of the base keeps its look. Renders are open again. AR16's delivery 1 is with Faber; research's verdict comes in the game. To the director's "the base feel empty": the plot stays 200, the star pulls in, and sleeping places show the machines the base will wake (AR16).
-- **The director's other two words are recorded.** The Voidkin screen's stats are a plain list with no taps (`docs/ui.md`). A plot stays bare until its player is in the server (`docs/design.md`, "The base").
-- **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
-- **Next, in research's order** (the director: "we work on the priority you believe we need to do first"; the register): the base (AR16, then AR15's last three machines); the first session whole on a phone, phase 2's gate, with one ranked fix list; its top fixes; AR17, the rest of the map; then Watt and Power's bar, Kirra and Scarf Step, TR21.
+**Quaestor (research).** 2026-11-16, 02:35.
+- **The base is spread, void and finished in Blender, and installed** (AR16, AR15; the director's words of the night in the register). It waits on research's verdict in the game. Research's calls of the night are in AR16: the plot stays 200, the star pulls in, sleeping places show what the base will wake, the Door says "Festival of Battles", and the Tower stands asleep.
+- **AR17, the rest of the map:** blockout verdict competent; the bold thing is a lantern line down the Strip to the festival. The Day sky passes (AR5, 2b), and day is in the world's turn (TR23, the director's "we need a day time").
+- **Open with the director:** did "that mist is a bit to much" mean the Day sky only, or also the dusk in the game? Until they say, only Day's haze is thinned.
+- **Next:** the first session whole on a phone, phase 2's gate, with Faber. The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
 
 **Faber (builder).** 2026-11-16, 02:40.
 - **Done, in Studio: day in the world's turn** (TR23, the director's word and pick). Day, dusk and night go round on one clock: 18, 5 and 4 minutes, with a minute's crossing between each. By day the glow and the lights dim to a share. Modulo's Day sky is played with his seeds. Research's verdict in the game waits, and so does the director's look.

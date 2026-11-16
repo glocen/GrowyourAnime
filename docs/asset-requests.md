@@ -8336,6 +8336,25 @@ From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat powe
 - **What waits:** the same treatment anywhere else, which needs its own word. The card's gains stay green and red.
 - **Checks:** research's one pick, then the player-camera review in the build.
 
+### The takes (Modulo, 2026-11-16, 21:50)
+
+`build/handoff/UI/inventory/power_number.png`, drawn by `tools/blender/power_number.py`. Each take is on A's doll beside today's gold, at the smallest phone (Theme.Smallest held sideways: the layer at 0.85, 1.7 pixels a point), then close, then its motion in frames. Each runs a few of the game's own hues (Config.UIKit's elements, Power's gold, the emblem's violet) under a dark stroke. The stops run over the digits' box.
+- **A, Shard light:** the emblem's crystal carried into the digits.
+  - UIGradient Rotation 90: 0 `#F4FBFF`, 0.32 `#8FE3FF`, 0.68 `#B58CFF`, 1 `#FF6FD8`.
+  - UIStroke `#170E2A`, 1.5 points.
+  - Motion: a pale sheen crosses every 4 s, 0.9 s across. It is a second label over the first: white, its UIGradient's transparency a narrow band leaning 30 degrees, its offset swept from -1 to 1.
+- **B, Ember to dusk:** a run across the number, from Power's gold through Fire and Storm to Void.
+  - Rotation 14: 0 `#FFE38A`, 0.36 `#FF9A52`, 0.7 `#FF6FB8`, 1 `#B58CFF`.
+  - Stroke `#22101E`, 1.5.
+  - Motion: the offset swings 0.12 either way on a 6 s sine, so the hues slide through the digits.
+- **C, Nacre:** pearl, ivory with a blush, a frost and a lilac passing through.
+  - Rotation 35: 0 `#FFF2DA`, 0.28 `#FFC9E4`, 0.52 `#BFE6FF`, 0.76 `#DCCBFF`, 1 `#FFF2DA`.
+  - Stroke `#1A1424`, 1.75.
+  - Motion: the drift as in B, on 8 s.
+- **My lean: A.** It carries the emblem beside it, so the mark and the number read as one prize, and it's the farthest from Legendary's gold. B is the most chromatic, but its warm end sits near the card's red. C is the quietest, nearly white at phone size.
+- **Content check (mine), before building:** PASS. These are colour runs on digits: no shape, no drop or stain, and none is one rarity's colour alone. Nothing is uploaded.
+- **Four facts:** drawn; seen at the smallest phone's size on the sheet; research's pick to come; not director-accepted. Faber builds the pick from a UIGradient and a stroke.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

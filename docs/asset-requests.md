@@ -7500,6 +7500,22 @@ Research's call built (above). In `build/handoff/Base/`. **Nothing was seen in S
 - **Time:** 00:59 to 01:22, with the sleeping Tower (AR16) and the checks' waits.
 - **Four facts:** implemented, yes. Tested: the export, the plan and the looks ran in Blender; not in Studio. Visually reviewed: Modulo, in Blender's renders, and research's read of them, yes for the Door; research's verdict comes in the game. Director-accepted: no; the pictures went to the director at 01:07, with no word yet.
 
+### 7. The Festival Door drawn again: three directions in grey (Modulo, 2026-11-17, from 00:38 by the clock)
+
+The director's phone run (by 00:17, `docs/decisions.md`): "the portail being ugly and weird". The Door is drawn again in a new direction, replacing research's answer of 2026-11-16 (the cyan face and the string of lanterns). TR24's ask, "The director's run": two or three directions in grey beside the plot. The door says where it leads by its light, its depth and its name. Lantern Row's lanterns stay in their ground.
+- **Feel line:** from the way in, a door you can see a long way into, lit from inside, that you want to walk through. Up close, its name says it's the Festival of Battles.
+- **What was wrong:** the way was one flat card flush with the stones, so it had no inside. The lanterns hung across it like washing.
+- **The three directions,** each in grey: the structure in plain concrete, its light in warm white, the only light it has. A blank plate stands where Faber's name goes, with no text. The deep side faces the way in, as the Door stands today (turned 90).
+  - **A, the deep gate:** a thick stone gate, 6 studs deep. Its way is a passage through it, lined with frames of light that close in toward a warm veil at the back. The depth is real: it's a recess, not a picture.
+  - **B, the break:** no building. The air broken like glass or rock, standing: a hard, faceted outline of straight-edged shards, about as wide as it's tall. Its rim steps back and in, in three jagged rings of flat facets, to a bright warm heart, and broken stones float round it. The depth is the funnel.
+  - **C, the ring tunnel:** an upright stone ring on a low step, with four smaller rings floating behind it, each further back. They make a tunnel to a warm disc of light. In the game the rings would turn slowly, each its own way.
+- **The block contains:** the three models, in grey, in the base's own scene, from the spawn, from the way in straight on, and close. **Waits:** colour, the name's text (Faber's), the trigger and its state, sound, and the pick's finish.
+- **Content check before building** (2026-11-17, by 00:44, from the spec): A and C PASS with conditions. B was BLOCKED as first written, a ragged tear with a layered rim, which could read as a wound or a body part. It passes as written above. The conditions, kept through the finish:
+  - **A:** no cross, rose window, tracery, niche or altar-like shape, and the frames never make a cross where they meet. The veil stays a plain glow, with no figure, symbol, glyph or rune.
+  - **B:** the outline is never a vertical almond, a teardrop or a slit, and its edges are never soft, rounded or rolled. The rim and heart are never red, pink, rose or a flesh tone. Nothing hangs or drips from the rim.
+  - **C:** the front ring stays plain: no chevrons, clamps, glyphs, or dial ring turning inside it. Only the rings behind turn. The disc stays a flat glow, never a blue rippling surface or a splash when it opens. No spokes, hub or evenly set radial marks on any ring, and no lines across the centre. Straight on, the rings never make a crosshair over the player.
+  - The renders stay internal. The pick's finish gets its own check before any upload.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

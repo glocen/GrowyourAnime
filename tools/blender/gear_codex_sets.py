@@ -6,7 +6,7 @@ never meet at 38 points. A design is the clasp, the fittings and what the cover 
 rule, a set keeps its word (gear_parts.py), and the near word from Rare up is Folio.
 
 Each Legendary's one new form changes the silhouette: Kouseki's pages unfold from its fore-edge in a folded trail;
-Ryuukou grows a tall crystal from the head of its spine; Hoshimi has a crystal at each corner pointing out.
+Ryuukou grows a tall crystal from the head of its spine; Tenmon has a crystal at each corner pointing out.
 
     blender -b --factory-startup --python tools/blender/gear_codex_sets.py -- build/handoff/Gear/codex_sets
 
@@ -24,11 +24,12 @@ import gear_sword_ladder as g  # noqa: E402
 import gear_tome_sets as tm  # noqa: E402
 from mathutils import Matrix, Vector  # noqa: E402
 
-g.GREY.setdefault("vellum", 0.8)     # the Codex's light covers, between cloth and ivory
+g.GREY.setdefault("vellum", 0.68)    # the Codex's light covers, a step under the pages' ivory so the block shows
 mat = p.mat
-TILT, SPIN = 6.0, -28.0
+TILT, SPIN = 22.0, -50.0
 FILL, DROP, LEAST = 0.84, 0.0, 0.86
-W, H, T, C = 1.7, 2.6, 0.4, 0.08
+W, H, T, C = 1.7, 2.6, 0.72, 0.1     # slimmer and narrower than the Tome's 2.0 by 0.92, and pale
+PW, PH, PX = W - 0.2, H - 0.22, -0.04   # the page block: narrower and lower than the covers, which stand proud
 FRONT = -T / 2
 
 
@@ -72,7 +73,7 @@ DESIGNS = (
     design("Ryuukou, the High Spire", "Legendary", "Its one new form: a tall crystal grows from the head of its "
            "spine.", "gilt", trim="ivory", cover="ivory", stone=("lit", 0.22), crystal="lit", edge=True,
            form="spire"),
-    design("Hoshimi, the Star Watch", "Legendary", "Its one new form: a crystal at each corner, pointing out.",
+    design("Tenmon, the Star Watch", "Legendary", "Its one new form: a crystal at each corner, pointing out.",
            "gilt", trim="ivory", cover="ivory", stone=("lit", 0.22), crystal="lit", edge=True, form="points",
            corners=None),
 )
@@ -82,10 +83,11 @@ def body(d):
     parts = []
     for side in (-1, 1):
         parts.append(p.flat("Cover", tm.rounded(W, H, 0.08), C, d["cover"], y=side * (T / 2 - C / 2), bevel=0.02))
-    parts.append(bl.place(bl.box("Pages", (W - 0.1, T - 2 * C, H - 0.12), mat("ivory")), (0.03, 0, 0)))
-    for k in range(3):
-        parts.append(bl.place(bl.box("Leaf", (0.012, (T - 2 * C) * 0.9, H - 0.14), mat("cloth")),
-                              (W / 2 - 0.02, -T / 2 + C + (k + 1) * (T - 2 * C) / 4, 0)))
+    parts.append(bl.place(bl.box("Pages", (PW, T - 2 * C + 0.02, PH), mat("ivory")), (PX, 0, 0)))
+    for k in range(1, 5):            # the leaves, as lines along the fore-edge and the top
+        y = -T / 2 + C + k * (T - 2 * C) / 5
+        parts.append(bl.place(bl.box("Leaves", (0.012, 0.024, PH - 0.04), mat("liner")), (PX + PW / 2 + 0.004, y, 0)))
+        parts.append(bl.place(bl.box("Leaves", (PW - 0.04, 0.024, 0.012), mat("liner")), (PX, y, PH / 2 + 0.004)))
     spine = bl.cylinder("Spine", T / 2, H, segments=20, material=mat(d["cover"]))
     parts.append(bl.smooth_by_angle(bl.place(spine, (-W / 2, 0, 0), (0, 0, 0), (0.45, 1, 1)), 40.0))
     zs = {2: (-0.7, 0.7), 3: (-0.8, 0.0, 0.8)}.get(d["spine_bands"], ())
@@ -105,7 +107,8 @@ def clasp(d, z):
     else:
         parts.append(p.flat("Strap", [(W / 2 - 0.5, z + 0.12), (W / 2 + 0.04, z + 0.12), (W / 2 + 0.04, z - 0.12),
                                       (W / 2 - 0.5, z - 0.12)], 0.04, metal, y=y, bevel=0.0))
-        parts.append(bl.place(bl.box("Wrap", (0.06, T + 0.06, 0.24), mat(metal)), (W / 2 + 0.05, 0, z)))
+        parts.append(bl.place(bl.box("Wrap", (0.05, T + 0.06, 0.24), mat(metal)), (W / 2 + 0.03, 0, z)))
+        parts.append(bl.place(bl.box("Across", (0.18, T + 0.06, 0.24), mat(metal)), (W / 2 - 0.06, 0, z)))
     gem = cb.crystal("Crystal", 0.11 + 0.05 * (d["gem"] - 0.6), d["gem"], d["crystal"], 0.0, 6)
     p.move(gem, Matrix.Translation((W / 2 - 0.3, y - 0.12, z - 0.3)))
     parts.append(gem)
@@ -232,7 +235,7 @@ WORDS = dict(
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is "
         "Folio.",
         "Each Legendary's one new form: Kouseki (a trail of light), pages unfolding in a folded trail; Ryuukou (a flowing "
-        "light), a tall crystal from its spine; Hoshimi (star-watching), a crystal at each corner.",
+        "light), a tall crystal from its spine; Tenmon (astronomy), a crystal at each corner.",
         "No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as a codex, slim and light beside the Tome, and apart from its two neighbours, at "
         "38 points? Does each Legendary outrank every Epic by shape? Not here yet: colour, frames, the class mark.",

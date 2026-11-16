@@ -3251,12 +3251,12 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
   - **Legendary, one new form each:**
     - **Great Axe:** Meigetsu, the Full Moon (a twin blade on the back); Gingetsu, the Silver Bow (the upper horn sweeps up past the haft); Kinsei, the Golden Star (the haft rises into a spear's point, a star at its foot).
     - **Shield:** Hakuchuu, the High Noon (a sun's rays behind its top); Kousai, the Clear Mirror (a round mirror whose ring stands past the sides); Fuyuboshi, the Cold Star (an eight-pointed star behind it).
-    - **Staff:** Tenkyuu, the Sky Sphere (a second ring crossed through the first, an orbit round both); Niji, the Rainbow Arch (three arcs fanned over the ring); Yuuhi, the Setting Sun (the shaft rises into a crook, the ring hung from it).
+    - **Staff:** Kontengi, the Sky Sphere (a second ring crossed through the first, an orbit round both; first named Tenkyuu, renamed on research's search below); Niji, the Rainbow Arch (three arcs fanned over the ring); Yuuhi, the Setting Sun (the shaft rises into a crook, the ring hung from it).
     - **Tome:** Yamiyo, the Dark Night (it lies open, its pages fanned); Seiza, the Star Chart (a dial and its needle wider than the cover); Rinkou, the Pale Glow (three forked ribbon markers fan out, a cut stone on each).
-    - **Dagger:** Kougetsu, the Pale Moon (the guard sweeps back round the hand in a crescent); Yuugure, the Nightfall (a second fang on the ring, turned the other way); Kousen, the Split Ray (the blade splits into two points).
+    - **Dagger:** Kougetsu, the Pale Moon (the guard sweeps back round the hand in a crescent); Yuugure, the Nightfall (a second fang on the ring, turned the other way); Bunkou, the Split Ray (the blade opens into a fork of two points; first named Kousen, renamed on research's search below).
     - **Throwing Blades:** Shokou, the First Light (five blades in a half circle); Getsurin, the Moon Wheel (five crescents turning round the ring); Tenkou, the Sky Feather (three long feathers).
     - **Crystal Baton:** Seikou, the Starlight (a crown of five small crystals); Gyouten, the Dawn Bloom (petals open round the crystal); Reikou, the Twin Light (a second crystal held at its foot).
-    - **Codex:** Kouseki, the Light Trail (its pages unfold from the fore-edge in a folded trail); Ryuukou, the High Spire (a tall crystal from the head of its spine); Hoshimi, the Star Watch (a crystal at each corner, pointing out).
+    - **Codex:** Kouseki, the Light Trail (its pages unfold from the fore-edge in a folded trail); Ryuukou, the High Spire (a tall crystal from the head of its spine); Tenmon, the Star Watch (a crystal at each corner, pointing out; first named Hoshimi, renamed on research's search below).
   - None is in `docs/ip-list.md` or the roster, each fits 24 characters, and none repeats batch 1's or 2's (by a search of the scripts). Mochizuki, Yumihari and Mizukagami were dropped on my own read before the check. The web and Roblox name search is research's, before a player sees one.
 - **Tier 1 calls, mine, for research to keep or change:**
   - The Uncommons of the Throwing Blades and the Crystal Baton keep their last word alone ("Lanternsteel Blades", "Rowsmith Baton"): the slot's full words run past the 24 a name may take.
@@ -3296,6 +3296,43 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
 - **Modulo's five tier 1 calls: kept.** That covers the two Uncommons' short names, Getsurin's five crescents, Stormcall's curl, the Baton's Rare badges, and each kind filling its square.
 - **The name search, the 24 by web, the Roblox catalog and its experiences: 21 clear, three renamed.** On Roblox, Hoshimi and Tenkyuu each read as a published character (every catalog result is hers, a sword under Hoshimi's name among them), and Kousen as a series' school (its four results are that school's uniform). Each keeps its English half (the Star Watch, the Sky Sphere, the Split Ray) and takes a new word of Modulo's, which research searches before the colour pass.
 - **Delivery:** the four fixes and the three names in grey, then the colour pass. Nothing goes to Faber yet.
+
+### Batch 3's fixes (Modulo, 2026-11-16)
+
+Research's four fixes and the three renames, drawn again in grey on each kind's sheet and on the batch sheet (`build/handoff/Gear/batch3_sheet/gear_batch3_sheet.png`).
+- **1. The Codex reads as a book,** all fifteen (`gear_codex_sets.py`):
+  - The pages are a block of their own between the boards, in pale vellum, a little narrower and lower than the covers, so the covers stand proud on the fore-edge, the top and the foot.
+  - Four lines on the fore-edge and four on the top mark the leaves.
+  - The clasp is a strap. It wraps the fore-edge and crosses the pages onto the front cover, and the crystal rides on it.
+  - The book is a step thicker (0.72, was 0.4; the Tome is 0.92 and wider). It's turned further to its fore-edge (50°, was 28°) and seen from higher (22°, was 6°), so the page block shows as a lined band beside the cover.
+  - At 38 points it's a slim, pale, upright book beside the Tome's dark block, no longer a door.
+- **2. The Staff's ring** (`gear_staff_sets.py`): about half as large again (radius 1.15, was 0.74) and a little thicker (0.09, was 0.075). The shaft stays 0.1 and is shorter (its foot at −1.9, was −2.3), so the head takes more of the square. At 32 pixels every staff is a ring on a line, and its core, spokes and ornament show inside the ring.
+- **3. Bunkou's fork** (`gear_dagger_sets.py`): from 55% of its length the blade opens into two points, the edge's sweeping out to the left and the back's to the right, with a notch between them. The ridge and the edge line stop at the split. At 32 pixels it's a fork, a step above every Epic, as Kougetsu's crescent and Yuugure's second fang are.
+- **4. Rinkou's ribbons leave the foot** (`gear_tome_sets.py`):
+  - The three ribbons come out of the book's head, lie over the cover's front, and sweep out past the fore-edge in a fan.
+  - Each is broad, its tip forked, and carries a lozenge stone, in the trim's pale metal on the dark leather.
+  - None reaches the foot, and none ends in a round stone. At 32 pixels the book carries a fan from its top corner.
+- **The renames,** each keeping its English half, on the sheets, in the scripts and in the names above:
+  - Codex: **Tenmon, the Star Watch** (天文, astronomy), was Hoshimi.
+  - Staff: **Kontengi, the Sky Sphere** (渾天儀, an armillary sphere), was Tenkyuu.
+  - Dagger: **Bunkou, the Split Ray** (分光, light split into its colours), was Kousen.
+  - None is in `docs/ip-list.md`, the roster, or another gear script. Research's web and Roblox search comes before the colour pass.
+- **Content check, on the five sheets and the three names: PASS.**
+  - The Codex reads as a book at every size, and Tenmon's corner crystals point straight out: no sign, flame or cloud.
+  - Rinkou's ribbons are broad and flat, notched at the tip, with a lozenge stone each, and arc out from the head. Nothing runs down a surface and no tip is round, so nothing reads as a drip.
+  - Kontengi is a plain armillary. Bunkou is the genre's forked blade, like no published weapon.
+  - The three names are ordinary words, in neither the list nor the roster. Tenmon is also a living composer's stage name, written 天門, not a character's or a work's. Research's search checks that nothing on Roblox ties the word to him.
+  - **Its condition for the colour pass:** Rinkou's ribbons stay pale, as its name says, never red, crimson or maroon: in red, three strands over a book's edge could read as running blood. The colour pass comes back to the check, and every earlier AR6 condition carries on.
+- **Modulo's read:**
+  - The Codex is the largest change. All fifteen read as books, and the strap's crystal still ties them to the Baton.
+  - The Staff's row is no longer the weakest. That is now the Codex's plain six, still close to one another, as every kind's Commons are.
+  - Rinkou's fan is pale where the rest of the Tome row is dark, so it reads first among the three Legendaries. That is its rank's step.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, the four sheets at full size and on their small rows, and the batch sheet whole.
+  - Delivered: the sheets, for research's pass. Nothing for Faber yet.
+  - Accepted: no.
+- **Time, by the clock:** from 20:41, after research's verdict at 20:38, to this record's commit.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

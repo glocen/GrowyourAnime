@@ -8,8 +8,8 @@ keeps its word (gear_parts.py), and the near word from Rare up is Grimoire.
 
 Each Legendary's one new form changes the silhouette: Yamiyo lies open, its covers spread and its pages fanned;
 Seiza carries a star chart's dial on its cover, the ring wider than the book and its needle past it; Rinkou has
-three broad ribbon markers fanned out from its pages, each with a cut stone set on it and a forked end: never a
-strand ending in a round drop, the drip shape the content check rules out.
+three broad ribbon markers sweeping out of the head of its pages past the fore-edge, fanned, each with a cut stone set
+on it and a forked end: never at the book's foot, never a strand ending in a round drop.
 
     blender -b --factory-startup --python tools/blender/gear_tome_sets.py -- build/handoff/Gear/tome_sets
 
@@ -81,7 +81,7 @@ DESIGNS = (
     design("Seiza, the Star Chart", "Legendary", "Its one new form: a star chart's dial on its cover, wider than "
            "the book.", "gilt", trim="ivory", cover="rich", pages="ivory", stone=("lit", 0.24), form="dial",
            edge=True, corners="cap"),
-    design("Rinkou, the Pale Glow", "Legendary", "Its one new form: three ribbon markers fan out from its pages, "
+    design("Rinkou, the Pale Glow", "Legendary", "Its one new form: three ribbon markers sweep out of its head, "
            "forked, a cut stone on each.", "gilt", trim="ivory", cover="rich", pages="ivory", stone=("lit", 0.28), form="ribbons",
            edge=True, frame=True, corners=None),
 )
@@ -195,22 +195,31 @@ def legend(d):
         for x, z in ((0.5, 0.75), (-0.62, 0.38), (0.3, -0.5), (-0.25, 0.9), (0.7, -0.05)):
             parts.append(p.ball("Star", 0.06, "lit", (x, y - 0.03, z), segments=8, rings=4))
     elif form == "ribbons":
-        hw, fork = 0.14, 0.3             # a ribbon's half width; how deep its forked end is cut
-        for x, drop, sway in ((-0.45, 1.05, -0.75), (0.05, 1.3, 0.05), (0.5, 0.95, 0.8)):
-            z0 = -H / 2 + 0.2
-            path = p.curve([(x, 0.05, z0), (x + sway * 0.25, -0.08, z0 - drop * 0.45), (x + sway, -0.12, z0 - drop)], 12)
-            for k, (px, py, pz) in enumerate(path[:-1]):
-                nxt = path[k + 1]
-                parts.append(p.flat("Ribbon", [(px - hw, pz), (px + hw, pz), (nxt[0] + hw, nxt[2] - 0.02),
-                                               (nxt[0] - hw, nxt[2] - 0.02)], 0.02, "cloth", y=py, bevel=0.0))
-            ex, ey, ez = path[-1]
-            parts.append(p.flat("Fork", [(ex - hw, ez), (ex + hw, ez), (ex + hw, ez - fork), (ex, ez - fork * 0.35),
-                                         (ex - hw, ez - fork)], 0.02, "cloth", y=ey, bevel=0.0))
-            sx, sy, sz = path[5]          # the stone, set high: a lozenge on its point in an ivory setting
+        # three broad markers out of the head of the pages, sweeping out past the fore-edge to one side and fanned,
+        # each forked at its end with a lozenge stone on its open length: never at the book's foot, never a drop
+        hw, fork, yr = 0.14, 0.32, y - 0.08      # laid over the cover's front, pale on the dark leather
+        for i in range(3):
+            pts = [(0.05 + 0.32 * i, yr, H / 2 + 0.02), (W / 2 - 0.1 + 0.05 * i, yr, H / 2 + 0.5 - 0.26 * i),
+                   (W / 2 + 0.75, yr, H / 2 + 0.32 - 0.66 * i), (W / 2 + 1.3, yr, H / 2 - 0.05 - 1.0 * i)]
+            path = p.curve(pts, 18)
+            left, right = [], []
+            for k, (x, _, z) in enumerate(path):
+                a, b = path[max(k - 1, 0)], path[min(k + 1, len(path) - 1)]
+                dx, dz = b[0] - a[0], b[2] - a[2]
+                ln = math.hypot(dx, dz)
+                nx, nz = -dz / ln, dx / ln
+                left.append((x + nx * hw, z + nz * hw))
+                right.append((x - nx * hw, z - nz * hw))
+            ux, uz = -nz, nx                       # the ribbon's way at its end
+            ex, ez = path[-1][0], path[-1][2]
+            tips = [(left[-1][0] + ux * fork, left[-1][1] + uz * fork), (ex, ez),
+                    (right[-1][0] + ux * fork, right[-1][1] + uz * fork)]
+            parts.append(p.flat("Ribbon", left + tips + list(reversed(right)), 0.02, trim, y=yr, bevel=0.0))
+            sx, _, sz = path[9]
             parts.append(p.flat("Setting", [(sx, sz + 0.27), (sx + 0.16, sz), (sx, sz - 0.27), (sx - 0.16, sz)], 0.03,
-                                trim, y=sy - 0.03, bevel=0.0))
+                                d["key"], y=yr - 0.03, bevel=0.0))
             parts.append(p.flat("Stone", [(sx, sz + 0.2), (sx + 0.1, sz), (sx, sz - 0.2), (sx - 0.1, sz)], 0.05, "lit",
-                                y=sy - 0.07, bevel=0.015))
+                                y=yr - 0.07, bevel=0.015))
     return parts
 
 
@@ -261,7 +270,7 @@ WORDS = dict(
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is "
         "Grimoire.",
         "Each Legendary's one new form: Yamiyo (a dark night), open with its pages fanned; Seiza (a constellation), a star "
-        "chart's dial wider than the book; Rinkou (a pale glow), three forked ribbon markers fanned out, a cut stone on each.",
+        "chart's dial wider than the book; Rinkou (a pale glow), three forked ribbon markers sweeping out of its head, a cut stone on each.",
         "No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as a tome, heavy and dark beside the Codex, and apart from its two neighbours, "
         "at 38 points? Does each Legendary outrank every Epic by shape? Not here yet: colour, frames, the class mark.",

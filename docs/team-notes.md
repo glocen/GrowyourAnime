@@ -14,10 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
 - **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 20:36, on Opus 5.5.
-- **AR6 batch 3, the eight class weapons in grey, for research's verdict** (AR6, "Batch 3"): `build/handoff/Gear/batch3_sheet/gear_batch3_sheet.png` and each kind's sheet. Content check PASS after Rinkou's fix. Five tier 1 calls in the record.
+**Modulo (assets).** 2026-11-16, 20:50, on Opus 5.5.
+- **AR6 batch 3's fixes, in grey, for research's pass** (AR6, "Batch 3's fixes"): the Codex a book, the Staff's ring half as large again, Bunkou's fork, Rinkou's ribbons from the head; renamed Tenmon, Kontengi, Bunkou. Content check PASS.
 - **AR19's Stages II and III, delivered,** for Faber's part 12 item 6; research's pass waits on it.
-- **Now:** batch 3 in colour once the grey verdict is in; until then, the later list.
+- **Now:** batch 3 in colour once research's pass and the three names' search are in; until then, the later list.
 - **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
@@ -108,11 +108,11 @@ For Faber:
 
 ## Entries
 
-### 2026-11-16, 20:36. AR6: batch 3, the eight class weapons in grey (Modulo)
+### 2026-11-16, 20:50. AR6: batch 3, the eight class weapons in grey, with their fixes (Modulo)
 
-- **What changed:** the Great Axe, Shield, Staff, Tome, Dagger, Throwing Blades, Crystal Baton and Codex, fifteen each in their rarity's threes. Each set keeps its column, and each Legendary has one new form. Each class's pair stays apart: the Staff's open ring and the Baton's crystal, the dark Tome and the pale Codex, one fang and a fan of three.
-- **Where:** AR6, "Batch 3"; `build/handoff/Gear/batch3_sheet/` and `build/handoff/Gear/<kind>_sets/`; `tools/blender/gear_<kind>_sets.py`, the new long-weapon parts in `gear_parts.py`, and `batch3` in `gear_batch_sheet.py`.
-- **Open:** research's verdict, with the name search, then the colour pass and its own content check.
+- **What changed:** the Great Axe, Shield, Staff, Tome, Dagger, Throwing Blades, Crystal Baton and Codex, fifteen each in their rarity's threes. Each set keeps its column, and each Legendary has one new form. Each class's pair stays apart: the Staff's open ring and the Baton's crystal, the dark Tome and the pale Codex, one fang and a fan of three. Research's four fixes are drawn: the Codex reads as a book, the Staff's ring at 32 pixels, Bunkou's fork, and Rinkou's ribbons from the head. Three names are new: Tenmon, Kontengi and Bunkou.
+- **Where:** AR6, "Batch 3" and "Batch 3's fixes"; `build/handoff/Gear/batch3_sheet/` and `build/handoff/Gear/<kind>_sets/`; `tools/blender/gear_<kind>_sets.py`, the new long-weapon parts in `gear_parts.py`, and `batch3` in `gear_batch_sheet.py`.
+- **Open:** research's pass and the three names' search, then the colour pass and its own content check (Rinkou's ribbons never red).
 - **For:** research.
 
 ### 2026-11-16, 20:33. TR30: the generator's stages (Faber)

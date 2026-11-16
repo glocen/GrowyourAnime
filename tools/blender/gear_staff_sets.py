@@ -6,7 +6,7 @@ stout, so the two never meet at 38 points; never a blade, so it's never the Grea
 doubled, cut square), what holds the core (a stem, spokes, a cradle), what the ring carries, and the shaft's fittings.
 A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near word from Rare up is Stave.
 
-Each Legendary's one new form changes the silhouette: Tenkyuu's ring is an armillary, a second ring crossed through it
+Each Legendary's one new form changes the silhouette: Kontengi's ring is an armillary, a second ring crossed through it
 and an orbit tilted round both; Niji carries three arcs fanned over its ring; Yuuhi's shaft rises past its head into
 a crook, and the ring hangs from the crook's tip, a sun going down.
 
@@ -25,8 +25,8 @@ from mathutils import Euler, Vector  # noqa: E402
 
 mat = p.mat
 FILL, DROP, LEAST = 0.86, 0.0, 0.9
-R, FOOT, NECK = 0.1, -2.3, 1.95     # the shaft's radius, its foot, where it meets the head
-RING, MINOR = 0.74, 0.075           # the ring's radius and thickness
+R, FOOT, NECK = 0.1, -1.9, 1.95     # the shaft's radius, its foot, where it meets the head
+RING, MINOR = 1.15, 0.09            # the ring's radius and thickness
 CORE = 2.0 + RING                    # the ring's middle, where the core sits
 
 
@@ -71,7 +71,7 @@ DESIGNS = (
            trim="filigree", orn="Nightloom", stone=("glow", 0.3), line="filigree", shaft="rich", hold="none",
            collar="filigree", turns=7, butt="spike"),
 
-    design("Tenkyuu, the Sky Sphere", "Legendary", "Its one new form: a second ring crossed through the first, an "
+    design("Kontengi, the Sky Sphere", "Legendary", "Its one new form: a second ring crossed through the first, an "
            "orbit tilted round both.", "gilt", trim="ivory", stone=("lit", 0.3), shaft="ivory", collar="ivory",
            turns=7, butt="facet", form="sphere", edge=True),
     design("Niji, the Rainbow Arch", "Legendary", "Its one new form: three arcs fanned over the ring.", "gilt",
@@ -225,7 +225,7 @@ WORDS = dict(
         "A set keeps its word and its ornament on every kind: Embers swells round its stone, Hoarfrost is cut square, Gales "
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is "
         "Stave.",
-        "Each Legendary's one new form: Tenkyuu (the celestial sphere), an armillary of crossed rings; Niji (a rainbow), "
+        "Each Legendary's one new form: Kontengi (an armillary sphere), an armillary of crossed rings; Niji (a rainbow), "
         "three arcs over the ring; Yuuhi (the setting sun), a crook with the ring hung from it.",
         "No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as a staff, and apart from its two neighbours, at 38 points? Does each "

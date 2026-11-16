@@ -7,7 +7,7 @@ two-edged and cross-guarded, so the two never meet at 38 points. A design is the
 ladder's rule, a set keeps its word (gear_parts.py), and the near word from Rare up is Fang.
 
 Each Legendary's one new form changes the silhouette: Kougetsu's guard sweeps back round the hand to its ring in a
-crescent; Yuugure's ring carries a second, smaller fang turned the other way; Kousen's blade splits into two points.
+crescent; Yuugure's ring carries a second, smaller fang turned the other way; Bunkou's blade opens into a fork of two points.
 
     blender -b --factory-startup --python tools/blender/gear_dagger_sets.py -- build/handoff/Gear/dagger_sets
 
@@ -68,9 +68,12 @@ DESIGNS = (
            width=0.7),
     design("Yuugure, the Nightfall", "Legendary", "Its one new form: a second fang on the ring, turned the other "
            "way.", "gilt", trim="ivory", stone=("lit", 0.17), edge=True, back=True, guard="hook", width=0.7),
-    design("Kousen, the Split Ray", "Legendary", "Its one new form: the blade splits into two points.", "gilt",
+    design("Bunkou, the Split Ray", "Legendary", "Its one new form: the blade opens into a fork of two points.", "gilt",
            trim="ivory", stone=("lit", 0.17), edge=True, split=True, guard="disc", width=0.78, bend=0.5),
 )
+
+
+SPLIT = 0.55                        # how far up a forked blade opens
 
 
 def fang(d, length=L, scale=1.0):
@@ -89,12 +92,14 @@ def fang(d, length=L, scale=1.0):
         x, z = back[k]
         back[k] = (x - 0.14, z)
     if d["split"]:
-        # the point forks: the last fifth of the blade cut down its middle into two tines
-        k = int(n * 0.68)
-        mid = ((back[k][0] + edge[k][0]) / 2, back[k][1])
-        tip_b = (back[-1][0] + 0.28, length * 1.02)
-        tip_e = (edge[-1][0] - 0.12, length * 0.98)
-        return edge[:k + 1] + [tip_e, mid, tip_b] + list(reversed(back[:k + 1]))
+        # the blade opens into a fork from its middle: two tines spreading apart, a deep crotch between them
+        k = int(n * SPLIT)
+        (ex, z0), (bx, _) = edge[k], back[k]
+        rest = length - z0
+        crotch = ((ex + bx) / 2, z0 + 0.28 * rest)
+        tine_e = [(ex - 0.26, z0 + 0.5 * rest), (ex - 0.6, length), (ex - 0.06, z0 + 0.56 * rest)]
+        tine_b = [(bx - 0.02, z0 + 0.6 * rest), (bx + 0.5, length * 1.03), (bx + 0.24, z0 + 0.45 * rest)]
+        return edge[:k + 1] + tine_e + [crotch] + tine_b + list(reversed(back[:k + 1]))
     return edge + list(reversed(back[:-1]))
 
 
@@ -103,14 +108,15 @@ def blade_parts(d):
     outline = fang(d)
     parts.append(p.flat("Blade", outline, 0.1, key, bevel=0.03))
     n = 14
+    top = int(n * SPLIT) if d["split"] else n          # a forked blade's ridge and edge stop where it opens
     if d["ridge"] or d["line"]:
         pts = [(-d["bend"] * (i / n) ** 2 + d["width"] / 2 * 0.35 * (1 - (i / n) ** 1.7), -0.055, (i / n) * L)
-               for i in range(1, n - 1)]
+               for i in range(1, min(n - 1, top))]
         parts.append(p.tube("Ridge" if not d["line"] else "Line", pts, 0.018 if not d["line"] else 0.022,
                             d["line"] or key, sides=6))
     if d["edge"]:
         pts = [(-d["bend"] * (i / n) ** 2 - d["width"] / 2 * (1 - (i / n) ** 1.7) * 0.92, -0.055, (i / n) * L)
-               for i in range(1, n)]
+               for i in range(1, top + 1 if d["split"] else n)]
         parts.append(p.tube("Edge", pts, 0.026, "lit", sides=6))
     if d["hole"]:
         parts.append(p.facing("Hole", 0.11, 0.03, "liner" if d["key"] == "scrap" else trim, (-0.04, -0.05, 0.55)))
@@ -197,7 +203,7 @@ WORDS = dict(
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is "
         "Fang.",
         "Each Legendary's one new form: Kougetsu (a pale bright moon), a crescent guard round the hand; Yuugure "
-        "(nightfall), a second fang on the ring; Kousen (a ray of light), a blade split into two points.",
+        "(nightfall), a second fang on the ring; Bunkou (light split apart), a blade opening into a fork.",
         "No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as a dagger, never the Short Sword, and apart from its two neighbours, at 38 "
         "points? Does each Legendary outrank every Epic by shape? Not here yet: colour, frames, the class mark.",

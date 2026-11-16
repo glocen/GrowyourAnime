@@ -2191,3 +2191,21 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - No wall of text and no Robux prompt.
   - Errors: the run's output wasn't read before the rejoin cleared it. The rejoin's boot had 0 errors, plus three Roblox warnings for an asset id that is in neither `src/` nor the place.
   - fps: 60 on arrival, 60 in the busiest fight, 58 at home. That's the PC under the simulator, not a phone.
+
+**Research's verdicts and the fix list (Quaestor, 2026-11-16, 14:18),** from the stills in `build/scratch/faber/tr24/`; motion only as the takes' notes give it.
+- **AR16, the base. Felt:** by day the player arrives on a wide grey yard with the machines small and far, and the void's light barely registers; at dusk the Breaker's and the Door's light carry and it's ours (`01`, `02-turn-*`, against `06`, `07-door`). **Tier:** works, not yet competent. **Bold thing:** the Door's light at dusk; by day nothing carries. **Fixes:** (1) the size is the main one, already in the package (`docs/research/rework-2026-11-16.md`, part 7): the first frame should hold the Breaker large; (2) the starter shards read as the Breaker's panel lights, small grey blocks at 37 studs: they get the shard's own shape, larger, lit so they hold in daylight, and named all three at once; (3) the void's light holds by day on the Breaker, the Door and the star, or the base reads as any yard.
+- **TR23, day in the turn. Felt:** day is clear and the Row's lanterns still read, but the turn to dusk is a cut, not a turn: 30 s of nothing, then the sky jumps from blue to violet (`16-pop-a`/`b`). **Tier:** works. **Bold thing:** the Row at dusk, the lanterns over violet (`16-c`). **Fixes:** (1) the light starts warming from the blend's first second, so the swap lands on a sky already near it, and the swap sits under a short haze peak; (2) day keeps one sign of the void (a violet top to the sky, the far shards in view), or it reads as a default sky. Frame cost: clean (no frame over 50 ms).
+- **The fix list, ranked by what a new player feels.** The package's pieces answer some of them; those are marked.
+  1. **Nothing says what to do next,** at arrival, after the reveal (nothing points to the Row), after Watt (nothing to a bay), and the hint goes stale. One next-step line and one marker in the world on the next target, at every step of the first session.
+  2. **The fight happens off screen:** Pip fights 30 studs to the side, and the elite fight was behind the player with only its bar showing (`09`, `18`). The game is watching your Voidkin fight: the lead fights in front of the player, in the camera's view.
+  3. **The lead blocks the view:** Pip's hat fills the camera (`19`), and Pip stands in front of the Breaker and the bay (`06`, `13-bay-e`). The lead stands beside the player, out of the camera's line, and fades when it's between them.
+  4. **No gear in the first session:** 36 kills, an empty bag, "Soon" (`14`). The north star's Build beat is empty. Answered by the package's chests (part 11: the third kill's chest).
+  5. **The waits:** Watt's break takes 30 s with nothing to do, "Ready to open" waits for the player to find a prompt, and Pip's fall costs 90 s. In the first session a starter's break takes a few seconds and opens itself when the player is there, and a fallen lead's wait is short enough to walk home.
+  6. **Trapped in a fight:** Home is refused "In a fight" while packs keep coming to a standing player. Home stays allowed after a short hold, or packs stop at the lead's leash.
+  7. **The walk to the gate kills a Lv 2 Pip** against Lv 6 and 7 Brawlers (`19-pip-down`). Checked in the sim against the Row's levels before the gate.
+  8. **The first drop is a toast at the screen's edge,** with no shard in the world (`10`). A drop falls in the world with its name and flies to the player: the same flight as the package's chests.
+  9. **The day-to-dusk cut** (TR23's fix 1).
+  10. **The Door shows no name** and a lamp post stands in its line of sight (`07-door`); the gate at 35 studs has no name either (`15-gate-c`).
+  11. **A Shade's death is a small white flash** (`08-shade-burst`); the kill should land.
+  12. **The join's 10 s,** with about 2 s of black.
+- **Not findings:** nothing under a thumb, no wall of text, no Robux prompt, 60 fps on the PC.

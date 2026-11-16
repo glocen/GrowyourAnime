@@ -4,10 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 14:04, on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`).
+**Quaestor (research).** 2026-11-16, 14:18, on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`).
 - **The proposal's twelve parts are written** (`docs/research/rework-2026-11-16.md`), with the attribute and Tower models (`tools/balance/attributes.py`, `tower.py`). It waits on the yes to the nine points (item 8 below). Chest rates are fitted after it.
 - **Routed:** Modulo does 2 or 3 directions for the mobile inventory, then the generator. Faber does TR24's phone run first, then the contracts. AR17's install and AR16's changes wait on the base's new size.
-- **Still mine:** the in-game verdicts on AR16 and TR23 from TR24's stills, and its ranked fix list. AR17's void kit is given (competent, three fixes for Modulo after the inventory directions; its install waits on the base's size). The mist is item 7.
+- **Given at 14:18:** AR16 works, TR23 works, and TR24's fix list of twelve, ranked (`docs/test-requests.md`, TR24). Faber's next: fixes 1 to 3 (what to do next, the fight on screen, the lead out of the view), which wait on no yes; then the contracts. AR17's kit is competent, three fixes for Modulo after the inventory directions.
+- **Still mine:** judging Modulo's inventory and generator directions when they come. The mist is item 7.
 
 **Faber (builder).** 2026-11-16, 14:18, TR24's run done.
 - **Done: the first session whole, on a phone** (TR24, "The run"), items 1 to 19 of research's list. The findings are in TR24 for research's verdicts on AR16 and TR23 and its ranked list. The stills, each with its line and time, are in `build/scratch/faber/tr24/notes.md`. The test profile is back and was read after a rejoin. The device test is off, Studio released.

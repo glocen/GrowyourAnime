@@ -39,7 +39,15 @@ WIDE = ([(0, -15), (0.6, -11), (-0.8, -6.5), (0.3, -2), (1.1, 2.5), (-0.5, 7), (
         [([(-0.8, -6.5), (-2.9, -4.4), (-3.9, -1.6)], [0.4, 0.24, 0.0]), ([(1.1, 2.5), (3.2, 4.6), (3.5, 7.6), (5.0, 9.2)], [0.45, 0.3, 0.16, 0.0])])
 THIN = ([(0, -15), (-0.4, -9), (0.5, -3), (-0.3, 4), (0.4, 10), (0, 15)], [0.3, 0.3, 0.42, 0.3, 0.36, 0.3],
         [([(0.5, -3), (2.0, -1.0), (2.5, 1.4)], [0.2, 0.1, 0.0])])
-TWIG = ([(0, -10.5), (0.4, -6), (-0.5, -1), (0.3, 4), (0, 10.5)], [0.3, 0.3, 0.24, 0.18, 0.08], [])
+TWIG = ([(0, -10.5), (0.4, -6), (-0.5, -1), (0.3, 4), (0, 10.5)], [0.18, 0.18, 0.14, 0.1, 0.04], [])
+# The crack's rank (research's fix 1, 2026-11-16, 14:09): the main line brightest and widest toward the crossing, the
+# branches to the gates thinner and dimmer, so one way reads at once. Where each samples the void's swatch, which is lit
+# evenly and runs from near white at its head (1) to deep violet at its foot (0): about 2.7 to 1 in light.
+RANK = {"VeinWide": 1.0, "VeinThin": 0.7, "VeinBranch": 0.0}
+# Research's fix 3 (2026-11-16, 14:09): from a far gate the great shard was lost in the dusk's haze, so its light is
+# brighter, not the shard bigger: its glow strength over the kit's, here and in its manifest entry. Only its light
+# brightens; the stone's mask is 0.
+BRIGHT = {"CrossingShard": 2.5}
 # The crossing's shard: its three parts round the light, each (the way it stands out in degrees, its foot, its tip).
 THREE = ((90.0, 8.5, 46.0), (210.0, 11.5, 40.0), (330.0, 10.0, 35.0))
 # A place where shards break out of the ground: (across, along, high, half width, the way it leans in degrees, how far).
@@ -47,9 +55,9 @@ OUTCROP = ((0.0, 0.0, 7.6, 1.5, 20, 0.2), (-2.0, 1.0, 4.3, 1.0, 160, 0.38), (1.8
            (0.5, 2.1, 2.7, 0.7, 80, 0.15), (-1.1, -1.8, 3.1, 0.8, 230, 0.3))
 
 
-def crack(m, points, widths, sw="void", lift=0.07):
+def crack(m, points, widths, sw="void", lift=0.07, bright=0.5):
     """A crack of the void's light, flat in the stones, on a bed of dark a little wider: a line through `points`
-    (across, along), `widths` its half width at each."""
+    (across, along), `widths` its half width at each, `bright` where it samples its swatch (1 its head, the brightest)."""
     pts = [Vector((x, y, 0.0)) for x, y in points]
     last = len(pts) - 1
 
@@ -58,7 +66,7 @@ def crack(m, points, widths, sw="void", lift=0.07):
         n = Vector((-along.y, along.x, 0.0))
         return pts[k] - n * half + Vector((0, 0, z)), pts[k] + n * half + Vector((0, 0, z))
 
-    for tone, grow, z in ((kit.sw_uv("dark", 0.5, 0.6), 1.0, lift - 0.03), (kit.sw_uv(sw, 0.0, 0.5), 0.0, lift)):
+    for tone, grow, z in ((kit.sw_uv("dark", 0.5, 0.6), 1.0, lift - 0.03), (kit.sw_uv(sw, 0.0, bright), 0.0, lift)):
         for k in range(last):
             r0, l0 = edge(k, widths[k] * (1 + grow) + 0.08 * grow, z)
             r1, l1 = edge(k + 1, widths[k + 1] * (1 + grow) + 0.08 * grow, z)
@@ -69,9 +77,9 @@ def cracked(name, line, long, note):
     def make():
         m = Mesh(None)
         points, widths, sides = line
-        crack(m, points, widths)
+        crack(m, points, widths, bright=RANK[name])
         for side, thin in sides:
-            crack(m, side, thin, lift=0.075)
+            crack(m, side, thin, lift=0.075, bright=RANK[name])
         return Piece(name, m, note=f"a crack of the void's light, flat in the stones, {long:g} long from its back to its "
                                    f"front. {note} It glows without a Light. No shadow. Look only: it lies 0.07 over the floor")
     return make
@@ -149,27 +157,20 @@ def seal(name, light, where):
 
 def crossing_mark():
     """The crossing's mark, laid in the stones: a ring round the place where the side street meets the Strip, and at
-    its heart a dark well ringed in the void's light, cracked from its middle out to the ring. The street's cracks
-    end at that ring; the great shard hangs over it."""
+    its heart a well of full black ringed in the void's light, with nothing in it (research's fix 2: it's the second
+    strongest shape). The street's cracks end at that ring; the great shard hangs over it."""
     m = Mesh(None)
     z, sides = 0.06, 40
-    tone, lit, dark = kit.sw_uv("bone", 0.3, 0.7), kit.sw_uv("void", 0.0, 0.5), kit.sw_uv("dark", 0.5, 0.6)
+    tone, lit, dark = kit.sw_uv("bone", 0.3, 0.7), kit.sw_uv("void", 0.0, 1.0), kit.sw_uv("ink", 1.0, 0.0)
     m.face([(8.7 * math.cos(math.tau * i / sides), 8.7 * math.sin(math.tau * i / sides), 0.04) for i in range(sides)], [dark] * sides)
     for r0, r1, uv in ((19.0, 19.9, tone), (8.6, HEART + 0.2, lit)):
         for i in range(sides):
             a, b = math.tau * i / sides, math.tau * (i + 1) / sides
             m.face([(r0 * math.cos(a), r0 * math.sin(a), z), (r1 * math.cos(a), r1 * math.sin(a), z),
                     (r1 * math.cos(b), r1 * math.sin(b), z), (r0 * math.cos(b), r0 * math.sin(b), z)], [uv] * 4)
-    rng = np.random.default_rng(5)
-    for i, reach in enumerate((8.6, 8.6, 6.2, 8.6, 5.0)):                  # no two alike: cracking, never a wheel
-        a = math.tau * (i + 0.35 + rng.uniform(-0.2, 0.2)) / 5
-        bends = (0.0, rng.uniform(-0.32, 0.32), rng.uniform(-0.2, 0.2), rng.uniform(-0.08, 0.08))
-        radii = (0.6 + rng.uniform(0.0, 0.9), reach * rng.uniform(0.32, 0.44), reach * rng.uniform(0.62, 0.74), reach)
-        line = [(r * math.cos(a + bend), r * math.sin(a + bend)) for r, bend in zip(radii, bends)]
-        crack(m, line, [0.05, 0.22, 0.3, 0.4 if reach > 8.0 else 0.0], lift=0.075)
-    return Piece("CrossingMark", m, note="lies 0.06 over the stones at the crossing's middle, 39.8 across: a ring, and a dark "
-                                         f"well ringed in the void's light {HEART:g} out, where the street's cracks end. The "
-                                         "ring and the cracks glow. No shadow. Look only")
+    return Piece("CrossingMark", m, note="lies 0.06 over the stones at the crossing's middle, 39.8 across: a ring, and a well "
+                                         f"of full black ringed in the void's light {HEART:g} out, where the street's cracks end, "
+                                         "with nothing in it. The inner ring glows. No shadow. Look only")
 
 
 def crossing_shard():
@@ -229,7 +230,8 @@ def far_shard(name):
 PIECES = {"StripPost": strip_post,
           "VeinWide": cracked("VeinWide", WIDE, TILE, "The wide one, for near the crossing: 2.2 at its widest, two side cracks."),
           "VeinThin": cracked("VeinThin", THIN, TILE, "The thin one, for far down the street: 0.8 at its widest, one side crack."),
-          "VeinBranch": cracked("VeinBranch", TWIG, BRANCH, "A branch from the street's crack to a gate: it thins toward its front."),
+          "VeinBranch": cracked("VeinBranch", TWIG, BRANCH, "A branch from the street's crack to a gate, thinner and dimmer "
+                                                            "than the street's own: 0.36 at its widest, thinning toward its front."),
           "CrossingShard": crossing_shard, "ShardOutcrop": outcrop,
           "SealCalamity": lambda: seal("SealCalamity", "void", "the Calamity"),
           "SealClash": lambda: seal("SealClash", "cyan", "the Clash Grounds"),
@@ -244,10 +246,18 @@ def build(name):
 class Stock(base.Stock):
     """The base's stock, with the Strip's pieces beside it."""
 
+    def __init__(self, maps, scene, look_kit):
+        super().__init__(maps, scene, look_kit)
+        self.maps = maps
+
     def stand(self, name, tag, at, turn):
         if name in PIECES and name not in self.made:
             piece = build(name)
-            self.made[name] = (piece, piece.mesh.whole().to_object(name, self.mats[piece.maps]))
+            mat = self.mats[piece.maps]
+            if name in BRIGHT:
+                tint, strength = base.MAPS[piece.maps]
+                mat = kit.kit_material(self.maps, piece.maps, "Base", (tint, strength * BRIGHT[name]))
+            self.made[name] = (piece, piece.mesh.whole().to_object(name, mat))
         return super().stand(name, tag, at, turn)
 
 
@@ -268,7 +278,7 @@ def export(out: Path):
             mesh=f"meshes/{name}.json", triangles=tris, vertices=len(ps), centre=record["c"],
             size=[round(float(v), 3) for v in ps.max(0) - ps.min(0)],
             colour="../Base/maps/Base_Kit_Color.png", glow="../Base/maps/Base_Kit_Glow.png",
-            glowTint=tint, glowStrength=strength, collision=piece.solid,
+            glowTint=tint, glowStrength=round(strength * BRIGHT.get(name, 1.0), 3), collision=piece.solid,
             lights=[dict(name=n, at=[round(at[0], 3), round(at[2], 3), round(-at[1], 3)], colour=c) for n, at, c in piece.lights],
             note=piece.note)
     manifest = dict(
@@ -278,7 +288,8 @@ def export(out: Path):
               "A light's `at` is in the piece's own frame.",
         surface="one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent "
                 "Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in "
-                "the engine). No new picture. Single sided; the void stone's ink is in its mesh.",
+                "the engine; CrossingShard's is 2.5 times the kit's, so its light carries to a far gate through the dusk's "
+                "haze). No new picture. Single sided; the void stone's ink is in its mesh.",
         shadows="CastShadow off on the three cracks, CrossingMark and the far shards.",
         pieces=listing)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")

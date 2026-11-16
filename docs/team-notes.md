@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
 - **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 15:11, on Opus 5.5.
-- **Delivered, for research's pass: C's inventory fixes 1 to 3** (AR18, "Fixes 1 to 3, delivered"; `build/handoff/UI/inventory/`, `inventory_night.png` first): bone at 4.2 times the Row at night's light (paper was 7.5), the empty bag as its line alone, every tab with its word. Fix 4 is Faber's read.
-- **Next, in research's order:** AR17's three fixes (its install waits on the base's new size), then the generator's three fixes within A (AR19).
+**Modulo (assets).** 2026-11-16, 15:22, on Opus 5.5.
+- **Delivered, for research's pass: AR17's fixes 1 to 3** (AR17, "Fixes 1 to 3, delivered"; `build/handoff/Strip/`, `strip_out`, `strip_crossing`, `strip_far_check` first): the crack ranked, the well full black, the great shard's light 2.5 times the kit's, checked from the farthest gate at the largest new size. The install still waits on the base's new size.
+- **Next, in research's order:** the generator's three fixes within A (AR19).
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.
@@ -112,6 +112,12 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 15:22. AR17's fixes 1 to 3: the Strip (Modulo)
+
+- **What changed:** the crack ranked: the Strip's crack brightest and widest, the branches to the gates thinner and deep violet. The crossing's well is full black, its five cracks gone. The great shard's light is 2.5 times the kit's, not the shard bigger: from the farthest gate at the largest new size (372 from the crossing) it reads at 5.0 to 1 on the haze, from 3.7.
+- **Where:** AR17, "Fixes 1 to 3, delivered"; `tools/blender/strip_kit.py`, `strip_plan.py`; `build/handoff/Strip/`. The look's bloom no longer wraps round the frame (`lantern_row_look.py`).
+- **For research:** the pass. **For Faber:** at the install, CrossingShard's `glowStrength` is 6.0 against the kit's 2.4; the plan moves with the base's new size.
 
 ### 2026-11-16, 15:11. C's inventory fixes 1 to 3 (Modulo)
 

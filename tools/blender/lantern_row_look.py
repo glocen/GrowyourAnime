@@ -946,10 +946,14 @@ def stage_them(rigs, far=False):
 # --- the picture: bloom and the tone curve -----------------------------------------------------------------------------
 
 def blur(channel, sigma):
-    h, w = channel.shape
+    """A Gaussian blur, padded with its edge first: the FFT's blur is circular, and unpadded a bright thing at the
+    frame's top bled into its foot (AR17's crossing, 2026-11-16)."""
+    pad = int(math.ceil(3 * sigma))
+    padded = np.pad(channel, pad, mode="edge")
+    h, w = padded.shape
     fy, fx = np.fft.fftfreq(h)[:, None], np.fft.rfftfreq(w)[None, :]
     kernel = np.exp(-2 * (math.pi * sigma) ** 2 * (fx ** 2 + fy ** 2))
-    return np.fft.irfft2(np.fft.rfft2(channel) * kernel, s=(h, w))
+    return np.fft.irfft2(np.fft.rfft2(padded) * kernel, s=(h, w))[pad:-pad, pad:-pad]
 
 
 def finish(linear, d):

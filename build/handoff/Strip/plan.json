@@ -1048,7 +1048,7 @@
   },
   "placements": 161,
   "triangles": {
-   "CrossingMark": 254,
+   "CrossingMark": 198,
    "CrossingShard": 248,
    "SealCalamity": 576,
    "SealClash": 576,
@@ -1061,7 +1061,7 @@
    "FarShardMid": 240,
    "FarShardLow": 160
   },
-  "trianglesInAll": 17122,
+  "trianglesInAll": 17066,
   "lights": 7,
   "note": "counted from the plan, not measured on a device"
  }

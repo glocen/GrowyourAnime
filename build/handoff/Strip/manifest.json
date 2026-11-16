@@ -2,7 +2,7 @@
  "what": "AR17: the Strip's own pieces. Made as the base's kit is, and wearing the base kit's own pair of pictures.",
  "unit": "1 = 1 stud",
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
- "surface": "one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in the engine). No new picture. Single sided; the void stone's ink is in its mesh.",
+ "surface": "one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in the engine; CrossingShard's is 2.5 times the kit's, so its light carries to a far gate through the dusk's haze). No new picture. Single sided; the void stone's ink is in its mesh.",
  "shadows": "CastShadow off on the three cracks, CrossingMark and the far shards.",
  "pieces": {
   "StripPost": {
@@ -86,14 +86,14 @@
    "triangles": 16,
    "vertices": 20,
    "centre": [
-    0.00954,
+    -0.0103,
     0.055,
-    0.02457
+    0.01579
    ],
    "size": [
-    2.139,
+    1.699,
     0.03,
-    21.071
+    21.046
    ],
    "colour": "../Base/maps/Base_Kit_Color.png",
    "glow": "../Base/maps/Base_Kit_Glow.png",
@@ -101,7 +101,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a crack of the void's light, flat in the stones, 21 long from its back to its front. A branch from the street's crack to a gate: it thins toward its front. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+   "note": "a crack of the void's light, flat in the stones, 21 long from its back to its front. A branch from the street's crack to a gate, thinner and dimmer than the street's own: 0.36 at its widest, thinning toward its front. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
   },
   "CrossingShard": {
    "mesh": "meshes/CrossingShard.json",
@@ -120,7 +120,7 @@
    "colour": "../Base/maps/Base_Kit_Color.png",
    "glow": "../Base/maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
+   "glowStrength": 6.0,
    "collision": "none: it hangs 8.5 over the floor, and players walk under it",
    "lights": [
     {
@@ -223,16 +223,16 @@
   },
   "CrossingMark": {
    "mesh": "meshes/CrossingMark.json",
-   "triangles": 254,
-   "vertices": 278,
+   "triangles": 198,
+   "vertices": 200,
    "centre": [
     0.0,
-    0.0575,
+    0.05,
     0.0
    ],
    "size": [
     39.8,
-    0.035,
+    0.02,
     39.8
    ],
    "colour": "../Base/maps/Base_Kit_Color.png",
@@ -241,7 +241,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "lies 0.06 over the stones at the crossing's middle, 39.8 across: a ring, and a dark well ringed in the void's light 9 out, where the street's cracks end. The ring and the cracks glow. No shadow. Look only"
+   "note": "lies 0.06 over the stones at the crossing's middle, 39.8 across: a ring, and a well of full black ringed in the void's light 9 out, where the street's cracks end, with nothing in it. The inner ring glows. No shadow. Look only"
   },
   "FarShardLow": {
    "mesh": "meshes/FarShardLow.json",

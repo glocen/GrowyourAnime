@@ -185,6 +185,11 @@ STANDS.update(far=((FAR, 12.0), 90), line=((-150.0, 24.0), 90), clash=((block.EN
               calamity=((block.ENDS[1] - 110.0, 24.0), 90), mark=((block.CROSSING + 34.0, 24.0), -90),
               vein=((block.CROSSING - 52.0, 21.0), 60))
 STANDS.pop("stone", None)
+# Research's fix 3 (2026-11-16, 14:09): the far gate at the base's new size, not picked yet (128, 144 or 160 studs, 32
+# apart: docs/research/rework-2026-11-16.md, part 7). From the largest, with the crossing's lot kept at 200, the far
+# plot's gate stands 372 from the crossing (448 today): the farthest any new size puts it. Today's yard stands round it.
+NEARER = 372.0
+STANDS["far_new"] = ((block.CROSSING - NEARER, 12.0), 90)
 
 
 def see(out: Path, only, fast):

@@ -7233,6 +7233,24 @@ From `strip_out`, `down`, `far`, `crossing` and `gate`, stills only; motion wait
   3. From a far gate the great shard is lost in the dusk's haze (`far`). Check it again at the base's new size (part 7 of `docs/research/rework-2026-11-16.md`: the row is 29% shorter); if it's still lost, the light inside it gets brighter, not bigger. Serves the feel line for all eight gates.
 - **The install waits on the base's new size,** since the plan moves with it (`docs/research/rework-2026-11-16.md`, part 7). The pieces stand; only the plan is redone. Then one verdict in the game, in motion.
 
+### Fixes 1 to 3, delivered (Modulo, 2026-11-16, 15:22)
+
+- **1. The crack ranked** (`RANK` in `tools/blender/strip_kit.py`). A crack's brightness is where it samples the void's swatch, lit evenly from near white at its head to deep violet at its foot, about 2.7 to 1 in light. The Strip's wide crack takes the head, the thin one 0.7, the branches the foot. The branches are thinner too: 0.36 at their widest, from 0.6. In `out` our gate's branch goes from 36 px wide to 17, a violet thread, and the street's crack is the brightest line, its mean light 0.82 from 0.76 (linear).
+- **2. The well full black.** Its five cracks are gone and the disc is the atlas's ink, `#0C0A16`; its ring takes the swatch's head. In `crossing` the well's foot measures 2, 1, 5 of 255. CrossingMark is 198 triangles, from 254; the plan 17,066, from 17,122.
+- **3. The great shard from a far gate, at the base's new size.**
+  - Part 7's size isn't picked, so the check stands at the largest of its three, plots of 160 studs, 32 apart, with the crossing's lot kept at 200 wide (my assumption; part 7 doesn't size it). The farthest gate is then 372 from the crossing, against 448 today: `far_new` in `strip_plan.py`'s `STANDS`, in today's yard.
+  - At the kit's glow the shard's light measures 3.7 to 1 on the haze beside it: there, but a grey-lilac line. Brighter, not bigger: its glow strength is now 2.5 times the kit's (`BRIGHT`; `glowStrength` 6.0 in the manifest, every other piece 2.4). It reads white at 5.0 to 1, and from today's far gate at 3.7 to 1, from 2.7. The four crops: `strip_far_check.png`.
+  - Whether the engine's EmissiveStrength takes 6.0 the way these renders do is for Faber to see at the install; the ask is the ratio.
+- **A fix in the renders, not the game.** The look's bloom (`blur` in `tools/blender/lantern_row_look.py`) was an FFT blur, which wraps round: the brightened shard at the top of `crossing` lit the foot of the well. It's now padded with its edge first, so every picture the look renders from here on changes a little at its edges.
+- **Handed off** in `build/handoff/Strip/`: the eleven views re-rendered under their names, with `strip_far_new.png` and `strip_far_check.png` new; the meshes, `manifest.json` and `plan.json` re-exported.
+- **Content check:** PASS, 2026-11-16, by 15:22 (`crossing`, `mark`, `out`, `far_new`, `vein` and the manifest's notes read). The black well, the fresh check the first pass asked for, reads as a hole into the void and not a pool: matte, a hard round edge, a bright rim, no gloss, ripple or red. With its cracks gone no cross sits inside the ring. The ranked cracks are hard-edged light, and the brighter shard is light alone. Conditions, on top of the first pass's:
+  - The well stays matte in the engine: no Glass, Foil or water material, no Reflectance.
+  - The well keeps its hard circle. A soft or spreading edge, any motion in it, or a red, plum or dark-liquid tint gets a fresh check.
+  - The view from straight above still gets its own check.
+  - Before any upload, the meshes get a sheet at full size and at 64 px.
+- **Four facts.** Implemented: the three fixes in the kit, the far check in the plan, the render fix. Tested: the kit exports and the plan counts; the measures above. Visually reviewed: my own read of the views; research's pass next. Director-accepted: no.
+- **The install still waits on the base's new size:** then only the plan moves (the plots in `strip_block.py`, `PLOTS` and `NEARER` in `strip_plan.py`).
+
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 
 Research's order, read at 13:47 by the clock, on the director's package of 13:41: "2 or 3 genuinely distinct directions, before anything is built. Phone landscape, each with its own palette and composition." Judged against research's brief (`docs/research/rework-2026-11-16.md`, part 5): research judges composition and usability, Faber judges feasibility.

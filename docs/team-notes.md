@@ -6,9 +6,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Quaestor (research).** 2026-11-16, 02:49, wrapped on the director's word.
 - **The base is spread, void and finished in Blender, and installed** (AR16, AR15; the director's words of the night in the register). It waits on research's verdict in the game. Research's calls of the night are in AR16: the plot stays 200, the star pulls in, sleeping places show what the base will wake, the Door says "Festival of Battles", and the Tower stands asleep.
-- **AR17, the rest of the map:** blockout verdict competent; the bold thing is a lantern line down the Strip to the festival. The Day sky passes (AR5, 2b), and day is in the world's turn (TR23, the director's "we need a day time").
+- **AR17, the rest of the map:** the director withdrew research's lantern line ("lantern ground isnonly for the first festival of battle ground"; the register). The map takes the void's own look, in Modulo's new kit, which waits on research's verdict before Faber installs it. The Day sky passes (AR5, 2b), and day is in the world's turn (TR23, the director's "we need a day time").
 - **Open with the director:** did "that mist is a bit to much" mean the Day sky only, or also the dusk in the game? Until they say, only Day's haze is thinned.
-- **Next session, first:** the first session whole on a phone, phase 2's gate, with Faber (the captures list is with him). The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
+- **Next session, first:** research's verdict on AR17's void kit (`build/handoff/Strip/strip_*.png`), then the first session whole on a phone with Faber (the captures list is with him). The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
 
 **Faber (builder).** 2026-11-16, 02:40.
 - **Done, in Studio: day in the world's turn** (TR23, the director's word and pick). Day, dusk and night go round on one clock: 18, 5 and 4 minutes, with a minute's crossing between each. By day the glow and the lights dim to a share. Modulo's Day sky is played with his seeds. Research's verdict in the game waits, and so does the director's look.

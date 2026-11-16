@@ -7183,7 +7183,7 @@ A throwaway, in Blender, from the game's camera behind a stand-in: `tools/blende
 
 - **Felt:** out of the gate it's a wide road between yards, plain until the crossing. Then the side street pulls: the strings close up toward the gate, the ground lanterns thicken, and the stalls stand before the gate, so the festival starts before its gate. At each end, the eye stops at a wall.
 - **Tier:** competent. The side street is the best street in the game so far. The Strip itself isn't a place yet.
-- **The one bold thing: the festival comes out to meet the player.**
+- **The one bold thing: the festival comes out to meet the player.** *Withdrawn by the director, read between 02:39 and 02:45 (the register): the lanterns belong to Lantern Row alone, and the map takes the game's own look. Research's fault: the bold thing carried a ground's props onto the world between grounds.*
   - A line of the side street's ground lanterns runs down the middle of the Strip from each far end to the crossing, then turns up the side street.
   - It's thin at the ends and thicker toward the crossing, as the field thickens toward the gate.
   - Lights carry through the haze where shapes don't. So every gate has the way in view, the two far plots included: the feel line holds for all eight, and the Strip gets something of its own.

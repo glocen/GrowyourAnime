@@ -15,7 +15,7 @@ INK_UV = (0.8297, 0.0625)   # the atlas's ink texel in a record's frame: kit.sw_
 SWATCHES = ("steel", "girder", "bone", "concrete", "yellow", "rubber", "ceramic", "copper", "power", "cyan", "lamp",
             "beacon", "dark", "ink", "void", "abyss")   # base_kit.SWATCHES, in the atlas's order
 SOLID = {"steel", "girder", "bone", "concrete", "yellow", "ceramic", "copper", "abyss", "print"}   # what a hull is drawn round
-HULLED = ("Generator", "GeneratorRotor", "GeneratorRing", "Breaker", "BreakerChamber", "BreakerWaiting", "Bay", "BatteryRack",
+HULLED = ("Generator", "GeneratorWheel", "GeneratorDemand", "Breaker", "BreakerChamber", "BreakerWaiting", "Bay", "BatteryRack",
           "BatteryCell", "Showcase", "Door", "Training", "TrainingCrown", "BaySleeping", "SleepingStone")   # the machines, and the plinth
 LEAST = (0.25, 0.8)   # a shape worth an edge: its thinnest side, and its middle one. Under it, an edge would swallow it
 

@@ -101,9 +101,12 @@ def machines(level=1):
     for name, (x, inward) in SLEEPING.items():
         made.append(("SleepingStone", x, inward, 0.0, 0.0, f"the {name.capitalize()}'s place, asleep"))
     made.append(("TowerSleeping", *TOWER_AT, 0.0, 0.0, "the Tower, asleep until phase 3"))
-    made.append(("Generator", *GENERATOR, 0.0, 0.0, "the generator"))
-    made.append(("GeneratorRotor", *GENERATOR, base.machines.AXLE, 0.0, "the generator's rotor, turning about its own X"))
-    made.append(("GeneratorRing", *GENERATOR, base.machines.AXLE, 90.0, "the generator's great ring, turning about its own X, slowly, against the rotor"))
+    mill = base.mill
+    made.append(("Generator", *GENERATOR, 0.0, 0.0, "the generator, the Void Mill: all of it that stands still"))
+    made.append(("GeneratorWheel", *GENERATOR, mill.AXLE, 0.0, "the generator's wheel, turning about the line to the gate, faster as the plant generates more"))
+    for i in range(mill.STEPS):
+        made.append((f"GeneratorArc{i + 1}", *GENERATOR, 0.0, 0.0, f"the gauge's step {i + 1} of {mill.STEPS}, shown while the generation lights it"))
+    made.append(("GeneratorDemand", *GENERATOR, mill.AXLE, 0.0, "the demand's mark, turned about the axle by the demand's share"))
     made.append(("BatteryRack", *BATTERY, 0.0, 0.0, "the battery"))
     for index, (x, y) in enumerate(base.machines.SEATS[:base.machines.CELLS_AT[level]]):
         made.append(("BatteryCell", BATTERY[0] + x, BATTERY[1] - y, base.machines.SEAT, 0.0, f"the battery's cell {index + 1}"))

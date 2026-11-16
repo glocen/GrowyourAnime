@@ -945,23 +945,87 @@
     "along": -72.0,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the generator"
+    "standsFor": "the generator, the Void Mill: all of it that stands still"
    },
    {
-    "piece": "GeneratorRotor",
+    "piece": "GeneratorWheel",
     "across": 0.0,
     "along": -72.0,
-    "up": 11.5,
+    "up": 10.0,
     "turn": 0.0,
-    "standsFor": "the generator's rotor, turning about its own X"
+    "standsFor": "the generator's wheel, turning about the line to the gate, faster as the plant generates more"
    },
    {
-    "piece": "GeneratorRing",
+    "piece": "GeneratorArc1",
     "across": 0.0,
     "along": -72.0,
-    "up": 11.5,
-    "turn": 90.0,
-    "standsFor": "the generator's great ring, turning about its own X, slowly, against the rotor"
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 1 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc2",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 2 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc3",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 3 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc4",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 4 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc5",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 5 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc6",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 6 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc7",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 7 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorArc8",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the gauge's step 8 of 8, shown while the generation lights it"
+   },
+   {
+    "piece": "GeneratorDemand",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 10.0,
+    "turn": 0.0,
+    "standsFor": "the demand's mark, turned about the axle by the demand's share"
    },
    {
     "piece": "BatteryRack",

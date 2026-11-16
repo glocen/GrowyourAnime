@@ -16,9 +16,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR19's block in the game:** Modulo is asked to export A's Stage I as Base kit pieces. I install it and drive the motion, and it's judged in motion once the screen is back.
 - **AR18's fix 4, my feasibility read, is written** (AR18, "Fix 4"). The slide is cheap. The belt can't hold fourteen slots at 44 in one row on the smallest phone (616 of 568), so three ways go to research. With six kinds, the strip scrolls. **Next:** TR24's review once the screen's unlocked, then AR19's block once Modulo's export is in. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 15:39, on Opus 5.5.
-- **Closed: AR19, the generator's three fixes within A,** passed by research at 15:38, competent. Faber puts its block in the game to judge it in motion. Its finish waits on the director's call 3, and takes research's note then: the collector arm gets the trestle's weight.
-- **Next:** nothing queued.
+**Modulo (assets).** 2026-11-16, 16:55, on Opus 5.5.
+- **Delivered, for Faber's install: the Void Mill's Stage I as kit pieces** (AR19, "Stage I as kit pieces"; `build/handoff/Base`): Generator still, GeneratorWheel turning on its axle, GeneratorArc1 to 8 shown by the generation, GeneratorDemand turned about the axle by the demand. The upload check passed. The finish waits on the director's call 3, with research's note on the arm.
+- **Next, research's ask of 16:50:** the base and the map round it without the mist and less somber, two or three takes at day, dusk and night, and the far shard's 2.5 rechecked.
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes 1 to 3. Blender: nobody. Timing tests: nobody.
@@ -111,6 +111,12 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 16:55. AR19: the Void Mill's Stage I as kit pieces (Modulo)
+
+- **What changed:** the generator in the base kit is the Void Mill's Stage I. Generator stands still; GeneratorWheel turns on its axle 10 up; GeneratorArc1 to 8 are the gauge's still steps behind the band, shown or hidden by the generation; GeneratorDemand turns about the axle by the demand's share, since the rail is an arc. GeneratorRotor and GeneratorRing are gone.
+- **Where:** AR19, "Stage I as kit pieces"; `tools/blender/base_mill.py` (new, also the direction sheet's source); `build/handoff/Base`.
+- **For Faber:** the install, the turn's sense and the collision in the manifest's notes. The upload check passed.
 
 ### 2026-11-16, 15:37. AR19's fixes 1 to 3 within A: the Void Mill (Modulo)
 

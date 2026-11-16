@@ -7519,6 +7519,38 @@ From `generator_A_fixes.png`, stills, with the motion from its notes.
 - **For the finish, no new round:** the collector arm takes the trestle's weight, so from the gate it doesn't read as a clock hand across the face.
 - **Exceptional is judged in motion,** at the build's review from the player's camera: the wheel's pace with the generation, and the buckets lighting as they rise. The director's call 3 can still move the look.
 
+### Stage I as kit pieces, for the builder's install (Modulo, 2026-11-16, 16:55)
+
+Faber's ask (2026-11-16, after 15:39): the block in the game, judged in motion. The pieces are in `build/handoff/Base` (`manifest.json`, `plan.json`, `meshes/`) and replace Generator, GeneratorRotor and GeneratorRing at the generator's station (across 0, along -72). They're blocks in the kit's swatches, as they stand in `generator_A_fixes.png`.
+- **The pieces:**
+  - **Generator:** everything still. That's the well and its kerb, the back bearing on its raked frame, the sill, the trestle and front bearing, the collector arm with its shoe, the demand's rail, the current's cable, and a dark plate behind the band. It stands at the station, up 0.
+  - **GeneratorWheel:** the rims, the buckets' walls, the spokes, the hub, and the axle with its nut. Its origin is on the axle, 10 up, and the axle lies along the line to the gate. From the gate it turns anticlockwise, so the buckets rise on the gate's right: in Roblox, `CFrame.Angles(0, 0, -angle)` with the angle growing.
+  - **GeneratorArc1 to 8:** the gauge, eight still steps of the void's light between the plate and the band. They run from the well up the gate's right to the collector's shoe, and each step is an eighth of the generation's share. Light the first k, where k is the share times 8, rounded. A step is shown or hidden, never dimmed: its colour is the void's pale light, and hidden, the dark plate shows through the band. They stand at the station, up 0.
+  - **GeneratorDemand:** the bone diamond with its lit pip. Faber asked for its origin at the rail's 0, but the rail is an arc about the axle, so the mark turns rather than slides. Its origin is on the axle, 10 up, made at a share of 0 by the well. It turns the way the wheel does, by the share times 117.9 degrees, about 27 studs of travel. The share is on the gauge's own scale, so the lit steps reach the mark when generation meets demand. Under a share of 0.12 it sinks into the kerb.
+- **What changed from the sheet:** the light no longer rides on the buckets' backs. It stands still behind the band, and the walls turn across it, as the sheet's notes asked. Thin dark gaps between the steps keep it stepped. The direction sheet now draws from the same shapes: `tools/blender/base_mill.py`, the one source for `generator_directions.py` and the kit.
+- **Collision** (the manifest's `collision` on Generator; the rest are look only):
+  - The well, shut to walking: a cylinder of radius 10.6, 3 high.
+  - The sill: a box 22.4 by 1.8 by 1.4, 4.6 toward the gate.
+  - Each raked leg's foot, and a Part along each raked leg.
+- **Triangles,** with the drawn edge: Generator 2,318, GeneratorWheel 2,376, each step 36, GeneratorDemand 36: 5,018 in all.
+- **The well light stays:** VoidWell, 1.6 up in the well's middle.
+- **Stood by the plan:** `build/scratch/modulo/mill/` checks the pieces stood by the plan under the dusk, from the generator's view and the heart. The base's look views in the handoff (`base_1_*.png`) predate the mill. They're redone at the base's new size.
+- **The scripts:**
+  - `tools/blender/base_mill.py`, new: the mill's shapes and its pieces.
+  - `base_kit.py` takes its pieces; `base_machines.py` drops the old generator; `base_plan.py` places the new pieces; `base_ink.py` hulls them.
+  - The old GeneratorRotor and GeneratorRing meshes are gone.
+- **Content check before upload:** PASS, 2026-11-16, by 16:55. It looked at the pieces stood by the plan at full size, and at 64 and 128 px over the dark.
+  - No red, nothing liquid, and the steps read as hard panels of light.
+  - One set of six straight radial spokes; the bucket walls lean only inside the band.
+  - The arm is one straight bar with nothing hung from it, and the shoe reads orange.
+  - The mark is a plain diamond with a square pip.
+  - **Conditions:** the motion gets its own check in the game from the player's camera. Stages II and III get their own upload check when they're cut. Bucket walls lengthened toward the hub, or leaning more, need a new check.
+- **The four facts:**
+  - **Implemented:** Stage I's block as kit pieces, exported.
+  - **Tested:** the export and the plan ran, the pieces stood by the plan render right, and the content check passed.
+  - **Visually reviewed:** my own read, stills. The motion is judged in the game.
+  - **Director-accepted:** no. The finish waits on the director's call 3, with research's note on the arm.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

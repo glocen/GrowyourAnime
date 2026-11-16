@@ -21,11 +21,7 @@ side a crescent of two horns holding an eye, a ring round a floating shard, over
 power out. The bay's own light is a piece by itself, in one pale swatch, so the builder gives it the worker's rarity
 colour (TR22): a ring round the worker's feet, a ring in the eye, and motes rising from the worker to it.
 
-The generator (`Generator`, `GeneratorRotor`, `GeneratorRing`): a cradle of two great horns over the well in the
-floor, 23 studs high, and floating in it the rotor, a dynamo's drum in a flywheel, inside a great ring of void stone.
-The rotor and the ring are each their own piece, its origin on its axle, so the builder turns them: the rotor about
-the line across the plot, the ring about the way in's, against each other, faster as the plant generates more. The
-void's power rises from the well to the rotor; the current leaves in yellow at the cradle's feet.
+The generator is the Void Mill (AR19): its own module, base_mill.py, whose pieces base_kit.py takes beside these.
 
 The battery (`BatteryRack`, `BatteryCell`): a bank, the yard's own. A low rack with eight seats and a bus bar down its
 middle, and a cell a seat as the battery's cap grows with the base's level (research, 2026-11-15: 60, 150 and 400
@@ -70,9 +66,6 @@ CHAMBERS = (3.5, 7.0, 4.0)       # a chamber's middle: across (each side), up; a
 GAP = (5.85, 8.35)               # the shard's room in a chamber, between the two points: from, to (up from the floor)
 BAY = (10.0, 0.4)                # a bay's stand-in, its pad: its side and its height
 HALO = (8.0, 1.7, 2.0)           # a bay's eye: its middle up from the floor, its ring's inner and outer radius
-PLANT = (9.2, 3.4, 4.6)          # the generator's cradle: a foot's place across (each side), and a foot's size across and deep
-AXLE = 11.5                      # the generator's heart: its rotor's and its ring's middle, up from the floor
-REACH = 7.6                      # the generator's great ring: its outer radius
 BANK = (6.0, 4.0, 3.0)           # the battery's stand-in: across, deep, high
 SEAT = 0.6                       # a cell's seat on the rack, up from the floor
 # a cell's seat on the rack, across and toward the Strip, in the order the bank fills: the spawn's row first, from
@@ -377,86 +370,6 @@ def tower_sleeping():
                       f"at its tip, 28 square at its foot. Dark and unlit but for the shard over its tip. No hull")
 
 
-# --- the generator -----------------------------------------------------------------------------------------------------
-
-def generator():
-    """The generator's cradle: two steel feet 18.4 studs apart, each with the plant's meter on both its faces, and
-    from each a great horn of void stone rising round the heart and closing over it to 23, a vein of the void's light
-    on its inner edge. Between the feet the void's power rises from the well in the floor as a spike of light; four
-    fangs stand round the well, leaning in; and over the horns' tips floats the plant's shard. The rotor and the great
-    ring float in the cradle, each its own piece. The current leaves in yellow at each foot's outer face."""
-    m = Mesh()
-    place, wide, deep = PLANT
-    heart = (0, 0, AXLE)
-    for sx in (-1, 1):
-        x = sx * place
-        m.box((wide + 0.4, deep + 0.4, 0.5), (x, 0, 0.25), "concrete", ink=True)
-        m.box((wide, deep, 2.3), (x, 0, 1.65), "girder", ink=True)
-        m.box((wide + 0.3, deep + 0.3, 0.35), (x, 0, 2.97), "bone", ink=True)
-        for sy in (-1, 1):
-            y = sy * (deep / 2 + 0.03)
-            m.box((2.6, 0.14, 1.3), (x, y, 1.7), "dark")                              # the meter's window
-            for k, tall in enumerate((0.35, 0.55, 0.75, 0.95)):                       # and its bars, rising
-                m.box((0.32, 0.18, tall), (x - 0.84 + 0.56 * k, y + sy * 0.02, 1.18 + tall / 2), "power")
-        m.box((0.14, deep - 1.0, 0.24), (x + sx * (wide / 2 + 0.03), 0, 2.2), "power")    # the current, out to the bus
-        m.box((0.14, 0.24, 1.9), (x + sx * (wide / 2 + 0.03), 0, 1.2), "power")
-        arm = [(x, 0, 3.1), (sx * 10.7, 0, 8.5), (sx * 10.5, 0, 14.5), (sx * 8.6, 0, 19.6), (sx * 5.4, 0, 23.0)]
-        widths = [1.5, 1.35, 1.1, 0.75, 0.06]
-        horn(m, arm, widths, "abyss", deep=0.8)
-        vein(m, arm[:4] + [(sx * 6.6, 0, 21.75)], widths[:4] + [0.35], heart, r=0.13)
-    for sx, sy in SIGNS:                                                              # the well's fangs
-        horn(m, [(sx * 5.6, sy * 5.6, 0.0), (sx * 4.5, sy * 4.5, 3.4)], [0.75, 0.05], "abyss", flat=(sy, -sx, 0.0))
-    horn(m, [(0, 0, 0.1), (0, 0, 3.6), (0, 0, AXLE - 2.9)], [1.3, 0.5, 0.05], "void", ink=False)   # the void's power, rising
-    shard(m, (0, 0, 24.0), 0.9, 3.4, "void", lean=0.6)
-    return Piece("Generator", m, solid=f"the two feet, each a box {wide + 0.4:g} by {deep + 0.4:g}, 3 high, at across "
-                                       f"{place:g} each side; and the well between them shut to walking, the builder's call",
-                 note=f"its middle on the well's, 26 high at its shard. Its rotor is GeneratorRotor and its great ring "
-                      f"GeneratorRing, both floating at its heart, {AXLE:g} up: the ring's outer radius is {REACH:g}, "
-                      f"clear of the horns by a stud and of the floor by {AXLE - REACH - 0.4:g}")
-
-
-def generator_rotor():
-    """The generator's rotor, a piece by itself, its origin on its axle (along X): a copper winding between two bone
-    rims with six bars of the current's yellow along it, which streak when it turns, the current's light in its
-    axle's two eyes, and round its middle a flywheel, a bone band on four spokes with eight marks of the current."""
-    m = Mesh()
-    turned = Mesh(None)
-    turned.lathe([(2.0, 1.8), (2.0, -1.8)], (0, 0, 0), 12, "copper", caps=False)
-    for sx in (-1, 1):
-        turned.lathe([(2.35, sx * 2.0 + 0.2), (2.35, sx * 2.0 - 0.2)], (0, 0, 0), 12, "bone")
-        turned.lathe([(0.75, sx * 2.75 + 0.1), (0.75, sx * 2.75 - 0.1)], (0, 0, 0), 6, "power")   # the axle's eye
-    turned.lathe([(0.55, 2.7), (0.55, -2.7)], (0, 0, 0), 6, "girder", caps=False)     # the axle
-    laid(m, turned, 0.0)
-    for k in range(6):
-        a = math.tau * k / 6
-        m.box((3.6, 0.44, 0.24), (0, -2.08 * math.sin(a), 2.08 * math.cos(a)), "power", rot=(a, 0.0, 0.0))
-    hoop(m, (0, 0, 0), 4.7, 5.4, 0.7, 16, "bone")
-    for k in range(8):
-        a = math.tau * (k + 0.5) / 8
-        m.box((0.9, 0.5, 0.3), (0, -5.42 * math.sin(a), 5.42 * math.cos(a)), "power", rot=(a, 0.0, 0.0))
-        if k % 2 == 0:                                                                # a spoke, from the winding to the band
-            m.box((0.34, 0.34, 2.8), (0, -3.35 * math.sin(a), 3.35 * math.cos(a)), "girder", rot=(a, 0.0, 0.0))
-    return Piece("GeneratorRotor", m,
-                 note=f"its origin is its axle's middle: it floats {AXLE:g} up at the generator's middle and turns "
-                      f"about its own X, faster as the plant generates more. 5.6 at its widest. Look only")
-
-
-def generator_ring():
-    """The generator's great ring, a piece by itself, its origin its middle, its axle along its own X: a band of void
-    stone, twelve marks of the void's light on its rim, which run round as it turns."""
-    m = Mesh()
-    hoop(m, (0, 0, 0), REACH - 0.8, REACH, 0.8, 24, "abyss")
-    for k in range(12):
-        a = math.tau * k / 12
-        m.box((1.0, 0.55, 0.3), (0, -(REACH + 0.02) * math.sin(a), (REACH + 0.02) * math.cos(a)), "void", rot=(a, 0.0, 0.0))
-        if k % 3 == 0:
-            m.box((0.5, 0.5, 0.3), (0, -(REACH - 0.82) * math.sin(a), (REACH - 0.82) * math.cos(a)), "void", rot=(a, 0.0, 0.0))
-    return Piece("GeneratorRing", m,
-                 note=f"its origin is its middle: it floats {AXLE:g} up at the generator's middle, turned 90 so its "
-                      f"axle lies along the way in and its face looks at the gate, and turns about its own X, slowly, "
-                      f"against the rotor. Look only")
-
-
 # --- the battery -------------------------------------------------------------------------------------------------------
 
 def battery_rack():
@@ -628,5 +541,4 @@ def training_crown():
 PIECES = {"Door": door, "DoorWay": door_way, "Training": training, "TrainingCrown": training_crown,
           "Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
           "Bay": bay, "BayHalo": bay_halo, "BaySleeping": bay_sleeping, "SleepingStone": sleeping_stone, "TowerSleeping": tower_sleeping,
-          "Generator": generator, "GeneratorRotor": generator_rotor,
-          "GeneratorRing": generator_ring, "BatteryRack": battery_rack, "BatteryCell": battery_cell}
+          "BatteryRack": battery_rack, "BatteryCell": battery_cell}

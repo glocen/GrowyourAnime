@@ -2315,6 +2315,8 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   6. **Kept as they are:** the chevrons over the starters, the reveal following the break, and the lead on the right.
 - 1 to 4 are this piece's fixes.
 
+**Then, the director's own run (research, 2026-11-16, 21:39).** After fix 1, the worker seen at its bay, the director plays the first session on a real phone, on research's go (`docs/decisions.md`, the row of 21:39: "sure just give me the go"). Faber publishes the build to the place first; the experience stays private.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.
@@ -2754,3 +2756,63 @@ Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/d
 - **Felt:** Stage III reads as the generator grown, not swapped: the gear and the side housings arrive on the same wheel.
 - **Tier:** competent.
 - **No fixes.** Visually reviewed in stills only: the motion is unseen, and the case's 2.4 is the measure until a capture shows it.
+
+## TR31. Back from away: the card on return (Faber)
+
+On the director's "yes!" of 2026-11-16, 21:39 (`docs/decisions.md`), to research's suggestion. Tier 2, research and Faber: a new screen players see. It serves the north star's first measure, "comes back the next day", and it's cheap: the numbers already exist in the rejoin's summary (`Rules.Breaker.Advance` with `away`).
+- **Feel line:** the player comes back and, before anything else, sees what the base did without them: the shards it broke, the Credits its workers made, the levels their lead trained. One tap pours it into their counters, so the first second back is a reward.
+- **The block:**
+  - One card on a rejoin, when the time away passes a seed in Config (5 minutes to start). It shows over the base, before the next step's line.
+  - Its lines come from the rejoin's summary, each with its HUD picture: Credits made, shards ready in the Breaker, the levels the lead trained (with the lead's portrait), the power the bays made. A zero line isn't shown.
+  - The time away, said plainly. When the cap bit, it's said honestly: "Your bays worked 2 h of your 9 h away" (`Config.Base.Battery.AwayHours`).
+  - One button. On its tap the amounts fly to their counters and count up there. The server has already credited them on load; only the show waits on the tap.
+  - A case, pure, Studio closed: the card's lines from a summary, zeros hidden, the cap's line only when it bit.
+- **What waits:**
+  - The Stone Condenser's stones, with the Forge.
+  - A Roblox experience notification when the battery fills: it's opt-in and has its own rules, so `docs/roblox-rules.md` comes first.
+  - Any effect beyond the fly-in.
+- **Tests:** the case, and one take from the player's camera on a phone: a rejoin after a scripted absence (`BaseService`'s "as if `seconds` passed").
+- **Order:** after TR24's fixes and the rebuild in A (TR28).
+
+## TR32. The first session, measured (Faber)
+
+On the director's "ok" of 2026-11-16, 21:39 (`docs/decisions.md`). Nothing players see, so no feel line. At the soft opening it shows where new players stop, against the north star's first measure.
+- **The block:**
+  - Roblox's own onboarding funnel (`AnalyticsService:LogOnboardingFunnelStepEvent`), from the server, at each beat of `docs/north-star.md`'s first session that the build has:
+    1. Arrive: the first join.
+    2. Choose: a starter picked.
+    3. Reveal: its shard broken.
+    4. Fight: the first Shade falls on Lantern Row.
+    5. Find: the Named shard picked up.
+    6. Work: the first worker in a bay.
+    7. Build: the first item equipped.
+    8. Want: the keeper's gate reached.
+  - Each step logs once an account, from the step's own server act, never on the client's word.
+  - It's Roblox's built-in analytics in the Creator Dashboard, at no cost. No personal data goes in a step.
+  - A case: each step logs once and in order, and a repeat doesn't log it again.
+- **What waits:**
+  - Economy and custom events (Credits in and out, the chests' opens), with the store.
+  - The dashboard's read, which needs live players.
+- **Order:** Faber's call. It's about an hour, so it can go in beside TR31.
+
+## TR33. Inspect another player (Faber)
+
+On the director's "YES" of 2026-11-16, 21:39 (`docs/decisions.md`). Tier 2, research and Faber: a new view players see. It serves the north star's measure "two players compare builds and argue about which is better", and it takes TR22's wait, the plinth's tap (Dragon Hunter's View Character).
+- **Feel line:** a player taps someone in the street, or their Voidkin at the gate, and that player's lead stands there as they built it: its Combat Power, its gear and its sheet. The player sees who's ahead and why.
+- **The block:**
+  - A tap opens the character screen in a visitor's mode. It works on another player's avatar or lead within reach, showing their lead, and on a base's plinth, showing the plinth's Voidkin.
+  - It shows the Voidkin large and turning, with:
+    - its name, class, level and stars;
+    - its preset's slots, each item's icon and forge rank;
+    - Combat Power at its feet;
+    - the stat sheet.
+  - A tap on an item opens its card, with no Equip and no bag.
+  - The owner's name is at the top, with a close. Nothing else of their save shows.
+  - The server builds the view from the owner's save through the one resolver, never from the asker's client. It answers one ask at a time a player, within a rate limit.
+  - A case: the view holds only the sheet's fields, and an ask past the limit is refused.
+- **What waits:**
+  - A comparison with the asker's own lead.
+  - Visiting another player's base (TR22).
+  - A list of the server's players to inspect from.
+- **Tests:** the case, and one take from the player's camera with two players in a Studio test server.
+- **Order:** after TR31.

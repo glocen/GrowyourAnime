@@ -16,16 +16,19 @@ return {
 
 	-- Rarity weights, Common to Legendary, one row a step. A chest of the ground in order g at tier t reads row g + t - 1,
 	-- so an elite's chest is the next ground's Shade chest, and the last ground's elites and keeper read past it.
+	-- Research's fit (TR27, 2026-11-16, 19:13; tools/balance/chests.py --fit): each rarity starts where its grounds read it
+	-- (Rare at row 3, Epic at 5, Legendary at 7) and about doubles a row; alone, a first Rare at 3.5 h, Epic 12.5, Legendary
+	-- 39.8 (medians).
 	Rarities = { "Common", "Uncommon", "Rare", "Epic", "Legendary" },
 	Ladder = {
-		{ 88, 12, 0, 0, 0 },
-		{ 72, 26, 2, 0, 0 },
-		{ 55, 37, 8, 0, 0 },
-		{ 40, 42, 16, 2, 0 },
-		{ 30, 42, 22, 6, 0 },
-		{ 20, 40, 30, 9, 1 },
-		{ 10, 35, 38, 14, 3 },
-		{ 0, 25, 45, 22, 8 },
+		{ 94, 6, 0, 0, 0 },
+		{ 91.4, 8.6, 0, 0, 0 },
+		{ 88, 10.9, 1.1, 0, 0 },
+		{ 83.2, 14.6, 2.2, 0, 0 },
+		{ 76.4, 19.2, 2.9, 1.5, 0 },
+		{ 67, 24.2, 5.6, 3.2, 0 },
+		{ 53.8, 28.7, 10.5, 6.2, 0.8 },
+		{ 35.4, 29.6, 19.6, 13.5, 1.9 },
 	},
 
 	-- A weapon is for the lead's class this often; else for one of the other classes the player owns.
@@ -77,7 +80,9 @@ return {
 	MainLean = 3, -- a weapon's lines weigh its class's Main this many times
 
 	-- Auto-salvage: Credits a G at the item's ground's last level, by rarity. Forge stones join when the Forge does.
-	Salvage = { Common = 15, Uncommon = 30, Rare = 60, Epic = 120, Legendary = 240 } :: { [string]: number },
+	-- Research's fit (TR27): salvaging everything pays at most 10% of a kill's Credits on Lantern Row, 16% on Mirror
+	-- Pavilion, so fighting stays the income.
+	Salvage = { Common = 8, Uncommon = 14, Rare = 24, Epic = 40, Legendary = 64 } :: { [string]: number },
 
 	Bag = 300, -- items held at most; an open that would pass it is refused before it rolls
 	Step = 50, -- chests opened in one request at most

@@ -13,6 +13,7 @@ local Rarity = require(Shared.Definitions.Rarity)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Attributes = require(Shared.Definitions.Attributes)
 local ChestsConfig = require(Shared.Config.Chests)
+local ChestRows = require(Shared.Definitions.Chests)
 local Collection = require(Shared.Rules.Collection)
 local Regalia = require(Shared.Rules.Regalia)
 local Stats = require(Shared.Rules.Stats)
@@ -190,7 +191,12 @@ return {
 			local chests = Bag.List(data, warrior, "Chests", "New")
 			t.Equal("Drum Court's Keeper's Chest first", chests[1].Id, "drumcourt_3")
 			t.Equal("its count", chests[1].Count, 2)
-			t.Equal("its edge is the best it can give", chests[1].Rarity, "Epic")
+			local best = "Common"
+			for rarity, chance in Chests.Odds(ChestRows.ById.drumcourt_3) do
+				best = if chance > 0 and Rarity.Rank[rarity] > Rarity.Rank[best] then rarity else best
+			end
+			t.Equal("its edge is the best it can give, by Config's ladder", chests[1].Rarity, best)
+			t.Check("which is above Common", Rarity.Rank[best] > Rarity.Rank.Common, best)
 			t.Equal("Lantern Row's Common Chest after, its best an Uncommon", chests[2].Rarity, "Uncommon")
 		end,
 	},

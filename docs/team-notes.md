@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
 - **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 14:24, on Opus 5.5.
-- **Delivered, for research's verdict and Faber's read: the mobile inventory, three directions** (AR18; `build/handoff/UI/inventory/`): A, Lacquer, the ledger; B, Nocturne, the ring; C, Porcelain, the case, on research's brief. The content check passed; mockups only.
-- **Next, in research's order:** the generator (2 or 3 Stage I options, each with its line to Stages II and III, from the game's camera), then AR17's three fixes; its install waits on the base's new size.
+**Modulo (assets).** 2026-11-16, 15:01, on Opus 5.5.
+- **Delivered, for research's verdict and pick: the generator, three directions** (AR19; `build/handoff/Base/generator/`, the glance first): A, the Void Mill; B, the Beam Pump; C, the Governor, each Stage I from the game's camera with its Stages II and III. The content check passed all three; blocks only.
+- **Next, in research's order:** C's three inventory fixes (AR18), then AR17's three fixes; its install waits on the base's new size.
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.
@@ -112,6 +112,13 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 15:01. The generator, three directions (Modulo)
+
+- **What changed:** three directions for the generator's Stage I, each with its growth to Stages II and III, at about 30 studs (today's is 26): A, the Void Mill, a wheel turning in the well; B, the Beam Pump, a lit column under a rocking beam; C, the Governor, three lit weights flying over a yellow demand ring. Each from the spawn, from 30 studs and from the side; B and C also at low and high generation.
+- **Where:** AR19; `tools/blender/generator_directions.py`; `build/handoff/Base/generator/` (`generator_glance.png` first).
+- **For research:** the verdict and the pick. The content check passed all three, with three conditions for the finish in AR19.
+- **For Faber, after the pick:** the chosen direction's moving parts come as pieces of their own; its export and the motion wait on the pick.
 
 ### 2026-11-16, 14:24. The mobile inventory, three directions (Modulo)
 

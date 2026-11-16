@@ -7303,6 +7303,92 @@ Read at phone size first (`inventory_glance.png`), then each sheet at full size;
   3. The icon-only tabs (Emblems, Jewels, Stones) get their words while they're shut, or they're unreadable at phone size. Serves readability.
   4. Faber's feasibility read before the build, in particular the card's 0.16 s slide and the belt's fourteen slots at 44 or more on the smallest phone.
 
+## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
+
+Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:
+- "The generator is my highest-priority redesign. Its current appearance is unattractive."
+- "Machines should look like early-stage industrial equipment, but still be exceptionally well designed": "recognizable mechanical construction", "logical functional components", "attractive silhouettes", "appropriate detail density", "clear electricity pathways", "coherent materials", "satisfying animation", "our original mature anime-industrial aesthetic"; "avoid meaningless decorative complexity".
+- The stages: "Stage I — Primitive: simple machinery, exposed components, modest energy effects. Stage II — Developed: better construction, more components and stronger mechanical detail. Stage III — Advanced: sophisticated mechanisms, refined silhouettes and stronger effects."
+- "All designs require review from gameplay camera angles."
+
+Research's reading, which this piece builds on, with the director's answer still open (the Now board, item 8): void machines built from parts you can read (gears, pistons, cables, clamps) doing void work; never a copy of a real power plant. Research's thresholds: Stage I is machine levels 1 to 5, Stage II 6 to 14, Stage III 15 and up.
+
+- **What the generator does** (`docs/design.md`, "The base"): the bays make the power. The generator is the plant's heart: the bays' power comes into it, and it shows generation against demand on its own face, at the scale of the base. A tap opens the Power screen.
+- **Why today's reads as unattractive** (seen in TR24's capture from the court): thin horns round a hollow ring, with a small drum floating in it. Nothing is joined to anything, nothing does visible work, and from the gate it's an outline with no mass.
+- **Feel line, proposed:** from the gate, the player sees the plant's heart at work. A heavy machine of honest steel takes the void's violet light from the well, works it, and sends the yard's yellow current out along its cables. Its pace, and a gauge as big as the machine, tell at a glance how much power the base makes.
+- **Every direction shares:**
+  - **The pathway:** violet in from the well, worked by the moving part, yellow out along cables to the floor's ring. The kit's colours: the void's violet, Power's yellow.
+  - **The kit's materials:** steel and girder for the frame, bone for bearings and caps, copper for windings, rubber for cables, concrete for the plinth, the yellow hazard band as the one painted accent.
+  - **Movement:** the moving parts are pieces of their own, which the builder drives faster as the plant generates more.
+  - **The place:** the well and the ring of current, where it stands today.
+  - **Size:** about 30 studs tall at Stage I and up to 32 at Stage III, over today's 26: the director's word of 2026-11-15 was "a lot bigger", with the footprint growing too. The first draft's 20 to 24 was under today's, and the block corrected it. The base's new size changes the camera's distance, not the machine.
+- **A, the Void Mill (a wheel turning in the well):**
+  - **The machine:** a heavy wheel, 21 across, faces the gate, and its lower part turns down in the well of void. Its rim is a deep band of buckets between two rims. They dip into the dark and carry the light up, glowing, and at the top a collector arm with two brushes takes the light off. The cables drop from the arm in yellow.
+  - **Why the band:** in the block, buckets standing out of a thin rim read as a ship's wheel.
+  - **The frame:** a raked frame behind carries the bearing and the mast, so nothing stands before the wheel.
+  - **The gauge:** a round dial on the mast over the collector, its needle for generation and a notch for demand.
+  - **The motion:** the turning wheel. Each bucket lights as it rises out of the well and fades as it gives its light up at the top.
+  - **Growth:**
+    - **Stage II:** widens the wheel, with two sets of spokes, a gear train and a copper dynamo, a second collector, the cables in trays and the frame plated.
+    - **Stage III:** houses the wheel in an armoured half drum under a crown of collector rods, with dynamos both sides. Its window band is lit only on the rising side: in the block, light all round the top arc read as a portal ring, and the Festival Door is the game's portal.
+- **B, the Beam Pump (a beam engine):**
+  - **The machine:** a tall column of glass bound in steel hoops holds the void's light. A walking beam rocks on a bearing at the column's head, and its two pistons pump the light up from the well into the column. In the block, a beam on two A-frames over the column read as a gateway, so the beam moved onto the column, making a T.
+  - **The gauge is the column:** its light stands at the generation's height, and a clamp collar marks demand.
+  - **The output:** from the column's head, cables leave in yellow.
+  - **The motion:** the beam rocks and the pistons stroke. Each stroke sends a pulse of light up the column.
+  - **Growth:** Stage II adds a flywheel and crank to the beam's end, a second column, a plated frame and a cabinet of gauges. Stage III stands four columns round a core, with the beam replaced by a wide turning cam and its pistons in a ring, standing straight under its rim. The light stays in the columns: the block's first Stage III, a tapering cage under a lit crown, came too near the tower shape the content check named.
+- **C, the Governor (a spindle that flings its weights), as changed by the content check:**
+  - **The machine:** a spindle stands on a turbine housing over the well, where the violet light swirls behind slotted vanes. Three flat eight-sided weights on hinged arms swing out and up as it spins, each with a band of the void's light round its rim.
+  - **The gauge is the arms:** the higher the weights fly, the more power. A copper collar slides up the spindle with them, and a yellow ring held on the frame's legs marks demand: weights flying over the ring mean power to spare.
+  - **The output:** at the head, an angular bearing block with a flat stack of copper collector rings sends the yellow current down the cables.
+  - **The frame:** three splayed legs rise clear of the weights' sweep to their knees, then stays climb to the head block, so no shaft stands free above the arms.
+  - **What the block changed:** upright posts with beams across read as a gallows, so they became the splayed legs. The front weight hid a clamp on the spindle, so the demand became the ring on the legs.
+  - **The motion:** the spin, and the weights climbing and falling with generation.
+  - **Growth:** the flyweights stay the silhouette's main feature. Stage II has four weights, a wider housing and four plated legs. Stage III has two tiers of weights, a low eight-sided housing with lit slots, power rings at the head and the back legs braced.
+- **Content check before building:** 2026-11-16, on this spec. A and B passed. C was blocked as first written and passes as changed above.
+  - **Why C was blocked:** two round weights beside a tall upright spindle under a rounded bone cap can read as rude from the front.
+  - **C's other condition:** its growth must never become a tall stepped furnace cylinder with gantry rings and a vented crown. That shape is another game's landmark generator.
+  - **For all three, the violet reads as light:** an emissive core, motes, bands, or a swirl behind vanes. Never a glossy surface, ripple, drop, drip or pour. Only violet in and yellow out; no beacon or dawn colour on the path.
+  - **For A:** the spokes stay straight and radial.
+  - **For B:** the column stays straight with even hoops, the cables run straight and clamped, and the pulse is one even band rising. No two-beat rhythm, and no "Heart" in anything players see.
+  - **For four-fold turning parts:** straight radial arms.
+  - **No preserved engine as a blueprint,** and no maker's plates or lettering.
+  - **On the renders:** 2026-11-16, 15:01, full size and at 64 px in the yard at dusk. **A, B and C pass.** C from the front at rest is clear, and its weights high round the lit housing read as a machine part.
+  - **Conditions for the finish:**
+    - C's plates stay centred on their arms, never offset (offset plates turning read as hooked from above).
+    - B's Stage III takes C's growth condition: never a stepped taper, a vented or lit crown, or gantry rings.
+    - The motion gets its own check once built.
+- **The block:**
+  - Each direction's Stage I in the yard as it stands, from the game's camera: from the spawn, from behind the player close to the machine, and from the court's side.
+  - Its Stages II and III from the near view.
+  - B and C also at low and high generation, since their gauge is the machine itself.
+  - Blocks in the kit's swatches, not finished pieces.
+- **Waits:**
+  - the chosen direction's real pieces and their export;
+  - the outline's hull on its round shapes;
+  - the builder's motion;
+  - the base's new size, at which the camera's distance changes, not the machine.
+- **Cap:** 2 hours from 14:29.
+- **Delivered, 2026-11-16, 15:01, for research's verdict and pick:**
+  - **The pictures,** in `build/handoff/Base/generator/`:
+    - `generator_glance.png`: all three from the spawn and from 30 studs. Read it first.
+    - `generator_A.png`, `generator_B.png`, `generator_C.png`: each direction's views, with its notes.
+    - `generator_64.png`: the content check's sheet.
+  - **The script:** `tools/blender/generator_directions.py`. It lays the yard without today's generator, sets each direction on the well and renders under the place's dusk. `small` remakes the 64 px sheet alone.
+  - **Triangles,** with the drawn edge, Stages I, II and III:
+    - A: 4,258, 5,530, 7,874.
+    - B: 6,280, 11,072, 18,192.
+    - C: 3,948, 5,008, 5,108.
+  - **My read** (for the verdict, not a verdict):
+    - **C:** the clearest gauge from 30 studs, the weights over or under the yellow ring, at the lowest count.
+    - **A:** the strongest silhouette from the spawn.
+    - **B:** the plainest gauge, the column filling, at the highest count.
+  - **The four facts:**
+    - **Implemented:** blocks in the kit's swatches, not finished pieces.
+    - **Tested:** the renders and the content check, both above.
+    - **Visually reviewed:** my own read from the game's camera. Research's pass is next.
+    - **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

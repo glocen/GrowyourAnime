@@ -30,7 +30,10 @@ ZOOM = 6  # pixels a point, the number close
 # Each take: its stops (place, colour) over the digits' box, the gradient's rotation (UIGradient.Rotation: 0 runs left to
 # right, 90 top to bottom), the stroke's colour and thickness in points, and its motion.
 TAKES = (
-    dict(key="A", name="Shard light", stops=((0.0, "#F4FBFF"), (0.32, "#8FE3FF"), (0.68, "#B58CFF"), (1.0, "#FF6FD8")),
+    # research's pick, with its fix (AR23, "Research's pick"): at the smallest phone the frost tops faded and the number
+    # read as one lilac, so the white holds clear over the tops and Storm's pink reaches higher at the feet
+    dict(key="A", name="Shard light", stops=((0.0, "#FFFFFF"), (0.22, "#FFFFFF"), (0.42, "#8FD8FF"), (0.6, "#B58CFF"),
+                                             (0.78, "#FF6FD8"), (1.0, "#FF6FD8")),
          rotation=90.0, stroke=("#170E2A", 1.5), motion="sheen",
          words="The emblem's crystal carried into the digits: frost white at their tops, through Frost and Void to "
                "Storm's pink at their feet, each digit a shard. Motion: a pale sheen crosses the number every 4 s, "

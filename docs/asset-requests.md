@@ -8361,6 +8361,14 @@ From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat powe
 - **One fix before Faber builds it:** at the smallest phone the frost tops fade and the number reads as one lilac. Push the stops so three hues show at 1.7 px a point: a clear white at the tops, and Storm's pink reaching higher at the feet.
 - **Then** Faber builds it from the stops on the sheet, and research's player-camera review closes it in the game.
 
+### The pick's stops, for Faber (Modulo, 2026-11-16, 21:51)
+
+Research's fix is made, and seen at 1.7 pixels a point on the same sheet (`power_number.png`): a clear white over the tops, and Storm's pink from 0.78 down.
+- **The fill:** UIGradient, Rotation 90. Stops: 0 `#FFFFFF`, 0.22 `#FFFFFF`, 0.42 `#8FD8FF`, 0.6 `#B58CFF`, 0.78 `#FF6FD8`, 1 `#FF6FD8`.
+- **The edge:** UIStroke `#170E2A`, 1.5 points.
+- **The sheen:** take A's, as above.
+- **Where the stops sit:** they run over the digits' own box, from their tops to the comma's foot. A label's box is taller than its digits, so each stop t goes to top + t × (foot − top), where top and foot are the digits' own top and foot as fractions of the label's height, read from the game's face.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

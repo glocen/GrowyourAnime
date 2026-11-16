@@ -180,7 +180,8 @@ function LeadService.Refusal(player: Player, id: any): string?
 	if current and current.Model:GetAttribute("Voidkin") == id then
 		return nil
 	end
-	return Carry.Refusal(FightService.InCombat(player), carriedOf(player)[id], now(), FightService.HomeOf(player))
+	-- In a fight, and frozen through a keeper's try or a Tower run (D10).
+	return Carry.Refusal(FightService.InCombat(player) or FightService.Frozen(player), carriedOf(player)[id], now(), FightService.HomeOf(player))
 end
 
 local function sync(player: Player)

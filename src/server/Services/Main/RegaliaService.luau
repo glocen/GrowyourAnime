@@ -19,6 +19,7 @@ local Chests = require(Shared.Rules.Chests)
 local ChestRows = require(Shared.Definitions.Chests)
 local DataService = require(script.Parent.Parent.Core.DataService)
 local DebugService = require(script.Parent.Parent.Core.DebugService)
+local FightService = require(script.Parent.FightService)
 
 local RegaliaService = {
 	Priority = 20, -- after DataService
@@ -104,8 +105,15 @@ local function registerDebug()
 end
 
 function RegaliaService.Init()
+	-- Gear never changes in a fight, and stays frozen through a keeper's try and a Tower run (D10): the client's
+	-- "Not during a fight" answers this refusal.
 	for name, action in Regalia.Actions do
-		DataService.Action(name, action)
+		DataService.Action(name, function(draft: Profile.Data, args: any, player: Player): { [string]: any }
+			if FightService.InCombat(player) or FightService.Frozen(player) then
+				return { Ok = false, Error = "InCombat" }
+			end
+			return action(draft, args)
+		end)
 	end
 	DataService.Action("OpenChests", function(draft: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}

@@ -98,6 +98,28 @@ export type GroundProgress = {
 	Back: number?, -- os.time() this player's keeper is back, set at each win (TR10, Rules.Progress); nil before the first
 }
 
+-- A Tower run under way (TR29, Rules.Tower): its ledger, written in the transaction of each floor won and granted once,
+-- by the transaction that ends it. A run never resumes: one left in the save by a crash is ended at the next join.
+export type TowerRun = {
+	Id: string, -- Profile.NewId: an end naming another id is a no-op, so a run is granted once
+	Started: number, -- os.time() it started
+	Floor: number, -- the last floor won; 0 before the first
+	Best: number, -- the record when it started: a floor past it pays the first-time bonus
+	Seed: number, -- the server's draw at the start: each floor's foe and chest roll come from it (Rules.Tower)
+	Credits: number, -- won and not yet granted
+	Chests: { [string]: number }, -- won by chest id and not yet granted
+}
+
+-- The last run's summary, kept until its screen has shown it (Act "TowerSeen" with its id).
+export type TowerResults = {
+	Id: string,
+	Floor: number, -- the highest floor won
+	Best: number, -- the record before it
+	Record: boolean, -- it passed the record
+	Credits: number,
+	Chests: { [string]: number },
+}
+
 export type Data = {
 	Version: number, -- how many migrations have run on it (Shared.Data.Migrations)
 	NextId: number, -- the counter behind every instance id
@@ -132,6 +154,11 @@ export type Data = {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
 		Kills: number, -- enemies that fell with this player's lead among their hitters (Rules.Drops); the first drops Watt's shard
+		Tower: {
+			Best: number, -- the highest floor ever won (TR29)
+			Run: TowerRun?,
+			Results: TowerResults?,
+		},
 	},
 }
 
@@ -177,7 +204,7 @@ function Profile.Template(): Data
 			Bays = bays,
 		},
 		Training = { Trainee = "", Banked = 0 },
-		Progress = { Starter = "", Grounds = {}, Kills = 0 },
+		Progress = { Starter = "", Grounds = {}, Kills = 0, Tower = { Best = 0 } },
 	}
 end
 

@@ -2513,3 +2513,81 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **(3) The count:** changed. The count matters most when the bag is nearly full, which is exactly when a scrolling foot is furthest off screen. **Fixed:** "n / 300 in the bag" is pinned under the grid, outside its scroll, and its digits turn red when the bag is full. The case checks it's out of the scroll and says what `Rules.Bag.Held` says.
 - **(4) Open N:** kept, if the number is what the tap opens. **Fixed:** `Rules.Bag.Chest`'s `Step` is now as many as are held, as one request takes, and as the bag has room for, so with 12 held it says "Open 12", and with room for 20, "Open 20". With the bag full, both buttons are off. Two new logic checks cover room for 20 and a full bag.
 - **Checks:** type check 0 new; logic 23,092/0 offline.
+
+## TR29. The Tower's run, in grey (Faber)
+
+Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).
+
+**Scope, set at the start (19:33, written here at the close).** The feel line is research's to write at the finish. The block follows design.md's "A run" line by line.
+- **The block:**
+  - `Config.Tower`: research's seeds for the foe, and the builder's for the rewards, fast floors and world.
+  - `Rules.Tower`: the foe, its build, fast floors, the heal cap, a floor's reward, the ring's spot, and the ledger.
+  - The save's `Progress.Tower`, and each plot's `TowerRing` marker.
+  - `TowerService`, and FightService's rival.
+  - The freeze on the lead, its stars and its Regalia.
+  - The client's grey platforms with the column, the floor line and the results screen.
+  - Studio's commands and the cases.
+- **What waits:**
+  - The void-light look: the foe's, and the platforms assembling and falling as light.
+  - The leap's arc, and the platform's rise carried in motion (today the pair is set down at mid-rise); the camera; the sounds.
+  - The rarity light on rare rewards.
+  - Items as rewards: the Dawn series, and the Tower's own chest table.
+  - Research's fit of the seeds below.
+  - Captures from the player's camera, for research's pass.
+
+**The build (19:33 to 20:04 by the clock).**
+- **The rules, pure (`src/shared/Rules/Tower.luau`):**
+  - **The foe:** floor f's foe is a Voidkin with a model, drawn from the run's seed. The pool is Kirra, Lyric, Pip and Rook. Its level is `1 + (f - 1) × 0.5`.
+  - **Its build:** the engine has no build share for a Voidkin row, so `Block` resolves the foe's own figure at its level and lifts each stat by `Config.Tower.Lift`, then its health by 0.55. The Lift is the model's 0.45 build over the own figure at level 30. It's read from `tools/balance`'s model, not from play.
+  - **Rewards:** `Reward(floor, best, seed)` gives Credits and maybe a chest.
+  - **Healing:** `Capped` never cuts a fall in health and spends the floor's room.
+  - **The ledger:** `Start`, `Won` (the next floor and this run's id only), `End` (grants once, raises `Best`, writes `Results`), `Recover` and `Seen`.
+- **The server (`TowerService`):**
+  - **Starting:** the avatar inside its plot's ring, with a lead, out of a fight, starts a run.
+  - **Each floor:**
+    - The rise takes `Rise` seconds. At `Leap` of it, the pair is set down on the new platform, and the server holds that floor's collision only.
+    - The foe spawns for this player alone.
+    - A won floor is one transaction on the ledger.
+  - **How it ends, always on the server:**
+    - The lead's fall, after 1.2 s.
+    - Stepping off the platform by `Out.Side` or `Out.Below`.
+    - A respawn, leaving the game, a world re-lay or a shutdown.
+  - **A crash** leaves the `Run` in the save, and the next join ends it.
+- **FightService:**
+  - **The rival:** registered as a Shade of kind "Rival" for one player (`For`). Only that player's lead targets it, and it targets only that lead. It never gives up or resets, and its area strikes skip other players' fighters. It wears "RivalLook", a grey Highlight standing in for void light.
+  - **Healing:** regen and mending pass one `heal()`, which spends the floor's `HealRoom`. The room is 0 between floors and `HealCap` of the lead's health in one. Lifesteal joins there when it's wired.
+  - **Fast floors:** a foe `Fast.Gap` levels under the lead is `Frail`. It falls to the first hit that lands, and the next rise takes 0.8 s.
+- **The freeze (D10):** `FightService.Frozen` is true during a keeper's try or a run. While it is, the lead change, the lead's stars (`SpendCopies` on the lead) and every Regalia action are refused with "InCombat". Equip had no guard at a keeper's try before, so this closes D10's gear rule there too.
+- **The world:** the ring lies on each plot's crossing end, where the sleeping Tower stood (`WorldService`). `plan.json`'s TowerSleeping placement is now unused. That file is Modulo's, left for it.
+- **The client:**
+  - **`TowerController`:** every runner's platforms, the floor's and two below. The newest assembles in 0.35 s, Back Out. Older floors fold into one column, and at the end everything falls away in 0.6 s. The own floor line reads "Floor N · best M".
+  - **`TowerScreen`:** the results open once from the save: the floor, the record, opponents defeated, Credits and chests. Closing them sends `Act("TowerSeen")`.
+- **Studio:** `TowerStart`, `TowerWin`, `TowerFell`, `TowerEnd`, `TowerState`, `TowerHurt`, `TowerOff`, `TowerCrash`, `TowerRecover`, `TowerBest`.
+
+**Faber's seeds, for research's fit (tier 2, `Config.Tower`).**
+- **Credits:** a floor pays 2 kills' Credits at its foe's level, and twice that on a floor past the record.
+- **Chests:** the chance is 0.01 per floor, at most 0.5. The chest is the Elite Chest (tier 2) of the ground the foe's level stands in. With Lantern Row alone, that means Uncommon at best, against balance.md's "Rare and better come from the Tower".
+- **Fast floors:** 10 levels under the lead, and the rise takes 0.8 s instead of 2.5.
+- **The pool includes Lyric (Rare),** where `tower.py` draws Commons.
+- **The run's length** is research's question in balance.md ("Not known").
+
+**The checks (20:04).**
+- **Type check:** 0 new, 11 known.
+- **Logic, offline and in Studio:** 23,212 passed, 0 failed. Tower's 8 cases cover the level, the pool and the seed; the ring's spot on both sides; the block's lift; fast floors; the heal cap; the rewards and chests; the ledger; and recovery.
+- **World report:** empty (one ring per plot).
+- **Self-test, the Tower's case** (`TowerCases.luau`, joined in the runner, since `Cases.luau` is at the type checker's limit): 43 passed, 0 failed, at 60 fps.
+  - **The run:** it starts from the ring's step. Each floor's foe comes from the pool, at its level, in its look and for this player. The heal room is within the cap in a floor and 0 between floors. The avatar stands on each platform.
+  - **The freeze:** gear, the lead and its stars.
+  - **The ledger:** each floor's reward written once, and nothing granted mid-run.
+  - **The platforms:** three standing, and the column under them.
+  - **The fall:** the run ends at its last floor won, granted once, with the record. The platforms fall away.
+  - **The results:** they open once, are cleared when closed, and don't open again.
+  - **Endings:** stepping off ends a run, and a crash's run is ended at the join with its ledger granted.
+  - **Cleanup:** the save is put back as it was.
+  - **The hurt-then-heal check** runs only when the floor lasts its 1.5 s. A level-1 foe can fall sooner, as it did in one run of three. `Capped`'s logic cases cover it either way.
+- **The whole suite: NOT VERIFIED.** It started at 20:05 to prove nothing else regressed (FightService, the lead, the Regalia), and the PC locked during it (LockApp; the client drew 0 frames a second, its viewport 1×1). It hung on a case that needs frames and was stopped at 20:25. It runs again once the screen's unlocked.
+- **Not done yet:** captures from the player's camera.
+
+**Notes for the finish and research.**
+- **The rival has no passive** (`passiveOf` is the lead's side only).
+- **The heal cap is a guard today.** Lifesteal isn't wired (`docs/balance.md`).

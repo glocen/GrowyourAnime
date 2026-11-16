@@ -11,6 +11,7 @@ local Collection = require(Shared.Rules.Collection)
 local DataService = require(script.Parent.Parent.Core.DataService)
 local TextFilterService = require(script.Parent.Parent.Core.TextFilterService)
 local LeadService = require(script.Parent.LeadService)
+local FightService = require(script.Parent.FightService)
 
 local VoidkinService = {
 	Priority = 20, -- after DataService
@@ -23,6 +24,9 @@ local GUARDS: { [string]: (Player, any) -> string? } = {
 		return LeadService.Refusal(player, if type(args) == "table" then args.Voidkin else nil)
 	end,
 }
+
+-- What a keeper's try or a Tower run holds as it started, for the lead alone: its stars wait for the end (D10).
+local FROZEN: { [string]: boolean } = { SpendCopies = true }
 
 VoidkinService.Filtered = "Filtered" -- a nickname the filter changes: refused, and the Voidkin keeps its name
 VoidkinService.FilterFailed = "FilterFailed" -- the filter couldn't answer: refused, to try again
@@ -50,6 +54,10 @@ function VoidkinService.Init()
 			local refusal = if guard then guard(player, args) else nil
 			if refusal then
 				return { Ok = false, Error = refusal }
+			end
+			local asked = if type(args) == "table" then args.Voidkin else nil
+			if FROZEN[name] and asked ~= nil and asked == draft.Roles.Lead and FightService.Frozen(player) then
+				return { Ok = false, Error = "InCombat" }
 			end
 			return action(draft, args, workspace:GetServerTimeNow(), 0)
 		end, BEFORE[name])

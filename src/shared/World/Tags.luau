@@ -28,6 +28,8 @@ local specs: { [string]: Spec } = {
 	Generator = { Tag = "GA_Generator", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- The Training machine (TR12): one Voidkin at a time trains on it, and a fallen lead comes home before it.
 	Training = { Tag = "GA_Training", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	-- The ring a Tower run starts from, on the plot's Tower lot (TR29; Rules.Tower.RingSpot).
+	TowerRing = { Tag = "GA_TowerRing", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	Shop = { Tag = "GA_Shop", Attributes = {}, Count = 1, Ground = true },
 	FestivalGate = { Tag = "GA_FestivalGate", Attributes = {}, Count = 1, Ground = true },
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's

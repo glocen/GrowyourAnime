@@ -30,6 +30,7 @@ local EffectsConfig = require(Shared.Config.Effects)
 local Stats = require(Shared.Rules.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
+local Tower = require(Shared.Rules.Tower)
 local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
@@ -66,6 +67,11 @@ export type Fighter = {
 	Home: CFrame?, -- a Shade's spawn
 	Pack: string?,
 	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
+	-- A foe fought by this player's lead alone (a Tower floor's, TR29): no other lead sees it or strikes it, and it sees
+	-- and strikes no other.
+	For: Player?,
+	HealRoom: number?, -- what it may still heal this floor (the Tower's heal cap, Rules.Tower.Capped); nil, no cap
+	Frail: boolean?, -- it falls to the first hit that lands (a Tower's fast floor, Rules.Tower.Fast)
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
@@ -150,6 +156,31 @@ local function setHealth(f: Fighter, health: number)
 end
 
 -- An action's cooldown for this fighter: its passive may shorten its own (Lyric's Tempo).
+-- A heal toward `wanted`, inside what the fighter may still heal (HealRoom, the Tower's cap; Rules.Tower.Capped): every
+-- heal in a fight passes here, its Regen, an action's mend and Lifesteal once it's wired. Returns the health it reached.
+local function heal(f: Fighter, wanted: number): number
+	local room = f.HealRoom
+	if room == nil then
+		setHealth(f, wanted)
+		return f.Health
+	end
+	local reached, left = Tower.Capped(f.Health, wanted, room)
+	f.HealRoom = left
+	setHealth(f, reached)
+	return f.Health
+end
+
+-- Whether `f` may strike `other`: another side, and a foe fought alone and its player's lead only each other (TR29).
+local function against(f: Fighter, other: Fighter): boolean
+	if other.Side == f.Side then
+		return false
+	end
+	if f.For and other.Owner ~= f.For then
+		return false
+	end
+	return other.For == nil or other.For == f.Owner
+end
+
 local function cooldownOf(f: Fighter, action: Actions.Action): number
 	return Passive.Cooldown(passiveOf(f), action.Id, action.Cooldown)
 end
@@ -773,6 +804,11 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Critical = Passive.Critical(own, not target.Struck[f.Id]),
 	}
 	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
+	if target.Frail then
+		-- A fast floor's foe (Rules.Tower.Fast): the first hit that reaches it fells it.
+		result.Dodged = false
+		result.Total = math.max(result.Total, target.Health)
+	end
 	if not result.Dodged then
 		target.Struck[f.Id] = true
 	end
@@ -856,9 +892,11 @@ local function mend(f: Fighter, hit: Actions.Hit, axis: Vector3?, beat: string)
 		local before = other.Health
 		local after = Fight.Mend(before, other.Block.Health, hit.Heal :: number)
 		if standing(other) and after > before then
-			setHealth(other, after)
-			-- Beat: a client shows an ally's heal when the beat's crest reaches it, as a hit's (TR3; AR4 section 10).
-			Net.Server.FireAll("Heal", { A = f.Model, T = other.Model, Beat = beat, Amount = after - before, Health = after, MaxHealth = other.Block.Health })
+			after = heal(other, after)
+			if after > before then
+				-- Beat: a client shows an ally's heal when the beat's crest reaches it, as a hit's (TR3; AR4 section 10).
+				Net.Server.FireAll("Heal", { A = f.Model, T = other.Model, Beat = beat, Amount = after - before, Health = after, MaxHealth = other.Block.Health })
+			end
 		end
 	end
 end
@@ -889,7 +927,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	if hit.Area then
 		local near = {}
 		for _, other in fighters do
-			if other ~= target and other.Side ~= f.Side and standing(other) and Fight.Within(flat(other.Root.Position - centre).Magnitude, hit.Area) then
+			if other ~= target and against(f, other) and standing(other) and Fight.Within(flat(other.Root.Position - centre).Magnitude, hit.Area) then
 				table.insert(near, other)
 			end
 		end
@@ -900,7 +938,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	if hit.Cone and gap > 0.01 then
 		local inside = {}
 		for _, other in fighters do
-			if other ~= target and other.Side ~= f.Side and standing(other) and inCone(f, other, line.Unit, hit) then
+			if other ~= target and against(f, other) and standing(other) and inCone(f, other, line.Unit, hit) then
 				table.insert(inside, other)
 			end
 		end
@@ -1120,7 +1158,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	-- Health carries (TR12): its Regen always, and on its owner's plot the heal at home besides.
 	local plot = if f.Owner then f.Owner:GetAttribute("Plot") else nil
 	local home = Markers.OnPlot(if type(plot) == "number" then plot else nil, f.Root.Position)
-	setHealth(f, Fight.Regen(f.Health, f.Block.Health, Fight.RegenRate(f.Block.Regen, f.Block.Health, home, Combat.Lead.Home.Full), dt))
+	heal(f, Fight.Regen(f.Health, f.Block.Health, Fight.RegenRate(f.Block.Regen, f.Block.Health, home, Combat.Lead.Home.Full), dt))
 	local toAvatar = (avatar.Position - f.Root.Position).Magnitude -- in three dimensions: an avatar teleported straight up still pulls its lead
 	-- The fight in the camera's view (TR24's fix 2): each enemy's degrees off the camera's look, from the avatar.
 	local looking = bearingOf(lookOf(f.Owner, avatar))
@@ -1130,7 +1168,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	end
 	local candidates: { Fight.Candidate } = {}
 	for _, other in fighters do
-		if other.Side == "Shade" and other.Kind ~= "Dummy" and standing(other) then
+		if other.Side == "Shade" and other.Kind ~= "Dummy" and standing(other) and (other.For == nil or other.For == f.Owner) then
 			table.insert(candidates, {
 				Id = other.Id,
 				Distance = distance(f.Root, other.Root),
@@ -1267,7 +1305,9 @@ local function thinkShade(f: Fighter, at: number)
 	-- A keeper is fought alone in its own copy of the ring (KeeperService): it comes for its challenger at once, and nothing
 	-- in the copy is far enough to make it give up. Copies stand 600 studs apart, so it never sees another player's lead.
 	local keeper = f.Kind == "Keeper"
-	if f.Target and not keeper and Fight.GivesUp(fromHome, Combat.Shade.GiveUp) then
+	-- A Tower floor's foe is fought the same way, alone on its platform: at once, and never given up (TR29).
+	local alone = keeper or f.For ~= nil
+	if f.Target and not alone and Fight.GivesUp(fromHome, Combat.Shade.GiveUp) then
 		endAction(f, at)
 		setTarget(f, nil)
 		face(f, nil)
@@ -1278,7 +1318,7 @@ local function thinkShade(f: Fighter, at: number)
 	local struck = if f.Pack then packHit[f.Pack] else nil
 	local candidates: { Fight.Candidate } = {}
 	for _, lead in leads do
-		if standing(lead) then
+		if standing(lead) and (f.For == nil or lead.Owner == f.For) then
 			table.insert(candidates, {
 				Id = lead.Id,
 				Distance = distance(f.Root, lead.Root),
@@ -1288,8 +1328,8 @@ local function thinkShade(f: Fighter, at: number)
 			})
 		end
 	end
-	local notice = if keeper then Combat.Keeper.Notice else Combat.Shade.Notice
-	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice, if keeper then nil else Combat.Shade.Lose, keeper or Combat.Shade.NoticeIdle)
+	local notice = if alone then Combat.Keeper.Notice else Combat.Shade.Notice
+	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice, if alone then nil else Combat.Shade.Lose, alone or Combat.Shade.NoticeIdle)
 	setTarget(f, if targetId then fighters[targetId] else nil)
 	local target = f.Target
 	if target == nil then
@@ -1297,8 +1337,8 @@ local function thinkShade(f: Fighter, at: number)
 			return
 		end
 		face(f, nil)
-		if fromHome > 2 or f.Health < f.Block.Health then
-			setState(f, "Reset") -- left alone: it goes home and heals
+		if f.For == nil and (fromHome > 2 or f.Health < f.Block.Health) then
+			setState(f, "Reset") -- left alone: it goes home and heals (a Tower's foe stands its ground)
 		end
 		return
 	end
@@ -1314,7 +1354,8 @@ local function thinkShade(f: Fighter, at: number)
 		start(f, action, at)
 	else
 		endAction(f, at)
-		moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), if keeper then Combat.Keeper.WalkSpeed else Combat.Shade.WalkSpeed)
+		local walk = if f.For and f.Block.Speed > 0 then f.Block.Speed elseif keeper then Combat.Keeper.WalkSpeed else Combat.Shade.WalkSpeed
+		moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), walk)
 	end
 end
 
@@ -1424,6 +1465,46 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 		start(f, Actions.ById[row.Enter], now())
 	end
 	return f
+end
+
+-- A Tower floor's foe for `player` (TR29): Voidkin `block.Def`'s own body in an enemy look, on its block, standing at
+-- `at`, which is also its home. Only `player`'s lead fights it, and it fights no other; it drops nothing (no Ground).
+function FightService.SpawnRival(player: Player, block: Stats.Block, at: CFrame, title: string): Fighter
+	local model, rig = buildLead(block.Def, `Rival_{player.UserId}`)
+	-- The enemy look in grey: darkened with a void tint over the body. A Highlight, so the client's own glows (its
+	-- signature's EmissiveStrength) and its hit flash keep working. The finish gives it its void light.
+	local look = Instance.new("Highlight")
+	look.Name = "RivalLook"
+	look.FillColor = Color3.fromRGB(18, 10, 32)
+	look.FillTransparency = 0.4
+	look.OutlineColor = Color3.fromRGB(140, 96, 255)
+	look.OutlineTransparency = 0.35
+	look.DepthMode = Enum.HighlightDepthMode.Occluded
+	look.Adornee = model
+	look.Parent = model
+	model:PivotTo(at)
+	local f = register(model, "Shade", "Rival", block.Def, block, Actions.KitOf(block.Def), title, nil, rig)
+	f.Home = model:GetPivot()
+	f.For = player
+	model:SetAttribute("For", player.UserId)
+	model:SetAttribute("Type", block.Type)
+	return f
+end
+
+-- Sets what `f` may still heal (the Tower's cap for its floor), or nil for no cap.
+function FightService.SetHealRoom(f: Fighter, room: number?)
+	f.HealRoom = room
+end
+
+-- Makes `f` fall to the first hit that lands on it (a Tower's fast floor).
+function FightService.SetFrail(f: Fighter, frail: boolean)
+	f.Frail = frail
+end
+
+-- Whether `player`'s lead and its Regalia are frozen (D10): through a keeper's try, and a Tower run from its first floor
+-- to its end.
+function FightService.Frozen(player: Player): boolean
+	return player:GetAttribute("Try") ~= nil or player:GetAttribute("Tower") ~= nil
 end
 
 function FightService.Remove(f: Fighter)

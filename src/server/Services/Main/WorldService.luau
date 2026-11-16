@@ -33,6 +33,8 @@ local LightingConfig = require(Shared.Config.Lighting)
 local Kit = require(Shared.World.Kit)
 local Night = require(Shared.Rules.Night)
 local BaseFit = require(Shared.Rules.BaseFit)
+local Tower = require(Shared.Rules.Tower)
+local TowerConfig = require(Shared.Config.Tower)
 local Net = require(Shared.Net)
 local Markers = require(Shared.World.Markers)
 local Log = require(Shared.Util.Log)
@@ -86,6 +88,7 @@ local GREY = {
 	Battery = Color3.fromRGB(164, 165, 150),
 	Generator = Color3.fromRGB(140, 141, 132),
 	Pad = Color3.fromRGB(196, 196, 200),
+	Ring = Color3.fromRGB(150, 152, 160), -- the Tower's ring, lighter than its lot (TR29)
 }
 
 local function block(parent: Instance, name: string, size: Vector3, at: CFrame, color: Color3): Part
@@ -684,9 +687,21 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		for index, name in { "Forge", "Condenser", "Lab" } do
 			machine(sleeping, name, "SleepingStone", index, number, at, front)
 		end
-		-- And the Tower, asleep behind the back corner on the crossing's side until phase 3 (AR16): one silhouette on its
-		-- lot's crossing end, look only. It stands with its plot's base: a bare lot has none.
-		machine(sleeping, "Tower", "TowerSleeping", 1, number, at, front)
+		-- The Tower's ring on its lot's crossing end, where the sleeping silhouette stood (TR29, replacing AR16's): bare
+		-- but for it, so the player knows where to start. It stands with its plot's base: a bare lot has none.
+		local ringX, ringZ = Tower.RingSpot(across, deep, behind, tower, crossingSide(at))
+		local ringAt = at * CFrame.new(ringX, 0, ringZ)
+		local ring = model(base, "TowerRing", ringAt)
+		local diameter = TowerConfig.Ring * 2
+		local outer = block(ring, "Ring", Vector3.new(0.12, diameter, diameter), ringAt * CFrame.new(0, 0.06, 0) * CFrame.Angles(0, 0, math.rad(90)), GREY.Ring)
+		outer.Shape = Enum.PartType.Cylinder
+		local inner = block(ring, "Inside", Vector3.new(0.14, diameter - 1.6, diameter - 1.6), ringAt * CFrame.new(0, 0.07, 0) * CFrame.Angles(0, 0, math.rad(90)), tint("lot", GREY.Tower))
+		inner.Shape = Enum.PartType.Cylinder
+		for _, part in { outer, inner } do
+			part.CanCollide, part.CanQuery, part.CanTouch = false, false, false
+		end
+		ring.PrimaryPart = outer
+		Markers.Stamp(ring, "TowerRing", { Plot = number })
 		-- The owner arrives at the gate, facing into the plot down the way in to the generator.
 		local spawn = Instance.new("SpawnLocation")
 		spawn.Name = "Spawn"

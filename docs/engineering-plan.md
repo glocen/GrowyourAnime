@@ -131,11 +131,11 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
   - A crash leaves `Run` in the save at its last saved floor. The next join ends it then, so nothing doubles and nothing won and saved is lost.
   - `Results` opens the screen once and is cleared by an `Act` with its op id.
   - A run never resumes.
-- **The rules, pure, `Rules.Tower`:** `Foe(floor, seed)` gives the Voidkin row, the level and the build share. `Reward(floor, best, seed)` gives a floor's Credits and chest roll. `HealCap(maxHealth)` gives the most healed in one floor.
+- **The rules, pure, `Rules.Tower`:** `Foe(floor, seed)` gives the Voidkin row and the level, and `Block(foe)` its stat block: its own figure lifted to the seeds' build (`Config.Tower.Lift`, read from the model), since the engine has no build share (TR29). `Reward(floor, best, seed)` gives a floor's Credits and chest roll. `HealCap(maxHealth)` gives the most healed in one floor.
 - **FightService:**
-  - The foe is a Voidkin row fought as an enemy (`Stats.Enemy` taking a Voidkin row and a build share).
+  - The foe is a Voidkin row fought as a rival for one player (`SpawnRival`): only that player's lead fights it, and its strikes touch no one else.
   - Healing passes one function that counts each floor's healing against the cap, so Lifesteal, when wired, is capped there too.
-  - The lead and the preset freeze at the first fight, through the keeper's try (`Try`, D10).
+  - The lead, its stars and the preset freeze at the first fight, as at a keeper's try (`FightService.Frozen`, D10).
 - **The world:** each plot's `TowerRing` marker, in `Shared.World.Tags`, with the world report counting one per owned plot. Platforms are the client's, from the run's floor attribute, never more than three. The server holds one floor's collision.
 - **Checks:** health carried between floors; the heal cap; the ledger each floor; a disconnect granting what was won; a rejoin showing the results once; at most three platforms; captures of the climb and the results.
 

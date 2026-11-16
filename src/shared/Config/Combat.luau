@@ -94,7 +94,7 @@ return {
 	Flinch = { Seconds = 0.28, Kinds = { Lead = true, Ordinary = true, Dummy = true } },
 
 	-- How far a push moves each body, against its Push (handbook/feel/combat.md: a heavy enemy moves less).
-	Weight = { Lead = 1, Ordinary = 1, Elite = 0.4, Keeper = 0.15, Dummy = 1 },
+	Weight = { Lead = 1, Ordinary = 1, Elite = 0.4, Keeper = 0.15, Dummy = 1, Rival = 1 }, -- Rival: a Tower floor's Voidkin, a lead's body
 
 	-- The hit's four moments (handbook/feel/combat.md, "Hit reactions and knockback"). The hold is the client's, presentation
 	-- only; the server pushes once the hold is over, so the body jumps on the frame it lets go.

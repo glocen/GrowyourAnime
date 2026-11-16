@@ -7127,7 +7127,7 @@ Installed from fcff1e7, Modulo's final delivery for one install.
 
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
-Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 02:00, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.
+Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.
 
 - **Feel line, proposed for Modulo to answer:** out of their gate at dusk, the player steps onto the Strip, a wide stone street between the other bases' gates. A gate is lit where a player is home and dark where none is, with the Towers pale in the haze behind. Down the street, the side street's lanterns glow toward the festival gate, so the way to the fight is in view the moment they leave home.
 - **The block contains:**

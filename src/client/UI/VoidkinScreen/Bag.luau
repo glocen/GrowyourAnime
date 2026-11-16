@@ -200,7 +200,7 @@ local function cross(parent: Instance, colour: Color3, side: number)
 end
 
 -- Where each piece stands, authored, in the room right of the rail (fix 4: the half narrows before the grid does).
-type Layout = { Case: Box, Belt: Box, Strip: Box, Grid: Box, Half: Box, Cell: number, Columns: number, Slot: number, Whole: boolean }
+type Layout = { Case: Box, Belt: Box, Strip: Box, Grid: Box, Count: Box, Half: Box, Cell: number, Columns: number, Slot: number, Whole: boolean }
 
 local function layout(size: Vector2, left: number): Layout
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
@@ -218,11 +218,13 @@ local function layout(size: Vector2, left: number): Layout
 	local cell = math.max(math.floor(math.min(C.Cell, (gridWide - (columns - 1) * C.CellGap) / columns)), slot)
 	local stripY = y0 + beltTall + C.Under
 	local gridY = stripY + Theme.Size.Tap + C.Under
+	local countY = foot - C.Row -- the count pinned under the grid, never in its scroll (research, TR28's call 3)
 	return {
 		Case = case,
 		Belt = { X = x0, Y = y0, Wide = wide, Tall = beltTall },
 		Strip = { X = x0, Y = stripY, Wide = gridWide, Tall = Theme.Size.Tap },
-		Grid = { X = x0, Y = gridY, Wide = gridWide, Tall = math.max(foot - gridY, 1) },
+		Grid = { X = x0, Y = gridY, Wide = gridWide, Tall = math.max(countY - C.Under - gridY, 1) },
+		Count = { X = x0, Y = countY, Wide = gridWide, Tall = C.Row },
 		Half = { X = x0 + gridWide + gap, Y = stripY, Wide = half, Tall = math.max(foot - stripY, 1) },
 		Cell = cell,
 		Columns = columns,
@@ -758,11 +760,11 @@ local function chestCard(context: Context, at: Layout, id: string)
 			return open(1)
 		end,
 	})
-	if info.Room < 1 then
+	if info.Step < 1 then
 		Button.Set(one, { Disabled = "The bag is full" })
 	end
 	if many then
-		local all = Button.new({
+		Button.new({
 			Name = "OpenAll",
 			Text = `Open {info.Step}`,
 			Size = UDim2.fromOffset(buttonWide, action),
@@ -773,9 +775,6 @@ local function chestCard(context: Context, at: Layout, id: string)
 				return open(info.Step)
 			end,
 		})
-		if info.Room < info.Step then
-			Button.Set(all, { Disabled = if info.Room < 1 then "The bag is full" else `Room for {info.Room}` })
-		end
 	end
 	card = made
 	if carded ~= id then
@@ -1000,8 +999,10 @@ function Bag.Build(context: Context): (() -> boolean)?
 			cells[entry.Id] = cellFor(entry, at.Cell, index, holder, taps)
 		end
 	end
-	local count = label({ Name = "Count", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Faint, Box = UDim2.fromOffset(at.Grid.Wide - 4, C.Row), Parent = grid }, `{Hud.Digits(Rules.Held(data))} / {Hud.Digits(Rules.Cap)} in the bag`)
-	count.LayoutOrder = 2
+	-- The count, under the grid and outside its scroll, so a nearly full bag says so wherever it's scrolled.
+	local held = Rules.Held(data)
+	local count = label({ Name = "BagCount", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = if held >= Rules.Cap then P.Down else P.Faint, Box = UDim2.fromOffset(at.Count.Wide - 4, at.Count.Tall), Position = UDim2.fromOffset(at.Count.X, at.Count.Y), Parent = body }, `{Hud.Digits(held)} / {Hud.Digits(Rules.Cap)} in the bag`)
+	count:SetAttribute("Held", held)
 	-- The Voidkin's half: its stage and figure, its name over it, its Combat Power at its feet, its totals beside it.
 	local half = at.Half
 	local totalsWide = math.min(C.Totals, math.floor(half.Wide * 0.42))

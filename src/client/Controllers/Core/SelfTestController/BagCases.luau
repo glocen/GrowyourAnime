@@ -129,9 +129,11 @@ function BagCases.Cases(given: Given): { any }
 				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
 				local state = Bag.State()
 				t.Check("on All, by rarity, nothing chosen", state.Kind == "All" and state.Sort == "Rarity" and state.Chosen == nil, `{state.Kind}, {state.Sort}`)
-				for _, name in { "Rail", "Case", "Belt", "Strip", "Page", "Over", "Totals", "CardRoom" } do
+				for _, name in { "Rail", "Case", "Belt", "Strip", "Page", "Over", "Totals", "CardRoom", "BagCount" } do
 					t.Check(`{name} in view`, inView(find(name)))
 				end
+				local count, page = find("BagCount"), find("Page")
+				t.Check("the count says the bag's held, pinned outside the grid's scroll (TR28's call 3)", count ~= nil and page ~= nil and count:GetAttribute("Held") == Rules.Held(view() :: any) and not count:IsDescendantOf(page))
 				-- The belt: all fourteen where they stand at a touch, each slot a touch.
 				local function beltChecks(where: string)
 					local whole = Bag.State().Whole

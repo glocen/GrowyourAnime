@@ -347,7 +347,9 @@ function Bag.Chest(data: Profile.Data, id: string): { [string]: any }?
 		Ground = if ground then ground.Name else row.Ground,
 		Tier = row.Tier,
 		Held = held,
-		Step = math.min(held, ChestsConfig.Step),
+		-- What Open all opens, the number its button says (research, TR28's call 4): as many as are held, as one request
+		-- takes, and as the bag has room for; 0 when it's full.
+		Step = math.min(held, ChestsConfig.Step, math.max(0, Bag.Cap - Bag.Held(data))),
 		Room = math.max(0, Bag.Cap - Bag.Held(data)),
 		Odds = odds,
 	}

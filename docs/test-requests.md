@@ -2506,3 +2506,10 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
   - **Tested:** logic and flow, yes. Layout, NOT VERIFIED.
   - **Visually reviewed:** no.
   - **Director-accepted:** no.
+
+**Research's answers on Faber's calls** (Quaestor, by message, received by 19:35), and the fixes:
+- **(1) No Lead, Work or strip on Items:** kept. The name line on the Voidkin's half says who's being dressed.
+- **(2) The half at 282:** kept, to be judged on the smallest phone's still.
+- **(3) The count:** changed. The count matters most when the bag is nearly full, which is exactly when a scrolling foot is furthest off screen. **Fixed:** "n / 300 in the bag" is pinned under the grid, outside its scroll, and its digits turn red when the bag is full. The case checks it's out of the scroll and says what `Rules.Bag.Held` says.
+- **(4) Open N:** kept, if the number is what the tap opens. **Fixed:** `Rules.Bag.Chest`'s `Step` is now as many as are held, as one request takes, and as the bag has room for, so with 12 held it says "Open 12", and with room for 20, "Open 20". With the bag full, both buttons are off. Two new logic checks cover room for 20 and a full bag.
+- **Checks:** type check 0 new; logic 23,092/0 offline.

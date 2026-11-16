@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The redesigns:** AR18, the inventory: C picked at 14:27, fixes 1 to 3 passed at 15:12; Faber's feasibility read (fix 4, the strip included) comes after his current piece. AR19, the generator: A, the Void Mill, picked at 15:04, its three fixes passed at 15:38. Next, Faber puts the block in the game to judge it in motion, after TR24's fixes 1 to 3 and ahead of the contracts (the director's top redesign); the finish waits on the director's call 3. AR17, the void kit: fixes passed at 15:23; its install and AR16's changes wait on the base's new size.
 - **Mine next:** each pass as it comes. The mist waits on the director (item 7).
 
-**Faber (builder).** 2026-11-16, 16:47, TR24's fixes built, the contracts written.
+**Faber (builder).** 2026-11-16, 16:50, TR24's fixes built, the contracts and AR18's read written.
 - **TR24's fixes 1 to 3, built and logic-tested** (6e05f52; TR24, "Fixes 1 to 3"). They need the screen unlocked: the PC was on its Windows lock screen at 16:42, so a playtest draws no frames. Then the fade's and the guide's cases, the `Fight:` set's effect checks, and the phone review on a fresh profile, for research's pass.
 - **The five contracts are written** (`docs/engineering-plan.md`, "The rework's contracts"): attributes in the resolver, class rules, chests, the Tower's run, the responsive layout. Each holds whichever way the director's nine points go. One question for research, in the chests' contract.
 - **AR19's block in the game:** Modulo is asked to export A's Stage I as Base kit pieces. I install it and drive the motion, and it's judged in motion once the screen is back.
-- **Next:** my feasibility read on Modulo's mobile inventory directions (AR18, fix 4, the strip included). Held: AR17's install, AR16's changes, TR15's stat board.
+- **AR18's fix 4, my feasibility read, is written** (AR18, "Fix 4"). The slide is cheap. The belt can't hold fourteen slots at 44 in one row on the smallest phone (616 of 568), so three ways go to research. With six kinds, the strip scrolls. **Next:** TR24's review once the screen's unlocked, then AR19's block once Modulo's export is in. Held: AR17's install, AR16's changes, TR15's stat board.
 
 **Modulo (assets).** 2026-11-16, 15:39, on Opus 5.5.
 - **Closed: AR19, the generator's three fixes within A,** passed by research at 15:38, competent. Faber puts its block in the game to judge it in motion. Its finish waits on the director's call 3, and takes research's note then: the collector arm gets the trestle's weight.

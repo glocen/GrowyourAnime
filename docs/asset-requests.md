@@ -7358,6 +7358,20 @@ From `inventory_night.png` and `inventory_C.png`, at phone size.
   - 3: every chip reads at phone size. Legendary's gold at 3.85 to 1 stands, since its band says it too.
 - **Open:** fix 4, Faber's feasibility read, now covering the strip too. Five words fill the row to the card's edge, so if the bag takes the proposal's six categories (`docs/research/rework-2026-11-16.md`, part 5), the strip scrolls or the words shorten. The build waits on that read.
 
+### Fix 4, Faber's feasibility read (2026-11-16, 16:50)
+
+Read against the game's own rules: C is drawn at `Theme.Author` (812 × 375) at a scale of 1. A layer draws at the screen's height over 375, never under `Theme.Scale.Floor` (0.85). So on the smallest phone (`Theme.Smallest`, 568 × 320) everything draws at 0.853, and a target authored at 44 renders at 37.5. A target holds 44 there only from `Size.Tap` (52) authored. The text widths are measured in Studio, in the game's face (Builder Sans Medium, 14), not the sheet's stand-in.
+- **The card's 0.16 s slide: feasible, cheap.** It's one frame tweened over the Voidkin's half, clipped by that half so it never draws over the belt. The figure behind stays one ViewportFrame, left as it is, so nothing is rebuilt per tap. About an hour with the screen.
+- **The belt's fourteen slots at 44 on the smallest phone: not possible in one row.** The slots alone are 14 × 44 = 616 rendered points, wider than that phone's whole 568. On the authored phone they fit only just: 14 at 44 with gaps of 1.5 and 4 between groups is 643.5 of the belt's 646. The sheet's 42 must become 44 there too. Three ways, for research to pick:
+  1. **Narrow screens show the target's group** (my lean). Where all fourteen don't fit at 44, the belt shows the group the chosen item goes to: the hands' 2, the body's 6 or the jewellery's 6, 322 authored at most. The other two become one chip each. The slot it fills stays in view, as the feel line asks. Cost: one layout rule.
+  2. **Two rows of seven:** about 105 authored of the screen's 375, so the grid keeps about two rows. The bag can't do its job, the reason B was set aside.
+  3. **The belt shows, it isn't pressed:** each worn item opens from the grid, marked as worn, so the belt's slots aren't targets and may draw at 35. Cost: none in code, but a worn item can't be reached from its slot.
+- **The strip: five words fit, six don't.** The bag's five kinds take 271 authored of the 328 left of the card (118 to 446). The proposal's six (All, Weapons, Armour, Jewellery, Chests, Materials) take 358 at the sheet's padding. With 8 of padding and gaps of 3, they take 323, but then "All" and "Chests" sit at 44 authored, 37.5 rendered at the floor. At 52 the six take 342. So with six, the strip scrolls sideways (a ScrollingFrame, the chosen chip kept in view, the last chip cut at the edge to show there's more). That's cheap, and needs no new kit piece.
+- **The chips' height:** a 34 pill renders at 29 at the floor. Each chip needs a hit box 52 tall round its pill, which takes 9 more authored points between the belt and the grid, or the grid moves down 9.
+- **The width on narrow phones:** C needs about 700 authored across (the rail, the grid's 328, the Voidkin's 300). The smallest phone gives 666, so the Voidkin's half narrows to about 260 there, and the card's two columns and the 24-character name get their check in the UI lint at that size. The grid holds: five at 60 renders at 51.
+- **The rail:** it's today's Voidkin screen rail, restyled, already lint-clean at the smallest phone.
+- **The contract it builds on:** `docs/engineering-plan.md`, "The rework's contracts", the responsive layout: Compact, Regular and Wide from one kit, and the input from `UserInputService.PreferredInput`.
+
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
 Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:

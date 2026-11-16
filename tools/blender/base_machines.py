@@ -357,17 +357,17 @@ def sleeping_stone():
 
 
 def tower_sleeping():
-    """The Tower, asleep, behind the back wall on the base's middle line: one dark silhouette in four tiers, broad
+    """The Tower, asleep, behind the back wall on the base's middle line: one silhouette in four tiers, broad
     and tall enough to read over the generator from the way in, and a faint shard of its own light over its tip. It has no
     name and no detail: phase 3 designs the Tower (research, 2026-11-16)."""
     m = Mesh(None)
     q = math.sqrt(2.0)
     tiers = [(0.6, TOWER), (3.0, TOWER - 22.0), (5.6, TOWER - 22.0), (6.6, 130.0), (9.0, 130.0), (10.0, 94.0), (12.6, 94.0), (14.0, 0.0)]
-    m.lathe([(half * q, z) for half, z in tiers], (0, 0, 0), 4, "dark", spin=math.pi / 4)
+    m.lathe([(half * q, z) for half, z in tiers], (0, 0, 0), 4, "tower", spin=math.pi / 4)   # AR20: a violet slate, not black
     shard(m, (0, 0, TOWER + 6.0), 2.0, 7.5, "dawn")
     return Piece("TowerSleeping", m, solid="a box, 28 square, as high as it needs; nobody reaches it yet",
                  note=f"stands behind the back wall on the plot's middle line, on the Tower's own lot: {TOWER:g} high "
-                      f"at its tip, 28 square at its foot. Dark and unlit but for the shard over its tip. No hull")
+                      f"at its tip, 28 square at its foot. A violet slate, unlit but for the shard over its tip. No hull")
 
 
 # --- the battery -------------------------------------------------------------------------------------------------------

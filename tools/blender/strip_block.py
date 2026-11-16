@@ -31,6 +31,7 @@ from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_plan as plan  # noqa: E402
+import strip_kit  # noqa: E402
 
 base, bl, kit, look, rs = plan.base, plan.bl, plan.kit, plan.look, plan.rs
 REPO = Path(__file__).resolve().parents[2]
@@ -62,7 +63,7 @@ class World(plan.Yard):
         self.asleep.mats = {name: kit.kit_material(BASE_MAPS, name, "Base", ("#FFFFFF", 0.0)) for name in base.MAPS}
         self.row = kit.Stock(ROW / "maps", scene, self.kit)
         f = self.flat
-        f["lot_asleep"] = plan.tile_material("LotAsleep", BASE_MAPS / "Base_Deck_Color.png", base.DECK[1], "#3A3C52")
+        f["lot_asleep"] = plan.tile_material("LotAsleep", BASE_MAPS / "Base_Deck_Color.png", base.DECK[1], strip_kit.LOT_TINT)
         f["kerb"] = look.painted("Kerb", "#3A4060", "#23273C")
         f["seal"] = look.painted("Seal", "#2A2148", "#120C26")
         f["far"] = look.painted("Far", "#3A2F62", "#171030")

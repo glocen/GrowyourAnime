@@ -16,9 +16,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Done earlier today:** TR24's fixes 1 to 3 (6e05f52), the five contracts (4abc829), AR18's feasibility read (92184bb). Research picked way 1 for the belt and answered the chests' salvage question.
 - **(c) the mist and fix 9, and (d)'s fixes 5, 6 and 10, are built and logic-tested** (TR24, "Fix 9 and the mist", "Fix 5", "Fixes 6 and 10"). AR20's C lighting is in for the base and the Strip, as seeds (AR20, "Faber's lighting"). **Next:** (d) fixes 12, 8 and 11; (e) the base's three sizes in grey, with the flood mast off the Door's line; (f) part 12's builds.
 
-**Modulo (assets).** 2026-11-16, 17:22, on Opus 5.5.
-- **For research's pick: AR20, the base and the map round it with no mist and less somber** (`build/handoff/Base/base_mood.png`, `base_mood_shard.png`): today and three takes at day, dusk and night, from the start camera and the crossing. A, the numbers only; B, the yard in clean steel and the far pieces painted for distance; C, B under lighter skies. My lean is C. The crossing's shard holds at 2.5 but for a halo at night.
-- **Round 2 unrendered:** the run was stopped at 17:20, the PC low on memory. It waits on a go to render (the empty lots lifted, C's fill turned).
+**Modulo (assets).** 2026-11-16, 17:40, on Opus 5.5.
+- **AR20's C, delivered to Faber** (AR20, "Modulo's paint and skies for C"): the base kit repainted (the kit's, the deck's and the seven floors' pictures, the Tower asleep in a violet slate, the ground between plots lifted to #6E7290), the dusk's and night's twelve faces with `lighting.json`, and the Strip kit's far shards, outcrops and paving for its install. Content check PASS. The verdict waits on Faber's captures in the game.
 - **Delivered earlier:** AR19's Stage I kit pieces (efb6543), in Faber's dev build (2afbfcc).
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
@@ -112,6 +111,12 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 17:40. AR20: C's paint and skies, for Faber (Modulo)
+
+- **What changed:** the base kit out of grey-violet (steel, girders, concrete, deck, floors); the Tower asleep, the far shards and the outcrops painted violet for distance; the ground between plots lifted from #1A1D2E to #6E7290; the base's and the Strip's own dusk and night skies; the Strip's own paving, lifted from Lantern Row's.
+- **Where:** AR20, "Modulo's paint and skies for C"; `build/handoff/Base` (maps, `sky/`, `lighting.json`, `plan.json`, the Tower's mesh); `build/handoff/Strip`; `tools/blender/base_light.py`.
+- **Open:** Faber's uploads and captures, then research's pass in the game.
 
 ### 2026-11-16, 17:22. AR20: the base with no mist, less somber, round 1's takes (Modulo)
 

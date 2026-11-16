@@ -1,0 +1,62 @@
+{
+ "what": "AR20's C, bright hours: the base's and the Strip's light in every phase (research's pick, 2026-11-16, 17:23). Lantern Row keeps its own.",
+ "atmosphere": {
+  "Density": 0,
+  "Haze": 0,
+  "Glare": 0,
+  "note": "no mist in any phase (the director, 16:50)"
+ },
+ "phases": {
+  "Day": {
+   "Ambient": "#A3A1B4",
+   "Brightness": 2.61,
+   "Exposure": 0.16,
+   "Floor": 0.525,
+   "Glow": 0.675
+  },
+  "Dusk": {
+   "Ambient": "#70618C",
+   "Brightness": 2.31,
+   "Exposure": 0.38,
+   "Floor": 1.275,
+   "Glow": 1.5,
+   "Sun": "#DDB8EC",
+   "Sky": {
+    "Ft": "sky/Base_SkyDusk_Ft.png",
+    "Lf": "sky/Base_SkyDusk_Lf.png",
+    "Bk": "sky/Base_SkyDusk_Bk.png",
+    "Rt": "sky/Base_SkyDusk_Rt.png",
+    "Up": "sky/Base_SkyDusk_Up.png",
+    "Dn": "sky/Base_SkyDusk_Dn.png"
+   }
+  },
+  "Night": {
+   "Ambient": "#50597E",
+   "Brightness": 1.53,
+   "Exposure": 0.54,
+   "Floor": 1.65,
+   "Glow": 1.5,
+   "Sun": "#BCCAF0",
+   "Sky": {
+    "Ft": "sky/Base_SkyNight_Ft.png",
+    "Lf": "sky/Base_SkyNight_Lf.png",
+    "Bk": "sky/Base_SkyNight_Bk.png",
+    "Rt": "sky/Base_SkyNight_Rt.png",
+    "Up": "sky/Base_SkyNight_Up.png",
+    "Dn": "sky/Base_SkyNight_Dn.png"
+   }
+  }
+ },
+ "lift": {
+  "Glow": 1.5,
+  "Lights": 1.3,
+  "note": "the kit's glow (Glow.Kit) and each phase's Floor and Glow are already lifted above; the pools' and the lead's light take Lights times theirs. The crossing's shard takes none of the lift"
+ },
+ "sky": {
+  "note": "Base_Sky<Phase>_<face>.png, faces as Lantern Row's (Ft up the side street, -Z): drawn to be seen under the phase's Exposure; the day keeps the game's own day sky"
+ },
+ "shard": {
+  "CrossingShard": 2.5,
+  "note": "its EmissiveStrength over the kit's before the lift: the same light as today"
+ }
+}

@@ -7664,6 +7664,61 @@ From `base_mood.png` and `base_mood_shard.png`, at the player's camera.
   - **Visually reviewed:** not yet. Captures from the start camera and from the crossing at day, dusk and night go to research when the screen is back, and again with Modulo's faces.
   - **Director-accepted:** no.
 
+### Modulo's paint and skies for C (2026-11-16, 17:25 to 17:40, by the clock)
+
+From research's pick (above) and its message: the dusk and night faces again for the base and the Strip, the
+crossing's empty lots lifted to #6E7290, the dark shards beside the crossing in their violet, and the great shard at
+today's own glow. Faber's lighting section left B's paint to me as well, since C is B under lighter skies.
+
+- **The base kit, repainted in `build/handoff/Base`:**
+  - `maps/Base_Kit_Color.png`:
+    - steel #8290B0 to #46506E, girder #4C5878 to #242C42, concrete #C8CAD2 to #82858F (today #62709A, #3A4468, #A2A7BC), so the void's violet is the only violet in the yard;
+    - three new cells in the atlas's second row: far, tower and outcrop.
+  - `maps/Base_Deck_Color.png`: the deck in #9EA7BC and #8790A8, its seam #3A4154, its lit edge #BEC6D6.
+  - The seven floors' `_Color` pictures, redrawn on that deck. Their glow pictures are unchanged.
+  - `meshes/TowerSleeping.json`: its UVs on the tower cell, a violet slate, not black. Its note is the manifest's only change.
+  - `plan.json`, `ground.ground`: #1A1D2E to #6E7290, the slab between plots that `WorldService` reads.
+- **The dark ground beside the crossing is that slab, not the bare lots:** the open ground each side of the side street, where the outcrops stand. Round 1's record named the bare lots' tint for it, which was wrong; the lift goes where research meant. The bare lot's deck tint is lifted too (#3A3C52 to #6E7290, below).
+- **The skies, in `build/handoff/Base/sky`:** `Base_SkyDusk_<face>.png` and `Base_SkyNight_<face>.png`, six faces each at 1024, drawn as Lantern Row's are.
+  - Ft is up the side street (-Z); the dusk's rose band and the night's moon stand there.
+  - They're drawn to be seen under the phase's exposure. The day keeps the game's own sky.
+- **The numbers, in `build/handoff/Base/lighting.json`:** each phase in Roblox's terms. They match `Config.Lighting.Clear` except:
+  - C's day exposure is +0.16; Config has A's +0.11.
+  - The pools' and the lead's light take 1.3 times theirs (Lights), not in Config yet.
+  - The crossing's shard takes none of the glow lift.
+- **The Strip kit, in `build/handoff/Strip`, for its install:**
+  - `meshes/FarShardLow`, `FarShardMid` and `FarShardTall` on the far cell, a pale void stone.
+  - `meshes/ShardOutcrop` on the outcrop cell: the dark shards beside the crossing, now a violet a little deeper than the far ones.
+  - `maps/Strip_Paving_Color.png`: Lantern Row's paving 1.35 times in light, the Strip's and the side street's own stones.
+  - In the manifest:
+    - the paving;
+    - the bare lot's floor, the base's deck tinted #6E7290;
+    - CrossingShard's note: its glowStrength 6.0 (2.5 times the kit's before the lift) stays, and it takes none of `Clear.Glow`, or it blooms into a halo at night.
+- **The scripts:**
+  - The paint lives in `base_kit.py` (swatches, deck), `base_machines.py` (the Tower), `strip_kit.py` (far shards, outcrop, paving, the lot's tint), `strip_block.py` and `base_plan.py` (the ground, the Strip's paving).
+  - `base_mood.py` is now `base_light.py`, which holds C alone: its light, the faces, `lighting.json` and a check render.
+- **For Faber:**
+  - Upload the base's nine pictures (the kit's, the deck's, the seven floors') and swap their ids.
+  - Re-import TowerSleeping, and take the plan's new ground.
+  - Upload the twelve faces and set them as the dusk's and the night's Sky south of the Row.
+  - Upload `Strip_Paving_Color.png` for wherever the Strip and the side street wear Lantern Row's paving.
+  - The Strip's pieces wait for its install.
+  - The check picture is `build/handoff/Base/base_light_check.png`.
+- **Checks:**
+  - **Exports:** the three exports and the sky ran clean under the memory guard (Blender's peak 1,024 MB at most).
+  - **Expected files only:** the base's export changed only the nine colour pictures, the Tower's mesh and its note.
+  - **Fast renders** (`base_light_check.png`), at day and at night:
+    - the yard reads pale, the Tower a violet slate;
+    - the far shards and the outcrops are violet against the day sky, and the ground a pale slate;
+    - the black well is the one dark;
+    - at night the great shard keeps its shape.
+  - **Content check before upload: PASS** for the nine maps, the twelve faces and the paving.
+- **The four facts:**
+  - **Implemented:** all of the above.
+  - **Tested:** the exports, and the content check.
+  - **Visually reviewed:** my own read of fast renders only. Research's pass waits on Faber's captures in the game.
+  - **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

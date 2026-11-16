@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_kit as base  # noqa: E402
 import base_machines as machines  # noqa: E402
 
-bl, ink, kit = base.bl, base.ink, base.kit
+bl, ink, kit, rs = base.bl, base.ink, base.kit, base.rs
 Mesh, Piece = base.Mesh, base.Piece
 horn, vein, shard = machines.horn, machines.vein, machines.shard
 
@@ -48,6 +48,11 @@ RANK = {"VeinWide": 1.0, "VeinThin": 0.7, "VeinBranch": 0.0}
 # brighter, not the shard bigger: its glow strength over the kit's, here and in its manifest entry. Only its light
 # brightens; the stone's mask is 0.
 BRIGHT = {"CrossingShard": 2.5}
+# AR20's C (research's pick, 2026-11-16, 17:23): the Strip's stones, Lantern Row's paving times STONES in light, and an
+# empty lot's floor, the base's deck under LOT_TINT, lifted from #3A3C52 so the lots beside the crossing aren't black.
+STONES, LOT_TINT = 1.35, "#6E7290"
+ROW_PAVING = Path(__file__).resolve().parents[2] / "build" / "handoff" / "LanternRow" / "maps" / "LanternRow_Paving_Color.png"
+PAVING_NAME = "Strip_Paving_Color.png"
 # The crossing's shard: its three parts round the light, each (the way it stands out in degrees, its foot, its tip).
 THREE = ((90.0, 8.5, 46.0), (210.0, 11.5, 40.0), (330.0, 10.0, 35.0))
 # A place where shards break out of the ground: (across, along, high, half width, the way it leans in degrees, how far).
@@ -206,11 +211,12 @@ def outcrop():
         way, flat = Vector((math.cos(a), math.sin(a), 0.0)), (-math.sin(a), math.cos(a), 0.0)
         foot = Vector((x, y, -0.6))
         horn(m, [foot, foot + way * (lean * high * 0.4) + Vector((0, 0, high * 0.45)), foot + way * (lean * high) + Vector((0, 0, high + 0.6))],
-             [wide * 0.8, wide, 0.05], "abyss", flat=flat, deep=0.8)
+             [wide * 0.8, wide, 0.05], "outcrop", flat=flat, deep=0.8)
     horn(m, [(1.0, 1.0, -0.3), (1.2, 1.1, 1.3), (1.7, 1.3, 3.6)], [0.36, 0.46, 0.04], "void", flat=(0.6, -0.8, 0.0), ink=False)
     return Piece("ShardOutcrop", m, solid="the tallest shard, as a post 2 square, if anything",
-                 note="shards breaking out of the ground, 7.6 high and about 6 across: five of void stone and one of the "
-                      "void's light, which glows without a Light. Turned as the plan says, no two look alike")
+                 note="shards breaking out of the ground, 7.6 high and about 6 across: five of void stone, a lighter "
+                      "violet than the near pieces' so none stands black against the day sky (AR20), and one of the void's "
+                      "light, which glows without a Light. Turned as the plan says, no two look alike")
 
 
 def far_shard(name):
@@ -218,10 +224,11 @@ def far_shard(name):
 
     def make():
         m = Mesh(None)
-        horn(m, [(0, 0, -30.0), (wide * 0.1, 0, high * 0.3), (wide * 0.22, 0, high)], [wide * 0.36, wide * 0.5, 0.3], "abyss",
+        horn(m, [(0, 0, -30.0), (wide * 0.1, 0, high * 0.3), (wide * 0.22, 0, high)], [wide * 0.36, wide * 0.5, 0.3], "far",
              deep=0.8, ink=False)
-        return Piece(name, m, note=f"a great shard of void stone, {high:g} high and {wide:g} wide, for the haze far past "
-                                   "the map's edge: dark and unlit, the distance pales it. It leans a little toward +X, and its foot "
+        return Piece(name, m, note=f"a great shard of void stone, {high:g} high and {wide:g} wide, far past "
+                                   "the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it "
+                                   "now (AR20). It leans a little toward +X, and its foot "
                                    "goes 30 under the floor, for where the ground has ended. "
                                    "No hull, no shadow, nobody reaches it")
     return make
@@ -261,8 +268,19 @@ class Stock(base.Stock):
         return super().stand(name, tag, at, turn)
 
 
+def paving(out: Path):
+    """The Strip's own stones: Lantern Row's paving lifted, in light, by STONES."""
+    page = rs.load(ROW_PAVING)
+    c = page[..., :3]
+    linear = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4) * STONES
+    page[..., :3] = base.kit.encode(linear)
+    out.mkdir(parents=True, exist_ok=True)
+    rs.save(page, out / PAVING_NAME)
+
+
 def export(out: Path):
     scene = bl.reset_scene()
+    paving(out / "maps")
     meshes = out / "meshes"
     meshes.mkdir(parents=True, exist_ok=True)
     listing = {}
@@ -288,8 +306,14 @@ def export(out: Path):
               "A light's `at` is in the piece's own frame.",
         surface="one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent "
                 "Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in "
-                "the engine; CrossingShard's is 2.5 times the kit's, so its light carries to a far gate through the dusk's "
-                "haze). No new picture. Single sided; the void stone's ink is in its mesh.",
+                "the engine; CrossingShard's is 2.5 times the kit's before AR20's lift, so its light carries to a far "
+                "gate: when Config.Lighting lifts the kit's glow for the base and the Strip, the shard keeps this "
+                "strength and takes none of the lift, or it blooms into a halo at night). Single sided; the void stone's "
+                "ink is in its mesh.",
+        maps={f"maps/{PAVING_NAME}": f"the Strip's stones: Lantern Row's paving, {STONES:g} times its light (AR20's C), a "
+                                     f"tile {base.kit.PAVING[1]:g} studs square for a Texture on the street's Part",
+              "../Base/maps/Base_Deck_Color.png": f"an empty lot's floor, the base's plain deck tinted {LOT_TINT} "
+                                                 "(the Texture's Color3), a tile 8 studs square"},
         shadows="CastShadow off on the three cracks, CrossingMark and the far shards.",
         pieces=listing)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")

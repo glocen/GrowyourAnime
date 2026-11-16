@@ -2,7 +2,11 @@
  "what": "AR17: the Strip's own pieces. Made as the base's kit is, and wearing the base kit's own pair of pictures.",
  "unit": "1 = 1 stud",
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
- "surface": "one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in the engine; CrossingShard's is 2.5 times the kit's, so its light carries to a far gate through the dusk's haze). No new picture. Single sided; the void stone's ink is in its mesh.",
+ "surface": "one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in the engine; CrossingShard's is 2.5 times the kit's before AR20's lift, so its light carries to a far gate: when Config.Lighting lifts the kit's glow for the base and the Strip, the shard keeps this strength and takes none of the lift, or it blooms into a halo at night). Single sided; the void stone's ink is in its mesh.",
+ "maps": {
+  "maps/Strip_Paving_Color.png": "the Strip's stones: Lantern Row's paving, 1.35 times its light (AR20's C), a tile 8 studs square for a Texture on the street's Part",
+  "../Base/maps/Base_Deck_Color.png": "an empty lot's floor, the base's plain deck tinted #6E7290 (the Texture's Color3), a tile 8 studs square"
+ },
  "shadows": "CastShadow off on the three cracks, CrossingMark and the far shards.",
  "pieces": {
   "StripPost": {
@@ -155,7 +159,7 @@
    "glowStrength": 2.4,
    "collision": "the tallest shard, as a post 2 square, if anything",
    "lights": [],
-   "note": "shards breaking out of the ground, 7.6 high and about 6 across: five of void stone and one of the void's light, which glows without a Light. Turned as the plan says, no two look alike"
+   "note": "shards breaking out of the ground, 7.6 high and about 6 across: five of void stone, a lighter violet than the near pieces' so none stands black against the day sky (AR20), and one of the void's light, which glows without a Light. Turned as the plan says, no two look alike"
   },
   "SealCalamity": {
    "mesh": "meshes/SealCalamity.json",
@@ -263,7 +267,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a great shard of void stone, 80 high and 16 wide, for the haze far past the map's edge: dark and unlit, the distance pales it. It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+   "note": "a great shard of void stone, 80 high and 16 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
   },
   "FarShardMid": {
    "mesh": "meshes/FarShardMid.json",
@@ -285,7 +289,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a great shard of void stone, 125 high and 22 wide, for the haze far past the map's edge: dark and unlit, the distance pales it. It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+   "note": "a great shard of void stone, 125 high and 22 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
   },
   "FarShardTall": {
    "mesh": "meshes/FarShardTall.json",
@@ -307,7 +311,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a great shard of void stone, 180 high and 30 wide, for the haze far past the map's edge: dark and unlit, the distance pales it. It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+   "note": "a great shard of void stone, 180 high and 30 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
   }
  }
 }

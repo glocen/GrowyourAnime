@@ -89,17 +89,25 @@ MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard":
         "WingsBack": ("#FFFFFF", COURT_GLOW),
         "Wings": ("#FFFFFF", COURT_GLOW)}   # each pair's tint and strength
 
-# Swatches: the colour at the head, at the foot, and how much it glows. Steel and bone under the dusk, the current in
-# Power's yellow (the HUD's own), the Breaker's light in cyan.
+# Swatches: the colour at the head, at the foot, and how much it glows. Light steel, pale concrete and bone, the
+# current in Power's yellow (the HUD's own), the Breaker's light in cyan. The steel, the girders and the concrete left
+# the grey-violet for AR20's C (research's pick, 2026-11-16, 17:23, on the director's "need to be less somber"), so the
+# void's violet is the only violet in the yard.
 SWATCHES = {
-    "steel": ("#62709A", "#2C3556", 0.0), "girder": ("#3A4468", "#181D32", 0.0), "bone": ("#E9E2D2", "#9C95A6", 0.0),
-    "concrete": ("#A2A7BC", "#5A5F78", 0.0), "yellow": ("#FFD23E", "#B07A28", 0.05), "rubber": ("#1F2233", "#0E101A", 0.0),
+    "steel": ("#8290B0", "#46506E", 0.0), "girder": ("#4C5878", "#242C42", 0.0), "bone": ("#E9E2D2", "#9C95A6", 0.0),
+    "concrete": ("#C8CAD2", "#82858F", 0.0), "yellow": ("#FFD23E", "#B07A28", 0.05), "rubber": ("#1F2233", "#0E101A", 0.0),
     "ceramic": ("#F4F0E8", "#A8A2B6", 0.0), "copper": ("#DE8E54", "#7C4630", 0.0), "power": ("#FFF6C4", "#FFD94A", 1.0),
     "cyan": ("#8CF6FF", "#3CC8E8", 1.0), "lamp": ("#F6FCFF", "#CDEEFF", 1.0), "beacon": ("#FF9A7A", "#FF6A52", 1.0),
     "dark": ("#1E1426", "#0C0A12", 0.0), "ink": ("#0C0A16", "#0C0A16", 0.0),
     "void": ("#E9DBFF", "#A97CFF", 1.0), "abyss": ("#4B3A7E", "#171030", 0.0),   # the void machines': its light, its stone
     "paper": ("#FFF6E0", "#FFC27A", 1.0),      # the second row: a festival lantern's paper, lit from inside
     "dawn": ("#FF9AD2", "#FF4FA6", 0.55),      # the Tower's own light, faint
+    # The distance, painted in (AR20): with no haze to pale them, the far shards, the Tower asleep and the shards
+    # breaking out beside the crossing stood as black cut-outs against the day sky. Each wears a lighter void stone:
+    # the farthest palest.
+    "far": ("#9284C8", "#5E5298", 0.0),        # the great shards past the map's edge (the Strip's FarShard pieces)
+    "tower": ("#7C76AE", "#46427A", 0.0),      # the Tower asleep, a violet slate
+    "outcrop": ("#8474BC", "#4A3E86", 0.0),    # the Strip's ShardOutcrop, nearer, a little deeper
 }
 SWATCH_AT = {name: ((i % 16) * CELL[0], (i // 16) * CELL[1]) for i, name in enumerate(SWATCHES)}
 # Prints: where each sits (x, y, width, height), each with a 4 pixel bleed round it.
@@ -108,7 +116,7 @@ PRINTS["half"] = (8, 268, 256, 160)   # the panel's first 8 studs, for the half 
 PRINTS["way"] = (8, 464, 240, 448)    # the Festival Door's way: the festival seen through it, 6 studs by 11.1
 DECK = (512, 8.0)      # the deck's own tile: pixels, and the studs it covers (four plates)
 PLATE = 4.0            # a deck plate, studs
-DECK_TONES = ("#6C7698", "#535C7E", "#252B44", "#8A94B6")   # a plate's two colours, its seam, its lit edge
+DECK_TONES = ("#9EA7BC", "#8790A8", "#3A4154", "#BEC6D6")   # a plate's two colours, its seam, its lit edge (AR20's C)
 
 
 def wear():

@@ -52,7 +52,7 @@ import lantern_row_look as look  # noqa: E402
 import rook_sheet as rs  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
-STREET = REPO / "build" / "handoff" / "LanternRow" / "maps" / "LanternRow_Paving_Color.png"   # the Strip's own stones
+STREET = REPO / "build" / "handoff" / "Strip" / "maps" / "Strip_Paving_Color.png"   # the Strip's own stones (strip_kit.paving)
 
 PLOT, STRIP, SPAWN = base.PLOT, base.STRIP, base.SPAWN
 TOWER_LOT = (16.0, 32.0)           # behind a plot: its path, then the Tower's footprint (Config/World, Behind and Tower)
@@ -66,12 +66,13 @@ WELL_LIGHT = ("VoidWell", *GENERATOR, 1.6, "#B98CFF")   # the void's light under
 APART = 25.0               # the least from one machine's middle to the next (AR16)
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
-GROUND = {"lot": "#7C7C8E", "ground": "#1A1D2E", "note": "the lot is the plot's own floor under the kit's floors: the deck tile "
+GROUND = {"lot": "#7C7C8E", "ground": "#6E7290", "note": "the lot is the plot's own floor under the kit's floors: the deck tile "
           "(Base_Deck_Color.png), its Texture's Color3 at `lot`. It shows only as the last 8 studs under the back "
           "wall, the darker foot of that wall (the Kept and Tower overlays take it too, unmarked). The ground is "
-          "the slab between plots, a flat colour. The Strip and the "
-          "side street wear Lantern Row's paving tile, as its street does: stepping off the stones onto the plates "
-          "is coming home."}
+          "the slab between plots, a flat colour, lifted from #1A1D2E for AR20's C so the open ground beside the "
+          "crossing isn't black with no haze over it. The Strip and the side street wear the Strip's own paving tile "
+          "(build/handoff/Strip/maps/Strip_Paving_Color.png, Lantern Row's lifted): stepping off the stones onto the "
+          "plates is coming home."}
 STAND_INS = {"machine": "#7E8AB0", "chamber": "#BFEFF5", "waiting": "#A2A7BC", "bay": "#56628C", "locked": "#1F2233",
              "battery": "#FFD23E", "generator": "#FFD23E", "training": "#C86A8A", "spawn": "#E9E2D2",
              "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. "

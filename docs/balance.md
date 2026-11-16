@@ -141,6 +141,16 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **Not known:** how long a run should last to feel good. The seeds lengthen the hard end, not the easy start. Judged in play.
 - **Against the grounds:** the Tower's reward rate is checked in the earning model, so neither becomes the only place worth playing.
 
+## Chests
+
+[D, 2026-11-16: the package's point 9.] The targets, the first of each rarity at its hour: `docs/design.md`, "Chests". The numbers: `src/shared/Config/Chests.luau`. The model: `py tools/balance/chests.py`, whose `--fit` solves the ladder; research's fit is in `docs/test-requests.md`, TR27.
+
+- **The shape** (research's): each rarity starts on the ladder where its grounds read it and roughly doubles a row, so a ground's packs never give its next rarity before its elites do, and Legendaries come from elites and keepers only.
+- **SIMULATED** on the fit, a player alone on budget (the median first; 10% to 90% of players): Uncommon 0.3 h; Rare 3.5 h (1.5 to 6.2); Epic 12.5 h (10.3 to 16.4); Legendary 39.8 h (35.7 to 47.4). Eight players on a server are slower by up to 1.3 h, since they share the elite.
+- **About 43 chests an hour,** 18 of them from elites, about 2,450 over the climb to level 60: bulk opening and auto-salvage are what make that many pleasant.
+- **Salvage** pays at most 10% of a kill's Credits on Lantern Row and 16% on Mirror Pavilion, so fighting stays the income and the base's prices hold.
+- **At launch,** with Lantern Row alone, its rows give Common and Uncommon, and a Rare only at the keeper's first win. Rare and better come from the Tower, whose table is fitted with its build to the same windows.
+
 ## What the simulation showed (2026-11-11)
 
 Run it with `py tools/balance/sim.py`. It reads the seeds and `docs/roster.md`.

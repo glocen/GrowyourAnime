@@ -2330,6 +2330,11 @@ Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 
   - Combat Power is 92% (any gap) and 97% (10% faster), until research's refit.
 - **NOT VERIFIED:** the client self-test "Voidkin screen: Overview's stat sheet…" and the phone captures, long numbers included. The screen is locked (0 frames a second, a 1 × 1 viewport).
 
+**Research's answers (Quaestor, 2026-11-16, 19:13).**
+- **The even foe: confirmed.** `attributes.py` gives the same means (Hit 75.8, Dodge 41.2, Critical 62.6, Critical Resist 119.7, Block 40.9, Penetration 82.9, Elemental Resist 96.8 a G). Across the grounds Dodge and Block run 0.57 to 1.43 of theirs, not 0.8 to 1.2, so a shown chance can move up to about 3 points. It stays one fixed reference, as part 4 designs it.
+- **`attributes.py` reads `Config.Stats.Attributes`** (5194c72) and reports any drift from its fit: none today.
+- **Combat Power's refit** is research's next piece, on the attribute builds.
+
 ## TR26. Items, class rules and the comparison (Faber)
 
 Part 12's order, item 4.3 (`docs/research/rework-2026-11-16.md`, part 10; the contract in `docs/engineering-plan.md`, "Class rules"), on the director's yes of 2026-11-16, 16:50.
@@ -2434,3 +2439,26 @@ Part 12's order, item 4.4 (`docs/research/rework-2026-11-16.md`, part 11; the co
   - At Uncommon with nothing worn, all 50 kept. With fourteen strong Legendaries worn, 17 of 20 salvaged for 594 Credits, paid. The 3 kept were Healer and Mage weapons, for the Voidkin of those classes, who wear nothing.
   - **A full bag:** 300 Keeper's Chest of Mirror Pavilion items save at 70 KB (62 KB of items, about 208 bytes each; the ledger 6.5 KB). The 301st: `BagFull`, the chest kept.
 - Nothing players see changed, so there's no capture to take.
+
+**Research's fit (Quaestor, 2026-11-16, 19:13).** The model: `py tools/balance/chests.py`, reading `Config.Chests`; `--fit` solves the ladder on research's shape. A player on budget, Lantern Row's laps taken as alike on every ground, a keeper's first win a quarter of the way into its ground.
+- **Today's seeds come early:** the first Rare at a median 1.1 h, Epic 5.6, Legendary 23.8. Salvaging everything would pay 20% to 66% of a kill's Credits.
+- **The ladder, for `Config.Chests.Ladder`** (Common, Uncommon, Rare, Epic, Legendary):
+  1. 94, 6, 0, 0, 0
+  2. 91.4, 8.6, 0, 0, 0
+  3. 88, 10.9, 1.1, 0, 0
+  4. 83.2, 14.6, 2.2, 0, 0
+  5. 76.4, 19.2, 2.9, 1.5, 0
+  6. 67, 24.2, 5.6, 3.2, 0
+  7. 53.8, 28.7, 10.5, 6.2, 0.8
+  8. 35.4, 29.6, 19.6, 13.5, 1.9
+- **Its shape:** each rarity starts where its grounds read it (Rare at row 3, Epic at 5, Legendary at 7) and roughly doubles a row; Uncommon starts at row 1. So a ground's packs never give its next rarity before its elites do, and Legendaries come from elites and keepers only.
+- **Met, a player alone** (median; 10% to 90%): Uncommon 0.3 h; Rare 3.5 h (1.5 to 6.2); Epic 12.5 h (10.3 to 16.4); Legendary 39.8 h (35.7 to 47.4). With eight players: 4.0, 13.0 and 41.1 h.
+- **`Salvage`: 8, 14, 24, 40, 64** a G, Common to Legendary. Salvaging everything would then pay 10% of a kill's Credits on Lantern Row and 16% on Mirror Pavilion, an upper bound, so fighting stays the income.
+- **These stand as built:**
+  - the drops (5%, an elite's always, the keeper's tiers 3 then 2, the third kill) and the class lean of 0.6;
+  - the worth (`PowerPerG`, the rarity shares from `gearRarity`, `MainShare`, `Spread`);
+  - lines and sockets by rarity, the main stat by slot, the pool and `MainLean`;
+  - `Bag`, `Step` and `Reach`.
+- **The count:** about 43 chests an hour, 18 of them from elites, and about 2,450 over the climb. Part 11's "about 20 an hour" counted Shades alone.
+- **Keep:** each class's best Voidkin, as `docs/design.md`, "Chests" has it (built in 2a95179).
+- **At launch,** with Lantern Row alone, its rows give Common and Uncommon, and a Rare only at the keeper's first win. Rare and better then come from the Tower, so its table is fitted with its build (part 12, item 7), to the same windows.

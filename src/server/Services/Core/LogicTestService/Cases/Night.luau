@@ -234,12 +234,15 @@ return {
 					t.Check(`{name} {key}: a key the phase holds, of its kind`, phase[key] ~= nil and typeof(phase[key]) == typeof(value))
 				end
 				local bright = Night.Ground(Night.Clear(phase, over, 1), name, sun)
-				t.Check(`{name}: out of the Row, C's fill`, bright.Lighting.Ambient == over.Ambient and bright.Lighting.OutdoorAmbient == over.Ambient)
+				local function same(x: Color3, y: Color3): boolean -- the engine's Lerp at 1 is float32's, not exact
+					return math.abs(x.R - y.R) + math.abs(x.G - y.G) + math.abs(x.B - y.B) < 1e-4
+				end
+				t.Check(`{name}: out of the Row, C's fill`, same(bright.Lighting.Ambient, over.Ambient) and same(bright.Lighting.OutdoorAmbient, over.Ambient), tostring(bright.Lighting.Ambient))
 				t.Equal(`{name}: and its exposure`, bright.Lighting.ExposureCompensation, over.Exposure)
 				t.Equal(`{name}: its sky its own`, bright.Sky, name)
 				t.Check(`{name}: its haze its own until the clear air`, bright.Atmosphere.Density == phase.Atmosphere.Density)
 				local row = Night.Ground(Night.Clear(phase, over, 0), name, sun)
-				t.Check(`{name}: in the Row, its own`, row.Lighting.Ambient == phase.Ambient and row.Lighting.Brightness == phase.Brightness)
+				t.Check(`{name}: in the Row, its own`, same(row.Lighting.Ambient, phase.Ambient) and near(row.Lighting.Brightness, phase.Brightness))
 				t.Equal(`{name}: and its own exposure`, row.Lighting.ExposureCompensation, phase.Exposure or 0)
 			end
 			t.Check("dusk brighter than night, still", clear.Phases.Dusk.Brightness > clear.Phases.Night.Brightness)

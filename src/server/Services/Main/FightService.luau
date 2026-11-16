@@ -1280,11 +1280,12 @@ local function thinkShade(f: Fighter, at: number)
 				Distance = distance(f.Root, lead.Root),
 				Reach = 0,
 				Aggrieved = struck ~= nil and struck[lead] == true,
+				Fighting = standing(lead.Target),
 			})
 		end
 	end
 	local notice = if keeper then Combat.Keeper.Notice else Combat.Shade.Notice
-	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice, if keeper then nil else Combat.Shade.Lose)
+	local targetId = Fight.ShadeTarget(candidates, if f.Target then f.Target.Id else nil, notice, if keeper then nil else Combat.Shade.Lose, keeper or Combat.Shade.NoticeIdle)
 	setTarget(f, if targetId then fighters[targetId] else nil)
 	local target = f.Target
 	if target == nil then

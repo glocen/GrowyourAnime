@@ -3,7 +3,7 @@
 -- joins PowerCases (Cases' one table had passed what the type solver checks in one piece). AR16's base as its save has
 -- it: the bays awake and asleep, the battery's cells, the Void Mill's wheel, gauge and demand mark (AR19) and the
 -- Training machine's crown; its machines' plates apart from the spawn; and the first session's shards opening themselves
--- on the plot (TR24's fix 5).
+-- on the plot (TR24's fix 5); the Festival Door's and the gate's names (TR24's fix 10).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -20,6 +20,8 @@ local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
+local SignsController = require(script.Parent.Parent.Parent.Main.SignsController)
+local Grounds = require(Shared.Definitions.Grounds)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Layers = require(UI.Layers)
@@ -312,12 +314,14 @@ function BaseCases.Cases(given: Given): { any }
 				if view == nil or view.Progress.Starter == "" or type(gateZ) ~= "number" then
 					return
 				end
-				local was = BaseController.SelfOpen(true)
+				BaseController.Dismiss() -- a reveal left up (one that opened itself at the join) holds the next back
+				local was = BaseController.SelfOpen(false)
 				local ok, err = pcall(function()
-					-- off the plot, in the Row: it breaks and waits
+					-- off the plot, in the Row: it breaks and waits (turned on there, so nothing left ready opens on the plot)
 					local up = Vector3.new(0, 3.6, 0)
 					t.Server("TestStandAt", Vector3.new(0, 0, gateZ - 60) + up, Vector3.new(0, 0, gateZ - 70) + up)
 					t.Wait(0.5)
+					BaseController.SelfOpen(true)
 					local held = view.Bag.Shards[shard] or 0
 					t.Server("BaseGive", shard, 1)
 					t.Check("the server gives one", waitFor(t, ANSWER, function(): boolean
@@ -361,6 +365,36 @@ function BaseCases.Cases(given: Given): { any }
 				BaseController.Dismiss()
 				if not ok then
 					error(err, 0)
+				end
+			end,
+		},
+		{
+			Name = "Base: TR24's fix 10, the Festival Door says its name over its arch with its ground under it, and the festival gate says its ground",
+			Run = function(t: any)
+				local ground = Grounds.ById[WorldConfig.Row.Ground].Name
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+				local gate = Markers.Find("FestivalGate")
+				t.Check("the plot's door and the festival gate are in the world", door ~= nil and gate ~= nil)
+				local parts: { [string]: Frame } = {}
+				t.Check("each wears its sign", waitFor(t, 3, function(): boolean
+					parts = SignsController.Parts()
+					return parts.Door ~= nil and parts.Gate ~= nil
+				end))
+				local function says(frame: Frame?, index: number): string
+					local panel = frame and frame:FindFirstChild("Panel")
+					local label = panel and panel:FindFirstChild(`Line{index}`)
+					return if label and label:IsA("TextLabel") then label.Text else ""
+				end
+				t.Equal("the door: its name", says(parts.Door, 1), WorldConfig.Signs.Door.Name)
+				t.Equal("the door: the ground it goes to under it", says(parts.Door, 2), ground)
+				t.Equal("the gate: its ground", says(parts.Gate, 1), ground)
+				-- over its top: where the plate stands (it moves on render)
+				if door and door:IsA("Model") and parts.Door then
+					local frame, size = door:GetBoundingBox()
+					local want = frame.Position + Vector3.new(0, size.Y / 2 + WorldConfig.Signs.Door.Lift, 0)
+					local at = World.Where(parts.Door)
+					t.Check("the door's over its arch", at ~= nil and (at - want).Magnitude < 0.1, if at then tostring(at) else "nowhere")
 				end
 			end,
 		},

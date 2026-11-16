@@ -34,6 +34,14 @@ return {
 
 	-- The side street runs from the crossing between the Towers to the festival gate: a plot's depth, its path behind and
 	-- its Tower: 15.5 s at a 200-stud plot, so the Festival Door is the way in. Then Lantern Row.
+	-- The names a place says over itself (TR24's fix 10; SignsController): the player's Festival Door, its name over the
+	-- arch and its ground under it (docs/design.md, "The Festival Door"), and the festival gate, its ground's name to the
+	-- side street. Width and Line in authored pixels; Lift studs over the model's top; Reach studs from the camera (the
+	-- gate's, past the 35 studs TR24's still saw it from). The builder's seeds, a block until research's pass.
+	Signs = {
+		Door = { Name = "Festival of Battles", Width = 200, Line = 22, Lift = 1.5, Reach = 90 },
+		Gate = { Width = 160, Line = 24, Lift = 2, Reach = 120 },
+	},
 	Row = {
 		Ground = "lanternrow", -- the ground this street is (Definitions.Grounds): its keeper's win counts there
 		Wide = 2.75, -- 44 studs between the stall fronts (research's verdict on TR2, 2026-11-12)

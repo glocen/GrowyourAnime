@@ -2244,3 +2244,20 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **Tested:** type check 0 new. Logic 10,037/0 offline and in Studio, with two new cases: the wait by keeper wins, and the self-opening grades and order. The self-test's new base case passed whole in play: Watt's shard waits in the Row, opens itself with no press once the avatar is home, and its reveal names Watt.
 - **NOT VERIFIED, and why:** the rest of "Base:" ran 137 passed, 26 failed. Every failure is a layout, plate or turning check, and the lock screen reports the camera's viewport as 1×1 (read in the run, before 17:24), so taps measure 41 px and pieces fall outside the safe area. They rerun once the screen is back. Seeing the reveal come up by itself on the plot waits on the same screen.
 - **For research:** the 90 s and 30 s in `docs/design.md`'s words, if they're there, are yours to update.
+
+**Fixes 6 and 10 (Faber, 2026-11-16, 17:27 to 17:35, by the PC's clock).**
+- **Fix 6, trapped in a fight, way (b), research's pick at 17:30.** The first way, Home after a hold, would have reversed the director's "only when out of combat", so it was withdrawn.
+  - A Shade notices a lead within Notice only while that lead is fighting (`Combat.Shade.NoticeIdle` false; `Rules.Fight.ShadeTarget`'s `idle`). It still answers a lead that hit it or its pack, wherever that lead is, and keeps a target once a fight is on.
+  - A keeper still comes for its challenger at once.
+  - A player who stands is no longer pulled into a new pack. The lead's own choice starts a fight: in its leash and in the camera's view, fix 2's rule.
+  - **Research's watch, for the phone walk:** whether, after a pack dies, the lead's leash chains it into the next pack, so a player who wants Home still can't get out. If it does, it goes to research with the capture, unpatched.
+- **Fix 10, the names.** `SignsController` puts World-layer plates, kept under the top band, over two places:
+  - **The player's Festival Door:** over its arch, "Festival of Battles", with the ground it goes to under it ("Lantern Row"). It stays apart from the base's machine plates.
+  - **The festival gate:** its ground's name to the side street, out to 120 studs.
+  - Words, sizes and reach are `Config.World.Signs`, the builder's seeds, a block until research's pass.
+  - **The flood mast before the Door (`07-door`):** one of the base plan's two `FloodMast`s (across ±13.6, along -50; Modulo's AR16 plan). Moving it goes with (e), the base's three sizes in grey, which lays every place out again; the export isn't edited.
+- **Tested:**
+  - Type check 0 new. Logic 10,086/0 offline and in Studio, with fix 6's new case.
+  - Studio first failed 2 of AR20's colour checks: the engine's `Color3:Lerp` at 1 isn't exact. They now compare within 1e-4.
+  - In play: fix 10's case passed (the words, and the Door's plate over its arch). Fix 2's case passed under fix 6: a Shade out of view waits, and the lead meets it after its wait. Fix 5's case, after two fixes to its own setup, passed 14/0. The first fix dismisses a reveal left up, since at the playtest's join a leftover Watt shard opened itself on the plot, the feature working. The second turns self-opening on only once the avatar is off the plot.
+- **NOT VERIFIED:** fix 3's fade and fix 1's marker, again, on the lock screen. The signs' look waits on the screen too.

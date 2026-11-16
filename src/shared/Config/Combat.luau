@@ -69,6 +69,10 @@ return {
 	-- from its spawn, so a fight never pulls the next pack, 80 studs on.
 	Shade = {
 		Notice = 20,
+		-- Whether a Shade notices a lead that isn't fighting (Rules.Fight.ShadeTarget). Off since TR24's fix 6, research's
+		-- pick (b), 2026-11-16: packs kept coming to a player who stood, so Home stayed refused "In a fight"; now a pack
+		-- comes for a lead that's fighting, or that hit it or its pack, and the lead's own choice starts a fight.
+		NoticeIdle = false,
 		GiveUp = 40,
 		-- A lead further than this from a Shade is let go, even one that hit its pack: one gone home through a door left
 		-- two of Pack 1 pinned at the gate's wall, short of GiveUp, holding it, so the player stayed in a fight at home and

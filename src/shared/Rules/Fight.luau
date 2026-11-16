@@ -51,6 +51,7 @@ export type Candidate = {
 	Aggrieved: boolean?, -- a Shade's: this lead hit it or its pack
 	Off: number?, -- a lead's: degrees between the camera's look and the enemy, seen from the avatar (0 to 180)
 	Engaged: boolean?, -- a lead's: this enemy is on the lead
+	Fighting: boolean?, -- a Shade's: this lead has a target of its own (TR24's fix 6)
 }
 
 export type View = { Arc: number, Guard: number }
@@ -107,10 +108,11 @@ function Fight.InLine(along: number, across: number, length: number, radius: num
 end
 
 -- A Shade's target: the lead it has while that one stands; else the nearest lead that hit it or its pack, wherever it is;
--- else the nearest within `notice`. Nil: it stays home. A lead further than `lose` is let go and never picked, even one
--- that hit its pack: one gone home through a door, while the Shade stands pinned at a wall short of its give-up (nil:
--- never let go, as a keeper's).
-function Fight.ShadeTarget(candidates: { Candidate }, current: string?, notice: number, lose: number?): string?
+-- else the nearest within `notice`, and with `idle` false only one that's fighting already (TR24's fix 6: a player who
+-- stands isn't pulled into a new pack; their lead's own choice starts a fight). Nil: it stays home. A lead further than
+-- `lose` is let go and never picked, even one that hit its pack: one gone home through a door, while the Shade stands
+-- pinned at a wall short of its give-up (nil: never let go, as a keeper's).
+function Fight.ShadeTarget(candidates: { Candidate }, current: string?, notice: number, lose: number?, idle: boolean?): string?
 	local near = candidates
 	if lose then
 		near = {}
@@ -129,7 +131,7 @@ function Fight.ShadeTarget(candidates: { Candidate }, current: string?, notice: 
 		return candidate.Aggrieved == true
 	end)
 	return struck or nearest(near, function(candidate: Candidate): boolean
-		return candidate.Distance <= notice
+		return candidate.Distance <= notice and (idle ~= false or candidate.Fighting == true)
 	end)
 end
 

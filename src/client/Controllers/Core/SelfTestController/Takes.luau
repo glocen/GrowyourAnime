@@ -924,7 +924,8 @@ return function(given: Given): { any }
 					moment("a tap in the cooldown: the shake and its words")
 					Button.Press(base)
 					t.Wait(TAKE_READ)
-					-- A real fight: the pack notices the lead within Combat.Shade.Notice.
+					-- A real fight: set down within Combat.Shade.Notice of the pack, the lead takes it on (in its leash and the
+					-- camera's view) and the pack answers (TR24's fix 6: a pack no longer comes for a lead that isn't fighting).
 					t.Server("HomeReady")
 					local since = workspace:GetServerTimeNow()
 					setDown(pack.At + toward * Combat.Shade.Notice * 0.6 + up)

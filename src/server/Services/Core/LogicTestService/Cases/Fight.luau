@@ -954,4 +954,22 @@ return {
 			t.Check("the blink comes before the cut", step.Beats.Blink < step.Beats.Cut)
 		end,
 	},
+	{
+		Name = "Fight: TR24's fix 6, a pack comes for a lead that's fighting or that hit it, never for one standing by, and a keeper for its challenger at once",
+		Run = function(t: any)
+			local notice, lose = Combat.Shade.Notice, Combat.Shade.Lose
+			t.Equal("the game's Shades: idle leads unnoticed", Combat.Shade.NoticeIdle, false)
+			local function lead(id: string, distance: number, fighting: boolean?, aggrieved: boolean?): Fight.Candidate
+				return { Id = id, Distance = distance, Reach = 0, Fighting = fighting, Aggrieved = aggrieved }
+			end
+			t.Check("a lead standing by, inside notice: left alone", Fight.ShadeTarget({ lead("still", 5, false) }, nil, notice, lose, false) == nil)
+			t.Equal("a lead fighting inside notice: it comes", Fight.ShadeTarget({ lead("busy", notice, true) }, nil, notice, lose, false), "busy")
+			t.Check("one fighting past notice: left alone", Fight.ShadeTarget({ lead("far", notice + 1, true) }, nil, notice, lose, false) == nil)
+			t.Equal("one that hit its pack, standing by: it answers", Fight.ShadeTarget({ lead("hitter", 35, false, true) }, nil, notice, lose, false), "hitter")
+			t.Equal("its target kept once the fight is on, fighting or not", Fight.ShadeTarget({ lead("mine", 10, false) }, "mine", notice, lose, false), "mine")
+			t.Equal("the nearest fighting, past one standing nearer", Fight.ShadeTarget({ lead("still", 4, false), lead("busy", 12, true) }, nil, notice, lose, false), "busy")
+			t.Equal("idle noticed, as a keeper's: the nearest", Fight.ShadeTarget({ lead("still", 4, false) }, nil, notice, nil, true), "still")
+			t.Equal("not said: as before, the nearest", Fight.ShadeTarget({ lead("still", 4, false) }, nil, notice), "still")
+		end,
+	},
 }

@@ -268,9 +268,10 @@ def tempered(px, where, metal):
     return px
 
 
-def finish(px, lit, glow, stone):
+def finish(px, lit, glow, stone, light=("#FFD777", (5, 0.95), (22, 0.5))):
     """What Workbench can't give: a warm key from above, a light on the upper left edge and a shade on the lower
-    right, and the light of what's lit. `lit` and `glow` are masks, 0 to 1."""
+    right, and the light of what's lit. `lit` and `glow` are masks, 0 to 1. `light` is a lit part's light: its colour,
+    then its near and far blur with their strengths (the chests take a warm white, kept small)."""
     rgb, a = px[..., :3].copy(), px[..., 3]
     grey = rgb.mean(axis=-1, keepdims=True)
     rgb = np.clip(grey + (rgb - grey) * 1.18, 0, 1)  # a little more colour
@@ -290,7 +291,7 @@ def finish(px, lit, glow, stone):
     rgb = rgb + (mix(stone, "#FFFFFF", 0.45) - rgb) * (0.4 * glow[..., None])
     out = np.empty_like(px)
     pm = np.clip(rgb, 0, 1) * a[..., None]
-    for field, colour, near, far in ((lit, "#FFD777", (5, 0.95), (22, 0.5)), (glow, stone, (4, 0.6), (16, 0.3))):
+    for field, colour, near, far in ((lit, *light), (glow, stone, (4, 0.6), (16, 0.3))):
         if field.max() < 0.01:
             continue
         halo = np.clip(blur(field, near[0]) * near[1] + blur(field, far[0]) * far[1], 0, 1)[..., None]

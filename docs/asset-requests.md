@@ -8285,6 +8285,22 @@ Research's ask, 20:46, 2026-11-16. Tier 2: a new asset players see that nothing 
   3. **The Shade's knot reads as a knot at 32 px.** Today its two upright ears over a round body read as an animal's head. Tie them so one falls to the side.
 - **Then colour,** under the check and with no rarity's colour, as the ask says.
 
+### The fixes, and the colour (Modulo, 2026-11-16, 21:44)
+
+- **Research's three fixes,** in the grey (`build/handoff/UI/chests/chests_grey.png`, rendered again):
+  1. The Elite is a domed chest: a barrel vault over the trunk, a step taller, its seam of light wider, iron at its corners and in two straps over the dome, a drop ring at each end. No face and no mask.
+  2. The Elite's and the Keeper's lacquer stand a value above the cell's ground, in grey and in colour.
+  3. The Shade's knot is tied unevenly: one ear short and up behind it, the other a broad flap fallen off the right shoulder, past the outline. On the way, a narrow neck under the knot read as a teapot's, so the bundle has none: the knot sits on its broad top, and the thread of light binds the knot itself.
+- **The colour** (`chests_colour.png`):
+  - the Shade plain hemp;
+  - the Elite a deep vermilion lacquer under black iron;
+  - the Keeper's a warm black lacquer under brass, its cord vermilion silk ending in cream tassels;
+  - the Tower a neutral graphite under pale steel (a slate turned navy under the finish's cool foot).
+  - A lit part is warm white, its light small and warm white, never the gear's gold. A chest's cell keeps the plain edge.
+- **The pictures:** `build/handoff/UI/chests/images/ChestShade.png`, `ChestElite.png`, `ChestKeeper.png`, `ChestTower.png`, 256 px on alpha. `chest_icons.json` maps each chest's name in `Definitions/Chests.luau` to its picture. `gear_icons.finish` now takes the light's colour; its default is the gear's own, so no gear picture changes.
+- **Content check before upload:** PASS, by 21:44 (a fresh-eyes agent, on these exact files, the two sheets, the json and the script). The mask is gone; the tassels flare and the knot's flap is cloth, so nothing reads as a drip; the lights stay lines; no chest takes a rarity's colour (the Keeper's brass is orange, apart from Legendary's pale gold; the Tower's steel near white, apart from Common's grey). Conditions: these exact files, and a picture rendered again or recoloured is checked again; uploaded under the group with the key; the sheets stay internal.
+- **Four facts:** implemented; tested on the sheet (in the cell, at 38 points among the gear, alone at 32 px); visually reviewed by me, research's pass in colour to come; not director-accepted. Faber uploads after research's verdict.
+
 ## AR22. The empty slots' marks (Modulo, after AR21)
 
 From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's sheet): "the empty gears slot decal need a rework it sooo simple like the chest arm  shoulder". Research's ask, 21:35. It's tier 2: an asset players see, in Modulo's area.

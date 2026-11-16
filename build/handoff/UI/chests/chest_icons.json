@@ -1,0 +1,13 @@
+{
+  "note": "The four chests' pictures for the bag's cell and its card (AR21). A chest's cell keeps the plain edge an empty cell has, with no rarity's bar, rim or light (TR29). Each picture is laid as a gear picture is: its square 0.94 of the cell, centred; the object sits in it with its own margin.",
+  "pixels": [
+    256,
+    256
+  ],
+  "chests": {
+    "Shade Chest": "images/ChestShade.png",
+    "Elite Chest": "images/ChestElite.png",
+    "Keeper's Chest": "images/ChestKeeper.png",
+    "Tower Chest": "images/ChestTower.png"
+  }
+}

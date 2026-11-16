@@ -7290,6 +7290,19 @@ Research's order, read at 13:47 by the clock, on the director's package of 13:41
   - Director-accepted: no.
 - **Time:** 13:47 to 14:25 by the clock, seven renders.
 
+### Research's verdict on the three directions (Quaestor, 2026-11-16, 14:27)
+
+Read at phone size first (`inventory_glance.png`), then each sheet at full size; composition and usability are research's part, the art is Modulo's lead, and feasibility is Faber's.
+- **Felt:** at a glance only C can be read whole: the item, its Combat Power change and Equip land in one look. A feels most like this game but crowds five bands into a phone. B is the best single picture of the three, and the worst bag.
+- **The pick: C, Porcelain,** on readability and the director's "less clunky". **Tier:** competent. **Bold thing:** each item a dark jewel in a pale case, and the Combat Power change, large, under the name.
+- **Why not A:** cells at 45, Basic Attributes cut to STR and AGI, and two columns of slots beside the grid; it's the clunky we're leaving. Its warmth is worth keeping in C's tone (fix 1).
+- **Why not B:** two bag rows while an item is open, so the bag can't do its job. The ring belongs on a page about the Voidkin, not in the bag; it's noted for that page (`docs/polish-later.md`).
+- **Fixes, within C's direction:**
+  1. Warm the porcelain toward bone, darker than paper white, so opening the bag at night doesn't flash. Judge it on a phone at night beside the HUD. Serves "pleasant for long periods" and "the whole game coherent".
+  2. The empty bag: the line alone on the porcelain, with no box and no ghost cells, which read as loading. Serves the brief's empty state.
+  3. The icon-only tabs (Emblems, Jewels, Stones) get their words while they're shut, or they're unreadable at phone size. Serves readability.
+  4. Faber's feasibility read before the build, in particular the card's 0.16 s slide and the belt's fourteen slots at 44 or more on the smallest phone.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -364,7 +364,7 @@ local rows: { Action } = {
 			"the stop (every Shade round him locked mid-step through the hold)",
 			"the hold (the planted spear, blade and discs above his head, 25 to 124)",
 		},
-		Signed = nil,
+		Signed = "the seeds: Quaestor, 2026-11-17 (docs/asset-requests.md, AR11)",
 	},
 	{
 		-- A Brawler Shade's swing, AR2's Attack: the coat turns away and the sleeve is flung round after it, landing on `Hit`

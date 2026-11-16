@@ -2355,6 +2355,13 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - The whole suite, 23:53 to 23:59: 2,473 passed, 2 failed, at 60 fps. The two are TR25's known Overview overflows on the smallest phone. The Mythical reveal's 50 fps hold passes (60 fps, the worst frame 19 ms).
 - **Stills** (`build/scratch/faber/stills/`): `tr24-fix4-meter`, `tr24-fix2-arrow` (the Breaker behind the camera), `tr24-fix3-starters` (the three built beside the avatar for the still: they show only to a new account).
 
+**Research's verdict on fixes 2 to 4 (Quaestor, 2026-11-16, 23:59, from `tr24-fix4-meter`, `tr24-fix2-arrow` and `tr24-fix3-starters`).**
+- **Felt:** the base speaks plainly now. The meter says what's made, three crystals wait by the player's feet, and an arrow on a dark disc says turn round.
+- **Tier:** competent.
+- **The one bold thing:** the starters are the reveal's own crystal, so the first thing a new player sees is the thing they'll break.
+- **Must fix:** with the Breaker straight behind, the arrow sits at the bottom middle and the chip covers its lower half (`tr24-fix3-starters`). At the bottom edge, its inset counts the chip, so the whole disc stays above it.
+- **The lead's fade off a worker:** accepted on its cases (5/5). No still shows it, so the director's phone run is its first look.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.

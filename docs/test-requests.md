@@ -2275,3 +2275,19 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **Tested:**
   - Type check 0 new. Logic 10,109/0 offline, with the new "Flight:" case (23 checks: beats, peak, landing, the ease-in, a walking player).
   - The play case ("HUD: TR24's fix 8") is NOT VERIFIED: the screen is locked, and the effect runs on render.
+
+**Fix 11, the kill lands (Faber, 2026-11-16, 17:52 to 17:58, by the PC's clock).** The block, to be judged in motion.
+- **Feel line:** when the player's Voidkin lands the last blow on a Shade, both freeze a beat longer than any hit, the body flashes as a critical does and the camera kicks once, and the blow throws the Shade back off its feet, so its lantern bursts where it lands, 6 studs from where it stood.
+- **What was there:** a killing hit held 0.09 s at its own rung, with no camera, and the beat's ordinary push, about a stud. So the body dropped on the spot, and the burst read as a speck at 30 studs (`08-shade-burst`). Fix 2 already brings the fight into the view.
+- **The block,** with its levers:
+  - **Hitstop:** a killing hit holds at least `Combat.Hitstop.Kill`, 0.13 s.
+  - **Flash and camera:** it lands at least at rung `KillRung`, 4, a critical's row, so its flash is 0.08 s at 0.7 and the player's own lead's kill kicks the camera at 0.35 trauma. It comes through the server's word on the hit (`raise`), the only place a kill is known. Its number grows by the rung, as a critical's does.
+  - **Knockback curve:** `Rules.Fight.Throw` throws the body at least `Combat.Push.Kill` 6 studs over 0.3 s, times its weight, so an elite moves 2.4 and a keeper 0.9. The server glides it, and a thrown body is told not to walk back. Each screen draws it from its own hold's end, as a push.
+  - The burst, AR2's art, is unchanged: Modulo's, and its look is the content check's.
+  - **Not in the block:** a kill sound (no hit sound exists yet but the Haymaker's; research's pick from the library), the burst's own size or light (AR2's), and a launch with height.
+- **Tested:**
+  - Type check 0 new.
+  - Logic 10,144/0, offline and in Studio, with the new "Fight: TR24's fix 11" case (16 checks).
+  - In play, on the server: a killed Shade's body moved 0 studs through the hold, then 6.00 studs between 0.13 and 0.43 s, and stayed there to 1 s.
+  - The killing hit reached the client with the kill's hold of 0.130 s. Both kills were a lead's signature at rung 7, so the ordinary hit's raise to rung 4 is logic-tested only.
+  - **NOT VERIFIED:** the drawn throw, the flash and the camera's kick, since the screen is locked and they run on render. To judge in motion: the Row's fight from the player's camera, with the Down clip during the throw, and the burst landing where the body does.

@@ -686,7 +686,7 @@ local function glide(f: Fighter, unit: Vector3, amount: number, seconds: number,
 	end)
 end
 
-local function push(f: Fighter, direction: Vector3, studs: number, hold: number)
+local function push(f: Fighter, direction: Vector3, studs: number, hold: number, seconds: number)
 	local weight = (Combat.Weight :: any)[f.Kind] or 1
 	local amount = studs * weight
 	if amount <= 0 or direction.Magnitude < 0.01 then
@@ -696,7 +696,10 @@ local function push(f: Fighter, direction: Vector3, studs: number, hold: number)
 		if fighters[f.Id] ~= f then
 			return
 		end
-		glide(f, direction.Unit, amount, Combat.Push.Seconds)
+		if f.State == "Down" then
+			f.Humanoid:MoveTo(f.Root.Position + direction.Unit * amount) -- a thrown body doesn't walk back to where it fell
+		end
+		glide(f, direction.Unit, amount, seconds)
 	end)
 end
 
@@ -798,14 +801,15 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		end
 	end
 	-- The hold by the hit's rung, a critical's raised and a killing hit's at least its own (Rules.Fight.Hold; AR8 A)
-	local rung = Fight.Rung(hit.Rung, result.Critical, Combat.Hitstop)
+	local rung = Fight.Rung(hit.Rung, result.Critical, Combat.Hitstop, fell)
 	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop)
 	if not result.Dodged then
 		if not fell and target.Action == nil and (Combat.Flinch.Kinds :: any)[target.Kind] then
 			setState(target, "Flinch", at + hold + Combat.Flinch.Seconds)
 			stop(target)
 		end
-		push(target, line, hit.Push, hold)
+		local studs, seconds = Fight.Throw(hit.Push, fell, Combat.Push :: any)
+		push(target, line, studs, hold, seconds)
 	end
 	Net.Server.FireAll("Hit", {
 		A = f.Model,

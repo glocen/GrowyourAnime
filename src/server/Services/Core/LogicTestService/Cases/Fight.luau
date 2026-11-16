@@ -972,4 +972,32 @@ return {
 			t.Equal("not said: as before, the nearest", Fight.ShadeTarget({ lead("still", 4, false) }, nil, notice), "still")
 		end,
 	},
+	{
+		Name = "Fight: TR24's fix 11, a killing hit lands: a longer hold, a critical's flash and camera at least, and a throw that carries the fall",
+		Run = function(t: any)
+			local hitstop = Combat.Hitstop :: any
+			local push = Combat.Push :: any
+			local kill = push.Kill
+			t.Check("the kill's rung is a critical's at least", hitstop.KillRung >= hitstop.Critical, tostring(hitstop.KillRung))
+			t.Equal("an ordinary hit that kills lands at the kill's rung", Fight.Rung(2, false, hitstop, true), hitstop.KillRung)
+			t.Equal("one that doesn't keeps its own", Fight.Rung(2, false, hitstop, false), 2)
+			t.Equal("not said: as before", Fight.Rung(2, false, hitstop), 2)
+			t.Equal("a killing signature keeps its higher own", Fight.Rung(8, false, hitstop, true), 8)
+			local killLever = Fight.Lever(Fight.Rung(2, false, hitstop, true), hitstop)
+			local plain = Fight.Lever(2, hitstop)
+			t.Check("the kill flashes stronger than a hit", killLever.Glow > plain.Glow and killLever.Flash >= plain.Flash)
+			t.Check("and kicks the player's camera, which a hit doesn't", killLever.Trauma > 0 and plain.Trauma == 0, tostring(killLever.Trauma))
+			t.Check("the kill holds longer than any ordinary hit", hitstop.Kill > Fight.Lever(3, hitstop).Hold, tostring(hitstop.Kill))
+			local studs, seconds = Fight.Throw(1, true, push)
+			t.Equal("a killing light hit throws Kill's studs", studs, kill.Studs)
+			t.Equal("over Kill's own seconds", seconds, kill.Seconds)
+			t.Equal("a heavier killing push keeps its own studs", (Fight.Throw(kill.Studs + 2, true, push)), kill.Studs + 2)
+			local s2, sec2 = Fight.Throw(1, false, push)
+			t.Check("a hit that doesn't kill is pushed as before", s2 == 1 and sec2 == push.Seconds)
+			t.Check("the throw reads as a throw, not a snap: under 40 studs a second", kill.Studs / kill.Seconds <= 40, tostring(kill.Studs / kill.Seconds))
+			t.Check("the hold and the throw are over before the body is taken away", hitstop.Kill + kill.Seconds < Combat.Shade.FadeSeconds)
+			t.Check("the burst's wait still outlasts the kill's hold", EffectsConfig.ShadeBurst.Wait > hitstop.Kill)
+			t.Check("an elite is thrown less, a keeper hardly", Combat.Weight.Elite < 1 and Combat.Weight.Keeper < Combat.Weight.Elite)
+		end,
+	},
 }

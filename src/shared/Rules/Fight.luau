@@ -362,13 +362,28 @@ function Fight.KnockAhead(studs: number, t: number, shown: number, push: { Secon
 end
 
 export type Lever = { From: number, Hold: number, Flash: number, Glow: number, Tremble: number, Trauma: number }
-export type Hitstop = { Rungs: { Lever }, Critical: number, Kill: number }
+export type Hitstop = { Rungs: { Lever }, Critical: number, Kill: number, KillRung: number }
 
 -- A hit's rung on the importance ladder (Actions.Hit.Rung; docs/research/vfx-reference.md, rule 1): its own, 2 when it
 -- names none, and at least the critical's when it's critical.
-function Fight.Rung(rung: number?, critical: boolean, hitstop: Hitstop): number
+function Fight.Rung(rung: number?, critical: boolean, hitstop: Hitstop, killing: boolean?): number
 	local own = rung or 2
-	return if critical then math.max(own, hitstop.Critical) else own
+	own = if critical then math.max(own, hitstop.Critical) else own
+	-- a killing hit lands at least at KillRung's levers, its flash and its camera (TR24's fix 11)
+	return if killing then math.max(own, hitstop.KillRung) else own
+end
+
+export type Throw = { Studs: number, Seconds: number }
+
+-- A hit's push, in studs before its body's weight, and the seconds it takes: its beat's over the push's Seconds; a killing
+-- hit's at least Kill's studs over Kill's own seconds, so the blow throws the body back as it falls and its burst lands
+-- where the body does (TR24's fix 11; handbook/feel/combat.md: "let the blow's push carry the fall").
+function Fight.Throw(studs: number, killing: boolean, push: { Seconds: number, Kill: Throw? }): (number, number)
+	local kill = push.Kill
+	if killing and kill then
+		return math.max(studs, kill.Studs), kill.Seconds
+	end
+	return studs, push.Seconds
 end
 
 -- The hit's levers for a rung (Config.Combat.Hitstop.Rungs): the highest row at or under it, or the lowest row.

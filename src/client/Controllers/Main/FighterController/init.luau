@@ -47,7 +47,7 @@ type Running = { Effect: Effects.Running, Clock: number, Free: number, At: numbe
 
 -- A hit's push as this screen draws it (Config.Combat.Push.Shown): from the hold's end, along the hit's line, at the
 -- server's pace.
-type Knock = { Home: Vector3, Direction: Vector3, Studs: number, From: number }
+type Knock = { Home: Vector3, Direction: Vector3, Studs: number, From: number, Pace: { Seconds: number, Wait: number, HandBack: number } }
 
 -- A prop let go of on Down and taken back on Up (Config.Animations.Props). At is when its move began.
 type Prop = {
@@ -831,7 +831,10 @@ local function knockOf(attacker: View, target: View, hit: any)
 	local action = Actions.ById[hit.Action]
 	local beat = if action and action.Hits then (action.Hits :: any)[hit.Beat] else nil
 	local weight = (Combat.Weight :: any)[target.Model:GetAttribute("Kind")] or 1
-	local studs = (if beat and type(beat.Push) == "number" then beat.Push else 0) * weight
+	-- a killing hit's throw (Rules.Fight.Throw; TR24's fix 11), known from the server's word on what's left
+	local killing = type(hit.Health) == "number" and hit.Health <= 0
+	local own, seconds = Fight.Throw(if beat and type(beat.Push) == "number" then beat.Push else 0, killing, Combat.Push :: any)
+	local studs = own * weight
 	local line = target.Root.Position - attacker.Root.Position
 	line = Vector3.new(line.X, 0, line.Z)
 	if not Combat.Push.Shown or studs <= 0 or line.Magnitude < 0.01 then
@@ -842,6 +845,7 @@ local function knockOf(attacker: View, target: View, hit: any)
 		Direction = line.Unit,
 		Studs = studs,
 		From = os.clock() + (if type(hit.Hold) == "number" then hit.Hold else 0),
+		Pace = { Seconds = seconds, Wait = Combat.Push.Wait, HandBack = Combat.Push.HandBack },
 	}
 end
 
@@ -852,7 +856,7 @@ local function stepKnock(view: View, now: number)
 		return
 	end
 	local shown = (view.Root.Position - knock.Home):Dot(knock.Direction)
-	local ahead = Fight.KnockAhead(knock.Studs, now - knock.From, shown, Combat.Push)
+	local ahead = Fight.KnockAhead(knock.Studs, now - knock.From, shown, knock.Pace)
 	if ahead == nil or view.Root.Parent == nil then
 		view.Knock = nil
 	elseif ahead > 0 then

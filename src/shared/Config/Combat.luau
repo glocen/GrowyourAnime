@@ -102,8 +102,10 @@ return {
 	-- highest row at or under it (Rules.Fight.Lever): Hold, seconds both bodies freeze; Flash, seconds the struck body
 	-- glows white, from Glow (the fill's opacity at its first picture) eased out; Tremble, studs the struck body shakes
 	-- inside the freeze, shrinking to nothing at its end (rung 7 and up); Trauma, the camera's added on the player's own
-	-- lead's hit (Shake). A critical is at least rung Critical, and a killing hit holds at least Kill seconds, the old light
-	-- hold, so the last blow lands before the burst. AR8 A, the builder's starting numbers, tuned by playing.
+	-- lead's hit (Shake). A critical is at least rung Critical, and a killing hit holds at least Kill seconds and lands at
+	-- least at rung KillRung's flash and camera, so the last blow lands before the burst (TR24's fix 11: "a Shade's death is
+	-- a small white flash"; Kill was 0.09, the old light hold). AR8 A and fix 11, the builder's starting numbers, tuned by
+	-- playing.
 	Hitstop = {
 		Rungs = {
 			{ From = 2, Hold = 0.045, Flash = 0.06, Glow = 0.55, Tremble = 0, Trauma = 0 }, -- an ordinary hit
@@ -113,13 +115,16 @@ return {
 			{ From = 8, Hold = 0.14, Flash = 0.1, Glow = 0.9, Tremble = 0.22, Trauma = 0.8 }, -- the keeper's signature
 		},
 		Critical = 4,
-		Kill = 0.09,
+		Kill = 0.13,
+		KillRung = 4,
 		Tremble = { Rate = 45 }, -- the struck body's shake: direction changes a second
 	},
 	-- The push: Seconds at a steady pace, on the server. Shown: each screen draws it from its own hold's end instead of
 	-- waiting for the body's replica, which comes a replication delay late (AR1, section 8); Wait is the longest it waits
 	-- for the replica to catch up, then it hands the body back over HandBack seconds.
-	Push = { Seconds = 0.1, Shown = true, Wait = 0.4, HandBack = 0.1 },
+	-- Kill: a killing hit's throw (Rules.Fight.Throw; TR24's fix 11), at least Studs over its own Seconds, times the body's
+	-- Weight: the blow carries the fall and the burst lands where the body does. The builder's seed, tuned by playing.
+	Push = { Seconds = 0.1, Shown = true, Wait = 0.4, HandBack = 0.1, Kill = { Studs = 6, Seconds = 0.3 } },
 	-- The camera, the client's, as trauma (handbook/feel/game-feel.md; docs/research/vfx-reference.md, item 12): each jolt
 	-- adds trauma, capped at 1, which falls by 1 every Decay seconds; the shake is trauma squared, so a big jolt lands and a
 	-- small one barely ticks. At full shake the camera moves Studs and turns Degrees (roll, with half of it in pitch and

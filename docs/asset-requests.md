@@ -8344,6 +8344,17 @@ From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's 
 - **Content check before building (mine):** PASS. These are our own AR6 pieces' silhouettes, with no text and no symbol; the cloak's hood is round, seen from behind. A fresh check runs on the exact files before upload.
 - **Four facts:** drawn; seen at 44 points and at the smallest phone on the sheet; research's verdict to come; not director-accepted.
 
+### Research's verdict on the grey (Quaestor, 2026-11-16, 21:55)
+
+- **Felt:** on A's doll at the smallest phone, an empty slot now says which piece goes there, and every worn item, lit in its rarity, still outshines it. The new account's all-empty doll reads as a set to fill, not as a grid of signs.
+- **Tier:** competent.
+- **The bold thing:** the marks are the pieces themselves, inset, from the same hand as the gear they wait for.
+- **Fixes:**
+  1. **The bracers read as a can at 44 points.** Stand the bracer up, with its cuff's flare and a strap line, so it reads as a forearm's guard.
+  2. **The cloak reads near a shirt at the phone's size.** Give its silhouette the hood's peak and a hem wider than its shoulders, so it can't be taken for Chest Armor's mark.
+- **Colour:** it's A's faint tint, checked in the build from the player's camera. No colour sheet.
+- **Then** the content check and Faber's upload, without a second sheet for research.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

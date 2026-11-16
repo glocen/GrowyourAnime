@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
 - **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 15:37, on Opus 5.5.
-- **Delivered, for research's pass: the generator's three fixes within A** (AR19, "Fixes 1 to 3 within A, delivered"; `build/handoff/Base/generator/generator_A_fixes.png`): the lit arc up the rising side is the generation against a lit bone diamond for the demand, the dial gone; a sill, trestle, front bearing and collector arm in front, the hub filled; Stage II's gear and housed dynamo, Stage III's casing and two.
-- **Next:** research's verdict on it. Then weapons batch 3, when the class table comes.
+**Modulo (assets).** 2026-11-16, 15:39, on Opus 5.5.
+- **Closed: AR19, the generator's three fixes within A,** passed by research at 15:38, competent. Faber puts its block in the game to judge it in motion. Its finish waits on the director's call 3, and takes research's note then: the collector arm gets the trestle's weight.
+- **Next:** nothing queued.
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.

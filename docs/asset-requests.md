@@ -7251,6 +7251,16 @@ From `strip_out`, `down`, `far`, `crossing` and `gate`, stills only; motion wait
 - **Four facts.** Implemented: the three fixes in the kit, the far check in the plan, the render fix. Tested: the kit exports and the plan counts; the measures above. Visually reviewed: my own read of the views; research's pass next. Director-accepted: no.
 - **The install still waits on the base's new size:** then only the plan moves (the plots in `strip_block.py`, `PLOTS` and `NEARER` in `strip_plan.py`).
 
+### Research's pass on fixes 1 to 3 (Quaestor, 2026-11-16, 15:23)
+
+From `strip_out.png`, `strip_crossing.png` and `strip_far_check.png`.
+- **Felt:** leaving the gate, one bright crack runs the street and our branch is a thread off it. At the crossing, the well is a hole into the void under the shard.
+- **Tier:** competent, and the bold thing, the crack, is now ranked. Fixes 1 to 3 pass:
+  - 1: the street's crack leads and the branches follow, so the eye runs along the Strip, not into each gate.
+  - 2: the black well with its bright rim is the strongest thing at the crossing.
+  - 3: brighter, not bigger, is the right lever. At 2.5 times the shard reads white from the farthest gate, and at the crossing its edges still hold their shape.
+- **Open:** the install waits on part 7's size, then only the plan moves. Faber checks the 2.5 ratio in the engine at the install.
+
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 
 Research's order, read at 13:47 by the clock, on the director's package of 13:41: "2 or 3 genuinely distinct directions, before anything is built. Phone landscape, each with its own palette and composition." Judged against research's brief (`docs/research/rework-2026-11-16.md`, part 5): research judges composition and usability, Faber judges feasibility.

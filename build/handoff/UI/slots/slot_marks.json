@@ -1,0 +1,37 @@
+{
+ "note": "The empty slots' marks (AR22): white on alpha, the slot tints them. Each is drawn at `points` in a slot of `slot` points, centred, tinted `tint` at `transparency`. `marks` keys a slot by its kind (Definitions/Gear.luau: either ring is Ring, either earring Earring); each hand's by the lead's class.",
+ "pixels": [
+  128,
+  128
+ ],
+ "slot": 44.0,
+ "points": 32.0,
+ "tint": "#6E6556",
+ "transparency": 0.1,
+ "marks": {
+  "Helmet": "images/SlotEmptyHelmet.png",
+  "Shoulders": "images/SlotEmptyShoulders.png",
+  "Chest Armor": "images/SlotEmptyChestArmor.png",
+  "Gloves": "images/SlotEmptyGloves.png",
+  "Bracers": "images/SlotEmptyBracers.png",
+  "Boots": "images/SlotEmptyBoots.png",
+  "Cloak": "images/SlotEmptyCloak.png",
+  "Amulet": "images/SlotEmptyAmulet.png",
+  "Ring": "images/SlotEmptyRing.png",
+  "Earring": "images/SlotEmptyEarring.png",
+  "Main Hand": {
+   "Warrior": "images/SlotEmptyMainHandWarrior.png",
+   "Tank": "images/SlotEmptyMainHandTank.png",
+   "Mage": "images/SlotEmptyMainHandMage.png",
+   "Assassin": "images/SlotEmptyMainHandAssassin.png",
+   "Healer": "images/SlotEmptyMainHandHealer.png"
+  },
+  "Off Hand": {
+   "Warrior": "images/SlotEmptyOffHandWarrior.png",
+   "Tank": "images/SlotEmptyOffHandTank.png",
+   "Mage": "images/SlotEmptyOffHandMage.png",
+   "Assassin": "images/SlotEmptyOffHandAssassin.png",
+   "Healer": "images/SlotEmptyOffHandHealer.png"
+  }
+ }
+}

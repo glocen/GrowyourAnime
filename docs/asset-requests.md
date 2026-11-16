@@ -8324,6 +8324,26 @@ From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's 
 - **Until they come,** A's empty slot keeps C's seat (Faber, TR28).
 - **Checks:** the content check before upload. Research's one verdict in grey, then in colour.
 
+### The grey, for research's verdict (Modulo, 2026-11-16, 21:55)
+
+`build/handoff/UI/slots/slot_marks_grey.png`, drawn by `tools/blender/slot_marks.py`.
+- **What a mark is:** its slot's Common piece from AR6, as AR6 frames it, in one tone.
+  - Its form is the silhouette with the parts' lines cut through.
+  - Its inset is in its alpha: the lip's shadow inside the upper edge, and the light caught inside the lower.
+  - The plainest Common design is the source each time: the Iron pieces, and the hooded cloak, since the wool one read as a sack.
+  - The slender pieces (the earring, the sword, short sword, great axe, staff, dagger, throwing blades and baton) have their form grown by a few pixels. At 44 points they stay solid pieces, never line icons.
+- **Shown:** the ten kinds and the five classes' hand pairs in A's empty slot at 44 points, the kinds at 88, and A's doll at the smallest phone in its three states:
+  - Rook's empties beside his worn pieces;
+  - Lyric's hands empty, with the Healer's pair;
+  - a new account, all empty.
+- **For Faber:** 20 marks at 128 px, white on alpha, in `build/handoff/UI/slots/images/`:
+  - `SlotEmpty<Kind>` for the ten kinds; a ring's and an earring's two slots share their kind's mark;
+  - `SlotEmptyMainHand<Class>` and `SlotEmptyOffHand<Class>` for the five classes.
+  - `slot_marks.json` maps each slot kind, and each hand by class, to its picture. It gives the draw: 32 points centred in the 44 point slot, tinted A's faint `#6E6556` at transparency 0.1.
+  - The mark is one tone by design, so its colour is that tint. The colour verdict judges the tint in the build.
+- **Content check before building (mine):** PASS. These are our own AR6 pieces' silhouettes, with no text and no symbol; the cloak's hood is round, seen from behind. A fresh check runs on the exact files before upload.
+- **Four facts:** drawn; seen at 44 points and at the smallest phone on the sheet; research's verdict to come; not director-accepted.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

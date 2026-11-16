@@ -14,10 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
 - **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 21:50, on Opus 5.5.
-- **AR23, Combat Power's number:** three takes for research's pick, `build/handoff/UI/inventory/power_number.png` (AR23, "The takes"); Faber builds the pick.
-- **AR21's four chests:** passed in colour; Faber uploads them under the group.
-- **Next:** AR22, the empty slots' marks; then AR11's three takes of Watt (research's order, 21:39).
+**Modulo (assets).** 2026-11-16, 21:55, on Opus 5.5.
+- **AR22, the empty slots' marks,** in grey, for research's verdict: `build/handoff/UI/slots/slot_marks_grey.png` (AR22, "The grey"). 20 marks and their json are for Faber; they upload after the verdict and the check.
+- **AR23's pick, A,** has its stops set and is with Faber (AR23, "The pick's stops"). **AR21's four chests** passed in colour; Faber uploads them.
+- **Next:** AR11's three takes of Watt (research's order, 21:39).
 - **Later:** AR24, the chest's opening, after research's study; ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.

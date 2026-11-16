@@ -1,13 +1,13 @@
-"""AR6, batch 1, the finish: the four kinds' sixty designs in colour, as flat pictures for the gear slots, with the gear
-frame's own images (docs/asset-requests.md, AR6, "Colour and frames").
+"""AR6, the finish: each kind's fifteen designs in colour, as flat pictures for the gear slots, with the gear frame's
+own images (docs/asset-requests.md, AR6, "Colour and frames"). Batch 1 is the Sword, the Short Sword, the Ring and the
+Helmet; batch 2 the eight shared kinds.
 
 Pictures only (the director, 2026-11-15: "it should only be 2D cuz gears dont have any visuals on the voidkins it just
 for the gears slot images!"): a model here is how a picture is drawn, and nothing but images leaves this script.
 
-The forms are the grey sheets' own (gear_sword_sets, gear_short_sword_sets, gear_ring_sets, gear_helmet_sets): this
-script only paints them. A material's key takes its colour from PAINT; a set's stone takes its set's tone; a lit part
-is warm white. Each design is rendered twice in Workbench, once lit and once flat as a mask of what glows, and the two
-are finished here: a warm key from above, a light on the upper edge, the stone's and the edge's own light. Never
+The forms are the grey sheets' own (gear_<kind>_sets.py, batch 2's on gear_parts.py): this script only paints them.
+A material's key takes its colour from PAINT; a set's stone takes its set's tone; a lit part is warm white. Each design
+is rendered twice in Workbench, once lit and once flat as a mask of what glows, and the two are finished here: a warm key from above, a light on the upper edge, the stone's and the edge's own light. Never
 flames, a cloud or particles: the light lives in the stone and the edge.
 
 Rarity in three layers (docs/research/gear-icons.md, DESIGN): the object's own material, the slot's light, the frame.
@@ -16,7 +16,8 @@ director, 2026-11-15): its two cuts become lit facets and a second rim of light 
 
     blender -b --factory-startup --python tools/blender/gear_icons.py -- build/handoff/UI/gear [kind ...]
 
-A kind is sword, short, ring, helmet, frames, or look (a few of each, for the look alone). With none, all of them.
+A kind is sword, short, ring, helmet, shoulders, chest, gloves, bracers, boots, cloak, amulet, earring, frames, or look
+(a few of each, for the look alone). With none, all of them.
 Writes images/Gear<Name>.png (256 pixels, the object alone), GearLight.png and GearFrameLegendary.png, a sheet a
 kind, and gear_icons.json. Workbench only: no GPU turn.
 """
@@ -30,8 +31,17 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
+import gear_amulet_sets as amulet  # noqa: E402
+import gear_boots_sets as boots  # noqa: E402
+import gear_bracers_sets as bracers  # noqa: E402
+import gear_chest_sets as chest  # noqa: E402
+import gear_cloak_sets as cloak  # noqa: E402
+import gear_earring_sets as earring  # noqa: E402
+import gear_gloves_sets as gloves  # noqa: E402
 import gear_helmet_sets as h  # noqa: E402
+import gear_parts as gp  # noqa: E402
 import gear_ring_sets as r  # noqa: E402
+import gear_shoulders_sets as shoulders  # noqa: E402
 import gear_short_sword_sets as ss  # noqa: E402
 import gear_sword_ladder as g  # noqa: E402
 import gear_sword_sets as s  # noqa: E402
@@ -52,7 +62,17 @@ PAINT = dict(
     iron=("#626877", 0.35, 0.45), steel=("#D8DFE9", 0.3, 0.42), bronze=("#BC7C44", 0.35, 0.4), scrap=("#827A76", 0.3, 0.55),
     brass=("#DDA050", 0.35, 0.32), blued=("#C6CCD6", 0.3, 0.36), rich=("#C6CCD6", 0.3, 0.3), filigree=("#F0E9FA", 0.2, 0.3),
     gilt=("#FFBF45", 0.3, 0.26), ivory=("#F6EEDC", 0.0, 0.5), wood=("#875C3D", 0.0, 0.7), leather=("#4C382E", 0.0, 0.75),
-    liner=("#0E0F13", 0.0, 0.9))
+    liner=("#0E0F13", 0.0, 0.9),
+    # cloth, batch 2's own, never a metal's colour: a cloak is never painted as plate. Each agrees with its rarity's
+    # metal: plain warm wool; a pale slate silk under brass; a dark slate dyed silk under filigree, blue only as blued
+    # steel's temper is; a near-black violet velvet, as the gunmetal; a cream white under gilt. The object agrees with
+    # its rarity and never wears its colour whole: the frame and the slot's light carry it (research, batch 1's
+    # verdict, 2026-11-15).
+    wool=("#7C7268", 0.0, 0.85), silk=("#8494A2", 0.0, 0.55), dyed=("#3E4C63", 0.0, 0.6), velvet=("#3E3450", 0.0, 0.7),
+    white=("#EFE6D2", 0.0, 0.6),
+    cloth=("#5E6070", 0.0, 0.8), cord=("#8C7052", 0.0, 0.8),
+    # a glove's leather, a cool charcoal, never a brown that could read as a hand (content check, 2026-11-16)
+    hide=("#34343C", 0.0, 0.6))
 LIT = "#FFF6DC"  # a lit part: warm white, never red or dark
 # A tempered metal is rendered as plain steel, and the finish gives it its own tones from shade to highlight (research,
 # 2026-11-15: the frame and the slot's light carry the rarity, the object only agrees with it). Rare is steel first:
@@ -268,11 +288,26 @@ def helmets(out, designs=None):
     return h.renders(out)
 
 
+def shared(kind):
+    """Batch 2's kinds, each drawn on gear_parts.py."""
+    def renders(out, designs=None):
+        kind.DESIGNS = tuple(designs or kind.DESIGNS)
+        return gp.renders(kind, out)
+    return renders
+
+
+SHARED = (("shoulders", shoulders, "the Shoulders", "Shoulders"), ("chest", chest, "Chest Armor", "Chest Armor"),
+          ("gloves", gloves, "the Gloves", "Gloves"), ("bracers", bracers, "the Bracers", "Bracers"),
+          ("boots", boots, "the Boots", "Boots"), ("cloak", cloak, "the Cloak", "Cloak"),
+          ("amulet", amulet, "the Amulet", "Amulet"), ("earring", earring, "the Earring", "Earring I"))
+
 KINDS = dict(
-    sword=dict(title="the Sword", slot="Main Hand", designs=s.DESIGNS, renders=swords, mark="Warrior"),
-    short=dict(title="the Short Sword", slot="Off Hand", designs=ss.DESIGNS, renders=shorts, mark="Warrior"),
-    ring=dict(title="Ring I", slot="Ring I", designs=r.DESIGNS, renders=rings, mark=None),
-    helmet=dict(title="the Helmet", slot="Helmet", designs=h.DESIGNS, renders=helmets, mark=None),
+    sword=dict(title="the Sword", slot="Main Hand", designs=s.DESIGNS, renders=swords, mark="Warrior", batch=1),
+    short=dict(title="the Short Sword", slot="Off Hand", designs=ss.DESIGNS, renders=shorts, mark="Warrior", batch=1),
+    ring=dict(title="Ring I", slot="Ring I", designs=r.DESIGNS, renders=rings, mark=None, batch=1),
+    helmet=dict(title="the Helmet", slot="Helmet", designs=h.DESIGNS, renders=helmets, mark=None, batch=1),
+    **{key: dict(title=title, slot=slot, designs=kind.DESIGNS, renders=shared(kind), mark=None, batch=2)
+       for key, kind, title, slot in SHARED},
 )
 
 
@@ -289,7 +324,8 @@ def sheet(out, kind, shots, designs, name):
     rows = max(sum(1 for d in designs if d["rarity"] == rar) for rar in RARITIES)
     sh = ui.Sheet(1200, top + rows * pitch_y + 64, g.GROUND)
     t = sh.tile(0, 0, sh.w, sh.h)
-    t.text(20, 12, 15, f"Grow your Anime: {kind['title']} in colour, in its slot (AR6, batch 1, the finish)", g.INK)
+    t.text(20, 12, 15, f"Grow your Anime: {kind['title']} in colour, in its slot (AR6, batch {kind['batch']}, the "
+           "finish)", g.INK)
     t.text(20, 36, 9.5, "Flat pictures for the gear slots only (the director, 2026-11-15). Rarity in three layers: the "
            "object's own material, the slot's light, the frame. Common to Epic share one frame in the rarity's colour; "
            "Legendary's border is its own, with no crown, on a deep umber ground.", g.SOFT_INK)
@@ -310,8 +346,8 @@ def sheet(out, kind, shots, designs, name):
     y = top + rows * pitch_y + 6
     notes = ("Stones take their set's tone: Embers amber, Hoarfrost ice, Gales sea green, Stormcall warm white, Gloamforge "
              "pale cyan, Nightloom lilac. A lit part is warm white, its light gold and small: no flame, cloud or particle.",
-             "Not here: Mythical and Dawn, the forge rank's badge, the other kinds. The slot is drawn from the frame's own "
-             "numbers (gear_icons.json); the build lays it from the kit's button slices and the two images delivered.")
+             "Not here: Mythical and Dawn, the forge rank's badge, the kinds to come. The slot is drawn from the frame's "
+             "own numbers (gear_icons.json); the build lays it from the kit's button slices and the two images delivered.")
     for i, line in enumerate(notes):
         t.text(20, y + i * 15, 9, line, g.SOFT_INK)
     for layer in ui.text_layers(sh.px.shape[1], sh.px.shape[0], sh.items).values():
@@ -342,7 +378,7 @@ def frames(out):
 
 def manifest(out, pad):
     data = dict(
-        note="Regalia's gear in its slots (AR6, batch 1). Pictures only: nothing here is worn or shown on a Voidkin. "
+        note="Regalia's gear in its slots (AR6). Pictures only: nothing here is worn or shown on a Voidkin. "
              "Sizes are in points for a slot of `slot` points, and scale with the slot unless a line says the kit's "
              "slice carries them. DESIGN, untried in Studio.",
         slot=SLOT,
@@ -382,6 +418,8 @@ def main():
     asked = [a for a in sys.argv[sys.argv.index("--") + 2:]] or list(KINDS) + ["frames"]
     g.PAINT, g.shoot = paint, shoot
     s.sword, r.ring, h.helmet = building(s.sword), building(r.ring), building(h.helmet)
+    for _, kind, _, _ in SHARED:
+        kind.build = building(kind.build)
     if "look" in asked:  # a few of each, at their own scale: for the look alone, nothing delivered
         for key, kind in KINDS.items():
             few = [d for d in kind["designs"] if d["rarity"] in ("Common", "Rare", "Epic", "Legendary")][::3]

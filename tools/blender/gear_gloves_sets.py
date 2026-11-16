@@ -21,6 +21,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
 import gear_parts as p  # noqa: E402
 
+# hide: the glove's own leather, leather's grey here and a cool charcoal in colour, so a glove never shows a hand
+p.g.GREY.setdefault("hide", p.g.GREY["leather"])
+
 mat = p.mat
 TILT, SPIN = 6.0, -16.0    # nearly level, turned a little to show the hand's depth
 FILL, DROP = 0.8, 0.0
@@ -32,13 +35,14 @@ BACK = -0.3                # the back of the hand's face, toward the camera
 
 
 def design(name, rarity, note, key, **more):
-    return p.design(name, rarity, note, key, **dict(dict(glove="leather", plated=False, knuckles=False, cuff="bell",
-                                                         cuff_mat=key, rims=None, studs=None, rivets=False,
+    return p.design(name, rarity, note, key, **dict(dict(glove="hide", band=None, plated=False, knuckles=False,
+                                                         cuff="bell", cuff_mat=key, rims=None, studs=None, rivets=False,
                                                          lozenge=None, facets=False), **more))
 
 
 DESIGNS = (
-    design("Iron Gloves", "Common", "Leather fingers, an iron plate on the back, a plain bell cuff.", "iron"),
+    design("Iron Gloves", "Common", "Leather fingers with iron knuckle plates, an iron plate on the back, a plain "
+           "bell cuff.", "iron"),
     design("Bronze Gloves", "Common", "A short bronze cuff with a rolled rim, a bar over the knuckles.", "bronze",
            cuff="short", rims="bronze", knuckles=True),
     design("Scrap Gloves", "Common", "A riveted back plate and a cuff of beaten plates.", "scrap", rivets=True,
@@ -68,17 +72,19 @@ DESIGNS = (
 
     design("Kirameki, the Glint", "Legendary", "Its one new form: the cuff spreads into a ring of points like a "
            "star's glint.", "gilt", trim="ivory", plated=True, cuff="star", orn="glint", stone=("lit", 0.14),
-           edge=True, glove="ivory"),
+           edge=True, glove="gilt", band="ivory"),
     design("Nagareboshi, the Meteor", "Legendary", "Its one new form: a falling star's streak trails from the back of "
            "the hand past the wrist.", "gilt", trim="ivory", plated=True, rims="ivory", orn="streak",
-           stone=("lit", 0.16), edge=True, glove="ivory"),
+           stone=("lit", 0.16), edge=True, glove="gilt", band="ivory"),
     design("Yuubae, the Evening Glow", "Legendary", "Its one new form: a setting sun's disc stands behind the hand.",
-           "gilt", trim="ivory", plated=True, rims="ivory", orn="sun", stone=("lit", 0.13), edge=True, glove="ivory"),
+           "gilt", trim="ivory", plated=True, rims="ivory", orn="sun", stone=("lit", 0.13), edge=True, glove="gilt",
+           band="ivory"),
 )
 
 
 def finger(d, x, length, splay, radius=0.12):
-    """A finger from its knuckle up, splayed and curling a little toward the camera; its plates if it's plated."""
+    """A finger from its knuckle up, splayed and curling a little toward the camera; its plates if it's plated, else a
+    plate over its knuckle. A band takes the middle plate, never the tip."""
     a = math.radians(splay)
     pts = []
     for i in range(7):
@@ -86,12 +92,11 @@ def finger(d, x, length, splay, radius=0.12):
         pts.append((x - math.sin(a) * length * t, -0.05 - 0.14 * t * t, KNUCKLE + math.cos(a) * length * t))
     parts = [p.tube("Finger", pts, [radius, radius * 0.96, radius * 0.92, radius * 0.88, radius * 0.84, radius * 0.8,
                                     radius * 0.7], d["glove"], sides=10)]
-    if d["plated"]:
-        for k, (t0, t1) in enumerate(((0.04, 0.3), (0.36, 0.6), (0.66, 0.9))):
-            seg = [pts[0]]
-            seg = [(x - math.sin(a) * length * t, -0.05 - 0.14 * t * t - 0.02, KNUCKLE + math.cos(a) * length * t)
-                   for t in (t0, (t0 + t1) / 2, t1)]
-            parts.append(p.tube("Plate", seg, radius * (1.22 - 0.08 * k), d["key"], sides=10))
+    for k, (t0, t1) in enumerate(((0.04, 0.3), (0.36, 0.6), (0.66, 0.9))[:3 if d["plated"] else 1]):
+        seg = [(x - math.sin(a) * length * t, -0.05 - 0.14 * t * t - 0.02, KNUCKLE + math.cos(a) * length * t)
+               for t in (t0, (t0 + t1) / 2, t1)]
+        parts.append(p.tube("Plate", seg, radius * (1.22 - 0.08 * k), d["band"] if k == 1 and d["band"] else d["key"],
+                            sides=10))
     return parts, pts[-1]
 
 
@@ -115,8 +120,7 @@ def hand(d):
     thumb = [(-0.5, -0.05, -0.05), (-0.74, -0.12, 0.12), (-0.92, -0.2, 0.36), (-1.0, -0.26, 0.56)]
     parts.append(p.tube("Thumb", p.curve(thumb, 10), [0.17, 0.16, 0.15, 0.14, 0.13, 0.12, 0.12, 0.11, 0.1, 0.09],
                         d["glove"], sides=10))
-    if d["plated"]:
-        parts.append(p.tube("Plate", p.curve(thumb[:3], 6), 0.17, key, sides=10))
+    parts.append(p.tube("Plate", p.curve(thumb[:3], 6), 0.17, key, sides=10))
     if d["knuckles"]:
         bar = [(x, -0.2, KNUCKLE - 0.02) for x, _, _ in FINGERS]
         parts.append(p.tube("Knuckles", p.curve([(-0.52, -0.16, KNUCKLE - 0.06)] + bar + [(0.52, -0.16, KNUCKLE - 0.06)],

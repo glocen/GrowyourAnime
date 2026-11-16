@@ -8,8 +8,8 @@ cops were deep and their lames leant out with them (research's verdict, 2026-11-
 helmet, a bell or a beetle in every pose tried (2026-11-16). A design is the cops, their lames, and what the cops carry.
 A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near word from Rare up is Pauldrons.
 
-Each Legendary's one new form changes the silhouette: Noroshi carries a beacon's spire on its cops, Yoake's lames
-sweep out into a folded wing, Kaikou's crest rises over each cop like a wave, holding a light under it.
+Each Legendary's one new form changes the silhouette: Noroshi carries a beacon's spire on its cops, Yoake's cops grow
+a folded wing that rises over two lames, Kaikou's crest rises over each cop like a wave, holding a light under it.
 
     blender -b --factory-startup --python tools/blender/gear_shoulders_sets.py -- build/handoff/Gear/shoulders_sets
 
@@ -77,8 +77,8 @@ DESIGNS = (
 
     design("Noroshi, the Beacon", "Legendary", "Its one new form: a beacon's spire on each cop, its light at the point.",
            "gilt", trim="ivory", rims="ivory", orn="spire", stone=("lit", 0.15), edge=True, strap="ivory"),
-    design("Yoake, the Daybreak", "Legendary", "Its one new form: the lames sweep out and down into a folded wing.", "gilt",
-           trim="ivory", lames=2, orn="wing", stone=("lit", 0.15), edge=True, strap="ivory"),
+    design("Yoake, the Daybreak", "Legendary", "Its one new form: a folded wing rises from each cop, two lames under "
+           "it.", "gilt", trim="ivory", lames=2, orn="wing", stone=("lit", 0.15), edge=True, strap="ivory"),
     design("Kaikou, the Sea Light", "Legendary", "Its one new form: a crest rises over each cop like a wave, a light "
            "under it.", "gilt", trim="ivory", rims="ivory", orn="wave", stone=("lit", 0.15), edge=True, strap="ivory"),
 )
@@ -147,7 +147,8 @@ def cop(d, side):
                              steps=16))
         parts.append(p.ball("Light", 0.2, "lit", (0.12 * side, 0, 2.42 + rise), squash=(1, 1, 1.2)))
     elif orn == "wing":
-        for k, (angle, length) in enumerate(((-28, 1.65), (-50, 1.55), (-72, 1.42), (-94, 1.26), (-116, 1.08))):
+        # the wing grows from the cop and rises, so the two lames hang clear under it (research, 2026-11-16)
+        for k, (angle, length) in enumerate(((14, 1.65), (-6, 1.55), (-26, 1.42), (-46, 1.26), (-66, 1.08))):
             blade = p.turned(p.leaf(length, 0.36, bend=0.0), angle if side > 0 else -angle, (0, 0))
             blade = p.shifted(blade, 0.78 * side, 0.32 - 0.05 * k)
             parts.append(p.flat("Feather", blade, 0.06, trim if k % 2 else key, y=0.05 + 0.07 * k))
@@ -192,6 +193,9 @@ def build(d):
         # the collar: a ring standing round the neck, flaring at its top
         out.append(p.lathe("Collar", [(0.42, 0.06), (0.4, 0.22), (0.42, 0.36), (0.5, 0.46)], d["trim"], deep=0.85,
                            thick=0.05, steps=40))
+        # the collar's inside is lined dark: an empty garment, never a body
+        out.append(p.lathe("Liner", [(0.38, 0.06), (0.36, 0.22), (0.38, 0.36), (0.46, 0.45)], "liner", deep=0.85,
+                           thick=0.015, steps=40))
         return out
     return p.scene_of(parts, TILT, SPIN)
 
@@ -206,7 +210,8 @@ WORDS = dict(
         "A set keeps its word and its ornament on every kind: Embers swells round its stone, Hoarfrost is cut square, Gales "
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is Pauldrons.",
         "Each Legendary's one new form: Noroshi (a beacon fire), a spire on the cop with its light at the point; Yoake "
-        "(daybreak), the lames sweep into a folded wing; Kaikou (the sea's own light), a wave over a light.",
+        "(daybreak), a folded wing rising from each cop over its lames; Kaikou (the sea's own light), a wave over a "
+        "light.",
         "No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as shoulders, and apart from its two neighbours, at 38 points? Does each Legendary "
         "outrank every Epic by shape? Not here yet: colour, frames.",

@@ -101,8 +101,8 @@ def pendant(d, at=(0.0, FRONT, -0.28), scale=1.0):
     sx = lambda outline: p.shifted(outline, x0, z0, k, k)  # noqa: E731
     if form == "disc":
         parts.append(p.flat("Disc", sx(p.ellipse(0.38, 0.38, 32)), 0.08 * k, key, y=y0))
-        if d["rims"]:
-            parts.append(p.facing("Rim", 0.38 * k, 0.035 * k, d["rims"], (x0, y0 - 0.02, z0)))
+        # a plain disc keeps a rolled edge in its own metal: face on, the flat catches no key light, the edge does
+        parts.append(p.facing("Rim", 0.38 * k, 0.035 * k, d["rims"] or key, (x0, y0 - 0.02, z0)))
     elif form == "ring":
         parts.append(p.facing("Ring", 0.3 * k, 0.08 * k, key, (x0, y0, z0)))
     elif form == "tag":

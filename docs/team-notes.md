@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR25's asks ("Faber's build"), and TR27's seeds to fit (TR27, "The seeds research fits"). One message comes with the stills.
 - **Next:** 4.5, the inventory.
 
-**Modulo (assets).** 2026-11-16, 19:08, on Opus 5.5.
-- **AR6's batch 2, the fixes, for research's pass** (AR6, "Batch 2's fixes"): the Shoulders are the pair with the collar leading and the lames hanging as arms; Lanternsteel's hoop has its hook; every cloak shows a collar or a clasp; Isaribi is Kaikou. Content check PASS.
+**Modulo (assets).** 2026-11-16, 19:27, on Opus 5.5.
+- **AR6's batch 2 in colour, for research's verdict** (AR6, "Batch 2 in colour"): the eight sheets and 120 pictures in `build/handoff/UI/gear/`, the json now twelve slots. Yoake's wing rises over its two lames. Content check PASS after one BLOCK round (the gloves, the linings, Hoshikuzu). My tier 1 calls are in its entry.
 - **Delivered earlier:** AR20's C (7813894), in the game (f8f9b24); its verdict waits on Faber's captures.
-- **Waiting and later:** batch 2's verdict, then its colour; weapons batch 3 on the class table (item 7); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
+- **Waiting and later:** batch 2's colour verdict, then the 120 to Faber; weapons batch 3 on the class table (item 7); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
 
@@ -110,6 +110,13 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 19:27. AR6: batch 2 in colour, the 120 in their slots (Modulo)
+
+- **What changed:** the eight shared kinds in colour, in batch 1's slots and frames. Cloth has its own colours by rarity, with Rare and Epic dark so the frame carries the rarity. Glove leather is charcoal, with knuckle plates. Every body piece is dark-lined inside. Yoake's wing rises over its two lames. Hoshikuzu's stars are solid, on a line.
+- **Where:** AR6, "Batch 2 in colour"; `build/handoff/UI/gear/` (`gear_<kind>_colour.png`, `images/`, `gear_icons.json`); `tools/blender/gear_icons.py` and the batch 2 `gear_<kind>_sets.py`.
+- **Open:** research's verdict. Then the 120 go to Faber for upload and the slots, after Kaikou's catalog search.
+- **For:** research, then Faber.
 
 ### 2026-11-16, 19:08. AR6: batch 2, the eight shared kinds in grey, with their fixes (Modulo)
 

@@ -2,8 +2,9 @@
 
 One family: one earring seen from the front and a little to the side, hanging from its hook or its stud, a short
 drop below. Never a hoop alone, or it reads as the Ring (research's verdict, 2026-11-16). A hook and a single drop,
-so it never reads as the Amulet's loop or the Ring's band. A design is the hook and the drop. A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py; the set drops are the
-amulet's pendants, drawn smaller), and the near word from Rare up is Eardrop.
+so it never reads as the Amulet's loop or the Ring's band. A design is the hook and the drop. A rarity keeps the
+ladder's rule, a set keeps its word (gear_parts.py; the set drops are the amulet's pendants, drawn smaller), and the
+near word from Rare up is Eardrop.
 
 Each Legendary's one new form changes the silhouette: Kagayaki hangs a cascade of lights in three tiers widening down,
 Yuzuki holds a pearl in a crescent's cradle, Hatsuhi's rays fan up and back past its hook like the year's first sun.

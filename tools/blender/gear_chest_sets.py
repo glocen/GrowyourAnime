@@ -125,6 +125,9 @@ def plate(d):
     parts.append(p.sheet_surface("Liner", "liner", lambda u, t: shell_point(u, t, d["keel"], inset=0.04), us, ts,
                                  thick=0.02))
     parts.append(p.sheet_surface("Back", key, lambda u, t: shell_point(u, t, back=True), us, ts, thick=0.06))
+    # the back plate's inside, seen through the neck and the arms, is lined dark too: an empty garment, never a body
+    parts.append(p.sheet_surface("BackLiner", "liner", lambda u, t: shell_point(u, t, back=True, inset=0.04), us, ts,
+                                 thick=0.02))
 
     # the belt and the fauld's lames below it
     w0 = half_width(0.0)

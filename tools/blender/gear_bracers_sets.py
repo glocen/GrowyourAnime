@@ -105,7 +105,8 @@ def sleeve(d):
     if d["bands"]:
         for k in range(d["bands"]):
             z0, z1 = -1.0 + 2.0 * k / d["bands"], -1.0 + 2.0 * (k + 1) / d["bands"] + 0.06
-            band = [(radius(z) + 0.012 * k, z) for z in (z0, (z0 + z1) / 2, z1)]
+            # each band laps over the one before it with a lip, so its seam catches the light at slot size
+            band = [(radius(z) + 0.035 * k, z) for z in (z0, (z0 + z1) / 2, z1)]
             parts.append(p.lathe("Band", band, key, *OPEN, thick=0.05, deep=DEEP, steps=steps))
         if d["flare"]:
             parts.append(p.lathe("Flare", prof[-3:], key, *OPEN, thick=0.05, deep=DEEP, steps=steps))

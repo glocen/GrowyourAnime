@@ -2,9 +2,9 @@
 
 One family: a cloak seen from behind and a little to the side, hanging from the shoulders, its folds widening to the
 hem, a collar, a hood, or a rolled collar and its clasp at the neck. A cape's outline, so it reads as nothing else. A
-design is the cloth, its collar, its hem, and what the back carries. A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near
-word from Rare up is Mantle. Cloth takes its own greys (wool, silk, velvet, white), never a metal's, so the finals
-never paint a cloak as plate.
+design is the cloth, its collar, its hem, and what the back carries. A rarity keeps the ladder's rule, a set keeps its
+word (gear_parts.py), and the near word from Rare up is Mantle. Cloth takes its own greys (wool, silk, velvet, white),
+never a metal's, so the finals never paint a cloak as plate.
 
 Each Legendary's one new form changes the silhouette: Kyokkou's hem streams out in ribbons like an aurora's curtains,
 Yuuyake's hem is cut in long points like the sun's last rays going down, Tsukiakari's hem parts in two long tails that
@@ -24,7 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
 import gear_parts as p  # noqa: E402
 
-for _key, _value in dict(wool=0.5, silk=0.68, velvet=0.36, white=0.9).items():
+# dyed is Rare's silk, silk's grey here and deep blue in colour, as blued steel is to steel
+for _key, _value in dict(wool=0.5, silk=0.68, dyed=0.68, velvet=0.36, white=0.9).items():
     p.g.GREY.setdefault(_key, _value)
 
 mat = p.mat
@@ -54,12 +55,12 @@ DESIGNS = (
     design("Stallguard Cloak", "Uncommon", "Brass studs along the shoulders, a brass band along the hem.", "silk",
            studs="brass", hem="brass", trim="brass"),
 
-    design("Mantle of Embers", "Rare", "A short cape over it, a swelling frame round one stone on the back.", "silk",
+    design("Mantle of Embers", "Rare", "A short cape over it, a swelling frame round one stone on the back.", "dyed",
            trim="filigree", capelet=True, line="filigree", orn="Embers", stone=("stone", 0.13)),
-    design("Mantle of Hoarfrost", "Rare", "A standing collar, deep square folds, a square stone in a spade.", "silk",
+    design("Mantle of Hoarfrost", "Rare", "A standing collar, deep square folds, a square stone in a spade.", "dyed",
            trim="filigree", collar=True, folds=5, line="filigree", orn="Hoarfrost", stone=("stone", 0.13),
            cut="square"),
-    design("Mantle of Gales", "Rare", "Vanes sweep out from the shoulders, the stone on the back.", "silk",
+    design("Mantle of Gales", "Rare", "Vanes sweep out from the shoulders, the stone on the back.", "dyed",
            trim="filigree", line="filigree", orn="Gales", stone=("stone", 0.13)),
 
     design("Stormcall Mantle", "Epic", "Filigree hooks rise from the collar and curl out. A glowing stone.", "velvet",
@@ -70,12 +71,12 @@ DESIGNS = (
            trim="filigree", hem="filigree", line="filigree", orn="Nightloom", stone=("glow", 0.17)),
 
     design("Kyokkou, the Aurora", "Legendary", "Its one new form: the hem streams out in ribbons like an aurora's "
-           "curtains.", "white", trim="ivory", collar=True, hem="ivory", orn="ribbons", stone=("lit", 0.15),
+           "curtains.", "white", trim="gilt", collar=True, hem="ivory", orn="ribbons", stone=("lit", 0.15),
            edge=True),
     design("Yuuyake, the Sunset", "Legendary", "Its one new form: the hem is cut in long points like the sun's last "
-           "rays.", "white", trim="ivory", collar=True, capelet=True, orn="points", stone=("lit", 0.15), edge=True),
+           "rays.", "white", trim="gilt", collar=True, capelet=True, orn="points", stone=("lit", 0.15), edge=True),
     design("Tsukiakari, the Moonglow", "Legendary", "Its one new form: the hem parts in two long tails that curve out "
-           "like a new moon's horns.", "white", trim="ivory", hood=True, hem="ivory", orn="tails",
+           "like a new moon's horns.", "white", trim="gilt", hood=True, hem="ivory", orn="tails",
            stone=("lit", 0.15), edge=True),
 )
 

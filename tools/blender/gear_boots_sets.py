@@ -163,12 +163,16 @@ def boot(d):
         parts.append(p.flat("ArchLight", p.shifted(inner, 0.3, TOP - 0.1), 0.06, "lit", y=-0.06))
         parts.append(p.ball("Light", 0.13, "lit", (0.3, -0.06, TOP + 1.3)))
     elif orn == "stars":
+        # solid stars, gilt and ivory, riding one gilt line up from the heel: never loose sparks with a glow round them
+        path = [(-0.3, 0.03, -0.22)]
         for k in range(6):
             t = k / 5
             x, z = -0.42 - 0.4 * t - 0.1 * t * t, -0.1 + 1.25 * t
+            path.append((x, 0.03, z))
             size = 0.1 + 0.12 * (1 - abs(t - 0.5) * 2) + 0.04
-            parts.append(p.flat("Star", p.shifted(p.star(4, size, size * 0.3), x, z), 0.05,
-                                "lit" if k % 2 else trim, y=0.0))
+            parts.append(p.flat("Star", p.shifted(p.star(4, size, size * 0.3), x, z), 0.05, trim if k % 2 else key,
+                                y=0.0))
+        parts.append(p.tube("Sweep", p.curve(path, 24), 0.035, key, sides=8))
     parts += p.stone_of(d, 1.0, stone_at)
     for obj in parts:   # the foot's rounded parts, smooth
         if obj.name.startswith(("Foot", "Heel", "Toe", "Plate")):

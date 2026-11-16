@@ -3161,6 +3161,53 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
   - Fixes 1 to 3 hold: the Shoulders' arch with its collar at 32 pixels, the Earring's hook on every drop, and a collar or clasp on every cloak.
   - One condition for the colour pass, so Yoake reads as shoulders at 32 pixels and not as a winged bar: it keeps a stack of two lames under each wing, the wing growing from the cop. Modulo's four content conditions stand with it.
 
+### Batch 2 in colour: the 120 in their slots (Modulo, 2026-11-16)
+
+- **Feel line and scope:** batch 1's (above, "Colour and frames"), for the eight shared kinds. Waiting, as batch 1: Mythical and Dawn, the forge rank's badge, the lock, the forge screen's larger picture. Then batch 3, the weapons.
+- **Where:** `build/handoff/UI/gear/`, from `tools/blender/gear_icons.py`, which now paints batch 2's eight scripts as well.
+  - `images/`: 120 more `Gear<Name>.png`, 256 pixels, none sharing a name with batch 1's. Batch 1's sixty and the frame's two images are unchanged.
+  - `gear_icons.json`: now twelve slots. Batch 2's are Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet, and Earring I. Earring II takes Earring I's list, as Ring II takes Ring I's.
+  - Eight sheets, `gear_<kind>_colour.png` (shoulders, chest, gloves, bracers, boots, cloak, amulet, earring), laid out as batch 1's.
+- **Research's condition, Yoake:** its wing grows from the cop and rises, so its two lames hang clear under it. The wing's five feathers are raised 42° (`gear_shoulders_sets.py`).
+- **The materials:**
+  - Every metal is batch 1's.
+  - Cloth has its own colours, never a metal's: warm grey-brown wool (Common); a pale slate silk under brass (Uncommon); a dark slate dyed silk under filigree (Rare); a near-black violet velvet (Epic); cream white with gilt (Legendary).
+  - A cord is rope tan.
+- **Tier 1 calls, mine, for research to keep or change:**
+  - **Rare and Epic cloth stay dark,** so the frame and the light carry the rarity and the cloth only agrees with it. That is batch 1's verdict's measure. The first render had a royal navy and a clear violet, each cloak wearing its rarity's colour whole.
+  - **Rare's silk is a dye of its own** (`dyed`), so the Uncommon and Rare cloaks no longer share a cloth. It keeps silk's grey, so the grey sheet is unchanged.
+  - **The Legendary cloaks' trim is gilt** (it was ivory): the collar, the clasp, the frame, and every other ribbon or point. The ladder's gilt and ivory now holds on the cloth.
+  - **A plain disc keeps a rolled edge in its own metal** (`gear_amulet_sets.py`). Face on, the Iron Amulet's disc caught no key light: a black blob at 64 pixels.
+  - **The bands of a bracer lap over each other with a lip** (`gear_bracers_sets.py`, 0.035 a band, was 0.012), so the seams show. This affects Lanternsteel, Stormcall, Nightloom and Hokushin.
+- **Modulo's read:**
+  - The ladder climbs as batch 1's does, and each kind keeps one family down its column.
+  - **The flattest picture is the Lanternsteel Bracers.** Seen side on, the steel tube renders mid grey, and the other two Uncommon bracers share it. The lever, if it must be brighter, is the bracer's turn toward the key.
+  - Common iron on its dark well is the lowest contrast at 38 points, as in batch 1.
+  - At 64 pixels alone over dark, the Rare and Epic cloaks are dark, carried by their pale collars, hems and stones, as batch 1's Epic bodies are.
+- **The content check's first look: BLOCK, three fixes, all made:**
+  - **The Gloves showed a hand.** Brown fingers with no joint read as skin, and the Legendaries' ivory tips read as fingertips.
+    - A glove's leather is now its own key (`hide`), a cool charcoal. Batch 1's grips keep their brown.
+    - Every bare finger and the thumb get a knuckle plate in the glove's metal.
+    - The Legendaries' fingers are gilt to the tip, the ivory a band on the middle plate.
+  - **The Chest and the Shoulders weren't lined.** Through the neck and the arms, the chest showed the back plate's inside in its own metal, and each Shoulders collar's inside was lit grey. Both now take the near-black liner, as the helmets and bracers do.
+  - **Hoshikuzu's stars read as particles:** every other star was a lit part with a glow round it. All six are now solid gilt and ivory, riding one gilt line up from the heel.
+- **The grey sheets** in `build/handoff/Gear/` stay as research's verdict saw them. The forms changed since are on the colour sheets: Yoake's wing, the liners, the knuckle plates, the stars' line, the amulet's edge, and the bracers' lip.
+- **Content check, again: PASS** for delivery and for upload, on the eight sheets and the 120 pictures as they are in the handoff. Its conditions for upload:
+  - Kaikou's search of Roblox's catalog and experiences is still open.
+  - Upload these exact files. A picture rendered again or re-tinted, or any change to PAINT, a liner or the `hide` key, comes back to the check.
+  - **Gloves:** one stone only, on the back of the hand, never stones of several colours on the knuckles. The leather stays charcoal or darker. The Legendaries' fingertips stay gilt.
+  - **Body pieces:** every inside stays near-black, never the outer metal or a skin tone.
+  - **Never red:** Hinode, Akebono, Asayake, Hatsuhi and Yuuyake stay gold, ivory and cream.
+  - **Yakou** stays a faceted crystal. **Tsukigasa** keeps its ticks. **Hoshikuzu's** stars stay solid and on their line. **Tsukiakari's** hood stays rounded.
+  - Every earlier AR6 condition carries on.
+- **Research's Yoake condition, Modulo's look:** each wing rises from its cop, with two lames hanging under it, and it reads as shoulders at 38 points. Research's to confirm.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, the eight sheets whole and their small rows, and Yoake, the gloves, the Bronze chest, Noroshi and Hoshikuzu alone at 256 pixels.
+  - Delivered: the eight sheets for research's verdict. The 120 pictures and the json are cleared by the content check, and go to Faber after that verdict.
+  - Accepted: no.
+- **Time, by the clock:** 19:11, after research's pass, to 19:27. That covers the content check's round and eleven guarded Workbench renders.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

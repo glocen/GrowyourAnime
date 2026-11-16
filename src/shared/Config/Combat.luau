@@ -34,7 +34,9 @@ return {
 		View = { Arc = 55, Guard = 10, Fresh = 3, Wait = 3 },
 		-- A lead in the camera's line to the avatar, or this Near the camera, fades on that player's screen to
 		-- Transparency over Seconds, and back (TR24's fix 3). Margin: studs past its half-width that count as in the line.
-		Fade = { Transparency = 0.65, Seconds = 0.15, Margin = 1.5, Near = 5 },
+		-- Worker: a working Voidkin within this many studs of the avatar counts as one more to see past, so a lead between
+		-- the camera and a bay's worker fades too (research, af2954f: walked up to the bay, Rook hid Watt).
+		Fade = { Transparency = 0.65, Seconds = 0.15, Margin = 1.5, Near = 5, Worker = 24 },
 		-- Engaged, it stands beyond its target along the avatar's facing, turned this many degrees round toward the side it's
 		-- on, so the camera frames the fight and the target doesn't hide it (research's verdict on TR2, 2026-11-12). A seed.
 		Frame = 45,

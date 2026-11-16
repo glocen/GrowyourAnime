@@ -5,6 +5,8 @@
 -- fading on this screen (ViewController), and fix 2 in play: a Shade in the camera's view taken on at once, one out of it
 -- waited for in view (Rules.Fight.LeadTarget's order is the logic cases').
 
+local CollectionService = game:GetService("CollectionService")
+local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
@@ -227,6 +229,45 @@ function ViewCases.Cases(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Fight: a lead between the camera and a bay's worker near the avatar fades, and comes back once clear (research, af2954f)",
+			Run = function(t: any)
+				local camera = workspace.CurrentCamera
+				local model, body = standIn()
+				local worker = Instance.new("Model")
+				worker.Name = "NL_SelfTestWorker"
+				local trunk = Instance.new("Part")
+				trunk.Anchored, trunk.CanCollide, trunk.CanQuery, trunk.Transparency = true, false, false, 1
+				trunk.Size = Vector3.new(2, 5, 1)
+				trunk.Parent = worker
+				worker.PrimaryPart = trunk
+				worker.Parent = workspace
+				local ok, err = pcall(function()
+					local eye = camera.CFrame.Position
+					local root = t.Root().Position
+					local right = flatUnit(camera.CFrame.RightVector) or Vector3.new(1, 0, 0)
+					-- the worker off to the camera's right, the lead halfway along the camera's line to it, well off the line to the avatar
+					local at = root + right * 10
+					trunk.CFrame = CFrame.new(at)
+					local line = at - eye
+					body.CFrame = CFrame.new(eye + line * 0.6)
+					t.Wait(FADE_WAIT)
+					t.Near("no worker yet: the lead whole", ViewController.Faded(model), 0, 1e-3)
+					CollectionService:AddTag(worker, "Worker")
+					t.Wait(FADE_WAIT)
+					t.Near("a worker it hides near the avatar: faded all the way", ViewController.Faded(model), 1, 1e-3)
+					trunk.CFrame = CFrame.new(root + right * (Combat.Lead.Fade.Worker + 6))
+					body.CFrame = CFrame.new(eye + (trunk.Position - eye) * 0.6)
+					t.Wait(FADE_WAIT)
+					t.Near("a worker far from the avatar: whole again", ViewController.Faded(model), 0, 1e-3)
+				end)
+				model:Destroy()
+				worker:Destroy()
+				if not ok then
+					error(err, 0)
+				end
+			end,
+		},
+		{
 			Name = "HUD: TR24's fix 1, the next step's marker over its target in view, at the frame's edge out of it, and none beside it",
 			Run = function(t: any)
 				local camera = workspace.CurrentCamera
@@ -258,9 +299,19 @@ function ViewCases.Cases(given: Given): { any }
 					t.Wait(0.2)
 					read = Guide.Read()
 					t.Check("behind the camera: the arrow at the frame's edge", read.Edge and read.Shown == 0, `edge {read.Edge}, {read.Shown} shown`)
+					local arrow = read.Arrow
+					-- TR24's fix 2: an arrow's shape, shaft and head, on a round dark backing, Config's size (it read as a small stroke).
+					local backing = if arrow then arrow:FindFirstChild("Backing") else nil
+					t.Check("the arrow: a shaft and a head on a dark backing, at its size", arrow ~= nil and backing ~= nil and backing:IsA("Frame") and backing.BackgroundColor3.R < 0.2 and arrow:FindFirstChild("Shaft") ~= nil and arrow:FindFirstChild("Left") ~= nil and arrow:FindFirstChild("Right") ~= nil
+						and math.abs(arrow.AbsoluteSize.X - HudConfig.Guide.Edge.Size * Layers.Scale()) <= 1, if arrow then tostring(arrow.AbsoluteSize) else "none")
+					-- the whole of it inside the frame's inset, never under the next step's chip at the foot
+					if arrow then
+						local foot = arrow.AbsolutePosition.Y + arrow.AbsoluteSize.Y + GuiService:GetGuiInset().Y
+						local floor = camera.ViewportSize.Y - HudConfig.Guide.Bottom * Layers.Scale()
+						t.Check("its foot over the frame's bottom inset", foot <= floor + 1, string.format("%.0f, the inset %.0f", foot, floor))
+					end
 					-- and under the HUD's top band, never drawn under a card or a pill (it hid under the wallet)
 					local band = World.Edge()
-					local arrow = read.Arrow
 					if band and arrow then
 						local layer = arrow.Parent :: GuiObject
 						local arrowTop = (arrow.AbsolutePosition.Y - layer.AbsolutePosition.Y) / Layers.Scale()

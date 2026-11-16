@@ -5438,6 +5438,7 @@ local cases = {
 			end
 			t.Check("a battery under 100 shows its hundredth, so it visibly counts up", Read.Kwh(0.354) == "0.35" and Read.Kwh(47.8) == "47.80" and Read.Kwh(2357) == "2,357", `{Read.Kwh(0.354)}, {Read.Kwh(47.8)}, {Read.Kwh(2357)}`)
 			t.Check("power in kW: a tenth under 10, whole above", Read.Kw(7.5) == "7.5 kW" and Read.Kw(7) == "7 kW" and Read.Kw(18) == "18 kW" and Read.Kw(3, true) == "+3 kW" and Read.Against(30, 34) == "30 / 34 kW", `{Read.Kw(7.5)}, {Read.Kw(7)}, {Read.Against(30, 34)}`)
+			t.Check("nothing drawing, only what's made (TR24's fix 4)", Read.Against(18, 0) == "18 kW" and Read.Against(0, 0) == "0 kW", `{Read.Against(18, 0)}, {Read.Against(0, 0)}`)
 			t.Check("the target's card hides out of a fight", not parts.Target.Visible)
 			-- Nothing stands empty: at a join the save's copy comes a moment after the HUD and the plot, and pills and plates
 			-- stood as blank boxes for a second (TR2's rejoin take).

@@ -121,7 +121,12 @@ local function apply(list: { Instance }?, tint: Color3?)
 	end
 	if edge then
 		for _, bar in edge:GetChildren() do
-			if bar:IsA("Frame") then
+			if bar.Name == "Backing" then
+				local rim = bar:FindFirstChildOfClass("UIStroke")
+				if rim then
+					rim.Color = colour -- the backing stays the ink; only its rim takes the colour
+				end
+			elseif bar:IsA("Frame") then
 				bar.BackgroundColor3 = colour
 			end
 		end
@@ -150,6 +155,56 @@ function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Fra
 	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge }
 end
 
+-- The edge's arrow drawn pointing down, its turn set each frame: a round dark backing rimmed in the guide's colour, and an
+-- arrow on it, a shaft and a head of two bars, each bar in the guide's colour with the chevrons' ink round it.
+local function edgeArrow(parent: Frame)
+	local look = CONFIG.Edge
+	local size = look.Size
+	local backing = Instance.new("Frame")
+	backing.Name = "Backing"
+	backing.AnchorPoint = Vector2.new(0.5, 0.5)
+	backing.Position = UDim2.fromScale(0.5, 0.5)
+	backing.Size = UDim2.fromScale(1, 1)
+	backing.BackgroundColor3 = INK
+	backing.BackgroundTransparency = look.Backing
+	backing.BorderSizePixel = 0
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = backing
+	local rim = Instance.new("UIStroke")
+	rim.Color = colour
+	rim.Transparency = look.Rim
+	rim.Thickness = 2
+	rim.Parent = backing
+	backing.Parent = parent
+	local length = size * 0.6
+	local tip = Vector2.new(size / 2, size / 2 + length / 2)
+	local head = size * 0.34
+	local function bar(name: string, centre: Vector2, long: number, turn: number)
+		local made = Instance.new("Frame")
+		made.Name = name
+		made.AnchorPoint = Vector2.new(0.5, 0.5)
+		made.Size = UDim2.fromOffset(long, THICK)
+		made.Position = UDim2.fromOffset(centre.X, centre.Y)
+		made.Rotation = turn
+		made.BackgroundColor3 = colour
+		made.BorderSizePixel = 0
+		made.ZIndex = 2
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = INK
+		stroke.Thickness = 1.5
+		stroke.Parent = made
+		local ends = Instance.new("UICorner")
+		ends.CornerRadius = UDim.new(0.5, 0)
+		ends.Parent = made
+		made.Parent = parent
+	end
+	bar("Shaft", Vector2.new(size / 2, size / 2 - THICK * 0.3), length - THICK * 0.6, 90)
+	local reach = head * 0.5 * math.sqrt(0.5)
+	bar("Left", tip + Vector2.new(-reach, -reach) + Vector2.new(0.5, -0.5) * THICK * 0.35, head, 45)
+	bar("Right", tip + Vector2.new(reach, -reach) + Vector2.new(-0.5, -0.5) * THICK * 0.35, head, -45)
+end
+
 -- The edge's arrow: where the targets' middle is off the frame, at the frame's inset edge on the way to it, turned to it.
 local function stepEdge()
 	local arrow = edge
@@ -159,9 +214,9 @@ local function stepEdge()
 		made.Name = "NL_GuideEdge"
 		made.BackgroundTransparency = 1
 		made.AnchorPoint = Vector2.new(0.5, 0.5)
-		made.Size = UDim2.fromOffset(CONFIG.Size, CONFIG.Size * 0.6)
+		made.Size = UDim2.fromOffset(CONFIG.Edge.Size, CONFIG.Edge.Size)
 		made.Visible = false
-		chevron(made)
+		edgeArrow(made)
 		made.Parent = layer
 		edge = made
 		arrow = made
@@ -202,8 +257,14 @@ local function stepEdge()
 	end
 	local band = World.Edge()
 	local layer = a.Parent :: GuiObject
+	-- The arrow's middle keeps half its size inside the inset, so the whole of it stays clear of the HUD's edges (the
+	-- next step's chip under it).
+	local pad = CONFIG.Edge.Size * 0.5 * scale
+	margin += pad
+	top += pad
+	bottom += pad
 	if band then
-		local under = layer.AbsolutePosition.Y + GuiService:GetGuiInset().Y + (band + CONFIG.Size * 0.3) * scale
+		local under = layer.AbsolutePosition.Y + GuiService:GetGuiInset().Y + band * scale + pad
 		top = math.max(top, under)
 	end
 	-- The way to it from the frame's middle (behind the camera, the way is turned round), cut at the inset edge.

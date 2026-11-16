@@ -17,6 +17,7 @@ local CollectionService = game:GetService("CollectionService")
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local RevealConfig = require(Shared.Config.Reveal)
+local RevealArt = require(Shared.Config.RevealArt)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
@@ -66,7 +67,13 @@ local BAY_UP = 4
 local STARTER_OUT = 7 -- studs in front of the Breaker, toward the spawn, the starter shards wait
 local STARTER_APART = 4
 local STARTER_UP = 2.6
-local STARTER_SIZE = Vector3.new(1.2, 2.2, 1.2)
+local STARTER_SIZE = Vector3.new(1.2, 2.2, 1.2) -- the anchor each one turns on, unseen: its prompt's host
+-- TR24's fix 3: each one is the break card's crystal, the reveal's own shard (RevealArt.Shard, the Standard grade a
+-- starter's picture shows, Rules.Hud.ShardPicture) whole and at this scale of its 4.5 studs (2.7 here, about half the
+-- avatar), with a faint light of its own (Range studs, Brightness) in the break's first crack colour, so it reads as a
+-- Void Shard and never a lit cube.
+local STARTER_SCALE = 0.6
+local STARTER_GLOW = { Colour = Color3.fromHex("#C9B8FF"), Range = 7, Brightness = 1.2 }
 local STARTER_SPIN = 0.6 -- radians a second each waiting shard turns
 local CHOOSE_HOLD = 0.4 -- seconds a starter's prompt is held: a choice for good
 local PLATE_LINE = 20 -- authored pixels a plate's line takes
@@ -669,6 +676,66 @@ local function find()
 	BaseController.Refresh()
 end
 
+-- A waiting shard's crystal on its anchor: the reveal's pieces (RevealService loads them, NL_Reveal.Shard), each welded
+-- where the shard whole has it, so the anchor's turn turns them. True once all are on; until then a later Refresh dresses
+-- it, and the anchor's prompt already speaks.
+local function dressStarter(anchor: BasePart): boolean
+	if anchor:GetAttribute("Dressed") then
+		return true
+	end
+	local reveal = ReplicatedStorage:FindFirstChild("NL_Reveal")
+	local source = if reveal then reveal:FindFirstChild("Shard") else nil
+	if source == nil then
+		return false
+	end
+	local wanted: { [string]: MeshPart } = {}
+	for name, piece in RevealArt.Shard.Pieces do
+		if piece.Order ~= nil then -- the shell; a grade's buds and the core (seen only as it splits) stay out
+			local made = source:FindFirstChild(name)
+			if made == nil or not made:IsA("MeshPart") then
+				return false
+			end
+			wanted[name] = made
+		end
+	end
+	for name, made in wanted do
+		local part = made:Clone()
+		part.Anchored = false
+		part.CanCollide, part.CanQuery, part.CanTouch = false, false, false
+		part.Massless = true
+		part.Material = Enum.Material.SmoothPlastic
+		part.TextureID = RevealArt.Images.reveal_palette.Id
+		part.Color = Color3.new(1, 1, 1)
+		part.Size = made.Size * STARTER_SCALE
+		part.CFrame = anchor.CFrame * CFrame.new(RevealArt.Shard.Pieces[name].Centre * STARTER_SCALE)
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0, weld.Part1 = anchor, part
+		weld.Parent = part
+		part.Parent = anchor
+	end
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness, light.Shadows = STARTER_GLOW.Colour, STARTER_GLOW.Range, STARTER_GLOW.Brightness, false
+	light.Parent = anchor
+	anchor:SetAttribute("Dressed", true)
+	return true
+end
+
+-- One starter shard waiting at `at`: its unseen anchor with the prompt that chooses it, dressed as the crystal.
+local function starterShard(id: string, at: Vector3, parent: Instance): Part
+	local part = Instance.new("Part")
+	part.Name = id
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.Transparency = 1
+	part.Size = STARTER_SIZE
+	part.Position = at
+	part:SetAttribute("Holds", Shards.ById[id].Holds)
+	part.Parent = parent
+	dressStarter(part)
+	return part
+end
+
 -- The starter shards wait in front of the Breaker until one is chosen.
 local function layStarters(view: Profile.View)
 	local want = view.Progress.Starter == "" and breaker ~= nil
@@ -680,6 +747,9 @@ local function layStarters(view: Profile.View)
 		return
 	end
 	if next(starters) ~= nil then
+		for _, part in starters do
+			dressStarter(part)
+		end
 		return
 	end
 	local b = Markers.At((breaker :: Spot).Marker).Position
@@ -689,22 +759,11 @@ local function layStarters(view: Profile.View)
 	toward = if toward.Magnitude > 1e-3 then toward.Unit else Vector3.new(0, 0, 1)
 	local side = toward:Cross(Vector3.yAxis)
 	for index, id in Shards.Starters do
-		local part = Instance.new("Part")
-		part.Name = id
-		part.Anchored = true
-		part.CanCollide = false
-		part.CanQuery = false
-		part.Material = Enum.Material.Neon
-		part.Color = Theme.Colour.TextDim
-		part.Size = STARTER_SIZE
-		part.Position = b + toward * STARTER_OUT + side * (index - 2) * STARTER_APART + Vector3.new(0, STARTER_UP, 0)
-		part.Parent = base()
-		local holds = Shards.ById[id].Holds
+		local part = starterShard(id, b + toward * STARTER_OUT + side * (index - 2) * STARTER_APART + Vector3.new(0, STARTER_UP, 0), base())
 		local p = prompt(part, "NL_Choose", Read.ShardName(id), "Choose", CHOOSE_HOLD)
 		p.Triggered:Connect(function()
 			act("ChooseStarter", { Shard = id })
 		end)
-		part:SetAttribute("Holds", holds)
 		starters[id] = part
 	end
 end
@@ -849,6 +908,9 @@ end
 -- For tests: each plate's spot by its name ("Breaker", "Battery", "Bay1"), whether it's near and has news, its spot on
 -- the floor, and how near speaks.
 BaseController.Near = NEAR
+-- For tests: a starter shard as one waits, at `at` under `parent` (TR24's fix 3), and its scale of the reveal's shard.
+BaseController.StarterShard = starterShard
+BaseController.StarterScale = STARTER_SCALE
 BaseController.NearSlack = NEAR_SLACK
 function BaseController.Says(): { [string]: { Near: boolean, News: boolean, Ground: Vector3 } }
 	local says = {}

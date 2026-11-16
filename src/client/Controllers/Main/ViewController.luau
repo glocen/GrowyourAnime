@@ -6,10 +6,12 @@
 --   beside the avatar out of the camera's line (Config.Combat.Lead.View, Side, Ahead).
 -- - On this screen, a lead standing in the camera's line to the avatar, or too near the camera, fades to
 --   Combat.Lead.Fade.Transparency over its Seconds, and back once it's clear (Rules.Fight.InLine), through each part's
---   LocalTransparencyModifier. Not the lead the spectate camera follows, nor a lead that's down or home: its fall and its
---   leaving as light are FighterController's, and a fade lets go of it first.
+--   LocalTransparencyModifier. A bay's worker within Fade.Worker of the avatar is seen past the same way: a lead in the
+--   camera's line to it fades too (research, af2954f). Not the lead the spectate camera follows, nor a lead that's
+--   down or home: its fall and its leaving as light are FighterController's, and a fade lets go of it first.
 --   ViewController.Faded(model)   how far a lead is faded now, 0 to 1 of Transparency, for tests
 
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -127,6 +129,18 @@ local function step(dt: number)
 	local folder = workspace:FindFirstChild("Fighters")
 	local seen: { [Model]: boolean } = {}
 	local rate = dt / math.max(Combat.Lead.Fade.Seconds, 1e-3)
+	-- the bays' workers near the avatar, each one more to see past
+	local workers: { Vector3 } = {}
+	if subject and root then
+		for _, item in CollectionService:GetTagged("Worker") do
+			if item:IsA("Model") and item.Parent ~= nil then
+				local at = item:GetPivot().Position
+				if (at - root.Position).Magnitude <= Combat.Lead.Fade.Worker then
+					table.insert(workers, at)
+				end
+			end
+		end
+	end
 	if folder and subject then
 		for _, model in folder:GetChildren() do
 			if model:IsA("Model") and model:GetAttribute("Side") == "Lead" then
@@ -140,7 +154,11 @@ local function step(dt: number)
 					end
 				else
 					f = entry(model)
-					local want = if inLine(camera, subject, model, (f :: Faded).Radius) then 1 else 0
+					local hides = inLine(camera, subject, model, (f :: Faded).Radius)
+					for _, worker in workers do
+						hides = hides or inLine(camera, worker, model, (f :: Faded).Radius)
+					end
+					local want = if hides then 1 else 0
 					local share = (f :: Faded).Share
 					local next = if want > share then math.min(want, share + rate) else math.max(want, share - rate)
 					if next ~= share then

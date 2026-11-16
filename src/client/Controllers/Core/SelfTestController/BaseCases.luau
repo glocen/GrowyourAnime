@@ -355,6 +355,53 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Base: TR24's fix 3, a waiting starter is the break card's crystal, never a lit cube",
+			Run = function(t: any)
+				local RevealArt = require(Shared.Config.RevealArt)
+				local holder = Instance.new("Folder")
+				holder.Name = "NL_TestStarter"
+				holder.Parent = workspace
+				local ok, err = pcall(function()
+					local at = t.Root().Position + Vector3.new(0, 40, 0)
+					local anchor = BaseController.StarterShard("starter_rook", at, holder)
+					t.Check("its anchor unseen, holding its Voidkin", anchor.Transparency == 1 and anchor:GetAttribute("Holds") == "rook", `{anchor.Transparency}, {tostring(anchor:GetAttribute("Holds"))}`)
+					t.Check("dressed as soon as the reveal's pieces are in", waitFor(t, 10, function(): boolean
+						return anchor:GetAttribute("Dressed") == true
+					end))
+					local shell, pieces: { MeshPart } = 0, {}
+					for _, piece in RevealArt.Shard.Pieces do
+						if piece.Order ~= nil then
+							shell += 1
+						end
+					end
+					local low, high = math.huge, -math.huge
+					for _, child in anchor:GetChildren() do
+						if child:IsA("MeshPart") then
+							table.insert(pieces, child)
+							low = math.min(low, child.Position.Y - child.Size.Y / 2)
+							high = math.max(high, child.Position.Y + child.Size.Y / 2)
+						end
+					end
+					t.Check("the reveal's whole shell, no core and no bud", #pieces == shell and anchor:FindFirstChild("Core") == nil and anchor:FindFirstChild("BudFoot") == nil, `{#pieces} of {shell}`)
+					t.Check("in the reveal's palette, not neon", #pieces > 0 and pieces[1].Material ~= Enum.Material.Neon and pieces[1].TextureID == RevealArt.Images.reveal_palette.Id)
+					local tall = high - low
+					t.Check("about the old stand's height, a crystal at hand", tall >= 1.8 and tall <= 3.4, string.format("%.2f studs", tall))
+					t.Check("a faint light of its own", anchor:FindFirstChildOfClass("PointLight") ~= nil)
+					-- the anchor's turn carries the pieces (they're welded, never left behind)
+					local piece = pieces[1]
+					local before = if piece then anchor.CFrame:ToObjectSpace(piece.CFrame) else CFrame.new()
+					anchor.CFrame = anchor.CFrame * CFrame.Angles(0, 1, 0)
+					t.Wait(0.1)
+					local after = if piece then anchor.CFrame:ToObjectSpace(piece.CFrame) else CFrame.new()
+					t.Check("its pieces turn with it", piece ~= nil and (before.Position - after.Position).Magnitude < 0.01, if piece then string.format("%.3f", (before.Position - after.Position).Magnitude) else "none")
+				end)
+				holder:Destroy()
+				if not ok then
+					error(err, 0)
+				end
+			end,
+		},
+		{
 			Name = "Base: TR24's fix 5, Watt's shard breaks in a starter's time and opens itself once its player is on their plot, never off it",
 			Run = function(t: any)
 				local shard = "named_watt"

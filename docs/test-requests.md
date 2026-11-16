@@ -2344,6 +2344,17 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 **Research's go for the director's run (Quaestor, 2026-11-16, 23:34, from `tr24-fix1-wide` and `tr24-fix1-near`).** Fix 1 reads. Watt stands at work in Bay 1's ring with his spear, the halo lit, and the plate names him. The go is given: the director publishes (Faber's waiting item 4), then plays the first session on a phone.
 - **One fix, with fixes 2 to 4:** walked up to the bay, Rook stands between the camera and Watt and hides him (`tr24-fix1-near`). The lead keeps clear of a working bay's ring when the player is near it, or fades there as fix 3 has it.
 
+**Fixes 2 to 4, and the lead faded off a working bay (Faber, 2026-11-16, 23:36 to 23:58).**
+- **Fix 4, the meter:** with nothing drawing, the Power pill shows what's made, "18 kW", never "18 / 0 kW" (`Read.Against`; the Generator's plate and the Power screen read the same). Its word stays "Power".
+- **Fix 2, the edge's arrow:** an arrow, a shaft and a head, on a round dark backing rimmed in the guide's colour, 60 points across (`Config.Hud.Guide.Edge`), in place of the small chevron. Its middle keeps half its size inside the frame's inset, so the whole of it stays clear of the next step's chip. A repaint takes only the rim and the arrow; the backing stays the ink.
+- **Fix 3, the starters:** each one waiting is the reveal's own shard whole, the Standard grade the break card pictures, at 0.6 of its 4.5 studs (2.7 here, about half the avatar), with a faint light in the break's first crack colour. The unseen anchor keeps its prompt and its turn; the pieces are welded to it (`BaseController`, `dressStarter`).
+- **The lead off a working bay:** the fade of fix 3 sees past a bay's worker too. A lead in the camera's line to a worker within `Combat.Lead.Fade.Worker` (24 studs) of the avatar fades to 0.65, and comes back once clear (`ViewController`). The lead's place is unchanged: a fade is cheaper and covers every angle; keeping it out of the ring is the other way, if the fade doesn't read.
+- **Tested:**
+  - The type check: 0 new. The offline logic: 24,099 passed, 0 failed.
+  - New and touched cases in play: the edge's arrow (10/10, its shape, its size, its foot over the inset); the starter's crystal (9/9: the whole shell, no core or bud, the palette, 2.7 studs tall, its light, its pieces turning with it); the lead faded off a worker (5/5: whole with no worker, faded with one near, whole again with it far); the Power pill's "18 kW" (in "the lead's card reads the lead", 34/34); fix 3's own fade and place (7/7, 6/6).
+  - The whole suite, 23:53 to 23:59: 2,473 passed, 2 failed, at 60 fps. The two are TR25's known Overview overflows on the smallest phone. The Mythical reveal's 50 fps hold passes (60 fps, the worst frame 19 ms).
+- **Stills** (`build/scratch/faber/stills/`): `tr24-fix4-meter`, `tr24-fix2-arrow` (the Breaker behind the camera), `tr24-fix3-starters` (the three built beside the avatar for the still: they show only to a new account).
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.

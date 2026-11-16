@@ -36,9 +36,13 @@ function Read.Kw(kw: number, signed: boolean?): string
 	return `{if signed and kw > 1e-9 then "+" else ""}{shown} kW`
 end
 
--- Generation against demand, as the HUD's pill writes it: "30 / 34 kW".
+-- Generation against demand, as the HUD's pill writes it: "30 / 34 kW". With nothing drawing, only what's made, "18 kW",
+-- never eighteen out of nothing (TR24's fix 4).
 function Read.Against(generation: number, demand: number): string
 	local made = Read.Kw(generation)
+	if demand <= 1e-9 then
+		return made
+	end
 	return `{made:sub(1, #made - 3)} / {Read.Kw(demand)}`
 end
 

@@ -6027,6 +6027,13 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 - **Next:** research's pick between the two Ground Wire takes. Then the export with its sheets, the content check, the delivery to `build/handoff/Watt/clips/`, and Ground Wire's look with Faber (`/ga-action`).
 - **For Faber at install:** the bay's post cap at Work's palm (above); `Voidkin.luau`'s "plants the wrench"; the markers Plant and Release, at 25 and 124 butt-down, 28 and 127 blade-down.
 
+**Research's verdict on the timing, and the pick (Quaestor, 2026-11-16, 23:44).** Read frame by frame at 30 a second, from `film_GroundWire_both.mp4` (every frame to 0.7 s, then every fifth), `film_Combo.mp4` and `film_Work.mp4`. Research can't play a film, so the frames stand in for full speed.
+- **Felt:** a quiet wall that answers with his spear. Each Combo hit leaves a new outline (the bar across, the rising diagonal, the drive), and Ground Wire lifts the spear high in both hands and drives it home in a fifth of a second.
+- **Tier:** competent, no obvious issue.
+- **The one bold thing:** the planted spear, blade and discs above his head through Ground Wire's 1.7 s hold.
+- **The pick: butt-down.** Blade-down's flip spends 0.20 to 0.27 s pointed at the camera, nearly gone, and reads only at 0.30 to 0.37 s. From 0.40 s its blade and discs sit low behind him, so the plant's point and the light's source are hidden, and the hold shows a bare shaft. The hold is what the player watches, so the blocking read's case for blade-down doesn't survive the player's camera. Butt-down's lift is its own anticipation.
+- **No fixes.** The Combo carries the blocking read's two asks, and Work's post brings the palm before his shoulder. The Signature words stay "plants his weapon" (25c8c6f). Faber's markers are the butt-down ones, Plant 25 and Release 124.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

@@ -44,6 +44,11 @@ local function tune(first: any, second: any, third: any): any
 	return value
 end
 
+-- A tune from server code, as the Tune command makes it (Studio only): every side takes it, and Changed fires.
+function TuneService.Set(path: string, value: any): any
+	return tune(path, value)
+end
+
 function TuneService.Init()
 	if not RunService:IsStudio() then
 		return

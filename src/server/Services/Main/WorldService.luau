@@ -32,6 +32,7 @@ local WorldConfig = require(Shared.Config.World)
 local LightingConfig = require(Shared.Config.Lighting)
 local Kit = require(Shared.World.Kit)
 local Night = require(Shared.Rules.Night)
+local BaseFit = require(Shared.Rules.BaseFit)
 local Net = require(Shared.Net)
 local Markers = require(Shared.World.Markers)
 local Log = require(Shared.Util.Log)
@@ -186,6 +187,10 @@ end
 
 -- Why the base's kit can't be laid on the plots: none when it can.
 local function baseProblems(): { string }
+	local plots = WorldConfig.Plots
+	if plots.Across ~= plots.Drawn or plots.Deep ~= plots.Drawn then
+		return { `the plots are {plots.Across * WorldConfig.Walk} studs and the plan is drawn for {plots.Drawn * WorldConfig.Walk}: part 7's grey trial` }
+	end
 	local template = kitTemplate(BASE)
 	if template == nil then
 		return { `the base's template isn't built (ServerStorage.Templates.{BASE}Kit: tools/studio/KitAssembly)` }
@@ -472,6 +477,15 @@ local function stand(part: BasePart, shown: boolean)
 end
 WorldService.Stand = stand
 
+-- Part 7's trial (Config.World.Fit): a square plot of another size than the plan's stands on Fit's layout for its size;
+-- nil at the plan's own, or a size Fit has no layout for (the plan's then stands as it is).
+local function trialLayout(across: number, deep: number): BaseFit.Layout?
+	if deep ~= across or across == WorldConfig.Plots.Drawn * WorldConfig.Walk then
+		return nil
+	end
+	return (WorldConfig.Fit.Layouts :: any)[tostring(across)]
+end
+
 -- One plot, `at` its centre on its floor, looking out of its front onto the Strip: its lot, laid with the world, and the
 -- builder of its base, raised when a player owns the plot and cleared when they leave, so a server stands only its
 -- players' bases (the director, 2026-11-15). The base is built whole before it's parented: it reaches clients at once.
@@ -501,7 +515,8 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		base.Name = "Base"
 		base.WorldPivot = at
 		local manifest, plan = kitFiles(BASE)
-		local layout = plan.layout
+		local trial = trialLayout(across, deep)
+		local layout = trial or plan.layout
 		-- A place of the layout in the plot's frame, on its floor: across, then studs in from the front edge.
 		local function place(spot: { across: number, inward: number }, turn: number?): CFrame
 			return at * CFrame.new(spot.across, 0, front + spot.inward) * CFrame.Angles(0, math.rad(turn or 0), 0)
@@ -687,6 +702,18 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		spawn.Neutral = true
 		spawn.Parent = base
 		Markers.Stamp(spawn, "Spawn", { Plot = number })
+		-- In part 7's trial, each machine's real footprint stands as a pale volume round its grey box, so the space
+		-- between them reads as it will with the kit: walked through, never solid.
+		if trial then
+			local fit = model(base, "Fit", at)
+			for _, box in BaseFit.Boxes(trial, WorldConfig.Fit.Prints :: any) do
+				local size = Vector3.new(box.X1 - box.X0, box.High, box.Z1 - box.Z0)
+				local middle = CFrame.new((box.X0 + box.X1) / 2, box.High / 2, front + (box.Z0 + box.Z1) / 2)
+				local part = block(fit, box.Name, size, at * middle, GREY.Chamber)
+				part.Transparency = 0.6
+				part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = false, false, false, false
+			end
+		end
 		if look then
 			dressPlot(base, number, at, front)
 		end
@@ -1021,6 +1048,30 @@ function WorldService.Init()
 	end
 	DebugService.Register("WorldReport", function(): { string }
 		return Markers.Report(WorldConfig.Plots.Count, owned())
+	end)
+	-- Part 7's trial (Config.World.Fit): ("BaseSize", nil, 144) lays the plots grey at that size, Fit.Between apart, on
+	-- Fit's layout; ("BaseSize") puts today's back. Either way it answers Rules.BaseFit's line for today's and each size.
+	local today = { Across = WorldConfig.Plots.Across, Deep = WorldConfig.Plots.Deep, Between = WorldConfig.Plots.Between }
+	DebugService.Register("BaseSize", function(_who: any, size: any): { string }
+		local walk = WorldConfig.Walk
+		local fit = WorldConfig.Fit
+		local cells = if type(size) == "number" then size / walk else nil
+		TuneService.Set("World.Plots.Across", cells or today.Across)
+		TuneService.Set("World.Plots.Deep", cells or today.Deep)
+		TuneService.Set("World.Plots.Between", if cells then fit.Between else today.Between)
+		local _, plan = kitFiles(BASE)
+		local kept = WorldConfig.Plots.Kept * walk
+		local lines = {
+			BaseFit.Line(BaseFit.Measure(plan.layout, today.Across * walk, fit :: any, { Walk = walk, Between = today.Between * walk, Kept = kept }), fit :: any) .. " (today's, AR16)",
+		}
+		for _, each in fit.Sizes do
+			local studs = each * walk
+			local layout = (fit.Layouts :: any)[tostring(studs)]
+			if layout then
+				table.insert(lines, BaseFit.Line(BaseFit.Measure(layout, studs, fit :: any, { Walk = walk, Between = fit.Between * walk, Kept = kept }), fit :: any))
+			end
+		end
+		return lines
 	end)
 	-- The dressing against its plan: every piece laid as often as the plan has it, each with its look, the plan's lights,
 	-- and the grey look under it hidden; then each plot against its base level's plan (AR14), its lights and its level's

@@ -7137,6 +7137,35 @@ Installed from fcff1e7, Modulo's final delivery for one install.
   - Visually reviewed: my takes from the spawn, the court's back, above, the Training pad, the sleeping bay, the Door up close, and the Tower over the generator from the gate's left (`build/captures/ar16/`). Research's verdict waits.
   - Director-accepted: no.
 
+### Part 7's three sizes in grey (Faber, 2026-11-16, 17:58 to 18:10, by the PC's clock)
+
+Research's order (e): `docs/research/rework-2026-11-16.md`, part 7, "Three sizes, tried in grey before anything is drawn".
+- **The trial:** `NL_Debug:Invoke("BaseSize", nil, 128 | 144 | 160)` lays the plots grey at that size, 32 studs apart. `("BaseSize")` puts today's back.
+  - Each size stands on its own layout (`Config.World.Fit.Layouts`), with each machine's real footprint as a pale volume round its grey box, walked through.
+  - The footprints (`Fit.Prints`) were measured from the laid kit at 200, so the machines keep their size at every size: the generator 25 × 29, the Breaker 25 × 7, the bays 10 × 11.
+  - Away from the plan's own 200, the plots stand grey (DressReport says why). `Config.World.Plots.Drawn` names the size the plan is drawn for.
+- **The layouts:** the builder's grey re-lay, AR16's star kept: the generator at the heart, the Breaker and the Door on the slants toward the gate, the bays at the bus's ends, the battery and the Training machine behind, the three sleeping places at the back. A search found the nearest to AR16 scaled to each size that passes every test. Scaling AR16 alone passes none: the Breaker comes within 3 to 8 studs of the generator. Modulo re-lays the chosen size for real.
+- **Part 7's tests** (`Rules.BaseFit`): the Breaker from the gate, the least gap between footprints, the way in clear, everything inside, and the widest corner against a 16:9 phone's half-view of 51°.
+
+  | Size | Breaker | Least gap | Widest | A row of four |
+  |---|---|---|---|---|
+  | 200, AR16 today | 2.9 s | 9.7, generator and Training: **fails** | 48° | 944 |
+  | 128 | 1.2 s | 12.1, bay 1 and the Door | 51°, at the edge | 608 |
+  | 144 | 1.5 s | 12.2, bay 1 and Training | 47° | 672 |
+  | 160 | 1.9 s | 12.2, bay 1 and Training | 47° | 736 |
+
+  All three pass. They differ in the look and the walking, which only the player's camera judges.
+  - Part 7 holds 12 studs to a machine's front; the grey boxes have no front, so every side is held to it.
+  - Today's base fails it by 2.3 studs, the generator's back corner against Training's pad.
+- **For the re-lay** (Modulo, once the size is picked): the plan's FloodMast at (−13.6, 50 in) stands in the Door's line of sight (TR24's fix 10). The re-lay moves it off that line.
+- **Four facts:**
+  - **Implemented:** as above.
+  - **Tested:**
+    - Type check 0 new. Logic 10,178/0 offline, with two new BaseFit cases: the measures on made boxes, and each trial layout passing every test with all 14 machines.
+    - In Studio, each size laid with WorldReport empty and 14 volumes per plot, with no errors. Today's came back with WorldReport and DressReport empty.
+  - **NOT VERIFIED:** the look. The PC is on its lock screen (Studio draws 0 frames a second), so the captures from the player's camera at each size, at the gate, from the spawn and on a phone, wait. They're what the pick rests on.
+  - **Visually reviewed:** no. **Director-accepted:** no.
+
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
 Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.

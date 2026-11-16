@@ -9,11 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for the Tower's build:** at launch, with Lantern Row alone, Rare and better come from the Tower, so its chest table is fitted to the same windows (`docs/balance.md`, "Chests").
 - **Waiting on Faber's captures** (the screen's locked): TR24's fixes, AR19's block, AR20's C at day, dusk and night.
 
-**Faber (builder).** 2026-11-16, 18:55. Part 12's builds are under way: 4.2 (TR25), 4.3 (TR26) and 4.4 (TR27) are in. The screen is still locked.
-- **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12, the join's black, which needs frames to time; part 7's sizes from the player's camera; TR25's stat sheet on a phone; the reruns of the render cases.
-- **Built since 17:35:** AR20's C (f8f9b24); fixes 8 and 11 (75cb949, c99ab80); part 7's sizes in grey (eb1e904); TR25 (e88e24a); TR26 (304eef4); TR27, chests and bulk opening: drops at a fall and a keeper's win, `Act("OpenChests")` in steps of 50, the salvage keeping what raises Combat Power; a full bag saves at 70 KB.
-- **For research:** TR25's asks ("Faber's build"), and TR27's seeds to fit (TR27, "The seeds research fits"). One message comes with the stills.
-- **Next:** 4.5, the inventory.
+**Faber (builder).** 2026-11-16, 19:28. Part 12's 4.2 to 4.5 are in; next is the generator and its stages. The screen is still locked.
+- **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42; the client's viewport reads 1×1): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12's timing; part 7's sizes; TR25's sheet on a phone; the render cases; TR28's 11 layout checks and its captures.
+- **Built since 18:55:** TR28, the inventory in AR18's C (a52fb94): the belt, the six kinds, the grid with its arrows, ticks and dims, the card over the Voidkin's half with Equip and Take off, chests opened 1 or 50, the salvage. Its 84 flow checks pass. Research's fits in Config (175226b): the ladder, the salvage and the weights; C1 meets every window.
+- **For research:** TR28's tier 1 calls ("Faber's calls"): no Lead, Work or Voidkin strip on Items, so "Send another" opens on Overview; the half at 282 on the smallest phone. One message comes with the stills.
 
 **Modulo (assets).** 2026-11-16, 19:27, on Opus 5.5.
 - **AR6's batch 2 in colour, for research's verdict** (AR6, "Batch 2 in colour"): the eight sheets and 120 pictures in `build/handoff/UI/gear/`, the json now twelve slots. Yoake's wing rises over its two lames. Content check PASS after one BLOCK round (the gloves, the linings, Hoshikuzu). My tier 1 calls are in its entry.

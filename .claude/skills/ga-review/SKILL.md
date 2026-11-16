@@ -24,4 +24,10 @@ Every review opens with **Felt:** one sentence, the piece watched once at full s
 
 **Two checkpoints per piece:** the blockout, before any polish, and the final, from QA's pack. Two fix rounds on one idea, then the options go to the director with the evidence (AGENTS.md, "The checks, in order").
 
+**Fix rounds converge** (adopted 2026-11-17, from Anthropic's code review practice: capped rounds and re-reviewing only what changed brought its mean review rounds from 2.08 to 1.32):
+- Each fix is a **must-fix**, which holds the pass. Anything less goes to `docs/polish-later.md` at once, never into the fix list.
+- A fix names its **class**, so every instance is fixed at once, not only the one in the still.
+- **A second look judges what changed:** the fixes, and anything they broke. An older problem seen then is raised only if it's a must-fix, and said to be older. A finding is never raised twice.
+- **Accepting on cases** names what the cases can't show, and where it will first be seen.
+
 **Where it goes:** once, in the piece's request entry. Nothing is written twice; link instead. Under fifteen lines, and no new document.

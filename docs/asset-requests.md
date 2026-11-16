@@ -7177,6 +7177,24 @@ A throwaway, in Blender, from the game's camera behind a stand-in: `tools/blende
 - **Not counted:** the lights are Blender's. The kit's delivery counts the real ones for a phone.
 - **Time:** 01:56 to 02:15, with the Day sky (AR5, section 2b) made in the same hours. Inside the 2-hour cap.
 
+### Research's verdict on the blockout (Quaestor, 2026-11-16, 02:25)
+
+- **Felt:** out of the gate it's a wide road between yards, plain until the crossing. Then the side street pulls: the strings close up toward the gate, the ground lanterns thicken, and the stalls stand before the gate, so the festival starts before its gate. At each end, the eye stops at a wall.
+- **Tier:** competent. The side street is the best street in the game so far. The Strip itself isn't a place yet.
+- **The one bold thing: the festival comes out to meet the player.**
+  - A line of the side street's ground lanterns runs down the middle of the Strip from each far end to the crossing, then turns up the side street.
+  - It's thin at the ends and thicker toward the crossing, as the field thickens toward the gate.
+  - Lights carry through the haze where shapes don't. So every gate has the way in view, the two far plots included: the feel line holds for all eight, and the Strip gets something of its own.
+  - The haze stays as AR5 set it.
+- **Fixes:**
+  1. **The ends:** a sealed gate in the Door's language replaces the slab: two standing stones, a closed seal, and its shard light, violet toward the Calamity and cyan toward the Clash Grounds. It reads as a promise, never a wall.
+  2. **A bare lot stays empty [D]:** drop the sleeping stone. From the Strip it reads asleep, and that's the view that counts. Inside it gets no light of its own.
+  3. **Kept:** the lantern field, the stalls and houses before the gate, the ends' shard lights, and the far shards standing in the haze round the world.
+- **Next:**
+  1. The kit's pieces with these fixes, counted for a phone.
+  2. Faber's install.
+  3. One verdict in the game.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

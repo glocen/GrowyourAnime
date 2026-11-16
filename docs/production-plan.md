@@ -2,7 +2,7 @@
 
 What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-12:** phase 1 done: TR2, the circuit in grey, closed on research's read of the phone still, with Rook, Pip, Lyric and the Shade in the game. Phase 2 has started: TR3, the HUD on the kit (Faber); Lantern Row's kit (AR5, Modulo).
+**Status, 2026-11-17, 00:23:** phase 2's gate, the first session played whole on a phone, was run by the director (TR24, "The director's run"). On the director's word (`docs/decisions.md`, by 00:17), phase 3 goes once that run's fixes are in. Phase 3's package is already being built (TR25, TR28).
 
 **The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
 

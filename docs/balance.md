@@ -59,7 +59,7 @@ The Battle Attributes, which every fight reads:
 | Elemental Attack | points | a second hit of the Voidkin's element, past Defence |
 | Elemental Resist | rating | lowers elemental damage taken |
 | Critical Damage | percent | the extra a critical adds, from a base of +50%, every source adding to it. No ceiling: over the updates it can reach 20,000% [D, 2026-11-15, night] |
-| Critical Guard | percent | taken off an attacker's Critical Damage |
+| Critical Immunity | percent | taken off an attacker's Critical Damage |
 | Lifesteal | percent | heals for a share of damage dealt |
 | Damage Bonus, Damage Reduction | percent | from signatures, passives and effects only, never from gear |
 
@@ -89,7 +89,7 @@ Done by the server, once per attack, by one function (`docs/engineering-plan.md`
 1. **Hit or dodged.**
 2. **Physical:** `Attack x the move's coefficient x (1 - mitigation)`. Mitigation comes from Defence, after Penetration, with a ceiling.
 3. **The attacker's bonus bucket,** a sum: Damage Bonus from effects and the type advantage. One ceiling.
-   - **A critical** multiplies on its own, outside the bucket: `x (1 + Critical Damage - the target's Critical Guard)`, never under x1, with no ceiling [D, 2026-11-15, night]. Each update that raises Critical Damage raises the foes' health and Critical Guard on the same curve ("The one rule").
+   - **A critical** multiplies on its own, outside the bucket: `x (1 + Critical Damage - the target's Critical Immunity)`, never under x1, with no ceiling [D, 2026-11-15, night]. Each update that raises Critical Damage raises the foes' health and Critical Immunity on the same curve ("The one rule").
 4. **The defender's reduction bucket,** a sum: Damage Reduction from effects, the type disadvantage, and on a block, the block's share. One ceiling.
 5. `final = physical x (1 + bonus) x critical x (1 - reduction)`, the critical x1 on a hit that isn't one.
 6. **Elemental,** if the attacker has it: `Elemental Attack x coefficient x (1 - resist)`, through the same two buckets but never critical. Shown as the second, coloured number.

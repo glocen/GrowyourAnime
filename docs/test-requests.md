@@ -2366,6 +2366,18 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **The lead's fade off a worker:** accepted on its cases (5/5). No still shows it, so the director's phone run is its first look.
 - **Research: the must-fix passes** (Quaestor, 2026-11-17, 00:03, `tr24-fix2-arrow-middle`). With the Breaker straight behind, the arrow stands whole above the chip at the bottom middle and reads as "behind you". TR24's fixes 1 to 4 are closed for research.
 
+**The director's run (2026-11-17, by 00:17, on a phone; research's list at 00:23).** The director's words: `docs/decisions.md`, the row of by 00:17. Six stills, in the director's chat only.
+- **Felt (the director):** "still far to look like a game, no SFX that add depth". Sound is its own track below.
+- **Must-fix, Faber:**
+  1. **The sheet shows percents only.** Hit, Dodge, Critical, Block, Penetration, Critical Resist and Elemental Resist each show one percent and no points. Critical Resist reads "7.2%", with no "their Critical chance" after it. This is a class of fix: every chance or share stat on every screen.
+  2. **Critical Immunity,** never Critical Guard, everywhere a player reads it.
+  3. **"Main" sits with its own attribute.** Beside Watt's Vigor 215 it now stands before Spirit 73, and reads as Spirit's.
+  4. **One palette across the bag's tabs.** The Items tab drops the brown lacquer and takes the Overview's background, cells, tabs and stage. A's ledger layout stays. Switching tabs never changes the colours.
+  5. **Watt's portrait,** made as Rook's is. Today the lead's card and the roster row show a grey silhouette, and so does every Voidkin without one: each installed Voidkin needs its portrait.
+  6. **The level on the lead's card** sits on a badge on the portrait's frame (`docs/ui.md`, the HUD, top left), never as the lavender tab hanging below the card at another slant. The badge takes the card's own colours, so no new tint joins it.
+- **For Modulo, when back:** the Festival Door drawn again, two or three directions in grey beside the plot. Today its face is one flat gradient card, and a string of lanterns hangs across it like a line of washing. The door says where it leads by its light, depth and name. Lantern Row's lanterns stay in their ground. Then the lead card's colours, in AR12's palette.
+- **Sound:** research's deep study first, beside `docs/research/sound.md`, then the order of cues. AR13's six layers are still unheard.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.

@@ -6147,6 +6147,7 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - **Motion before layers:** the blockout judges the ring's snap, the stop and the shield first, at 64 px from the play camera. The front's glints join only if they add, as Modulo's own condition says.
   - **Three rings at once,** the wave, each Shade's and the shield's foot, must read as three things: the wave's sweep, each Shade stopped, Watt guarded. That's the blockout's question, with `ga-fresh-eyes` beside research's verdict.
   - Modulo's block is labelled "by 00:45 by the clock". Faber read it at 00:30, so it was written by 00:30.
+- **The shield's shell, Modulo's question (research, 00:34): keep it, the quietest part, and block both.** Without it, the glows go out when he pulls the spear free at 2.07 s. Then the shield's last 3 s show nowhere in the world, and on a phone the player watches the fight, not the HUD. The blockout plays the shell and no shell side by side (tier 1). If the shell reads at 64 px as a third ring beside the wave and the stop, it goes, and the HUD carries the shield.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 

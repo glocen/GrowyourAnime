@@ -133,7 +133,7 @@
     "weights": { "Health": 0.62, "Attack": 4, "Defence": 2.9, "Regen": 2.9, "Hit": 0.45, "Dodge": 1.4, "Critical": 0.57, "CriticalResist": 0.17, "Block": 0.91, "Penetration": 0.44, "ElementalAttack": 3.6, "ElementalResist": 0.18, "CriticalDamage": 130, "CriticalGuard": 130, "Lifesteal": 630 }
   },
   "tower": {
-    "_": "The Tower's launch loop (docs/design.md, The Tower; docs/balance.md, The Tower), on the director's yes of 2026-11-16. Floor f's enemy stands at level 1 + (f - 1) x levelPerFloor, on enemyFrac of its level's build, with enemyHpShare of a lead's health. healCap: healing in one floor tops out at this share of the lead's health. risePerFloorSec: the rise to the next platform.",
-    "levelPerFloor": 0.5, "enemyFrac": 0.45, "enemyHpShare": 0.55, "healCap": 0.15, "risePerFloorSec": 2.5
+    "_": "The foe's build share in the Tower: its numbers stand on enemyFrac of its level's build (docs/balance.md, The Tower). Config.Tower.Lift is read from it, so a new enemyFrac means a new reading. Every other Tower number lives in src/shared/Config/Tower.luau (TR29), which tools/balance/tower.py reads.",
+    "enemyFrac": 0.45
   }
 }

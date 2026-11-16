@@ -2592,6 +2592,22 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
 - **The rival has no passive** (`passiveOf` is the lead's side only).
 - **The heal cap is a guard today.** Lifesteal isn't wired (`docs/balance.md`).
 
+**Research's fit and feel line (Quaestor, 2026-11-16, 20:34).** `tools/balance/tower.py` now reads Config.Tower, with fast floors in (T4 to T6); the results are in `docs/balance.md`, "The Tower".
+- **Feel line:** the player and their lead climb a column of light, the easy floors snapping past a beat each and the hard ones real fights with health as the clock, until the fall drops it all away as light and the results land on the floor reached and the record beaten.
+- **Today's seeds overpay** (T4): the Tower's Credits an hour come to 2 to 36 times Lantern Row's, and its chests to 18 to 893 an hour, against the grounds' 43.
+- **For Config:**
+  - **Only hard floors pay:** a fast floor gives no Credits and no chest. It's the free ride to where it gets hard.
+  - `Credits = { Share = 0.34, Record = 2 }`: half Lantern Row's Credits an hour at levels 10 to 15. The Tower pays the gear; the grounds pay the Credits and experience.
+  - `Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5 }`, the chance by the floor's number: about 15 chests an hour of runs at level 10, and 18 at 15.
+  - **The chest is the Tower's own:** one row in `Config.Chests`, in place of `Tier`, with Common 60, Uncommon 36.32, Rare 2.86, Epic 0.57 and Legendary 0.24. Lantern Row's foes would read only row 2, Uncommon at best.
+  - **The windows:** it meets them (Rare 3.5 h, Epic 12.5, Legendary 39.9) if a player spends half their play after the first hour in the Tower, which is a guess. A quarter gives 6.0, 24.1 and 78.8 h.
+- **Kept:**
+  - Fast floors at 10 levels and 0.8 s: 12 s at level 15. Past level 25 the stretch passes 30 s; that's for the refit when the grounds open.
+  - Lyric in the pool: a Rare foe moves a run by a floor at most (T3).
+  - The heal cap.
+- **The run's length:** about a minute at launch, nearly all of it hard floors. It's judged at the first capture.
+- **Refit when Drum Court opens:** past launch, the Tower's Credits fall to 7% to 26% of a ground's at the lead's level.
+
 ## TR30. The generator's stages (Faber, on AR19)
 
 Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/design.md`, "The base", "Three stages for every machine"), on the director's yes of 2026-11-16, 16:50. Research's answer is (a): the generator takes the stage of a machine at the base's ceiling. Modulo's pieces and swap table are AR19, "Stages II and III as kit pieces" (e516da7).

@@ -124,22 +124,29 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 
 ## The Tower
 
-[D, 2026-11-16: the package's point 4.] One Voidkin climbs, its health carried from floor to floor (`docs/design.md`, "The Tower"). The seeds: `tools/balance/seeds.json`, "tower", until the build gives them a Config. The model: `py tools/balance/tower.py`.
+[D, 2026-11-16: the package's point 4.] One Voidkin climbs, its health carried from floor to floor (`docs/design.md`, "The Tower"). The numbers: `src/shared/Config/Tower.luau` (TR29). The foe's build share stays in `tools/balance/seeds.json`, "tower". The model: `py tools/balance/tower.py`.
 
-**SIMULATED** (median of 60 runs, 2026-11-16): floors won by one run.
+**SIMULATED** (median of 60 runs, 2026-11-16, fast floors in): floors won by one run, a Warrior. The five classes end within 2 floors of each other.
 
-| Level | A weak build (0.4) | On budget (0.7) | A full build (1.0) | Minutes on budget |
-|---|---|---|---|---|
-| 5 | 3 | 5 | 7 | 0.3 |
-| 15 | 17 | 20 | 24 | 1.1 |
-| 30 | 40 | 50 | 58 | 2.5 |
-| 45 | 57 | 69 | 78 | 3.3 |
-| 60 | 75 | 90 | 101 | 4.3 |
+| Level | A weak build (0.4) | On budget (0.7) | A full build (1.0) | Minutes on budget | Fast floors |
+|---|---|---|---|---|---|
+| 5 | 3 | 5 | 7 | 0.3 | 0 |
+| 10 | 12 | 17 | 20 | 0.9 | 0 |
+| 15 | 18 | 21 | 24 | 0.9 | 9 |
+| 30 | 45 | 53 | 59 | 1.7 | 39 |
+| 45 | 73 | 78 | 82 | 2.0 | 69 |
+| 60 | 101 | 104 | 109 | 2.5 | 99 |
 
-- **Power shows as floors:** at level 30 a full build climbs 18 floors past a weak one, and the five classes end within 3 floors of each other.
-- **The heal cap** changes nothing today (the floors are the same from 10% up). It's the guard for when Lifesteal is wired and heals grow.
-- **Not known:** how long a run should last to feel good. The seeds lengthen the hard end, not the easy start. Judged in play.
-- **Against the grounds:** the Tower's reward rate is checked in the earning model, so neither becomes the only place worth playing.
+- **Power shows as floors:** at level 30 a full build climbs 14 floors past a weak one.
+- **A run at launch** (levels 10 to 15) lasts about a minute, nearly all of it hard floors. Whether that length feels good is judged in play.
+- **Fast floors** take 12 s at level 15. Past level 25 the stretch passes 30 s (51 s at 30, 129 s at 60), against the design's "takes seconds", and at 60 only 5 hard floors follow it. It isn't a launch problem; it's refit when the grounds above Lantern Row open.
+- **The heal cap** changes nothing today (the floors are the same from 10% up). It's the guard for when Lifesteal is wired.
+- **The pool:** a Rare foe (Lyric) in one floor of four moves a run by a floor at most.
+- **The rewards** (research's fit, TR29), with only hard floors paying:
+  - **Credits:** half Lantern Row's an hour at levels 10 to 15, and a third at level 5. The Tower pays the gear; the grounds pay the Credits and experience, so neither is the only place worth playing.
+  - **Chests:** about 15 an hour of runs at level 10 and 18 at 15. The chest has its own rarity row (`Config.Chests`), since Lantern Row's foes would read only row 2.
+  - **The windows at launch,** if the Tower takes half of play after the first hour (a guess): Rare 3.5 h, Epic 12.5 h, Legendary 39.9 h. A quarter gives 6.0, 24.1 and 78.8 h; all of play in the Tower gives 2.3, 6.8 and 20.5 h.
+  - **Past launch,** the Tower's Credits fall to 7% to 26% of a ground's at the lead's level, and its chests stay at 20 to 40 an hour. Its rewards are refit when Drum Court opens.
 
 ## Chests
 
@@ -149,7 +156,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **SIMULATED** on the fit, a player alone on budget (the median first; 10% to 90% of players): Uncommon 0.3 h; Rare 3.5 h (1.5 to 6.2); Epic 12.5 h (10.3 to 16.4); Legendary 39.8 h (35.7 to 47.4). Eight players on a server are slower by up to 1.3 h, since they share the elite.
 - **About 43 chests an hour,** 18 of them from elites, about 2,450 over the climb to level 60: bulk opening and auto-salvage are what make that many pleasant.
 - **Salvage** pays at most 10% of a kill's Credits on Lantern Row and 16% on Mirror Pavilion, so fighting stays the income and the base's prices hold.
-- **At launch,** with Lantern Row alone, its rows give Common and Uncommon, and a Rare only at the keeper's first win. Rare and better come from the Tower, whose table is fitted with its build to the same windows.
+- **At launch,** with Lantern Row alone, its rows give Common and Uncommon, and a Rare only at the keeper's first win. Rare and better come from the Tower, whose own chest row is fitted to the same windows ("The Tower").
 
 ## What the simulation showed (2026-11-11)
 

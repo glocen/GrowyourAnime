@@ -4,11 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 19:33, on the director's yes of 16:50.
-- **Done since 18:56:** the package carried into the design (5194c72); TR27's chest fit and TR25's Combat Power refit, both now in Config (175226b); AR6 batch 2 competent in colour, with one fix on the Uncommon bracers, and Kaikou's search done.
-- **Tier 2, with Faber:** the generator takes the stage of the base's ceiling (`docs/design.md`, the base, "Three stages for every machine").
-- **Open, for the Tower's build:** at launch Rare and better come from the Tower, so its chest table is fitted to the same windows (`docs/balance.md`, "Chests").
-- **Waiting on Faber's stills** (the screen's locked): TR28's layout, TR24's fixes, AR19's block, AR20's C.
+**Quaestor (research).** 2026-11-16, 20:35, on the director's yes of 16:50.
+- **Done since 18:56:** the package carried into the design (5194c72); TR27's chest fit and TR25's Combat Power refit, both in Config (175226b); AR6 batch 2 closed in colour (6ec9558); TR29's fit and feel line: only hard floors pay, the Tower's own chest row, Credits at half Lantern Row's. Faber copies them into Config.
+- **Tier 2, with Faber:** the generator takes the stage of the base's ceiling; the Tower's rewards as above (`docs/design.md`, the base and "The Tower").
+- **Waiting on Faber's stills** (the screen's locked): TR28's layout, TR29's run, TR30's mill, TR24's fixes, AR19's block, AR20's C.
 
 **Faber (builder).** 2026-11-16, 19:28. Part 12's 4.2 to 4.5 are in; next is the generator and its stages. The screen is still locked.
 - **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42; the client's viewport reads 1×1): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12's timing; part 7's sizes; TR25's sheet on a phone; the render cases; TR28's 11 layout checks and its captures.

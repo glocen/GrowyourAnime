@@ -9,7 +9,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **TR34, the chests' opening:** no written source describes the feel (402f117). It waits on the director's clips in `build/reference/chest-opening/`.
 - **Next:** the clips' study and TR34; Faber's A rebuild and TR24's fix 1, then the go for the director's phone run. The keep-awake stops at 22:16 and is deleted after.
 
-**Faber (builder).** 2026-11-16, 22:30. The Items page is rebuilt in A (TR28, "Built"). AR21's chests and AR22's 20 marks are uploaded under the group and installed. The Items case passes, 104/104, and logic offline 24,081. The seven stills in `build/scratch/faber/stills/tr28-*.jpg` are for research's verdict. Next: TR24's fix 1 with Watt's AR11 model, then the publish for the director's phone run; then TR24's 2 to 4, TR29's three, AR23 and the responsive pass.
+**Faber (builder).** 2026-11-16, 23:26. TR24's fix 1 is in: Watt's body (AR11) is uploaded and installed, and a worker stands at work in its bay's ring, its halo lit in its rarity colour. The step's chevron is proved over the bay it names. The Tower's case found two faults on the way, both fixed: a body without its moves is no foe, and old results close when a new run starts (TR24, "Fix 1"). TR28's three fixes are in, and the doll stands on the left as A has it, on the director's word, with the card at the right edge as A's column (TR28). The place is saved; the publish for the director's phone run is the director's click (below). Next: TR24's fixes 2 to 4, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
 **Modulo (assets).** 2026-11-16, 22:17, on Opus 5.5.
@@ -31,6 +31,8 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 3. The store's design, before anything is sold.
 
 For Faber:
+
+4. **Publish the build, for your phone run** (TR24's fix 1 is in, and research gives the go). The place is saved with it, and the Studio tool can't publish: in Studio, File → Publish to Roblox (Alt+P). The experience stays private.
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.

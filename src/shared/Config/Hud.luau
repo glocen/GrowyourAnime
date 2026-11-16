@@ -443,6 +443,21 @@ return {
 		Mark = 14, -- a cell's corner seat: the up arrow, the worn tick
 		Card = { Corner = 4, Pad = 10, Cell = 56, Close = 14, Title = 16 }, -- the close's X drawn this size in a touch
 		Salvage = { "", "Common", "Uncommon", "Rare", "Epic" }, -- the salvage control's steps, in order: "" is off
+		-- The figure on A's lacquer, no panel (research's fix 1 to the rebuild, 22:37; A's sheet, `a_doll`): a warm glow round
+		-- its middle, Middle of its height over its soles, full to Inner of its height and gone by Outer, Wide as wide as tall,
+		-- in Rings steps whose sum is Alpha at its heart, scaled down as one to fit the stage's width; under its soles its own
+		-- disc in BrassDim at Fill, Floor.Wide of its height across (Figure.Lacquer): A's quarter hides behind the feet from
+		-- the stage's near-level camera, so half, a brass line past the shoes.
+		Stage = {
+			Glow = Color3.fromHex("#3A2B1C"),
+			Alpha = 0.55,
+			Rings = 5,
+			Middle = 0.45,
+			Inner = 0.24,
+			Outer = 0.5,
+			Wide = 1.11,
+			Floor = { Wide = 0.5, Fill = 0.5 },
+		},
 		-- LACQUER (A's palette, Modulo's tools/blender/inventory_directions.py): warm black, brass hairlines, bone words.
 		Palette = {
 			Top = Color3.fromHex("#1C1713"), -- the room, top to foot

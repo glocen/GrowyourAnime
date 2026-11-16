@@ -445,8 +445,28 @@ function VoidkinCases.Cases(given: Given): { any }
 							t.Check(`Overview: its {stat}, resolved`, right ~= nil and (right :: TextLabel).Text == Hud.Digits((block :: any)[stat]), if right then (right :: TextLabel).Text else "none")
 						end
 						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed", true) ~= nil)
+						-- Off the Items page, the stage's own: no warm glow, the disc its own look again (TR28's fix 1).
+						local shown = VoidkinScreen.Find("Figure")
+						local stage = if shown and shown:IsA("ViewportFrame") then shown.Parent else nil
+						local warm = if stage then stage:FindFirstChild("Warm") else nil
+						local disc = if shown then shown:FindFirstChild("Floor", true) else nil
+						t.Check("Overview: the stage its own, no warm glow, the disc not the lacquer's", stage ~= nil and (warm == nil or not (warm :: Frame).Visible) and disc ~= nil and disc:IsA("BasePart") and disc.Color ~= HudConfig.Bag.Palette.BrassDim)
 					elseif name == "Bag" then
 						t.Check("Bag: A's lacquer, its doll, its strip and the card's room", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Doll") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
+						-- TR28's fix 1: the figure on A's lacquer, no panel: its glow round and inside the stage, its disc A's brass floor.
+						local shown = VoidkinScreen.Find("Figure")
+						local stage = if shown and shown:IsA("ViewportFrame") then shown.Parent else nil
+						local warm = if stage then stage:FindFirstChild("Warm") else nil
+						local disc = if shown then shown:FindFirstChild("Floor", true) else nil
+						local round, rings = true, 0
+						for _, glow in (if warm then warm:GetChildren() else {}) :: { Instance } do
+							if glow:IsA("Frame") and stage and stage:IsA("Frame") then
+								rings += 1
+								round = round and math.abs(glow.AbsoluteSize.X - glow.AbsoluteSize.Y * HudConfig.Bag.Stage.Wide) <= 1 and glow.AbsoluteSize.X <= stage.AbsoluteSize.X + 1
+							end
+						end
+						t.Check("Bag: the figure on the lacquer, no panel, its glow round and inside the stage", stage ~= nil and stage:IsA("Frame") and stage.BackgroundTransparency == 1 and warm ~= nil and (warm :: Frame).Visible and rings == HudConfig.Bag.Stage.Rings and round)
+						t.Check("Bag: its disc A's brass floor", disc ~= nil and disc:IsA("BasePart") and disc.Color == HudConfig.Bag.Palette.BrassDim and math.abs(disc.Transparency - (1 - HudConfig.Bag.Stage.Floor.Fill)) < 1e-3)
 						-- The rail words only the chosen page (and Soon's): chosen, the bag's page reads Items (the director, 2026-11-15).
 						local pages = VoidkinScreen.Find("Rail")
 						local bagPage = pages and pages:FindFirstChild("Bag", true)

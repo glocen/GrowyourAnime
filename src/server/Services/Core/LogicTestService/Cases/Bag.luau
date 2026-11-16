@@ -21,6 +21,9 @@ local Regalia = require(Shared.Rules.Regalia)
 local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Bag = require(Shared.Rules.Bag)
+local Growth = require(Shared.Rules.Growth)
+local StatsConfig = require(Shared.Config.Stats)
+local GrowthConfig = require(Shared.Config.Growth)
 
 local NOW = 1_800_000_000
 
@@ -233,6 +236,36 @@ return {
 			t.Equal("no such item: no card", Bag.Card(data, warrior, "k9999"), nil)
 			local short = Bag.Card(data, warrior, ids.short) :: Bag.Card
 			t.Check("the Warrior's off hand, empty: a gain, replacing nothing", short.Fits and short.Slot == "Off Hand" and short.Replaces == nil and short.Power > 0)
+		end,
+	},
+	{
+		-- Research's fix 2 to the rebuild in A (TR28, 22:37): the Bracers' +465 over Health +75 alone. It was right: a card
+		-- shows every stat behind its number, and Health +75 is worth 0.62 × 75 × 10.
+		Name = "Bag: a card's Combat Power is what its shown lines are worth, so none is hidden",
+		Run = function(t: any)
+			local power = StatsConfig.Power
+			t.Equal("Health +75 alone is worth +465", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 465)
+			local data, warrior, ids = stocked()
+			local level = Stats.Resolve(warrior, Stats.PresetOf(data, warrior), data).Level
+			local g = Growth.G(math.clamp(level, 1, GrowthConfig.MaxLevel))
+			local checked = 0
+			for name, id in ids do
+				local card = Bag.Card(data, warrior, id)
+				if card == nil or not card.Fits or #card.Battle >= Bag.Battle then
+					continue -- another class's, or a card at its cap of rows (none in the stock)
+				end
+				local sum = 0
+				for _, line in card.Battle do
+					local weight = (power.Weights[line.Stat] or 0) * (if power.ByLevel[line.Stat] then g else 1)
+					local function worth(value: number): number
+						return if line.Stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value
+					end
+					sum += weight * (worth(line.Value + line.Change) - worth(line.Value))
+				end
+				checked += 1
+				t.Check(`{name}: its {card.Power} is its lines' {string.format("%.1f", sum * power.Scale)}`, math.abs(sum * power.Scale - card.Power) <= 1)
+			end
+			t.Check("every item that fits, checked", checked >= 6, `{checked}`)
 		end,
 	},
 	{

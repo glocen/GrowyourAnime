@@ -171,6 +171,12 @@ function BagCases.Cases(given: Given): { any }
 						end
 					end
 					t.Check(`{where}: all fourteen slots on the doll`, shown == 14, `{shown}`)
+					-- A's sides (the director, 2026-11-16): the doll at the room's left, the grid right of it; the card's room at the
+					-- room's right edge, so Equip stands under the right thumb.
+					local grid, room, case = find("Strip"), find("CardRoom"), find("Case")
+					t.Check(`{where}: the doll left of the grid, the card's room at the right edge`, doll ~= nil and grid ~= nil and room ~= nil and case ~= nil
+						and doll.AbsolutePosition.X + doll.AbsoluteSize.X <= grid.AbsolutePosition.X
+						and math.abs(room.AbsolutePosition.X + room.AbsoluteSize.X - (case.AbsolutePosition.X + case.AbsoluteSize.X)) <= 2)
 					-- AR22: an empty slot shows its piece's mark from the kit, a worn one none.
 					local unmarked = ""
 					for _, piece in (if doll then doll:GetChildren() else {}) :: { Instance } do

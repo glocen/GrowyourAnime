@@ -290,8 +290,61 @@ local function stageIn(frame: Frame, position: UDim2, size: UDim2): Frame
 	return made :: Frame
 end
 
--- The stage lit for `def`, and its figure, new when it's another Voidkin's.
-local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, at: Place)
+-- On the Items page the figure stands on A's lacquer with no panel (TR28; Config.Hud.Bag.Stage): its warm glow and its
+-- floor, made once in the stage and shown only there; elsewhere the stage's backing, lit by its rarity.
+local function warmth(on: Frame, warm: boolean, feet: number, height: number, size: Vector2)
+	local config = HudConfig.Bag.Stage
+	on.BackgroundTransparency = if warm then 1 else 0
+	local halo = on:FindFirstChild("Halo") :: Frame
+	halo.Visible = not warm
+	local held = on:FindFirstChild("Warm") :: Frame?
+	if held == nil then
+		if not warm then
+			return
+		end
+		local made = Instance.new("Frame")
+		made.Name = "Warm"
+		made.BackgroundTransparency = 1
+		made.Size = UDim2.fromScale(1, 1)
+		made.ZIndex = 1
+		local each = 1 - (1 - config.Alpha) ^ (1 / config.Rings) -- so the rings' sum at the heart is Alpha
+		for index = 1, config.Rings do
+			local ring = Instance.new("Frame")
+			ring.Name = `Ring{index}`
+			ring.BorderSizePixel = 0
+			ring.AnchorPoint = Vector2.new(0.5, 0.5)
+			ring.BackgroundColor3 = config.Glow
+			ring.BackgroundTransparency = 1 - each
+			ring.ZIndex = 1
+			local round = Instance.new("UICorner")
+			round.CornerRadius = UDim.new(1, 0)
+			round.Parent = ring
+			ring.Parent = made
+		end
+		made.Parent = on
+		held = made
+	end
+	local warmFrame = held :: Frame
+	warmFrame.Visible = warm
+	if not warm then
+		return
+	end
+	-- In the stage's own points, so the glow keeps its shape on any stage: round, the whole glow scaled down as one so its
+	-- outer ring fits the stage's width, which clips. Its floor is the figure's own disc (Figure.Lacquer).
+	local tall = height * size.Y
+	local middle = feet - height * config.Middle
+	local fit = math.min(1, size.X / (2 * config.Outer * tall * config.Wide))
+	for index = 1, config.Rings do
+		local ring = warmFrame:FindFirstChild(`Ring{index}`) :: Frame
+		local reach = config.Inner + (config.Outer - config.Inner) * (index - 1) / math.max(config.Rings - 1, 1)
+		local deep = 2 * reach * tall * fit
+		ring.Size = UDim2.fromOffset(deep * config.Wide, deep)
+		ring.Position = UDim2.fromScale(0.5, middle)
+	end
+end
+
+-- The stage lit for `def`, and its figure, new when it's another Voidkin's. `warm`: the Items page's, on A's lacquer.
+local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, at: Place, warm: boolean?)
 	local row = Voidkin.ById[def]
 	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
 	local light = on:FindFirstChild("Light") :: UIGradient
@@ -306,9 +359,11 @@ local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, a
 	local height = math.max(0.2, feet - config.Figure.Top / stageHeight)
 	halo.Position = UDim2.fromScale(0.5, feet - height * 0.55)
 	measured.Height, measured.Stage, measured.Slot = height * stageHeight / at.Room.Y, stageHeight, at.Slot
+	warmth(on, warm == true, feet, height, Vector2.new(at.Stage.Wide, stageHeight))
 	local current = figure
 	if current and current.Def == def and current.Stage == on then
 		Figure.Frame(current, height, feet)
+		Figure.Lacquer(current, warm == true)
 		return
 	end
 	if current then
@@ -326,6 +381,9 @@ local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, a
 			VoidkinScreen.Choose(nextOne.Id, step)
 		end
 	end)
+	if figure then
+		Figure.Lacquer(figure, warm == true)
+	end
 	if figure and slideFrom ~= 0 then
 		Figure.Slide(figure, slideFrom)
 	end
@@ -1272,7 +1330,7 @@ local function build(view: Profile.View, on: On)
 				Figure.Wings(on_)
 				local there = table.clone(at)
 				there.Stage = box
-				dress(on_, owned.Def, roster, there)
+				dress(on_, owned.Def, roster, there, true)
 			end,
 			Name = function(over: Frame, wide: number): (() -> boolean)?
 				return nameLine(over, Theme.Size.Pad, wide - Theme.Size.Pad * 2, owned, on)

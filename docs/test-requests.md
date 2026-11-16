@@ -2317,6 +2317,30 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 
 **Then, the director's own run (research, 2026-11-16, 21:39).** After fix 1, the worker seen at its bay, the director plays the first session on a real phone, on research's go (`docs/decisions.md`, the row of 21:39: "sure just give me the go"). Faber publishes the build to the place first; the experience stays private.
 
+**Fix 1, Watt at work is seen (Faber, 2026-11-16, 22:30 to 23:24 by the PC's clock).**
+- **Watt's body:** AR11's seven meshes and four maps are uploaded under the group with the key (`docs/asset-log.md`), built to `src/storage/Watt.rbxm` (`models_offline Watt` PASS), and `Model = "Watt"` is on his row. His clips are Modulo's next, so his row's `ClipsDue` says where they come from. Until they land he fights on the stand-in's kit and reveals as the stand-in (finding 5). The two logic rules on a body now take `ClipsDue`, and ask for it gone once his kit is in.
+- **The worker at its bay:** `BaseService` puts the worker's body in its bay's ring (`FightService.Body`), facing the bay's front, `Config.World.Bay.Hip` over its floor, held in place, and through nobody's way. `BaseController` plays its rig's Idle; his own stance comes with his clips. The body goes when the bay empties.
+- **AR16's rarity light:** the ring's `BayHalo` stands in Neon in the worker's rarity colour (`Config.Reveal`'s Words), with one PointLight (`Config.World.Bay.Light`), and is dark when the bay is empty. Watt is Common: his #AEB4C0 barely reads by day in the stills.
+- **The chevron:** `stepTargets` already pointed at the bay the step names. The plate in view at `12` was Bay 2's, which stands behind the Breaker from the spawn. A new case now proves it for all six bays, and with Watt standing in Bay 1 the line and the bay agree on sight.
+- **The Tower, found by its case once Watt had a body:**
+  - **A body without its moves is no foe.** `Rules.Tower.Pool` takes a Model and a Kit, so Watt waits for his clips. A logic check says so.
+  - **Results the save no longer holds close.** A run started with the last run's results still open drops them (`Rules.Tower.Start`), but the screen stayed up: the run then ended on the old floor's results, and its own never showed. Now the open results close, and the new run's open at its end. A check in the Tower case.
+  - **The case itself:** the bays' workers step out for its run (a full battery spills their power into Credits mid-run), and its foes strike for next to nothing by a Tune put back after. A lifted foe's signature takes about two fifths of a level 5 lead after the heal cap's hurt to half, so the climb was testing the run's seed, not the ledger. The lead's fall keeps its own step.
+- **Tested:**
+  - Type check: 0 new.
+  - Logic offline: 24,099/0.
+  - The new "Base: TR24's fix 1" case: 19/19.
+  - "Base:": 202/0.
+  - The bodies' case, with Watt as the lead: 36/0.
+  - "Reveal": 160/0.
+  - "Tower": 48/0, five runs in a row, one started over a stepped-off run's results left open.
+  - The whole suite, 23:24 to 23:30, with TR28's fixes in: 2,458 passed, 4 failed, at 45 fps. The Tower's two Credits failures are gone.
+    - TR25's two known Overview overflows.
+    - The Mythical reveal's 50 fps hold: NOT VERIFIED. The client ran 43 to 47 fps quiet, with Bay 1's worker and without, so the cause is this Studio's long session, not the worker.
+    - TR20's pointer case: it passes alone, 36/0.
+- **Stills:** `build/scratch/faber/stills/tr24-fix1-wide` and `tr24-fix1-near`. The lead stands beside him: the camera follows the avatar.
+- **For research:** Watt's Signature words still say "plants the wrench", and take A carries a spear. The row's words and `docs/roster.md` are yours.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.
@@ -2604,6 +2628,26 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **Not here:** AR23's number, which is queued, and TR25's overflow, its own piece.
 - **The tint and the bracer** read from the player's camera: AR22 closes.
 - **Visually reviewed in stills only.**
+
+**Research's three fixes, and the director's sides (Faber, 2026-11-16, by 23:26 by the PC's clock).**
+- **Fix 1, the stage on A's lacquer:**
+  - On the Items page the stage drops Overview's panel and halo. A warm glow stands round the figure's middle (`Config.Hud.Bag.Stage`: #3A2B1C, 0.55 at its heart, in five round rings scaled as one to fit the stage).
+  - The figure's own disc becomes A's brass floor (`Figure.Lacquer`: BrassDim at half, half the figure's height across). A's quarter hid behind the feet from the stage's near-level camera.
+  - Overview keeps its own stage, and the disc takes its own look back there. Two checks in the Voidkin screen case.
+- **Fix 2, no change, and a correction:** +465 is what Health +75 is worth: Health's weight 0.62 × 75 × `Stats`' Scale of 10. "About 40" leaves out the scale. A new logic case proves it: on every stocked item that fits, a card's Combat Power is the sum of its shown lines, within 1.
+- **Fix 3:** the card's word is "Combat Power".
+- **The sides, the director's word (2026-11-16, by 23:24): "why is the voidkin + gear slot on the right when it should be on the left".**
+  - The doll stands at the room's left, as A's sheet has it, then a brass hairline, then the grid. This reverses my tier 1 call of 21:27.
+  - The card opens at the room's right edge, the doll's width, where A's sheet has its comparison column. Equip stays under the right thumb, and the doll stays in view beside the card.
+  - This replaces the kept call "the card over the doll". It parts from `docs/ui.md`'s line "the item's sheet slides over the Voidkin's half", as A itself did: research's to rewrite.
+  - On a phone the card covers the grid's end while it's open: research's pass judges it.
+  - A check in the Items case.
+- **Tested:**
+  - Type check: 0 new.
+  - Logic offline: 24,099/0.
+  - "Items page (TR28)": 106/0.
+  - "Voidkin screen (TR17)": 259/0.
+- **Still:** `build/scratch/faber/stills/tr28-left.jpg`.
 
 ## TR29. The Tower's run, in grey (Faber)
 

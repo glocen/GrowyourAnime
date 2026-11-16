@@ -9,11 +9,13 @@
 --     Combat Power, a tick when it's worn, another class's weapon drained. Chests stand after the items, each its
 --     picture (AR21) and count in a plain cell, the shards after them. The count stands under the grid, outside its
 --     scroll;
---   right of a brass hairline, the doll: the Voidkin between its two columns of slots, the six armour pieces on the left,
+--   the doll at the room's left, as A's sheet has it (the director, 2026-11-16), a brass hairline between it and the grid:
+--     the Voidkin between its two columns of slots, the six armour pieces on the left,
 --     the cloak and the jewellery on the right, its name and level over it, its Combat Power and its two hands at its
 --     feet. All fourteen slots always show, each a touch, an empty one its piece's mark (AR22); the one the chosen
 --     item would go in wears a bone ring;
---   a chosen item's card slides over the doll in 0.16 s, so Equip stands under the right thumb: its design's picture and
+--   a chosen item's card slides in at the room's right edge, the doll's width, in 0.16 s, so Equip stands under the right
+--     thumb and the doll stays in view: its design's picture and
 --     name, its rarity and kind, Combat Power's change, what it replaces, each Basic and Battle Attribute's change, and
 --     Equip, or Take off when it's worn. Another class's weapon lists its lines, says whose it is, and Equip is off. A
 --     chest's card holds its odds, and Open and Open all (in steps of 50).
@@ -200,15 +202,17 @@ local function cross(parent: Instance, colour: Color3, side: number)
 	end
 end
 
--- Where each piece stands, authored, in the room right of the rail: the doll at the right, its slots a touch each and
--- taking the room's height (C.Doll), the grid in what's left, five across or more.
+-- Where each piece stands, authored, in the room right of the rail: the doll at the left, as A's sheet has it (the
+-- director, 2026-11-16), its slots a touch each and taking the room's height (C.Doll), then a brass hairline, the grid
+-- in what's left, five across or more. The card opens at the room's right edge, the doll's width, over the grid's end:
+-- Equip under the right thumb (docs/ui.md), and the doll in view beside it.
 type Layout = {
 	Case: Box,
 	Strip: Box,
 	Grid: Box,
 	Count: Box,
 	Doll: Box, -- the two columns of slots and the figure between them
-	Half: Box, -- the card's room: the doll's width, the room's height
+	Half: Box, -- the card's room: the doll's width at the room's right edge, the room's height
 	Hit: number, -- a slot's tap
 	Pitch: number, -- from one slot to the next down its column
 	Well: number, -- a slot's drawn well, inside its tap
@@ -232,9 +236,9 @@ local function layout(size: Vector2, left: number): Layout
 	local figure = math.max(d.Figure, math.floor(hit * d.Grow))
 	local dollWide = hit * 2 + figure
 	local column = 5 * pitch + hit
-	local doll = { X = case.X + case.Wide - dollWide, Y = math.floor((tall - column) / 2), Wide = dollWide, Tall = column }
-	local x0, y0 = case.X + C.Inset, C.Inset
-	local gridWide = math.max(doll.X - gap * 2 - x0, 1)
+	local doll = { X = case.X + C.Inset, Y = math.floor((tall - column) / 2), Wide = dollWide, Tall = column }
+	local x0, y0 = doll.X + dollWide + gap * 2, C.Inset
+	local gridWide = math.max(case.X + case.Wide - C.Inset - x0, 1)
 	local inner = gridWide - C.Ring -- the cells' holder: room for a chosen cell's ring at the grid's edges
 	local columns = math.max(C.Columns, math.floor((inner + C.CellGap) / (C.Cell + C.CellGap)))
 	local cell = math.max(math.floor(math.min(C.Cell, (inner - (columns - 1) * C.CellGap) / columns)), touch())
@@ -246,7 +250,7 @@ local function layout(size: Vector2, left: number): Layout
 		Grid = { X = x0, Y = gridY, Wide = gridWide, Tall = math.max(countY - C.Under - gridY, 1) },
 		Count = { X = x0, Y = countY, Wide = gridWide, Tall = C.Row },
 		Doll = doll,
-		Half = { X = doll.X - 3, Y = 0, Wide = dollWide + 3, Tall = tall }, -- 3 past the doll: a slot's ring (2) stays under the card
+		Half = { X = case.X + case.Wide - dollWide - 3, Y = 0, Wide = dollWide + 3, Tall = tall }, -- 3 more: a cell's ring (2) stays under it
 		Hit = hit,
 		Pitch = pitch,
 		Well = math.min(hit, pitch - d.Seam),
@@ -611,7 +615,8 @@ local function itemCard(context: Context, at: Layout, id: string)
 		plate.BackgroundTransparency = 0.3
 		plate.BackgroundColor3 = P.Seat
 		round(plate, 3)
-		label({ Name = "Word", Size = Theme.Text.Caption, Colour = P.Soft, Box = UDim2.fromOffset(wide / 2, NUMBER_ROW + 8), Position = UDim2.fromOffset(8, 0), Parent = plate }, "Power")
+		-- the doll's own word (research's fix 3 to the rebuild); the number, right-aligned, keeps the plate's other side
+		label({ Name = "Word", Size = Theme.Text.Caption, Colour = P.Soft, Box = UDim2.fromOffset(wide * 0.6, NUMBER_ROW + 8), Position = UDim2.fromOffset(8, 0), Parent = plate, Truncate = true }, "Combat Power")
 		local number = label({ Name = "Power", Size = Theme.Text.Title, Font = Theme.Font.Number, Colour = colour, Align = Enum.TextXAlignment.Right, Box = UDim2.fromOffset(wide - 8 - 20, NUMBER_ROW + 8), Parent = plate }, Sheet.Change("Power", info.Power))
 		number:SetAttribute("Power", info.Power)
 		if up then
@@ -1059,8 +1064,8 @@ function Bag.Build(context: Context): (() -> boolean)?
 	local held = Rules.Held(data)
 	local count = label({ Name = "BagCount", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = if held >= Rules.Cap then P.Down else P.Faint, Box = UDim2.fromOffset(at.Count.Wide - 4, at.Count.Tall), Position = UDim2.fromOffset(at.Count.X, at.Count.Y), Parent = body }, `{Hud.Digits(held)} / {Hud.Digits(Rules.Cap)} in the bag`)
 	count:SetAttribute("Held", held)
-	-- A brass hairline between the grid and the doll.
-	local hairline = plain("Rule", body, at.Doll.X - Theme.Size.Gap, C.Inset * 2, 1, at.Case.Tall - C.Inset * 4)
+	-- A brass hairline between the doll and the grid.
+	local hairline = plain("Rule", body, at.Doll.X + at.Doll.Wide + Theme.Size.Gap, C.Inset * 2, 1, at.Case.Tall - C.Inset * 4)
 	hairline.BackgroundTransparency = 0.2
 	hairline.BackgroundColor3 = P.BrassDim
 	-- The doll: its name and level over the figure, the figure on its stage, its Combat Power at its feet, then the slots.

@@ -3437,6 +3437,15 @@ Eight pictures rendered again: research's seven and the Bronze Tome, which share
   - Accepted: no.
 - **Time, by the clock:** from research's verdict at 21:02 to this record's commit. That covers nine guarded Workbench runs, seven in colour and two in grey. Four were retries: the Tome's boards with the Staff's edge, and Ryuukou's spire three times.
 
+### Research's look at the three fixes (Quaestor, 2026-11-16, 21:18)
+
+- **All three are met (bf94e94).**
+  - Common iron stands off its well at 38 points, and the Tome's muted leather reads as a book.
+  - The two Bronze faces catch their streak.
+  - Ryuukou's spire reads as a crystal cluster at 38 and 64, no longer a candle.
+- **Batch 3 closes in colour.** The 120 are cleared for upload.
+- **Batch 1's Iron Sword and Iron Short Sword take the same lift** (Modulo's question). It's the same rule, so no second look is needed. Faber uploads the two again with the rest.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

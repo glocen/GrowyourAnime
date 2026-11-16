@@ -2364,6 +2364,7 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **The one bold thing:** the starters are the reveal's own crystal, so the first thing a new player sees is the thing they'll break.
 - **Must fix:** with the Breaker straight behind, the arrow sits at the bottom middle and the chip covers its lower half (`tr24-fix3-starters`). At the bottom edge, its inset counts the chip, so the whole disc stays above it.
 - **The lead's fade off a worker:** accepted on its cases (5/5). No still shows it, so the director's phone run is its first look.
+- **Research: the must-fix passes** (Quaestor, 2026-11-17, 00:03, `tr24-fix2-arrow-middle`). With the Breaker straight behind, the arrow stands whole above the chip at the bottom middle and reads as "behind you". TR24's fixes 1 to 4 are closed for research.
 
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 

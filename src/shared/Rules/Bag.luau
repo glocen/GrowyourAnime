@@ -43,7 +43,7 @@ export type Entry = {
 	Kind: string, -- "Item", "Chest" or "Shard"
 	Id: string, -- an item's id; a chest's or a shard's definition
 	Def: string,
-	Rarity: string, -- an item's; the best a chest can give; the Voidkin a shard holds, or Common
+	Rarity: string, -- an item's; the Voidkin a shard holds, or Common; "" for a chest, which takes no rarity's frame
 	Count: number, -- 1 for an item
 	Fits: boolean, -- the shown Voidkin's class can wear it (always, for what isn't an item)
 	Class: string?, -- a weapon's class
@@ -126,18 +126,6 @@ local function rank(rarity: string): number
 	return Rarity.Rank[rarity] or 0
 end
 
--- The best rarity a chest can give.
-local function best(chest: ChestRows.Row): string
-	local top = ChestsConfig.Rarities[1]
-	local odds = Chests.Odds(chest)
-	for _, name in ChestsConfig.Rarities do
-		if (odds[name] or 0) > 0 then
-			top = name
-		end
-	end
-	return top
-end
-
 local function items(data: Profile.Data, owned: Profile.OwnedVoidkin?, kind: string): { Entry }
 	local worn = Bag.Worn(data, owned)
 	local at: { [string]: string } = {}
@@ -217,7 +205,9 @@ function Bag.List(data: Profile.Data, owned: Profile.OwnedVoidkin?, kind: string
 		for id, count in data.Bag.Chests do
 			local row = ChestRows.ById[id]
 			if row and count > 0 then
-				table.insert(chests, { Kind = "Chest", Id = id, Def = id, Rarity = best(row), Count = count, Fits = true, Worn = nil, Gain = 0, Up = false, New = Chests.Step(row) * 10 + row.Tier })
+				-- No rarity: a rarity's frame says what a thing is, and on a chest it would say what it might be (research,
+				-- TR29; docs/ui.md, "Stats, shown honestly"). Its odds are on its card.
+				table.insert(chests, { Kind = "Chest", Id = id, Def = id, Rarity = "", Count = count, Fits = true, Worn = nil, Gain = 0, Up = false, New = Chests.Step(row) * 10 + row.Tier })
 			end
 		end
 		table.sort(chests, function(a: Entry, b: Entry): boolean

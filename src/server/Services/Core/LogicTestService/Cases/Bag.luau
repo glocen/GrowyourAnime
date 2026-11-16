@@ -191,13 +191,10 @@ return {
 			local chests = Bag.List(data, warrior, "Chests", "New")
 			t.Equal("Drum Court's Keeper's Chest first", chests[1].Id, "drumcourt_3")
 			t.Equal("its count", chests[1].Count, 2)
-			local best = "Common"
-			for rarity, chance in Chests.Odds(ChestRows.ById.drumcourt_3) do
-				best = if chance > 0 and Rarity.Rank[rarity] > Rarity.Rank[best] then rarity else best
-			end
-			t.Equal("its edge is the best it can give, by Config's ladder", chests[1].Rarity, best)
-			t.Check("which is above Common", Rarity.Rank[best] > Rarity.Rank.Common, best)
-			t.Equal("Lantern Row's Common Chest after, its best an Uncommon", chests[2].Rarity, "Uncommon")
+			-- A chest takes no rarity's frame (research, TR29): it would say what it might be.
+			t.Equal("no rarity on a chest, though it can give above Common", chests[1].Rarity, "")
+			t.Check("(it can)", (Chests.Odds(ChestRows.ById.drumcourt_3).Rare or 0) > 0)
+			t.Equal("Lantern Row's Common Chest after, no rarity either", chests[2].Rarity, "")
 		end,
 	},
 	{

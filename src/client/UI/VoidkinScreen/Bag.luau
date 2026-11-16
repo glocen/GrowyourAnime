@@ -235,21 +235,24 @@ end
 
 -- A thing's dark inlay, `side` across: its rarity's enamel across its head, its stand-in art (its kind's word, until
 -- AR6's icons), dimmed for another class with that class's mark at its foot.
+-- `rarity` "" (a chest) is the bag's plain edge: no band and no Legendary ground (research, TR29).
 local function inlay(holder: GuiObject, rarity: string, words: string, side: number, dim: boolean, class: string?)
 	holder.BackgroundColor3 = Color3.new(1, 1, 1)
 	holder.BackgroundTransparency = 0
 	ramp(holder, if rarity == "Legendary" then P.Umber else P.Well)
 	round(holder, C.Corner)
 	edge(holder, P.Line)
-	local band = Instance.new("Frame")
-	band.Name = "Band"
-	band.BorderSizePixel = 0
-	band.BackgroundColor3 = P.Band[rarity] or P.Band.Common
-	band.BackgroundTransparency = if dim then 0.65 else 0
-	band.Position = UDim2.fromOffset(C.Corner - 1, 3)
-	band.Size = UDim2.fromOffset(side - (C.Corner - 1) * 2, C.Band)
-	round(band, 2)
-	band.Parent = holder
+	if rarity ~= "" then
+		local band = Instance.new("Frame")
+		band.Name = "Band"
+		band.BorderSizePixel = 0
+		band.BackgroundColor3 = P.Band[rarity] or P.Band.Common
+		band.BackgroundTransparency = if dim then 0.65 else 0
+		band.Position = UDim2.fromOffset(C.Corner - 1, 3)
+		band.Size = UDim2.fromOffset(side - (C.Corner - 1) * 2, C.Band)
+		round(band, 2)
+		band.Parent = holder
+	end
 	local art = label({
 		Name = "Art",
 		Size = Theme.Text.Caption,

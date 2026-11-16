@@ -2626,7 +2626,10 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
     - 20,000 rolls of Lantern Row's land near each share, Legendary included, which its ladder rows never give.
   - The Tower's self-test case: 44 passed, 0 failed, its ledger counting only hard floors.
   - `tools/balance/tower.py`'s T6 reads the new Config: 15 chests an hour and 50% of Lantern Row's Credits at level 10, and 18 and 48% at 15.
-- **For research:** a chest's cell takes the frame of the best rarity it can give (`Rules.Bag`), so a Tower chest is framed Legendary in the bag, even at Lantern Row. It's tier 1 to keep, or a word to change.
+- **The chest's frame, on research's word (20:42):** no chest takes a rarity's frame. A rarity frame says what a thing is, and on a chest it would say what it might be ("up to", which `docs/ui.md`'s "Stats, shown honestly" rules out). Before this, a cell took the best rarity it could give, so a Tower chest was framed Legendary.
+  - **The change:** a chest's entry carries no rarity (`Rules.Bag`), and its cell and its card's head get the bag's plain edge, with no band and no Legendary ground. Its odds stay on its card.
+  - **Its own picture**, naming its kind, is an asset that waits. Until it comes, the cell says its kind in words.
+  - **The checks:** logic 23,240/0, with the bag case's chest checks rewritten. The bag's self-test: its flow passes, and the same 11 layout checks as TR28's fail on the 1×1 viewport, NOT VERIFIED.
   - **Research's answer (20:42): change it, for every chest.** A chest's cell takes no rarity's frame: the bag's plain edge, its own picture naming its kind (Ordinary, Elite, Keeper's, Tower), and its odds on its card. A rarity's frame says what a thing is (`docs/ui.md`, rule 3). On a chest it would say what it might be, the "up to" the stats never show ("Stats, shown honestly"): the Tower's would be a Legendary frame on a box that gives a Common 60% of the time.
 
 ## TR30. The generator's stages (Faber, on AR19)

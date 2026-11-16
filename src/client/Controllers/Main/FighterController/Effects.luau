@@ -35,6 +35,7 @@ local EffectsConfig = require(ReplicatedStorage.Shared.Config.Effects)
 local Combat = require(ReplicatedStorage.Shared.Config.Combat)
 local Fight = require(ReplicatedStorage.Shared.Rules.Fight)
 local Track = require(ReplicatedStorage.Shared.Rules.Track)
+local Flight = require(ReplicatedStorage.Shared.Rules.Flight)
 local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Sounds = require(script.Parent.Sounds)
 local Rows = require(script.Parent.Rows)
@@ -103,6 +104,8 @@ end
 -- Timed effects that run on their own: each step gets seconds since it began, on Effects.TimeScale.
 type Timed = { Age: number, Step: (age: number) -> boolean, Done: () -> () }
 local timed: { Timed } = {}
+
+local drops: { [BasePart]: Frame } = {} -- the shards won in the world now, and their name plates (Effects.Drop)
 
 local function run(step: (age: number) -> boolean, done: () -> ())
 	table.insert(timed, { Age = 0, Step = step, Done = done })
@@ -2131,11 +2134,20 @@ function Effects.LevelUp(root: BasePart, level: number): (Beam, TextLabel, Beam)
 	return column, label, sleeve
 end
 
--- A shard won (Config.Effects.ShardLeap): it leaves the fallen Shade in an arc, eased in and out so it lifts off and
--- settles, spinning, and lands on the avatar in a small flash. `to` is read every frame, so it follows a walking avatar.
-function Effects.ShardLeap(from: Vector3?, to: () -> Vector3?)
-	local look = EffectsConfig.ShardLeap
-	local function flash(at: Vector3)
+-- A shard won, in the world (Config.Effects.Drop; Rules.Flight; TR24's fix 8): it pops out of the fallen Shade at `from`
+-- a step toward the avatar, bounces once on the floor, rests there with `name` over it, then is pulled into the avatar,
+-- eased in, and lands in a small flash, when `landed` runs (the toast says it then). The hero shape is the shard alone,
+-- spinning; its plate shows from the landing to the pull. `to` is read every frame, so it follows a walking avatar. No
+-- `from`: it only lands, at once.
+function Effects.Drop(from: Vector3?, to: () -> Vector3?, name: string, landed: (() -> ())?)
+	local look = EffectsConfig.Drop
+	local function arrive(at: Vector3?)
+		if landed then
+			task.spawn(landed)
+		end
+		if at == nil then
+			return
+		end
 		local ball = part(Theme.Colour.Ready, Enum.Material.Neon)
 		ball.Shape = Enum.PartType.Ball
 		run(function(age: number): boolean
@@ -2153,25 +2165,47 @@ function Effects.ShardLeap(from: Vector3?, to: () -> Vector3?)
 	end
 	local start = to()
 	if from == nil or start == nil then
-		if start then
-			flash(start)
-		end
+		arrive(start)
 		return
 	end
+	local fell: Vector3 = from
+	local floor = fell.Y - R6_ROOT_HEIGHT
 	local shard = part(Theme.Colour.Ready, Enum.Material.Neon)
-	shard.Size = Vector3.new(look.Size * 0.6, look.Size, look.Size * 0.6)
+	shard.Name = "Drop"
+	shard.Size = Vector3.new(look.Size * 0.55, look.Size, look.Size * 0.55)
 	local last: Vector3 = start
-	run(function(age: number): boolean
-		local t = math.clamp(age / look.Seconds, 0, 1)
-		last = to() or last
-		local eased = t * t * (3 - 2 * t)
-		local at = from:Lerp(last, eased) + Vector3.new(0, look.Height * 4 * t * (1 - t), 0)
-		shard.CFrame = CFrame.new(at) * CFrame.Angles(0, age * look.Spin, math.rad(45))
-		return t < 1
-	end, function()
-		shard:Destroy()
-		flash(last)
+	local where: Vector3 = fell
+	local beat: Flight.Beat = "Pop"
+	local p = look.Plate
+	local plate = World.Plate("Drop", Vector2.new(p.Width, p.Line + 8), function(): Vector3?
+		return if beat == "Bounce" or beat == "Rest" then where + Vector3.new(0, look.Size / 2 + p.Lift, 0) else nil
 	end)
+	World.Below(plate)
+	local label = Text.new({ Name = "Name", Size = Theme.Text.Body, Font = Theme.Font.Strong, Colour = Theme.Colour.Ready, Align = Enum.TextXAlignment.Center, Parent = plate })
+	label.Text = name
+	label.TextStrokeTransparency = 0.2
+	drops[shard] = plate
+	run(function(age: number): boolean
+		last = to() or last
+		local at, now = Flight.At(age, fell, floor, last, look)
+		where, beat = at, now
+		shard.CFrame = CFrame.new(at) * CFrame.Angles(0, age * look.Spin, math.rad(20))
+		return now ~= "Done"
+	end, function()
+		drops[shard] = nil
+		shard:Destroy()
+		World.Remove(plate)
+		arrive(last)
+	end)
+end
+
+-- For tests: each drop in the world now and its name plate.
+function Effects.Drops(): { [BasePart]: Frame }
+	local out: { [BasePart]: Frame } = {}
+	for shard, plate in drops do
+		out[shard] = plate
+	end
+	return out
 end
 
 -- The camera's trauma (Config.Combat.Shake; Rules.Fight.Trauma): each jolt adds to it, it falls on its own, and the

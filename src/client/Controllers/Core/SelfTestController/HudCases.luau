@@ -17,6 +17,9 @@ local BaseViewConfig = require(Shared.Config.BaseView)
 local UIKit = require(Shared.Config.UIKit)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
+local EffectsConfig = require(Shared.Config.Effects)
+local Flight = require(Shared.Rules.Flight)
+local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -699,6 +702,62 @@ function HudCases.Cases(given: Given): { any }
 				if not ok then
 					error(err, 0)
 				end
+			end,
+		},
+		{
+			-- TR24's fix 8 (Config.Effects.Drop; Rules.Flight): a shard won drops in the world with its name and flies to
+			-- the avatar, and the toast's moment, `landed`, comes as it lands on them.
+			Name = "HUD: TR24's fix 8, a shard won drops in the world with its name over it and flies into the avatar, landing as its toast",
+			Run = function(t: any)
+				local root = Parts.Root(Players.LocalPlayer.Character)
+				t.Check("the avatar stands", root ~= nil)
+				if root == nil then
+					return
+				end
+				local look = EffectsConfig.Drop
+				local avatar = root :: BasePart
+				local from = avatar.Position + avatar.CFrame.LookVector * 20 -- a Shade fallen 20 studs ahead, at root height
+				local name = "Test shard"
+				local landedAt: number? = nil
+				local began = os.clock()
+				local before = Effects.Drops()
+				Effects.Drop(from, function(): Vector3?
+					return if avatar.Parent then avatar.Position else nil
+				end, name, function()
+					landedAt = os.clock()
+				end)
+				local shard: BasePart? = nil
+				local plate: Frame? = nil
+				for part, frame in Effects.Drops() do
+					if before[part] == nil then
+						shard, plate = part, frame
+					end
+				end
+				t.Check("a shard is in the world", shard ~= nil)
+				if shard == nil or plate == nil then
+					return
+				end
+				t.Check("it's the hero size", math.abs(shard.Size.Y - look.Size) < 1e-3, `{shard.Size.Y}`)
+				local named = plate :: Frame
+				local label = named:FindFirstChild("Name")
+				t.Equal("its plate says its name", if label and label:IsA("TextLabel") then label.Text else "", name)
+				-- in the rest: on the floor, a step toward the avatar, its plate over it
+				local restAt = look.Pop.Seconds + look.Bounce.Seconds + look.Rest / 2
+				t.Wait(restAt)
+				local floor = from.Y - 3
+				t.Check("resting, it sits on the floor", math.abs(shard.Position.Y - (floor + look.Hover)) < 0.3, `{shard.Position.Y - floor} over the floor`)
+				local flatGap = (Vector3.new(shard.Position.X, 0, shard.Position.Z) - Vector3.new(from.X, 0, from.Z)).Magnitude
+				t.Check("a step toward the avatar from its fall", math.abs(flatGap - look.Pop.Out) < 0.3, `{flatGap} studs`)
+				local over = World.Where(named)
+				t.Check("its name stands over it", over ~= nil and over.Y > shard.Position.Y + look.Size / 2, if over then tostring(over) else "hidden")
+				t.Check("nothing landed yet", landedAt == nil)
+				-- the end: it's on the avatar and gone, and the toast's moment came then
+				t.Check("it lands", waitFor(t, Flight.Length(look) + 1, function(): boolean
+					return landedAt ~= nil
+				end))
+				local took = if landedAt then landedAt - began else 0
+				t.Check("it lands as its flight ends", math.abs(took - Flight.Length(look)) < 0.25, `{took} s`)
+				t.Check("the shard is gone from the world", shard.Parent == nil and Effects.Drops()[shard] == nil)
 			end,
 		},
 	}

@@ -630,11 +630,11 @@ local function voidkinScreen()
 	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing })
 end
 
--- Where a shard just won leaps from: the nearest fallen Shade to the avatar, within ShardLeap.From.
+-- Where a shard just won comes from: the nearest fallen Shade to the avatar, within Config.Effects.Drop.From.
 local function fallenNear(): Vector3?
 	local at = avatarAt()
 	local best: Vector3? = nil
-	local bestGap = EffectsConfig.ShardLeap.From
+	local bestGap = EffectsConfig.Drop.From
 	for _, model in fighters() do
 		if model:IsA("Model") and model:GetAttribute("Side") == "Shade" and model:GetAttribute("State") == "Down" and at then
 			local where = model:GetPivot().Position
@@ -776,7 +776,8 @@ local function showChip(view: Profile.View)
 	Guide.Point(stepTargets(step))
 end
 
--- What changed since the last copy, said once: a shard gained (it leaps to the avatar), a level gained.
+-- What changed since the last copy, said once: a shard gained (it drops in the world and flies to the avatar, and the toast
+-- says it as it lands: TR24's fix 8), a level gained.
 local function notice(old: Profile.View?, new: Profile.View)
 	if old == nil then
 		return
@@ -784,8 +785,10 @@ local function notice(old: Profile.View?, new: Profile.View)
 	for shard, count in new.Bag.Shards do
 		local gained = count - (old.Bag.Shards[shard] or 0)
 		if gained > 0 then
-			Toast.Show(`+{gained} {Read.ShardName(shard)}`, Theme.Colour.Ready)
-			Effects.ShardLeap(fallenNear(), avatarAt)
+			local words = `+{gained} {Read.ShardName(shard)}`
+			Effects.Drop(fallenNear(), avatarAt, Read.ShardName(shard), function()
+				Toast.Show(words, Theme.Colour.Ready)
+			end)
 		end
 	end
 	local pops = HudConfig.Pop.Rungs

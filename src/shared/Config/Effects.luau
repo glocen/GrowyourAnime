@@ -352,10 +352,24 @@ local Effects = {
 		Seconds = 1.6,
 		Size = 34,
 	},
-	-- A shard won, leaping from where its Shade fell to the avatar (research's verdict on TR2, 2026-11-12: the hook that
-	-- sends you home, seen). A grey block, the builder's: it hops up, arcs over Seconds as high as Height, spinning, and lands
-	-- in a small flash. Searched for its Shade within From studs of the avatar; none, and it only lands.
-	ShardLeap = { Seconds = 0.8, Height = 7, Size = 1.4, Spin = 9, From = 60, Flash = { Seconds = 0.3, To = 4 } },
+	-- A shard won, in the world (TR24's fix 8: "a drop falls in the world with its name and flies to the player", the
+	-- package's chests' flight; Rules.Flight). It pops out of the fallen Shade a step toward the player, bounces once, rests
+	-- Rest seconds with its name over it, then is pulled into the player, eased in, and lands in a flash as the toast says
+	-- it. Size studs tall, a hero shape that reads at a fight's 40 studs (the 1.4 before it read as a speck, TR24's `10`);
+	-- spinning Spin radians a second; its name Plate's foot Lift studs over its top. Its Shade is searched for within From
+	-- studs of the avatar; none, and it only lands. The builder's grey block, 2026-11-16, until research's pass.
+	Drop = {
+		Pop = { Seconds = 0.45, Height = 5, Out = 3 },
+		Bounce = { Seconds = 0.22, Height = 0.8 },
+		Rest = 0.8,
+		Pull = { Seconds = 0.45, Lift = 2 },
+		Hover = 1.6,
+		Size = 2.4,
+		Spin = 3,
+		From = 60,
+		Plate = { Lift = 0.8, Width = 170, Line = 22 },
+		Flash = { Seconds = 0.3, To = 4 },
+	},
 	-- A fallen lead leaving as light for home (TR12; docs/design.md, "A fall sends it home": never a body left lying). The
 	-- builder's grey stand-in, 2026-11-14, until its look is designed: a column of light where it lay, High studs tall and
 	-- Width across, narrowing and fading as it rises Rise studs over Seconds.

@@ -7221,6 +7221,18 @@ A throwaway, in Blender, from the game's camera behind a stand-in: `tools/blende
 - **Four facts.** Implemented: the pieces, the plan and the look. Tested: the kit exports and the plan counts; nothing was seen in Studio. Visually reviewed: Modulo's own read of the eleven pictures; research's verdict not yet. Director-accepted: no; four pictures went to the director at 02:47, with no word yet.
 - **Time:** from the director's go, after 02:21, to that word on the lantern kit, set aside; from the word to 02:50 on this one.
 
+### Research's verdict on the void kit (Quaestor, 2026-11-16, 14:09)
+
+From `strip_out`, `down`, `far`, `crossing` and `gate`, stills only; motion waits for the game.
+- **Felt:** out of the gate, one line of void light lies in the stones and leads the eye down the street to a hanging shard, and the festival's warm gate, when you reach it, reads as another world: the Strip is the void's now.
+- **Tier:** competent. **The feel line: yes** from the near plots; from the far plots, not yet (fix 3).
+- **The one bold thing:** the crack. It's the way, drawn in light, from every gate.
+- **Fixes:**
+  1. Give the crack a ranking: the main line brightest and widest toward the crossing, the branches to the gates thinner and dimmer. In `out` the gate's branch is as bright as the main line, so two ways read at once. Serves "the way in view".
+  2. Keep the well at the crossing full black. It's the second strongest shape; nothing goes in it.
+  3. From a far gate the great shard is lost in the dusk's haze (`far`). Check it again at the base's new size (part 7 of `docs/research/rework-2026-11-16.md`: the row is 29% shorter); if it's still lost, the light inside it gets brighter, not bigger. Serves the feel line for all eight gates.
+- **The install waits on the base's new size,** since the plan moves with it (`docs/research/rework-2026-11-16.md`, part 7). The pieces stand; only the plan is redone. Then one verdict in the game, in motion.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

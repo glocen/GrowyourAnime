@@ -7,7 +7,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Quaestor (research).** 2026-11-16, 14:04, on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`).
 - **The proposal's twelve parts are written** (`docs/research/rework-2026-11-16.md`), with the attribute and Tower models (`tools/balance/attributes.py`, `tower.py`). It waits on the yes to the nine points (item 8 below). Chest rates are fitted after it.
 - **Routed:** Modulo does 2 or 3 directions for the mobile inventory, then the generator. Faber does TR24's phone run first, then the contracts. AR17's install and AR16's changes wait on the base's new size.
-- **Still mine:** the verdict on AR17's void kit (`build/handoff/Strip/strip_*.png`); the in-game verdicts on AR16 and TR23 from TR24's stills, and its ranked fix list. The mist is item 7.
+- **Still mine:** the in-game verdicts on AR16 and TR23 from TR24's stills, and its ranked fix list. AR17's void kit is given (competent, three fixes for Modulo after the inventory directions; its install waits on the base's size). The mist is item 7.
 
 **Faber (builder).** 2026-11-16, 02:53, wrapped on the director's word.
 - **Done, in Studio: day in the world's turn** (TR23, pushed). Research's verdict in the game and the director's look wait. AR16's install waits on the same verdict.

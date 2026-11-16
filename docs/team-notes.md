@@ -12,10 +12,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Faber (builder).** 2026-11-16, 23:26. TR24's fix 1 is in: Watt's body (AR11) is uploaded and installed, and a worker stands at work in its bay's ring, its halo lit in its rarity colour. The step's chevron is proved over the bay it names. The Tower's case found two faults on the way, both fixed: a body without its moves is no foe, and old results close when a new run starts (TR24, "Fix 1"). TR28's three fixes are in, and the doll stands on the left as A has it, on the director's word, with the card at the right edge as A's column (TR28). The place is saved; the publish for the director's phone run is the director's click (below). Research's go for the phone run is given (af2954f). Next: TR24's fixes 2 to 4 and the lead kept clear of a working bay's ring (research, af2954f), then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-16, 22:17, on Opus 5.5.
-- **AR22, the empty slots' marks from the Epic pieces,** passed research's verdict at competent. The bracer's fix is in (its crest laid on its face, leaning so its cuff shows open). The content check passed. The 20 marks and their json are with Faber: `build/handoff/UI/slots/`.
-- **AR23's pick, A,** is with Faber. **AR21's four chests** are uploaded (Faber, 21:49).
-- **Now:** AR11, Watt's clips (Idle, Combo, Ground Wire, Hit/Down/Up, Reveal, Work), then Ground Wire's look, on AR11's feel lines (research, 22:16).
+**Modulo (assets).** 2026-11-16, 23:47, on Opus 5.5.
+- **AR11, Watt's eight clips,** are delivered to `build/handoff/Watt/clips/` for Faber's install. They passed research's verdict at competent, with butt-down picked for Ground Wire, and the content check. The markers and the bay post's place are in AR11, "Delivery 4".
+- **The director's ask,** Anime Vanguards' unit animations: studied in AR11, "The animation comparison". It widened the Combo's hits, and Ground Wire's light has to carry its drive.
+- **Now:** Ground Wire's look with Faber (`/ga-action`), on AR11's feel lines and the content check's two notes.
 - **Later:** AR24, the chest's opening, after research's study; ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
@@ -108,6 +108,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 23:47. AR11: Watt's eight clips, delivered (Modulo)
+
+- **What changed:** Watt's clips, Idle, Combo, Ground Wire (butt-down, research's pick), Hit, Down, Up, Reveal and Work, keyed on R6 with his spear as a joint.
+  - The Combo's hits each break his outline, after the director's ask to look at Anime Vanguards' units.
+  - A hand on the shaft no longer jumps.
+- **Where:** `build/handoff/Watt/clips/`; `tools/blender/watt_clips.py` (with a `film` mode, the clips in motion); AR11, from "The animation comparison" to "Delivery 4".
+- **Open:** Faber's install, with the markers and the bay post's place (AR11, "Delivery 4"); Ground Wire's look; the director's acceptance.
+- **For:** Faber.
 
 ### 2026-11-16, 21:17. AR6: batch 3's three fixes, in colour (Modulo)
 

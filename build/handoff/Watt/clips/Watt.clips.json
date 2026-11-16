@@ -1,0 +1,106 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Idle": {
+      "File": "Watt_Idle.json",
+      "Frames": 241,
+      "Seconds": 4.0,
+      "Loop": true,
+      "Markers": []
+    },
+    "Combo": {
+      "File": "Watt_Combo.json",
+      "Frames": 111,
+      "Seconds": 1.833,
+      "Loop": false,
+      "Markers": [
+        [
+          21,
+          "Hit1"
+        ],
+        [
+          36,
+          "Hit2"
+        ],
+        [
+          60,
+          "Hit3"
+        ]
+      ]
+    },
+    "GroundWire": {
+      "File": "Watt_GroundWire.json",
+      "Frames": 171,
+      "Seconds": 2.833,
+      "Loop": false,
+      "Markers": [
+        [
+          25,
+          "Plant"
+        ],
+        [
+          124,
+          "Release"
+        ]
+      ]
+    },
+    "Hit": {
+      "File": "Watt_Hit.json",
+      "Frames": 23,
+      "Seconds": 0.367,
+      "Loop": false,
+      "Markers": []
+    },
+    "Down": {
+      "File": "Watt_Down.json",
+      "Frames": 71,
+      "Seconds": 1.167,
+      "Loop": false,
+      "Markers": [
+        [
+          22,
+          "Land"
+        ]
+      ]
+    },
+    "Up": {
+      "File": "Watt_Up.json",
+      "Frames": 61,
+      "Seconds": 1.0,
+      "Loop": false,
+      "Markers": []
+    },
+    "Reveal": {
+      "File": "Watt_Reveal.json",
+      "Frames": 151,
+      "Seconds": 2.5,
+      "Loop": false,
+      "Markers": [
+        [
+          14,
+          "Land"
+        ],
+        [
+          54,
+          "Plant"
+        ],
+        [
+          96,
+          "Name"
+        ]
+      ]
+    },
+    "Work": {
+      "File": "Watt_Work.json",
+      "Frames": 241,
+      "Seconds": 4.0,
+      "Loop": true,
+      "Markers": [
+        [
+          180,
+          "Pump"
+        ]
+      ]
+    }
+  }
+}

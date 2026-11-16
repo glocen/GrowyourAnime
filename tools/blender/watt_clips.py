@@ -155,7 +155,7 @@ def build():
     undress(False)
     feet = {leg: r6._empty(f"Watt.Foot.{leg}", None, Matrix.Identity(4), 0.1) for leg in r6.LEGS}
     ctl = {name: r6._empty(f"Watt.Ctl.{name}", None, Matrix.Identity(4), 0.1)
-           for name in ("lift", "sp_mode", "sp_butt", "sp_dir", "sp_slide", "sp_end", "grabR", "grabL")}
+           for name in ("lift", "sp_mode", "sp_butt", "sp_dir", "sp_slide", "grabR", "grabL")}
     for empty in (*feet.values(), *ctl.values()):
         empty.location = (0, 0, 0)
     reach = {arm: r6._rest_offset(arm, rc.HAND).length for arm in ("Right Arm", "Left Arm")}
@@ -165,19 +165,16 @@ def build():
 
 # --- the spear ---------------------------------------------------------------------------------------------------------
 
-def spear_line(v, hand, tip) -> tuple:
-    """(butt, direction) of the shaft (Roblox world) from a frame's numbers `v` and the right fist's grip point.
-    Turned over (sp_end 1), it's the blade's point that stands on the floor place, `tip` studs from the butt."""
+def spear_line(v, hand) -> tuple:
+    """(butt, direction) of the shaft (Roblox world) from a frame's numbers `v` and the right fist's grip point."""
     m, h = v["sp_mode"][0], v["sp_mode"][1]
     B, D, s = W(*v["sp_butt"]), W(*v["sp_dir"]), v["sp_slide"][0]
     D = D.normalized() if D.length > 1e-6 else Vector((0, 1, 0))
-    over = v["sp_end"][0] > 0.5
     up = hand - B
-    up = up.normalized() if up.length > 1e-6 else (-D if over else D)
-    pinned, butt_pinned, standing = (-up, B + up * tip, B - D * tip) if over else (up, B, B)
-    held = D.lerp(pinned, m).normalized()
-    butt_held = (hand - D * s).lerp(butt_pinned, m)
-    return standing.lerp(butt_held, h), D.lerp(held, h).normalized()
+    up = up.normalized() if up.length > 1e-6 else D
+    held = D.lerp(up, m).normalized()
+    butt_held = (hand - D * s).lerp(B, m)
+    return B.lerp(butt_held, h), D.lerp(held, h).normalized()
 
 
 def spear_matrix(rest, butt, D, roll) -> Matrix:
@@ -222,7 +219,7 @@ HUB = {
     "T": (3, -5, -6, 0.12, 0, 0), "feet": {"Right Leg": (0.85, 0.15), "Left Leg": (-0.8, -0.12)}, "RL": (0, 0, 0), "LL": (0, 0, 0),
     "crouch": 0.08, "look": EYES, "H": (0, 0, 0), "RA": ("reach", HAND_LEAN, (24, 0, 48)), "LA": (-4, 0, -9), "lift": 0.0,
 }
-SPEAR_HUB = {"m": 1.0, "h": 1.0, "roll": 0.0, "B": B_LEAN, "D": (0.0, 0.0, 1.0), "s": 2.8, "end": 0}
+SPEAR_HUB = {"m": 1.0, "h": 1.0, "roll": 0.0, "B": B_LEAN, "D": (0.0, 0.0, 1.0), "s": 2.8}
 
 
 class Take(rc.Take):
@@ -251,19 +248,17 @@ class Take(rc.Take):
         """Keys the spear at clip frame `f` (SPEAR_HUB's names): m, pinned (1) or carried (0); h, in his right fist
         (1) or standing on its own (0); roll, degrees about its line; B, the butt's floor place (right, forward, up);
         D, its line, butt to blade (right, forward, up); s, studs from the butt up to the fist, carried. What isn't
-        named holds; end, which end stands on B when pinned or standing (0 the butt, 1 the blade's point, turned
-        over), changes at its key and only while it's carried. Key it before the body at the same frame."""
+        named holds. Key it before the body at the same frame."""
         p = self.sp
         p.update(changes)
-        self._hold(f, "hold", {"sp_end": (p["end"], 0.0, 0.0)})
         return self._hold(f, ease, {"sp_mode": (p["m"], p["h"], p["roll"]), "sp_butt": p["B"], "sp_dir": p["D"],
                                     "sp_slide": (p["s"], 0.0, 0.0)})
 
     def line_now(self) -> tuple:
         """The shaft (butt, direction, Roblox) as the spear's last key and the right fist stand now."""
         v = {"sp_mode": (self.sp["m"], self.sp["h"], 0.0), "sp_butt": self.sp["B"], "sp_dir": self.sp["D"],
-             "sp_slide": (self.sp["s"], 0.0, 0.0), "sp_end": (self.sp["end"], 0.0, 0.0)}
-        return spear_line(v, r6.hand(self.rig, "Right Arm").to_translation(), self.rest["spear"]["tip"])
+             "sp_slide": (self.sp["s"], 0.0, 0.0)}
+        return spear_line(v, r6.hand(self.rig, "Right Arm").to_translation())
 
     def key(self, f, label=None, ease=None, feet_ease=None, **changes):
         """Keys the body at clip frame `f`. `ease` shapes the move that starts here (`feet_ease` the feet's). `label`
@@ -396,7 +391,7 @@ def props(rig, ctl, motors, rest, takes) -> dict:
                 pose = S["pose"]["R"]
                 if on > 1e-3:
                     standing = dict(v, sp_mode=(v["sp_mode"][0], 0.0, 0.0))
-                    butt, D = spear_line(standing, hand, sp["tip"])
+                    butt, D = spear_line(standing, hand)
                     point, miss, branch = on_shaft(rig, "Right Arm", rest["reach"]["Right Arm"], butt, D, s, sp["length"],
                                                    held_at["R"])
                     held_at["R"] = branch if on > 0.5 else None
@@ -409,7 +404,7 @@ def props(rig, ctl, motors, rest, takes) -> dict:
                 r6._key_parts(rig, frame, {"Right Arm": pose}, "LINEAR", "AUTO")
                 r6._refresh()
                 hand = r6.hand(rig, "Right Arm").to_translation()
-            butt, D = spear_line(v, hand, sp["tip"])
+            butt, D = spear_line(v, hand)
             M = spear_matrix(rest, butt, D, v["sp_mode"][2])
             c0 = r6.to_roblox(motors[SPEAR].matrix_world)
             r6.key_matrices(rig, frame, {SPEAR: r6.to_blender(c0.inverted() @ M)})
@@ -631,60 +626,6 @@ def ground_wire(t):
         t.stand_ins.append(("shade", at))
 
 
-def ground_wire_blade(t):
-    """Ground Wire turned over, beside the butt-down take, for research's judgement in motion: he flips the spear out
-    at his right, the blade swinging back past his hip and down, carries it point-down before him raised in both fists,
-    and drives the blade home in the street. The ring goes out from the point, the discs low at its centre; he holds
-    behind the shaft, its butt cap standing up before his face. Then he draws it out, flips it back the same way at
-    his right, and stands it by his foot. A blade driven home, never a rod set in the ground."""
-    plant = (0.0, 0.92, -0.45)  # the point, a hand's width into the street square before him, between his feet
-    t.key(0, "the lean")
-    t.spear(4, ease="cubic")
-    t.spear(10, ease="out", m=0.0, D=(0.05, 0.0, 1.0), s=2.9)  # up out of the street at his right
-    t.key(10, ease="out", T=(-2, -8, -3, 0.05, 0, 0), crouch=0.06, RA=("reach", (2.15, 0.6, 3.5), (44, 0, 48)),
-          look=(0.0, 8.0, 5.0), H=(0, 0, 0))
-    t.spear(16, D=(0.08, -1.0, 0.15), s=3.8)  # the flip: the blade goes back past his right hip, out of his head's way
-    t.key(16, "the flip", T=(-4, -14, -4, 0.05, 0, -0.05), crouch=0.04, RA=("reach", (2.2, 0.55, 3.7), (50, 0, 52)))
-    t.spear(21, ease="in", D=(0.02, 0.08, -1.0), s=4.6, end=1)  # point-down at his right
-    t.key(21, ease="in", T=(-6, -12, -2, 0, 0, -0.05), crouch=0.0, RA=("reach", (2.0, 0.9, 3.9), (70, 0, 46)))
-    # brought before him, raised in both fists, the point out ahead of his legs and the discs clear of his belt; it
-    # swings in under him as it comes down, to touch the street where it goes in, then runs down its own line
-    t.spear(24, ease="snap", D=(0.0, 0.12, -1.0), s=4.6, B=(plant[0], plant[1], 0.0))
-    t.key(24, "raised before him", ease="snap", T=(-8, -12, 0, 0, 0, -0.08), crouch=-0.04,
-          RA=("reach", (0.05, 1.05, 3.8), (96, 0, 8)), LA=("shaft", 4.2, (110, 0, -10)))
-    t.spear(27, ease="in", m=1.0)
-    t.key(27, ease="in", T=(2, -12, 0, 0, 0, 0.0), crouch=0.34, feet={"Right Leg": (1.05, 0.2), "Left Leg": (-0.85, -0.3)},
-          RA=("reach", (0.04, 1.1, 3.2), (76, 0, 8)))
-    t.spear(28, B=plant)
-    t.key(28, "driven home", ease="out", T=(3, -12, 0, 0, 0, 0.03), crouch=0.46,
-          feet={"Right Leg": (1.05, 0.2), "Left Leg": (-0.85, -0.3)}, RA=("reach", (0.05, 1.14, 2.75), (70, 0, 8)),
-          look=(0.0, 9.0, 3.4))
-    t.mark(28, "Plant")
-    t.key(37, ease="sine", T=(4, -12, 0, 0, 0, 0.04), crouch=0.42, look=(0.0, 10.0, 4.2))
-    t.key(73, "held behind it", ease="sine", T=(3, -12, 0, 0, 0, 0.03), crouch=0.4)
-    t.key(113, ease="sine", T=(5, -12, 0, 0, 0, 0.04), crouch=0.42)
-    t.key(127, ease="cubic", T=(3, -12, 0, 0, 0, 0.03), crouch=0.38)
-    t.mark(127, "Release")
-    t.spear(127, ease="cubic")
-    t.spear(131, ease="in", B=(plant[0], plant[1], 0.0))  # drawn up its own line out of the street
-    t.key(131, ease="in", T=(1, -12, 0, 0, 0, 0.02), crouch=0.3, RA=("reach", (0.04, 1.1, 3.2), (76, 0, 8)))
-    t.spear(137, ease="out", m=0.0, D=(0.0, 0.06, -1.0), s=4.6)  # yanked clear
-    t.key(137, "drawn out", ease="out", T=(-2, -10, 0, 0, 0, 0.0), crouch=0.08, feet=HUB["feet"],
-          RA=("reach", (0.1, 1.1, 3.8), (90, 0, 10)), look=EYES)
-    t.key(140, ease="cubic", LA=(-6, 0, -10))  # the left lets go before it goes out to his right
-    t.spear(144, ease="cubic", D=(0.02, 0.08, -1.0))  # out to his right, still point-down
-    t.key(144, ease="cubic", T=(-4, -12, -2, 0, 0, -0.05), RA=("reach", (2.0, 0.9, 3.9), (70, 0, 46)))
-    t.spear(151, D=(0.08, -1.0, 0.15), s=3.8)  # flipped back the way it came, the blade past his right hip
-    t.key(151, T=(-4, -14, -4, 0.05, 0, -0.05), RA=("reach", (2.2, 0.55, 3.7), (50, 0, 52)))
-    t.spear(158, ease="cubic", D=(0.05, 0.0, 1.0), s=2.9, end=0, B=B_LEAN)
-    t.key(158, ease="cubic", T=(2, -5, -2), crouch=0.08, RA=("reach", (2.25, 0.5, 3.1), (30, 0, 48)))
-    t.spear(165, ease="hold", m=1.0)
-    t.key(165, ease="sine", T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
-    t.key(182)
-    for at in RING:
-        t.stand_ins.append(("shade", at))
-
-
 def hit(t):
     """It lands on his chest and he gives it a step's worth of nothing: his shoulders rock back, his head ticks, his
     fist stays on the spear, and the spear stays where it is. A wall takes a hit."""
@@ -796,14 +737,13 @@ def work(t):
     t.stand_ins.append(("post", POST))
 
 
-CLIPS = {"Idle": idle, "Combo": combo, "GroundWire": ground_wire, "GroundWireBlade": ground_wire_blade, "Hit": hit,
+CLIPS = {"Idle": idle, "Combo": combo, "GroundWire": ground_wire, "Hit": hit,
          "Down": down, "Up": up, "Reveal": reveal, "Work": work}
 # Each clip's cameras: where they look (a stage place), how far off, and the pose sheet's rows (the first is the
 # blocking's). The spear stands eight studs, so every view stands further off than Pip's.
 VIEWS = {"Idle": ((0.7, 0.2, 3.9), 19.0, ("game", "side", "front")),
          "Combo": ((0.4, 1.4, 3.9), 21.0, ("game", "side", "front")),
          "GroundWire": ((0.4, 1.2, 3.9), 22.0, ("game", "side", "front")),
-         "GroundWireBlade": ((0.4, 1.2, 3.9), 22.0, ("game", "side", "front")),
          "Hit": ((0.7, 0.2, 3.9), 19.0, ("game", "side")),
          "Down": ((0.9, -0.4, 3.2), 19.0, ("game", "side", "front")),
          "Up": ((0.9, -0.4, 3.2), 19.0, ("game", "side", "front")),

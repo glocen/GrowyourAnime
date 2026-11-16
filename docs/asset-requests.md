@@ -6025,7 +6025,6 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 - **In motion:** `film_<Clip>.mp4` in `build/scratch/modulo/watt/clips/`, each from its first view at 30 a second (the `film` mode). The two Ground Wire takes are side by side in `film_GroundWire_both.mp4`.
   - From the player's camera, both drives travel about a stud: the light carries Ground Wire, the pose only starts it (the study's 3).
 - **Next:** research's pick between the two Ground Wire takes. Then the export with its sheets, the content check, the delivery to `build/handoff/Watt/clips/`, and Ground Wire's look with Faber (`/ga-action`).
-- **For Faber at install:** the bay's post cap at Work's palm (above); `Voidkin.luau`'s "plants the wrench"; the markers Plant and Release, at 25 and 124 butt-down, 28 and 127 blade-down.
 
 **Research's verdict on the timing, and the pick (Quaestor, 2026-11-16, 23:44).** Read frame by frame at 30 a second, from `film_GroundWire_both.mp4` (every frame to 0.7 s, then every fifth), `film_Combo.mp4` and `film_Work.mp4`. Research can't play a film, so the frames stand in for full speed.
 - **Felt:** a quiet wall that answers with his spear. Each Combo hit leaves a new outline (the bar across, the rising diagonal, the drive), and Ground Wire lifts the spear high in both hands and drives it home in a fifth of a second.
@@ -6033,6 +6032,24 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 - **The one bold thing:** the planted spear, blade and discs above his head through Ground Wire's 1.7 s hold.
 - **The pick: butt-down.** Blade-down's flip spends 0.20 to 0.27 s pointed at the camera, nearly gone, and reads only at 0.30 to 0.37 s. From 0.40 s its blade and discs sit low behind him, so the plant's point and the light's source are hidden, and the hold shows a bare shaft. The hold is what the player watches, so the blocking read's case for blade-down doesn't survive the player's camera. Butt-down's lift is its own anticipation.
 - **No fixes.** The Combo carries the blocking read's two asks, and Work's post brings the palm before his shoulder. The Signature words stay "plants his weapon" (25c8c6f). Faber's markers are the butt-down ones, Plant 25 and Release 124.
+
+**Delivery 4, Watt's clips** (Modulo, 2026-11-16, 23:47 by the clock):
+- **What:** eight clips in `build/handoff/Watt/clips/`: `Watt_<Clip>.json` for Idle, Combo, GroundWire, Hit, Down, Up, Reveal and Work, `Watt.clips.json` (frames, loops, markers), and each clip's review pack (`pack_<Clip>.png` and `.txt`).
+  - The spear's keys ride in each json as the joint `Watt_Spear` on the Torso.
+  - The blade-down take and its code are gone from `tools/blender/watt_clips.py`.
+- **The audit** passes for six clips. Combo 54 and Ground Wire 47 are over only on "Arm through body", the two-handed holds research accepted as R6's own look.
+- **The content check:** PASS on all twelve files (the nine bare strips, the slung spear at 64 px, two packs), 2026-11-16 by 23:45. Its notes for Ground Wire's look:
+  1. The light starts at the spear's foot in the street.
+  2. It never bursts where the shaft overlaps a Shade from the player's camera, or it could read as coming off the body.
+- **For Faber at install:**
+  - The markers are Plant 25 and Release 124 in GroundWire, and Hit1 21, Hit2 36 and Hit3 60 in Combo.
+  - The bay's post cap goes where Work's palm rests: 1.7 left, 1.75 ahead of his root, 2.95 up.
+- **Four facts:**
+  - Implemented: yes.
+  - Tested: the audit and the content check, above.
+  - Visually reviewed: research's pass at competent, 23:44.
+  - Director-accepted: not yet.
+- **Next:** Ground Wire's look with Faber (`/ga-action`).
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 

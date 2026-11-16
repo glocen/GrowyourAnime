@@ -1,0 +1,28 @@
+GroundWire: 171 frames, 2.83 s
+  the discs and the blade, nearest his head and hair (studs, past 0 is clear): 0.36 at 25
+  the same as the game fades the clip in from the walk's slung spear, or out to it: 0.45 (fading in at 0.00)
+  the spear's nearest each part of him, less a fist's width at a holding hand: Head 0.26 at 25; Torso 0.10 at 21; Right Arm -0.06 at 151; Left Arm 0.05 at 13; Right Leg -0.03 at 137; Left Leg 0.21 at 21
+  the butt at its lowest over the floor: -0.01 at 152; the blade's point: 7.11 at 136
+  the butt's most slide in a frame while it's on the street: 0.039 at 152; the point's fastest: 1.41 studs a frame at 11
+  a hand that can't reach the shaft, by how far (studs): right 0.00 at 0, left 0.30 at 129
+  his chin at its lowest against the torso, of 8 degrees: 5.8 at 21
+  a leg's widest swing: 19 degrees at 110
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 170), left 0 (to 170)
+  each arm at its highest: right -1 degrees at 21, left 8 at 17
+[audit] Watt_GroundWire.json (export, 171 poses)
+  Legs cross            0.000 studs
+  Arm through body      0.651 studs at 0.7833 (Left Arm into Torso)   OVER
+  Leg out of hip        0.034 studs at 0.0 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 1.4 (Right Leg)
+  Pop                   2.202x at 2.4 (Right Arm turns 17.2 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip            36.257 deg at 0.4 (Left Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 2.2 (the head off its neck)
+  Nod                   5.800 deg at 0.35 (the head against the torso)
+  Beat                  7.202x at 0.4 (Left Arm turns 39.0 deg in one frame, on the marker Plant; the clip's own beat, for information)
+  Shoulder cap          0.305 studs at 2.4333 (Right Arm; inherent to R6, for information)
+  Eyes                 -9.1 to +2.5 deg (at 0.4167 and 0.2667; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT FAIL: 1 over

@@ -11,6 +11,8 @@ Run, each a headless Blender job:
   ... --python tools/blender/hud_art.py -- <out> contact     the heads alone, to choose the angles
   ... --python tools/blender/hud_art.py -- <out> make        every image, into <out>/images
   ... --python tools/blender/hud_art.py -- <out> sheet       the review sheet, from the images
+Naming Voidkin after `contact` or `make` shoots those alone: `make` then keeps every other image and its listing as
+they are. `review <names>` is the sheet for those alone, beside Rook's, for a portrait added after the launch three.
 """
 import json
 import math
@@ -30,6 +32,10 @@ import ui_sheet as ui  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 MODELS = REPO / "build" / "scratch" / "modulo"
+HANDOFF = REPO / "build" / "handoff"
+# Whose model is read from its delivery (build/handoff/<Name>: the recipe, its meshes and its maps), not from a .blend.
+# Watt's only .blend is the first design's, which left the game (AR11, delivery 3).
+DELIVERED = ("Watt", "Kirra")
 KIT = REPO / "build" / "handoff" / "UI" / "kit"
 K = 4            # pixels a point in a slice, the kit's
 NECK = Vector((0.0, 0.0, 4.0))  # R6's neck: the head turns about it
@@ -50,6 +56,13 @@ PORTRAITS = {
     # at the card's size it's a line through her face.
     "Lyric": dict(side=1, body=32, turn=22, tilt=4, nod=-2, elevation=2, centre=(0.0, 0, 4.56), span=2.55,
                   head=("Lyric_Head", "Lyric_HeadEdge"), hide=("Lyric_Staff",)),
+    # The quiet wall: the collar up to his nose, so the eyes do the talking, level and steady over it. The pale band
+    # across his chest is the sling, the coat's own; the spear itself hardly enters the crop.
+    "Watt": dict(side=1, body=30, turn=20, tilt=0, nod=3, elevation=2, centre=(0.0, 0, 4.45), span=2.85,
+                 head=("Watt_Head",), hide=()),
+    # The courier: a quick sideways look back over the shoulder, a touch sly, her scarf's tail over the near shoulder.
+    "Kirra": dict(side=-1, body=38, turn=26, tilt=-5, nod=2, elevation=1, centre=(0.0, 0, 4.35), span=2.7,
+                  head=("Kirra_Head",), hide=()),
 }
 
 
@@ -62,14 +75,51 @@ def voidkin_rarity(name):
     return found.group(1)
 
 
+def delivered_piece(name, record, material):
+    """A delivered mesh where it stands at rest (its points are about its centre `c`), turned to Blender's frame, with
+    its UVs and its own normals."""
+    def turned(v):
+        return (v[0], -v[2], v[1])
+
+    p, n, t, c = record["p"], record["n"], record["t"], record["c"]
+    tris = [record["f"][i:i + 9] for i in range(0, len(record["f"]), 9)]   # corners, their normals, their UVs
+    data = bpy.data.meshes.new(name)
+    data.from_pydata([turned((p[i] + c[0], p[i + 1] + c[1], p[i + 2] + c[2])) for i in range(0, len(p), 3)], [],
+                     [tuple(tri[:3]) for tri in tris])
+    uv = data.uv_layers.new(name="UVMap")
+    normals = []
+    for poly, tri in zip(data.polygons, tris):
+        poly.use_smooth = True
+        for loop, k in zip(poly.loop_indices, tri[6:9]):
+            uv.data[loop].uv = (t[2 * k], 1 - t[2 * k + 1])
+        normals += [turned(n[3 * k:3 * k + 3]) for k in tri[3:6]]
+    data.normals_split_custom_set(normals)
+    data.materials.append(material)
+    return bpy.data.objects.new(name, data)
+
+
+def delivered(name):
+    """A Voidkin as delivered: its recipe's pieces at rest on its maps, its glow cold, as it stands (the recipe's
+    `cold`). The Roblox frame turned to the .blend's: facing +Y, the feet on z = 0."""
+    folder = HANDOFF / name
+    recipe = json.loads((folder / f"{name}.recipe.json").read_text(encoding="utf-8"))
+    material = rm.baked(name, {kind: folder / file for kind, file in recipe["maps"].items()}, 0.0)
+    return [delivered_piece(piece["name"], json.loads((folder / piece["mesh"]).read_text(encoding="utf-8")), material)
+            for piece in recipe["pieces"]]
+
+
 def shoot_portrait(name, out: Path, size=RENDER):
     """One Voidkin's head and shoulders, on transparency."""
     p = PORTRAITS[name]
     scene = bl.reset_scene()
     scene.world = bpy.data.worlds.new("Portrait")
-    with bpy.data.libraries.load(str(MODELS / name.lower() / "model" / f"{name.lower()}_model.blend")) as (src, dst):
-        dst.objects = list(src.objects)
-    for o in dst.objects:
+    if name in DELIVERED:
+        objects = delivered(name)
+    else:
+        with bpy.data.libraries.load(str(MODELS / name.lower() / "model" / f"{name.lower()}_model.blend")) as (src, dst):
+            dst.objects = list(src.objects)
+        objects = dst.objects
+    for o in objects:
         if o.type == "MESH" and o.name not in p["hide"]:
             scene.collection.objects.link(o)
     bpy.context.view_layer.update()
@@ -95,9 +145,9 @@ def shoot_portrait(name, out: Path, size=RENDER):
     return shot
 
 
-def contact(out: Path):
+def contact(out: Path, only=()):
     """The heads alone, large and at the card's size, over a dark ground: to choose the angles."""
-    tiles = [shoot_portrait(name, out) for name in PORTRAITS]
+    tiles = [shoot_portrait(name, out) for name in (only or PORTRAITS)]
     page = rs.canvas(len(tiles) * 328 + 16, 376 + 124 + 40, (0.09, 0.09, 0.11))
     for i, shot in enumerate(tiles):
         rs.paste(page, rs.shrink(shot, 0.5), 16 + i * 328, 16)
@@ -212,18 +262,20 @@ def sweep():
 
 # --- every image ---------------------------------------------------------------------------------------------------
 
-def make(out: Path):
+def make(out: Path, only=()):
     kit = json.loads((KIT / "kit.json").read_text(encoding="utf-8"))
     images = out / "images"
     images.mkdir(parents=True, exist_ok=True)
     listing = {}
+    if only:   # those alone: every other image and its listing stay as they are
+        listing = json.loads((out / "hud_art.json").read_text(encoding="utf-8"))["images"]
 
     def keep(name, px, entry, use):
         rs.save(px, images / f"{name}.png")
         listing[name] = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]], points=entry["points"],
                              pad=entry["pad"], use=use)
 
-    for who in PORTRAITS:
+    for who in (only or PORTRAITS):
         rarity = voidkin_rarity(who)
         shot = shoot_portrait(who, out)
         rs.save(shot, out / f"{who}_uncut.png")
@@ -231,6 +283,9 @@ def make(out: Path):
             px, entry = cut(shot, rarity, small, kit)
             keep(f"Portrait{who}{'Small' if small else ''}", px, entry,
                  f"{who}, cut to {frame_name(rarity, small)}: over its Back, under the frame, at the frame's own place and size")
+    if only:
+        (out / "hud_art.json").write_text(json.dumps(dict(pixelsPerPoint=K, images=listing), indent=1), encoding="utf-8")
+        return
     shot = shoot_unknown(out)
     rs.save(shot, out / "Unknown_uncut.png")
     for rarity in RARITIES:
@@ -253,7 +308,9 @@ def make(out: Path):
 LOOK = MODELS / "lanternrow"   # the merge's frames (tools/blender/lantern_row_look.py, `M` and `M far`): the street to read over
 WHO = {"Rook": "sizing you up: the gauntlet's shoulder forward, chin down, a level look from under the brow",
        "Pip": "looking up from under a hat too big, head cocked, eager and a little unsure",
-       "Lyric": "between songs: composed, chin a touch up, the headset to the camera"}
+       "Lyric": "between songs: composed, chin a touch up, the headset to the camera",
+       "Watt": "the quiet wall: the collar up to his nose, a level, steady look over it",
+       "Kirra": "a quick sideways look back over the shoulder, a touch sly"}
 
 
 def layers(page, x, y, names, scale):
@@ -368,16 +425,61 @@ def sheet(out: Path):
     rs.save(page, out / "hud_art_sheet.png")
 
 
+def review(out: Path, names):
+    """The sheet for portraits added after the launch three, beside Rook's: each in its frame as the game lays it, the
+    small cut at the lead's card's size over Lantern Row's dark side and its bright end, and each alone at 64 px over
+    dark, as moderation meets it."""
+    global LOADED
+    LOADED = out / "images"
+    street, far = rs.load(LOOK / "M_frame.png"), rs.load(LOOK / "M_far_frame.png")
+    rs.OUT = out
+    cast = ["Rook", *names]
+    W, H = 24 + len(cast) * 536, 1060
+    page = rs.canvas(W, H, (0.075, 0.07, 0.085))
+    ink, soft = "#F2ECE2", "#B9B2C4"
+    text = [(24, 18, 26, f"Portraits for {' and '.join(names)}, made as Rook's (AR3, section 3), Rook's beside them.", ink),
+            (24, 54, 15, "Each is the Voidkin's own delivered model, cut to its rarity frame's mask, shown in the frame as the game "
+                         "lays it: Back, portrait, frame.", soft)]
+    y = 92
+    for i, who in enumerate(cast):
+        rarity = voidkin_rarity(who)
+        x = 24 + i * 536
+        framed(page, x, y, f"Portrait{who}", rarity, False, 0.5)
+        framed(page, x + 330, y + 10, f"Portrait{who}", rarity, True, 0.5)
+        framed(page, x + 376, y + 220, f"Portrait{who}", rarity, True, 0.25)
+        text.append((x + 60, y + 372, 15, f"{who}, {rarity}", ink))
+        text.append((x + 60, y + 394, 12, WHO[who], soft))
+    y += 440
+    text.append((24, y, 16, "The small cut at the lead's card's size over Lantern Row: its dark side and its bright end, at 2 pixels a point and at 1", ink))
+    for j, ground in enumerate((far[190:350, 0:788], street[50:210, 86:874])):
+        gy = y + 28 + j * 180
+        rs.paste(page, ground.copy(), 24, gy)
+        for i, who in enumerate(cast):
+            framed(page, 28 + i * 124, gy - 20, f"Portrait{who}", voidkin_rarity(who), True, 0.5)
+            framed(page, 524 + i * 62, gy + 30, f"Portrait{who}", voidkin_rarity(who), True, 0.25)
+    y += 28 + 2 * 180 + 10
+    text.append((24, y, 16, "Each alone at 64 px over dark, as moderation meets it", ink))
+    for i, who in enumerate(names):
+        px = rs.load(LOADED / f"Portrait{who}Small.png")
+        pad = 26 * K
+        rs.paste(page, rs.shrink(px[pad:-pad, pad:-pad], 64 / (px.shape[1] - 2 * pad)), 24 + i * 84, y + 28)
+    rs.paste(page, rs.text_layer(W, H, text), 0, 0)
+    rs.save(page, out / f"hud_portraits_{'_'.join(n.lower() for n in names)}.png")
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     mode = args[0] if args else "contact"
+    names = [a for a in args[1:] if a in PORTRAITS]
     if mode == "contact":
-        contact(out)
+        contact(out, names)
     elif mode == "make":
-        make(out)
+        make(out, names)
     elif mode == "sheet":
         sheet(out)
+    elif mode == "review":
+        review(out, names)
 
 
 if __name__ == "__main__":

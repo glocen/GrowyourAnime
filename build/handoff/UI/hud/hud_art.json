@@ -258,6 +258,58 @@
     "slantDegrees": 10
    },
    "use": "behind a critical number, under its outline, under its leading half: its height the digits' own, its left edge a third of a digit before the first digit, its width 0.6 of the number's and never under three times its height; it stretches along, never up"
+  },
+  "PortraitWatt": {
+   "file": "images/PortraitWatt.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "Watt, cut to FrameCommon: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitWattSmall": {
+   "file": "images/PortraitWattSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "Watt, cut to FrameCommonSmall: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitKirra": {
+   "file": "images/PortraitKirra.png",
+   "pixels": [
+    736,
+    800
+   ],
+   "points": [
+    184.0,
+    200.0
+   ],
+   "pad": 52.0,
+   "use": "Kirra, cut to FrameCommon: over its Back, under the frame, at the frame's own place and size"
+  },
+  "PortraitKirraSmall": {
+   "file": "images/PortraitKirraSmall.png",
+   "pixels": [
+    368,
+    400
+   ],
+   "points": [
+    92.0,
+    100.0
+   ],
+   "pad": 26.0,
+   "use": "Kirra, cut to FrameCommonSmall: over its Back, under the frame, at the frame's own place and size"
   }
  }
 }

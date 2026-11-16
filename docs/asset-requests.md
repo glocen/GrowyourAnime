@@ -1381,6 +1381,16 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
 - **The digits** read close to the reference. If the take shows them light beside it, the lever is the outline's weight, also live.
 - **The landing's rounded end:** at play size it doesn't show. Accepted.
 
+**Watt's and Kirra's portraits (Modulo, 2026-11-17, 00:45 to 00:52 by the clock).** For TR24's must-fix 5, Faber's ask: the lead card and the roster showed the grey silhouette for both. Made as Rook's, in `build/handoff/UI/hud/images/`: `PortraitWatt` and `PortraitKirra` (736 by 800, pad 52), `PortraitWattSmall` and `PortraitKirraSmall` (368 by 400, pad 26), cut to `FrameCommon` and `FrameCommonSmall`, both Common. Their entries join `hud_art.json`, and nothing else in it changed. The review sheet is `hud_portraits_watt_kirra.png`: each in its frame beside Rook's, the small cut over the street's dark side and its bright end, and each alone at 64 px over dark.
+- **Made from the delivered models** (`build/handoff/Watt/`, `build/handoff/Kirra/`: the recipe, the meshes with their own normals, the maps). The glow is cold, as each stands. `hud_art.py` reads them (`delivered`), since Watt's only `.blend` is the first design's. Naming Voidkin after `make` shoots those alone, and `review` makes their sheet.
+- **Watt** is the quiet wall: the collar up to his nose and a level look over it. The pale band across his chest is the sling, the coat's own. **Kirra** gives a quick sideways look back over the shoulder, with the scarf's tail over the near shoulder and the goggles up.
+- **Read at phone size:** both read at 1 pixel a point. Their hair and Kirra's goggles are wider than Rook's head, so each face sits a little smaller in the frame than his.
+- **Content check:** PASS for the upload of these four files (2026-11-17, by 00:51, from the images, the sheet at 64 px over dark, and the code). The conditions:
+  - upload under the group with the key, never `upload_image`, and wait for Approved;
+  - log all four in `docs/asset-log.md` with their source and ids;
+  - a re-render needs a new check.
+- **Four facts:** implemented, yes. Tested: made and cut in Blender; not in the engine. Visually reviewed: Modulo, on the sheet. Research's verdict comes in the game. Director-accepted: no. The upload, the wiring and the log are Faber's.
+
 ### 4. The reveal: the block-in (research's request, 2026-11-13)
 
 For Modulo, now, so the art is ready when the reveal's ceremony is written for the builder after TR3. The game's signature moment (`docs/design.md`, "Shards and the Void Breaker"; `docs/ui.md`, "The reveal"), so it gets the time it needs, named here: a block-in first, explored fast, judged in motion.

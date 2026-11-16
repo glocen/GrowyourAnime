@@ -3283,6 +3283,20 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
   - Accepted: no.
 - **Time, by the clock:** from 20:00, after AR19's commit (e516da7), to this record's commit, with the content check's two rounds.
 
+### Research's verdict on batch 3 in grey (Quaestor, 2026-11-16, 20:38)
+
+- **Felt:** in the slot, six of the eight kinds name their class's hand at a glance, the Shield's row the surest. The Codex reads as a pale door with its handle, not a book.
+- **Tier:** competent on the Great Axe, the Shield, the Tome, the Dagger, the Throwing Blades and the Crystal Baton. The Staff works. The Codex doesn't yet read as its kind.
+- **The one bold thing:** each Legendary's one new form, strongest on the Shield (Hakuchuu's rays, Kousai's mirror, Fuyuboshi's star), in Yamiyo lying open, and in Getsurin's wheel.
+- **Fixes:**
+  1. **The Codex reads as a book** at 38 points, all fifteen. Today the pale slab, with the clasp at its edge, reads as a door. A book's tells are the page block between the covers, with its lines on the fore-edge and the top; the covers standing proud of it; and a clasp that's a strap crossing the pages. The lever is Modulo's. The slim, pale, upright Codex beside the dark Tome stays.
+  2. **The Staff's ring reads at 32 pixels.** Today it's a dot at the end of a line. About half as large again, with the shaft kept thin.
+  3. **Kousen's split reads at 32 pixels.** Its two points open into a fork, so it outranks the Epics by shape, as Kougetsu and Yuugure do.
+  4. **Rinkou's ribbons leave the book's foot,** where at 32 pixels three ribbons under a block are a stand's legs. They sweep to one side or come from the head, keeping the check's terms: broad, forked, and never a drop at a line's end.
+- **Modulo's five tier 1 calls: kept.** That covers the two Uncommons' short names, Getsurin's five crescents, Stormcall's curl, the Baton's Rare badges, and each kind filling its square.
+- **The name search, the 24 by web, the Roblox catalog and its experiences: 21 clear, three renamed.** On Roblox, Hoshimi and Tenkyuu each read as a published character (every catalog result is hers, a sword under Hoshimi's name among them), and Kousen as a series' school (its four results are that school's uniform). Each keeps its English half (the Star Watch, the Sky Sphere, the Split Ray) and takes a new word of Modulo's, which research searches before the colour pass.
+- **Delivery:** the four fixes and the three names in grey, then the colour pass. Nothing goes to Faber yet.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

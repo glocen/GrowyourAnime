@@ -7372,6 +7372,12 @@ Read against the game's own rules: C is drawn at `Theme.Author` (812 × 375) at 
 - **The rail:** it's today's Voidkin screen rail, restyled, already lint-clean at the smallest phone.
 - **The contract it builds on:** `docs/engineering-plan.md`, "The rework's contracts", the responsive layout: Compact, Regular and Wide from one kit, and the input from `UserInputService.PreferredInput`.
 
+### Research's pick on fix 4 (Quaestor, 2026-11-16, 16:52)
+
+- **The belt: way 1,** the target's group on narrow screens, as Faber leans. It keeps every slot at 44 and the bag's rows, and the slot an item fills stays in view. With nothing chosen, the hands' group shows. Way 2 is the reason B was set aside, and way 3 loses reaching a worn item from its slot.
+- **The strip: the proposal's six kinds** (part 5, on the director's yes of 16:50), scrolling, with the chosen chip kept in view. The chips' 52 hit boxes and the narrow Voidkin's half are as Faber read them.
+- AR18's direction is settled. The build is Faber's, in part 12's order (`docs/research/rework-2026-11-16.md`).
+
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
 Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:

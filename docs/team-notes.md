@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 15:23, on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`).
-- **The proposal's twelve parts are written** (`docs/research/rework-2026-11-16.md`), with the attribute and Tower models (`tools/balance/attributes.py`, `tower.py`). It waits on the yes to the nine points (item 8 below). Chest rates are fitted after it.
-- **Given at 14:18:** AR16 works, TR23 works, and TR24's fix list of twelve, ranked (`docs/test-requests.md`, TR24). Faber's next: fixes 1 to 3 (what to do next, the fight on screen, the lead out of the view), which wait on no yes; then the contracts.
-- **The redesigns:** AR18, the inventory: C picked at 14:27, fixes 1 to 3 passed at 15:12; Faber's feasibility read (fix 4, the strip included) comes after his current piece. AR19, the generator: A, the Void Mill, picked at 15:04, its three fixes passed at 15:38. Next, Faber puts the block in the game to judge it in motion, after TR24's fixes 1 to 3 and ahead of the contracts (the director's top redesign); the finish waits on the director's call 3. AR17, the void kit: fixes passed at 15:23; its install and AR16's changes wait on the base's new size.
-- **Mine next:** each pass as it comes. The mist waits on the director (item 7).
+**Quaestor (research).** 2026-11-16, 16:52, on the director's yes of 16:50.
+- **In the register** (`docs/decisions.md`, two rows at 16:50): the nine points stand, with research's leans on the names (Might, Finesse, Vigor, Spirit, Insight) and on anime-industrial, said back to the director; the mist leaves the base and the map around it, which turn less somber. The Warrior's off hand stays open (item 7).
+- **The design follows** `docs/research/rework-2026-11-16.md`, part 12's order. Mine next: carry it into `docs/design.md` and `docs/ui.md`, then fit the chest rates.
+- **Faber's order, given at 16:52:** TR24's fixes 1 to 3 reviewed once the screen's back; AR19's block in the game; the mist out with fix 9's dusk cut; TR24's fixes 5, 6, 8, 10, 11, 12; the base's three sizes in grey (part 7); then part 12's builds from attributes on. AR18's fix 4: the target's group on narrow screens, six kinds in a scrolling strip.
+- **Modulo's next:** the base and the map around it, no mist and less somber, two or three takes from the player's camera for research's pick; the far shard rechecked without the haze.
 
 **Faber (builder).** 2026-11-16, 16:50, TR24's fixes built, the contracts and AR18's read written.
 - **TR24's fixes 1 to 3, built and logic-tested** (6e05f52; TR24, "Fixes 1 to 3"). They need the screen unlocked: the PC was on its Windows lock screen at 16:42, so a playtest draws no frames. Then the fade's and the guide's cases, the `Fight:` set's effect checks, and the phone review on a fresh profile, for research's pass.
@@ -29,7 +29,6 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on the director"):
 
-1. A second look at gear belonging to the account, before phase 3.
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
 
@@ -39,8 +38,7 @@ For Faber:
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 For research:
 
-7. **The mist** (to Modulo, read at 02:16: "a bit to much atmosphere imo like that mist is a bit to much"): only the Day sky's haze is thinned. Did you mean the dusk in the game too? Say so and Faber and Modulo thin it.
-8. **Your package of 13:41, restated in nine points** (`docs/decisions.md`, its row; the words in `docs/archive/director-package-2026-11-16.md`): say yes, or the numbers to change. Three questions inside it: Strength, Agility and Intelligence are already types, so which gets new names (my lean: the attributes)? does "anime-industrial" keep the void machines of 2026-11-15 (my reading: void machines built from readable mechanical parts, never a real power plant)? And does the Warrior keep two swords, since the Tank already holds the Shield? Your words on account-wide presets read as keeping gear as the account's (item 1 above); say if not. The proposal that answers your twelve parts: `docs/research/rework-2026-11-16.md`.
+7. **The Warrior's off hand** (the package's point 8, the last open question in it): two swords, as you said on 2026-11-12, or the package's Sword and Shield? Research's lean: two swords, since the Tank already holds the Shield and each class's pair should be its own.
 
 ### Notices
 

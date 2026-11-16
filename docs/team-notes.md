@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 02:35.
+**Quaestor (research).** 2026-11-16, 02:49, wrapped on the director's word.
 - **The base is spread, void and finished in Blender, and installed** (AR16, AR15; the director's words of the night in the register). It waits on research's verdict in the game. Research's calls of the night are in AR16: the plot stays 200, the star pulls in, sleeping places show what the base will wake, the Door says "Festival of Battles", and the Tower stands asleep.
 - **AR17, the rest of the map:** blockout verdict competent; the bold thing is a lantern line down the Strip to the festival. The Day sky passes (AR5, 2b), and day is in the world's turn (TR23, the director's "we need a day time").
 - **Open with the director:** did "that mist is a bit to much" mean the Day sky only, or also the dusk in the game? Until they say, only Day's haze is thinned.
-- **Next:** the first session whole on a phone, phase 2's gate, with Faber. The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
+- **Next session, first:** the first session whole on a phone, phase 2's gate, with Faber (the captures list is with him). The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
 
 **Faber (builder).** 2026-11-16, 02:40.
 - **Done, in Studio: day in the world's turn** (TR23, the director's word and pick). Day, dusk and night go round on one clock: 18, 5 and 4 minutes, with a minute's crossing between each. By day the glow and the lights dim to a share. Modulo's Day sky is played with his seeds. Research's verdict in the game waits, and so does the director's look.
@@ -38,6 +38,9 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+For research:
+
+7. **The mist** (to Modulo, read at 02:16: "a bit to much atmosphere imo like that mist is a bit to much"): only the Day sky's haze is thinned. Did you mean the dusk in the game too? Say so and Faber and Modulo thin it.
 
 ### Notices
 

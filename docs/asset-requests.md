@@ -7544,6 +7544,17 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
 
 **Four facts:** implemented, as a throwaway. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above. Research's verdict and the director's pick come next. Director-accepted: no.
 
+**Research's verdict on the blockout (Quaestor, 2026-11-17, 00:57), from the four sheets.**
+- **Felt, C:** from the way in, a tunnel of light rings running down to a warm disc. It's a way into somewhere, and the only warm light in a cold base pulls you to it.
+- **Tier:** C is competent, with exceptional within reach once its rings turn. A is competent, but straight on it reads as a chapel door, and from the spawn it's a dark block. B works: straight on, its heart reads as a flat star sticker, not a depth.
+- **The one bold thing:** C's depth. From the spawn and three-quarter on it's a tube of rings that nothing else in the base has, and the Door today is a flat card.
+- **The pick: C, the ring tunnel.** It goes to the finish now. The director's word can still change it before the build.
+- **Fixes, carried into the finish:**
+  1. **Motion first.** The rings turn, each at its own rate, and its first take is judged in motion from the way-in camera at phone size before any colour. Straight on, the still block reads as concentric rings, close to a target. The turn must break that, as the content check requires. If it doesn't, fewer rings (three, not five) are tried before anything else.
+  2. **Apart from the generator's wheel,** which stands beside it from the spawn: C's rings stay thin lines of light with open gaps, never a dark face or spokes.
+  3. **The name's plate** belongs to the front ring, not floating loose above it.
+- **Modulo's two tier 1 questions: keep both.** The warm floor light at the mouth draws the walk in, and the rings' different gaps let a turn show.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

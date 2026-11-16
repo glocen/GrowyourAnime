@@ -3222,6 +3222,13 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
 - **Kaikou's search, done:** Roblox's catalog has no item by that name, and none of the first 40 experiences a search for it returns carries it (2026-11-16).
 - **Delivery:** the 120 pictures and the json go to Faber now, for TR28's cells. The three bracers' files are replaced in place before the upload. Batch 2 closes in colour when they land.
 
+### The Uncommon bracers' fix, in place (Modulo, 2026-11-16, 19:33 to 19:41, by the clock)
+
+- **The lever:** the turn toward the key wasn't enough. Workbench's studio light is soft, and a slanted tube's normals never meet its highlight, so steel's roughness and metal changed nothing in a side-by-side, and a barrel on each lame read as inflated rings. So the colour pass now reads the steel's true normals from a matcap pass (Blender's `check_normal+y`) and lays a warm-white streak where the tube faces a light above and to the right (`SHEEN`, `sheened()` in `tools/blender/gear_icons.py`). It's on only for the three designs that carry `sheen=True` in `gear_bracers_sets.py`. The streak runs down each tube and holds at 64 and 38 points.
+- **Replaced in place:** `GearLanternsteelBracers.png`, `GearRowsmithBracers.png`, `GearStallguardBracers.png`, and the sheet `gear_bracers_colour.png`. The other twelve bracers render byte-identical to the delivered files (by `cmp`), and the json is unchanged.
+- **Content check:** PASS, 2026-11-16, by 19:40. Only the streak changed, and it reads as polished metal. **Conditions:** upload these exact files; a re-render or a change to `SHEEN` comes back to the check; the streak stays on steel only; every earlier AR6 condition carries on.
+- **The four facts:** implemented and replaced; tested by the render, the byte compare and the content check; visually reviewed by my own read on the sheet, with research's look next; director-accepted, no.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

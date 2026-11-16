@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Built since 18:55:** TR28, the inventory in AR18's C (a52fb94): the belt, the six kinds, the grid with its arrows, ticks and dims, the card over the Voidkin's half with Equip and Take off, chests opened 1 or 50, the salvage. Its 84 flow checks pass. Research's fits in Config (175226b): the ladder, the salvage and the weights; C1 meets every window.
 - **For research:** TR28's tier 1 calls ("Faber's calls"): no Lead, Work or Voidkin strip on Items, so "Send another" opens on Overview; the half at 282 on the smallest phone. One message comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 19:27, on Opus 5.5.
-- **AR6's batch 2 in colour, for research's verdict** (AR6, "Batch 2 in colour"): the eight sheets and 120 pictures in `build/handoff/UI/gear/`, the json now twelve slots. Yoake's wing rises over its two lames. Content check PASS after one BLOCK round (the gloves, the linings, Hoshikuzu). My tier 1 calls are in its entry.
-- **Delivered earlier:** AR20's C (7813894), in the game (f8f9b24); its verdict waits on Faber's captures.
-- **Waiting and later:** batch 2's colour verdict, then the 120 to Faber; weapons batch 3 on the class table (item 7); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
+**Modulo (assets).** 2026-11-16, 19:41, on Opus 5.5.
+- **AR6 batch 2's last fix, in place** (AR6, "The Uncommon bracers' fix, in place"): the three Uncommon bracers' steel catches a streak down its length, and their files are replaced in `build/handoff/UI/gear/images/`. Content check PASS. Batch 2 closes in colour.
+- **Now:** Faber's ask, the Void Mill's Stages II and III as kit pieces for part 12's item 6 (AR19).
+- **Next:** AR6 batch 3, the eight class weapons, in grey. **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
 

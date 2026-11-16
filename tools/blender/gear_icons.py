@@ -91,7 +91,10 @@ GLINT = "#FFF3C4"  # Legendary's border: its light
 WELL, CHANNEL = "#0B0C10", "#07080B"
 # Legendary's slot (research, 2026-11-15): a deep warm umber ground, the light kept to the centre, so gilt keeps its edge.
 UMBER, LEGEND_LIGHT = ("#34200E", "#1A1007"), 0.72
-NOW = dict(tone=LIT)  # the design being built
+# A polished steel tube's streak, which Workbench's soft light leaves flat (research's verdict on batch 2 in colour, the
+# Uncommon bracers): its light, above and to the right, toward the camera.
+SHEEN = (0.35, 0.65, 0.67)
+NOW = dict(tone=LIT, sheen=False)  # the design being built
 
 
 def tone(d):
@@ -119,7 +122,7 @@ def paint(key):
 def building(make):
     """A kind's own builder, noting the design it builds so its stone takes its set's tone."""
     def built(d, *more):
-        NOW["tone"] = tone(d)
+        NOW["tone"], NOW["sheen"] = tone(d), d.get("sheen", False)
         return make(d, *more)
     return built
 
@@ -156,7 +159,32 @@ def shoot(scene, out, centre, span):
     mask = render(scene, out)
     if metal:
         lit = tempered(lit, mask[..., 2] * mask[..., 3], metal)
+    if NOW["sheen"]:
+        lit = sheened(lit, *normals(scene, out, {"steel"}))
     return finish(lit, mask[..., 0] * mask[..., 3], mask[..., 1] * mask[..., 3], NOW["tone"])
+
+
+def normals(scene, out, keys):
+    """The parts in `keys` as camera-space normals, through Blender's matcap that encodes them; the rest black."""
+    for m in bpy.data.materials:
+        m.diffuse_color = (1, 1, 1, 1) if m.name[5:] in keys else (0, 0, 0, 1)
+    shading = scene.display.shading
+    shading.light, shading.studio_light, shading.color_type = "MATCAP", "check_normal+y.exr", "MATERIAL"
+    shading.show_cavity = shading.show_object_outline = shading.show_specular_highlight = False
+    px = render(scene, out)
+    n = px[..., :3] * 2 - 1
+    return n / np.maximum(np.linalg.norm(n, axis=-1, keepdims=True), 1e-4), (px[..., :3].max(axis=-1) > 0.02) * px[..., 3]
+
+
+def sheened(px, n, where):
+    """A streak where the steel faces SHEEN's light best, by its true normals: a band 0.1 wide in the cosine."""
+    h = np.array(SHEEN) / np.linalg.norm(SHEEN) + np.array([0.0, 0.0, 1.0])
+    ndh = np.clip(n @ (h / np.linalg.norm(h)), 0, 1)
+    top = np.percentile(ndh[where > 0.5], 99.0)
+    streak = (np.clip(1 - (top - ndh) / 0.1, 0, 1) ** 2 * where).astype(np.float32)
+    px = px.copy()
+    px[..., :3] += (c("#FFFBF2")[:3] - px[..., :3]) * (0.8 * streak[..., None])
+    return px
 
 
 def tempered(px, where, metal):

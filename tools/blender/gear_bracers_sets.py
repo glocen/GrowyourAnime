@@ -44,12 +44,13 @@ DESIGNS = (
     design("Scrap Bracers", "Common", "Plates beaten flat and riveted, three cord straps.", "scrap", facets=True,
            rivets=True, straps=3, strap_mat="cord"),
 
+    # sheen: in colour, the steel tube's highlight down its length (gear_icons.py; research, batch 2 in colour)
     design("Lanternsteel Bracers", "Uncommon", "Bright steel in three bands, a brass rim at each end.", "steel", bands=3,
-           rims="brass", straps=0),
+           rims="brass", straps=0, sheen=True),
     design("Rowsmith Bracers", "Uncommon", "A ridge down the outside, a brass lozenge, a flared elbow.", "steel",
-           ridge=True, lozenge="brass", flare=True),
+           ridge=True, lozenge="brass", flare=True, sheen=True),
     design("Stallguard Bracers", "Uncommon", "Brass studs down the outside, a brass rim at each end.", "steel",
-           studs="brass", rims="brass"),
+           studs="brass", rims="brass", sheen=True),
 
     design("Vambraces of Embers", "Rare", "A swelling frame round one stone on the outside, a line round each end.",
            "blued", line="filigree", orn="Embers", stone=("stone", 0.12)),

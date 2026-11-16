@@ -1,8 +1,8 @@
 """AR6, batch 2: Earrings in three designs at each rarity, in grey: a blockout for research's verdict.
 
-One family: one earring seen from the front and a little to the side, hanging from its hook (or its stud, or as a
-hoop), a short drop below. A hook and a single drop, so it never reads as the Amulet's loop or the Ring's band. A design
-is the hook and the drop. A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py; the set drops are the
+One family: one earring seen from the front and a little to the side, hanging from its hook or its stud, a short
+drop below. Never a hoop alone, or it reads as the Ring (research's verdict, 2026-11-16). A hook and a single drop,
+so it never reads as the Amulet's loop or the Ring's band. A design is the hook and the drop. A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py; the set drops are the
 amulet's pendants, drawn smaller), and the near word from Rare up is Eardrop.
 
 Each Legendary's one new form changes the silhouette: Kagayaki hangs a cascade of lights in three tiers widening down,
@@ -38,7 +38,7 @@ DESIGNS = (
     design("Bronze Earring", "Common", "A bronze bead on a hook.", "bronze", form="bead"),
     design("Scrap Earring", "Common", "A bent tag of scrap on an iron hook.", "scrap", chain_mat="iron", form="tag"),
 
-    design("Lanternsteel Earring", "Uncommon", "A steel hoop with a brass bead hung at its foot.", "steel", top="hoop",
+    design("Lanternsteel Earring", "Uncommon", "A steel hoop on a hook, a brass bead hung at its foot.", "steel",
            form="hoopbead", rims="brass"),
     design("Rowsmith Earring", "Uncommon", "A brass lozenge in a steel frame, on a hook.", "steel", form="lozenge",
            rims="brass"),
@@ -69,10 +69,8 @@ DESIGNS = (
 
 
 def hook(d):
-    """What the earring hangs from: a hook through the ear, a stud, or the hoop itself."""
+    """What the earring hangs from: a hook through the ear, or a stud."""
     top, metal = d["top"], d["chain_mat"]
-    if top == "hoop":
-        return [p.facing("Hoop", 0.5, 0.05, d["key"], (0.0, 0.0, 0.62))]
     if top == "stud":
         return [p.ball("Stud", 0.13, d["key"], (0.0, 0.0, 0.92), squash=(1, 0.6, 1)),
                 p.tube("Post", [(0.0, 0.0, 0.92), (0.0, 0.3, 0.92)], 0.025, metal, sides=6)]
@@ -90,10 +88,11 @@ def drop(d):
     if form == "none":
         return parts
     if form == "bead":
-        parts.append(p.ball("Bead", 0.22, key, (x0, y0, z0 + 0.2), segments=20, rings=12))
+        parts.append(p.ball("Bead", 0.22, key, (x0, y0, z0 + 0.4), segments=20, rings=12))   # hung from the link
     elif form == "hoopbead":
-        parts.append(p.facing("Link", 0.05, 0.018, d["rims"], (x0, y0, 0.08)))
-        parts.append(p.ball("Bead", 0.13, d["rims"], (x0, y0, -0.06), segments=16, rings=10))
+        parts.append(p.facing("Hoop", 0.32, 0.04, key, (x0, y0, 0.2)))
+        parts.append(p.facing("Link", 0.05, 0.018, d["rims"], (x0, y0, -0.17)))
+        parts.append(p.ball("Bead", 0.13, d["rims"], (x0, y0, -0.32), segments=16, rings=10))
     elif form == "beads":
         for k in range(3):
             z = 0.66 - 0.32 * k
@@ -147,8 +146,8 @@ def build(d):
 WORDS = dict(
     file="gear_earring_sets.png",
     title="Grow your Anime: Earrings in three designs at each rarity, in grey (AR6, batch 2)",
-    lead="One earring from the front and a little to the side, hanging from its hook, its stud, or as a hoop, a short "
-         "drop below. A design is the hook and the drop.",
+    lead="One earring from the front and a little to the side, hanging from its hook or its stud, a short drop below. "
+         "A design is the hook and the drop.",
     notes=(
         "A set keeps its word and its ornament on every kind: Embers swells round its stone, Hoarfrost is cut square, Gales "
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is "

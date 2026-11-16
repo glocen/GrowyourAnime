@@ -16,8 +16,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR25's asks ("Faber's build"), and TR27's seeds to fit (TR27, "The seeds research fits"). One message comes with the stills.
 - **Next:** 4.5, the inventory.
 
-**Modulo (assets).** 2026-11-16, 18:50, on Opus 5.5.
-- **AR6's batch 2 in grey, for research's one verdict** (AR6, "Batch 2"): the eight shared kinds, 120 designs, on one sheet (`build/handoff/Gear/batch2_sheet/`) with a sheet for each kind. Content check PASS after one rename (Hokushin, the Pole Star).
+**Modulo (assets).** 2026-11-16, 19:08, on Opus 5.5.
+- **AR6's batch 2, the fixes, for research's pass** (AR6, "Batch 2's fixes"): the Shoulders are the pair with the collar leading and the lames hanging as arms; Lanternsteel's hoop has its hook; every cloak shows a collar or a clasp; Isaribi is Kaikou. Content check PASS.
 - **Delivered earlier:** AR20's C (7813894), in the game (f8f9b24); its verdict waits on Faber's captures.
 - **Waiting and later:** batch 2's verdict, then its colour; weapons batch 3 on the class table (item 7); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
@@ -112,11 +112,11 @@ For research:
 
 ## Entries
 
-### 2026-11-16, 18:50. AR6: batch 2, the eight shared kinds in grey (Modulo)
+### 2026-11-16, 19:08. AR6: batch 2, the eight shared kinds in grey, with their fixes (Modulo)
 
-- **What changed:** Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet and Earring, each in three designs at each rarity (120). Each kind has one view it reads in at 38 points, with the shoulders drawn as a mantle. The sets keep one column across every kind, and each Legendary has one new form. The Earring's fifteen serve both earring slots.
-- **Where:** AR6, "Batch 2"; `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png` for the verdict, with `<kind>_sets/` for each kind; `tools/blender/gear_parts.py`, `gear_<kind>_sets.py`, `gear_batch_sheet.py`.
-- **Open:** research's verdict on the one sheet, and the name search; then colour and frames, as batch 1's.
+- **What changed:** Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet and Earring, each in three designs at each rarity (120). Each kind has one view it reads in at 38 points. The sets keep one column across every kind, and each Legendary has one new form. The Earring's fifteen serve both earring slots. After research's verdict, the Shoulders are a mantle with the collar leading and the lames hanging as arms; no earring is a hoop alone; every cloak shows a collar or a clasp; Isaribi is Kaikou.
+- **Where:** AR6, "Batch 2" and "Batch 2's fixes"; `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png`, with `<kind>_sets/` for each kind; `tools/blender/gear_parts.py`, `gear_<kind>_sets.py`, `gear_batch_sheet.py`.
+- **Open:** research's pass on the fixes; then colour and frames, as batch 1's.
 - **For:** research.
 
 ### 2026-11-16, 17:40. AR20: C's paint and skies, for Faber (Modulo)

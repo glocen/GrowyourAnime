@@ -3065,19 +3065,19 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
 - **For the one verdict:** `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png` (`tools/blender/gear_batch_sheet.py`). A row is a kind, its fifteen in their rarity's threes; a column is a set, carried down all eight. The sheet checks that every kind keeps the sets in one order.
 - **Each kind's own sheet,** laid as batch 1's (fifteen at 220 points, at the 38-point slot and as 32-pixel silhouettes, each with a name): `build/handoff/Gear/<kind>_sets/gear_<kind>_sets.png` for shoulders, chest, gloves, bracers, boots, cloak, amulet and earring, each from `tools/blender/gear_<kind>_sets.py`. The parts they share are in `gear_parts.py`. Workbench, no GPU turn.
 - **One view per kind,** so each reads as its kind at 38 points:
-  - **Shoulders:** a mantle as it sits on a body, from the front and a little above: a yoke, a standing collar, a cop on each shoulder with its lames stepping down. Five tries came first: two cops on a strap read as goggles or worse, one cop alone as a helmet or a bell.
+  - **Shoulders:** a mantle as it sits on a body, from the front and above, its collar leading: a plate sloping from the collar over both shoulders, a shallow cop leant out on each, and at least two lames a side hanging straight down as the arms hang. Its tries are in "Batch 2's fixes" below.
   - **Chest Armor:** a breastplate turned a little, with its back plate, belt and fauld lames.
   - **Gloves:** the right gauntlet from the back of the hand, fingers up, over its cuff.
   - **Bracers:** a vambrace slanted, the elbow high on the left and the wrist low on the right, with its straps.
   - **Boots:** the right boot from its outer side, toe to the right: shaft, foot plates, sole and heel, and a knee guard on some.
-  - **Cloak:** from behind and a little to the side, its folds widening to the hem, a collar or a hood at the neck.
+  - **Cloak:** from behind and a little to the side, its folds widening to the hem, and at the neck a collar, a hood, or a rolled collar with its clasp.
   - **Amulet:** a necklace from the front and a little above, its loop lying as it would round a neck, the pendant at its dip. The pendant is drawn at 1.45 times its first size, since at 32 pixels the pendant is the design.
-  - **Earring:** one earring, a hook, a stud or a hoop over its drop. The set drops are the amulet's pendants drawn smaller, so a set matches across the two.
+  - **Earring:** one earring, a hook or a stud over its drop, never a hoop alone. The set drops are the amulet's pendants drawn smaller, so a set matches across the two.
 - **Names,** by batch 1's rules, every set in the same column on every kind:
   - Iron, Bronze, Scrap; Lanternsteel, Rowsmith, Stallguard; of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom.
   - The Commons and Uncommons say the slot (Shoulders, Chestplate, Gloves, Bracers, Boots, Cloak, Amulet, Earring). From Rare up a near word: Pauldrons, Cuirass, Gauntlets, Vambraces, Greaves, Mantle, Pendant at Rare and Talisman at Epic, Eardrop.
   - **Legendary, one new form each:**
-    - **Shoulders:** Noroshi, the Beacon (a beacon's spire on the cop); Yoake, the Daybreak (the lames sweep into a folded wing); Isaribi, the Sea Lights (a crest rises over the cop like a wave).
+    - **Shoulders:** Noroshi, the Beacon (a beacon's spire on the cop); Yoake, the Daybreak (the lames sweep into a folded wing); Kaikou, the Sea Light (a crest rises over the cop like a wave; Isaribi before research's name search).
     - **Chest Armor:** Hinode, the Sunrise (rays behind the collar); Tsukiyo, the Moonlit Sky (the collar rises into a crescent); Amanogawa, the Starway (a sash of stars across the chest).
     - **Gloves:** Kirameki, the Glint (the cuff spreads into a ring of points); Nagareboshi, the Meteor (a falling star's streak from the back of the hand); Yuubae, the Evening Glow (a setting sun's disc behind the hand).
     - **Bracers:** Asayake, the Red Morning (rays fan from the outer side); Hokushin, the Pole Star (a four-pointed star past the sleeve); Hakkou, the Radiance (a ring of light round the sleeve).
@@ -3114,6 +3114,43 @@ From the batch sheet and the Shoulders' own, at 38 points and in the 32-pixel si
   3. **The plain Cloaks:** the Common with no collar reads as a skirt from behind. Every cloak shows its collar or clasp at the neck. Serves the kind's read.
 - **The tier 1 calls:** the Earring's fifteen serving both slots, the Cloak's plain names, the Amulet's two near words, and each kind filling its square all stand. The mantle, the first, is fix 1.
 - **The names, searched by 18:54:** 23 of the 24 Legendaries are clear on the web, and the four namesakes found are ordinary words used widely, so they stand. **Isaribi is renamed Kaikou, the Sea Light:** that name and its sea theme both match a series' character. Kaikou searched clear. The search ran on the web with Roblox among its terms; Roblox's own catalog and experiences get a search before upload.
+
+### Batch 2's fixes (Modulo, 2026-11-16)
+
+Research's three fixes and the rename, drawn again in grey on each kind's sheet and on the batch sheet (`build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png`).
+- **1. The Shoulders: the pair, turned so the collar leads** (`gear_shoulders_sets.py`):
+  - **What changed:**
+    - The cops are shallow, about two thirds as high as they're wide, and lean out 34°.
+    - The lames hang from each cop's outer end: at least two a side, three by default, four on Lanternsteel and Nightloom. Each leans less than the one above, so the last hangs straight.
+    - A plate slopes from the collar out under both cops.
+    - The view is from 30° above (was 24°).
+    - At 32 pixels each is now an arch on two hanging stacks, with the collar at its top: the neck, the slope, the arms. Before, the deep cops and their leaning lames made a bow tie.
+  - **The single pauldron, tried first, didn't read in any pose.** On the diagonal, as the Bracers lie, it was a tipped bell. Upright and turned, it was a helmet with its neck guard. As a long shell it was a beetle, and as a fan of plates a pine cone.
+  - **How it was picked:** on two scratch sheets, five levers in three views for the single pauldron, then five for the pair. The mantle with the collar leading and the lames hanging was the one that read.
+  - **The ornaments:** each cop keeps its own. The spire, the shuttle and the wave come down with the shallower crown.
+- **2. The Earring:**
+  - Lanternsteel is a steel hoop on a hook, with a brass bead hung at its foot, so no earring is a hoop alone.
+  - The Bronze bead floated a link's height below its hook; it now hangs from the link.
+- **3. The Cloak:** every cloak without a collar or a hood (Wool, Scrap, Rowsmith, Stallguard, Embers, Gales, Nightloom) gets a rolled collar and a clasp at the throat that shows over the back of the neck. Wool's clasp is iron; the rest take their trim.
+- **The rename:** Isaribi, the Sea Lights, is now Kaikou, the Sea Light, on the sheet, in the script and in the names above.
+- **Content check, on the four sheets and the scripts: PASS.**
+  - 海光 is an ordinary word. Its only namesake the check knows is a research submersible, Kaikō (海溝), a different word.
+  - The Shoulders are the genre's general pauldron, on a plain mantle.
+  - Its conditions for the colour pass:
+    - **Hatsuhi (Earring):** its rays fan from a round stone, so it takes Akebono's and Hinode's condition: never a red disc with alternating red and white rays. Yuuyake's points follow it too.
+    - **Yakou (Amulet):** its long caged drop is never red or glossy liquid. In metal or a cool light it's jewellery.
+    - **Tsukigasa:** its spokes stay short ticks between the rings, never a plain cross through one ring.
+    - **Kaikou:** Roblox's catalog and experiences get a search before upload, as research plans.
+- **Modulo's read:**
+  - The Shoulders now read as shoulders at 38 points, all fifteen.
+  - Their weakest is Yoake: its wing replaces most of its lames (two a side), so its shape is wide and flat, and the wing carries it.
+  - The Commons are still close to one another, as on every kind.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, the three sheets at full size and on their small rows, and the batch sheet whole.
+  - Delivered: the sheets, for research's pass. Nothing for Faber.
+  - Accepted: no.
+- **Time, by the clock:** 18:51, research's verdict, to 19:08.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

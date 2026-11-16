@@ -1,8 +1,8 @@
 """AR6, batch 2: Cloaks in three designs at each rarity, in grey: a blockout for research's verdict.
 
 One family: a cloak seen from behind and a little to the side, hanging from the shoulders, its folds widening to the
-hem, a collar or a hood at the neck. A cape's outline, so it reads as nothing else. A design is the cloth, its collar,
-its hem, and what the back carries. A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near
+hem, a collar, a hood, or a rolled collar and its clasp at the neck. A cape's outline, so it reads as nothing else. A
+design is the cloth, its collar, its hem, and what the back carries. A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near
 word from Rare up is Mantle. Cloth takes its own greys (wool, silk, velvet, white), never a metal's, so the finals
 never paint a cloak as plate.
 
@@ -43,7 +43,7 @@ def design(name, rarity, note, key, **more):
 
 
 DESIGNS = (
-    design("Wool Cloak", "Common", "Plain wool tied at the neck with a cord.", "wool"),
+    design("Wool Cloak", "Common", "Plain wool, a rolled collar, an iron clasp at the throat.", "wool"),
     design("Hooded Cloak", "Common", "Wool with its hood down over the shoulders.", "wool", hood=True),
     design("Scrap Cloak", "Common", "Patched cloth with a ragged hem.", "wool", patches=True, ragged=True),
 
@@ -127,6 +127,14 @@ def cloak(d):
         # a standing collar round the back of the neck, open at the front (the lathe's 0 faces the front)
         parts.append(p.lathe("Collar", [(0.48, NECK - 0.04), (0.5, NECK + 0.2), (0.58, NECK + 0.34)], trim, 40.0,
                              320.0, thick=0.05, deep=DEEP * 1.15, steps=32))
+    elif not d["hood"]:
+        # with no collar and no hood, the cloth rolls over at the neck and a clasp at the throat shows over it, seen from
+        # behind and above: without one a cloak reads as a skirt from behind (research's verdict, 2026-11-16)
+        parts.append(p.lathe("Roll", [(0.5, NECK - 0.06), (0.58, NECK + 0.08), (0.68, NECK - 0.02)], key, 40.0, 320.0,
+                             thick=0.06, deep=DEEP * 1.1, steps=32))
+        metal = trim if trim != key else "iron"
+        parts.append(p.ball("Clasp", 0.17, metal, (0.0, -0.5 * DEEP, NECK + 0.14), squash=(1, 0.4, 1)))
+        parts.append(p.facing("Clasp", 0.17, 0.04, metal, (0.0, -0.5 * DEEP + 0.04, NECK + 0.14)))
     neck = [cloth_point(d, a, 0.0) for a in range(-110, 111, 10)]
     parts.append(p.tube("Neck", p.curve(neck, 24), 0.05, d["tie"] if not d["collar"] else trim, sides=8))
     hem = [cloth_point(d, a, 1.0) for a in angles[::2]]
@@ -202,7 +210,8 @@ WORDS = dict(
     file="gear_cloak_sets.png",
     title="Grow your Anime: Cloaks in three designs at each rarity, in grey (AR6, batch 2)",
     lead="A cloak from behind and a little to the side, hanging from the shoulders, its folds widening to the hem, a "
-         "collar or a hood at the neck. A design is the cloth, its collar and hem and what the back carries.",
+         "collar, a hood, or a rolled collar and its clasp at the neck. A design is the cloth, its collar and hem and what "
+         "the back carries.",
     notes=(
         "A set keeps its word and its ornament on every kind: Embers swells round its stone, Hoarfrost is cut square, Gales "
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is "

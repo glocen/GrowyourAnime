@@ -37,7 +37,7 @@ local Passive = require(Shared.Rules.Passive)
 local DataService = require(script.Parent.Parent.Core.DataService)
 
 -- "Home": a fallen lead on its plot, healing and waiting for its player (TR12), never in a fight.
-export type State = "Idle" | "Flinch" | "Down" | "Reset" | "Home"
+export type State = "Idle" | "Flinch" | "Stun" | "Down" | "Reset" | "Home"
 
 export type Fighter = {
 	Id: string,
@@ -74,6 +74,8 @@ export type Fighter = {
 	Frail: boolean?, -- it falls to the first hit that lands (a Tower's fast floor, Rules.Tower.Fast)
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
+	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
+	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
 	-- A lead watching a keeper it felled, standing and facing where it fell, until its Down's Gone (AR7, section 5, fix 2).
 	Watch: Vector3?,
@@ -491,6 +493,8 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Ground = nil,
 		Hitters = {},
 		Struck = {},
+		Shield = nil,
+		StunLock = 0,
 		Alone = block.Health,
 		WatchUntil = 0,
 		Forced = nil,
@@ -802,9 +806,11 @@ end
 local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: string, hit: Actions.Hit, at: number, line: Vector3)
 	local rolls = { Dodge = rng:NextNumber(), Critical = rng:NextNumber(), Block = rng:NextNumber() }
 	local own = passiveOf(f)
+	local guard = passiveOf(target)
 	local effects: Hit.Effects = {
-		Reduction = Passive.Reduction(passiveOf(target), target.Health, target.Block.Health),
+		Reduction = Passive.Reduction(guard, target.Health, target.Block.Health) + Fight.Shield(target.Shield, at),
 		Critical = Passive.Critical(own, not target.Struck[f.Id]),
+		Resist = Passive.Resist(guard),
 	}
 	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
 	if target.Frail then
@@ -843,8 +849,16 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	local rung = Fight.Rung(hit.Rung, result.Critical, Combat.Hitstop, fell)
 	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop)
 	if not result.Dodged then
-		if not fell and target.Action == nil and (Combat.Flinch.Kinds :: any)[target.Kind] then
+		if not fell and target.Action == nil and target.State ~= "Stun" and (Combat.Flinch.Kinds :: any)[target.Kind] then
 			setState(target, "Flinch", at + hold + Combat.Flinch.Seconds)
+			stop(target)
+		end
+		local stunned = if fell then 0 else Fight.Stun(hit.Stun, Combat.Stun.Share[target.Kind], at, target.StunLock)
+		if stunned > 0 then
+			-- stopped where it stands: the state first, so a client holds the pose its action was stopped in
+			target.StunLock = at + stunned + Combat.Stun.Lock
+			setState(target, "Stun", at + stunned)
+			endAction(target, at)
 			stop(target)
 		end
 		local studs, seconds = Fight.Throw(hit.Push, fell, Combat.Push :: any)
@@ -905,7 +919,8 @@ local function mend(f: Fighter, hit: Actions.Hit, axis: Vector3?, beat: string)
 end
 
 -- A beat's hit on its fighter's target, if it reaches; with an Area, on every enemy standing that near the target too;
--- with a Cone, on every enemy inside it. A heal comes first, and with no target the fighter still heals itself.
+-- with a Cone, on every enemy inside it; with a Round, on every enemy round the fighter instead, reaching or not. A heal
+-- and a shield come first, and with no target the fighter still heals and shields itself.
 local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local action = f.Action :: Actions.Action
 	local target = f.ForcedTarget or f.Target
@@ -916,6 +931,24 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local gap = line.Magnitude
 	if hit.Heal then
 		mend(f, hit, if gap > 0.01 then line.Unit else nil, beat)
+	end
+	local shield = hit.Shield
+	if shield then
+		f.Shield = { Share = shield.Share, Until = at + shield.Seconds }
+		f.Model:SetAttribute("ShieldUntil", at + shield.Seconds) -- for its look (Ground Wire's, AR11)
+	end
+	if hit.Round then
+		-- a pulse round the fighter itself: every enemy standing within, its target too, whichever way it faces
+		local near = {}
+		for _, other in fighters do
+			if against(f, other) and standing(other) and Fight.Within(flat(other.Root.Position - f.Root.Position).Magnitude, hit.Round) then
+				table.insert(near, other)
+			end
+		end
+		for _, other in near do
+			land(f, action, other, beat, hit, at, flat(other.Root.Position - f.Root.Position))
+		end
+		return
 	end
 	if target == nil then
 		return
@@ -1378,6 +1411,12 @@ local function step()
 				thinkHome(f, at, dt)
 			end
 			continue
+		end
+		if f.State == "Stun" then
+			if at < f.StateUntil then
+				continue -- stopped: no beat, no step, no thought (Actions.Hit.Stun)
+			end
+			setState(f, "Idle")
 		end
 		if f.State == "Flinch" and at >= f.StateUntil then
 			setState(f, "Idle")

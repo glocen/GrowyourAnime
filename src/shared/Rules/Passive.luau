@@ -31,6 +31,11 @@ function Passive.Critical(row: Passives.Row?, first: boolean): number
 	return if row and row.Kind == "Opener" and first then row.Share else 0
 end
 
+-- The share less elemental damage a Resist takes (Rules.Hit's Resist), whatever its health; nothing of another kind.
+function Passive.Resist(row: Passives.Row?): number
+	return if row and row.Kind == "Resist" then row.Share else 0
+end
+
 -- `action`'s cooldown under a Cooldown passive: Share shorter on its own action, unchanged on any other.
 function Passive.Cooldown(row: Passives.Row?, action: string, cooldown: number): number
 	if row == nil or row.Kind ~= "Cooldown" or row.Action ~= action then

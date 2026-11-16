@@ -333,6 +333,23 @@ function Fight.PackRing(count: number, spacing: number): { { number } }
 	return out
 end
 
+-- How long a hit's Stun (`seconds`) stops a fighter of a kind stopped `share` of it, at `at`: none while it's still locked
+-- from its last (`locked`, the time its lock ends), else the share of it. The lock starts where this one ends.
+function Fight.Stun(seconds: number?, share: number?, at: number, locked: number): number
+	if seconds == nil or not (seconds > 0) or at < locked then
+		return 0
+	end
+	return seconds * math.clamp(share or 1, 0, 1)
+end
+
+-- The share less damage a fighter's shield takes off a hit at `at` (Actions.Hit.Shield): its Share until it lapses.
+function Fight.Shield(shield: { Share: number, Until: number }?, at: number): number
+	if shield == nil or at >= shield.Until or not (shield.Share > 0) then
+		return 0
+	end
+	return math.min(shield.Share, 1)
+end
+
 -- Whether a fighter `distance` studs (flat) from a hit's target stands in the hit's Area, the target's own studs round it.
 function Fight.Within(distance: number, area: number): boolean
 	return area > 0 and distance <= area

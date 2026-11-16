@@ -6051,6 +6051,37 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Director-accepted: not yet.
 - **Next:** Ground Wire's look with Faber (`/ga-action`).
 
+**The install** (Faber, 2026-11-17, by 00:30 by the clock):
+- **What:** Watt fights with his own kit.
+  - `WattCombo` hits on his markers: Hit1 0.35, Hit2 0.60, Hit3 1.00. `WattGroundWire` has Plant 0.42 and Release 2.07 (`Definitions/Actions.luau`).
+  - His Idle, Hit, Down and Up are in `Config.Animations.Rigs.Watt`. His reveal strikes on the Plant (`Config.Reveal`).
+  - The eight clips are saved in the place (version 677).
+- **Ground Wire, as data:**
+  - The Plant lands on every enemy within 9 studs of him (`Round`, new: a cone never reaches behind him).
+  - Each enemy hit is stopped for his hold, Plant to Release, 1.65 s (`Stun`, new). The stop is halved on elites and the keeper, and never lands again on the same body within 4 s (`Config.Combat.Stun`). The stopped body's pose holds like a long hitstop.
+  - He takes 30% less damage for 5 s from the Plant (`Shield`, new; the `ShieldUntil` attribute for its look).
+- **Insulated, his passive:** a new kind, Resist. It takes 25% off a hit's elemental part alone, under the reduction bucket's ceiling (`Rules.Hit`, `Rules.Passive`).
+- **Seeds for research (tier 2):**
+  - the stop's 1.65 s (his hold), halved on the tough, with its 4 s lock;
+  - the 9-stud round;
+  - the 30% shield for 5 s;
+  - coefficient 2.5 at rung 7, with a 10 s cooldown;
+  - Insulated's 25%;
+  - the Combo's 0.73, 0.73 and 1.15, Rook's damage per second.
+  - The Definition's Signed line waits for research and Modulo.
+- **Not done:** Work's post cap. No Work clip plays in a bay yet (a bay plays the rig's Idle), so it waits for the bay's work piece.
+- **Four facts:**
+  - Implemented: yes.
+  - Tested:
+    - The type check: 0 new.
+    - The logic cases, offline and in Studio: 24,205 passed, 0 failed, including two new ones (Ground Wire's rules, Insulated).
+    - The self-test "Watt's Ground Wire": 12 of 12. The dummy stops 1.65 s from the Plant, within 0.05 s. Its pose holds, it drifts 0.02 studs, and it's let go within 0.15 s. His shield lands on time.
+    - "markers": 242 of 242.
+    - The fight and reveal suites ran at 17 fps (the screen asleep, the window in front). Four timing cases are NOT VERIFIED: pip's skip back, Kirra's Dash, the Shade's alternation, and the reveal's card time. None of them reaches a stopped body. They run again at 60 fps.
+  - Visually reviewed: one still mid-hold (`build/scratch/faber/stills/ar11-groundwire-hold.jpg`). The light waits for its look.
+  - Director-accepted: not yet.
+- **Next:** Ground Wire's look with Modulo (`/ga-action`), on the content check's two notes and Modulo's parts above.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

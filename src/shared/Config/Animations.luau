@@ -28,6 +28,9 @@ return {
 	Rigs = {
 		R6 = { Idle = "RookIdle", Hit = "RookHit", Down = "RookDown", Up = "RookUp" },
 		Robe = { Idle = "PipIdle", Hit = "PipHit", Down = "PipDown", Up = "PipUp" },
+		-- Watt's own (AR11): the spear slung on his back is keyed in each (its joint on the Torso), so the shared sets would
+		-- leave it still through a fall
+		Watt = { Idle = "WattIdle", Hit = "WattHit", Down = "WattDown", Up = "WattUp" },
 		Shade = { Idle = "ShadeIdle", Walk = "ShadeWalk", Hit = "ShadeHit", Down = "ShadeBurst" },
 		Lamplighter = { Idle = "LamplighterIdle", Walk = "LamplighterWalk", Hit = "LamplighterHit", Down = "LamplighterDown" },
 	} :: { [string]: { [string]: string } },
@@ -72,6 +75,10 @@ return {
 		PipHit = "Hit",
 		PipDown = "Down",
 		PipUp = "Up",
+		WattIdle = "Idle",
+		WattHit = "Hit",
+		WattDown = "Down",
+		WattUp = "Up",
 		KirraTailHit = "Hit", -- her layers take their reaction's fades
 		KirraTailDown = "Down",
 		KirraTailUp = "Up",

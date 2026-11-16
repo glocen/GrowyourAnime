@@ -95,6 +95,10 @@ return {
 	-- Who flinches: a short reaction that never cancels an action (docs/design.md, "States in a fight").
 	Flinch = { Seconds = 0.28, Kinds = { Lead = true, Ordinary = true, Dummy = true } },
 
+	-- A stun (docs/design.md, "States in a fight"; Actions.Hit.Stun): an elite or a keeper is stopped a share of its time,
+	-- half as long; after one, no fighter is stunned again for Lock seconds, so two automatic builds can't lock each other.
+	Stun = { Share = { Elite = 0.5, Keeper = 0.5 } :: { [string]: number }, Lock = 4 },
+
 	-- How far a push moves each body, against its Push (handbook/feel/combat.md: a heavy enemy moves less).
 	Weight = { Lead = 1, Ordinary = 1, Elite = 0.4, Keeper = 0.15, Dummy = 1, Rival = 1 }, -- Rival: a Tower floor's Voidkin, a lead's body
 

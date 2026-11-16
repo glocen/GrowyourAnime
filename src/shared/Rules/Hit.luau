@@ -17,8 +17,9 @@ local Hit = {}
 
 export type Rolls = { Dodge: number, Critical: number, Block: number } -- each in [0, 1)
 -- Damage Bonus and Damage Reduction from effects in the fight; Critical, a floor under the hit's critical chance, past its
--- cap (an Opener passive's: 1 always crits).
-export type Effects = { Bonus: number?, Reduction: number?, Critical: number? }
+-- cap (an Opener passive's: 1 always crits); Resist, Damage Reduction on the elemental part alone (a Resist passive's),
+-- added to the hit's Reduction under the same ceiling.
+export type Effects = { Bonus: number?, Reduction: number?, Critical: number?, Resist: number? }
 
 export type Result = {
 	Dodged: boolean,
@@ -111,7 +112,9 @@ function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: 
 	if attacker.Element ~= "" and attacker.ElementalAttack > 0 then
 		local resist = Stats.Chance(StatsConfig.Caps.ElementalResist, defender.ElementalResist, 0, attacker.Level)
 		-- Past Defence, never critical.
-		result.Elemental = attacker.ElementalAttack * coefficient * (1 - resist) * (1 + bonus) * (1 - reduction)
+		local fxResist = if effects then effects.Resist or 0 else 0
+		local elementalReduction = if fxResist > 0 then math.min(buckets.ReductionCap, reduction + fxResist) else reduction
+		result.Elemental = attacker.ElementalAttack * coefficient * (1 - resist) * (1 + bonus) * (1 - elementalReduction)
 	end
 	result.Total = result.Physical + result.Elemental
 	result.LifestealShare = math.clamp(attacker.Lifesteal, 0, StatsConfig.Lifesteal.Cap)

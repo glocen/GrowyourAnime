@@ -142,7 +142,7 @@ return {
 					t.Check(`kit {def}: {id} exists`, Actions.ById[id] ~= nil)
 				end
 			end
-			t.Equal("an unbuilt Voidkin fights with the stand-in's kit", Actions.KitOf("watt")[1].Id, Actions.KitOf(Actions.StandIn)[1].Id)
+			t.Equal("an unbuilt Voidkin fights with the stand-in's kit", Actions.KitOf("patch")[1].Id, Actions.KitOf(Actions.StandIn)[1].Id)
 			for _, row in Enemies.List do
 				t.Check(`{row.Id}'s numbers exist`, (EnemiesConfig :: any)[row.Kind] ~= nil)
 				t.Check(`{row.Id}'s action exists`, row.Action == nil or Actions.ById[row.Action] ~= nil)
@@ -1000,6 +1000,61 @@ return {
 			t.Check("the hold and the throw are over before the body is taken away", hitstop.Kill + kill.Seconds < Combat.Shade.FadeSeconds)
 			t.Check("the burst's wait still outlasts the kill's hold", EffectsConfig.ShadeBurst.Wait > hitstop.Kill)
 			t.Check("an elite is thrown less, a keeper hardly", Combat.Weight.Elite < 1 and Combat.Weight.Keeper < Combat.Weight.Elite)
+		end,
+	},
+	{
+		-- AR11's install: Watt's kit (docs/roster.md: "plants his weapon, shields himself, and a pulse stops nearby enemies
+		-- for a moment"), and the stun and the shield as data (Actions.Hit.Round, Stun, Shield; docs/design.md, "States in a
+		-- fight").
+		Name = "Fight: Ground Wire stops every enemy round Watt for his hold and shields him past it; a stun is halved on the tough and never chained",
+		Run = function(t: any)
+			local watt = Voidkin.ById.watt
+			t.Check("Watt is built, on his own rig", watt.Kit ~= nil and watt.Rig == "Watt" and watt.ClipsDue == nil)
+			local rig = Animations.Rigs.Watt
+			t.Check("his rig plays his own reactions", rig ~= nil and rig.Idle == "WattIdle" and rig.Hit == "WattHit" and rig.Down == "WattDown" and rig.Up == "WattUp")
+			local wire = Actions.ById.WattGroundWire
+			t.Equal("his signature first", Actions.KitOf("watt")[1].Id, "WattGroundWire")
+			local plant = wire.Hits.Plant
+			local count = 0
+			for _ in wire.Hits do
+				count += 1
+			end
+			t.Check("one hit, on the Plant", plant ~= nil and count == 1, `{count}`)
+			t.Check("a pulse round him, at least as far as his own reach", plant.Round ~= nil and plant.Round >= plant.Reach, `{plant.Round}`)
+			t.Check("it stops them for the hold, Plant to Release", plant.Stun ~= nil and near(plant.Stun, wire.Beats.Release - wire.Beats.Plant, 1e-3), `{plant.Stun}`)
+			t.Check("locked where they stood, never thrown", plant.Push == 0)
+			t.Equal("it names its state", wire.State, "Stun")
+			local shield = plant.Shield
+			t.Check("his shield outlasts the stop", shield ~= nil and shield.Seconds > (plant.Stun or 0) and shield.Share > 0 and shield.Share < 1)
+			t.Check("and lapses before it's ready again", shield ~= nil and shield.Seconds < wire.Cooldown)
+			t.Check("a signature's weight", plant.Heavy and plant.Rung == 7 and wire.Cooldown == 10)
+			local combo = Actions.ById.WattCombo
+			local one, two, three = combo.Hits.Hit1, combo.Hits.Hit2, combo.Hits.Hit3
+			t.Check("his combo: three hits, the last a combo's", one ~= nil and two ~= nil and three ~= nil and three.Rung == 3)
+			local rate = (one.Coefficient + two.Coefficient + three.Coefficient) / combo.CancelFrom
+			local rook = Actions.ById.RookCombo
+			local rookRate = (rook.Hits.Hit1.Coefficient + rook.Hits.Hit2.Coefficient + rook.Hits.Hit3.Coefficient) / rook.CancelFrom
+			t.Check("a second's worth as Rook's combo's (a seed)", near(rate, rookRate, 0.01), `{rate} against {rookRate}`)
+			-- the stun's rule
+			local share = Combat.Stun.Share
+			t.Equal("an ordinary Shade: the whole of it", Fight.Stun(1.65, share.Ordinary, 10, 0), 1.65)
+			t.Check("an elite: half", near(Fight.Stun(1.65, share.Elite, 10, 0), 0.825), `{Fight.Stun(1.65, share.Elite, 10, 0)}`)
+			t.Check("a keeper: half", near(Fight.Stun(1.65, share.Keeper, 10, 0), 0.825))
+			t.Equal("still locked from the last: none", Fight.Stun(1.65, nil, 10, 10.5), 0)
+			t.Equal("the lock over: again", Fight.Stun(1.65, nil, 10.5, 10.5), 1.65)
+			t.Equal("a hit with no stun: none", Fight.Stun(nil, nil, 10, 0), 0)
+			t.Check("a lock after it", Combat.Stun.Lock > 0)
+			-- the shield's rule
+			t.Equal("a shield up: its share", Fight.Shield({ Share = 0.3, Until = 15 }, 14.9), 0.3)
+			t.Equal("lapsed: none", Fight.Shield({ Share = 0.3, Until = 15 }, 15), 0)
+			t.Equal("no shield: none", Fight.Shield(nil, 1), 0)
+			local a = Stats.Empty(1)
+			a.Attack = 100
+			local d = Stats.Empty(1)
+			local NONE: Hit.Rolls = { Dodge = 0.999999, Critical = 0.999999, Block = 0.999999 }
+			local open = Hit.Resolve(a, d, 1, NONE, nil)
+			local shielded = Hit.Resolve(a, d, 1, NONE, { Reduction = Fight.Shield({ Share = 0.3, Until = 15 }, 14) })
+			t.Check("a hit on him shielded, 30% less", near(shielded.Total, open.Total * 0.7, 1e-6), `{shielded.Total} against {open.Total}`)
 		end,
 	},
 }

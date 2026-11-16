@@ -51,6 +51,8 @@ return {
 					t.Check(`{row.Id}: its action in its kit, with a cooldown`, action ~= nil and inKit(row.Id, action.Id) and action.Cooldown > 0, row.Action)
 				elseif row.Kind == "Opener" then
 					t.Check(`{row.Id}: no action, beat or threshold: every hit's first`, row.Action == nil and row.Beat == nil and row.Below == nil)
+				elseif row.Kind == "Resist" then
+					t.Check(`{row.Id}: no action, beat or threshold: always`, row.Action == nil and row.Beat == nil and row.Below == nil)
 				else
 					t.Check(`{row.Id}: a known kind`, false, row.Kind)
 				end
@@ -137,6 +139,35 @@ return {
 			t.Check("a dodged swing deals nothing and doesn't crit", dodged.Dodged and not dodged.Critical and dodged.Total == 0)
 			local half = Hit.Resolve(a, d, 1, { Dodge = 0.999999, Critical = 0.6, Block = 0.999999 }, { Critical = 0.5 })
 			t.Check("a floor below one rolls as a chance", not half.Critical and half.ChanceCritical == 0.5)
+		end,
+	},
+	{
+		-- docs/roster.md: Watt's Insulated, "takes less elemental damage" (AR11's install; a seed, tier 2).
+		Name = "Passive: a Resist takes its share off a hit's elemental part alone, always, under the bucket's ceiling",
+		Run = function(t: any)
+			local watt = Passives.ById.watt
+			t.Check("Watt: Insulated, 25% less elemental, no cue", watt ~= nil and watt.Name == "Insulated" and watt.Kind == "Resist" and watt.Share == 0.25 and watt.Cue == nil)
+			t.Equal("its share", Passive.Resist(watt), 0.25)
+			t.Equal("another kind: none", Passive.Resist(Passives.ById.rook), 0)
+			t.Equal("no row: none", Passive.Resist(nil), 0)
+			local a = Stats.Empty(1)
+			a.Attack = 100
+			a.Element = "Storm"
+			a.ElementalAttack = 40
+			local d = Stats.Empty(1)
+			local plain = Hit.Resolve(a, d, 1, NONE, nil)
+			local insulated = Hit.Resolve(a, d, 1, NONE, { Resist = Passive.Resist(watt) })
+			t.Check("a hit with an element", plain.Elemental > 0, `{plain.Elemental}`)
+			t.Check("its physical part whole", near(insulated.Physical, plain.Physical), `{insulated.Physical} against {plain.Physical}`)
+			t.Check("its elemental part 25% less", near(insulated.Elemental, plain.Elemental * 0.75), `{insulated.Elemental} against {plain.Elemental}`)
+			local both = Hit.Resolve(a, d, 1, NONE, { Reduction = 0.2, Resist = 0.25 })
+			t.Check("with a Reduction, the two add on the elemental part", near(both.Elemental, plain.Elemental * (1 - 0.45)), `{both.Elemental}`)
+			t.Check("and the Reduction alone on the physical", near(both.Physical, plain.Physical * 0.8), `{both.Physical}`)
+			local capped = Hit.Resolve(a, d, 1, NONE, { Reduction = 0.9, Resist = 0.9 })
+			t.Check("never past the bucket's ceiling", capped.Elemental > 0, `{capped.Elemental}`)
+			a.Element = ""
+			local bare = Hit.Resolve(a, d, 1, NONE, { Resist = 0.25 })
+			t.Equal("no element: nothing to take off", bare.Total, Hit.Resolve(a, d, 1, NONE, nil).Total)
 		end,
 	},
 }

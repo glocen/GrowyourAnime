@@ -41,6 +41,7 @@ return {
 		PipReveal = { Marker = "Flourish", Time = 0.9667 },
 		LyricReveal = { Marker = "Strike", Time = 1.5 },
 		KirraReveal = { Marker = "Land", Time = 0.2333 }, -- she drops in and lands as her colours run (the builder's call, AR10's install)
+		WattReveal = { Marker = "Plant", Time = 0.9 }, -- the spear planted as his colours run (the builder's call, AR11's install)
 	} :: { [string]: { Marker: string, Time: number } },
 	Fallback = "RookReveal", -- the clip a Voidkin without his own Reveal plays (the grey stand-in)
 	-- His silhouette's rim: the light from behind him, its colour the rarity's, so his edge takes it and his front stays

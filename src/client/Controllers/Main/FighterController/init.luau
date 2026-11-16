@@ -91,6 +91,7 @@ type View = {
 	Late: number, -- how late it began, caught up after OwnPace
 	Rate: number,
 	FrozenUntil: number,
+	StunHeld: number, -- the hold a stun set (os.clock()), let go when the stun ends; 0 for none
 	Shown: { [string]: boolean }, -- the hits this screen has shown, by beat and press
 	Held: { [string]: Held }, -- each hit it has shown on a body, by beat, press and target: what a server's hit may raise
 	Struck: Struck?, -- its flash and tremble as a hit's target, while they run
@@ -431,7 +432,27 @@ local function onState(view: View)
 	end
 	local was = view.State
 	view.State = state
-	if state == "Flinch" then
+	if was == "Stun" then
+		-- the stop over: the pose let go, and the action the server ended under it ended here too
+		if view.StunHeld > 0 and view.FrozenUntil == view.StunHeld then
+			view.FrozenUntil = os.clock()
+		end
+		view.StunHeld = 0
+		local id = view.Model:GetAttribute("Action")
+		if view.Action and (type(id) ~= "string" or Actions.ById[id] == nil) then
+			endAction(view)
+		end
+	end
+	if state == "Stun" then
+		-- Stopped mid-step (Actions.Hit.Stun; AR11): everything it plays held where it stands, as a long hold, until the
+		-- server's StateUntil.
+		local untilTime = view.Model:GetAttribute("StateUntil")
+		local left = if type(untilTime) == "number" then untilTime - workspace:GetServerTimeNow() else 0
+		if left > 0 then
+			view.StunHeld = math.max(view.FrozenUntil, os.clock() + left)
+			view.FrozenUntil = view.StunHeld
+		end
+	elseif state == "Flinch" then
 		local wait = math.max(0, view.FrozenUntil - os.clock())
 		if Animations.Rigs[view.Rig] then
 			task.delay(wait, function()
@@ -578,7 +599,9 @@ local function onAction(view: View)
 	local action = Actions.ById[id]
 	if action then
 		beginAction(view, action, at)
-	elseif freezeOf(view) == nil then -- a frozen replay holds its frame past the server's end, until the next press
+	elseif freezeOf(view) == nil and view.State ~= "Stun" then
+		-- a frozen replay holds its frame past the server's end, until the next press; a stopped fighter its pose, until
+		-- the stop ends (onState)
 		endAction(view)
 	end
 end
@@ -620,6 +643,7 @@ local function add(model: Instance)
 		Late = 0,
 		Rate = 1,
 		FrozenUntil = 0,
+		StunHeld = 0,
 		Shown = {},
 		Held = {},
 		Struck = nil,

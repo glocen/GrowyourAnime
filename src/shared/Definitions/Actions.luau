@@ -33,6 +33,15 @@ export type Hit = {
 	-- body's tremble and the camera's trauma (Config.Combat.Hitstop): 2 when nil, an ordinary hit; 3 a combo's last or
 	-- the Shade's swing; 7 a Voidkin's signature; 8 the keeper's. A critical raises it (Rules.Fight.Rung).
 	Rung: number?,
+	-- Studs round the fighter itself: every enemy standing within takes the hit, its target too, whichever way it faces
+	-- (Ground Wire's pulse); the target needn't be in Reach
+	Round: number?,
+	-- Seconds each enemy it lands on is stopped, unable to act or move (docs/design.md, "States in a fight": Stun), as a
+	-- share of them on a tough kind and never again inside a lock after one (Config.Combat.Stun; Rules.Fight.Stun)
+	Stun: number?,
+	-- The fighter takes Share less damage for Seconds from the beat (Rules.Hit's Reduction bucket; Rules.Fight.Shield),
+	-- whether or not anything is in reach
+	Shield: { Share: number, Seconds: number }?,
 }
 
 -- The server carrying its fighter from a beat (Rules.Fight.MoveEnd; FightService): an Assassin's dash in, Kirra's blink.
@@ -306,6 +315,56 @@ local rows: { Action } = {
 			"the held line (the scarf straight through its chest, 16 to 40, let go from the tip)",
 		},
 		Signed = "the feel line: Quaestor, 2026-11-14 (docs/asset-requests.md, AR10)",
+	},
+	{
+		-- Watt's three (AR11, delivery 4): the shaft across in both fists (Hit1, frame 21), the butt rising (Hit2, 36), and
+		-- the spear lifted in both hands and driven into the street (Hit3, 60), held on it (72) and back by his foot (88),
+		-- where the next round's lean starts. Heavy and short, the Tank's way. A second's worth as Rook's combo's over his
+		-- 1.47 s chain, Rook's spacing (seeds).
+		Id = "WattCombo",
+		Clip = "WattCombo",
+		Length = 1.8333,
+		CancelFrom = 1.4667, -- frame 88, the spear back by his foot: Hit3 to the next Hit1 is 0.82 s, the drive held
+		Cooldown = 0,
+		Beats = { Hit1 = 0.35, Hit2 = 0.6, Hit3 = 1.0 },
+		Hits = {
+			Hit1 = { Coefficient = 0.73, Heavy = false, Reach = 6, Push = 0.4 },
+			Hit2 = { Coefficient = 0.73, Heavy = false, Reach = 6, Push = 0.4 },
+			Hit3 = { Coefficient = 1.15, Heavy = false, Reach = 6, Push = 1.2, Rung = 3 }, -- into the street
+		},
+		Range = 4.5,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the lift before the drive, 54 to 60)", "hitstop (light)", "a spark on contact" },
+		Signed = nil,
+	},
+	{
+		-- Watt's signature, Ground Wire (docs/roster.md; AR11's feel line): he lifts the spear in both hands and drives its
+		-- butt into the street (Plant, frame 25), a ring of Storm's light snaps out along the ground, and the Shades round
+		-- him lock mid-step while he stands behind it, shielded, until he pulls it free (Release, 124). The pulse takes
+		-- every enemy within Round of him, whichever way it faces, and stops it for the hold, Plant to Release; his shield
+		-- outlasts it. Seeds: Pip's area burst's weight, rung 7, a 10 s cooldown; the shield's share and time (tier 2).
+		Id = "WattGroundWire",
+		Clip = "WattGroundWire",
+		Length = 2.8333,
+		CancelFrom = 2.5, -- frame 150, upright again after he straightens (136)
+		Cooldown = 10,
+		Beats = { Plant = 0.4167, Release = 2.0667 },
+		Hits = {
+			-- Push 0: locked where they stood, never thrown (AR11: "stopped, never hurt")
+			Plant = { Coefficient = 2.5, Heavy = true, Reach = 9, Push = 0, Rung = 7, Round = 9, Stun = 1.65, Shield = { Share = 0.3, Seconds = 5 } },
+		},
+		Range = 4.5,
+		Heavy = true,
+		State = "Stun",
+		Levers = {
+			"anticipation (the lift, both hands up, 0 to 16)",
+			"the snap (the drive home in a fifth of a second, 16 to 25)",
+			"hitstop (heavy, rung 7) on the Plant",
+			"the stop (every Shade round him locked mid-step through the hold)",
+			"the hold (the planted spear, blade and discs above his head, 25 to 124)",
+		},
+		Signed = nil,
 	},
 	{
 		-- A Brawler Shade's swing, AR2's Attack: the coat turns away and the sleeve is flung round after it, landing on `Hit`

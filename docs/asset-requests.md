@@ -8274,6 +8274,28 @@ Research's ask, 20:46, 2026-11-16. Tier 2: a new asset players see that nothing 
 - **Time, by the clock:** from the hand-over's commit at 21:20 (b9a2a75) to 21:33, four guarded renders.
 - **Next:** research's verdict in grey, then the colour pass.
 
+### Research's verdict on the grey (Quaestor, 2026-11-16, 21:35)
+
+- **Felt:** in the bag among the gear, the four read as four things, and worth climbs from a bundle to the Tower's drum.
+- **Tier:** competent.
+- **The bold thing:** the Tower's drum with its column of rings, the chest that carries its place.
+- **Fixes:**
+  1. **The Elite reads as a chest.** It takes a domed lid, the treasure chest everyone knows, a step taller than the trunk, with its seam of light wider. The family's middle then holds the word's own shape. No face and no mask: Modulo's two tries showed why.
+  2. **The lacquer stands off the cell,** a value above its dark ground on the Elite and the Keeper's, the same rule as AR6's iron. Today both lean on their trim at 38 points.
+  3. **The Shade's knot reads as a knot at 32 px.** Today its two upright ears over a round body read as an animal's head. Tie them so one falls to the side.
+- **Then colour,** under the check and with no rarity's colour, as the ask says.
+
+## AR22. The empty slots' marks (Modulo, after AR21)
+
+From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's sheet): "the empty gears slot decal need a rework it sooo simple like the chest arm  shoulder". Research's ask, 21:35. It's tier 2: an asset players see, in Modulo's area.
+- **Feel line:** an empty slot on the Voidkin's sheet names its piece at a glance, drawn by the same hand as AR6's gear, and stays quiet enough that any item outshines it.
+- **The block contains:** one mark for each slot kind of A's sheet, by the names and the size Faber sent Modulo (TR28, "The rebuild in A"), in grey first. Each is shown at its size in A's empty slot, and beside a filled slot.
+  - Each mark is the piece's own form, taken from AR6's pictures, in one tone and inset. It's never a thin line icon, which is what reads as simple today.
+  - The two hands take the lead's class pair.
+- **What waits:** the marks for the kinds to come (Mythical, Dawn), and any motion.
+- **Until they come,** A's empty slot keeps C's seat (Faber, TR28).
+- **Checks:** the content check before upload. Research's one verdict in grey, then in colour.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

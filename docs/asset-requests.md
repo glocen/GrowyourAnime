@@ -8250,6 +8250,30 @@ Research's ask, 20:46, 2026-11-16. Tier 2: a new asset players see that nothing 
 - **Until it lands,** the cell names the kind in words (Faber, TR29).
 - **Checks:** the content check before upload. Research's one verdict in grey, then in colour.
 
+### The grey, for research's verdict (Modulo, 2026-11-16, 21:33)
+
+- **The sheet:** `build/handoff/UI/chests/chests_grey.png`, from `tools/blender/chest_icons.py`. Each chest is shown three ways: in the bag's plain cell seen close, at 38 points, and alone at 32 px over dark. Under them, a row of the bag with AR6's gear, at 38 points and at twice that.
+- **The four, each a different thing,** so the shape names it:
+  - **Shade:** a cloth bundle, its knot's two ears up, a thread of light round the gather.
+  - **Elite:** a lacquer trunk, wider than tall, iron at its corners, a seam of light under its lid, an iron drop ring at each end.
+  - **Keeper's:** three lacquer tiers with brass corner strips and a seam of light under each, bound with a cord in a bow with two tassels, and a ring crest on its lid.
+  - **Tower:** a staved drum, banded like the platforms' rims, and from its lid the Tower's column of light, with three rings that shrink as they rise.
+- **Worth rises by:**
+  - size: each fills 0.68, 0.78, 0.85 and 0.9 of its square;
+  - height;
+  - finish: cloth, iron, brass, steel;
+  - the light's lines: a thread, a seam, three seams, a column.
+- **What stays out:** no rarity's colour or frame. The cell keeps the empty cell's edge.
+- **Tried and dropped:** the Elite carried a Shade's mask, after the roster's elite with its second one. At 38 points, any white mask with two dark slits on a dark box reads as a face: low on the front, a smiley and then a hasp; on its shoulder, a skull. The drop rings took its place. The Elite is the plainest of the four, and its colour carries the rest.
+- **Content check:** PASS for building, with conditions carried into colour:
+  - nothing hanging reads as a drip: the tassels matte, with a fringe or flared ends;
+  - the lights stay lines, never a pooled glow;
+  - no finish or light takes a rarity's rim colour;
+  - a fresh check on the exact files before upload, and an asset-log entry each.
+  - Its condition on the mask no longer applies.
+- **Time, by the clock:** from the hand-over's commit at 21:20 (b9a2a75) to 21:33, four guarded renders.
+- **Next:** research's verdict in grey, then the colour pass.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -8363,6 +8363,31 @@ The director, over the grey: "im not happy with the shoulder and helmet and boot
 - **The two fixes still hold** on the Epic forms: the bracer stood up, and the cloak's hood and hem.
 - **Shown as before:** the kinds at 44 and 88 points, and A's doll at the smallest phone, empty beside filled and all empty. One verdict from research, which the director sees.
 
+### From the Epic pieces, for research's verdict (Modulo, 2026-11-16, 22:12)
+
+`build/handoff/UI/slots/slot_marks_grey.png`, drawn by `tools/blender/slot_marks.py`, on the director's word above.
+- **Each mark is an Epic piece of AR6,** from whichever of its three sets reads clearest at 44 points:
+  - Stormcall's for most;
+  - Gloamforge's helm, gauntlets, greaves and short sword;
+  - Nightloom's talisman.
+  - Their crests, plates, stones and trim stay, in the one faint tone and inset.
+- **Three are posed afresh from AR6's models,** not taken from their pictures, and finished as the pictures are:
+  - **The Shoulders: one pauldron.** In every view tried, AR6's cop on its own read as a head: a full dome, its stone an eye, its crest horns. So the mark's pauldron is built the way one is drawn:
+    - the Stormcall cop's shell, open on the neck's side;
+    - its three lames tiered under it;
+    - its filigree line and stone kept, and its crest laid flat on its face round the stone.
+  - **The bracer stands up** (fix 1): Stormcall's, upright, its elbow's cuff flared, its two straps across it.
+  - **The cloak** (fix 2): Stormcall's mantle seen from behind, its cloth widened toward the hem, 45% at the foot, so the hem is wider than its shoulders. Its crest stands where a hood's peak would. A peak lifted on the cloth read as a cone, so the crest is the top.
+- **Shown as before:** the ten kinds and the five classes' hand pairs at 44 points, the kinds at 88, and A's doll at the smallest phone, empty beside filled and all empty.
+- **For Faber, after the verdict:** the same 20 names and the same `slot_marks.json`, with the same draw. They aren't sent before the verdict.
+- **Content check (a fresh-eyes agent, on these exact files, by 22:13):** PASS, on the sheet, the json and the script.
+  - Nothing reads as gore at any size: the earring's drop is a hook over a pendant.
+  - The cloak is low and wide, its top flat with one crest, so it can't read as a pointed hood.
+  - The talons fan from one grip, with no turning symmetry. No emblem sits on the tome or the codex.
+  - No text in the images, and nothing from the IP list.
+  - The marks are white on alpha, so they were judged through the sheet, which draws the same arrays it saves.
+- **Four facts:** drawn; seen at 44 and 88 points and at the smallest phone on the sheet; research's verdict to come; not director-accepted.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

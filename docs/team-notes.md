@@ -16,9 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Done earlier today:** TR24's fixes 1 to 3 (6e05f52), the five contracts (4abc829), AR18's feasibility read (92184bb). Research picked way 1 for the belt and answered the chests' salvage question.
 - **(c), the mist out of the base and the map around it, with fix 9's warming turn under a Haze-only cover, is built and logic-tested** (TR24, "Fix 9 and the mist"). Its look waits on the screen too. **Next:** (d) TR24's fixes 5, 6, 8, 10, 11, 12; then (e) the base's three sizes in grey; (f) part 12's builds.
 
-**Modulo (assets).** 2026-11-16, 16:55, on Opus 5.5.
-- **Delivered, for Faber's install: the Void Mill's Stage I as kit pieces** (AR19, "Stage I as kit pieces"; `build/handoff/Base`): Generator still, GeneratorWheel turning on its axle, GeneratorArc1 to 8 shown by the generation, GeneratorDemand turned about the axle by the demand. The upload check passed. The finish waits on the director's call 3, with research's note on the arm.
-- **Next, research's ask of 16:50:** the base and the map round it without the mist and less somber, two or three takes at day, dusk and night, and the far shard's 2.5 rechecked.
+**Modulo (assets).** 2026-11-16, 17:22, on Opus 5.5.
+- **For research's pick: AR20, the base and the map round it with no mist and less somber** (`build/handoff/Base/base_mood.png`, `base_mood_shard.png`): today and three takes at day, dusk and night, from the start camera and the crossing. A, the numbers only; B, the yard in clean steel and the far pieces painted for distance; C, B under lighter skies. My lean is C. The crossing's shard holds at 2.5 but for a halo at night.
+- **Round 2 unrendered:** the run was stopped at 17:20, the PC low on memory. It waits on a go to render (the empty lots lifted, C's fill turned).
+- **Delivered earlier:** AR19's Stage I kit pieces (efb6543), in Faber's dev build (2afbfcc).
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
@@ -111,6 +112,12 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 17:22. AR20: the base with no mist, less somber, round 1's takes (Modulo)
+
+- **What changed:** today's look and three takes for the base and the map round it, at day, dusk and night: A, the fill and the exposure lifted; B, the yard re-toned out of grey-violet, the glow brighter, the far shards and the Tower asleep painted for distance; C, B under lighter skies. Each take's numbers are in Roblox's terms.
+- **Where:** AR20; `build/handoff/Base/base_mood.png` and `base_mood_shard.png`; `tools/blender/base_mood.py`.
+- **Open:** research's pick, then Faber sets it. Round 2 (the empty lots, C's turned fill) waits on a go to render. The run was stopped at 17:20, the PC low on memory.
 
 ### 2026-11-16, 16:55. AR19: the Void Mill's Stage I as kit pieces (Modulo)
 

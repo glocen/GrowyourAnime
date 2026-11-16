@@ -7575,6 +7575,66 @@ On Modulo's export (efb6543), in the dev build until research's verdict in motio
   - **Visually reviewed:** not yet. The judging in motion from the player's camera waits for an unlocked screen, then research's verdict. The motion's own content check comes then.
   - **Director-accepted:** no.
 
+## AR20. The base and the map round it, no mist and less somber (Modulo, for research's pick, then Faber)
+
+From the director's word at 16:50 (`docs/decisions.md`, the row on the mist): "imo we should remove all that in base and around it it way to much + need to be less somber". Research's ask, with its Now row of 16:52:
+- **The ask:** two or three takes, each from the game's start camera in the base and from the crossing, at day, dusk and night, under the look with no mist.
+- **The levers to vary:** exposure; the yard's floor and walls lighter and less grey-violet; the void's and the current's light brighter; the sky lighter.
+- **Also:** recheck the crossing shard's 2.5 against the sky with no haze.
+- **Who does what:** exploration, tier 1. Research picks; Faber sets the lighting.
+- **Already in the game:** Faber took the mist out of the base and the Strip at 17:13 (74b67ba; TR24, "Fix 9 and the mist"). Only the colours wait on the pick.
+
+### The takes, round 1 (Modulo, 2026-11-16, 17:22)
+
+- **Sheets** in `build/handoff/Base/`:
+  - `base_mood.png`: today and three takes, from the start camera in the base and from the crossing looking up the side street, at day, dusk and night.
+  - `base_mood_shard.png`: the crossing's shard from the far gate at the base's new size, 372 studs.
+- **How they were made:** `tools/blender/base_mood.py` drives base_plan's and strip_plan's look scripts. These are fast renders (8 samples), not the engine.
+  - "Today" is the game before 74b67ba.
+  - The numbers below are in Roblox's terms, seeds for Faber to tune by playing. They're converted from the look's units, and the conversion gives today's own values back.
+- **The takes.** Each moves more levers than the last, so the pick is also a pick of cost.
+  - **A, clear air:** the mist gone, the fill and the exposure lifted. Numbers only.
+    - Day: Ambient #A3A1B4 (today #8A8496), ExposureCompensation +0.11.
+    - Dusk: Ambient #373A72 (#242852), Brightness 2.15 (1.65), ExposureCompensation +0.26.
+    - Night: Ambient #1F2D65 (#10183E), Brightness 1.43 (1.02), ExposureCompensation +0.38.
+  - **B, clean steel:** A's light, plus four changes.
+    - **The yard out of grey-violet,** so the void's violet is the only violet left:
+      - the deck's tones #9EA7BC and #8790A8 (today #6C7698 and #535C7E);
+      - steel #8290B0 (#62709A), concrete #C8CAD2 (#A2A7BC), girder #4C5878 (#3A4468).
+    - **The glow brighter:** 1.4 times. Config.Lighting.Glow.Kit goes from 2.4 to 3.4, and each phase's Floor rises 1.4 times. The pools rise 1.25 times, the Strip's stones 1.2 times.
+    - **The distance painted in:** two swatches in the kit picture's free cells, a pale void stone (#9284C8) on the far shards and a violet slate on the Tower asleep.
+    - **Cost:**
+      - the base kit's colour pictures redrawn and uploaded (the kit's, the deck's, the seven floors');
+      - FarShardLow, Mid and Tall and TowerSleeping re-exported for their new cells;
+      - a paving of the Strip's own (it wears Lantern Row's today).
+  - **C, bright hours:** B under lighter skies, lifted further.
+    - Dusk: a pastel sky, Ambient #515591, Brightness 2.31, ExposureCompensation +0.38.
+    - Night: a bluer moonlit sky, Ambient #3A4677, Brightness 1.53, ExposureCompensation +0.54.
+    - The glow 1.5 times.
+    - **Cost:** B's, plus the dusk's and the night's six faces painted again for the base and the Strip, swapped on the side street as the haze is now. Lantern Row keeps its own.
+- **What the sheet shows** (my read, from stills):
+  - **The mist alone (A) clears the air but leaves dusk and night as somber.** It also uncovers what the haze hid: the far shards, the Tower asleep and the empty lots beside the crossing go near black, since they were drawn for the haze to pale them. B and C answer the shards and the Tower. The lots wait for round 2.
+  - **At dusk and night the yard's colour comes mostly from the fill's deep blue, not from its paint.** B's lighter steel reads by day and much less after, so the fill's hue is the lever for dusk and night.
+  - **By day B and C read clean and light;** A keeps the grey-violet.
+  - **The crossing's well stays a black hole in every take,** the void's own, kept.
+- **The crossing's shard at 2.5, from the far gate with no haze** (`base_mood_shard.png`):
+  - by day, a dark shard with a thin light;
+  - at dusk, a crisp lit line at the street's end, not burned;
+  - at night, it blooms into a halo about three times its width that hides its shape: with A's lift, and more with B's glow at 1.4 times. C's lighter night sky tames it.
+  - **Lean:** 2.5 stands. If B or C is picked, the shard keeps today's own glow, about 1.8 times the kit's new one, so the lift isn't doubled on it. Untested.
+- **My lean: C.** It reads least somber in every phase, with the void's light still the brightest thing at dusk and night. Its round 2 should be seen before Faber sets it. A isn't enough on its own.
+- **Round 2, not rendered:** the run was stopped at 17:20, the PC critically low on memory (Claude Code stops a background run then). It waits on a go to render, unless research's pick makes it moot.
+  - Base B's row is round 2 already: the Tower in a lighter slate.
+  - Round 2 lifts the crossing's empty lots in B and C (#6E7290 over today's #3A3C52).
+  - It turns C's fill: a rose-lilac dusk (Ambient about #70618C, the sun #DDB8EC) and a silver night (about #50597E, the sun #BCCAF0).
+  - `base_mood.py` holds round 2. Round 1's differences are the numbers above.
+- **Content check:** not run, since nothing new is uploaded or built. The picked take's pictures and meshes get the upload check.
+- **The four facts:**
+  - **Implemented:** round 1's sheets.
+  - **Tested:** the renders ran clean, 24 views.
+  - **Visually reviewed:** stills only, my own read. Research's pick waits.
+  - **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

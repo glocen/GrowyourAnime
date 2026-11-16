@@ -1,8 +1,8 @@
 --!strict
 -- Drops (pure rules): what an enemy's fall gives one player whose lead hit it, written into their save in one step
 -- (docs/design.md, "The world, in grey"; docs/decisions.md, D01). Credits, the lead's experience, a chance at the ground's
--- Standard shard, and on the account's first kill, Watt's Named shard. The server decides the fall and the roll; this only
--- writes them. No Roblox API: it runs with Studio closed.
+-- Standard shard, and on the account's first kill, Watt's Named shard; a chest by Rules.Chests.Dropped (TR27). The server
+-- decides the fall and the rolls; this only writes them. No Roblox API: it runs with Studio closed.
 
 local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
@@ -11,6 +11,7 @@ local GrowthConfig = require(Shared.Config.Growth)
 local Grounds = require(Shared.Definitions.Grounds)
 local Shards = require(Shared.Definitions.Shards)
 local Growth = require(Shared.Rules.Growth)
+local Chests = require(Shared.Rules.Chests)
 
 local Drops = {}
 
@@ -77,9 +78,10 @@ function Drops.Card(kind: any, level: any, ground: any): { Line }
 end
 
 -- The fall written into one player's save: Credits, the lead's experience (levels as far as it goes), the shard the roll
--- won, and on the account's first kill, Config.Drops.First. { Ok, Credits, Xp, Levels, Shard, First, Kills } where Shard
--- and First are "" when nothing dropped. A player without a lead still gets the rest.
-function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll: any): { [string]: any }
+-- won, on the account's first kill, Config.Drops.First, and the chest `chestRoll` drops (Rules.Chests.Dropped; the sure one
+-- needs no roll). { Ok, Credits, Xp, Levels, Shard, First, Chest, Kills } where Shard, First and Chest are "" when nothing
+-- dropped. A player without a lead still gets the rest.
+function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll: any, chestRoll: number?): { [string]: any }
 	local drop, problem = Drops.Roll(kind, level, ground, roll)
 	if drop == nil then
 		return { Ok = false, Error = problem }
@@ -96,6 +98,10 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 		first = DropsConfig.First
 		bag[first] = (bag[first] or 0) + 1
 	end
+	local chest = Chests.Dropped(kind, ground, data.Progress.Kills, chestRoll)
+	if chest then
+		Chests.Grant(data, chest, 1)
+	end
 	data.Progress.Kills += 1
 	return {
 		Ok = true,
@@ -104,6 +110,7 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 		Levels = levels,
 		Shard = drop.Shard,
 		First = first,
+		Chest = chest or "",
 		Kills = data.Progress.Kills,
 	}
 end

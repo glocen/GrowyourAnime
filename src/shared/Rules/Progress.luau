@@ -7,6 +7,7 @@ local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
 local Grounds = require(Shared.Definitions.Grounds)
 local Cooldown = require(Shared.Rules.Cooldown)
+local Chests = require(Shared.Rules.Chests)
 
 local Progress = {}
 
@@ -23,8 +24,9 @@ local function opened(data: Profile.Data, id: string, now: number): Profile.Grou
 end
 
 -- The keeper of ground `id` fell to this player's lead at `now` (os.time): one more win there, the next ground opened if
--- it wasn't, and this player's keeper resting Cooldown.Wait("Keeper") from now. { Ok, Ground, Wins, Opened, Back } where
--- Opened is the ground the win opened, or "" when it opened none, and Back when the keeper is back (os.time).
+-- it wasn't, this player's keeper resting Cooldown.Wait("Keeper") from now, and its chest, the better on the first win
+-- (Rules.Chests.KeeperChest, TR27). { Ok, Ground, Wins, Opened, Back, Chest } where Opened is the ground the win opened,
+-- or "" when it opened none, Back when the keeper is back (os.time), and Chest the chest's id, or "" for none.
 function Progress.KeeperWon(data: Profile.Data, id: any, now: number): { [string]: any }
 	local row = if type(id) == "string" then Grounds.ById[id] else nil
 	if row == nil then
@@ -33,13 +35,17 @@ function Progress.KeeperWon(data: Profile.Data, id: any, now: number): { [string
 	local record = opened(data, row.Id, now)
 	record.KeeperWins += 1
 	record.Back = now + Cooldown.Wait("Keeper")
+	local chest = Chests.KeeperChest(row.Id, record.KeeperWins)
+	if chest then
+		Chests.Grant(data, chest, 1)
+	end
 	local nextRow = Grounds.List[row.Order + 1]
 	local newly = ""
 	if nextRow and data.Progress.Grounds[nextRow.Id] == nil then
 		opened(data, nextRow.Id, now)
 		newly = nextRow.Id
 	end
-	return { Ok = true, Ground = row.Id, Wins = record.KeeperWins, Opened = newly, Back = record.Back }
+	return { Ok = true, Ground = row.Id, Wins = record.KeeperWins, Opened = newly, Back = record.Back, Chest = chest or "" }
 end
 
 -- Seconds before this player's keeper of ground `id` is back at `now` (os.time, or the server's time on a client), 0 when

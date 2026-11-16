@@ -1,8 +1,9 @@
 --!strict
--- RegaliaService (server): what a player may ask of the gear they own, the equip and the unequip (Shared.Rules.Regalia),
--- registered with the save's one door, so each is one transaction with its op id and a repeat answers its first answer.
--- The lead's block follows on its own: LeadService resolves it again on every change. Items come from chests (part 11);
--- until then, Studio's "ItemGive" makes one.
+-- RegaliaService (server): what a player may ask of the gear they own: the equip and the unequip (Shared.Rules.Regalia),
+-- a chest opened and the salvage's rarity (Shared.Rules.Chests). Each is registered with the save's one door, so it's one
+-- transaction with its op id and a repeat answers its first answer. An open's rolls come from a generator seeded inside
+-- its transaction, never from the client. The lead's block follows on its own: LeadService resolves it again on every
+-- change. Chests drop at a fall (DropService, KeeperService); Studio's "ChestGive" and "ItemGive" make them by hand.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -14,6 +15,8 @@ local Rarity = require(Shared.Definitions.Rarity)
 local Attributes = require(Shared.Definitions.Attributes)
 local Stats = require(Shared.Rules.Stats)
 local Regalia = require(Shared.Rules.Regalia)
+local Chests = require(Shared.Rules.Chests)
+local ChestRows = require(Shared.Definitions.Chests)
 local DataService = require(script.Parent.Parent.Core.DataService)
 local DebugService = require(script.Parent.Parent.Core.DebugService)
 
@@ -21,7 +24,21 @@ local RegaliaService = {
 	Priority = 20, -- after DataService
 }
 
+local seeds = Random.new()
+
 local function registerDebug()
+	-- Studio only. `count` of chest `chest` in the bag (a negative count takes them out, never below none).
+	DebugService.Register("ChestGive", function(who: any, chest: any, count: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(chest) ~= "string" or ChestRows.ById[chest] == nil or type(count) ~= "number" or count ~= math.floor(count) then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "ChestGive", function(draft: Profile.Data): { [string]: any }
+			local held = math.max(0, (draft.Bag.Chests[chest] or 0) + count)
+			draft.Bag.Chests[chest] = if held > 0 then held else nil
+			return { Ok = true, Held = held }
+		end)
+	end)
 	-- Studio only. An item of a row in the bag: its rarity (Common by default), its tier (1) and its lines as given, each
 	-- { Stat, Value } naming a Battle Attribute or a Basic Attribute. Answers its id.
 	DebugService.Register("ItemGive", function(who: any, def: any, rarity: any, lines: any, tier: any): any
@@ -59,6 +76,16 @@ function RegaliaService.Init()
 	for name, action in Regalia.Actions do
 		DataService.Action(name, action)
 	end
+	DataService.Action("OpenChests", function(draft: Profile.Data, args: any): { [string]: any }
+		local given = if type(args) == "table" then args else {}
+		local rng = Random.new(seeds:NextInteger(0, 2 ^ 31 - 1))
+		return Chests.Open(draft, given.Chest, given.Count, function(): number
+			return rng:NextNumber()
+		end)
+	end)
+	DataService.Action("SetSalvage", function(draft: Profile.Data, args: any): { [string]: any }
+		return Chests.SetSalvage(draft, if type(args) == "table" then args.Below else nil)
+	end)
 	if RunService:IsStudio() then
 		registerDebug()
 	end

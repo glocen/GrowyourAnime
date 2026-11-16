@@ -109,6 +109,10 @@ export type Data = {
 	SlotRanks: { [string]: number }, -- forge rank by slot name; a slot never forged has no key
 	Bag: {
 		Shards: { [string]: number }, -- count by shard definition
+		Chests: { [string]: number }, -- count by chest definition, so identical chests stack (TR27, Rules.Chests)
+	},
+	Settings: {
+		Salvage: string, -- an opened item of this rarity or under turns into Credits; "" for none (Rules.Chests)
 	},
 	Currency: {
 		Credits: number,
@@ -155,7 +159,8 @@ function Profile.Template(): Data
 		Items = {},
 		Presets = { { Slots = {}, Hands = {} } },
 		SlotRanks = {},
-		Bag = { Shards = {} },
+		Bag = { Shards = {}, Chests = {} },
+		Settings = { Salvage = "" },
 		Currency = { Credits = 0, Research = 0 },
 		Roles = { Lead = "" },
 		Base = {

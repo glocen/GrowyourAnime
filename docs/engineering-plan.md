@@ -101,20 +101,22 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 - **The rows:** `Definitions/Chests.luau` holds `Id`, `Ground`, `Tier` and `Name`. `Config.Chests` holds the tables (rarity, slot and line rolls by ground and tier), the drop chances, the bag's cap, the open step (50) and the pickup reach.
 - **The save:**
   - `Bag.Chests`: count by chest id. A stack is a count, so identical chests stack by shape.
-  - `Settings.Salvage`: the rarity under which an opened item turns into forge stones and Credits, or `""`.
+  - `Settings.Salvage`: an opened item of this rarity or under turns into Credits (forge stones once the Forge is in), or `""` for none.
   - `Items` as they are.
-  - Size, estimated before the build: an item about 150 bytes, 300 items about 45 KB, against a profile's 4 MB. Faber measures it at the build.
-- **A drop is granted on the server at the kill,** in the kill's own transaction (`Rules.Drops`), as Watt's shard is today. The chest falling in the world and flying to the player is its show: "a reward is granted before its animation, never by it".
+  - Size, measured at the build (TR27): a full bag of 300 of the richest chest's items saves at 70 KB, about 208 bytes an item, against a profile's 4 MB.
+- **A drop is granted on the server at the kill,** in the kill's own transaction (`Rules.Drops` through `Rules.Chests.Dropped`, with a roll drawn by `DropService`), as Watt's shard is today. A keeper's comes from its win's transaction (`Rules.Progress.KeeperWon` through `Rules.Chests.KeeperChest`), since the fall and the win are two listeners with no set order. The chest falling in the world and flying to the player is its show: "a reward is granted before its animation, never by it".
 - **Open:** `Act("OpenChests", { Chest, Count })` with its op id. Count is at most the open step and at most what's owned. "Open all" is several requests, one op id each, and the summary shows once all have answered.
-  - Each request is one transaction: it removes the chests, rolls each item with `Rules.Chests.Roll(chest, seed)`, the seed drawn on the server in the transaction, never from the client, and applies the salvage.
+  - Each request is one transaction: it removes the chests, rolls each item with `Rules.Chests.Roll(chest, classes, draw)`, `draw` a generator seeded on the server in the transaction, never from the client, and applies the salvage. A weapon's class comes from `Rules.Chests.Classes`: the lead's at `Config.Chests.ClassLean`, else another class the player owns.
   - It writes everything in the same step and answers with the item ids and the salvage's totals.
-  - At the bag's cap it refuses `BagFull` before rolling, and the chests stay.
-- **The salvage never takes an item that would raise Combat Power** (`Rules.Chests.Keep`, through `Stats.Compare`). **Open, for research:** against whom, the lead in its preset or each class's best Voidkin. It's one function either way.
-- **Rule 4:** no product grants a chest, a key or a rate. A case reads every product row.
+  - It refuses `BagFull` before rolling when the items held and the count would pass the cap, and the chests stay. `Unknown` and `NotEnough` the same way.
+  - The salvage's rarity is set by `Act("SetSalvage", { Below })`.
+- **The salvage never takes an item that would raise Combat Power** (`Rules.Chests.Keep`, through `Stats.Compare`). **Open, for research:** against whom. The builder's default is one function, `Rules.Chests.For`: armour and jewellery against the lead in its preset; a weapon against the lead when it's of the weapon's class, else that class's strongest owned Voidkin, and salvaged when the player owns none of the class.
+- **Rule 4:** no product grants a chest, a key or a rate. A case reads every product row, once the store has rows (none in `src` at TR27).
 - **Checks:**
   - 1,000 opened in steps, every chest removed once and every item granted once;
   - a repeated op id answers its first answer;
   - a refused step changes nothing;
+  - a server stopped mid-open applies nothing, and the request sent again opens once;
   - the save's size at a full bag.
 
 **The Tower's run** (part 8).

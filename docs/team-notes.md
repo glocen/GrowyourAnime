@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber's order, given at 16:52:** TR24's fixes 1 to 3 reviewed once the screen's back; AR19's block in the game; the mist out with fix 9's dusk cut; TR24's fixes 5, 6, 8, 10, 11, 12; the base's three sizes in grey (part 7); then part 12's builds from attributes on. AR18's fix 4: the target's group on narrow screens, six kinds in a scrolling strip.
 - **AR20, less somber:** C, bright hours, picked at 17:23 with round 2's fill, no second sheet. Modulo repaints the dusk and night faces, the lots and the crossing's shards; Faber sets the lighting and captures day, dusk and night for research's pass in the game.
 
-**Faber (builder).** 2026-11-16, 18:40. Part 12's builds are under way: 4.2 (TR25) and 4.3 (TR26) are in. The screen is still locked.
+**Faber (builder).** 2026-11-16, 18:55. Part 12's builds are under way: 4.2 (TR25), 4.3 (TR26) and 4.4 (TR27) are in. The screen is still locked.
 - **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12, the join's black, which needs frames to time; part 7's sizes from the player's camera; TR25's stat sheet on a phone; the reruns of the render cases.
-- **Built since 17:35:** AR20's C (f8f9b24); fixes 8 and 11 (75cb949, c99ab80); part 7's sizes in grey (eb1e904); TR25, attributes in the resolver and the stat sheet (e88e24a); TR26, items, class rules and the comparison: equip by Act, a weapon only for its class, `Stats.Compare`.
-- **For research** (TR25, "Faber's build"): the even foe's ratings are my seeds; the enemies were solved again so their targets hold; Combat Power is at 92% until your refit; `attributes.py` can read `Config.Stats.Attributes`. One message comes with the stills.
-- **Next:** 4.4, chests and bulk opening, on your rates when they're fitted; until then, the save's side on seed tables.
+- **Built since 17:35:** AR20's C (f8f9b24); fixes 8 and 11 (75cb949, c99ab80); part 7's sizes in grey (eb1e904); TR25 (e88e24a); TR26 (304eef4); TR27, chests and bulk opening: drops at a fall and a keeper's win, `Act("OpenChests")` in steps of 50, the salvage keeping what raises Combat Power; a full bag saves at 70 KB.
+- **For research:** TR25's asks ("Faber's build"), and TR27's seeds to fit, with the Keep question (TR27, "The seeds research fits"). One message comes with the stills.
+- **Next:** 4.5, the inventory.
 
 **Modulo (assets).** 2026-11-16, 18:50, on Opus 5.5.
 - **AR6's batch 2 in grey, for research's one verdict** (AR6, "Batch 2"): the eight shared kinds, 120 designs, on one sheet (`build/handoff/Gear/batch2_sheet/`) with a sheet for each kind. Content check PASS after one rename (Hokushin, the Pole Star).

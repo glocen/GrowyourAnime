@@ -2377,3 +2377,59 @@ Part 12's order, item 4.3 (`docs/research/rework-2026-11-16.md`, part 10; the co
   - A Sword in the Tank's hand: `WrongClass`. With no class named, it went under the Warrior's pair and the Tank's figure didn't move.
   - The unequip took it back to 3664.
 - Nothing players see changed, so there's no capture to take.
+
+## TR27. Chests and bulk opening (Faber)
+
+Part 12's order, item 4.4 (`docs/research/rework-2026-11-16.md`, part 11; the contract in `docs/engineering-plan.md`, "Chests"), on the director's yes of 2026-11-16, 16:50.
+
+**Scope, set at the start (18:41).**
+- **The block:** the chest rows; `Config.Chests` on the builder's seeds; the save's `Bag.Chests` and `Settings.Salvage`; `Rules.Chests` (the roll, the open, the salvage and its keep, the drops); the drops at a fall and at a keeper's win; `Act("OpenChests")` and `Act("SetSalvage")`; Studio's `ChestGive`; the cases.
+- **What waits:**
+  - Research's fit of every table to part 11's targets (below), and the Keep question.
+  - The show, on their own feel lines: the chest's fall and its fly-in within `Reach`, the reveal, the summary after an "Open all". With the inventory (4.5): the bag, the salvage's control, the refusal words.
+  - Forge stones from the salvage, with the Forge. The products case, with the store: `src` has no product rows.
+
+**Faber's build (18:41 to 18:54).**
+- **`Definitions/Chests.luau`:** three tiers in every ground, `<ground>_<tier>`: a "Common Chest" (a Shade's), an "Elite Chest" (an elite's, and a keeper's after its first win) and a "Keeper's Chest" (a keeper's first win), each "of <Ground>". The tier names are mine.
+- **The save:** `Bag.Chests` (a count by chest id) and `Settings.Salvage` (a rarity, or ""). Reconcile added both to the live Test save on load, so no migration.
+- **The drops:**
+  - `Rules.Chests.Dropped` runs inside `Drops.Give`, the kill's transaction, on a second roll `DropService` draws: a Shade's chest at 5%, an elite's every time, and the account's third kill always.
+  - A keeper's comes from `Progress.KeeperWon`, its win's transaction, since the fall and the win are two listeners with no set order: the Keeper's Chest on the first win, an Elite Chest after.
+- **The roll, `Rules.Chests.Roll(chest, classes, draw)`,** every number from `draw`, in a fixed order:
+  - **The rarity:** from the ladder's row, the ground's order plus the tier less one, so an elite's chest reads as the next ground's Shade chest.
+  - **The slot:** one of the fourteen alike, so a ring or an earring comes twice as often as a helmet. A weapon's class is the lead's 60% of the time, else another class the player owns.
+  - **The main stat:** fixed by the slot, or a Basic Attribute for jewellery.
+  - **The lines:** 1 to 4 by rarity, never the main stat and never twice. A weapon weighs its class's Main ×3.
+  - **The sockets:** 1 to 4, empty.
+  - **The values:** an item's worth is `PowerPerG` × its rarity's share × G at its ground's last level. The main takes half, the lines share the rest, each line within ±15%, turned into points by `Rules.Chests.Price`, the line's Combat Power a point at the generic row (Might 6.1, Insight 5.4, Attack 4, Health 0.53).
+  - `PowerPerG` (63.5) is the sim's full-set gear share at rarity 1 in Config's Power weights, over fourteen.
+- **The open, `Rules.Chests.Open`:**
+  - At most 50 and at most what's held. It refuses `Unknown`, `NotEnough` or `BagFull` (items held plus the count past 300) before it rolls.
+  - The chests leave the bag in the step that writes every item.
+  - The answer: the kept item ids, the number salvaged and their Credits.
+  - Registered in `RegaliaService`, with a `Random` seeded inside the transaction.
+- **The salvage:** an item of the set rarity or under turns into Credits by rarity × G, unless `Keep` finds it would raise Combat Power through `Stats.Compare`. The salvage reads "this rarity and under", my call, since that's how a player picks it.
+  - It's compared against `Rules.Chests.For`, my default for research's question: armour and jewellery against the lead; a weapon against the lead when of its class, else that class's strongest owned. A weapon of a class nobody owns is salvaged.
+- **Studio:** `NL_Debug:Invoke("ChestGive", who, chest, count)`.
+
+**The seeds research fits** (`Config.Chests`, every number the builder's): the eight-row rarity ladder; the drop chances; the class lean (0.6); the item's worth (`PowerPerG`, the rarity shares, `MainShare` 0.5, `Spread` 0.15); lines and sockets by rarity; the main stat by armour slot (Helmet and Chest Armor Health, Shoulders Defence, Gloves Critical, Bracers Hit, Boots Dodge, Cloak Block); the line pool's weights; the salvage's Credits. The targets are part 11's: an Uncommon in the first hour, a Rare at 3 to 4 hours, an Epic at 10 to 15, a Legendary at 35 to 45, about 20 chests an hour.
+
+**Checks (18:54).**
+- Type check 0 new.
+- Logic 22,938/0 offline and in Studio: 5,293 new checks, in the Chests cases.
+  - Every ground has its three chests, each named for its ground, its odds summing to one.
+  - 400 rolls: each one the same twice from the same draws, fitting its slot, with its main, its lines and sockets, each line priced within its spread.
+  - 20,000 rolls land on their odds: each rarity, the ring's double share, and 60% of the weapons for the lead's class.
+  - 1,000 opened in twenty steps: every chest removed once and every item granted once.
+  - A repeated op id answers its first answer. Six bad requests and `BagFull` change nothing.
+  - A server stopped mid-open applies nothing, and the request sent again opens once.
+  - The salvage: everything under a strong worn set, its Credits matching the same rolls replayed; at Common, the Commons only; nothing worn, everything kept but another class's weapon.
+  - The drops: none over the chance, one under it, one sure on the third kill, an elite's always, a keeper's best first.
+  - A full bag of the richest chest's items saves whole.
+- Boot errors 0.
+- **The Act path in a playtest, on the live Test save** (exported first, imported back after: 0 items, Credits 52,471, as it was):
+  - 120 Lantern Row chests given; 50 opened (one is a Common ring, Insight 7 and Critical 28); the same op id again gave the same 50 ids.
+  - 51 at once: `Unknown`. An Elite Chest not held: `NotEnough`. A salvage of "Shiny": `Unknown`.
+  - At Uncommon with nothing worn, all 50 kept. With fourteen strong Legendaries worn, 17 of 20 salvaged for 594 Credits, paid. The 3 kept were Healer and Mage weapons, for the Voidkin of those classes, who wear nothing.
+  - **A full bag:** 300 Keeper's Chest of Mirror Pavilion items save at 70 KB (62 KB of items, about 208 bytes each; the ledger 6.5 KB). The 301st: `BagFull`, the chest kept.
+- Nothing players see changed, so there's no capture to take.

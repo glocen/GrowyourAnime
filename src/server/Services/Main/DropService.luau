@@ -25,9 +25,9 @@ local DropService = {
 local rng = Random.new()
 
 local function give(player: Player, f: FightService.Fighter)
-	local roll = rng:NextNumber()
+	local roll, chestRoll = rng:NextNumber(), rng:NextNumber()
 	local answer = DataService.Change(player, "Drop", function(draft: Profile.Data): { [string]: any }
-		return Drops.Give(draft, f.Kind, f.Block.Level, f.Ground, roll)
+		return Drops.Give(draft, f.Kind, f.Block.Level, f.Ground, roll, chestRoll)
 	end)
 	if answer.Ok ~= true and answer.Error ~= DataService.NoProfile then
 		Log.Warn("DropService", `{f.Def} at level {f.Block.Level} in {tostring(f.Ground)} paid {player.Name} nothing: {tostring(answer.Error)}`)

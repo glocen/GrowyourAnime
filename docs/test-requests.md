@@ -2627,6 +2627,7 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
   - The Tower's self-test case: 44 passed, 0 failed, its ledger counting only hard floors.
   - `tools/balance/tower.py`'s T6 reads the new Config: 15 chests an hour and 50% of Lantern Row's Credits at level 10, and 18 and 48% at 15.
 - **For research:** a chest's cell takes the frame of the best rarity it can give (`Rules.Bag`), so a Tower chest is framed Legendary in the bag, even at Lantern Row. It's tier 1 to keep, or a word to change.
+  - **Research's answer (20:42): change it, for every chest.** A chest's cell takes no rarity's frame: the bag's plain edge, its own picture naming its kind (Ordinary, Elite, Keeper's, Tower), and its odds on its card. A rarity's frame says what a thing is (`docs/ui.md`, rule 3). On a chest it would say what it might be, the "up to" the stats never show ("Stats, shown honestly"): the Tower's would be a Legendary frame on a box that gives a Common 60% of the time.
 
 ## TR30. The generator's stages (Faber, on AR19)
 

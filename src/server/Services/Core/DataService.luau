@@ -224,6 +224,33 @@ local function registerDebug()
 			return { Ok = true }
 		end)
 	end)
+	-- A save as JSON, and back: kept before a wipe, so a new player's run never costs the test profile (the phone run,
+	-- 2026-11-16). The import replaces the whole save through the same door as any change, migrated to the latest.
+	DebugService.Register("DataExport", function(who: any): any
+		local player = DebugService.ResolvePlayer(who)
+		local data = player and DataService.Get(player)
+		return if data then HttpService:JSONEncode(data) else nil
+	end)
+	DebugService.Register("DataImport", function(who: any, json: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(json) ~= "string" then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		local read, kept = pcall(HttpService.JSONDecode, HttpService, json)
+		if not read or type(kept) ~= "table" then
+			return { Ok = false, Error = "BadJson" }
+		end
+		Migrations.Run(kept)
+		return DataService.Change(player, "DataImport", function(draft: Profile.Data): Transaction.Answer
+			for key in draft :: any do
+				(draft :: any)[key] = nil
+			end
+			for key, value in kept do
+				(draft :: any)[key] = value
+			end
+			return { Ok = true }
+		end)
+	end)
 	-- Adds Credits through the same door as any change, so a save and a rejoin can be checked without a menu.
 	DebugService.Register("DataCredits", function(who: any, amount: any): any
 		local player = DebugService.ResolvePlayer(who)

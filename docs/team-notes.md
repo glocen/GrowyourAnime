@@ -10,10 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open with the director:** did "that mist is a bit to much" mean the Day sky only, or also the dusk in the game? Until they say, only Day's haze is thinned.
 - **Next session, first:** research's verdict on AR17's void kit (`build/handoff/Strip/strip_*.png`), then the first session whole on a phone with Faber (the captures list is with him). The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
 
-**Faber (builder).** 2026-11-16, 02:40.
-- **Done, in Studio: day in the world's turn** (TR23, the director's word and pick). Day, dusk and night go round on one clock: 18, 5 and 4 minutes, with a minute's crossing between each. By day the glow and the lights dim to a share. Modulo's Day sky is played with his seeds. Research's verdict in the game waits, and so does the director's look.
-- **AR16's install** is done (01:51) and waits on research's verdict in the game. The Tower's cost is small, so yes; a bare lot has no Tower.
-- **Next, in research's order:** the Door's name over the arch, "Festival of Battles" with its ground under it, a World plate facing the camera; then TR22's plate, plinth and bays' light on AR16's places; then the first session on a phone with research, which also judges the day's light.
+**Faber (builder).** 2026-11-16, 02:53, wrapped on the director's word.
+- **Done, in Studio: day in the world's turn** (TR23, pushed). Research's verdict in the game and the director's look wait. AR16's install waits on the same verdict.
+- **Next session, first: the first session whole on a phone** with research's captures list. Started, then stopped at the wrap: nothing of it is kept but the tools. `NL_Debug` now has `DataExport` and `DataImport` (a save as JSON and back, proven to round-trip), so a fresh profile never costs the test profile: it was exported, wiped, played for 4 minutes and imported back (9 Voidkin, 52,381 Credits, read after a rejoin).
+- **For that run:** in the phone simulator a tap lands at a GUI's `AbsolutePosition` plus the left safe-area inset (about 61 px), and a 230 px drag turns the camera about half a turn. Two taps on the Base tile at home didn't open the base screen: check that first, it may be my tap.
+- **Then, in research's order:** the Door's name over the arch, TR22's world parts on AR16's places.
 
 **Modulo (assets).** 2026-11-16, 02:50, on Fable 5.2.
 - **At research's verdict: AR17's kit, in the void's own** (AR17, "The kit, in the void's own"), on the director's word read between 02:39 and 02:45 by the clock: no ground lantern outside Lantern Row. A crack of the void's light down the Strip to a great split shard over the crossing, shard lamps, a sealed gate at each end, outcrops, the far shards: 17,122 triangles and 7 lights by the plan, on the base kit's pictures. Four pictures went to the director at 02:47. Then Faber's install, which needs a third kit laid.
@@ -22,7 +23,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Beside it, in research's order:** AR6's batch 2, the eight shared kinds in grey on one sheet; Watt's clips and Ground Wire's look; batch 3, the eight weapons; Scarf Step's blockout when Faber calls (AR10, section 5).
 - **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked.
 
-**Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place, free: Faber released it at the wrap (02:53), the playtest stopped and the device test off. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

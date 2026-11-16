@@ -41,8 +41,11 @@ export type OwnedItem = {
 	Jewel: string, -- a jewel id, or ""
 }
 
+-- A Regalia preset (docs/engineering-plan.md, "Class rules"): the twelve shared slots, and one weapon pair for each class.
+-- A Voidkin wears its preset's Slots and its own class's pair, nothing else (Rules.Stats, Definitions.Items.Fits).
 export type Preset = {
-	Slots: { [string]: string }, -- slot name to item id; a slot with nothing in it has no key
+	Slots: { [string]: string }, -- a shared slot's name (Gear.Shared) to an item id; a slot with nothing in it has no key
+	Hands: { [string]: { [string]: string } }, -- a class to its pair: "Main Hand" and "Off Hand" to an item id (TR26)
 }
 
 export type IndexEntry = {
@@ -150,7 +153,7 @@ function Profile.Template(): Data
 		Voidkin = {},
 		Index = {},
 		Items = {},
-		Presets = { { Slots = {} } },
+		Presets = { { Slots = {}, Hands = {} } },
 		SlotRanks = {},
 		Bag = { Shards = {} },
 		Currency = { Credits = 0, Research = 0 },

@@ -2329,3 +2329,51 @@ Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 
   - class against class is within 0.03 of today's edges at levels 10 and 40;
   - Combat Power is 92% (any gap) and 97% (10% faster), until research's refit.
 - **NOT VERIFIED:** the client self-test "Voidkin screen: Overview's stat sheet…" and the phone captures, long numbers included. The screen is locked (0 frames a second, a 1 × 1 viewport).
+
+## TR26. Items, class rules and the comparison (Faber)
+
+Part 12's order, item 4.3 (`docs/research/rework-2026-11-16.md`, part 10; the contract in `docs/engineering-plan.md`, "Class rules"), on the director's yes of 2026-11-16, 16:50.
+
+**Scope, set at the start (18:30).**
+- **The block:** the item rows; each preset's class pairs (`Hands`) with migration 6; the resolver's two guards; Equip and Unequip, one transaction each with its refusals; `Stats.Compare`; Studio's `ItemGive`; the cases.
+- **What waits:**
+  - With the inventory (4.5): the screen's words for each refusal, the green gains after an equip, the bag's arrows and the slot's dot. Nothing in the game can equip yet but the Act remote.
+  - With chests (4.4): an item's main stat by its slot, its rolled lines, its sockets and the drop's lean toward the lead's class.
+  - The Warrior's off hand stays the Short Sword until the director's pick (the register, item 7).
+
+**Faber's build (18:30 to 18:39).**
+- **`Definitions/Items.luau`:** one row per kind, ten armour and ten weapons, each weapon with its class.
+  - A row's `Slot` names the kind of slot: `Ring` and `Earring` fit either of their two.
+  - `Items.Fits(row, slot, class)` is the one answer to what goes where: a weapon only in its own hand, for its own class; armour only in a shared slot of its kind.
+  - `Gear` gains `Family`, `SlotsOf`, `IsHand` and `IsShared`.
+- **The save:** a preset is `Slots` (the twelve shared) and `Hands` (a class to its pair).
+  - Migration 6 gives every preset its `Hands`, and moves a hand found in `Slots` under its item's class, or drops it.
+  - The live Test save took it on load.
+- **`Rules.Stats.Resolve`** reads the twelve shared slots in Gear's order, then the pair of the Voidkin's own class, and only an item whose row fits there. So a save edited by hand applies no wrong weapon, and the lines read in the same order every time (they followed hash order before).
+- **`Rules.Regalia`:**
+  - Equip is `Act("Equip", { Preset, Slot, Class?, Item? })`. A weapon's class comes from its row when the request names none; an empty or absent item takes off what's there.
+  - The refusals: `NotOwned`, `WrongSlot`, `WrongClass`, and `Unknown` for a request that isn't one.
+  - An item moves within a preset rather than being worn twice, and one item may sit in several presets (`docs/design.md`, "Presets").
+  - It's registered by `Services/Main/RegaliaService`. The lead's block follows by itself, since LeadService resolves it again on every change, so an equip applies at once, as a level does. My call: no fight guard in grey.
+- **`Stats.Compare(data, preset, owned, item, slot?)`** is the resolver run twice. It returns the slot, each Basic and Battle Attribute's change, Combat Power's change and the two blocks.
+  - Without a slot, a ring or an earring goes where Combat Power ends highest: an empty one before a worn one, the first on a tie.
+  - A weapon is compared for its own class only.
+- **Studio:** `NL_Debug:Invoke("ItemGive", who, def, rarity?, lines?, tier?)` puts an item in the bag and answers its id.
+- **The Stats cases** wore a made-up `case_item` in any slot, and one put a single weapon on every class. They now wear real rows in shared slots.
+
+**Checks (18:39).**
+- Type check 0 new.
+- Logic 17,645/0 offline and in Studio: 402 new checks, in the Regalia cases and Data's step 6.
+  - The rows match `Gear.Weapons`.
+  - Each of nine wrong requests is refused with its reason and changes nothing.
+  - A preset applies only the Voidkin's own class's pair.
+  - Six hand edits of a save each apply nothing.
+  - A repeated op id answers its first answer, even after the slot has changed since.
+  - The comparison equals the resolver twice and picks the better ring.
+- Boot errors 0.
+- **The Act path in a playtest, on the live Test save** (exported first, imported back after: 0 items, as it was):
+  - A Rare Great Axe with +1000 Health raised the Tank lead's MaxHealth from 3664 to 4664 at once.
+  - The same op id sent again answered its first answer.
+  - A Sword in the Tank's hand: `WrongClass`. With no class named, it went under the Warrior's pair and the Tank's figure didn't move.
+  - The unequip took it back to 3664.
+- Nothing players see changed, so there's no capture to take.

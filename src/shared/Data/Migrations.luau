@@ -4,6 +4,8 @@
 -- STEPS[n] upgrades a save from version n - 1 to n. A shipped step is never changed or reordered: add a new one, give it a
 -- logic case, and list every table whose keys it touches. No Roblox API: it runs with Studio closed.
 
+local Items = require(game:GetService("ReplicatedStorage").Shared.Definitions.Items)
+
 local Migrations = {}
 
 local STEPS: { (data: any) -> () } = {
@@ -55,6 +57,34 @@ local STEPS: { (data: any) -> () } = {
 		end
 		while #base.Bays < 2 do
 			table.insert(base.Bays, { Worker = "", Level = 1 })
+		end
+	end,
+	-- 6: class rules (TR26, 2026-11-16). Touches Presets[n]: each preset gains Hands, each class's weapon pair, and a hand
+	-- found in its Slots moves under its item's class, or goes when its item is gone or isn't that hand's weapon. No save
+	-- should hold one, since no item was granted before this step; the step makes sure.
+	function(data: any)
+		local items = if type(data.Items) == "table" then data.Items else {}
+		for _, preset in data.Presets or {} do
+			if type(preset) ~= "table" then
+				continue
+			end
+			if type(preset.Hands) ~= "table" then
+				preset.Hands = {}
+			end
+			local slots = if type(preset.Slots) == "table" then preset.Slots else {}
+			for _, hand in { "Main Hand", "Off Hand" } do
+				local id = slots[hand]
+				if id == nil then
+					continue
+				end
+				slots[hand] = nil
+				local item = items[id]
+				local row = if type(item) == "table" then Items.ById[item.Def] else nil
+				if row and row.Class and row.Slot == hand then
+					preset.Hands[row.Class] = preset.Hands[row.Class] or {}
+					preset.Hands[row.Class][hand] = id
+				end
+			end
 		end
 	end,
 }

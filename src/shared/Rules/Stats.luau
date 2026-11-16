@@ -6,7 +6,9 @@
 --      Base     the Voidkin's own points at level 1: its class's shape times its rarity times G(1); the level's own Regen
 --      Level    what its level adds to the same, times G(level) - G(1): the two make the own figure
 --      Stars    a share of the own attribute points (base and level) per star, linear, never of Regen
---      Item     each line of the item in each of the preset's slots, as it is: to an attribute or to a Battle Attribute
+--      Item     each line of each item worn, as it is: to an attribute or to a Battle Attribute. Worn means the preset's
+--               twelve shared slots and its pair for the Voidkin's own class, in Gear's order, and only an item whose row
+--               fits there (Definitions.Items.Fits), so a save edited by hand applies no wrong weapon (TR26)
 --   2. Attr:<id>  each attribute's total converts once by its row (Config.Stats.Attributes.Convert)
 --   3. Main:<id>  the class's Main converts once more by its class's row (Attributes.Main)
 -- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
@@ -23,7 +25,10 @@ local Enemies = require(Shared.Definitions.Enemies)
 local EnemiesConfig = require(Shared.Config.Enemies)
 local Profile = require(Shared.Data.Profile)
 local Attributes = require(Shared.Definitions.Attributes)
+local Gear = require(Shared.Definitions.Gear)
+local Items = require(Shared.Definitions.Items)
 local Growth = require(Shared.Rules.Growth)
+local Regalia = require(Shared.Rules.Regalia)
 
 local Stats = {}
 
@@ -181,17 +186,26 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	add("Base", "Regen", firstRegen) -- no star share: the level's Regen is a value a second, never a share
 	add("Level", "Regen", regen - firstRegen)
 	if preset and data then
-		for slot, itemId in preset.Slots do
-			local item = data.Items[itemId]
-			if item then
-				for _, itemLine in item.Lines do
-					if Attributes.ById[itemLine.Stat] then
-						point(`Item:{slot}`, itemLine.Stat, itemLine.Value)
-					else
-						add(`Item:{slot}`, itemLine.Stat, itemLine.Value)
-					end
+		local function wear(slot: string, itemId: string?)
+			local item = if itemId then data.Items[itemId] else nil
+			local itemRow = if item then Items.ById[item.Def] else nil
+			if item == nil or itemRow == nil or not Items.Fits(itemRow, slot, row.Class) then
+				return
+			end
+			for _, itemLine in item.Lines do
+				if Attributes.ById[itemLine.Stat] then
+					point(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+				else
+					add(`Item:{slot}`, itemLine.Stat, itemLine.Value)
 				end
 			end
+		end
+		for _, slot in Gear.Shared do
+			wear(slot, preset.Slots[slot])
+		end
+		local pair = if preset.Hands then preset.Hands[row.Class] else nil
+		for _, slot in Gear.Hands do
+			wear(slot, if pair then pair[slot] else nil)
 		end
 	end
 	-- 2. Each total converts once by its row, in Names' order so the lines read the same every time.
@@ -269,6 +283,74 @@ end
 -- The preset an owned Voidkin is linked to, or nil.
 function Stats.PresetOf(data: Profile.Data, owned: Profile.OwnedVoidkin): Profile.Preset?
 	return data.Presets[owned.Preset]
+end
+
+-- What wearing one item would change: the slot it would go in, each Basic Attribute's change, each Battle Attribute's,
+-- Combat Power's, and the two blocks.
+export type Change = {
+	Slot: string,
+	Attributes: { [string]: number },
+	Battle: { [string]: number },
+	Power: number,
+	Before: Block,
+	After: Block,
+}
+
+local function copyPreset(preset: Profile.Preset?): Profile.Preset
+	local hands = {}
+	for class, pair in (if preset and preset.Hands then preset.Hands else {}) :: { [string]: { [string]: string } } do
+		hands[class] = table.clone(pair)
+	end
+	return { Slots = if preset then table.clone(preset.Slots) else {}, Hands = hands }
+end
+
+-- What `owned` would gain from wearing item `id` in `preset` (docs/engineering-plan.md, "Class rules"; the rework's
+-- part 10, "The comparison"): the resolver run twice, on the preset as it is and with the item put in, so it can't drift
+-- from the fight, and the client's copy answers it as the server's would. `slot` picks one of a pair; without it, a ring
+-- or an earring goes where Combat Power ends highest, an empty one before a worn one, Ring I before Ring II on a tie. A
+-- weapon is compared for its own class only. Nil and the refusal when the item can't go there.
+function Stats.Compare(
+	data: Profile.Data,
+	preset: Profile.Preset?,
+	owned: Profile.OwnedVoidkin,
+	id: string,
+	slot: string?
+): (Change?, string?)
+	local item = data.Items[id]
+	local itemRow = if item then Items.ById[item.Def] else nil
+	local row = Voidkin.ById[owned.Def]
+	if item == nil or itemRow == nil then
+		return nil, if item == nil then Regalia.NotOwned else Regalia.WrongSlot
+	end
+	local class = if row then row.Class else nil
+	local slots = if slot then { slot } else Gear.SlotsOf(itemRow.Slot)
+	local before = Stats.Resolve(owned, preset, data)
+	local best: Change? = nil
+	local refusal: string? = Regalia.WrongSlot
+	for _, candidate in slots do
+		refusal = Regalia.Refusal(data, candidate, class, id)
+		if refusal then
+			continue
+		end
+		local trial = copyPreset(preset)
+		Regalia.Put(trial, candidate, class, id)
+		local after = Stats.Resolve(owned, trial, data)
+		local power = Stats.Power(after) - Stats.Power(before)
+		if best == nil or power > best.Power then
+			local attributes, battle = {}, {}
+			for _, attribute in Attributes.Ids do
+				attributes[attribute] = after.Attributes[attribute] - before.Attributes[attribute]
+			end
+			for _, stat in Stats.Names do
+				battle[stat] = (after :: any)[stat] - (before :: any)[stat]
+			end
+			best = { Slot = candidate, Attributes = attributes, Battle = battle, Power = power, Before = before, After = after }
+		end
+	end
+	if best then
+		return best, nil
+	end
+	return nil, refusal
 end
 
 -- A rating as a chance: cap x mine / (mine + theirs + K x G(level)). Never reaches its cap; nothing below one point.

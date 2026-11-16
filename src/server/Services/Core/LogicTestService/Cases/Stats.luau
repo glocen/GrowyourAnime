@@ -13,6 +13,7 @@ local Stats = require(Shared.Rules.Stats)
 local Collection = require(Shared.Rules.Collection)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Attributes = require(Shared.Definitions.Attributes)
+local Items = require(Shared.Definitions.Items)
 local StatsConfig = require(Shared.Config.Stats)
 local GrowthConfig = require(Shared.Config.Growth)
 local VoidkinConfig = require(Shared.Config.Voidkin)
@@ -46,9 +47,18 @@ local function own(data: Profile.Data, def: string, level: number, stars: number
 	return owned
 end
 
+-- An item of the row that fits shared `slot`, worn there in the first preset (hands: the Regalia cases).
 local function give(data: Profile.Data, slot: string, lines: { { Stat: string, Value: number } }): string
+	local def = nil
+	for _, row in Items.List do
+		if Items.Fits(row, slot, nil) then
+			def = row.Id
+			break
+		end
+	end
+	assert(def, `no row fits {slot}`)
 	local id = Profile.NewId(data)
-	data.Items[id] = { Id = id, Def = "case_item", Tier = 1, Rarity = "Common", Lines = lines :: any, Sockets = {}, Jewel = "" }
+	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Lines = lines :: any, Sockets = {}, Jewel = "" }
 	data.Presets[1].Slots[slot] = id
 	return id
 end
@@ -165,7 +175,7 @@ return {
 			-- Nothing else: no source names it, and gear's line is dropped.
 			t.Check("not a stat any source adds to", table.find(Stats.Names, "Speed") == nil)
 			local rook = own(data, "rook", 5, 0)
-			give(data, "Weapon", { { Stat = "Speed", Value = 50 } })
+			give(data, "Cloak", { { Stat = "Speed", Value = 50 } })
 			t.Equal("an item's Speed line adds nothing", Stats.Resolve(rook, data.Presets[1], data).Speed, speed.Class.Warrior)
 			t.Equal("an enemy walks its kind's, not a Speed", Stats.Enemy("brawler", 5).Speed, 0)
 			t.Equal("an unknown class walks nothing of its own", Stats.SpeedOf({ Id = "x", Name = "X", Rarity = "Common", Type = "Strength", Class = "Nobody", Element = "", Zone = 1, Aptitude = 1, Speed = 1, Words = { Signature = "", Passive = "" } }), 0)
@@ -329,7 +339,7 @@ return {
 		Name = "Stats: rarity, class and level shape the own points only",
 		Run = function(t: any)
 			local data = fresh()
-			give(data, "Main Hand", { { Stat = "Attack", Value = 40 }, { Stat = "Critical", Value = 12 }, { Stat = "Vigor", Value = 9 } })
+			give(data, "Gloves", { { Stat = "Attack", Value = 40 }, { Stat = "Critical", Value = 12 }, { Stat = "Vigor", Value = 9 } })
 			for _, row in Voidkin.List do
 				local owned = own(data, row.Id, 9, 0)
 				local _, lines = Stats.Resolve(owned, data.Presets[1], data)
@@ -341,7 +351,7 @@ return {
 					t.Check(`{row.Id} {id}: base and level make the own figure`, near(from(lines, "Base")[id] + from(lines, "Level")[id], expected))
 					t.Check(`{row.Id} {id}: the same as Stats.Own`, near(Stats.Own(row, id, 9), expected))
 				end
-				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Main Hand"), { Attack = 40, Critical = 12, Vigor = 9 }))
+				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Gloves"), { Attack = 40, Critical = 12, Vigor = 9 }))
 			end
 		end,
 	},

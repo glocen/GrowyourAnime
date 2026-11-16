@@ -104,6 +104,32 @@ return {
 		end,
 	},
 	{
+		Name = "Data: step 6 gives each preset its class pairs and moves a hand in Slots under its item's class",
+		Run = function(t: any)
+			-- TR26's class rules: Hands holds each class's pair; Slots keeps the twelve shared slots only.
+			local old = fresh()
+			old.Version = 5
+			old.Items.s = { Id = "s", Def = "sword", Tier = 1, Rarity = "Common", Lines = {}, Sockets = {}, Jewel = "" }
+			old.Items.h = { Id = "h", Def = "helmet", Tier = 1, Rarity = "Common", Lines = {}, Sockets = {}, Jewel = "" }
+			old.Presets = {
+				{ Slots = { ["Main Hand"] = "s", ["Off Hand"] = "gone", Helmet = "h" } },
+				{ Slots = { ["Off Hand"] = "s" } },
+				{ Slots = {} },
+			} :: any
+			local ran = Migrations.Run(old)
+			t.Equal("one step ran", ran, Migrations.Latest - 5)
+			local one, two, three = old.Presets[1], old.Presets[2], old.Presets[3]
+			t.Equal("the sword under the Warrior's main hand", one.Hands.Warrior and one.Hands.Warrior["Main Hand"], "s")
+			t.Check("no hand left in Slots", one.Slots["Main Hand"] == nil and one.Slots["Off Hand"] == nil)
+			t.Equal("the helmet kept", one.Slots.Helmet, "h")
+			t.Check("a hand of a lost item goes", one.Hands.Warrior["Off Hand"] == nil)
+			t.Check("a main-hand weapon found in the off hand goes", two.Slots["Off Hand"] == nil and next(two.Hands) == nil)
+			t.Check("an empty preset gains its pairs", type(three.Hands) == "table" and next(three.Hands) == nil)
+			local problems = Saveable.Problems(old, "profile")
+			t.Check("still saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
 		Name = "Data: a newer save is left alone",
 		Run = function(t: any)
 			local data = fresh()

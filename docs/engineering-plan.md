@@ -90,11 +90,11 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
   - `tools/balance/attributes.py` reads the same Config, as `sim.py` does.
 
 **Class rules** (part 10).
-- **Item rows:** `Definitions/Items.luau` is the row an `OwnedItem.Def` names: `Id`, `Slot`, `Kind`, `Name`, and `Class` on a weapon only. A case checks each weapon's class against `Gear.Weapons`.
+- **Item rows:** `Definitions/Items.luau` is the row an `OwnedItem.Def` names: `Id`, `Slot` (the kind of slot: `Ring` and `Earring` fit either of their two), `Kind`, `Name`, and `Class` on a weapon only. `Items.Fits(row, slot, class)` is the one answer to what goes where, asked by the resolver and the equip. A case checks each weapon's class against `Gear.Weapons`.
 - **A preset:** `Slots` keeps the twelve shared slots. A new key, `Hands`, holds each class's pair: `{ [class]: { ["Main Hand"]: id?, ["Off Hand"]: id? } }`. The next migration moves any hand found in `Slots` under its item's class. None exists today, since items aren't built yet.
 - **The resolver reads `Slots` and `Hands[its class]` only.** It also skips a hand item whose row's class isn't the Voidkin's. A hand-edited save can't apply a wrong weapon: two guards.
-- **Equip:** one transaction, `Act("Equip", { Preset, Slot, Class?, Item })` with its op id. The server checks the owner, the slot against the row, and a hand's class. It refuses with `NotOwned`, `WrongSlot` or `WrongClass`, which the screen says. Unequip is the same with no item.
-- **The comparison:** `Stats.Compare(data, preset, owned, item)` is the resolver run twice, and returns the attribute changes, the Battle changes and Combat Power's. The screen calls it on its copy of the profile. It's the same pure function the server would call on the same data, so it can't drift, and no tap waits on a remote (the builder's call).
+- **Equip:** one transaction, `Act("Equip", { Preset, Slot, Class?, Item })` with its op id. The server checks the owner, the slot against the row, and a hand's class. It refuses with `NotOwned`, `WrongSlot` or `WrongClass`, which the screen says, or `Unknown` for a request that isn't one. Unequip is the same with no item. An item moves within a preset rather than being worn twice (`Rules.Regalia`, TR26).
+- **The comparison:** `Stats.Compare(data, preset, owned, item, slot?)` is the resolver run twice (without a slot, a ring or an earring goes where Combat Power ends highest), and returns the attribute changes, the Battle changes and Combat Power's. The screen calls it on its copy of the profile. It's the same pure function the server would call on the same data, so it can't drift, and no tap waits on a remote (the builder's call).
 - **Checks:** a wrong-class equip refused; a preset applying only its class's pair; a hand-edited save not applying a wrong weapon; a repeated equip a no-op.
 
 **Chests** (part 11).

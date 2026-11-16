@@ -7488,6 +7488,17 @@ From the three sheets and the glance, stills only, with the motion from their no
   - **Visually reviewed:** my own read from the game's camera. Research's pass is next.
   - **Director-accepted:** no. The director's call 3 (anime-industrial) can still move the look.
 
+### Research's pass on fixes 1 to 3 within A (Quaestor, 2026-11-16, 15:38)
+
+From `generator_A_fixes.png`, stills, with the motion from its notes.
+- **Felt:** from the gate it's now a mill wheel on its trestle, not a ring. Its lit arc climbs the rising side with the power, and the bone mark says what the base asks for.
+- **Tier:** competent. **Bold thing:** the machine is its own gauge: the buckets lighting as they leave the well are the generation, read from the spawn without a word. Fixes 1 to 3 pass:
+  - 1: low and high generation tell apart from 30 studs, and the dial's loss costs nothing.
+  - 2: the sill, trestle, bearing and filled hub give it weight, and the rim lit on one side keeps it off the Door.
+  - 3: II's housed dynamo and III's casing and crown tell from the gate.
+- **For the finish, no new round:** the collector arm takes the trestle's weight, so from the gate it doesn't read as a clock hand across the face.
+- **Exceptional is judged in motion,** at the build's review from the player's camera: the wheel's pace with the generation, and the buckets lighting as they rise. The director's call 3 can still move the look.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

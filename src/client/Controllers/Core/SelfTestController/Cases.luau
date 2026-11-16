@@ -1160,6 +1160,13 @@ local cases = {
 				t.Check("the base: out of the Row's haze", LightingController.Look().Row == 0, tostring(LightingController.Look().Row))
 				t.Near("the base: no mist, its density", Atmosphere and Atmosphere.Density or -1, clear.Density, 1e-3)
 				t.Near("the base: no haze", Atmosphere and Atmosphere.Haze or -1, clear.Haze, 1e-3)
+				-- and in bright hours (AR20's C): the night's fill, light and exposure there, not the Row's
+				local bright = LightingConfig.Clear.Phases.Night
+				local lighting = game:GetService("Lighting")
+				t.Check("the base: C's night fill", near(lighting.Ambient, bright.Ambient) and near(lighting.OutdoorAmbient, bright.Ambient), tostring(lighting.Ambient))
+				t.Near("the base: C's night light", lighting.Brightness, bright.Brightness, 1e-3)
+				t.Near("the base: C's night exposure", lighting.ExposureCompensation, bright.Exposure, 1e-3)
+				t.Near("the base: the glow lifted", LightingController.Look().Glow, ((LightingConfig.Phases :: any).Night.Glow or 1) * LightingConfig.Clear.Glow, 0.02)
 				t.Server("Tune", "Lighting.Everywhere", false)
 				stand(gateZ + from + 120) -- a jump, so it lands
 				t.Wait(0.3)

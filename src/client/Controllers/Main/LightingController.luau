@@ -12,8 +12,9 @@
 --   skies are loaded before they're needed. A phase with no faces wears Roblox's built-in sky (a new Sky's own), with its
 --   Bodies (the day's sun disc). A crossing's light warms from its first second, Config.Lighting.Warm of the way there
 --   by the swap (TR24's fix 9).
--- * No mist over the base and the map round it (the director, 2026-11-16, 16:50): south of the Row's From line the
---   phase's Atmosphere wears Config.Lighting.Clear's, eased over Enter seconds on the walk up the side street.
+-- * No mist over the base and the map round it (the director, 2026-11-16, 16:50), and bright hours there (AR20's C):
+--   south of the Row's From line the phase's Atmosphere wears Config.Lighting.Clear's, its light, fill and exposure
+--   Clear.Phases', and the kit's glow Clear.Glow times its own, eased over Enter seconds on the walk up the side street.
 -- * The sun stands where the kit's frames have it (Config.Lighting.Toward) at a day clock, solved once for this engine's
 --   sun (Lighting:GetSunDirection()), so the painted moon and the shadows agree.
 -- * The kit's pieces (tagged Kit.Tag by WorldService) glow by Config.Lighting.Glow, the houses less, the floors by the
@@ -48,7 +49,7 @@ local LightingController = {}
 
 local WORLD = "World"
 local JUMP = 40 -- studs the focus moves in one frame that make a jump, not a walk: the look lands at once
-local LIGHTING_KEYS = { "Ambient", "OutdoorAmbient", "Brightness", "ColorShift_Top", "EnvironmentDiffuseScale", "ClockTime", "GeographicLatitude" }
+local LIGHTING_KEYS = { "Ambient", "OutdoorAmbient", "Brightness", "ColorShift_Top", "EnvironmentDiffuseScale", "ExposureCompensation", "ClockTime", "GeographicLatitude" }
 local ATMOSPHERE_KEYS = { "Density", "Offset", "Haze", "Glare", "Color", "Decay" }
 local BLOOM_KEYS = { "Intensity", "Size", "Threshold" }
 
@@ -356,13 +357,19 @@ local function step(dt: number)
 	-- The light, the haze and the glow warm from the crossing's first second (TR24's fix 9); the sky still swaps at its
 	-- middle, under the veil's peak.
 	local warm = if fromName == toName then 0 else Night.Warm(into, LightingConfig.Warm)
-	local ground = Night.Mix(Night.Ground(phases[fromName], fromName, at), Night.Ground(phases[toName], toName, at), warm)
-	ground.Sky = if turn < 0.5 then fromName else toName
-	-- No mist south of the Row (the director's 16:50): Clear's over the phase's, as far as the walk has come out of it.
+	-- South of the Row, no mist (the director's 16:50) and bright hours (AR20's C): Clear's over each phase's own, as far
+	-- as the walk has come out of the Row.
 	local clear = LightingConfig.Clear
-	ground.Atmosphere = Night.Clear(ground.Atmosphere, clear.Atmosphere :: any, 1 - mist)
+	local out = 1 - mist
+	local function phaseOf(name: string): any
+		local over = (clear.Phases :: any)[name]
+		return if over then Night.Clear(phases[name], over, out) else phases[name]
+	end
+	local ground = Night.Mix(Night.Ground(phaseOf(fromName), fromName, at), Night.Ground(phaseOf(toName), toName, at), warm)
+	ground.Sky = if turn < 0.5 then fromName else toName
+	ground.Atmosphere = Night.Clear(ground.Atmosphere, clear.Atmosphere :: any, out)
 	local look = Night.Mix(base, ground, a)
-	glowShare = math.floor(ground.Glow / SHARE_STEP + 0.5) * SHARE_STEP
+	glowShare = math.floor(ground.Glow * (1 + (clear.Glow - 1) * out) / SHARE_STEP + 0.5) * SHARE_STEP
 	lightShare = math.floor(ground.Lights / SHARE_STEP + 0.5) * SHARE_STEP
 	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own. In the Row its haze and density;
 	-- south of it Haze alone, which veils the sky and leaves the yard clear.

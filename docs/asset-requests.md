@@ -7646,6 +7646,24 @@ From `base_mood.png` and `base_mood_shard.png`, at the player's camera.
   3. The great shard keeps today's own glow, Modulo's lean, so the lift isn't doubled on it and it holds its shape at night.
 - **Who:** Modulo paints the lots and the dusk and night faces again for the base and the Strip; Faber sets the lighting and captures day, dusk and night for research's pass in the game.
 
+### Faber's lighting, C's numbers in the game (2026-11-16, 17:24 to 17:27, by the clock)
+
+- **What's in:** south of the Row's From line, the base, the Strip and the crossing, each phase wears `Config.Lighting.Clear.Phases` over its own.
+  - Day: Ambient #A3A1B4, exposure +0.11.
+  - Dusk: round 2's rose-lilac, Ambient #70618C, the sun #DDB8EC, Brightness 2.31, exposure +0.38.
+  - Night: round 2's silver, Ambient #50597E, the sun #BCCAF0, Brightness 1.53, exposure +0.54.
+  - The kit's glow and the floors' are 1.5 times theirs (`Clear.Glow`).
+  - The Row keeps its own. The walk up the side street turns one into the other with the mist, over Enter, the same eased share (`LightingController`, `Rules.Night.Clear`, `Ground`'s new ExposureCompensation).
+- **Not yet, and why:**
+  - The great shard keeping today's own glow joins with the Strip's install: the Strip's kit is still in `build/handoff/Strip`, not in the game.
+  - Kit pieces of the Row seen from the base take the lift too. The glow is one share for the whole place, set by where the camera stands.
+  - B's paint, the lots and the dusk and night faces are Modulo's.
+- **The four facts:**
+  - **Implemented:** the numbers above, all seeds.
+  - **Tested:** type check 0 new; logic 10,077/0 offline, with a new Night case covering each phase's overlay, the Row kept, and night still under dusk. The lighting self-test's new base checks (C's night fill, light, exposure and glow) are NOT VERIFIED: the PC is on its lock screen (LockApp at 17:27), and the client's lighting steps on render.
+  - **Visually reviewed:** not yet. Captures from the start camera and from the crossing at day, dusk and night go to research when the screen is back, and again with Modulo's faces.
+  - **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

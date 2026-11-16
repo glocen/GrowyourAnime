@@ -43,9 +43,19 @@ return {
 	-- coloured layer over the horizon, which veils the sky and leaves the yard clear (Density hides the ground, not the
 	-- sky: the handbook's "Atmosphere"): Veil's Density and Haze over Clear's at its top (the builder's seeds, tuned by
 	-- playing).
+	-- And less somber there (the same words; AR20, research's pick of 17:23: C, bright hours, with round 2's fill, a
+	-- rose-lilac dusk and a silver night): Phases' keys over each phase's own, the light, the fill and the exposure, and
+	-- the kit's glow and the floors' Glow times theirs. The Row keeps its own. Modulo's seeds (AR20, "The takes" and "Round
+	-- 2"), tuned by playing; the dusk's and the night's faces for the base and the Strip follow from Modulo.
 	Clear = {
 		Atmosphere = { Density = 0, Haze = 0, Glare = 0 },
 		Veil = { Density = 0, Haze = 2.5 },
+		Phases = {
+			Day = { Ambient = hex("A3A1B4"), Exposure = 0.11 },
+			Dusk = { Ambient = hex("70618C"), Sun = hex("DDB8EC"), Brightness = 2.31, Exposure = 0.38 },
+			Night = { Ambient = hex("50597E"), Sun = hex("BCCAF0"), Brightness = 1.53, Exposure = 0.54 },
+		},
+		Glow = 1.5,
 	},
 	-- A crossing's light warms from its first second (TR24's fix 9, TR23's fix 1: "the light starts warming from the
 	-- blend's first second, so the swap lands on a sky already near it"): Warm, the share of the way the light, the haze
@@ -59,8 +69,8 @@ return {
 	-- stand over these.
 	SkyBodies = { StarCount = 0, SunAngularSize = 0, MoonAngularSize = 0 },
 	-- A phase: its Sky's six faces (none: Roblox's built-in sky), the sun's colour and Brightness, one flat fill, the sky's
-	-- share of the fill (Diffuse), the haze, the bloom, the floors' glow (Floor), and the share of the kit's glow (Glow)
-	-- and of the street's and the lead's lights (Lights), 1 when not given.
+	-- share of the fill (Diffuse), the exposure (ExposureCompensation), the haze, the bloom, the floors' glow (Floor), and
+	-- the share of the kit's glow (Glow) and of the street's and the lead's lights (Lights), 1 when not given.
 	Phases = {
 		-- The day (TR23): a clear azure day under the same sun, warm on the faces turned to it, a lilac fill nearer grey so
 		-- the shadows keep a violet and the paving loses its blue cast, the sky's share of the fill halved so the blue sky
@@ -74,6 +84,7 @@ return {
 			Brightness = 2.6,
 			Ambient = hex("8A8496"),
 			Diffuse = 0.5,
+			Exposure = 0,
 			Atmosphere = { Density = 0.16, Offset = 0.2, Haze = 0.2, Glare = 0.1, Color = hex("EFE3D6"), Decay = hex("A9BCE4") },
 			Bloom = { Intensity = 0.3, Size = 24, Threshold = 2.2 },
 			Floor = 0.35,
@@ -87,6 +98,7 @@ return {
 			Brightness = 1.65, -- the frames' 0.55, times 3 (the builder's seed)
 			Ambient = hex("242852"), -- Ambient and OutdoorAmbient alike: the frames' colour times strength ("asOne")
 			Diffuse = 0.6, -- EnvironmentDiffuseScale
+			Exposure = 0, -- ExposureCompensation
 			Atmosphere = { Density = 0.22, Offset = 0.12, Haze = 1, Glare = 0.2, Color = hex("CC7CA0"), Decay = hex("7868B4") },
 			Bloom = { Intensity = 0.6, Size = 24, Threshold = 1.3 },
 			Floor = 0.85, -- the floors' glow (EmissiveStrength): their painted pools
@@ -97,6 +109,7 @@ return {
 			Brightness = 1.02, -- the frames' 0.34, times 3
 			Ambient = hex("10183E"),
 			Diffuse = 0.6,
+			Exposure = 0,
 			Atmosphere = { Density = 0.28, Offset = 0.1, Haze = 0.8, Glare = 0.1, Color = hex("3A3C80"), Decay = hex("22306A") },
 			Bloom = { Intensity = 0.85, Size = 28, Threshold = 1.2 },
 			Floor = 1.1, -- higher at night: the floor is darker, and a pool does more of the work

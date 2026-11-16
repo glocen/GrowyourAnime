@@ -212,4 +212,39 @@ return {
 			t.Check("6 s in: the share a tenth, the ease under it", near(early, 0.1) and eased < early, `{early} {eased}`)
 		end,
 	},
+	{
+		Name = "Night: AR20's C, bright hours south of the Row: a lighter fill, light and exposure over each phase's own, the glow lifted, the Row keeping its own",
+		Run = function(t: any)
+			local clear = LightingConfig.Clear
+			local phases = LightingConfig.Phases :: any
+			local function lum(c: Color3): number
+				return 0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B
+			end
+			local sun = { Clock = 14, Latitude = 0 }
+			for _, name in { "Day", "Dusk", "Night" } do
+				local over = (clear.Phases :: any)[name]
+				local phase = phases[name]
+				t.Check(`{name}: C's fill`, over ~= nil and typeof(over.Ambient) == "Color3")
+				if over == nil then
+					continue
+				end
+				t.Check(`{name}: its fill lighter than the Row's`, lum(over.Ambient) > lum(phase.Ambient), string.format("%.3f over %.3f", lum(over.Ambient), lum(phase.Ambient)))
+				t.Check(`{name}: its exposure lifted`, over.Exposure > (phase.Exposure or 0), tostring(over.Exposure))
+				for key, value in over do
+					t.Check(`{name} {key}: a key the phase holds, of its kind`, phase[key] ~= nil and typeof(phase[key]) == typeof(value))
+				end
+				local bright = Night.Ground(Night.Clear(phase, over, 1), name, sun)
+				t.Check(`{name}: out of the Row, C's fill`, bright.Lighting.Ambient == over.Ambient and bright.Lighting.OutdoorAmbient == over.Ambient)
+				t.Equal(`{name}: and its exposure`, bright.Lighting.ExposureCompensation, over.Exposure)
+				t.Equal(`{name}: its sky its own`, bright.Sky, name)
+				t.Check(`{name}: its haze its own until the clear air`, bright.Atmosphere.Density == phase.Atmosphere.Density)
+				local row = Night.Ground(Night.Clear(phase, over, 0), name, sun)
+				t.Check(`{name}: in the Row, its own`, row.Lighting.Ambient == phase.Ambient and row.Lighting.Brightness == phase.Brightness)
+				t.Equal(`{name}: and its own exposure`, row.Lighting.ExposureCompensation, phase.Exposure or 0)
+			end
+			t.Check("dusk brighter than night, still", clear.Phases.Dusk.Brightness > clear.Phases.Night.Brightness)
+			t.Check("night still night: its fill under dusk's", lum(clear.Phases.Night.Ambient) < lum(clear.Phases.Dusk.Ambient))
+			t.Check("the glow lifted, not doubled", clear.Glow > 1 and clear.Glow < 2, tostring(clear.Glow))
+		end,
+	},
 }

@@ -20,8 +20,9 @@
 --                                       share of the blend it covers
 --   Night.Mix(a, b, w)                  a look between two, key by key: numbers, colours and vectors blend; anything else
 --                                       is a's below the middle and b's from it (which sky)
---   Night.Clear(atmosphere, clear, w)   an Atmosphere's keys with `clear`'s over them by w, 0 none to 1 all (no mist
---                                       outside the Row, the director's 16:50)
+--   Night.Clear(look, clear, w)         a table's keys with `clear`'s over them by w, 0 none to 1 all, a key it doesn't
+--                                       hold left out: an Atmosphere's (no mist outside the Row, the director's 16:50), a
+--                                       phase's (AR20's bright hours there)
 --   Night.Ground(phase, sky, sun)       a phase of Config.Lighting as a look, its sun at `sun` (clock, latitude)
 --   Night.Inside(z, gateZ, from)        whether a point `z` stands in the ground: north of its festival gate, or within
 --                                       `from` studs south of it
@@ -169,6 +170,7 @@ function Night.Ground(phase: any, sky: string, sun: Sun): any
 			Brightness = phase.Brightness,
 			ColorShift_Top = phase.Sun,
 			EnvironmentDiffuseScale = phase.Diffuse,
+			ExposureCompensation = phase.Exposure or 0,
 			ClockTime = sun.Clock,
 			GeographicLatitude = sun.Latitude,
 		},

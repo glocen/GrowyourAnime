@@ -435,4 +435,29 @@ return {
 			t.Check("saves whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
+	{
+		Name = "Breaker: AR19, the mill's gauge: generation and demand on one scale, its top the larger over Fill and never under Floor, steps lit from the first",
+		Run = function(t: any)
+			local gauge = { Steps = 8, Floor = 60, Fill = 0.85 }
+			local read = Power.Gauge(0, 0, gauge)
+			t.Check("nothing made, nothing asked: no step lit, the mark at the foot", read.Lit == 0 and read.Generation == 0 and read.Demand == 0)
+			read = Power.Gauge(30, 15, gauge)
+			t.Check("a starter's 30 kW under the floor's 60: half the scale", near(read.Generation, 0.5), tostring(read.Generation))
+			t.Equal("so four steps of eight", read.Lit, 4)
+			t.Check("the demand on the same scale", near(read.Demand, 0.25), tostring(read.Demand))
+			read = Power.Gauge(120, 60, gauge)
+			t.Check("past the floor the larger stands at Fill, never at the top", near(read.Generation, 0.85), tostring(read.Generation))
+			t.Equal("seven steps", read.Lit, 7)
+			t.Check("and the demand at half of it", near(read.Demand, 0.425), tostring(read.Demand))
+			read = Power.Gauge(60, 120, gauge)
+			t.Check("short of power: the demand the larger, at Fill", near(read.Demand, 0.85), tostring(read.Demand))
+			t.Check("the generation under it", near(read.Generation, 0.425), tostring(read.Generation))
+			local meet = Power.Gauge(90, 90, gauge)
+			t.Check("generation meeting demand: the lit steps reach the mark", meet.Generation == meet.Demand and meet.Lit == math.floor(meet.Demand * 8 + 0.5))
+			t.Equal("any power made lights the first step", Power.Gauge(1, 0, gauge).Lit, 1)
+			t.Equal("all eight at the top", Power.Gauge(100, 0, { Steps = 8, Floor = 10, Fill = 1 }).Lit, 8)
+			read = Power.Gauge(0 / 0, -5, gauge)
+			t.Check("no number or a negative: nothing", read.Lit == 0 and read.Generation == 0 and read.Demand == 0)
+		end,
+	},
 }

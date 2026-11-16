@@ -1,8 +1,8 @@
 --!strict
 -- BaseCases (client, Studio only): the base's cases on its plot, a list of their own beside Cases, which joins it as it
 -- joins PowerCases (Cases' one table had passed what the type solver checks in one piece). AR16's base as its save has
--- it: the bays awake and asleep, the battery's cells, the generator's ring and the Training machine's crown; and its
--- machines' plates apart from the spawn.
+-- it: the bays awake and asleep, the battery's cells, the Void Mill's wheel, gauge and demand mark (AR19) and the
+-- Training machine's crown; and its machines' plates apart from the spawn.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
+local Power = require(Shared.Rules.Power)
 local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
@@ -35,7 +36,7 @@ function BaseCases.Cases(given: Given): { any }
 	local ANSWER, waitFor = given.ANSWER, given.waitFor
 	return {
 		{
-			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the ring against the rotor, the crown while a Voidkin trains, the Door's way in the festival's print",
+			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains, the Door's way in the festival's print",
 			Run = function(t: any)
 				local view = ProfileController.Get()
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -127,12 +128,58 @@ function BaseCases.Cases(given: Given): { any }
 					end), wrong(full(share)))
 				end
 				t.Server("BaseBattery", was)
-				-- The ring: the rotor's generation, turning against it, slower.
+				-- The Void Mill (AR19): its wheel carries the plant's generation and turns by it, its gauge's first steps
+				-- shown as the generation lights them and the rest hidden, and the demand's mark turned about the axle to
+				-- the demand's share, on one scale (Rules.Power.Gauge).
 				local plant = Markers.Find("Generator", { Plot = plot })
-				local rotor = if plant then plant:FindFirstChild("Rotor") else nil
-				local ring = if plant then plant:FindFirstChild("Ring") else nil
-				t.Check("the ring carries the plant's generation, as the rotor does", ring ~= nil and rotor ~= nil and ring:GetAttribute("Generation") == rotor:GetAttribute("Generation"),
-					tostring(ring and ring:GetAttribute("Generation")))
+				local wheel = if plant then plant:FindFirstChild("Wheel") else nil
+				local mark = if plant then plant:FindFirstChild("Demand") else nil
+				local mill = WorldConfig.Grey.Generator
+				local function gauge(): Power.GaugeRead?
+					local now = ProfileController.Get()
+					if now == nil then
+						return nil
+					end
+					local rates = Breaker.Rates(now :: any)
+					return Power.Gauge(rates.Generation, rates.Demand, mill.Gauge)
+				end
+				local function stepsWrong(): string?
+					local want = gauge()
+					local found = plant
+					if want == nil or found == nil then
+						return "no save or no mill"
+					end
+					for step = 1, mill.Gauge.Steps do
+						local part = found:FindFirstChild(`Step {step}`)
+						if part == nil or not part:IsA("BasePart") then
+							return `no step {step}`
+						end
+						local lit = step <= want.Lit
+						if (part.Transparency == 0) ~= lit or (not lit and part.Transparency ~= 1) then
+							return `step {step} at {part.Transparency}, {want.Lit} lit`
+						end
+					end
+					return nil
+				end
+				t.Check("the mill's wheel carries the plant's generation", waitFor(t, ANSWER, function(): boolean
+					local now = ProfileController.Get()
+					return wheel ~= nil and now ~= nil and wheel:GetAttribute("Generation") == Breaker.Rates(now :: any).Generation
+				end), tostring(wheel and wheel:GetAttribute("Generation")))
+				t.Check("its gauge's first steps shown as the generation lights them, the rest hidden", waitFor(t, ANSWER, function(): boolean
+					return stepsWrong() == nil
+				end), stepsWrong())
+				t.Check("the demand's mark at the demand's share", waitFor(t, ANSWER, function(): boolean
+					local want = gauge()
+					local share = if mark then mark:GetAttribute("Share") else nil
+					return type(share) == "number" and want ~= nil and math.abs(share - want.Demand) < 1e-6
+				end), tostring(mark and mark:GetAttribute("Share")))
+				if mark and mark:IsA("BasePart") then
+					t.Wait(mill.Gauge.Glide * 2)
+					local share = mark:GetAttribute("Share")
+					local angle = BaseController.TurnedOf(mark)
+					t.Near("and turned there about the axle, once glided", angle or -1, math.rad(mill.Gauge.Turn) * (if type(share) == "number" then share else 0), math.rad(1))
+				end
+				-- How far a turning piece turns in `seconds`, in radians, the way it turns.
 				local function turned(part: Instance?, seconds: number): number?
 					if part == nil or not part:IsA("BasePart") then
 						return nil
@@ -145,14 +192,18 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					return (after - before + math.pi) % (2 * math.pi) - math.pi
 				end
-				local kw = if rotor then rotor:GetAttribute("Generation") else nil
-				if type(kw) == "number" and kw > 0 then
-					local spin, back = turned(rotor, 0.3), turned(ring, 0.3)
-					local share = WorldConfig.Grey.Generator.Ring
-					t.Check(`the ring turns against the rotor at {share} its rate`, spin ~= nil and back ~= nil and spin > 0 and math.abs(back / spin - share) < 0.15,
-						`{if spin then string.format("%.3f", spin) else "none"} and {if back then string.format("%.3f", back) else "none"}`)
-				else
-					t.Check("at no generation, the ring stands still", turned(ring, 0.3) == 0)
+				local kw = if wheel then wheel:GetAttribute("Generation") else nil
+				if wheel and wheel:IsA("BasePart") and type(kw) == "number" then
+					local before = wheel.CFrame
+					local spun = turned(wheel, 0.5) or -1
+					if kw > 0 then
+						local rate = math.min(mill.Wheel.Least + kw * mill.Wheel.PerKw, mill.Wheel.Most)
+						t.Near(`it turns heavily at {string.format("%.3f", rate)} turns a second`, spun / (2 * math.pi) / 0.5, rate, rate * 0.25)
+						t.Check("about its axle, the line to the gate, so it stays in place", before.Position:FuzzyEq(wheel.CFrame.Position, 1e-3)
+							and math.abs(before.LookVector:Dot(wheel.CFrame.LookVector) - 1) < 1e-4)
+					else
+						t.Check("at no generation, the wheel stands still", before:FuzzyEq(wheel.CFrame, 1e-4))
+					end
 				end
 				-- The Festival Door's way wears the festival seen through it, a print on the kit's atlas, tinted white so it keeps
 				-- its colours (AR15, section 6).

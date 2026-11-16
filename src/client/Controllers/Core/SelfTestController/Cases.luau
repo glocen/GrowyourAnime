@@ -6513,7 +6513,7 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Base: the Breaker's chambers glow and hold their shard while they break, low and empty after; the generator turns by its generation (AR15)",
+		Name = "Base: the Breaker's chambers glow and hold their shard while they break, low and empty after; the mill's wheel turns by its generation (AR15, AR19)",
 		Run = function(t: any)
 			local view = ProfileController.Get()
 			local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -6563,15 +6563,15 @@ local cases = {
 				local now = ProfileController.Get()
 				return now ~= nil and (now :: any).Base.Chambers[1].Work == nil and wrong() == nil
 			end), wrong())
-			-- The rotor: its owner's generation, and turning while there is some.
-			local rotor = if plant then plant:FindFirstChild("Rotor") else nil
-			local kw = if rotor then rotor:GetAttribute("Generation") else nil
-			t.Check("the generator's rotor carries the plant's generation", type(kw) == "number" and math.abs(kw - Power.Generation(ProfileController.Get() :: any)) < 1e-6, tostring(kw))
-			if rotor and rotor:IsA("BasePart") and type(kw) == "number" then
-				local before = rotor.CFrame
-				t.Wait(0.3)
-				local turned = before.Position:FuzzyEq(rotor.CFrame.Position, 1e-3) and not before:FuzzyEq(rotor.CFrame, 1e-4)
-				t.Check(if kw > 0 then "it turns about its axle" else "it stands still at none", if kw > 0 then turned else before:FuzzyEq(rotor.CFrame, 1e-4))
+			-- The mill's wheel (AR19): its owner's generation, and turning about its axle while there is some.
+			local wheel = if plant then plant:FindFirstChild("Wheel") else nil
+			local kw = if wheel then wheel:GetAttribute("Generation") else nil
+			t.Check("the generator's wheel carries the plant's generation", type(kw) == "number" and math.abs(kw - Power.Generation(ProfileController.Get() :: any)) < 1e-6, tostring(kw))
+			if wheel and wheel:IsA("BasePart") and type(kw) == "number" then
+				local before = wheel.CFrame
+				t.Wait(0.5)
+				local turned = before.Position:FuzzyEq(wheel.CFrame.Position, 1e-3) and not before:FuzzyEq(wheel.CFrame, 1e-4)
+				t.Check(if kw > 0 then "it turns about its axle" else "it stands still at none", if kw > 0 then turned else before:FuzzyEq(wheel.CFrame, 1e-4))
 			end
 		end,
 	},

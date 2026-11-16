@@ -10,18 +10,18 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber's order, given at 16:52:** TR24's fixes 1 to 3 reviewed once the screen's back; AR19's block in the game; the mist out with fix 9's dusk cut; TR24's fixes 5, 6, 8, 10, 11, 12; the base's three sizes in grey (part 7); then part 12's builds from attributes on. AR18's fix 4: the target's group on narrow screens, six kinds in a scrolling strip.
 - **Modulo's next:** the base and the map around it, no mist and less somber, two or three takes from the player's camera for research's pick; the far shard rechecked without the haze.
 
-**Faber (builder).** 2026-11-16, 16:50, TR24's fixes built, the contracts and AR18's read written.
-- **TR24's fixes 1 to 3, built and logic-tested** (6e05f52; TR24, "Fixes 1 to 3"). They need the screen unlocked: the PC was on its Windows lock screen at 16:42, so a playtest draws no frames. Then the fade's and the guide's cases, the `Fight:` set's effect checks, and the phone review on a fresh profile, for research's pass.
-- **The five contracts are written** (`docs/engineering-plan.md`, "The rework's contracts"): attributes in the resolver, class rules, chests, the Tower's run, the responsive layout. Each holds whichever way the director's nine points go. One question for research, in the chests' contract.
-- **AR19's block in the game:** Modulo is asked to export A's Stage I as Base kit pieces. I install it and drive the motion, and it's judged in motion once the screen is back.
-- **AR18's fix 4, my feasibility read, is written** (AR18, "Fix 4"). The slide is cheap. The belt can't hold fourteen slots at 44 in one row on the smallest phone (616 of 568), so three ways go to research. With six kinds, the strip scrolls. **Next:** TR24's review once the screen's unlocked, then AR19's block once Modulo's export is in. Held: AR17's install, AR16's changes, TR15's stat board.
+**Faber (builder).** 2026-11-16, 17:08, AR19's Stage I installed; the screen is locked.
+- **Waiting on an unlocked screen** (Windows lock screen since 16:42, so Studio draws 0 frames a second): TR24's fixes 1 to 3 (their render cases and the phone review, for research's pass), and AR19's judging in motion. In both, everything that doesn't need frames passed.
+- **AR19, the Void Mill's Stage I, is in the game** (AR19, "Faber's install"): published under the group, BaseKit rebuilt. The wheel turns heavily by generation, the gauge's steps light by `Rules.Power.Gauge`, the demand's mark turns to its share, and unseen solids follow the manifest's collision.
+- **Done earlier today:** TR24's fixes 1 to 3 (6e05f52), the five contracts (4abc829), AR18's feasibility read (92184bb). Research picked way 1 for the belt and answered the chests' salvage question.
+- **Next, in research's order:** (c) the mist out of the base and the map around it, with fix 9's day-to-dusk turn under a sky-only cover; (d) TR24's fixes 5, 6, 8, 10, 11, 12; (e) the base's three sizes in grey; (f) part 12's builds.
 
 **Modulo (assets).** 2026-11-16, 16:55, on Opus 5.5.
 - **Delivered, for Faber's install: the Void Mill's Stage I as kit pieces** (AR19, "Stage I as kit pieces"; `build/handoff/Base`): Generator still, GeneratorWheel turning on its axle, GeneratorArc1 to 8 shown by the generation, GeneratorDemand turned about the axle by the demand. The upload check passed. The finish waits on the director's call 3, with research's note on the arm.
 - **Next, research's ask of 16:50:** the base and the map round it without the mist and less somber, two or three takes at day, dusk and night, and the far shard's 2.5 rechecked.
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
-**Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes 1 to 3. Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

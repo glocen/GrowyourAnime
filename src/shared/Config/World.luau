@@ -86,8 +86,17 @@ return {
 		Training = { Size = Vector3.new(6, 4, 5), Spot = -6, Crown = 0.12 },
 		-- The generator (TR18) at the plot's heart, where the layout says: a box Size while its kit isn't laid. Its spot
 		-- stands more than BaseController's near (13 studs) from every other: a player at one hears only that one.
-		-- Its rotor (AR15) turns PerKw turns a second for each kW its owner's plant generates, at most Most, still at none;
-		-- its great ring (AR16) turns Ring times the rotor's speed, slower and against it (the builder's seed).
-		Generator = { Size = Vector3.new(6, 8, 5), Rotor = { PerKw = 0.02, Most = 2 }, Ring = -0.35 },
+		-- The Void Mill (AR19, Stage I): its wheel turns Least turns a second and PerKw more for each kW its owner's plant
+		-- generates, at most Most, still at none; heavy, never a spin (the builder's seed, tuned by playing).
+		-- Its gauge (Rules.Power.Gauge): Steps lit steps up the rising side are the generation, and the demand's mark rides
+		-- the rail on the same scale, Turn degrees about the axle from its foot to its top (the rail's arc, Modulo's). The
+		-- scale's top is the larger of the two over Fill, never under Floor kW, so the mark and the lit steps meet when
+		-- generation meets demand and a small plant reads small (the builder's seed). The mark glides to its place over
+		-- Glide seconds.
+		Generator = {
+			Size = Vector3.new(6, 8, 5),
+			Wheel = { Least = 0.03, PerKw = 0.002, Most = 0.18 },
+			Gauge = { Steps = 8, Floor = 60, Fill = 0.85, Turn = 117.9, Glide = 0.6 },
+		},
 	},
 }

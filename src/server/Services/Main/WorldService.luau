@@ -400,6 +400,37 @@ local function piece(parent: Instance, name: string, kind: string, placement: an
 	return part
 end
 
+-- The Void Mill's body is look only; what a player bumps is these unseen shapes, the manifest's `collision` on Generator
+-- (AR19), in the piece's own frame (x across, y up, -z toward the gate): the well shut to walking, so nobody stands in
+-- its wheel, the sill across it, and the raked legs' feet and legs. The trestle and the arm stand on them, look only.
+local MILL_SOLID = {
+	Well = { Radius = 10.6, High = 3 },
+	Sill = { Size = Vector3.new(22.4, 1.4, 1.8), At = Vector3.new(0, 0.7, -4.6) },
+	Feet = { Size = Vector3.new(2.8, 1, 2.8), At = Vector3.new(7.6, 0.5, 14) },
+	Leg = { Thick = 1.3, From = Vector3.new(7.6, 0.3, 14), To = Vector3.new(1.5, 8.7, 3.6) },
+}
+
+local function millSolid(plant: Instance, body: BasePart)
+	local c = (kitFiles(BASE)).pieces.Generator.centre
+	local origin = body.CFrame * CFrame.new(-c[1], -c[2], -c[3])
+	local function solid(name: string, size: Vector3, frame: CFrame, shape: Enum.PartType?)
+		local part = block(plant, name, size, origin * frame, GREY.Machine)
+		part.Shape = shape or Enum.PartType.Block
+		part.Transparency, part.CastShadow, part.CanTouch = 1, false, false
+		part:SetAttribute("Solid", true)
+	end
+	local well = MILL_SOLID.Well
+	solid("Well's solid", Vector3.new(well.High, well.Radius * 2, well.Radius * 2), CFrame.new(0, well.High / 2, 0) * CFrame.Angles(0, 0, math.pi / 2), Enum.PartType.Cylinder)
+	solid("Sill's solid", MILL_SOLID.Sill.Size, CFrame.new(MILL_SOLID.Sill.At))
+	for _, side in { 1, -1 } do
+		local flip = Vector3.new(side, 1, 1)
+		solid("Foot's solid", MILL_SOLID.Feet.Size, CFrame.new(MILL_SOLID.Feet.At * flip))
+		local from, to = MILL_SOLID.Leg.From * flip, MILL_SOLID.Leg.To * flip
+		local thick = MILL_SOLID.Leg.Thick
+		solid("Leg's solid", Vector3.new(thick, thick, (to - from).Magnitude), CFrame.lookAt((from + to) / 2, to))
+	end
+end
+
 -- A machine with its model (AR15; the plan's machines) in place of its grey box: the plan's `nth` placement of `placed`,
 -- laid as a placement is and raised by its `up`, wearing the piece `as` (`placed` itself unless given: a bay a level
 -- wakes stands where its sleeping bay stood), named as the box it replaces. Nil while the base's kit isn't laid or the
@@ -566,19 +597,33 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			block(battery, "Body", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
 		end
 		Markers.Stamp(battery, "Battery", { Plot = number })
-		-- The generator at the plot's heart, at the end of the way in (TR18; AR16): its cradle, its rotor and its great
-		-- ring, which the client turns by its owner's generation; a box while its kit isn't laid.
+		-- The generator at the plot's heart, at the end of the way in (TR18; AR19, the Void Mill): what stands still, its
+		-- wheel, which the client turns by its owner's generation, the gauge's eight steps up the rising side, which
+		-- BaseService shows as the generation lights them, and the demand's mark, which the client turns about the axle
+		-- to the demand's share (Rules.Power.Gauge); a box while its kit isn't laid.
 		local generator = WorldConfig.Grey.Generator
 		local generatorAt = place(layout.stations.generator)
 		local plant = model(base, "Generator", generatorAt)
-		if machine(plant, "Body", "Generator", 1, number, at, front) == nil then
+		local body = machine(plant, "Body", "Generator", 1, number, at, front)
+		if body == nil then
 			block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), tint("generator", GREY.Generator))
+		else
+			millSolid(plant, body)
 		end
-		for _, turning in { { "Rotor", "GeneratorRotor" }, { "Ring", "GeneratorRing" } } do
-			local part = machine(plant, turning[1], turning[2], 1, number, at, front)
-			if part then
-				part:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
+		local wheel = machine(plant, "Wheel", "GeneratorWheel", 1, number, at, front)
+		if wheel then
+			wheel:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
+		end
+		for step = 1, generator.Gauge.Steps do
+			local lit = machine(plant, `Step {step}`, `GeneratorArc{step}`, 1, number, at, front)
+			if lit then
+				lit:SetAttribute("Step", step)
+				lit.Transparency = 1 -- hidden until the generation lights it: shown or hidden, never dimmed
 			end
+		end
+		local mark = machine(plant, "Demand", "GeneratorDemand", 1, number, at, front)
+		if mark then
+			mark:SetAttribute("Share", 0) -- the demand's share of the gauge (BaseService), to which the client turns it
 		end
 		Markers.Stamp(plant, "Generator", { Plot = number })
 		-- The Festival Door on the other slant toward the gate, turned to face down the way in (AR15, section 5): its

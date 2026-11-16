@@ -22,6 +22,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
+local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest) -- each piece's centre, for the pieces that turn about their origin
 local WorldConfig = require(Shared.Config.World)
 local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
@@ -849,30 +850,48 @@ local function revealBridge()
 	bridge.Parent = ReplicatedStorage
 end
 
--- The base's turning pieces on every plot, each from the attribute its server sets (BaseService), in turns a second:
--- * the generator's rotor about its own X, faster as its owner's plant generates more (AR15);
--- * its great ring about its own X, slower and against it (AR16; `Generator.Ring`, the rotor's rate times it);
+-- The base's turning pieces on every plot, each from the attribute its server sets (BaseService):
+-- * the generator's wheel about its axle, the line to the gate, faster as its owner's plant generates more, still at
+--   none (AR19, the Void Mill; `Generator.Wheel`, in turns a second): anticlockwise from the gate, so the buckets rise
+--   on the gate's right through the gauge's lit steps;
+-- * the demand's mark about the same axle, to the demand's share of the gauge (`Generator.Gauge.Turn` at a share of 1),
+--   gliding there over `Gauge.Glide` seconds (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre
+--   away from the part;
 -- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5).
-type Turning = { Rest: CFrame, Angle: number, Axis: "X" | "Y" }
+type Turning = { Rest: CFrame, Angle: number, Axis: "Z" | "Y", Pivot: CFrame }
 local turning: { [BasePart]: Turning } = {}
-local TURNS = { GeneratorRotor = "X", GeneratorRing = "X", TrainingCrown = "Y" }
+local TURNS = { GeneratorWheel = "Z", GeneratorDemand = "Z", TrainingCrown = "Y" }
 
 local function watchTurning(item: Instance)
-	local axis = TURNS[item:GetAttribute("Piece")]
+	local kind = item:GetAttribute("Piece")
+	local axis = TURNS[kind]
 	if item:IsA("BasePart") and axis then
-		turning[item] = { Rest = item.CFrame, Angle = 0, Axis = axis }
+		-- The part stands at its piece's origin times the manifest's centre; it turns about the origin.
+		local piece = BaseManifest.pieces[kind]
+		local c = if piece then piece.centre else { 0, 0, 0 }
+		turning[item] = { Rest = item.CFrame, Angle = 0, Axis = axis, Pivot = CFrame.new(c[1], c[2], c[3]) }
 	end
 end
 
-local function rateOf(part: BasePart): number
+-- The angle a turning piece goes to this frame, in radians, growing the way it turns.
+local function angleOf(part: BasePart, turn: Turning, dt: number): number
 	local generator, training = WorldConfig.Grey.Generator, WorldConfig.Grey.Training
 	local piece = part:GetAttribute("Piece")
-	if piece == "TrainingCrown" then
-		return if part:GetAttribute("Training") == true then training.Crown else 0
+	if piece == "GeneratorDemand" then
+		local share = part:GetAttribute("Share")
+		local goal = math.rad(generator.Gauge.Turn) * math.clamp(if type(share) == "number" then share else 0, 0, 1)
+		local glide = generator.Gauge.Glide
+		return if glide <= 0 then goal else turn.Angle + (goal - turn.Angle) * (1 - math.exp(-dt * 4 / glide))
 	end
-	local kw = part:GetAttribute("Generation")
-	local rate = if type(kw) == "number" then math.min(kw * generator.Rotor.PerKw, generator.Rotor.Most) else 0
-	return if piece == "GeneratorRing" then rate * generator.Ring else rate
+	local rate = 0
+	if piece == "TrainingCrown" then
+		rate = if part:GetAttribute("Training") == true then training.Crown else 0
+	else
+		local kw = part:GetAttribute("Generation")
+		local wheel = generator.Wheel
+		rate = if type(kw) == "number" and kw > 0 then math.min(wheel.Least + kw * wheel.PerKw, wheel.Most) else 0
+	end
+	return (turn.Angle + rate * 2 * math.pi * dt) % (2 * math.pi)
 end
 
 local function turnPieces(dt: number)
@@ -881,11 +900,12 @@ local function turnPieces(dt: number)
 			turning[part] = nil
 			continue
 		end
-		local rate = rateOf(part)
-		if rate ~= 0 then
-			turn.Angle = (turn.Angle + rate * 2 * math.pi * dt) % (2 * math.pi)
-			part.CFrame = turn.Rest
-				* (if turn.Axis == "X" then CFrame.Angles(turn.Angle, 0, 0) else CFrame.Angles(0, turn.Angle, 0))
+		local angle = angleOf(part, turn, dt)
+		if angle ~= turn.Angle then
+			turn.Angle = angle
+			part.CFrame = if turn.Axis == "Z"
+				then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, -angle) * turn.Pivot
+				else turn.Rest * CFrame.Angles(0, angle, 0)
 		end
 	end
 end

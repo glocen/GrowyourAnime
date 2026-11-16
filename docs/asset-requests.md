@@ -7551,6 +7551,30 @@ Faber's ask (2026-11-16, after 15:39): the block in the game, judged in motion. 
   - **Visually reviewed:** my own read, stills. The motion is judged in the game.
   - **Director-accepted:** no. The finish waits on the director's call 3, with research's note on the arm.
 
+### Faber's install, Stage I's block in the game (2026-11-16, 16:57 to 17:08, by the clock)
+
+On Modulo's export (efb6543), in the dev build until research's verdict in motion.
+- **In the game:**
+  - **What's published:** the eleven pieces, published under the group from Studio. The ids are in `tools/studio/Kits/Base.json` and the asset log. `src/storage/BaseKit.rbxm` now holds 41 pieces and the paving. The rotor and the ring are gone.
+  - **What collides:** the mill's body is look only. A player bumps unseen shapes in WorldService, taken from the manifest's collision: the well as a cylinder 10.6 across and 3 high, the sill, and the raked legs' feet and legs. So the yard's ground runs right up to the kerb, and nobody stands in the wheel.
+- **The motion,** each a Config number, tuned by playing:
+  - **The wheel** turns heavily by the plant's generation: 0.03 turns a second, plus 0.002 for each kW, at most 0.18, and still at none. That's about 14 s a turn for a starter's 20 kW. It turns anticlockwise from the gate, as Modulo set it (`Config.World.Grey.Generator.Wheel`).
+  - **The gauge** is pure Luau, `Rules.Power.Gauge`:
+    - Generation and demand share one scale. Its top is the larger of the two over 0.85, and never under 60 kW, so a starter's 30 kW lights half of it.
+    - The steps are shown or hidden by the server, never dimmed, and at least one is lit while any power is made.
+    - The demand's mark turns about the axle, 117.9 degrees at a share of 1, gliding there over 0.6 s.
+  - The scale's top is the builder's seed: AR19 didn't name one (`Config.World.Grey.Generator.Gauge`).
+- **The four facts:**
+  - **Implemented:** as above.
+  - **Tested:**
+    - Type check: 0 new.
+    - Logic: 9,987 passed, 0 failed, offline and in Studio, with the gauge's new case of 12 checks.
+    - WorldReport and DressReport are empty.
+    - In play on the server: plot 1's wheel carries 20.5 kW, 3 of 8 steps are lit as the rule says, the mark stands at the demand's 0, and the six solids stand.
+    - The base case: 21 passed. Its 2 turning checks, the wheel's and the untouched Training crown's, are NOT VERIFIED. The PC is on its lock screen, Studio draws at 0 frames a second, and nothing that turns on the client moves.
+  - **Visually reviewed:** not yet. The judging in motion from the player's camera waits for an unlocked screen, then research's verdict. The motion's own content check comes then.
+  - **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -162,6 +162,25 @@ end
 
 -- A split a client asked for, checked: each share a machine's, 0 or more, the whole never over 1. Returns the shares,
 -- or nil and a refusal code (Rules.Base's): "BadArgs" for the wrong shape, "Over" for a whole over 1.
+-- The generator's gauge (AR19, the Void Mill): the generation and the demand as shares of one scale, 0 at the well to 1
+-- at the collector's shoe, and the steps the generation lights. The scale's top is the larger of the two over
+-- `gauge.Fill`, never under `gauge.Floor` kW, so the larger never quite reaches the top, the lit steps meet the mark
+-- when generation meets demand, and a small plant reads small. Steps light from the first: none at no generation, all
+-- at the top, the share times Steps rounded otherwise, and at least one while any power is made.
+export type Gauge = { Steps: number, Floor: number, Fill: number }
+export type GaugeRead = { Generation: number, Demand: number, Lit: number }
+function Power.Gauge(generation: number, demand: number, gauge: Gauge): GaugeRead
+	local made = math.max(0, if generation == generation then generation else 0)
+	local asked = math.max(0, if demand == demand then demand else 0)
+	local top = math.max(gauge.Floor, math.max(made, asked) / math.max(gauge.Fill, EPSILON), EPSILON)
+	local share = math.clamp(made / top, 0, 1)
+	local lit = math.clamp(math.floor(share * gauge.Steps + 0.5), 0, gauge.Steps)
+	if made > EPSILON and lit == 0 then
+		lit = 1
+	end
+	return { Generation = share, Demand = math.clamp(asked / top, 0, 1), Lit = lit }
+end
+
 function Power.Shares(asked: any): ({ [string]: number }?, string?)
 	if type(asked) ~= "table" then
 		return nil, "BadArgs"

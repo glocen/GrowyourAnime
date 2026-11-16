@@ -16,6 +16,7 @@ local Breaker = require(Shared.Rules.Breaker)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local BaseRules = require(Shared.Rules.Base)
 local BaseConfig = require(Shared.Config.Base)
+local WorldConfig = require(Shared.Config.World)
 local Shards = require(Shared.Definitions.Shards)
 local Markers = require(Shared.World.Markers)
 local Power = require(Shared.Rules.Power)
@@ -79,7 +80,8 @@ end
 
 -- A plot's machines as its owner's base stands (AR15; AR16), for every client, so a passer-by sees the plant work:
 -- * a chamber that breaks a shard glows full with the shard between its points, an empty one low with none ("Working");
--- * the generator's rotor and its great ring turn by the plant's generation ("Generation");
+-- * the generator's wheel turns by the plant's generation ("Generation"), its gauge's steps light by it, and the demand's
+--   mark stands at the demand's share ("Share"), on one scale (Rules.Power.Gauge; AR19);
 -- * each bay the base has opened stands awake and the rest asleep, where a level will wake them;
 -- * the battery's bank shows the cells its base's level holds, each lit by its share of the charge ("Lit",
 --   Rules.Breaker.Cells);
@@ -87,11 +89,23 @@ end
 -- `data` nil stills them all, with level 1's bays and cells.
 local function showPlot(number: number, data: Profile.Data?)
 	local plant = Markers.Find("Generator", { Plot = number })
-	local generation = if data then Power.Generation(data) else 0
-	for _, name in { "Rotor", "Ring" } do
-		local part = if plant then plant:FindFirstChild(name) else nil
-		if part then
-			part:SetAttribute("Generation", generation)
+	local rates = if data then Breaker.Rates(data) else nil
+	local generation = if rates then rates.Generation else 0
+	local gauge = Power.Gauge(generation, if rates then rates.Demand else 0, WorldConfig.Grey.Generator.Gauge)
+	if plant then
+		local wheel = plant:FindFirstChild("Wheel")
+		if wheel then
+			wheel:SetAttribute("Generation", generation)
+		end
+		local mark = plant:FindFirstChild("Demand")
+		if mark then
+			mark:SetAttribute("Share", gauge.Demand)
+		end
+		for _, step in plant:GetChildren() do
+			local index = step:GetAttribute("Step")
+			if type(index) == "number" and step:IsA("BasePart") then
+				step.Transparency = if index <= gauge.Lit then 0 else 1
+			end
 		end
 	end
 	local open = if data then #data.Base.Bays else BaseLevels.Bays(1)

@@ -266,6 +266,19 @@ def write_plan(out: Path):
                  "(`layout.laterBays`).",
             placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w, **({"toward": "crossing"} if n == "TowerSleeping" else {}))
                         for n, x, i, z, t, w in machines()],
+            generatorStages=dict(
+                note="AR19: the generator's three stages, the swap's table (base_mill.py, `stages`). The generator "
+                     "takes the stage of the base's ceiling: Stage I at base level 1, II at 2, III at 3 (research, "
+                     "2026-11-16). A stage's pieces replace the one before's at the same place, laid as a placement is, "
+                     "raised by `up`, turn 0. `moves`: still; turns, about the piece's own origin along the line to the "
+                     "gate, CFrame.Angles(0, 0, -angle * rate) with the wheel's angle, so the pinions turn the other "
+                     "way 2.4 times as fast; gauge, the step lit while the generation's share reaches it; demand, "
+                     "turned about the axle by the share times `degrees`. A later stage names what it keeps from the "
+                     "one before once: Stage III stands Generator2Wheel and Generator2Pinion.",
+                stages={stage: [dict(piece=row["piece"], across=round(GENERATOR[0] + row["at"][0], 3) + 0.0,
+                                     along=round(-GENERATOR[1] + row["at"][1], 3) + 0.0, up=row["at"][2],
+                                     **{k: v for k, v in row.items() if k not in ("piece", "at")})
+                                for row in rows] for stage, rows in base.mill.stages().items()}),
             battery=dict(
                 note="the battery is a bank: a cell a seat, in this order, as its cap grows with the base's level. "
                      "The builder lights the cells one after another as the charge rises.",

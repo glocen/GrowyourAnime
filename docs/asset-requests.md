@@ -7777,6 +7777,69 @@ On Modulo's export (efb6543), in the dev build until research's verdict in motio
   - **Visually reviewed:** not yet. The judging in motion from the player's camera waits for an unlocked screen, then research's verdict. The motion's own content check comes then.
   - **Director-accepted:** no.
 
+### Stages II and III as kit pieces, for the builder's install (Modulo, 2026-11-16, 19:41 to 19:59, by the clock: 6ec9558 to the check)
+
+Faber's ask (2026-11-16, after 19:28): Stages II and III as kit pieces, for part 12's item 6. The generator takes the stage of its base's ceiling: II at base level 2, III at 3 (research, `docs/design.md`, the base, "Three stages for every machine"). The shapes are AR19's fixes 1 to 3 as the sheet draws them, and nothing in them is new. The pieces are in `build/handoff/Base` (`manifest.json`, `meshes/`). The swap's table is in `plan.json`, under `machines.generatorStages`. Stage I's pieces, names and origins are byte for byte as they were: the export only adds.
+- **The pieces,** each stood at the generator's place, as Stage I's are:
+  - **Generator2 and Generator3:** each stage's still body, in place of Generator. Stage III's casing windows stand dark in it.
+  - **Generator2Wheel,** for Stages II and III: the twin wheel and the spur gear (24 teeth) on its axle, in one piece, since they turn together. Its origin is on the axle, 10 up, and it turns as GeneratorWheel does.
+  - **Generator2Pinion and Generator3Pinion:** Generator2Pinion stands on the descending side in Stages II and III; Generator3Pinion stands on the rising side in Stage III.
+    - Each has 10 teeth and its origin on its own axle: ±5.196 across, 3.4 toward the gate, 7 up.
+    - A pinion turns the other way from the wheel, 2.4 times as fast: `CFrame.Angles(0, 0, angle * 2.4)`, against the wheel's `CFrame.Angles(0, 0, -angle)`.
+    - It's made meshed at the wheel's angle 0, so the teeth stay in step.
+  - **Generator2Arc1 to 8 and Generator3Arc1 to 8:** the wider wheel moves the steps, so each stage has its own. Their span is 114.5 degrees, against Stage I's 117.9.
+    - Stage III's steps 5 to 8 carry the casing's five lit windows over them, so a window lights with its step.
+    - The two windows past the collector's shoe stay dark.
+  - **Generator2Demand and Generator3Demand:** 114.5 degrees at a share of 1. Stage III's rides outside the casing, 15.76 from the axle.
+- **The swap's table** (`plan.json`, `machines.generatorStages.stages`):
+  - **What it lists:** for each stage, 1 to 3, every piece with its place (across, along, up) and how it moves.
+  - **How a piece moves:**
+    - still;
+    - turns, with `rate` against the wheel's angle (1 for the wheel, -2.4 for a pinion);
+    - gauge, with its step;
+    - demand, with its degrees.
+  - **Shared pieces:** Stage III names Generator2Wheel and Generator2Pinion again, rather than copies.
+- **Collision** (the manifest's `collision` on Generator2 and Generator3):
+  - **The footprint on the ground doesn't grow.** Every stage reaches 10.7 toward the gate and 18.2 back, as Stage I does.
+  - **The shapes are Stage I's,** with two changes: the sill stands 0.5 nearer the gate (5.1), and the raked legs meet the wider wheel's back bearing.
+  - **Look only:** the casing and the crown, which stand overhead, above 12 up.
+- **Triangles,** with the drawn edge:
+
+  | Stage | In all | Still body | Wheel | Pinions | Steps and mark |
+  |---|---|---|---|---|---|
+  | I | 5,018 | | | | |
+  | II | 7,134 | 2,994 | 3,432 | 384 | 324 |
+  | III | 9,682 | 5,098 | 3,432 | 768 (two) | 384 |
+
+- **Stood by the table** (in `build/scratch/modulo/mill2/`, not delivered):
+  - **What's there:**
+    - `check/`: the pieces stood by the table, beside the sheet's whole mill;
+    - `mesh/`: the gear and pinions alone, at three angles;
+    - `look/`: both stages in the plan's look under the dusk, from the gate's line and the heart.
+  - **Measured:** through one tooth's pass, the phased teeth overlap a steady 0.13 of a tooth's 0.42 face, at the corners only. Unphased, they'd reach 0.37.
+- **The scripts:**
+  - `base_mill.py`: the stage pieces and `stages()`, with the casing's windows and the phased pinion as shapes of their own.
+  - `base_ink.py` hulls the pieces.
+  - `base_plan.py` writes the table.
+- **Content check before upload:** PASS, 2026-11-16, by 19:59. It looked at both stages stood by the plan under the dusk, from the gate's line and the heart, at full size and at 128 and 64 px. It also looked at the pieces stood by the table, the gear sheet and the notes.
+  - **What it found:**
+    - No red at any size. The only warm spot is the collector's orange shoe, as in Stage I.
+    - Nothing is liquid. The steps and the casing's windows read as hard pale panels at 64 px.
+    - The crown is three and three rods on the casing's arc, ending in grey insulators and blocks that don't glow.
+  - **Conditions:**
+    - Upload exactly these meshes.
+    - A change to the crown needs a new check: a glow on the rod tops, a seventh rod, or the rods in one symmetric row round a centre post.
+    - The motion gets its own check in the game from the player's camera, as Stage I's does.
+    - Stage I's condition on the bucket walls carries over.
+- **For research's pass,** two notes from the check that fall outside it:
+  - **The dynamos and the crown's tops:** the dynamos (a copper drum in a steel cage) and the crown's insulators and copper blocks are fairly real-world electrical parts, against the director's word that the generator is a void machine. They're AR19's direction A and its fixes as research passed them at 15:38, and I've kept them as drawn. Research's call.
+  - **The teeth:** the blocky teeth (0.65 wide) are wider than the gaps (0.4 to 0.45), so their corners cross through every pass, mostly behind the dynamo's housing from the gate. Narrower teeth are for the finish (`docs/polish-later.md`).
+- **The four facts:**
+  - **Implemented:** Stages II and III as kit pieces, exported, with the swap's table in the plan.
+  - **Tested:** the export and the plan ran, and Stage I's entries are unchanged. The pieces stood by the table match the sheet, and the teeth's mesh is measured. The content check passed.
+  - **Visually reviewed:** my own read, stills only. The motion is judged in the game.
+  - **Director-accepted:** no.
+
 ## AR20. The base and the map round it, no mist and less somber (Modulo, for research's pick, then Faber)
 
 From the director's word at 16:50 (`docs/decisions.md`, the row on the mist): "imo we should remove all that in base and around it it way to much + need to be less somber". Research's ask, with its Now row of 16:52:

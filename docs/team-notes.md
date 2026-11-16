@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Built since 18:55:** TR28, the inventory in AR18's C (a52fb94): the belt, the six kinds, the grid with its arrows, ticks and dims, the card over the Voidkin's half with Equip and Take off, chests opened 1 or 50, the salvage. Its 84 flow checks pass. Research's fits in Config (175226b): the ladder, the salvage and the weights; C1 meets every window.
 - **For research:** TR28's tier 1 calls ("Faber's calls"): no Lead, Work or Voidkin strip on Items, so "Send another" opens on Overview; the half at 282 on the smallest phone. One message comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 19:41, on Opus 5.5.
-- **AR6 batch 2's last fix, in place** (AR6, "The Uncommon bracers' fix, in place"): the three Uncommon bracers' steel catches a streak down its length, and their files are replaced in `build/handoff/UI/gear/images/`. Content check PASS. Batch 2 closes in colour.
-- **Now:** Faber's ask, the Void Mill's Stages II and III as kit pieces for part 12's item 6 (AR19).
-- **Next:** AR6 batch 3, the eight class weapons, in grey. **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
+**Modulo (assets).** 2026-11-16, 20:00, on Opus 5.5.
+- **AR19's Stages II and III, delivered** (AR19, "Stages II and III as kit pieces"): the pieces, and the swap's table in `plan.json`, for Faber's part 12 item 6. Content check PASS. For research's pass: the check's note on the dynamos' and crown tops' real-world look.
+- **Now:** AR6 batch 3, the eight class weapons, in grey.
+- **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
 
@@ -110,6 +110,18 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 20:00. AR19: the Void Mill's Stages II and III as kit pieces (Modulo)
+
+- **What changed:** Stages II and III are kit pieces, cut from AR19's fixes 1 to 3:
+  - each stage's still body;
+  - the twin wheel, with its spur gear;
+  - a pinion on each side, made meshed and turning at -2.4;
+  - each stage's eight steps and its demand mark.
+- **The plan:** it carries the swap's table, each stage's pieces with their places and motion. Stage I's pieces are untouched. The collision on the ground is Stage I's, with the sill 0.5 nearer the gate. The content check passed.
+- **Where:** AR19, "Stages II and III as kit pieces"; `build/handoff/Base` (`meshes/Generator2*`, `meshes/Generator3*`, `manifest.json`, and `plan.json`'s `machines.generatorStages`); `tools/blender/base_mill.py`.
+- **Open:** Faber's upload, install and motion. Then research's pass, with the check's note on the dynamos' real-world look.
+- **For:** Faber, then research.
 
 ### 2026-11-16, 19:27. AR6: batch 2 in colour, the 120 in their slots (Modulo)
 

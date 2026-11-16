@@ -18,7 +18,16 @@ One source for two uses: generator_directions.py's sheet draws the whole mill (`
                      shown or hidden, never dimmed: hidden, the dark plate shows through the band.
   GeneratorDemand    the demand's bone diamond with its lit pip, on the rail: its origin on the axle, made at a share of
                      0, turned about the axle by the share, the way the wheel turns.
-Stages II and III are drawn in the sheet only: the builder's first install judges Stage I's pace alone.
+Stages II and III (Faber, 2026-11-16: the generator takes the stage of the base's ceiling, II at base level 2 and III
+at 3) are cut the same way, every piece of stage n named Generator<n>..., with what a later stage keeps from the one
+before named once: `STAGES` lists each stage's pieces, and base_plan.py writes it into the plan as the swap's table.
+  Generator2, Generator3          the stage's still body. Stage III's casing windows stand dark in it.
+  Generator2Wheel                 the twin wheel and the spur gear on its axle, which turns with it: Stages II and III.
+  Generator2Pinion                the pinion on the descending side, turning the other way, 24/10 as fast: II and III.
+  Generator3Pinion                the pinion on the rising side: III.
+  Generator2Arc1..8, 3Arc1..8     the gauge's steps on the twin wheel. Stage III's carry the casing's windows over them,
+                                  so a window lights with its step.
+  Generator2Demand, 3Demand       the demand's mark: Stage III's rail runs outside the casing.
 
 The frame is the kit's: a piece's front (+Y) toward the gate, its origin on the floor at the well's middle (on the
 axle for the wheel and the demand), one unit a stud. A part built about Z is turned by FACING so its Z looks at the
@@ -331,18 +340,15 @@ def still(stage, top=None):
     put(m, rail, face)
     if stage == 3:
         # the casing: an armoured half drum over the twin wheel, its window band lit only as far as the gauge
-        shell, band = Mesh(), Mesh()
+        shell = Mesh()
         ra, rb = r + 1.0, r + 2.0
         for k in range(14):
             a = math.radians(188 + k * 12 + 6)
             shell.box(((ra + rb) / 2 * 0.22 + 0.25, rb - ra, width + 1.6), Vector((math.cos(a), math.sin(a), 0.0)) * (ra + rb) / 2,
                       "steel", rot=(0.0, 0.0, a + math.pi / 2), ink=True)
-        for k in range(7):
-            a = 194 + k * 11.5
-            band.box((0.4, 1.6, 0.3), Vector((math.cos(math.radians(a)), math.sin(math.radians(a)), 0.0)) * (ra + rb) / 2,
-                     "void" if a <= top else "dark", rot=(0.0, 0.0, math.radians(a)), occ=0.5)
         put(m, shell, face)
-        put(m, band, at(0, width / 2 + 0.85, AXLE) @ FACING)
+        put(m, windows(stage, [a for a in WINDOWS if a <= top], "void"), at(0, width / 2 + 0.85, AXLE) @ FACING)
+        put(m, windows(stage, [a for a in WINDOWS if a > top], "dark"), at(0, width / 2 + 0.85, AXLE) @ FACING)
         for x in (-10.6, -8.4, -6.0, 6.0, 8.4, 10.6):                                          # the crown of rods
             z = AXLE + math.sqrt(max(rb * rb - x * x, 0.0))
             rod(m, (x, -0.4, z - 0.6), (x, -0.4, z + 3.2), 0.28, "steel")
@@ -365,9 +371,38 @@ def still(stage, top=None):
     return m
 
 
+WINDOWS = [194 + k * 11.5 for k in range(7)]   # Stage III's casing windows, degrees about the wheel's Z
+
+
+def windows(stage, angles, sw, lift=0.0):
+    """Stage III's casing windows at `angles`, about the wheel's Z, on the casing's front band; `lift` toward the gate."""
+    r, width = size(stage)
+    mid = r + 1.5
+    band = Mesh()
+    for a in angles:
+        band.box((0.4, 1.6, 0.3), Vector((math.cos(math.radians(a)), math.sin(math.radians(a)), 0.0)) * mid + Vector((0, 0, lift)),
+                 sw, rot=(0.0, 0.0, math.radians(a)), occ=0.5)
+    return band
+
+
+GEAR, PINION = (4.2, 24), (1.65, 10)   # the spur gear on the axle and its pinions: radius, teeth
+
+
 def pinion(sx):
     """A pinion's axle, across and up: on the gear's rim, 30 degrees under the axle's level."""
     return sx * 6.0 * math.cos(math.radians(30.0)), AXLE - 6.0 * math.sin(math.radians(30.0))
+
+
+def pinion_gear(sx):
+    """A pinion about its own Z, turned so a gap between its teeth takes the gear's tooth where the two meet: the gear's
+    teeth stand every 15 degrees from 0, so one points at each pinion (30 degrees about its Z on the descending side,
+    150 on the rising), and the pinion's gap faces back along that line."""
+    toward = 30.0 if sx > 0 else 150.0
+    pitch = 360.0 / PINION[1]
+    phase = (toward + 180.0 - pitch / 2) % pitch
+    m = Mesh()
+    put(m, toothed(PINION[0], PINION[1], 0.8, 0.5), Matrix.Rotation(math.radians(phase), 4, "Z"))
+    return m
 
 
 def mill(stage, gen=0.6, demand=0.45):
@@ -384,10 +419,10 @@ def mill(stage, gen=0.6, demand=0.45):
     put(m, demand_mark(stage), face @ Matrix.Rotation(math.radians(max(0.0, min(1.0, demand)) * span(stage)), 4, "Z"))
     if stage >= 2:
         front = size(stage)[1] / 2
-        put(m, toothed(4.2, 24, 0.8, 1.0), at(0, front + 0.9, AXLE) @ FACING)
+        put(m, toothed(GEAR[0], GEAR[1], 0.8, 1.0), at(0, front + 0.9, AXLE) @ FACING)
         for sx in ((1,) if stage == 2 else (1, -1)):
             px, pz = pinion(sx)
-            put(m, toothed(1.65, 10, 0.8, 0.5), at(px, front + 0.9, pz) @ FACING)
+            put(m, pinion_gear(sx), at(px, front + 0.9, pz) @ FACING)
     return m
 
 
@@ -454,5 +489,129 @@ def generator_demand():
                       f"Look only")
 
 
+# --- the kit's pieces (Stages II and III) -------------------------------------------------------------------------------
+
+def reach(stage):
+    """How high the collector's arm reaches: the rail's head, beyond the rim."""
+    return AXLE + rail_radius(stage) * -math.sin(math.radians(GAUGE_TOP)) + 0.6
+
+
+def solid(stage):
+    """What a player walks into, in the piece's frame: Stage I's, with the sill and the legs' heads where the wider
+    wheel puts them. The dynamos stand on the sill inside the well's cylinder, and the casing and its crown overhead."""
+    width = size(stage)[1]
+    return (f"in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, "
+            f"3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle "
+            f"{width / 2 + REACH:g} toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 "
+            f"back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to "
+            f"(+-1.5, {-width / 2 - 1.6:g}, {AXLE - 1.3:g}). The trestle and the dynamos stand on the sill, the arm"
+            f"{', the casing and its crown' if stage == 3 else ''} over the well: look only")
+
+
+def generator_stage(stage):
+    def make():
+        r, width = size(stage)
+        grown = ("a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its "
+                 "housed dynamo on the sill (the descending side), the back frame plated" if stage == 2 else
+                 "Stage II's, with the armoured half drum of a casing over the wheel and its crown of six rods, a second "
+                 "pinion and dynamo on the rising side; the casing's seven windows stand dark here: the gauge's steps "
+                 "5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the "
+                 "collector's shoe stay dark")
+        return Piece(f"Generator{stage}", still(stage),
+                     solid=solid(stage),
+                     note=f"Stage {'II' if stage == 2 else 'III'}'s still body, in place of Generator at the same place: "
+                          f"{grown}. Its middle on the well's. The collector's arm reaches about {reach(stage):.1f} up"
+                          f"{', the crown about 27.7' if stage == 3 else ''}. On the ground it stands where Stage I "
+                          f"stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up "
+                          f"in its middle")
+    return make
+
+
+def generator_wheel_twin():
+    m = Mesh()
+    put(m, wheel(2), FACING)
+    put(m, toothed(GEAR[0], GEAR[1], 0.8, 1.0), at(0, size(2)[1] / 2 + 0.9, 0) @ FACING)
+    return Piece("Generator2Wheel", m,
+                 note=f"Stages II and III: the twin wheel, 24.4 across, with the spur gear ({GEAR[1]} teeth) on its axle "
+                      f"in front of the hub, which turns with it. As GeneratorWheel: its origin is its axle's middle, "
+                      f"{AXLE:g} up at the generator's middle, its axle along the piece's Y (Roblox's Z), the line to "
+                      f"the gate; from the gate it turns anticlockwise, CFrame.Angles(0, 0, -angle) with the angle "
+                      f"growing. Its lower edge runs 2.2 under the floor, inside the well's dark")
+
+
+def generator_pinion(stage, sx):
+    px, pz = pinion(sx)
+    side = "descending" if sx > 0 else "rising"
+    ratio = GEAR[1] / PINION[1]
+
+    def make():
+        m = Mesh()
+        put(m, pinion_gear(sx), FACING)
+        return Piece(f"Generator{stage}Pinion", m,
+                     note=f"the pinion on the {side} side ({PINION[1]} teeth), meshing with the wheel's gear: its origin "
+                          f"on its own axle, {px:+.3f} across, {size(2)[1] / 2 + 0.9:g} toward the gate and {pz:g} up "
+                          f"from the generator's place, its axle along the piece's Y like the wheel's. It turns the "
+                          f"other way, {ratio:g} times as fast: CFrame.Angles(0, 0, angle * {ratio:g}) with the wheel's "
+                          f"angle. Made with its teeth meshed at the wheel's angle 0")
+    return make
+
+
+def arc_stage(stage, i):
+    def make():
+        width = size(stage)[1]
+        d = span(stage) / STEPS
+        lo, hi = start(stage) + i * d, start(stage) + (i + 1) * d
+        m = put_still(arc_step(stage, i))
+        mine = [a for a in WINDOWS if lo < a <= hi] if stage == 3 else []
+        if mine:   # its casing windows, lit, just in front of the dark ones in Generator3
+            put(m, windows(stage, mine, "void", lift=0.06), at(0, width / 2 + 0.85, AXLE) @ FACING)
+        return Piece(f"Generator{stage}Arc{i + 1}", m,
+                     note=f"Stage {'II' if stage == 2 else 'III'}'s gauge, step {i + 1} of {STEPS}: the generation's "
+                          f"share from {i / STEPS:g} to {(i + 1) / STEPS:g}, {lo:.1f} to {hi:.1f} degrees about the "
+                          f"axle{f', with {len(mine)} of the casing windows over it' if mine else ''}. As GeneratorArc"
+                          f"{i + 1}: still, at the generator's place; light the first k, k the share times {STEPS} "
+                          f"rounded, shown or hidden, never dimmed. Look only")
+    return make
+
+
+def demand_stage(stage):
+    def make():
+        m = Mesh()
+        put(m, demand_mark(stage), FACING)
+        rr = rail_radius(stage) + 0.51
+        return Piece(f"Generator{stage}Demand", m,
+                     note=f"Stage {'II' if stage == 2 else 'III'}'s demand mark, as GeneratorDemand: its origin on "
+                          f"the axle, {AXLE:g} up, made at a share of 0 by the well, turned about the axle by the share "
+                          f"times {span(stage):.1f} degrees (CFrame.Angles(0, 0, -share * math.rad({span(stage):.1f})))"
+                          f", {rr:.2f} from the axle{', outside the casing' if stage == 3 else ''}. Look only")
+    return make
+
+
+def stages():
+    """The swap's table: each stage's pieces, where each stands from the generator's place (across, toward the gate,
+    up), and how it moves. `rate` is a turning piece's against the wheel's angle: CFrame.Angles(0, 0, -angle * rate)."""
+    table = {}
+    for stage in (1, 2, 3):
+        tag = "" if stage == 1 else str(stage)
+        front = size(stage)[1] / 2 + 0.9
+        rows = [dict(piece=f"Generator{tag}", at=[0.0, 0.0, 0.0], moves="still")]
+        rows.append(dict(piece="GeneratorWheel" if stage == 1 else "Generator2Wheel", at=[0.0, 0.0, AXLE],
+                         moves="turns", rate=1.0))
+        for sx in (() if stage == 1 else (1,) if stage == 2 else (1, -1)):
+            px, pz = pinion(sx)
+            rows.append(dict(piece="Generator2Pinion" if sx > 0 else "Generator3Pinion",
+                             at=[round(px, 3), front, round(pz, 3)], moves="turns", rate=-GEAR[1] / PINION[1]))
+        rows += [dict(piece=f"GeneratorArc{i + 1}" if stage == 1 else f"Generator{stage}Arc{i + 1}", at=[0.0, 0.0, 0.0],
+                      moves="gauge", step=i + 1) for i in range(STEPS)]
+        rows.append(dict(piece=f"Generator{tag}Demand", at=[0.0, 0.0, AXLE], moves="demand",
+                         degrees=round(span(stage), 2)))
+        table[str(stage)] = rows
+    return table
+
+
 PIECES = {"Generator": generator, "GeneratorWheel": generator_wheel,
-          **{f"GeneratorArc{i + 1}": generator_arc(i) for i in range(STEPS)}, "GeneratorDemand": generator_demand}
+          **{f"GeneratorArc{i + 1}": generator_arc(i) for i in range(STEPS)}, "GeneratorDemand": generator_demand,
+          "Generator2": generator_stage(2), "Generator3": generator_stage(3), "Generator2Wheel": generator_wheel_twin,
+          "Generator2Pinion": generator_pinion(2, 1), "Generator3Pinion": generator_pinion(3, -1),
+          **{f"Generator{st}Arc{i + 1}": arc_stage(st, i) for st in (2, 3) for i in range(STEPS)},
+          "Generator2Demand": demand_stage(2), "Generator3Demand": demand_stage(3)}

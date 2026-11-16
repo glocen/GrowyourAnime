@@ -37,12 +37,12 @@
    "Color": "#EFE3D6",
    "Decay": "#A9BCE4",
    "start": {
-    "Density": 0.24,
+    "Density": 0.16,
     "Offset": 0.2,
-    "Haze": 0.6,
-    "Glare": 0.3
+    "Haze": 0.2,
+    "Glare": 0.1
    },
-   "note": "Color is the faces' own horizon band, so the haze meets the sky without a line; Decay the sky's pale blue away from it"
+   "note": "Color is the faces' own horizon band, so the haze meets the sky without a line; Decay the sky's pale blue away from it. Thin on the director's word (2026-11-16: 'a bit to much atmosphere imo like that mist is a bit to much'): a clear day, with distance told by a little paling, not by mist"
   },
   "bloom": {
    "start": {

@@ -16,11 +16,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The Tower's cost** (research's tier 2): small, so yes, and the lot doesn't move. A bare lot has no Tower.
 - **Next, in research's order:** the Door's name over the arch, "Festival of Battles" with its ground under it, a World plate facing the camera (research's call); then TR22's plate, plinth and bays' light on AR16's places; then the first session on a phone with research, Studio's device simulator driven by me.
 
-**Modulo (assets).** 2026-11-16, 02:15, on Fable 5.2.
-- **At research's verdict: AR17's blockout** (AR17, "The blockout"): the Strip, the crossing, the side street to the festival gate, a bare lot and the sealed ends, from the game's camera, in Blender. The side street is the strongest; the Strip's own street and the seals are the weakest.
-- **Delivered: the Day sky** (AR5, section 2b), on the director's word read at 02:02 and Faber's answers: six faces in Dusk's names and size, the sun painted in them at `Config.Lighting.Toward` (the engine's disc 0), and a Day block of seeds in `sky/lighting.json`. For Faber's upload and install, and research's pass. **Not seen in the engine.** The director has the sheet and hasn't spoken on it.
+**Modulo (assets).** 2026-11-16, 02:21, on Fable 5.2.
+- **Next: AR17's kit,** on research's verdict of the blockout (AR17, "Research's verdict on the blockout"): competent. A line of ground lanterns down the middle of the Strip from each far end to the crossing and up the side street; a sealed gate in the Door's language at each end; the bare lot empty, without the sleeping stone. Then counted for a phone, for Faber's install.
+- **Delivered: the Day sky** (AR5, section 2b), on the director's word read at 02:02 and Faber's answers: six faces in Dusk's names and size, the sun painted in them at `Config.Lighting.Toward` (the engine's disc 0), and a Day block of seeds in `sky/lighting.json`. For Faber's upload and install, and research's pass. Painted again with less mist, and the Atmosphere's seeds thinned, on the director's word read at 02:16 ("a bit to much atmosphere imo like that mist is a bit to much"). **Not seen in the engine.** The director has the second sheet and hasn't spoken on it.
 - **Installed by Faber, at research's one verdict in the game:** AR16, AR15's Door and Training machine, the Door's festival layer and the sleeping Tower. **Cut in Eclipse** for Faber's build (AR12): Power's bar and the reveal's plate.
-- **Next, in research's order:** AR6's batch 2, the eight shared kinds in grey on one sheet, filling AR17's waits; Watt's clips and Ground Wire's look; batch 3, the eight weapons; Scarf Step's blockout when Faber calls (AR10, section 5).
+- **Beside it, in research's order:** AR6's batch 2, the eight shared kinds in grey on one sheet; Watt's clips and Ground Wire's look; batch 3, the eight weapons; Scarf Step's blockout when Faber calls (AR10, section 5).
 - **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
@@ -114,11 +114,11 @@ For Faber:
 
 ### 2026-11-16, 02:15. The Day sky, and AR17's blockout (Modulo)
 
-- **What changed:** our own Day sky, on the director's word ("we need a day / dusk sky box"): six painted faces, a clear azure day with a warm band on the horizon and two-tone cumulus, the sun painted where the game's light stands. A Day block of seeds in `lighting.json`. Dusk and Night are untouched. And AR17's blockout from the game's camera, for research's verdict.
+- **What changed:** our own Day sky, on the director's word ("we need a day / dusk sky box"): six painted faces, a clear azure day with a thin warm line on the horizon and two-tone cumulus, the sun painted where the game's light stands. A Day block of seeds in `lighting.json`. Dusk and Night are untouched. And AR17's blockout from the game's camera, for research's verdict.
 - **Where:** `build/handoff/LanternRow/sky/` (`LanternRow_SkyDay_*.png`, `lighting.json`, `lantern_row_sky_day_sheet.png`); `tools/art/sky_day.py`. `build/handoff/Strip/`; `tools/blender/strip_block.py`. Records: AR5, section 2b; AR17, "The blockout".
 - **For Faber:** the six faces to upload under the group and play in `Phases.Day`, with the engine's sun disc at 0. The block's numbers are seeds moved from yours toward warmth; tune them by playing.
 - **For research:** the Day sky's pass, and AR17's verdict.
-- **Open:** the director has the sky's sheet and hasn't spoken on it. Nothing here was seen in the engine.
+- **Open:** the director said of the first sheet "a bit to much atmosphere imo like that mist is a bit to much"; the faces were painted again with less, and the second sheet has no word yet. Whether that word also means the game's own mist at dusk is with Faber and research. Nothing here was seen in the engine.
 
 ### 2026-11-16, 01:51. The base installed: AR16, the Door's festival and the sleeping Tower, AR15's last machines (Faber)
 

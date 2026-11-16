@@ -1,8 +1,9 @@
 """The Day sky (TR23; the director, 2026-11-16: "we need a day / dusk sky box"): Roblox's six faces, painted by
 direction in plain numpy, so no seam and no Blender. Beside AR5's Dusk and Night (build/handoff/LanternRow/sky).
 
-A clear anime day: deep azure overhead falling to pale cyan, and a warm cream band on the horizon, warmest up the
-street toward the festival. Cumulus stand in banks round the horizon, two tones and a flat base: white where the high
+A clear anime day: deep azure overhead falling to pale cyan, and a thin warm line on the horizon, warmest up the
+street toward the festival. Little haze (the director, 2026-11-16: "a bit to much atmosphere imo like that mist is a
+bit to much"): the blue comes down almost to the horizon, and the far clouds stay crisp. Cumulus stand in banks round the horizon, two tones and a flat base: white where the high
 sun finds them, lavender under each billow. A paler, lower rank stands behind them in the haze, and a few thin wisps
 lie high. The sun is painted where the game's one light stands (Config.Lighting.Toward), so the engine's disc is 0.
 
@@ -26,8 +27,8 @@ FACES = {"Ft": ((0, 1, 0), (0, 0, 1)), "Lf": ((1, 0, 0), (0, 0, 1)), "Bk": ((0, 
          "Rt": ((-1, 0, 0), (0, 0, 1)), "Up": ((0, 0, 1), (1, 0, 0)), "Dn": ((0, 0, -1), (-1, 0, 0))}
 SUN = (-0.161, -0.441, 0.883)   # Config.Lighting.Toward, in this frame: high, behind the player walking up the street
 # The sky by elevation, in degrees: under the horizon, the warm band, pale cyan, azure, the deep blue overhead.
-RAMP = ((-90.0, "#C4D2E6"), (-4.0, "#E6DDD4"), (0.0, "#F7E7D3"), (2.5, "#DCEAF1"), (7.0, "#AED6F3"), (18.0, "#74B5EF"),
-        (38.0, "#4390E4"), (65.0, "#2C6FD4"), (90.0, "#2563C8"))
+RAMP = ((-90.0, "#C4D2E6"), (-4.0, "#E6DDD4"), (0.0, "#F3E2CC"), (1.1, "#CDE3F2"), (4.0, "#9CCBF2"), (14.0, "#6FB1EE"),
+        (36.0, "#4390E4"), (65.0, "#2C6FD4"), (90.0, "#2563C8"))
 COOL = "#E4EBF2"                # the horizon's band away from the festival: the warmth lies up the street
 LIT, CREAM, SHADE, BASE = "#FFFFFF", "#FFF3E0", "#BCC9EE", "#94A8DC"   # a cloud: its lit top, its lit flank, in its own shade, its foot
 HAZE = "#E9E4E0"                # what distance does to a cloud near the horizon
@@ -115,19 +116,19 @@ def paint(d):
     stops = np.array([e for e, _ in RAMP], np.float32)
     cols = np.stack([rgb(c) for _, c in RAMP])
     out = np.stack([np.interp(el, stops, cols[:, k]) for k in range(3)], axis=1)
-    band = np.exp(-np.abs(el) / 3.2)[:, None] * (0.5 - 0.5 * np.cos(np.radians(az)))[:, None] * (el > -6)[:, None]
+    band = np.exp(-np.abs(el) / 1.4)[:, None] * (0.5 - 0.5 * np.cos(np.radians(az)))[:, None] * (el > -6)[:, None]
     out = out + (rgb(COOL) - out) * band * 0.85                    # the warm band cools away from the festival
     sun = np.array(SUN, np.float32) / np.linalg.norm(SUN)
     sun_az = math.degrees(math.atan2(sun[0], sun[1])) % 360.0
     ang = np.degrees(np.arccos(np.clip(d @ sun, -1, 1)))
-    out = out + (rgb(SUN_HALO) - out) * (0.5 * np.exp(-ang / 5.0) + 0.16 * np.exp(-ang / 24.0))[:, None]
+    out = out + (rgb(SUN_HALO) - out) * (0.5 * np.exp(-ang / 4.0) + 0.06 * np.exp(-ang / 20.0))[:, None]
     low = el < 62.0
     if low.any():
         dl, azl, ell = d[low], az[low], el[low]
         part = out[low]
         w1, w2 = wobble(dl, 23.0, 1.0), wobble(dl, 57.0, 4.0)
         side = np.sin(np.radians(sun_az - azl))                   # which way the sun lies round the horizon, with no jump
-        for puffs, alpha, depth, soft, reach in ((FAR, 0.86, 0.62, 0.05, 2.2), (NEAR, 1.0, 0.0, 0.035, 5.0)):
+        for puffs, alpha, depth, soft, reach in ((FAR, 0.96, 0.3, 0.05, 2.2), (NEAR, 1.0, 0.0, 0.035, 5.0)):
             here = body(azl, ell, puffs) + 0.035 * w1 + 0.018 * w2
             cover = step(0.0, soft, here) * alpha
             # a cloud shades itself: what has cloud between it and the sun, up and round toward it, is in shade
@@ -136,7 +137,7 @@ def paint(d):
             col = rgb(CREAM) + (rgb(LIT) - rgb(CREAM)) * step(0.35, -0.1, over)[:, None]
             col = col + (rgb(SHADE) - col) * step(0.0, 0.3, over)[:, None]
             col = col + (rgb(BASE) - col) * (step(0.05, 0.6, deep) * 0.8)[:, None]
-            far = np.clip(depth + (1 - depth) * np.exp(-np.maximum(ell, 0) / 7.5) * 0.6, 0, 1)[:, None]
+            far = np.clip(depth + (1 - depth) * np.exp(-np.maximum(ell, 0) / 4.0) * 0.3, 0, 1)[:, None]
             col = col + (rgb(HAZE) - col) * far                     # distance takes a cloud toward the horizon's haze
             part = part + (col - part) * cover[:, None]
         high = body(azl, ell, WISPS)
@@ -203,9 +204,10 @@ DAY = dict(
                  note="a lilac nearer grey than the first seed (#6E7398): the shadows keep a violet, the paving loses its "
                       "blue cast"),
     atmosphere=dict(Color="#EFE3D6", Decay="#A9BCE4",
-                    start=dict(Density=0.24, Offset=0.2, Haze=0.6, Glare=0.3),
+                    start=dict(Density=0.16, Offset=0.2, Haze=0.2, Glare=0.1),
                     note="Color is the faces' own horizon band, so the haze meets the sky without a line; Decay the sky's "
-                         "pale blue away from it"),
+                         "pale blue away from it. Thin on the director's word (2026-11-16: 'a bit to much atmosphere imo like "
+                         "that mist is a bit to much'): a clear day, with distance told by a little paling, not by mist"),
     bloom=dict(start=dict(Intensity=0.3, Size=24, Threshold=2.2)),
     environmentDiffuseScale=0.5,
     shares=dict(Floor=0.35, Glow=0.45, Lights=0.2,

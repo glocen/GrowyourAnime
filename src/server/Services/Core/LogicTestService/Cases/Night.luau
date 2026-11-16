@@ -250,4 +250,31 @@ return {
 			t.Check("the glow lifted, not doubled", clear.Glow > 1 and clear.Glow < 2, tostring(clear.Glow))
 		end,
 	},
+	{
+		Name = "Night: AR20's C, the base's own sky at dusk and night south of the Row past its middle, the day's kept, and the lights lifted",
+		Run = function(t: any)
+			local clear = LightingConfig.Clear :: any
+			local phases = clear.Phases
+			for _, name in { "Dusk", "Night" } do
+				t.Equal(`{name}: out of the Row, the base's own`, Night.SkyOf(name, phases, 1), `Clear{name}`)
+				t.Equal(`{name}: in the Row, the Row's`, Night.SkyOf(name, phases, 0), name)
+				t.Equal(`{name}: at the walk's middle, still the Row's`, Night.SkyOf(name, phases, 0.5), name)
+				t.Equal(`{name}: past it, the base's`, Night.SkyOf(name, phases, 0.51), `Clear{name}`)
+				local faces = 0
+				for face, id in phases[name].Sky do
+					faces += if string.match(id, "^rbxassetid://%d+$") and face:match("^%u%l$") then 1 else 0
+				end
+				t.Equal(`{name}: six faces of its own`, faces, 6)
+				local same = 0
+				for face, id in phases[name].Sky do
+					same += if (LightingConfig.Phases :: any)[name].Sky[face] == id then 1 else 0
+				end
+				t.Equal(`{name}: none of them the Row's`, same, 0)
+			end
+			t.Equal("the day keeps the game's own sky everywhere", Night.SkyOf("Day", phases, 1), "Day")
+			t.Equal("a phase Clear doesn't name keeps its own", Night.SkyOf("Nowhere", phases, 1), "Nowhere")
+			t.Check("the pools' and the lead's light lifted, not doubled", clear.Lights > 1 and clear.Lights < 2, tostring(clear.Lights))
+			t.Check("C's day: brighter exposure than A's", phases.Day.Exposure > 0.11, tostring(phases.Day.Exposure))
+		end,
+	},
 }

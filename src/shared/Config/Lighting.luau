@@ -45,17 +45,32 @@ return {
 	-- playing).
 	-- And less somber there (the same words; AR20, research's pick of 17:23: C, bright hours, with round 2's fill, a
 	-- rose-lilac dusk and a silver night): Phases' keys over each phase's own, the light, the fill and the exposure, and
-	-- the kit's glow and the floors' Glow times theirs. The Row keeps its own. Modulo's seeds (AR20, "The takes" and "Round
-	-- 2"), tuned by playing; the dusk's and the night's faces for the base and the Strip follow from Modulo.
+	-- the kit's glow and the floors' Glow times theirs, the pools' and the lead's light Lights times theirs. A phase's Sky
+	-- here is the base's own, worn south of the Row past its middle (the day keeps the game's day sky), its swap under the
+	-- walk's veil. The Row keeps its own. Modulo's C (build/handoff/Base/lighting.json; AR20, "Modulo's paint and skies
+	-- for C"; the faces uploaded under the group, docs/asset-log.md, 2026-11-16), tuned by playing.
 	Clear = {
 		Atmosphere = { Density = 0, Haze = 0, Glare = 0 },
 		Veil = { Density = 0, Haze = 2.5 },
 		Phases = {
-			Day = { Ambient = hex("A3A1B4"), Exposure = 0.11 },
-			Dusk = { Ambient = hex("70618C"), Sun = hex("DDB8EC"), Brightness = 2.31, Exposure = 0.38 },
-			Night = { Ambient = hex("50597E"), Sun = hex("BCCAF0"), Brightness = 1.53, Exposure = 0.54 },
+			Day = { Ambient = hex("A3A1B4"), Brightness = 2.61, Exposure = 0.16 },
+			Dusk = {
+				Sky = faces({ 75877956278554, 103984710637104, 74714220433765, 138164631575167, 125396877000879, 111017006396801 }),
+				Ambient = hex("70618C"),
+				Sun = hex("DDB8EC"),
+				Brightness = 2.31,
+				Exposure = 0.38,
+			},
+			Night = {
+				Sky = faces({ 84005929943191, 108363997996410, 85851788746244, 96528787831781, 109109844282462, 117630142610865 }),
+				Ambient = hex("50597E"),
+				Sun = hex("BCCAF0"),
+				Brightness = 1.53,
+				Exposure = 0.54,
+			},
 		},
 		Glow = 1.5,
+		Lights = 1.3,
 	},
 	-- A crossing's light warms from its first second (TR24's fix 9, TR23's fix 1: "the light starts warming from the
 	-- blend's first second, so the swap lands on a sky already near it"): Warm, the share of the way the light, the haze

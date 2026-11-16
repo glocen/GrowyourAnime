@@ -147,16 +147,30 @@ local function setSkyFaces(sky: Sky, phase: any)
 	end
 end
 
-local function groundSky(name: string): Sky
+local function groundSky(name: string, phase: any): Sky
 	local sky = Instance.new("Sky")
-	sky.Name = `LanternRow{name}`
-	setSkyFaces(sky, (LightingConfig.Phases :: any)[name])
+	sky.Name = if string.sub(name, 1, 5) == "Clear" then `Base{string.sub(name, 6)}` else `LanternRow{name}`
+	setSkyFaces(sky, phase)
 	return sky
 end
 
+-- Every sky by its name: each phase's (the Row's), and each phase's own south of the Row (Night.SkyOf: Clear<name>).
+local function skyLooks(): { [string]: any }
+	local out: { [string]: any } = {}
+	for name, look in LightingConfig.Phases :: any do
+		out[name] = look
+	end
+	for name, look in LightingConfig.Clear.Phases :: any do
+		if look.Sky then
+			out[`Clear{name}`] = look
+		end
+	end
+	return out
+end
+
 local function showSky(name: string)
-	for phase, look in LightingConfig.Phases :: any do
-		local sky = skies[phase]
+	for key, look in skyLooks() do
+		local sky = skies[key]
 		if sky then
 			setSkyFaces(sky, look)
 		end
@@ -366,15 +380,18 @@ local function step(dt: number)
 		return if over then Night.Clear(phases[name], over, out) else phases[name]
 	end
 	local ground = Night.Mix(Night.Ground(phaseOf(fromName), fromName, at), Night.Ground(phaseOf(toName), toName, at), warm)
-	ground.Sky = if turn < 0.5 then fromName else toName
+	local shownPhase = if turn < 0.5 then fromName else toName
+	ground.Sky = Night.SkyOf(shownPhase, clear.Phases :: any, out)
 	ground.Atmosphere = Night.Clear(ground.Atmosphere, clear.Atmosphere :: any, out)
 	local look = Night.Mix(base, ground, a)
 	glowShare = math.floor(ground.Glow * (1 + (clear.Glow - 1) * out) / SHARE_STEP + 0.5) * SHARE_STEP
-	lightShare = math.floor(ground.Lights / SHARE_STEP + 0.5) * SHARE_STEP
-	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own. In the Row its haze and density;
-	-- south of it Haze alone, which veils the sky and leaves the yard clear.
+	lightShare = math.floor(ground.Lights * (1 + (clear.Lights - 1) * out) / SHARE_STEP + 0.5) * SHARE_STEP
+	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own, into the ground and up or down the
+	-- side street when the base's sky differs from the Row's. In the Row its haze and density; south of it Haze alone,
+	-- which veils the sky and leaves the yard clear.
 	local width = LightingConfig.Veil.Width
-	local veil = math.max(Night.Veil(turn, width) * a, Night.Veil(a, width))
+	local walkVeil = if Night.SkyOf(shownPhase, clear.Phases :: any, 1) ~= shownPhase then Night.Veil(mist, width) else 0
+	local veil = math.max(Night.Veil(turn, width) * a, Night.Veil(a, width), walkVeil)
 	look.Atmosphere.Density += (clear.Veil.Density + (LightingConfig.Veil.Density - clear.Veil.Density) * mist) * veil
 	look.Atmosphere.Haze += (clear.Veil.Haze + (LightingConfig.Veil.Haze - clear.Veil.Haze) * mist) * veil
 	-- Applied, only what changed.
@@ -407,8 +424,8 @@ function LightingController.Start()
 	base.Atmosphere, base.Bloom = atmosphereBase, bloomBase
 	skies.Base = Lighting:FindFirstChildOfClass("Sky")
 	local load: { Instance } = {}
-	for name in LightingConfig.Phases :: any do
-		local sky = groundSky(name)
+	for name, phase in skyLooks() do
+		local sky = groundSky(name, phase)
 		skies[name] = sky
 		table.insert(load, sky)
 	end

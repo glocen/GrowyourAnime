@@ -621,7 +621,7 @@
    "glowStrength": 2.4,
    "collision": "a box, 28 square, as high as it needs; nobody reaches it yet",
    "lights": [],
-   "note": "stands behind the back wall on the plot's middle line, on the Tower's own lot: 172 high at its tip, 28 square at its foot. Dark and unlit but for the shard over its tip. No hull"
+   "note": "stands behind the back wall on the plot's middle line, on the Tower's own lot: 172 high at its tip, 28 square at its foot. A violet slate, unlit but for the shard over its tip. No hull"
   },
   "BatteryRack": {
    "mesh": "meshes/BatteryRack.json",

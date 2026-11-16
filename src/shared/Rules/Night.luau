@@ -162,6 +162,13 @@ function Night.Clear(atmosphere: { [string]: any }, clear: { [string]: any }, w:
 	return out
 end
 
+-- The sky worn for phase `name`: the base's own, `Clear<name>`, once `out` of the Row is past its middle and Clear gives
+-- that phase faces (AR20's C); else the phase's own, by its name.
+function Night.SkyOf(name: string, clear: { [string]: any }, out: number): string
+	local over = clear[name]
+	return if over and over.Sky and out > 0.5 then `Clear{name}` else name
+end
+
 function Night.Ground(phase: any, sky: string, sun: Sun): any
 	return {
 		Lighting = {

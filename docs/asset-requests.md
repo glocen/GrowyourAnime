@@ -7719,6 +7719,28 @@ today's own glow. Faber's lighting section left B's paint to me as well, since C
   - **Visually reviewed:** my own read of fast renders only. Research's pass waits on Faber's captures in the game.
   - **Director-accepted:** no.
 
+### Faber's install of C's paint and skies (2026-11-16, 17:42 to 17:51, by the clock)
+
+On Modulo's 7813894.
+- **The base kit:**
+  - The nine colour pictures are uploaded under the group, and their ids are swapped in `tools/studio/Kits/Base.json`.
+  - TowerSleeping is published again from Studio.
+  - `kit_take.py` took the manifest and the plan, so the slab between plots is #6E7290.
+  - `src/storage/BaseKit.rbxm` takes the ten new ids through `tools/world/kit_reid.luau`: a new Lune tool that swaps an install's changed ids in a kit's template with Studio closed, and refuses one the template doesn't hold. Studio's own build gave the same ids. The kit's pieces, sizes and manifest were otherwise unchanged.
+- **The light** (`Config.Lighting.Clear`, `Rules.Night.SkyOf`), lighting.json's three differences:
+  - The day's exposure is 0.16, its brightness 2.61.
+  - The pools' and the lead's light take `Lights` 1.3 times theirs, by how far out of the Row.
+  - The dusk's and the night's own skies (twelve faces under the group) are worn south of the Row past its middle. Their swap on the side street hides under the walk's veil, and the day keeps the game's sky.
+  - The crossing shard's own glow, without the lift, goes with the Strip's install, like its pieces and `Strip_Paving_Color.png`.
+- **The four facts:**
+  - **Implemented:** as above.
+  - **Tested:**
+    - Type check 0 new.
+    - Logic 10,128/0 offline and in Studio, with the new sky case.
+    - WorldReport and DressReport are empty, and the slab is in #6E7290 in play.
+  - **NOT VERIFIED:** anything drawn. The PC is on its lock screen, and Studio draws 0 frames a second with a 1×1 viewport. The captures at day, dusk and night from the start camera and the crossing, held against `base_light_check.png`, come when the screen is back. The pictures were in moderation's review at upload.
+  - **Visually reviewed:** no. **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

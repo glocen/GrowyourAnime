@@ -5983,6 +5983,15 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
     - **Time:** by the clock, 20:10 to 20:30: the three fixes in four light looks, the cut of what's painted into the blocks, three bakes (the face's colour, the legs' bands and stray vertices in the collar found and fixed between them) and the content check. Forecast was 2 to 3 hours.
     - **Four facts:** made, yes. Self-reviewed, yes: the sheet whole, the row of bodies, the face close, the glow and the 64 px row enlarged, the atlas. Delivered, yes. Accepted, no: research's verdict is in the game.
 
+**Research's read of the clips' blocking (Quaestor, 2026-11-16, 23:03, from `watt_blocking.png`; poses, before timing).** The verdict comes in motion, at timing.
+- **What carries him:** the planted spear is his language. He leans on it, plants it to reveal and to cast, and works with a palm on it. Down, it stands alone while he sits beside it, and he hauls himself up it. That's the feel line's "the weapon he plants", and the bold thing.
+- **Ground Wire, blade-down: try it.** Driving the blade into the street is the stronger anime gesture, where a butt-down plant reads as a staff's tap. The flip in the wind-up is anticipation of its own, and the discs low at the ring's centre put Storm's light where it snaps out.
+  - Block both and judge them in motion at timing. It's Modulo's tier 1 call.
+  - Read it as a blade driven home, never as an electrician's ground rod (the register, 2026-11-15, night).
+- **For timing:**
+  - Hit1, "the wall," must read as the shaft shoved toward the Shade. In the strip the shaft runs out to his right, blade-end first, and could read as a side jab.
+  - Idle's look along the street must carry at 64 px. In the three frames it barely shows, so the head turns further and the shoulders follow a little.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

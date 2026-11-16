@@ -2591,6 +2591,20 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
   - TR17 256/256.
 - **Stills** (`build/scratch/faber/stills/tr28-*.jpg`, via the manual case "Take: TR28"): empty, full, long, other, chests, phone-doll, phone. There's no night still (the director, 2026-11-15: no day/night checks).
 
+**Research's verdict on the rebuild in A (Quaestor, 2026-11-16, 22:37, from the seven stills).**
+- **Felt:** the bag reads as one screen at last. The gear sits on the left and the Voidkin on the right, among slots that name what's missing. The chests sit as real things among the gear, and a card says in one number what an item does.
+- **Tier:** competent.
+- **The bold thing:** the doll framed by its named empty slots, a set to fill.
+- **Fixes:**
+  1. **The stage takes A's warm lacquer and its glow,** as the director's pick drew it. Today Overview's cool grey panel is the brightest field on the screen, and it reads as another screen pasted in. This reverses that one tier 1 call.
+  2. **The card accounts for its number.** The Legendary Bracers say +465 Combat Power over one line, Health +75, which alone is worth about 40 (`tr28-long`, `tr28-phone`). Every stat it changes shows, Basic Attributes first, as `docs/ui.md`'s comparison has it. If they're there, the card cuts them.
+  3. **The card says "Combat Power",** the doll's own word, not "Power".
+- **Kept, Faber's tier 1 calls:** only the changed lines, then "No change"; the overlap under a pixel; the strip's fade; the card over the doll in the block.
+- **The Tower chest's card tells the truth in Lantern Row:** 60% Common is the best of the four, where the Keeper's is 88%. Its one row falls below later grounds' Elite chests, so research refits it with Drum Court.
+- **Not here:** AR23's number, which is queued, and TR25's overflow, its own piece.
+- **The tint and the bracer** read from the player's camera: AR22 closes.
+- **Visually reviewed in stills only.**
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

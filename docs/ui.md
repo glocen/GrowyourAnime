@@ -81,7 +81,7 @@ Rest, pressed, selected, disabled with its reason, waiting on the server, succee
 ## Stats, shown honestly
 
 - The stat sheet lists every stat as one total, the sum of its sources, never "up to" [D, 2026-11-15, night]: a rating as its points, a percent as its percent.
-- On the Voidkin screen, the sheet is a plain list and nothing opens [D, 2026-11-15, night: "Plain list, no taps"]: no notes and no sources; a rating's chance against an even foe stands beside its points [D, 2026-11-16: the package's point 3]. What each source gives shows in Combat Power's tap, whose parts sum to its total (`docs/design.md`, "Combat Power").
+- On the Voidkin screen, the sheet is a plain list and nothing opens [D, 2026-11-15, night: "Plain list, no taps"]: no notes and no sources; a rating's chance against an even foe stands beside its points [D, 2026-11-16: the package's point 3]. Hit, Dodge, Critical and Block lead with that chance, a percent, large, and their points small beside it [D, 2026-11-16, 21:34]; Penetration, Critical Resist and Elemental Resist keep their points first, with what they do to an even foe under them. What each source gives shows in Combat Power's tap, whose parts sum to its total (`docs/design.md`, "Combat Power").
 - An item's comparison never shows a percent of a percent.
 
 ## Nicknames

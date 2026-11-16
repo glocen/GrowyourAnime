@@ -1381,7 +1381,7 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
 - **The digits** read close to the reference. If the take shows them light beside it, the lever is the outline's weight, also live.
 - **The landing's rounded end:** at play size it doesn't show. Accepted.
 
-**Watt's and Kirra's portraits (Modulo, 2026-11-17, 00:45 to 00:52 by the clock).** For TR24's must-fix 5, Faber's ask: the lead card and the roster showed the grey silhouette for both. Made as Rook's, in `build/handoff/UI/hud/images/`: `PortraitWatt` and `PortraitKirra` (736 by 800, pad 52), `PortraitWattSmall` and `PortraitKirraSmall` (368 by 400, pad 26), cut to `FrameCommon` and `FrameCommonSmall`, both Common. Their entries join `hud_art.json`, and nothing else in it changed. The review sheet is `hud_portraits_watt_kirra.png`: each in its frame beside Rook's, the small cut over the street's dark side and its bright end, and each alone at 64 px over dark.
+**Watt's and Kirra's portraits (Modulo, 2026-11-17, 00:45 to 00:51 by the clock; committed in 336c68e).** For TR24's must-fix 5, Faber's ask: the lead card and the roster showed the grey silhouette for both. Made as Rook's, in `build/handoff/UI/hud/images/`: `PortraitWatt` and `PortraitKirra` (736 by 800, pad 52), `PortraitWattSmall` and `PortraitKirraSmall` (368 by 400, pad 26), cut to `FrameCommon` and `FrameCommonSmall`, both Common. Their entries join `hud_art.json`, and nothing else in it changed. The review sheet is `hud_portraits_watt_kirra.png`: each in its frame beside Rook's, the small cut over the street's dark side and its bright end, and each alone at 64 px over dark.
 - **Made from the delivered models** (`build/handoff/Watt/`, `build/handoff/Kirra/`: the recipe, the meshes with their own normals, the maps). The glow is cold, as each stands. `hud_art.py` reads them (`delivered`), since Watt's only `.blend` is the first design's. Naming Voidkin after `make` shoots those alone, and `review` makes their sheet.
 - **Watt** is the quiet wall: the collar up to his nose and a level look over it. The pale band across his chest is the sling, the coat's own. **Kirra** gives a quick sideways look back over the shoulder, with the scarf's tail over the near shoulder and the goggles up.
 - **Read at phone size:** both read at 1 pixel a point. Their hair and Kirra's goggles are wider than Rook's head, so each face sits a little smaller in the frame than his.
@@ -7525,6 +7525,24 @@ The director's phone run (by 00:17, `docs/decisions.md`): "the portail being ugl
   - **B:** the outline is never a vertical almond, a teardrop or a slit, and its edges are never soft, rounded or rolled. The rim and heart are never red, pink, rose or a flesh tone. Nothing hangs or drips from the rim.
   - **C:** the front ring stays plain: no chevrons, clamps, glyphs, or dial ring turning inside it. Only the rings behind turn. The disc stays a flat glow, never a blue rippling surface or a splash when it opens. No spokes, hub or evenly set radial marks on any ring, and no lines across the centre. Straight on, the rings never make a crosshair over the player.
   - The renders stay internal. The pick's finish gets its own check before any upload.
+
+**The blockout** (Modulo, 2026-11-17, 00:49 to 00:56 by the clock, round the portraits' content check). A throwaway in Blender, from the game's camera: `tools/blender/base_door_block.py`. In the base's own scene, the Door's two pieces are swapped for each take where it stands. **Nothing was seen in Studio.** Four sheets in `build/handoff/Base/`, one a view, each showing the Door as it stands now (top left), then A (top right), B (foot left) and C (foot right):
+- `door_block_home.png`: from the spawn. The Door stands off to the right, edge on.
+- `door_block_way.png`: from the way in, straight on, behind a player 20 studs from the front. The base's lamp post stands in the line.
+- `door_block_close.png`: six studs from its front, the camera tipped up a little.
+- `door_block_side.png`: the base's own look at the Door, three-quarter on.
+
+Each take's light is its own glow: its lines bright, and what lies deep (the veil, the heart, the disc) softer and warmer, so the depth reads and nothing burns white. One warm light inside each and one before it. Two player stand-ins, at 20 and 6 from the front, show its size. They're where the two player cameras stand.
+
+**Modulo's read, for research's verdict:**
+- **C, the ring tunnel: the strongest.** Its depth reads from every view. From the side and from the spawn it's a tunnel of rings, a shape nothing else in the base has. Straight on, the eye runs down the rings to the warm disc. **Weakest:** straight on, the offset rings come near a target. Turning them at different rates would break that in motion, and the block doesn't show it.
+- **A, the deep gate: the plainest door.** You see at once that it's a way in, and from the side the frames of light step back down a real passage. **Weakest:** it's a heavy dark mass, like a hangar or a chapel. The pointed frames lean on a church door, and from the spawn it's a dark block.
+- **B, the break: the most the void's own.** Its faceted silhouette is unlike anything round it, and the floating stones say something broke. **Weakest:** straight on, the bright heart reads as a flat star of light more than as depth. From the spawn it's a thin edge, and its depth reads only from the side.
+- **For all three:** the plate floats where the name will go, and only marks the place. The blank structure reads dark navy in the base's light from every view but the side.
+- **Not counted:** the lights are Blender's. The pick's finish counts the real ones for a phone.
+- **Tier 1, research's to keep or drop:** a warm light before each take, on the floor at its mouth. The rings' different gaps, so a turn shows.
+
+**Four facts:** implemented, as a throwaway. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above. Research's verdict and the director's pick come next. Director-accepted: no.
 
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 

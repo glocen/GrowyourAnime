@@ -5395,7 +5395,8 @@ local cases = {
 			local health, most = lead:GetAttribute("Health") :: number, lead:GetAttribute("MaxHealth") :: number
 			t.Near("its health bar is its share of health", parts.LeadHealth:GetAttribute("Share") :: number, health / most, 0.01)
 			local under = (parts.LeadHealthText :: TextLabel).Text
-			t.Check("with its health and its most under it, set tight", under == Hud.Health(health, most, nil, true), under)
+			-- whole, or in its compact form where the whole is wider than its bar holds (TR3's fix 6)
+			t.Check("with its health and its most under it, set tight", under == Hud.Health(health, most, #under, true), under)
 			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
 			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
 			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)
@@ -6234,7 +6235,9 @@ local cases = {
 				return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
 			end))
 			t.Wait(PLATE_TICK * 2)
-			t.Check("at home, the hint says into the Breaker", hud.Chip.Visible and string.find(text.Text, "into the Breaker", 1, true) ~= nil, text.Text)
+			-- into the Breaker, or, where breaks already wait in it, those first (Rules.Hud.NextStep, TR24's fix 1)
+			local readyFirst = string.find(text.Text, "at the Breaker", 1, true) ~= nil
+			t.Check("at home, the hint says into the Breaker", hud.Chip.Visible and (string.find(text.Text, "into the Breaker", 1, true) ~= nil or readyFirst), text.Text)
 			t.Check("in the Voidkin's colour", hud.Chip:GetAttribute("System") == "Voidkin")
 			Layers.Force(Theme.Scale.Floor)
 			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))

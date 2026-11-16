@@ -150,7 +150,9 @@ function ViewCases.Cases(given: Given): { any }
 					aim()
 					t.Wait(given.LEAD_SETTLE + CROSS)
 					local avatar = t.Root().Position
-					spawned = t.Server("FightSpawn", "brawler", level, given.SHADE_AHEAD)
+					-- one that comes for the lead (since fix 6 a Shade passes over an idle lead: one out of view and not on it
+					-- is left for the player to look at, Rules.Fight.LeadTarget)
+					spawned = t.Server("FightSpawn", "brawler", level, given.SHADE_AHEAD, true)
 					t.Check("out of view: the Shade spawns behind the camera", type(spawned) == "table" and spawned.Ok == true)
 					if type(spawned) ~= "table" or spawned.Ok ~= true then
 						return
@@ -158,6 +160,8 @@ function ViewCases.Cases(given: Given): { any }
 					local wait = Combat.Lead.View.Wait
 					local toward = -math.huge
 					local met: number? = nil
+					local targeted: number? = nil -- when the lead first took it as its target, for the report
+					local last = "no row"
 					began = os.clock()
 					while met == nil and os.clock() - began < wait + TAKE do
 						aim()
@@ -166,6 +170,12 @@ function ViewCases.Cases(given: Given): { any }
 							toward = math.max(toward, (root.Position - avatar):Dot(facing))
 						end
 						local row = mine()
+						if row then
+							last = `target {if row.Target == spawned.Id then "it" else tostring(row.Target)}, action "{row.Action}"`
+							if row.Target == spawned.Id and targeted == nil then
+								targeted = age
+							end
+						end
 						if age >= wait - 0.5 and row and row.Target == spawned.Id and row.Action ~= "" then
 							met = age
 						end
@@ -173,7 +183,7 @@ function ViewCases.Cases(given: Given): { any }
 					end
 					local place = -Combat.Lead.Ahead
 					t.Check("out of view: it waits at its place in view, not walking off to it", toward <= place + STAYS, string.format("%.1f studs toward it, its place %.1f", toward, place))
-					t.Check("and meets it once its wait is over, if it hasn't come", met ~= nil, string.format("%.1f s, the wait %.1f", met or -1, wait))
+					t.Check("and meets it once its wait is over, if it hasn't come", met ~= nil, string.format("%.1f s, the wait %.1f; targeted at %.1f s, last %s", met or -1, wait, targeted or -1, last))
 				end)
 				t.Server("FightSpawn")
 				camera.CameraType = wasType

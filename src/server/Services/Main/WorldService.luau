@@ -1201,7 +1201,10 @@ function WorldService.Init()
 			end
 			local standing: { [string]: number } = {}
 			for _, placement in (if basePlan.machines then basePlan.machines.placements else {}) do
-				standing[placement.piece] = (standing[placement.piece] or 0) + 1
+				-- The Tower's ring stands where the sleeping Tower was placed (TR29): it's checked below, not its piece.
+				if placement.piece ~= "TowerSleeping" then
+					standing[placement.piece] = (standing[placement.piece] or 0) + 1
+				end
 			end
 			for number = 1, WorldConfig.Plots.Count do
 				local lot = plots:FindFirstChild(`Plot {number}`)
@@ -1259,9 +1262,17 @@ function WorldService.Init()
 						table.insert(problems, `Plot {number} {piece}: {machines[piece] or 0} stand, the plan's machines have {needed}`)
 					end
 				end
-				-- A piece placed toward the crossing stands on the plot's crossing side (AR16's Tower).
+				-- A piece placed toward the crossing stands on the plot's crossing side (AR16's Tower), and the Tower's ring
+				-- with it (TR29).
 				local pivot = (m :: Model).WorldPivot
 				local side = crossingSide(pivot)
+				local ring = (m :: Instance):FindFirstChild("TowerRing", true)
+				local middle = if ring and ring:IsA("Model") then ring.PrimaryPart else nil
+				if middle == nil then
+					table.insert(problems, `Plot {number}: no Tower ring`)
+				elseif pivot:PointToObjectSpace(middle.Position).X * side <= 0 then
+					table.insert(problems, `Plot {number}: the Tower ring stands away from the crossing`)
+				end
 				for _, placement in (if basePlan.machines then basePlan.machines.placements else {}) do
 					if placement.toward == "crossing" then
 						for _, item in (m :: Instance):GetDescendants() do

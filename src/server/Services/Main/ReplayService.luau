@@ -136,7 +136,9 @@ end
 
 local spawned: { [FightService.Fighter]: boolean } = {}
 
-local function fightSpawn(who: any, def: any, level: any, ahead: any): any
+-- `comes`: it comes for the player's lead at once, as one fought alone does (TR29's `For`), lead fighting or not: since
+-- TR24's fix 6 a Shade passes over an idle lead, and a case that needs one on the lead says so.
+local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any): any
 	if def == nil then
 		local count = 0
 		for f in spawned do
@@ -161,6 +163,10 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any): any
 	local hit = workspace:Raycast(spot, Vector3.new(0, -GROUND_RAY, 0), params)
 	local ground = if hit then hit.Position else spot - Vector3.new(0, STAND, 0)
 	local f = FightService.SpawnEnemy(def, lvl, CFrame.lookAt(ground, ground - look))
+	if comes == true then
+		f.For = player
+		f.Model:SetAttribute("For", (player :: Player).UserId)
+	end
 	spawned[f] = true
 	f.Model.Destroying:Connect(function()
 		spawned[f] = nil

@@ -174,6 +174,10 @@ local function stepEdge()
 		a.Visible = false
 		return
 	end
+	-- Over each target where it is now, a moving one too (the plates read the same tops after this step).
+	for index, target in targets do
+		tops[index] = (if target.Parent then topOf(target) else nil) or tops[index]
+	end
 	local middle, nearest = Vector3.zero, math.huge
 	for _, top in tops do
 		middle += top / #tops

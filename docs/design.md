@@ -203,7 +203,7 @@ One number for how strong the lead is with its preset, made to be watched rising
 [D, 2026-11-16: the package's point 9.] Earned by play, auto-collected, stacked and opened in bulk. **No chest, key or drop-rate boost is ever sold for Robux or a currency bought with Robux** (`docs/roblox-rules.md`).
 
 - **Where they come from:** a Shade, at a small chance a kill, and the account's third kill always drops one, for the north star's "Build" beat; an elite, one every time, a tier up; a keeper, a better chest on the first win and a chest after; the Tower, a chance rising with the floor.
-- **A chest is named for its ground and its tier** ("a Common Chest of Lantern Row"). Its table rolls the item's rarity, slot and lines on the server when it's opened.
+- **A chest is named for its ground and its kind** ("a Shade Chest of Lantern Row"). There are four kinds, Shade, Elite, Keeper's and Tower, each named for what drops it, and never a rarity's word or frame, since a chest isn't a rarity (research, TR29, 2026-11-16). In the bag, its picture says its kind, and its card gives its odds. Its table rolls the item's rarity, slot and lines on the server when it's opened.
 - **The rarities' pace,** with the rates fitted to it by simulation (`docs/balance.md`, "Chests"):
 
 | Rarity | The first one, at about | Mostly from |

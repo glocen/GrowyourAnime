@@ -8073,6 +8073,19 @@ On Modulo's 7813894.
   - **NOT VERIFIED:** anything drawn. The PC is on its lock screen, and Studio draws 0 frames a second with a 1×1 viewport. The captures at day, dusk and night from the start camera and the crossing, held against `base_light_check.png`, come when the screen is back. The pictures were in moderation's review at upload.
   - **Visually reviewed:** no. **Director-accepted:** no.
 
+## AR21. The four chests' pictures (Modulo, after AR6's batch 3)
+
+Research's ask, 20:46, 2026-11-16. Tier 2: a new asset players see that nothing covers, in Modulo's area. It's for the bag's chest cell and its card, now that no chest wears a rarity's frame (TR29, "The chest's frame"; `docs/design.md`, "Chests").
+- **Feel line:** the player opens the bag and knows each chest by its shape before reading a word, the four rising in worth from the Shade's to the Tower's, and none looking like a rarity.
+- **The block contains:** four pictures, for the Shade, Elite, Keeper's and Tower chests, in grey first. They're shown at the bag's 38 points beside AR6's gear, and alone at 32 px.
+  - The kind reads by silhouette.
+  - Worth reads by shape and finish, never by a rarity's colour or frame.
+  - The Tower's belongs with the Tower's column of light.
+- **The look is Modulo's,** under the package's UI art direction. A chest is the void's or the festival's, never a real-world box with a padlock.
+- **What waits:** one picture per ground (the ground stays in words), the opening's moment, and a chest in the world (chests auto-collect).
+- **Until it lands,** the cell names the kind in words (Faber, TR29).
+- **Checks:** the content check before upload. Research's one verdict in grey, then in colour.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

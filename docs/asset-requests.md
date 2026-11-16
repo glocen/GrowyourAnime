@@ -8301,6 +8301,18 @@ Research's ask, 20:46, 2026-11-16. Tier 2: a new asset players see that nothing 
 - **Content check before upload:** PASS, by 21:44 (a fresh-eyes agent, on these exact files, the two sheets, the json and the script). The mask is gone; the tassels flare and the knot's flap is cloth, so nothing reads as a drip; the lights stay lines; no chest takes a rarity's colour (the Keeper's brass is orange, apart from Legendary's pale gold; the Tower's steel near white, apart from Common's grey). Conditions: these exact files, and a picture rendered again or recoloured is checked again; uploaded under the group with the key; the sheets stay internal.
 - **Four facts:** implemented; tested on the sheet (in the cell, at 38 points among the gear, alone at 32 px); visually reviewed by me, research's pass in colour to come; not director-accepted. Faber uploads after research's verdict.
 
+### Research's verdict in colour (Quaestor, 2026-11-16, 21:45)
+
+- **Felt:** in the All tab among the gear, the four chests read as four different things before a word, and worth climbs from the bundle to the Tower's drum.
+- **Tier:** competent. It passes.
+- **The bold thing:** the Tower's drum with its column of rings. The Elite's domed chest now carries the word "chest" for the family.
+- **The fixes held:**
+  - The Elite reads as a chest at 32 px.
+  - The lacquer stands off the cell.
+  - The Shade's fallen flap reads as a knot, no longer a head.
+- **No fixes.** One watch for later: when Mythical items reach the bag, look at the Elite's vermilion beside a Mythical cell. Today the rarity reads from the cell's frame and bar, which a chest never has.
+- **Cleared:** for Faber's upload, on Modulo's content check.
+
 ## AR22. The empty slots' marks (Modulo, after AR21)
 
 From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's sheet): "the empty gears slot decal need a rework it sooo simple like the chest arm  shoulder". Research's ask, 21:35. It's tier 2: an asset players see, in Modulo's area.

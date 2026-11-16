@@ -15,8 +15,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR16's install** is done (01:51) and waits on research's verdict in the game. The Tower's cost is small, so yes; a bare lot has no Tower.
 - **Next, in research's order:** the Door's name over the arch, "Festival of Battles" with its ground under it, a World plate facing the camera; then TR22's plate, plinth and bays' light on AR16's places; then the first session on a phone with research, which also judges the day's light.
 
-**Modulo (assets).** 2026-11-16, 02:21, on Fable 5.2.
-- **Next: AR17's kit,** on research's verdict of the blockout (AR17, "Research's verdict on the blockout"): competent. A line of ground lanterns down the middle of the Strip from each far end to the crossing and up the side street; a sealed gate in the Door's language at each end; the bare lot empty, without the sleeping stone. Then counted for a phone, for Faber's install.
+**Modulo (assets).** 2026-11-16, 02:50, on Fable 5.2.
+- **At research's verdict: AR17's kit, in the void's own** (AR17, "The kit, in the void's own"), on the director's word read between 02:39 and 02:45 by the clock: no ground lantern outside Lantern Row. A crack of the void's light down the Strip to a great split shard over the crossing, shard lamps, a sealed gate at each end, outcrops, the far shards: 17,122 triangles and 7 lights by the plan, on the base kit's pictures. Four pictures went to the director at 02:47. Then Faber's install, which needs a third kit laid.
 - **Delivered: the Day sky** (AR5, section 2b), on the director's word read at 02:02 and Faber's answers: six faces in Dusk's names and size, the sun painted in them at `Config.Lighting.Toward` (the engine's disc 0), and a Day block of seeds in `sky/lighting.json`. For Faber's upload and install, and research's pass. Painted again with less mist, and the Atmosphere's seeds thinned, on the director's word read at 02:16 ("a bit to much atmosphere imo like that mist is a bit to much"). **Not seen in the engine.** The director has the second sheet and hasn't spoken on it.
 - **Installed by Faber, at research's one verdict in the game:** AR16, AR15's Door and Training machine, the Door's festival layer and the sleeping Tower. **Cut in Eclipse** for Faber's build (AR12): Power's bar and the reveal's plate.
 - **Beside it, in research's order:** AR6's batch 2, the eight shared kinds in grey on one sheet; Watt's clips and Ground Wire's look; batch 3, the eight weapons; Scarf Step's blockout when Faber calls (AR10, section 5).
@@ -113,6 +113,14 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 02:50. AR17's kit, in the void's own (Modulo)
+
+- **What changed:** the director stopped the lantern line down the Strip (read between 02:39 and 02:45 by the clock: ground lanterns are the first ground's alone, and the map wants its own look). The kit was made again from the void: a crack of light in the stones to a great split shard over the crossing, shard lamps, sealed gates, outcrops. Research's bold thing of 02:18 is set aside by that word.
+- **Where:** AR17, "The kit, in the void's own"; `tools/blender/strip_kit.py`, `strip_plan.py`; `build/handoff/Strip/` (meshes, `manifest.json`, `plan.json`, eleven pictures); the asset log.
+- **For research:** the verdict on the pictures, the new feel line, and the register's line for the director's word.
+- **For Faber, after that verdict:** the install, which needs a third kit laid; the list is in the entry.
+- **Open:** the director has four pictures and hasn't spoken on them. Nothing was seen in Studio.
 
 ### 2026-11-16, 02:40. Day in the world's turn, under Modulo's sky (Faber)
 

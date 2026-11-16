@@ -1,0 +1,1068 @@
+{
+ "what": "AR17: the Strip, the crossing and the side street, dressed in the void's own: nothing of the festival's before its gate. Pieces from this folder's manifest.",
+ "origin": "the festival gate's middle on the floor, as Lantern Row's plan: the world's (0, floor, -272). The crossing's middle is at across 0, along -272; the Strip's ends at across -628 and 628.",
+ "axes": "across toward +X, along toward -Z (so everything here has along under 0), turn in degrees anticlockwise seen from above: Kit.Place's own. At turn 0 a piece's front looks north.",
+ "placements": [
+  {
+   "piece": "CrossingMark",
+   "across": 0.0,
+   "along": -272.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "CrossingShard",
+   "across": 0.0,
+   "along": -272.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "SealCalamity",
+   "across": -611.5,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "SealClash",
+   "across": 611.5,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -46.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -46.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 46.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 46.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -108.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -108.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 108.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 108.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -170.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -170.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 170.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 170.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -232.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -232.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 232.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 232.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -294.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -294.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 294.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 294.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -356.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -356.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 356.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 356.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -418.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -418.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 418.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 418.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -480.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -480.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 480.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 480.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -542.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -542.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 542.0,
+   "along": -250.4,
+   "turn": 270.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 542.0,
+   "along": -293.6,
+   "turn": 90.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -19.6,
+   "along": -210.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 19.6,
+   "along": -210.0,
+   "turn": 180.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -19.6,
+   "along": -158.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 19.6,
+   "along": -158.0,
+   "turn": 180.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -19.6,
+   "along": -106.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 19.6,
+   "along": -106.0,
+   "turn": 180.0
+  },
+  {
+   "piece": "StripPost",
+   "across": -19.6,
+   "along": -54.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "StripPost",
+   "across": 19.6,
+   "along": -54.0,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -24.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -54.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -84.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -114.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -144.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -174.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": -204.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -234.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -264.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -294.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -324.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -354.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -384.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -414.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -444.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -474.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -504.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -534.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -564.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": -594.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 24.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 54.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 84.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 114.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 144.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 174.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 204.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 234.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 264.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 294.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 324.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 354.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 384.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 414.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 444.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 474.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 504.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 534.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 564.0,
+   "along": -272.0,
+   "turn": 270.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 594.0,
+   "along": -272.0,
+   "turn": 90.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 0.0,
+   "along": -248.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 0.0,
+   "along": -218.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 0.0,
+   "along": -188.0,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinWide",
+   "across": 0.0,
+   "along": -158.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 0.0,
+   "along": -128.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 0.0,
+   "along": -98.0,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 0.0,
+   "along": -68.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinThin",
+   "across": 0.0,
+   "along": -38.0,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": 0.0,
+   "along": -291.5,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": -200.0,
+   "along": -260.5,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": -200.0,
+   "along": -283.5,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": 200.0,
+   "along": -260.5,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": 200.0,
+   "along": -283.5,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": -448.0,
+   "along": -260.5,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": -448.0,
+   "along": -283.5,
+   "turn": 180.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": 448.0,
+   "along": -260.5,
+   "turn": 0.0
+  },
+  {
+   "piece": "VeinBranch",
+   "across": 448.0,
+   "along": -283.5,
+   "turn": 180.0
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -91.03,
+   "along": -56.87,
+   "turn": 144.4
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -46.6,
+   "along": -152.75,
+   "turn": 310.3
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -55.63,
+   "along": -19.88,
+   "turn": 203.7
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -48.68,
+   "along": -89.67,
+   "turn": 237.7
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -73.05,
+   "along": -127.37,
+   "turn": 235.2
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -67.62,
+   "along": -202.55,
+   "turn": 327.1
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -86.17,
+   "along": -154.93,
+   "turn": 197.3
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -49.43,
+   "along": -226.62,
+   "turn": 105.6
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -62.04,
+   "along": -61.18,
+   "turn": 213.6
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -599.5,
+   "along": -253.0,
+   "turn": 251.8
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -584.5,
+   "along": -289.0,
+   "turn": 262.9
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -566.5,
+   "along": -257.0,
+   "turn": 223.7
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": -551.5,
+   "along": -285.0,
+   "turn": 87.9
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 61.39,
+   "along": -120.13,
+   "turn": 4.0
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 52.32,
+   "along": -152.55,
+   "turn": 3.7
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 90.07,
+   "along": -135.96,
+   "turn": 93.8
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 72.77,
+   "along": -38.19,
+   "turn": 196.2
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 43.77,
+   "along": -78.08,
+   "turn": 336.8
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 88.2,
+   "along": -195.21,
+   "turn": 281.7
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 77.53,
+   "along": -70.0,
+   "turn": 145.0
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 44.71,
+   "along": -225.97,
+   "turn": 146.5
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 93.01,
+   "along": -94.21,
+   "turn": 1.0
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 599.5,
+   "along": -253.0,
+   "turn": 230.8
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 584.5,
+   "along": -289.0,
+   "turn": 177.6
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 566.5,
+   "along": -257.0,
+   "turn": 284.7
+  },
+  {
+   "piece": "ShardOutcrop",
+   "across": 551.5,
+   "along": -285.0,
+   "turn": 129.3
+  },
+  {
+   "piece": "FarShardTall",
+   "across": 979.25,
+   "along": -325.65,
+   "turn": 162.6
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 951.08,
+   "along": -414.86,
+   "turn": 23.0
+  },
+  {
+   "piece": "FarShardLow",
+   "across": 996.5,
+   "along": -604.52,
+   "turn": 61.2
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 783.37,
+   "along": -664.72,
+   "turn": 138.1
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 824.36,
+   "along": -806.7,
+   "turn": 205.7
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 552.42,
+   "along": -803.71,
+   "turn": 317.6
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 378.5,
+   "along": -969.66,
+   "turn": 335.3
+  },
+  {
+   "piece": "FarShardTall",
+   "across": 207.93,
+   "along": -993.24,
+   "turn": 53.4
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 63.51,
+   "along": -945.54,
+   "turn": 149.0
+  },
+  {
+   "piece": "FarShardLow",
+   "across": -107.5,
+   "along": -1053.61,
+   "turn": 224.3
+  },
+  {
+   "piece": "FarShardMid",
+   "across": -296.53,
+   "along": -920.93,
+   "turn": 323.4
+  },
+  {
+   "piece": "FarShardTall",
+   "across": -497.66,
+   "along": -821.33,
+   "turn": 160.3
+  },
+  {
+   "piece": "FarShardMid",
+   "across": -707.07,
+   "along": -806.66,
+   "turn": 138.6
+  },
+  {
+   "piece": "FarShardTall",
+   "across": -894.54,
+   "along": -747.79,
+   "turn": 96.7
+  },
+  {
+   "piece": "FarShardTall",
+   "across": -864.05,
+   "along": -621.67,
+   "turn": 24.2
+  },
+  {
+   "piece": "FarShardTall",
+   "across": -982.76,
+   "along": -489.95,
+   "turn": 276.0
+  },
+  {
+   "piece": "FarShardMid",
+   "across": -921.31,
+   "along": -388.54,
+   "turn": 340.3
+  },
+  {
+   "piece": "FarShardTall",
+   "across": -1014.07,
+   "along": -228.82,
+   "turn": 255.7
+  },
+  {
+   "piece": "FarShardLow",
+   "across": -1062.98,
+   "along": -113.33,
+   "turn": 226.5
+  },
+  {
+   "piece": "FarShardLow",
+   "across": -831.06,
+   "along": 22.98,
+   "turn": 129.8
+  },
+  {
+   "piece": "FarShardTall",
+   "across": -896.17,
+   "along": 149.84,
+   "turn": 143.8
+  },
+  {
+   "piece": "FarShardLow",
+   "across": -630.61,
+   "along": 193.32,
+   "turn": 135.1
+  },
+  {
+   "piece": "FarShardLow",
+   "across": -563.64,
+   "along": 280.88,
+   "turn": 140.4
+  },
+  {
+   "piece": "FarShardLow",
+   "across": -421.96,
+   "along": 337.31,
+   "turn": 77.6
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 505.83,
+   "along": 355.42,
+   "turn": 136.7
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 566.22,
+   "along": 229.29,
+   "turn": 46.8
+  },
+  {
+   "piece": "FarShardTall",
+   "across": 726.49,
+   "along": 184.44,
+   "turn": 155.2
+  },
+  {
+   "piece": "FarShardLow",
+   "across": 992.55,
+   "along": 76.4,
+   "turn": 140.6
+  },
+  {
+   "piece": "FarShardMid",
+   "across": 1058.94,
+   "along": -33.35,
+   "turn": 17.2
+  },
+  {
+   "piece": "FarShardTall",
+   "across": 1063.69,
+   "along": -167.14,
+   "turn": 142.1
+  }
+ ],
+ "lights": [
+  {
+   "name": "Crossing",
+   "across": 0.0,
+   "along": -272.0,
+   "up": 24.0,
+   "colour": "#B58CFF",
+   "kind": "point"
+  },
+  {
+   "name": "SealCalamity",
+   "across": -611.5,
+   "along": -272.0,
+   "up": 46.0,
+   "colour": "#B58CFF",
+   "kind": "point"
+  },
+  {
+   "name": "SealClash",
+   "across": 611.5,
+   "along": -272.0,
+   "up": 46.0,
+   "colour": "#7CE8FF",
+   "kind": "point"
+  },
+  {
+   "name": "PostWN",
+   "across": -46.0,
+   "along": -252.4,
+   "up": 7.7,
+   "colour": "#C9B0FF",
+   "kind": "point"
+  },
+  {
+   "name": "PostWS",
+   "across": -46.0,
+   "along": -291.6,
+   "up": 7.7,
+   "colour": "#C9B0FF",
+   "kind": "point"
+  },
+  {
+   "name": "PostEN",
+   "across": 46.0,
+   "along": -252.4,
+   "up": 7.7,
+   "colour": "#C9B0FF",
+   "kind": "point"
+  },
+  {
+   "name": "PostES",
+   "across": 46.0,
+   "along": -291.6,
+   "up": 7.7,
+   "colour": "#C9B0FF",
+   "kind": "point"
+  }
+ ],
+ "lightsNote": "seven real lights, Shadows off, in the plan's list as Lantern Row's are: a PointLight at the shard of each of the four posts nearest the crossing, one in the crossing's great shard, and a faint one at each sealed gate's shard, in its own colour. Everything else only glows. A manifest's `lights` name the same points piece by piece.",
+ "bare": "a plot with no player home, as the blockout showed it and research judged it from the Strip: the base's front walls and its gate standing with their glow at 0, on the plain deck floor. No machines, no Tower, no sleeping stone, no light of its own. The game today shows a bare lot as its floor alone: the walls and the gate asleep are a state to build, the builder's and research's call.",
+ "edges": "nothing here closes the map: a sealed gate ends the street's own 48 studs, and the ground still ends at its edge. The far shards stand past it, their feet under the floor.",
+ "budget": {
+  "pieces": {
+   "CrossingMark": 1,
+   "CrossingShard": 1,
+   "SealCalamity": 1,
+   "SealClash": 1,
+   "StripPost": 44,
+   "VeinWide": 18,
+   "VeinThin": 30,
+   "VeinBranch": 9,
+   "ShardOutcrop": 26,
+   "FarShardTall": 10,
+   "FarShardMid": 12,
+   "FarShardLow": 8
+  },
+  "placements": 161,
+  "triangles": {
+   "CrossingMark": 254,
+   "CrossingShard": 248,
+   "SealCalamity": 576,
+   "SealClash": 576,
+   "StripPost": 7744,
+   "VeinWide": 792,
+   "VeinThin": 780,
+   "VeinBranch": 144,
+   "ShardOutcrop": 5408,
+   "FarShardTall": 200,
+   "FarShardMid": 240,
+   "FarShardLow": 160
+  },
+  "trianglesInAll": 17122,
+  "lights": 7,
+  "note": "counted from the plan, not measured on a device"
+ }
+}

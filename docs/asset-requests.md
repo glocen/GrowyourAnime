@@ -7197,6 +7197,30 @@ A throwaway, in Blender, from the game's camera behind a stand-in: `tools/blende
   2. Faber's install.
   3. One verdict in the game.
 
+### The kit, in the void's own: a new direction on the director's word (Modulo, 2026-11-16, to 02:50)
+
+**The director, read between 02:39 and 02:45 by the clock,** on the kit's first look, a line of ground lanterns down the Strip as the verdict above asked: "stop with these lantern lantern ground isnonly for the first festival of battle ground make something different for the actual map do you understand what game we are making".
+
+- **Read as:** ground lanterns and the festival's own props stay inside Lantern Row, the first ground. The map between the bases takes its look from what the game is about: the void, its shards, its light. So the verdict's bold thing is set aside, with the lantern field, the strings, the banners and the stalls and houses before the gate. Kept from the verdict: a sealed gate at each end, the bare lot empty, the far shards, and its reason, that light carries through the haze where shapes don't.
+- **A new feel line, for research to answer:** out of their gate at dusk, the player steps onto a street the void has cracked. A crack of its light runs down the street's middle to a great split shard hanging over the crossing, so the middle of the neighbourhood is in view from every gate. The festival's warm light begins only at its own gate.
+- **The pieces** (`tools/blender/strip_kit.py`; meshes and `manifest.json` in `build/handoff/Strip/`). All wear the base kit's own pair of pictures, so **no new image**:
+  - `VeinWide`, `VeinThin`, `VeinBranch` (44, 26 and 16 triangles): a crack of the void's light lying flat in the stones, on a bed of dark. Wide near the crossing, thin far off, and a branch to each base's gate and to the Shop.
+  - `CrossingShard` (248): a great shard of void stone split in three, hanging 8.5 to 46 over the crossing, the light inside it and four small shards adrift round it. `CrossingMark` (254): a ring in the stones, and a dark well ringed in light where the cracks end.
+  - `StripPost` (176): a standing stone with a shard of light hung in a ring of void stone. No paper lantern.
+  - `SealCalamity`, `SealClash` (576 each): the sealed gate in the Door's language, violet at the west end and cyan at the east, as `docs/design.md` draws the ends.
+  - `ShardOutcrop` (208): shards breaking out of the ground where nobody has built. `FarShardLow`, `Mid`, `Tall` (20 each), for the haze past the edges.
+- **The plan** (`tools/blender/strip_plan.py`, `plan.json`), in Lantern Row's plan's frame and shape, so `Kit.Place` reads it as it is: 161 placements, **17,122 triangles and 7 real lights** (four posts at the crossing, the great shard, each sealed gate), Shadows off. Counted from the plan, not measured on a device.
+- **The look,** from the game's camera in Blender (`build/handoff/Strip/strip_*.png`, without `block` in the name): `out`, `down`, `far` (from a far plot's gate: the crack carries to the crossing, the great shard doesn't through the dusk's haze), `vein`, `mark`, `crossing`, `street`, `gate`, `calamity`, `clash`, `bare`. The side street has posts, the crack and outcrops in the open each side; the crack stops 23 studs before the festival gate.
+- **The pieces are cheap, so these pictures are this direction's blockout:** research's verdict comes before Faber installs.
+- **For Faber, what the game doesn't have yet:**
+  - No code lays a third kit: `WorldService` names LanternRow and Base, there's no `tools/studio/Kits/Strip.json`, and `DressReport` counts every tagged thing without a plot against Lantern Row's plan and its 14 lights.
+  - A bare lot shows its floor alone today. Its walls and gate standing dark, as the blockout had them, is a state to build: research's and Faber's call.
+  - A sealed gate closes the street's 48 studs, and nothing closes the ground's edges.
+  - The crack could pulse toward the crossing and the great shard turn slowly: Faber's call, the meshes ask for nothing.
+- **Content check:** PASS, 2026-11-16 (both generators, the manifest's notes and the eleven pictures read): every piece is written by our own script from the base's void stone shapes, with no new picture; a floating crystal, cracks of light, a sealed pointed gate and crystal outcrops are genre shapes, and no name is on the list; the cracks are hard-edged light with no drop, drip or stain shape; the floor mark, the crossing from above, the seal's lock and the post's ring were each checked for a symbol and cleared. Conditions: the pass covers violet-white and cyan, and any red or dark-liquid tint on the cracks, the well or the seals gets a fresh check; no "Eye" in anything players see for the lock or the lamp; a minimap, icon or thumbnail of the crossing from straight above gets its own check; the meshes are logged at upload. Not seen: a 64 px sheet, a piece alone or from above, the engine. On its suggestion the well's five cracks were then given their own bends and lengths, so they read as cracking and not as a spoked wheel.
+- **Four facts.** Implemented: the pieces, the plan and the look. Tested: the kit exports and the plan counts; nothing was seen in Studio. Visually reviewed: Modulo's own read of the eleven pictures; research's verdict not yet. Director-accepted: no; four pictures went to the director at 02:47, with no word yet.
+- **Time:** from the director's go, after 02:21, to that word on the lantern kit, set aside; from the word to 02:50 on this one.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

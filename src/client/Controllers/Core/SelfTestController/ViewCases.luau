@@ -15,6 +15,8 @@ local Net = require(Shared.Net)
 local ViewController = require(script.Parent.Parent.Parent.Main.ViewController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Guide = require(UI.Guide)
+local Layers = require(UI.Layers)
+local World = require(UI.World)
 
 local ViewCases = {}
 
@@ -245,10 +247,25 @@ function ViewCases.Cases(given: Given): { any }
 					local read = Guide.Read()
 					t.Check("in view: its chevron shows", read.Count == 1 and read.Shown == 1, `{read.Count} targets, {read.Shown} shown`)
 					t.Check("and no arrow at the edge", not read.Edge)
+					-- high in view, over the HUD's band (the Door's crown): still its chevron, and no arrow with it
+					local over = camera.CFrame.Position + camera.CFrame.LookVector * 40
+					local ray = camera:ViewportPointToRay(camera.ViewportSize.X / 2, HudConfig.Guide.Top * Layers.Scale() + 24)
+					target.Position = ray.Origin + ray.Direction * (over - camera.CFrame.Position).Magnitude - Vector3.new(0, target.Size.Y / 2 + HudConfig.Guide.Lift, 0)
+					t.Wait(0.2)
+					read = Guide.Read()
+					t.Check("high in view, over the band: its chevron, and no arrow", read.Shown == 1 and not read.Edge, `edge {read.Edge}, {read.Shown} shown`)
 					target.Position = avatar - look * 40
 					t.Wait(0.2)
 					read = Guide.Read()
 					t.Check("behind the camera: the arrow at the frame's edge", read.Edge and read.Shown == 0, `edge {read.Edge}, {read.Shown} shown`)
+					-- and under the HUD's top band, never drawn under a card or a pill (it hid under the wallet)
+					local band = World.Edge()
+					local arrow = read.Arrow
+					if band and arrow then
+						local layer = arrow.Parent :: GuiObject
+						local arrowTop = (arrow.AbsolutePosition.Y - layer.AbsolutePosition.Y) / Layers.Scale()
+						t.Check("its top under the top band", arrowTop >= band - 0.5, string.format("%.0f, the band %.0f", arrowTop, band))
+					end
 					target.Position = avatar + look * (HudConfig.Guide.Near - 2)
 					t.Wait(0.2)
 					read = Guide.Read()

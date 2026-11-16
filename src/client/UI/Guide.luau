@@ -140,14 +140,14 @@ function Guide.Test(list: { Instance }?)
 	apply(if list then list else wanted)
 end
 
-function Guide.Read(): { Count: number, Shown: number, Edge: boolean }
+function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Frame? }
 	local shown = 0
 	for _, frame in chevrons do
 		if frame.Visible then
 			shown += 1
 		end
 	end
-	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible }
+	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge }
 end
 
 -- The edge's arrow: where the targets' middle is off the frame, at the frame's inset edge on the way to it, turned to it.
@@ -192,10 +192,19 @@ local function stepEdge()
 	local view = camera.ViewportSize
 	local scale = Layers.Scale()
 	local margin, top, bottom = CONFIG.Margin * scale, CONFIG.Top * scale, CONFIG.Bottom * scale
+	-- Never under the HUD's top band (the cards and the pills, UI.World.Band): the arrow drawn under the wallet was unseen
+	-- (TR24's fix 1, read on an unlocked screen, 2026-11-16).
+	-- In view is judged on the frame's own inset: a chevron in the sky over the band still shows, and no arrow with it.
 	local inside = screen.Z > 0 and screen.X >= margin and screen.X <= view.X - margin and screen.Y >= top and screen.Y <= view.Y - bottom
 	if inside then
 		a.Visible = false
 		return
+	end
+	local band = World.Edge()
+	local layer = a.Parent :: GuiObject
+	if band then
+		local under = layer.AbsolutePosition.Y + GuiService:GetGuiInset().Y + (band + CONFIG.Size * 0.3) * scale
+		top = math.max(top, under)
 	end
 	-- The way to it from the frame's middle (behind the camera, the way is turned round), cut at the inset edge.
 	local centre = Vector2.new(view.X / 2, (top + view.Y - bottom) / 2)
@@ -213,7 +222,6 @@ local function stepEdge()
 	point += unit * (bob() / CONFIG.Bob) * 4 * scale -- it nudges along its way, as the chevrons bob
 	-- A viewport pixel less the top bar's inset is a GUI pixel, less the layer's corner (as UI.World places its plates).
 	-- By scale, so the layer's UIScale sizes the arrow and never moves it.
-	local layer = a.Parent :: GuiObject
 	local room = layer.AbsoluteSize
 	if room.X <= 0 or room.Y <= 0 then
 		a.Visible = false

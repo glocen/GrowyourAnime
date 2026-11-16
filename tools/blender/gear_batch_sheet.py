@@ -44,6 +44,23 @@ BATCHES = dict(
             "column? Does each Legendary outrank its row's Epics by shape?",
         ),
     ),
+    batch3=dict(
+        title="Grow your Anime: AR6's batch 3, the eight class weapons, in grey, for one verdict",
+        kinds=(("great_axe", "Great Axe"), ("shield", "Shield"), ("staff", "Staff"), ("tome", "Tome"),
+               ("dagger", "Dagger"), ("throwing_blades", "Throwing Blades"), ("crystal_baton", "Crystal Baton"),
+               ("codex", "Codex")),
+        notes=(
+            "Two kinds a class, its main hand then its off hand: the Tank's Great Axe and Shield, the Mage's Staff and "
+            "Tome, the Assassin's Dagger and Throwing Blades, the Healer's Crystal Baton and Codex.",
+            "Each pair keeps apart from its neighbours: the Staff is an open ring, never a crystal; the Baton is short and "
+            "holds a cut crystal; the Tome is thick and heavy, the Codex slim and light; the Dagger is one fang, the "
+            "Throwing Blades a fan of three.",
+            "A Legendary is named alone, each with its one new form. No flame and no cloud anywhere: a light is a stone or "
+            "a line. Not here yet: colour, frames, the class mark.",
+            "For the verdict: does each read as its kind, and apart from its neighbours? Does a set read as one down its "
+            "column? Does each Legendary outrank its row's Epics by shape?",
+        ),
+    ),
 )
 
 # A set keeps its column on every kind, so a word must stand in each name of its column.

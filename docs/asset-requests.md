@@ -3230,6 +3230,59 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
 - **Content check:** PASS, 2026-11-16, by 19:40. Only the streak changed, and it reads as polished metal. **Conditions:** upload these exact files; a re-render or a change to `SHEEN` comes back to the check; the streak stays on steel only; every earlier AR6 condition carries on.
 - **The four facts:** implemented and replaced; tested by the render, the byte compare and the content check; visually reviewed by my own read on the sheet, with research's look next; director-accepted, no.
 
+### Batch 3: the eight class weapons in three designs at each rarity, in grey (Modulo, 2026-11-16)
+
+- **Feel line:** in its slot each weapon names its class's hand at a glance at any rarity (the Tank's axe and shield, the Mage's staff and book, the Assassin's knife and fan of blades, the Healer's crystal rod and light book), and what it carries says the rarity.
+- **Scope:** grey forms and names, on batch 1's spec as it stands. Waiting: colour and frames (batch 1's materials and slot), the class mark.
+- **For the one verdict:** `build/handoff/Gear/batch3_sheet/gear_batch3_sheet.png` (`tools/blender/gear_batch_sheet.py`, `batch3`), laid as batch 2's: a row a kind, a column a set.
+- **Each kind's own sheet,** laid as batch 1's: `build/handoff/Gear/<kind>_sets/gear_<kind>_sets.png` for great_axe, shield, staff, tome, dagger, throwing_blades, crystal_baton and codex, each from `tools/blender/gear_<kind>_sets.py`. The long weapons' shared parts are new in `gear_parts.py`: `laid` (the diagonal), `rod`, `bands`, `grip_wrap`, `butt`, `curl` (Stormcall's filigree curl as a tapered tube), `bowed`, `outline_of`. Workbench, no GPU turn.
+- **One view per kind, and each pair kept apart:**
+  - **Great Axe:** a two-hand haft on the diagonal, the blade filling the top left and the head's back toward the bottom right. A design is the blade's outline (crescent, half moon, cleaver, beard, fan), the back (spike, hook, hammer) and the haft.
+  - **Shield:** a heater, its face bowed toward the viewer and turned so the rim shows. A design is the top's line (arched, raised shoulders, cut square, swept), the rim, the boss and bands.
+  - **Staff:** long and slim on the diagonal, its head an open ring round a core. Never a crystal (the Baton's) and never a blade.
+  - **Tome:** thick, dark and heavy, standing a little turned, clasps and corners on its cover.
+  - **Dagger:** one curved fang, its back convex and its edge hollowed, a ring pommel. Never the Short Sword's straight blade.
+  - **Throwing Blades:** three slim blades fanned from one ring through their tangs. No other kind is a fan.
+  - **Crystal Baton:** short and stout on the diagonal, a long cut crystal held in curved prongs from a cup.
+  - **Codex:** slim, pale and upright, turned to its fore-edge, shut by a clasp that carries the Baton's crystal. The Tome's opposite at 38 points.
+- **Names,** by batch 1's rules, every set in the same column on every kind:
+  - Iron, Bronze, Scrap; Lanternsteel, Rowsmith, Stallguard; of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom.
+  - The Commons and Uncommons say the slot (Greataxe, Shield, Staff, Tome, Dagger, Throwing Blades, Crystal Baton, Codex). From Rare up a near word: Greataxe, Bulwark, Stave, Grimoire, Fang, Talons, Sceptre, Folio.
+  - **Legendary, one new form each:**
+    - **Great Axe:** Meigetsu, the Full Moon (a twin blade on the back); Gingetsu, the Silver Bow (the upper horn sweeps up past the haft); Kinsei, the Golden Star (the haft rises into a spear's point, a star at its foot).
+    - **Shield:** Hakuchuu, the High Noon (a sun's rays behind its top); Kousai, the Clear Mirror (a round mirror whose ring stands past the sides); Fuyuboshi, the Cold Star (an eight-pointed star behind it).
+    - **Staff:** Tenkyuu, the Sky Sphere (a second ring crossed through the first, an orbit round both); Niji, the Rainbow Arch (three arcs fanned over the ring); Yuuhi, the Setting Sun (the shaft rises into a crook, the ring hung from it).
+    - **Tome:** Yamiyo, the Dark Night (it lies open, its pages fanned); Seiza, the Star Chart (a dial and its needle wider than the cover); Rinkou, the Pale Glow (three forked ribbon markers fan out, a cut stone on each).
+    - **Dagger:** Kougetsu, the Pale Moon (the guard sweeps back round the hand in a crescent); Yuugure, the Nightfall (a second fang on the ring, turned the other way); Kousen, the Split Ray (the blade splits into two points).
+    - **Throwing Blades:** Shokou, the First Light (five blades in a half circle); Getsurin, the Moon Wheel (five crescents turning round the ring); Tenkou, the Sky Feather (three long feathers).
+    - **Crystal Baton:** Seikou, the Starlight (a crown of five small crystals); Gyouten, the Dawn Bloom (petals open round the crystal); Reikou, the Twin Light (a second crystal held at its foot).
+    - **Codex:** Kouseki, the Light Trail (its pages unfold from the fore-edge in a folded trail); Ryuukou, the High Spire (a tall crystal from the head of its spine); Hoshimi, the Star Watch (a crystal at each corner, pointing out).
+  - None is in `docs/ip-list.md` or the roster, each fits 24 characters, and none repeats batch 1's or 2's (by a search of the scripts). Mochizuki, Yumihari and Mizukagami were dropped on my own read before the check. The web and Roblox name search is research's, before a player sees one.
+- **Tier 1 calls, mine, for research to keep or change:**
+  - The Uncommons of the Throwing Blades and the Crystal Baton keep their last word alone ("Lanternsteel Blades", "Rowsmith Baton"): the slot's full words run past the 24 a name may take.
+  - Getsurin's wheel has five crescents, never four: four hooked arms turning round a centre must never read as a sign.
+  - Stormcall's ornament on the weapons is a filigree curl (`p.curl`), batch 2's hook drawn as a tapered spiral: on the Shield and the Axe the flat hooks read as horns.
+  - On the Crystal Baton the Embers and Hoarfrost frames sit on the cup as a badge round a small stone of their own: round the crystal's waist they hid in the prongs.
+  - Each kind fills its own square, as batch 2's do.
+- **Content check, on the nine sheets and the scripts:** BLOCK on one design, all else PASS.
+  - **Rinkou** first had three thin ribbons hanging nearly parallel, each ending in a round stone. At 32 pixels that is a line ending in a drop, the drip shape the platform's rules treat as a risk in any colour.
+  - Now its three broad ribbon markers fan apart. Each has a lozenge stone set high under the book and a forked swallowtail end. The re-check on the Tome's sheet and the batch sheet is PASS. Its note: at 32 pixels the splayed ribbons look a little like a stand's legs, a matter of shape for research.
+  - The check found no hate sign: Getsurin's wheel has five crescents, Fuyuboshi's star is uneven spikes, and Seiza's dial is ticks between rings with no arms from the centre.
+  - Hoshimi is also a published character's surname. As an ordinary word and surname it stays free (`docs/ip-list.md`, "Our own words").
+  - Nothing is cleared for upload. The colour pass gets its own check, with Rinkou's ribbons and stones never red, crimson or wine, and every earlier AR6 condition carries over.
+- **Modulo's read:**
+  - All 120 read as their kind at 38 points, and each pair stays apart: the Staff's ring against the Baton's crystal, the Tome's dark block against the Codex's pale slab, the Dagger's single fang against the fan.
+  - Every Legendary changes its row's silhouette; the strongest are Meigetsu, Fuyuboshi, Niji, Yamiyo, Getsurin, Kouseki and Hoshimi.
+  - The weakest rows are the Staff (thin on the diagonal, its ring small at 32 pixels) and the Codex's plain six (a pale rectangle, carried by the clasp's crystal and the frame).
+  - Down the columns, Gales' vane, Stormcall's curls, Gloamforge's prongs and Nightloom's shuttle show on every kind. Embers and Hoarfrost part by their stone's setting, round against square, as in batch 2.
+  - The three Commons of a kind are nearly one shape, as in batches 1 and 2.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, each kind's sheet at full size and on its small rows, and the batch sheet whole.
+  - Delivered: the sheets, for research's verdict. Nothing for Faber yet.
+  - Accepted: no.
+- **Time, by the clock:** from 20:00, after AR19's commit (e516da7), to this record's commit, with the content check's two rounds.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

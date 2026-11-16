@@ -14,9 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
 - **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 20:00, on Opus 5.5.
-- **AR19's Stages II and III, delivered** (AR19, "Stages II and III as kit pieces"): the pieces, and the swap's table in `plan.json`, for Faber's part 12 item 6. Content check PASS. For research's pass: the check's note on the dynamos' and crown tops' real-world look.
-- **Now:** AR6 batch 3, the eight class weapons, in grey.
+**Modulo (assets).** 2026-11-16, 20:36, on Opus 5.5.
+- **AR6 batch 3, the eight class weapons in grey, for research's verdict** (AR6, "Batch 3"): `build/handoff/Gear/batch3_sheet/gear_batch3_sheet.png` and each kind's sheet. Content check PASS after Rinkou's fix. Five tier 1 calls in the record.
+- **AR19's Stages II and III, delivered,** for Faber's part 12 item 6; research's pass waits on it.
+- **Now:** batch 3 in colour once the grey verdict is in; until then, the later list.
 - **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
@@ -109,6 +110,13 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 20:36. AR6: batch 3, the eight class weapons in grey (Modulo)
+
+- **What changed:** the Great Axe, Shield, Staff, Tome, Dagger, Throwing Blades, Crystal Baton and Codex, fifteen each in their rarity's threes. Each set keeps its column, and each Legendary has one new form. Each class's pair stays apart: the Staff's open ring and the Baton's crystal, the dark Tome and the pale Codex, one fang and a fan of three.
+- **Where:** AR6, "Batch 3"; `build/handoff/Gear/batch3_sheet/` and `build/handoff/Gear/<kind>_sets/`; `tools/blender/gear_<kind>_sets.py`, the new long-weapon parts in `gear_parts.py`, and `batch3` in `gear_batch_sheet.py`.
+- **Open:** research's verdict, with the name search, then the colour pass and its own content check.
+- **For:** research.
 
 ### 2026-11-16, 20:33. TR30: the generator's stages (Faber)
 

@@ -217,6 +217,102 @@ def stone_of(d, size, at):
     return stone(kind, size * k, at, d["trim"], square=d.get("cut") == "square")
 
 
+# --- weapons (batch 3): what the long ones share -----------------------------------------------------------------------
+
+LEAN = g.LEAN   # laid on the diagonal, the head up and to the right, as the swords lie
+
+
+def laid(parts, spin=22.0, lean=LEAN):
+    """A weapon built up Z (its head at the top, -x its face's leading side), turned about its length by `spin`,
+    then laid on the diagonal. -x ends up toward the square's top left."""
+    lay = Matrix.Rotation(math.radians(lean), 4, "Y") @ Matrix.Rotation(math.radians(spin), 4, "Z")
+    for obj in parts:
+        move(obj, lay)
+    return parts
+
+
+def rod(name, z0, z1, r, key, top=None, sides=16, at=(0.0, 0.0)):
+    """A round shaft up Z from z0 to z1, tapering to `top` at its upper end."""
+    obj = bl.cylinder(name, r, z1 - z0, segments=sides, material=mat(key), radius_top=r if top is None else top)
+    return bl.smooth_by_angle(bl.place(obj, (at[0], at[1], (z0 + z1) / 2)), 40.0)
+
+
+def bands(zs, r, key, minor=0.035):
+    """Raised bands round a shaft of radius r at each z."""
+    return [hoop("Band", r + minor * 0.4, minor, key, z) for z in zs]
+
+
+def grip_wrap(z0, z1, r, key, turns):
+    """A grip wrapped in `turns` slanted turns of a strap, as the swords' grips are."""
+    parts = [rod("Grip", z0, z1, r, key)]
+    step = (z1 - z0) / turns
+    for k in range(turns):
+        t = bl.torus("Wrap", r + 0.012, 0.032, 24, 6, mat(key))
+        parts.append(bl.smooth_by_angle(bl.place(t, (0, 0, z0 + (k + 0.5) * step), (14, 0, 0)), 40.0))
+    return parts
+
+
+def butt(kind, z, r, key):
+    """The foot of a shaft, below z: a cap, a pear, a cut facet, a spike, or a ring to hang it by."""
+    if kind == "cap":
+        return [rod("Butt", z - 0.22, z, r * 1.25, key, top=r * 1.1)]
+    if kind == "pear":
+        return [ball("Butt", r * 1.6, key, (0, 0, z - r * 1.3), squash=(1, 1, 1.3))]
+    if kind == "facet":
+        gem = bl.sphere("Butt", r * 1.7, segments=6, rings=3, material=mat(key))
+        return [bl.place(gem, (0, 0, z - r * 1.4), (0, 0, 30), (1, 1, 1.35))]
+    if kind == "spike":
+        return [rod("Butt", z - 0.1, z, r * 1.3, key), rod("Spike", z - 0.62, z - 0.1, 0.01, key, top=r * 1.2, sides=8)]
+    if kind == "ring":
+        return [rod("Butt", z - 0.12, z, r * 1.2, key), facing("Loop", r * 1.6, r * 0.42, key, (0, 0, z - 0.12 - r * 1.6))]
+    return []
+
+
+def curl(root, side, scale, key, y=0.0, turn=0.0, r=0.07):
+    """Stormcall's word on a weapon: a filigree curl springing out from `root` (x, z) to `side` (+1 right, -1 left),
+    rising and rolling back on itself, tapering to its tip. `turn` tilts it (degrees, toward the side's outside)."""
+    unit = [(0.0, 0.0), (0.3, 0.12), (0.52, 0.4), (0.52, 0.7), (0.34, 0.82), (0.2, 0.68), (0.27, 0.54), (0.38, 0.58)]
+    pts = turned([(x * scale, z * scale) for x, z in unit], -turn)
+    path = curve([(root[0] + side * x, y, root[1] + z) for x, z in pts], 28)
+    return tube("Curl", path, [r * scale * (1.0 - 0.6 * i / 27) for i in range(28)], key, sides=8)
+
+
+def bowed(parts, half, depth, cuts=14):
+    """Bows the parts toward the camera across x, as a shield's face is: the middle `depth` nearer than the edges at
+    +-half. Each part is cut along x first so its flat faces bend."""
+    for obj in parts:
+        bm = bmesh.new()
+        bm.from_mesh(obj.data)
+        for i in range(1, cuts):
+            x = -half + 2 * half * i / cuts
+            geom = bm.verts[:] + bm.edges[:] + bm.faces[:]
+            bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(x, 0, 0), plane_no=(1, 0, 0))
+        for v in bm.verts:
+            t = max(-1.0, min(1.0, v.co.x / half))
+            v.co.y -= depth * (1 - t * t)
+        bm.to_mesh(obj.data)
+        bm.free()
+        bl.smooth_by_angle(obj, 30.0)
+    return parts
+
+
+def outline_of(spans, samples=5):
+    """An outline from spans of points, each drawn smooth, the corners between them kept sharp."""
+    out = []
+    for span in spans:
+        out += curve(span, max(2, samples * (len(span) - 1)))[:-1]
+    return out + [tuple(spans[-1][-1])]
+
+
+def half_width(right, z):
+    """How far a right half-outline (top middle round to foot middle) reaches at height z."""
+    best = 0.0
+    for (x0, z0), (x1, z1) in zip(right, right[1:]):
+        if min(z0, z1) <= z <= max(z0, z1) and z0 != z1:
+            best = max(best, x0 + (x1 - x0) * (z - z0) / (z1 - z0))
+    return best
+
+
 # --- renders -----------------------------------------------------------------------------------------------------------
 
 def scene_of(parts_fn, tilt, spin):

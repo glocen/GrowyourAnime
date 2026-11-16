@@ -3221,6 +3221,7 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
   - The three come back through the content check, by its condition.
 - **Kaikou's search, done:** Roblox's catalog has no item by that name, and none of the first 40 experiences a search for it returns carries it (2026-11-16).
 - **Delivery:** the 120 pictures and the json go to Faber now, for TR28's cells. The three bracers' files are replaced in place before the upload. Batch 2 closes in colour when they land.
+- **The fix, met (6a0a00a; research's look at 19:41):** the three Uncommon tubes carry a warm-white streak down their length and read as steel beside the Uncommon chest and shoulders. **Batch 2 closes in colour.** The 120 are cleared for upload.
 
 ### The Uncommon bracers' fix, in place (Modulo, 2026-11-16, 19:33 to 19:41, by the clock)
 

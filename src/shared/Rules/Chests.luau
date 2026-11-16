@@ -8,8 +8,8 @@
 --              a keeper's from its win (Progress.KeeperWon): the better tier on the first
 --   A roll     its rarity from the ladder, then one of the fourteen slots alike, a weapon's class (the lead's ClassLean,
 --              else one of the other classes owned), the row, its main stat and its lines, each priced in Combat Power
---   Salvage    an opened item of Settings.Salvage's rarity or under turns into Credits, unless it would raise Combat
---              Power (Keep)
+--   Salvage    an opened item of Settings.Salvage's rarity or under turns into Credits, unless it would raise the
+--              Combat Power of its class's best Voidkin, or any class's for a piece every class wears (Keep)
 -- No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -213,12 +213,10 @@ function Chests.Salvage(item: { Tier: number, Rarity: string }): number
 	return math.floor((ChestsConfig.Salvage[item.Rarity] or 0) * Growth.G(if ground then ground.LevelTo else 1) + 0.5)
 end
 
--- Who each kind of item is for when the salvage asks whether to keep it: armour and jewellery the lead; a weapon its
--- class's strongest owned, by Combat Power in its own preset, then by Id, the lead when it's of that class. Open, for
--- research (docs/engineering-plan.md, "Chests"): against whom. This is the builder's default; it's one function.
+-- Each class's best owned Voidkin, by Combat Power in its own preset, the first by Id on a tie: who the salvage protects
+-- (docs/design.md, "Chests", "Auto-salvage"). A class the player owns none of has no entry.
 function Chests.For(data: Profile.Data): { [string]: Profile.OwnedVoidkin }
 	local out: { [string]: Profile.OwnedVoidkin } = {}
-	local lead = data.Voidkin[data.Roles.Lead]
 	local most: { [string]: number } = {}
 	for _, id in sorted(data.Voidkin) do
 		local owned = data.Voidkin[id]
@@ -230,29 +228,27 @@ function Chests.For(data: Profile.Data): { [string]: Profile.OwnedVoidkin }
 			end
 		end
 	end
-	if lead then
-		out.Armour = lead
-		local row = Voidkin.ById[lead.Def]
-		if row then
-			out[row.Class] = lead
-		end
-	end
 	return out
 end
 
--- Whether the salvage must keep item `id`: it would raise Combat Power for the one it's for (Chests.For).
-function Chests.Keep(data: Profile.Data, id: string, forWhom: { [string]: Profile.OwnedVoidkin }): boolean
+-- Whether the salvage must keep item `id`: it would raise the Combat Power of its class's best Voidkin, or for a piece
+-- every class wears, of any class's best (`best` is Chests.For's). A class owned by nobody protects nothing.
+function Chests.Keep(data: Profile.Data, id: string, best: { [string]: Profile.OwnedVoidkin }): boolean
 	local item = data.Items[id]
 	local row = if item then Items.ById[item.Def] else nil
 	if row == nil then
 		return false
 	end
-	local who = forWhom[row.Class or "Armour"]
-	if who == nil then
-		return false
+	for _, class in CLASSES do
+		local who = best[class]
+		if who and (row.Class == nil or row.Class == class) then
+			local change = Stats.Compare(data, Stats.PresetOf(data, who), who, id)
+			if change ~= nil and change.Power > 0 then
+				return true
+			end
+		end
 	end
-	local change = Stats.Compare(data, Stats.PresetOf(data, who), who, id)
-	return change ~= nil and change.Power > 0
+	return false
 end
 
 -- Puts `count` of chest `id` in the bag.
@@ -304,7 +300,7 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 	data.Bag.Chests[chest.Id] = if held > count then held - count else nil
 	local classes = Chests.Classes(data)
 	local below = Rarity.Rank[data.Settings.Salvage]
-	local forWhom = if below then Chests.For(data) else {}
+	local best = if below then Chests.For(data) else {}
 	local kept, salvaged, credits = {}, 0, 0
 	for _ = 1, count do
 		local rolled = Chests.Roll(chest, classes, draw)
@@ -318,7 +314,7 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 			Sockets = rolled.Sockets,
 			Jewel = rolled.Jewel,
 		}
-		if below and (Rarity.Rank[rolled.Rarity] or 0) <= below and not Chests.Keep(data, itemId, forWhom) then
+		if below and (Rarity.Rank[rolled.Rarity] or 0) <= below and not Chests.Keep(data, itemId, best) then
 			data.Items[itemId] = nil
 			salvaged += 1
 			credits += Chests.Salvage(rolled)

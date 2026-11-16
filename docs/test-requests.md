@@ -2385,7 +2385,8 @@ Part 12's order, item 4.4 (`docs/research/rework-2026-11-16.md`, part 11; the co
 **Scope, set at the start (18:41).**
 - **The block:** the chest rows; `Config.Chests` on the builder's seeds; the save's `Bag.Chests` and `Settings.Salvage`; `Rules.Chests` (the roll, the open, the salvage and its keep, the drops); the drops at a fall and at a keeper's win; `Act("OpenChests")` and `Act("SetSalvage")`; Studio's `ChestGive`; the cases.
 - **What waits:**
-  - Research's fit of every table to part 11's targets (below), and the Keep question.
+  - Research's fit of every table to part 11's targets (below).
+  - The Dawn series (`docs/design.md`, "Regalia"): Legendary items of their own rows, from the last ground and the Tower, with their icons.
   - The show, on their own feel lines: the chest's fall and its fly-in within `Reach`, the reveal, the summary after an "Open all". With the inventory (4.5): the bag, the salvage's control, the refusal words.
   - Forge stones from the salvage, with the Forge. The products case, with the store: `src` has no product rows.
 
@@ -2409,21 +2410,21 @@ Part 12's order, item 4.4 (`docs/research/rework-2026-11-16.md`, part 11; the co
   - The answer: the kept item ids, the number salvaged and their Credits.
   - Registered in `RegaliaService`, with a `Random` seeded inside the transaction.
 - **The salvage:** an item of the set rarity or under turns into Credits by rarity × G, unless `Keep` finds it would raise Combat Power through `Stats.Compare`. The salvage reads "this rarity and under", my call, since that's how a player picks it.
-  - It's compared against `Rules.Chests.For`, my default for research's question: armour and jewellery against the lead; a weapon against the lead when of its class, else that class's strongest owned. A weapon of a class nobody owns is salvaged.
+  - It's compared as `docs/design.md` says ("Chests", "Auto-salvage"): a weapon against its class's best owned Voidkin, a piece every class wears against each class's best (`Rules.Chests.For`). A weapon of a class nobody owns is salvaged. My first default compared armour against the lead only; I found design's line after a62e0a7 and followed it in the next commit.
 - **Studio:** `NL_Debug:Invoke("ChestGive", who, chest, count)`.
 
 **The seeds research fits** (`Config.Chests`, every number the builder's): the eight-row rarity ladder; the drop chances; the class lean (0.6); the item's worth (`PowerPerG`, the rarity shares, `MainShare` 0.5, `Spread` 0.15); lines and sockets by rarity; the main stat by armour slot (Helmet and Chest Armor Health, Shoulders Defence, Gloves Critical, Bracers Hit, Boots Dodge, Cloak Block); the line pool's weights; the salvage's Credits. The targets are part 11's: an Uncommon in the first hour, a Rare at 3 to 4 hours, an Epic at 10 to 15, a Legendary at 35 to 45, about 20 chests an hour.
 
 **Checks (18:54).**
 - Type check 0 new.
-- Logic 22,938/0 offline and in Studio: 5,293 new checks, in the Chests cases.
+- Logic 22,938/0 offline and in Studio: 5,293 new checks, in the Chests cases. With the Keep as design has it, 22,939/0 offline.
   - Every ground has its three chests, each named for its ground, its odds summing to one.
   - 400 rolls: each one the same twice from the same draws, fitting its slot, with its main, its lines and sockets, each line priced within its spread.
   - 20,000 rolls land on their odds: each rarity, the ring's double share, and 60% of the weapons for the lead's class.
   - 1,000 opened in twenty steps: every chest removed once and every item granted once.
   - A repeated op id answers its first answer. Six bad requests and `BagFull` change nothing.
   - A server stopped mid-open applies nothing, and the request sent again opens once.
-  - The salvage: everything under a strong worn set, its Credits matching the same rolls replayed; at Common, the Commons only; nothing worn, everything kept but another class's weapon.
+  - The salvage: everything under a strong worn set, its Credits matching the same rolls replayed; at Common, the Commons only; nothing worn, everything kept but another class's weapon; with a Healer owned who wears nothing, every shared piece and Healer weapon kept, the Warrior's salvaged.
   - The drops: none over the chance, one under it, one sure on the third kill, an elite's always, a keeper's best first.
   - A full bag of the richest chest's items saves whole.
 - Boot errors 0.

@@ -390,6 +390,7 @@ return {
 				data.Items[itemId] = nil
 			end
 			Chests.SetSalvage(data, "Legendary")
+			local full = data.Presets[1]
 			data.Presets[1] = { Slots = {}, Hands = {} }
 			Chests.Grant(data, id, 40)
 			local open = Chests.Open(data, id, 40, sequence(31))
@@ -400,6 +401,21 @@ return {
 			t.Equal("nothing worn: every armour and Warrior weapon kept, as each would raise it", #open.Items, 40 - weaponsElsewhere)
 			t.Equal("only another class's weapon, with none of that class owned, salvaged", open.Salvaged, weaponsElsewhere)
 			t.Check("Lantern Row gave the Warrior's weapons only", weapons >= 0 and weaponsElsewhere == 0, `{weaponsElsewhere}`)
+			-- A second class's best, wearing nothing: armour now raises its figure, so the salvage keeps it.
+			data.Presets[1] = full
+			local healer = lead(data, "Healer")
+			healer.Preset = 2
+			data.Presets[2] = { Slots = {}, Hands = {} }
+			data.Roles.Lead = owned.Id
+			Chests.Grant(data, id, 40)
+			local shared = Chests.Open(data, id, 40, sequence(31))
+			local armour, healers = 0, 0
+			for _, itemId in shared.Items do
+				local itemRow = Items.ById[data.Items[itemId].Def]
+				armour += if itemRow.Class == nil then 1 else 0
+				healers += if itemRow.Class == "Healer" then 1 else 0
+			end
+			t.Check("a shared piece kept for any class's best: every armour, every Healer weapon", armour > 0 and healers + armour == #shared.Items and shared.Salvaged == 40 - #shared.Items, `{armour} armour, {healers} Healer, {shared.Salvaged} salvaged`)
 			Chests.SetSalvage(data, "")
 			t.Equal("off", data.Settings.Salvage, "")
 			t.Check(`the worn Voidkin stood: {owned.Id}`, data.Voidkin[owned.Id] ~= nil)

@@ -110,7 +110,7 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
   - It writes everything in the same step and answers with the item ids and the salvage's totals.
   - It refuses `BagFull` before rolling when the items held and the count would pass the cap, and the chests stay. `Unknown` and `NotEnough` the same way.
   - The salvage's rarity is set by `Act("SetSalvage", { Below })`.
-- **The salvage never takes an item that would raise Combat Power** (`Rules.Chests.Keep`, through `Stats.Compare`). **Open, for research:** against whom. The builder's default is one function, `Rules.Chests.For`: armour and jewellery against the lead in its preset; a weapon against the lead when it's of the weapon's class, else that class's strongest owned Voidkin, and salvaged when the player owns none of the class.
+- **The salvage never takes an item that would raise Combat Power** (`Rules.Chests.Keep`, through `Stats.Compare`), against whom `docs/design.md` says ("Chests", "Auto-salvage"): a weapon against its class's best owned Voidkin, a piece every class wears against each class's best (`Rules.Chests.For`, by Combat Power in its own preset). A class the player owns none of protects nothing.
 - **Rule 4:** no product grants a chest, a key or a rate. A case reads every product row, once the store has rows (none in `src` at TR27).
 - **Checks:**
   - 1,000 opened in steps, every chest removed once and every item granted once;

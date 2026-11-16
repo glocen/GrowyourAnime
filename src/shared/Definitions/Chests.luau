@@ -13,7 +13,8 @@ local Grounds = require(Shared.Definitions.Grounds)
 
 export type Row = { Id: string, Ground: string, Tier: number, Name: string }
 
-local TIERS = { "Common Chest", "Elite Chest", "Keeper's Chest", "Tower Chest" }
+-- Named for what drops it, never a rarity's word (docs/design.md, "Chests"): a chest isn't a rarity.
+local TIERS = { "Shade Chest", "Elite Chest", "Keeper's Chest", "Tower Chest" }
 
 local List: { Row } = {}
 local ById: { [string]: Row } = {}

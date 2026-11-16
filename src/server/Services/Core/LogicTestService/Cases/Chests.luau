@@ -122,6 +122,11 @@ return {
 					t.Check(`{ground.Id} tier {tier}: a row`, row ~= nil and row.Ground == ground.Id and row.Tier == tier)
 					if row then
 						t.Check(`{row.Id}: named for its ground`, string.find(row.Name, ground.Name, 1, true) ~= nil, row.Name)
+						for _, word in ChestsConfig.Rarities do
+							if string.find(row.Name, word, 1, true) then
+								t.Check(`{row.Id}: no rarity's word in its name`, false, row.Name)
+							end
+						end
 						local sum = 0
 						for _, chance in Chests.Odds(row) do
 							sum += chance

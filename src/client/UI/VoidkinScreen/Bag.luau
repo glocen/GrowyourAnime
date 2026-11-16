@@ -68,7 +68,7 @@ export type Context = {
 local C = HudConfig.Bag
 local P = C.Palette
 local GROUP_KIND = { "Weapons", "Armour", "Jewellery" } -- each belt group's kind on the strip, and its chip's word
-local TIER_WORD = { "Common", "Elite", "Keeper's", "Tower" } -- a chest's tier on its cell
+local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
 local NUMBER_ROW = 20 -- the card's Combat Power line
 local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = "The bag is full", Unknown = "Not now" }
 local EQUIP_SAID: { [string]: string } = {

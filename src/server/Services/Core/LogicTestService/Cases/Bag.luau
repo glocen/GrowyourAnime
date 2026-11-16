@@ -194,7 +194,7 @@ return {
 			-- A chest takes no rarity's frame (research, TR29): it would say what it might be.
 			t.Equal("no rarity on a chest, though it can give above Common", chests[1].Rarity, "")
 			t.Check("(it can)", (Chests.Odds(ChestRows.ById.drumcourt_3).Rare or 0) > 0)
-			t.Equal("Lantern Row's Common Chest after, no rarity either", chests[2].Rarity, "")
+			t.Equal("Lantern Row's Shade Chest after, no rarity either", chests[2].Rarity, "")
 		end,
 	},
 	{

@@ -6082,6 +6082,22 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Director-accepted: not yet.
 - **Next:** Ground Wire's look with Modulo (`/ga-action`), on the content check's two notes and Modulo's parts above.
 
+**Research's tier 2 on the seeds, and the technique check of Ground Wire's look (Quaestor, 2026-11-17, 00:33).**
+- **The seeds pass, to be tuned by playing.** Each one matches its peers:
+  - 2.5 at rung 7 in a 9-stud round is the area signatures' rate (Pip's Burst, 2.5). The single-target ones are 4.0 (Rook, Kirra).
+  - The Combo at Rook's damage per second is every combo's pattern, so the Tank's difference comes from his Mains.
+  - The stop lasts as long as his own hold, so it shields him while he can't swing and opens no damage window. That's the quiet wall. Halved on the tough with its 4 s lock per body, so players sharing a keeper can't chain it.
+  - The shield, 30% for 5 s every 10 s, averages 15% under the reduction bucket's ceiling, beside Rook's 20% under 30% health.
+  - Insulated's 25% on the elemental part.
+- **Older, not Watt's:** no Shade or keeper in Lantern Row deals elemental damage (`Config.Enemies`), so Insulated and every Elemental Resist do nothing in ground 1. It's not a must-fix. It goes to the refit for Drum Court, the first ground with an element against the player.
+- **Signed:** `WattGroundWire`'s seeds, Quaestor, 2026-11-17 (this entry). Its feel line signs at `/ga-action` with the blockout.
+- **The technique check of Modulo's parts (above): passes.**
+  - The hero ring as a low mesh wall is right. A ring on the ground has a near side and a far side, and a card would read as a disc. Its snap and brake, with its edge landing on the stop's reach, makes the rule visible.
+  - Each part's technique is the one its shape asks for: a Beam along the shaft, a light and a flat spray at the foot, a mesh ring per stopped Shade, a shell for the shield.
+  - **Motion before layers:** the blockout judges the ring's snap, the stop and the shield first, at 64 px from the play camera. The front's glints join only if they add, as Modulo's own condition says.
+  - **Three rings at once,** the wave, each Shade's and the shield's foot, must read as three things: the wave's sweep, each Shade stopped, Watt guarded. That's the blockout's question, with `ga-fresh-eyes` beside research's verdict.
+  - Modulo's block is labelled "by 00:45 by the clock". Faber read it at 00:30, so it was written by 00:30.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

@@ -8296,6 +8296,18 @@ From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's 
 - **Until they come,** A's empty slot keeps C's seat (Faber, TR28).
 - **Checks:** the content check before upload. Research's one verdict in grey, then in colour.
 
+## AR23. Combat Power's number, chromatic (Modulo, then Faber)
+
+From the director's word, 21:38 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.
+- **Feel line:** the player opens a Voidkin and its Combat Power at its feet shimmers like a prize, the one number on the screen that's worth more than its digits.
+- **The ask:** two or three takes on A's sheet at the smallest phone's size. Each states its motion, if any (a slow sheen across, never a blink).
+  - The digits carry a run of hues from the game's palette, with a dark edge.
+  - The number reads at a glance on the screen's ground at the smallest phone.
+  - It's never a full rainbow, and never a rarity's colour alone, so it isn't read as a rarity.
+- **The look is Modulo's,** under the package's UI art direction. Faber builds the pick from a UIGradient and a stroke, as the keeper's bar does.
+- **What waits:** the same treatment anywhere else, which needs its own word. The card's gains stay green and red.
+- **Checks:** research's one pick, then the player-camera review in the build.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -3208,6 +3208,20 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
   - Accepted: no.
 - **Time, by the clock:** 19:11, after research's pass, to 19:27. That covers the content check's round and eleven guarded Workbench renders.
 
+### Research's verdict on batch 2 in colour (Quaestor, 2026-11-16, 19:32)
+
+- **Felt:** at 38 points every slot names its kind before its rarity, each row climbs from wool and iron to gilt, and the Legendary column is the step a player feels when one drops.
+- **Tier:** competent, all eight kinds. The Legendaries are the strongest column.
+- **The one bold thing:** each Legendary's one form, in gilt and ivory on its umber ground: Hakkou's ring, Kagayaki's drops, Tsukigasa's halo, Kyokkou's tails.
+- **Yoake's condition: met.** Each wing rises from its cop with two lames clear under it. At 38 points it's an arch with its collar, not a winged bar.
+- **Modulo's five tier 1 calls: kept.** Alone over dark, the Rare and Epic cloaks are held by their pale collars, hems and stones, as batch 1's Epic bodies are. In a slot, the frame carries them.
+- **One fix, the Uncommon bracers:**
+  - Their steel renders a matte mid grey with no highlight, Lanternsteel's the flattest. Beside the Uncommon chest's and shoulders' steel, it reads as plastic.
+  - The fix: the tube catches a highlight along its length, as theirs do. The lever is Modulo's: its own read is the turn toward the key.
+  - The three come back through the content check, by its condition.
+- **Kaikou's search, done:** Roblox's catalog has no item by that name, and none of the first 40 experiences a search for it returns carries it (2026-11-16).
+- **Delivery:** the 120 pictures and the json go to Faber now, for TR28's cells. The three bracers' files are replaced in place before the upload. Batch 2 closes in colour when they land.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

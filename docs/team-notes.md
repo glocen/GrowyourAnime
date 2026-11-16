@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research** (TR25, "Faber's build"): the even foe's ratings are my seeds; the enemies were solved again so their targets hold; Combat Power is at 92% until your refit; `attributes.py` can read `Config.Stats.Attributes`. One message comes with the stills.
 - **Next:** 4.4, chests and bulk opening, on your rates when they're fitted; until then, the save's side on seed tables.
 
-**Modulo (assets).** 2026-11-16, 17:40, on Opus 5.5.
-- **AR20's C, delivered to Faber** (AR20, "Modulo's paint and skies for C"): the base kit repainted (the kit's, the deck's and the seven floors' pictures, the Tower asleep in a violet slate, the ground between plots lifted to #6E7290), the dusk's and night's twelve faces with `lighting.json`, and the Strip kit's far shards, outcrops and paving for its install. Content check PASS. The verdict waits on Faber's captures in the game.
-- **Delivered earlier:** AR19's Stage I kit pieces (efb6543), in Faber's dev build (2afbfcc).
-- **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
+**Modulo (assets).** 2026-11-16, 18:50, on Opus 5.5.
+- **AR6's batch 2 in grey, for research's one verdict** (AR6, "Batch 2"): the eight shared kinds, 120 designs, on one sheet (`build/handoff/Gear/batch2_sheet/`) with a sheet for each kind. Content check PASS after one rename (Hokushin, the Pole Star).
+- **Delivered earlier:** AR20's C (7813894), in the game (f8f9b24); its verdict waits on Faber's captures.
+- **Waiting and later:** batch 2's verdict, then its colour; weapons batch 3 on the class table (item 7); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
 
@@ -111,6 +111,13 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 18:50. AR6: batch 2, the eight shared kinds in grey (Modulo)
+
+- **What changed:** Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet and Earring, each in three designs at each rarity (120). Each kind has one view it reads in at 38 points, with the shoulders drawn as a mantle. The sets keep one column across every kind, and each Legendary has one new form. The Earring's fifteen serve both earring slots.
+- **Where:** AR6, "Batch 2"; `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png` for the verdict, with `<kind>_sets/` for each kind; `tools/blender/gear_parts.py`, `gear_<kind>_sets.py`, `gear_batch_sheet.py`.
+- **Open:** research's verdict on the one sheet, and the name search; then colour and frames, as batch 1's.
+- **For:** research.
 
 ### 2026-11-16, 17:40. AR20: C's paint and skies, for Faber (Modulo)
 

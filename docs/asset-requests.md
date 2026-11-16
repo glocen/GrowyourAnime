@@ -3057,6 +3057,52 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Legendary's gilt** stands out on the umber ground.
   - **To Faber** for upload and the slots, all sixty, as the json lays them.
   - **The rest of the kinds open now** (the director to Modulo, 2026-11-16, 01:53: "i dont think you finished all the gears sets there is 14 gears slots"; the register). They follow batch 1's spec as it stands: five rarities, three designs each, the ladder, and the names by rarity. Modulo's order (research's call): AR17 first, with batch 2 filling any wait for a verdict or an install. Batch 2 is the eight shared kinds (120 icons): with the Warrior's pair, every one of Rook's fourteen slots then has art. Then Watt's clips and Ground Wire's look, then batch 3, the eight weapons (120). Each batch goes in grey as one sheet of its eight kinds for one verdict, then its finals.
+
+### Batch 2: the eight shared kinds in three designs at each rarity, in grey (Modulo, 2026-11-16)
+
+- **Feel line:** in its slot each piece is the thing a player knows at a glance at any rarity (a mantle, a breastplate, a gauntlet, a vambrace, a boot, a cloak, a necklace, an earring), and what it carries says the rarity.
+- **Scope:** grey forms and names, on batch 1's spec as it stands. Waiting: colour and frames (batch 1's materials and slot), batch 3's eight weapons.
+- **For the one verdict:** `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png` (`tools/blender/gear_batch_sheet.py`). A row is a kind, its fifteen in their rarity's threes; a column is a set, carried down all eight. The sheet checks that every kind keeps the sets in one order.
+- **Each kind's own sheet,** laid as batch 1's (fifteen at 220 points, at the 38-point slot and as 32-pixel silhouettes, each with a name): `build/handoff/Gear/<kind>_sets/gear_<kind>_sets.png` for shoulders, chest, gloves, bracers, boots, cloak, amulet and earring, each from `tools/blender/gear_<kind>_sets.py`. The parts they share are in `gear_parts.py`. Workbench, no GPU turn.
+- **One view per kind,** so each reads as its kind at 38 points:
+  - **Shoulders:** a mantle as it sits on a body, from the front and a little above: a yoke, a standing collar, a cop on each shoulder with its lames stepping down. Five tries came first: two cops on a strap read as goggles or worse, one cop alone as a helmet or a bell.
+  - **Chest Armor:** a breastplate turned a little, with its back plate, belt and fauld lames.
+  - **Gloves:** the right gauntlet from the back of the hand, fingers up, over its cuff.
+  - **Bracers:** a vambrace slanted, the elbow high on the left and the wrist low on the right, with its straps.
+  - **Boots:** the right boot from its outer side, toe to the right: shaft, foot plates, sole and heel, and a knee guard on some.
+  - **Cloak:** from behind and a little to the side, its folds widening to the hem, a collar or a hood at the neck.
+  - **Amulet:** a necklace from the front and a little above, its loop lying as it would round a neck, the pendant at its dip. The pendant is drawn at 1.45 times its first size, since at 32 pixels the pendant is the design.
+  - **Earring:** one earring, a hook, a stud or a hoop over its drop. The set drops are the amulet's pendants drawn smaller, so a set matches across the two.
+- **Names,** by batch 1's rules, every set in the same column on every kind:
+  - Iron, Bronze, Scrap; Lanternsteel, Rowsmith, Stallguard; of Embers, of Hoarfrost, of Gales; Stormcall, Gloamforge, Nightloom.
+  - The Commons and Uncommons say the slot (Shoulders, Chestplate, Gloves, Bracers, Boots, Cloak, Amulet, Earring). From Rare up a near word: Pauldrons, Cuirass, Gauntlets, Vambraces, Greaves, Mantle, Pendant at Rare and Talisman at Epic, Eardrop.
+  - **Legendary, one new form each:**
+    - **Shoulders:** Noroshi, the Beacon (a beacon's spire on the cop); Yoake, the Daybreak (the lames sweep into a folded wing); Isaribi, the Sea Lights (a crest rises over the cop like a wave).
+    - **Chest Armor:** Hinode, the Sunrise (rays behind the collar); Tsukiyo, the Moonlit Sky (the collar rises into a crescent); Amanogawa, the Starway (a sash of stars across the chest).
+    - **Gloves:** Kirameki, the Glint (the cuff spreads into a ring of points); Nagareboshi, the Meteor (a falling star's streak from the back of the hand); Yuubae, the Evening Glow (a setting sun's disc behind the hand).
+    - **Bracers:** Asayake, the Red Morning (rays fan from the outer side); Hokushin, the Pole Star (a four-pointed star past the sleeve); Hakkou, the Radiance (a ring of light round the sleeve).
+    - **Boots:** Komorebi, the Leaf Light (leaf blades fan back from the ankle); Asaborake, the Dawnlight (the knee guard rises into a tall arch); Hoshikuzu, the Stardust (small stars sweep up from the heel).
+    - **Cloak:** Kyokkou, the Aurora (the hem streams out in ribbons); Yuuyake, the Sunset (the hem cut in long points); Tsukiakari, the Moonglow (the hem parts in two tails curving out like a new moon's horns).
+    - **Amulet:** Yakou, the Night Glow (a long drop of light in a filigree cage); Akebono, the Dawn (a sun rising from a cradle, its rays fanning above); Tsukigasa, the Moon Halo (two rings round a stone on four spokes).
+    - **Earring:** Kagayaki, the Brilliance (a cascade of lights in three tiers); Yuzuki, the Evening Moon (a pearl of light in a crescent); Hatsuhi, the First Sun (rays fanning up past the hook).
+  - None is in `docs/ip-list.md` or the roster, each fits 24 characters, and none repeats batch 1's. The handbook's web and Roblox name search is research's to run before a player sees one.
+- **Tier 1 calls, mine, for research to keep or change:**
+  - The Shoulders slot is drawn as the mantle, a pair on a yoke.
+  - The Earring's fifteen serve both earring slots, as the Ring's serve both rings.
+  - The Cloak's plain three are Wool, Hooded and Scrap, and its Uncommon is Lanternweave: cloth has no iron or bronze.
+  - The Amulet takes two near words, Pendant at Rare and Talisman at Epic.
+  - Each kind fills its own square, as the ring and the helmet do.
+- **Content check, on the nine sheets and the scripts:** BLOCK on one name, all else PASS. "Hoshikage, the Starlight" reads as a title from a published series in romaji. It's now Hokushin, the Pole Star (the check's own offer, Hoshiakari, is batch 1's Short Sword already), and the re-check on the name and the two sheets rendered again is PASS: 北辰 is an ordinary word, and a demon's 北神 in one series shares only the spelling. Nothing is cleared for upload: the finals get their own check at full size and at 64 pixels. Its notes for the colour pass:
+  - Akebono's and Hinode's rays never take a red disc with alternating red and white rays.
+  - Every shoulder icon keeps its standing collar, the piece that rules out a wrong reading of two cups.
+  - Every earlier AR6 condition carries over.
+- **Modulo's read:**
+  - All 120 read as their kind at 38 points, and each Legendary changes its row's silhouette.
+  - The weakest rows are the Shoulders (wide and short, filling about 0.6 of the square, Common to Rare close) and the Earring's plain ones (thin, filling about 0.5).
+  - Down the columns, Gales' vanes, Stormcall's hooks, Gloamforge's prongs and Nightloom's shuttle show on every kind. Embers and Hoarfrost part mostly by their stone's setting, round against square, which is small at 38 points.
+  - The three Commons of a kind are nearly one shape, as in batch 1. The frame and the name carry them.
+- **Four facts:** made, yes. Self-reviewed, yes: each kind's sheet at full size and on its small rows, and the batch sheet whole. Delivered, the sheets for research's verdict; nothing for Faber yet. Accepted, no.
+- **Time, by the clock:** the shared parts were written at 13:45, in the wait for AR17's verdict. The eight kinds and the batch sheet ran from 17:41, after AR20's delivery, to the commit.
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

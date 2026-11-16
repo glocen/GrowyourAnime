@@ -4,11 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 02:49, wrapped on the director's word.
-- **The base is spread, void and finished in Blender, and installed** (AR16, AR15; the director's words of the night in the register). It waits on research's verdict in the game. Research's calls of the night are in AR16: the plot stays 200, the star pulls in, sleeping places show what the base will wake, the Door says "Festival of Battles", and the Tower stands asleep.
-- **AR17, the rest of the map:** the director withdrew research's lantern line ("lantern ground isnonly for the first festival of battle ground"; the register). The map takes the void's own look, in Modulo's new kit, which waits on research's verdict before Faber installs it. The Day sky passes (AR5, 2b), and day is in the world's turn (TR23, the director's "we need a day time").
-- **Open with the director:** did "that mist is a bit to much" mean the Day sky only, or also the dusk in the game? Until they say, only Day's haze is thinned.
-- **Next session, first:** research's verdict on AR17's void kit (`build/handoff/Strip/strip_*.png`), then the first session whole on a phone with Faber (the captures list is with him). The same run gives the in-game verdicts on AR16 and TR23, then one ranked fix list. Then Watt and Power's bar, Kirra and Scarf Step, TR21.
+**Quaestor (research).** 2026-11-16, 14:04, on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`).
+- **The proposal's twelve parts are written** (`docs/research/rework-2026-11-16.md`), with the attribute and Tower models (`tools/balance/attributes.py`, `tower.py`). It waits on the yes to the nine points (item 8 below). Chest rates are fitted after it.
+- **Routed:** Modulo does 2 or 3 directions for the mobile inventory, then the generator. Faber does TR24's phone run first, then the contracts. AR17's install and AR16's changes wait on the base's new size.
+- **Still mine:** the verdict on AR17's void kit (`build/handoff/Strip/strip_*.png`); the in-game verdicts on AR16 and TR23 from TR24's stills, and its ranked fix list. The mist is item 7.
 
 **Faber (builder).** 2026-11-16, 02:53, wrapped on the director's word.
 - **Done, in Studio: day in the world's turn** (TR23, pushed). Research's verdict in the game and the director's look wait. AR16's install waits on the same verdict.
@@ -42,6 +41,7 @@ For Faber:
 For research:
 
 7. **The mist** (to Modulo, read at 02:16: "a bit to much atmosphere imo like that mist is a bit to much"): only the Day sky's haze is thinned. Did you mean the dusk in the game too? Say so and Faber and Modulo thin it.
+8. **Your package of 13:41, restated in nine points** (`docs/decisions.md`, its row; the words in `docs/archive/director-package-2026-11-16.md`): say yes, or the numbers to change. Three questions inside it: Strength, Agility and Intelligence are already types, so which gets new names (my lean: the attributes)? does "anime-industrial" keep the void machines of 2026-11-15 (my reading: void machines built from readable mechanical parts, never a real power plant)? And does the Warrior keep two swords, since the Tank already holds the Shield? Your words on account-wide presets read as keeping gear as the account's (item 1 above); say if not. The proposal that answers your twelve parts: `docs/research/rework-2026-11-16.md`.
 
 ### Notices
 

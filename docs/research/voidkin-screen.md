@@ -76,9 +76,7 @@ Research, 2026-11-15, night, on the director's words to Faber: "no no no no crit
   - Critical Damage is a percent that adds up across gear. One helm, fully refined, gives 37% ([GamerSky](https://shouyou.gamersky.com/gl/201511/687391.shtml)).
   - In Heroes, a critical multiplies the base damage by it, less the target's Crit Reduction ([its fan wiki](https://taichipandaheroes.fandom.com/wiki/Attributes)).
   - The formula that circulates, "Hit − Dodge, min 20%", is from that first game too.
-- **Not found: the Attribute page itself.** Nothing shows its layout, which stats it shows as points and which as percents, or its caps and formulas.
-  - None of these had it: the director's package (which says so itself), today's searches in English and Chinese, and our two captures (the Character page and View Character).
-  - Two screenshots of the Attribute page, top and scrolled, would settle it. They go in `build/reference/dragon-hunter/`, kept internal.
+- **The Attribute page, found** (the director's two captures, 2026-11-16, `build/reference/dragon-hunter/2026-11-16_attribute-page-en.png` and `-zh.jpg`, internal): five Basic Attributes on top, one marked Main for the class, and the Battle Attributes in two columns below, one plain row each. Its Hit and Critical read over 100% because they're opposed ratings, not chances. What research takes from it is in `docs/research/rework-2026-11-16.md`, parts 1 and 4.
 
 **What our sheet does today** (TR17, `2d91c71`; `build/captures/overview/stat_sheet_smallest_phone.png`). Every family above is on it. Three things differ from the director's words:
 1. **Critical reads "0 · up to 5%".** The 5% is the chance every hit has at zero points, a floor and not a cap, but it reads as a cap.

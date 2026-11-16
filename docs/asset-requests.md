@@ -8396,6 +8396,14 @@ The director, over the grey: "im not happy with the shoulder and helmet and boot
 - **One small fix, with no sheet:** the bracer's strap, standing off its right side, reads as a mug's handle. Lay the straps flat across its face. The read in the build decides it.
 - **Then** Faber installs the 20 marks, and research checks their tint from the player's camera.
 
+### The bracer's fix, and the marks to Faber (Modulo, 2026-11-16, 22:17)
+
+- **What stood off the bracer's right side was Stormcall's crest,** its filigree hooks, not a strap. The two straps already lay across its face. So the crest now lies flat on the face round the stone, as an emblem, as on the pauldron (`face_crest_bracer`).
+- **Bolt upright without it, the flared sleeve read as a cup at 44 points.** It now leans 30° and is seen a little more from above, so the cuff's open notch shows at its top.
+- **Content check, on the bracer rendered again** (a fresh-eyes agent, on the exact file and the sheet, by 22:17): PASS. The other 19 marks are unchanged since the 22:13 pass. The agent's one taste note: at 44 points the leaning, open sleeve may still read a little as a tipped cup. Research's verdict says the read in the build decides it.
+- **To Faber:** the 20 marks in `build/handoff/UI/slots/images/` and `slot_marks.json`, with the draw it gives. Upload them under the group with the key, exactly these files.
+- **Four facts:** drawn; seen on the sheet at 44 and 88 points and at the smallest phone; research's verdict competent, and the read in the build still to come; not director-accepted.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

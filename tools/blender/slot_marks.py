@@ -137,6 +137,18 @@ def lone_pauldron(d, lean=25.0, step=0.24, grow=0.12):
     return gp.scene_of(parts, sh.TILT, sh.SPIN)
 
 
+def face_crest_bracer(d):
+    """The bracer stood up with its crest laid flat on its face round the stone, as an emblem: standing out from its
+    side, the crest read as a mug's handle (research, 22:16)."""
+    def parts():
+        out = bracers.sleeve(dict(d, orn=None))
+        at = bracers.face(0.05, 0.06)
+        out.append(gp.flat("Crest", gp.set_ornament(d["orn"], 0.4, (0, at[2] - 0.12)), 0.05, d["trim"],
+                           y=at[1] + 0.04))
+        return out
+    return gp.scene_of(parts, bracers.TILT, bracers.SPIN)
+
+
 def widened(k):
     """The cloth flaring out toward its hem, by `k` of its width at the hem."""
     def point(d, a, v, inset=0.0, length=1.0):
@@ -149,8 +161,10 @@ def widened(k):
 # The three kinds whose mark is posed afresh from AR6's model rather than drawn from its picture, each in its view.
 POSED = {
     "StormcallPauldrons": lambda: posed(shoulders, "Stormcall Pauldrons", lone_pauldron, TILT=25.0, SPIN=-25.0),
-    # research's fix 1: stood up, with the cuff's flare and its two straps
-    "StormcallVambraces": lambda: posed(bracers, "Stormcall Vambraces", change=dict(flare=True), SLANT=0.0),
+    # research's fix 1: stood up, with the cuff's flare and its two straps; its crest laid on its face. Leant 30 degrees
+    # and seen a little more from above, so the cuff's open notch shows at its top: bolt upright, it read as a cup
+    "StormcallVambraces": lambda: posed(bracers, "Stormcall Vambraces", face_crest_bracer, change=dict(flare=True),
+                                        SLANT=-30.0, TILT=25.0),
     # research's fix 2: the hem wider than the shoulders; the crest stands where a hood's peak would
     "StormcallMantle": lambda: posed(cloak, "Stormcall Mantle", cloth_point=widened(0.45), SPIN=166.0),
 }
@@ -292,9 +306,9 @@ def review(out, files, table, shots):
     notes = ("Today's plain marks were flat signs; these are the Epic pieces themselves, so the slot says what goes there "
              "and a held item, lit in its rarity, still outshines it. The Shoulders' mark is one pauldron, built for the "
              "mark from the Stormcall pair's cop, lames and stone, its crest laid on its face: AR6's cop alone reads as a "
-             "head. The bracer stands upright, its cuff flared, its straps across it. The cloak's hem is wider than its "
-             "shoulders, and its crest stands where a hood's peak would. The rings and the earrings share their kind's "
-             "mark.",
+             "head. The bracer stands, leaning a little, its cuff flared and open, its straps across it, its crest laid "
+             "on its face. The cloak's hem is wider than its shoulders, and its crest stands where a hood's peak would. "
+             "The rings and the earrings share their kind's mark.",
              "Not here: the marks for kinds to come (Mythical, Dawn), and any motion.")
     for n in notes:
         for line in textwrap.wrap(n, 180):

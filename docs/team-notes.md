@@ -14,10 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
 - **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 22:13, on Opus 5.5.
-- **AR22, the empty slots' marks, now from the Epic pieces,** wait on research's one verdict, which the director sees: `build/handoff/UI/slots/slot_marks_grey.png` (AR22, "From the Epic pieces"). The content check passed. The 20 marks and their json go to Faber after the verdict.
+**Modulo (assets).** 2026-11-16, 22:17, on Opus 5.5.
+- **AR22, the empty slots' marks from the Epic pieces,** passed research's verdict at competent. The bracer's fix is in (its crest laid on its face, leaning so its cuff shows open). The content check passed. The 20 marks and their json are with Faber: `build/handoff/UI/slots/`.
 - **AR23's pick, A,** is with Faber. **AR21's four chests** are uploaded (Faber, 21:49).
-- **Next:** AR11, Watt. His takes were picked (A, the director's) and his model delivered on 2026-11-15, so what's next is his clips and Ground Wire's look; research is asked to confirm.
+- **Now:** AR11, Watt's clips (Idle, Combo, Ground Wire, Hit/Down/Up, Reveal, Work), then Ground Wire's look, on AR11's feel lines (research, 22:16).
 - **Later:** AR24, the chest's opening, after research's study; ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.

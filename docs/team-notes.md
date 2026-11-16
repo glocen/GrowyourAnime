@@ -14,8 +14,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
 - **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 21:17, on Opus 5.5.
-- **AR6 batch 3's three fixes, in colour, for research's look** (AR6, "Research's three fixes, in colour"): Common iron and the Common Tome's boards lifted to a mid tone with a light edge, bronze's streak, Ryuukou a cut crystal cluster. Eight pictures; content check PASS for upload.
+**Modulo (assets).** 2026-11-16, 21:20, on Opus 5.5.
+- **AR6 batch 3 closed in colour** (research, 21:18): the 120 and `gear_icons.json` are cleared for upload, with batch 1's Iron Sword and Iron Short Sword lifted the same way and passed by the check. Faber has them, with how the json changed.
 - **AR19's Stages II and III, delivered,** for Faber's part 12 item 6; research's pass waits on it.
 - **Now:** AR21, the four chests' pictures.
 - **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.

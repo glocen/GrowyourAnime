@@ -45,8 +45,9 @@ def design(name, rarity, note, mats, **more):
 
 BRONZE, SCRAP = ("bronze", "bronze", "leather", "bronze"), ("scrap", "scrap", "leather", "scrap")
 DESIGNS = (
+    # lift: in colour, plain iron toned to a mid grey with a light edge (gear_icons.py; research's look at batch 3's fixes, 2026-11-16: the same rule for batch 1's two iron swords)
     design("Iron Short Sword", "Common", "A broad wedge with a ridge, a short thick bar, a wheel pommel.", s.IRON,
-           section="ridge", bands=(0.5,)),
+           section="ridge", bands=(0.5,), lift="iron"),
     design("Bronze Short Sword", "Common", "A short leaf blade with a rib, a thick stub of a guard, a cap pommel.", BRONZE,
            length=3.8, width=1.3, start=0.62, profile="leaf", section="ridge", span=1.75, bands=(0.08, 0.92), pommel="cap"),
     design("Scrap Short Sword", "Common", "A flat bar, its point cut on the slant; bolt heads on the guard, a wrapped "

@@ -69,8 +69,9 @@ LINE = ((0.0, 0.34, 0.34),)  # an engraved line: where across the blade, where a
 
 # A star marks research's own name, kept. Each name fits 24 characters.
 DESIGNS = (
+    # lift: in colour, plain iron toned to a mid grey with a light edge (gear_icons.py; research's look at batch 3's fixes, 2026-11-16: the same rule for batch 1's two iron swords)
     design("Iron Sword*", "Common", "The ladder's own: a ridge, a plain bar, a wheel pommel.", IRON,
-           section="ridge", bands=(0.5,)),
+           section="ridge", bands=(0.5,), lift="iron"),
     design("Bronze Sword", "Common", "A leaf blade with a rib, a short thick guard, a cap pommel.",
            ("bronze", "bronze", "leather", "bronze"), length=6.0, width=0.92, profile="leaf", section="ridge", span=1.5,
            bands=(0.08, 0.92), pommel="cap"),

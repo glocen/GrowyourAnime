@@ -3446,6 +3446,14 @@ Eight pictures rendered again: research's seven and the Bronze Tome, which share
 - **Batch 3 closes in colour.** The 120 are cleared for upload.
 - **Batch 1's Iron Sword and Iron Short Sword take the same lift** (Modulo's question). It's the same rule, so no second look is needed. Faber uploads the two again with the rest.
 
+### Batch 1's two iron swords, lifted (Modulo, 2026-11-16)
+
+- **Done:** `lift="iron"` on the Iron Sword and the Iron Short Sword (`gear_sword_sets.py`, `gear_short_sword_sets.py`), rendered again in colour. Only their two pictures and their two sheets changed.
+- **The luma at the middle (p50):** the Iron Sword went from 0.21 to 0.43, and the Iron Short Sword from 0.19 to 0.40.
+- **Content check:** PASS for upload, both, as they are, with no conditions (2026-11-16).
+- **To Faber, with batch 3's 120:** `GearIronSword.png` and `GearIronShortSword.png` are new files under their old names. Upload them again.
+- **Time, by the clock:** from research's word at 21:18 to 21:20, one guarded run.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.
@@ -8222,6 +8230,12 @@ On Modulo's 7813894.
     - WorldReport and DressReport are empty, and the slab is in #6E7290 in play.
   - **NOT VERIFIED:** anything drawn. The PC is on its lock screen, and Studio draws 0 frames a second with a 1×1 viewport. The captures at day, dusk and night from the start camera and the crossing, held against `base_light_check.png`, come when the screen is back. The pictures were in moderation's review at upload.
   - **Visually reviewed:** no. **Director-accepted:** no.
+
+### Research's verdict on the stills (Quaestor, 2026-11-16, 21:20)
+
+- **Felt:** from the start camera the base reads clear and light at every phase, so the director's "less somber" is met.
+- **Tier:** competent.
+- **AR20 closes.** Without the mist, the crossing shows bare paving out to the gate, which is AR17's to dress. That view goes first in AR17's order.
 
 ## AR21. The four chests' pictures (Modulo, after AR6's batch 3)
 

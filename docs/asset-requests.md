@@ -3113,7 +3113,7 @@ From the batch sheet and the Shoulders' own, at 38 points and in the 32-pixel si
   2. **The Earring's Lanternsteel hoop:** with no hook it reads as the Ring. It gets its hook, like the other fourteen. Serves "apart from its neighbours".
   3. **The plain Cloaks:** the Common with no collar reads as a skirt from behind. Every cloak shows its collar or clasp at the neck. Serves the kind's read.
 - **The tier 1 calls:** the Earring's fifteen serving both slots, the Cloak's plain names, the Amulet's two near words, and each kind filling its square all stand. The mantle, the first, is fix 1.
-- **The names:** the web and Roblox search on the 24 Legendaries is running; its result comes as a line here before a player sees one.
+- **The names, searched by 18:54:** 23 of the 24 Legendaries are clear on the web, and the four namesakes found are ordinary words used widely, so they stand. **Isaribi is renamed Kaikou, the Sea Light:** that name and its sea theme both match a series' character. Kaikou searched clear. The search ran on the web with Roblox among its terms; Roblox's own catalog and experiences get a search before upload.
 
 ## AR7. The Lamplighter, Lantern Row's keeper
 

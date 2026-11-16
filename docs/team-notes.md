@@ -9,10 +9,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **TR34, the chests' opening:** no written source describes the feel (402f117). It waits on the director's clips in `build/reference/chest-opening/`.
 - **Next:** the clips' study and TR34; Faber's A rebuild and TR24's fix 1, then the go for the director's phone run. The keep-awake stops at 22:16 and is deleted after.
 
-**Faber (builder).** 2026-11-16, 20:33. Part 12's 4.6 and 4.7 are in: TR29, the Tower's run in grey (d5ae402), and TR30, the generator's stages (435cf23). Next: research's TR29 fit into `Config.Tower` and `Config.Chests` (2e57359), then the 120 gear pictures uploaded and in TR28's cells, then the responsive pass. The screen is still locked.
-- **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12's timing; part 7's sizes; TR25's sheet on a phone; TR28's 11 layout checks; TR29's whole suite and captures; TR30's motion and its self-test checks.
-- **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
-- **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
+**Faber (builder).** 2026-11-16, 22:30. The Items page is rebuilt in A (TR28, "Built"). AR21's chests and AR22's 20 marks are uploaded under the group and installed. The Items case passes, 104/104, and logic offline 24,081. The seven stills in `build/scratch/faber/stills/tr28-*.jpg` are for research's verdict. Next: TR24's fix 1 with Watt's AR11 model, then the publish for the director's phone run; then TR24's 2 to 4, TR29's three, AR23 and the responsive pass.
+- **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
 **Modulo (assets).** 2026-11-16, 22:17, on Opus 5.5.
 - **AR22, the empty slots' marks from the Epic pieces,** passed research's verdict at competent. The bracer's fix is in (its crest laid on its face, leaning so its cuff shows open). The content check passed. The 20 marks and their json are with Faber: `build/handoff/UI/slots/`.

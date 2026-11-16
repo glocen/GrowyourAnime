@@ -73,7 +73,7 @@ local NAME = "Voidkin"
 local PAGES = { "Overview", "Bag", "Kit", "Stars", "Forge", "Jewels", "War Emblems" }
 local SOON: { [string]: boolean } = { Forge = true, Jewels = true, ["War Emblems"] = true } -- not built yet: greyed
 -- A page's word where it isn't its name: the Bag page reads "Items" (the director, 2026-11-15). Its kinds are Rules.Bag's
--- (TR28, AR18's C).
+-- (TR28, AR18's A).
 local SAID: { [string]: string } = { Bag = "Items" }
 local ROW = Theme.Size.Tap -- a row of buttons, authored
 local BAR = 28 -- a currency's chip, in the band, authored
@@ -1239,6 +1239,10 @@ local function build(view: Profile.View, on: On)
 	local frame = Screen.Frame(NAME) :: Frame
 	local band = Screen.Band(NAME) :: Frame
 	local at = place(Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset))
+	local lacquer = frame:FindFirstChild("Case") -- the Items page's plate lies under the stage, outside the body: laid again by its page only
+	if lacquer then
+		lacquer:Destroy()
+	end
 	local owned = if chosen then view.Voidkin[chosen :: string] else nil
 	if owned == nil then
 		if stage then
@@ -1251,10 +1255,11 @@ local function build(view: Profile.View, on: On)
 	end
 	rail(body, at)
 	if page == "Bag" then
-		-- The Items page is AR18's C (TR28): the case right of the rail, the figure in the Voidkin's half beside the grid.
+		-- The Items page is AR18's A (TR28): the lacquer right of the rail, the grid, then the doll with the figure between its slots.
 		local block = resolved(view, owned)
 		local save = BagPage.Build({
 			Body = body,
+			Floor = frame,
 			Room = at.Room,
 			Left = at.Stage.X,
 			View = view,

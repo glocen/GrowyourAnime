@@ -11,16 +11,18 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Grounds = require(Shared.Definitions.Grounds)
 
-export type Row = { Id: string, Ground: string, Tier: number, Name: string }
+export type Row = { Id: string, Ground: string, Tier: number, Name: string, Image: string }
 
 -- Named for what drops it, never a rarity's word (docs/design.md, "Chests"): a chest isn't a rarity.
 local TIERS = { "Shade Chest", "Elite Chest", "Keeper's Chest", "Tower Chest" }
+-- Each tier's picture in Config.UIKit.Images (AR21; build/handoff/UI/chests/chest_icons.json), the same in every ground.
+local PICTURES = { "ChestShade", "ChestElite", "ChestKeeper", "ChestTower" }
 
 local List: { Row } = {}
 local ById: { [string]: Row } = {}
 for _, ground in Grounds.List do
 	for tier, said in TIERS do
-		local row = { Id = `{ground.Id}_{tier}`, Ground = ground.Id, Tier = tier, Name = `{said} of {ground.Name}` }
+		local row = { Id = `{ground.Id}_{tier}`, Ground = ground.Id, Tier = tier, Name = `{said} of {ground.Name}`, Image = PICTURES[tier] }
 		table.insert(List, row)
 		ById[row.Id] = row
 	end

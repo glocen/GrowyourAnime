@@ -8,11 +8,13 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Items = require(Shared.Definitions.Items)
+local ItemDesigns = require(Shared.Definitions.ItemDesigns)
 local Gear = require(Shared.Definitions.Gear)
 local Rarity = require(Shared.Definitions.Rarity)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Attributes = require(Shared.Definitions.Attributes)
 local ChestsConfig = require(Shared.Config.Chests)
+local UIKit = require(Shared.Config.UIKit)
 local ChestRows = require(Shared.Definitions.Chests)
 local Collection = require(Shared.Rules.Collection)
 local Regalia = require(Shared.Rules.Regalia)
@@ -261,6 +263,43 @@ return {
 			local full = Bag.Chest(data, "lanternrow_1") :: { [string]: any }
 			t.Check("with the bag full, the step is none", full.Room == 0 and full.Step == 0, `{full.Room}, {full.Step}`)
 			t.Equal("a chest not held: no card", Bag.Chest(data, "mirrorpavilion_1"), nil)
+		end,
+	},
+	{
+		Name = "Bag: an item's cell shows its design's picture, and its card is titled with its design's name",
+		Run = function(t: any)
+			local data, _, ids = stocked()
+			local owned = data.Voidkin[data.Roles.Lead]
+			data.Items[ids.better].Design = 2
+			local design = Items.Design(data.Items[ids.better]) :: ItemDesigns.Design
+			t.Check("the Epic helmet's second design", design ~= nil and design == ItemDesigns.ByKind.Helmet.Epic[2])
+			local seen, chests, wrong = 0, 0, ""
+			for _, entry in Bag.List(data, owned, "All", "Rarity") do
+				local item = data.Items[entry.Id]
+				if entry.Kind == "Item" then
+					seen += 1
+					local own = Items.Design(item)
+					if own == nil or entry.Image ~= own.Image or UIKit.Images[entry.Image :: string] == nil then
+						wrong = entry.Id
+					end
+				elseif entry.Kind == "Chest" then
+					local row = ChestRows.ById[entry.Def]
+					chests += 1
+					if row == nil or entry.Image ~= row.Image or UIKit.Images[entry.Image :: string] == nil then
+						wrong = entry.Id
+					end
+				elseif entry.Image ~= nil then
+					wrong = entry.Id
+				end
+			end
+			t.Check("every item's cell its own design's picture, in the kit; a chest's its tier's (AR21), in the kit; a shard's none", seen == 9 and chests > 0 and wrong == "", `{seen}, {chests} chests, {wrong}`)
+			local card = Bag.Card(data, owned, ids.better) :: Bag.Card
+			t.Check("its card's title is its design's name, its picture its design's", card.Name == design.Name and card.Image == design.Image, card.Name)
+			t.Check("and its kind stays its row's", card.Kind == "Helmet" and card.Rarity == "Epic")
+			local before = card.Power
+			data.Items[ids.better].Design = 3
+			local again = Bag.Card(data, owned, ids.better) :: Bag.Card
+			t.Check("another design: another name, the same comparison", again.Name == ItemDesigns.ByKind.Helmet.Epic[3].Name and again.Power == before)
 		end,
 	},
 }

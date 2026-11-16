@@ -298,7 +298,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check(`Back and each mark a touch or more, {Theme.Size.Touch} rendered px`, touch)
 			local opened = VoidkinScreen.Find("Page")
 			t.Check("it opens on the Items page", opened ~= nil and opened:GetAttribute("Page") == "Bag", tostring(opened and opened:GetAttribute("Page")))
-			-- The Items page is AR18's C (TR28), checked in its own case (BagCases): what follows is Overview's composition.
+			-- The Items page is AR18's A (TR28), checked in its own case (BagCases): what follows is Overview's composition.
 			VoidkinScreen.Show("Overview")
 			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
 			local view = ProfileController.Get() :: Profile.View
@@ -342,10 +342,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
 				t.Check(`{name} in view`, inView(name))
 			end
-			local pages = VoidkinScreen.Find("Rail")
-			local bagPage = pages and pages:FindFirstChild("Bag", true)
-			local word = bagPage and bagPage:FindFirstChild("Label")
-			t.Check("whose page reads Items on the rail, its kinds the bag's six", word ~= nil and word:IsA("TextLabel") and word.Text == "Items" and #VoidkinScreen.Kinds == 6 and table.find(VoidkinScreen.Kinds, "Weapons") ~= nil, if word and word:IsA("TextLabel") then word.Text else "no word")
+			t.Check("the bag's kinds the bag's six", #VoidkinScreen.Kinds == 6 and table.find(VoidkinScreen.Kinds, "Weapons") ~= nil)
 			-- Its name over the stage: one line between the slot columns, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
 			-- The rail: all seven taps whole, each a touch or more, and no scroll.
@@ -449,7 +446,12 @@ function VoidkinCases.Cases(given: Given): { any }
 						end
 						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed", true) ~= nil)
 					elseif name == "Bag" then
-						t.Check("Bag: C's case, its belt, its strip and the Voidkin's half", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Belt") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
+						t.Check("Bag: A's lacquer, its doll, its strip and the card's room", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Doll") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
+						-- The rail words only the chosen page (and Soon's): chosen, the bag's page reads Items (the director, 2026-11-15).
+						local pages = VoidkinScreen.Find("Rail")
+						local bagPage = pages and pages:FindFirstChild("Bag", true)
+						local word = bagPage and bagPage:FindFirstChild("Label")
+						t.Check("Bag: its page reads Items on the rail", word ~= nil and word:IsA("TextLabel") and word.Text == "Items", if word and word:IsA("TextLabel") then word.Text else "no word")
 					elseif name == "Kit" then
 						local signature = false
 						for _, child in scroll:GetChildren() do

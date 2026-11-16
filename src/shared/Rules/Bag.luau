@@ -52,6 +52,7 @@ export type Entry = {
 	Up: boolean, -- a gain: the up arrow
 	Slot: string?, -- where it would go: its comparison's slot, its worn slot, or its row's first
 	New: number, -- the order it came in (an item's id), 0 for the rest
+	Image: string?, -- an item's design's picture, by its name in Config.UIKit.Images (Definitions.ItemDesigns); nil for the rest
 }
 
 export type Line = { Stat: string, Value: number, Change: number }
@@ -59,7 +60,8 @@ export type Line = { Stat: string, Value: number, Change: number }
 export type Card = {
 	Id: string,
 	Def: string,
-	Name: string,
+	Name: string, -- its design's name, the card's title (docs/design.md, Regalia, "An item's design"); its row's without one
+	Image: string?, -- its design's picture, by its name in Config.UIKit.Images
 	Rarity: string,
 	Kind: string, -- what the row is: "Sword", "Ring"
 	Class: string?,
@@ -72,6 +74,12 @@ export type Card = {
 	Replaces: string?, -- the item in that slot now, when there's one and it isn't this
 	Lines: { Profile.ItemLine }, -- its own rolled lines, the main stat first
 }
+
+-- An item's design's picture: its name in Config.UIKit.Images, or nil when its kind has no design at its rarity.
+local function picture(item: Profile.OwnedItem): string?
+	local design = Items.Design(item)
+	return if design then design.Image else nil
+end
 
 -- Which of the strip's kinds an item row is.
 function Bag.KindOf(row: Items.Row): string
@@ -162,6 +170,7 @@ local function items(data: Profile.Data, owned: Profile.OwnedVoidkin?, kind: str
 			Up = gain > 0,
 			Slot = slot or Gear.SlotsOf(row.Slot)[1],
 			New = number(id),
+			Image = picture(item),
 		})
 	end
 	return out
@@ -207,7 +216,7 @@ function Bag.List(data: Profile.Data, owned: Profile.OwnedVoidkin?, kind: string
 			if row and count > 0 then
 				-- No rarity: a rarity's frame says what a thing is, and on a chest it would say what it might be (research,
 				-- TR29; docs/ui.md, "Stats, shown honestly"). Its odds are on its card.
-				table.insert(chests, { Kind = "Chest", Id = id, Def = id, Rarity = "", Count = count, Fits = true, Worn = nil, Gain = 0, Up = false, New = Chests.Step(row) * 10 + row.Tier })
+				table.insert(chests, { Kind = "Chest", Id = id, Def = id, Rarity = "", Image = row.Image, Count = count, Fits = true, Worn = nil, Gain = 0, Up = false, New = Chests.Step(row) * 10 + row.Tier })
 			end
 		end
 		table.sort(chests, function(a: Entry, b: Entry): boolean
@@ -264,10 +273,12 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 			wornAt = slot
 		end
 	end
+	local design = Items.Design(item)
 	local card: Card = {
 		Id = id,
 		Def = item.Def,
-		Name = row.Name,
+		Name = if design then design.Name else row.Name,
+		Image = if design then design.Image else nil,
 		Rarity = item.Rarity,
 		Kind = row.Kind,
 		Class = row.Class,

@@ -683,6 +683,34 @@ return {
 		GearTenmon = { Id = "rbxassetid://82288371318013", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 		GearLight = { Id = "rbxassetid://108691577894292", Pixels = Vector2.new(192, 192), Points = Vector2.new(48, 48), Pad = 0 },
 		GearFrameLegendary = { Id = "rbxassetid://77199189229522", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Cut = { 22, 22, 22, 22 }, Pad = 8 },
+		-- AR21's chest pictures (build/handoff/UI/chests/chest_icons.json), uploaded under the group by Faber, 2026-11-16:
+		-- Chest<Tier's word>, laid as a gear picture is, in a chest's plain cell.
+		ChestShade = { Id = "rbxassetid://119242480421974", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+		ChestElite = { Id = "rbxassetid://111496914883611", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+		ChestKeeper = { Id = "rbxassetid://103671893568028", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+		ChestTower = { Id = "rbxassetid://135567021405057", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+		-- AR22's empty-slot marks (build/handoff/UI/slots/slot_marks.json), uploaded under the group by Faber, 2026-11-16:
+		-- white on alpha, tinted by the slot; SlotEmpty<Kind>, a hand's SlotEmpty<Hand><Class>.
+		SlotEmptyAmulet = { Id = "rbxassetid://130234359222700", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyBoots = { Id = "rbxassetid://105017426478774", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyBracers = { Id = "rbxassetid://102371649325369", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyChestArmor = { Id = "rbxassetid://105324890278270", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyCloak = { Id = "rbxassetid://88926357802728", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyEarring = { Id = "rbxassetid://85179302602569", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyGloves = { Id = "rbxassetid://82791871372067", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyHelmet = { Id = "rbxassetid://128986239061399", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyMainHandAssassin = { Id = "rbxassetid://133023626132904", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyMainHandHealer = { Id = "rbxassetid://80470488679305", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyMainHandMage = { Id = "rbxassetid://128716955070056", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyMainHandTank = { Id = "rbxassetid://98025148341897", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyMainHandWarrior = { Id = "rbxassetid://74408539965114", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyOffHandAssassin = { Id = "rbxassetid://111288866493234", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyOffHandHealer = { Id = "rbxassetid://138637371785376", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyOffHandMage = { Id = "rbxassetid://94736051915264", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyOffHandTank = { Id = "rbxassetid://105634358599408", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyOffHandWarrior = { Id = "rbxassetid://85747919602167", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyRing = { Id = "rbxassetid://103965391721228", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyShoulders = { Id = "rbxassetid://89521059889361", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {

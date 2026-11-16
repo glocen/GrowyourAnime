@@ -7715,7 +7715,7 @@ end
 for _, case in VoidkinCases.Cases({ ANSWER = ANSWER, REPLICATE = REPLICATE, waitFor = waitFor, lintClean = lintClean }) do
 	table.insert(cases, case)
 end
--- The Items page's, given theirs (TR28; AR18's C).
+-- The Items page's, given theirs (TR28; AR18's A).
 for _, case in BagCases.Cases({ ANSWER = ANSWER, waitFor = waitFor, lintClean = lintClean }) do
 	table.insert(cases, case)
 end

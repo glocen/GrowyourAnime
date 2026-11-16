@@ -421,51 +421,53 @@ return {
 	-- it, where a chosen item's card slides in. Authored points, as Modulo's sheet draws them; a slot is a touch at the
 	-- scale drawn, never under (fix 4), so a narrow screen's belt shows the chosen item's group.
 	Bag = {
-		Cell = 60, -- a grid cell's side: five across is 324 with their gaps, 51 rendered on the smallest phone
+		-- The Items page in A, "the ledger" (the director's pick of AR18, about 20:52, 2026-11-16; TR28, "The rebuild in A"):
+		-- the grid beside the Voidkin between its two columns of slots, the card sliding over the Voidkin (docs/ui.md, the bag).
+		Cell = 64, -- a grid cell's side at most (docs/ui.md: about 64); five across or more, never under a touch
 		CellGap = 6,
-		Columns = 5, -- at least; a wider room adds a column a cell wide, the Voidkin's half at Half
-		Half = 300, -- the Voidkin's half at most; under it on a narrow room, 282 on the smallest phone (fix 4)
-		Inset = 4, -- the case's porcelain round what it holds
-		Under = 2, -- between the belt, the strip and the grid
-		BeltGap = 2, -- between two slots of a group
-		GroupGap = 6, -- between two groups
-		BeltInset = 4, -- the belt's plate round its slots
-		Band = 4, -- the rarity's enamel across a cell's head
-		Corner = 7,
-		Pill = 34, -- a chip's pill, drawn in the middle of its tap's height (fix 4: a 52 hit box round a 34 pill)
-		Totals = 104, -- the Voidkin's totals beside its figure
-		Row = 18, -- a line of the totals and of the card
-		Slide = 0.16, -- seconds: the card over the Voidkin's half, and back (fix 4)
-		Mark = 14, -- a cell's corner chip: the up arrow, the worn tick, the class
-		Card = { Corner = 14, Pad = 10, Cell = 56, Close = 14 }, -- the close's X drawn this size in a touch
+		Veil = 24, -- the kinds strip's fade where it hides a chip
+		Ring = 7, -- the cells' holder's margins: 3 left for a chosen cell's ring, 4 right for the scroll bar
+		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6E6556"), Alpha = 0.1 }, -- an empty slot's mark (AR22's json): its share of the well, its tint
+		Columns = 5, -- at least; a wider room adds a column a cell wide
+		Inset = 4, -- the room's edge round the grid
+		Under = 4, -- between the strip, the grid and the count
+		-- The doll: A's slots 44 at a pitch of 49, its figure's room 140 between its two columns. On a taller room the slots
+		-- grow to Most and the figure's room with them (Grow slots wide); where six a touch tall don't stand (the smallest phone),
+		-- each slot keeps its whole touch and the six are pitched to the room, a tap over its neighbour's by under a pixel.
+		Doll = { Slot = 44, Gap = 5, Most = 64, Seam = 4, Figure = 140, Grow = 2.6, Level = 16 },
+		Gear = 48, -- the slot AR6's sizes are given for (build/handoff/UI/gear/gear_icons.json): a cell's layers scale from it
+		Bar = 3, -- a cell's rarity bar along its foot
+		Pill = 34, -- a chip's pill, drawn in the middle of its tap's height
+		Row = 18, -- a line of the card
+		Slide = 0.16, -- seconds: the card over the Voidkin, and back
+		Mark = 14, -- a cell's corner seat: the up arrow, the worn tick
+		Card = { Corner = 4, Pad = 10, Cell = 56, Close = 14, Title = 16 }, -- the close's X drawn this size in a touch
 		Salvage = { "", "Common", "Uncommon", "Rare", "Epic" }, -- the salvage control's steps, in order: "" is off
-		-- BONE (research's fix 1, Modulo's tools/blender/inventory_directions.py): warmed porcelain, ink words, dark inlays.
+		-- LACQUER (A's palette, Modulo's tools/blender/inventory_directions.py): warm black, brass hairlines, bone words.
 		Palette = {
-			Top = Color3.fromHex("#BFB5A2"),
-			Foot = Color3.fromHex("#ADA28D"),
-			Ink = Color3.fromHex("#1B1814"),
-			Soft = Color3.fromHex("#3F3A32"),
-			Faint = Color3.fromHex("#5A5347"),
-			Line = Color3.fromHex("#8F8572"),
-			Card = { Color3.fromHex("#CFC6B4"), Color3.fromHex("#C4BAA7") },
-			Well = { Color3.fromHex("#1C1A1F"), Color3.fromHex("#0D0C0F") },
-			Umber = { Color3.fromHex("#33220F"), Color3.fromHex("#160E06") }, -- a Legendary's inlay
-			Lit = Color3.fromHex("#F3EFE6"),
-			Belt = Color3.fromHex("#B3A894"),
-			Slot = { Color3.fromHex("#A39985"), Color3.fromHex("#978C78") },
-			SlotMark = Color3.fromHex("#6A6254"),
-			OnWell = Color3.fromHex("#D8CFBE"),
-			Up = Color3.fromHex("#0B572D"),
-			Down = Color3.fromHex("#882C1C"),
-			Rarity = { -- a rarity's word on the porcelain, deepened to 4.5 to 1 (Legendary's 3.85, bold)
-				Common = Color3.fromHex("#3B3F48"),
-				Uncommon = Color3.fromHex("#0A532A"),
-				Rare = Color3.fromHex("#1A4687"),
-				Epic = Color3.fromHex("#5B2B8F"),
-				Legendary = Color3.fromHex("#6B4D08"),
-			} :: { [string]: Color3 },
-			Band = { -- a rarity's enamel on its inlay
+			Top = Color3.fromHex("#1C1713"), -- the room, top to foot
+			Foot = Color3.fromHex("#0C0A08"),
+			Brass = Color3.fromHex("#C9A56B"),
+			BrassDim = Color3.fromHex("#5E4C34"), -- the hairlines
+			Text = Color3.fromHex("#F0E8D7"),
+			Soft = Color3.fromHex("#AEA390"),
+			Faint = Color3.fromHex("#6E6556"),
+			Ink = Color3.fromHex("#17120E"), -- a word on bone
+			Field = { Color3.fromHex("#221B16"), Color3.fromHex("#16110E") }, -- the card
+			Well = { Color3.fromHex("#110E0B"), Color3.fromHex("#070605") }, -- a cell
+			Umber = { Color3.fromHex("#2E1E0E"), Color3.fromHex("#140C05") }, -- a Legendary's cell
+			Seat = Color3.fromHex("#0A0807"), -- under a corner's mark, and the card's Combat Power
+			Up = Color3.fromHex("#7CF0A4"), -- the kit's GOOD: a gain
+			Down = Color3.fromHex("#FF7A66"), -- the kit's BAD: a loss, only ever as digits
+			Rarity = { -- a rarity's word on the lacquer
 				Common = Color3.fromHex("#9AA0AC"),
+				Uncommon = Color3.fromHex("#7CF0A0"),
+				Rare = Color3.fromHex("#6FB6FF"),
+				Epic = Color3.fromHex("#D29CFF"),
+				Legendary = Color3.fromHex("#FFD777"),
+			} :: { [string]: Color3 },
+			Rim = { -- a rarity's rim, tint and light on a cell (AR6's `rim`)
+				Common = Color3.fromHex("#8A909C"),
 				Uncommon = Color3.fromHex("#7CF0A0"),
 				Rare = Color3.fromHex("#6FB6FF"),
 				Epic = Color3.fromHex("#D29CFF"),

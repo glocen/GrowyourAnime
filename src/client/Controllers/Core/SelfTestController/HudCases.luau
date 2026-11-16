@@ -498,6 +498,9 @@ function HudCases.Cases(given: Given): { any }
 					return Screen.Current() == "Voidkin"
 				end))
 				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				-- It opens on the Items page (TR28); the Voidkin's cards stand on Overview's strip.
+				VoidkinScreen.Show("Overview")
+				t.Wait(0.1)
 				local other: TextButton? = nil
 				for id in view.Voidkin do
 					local cell = VoidkinScreen.Find(id)

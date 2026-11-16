@@ -2562,12 +2562,34 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
   - A's motion: the contents rising 8 points, and the target's ring drawn round once;
   - the rail in brass (one rail for every page);
   - the preset's dropdown;
-  - the Emblems, Jewels and Stones pages.
+  - the Emblems, Jewels and Stones pages;
+  - with the third column: the totals with nothing chosen, and A's "No <Class> weapon" line (the block has no room for them; the Overview shows the whole sheet).
 - **Acceptance:**
   - the Items page's case rewritten for the ledger (all fourteen, the target ringed in its column), passing in this window and on the smallest phone;
   - the TR20 card case, the TR17 rail word and TR28's five across all passing;
   - the design's logic case passing;
   - stills from the player's camera for research: a full bag, a long name, another class's weapon, the empty bag, the smallest phone and night.
+- **The director's words on A's sheet, 2026-11-16, by 21:32:**
+  - "the empty gears slot decal need a rework it sooo simple like the chest arm  shoulder". This covers the empty slot's mark, slot by slot (A's sheet draws it with `inventory_directions.py`'s `empty_mark`). The marks are an asset for Modulo, and research opens its request. Until they come, the block's empty slot keeps C's seat as a stand-in.
+  - "Also the inventory first tab should be a "all" featuring everything than gears etc". This covers the first tab. The game's strip already opens on All, which holds the gear, the chests and the shards, and the rebuild keeps it so. A's "Gear" first tab isn't carried.
+- **Built (Faber, 2026-11-16, by 22:28):**
+  - The page is `src/client/UI/VoidkinScreen/Bag.luau`, rewritten; its numbers are `Config.Hud.Bag`.
+  - The lacquer lies under the figure's stage, in the screen's frame.
+  - The chests show AR21's pictures, uploaded and logged (`Definitions.Chests`' `Image`).
+  - The empty slots show AR22's 20 marks, uploaded by 22:20, at 32/44 of the well in #6E6556, 0.1. A hand's mark is the shown Voidkin's class.
+- **Faber's calls (tier 1, for research's pass):**
+  - **The card lists only the lines it changes,** then "No change" if none.
+  - **The smallest phone:** six slots a touch tall need 264 px and the room has 262. So the column pitch shrinks: each slot keeps its whole 44, and neighbouring taps overlap by under a rendered pixel.
+  - **The kinds strip fades** where it hides a chip, so a cut chip no longer reads as a stray dot.
+  - **The stage keeps** Overview's cool grey panel on A's warm lacquer.
+  - **The target's ring:** in the block the card covers the doll, so the ring shows only once the third column comes.
+- **Checks:**
+  - type check 0 new;
+  - logic 24,081/0 offline (the design case checks a chest's picture is its tier's and in the kit);
+  - the Items case 104/104, with the marks and the strip's fade checked in this window and on the smallest phone;
+  - TR20 36/36;
+  - TR17 256/256.
+- **Stills** (`build/scratch/faber/stills/tr28-*.jpg`, via the manual case "Take: TR28"): empty, full, long, other, chests, phone-doll, phone. There's no night still (the director, 2026-11-15: no day/night checks).
 
 ## TR29. The Tower's run, in grey (Faber)
 

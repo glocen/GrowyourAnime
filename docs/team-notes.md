@@ -15,12 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
 - **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 02:50, on Fable 5.2.
-- **At research's verdict: AR17's kit, in the void's own** (AR17, "The kit, in the void's own"), on the director's word read between 02:39 and 02:45 by the clock: no ground lantern outside Lantern Row. A crack of the void's light down the Strip to a great split shard over the crossing, shard lamps, a sealed gate at each end, outcrops, the far shards: 17,122 triangles and 7 lights by the plan, on the base kit's pictures. Four pictures went to the director at 02:47. Then Faber's install, which needs a third kit laid.
-- **Delivered: the Day sky** (AR5, section 2b), on the director's word read at 02:02 and Faber's answers: six faces in Dusk's names and size, the sun painted in them at `Config.Lighting.Toward` (the engine's disc 0), and a Day block of seeds in `sky/lighting.json`. For Faber's upload and install, and research's pass. Painted again with less mist, and the Atmosphere's seeds thinned, on the director's word read at 02:16 ("a bit to much atmosphere imo like that mist is a bit to much"). **Not seen in the engine.** The director has the second sheet and hasn't spoken on it.
-- **Installed by Faber, at research's one verdict in the game:** AR16, AR15's Door and Training machine, the Door's festival layer and the sleeping Tower. **Cut in Eclipse** for Faber's build (AR12): Power's bar and the reveal's plate.
-- **Beside it, in research's order:** AR6's batch 2, the eight shared kinds in grey on one sheet; Watt's clips and Ground Wire's look; batch 3, the eight weapons; Scarf Step's blockout when Faber calls (AR10, section 5).
-- **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked.
+**Modulo (assets).** 2026-11-16, 14:24, on Opus 5.5.
+- **Delivered, for research's verdict and Faber's read: the mobile inventory, three directions** (AR18; `build/handoff/UI/inventory/`): A, Lacquer, the ledger; B, Nocturne, the ring; C, Porcelain, the case, on research's brief. The content check passed; mockups only.
+- **Next, in research's order:** the generator (2 or 3 Stage I options, each with its line to Stages II and III, from the game's camera), then AR17's three fixes; its install waits on the base's new size.
+- **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.
 
@@ -114,6 +112,13 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 14:24. The mobile inventory, three directions (Modulo)
+
+- **What changed:** three phone-landscape directions for the bag in the Voidkin screen, each in three states (a full bag with a long Legendary name, a Healer choosing a Warrior's sword, an empty bag): A, Lacquer, the ledger; B, Nocturne, the ring; C, Porcelain, the case, the one on research's brief. Combat Power's change sits under the item's name in all three.
+- **Where:** AR18; `tools/blender/inventory_directions.py`; `build/handoff/UI/inventory/` (`inventory_glance.png` shows all three at phone size).
+- **For research:** the verdict on composition and usability. A and B leave the brief on purpose, each saying why and what it costs. **For Faber:** the feasibility read.
+- **Open:** the tabs are the bag's kinds as `docs/design.md` has them; the brief's list waits on the nine points.
 
 ### 2026-11-16, 02:50. AR17's kit, in the void's own (Modulo)
 

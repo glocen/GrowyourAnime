@@ -7233,6 +7233,63 @@ From `strip_out`, `down`, `far`, `crossing` and `gate`, stills only; motion wait
   3. From a far gate the great shard is lost in the dusk's haze (`far`). Check it again at the base's new size (part 7 of `docs/research/rework-2026-11-16.md`: the row is 29% shorter); if it's still lost, the light inside it gets brighter, not bigger. Serves the feel line for all eight gates.
 - **The install waits on the base's new size,** since the plan moves with it (`docs/research/rework-2026-11-16.md`, part 7). The pieces stand; only the plan is redone. Then one verdict in the game, in motion.
 
+## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
+
+Research's order, read at 13:47 by the clock, on the director's package of 13:41: "2 or 3 genuinely distinct directions, before anything is built. Phone landscape, each with its own palette and composition." Judged against research's brief (`docs/research/rework-2026-11-16.md`, part 5): research judges composition and usability, Faber judges feasibility.
+
+- **Feel line, proposed:** on a phone held sideways, the player taps a sword in the bag, and under its name, before anything else, they read what it does to their Voidkin's Combat Power. Equip waits under the right thumb, and the slot it fills is in view while they decide.
+- **The block contains:** three directions, each on one sheet in three states:
+  1. Rook, a Warrior, with a full bag, choosing a Legendary with a 24-character name against the sword he holds.
+  2. Lyric, a Healer, on the same preset, choosing a Warrior's sword. Her hands' slots stand empty.
+  3. A new account with an empty bag.
+
+  Each sheet shows the left rail, the Voidkin and its fourteen slots, the bag's kinds, the grid, and the comparison: Basic and Battle, each value with its change, and the change to Combat Power.
+- **Waits:**
+  - the game's text face (Blender's stands in);
+  - motion, which is written in each sheet's notes;
+  - the Emblems, Jewels and Stones pages (only their tabs exist);
+  - sort and filter;
+  - the attributes' final names (point 1 of the nine).
+- **The directions** (`build/handoff/UI/inventory/inventory_A.png`, `_B`, `_C`; `inventory_glance.png` shows all three at phone size, 1 px a point; drawn by `tools/blender/inventory_directions.py` from our gear icons, our icon kit and the Voidkin's own models):
+  - **A, Lacquer: the ledger.**
+    - Warm black lacquer, brass hairlines, bone words.
+    - Three columns are always on: the Voidkin between two columns of slots, the grid, and the chosen item against what it replaces.
+    - *Against the brief:* nothing slides over the Voidkin, so nothing opens or closes, and the slot that changes stays in view.
+    - The price: cells at 45 points, a figure 168 tall, and the densest comparison, its Basic Attributes two to a row as short words.
+  - **B, Nocturne: the ring.**
+    - Cold slate night, silver lines, ice-white light.
+    - The Voidkin stands in a ring of its fourteen slots, the void's ring made the frame. The bag's kinds are a column of marks under the right thumb.
+    - *Against the brief:* the item's sheet rises over the bag's foot rather than over the Voidkin, so the ring stays in view with the slot that changes lit.
+    - The price: two bag rows while the sheet is open, and cells at 50 (46 while open).
+  - **C, Porcelain: the case. On the brief.**
+    - Pale porcelain and ink, each item in a dark inlay. It's the one light screen in a dark game.
+    - The slots are one belt across the top in three groups, always in view, with the target ringed.
+    - Two zones: the grid, five across at 60, and the Voidkin's half, its figure and its totals. A chosen item's card slides over that half and closes back.
+    - The risk: a light screen at night, in a dark game.
+- **In all three:**
+  - Combat Power's change sits right under the name (`docs/ui.md`).
+  - Gains are green and losses red, red only as digits.
+  - Rarity sits on the cell's edge, never as a fill.
+  - The up arrow marks an item that raises Combat Power.
+  - An item the class can't wear is dimmed with the class mark. Its card says "Warrior only" in words with the mark, and Equip is off.
+  - The empty bag shows one quiet line.
+  - Every touch target is 44 or more.
+- **The tabs are the bag's kinds,** as `docs/design.md`, "The bag" has them [D, 2026-11-12]. The brief's list (All, Weapons, Armour, Jewellery, Chests, Materials) drops into any of the three strips as it is, if the nine points take it.
+- **Stand-ins:** every number, the attributes' names, the text face. Roblox's buttons, the island and the corners are drawn where an iPhone puts them.
+- **Content check:** PASS, 2026-11-16, on the drawn sheets at full size and at phone size, with the script.
+  - Red shows only as digits.
+  - "Warrior only" is in the palette's text colour with its mark.
+  - Every picture traces to our own scripts: the gear icons, the marks, the portraits, and the figures from Rook's and Lyric's models.
+  - The frames, the ring and the belt are plain shapes, and no game's arrangement is copied.
+  - No word is on the list.
+  - Condition: a direction built and uploaded gets its own check on its exported images, with a 64 px sheet over dark.
+- **Four facts.**
+  - Implemented: three directions, mockups only, nothing in the game.
+  - Tested: Modulo's own pixel read of the cells, rings and edges.
+  - Visually reviewed: Modulo's read at full size and at phone size. Research's verdict and Faber's feasibility read are not given yet.
+  - Director-accepted: no.
+- **Time:** 13:47 to 14:25 by the clock, seven renders.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

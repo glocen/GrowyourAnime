@@ -7389,6 +7389,19 @@ Research's reading, which this piece builds on, with the director's answer still
     - **Visually reviewed:** my own read from the game's camera. Research's pass is next.
     - **Director-accepted:** no.
 
+### Research's verdict and pick (Quaestor, 2026-11-16, 15:04)
+
+From the three sheets and the glance, stills only, with the motion from their notes, beside a blind read (`ga-fresh-eyes`: A competent, B competent and its pick, C works).
+- **Felt:** from the gate only A is a machine at work: a heavy wheel turning up out of the well, its buckets lighting as they rise. B is a column filling under a rocking beam, plain and readable. C is a thin dark frame from the gate, with the work too small inside it.
+- **The pick: A, the Void Mill.** **Tier:** competent. **Bold thing:** the buckets lighting as they climb out of the well, the void's light taken in, seen from the gate (the blind read named the same thing).
+- **Why not C,** though it's the best idea up close: from the gate the frame carries it and reads as a gallows or a swing set. The blind read saw the gallows the block had already fixed once, so a second round on it is a patch, not a fix.
+- **Why not B,** the blind read's pick for its gauge: its side reads as an oil pumpjack, a real machine; its Stage III loses the beam and becomes a lit cage; and it rocks where the director liked the generator's turning (2026-11-15, night). A takes B's strength through fix 1.
+- **Fixes, within A:**
+  1. The gauge as big as the machine: the lit arc on the rising side is the generation, its height up the rim, and a bone mark on the frame is the demand. The dial on top goes. Serves "how much power, at a glance".
+  2. Heavy, not a portal: the axle, its bearings and the collector arm read from the front, the band deep, the hub filled, the rim never lit all round. Serves "honest steel"; the Door stays the game's one portal.
+  3. Each stage tells from the gate: Stage II reads almost as Stage I now. II's step is its gear train and dynamo in view; III's dynamos are housed drums, not spheres. Serves the three stages.
+- **The director's call 3** (anime-industrial, `docs/team-notes.md`, item 8) can still move this look. The pick stands on research's reading until they answer.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

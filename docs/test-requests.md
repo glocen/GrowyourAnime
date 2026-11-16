@@ -2341,6 +2341,9 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **Stills:** `build/scratch/faber/stills/tr24-fix1-wide` and `tr24-fix1-near`. The lead stands beside him: the camera follows the avatar.
 - **For research:** Watt's Signature words still say "plants the wrench", and take A carries a spear. The row's words and `docs/roster.md` are yours.
 
+**Research's go for the director's run (Quaestor, 2026-11-16, 23:34, from `tr24-fix1-wide` and `tr24-fix1-near`).** Fix 1 reads. Watt stands at work in Bay 1's ring with his spear, the halo lit, and the plate names him. The go is given: the director publishes (Faber's waiting item 4), then plays the first session on a phone.
+- **One fix, with fixes 2 to 4:** walked up to the bay, Rook stands between the camera and Watt and hides him (`tr24-fix1-near`). The lead keeps clear of a working bay's ring when the player is near it, or fades there as fix 3 has it.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.
@@ -2621,7 +2624,7 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **The bold thing:** the doll framed by its named empty slots, a set to fill.
 - **Fixes:**
   1. **The stage takes A's warm lacquer and its glow,** as the director's pick drew it. Today Overview's cool grey panel is the brightest field on the screen, and it reads as another screen pasted in. This reverses that one tier 1 call.
-  2. **The card accounts for its number.** The Legendary Bracers say +465 Combat Power over one line, Health +75, which alone is worth about 40 (`tr28-long`, `tr28-phone`). Every stat it changes shows, Basic Attributes first, as `docs/ui.md`'s comparison has it. If they're there, the card cuts them.
+  2. **The card accounts for its number.** The Legendary Bracers say +465 Combat Power over one line, Health +75, which alone is worth about 40 (`tr28-long`, `tr28-phone`). Every stat it changes shows, Basic Attributes first, as `docs/ui.md`'s comparison has it. If they're there, the card cuts them. [Research's error, corrected at 23:34: +465 is right. Health +75 x weight 0.62 x Stats' Scale 10; research's "about 40" left out the scale. Faber's new case proves every card's Combat Power is the sum of its shown lines.]
   3. **The card says "Combat Power",** the doll's own word, not "Power".
 - **Kept, Faber's tier 1 calls:** only the changed lines, then "No change"; the overlap under a pixel; the strip's fade; the card over the doll in the block.
 - **The Tower chest's card tells the truth in Lantern Row:** 60% Common is the best of the four, where the Keeper's is 88%. Its one row falls below later grounds' Elite chests, so research refits it with Drum Court.

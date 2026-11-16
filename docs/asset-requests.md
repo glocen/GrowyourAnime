@@ -7635,6 +7635,17 @@ From the director's word at 16:50 (`docs/decisions.md`, the row on the mist): "i
   - **Visually reviewed:** stills only, my own read. Research's pick waits.
   - **Director-accepted:** no.
 
+### Research's pick (Quaestor, 2026-11-16, 17:23)
+
+From `base_mood.png` and `base_mood_shard.png`, at the player's camera.
+- **Felt:** only C stops the base feeling like night at every hour: a clean pale yard by day, a pastel dusk, a moonlit night. The well's black and the void's violet light are still the strongest things in it. A only clears the air, and B is C with dusk and night still heavy.
+- **The pick: C, bright hours.** **Tier:** competent. **Bold thing:** a light world with the void as its one dark: the black well, ringed in its light.
+- **No round 2 sheet:** its numbers go to Faber as seeds, judged in the game from the player's camera, one verdict there.
+  1. C's fill as round 2 has it: a rose-lilac dusk and a silver night (the numbers above), not C's cobalt, so the yard's paint shows at night. Serves less somber, with night still night.
+  2. The crossing's empty lots lifted (#6E7290), and the dark shards beside the crossing in their violet, painted for distance as B's far ones are, so no black spikes stand against the day sky. Serves less somber.
+  3. The great shard keeps today's own glow, Modulo's lean, so the lift isn't doubled on it and it holds its shape at night.
+- **Who:** Modulo paints the lots and the dusk and night faces again for the base and the Strip; Faber sets the lighting and captures day, dusk and night for research's pass in the game.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -2303,6 +2303,18 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - At work, no Watt stands at Bay 1: the plate, within 13 studs, says "Watt · 18 kW" (`14`). The meter reads "18 / 0 kW".
   - From the first stills (`01` to `03`): chevrons over the starters at arrival, the starters plain lit cubes, the reveal opening by itself, the lead on the camera's right.
 
+**Research's verdict on the read (Quaestor, 2026-11-16, 21:20, from the stills).**
+- **Felt:** arrival to the gate now runs on its own, the Door found and the Row's fight in view, until the bay. There the loop's second pillar, a Voidkin at work, can't be seen.
+- **Met:** fixes 1, 2, 3 and 10, and the gate's line.
+- **The driver's findings, ranked:**
+  1. **Watt at work is seen.** The worker stands at its bay, working, and the objective's chevron sits over the bay it names. Today it says Bay 1 while the plate in view says Bay 2 (`12`), and no one stands at Bay 1 (`14`). Serves the Build beat.
+  2. **The edge arrow reads as an arrow on the sky and the pale floor.** Today it's a small lilac stroke (`13`, `14`). Make it larger, an arrow's shape, with a dark backing. Serves wayfinding, the first session's spine.
+  3. **The starters read as Void Shards,** the break card's crystal, not lit cubes (`02`). The first thing a player picks should be what it says.
+  4. **The meter never reads "18 / 0 kW",** eighteen out of nothing. When nothing draws, it shows what's made. Its words stay `docs/ui.md`'s, "Power".
+  5. **Watt's grey reveal** (`11`) belongs to the roster's second Voidkin, not to this piece.
+  6. **Kept as they are:** the chevrons over the starters, the reveal following the break, and the lead on the right.
+- 1 to 4 are this piece's fixes.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.
@@ -2648,6 +2660,15 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
 - The ring reads as a faint pale disc, with no word on it.
 - After 11 fast floors the results say "+0 Credits" and "No chests this run", which is right by the fit, but the screen doesn't say why. It shows two Close buttons.
 
+**Research's verdict on the read (Quaestor, 2026-11-16, 21:20, from the stills).**
+- **Felt:** the climb runs as a block. But the way in and the way out don't explain themselves: nobody finds a faint disc, and a new record that pays "+0 Credits" reads as broken.
+- **Tier:** works, for a block.
+- **Fixes:**
+  1. **The ring reads as the Tower's way in from the base:** a column of light rising from it, the feel line's own, with its name. In grey, a tall light is enough.
+  2. **The results say why a run paid nothing:** one line that easy floors pay nothing and rewards start where the fights get hard, with that floor for the lead. The words are the game's.
+  3. **One Close,** at the bottom, under the thumb.
+- **The grey foes and platform** are the block's.
+
 ## TR30. The generator's stages (Faber, on AR19)
 
 Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/design.md`, "The base", "Three stages for every machine"), on the director's yes of 2026-11-16, 16:50. Research's answer is (a): the generator takes the stage of a machine at the base's ceiling. Modulo's pieces and swap table are AR19, "Stages II and III as kit pieces" (e516da7).
@@ -2698,3 +2719,8 @@ Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/d
   - The whole suite, and the player-camera check.
 
 **Read on the unlocked screen (Faber, 2026-11-16, 21:02 to 21:03, by the PC's clock).** Stills `build/scratch/faber/stills/tr30-stage2` and `tr30-stage3` (scratch), for research's verdict. The stages swap at base levels 2 and 3, and the pinion turns at 2.4 times the wheel in motion. The mill's self-test checks and the whole suite pass on render (27847da).
+
+**Research's verdict on the read (Quaestor, 2026-11-16, 21:20, from the stills).**
+- **Felt:** Stage III reads as the generator grown, not swapped: the gear and the side housings arrive on the same wheel.
+- **Tier:** competent.
+- **No fixes.** Visually reviewed in stills only: the motion is unseen, and the case's 2.4 is the measure until a capture shows it.

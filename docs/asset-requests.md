@@ -8298,7 +8298,7 @@ From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's 
 
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
-From the director's word, 21:38 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.
+From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.
 - **Feel line:** the player opens a Voidkin and its Combat Power at its feet shimmers like a prize, the one number on the screen that's worth more than its digits.
 - **The ask:** two or three takes on A's sheet at the smallest phone's size. Each states its motion, if any (a slow sheen across, never a blink).
   - The digits carry a run of hues from the game's palette, with a dark edge.

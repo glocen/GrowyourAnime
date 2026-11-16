@@ -2,10 +2,14 @@
 
 Research, 2026-11-15, on the director's two asks (`docs/decisions.md`, 2026-11-15: "the game lack environnement sfx ... we should study how to make good sfx like jujusu infinite"; then "research about pro sfx, anime sfx like fire force, pro roblox dev sfx and if we need an app such as audacity"). The studio's method stays `handbook/visuals/audio.md`; this file is what the game needs and the changes to how we pick. Labels: SOURCED (read at the link), UNVERIFIED (nobody acts on it yet). Nothing here is tested in Studio.
 
+**Updated 2026-11-17, 00:39,** after the director's phone run (`docs/decisions.md`, by 00:17: "no SFX that add depth" and "do deep research on how to make SFX in a game what need or dont FOR A roblox anime games"). Two read-only studies added what's worth what, music, phone speakers, what to skip, and the engine's facts since. Studies of excerpts only say so.
+
 ## Where we are
 
 - **Nine cues in the whole game:** Haymaker's strike and the reveal's eight (`src/shared/Config/Sounds.luau`, `docs/asset-log.md`). Every other moment is silent: steps, the Shades, every other attack, the grounds, the base, the screens.
 - **Every pick was made by measure.** No teammate can hear, so a waveform's shape chose each one and no ear accepted it. The director's verdict: "meh", and on 2026-11-14 "Horrendous".
+- **Made and never heard:** Modulo's 33 takes for the six-cue test (`docs/asset-requests.md`, AR13). Their upload waits on the director's word.
+- **No music at all,** and no volume setting. Pass 1 had neither (corrected below).
 - **Only two libraries were searched:** ProSoundEffects and APMOfficial. The search tool takes any author (`handbook/visuals/audio.md`, "Search"); we ranked those two first and stopped there.
 
 The fault is less the nine picks than the process: one candidate per cue, chosen blind, and most of the game never briefed. The fix is coverage, sets, and the director's ear early on several candidates.
@@ -20,8 +24,8 @@ The director's example, Jujutsu Infinite, has nothing written about its sound: n
 4. **The important sound pops; the rest gives way.** MK1 and God of War duck lesser sounds under the big moments with side-chain compression. Overwatch and Diablo IV rank sounds by importance and cap voices. SOURCED: the MK1 and God of War pages; [Overwatch, GDC 2016](https://gdcvault.com/play/1023010/Overwatch-The-Elusive-Goal-Play), from the abstract. **Ours:** a priority table (below). The lead's hits and a Shade's tell come first, ambience last, and each cue has a voice cap.
 5. **The world breathes under it.** Ghost of Tsushima runs its ambience from data (what plays where and how often), places spot sounds by hand only where they matter, and drops ambience under tense moments. SOURCED: [A Sound Effect, 2020](https://www.asoundeffect.com/ghost-of-tsushima-sound/). **Ours:** each place gets one bed and a few spot sounds: the grounds' festival, the base's power plant, the Breaker.
 6. **Nothing sounds the same twice.** Pitch spread about ±10% and volume 0.85 to 1, with at least three takes for steps. UNVERIFIED: tutorials only, though they agree with each other and with Diablo IV. **Ours:** the handbook's pitch spread on every cue, and three takes for each step surface and each common impact.
-7. **Phones are the target.** A phone speaker gives very little low end, so weight has to live above it. UNVERIFIED on numbers. It agrees with the handbook's "keep a cue's weight above 250 Hz". **Ours:** the director's acceptance pass is on a phone.
-8. **Loudness has a target.** Sony's guidance was −18 LUFS for portable devices, ±2 LU. SOURCED: [Designing Sound, 2012](https://designingsound.org/2012/07/30/video-games-and-loudness-standards-interview-with-sonys-garry-taylor/). **Ours:** the handbook's levelling to −14 dBFS per cue stays. The whole mix's level is measured offline, as the reveal's was.
+7. **Phones are the target.** A phone speaker gives very little low end, so weight has to live above it. Modern phones struggle under 200 Hz and roll off fully by 100 Hz. A bass's growl and knock lives at 250 to 700 Hz, and saturation adds harmonics EQ can't (SOURCED, a vendor guide: [LANDR](https://blog.landr.com/make-bass-audible-phone-speakers/)). Older Androids measured rolled off from about 1 kHz, an iPhone 7 Plus from about 400 Hz (SOURCED, excerpt: [Audiokinetic](https://www.audiokinetic.com/en/community/blog/loudness-and-frequency-response-on-popular-smart-phones/)). A phone's amplifier cuts deep bass near its limit, so a hit heavy in sub-bass comes out quieter overall (SOURCED, excerpt: [Electronic Design](https://www.electronicdesign.com/technologies/analog/article/21805959/make-your-audio-system-sound-better-with-smart-amp-technology)). The ear hears a missing low note from its harmonics (SOURCED, abstract: Larsen and Aarts, *JAES* 2002). **Ours:** every cue's weight sits at 250 to 700 Hz with a sharp attack. Sub-bass is only ever a saturated extra layer. Nothing important rides on panning, and tails stay short, their reverb cut below 200 to 400 Hz. The director's acceptance pass is on a phone, with the iPhone's silent switch off: users report it mutes Roblox.
+8. **Loudness has a target.** Sony's guidance was −18 LUFS for portable devices, ±2 LU. SOURCED: [Designing Sound, 2012](https://designingsound.org/2012/07/30/video-games-and-loudness-standards-interview-with-sonys-garry-taylor/). ITU-R BS.2434 (2018) says the same for portable game devices (SOURCED, excerpt). **Ours:** the handbook's levelling to −14 dBFS per cue stays. The whole mix's level is measured offline, as the reveal's was.
 
 ## Pro and anime craft, in recipes
 
@@ -64,6 +68,37 @@ The director's second ask, 2026-11-15: "research about pro sfx, anime sfx like f
 | A Shade bursts | a paper rip (150–300 ms), a distorted cardboard thump as the pop, a bright shimmer tail (400–800 ms), scattered paper ticks | the shimmer in the music's key; short tail so a pack doesn't pile up; voice cap |
 | A reward | 2–3 rising tones in the key, on the beat, a crystal sparkle, a soft swell; the reveal: a riser, a short silence, the chime | gentle compression; reverb tail about 1–1.5 s |
 
+## What sound is worth, music, and what we skip (2026-11-17)
+
+- **Sound raises how good the picture looks.** In a study of 108 people, better audio raised the perceived quality of the same visuals. SOURCED (abstract): [Storms and Zyda, *Presence*, 2000](https://calhoun.nps.edu/entities/publication/1be1a67d-88bc-433f-908d-0914c080de2e). So the director's "far to look like a game" is partly a sound finding.
+- **Effects carry the feel; music adds to them.** Turning effects off changed every dimension of the Game Experience Questionnaire. Music only worked with them, on tension and flow. SOURCED: [Nacke, Grimshaw and Lindley, 2010](https://ub-ir.bolton.ac.uk/esploro/outputs/journalArticle/More-than-a-feeling-Measurement-of/999710108841), one shooter study.
+- **Sound alone doesn't keep players.** In two casual games, removing music and effects had little or no effect on play time; animation did. SOURCED (abstract): [Andersen et al., CHI 2011](https://grail.cs.washington.edu/projects/game-abtesting/chi2011).
+- **Most mobile players say they play muted:** 91% of 2,400, self-reported, casual-heavy. Young players with long sessions keep it on most. SOURCED: [TapResearch, 2022](https://blog.tapresearch.com/how-sound-preferences-impact-player-engagement). **Ours:** sound never carries anything a player needs. A Shade's tell also shows.
+- **Win sounds inflate how big a win feels** (players overestimated their wins 24% against 15%). SOURCED: [Dixon et al., 2014](https://pmc.ncbi.nlm.nih.gov/articles/PMC4225056), a slot-machine study. **Ours:** a Common reward stays small. Sound never dresses a paid roll (rule 4).
+- **The genre ships sound as a feature.** Anime Vanguards' Update 5 listed a new soundtrack, and Blox Fruits 17.3 "Footstep sounds have been added". SOURCED (excerpts): [Sportskeeda](https://www.sportskeeda.com/roblox-news/anime-vanguards-update-5-patch-notes), [the wiki](https://blox-fruits.fandom.com/wiki/Updates/17.3). Roblox's own Park template runs one bed loop with 27 bird calls, 6 rustles and 6 gusts fired at random over it. SOURCED: [DevForum, 2025-02-25](https://devforum.roblox.com/t/3507022). Licensed anime games lift the show's own sounds, which is closed to us: our anime feel comes from craft.
+
+**Music** (new: pass 1 had none).
+- **Why now:** a silent world reads as unfinished, and licensed tracks cost an afternoon. Per hour, it's the most "real game" we can add. INFERRED.
+- **Where from:** Roblox's licensed music. APM since 2018 ("royalty free for use on the Roblox platform"), DistroKid since 2024-09-19, and Too Lost since 2026-07-27. SOURCED: [2018](https://devforum.roblox.com/t/130570), [2024](https://devforum.roblox.com/t/3164792), [2026](https://devforum.roblox.com/t/4760221). Search with `AudioSubType = Music`. Rule 2's "Roblox's audio library" covers it.
+- **The terms,** quoted on the forum from the Terms of Use, 5.a.iii: up to 250 licensed tracks in one game at a time, no "streaming service or music library" inside it, and never charging to hear a track. SOURCED (forum quote, 2024-12-15): [DevForum](https://devforum.roblox.com/t/3305661). The Terms and the help page refused fetching. No line excludes monetized games, and none says they're included: INFERRED allowed. Never a jukebox, a radio or a paid track.
+- **Trailers** need music of their own: community answers say the licence is in-game only (no staff reply, 2018).
+- **Ours:** a base track, a grounds track and a keeper track, crossfaded per place, on their own fader. It ducks under the reveal (TR4) and under signatures, never under ordinary hits. Each has an alternate in Config, since licensed tracks have been blocked by mistake (forum, 2023). The track picked sets the key the reward sounds wait on (AR13's A and E). Never a track that sounds like a known anime score (rule 3).
+- **Its own effects in the music's key:** Hi-Fi Rush's "Inst FX" gives attacks musical sounds (SOURCED, excerpt). **Ours:** a signature's hit carries one pitched layer in the key, after the reward sounds.
+- **Later, not now:** music that adapts to play. Zenless Zone Zero adds a rap section to the pull's music when an S-rank is coming (SOURCED: [interview, 2026-02-13](https://playday.one/2026/02/13/1v1-an-interview-with-san-z-studio-on-the-sounds-of-zenless-zone-zero)). Swapping to the keeper's track gives most of it.
+
+**What else the anime feel takes:**
+- **Near-silence before a hit** makes it feel louder at the same level. On a phone, contrast is the only way to make a hit bigger without clipping. SOURCED, a trailer guide (excerpt); Rob Bridgett's chapter on dynamic range and silence.
+- **Misses get whooshes too,** since most of a fight is things not connecting.
+- **The anime bass drop** is a saturated knock with a hard attack on a phone, never sub-bass.
+- **No sample twice in a row:** random with no immediate repeat. SOURCED: [MusicRadar](https://musicradar.com/tuition/tech/how-to-avoid-the-machine-gun-effect-using-round-robin-sampling-632302).
+
+**What we skip:**
+- **Voices.** Speech can't be published as a sound effect, actors cost money, and voices risk imitation.
+- **Steps for every surface.** That's Celeste's, a platformer where movement is the game. Ours fights on its own: one set per place.
+- **Others' fights at full volume.** From another player's lead, only its hits and bursts play, about 10 dB down, under the voice cap. Every relay is rate-limited by the server.
+- **A jukebox,** acoustic simulation (frame time on phones), and music that adapts beyond the keeper's swap.
+- **No mute:** Music and Effects get their own sliders, which players ask for (SOURCED: [DevForum](https://devforum.roblox.com/t/320826)).
+
 ## Roblox's rules for sounds we make
 
 - **Library sounds are used inside Roblox only.** Edits are allowed "solely within your game", through Studio's sound properties. No Roblox source permits downloading, editing and re-uploading one, and an upload requires that we hold its rights. SOURCED: [Roblox, 2018](https://devforum.roblox.com/t/upcoming-music-changes-and-copyright-related-action/130570), [audio assets](https://create.roblox.com/docs/audio/assets). **So "mix if needed" means layering at runtime:** several library slices, pitch, EQ and timing through the audio graph. Only material we hold the rights to is mixed offline and uploaded.
@@ -88,7 +123,12 @@ The director's second ask, 2026-11-15: "research about pro sfx, anime sfx like f
 
 - **Search every author** (the director, 2026-11-15). Rule 2's order stays a preference: Roblox and its licensed partners first in the ranking. Any author's sound is taken when it's the best by ear. It's logged with its uploader, and gets a licensed alternate where one exists, so a claim is a one-line swap.
 - **Lower risk:** Roblox, its partners, and sound effects published since 2024-05-23, which passed Roblox's copyright detection and moderation, with an ID-verified distributor. SOURCED: [Roblox, 2024](https://devforum.roblox.com/t/public-sound-effects-upload-are-now-available-for-creators/2980704). **Higher risk:** old anonymous uploads, and titles that name a commercial library or another work. The second is already filtered out by the shortlist.
-- **Check that each one plays.** A search returns sounds our game can't play (Roblox staff, 2025-01-10, "intended"). SOURCED: [DevForum](https://devforum.roblox.com/t/assetservicesearchaudio-provides-results-that-cant-be-played-in-experience/3364668). Every candidate is loaded in our place before it reaches the director.
+- **Check that each one plays.** A search returns sounds our game can't play (Roblox staff, 2025-01-10, "intended"). SOURCED: [DevForum](https://devforum.roblox.com/t/assetservicesearchaudio-provides-results-that-cant-be-played-in-experience/3364668). Every candidate is loaded in our place before it reaches the director. Since late January 2025 public uploads and Creator Store free audio play without being added to the game (SOURCED, staff: [DevForum, 2025-01-30](https://devforum.roblox.com/t/3375062)), so fewer fail, and the check stays.
+- **Our group's own uploads need a grant.** A game needs permission to use an audio asset, or it's silent at runtime. A grant is permanent. Staff said in 2023 that group games get no automatic grant. SOURCED: [asset privacy](https://create.roblox.com/docs/projects/assets/privacy), [DevForum](https://devforum.roblox.com/t/2502005). **Ours:** each uploaded cue is granted `Use` to universe 9093907961, and the grant is read back. The bulk API (`asset-permissions-api`, beta) needs a key scope only the director can add.
+- **Studio passing isn't proof.** A moderated sound loaded on the server and played nothing on a live client in a group game. SOURCED: [DevForum, 2025-02](https://devforum.roblox.com/t/3464632). **Ours:** a live client checks every cue id (a preload's `Failure`, or an analyzer's peak above 0) after each publish, which also catches a claimed or deleted library sound.
+- **Loudness matched before every comparison,** because the louder candidate tends to win (practitioners; INFERRED weight high). A one-shot under 0.4 s is levelled by its RMS or its loudest 0.4 s, never integrated loudness, which needs 0.4 s (EBU Tech 3341, pyloudnorm).
+- **The board, for the ear:** candidates under random letters, never titles. The current cue is hidden among them, one deliberately poor candidate too, and "none" is a choice. One earlier pair comes back to check the picks agree, and a phone switch puts a high-pass near 300 Hz on the mix. Each pick is logged, all in a looping fight beat. Borrowed from ITU-R BS.1534's hidden reference and anchor; research's proposal, untried.
+- **Search:** `AudioSearchParams` takes up to 100 a page, sorts by use, trend or date, and still has no uploader filter. Each result carries its creator and whether it's verified, and its `CreateTime` marks the lower-risk uploads by itself. The call has a low rate limit, so it goes in pcall. The Studio MCP's `search_asset` has a price filter: always `"free"` (rule 1). SOURCED: [docs](https://create.roblox.com/docs/reference/engine/classes/AudioSearchParams).
 - **Several candidates per cue, for the ear.** For each cue, research's brief goes to `tools/studio/Audio`, which searches wide and shortlists five by shape. The director clicks through them in the Audition panel during a fight and picks one, or none. A cue is accepted only on that pick.
 - **Anchors set the taste.** The director's first few picks become anchors. Later searches rank candidates by their likeness to the anchor of the same family (attack, decay, the three bands the tool already measures), so the ear teaches the measure. Research's proposal, untried.
 - **A reference by numbers, if the director wants it:** 30 s of combat from the director's example, recorded by the director and kept internal. We measure sound events per action, where the whoosh falls against the contact, and tail lengths. That gives timing, never taste (`handbook/visuals/audio.md`, "Do"). Optional; the ear on our own candidates matters more.
@@ -100,9 +140,18 @@ The builder's calls; these are the facts behind them.
 - **The new audio API is released** (out of beta 2024-09-10). The classic `Sound` stays supported. SOURCED: [Roblox, 2024](https://devforum.roblox.com/t/roblox-audio-api-exits-beta-enhanced-sound-controls-now-available/3153454).
   - `AudioCompressor` has a Sidechain pin for ducking. SOURCED: [docs](https://create.roblox.com/docs/reference/engine/classes/AudioCompressor).
   - `AudioLimiter` responds instantly, where the classic compressor lets a transient through (the handbook's trap). SOURCED: [Roblox, 2024-12](https://devforum.roblox.com/t/3282100).
-- **Layers start together** when each gets the same start time: `AudioPlayer:Play(atTime)` with `SoundService:GetMixerTime()` plus about 0.1 s, per a Roblox audio engineer, 2026-07-25. SOURCED: [DevForum](https://devforum.roblox.com/t/some-looped-audios-make-a-repeating-popping-noise/4751982). That would also answer the handbook's 0.3 s late-start trap differently. Untested by us.
+- **Layers start together** when each gets the same start time: `AudioPlayer:Play(atTime)` with `SoundService:GetMixerTime()` plus about 0.1 s, "sample-accurate, framerate-independent". SOURCED: [the docs](https://create.roblox.com/docs/reference/engine/classes/AudioPlayer), and a Roblox audio engineer, 2026-07-25. That would also answer the handbook's 0.3 s late-start trap differently. Untested by us.
+  - Mixer time differs between machines, so each client schedules a cue from a replicated event, never from the server's clock.
+  - `Play()` doesn't rewind: it resumes, so a quick replay plays nothing. Staff's fix: `Stop()`, set `TimePosition`, then `Play()` (SOURCED: [2026-07-18](https://devforum.roblox.com/t/4743400)). One player is one voice, so a cue keeps a small pool of loaded players, and the pool's size is its voice cap.
+  - Random spread on a one-shot goes through `PlaybackSpeed`, never `AudioPitchShifter`, whose window adds latency off the contact frame.
+  - **Level trap:** Roblox doubled AudioPlayer's volume in 2025 (forced 2025-09-29). Level advice for AudioPlayer from before is 6 dB off. SOURCED: [staff](https://devforum.roblox.com/t/3907391).
+  - A player with `AutoLoad` loads as soon as its asset is set and may unload under extreme memory pressure: check `IsReady` before scheduling, on phones above all.
+  - **Listener trap:** the default listener exists only in games with voice chat. Set `DefaultListenerLocation` to Camera or Character, or emitters are silent (SOURCED: [docs](https://create.roblox.com/docs/audio/objects), staff 2026-04-15).
+  - `AudioEmitter:GetAudibilityFor(listener)` reads 0 to 1. Skipping another player's cue under about 0.05 keeps a full server's voices down (INFERRED).
+  - The docs now call Sound, SoundGroup and SoundEffect "discouraged" in favour of the audio objects. They still work.
+  - **Not yet usable:** `AudioWindSynthesizer`, wind made in the engine (Turbulence, Whistle, Foliage), listed since build 734 with no docs; a candidate for the grounds' wind once released. `AudioStreamWriter`, Luau buffers into the graph, Studio only: if it works, the director could hear our synthesized takes in Studio before any upload. Both unverified.
 - **Acoustic simulation** (occlusion, reverb) is fully released (2026-09-22) and needs the new API. SOURCED: [Roblox](https://devforum.roblox.com/t/full-release-acoustic-simulation-emit-audio-with-presence/4307121). Not for now: it costs frame time on phones.
-- **Steps.** The director hears no steps. Roblox's default character sounds play one plastic step whatever the floor (UNVERIFIED). Games customise them by their own copy of `RbxCharacterSounds`, mapping `Humanoid.FloorMaterial` (SOURCED: [docs](https://create.roblox.com/docs/reference/engine/classes/Humanoid)) to sets. A report of 2026-08-19 says the defaults can't be removed in some games (UNVERIFIED). **Test first in our place:** are the defaults there and audible, and does our own copy replace them? The Voidkin and the Shades are rigs with no steps at all: theirs come from their walk clips.
+- **Steps.** The director hears no steps. Roblox's default character sounds play one plastic step whatever the floor (UNVERIFIED). Games customise them by their own copy of `RbxCharacterSounds`, mapping `Humanoid.FloorMaterial` (SOURCED: [docs](https://create.roblox.com/docs/reference/engine/classes/Humanoid)) to sets. A report of 2026-08-19 says the defaults can't be removed in some games (UNVERIFIED). `SoundService.CharacterSoundsUseNewApi` moves the default character sounds to the new API, and in 2026-04 it broke in older places whose script lacked a child; our copy must match the setting (SOURCED: [DevForum](https://devforum.roblox.com/t/4556965)). **Test first in our place:** are the defaults there and audible, and does our own copy replace them? The Voidkin and the Shades are rigs with no steps at all: theirs come from their walk clips.
 - `AssetService:SearchAudioAsync` replaces the deprecated `SearchAudio`. It can't filter by uploader, so the tool reads each result's creator. SOURCED: [docs](https://create.roblox.com/docs/reference/engine/classes/AssetService).
 
 ## The cues
@@ -119,6 +168,8 @@ Pass 1 is what a first session hears in its first ten minutes, in the order it h
 6. steps;
 7. spot sounds;
 8. ambience.
+
+Music has its own fader beside this list: it ducks under the reveal and the signatures, never under ordinary hits.
 
 ### Pass 1: the first ten minutes
 
@@ -146,6 +197,8 @@ Pass 1 is what a first session hears in its first ten minutes, in the order it h
 | The Breaker works | 1 loop | an electric hum that rises with its share of power |
 | A shard is ready | 1 | a clear chime from the Breaker |
 | The reveal's eight | as TR4 | brought to the director's ear again, beside new candidates |
+| Music: base, grounds, keeper | 1 each, an alternate in Config | Roblox's licensed library, picked by ear in a fight, crossfaded per place (2026-11-17) |
+| Music and Effects sliders | 2 | in settings; the muted majority and the players who stream (2026-11-17) |
 
 ### Pass 2: the rest
 
@@ -159,13 +212,13 @@ Pass 1 is what a first session hears in its first ten minutes, in the order it h
 
 ## Next
 
-1. **The director:**
-   - the change to rule 2: sounds made by us on the PC, restated in research's chat on 2026-11-15 and waiting on the yes;
-   - each install (numpy, scipy, pedalboard, pyloudnorm);
-   - whether a test of six cues goes first, after Faber's HUD.
-2. **The test, six cues:** a Shade's swipe, its hurt and its burst, and a light hit, a heavy hit and a critical. Each is a stack of library slices layered at runtime, plus Modulo's synthesized layers once the rule's yes is in. Five candidates each, for the director's ear in a fight. If it still sounds like slop, the approach changes before the other 39.
-3. **Faber:**
-   - the steps test in our place;
-   - `tools/studio/Audio` moved to `SearchAudioAsync`, with each result's creator and a playability check;
-   - layers on one clock through the audio graph, with a priority duck.
-4. **Research:** each test cue's brief, from the recipes above, in the piece's entry when it opens.
+The order of work, research's ranking (2026-11-17, 00:39). Rule 2's change was approved on 2026-11-15, and the four packages are in, so pass 1's first steps wait on nothing but the upload.
+
+1. **The six-cue test, heard in a fight** (AR13). It's made. Its upload waits on the director: the 33 files heard first, or up unheard (research's advice). Faber installs it on one clock with the pool and the duck above. The director's ear decides: if it sounds like slop, the approach changes before the other cues.
+2. **Music, and the two sliders.** Three tracks from the licensed library, searched as music, loudness-matched, picked by ear. It's the most "real game" per hour.
+3. **The screens' family:** tap, open, close, tab, confirm, refused.
+4. **The rest of the fight:** whooshes on misses too, impacts by weight, the lead hit, each kit's beats, the Shade set.
+5. **Each place's bed with 3 to 6 spot sounds,** and the rewards (shard, level, credits, a shard ready).
+6. **Should, after pass 1:** steps (test the defaults first), the Breaker's and the bays' hum, the keeper's entrance and fall, others' fights quieter.
+
+For Faber: the engine's traps above, the grant to the universe and the live check, `tools/studio/Audio` on `SearchAudioAsync` with creators and music. For research: each cue's brief in its entry when it opens.

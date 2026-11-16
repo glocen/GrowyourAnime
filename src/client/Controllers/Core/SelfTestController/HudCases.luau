@@ -30,6 +30,7 @@ local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
+local World = require(UI.World)
 
 local HudCases = {}
 
@@ -544,6 +545,8 @@ function HudCases.Cases(given: Given): { any }
 				-- Research's pass on AR12 at phone size (2026-11-15): at home, Spectate's eye stood over "Bay 1 · no one works
 				-- here". The camera is turned so the Breaker's point stands over the eye, halfway up the band; its plate must show
 				-- under the band, clear of the readout and the eye, and right beside them, at both sizes (World.Band's corner).
+				-- The plate's own point, over the gantry's lamp: aimed at the prompt's, 5.5 studs under it, the point stood over
+				-- the screen's top from AR16's nearer spawn, and the plate rightly hid.
 				local world = Layers.Get("World")
 				local hud = HudController.Parts()
 				local plate: Frame? = nil
@@ -565,11 +568,10 @@ function HudCases.Cases(given: Given): { any }
 					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
 				end))
 				t.Wait(PLATE_TICK * 2)
-				local prompt = BaseController.Parts().BreakerPrompt
-				local anchor = if prompt then prompt.Parent :: BasePart? else nil
+				local point = World.Where(plate)
 				local camera = workspace.CurrentCamera
-				t.Check("its point", anchor ~= nil and camera ~= nil)
-				if anchor and camera then
+				t.Check("its point", point ~= nil and camera ~= nil)
+				if point and camera then
 					camera.CameraType = Enum.CameraType.Scriptable
 					local from = camera.CFrame.Position
 					local eye, piece = hud.Spectate :: GuiObject, hud.Signature :: GuiObject
@@ -589,14 +591,14 @@ function HudCases.Cases(given: Given): { any }
 						local inset = GuiService:GetGuiInset()
 						local x = eye.AbsolutePosition.X + eye.AbsoluteSize.X / 2 + inset.X
 						local y = world.AbsolutePosition.Y + band * scale * 0.5 + inset.Y
-						camera.CFrame = CFrame.lookAt(from, anchor.Position)
+						camera.CFrame = CFrame.lookAt(from, point)
 						local aside = camera.CFrame:VectorToObjectSpace(camera:ViewportPointToRay(x, y).Direction)
 						camera.CFrame *= CFrame.fromRotationBetweenVectors(aside, Vector3.new(0, 0, -1))
 						for _ = 1, 3 do
 							RunService.RenderStepped:Wait()
 						end
-						local point = camera:WorldToViewportPoint(anchor.Position)
-						t.Check(`{at.Name}: the Breaker's point is over the eye`, math.abs(point.X - x) < eye.AbsoluteSize.X / 2, string.format("%.1f against %.1f", point.X, x))
+						local seen = camera:WorldToViewportPoint(point)
+						t.Check(`{at.Name}: the Breaker's point is over the eye`, math.abs(seen.X - x) < eye.AbsoluteSize.X / 2, string.format("%.1f against %.1f", seen.X, x))
 						t.Check(`{at.Name}: its plate shows`, plate.Visible and plate.Parent ~= nil)
 						local p0, p1 = plate.AbsolutePosition, plate.AbsolutePosition + plate.AbsoluteSize
 						local function clear(frame: GuiObject): (boolean, string)

@@ -8,7 +8,7 @@
 --   BaseView.Open({ Plot = floor, Spots = { Breaker = Vector3, Bay1 = Vector3, ... }, View = ProfileController.Get })
 --   BaseView.Close()
 --   BaseView.IsOpen()
---   BaseView.Framing(ground, points, aspect) -> the camera's CFrame, for tests
+--   BaseView.Framing(ground, points, aspect, edge?) -> the camera's CFrame, for tests
 --   BaseView.Parts() -> its chips by spot name and its level plate, for tests
 
 local Players = game:GetService("Players")
@@ -37,7 +37,7 @@ export type Options = {
 }
 type Chip = { Frame: Frame, Title: TextLabel, Doing: TextLabel, Ground: Vector3 }
 type Saved = { Type: Enum.CameraType, CFrame: CFrame, Fov: number }
-type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number } -- a chip on the screen, authored pixels
+type Row = World.Row -- a chip on the screen, authored pixels
 type State = { Options: Options, Holder: Frame, Level: Frame, Chips: { [string]: Chip }, Saved: Saved, Beat: RBXScriptConnection, ReadAt: number }
 
 local BaseView = {}
@@ -74,7 +74,9 @@ end
 
 -- The camera's CFrame that sees every point of `points` from the gate's side of `ground` (the plot's floor, its local -Z
 -- toward the gate) on a screen of `aspect`, by Config.BaseView.Lift. The points' box is foreshortened at its pitch.
-function BaseView.Framing(ground: CFrame, points: { Vector3 }, aspect: number): CFrame
+-- `edge` (0 to 0.5) is the share of the screen's half-width kept clear at each side, so a chip over the outermost point
+-- stands whole: AR16's later bays stand at the plot's sides.
+function BaseView.Framing(ground: CFrame, points: { Vector3 }, aspect: number, edge: number?): CFrame
 	local c = BaseViewConfig.Lift
 	local lowX: number, lowZ: number, highX: number, highZ: number = math.huge, math.huge, -math.huge, -math.huge
 	for _, point in points do
@@ -91,7 +93,7 @@ function BaseView.Framing(ground: CFrame, points: { Vector3 }, aspect: number): 
 	local halfZ = math.max((highZ - lowZ) / 2 + c.Pad, c.Least)
 	local pitch = math.rad(c.Pitch)
 	local tall = math.tan(math.rad(c.Fov) / 2)
-	local wide = tall * math.max(aspect, 0.1)
+	local wide = tall * math.max(aspect, 0.1) * (1 - math.clamp(edge or 0, 0, 0.5))
 	local away = math.max(halfX / wide, halfZ * math.sin(pitch) / tall)
 	local aim = Vector3.new((lowX + highX) / 2, 0, (lowZ + highZ) / 2)
 	local eye = aim + Vector3.new(0, math.sin(pitch), -math.cos(pitch)) * away
@@ -140,37 +142,9 @@ local function spread(now: State)
 			World.Shift(one.Frame, Vector2.zero)
 		end
 	end
-	table.sort(rows, function(a: Row, b: Row): boolean
-		return a.Foot > b.Foot
-	end)
-	local placed: { { Left: number, Right: number, Top: number, Foot: number } } = {}
+	local feet = World.Settle(rows, c.Gap, ceiling, bottom)
 	for _, row in rows do
-		local left, right = row.Middle - row.Half, row.Middle + row.Half
-		local function free(foot: number): boolean
-			if foot - row.Tall < ceiling or foot > bottom then
-				return false
-			end
-			for _, other in placed do
-				-- Side by side clears at a touch; over and under, by Chip.Gap.
-				if left < other.Right and right > other.Left and foot - row.Tall < other.Foot + c.Gap and foot > other.Top - c.Gap then
-					return false
-				end
-			end
-			return true
-		end
-		local best: number? = if free(row.Foot) then row.Foot else nil
-		if best == nil then
-			for _, other in placed do
-				for _, foot in { other.Top - c.Gap, other.Foot + c.Gap + row.Tall } do
-					if free(foot) and (best == nil or math.abs(foot - row.Foot) < math.abs((best :: number) - row.Foot)) then
-						best = foot
-					end
-				end
-			end
-		end
-		local foot = best or row.Foot -- no free place on this screen: it stands at its machine
-		table.insert(placed, { Left = left, Right = right, Top = foot - row.Tall, Foot = foot })
-		World.Shift(row.Frame, Vector2.new(0, foot - row.Foot))
+		World.Shift(row.Frame, Vector2.new(0, feet[row.Frame] - row.Foot))
 	end
 end
 
@@ -311,7 +285,8 @@ function BaseView.Open(options: Options)
 	local ground = options.Plot.CFrame * CFrame.new(0, options.Plot.Size.Y / 2, 0)
 	local lift = BaseViewConfig.Lift
 	local info = TweenInfo.new(lift.Seconds, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-	TweenService:Create(camera, info, { CFrame = BaseView.Framing(ground, points, size.X / math.max(size.Y, 1)), FieldOfView = lift.Fov }):Play()
+	local edge = (BaseViewConfig.Chip.Width / 2 + BaseViewConfig.Chip.Gap) * Layers.Scale() / math.max(size.X / 2, 1)
+	TweenService:Create(camera, info, { CFrame = BaseView.Framing(ground, points, size.X / math.max(size.Y, 1), edge), FieldOfView = lift.Fov }):Play()
 end
 
 function BaseView.Close()

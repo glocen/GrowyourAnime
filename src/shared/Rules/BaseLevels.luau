@@ -51,6 +51,11 @@ function BaseLevels.Battery(level: number): number
 	return at(BaseConfig.Levels.Battery, level)
 end
 
+-- Cells the battery's bank shows at the base's `level` (AR15, section 4).
+function BaseLevels.Cells(level: number): number
+	return at(BaseConfig.Levels.Cells, level)
+end
+
 -- Credits to reach a machine's `level`; nil at 1 and past the table.
 function BaseLevels.MachinePrice(level: number): number?
 	return BaseConfig.Machines.Price[level]

@@ -176,6 +176,8 @@ local function plate(name: string, anchor: Part, lines: number, width: number, s
 	end, REACH)
 	-- Kept under the top band: a machine high on screen put its news under the lead's card (the phone pack, 2026-11-13).
 	World.Below(frame)
+	-- And never over another machine's: from the spawn, AR16's star stands bay 2 right behind the Breaker.
+	World.Apart(frame, "Base")
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
 	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
 	Panel.Pad(panel, 4, 10) -- clear of the panel's cut corner and its lit edge at the sides (TR3's take)
@@ -847,37 +849,59 @@ local function revealBridge()
 	bridge.Parent = ReplicatedStorage
 end
 
--- The generators' rotors on every plot (AR15), each turning about its own X by its owner's generation (BaseService).
-local rotors: { [BasePart]: { Rest: CFrame, Angle: number } } = {}
+-- The base's turning pieces on every plot, each from the attribute its server sets (BaseService), in turns a second:
+-- * the generator's rotor about its own X, faster as its owner's plant generates more (AR15);
+-- * its great ring about its own X, slower and against it (AR16; `Generator.Ring`, the rotor's rate times it);
+-- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5).
+type Turning = { Rest: CFrame, Angle: number, Axis: "X" | "Y" }
+local turning: { [BasePart]: Turning } = {}
+local TURNS = { GeneratorRotor = "X", GeneratorRing = "X", TrainingCrown = "Y" }
 
-local function watchRotor(item: Instance)
-	if item:IsA("BasePart") and item:GetAttribute("Piece") == "GeneratorRotor" then
-		rotors[item] = { Rest = item.CFrame, Angle = 0 }
+local function watchTurning(item: Instance)
+	local axis = TURNS[item:GetAttribute("Piece")]
+	if item:IsA("BasePart") and axis then
+		turning[item] = { Rest = item.CFrame, Angle = 0, Axis = axis }
 	end
 end
 
-local function turnRotors(dt: number)
-	local spin = WorldConfig.Grey.Generator.Rotor
-	for part, turning in rotors do
+local function rateOf(part: BasePart): number
+	local generator, training = WorldConfig.Grey.Generator, WorldConfig.Grey.Training
+	local piece = part:GetAttribute("Piece")
+	if piece == "TrainingCrown" then
+		return if part:GetAttribute("Training") == true then training.Crown else 0
+	end
+	local kw = part:GetAttribute("Generation")
+	local rate = if type(kw) == "number" then math.min(kw * generator.Rotor.PerKw, generator.Rotor.Most) else 0
+	return if piece == "GeneratorRing" then rate * generator.Ring else rate
+end
+
+local function turnPieces(dt: number)
+	for part, turn in turning do
 		if part.Parent == nil then
-			rotors[part] = nil
+			turning[part] = nil
 			continue
 		end
-		local kw = part:GetAttribute("Generation")
-		local rate = if type(kw) == "number" then math.min(kw * spin.PerKw, spin.Most) else 0
-		if rate > 0 then
-			turning.Angle = (turning.Angle + rate * 2 * math.pi * dt) % (2 * math.pi)
-			part.CFrame = turning.Rest * CFrame.Angles(turning.Angle, 0, 0)
+		local rate = rateOf(part)
+		if rate ~= 0 then
+			turn.Angle = (turn.Angle + rate * 2 * math.pi * dt) % (2 * math.pi)
+			part.CFrame = turn.Rest
+				* (if turn.Axis == "X" then CFrame.Angles(turn.Angle, 0, 0) else CFrame.Angles(0, turn.Angle, 0))
 		end
 	end
+end
+
+-- For the self-test: a turning piece's angle so far, nil for one not watched.
+function BaseController.TurnedOf(part: BasePart): number?
+	local turn = turning[part]
+	return if turn then turn.Angle else nil
 end
 
 function BaseController.Start()
 	HudController.OpenBase = BaseController.Open
 	HudController.OpenView = BaseController.OpenView
-	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(watchRotor)
+	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(watchTurning)
 	for _, item in CollectionService:GetTagged(Kit.Tag) do
-		watchRotor(item)
+		watchTurning(item)
 	end
 	if RunService:IsStudio() then
 		revealBridge()
@@ -906,7 +930,7 @@ function BaseController.Start()
 		for _, part in starters do
 			part.CFrame = part.CFrame * CFrame.Angles(0, STARTER_SPIN * dt, 0)
 		end
-		turnRotors(dt)
+		turnPieces(dt)
 		if os.clock() - last >= TICK then
 			last = os.clock()
 			BaseController.Refresh()

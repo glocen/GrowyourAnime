@@ -3,7 +3,8 @@
  "unit": "1 = 1 stud",
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel.",
- "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings).",
+ "ink": "the drawn edge is a hull 0.11 studs out (base_ink.py); Lantern Row's is 0.14",
+ "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack).",
  "maps": {
   "Base_Deck_Color.png": "the plain deck, a tile 8 studs square (four plates), for a Texture on a Part"
  },
@@ -74,19 +75,107 @@
    "lights": [],
    "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
   },
+  "YardLive": {
+   "mesh": "meshes/YardLive.json",
+   "triangles": 4,
+   "vertices": 6,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    88.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_YardLive_Color.png",
+   "glow": "maps/Base_YardLive_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
+  },
+  "YardBack": {
+   "mesh": "meshes/YardBack.json",
+   "triangles": 4,
+   "vertices": 6,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    88.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_YardBack_Color.png",
+   "glow": "maps/Base_YardBack_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
+  },
+  "WingsLive": {
+   "mesh": "meshes/WingsLive.json",
+   "triangles": 4,
+   "vertices": 8,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    200.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_WingsLive_Color.png",
+   "glow": "maps/Base_WingsLive_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+  },
+  "WingsBack": {
+   "mesh": "meshes/WingsBack.json",
+   "triangles": 4,
+   "vertices": 8,
+   "centre": [
+    0.0,
+    0.06,
+    24.0
+   ],
+   "size": [
+    200.0,
+    0.0,
+    48.0
+   ],
+   "colour": "maps/Base_WingsBack_Color.png",
+   "glow": "maps/Base_WingsBack_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+  },
   "Wall": {
    "mesh": "meshes/Wall.json",
    "triangles": 144,
    "vertices": 96,
    "centre": [
-    7.23,
-    3.68,
+    7.245,
+    3.695,
     0.0
    ],
    "size": [
-    16.74,
-    7.64,
-    2.28
+    16.71,
+    7.61,
+    2.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -101,14 +190,14 @@
    "triangles": 144,
    "vertices": 96,
    "centre": [
-    3.23,
-    3.68,
+    3.245,
+    3.695,
     0.0
    ],
    "size": [
-    8.74,
-    7.64,
-    2.28
+    8.71,
+    7.61,
+    2.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -124,13 +213,13 @@
    "vertices": 48,
    "centre": [
     0.0,
-    3.68,
+    3.695,
     0.0
    ],
    "size": [
-    2.28,
-    7.64,
-    2.28
+    2.22,
+    7.61,
+    2.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -146,13 +235,13 @@
    "vertices": 564,
    "centre": [
     0.0,
-    10.23,
+    10.245,
     0.0
    ],
    "size": [
     56.0,
-    20.74,
-    4.88
+    20.71,
+    4.82
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -174,7 +263,7 @@
    "size": [
     5.7,
     25.252,
-    10.68
+    10.62
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -216,9 +305,9 @@
     -1.35
    ],
    "size": [
-    3.38,
-    13.68,
-    4.58
+    3.32,
+    13.62,
+    4.52
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -244,13 +333,13 @@
    "vertices": 286,
    "centre": [
     0.0,
-    2.5,
+    2.515,
     0.0
    ],
    "size": [
-    3.88,
-    5.28,
-    3.28
+    3.82,
+    5.25,
+    3.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -260,217 +349,129 @@
    "lights": [],
    "note": ""
   },
-  "Crane": {
-   "mesh": "meshes/Crane.json",
-   "triangles": 1344,
-   "vertices": 1208,
+  "Door": {
+   "mesh": "meshes/Door.json",
+   "triangles": 896,
+   "vertices": 604,
    "centre": [
-    14.1425,
-    27.205,
+    0.0,
+    7.245,
     0.0
    ],
    "size": [
-    56.165,
-    54.69,
-    7.28
+    12.34,
+    14.71,
+    3.02
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box round its foot, 7 square, 3 high",
+   "collision": "the threshold, 10.4 by 2.8 and 0.4 high, and the two stones on it, each about 2 by 1.8 and 9.4 high; the way between them stays open",
    "lights": [],
-   "note": "the jib runs 42 studs along +X at 45.4 up, the load hangs 30.5 out and 14 over the floor; 54.6 studs to its beacon"
+   "note": "its middle on the stand-in's, 14.6 high at its keystone. Turned 90, so its way looks down the plot's way in. The way is 6 wide between the stones, as the stand-in's"
   },
-  "Frame": {
-   "mesh": "meshes/Frame.json",
-   "triangles": 576,
-   "vertices": 392,
+  "DoorWay": {
+   "mesh": "meshes/DoorWay.json",
+   "triangles": 28,
+   "vertices": 13,
    "centre": [
     0.0,
-    7.05,
+    6.05,
+    -0.0
+   ],
+   "size": [
+    6.0,
+    11.1,
+    0.0
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "stands where its Door stands, the same turn: 6 wide, from 0.5 to 11.6 up at its point. It wears the kit's two pictures: the festival seen through the door, warm white at its foot rising into cyan, lantern lights down a street. Its glow's strength is the Door's state, low while no ground is open to go to; keep its tint white, or the festival's colours go. Look only: the player walks through it"
+  },
+  "Training": {
+   "mesh": "meshes/Training.json",
+   "triangles": 466,
+   "vertices": 304,
+   "centre": [
+    0.0,
+    4.37,
+    -2.85
+   ],
+   "size": [
+    6.22,
+    8.96,
+    10.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 6 by 4.6 and 0.5 high, the stone on it, about 2.8 square and 6.9 high, and the pad, 4 square and 0.4 high, 6 toward the piece's front",
+   "lights": [],
+   "note": "its middle on the stand-in's; the pad is in the piece, 6 toward its front, where the stand-in's pad is. The one who trains stands at the pad's middle, facing the stone. Its crown is TrainingCrown, floating 8 up"
+  },
+  "TrainingCrown": {
+   "mesh": "meshes/TrainingCrown.json",
+   "triangles": 496,
+   "vertices": 288,
+   "centre": [
+    0.0,
+    -0.2,
     0.0
    ],
    "size": [
-    18.08,
-    14.38,
-    14.08
+    6.24,
+    2.22,
+    6.24
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box round each column's foot, 1.8 square",
+   "collision": "none",
    "lights": [],
-   "note": "16 by 12, 14 high: a machine hall's frame before its walls"
-  },
-  "Scaffold": {
-   "mesh": "meshes/Scaffold.json",
-   "triangles": 312,
-   "vertices": 212,
-   "centre": [
-    0.0,
-    6.07398,
-    -0.015
-   ],
-   "size": [
-    8.3,
-    12.252,
-    3.23
-   ],
-   "colour": "maps/Base_Kit_Color.png",
-   "glow": "maps/Base_Kit_Glow.png",
-   "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
-   "collision": "a box, 8 by 3, 11 high",
-   "lights": [],
-   "note": "8 studs along X, 3 deep: stand it along a wall or a site's edge"
-  },
-  "Foundation": {
-   "mesh": "meshes/Foundation.json",
-   "triangles": 344,
-   "vertices": 248,
-   "centre": [
-    0.0,
-    1.33,
-    0.0
-   ],
-   "size": [
-    12.4,
-    2.94,
-    12.4
-   ],
-   "colour": "maps/Base_Kit_Color.png",
-   "glow": "maps/Base_Kit_Glow.png",
-   "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
-   "collision": "a box, 12 square, 1 high, and a box round each corner's bars, 1 square and 2.8 high, 4.2 from the middle each way: nobody stands in the bars",
-   "lights": [],
-   "note": "12 studs square: on a lot, where the level that opens it stands its machine"
-  },
-  "Stack": {
-   "mesh": "meshes/Stack.json",
-   "triangles": 240,
-   "vertices": 160,
-   "centre": [
-    -0.1,
-    1.04,
-    -0.155
-   ],
-   "size": [
-    10.0,
-    2.08,
-    7.29
-   ],
-   "colour": "maps/Base_Kit_Color.png",
-   "glow": "maps/Base_Kit_Glow.png",
-   "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
-   "collision": "a box, 8 by 7, 2 high",
-   "lights": [],
-   "note": "about 9 studs by 8"
-  },
-  "Drum": {
-   "mesh": "meshes/Drum.json",
-   "triangles": 116,
-   "vertices": 76,
-   "centre": [
-    0.0,
-    1.7,
-    0.0
-   ],
-   "size": [
-    2.2,
-    3.4,
-    3.234
-   ],
-   "colour": "maps/Base_Kit_Color.png",
-   "glow": "maps/Base_Kit_Glow.png",
-   "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
-   "collision": "a box, 2.2 by 3.4, 3.4 high",
-   "lights": [],
-   "note": "its axle lies along X: it rolls along Y"
-  },
-  "Barrier": {
-   "mesh": "meshes/Barrier.json",
-   "triangles": 84,
-   "vertices": 56,
-   "centre": [
-    0.0,
-    1.7625,
-    0.0
-   ],
-   "size": [
-    7.6,
-    3.525,
-    1.6
-   ],
-   "colour": "maps/Base_Kit_Color.png",
-   "glow": "maps/Base_Kit_Glow.png",
-   "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
-   "collision": "a wall, 8 long and 3 high",
-   "lights": [],
-   "note": "8 studs along X, centred on its place"
-  },
-  "Cabin": {
-   "mesh": "meshes/Cabin.json",
-   "triangles": 192,
-   "vertices": 128,
-   "centre": [
-    0.0,
-    3.75,
-    -0.33
-   ],
-   "size": [
-    10.68,
-    7.5,
-    5.34
-   ],
-   "colour": "maps/Base_Kit_Color.png",
-   "glow": "maps/Base_Kit_Glow.png",
-   "glowTint": "#FFFFFF",
-   "glowStrength": 2.4,
-   "collision": "a box, 10 by 4, 4.7 high",
-   "lights": [],
-   "note": "its door and its window face +Y"
+   "note": "its origin is its middle: it floats 8 up at the Training machine's middle, round the stone's spark, and turns about its own upright while a Voidkin trains, still when none does. 7.6 across at its weights. Look only"
   },
   "Breaker": {
    "mesh": "meshes/Breaker.json",
-   "triangles": 796,
-   "vertices": 536,
+   "triangles": 682,
+   "vertices": 452,
    "centre": [
     0.0,
-    5.68,
+    6.345,
     0.0
    ],
    "size": [
-    15.18,
-    11.64,
-    6.88
+    16.812,
+    12.91,
+    6.82
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box, 14 by 6, 5 high, and the gantry's two legs",
+   "collision": "a box, 14 by 6, 5 high, and the jaws' two feet",
    "lights": [],
-   "note": "on the stand-in's footprint. A chamber stands at across 3.5 each side, its foot on the body's top at 5. The lamp is at 11.15 up, a stud over the builder's BreakerLamp"
+   "note": "on the stand-in's footprint, 12.8 high. A chamber stands at across 3.5 each side, its foot on the body's top at 5. The crystal is the Breaker's lamp, its middle 10.2 up, where the builder's BreakerLamp is"
   },
   "BreakerChamber": {
    "mesh": "meshes/BreakerChamber.json",
-   "triangles": 252,
-   "vertices": 172,
+   "triangles": 270,
+   "vertices": 176,
    "centre": [
     0.0,
-    1.885,
+    1.98697,
     0.0
    ],
    "size": [
-    4.48,
-    4.05,
-    4.48
+    4.652,
+    4.194,
+    4.652
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -482,17 +483,17 @@
   },
   "BreakerWaiting": {
    "mesh": "meshes/BreakerWaiting.json",
-   "triangles": 96,
-   "vertices": 60,
+   "triangles": 132,
+   "vertices": 80,
    "centre": [
     0.0,
-    0.48,
+    0.55,
     0.0
    ],
    "size": [
-    2.78,
-    1.24,
-    2.78
+    2.72,
+    1.32,
+    2.72
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -504,39 +505,39 @@
   },
   "Bay": {
    "mesh": "meshes/Bay.json",
-   "triangles": 812,
-   "vertices": 490,
+   "triangles": 614,
+   "vertices": 400,
    "centre": [
-    0.0,
-    4.58,
+    -0.07,
+    5.0,
     0.0
    ],
    "size": [
-    10.28,
-    9.44,
-    10.28
+    10.36,
+    10.22,
+    11.452
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box, 10 square, 0.4 high, and the frame's two posts",
+   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
    "lights": [],
-   "note": "on the stand-in's pad. Its ring stands on -X: turn 0 on the plot's left, 180 on its right, so the ring is on the outer side and the worker is seen against it from the court and the gate. The worker stands at the pad's middle; the ring's middle is 4.9 up"
+   "note": "on the stand-in's pad, 9.4 high at its horns' tips. Its crescent stands on -X: turn 0 on the plot's left, 180 on its right, so the eye is on the outer side and the worker is seen under it from the court and the gate. The worker stands at the pad's middle; the eye's middle is 8 up"
   },
   "BayHalo": {
    "mesh": "meshes/BayHalo.json",
-   "triangles": 144,
-   "vertices": 72,
+   "triangles": 168,
+   "vertices": 108,
    "centre": [
-    -1.11,
-    3.66,
+    -0.725,
+    5.11,
     0.0
    ],
    "size": [
-    6.82,
-    6.4,
-    4.6
+    7.55,
+    9.02,
+    6.1
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -548,7 +549,7 @@
      "name": "Rarity",
      "at": [
       -3.05,
-      5.3,
+      7.4,
       -0.0
      ],
      "colour": "#F6FCFF"
@@ -556,41 +557,107 @@
    ],
    "note": "stands where its Bay stands, the same turn, only while a worker works there. One pale swatch on every face: the worker's rarity colour is the builder's (a tint, or the mesh in Neon without the kit's pictures). Its light is a PointLight in the same colour, the first to go if the plot's lights weigh. Look only"
   },
-  "Generator": {
-   "mesh": "meshes/Generator.json",
-   "triangles": 750,
-   "vertices": 473,
+  "BaySleeping": {
+   "mesh": "meshes/BaySleeping.json",
+   "triangles": 370,
+   "vertices": 212,
    "centre": [
-    0.0,
-    4.205,
+    -0.05,
+    0.6725,
     0.0
    ],
    "size": [
-    6.68,
-    8.69,
-    5.68
+    10.32,
+    1.565,
+    10.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "a box, 6 by 5, 8 high",
+   "collision": "a box, 10 square, 0.4 high; the rest is under a stud high",
    "lights": [],
-   "note": "on the stand-in's footprint, 8.55 high with its bushings. Its rotor is GeneratorRotor, its axle along X, 5.3 up at the machine's middle: it turns clear of everything, 1.75 at its widest"
+   "note": "stands where a Bay will stand, the same turn, until the base's level wakes that bay; then the Bay takes its place. It lies low, about 1.5 high. Nothing on it glows"
+  },
+  "SleepingStone": {
+   "mesh": "meshes/SleepingStone.json",
+   "triangles": 230,
+   "vertices": 148,
+   "centre": [
+    0.0,
+    0.667,
+    0.0
+   ],
+   "size": [
+    9.22,
+    1.554,
+    9.22
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 9 square, 0.4 high; the rest is under a stud high",
+   "lights": [],
+   "note": "stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until that machine has its model and its phase. It lies low, about 1.5 high. Nothing on it glows"
+  },
+  "TowerSleeping": {
+   "mesh": "meshes/TowerSleeping.json",
+   "triangles": 76,
+   "vertices": 44,
+   "centre": [
+    0.0,
+    90.875,
+    0.0
+   ],
+   "size": [
+    28.0,
+    181.75,
+    28.0
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 28 square, as high as it needs; nobody reaches it yet",
+   "lights": [],
+   "note": "stands behind the back wall on the plot's middle line, on the Tower's own lot: 172 high at its tip, 28 square at its foot. Dark and unlit but for the shard over its tip. No hull"
+  },
+  "Generator": {
+   "mesh": "meshes/Generator.json",
+   "triangles": 758,
+   "vertices": 520,
+   "centre": [
+    0.0,
+    12.79108,
+    0.0
+   ],
+   "size": [
+    24.301,
+    26.498,
+    12.481
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the two feet, each a box 3.8 by 5, 3 high, at across 9.2 each side; and the well between them shut to walking, the builder's call",
+   "lights": [],
+   "note": "its middle on the well's, 26 high at its shard. Its rotor is GeneratorRotor and its great ring GeneratorRing, both floating at its heart, 11.5 up: the ring's outer radius is 7.6, clear of the horns by a stud and of the floor by 3.5"
   },
   "GeneratorRotor": {
    "mesh": "meshes/GeneratorRotor.json",
-   "triangles": 176,
-   "vertices": 120,
+   "triangles": 808,
+   "vertices": 496,
    "centre": [
     0.0,
     0.0,
     0.0
    ],
    "size": [
-    3.5,
-    3.5,
-    3.329
+    5.7,
+    11.02,
+    11.02
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -598,21 +665,87 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its axle's middle: it stands 5.3 up at the generator's middle and turns about its own X, faster as the plant generates more. Look only"
+   "note": "its origin is its axle's middle: it floats 11.5 up at the generator's middle and turns about its own X, faster as the plant generates more. 5.6 at its widest. Look only"
   },
-  "Showcase": {
-   "mesh": "meshes/Showcase.json",
-   "triangles": 220,
-   "vertices": 152,
+  "GeneratorRing": {
+   "mesh": "meshes/GeneratorRing.json",
+   "triangles": 576,
+   "vertices": 320,
    "centre": [
     0.0,
-    0.85,
+    0.0,
     0.0
    ],
    "size": [
-    6.098,
-    1.7,
-    6.098
+    1.02,
+    15.54,
+    15.54
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its middle: it floats 11.5 up at the generator's middle, turned 90 so its axle lies along the way in and its face looks at the gate, and turns about its own X, slowly, against the rotor. Look only"
+  },
+  "BatteryRack": {
+   "mesh": "meshes/BatteryRack.json",
+   "triangles": 372,
+   "vertices": 230,
+   "centre": [
+    0.0,
+    1.37,
+    0.0
+   ],
+   "size": [
+    6.52,
+    2.96,
+    4.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 6 by 4, 3 high",
+   "lights": [],
+   "note": "on the stand-in's footprint, 2.85 high at its posts. Its eight seats are 0.6 up; a BatteryCell stands on each seat the base's level has earned (plan.json, machines, battery)"
+  },
+  "BatteryCell": {
+   "mesh": "meshes/BatteryCell.json",
+   "triangles": 120,
+   "vertices": 80,
+   "centre": [
+    0.0,
+    1.025,
+    0.0
+   ],
+   "size": [
+    1.52,
+    2.27,
+    1.76
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its seat on the rack, 0.6 up; 2.16 high above it. Its glow is its own charge: the builder lights the cells in the seats' order as the battery fills. Look only"
+  },
+  "Showcase": {
+   "mesh": "meshes/Showcase.json",
+   "triangles": 304,
+   "vertices": 200,
+   "centre": [
+    0.0,
+    0.795,
+    0.0
+   ],
+   "size": [
+    6.318,
+    1.81,
+    6.318
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",

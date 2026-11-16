@@ -47,6 +47,7 @@ return {
 		Bays = { 2, 4, 6 }, -- bays open at each base level
 		Ceiling = { 2, 6, 30 }, -- the highest level any machine reaches at each base level
 		Battery = { 60, 150, 400 }, -- kWh the battery holds at each base level (seeds "baseLevels.batteryKwh")
+		Cells = { 2, 4, 8 }, -- cells its bank shows at each base level, lit one after another as it charges (Modulo's count, AR15, section 4)
 	},
 	Machines = {
 		-- Credits to reach each machine level, the same for every machine with a level (the Training machine has none).

@@ -24,7 +24,8 @@ Kit.Tag = "GA_Dressing"
 Kit.Floors = { StreetBay = true, SquareFloor = true, Court1 = true, Yard = true } :: { [string]: boolean }
 
 export type Piece = { centre: { number }, size: { number }?, glowStrength: number?, glowTint: string? }
-export type Placement = { piece: string, across: number, along: number, turn: number, up: number? } -- up: a machine's (AR15)
+-- up: a machine's (AR15); toward: "crossing", a piece that stands on its plot's crossing side (AR16's Tower, Kit.Toward)
+export type Placement = { piece: string, across: number, along: number, turn: number, up: number?, toward: string? }
 export type Light = { name: string, across: number, along: number, up: number, colour: string, kind: string, cone: number? }
 export type PaperBox = { across: number, along: number, up: number, size: { number } }
 export type PaperBand = { Floor: number, Top: number }
@@ -44,6 +45,24 @@ function Kit.Place(placement: Placement, piece: Piece, gateZ: number, floorY: nu
 	return CFrame.new(placement.across, floorY + (placement.up or 0), gateZ - placement.along)
 		* CFrame.Angles(0, math.rad(placement.turn), 0)
 		* CFrame.new(c[1], c[2], c[3])
+end
+
+-- A placement as it stands on a plot whose crossing is on its `side` of across (1 or -1): one marked "toward":
+-- "crossing" is written as if the crossing were on its across's side, and mirrors, across and turn, on a plot whose
+-- crossing is on the other (AR16's sleeping Tower, behind the back corner on the crossing's side, so the two inner
+-- Towers flank the side street). Any other placement, and one on the middle line, as it is.
+function Kit.Toward(placement: Placement, side: number): Placement
+	if placement.toward ~= "crossing" or placement.across == 0 then
+		return placement
+	end
+	local written = if placement.across > 0 then 1 else -1
+	if side == written then
+		return placement
+	end
+	local mirrored = table.clone(placement)
+	mirrored.across = -placement.across
+	mirrored.turn = -placement.turn
+	return mirrored
 end
 
 -- A light's place; its frame looks straight down, so a SpotLight on a part's Front face shines onto the street.

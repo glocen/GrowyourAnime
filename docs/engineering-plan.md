@@ -92,6 +92,7 @@ The handbook's rule ([the world contract](../handbook/engineering/architecture.m
 - **The grey world, laid out:** the crossing's centre is the origin and north is `-Z`. Plots are numbered west to east, the north row first. A World number tuned in a playtest lays it again, and `WorldService.Laid` tells whatever stands on a marker to find it again.
 - **Plots:** the server gives each player the lowest free plot at join (the player attribute `Plot`, freed at leave) and sets them down on its spawn, facing the Breaker. Eight plots, so the place's Max Players is eight.
 - **A plot no one owns is a bare lot** (the director, 2026-11-15: "if there 3 players out of 8 only 3 base are in"): its floor with its `Plot` marker, nothing else. A player's base, its plot's own markers and its dressing, stands when they arrive, before the attribute is set, and goes when they leave. `WorldService.Built` tells whatever stands on its markers. The report wants a plot's own markers on the owned plots and none on the rest.
+- **One base plan for every plot**, laid in each plot's own frame (`Kit.Place`). A placement marked `"toward": "crossing"` is written for one side and mirrored, across and turn, onto each plot's crossing side (`Kit.Toward`, AR16's sleeping Tower); the dressing report checks it stands there.
 - Screens read replicated state, never markers.
 
 ## Transactions

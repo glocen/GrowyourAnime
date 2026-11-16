@@ -5,6 +5,7 @@
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseLevels = require(Shared.Rules.BaseLevels)
+local Breaker = require(Shared.Rules.Breaker)
 local BaseConfig = require(Shared.Config.Base)
 
 local function gainOf(offer: BaseLevels.Offer, what: string): BaseLevels.Gain?
@@ -94,6 +95,23 @@ return {
 			t.Check("the Breaker's offer at 7 shows its third chamber", chambers ~= nil and chambers.From == 2 and chambers.To == 3)
 			t.Check("and its speed", gainOf(breaker, "Speed") ~= nil)
 			t.Equal("a level with no new chamber shows none", gainOf(BaseLevels.NextMachine("Breaker", 2, 3, 1e9), "Chambers"), nil)
+		end,
+	},
+	{
+		Name = "Battery: its bank shows 2, 4 and 8 cells at the base's levels, lit one after another as it charges",
+		Run = function(t: any)
+			for level, want in { 2, 4, 8 } do
+				t.Equal(`level {level}: {want} cells`, BaseLevels.Cells(level), want)
+			end
+			local function lit(level: number, charge: number): string
+				return table.concat(Breaker.Cells({ Level = level, Charge = charge } :: any), " ")
+			end
+			t.Equal("empty: every cell dark", lit(1, 0), "0 0")
+			t.Equal("a quarter of 60 kWh: the first cell half lit", lit(1, 15), "0.5 0")
+			t.Equal("half: the first lit, the second dark", lit(1, 30), "1 0")
+			t.Equal("full: both lit", lit(1, 60), "1 1")
+			t.Equal("past the cap, as a stored charge can be: still both, never more", lit(1, 75), "1 1")
+			t.Equal("level 3, 250 of 400 kWh: five of eight lit", lit(3, 250), "1 1 1 1 1 0 0 0")
 		end,
 	},
 }

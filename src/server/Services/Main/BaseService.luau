@@ -13,6 +13,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local Breaker = require(Shared.Rules.Breaker)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local BaseRules = require(Shared.Rules.Base)
 local BaseConfig = require(Shared.Config.Base)
 local Shards = require(Shared.Definitions.Shards)
@@ -76,15 +77,48 @@ local function onReady(player: Player)
 	schedule(player)
 end
 
--- A plot's machines as its owner's base stands (AR15), for every client, so a passer-by sees the plant work: a chamber
--- that breaks a shard glows full with the shard between its points, an empty one low with none, and the generator's rotor
--- turns by the plant's generation. Each modelled chamber carries "Working" and the rotor "Generation" (WorldService);
--- `data` nil stills them all.
+-- A plot's machines as its owner's base stands (AR15; AR16), for every client, so a passer-by sees the plant work:
+-- * a chamber that breaks a shard glows full with the shard between its points, an empty one low with none ("Working");
+-- * the generator's rotor and its great ring turn by the plant's generation ("Generation");
+-- * each bay the base has opened stands awake and the rest asleep, where a level will wake them;
+-- * the battery's bank shows the cells its base's level holds, each lit by its share of the charge ("Lit",
+--   Rules.Breaker.Cells);
+-- * the Training machine's crown turns while a Voidkin trains ("Training").
+-- `data` nil stills them all, with level 1's bays and cells.
 local function showPlot(number: number, data: Profile.Data?)
 	local plant = Markers.Find("Generator", { Plot = number })
-	local rotor = if plant then plant:FindFirstChild("Rotor") else nil
-	if rotor then
-		rotor:SetAttribute("Generation", if data then Power.Generation(data) else 0)
+	local generation = if data then Power.Generation(data) else 0
+	for _, name in { "Rotor", "Ring" } do
+		local part = if plant then plant:FindFirstChild(name) else nil
+		if part then
+			part:SetAttribute("Generation", generation)
+		end
+	end
+	local open = if data then #data.Base.Bays else BaseLevels.Bays(1)
+	for _, bay in Markers.All("Bay") do
+		local index = bay:GetAttribute("Bay")
+		local pad, sleeping = bay:FindFirstChild("Pad"), bay:FindFirstChild("Sleeping")
+		if bay:GetAttribute("Plot") == number and type(index) == "number" and pad and sleeping and pad:IsA("BasePart") and sleeping:IsA("BasePart") then
+			WorldService.Stand(pad, index <= open)
+			WorldService.Stand(sleeping, index > open)
+		end
+	end
+	local battery = Markers.Find("Battery", { Plot = number })
+	if battery then
+		local shown = BaseLevels.Cells(if data then data.Base.Level else 1)
+		local lit = if data then Breaker.Cells(data.Base) else {}
+		for _, cell in battery:GetChildren() do
+			local seat = cell:GetAttribute("Cell")
+			if type(seat) == "number" and cell:IsA("BasePart") then
+				WorldService.Stand(cell, seat <= shown)
+				cell:SetAttribute("Lit", lit[seat] or 0)
+			end
+		end
+	end
+	local trainer = Markers.Find("Training", { Plot = number })
+	local crown = if trainer then trainer:FindFirstChild("Crown") else nil
+	if crown then
+		crown:SetAttribute("Training", data ~= nil and Breaker.Trainee(data) ~= nil)
 	end
 	local breaker = Markers.Find("Breaker", { Plot = number })
 	if breaker == nil then

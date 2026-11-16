@@ -371,40 +371,82 @@ local function pave(part: BasePart)
 	end
 end
 
--- A machine with its model (AR15; the plan's machines) in place of its grey box: the plan's `nth` `piece`, laid as a
--- placement is and raised by its `up`, named as the box it replaces, tagged for the client's look and carrying its plot.
--- Nil while the base's kit isn't laid or the plan has no such machine: then the box stands.
-local function machine(parent: Instance, name: string, piece: string, nth: number, number: number, at: CFrame, front: number): BasePart?
+-- The crossing's side of a plot `at`, in its own across: 1 or -1. The plots stand either side of the crossing, which
+-- is the world's x = 0 (lay()).
+local function crossingSide(at: CFrame): number
+	return if at:PointToObjectSpace(Vector3.new(0, at.Position.Y, at.Position.Z)).X >= 0 then 1 else -1
+end
+
+-- One of the base kit's pieces on a plot at `placement` (Kit.Place in the plot's frame), named `name`, tagged for the
+-- client's look and carrying its plot, and "Solid" when its piece collides, for whatever shows and hides it
+-- (BaseService). Nil while the base's kit isn't laid or the template has no such piece.
+local function piece(parent: Instance, name: string, kind: string, placement: any, number: number, at: CFrame, front: number): BasePart?
 	if baseLook == nil then
 		return nil
 	end
-	local template = kitTemplate(BASE) :: Instance
-	local manifest, plan = kitFiles(BASE)
+	local made = (kitTemplate(BASE) :: Instance):FindFirstChild(kind)
+	if made == nil or not made:IsA("BasePart") then
+		return nil
+	end
+	local manifest = kitFiles(BASE)
+	local part = made:Clone()
+	part.Name = name
+	part.CFrame = at * Kit.Place(placement, manifest.pieces[kind], front, DRESS_LIFT)
+	part:SetAttribute("Piece", kind)
+	part:SetAttribute("Plot", number)
+	part:SetAttribute("Solid", part.CanCollide)
+	CollectionService:AddTag(part, Kit.Tag)
+	part.Parent = parent
+	return part
+end
+
+-- A machine with its model (AR15; the plan's machines) in place of its grey box: the plan's `nth` placement of `placed`,
+-- laid as a placement is and raised by its `up`, wearing the piece `as` (`placed` itself unless given: a bay a level
+-- wakes stands where its sleeping bay stood), named as the box it replaces. Nil while the base's kit isn't laid or the
+-- plan has no such machine: then the box stands.
+local function machine(parent: Instance, name: string, placed: string, nth: number, number: number, at: CFrame, front: number, as: string?): BasePart?
+	if baseLook == nil then
+		return nil
+	end
+	local _, plan = kitFiles(BASE)
 	local seen = 0
 	for _, placement in (if plan.machines then plan.machines.placements else {}) do
-		if placement.piece ~= piece then
-			continue
-		end
-		seen += 1
-		local made = template:FindFirstChild(piece)
-		if seen == nth and made and made:IsA("BasePart") then
-			local part = made:Clone()
-			part.Name = name
-			part.CFrame = at * Kit.Place(placement, manifest.pieces[piece], front, DRESS_LIFT)
-			part:SetAttribute("Piece", piece)
-			part:SetAttribute("Plot", number)
-			CollectionService:AddTag(part, Kit.Tag)
-			part.Parent = parent
-			return part
+		if placement.piece == placed then
+			seen += 1
+			if seen == nth then
+				return piece(parent, name, as or placed, Kit.Toward(placement, crossingSide(at)), number, at, front)
+			end
 		end
 	end
 	return nil
 end
 
+-- The turn of the plan's first placement of `placed`, in degrees anticlockwise from above; 0 when it has none.
+local function turnOf(placed: string): number
+	local _, plan = kitFiles(BASE)
+	for _, placement in (if plan.machines then plan.machines.placements else {}) do
+		if placement.piece == placed then
+			return placement.turn or 0
+		end
+	end
+	return 0
+end
+
+-- A part shown or hidden in its place (a bay asleep or awake, a battery cell), solid only while shown and its piece is.
+-- BaseService shows each plot's by its owner's base.
+local function stand(part: BasePart, shown: boolean)
+	part.Transparency = if shown then 0 else 1
+	part.CanCollide = shown and part:GetAttribute("Solid") == true
+	part.CanQuery = part.CanCollide
+end
+WorldService.Stand = stand
+
 -- One plot, `at` its centre on its floor, looking out of its front onto the Strip: its lot, laid with the world, and the
 -- builder of its base, raised when a player owns the plot and cleared when they leave, so a server stands only its
 -- players' bases (the director, 2026-11-15). The base is built whole before it's parented: it reaches clients at once.
-local function plot(parent: Instance, number: number, at: CFrame, across: number, deep: number, kept: number, behind: number, tower: number, bays: number): () -> Model
+-- Where each machine stands is the base plan's layout (AR16: a star round the generator, open toward the gate), whether
+-- its kit is laid or the plot is grey.
+local function plot(parent: Instance, number: number, at: CFrame, across: number, deep: number, kept: number, behind: number, tower: number): () -> Model
 	local m = model(parent, `Plot {number}`, at)
 	local look = baseLook
 	-- Each grey box in the base's stand-in colour while its kit is laid (the plan's standIns: one steel body, an accent each).
@@ -427,8 +469,15 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		local base = Instance.new("Model")
 		base.Name = "Base"
 		base.WorldPivot = at
-		-- The Breaker at the front, so a passer-by sees the shards cracking: two chambers, and its waiting line beside it.
-		local breakerAt = at * CFrame.new(0, 0, front + 12)
+		local manifest, plan = kitFiles(BASE)
+		local layout = plan.layout
+		-- A place of the layout in the plot's frame, on its floor: across, then studs in from the front edge.
+		local function place(spot: { across: number, inward: number }, turn: number?): CFrame
+			return at * CFrame.new(spot.across, 0, front + spot.inward) * CFrame.Angles(0, math.rad(turn or 0), 0)
+		end
+		-- The Void Breaker on the slant toward the gate, so a passer-by sees the shards cracking: two chambers, and its
+		-- waiting line beside it.
+		local breakerAt = place(layout.stations.breaker)
 		local breaker = model(base, "Breaker", breakerAt)
 		if machine(breaker, "Body", "Breaker", 1, number, at, front) == nil then
 			block(breaker, "Body", Vector3.new(14, 5, 6), breakerAt * CFrame.new(0, 2.5, 0), tint("machine", GREY.Machine))
@@ -455,61 +504,138 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			end
 		end
 		Markers.Stamp(breaker, "Breaker", { Plot = number })
-		-- The bays line its sides, in the order they open; the battery sits between them.
-		for index = 1, bays do
-			local side = if index % 2 == 1 then -1 else 1
-			local row = (index - 1) // 2
-			local bayAt = at * CFrame.new(side * 22, 0, front + 26 + row * 14)
+		-- Every bay the base can open, on the layout's places: level 1's two at the bus's ends, and the rest asleep where
+		-- each will stand until a base level wakes it. Each past level 1's carries its Pad and its Sleeping piece, and
+		-- BaseService shows one of the two by its owner's open bays.
+		local bayPlaces = { layout.stations.bay1, layout.stations.bay2 }
+		for _, later in layout.laterBays do
+			table.insert(bayPlaces, later)
+		end
+		for index, spot in bayPlaces do
+			local bayAt = place(spot)
 			local bay = model(base, `Bay {index}`, bayAt)
-			if machine(bay, "Pad", "Bay", index, number, at, front) == nil then
-				block(bay, "Pad", Vector3.new(10, 0.4, 10), bayAt * CFrame.new(0, 0.2, 0), tint("bay", GREY.Bay))
-			end
+			local asleep = index > 2 -- level 1 opens two (Config.Base.Levels.Bays)
+			local pad = if asleep
+				then machine(bay, "Pad", "BaySleeping", index - 2, number, at, front, "Bay")
+				else machine(bay, "Pad", "Bay", index, number, at, front)
 			-- Its light, in the worker's rarity colour while one works there (TR22): out of sight until then, one colour.
-			local halo = machine(bay, "Halo", "BayHalo", index, number, at, front)
+			local halo = if asleep
+				then machine(bay, "Halo", "BaySleeping", index - 2, number, at, front, "BayHalo")
+				else machine(bay, "Halo", "BayHalo", index, number, at, front)
 			if halo then
 				halo:ClearAllChildren()
 				halo.Material = Enum.Material.Neon
 				halo.Transparency = 1
 			end
-			if index > 1 then
-				block(bay, "Locked", Vector3.new(10, 3, 0.6), bayAt * CFrame.new(0, 1.5, -5), tint("locked", GREY.Locked))
+			-- A sleeping bay's pad and light stand for a later level: the dressing report counts level 1's.
+			for _, part in { pad, halo } do
+				if part and asleep then
+					part:SetAttribute("Later", true)
+				end
+			end
+			local sleeping = if asleep then machine(bay, "Sleeping", "BaySleeping", index - 2, number, at, front) else nil
+			if pad == nil then
+				pad = block(bay, "Pad", Vector3.new(10, 0.4, 10), bayAt * CFrame.new(0, 0.2, 0), tint("bay", GREY.Bay))
+				pad:SetAttribute("Solid", true)
+				if asleep then
+					sleeping = block(bay, "Sleeping", Vector3.new(10, 0.6, 10), bayAt * CFrame.new(0, 0.3, 0), tint("locked", GREY.Locked))
+					sleeping:SetAttribute("Solid", true)
+				end
+			end
+			if pad and sleeping then
+				stand(pad, false)
 			end
 			Markers.Stamp(bay, "Bay", { Plot = number, Bay = index })
 		end
-		local batteryAt = at * CFrame.new(0, 0, front + 26)
+		-- The battery on the slant toward the back: its rack, and its bank of cells on the plan's seats, in the order they
+		-- fill (AR15, section 4). BaseService shows as many as the base's level holds and lights each by the charge.
+		local batteryAt = place(layout.stations.battery)
 		local battery = model(base, "Battery", batteryAt)
-		-- Low, so the owner sees the Breaker over it from the spawn.
-		block(battery, "Cell", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
+		if machine(battery, "Rack", "BatteryRack", 1, number, at, front) then
+			local bank = plan.machines.battery
+			for seat, spot in bank.seats do
+				local cell = piece(battery, `Cell {seat}`, "BatteryCell", { across = spot.across, along = spot.along, up = bank.up, turn = 0 }, number, at, front)
+				if cell then
+					cell:SetAttribute("Cell", seat)
+					cell:SetAttribute("Lit", 0)
+					cell:SetAttribute("Later", seat > bank.cellsAt["1"])
+					stand(cell, false)
+				end
+			end
+		else
+			block(battery, "Body", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
+		end
 		Markers.Stamp(battery, "Battery", { Plot = number })
-		-- The generator (TR18), left of the Breaker between it and the Training machine: a tall box, its face toward the
-		-- spawn, where the owner's client writes generation and demand.
+		-- The generator at the plot's heart, at the end of the way in (TR18; AR16): its cradle, its rotor and its great
+		-- ring, which the client turns by its owner's generation; a box while its kit isn't laid.
 		local generator = WorldConfig.Grey.Generator
-		local generatorAt = at * CFrame.new(generator.At, 0, front + 12)
+		local generatorAt = place(layout.stations.generator)
 		local plant = model(base, "Generator", generatorAt)
 		if machine(plant, "Body", "Generator", 1, number, at, front) == nil then
 			block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), tint("generator", GREY.Generator))
 		end
-		local rotor = machine(plant, "Rotor", "GeneratorRotor", 1, number, at, front)
-		if rotor then
-			rotor:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
+		for _, turning in { { "Rotor", "GeneratorRotor" }, { "Ring", "GeneratorRing" } } do
+			local part = machine(plant, turning[1], turning[2], 1, number, at, front)
+			if part then
+				part:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
+			end
 		end
 		Markers.Stamp(plant, "Generator", { Plot = number })
-		-- The Festival Door, right of the Breaker and level with it, in view from the spawn.
-		Markers.Stamp(door(base, "Festival Door", at * CFrame.new(WorldConfig.Grey.Door.DoorAt, 0, front + 12)), "FestivalDoor", { Plot = number })
-		-- The Training machine (TR12), left of the Breaker as the door is right of it: a box, and its pad on the spawn's side,
-		-- where a fallen lead comes home and trains (FightService).
+		-- The Festival Door on the other slant toward the gate, turned to face down the way in (AR15, section 5): its
+		-- frame, its way of light, and the unseen Way a player walks into (DoorService); the grey frame while its kit
+		-- isn't laid.
+		local doorAt = place(layout.stations.door, turnOf("Door"))
+		local festival = model(base, "Festival Door", doorAt)
+		if machine(festival, "Frame", "Door", 1, number, at, front) then
+			local d = WorldConfig.Grey.Door
+			-- Its way wears the festival seen through it, a print on the kit's atlas (AR15, section 6), tinted Light.
+			local light = machine(festival, "Light", "DoorWay", 1, number, at, front)
+			if light then
+				light.Color = Color3.fromHex(d.Light)
+				light.Transparency = d.LightFade
+				light.CastShadow = false
+			end
+			local way = manifest.pieces.DoorWay.size
+			local trigger = block(festival, "Way", Vector3.new(way[1], way[2], 1), if light then light.CFrame else doorAt * CFrame.new(0, way[2] / 2 + 0.5, 0), GREY.Pad)
+			trigger.Transparency, trigger.CanCollide, trigger.CanQuery, trigger.CastShadow = 1, false, false, false
+		else
+			festival:Destroy()
+			festival = door(base, "Festival Door", doorAt)
+		end
+		Markers.Stamp(festival, "FestivalDoor", { Plot = number })
+		-- The Training machine (TR12) on the slant toward the back, as the battery is: its stone, its pad in front of it
+		-- toward the gate, where a fallen lead comes home and trains (FightService), and its crown, which the client turns
+		-- while a Voidkin trains (BaseService).
 		local training = WorldConfig.Grey.Training
-		local machineAt = at * CFrame.new(-WorldConfig.Grey.Door.DoorAt, 0, front + 12)
-		local machine = model(base, "Training machine", machineAt)
-		block(machine, "Body", training.Size, machineAt * CFrame.new(0, training.Size.Y / 2, 0), tint("training", GREY.Machine))
-		block(machine, "Pad", Vector3.new(4, 0.4, 4), machineAt * CFrame.new(0, 0.2, training.Spot), tint("bay", GREY.Bay))
-		Markers.Stamp(machine, "Training", { Plot = number })
-		-- The owner arrives behind it all, facing the Breaker.
+		local machineAt = place(layout.stations.training)
+		local trainer = model(base, "Training machine", machineAt)
+		if machine(trainer, "Body", "Training", 1, number, at, front) == nil then
+			block(trainer, "Body", training.Size, machineAt * CFrame.new(0, training.Size.Y / 2, 0), tint("training", GREY.Machine))
+			block(trainer, "Pad", Vector3.new(4, 0.4, 4), machineAt * CFrame.new(0, 0.2, training.Spot), tint("bay", GREY.Bay))
+		end
+		local crown = machine(trainer, "Crown", "TrainingCrown", 1, number, at, front)
+		if crown then
+			crown:SetAttribute("Training", false)
+		end
+		Markers.Stamp(trainer, "Training", { Plot = number })
+		-- What the base will wake in its back half, asleep where each will stand (AR16): the Forge, the Condenser and the
+		-- Lab, in the plan's order. Look only: nothing works there yet.
+		local sleeping = model(base, "Sleeping", at)
+		for index, name in { "Forge", "Condenser", "Lab" } do
+			machine(sleeping, name, "SleepingStone", index, number, at, front)
+		end
+		-- And the Tower, asleep behind the back corner on the crossing's side until phase 3 (AR16): one silhouette on its
+		-- lot's crossing end, look only. It stands with its plot's base: a bare lot has none.
+		machine(sleeping, "Tower", "TowerSleeping", 1, number, at, front)
+		-- The owner arrives at the gate, facing into the plot down the way in to the generator.
 		local spawn = Instance.new("SpawnLocation")
 		spawn.Name = "Spawn"
 		spawn.Anchored = true
 		spawn.Size = Vector3.new(6, 0.2, 6)
-		spawn.CFrame = at * CFrame.new(0, 0.1, front + 40)
+		-- Facing the Breaker and the three shards before it (docs/design.md, "The base", arrival), the way in and the
+		-- generator in the same view.
+		local spawnAt = place(layout.spawn).Position
+		spawn.CFrame = CFrame.lookAt(spawnAt, Vector3.new(breakerAt.X, spawnAt.Y, breakerAt.Z)) * CFrame.new(0, 0.1, 0)
 		spawn.Color = tint("spawn", GREY.Pad)
 		spawn.Material = Enum.Material.SmoothPlastic
 		spawn.Duration = 0 -- no shield
@@ -609,7 +735,7 @@ local function lay(folder: Folder)
 		local z = (if south then 1 else -1) * (stripHalf + deep / 2)
 		local centre = Vector3.new(x, PAVED_TOP, z)
 		local at = CFrame.lookAt(centre, centre + Vector3.new(0, 0, if south then -1 else 1))
-		bases[number] = plot(plotFolder, number, at, across, deep, studs(plots.Kept), behind, tower, plots.Bays)
+		bases[number] = plot(plotFolder, number, at, across, deep, studs(plots.Kept), behind, tower)
 	end
 
 	-- The Shop, south of the crossing: every trip out and back passes its clock.
@@ -964,17 +1090,33 @@ function WorldService.Init()
 				if level.levelMark and dressing:FindFirstChild("LevelMark") == nil then
 					table.insert(problems, `Plot {number}: no level mark`)
 				end
-				-- The machines with their model, each in place of its box (AR15).
+				-- The machines with their model, each in place of its box (AR15), as level 1 stands them: a sleeping bay's
+				-- pad and light, and the cells past level 1's, are a later level's (AR16).
 				local machines: { [string]: number } = {}
 				for _, item in (m :: Instance):GetDescendants() do
 					local piece = item:GetAttribute("Piece")
-					if type(piece) == "string" and item.Parent ~= dressing then
+					if type(piece) == "string" and item.Parent ~= dressing and item:GetAttribute("Later") ~= true then
 						machines[piece] = (machines[piece] or 0) + 1
 					end
 				end
 				for piece, needed in standing do
 					if machines[piece] ~= needed then
 						table.insert(problems, `Plot {number} {piece}: {machines[piece] or 0} stand, the plan's machines have {needed}`)
+					end
+				end
+				-- A piece placed toward the crossing stands on the plot's crossing side (AR16's Tower).
+				local pivot = (m :: Model).WorldPivot
+				local side = crossingSide(pivot)
+				for _, placement in (if basePlan.machines then basePlan.machines.placements else {}) do
+					if placement.toward == "crossing" then
+						for _, item in (m :: Instance):GetDescendants() do
+							if item:IsA("BasePart") and item:GetAttribute("Piece") == placement.piece then
+								local across = pivot:PointToObjectSpace(item.Position).X
+								if across * side <= 0 then
+									table.insert(problems, `Plot {number} {placement.piece}: stands away from the crossing`)
+								end
+							end
+						end
 					end
 				end
 			end

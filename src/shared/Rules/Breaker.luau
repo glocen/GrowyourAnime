@@ -66,6 +66,18 @@ function Breaker.Capacity(base: Profile.Base): number
 	return BaseLevels.Battery(base.Level)
 end
 
+-- How lit each cell of the battery's bank is, 0 to 1, in the order its seats fill (AR15, section 4): the charge's share
+-- of the cap, one cell after another, so with two cells half a charge is the first lit and the second dark.
+function Breaker.Cells(base: Profile.Base): { number }
+	local count = BaseLevels.Cells(base.Level)
+	local filled = math.clamp(base.Charge / Breaker.Capacity(base), 0, 1) * count
+	local lit = table.create(count, 0)
+	for index = 1, count do
+		lit[index] = math.clamp(filled - (index - 1), 0, 1)
+	end
+	return lit
+end
+
 -- Who's on the Training machine over an advance: away, the lead; else Training.Trainee. Nil for nobody, a Voidkin that's
 -- gone, or a worker (one role at a time).
 function Breaker.Trainee(data: Profile.Data, away: boolean?): Profile.OwnedVoidkin?

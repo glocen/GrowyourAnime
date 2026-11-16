@@ -15,6 +15,10 @@
 --                                             (the readout, the eye, the next's offer): a plate under the band starts right
 --                                             of it (research's pass on AR12: the eye stood over a bay's plate)
 --   World.Ceiling()                           that foot in the viewport's pixels: a shape in the world kept under it
+--   World.Apart(plate, group)                 kept from covering another of its group: the nearest stands at its point, and
+--                                             each one above it takes the free place nearest its point, over or under
+--                                             (a base's machine plates: AR16's star lined a bay up behind the Breaker)
+--   World.Settle(rows, gap, ceiling, bottom)  that rule on rows of plates, for a view that places its own (TR21's chips)
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
 
@@ -28,7 +32,10 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale? }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string? }
+-- A plate on the screen, authored pixels from the layer's corner: its middle, its foot, half its width, its height; and how
+-- far its point stands from the camera, if known.
+export type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number, Depth: number? }
 export type Span = { Left: number, Right: number, Edge: number } -- a piece of the band, its margin included, authored pixels
 
 local plates: { [Frame]: Plate } = {}
@@ -78,6 +85,63 @@ function World.Ceiling(): number?
 	end
 	local world = Layers.Get("World")
 	return world.AbsolutePosition.Y + floor * Layers.Scale() + GuiService:GetGuiInset().Y
+end
+
+function World.Apart(frame: Frame, group: string)
+	local plate = plates[frame]
+	if plate then
+		plate.Apart = group
+	end
+end
+
+-- No row covers another: the one lowest on the screen, the nearest, stands at its point, and each one above it takes the
+-- free place nearest its point, over or under a row already placed, `gap` clear of it, its top under `ceiling` and its
+-- foot over `bottom`. Side by side clears at a touch. A row with no free place on the screen stands at its point. Each
+-- row's foot, by its frame. Feet level to the pixel go nearest first, then by name: two plates the band pushed to one
+-- line swapped places every frame (the HUD case, AR16's Breaker and bay 2).
+function World.Settle(rows: { Row }, gap: number, ceiling: number, bottom: number): { [Frame]: number }
+	local sorted = table.clone(rows)
+	table.sort(sorted, function(a: Row, b: Row): boolean
+		local low, high = math.round(a.Foot), math.round(b.Foot)
+		if low ~= high then
+			return low > high
+		end
+		local near, far = a.Depth or 0, b.Depth or 0
+		if near ~= far then
+			return near < far
+		end
+		return a.Frame.Name < b.Frame.Name
+	end)
+	local feet: { [Frame]: number } = {}
+	local placed: { { Left: number, Right: number, Top: number, Foot: number } } = {}
+	for _, row in sorted do
+		local left, right = row.Middle - row.Half, row.Middle + row.Half
+		local function free(foot: number): boolean
+			if foot - row.Tall < ceiling or foot > bottom then
+				return false
+			end
+			for _, other in placed do
+				if left < other.Right and right > other.Left and foot - row.Tall < other.Foot + gap and foot > other.Top - gap then
+					return false
+				end
+			end
+			return true
+		end
+		local best: number? = if free(row.Foot) then row.Foot else nil
+		if best == nil then
+			for _, other in placed do
+				for _, foot in { other.Top - gap, other.Foot + gap + row.Tall } do
+					if free(foot) and (best == nil or math.abs(foot - row.Foot) < math.abs((best :: number) - row.Foot)) then
+						best = foot
+					end
+				end
+			end
+		end
+		local foot = best or row.Foot
+		table.insert(placed, { Left = left, Right = right, Top = foot - row.Tall, Foot = foot })
+		feet[row.Frame] = foot
+	end
+	return feet
 end
 
 function World.Shift(frame: Frame, offset: Vector2)
@@ -145,6 +209,7 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 	if room.X <= 0 or room.Y <= 0 then
 		return
 	end
+	local groups: { [string]: { Row } } = {} -- the plates kept apart, by group, where each would stand
 	for frame, plate in plates do
 		if frame.Parent == nil then
 			plates[frame] = nil
@@ -211,6 +276,22 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 		-- open plate a pixel over the piece it cleared (the World case, 2026-11-13).
 		frame.Position = UDim2.fromScale((on.X + shift.X * scale) / room.X, (on.Y + shift.Y * scale) / room.Y)
 		frame.Visible = true
+		local group = plate.Apart
+		if group then
+			local swell = if plate.Swell then plate.Swell.Scale else 1
+			groups[group] = groups[group] or {}
+			table.insert(groups[group], { Frame = frame, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell, Depth = screen.Z })
+		end
+	end
+	-- Then each group apart, under the band and over the screen's foot: a plate only rises or drops from where it stood.
+	for _, rows in groups do
+		local feet = World.Settle(rows, HudConfig.Plates.Gap, band or 0, room.Y / scale)
+		for _, row in rows do
+			local foot = feet[row.Frame]
+			if foot and foot ~= row.Foot then
+				row.Frame.Position = UDim2.fromScale(row.Middle * scale / room.X, foot * scale / room.Y)
+			end
+		end
 	end
 end)
 

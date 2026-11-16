@@ -148,4 +148,22 @@ return {
 			t.Equal("lights over the ceiling", #Kit.Problems(Manifest.pieces, Plan, stops, #Plan.lights - 1), 1)
 		end,
 	},
+	{
+		Name = "Kit: AR16, a piece placed toward the crossing stands on each plot's crossing side, mirrored with its turn; any other as it is",
+		Run = function(t: any)
+			local tower: Kit.Placement = { piece = "TowerSleeping", across = 84, along = -232, up = 0, turn = 20, toward = "crossing" }
+			local same = Kit.Toward(tower, 1)
+			t.Check("on the side it was written for, as it is", same.across == 84 and same.turn == 20)
+			local other = Kit.Toward(tower, -1)
+			t.Check("on the other, across and turn mirrored", other.across == -84 and other.turn == -20 and other.along == -232 and other.up == 0)
+			t.Check("the plan's own placement unchanged", tower.across == 84 and tower.turn == 20)
+			local written: Kit.Placement = { piece = "TowerSleeping", across = -84, along = -232, turn = 0, toward = "crossing" }
+			local left = Kit.Toward(written, 1)
+			t.Check("written on the left, mirrored onto a crossing on the right", left.across == 84)
+			local plain: Kit.Placement = { piece = "Bay", across = 30, along = -40, turn = 10 }
+			t.Check("a piece with no toward stands as written on either side", Kit.Toward(plain, -1) == plain and Kit.Toward(plain, 1) == plain)
+			local middle: Kit.Placement = { piece = "TowerSleeping", across = 0, along = -232, turn = 0, toward = "crossing" }
+			t.Check("one on the middle line, as it is", Kit.Toward(middle, -1) == middle)
+		end,
+	},
 }

@@ -19,12 +19,11 @@ return {
 	Plots = {
 		Count = 8,
 		Across = 12.5, -- 200 studs, open onto the Strip
-		Deep = 12.5, -- 200 studs: the Breaker at the front, the bays at its sides, the battery between them
+		Deep = 12.5, -- 200 studs. Where each machine stands is the base plan's layout (Config.Kits.Base, AR16)
 		Kept = 1.5, -- 24 studs at the back, kept for the Forge, the Lab and the Condenser (phase 3)
 		Between = 3, -- 48 studs between neighbours
 		Behind = 1, -- 16 studs of path behind a plot, then its Tower
 		Tower = 2, -- the Tower's footprint, 32 studs, left empty (phase 3)
-		Bays = 2, -- one open, the second locked (TR2)
 	},
 
 	-- The Strip: plots on both sides, a crossing one plot wide at its middle, the Shop south of it, the side street north.
@@ -71,20 +70,24 @@ return {
 		Wall = 10, -- the stall fronts' and the gates' height
 		Copies = 600, -- how far apart the keeper's ring copies stand, one per plot, out of sight
 		CopiesAt = 3000, -- studs east of the crossing the first copy stands
-		-- The Festival Door: its way of light, Wide by High, in a frame. On a plot it stands DoorAt studs right of the
-		-- Breaker's line and level with it; at a ground's gate, AtGate studs inside it, against the east stall front. A plot's
-		-- door sets the player down Landing studs before the gate, facing through it: out of the lead's leash of the first
-		-- pack (Combat.Lead.Leash), so the arrival is a look up the street before the first fight.
+		-- The Festival Door: its way of light, Wide by High, in a grey frame. On a plot it stands where the base plan's
+		-- layout says, and wears its kit's Door: the way wears the festival seen through it, a print on the kit's atlas
+		-- (AR15, section 6), tinted Light, white so the print keeps its colours, its Transparency LightFade, so the print
+		-- reads whole. At a ground's gate it stands AtGate studs
+		-- inside it, against the east stall front. A plot's door sets the player down Landing studs before the gate, facing
+		-- through it: out of the lead's leash of the first pack (Combat.Lead.Leash), so the arrival is a look up the street
+		-- before the first fight.
 		-- HomeWay: the door home's way, in the ground's look, is lit by the street, no brighter than its lanterns (research's
 		-- read of TR8's round 1, 2026-11-14: a Neon block outshone them at the gate); its dressing waits for the door pass.
-		Door = { Wide = 6, High = 9, DoorAt = 34, AtGate = 10, Landing = 4, HomeWay = "SmoothPlastic" },
-		-- The Training machine (TR12): left of the Breaker, as the door is right of it (DoorAt), a box Size, and its pad
-		-- Spot studs behind it on the spawn's side, where a fallen lead comes home, facing the machine.
-		Training = { Size = Vector3.new(6, 4, 5), Spot = 6 },
-		-- The generator (TR18): between the Breaker and the Training machine it feeds, At studs left of the Breaker's
-		-- line and level with it, a box Size, taller than both, so the plant's heart reads from the spawn. Its spot
+		Door = { Wide = 6, High = 9, AtGate = 10, Landing = 4, HomeWay = "SmoothPlastic", Light = "#FFFFFF", LightFade = 0 },
+		-- The Training machine (TR12), where the layout says: a box Size while its kit isn't laid, and its pad Spot studs
+		-- before it toward the gate (the kit's pad, AR15, section 5), where a fallen lead comes home, facing the machine.
+		-- Its crown turns Crown turns a second about its upright while a Voidkin trains (the builder's seed).
+		Training = { Size = Vector3.new(6, 4, 5), Spot = -6, Crown = 0.12 },
+		-- The generator (TR18) at the plot's heart, where the layout says: a box Size while its kit isn't laid. Its spot
 		-- stands more than BaseController's near (13 studs) from every other: a player at one hears only that one.
-		-- Its rotor (AR15) turns PerKw turns a second for each kW its owner's plant generates, at most Most, still at none.
-		Generator = { Size = Vector3.new(6, 8, 5), At = -17, Rotor = { PerKw = 0.02, Most = 2 } },
+		-- Its rotor (AR15) turns PerKw turns a second for each kW its owner's plant generates, at most Most, still at none;
+		-- its great ring (AR16) turns Ring times the rotor's speed, slower and against it (the builder's seed).
+		Generator = { Size = Vector3.new(6, 8, 5), Rotor = { PerKw = 0.02, Most = 2 }, Ring = -0.35 },
 	},
 }

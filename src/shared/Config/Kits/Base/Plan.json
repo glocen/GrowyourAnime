@@ -1,5 +1,5 @@
 {
- "what": "AR14, the base dressed: where the base's own kit stands on a plot, by the base's level",
+ "what": "AR14 and AR16, the base dressed and spread: where the base's own kit stands on a plot, by the base's level",
  "kit": "manifest.json, beside this file: every piece named here is one of its pieces",
  "origin": "the middle of the plot's front edge (the edge on the Strip), on the plot's floor",
  "axes": "`across` is the plot's own +X, to the right as the spawn looks; `along` is studs out of the front edge toward the Strip, so everything on the plot is negative; `turn` is degrees anticlockwise seen from above",
@@ -28,25 +28,25 @@
      "turn": 0.0
     },
     {
-     "piece": "Yard",
+     "piece": "YardLive",
      "across": 0,
      "along": -48,
      "turn": 0.0
     },
     {
-     "piece": "Wings",
+     "piece": "WingsLive",
      "across": 0,
      "along": -48,
      "turn": 0.0
     },
     {
-     "piece": "Yard",
+     "piece": "YardBack",
      "across": 0,
      "along": -96,
      "turn": 0.0
     },
     {
-     "piece": "Wings",
+     "piece": "WingsBack",
      "across": 0,
      "along": -96,
      "turn": 0.0
@@ -280,70 +280,28 @@
      "turn": -90
     },
     {
-     "piece": "WallEnd",
+     "piece": "Wall",
      "across": 100.0,
      "along": -176,
-     "turn": 0
+     "turn": -90
     },
     {
-     "piece": "WallEnd",
+     "piece": "WallHalf",
      "across": 100.0,
      "along": -192.0,
-     "turn": 0
+     "turn": -90
     },
     {
-     "piece": "Barrier",
-     "across": 100.0,
-     "along": -180,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": 100.0,
-     "along": -188,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": 100.0,
-     "along": -196.0,
-     "turn": 90
-    },
-    {
-     "piece": "WallEnd",
+     "piece": "Wall",
      "across": 100.0,
      "along": -200.0,
-     "turn": 0
+     "turn": 180
     },
     {
-     "piece": "Barrier",
-     "across": 96.0,
-     "along": -200.0,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 88.0,
-     "along": -200.0,
-     "turn": 0
-    },
-    {
-     "piece": "WallEnd",
+     "piece": "Wall",
      "across": 84.0,
      "along": -200.0,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 80.0,
-     "along": -200.0,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 72.0,
-     "along": -200.0,
-     "turn": 0
+     "turn": 180
     },
     {
      "piece": "Wall",
@@ -515,26 +473,26 @@
     },
     {
      "piece": "FloodMast",
-     "across": -12.5,
-     "along": -45.5,
+     "across": -13.6,
+     "along": -50.0,
      "turn": 0
     },
     {
      "piece": "FloodMast",
-     "across": 12.5,
-     "along": -45.5,
+     "across": 13.6,
+     "along": -50.0,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": -5.6,
-     "along": -20.0,
+     "across": -34.0,
+     "along": -77.5,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": 5.6,
-     "along": -20.0,
+     "across": 34.0,
+     "along": -77.5,
      "turn": 0
     },
     {
@@ -542,301 +500,13 @@
      "across": 14.0,
      "along": -4.9,
      "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": -46,
-     "along": -18,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": -46,
-     "along": -34,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": -30,
-     "along": -50,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": -38,
-     "along": -50,
-     "turn": 0
-    },
-    {
-     "piece": "Foundation",
-     "across": -22,
-     "along": -72,
-     "turn": 0
-    },
-    {
-     "piece": "Scaffold",
-     "across": -31.5,
-     "along": -72,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": -18,
-     "along": -62,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": -26,
-     "along": -62,
-     "turn": 0
-    },
-    {
-     "piece": "FloodMast",
-     "across": -29.5,
-     "along": -64.5,
-     "turn": -135
-    },
-    {
-     "piece": "Foundation",
-     "across": -22,
-     "along": -120,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": -18,
-     "along": -110,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": -26,
-     "along": -110,
-     "turn": 0
-    },
-    {
-     "piece": "Stack",
-     "across": -34,
-     "along": -120,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": 46,
-     "along": -18,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": 46,
-     "along": -34,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": 30,
-     "along": -50,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 38,
-     "along": -50,
-     "turn": 0
-    },
-    {
-     "piece": "Foundation",
-     "across": 22,
-     "along": -72,
-     "turn": 0
-    },
-    {
-     "piece": "Scaffold",
-     "across": 31.5,
-     "along": -72,
-     "turn": 90
-    },
-    {
-     "piece": "Barrier",
-     "across": 18,
-     "along": -62,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 26,
-     "along": -62,
-     "turn": 0
-    },
-    {
-     "piece": "FloodMast",
-     "across": 29.5,
-     "along": -64.5,
-     "turn": 135
-    },
-    {
-     "piece": "Foundation",
-     "across": 22,
-     "along": -120,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 18,
-     "along": -110,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 26,
-     "along": -110,
-     "turn": 0
-    },
-    {
-     "piece": "Stack",
-     "across": 34,
-     "along": -120,
-     "turn": 90
-    },
-    {
-     "piece": "Scaffold",
-     "across": -40,
-     "along": -2.4,
-     "turn": 0
-    },
-    {
-     "piece": "Scaffold",
-     "across": 52,
-     "along": -2.4,
-     "turn": 0
-    },
-    {
-     "piece": "Crane",
-     "across": -50.0,
-     "along": -84.0,
-     "turn": 23.2
-    },
-    {
-     "piece": "Drum",
-     "across": 5,
-     "along": -98,
-     "turn": 0
-    },
-    {
-     "piece": "Drum",
-     "across": -5,
-     "along": -146,
-     "turn": 0
-    },
-    {
-     "piece": "Drum",
-     "across": 22,
-     "along": -166,
-     "turn": 0
-    },
-    {
-     "piece": "Drum",
-     "across": 25.5,
-     "along": -170.5,
-     "turn": 30
-    },
-    {
-     "piece": "Stack",
-     "across": -22,
-     "along": -168,
-     "turn": 0
-    },
-    {
-     "piece": "Cabin",
-     "across": 62,
-     "along": -22,
-     "turn": 90
-    },
-    {
-     "piece": "Stack",
-     "across": 72,
-     "along": -31,
-     "turn": 0
-    },
-    {
-     "piece": "Frame",
-     "across": 68,
-     "along": -72,
-     "turn": 90
-    },
-    {
-     "piece": "Foundation",
-     "across": 68,
-     "along": -120,
-     "turn": 0
-    },
-    {
-     "piece": "Barrier",
-     "across": 68,
-     "along": -108,
-     "turn": 0
-    },
-    {
-     "piece": "Frame",
-     "across": 68,
-     "along": -166,
-     "turn": 0
-    },
-    {
-     "piece": "Stack",
-     "across": -64,
-     "along": -18,
-     "turn": 0
-    },
-    {
-     "piece": "Stack",
-     "across": -73,
-     "along": -29,
-     "turn": 90
-    },
-    {
-     "piece": "Drum",
-     "across": -59,
-     "along": -30,
-     "turn": 20
-    },
-    {
-     "piece": "Drum",
-     "across": -56,
-     "along": -25.5,
-     "turn": 75
-    },
-    {
-     "piece": "Stack",
-     "across": -66,
-     "along": -70,
-     "turn": 0
-    },
-    {
-     "piece": "Frame",
-     "across": -68,
-     "along": -120,
-     "turn": 0
-    },
-    {
-     "piece": "Scaffold",
-     "across": 84,
-     "along": -196.6,
-     "turn": 0
-    },
-    {
-     "piece": "Stack",
-     "across": 82,
-     "along": -186,
-     "turn": 90
     }
    ],
    "lights": [
     {
      "name": "FloodLeft",
-     "across": -12.5,
-     "along": -42.5,
+     "across": -13.6,
+     "along": -47.0,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -844,8 +514,8 @@
     },
     {
      "name": "FloodRight",
-     "across": 12.5,
-     "along": -42.5,
+     "across": 13.6,
+     "along": -47.0,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -853,10 +523,19 @@
     },
     {
      "name": "BreakerLamp",
-     "across": 0.0,
-     "along": -12.0,
+     "across": 26.0,
+     "along": -46.0,
      "up": 10.0,
      "colour": "#8CF6FF",
+     "kind": "point",
+     "cone": null
+    },
+    {
+     "name": "VoidWell",
+     "across": 0.0,
+     "along": -72.0,
+     "up": 1.6,
+     "colour": "#B98CFF",
      "kind": "point",
      "cone": null
     },
@@ -868,24 +547,6 @@
      "colour": "#F6FCFF",
      "kind": "point",
      "cone": null
-    },
-    {
-     "name": "SiteLeft",
-     "across": -27.378700000000002,
-     "along": -66.6213,
-     "up": 12.0,
-     "colour": "#EAF6FF",
-     "kind": "spot",
-     "cone": 66.0
-    },
-    {
-     "name": "SiteRight",
-     "across": 27.378700000000002,
-     "along": -66.6213,
-     "up": 12.0,
-     "colour": "#EAF6FF",
-     "kind": "spot",
-     "cone": 66.0
     }
    ],
    "levelMark": {
@@ -901,30 +562,26 @@
     "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text"
    },
    "budget": {
-    "pieces": 137,
-    "triangles": 32500,
-    "lights": 6,
+    "pieces": 82,
+    "triangles": 21384,
+    "lights": 5,
     "counts": {
      "Court1": 1,
      "Gate1": 1,
-     "Wings": 4,
-     "Yard": 3,
-     "Wall": 39,
-     "WallHalf": 5,
-     "WallEnd": 6,
-     "Barrier": 24,
+     "Wings": 2,
+     "YardLive": 1,
+     "WingsLive": 1,
+     "YardBack": 1,
+     "WingsBack": 1,
+     "Yard": 1,
+     "Wall": 42,
+     "WallHalf": 6,
+     "WallEnd": 2,
      "Pylon": 10,
      "PowerSpan": 8,
-     "FloodMast": 4,
+     "FloodMast": 2,
      "Transformer": 2,
-     "Showcase": 1,
-     "Foundation": 5,
-     "Scaffold": 5,
-     "Stack": 8,
-     "Crane": 1,
-     "Drum": 6,
-     "Cabin": 1,
-     "Frame": 3
+     "Showcase": 1
     }
    }
   }
@@ -946,108 +603,468 @@
   "spawn": "#E9E2D2",
   "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One steel body for every machine and one accent each; the chambers glow (Neon)."
  },
+ "layout": {
+  "note": "AR16, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's ends, the battery and the Training machine on the two slants toward the back. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn. What the base will wake stands asleep where it will stand, dark, on a dead line that lights out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along the side walls (level 3), and in the back half the Lab on the main line with the Forge and the Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator.",
+  "avenue": 20.0,
+  "least": 25.0,
+  "ring": 18.0,
+  "spawn": {
+   "across": 0.0,
+   "inward": 10.0,
+   "facing": "into the plot"
+  },
+  "showcase": {
+   "across": 14.0,
+   "inward": 4.9
+  },
+  "stations": {
+   "generator": {
+    "across": 0.0,
+    "inward": 72.0
+   },
+   "breaker": {
+    "across": 26.0,
+    "inward": 46.0
+   },
+   "door": {
+    "across": -26.0,
+    "inward": 46.0
+   },
+   "battery": {
+    "across": 26.0,
+    "inward": 98.0
+   },
+   "training": {
+    "across": -26.0,
+    "inward": 98.0
+   },
+   "bay1": {
+    "across": -50.0,
+    "inward": 72.0
+   },
+   "bay2": {
+    "across": 50.0,
+    "inward": 72.0
+   }
+  },
+  "laterBays": [
+   {
+    "across": -82.0,
+    "inward": 72.0
+   },
+   {
+    "across": 82.0,
+    "inward": 72.0
+   },
+   {
+    "across": -82.0,
+    "inward": 108.0
+   },
+   {
+    "across": 82.0,
+    "inward": 108.0
+   }
+  ],
+  "sleeping": {
+   "forge": {
+    "across": -36.0,
+    "inward": 132.0
+   },
+   "condenser": {
+    "across": 36.0,
+    "inward": 132.0
+   },
+   "lab": {
+    "across": 0.0,
+    "inward": 136.0
+   }
+  },
+  "check": {
+   "nearest": [
+    32.0,
+    "bay1",
+    "bay3"
+   ],
+   "least": 25.0,
+   "inTheWay": []
+  }
+ },
+ "current": {
+  "note": "the live conduits drawn in the floor, each from the generator's end outward: where the current runs. For a pulse of light along each, if the builder's effect takes it: a small touch, at research's verdict.",
+  "runs": [
+   {
+    "across": [
+     9.6,
+     18.0
+    ],
+    "along": [
+     -72.0,
+     -72.0
+    ]
+   },
+   {
+    "across": [
+     -9.6,
+     -18.0
+    ],
+    "along": [
+     -72.0,
+     -72.0
+    ]
+   },
+   {
+    "across": [
+     18.0,
+     43.8
+    ],
+    "along": [
+     -72.0,
+     -72.0
+    ]
+   },
+   {
+    "across": [
+     -18.0,
+     -43.8
+    ],
+    "along": [
+     -72.0,
+     -72.0
+    ]
+   },
+   {
+    "across": [
+     12.73,
+     20.8
+    ],
+    "along": [
+     -59.27,
+     -51.2
+    ]
+   },
+   {
+    "across": [
+     -12.73,
+     -20.8
+    ],
+    "along": [
+     -59.27,
+     -51.2
+    ]
+   },
+   {
+    "across": [
+     12.73,
+     20.8
+    ],
+    "along": [
+     -84.73,
+     -92.8
+    ]
+   },
+   {
+    "across": [
+     -12.73,
+     -20.8
+    ],
+    "along": [
+     -84.73,
+     -92.8
+    ]
+   },
+   {
+    "across": [
+     0.0,
+     0.0
+    ],
+    "along": [
+     -81.6,
+     -90.0
+    ]
+   }
+  ],
+  "ring": {
+   "across": 0.0,
+   "along": -72.0,
+   "radius": 18.0,
+   "open": 90.0,
+   "note": "the ring round the well: a circle of this radius about the generator, less the quarter that faces the gate. Its current runs from the bus's two joints and the main line's, toward its open ends."
+  }
+ },
  "machines": {
-  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the lots at 72 and 120 in, across 22 each side.",
+  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots (`layout.laterBays`).",
   "placements": [
    {
     "piece": "Breaker",
-    "across": 0.0,
-    "along": -12.0,
+    "across": 26.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Breaker's body"
    },
    {
     "piece": "BreakerChamber",
-    "across": -3.5,
-    "along": -12.0,
+    "across": 22.5,
+    "along": -46.0,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 1"
    },
    {
     "piece": "BreakerChamber",
-    "across": 3.5,
-    "along": -12.0,
+    "across": 29.5,
+    "along": -46.0,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 2"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 9.0,
-    "along": -12.0,
+    "across": 35.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 1"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 12.0,
-    "along": -12.0,
+    "across": 38.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 2"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 15.0,
-    "along": -12.0,
+    "across": 41.0,
+    "along": -46.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 3"
    },
    {
     "piece": "Bay",
-    "across": -22.0,
-    "along": -26.0,
+    "across": -50.0,
+    "along": -72.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 1"
    },
    {
     "piece": "BayHalo",
-    "across": -22.0,
-    "along": -26.0,
+    "across": -50.0,
+    "along": -72.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 1's light, while a worker works there"
    },
    {
     "piece": "Bay",
-    "across": 22.0,
-    "along": -26.0,
+    "across": 50.0,
+    "along": -72.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 2"
    },
    {
     "piece": "BayHalo",
-    "across": 22.0,
-    "along": -26.0,
+    "across": 50.0,
+    "along": -72.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 2's light, while a worker works there"
    },
    {
+    "piece": "BaySleeping",
+    "across": -82.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "bay 3, asleep until level 2"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": 82.0,
+    "along": -72.0,
+    "up": 0.0,
+    "turn": 180.0,
+    "standsFor": "bay 4, asleep until level 2"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": -82.0,
+    "along": -108.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "bay 5, asleep until level 3"
+   },
+   {
+    "piece": "BaySleeping",
+    "across": 82.0,
+    "along": -108.0,
+    "up": 0.0,
+    "turn": 180.0,
+    "standsFor": "bay 6, asleep until level 3"
+   },
+   {
+    "piece": "SleepingStone",
+    "across": -36.0,
+    "along": -132.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Forge's place, asleep"
+   },
+   {
+    "piece": "SleepingStone",
+    "across": 36.0,
+    "along": -132.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Condenser's place, asleep"
+   },
+   {
+    "piece": "SleepingStone",
+    "across": 0.0,
+    "along": -136.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Lab's place, asleep"
+   },
+   {
+    "piece": "TowerSleeping",
+    "across": 84.0,
+    "along": -232.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Tower, asleep until phase 3",
+    "toward": "crossing"
+   },
+   {
     "piece": "Generator",
-    "across": -17.0,
-    "along": -12.0,
+    "across": 0.0,
+    "along": -72.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the generator"
    },
    {
     "piece": "GeneratorRotor",
-    "across": -17.0,
-    "along": -12.0,
-    "up": 5.3,
+    "across": 0.0,
+    "along": -72.0,
+    "up": 11.5,
     "turn": 0.0,
     "standsFor": "the generator's rotor, turning about its own X"
+   },
+   {
+    "piece": "GeneratorRing",
+    "across": 0.0,
+    "along": -72.0,
+    "up": 11.5,
+    "turn": 90.0,
+    "standsFor": "the generator's great ring, turning about its own X, slowly, against the rotor"
+   },
+   {
+    "piece": "BatteryRack",
+    "across": 26.0,
+    "along": -98.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the battery"
+   },
+   {
+    "piece": "BatteryCell",
+    "across": 25.25,
+    "along": -98.95,
+    "up": 0.6,
+    "turn": 0.0,
+    "standsFor": "the battery's cell 1"
+   },
+   {
+    "piece": "BatteryCell",
+    "across": 26.75,
+    "along": -98.95,
+    "up": 0.6,
+    "turn": 0.0,
+    "standsFor": "the battery's cell 2"
+   },
+   {
+    "piece": "Door",
+    "across": -26.0,
+    "along": -46.0,
+    "up": 0.0,
+    "turn": 90.0,
+    "standsFor": "the Festival Door, its way looking down the way in"
+   },
+   {
+    "piece": "DoorWay",
+    "across": -26.0,
+    "along": -46.0,
+    "up": 0.0,
+    "turn": 90.0,
+    "standsFor": "the Door's way of light"
+   },
+   {
+    "piece": "Training",
+    "across": -26.0,
+    "along": -98.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Training machine, its pad toward the front"
+   },
+   {
+    "piece": "TrainingCrown",
+    "across": -26.0,
+    "along": -98.0,
+    "up": 8.0,
+    "turn": 0.0,
+    "standsFor": "the Training machine's crown, turning about its own upright while a Voidkin trains"
    }
-  ]
+  ],
+  "battery": {
+   "note": "the battery is a bank: a cell a seat, in this order, as its cap grows with the base's level. The builder lights the cells one after another as the charge rises.",
+   "cellsAt": {
+    "1": 2,
+    "2": 4,
+    "3": 8
+   },
+   "up": 0.6,
+   "seats": [
+    {
+     "across": 25.25,
+     "along": -98.95
+    },
+    {
+     "across": 26.75,
+     "along": -98.95
+    },
+    {
+     "across": 25.25,
+     "along": -97.05
+    },
+    {
+     "across": 26.75,
+     "along": -97.05
+    },
+    {
+     "across": 23.75,
+     "along": -98.95
+    },
+    {
+     "across": 28.25,
+     "along": -98.95
+    },
+    {
+     "across": 23.75,
+     "along": -97.05
+    },
+    {
+     "across": 28.25,
+     "along": -97.05
+    }
+   ]
+  }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",
- "lightsNote": "a SpotLight straight down from each flood mast's head and a PointLight over the Breaker's chambers, Shadows off; everything else that glows is in a glow picture",
+ "lightsNote": "a SpotLight straight down from each flood mast's head, a PointLight over the Breaker's chambers and one low in the generator's well, in the void's violet, Shadows off; everything else that glows is in a glow picture",
  "collision": "each piece's `collision` in the manifest; the court's floor and the lines are look only"
 }

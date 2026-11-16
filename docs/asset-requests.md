@@ -6773,7 +6773,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16. The battery's install follows AR16's.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -7080,6 +7080,50 @@ Research's call built ("Filled by what it will become", above), and moved off th
 - **The look:** `base_1_tower.png`, `base_1_home.png`. All twenty-one pictures were rendered again.
 - **Content check:** with the Door's festival layer, in AR15, section 6.
 - **Four facts:** implemented, yes. Tested: the export, the plan and the looks ran in Blender; not in Studio. Visually reviewed: Modulo, in Blender's renders; research's verdict comes in the game. Director-accepted: no; a picture of it on the middle line went to the director at 01:07, with no word yet.
+
+### Faber's install: delivery 2 as amended, the Door's festival layer and the sleeping Tower, with AR15's battery, Training machine and Festival Door (2026-11-16, to 01:45)
+
+Installed from fcff1e7, Modulo's final delivery for one install.
+- **Published under the group and approved:**
+  - the meshes from Studio (KitAssembly.Publish), each changed piece again, the Door, its way and the Tower last;
+  - the pictures with the key: the court's, the atlas (again for the festival layer), the yard's, the wings', and the four new floors' pairs;
+  - the amended Yard and Wings colour pictures. Their glow is the one plain black picture, also used by WingsBack.
+  - Ids are in `tools/studio/Kits/Base.json` and the asset log.
+  - The template (`src/storage/BaseKit.rbxm`) holds 33 pieces and the paving. The plan is `src/shared/Config/Kits/Base/`.
+- **The plot** (`WorldService`, `BaseService`), as its owner's save has it:
+  - **Bays.** Every bay the base can open stands on its place: the opened ones as `Bay`, the rest as `BaySleeping` (`WorldService.Stand`). The Forge's, the Condenser's and the Lab's places stand as sleeping stones.
+  - **The battery is a bank.** It has a cell on each seat its level holds (2, 4, 8: `Config.Base`, `Rules.BaseLevels.Cells`). The charge lights them one after another (`Rules.Breaker.Cells`). A cell's `Lit` takes its glow from `Glow.Empty` up to full.
+  - **The generator's great ring** turns against the rotor at 0.35 of its rate (`Config.World.Grey.Generator.Ring`).
+  - **The Training machine.** Its crown turns 0.12 turns a second while a Voidkin trains and stands still otherwise. Its pad is 6 studs before the stone (`Grey.Training`).
+  - **The Festival Door.** Its way wears the festival's print from the kit's atlas, tinted white at no transparency (`Grey.Door.Light` `#FFFFFF`, `LightFade` 0), so the print keeps its colours. The Door always opens onto the festival today (one ground, `DoorService`), so its way glows full. A Door that can close would lower it.
+  - **The sleeping Tower** stands behind the back corner on the crossing's side. Modulo writes its placement for one side, with `"toward": "crossing"`. `Kit.Toward` mirrors its across and turn on a plot whose crossing is on the other side, and `WorldService.crossingSide` reads which side that is. It collides as a box, as its manifest says: it stands on ground a player reaches from the side street. It stands with its plot's base, so a bare lot has none. The Tower's lot doesn't move: its 32-stud strip already runs the plot's whole width.
+  - **The spawn faces the Breaker** (`docs/design.md`, "Arrival"). It stood 36° off.
+  - **Later levels.** A piece for a later level carries `Later`, and DressReport skips it.
+- **The plates:**
+  - **Kept apart.** From the spawn, the star stands bay 2 right behind the Breaker, and their plates covered each other. Now a base's machine plates never do (`World.Apart`, `World.Settle`, `Config.Hud.Plates.Gap` 6). The lowest on screen, the nearest, stands at its point. Each other one takes the nearest free place over or under it, still under the top band. Two plates level to the pixel go nearest first: the band had pushed both to one line, and they swapped every frame.
+  - **The command view's edge.** It keeps its chips inside the screen's edge (`BaseView.Framing`).
+- **The content conditions, in Studio** (`build/captures/ar16/`):
+  - The Training pad's inner disc reads dark violet inside its lit ring, never red or glossy.
+  - The sleeping bay lies flat and dark beside the avatar and the lead, from close and at about 80 px, with nothing upright in it.
+  - No figure is placed on a sleeping piece or against the pegs. A fighter on the Training pad gets one look the first time it trains.
+  - Only a shard sits in a chamber.
+  - The lanterns stay blank, on the plain paper swatch.
+  - `BayHalo` stays hidden until TR22, so its tint isn't seen yet.
+  - The upload checks passed (the asset log's rows). The amended Yard and Wings pictures were checked after their upload, since they had missed the batch.
+- **Cases:**
+  - "Base: AR16's base as its save has it..." now checks the Door's way too, and reads at home: a case before it leaves the avatar at the crossing, where the rack streams out. "Base: from the spawn, AR16, no machine's plate covers another's..." (`SelfTestController/BaseCases.luau`, joined to Cases as PowerCases is: Cases' one table had passed what the type solver checks).
+  - "Kit: AR16, a piece placed toward the crossing..." (`Cases/Kit`), and DressReport wants such a piece on its plot's crossing side.
+  - The cells' count and share (`Cases/BaseLevels`), and the lighting case reads a cell's share.
+  - HUD's plate-under-the-card case aims at the plate's own point. The prompt's point is 5.5 under it, and from the nearer spawn the plate's point stood above the top of the screen.
+- **Four facts:**
+  - Implemented: yes.
+  - Tested:
+    - type check 0 new;
+    - the offline cases, 9,885 passed;
+    - in Studio: LogicTests 9,885; Base: 147, World 71, AR16 23, HUD 393; the whole suite, 2,187 passed, 0 failed, at 60 fps. A run before it failed 32 timing cases (the camera's follow, the lighting's eases, plates) while a heavy script of mine ran beside Studio. Each of them passed alone, and the whole suite passed again on a quiet PC;
+    - WorldReport and DressReport empty.
+  - Visually reviewed: my takes from the spawn, the court's back, above, the Training pad, the sleeping bay, the Door up close, and the Tower over the generator from the gate's left (`build/captures/ar16/`). Research's verdict waits.
+  - Director-accepted: no.
 
 ## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
 

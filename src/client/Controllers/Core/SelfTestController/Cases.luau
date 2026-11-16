@@ -82,6 +82,7 @@ local Takes = require(script.Parent.Takes)
 local VoidkinCases = require(script.Parent.VoidkinCases)
 local HudCases = require(script.Parent.HudCases)
 local PowerCases = require(script.Parent.PowerCases)
+local BaseCases = require(script.Parent.BaseCases)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -1195,8 +1196,11 @@ local cases = {
 					local want = if Kit.Floors[piece] then LightingConfig.Phases.Dusk.Floor
 						elseif LightingConfig.Houses[piece] then LightingConfig.Glow.Houses
 						else LightingConfig.Glow.Kit
+					local lit = item:GetAttribute("Lit")
 					if item:GetAttribute("Working") == false then -- an empty chamber, low (AR15)
 						want *= LightingConfig.Glow.Empty
+					elseif type(lit) == "number" then -- a battery cell, by its share of the charge (AR15, section 4)
+						want *= LightingConfig.Glow.Empty + (1 - LightingConfig.Glow.Empty) * math.clamp(lit, 0, 1)
 					end
 					if math.abs(surface.EmissiveStrength - want) > 1e-3 then
 						table.insert(off, string.format("%s at %.2f, not %.2f", piece, surface.EmissiveStrength, want))
@@ -7663,6 +7667,10 @@ for _, case in HudCases.Cases({
 end
 -- The Power screen's, given theirs (TR18; AR12's battery plate).
 for _, case in PowerCases.Cases({ ANSWER = ANSWER, PLATE_TICK = PLATE_TICK, waitFor = waitFor, lintClean = lintClean }) do
+	table.insert(cases, case)
+end
+-- The base's on its plot, given theirs (AR16).
+for _, case in BaseCases.Cases({ ANSWER = ANSWER, waitFor = waitFor }) do
 	table.insert(cases, case)
 end
 -- The Voidkin screen's, given theirs (TR17).

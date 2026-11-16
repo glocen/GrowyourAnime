@@ -183,6 +183,9 @@ return {
 	-- On, the camera's point eases from the avatar's focus to the lead's, Height studs over the lead's root, about 95% of
 	-- the way in Ease seconds (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
 	Spectate = { Size = 52, Plate = 44, Right = 10, Lower = 7, Off = 0.45, Ease = 0.3, Height = 1.5 },
+	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
+	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
+	Plates = { Gap = 6 },
 	-- The dock of three icons (AR12; UI.Dock; its shape is UIKit.Dock, Modulo's): pressed, a tile's mark sinks Sink points
 	-- along the tile's lean (Modulo's 1.6); a tile that can't be used draws its tile and mark at Dim of themselves; a touch
 	-- held LongPress seconds shows the tile's word Rise points over its tap, and lifting it then doesn't press.

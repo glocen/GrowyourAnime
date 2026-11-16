@@ -179,22 +179,27 @@ local function floorNow(): number
 	return if applied then applied.Floor or dusk else dusk
 end
 
--- A piece whose glow follows its state (a Breaker's chamber, "Working", set by the server: AR15), watched once.
+-- A piece whose glow follows its state, set by the server, watched once: a Breaker's chamber by "Working" (AR15), a
+-- battery cell by "Lit", 0 to 1, low while dark and full while lit (AR15, section 4).
 local watched: { [Instance]: true } = setmetatable({}, { __mode = "k" }) :: any
 
 local function dressOne(item: Instance, floor: number)
 	local piece = item:GetAttribute("Piece")
 	if type(piece) == "string" then
 		local look = item:FindFirstChildOfClass("SurfaceAppearance")
-		local working = item:GetAttribute("Working")
-		if working ~= nil and not watched[item] then
+		local working, lit = item:GetAttribute("Working"), item:GetAttribute("Lit")
+		if (working ~= nil or lit ~= nil) and not watched[item] then
 			watched[item] = true
-			item:GetAttributeChangedSignal("Working"):Connect(function()
+			local function again()
 				dressOne(item, floorNow())
-			end)
+			end
+			item:GetAttributeChangedSignal("Working"):Connect(again)
+			item:GetAttributeChangedSignal("Lit"):Connect(again)
 		end
 		if look then
-			local want = glowOf(piece, floor) * (if working == false then LightingConfig.Glow.Empty else 1)
+			local empty = LightingConfig.Glow.Empty
+			local share = if working == false then empty elseif type(lit) == "number" then empty + (1 - empty) * math.clamp(lit, 0, 1) else 1
+			local want = glowOf(piece, floor) * share
 			if look.EmissiveStrength ~= want then
 				look.EmissiveStrength = want
 			end

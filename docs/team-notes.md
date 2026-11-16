@@ -8,7 +8,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The proposal's twelve parts are written** (`docs/research/rework-2026-11-16.md`), with the attribute and Tower models (`tools/balance/attributes.py`, `tower.py`). It waits on the yes to the nine points (item 8 below). Chest rates are fitted after it.
 - **Given at 14:18:** AR16 works, TR23 works, and TR24's fix list of twelve, ranked (`docs/test-requests.md`, TR24). Faber's next: fixes 1 to 3 (what to do next, the fight on screen, the lead out of the view), which wait on no yes; then the contracts.
 - **The redesigns:** AR18, the inventory: C picked at 14:27, fixes 1 to 3 passed at 15:12; Faber's feasibility read (fix 4, the strip included) comes after his current piece. AR19, the generator: A, the Void Mill, picked at 15:04 against a blind read's B, three fixes with Modulo; the director's call 3 can still move it. AR17, the void kit: fixes passed at 15:23; its install and AR16's changes wait on the base's new size.
-- **Mine next:** the mist (item 7), and each pass as it comes.
+- **Mine next:** each pass as it comes. The mist waits on the director (item 7).
 
 **Faber (builder).** 2026-11-16, 14:18, TR24's run done.
 - **Done: the first session whole, on a phone** (TR24, "The run"), items 1 to 19 of research's list. The findings are in TR24 for research's verdicts on AR16 and TR23 and its ranked list. The stills, each with its line and time, are in `build/scratch/faber/tr24/notes.md`. The test profile is back and was read after a rejoin. The device test is off, Studio released.

@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 20:35, on the director's yes of 16:50.
-- **Done since 18:56:** the package carried into the design (5194c72); TR27's chest fit and TR25's Combat Power refit, both in Config (175226b); AR6 batch 2 closed in colour (6ec9558); TR29's fit and feel line: only hard floors pay, the Tower's own chest row, Credits at half Lantern Row's. Faber copies them into Config.
-- **Tier 2, with Faber:** the generator takes the stage of the base's ceiling; the Tower's rewards as above (`docs/design.md`, the base and "The Tower").
-- **Waiting on Faber's stills** (the screen's locked): TR28's layout, TR29's run, TR30's mill, TR24's fixes, AR19's block, AR20's C.
+**Quaestor (research).** 2026-11-16, 21:21.
+- **Done since 20:35:** the weapons' word recorded (912b8d7) and the bag's A (e85c1bf); AR6 batch 3 closed in grey and colour, with 120 cleared for upload and three names renamed and searched (1c977d0); chests named by kind, with AR21 for their pictures (236c0c3); an item's design fixed at its drop (e85c1bf).
+- **Verdicts on the stills** (d97140d): TR24's four fixes ranked, TR29's three, TR30 competent, AR20 closed.
+- **Next:** AR21's grey when Modulo sends it, and Faber's fixes as they come. The PC is kept awake until 22:16 by `build/scratch/quaestor/keep_awake.ps1`, at the director's ask.
 
 **Faber (builder).** 2026-11-16, 20:33. Part 12's 4.6 and 4.7 are in: TR29, the Tower's run in grey (d5ae402), and TR30, the generator's stages (435cf23). Next: research's TR29 fit into `Config.Tower` and `Config.Chests` (2e57359), then the 120 gear pictures uploaded and in TR28's cells, then the responsive pass. The screen is still locked.
 - **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12's timing; part 7's sizes; TR25's sheet on a phone; TR28's 11 layout checks; TR29's whole suite and captures; TR30's motion and its self-test checks.

@@ -1,4 +1,65 @@
 {
+ "Day": {
+  "phase": "Day",
+  "sky": {
+   "faces": {
+    "Ft": "LanternRow_SkyDay_Ft.png",
+    "Lf": "LanternRow_SkyDay_Lf.png",
+    "Bk": "LanternRow_SkyDay_Bk.png",
+    "Rt": "LanternRow_SkyDay_Rt.png",
+    "Up": "LanternRow_SkyDay_Up.png",
+    "Dn": "LanternRow_SkyDay_Dn.png"
+   },
+   "StarCount": 0,
+   "SunAngularSize": 0,
+   "MoonAngularSize": 0,
+   "note": "the sun is painted in the faces where Config.Lighting.Toward stands, so the engine's disc is 0, as at dusk and night; the horizon's warm band is strongest in Ft, up the street (-Z)"
+  },
+  "sun": {
+   "toward": [
+    -0.161,
+    0.883,
+    0.441
+   ],
+   "elevationDegrees": 62.0,
+   "colour": "#FFE2B8",
+   "strength": 0.87,
+   "shadows": true,
+   "note": "warmer than the first seed (#FFE6C4), so the faces turned to it take the warmth the paving lacked; strength is the kit's unit, a third of Brightness: 2.6"
+  },
+  "ambient": {
+   "colour": "#8A8496",
+   "strength": 1.0,
+   "asOne": "#8A8496",
+   "note": "a lilac nearer grey than the first seed (#6E7398): the shadows keep a violet, the paving loses its blue cast"
+  },
+  "atmosphere": {
+   "Color": "#EFE3D6",
+   "Decay": "#A9BCE4",
+   "start": {
+    "Density": 0.24,
+    "Offset": 0.2,
+    "Haze": 0.6,
+    "Glare": 0.3
+   },
+   "note": "Color is the faces' own horizon band, so the haze meets the sky without a line; Decay the sky's pale blue away from it"
+  },
+  "bloom": {
+   "start": {
+    "Intensity": 0.3,
+    "Size": 24,
+    "Threshold": 2.2
+   }
+  },
+  "environmentDiffuseScale": 0.5,
+  "shares": {
+   "Floor": 0.35,
+   "Glow": 0.45,
+   "Lights": 0.2,
+   "note": "the builder's own (Config.Lighting.Phases.Day), unmoved: the floors' glow, the kit's glow and the street's lights by day. environmentDiffuseScale comes down from 1 so the blue sky tints the ground less"
+  },
+  "note": "seeds, not measurements: set from the painted faces, never seen in the engine"
+ },
  "Dusk": {
   "phase": "Dusk",
   "sky": {

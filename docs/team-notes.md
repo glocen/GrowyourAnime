@@ -16,12 +16,12 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The Tower's cost** (research's tier 2): small, so yes, and the lot doesn't move. A bare lot has no Tower.
 - **Next, in research's order:** the Door's name over the arch, "Festival of Battles" with its ground under it, a World plate facing the camera (research's call); then TR22's plate, plinth and bays' light on AR16's places; then the first session on a phone with research, Studio's device simulator driven by me.
 
-**Modulo (assets).** 2026-11-16, 01:22, on Fable 5.2.
-- **AR16: delivered** (deliveries 1 and 2, and 2's amendment: the sleeping places lie low and the plain blocks carry no mark), and **AR15's Door and Training machine** (section 5), for Faber's install and research's one verdict in the game. Exported and rendered in Blender; **not seen in Studio.** The director has the renders and hasn't spoken on the star or the sleeping places.
-- **Delivered too: the Door says festival, and a Tower stands asleep** (AR15, section 6; AR16, "The sleeping Tower"), on the director's word read at 00:43 and research's calls. The way shows the festival through it, a string of paper lanterns hangs across the arch, and a sleeping Tower stands behind each plot's back corner on the crossing's side. The name over the arch is Faber's. The director has the pictures and hasn't spoken on them.
-- **Cut in Eclipse, for Faber's build and research's pass** (AR12): Power's bar (`power_images.json`) and the reveal's plate (`reveal_card_images.json`).
-- **Next:** Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5); AR17 with research after AR16's verdict.
-- **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked; AR6's other kinds on research's spec, after phase 2.
+**Modulo (assets).** 2026-11-16, 02:15, on Fable 5.2.
+- **At research's verdict: AR17's blockout** (AR17, "The blockout"): the Strip, the crossing, the side street to the festival gate, a bare lot and the sealed ends, from the game's camera, in Blender. The side street is the strongest; the Strip's own street and the seals are the weakest.
+- **Delivered: the Day sky** (AR5, section 2b), on the director's word read at 02:02 and Faber's answers: six faces in Dusk's names and size, the sun painted in them at `Config.Lighting.Toward` (the engine's disc 0), and a Day block of seeds in `sky/lighting.json`. For Faber's upload and install, and research's pass. **Not seen in the engine.** The director has the sheet and hasn't spoken on it.
+- **Installed by Faber, at research's one verdict in the game:** AR16, AR15's Door and Training machine, the Door's festival layer and the sleeping Tower. **Cut in Eclipse** for Faber's build (AR12): Power's bar and the reveal's plate.
+- **Next, in research's order:** AR6's batch 2, the eight shared kinds in grey on one sheet, filling AR17's waits; Watt's clips and Ground Wire's look; batch 3, the eight weapons; Scarf Step's blockout when Faber calls (AR10, section 5).
+- **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
 
@@ -111,6 +111,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 02:15. The Day sky, and AR17's blockout (Modulo)
+
+- **What changed:** our own Day sky, on the director's word ("we need a day / dusk sky box"): six painted faces, a clear azure day with a warm band on the horizon and two-tone cumulus, the sun painted where the game's light stands. A Day block of seeds in `lighting.json`. Dusk and Night are untouched. And AR17's blockout from the game's camera, for research's verdict.
+- **Where:** `build/handoff/LanternRow/sky/` (`LanternRow_SkyDay_*.png`, `lighting.json`, `lantern_row_sky_day_sheet.png`); `tools/art/sky_day.py`. `build/handoff/Strip/`; `tools/blender/strip_block.py`. Records: AR5, section 2b; AR17, "The blockout".
+- **For Faber:** the six faces to upload under the group and play in `Phases.Day`, with the engine's sun disc at 0. The block's numbers are seeds moved from yours toward warmth; tune them by playing.
+- **For research:** the Day sky's pass, and AR17's verdict.
+- **Open:** the director has the sky's sheet and hasn't spoken on it. Nothing here was seen in the engine.
 
 ### 2026-11-16, 01:51. The base installed: AR16, the Door's festival and the sleeping Tower, AR15's last machines (Faber)
 

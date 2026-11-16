@@ -2715,6 +2715,16 @@ For Modulo, after AR3 section 3. Built in the merge's look, with its four notes 
 
 **2. The sky.** Six faces a phase at 1024 px, each pixel drawn from its direction (`sky/LanternRow_SkyDusk_*`, `LanternRow_SkyNight_*`). The afterglow is in Ft, up the street. `sky/lighting.json` holds each phase's numbers. A colour, a direction, a place and a cone carry over as they are. A strength is the script's own unit, given so the two phases keep their ratio, beside the handbook's starting values (practice, not measured here).
 
+**2b. The Day sky (Modulo, 2026-11-16, 02:02 to 02:15).** On the director's word, read at 02:02: "we need a day / dusk sky box btw ask faber + lightning/atmosphere etc". Faber's answers (TR23): the same faces, names and size as Dusk; his Day numbers were seeds under Roblox's built-in sky, to move with ours; the sun stays at `Config.Lighting.Toward`. Dusk isn't redrawn: the game shows nothing to redo in it, and a second dusk would widen the director's word.
+
+- **The faces:** `sky/LanternRow_SkyDay_<Bk, Dn, Ft, Lf, Rt, Up>.png`, 1024 px, each pixel painted from its direction in plain numpy (`tools/art/sky_day.py`), so no seam and no Blender. A clear day: deep azure overhead falling to pale cyan, and a warm cream band on the horizon, warmest in Ft, up the street. Cumulus stand in banks round the horizon in two tones, white where the sun finds them and lavender in their own shade, on flat bases. A paler, lower rank stands behind them in the haze, and a few thin wisps lie high.
+- **The sun is painted in the faces,** where `Config.Lighting.Toward` stands (high, in Up and Bk), so the engine's disc is 0, as at dusk and night.
+- **The Day block** in `sky/lighting.json`, beside Dusk and Night, which are untouched: seeds set from the painted faces, never seen in the engine. The sun `#FFE2B8` at 0.87 (Brightness 2.6), the ambient `#8A8496`, the atmosphere's Color `#EFE3D6` (the faces' own horizon band) and Decay `#A9BCE4`, Density 0.24, Haze 0.6, Glare 0.3, EnvironmentDiffuseScale 0.5. Each moves toward warmth and away from blue, for the lavender-blue cast Faber saw on the paving under the built-in sky. Floor, Glow and Lights stay Faber's (0.35, 0.45, 0.2).
+- **The sheet:** `sky/lantern_row_sky_day_sheet.png`: the six faces, and three views as the game's camera frames them over a flat stand-in for the ground.
+- **Content check:** PASS, 2026-11-16 (the six faces, the sheet and the generator read): only sky, cloud and a plain sun disc; a two-tone summer cumulus sky is the genre, and the layout comes from a seeded generator, with no source image. Conditions: only the six faces are uploaded, under the group, and the sheet stays internal; faces painted again (another seed, size or palette) get a fresh check.
+- **For research's pass:** the near banks' flat bases cut hard, and a strip of sky and the far rank show under them at the horizon (the content check's remark). In the game the walls and houses cover most of that band.
+- **Four facts:** implemented, yes. Tested: painted and read back as six opaque 1024 px faces; not seen in the engine. Visually reviewed: Modulo, on the sheet; research's pass waits. Director-accepted: no; the sheet went to the director at 02:14, with no word yet.
+
 **3. The dressing.** `plan.json`, in studs from the festival gate's middle: across, along, turn. One rhythm: a bay is 13.33 studs (a stall with its gap, a string, a module of paving), six to a stop. Stalls stand down both sides except inside the gate on the right, where the Festival Door's twin stands, and round the square, which has a corner stall at each corner.
 
 **4. The phone budget** (counted from the plan, not measured on a device):
@@ -7150,6 +7160,22 @@ Research's entry, 2026-11-15, night, on the director's word: "then once the base
   4. Modulo makes the kit's pieces.
   5. Faber installs them.
   6. Research gives one verdict in the game.
+
+### The blockout (Modulo, 2026-11-16, 01:56 to 02:15)
+
+**The feel line: yes,** with one thing the blockout shows. From the two plots beside the crossing the side street's lanterns are in view from the gate. From the two far plots they are 450 studs off, and the haze has most of them. So the dusk's glow stands over the festival, up the side street, as the game's dusk sky already has it (the afterglow in Ft): the way to the fight is the bright end of the sky from every gate.
+
+A throwaway, in Blender, from the game's camera behind a stand-in: `tools/blender/strip_block.py`, pictures in `build/handoff/Strip/`. The base's and Lantern Row's own pieces stand in it; everything else is plain blocks. **Nothing was seen in Studio.**
+
+- **Out of the gate** (`strip_block_out.png`): the Strip in Lantern Row's stones, and across it a neighbour at home: its gate lit, its base awake behind.
+- **Down the Strip** (`strip_block_down.png`): a kerb and a low wall each side, a lantern post every 62 studs, and the side street's strings small at the far right. **The plainest view:** the street itself has nothing of its own yet.
+- **At the crossing** (`strip_block_crossing.png`): a ring and a heart in the stones, and the side street straight ahead.
+- **Up the side street** (`strip_block_street.png`, `strip_block_gate.png`): eight lantern strings that close up toward the gate, a pool of light under every other one, and a field of small ground lanterns each side, thicker toward the gate. Three stalls and three houses a side stand before the festival gate, so the festival starts before its gate. **The strongest views.**
+- **A bare lot** (`strip_block_bare.png`, `strip_block_stone.png`): its walls and gate dark, the gate's sign unlit, a dark floor, no machines and no Tower. One try has a sleeping stone at the generator's place. From the Strip it reads asleep. From inside it's a black field, and the stone hardly shows: it wants one low light of its own, or a paler floor.
+- **Past the edges** (`strip_block_end.png`): each end of the Strip is sealed by a dark arch with one faint shard, violet toward the Calamity and cyan toward the Clash Grounds, and great pale shards stand far off in the haze, all round but the festival's sky. **The weakest view:** the seal is a blunt slab.
+- **Tier 1 tries,** research's to keep or drop: the lantern field; the stalls before the gate; the sleeping stone; the sealed ends' shard lights; the far shards.
+- **Not counted:** the lights are Blender's. The kit's delivery counts the real ones for a phone.
+- **Time:** 01:56 to 02:15, with the Day sky (AR5, section 2b) made in the same hours. Inside the 2-hour cap.
 
 ## Later, by ground
 

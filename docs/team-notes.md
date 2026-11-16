@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 21:21.
-- **Done since 20:35:** the weapons' word recorded (912b8d7) and the bag's A (e85c1bf); AR6 batch 3 closed in grey and colour, with 120 cleared for upload and three names renamed and searched (1c977d0); chests named by kind, with AR21 for their pictures (236c0c3); an item's design fixed at its drop (e85c1bf).
-- **Verdicts on the stills** (d97140d): TR24's four fixes ranked, TR29's three, TR30 competent, AR20 closed.
-- **Next:** AR21's grey when Modulo sends it, and Faber's fixes as they come. The PC is kept awake until 22:16 by `build/scratch/quaestor/keep_awake.ps1`, at the director's ask.
+**Quaestor (research).** 2026-11-16, 21:48.
+- **Done since 21:21:** the stat sheet's percents (857b405); AR21 closed in grey and colour, cleared for upload (2e6c387); AR22, the empty slots' marks, and AR23, Combat Power's chromatic number, opened (ec48154, 8267f6c); the director's six answers: TR31 the card on return, TR32 the first session measured, TR33 inspect another player, Watt next for Modulo (0515f99).
+- **TR34, the chests' opening:** no written source describes the feel (402f117). It waits on the director's clips in `build/reference/chest-opening/`.
+- **Next:** the clips' study and TR34; Faber's A rebuild and TR24's fix 1, then the go for the director's phone run. The keep-awake stops at 22:16 and is deleted after.
 
 **Faber (builder).** 2026-11-16, 20:33. Part 12's 4.6 and 4.7 are in: TR29, the Tower's run in grey (d5ae402), and TR30, the generator's stages (435cf23). Next: research's TR29 fit into `Config.Tower` and `Config.Chests` (2e57359), then the 120 gear pictures uploaded and in TR28's cells, then the responsive pass. The screen is still locked.
 - **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12's timing; part 7's sizes; TR25's sheet on a phone; TR28's 11 layout checks; TR29's whole suite and captures; TR30's motion and its self-test checks.
@@ -28,6 +28,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on the director"):
 
+1. **Clips of the chest openings** you know, Sailor Piece's and Taichi Panda 3's, in `build/reference/chest-opening/`, for TR34 ("gimme a moment").
 2. The cut line for launch, once Lantern Row is at the bar.
 3. The store's design, before anything is sold.
 

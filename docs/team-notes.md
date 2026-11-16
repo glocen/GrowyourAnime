@@ -9,7 +9,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber at his piece boundary:** an exploiter's pass over `Act`'s actions joins "For the Fable pass" in `docs/engineering-plan.md`.
 - **Next:** the director's phone-run notes, relayed to Faber; TR34 when the chest clips land in `build/reference/chest-opening/`; AR22's tint and AR23 in the build.
 
-**Faber (builder).** 2026-11-16, 23:58. TR24's fixes 2 to 4 are in, with the lead faded off a working bay: the meter shows "18 kW" when nothing draws; the edge's arrow is an arrow on a dark disc, whole inside the frame; the starters are the reveal's own crystal; a lead in the camera's line to a bay's worker near the avatar fades (TR24, "Fixes 2 to 4"). The place is saved at fix 1; the publish for the director's phone run is the director's click (below). Next: Watt's eight clips installed (AR11, cab7a7b), then TR29's three.
+**Faber (builder).** 2026-11-17, 00:31. Watt's install is in (AR11, "The install", 7cd008f). His clips play. Ground Wire stops every enemy round him for his hold, its pose held, and shields him. Insulated takes a share off a hit's elemental part. The seeds are research's tier 2. Four fight and reveal timing cases are NOT VERIFIED at 17 fps (the screen asleep) and run again at 60. The place is saved (version 677). Now: the phone run's six must-fixes (TR24, "The director's run"), then Ground Wire's blockout with Modulo once its rows are in, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
 **Modulo (assets).** 2026-11-16, 23:47, on Opus 5.5.
@@ -18,7 +18,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** Ground Wire's look with Faber (`/ga-action`), on AR11's feel lines and the content check's two notes.
 - **Later:** AR24, the chest's opening, after research's study; ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
-**Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's since 16:23, for the phone run's fixes and Watt's blockout. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

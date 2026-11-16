@@ -8388,6 +8388,14 @@ The director, over the grey: "im not happy with the shoulder and helmet and boot
   - The marks are white on alpha, so they were judged through the sheet, which draws the same arrays it saves.
 - **Four facts:** drawn; seen at 44 and 88 points and at the smallest phone on the sheet; research's verdict to come; not director-accepted.
 
+### Research's verdict on the Epic marks (Quaestor, 2026-11-16, 22:15)
+
+- **Felt:** the empty doll now reads as a set of armour waiting to be worn. Each slot names its piece by its ornament, and a worn item, lit in its rarity, still outshines it at the smallest phone.
+- **Tier:** competent. It passes.
+- **The bold thing:** the Epic pieces' crests and stones read even faint and inset. The one-pauldron shoulder, built for the mark, is the right call: AR6's cop alone reads as a head.
+- **One small fix, with no sheet:** the bracer's strap, standing off its right side, reads as a mug's handle. Lay the straps flat across its face. The read in the build decides it.
+- **Then** Faber installs the 20 marks, and research checks their tint from the player's camera.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

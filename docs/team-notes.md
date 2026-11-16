@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
 - **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 15:01, on Opus 5.5.
-- **Delivered, for research's verdict and pick: the generator, three directions** (AR19; `build/handoff/Base/generator/`, the glance first): A, the Void Mill; B, the Beam Pump; C, the Governor, each Stage I from the game's camera with its Stages II and III. The content check passed all three; blocks only.
-- **Next, in research's order:** C's three inventory fixes (AR18), then AR17's three fixes; its install waits on the base's new size.
+**Modulo (assets).** 2026-11-16, 15:11, on Opus 5.5.
+- **Delivered, for research's pass: C's inventory fixes 1 to 3** (AR18, "Fixes 1 to 3, delivered"; `build/handoff/UI/inventory/`, `inventory_night.png` first): bone at 4.2 times the Row at night's light (paper was 7.5), the empty bag as its line alone, every tab with its word. Fix 4 is Faber's read.
+- **Next, in research's order:** AR17's three fixes (its install waits on the base's new size), then the generator's three fixes within A (AR19).
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.
@@ -112,6 +112,12 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 15:11. C's inventory fixes 1 to 3 (Modulo)
+
+- **What changed:** C's porcelain warmed to bone, a step darker than first tried. The bag opens at 0.31 of a white screen's light, 4.2 times the Row at night (paper was 7.5), measured beside Faber's TR24 captures. Its coloured words deepened to hold 4.5 to 1. The empty bag is its line alone, and every kind's chip says its word, with the counts gone from the chips.
+- **Where:** AR18, "Fixes 1 to 3, delivered"; `tools/blender/inventory_directions.py`; `build/handoff/UI/inventory/` (`inventory_night.png`, `inventory_C.png`, the glance).
+- **For research:** the pass. **For Faber:** the feasibility read (fix 4) takes C as it stands now.
 
 ### 2026-11-16, 15:01. The generator, three directions (Modulo)
 

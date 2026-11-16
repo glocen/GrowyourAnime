@@ -900,8 +900,25 @@ def draw_b(scr, state, who, chosen):
 
 # --- C, Porcelain: the case ------------------------------------------------------------------------------------------
 
+# As delivered on 2026-11-16 (14:25): cool porcelain, paper white at its brightest. Kept to be drawn beside BONE.
 PORCELAIN = dict(top="#EEEFF1", foot="#D9DCE1", ink="#16171C", soft="#4E5361", faint="#8B909C", line="#B8BDC7",
-                 card=("#FBFBFC", "#F1F2F4"), well=("#1B1D24", "#0C0D11"), umber=("#33220F", "#160E06"))
+                 card=("#FBFBFC", "#F1F2F4"), well=("#1B1D24", "#0C0D11"), umber=("#33220F", "#160E06"),
+                 glaze=("#FFFFFF", 0.9), lit="#FFFFFF", belt="#E3E5E9", slot=("#C9CDD4", "#BCC1C9"), slot_mark="#9298A4",
+                 shut="#CDD1D8", pair="#F4F5F7", shadow="#B9BDC6", off="#E3E5E9", button="#2A2C34",
+                 card_glow="#5A6070", glow=("#FFFFFF", 0.35), on_well="#C9CDD4", up=UP_DEEP, down=DOWN_DEEP,
+                 deep=RARITY_DEEP)
+# Research's fix 1 (2026-11-16, 14:27): warmed toward bone and darker than paper white, so the bag doesn't flash at
+# night. The kit's own ivory (#F3EFE6) is the brightest thing on it, and only as a glaze line or a word on ink.
+# Measured in inventory_night.png: a first bone (ground #D8CFBE to #C7BDAA) still stood 5.6 times the Row at night,
+# so it went a step deeper. The coloured words went deeper with it: 4.5 to 1 or more on their own ground, Legendary's
+# gold 3.85 (bold, and its band carries the colour; as delivered it was 3.34), faint 3.0 for headings.
+BONE = dict(top="#BFB5A2", foot="#ADA28D", ink="#1B1814", soft="#3F3A32", faint="#5A5347", line="#8F8572",
+            card=("#CFC6B4", "#C4BAA7"), well=("#1C1A1F", "#0D0C0F"), umber=("#33220F", "#160E06"),
+            glaze=("#F3EFE6", 0.55), lit="#F3EFE6", belt="#B3A894", slot=("#A39985", "#978C78"), slot_mark="#6A6254",
+            shut="#9B917E", pair="#C9C0AE", shadow="#948A77", off="#B6AC98", button="#2D2924",
+            card_glow="#4A4337", glow=("#F3EFE6", 0.10), on_well="#D8CFBE", up="#0B572D", down="#882C1C",
+            deep={"Common": "#3B3F48", "Uncommon": "#0A532A", "Rare": "#1A4687", "Epic": "#5B2B8F",
+                  "Legendary": "#6B4D08"})
 
 
 def c_cell(scr, p, x, y, s, stem, who, chosen=False, target=False, slot=None):
@@ -909,12 +926,12 @@ def c_cell(scr, p, x, y, s, stem, who, chosen=False, target=False, slot=None):
     and its light inside. Legendary: a gilt band and a gilt hairline. Chosen: an ink ring."""
     t = scr.area(x, y, x + s, y + s, 6)
     d = rrect(t, x, y, x + s, y + s, 7.0)
-    t.paint(d - 1.2, c("#FFFFFF"), 0.9)
+    t.paint(d - 1.2, c(p["glaze"][0]), p["glaze"][1])
     t.paint(d - 0.6, c(p["line"]), 0.7)
     if stem is None:
-        t.paint(d, vramp(t, "#C9CDD4", "#BCC1C9", y, y + s))
+        t.paint(d, vramp(t, *p["slot"], y, y + s))
         if slot:
-            t.paint(empty_mark(t, slot, x + s / 2, y + s / 2, s * 0.27), c("#9298A4"), 0.9)
+            t.paint(empty_mark(t, slot, x + s / 2, y + s / 2, s * 0.27), c(p["slot_mark"]), 0.9)
         if target:
             t.line(d - 2.6, 1.8, c(p["ink"]))
         return
@@ -932,12 +949,12 @@ def c_cell(scr, p, x, y, s, stem, who, chosen=False, target=False, slot=None):
     t = scr.area(x, y, x + s, y + s, 6)
     d = rrect(t, x, y, x + s, y + s, 7.0)
     if not ok:
-        class_mark(scr, "Warrior", x + s - 9, y + s - 9, 5.5, "#C9CDD4", seat="#0C0D11")
+        class_mark(scr, "Warrior", x + s - 9, y + s - 9, 5.5, p["on_well"], seat="#0C0D11")
     if stem in RAISES.get(who["who"], ()):
-        t.paint(rrect(t, x + s - 15, y + 5, x + s - 3, y + 17, 3), c("#FFFFFF"), 0.95)
-        up_arrow(t, x + s - 9, y + 6.5, 8.5, UP_DEEP)
+        t.paint(rrect(t, x + s - 15, y + 5, x + s - 3, y + 17, 3), c(p["lit"]), 0.95)
+        up_arrow(t, x + s - 9, y + 6.5, 8.5, p["up"])
     if stem in WORN and ok:
-        t.paint(rrect(t, x + 3, y + 5, x + 15, y + 17, 3), c("#FFFFFF"), 0.95)
+        t.paint(rrect(t, x + 3, y + 5, x + 15, y + 17, 3), c(p["lit"]), 0.95)
         tick(t, x + 9, y + 11.5, 7.0, p["ink"], 1.5)
     if chosen or target:
         t.line(d - 2.6, 1.8, c(p["ink"]))
@@ -957,7 +974,7 @@ def c_rail(scr, p):
             t.paint(circle(t, x, y, 19), c(p["ink"]))
     for i, (page, y) in enumerate(zip(PAGES, ys)):
         if i == chosen:
-            mark(scr, page, x, y, 17.0, "#FFFFFF")
+            mark(scr, page, x, y, 17.0, p["lit"])
             scr.text(x, y + 25, 14, PAGE_WORD[page], p["ink"], "CENTER", bold=0.1)
         else:
             mark(scr, page, x, y, 15.0, p["soft"], 0.35 if page in SOON else 0.95)
@@ -967,7 +984,7 @@ def c_band(scr, p, who):
     """The header: back, the Voidkin's face and name, its preset, its Combat Power."""
     t = scr.area(222, 8, 758, 54)
     stroke(t, [(240, 21), (232, 30), (240, 39)], 2.4, c(p["ink"]))
-    t.paint(circle(t, 282, 30, 20), c(RARITY_DEEP[who["rarity"]]))
+    t.paint(circle(t, 282, 30, 20), c(p["deep"][who["rarity"]]))
     t.paint(circle(t, 282, 30, 18.2), c("#1B1D24"))
     scr.paste(face(who["who"], 36), 264, 12)
     scr.mid(310, 22, 18, who["who"], p["ink"], bold=0.18)
@@ -976,7 +993,7 @@ def c_band(scr, p, who):
     class_mark(scr, who["cls"], x + 6, 42, 6.0, p["ink"])
     scr.mid(x + 15, 42, 14, who["cls"], p["soft"])
     x += 15 + width(who["cls"], 14) + 9
-    scr.mid(x, 42, 14, who["rarity"], RARITY_DEEP[who["rarity"]])
+    scr.mid(x, 42, 14, who["rarity"], p["deep"][who["rarity"]])
     t = scr.area(520, 10, 758, 50)
     t.line(rrect(t, 528, 14, 626, 44, 15), 1.0, c(p["ink"]))
     scr.mid(542, 29, 14, "Preset 1", p["ink"])
@@ -992,7 +1009,7 @@ def c_belt(scr, p, who, target):
     groups = (WEAPON, SLOTS[:6], ("Cloak", "Amulet", "Ring I", "Ring II", "Earring I", "Earring II"))
     s, gap, x, y = 42.0, 2.5, 116.0, 60.0
     t = scr.area(108, 54, 758, 108)
-    t.paint(rrect(t, 110, 56, 756, 106, 10), c("#E3E5E9"))
+    t.paint(rrect(t, 110, 56, 756, 106, 10), c(p["belt"]))
     t.line(rrect(t, 110, 56, 756, 106, 10), 0.8, c(p["line"]))
     ring = None
     for gi, group in enumerate(groups):
@@ -1009,31 +1026,33 @@ def c_belt(scr, p, who, target):
         # the hands' pair, empty for this class, says so in its own place
         t = scr.area(112, 56, 208, 106)
         d = rrect(t, 116, 60, 202.5, 102, 7)
-        t.paint(d, c("#F4F5F7"))
+        t.paint(d, c(p["pair"]))
         t.line(d, 1.0, c(p["faint"]))
         scr.mid(159.25, 73, 14, f"No {who['cls']}", p["ink"], "CENTER", bold=0.1)
         scr.mid(159.25, 90, 14, "weapon", p["ink"], "CENTER", bold=0.1)
 
 
 def c_chips(scr, p, who):
-    """The bag's kinds as chips with their counts; a kind not built yet is a chip with its mark alone, faint."""
+    """The bag's kinds as chips, each with its word (research's fix 3: a mark alone can't be read at phone size).
+    A kind not built yet is a faint chip with its word in faint ink. The five words fill the row before the card's
+    edge (118 to 446 points), so the counts left the chips."""
     x, y = 118.0, 116.0
-    for word, count, built in CATEGORIES:
+    for word, _, built in CATEGORIES:
         on = word == "Gear"
-        label = f"{word}  {count}" if count and not who.get("new") else word
-        w = width(label, 14) + 18 if built else 44.0
+        w = max(width(word, 14) + 14, 44.0)
         t = scr.area(x, y, x + w, y + 34, 2)
         d = rrect(t, x, y, x + w, y + 34, 17)
         if on:
             t.paint(d, c(p["ink"]))
-            scr.mid(x + w / 2, y + 17, 14, label, "#FFFFFF", "CENTER", bold=0.1)
+            scr.mid(x + w / 2, y + 17, 14, word, p["lit"], "CENTER", bold=0.1)
         elif built:
             t.line(d, 1.0, c(p["line"]))
-            scr.mid(x + w / 2, y + 17, 14, label, p["soft"], "CENTER")
+            scr.mid(x + w / 2, y + 17, 14, word, p["soft"], "CENTER")
         else:
-            t.line(d, 1.0, c("#CDD1D8"))
-            cat_mark(t, word, x + w / 2, y + 17, 7.5, p["faint"], 0.7)
+            t.line(d, 1.0, c(p["shut"]), 0.55)
+            scr.mid(x + w / 2, y + 17, 14, word, p["faint"], "CENTER")
         x += w + 4
+    assert x - 4 <= 446.0, f"the kinds' chips run to {x - 4:.0f}, past the card's edge"
 
 
 def c_bag(scr, p, who, chosen):
@@ -1041,15 +1060,9 @@ def c_bag(scr, p, who, chosen):
     items = bag_for(who)
     x0, y0, s, gap = 118.0, 158.0, 60.0, 5.5
     right = x0 + 5 * s + 4 * gap
-    if not items:
-        t = scr.area(x0, y0, right, 370)
-        for i in range(20):
-            x, y = x0 + (i % 5) * (s + gap), y0 + (i // 5) * (s + gap)
-            t.paint(rrect(t, x, y, x + s, y + s, 8), c("#D3D6DC"), 0.6)
-        t.paint(rrect(t, x0 + 30, 222, right - 30, 298, 12), c(p["card"][0]))
-        t.line(rrect(t, x0 + 30, 222, right - 30, 298, 12), 0.9, c(p["line"]))
-        scr.mid((x0 + right) / 2, 248, 16, "No gear yet", p["ink"], "CENTER", bold=0.15)
-        scr.mid((x0 + right) / 2, 272, 14, "Shades and keepers drop it", p["soft"], "CENTER")
+    if not items:  # research's fix 2: the line alone, no box and no ghost cells (they read as loading)
+        scr.mid((x0 + right) / 2, 238, 16, "No gear yet", p["ink"], "CENTER", bold=0.15)
+        scr.mid((x0 + right) / 2, 262, 14, "Shades and keepers drop it", p["soft"], "CENTER")
         return
     for i, stem in enumerate(items[:20]):
         x, y = x0 + (i % 5) * (s + gap), y0 + (i // 5) * (s + gap)
@@ -1061,7 +1074,7 @@ def c_bag(scr, p, who, chosen):
 def c_voidkin(scr, p, who):
     """The Voidkin's half, nothing chosen: its figure on the porcelain, its totals beside it. No box round it."""
     t = scr.area(452, 300, 640, 372)
-    t.paint(np.hypot((t.X - 540) / 3.4, t.Y - 352) - 7, c("#B9BDC6"), 0.7)
+    t.paint(np.hypot((t.X - 540) / 3.4, t.Y - 352) - 7, c(p["shadow"]), 0.7)
     figure(scr, who, 540, 354, 214)
     lx, rx = 642.0, 748.0
     scr.mid(lx, 128, 14, "Basic", p["faint"])
@@ -1079,7 +1092,7 @@ def c_card(scr, p, who, chosen):
     x0, y0, x1, y1 = 452.0, 116.0, 752.0, 370.0
     t = scr.area(x0, y0, x1, y1, 10)
     d = rrect(t, x0, y0, x1, y1 + 16, 14)
-    t.glow(d, 8.0, c("#5A6070"), 0.25)
+    t.glow(d, 8.0, c(p["card_glow"]), 0.25)
     t.paint(d, vramp(t, *p["card"], y0, y1))
     t.line(d, 0.9, c(p["line"]))
     lx, rx = x0 + 14, x1 - 14
@@ -1089,7 +1102,7 @@ def c_card(scr, p, who, chosen):
     g = GEAR[chosen["stem"]]
     ok = usable(who, chosen["stem"])
     c_cell(scr, p, lx, y0 + 12, 68, chosen["stem"], who)
-    class_mark(scr, "Warrior", lx + 59, y0 + 71, 6.0, "#FFFFFF", seat="#0C0D11")
+    class_mark(scr, "Warrior", lx + 59, y0 + 71, 6.0, p["lit"], seat="#0C0D11")
     nx = lx + 80
     y = y0 + 22
     for line in wrap(g["name"], 18, 700 - nx):
@@ -1098,10 +1111,10 @@ def c_card(scr, p, who, chosen):
     if ok:
         mark(scr, "CombatPower", nx + 8, y + 1, 16.0, None)
         up = scr.area(nx + 22, y - 9, nx + 38, y + 11)
-        up_arrow(up, nx + 30, y - 7, 13.0, UP_DEEP)
-        scr.mid(nx + 41, y + 1, 20, chosen["power"], UP_DEEP, bold=0.2)
+        up_arrow(up, nx + 30, y - 7, 13.0, p["up"])
+        scr.mid(nx + 41, y + 1, 20, chosen["power"], p["up"], bold=0.2)
         y += 21
-    scr.mid(nx, y, 14, g["rarity"], RARITY_DEEP[g["rarity"]], bold=0.1)
+    scr.mid(nx, y, 14, g["rarity"], p["deep"][g["rarity"]], bold=0.1)
     scr.mid(nx + width(g["rarity"], 14) + 8, y, 14, g["kind"], p["soft"])
     if not ok:
         class_mark(scr, "Warrior", nx + 6, y + 19, 6.0, p["ink"])
@@ -1126,7 +1139,7 @@ def c_card(scr, p, who, chosen):
         c_stat(scr, p, mx, rx, y + 18 + i * 18, name, value, delta)
     scr.mid(lx, y1 - 36, 14, "Replaces", p["faint"])
     item_art(scr, chosen["against"], lx - 3, y1 - 26, 22)
-    scr.mid(lx + 21, y1 - 15, 14, GEAR[chosen["against"]]["name"], RARITY_DEEP[GEAR[chosen["against"]]["rarity"]])
+    scr.mid(lx + 21, y1 - 15, 14, GEAR[chosen["against"]]["name"], p["deep"][GEAR[chosen["against"]]["rarity"]])
     c_button(scr, p, rx - 96, y1 - 46, 96, 44, "Equip", True)
 
 
@@ -1136,7 +1149,7 @@ def c_stat(scr, p, x0, x1, y, name, value, delta):
     if delta in ("0", ""):
         scr.mid(x1, y, 14, "–", p["faint"], "RIGHT")
     else:
-        scr.mid(x1, y, 14, delta.replace("-", "−"), UP_DEEP if delta.startswith("+") else DOWN_DEEP, "RIGHT")
+        scr.mid(x1, y, 14, delta.replace("-", "−"), p["up"] if delta.startswith("+") else p["down"], "RIGHT")
 
 
 def c_button(scr, p, x, y, w, h, label, enabled):
@@ -1144,19 +1157,19 @@ def c_button(scr, p, x, y, w, h, label, enabled):
     d = rrect(t, x, y, x + w, y + h, h / 2)
     if enabled:
         t.glow(d, 4.0, c("#000000"), 0.2)
-        t.paint(d, vramp(t, "#2A2C34", p["ink"], y, y + h))
-        scr.mid(x + w / 2, y + h / 2, 16, label, "#FFFFFF", "CENTER", bold=0.2)
+        t.paint(d, vramp(t, p["button"], p["ink"], y, y + h))
+        scr.mid(x + w / 2, y + h / 2, 16, label, p["lit"], "CENTER", bold=0.2)
     else:
-        t.paint(d, c("#E3E5E9"))
+        t.paint(d, c(p["off"]))
         t.line(d, 1.0, c(p["line"]))
         scr.mid(x + w / 2, y + h / 2, 16, label, p["faint"], "CENTER")
 
 
-def draw_c(scr, state, who, chosen):
-    p = PORCELAIN
+def draw_c(scr, state, who, chosen, p=None):
+    p = p or BONE
     t = scr.area(0, 0, W, H)
     t.paint(t.X * 0 - 1, vramp(t, p["top"], p["foot"], 0, H))
-    t.glow(np.hypot((t.X - 300) * 0.5, t.Y - 60) - 40, 160.0, c("#FFFFFF"), 0.35)
+    t.glow(np.hypot((t.X - 300) * 0.5, t.Y - 60) - 40, 160.0, c(p["glow"][0]), p["glow"][1])
     del t
     c_rail(scr, p)
     c_band(scr, p, who)
@@ -1197,8 +1210,8 @@ DIRECTIONS = (
         "Motion: the sheet rises in 0.18 s and the ring's slot glows in; the ring turns a few degrees to bring the "
         "slot nearer the sheet. Rarity: a crescent of its light under the item; Legendary, the crescent closes into "
         "a gold ring.")),
-    ("C", "Porcelain: the case", draw_c, "#C9CDD4", "#16171C", "#4E5361", (
-        "Pale porcelain and ink, the items in dark inlays, so each picture is a jewel in its case: the one light "
+    ("C", "Porcelain: the case", draw_c, "#BDB3A0", "#1B1814", "#4A443B", (
+        "Bone porcelain and ink, the items in dark inlays, so each picture is a jewel in its case: the one light "
         "screen in a dark game, kept for the bag. The fourteen slots are one belt across the top, in three groups "
         "(hands, body, jewellery), always in view; the Voidkin's face, name and Combat Power stand in the header.",
         "On research's brief: two zones, the grid (five across at 60) and the Voidkin's half, its figure and its "
@@ -1207,7 +1220,10 @@ DIRECTIONS = (
         "and Battle as two tables with the value and its change, what it replaces, Equip at the right thumb.",
         "Motion: the card slides in from the right over the figure in 0.16 s, the chosen cell sinks 1 point, the "
         "belt's slot rings in ink. Rarity: an enamel band across the inlay's head and its light inside; Legendary, a "
-        "gilt band and hairline. The risk: a light screen is bright on a phone at night, in a dark game.")),
+        "gilt band and hairline.",
+        "Research's fixes of 14:27: the porcelain warmed toward bone and darker than paper white, so the bag doesn't "
+        "flash at night (inventory_night.png sets it beside the Row at night and today's bag, measured); the empty "
+        "bag as its line alone; every kind's chip with its word, the counts gone from the chips to make the room.")),
 )
 CAPTIONS = ("1. Rook, a Warrior, full bag: a Legendary with a 24-character name, set against what he holds.",
             "2. Lyric, a Healer, the same preset: a Warrior's sword chosen; her own hands' slots stand empty.",
@@ -1259,6 +1275,69 @@ def glance_sheet(out, firsts):
     rs.save(sheet.px, out / "inventory_glance.png")
 
 
+# Faber's phone captures from TR24's run (2026-11-16, before 14:18): the Row at night with the HUD, and today's bag.
+NIGHT_STILLS = REPO / "build" / "scratch" / "faber" / "tr24"
+
+
+def light(px):
+    """A screen's mean light: its relative luminance, linear, averaged over every pixel (1.0 is a white screen)."""
+    v = np.clip(px[..., :3], 0.0, 1.0)
+    lin = np.where(v <= 0.04045, v / 12.92, ((v + 0.055) / 1.055) ** 2.4)
+    return float((lin @ np.array([0.2126, 0.7152, 0.0722])).mean())
+
+
+def c_alone(p):
+    """C with nothing chosen, as the bag opens, in palette p, at a pixel a point."""
+    sheet = ui.Sheet(W, H, "#000000")
+    draw_c(Screen(sheet, 0, 0), "full", ROOK, None, p)
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    return rs.shrink(sheet.px, 1 / K)
+
+
+def night_sheet(out):
+    """Research's fix 1, judged as a phone at night: the bag as it opens, beside the Row at night with its HUD and
+    today's bag, each at a phone's size over a dark room, with each screen's mean light measured."""
+    screens = [("The Row at night, the HUD (Faber's TR24 capture)", NIGHT_STILLS / "16-d-row-night.png"),
+               ("Today's bag (Faber's TR24 capture)", NIGHT_STILLS / "14-bag.png"),
+               ("C as delivered at 14:25: porcelain, paper white", PORCELAIN),
+               ("C warmed to bone (research's fix 1)", BONE)]
+    shots = []
+    for label, source in screens:
+        if isinstance(source, dict):
+            px = c_alone(source)
+        elif source.exists():
+            px = rs.load(source)
+            px = rs.shrink(px, H / px.shape[0])
+        else:
+            px = None
+        shots.append((label, px))
+    gap, top = 16.0, 44.0
+    ui.K, kk = 1, K
+    night = next((light(px) for _, px in shots if px is not None), None)
+    sheet = ui.Sheet(2 * W + 3 * gap, top + 2 * (H + 34) + 40, "#050506")
+    t = sheet.tile(0, 0, sheet.w, sheet.h)
+    t.text(gap, 12, 16, "C's bag at night: each screen at a phone's size, over a dark room, with its mean light",
+           "#B4AC9C")
+    for i, (label, px) in enumerate(shots):
+        x, y = gap + (i % 2) * (W + gap), top + (i // 2) * (H + 34)
+        if px is None:
+            t.text(x, y + 20, 14, f"{label}: not found", "#B4AC9C")
+            continue
+        rs.paste(sheet.px, px, round(x), round(y + 22))
+        lit = light(px)
+        than = f", {lit / night:.1f} times the Row at night" if night and i else ""
+        t.text(x, y, 14, f"{label}. Mean light {lit:.2f}{than}", "#EDE6D6")
+    t.text(gap, sheet.h - 30, 12, "Mean light: relative luminance, linear, averaged over the screen (a white "
+           "screen is 1.00). A monitor's picture of a phone, not a phone: the real check is on a device once built.",
+           "#8F887A")
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    ui.K = kk
+    rs.save(sheet.px, out / "inventory_night.png")
+    print("light:", {label: round(light(px), 3) for label, px in shots if px is not None})
+
+
 def main():
     out = bl.out_dir()
     for who in (ROOK, LYRIC):
@@ -1270,6 +1349,7 @@ def main():
         for k in [k for k in FIGURES if isinstance(k, tuple)]:
             del FIGURES[k]
     glance_sheet(out, firsts)
+    night_sheet(out)
 
 
 if __name__ == "__main__":

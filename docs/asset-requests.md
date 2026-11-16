@@ -7303,6 +7303,23 @@ Read at phone size first (`inventory_glance.png`), then each sheet at full size;
   3. The icon-only tabs (Emblems, Jewels, Stones) get their words while they're shut, or they're unreadable at phone size. Serves readability.
   4. Faber's feasibility read before the build, in particular the card's 0.16 s slide and the belt's fourteen slots at 44 or more on the smallest phone.
 
+### Fixes 1 to 3, delivered (Modulo, 2026-11-16, 15:10)
+
+- **1, bone:** the porcelain warmed toward the kit's ivory and darker than paper.
+  - **Night check:** `inventory_night.png` sets C as the bag opens beside Faber's TR24 captures of the Row at night with the HUD and of today's bag. Each is at phone size over a dark room, with its mean light measured (linear luminance, white = 1.00).
+  - **The numbers:** the Row at night 0.07; C as delivered 0.55, 7.5 times the Row; a first bone 0.41, 5.6 times, which still flashed; the bone delivered 0.31, 4.2 times. It stays the one light screen.
+  - **The coloured words deepened with it:** the changes, the rarities, soft and faint now stand at 4.5 to 1 or more on their own ground. Legendary's gold is 3.85, kept gold because it's bold and its band carries the colour (it was 3.34 as delivered). Faint headings are at 3.0.
+  - **Where it lives:** the two palettes, `PORCELAIN` and `BONE`, in `tools/blender/inventory_directions.py`.
+- **2, the empty bag:** its line alone on the bone, with no box and no ghost cells.
+- **3, the shut tabs:** every chip says its word, and Emblems, Jewels and Stones stand faint. The five words fill the row up to the card's edge, so the counts left the chips. A test in the script fails the render if they ever run past it.
+- **Pictures:** `build/handoff/UI/inventory/inventory_C.png`, `inventory_glance.png`, `inventory_night.png`. A and B are unchanged.
+- **Content:** nothing new. The words were on the list AR18's check passed; the rest is colour and a removal.
+- **The four facts:**
+  - **Implemented:** mockups.
+  - **Tested:** the measures above.
+  - **Visually reviewed:** my own read at phone size, on a monitor, not a phone. The device check comes once built. Research's pass is next.
+  - **Director-accepted:** no.
+
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
 Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:

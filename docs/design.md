@@ -167,7 +167,7 @@ The largest change from the package (`docs/decisions.md`, "What changed from the
 | Tank | Great Axe [D] | Shield [D] |
 | Mage | Staff [D] | Tome [D] |
 | Assassin | Dagger [D] | Throwing Blades |
-| Warrior | Sword [D] | Short Sword [D: two swords; asked again, 2026-11-16] |
+| Warrior | Sword [D] | Short Sword [D: two swords, 2026-11-12 and 2026-11-16] |
 | Healer | Crystal Baton [D] | Codex [D: a book] |
 
   The pairs are final by the director's word (the Assassin's off hand is research's, taken), the Warrior's two swords included [D, 2026-11-16, 20:41]. The slots never decide a Voidkin's model: a Warrior may hold one long sword, two swords or anything its design gives it, and so may every class [D, the same]. The Warrior's off-hand sword is shorter, so the two slots never show the same icon. Every main hand is a silhouette no other class shares. The Mage and the Healer both hold a book: the Mage's Tome is heavy and dark, the Healer's Codex light and clasped with the baton's crystal, and every weapon icon carries its class mark on the frame, so the two never read as one.
@@ -176,6 +176,7 @@ The largest change from the package (`docs/decisions.md`, "What changed from the
 - **A weapon of any class may drop** and stays in the bag, usable or not [D, the same]. Drops lean to the lead's class, the rest among the classes the player owns, so a drop is rarely useless. The Void Shop's stock may hold any class.
 - **Why:** a counter system asks players to swap leads often. Gear worn per Voidkin would make every swap a chore of fourteen items and their sockets, and it would bury new Voidkin under the cost of dressing them.
 - **Gear is never shown on the body** [D]: each Voidkin's look is authored. An item's whole look is its icon, so the icon carries all of gear's appeal. Each item kind is modelled in Blender and rendered to its icon, lit, with its rarity's frame and light; rarity also shows in its material, from plain iron to gilt. Dawn has designs of its own. How many designs per kind is set when the item art's request is written (`docs/asset-requests.md`, AR6), after a reference study of the director's references for what makes an icon worth wanting.
+- **An item's design** [research, 2026-11-16, on Faber's proposal]: each kind has three designs at each rarity (AR6), each with its own picture and name. An item's design is fixed when it drops and never changes after, even when its kind gains designs. A design is the look and the name only, never a stat, so no design is worth more than another of its rarity. The card's title is the design's name ("Blade of Embers", "Meigetsu, the Full Moon"), with its kind and rarity under it.
 - **An item** has a rarity, a level tier, one main stat and a few rolled lines.
   - A weapon's main stat is Attack, and its lines favour its class's Main. An armour piece's is the Battle Attribute its slot fixes. A piece of jewellery's (the Amulet, the Rings, the Earrings) is a Basic Attribute rolled at the drop: that's where the player chooses ("this ring is Finesse").
   - Rolled lines come from the five attributes and the Battle Attributes. A line is priced by its Combat Power, so an attribute line and a Battle line of one budget are worth the same.

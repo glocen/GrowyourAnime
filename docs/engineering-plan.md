@@ -68,6 +68,85 @@ The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is wh
 - A nickname is stored raw and filtered for each viewer when shown (`docs/roblox-rules.md`).
 - It sits on ProfileStore, under a layer of our own: see [the builder's calls](#the-builders-calls).
 
+## The rework's contracts
+
+The builder's, 2026-11-16, written before the systems (research's order, `docs/research/rework-2026-11-16.md`, part 12). The design they serve waits on the director's yes to its nine points. Each contract holds whichever way the open questions go: a name the director picks is a row's display name, never a key a save holds. Every number is a seed in `Config`, never here.
+
+**Attributes in the resolver** (the proposal, parts 1 to 4).
+- **The rows:** `Definitions/Attributes.luau` holds the five, each with a stable id and its display name. The ids are the working names (`Might`, `Finesse`, `Vigor`, `Spirit`, `Insight`), so a rename changes only `Name`. `Config.Stats.Attributes` holds each one's conversion row, and each class's Main, its Main's own row and its shape.
+- **Nothing is saved:** a Voidkin's points are computed (shape × rarity × G(level) × its stars), as its stats are today. Gear adds points as item lines whose `Stat` is an attribute id. So no migration, and today's lines stay valid.
+- **`Stats.Resolve`** keeps its signature and its breakdown. The block gains `Attributes` (each total) and `Main`. The order:
+  1. Points: the Voidkin's own, then each worn line's, flat.
+  2. Each total converts once by its row.
+  3. The Main converts once more by its class's row.
+  4. Each conversion is a line (`Attr:<id>`, `Main:<id>`), so the sheet shows where every point of every Battle Attribute came from.
+- **`Stats.Power` reads the Battle Attributes only,** never `Attributes`, so no point counts twice.
+- **The even foe:** `Stats.EvenFoe(level)` builds its block from Config's on-budget ratings. The sheet's chances come from `Stats.Chance` against it, the function the hit uses.
+- **Checks:**
+  - logic cases for each conversion and each Main;
+  - linearity: twice a source's points, twice exactly its lines; no source multiplies another;
+  - Combat Power unchanged when only `Attributes` changes;
+  - each shown chance equal to `Stats.Chance`, and never over its ceiling;
+  - `tools/balance/attributes.py` reads the same Config, as `sim.py` does.
+
+**Class rules** (part 10).
+- **Item rows:** `Definitions/Items.luau` is the row an `OwnedItem.Def` names: `Id`, `Slot`, `Kind`, `Name`, and `Class` on a weapon only. A case checks each weapon's class against `Gear.Weapons`.
+- **A preset:** `Slots` keeps the twelve shared slots. A new key, `Hands`, holds each class's pair: `{ [class]: { ["Main Hand"]: id?, ["Off Hand"]: id? } }`. The next migration moves any hand found in `Slots` under its item's class. None exists today, since items aren't built yet.
+- **The resolver reads `Slots` and `Hands[its class]` only.** It also skips a hand item whose row's class isn't the Voidkin's. A hand-edited save can't apply a wrong weapon: two guards.
+- **Equip:** one transaction, `Act("Equip", { Preset, Slot, Class?, Item })` with its op id. The server checks the owner, the slot against the row, and a hand's class. It refuses with `NotOwned`, `WrongSlot` or `WrongClass`, which the screen says. Unequip is the same with no item.
+- **The comparison:** `Stats.Compare(data, preset, owned, item)` is the resolver run twice, and returns the attribute changes, the Battle changes and Combat Power's. The screen calls it on its copy of the profile. It's the same pure function the server would call on the same data, so it can't drift, and no tap waits on a remote (the builder's call).
+- **Checks:** a wrong-class equip refused; a preset applying only its class's pair; a hand-edited save not applying a wrong weapon; a repeated equip a no-op.
+
+**Chests** (part 11).
+- **The rows:** `Definitions/Chests.luau` holds `Id`, `Ground`, `Tier` and `Name`. `Config.Chests` holds the tables (rarity, slot and line rolls by ground and tier), the drop chances, the bag's cap, the open step (50) and the pickup reach.
+- **The save:**
+  - `Bag.Chests`: count by chest id. A stack is a count, so identical chests stack by shape.
+  - `Settings.Salvage`: the rarity under which an opened item turns into forge stones and Credits, or `""`.
+  - `Items` as they are.
+  - Size, estimated before the build: an item about 150 bytes, 300 items about 45 KB, against a profile's 4 MB. Faber measures it at the build.
+- **A drop is granted on the server at the kill,** in the kill's own transaction (`Rules.Drops`), as Watt's shard is today. The chest falling in the world and flying to the player is its show: "a reward is granted before its animation, never by it".
+- **Open:** `Act("OpenChests", { Chest, Count })` with its op id. Count is at most the open step and at most what's owned. "Open all" is several requests, one op id each, and the summary shows once all have answered.
+  - Each request is one transaction: it removes the chests, rolls each item with `Rules.Chests.Roll(chest, seed)`, the seed drawn on the server in the transaction, never from the client, and applies the salvage.
+  - It writes everything in the same step and answers with the item ids and the salvage's totals.
+  - At the bag's cap it refuses `BagFull` before rolling, and the chests stay.
+- **The salvage never takes an item that would raise Combat Power** (`Rules.Chests.Keep`, through `Stats.Compare`). **Open, for research:** against whom, the lead in its preset or each class's best Voidkin. It's one function either way.
+- **Rule 4:** no product grants a chest, a key or a rate. A case reads every product row.
+- **Checks:**
+  - 1,000 opened in steps, every chest removed once and every item granted once;
+  - a repeated op id answers its first answer;
+  - a refused step changes nothing;
+  - the save's size at a full bag.
+
+**The Tower's run** (part 8).
+- **The save:** `Progress.Tower` holds `Best`, `Run?` and `Results?`. `Run` is the ledger: `Id` (`Profile.NewId`), `Started`, `Floor` (the last won), and what's won (Credits, chests by id). `Results` is the last run's summary, kept until the screen has shown it.
+- **Each floor won is one transaction** that writes the ledger. **The end is one transaction:**
+  1. It grants the ledger.
+  2. It raises `Best`.
+  3. It writes `Results` and clears `Run`.
+  An end that finds no `Run`, or another `Id`, is a no-op, so a run is granted once.
+- **Interruptions:**
+  - Leaving the ring, home, a disconnect or a shutdown each end the run on the server, before the profile is released.
+  - A crash leaves `Run` in the save at its last saved floor. The next join ends it then, so nothing doubles and nothing won and saved is lost.
+  - `Results` opens the screen once and is cleared by an `Act` with its op id.
+  - A run never resumes.
+- **The rules, pure, `Rules.Tower`:** `Foe(floor, seed)` gives the Voidkin row, the level and the build share. `Reward(floor, best, seed)` gives a floor's Credits and chest roll. `HealCap(maxHealth)` gives the most healed in one floor.
+- **FightService:**
+  - The foe is a Voidkin row fought as an enemy (`Stats.Enemy` taking a Voidkin row and a build share).
+  - Healing passes one function that counts each floor's healing against the cap, so Lifesteal, when wired, is capped there too.
+  - The lead and the preset freeze at the first fight, through the keeper's try (`Try`, D10).
+- **The world:** each plot's `TowerRing` marker, in `Shared.World.Tags`, with the world report counting one per owned plot. Platforms are the client's, from the run's floor attribute, never more than three. The server holds one floor's collision.
+- **Checks:** health carried between floors; the heal cap; the ledger each floor; a disconnect granting what was won; a rejoin showing the results once; at most three platforms; captures of the climb and the results.
+
+**The responsive layout** (part 6).
+- **One module, `UI.Layout`:**
+  - `Class()` gives Compact, Regular or Wide, from the viewport less the safe insets (`ScreenGui.ScreenInsets`, `GuiService:GetGuiInset`), on thresholds in `Config.UIKit.Layout`.
+  - `Input()` gives Mouse, Touch or Gamepad, from `UserInputService.PreferredInput`, confirmed in Studio on 2026-11-16: KeyboardAndMouse, Gamepad, Touch and MicroGamepad, the last read as Gamepad.
+  - `Changed` fires on a viewport, inset or input change, so a switch of device is live.
+  - Hover reads `Input()` from then on, in place of its own last-input guess.
+- **One kit:** each screen builds its frame from `Theme.Size[class]` (gutters, columns, the 44-point touch target) and rebuilds on `Changed`. No second set of screens. Wide is three columns, Compact and Regular two panes.
+- **Gamepad:** focus through `GuiService.SelectedObject`. The shoulder buttons step the tabs and B closes, bound through `ContextActionService` above the game's priority while a screen is open.
+- **Checks:** the UI lint for every screen at each class's smallest viewport (Compact at `Theme.Smallest`, the smallest phone held sideways; Regular at a tablet's 1024 × 768; Wide at 1920 × 1080) and in each input; under Touch, every target at 44 points or more; captures by eye at each class.
+
 ## Who owns what
 
 | State | Owner | The client's part |

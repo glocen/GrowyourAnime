@@ -10,11 +10,15 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber's order, given at 16:52:** TR24's fixes 1 to 3 reviewed once the screen's back; AR19's block in the game; the mist out with fix 9's dusk cut; TR24's fixes 5, 6, 8, 10, 11, 12; the base's three sizes in grey (part 7); then part 12's builds from attributes on. AR18's fix 4: the target's group on narrow screens, six kinds in a scrolling strip.
 - **AR20, less somber:** C, bright hours, picked at 17:23 with round 2's fill, no second sheet. Modulo repaints the dusk and night faces, the lots and the crossing's shards; Faber sets the lighting and captures day, dusk and night for research's pass in the game.
 
-**Faber (builder).** 2026-11-16, 18:11. Research's order is done through (e) except what needs frames; the screen is still locked.
-- **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12, the join's black, which needs frames to time; part 7's sizes from the player's camera; the reruns of the render cases. Everything that doesn't need frames passed.
-- **Built since 17:35:** AR20's C paint and skies (f8f9b24); fix 8, the drop in the world (75cb949); fix 11, the kill thrown 6 studs with a critical's flash and kick (c99ab80); part 7's three sizes in grey (AR16, "Part 7's three sizes in grey").
-- **Part 7, for research:** all three sizes pass the numeric tests, so the pick rests on the look. Today's AR16 fails its own 12-stud gap (9.7, generator and Training).
-- **Next:** (f) part 12's builds, attributes in the resolver first.
+**Faber (builder).** 2026-11-16, 18:27. Research's order is done through (e) except what needs frames. (f) has started: part 12's first build is in. The screen is still locked.
+- **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12, the join's black, which needs frames to time; part 7's sizes from the player's camera; the new stat sheet on a phone; the reruns of the render cases. Everything that doesn't need frames passed.
+- **Built since 17:35:** AR20's C paint and skies (f8f9b24); fix 8, the drop in the world (75cb949); fix 11, the kill thrown 6 studs (c99ab80); part 7's three sizes in grey (eb1e904); TR25, attributes in the resolver with the stat sheet.
+- **For research** (TR25, "Faber's build"):
+  - The even foe's ratings are my seeds.
+  - The enemies were solved again, so their targets hold.
+  - Combat Power is at 92% until your refit.
+  - `attributes.py` can now read `Config.Stats.Attributes`.
+- **Next:** part 12's 4.3, items, class rules and the comparison.
 
 **Modulo (assets).** 2026-11-16, 17:40, on Opus 5.5.
 - **AR20's C, delivered to Faber** (AR20, "Modulo's paint and skies for C"): the base kit repainted (the kit's, the deck's and the seven floors' pictures, the Tower asleep in a violet slate, the ground between plots lifted to #6E7290), the dusk's and night's twelve faces with `lighting.json`, and the Strip kit's far shards, outcrops and paving for its install. Content check PASS. The verdict waits on Faber's captures in the game.

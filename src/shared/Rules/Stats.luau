@@ -1,10 +1,14 @@
 --!strict
--- Stats (shared, pure): the one place a fighter's stats are added up (docs/engineering-plan.md, "The resolver";
--- docs/balance.md, "The one rule"). Every source gives flat points, and the breakdown says which source gave each one:
---   Base     the Voidkin's own Health, Attack, Defence and Regen at level 1: its rarity and its class times G(1)
---   Level    what its level adds to the same figure, times G(level) - G(1): the two make the own figure
---   Stars    a share of that own figure (base and level) per star, linear, never of the total, never of Regen
---   Item     each line of the item in each of the preset's slots, as it is
+-- Stats (shared, pure): the one place a fighter's stats are added up (docs/engineering-plan.md, "The resolver" and
+-- "Attributes in the resolver"; docs/balance.md, "The one rule"). Every source gives flat points, in three steps, and the
+-- breakdown says which source gave each one:
+--   1. Points, to the Basic Attributes (Definitions.Attributes) and to Regen:
+--      Base     the Voidkin's own points at level 1: its class's shape times its rarity times G(1); the level's own Regen
+--      Level    what its level adds to the same, times G(level) - G(1): the two make the own figure
+--      Stars    a share of the own attribute points (base and level) per star, linear, never of Regen
+--      Item     each line of the item in each of the preset's slots, as it is: to an attribute or to a Battle Attribute
+--   2. Attr:<id>  each attribute's total converts once by its row (Config.Stats.Attributes.Convert)
+--   3. Main:<id>  the class's Main converts once more by its class's row (Attributes.Main)
 -- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
 -- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
 -- Both the server (for truth) and the client (for previews) call it; nothing else adds stats.
@@ -18,6 +22,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
 local EnemiesConfig = require(Shared.Config.Enemies)
 local Profile = require(Shared.Data.Profile)
+local Attributes = require(Shared.Definitions.Attributes)
 local Growth = require(Shared.Rules.Growth)
 
 local Stats = {}
@@ -68,9 +73,20 @@ export type Block = {
 	Lifesteal: number,
 	Regen: number, -- health a second, always (Config.Stats.Regen)
 	Speed: number, -- a lead's walk in a fight, studs a second (Stats.SpeedOf); 0 for an enemy, which walks at its kind's (Config.Combat)
+	Attributes: { [string]: number }, -- each Basic Attribute's total, by its id; read by the sheet, never by a fight or Power
+	Main: string, -- its class's Main attribute's id, or "" (an enemy, an unknown class)
 }
 
 export type Line = { Source: string, Stat: string, Value: number }
+
+-- Every attribute at 0, by its id.
+function Stats.NoPoints(): { [string]: number }
+	local out = {}
+	for _, id in Attributes.Ids do
+		out[id] = 0
+	end
+	return out
+end
 
 -- A block of zeros, with the critical's base extra. Enemies and tests start from it too.
 function Stats.Empty(level: number): Block
@@ -97,6 +113,8 @@ function Stats.Empty(level: number): Block
 		Lifesteal = 0,
 		Regen = 0,
 		Speed = 0,
+		Attributes = Stats.NoPoints(),
+		Main = "",
 	}
 end
 
@@ -108,22 +126,20 @@ function Stats.SpeedOf(row: Voidkin.Row): number
 	return if class then class + math.clamp(row.Speed or 0, -speed.Nudge, speed.Nudge) else 0
 end
 
-local OWN = { "Health", "Attack", "Defence" }
-
--- A Voidkin row's own figure of `stat` at `level`, before stars, the board and gear: for Health, Attack and Defence its
--- rarity and its class times G (the Base line); for Regen its class's Regen times G (the Level line); else 0.
+-- A Voidkin row's own figure of `stat` at `level`, before stars and gear: for an attribute, its class's shape times its
+-- rarity times G; for Regen, the level's own, Base times G (times its class's, if Config names one); else 0.
 function Stats.Own(row: Voidkin.Row, stat: string, level: number): number
 	local g = Growth.G(math.clamp(level, 1, GrowthConfig.MaxLevel))
 	if stat == "Regen" then
 		local regen = StatsConfig.Regen
 		return regen.Base * (regen.Class[row.Class] or 1) * g
 	end
-	local base = StatsConfig.Base[stat]
-	if base == nil or not table.find(OWN, stat) then
+	local shape = StatsConfig.Attributes.Shape[row.Class]
+	local points = if shape then shape[stat] else nil
+	if points == nil or Attributes.ById[stat] == nil then
 		return 0
 	end
-	local shift = StatsConfig.Class[row.Class]
-	return base * (StatsConfig.Rarity[row.Rarity] or 1) * (if shift then shift[stat] else 1) * g
+	return points * (StatsConfig.Rarity[row.Rarity] or 1) * g
 end
 
 -- The full stat block of an owned Voidkin wearing `preset` (nil: nothing worn), and where each point came from.
@@ -146,26 +162,55 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	block.Poise = StatsConfig.Poise[row.Class] or 0
 	block.Speed = Stats.SpeedOf(row)
 	local stars = math.clamp(owned.Stars, 0, VoidkinConfig.MaxStars)
+	local attributes = StatsConfig.Attributes
+	-- 1. Points. An attribute's go to its total, a Battle Attribute's straight on.
+	local function point(source: string, id: string, value: number)
+		if value == value and value ~= 0 then
+			block.Attributes[id] += value
+			table.insert(lines, { Source = source, Stat = id, Value = value })
+		end
+	end
 	-- The own figure in two lines, so the stat sheet can say what the level gave (docs/ui.md, "Stats, shown honestly").
-	local function own(stat: string): number
-		local whole, first = Stats.Own(row, stat, level), Stats.Own(row, stat, 1)
-		add("Base", stat, first)
-		add("Level", stat, whole - first)
-		return whole
+	for _, id in Attributes.Ids do
+		local whole, first = Stats.Own(row, id, level), Stats.Own(row, id, 1)
+		point("Base", id, first)
+		point("Level", id, whole - first)
+		point("Stars", id, whole * VoidkinConfig.StarShareOfBase * stars)
 	end
-	for _, stat in OWN do
-		add("Stars", stat, own(stat) * VoidkinConfig.StarShareOfBase * stars)
-	end
-	own("Regen") -- no star share: Regen is a value a second, never a share of the base
+	local regen, firstRegen = Stats.Own(row, "Regen", level), Stats.Own(row, "Regen", 1)
+	add("Base", "Regen", firstRegen) -- no star share: the level's Regen is a value a second, never a share
+	add("Level", "Regen", regen - firstRegen)
 	if preset and data then
 		for slot, itemId in preset.Slots do
 			local item = data.Items[itemId]
 			if item then
 				for _, itemLine in item.Lines do
-					add(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+					if Attributes.ById[itemLine.Stat] then
+						point(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+					else
+						add(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+					end
 				end
 			end
 		end
+	end
+	-- 2. Each total converts once by its row, in Names' order so the lines read the same every time.
+	local function convert(source: string, total: number, rates: { [string]: number })
+		for _, stat in Stats.Names do
+			local rate = rates[stat]
+			if rate then
+				add(source, stat, total * rate)
+			end
+		end
+	end
+	for _, id in Attributes.Ids do
+		convert(`Attr:{id}`, block.Attributes[id], attributes.Convert[id] or {})
+	end
+	-- 3. The Main converts once more.
+	local main = attributes.Main[row.Class]
+	if main and Attributes.ById[main.Attribute] then
+		block.Main = main.Attribute
+		convert(`Main:{main.Attribute}`, block.Attributes[main.Attribute], main.Gives)
 	end
 	return block, lines
 end
@@ -203,6 +248,21 @@ function Stats.Enemy(def: string, level: number, type: string?): Block
 		end
 	end
 	block.Def, block.Type = row.Id, type or row.Type
+	return block
+end
+
+-- The even foe at `level` (docs/research/rework-2026-11-16.md, part 4): a Voidkin of that level on the on-budget build,
+-- its ratings Config.Stats.EvenFoe times G, nothing else. The stat sheet reads its chances against it, through the
+-- hit's own functions (Rules.Sheet), so what it shows can't drift from the combat.
+function Stats.EvenFoe(level: number): Block
+	local clamped = math.clamp(level, 1, GrowthConfig.MaxLevel)
+	local block = Stats.Empty(clamped)
+	local g = Growth.G(clamped)
+	for stat, value in StatsConfig.EvenFoe do
+		if KNOWN[stat] then
+			(block :: any)[stat] = value * g
+		end
+	end
 	return block
 end
 

@@ -1,7 +1,9 @@
 --!strict
 -- Stats cases (pure): the curve, experience, and the resolver. Every source adds flat points and none multiplies another
--- (docs/balance.md, "The one rule"); rarity and class touch the own base only; stars are a share of the own base, linear;
--- an item's lines add as they are. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- (docs/balance.md, "The one rule"); rarity, class and level shape the own attribute points only; stars are a share of
+-- them, linear; an item's lines add as they are; each attribute converts once by its row and its class's Main once more;
+-- Combat Power reads the Battle Attributes only (docs/engineering-plan.md, "Attributes in the resolver"). Runs in Studio
+-- (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -10,6 +12,7 @@ local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
 local Collection = require(Shared.Rules.Collection)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Attributes = require(Shared.Definitions.Attributes)
 local StatsConfig = require(Shared.Config.Stats)
 local GrowthConfig = require(Shared.Config.Growth)
 local VoidkinConfig = require(Shared.Config.Voidkin)
@@ -169,74 +172,185 @@ return {
 		end,
 	},
 	{
-		Name = "Stats: a Common Warrior at level 1 is the seeds' base",
+		Name = "Stats: a Common Warrior at level 1 is its class's shape, converted: research's A1 figure",
 		Run = function(t: any)
 			local def = first("Common", "Warrior")
 			t.Check("the roster has one", def ~= nil)
 			local data = fresh()
 			local block = Stats.Resolve(own(data, def :: string, 1, 0), nil, nil)
-			t.Equal("health", block.Health, StatsConfig.Base.Health)
-			t.Equal("attack", block.Attack, StatsConfig.Base.Attack)
-			t.Equal("defence", block.Defence, StatsConfig.Base.Defence)
-			t.Equal("no rating from nowhere", block.Critical + block.Dodge + block.Hit, 0)
+			local shape = StatsConfig.Attributes.Shape.Warrior
+			for _, id in Attributes.Ids do
+				t.Check(`its {id} is its shape's`, near(block.Attributes[id], shape[id]), `{block.Attributes[id]}`)
+			end
+			t.Equal("its Main is Might", block.Main, "Might")
+			-- By hand from the rows (tools/balance/attributes.py, report A1: Health 516, Attack 116, Defence 40, Regen 4.8)
+			t.Check("health: 4 a Might, 5 a Vigor, 6 a Spirit, 2 an Insight", near(block.Health, 4 * 53 + 5 * 40 + 6 * 13 + 2 * 13), `{block.Health}`)
+			t.Check("attack: Might, its Main's +1, and 0.4 a Finesse and an Insight", near(block.Attack, 53 + 53 + 0.4 * 13 + 0.4 * 13), `{block.Attack}`)
+			t.Check("defence: 1 a Vigor", near(block.Defence, 40), `{block.Defence}`)
+			t.Check("regen: the level's 4, and 0.06 a Spirit", near(block.Regen, StatsConfig.Regen.Base + 0.06 * 13), `{block.Regen}`)
+			t.Check("its own ratings: Finesse's and Insight's Hit", near(block.Hit, 1.2 * 13 + 13), `{block.Hit}`)
+			t.Check("Finesse's Critical and Dodge", near(block.Critical, 1.6 * 13) and near(block.Dodge, 0.6 * 13))
+			t.Check("Vigor's Block, Spirit's resists, Insight's Penetration", near(block.Block, 0.3 * 40) and near(block.CriticalResist, 4 * 13) and near(block.ElementalResist, 3 * 13) and near(block.Penetration, 2.5 * 13))
+			t.Equal("no Elemental Attack: a Warrior's Main gives none", block.ElementalAttack, 0)
 			t.Equal("the critical's base extra", block.CriticalDamage, StatsConfig.CriticalDamage)
 			t.Equal("a Warrior's poise", block.Poise, StatsConfig.Poise.Warrior)
-			t.Equal("its Regen, the seed's at level 1", block.Regen, StatsConfig.Regen.Base)
 		end,
 	},
 	{
-		-- TR12: Regen is a value a second from the level (G), never a share; a Healer's class carries more; rarity and
-		-- stars leave it alone (docs/design.md, "Health carries").
-		Name = "Stats: TR12, Regen grows with the level, a Healer carries more, and rarity and stars leave it alone",
+		Name = "Stats: every conversion and every Main, a point at a time, on every class",
+		Run = function(t: any)
+			local attributes = StatsConfig.Attributes
+			local data = fresh()
+			for class, main in attributes.Main do
+				local def: string? = nil
+				for _, row in Voidkin.List do
+					if row.Class == class then
+						def = row.Id
+						break
+					end
+				end
+				if def == nil then
+					t.Check(`{class}: no Voidkin of the class to test on yet`, true)
+					continue
+				end
+				local owned = own(data, def, 14, 2)
+				t.Equal(`{class}: its Main`, (Stats.Resolve(owned, nil, nil)).Main, main.Attribute)
+				local shape = attributes.Shape[class]
+				local largest = 0
+				for _, id in Attributes.Ids do
+					largest = math.max(largest, shape[id])
+				end
+				t.Equal(`{class}: its Main is its shape's largest`, shape[main.Attribute], largest)
+				for _, id in Attributes.Ids do
+					data.Presets[1].Slots = {}
+					local before = Stats.Resolve(owned, data.Presets[1], data)
+					give(data, "Amulet", { { Stat = id, Value = 100 } })
+					local after, lines = Stats.Resolve(owned, data.Presets[1], data)
+					t.Check(`{class} {id}: the total takes the 100`, near(after.Attributes[id] - before.Attributes[id], 100))
+					local row: { [string]: number } = attributes.Convert[id] or {}
+					for _, stat in Stats.Names do
+						local want: number = 100 * (row[stat] or 0)
+						if id == main.Attribute then
+							want += 100 * (main.Gives[stat] or 0)
+						end
+						local moved = (after :: any)[stat] - (before :: any)[stat]
+						t.Check(`{class} {id} to {stat}: its row's {want}`, near(moved, want, 1e-9), `{moved}`)
+					end
+					-- the lines: Attr:<id> is the total times its row, once; Main:<id> only for the Main
+					for stat, rate in attributes.Convert[id] or {} do
+						t.Check(`{class} {id}: its Attr line for {stat}`, near(from(lines, `Attr:{id}`)[stat] or 0, after.Attributes[id] * rate))
+					end
+					local mainLines = from(lines, `Main:{id}`)
+					t.Equal(`{class} {id}: a Main line only on the Main`, next(mainLines) ~= nil, id == main.Attribute)
+				end
+			end
+		end,
+	},
+	{
+		Name = "Stats: linear and nothing multiplies: twice an item's points, twice exactly what it gives, on any level or stars",
+		Run = function(t: any)
+			local data = fresh()
+			local owned = own(data, "kirra", 20, 0)
+			local function gain(points: number): { [string]: number }
+				data.Presets[1].Slots = {}
+				local bare = Stats.Resolve(owned, data.Presets[1], data)
+				give(data, "Ring I", { { Stat = "Finesse", Value = points }, { Stat = "Insight", Value = points / 2 }, { Stat = "Attack", Value = points / 4 } })
+				local worn = Stats.Resolve(owned, data.Presets[1], data)
+				local out = {}
+				for _, stat in Stats.Names do
+					out[stat] = (worn :: any)[stat] - (bare :: any)[stat]
+				end
+				return out
+			end
+			local once, twice = gain(40), gain(80)
+			for _, stat in Stats.Names do
+				t.Check(`{stat}: twice the points, twice the gain`, near(twice[stat], 2 * once[stat], 1e-9), `{once[stat]} then {twice[stat]}`)
+			end
+			owned.Stars, owned.Level = VoidkinConfig.MaxStars, 55
+			local later = gain(40)
+			for _, stat in Stats.Names do
+				t.Check(`{stat}: the same item gives the same at any level and stars`, near(later[stat], once[stat], 1e-9), `{once[stat]} then {later[stat]}`)
+			end
+		end,
+	},
+	{
+		Name = "Stats: Combat Power reads the Battle Attributes only: the attribute totals and the Main count for nothing",
+		Run = function(t: any)
+			local data = fresh()
+			local block = Stats.Resolve(own(data, "rook", 30, 3), nil, nil)
+			local power = Stats.Power(block)
+			local doubled = table.clone(block)
+			doubled.Attributes = table.clone(block.Attributes)
+			for id, value in doubled.Attributes do
+				doubled.Attributes[id] = value * 2 + 1000
+			end
+			doubled.Main = "Insight"
+			t.Equal("the totals moved, the power didn't", Stats.Power(doubled), power)
+			local more = table.clone(block)
+			more.Attack += 10
+			t.Check("a Battle Attribute still moves it", Stats.Power(more) > power)
+		end,
+	},
+	{
+		-- TR12: Regen is a value a second from the level (G), never a share; rarity and stars leave the level's own
+		-- alone (docs/design.md, "Health carries"). A Healer's more comes from its Main now (rework part 1).
+		Name = "Stats: TR12, the level's Regen grows with G for every class, Spirit adds to it, and a Healer's Main the most",
 		Run = function(t: any)
 			local data = fresh()
 			local regen = StatsConfig.Regen
-			t.Check("a Healer's class carries more", (regen.Class.Healer or 1) > 1)
+			t.Equal("no class carries more of the level's own", next(regen.Class), nil)
 			for _, row in Voidkin.List do
 				for _, level in { 1, 9, 30 } do
 					local owned = own(data, row.Id, level, 0)
 					local block, lines = Stats.Resolve(owned, nil, nil)
-					local want = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(level)
-					t.Check(`{row.Id} at {level}`, near(block.Regen, want), `{block.Regen}, wanted {want}`)
-					local first = regen.Base * (regen.Class[row.Class] or 1) * Growth.G(1)
-				t.Check(`{row.Id} at {level}: its base, the level-1 figure`, near(from(lines, "Base").Regen or 0, first))
-				t.Check(`{row.Id} at {level}: the level adds the rest`, near((from(lines, "Level").Regen or 0) + first, want))
+					local levelled = regen.Base * Growth.G(level)
+					local first = regen.Base * Growth.G(1)
+					t.Check(`{row.Id} at {level}: its base, the level-1 figure`, near(from(lines, "Base").Regen or 0, first))
+					t.Check(`{row.Id} at {level}: the level adds the rest`, near((from(lines, "Level").Regen or 0) + first, levelled))
+					local spirit = from(lines, "Attr:Spirit").Regen or 0
+					local main = from(lines, `Main:{block.Main}`).Regen or 0
+					t.Check(`{row.Id} at {level}: the level's, Spirit's and its Main's`, near(block.Regen, levelled + spirit + main), `{block.Regen}`)
+					t.Check(`{row.Id} at {level}: Spirit adds`, spirit > 0)
 					owned.Stars = VoidkinConfig.MaxStars
-					t.Check(`{row.Id} at {level}: stars leave it alone`, near(Stats.Resolve(owned, nil, nil).Regen, want))
+					local _, starred = Stats.Resolve(owned, nil, nil)
+					t.Check(`{row.Id} at {level}: stars leave the level's own alone`, near((from(starred, "Base").Regen or 0) + (from(starred, "Level").Regen or 0), levelled))
 				end
 			end
-			local rook = Stats.Resolve(own(data, "rook", 15, 0), nil, nil)
-			t.Check("a value, not a share: the same Regen whatever the health", rook.Regen > 0 and near(rook.Regen, regen.Base * Growth.G(15)))
+			local healer, warrior = first("Common", "Healer"), first("Common", "Warrior")
+			if healer and warrior then
+				local h = Stats.Resolve(own(data, healer, 20, 0), nil, nil)
+				local w = Stats.Resolve(own(data, warrior, 20, 0), nil, nil)
+				t.Check("a Healer heals more than a Warrior of its level", h.Regen > w.Regen, `{h.Regen} against {w.Regen}`)
+			end
 			t.Equal("an enemy has none", Stats.Enemy("brawler", 5).Regen, 0)
 		end,
 	},
 	{
-		Name = "Stats: rarity, class and level shape the own base only",
+		Name = "Stats: rarity, class and level shape the own points only",
 		Run = function(t: any)
 			local data = fresh()
-			give(data, "Main Hand", { { Stat = "Attack", Value = 40 }, { Stat = "Critical", Value = 12 } })
+			give(data, "Main Hand", { { Stat = "Attack", Value = 40 }, { Stat = "Critical", Value = 12 }, { Stat = "Vigor", Value = 9 } })
 			for _, row in Voidkin.List do
 				local owned = own(data, row.Id, 9, 0)
-				local block, lines = Stats.Resolve(owned, data.Presets[1], data)
-				local g = Growth.G(9)
-				for _, stat in { "Health", "Attack", "Defence" } do
-					local expected = StatsConfig.Base[stat] * StatsConfig.Rarity[row.Rarity] * StatsConfig.Class[row.Class][stat] * g
-					local first = StatsConfig.Base[stat] * StatsConfig.Rarity[row.Rarity] * StatsConfig.Class[row.Class][stat] * Growth.G(1)
-					t.Check(`{row.Id} {stat} base, at level 1`, near(from(lines, "Base")[stat], first))
-					t.Check(`{row.Id} {stat}: base and level make the own figure`, near(from(lines, "Base")[stat] + from(lines, "Level")[stat], expected))
-					t.Check(`{row.Id} {stat}: the same as Stats.Own`, near(Stats.Own(row, stat, 9), expected))
+				local _, lines = Stats.Resolve(owned, data.Presets[1], data)
+				local shape = StatsConfig.Attributes.Shape[row.Class]
+				for _, id in Attributes.Ids do
+					local expected = shape[id] * StatsConfig.Rarity[row.Rarity] * Growth.G(9)
+					local firstLevel = shape[id] * StatsConfig.Rarity[row.Rarity] * Growth.G(1)
+					t.Check(`{row.Id} {id} base, at level 1`, near(from(lines, "Base")[id], firstLevel))
+					t.Check(`{row.Id} {id}: base and level make the own figure`, near(from(lines, "Base")[id] + from(lines, "Level")[id], expected))
+					t.Check(`{row.Id} {id}: the same as Stats.Own`, near(Stats.Own(row, id, 9), expected))
 				end
-				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Main Hand"), { Attack = 40, Critical = 12 }))
-				t.Equal(`{row.Id} critical is the item's`, block.Critical, 12)
+				t.Check(`{row.Id}: the item is the same on everyone`, same(from(lines, "Item:Main Hand"), { Attack = 40, Critical = 12, Vigor = 9 }))
 			end
 		end,
 	},
 	{
-		Name = "Stats: stars are a share of the own base, linear",
+		Name = "Stats: stars are a share of the own points, linear",
 		Run = function(t: any)
 			local data = fresh()
 			local owned = own(data, "rook", 12, 0)
-			give(data, "Chest Armor", { { Stat = "Health", Value = 500 } })
+			give(data, "Chest Armor", { { Stat = "Health", Value = 500 }, { Stat = "Might", Value = 20 } })
 			local _, none = Stats.Resolve(owned, data.Presets[1], data)
 			local base = from(none, "Base") -- the own figure: the base and the level's lines
 			for stat, value in from(none, "Level") do
@@ -250,11 +364,12 @@ return {
 				for stat, value in base do
 					t.Check(`{stars} stars on {stat}`, near(got[stat], value * VoidkinConfig.StarShareOfBase * stars))
 				end
-				t.Check(`{stars} stars leave the item alone`, same(from(lines, "Item:Chest Armor"), { Health = 500 }))
+				t.Equal(`{stars} stars: only on the attributes`, got.Health, nil)
+				t.Check(`{stars} stars leave the item alone`, same(from(lines, "Item:Chest Armor"), { Health = 500, Might = 20 }))
 			end
 			owned.Stars = 99
 			local _, over = Stats.Resolve(owned, nil, nil)
-			t.Check("no star past the last", near(from(over, "Stars").Attack, base.Attack * VoidkinConfig.StarShareOfBase * VoidkinConfig.MaxStars))
+			t.Check("no star past the last", near(from(over, "Stars").Might, base.Might * VoidkinConfig.StarShareOfBase * VoidkinConfig.MaxStars))
 		end,
 	},
 	{
@@ -281,6 +396,13 @@ return {
 				end
 				t.Check(`{stat} is the sum of its lines`, near((after :: any)[stat], sum))
 			end
+			for _, id in Attributes.Ids do
+				local sum = 0
+				for _, line in afterLines do
+					sum += if line.Stat == id then line.Value else 0
+				end
+				t.Check(`{id}'s total is the sum of its points' lines`, near(after.Attributes[id], sum))
+			end
 		end,
 	},
 	{
@@ -289,15 +411,32 @@ return {
 			local data = fresh()
 			local owned = own(data, "rook", 1, 0)
 			local clean = Stats.Resolve(owned, data.Presets[1], data)
-			give(data, "Boots", { { Stat = "Charisma", Value = 50 }, { Stat = "Attack", Value = 0 / 0 } })
+			give(data, "Boots", { { Stat = "Charisma", Value = 50 }, { Stat = "Attack", Value = 0 / 0 }, { Stat = "Might", Value = 0 / 0 } })
 			data.Presets[1].Slots.Helmet = "k404"
 			local block = Stats.Resolve(owned, data.Presets[1], data)
-			t.Check("an unknown stat, NaN and a missing item add nothing", block.Attack == clean.Attack and block.Health == clean.Health)
+			t.Check("an unknown stat, NaN and a missing item add nothing", block.Attack == clean.Attack and block.Health == clean.Health and block.Attributes.Might == clean.Attributes.Might)
 			owned.Level = 1000
 			t.Equal("the level holds at the last", Stats.Resolve(owned, nil, nil).Level, GrowthConfig.MaxLevel)
 			owned.Def = "nobody"
 			local empty = Stats.Resolve(owned, nil, nil)
 			t.Equal("no row, no stats", empty.Health, 0)
+			t.Equal("no row, no Main", empty.Main, "")
+			t.Equal("an enemy has no attributes", Stats.Enemy("brawler", 5).Attributes.Might, 0)
+		end,
+	},
+	{
+		Name = "Stats: the even foe is the on-budget ratings times G at its level, and nothing else",
+		Run = function(t: any)
+			for _, level in { 1, 20, 60 } do
+				local foe = Stats.EvenFoe(level)
+				local g = Growth.G(level)
+				t.Equal(`level {level}`, foe.Level, level)
+				for stat, value in StatsConfig.EvenFoe do
+					t.Check(`level {level}: its {stat}`, near((foe :: any)[stat], value * g))
+				end
+				t.Equal(`level {level}: no type, no element`, foe.Type .. foe.Element, "")
+			end
+			t.Equal("past the last level, the last", Stats.EvenFoe(9999).Level, GrowthConfig.MaxLevel)
 		end,
 	},
 	{

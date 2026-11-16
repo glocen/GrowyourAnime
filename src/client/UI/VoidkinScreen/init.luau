@@ -83,9 +83,13 @@ local LABEL = 16 -- a rail button's label, under its circle, authored
 local WORD = 64 -- Save and Cancel, in the band, each, authored
 local WARM = 12 -- bodies drawn ahead at the open, the roster's first; one past them is drawn when it's asked for
 local SHEET_HEAD = 22 -- a stat group's caption line, the space above it included, authored
+-- A heading over the sheet's blocks (Basic Attributes, Battle Attributes), the space above it included, and its caption's
+-- line under it, authored.
+local SHEET_HEADING = { Line = 34, Caption = 18 }
 -- A stat's cell (a tap, so the kit's touch size: 44 rendered at the smallest scale), its name's line from Top and its
--- total's under it, a source's line in its tap, the tap's inset, authored.
-local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Pad = 8 }
+-- total's under it, a rating's chance or effect on a line of its own under that (too long beside it on the smallest
+-- phone's half panel), the tap's inset, authored.
+local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Effect = 16, Pad = 8 }
 local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, authored; a character's share of its text size; seconds between reads
 
 local player = Players.LocalPlayer
@@ -629,48 +633,74 @@ local function line(parent: Instance, order: number, left: string, right: string
 	return item
 end
 
--- One stat's cell (docs/ui.md, "Stats, shown honestly"), two a row: its name over its one total, and nothing opens [the
--- director, 2026-11-15, night: "Plain list, no taps"]. Each as tall as a touch, so the sheet keeps its rhythm.
-local function statCell(pair: Frame, side: number, row: Sheet.Row): Frame
+-- One stat's cell (docs/ui.md, "Stats, shown honestly"; rework part 4), two a row: its name over its one total, a rating's
+-- chance or effect against an even foe under it, smaller, and an attribute's Main tag on its total's line; nothing opens
+-- [the director, 2026-11-15, night: "Plain list, no taps"]. Each at least as tall as a touch, so the sheet keeps its rhythm.
+local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number): Frame
 	local item = Instance.new("Frame")
 	item.Name = row.Name
 	item.BackgroundTransparency = 1
 	item.Position = UDim2.fromScale(side * 0.5, 0)
-	item.Size = UDim2.new(0.5, 0, 0, SHEET.Line)
+	item.Size = UDim2.new(0.5, 0, 0, tall)
 	item.Parent = pair
 	text({ Name = "Left", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Name), Position = UDim2.fromOffset(0, SHEET.Top), Parent = item }, row.Name)
 	text({ Name = "Right", Font = Theme.Font.Number, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Value), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name), Parent = item }, row.Value)
+	if row.Effect then
+		text({ Name = "Effect", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Effect), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name + SHEET.Value), Parent = item }, row.Effect)
+	end
+	if row.Main then
+		text({ Name = "Main", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.Primary, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Value), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name), Parent = item }, "Main")
+	end
 	item:SetAttribute("Stat", row.Stat)
 	return item
 end
 
--- Its whole stat sheet, from `order` on (docs/ui.md, 5, "Overview's stat sheet"): every stat in its three groups, a zero
--- as 0, each stat one total from Rules.Sheet, two a row. A group's name is a quiet caption over its cells.
+-- Its whole stat sheet, from `order` on (docs/ui.md, 5, "Overview's stat sheet"; rework part 4): the Basic Attributes,
+-- then the Battle Attributes' three blocks, every stat a line, a zero as 0, each one total from Rules.Sheet, two a row,
+-- Offence and Defence paired. A heading is a line of its own with its caption under it; a block's name is a quiet
+-- caption over its cells.
 local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, order: number)
 	local block = resolved(view, owned)
 	for _, group in Sheet.Rows(block) do
-		order += 1
-		local head = Instance.new("Frame")
-		head.Name = `Group{group.Name}`
-		head.BackgroundTransparency = 1
-		head.LayoutOrder = order
-		head.Size = UDim2.new(1, -8, 0, SHEET_HEAD)
-		head.Parent = scroll
-		local caption = UDim2.new(1, 0, 0, Theme.Text.Caption + 4)
-		local foot = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4))
-		text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Box = caption, Position = foot, Parent = head }, group.Name)
+		if group.Heading then
+			order += 1
+			local heading = Instance.new("Frame")
+			heading.Name = `Heading{group.Heading}`
+			heading.BackgroundTransparency = 1
+			heading.LayoutOrder = order
+			heading.Size = UDim2.new(1, -8, 0, SHEET_HEADING.Line + (if group.Caption then SHEET_HEADING.Caption else 0))
+			heading.Parent = scroll
+			text({ Name = "Left", Font = Theme.Font.Strong, Box = UDim2.new(1, 0, 0, Theme.Text.Body + 6), Position = UDim2.new(0, 0, 0, SHEET_HEADING.Line - Theme.Text.Body - 6), Parent = heading }, string.upper(group.Heading))
+			if group.Caption then
+				text({ Name = "Caption", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, 0, 0, SHEET_HEADING.Caption), Position = UDim2.fromOffset(0, SHEET_HEADING.Line), Parent = heading }, group.Caption)
+			end
+		end
+		if group.Name ~= "" then
+			order += 1
+			local head = Instance.new("Frame")
+			head.Name = `Group{group.Name}`
+			head.BackgroundTransparency = 1
+			head.LayoutOrder = order
+			head.Size = UDim2.new(1, -8, 0, SHEET_HEAD)
+			head.Parent = scroll
+			local caption = UDim2.new(1, 0, 0, Theme.Text.Caption + 4)
+			local foot = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4))
+			text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Box = caption, Position = foot, Parent = head }, group.Name)
+		end
 		for at = 1, #group.Rows, 2 do
 			order += 1
+			local first, second = group.Rows[at], group.Rows[at + 1]
+			local rated = first.Effect ~= nil or (second ~= nil and second.Effect ~= nil)
+			local tall = SHEET.Line + (if rated then SHEET.Effect else 0)
 			local pair = Instance.new("Frame")
 			pair.Name = `Pair{group.Name}{(at + 1) // 2}`
 			pair.BackgroundTransparency = 1
 			pair.LayoutOrder = order
-			pair.Size = UDim2.new(1, -8, 0, SHEET.Line)
+			pair.Size = UDim2.new(1, -8, 0, tall)
 			pair.Parent = scroll
-			statCell(pair, 0, group.Rows[at])
-			local second = group.Rows[at + 1]
+			statCell(pair, 0, first, tall)
 			if second then
-				statCell(pair, 1, second)
+				statCell(pair, 1, second, tall)
 			end
 		end
 	end

@@ -4,18 +4,47 @@
 -- their home. Rules.Stats and Rules.Hit read them when they run, so a tune reaches the next call.
 
 return {
-	-- A Common Warrior's own base at level 1 (seeds "base"); G(level) scales it.
-	Base = { Health = 800, Attack = 100, Defence = 50 } :: { [string]: number },
-	-- Rarity multiplies the Voidkin's own base only (seeds "rarityBase").
+	-- Rarity multiplies the Voidkin's own attribute points only (seeds "rarityBase"), never gear.
 	Rarity = { Common = 1.0, Uncommon = 1.08, Rare = 1.16, Epic = 1.26, Legendary = 1.38, Mythical = 1.5 } :: { [string]: number },
-	-- Class shifts the own base between the three (seeds "classMult"). It never touches gear.
-	Class = {
-		Warrior = { Health = 1.0, Attack = 1.0, Defence = 1.0 },
-		Tank = { Health = 1.3, Attack = 0.8, Defence = 1.25 },
-		Assassin = { Health = 0.85, Attack = 1.2, Defence = 0.85 },
-		Mage = { Health = 0.9, Attack = 1.15, Defence = 0.85 },
-		Healer = { Health = 1.0, Attack = 0.8, Defence = 0.95 },
-	} :: { [string]: { [string]: number } },
+	-- Basic Attributes (docs/research/rework-2026-11-16.md, parts 1 and 2; the director's yes of 2026-11-16, 16:50; the
+	-- ids in Definitions.Attributes). A Voidkin's own points are its class's Shape x its rarity x G(level), and each star
+	-- adds Config.Voidkin.StarShareOfBase of them; gear adds points flat. Every point converts once by its attribute's
+	-- Convert row, every class alike, and its class's Main converts once more by its Main row: that's the whole class
+	-- difference. Everything adds: nothing multiplies an attribute, and Combat Power reads the Battle Attributes only, so
+	-- no point counts twice (Rules.Stats). Research's seeds: tools/balance/attributes.py, ATTR, the shapes its fitted
+	-- level-1 points (report A1), each class as strong against the rest as before.
+	Attributes = {
+		-- Battle Attribute points per attribute point, every class.
+		Convert = {
+			Might = { Attack = 1, Health = 4 },
+			Finesse = { Attack = 0.4, Hit = 1.2, Critical = 1.6, Dodge = 0.6 },
+			Vigor = { Health = 5, Defence = 1, Block = 0.3 },
+			Spirit = { Regen = 0.06, Health = 6, CriticalResist = 4, ElementalResist = 3 },
+			Insight = { Attack = 0.4, Penetration = 2.5, Hit = 1, Health = 2 },
+		} :: { [string]: { [string]: number } },
+		-- Each class's Main, and what one point of it gives on top of its Convert row.
+		Main = {
+			Warrior = { Attribute = "Might", Gives = { Attack = 1 } },
+			Tank = { Attribute = "Vigor", Gives = { Attack = 0.5, Health = 3 } },
+			Assassin = { Attribute = "Finesse", Gives = { Attack = 1 } },
+			Mage = { Attribute = "Insight", Gives = { Attack = 0.8, ElementalAttack = 0.25 } },
+			Healer = { Attribute = "Spirit", Gives = { Attack = 0.7, Regen = 0.04 } },
+		} :: { [string]: { Attribute: string, Gives: { [string]: number } } },
+		-- A class's own points at level 1, Common, no stars, its Main the largest.
+		Shape = {
+			Warrior = { Might = 53, Finesse = 13, Vigor = 40, Spirit = 13, Insight = 13 },
+			Tank = { Might = 32, Finesse = 15, Vigor = 62, Spirit = 21, Insight = 18 },
+			Assassin = { Might = 38, Finesse = 53, Vigor = 32, Spirit = 12, Insight = 12 },
+			Mage = { Might = 35, Finesse = 12, Vigor = 32, Spirit = 14, Insight = 52 },
+			Healer = { Might = 31, Finesse = 11, Vigor = 37, Spirit = 51, Insight = 11 },
+		} :: { [string]: { [string]: number } },
+	},
+	-- The even foe (docs/research/rework-2026-11-16.md, part 4): the fixed reference the stat sheet's chances are read
+	-- against, a Voidkin of the viewer's level on the on-budget build (seeds "onBudget"). Its ratings per G: the mean of
+	-- the five classes' on-budget builds with attributes (tools/balance/attributes.py's fighter_attr, balanced spec) at
+	-- each ground's first and last levels. They run from 0.8 to 1.2 of these across the grounds, which moves a shown
+	-- chance under 2 points. The builder's seeds, 2026-11-16, for research to confirm.
+	EvenFoe = { Hit = 76, Dodge = 41, Critical = 63, CriticalResist = 120, Block = 41, Penetration = 83, ElementalResist = 97 } :: { [string]: number },
 	-- Ratings: chance = cap x mine / (mine + theirs + K x G(level)) (seeds "ratings").
 	RatingK = 100,
 	Caps = {
@@ -40,11 +69,13 @@ return {
 	},
 	Lifesteal = { Cap = 0.1, PerSecondOfMaxHealth = 0.008 }, -- seeds "lifesteal"
 	-- Regen: the health a lead heals a second, always, in a fight too (docs/design.md, "Health carries"). A value, never a
-	-- share: Base at level 1 times G(level), a Healer's class carrying Class more (every other class 1), and later its gear
-	-- (Regalia's stats). Rarity and stars don't touch it. Research's read of the sim, 2026-11-14 (tier 2, TR12): 4, half
+	-- share: the level's own, Base at level 1 times G(level) for every class (a class in Class would carry that many
+	-- times more; none does), plus what Spirit gives and a Healer's Main (Attributes), and later its gear (Regalia's
+	-- stats). Rarity and stars don't touch the level's own. Research's read of the sim, 2026-11-14 (tier 2, TR12): 4, half
 	-- a percent of a level-1 Warrior's health a second, 200 s from empty to full, so waiting out a heal loses to the door
-	-- home; with Config.Enemies' Ordinary Attack halved, Pack 2 ends at about half (tools/balance/sim.py, section 9).
-	Regen = { Base = 4, Class = { Healer = 1.5 } :: { [string]: number } },
+	-- home; with Config.Enemies' Ordinary Attack halved, Pack 2 ends at about half (tools/balance/sim.py, section 9). The
+	-- Healer's 1.5 moved into its Main (rework part 1).
+	Regen = { Base = 4, Class = {} :: { [string]: number } },
 	-- Type: each beats the next, in a ring (docs/design.md, "Voidkin").
 	Beats = {
 		Agility = "Strength",

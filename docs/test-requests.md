@@ -2291,3 +2291,41 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - In play, on the server: a killed Shade's body moved 0 studs through the hold, then 6.00 studs between 0.13 and 0.43 s, and stayed there to 1 s.
   - The killing hit reached the client with the kill's hold of 0.130 s. Both kills were a lead's signature at rung 7, so the ordinary hit's raise to rung 4 is logic-tested only.
   - **NOT VERIFIED:** the drawn throw, the flash and the camera's kick, since the screen is locked and they run on render. To judge in motion: the Row's fight from the player's camera, with the Down clip during the throw, and the burst landing where the body does.
+
+## TR25. Attributes in the resolver, with the stat sheet (Faber)
+
+Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.
+
+**Scope, set at the start (18:12).**
+- **The block:** the five attributes as content; their rows, Mains and shapes in Config; the resolver's three steps with their lines; the even foe; the sheet's two headings with each rating's chance; the enemies solved again so their targets hold; the cases.
+- **What waits:** an equip's green gains (with items, 4.3); attribute lines on gear (items); Combat Power's refit (research, `sim.py` section 16); `attributes.py` reading Config, as `sim.py` does (research's file); the sheet's look in Modulo's UI direction (the inventory piece, 4.5).
+
+**Faber's build (18:12 to 18:26).**
+- **Content:** `Definitions/Attributes.luau` holds Might, Finesse, Vigor, Spirit and Insight, each with its id, name and job.
+- **`Config.Stats.Attributes`:**
+  - Convert, Main and Shape are `attributes.py`'s ATTR. The shapes are its fitted level-1 points (report A1).
+  - The old own base (`Base`, `Class`) is gone.
+  - Regen's `Class` is empty: the Healer's 1.5 moved into its Main.
+- **`Rules.Stats.Resolve`:**
+  - Its order: points (Base, Level, Stars, `Item:<slot>`), then `Attr:<id>`, then `Main:<id>`, each a line.
+  - The block gains `Attributes` and `Main`.
+  - Power is untouched: it reads the Battle Attributes only.
+  - `Stats.EvenFoe(level)`: `Config.Stats.EvenFoe` × G.
+- **The even foe's ratings** are the builder's seeds, for research to confirm. They are the mean of the five classes' on-budget builds with attributes, at each ground's first and last levels (Hit 76, Dodge 41, Critical 63, Critical Resist 120, Block 41, Penetration 83, Elemental Resist 97 a G). Across the grounds they run 0.8 to 1.2 of these, which moves a shown chance under 2 points.
+- **`Rules.Sheet`:**
+  - The Basic Attributes come first, the Main marked. Then the Battle Attributes, under the one caption "chances against an even foe": Core; Offence and Defence paired (Hit | Dodge … Penetration | Block); Sustain (Regen | Lifesteal).
+  - `Sheet.Odds` is `Hit.Odds` both ways against the even foe, plus `Stats.Chance` for Elemental Resist.
+  - Critical Resist reads in points of the foe's chance it takes off.
+- **The screen:** a rating's chance or effect sits on a line under its total, smaller. "-12% their Critical chance" doesn't fit beside a total in the smallest phone's half panel (about 127 points), so all seven take one place. The Main tag is a small Primary "Main" at its total's right.
+- **`Config.Enemies`,** solved again by its own method against the bare Common Warrior's new figure (Health 516, Attack 116, its own ratings), so 5 s and 6%, 18 s and 35%, 45 s and 70% hold. Each Health is about ×1.24 and each Attack about ×0.65.
+
+**Checks (18:26).**
+- Type check 0 new.
+- Logic 17,243/0, offline and in Studio. That includes the new Stats cases (the A1 figure by hand, every conversion and Main a point at a time on every class, linearity, Power blind to the totals, the even foe) and the Sheet cases (each shown chance the hit's own and under its ceiling, on every Voidkin and on 10^12 points).
+- Boot errors 0.
+- `attributes.py` on the same numbers:
+  - each class's Main is its best attribute at level 30;
+  - the lowest secondary is 0.43 (Warrior's Finesse);
+  - class against class is within 0.03 of today's edges at levels 10 and 40;
+  - Combat Power is 92% (any gap) and 97% (10% faster), until research's refit.
+- **NOT VERIFIED:** the client self-test "Voidkin screen: Overview's stat sheet…" and the phone captures, long numbers included. The screen is locked (0 frames a second, a 1 × 1 viewport).

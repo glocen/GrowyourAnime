@@ -8,10 +8,13 @@
 -- they're tuned again against the on-budget build, as the sim's own enemies are.
 -- TR12, research's read of the sim, 2026-11-14 (tier 2, Faber's proposal): an Ordinary Shade's Attack halved from 11.47,
 -- so a pack leaves its mark on a lead that heals only its Regen (tools/balance/sim.py, section 9).
+-- TR25, 2026-11-16: solved again by the same method for the bare Common Warrior's attribute figure (Health 516, Attack
+-- 116, its own ratings), so every target above holds exactly: Health from 881.1, 3172 and 6975, Attack from 5.735, 9.29
+-- and 7.43 ("the build re-authors them and the targets hold exactly", docs/research/rework-2026-11-16.md, part 2).
 
 return {
-	Ordinary = { Health = 881.1, Attack = 5.735, Defence = 40 },
-	Elite = { Health = 3172, Attack = 9.29, Defence = 40 },
-	Keeper = { Health = 6975, Attack = 7.43, Defence = 40, Dodge = 20, CriticalResist = 30, Block = 30, ElementalResist = 30 },
+	Ordinary = { Health = 1096, Attack = 3.718, Defence = 40 },
+	Elite = { Health = 3944, Attack = 6.024, Defence = 40 },
+	Keeper = { Health = 8811, Attack = 4.82, Defence = 40, Dodge = 20, CriticalResist = 30, Block = 30, ElementalResist = 30 },
 	Dummy = { Health = 1e6, Attack = 0, Defence = 40 },
 }

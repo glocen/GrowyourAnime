@@ -722,7 +722,7 @@ function VoidkinCases.Cases(given: Given): { any }
 	-- list, no taps"], its experience bar lit as far as its share, and whole on the smallest phone with the list scrolled to
 	-- its foot.
 	local sheet = {
-		Name = "Voidkin screen: Overview's stat sheet, every stat in three groups as a plain list where nothing opens, its experience bar lit to its share, whole on the smallest phone at the list's foot",
+		Name = "Voidkin screen: Overview's stat sheet, the Basic Attributes then the Battle Attributes' blocks as a plain list where nothing opens, each rating's chance under it, its experience bar lit to its share, whole on the smallest phone at the list's foot",
 		Run = function(t: any)
 			local view = ProfileController.Get()
 			t.Check("the save's copy is here", view ~= nil)
@@ -776,27 +776,36 @@ function VoidkinCases.Cases(given: Given): { any }
 				local pair = item.Parent
 				return if pair and pair:IsA("GuiObject") and pair.Parent == scroll then pair.LayoutOrder + item.Position.X.Scale else -1
 			end
+			local function said(item: Instance?, part: string): string?
+				local label = item and item:FindFirstChild(part)
+				return if label and label:IsA("TextLabel") then label.Text else nil
+			end
 			for _, group in Sheet.Rows(block) do
-				local head = scroll:FindFirstChild(`Group{group.Name}`)
-				if head == nil or not head:IsA("GuiObject") or head.LayoutOrder <= order then
-					table.insert(wrong, `{group.Name}'s caption`)
-				else
-					order = head.LayoutOrder
+				for _, frame in { if group.Heading then `Heading{group.Heading}` else nil, if group.Name ~= "" then `Group{group.Name}` else nil } do
+					local head = scroll:FindFirstChild(frame)
+					if head == nil or not head:IsA("GuiObject") or head.LayoutOrder <= order then
+						table.insert(wrong, `{frame} out of its place`)
+					else
+						order = head.LayoutOrder
+					end
+				end
+				if group.Caption and said(scroll:FindFirstChild(`Heading{group.Heading}`), "Caption") ~= group.Caption then
+					table.insert(wrong, `{group.Heading}'s caption`)
 				end
 				for _, want in group.Rows do
 					local item = scroll:FindFirstChild(want.Name, true)
-					local right = item and item:FindFirstChild("Right")
-					local said = if right and right:IsA("TextLabel") then right.Text else nil
 					if item == nil or not item:IsA("GuiObject") or placeOf(item) <= order then
-						table.insert(wrong, `{want.Name} out of its group`)
-					elseif said ~= want.Value or item:FindFirstChild("Under") ~= nil then
-						table.insert(wrong, `{want.Name}: {said}, a line under it`)
+						table.insert(wrong, `{want.Name} out of its block`)
+					elseif said(item, "Right") ~= want.Value or said(item, "Effect") ~= want.Effect or item:FindFirstChild("Under") ~= nil then
+						table.insert(wrong, `{want.Name}: {said(item, "Right")} and {said(item, "Effect")}, wanted {want.Value} and {want.Effect}`)
+					elseif (item:FindFirstChild("Main") ~= nil) ~= (want.Main == true) then
+						table.insert(wrong, `{want.Name}: its Main tag`)
 					else
 						order = placeOf(item)
 					end
 				end
 			end
-			t.Check("every stat in Core, Attack and Defence, two a row in order, each under its caption with its one total, nothing under it", #wrong == 0, wrong[1])
+			t.Check("the five, then Core, Offence and Defence, Sustain, two a row in order, each under its heading and caption with its one total and a rating's chance, the Main tagged", #wrong == 0, wrong[1])
 			-- Nothing opens: no cell is a button, none holds anything under its total, and no caption says to tap.
 			local opens: { string } = {}
 			for _, group in Sheet.Groups do
@@ -832,23 +841,24 @@ function VoidkinCases.Cases(given: Given): { any }
 			if small and small:IsA("ScrollingFrame") then
 				small.CanvasPosition = Vector2.new(0, math.max(0, small.AbsoluteCanvasSize.Y - small.AbsoluteWindowSize.Y))
 				t.Wait(0.1)
-				local last = small:FindFirstChild(Sheet.Said.DamageReduction, true)
-				t.Check("the smallest phone: the list scrolls to Damage Reduction", last ~= nil and last:IsA("GuiObject") and last.AbsolutePosition.Y + last.AbsoluteSize.Y <= small.AbsolutePosition.Y + small.AbsoluteWindowSize.Y + 1)
+				local final = Sheet.Groups[#Sheet.Groups].Stats
+				local last = small:FindFirstChild(final[#final], true)
+				t.Check("the smallest phone: the list scrolls to its last line", last ~= nil and last:IsA("GuiObject") and last.AbsolutePosition.Y + last.AbsoluteSize.Y <= small.AbsolutePosition.Y + small.AbsoluteWindowSize.Y + 1)
 				lintClean(t, "the smallest phone, Overview at its foot")
 				-- Every name and total whole on its line at the smallest phone.
 				local cut: { string } = {}
 				for _, group in Sheet.Groups do
 					for _, stat in group.Stats do
 						local item = small:FindFirstChild(Sheet.Said[stat] or stat, true)
-						for _, part in { "Left", "Right" } do
+						for _, part in { "Left", "Right", "Effect" } do
 							local label = item and item:FindFirstChild(part)
-							if label == nil or not label:IsA("TextLabel") or not label.TextFits then
+							if (label == nil and part ~= "Effect") or (label and (not label:IsA("TextLabel") or not label.TextFits)) then
 								table.insert(cut, `{stat} {part}`)
 							end
 						end
 					end
 				end
-				t.Check("the smallest phone: every name and total fits its line", #cut == 0, cut[1])
+				t.Check("the smallest phone: every name, total and chance fits its line", #cut == 0, cut[1])
 			else
 				t.Check("the smallest phone: Overview", false)
 			end

@@ -1,23 +1,31 @@
 --!strict
--- Logic cases (pure): Overview's stat sheet (docs/ui.md, 5, "Overview's stat sheet", and "Stats, shown honestly";
--- Rules.Sheet), a plain list [the director, 2026-11-15, night: "Plain list, no taps"]: every stat in its three groups, a
--- zero as 0, its name and one total a line, never "up to", nothing else on it; the percents, Critical Damage without a
--- ceiling; Damage Reduction only what holds at all times; and on every Voidkin each line its block's total as shown.
+-- Logic cases (pure): Overview's stat sheet (docs/research/rework-2026-11-16.md, part 4; docs/ui.md, 5, "Overview's stat
+-- sheet"; Rules.Sheet), a plain list [the director, 2026-11-15, night: "Plain list, no taps"]: the Basic Attributes with
+-- the Main marked, then the Battle Attributes in Core, Offence and Defence paired, and Sustain; every stat a line, a zero
+-- as 0, its name and one total, never a "%" on a rating's points; each rating's chance or effect the hit's own against the
+-- even foe, never over its ceiling; the percents, Critical Damage without a ceiling; Damage Reduction only what holds at
+-- all times; and on every Voidkin each line its block's total as shown.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Sheet = require(Shared.Rules.Sheet)
 local Stats = require(Shared.Rules.Stats)
+local Hit = require(Shared.Rules.Hit)
+local Growth = require(Shared.Rules.Growth)
 local StatsConfig = require(Shared.Config.Stats)
+local Attributes = require(Shared.Definitions.Attributes)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 
 local LEVEL = 12
 
+local RATED = { "Hit", "Dodge", "Critical", "Block", "Penetration", "CriticalResist", "ElementalResist" }
+
 local function block(change: { [string]: any }?): Stats.Block
 	local b = Stats.Empty(LEVEL)
-	b.Def, b.Type, b.Class, b.Element = "rook", "Blaze", "Warrior", ""
+	b.Def, b.Type, b.Class, b.Element, b.Main = "rook", "Blaze", "Warrior", "", "Might"
 	b.Health, b.Attack, b.Defence, b.Regen, b.Speed, b.Poise = 1234, 150, 60, 4.26, 16, 100
+	b.Attributes = { Might = 1234.4, Finesse = 13, Vigor = 40, Spirit = 13, Insight = 0 }
 	for key, value in change or {} do
 		(b :: any)[key] = value
 	end
@@ -35,65 +43,170 @@ local function row(groups: { Sheet.Group }, stat: string): Sheet.Row?
 	return nil
 end
 
--- A number as it's shown, read back: "1,234" 1234, "4.3 a second" 4.3, "+50%" 50.
+-- A number as it's shown, read back: "1,234" 1234, "4.3 a second" 4.3, "+50%" 50, "ignores 8.1% Defence" 8.1.
 local function readBack(said: string): number
 	local digits = said:gsub(",", ""):match("%-?[%d%.]+")
 	return tonumber(digits) or -1
 end
 
--- What a line may say: its number, a percent's sign, and Regen's and Speed's units. Nothing else.
+-- What a total may say: its number, a percent's sign, and Regen's and Speed's units. Nothing else.
 local function plain(said: string): boolean
 	return string.match(said, "^%+?[%d,%.]+%%?$") ~= nil
 		or string.match(said, "^[%d%.]+ a second$") ~= nil
 		or string.match(said, "^[%d%.]+ studs a second$") ~= nil
 end
 
+local function keys(each: Sheet.Row): string
+	local out = {}
+	for key in each :: any do
+		table.insert(out, key)
+	end
+	table.sort(out)
+	return table.concat(out, ",")
+end
+
 return {
 	{
-		Name = "Sheet: Overview shows every stat in three groups, its name and one total a line, a zero as 0, nothing else",
+		Name = "Sheet: Overview's two headings, the five with the Main marked, then Core, Offence and Defence paired, and Sustain",
 		Run = function(t: any)
 			local groups = Sheet.Rows(block())
-			local names, count = {}, 0
-			for _, group in groups do
-				table.insert(names, group.Name)
-				count += #group.Rows
+			t.Equal("four blocks", #groups, 4)
+			t.Equal("the Basic Attributes first", groups[1].Heading, "Basic Attributes")
+			local five = {}
+			for _, each in groups[1].Rows do
+				table.insert(five, each.Stat)
 			end
-			t.Equal("Core, Attack and Defence, in that order", table.concat(names, ", "), "Core, Attack, Defence")
+			t.Equal("the five, in order", table.concat(five, ","), table.concat(Attributes.Ids, ","))
+			local might = row(groups, "Might")
+			t.Equal("an attribute's total, grouped, no decimals", if might then might.Value else nil, "1,234")
+			t.Equal("its Main marked", if might then might.Main else nil, true)
+			local marked = 0
+			for _, each in groups[1].Rows do
+				marked += if each.Main then 1 else 0
+				t.Check(`{each.Stat}: its name players read`, each.Name == Attributes.ById[each.Stat].Name)
+				t.Equal(`{each.Stat}: no chance on an attribute`, each.Effect, nil)
+			end
+			t.Equal("one Main", marked, 1)
+			t.Equal("an attribute at zero shows 0", (row(groups, "Insight") :: Sheet.Row).Value, "0")
+			t.Equal("then the Battle Attributes", groups[2].Heading, "Battle Attributes")
+			t.Equal("one caption under it", groups[2].Caption, "chances against an even foe")
+			t.Check("and nowhere else", groups[3].Caption == nil and groups[4].Caption == nil and groups[1].Caption == nil)
+			local names = {}
+			local count = 0
+			for index = 2, #groups do
+				table.insert(names, groups[index].Name)
+				count += #groups[index].Rows
+			end
+			t.Equal("Core, Offence and Defence, Sustain", table.concat(names, ", "), "Core, Offence and Defence, Sustain")
 			t.Equal("nineteen lines: every stat a source adds to, Speed, Poise, and the two from effects", count, #Stats.Names + 4)
 			for _, name in Stats.Names do
 				t.Check(`{name} has a line`, row(groups, name) ~= nil)
 			end
-			local hit = row(groups, "Hit")
-			t.Equal("a rating at zero shows 0", if hit then hit.Value else nil, "0")
-			local critical = row(groups, "Critical")
-			t.Equal("Critical at no points: its points alone, 0", if critical then critical.Value else nil, "0")
-			local guard = row(groups, "CriticalGuard")
-			t.Equal("a percent at zero shows 0%", if guard then guard.Value else nil, "0%")
-			local bonus = row(groups, "DamageBonus")
-			t.Equal("Damage Bonus with nothing giving it: 0%", if bonus then bonus.Value else nil, "0%")
-			local health = row(groups, "Health")
-			t.Equal("points grouped", if health then health.Value else nil, "1,234")
-			local regen = row(groups, "Regen")
-			t.Equal("Regen to a tenth, a second", if regen then regen.Value else nil, "4.3 a second")
-			local speed = row(groups, "Speed")
-			t.Equal("Speed in studs a second", if speed then speed.Value else nil, "16 studs a second")
-			t.Equal("the names players read", if row(groups, "CriticalDamage") then (row(groups, "CriticalDamage") :: Sheet.Row).Name else nil, "Critical Damage")
-			local rated = Sheet.Rows(block({ Dodge = 80, Critical = 120, Block = 60, Penetration = 40, Hit = 50, CriticalResist = 30, ElementalResist = 20, Element = "Fire", ElementalAttack = 30 }))
-			for _, group in rated do
-				for _, each in group.Rows do
-					local keys = {}
-					for key in each :: any do
-						table.insert(keys, key)
-					end
-					table.sort(keys)
-					t.Equal(`{each.Stat}: its name and its total, nothing to open`, table.concat(keys, ","), "Name,Stat,Value")
-					t.Check(`{each.Stat}: only its number, never "up to" or a note`, plain(each.Value), each.Value)
+			local core = {}
+			for _, each in groups[2].Rows do
+				table.insert(core, each.Stat)
+			end
+			t.Equal("Core", table.concat(core, ","), "Health,Attack,Defence,Speed,Poise")
+			local pairs = { { "Hit", "Dodge" }, { "Critical", "CriticalResist" }, { "CriticalDamage", "CriticalGuard" }, { "ElementalAttack", "ElementalResist" }, { "DamageBonus", "DamageReduction" }, { "Penetration", "Block" } }
+			local paired = groups[3].Rows
+			for index, pair in pairs do
+				local left, right = paired[index * 2 - 1], paired[index * 2]
+				t.Check(`row {index}: {pair[1]} | {pair[2]}`, left and right and left.Stat == pair[1] and right.Stat == pair[2])
+			end
+			local sustain = groups[4].Rows
+			t.Check("Sustain: Regen | Lifesteal", #sustain == 2 and sustain[1].Stat == "Regen" and sustain[2].Stat == "Lifesteal")
+		end,
+	},
+	{
+		Name = "Sheet: each line its name and one total, a zero as 0, a rating's points without a %, its chance or effect beside",
+		Run = function(t: any)
+			local groups = Sheet.Rows(block())
+			t.Equal("a rating at zero shows 0", (row(groups, "Hit") :: Sheet.Row).Value, "0")
+			local critical = row(groups, "Critical") :: Sheet.Row
+			t.Equal("Critical at no points: 0", critical.Value, "0")
+			t.Equal("and its chance, the floor every hit has", critical.Effect, Sheet.Percent(StatsConfig.Caps.CriticalFloor))
+			t.Equal("a percent at zero shows 0%", (row(groups, "CriticalGuard") :: Sheet.Row).Value, "0%")
+			t.Equal("Damage Bonus with nothing giving it: 0%", (row(groups, "DamageBonus") :: Sheet.Row).Value, "0%")
+			t.Equal("points grouped", (row(groups, "Health") :: Sheet.Row).Value, "1,234")
+			t.Equal("Regen to a tenth, a second", (row(groups, "Regen") :: Sheet.Row).Value, "4.3 a second")
+			t.Equal("Speed in studs a second", (row(groups, "Speed") :: Sheet.Row).Value, "16 studs a second")
+			t.Equal("the names players read", (row(groups, "CriticalDamage") :: Sheet.Row).Name, "Critical Damage")
+			local rated = Sheet.Rows(block({ Dodge = 80, Critical = 1240, Block = 60, Penetration = 40, Hit = 50, CriticalResist = 30, ElementalResist = 20, Element = "Fire", ElementalAttack = 30 }))
+			for index = 2, #rated do
+				for _, each in rated[index].Rows do
+					local isRated = table.find(RATED, each.Stat) ~= nil
+					t.Equal(`{each.Stat}: its name, its total{if isRated then " and its chance" else ""}, nothing to open`, keys(each), if isRated then "Effect,Name,Stat,Value" else "Name,Stat,Value")
+					t.Check(`{each.Stat}: only its number, never a % on a rating, never "up to"`, plain(each.Value) and not (isRated and string.find(each.Value, "%", 1, true)), each.Value)
 				end
 			end
-			local dodge = row(rated, "Dodge")
-			t.Equal("a rating's line: its points alone", if dodge then dodge.Value else nil, "80")
-			local fire = row(rated, "ElementalAttack")
-			t.Equal("Elemental Attack: its points, its element unsaid", if fire then fire.Value else nil, "30")
+			local big = row(rated, "Critical") :: Sheet.Row
+			t.Equal("a rating's points: grouped, no %", big.Value, "1,240")
+			t.Check("its chance, a percent", string.match(big.Effect or "", "^[%d%.]+%%$") ~= nil, big.Effect)
+			t.Check("Penetration says what it does", string.match((row(rated, "Penetration") :: Sheet.Row).Effect or "", "^ignores [%d%.]+%% Defence$") ~= nil)
+			t.Check("Critical Resist says what it does", string.match((row(rated, "CriticalResist") :: Sheet.Row).Effect or "", "^%-[%d%.]+%% their Critical chance$") ~= nil)
+			t.Check("Elemental Resist says what it does", string.match((row(rated, "ElementalResist") :: Sheet.Row).Effect or "", "^%-[%d%.]+%% elemental damage$") ~= nil)
+			t.Equal("Elemental Attack: its points, its element unsaid", (row(rated, "ElementalAttack") :: Sheet.Row).Value, "30")
+			-- by hand: 100 Dodge at level 1 against the even foe's Hit, 40% x 100 / (100 + Hit + K)
+			local one = Stats.Empty(1)
+			one.Dodge = 100
+			local want = StatsConfig.Caps.Dodge * 100 / (100 + StatsConfig.EvenFoe.Hit * Growth.G(1) + StatsConfig.RatingK * Growth.G(1))
+			t.Check("100 Dodge at level 1, by hand", math.abs(Sheet.Odds(one).Dodge - want) < 1e-12, `{Sheet.Odds(one).Dodge} against {want}`)
+		end,
+	},
+	{
+		Name = "Sheet: each shown chance is the hit's own against the even foe, and never over its ceiling",
+		Run = function(t: any)
+			local caps = StatsConfig.Caps
+			local ceiling = {
+				Hit = 1,
+				Dodge = caps.Dodge,
+				Critical = caps.Critical,
+				Block = caps.Block,
+				Penetration = caps.Penetration,
+				CriticalResist = caps.CriticalSpan,
+				ElementalResist = caps.ElementalResist,
+			}
+			local blocks: { Stats.Block } = {}
+			for _, def in Voidkin.List do
+				for _, level in { 1, 12, 60 } do
+					for _, stars in { 0, VoidkinConfig.MaxStars } do
+						local owned = { Id = "k", Def = def.Id, Level = level, Xp = 0, Stars = stars, Copies = 0, Nickname = "", Preset = "", Favourite = false, Locked = false, Born = 0 }
+						table.insert(blocks, (Stats.Resolve(owned :: any, nil, nil)))
+					end
+				end
+			end
+			local huge = block()
+			for _, stat in RATED do
+				(huge :: any)[stat] = 1e12
+			end
+			table.insert(blocks, huge)
+			for _, made in blocks do
+				local foe = Stats.EvenFoe(made.Level)
+				local foeDodge, critical, _, penetration = Hit.Odds(made, foe)
+				local dodge, foeCritical, blocked = Hit.Odds(foe, made)
+				local bare = table.clone(made)
+				bare.CriticalResist = 0
+				local _, foeBare = Hit.Odds(foe, bare)
+				local want = {
+					Hit = 1 - foeDodge,
+					Dodge = dodge,
+					Critical = critical,
+					Block = blocked,
+					Penetration = penetration,
+					CriticalResist = foeBare - foeCritical,
+					ElementalResist = Stats.Chance(caps.ElementalResist, made.ElementalResist, 0, foe.Level),
+				}
+				local odds = Sheet.Odds(made)
+				local groups = Sheet.Rows(made)
+				local label = `{made.Def} {made.Level}`
+				for _, stat in RATED do
+					t.Equal(`{label} {stat}: the hit's own`, odds[stat], want[stat])
+					t.Check(`{label} {stat}: under its ceiling`, odds[stat] >= 0 and odds[stat] <= ceiling[stat], `{odds[stat]}`)
+					local shown = row(groups, stat) :: Sheet.Row
+					t.Equal(`{label} {stat}: shown as it is`, shown.Effect, Sheet.Effect(stat, odds[stat]))
+					t.Check(`{label} {stat}: never over 100%`, readBack(shown.Effect or "") <= 100 + 1e-9, shown.Effect)
+				end
+			end
 		end,
 	},
 	{
@@ -132,11 +245,11 @@ return {
 						local made = Stats.Resolve(owned :: any, nil, nil)
 						for _, group in Sheet.Rows(made) do
 							for _, each in group.Rows do
-								local raw = (made :: any)[each.Stat]
+								local raw = if Attributes.ById[each.Stat] then made.Attributes[each.Stat] else (made :: any)[each.Stat]
 								local value = if type(raw) == "number" then raw else 0
 								local percent = string.sub(each.Value, -1) == "%"
 								local want = if percent then value * 100 else value
-								local slack = if percent then (if math.abs(want) >= 10 then 0.5 else 0.05) elseif string.find(each.Value, "second", 1, true) then 0.05 else 1
+								local slack = if percent then (if math.abs(want) >= 10 then 0.5 else 0.05) elseif string.find(each.Value, "second", 1, true) then 0.05 else 0.5
 								t.Check(`{def.Id} {level} {stars}: {each.Stat} {each.Value}`, plain(each.Value) and math.abs(readBack(each.Value) - want) <= slack + 1e-9)
 							end
 						end

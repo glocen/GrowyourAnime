@@ -1,26 +1,60 @@
 --!strict
--- Sheet (shared, pure): what each line of Overview's stat sheet says (docs/ui.md, 5, "Overview's stat sheet", and
--- "Stats, shown honestly"; the stats in docs/balance.md, "The stats"). Every stat in three groups, Core, Attack and
--- Defence, a zero shown as 0, never hidden. A plain list [the director, 2026-11-15, night: "dont put any description for
--- stats", then "Plain list, no taps"]: each stat its name and its one total, never "up to", a rating as its points, a
--- percent as its percent, and nothing opens: no notes, no chance, no sources. Damage Bonus and Damage Reduction show only
--- what holds at all times, so a signature's, a passive's or an effect's share on a condition isn't in them.
--- The client draws the rows (UI.VoidkinScreen); nothing here decides anything.
+-- Sheet (shared, pure): what each line of Overview's stat sheet says (docs/research/rework-2026-11-16.md, part 4, "How
+-- stats are written, and the Overview"; docs/ui.md, 5, "Overview's stat sheet"; the stats in docs/balance.md, "The
+-- stats"). Two headings:
+--   Basic Attributes   the five, each its total, its class's Main marked
+--   Battle Attributes  Core; Offence and Defence paired on each row, so what counters what reads without a word; Sustain
+-- A plain list [the director, 2026-11-15, night: "dont put any description for stats", then "Plain list, no taps"]: each
+-- stat its name and its one total, a zero shown as 0, never hidden, and nothing opens. What each kind of number shows:
+--   points             the number, grouped, no decimals (Regen to a tenth a second, Speed in studs a second)
+--   a rating vs a foe  Hit, Dodge, Critical, Block: its points, then its chance against an even foe, smaller
+--   a rating's effect  Penetration, Critical Resist, Elemental Resist: its points, then what it does to an even foe
+--   a percent          Critical Damage, Critical Guard, Lifesteal, Damage Bonus, Damage Reduction, as it is
+-- No "%" is ever put on a rating's points. Every chance is the hit's own (Rules.Hit.Odds, Rules.Stats.Chance) against
+-- Stats.EvenFoe at the block's level, so it can't drift from the combat, and none reads over its ceiling. Damage Bonus and
+-- Damage Reduction show only what holds at all times, so a signature's, a passive's or an effect's share on a condition
+-- isn't in them. The client draws the rows (UI.VoidkinScreen); nothing here decides anything.
 -- No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
+local StatsConfig = require(Shared.Config.Stats)
+local Attributes = require(Shared.Definitions.Attributes)
 local Stats = require(Shared.Rules.Stats)
+local Hit = require(Shared.Rules.Hit)
 local Hud = require(Shared.Rules.Hud)
 
 local Sheet = {}
 
-export type Row = { Stat: string, Name: string, Value: string }
-export type Group = { Name: string, Rows: { Row } }
+-- A line: its stat, the name players read, its total as shown, then, smaller, its chance or its effect against an even
+-- foe, and whether it's its class's Main.
+export type Row = { Stat: string, Name: string, Value: string, Effect: string?, Main: boolean? }
+-- A block of lines under its caption. The first of a heading's blocks carries the heading, and its caption line under it.
+export type Group = { Name: string, Rows: { Row }, Heading: string?, Caption: string? }
 
+Sheet.Headings = { Basic = "Basic Attributes", Battle = "Battle Attributes" }
+Sheet.EvenFoe = "chances against an even foe" -- the one caption, under Battle Attributes
+
+-- The Battle Attributes' blocks, two a row: Offence and Defence paired, the attacker's stat on the left.
 Sheet.Groups = {
-	{ Name = "Core", Stats = { "Health", "Attack", "Defence", "Regen", "Speed", "Poise" } },
-	{ Name = "Attack", Stats = { "Hit", "Critical", "CriticalDamage", "Penetration", "ElementalAttack", "Lifesteal", "DamageBonus" } },
-	{ Name = "Defence", Stats = { "Dodge", "Block", "CriticalResist", "CriticalGuard", "ElementalResist", "DamageReduction" } },
+	{ Name = "Core", Stats = { "Health", "Attack", "Defence", "Speed", "Poise" } },
+	{
+		Name = "Offence and Defence",
+		Stats = {
+			"Hit",
+			"Dodge",
+			"Critical",
+			"CriticalResist",
+			"CriticalDamage",
+			"CriticalGuard",
+			"ElementalAttack",
+			"ElementalResist",
+			"DamageBonus",
+			"DamageReduction",
+			"Penetration", -- not a counter pair: where both fit
+			"Block",
+		},
+	},
+	{ Name = "Sustain", Stats = { "Regen", "Lifesteal" } },
 }
 
 -- What players read for each stat.
@@ -64,22 +98,86 @@ local function amount(stat: string, value: number): string
 	return Hud.Digits(value)
 end
 
--- One stat's line. A stat the block doesn't carry (Damage Bonus, Damage Reduction: nothing gives them at all times yet)
--- reads as its zero.
-function Sheet.Row(stat: string, block: Stats.Block): Row
-	local value = (block :: any)[stat]
-	return { Stat = stat, Name = Sheet.Said[stat] or stat, Value = amount(stat, if type(value) == "number" then value else 0) }
+-- Each rating's chance or effect against an even foe of `block`'s level, as a share, by the hit's own functions:
+--   Hit              the share of its hits that land: 1 - the foe's dodge
+--   Dodge, Block     the share of the foe's hits it dodges, it blocks
+--   Critical         its critical chance, the floor included
+--   Penetration      the share of the foe's Defence it ignores
+--   Critical Resist  how much it takes off the foe's critical chance, in points of chance
+--   Elemental Resist the share of elemental damage it takes off
+function Sheet.Odds(block: Stats.Block): { [string]: number }
+	local foe = Stats.EvenFoe(block.Level)
+	local foeDodge, critical, _, penetration = Hit.Odds(block, foe)
+	local dodge, foeCritical, blocked = Hit.Odds(foe, block)
+	local bare = table.clone(block)
+	bare.CriticalResist = 0
+	local _, foeBare = Hit.Odds(foe, bare)
+	return {
+		Hit = 1 - foeDodge,
+		Dodge = dodge,
+		Critical = critical,
+		Block = blocked,
+		Penetration = penetration,
+		CriticalResist = foeBare - foeCritical,
+		ElementalResist = Stats.Chance(StatsConfig.Caps.ElementalResist, block.ElementalResist, 0, foe.Level),
+	}
 end
 
--- The whole sheet, group by group.
+-- What a rating's chance or effect says, from its share (Sheet.Odds).
+function Sheet.Effect(stat: string, share: number): string
+	local said = Sheet.Percent(share)
+	if stat == "Penetration" then
+		return `ignores {said} Defence`
+	elseif stat == "CriticalResist" then
+		return `-{said} their Critical chance`
+	elseif stat == "ElementalResist" then
+		return `-{said} elemental damage`
+	end
+	return said
+end
+
+-- One stat's line. A stat the block doesn't carry (Damage Bonus, Damage Reduction: nothing gives them at all times yet)
+-- reads as its zero. `odds` (Sheet.Odds) gives a rating its chance or effect.
+function Sheet.Row(stat: string, block: Stats.Block, odds: { [string]: number }?): Row
+	local value = (block :: any)[stat]
+	local share = if odds then odds[stat] else nil
+	return {
+		Stat = stat,
+		Name = Sheet.Said[stat] or stat,
+		Value = amount(stat, if type(value) == "number" then value else 0),
+		Effect = if share then Sheet.Effect(stat, share) else nil,
+	}
+end
+
+-- The five attributes' lines, in Definitions.Attributes' order, each its total, the class's Main marked.
+function Sheet.Basic(block: Stats.Block): { Row }
+	local rows = {}
+	for _, attribute in Attributes.List do
+		table.insert(rows, {
+			Stat = attribute.Id,
+			Name = attribute.Name,
+			Value = Hud.Digits(block.Attributes[attribute.Id] or 0),
+			Main = if block.Main == attribute.Id then true else nil,
+		})
+	end
+	return rows
+end
+
+-- The whole sheet, block by block: the Basic Attributes, then the Battle Attributes' three.
 function Sheet.Rows(block: Stats.Block): { Group }
-	local groups = {}
-	for _, group in Sheet.Groups do
+	local odds = Sheet.Odds(block)
+	local groups: { Group } = { { Name = "", Heading = Sheet.Headings.Basic, Rows = Sheet.Basic(block) } }
+	for index, group in Sheet.Groups do
 		local rows = {}
 		for _, stat in group.Stats do
-			table.insert(rows, Sheet.Row(stat, block))
+			table.insert(rows, Sheet.Row(stat, block, odds))
 		end
-		table.insert(groups, { Name = group.Name, Rows = rows })
+		table.insert(groups, {
+			Name = group.Name,
+			Rows = rows,
+			Heading = if index == 1 then Sheet.Headings.Battle else nil,
+			Caption = if index == 1 then Sheet.EvenFoe else nil,
+		})
 	end
 	return groups
 end

@@ -42,6 +42,8 @@ local PowerScreen = require(UI.PowerScreen)
 local BaseView = require(UI.BaseView)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
+local Clips = require(script.Parent.FighterController.Clips)
+local AnimationsConfig = require(Shared.Config.Animations)
 
 local BaseController = {}
 
@@ -907,6 +909,33 @@ type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y", Pi
 local turning: { [BasePart]: Turning } = {}
 local WRAP = 5 * 2 * math.pi
 
+-- A bay's worker (BaseService, TR24's fix 1): its rig's Idle, looped, played here for this screen alone, as every fighter's
+-- clips are. It streams in and out with its bay; a body replaced brings a new one.
+local function watchWorker(item: Instance)
+	if not item:IsA("Model") then
+		return
+	end
+	task.spawn(function()
+		local animator = item:FindFirstChildWhichIsA("Animator", true)
+		local waited = 0
+		while animator == nil and item.Parent and waited < 5 do
+			waited += task.wait(0.2)
+			animator = item:FindFirstChildWhichIsA("Animator", true)
+		end
+		local named = item:GetAttribute("Rig")
+		local rig = AnimationsConfig.Rigs[if type(named) == "string" then named else "R6"] or AnimationsConfig.Rigs.R6
+		local animation = Clips.Animation(rig.Idle)
+		if animator == nil or animation == nil or item.Parent == nil then
+			return
+		end
+		local track = (animator :: Animator):LoadAnimation(animation)
+		track.Looped = true
+		track.Priority = Enum.AnimationPriority.Idle
+		track:Play(0)
+		item:SetAttribute("Playing", rig.Idle)
+	end)
+end
+
 local function watchTurning(item: Instance)
 	if not item:IsA("BasePart") then
 		return
@@ -999,6 +1028,10 @@ function BaseController.Start()
 	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(watchTurning)
 	for _, item in CollectionService:GetTagged(Kit.Tag) do
 		watchTurning(item)
+	end
+	CollectionService:GetInstanceAddedSignal("Worker"):Connect(watchWorker)
+	for _, item in CollectionService:GetTagged("Worker") do
+		watchWorker(item)
 	end
 	if RunService:IsStudio() then
 		revealBridge()

@@ -1287,6 +1287,11 @@ function HudController.KeeperTrail(): (number, number)
 	return BossBar.Trail(keeperBar)
 end
 
+-- For tests: where a step's marker stands (stepTargets): a "Bay" step's, the bay it names on the player's plot.
+function HudController.StepTargets(step: Hud.Step?): { Instance }
+	return stepTargets(step)
+end
+
 -- For tests: the HUD's parts by name.
 function HudController.Parts(): { [string]: GuiObject }
 	return {

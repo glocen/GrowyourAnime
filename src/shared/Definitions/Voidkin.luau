@@ -33,6 +33,9 @@ export type Row = {
 	Rig: string?,
 	-- Its moves, once built; without them a lead fights with the stand-in's (Actions.StandIn) on the grey R6 rig
 	Kit: Kit?,
+	-- A body installed ahead of its clips: where they come from. Until they land it fights on the stand-in's kit and
+	-- reveals as the stand-in (UI.Reveal.Figure), and the logic cases ask for it gone once they have.
+	ClipsDue: string?,
 	-- Its own nudge to its class's walk speed in a fight, 1 either way at most (TR14; Config.Stats.Speed; docs/design.md,
 	-- "Speed"): research's seeds, not the roster's columns.
 	Speed: number?,
@@ -45,7 +48,7 @@ local rows: { Row } = {
 	{ Id = "rook", Name = "Rook", Rarity = "Common", Type = "Strength", Class = "Warrior", Element = "", Zone = 1, Aptitude = 2, Model = "Rook", Kit = { Signature = "RookHaymaker", Combo = "RookCombo" }, Words = { Signature = "Haymaker: a long wind-up, one straight punch, a shockwave along the ground", Passive = "Second Wind: takes less damage below 30% health" } },
 	{ Id = "kirra", Name = "Kirra", Rarity = "Common", Type = "Agility", Class = "Assassin", Element = "", Zone = 1, Aptitude = 1, Speed = 1, Model = "Kirra", Kit = { Signature = "KirraScarfStep", Combo = "KirraCombo", Idle = "KirraIdle" }, Words = { Signature = "Scarf Step: vanishes, crosses the target, cuts on the way out", Passive = "First Strike: her first hit on a new target always crits" } },
 	{ Id = "pip", Name = "Pip", Rarity = "Common", Type = "Intelligence", Class = "Mage", Element = "Fire", Zone = 1, Aptitude = 2, Model = "Pip", Rig = "Robe", Kit = { Signature = "PipLanternBurst", Combo = "PipCombo", Skip = "PipSkip" }, Words = { Signature = "Lantern Burst: the lantern flies out and bursts over a small area", Passive = "Kindle: his third shot adds Fire damage" } },
-	{ Id = "watt", Name = "Watt", Rarity = "Common", Type = "Endurance", Class = "Tank", Element = "Storm", Zone = 1, Aptitude = 3, Words = { Signature = "Ground Wire: plants the wrench, shields himself, and a pulse stops nearby enemies for a moment", Passive = "Insulated: takes less elemental damage" } },
+	{ Id = "watt", Name = "Watt", Rarity = "Common", Type = "Endurance", Class = "Tank", Element = "Storm", Zone = 1, Aptitude = 3, Model = "Watt", ClipsDue = "AR11's clips, Modulo's next: his body came first for TR24's fix 1, 2026-11-16", Words = { Signature = "Ground Wire: plants the wrench, shields himself, and a pulse stops nearby enemies for a moment", Passive = "Insulated: takes less elemental damage" } },
 	{ Id = "patch", Name = "Patch", Rarity = "Common", Type = "Technique", Class = "Healer", Element = "", Zone = 2, Aptitude = 2, Words = { Signature = "Quick Fix: heals the ally with the least health, herself when alone", Passive = "Triage: her heals are stronger on a target under half health" } },
 	{ Id = "tumble", Name = "Tumble", Rarity = "Common", Type = "Agility", Class = "Warrior", Element = "", Zone = 2, Aptitude = 1, Words = { Signature = "Cartwheel Kick: a spinning double kick that hits all around", Passive = "Momentum: each hit in a row on one target adds damage, up to a cap" } },
 	{ Id = "brick", Name = "Brick", Rarity = "Common", Type = "Strength", Class = "Tank", Element = "", Zone = 2, Aptitude = 3, Words = { Signature = "Door Slam: slams the door down, pushes enemies back and draws them onto him", Passive = "Hard Hat: blocks the first hit of every fight" } },

@@ -46,7 +46,12 @@ return {
 			local pool = Tower.Pool()
 			t.Check("a pool", #pool >= 1)
 			for _, id in pool do
-				t.Check(`{id} has a body`, Voidkin.ById[id] ~= nil and Voidkin.ById[id].Model ~= nil)
+				t.Check(`{id} has a body and its moves`, Voidkin.ById[id] ~= nil and Voidkin.ById[id].Model ~= nil and Voidkin.ById[id].Kit ~= nil)
+			end
+			for _, row in Voidkin.List do
+				if row.Model and row.ClipsDue then
+					t.Check(`{row.Id}: its body ahead of its clips, not yet a foe`, table.find(pool, row.Id) == nil)
+				end
 			end
 			local seen = {}
 			for floor = 1, 200 do

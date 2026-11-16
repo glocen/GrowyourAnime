@@ -3,7 +3,8 @@
 -- joins PowerCases (Cases' one table had passed what the type solver checks in one piece). AR16's base as its save has
 -- it: the bays awake and asleep, the battery's cells, the Void Mill's wheel, gauge and demand mark (AR19) and the
 -- Training machine's crown; its machines' plates apart from the spawn; and the first session's shards opening themselves
--- on the plot (TR24's fix 5); the Festival Door's and the gate's names (TR24's fix 10).
+-- on the plot (TR24's fix 5); the Festival Door's and the gate's names (TR24's fix 10); a bay's worker at work in its ring,
+-- its halo lit in its rarity colour, and the step's chevron over the bay it names (TR24's fix 1).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -21,6 +22,9 @@ local Markers = require(Shared.World.Markers)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local SignsController = require(script.Parent.Parent.Parent.Main.SignsController)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local AnimationsConfig = require(Shared.Config.Animations)
+local RevealConfig = require(Shared.Config.Reveal)
 local Grounds = require(Shared.Definitions.Grounds)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -446,6 +450,91 @@ function BaseCases.Cases(given: Given): { any }
 					local want = frame.Position + Vector3.new(0, size.Y / 2 + WorldConfig.Signs.Door.Lift, 0)
 					local at = World.Where(parts.Door)
 					t.Check("the door's over its arch", at ~= nil and (at - want).Magnitude < 0.1, if at then tostring(at) else "nowhere")
+				end
+			end,
+		},
+		{
+			Name = "Base: TR24's fix 1, a worker stands at work in its bay's ring playing its rig's Idle, the halo lit in its rarity colour; the bay empty, both gone; the step's chevron over the bay it names",
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				if view == nil or type(plot) ~= "number" or #view.Base.Bays == 0 then
+					t.Check("a plot, a save and an open bay", false)
+					return
+				end
+				-- The chevron: a "Bay" step's marker is the bay it names, on this plot, for each bay the base can open.
+				for index = 1, BaseLevels.Bays(BaseLevels.Top()) do
+					local found = HudController.StepTargets({ Line = "", Target = "Bay", Bay = index })
+					local bay = found[1]
+					t.Check(`the step for bay {index}: its chevron over bay {index}`, #found == 1 and bay:GetAttribute("Bay") == index and bay:GetAttribute("Plot") == plot,
+						if bay then `bay {tostring(bay:GetAttribute("Bay"))} of plot {tostring(bay:GetAttribute("Plot"))}` else "none")
+				end
+				-- Bay 1 with a worker: one the save owns, its own worker if it has one, else any that neither leads nor trains.
+				local before = view.Base.Bays[1].Worker
+				local worker = before
+				if worker == "" then
+					local busy: { [string]: boolean } = { [view.Roles.Lead] = true, [view.Training.Trainee] = true }
+					for _, seat in view.Base.Bays do
+						busy[seat.Worker] = true
+					end
+					local ids: { string } = {}
+					for id in view.Voidkin do
+						if not busy[id] then
+							table.insert(ids, id)
+						end
+					end
+					table.sort(ids)
+					worker = ids[1] or ""
+				end
+				if worker == "" then
+					t.Check("a Voidkin free to work bay 1", false, "every Voidkin leads, works or trains")
+					return
+				end
+				local bay = Markers.Find("Bay", { Plot = plot, Bay = 1 })
+				if bay == nil then
+					t.Check("bay 1 on the plot", false)
+					return
+				end
+				pcall(function()
+					Players.LocalPlayer:RequestStreamAroundAsync(Markers.At(bay).Position, 2)
+				end)
+				local function body(): Model?
+					local found = bay:FindFirstChild("Worker")
+					return if found and found:IsA("Model") then found else nil
+				end
+				if before == "" then
+					t.Check("bay 1 takes a worker", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = worker }).Ok == true)
+				end
+				local def = view.Voidkin[worker].Def
+				local rig = AnimationsConfig.Rigs[Voidkin.ById[def].Rig or "R6"]
+				t.Check("its body stands in the bay, playing its rig's Idle", waitFor(t, ANSWER + 3, function(): boolean
+					local made = body()
+					return made ~= nil and made:GetAttribute("Playing") == rig.Idle
+				end), if body() then `playing {tostring((body() :: Model):GetAttribute("Playing"))}` else "no body")
+				local made = body()
+				if made then
+					t.Equal("the body is the worker's", made:GetAttribute("Voidkin"), worker)
+					local at, want = made:GetPivot().Position, Markers.At(bay).Position + Vector3.new(0, WorldConfig.Bay.Hip, 0)
+					t.Check("it stands in the ring, Hip studs over the bay's floor", (at - want).Magnitude < 0.05, tostring(at))
+					t.Check("facing the bay's front", made:GetPivot().LookVector:Dot(Markers.At(bay).LookVector) > 0.99)
+					local root = made:FindFirstChild("HumanoidRootPart")
+					t.Check("held where it stands, through nobody's way", root ~= nil and root:IsA("BasePart") and root.Anchored and not root.CanCollide)
+				end
+				local halo = bay:FindFirstChild("Halo")
+				local light = halo and halo:FindFirstChild("Light")
+				local colour = RevealConfig.Plate.Words[Voidkin.ById[def].Rarity]
+				t.Check("the halo lit in its rarity colour, in Neon", halo ~= nil and halo:IsA("BasePart") and halo.Transparency == 0 and halo.Material == Enum.Material.Neon and halo.Color == colour)
+				t.Check("with one light of that colour", light ~= nil and light:IsA("PointLight") and light.Enabled and light.Color == colour)
+				-- Bay 1 empty: both go.
+				t.Check("the worker steps out", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = "" }).Ok == true)
+				t.Check("its body leaves the bay", waitFor(t, ANSWER, function(): boolean
+					return body() == nil
+				end))
+				t.Check("the halo dark, its light out", waitFor(t, ANSWER, function(): boolean
+					return halo ~= nil and halo:IsA("BasePart") and halo.Transparency == 1 and light ~= nil and light:IsA("PointLight") and not light.Enabled
+				end))
+				if before ~= "" then
+					t.Check("the worker goes back", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = before }).Ok == true)
 				end
 			end,
 		},

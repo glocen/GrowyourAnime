@@ -191,4 +191,8 @@ return {
 			Gauge = { Steps = 8, Floor = 60, Fill = 0.85, Turn = 117.9, Glide = 0.6 },
 		},
 	},
+	-- A bay at work (TR24's fix 1; AR16's rarity light): its worker stands in the ring, Hip studs over the bay's floor (an R6
+	-- body's root), facing the bay's front, playing its rig's Idle; the ring's BayHalo stands lit in the worker's rarity colour
+	-- (Config.Reveal's Words) in Neon, with one PointLight of that colour. An empty bay shows its frame and ring, unlit.
+	Bay = { Hip = 3, Light = { Range = 12, Brightness = 1.5 } },
 }

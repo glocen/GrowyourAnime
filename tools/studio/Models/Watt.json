@@ -1,0 +1,18 @@
+{
+ "Why": "Watt's install (AR11, take A, the quiet wall): his seven meshes and four maps as published under the group on 2026-11-16 (docs/asset-log.md). The recipe gives the rest: the hair's pale ends and the spear's three discs glow, cold 0, Ground Wire's hold raising them.",
+ "Meshes": {
+  "Watt_Torso": 139445229036563,
+  "Watt_Head": 121638018387123,
+  "Watt_RightArm": 99213274804878,
+  "Watt_LeftArm": 128579379622405,
+  "Watt_RightLeg": 84993526665609,
+  "Watt_LeftLeg": 80384990783546,
+  "Watt_Spear": 137913663750844
+ },
+ "Maps": {
+  "Color": "rbxassetid://98114455072387",
+  "Roughness": "rbxassetid://96520804580272",
+  "Metalness": "rbxassetid://125771053640778",
+  "Emissive": "rbxassetid://95518053444073"
+ }
+}

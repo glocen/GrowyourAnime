@@ -34,11 +34,12 @@ local function draw(seed: number, floor: number, salt: number): number
 end
 Tower.Draw = draw
 
--- The Voidkin a foe can be: those with a body of their own, in Id order.
+-- The Voidkin a foe can be: those with a body and moves of their own, in Id order. A body installed ahead of its clips
+-- (Definitions.Voidkin's ClipsDue) waits for them: it would fight on the stand-in's kit.
 function Tower.Pool(): { string }
 	local pool = {}
 	for _, row in Voidkin.List do
-		if row.Model then
+		if row.Model and row.Kit then
 			table.insert(pool, row.Id)
 		end
 	end

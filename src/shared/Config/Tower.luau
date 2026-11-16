@@ -17,7 +17,7 @@ return {
 		Block = 2.97, Penetration = 1.74, ElementalResist = 1.62, CriticalDamage = 1.11,
 	} :: { [string]: number },
 	Health = 0.55, -- and then this share of its health (seeds "enemyHpShare")
-	-- Its Voidkin: one with a body of its own (a Model), picked from the run's seed by floor, no new models.
+	-- Its Voidkin: one with a body and moves of its own (a Model and a Kit: Rules.Tower.Pool), picked from the run's seed by floor, no new models.
 	HealCap = 0.15, -- healing in one floor tops out at this share of the lead's most health (seeds "healCap")
 	Rise = 2.5, -- seconds from a floor won to the next foe: the rise to its platform (seeds "risePerFloorSec")
 	Leap = 0.5, -- the share of Rise at which the lead and the avatar are set down on the new platform

@@ -179,13 +179,16 @@ local function showLabel()
 	l.Visible = true
 end
 
--- The results the save holds, opened once they're the client's to see: out of a run, never twice.
+-- The results the save holds, opened once they're the client's to see: out of a run, never twice. Results on screen the
+-- save no longer holds close: a run started over them dropped them (Rules.Tower.Start), and its own open at its end.
 local function results(view: Profile.View?)
 	local held = if view then view.Progress.Tower.Results else nil
-	if held == nil or Players.LocalPlayer:GetAttribute("Tower") ~= nil or TowerScreen.Told(held.Id) then
-		return
+	local open = Screen.Current() == TowerScreen.Name
+	if open and (held == nil or TowerScreen.Shown() ~= held.Id) then
+		Screen.Close()
+		open = false
 	end
-	if Screen.Current() == TowerScreen.Name then
+	if held == nil or Players.LocalPlayer:GetAttribute("Tower") ~= nil or TowerScreen.Told(held.Id) or open then
 		return
 	end
 	TowerScreen.Open(held, { Act = ProfileController.Act })

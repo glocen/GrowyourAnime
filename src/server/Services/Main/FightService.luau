@@ -315,6 +315,9 @@ local function buildLead(def: string, name: string): (Model, string)
 	return model, (row :: Voidkin.Row).Rig or "R6"
 end
 
+-- A Voidkin's body and its rig's name, as a lead's: a worker at its bay stands in it too (BaseService).
+FightService.Body = buildLead
+
 -- A Shade in grey: a dark box on an unseen root, joined by a Motor6D the client leans for its stand-in motion, and a
 -- mask on its face. An elite carries a second mask on its shoulder; a keeper, a hat.
 local function buildBox(row: Enemies.Row, name: string): Model

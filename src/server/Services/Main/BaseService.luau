@@ -6,6 +6,7 @@
 -- lead on the Training machine. Within the away hours the workers generate the same either way, so the most a leave can
 -- cost is that many seconds of a long absence's cap.
 
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -18,12 +19,15 @@ local BaseRules = require(Shared.Rules.Base)
 local BaseConfig = require(Shared.Config.Base)
 local WorldConfig = require(Shared.Config.World)
 local Shards = require(Shared.Definitions.Shards)
+local Voidkin = require(Shared.Definitions.Voidkin)
+local RevealConfig = require(Shared.Config.Reveal)
 local Markers = require(Shared.World.Markers)
 local Power = require(Shared.Rules.Power)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
 local WorldService = require(script.Parent.WorldService)
+local FightService = require(script.Parent.FightService)
 
 local BaseService = {
 	Priority = 20, -- after DataService
@@ -87,8 +91,69 @@ end
 -- * each bay the base has opened stands awake and the rest asleep, where a level will wake them;
 -- * the battery's bank shows the cells its base's level holds, each lit by its share of the charge ("Lit",
 --   Rules.Breaker.Cells);
--- * the Training machine's crown turns while a Voidkin trains ("Training").
+-- * the Training machine's crown turns while a Voidkin trains ("Training");
+-- * a bay at work holds its worker's body in its ring, its halo lit in the worker's rarity colour (showWorker).
 -- `data` nil stills them all, with level 1's bays and cells.
+
+-- A bay's worker (TR24's fix 1): its body in the ring (FightService.Body: its own once installed, else the grey stand-in),
+-- tagged "Worker" for the client to play its rig's Idle (BaseController), and the ring's halo lit in its rarity colour
+-- with one light of it (Config.World.Bay; AR16). The same Voidkin kept stays as it stands; nobody there takes both away.
+local function showWorker(bay: Instance, number: number, index: number, id: string, def: string?)
+	local body = bay:FindFirstChild("Worker")
+	if body and (body:GetAttribute("Voidkin") ~= id or body:GetAttribute("Def") ~= def) then
+		body:Destroy()
+		body = nil
+	end
+	if body == nil and def then
+		local made, rig = FightService.Body(def, "Worker")
+		for _, item in made:GetDescendants() do
+			if item:IsA("Script") or item:IsA("LocalScript") then
+				item:Destroy()
+			elseif item:IsA("BasePart") then
+				item.Anchored = item.Name == "HumanoidRootPart"
+				item.CanCollide, item.CanQuery, item.CanTouch = false, false, false
+			elseif item:IsA("Humanoid") then
+				item.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+				item.EvaluateStateMachine = false
+			end
+		end
+		local at = Markers.At(bay)
+		made:PivotTo(CFrame.lookAt(at.Position, at.Position + at.LookVector) + Vector3.new(0, WorldConfig.Bay.Hip, 0))
+		made:SetAttribute("Voidkin", id)
+		made:SetAttribute("Def", def)
+		made:SetAttribute("Rig", rig)
+		made:SetAttribute("Plot", number)
+		made:SetAttribute("Bay", index)
+		CollectionService:AddTag(made, "Worker")
+		made.Parent = bay
+	end
+	local halo = bay:FindFirstChild("Halo")
+	if halo and halo:IsA("BasePart") then
+		local row = if def then Voidkin.ById[def] else nil
+		local colour = if row then RevealConfig.Plate.Words[row.Rarity] else nil
+		halo.Transparency = if colour then 0 else 1
+		halo.Material = Enum.Material.Neon
+		if colour then
+			halo.Color = colour
+		end
+		local light = halo:FindFirstChild("Light") :: PointLight?
+		if light == nil then
+			local made = Instance.new("PointLight")
+			made.Name = "Light"
+			made.Range = WorldConfig.Bay.Light.Range
+			made.Brightness = WorldConfig.Bay.Light.Brightness
+			made.Shadows = false
+			made.Parent = halo
+			light = made
+		end
+		local lamp = light :: PointLight
+		lamp.Enabled = colour ~= nil
+		if colour then
+			lamp.Color = colour
+		end
+	end
+end
+
 local function showPlot(number: number, data: Profile.Data?)
 	local plant = Markers.Find("Generator", { Plot = number })
 	local rates = if data then Breaker.Rates(data) else nil
@@ -130,6 +195,12 @@ local function showPlot(number: number, data: Profile.Data?)
 		if bay:GetAttribute("Plot") == number and type(index) == "number" and pad and sleeping and pad:IsA("BasePart") and sleeping:IsA("BasePart") then
 			WorldService.Stand(pad, index <= open)
 			WorldService.Stand(sleeping, index > open)
+		end
+		if bay:GetAttribute("Plot") == number and type(index) == "number" then
+			local seat = if data and index <= open then data.Base.Bays[index] else nil
+			local id = if seat then seat.Worker else ""
+			local owned = if id ~= "" and data then data.Voidkin[id] else nil
+			showWorker(bay, number, index, id, if owned then owned.Def else nil)
 		end
 	end
 	local battery = Markers.Find("Battery", { Plot = number })

@@ -36,7 +36,9 @@ return {
 			for _, row in Voidkin.List do
 				local kit = row.Kit
 				if row.Model then
-					t.Check(`{row.Id}: a body installed has its moves`, kit ~= nil)
+					-- or says where they come from (ClipsDue), and says it no longer once they're in
+					t.Check(`{row.Id}: a body installed has its moves`, kit ~= nil or row.ClipsDue ~= nil)
+					t.Check(`{row.Id}: its moves in, ClipsDue goes`, kit == nil or row.ClipsDue == nil)
 				end
 				if kit then
 					built += 1

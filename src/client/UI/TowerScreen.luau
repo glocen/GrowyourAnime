@@ -29,10 +29,12 @@ local SIZE = Vector2.new(340, 316)
 local ROW = 26
 
 local parts: { [string]: Instance } = {}
+local shown: string? = nil
 local closing: { [string]: boolean } = {} -- results already told seen, so a closed screen asks once
 
 function TowerScreen.Open(results: Profile.TowerResults, on: On)
 	table.clear(parts)
+	shown = results.Id
 	local body = Screen.Open(TowerScreen.Name, "Tower", SIZE)
 	for _, child in body:GetChildren() do
 		child:Destroy()
@@ -99,6 +101,11 @@ function TowerScreen.Open(results: Profile.TowerResults, on: On)
 			task.spawn(on.Act, "TowerSeen", { Id = id })
 		end
 	end)
+end
+
+-- The id of the results last opened: whether those on screen are the ones the save holds.
+function TowerScreen.Shown(): string?
+	return shown
 end
 
 -- Whether results `id` were told seen from this client.

@@ -201,7 +201,8 @@ return {
 				local model = (row :: any).Model
 				if model then
 					local strike = RevealConfig.Strikes[`{model}Reveal`]
-					t.Check(`{row.Name}'s Reveal has its strike`, strike ~= nil)
+					-- a body ahead of its clips reveals as the stand-in until they land (Definitions.Voidkin's ClipsDue)
+					t.Check(`{row.Name}'s Reveal has its strike`, strike ~= nil or row.ClipsDue ~= nil)
 					if strike then
 						t.Check(`{row.Name}'s strike falls on Rook's Knock`, near(Reveal.Figure(Art.Figure.Knock, strike.Time), strike.Time))
 					end

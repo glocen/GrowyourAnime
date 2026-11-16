@@ -38,10 +38,12 @@ Shares of a full launch build's stat points, at level 60:
 
 - **Rarity** multiplies a Voidkin's own base only, from 1.00 for a Common to 1.50 for a Mythical. Since the base is about a third of a build, a Mythical at a full build has about 19% more of each stat than a Common at a full build.
 - **Skill points** come later, inside a skill tree (`docs/design.md`, "Skill points"). None are in the game now.
-- **Class** shifts a Voidkin's own base between health, attack and defence. It doesn't touch gear.
+- **Class** sets a Voidkin's own points by its shape and its Main ("Basic Attributes", below). It doesn't touch gear, but for the weapon pair each class holds.
 - **Gear is the account's,** so most of a build carries over to whichever Voidkin leads.
 
 ## The stats
+
+The Battle Attributes, which every fight reads:
 
 | Stat | Kind | What it does |
 |---|---|---|
@@ -64,6 +66,21 @@ Shares of a full launch build's stat points, at level 60:
 **Ratings** all convert the same way: `chance = ceiling x mine / (mine + theirs + K x G(level))`. A rating never reaches its ceiling, an opposing rating always pulls it down, and it needs more points at higher levels to hold the same chance. That shape is what keeps a stat from being solved.
 
 **Combat Power** is one number shown to the player: a weighted sum of the stats, its weights fitted by the simulation so the higher number wins more often with no type edge. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage. How it's shown: `docs/design.md`, "Combat Power". Its weights (`tools/balance/seeds.json`, "combatPower"; the sim's section 16) are what a point adds to winning, Attack's held at 4. A percent's weight is given at level 1 and multiplies by G at the Voidkin's level, since a percent multiplies points that grow with G. With them the higher number wins 97% of same-level duels with no type edge, and every duel where one side wins 10% faster. Its limit is a sum's: it can't see that spreading points beats stacking them, so of one budget spent two ways it picks the better about half the time (`docs/polish-later.md`).
+
+**Basic Attributes** [D, 2026-11-16, the yes at 16:50] feed the Battle Attributes and no fight reads them itself (`docs/design.md`, "Voidkin"). Each attribute converts by one row, every class alike, and the class's Main once more by its own; a class's points at level 1 are its shape, fitted so the class stands against every class and spec as it did before. The rows and the shapes: `src/shared/Config/Stats.luau`, "Attributes". The model reads them there: `py tools/balance/attributes.py`.
+
+| Attribute | Its job | It feeds |
+|---|---|---|
+| Might | raw power | Attack, Health |
+| Finesse | precision and evasion | Hit, Critical, Dodge, a little Attack |
+| Vigor | toughness | Health, Defence, Block |
+| Spirit | resolve and recovery | Regen, Health, Critical Resist, Elemental Resist |
+| Insight | seeing through armour | Penetration, Hit, a little Attack and Health; the Mage's element through its Main |
+
+- **SIMULATED** (`attributes.py`, 2026-11-16): class-against-class edges within 0.03 of the old ones; each Main is its class's best attribute, and at level 30 every other is worth 43% to 91% of it, so none is dead; stacking the Main beats spreading for its own class, and spreading beats stacking anything else, so gear reads "my Main first, then what I lack".
+- **Health** runs 20% to 40% lower at level 1 than before, and the ratings a Voidkin brings itself (an Assassin's Critical, a Mage's Penetration, a Healer's resists) make up the value. They were 0 before.
+- **Combat Power** reads the new figures at 92% (97% where one side wins 10% faster) until its weights are refit (the sim's section 16).
+- **A gear line's price** is its Combat Power at the generic row, so an attribute line and a Battle line of one budget are worth the same, and the Main makes a line worth more to its class.
 
 ## One hit
 
@@ -104,6 +121,25 @@ The Void Rift is Breaker speed for a minute, on a schedule. Online all day it av
 ## Pace
 
 Seeds for how long each ground takes a player who keeps a 70% build ("on budget"): 1, 3, 6, 10, 15 and 22 hours, 57 in all. Everything else is derived from that table: kills per level, what a forge rank costs, when a player meets each shard. One table to turn if the game is too long or too short.
+
+## The Tower
+
+[D, 2026-11-16: the package's point 4.] One Voidkin climbs, its health carried from floor to floor (`docs/design.md`, "The Tower"). The seeds: `tools/balance/seeds.json`, "tower", until the build gives them a Config. The model: `py tools/balance/tower.py`.
+
+**SIMULATED** (median of 60 runs, 2026-11-16): floors won by one run.
+
+| Level | A weak build (0.4) | On budget (0.7) | A full build (1.0) | Minutes on budget |
+|---|---|---|---|---|
+| 5 | 3 | 5 | 7 | 0.3 |
+| 15 | 17 | 20 | 24 | 1.1 |
+| 30 | 40 | 50 | 58 | 2.5 |
+| 45 | 57 | 69 | 78 | 3.3 |
+| 60 | 75 | 90 | 101 | 4.3 |
+
+- **Power shows as floors:** at level 30 a full build climbs 18 floors past a weak one, and the five classes end within 3 floors of each other.
+- **The heal cap** changes nothing today (the floors are the same from 10% up). It's the guard for when Lifesteal is wired and heals grow.
+- **Not known:** how long a run should last to feel good. The seeds lengthen the hard end, not the easy start. Judged in play.
+- **Against the grounds:** the Tower's reward rate is checked in the earning model, so neither becomes the only place worth playing.
 
 ## What the simulation showed (2026-11-11)
 

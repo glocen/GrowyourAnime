@@ -81,7 +81,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 2. One ground at the bar.** Rook, Pip and Lyric finished and timed. Lantern Row dressed. The HUD, the reveal and the Breaker screen on the real kit. The Lamplighter. The first session reviewed whole, from a phone. This is the game's proof and its advert. Its signature effects close at competent; the push toward exceptional waits for the finish pass before launch (the director, 2026-11-13, `docs/decisions.md`). **Content as data** (Faber, after TR6, before the next Voidkin is installed): `docs/engineering-plan.md`, "Content at scale", items 1 to 5, so each Voidkin, effect and Shade after it is mostly data and art.
 
-**Phase 3. The build.** Regalia with presets, the bag, the Forge and the Stone Condenser that feeds it, emblems, jewels, research. The Tower's first floors. The director's second look at gear-as-the-account's comes before this phase builds it.
+**Phase 3. The build.** It opens with the director's package of 2026-11-16 (the yes at 16:50), in this order, each a block first: the base's three sizes in grey; attributes in the resolver with the stat sheet; items, class rules and the comparison; chests and bulk opening; the inventory on its chosen direction; the generator and the machines' stages; the Tower's run; the responsive pass across every screen. Then the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Gear stays the account's (the same yes). The evidence behind the order and its risks: `docs/research/rework-2026-11-16.md`, part 12.
 
 **Phase 4. Breadth.** The Void Shop, the Rift. Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
 

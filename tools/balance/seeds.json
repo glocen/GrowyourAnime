@@ -131,5 +131,9 @@
     "_": "TR17, fix 10: Config.Stats.Power, fitted by tools/balance/sim.py, section 16. A weight a point, Attack's held at 4; a percent's (Critical Damage above its base, Critical Guard, Lifesteal) is its weight at level 1, and Power multiplies it by G(level). Refit when a source lands past launch's ranges (Critical Damage far past +100%, a new stat).",
     "scale": 10,
     "weights": { "Health": 0.53, "Attack": 4, "Defence": 3.1, "Regen": 3.1, "Hit": 0.53, "Dodge": 2.1, "Critical": 1.2, "CriticalResist": 0.2, "Block": 1.4, "Penetration": 0.88, "ElementalAttack": 5.2, "ElementalResist": 0.34, "CriticalDamage": 110, "CriticalGuard": 110, "Lifesteal": 770 }
+  },
+  "tower": {
+    "_": "The Tower's launch loop (docs/design.md, The Tower; docs/balance.md, The Tower), on the director's yes of 2026-11-16. Floor f's enemy stands at level 1 + (f - 1) x levelPerFloor, on enemyFrac of its level's build, with enemyHpShare of a lead's health. healCap: healing in one floor tops out at this share of the lead's health. risePerFloorSec: the rise to the next platform.",
+    "levelPerFloor": 0.5, "enemyFrac": 0.45, "enemyHpShare": 0.55, "healCap": 0.15, "risePerFloorSec": 2.5
   }
 }

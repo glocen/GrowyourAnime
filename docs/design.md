@@ -43,6 +43,11 @@ Break a shard, meet a Voidkin. Lead with one, fight through a ground, win shards
 | Healer | ranged | keeps itself up alone, keeps others up in a group | heals in its signature |
 
 - **Element** (Fire, Frost, Storm, Void) is optional. A Voidkin with one deals a second, coloured damage number [D: elemental damage with its own number].
+- **Basic Attributes** [D, 2026-11-16: the package's point 1, the yes at 16:50, with research's names]. Five, each with its own job, and never a type's name:
+  - **Might,** raw power. **Finesse,** precision and evasion. **Vigor,** toughness. **Spirit,** resolve and recovery. **Insight,** seeing through armour: Penetration, and the Mage's element.
+  - Every point converts into Battle Attributes by one fixed row, the same for every class. The class's **Main** converts once more by its own row: the Warrior's Might, the Tank's Vigor, the Assassin's Finesse, the Mage's Insight, the Healer's Spirit. That's the whole class difference.
+  - A Voidkin's own points are its class's shape × its rarity × G(level) × its stars. Gear adds points flat. Everything adds: nothing multiplies an attribute, and Combat Power reads only the resolved Battle Attributes, so no point counts twice.
+  - None are spent by hand (skill points, below). The rows and the shapes: `docs/balance.md`, "The stats". The evidence: `docs/research/rework-2026-11-16.md`, parts 1 to 3.
 - **A kit** is a basic combo (two families: the melee three-hit and the ranged three-shot, with stance and tempo of its own), one **signature** on a cooldown, and one **passive**. The signature fires by itself, with a readout the player can watch. Firing it by hand is a later option (`docs/polish-later.md`).
 - **Bodies.** No height stat [D]. Humanoid Voidkin stand at the R6 player's height, on the shared R6 rig [D]. Machines and other large bodies use a custom rig and stand taller [D]. Size is a look: the hurtbox comes from a small set of size classes, so a big body is never a free weakness.
 - **Its own progress:** level (from fighting, working or training, up to 125 [D]), stars (from duplicates), a nickname the player may give it [D], favourite and lock.
@@ -123,7 +128,7 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
 - **Power: the base is a power plant** [D, 2026-11-14, night: "not showing electricity "600" but power generation 30Kw, power demand 30Kw ... with generator output control to slide a scroll bar horizontal and select where to spend this power ... the more power the highest effects it has the less power the less effects/speed"; "Yes, as restated" to research's restatement]. Tier 3, the director's.
   - **Generation:** the bays generate power, in kW, the sum of their workers' output. It's shown as power, never as a stock: "Generation 30 kW · Demand 34 kW".
   - **Demand:** each machine that works draws power up to its rated kW: the Breaker, the Stone Condenser and the Training machine. A machine's level raises its rating and its full speed together.
-  - **The generator:** one large machine in the world, the plant's heart, showing generation and demand on its own face at the scale of the base. It opens the Power screen.
+  - **The generator:** one large machine in the world, the plant's heart: the Void Mill, a heavy wheel turning up out of the void's well. Its buckets light up the rising side as high as the generation, against a bone mark for the demand, so the machine is its own gauge (`docs/asset-requests.md`, AR19). It opens the Power screen.
   - **The Power screen:** one horizontal bar is the whole generation, split among the machines by dragging its handles, with +/- on each share for a precise touch. Auto is the default and shares by demand. A machine runs at its share over its rating, up to full speed, and never stops dead.
   - **What isn't routed charges the battery,** in kWh. The battery covers routed demand above generation, while the player is away too, and pays for infusion.
   - **The HUD** shows generation against demand, not a stored number.
@@ -134,21 +139,25 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
     - **The price:** levels 2 and 3 cost Credits. Higher levels also need items [D], designed when the cap rises.
     - **The pace at launch** (seeds): level 2 in the first session, 3 at about 5 hours of play. The ladder to 20 keeps its "hundreds of hours" [D] once its items exist, and its pace is set then (`docs/balance.md`).
     - **Bays** (seeds, research's, so launch keeps the six [D]): two at level 1, four at 2, six at 3.
-    - **The look:** at launch, levels 1, 2 and 3 each have a look of their own for the whole base and its machines, readable from the gate. Its look as it stands in the game is kept [D, 2026-11-15, about 23:28: "that graphism was perfect"], with the toon outline on every machine and a bit more anime in small touches [D, the word after]. Three machines are reworked as void machines: the Void Breaker, the bays, and the generator, a lot bigger and still turning [D, 2026-11-15, 23:44 to 23:58]. It's spread across the whole plot with an open way in from the gate, less cluttered, the generator turning in view, and never a building site (`docs/asset-requests.md`, AR16). The levels past 3 get theirs when the cap rises. The base's level stands on its gate (`docs/asset-requests.md`, AR14).
+    - **The look:** at launch, levels 1, 2 and 3 each have a look of their own for the whole base and its machines, readable from the gate. Its look as it stands in the game is kept [D, 2026-11-15, about 23:28: "that graphism was perfect"], with the toon outline on every machine and a bit more anime in small touches [D, the word after]. Three machines are reworked as void machines: the Void Breaker, the bays, and the generator, a lot bigger and still turning [D, 2026-11-15, 23:44 to 23:58]. It's spread across the whole plot with an open way in from the gate, less cluttered, the generator turning in view, and never a building site (`docs/asset-requests.md`, AR16). The levels past 3 get theirs when the cap rises. The base's level stands on its gate (`docs/asset-requests.md`, AR14). No mist in the base and the map around it, and less somber in every phase [D, 2026-11-16, 16:50]: a light world with the void as its one dark (`docs/asset-requests.md`, AR20).
     - **Where it's bought:** the base screen (`docs/ui.md`, 7).
     - **The base shows off its owner** [D, 2026-11-15, about 22:04, to Modulo: "dont forget the base need to show of each players etc"]. At launch, by research's call (tier 2; TR22), a passer-by on the Strip sees three things. The gate's plate carries the owner's name and the base's level. The showcase, research's idea brought into launch, is a lit plinth just inside the gate: a Voidkin the player picks stands on it, turning, with its Combat Power, and it's their strongest until they pick one. Each working bay is lit in its worker's rarity colour. A tap on the plinth to see that Voidkin as a visitor comes later.
   - **A machine's level** raises its own work (the Training machine has none, since its rate is fixed [D]): the Breaker its speed, then its third and fourth chambers; a bay its output; the Condenser its rate, its grade and its tray; the Forge and the Lab their later uses.
   - Each level shows its gain before it's bought, in plain numbers, and the machine changes in the world when it lands.
+  - **Three stages for every machine** [D, 2026-11-16: the package's point 6]: Stage I, Primitive, at machine levels 1 to 5; Stage II, Developed, 6 to 14; Stage III, Advanced, 15 and up (research's thresholds). Each stage lands as a moment, the machine changing in the world. They're void machines built from parts you can read (gears, pistons, cables, clamps) doing void work, never a real power plant [D: the yes's reading of "anime-industrial"]. The generator first, then the Breaker, the bays, the battery and the Training machine, then the rest.
 - **The battery** stores what isn't routed ("Power"), to a cap, and is what keeps the base working while the player is away. Past the cap, the overflow sells itself into Credits at a poor rate, so nothing is thrown away. Its cap rises with the base's level, never by an upgrade of its own, so there is no choice to keep it small for the overflow (the director's question, 2026-11-12). The screen shows the cap as the hours of work it holds, not a number of units. Electricity is always worth more spent than sold: a full battery's overflow is a few kills' Credits.
 - **Machines:** the Void Breaker, the Forge, the Stone Condenser, the Research Lab [D]. Each is a place to walk to, with its own sound.
 - **The Stone Condenser makes forge stones, online and away** [D, 2026-11-12: "a machine at base that produce stones ... it will work offlines making players come back and get very strong"]. It draws electricity like the Breaker, so the workers feed it too (research's). What it makes lands in its tray, which has a cap: a full tray stops, and coming back to empty it is the reason to return. Its grade and speed rise with its level. Turning lower stones into higher ones stays its second job. Stones still drop from enemies, keepers and the Tower [D]. More uses come later [D: "for now only this"].
 - **The Training machine** [D, 2026-11-14, night: "the voidkin that we equipped train with a machine and get level (even offline)"]. It trains one Voidkin at a time: the one at home without the player, a fallen lead once it's healed, or the player's lead while the player is offline. When the player is on the plot, the lead leaves it and follows. At its full power it earns a fixed amount of experience a minute that never grows: a third of what fighting earns in Lantern Row (seed, through the simulation). With less power it trains slower, in proportion ("Power", below). No cap [D: "simply no cap"; "it will be slow at high level tho"; then "Fixed rate, no cap"]: each level costs more, so training is fast at the start and slows steeply as levels rise. Earning a share of fighting at its own level was tried in the simulation and reached the last level in a week. Its time away is worked out on the server at the next join, as the Breaker's and the battery's are. It draws power like every machine [D, 2026-11-14, night: "Yes, as restated" to the power plant; it replaces "it draws nothing"].
-- **Room for it all** [D, 2026-11-12: bases "way bigger", since six workers in their machines take room]: the Breaker, six bays each with its Voidkin at work inside, the battery, the Forge, the Condenser, the Lab, and the Tower behind. The plot's size comes from these, set at TR2's verdict.
+- **Its size: about half** [D, 2026-11-16: the package's point 5, replacing "way bigger" of 2026-11-12]. It holds the Breaker, six bays each with its Voidkin at work inside, the battery, the Forge, the Condenser and the Lab, with the Tower behind.
+  - Three squares are tried in grey before anything is drawn: 128, 144 and 160 studs (research's lean, 144). Neighbours stand 32 apart instead of 48.
+  - The pick, from the player's camera: the gate to the Breaker in 4 s or less at a walk; every machine seen from the gate in one view; none within 12 studs of another's front; a clear way in; room kept for the Forge, the Condenser and the Lab as sleeping places.
+  - The base is recomposed, never scaled: the machines keep their size. The world's numbers: `src/shared/Config/World.luau`.
 - **Visiting** another base is free and safe [D]: look, never touch.
 
 ## Regalia: gear
 
-The largest change from the package, and reversible until gear is built (`docs/decisions.md`, "What changed from the package").
+The largest change from the package (`docs/decisions.md`, "What changed from the package"), kept by the director's yes of 2026-11-16, whose package has presets across the account.
 
 - **Gear belongs to the account,** not to one Voidkin. Fourteen slots [D]: Main Hand, Off Hand, Helmet, Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet, Ring I, Ring II, Earring I, Earring II. The two hands are the two weapon slots [D, 2026-11-12]: they take the places of the package's Weapon and Shield, since the Tank's shield is its off hand.
 - **Weapons belong to a class** [D]: only that class wields them. Each class has its pair:
@@ -158,15 +167,19 @@ The largest change from the package, and reversible until gear is built (`docs/d
 | Tank | Great Axe [D] | Shield [D] |
 | Mage | Staff [D] | Tome [D] |
 | Assassin | Dagger [D] | Throwing Blades |
-| Warrior | Sword [D] | Short Sword [D: two swords] |
+| Warrior | Sword [D] | Short Sword [D: two swords; asked again, 2026-11-16] |
 | Healer | Crystal Baton [D] | Codex [D: a book] |
 
-  The pairs are final by the director's word (the Assassin's off hand is research's, taken). The Warrior's off-hand sword is shorter, so the two slots never show the same icon. Every main hand is a silhouette no other class shares. The Mage and the Healer both hold a book: the Mage's Tome is heavy and dark, the Healer's Codex light and clasped with the baton's crystal, and every weapon icon carries its class mark on the frame, so the two never read as one.
+  The pairs are final by the director's word (the Assassin's off hand is research's, taken), but for the Warrior's off hand: the package's example gives Sword and Shield, and the director is asked (`docs/decisions.md`, "Waiting on the director"). The Warrior's off-hand sword is shorter, so the two slots never show the same icon. Every main hand is a silhouette no other class shares. The Mage and the Healer both hold a book: the Mage's Tome is heavy and dark, the Healer's Codex light and clasped with the baton's crystal, and every weapon icon carries its class mark on the frame, so the two never read as one.
 - **Presets.** A preset holds the twelve shared slots and one weapon pair for each class. One at the start, up to five. Each Voidkin is linked to a preset and fights with its own class's pair from it, so a Tank wears the tank set and an Assassin the crit set, and swapping the lead swaps nothing by hand. One item may sit in several presets. A preset whose pair is empty for the lead's class says so with a mark on the slot, never silently.
-- **A weapon that drops** is for the lead's class. Five classes would otherwise split every weapon drop five ways. The Void Shop's stock may hold any class.
+- **Class rules** [D, 2026-11-16: the package's point 8]. Main Hand and Off Hand take only their class's pair; the other twelve slots suit every class. The resolver reads only the pair of the Voidkin's class, so a wrong-class bonus never applies, and the server checks every equip and refuses a wrong class with a reason the screen shows.
+- **A weapon of any class may drop** and stays in the bag, usable or not [D, the same]. Drops lean to the lead's class, the rest among the classes the player owns, so a drop is rarely useless. The Void Shop's stock may hold any class.
 - **Why:** a counter system asks players to swap leads often. Gear worn per Voidkin would make every swap a chore of fourteen items and their sockets, and it would bury new Voidkin under the cost of dressing them.
 - **Gear is never shown on the body** [D]: each Voidkin's look is authored. An item's whole look is its icon, so the icon carries all of gear's appeal. Each item kind is modelled in Blender and rendered to its icon, lit, with its rarity's frame and light; rarity also shows in its material, from plain iron to gilt. Dawn has designs of its own. How many designs per kind is set when the item art's request is written (`docs/asset-requests.md`, AR6), after a reference study of the director's references for what makes an icon worth wanting.
-- **An item** has a rarity, a level tier, one main stat fixed by its slot, and a few rolled lines.
+- **An item** has a rarity, a level tier, one main stat and a few rolled lines.
+  - A weapon's main stat is Attack, and its lines favour its class's Main. An armour piece's is the Battle Attribute its slot fixes. A piece of jewellery's (the Amulet, the Rings, the Earrings) is a Basic Attribute rolled at the drop: that's where the player chooses ("this ring is Finesse").
+  - Rolled lines come from the five attributes and the Battle Attributes. A line is priced by its Combat Power, so an attribute line and a Battle line of one budget are worth the same.
+- **The comparison:** against what's worn in the same preset, for the weapon's class, or for the selected Voidkin with armour and jewellery. It shows the Basic Attribute changes, then the Battle Attribute changes, then Combat Power. Both sides come from the one resolver, so it can't drift.
 - **Forge ranks sit on the slot,** not the item. Raising the Main Hand strengthens whatever is held there, by every class, in every preset, for good. Replacing an item never loses the work.
 - **War Emblems** go in an item's sockets: one on a Common item, two on Uncommon, three on Rare, four on Epic and above [D: four at most]. Emblems obtainable at launch are Common, Uncommon and Rare [D]. Taking one out is free, and replacing an item carries its emblems across.
 - **Jewels:** one jewel socket on items of Rare and above. Jewels carry the percent stats (critical damage, critical guard, lifesteal).
@@ -185,6 +198,27 @@ One number for how strong the lead is with its preset, made to be watched rising
 - **Honest.** A tap on it shows how much each source gives, and the parts sum to the total (`docs/ui.md`, "Stats, shown honestly").
 - It's for reading, matchmaking and the Clash's rewards, and never used to compute damage.
 
+## Chests
+
+[D, 2026-11-16: the package's point 9.] Earned by play, auto-collected, stacked and opened in bulk. **No chest, key or drop-rate boost is ever sold for Robux or a currency bought with Robux** (`docs/roblox-rules.md`).
+
+- **Where they come from:** a Shade, at a small chance a kill, and the account's third kill always drops one, for the north star's "Build" beat; an elite, one every time, a tier up; a keeper, a better chest on the first win and a chest after; the Tower, a chance rising with the floor.
+- **A chest is named for its ground and its tier** ("a Common Chest of Lantern Row"). Its table rolls the item's rarity, slot and lines on the server when it's opened.
+- **The rarities' pace,** with the rates fitted to it by simulation (`docs/balance.md`, "Chests"):
+
+| Rarity | The first one, at about | Mostly from |
+|---|---|---|
+| Uncommon | the first hour | Lantern Row |
+| Rare | 3 to 4 hours | grounds 2 and 3 |
+| Epic | 10 to 15 hours | grounds 4 and 5 |
+| Legendary | 35 to 45 hours | ground 6 and the Tower's deep floors |
+| Dawn | rarer still | the last ground and the Tower |
+
+- **The convenience:** chests that fall near the avatar fly to it. Identical unopened chests stack ("Lantern Row Common × 37"). **Open all** opens a stack in one server step and shows one summary sorted by rarity, rare items lit; an Epic or better gets a short reveal of its own.
+- **Auto-salvage** is a setting: items under a rarity the player picks turn into forge stones and Credits as they're opened, but never an item that would raise the Combat Power of the player's best Voidkin of its class (for a piece any class wears, of any class's best). A class the player owns no Voidkin of protects nothing.
+- **The bag has a cap** and says so before it fills.
+- **Safe by construction:** each open is one transaction with an id, so a repeat is a no-op and nothing is half-granted; every item is written in the save step that removes its chest; bulk opens go in chunks. Every number: `src/shared/Config/Chests.luau`.
+
 ## The Festival of Battles
 
 Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of one festival kit. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
@@ -202,7 +236,17 @@ Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of o
 
 ## The Tower
 
-Behind each base [D]. Before it opens, its silhouette stands asleep behind the back wall, so the player knows it's there [D, 2026-11-16, 00:43: "same for the infinite tower behind"]. Floor after floor of authored opponents at launch, fought with a line-up of three, where class finally matters to a solo player: a Tank to hold, a Healer to keep, a third to finish. First clears pay. Other players' saved teams as floor holders [D] follow in an update, on the same contract.
+Behind each base [D], its lot bare but for a ring in the ground where the first platform rises [D, 2026-11-16: the package's point 4, replacing the line-up of three, the authored floors and the sleeping silhouette of 00:43]. The launch loop: fight, win, rise, fight, die, rewards, reset.
+
+- **A run:** the player steps into the ring with their lead. A circular platform rises with them on it and an enemy Voidkin appears, fought automatically. On a win a new platform assembles above, and the lead and the avatar leap up to it together; the camera stays the player's. The lead and its Regalia are frozen from the first fight to the end, as at a keeper.
+- **Enemies:** our own Voidkin in an enemy look, darkened with void light, so no new models. Their level rises with the floor, on a lighter build than a player's (`docs/balance.md`, "The Tower").
+- **Health carries:** nothing heals between floors. In a fight, healing tops out at a share of the lead's health a floor, the heal cap.
+- **Death ends the run:** the platforms fall away as light, and the results open: the highest floor this run and the record if it's beaten, opponents defeated, Credits, items and chests, rare rewards in their rarity's light. The next run starts from the ground.
+- **Fast floors:** a floor far below the lead's power falls in one hit and the rise quickens, so the climb to where it gets hard takes seconds.
+- **Rewards** by floor won: Credits rising with the floor, a chest chance rising with it, and a first-time bonus past the record. Each is written to the run's ledger on the server when its floor is won, and granted once when the run ends; a run's id makes a repeated claim a no-op.
+- **Interruptions:** leaving the ring, going home, a disconnect or a shutdown end the run at its last floor won, and nothing won is lost. The results open once at the next join. A run never resumes.
+- **At most three platforms stand,** the current one and two below. Older ones fold into one thin column of rings, so the height still reads.
+- **Not at launch** [D]: milestone bosses, cash-outs, branches, extra currencies.
 
 ## The world, in grey
 
@@ -239,7 +283,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 | Research Points | first clears, Tower floors, the daily track, the Calamity | the Research Lab |
 | Forge stones, three grades | enemies by ground, keepers, the Tower, the Condenser, the shop | forge ranks |
 
-**The bag** [D, 2026-11-12: "we will need a inventory systems"] holds everything owned that isn't a Voidkin: items, emblems, jewels, stones, shards. One screen with tabs by kind, sort and filter, a lock on anything precious, and a count of its space. Items that would raise Combat Power carry the up arrow (Combat Power, above).
+**The bag** [D, 2026-11-12: "we will need a inventory systems"] holds everything owned that isn't a Voidkin: items, chests, emblems, jewels, stones, shards. One screen with tabs by kind, sort and filter, a lock on anything precious, and a count of its space. Items that would raise Combat Power carry the up arrow (Combat Power, above).
 
 Void Essence is out of launch: nothing needed it that these four don't cover (`docs/polish-later.md`).
 

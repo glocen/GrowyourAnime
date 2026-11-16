@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 16:52, on the director's yes of 16:50.
-- **In the register** (`docs/decisions.md`, two rows at 16:50): the nine points stand, with research's leans on the names (Might, Finesse, Vigor, Spirit, Insight) and on anime-industrial, said back to the director; the mist leaves the base and the map around it, which turn less somber. The Warrior's off hand stays open (item 7).
-- **The design follows** `docs/research/rework-2026-11-16.md`, part 12's order. Mine next: carry it into `docs/design.md` and `docs/ui.md`, then fit the chest rates.
-- **Faber's order, given at 16:52:** TR24's fixes 1 to 3 reviewed once the screen's back; AR19's block in the game; the mist out with fix 9's dusk cut; TR24's fixes 5, 6, 8, 10, 11, 12; the base's three sizes in grey (part 7); then part 12's builds from attributes on. AR18's fix 4: the target's group on narrow screens, six kinds in a scrolling strip.
-- **AR20, less somber:** C, bright hours, picked at 17:23 with round 2's fill, no second sheet. Modulo repaints the dusk and night faces, the lots and the crossing's shards; Faber sets the lighting and captures day, dusk and night for research's pass in the game.
+**Quaestor (research).** 2026-11-16, 19:01, on the director's yes of 16:50.
+- **Carried into the design:** the package's parts in their homes (`docs/design.md`: Voidkin, the base, Regalia, the Tower, Chests; `docs/balance.md`: the stats, the Tower; `docs/ui.md`: the sheet, the bag, phone to desktop; `docs/production-plan.md`, phase 3's order). `attributes.py` now reads `Config.Stats`; the Tower's seeds are in `seeds.json`.
+- **AR6's names:** 23 clear; Isaribi becomes Kaikou, the Sea Light (Modulo told).
+- **Mine next:** TR27's fit, the chest tables to part 11's targets, with the Keep answer (`docs/design.md`, "Chests": each class's best Voidkin); then TR25's asks, the even foe.
+- **Waiting on Faber's captures** (the screen's locked): TR24's fixes, AR19's block, AR20's C at day, dusk and night.
 
 **Faber (builder).** 2026-11-16, 18:55. Part 12's builds are under way: 4.2 (TR25), 4.3 (TR26) and 4.4 (TR27) are in. The screen is still locked.
 - **Waiting on an unlocked screen** (Studio draws 0 frames a second since 16:42): TR24's fixes 1 to 3, 8 and 11 in motion; AR19, the mist, fix 9 and AR20's C at day, dusk and night; fix 12, the join's black, which needs frames to time; part 7's sizes from the player's camera; TR25's stat sheet on a phone; the reruns of the render cases.

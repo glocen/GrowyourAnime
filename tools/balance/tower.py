@@ -1,7 +1,7 @@
 """The Tower's launch loop: the director's package of 2026-11-16, item 6 (docs/archive/director-package-2026-11-16.md).
 
 Run:  py tools/balance/tower.py          (from the project folder)
-Proposal stage: the seeds live in TOWER below until the director's yes, then move to seeds.json.
+The seeds are in tools/balance/seeds.json, "tower" (the director's yes of 2026-11-16).
 
 One Voidkin climbs. Each floor is one enemy Voidkin; health carries from floor to floor and nothing heals between
 floors. In a fight, Regen (and Lifesteal) heal, but never more than HealCap of the lead's health in one floor.
@@ -15,12 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import attributes as at  # noqa: E402
 from sim import S, G, dps, line  # noqa: E402
 
-TOWER = {
-    "levelPerFloor": 0.5,     # floor f's enemy stands at level 1 + (f - 1) x this: floor 2L-1 is level L
-    "enemyFrac": 0.45,        # the enemy's build: a share of its level's available build (sim.build's frac)
-    "enemyHpShare": 0.55,     # an enemy Voidkin's health against a player's lead of its build: a floor is short
-    "healCap": 0.15,          # in one floor, healing from every source tops out at this share of the lead's health
-}
+TOWER = S["tower"]     # tools/balance/seeds.json, "tower"
 
 
 def enemy_at(floor, rng):
@@ -42,12 +37,12 @@ def climb(me, rng, cap=TOWER["healCap"], max_floors=400):
         if lost >= hp:
             return f - 1, t + hp / max(1e-9, theirs - heal / kill)
         hp = min(me["hp"], hp - lost)
-        t += kill + 2.5          # the rise to the next platform, about 2.5 s (seed)
+        t += kill + TOWER["risePerFloorSec"]   # the rise to the next platform (seed)
     return max_floors, t
 
 
 def report(runs=60, seed=5):
-    print("Tower, proposal run. Seeds:", TOWER)
+    print("Tower. Seeds:", {k: v for k, v in TOWER.items() if k != "_"})
     rng = random.Random(seed)
     print("\n== T1. Floors won by one run, by level and build (median of runs; minutes) ==")
     line("level", "class", "frac 0.4", "frac 0.7", "frac 1.0", "min at 0.7", w=12)

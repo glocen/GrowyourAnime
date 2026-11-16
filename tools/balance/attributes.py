@@ -1,7 +1,7 @@
 """Basic Attributes: the director's package of 2026-11-16, item 1 (docs/archive/director-package-2026-11-16.md).
 
 Run:  py tools/balance/attributes.py          (from the project folder)
-Proposal stage: the seeds live in ATTR below until the director's yes, then move to seeds.json.
+The numbers are read from src/shared/Config/Stats.luau, their home since TR25; the class shares below are the fit's input.
 It reuses sim.py's hit, duel and Combat Power, so nothing here re-derives the combat math.
 Nothing here is a measurement of play: it tests the structure and the seeds against each other.
 
@@ -22,26 +22,47 @@ from sim import S, G, line, dps, edge, fighter, cp, CP_NAMES, SPECS, RARITIES  #
 CLASSES = ["Warrior", "Tank", "Assassin", "Mage", "Healer"]
 ATTRS = ["might", "finesse", "vigor", "spirit", "insight"]
 
-# ------------------------------------------------------------------ the seeds (proposal)
+# ------------------------------------------------------------------ the numbers (src/shared/Config/Stats.luau, their home)
 
+KEY = {v: k for k, v in CP_NAMES.items()}   # "Attack" -> "atk", and so on
+
+
+def _config_attributes():
+    """Config.Stats.Attributes and the level's Regen, read from the game's own file, so the model follows every tune."""
+    import re
+    src = sim.lua("src/shared/Config/Stats.luau")
+    body = src[src.index("Attributes = {"):src.index("EvenFoe =")]
+
+    def block(name):
+        i = body.index(name + " = {")
+        depth, j = 0, body.index("{", i)
+        for k in range(j, len(body)):
+            depth += {"{": 1, "}": -1}.get(body[k], 0)
+            if depth == 0:
+                return body[j + 1:k]
+
+    def pairs(txt):
+        return {m[1]: float(m[2]) for m in re.finditer(r"(\w+) = ([\d.]+)", txt)}
+
+    conv = {}
+    for m in re.finditer(r"(\w+) = \{([^{}]*)\}", block("Convert")):
+        conv[m[1].lower()] = {KEY[k]: v for k, v in pairs(m[2]).items()}
+    main = {}
+    for m in re.finditer(r'(\w+) = \{ Attribute = "(\w+)", Gives = \{([^{}]*)\} \}', block("Main")):
+        main[m[1]] = (m[2].lower(), {KEY[k]: v for k, v in pairs(m[3]).items()})
+    shape_pts = {}
+    for m in re.finditer(r"(\w+) = \{([^{}]*)\}", block("Shape")):
+        shape_pts[m[1]] = {k.lower(): int(v) for k, v in pairs(m[2]).items()}
+    regen = float(re.search(r"Regen = \{ Base = ([\d.]+)", src)[1])
+    return conv, main, shape_pts, regen
+
+
+_conv, _main, _points, _regen = _config_attributes()
 ATTR = {
-    # Battle Attribute points per attribute point, every class.
-    "conv": {
-        "might":   {"atk": 1.0, "hp": 4.0},
-        "finesse": {"atk": 0.4, "hit": 1.2, "crit": 1.6, "dodge": 0.6},
-        "vigor":   {"hp": 5.0, "def": 1.0, "block": 0.3},
-        "spirit":  {"regen": 0.06, "hp": 6.0, "critres": 4.0, "eres": 3.0},
-        "insight": {"atk": 0.4, "pen": 2.5, "hit": 1.0, "hp": 2.0},
-    },
-    # Each class's Main attribute, and what one point of it gives on top of the row above.
-    "main": {
-        "Warrior":  ("might",   {"atk": 1.0}),
-        "Tank":     ("vigor",   {"atk": 0.5, "hp": 3.0}),
-        "Assassin": ("finesse", {"atk": 1.0}),
-        "Mage":     ("insight", {"atk": 0.8, "elem": 0.25}),
-        "Healer":   ("spirit",  {"atk": 0.7, "regen": 0.04}),
-    },
-    # A class's shape: the share of its points in each attribute, its Main the largest.
+    "conv": _conv,
+    "main": _main,
+    # The fit's input, research's: a class's share of its points in each attribute, its Main the largest.
+    # fit_profiles() turns it into level-1 points; Config.Stats.Attributes.Shape holds the points the game uses.
     "shape": {
         "Warrior":  {"might": .40, "finesse": .10, "vigor": .30, "spirit": .10, "insight": .10},
         "Tank":     {"might": .22, "finesse": .10, "vigor": .42, "spirit": .14, "insight": .12},
@@ -49,17 +70,16 @@ ATTR = {
         "Mage":     {"might": .24, "finesse": .08, "vigor": .22, "spirit": .10, "insight": .36},
         "Healer":   {"might": .22, "finesse": .08, "vigor": .26, "spirit": .36, "insight": .08},
     },
-    # A class's attribute points at level 1, Common, no stars: its shape times the total that keeps the class
-    # exactly as strong against everyone as it is today (fit_profiles), rounded.
-    "profile": {},
+    "profile": {c: dict(p) for c, p in _points.items()},   # the game's points, until fit_profiles() refits them
 }
+CONFIG_POINTS = {c: dict(p) for c, p in _points.items()}
 
 TODAY = {c: {"hp": S["base"]["hp"] * S["classMult"][c]["hp"], "atk": S["base"]["atk"] * S["classMult"][c]["atk"],
              "def": S["base"]["def"] * S["classMult"][c]["def"], "regen": 4 * (1.5 if c == "Healer" else 1)}
          for c in CLASSES}
 RATING_KEYS = S["ratings"]["list"]
 STAT_KEYS = ["hp", "atk", "def", "regen", "elem"] + RATING_KEYS
-LEVEL_REGEN = 4.0     # Regen a second at G = 1 that every Voidkin has from its level, as today (no class bonus now)
+LEVEL_REGEN = _regen   # Config.Stats.Regen.Base: Regen a second at G = 1 from the level, every class
 MIN_SECONDARY = 5   # every class holds at least this many points of finesse and insight at level 1: no dead attribute
 
 
@@ -271,7 +291,11 @@ def report_value():
 if __name__ == "__main__":
     sim.ROSTER.extend(sim.roster())
     fit_profiles()
-    print("Basic Attributes, proposal run. Seeds: ATTR in tools/balance/attributes.py.")
+    print("Basic Attributes, from src/shared/Config/Stats.luau; the profiles refitted below.")
+    drift = {c: {a: ATTR["profile"][c][a] - CONFIG_POINTS[c][a] for a in ATTRS if ATTR["profile"][c][a] != CONFIG_POINTS[c][a]}
+             for c in CLASSES}
+    drift = {c: d for c, d in drift.items() if d}
+    print("Config.Stats.Attributes.Shape against the fit:", drift or "the same")
     report_fit()
     report_value()
     report_marginal()

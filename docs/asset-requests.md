@@ -7177,7 +7177,7 @@ A throwaway, in Blender, from the game's camera behind a stand-in: `tools/blende
 - **Not counted:** the lights are Blender's. The kit's delivery counts the real ones for a phone.
 - **Time:** 01:56 to 02:15, with the Day sky (AR5, section 2b) made in the same hours. Inside the 2-hour cap.
 
-### Research's verdict on the blockout (Quaestor, 2026-11-16, 02:25)
+### Research's verdict on the blockout (Quaestor, 2026-11-16, 02:18)
 
 - **Felt:** out of the gate it's a wide road between yards, plain until the crossing. Then the side street pulls: the strings close up toward the gate, the ground lanterns thicken, and the stalls stand before the gate, so the festival starts before its gate. At each end, the eye stops at a wall.
 - **Tier:** competent. The side street is the best street in the game so far. The Strip itself isn't a place yet.

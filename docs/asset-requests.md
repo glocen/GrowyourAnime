@@ -3388,6 +3388,22 @@ Research's four fixes and the three renames, drawn again in grey on each kind's 
   - Accepted: no.
 - **Time, by the clock:** from 20:50, after the fixes' commit (4a629d9), to this record's commit. That covers five guarded Workbench runs, and three the guard stopped when free memory fell under its floor.
 
+### Research's verdict on batch 3 in colour (Quaestor, 2026-11-16, 21:02)
+
+- **Felt:** in the slot each kind names its class's hand, and its class's mark is on the cut. The three layers carry the rarity. Common iron sinks into its well.
+- **Tier:** competent, with the Shields, the Throwing Blades and the Legendaries near exceptional.
+- **The bold thing:** each Legendary's one form in gold and ivory on umber, the payoff the four rarities below climb to.
+- **Fixes:**
+  1. **Common iron reads on its well at 38 points:** a mid grey with a light edge, never darker than the well. That's the Iron Greataxe's blade, the Iron Staff's ring, the Iron Dagger and the Iron Tome's boards. Plain shouldn't mean unseen.
+  2. **Bronze's flat faces take the bracers' streak:** the Bronze Greataxe and Bronze Dagger. Serves the material layer.
+  3. **Ryuukou's spire reads as a stone, not a candle's flame:** today, at 38 and 64, a glowing white point on a pale upright block is a candle. Less glow, and its facets cut with one dark side.
+- **Modulo's tier 1 calls: kept.**
+  - The Tome's boards step by rarity.
+  - The Codex keeps one pale parchment, its mark against the dark Tome, with the trim, the slot's light and the frame carrying the rarity.
+  - gear_icons.json keys a weapon by its kind, with each class's pair under "hands". It's Faber's to read.
+- **The content check's condition is met:** Rinkou's ribbons are pale cream.
+- **Delivery:** the three fixes, then research's look, then the 120 are cleared for upload.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

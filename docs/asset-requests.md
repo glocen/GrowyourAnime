@@ -6051,7 +6051,7 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Director-accepted: not yet.
 - **Next:** Ground Wire's look with Faber (`/ga-action`).
 
-**Ground Wire's look: the parts and their techniques** (Modulo, 2026-11-17, by 00:45 by the clock). `/ga-action` step 1, for research's technique check before any block-in. A signature: `ga-fresh-eyes` reads it at the blockout and the final.
+**Ground Wire's look: the parts and their techniques** (Modulo, 2026-11-17, committed 00:33 in e92061c). `/ga-action` step 1, for research's technique check before any block-in. A signature: `ga-fresh-eyes` reads it at the blockout and the final.
 - **The beats,** from the delivered clip (60 fps):
   - the lift, 0 to 16, both hands up;
   - the drive, 16 to 25, the butt falling its last 1.1 studs in two frames;
@@ -6083,7 +6083,7 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - From the replay's camera (heading 215, as for Kirra), the target covers 5 to 10 of 16 points on a 1-stud ring round the butt's foot, and 8 to 14 of 20 points of the shaft. So on the play camera the plant sits partly behind the target.
   - By construction, nothing at the plant rises: the light and the sparks lie along the street, the ring is a low wall, and nothing bursts at the shaft's height.
   - The block's take at 64 px is the check.
-- **The block contains,** in grey (`Grey` true, `Action` `WattGroundWire`), three rows files, written by `tools/blender/watt_ground_wire_fx.py rows` from the clip (plain `py`). They're drafted, and they pass their own check. They go to `build/handoff/Watt/fx/` once the technique check passes:
+- **The block contains,** in grey (`Grey` true, `Action` `WattGroundWire`), three rows files, written by `tools/blender/watt_ground_wire_fx.py rows` from the clip (plain `py`). They're in `build/handoff/Watt/fx/`, byte for byte the checked drafts (delivered below):
   - `WattGroundWire`: the charge, the plant's light, the sparks, the ring, its front, the discs and the hair. `Free` is on the Plant, so the ring runs through rung 7's 8-frame hold while the bodies are held, and the stop lands with it. The glows ride the free clock from there, so their release is written 8 frames late to stay on the clip.
   - `WattGroundWireStop`: its ring.
   - `WattGroundWireShield`: the shell.
@@ -6100,6 +6100,19 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   4. The sparks' flat fan is `SpreadAngle` (6, 180) from `Front`. If Roblox turns it into a wall, swap the two (a Tune).
 - **Section 2's effect conditions still standing:** Storm light pink to white, as lines and a thin ring with speed; no filled dark disc on the ground; no drops or stain. The lens's plum and the jaw's arcs were the first model's, and went with it.
 - **Time:** the rows, about 45 minutes after the check. The blockout with Faber in the replay, about an hour.
+- **Content check, 2026-11-17, by 00:35: PASS for the grey block** (the dev build, nothing uploaded), on the spec and the three files, with no render yet. Its conditions for the block:
+  1. The sparks lie flat. If `SpreadAngle` (6, 180) draws a wall or a standing fan, swap the two before anyone judges the take.
+  2. The charge, from the replay's camera, never reads as light through the target's torso, at full size or at 64 px. If it does, it's shortened to the shaft above the Shade, or cut.
+  3. A take for the next check: the Plant and a mid-hold frame, full size and at 64 px over dark, from the replay's camera and two more headings. `ga-fresh-eyes` reads the same take.
+  4. The stop's ring stays a thin line with the street showing inside it. If it reads as a band or a plate, its wall thins.
+  5. The front's glints ride the rim. If they fill the disc, they're fixed or dropped.
+  - **For the finish:** Storm's ramp runs from a white core to `#FF6FD8`, never toward red or dark; a street mark, if any, is lines of light in the stone; static off the hair is lines and arcs; the finish gets its own check on the exact files before any upload.
+- **Delivered (Modulo, 2026-11-17, 00:35 by the clock):** the three rows files to `build/handoff/Watt/fx/`, for Faber's blockout in the replay. On research's call (00:34), the blockout plays the shield both ways side by side: with the shell (`WattGroundWireShield` played) and without it.
+- **Four facts:**
+  - Implemented: the rows.
+  - Tested: their own check, the technique check and the content check.
+  - Visually reviewed: no. That's the blockout's verdict, with `ga-fresh-eyes`.
+  - Director-accepted: no.
 
 **The install** (Faber, 2026-11-17, by 00:30 by the clock):
 - **What:** Watt fights with his own kit.

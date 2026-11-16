@@ -1,0 +1,275 @@
+{
+ "Schema": "rows/1",
+ "Effect": "WattGroundWireStop",
+ "Why": "Ground Wire's stop, on each body it holds (AR11): played by the builder's stop for as long as that body's stun lasts and ended with it, at once: the lock lets go. No arcs, sparks or flinch on the body. Its rows hold to frame 600. Written by tools/blender/watt_ground_wire_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Lock": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxColumn"
+   ],
+   "Body": "HumanoidRootPart",
+   "Ground": true,
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "a small ring of the hero's light at the stopped body's feet, closing in on it, humming with the discs",
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.8,
+        0.2,
+        2.8
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        1.7,
+        0.1,
+        1.7
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      19,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      34,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      49,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      64,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      79,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      94,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      109,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      124,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      139,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      154,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      169,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      184,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      199,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      214,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      229,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      244,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      259,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      274,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      289,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      304,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      319,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      334,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      349,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      364,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      379,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      394,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      409,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      424,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      439,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      454,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      469,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      484,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      499,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      514,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      529,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      544,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      559,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      574,
+      0.45,
+      "Sine InOut"
+     ],
+     [
+      589,
+      0.15,
+      "Sine InOut"
+     ],
+     [
+      600,
+      0.15,
+      "Sine InOut"
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      2.2,
+      "Quad Out"
+     ],
+     [
+      6,
+      1.4
+     ]
+    ]
+   }
+  }
+ }
+}

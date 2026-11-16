@@ -1,0 +1,568 @@
+{
+ "Schema": "rows/1",
+ "Effect": "WattGroundWire",
+ "Why": "Watt's Ground Wire, the grey block (AR11, \"Ground Wire's look\"). Free on the Plant: the ring runs through rung 7's hold of 8 frames while the bodies are held, so the glows' release is written that much late to stay on the clip. Written by tools/blender/watt_ground_wire_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Action": "WattGroundWire",
+ "Free": "Plant",
+ "Rows": {
+  "Discs": {
+   "Kind": "Glow",
+   "Part": [
+    "Watt_Spear"
+   ],
+   "Why": "the three discs gather on the lift, flare on the Plant, hum through the hold, and go out as he pulls it free (the recipe's hot 2.5)",
+   "Tracks": {
+    "Glow": [
+     [
+      0,
+      0,
+      "Sine InOut"
+     ],
+     [
+      16,
+      1.4,
+      "Linear"
+     ],
+     [
+      25,
+      1.4,
+      "Linear"
+     ],
+     [
+      26,
+      3.2,
+      "Quad Out"
+     ],
+     [
+      34,
+      2.5,
+      "Sine InOut"
+     ],
+     [
+      49,
+      1.9,
+      "Sine InOut"
+     ],
+     [
+      64,
+      2.5,
+      "Sine InOut"
+     ],
+     [
+      79,
+      1.9,
+      "Sine InOut"
+     ],
+     [
+      94,
+      2.5,
+      "Sine InOut"
+     ],
+     [
+      109,
+      1.9,
+      "Sine InOut"
+     ],
+     [
+      124,
+      2.5,
+      "Sine InOut"
+     ],
+     [
+      132,
+      2.5,
+      "Quad Out"
+     ],
+     [
+      148,
+      0
+     ]
+    ]
+   }
+  },
+  "Hair": {
+   "Kind": "Glow",
+   "Part": [
+    "Watt_Head"
+   ],
+   "Why": "the hair's pale ends, with the discs (the recipe's hot 3)",
+   "Tracks": {
+    "Glow": [
+     [
+      0,
+      0,
+      "Sine InOut"
+     ],
+     [
+      16,
+      0.5,
+      "Linear"
+     ],
+     [
+      25,
+      0.5,
+      "Linear"
+     ],
+     [
+      26,
+      3.0,
+      "Quad Out"
+     ],
+     [
+      34,
+      2.2,
+      "Sine InOut"
+     ],
+     [
+      49,
+      1.7,
+      "Sine InOut"
+     ],
+     [
+      64,
+      2.2,
+      "Sine InOut"
+     ],
+     [
+      79,
+      1.7,
+      "Sine InOut"
+     ],
+     [
+      94,
+      2.2,
+      "Sine InOut"
+     ],
+     [
+      109,
+      1.7,
+      "Sine InOut"
+     ],
+     [
+      124,
+      2.2,
+      "Sine InOut"
+     ],
+     [
+      132,
+      2.2,
+      "Quad Out"
+     ],
+     [
+      148,
+      0
+     ]
+    ]
+   }
+  },
+  "Charge": {
+   "Kind": "Beam",
+   "Body": "Butt",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "a short light runs down the shaft with the drive, from the discs into the street: the drive's read",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 2,
+    "Segments": 1
+   },
+   "Tracks": {
+    "Tilt": [
+     [
+      16,
+      {
+       "Vector3": [
+        5.135,
+        0.0,
+        -25.47
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      16,
+      5.4,
+      "Quad In"
+     ],
+     [
+      25,
+      0,
+      "Linear"
+     ],
+     [
+      27,
+      0
+     ]
+    ],
+    "Top": [
+     [
+      16,
+      6.6,
+      "Quad In"
+     ],
+     [
+      25,
+      1.2,
+      "Quad In"
+     ],
+     [
+      27,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      16,
+      0.25,
+      "Quad In"
+     ],
+     [
+      25,
+      0.5,
+      "Linear"
+     ],
+     [
+      27,
+      0.3
+     ]
+    ],
+    "Transparency": [
+     [
+      16,
+      0.3,
+      "Quad In"
+     ],
+     [
+      25,
+      0,
+      "Linear"
+     ],
+     [
+      27,
+      0.6
+     ]
+    ]
+   }
+  },
+  "PlantAt": {
+   "Kind": "Point",
+   "From": "Plant",
+   "Why": "the butt's foot in the street, measured from the clip",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.15,
+        0.0,
+        -0.8
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "PlantLight": {
+   "Kind": "Light",
+   "On": "PlantAt",
+   "From": "Plant",
+   "Range": 16,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        1.0,
+        0
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      6,
+      "Quart Out"
+     ],
+     [
+      6,
+      2.5,
+      "Sine InOut"
+     ],
+     [
+      24,
+      0
+     ]
+    ]
+   }
+  },
+  "Sparks": {
+   "Kind": "Emitter",
+   "On": "PlantAt",
+   "From": "Plant",
+   "Image": "fx_spark",
+   "Emit": [
+    [
+     0,
+     16
+    ]
+   ],
+   "Why": "a low spray all round along the street, never up (the content check's note 2): from Front, X tips it up and Y turns it round; if the replay shows a wall, swap them",
+   "Emitter": {
+    "Lifetime": [
+     0.15,
+     0.3
+    ],
+    "Speed": [
+     14,
+     24
+    ],
+    "SpreadAngle": [
+     6,
+     180
+    ],
+    "EmissionDirection": "Front",
+    "Drag": 9,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      -10,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.5
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.7,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0.15,
+        0
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Ring": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxColumn"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Plant",
+   "Why": "the hero: a low wall of light out from the butt's foot to the stop's reach (Round 9), snapping out and braking, its centre drifting to his root so its edge at full size is the stop's",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.15,
+        0.0,
+        -0.8
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      10,
+      {
+       "Vector3": [
+        0,
+        0,
+        0
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.3,
+        0.35,
+        0.3
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      10,
+      {
+       "Vector3": [
+        9.0,
+        0.12,
+        9.0
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      10,
+      0,
+      "Quad In"
+     ],
+     [
+      28,
+      1
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      2.5,
+      "Quad Out"
+     ],
+     [
+      10,
+      1.6,
+      "Linear"
+     ],
+     [
+      28,
+      0.6
+     ]
+    ]
+   }
+  },
+  "Front": {
+   "Kind": "Emitter",
+   "On": "Ring",
+   "From": "Plant",
+   "Image": "fx_spark",
+   "Why": "glints let go along the ring's rim as it travels: layer 3 at most",
+   "Emitter": {
+    "Shape": "Disc",
+    "ShapeStyle": "Surface",
+    "EmissionDirection": "Top",
+    "Lifetime": [
+     0.12,
+     0.25
+    ],
+    "Speed": [
+     0.5,
+     2
+    ],
+    "Drag": 4,
+    "Size": [
+     [
+      0,
+      0.35
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "Radius": [
+     [
+      0,
+      1
+     ]
+    ],
+    "Rate": [
+     [
+      0,
+      420,
+      "Linear"
+     ],
+     [
+      8,
+      0
+     ]
+    ]
+   }
+  }
+ }
+}

@@ -12,10 +12,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Faber (builder).** 2026-11-17, 00:31. Watt's install is in (AR11, "The install", 7cd008f). His clips play. Ground Wire stops every enemy round him for his hold, its pose held, and shields him. Insulated takes a share off a hit's elemental part. The seeds are research's tier 2. Four fight and reveal timing cases are NOT VERIFIED at 17 fps (the screen asleep) and run again at 60. The place is saved (version 677). Now: the phone run's six must-fixes (TR24, "The director's run"), then Ground Wire's blockout with Modulo once its rows are in, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-16, 23:47, on Opus 5.5.
-- **AR11, Watt's eight clips,** are delivered to `build/handoff/Watt/clips/` for Faber's install. They passed research's verdict at competent, with butt-down picked for Ground Wire, and the content check. The markers and the bay post's place are in AR11, "Delivery 4".
-- **The director's ask,** Anime Vanguards' unit animations: studied in AR11, "The animation comparison". It widened the Combo's hits, and Ground Wire's light has to carry its drive.
-- **Now:** Ground Wire's look with Faber (`/ga-action`), on AR11's feel lines and the content check's two notes.
+**Modulo (assets).** 2026-11-17, 00:35, on Opus 5.5.
+- **AR11, Watt's eight clips,** are delivered (cab7a7b) and installed by Faber (7cd008f).
+- **Ground Wire's look** (`/ga-action`): its grey rows are in `build/handoff/Watt/fx/` (the action's, the stop's and the shield's). They passed research's technique check and the content check, whose five block conditions are in AR11, "Ground Wire's look". Next: the blockout with Faber in the replay, once his must-fixes are done.
+- **Now:** TR24's asks from the director's run: the Festival Door drawn again in two or three grey directions, then the lead card's colours in AR12's palette.
 - **Later:** AR24, the chest's opening, after research's study; ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for the phone run's fixes and Watt's blockout. Blender: nobody. Timing tests: nobody.

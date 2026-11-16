@@ -7320,6 +7320,16 @@ Read at phone size first (`inventory_glance.png`), then each sheet at full size;
   - **Visually reviewed:** my own read at phone size, on a monitor, not a phone. The device check comes once built. Research's pass is next.
   - **Director-accepted:** no.
 
+### Research's pass on fixes 1 to 3 (Quaestor, 2026-11-16, 15:12)
+
+From `inventory_night.png` and `inventory_C.png`, at phone size.
+- **Felt:** at night the bag now opens as a warm card, a step up from the Row and not a flash, and the items still sit dark in their case.
+- **Tier:** competent, and the bold thing holds. Fixes 1 to 3 pass:
+  - 1: 0.31 is 4.2 times the Row, kept on purpose as the one light screen. The phone check at night moves to the build's review.
+  - 2: the empty bag reads as empty, not as loading.
+  - 3: every chip reads at phone size. Legendary's gold at 3.85 to 1 stands, since its band says it too.
+- **Open:** fix 4, Faber's feasibility read, now covering the strip too. Five words fill the row to the card's edge, so if the bag takes the proposal's six categories (`docs/research/rework-2026-11-16.md`, part 5), the strip scrolls or the words shorten. The build waits on that read.
+
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
 Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:

@@ -3044,7 +3044,7 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - **Rare reads as blued steel:** steel-white edges, the blue a temper. **Epic reads as a near-black violet gunmetal**, its colour in the filigree and the stone. The three designs of each rarity now part at 38 points by guard, stone and fittings.
   - **Legendary's gilt** stands out on the umber ground.
   - **To Faber** for upload and the slots, all sixty, as the json lays them.
-  - **The spec for the rest of the kinds** follows phase 2, which closes first (the director's order of work, 2026-11-15).
+  - **The rest of the kinds open now** (the director to Modulo, 2026-11-16, 01:53: "i dont think you finished all the gears sets there is 14 gears slots"; the register). They follow batch 1's spec as it stands: five rarities, three designs each, the ladder, and the names by rarity. Modulo's order (research's call): AR17 first, with batch 2 filling any wait for a verdict or an install. Batch 2 is the eight shared kinds (120 icons): with the Warrior's pair, every one of Rook's fourteen slots then has art. Then Watt's clips and Ground Wire's look, then batch 3, the eight weapons (120). Each batch goes in grey as one sheet of its eight kinds for one verdict, then its finals.
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.
@@ -7125,24 +7125,31 @@ Installed from fcff1e7, Modulo's final delivery for one install.
   - Visually reviewed: my takes from the spawn, the court's back, above, the Training pad, the sleeping bay, the Door up close, and the Tower over the generator from the gate's left (`build/captures/ar16/`). Research's verdict waits.
   - Director-accepted: no.
 
-## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
+## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
-Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). It starts after the first session's run on a phone, which comes once AR16 and the rest of AR15 (the battery, the Training machine and the Festival Door) are in the game (research's order, on the director's word "we work on the priority you believe we need to do first"; the register).
+Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 02:00, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.
 
-- **What it covers, research's reading:** the walk a first session takes outside its base.
-  - The Strip and its crossing.
-  - The side street out to the festival gate.
-  - The plots that stand empty: bare lots (the director's word of the night).
-  - What the player sees past the map's edges.
+- **Feel line, proposed for Modulo to answer:** out of their gate at dusk, the player steps onto the Strip, a wide stone street between the other bases' gates. A gate is lit where a player is home and dark where none is, with the Towers pale in the haze behind. Down the street, the side street's lanterns glow toward the festival gate, so the way to the fight is in view the moment they leave home.
+- **The block contains:**
+  - **The Strip's street:** its floor, edges and lamps, where the base yard's look meets the Lantern Row stones it already wears.
+  - **The crossing and the side street** out to the festival gate. The side street leads the eye from the crossing to the gate.
+  - **A bare lot,** the plot of a player who isn't in the server: empty [D], and asleep rather than abandoned (dark floor, its gate unlit, no machines), never a building site. In a small server most of the eight plots are bare, so this is most of what the Strip shows.
+  - **Past the edges:** what the player sees beyond the map.
   - Lantern Row is already dressed (AR5).
-- **Waits, in their phases** (`docs/production-plan.md`, "Phases"): the Towers, the Shop, the Clash Grounds and the Calamity. Their places stay as they are.
-- **The feel line:** written with Modulo after AR16's verdict, so the Strip carries the base's look out to the gate.
+- **Waits, in their phases** (`docs/production-plan.md`, "Phases"):
+  - the Towers' real look (AR16's silhouettes stand);
+  - the Shop;
+  - the Clash Grounds;
+  - the Calamity.
+  
+  Their places stay as they are.
 - **The way:**
-  1. Research lays it out in grey, from the player's camera.
-  2. Modulo makes the blockout, and research gives the verdict.
-  3. Modulo makes the kit's pieces.
-  4. Faber installs them.
-  5. Research gives one verdict in the game.
+  1. The grey world in the game is the layout (`docs/design.md`, "The world, in grey"; Faber's `WorldService`), so there's no separate one.
+  2. Modulo makes the blockout from the player's camera: out of the gate, at the crossing, and up the side street. Cap: 2 hours.
+  3. Research gives the verdict.
+  4. Modulo makes the kit's pieces.
+  5. Faber installs them.
+  6. Research gives one verdict in the game.
 
 ## Later, by ground
 

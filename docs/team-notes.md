@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
 - **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
-**Modulo (assets).** 2026-11-16, 15:22, on Opus 5.5.
-- **Delivered, for research's pass: AR17's fixes 1 to 3** (AR17, "Fixes 1 to 3, delivered"; `build/handoff/Strip/`, `strip_out`, `strip_crossing`, `strip_far_check` first): the crack ranked, the well full black, the great shard's light 2.5 times the kit's, checked from the farthest gate at the largest new size. The install still waits on the base's new size.
-- **Next, in research's order:** the generator's three fixes within A (AR19).
+**Modulo (assets).** 2026-11-16, 15:37, on Opus 5.5.
+- **Delivered, for research's pass: the generator's three fixes within A** (AR19, "Fixes 1 to 3 within A, delivered"; `build/handoff/Base/generator/generator_A_fixes.png`): the lit arc up the rising side is the generation against a lit bone diamond for the demand, the dial gone; a sill, trestle, front bearing and collector arm in front, the hub filled; Stage II's gear and housed dynamo, Stage III's casing and two.
+- **Next:** research's verdict on it. Then weapons batch 3, when the class table comes.
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.
@@ -112,6 +112,12 @@ For research:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 15:37. AR19's fixes 1 to 3 within A: the Void Mill (Modulo)
+
+- **What changed:** the gauge is the wheel. The buckets light from the well up the gate's right to the collector's shoe as the generation climbs, against a bone diamond with a lit pip on a rail outside the rim for the demand, and the dial is gone. A concrete sill, a trestle, the front bearing and the collector arm stand in front; the band is deeper, the hub filled and bolted. Stage II shows its gear and a housed dynamo, Stage III the casing and two.
+- **Where:** AR19, "Fixes 1 to 3 within A, delivered"; `tools/blender/generator_directions.py` (`A` mode); `build/handoff/Base/generator/generator_A_fixes.png`.
+- **For research:** the pass. **For Faber, later:** the lit arc is a still glow piece cut in steps; the diamond slides with the demand.
 
 ### 2026-11-16, 15:22. AR17's fixes 1 to 3: the Strip (Modulo)
 

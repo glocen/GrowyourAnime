@@ -1,6 +1,6 @@
 """AR19: the generator's three directions for Stage I, and how each grows (docs/asset-requests.md, AR19).
 
-blender.exe -b --factory-startup --python tools/blender/generator_directions.py -- <out_dir> [fast | small]
+blender.exe -b --factory-startup --python tools/blender/generator_directions.py -- <out_dir> [fast | small | A]
 
 `small` makes only the content check's sheet (generator_64.png) from the views already rendered in <out_dir>.
 
@@ -13,8 +13,10 @@ Each direction's Stages II and III are seen from the near view. B and C are also
 since their gauge is the machine itself. It writes each view, a sheet a direction (generator_A.png, _B, _C) and the
 three side by side (generator_glance.png). Stage I stands about 30 studs tall, over today's 26.
 
-  A, the Void Mill   A wheel facing the gate turns down into the well's dark. Its band of buckets comes up lit and
-                     gives its light to a collector over the top. The gauge is a dial over the collector.
+  A, the Void Mill   A wheel facing the gate turns down into the well's dark. Its band of buckets comes up lit on
+                     the gate's right and gives its light to a collector's shoe high on that side. The lit arc's
+                     height is the generation, read against a bone mark on a rail outside the rim for the demand.
+                     (Research's pick, with its three fixes: `A` renders only A, as generator_A_fixes.png.)
   B, the Beam Pump   A walking beam rocks on the head of a hooped column, and its two pumps lift the well's light into
                      the column. The column's lit height is the generation, and a collar marks the demand.
   C, the Governor    A spindle over a vaned turbine flings three flat weights out and up as the plant generates. A
@@ -170,120 +172,193 @@ def motes(m, points, size=0.22):
         m.box((size, size, size), p, "void", rot=(0.6, 0.4, 0.8))
 
 
-def rising(a):
-    """Whether a bucket at angle `a` about the wheel's own Z is on its lit side once the wheel faces the gate: the
-    gate's right (-X), from under the axle up to the top."""
-    deg = math.degrees(a) % 360.0
-    return 130.0 <= deg <= 256.0
+GAUGE_TOP = 250.0     # the collector's shoe, about the wheel's own Z: high on the gate's right, short of the top
+DEEP = 3.0            # the band of buckets, from its outer rim in
 
 
-# --- A, the Void Mill --------------------------------------------------------------------------------------------------
+def lit_to(gen, a0):
+    """The gauge (research's fix 1, 2026-11-16): the angle about the wheel's own Z up to which the rising side is lit,
+    from `a0`, where the buckets leave the well on the gate's right, up to the collector's shoe as the generation
+    goes from 0 to 1. Once the wheel faces the gate an angle `a` is at (cos a, -sin a) across and up from the axle."""
+    return a0 + max(0.0, min(1.0, gen)) * (GAUGE_TOP - a0)
 
-def mill_wheel(r, width, buckets, spokes, double=False):
+
+def mill_wheel(r, width, buckets, spokes, a0, top, double=False):
     """The wheel, built about Z, its front at +Z: a deep band of buckets between an inner and an outer rim, each
-    bucket's back lit on the rising side and dark on the rest, so from the gate the band glows in cells where the
-    light rides up; heavy spokes and a hub."""
+    bucket's back lit from `a0` up to `top` and dark on the rest, so from the gate the lit arc's height is the
+    generation and the rim is never lit all round; heavy spokes and a filled hub, bolted in bone."""
     w = Mesh()
-    deep = 2.4
-    bm.hoop(w, (0, 0, 0), r - 0.55, r, width, 40, "steel", lying=True)                       # the outer rim
-    bm.hoop(w, (0, 0, 0), r - deep - 0.5, r - deep, width, 40, "steel", lying=True)          # the inner rim
-    mid = r - deep / 2 - 0.25
+    hub = 3.0
+    bm.hoop(w, (0, 0, 0), r - 0.6, r, width, 44, "steel", lying=True)                         # the outer rim
+    bm.hoop(w, (0, 0, 0), r - DEEP - 0.6, r - DEEP, width, 44, "steel", lying=True)           # the inner rim
+    mid = r - DEEP / 2 - 0.3
     for k in range(buckets):
         a = math.tau * k / buckets
         out = Vector((math.cos(a), math.sin(a), 0.0))
-        w.box((deep - 0.3, 0.4, width), out * mid, "girder", rot=(0.0, 0.0, a + 0.18), ink=True)   # a bucket's wall
+        w.box((DEEP - 0.2, 0.45, width), out * mid, "girder", rot=(0.0, 0.0, a + 0.18), ink=True)   # a bucket's wall
         b = a + math.pi / buckets
-        w.box((deep - 0.55, math.tau * mid / buckets - 0.5, 0.3), Vector((math.cos(b), math.sin(b), 0.0)) * mid -
-              Vector((0, 0, width / 2 - 0.35)), "void" if rising(b) else "dark", rot=(0.0, 0.0, b))
-    for z in ((-width / 2 + 0.45, width / 2 - 0.45) if double else (0.0,)):
+        lit = a0 <= math.degrees(b) % 360.0 <= top
+        w.box((DEEP - 0.5, math.tau * mid / buckets - 0.55, 0.3), Vector((math.cos(b), math.sin(b), 0.0)) * mid -
+              Vector((0, 0, width / 2 - 0.35)), "void" if lit else "dark", rot=(0.0, 0.0, b), occ=0.5)   # mid-cell: no bleed
+    for z in ((-width / 2 + 0.6, width / 2 - 0.6) if double else (0.0,)):
         for k in range(spokes):
             a = math.tau * (k + 0.5) / spokes
             out = Vector((math.cos(a), math.sin(a), 0.0))
-            length = r - deep - 0.5 - 2.4
-            w.box((length + 0.4, 1.0, 1.0), out * (2.4 + length / 2), "girder", rot=(0.0, 0.0, a), ink=True)
-    put(w, turned([(2.6, width / 2 + 0.3), (2.6, -width / 2 - 0.3)], 12, "steel"), Matrix.Identity(4))
-    put(w, turned([(1.5, width / 2 + 0.8), (1.5, width / 2 + 0.3)], 12, "bone"), Matrix.Identity(4))
-    put(w, turned([(0.8, width / 2), (0.8, -width / 2 - 4.2)], 8, "girder"), Matrix.Identity(4))
+            length = r - DEEP - 0.6 - hub
+            w.box((length + 0.6, 1.3, 1.3), out * (hub + length / 2) + Vector((0, 0, z)), "girder", rot=(0.0, 0.0, a), ink=True)
+    put(w, turned([(hub, width / 2 + 0.3), (hub, -width / 2 - 0.3)], 16, "steel"), Matrix.Identity(4))   # the hub, filled
+    for k in range(8):                                                                       # its bolts
+        a = math.tau * (k + 0.5) / 8
+        w.box((0.5, 0.5, 0.3), (2.25 * math.cos(a), 2.25 * math.sin(a), width / 2 + 0.4), "bone", rot=(0.0, 0.0, a))
     return w
+
+
+def dynamo(m, x, y0, y1, z, stand_from):
+    """A dynamo, housed (research's fix 3): a copper drum lying along the line to the gate inside a steel cage, square
+    bolted end plates joined by four corner bars and strapped round, a bone boss on its front, a terminal box on its
+    top, on a stand down to `stand_from`. From the gate it's a square plate round a boss, never a ball."""
+    s, length = 3.6, y1 - y0
+    put(m, turned([(1.45, length - 0.6), (1.45, 0.0)], 14, "copper"), at(x, y0 + 0.3, z) @ FACING)
+    for y in (y0 + 0.25, y1 - 0.25):
+        m.box((s, 0.5, s), (x, y, z), "steel", ink=True)
+    for cx in (-1, 1):
+        for cz in (-1, 1):
+            m.box((0.5, length - 0.5, 0.5), (x + cx * (s / 2 - 0.25), (y0 + y1) / 2, z + cz * (s / 2 - 0.25)), "steel")
+    for f in (0.35, 0.65):
+        put(m, turned([(1.7, 0.45), (1.7, 0.0)], 14, "steel"), at(x, y0 + length * f - 0.22, z) @ FACING)
+    put(m, turned([(0.85, 0.45), (0.85, 0.0)], 10, "bone"), at(x, y1, z) @ FACING)
+    m.box((1.6, 1.8, 1.0), (x, (y0 + y1) / 2, z + s / 2 + 0.5), "dark", ink=True)
+    high = z - s / 2 - stand_from
+    m.box((2.6, 2.0, high), (x, (y0 + y1) / 2 - 0.2, stand_from + high / 2), "steel", ink=True)
+
+
+def toothed(r, teeth, thick, hole):
+    """A spur gear about Z: a web from `hole` out, its teeth at `r`."""
+    g = Mesh()
+    bm.hoop(g, (0, 0, 0), hole, r - 0.3, thick, max(teeth, 12), "girder", lying=True)
+    for k in range(teeth):
+        a = math.tau * k / teeth
+        g.box((0.65, 0.65, thick), Vector((math.cos(a), math.sin(a), 0)) * r, "girder", rot=(0, 0, a))
+    return g
 
 
 def mill(stage, gen=0.6, demand=0.45):
     m = Mesh()
-    axle = 9.2
-    r = 10.6 if stage == 1 else 11.2
-    width = 3.0 if stage == 1 else 4.2
-    top = axle + r + 2.2
-    # the well's kerb: a low steel lip round the dark the wheel turns down into, motes of light rising on its right
-    ring_up(m, (0, 0, 0.7), 8.4, 9.6, 1.4, "steel", sides=40)
-    floor_disc(m, (0, 0, 1.0), 8.4, "dark")
-    motes(m, [(-1.5, 0.4, 1.1), (3.2, -0.8, 1.1), (-5.6, 0.9, 1.1), (6.0, 1.2, 1.1), (-3.4, -1.6, 1.1), (0.6, 1.8, 1.1)] +
-          [(-(r + 1.2) * math.sin(math.radians(a)), width / 2 + 0.5, axle - (r + 1.2) * math.cos(math.radians(a)))
-           for a in (140, 118, 96, 74, 52)], size=0.3)
-    put(m, mill_wheel(r, width, 18 if stage == 1 else 22, 6, double=stage > 1), at(0, 0, axle) @ FACING)
-    back = -width / 2 - 2.0
-    m.box((3.4, 2.2, 3.4), (0, back, axle), "steel", ink=True)                     # the bearing
-    for sx in (-1, 1):                                                              # the raked frame behind
-        bar(m, (sx * 7.6, -14.0, 0.3), (sx * 1.4, back, axle - 1.2), 1.2, "girder")
+    axle = 10.0
+    r = 11.6 if stage == 1 else 12.2
+    width = 4.0 if stage == 1 else 5.0
+    front = width / 2
+    a0 = 180.0 - math.degrees(math.asin((axle - 1.0) / r)) + 3.0    # where a bucket leaves the well, on the gate's right
+    top = lit_to(gen, a0)
+    face = at(0, 0, axle) @ FACING                                   # the wheel's frame, for what stands still round it
+    centre = Vector((0.0, 0.0, axle))
+    # the well: a low steel kerb round the dark the wheel turns down into, motes of light rising in it
+    ring_up(m, (0, 0, 0.7), 9.4, 10.6, 1.4, "steel", sides=44)
+    floor_disc(m, (0, 0, 1.0), 9.4, "dark")
+    motes(m, [(-1.5, 0.4, 1.1), (3.2, -0.8, 1.1), (-5.6, 0.9, 1.1), (6.0, 1.2, 1.1), (-3.4, -1.6, 1.1), (0.6, 1.8, 1.1)], size=0.3)
+    put(m, mill_wheel(r, width, 20 if stage == 1 else 24, 6, a0, top, double=stage > 1), face)
+    # behind: the back bearing on its raked frame
+    back = -front - 1.6
+    m.box((3.6, 2.4, 3.6), (0, back, axle), "steel", ink=True)
+    for sx in (-1, 1):
+        bar(m, (sx * 7.6, -14.0, 0.3), (sx * 1.5, back, axle - 1.3), 1.3, "girder")
         m.box((2.8, 2.8, 0.6), (sx * 7.6, -14.0, 0.3), "concrete", ink=True)
-    bar(m, (0, back, axle + 1.7), (0, back, top + 0.6), 1.3, "girder")              # the mast
-    bar(m, (0, back - 0.5, top), (0, -16.0, 0.3), 1.0, "girder")                    # and its stay
-    m.box((2.6, 3.0, 0.6), (0, -16.0, 0.3), "concrete", ink=True)
-    arms = (0.0,) if stage == 1 else (-0.4, 0.4) if stage == 2 else ()
-    for tilt in arms:                                                               # the collector: an arm over the top
-        tip = Vector((math.sin(tilt) * (r + 1.0), 0.4, axle + math.cos(tilt) * (r + 1.0)))
-        bar(m, (0, back, top - 0.4), tip, 1.0, "steel")
-        for sy in (-1, 1):
-            m.box((0.9, 0.7, 1.1), tip + Vector((0, sy * width * 0.3, -0.7)), "copper", ink=True)
-        bm.insulator(m, (tip.x * 0.55, back + 0.4, tip.z + 0.7 - 0.5 * abs(tilt)), 1.3)
+    # in front (research's fix 2): a concrete sill across the well, a trestle on it, the front bearing at its head,
+    # the axle running from the hub into it
+    yf = front + 2.6
+    m.box((22.4, 1.8, 1.0), (0, yf, 0.9), "concrete", ink=True)
+    for sx in (-1, 1):
+        bar(m, (sx * 3.6, yf, 1.4), (sx * 0.9, yf, axle - 1.6), 1.1, "girder")
+    bar(m, (-2.45, yf, 4.4), (2.45, yf, 4.4), 0.8, "girder")
+    m.box((4.8, 2.4, 1.6), (0, yf, axle - 1.6), "steel", ink=True)                              # the pillow block
+    put(m, turned([(1.8, 1.2), (1.8, -1.2)], 14, "steel"), at(0, yf, axle) @ FACING)            # its cap
+    for sx in (-1, 1):
+        m.box((0.55, 0.55, 0.5), (sx * 2.0, yf, axle - 0.6), "bone", ink=True)
+    put(m, turned([(1.0, yf - front), (1.0, 0.0)], 12, "girder"), at(0, front, axle) @ FACING)  # the axle
+    put(m, turned([(1.15, 0.5), (1.15, 0.0)], 6, "bone"), at(0, yf + 1.2, axle) @ FACING)       # its nut
+    # the collector (fix 2): an arm clamped on the bearing's cap, out across the wheel's face to the top of the gauge,
+    # where its copper shoe rides the buckets' lips; it carries the rail's head beyond the rim
+    phi = math.radians(GAUGE_TOP)
+    dirn = Vector((math.cos(phi), 0.0, -math.sin(phi)))
+    turn = (0.0, -math.atan2(dirn.z, dirn.x), 0.0)
+    mid = r - DEEP / 2 - 0.3
+    rr = r + (2.6 if stage == 3 else 0.6)                             # the rail, outside the casing at Stage III
+    head = centre + Vector((0, yf, 0))
+    tip, end = head + dirn * mid, head + dirn * (rr + 0.45)
+    m.box((1.0, 2.8, 1.6), head + dirn * 2.0, "steel", rot=turn, ink=True)                     # the clamp
+    bar(m, head + dirn * 1.8, end, 1.2, "steel", d=0.9)
+    bar(m, tip + Vector((0, -0.4, 0)), Vector((tip.x, front + 0.55, tip.z)), 0.8, "steel")     # the shoe's holder
+    m.box((1.3, 0.5, 2.2), (tip.x, front + 0.3, tip.z), "copper", rot=turn, ink=True)          # the shoe
+    bm.insulator(m, tuple(head + dirn * (mid * 0.62) + Vector((0, 0.7, 0.5))), 1.4)
+    bar(m, end + Vector((0, -0.4, 0)), Vector((end.x, front + 0.2, end.z)), 0.8, "steel")      # down to the rail
+    # the gauge's rail (fix 1): a steel arc outside the rim on the rising side, from the well to the collector, and on
+    # it a bone mark for the demand; the lit arc climbing past the mark means power to spare
+    rail = Mesh()
+    lo, hi, n = a0 - 6.0, GAUGE_TOP, 16
+    for k in range(n):
+        a = math.radians(lo + (hi - lo) * (k + 0.5) / n)
+        chord = 2 * (rr + 0.45) * math.sin(math.radians(hi - lo) / n / 2) + 0.06
+        rail.box((0.9, chord, 1.0), Vector((math.cos(a), math.sin(a), 0.0)) * (rr + 0.45) + Vector((0, 0, front - 0.2)),
+                 "steel", rot=(0.0, 0.0, a), ink=True)
+    # the mark: a bone diamond pointing in at the rim, a lit pip in its face so it holds at dusk, where unlit bone
+    # facing the gate reads dark (the first render)
+    d = math.radians(lit_to(demand, a0))
+    out = Vector((math.cos(d), math.sin(d), 0.0))
+    rail.box((2.0, 2.0, 1.4), out * (rr + 0.96) + Vector((0, 0, front - 0.2)), "bone", rot=(0.0, 0.0, d + math.pi / 4), ink=True)
+    rail.box((0.95, 0.95, 0.3), out * (rr + 0.96) + Vector((0, 0, front + 0.6)), "lamp", rot=(0.0, 0.0, d + math.pi / 4), occ=0.5)
+    put(m, rail, face)
     if stage == 3:
-        # the casing: an armoured half drum over the twin wheel, its window band lit along its front
+        # the casing: an armoured half drum over the twin wheel, its window band lit only as far as the gauge
         shell, band = Mesh(), Mesh()
         ra, rb = r + 1.0, r + 2.0
         for k in range(14):
             a = math.radians(188 + k * 12 + 6)
             shell.box(((ra + rb) / 2 * 0.22 + 0.25, rb - ra, width + 1.6), Vector((math.cos(a), math.sin(a), 0.0)) * (ra + rb) / 2,
                       "steel", rot=(0.0, 0.0, a + math.pi / 2), ink=True)
-        for k in range(7):                                                          # lit only where the light rides up
-            a = math.radians(194 + k * 11.5)
-            band.box((0.4, 1.6, 0.3), Vector((math.cos(a), math.sin(a), 0.0)) * (ra + rb) / 2, "void", rot=(0.0, 0.0, a))
-        put(m, shell, at(0, 0, axle) @ FACING)
+        for k in range(7):
+            a = 194 + k * 11.5
+            band.box((0.4, 1.6, 0.3), Vector((math.cos(math.radians(a)), math.sin(math.radians(a)), 0.0)) * (ra + rb) / 2,
+                     "void" if a <= top else "dark", rot=(0.0, 0.0, math.radians(a)), occ=0.5)
+        put(m, shell, face)
         put(m, band, at(0, width / 2 + 0.85, axle) @ FACING)
-        for x in (-10.6, -8.4, -6.0, 6.0, 8.4, 10.6):                              # the crown of collector rods
+        for x in (-10.6, -8.4, -6.0, 6.0, 8.4, 10.6):                                          # the crown of rods
             z = axle + math.sqrt(max(rb * rb - x * x, 0.0))
             rod(m, (x, -0.4, z - 0.6), (x, -0.4, z + 3.2), 0.28, "steel")
             bm.insulator(m, (x, -0.4, z + 3.2), 1.1)
             m.box((0.6, 0.6, 0.45), (x, -0.4, z + 4.5), "copper", ink=True)
-        bez = Mesh()
-        bm.hoop(bez, (0, 0, 0), 3.0, 4.0, 0.6, 20, "bone", lying=True)
-        put(m, bez, at(0, width / 2 + 0.9, axle) @ FACING)
-        disc(m, (0, width / 2 + 0.95, axle), 1.6, 0.4, "steel")
-    if stage >= 2:                                                                  # the gear train and the dynamo
-        for sx in ((1,) if stage == 2 else (-1, 1)):
-            x = sx * (r + 3.6)
-            m.box((3.4, 4.4, axle - 2.2), (x, -0.6, (axle - 2.2) / 2), "steel", ink=True)
-            put(m, turned([(2.2, 2.2), (2.2, -2.2)], 12, "copper"), at(x, -0.6, axle) @ FACING)
-            for sy in (-1, 1):
-                disc(m, (x, -0.6 + sy * 2.35, axle), 2.4, 0.4, "bone")
-            gear = Mesh()
-            bm.hoop(gear, (0, 0, 0), 0.8, 1.7, 0.8, 12, "girder", lying=True)
-            for k in range(10):
-                a = math.tau * k / 10
-                gear.box((0.7, 0.7, 0.8), Vector((math.cos(a), math.sin(a), 0)) * 1.9, "girder", rot=(0, 0, a))
-            put(m, gear, at(x - sx * 2.4, -width / 2 - 0.8, axle) @ FACING)
-            cable(m, [(x, -3.0, axle + 0.6), (x + sx * 0.4, -7.0, 0.4), (x + sx * 1.0, -17.4, 0.2)], r=0.3)
-        for sx in (-1, 1):                                                          # the frame plated, the cables in trays
+    if stage >= 2:
+        # the gear train (fix 3): a spur gear on the axle before the hub, a pinion on the descending side, and the
+        # dynamo it drives, housed, on its stand on the sill; at Stage III a second on the rising side
+        put(m, toothed(4.2, 24, 0.8, 1.0), at(0, front + 0.9, axle) @ FACING)
+        for sx in ((1,) if stage == 2 else (1, -1)):
+            px, pz = sx * 6.0 * math.cos(math.radians(30.0)), axle - 6.0 * math.sin(math.radians(30.0))
+            put(m, toothed(1.65, 10, 0.8, 0.5), at(px, front + 0.9, pz) @ FACING)
+            dynamo(m, px, front + 1.4, front + 5.6, pz, 1.4)
+            cable(m, [(px, front + 3.5, pz + 2.5), (sx * 9.0, front + 3.5, pz + 2.5), (sx * 9.8, yf + 0.9, 1.4),
+                      (sx * 11.4, -4.0, 0.3), (sx * 3.4, -18.0, 0.2)], r=0.3)
+        for sx in (-1, 1):                                                                      # the frame plated
             bar(m, (sx * 6.8, -13.2, 0.6), (sx * 1.9, back, axle - 0.4), 2.0, "steel", d=0.5)
-            m.box((1.1, 9.0, 0.5), (sx * 2.0, -12.0, 0.25), "girder", ink=True)
-    dial_r = 3.0 if stage == 1 else 3.4
-    gauge_z = top + (4.0 if stage < 3 else 5.0)
-    post_from = top + 0.3
-    post = gauge_z - dial_r - post_from + 0.3
-    m.box((1.4, 1.4, post), (0, back + 0.2, post_from + post / 2), "girder", ink=True)
-    dial(m, (0, back + 1.0, gauge_z), dial_r, gen, demand, needles=1 if stage == 1 else 2)
-    for sx in (-1, 1):                                                              # the cables, down the stay and out
-        head = [(sx * 6.0, -0.9, top + 1.4)] if stage == 3 else []
-        cable(m, head + [(sx * 0.8, back - 0.9, top - 0.3), (sx * 0.8, -15.2, 0.7), (sx * 3.4, -18.0, 0.2)], r=0.3)
+    # the current: from the shoe along the arm, round the bearing, down the trestle and away on the floor
+    cable(m, [tuple(tip + Vector((0, 0.75, 0))), tuple(head + dirn * 2.4 + Vector((0, 0.75, 0))),
+              (-2.8, yf + 0.8, axle - 0.4), (-2.8, yf + 0.8, axle - 2.6), (-3.9, yf + 0.8, 1.6),
+              (-9.8, yf + 0.9, 1.4), (-11.4, -4.0, 0.3), (-3.4, -18.0, 0.2)], r=0.3)
     return m
+
+
+A_FIXES = (
+    "Research's pick with its three fixes (AR19, research's verdict, 15:04). 1. The gauge is the machine: the "
+    "buckets light as they leave the well on the gate's right, and the lit arc's height up the rim is the "
+    "generation, from the well to the collector's shoe; a bone diamond on a steel rail outside the rim is the "
+    "demand, a lit pip in its face so it holds at dusk. The arc past the mark means power to spare. The dial is gone. 2. Heavy, not a portal: a concrete sill across "
+    "the well carries a trestle and the front bearing, the axle running from the hub into it; the collector is an "
+    "arm clamped on that bearing, out across the wheel's face to its copper shoe; the band is 3 deep and 4 wide, the "
+    "hub filled and bolted, and the rim lit only on the rising side. 3. Each stage tells from the gate: Stage II "
+    "puts a spur gear on the axle and its pinion driving a housed dynamo on the sill, in front; Stage III adds the "
+    "casing, the crown of rods and a second dynamo. The wheel is 23 studs across (24 from Stage II), its top 22 up.",
+    "For the builder: the wheel turns about the line to the gate as its own piece; the lit arc is a glow piece that "
+    "stays still while the buckets turn through it, cut in steps so its top follows the generation, and the bone "
+    "mark slides along the rail with the demand. The gears turn with the wheel, the pinions the other way.",
+)
 
 
 # --- B, the Beam Pump --------------------------------------------------------------------------------------------------
@@ -633,24 +708,7 @@ class Shots:
 
 
 DIRECTIONS = (
-    ("A", "the Void Mill", mill, (
-        "A heavy wheel, 21 studs across, faces the gate and turns down into the well's dark. Its rim is a deep band of "
-        "buckets between two rims: the buckets coming up out of the dark on the gate's right glow violet in their "
-        "cells, and at the top a collector arm with two copper brushes takes the light off. The current leaves the arm "
-        "in yellow, down the mast's stay and away on the floor. A raked frame behind carries the bearing, so nothing "
-        "stands before the wheel. The gauge is a round dial over the collector: its needle is the generation, and a "
-        "bone notch on the rim is the demand.",
-        "The motion: the wheel turns, faster as the plant generates more, and each bucket lights as it leaves the dark "
-        "and goes dark as it gives its light up. From the gate it's the clearest motion of the three, a whole wheel "
-        "turning face on, and the most honest frame: the wheel, its bearing, its collector. The risk: a wheel facing "
-        "the gate is round, like today's ring, so the band's depth, its lit cells and the frame must carry the "
-        "difference.",
-        "Growth: Stage II has a wider wheel with two sets of spokes and two collector arms, a gear and a copper dynamo "
-        "beside it on the right, the frame plated, the cables in trays, and two needles on a larger dial. Stage III is "
-        "that wheel under an armoured half drum with a lit window band, a crown of six collector rods, dynamos both "
-        "sides and a bezel round the hub. For the builder: the wheel is its own piece turning about the line to the "
-        "gate, and the buckets' light could be one glow piece on the rising side that stays still while the wheel "
-        "turns through it.")),
+    ("A", "the Void Mill", mill, A_FIXES),
     ("B", "the Beam Pump", pump, (
         "A walking beam rocks on the head of a straight column bound in even steel hoops. Its two pumps stand at the "
         "well's edge and lift the well's light up the pipes into the column's foot. The column's lit height is the "
@@ -696,7 +754,7 @@ STANDINS = ("Blocks in the base kit's own swatches, rendered in Blender under th
             "figures are a player's size.")
 
 
-def direction_sheet(out, key, title, notes, cells, tris):
+def direction_sheet(out, key, title, notes, cells, tris, name=None):
     gap, w, h = 16, *look.SIZE
     cols = 2
     rows = (len(cells) + cols - 1) // cols
@@ -716,7 +774,7 @@ def direction_sheet(out, key, title, notes, cells, tris):
         t.text(gap, y + i * 19, 14, line, "#B4AC9C")
     for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
         rs.paste(sheet.px, layer, 0, 0)
-    rs.save(sheet.px, out / f"generator_{key}.png")
+    rs.save(sheet.px, out / (name or f"generator_{key}.png"))
 
 
 def glance_sheet(out, shots):
@@ -761,6 +819,28 @@ def small_sheet(out, made):
     rs.save(sheet.px, out / "generator_64.png")
 
 
+def fixes_sheet(out, shots):
+    """A after research's three fixes, from the game's camera, with its last near view before them."""
+    shots.take("A", mill(1), ("spawn", "near", "side"))
+    shots.take("Alowgen", mill(1, gen=0.2), ("near",))
+    shots.take("Ahighgen", mill(1, gen=0.95), ("near",))
+    shots.take("AII", mill(2), ("near",))
+    shots.take("AIII", mill(3), ("near",))
+    ui.K = 1
+    cells = [(CAPTIONS["spawn"], shots.made[("A", "spawn")]),
+             (CAPTIONS["near"] + ", generation 0.6, demand 0.45", shots.made[("A", "near")]),
+             (CAPTIONS["side"], shots.made[("A", "side")]),
+             ("Stage I, low generation (0.2): the arc under the demand's mark", shots.made[("Alowgen", "near")]),
+             ("Stage I, high generation (0.95): the arc up to the collector", shots.made[("Ahighgen", "near")]),
+             (CAPTIONS["II"], shots.made[("AII", "near")]), (CAPTIONS["III"], shots.made[("AIII", "near")])]
+    before = out / "generator_A_before_near.png"
+    if before.exists():
+        cells.append(("Before the fixes: the direction research picked, from 30 studs", rs.load(before)))
+    direction_sheet(out, "A", "the Void Mill, with research's three fixes", A_FIXES, cells,
+                    [shots.tris["A"], shots.tris["AII"], shots.tris["AIII"]], name="generator_A_fixes.png")
+    print("triangles:", {k: v for k, v in shots.tris.items()})
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
@@ -771,6 +851,9 @@ def main():
         return
     fast = "fast" in args
     scene, yard, d = yard_without_generator(out, fast)
+    if "A" in args:                                         # research's pick alone, with its three fixes
+        fixes_sheet(out, Shots(out, scene, yard, d))
+        return
     shots = Shots(out, scene, yard, d)
     for key, title, build, _ in DIRECTIONS:
         shots.take(key, build(1), ("spawn", "near", "side"))

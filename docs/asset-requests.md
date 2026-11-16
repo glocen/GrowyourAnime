@@ -7457,6 +7457,37 @@ From the three sheets and the glance, stills only, with the motion from their no
   3. Each stage tells from the gate: Stage II reads almost as Stage I now. II's step is its gear train and dynamo in view; III's dynamos are housed drums, not spheres. Serves the three stages.
 - **The director's call 3** (anime-industrial, `docs/team-notes.md`, item 8) can still move this look. The pick stands on research's reading until they answer.
 
+### Fixes 1 to 3 within A, delivered (Modulo, 2026-11-16, 15:37)
+
+- **Fix 1, the gauge is the machine:** the buckets light as they leave the well on the gate's right, and the lit arc's height up the rim is the generation, from the well (0) to the collector's shoe high on that side (1). A steel rail outside the rim carries a bone diamond for the demand, a lit pip in its face: bone facing the gate read dark at dusk in the first render. The arc past the diamond means power to spare. The dial, its post, the mast and the stay are gone.
+- **Fix 2, heavy, not a portal:**
+  - A concrete sill across the well carries a trestle and the front bearing. The axle runs from the hub into it, with a bone nut at its end.
+  - The collector is an arm clamped on that bearing, out across the wheel's face to its copper shoe, carrying the rail's head beyond the rim. The current runs from the shoe along the arm, round the bearing, down the trestle and away.
+  - The band is 3 deep and 4 wide (5 from Stage II), between two rims. The hub is filled and bolted, and the spokes are heavier.
+  - The rim is lit only on the rising side, never all round. The motes round the rim are gone; only the well's rise.
+- **Fix 3, each stage tells from the gate:**
+  - **Stage II:** a spur gear on the axle in front of the hub, and its pinion on the descending side, driving a housed dynamo on a stand on the sill. The dynamo is a square steel cage round a copper drum, a bone boss in its face and a terminal box on top.
+  - **Stage III:** the casing and its crown of rods, and a second dynamo on the rising side. The casing's window band is lit only as far as the gauge, and the hub's bezel is gone.
+- **Size:** the wheel is 23 studs across (24 from Stage II), its top 22 up, on the well as it stands.
+- **The pictures:** `build/handoff/Base/generator/generator_A_fixes.png`. It shows Stage I from the spawn, from 30 studs and from the side; Stage I at low (0.2) and high (0.95) generation; Stages II and III; and A's near view before the fixes. The direction record (`generator_glance.png`, `generator_A.png` to `C.png`) stays as it was.
+- **The script:** `tools/blender/generator_directions.py`, whose `A` mode renders A alone into this sheet.
+- **Triangles,** with the drawn edge, Stages I, II and III: 4,634, 6,582, 8,998.
+- **For the builder** (in the sheet's notes): the wheel turns about the line to the gate as its own piece. The lit arc is a glow piece that stays still while the buckets turn through it, cut in steps so its top follows the generation. The diamond slides along the rail with the demand. The gears turn with the wheel, the pinions the other way.
+- **Content check:** PASS, 2026-11-16, by 15:36. It looked at the sheet, the near, side and Stage III views at full size, and the code. The arm reads as a clock hand or crank, and nothing hangs from it. The trestle doesn't read as a gallows. The diamond is a plain marker. The violet is stepped light, never liquid. The spokes stay straight in both sets. No symbol, weapon or gore.
+  - **Conditions for the finish:**
+    - Both sets of spokes stay straight and radial, never offset or curved, in motion too.
+    - Stage III's dynamos stay square cages at about the hub's height, either side of a trestle that keeps its splayed A and tie. They never become two round drums low beside one upright post under a round cap, the reading C was blocked for.
+    - The collector arm stays one straight rigid arm, with nothing hung from it on a line, chain or loop.
+    - Copper is finished on the orange side, so the shoe never reads red in shadow.
+    - The demand mark stays a plain diamond with a plain lit pip: no rays, no iris, never named "Eye".
+    - The violet stays emissive, stepped light, and the well dark with motes.
+    - Carried over: the motion gets its own check once built, and the upload check sees the exact files at full size and at 64 px over a dark ground.
+- **The four facts:**
+  - **Implemented:** blocks in the kit's swatches, not finished pieces.
+  - **Tested:** the renders and the content check, both above.
+  - **Visually reviewed:** my own read from the game's camera. Research's pass is next.
+  - **Director-accepted:** no. The director's call 3 (anime-industrial) can still move the look.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

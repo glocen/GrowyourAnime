@@ -3152,6 +3152,15 @@ Research's three fixes and the rename, drawn again in grey on each kind's sheet 
   - Accepted: no.
 - **Time, by the clock:** 18:51, research's verdict, to 19:08.
 
+### Research's pass on batch 2's fixes (Quaestor, 2026-11-16, 19:10)
+
+- **Felt:** the Shoulders' row now reads as a mantle on a body at slot size, the collar ring the tell, and down each column a set is still one family.
+- **Tier:** competent, all eight kinds. Batch 2 closes in grey; its colour is next.
+- **The one bold thing:** each Legendary's one new form, as before.
+- **Fixes (fix 1 held to the pair, as the round showed the single pauldron doesn't read):**
+  - Fixes 1 to 3 hold: the Shoulders' arch with its collar at 32 pixels, the Earring's hook on every drop, and a collar or clasp on every cloak.
+  - One condition for the colour pass, so Yoake reads as shoulders at 32 pixels and not as a winged bar: it keeps a stack of two lames under each wing, the wing growing from the cop. Modulo's four content conditions stand with it.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

@@ -275,6 +275,59 @@ def report_cp(pairs=3000, seed=11):
     print("Today's figure for the same test is in sim.py's section 16 (97%).")
 
 
+def cp_fit_attr(level, attack=4.0):
+    """sim.cp_fit on the attribute builds: each stat's weight a point, Attack's held at `attack`, from what a point adds
+    to the edge, averaged over every class and spec on budget, with and without typical lifesteal, as the fighter and
+    as its foe. A percent's is given at level 1, as Power multiplies it by G."""
+    ps = panel(level, S["onBudget"], fighter_attr)
+    m = {k: 0.0 for k in CP_NAMES}
+    for a in ps:
+        for k in CP_NAMES:
+            step = 0.01 if k in sim.CP_PERCENTS else max(0.5, 0.01 * max(a[k], G(level) * 10))
+            b = dict(a)
+            b[k] += step
+            m[k] += sum(edge(b, p) - edge(a, p) for p in ps) / step
+    return {k: attack * v / m["atk"] / (G(level) if k in sim.CP_PERCENTS else 1) for k, v in m.items()}
+
+
+def two_figures(x):
+    return float(f"{x:.2g}")
+
+
+def report_cp_refit(pairs=3000, seed=11):
+    print("\n== A8. Combat Power's weights refit on the attribute builds (sim.py's section 16, the same method) ==")
+    seeds = {k: S["combatPower"]["weights"][n] for k, n in CP_NAMES.items()}
+    levels = (5, 15, 30, 45, 60)
+    fits = {L: cp_fit_attr(L) for L in levels}
+    refit = {k: two_figures(sum(fits[L][k] for L in levels) / len(levels)) for k in CP_NAMES}
+    refit["atk"] = 4
+    line("stat", *[f"fit lv {L}" for L in levels], "refit", "seeds", w=13)
+    for k in CP_NAMES:
+        line(CP_NAMES[k], *[f"{fits[L][k]:.3g}" for L in levels], refit[k], seeds[k], w=13)
+    rng = random.Random(seed)
+    rows = []
+    for _ in range(pairs):
+        L, f = rng.randint(1, 60), rng.uniform(0.2, 1.0)
+
+        def someone(ff):
+            return fighter_attr(L, ff, rng.choice(RARITIES), rng.choice(CLASSES), rng.choice(list(SPECS)),
+                                rng.choice((0.0, 0.0, S["lifesteal"]["typical"], 0.06)),
+                                extra={rng.choice(ATTRS): rng.uniform(0, 0.25) * 100 * G(L)})
+        a, b = someone(f), someone(min(1.0, max(0.0, f + rng.uniform(-0.1, 0.1))))
+        rows.append((a, b, edge(a, b)))
+    for name, w in (("seeds", seeds), ("refit", refit)):
+        out = []
+        for least in (0.02, 0.10):
+            n = ok = 0
+            for a, b, e in rows:
+                if abs(e) >= least:
+                    n += 1
+                    ok += (cp(a, w) > cp(b, w)) == (e > 0)
+            out.append(f"{ok / n:.1%}")
+        print(f"{name}: the higher wins {out[0]} of same-level duels with no type edge, {out[1]} where one wins 10% faster")
+    print("For Config.Stats.Power.Weights:", {CP_NAMES[k]: v for k, v in refit.items()})
+
+
 def report_value():
     print("\n== A7. What a point is worth in Combat Power (weights x conversion), the price of a gear line ==")
     w = {k: S["combatPower"]["weights"][n] for k, n in CP_NAMES.items()}
@@ -303,3 +356,4 @@ if __name__ == "__main__":
     report_classes()
     report_ttk()
     report_cp()
+    report_cp_refit()

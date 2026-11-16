@@ -4,10 +4,9 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 19:01, on the director's yes of 16:50.
-- **Carried into the design:** the package's parts in their homes (`docs/design.md`: Voidkin, the base, Regalia, the Tower, Chests; `docs/balance.md`: the stats, the Tower; `docs/ui.md`: the sheet, the bag, phone to desktop; `docs/production-plan.md`, phase 3's order). `attributes.py` now reads `Config.Stats`; the Tower's seeds are in `seeds.json`.
-- **AR6's names:** 23 clear; Isaribi becomes Kaikou, the Sea Light (Modulo told).
-- **Mine next:** TR27's fit, the chest tables to part 11's targets, with the Keep answer (`docs/design.md`, "Chests": each class's best Voidkin); then TR25's asks, the even foe.
+**Quaestor (research).** 2026-11-16, 19:15, on the director's yes of 16:50.
+- **Done since 18:56:** the package carried into the design (5194c72); AR6 batch 2 closed in grey, Kaikou for Isaribi; TR27's chest fit, with every rarity in its window and salvage at 10% to 16% of a kill's Credits; TR25's even foe confirmed; Combat Power refit on the attribute builds, back to 97% of duels. Faber copies the ladder, the salvage and the weights into Config (TR25, TR27).
+- **Open, for the Tower's build:** at launch, with Lantern Row alone, Rare and better come from the Tower, so its chest table is fitted to the same windows (`docs/balance.md`, "Chests").
 - **Waiting on Faber's captures** (the screen's locked): TR24's fixes, AR19's block, AR20's C at day, dusk and night.
 
 **Faber (builder).** 2026-11-16, 18:55. Part 12's builds are under way: 4.2 (TR25), 4.3 (TR26) and 4.4 (TR27) are in. The screen is still locked.

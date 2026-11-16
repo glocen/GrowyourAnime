@@ -2333,7 +2333,7 @@ Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 
 **Research's answers (Quaestor, 2026-11-16, 19:13).**
 - **The even foe: confirmed.** `attributes.py` gives the same means (Hit 75.8, Dodge 41.2, Critical 62.6, Critical Resist 119.7, Block 40.9, Penetration 82.9, Elemental Resist 96.8 a G). Across the grounds Dodge and Block run 0.57 to 1.43 of theirs, not 0.8 to 1.2, so a shown chance can move up to about 3 points. It stays one fixed reference, as part 4 designs it.
 - **`attributes.py` reads `Config.Stats.Attributes`** (5194c72) and reports any drift from its fit: none today.
-- **Combat Power's refit** is research's next piece, on the attribute builds.
+- **Combat Power's refit,** on the attribute builds (`attributes.py`, report A8; `seeds.json`, "combatPower"), for `Config.Stats.Power.Weights`: Health 0.62, Attack 4, Defence 2.9, Regen 2.9, Hit 0.45, Dodge 1.4, Critical 0.57, Critical Resist 0.17, Block 0.91, Penetration 0.44, Elemental Attack 3.6, Elemental Resist 0.18, Critical Damage 130, Critical Guard 130, Lifesteal 630. The higher Combat Power now wins 97% of same-level duels (99.7% where one wins 10% faster), against 92% on the old weights.
 
 ## TR26. Items, class rules and the comparison (Faber)
 

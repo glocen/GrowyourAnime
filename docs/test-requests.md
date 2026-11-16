@@ -2292,6 +2292,17 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - The killing hit reached the client with the kill's hold of 0.130 s. Both kills were a lead's signature at rung 7, so the ordinary hit's raise to rung 4 is logic-tested only.
   - **NOT VERIFIED:** the drawn throw, the flash and the camera's kick, since the screen is locked and they run on render. To judge in motion: the Row's fight from the player's camera, with the Down clip during the throw, and the burst landing where the body does.
 
+**Read on the unlocked screen (Faber, 2026-11-16, 21:01 to 21:17, by the PC's clock).** A fresh profile in play, walked by script from arrival to the gate's line. The stills are `build/scratch/faber/stills/tr24-01` to `tr24-15` (scratch), for research's verdict.
+- **The suite (27847da):** 2,391 passed, 10 failed; six fixed and each rerun alone. The four left wait on the Items page in A and on TR25's smallest phone. Fix 8's and fix 11's play cases pass on render.
+- **Fix 1, again (27a168a):** the edge arrow stood under the wallet. It now stands under the HUD's top band. In view is still judged on the frame's own inset, so the Door's crown, high over its sign, keeps its chevron and gets no arrow (`05a` before, `05` after). The case gains both checks, 8/8 at 60 fps.
+- **What reads:** the Door's sign (fix 10, `05`); the Row's Shades in view from the landing and the fight before the camera (fix 2, `06`, `07`); turned round, Rook between the camera and the avatar fades to 0.65 (fix 3, `08`); home, "Watt's shard: into the Breaker" (`09`); the break and Watt's reveal (`10`, `11`); in the Row again once a bay works, "The Lamplighter waits at the gate" (`15`).
+- **The driver's findings, for research's ranking:**
+  - At the top, under the band, the edge arrow stands about a quarter down the frame and reads as a small lilac stroke on the sky (`13`, `14`).
+  - Watt's reveal shows the grey stand-in body (`11`).
+  - "Watt: to work in Bay 1" while the plate in view reads "Bay 2 · nobody works here" (`12`).
+  - At work, no Watt stands at Bay 1: the plate, within 13 studs, says "Watt · 18 kW" (`14`). The meter reads "18 / 0 kW".
+  - From the first stills (`01` to `03`): chevrons over the starters at arrival, the starters plain lit cubes, the reveal opening by itself, the lead on the camera's right.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.
@@ -2633,6 +2644,10 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
   - **The checks:** logic 23,240/0, with the bag case's chest checks rewritten. The bag's self-test: its flow passes, and the same 11 layout checks as TR28's fail on the 1×1 viewport, NOT VERIFIED.
   - **Research's answer (20:42): change it, for every chest.** A chest's cell takes no rarity's frame: the bag's plain edge, its own picture naming its kind (Ordinary, Elite, Keeper's, Tower), and its odds on its card. A rarity's frame says what a thing is (`docs/ui.md`, rule 3). On a chest it would say what it might be, the "up to" the stats never show ("Stats, shown honestly"): the Tower's would be a Legendary frame on a box that gives a Common 60% of the time.
 
+**Read on the unlocked screen (Faber, 2026-11-16, 21:04 to 21:05, by the PC's clock).** Stills `build/scratch/faber/stills/tr29-ring`, `tr29-floor9` and `tr29-summary` (scratch), for research's verdict. The suite's Tower case passes on render (27847da).
+- The ring reads as a faint pale disc, with no word on it.
+- After 11 fast floors the results say "+0 Credits" and "No chests this run", which is right by the fit, but the screen doesn't say why. It shows two Close buttons.
+
 ## TR30. The generator's stages (Faber, on AR19)
 
 Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/design.md`, "The base", "Three stages for every machine"), on the director's yes of 2026-11-16, 16:50. Research's answer is (a): the generator takes the stage of a machine at the base's ceiling. Modulo's pieces and swap table are AR19, "Stages II and III as kit pieces" (e516da7).
@@ -2681,3 +2696,5 @@ Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/d
   - The turning in motion.
   - The new self-test checks in BaseCases' mill case: each level's stage shown and solid, the others hidden and open, a pinion driven from its wheel about its own axle, and the stage's degrees. The mill's older checks there and in `Cases.luau` read the shown stage through `MillStage`.
   - The whole suite, and the player-camera check.
+
+**Read on the unlocked screen (Faber, 2026-11-16, 21:02 to 21:03, by the PC's clock).** Stills `build/scratch/faber/stills/tr30-stage2` and `tr30-stage3` (scratch), for research's verdict. The stages swap at base levels 2 and 3, and the pinion turns at 2.4 times the wheel in motion. The mill's self-test checks and the whole suite pass on render (27847da).

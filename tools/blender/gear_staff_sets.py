@@ -37,8 +37,9 @@ def design(name, rarity, note, key, **more):
 
 
 DESIGNS = (
+    # lift, glint: in colour, research's verdict on batch 3 in colour (gear_icons.py): plain iron toned to a mid grey with a light edge, a flat bronze face's streak
     design("Iron Staff", "Common", "A plain iron ring on an ash shaft, an iron ball on a stem.", "iron",
-           shaft_bands=(-1.0, 0.8)),
+           shaft_bands=(-1.0, 0.8), lift="iron"),
     design("Bronze Staff", "Common", "Three knobs round a bronze ring, the ball in a cradle.", "bronze",
            knobs=True, hold="cradle", butt="pear"),
     design("Scrap Staff", "Common", "A strap bent into a ring and wired to the shaft, a nut for a core.", "scrap",

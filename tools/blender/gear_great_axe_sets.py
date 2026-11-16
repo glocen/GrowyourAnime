@@ -75,10 +75,11 @@ def design(name, rarity, note, key, **more):
 
 
 DESIGNS = (
+    # lift, glint: in colour, research's verdict on batch 3 in colour (gear_icons.py): plain iron toned to a mid grey with a light edge, a flat bronze face's streak
     design("Iron Greataxe", "Common", "A bearded crescent, a plain socket, iron bands on an ash haft.", "iron",
-           haft_bands=(-1.5, -0.2, 1.2)),
+           haft_bands=(-1.5, -0.2, 1.2), lift="iron"),
     design("Bronze Greataxe", "Common", "A round half moon of bronze, a hammer's face on its back.", "bronze",
-           blade=HALF_MOON, back="hammer", haft_bands=(-0.4,), butt="pear"),
+           blade=HALF_MOON, back="hammer", haft_bands=(-0.4,), butt="pear", glint="bronze"),
     design("Scrap Greataxe", "Common", "A slab of plate cut square and bolted on, a cord grip.", "scrap",
            blade=CLEAVER, bolts=True, grip="cord", turns=6, haft_bands=(1.2,)),
 

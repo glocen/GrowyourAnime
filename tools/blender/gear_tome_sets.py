@@ -54,9 +54,10 @@ def design(name, rarity, note, key, **more):
 
 
 DESIGNS = (
-    design("Iron Tome", "Common", "Dark leather, iron caps on its corners, an iron strap clasp.", "iron"),
+    # lift, glint: in colour, research's verdict on batch 3 in colour (gear_icons.py): plain iron toned to a mid grey with a light edge, a flat bronze face's streak
+    design("Iron Tome", "Common", "Dark leather, iron caps on its corners, an iron strap clasp.", "iron", lift="boards"),
     design("Bronze Tome", "Common", "A bronze boss on the cover, bronze corners, three bands on the spine.", "bronze",
-           boss=0.3, spine_bands=3, clasp=None),
+           boss=0.3, spine_bands=3, clasp=None, lift="boards"),
     design("Scrap Tome", "Common", "Covers of plate bolted on, a cord tied round it twice.", "scrap",
            cover="scrap", corners=None, cord=True, bolts=True, clasp=None, spine_bands=0),
 

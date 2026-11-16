@@ -84,7 +84,10 @@ PAINT = dict(
     # a glove's leather, a cool charcoal, never a brown that could read as a hand (content check, 2026-11-16)
     hide=("#34343C", 0.0, 0.6),
     # batch 3: the Tome's pages, a warm cream a step under ivory; the Codex's pale covers, a cool parchment under it
-    paper=("#D6CAB0", 0.0, 0.75), vellum=("#CDC8BC", 0.0, 0.6))
+    paper=("#D6CAB0", 0.0, 0.75), vellum=("#CDC8BC", 0.0, 0.6),
+    # a pale crystal's facets turned from the light: a cool slate, so it reads cut, a stone, never a flame (research's
+    # verdict on batch 3 in colour, Ryuukou)
+    facet=("#3E4152", 0.0, 0.35), facet_mid=("#A39E95", 0.0, 0.35))
 # The Tome's boards: a dark leather that agrees with its rarity and never wears it whole, as batch 2's cloth does.
 BOARDS = dict(Common="#3A2C25", Uncommon="#2C333D", Rare="#1F293B", Epic="#291F33", Legendary="#1F2436")
 LIT = "#FFF6DC"  # a lit part: warm white, never red or dark
@@ -108,7 +111,15 @@ UMBER, LEGEND_LIGHT = ("#34200E", "#1A1007"), 0.72
 # A polished steel tube's streak, which Workbench's soft light leaves flat (research's verdict on batch 2 in colour, the
 # Uncommon bracers): its light, above and to the right, toward the camera.
 SHEEN = (0.35, 0.65, 0.67)
-NOW = dict(tone=LIT, sheen=False, rarity="Common")  # the design being built
+# Research's verdict on batch 3 in colour (2026-11-16, 21:02): Common iron reads on its well at 38 points, a mid grey
+# with a light edge, never darker than the well, since plain shouldn't mean unseen. A design's `lift` names the one key
+# toned so, by how bright it renders, from its own shade to its own light, through these four tones: iron a mid grey,
+# the Common Tome's boards a mid leather. A board's broad face is its darkest part, so its first tone is the leather
+# itself, muted so it never reads as bronze.
+LIFT = dict(iron=((0.0, "#4A505B"), (0.45, "#7C8390"), (0.85, "#C2C7D0"), (1.0, "#EEF1F5")),
+            boards=((0.0, "#5B4D44"), (0.45, "#6E6158"), (0.85, "#92857A"), (1.0, "#BCAFA2")))
+LUMA = np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+NOW = dict(tone=LIT, sheen=False, rarity="Common", lift=None, glint=None)  # the design being built
 
 
 def tone(d):
@@ -139,6 +150,7 @@ def building(make):
     """A kind's own builder, noting the design it builds so its stone takes its set's tone."""
     def built(d, *more):
         NOW["tone"], NOW["sheen"], NOW["rarity"] = tone(d), d.get("sheen", False), d["rarity"]
+        NOW["lift"], NOW["glint"] = d.get("lift"), d.get("glint")
         return make(d, *more)
     return built
 
@@ -177,6 +189,10 @@ def shoot(scene, out, centre, span):
         lit = tempered(lit, mask[..., 2] * mask[..., 3], metal)
     if NOW["sheen"]:
         lit = sheened(lit, *normals(scene, out, {"steel"}))
+    if NOW["lift"]:
+        lit = lifted(lit, normals(scene, out, {NOW["lift"]})[1], LIFT[NOW["lift"]])
+    if NOW["glint"]:
+        lit = glinted(lit, *normals(scene, out, {NOW["glint"]}))
     return finish(lit, mask[..., 0] * mask[..., 3], mask[..., 1] * mask[..., 3], NOW["tone"])
 
 
@@ -200,6 +216,42 @@ def sheened(px, n, where):
     streak = (np.clip(1 - (top - ndh) / 0.1, 0, 1) ** 2 * where).astype(np.float32)
     px = px.copy()
     px[..., :3] += (c("#FFFBF2")[:3] - px[..., :3]) * (0.8 * streak[..., None])
+    return px
+
+
+def lifted(px, where, stops):
+    """A plain key toned by how bright it renders, its own shade to its own light mapped onto `stops`, then a light
+    edge on its upper left, wide enough to hold at 38 points: 7 pixels on a broad face, down to 3 on a thin ring, by
+    the part's own width (twice its area over its outline), so a thin part stays grey under its edge."""
+    grey = px[..., :3] @ LUMA
+    lo, hi = np.percentile(grey[where > 0.5], (5.0, 95.0))
+    v = np.clip((grey - lo) / max(hi - lo, 1e-3), 0, 1)
+    at, tones = [s[0] for s in stops], np.array([c(s[1])[:3] for s in stops])
+    tone = np.stack([np.interp(v, at, tones[:, i]) for i in range(3)], axis=-1).astype(np.float32)
+    px = px.copy()
+    px[..., :3] += (tone - px[..., :3]) * where[..., None]
+    gy, gx = np.gradient(where)
+    width = 2.0 * float(where.sum()) / max(float(np.hypot(gx, gy).sum()), 1.0)
+    k = int(round(min(max(0.3 * width, 3.0), 7.0)))
+    rim = blur(np.clip(where - np.roll(where, (k, k), axis=(0, 1)), 0, 1), 1.5) * where
+    px[..., :3] += (tones[-1] - px[..., :3]) * (0.6 * rim[..., None])
+    return px
+
+
+def glinted(px, n, where):
+    """A polished streak across a flat metal face, which the bracers' streak can't reach, since a flat face's normal
+    never turns: a band along the haft's line on the face's upper side, where the key light would lie if the face were
+    bowed a little, and a thin one beside it."""
+    face = np.median(n[where > 0.5], axis=0)
+    face /= max(float(np.linalg.norm(face)), 1e-4)
+    flat = where * np.clip((n @ face - 0.94) / 0.04, 0, 1)
+    ys, xs = np.mgrid[0:SIZE, 0:SIZE].astype(np.float32)
+    s = xs + ys  # constant along the haft's line, lower left to upper right
+    lo, hi = np.percentile(s[flat > 0.5], (2.0, 98.0))
+    t = (s - lo) / max(hi - lo, 1.0)
+    band = np.exp(-(((t - 0.3) / 0.075) ** 2)) + 0.5 * np.exp(-(((t - 0.47) / 0.03) ** 2))
+    px = px.copy()
+    px[..., :3] += (c("#FFF0D8")[:3] - px[..., :3]) * np.clip(0.75 * band * flat, 0, 1)[..., None]
     return px
 
 

@@ -31,6 +31,22 @@ FILL, DROP, LEAST = 0.84, 0.0, 0.86
 W, H, T, C = 1.7, 2.6, 0.72, 0.1     # slimmer and narrower than the Tome's 2.0 by 0.92, and pale
 PW, PH, PX = W - 0.2, H - 0.22, -0.04   # the page block: narrower and lower than the covers, which stand proud
 FRONT = -T / 2
+g.GREY.setdefault("facet", 0.34)     # a crystal's facets turned from the light
+g.GREY.setdefault("facet_mid", 0.6)  # and those facing the eye
+
+
+def cut(obj, turn=25.0):
+    """A crystal in three tones, as a prism reads and a blade's two bevels never do: once the book is laid, its facets
+    turned right take `facet`, those facing the eye `facet_mid`, and those turned left keep their own key."""
+    lay = (Matrix.Rotation(math.radians(TILT), 3, "X") @ Matrix.Rotation(math.radians(SPIN), 3, "Z"))
+    first = len(obj.data.materials)
+    obj.data.materials.append(mat("facet"))
+    obj.data.materials.append(mat("facet_mid"))
+    for poly in obj.data.polygons:
+        n = lay @ poly.normal
+        a = math.degrees(math.atan2(n.x, -n.y))  # 0 faces the camera, more is turned right
+        poly.material_index = first if a > turn else first + 1 if a > -turn else poly.material_index
+    return obj
 
 
 def design(name, rarity, note, key, **more):
@@ -194,15 +210,19 @@ def legend(d):
         cup = p.lathe("Cup", [(0.12, 0.0), (0.2, 0.08), (0.26, 0.18)], d["key"], thick=0.04)
         p.move(cup, Matrix.Translation((-W / 2 + 0.05, 0, H / 2)))
         parts.append(cup)
-        spire = cb.crystal("Spire", 0.22, 1.7, "lit", 0.0, 6)
+        # a cut stone, never a candle's flame (research's verdict on batch 3 in colour): the spire unlit, its facets
+        # turned from the light dark, and the light kept to the three small crystals at its foot
+        spire = cb.crystal("Spire", 0.27, 1.7, "stone", 0.0, 6)
         p.move(spire, Matrix.Translation((-W / 2 + 0.05, 0, H / 2 + 0.06)))
-        parts.append(spire)
-        for k in range(3):
-            small = cb.crystal("Small", 0.1, 0.7, "lit", 0.0, 6)
-            a = 2 * math.pi * k / 3 + 0.4
-            p.move(small, Matrix.Translation((-W / 2 + 0.05 + 0.2 * math.cos(a), 0.2 * math.sin(a), H / 2 + 0.05)) @
-                   Matrix.Rotation(math.radians(24), 4, Vector((-math.sin(a), math.cos(a), 0))))
-            parts.append(small)
+        parts.append(cut(spire))
+        # three heights, splayed little, so they grow as a cluster and never pair into a sword's guard; each set by
+        # where it stands once the book is laid (SPIN turns it; -90 faces the camera), so all three show in front
+        for r, length, laid in ((0.13, 0.95, -25.0), (0.1, 0.6, -150.0), (0.08, 0.42, -90.0)):
+            small = cb.crystal("Small", r, length, "glow", 0.0, 6)
+            a = math.radians(laid - SPIN)
+            p.move(small, Matrix.Translation((-W / 2 + 0.05 + 0.22 * math.cos(a), 0.22 * math.sin(a), H / 2 + 0.05)) @
+                   Matrix.Rotation(math.radians(15), 4, Vector((-math.sin(a), math.cos(a), 0))))
+            parts.append(cut(small))
     elif form == "points":
         for sx in (-1, 1):
             for sz in (-1, 1):

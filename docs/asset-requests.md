@@ -3404,6 +3404,39 @@ Research's four fixes and the three renames, drawn again in grey on each kind's 
 - **The content check's condition is met:** Rinkou's ribbons are pale cream.
 - **Delivery:** the three fixes, then research's look, then the 120 are cleared for upload.
 
+### Research's three fixes, in colour (Modulo, 2026-11-16)
+
+Eight pictures rendered again: research's seven and the Bronze Tome, which shares Common's boards. Every other picture in batch 3 renders byte-identical, since each fix is a flag on its own designs (`lift`, `glint`, Ryuukou's form) in `tools/blender/gear_icons.py` and the kinds' scripts.
+- **1. Common iron reads on its well.**
+  - **The lever:** `lift` tones the plain key by how bright it renders, from its own shade to its own light, through four tones (`LIFT`): iron runs from a mid grey to a pale steel.
+  - **The light edge:** the edge on its upper left is 3 to 7 pixels wide, by the part's own width. A broad blade gets 7, and the Staff's thin ring gets 3, so it stays grey under its edge.
+  - **The luma at the middle (p50), before → after:**
+    - Iron Greataxe 0.18 → 0.36.
+    - Iron Dagger 0.21 → 0.35.
+    - Iron Staff 0.39 → 0.53: its ring is a round tube, so it spans more of its range than a flat blade.
+  - **The Common Tome's boards** take the same lever, toward a muted mid leather. The broad face is the darkest part, so the first tone is the leather itself, muted so it never reads as bronze; the first try came out copper and was redone.
+    - Iron Tome 0.05 → 0.32.
+    - Bronze Tome 0.05 → 0.33. Not in research's list: its boards are Common's too, and boards step by rarity.
+  - Uncommon to Epic boards stay near-black, as kept.
+- **2. Bronze's streak.** The bracers' streak lights the facets that turn toward the light, and a flat face never turns. So `glint` lays the streak where a face bowed a little would catch it: a band along the haft's line on the face's upper side, and a thin one beside it. On the Bronze Greataxe and the Bronze Dagger, the luma at the middle went 0.26 → 0.35 and 0.28 → 0.36.
+- **3. Ryuukou's spire is a cut stone.**
+  - The spire is unlit now, in three tones: pale facets on the left, mid at the front (`facet_mid`), dark slate on the right (`facet`). A prism reads in three tones, and a blade's two bevels in two.
+  - It's a little thicker (radius 0.22 → 0.27).
+  - The light lives in the three small crystals at its foot, which glow a little and stand at three heights (0.95, 0.6, 0.42), splayed 15°. Each is placed by where it stands once the book is laid, so all three show in front of the spire.
+  - **The two tries before it:**
+    - Two tones read as a blade standing in the book.
+    - Two even crystals splayed at 24° read as a sword's guard.
+    - With only one small crystal showing, the content check still saw a weak blade at 64 px.
+  - The Codex's grey sheet is drawn again from its script (`build/handoff/Gear/codex_sets/`).
+- **Not done, for research's word:** batch 1's Iron Sword and Iron Short Sword are as dark as these were. At the middle they measure 0.21 and 0.19, with 14% and 9% of their pixels under 0.12. `lift="iron"` on those two designs is the same fix, if wanted.
+- **Content check:** PASS for upload, all eight, with no conditions. The bronze streak reads as polish, never as a liquid, and the Tome's leather never as skin or a stain. Ryuukou passed at its first render, with a note that at 64 px one small crystal showing left a weak blade. Rendered again with all three in front, it passed again as a crystal cluster, neither a flame nor a blade.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, the five sheets and the eight pictures at full size.
+  - Delivered: for research's look.
+  - Accepted: no.
+- **Time, by the clock:** from research's verdict at 21:02 to this record's commit. That covers nine guarded Workbench runs, seven in colour and two in grey. Four were retries: the Tome's boards with the Staff's edge, and Ryuukou's spire three times.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

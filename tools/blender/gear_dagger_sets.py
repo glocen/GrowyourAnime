@@ -33,9 +33,10 @@ def design(name, rarity, note, key, **more):
 
 
 DESIGNS = (
-    design("Iron Dagger", "Common", "A plain iron fang, a block for a guard, a plain ring.", "iron", grip="wood"),
+    # lift, glint: in colour, research's verdict on batch 3 in colour (gear_icons.py): plain iron toned to a mid grey with a light edge, a flat bronze face's streak
+    design("Iron Dagger", "Common", "A plain iron fang, a block for a guard, a plain ring.", "iron", grip="wood", lift="iron"),
     design("Bronze Dagger", "Common", "A broad bronze fang bent hard, a hooked quillon.", "bronze",
-           bend=0.8, width=0.72, guard="hook", grip="cord"),
+           bend=0.8, width=0.72, guard="hook", grip="cord", glint="bronze"),
     design("Scrap Dagger", "Common", "A cut strip of plate with a bolt hole, wrapped in cord.", "scrap",
            bend=0.4, width=0.56, guard=None, hole=True, grip="cord", ridge=False),
 

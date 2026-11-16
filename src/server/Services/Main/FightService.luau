@@ -99,6 +99,11 @@ local fighters: { [string]: Fighter } = {}
 local byModel: { [Model]: Fighter } = {}
 local leads: { [Player]: Fighter } = {}
 local packHit: { [string]: { [Fighter]: boolean } } = {} -- the leads that hit a pack, until it resets
+-- Where each player's camera looks, flat, as their client last said (Net "View"; TR24's fixes 2 and 3), by os.clock().
+local views: { [Player]: { Look: Vector3, At: number } } = {}
+-- A lead waiting in view for an enemy coming to it from out of view (TR24's fix 2): which, and since when.
+local waits: { [Fighter]: { Target: Fighter, Since: number } } = setmetatable({}, { __mode = "k" }) :: any
+local overs: { [Fighter]: number } = setmetatable({}, { __mode = "k" }) :: any -- halfOver's, once each
 local nextId = 0
 local folder: Folder
 
@@ -521,11 +526,45 @@ local function remove(f: Fighter)
 	f.Model:Destroy()
 end
 
--- Where a lead stands beside its avatar: a little to the right and behind, at the avatar's height; in a keeper's try, on
--- its left (Combat.Keeper.Side: clear of the Challenge and the fall's line).
-local function besideAvatar(avatar: BasePart, owner: Player?): CFrame
-	local side = if owner and owner:GetAttribute("Try") ~= nil then Combat.Keeper.Side else Combat.Lead.Side
-	return avatar.CFrame * CFrame.new(side, 0, 1)
+local function bearingOf(offset: Vector3): number
+	return math.deg(math.atan2(offset.Z, offset.X))
+end
+
+-- Where the player watches from (TR24's fixes 2 and 3): their camera's flat look while their client's report is fresh,
+-- else the avatar's facing.
+local function lookOf(owner: Player?, avatar: BasePart): Vector3
+	local view = if owner then views[owner] else nil
+	if view and os.clock() - view.At <= Combat.Lead.View.Fresh then
+		return view.Look
+	end
+	local facing = flat(avatar.CFrame.LookVector)
+	return if facing.Magnitude > 1e-3 then facing.Unit else Vector3.new(0, 0, -1)
+end
+
+-- Half of how much wider than an R6 body with its arms (4 studs) a lead stands, at most 3: it stands that much further
+-- aside, so a broad Voidkin never brushes the avatar.
+local function halfOver(f: Fighter): number
+	local known = overs[f]
+	if known == nil then
+		local size = f.Model:GetExtentsSize()
+		known = math.clamp(math.max(size.X, size.Z) / 2 - 2, 0, 3)
+		overs[f] = known
+	end
+	return known :: number
+end
+
+-- Where a lead stands beside its avatar: Combat.Lead.Side to the right and Ahead in front along the player's camera, at
+-- the avatar's height, facing where the camera looks, so it stands out of the camera's line (TR24's fix 3); `f` adds its
+-- breadth. In a keeper's try, on the avatar's left along its facing (Combat.Keeper.Side: clear of the Challenge and the
+-- fall's line).
+local function besideAvatar(avatar: BasePart, owner: Player?, f: Fighter?): CFrame
+	if owner and owner:GetAttribute("Try") ~= nil then
+		return avatar.CFrame * CFrame.new(Combat.Keeper.Side, 0, 1)
+	end
+	local look = lookOf(owner, avatar)
+	local right = look:Cross(Vector3.yAxis)
+	local at = avatar.Position + right * (Combat.Lead.Side + (if f then halfOver(f) else 0)) + look * Combat.Lead.Ahead
+	return CFrame.lookAt(at, at + look)
 end
 
 local function avatarRoot(f: Fighter): BasePart?
@@ -535,10 +574,6 @@ local function avatarRoot(f: Fighter): BasePart?
 		return root
 	end
 	return nil
-end
-
-local function bearingOf(offset: Vector3): number
-	return math.deg(math.atan2(offset.Z, offset.X))
 end
 
 -- Where `f` heads to fight `target`, `radius` studs from it: its place among the fighters of its side closing on that
@@ -565,7 +600,7 @@ local function slotFor(f: Fighter, target: Fighter, radius: number): (Vector3, n
 	for index, other in mates do
 		local bearing = bearingOf(flat(other.Root.Position - center))
 		local avatar = if other.Side == "Lead" then avatarRoot(other) else nil
-		local watched = if avatar then flat(-avatar.CFrame.LookVector) else Vector3.zero -- the side the player watches from
+		local watched = if avatar then -lookOf(other.Owner, avatar) else Vector3.zero -- the side the player watches from
 		if avatar and watched.Magnitude > 0.5 and beside then
 			local lean = Fight.Wrap(bearingOf(flat(center - avatar.Position)) - bearingOf(watched) - 180)
 			wants[index] = Fight.Aside(bearingOf(watched), lean, bearing, frame, Combat.Lead.Straight, near)
@@ -906,7 +941,7 @@ local function rise(f: Fighter, at: number)
 	local avatar = avatarRoot(f)
 	if avatar then
 		f.Root.AssemblyLinearVelocity = Vector3.zero
-		f.Root.CFrame = besideAvatar(avatar, f.Owner)
+		f.Root.CFrame = besideAvatar(avatar, f.Owner, f)
 	end
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
@@ -1075,19 +1110,31 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	local home = Markers.OnPlot(if type(plot) == "number" then plot else nil, f.Root.Position)
 	setHealth(f, Fight.Regen(f.Health, f.Block.Health, Fight.RegenRate(f.Block.Regen, f.Block.Health, home, Combat.Lead.Home.Full), dt))
 	local toAvatar = (avatar.Position - f.Root.Position).Magnitude -- in three dimensions: an avatar teleported straight up still pulls its lead
+	-- The fight in the camera's view (TR24's fix 2): each enemy's degrees off the camera's look, from the avatar.
+	local looking = bearingOf(lookOf(f.Owner, avatar))
+	local function offView(other: Fighter): number
+		local offset = flat(other.Root.Position - avatar.Position)
+		return if offset.Magnitude > 1e-3 then Fight.Off(bearingOf(offset), looking) else 0
+	end
 	local candidates: { Fight.Candidate } = {}
 	for _, other in fighters do
 		if other.Side == "Shade" and other.Kind ~= "Dummy" and standing(other) then
-			table.insert(candidates, { Id = other.Id, Distance = distance(f.Root, other.Root), Reach = distance(avatar, other.Root) })
+			table.insert(candidates, {
+				Id = other.Id,
+				Distance = distance(f.Root, other.Root),
+				Reach = distance(avatar, other.Root),
+				Off = offView(other),
+				Engaged = other.Target == f,
+			})
 		end
 	end
-	local targetId = Fight.LeadTarget(candidates, if f.Target then f.Target.Id else nil, Combat.Lead.Leash)
+	local targetId = Fight.LeadTarget(candidates, if f.Target then f.Target.Id else nil, Combat.Lead.Leash, Combat.Lead.View)
 	setTarget(f, if targetId then fighters[targetId] else nil)
 	local mode = Fight.LeadMode(toAvatar, f.Target ~= nil, Combat.Lead)
 	if mode == "Teleport" then
 		endAction(f, at)
 		f.Root.AssemblyLinearVelocity = Vector3.zero
-		f.Root.CFrame = besideAvatar(avatar, f.Owner)
+		f.Root.CFrame = besideAvatar(avatar, f.Owner, f)
 		return
 	end
 	if f.State == "Flinch" then
@@ -1118,7 +1165,24 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		else
 			endAction(f, at)
 			local walk = if f.Block.Speed > 0 then f.Block.Speed else Combat.Lead.FollowWalk -- its Speed (TR14)
-			moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), Fight.LeadSpeed(toAvatar, walk, Combat.Lead))
+			-- An enemy on it from out of the camera's view: it waits for it in view, at its place by the avatar, rather
+			-- than walking off the frame to meet it, View.Wait seconds at most (TR24's fix 2).
+			local waiting = waits[f]
+			if target.Target == f and offView(target) > Combat.Lead.View.Arc then
+				if waiting == nil or waiting.Target ~= target then
+					waiting = { Target = target, Since = at }
+					waits[f] = waiting
+				end
+			else
+				waiting = nil
+				waits[f] = nil
+			end
+			if waiting and at - waiting.Since < Combat.Lead.View.Wait then
+				local place = besideAvatar(avatar, f.Owner, f).Position
+				moveTo(f, Vector3.new(place.X, f.Root.Position.Y, place.Z), Fight.LeadSpeed(toAvatar, walk, Combat.Lead))
+			else
+				moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), Fight.LeadSpeed(toAvatar, walk, Combat.Lead))
+			end
 		end
 		return
 	end
@@ -1134,12 +1198,19 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		return
 	end
 	f.Watch = nil
-	face(f, nil)
-	-- the watch over, it turns from the fall and goes back to its place by the avatar, however near it stands: a lead
-	-- within Follow would otherwise keep facing where the keeper fell
-	if toAvatar > Combat.Lead.Follow or watch then
+	waits[f] = nil
+	-- Its place beside the avatar, along the camera (TR24's fix 3): it walks there once the avatar is Follow away or the
+	-- place has moved Settle from it (the camera turned), and there faces where the camera looks. The watch over, it
+	-- turns from the fall and goes back to its place however near it stands: a lead within Follow would otherwise keep
+	-- facing where the keeper fell.
+	local place = besideAvatar(avatar, f.Owner, f)
+	local fromPlace = flat(place.Position - f.Root.Position).Magnitude
+	if toAvatar > Combat.Lead.Follow or fromPlace > Combat.Lead.Settle or watch then
+		face(f, nil)
 		endAction(f, at)
-		moveTo(f, besideAvatar(avatar, f.Owner).Position, Fight.LeadSpeed(toAvatar, Combat.Lead.FollowWalk, Combat.Lead))
+		moveTo(f, place.Position, Fight.LeadSpeed(toAvatar, Combat.Lead.FollowWalk, Combat.Lead))
+	elseif fromPlace < 1 then
+		face(f, f.Root.Position + place.LookVector)
 	end
 end
 
@@ -1418,7 +1489,7 @@ function FightService.Calm(player: Player)
 	end
 	local avatar = Parts.Root(player.Character)
 	if avatar and standing(lead) then
-		lead.Model:PivotTo(besideAvatar(avatar, player))
+		lead.Model:PivotTo(besideAvatar(avatar, player, lead))
 	end
 end
 
@@ -1504,7 +1575,16 @@ function FightService.Start()
 	for _, player in Players:GetPlayers() do
 		onPlayer(player)
 	end
+	-- Where each player's camera looks (TR24's fixes 2 and 3): a flat bearing in degrees, atan2(Z, X).
+	Net.Server.On("View", function(player: Player, bearing: any)
+		if type(bearing) ~= "number" or bearing ~= bearing or math.abs(bearing) > 360 then
+			return
+		end
+		local r = math.rad(bearing)
+		views[player] = { Look = Vector3.new(math.cos(r), 0, math.sin(r)), At = os.clock() }
+	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
+		views[player] = nil
 		local lead = leads[player]
 		if lead then
 			remove(lead)

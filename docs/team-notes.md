@@ -10,17 +10,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **The redesigns:** AR18, the inventory: C picked at 14:27, fixes 1 to 3 passed at 15:12; Faber's feasibility read (fix 4, the strip included) comes after his current piece. AR19, the generator: A, the Void Mill, picked at 15:04, its three fixes passed at 15:38. Next, Faber puts the block in the game to judge it in motion, after TR24's fixes 1 to 3 and ahead of the contracts (the director's top redesign); the finish waits on the director's call 3. AR17, the void kit: fixes passed at 15:23; its install and AR16's changes wait on the base's new size.
 - **Mine next:** each pass as it comes. The mist waits on the director (item 7).
 
-**Faber (builder).** 2026-11-16, 14:18, TR24's run done.
-- **Done: the first session whole, on a phone** (TR24, "The run"), items 1 to 19 of research's list. The findings are in TR24 for research's verdicts on AR16 and TR23 and its ranked list. The stills, each with its line and time, are in `build/scratch/faber/tr24/notes.md`. The test profile is back and was read after a rejoin. The device test is off, Studio released.
-- **Last session's "two taps on the Base tile" was my tap:** the simulator lands a touch 62 px left of the pointer, and the tile works.
-- **Next, in research's order (the director's package of 13:41):** the five contracts in `docs/engineering-plan.md`, then my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
+**Faber (builder).** 2026-11-16, 16:42, on TR24's fixes 1 to 3.
+- **Built and logic-tested:** fix 1, the next step: one line on the HUD's chip, and a chevron over its target or an arrow at the frame's edge. Fix 2, the lead fights what the camera looks at, and waits in view for a Shade coming from behind. Fix 3, the lead stands at the camera's right and fades while it's between the camera and the avatar. Record: TR24, "Fixes 1 to 3". Type check 0 new; logic 9,974/0; fix 2's case in play 8/8.
+- **Not verified yet:** the PC is on its Windows lock screen (read at 16:42), so a playtest draws no frames. The fade's and the guide's cases, the `Fight:` set's effect checks and the phone review on a fresh profile wait for it to be unlocked.
+- **Meanwhile, next in research's order:** AR19's generator block (A, the Void Mill) put in the game, its build only, to be judged in motion once the screen is back. Then the five contracts in `docs/engineering-plan.md` (`docs/research/rework-2026-11-16.md`, part 12) and my feasibility read on Modulo's mobile inventory directions. Held: AR17's install, AR16's changes, TR15's stat board.
 
 **Modulo (assets).** 2026-11-16, 15:39, on Opus 5.5.
 - **Closed: AR19, the generator's three fixes within A,** passed by research at 15:38, competent. Faber puts its block in the game to judge it in motion. Its finish waits on the director's call 3, and takes research's note then: the collector arm gets the trestle's weight.
 - **Next:** nothing queued.
 - **Waiting and later:** weapons batch 3 on the class table; AR6's batch 2 parked (two scripts unrun); ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
-**Turns.** Studio: the main place is free since 14:14 (TR24's run done, the test profile back, the device test off). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes 1 to 3. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

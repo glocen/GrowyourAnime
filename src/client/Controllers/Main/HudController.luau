@@ -30,6 +30,8 @@ local UIKit = require(Shared.Config.UIKit)
 local Profile = require(Shared.Data.Profile)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
+local Grounds = require(Shared.Definitions.Grounds)
+local Shards = require(Shared.Definitions.Shards)
 local Actions = require(Shared.Definitions.Actions)
 local HomeConfig = require(Shared.Config.Home)
 local Growth = require(Shared.Rules.Growth)
@@ -41,6 +43,7 @@ local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local World = require(UI.World)
+local Guide = require(UI.Guide)
 local Read = require(UI.Read)
 local Pill = require(UI.Kit.Pill)
 local Text = require(UI.Kit.Text)
@@ -662,9 +665,8 @@ local function keeperNear(): Model?
 	return if nearest <= Combat.Keeper.Notice then best else nil
 end
 
--- The shards' hint over the dock, in the Voidkin's colour: while the bag holds a shard and the player is home, the step
--- that's next, "into the Breaker" (Rules.Hud.ShardHint; the director, 2026-11-15: only at the base).
-local function showChip(view: Profile.View)
+-- The first session's state for the next step (TR24's fix 1; Rules.Hud.NextStep), from the save and where the avatar is.
+local function stepState(view: Profile.View): Hud.StepState
 	local kinds, total, first = 0, 0, nil :: string?
 	for shard, count in view.Bag.Shards do
 		if count > 0 then
@@ -673,11 +675,105 @@ local function showChip(view: Profile.View)
 			first = first or shard
 		end
 	end
-	local said = Hud.ShardHint(kinds, total, if first then Read.ShardName(first) else nil, atHome())
-	chip.Visible = said ~= nil
-	if said then
-		chipText.Text = said
+	local breaking = 0
+	for _, chamber in view.Base.Chambers do
+		breaking += if chamber.Work then 1 else 0
 	end
+	-- An empty bay, and a Voidkin that neither leads, works nor trains to fill it: the lowest Id, so it's always the same.
+	local busy: { [string]: boolean } = { [view.Roles.Lead] = true, [view.Training.Trainee] = true }
+	local worked, bay = false, nil :: number?
+	for index, each in view.Base.Bays do
+		if each.Worker ~= "" then
+			busy[each.Worker] = true
+			worked = true
+		elseif bay == nil then
+			bay = index
+		end
+	end
+	local idle: string? = nil
+	if bay then
+		local ids: { string } = {}
+		for id in view.Voidkin do
+			if not busy[id] then
+				table.insert(ids, id)
+			end
+		end
+		table.sort(ids)
+		idle = if ids[1] then Read.VoidkinName(view.Voidkin[ids[1]]) else nil
+	end
+	local won = false
+	for _, ground in view.Progress.Grounds do
+		won = won or ground.KeeperWins > 0
+	end
+	-- Out in a ground with a keeper: the keeper's name, near its gate (one ground has one yet).
+	local home = atHome()
+	local keeper: string? = nil
+	if not home then
+		local gate, ring, at = Markers.Find("KeeperGate"), Markers.Find("Ring"), avatarAt()
+		local def = if ring then ring:GetAttribute("Def") else nil
+		local row = if type(def) == "string" then Enemies.ById[def] else nil
+		if gate and row and at and (Markers.At(gate).Position - at).Magnitude <= HudConfig.Guide.Reach then
+			keeper = row.Name
+		end
+	end
+	local firstGround = Grounds.ById[Grounds.First]
+	return {
+		Home = home,
+		Chosen = view.Progress.Starter ~= "",
+		Ready = #view.Base.Ready,
+		Breaking = breaking,
+		Shards = total,
+		Kinds = kinds,
+		First = if first then Read.ShardName(first) else nil,
+		Idle = idle,
+		Bay = bay,
+		Worked = worked,
+		Won = won,
+		Keeper = keeper,
+		Ground = if firstGround then firstGround.Name else "the grounds",
+	}
+end
+
+-- Where the next step's marker stands (UI.Guide): the targets in the world the step names, or none.
+local function stepTargets(step: Hud.Step?): { Instance }
+	if step == nil then
+		return {}
+	end
+	local plot = player:GetAttribute("Plot")
+	local found: Instance? = nil
+	if step.Target == "Starters" then
+		local folder = workspace:FindFirstChild("NL_Base")
+		local list: { Instance } = {}
+		for _, id in Shards.Starters do
+			local part = if folder then folder:FindFirstChild(id) else nil
+			if part then
+				table.insert(list, part)
+			end
+		end
+		return list
+	elseif step.Target == "Breaker" then
+		found = Markers.Find("Breaker", { Plot = plot })
+	elseif step.Target == "Bay" then
+		found = Markers.Find("Bay", { Plot = plot, Bay = step.Bay })
+	elseif step.Target == "Door" then
+		found = Markers.Find("FestivalDoor", { Plot = plot })
+	elseif step.Target == "Gate" then
+		found = Markers.Find("KeeperGate")
+	end
+	return if found then { found } else {}
+end
+
+-- The next step over the dock, in the Voidkin's colour, and its marker in the world (TR24's fix 1; Rules.Hud.NextStep):
+-- what to do next at every step of the first session, the shards' hint among them ("into the Breaker", only at the base:
+-- the director, 2026-11-15), which stays after it.
+local function showChip(view: Profile.View)
+	-- nothing in a keeper's try: the fight has the screen
+	local step = if player:GetAttribute("Try") ~= nil then nil else Hud.NextStep(stepState(view))
+	chip.Visible = step ~= nil
+	if step then
+		chipText.Text = step.Line
+	end
+	Guide.Point(stepTargets(step))
 end
 
 -- What changed since the last copy, said once: a shard gained (it leaps to the avatar), a level gained.

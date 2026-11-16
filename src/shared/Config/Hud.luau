@@ -186,6 +186,11 @@ return {
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
 	Plates = { Gap = 6 },
+	-- The next step's marker (TR24's fix 1; UI.Guide): a chevron Lift studs over each target, bobbing Bob studs Rate times a
+	-- second, Size authored points wide; off the frame, one arrow at its edge, Margin authored points in from the sides,
+	-- Top from the top and Bottom from the foot (clear of the cards and the dock). Within Near studs of the avatar it steps
+	-- back for the target's own prompt. The keeper's gate is pointed at within Reach studs of it. The builder's seeds.
+	Guide = { Lift = 1.5, Bob = 0.35, Rate = 0.9, Size = 36, Margin = 56, Top = 84, Bottom = 120, Near = 12, Reach = 800 },
 	-- The dock of three icons (AR12; UI.Dock; its shape is UIKit.Dock, Modulo's): pressed, a tile's mark sinks Sink points
 	-- along the tile's lean (Modulo's 1.6); a tile that can't be used draws its tile and mark at Dim of themselves; a touch
 	-- held LongPress seconds shows the tile's word Rise points over its tap, and lifting it then doesn't press.

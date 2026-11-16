@@ -32,6 +32,8 @@ local REMOTES: { [string]: Spec } = {
 	-- Home in one tap (HomeService, TR19).
 	Home = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Refusal?, Says? }: the charge begins, or why not
 	HomeJump = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (landed, says?) the jump home, or the charge broken and why
+	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).
+	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)
 }
 
 local CLASS_FOR_KIND: { [Kind]: string } = {

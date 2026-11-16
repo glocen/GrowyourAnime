@@ -408,6 +408,64 @@ function Hud.ShardHint(kinds: number, total: number, first: string?, home: boole
 	return if kinds == 1 and total == 1 and first then `{first}: into the Breaker` else `{total} shards: into the Breaker`
 end
 
+-- What the next-step line reads (TR24's fix 1): the first session's state, as HudController reads it.
+export type StepState = {
+	Home: boolean, -- the avatar stands on its own plot
+	Chosen: boolean, -- the starter shard is chosen
+	Ready: number, -- shards broken, waiting to be opened
+	Breaking: number, -- shards in the Breaker's chambers
+	Shards: number, -- shards in the bag
+	Kinds: number, -- of how many kinds
+	First: string?, -- the one shard's name, when the bag holds one alone
+	Idle: string?, -- a Voidkin's name that neither leads, works nor trains, while a bay stands empty
+	Bay: number?, -- the lowest empty bay
+	Worked: boolean, -- a bay has a worker
+	Won: boolean, -- a keeper beaten: the first session's guide is over
+	Keeper: string?, -- out in a ground whose keeper waits at its gate: the keeper's name
+	Ground: string, -- the name of the ground the Door opens on
+}
+
+export type Step = {
+	Line: string,
+	Target: "Starters" | "Breaker" | "Bay" | "Door" | "Gate", -- where the world's marker stands
+	Bay: number?, -- which bay, for "Bay"
+}
+
+-- The next step (TR24's fix 1: one line and one marker on the next target, at every step of the first session). At home,
+-- in turn: the first shard to choose; shards ready to open; shards in the bag (ShardHint's line, which stays after the
+-- first session); a Voidkin to set to work in an empty bay; then, until a keeper is beaten, a shard breaking and the
+-- Door to the grounds. Out in a ground, once a bay works and until a keeper is beaten, the keeper's gate; nothing else,
+-- since the shards' hint shows only at the base (the director, 2026-11-15). Nil: nothing to say.
+function Hud.NextStep(s: StepState): Step?
+	if not s.Home then
+		if s.Won or not s.Worked or s.Keeper == nil then
+			return nil
+		end
+		local name = string.upper(string.sub(s.Keeper, 1, 1)) .. string.sub(s.Keeper, 2)
+		return { Line = `{name} waits at the gate`, Target = "Gate" }
+	end
+	if not s.Chosen then
+		return { Line = "Choose your first shard", Target = "Starters" }
+	end
+	if s.Ready > 0 then
+		return { Line = if s.Ready == 1 then "Ready: open it at the Breaker" else `{s.Ready} ready: open them at the Breaker`, Target = "Breaker" }
+	end
+	local shards = Hud.ShardHint(s.Kinds, s.Shards, s.First, true)
+	if shards then
+		return { Line = shards, Target = "Breaker" }
+	end
+	if s.Idle and s.Bay then
+		return { Line = `{s.Idle}: to work in Bay {s.Bay}`, Target = "Bay", Bay = s.Bay }
+	end
+	if s.Won then
+		return nil
+	end
+	if s.Breaking > 0 then
+		return { Line = "Breaking: it opens at the Breaker", Target = "Breaker" }
+	end
+	return { Line = `Through the Door: {s.Ground}`, Target = "Door" }
+end
+
 -- The readout's light (AR12; Config.Hud.Readout): one gradient across the well's square, `side` points each way, turned
 -- so its lines rise `lean` of a point for each point to the right. Returns its turn in degrees (90 is top to foot) and
 -- its length in points: the square's reach along the gradient's way.

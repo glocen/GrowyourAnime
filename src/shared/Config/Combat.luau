@@ -19,7 +19,22 @@ return {
 	Lead = {
 		Leash = 30, -- it fights enemies within this of the avatar
 		Follow = 6, -- with nothing to fight, it walks to the avatar's side once it's this far away
-		Side = 3.5, -- the spot it walks to: this far right of the avatar and a stud behind
+		-- The spot it walks to: Side studs right of the avatar and Ahead in front, both along the player's camera, so it
+		-- stands beside the avatar out of the camera's line (TR24's fix 3); half its own width more to the side. In a
+		-- keeper's try, Keeper.Side along the avatar's facing instead.
+		Side = 4,
+		Ahead = 1.5,
+		Settle = 2.5, -- studs its place may move from it (the camera turned) before it walks there again
+		-- The fight in the camera's view (TR24's fix 2): the client reports where its camera looks (Net "View"). An enemy
+		-- within Arc degrees of that look, seen from the avatar, is in view: the lead picks those first, and a Shade
+		-- already on it. Out of view it takes only one within Guard of the avatar, and waits in view for one coming to it
+		-- rather than walking off the frame. A report older than Fresh seconds is stale: the avatar's facing stands in.
+		-- Seeds: a phone in landscape frames about 53 degrees each side.
+		-- Wait: seconds at most it waits in view for one coming to it, then goes to meet it.
+		View = { Arc = 55, Guard = 10, Fresh = 3, Wait = 3 },
+		-- A lead in the camera's line to the avatar, or this Near the camera, fades on that player's screen to
+		-- Transparency over Seconds, and back (TR24's fix 3). Margin: studs past its half-width that count as in the line.
+		Fade = { Transparency = 0.65, Seconds = 0.15, Margin = 1.5, Near = 5 },
 		-- Engaged, it stands beyond its target along the avatar's facing, turned this many degrees round toward the side it's
 		-- on, so the camera frames the fight and the target doesn't hide it (research's verdict on TR2, 2026-11-12). A seed.
 		Frame = 45,

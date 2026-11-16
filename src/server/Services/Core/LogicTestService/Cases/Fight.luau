@@ -306,6 +306,32 @@ return {
 			t.Check("nothing in: it comes back", Fight.LeadTarget({ candidate("x", 1, leash + 0.01) }, nil, leash) == nil)
 			t.Equal("on the leash counts", Fight.LeadTarget({ candidate("x", 1, leash) }, nil, leash), "x")
 			t.Equal("a tie goes the same way every time", Fight.LeadTarget({ candidate("q", 3, 1), candidate("p", 3, 1) }, nil, leash), "p")
+			-- TR24's fix 2: with the camera's view, what's on the lead, then what's in view, then what's at the avatar's side.
+			local view = Combat.Lead.View
+			local function seen(id: string, distance: number, reach: number, off: number, engaged: boolean?): any
+				local c = candidate(id, distance, reach) :: any
+				c.Off, c.Engaged = off, engaged
+				return c
+			end
+			local aside = seen("aside", 3, 20, 90) -- nearest, but off to the side
+			local ahead = seen("ahead", 12, 25, view.Arc - 1)
+			t.Equal("in view beats nearer out of view", Fight.LeadTarget({ aside, ahead }, nil, leash, view), "ahead")
+			t.Equal("on the edge of the view counts", Fight.LeadTarget({ aside, seen("edge", 12, 25, view.Arc) }, nil, leash, view), "edge")
+			t.Check("out of view and not on it: left alone", Fight.LeadTarget({ aside, seen("behind", 4, 15, 170) }, nil, leash, view) == nil)
+			t.Equal("one on the lead comes first, wherever it stands", Fight.LeadTarget({ ahead, seen("onit", 20, 25, 160, true) }, nil, leash, view), "onit")
+			t.Equal("one at the avatar's side is fought from any side", Fight.LeadTarget({ seen("close", 8, view.Guard, 150) }, nil, leash, view), "close")
+			t.Check("just past the guard, out of view: left", Fight.LeadTarget({ seen("close", 8, view.Guard + 0.01, 150) }, nil, leash, view) == nil)
+			t.Equal("it keeps its target as the camera turns", Fight.LeadTarget({ ahead, seen("old", 9, 20, 150) }, "old", leash, view), "old")
+			t.Check("on the lead but past the leash: dropped", Fight.LeadTarget({ seen("onit", 2, leash + 1, 0, true) }, nil, leash, view) == nil)
+			t.Equal("with no view, the nearest as before", Fight.LeadTarget({ aside, ahead }, nil, leash), "aside")
+			t.Equal("degrees off the view, either way", Fight.Off(170, -170), 20)
+			t.Equal("degrees off the view, straight", Fight.Off(30, 30), 0)
+			local fade = Combat.Lead.Fade
+			t.Check("between the camera and the avatar: in the line", Fight.InLine(9, 1, 12, 1.5, fade.Margin, fade.Near))
+			t.Check("well to the side: out of it", not Fight.InLine(8, 5, 12, 1.5, fade.Margin, fade.Near))
+			t.Check("beyond the avatar: hidden by it, out of the line", not Fight.InLine(14, 1, 12, 1.5, fade.Margin, fade.Near))
+			t.Check("over the camera's shoulder: too near", Fight.InLine(-1, 3, 12, 1.5, fade.Margin, fade.Near))
+			t.Check("behind the camera, well off: out", not Fight.InLine(-9, 2, 12, 1.5, fade.Margin, fade.Near))
 			local lead = Combat.Lead
 			t.Equal("with a target, it fights", Fight.LeadMode(10, true, lead), "Fight")
 			t.Equal("without, it follows", Fight.LeadMode(10, false, lead), "Follow")

@@ -82,6 +82,7 @@ local Takes = require(script.Parent.Takes)
 local VoidkinCases = require(script.Parent.VoidkinCases)
 local HudCases = require(script.Parent.HudCases)
 local PowerCases = require(script.Parent.PowerCases)
+local ViewCases = require(script.Parent.ViewCases)
 local BaseCases = require(script.Parent.BaseCases)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
@@ -7678,6 +7679,10 @@ for _, case in HudCases.Cases({
 	lintClean = lintClean,
 	myLead = myLead,
 }) do
+	table.insert(cases, case)
+end
+-- TR24's fixes 1 to 3, given theirs: the next step's marker, the lead's fights in view, its place beside the avatar, its fade.
+for _, case in ViewCases.Cases({ LEAD_SETTLE = LEAD_SETTLE, SHADE_AHEAD = SHADE_AHEAD, waitFor = waitFor, myLead = myLead }) do
 	table.insert(cases, case)
 end
 -- The Power screen's, given theirs (TR18; AR12's battery plate).

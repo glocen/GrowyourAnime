@@ -255,6 +255,61 @@ return {
 		end,
 	},
 	{
+		Name = "Hud: the next step names one target at every step of the first session (TR24's fix 1)",
+		Run = function(t: any)
+			local function state(over: { [string]: any }): Hud.StepState
+				local s: { [string]: any } = {
+					Home = true, Chosen = true, Ready = 0, Breaking = 0, Shards = 0, Kinds = 0, First = nil,
+					Idle = nil, Bay = nil, Worked = false, Won = false, Keeper = nil, Ground = "Lantern Row",
+				}
+				for key, value in over do
+					s[key] = value
+				end
+				return s :: any
+			end
+			local function step(over: { [string]: any }): (string?, string?, number?)
+				local found = Hud.NextStep(state(over))
+				if found == nil then
+					return nil, nil, nil
+				end
+				return found.Line, found.Target, found.Bay
+			end
+			local line, target = step({ Chosen = false })
+			t.Check("arrival: the starter shards", line == "Choose your first shard" and target == "Starters", `{line} {target}`)
+			line, target = step({ Breaking = 1 })
+			t.Check("the starter breaking: the Breaker", line == "Breaking: it opens at the Breaker" and target == "Breaker", `{line} {target}`)
+			line, target = step({ Ready = 1, Breaking = 1 })
+			t.Check("one ready: open it at the Breaker", line == "Ready: open it at the Breaker" and target == "Breaker", `{line} {target}`)
+			line = step({ Ready = 3 })
+			t.Equal("three ready: counted", line, "3 ready: open them at the Breaker")
+			line, target = step({})
+			t.Check("after the reveal: the Door to the first ground", line == "Through the Door: Lantern Row" and target == "Door", `{line} {target}`)
+			line, target = step({ Shards = 1, Kinds = 1, First = "Watt's shard" })
+			t.Check("home with a shard: the shards' hint, at the Breaker", line == "Watt's shard: into the Breaker" and target == "Breaker", `{line} {target}`)
+			local bay
+			line, target, bay = step({ Idle = "Watt", Bay = 2 })
+			t.Check("a Voidkin idle and a bay empty: that bay", line == "Watt: to work in Bay 2" and target == "Bay" and bay == 2, `{line} {target} {bay}`)
+			t.Equal("an idle Voidkin with no empty bay: on to the Door", (step({ Idle = "Watt" })), "Through the Door: Lantern Row")
+			t.Equal("the order: the choice first", (step({ Chosen = false, Ready = 1, Shards = 2, Kinds = 1 })), "Choose your first shard")
+			t.Equal("then what's ready", (step({ Ready = 1, Shards = 2, Kinds = 1, Idle = "Watt", Bay = 2 })), "Ready: open it at the Breaker")
+			t.Equal("then the bag", (step({ Shards = 2, Kinds = 1, Idle = "Watt", Bay = 2 })), "2 shards: into the Breaker")
+			t.Equal("then the bay", (step({ Idle = "Watt", Bay = 2, Breaking = 1 })), "Watt: to work in Bay 2")
+			-- Out in a ground: nothing but the keeper's gate, once a bay works and until a keeper falls.
+			t.Equal("in the ground before a bay works: nothing", (step({ Home = false, Keeper = "the Lamplighter" })), nil)
+			line, target = step({ Home = false, Worked = true, Keeper = "the Lamplighter" })
+			t.Check("in the ground once a bay works: the keeper's gate", line == "The Lamplighter waits at the gate" and target == "Gate", `{line} {target}`)
+			t.Equal("in the ground with shards: never the shards' hint", (step({ Home = false, Shards = 4, Kinds = 1 })), nil)
+			t.Equal("in a ground with no keeper: nothing", (step({ Home = false, Worked = true })), nil)
+			-- After the first keeper falls the guide is quiet, but what's ready, the bag and an empty bay still speak at home.
+			t.Equal("won, out in a ground: nothing", (step({ Home = false, Worked = true, Won = true, Keeper = "the Lamplighter" })), nil)
+			t.Equal("won, home, nothing to do: nothing", (step({ Won = true })), nil)
+			t.Equal("won, home, a shard breaking: nothing", (step({ Won = true, Breaking = 2 })), nil)
+			t.Equal("won, home, one ready: still said", (step({ Won = true, Ready = 1 })), "Ready: open it at the Breaker")
+			t.Equal("won, home, the bag: still said", (step({ Won = true, Shards = 5, Kinds = 2 })), "5 shards: into the Breaker")
+			t.Equal("won, home, an empty bay: still said", (step({ Won = true, Idle = "Watt", Bay = 1 })), "Watt: to work in Bay 1")
+		end,
+	},
+	{
 		Name = "Hud: the readout's front: its turn, a stop's place along it, and the carry for each share",
 		Run = function(t: any)
 			-- AR12 (Config.Hud.Readout): one gradient over the well's square, its line rising `lean` for each point right.

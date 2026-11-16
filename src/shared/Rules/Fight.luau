@@ -49,7 +49,11 @@ export type Candidate = {
 	Distance: number, -- to the fighter choosing
 	Reach: number, -- to what bounds the choice: the lead's avatar, or the Shade itself
 	Aggrieved: boolean?, -- a Shade's: this lead hit it or its pack
+	Off: number?, -- a lead's: degrees between the camera's look and the enemy, seen from the avatar (0 to 180)
+	Engaged: boolean?, -- a lead's: this enemy is on the lead
 }
+
+export type View = { Arc: number, Guard: number }
 
 local function nearest(candidates: { Candidate }, allowed: (Candidate) -> boolean): string?
 	local best: Candidate? = nil
@@ -63,15 +67,43 @@ end
 
 -- A lead's target: of the enemies within `leash` of its avatar (Reach), the one it has while that stays in, else the
 -- nearest to the lead. Nil when none is in: it comes back.
-function Fight.LeadTarget(candidates: { Candidate }, current: string?, leash: number): string?
+-- With a `view` (TR24's fix 2: the fight in the camera's view), a new target is, in turn, the nearest already on the
+-- lead (Engaged), the nearest in view (Off within view.Arc), or the nearest within view.Guard of the avatar; one out of
+-- view and not on the lead is left for the player to look at. A candidate with no Off counts as in view.
+function Fight.LeadTarget(candidates: { Candidate }, current: string?, leash: number, view: View?): string?
 	for _, candidate in candidates do
 		if candidate.Id == current and candidate.Reach <= leash then
 			return current
 		end
 	end
+	if view == nil then
+		return nearest(candidates, function(candidate: Candidate): boolean
+			return candidate.Reach <= leash
+		end)
+	end
 	return nearest(candidates, function(candidate: Candidate): boolean
-		return candidate.Reach <= leash
+		return candidate.Reach <= leash and candidate.Engaged == true
+	end) or nearest(candidates, function(candidate: Candidate): boolean
+		return candidate.Reach <= leash and (candidate.Off or 0) <= view.Arc
+	end) or nearest(candidates, function(candidate: Candidate): boolean
+		return candidate.Reach <= math.min(leash, view.Guard)
 	end)
+end
+
+-- Degrees between two flat bearings, 0 to 180.
+function Fight.Off(a: number, b: number): number
+	return math.abs(Fight.Wrap(a - b))
+end
+
+-- Whether a lead `radius` studs wide stands in the camera's line to the avatar, or too near the camera (TR24's fix 3):
+-- `along` studs from the camera along the line to the avatar, `across` studs off it, the avatar `length` along. In the
+-- line: between the camera and the avatar, within radius + margin of it. Too near: its middle within `near` + radius of
+-- the camera, wherever.
+function Fight.InLine(along: number, across: number, length: number, radius: number, margin: number, near: number): boolean
+	if along * along + across * across <= (near + radius) ^ 2 then
+		return true
+	end
+	return along > 0 and along < length and across <= radius + margin
 end
 
 -- A Shade's target: the lead it has while that one stands; else the nearest lead that hit it or its pack, wherever it is;

@@ -109,8 +109,8 @@ return {
 			-- TR26's class rules: Hands holds each class's pair; Slots keeps the twelve shared slots only.
 			local old = fresh()
 			old.Version = 5
-			old.Items.s = { Id = "s", Def = "sword", Tier = 1, Rarity = "Common", Lines = {}, Sockets = {}, Jewel = "" }
-			old.Items.h = { Id = "h", Def = "helmet", Tier = 1, Rarity = "Common", Lines = {}, Sockets = {}, Jewel = "" }
+			old.Items.s = { Id = "s", Def = "sword", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
+			old.Items.h = { Id = "h", Def = "helmet", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
 			old.Presets = {
 				{ Slots = { ["Main Hand"] = "s", ["Off Hand"] = "gone", Helmet = "h" } },
 				{ Slots = { ["Off Hand"] = "s" } },

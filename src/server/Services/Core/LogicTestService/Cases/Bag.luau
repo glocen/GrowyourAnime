@@ -41,7 +41,7 @@ end
 
 local function give(data: Profile.Data, def: string, rarity: string, lines: { Profile.ItemLine }): string
 	local id = Profile.NewId(data)
-	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Lines = lines, Sockets = {}, Jewel = "" }
+	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Design = 1, Lines = lines, Sockets = {}, Jewel = "" }
 	return id
 end
 
@@ -251,12 +251,12 @@ return {
 			-- The step is what one press opens, so it never passes the bag's room (research, TR28's call 4).
 			local held = Bag.Held(data)
 			for index = 1, Bag.Cap - held - 20 do
-				data.Items[`filler{index}`] = { Def = "ring", Rarity = "Common", Lines = {}, Tier = 1, Got = 0 } :: any
+				data.Items[`filler{index}`] = { Def = "ring", Rarity = "Common", Design = 1, Lines = {}, Tier = 1, Got = 0 } :: any
 			end
 			local tight = Bag.Chest(data, "lanternrow_1") :: { [string]: any }
 			t.Check("with room for 20, the step is 20", tight.Room == 20 and tight.Step == 20, `{tight.Room}, {tight.Step}`)
 			for index = 1, 20 do
-				data.Items[`more{index}`] = { Def = "ring", Rarity = "Common", Lines = {}, Tier = 1, Got = 0 } :: any
+				data.Items[`more{index}`] = { Def = "ring", Rarity = "Common", Design = 1, Lines = {}, Tier = 1, Got = 0 } :: any
 			end
 			local full = Bag.Chest(data, "lanternrow_1") :: { [string]: any }
 			t.Check("with the bag full, the step is none", full.Room == 0 and full.Step == 0, `{full.Room}, {full.Step}`)

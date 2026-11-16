@@ -39,6 +39,7 @@ export type Rolled = {
 	Def: string,
 	Tier: number,
 	Rarity: string,
+	Design: number, -- drawn last, so a design never moves what was drawn before it
 	Lines: { Profile.ItemLine }, -- the first is the main stat, fixed by its slot (a jewel's rolled)
 	Sockets: { string },
 	Jewel: string,
@@ -209,7 +210,8 @@ function Chests.Roll(chest: ChestRows.Row, classes: { [string]: number }, draw: 
 	for _ = 1, ChestsConfig.Sockets[rarity] or 0 do
 		table.insert(sockets, "")
 	end
-	return { Def = row.Id, Tier = tier, Rarity = rarity, Lines = lines, Sockets = sockets, Jewel = "" }
+	local design = index(math.max(Items.Designs(row.Id, rarity), 1), draw())
+	return { Def = row.Id, Tier = tier, Rarity = rarity, Design = design, Lines = lines, Sockets = sockets, Jewel = "" }
 end
 
 -- What salvaging an item gives, in Credits.
@@ -315,6 +317,7 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 			Def = rolled.Def,
 			Tier = rolled.Tier,
 			Rarity = rolled.Rarity,
+			Design = rolled.Design,
 			Lines = rolled.Lines,
 			Sockets = rolled.Sockets,
 			Jewel = rolled.Jewel,

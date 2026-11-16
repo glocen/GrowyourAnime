@@ -63,7 +63,7 @@ end
 -- An item of row `def` in the bag, worn nowhere.
 local function item(data: Profile.Data, def: string, lines: { { Stat: string, Value: number } }): string
 	local id = Profile.NewId(data)
-	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Lines = lines :: any, Sockets = {}, Jewel = "" }
+	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Design = 1, Lines = lines :: any, Sockets = {}, Jewel = "" }
 	return id
 end
 
@@ -230,7 +230,7 @@ return {
 				{ "a ring on the head", "slot", "", "Helmet", ring },
 				{ "an item of no row", "slot", "", "Boots", "nowhere" },
 			}
-			data.Items.nowhere = { Id = "nowhere", Def = "case_none", Tier = 1, Rarity = "Common", Lines = { { Stat = "Attack", Value = 9 } }, Sockets = {}, Jewel = "" }
+			data.Items.nowhere = { Id = "nowhere", Def = "case_none", Tier = 1, Rarity = "Common", Design = 1, Lines = { { Stat = "Attack", Value = 9 } }, Sockets = {}, Jewel = "" }
 			for _, edit in edits do
 				preset.Slots, preset.Hands = {}, {}
 				if edit[2] == "hand" then

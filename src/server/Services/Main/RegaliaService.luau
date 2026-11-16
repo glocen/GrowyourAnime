@@ -95,6 +95,7 @@ local function registerDebug()
 				Def = def,
 				Tier = if type(tier) == "number" then tier else 1,
 				Rarity = grade,
+				Design = 1,
 				Lines = rolled,
 				Sockets = {},
 				Jewel = "",

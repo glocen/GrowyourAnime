@@ -58,7 +58,7 @@ local function give(data: Profile.Data, slot: string, lines: { { Stat: string, V
 	end
 	assert(def, `no row fits {slot}`)
 	local id = Profile.NewId(data)
-	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Lines = lines :: any, Sockets = {}, Jewel = "" }
+	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Design = 1, Lines = lines :: any, Sockets = {}, Jewel = "" }
 	data.Presets[1].Slots[slot] = id
 	return id
 end

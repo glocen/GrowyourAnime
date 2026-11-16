@@ -87,6 +87,15 @@ local STEPS: { (data: any) -> () } = {
 			end
 		end
 	end,
+	-- 7: an item's design (docs/design.md, Regalia, "An item's design"; 2026-11-16). Touches Items[id]: an item with no
+	-- Design takes the one its id gives over the launch's three (Items.LaunchDesign), so it never moves after.
+	function(data: any)
+		for id, item in (if type(data.Items) == "table" then data.Items else {}) :: { [any]: any } do
+			if type(item) == "table" and type(item.Design) ~= "number" then
+				item.Design = Items.LaunchDesign(tostring(item.Id or id))
+			end
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

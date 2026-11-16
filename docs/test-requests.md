@@ -2537,6 +2537,36 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **(4) Open N:** kept, if the number is what the tap opens. **Fixed:** `Rules.Bag.Chest`'s `Step` is now as many as are held, as one request takes, and as the bag has room for, so with 12 held it says "Open 12", and with room for 20, "Open 20". With the bag full, both buttons are off. Two new logic checks cover room for 20 and a full bag.
 - **Checks:** type check 0 new; logic 23,092/0 offline.
 
+**The rebuild in A (Faber, 2026-11-16, scope set at 21:27 by the PC's clock).** On the director's pick of AR18's A, about 20:52 (`docs/decisions.md`), under `docs/ui.md`'s bag rules.
+- **The block contains:**
+  - **A's ledger:** the Voidkin between its two columns of slots: the six armour pieces on the left; the Cloak, the Amulet, the two Rings and the two Earrings on the right. Its name and level stand over it, and Combat Power and its two hands at its feet. All fourteen slots always show, so C's belt and its group chips go.
+  - **A's lacquer:** warm black, brass hairlines, bone words. Gains and losses take the kit's GOOD and BAD, and red shows only as digits.
+  - **A's cell, at about 64:**
+    - a lacquer well holding its design's picture;
+    - its rarity as a bar along its foot, with a fine rim and its light rising; Legendary takes a gilt double rim and a brass corner;
+    - a weapon's class mark from the kit, laid at the foot's right (AR6's json);
+    - another class's weapon drained;
+    - the up arrow and the worn tick, as before.
+  - **The card:**
+    - the design's picture, and its name as the title, with kind and rarity under it;
+    - Combat Power's change right under the title, then what it replaces;
+    - every Basic and Battle Attribute's change;
+    - Equip at the right thumb.
+  - **As C had them:** the six kinds' strip, the sort, the count and the chest's card.
+  - **An item's design** (`docs/design.md`, Regalia): stored on the item at its drop (`OwnedItem.Design`), with migration 7 for saves made before it.
+- **Faber's call (tier 1, for research's pass):** the Voidkin's half stands right of the grid, where A's sheet has it on the left. `docs/ui.md` puts Equip at the right thumb and the card over the Voidkin's half on a phone. With the half on the left, Equip would sit under the left thumb.
+- **Waits for the shared finish:**
+  - a third column where it fits (the card always on beside the half, as A's sheet);
+  - A's motion: the contents rising 8 points, and the target's ring drawn round once;
+  - the rail in brass (one rail for every page);
+  - the preset's dropdown;
+  - the Emblems, Jewels and Stones pages.
+- **Acceptance:**
+  - the Items page's case rewritten for the ledger (all fourteen, the target ringed in its column), passing in this window and on the smallest phone;
+  - the TR20 card case, the TR17 rail word and TR28's five across all passing;
+  - the design's logic case passing;
+  - stills from the player's camera for research: a full bag, a long name, another class's weapon, the empty bag, the smallest phone and night.
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

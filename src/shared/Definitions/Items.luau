@@ -6,11 +6,12 @@
 --   Kind   what it is, which picks its icon: the slot's name for armour, the weapon's for a weapon (Gear.Weapons)
 --   Name   what players read
 --   Class  on a weapon only: the one class that wields it
--- One row per kind until the item art's request sets how many designs each kind has (AR6). No Roblox API: it runs with
--- Studio closed.
+-- One row per kind. A kind's looks and names are its designs (Definitions.ItemDesigns, AR6): an owned item keeps the index
+-- of its own (docs/design.md, Regalia, "An item's design"). No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Gear = require(Shared.Definitions.Gear)
+local ItemDesigns = require(Shared.Definitions.ItemDesigns)
 
 export type Row = { Id: string, Slot: string, Kind: string, Name: string, Class: string? }
 
@@ -52,8 +53,39 @@ local function Fits(row: Row, slot: string, class: string?): boolean
 	return row.Class == nil and Gear.IsShared(slot) and row.Slot == Gear.Family(slot)
 end
 
+-- How many designs a kind has at a rarity: what a drop picks from (Rules.Chests.Roll).
+local function Designs(def: string, rarity: string): number
+	local row = ById[def]
+	local by = if row then ItemDesigns.ByKind[row.Kind] else nil
+	local list = if by then by[rarity] else nil
+	return if list then #list else 0
+end
+
+-- An owned item's design: its look and its name, by the index it took at its drop. A design is never a stat. Nil when
+-- the save names no design its kind has at its rarity (a save edited by hand), and the reader falls back on the row.
+local function Design(item: { Def: string, Rarity: string, Design: number }): ItemDesigns.Design?
+	local row = ById[item.Def]
+	local by = if row then ItemDesigns.ByKind[row.Kind] else nil
+	local list = if by then by[item.Rarity] else nil
+	return if list then list[item.Design] else nil
+end
+
+-- The design an item saved before designs takes (Data.Migrations, step 7): from its id, over the launch's three designs
+-- forever, so a design added later never moves one. Pure: the same id gives the same design on every server.
+local LAUNCH_DESIGNS = 3
+local function LaunchDesign(id: string): number
+	local hash = 0
+	for i = 1, #id do
+		hash = (hash * 31 + string.byte(id, i)) % 2147483647
+	end
+	return hash % LAUNCH_DESIGNS + 1
+end
+
 return {
 	List = List,
 	ById = ById,
 	Fits = Fits,
+	Designs = Designs,
+	Design = Design,
+	LaunchDesign = LaunchDesign,
 }

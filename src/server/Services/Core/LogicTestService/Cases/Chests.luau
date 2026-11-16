@@ -23,6 +23,9 @@ local Progress = require(Shared.Rules.Progress)
 local Regalia = require(Shared.Rules.Regalia)
 local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
+local Stats = require(Shared.Rules.Stats)
+local ItemDesigns = require(Shared.Definitions.ItemDesigns)
+local UIKit = require(Shared.Config.UIKit)
 
 local NOW = 1_800_000_000
 local OP = "9b2c7d1e-5f3a-4c8b-a6e0-1d2f3a4b5c6d"
@@ -344,7 +347,7 @@ return {
 				t.Check(`{case[1]}: nothing changed`, same(data, before))
 			end
 			for n = 1, ChestsConfig.Bag - count(data.Items) - 2 do
-				data.Items[`fill{n}`] = { Id = `fill{n}`, Def = "ring", Tier = 1, Rarity = "Common", Lines = {}, Sockets = {}, Jewel = "" }
+				data.Items[`fill{n}`] = { Id = `fill{n}`, Def = "ring", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
 			end
 			local full = Profile.DeepCopy(data)
 			local answer = Chests.Open(data, id, 3, sequence(1))
@@ -395,13 +398,13 @@ return {
 			-- Worn: an item in every slot too strong for any Lantern Row roll to beat.
 			for _, slot in Gear.Shared do
 				local id = Profile.NewId(data)
-				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Might", Value = 1e5 }, { Stat = "Finesse", Value = 1e5 }, { Stat = "Vigor", Value = 1e5 }, { Stat = "Spirit", Value = 1e5 }, { Stat = "Insight", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Might", Value = 1e5 }, { Stat = "Finesse", Value = 1e5 }, { Stat = "Vigor", Value = 1e5 }, { Stat = "Spirit", Value = 1e5 }, { Stat = "Insight", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Jewel = "" }
 				Regalia.Put(data.Presets[1], slot, nil, id)
 			end
 			for _, hand in Gear.Hands do
 				local id = Profile.NewId(data)
 				local def = if hand == "Main Hand" then "sword" else "short_sword"
-				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Might", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Might", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Jewel = "" }
 				Regalia.Put(data.Presets[1], hand, "Warrior", id)
 			end
 			local worn = count(data.Items)
@@ -511,6 +514,102 @@ return {
 			t.Check(`about {math.floor(each)} bytes an item, {math.floor(whole / 1024)} KB in all, under 100 KB`, whole < 100 * 1024 and each < 400, `{whole}`)
 			local problems = Saveable.Problems(data, "profile")
 			t.Check("still saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Chests: an item's design, fixed at its drop, never moved by a design added later, never a stat",
+		Run = function(t: any)
+			-- every kind has its three designs at every rarity, each named, each with its picture in the kit
+			for _, row in Items.List do
+				for _, rarity in ChestsConfig.Rarities do
+					local by = ItemDesigns.ByKind[row.Kind]
+					local list: { ItemDesigns.Design } = if by and by[rarity] then by[rarity] else {}
+					t.Equal(`{row.Id} {rarity}: three designs`, #list, 3)
+					t.Equal(`{row.Id} {rarity}: Items.Designs counts them`, Items.Designs(row.Id, rarity), #list)
+					for i, design in list do
+						t.Check(`{row.Id} {rarity} {i}: a name`, #design.Name > 0)
+						t.Check(`{row.Id} {rarity} {i}: its picture is in the kit`, UIKit.Images[design.Image] ~= nil, design.Image)
+					end
+				end
+			end
+			-- a drop draws its design last, from its kind's at its rarity
+			local data = fresh()
+			lead(data, "Warrior")
+			local classes = Chests.Classes(data)
+			local row = ChestRows.ById[chest("lanternrow", 1)]
+			local seen: { [number]: number } = {}
+			local rolls = 3000
+			local last = true
+			for seed = 1, rolls do
+				local inner = sequence(5000 + seed)
+				local final = 0
+				local rolled = Chests.Roll(row, classes, function(): number
+					final = inner()
+					return final
+				end)
+				local n = Items.Designs(rolled.Def, rolled.Rarity)
+				last = last and rolled.Design == math.clamp(math.floor(final * n) + 1, 1, n)
+				seen[rolled.Design] = (seen[rolled.Design] or 0) + 1
+			end
+			t.Check("the design is the roll's last draw", last)
+			for design = 1, 3 do
+				local share = (seen[design] or 0) / rolls
+				t.Check(`design {design} drops about a third of the time`, share > 0.29 and share < 0.38, string.format("%.3f", share))
+			end
+			-- opened, the item keeps the design its roll drew
+			data.Bag.Chests[row.Id] = 20
+			local opened = Chests.Open(data, row.Id, 20, function()
+				return 0.999
+			end)
+			t.Check("opened", opened.Ok == true, tostring(opened.Error))
+			for _, id in opened.Items or {} do
+				t.Equal(`{id}: the last draw's design`, data.Items[id].Design, Items.Designs(data.Items[id].Def, data.Items[id].Rarity))
+			end
+			-- a design added later moves no item: the item keeps its index, and the launch's fill never reads the list
+			local item = data.Items[(opened.Items or {})[1]]
+			if item then
+				item.Design = 2
+				local kind = Items.ById[item.Def].Kind
+				local list = ItemDesigns.ByKind[kind][item.Rarity]
+				local before, launch = (Items.Design(item) :: ItemDesigns.Design).Name, Items.LaunchDesign(item.Id)
+				table.insert(list, { Name = "Case's fourth", Image = "GearLight" })
+				t.Equal("with a fourth design, the same design", (Items.Design(item) :: ItemDesigns.Design).Name, before)
+				t.Equal("with a fourth design, the same launch design", Items.LaunchDesign(item.Id), launch)
+				t.Equal("a drop now picks from four", Items.Designs(item.Def, item.Rarity), 4)
+				table.remove(list)
+			end
+			-- the launch's fill: the same id the same design, always one of three, spread across them
+			local spread: { [number]: number } = {}
+			for n = 1, 3000 do
+				local design = Items.LaunchDesign(`i{n}`)
+				spread[design] = (spread[design] or 0) + 1
+			end
+			t.Equal("the launch's fill: one id, one design", Items.LaunchDesign("i42"), Items.LaunchDesign("i42"))
+			t.Check("the launch's fill: only the three", (spread[1] or 0) + (spread[2] or 0) + (spread[3] or 0) == 3000)
+			t.Check("the launch's fill: each about a third", (spread[1] or 0) > 800 and (spread[2] or 0) > 800 and (spread[3] or 0) > 800, `{spread[1]}, {spread[2]}, {spread[3]}`)
+			-- migration 7: an item saved before designs takes its launch design, once
+			local old = Profile.Template()
+			Migrations.Run(old)
+			old.Version = 6
+			old.Items.x = { Id = "x", Def = "sword", Tier = 1, Rarity = "Rare", Lines = {}, Sockets = {}, Jewel = "" } :: any
+			old.Items.kept = { Id = "kept", Def = "sword", Tier = 1, Rarity = "Rare", Design = 3, Lines = {}, Sockets = {}, Jewel = "" }
+			Migrations.Run(old)
+			t.Equal("an old item takes its launch design", old.Items.x.Design, Items.LaunchDesign("x"))
+			t.Equal("an item with a design keeps it", old.Items.kept.Design, 3)
+			t.Equal("at the latest", old.Version, Migrations.Latest)
+			-- a design is never a stat: the same item in every design, the same Combat Power
+			local held = fresh()
+			local owned = lead(held, "Warrior")
+			local id = Profile.NewId(held)
+			held.Items[id] = { Id = id, Def = "sword", Tier = 3, Rarity = "Epic", Design = 1, Lines = { { Stat = "Attack", Value = 400 }, { Stat = "Might", Value = 30 } }, Sockets = {}, Jewel = "" }
+			Regalia.Put(held.Presets[1], "Main Hand", "Warrior", id)
+			local powers = {}
+			for design = 1, 3 do
+				held.Items[id].Design = design
+				powers[design] = Stats.Power((Stats.Resolve(owned, Stats.PresetOf(held, owned), held)))
+			end
+			t.Check("worn, the sword raises Combat Power", powers[1] > Stats.Power((Stats.Resolve(owned, nil, held))))
+			t.Check("every design, the same Combat Power", powers[1] == powers[2] and powers[2] == powers[3], `{powers[1]}, {powers[2]}, {powers[3]}`)
 		end,
 	},
 }

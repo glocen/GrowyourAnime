@@ -36,6 +36,7 @@ export type OwnedItem = {
 	Def: string, -- its row in Definitions.Items, which names the slot
 	Tier: number, -- the level tier
 	Rarity: string,
+	Design: number, -- its design among its kind's at its rarity (Definitions.ItemDesigns), fixed at its drop: look and name only
 	Lines: { ItemLine }, -- the rolled lines
 	Sockets: { string }, -- one entry per socket its rarity gives: an emblem id, or "" when empty
 	Jewel: string, -- a jewel id, or ""

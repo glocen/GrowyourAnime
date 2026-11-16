@@ -44,7 +44,6 @@ local HudConfig = require(Shared.Config.Hud)
 local Breaker = require(Shared.Rules.Breaker)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
-local Shards = require(Shared.Definitions.Shards)
 local Gear = require(Shared.Definitions.Gear)
 local Actions = require(Shared.Definitions.Actions)
 local Passives = require(Shared.Definitions.Passives)
@@ -62,23 +61,23 @@ local Hover = require(UI.Kit.Hover)
 local Bar = require(UI.Kit.Bar)
 local Skin = require(UI.Kit.Skin)
 local Figure = require(script.Figure)
+local BagPage = require(script.Bag)
+local BagRules = require(Shared.Rules.Bag)
 
 local VoidkinScreen = {}
 
-export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing: () -> { [string]: number } }
+-- `Page`: the page a fresh open shows, the Items page when none is named ("Send another" asks for Overview, where Lead is).
+export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing: () -> { [string]: number }, Page: string? }
 
 local NAME = "Voidkin"
 local PAGES = { "Overview", "Bag", "Kit", "Stars", "Forge", "Jewels", "War Emblems" }
 local SOON: { [string]: boolean } = { Forge = true, Jewels = true, ["War Emblems"] = true } -- not built yet: greyed
-local KINDS = { "Shards", "Gear", "Emblems", "Jewels", "Stones" } -- the bag's tabs (docs/design.md, "The bag")
--- A page's word where it isn't its name: the Bag page reads "Items" (the director, 2026-11-15), so its gear tab is "Gear".
+-- A page's word where it isn't its name: the Bag page reads "Items" (the director, 2026-11-15). Its kinds are Rules.Bag's
+-- (TR28, AR18's C).
 local SAID: { [string]: string } = { Bag = "Items" }
-local HELD: { [string]: boolean } = { Shards = true } -- the kinds the save holds today
 local ROW = Theme.Size.Tap -- a row of buttons, authored
 local BAR = 28 -- a currency's chip, in the band, authored
 local TITLE = 24 -- the name's line over the stage, authored
-local TAB_GAP = 2 -- between the bag's tabs, authored: five stand whole in the smallest phone's panel, each a tap wide
-local TAB_LETTERS = 6 -- a bag tab is as wide as a name of at least this many letters
 local LABEL = 16 -- a rail button's label, under its circle, authored
 local WORD = 64 -- Save and Cancel, in the band, each, authored
 local WARM = 12 -- bodies drawn ahead at the open, the roster's first; one past them is drawn when it's asked for
@@ -110,7 +109,6 @@ local REFUSED: { [string]: string } = {
 
 local chosen: string? = nil
 local page = "Bag"
-local kind = "Shards" -- the bag's tab
 local editing = false -- the name's row is a box to type a nickname in
 local draft: string? = nil -- what's typed there, kept across a rebuild
 local builtRoom = Vector2.zero -- the room it was built in
@@ -337,10 +335,9 @@ end
 -- Its name over the stage, between the tops of the slot columns, on one line: its rarity after it, in the rarity's
 -- colour (docs/ui.md, rule 3). The name gives way first, cut with "…". Renaming, the line is a box to type in, and what
 -- it returns saves it: Save and Cancel stand in the band (marks).
-local function nameLine(over: Frame, at: Place, owned: Profile.OwnedVoidkin, on: On): (() -> boolean)?
+local function nameLine(over: Frame, x: number, wide: number, owned: Profile.OwnedVoidkin, on: On): (() -> boolean)?
 	local gap = Theme.Size.Gap
-	local wide = math.max(at.Span - (at.Column + gap) * 2, 1)
-	local row = frameOf("Name", over, UDim2.fromOffset(at.Group + at.Column + gap, 0), UDim2.fromOffset(wide, TITLE))
+	local row = frameOf("Name", over, UDim2.fromOffset(x, 0), UDim2.fromOffset(math.max(wide, 1), TITLE))
 	local own = Voidkin.ById[owned.Def]
 	if editing then
 		local box = Instance.new("TextBox")
@@ -805,119 +802,12 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 	end
 end
 
--- The bag's kinds as tabs along `parent`'s top: the held ones to pick, the rest greyed with "Soon" under their name
--- until they're built. Every tab stands whole in the row, each as wide as its name's share of it and never under a
--- tap's width on the smallest phone (TR17's retake, research's fix, 2026-11-15: a scrolling row cut a tab mid-word).
-local function bagTabs(parent: Instance, top: number)
-	local tabs = Instance.new("Frame")
-	tabs.Name = "Kinds"
-	tabs.BackgroundTransparency = 1
-	tabs.Position = UDim2.fromOffset(0, top)
-	tabs.Size = UDim2.new(1, 0, 0, ROW)
-	tabs.Parent = parent
-	local layout = Instance.new("UIListLayout")
-	layout.FillDirection = Enum.FillDirection.Horizontal
-	layout.Padding = UDim.new(0, TAB_GAP)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = tabs
-	local letters = 0
-	for _, name in KINDS do
-		letters += math.max(#name, TAB_LETTERS)
-	end
-	local gaps = TAB_GAP * (#KINDS - 1)
-	for index, name in KINDS do
-		local share = math.max(#name, TAB_LETTERS) / letters
-		local tab = Button.new({
-			Name = name,
-			Text = name,
-			Under = true,
-			Size = UDim2.new(share, -math.ceil(gaps * share), 0, ROW),
-			LayoutOrder = index,
-			Parent = tabs,
-			TextSize = Theme.Text.Caption,
-			OnPress = function()
-				kind = name
-				rebuild()
-			end,
-		})
-		Button.Set(tab, { Selected = name == kind, Disabled = if HELD[name] then false else "Soon" })
-	end
-end
-
--- The bag: everything owned that isn't a Voidkin, one cell a thing with its count. Shards are what the save holds yet:
--- each one's mark wears the light of the Voidkin it holds, and a tap names it.
-local function bagTab(scroll: ScrollingFrame, view: Profile.View)
-	local ids = {}
-	local total = 0
-	for id, count in view.Bag.Shards do
-		if count > 0 then
-			table.insert(ids, id)
-			total += count
-		end
-	end
-	table.sort(ids)
-	line(scroll, 1, if total == 1 then "1 shard" else `{Hud.Digits(total)} shards`, nil, if total == 0 then "None yet · the grounds drop them, the Breaker opens them" else nil)
-	if total == 0 then
-		return
-	end
-	local grid = Instance.new("Frame")
-	grid.Name = "Cells"
-	grid.BackgroundTransparency = 1
-	grid.LayoutOrder = 2
-	grid.Size = UDim2.new(1, -8, 0, 0)
-	grid.AutomaticSize = Enum.AutomaticSize.Y
-	grid.Parent = scroll
-	local layout = Instance.new("UIGridLayout")
-	layout.CellSize = UDim2.fromOffset(ROW, ROW)
-	layout.CellPadding = UDim2.fromOffset(Theme.Size.Gap, Theme.Size.Gap)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = grid
-	for index, id in ids do
-		local count = view.Bag.Shards[id]
-		local row = Shards.ById[id]
-		local holds = if row and row.Holds ~= "" then Voidkin.ById[row.Holds] else nil
-		local cell = Instance.new("TextButton")
-		cell.Name = id
-		cell.Text = ""
-		cell.AutoButtonColor = false
-		cell.BorderSizePixel = 0
-		cell.BackgroundColor3 = Theme.Colour.PlateHigh
-		cell.LayoutOrder = index
-		cell:SetAttribute("Count", count)
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
-		corner.Parent = cell
-		-- Its grade's picture (AR12); a shard that holds one Voidkin wears its light on the cell's edge, as its mark did.
-		local edge = Instance.new("UIStroke")
-		edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		edge.Color = if holds then HudConfig.Card.Trim[holds.Rarity] or Theme.Colour.Line else Theme.Colour.Line
-		edge.Parent = cell
-		cell.Parent = grid
-		local art = HudConfig.ShardArt
-		local side = ROW * art.Cell
-		local picture = Skin.Icon(cell, Hud.ShardPicture(if row then row.Grade else "Standard", side, art.Large), ROW / 2, side / 2 + 2, side)
-		picture.Name = "Picture"
-		text({ Name = "Count", Size = Theme.Text.Caption, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -6, 0, 20), Position = UDim2.new(0, 0, 1, -21), Parent = cell }, `×{Hud.Digits(count)}`)
-		local function onTap()
-			Toast.Show(`{Read.ShardName(id)} ×{Hud.Digits(count)}`, Theme.Colour.Text)
-		end
-		cell.Activated:Connect(onTap)
-		taps[cell] = onTap
-	end
-end
-
 -- The chosen page, filling `parent` from `top` down.
 local function pageBody(parent: Frame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On, top: number)
-	if page == "Bag" then
-		bagTabs(parent, top)
-		top += ROW + Theme.Size.Gap
-	end
 	local scroll = scroller("Page", parent, UDim2.fromOffset(0, top), UDim2.new(1, 0, 1, -top), false)
-	scroll:SetAttribute("Keep", if page == "Bag" then `Bag{kind}` else `{owned.Id}{page}`)
+	scroll:SetAttribute("Keep", `{owned.Id}{page}`)
 	scroll:SetAttribute("Page", page)
-	if page == "Bag" then
-		bagTab(scroll, view)
-	elseif page == "Kit" then
+	if page == "Kit" then
 		kitTab(scroll, owned)
 	elseif page == "Stars" then
 		starsTab(scroll, view, owned, on)
@@ -1360,6 +1250,35 @@ local function build(view: Profile.View, on: On)
 		return
 	end
 	rail(body, at)
+	if page == "Bag" then
+		-- The Items page is AR18's C (TR28): the case right of the rail, the figure in the Voidkin's half beside the grid.
+		local block = resolved(view, owned)
+		local save = BagPage.Build({
+			Body = body,
+			Room = at.Room,
+			Left = at.Stage.X,
+			View = view,
+			Owned = owned,
+			Act = on.Act,
+			Taps = taps,
+			Rebuild = rebuild,
+			Stage = function(box: Box)
+				local on_ = stageIn(frame, UDim2.fromOffset(box.X, box.Y), UDim2.fromOffset(box.Wide, box.Tall))
+				Figure.Wings(on_)
+				local there = table.clone(at)
+				there.Stage = box
+				dress(on_, owned.Def, roster, there)
+			end,
+			Name = function(over: Frame, wide: number): (() -> boolean)?
+				return nameLine(over, Theme.Size.Pad, wide - Theme.Size.Pad * 2, owned, on)
+			end,
+			Power = function(feet: Frame, wide: number)
+				power(feet, owned, block, wide)
+			end,
+		})
+		wallet(band, marks(band, owned, on, save), view)
+		return
+	end
 	local where, size = UDim2.fromOffset(at.Stage.X, at.Stage.Y), UDim2.fromOffset(at.Stage.Wide, at.Stage.Tall)
 	local on_ = stageIn(frame, where, size)
 	Figure.Wings(on_)
@@ -1368,7 +1287,8 @@ local function build(view: Profile.View, on: On)
 	local over = frameOf("Over", body, where, size)
 	gear(over, at, owned, (resolved(view, owned)))
 	-- The band: Back is the kit's; its marks beside it, the currencies at the right.
-	wallet(band, marks(band, owned, on, nameLine(over, at, owned, on)), view)
+	local gap = Theme.Size.Gap
+	wallet(band, marks(band, owned, on, nameLine(over, at.Group + at.Column + gap, at.Span - (at.Column + gap) * 2, owned, on)), view)
 	strip(body, at, roster, on)
 	actions(frameOf("Actions", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad), UDim2.fromOffset(at.Panel.Wide, ROW)), view, owned, on)
 	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body })
@@ -1386,8 +1306,9 @@ end
 function VoidkinScreen.Open(view: Profile.View, on: On)
 	local fresh = Screen.Current() ~= NAME
 	if fresh then -- a fresh open starts on the lead and the bag (research's call, 2026-11-15), never on a choice left from before
-		chosen, page, kind, slideFrom, shownPower, litTo = nil, "Bag", "Shards", 0, {}, nil
+		chosen, page, slideFrom, shownPower, litTo = nil, if on.Page and table.find(PAGES, on.Page) and not SOON[on.Page] then on.Page else "Bag", 0, {}, nil
 		editing, draft, awaited = false, nil, nil
+		BagPage.Reset()
 	end
 	build(view, on)
 	if fresh then -- the bodies it may be asked to show next, drawn ahead in the stage's wings
@@ -1512,7 +1433,7 @@ VoidkinScreen.Refused = REFUSED
 VoidkinScreen.Pages = PAGES
 VoidkinScreen.Soon = SOON
 VoidkinScreen.Said = SAID
-VoidkinScreen.Kinds = KINDS
-VoidkinScreen.Held = HELD
+VoidkinScreen.Kinds = BagRules.Kinds
+VoidkinScreen.Bag = BagPage
 
 return VoidkinScreen

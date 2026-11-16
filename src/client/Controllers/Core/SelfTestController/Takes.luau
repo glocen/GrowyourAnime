@@ -352,6 +352,7 @@ return function(given: Given): { any }
 					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
+					VoidkinScreen.Show("Overview") -- it opens on the Items page (TR28): this take is Overview's
 					moment("the lead's screen, full: the rail, its figure on Idle between its slots, its hands and its power at its feet")
 					t.Wait(TAKE_READ)
 					moment(`not played: a drag, the figure turned {TAKE_SPIN.Degrees}° and back by its own Turn`)
@@ -462,6 +463,7 @@ return function(given: Given): { any }
 					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
+					VoidkinScreen.Show("Overview") -- it opens on the Items page (TR28): Leading and Send to work are Overview's
 					moment("the lead's screen: the band, its name over the stage, Leading, Send to work off with why")
 					t.Wait(TAKE_READ)
 					for index = 2, 3 do
@@ -829,6 +831,7 @@ return function(given: Given): { any }
 					t.Check("the dock opens the Voidkin screen", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
+					VoidkinScreen.Show("Overview") -- where its training shows (TR28: it opens on the Items page)
 					moment("the Voidkin screen: Rook training")
 					t.Wait(TAKE_READ)
 					Screen.Close()
@@ -1159,6 +1162,7 @@ return function(given: Given): { any }
 					waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end)
+					VoidkinScreen.Show("Overview") -- the strip's cards are Overview's (TR28: it opens on the Items page)
 					t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
 					local view = ProfileController.Get()
 					for id in (if view then view.Voidkin else {}) do

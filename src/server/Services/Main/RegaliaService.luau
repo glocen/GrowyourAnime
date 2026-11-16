@@ -41,6 +41,37 @@ local function registerDebug()
 	end)
 	-- Studio only. An item of a row in the bag: its rarity (Common by default), its tier (1) and its lines as given, each
 	-- { Stat, Value } naming a Battle Attribute or a Basic Attribute. Answers its id.
+	-- Studio only. Item `id` out of the save and out of every preset that wears it: a case's own items, taken back.
+	DebugService.Register("ItemTake", function(who: any, id: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(id) ~= "string" then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "ItemTake", function(draft: Profile.Data): { [string]: any }
+			if draft.Items[id] == nil then
+				return { Ok = false, Error = "NotOwned" }
+			end
+			draft.Items[id] = nil
+			for _, preset in draft.Presets do
+				for slot, worn in preset.Slots do
+					if worn == id then
+						preset.Slots[slot] = nil
+					end
+				end
+				for class, pair in preset.Hands do
+					for slot, worn in pair do
+						if worn == id then
+							pair[slot] = nil
+						end
+					end
+					if next(pair) == nil then
+						preset.Hands[class] = nil
+					end
+				end
+			end
+			return { Ok = true }
+		end)
+	end)
 	DebugService.Register("ItemGive", function(who: any, def: any, rarity: any, lines: any, tier: any): any
 		local player = DebugService.ResolvePlayer(who)
 		local grade = if rarity == nil then "Common" else rarity

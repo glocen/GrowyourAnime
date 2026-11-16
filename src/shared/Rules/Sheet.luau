@@ -98,6 +98,28 @@ local function amount(stat: string, value: number): string
 	return Hud.Digits(value)
 end
 
+-- A total as a card writes it beside another (Rules.Bag's cards): as the sheet reads it, but Regen and Speed without
+-- their units, so a row fits a card's half.
+function Sheet.Amount(stat: string, value: number): string
+	if stat == "Regen" or stat == "Speed" then
+		return if value == math.floor(value) then tostring(value) else string.format("%.1f", value)
+	end
+	return amount(stat, value)
+end
+
+-- What a change does to a total, signed: "+12", "−3", "+1.5%"; "–" when it's none.
+function Sheet.Change(stat: string, change: number): string
+	if math.abs(change) < 1e-9 then
+		return "–"
+	end
+	local size = math.abs(change)
+	local said = if PERCENTS[stat] or stat == "CriticalDamage" then Sheet.Percent(size) elseif stat == "Regen" or stat == "Speed" then string.format("%.1f", size) else Hud.Digits(size)
+	if said == "0" then -- under a half: a tenth, so a change never reads as none
+		said = string.format("%.1f", size)
+	end
+	return (if change > 0 then "+" else "−") .. said
+end
+
 -- Each rating's chance or effect against an even foe of `block`'s level, as a share, by the hit's own functions:
 --   Hit              the share of its hits that land: 1 - the foe's dodge
 --   Dodge, Block     the share of the foe's hits it dodges, it blocks

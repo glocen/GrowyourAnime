@@ -416,4 +416,61 @@ return {
 		Strip = 52,
 		Panel = { Share = 0.44, Least = 300, Most = 420 },
 	},
+	-- The Items page, AR18's C, "the case" (TR28; research's pick at 14:27, its fixes at 15:12, fix 4 at 16:52): a belt of
+	-- the fourteen slots across the top, the bag's six kinds under it, the grid five across, and the Voidkin's half beside
+	-- it, where a chosen item's card slides in. Authored points, as Modulo's sheet draws them; a slot is a touch at the
+	-- scale drawn, never under (fix 4), so a narrow screen's belt shows the chosen item's group.
+	Bag = {
+		Cell = 60, -- a grid cell's side: five across is 324 with their gaps, 51 rendered on the smallest phone
+		CellGap = 6,
+		Columns = 5, -- at least; a wider room adds a column a cell wide, the Voidkin's half at Half
+		Half = 300, -- the Voidkin's half at most; under it on a narrow room, 282 on the smallest phone (fix 4)
+		Inset = 4, -- the case's porcelain round what it holds
+		Under = 2, -- between the belt, the strip and the grid
+		BeltGap = 2, -- between two slots of a group
+		GroupGap = 6, -- between two groups
+		BeltInset = 4, -- the belt's plate round its slots
+		Band = 4, -- the rarity's enamel across a cell's head
+		Corner = 7,
+		Pill = 34, -- a chip's pill, drawn in the middle of its tap's height (fix 4: a 52 hit box round a 34 pill)
+		Totals = 104, -- the Voidkin's totals beside its figure
+		Row = 18, -- a line of the totals and of the card
+		Slide = 0.16, -- seconds: the card over the Voidkin's half, and back (fix 4)
+		Mark = 14, -- a cell's corner chip: the up arrow, the worn tick, the class
+		Card = { Corner = 14, Pad = 10, Cell = 56, Close = 14 }, -- the close's X drawn this size in a touch
+		Salvage = { "", "Common", "Uncommon", "Rare", "Epic" }, -- the salvage control's steps, in order: "" is off
+		-- BONE (research's fix 1, Modulo's tools/blender/inventory_directions.py): warmed porcelain, ink words, dark inlays.
+		Palette = {
+			Top = Color3.fromHex("#BFB5A2"),
+			Foot = Color3.fromHex("#ADA28D"),
+			Ink = Color3.fromHex("#1B1814"),
+			Soft = Color3.fromHex("#3F3A32"),
+			Faint = Color3.fromHex("#5A5347"),
+			Line = Color3.fromHex("#8F8572"),
+			Card = { Color3.fromHex("#CFC6B4"), Color3.fromHex("#C4BAA7") },
+			Well = { Color3.fromHex("#1C1A1F"), Color3.fromHex("#0D0C0F") },
+			Umber = { Color3.fromHex("#33220F"), Color3.fromHex("#160E06") }, -- a Legendary's inlay
+			Lit = Color3.fromHex("#F3EFE6"),
+			Belt = Color3.fromHex("#B3A894"),
+			Slot = { Color3.fromHex("#A39985"), Color3.fromHex("#978C78") },
+			SlotMark = Color3.fromHex("#6A6254"),
+			OnWell = Color3.fromHex("#D8CFBE"),
+			Up = Color3.fromHex("#0B572D"),
+			Down = Color3.fromHex("#882C1C"),
+			Rarity = { -- a rarity's word on the porcelain, deepened to 4.5 to 1 (Legendary's 3.85, bold)
+				Common = Color3.fromHex("#3B3F48"),
+				Uncommon = Color3.fromHex("#0A532A"),
+				Rare = Color3.fromHex("#1A4687"),
+				Epic = Color3.fromHex("#5B2B8F"),
+				Legendary = Color3.fromHex("#6B4D08"),
+			} :: { [string]: Color3 },
+			Band = { -- a rarity's enamel on its inlay
+				Common = Color3.fromHex("#9AA0AC"),
+				Uncommon = Color3.fromHex("#7CF0A0"),
+				Rare = Color3.fromHex("#6FB6FF"),
+				Epic = Color3.fromHex("#D29CFF"),
+				Legendary = Color3.fromHex("#FFD777"),
+			} :: { [string]: Color3 },
+		},
+	},
 }

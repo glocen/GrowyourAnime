@@ -308,13 +308,15 @@ end
 -- part 10, "The comparison"): the resolver run twice, on the preset as it is and with the item put in, so it can't drift
 -- from the fight, and the client's copy answers it as the server's would. `slot` picks one of a pair; without it, a ring
 -- or an earring goes where Combat Power ends highest, an empty one before a worn one, Ring I before Ring II on a tie. A
--- weapon is compared for its own class only. Nil and the refusal when the item can't go there.
+-- weapon is compared for its own class only. Nil and the refusal when the item can't go there. `before`, when given, is
+-- `owned` resolved in `preset` already, so a list of items resolves it once (Rules.Bag).
 function Stats.Compare(
 	data: Profile.Data,
 	preset: Profile.Preset?,
 	owned: Profile.OwnedVoidkin,
 	id: string,
-	slot: string?
+	slot: string?,
+	before: Block?
 ): (Change?, string?)
 	local item = data.Items[id]
 	local itemRow = if item then Items.ById[item.Def] else nil
@@ -324,7 +326,7 @@ function Stats.Compare(
 	end
 	local class = if row then row.Class else nil
 	local slots = if slot then { slot } else Gear.SlotsOf(itemRow.Slot)
-	local before = Stats.Resolve(owned, preset, data)
+	local now = before or Stats.Resolve(owned, preset, data)
 	local best: Change? = nil
 	local refusal: string? = Regalia.WrongSlot
 	for _, candidate in slots do
@@ -335,16 +337,16 @@ function Stats.Compare(
 		local trial = copyPreset(preset)
 		Regalia.Put(trial, candidate, class, id)
 		local after = Stats.Resolve(owned, trial, data)
-		local power = Stats.Power(after) - Stats.Power(before)
+		local power = Stats.Power(after) - Stats.Power(now)
 		if best == nil or power > best.Power then
 			local attributes, battle = {}, {}
 			for _, attribute in Attributes.Ids do
-				attributes[attribute] = after.Attributes[attribute] - before.Attributes[attribute]
+				attributes[attribute] = after.Attributes[attribute] - now.Attributes[attribute]
 			end
 			for _, stat in Stats.Names do
-				battle[stat] = (after :: any)[stat] - (before :: any)[stat]
+				battle[stat] = (after :: any)[stat] - (now :: any)[stat]
 			end
-			best = { Slot = candidate, Attributes = attributes, Battle = battle, Power = power, Before = before, After = after }
+			best = { Slot = candidate, Attributes = attributes, Battle = battle, Power = power, Before = now, After = after }
 		end
 	end
 	if best then

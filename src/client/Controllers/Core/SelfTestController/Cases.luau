@@ -80,6 +80,7 @@ local Burst = require(UI.Kit.Burst)
 local UiLint = require(script.Parent.UiLint)
 local Takes = require(script.Parent.Takes)
 local VoidkinCases = require(script.Parent.VoidkinCases)
+local BagCases = require(script.Parent.BagCases)
 local HudCases = require(script.Parent.HudCases)
 local PowerCases = require(script.Parent.PowerCases)
 local ViewCases = require(script.Parent.ViewCases)
@@ -5542,6 +5543,8 @@ local cases = {
 			t.Check("the button opens the Voidkin screen", Button.Press(parts.Next :: TextButton) and waitFor(t, 1, function(): boolean
 				return Screen.Current() == "Voidkin"
 			end), tostring(Screen.Current()))
+			local opened = VoidkinScreen.Find("Page")
+			t.Check("on Overview, where Lead is (TR28: the dock's opens on the Items page)", opened ~= nil and opened:GetAttribute("Page") == "Overview", tostring(opened and opened:GetAttribute("Page")))
 			local fallenRow = leadButton(was)
 			t.Check("the fallen one, the lead still, reads Leading, lit: nothing to press", fallenRow ~= nil and Button.State(fallenRow) == "Selected" and VoidkinScreen.Chosen() == was, if fallenRow then Button.State(fallenRow) else "no button")
 			local free = leadButton(other)
@@ -7707,6 +7710,10 @@ for _, case in BaseCases.Cases({ ANSWER = ANSWER, waitFor = waitFor }) do
 end
 -- The Voidkin screen's, given theirs (TR17).
 for _, case in VoidkinCases.Cases({ ANSWER = ANSWER, REPLICATE = REPLICATE, waitFor = waitFor, lintClean = lintClean }) do
+	table.insert(cases, case)
+end
+-- The Items page's, given theirs (TR28; AR18's C).
+for _, case in BagCases.Cases({ ANSWER = ANSWER, waitFor = waitFor, lintClean = lintClean }) do
 	table.insert(cases, case)
 end
 

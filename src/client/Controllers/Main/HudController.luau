@@ -621,13 +621,14 @@ local function jumped(landed: boolean, says: string?)
 	player:SetAttribute("HomeLanded", os.clock()) -- for the self-test
 end
 
--- The Voidkin screen (UI/VoidkinScreen): one Voidkin at a time, on the lead first (TR17).
-local function voidkinScreen()
+-- The Voidkin screen (UI/VoidkinScreen): one Voidkin at a time, on the lead first (TR17). A fresh open shows `page`,
+-- the Items page when none is named.
+local function voidkinScreen(page: string?)
 	local view = ProfileController.Get()
 	if view == nil then
 		return
 	end
-	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing })
+	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing, Page = page })
 end
 
 -- Where a shard just won comes from: the nearest fallen Shade to the avatar, within Config.Effects.Drop.From.
@@ -1166,7 +1167,7 @@ function HudController.Start()
 		AnchorPoint = Vector2.new(0, 0.5),
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
-			voidkinScreen()
+			voidkinScreen("Overview") -- where Lead stands: the Items page has none (TR28)
 		end,
 	})
 	nextButton.Visible = false
@@ -1211,7 +1212,9 @@ function HudController.Start()
 		end
 	end
 	dockUi = Dock.new(Layers.Get("Hud"), {
-		Inventory = toggle("Voidkin", voidkinScreen),
+		Inventory = toggle("Voidkin", function()
+			voidkinScreen()
+		end),
 		Base = goHome,
 	})
 	Dock.Charges(dockUi, "Base", true) -- its tap is the charge's first frame: ink while it fills, no flash (TR19)

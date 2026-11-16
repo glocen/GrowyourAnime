@@ -22,7 +22,6 @@ local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Gear = require(Shared.Definitions.Gear)
-local Shards = require(Shared.Definitions.Shards)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -297,6 +296,11 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			t.Check("Back, favourite, lock, rename, then the currencies, left to right, none over another", order)
 			t.Check(`Back and each mark a touch or more, {Theme.Size.Touch} rendered px`, touch)
+			local opened = VoidkinScreen.Find("Page")
+			t.Check("it opens on the Items page", opened ~= nil and opened:GetAttribute("Page") == "Bag", tostring(opened and opened:GetAttribute("Page")))
+			-- The Items page is AR18's C (TR28), checked in its own case (BagCases): what follows is Overview's composition.
+			VoidkinScreen.Show("Overview")
+			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
 			local view = ProfileController.Get() :: Profile.View
 			local lead = view.Roles.Lead
 			t.Check("on the lead", VoidkinScreen.Chosen() == lead, tostring(VoidkinScreen.Chosen()))
@@ -338,12 +342,10 @@ function VoidkinCases.Cases(given: Given): { any }
 			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
 				t.Check(`{name} in view`, inView(name))
 			end
-			local opened = VoidkinScreen.Find("Page")
-			t.Check("it opens on the bag", opened ~= nil and opened:GetAttribute("Page") == "Bag", tostring(opened and opened:GetAttribute("Page")))
 			local pages = VoidkinScreen.Find("Rail")
 			local bagPage = pages and pages:FindFirstChild("Bag", true)
 			local word = bagPage and bagPage:FindFirstChild("Label")
-			t.Check("whose page reads Items on the rail, its gear tab Gear", word ~= nil and word:IsA("TextLabel") and word.Text == "Items" and table.find(VoidkinScreen.Kinds, "Gear") ~= nil and table.find(VoidkinScreen.Kinds, "Items") == nil, if word and word:IsA("TextLabel") then word.Text else "no word")
+			t.Check("whose page reads Items on the rail, its kinds the bag's six", word ~= nil and word:IsA("TextLabel") and word.Text == "Items" and #VoidkinScreen.Kinds == 6 and table.find(VoidkinScreen.Kinds, "Weapons") ~= nil, if word and word:IsA("TextLabel") then word.Text else "no word")
 			-- Its name over the stage: one line between the slot columns, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
 			-- The rail: all seven taps whole, each a touch or more, and no scroll.
@@ -447,51 +449,7 @@ function VoidkinCases.Cases(given: Given): { any }
 						end
 						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed", true) ~= nil)
 					elseif name == "Bag" then
-						local kinds = VoidkinScreen.Find("Kinds")
-						local tabs = true
-						local cut = ""
-						for _, kind in VoidkinScreen.Kinds do
-							local tab = kinds and kinds:FindFirstChild(kind)
-							local want = if VoidkinScreen.Held[kind] then "" else "Soon"
-							tabs = tabs and tab ~= nil and tab:IsA("TextButton") and tab:GetAttribute("Disabled") == want
-							if kinds and kinds:IsA("GuiObject") and tab and tab:IsA("GuiObject") then
-								local left = tab.AbsolutePosition.X - kinds.AbsolutePosition.X
-								if left < -0.5 or left + tab.AbsoluteSize.X > kinds.AbsoluteSize.X + 0.5 then
-									cut = kind
-								end
-							end
-						end
-						t.Check("Bag: a tab for each kind, those not held yet greyed with Soon", tabs)
-						t.Check("Bag: every tab whole in its row, none cut", kinds ~= nil and not kinds:IsA("ScrollingFrame") and cut == "", cut)
-						local shards = kinds and kinds:FindFirstChild("Shards")
-						t.Check("Bag: on Shards", shards ~= nil and shards:IsA("TextButton") and Button.State(shards) == "Selected")
-						local bag = (ProfileController.Get() :: Profile.View).Bag.Shards
-						local held, total = 0, 0
-						for _, count in bag do
-							held += if count > 0 then 1 else 0
-							total += count
-						end
-						t.Check("Bag: its count of shards, the save's", scroll:FindFirstChild(if total == 1 then "1 shard" else `{Hud.Digits(total)} shards`) ~= nil, `{total}`)
-						local cells = scroll:FindFirstChild("Cells")
-						local shown, right, first = 0, true, nil :: TextButton?
-						for _, cell in (if cells then cells:GetChildren() else {}) :: { Instance } do
-							if cell:IsA("TextButton") then
-								shown += 1
-								right = right and cell:GetAttribute("Count") == bag[cell.Name]
-								first = first or cell
-							end
-						end
-						t.Check("Bag: a cell for each shard held, with its count", shown == held and right, `{shown} of {held}`)
-						if first then
-							-- AR12: its grade's picture, the size's own (Rules.Hud.ShardPicture).
-							local picture = first:FindFirstChild("Picture", true)
-							local grade = if Shards.ById[first.Name] then Shards.ById[first.Name].Grade else "Standard"
-							local art = HudConfig.ShardArt
-							local want = Hud.ShardPicture(grade, Theme.Size.Tap * art.Cell, art.Large)
-							t.Check("Bag: a cell wears its grade's picture", picture ~= nil and picture:GetAttribute("Kit") == want, if picture then tostring(picture:GetAttribute("Kit")) else "none")
-							local said = `{Read.ShardName(first.Name)} ×{Hud.Digits(bag[first.Name])}`
-							t.Check("Bag: a tap on a cell names it", VoidkinScreen.Tap(first) and table.find(Toast.Shown(), said) ~= nil, table.concat(Toast.Shown(), "; "))
-						end
+						t.Check("Bag: C's case, its belt, its strip and the Voidkin's half", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Belt") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
 					elseif name == "Kit" then
 						local signature = false
 						for _, child in scroll:GetChildren() do
@@ -507,7 +465,7 @@ function VoidkinCases.Cases(given: Given): { any }
 						t.Check(`Stars: {VoidkinConfig.MaxStars} pips`, count == VoidkinConfig.MaxStars, `{count}`)
 					end
 				end
-				for _, kept in { "Lead", "Work" } do
+				for _, kept in (if name == "Bag" then {} else { "Lead", "Work" }) :: { string } do -- C's Items page has neither
 					t.Check(`{name}: {kept} still in view`, inView(kept))
 				end
 			end

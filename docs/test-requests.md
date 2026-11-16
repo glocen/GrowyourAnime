@@ -2462,3 +2462,44 @@ Part 12's order, item 4.4 (`docs/research/rework-2026-11-16.md`, part 11; the co
 - **The count:** about 43 chests an hour, 18 of them from elites, and about 2,450 over the climb. Part 11's "about 20 an hour" counted Shades alone.
 - **Keep:** each class's best Voidkin, as `docs/design.md`, "Chests" has it (built in 2a95179).
 - **At launch,** with Lantern Row alone, its rows give Common and Uncommon, and a Rare only at the keeper's first win. Rare and better then come from the Tower, so its table is fitted with its build (part 12, item 7), to the same windows.
+
+## TR28. The inventory: the bag, in C (Faber)
+
+Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12; `docs/ui.md`, the bag), on the director's yes of 2026-11-16, 16:50. The direction is AR18's C, "the case", in BONE, with research's fixes 1 to 3 and its pick on fix 4 (AR18).
+
+**Scope, set at the start (19:08).**
+- **The block:** `Rules.Bag` (the kinds, the belt's groups, a kind's cells with their arrows, the sorts, an item's card against what it replaces, a chest's card); its cases; the Voidkin screen's Items page in C's composition: the belt (a narrow room shows the chosen item's group, the other two a chip each), the six kinds on a scrolling strip, a sort and "n / 300", the grid five across with the rarity's band, the up arrow, the worn tick and another class's dim, the Voidkin's half with its totals, the card sliding over it with Equip or Take off, another class's reason with Equip off; chests in the grid with their counts, their card with the odds, Open and Open all (`Act("OpenChests")` in steps of 50) and the outcome's line; the salvage's control in the Chests kind (`Act("SetSalvage")`); shards in Materials; the empty lines.
+- **What waits:** AR6's icons (a cell shows its kind's word in the inlay until then); the rail and the band on bone; the preset's dropdown; the lock; the "new" pip; a slot's better-item dot; a gamepad's focus; Regular and Wide (4.8, the responsive pass); the chest's summary and reveal (their own feel lines); the Dawn series.
+
+**The build (19:08 to 19:26 by the clock, on the rules written before it).**
+- **The rules, pure:** `src/shared/Rules/Bag.luau`.
+  - `List(data, owned, kind, sort)` gives a kind's cells: items by rarity, Combat Power or newest; then chests, the best tier first; then shards.
+  - Each cell says its rarity, its count, whether it fits the shown Voidkin's class, where it's worn, and its Combat Power gain, which is what the up arrow shows.
+  - `Card` sets an item against what it would replace, through `Stats.Compare`, which now takes a list's `before` so 300 cells resolve the Voidkin once (13 ms for 300). A worn item compares taking it off; another class's lists its own lines and compares nothing.
+  - `Chest` gives the held count, the step (Config.Chests.Step), the room left in the bag, and the odds.
+  - Two helpers in `Rules.Sheet`, `Amount` and `Change`, write a total and its signed change.
+- **The page:** `src/client/UI/VoidkinScreen/Bag.luau`, numbers in `Config.Hud.Bag` (BONE's palette among them). The screen's `build` hands it the room right of the rail, with the figure's stage, the name line and Combat Power.
+  - **The belt:** fourteen slots at a touch (44 rendered) where they fit. Otherwise, the chosen item's group shows, the hands' with nothing chosen, and the other two groups are a chip each. The slot an item would fill is ringed in ink.
+  - **The strip and the grid:** the six kinds scroll, the chosen one kept in view, with the sort (or, in Chests, the salvage) at the strip's end. The grid is five across or more at 60, with "n / 300 in the bag" at its foot.
+  - **The card:** a tap changes the card, the rings and the belt in place, never the grid. The card slides over the Voidkin's half in 0.16 s, Quart Out, and back. Equip and Take off go through `Act("Equip")`, and the card closes so Combat Power's count-up shows. A chest's card opens 1 or the step through `Act("OpenChests")`, and its toast says what was kept and salvaged.
+- **Faber's calls (tier 1, for research's pass):**
+  - **Neither Lead and Work nor the Voidkin strip on Items:** C has neither. The Voidkin dressed is the screen's chosen one, picked on Overview. The dock opens on Items (research's call of 2026-11-15), and "Send another" now opens on Overview, where Lead is (`On.Page`).
+  - **The half's width:** the layout gives the Voidkin's half 282 authored on the smallest phone, against research's "about 260". The grid keeps its five at 60.
+  - **The count's place:** at the grid's foot, scrolling with it.
+  - **Open N's word:** the button says the step ("Open 50").
+- **For tests:** Studio's `ItemTake` takes a case's own items back out of the save and every preset.
+
+**The checks (19:26).**
+- **Type check:** 0 new, 11 known.
+- **Logic, offline and in Studio:** 23,133 passed, 0 failed (Bag 194).
+- **Boot:** 19 server and 12 client modules, 0 errors.
+- **Self-test, the Items page's case** (`BagCases.luau`):
+  - **Passed, 84 checks:** the grid matches `Rules.Bag`'s list in its order for All, Weapons, Jewellery and Chests and for each sort. The up arrow, the tick and another class's dim show on the right cells. Equip and Take off reach the save, and the card closes. Another class's card says "<Class> only" with Equip off for that reason. A chest opens with its line. The salvage goes round its five steps and back. The case's own things are taken back.
+  - **NOT VERIFIED, 11 checks:** sizes and positions in this window and on the smallest phone, the card's slide, and the screen lint. The PC is locked: the client's viewport is 1×1 and RenderStepped runs at 0 fps, so the rail's long-standing buttons read 41 px too.
+  - The TR17 case now checks Overview after showing it, the takes show Overview where they film it, and "Send another"'s case checks that it opens on Overview.
+- **When the screen unlocks:** the case again, then captures: a full bag, long names, a comparison, another class's weapon, an empty bag, the smallest phone, and at night beside the HUD (fix 1's phone check).
+- **The four facts:**
+  - **Implemented:** yes.
+  - **Tested:** logic and flow, yes. Layout, NOT VERIFIED.
+  - **Visually reviewed:** no.
+  - **Director-accepted:** no.

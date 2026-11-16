@@ -329,10 +329,11 @@ def effect(n, name, why):
             "Rows": rows}, lengths
 
 
-def check(effect_rows):
-    """Config.EffectRows' and the rows cases' own tests that run without the game; the rest run when Faber takes it."""
+def check(effect_rows, used=IMAGES + MESHES):
+    """Config.EffectRows' and the rows cases' own tests that run without the game; the rest run when Faber takes it.
+    `used`: the kit's names the effect takes (another effect's rows script passes its own)."""
     names = set(re.findall(r"^\s*(\w+)\s*=\s*\{", FXKIT.read_text(encoding="utf-8"), flags=re.M))
-    problems = [f"{w} isn't in Config.FxKit" for w in IMAGES + MESHES if w not in names]
+    problems = [f"{w} isn't in Config.FxKit" for w in used if w not in names]
     problems += [f"top field {k}" for k in effect_rows if k not in TOP]
     rows = effect_rows["Rows"]
     for name, row in rows.items():

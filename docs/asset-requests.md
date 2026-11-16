@@ -6051,6 +6051,56 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Director-accepted: not yet.
 - **Next:** Ground Wire's look with Faber (`/ga-action`).
 
+**Ground Wire's look: the parts and their techniques** (Modulo, 2026-11-17, by 00:45 by the clock). `/ga-action` step 1, for research's technique check before any block-in. A signature: `ga-fresh-eyes` reads it at the blockout and the final.
+- **The beats,** from the delivered clip (60 fps):
+  - the lift, 0 to 16, both hands up;
+  - the drive, 16 to 25, the butt falling its last 1.1 studs in two frames;
+  - **Plant** 25 (0.42 s), then the hold to **Release** 124 (2.07 s);
+  - the spear out of the street by 136, at rest by 150.
+  - Rung 7 holds both bodies 0.13 s (8 frames) on the Plant.
+- **Measured from the clip** (`tools/blender/watt_ground_wire_fx.py measure`, the delivered Transforms on the recipe's joint): the butt stands in the street from 25 to 136, 0.15 right of and 0.80 ahead of his root. The discs are 6.6 studs up the shaft from it.
+- **The hero, the ring:** a thin ring of light along the street, out from the butt's foot to the stop's reach (the hit's `Round`, 9, round his root).
+  - **Direction:** out from the weapon.
+  - **Acceleration:** it snaps out and brakes (Quart Out, 10 frames, three quarters of the way in its first 3), then holds at the edge and fades by 28 (0.47 s).
+  - Its centre drifts from the butt to his root as it grows, so at full size its edge is the stop's: what's inside it is stopped.
+  - **Technique, a mesh:** a ring on the ground has a near and a far side. It's the kit's `FxColumn` flattened to a low wall, 0.7 studs tall at the foot and 0.24 at the edge, which keeps a thin line on screen at any radius. The column has no caps, so there's no disc. The kit's hoop has a floor band 30% of its radius, 2.7 studs wide at the edge: a filled band where the content check wants a thin ring.
+- **Before it, the charge** (16 to 25): a short **Beam** of light runs down the shaft with the drive, from the discs into the street, slow then fast (Quad In), and goes in on the Plant.
+  - It rides the spear's `Butt` point, along the shaft. A Beam, because it runs along a shape.
+  - The drive travels about a stud from the player's camera (Timing, above). So the charge is the drive's read and the ring's start in one line: the discs, the shaft, the street, the ring.
+- **The plant** (25): a **light** at the butt's foot, lit at once and eased out by 24, and a low spray of **sparks** (particles) all round along the street, never up.
+- **The ring's front** (25 to 33): **particles** let go along the ring's rim as it travels (an emitter riding the ring, its disc the ring's radius), so its sweep leaves glints in the street. Layer 3 at most, and out if it doesn't add at 64 px.
+- **The hold's hum:** the discs' and the hair's own **glow** (the recipe's emissive: cold 0, hot 2.5 and 3.0). The discs gather on the lift, flare on the Plant, pulse twice a second through the hold, and go out as he pulls the spear free.
+- **The stop,** on every Shade inside the ring, from the Plant to the end of its stun:
+  - a small ring of the same light at its feet (`FxColumn` again, a mesh, 1.4 studs round), closing in on it in 4 frames as the hero passes, pulsing with the discs;
+  - its pose held (Faber's stop);
+  - no arcs, sparks or flinch on its body: stopped, never hurt.
+  - It's its own effect, riding the stopped body, played by Faber's stop for as long as that body's stun lasts (halved on the tough). It goes at once when the stun ends: the lock lets go.
+- **The shield,** 5 s from the Plant, past the action's end: faint light standing up from the street round him.
+  - A **mesh,** the kit's `FxShell`, 4 studs across, its top 5.8 up and its centre 1.8 up. Its lower part is under the street, so only a rim 3.6 across meets the ground. The spear's blade stands out of it in the hold.
+  - Bright at its foot and clear by its top (the `rise` ramp), lit on the Plant, then held quiet with the same hum.
+  - Its own effect too, riding him, played from his `ShieldUntil` (FightService sets it "for its look"), and ended with the shield.
+- **The content check's note 2, measured** (`... screen`, cameras round the fight, the target Shade at rest 4.5 ahead):
+  - From the replay's camera (heading 215, as for Kirra), the target covers 5 to 10 of 16 points on a 1-stud ring round the butt's foot, and 8 to 14 of 20 points of the shaft. So on the play camera the plant sits partly behind the target.
+  - By construction, nothing at the plant rises: the light and the sparks lie along the street, the ring is a low wall, and nothing bursts at the shaft's height.
+  - The block's take at 64 px is the check.
+- **The block contains,** in grey (`Grey` true, `Action` `WattGroundWire`), three rows files, written by `tools/blender/watt_ground_wire_fx.py rows` from the clip (plain `py`). They're drafted, and they pass their own check. They go to `build/handoff/Watt/fx/` once the technique check passes:
+  - `WattGroundWire`: the charge, the plant's light, the sparks, the ring, its front, the discs and the hair. `Free` is on the Plant, so the ring runs through rung 7's 8-frame hold while the bodies are held, and the stop lands with it. The glows ride the free clock from there, so their release is written 8 frames late to stay on the clip.
+  - `WattGroundWireStop`: its ring.
+  - `WattGroundWireShield`: the shell.
+- **Waits for the finish:**
+  - Storm's colours: a Storm ramp the kit lacks, white core to the `#FF6FD8` edge;
+  - a drawn street mark, if the block wants one: lines of light in the stone, never a stain;
+  - static off the hair;
+  - his sounds (Faber's);
+  - anything new to upload.
+- **For Faber, at the blockout** (his calls):
+  1. `Effect = "WattGroundWire"` on the action, then `rows_take` for the three files.
+  2. The stop's look: `WattGroundWireStop` played on each body his stop holds, riding it, and ended with its stun.
+  3. The shield's look: `WattGroundWireShield` on Watt from `ShieldUntil`, ended at it, or when the shield is spent if it can be.
+  4. The sparks' flat fan is `SpreadAngle` (6, 180) from `Front`. If Roblox turns it into a wall, swap the two (a Tune).
+- **Section 2's effect conditions still standing:** Storm light pink to white, as lines and a thin ring with speed; no filled dark disc on the ground; no drops or stain. The lens's plum and the jaw's arcs were the first model's, and went with it.
+- **Time:** the rows, about 45 minutes after the check. The blockout with Faber in the replay, about an hour.
+
 **The install** (Faber, 2026-11-17, by 00:30 by the clock):
 - **What:** Watt fights with his own kit.
   - `WattCombo` hits on his markers: Hit1 0.35, Hit2 0.60, Hit3 1.00. `WattGroundWire` has Plant 0.42 and Release 2.07 (`Definitions/Actions.luau`).

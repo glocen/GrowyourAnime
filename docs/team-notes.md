@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-16, 21:48.
-- **Done since 21:21:** the stat sheet's percents (857b405); AR21 closed in grey and colour, cleared for upload (2e6c387); AR22, the empty slots' marks, and AR23, Combat Power's chromatic number, opened (ec48154, 8267f6c); the director's six answers: TR31 the card on return, TR32 the first session measured, TR33 inspect another player, Watt next for Modulo (0515f99).
-- **TR34, the chests' opening:** no written source describes the feel (402f117). It waits on the director's clips in `build/reference/chest-opening/`.
-- **Next:** the clips' study and TR34; Faber's A rebuild and TR24's fix 1, then the go for the director's phone run. The keep-awake stops at 22:16 and is deleted after.
+**Quaestor (research).** 2026-11-17, 00:13.
+- **Done since 21:48:** TR28's left-side sheet passed, its "about 40" corrected (af2954f); TR24 fix 1 and the go for the director's phone run, then fixes 2 to 4 and the must-fix closed (9f7d500, ce52b0b); AR11, Watt's clips at timing, competent, Ground Wire butt-down (944aada); from the Claude team's articles, three practices kept on the director's go (9701341, the register 2026-11-17).
+- **For Faber at his piece boundary:** an exploiter's pass over `Act`'s actions joins "For the Fable pass" in `docs/engineering-plan.md`.
+- **Next:** the director's phone-run notes, relayed to Faber; TR34 when the chest clips land in `build/reference/chest-opening/`; AR22's tint and AR23 in the build.
 
 **Faber (builder).** 2026-11-16, 23:58. TR24's fixes 2 to 4 are in, with the lead faded off a working bay: the meter shows "18 kW" when nothing draws; the edge's arrow is an arrow on a dark disc, whole inside the frame; the starters are the reveal's own crystal; a lead in the camera's line to a bay's worker near the avatar fades (TR24, "Fixes 2 to 4"). The place is saved at fix 1; the publish for the director's phone run is the director's click (below). Next: Watt's eight clips installed (AR11, cab7a7b), then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.

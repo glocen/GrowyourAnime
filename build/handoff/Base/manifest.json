@@ -351,8 +351,8 @@
   },
   "Door": {
    "mesh": "meshes/Door.json",
-   "triangles": 416,
-   "vertices": 284,
+   "triangles": 896,
+   "vertices": 604,
    "centre": [
     0.0,
     7.245,
@@ -391,7 +391,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "stands where its Door stands, the same turn: 6 wide, from 0.5 to 11.6 up at its point. One pale swatch on every face: its colour is the builder's (a tint, or the mesh in Neon without the kit's pictures), and its glow is the Door's state, low while no ground is open to go to. Look only: the player walks through it"
+   "note": "stands where its Door stands, the same turn: 6 wide, from 0.5 to 11.6 up at its point. It wears the kit's two pictures: the festival seen through the door, warm white at its foot rising into cyan, lantern lights down a street. Its glow's strength is the Door's state, low while no ground is open to go to; keep its tint white, or the festival's colours go. Look only: the player walks through it"
   },
   "Training": {
    "mesh": "meshes/Training.json",
@@ -600,6 +600,28 @@
    "collision": "a box, 9 square, 0.4 high; the rest is under a stud high",
    "lights": [],
    "note": "stands where a machine the base hasn't woken will stand (plan.json, layout, sleeping), until that machine has its model and its phase. It lies low, about 1.5 high. Nothing on it glows"
+  },
+  "TowerSleeping": {
+   "mesh": "meshes/TowerSleeping.json",
+   "triangles": 76,
+   "vertices": 44,
+   "centre": [
+    0.0,
+    90.875,
+    0.0
+   ],
+   "size": [
+    28.0,
+    181.75,
+    28.0
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 28 square, as high as it needs; nobody reaches it yet",
+   "lights": [],
+   "note": "stands behind the back wall on the plot's middle line, on the Tower's own lot: 172 high at its tip, 28 square at its foot. Dark and unlit but for the shard over its tip. No hull"
   },
   "Generator": {
    "mesh": "meshes/Generator.json",

@@ -82,6 +82,7 @@ CELLS_AT = {1: 2, 2: 4, 3: 8}    # cells by the base's level, with the battery's
 WAY = (3.0, 11.6)                # the Door's way of light: its half width, and its point's height
 CROWN = 8.0                      # the Training machine's crown: its middle, up from the floor
 TRAINEE = 6.0                    # the Training machine's pad: its middle, out from the stone's toward the piece's front
+TOWER = 172.0                    # the sleeping Tower's tip
 
 
 def post(m, x, y, z0, z1, t, sw, ink=False):
@@ -362,6 +363,20 @@ def sleeping_stone():
                       "that machine has its model and its phase. It lies low, about 1.5 high. Nothing on it glows")
 
 
+def tower_sleeping():
+    """The Tower, asleep, behind the back wall on the base's middle line: one dark silhouette in four tiers, broad
+    and tall enough to read over the generator from the way in, and a faint shard of its own light over its tip. It has no
+    name and no detail: phase 3 designs the Tower (research, 2026-11-16)."""
+    m = Mesh(None)
+    q = math.sqrt(2.0)
+    tiers = [(0.6, TOWER), (3.0, TOWER - 22.0), (5.6, TOWER - 22.0), (6.6, 130.0), (9.0, 130.0), (10.0, 94.0), (12.6, 94.0), (14.0, 0.0)]
+    m.lathe([(half * q, z) for half, z in tiers], (0, 0, 0), 4, "dark", spin=math.pi / 4)
+    shard(m, (0, 0, TOWER + 6.0), 2.0, 7.5, "dawn")
+    return Piece("TowerSleeping", m, solid="a box, 28 square, as high as it needs; nobody reaches it yet",
+                 note=f"stands behind the back wall on the plot's middle line, on the Tower's own lot: {TOWER:g} high "
+                      f"at its tip, 28 square at its foot. Dark and unlit but for the shard over its tip. No hull")
+
+
 # --- the generator -----------------------------------------------------------------------------------------------------
 
 def generator():
@@ -486,8 +501,9 @@ def battery_cell():
 def door():
     """The Festival Door's frame: a steel threshold with a line of the void's light round it, two standing stones of
     void stone leaning a little apart, a vein on each one's inner edge, and over them the arch in four floating
-    stones and a keystone of the void's light. A festival lantern hangs from a peg at each stone's shoulder. Both
-    faces are fronts."""
+    stones and a keystone of the void's light. A festival lantern hangs from a peg at each stone's shoulder, and a
+    string of five paper lanterns hangs across the arch from stone to stone, in the way's own plane, so each face
+    shows it. The stones stay void stone: a void machine that opens on the festival. Both faces are fronts."""
     m = Mesh()
     half, point = WAY
     m.box((10.4, 2.8, 0.4), (0, 0, 0.2), "girder", ink=True)
@@ -507,6 +523,18 @@ def door():
         m.box((0.74, 0.74, 0.14), (sx * 5.8, 0, 6.5), "girder")
         m.box((0.2, 0.2, 0.3), (sx * 5.8, 0, 6.28), "copper")
     shard(m, (0, 0, 13.6), 0.5, 2.0, "void")
+    reach, hung, sag = 4.1, 9.9, 0.8                                                  # the string: its ends, its dip
+
+    def line(x):
+        return (x, 0, hung - sag * (1 - (x / reach) ** 2))
+
+    m.tube([line(reach * (k - 5) / 5) for k in range(11)], 0.045, "rubber")
+    for k in range(-2, 3):
+        x, _, z = line(1.45 * k)
+        m.box((0.05, 0.05, 0.2), (x, 0, z - 0.1), "rubber")
+        m.box((0.3, 0.3, 0.08), (x, 0, z - 0.22), "rubber")
+        m.lathe([(0.17, 0.0), (0.38, -0.24), (0.38, -0.62), (0.17, -0.86)], (x, 0, z - 0.26), 6, "paper")
+        m.box((0.24, 0.24, 0.07), (x, 0, z - 1.15), "rubber")
     return Piece("Door", m, solid="the threshold, 10.4 by 2.8 and 0.4 high, and the two stones on it, each about 2 by "
                                   "1.8 and 9.4 high; the way between them stays open",
                  note=f"its middle on the stand-in's, 14.6 high at its keystone. Turned 90, so its way looks down the "
@@ -514,24 +542,28 @@ def door():
 
 
 def door_way():
-    """The Door's way of light, a piece by itself: a sheet in a pointed arch between the stones, pale at its foot and
-    brighter toward its point, seen from both sides."""
+    """The Door's way of light, a piece by itself: a sheet in a pointed arch between the stones, wearing the kit's
+    print of the festival seen through it (`base_kit.way`), from both sides."""
     m = Mesh(None)
     half, point = WAY
+    u0, v0, u1, v1 = kit.pic_uv("way")
+
+    def uv(q):
+        return (u0 + (u1 - u0) * (q[0] + half) / (2 * half), v0 + (v1 - v0) * (q[2] - 0.5) / (point - 0.5))
+
     edge = [(half, 0.5), (half, 7.6), (half - 0.7, 9.4), (half - 1.8, 10.8), (0.0, point)]
     for (x0, z0), (x1, z1) in zip(edge, edge[1:]):
-        shade = 0.85 - 0.7 * (z0 + z1) / 2 / point
         for sx in (-1, 1):
             pts = [(0, 0, z0), (sx * x0, 0, z0), (sx * x1, 0, z1)] + ([(0, 0, z1)] if x1 else [])
-            m.flat(pts, "lamp", t=shade)
+            for face in (pts, pts[::-1]):
+                m.face(face, [uv(q) for q in face])
     return Piece("DoorWay", m,
                  note=f"stands where its Door stands, the same turn: {half * 2:g} wide, from 0.5 to {point:g} up at its "
-                      f"point. One pale swatch on every face: its colour is the builder's (a tint, or the mesh in Neon "
-                      f"without the kit's pictures), and its glow is the Door's state, low while no ground is open to "
-                      f"go to. Look only: the player walks through it")
+                      f"point. It wears the kit's two pictures: the festival seen through the door, warm white at its "
+                      f"foot rising into cyan, lantern lights down a street. Its glow's strength is the Door's state, "
+                      f"low while no ground is open to go to; keep its tint white, or the festival's colours go. Look "
+                      f"only: the player walks through it")
 
-
-# --- the Training machine ----------------------------------------------------------------------------------------------
 
 def target(m, at, r0, r1, sides, sw):
     """A flat ring facing the piece's front and its back, its middle at `at`."""
@@ -595,5 +627,6 @@ def training_crown():
 
 PIECES = {"Door": door, "DoorWay": door_way, "Training": training, "TrainingCrown": training_crown,
           "Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
-          "Bay": bay, "BayHalo": bay_halo, "BaySleeping": bay_sleeping, "SleepingStone": sleeping_stone, "Generator": generator, "GeneratorRotor": generator_rotor,
+          "Bay": bay, "BayHalo": bay_halo, "BaySleeping": bay_sleeping, "SleepingStone": sleeping_stone, "TowerSleeping": tower_sleeping,
+          "Generator": generator, "GeneratorRotor": generator_rotor,
           "GeneratorRing": generator_ring, "BatteryRack": battery_rack, "BatteryCell": battery_cell}

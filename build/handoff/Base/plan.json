@@ -931,6 +931,15 @@
     "standsFor": "the Lab's place, asleep"
    },
    {
+    "piece": "TowerSleeping",
+    "across": 84.0,
+    "along": -232.0,
+    "up": 0.0,
+    "turn": 0.0,
+    "standsFor": "the Tower, asleep until phase 3",
+    "toward": "crossing"
+   },
+   {
     "piece": "Generator",
     "across": 0.0,
     "along": -72.0,

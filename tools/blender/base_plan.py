@@ -55,6 +55,10 @@ REPO = Path(__file__).resolve().parents[2]
 STREET = REPO / "build" / "handoff" / "LanternRow" / "maps" / "LanternRow_Paving_Color.png"   # the Strip's own stones
 
 PLOT, STRIP, SPAWN = base.PLOT, base.STRIP, base.SPAWN
+TOWER_LOT = (16.0, 32.0)           # behind a plot: its path, then the Tower's footprint (Config/World, Behind and Tower)
+TOWER_AT = (PLOT / 2 - TOWER_LOT[1] / 2, PLOT + TOWER_LOT[0] + TOWER_LOT[1] / 2)
+# The sleeping Tower: behind the back corner on the crossing's side, off the middle line, where it stood as a slab behind
+# the generator (research, 2026-11-16). The builder sets its across's sign toward the crossing, plot by plot.
 GENERATOR, BREAKER, DOOR, BATTERY, TRAINING = base.GENERATOR, base.BREAKER, base.DOOR, base.BATTERY, base.TRAINING
 SHOWCASE = (14.0, 4.9)     # the showcase's plinth, just inside the gate, beside the way in: across, in (TR22)
 LAMP = ("BreakerLamp", *BREAKER, 10.0, "#8CF6FF")   # the Breaker's own light, over the chambers
@@ -96,6 +100,7 @@ def machines(level=1):
             made.append(("BaySleeping", x, inward, 0.0, 0.0 if x < 0 else 180.0, f"bay {index + 1}, asleep until level {index // 2 + 1}"))
     for name, (x, inward) in SLEEPING.items():
         made.append(("SleepingStone", x, inward, 0.0, 0.0, f"the {name.capitalize()}'s place, asleep"))
+    made.append(("TowerSleeping", *TOWER_AT, 0.0, 0.0, "the Tower, asleep until phase 3"))
     made.append(("Generator", *GENERATOR, 0.0, 0.0, "the generator"))
     made.append(("GeneratorRotor", *GENERATOR, base.machines.AXLE, 0.0, "the generator's rotor, turning about its own X"))
     made.append(("GeneratorRing", *GENERATOR, base.machines.AXLE, 90.0, "the generator's great ring, turning about its own X, slowly, against the rotor"))
@@ -255,7 +260,8 @@ def write_plan(out: Path):
                  "its own piece in one pale swatch: it stands only while a worker works there, in the worker's "
                  "rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots "
                  "(`layout.laterBays`).",
-            placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w) for n, x, i, z, t, w in machines()],
+            placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w, **({"toward": "crossing"} if n == "TowerSleeping" else {}))
+                        for n, x, i, z, t, w in machines()],
             battery=dict(
                 note="the battery is a bank: a cell a seat, in this order, as its cap grows with the base's level. "
                      "The builder lights the cells one after another as the charge rises.",
@@ -416,6 +422,7 @@ def see(out: Path, level, fast, clear, only=()):
              "door": ((DOOR[0] + 20.0, -(DOOR[1] - 9.0), 6.0), (DOOR[0], -DOOR[1], 6.6)),
              "training": ((TRAINING[0] + 11.0, -(TRAINING[1] - 17.0), 5.5), (TRAINING[0], -(TRAINING[1] - 2.0), 4.2)),
              "asleep": ((base.FAR - 10.0, -(base.ROW - 9.0), 6.0), (base.FAR, -base.ROW, 0.6)),
+             "tower": ((-10.0, -84.0, 6.0), (TOWER_AT[0], -TOWER_AT[1], 84.0)),
              "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
     if only:
         views = {name: views[name] for name in only}

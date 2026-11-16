@@ -6898,6 +6898,20 @@ In `build/handoff/Base/`, with the rest (`tools/blender/base_machines.py`). Buil
 - **From across the plot:** the way's light leaves void violet for the festival's own warm white and cyan, and a string of paper lanterns hangs across the arch. The standing stones stay void stone. No pennants: the plot stays uncluttered.
 - **Up close and from the gate:** a name in the world over the arch, in the UI kit, "Festival of Battles", with the ground it leads to under it. The Door stands edge-on to the gate, so the name faces the camera. The model's part is Modulo's, about an hour, with a content check; the name is Faber's.
 
+### 6. The Door's festival layer (Modulo, 2026-11-16, 00:59 to 01:22)
+
+Research's call built (above). In `build/handoff/Base/`. **Nothing was seen in Studio.**
+
+- **The way shows the festival** (`DoorWay`, 28 triangles, the same shape). It wears a print on the kit's atlas (`base_kit.way`, 240 by 448 px): the festival seen through the door, warm white at its foot rising into cyan, and two strings of lantern lights running down a street to one point.
+  - **For Faber:** `DoorWay` now wears the kit's colour and glow pictures like any piece. Its tint stays white, or the festival's colours go. Its glow's strength is the Door's state, low while no ground is open to go to.
+- **A string of paper lanterns across the arch** (`Door`, 896 triangles, from 416): five plain six-sided lanterns in a new warm swatch, `paper`, on one sagging string from stone to stone, 9.9 up at its ends. It hangs in the way's own plane, so both faces show it. The lowest lantern's foot is 7.9 up, over the tallest Voidkin's hat. The stones, the arch and the keystone stay void stone, and its solid is unchanged.
+- **The kit's atlas changed** (`Base_Kit_Color.png`, `Base_Kit_Glow.png`): a second row of swatches (`paper`, and `dawn` for the Tower's light, AR16) and the way's print. Nothing already on it moved.
+- **The name** over the arch is Faber's, in the UI kit, facing the camera (research's call). The Door stands edge-on to the gate, so from there the name is what says it (`base_1_gate.png`).
+- **The look:** `base_1_door.png`, and `base_1_home.png` from the spawn.
+- **Content check:** PASS for delivery (2026-11-16, judged from the code, the atlas, the print, the renders, and views of the door, the print and the Tower at full size and 64 px over dark). Only warm white, cyan and rose light, with no drop, drip or stain shape. A lantern street to one vanishing point, a string of plain paper lanterns, a floating-stone arch and a plain stepped spire are genre shapes: none names a published work, a landmark or a religious site at a glance, and none matches a hate symbol. At 64 px the Door is a cyan-lit arch, the print a V of warm lights, the Tower a plain stepped spire. Conditions that stand: the lanterns' paper stays blank, with no script, crest or emblem. The Tower stays windowless, with no mast or crown, so it never reads as a real skyscraper. Its tip light stays a shard and is never called an eye (docs/ip-list.md). The name over the arch wasn't checked. The upload batch gets its own check.
+- **Time:** 00:59 to 01:22, with the sleeping Tower (AR16) and the checks' waits.
+- **Four facts:** implemented, yes. Tested: the export, the plan and the looks ran in Blender; not in Studio. Visually reviewed: Modulo, in Blender's renders, and research's read of them, yes for the Door; research's verdict comes in the game. Director-accepted: no; the pictures went to the director at 01:07, with no word yet.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.
@@ -7054,6 +7068,18 @@ Research's calls on delivery 2 built ("Filled by what it will become", above; re
   - Tested: the export, the plan and the looks ran in Blender; one hull a shape. **Not tested in Studio.**
   - Visually reviewed: Modulo, in Blender's renders, the sleeping bay from close. Research's verdict comes in the game after the install.
   - Director-accepted: no. The director hasn't spoken on the tighter star or the sleeping places.
+
+### The sleeping Tower (Modulo, 2026-11-16, 00:59 to 01:22)
+
+Research's call built ("Filled by what it will become", above), and moved off the middle line on research's read of the renders, with Faber's yes on the place. **Nothing was seen in Studio.**
+
+- **`TowerSleeping`** (76 triangles; `base_machines.tower_sleeping`): one four-sided silhouette in four tiers, 28 square at its foot and 172 to its tip, in the kit's `dark`, unlit, with no hull. A shard of its own rose light (`dawn`, a new swatch, at about half glow) floats over its tip, to 182. It has no name, no window and no detail: a stand-in until phase 3 designs the Tower.
+- **Where** (`plan.json`, `machines.placements`): across 84, along -232, turn 0, and `"toward": "crossing"`. Faber sets the sign of `across` toward the crossing, plot by plot, and negates the turn with it (his word, 2026-11-16); the piece reads the same from every side. It stands at the crossing's end of the Tower's lot, which Config/World keeps (Behind 16, Tower 32), and with its plot's base: a bare lot has no Tower.
+- **Why not the middle line:** built there first, it showed from the spawn as a pale slab through the generator's ring and over its horns, flattening the base's hero.
+- **Seen in the renders, for the verdict:** it is pale, not dark. At this distance the place's fog lightens it against the sky, and research keeps that: far and tall. From the spawn it rises out of the frame's top beside the generator, so its tip and its light show when the player looks up. From outside the gate, the gate's sign covers that part of the sky.
+- **The look:** `base_1_tower.png`, `base_1_home.png`. All twenty-one pictures were rendered again.
+- **Content check:** with the Door's festival layer, in AR15, section 6.
+- **Four facts:** implemented, yes. Tested: the export, the plan and the looks ran in Blender; not in Studio. Visually reviewed: Modulo, in Blender's renders; research's verdict comes in the game. Director-accepted: no; a picture of it on the middle line went to the director at 01:07, with no word yet.
 
 ## AR17. The rest of the map (research's layout, Modulo's look, then Faber)
 

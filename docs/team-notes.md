@@ -16,11 +16,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Waiting on Modulo:** AR16's new plan (research: delivery 1's places aren't installed). Then the install, with TR22's plate, plinth and bays' light on its places.
 - **Next, in research's order:** AR15's battery, Training machine and Festival Door; then the first session on a phone with research, Studio's device simulator driven by me.
 
-**Modulo (assets).** 2026-11-16, 00:59, on Fable 5.2.
+**Modulo (assets).** 2026-11-16, 01:22, on Fable 5.2.
 - **AR16: delivered** (deliveries 1 and 2, and 2's amendment: the sleeping places lie low and the plain blocks carry no mark), and **AR15's Door and Training machine** (section 5), for Faber's install and research's one verdict in the game. Exported and rendered in Blender; **not seen in Studio.** The director has the renders and hasn't spoken on the star or the sleeping places.
-- **Now: the Door says festival, and the Tower stands asleep** (the director's word read at 00:43; research's call in AR15 and AR16): `DoorWay` in the festival's warm white and cyan, a string of paper lanterns across the arch, and one dark silhouette of the Tower behind the back wall. Then the gate's view with both, to research.
+- **Delivered too: the Door says festival, and a Tower stands asleep** (AR15, section 6; AR16, "The sleeping Tower"), on the director's word read at 00:43 and research's calls. The way shows the festival through it, a string of paper lanterns hangs across the arch, and a sleeping Tower stands behind each plot's back corner on the crossing's side. The name over the arch is Faber's. The director has the pictures and hasn't spoken on them.
 - **Cut in Eclipse, for Faber's build and research's pass** (AR12): Power's bar (`power_images.json`) and the reveal's plate (`reveal_card_images.json`).
-- **Next, after those:** Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5); AR17 with research after AR16's verdict.
+- **Next:** Watt's clips and Ground Wire's look; Scarf Step's blockout when Faber calls (AR10, section 5); AR17 with research after AR16's verdict.
 - **Waiting and later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, **whose upload waits on the director's word**; the Breaker's room and the other dark screens in Eclipse; TR10's two icons; the empty slots' marks and the bag's tab marks when asked; AR6's other kinds on research's spec, after phase 2.
 
 **Turns.** Studio: the main place, held by Faber since the director's "go" (2026-11-15), stopped between pieces. Blender: nobody. Timing tests: nobody.
@@ -110,6 +110,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 01:22. The Door says festival, and a sleeping Tower (Modulo)
+
+- **What changed:** on the director's word that the portal and the Tower must say where they lead, and research's calls. The Festival Door's way shows the festival through it (warm white rising into cyan, lantern lights down a street) and a string of paper lanterns hangs across its arch. One sleeping Tower stands behind each plot's back corner on the crossing's side, a rose shard over its tip.
+- **Where:** `build/handoff/Base/` (`Door.json`, `DoorWay.json`, `TowerSleeping.json`, `Base_Kit_*`, `plan.json`, `base_1_door.png`, `base_1_tower.png`); `tools/blender/base_kit.py` (`way`), `base_machines.py`, `base_plan.py`. Records: AR15, section 6; AR16, "The sleeping Tower".
+- **For Faber:** `Door`, `DoorWay`, the kit's atlas pair and the Tower's placement are final, for one install. `DoorWay` wears the kit's pictures now, its tint white. The name over the arch is yours.
+- **For research:** the verdict in the game, with AR16's.
+- **Open:** the director has the pictures and hasn't spoken on them.
 
 ### 2026-11-16, 00:26. TR21's rules and the command view, parked; TR22's rule (Faber)
 

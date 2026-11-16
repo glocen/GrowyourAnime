@@ -60,7 +60,9 @@ return {
 		-- Health carries (TR12; docs/design.md): a lead heals only its Regen a second (Config.Stats.Regen), in a fight or
 		-- out; on its own plot it heals from nothing to full in Home.Full seconds besides, and so does one at home that isn't
 		-- out. One that fell heals from nothing to full in Home.Fallen seconds, then waits. Research's seeds, 2026-11-14.
-		Home = { Full = 30, Fallen = 90 },
+		-- Until its player beats their first keeper, FirstFallen instead: short enough to walk home (TR24's fix 5, "Pip's
+		-- fall costs 90 s"; the builder's seed, about the walk from the Row's packs to the plot at 16 studs a second).
+		Home = { Full = 30, Fallen = 90, FirstFallen = 20 },
 	},
 
 	-- Shades (docs/test-requests.md, TR2, "the builder's read"): a pack notices a lead within 20 studs and gives up past 40

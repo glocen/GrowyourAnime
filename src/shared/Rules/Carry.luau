@@ -2,12 +2,14 @@
 -- Carry (shared, pure): the health a Voidkin carries between fights (docs/design.md, "Combat", "Health carries" to "The
 -- next lead"; TR12). The lead's own health lives on its fighter. One that isn't out keeps the share it had when it was
 -- taken in and heals at home from then: Combat.Lead.Home.Full seconds from nothing to full, or Home.Fallen once it fell.
--- A fallen one can't be sent out again until it's whole, and the lead never changes in a fight.
+-- A fallen one can't be sent out again until it's whole, and the lead never changes in a fight. Until a player beats
+-- their first keeper, a fallen one's wait is Home.FirstFallen's (TR24's fix 5).
 --   Carry.Mend(share, seconds, full)            a share after `seconds` at home
 --   Carry.Share(entry, now, home)               what a Voidkin carries now (whole when there's no entry)
 --   Carry.WholeAt(entry, home)                  when it's whole again
 --   Carry.Refusal(inCombat, entry, now, home)   why it can't be sent out now, or nil
 --   Carry.Fallen(state, since, playerHome, leave, whole)   the fallen lead's next state
+--   Carry.HomeFor(home, grounds)                the home's times for a player by their grounds' progress
 
 export type Entry = {
 	Share: number, -- of its most health, when it was taken in
@@ -15,6 +17,7 @@ export type Entry = {
 	Fallen: boolean, -- it fell: it heals at the fallen rate, and can't be sent out until whole
 }
 export type Home = { Full: number, Fallen: number }
+export type Times = { Full: number, Fallen: number, FirstFallen: number } -- Combat.Lead.Home
 
 local Carry = {}
 
@@ -59,6 +62,22 @@ function Carry.Refusal(inCombat: boolean, entry: Entry?, now: number, home: Home
 		return Carry.Healing
 	end
 	return nil
+end
+
+-- The home's times for a player whose grounds' progress is `grounds` (Profile.Progress.Grounds): Fallen is FirstFallen's
+-- until a keeper is beaten in any ground, the first session (TR24's fix 5), and `home` as it is after.
+function Carry.HomeFor(home: Times, grounds: { [string]: { KeeperWins: number } }?): Home
+	local after: Home = { Full = home.Full, Fallen = home.Fallen }
+	local first = home.FirstFallen
+	if not (first >= 0) then
+		return after
+	end
+	for _, ground in grounds or {} do
+		if (ground.KeeperWins or 0) > 0 then
+			return after
+		end
+	end
+	return { Full = home.Full, Fallen = first }
 end
 
 -- The fallen lead's next state (docs/design.md, "A fall sends it home"): "Down" for `leave` seconds from its fall, so the

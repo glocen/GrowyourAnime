@@ -20,6 +20,7 @@ local RevealConfig = require(Shared.Config.Reveal)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
+local Breaker = require(Shared.Rules.Breaker)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest) -- each piece's centre, for the pieces that turn about their origin
@@ -48,6 +49,8 @@ local player = Players.LocalPlayer
 
 local FIND_EVERY = 1 -- seconds between looks for the plot's markers: they stream in, and a relaid world replaces them
 local TICK = 0.25 -- seconds between countdown updates
+local SELF_OPEN_EVERY = 0.5 -- seconds between looks for a shard that opens itself (TR24's fix 5)
+local SELF_OPEN_AFTER_NO = 5 -- seconds before asking again once the server said no
 local REACH = 140 -- studs from the camera a base's plates show: the plot and the Strip, never the street
 local PROMPT_REACH = 10 -- studs from a prompt's spot it can be pressed
 -- Studs, flat, from a machine's spot within which its plate speaks without news: the prompt's reach and a few steps. The
@@ -253,6 +256,43 @@ end
 -- only once the server says it opened (a refusal is a toast).
 function BaseController.OpenShard(index: number?)
 	openShard(index)
+end
+
+-- A broken shard that opens itself (TR24's fix 5; Rules.Breaker.SelfOpening): the first session's starter and Watt's,
+-- once the player stands on their plot, with no reveal on screen and no screen open but the Breaker's. One ask at a
+-- time; after a no, a wait before the next. The server checks the ask as it checks a tap's.
+local selfNext = 0
+local selfOn = true
+local function selfOpen()
+	if not selfOn or os.clock() < selfNext or reveal ~= nil then
+		return
+	end
+	local current = Screen.Current()
+	if current ~= nil and current ~= BreakerScreen.Name then
+		return
+	end
+	local view = ProfileController.Get()
+	local plot = player:GetAttribute("Plot")
+	local root = Parts.Root(player.Character)
+	local onPlot = Markers.OnPlot(if type(plot) == "number" then plot else nil, if root then root.Position else nil)
+	local index = if view then Breaker.SelfOpening(view.Base.Ready, onPlot) else nil
+	if index == nil then
+		return
+	end
+	selfNext = math.huge -- while the ask is out
+	local answer = act("Open", { Index = index })
+	selfNext = os.clock() + if answer.Ok == true then 0 else SELF_OPEN_AFTER_NO
+	if answer.Ok == true then
+		BaseController.Reveal(answer)
+	end
+end
+
+-- For tests: whether a shard opens itself (on, as players have it), returning how it was. The self-test turns it off
+-- for its run, its cases opening their shards by hand, and its own case turns it on.
+function BaseController.SelfOpen(on: boolean): boolean
+	local was = selfOn
+	selfOn = on
+	return was
 end
 
 local function breakerRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
@@ -943,6 +983,16 @@ function BaseController.Start()
 				warn(`BaseController: {problem}`)
 			end
 			task.wait(FIND_EVERY)
+		end
+	end)
+	task.spawn(function()
+		while true do
+			local ok, problem = pcall(selfOpen)
+			if not ok then
+				selfNext = os.clock() + SELF_OPEN_AFTER_NO
+				warn(`BaseController: {problem}`)
+			end
+			task.wait(SELF_OPEN_EVERY)
 		end
 	end)
 	local last = 0

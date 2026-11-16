@@ -11,9 +11,13 @@
 -- Who trains: while the player is in the game, Training.Trainee (the server's, LeadService); away, the lead. A worker
 -- never trains. Away, the workers generate for Config.Base.Battery.AwayHours at most; then the machines run on the
 -- battery, then at the floor. No Roblox API: it runs with Studio closed.
+-- One query for the client: SelfOpening(ready, onPlot), the first broken shard that opens itself (a grade with Opens in
+-- Config.Shards.Grades: the first session's starter and Watt's, TR24's fix 5) once its player stands on their plot.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseConfig = require(Shared.Config.Base)
+local ShardConfig = require(Shared.Config.Shards)
+local Shards = require(Shared.Definitions.Shards)
 local Profile = require(Shared.Data.Profile)
 local Power = require(Shared.Rules.Power)
 local Training = require(Shared.Rules.Training)
@@ -293,6 +297,22 @@ function Breaker.TakeOut(data: Profile.Data, chamberIndex: number): boolean
 	table.insert(base.Line, work)
 	feed(base) -- when the line was empty, the shard goes straight back in
 	return true
+end
+
+-- The index in `ready` (Base.Ready, in the save's order) of the first broken shard that opens itself, while its player
+-- stands on their plot, or nil: the client asks Open for it (the server checks the ask as any other).
+function Breaker.SelfOpening(ready: { Profile.ShardWork }, onPlot: boolean): number?
+	if not onPlot then
+		return nil
+	end
+	for index, work in ready do
+		local shard = Shards.ById[work.Def]
+		local grade = shard and ShardConfig.Grades[shard.Grade]
+		if grade and grade.Opens == true then
+			return index
+		end
+	end
+	return nil
 end
 
 return Breaker

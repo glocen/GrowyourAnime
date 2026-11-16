@@ -33,6 +33,7 @@ local Fight = require(Shared.Rules.Fight)
 local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
+local DataService = require(script.Parent.Parent.Core.DataService)
 
 -- "Home": a fallen lead on its plot, healing and waiting for its player (TR12), never in a fight.
 export type State = "Idle" | "Flinch" | "Down" | "Reset" | "Home"
@@ -967,8 +968,15 @@ local function homeSpot(f: Fighter): CFrame?
 	return if spawn then Markers.At(spawn) + Vector3.new(0, LEAD_ROOT_HEIGHT, 0) else nil
 end
 
+-- The home's times for `player` (Rules.Carry.HomeFor): a fallen lead's wait is short until their first keeper falls
+-- (TR24's fix 5). LeadService reads the same.
+function FightService.HomeOf(player: Player?): Carry.Home
+	local data = if player then DataService.Get(player) else nil
+	return Carry.HomeFor(Combat.Lead.Home, if data then data.Progress.Grounds :: any else nil)
+end
+
 -- The fall's end (docs/design.md, "A fall sends it home"): it leaves as light (the client's), and is home on its plot,
--- healing from nothing to full in Home.Fallen seconds. StateUntil is when it's whole, for the card's time.
+-- healing from nothing to full in its player's Home.Fallen seconds. StateUntil is when it's whole, for the card's time.
 local function goHome(f: Fighter, at: number)
 	local spot = homeSpot(f)
 	if spot then
@@ -978,7 +986,7 @@ local function goHome(f: Fighter, at: number)
 	f.ReadyAt = {}
 	f.Model:SetAttribute("Ready", 0)
 	setHealth(f, 0)
-	setState(f, "Home", at + Combat.Lead.Home.Fallen)
+	setState(f, "Home", at + FightService.HomeOf(f.Owner).Fallen)
 end
 
 -- Whether a player stands on their own plot (Markers.OnPlot).
@@ -992,7 +1000,7 @@ end
 -- up and follows them.
 local function thinkHome(f: Fighter, at: number, dt: number)
 	local most = f.Block.Health
-	local share = Carry.Mend(if most > 0 then f.Health / most else 0, dt, Combat.Lead.Home.Fallen)
+	local share = Carry.Mend(if most > 0 then f.Health / most else 0, dt, FightService.HomeOf(f.Owner).Fallen)
 	setHealth(f, share * most)
 	if Carry.Fallen(f.State, 0, playerHome(f.Owner), Combat.Lead.Leave, share >= 1) == "Idle" then
 		setState(f, "Idle")

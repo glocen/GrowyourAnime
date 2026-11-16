@@ -25,7 +25,6 @@ local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local GrowthConfig = require(Shared.Config.Growth)
-local Combat = require(Shared.Config.Combat)
 local Carry = require(Shared.Rules.Carry)
 local Training = require(Shared.Rules.Training)
 local Breaker = require(Shared.Rules.Breaker)
@@ -101,7 +100,7 @@ local function trainee(player: Player): string?
 	local waiting = lead ~= nil and lead.State == "Home" and lead.Health >= lead.Block.Health
 	local healed: { Training.Healed } = {}
 	for id, entry in carriedOf(player) do
-		if entry.Fallen and data.Voidkin[id] and Carry.Share(entry, now(), Combat.Lead.Home) >= 1 then
+		if entry.Fallen and data.Voidkin[id] and Carry.Share(entry, now(), FightService.HomeOf(player)) >= 1 then
 			table.insert(healed, { Id = id, Fell = entry.At })
 		end
 	end
@@ -135,13 +134,13 @@ local function tick(player: Player)
 	local lead = FightService.LeadOf(player)
 	local leadId = if lead then lead.Model:GetAttribute("Voidkin") else nil
 	if lead and type(leadId) == "string" and (lead.State == "Down" or lead.State == "Home") then
-		local whole = if lead.State == "Home" then lead.StateUntil else lead.StateUntil + Combat.Lead.Home.Fallen
+		local whole = if lead.State == "Home" then lead.StateUntil else lead.StateUntil + FightService.HomeOf(player).Fallen
 		if whole > now() then
 			healing[leadId], any = whole, true
 		end
 	end
 	for id, entry in carriedOf(player) do
-		local whole = Carry.WholeAt(entry, Combat.Lead.Home)
+		local whole = Carry.WholeAt(entry, FightService.HomeOf(player))
 		if entry.Fallen and whole > now() then
 			healing[id], any = whole, true
 		end
@@ -181,7 +180,7 @@ function LeadService.Refusal(player: Player, id: any): string?
 	if current and current.Model:GetAttribute("Voidkin") == id then
 		return nil
 	end
-	return Carry.Refusal(FightService.InCombat(player), carriedOf(player)[id], now(), Combat.Lead.Home)
+	return Carry.Refusal(FightService.InCombat(player), carriedOf(player)[id], now(), FightService.HomeOf(player))
 end
 
 local function sync(player: Player)
@@ -213,7 +212,7 @@ local function sync(player: Player)
 		takeIn(player, current)
 	end
 	local mine = carriedOf(player)
-	local share = Carry.Share(mine[id], now(), Combat.Lead.Home)
+	local share = Carry.Share(mine[id], now(), FightService.HomeOf(player))
 	mine[id] = nil
 	local row = Voidkin.ById[owned.Def]
 	local lead = FightService.SpawnLead(player, block, if row then row.Name else owned.Def, share)

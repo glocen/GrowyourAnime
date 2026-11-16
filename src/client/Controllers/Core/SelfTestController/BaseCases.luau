@@ -2,7 +2,8 @@
 -- BaseCases (client, Studio only): the base's cases on its plot, a list of their own beside Cases, which joins it as it
 -- joins PowerCases (Cases' one table had passed what the type solver checks in one piece). AR16's base as its save has
 -- it: the bays awake and asleep, the battery's cells, the Void Mill's wheel, gauge and demand mark (AR19) and the
--- Training machine's crown; and its machines' plates apart from the spawn.
+-- Training machine's crown; its machines' plates apart from the spawn; and the first session's shards opening themselves
+-- on the plot (TR24's fix 5).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10,6 +11,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
+local ShardConfig = require(Shared.Config.Shards)
+local Shards = require(Shared.Definitions.Shards)
+local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
 local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
@@ -25,6 +29,20 @@ local World = require(UI.World)
 local PLATES = { Breaker = true, Battery = true, Training = true, Generator = true }
 
 local BaseCases = {}
+
+local SKIP_ALL = 3600 -- seconds of base time a case skips, past any shard's work even at the floor's speed
+
+-- Broken shards waiting to be opened that open themselves (Rules.Breaker.SelfOpening's grades).
+local function selfOpeners(): number
+	local view = ProfileController.Get()
+	local count = 0
+	for _, work in (if view then view.Base.Ready else {}) do
+		local shard = Shards.ById[work.Def]
+		local grade = shard and ShardConfig.Grades[shard.Grade]
+		count += if grade and grade.Opens == true then 1 else 0
+	end
+	return count
+end
 
 -- Cases' own helpers and measures, one home each.
 export type Given = {
@@ -277,6 +295,73 @@ function BaseCases.Cases(given: Given): { any }
 					end
 				end
 				t.Check("each under the top band", #over == 0, `{table.concat(over, "; ")} over {tostring(band)}`)
+			end,
+		},
+		{
+			Name = "Base: TR24's fix 5, Watt's shard breaks in a starter's time and opens itself once its player is on their plot, never off it",
+			Run = function(t: any)
+				local shard = "named_watt"
+				local grade = ShardConfig.Grades[Shards.ById[shard].Grade]
+				t.Check("Watt's shard breaks in a few seconds, a starter's", grade.BreakSeconds <= ShardConfig.Grades.Starter.BreakSeconds, `{grade.BreakSeconds} s`)
+				t.Check("it and a starter's open themselves", grade.Opens == true and ShardConfig.Grades.Starter.Opens == true)
+				local view = ProfileController.Get()
+				local world = workspace:FindFirstChild("World")
+				local gateZ = if world then world:GetAttribute("GateZ") else nil
+				t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+				t.Check("the world says where its gate stands", type(gateZ) == "number")
+				if view == nil or view.Progress.Starter == "" or type(gateZ) ~= "number" then
+					return
+				end
+				local was = BaseController.SelfOpen(true)
+				local ok, err = pcall(function()
+					-- off the plot, in the Row: it breaks and waits
+					local up = Vector3.new(0, 3.6, 0)
+					t.Server("TestStandAt", Vector3.new(0, 0, gateZ - 60) + up, Vector3.new(0, 0, gateZ - 70) + up)
+					t.Wait(0.5)
+					local held = view.Bag.Shards[shard] or 0
+					t.Server("BaseGive", shard, 1)
+					t.Check("the server gives one", waitFor(t, ANSWER, function(): boolean
+						local now = ProfileController.Get()
+						return now ~= nil and (now.Bag.Shards[shard] or 0) == held + 1
+					end))
+					local before = selfOpeners() -- some may wait already, from earlier runs
+					local added = t.Server("Act", "AddShard", { Shard = shard })
+					t.Check("it joins the Breaker", type(added) == "table" and added.Ok == true)
+					t.Server("BaseSkip", SKIP_ALL)
+					t.Check("it breaks", waitFor(t, ANSWER, function(): boolean
+						return selfOpeners() == before + 1
+					end), `{selfOpeners()} of {before} before`)
+					local waiting = selfOpeners()
+					t.Wait(1.5)
+					t.Check("off the plot it waits for its player", BaseController.Revealed() == nil and selfOpeners() == waiting, `{selfOpeners()} of {waiting}`)
+					-- home: it opens itself, with no press
+					local old = Players.LocalPlayer.Character
+					t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, 8, function(): boolean
+						local character = Players.LocalPlayer.Character
+						return character ~= nil and character ~= old and character:FindFirstChild("HumanoidRootPart") ~= nil
+					end))
+					t.Check("on the plot it opens itself, no press", waitFor(t, 3, function(): boolean
+						return BaseController.Revealed() ~= nil
+					end))
+					local shown = BaseController.Revealed()
+					-- the oldest that opens itself goes first: Watt's, or a starter's left from an earlier case
+					local named: { [string]: boolean } = {}
+					for _, row in Shards.List do
+						local rowGrade = ShardConfig.Grades[row.Grade]
+						if rowGrade and rowGrade.Opens == true and Voidkin.ById[row.Holds] then
+							named[Voidkin.ById[row.Holds].Name] = true
+						end
+					end
+					t.Check("its reveal names its Voidkin", shown ~= nil and named[shown.Name] == true, if shown then shown.Name else "nothing")
+					t.Check("one fewer waits to be opened", waitFor(t, ANSWER, function(): boolean
+						return selfOpeners() == waiting - 1
+					end), `{selfOpeners()} of {waiting}`)
+				end)
+				BaseController.SelfOpen(was)
+				BaseController.Dismiss()
+				if not ok then
+					error(err, 0)
+				end
 			end,
 		},
 	}

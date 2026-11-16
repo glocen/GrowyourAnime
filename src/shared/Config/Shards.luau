@@ -9,9 +9,12 @@ return {
 		Standard = { BreakSeconds = 30 },
 		Enriched = { BreakSeconds = 900 },
 		Prismatic = { BreakSeconds = 10800 },
-		Named = { BreakSeconds = 30 }, -- the builder's seed, 2026-11-12: a Standard's, as Watt's is the first
-		Starter = { BreakSeconds = 6 }, -- docs/decisions.md, D01: fast. The builder's seed for "fast"
-	} :: { [string]: { BreakSeconds: number } },
+		-- The first session's two (TR24's fix 5: "a starter's break takes a few seconds and opens itself when the player is
+		-- there"): Watt's Named shard breaks in a starter's time, and both open themselves once their player stands on
+		-- their plot (Opens; Rules.Breaker.SelfOpening). Before, Watt's took a Standard's 30 s.
+		Named = { BreakSeconds = 6, Opens = true },
+		Starter = { BreakSeconds = 6, Opens = true }, -- docs/decisions.md, D01: fast. The builder's seed for "fast"
+	} :: { [string]: { BreakSeconds: number, Opens: boolean? } },
 	-- Each grade's weight per rarity. A tier the ground's Voidkin don't reach is dropped and the rest keep their proportions.
 	Pools = {
 		Standard = { Common = 60, Uncommon = 30, Rare = 9, Epic = 1, Legendary = 0, Mythical = 0 },

@@ -19,6 +19,7 @@ local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
 local TestInput = require(Shared.Util.TestInput)
 local Cases = require(script.Cases)
+local BaseController = require(script.Parent.Parent.Main.BaseController)
 
 local BRIDGE_NAME = "NL_SelfTest"
 local BASELINE = "Baseline" -- the preset the cases are written against
@@ -164,6 +165,9 @@ local function run(filter: string?): string
 		serverCall("Preset", BASELINE)
 		task.wait(0.3)
 	end
+	-- a shard that opens itself would race the cases that open theirs by hand (TR24's fix 5): off for the run, its own
+	-- case turning it on
+	local selfOpening = BaseController.SelfOpen(false)
 	local cases: { any } = table.clone(Cases)
 	-- more lists join here: table.move(More.Cases, 1, #More.Cases, #cases + 1, cases)
 	for _, case in cases do
@@ -182,6 +186,7 @@ local function run(filter: string?): string
 		end
 	end
 	releaseStick() -- a case that crashed mid-walk never leaves the stick held
+	BaseController.SelfOpen(selfOpening)
 	pcall(serverCall, "TestPadClear")
 	if benched then
 		pcall(serverCall, "Preset", preset)

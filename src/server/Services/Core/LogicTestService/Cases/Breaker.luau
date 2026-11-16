@@ -460,4 +460,25 @@ return {
 			t.Check("no number or a negative: nothing", read.Lit == 0 and read.Generation == 0 and read.Demand == 0)
 		end,
 	},
+	{
+		Name = "Breaker: TR24's fix 5, the first session's shards break in a few seconds and open themselves on the plot, the others by hand",
+		Run = function(t: any)
+			local grades = ShardConfig.Grades
+			t.Check("Watt's Named shard breaks in a starter's time", grades.Named.BreakSeconds <= grades.Starter.BreakSeconds, tostring(grades.Named.BreakSeconds))
+			t.Check("a few seconds", grades.Starter.BreakSeconds <= 10, tostring(grades.Starter.BreakSeconds))
+			t.Check("the Named and the starters open themselves", grades.Named.Opens == true and grades.Starter.Opens == true)
+			t.Check("the rolled grades by hand", grades.Standard.Opens ~= true and grades.Enriched.Opens ~= true and grades.Prismatic.Opens ~= true)
+			local function work(def: string): Profile.ShardWork
+				return { Def = def, Luck = 0, Done = 0 }
+			end
+			t.Equal("nothing ready: nothing", Breaker.SelfOpening({}, true), nil)
+			t.Equal("Watt's alone, on the plot: it", Breaker.SelfOpening({ work("named_watt") }, true), 1)
+			t.Equal("off the plot: it waits", Breaker.SelfOpening({ work("named_watt") }, false), nil)
+			t.Equal("a starter's too", Breaker.SelfOpening({ work("starter_pip") }, true), 1)
+			t.Equal("a Standard's waits for a tap", Breaker.SelfOpening({ work(STANDARD) }, true), nil)
+			t.Equal("behind a Standard: Watt's", Breaker.SelfOpening({ work(STANDARD), work("named_watt") }, true), 2)
+			t.Equal("the oldest of two first", Breaker.SelfOpening({ work("starter_rook"), work("named_watt") }, true), 1)
+			t.Equal("an unknown shard waits", Breaker.SelfOpening({ work("no_such_shard") }, true), nil)
+		end,
+	},
 }

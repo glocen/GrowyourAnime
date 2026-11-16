@@ -58,7 +58,7 @@ local TAKE_FIGHT = 75 -- seconds a pack may take to fall in the take
 local TAKE_TURN = 2.5 -- how fast the take's camera swings in behind a walking avatar (a share of the gap a second)
 local TAKE_REACH = 2.5 -- studs from a waypoint that count as there
 local TAKE_ZOOM = 12.5 -- studs from the avatar the take's camera holds: where Roblox's camera starts a player
-local TAKE_HEAL = 25 -- seconds a fallen lead heals at home in TR12's take, for Combat.Lead.Home.Fallen's 90
+local TAKE_HEAL = 25 -- seconds a fallen lead heals at home in TR12's take, for Combat.Lead.Home.Fallen's 90 (and FirstFallen's)
 local TAKE_BEFORE_FALL = 1.5 -- seconds of the fight before a take holds its lead's health low
 local TAKE_LOW = 0.002 -- the share of its health a take holds its lead at, at most: a sliver, a hit from falling
 local TAKE_HIT = 8 -- seconds a take waits for a hit to down its held lead before it downs it outright
@@ -734,7 +734,7 @@ return function(given: Given): { any }
 					t.Check(`bay {bay}'s worker steps out for the take`, t.Server("Act", "SetWorker", { Bay = bay, Voidkin = "" }).Ok == true)
 				end
 				local before = (view :: Profile.View).Roles.Lead
-				local heal = Combat.Lead.Home.Fallen
+				local heal, firstHeal = Combat.Lead.Home.Fallen, Combat.Lead.Home.FirstFallen
 				take(t, function(kit: Take)
 					local player = Players.LocalPlayer
 					local moment, walkTo = kit.Moment, kit.WalkTo
@@ -751,6 +751,7 @@ return function(given: Given): { any }
 					t.Server("LeadHeal")
 					t.Check("Rook leads", t.Server("Act", "SetLead", { Voidkin = first }).Ok == true)
 					t.Server("Tune", "Combat.Lead.Home.Fallen", TAKE_HEAL)
+					t.Server("Tune", "Combat.Lead.Home.FirstFallen", TAKE_HEAL)
 					local old = player.Character
 					t.Server("Respawn")
 					t.Check("the avatar arrives on its plot", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
@@ -843,6 +844,7 @@ return function(given: Given): { any }
 					moment("end")
 				end)
 				t.Server("Tune", "Combat.Lead.Home.Fallen", heal)
+				t.Server("Tune", "Combat.Lead.Home.FirstFallen", firstHeal)
 				if before ~= nil and before ~= "" then
 					t.Check("the lead before the take back, once out of the fight", waitFor(t, 20, function(): boolean
 						return t.Server("Act", "SetLead", { Voidkin = before }).Ok == true

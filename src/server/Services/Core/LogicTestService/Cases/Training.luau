@@ -178,4 +178,28 @@ return {
 			t.Check("nobody on it: nothing given", later.Trained == nil and later.Levels == 0)
 		end,
 	},
+	{
+		Name = "Training: TR24's fix 5, until a keeper is beaten a fallen one's wait is short enough to walk home, and the game's after",
+		Run = function(t: any)
+			local times = Combat.Lead.Home
+			t.Check("the first session's wait is the shorter", times.FirstFallen < times.Fallen and times.FirstFallen > 0, `{times.FirstFallen} of {times.Fallen}`)
+			t.Check("a walk home's length: half a minute or less", times.FirstFallen <= 30, tostring(times.FirstFallen))
+			local none = Carry.HomeFor(times, nil)
+			t.Equal("a new account: the short wait", none.Fallen, times.FirstFallen)
+			t.Equal("its home heal untouched", none.Full, times.Full)
+			local opened = { lanternrow = { KeeperWins = 0 } }
+			t.Equal("a ground opened, its keeper standing: still short", Carry.HomeFor(times, opened).Fallen, times.FirstFallen)
+			local won = { lanternrow = { KeeperWins = 0 }, second = { KeeperWins = 1 } }
+			t.Equal("a keeper beaten in any ground: the game's wait", Carry.HomeFor(times, won).Fallen, times.Fallen)
+			t.Equal("and its home heal", Carry.HomeFor(times, won).Full, times.Full)
+			local bad = Carry.HomeFor({ Full = 30, Fallen = 90, FirstFallen = 0 / 0 }, nil)
+			t.Equal("no number: the game's wait", bad.Fallen, 90)
+			-- the wait carries through the rules that read it
+			local entry: Carry.Entry = { Share = 0, At = NOW, Fallen = true }
+			local short = Carry.HomeFor(times, nil)
+			t.Check("whole after the short wait", near(Carry.WholeAt(entry, short), NOW + times.FirstFallen))
+			t.Check("sent out once whole", Carry.Refusal(false, entry, NOW + times.FirstFallen, short) == nil)
+			t.Equal("still healing just before", Carry.Refusal(false, entry, NOW + times.FirstFallen - 1, short), Carry.Healing)
+		end,
+	},
 }

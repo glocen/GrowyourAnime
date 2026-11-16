@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 00:13.
-- **Done since 21:48:** TR28's left-side sheet passed, its "about 40" corrected (af2954f); TR24 fix 1 and the go for the director's phone run, then fixes 2 to 4 and the must-fix closed (9f7d500, ce52b0b); AR11, Watt's clips at timing, competent, Ground Wire butt-down (944aada); from the Claude team's articles, three practices kept on the director's go (9701341, the register 2026-11-17).
-- **For Faber at his piece boundary:** an exploiter's pass over `Act`'s actions joins "For the Fable pass" in `docs/engineering-plan.md`.
-- **Next:** the director's phone-run notes, relayed to Faber; TR34 when the chest clips land in `build/reference/chest-opening/`; AR22's tint and AR23 in the build.
+**Quaestor (research).** 2026-11-17, 00:41.
+- **Done since 00:13:** the director's phone run recorded, % only and Critical Immunity corrected, the six must-fixes to Faber (f2f6a69, TR24); Watt's seeds tier 2 and Ground Wire's technique check passed, the shell kept (59444cb, 97e5287); the deep sound study, with music added and the order of work (`docs/research/sound.md`, 4daf959).
+- **For Faber at his piece boundary:** an exploiter's pass over `Act`'s actions joins "For the Fable pass"; the sound study's engine traps when AR13 is installed.
+- **Next:** AR13 into the game once the director answers item 7; the music brief; TR34 when the chest clips land; AR22's tint and AR23 in the build.
 
 **Faber (builder).** 2026-11-17, 00:31. Watt's install is in (AR11, "The install", 7cd008f). His clips play. Ground Wire stops every enemy round him for his hold, its pose held, and shields him. Insulated takes a share off a hit's elemental part. The seeds are research's tier 2. Four fight and reveal timing cases are NOT VERIFIED at 17 fps (the screen asleep) and run again at 60. The place is saved (version 677). Now: the phone run's six must-fixes (TR24, "The director's run"), then Ground Wire's blockout with Modulo once its rows are in, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
@@ -36,6 +36,7 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+7. **The six-cue sound test (AR13):** play the 33 files in `build/handoff/Audio/test6/` first (under 10 s), or say they go up unheard (research's advice: you judge them in a fight, and a rejected layer is replaced).
 
 ### Notices
 

@@ -1111,7 +1111,7 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Lighting: TR8, north of the festival gate the ground's dusk or night holds, outside it the place's own unless the base is under it too (AR14); a walk eases in, a jump lands",
+		Name = "Lighting: TR8, TR23, north of the festival gate the ground's day, dusk or night holds, outside it the place's own unless the base is under it too (AR14); by day the glow and the lights dim; a walk eases in, a jump lands",
 		Run = function(t: any)
 			local world = workspace:FindFirstChild("World")
 			local gateZ = if world then world:GetAttribute("GateZ") else nil
@@ -1183,9 +1183,10 @@ local cases = {
 			t.Server("Night", "Dusk")
 			t.Wait(0.3)
 			holds("Dusk")
-			-- The pieces round the avatar glow by Config, and a tune shows at once.
-			local function glows(): (number, { string })
+			-- The pieces round the avatar glow by Config, at the phase's share, and a tune shows at once.
+			local function glows(name: string): (number, { string })
 				local count, off = 0, {}
+				local share = LightingController.Look().Glow
 				for _, item in CollectionService:GetTagged(Kit.Tag) do
 					local piece = item:GetAttribute("Piece")
 					local surface = item:FindFirstChildOfClass("SurfaceAppearance")
@@ -1193,7 +1194,7 @@ local cases = {
 						continue
 					end
 					count += 1
-					local want = if Kit.Floors[piece] then LightingConfig.Phases.Dusk.Floor
+					local want = if Kit.Floors[piece] then (LightingConfig.Phases :: any)[name].Floor
 						elseif LightingConfig.Houses[piece] then LightingConfig.Glow.Houses
 						else LightingConfig.Glow.Kit
 					local lit = item:GetAttribute("Lit")
@@ -1202,22 +1203,36 @@ local cases = {
 					elseif type(lit) == "number" then -- a battery cell, by its share of the charge (AR15, section 4)
 						want *= LightingConfig.Glow.Empty + (1 - LightingConfig.Glow.Empty) * math.clamp(lit, 0, 1)
 					end
+					want *= share
 					if math.abs(surface.EmissiveStrength - want) > 1e-3 then
 						table.insert(off, string.format("%s at %.2f, not %.2f", piece, surface.EmissiveStrength, want))
 					end
 				end
 				return count, off
 			end
-			local count, off = glows()
+			t.Equal("dusk: the glow whole", LightingController.Look().Glow, 1)
+			local count, off = glows("Dusk")
 			t.Check("pieces streamed in round the avatar", count > 0, tostring(count))
 			t.Check("each at its glow", #off == 0, off[1])
 			local before = LightingConfig.Glow.Kit
 			t.Server("Tune", "Lighting.Glow.Kit", before + 1)
 			t.Wait(0.3)
-			count, off = glows()
+			count, off = glows("Dusk")
 			t.Check("a tuned glow shows at once", count > 0 and #off == 0, off[1])
 			t.Server("Tune", "Lighting.Glow.Kit", before)
 			t.Wait(0.3)
+			-- The turn jumped to day (TR23): its own look and sky, the glow and the lights at their shares.
+			t.Server("Night", "Day")
+			t.Wait(0.3)
+			holds("Day")
+			local day = (LightingConfig.Phases :: any).Day
+			local now = LightingController.Look()
+			t.Near("day: the glow at its share", now.Glow, day.Glow or 1, 0.011)
+			t.Near("day: the lights at their share", now.Lights, day.Lights or 1, 0.011)
+			count, off = glows("Day")
+			t.Check("day: each piece at its share of its glow", count > 0 and #off == 0, off[1])
+			local light = LightingController.LeadLight()
+			t.Near("day: the lead's light at its share", if light then light.Brightness else -1, LightingConfig.Lead.Brightness * now.Lights, 1e-3)
 			-- A walk out eases: half way through Enter, between the two looks; after it, out.
 			stand(gateZ + from - 8)
 			t.Wait(0.3)
@@ -6517,7 +6532,7 @@ local cases = {
 					local held = (now :: any).Base.Chambers[index]
 					local working = held ~= nil and held.Work ~= nil
 					local look = if chamber then chamber:FindFirstChildOfClass("SurfaceAppearance") else nil
-					local glow = LightingConfig.Glow.Kit * (if working then 1 else LightingConfig.Glow.Empty)
+					local glow = LightingConfig.Glow.Kit * (if working then 1 else LightingConfig.Glow.Empty) * LightingController.Look().Glow -- the phase's share (TR23)
 					if chamber == nil or chamber:GetAttribute("Working") ~= working then
 						return `chamber {index}: Working {tostring(chamber and chamber:GetAttribute("Working"))}, the save {tostring(working)}`
 					elseif shard == nil or not shard:IsA("BasePart") or shard.Transparency ~= (if working then 0 else 1) then

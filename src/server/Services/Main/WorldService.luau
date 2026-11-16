@@ -1133,7 +1133,7 @@ function WorldService.Init()
 	-- A jump of the server's turn of dusk and night to a phase's start (Rules.Night), every client with it.
 	DebugService.Register("Night", function(_who: any, phase: any): string
 		local name = tostring(phase)
-		workspace:SetAttribute(Night.Attribute, Night.From(name, workspace:GetServerTimeNow(), LightingConfig.Cycle))
+		workspace:SetAttribute(Night.Attribute, Night.From(name, workspace:GetServerTimeNow(), LightingConfig.Cycle :: any))
 		return name
 	end)
 	-- A fresh arrival, as after a fall or a reset: Respawn (the bridge passes the caller first).

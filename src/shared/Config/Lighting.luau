@@ -1,12 +1,13 @@
 --!strict
--- Lighting (shared Config): Lantern Row's dusk and night (TR8; the director, 2026-11-12: "we should add a night cycle for
--- this festival area as well cause the night looks absolutely gorgeous as well"), on one server clock (Rules.Night), as
--- LightingController turns them. The ground's look holds from its festival gate on; the base keeps the place's own Lighting.
+-- Lighting (shared Config): the world's day, dusk and night (TR8; the director, 2026-11-12: "we should add a night cycle
+-- for this festival area as well cause the night looks absolutely gorgeous as well"; 2026-11-16: "i feel like the world it
+-- a bit to dark and somber we need a day time", yes to adding day to the cycle, TR23), on one server clock (Rules.Night),
+-- as LightingController turns them. The ground's look holds from its festival gate on, and over the base too (Everywhere).
 -- The numbers start from the kit's frames (build/handoff/LanternRow/sky/lighting.json, AR5, section 2): a colour, a place
 -- and a cone carry over as they are, the haze and the bloom are the handbook's starting values the frames used, and a
 -- strength in the kit script's own unit becomes a Roblox one by the builder's seed, keeping the two phases' ratio. Tuned
 -- by playing, live: NL_Debug:Invoke("Tune", "Lighting.Phases.Night.Brightness", 1.2); a jump to a phase for the takes:
--- NL_Debug:Invoke("Night", "Night") (or "Dusk", "ToNight", "ToDusk").
+-- NL_Debug:Invoke("Night", "Night") (or "Day", "Dusk", "ToDusk", "ToNight", "ToDay").
 
 local function hex(text: string): Color3
 	return Color3.fromHex(text)
@@ -21,11 +22,12 @@ local function faces(ids: { number }): { [string]: string }
 end
 
 return {
-	-- One turn, from dusk, in seconds: research's seed (tier 2, TR8), tuned by playing. 20 minutes: 13 of dusk, a
-	-- minute's crossing, 5 of night, a minute back.
-	Cycle = { Dusk = 780, Night = 300, Cross = 60 },
-	-- The ground's dusk and night over the whole place, the base's plots and the Strip too (AR14's feel line: "under the
-	-- same festival sky as Lantern Row"). Off, the place keeps its own Lighting outside the ground, as below.
+	-- One turn, in seconds: each look of Order held for its Hold, then a crossing of Cross into the next, and round again.
+	-- 30 minutes, day about 60% of it (the builder's seed at the director's yes, TR23; tuned by playing): 18 of day, a
+	-- minute's crossing, 5 of dusk, a minute, 4 of night, a minute's dawn back to day. Dusk and night keep their looks.
+	Cycle = { Order = { "Day", "Dusk", "Night" }, Hold = { Day = 1080, Dusk = 300, Night = 240 }, Cross = 60 },
+	-- The ground's turn over the whole place, the base's plots and the Strip too (AR14's feel line: "under the same
+	-- festival sky as Lantern Row"). Off, the place keeps its own Lighting outside the ground, as below.
 	Everywhere = true,
 	-- The ground's look begins From studs south of its festival gate, so a door's landing (Config.World.Grey.Door.Landing)
 	-- is already in it, under the door's black, and a walk up the side street turns into it there, over Enter seconds.
@@ -35,12 +37,34 @@ return {
 	-- the share of the blend the peak covers; Density and Haze, added to the Atmosphere's at its top.
 	Veil = { Width = 0.3, Density = 0.12, Haze = 0.6 },
 	-- The sun where the frames have it: the unit vector toward it, the street running to -Z (lighting.json, "sun"), the
-	-- same in both phases so no shadow swings as the night turns. LightingController finds the clock and the latitude that
+	-- same in every phase so no shadow swings as the turn goes round. LightingController finds the clock and the latitude that
 	-- stand Roblox's sun there, at a day clock: at a night clock Roblox darkens a painted sky (the handbook's pseudo-night).
 	Toward = Vector3.new(-0.161, 0.883, 0.441),
-	-- The sky's own discs and stars stay hidden: the moon and the stars are painted in the faces.
+	-- The sky's own discs and stars stay hidden: the moon and the stars are painted in the faces. A phase's Bodies, if any,
+	-- stand over these.
 	SkyBodies = { StarCount = 0, SunAngularSize = 0, MoonAngularSize = 0 },
+	-- A phase: its Sky's six faces (none: Roblox's built-in sky), the sun's colour and Brightness, one flat fill, the sky's
+	-- share of the fill (Diffuse), the haze, the bloom, the floors' glow (Floor), and the share of the kit's glow (Glow)
+	-- and of the street's and the lead's lights (Lights), 1 when not given.
 	Phases = {
+		-- The day (TR23): a clear azure day under the same sun, warm on the faces turned to it, a lilac fill nearer grey so
+		-- the shadows keep a violet and the paving loses its blue cast, the sky's share of the fill halved so the blue sky
+		-- tints the ground less, a thin haze (the director to Modulo, 2026-11-16: "a bit to much atmosphere imo like that
+		-- mist is a bit to much"), little bloom. The lanterns and the void machines' glow dim to a share, and light up again
+		-- at dusk. Modulo's seeds (build/handoff/LanternRow/sky/lighting.json, "Day"; AR5, section 2b), tuned by playing.
+		Day = {
+			-- The six faces, uploaded under the group (docs/asset-log.md, 2026-11-16); the sun is painted in them.
+			Sky = faces({ 98216580739980, 89383367394493, 123733923034090, 132698338964060, 116406582796462, 124209204001841 }),
+			Sun = hex("FFE2B8"),
+			Brightness = 2.6,
+			Ambient = hex("8A8496"),
+			Diffuse = 0.5,
+			Atmosphere = { Density = 0.16, Offset = 0.2, Haze = 0.2, Glare = 0.1, Color = hex("EFE3D6"), Decay = hex("A9BCE4") },
+			Bloom = { Intensity = 0.3, Size = 24, Threshold = 2.2 },
+			Floor = 0.35,
+			Glow = 0.45,
+			Lights = 0.2,
+		},
 		Dusk = {
 			-- The six faces, uploaded under the group (docs/asset-log.md, 2026-11-14).
 			Sky = faces({ 130610418024599, 133827456103265, 103210699518956, 102529233550104, 86758633678183, 95048421398658 }),

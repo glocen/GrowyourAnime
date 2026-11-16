@@ -14,6 +14,7 @@ local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
+local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Layers = require(UI.Layers)
@@ -97,7 +98,7 @@ function BaseCases.Cases(given: Given): { any }
 					for seat, cell in cells do
 						local lit = want[seat] or 0
 						local look = cell:FindFirstChildOfClass("SurfaceAppearance")
-						local glow = LightingConfig.Glow.Kit * (empty + (1 - empty) * lit)
+						local glow = LightingConfig.Glow.Kit * (empty + (1 - empty) * lit) * LightingController.Look().Glow -- the phase's share (TR23)
 						local got = cell:GetAttribute("Lit")
 						if (cell.Transparency == 0) ~= (seat <= shown) then
 							return `cell {seat}: {if cell.Transparency == 0 then "shown" else "hidden"} at level {(now :: any).Base.Level}`

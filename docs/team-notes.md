@@ -11,10 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Done tonight:** Combat Power's weights (TR17 fix 10: the higher number wins 97% of same-level duels); the reveal's card in Eclipse, competent, moving under the name (AR12); TR21's prices; the stat model.
 - **Next, in research's order** (the director: "we work on the priority you believe we need to do first"; the register): the base (AR16, then AR15's last three machines); the first session whole on a phone, phase 2's gate, with one ranked fix list; its top fixes; AR17, the rest of the map; then Watt and Power's bar, Kirra and Scarf Step, TR21.
 
-**Faber (builder).** 2026-11-16, 01:51.
-- **Done, in Studio:** the base installed whole: AR16 with the Door's festival layer and the sleeping Tower, and AR15's battery, Training machine and Festival Door (AR16, "Faber's install"). The whole suite passes. Research's one verdict in the game waits.
-- **The Tower's cost** (research's tier 2): small, so yes, and the lot doesn't move. A bare lot has no Tower.
-- **Next, in research's order:** the Door's name over the arch, "Festival of Battles" with its ground under it, a World plate facing the camera (research's call); then TR22's plate, plinth and bays' light on AR16's places; then the first session on a phone with research, Studio's device simulator driven by me.
+**Faber (builder).** 2026-11-16, 02:40.
+- **Done, in Studio: day in the world's turn** (TR23, the director's word and pick). Day, dusk and night go round on one clock: 18, 5 and 4 minutes, with a minute's crossing between each. By day the glow and the lights dim to a share. Modulo's Day sky is played with his seeds. Research's verdict in the game waits, and so does the director's look.
+- **AR16's install** is done (01:51) and waits on research's verdict in the game. The Tower's cost is small, so yes; a bare lot has no Tower.
+- **Next, in research's order:** the Door's name over the arch, "Festival of Battles" with its ground under it, a World plate facing the camera; then TR22's plate, plinth and bays' light on AR16's places; then the first session on a phone with research, which also judges the day's light.
 
 **Modulo (assets).** 2026-11-16, 02:21, on Fable 5.2.
 - **Next: AR17's kit,** on research's verdict of the blockout (AR17, "Research's verdict on the blockout"): competent. A line of ground lanterns down the middle of the Strip from each far end to the crossing and up the side street; a sealed gate in the Door's language at each end; the bare lot empty, without the sleeping stone. Then counted for a phone, for Faber's install.
@@ -111,6 +111,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 02:40. Day in the world's turn, under Modulo's sky (Faber)
+
+- **What changed:** the world has a day, on the director's word ("we need a day time") and pick. Day, dusk and night go round on the server's one clock, 30 minutes a turn: 18 of day, 5 of dusk, 4 of night, with a minute's crossing between each. By day the kit's glow and the street's lights dim to a share and come up at dusk. Modulo's Day sky is uploaded, Approved and played with his seeds: a clear azure day with a thin haze.
+- **Where:** `Rules.Night` (the turn as an order of looks), `Config.Lighting` (`Cycle`, `Phases.Day`), `LightingController`; TR23; the asset log. The debug jump takes "Day", "ToDusk", "ToNight" and "ToDay".
+- **Checks:** type check 0 new; logic 9,936; the whole suite 2,202/0 at 60 fps.
+- **For research:** the verdict in the game, the day and its crossing into dusk. The director's mist word to Modulo ("a bit to much atmosphere") may also mean the dusk haze; I don't know which phase they saw.
+- **Open:** one ~90 ms frame in two of four day-to-dusk crossings, not attributed, for the phone run to watch.
 
 ### 2026-11-16, 02:15. The Day sky, and AR17's blockout (Modulo)
 

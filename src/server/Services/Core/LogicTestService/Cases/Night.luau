@@ -1,7 +1,8 @@
 --!strict
--- Night cases (pure): Lantern Row's dusk and night on one server clock (TR8; the director, 2026-11-12; Rules.Night,
--- Config.Lighting). A turn is research's seed, 20 minutes; the crossing eases; the sky's swap hides under the haze's peak;
--- a look mixes key by key; the ground's look holds from just before its gate, a door's landing inside it.
+-- Night cases (pure): the world's day, dusk and night on one server clock (TR8; the director, 2026-11-12 and 2026-11-16,
+-- TR23; Rules.Night, Config.Lighting). A turn holds each look and crosses into the next, day the most of it; the crossing
+-- eases; the sky's swap hides under the haze's peak; a look mixes key by key; the ground's look holds from just before
+-- its gate, a door's landing inside it.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -9,73 +10,98 @@ local Night = require(Shared.Rules.Night)
 local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
 
-local CYCLE = { Dusk = 780, Night = 300, Cross = 60 }
+local CYCLE: Night.Cycle = { Order = { "Day", "Dusk", "Night" }, Hold = { Day = 1080, Dusk = 300, Night = 240 }, Cross = 60 }
 local NOW = 1_800_000_000
 
 local function near(a: number, b: number): boolean
 	return math.abs(a - b) <= 1e-6 * math.max(1, math.abs(b))
 end
 
-local function at(seconds: number): (number, string)
-	return Night.At(seconds, CYCLE)
+-- The turn at `seconds`: (from, to, w, phase).
+local function at(seconds: number): (string, string, number, string)
+	return Night.Turn(seconds, CYCLE)
+end
+
+-- How far into night the turn stands, 0 to 1, on the way from dusk and back to day.
+local function w(seconds: number): number
+	local _, _, weight = at(seconds)
+	return weight
 end
 
 return {
 	{
-		Name = "Night: TR8, a turn is 13 minutes of dusk, a minute's crossing, 5 of night and a minute back, on the server's clock",
+		Name = "Night: TR23, a turn is 18 minutes of day, a minute's crossing, 5 of dusk, a minute, 4 of night and a minute's dawn, on the server's clock",
 		Run = function(t: any)
-			t.Equal("research's seed: 20 minutes", Night.Length(LightingConfig.Cycle), 1200)
-			t.Equal("the seed in Config", Night.Length(CYCLE), Night.Length(LightingConfig.Cycle))
-			local w, phase = at(0)
-			t.Check("it starts at dusk", w == 0 and phase == "Dusk")
-			w, phase = at(779.9)
-			t.Check("dusk to its last moment", w == 0 and phase == "Dusk")
-			w, phase = at(810)
-			t.Check("half way to night", near(w, 0.5) and phase == "ToNight", `{w} {phase}`)
-			w, phase = at(840)
-			t.Check("night", w == 1 and phase == "Night")
-			w, phase = at(1170)
-			t.Check("half way back", near(w, 0.5) and phase == "ToDusk", `{w} {phase}`)
-			w, phase = at(1200)
-			t.Check("round to dusk again", w == 0 and phase == "Dusk")
-			w, phase = at(-30)
-			t.Check("before the epoch, the turn runs on", near(w, 0.5) and phase == "ToDusk", `{w} {phase}`)
-			w, phase = at(0 / 0)
-			t.Check("no clock: dusk", w == 0 and phase == "Dusk")
-			t.Equal("dusk's 13 minutes left at its start", Night.Left(0, CYCLE), 780)
-			t.Equal("40 s of the crossing left", Night.Left(800, CYCLE), 40)
+			t.Equal("the builder's seed: 30 minutes", Night.Length(LightingConfig.Cycle :: any), 1800)
+			t.Equal("the seed in Config", Night.Length(CYCLE), Night.Length(LightingConfig.Cycle :: any))
+			t.Check("day the most of the turn, about 60%", (LightingConfig.Cycle.Hold.Day :: number) / Night.Length(LightingConfig.Cycle :: any) >= 0.55)
+			t.Equal("the phases in order", table.concat(Night.Phases(CYCLE), " "), "Day ToDusk Dusk ToNight Night ToDay")
+			local from, to, weight, phase = at(0)
+			t.Check("it starts in the day", from == "Day" and to == "Day" and weight == 0 and phase == "Day", `{from} {to} {weight} {phase}`)
+			from, to, weight, phase = at(1079.9)
+			t.Check("day to its last moment", from == "Day" and phase == "Day")
+			from, to, weight, phase = at(1110)
+			t.Check("half way to dusk", from == "Day" and to == "Dusk" and near(weight, 0.5) and phase == "ToDusk", `{from} {to} {weight} {phase}`)
+			from, to, weight, phase = at(1140)
+			t.Check("dusk", from == "Dusk" and to == "Dusk" and weight == 0 and phase == "Dusk", `{from} {to} {weight} {phase}`)
+			from, to, weight, phase = at(1470)
+			t.Check("half way to night", from == "Dusk" and to == "Night" and near(weight, 0.5) and phase == "ToNight", `{from} {to} {weight} {phase}`)
+			from, to, weight, phase = at(1500)
+			t.Equal("night", phase, "Night")
+			from, to, weight, phase = at(1770)
+			t.Check("half way through the dawn", from == "Night" and to == "Day" and near(weight, 0.5) and phase == "ToDay", `{from} {to} {weight} {phase}`)
+			from, to, weight, phase = at(1800)
+			t.Equal("round to day again", phase, "Day")
+			from, to, weight, phase = at(-30)
+			t.Check("before the epoch, the turn runs on", from == "Night" and to == "Day" and near(weight, 0.5), `{from} {to} {weight} {phase}`)
+			from, to, weight, phase = at(0 / 0)
+			t.Check("no clock: day", weight == 0 and phase == "Day")
+			t.Equal("day's 18 minutes left at its start", Night.Left(0, CYCLE), 1080)
+			t.Equal("40 s of the crossing to dusk left", Night.Left(1100, CYCLE), 40)
+			t.Equal("night's 4 minutes", Night.Left(1500, CYCLE), 240)
+			-- A look held for no time is passed over: the turn crosses straight on.
+			local short: Night.Cycle = { Order = { "Day", "Dusk", "Night" }, Hold = { Day = 100, Night = 100 }, Cross = 10 }
+			t.Equal("no dusk held: the crossing to it, then on to night", select(4, Night.Turn(115, short)), "ToNight")
 		end,
 	},
 	{
-		Name = "Night: TR8, a jump to a phase puts the server's clock at its start, for the takes",
+		Name = "Night: TR23, a jump to a phase puts the server's clock at its start, for the takes",
 		Run = function(t: any)
-			for _, phase in { "Dusk", "ToNight", "Night", "ToDusk" } do
+			for _, phase in Night.Phases(CYCLE) do
 				local epoch = Night.From(phase, NOW, CYCLE)
-				local _, got = at(NOW - epoch)
+				local _, _, _, got = at(NOW - epoch)
 				t.Equal(`{phase}: there`, got, phase)
-				local _, before = at(NOW - epoch - 0.01)
+				local _, _, _, before = at(NOW - epoch - 0.01)
 				t.Check(`{phase}: at its start`, before ~= phase)
 			end
-			t.Equal("night's 5 minutes ahead", Night.Left(NOW - Night.From("Night", NOW, CYCLE), CYCLE), 300)
+			t.Equal("night's 4 minutes ahead", Night.Left(NOW - Night.From("Night", NOW, CYCLE), CYCLE), 240)
 			t.Check("no such phase", not pcall(Night.From, "Noon", NOW, CYCLE))
+			for _, name in LightingConfig.Cycle.Order do
+				t.Check(`{name}: a look in Config`, (LightingConfig.Phases :: any)[name] ~= nil)
+			end
+			for name in LightingConfig.Phases :: any do
+				t.Check(`{name}: in the turn`, table.find(LightingConfig.Cycle.Order, name) ~= nil)
+			end
 		end,
 	},
 	{
-		Name = "Night: TR8, the crossing eases from dusk to night, and the sky's swap hides under the haze's peak",
+		Name = "Night: TR8, each crossing eases from one look to the next, and the sky's swap hides under the haze's peak",
 		Run = function(t: any)
-			local last, rising = -1, true
-			for s = 780, 840, 2 do
-				local w = at(s)
-				rising = rising and w >= last
-				last = w
+			for name, start in ({ ToDusk = 1080, ToNight = 1440, ToDay = 1740 } :: { [string]: number }) do
+				local last, rising = -1, true
+				for s = start, start + 59, 1 do
+					local weight = w(s)
+					rising = rising and weight >= last
+					last = weight
+				end
+				t.Check(`{name}: never back`, rising)
+				t.Check(`{name}: eased, slow at its ends`, w(start + 3) < 0.05 and w(start + 57) > 0.95)
 			end
-			t.Check("never back on the way to night", rising)
-			t.Check("eased: slow at its ends", at(783) < 0.05 and at(837) > 0.95)
 			local width = LightingConfig.Veil.Width
 			t.Equal("the peak at the middle", Night.Veil(0.5, width), 1)
 			t.Equal("nothing at its edge", Night.Veil(0.5 + width / 2, width), 0)
-			t.Equal("nothing at dusk", Night.Veil(0, width), 0)
-			t.Equal("nothing at night", Night.Veil(1, width), 0)
+			t.Equal("nothing while a look holds", Night.Veil(0, width), 0)
+			t.Equal("nothing at the crossing's end", Night.Veil(1, width), 0)
 			t.Check("half way up, between", Night.Veil(0.5 - width / 4, width) > 0 and Night.Veil(0.5 - width / 4, width) < 1)
 			t.Equal("no width, no veil", Night.Veil(0.5, 0), 0)
 		end,
@@ -101,18 +127,30 @@ return {
 			t.Equal("the sun where the frames have it", look.Lighting.ClockTime, 13.5)
 			t.Equal("the sky by name", look.Sky, "Dusk")
 			t.Equal("the floors' glow", look.Floor, dusk.Floor)
+			t.Equal("dusk's glow whole", look.Glow, 1)
+			t.Equal("dusk's lights whole", look.Lights, 1)
+			local day = (LightingConfig.Phases :: any).Day
+			local bright = Night.Ground(day, "Day", { Clock = 13.5, Latitude = 20 })
+			t.Check("by day the glow and the lights at a share", bright.Glow == day.Glow and bright.Lights == day.Lights
+				and day.Glow < 1 and day.Lights < 1, `{bright.Glow} {bright.Lights}`)
 			look.Atmosphere.Density = 99
 			t.Check("a look is its own copy", dusk.Atmosphere.Density ~= 99)
 		end,
 	},
 	{
-		Name = "Night: TR8, Lantern Row's two phases are whole, and its look holds from just before the gate, a door's landing inside it",
+		Name = "Night: TR8, TR23, the ground's phases are whole, and its look holds from just before the gate, a door's landing inside it",
 		Run = function(t: any)
 			local phases = LightingConfig.Phases :: any
-			for key, value in phases.Dusk do
-				t.Check(`{key}: in both phases, of one kind`, phases.Night[key] ~= nil and typeof(phases.Night[key]) == typeof(value))
-			end
 			for name, phase in phases do
+				for _, key in { "Sun", "Brightness", "Ambient", "Diffuse", "Atmosphere", "Bloom", "Floor" } do
+					t.Check(`{name} {key}: given, of dusk's kind`, phase[key] ~= nil and typeof(phase[key]) == typeof(phases.Dusk[key]))
+				end
+				for _, key in { "Glow", "Lights" } do
+					t.Check(`{name} {key}: a share, if given`, phase[key] == nil or (phase[key] >= 0 and phase[key] <= 1))
+				end
+				if phase.Sky == nil then
+					continue -- Roblox's built-in sky (the day's, until our own is drawn)
+				end
 				local count = 0
 				for face, id in phase.Sky do
 					count += 1
@@ -120,6 +158,8 @@ return {
 				end
 				t.Equal(`{name}: six faces`, count, 6)
 			end
+			t.Check("day, dusk and night wear our own skies", phases.Day.Sky ~= nil and phases.Dusk.Sky ~= nil and phases.Night.Sky ~= nil)
+			t.Check("the day brighter than dusk, dusk than night", phases.Day.Brightness > phases.Dusk.Brightness and phases.Dusk.Brightness > phases.Night.Brightness)
 			t.Check("night's floors glow more, its pools doing more of the work", phases.Night.Floor > phases.Dusk.Floor)
 			t.Check("the sun's toward, a unit vector up", near(LightingConfig.Toward.Magnitude, 1) or math.abs(LightingConfig.Toward.Magnitude - 1) < 0.01)
 			t.Check("and above the horizon: a day clock", LightingConfig.Toward.Y > 0)

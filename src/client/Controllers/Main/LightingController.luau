@@ -1,23 +1,26 @@
 --!strict
--- LightingController (client): Lantern Row's look (TR8; the director, 2026-11-12: "we should add a night cycle for this
--- festival area as well"). North of the festival gate, from Config.Lighting.From studs short of it, the ground's look
--- holds: its dusk and its night on the server's one clock (Rules.Night; the epoch is the workspace attribute NightFrom),
--- eased through a minute's crossing. Everywhere else the place keeps its own Lighting, as this client found it at its
+-- LightingController (client): the world's look (TR8; the director, 2026-11-12: "we should add a night cycle for this
+-- festival area as well"; 2026-11-16: "we need a day time", TR23). North of the festival gate, from Config.Lighting.From
+-- studs short of it, and over the base too while Config.Lighting.Everywhere, the ground's look holds: its day, its dusk
+-- and its night on the server's one clock (Rules.Night; the epoch is the workspace attribute NightFrom), each eased
+-- into the next through a minute's crossing. Everywhere else the place keeps its own Lighting, as this client found it at its
 -- start. Walking in or out turns one look into the other over Enter seconds; a jump (a door, a fade, a respawn) lands
 -- in its look at once. Where the player stands is the camera's focus: the avatar, or the lead while spectating. The
 -- camera itself is never touched.
 -- * A sky can't fade into another (handbook/visuals/lighting-and-mood.md, "Skies"): each blend swaps its sky at its
---   middle, under a peak of haze (Config.Lighting.Veil), and both of the ground's skies are loaded before they're needed.
+--   middle, under a peak of haze (Config.Lighting.Veil), and all the ground's skies are loaded before they're needed. A
+--   phase with no faces wears Roblox's built-in sky (a new Sky's own), with its Bodies (the day's sun disc).
 -- * The sun stands where the kit's frames have it (Config.Lighting.Toward) at a day clock, solved once for this engine's
 --   sun (Lighting:GetSunDirection()), so the painted moon and the shadows agree.
 -- * The kit's pieces (tagged Kit.Tag by WorldService) glow by Config.Lighting.Glow, the houses less, the floors by the
---   phase; the street's lights shine by Config.Lighting.Pools and Lamp; the paper's boxes stand in Config.Lighting.Paper's
+--   phase, all by the phase's Glow share (by day a share, full from dusk); the street's lights shine by
+--   Config.Lighting.Pools and Lamp, by the phase's Lights share; the paper's boxes stand in Config.Lighting.Paper's
 --   band with its rate and tint (Kit.PaperBand). Each piece streamed in takes its value at once.
 -- * The player's lead carries the plan's tenth light at its head (Config.Lighting.Lead), turned up with the ground's look
---   and off out of it.
+--   and the phase's Lights share, and off out of it.
 -- Every number is read from Config each frame, so a Tune shows at once (a new Toward is solved again).
---   LightingController.Look()   what's applied: the look, how far into the ground (Area), the turn (Night, Phase) and the
---                               haze's peak (Veil), for tests
+--   LightingController.Look()   what's applied: the look, how far into the ground (Area), the turn (From, To, Turn: 0 at
+--                               From to 1 at To, Phase), the shares (Glow, Lights) and the haze's peak (Veil), for tests
 --   LightingController.Sun()    the solved sun: { Clock, Latitude, Off } (Off: degrees from Toward), for tests
 --   LightingController.LeadLight()  the lead's light, or nil with no lead, for tests
 
@@ -47,14 +50,16 @@ local BLOOM_KEYS = { "Intensity", "Size", "Threshold" }
 local base: any = nil -- the place's own look, captured at the start
 local atmosphere: Atmosphere
 local bloom: BloomEffect
-local skies: { [string]: Sky? } = {} -- "Base" (the place's, if it has one), "Dusk", "Night"
+local skies: { [string]: Sky? } = {} -- "Base" (the place's, if it has one), and one per phase of the cycle
 local shownSky = "Base"
 local sun = { Clock = 14, Latitude = 0, Off = 180 }
 local solvedFor: Vector3? = nil
 local area = 0 -- 0 out of the ground, 1 in it, eased by the walk
 local lastFocus: Vector3? = nil
 local applied: any = nil -- the last look applied, for tests and to set only what changed
-local current = { Area = 0, Night = 0, Phase = "Dusk", Veil = 0 }
+local current = { Area = 0, From = "Day", To = "Day", Turn = 0, Phase = "Day", Glow = 1, Lights = 1, Veil = 0 }
+local SHARE_STEP = 0.02 -- the glow's and the lights' shares move in steps: a crossing re-dresses the pieces ~30 times, not each frame
+local glowShare, lightShare = 1, 1
 local floors: { [BasePart]: true } = {}
 local stamp = "" -- the glow and light numbers last given to the pieces
 local leadLight: PointLight? = nil
@@ -120,15 +125,17 @@ local function solve(toward: Vector3)
 end
 
 local function setSkyFaces(sky: Sky, phase: any)
-	for face, id in phase.Sky do
+	for face, id in phase.Sky or {} do -- none: the built-in faces a new Sky has
 		local key = `Skybox{face}`
 		if (sky :: any)[key] ~= id then
 			(sky :: any)[key] = id
 		end
 	end
-	for key, value in LightingConfig.SkyBodies :: any do
-		if (sky :: any)[key] ~= value then
-			(sky :: any)[key] = value
+	for _, bodies in { LightingConfig.SkyBodies :: any, phase.Bodies or {} } do
+		for key, value in bodies do
+			if (sky :: any)[key] ~= value then
+				(sky :: any)[key] = value
+			end
 		end
 	end
 end
@@ -141,8 +148,11 @@ local function groundSky(name: string): Sky
 end
 
 local function showSky(name: string)
-	for _, phase in { "Dusk", "Night" } do
-		setSkyFaces(skies[phase] :: Sky, (LightingConfig.Phases :: any)[phase])
+	for phase, look in LightingConfig.Phases :: any do
+		local sky = skies[phase]
+		if sky then
+			setSkyFaces(sky, look)
+		end
 	end
 	if name == shownSky then
 		return
@@ -199,7 +209,7 @@ local function dressOne(item: Instance, floor: number)
 		if look then
 			local empty = LightingConfig.Glow.Empty
 			local share = if working == false then empty elseif type(lit) == "number" then empty + (1 - empty) * math.clamp(lit, 0, 1) else 1
-			local want = glowOf(piece, floor) * share
+			local want = glowOf(piece, floor) * share * glowShare
 			if look.EmissiveStrength ~= want then
 				look.EmissiveStrength = want
 			end
@@ -230,14 +240,14 @@ local function dressOne(item: Instance, floor: number)
 	local numbers = if kind == "Pool" then LightingConfig.Pools elseif kind == "Lamp" then LightingConfig.Lamp else nil
 	local light = item:FindFirstChildWhichIsA("Light")
 	if numbers and light then
-		light.Brightness = numbers.Brightness;
+		light.Brightness = numbers.Brightness * lightShare;
 		(light :: any).Range = numbers.Range
 	end
 end
 
 local function dressAll(floor: number)
 	local glow, pools, lamp, paper = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp, LightingConfig.Paper
-	local now = `{glow.Kit},{glow.Houses},{glow.Empty},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour}`
+	local now = `{glow.Kit},{glow.Houses},{glow.Empty},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare}`
 	if now ~= stamp then
 		stamp = now
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
@@ -245,15 +255,16 @@ local function dressAll(floor: number)
 		end
 		return
 	end
-	-- Only the floors follow the turn.
+	-- Only the floors follow the turn frame by frame (the shares by their steps, above).
 	for part in floors do
 		if part.Parent == nil then
 			floors[part] = nil
 			continue
 		end
 		local look = part:FindFirstChildOfClass("SurfaceAppearance")
-		if look and look.EmissiveStrength ~= floor then
-			look.EmissiveStrength = floor
+		local want = floor * glowShare
+		if look and look.EmissiveStrength ~= want then
+			look.EmissiveStrength = want
 		end
 	end
 end
@@ -329,14 +340,16 @@ local function step(dt: number)
 	-- The turn, on the server's clock.
 	local from = workspace:GetAttribute(Night.Attribute)
 	local seconds = workspace:GetServerTimeNow() - (if type(from) == "number" then from else 0)
-	local night, phase = Night.At(seconds, LightingConfig.Cycle)
+	local fromName, toName, turn, phase = Night.Turn(seconds, LightingConfig.Cycle :: any)
 	local phases = LightingConfig.Phases :: any
 	local at = { Clock = sun.Clock, Latitude = sun.Latitude }
-	local ground = Night.Mix(Night.Ground(phases.Dusk, "Dusk", at), Night.Ground(phases.Night, "Night", at), night)
+	local ground = Night.Mix(Night.Ground(phases[fromName], fromName, at), Night.Ground(phases[toName], toName, at), turn)
 	local look = Night.Mix(base, ground, a)
+	glowShare = math.floor(ground.Glow / SHARE_STEP + 0.5) * SHARE_STEP
+	lightShare = math.floor(ground.Lights / SHARE_STEP + 0.5) * SHARE_STEP
 	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own.
 	local width = LightingConfig.Veil.Width
-	local veil = math.max(Night.Veil(night, width) * a, Night.Veil(a, width))
+	local veil = math.max(Night.Veil(turn, width) * a, Night.Veil(a, width))
 	look.Atmosphere.Density += LightingConfig.Veil.Density * veil
 	look.Atmosphere.Haze += LightingConfig.Veil.Haze * veil
 	-- Applied, only what changed.
@@ -345,9 +358,9 @@ local function step(dt: number)
 	setKeys(bloom, look.Bloom, applied and applied.Bloom)
 	showSky(look.Sky)
 	dressAll(ground.Floor)
-	lightLead(a)
+	lightLead(a * lightShare)
 	applied = look
-	current = { Area = area, Night = night, Phase = phase, Veil = veil }
+	current = { Area = area, From = fromName, To = toName, Turn = turn, Phase = phase, Glow = glowShare, Lights = lightShare, Veil = veil }
 end
 
 function LightingController.Start()
@@ -368,9 +381,14 @@ function LightingController.Start()
 	atmosphere, bloom = a :: Atmosphere, b :: BloomEffect
 	base.Atmosphere, base.Bloom = atmosphereBase, bloomBase
 	skies.Base = Lighting:FindFirstChildOfClass("Sky")
-	skies.Dusk, skies.Night = groundSky("Dusk"), groundSky("Night")
+	local load: { Instance } = {}
+	for name in LightingConfig.Phases :: any do
+		local sky = groundSky(name)
+		skies[name] = sky
+		table.insert(load, sky)
+	end
 	task.spawn(function()
-		ContentProvider:PreloadAsync({ skies.Dusk :: Sky, skies.Night :: Sky })
+		ContentProvider:PreloadAsync(load)
 	end)
 	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(function(item: Instance)
 		dressOne(item, floorNow())

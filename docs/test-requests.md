@@ -2083,3 +2083,36 @@ Research's entry, 2026-11-15, night. It answers the director's word to Modulo at
   - **Implemented.** The save holds `Base.Showcase` (`docs/engineering-plan.md`, "The showcase at the gate"). `Collection.Showcase` gives the pick while it's owned. Otherwise it gives the strongest by Combat Power, then the higher level, then the lower Id, so the plinth never flickers between two. `SetShowcase` takes any owned Voidkin whatever its role, and "" gives it back to the strongest.
   - **Tested.** The case "Collection: TR22, the showcase at the gate stands the strongest until one is picked" passes in the 9,870.
   - **Waits:** the gate's plate, the plinth's Voidkin with its Combat Power and the bays' rarity light, on AR16's new plan; "Show at the gate" on the character screen; the take from the Strip.
+
+## TR23. Day in the world's turn (Faber, then Modulo's day sky)
+
+The director to Faber, 2026-11-16, after the base's install: "i feel like the world it a bit to dark and somber we need a day time". Asked how, the director picked "Add day to the cycle" in the builder's words: "Day, then dusk, then night, then back to day, across the whole world. Dusk and night keep their looks and get a smaller share of the cycle (my first split: day about 60%, tuned live). The lanterns and the void machines' glow fade by day and light up at dusk. A day sky is needed: our own, drawn by Modulo, or Roblox's built-in sky until then." The director also picked "Next piece, now": built before the Door's name, and the phone run then judges the light players will actually see. Then, to Modulo, read at 02:02: "we need a day / dusk sky box btw ask faber + lightning/atmosphere etc". Modulo draws the day sky and its seeds.
+
+- **Feel line:** a player comes back to the festival in full day, a blue sky over the navy houses and the paper lanterns, the void machines still faintly lit. The afternoon slips into dusk and the lanterns come up, then night, then morning again.
+- **The block contains:**
+  - Day in the turn. `Rules.Night` holds each look of `Config.Lighting.Cycle.Order` for its Hold and crosses into the next. The seed is 30 minutes: 18 of day, 5 of dusk, 4 of night, and a minute's crossing between each.
+  - `Config.Lighting.Phases.Day`, first the builder's seed on Roblox's built-in sky, then Modulo's Day sky with his seeds once it came (2f3430a), within the hour. Its sun is painted in the faces at `Toward`.
+  - The day's shares: Glow is the share of the kit's glow (floors included), and Lights the share of the street's and the lead's lights. Both are full at dusk and night.
+  - The debug jump takes the new phases ("Day", "ToDusk", "ToNight", "ToDay").
+- **Waits:**
+  - Research's verdict in the game.
+  - The phone run.
+  - The director's mist word, read by Modulo at 02:16: "a bit to much atmosphere imo like that mist is a bit to much". It was said on the first sheet, and the Day's haze is thin for it. Whether it also means the game's dusk haze (Haze 1, AR5's numbers) is with research.
+  - A second dusk sky. Only if the director's "day / dusk" asks for one; Modulo asks the director.
+- **Built, 2026-11-16 (Faber).**
+  - **Implemented** in `Rules.Night` (the turn as an order of looks, `Night.Turn`, `Night.Phases`), `Config.Lighting` and `LightingController` (a sky per phase; the shares in steps of 0.02, so a crossing re-dresses the pieces about 30 times, not each frame). The two glow cases that computed a piece's glow read the live share too.
+  - **Modulo's Day sky:** six faces uploaded under the group and Approved (`docs/asset-log.md`). His seeds are in `Phases.Day`: sun #FFE2B8 at 2.6, fill #8A8496, the sky's share of the fill 0.5, and a thin haze (Density 0.16, Haze 0.2, Glare 0.1). Floor, Glow and Lights are the builder's.
+  - **Tested.**
+    - Type check 0 new.
+    - Logic cases: offline and in Studio, 9,936 passed. They cover the turn, each crossing's ease, the jumps, Day's look, sky and shares, and every phase in Config being in the turn.
+    - Self-test: "Lighting" 47/0, with day's look, sky, glow share, lights share and the lead's light.
+    - The whole suite: 2,202 passed, 0 failed, at 60 fps; the world report is empty.
+      - The first whole run failed 17. Three were the Breaker chambers' case, which wanted a glow without the day's share; it's fixed.
+      - The other 14 followed the camera case's one failure (TR11) through the Haymaker and plate cases. Each passed alone and in the second whole run.
+    - In the game: the day-to-dusk crossing eases the brightness, and the sky swaps under the haze's peak at 29.6 s of 60. The client held 57 to 58 fps.
+    - A single frame of about 90 ms came at about 26 s in two of four day-to-dusk crossings. It wasn't there in the other two or in dusk-to-night, and holding the lights didn't settle it either way. It's not attributed; the phone run watches for it.
+  - **Visually reviewed:** the builder's captures only, at the spawn and on Lantern Row by day, on each sky.
+    - On the built-in sky, the paving took a strong lavender-blue cast.
+    - On ours, the base stands under big anime cumulus, and the paving is greyer and less blue. Lantern Row is clear far up the street with no mist, the navy houses and the lanterns read against the sky, and the clouds sit over the lanterns.
+    - Research's pass is wanted.
+  - **Director-accepted:** not yet.

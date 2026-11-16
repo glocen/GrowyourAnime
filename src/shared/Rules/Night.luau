@@ -1,13 +1,15 @@
 --!strict
--- Night (shared, pure): Lantern Row's dusk and night on one server clock (TR8; the director, 2026-11-12: "we should add a
--- night cycle for this festival area as well"; docs/decisions.md). The clock is the server's own time from an epoch the
--- server can move (the workspace attribute NightFrom, a jump to a phase for the takes), so every client sees the same
--- hour. A turn is dusk, a crossing to night, night, and a crossing back (Config.Lighting.Cycle). LightingController mixes
--- the place's own look and the ground's by where the avatar stands, and the ground's dusk and night by the clock. No
--- Roblox API beyond its data types: it runs with Studio closed.
+-- Night (shared, pure): the world's day, dusk and night on one server clock (TR8; the director, 2026-11-12: "we should
+-- add a night cycle for this festival area as well"; 2026-11-16: "we need a day time", yes to adding day to the cycle;
+-- docs/decisions.md). The clock is the server's own time from an epoch the server can move (the workspace attribute
+-- NightFrom, a jump to a phase for the takes), so every client sees the same hour. A turn holds each look of the
+-- cycle's Order in turn for its Hold, then crosses into the next over Cross seconds, and round again
+-- (Config.Lighting.Cycle). LightingController mixes the place's own look and the ground's by where the avatar stands,
+-- and the turn's two looks by the clock. No Roblox API beyond its data types: it runs with Studio closed.
 --   Night.Length(cycle)                 seconds in one turn
---   Night.At(seconds, cycle)            (night, phase): night 0 at dusk to 1 at night, eased through a crossing; phase
---                                       "Dusk", "ToNight", "Night" or "ToDusk"
+--   Night.Phases(cycle)                 the turn's phases in order: each look, then "To" and the next one's name
+--   Night.Turn(seconds, cycle)          (from, to, w, phase): the two looks the turn stands between, w 0 at `from` to 1
+--                                       at `to`, eased through a crossing (from == to, w 0, while a look holds)
 --   Night.Left(seconds, cycle)          seconds until the phase changes
 --   Night.From(phase, now, cycle)       the epoch that puts `now` at the phase's start
 --   Night.Veil(w, width)                0 to 1: the haze's peak over a blend's middle, where a sky is swapped (a sky can't
@@ -21,63 +23,83 @@
 
 local Night = {}
 
--- The workspace attribute holding the turn's epoch, the server's time a dusk began (0 unless a jump moved it).
+-- The workspace attribute holding the turn's epoch, the server's time a turn began (0 unless a jump moved it).
 Night.Attribute = "NightFrom"
 
-export type Cycle = { Dusk: number, Night: number, Cross: number }
+export type Cycle = { Order: { string }, Hold: { [string]: number }, Cross: number }
 export type Sun = { Clock: number, Latitude: number }
-
-local PHASES = { "Dusk", "ToNight", "Night", "ToDusk" }
+type Span = { Phase: string, From: string, To: string, Start: number, Length: number }
 
 local function ease(x: number): number
 	local t = math.clamp(x, 0, 1)
 	return t * t * (3 - 2 * t)
 end
 
--- Where each phase starts in a turn, and how long it lasts.
-local function spans(cycle: Cycle): { { number } }
-	local a = cycle.Dusk
-	local b = a + cycle.Cross
-	local c = b + cycle.Night
-	return { { 0, a }, { a, cycle.Cross }, { b, cycle.Night }, { c, cycle.Cross } }
+-- Each phase of a turn: where it starts, how long it lasts, and the two looks it stands between.
+local function spans(cycle: Cycle): { Span }
+	local out: { Span } = {}
+	local start = 0
+	for index, name in cycle.Order do
+		local hold = math.max(0, cycle.Hold[name] or 0)
+		table.insert(out, { Phase = name, From = name, To = name, Start = start, Length = hold })
+		start += hold
+		local nextName = cycle.Order[index % #cycle.Order + 1]
+		table.insert(out, { Phase = `To{nextName}`, From = name, To = nextName, Start = start, Length = cycle.Cross })
+		start += cycle.Cross
+	end
+	return out
 end
 
 function Night.Length(cycle: Cycle): number
-	return cycle.Dusk + cycle.Night + 2 * cycle.Cross
+	local length = 0
+	for _, span in spans(cycle) do
+		length += span.Length
+	end
+	return length
 end
 
-local function where(seconds: number, cycle: Cycle): (number, number)
+function Night.Phases(cycle: Cycle): { string }
+	local out: { string } = {}
+	for _, span in spans(cycle) do
+		table.insert(out, span.Phase)
+	end
+	return out
+end
+
+-- The span the turn stands in at `seconds`, and how far into it. A span of no length is passed over.
+local function where(seconds: number, cycle: Cycle): (Span, number)
+	local all = spans(cycle)
 	local length = Night.Length(cycle)
 	local t = if length > 0 and seconds == seconds then seconds % length else 0
-	for index, span in spans(cycle) do
-		if t < span[1] + span[2] or index == #PHASES then
-			return index, t - span[1]
+	for _, span in all do
+		if span.Length > 0 and t < span.Start + span.Length then
+			return span, t - span.Start
 		end
 	end
-	return 1, t
+	return all[1], 0
 end
 
-function Night.At(seconds: number, cycle: Cycle): (number, string)
-	local index, into = where(seconds, cycle)
-	local phase = PHASES[index]
-	if phase == "Dusk" then
-		return 0, phase
-	elseif phase == "Night" then
-		return 1, phase
+function Night.Turn(seconds: number, cycle: Cycle): (string, string, number, string)
+	local span, into = where(seconds, cycle)
+	if span.From == span.To then
+		return span.From, span.To, 0, span.Phase
 	end
-	local w = if cycle.Cross > 0 then ease(into / cycle.Cross) else 1
-	return if phase == "ToNight" then w else 1 - w, phase
+	local w = if span.Length > 0 then ease(into / span.Length) else 1
+	return span.From, span.To, w, span.Phase
 end
 
 function Night.Left(seconds: number, cycle: Cycle): number
-	local index, into = where(seconds, cycle)
-	return math.max(0, spans(cycle)[index][2] - into)
+	local span, into = where(seconds, cycle)
+	return math.max(0, span.Length - into)
 end
 
 function Night.From(phase: string, now: number, cycle: Cycle): number
-	local index = table.find(PHASES, phase)
-	assert(index, `no phase "{phase}": Dusk, ToNight, Night or ToDusk`)
-	return now - spans(cycle)[index][1]
+	for _, span in spans(cycle) do
+		if span.Phase == phase then
+			return now - span.Start
+		end
+	end
+	error(`no phase "{phase}": {table.concat(Night.Phases(cycle), ", ")}`)
 end
 
 function Night.Veil(w: number, width: number): number
@@ -114,7 +136,8 @@ end
 -- A phase as Lighting holds it: the sun's colour on the faces turned to it (ColorShift_Top) and its brightness, one flat
 -- fill for Ambient and OutdoorAmbient alike (the kit's frames: lighting.json, "ambient", asOne), the sky's share of the
 -- fill, the haze and the bloom; the sky by its name; the sun where the frames have it, at a day clock (the handbook's
--- pseudo-night). Floor is the floors' glow, apart from Lighting.
+-- pseudo-night). Apart from Lighting: Floor, the floors' glow; Glow, the share of the kit's glow; Lights, the share of the
+-- street's lights and the lead's (by day both dim, and light up at dusk), 1 when a phase doesn't say.
 function Night.Ground(phase: any, sky: string, sun: Sun): any
 	return {
 		Lighting = {
@@ -130,6 +153,8 @@ function Night.Ground(phase: any, sky: string, sun: Sun): any
 		Bloom = table.clone(phase.Bloom),
 		Sky = sky,
 		Floor = phase.Floor,
+		Glow = phase.Glow or 1,
+		Lights = phase.Lights or 1,
 	}
 end
 

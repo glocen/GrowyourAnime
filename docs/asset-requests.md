@@ -5992,6 +5992,41 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Hit1, "the wall," must read as the shaft shoved toward the Shade. In the strip the shaft runs out to his right, blade-end first, and could read as a side jab.
   - Idle's look along the street must carry at 64 px. In the three frames it barely shows, so the head turns further and the shoulders follow a little.
 
+**The animation comparison** (Modulo, 2026-11-16, written by 23:27 by the clock, `ga-reference-study`). The director, mid-timing: "look at some anime vanguard units animations". The question: how do Anime Vanguards' units move (idle, attack, a weapon in two hands) on the blocky body, and where do Watt's clips fall short?
+- **Looked at:** the public fan wiki's attack recordings of ten units, eight of them used: two spear users, a scythe, a two-handed sword, a staff, two swords and an Epic. They're in `build/reference/anime-vanguards/animations/` (gitignored, study only): the `.gif` files, a contact sheet of each, `Rummie_crop.png`, `Saber_crop.png` and `Genitsu_crop.png` enlarged; Watt's Combo shrunk to the same size in `build/scratch/modulo/watt/clips/combo_small.png`. The recordings show the units about 30 to 50 px tall, so this is by eye. Nothing is measured but the recordings' lengths. The Rare units have no recordings.
+- **OBSERVED:**
+  1. Each recording loops in 2.6 to 4.1 s: the unit stands at its spot, attacks, and stands again.
+  2. **The attack travels.** The scythe, the spears, the two-handed sword and the Epic dash into the enemies, strike and come back to their spot. The Epic's dash is three afterimages in about 0.3 s, after a crouch of about 0.1 s.
+  3. **The effect carries the hit.** From the Mythic up, bursts in the unit's colour cover the screen for about a second and hide the body. The recording's camera pushes in and shakes. Whether the game's own camera does is unknown.
+  4. **The idle is almost still** at that size. It reads by its outline (the scythe stood at the side, its blade above the head and turned out; the sword held before the chest; the Epic's crouch) and by an aura that never stops.
+  5. **Both hands on one weapon:** the two-handed sword is held with both fists together before the middle of the chest, at rest and between strikes. So the blocky arms cross to the centre.
+  6. **The swing is big.** The scythe sweeps over and round the body, about the unit's own height, and the body leans 30 to 45° into it.
+- **Watt's clips against them,** at the same size (`combo_small.png`): his hits read in three of nine key poses, the bar across (15, 21) and the rising diagonal (36). In the other six the spear stands upright beside him, one outline, and his torso stays near upright through the whole Combo. What he has that they don't: the planted spear as a language, the clips' own beat.
+- **DESIGN, for Watt's timing** (the way of moving is taken; no unit's move, pose or effect is):
+  1. **He stays planted:** no dash. The quiet wall doesn't travel, and that's the difference from them that we keep.
+  2. **Each hit breaks his outline:** the spear leaves the upright and his body leans into it, 15 to 30°. Hit2 sweeps from low behind him to high before him, and Hit3 is lifted higher before the drive, driven in at a slant ahead of him, his body over it.
+  3. **The light carries each hit,** small at a Combo hit and big at Ground Wire (the effect's look, with Faber). The pose only starts the read.
+  4. **The idle keeps its lean,** the outline that reads. An aura that never stops would be a new visible asset: a tier 2 proposal for research, not built.
+  5. **The two-handed holds stay,** as the sword's are (5 above). R6's shoulder pivot sits on the arm's inner edge, so a fist brought to the chest's middle always sinks the arm's inner edge into the chest. The export's audit counts that as "Arm through body" (0.38 to 0.69 studs, against 0.05), in Combo 54, Ground Wire's hold (both takes) and Work 176.
+  - **Research's call** (23:27): keep the two-handed holds at Combo 54 and in Ground Wire's hold, both takes, listed as R6's own look. The player's camera sits behind him for both, the wind-up is brief, and his body covers the crossing.
+  - **The exception, Work 176:** Work is seen from before him at the bay, so the crossing would show. That lift goes one-handed: his right hand on the shaft, his left palm staying on the cap.
+  - **The outline changes** (2 above): yes, tier 1.
+
+**Timing** (Modulo, 2026-11-16, to 23:41 by the clock):
+- **Changed:**
+  - **Hit2** winds down and round to his right, then the whole spear wheels as long as it is: the butt up into the Shade, the blade down past his right side.
+  - **Hit1** holds a beat (21 to 24) before the left lets go.
+  - **Hit3** is lifted higher, his body rocked back, and driven in at a slant ahead of him, the body over it.
+  - **Work's post** stands before his left shoulder (`POST`, 1.7 left and 1.75 ahead of his root, the palm 2.95 up), so his left arm reaches straight.
+- **Fixed:**
+  - The pops: Combo 11, the blade take's 129, its limb flip at 28.
+  - Their cause was the hand on the shaft. A straight R6 arm meets the shaft at two points, and the solver jumped between them, so it now keeps the one it held unless the jump is small (`on_shaft`, `SWITCH`, `JUMP`).
+- **The audit** over all nine clips passes except the two-handed holds research accepted (Combo 54, Ground Wire 47, the blade take's 127).
+- **In motion:** `film_<Clip>.mp4` in `build/scratch/modulo/watt/clips/`, each from its first view at 30 a second (the `film` mode). The two Ground Wire takes are side by side in `film_GroundWire_both.mp4`.
+  - From the player's camera, both drives travel about a stud: the light carries Ground Wire, the pose only starts it (the study's 3).
+- **Next:** research's pick between the two Ground Wire takes. Then the export with its sheets, the content check, the delivery to `build/handoff/Watt/clips/`, and Ground Wire's look with Faber (`/ga-action`).
+- **For Faber at install:** the bay's post cap at Work's palm (above); `Voidkin.luau`'s "plants the wrench"; the markers Plant and Release, at 25 and 124 butt-down, 28 and 127 blade-down.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

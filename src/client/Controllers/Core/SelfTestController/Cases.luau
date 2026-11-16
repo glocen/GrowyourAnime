@@ -1112,7 +1112,7 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Lighting: TR8, TR23, north of the festival gate the ground's day, dusk or night holds, outside it the place's own unless the base is under it too (AR14); by day the glow and the lights dim; a walk eases in, a jump lands",
+		Name = "Lighting: TR8, TR23, north of the festival gate the ground's day, dusk or night holds, outside it the place's own unless the base is under it too (AR14), in the clear with no mist (the director's 16:50); by day the glow and the lights dim; a walk eases in, a jump lands",
 		Run = function(t: any)
 			local world = workspace:FindFirstChild("World")
 			local gateZ = if world then world:GetAttribute("GateZ") else nil
@@ -1155,6 +1155,11 @@ local cases = {
 			local everywhere = LightingConfig.Everywhere
 			if everywhere then
 				t.Check("the base: under the ground's look", LightingController.Look().Area == 1, tostring(LightingController.Look().Area))
+				-- and in the clear: no mist over the base in any phase (the director's 16:50), its veil's haze only at a swap
+				local clear = LightingConfig.Clear.Atmosphere
+				t.Check("the base: out of the Row's haze", LightingController.Look().Row == 0, tostring(LightingController.Look().Row))
+				t.Near("the base: no mist, its density", Atmosphere and Atmosphere.Density or -1, clear.Density, 1e-3)
+				t.Near("the base: no haze", Atmosphere and Atmosphere.Haze or -1, clear.Haze, 1e-3)
 				t.Server("Tune", "Lighting.Everywhere", false)
 				stand(gateZ + from + 120) -- a jump, so it lands
 				t.Wait(0.3)

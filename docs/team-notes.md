@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Faber's order, given at 16:52:** TR24's fixes 1 to 3 reviewed once the screen's back; AR19's block in the game; the mist out with fix 9's dusk cut; TR24's fixes 5, 6, 8, 10, 11, 12; the base's three sizes in grey (part 7); then part 12's builds from attributes on. AR18's fix 4: the target's group on narrow screens, six kinds in a scrolling strip.
 - **Modulo's next:** the base and the map around it, no mist and less somber, two or three takes from the player's camera for research's pick; the far shard rechecked without the haze.
 
-**Faber (builder).** 2026-11-16, 17:08, AR19's Stage I installed; the screen is locked.
-- **Waiting on an unlocked screen** (Windows lock screen since 16:42, so Studio draws 0 frames a second): TR24's fixes 1 to 3 (their render cases and the phone review, for research's pass), and AR19's judging in motion. In both, everything that doesn't need frames passed.
+**Faber (builder).** 2026-11-16, 17:12, AR19's Stage I installed, the mist out of the base; the screen is locked.
+- **Waiting on an unlocked screen** (Windows lock screen since 16:42, so Studio draws 0 frames a second): TR24's fixes 1 to 3 (their render cases and the phone review, for research's pass), AR19's judging in motion, and the mist's and fix 9's captures. In both, everything that doesn't need frames passed.
 - **AR19, the Void Mill's Stage I, is in the game** (AR19, "Faber's install"): published under the group, BaseKit rebuilt. The wheel turns heavily by generation, the gauge's steps light by `Rules.Power.Gauge`, the demand's mark turns to its share, and unseen solids follow the manifest's collision.
 - **Done earlier today:** TR24's fixes 1 to 3 (6e05f52), the five contracts (4abc829), AR18's feasibility read (92184bb). Research picked way 1 for the belt and answered the chests' salvage question.
-- **Next, in research's order:** (c) the mist out of the base and the map around it, with fix 9's day-to-dusk turn under a sky-only cover; (d) TR24's fixes 5, 6, 8, 10, 11, 12; (e) the base's three sizes in grey; (f) part 12's builds.
+- **(c), the mist out of the base and the map around it, with fix 9's warming turn under a Haze-only cover, is built and logic-tested** (TR24, "Fix 9 and the mist"). Its look waits on the screen too. **Next:** (d) TR24's fixes 5, 6, 8, 10, 11, 12; then (e) the base's three sizes in grey; (f) part 12's builds.
 
 **Modulo (assets).** 2026-11-16, 16:55, on Opus 5.5.
 - **Delivered, for Faber's install: the Void Mill's Stage I as kit pieces** (AR19, "Stage I as kit pieces"; `build/handoff/Base`): Generator still, GeneratorWheel turning on its axle, GeneratorArc1 to 8 shown by the generation, GeneratorDemand turned about the axle by the demand. The upload check passed. The finish waits on the director's call 3, with research's note on the arm.

@@ -19,7 +19,8 @@ end
 
 -- The turn at `seconds`: (from, to, w, phase).
 local function at(seconds: number): (string, string, number, string)
-	return Night.Turn(seconds, CYCLE)
+	local from, to, w, phase = Night.Turn(seconds, CYCLE)
+	return from, to, w, phase
 end
 
 -- How far into night the turn stands, 0 to 1, on the way from dusk and back to day.
@@ -167,6 +168,48 @@ return {
 			t.Check("north of the gate: inside", Night.Inside(gateZ - 100, gateZ, from))
 			t.Check("a door's landing: inside", Night.Inside(gateZ + WorldConfig.Grey.Door.Landing, gateZ, from))
 			t.Check("the side street's far end: outside", not Night.Inside(gateZ + from + 1, gateZ, from))
+		end,
+	},
+	{
+		Name = "Night: the director's 16:50, no mist south of the Row in any phase, and TR24's fix 9, a crossing's light warming from its first second with the sky still swapped at its middle",
+		Run = function(t: any)
+			local clear = LightingConfig.Clear
+			t.Check("the clear air holds no mist: no density, no haze", clear.Atmosphere.Density == 0 and clear.Atmosphere.Haze == 0)
+			t.Check("its veil hides the sky alone: no more density than the Row's, and haze", clear.Veil.Density <= LightingConfig.Veil.Density and clear.Veil.Haze > 0)
+			for name, phase in LightingConfig.Phases :: any do
+				local out = Night.Clear(phase.Atmosphere, clear.Atmosphere :: any, 1)
+				t.Check(`{name}: clear south of the Row`, out.Density == 0 and out.Haze == 0 and out.Glare == 0, `{out.Density} {out.Haze} {out.Glare}`)
+				t.Check(`{name}: its colours kept, for the veil's tint`, out.Color == phase.Atmosphere.Color and out.Decay == phase.Atmosphere.Decay)
+				local kept = Night.Clear(phase.Atmosphere, clear.Atmosphere :: any, 0)
+				t.Check(`{name}: the Row keeps its haze`, kept.Density == phase.Atmosphere.Density and kept.Haze == phase.Atmosphere.Haze)
+				local half = Night.Clear(phase.Atmosphere, clear.Atmosphere :: any, 0.5)
+				t.Check(`{name}: half way up the side street, half of it`, near(half.Density, phase.Atmosphere.Density / 2))
+			end
+			t.Equal("a key the clear air doesn't hold stays out", Night.Clear({ Density = 0.3 }, { Density = 0, Haze = 0 }, 1).Haze, nil)
+			-- the warm light
+			local warm = LightingConfig.Warm
+			t.Check("the seed: past half by the middle, under all of it", warm > 0.5 and warm < 1, tostring(warm))
+			t.Equal("nothing before the crossing", Night.Warm(0, warm), 0)
+			t.Check("the first second of a minute's crossing already moves it", Night.Warm(1 / 60, warm) >= 0.02, string.format("%.4f", Night.Warm(1 / 60, warm)))
+			local _, _, second = at(1080 + 1)
+			t.Check("where the eased turn has barely moved", Night.Warm(1 / 60, warm) > 10 * second, string.format("%.5f", second))
+			t.Check("Warm of the way by the middle", near(Night.Warm(0.5, warm), warm), string.format("%.4f", Night.Warm(0.5, warm)))
+			t.Check("all of it at the end", near(Night.Warm(1, warm), 1))
+			local last, rising = -1, true
+			for step = 0, 20 do
+				local v = Night.Warm(step / 20, warm)
+				rising = rising and v >= last
+				last = v
+			end
+			t.Check("never back", rising)
+			t.Check("a straight line at a half", near(Night.Warm(0.3, 0.5), 0.3))
+			t.Check("no number: nothing", Night.Warm(0 / 0, warm) == 0)
+			local _, _, w, _, x = Night.Turn(1110, CYCLE)
+			t.Check("the turn gives its crossing's own share: half way to dusk", near(x, 0.5) and near(w, 0.5), `{x} {w}`)
+			local _, _, _, _, held = Night.Turn(500, CYCLE)
+			t.Equal("none while a look holds", held, 0)
+			local _, _, eased, _, early = Night.Turn(1080 + 6, CYCLE)
+			t.Check("6 s in: the share a tenth, the ease under it", near(early, 0.1) and eased < early, `{early} {eased}`)
 		end,
 	},
 }

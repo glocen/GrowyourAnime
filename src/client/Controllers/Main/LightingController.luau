@@ -8,8 +8,12 @@
 -- in its look at once. Where the player stands is the camera's focus: the avatar, or the lead while spectating. The
 -- camera itself is never touched.
 -- * A sky can't fade into another (handbook/visuals/lighting-and-mood.md, "Skies"): each blend swaps its sky at its
---   middle, under a peak of haze (Config.Lighting.Veil), and all the ground's skies are loaded before they're needed. A
---   phase with no faces wears Roblox's built-in sky (a new Sky's own), with its Bodies (the day's sun disc).
+--   middle, under a peak of haze (Config.Lighting.Veil; south of the Row, Clear.Veil's Haze alone), and all the ground's
+--   skies are loaded before they're needed. A phase with no faces wears Roblox's built-in sky (a new Sky's own), with its
+--   Bodies (the day's sun disc). A crossing's light warms from its first second, Config.Lighting.Warm of the way there
+--   by the swap (TR24's fix 9).
+-- * No mist over the base and the map round it (the director, 2026-11-16, 16:50): south of the Row's From line the
+--   phase's Atmosphere wears Config.Lighting.Clear's, eased over Enter seconds on the walk up the side street.
 -- * The sun stands where the kit's frames have it (Config.Lighting.Toward) at a day clock, solved once for this engine's
 --   sun (Lighting:GetSunDirection()), so the painted moon and the shadows agree.
 -- * The kit's pieces (tagged Kit.Tag by WorldService) glow by Config.Lighting.Glow, the houses less, the floors by the
@@ -19,8 +23,9 @@
 -- * The player's lead carries the plan's tenth light at its head (Config.Lighting.Lead), turned up with the ground's look
 --   and the phase's Lights share, and off out of it.
 -- Every number is read from Config each frame, so a Tune shows at once (a new Toward is solved again).
---   LightingController.Look()   what's applied: the look, how far into the ground (Area), the turn (From, To, Turn: 0 at
---                               From to 1 at To, Phase), the shares (Glow, Lights) and the haze's peak (Veil), for tests
+--   LightingController.Look()   what's applied: the look, how far into the ground (Area) and into the Row (Row, 0 out in
+--                               the clear), the turn (From, To, Turn: 0 at From to 1 at To, Phase; Warm, how far its
+--                               light has come), the shares (Glow, Lights) and the haze's peak (Veil), for tests
 --   LightingController.Sun()    the solved sun: { Clock, Latitude, Off } (Off: degrees from Toward), for tests
 --   LightingController.LeadLight()  the lead's light, or nil with no lead, for tests
 
@@ -55,9 +60,10 @@ local shownSky = "Base"
 local sun = { Clock = 14, Latitude = 0, Off = 180 }
 local solvedFor: Vector3? = nil
 local area = 0 -- 0 out of the ground, 1 in it, eased by the walk
+local row = 0 -- 0 south of the Row's line (the base, the Strip, the crossing: no mist), 1 in the Row, eased by the walk
 local lastFocus: Vector3? = nil
 local applied: any = nil -- the last look applied, for tests and to set only what changed
-local current = { Area = 0, From = "Day", To = "Day", Turn = 0, Phase = "Day", Glow = 1, Lights = 1, Veil = 0 }
+local current = { Area = 0, Row = 0, From = "Day", To = "Day", Turn = 0, Warm = 0, Phase = "Day", Glow = 1, Lights = 1, Veil = 0 }
 local SHARE_STEP = 0.02 -- the glow's and the lights' shares move in steps: a crossing re-dresses the pieces ~30 times, not each frame
 local glowShare, lightShare = 1, 1
 local floors: { [BasePart]: true } = {}
@@ -327,31 +333,43 @@ local function step(dt: number)
 	local camera = workspace.CurrentCamera
 	local focus = if camera then camera.Focus.Position else nil
 	local z = gateZ()
-	local inside = LightingConfig.Everywhere or (focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From))
-	local target = if inside then 1 else 0
+	local inRow = focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From)
+	local target = if LightingConfig.Everywhere or inRow then 1 else 0
 	local jumped = focus == nil or lastFocus == nil or (focus - (lastFocus :: Vector3)).Magnitude > JUMP
 	lastFocus = focus
-	if jumped or LightingConfig.Enter <= 0 then
-		area = target
-	else
-		area = if target > area then math.min(target, area + dt / LightingConfig.Enter) else math.max(target, area - dt / LightingConfig.Enter)
+	local function toward(now: number, want: number): number
+		if jumped or LightingConfig.Enter <= 0 then
+			return want
+		end
+		return if want > now then math.min(want, now + dt / LightingConfig.Enter) else math.max(want, now - dt / LightingConfig.Enter)
 	end
+	area = toward(area, target)
+	row = toward(row, if inRow then 1 else 0)
 	local a = ease(area)
+	local mist = ease(row)
 	-- The turn, on the server's clock.
 	local from = workspace:GetAttribute(Night.Attribute)
 	local seconds = workspace:GetServerTimeNow() - (if type(from) == "number" then from else 0)
-	local fromName, toName, turn, phase = Night.Turn(seconds, LightingConfig.Cycle :: any)
+	local fromName, toName, turn, phase, into = Night.Turn(seconds, LightingConfig.Cycle :: any)
 	local phases = LightingConfig.Phases :: any
 	local at = { Clock = sun.Clock, Latitude = sun.Latitude }
-	local ground = Night.Mix(Night.Ground(phases[fromName], fromName, at), Night.Ground(phases[toName], toName, at), turn)
+	-- The light, the haze and the glow warm from the crossing's first second (TR24's fix 9); the sky still swaps at its
+	-- middle, under the veil's peak.
+	local warm = if fromName == toName then 0 else Night.Warm(into, LightingConfig.Warm)
+	local ground = Night.Mix(Night.Ground(phases[fromName], fromName, at), Night.Ground(phases[toName], toName, at), warm)
+	ground.Sky = if turn < 0.5 then fromName else toName
+	-- No mist south of the Row (the director's 16:50): Clear's over the phase's, as far as the walk has come out of it.
+	local clear = LightingConfig.Clear
+	ground.Atmosphere = Night.Clear(ground.Atmosphere, clear.Atmosphere :: any, 1 - mist)
 	local look = Night.Mix(base, ground, a)
 	glowShare = math.floor(ground.Glow / SHARE_STEP + 0.5) * SHARE_STEP
 	lightShare = math.floor(ground.Lights / SHARE_STEP + 0.5) * SHARE_STEP
-	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own.
+	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own. In the Row its haze and density;
+	-- south of it Haze alone, which veils the sky and leaves the yard clear.
 	local width = LightingConfig.Veil.Width
 	local veil = math.max(Night.Veil(turn, width) * a, Night.Veil(a, width))
-	look.Atmosphere.Density += LightingConfig.Veil.Density * veil
-	look.Atmosphere.Haze += LightingConfig.Veil.Haze * veil
+	look.Atmosphere.Density += (clear.Veil.Density + (LightingConfig.Veil.Density - clear.Veil.Density) * mist) * veil
+	look.Atmosphere.Haze += (clear.Veil.Haze + (LightingConfig.Veil.Haze - clear.Veil.Haze) * mist) * veil
 	-- Applied, only what changed.
 	setKeys(Lighting, look.Lighting, applied and applied.Lighting)
 	setKeys(atmosphere, look.Atmosphere, applied and applied.Atmosphere)
@@ -360,7 +378,7 @@ local function step(dt: number)
 	dressAll(ground.Floor)
 	lightLead(a * lightShare)
 	applied = look
-	current = { Area = area, From = fromName, To = toName, Turn = turn, Phase = phase, Glow = glowShare, Lights = lightShare, Veil = veil }
+	current = { Area = area, Row = row, From = fromName, To = toName, Turn = turn, Warm = warm, Phase = phase, Glow = glowShare, Lights = lightShare, Veil = veil }
 end
 
 function LightingController.Start()

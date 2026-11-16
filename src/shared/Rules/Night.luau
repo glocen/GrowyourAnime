@@ -8,8 +8,11 @@
 -- and the turn's two looks by the clock. No Roblox API beyond its data types: it runs with Studio closed.
 --   Night.Length(cycle)                 seconds in one turn
 --   Night.Phases(cycle)                 the turn's phases in order: each look, then "To" and the next one's name
---   Night.Turn(seconds, cycle)          (from, to, w, phase): the two looks the turn stands between, w 0 at `from` to 1
---                                       at `to`, eased through a crossing (from == to, w 0, while a look holds)
+--   Night.Turn(seconds, cycle)          (from, to, w, phase, x): the two looks the turn stands between, w 0 at `from` to
+--                                       1 at `to`, eased through a crossing (from == to, w 0, while a look holds); x the
+--                                       crossing's own share, not eased (0 while a look holds)
+--   Night.Warm(x, warm)                 0 to 1: how far a crossing's light has come at its share x, from its first second,
+--                                       `warm` of the way by its middle, easing into its end (TR24's fix 9)
 --   Night.Left(seconds, cycle)          seconds until the phase changes
 --   Night.From(phase, now, cycle)       the epoch that puts `now` at the phase's start
 --   Night.Veil(w, width)                0 to 1: the haze's peak over a blend's middle, where a sky is swapped (a sky can't
@@ -17,6 +20,8 @@
 --                                       share of the blend it covers
 --   Night.Mix(a, b, w)                  a look between two, key by key: numbers, colours and vectors blend; anything else
 --                                       is a's below the middle and b's from it (which sky)
+--   Night.Clear(atmosphere, clear, w)   an Atmosphere's keys with `clear`'s over them by w, 0 none to 1 all (no mist
+--                                       outside the Row, the director's 16:50)
 --   Night.Ground(phase, sky, sun)       a phase of Config.Lighting as a look, its sun at `sun` (clock, latitude)
 --   Night.Inside(z, gateZ, from)        whether a point `z` stands in the ground: north of its festival gate, or within
 --                                       `from` studs south of it
@@ -79,13 +84,21 @@ local function where(seconds: number, cycle: Cycle): (Span, number)
 	return all[1], 0
 end
 
-function Night.Turn(seconds: number, cycle: Cycle): (string, string, number, string)
+function Night.Turn(seconds: number, cycle: Cycle): (string, string, number, string, number)
 	local span, into = where(seconds, cycle)
 	if span.From == span.To then
-		return span.From, span.To, 0, span.Phase
+		return span.From, span.To, 0, span.Phase, 0
 	end
-	local w = if span.Length > 0 then ease(into / span.Length) else 1
-	return span.From, span.To, w, span.Phase
+	local x = if span.Length > 0 then math.clamp(into / span.Length, 0, 1) else 1
+	return span.From, span.To, ease(x), span.Phase, x
+end
+
+function Night.Warm(x: number, warm: number): number
+	local t = math.clamp(if x == x then x else 0, 0, 1)
+	local share = math.clamp(if warm == warm then warm else 0.5, 1e-3, 1 - 1e-3)
+	-- 1 - (1 - t)^p, its p putting `share` at the middle: p 1 is a straight line (share 0.5), p 2 an ease-out (0.75)
+	local p = math.log(1 - share) / math.log(0.5)
+	return 1 - (1 - t) ^ p
 end
 
 function Night.Left(seconds: number, cycle: Cycle): number
@@ -138,6 +151,16 @@ end
 -- fill, the haze and the bloom; the sky by its name; the sun where the frames have it, at a day clock (the handbook's
 -- pseudo-night). Apart from Lighting: Floor, the floors' glow; Glow, the share of the kit's glow; Lights, the share of the
 -- street's lights and the lead's (by day both dim, and light up at dusk), 1 when a phase doesn't say.
+function Night.Clear(atmosphere: { [string]: any }, clear: { [string]: any }, w: number): { [string]: any }
+	local out = table.clone(atmosphere)
+	for key, value in clear do
+		if out[key] ~= nil then
+			out[key] = Night.Mix(out[key], value, math.clamp(w, 0, 1))
+		end
+	end
+	return out
+end
+
 function Night.Ground(phase: any, sky: string, sun: Sun): any
 	return {
 		Lighting = {

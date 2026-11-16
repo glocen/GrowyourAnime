@@ -34,8 +34,23 @@ return {
 	From = 24,
 	Enter = 1.5,
 	-- A sky is swapped at a blend's middle under a peak of haze (handbook/visuals/lighting-and-mood.md, "Skies"): Width,
-	-- the share of the blend the peak covers; Density and Haze, added to the Atmosphere's at its top.
+	-- the share of the blend the peak covers; Density and Haze, added to the Atmosphere's at its top, in the Row.
 	Veil = { Width = 0.3, Density = 0.12, Haze = 0.6 },
+	-- No mist over the base and the map round it, the Strip and the crossing, in any phase (the director, 2026-11-16,
+	-- 16:50: "imo we should remove all that in base and around it it way to much"; docs/decisions.md). South of the Row,
+	-- from its From line, each phase's Atmosphere wears Clear's over its own; the Row keeps its haze, and a walk up the
+	-- side street turns one into the other over Enter seconds. There a sky's swap hides under a peak of Haze alone, the
+	-- coloured layer over the horizon, which veils the sky and leaves the yard clear (Density hides the ground, not the
+	-- sky: the handbook's "Atmosphere"): Veil's Density and Haze over Clear's at its top (the builder's seeds, tuned by
+	-- playing).
+	Clear = {
+		Atmosphere = { Density = 0, Haze = 0, Glare = 0 },
+		Veil = { Density = 0, Haze = 2.5 },
+	},
+	-- A crossing's light warms from its first second (TR24's fix 9, TR23's fix 1: "the light starts warming from the
+	-- blend's first second, so the swap lands on a sky already near it"): Warm, the share of the way the light, the haze
+	-- and the glow have come by the crossing's middle, where the sky swaps; easing into its end (the builder's seed).
+	Warm = 0.75,
 	-- The sun where the frames have it: the unit vector toward it, the street running to -Z (lighting.json, "sun"), the
 	-- same in every phase so no shadow swings as the turn goes round. LightingController finds the clock and the latitude that
 	-- stand Roblox's sun there, at a day clock: at a night clock Roblox darkens a painted sky (the handbook's pseudo-night).

@@ -8355,6 +8355,14 @@ From the director's word to Faber by 21:32 (`docs/decisions.md`, the row on A's 
 - **Colour:** it's A's faint tint, checked in the build from the player's camera. No colour sheet.
 - **Then** the content check and Faber's upload, without a second sheet for research.
 
+### The director's word on the grey (research, 2026-11-16, 21:57)
+
+The director, over the grey: "im not happy with the shoulder and helmet and boots and chest need to looks more detailed "epic" and the shoulder only show 1 shoulder". Asked whether the rest follow: "All of them" (`docs/decisions.md`). It replaces research's verdict above.
+- **Every mark is drawn from its slot's Epic piece in AR6,** the hands' pairs included. Each keeps its detail and ornament: the crest, the plates, the trim. It stays in one faint tone and inset, and a worn item, lit in its rarity, still outshines it.
+- **The shoulder's mark is one pauldron,** not a pair.
+- **The two fixes still hold** on the Epic forms: the bracer stood up, and the cloak's hood and hem.
+- **Shown as before:** the kinds at 44 and 88 points, and A's doll at the smallest phone, empty beside filled and all empty. One verdict from research, which the director sees.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

@@ -6,6 +6,8 @@
 -- price, the gain, and why it can't be bought when it can't. No Roblox API: it runs with Studio closed.
 --   BaseLevels.Next(baseLevel, credits)                     the base's next level, as an offer
 --   BaseLevels.NextMachine(machine, level, baseLevel, credits)  a machine's next level ("Breaker" or "Bay"), as an offer
+--   BaseLevels.Stage(level)                                 a machine's stage at its level: 1, 2 or 3
+--   BaseLevels.GeneratorStage(baseLevel)                    the generator's: a machine's at the base's ceiling
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseConfig = require(Shared.Config.Base)
@@ -49,6 +51,23 @@ end
 
 function BaseLevels.Battery(level: number): number
 	return at(BaseConfig.Levels.Battery, level)
+end
+
+-- A machine's stage at its `level` (Config.Base.Machines.Stages): 1, Primitive; 2, Developed; 3, Advanced.
+function BaseLevels.Stage(level: number): number
+	local stage = 1
+	for index, from in BaseConfig.Machines.Stages do
+		if level >= from then
+			stage = index
+		end
+	end
+	return stage
+end
+
+-- The generator's stage at the base's `level`: it has no level of its own, so it stands as a machine at the base's
+-- ceiling would, and the plant's heart changes when the base levels up (docs/design.md; AR19).
+function BaseLevels.GeneratorStage(baseLevel: number): number
+	return BaseLevels.Stage(BaseLevels.Ceiling(baseLevel))
 end
 
 -- Cells the battery's bank shows at the base's `level` (AR15, section 4).

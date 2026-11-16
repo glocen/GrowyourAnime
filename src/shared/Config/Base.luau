@@ -50,6 +50,10 @@ return {
 		Cells = { 2, 4, 8 }, -- cells its bank shows at each base level, lit one after another as it charges (Modulo's count, AR15, section 4)
 	},
 	Machines = {
+		-- The first machine level of each stage: I, Primitive; II, Developed; III, Advanced (research's thresholds,
+		-- docs/design.md, "Three stages for every machine"). The generator has no level: it takes a machine's stage at
+		-- its base's ceiling (Rules.BaseLevels.GeneratorStage).
+		Stages = { 1, 6, 15 },
 		-- Credits to reach each machine level, the same for every machine with a level (the Training machine has none).
 		Price = {
 			[2] = 170, [3] = 660, [4] = 960, [5] = 1200, [6] = 1500, [7] = 2000, [8] = 2400, [9] = 2900, [10] = 3100,

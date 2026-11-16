@@ -98,6 +98,21 @@ return {
 		end,
 	},
 	{
+		Name = "Stages: a machine's I to level 5, II from 6, III from 15; the generator's the base's ceiling's, II at base level 2 and III at 3",
+		Run = function(t: any)
+			for level, want in { [1] = 1, [5] = 1, [6] = 2, [14] = 2, [15] = 3, [30] = 3 } do
+				t.Equal(`machine level {level}: stage {want}`, BaseLevels.Stage(level), want)
+			end
+			t.Equal("below level 1 is still stage I", BaseLevels.Stage(0), 1)
+			for level, want in { 1, 2, 3 } do
+				t.Equal(`base level {level}: the generator's stage {want}`, BaseLevels.GeneratorStage(level), want)
+				t.Equal(`base level {level}: as a machine at the ceiling`, BaseLevels.GeneratorStage(level), BaseLevels.Stage(BaseLevels.Ceiling(level)))
+			end
+			t.Equal("past the cap, the last stage", BaseLevels.GeneratorStage(BaseLevels.Top() + 1), 3)
+			t.Equal("one stage a threshold", #BaseConfig.Machines.Stages, 3)
+		end,
+	},
+	{
 		Name = "Battery: its bank shows 2, 4 and 8 cells at the base's levels, lit one after another as it charges",
 		Run = function(t: any)
 			for level, want in { 2, 4, 8 } do

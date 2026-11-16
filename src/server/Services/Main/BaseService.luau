@@ -80,8 +80,10 @@ end
 
 -- A plot's machines as its owner's base stands (AR15; AR16), for every client, so a passer-by sees the plant work:
 -- * a chamber that breaks a shard glows full with the shard between its points, an empty one low with none ("Working");
--- * the generator's wheel turns by the plant's generation ("Generation"), its gauge's steps light by it, and the demand's
---   mark stands at the demand's share ("Share"), on one scale (Rules.Power.Gauge; AR19);
+-- * the generator stands at its owner's stage (Rules.BaseLevels.GeneratorStage: a machine's at the base's ceiling; AR19),
+--   the plant's "Stage", the other two stages hidden and their solids open; every stage's wheel turns by the plant's
+--   generation ("Generation"), its gauge's steps light by it, and the demand's mark stands at the demand's share
+--   ("Share"), on one scale (Rules.Power.Gauge), so a stage shown is already where the plant is;
 -- * each bay the base has opened stands awake and the rest asleep, where a level will wake them;
 -- * the battery's bank shows the cells its base's level holds, each lit by its share of the charge ("Lit",
 --   Rules.Breaker.Cells);
@@ -93,18 +95,31 @@ local function showPlot(number: number, data: Profile.Data?)
 	local generation = if rates then rates.Generation else 0
 	local gauge = Power.Gauge(generation, if rates then rates.Demand else 0, WorldConfig.Grey.Generator.Gauge)
 	if plant then
-		local wheel = plant:FindFirstChild("Wheel")
-		if wheel then
-			wheel:SetAttribute("Generation", generation)
-		end
-		local mark = plant:FindFirstChild("Demand")
-		if mark then
-			mark:SetAttribute("Share", gauge.Demand)
-		end
-		for _, step in plant:GetChildren() do
-			local index = step:GetAttribute("Step")
-			if type(index) == "number" and step:IsA("BasePart") then
-				step.Transparency = if index <= gauge.Lit then 0 else 1
+		local stage = BaseLevels.GeneratorStage(if data then data.Base.Level else 1)
+		plant:SetAttribute("Stage", stage)
+		for _, group in plant:GetChildren() do
+			local at = group:GetAttribute("Stage")
+			if not group:IsA("Model") or type(at) ~= "number" then
+				continue
+			end
+			local shown = at == stage
+			for _, part in group:GetChildren() do
+				if not part:IsA("BasePart") then
+					continue
+				end
+				local index = part:GetAttribute("Step")
+				if type(index) == "number" then
+					part.Transparency = if shown and index <= gauge.Lit then 0 else 1 -- shown or hidden, never dimmed
+				elseif part:GetAttribute("Unseen") == true then
+					part.CanCollide, part.CanQuery = shown, shown -- the mill's solids: never seen, solid while shown
+				else
+					WorldService.Stand(part, shown)
+				end
+				if part.Name == "Wheel" then
+					part:SetAttribute("Generation", generation)
+				elseif part.Name == "Demand" then
+					part:SetAttribute("Share", gauge.Demand)
+				end
 			end
 		end
 	end
@@ -260,6 +275,19 @@ local function registerDebug()
 				draft.Base.Power.Auto = true
 			end
 			return { Ok = true, Open = open }
+		end)
+	end)
+	-- Studio only. The base's level set as it is, nothing else touched, so a case shows a stage and puts the level back
+	-- (the generator's stages, AR19). Bought levels go through Act("UpgradeBase").
+	DebugService.Register("BaseLevel", function(who: any, level: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(level) ~= "number" or level ~= math.floor(level) or level < 1 or level > BaseLevels.Top() then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "BaseLevel", function(draft: Profile.Data): { [string]: any }
+			local was = draft.Base.Level
+			draft.Base.Level = level
+			return { Ok = true, Was = was, Level = level }
 		end)
 	end)
 	DebugService.Register("BaseGive", function(who: any, shard: any, count: any): any

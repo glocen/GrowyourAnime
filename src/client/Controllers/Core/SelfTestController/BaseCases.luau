@@ -148,12 +148,15 @@ function BaseCases.Cases(given: Given): { any }
 					end), wrong(full(share)))
 				end
 				t.Server("BaseBattery", was)
-				-- The Void Mill (AR19): its wheel carries the plant's generation and turns by it, its gauge's first steps
-				-- shown as the generation lights them and the rest hidden, and the demand's mark turned about the axle to
-				-- the demand's share, on one scale (Rules.Power.Gauge).
+				-- The Void Mill (AR19), at the stage it stands at: its wheel carries the plant's generation and turns by it,
+				-- its gauge's first steps shown as the generation lights them and the rest hidden, and the demand's mark
+				-- turned about the axle to the demand's share at its stage's degrees, on one scale (Rules.Power.Gauge).
 				local plant = Markers.Find("Generator", { Plot = plot })
-				local wheel = if plant then plant:FindFirstChild("Wheel") else nil
-				local mark = if plant then plant:FindFirstChild("Demand") else nil
+				local function standing(): Instance?
+					return if plant then BaseController.MillStage(plant) else nil
+				end
+				local wheel = if standing() then (standing() :: Instance):FindFirstChild("Wheel") else nil
+				local mark = if standing() then (standing() :: Instance):FindFirstChild("Demand") else nil
 				local mill = WorldConfig.Grey.Generator
 				local function gauge(): Power.GaugeRead?
 					local now = ProfileController.Get()
@@ -165,7 +168,7 @@ function BaseCases.Cases(given: Given): { any }
 				end
 				local function stepsWrong(): string?
 					local want = gauge()
-					local found = plant
+					local found = standing()
 					if want == nil or found == nil then
 						return "no save or no mill"
 					end
@@ -197,7 +200,9 @@ function BaseCases.Cases(given: Given): { any }
 					t.Wait(mill.Gauge.Glide * 2)
 					local share = mark:GetAttribute("Share")
 					local angle = BaseController.TurnedOf(mark)
-					t.Near("and turned there about the axle, once glided", angle or -1, math.rad(mill.Gauge.Turn) * (if type(share) == "number" then share else 0), math.rad(1))
+					local degrees = mark:GetAttribute("Turn")
+					t.Check("the mark has its stage's degrees", type(degrees) == "number")
+					t.Near("and turned there about the axle, once glided", angle or -1, math.rad(if type(degrees) == "number" then degrees else mill.Gauge.Turn) * (if type(share) == "number" then share else 0), math.rad(1))
 				end
 				-- How far a turning piece turns in `seconds`, in radians, the way it turns.
 				local function turned(part: Instance?, seconds: number): number?
@@ -225,6 +230,52 @@ function BaseCases.Cases(given: Given): { any }
 						t.Check("at no generation, the wheel stands still", before:FuzzyEq(wheel.CFrame, 1e-4))
 					end
 				end
+				-- The mill's stages (AR19): a machine's at the base's ceiling, II at base level 2 and III at 3, each laid
+				-- from the swap's table, the other two hidden and their solids open; a stage's pinions driven from its
+				-- wheel's angle, about their own axles. The level is the case's own, put back.
+				local levelWas = (ProfileController.Get() :: any).Base.Level
+				for level = 1, BaseLevels.Top() do
+					t.Server("BaseLevel", level)
+					local want = BaseLevels.GeneratorStage(level)
+					t.Check(`base level {level}: the mill stands at stage {want}`, waitFor(t, ANSWER, function(): boolean
+						return plant ~= nil and plant:GetAttribute("Stage") == want
+					end), tostring(plant and plant:GetAttribute("Stage")))
+					local wrongStage: string? = nil
+					for _, group in (if plant then plant:GetChildren() else {}) do
+						local at = group:GetAttribute("Stage")
+						if type(at) ~= "number" then
+							continue
+						end
+						for _, part in group:GetChildren() do
+							if part:IsA("BasePart") and part:GetAttribute("Step") == nil then
+								local visible = part:GetAttribute("Unseen") ~= true
+								local ok = if at == want
+									then (not visible or part.Transparency == 0) and (visible or part.CanCollide)
+									else part.Transparency == 1 and not part.CanCollide
+								if not ok then
+									wrongStage = `stage {at}'s {part.Name} at {part.Transparency}, solid {part.CanCollide}`
+								end
+							end
+						end
+					end
+					t.Check(`base level {level}: its pieces shown and solid, the others' hidden and open`, wrongStage == nil, wrongStage)
+					local shown = standing()
+					local turner = if shown then shown:FindFirstChild("Wheel") else nil
+					local pinions = 0
+					for _, part in (if shown then shown:GetChildren() else {}) do
+						local rate = part:GetAttribute("Rate")
+						if part:IsA("BasePart") and type(rate) == "number" and rate ~= 1 and turner and turner:IsA("BasePart") then
+							pinions += 1
+							local before = part.Position
+							t.Wait(0.3)
+							local a, w = BaseController.TurnedOf(part), BaseController.TurnedOf(turner)
+							t.Check(`base level {level}: {part.Name} driven from its wheel at {rate}`, a ~= nil and w ~= nil and math.abs(a - w * rate) < 1e-6, `{a}, {w}`)
+							t.Check(`base level {level}: {part.Name} about its own axle`, before:FuzzyEq(part.Position, 1e-3))
+						end
+					end
+					t.Equal(`base level {level}: its pinions`, pinions, want - 1)
+				end
+				t.Server("BaseLevel", levelWas)
 				-- The Festival Door's way wears the festival seen through it, a print on the kit's atlas, tinted white so it keeps
 				-- its colours (AR15, section 6).
 				local door = Markers.Find("FestivalDoor", { Plot = plot })

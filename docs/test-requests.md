@@ -2591,3 +2591,52 @@ Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/d
 **Notes for the finish and research.**
 - **The rival has no passive** (`passiveOf` is the lead's side only).
 - **The heal cap is a guard today.** Lifesteal isn't wired (`docs/balance.md`).
+
+## TR30. The generator's stages (Faber, on AR19)
+
+Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/design.md`, "The base", "Three stages for every machine"), on the director's yes of 2026-11-16, 16:50. Research's answer is (a): the generator takes the stage of a machine at the base's ceiling. Modulo's pieces and swap table are AR19, "Stages II and III as kit pieces" (e516da7).
+
+**Scope, set at the start.**
+- **The block:**
+  - The stage rule in `Rules.BaseLevels` and `Config.Base`.
+  - The 23 meshes uploaded and the base kit rebuilt.
+  - The mill laid once a stage from the swap's table, the owner's stage shown, and each stage's motion (the wheel, the pinions from it, the gauge, the mark at its stage's degrees).
+  - Studio's `BaseLevel`, and the cases.
+- **What waits:**
+  - The stage's moment: the change landing as a moment when the base levels up (design.md). Today it's an instant swap.
+  - The motion's check in the game from the player's camera (the content check's condition).
+  - The other machines' stages: the Breaker, the bays, the battery, then the Training machine.
+
+**The build, done by 20:32 by the clock** (it came after TR29's commit at 20:25 and AR19's at 20:00).
+- **The rule, pure:**
+  - `Config.Base.Machines.Stages = { 1, 6, 15 }`, the first machine level of each stage.
+  - `BaseLevels.Stage(level)` gives a machine's stage. `BaseLevels.GeneratorStage(baseLevel)` is `Stage(Ceiling(baseLevel))`: I at base level 1, II at 2, III at 3.
+- **The kit:**
+  - `kit_take.py` and `stage_kit.py` took and staged it. `KitAssembly.Publish` uploaded the 23 new meshes under the group, with their ids in `tools/studio/Kits/Base.json` and `docs/asset-log.md`.
+  - `KitAssembly.Build` rebuilt `src/storage/BaseKit.rbxm`: 65 pieces, 51,629 bytes, adler32 matching Studio's. The one before is in `build/scratch/faber/`.
+- **`WorldService`:**
+  - Each plot's mill holds a model per stage ("Stage 1" to "Stage 3"), laid from `plan.machines.generatorStages`. Stage III stands Generator2Wheel and Generator2Pinion by name, as the table says.
+  - Each piece carries its row's `Moves`, `Rate` (the wheel's 1, a pinion's -2.4) and the mark's `Turn` (117.88 for I, 114.54 for II and III).
+  - Each stage's solids are the manifest's collision: II and III's sill sits 5.1 toward the gate, with the legs' heads moved. They're marked `Unseen`.
+  - II and III are laid hidden and open.
+- **`BaseService`:** it stands the owner's stage (the plant's `Stage`), and hides the other two and opens their solids. It feeds every stage's wheel, steps and mark, so a stage is already where the plant is when it's shown. A plot with no owner stands at Stage I.
+- **`BaseController`:**
+  - What turns is read from each piece's `Moves`.
+  - A pinion is driven from its stage's wheel's angle, `CFrame.Angles(0, 0, -wheel × Rate)`, in a second pass the same frame. The wheel's angle wraps at five turns, where the pinion's 12 come round whole, so the teeth never jump.
+  - The mark turns to its stage's degrees. A hidden piece keeps its angle and is moved once shown.
+  - `MillStage(plant)` gives the shown stage's model, for the cases.
+- **Studio's `BaseLevel`** sets the save's base level alone, so a case shows a stage and puts the level back.
+
+**The checks (20:32).**
+- **Type check:** 0 new, 11 known.
+- **Logic, offline and in Studio:** 23,227 passed, 0 failed. It covers the stages at machine levels 1, 5, 6, 14, 15 and 30, and the generator's at base levels 1 to 3.
+- **World report:** empty.
+- **In a playtest, from the server, at base levels 2, 3 and back to 1:**
+  - The plant's stage follows the level.
+  - The shown stage has its body, wheel, pinions and mark seen, and its six solids solid. The other stages' parts are hidden and open.
+  - The lit steps follow the generation.
+- **On the client:** every stage's turning pieces arrive with their `Moves`, `Rate` and `Turn`.
+- **NOT VERIFIED (the PC is locked, 0 frames a second):**
+  - The turning in motion.
+  - The new self-test checks in BaseCases' mill case: each level's stage shown and solid, the others hidden and open, a pinion driven from its wheel about its own axle, and the stage's degrees. The mill's older checks there and in `Cases.luau` read the shown stage through `MillStage`.
+  - The whole suite, and the player-camera check.

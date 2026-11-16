@@ -6579,7 +6579,7 @@ local cases = {
 				return now ~= nil and (now :: any).Base.Chambers[1].Work == nil and wrong() == nil
 			end), wrong())
 			-- The mill's wheel (AR19): its owner's generation, and turning about its axle while there is some.
-			local wheel = if plant then plant:FindFirstChild("Wheel") else nil
+			local wheel = if plant then (BaseController.MillStage(plant) or plant):FindFirstChild("Wheel") else nil
 			local kw = if wheel then wheel:GetAttribute("Generation") else nil
 			t.Check("the generator's wheel carries the plant's generation", type(kw) == "number" and math.abs(kw - Power.Generation(ProfileController.Get() :: any)) < 1e-6, tostring(kw))
 			if wheel and wheel:IsA("BasePart") and type(kw) == "number" then

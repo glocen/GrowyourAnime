@@ -890,64 +890,101 @@ local function revealBridge()
 	bridge.Parent = ReplicatedStorage
 end
 
--- The base's turning pieces on every plot, each from the attribute its server sets (BaseService):
--- * the generator's wheel about its axle, the line to the gate, faster as its owner's plant generates more, still at
---   none (AR19, the Void Mill; `Generator.Wheel`, in turns a second): anticlockwise from the gate, so the buckets rise
---   on the gate's right through the gauge's lit steps;
--- * the demand's mark about the same axle, to the demand's share of the gauge (`Generator.Gauge.Turn` at a share of 1),
---   gliding there over `Gauge.Glide` seconds (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre
---   away from the part;
+-- The base's turning pieces on every plot, each from the attribute its server sets (BaseService), the generator's laid
+-- once a stage by the swap's table (AR19; WorldService), marked by its row's `moves`:
+-- * a stage's wheel ("turns", Rate 1) about its axle, the line to the gate, faster as its owner's plant generates more,
+--   still at none (`Generator.Wheel`, in turns a second): anticlockwise from the gate, so the buckets rise on the gate's
+--   right through the gauge's lit steps;
+-- * a stage's pinions ("turns", Rate -2.4) about their own axles, driven from their stage's wheel's angle, never their
+--   own clock, so the teeth stay meshed: CFrame.Angles(0, 0, -wheel * Rate). The wheel's angle comes round after five
+--   turns (WRAP), where a pinion's 2.4 a turn does too (12 of its own);
+-- * the demand's mark ("demand") about the same axle, to the demand's share of the gauge at its stage's degrees
+--   (`Turn`, the row's; `Generator.Gauge.Turn` without one), gliding there over `Gauge.Glide` seconds
+--   (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre away from the part;
 -- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5).
-type Turning = { Rest: CFrame, Angle: number, Axis: "Z" | "Y", Pivot: CFrame }
+-- A hidden stage's pieces keep their angle, and are moved once they're shown.
+type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y", Pivot: CFrame, Rate: number, Follows: boolean }
 local turning: { [BasePart]: Turning } = {}
-local TURNS = { GeneratorWheel = "Z", GeneratorDemand = "Z", TrainingCrown = "Y" }
+local WRAP = 5 * 2 * math.pi
 
 local function watchTurning(item: Instance)
-	local kind = item:GetAttribute("Piece")
-	local axis = TURNS[kind]
-	if item:IsA("BasePart") and axis then
-		-- The part stands at its piece's origin times the manifest's centre; it turns about the origin.
-		local piece = BaseManifest.pieces[kind]
-		local c = if piece then piece.centre else { 0, 0, 0 }
-		turning[item] = { Rest = item.CFrame, Angle = 0, Axis = axis, Pivot = CFrame.new(c[1], c[2], c[3]) }
+	if not item:IsA("BasePart") then
+		return
 	end
+	local kind = item:GetAttribute("Piece")
+	local moves = item:GetAttribute("Moves")
+	local axis: ("Z" | "Y")? = if kind == "TrainingCrown" then "Y" elseif moves == "turns" or moves == "demand" then "Z" else nil
+	if axis == nil then
+		return
+	end
+	-- The part stands at its piece's origin times the manifest's centre; it turns about the origin.
+	local piece = if type(kind) == "string" then BaseManifest.pieces[kind] else nil
+	local c = if piece then piece.centre else { 0, 0, 0 }
+	local rate = item:GetAttribute("Rate")
+	local r = if type(rate) == "number" then rate else 1
+	turning[item] = {
+		Rest = item.CFrame,
+		Angle = 0,
+		Drawn = 0,
+		Axis = axis,
+		Pivot = CFrame.new(c[1], c[2], c[3]),
+		Rate = r,
+		Follows = moves == "turns" and r ~= 1,
+	}
 end
 
--- The angle a turning piece goes to this frame, in radians, growing the way it turns.
+-- The angle a turning piece goes to this frame, in radians, growing the way it turns; a pinion's from its wheel's.
 local function angleOf(part: BasePart, turn: Turning, dt: number): number
 	local generator, training = WorldConfig.Grey.Generator, WorldConfig.Grey.Training
-	local piece = part:GetAttribute("Piece")
-	if piece == "GeneratorDemand" then
+	if turn.Follows then
+		local wheel = if part.Parent then part.Parent:FindFirstChild("Wheel") else nil
+		local driver = if wheel and wheel:IsA("BasePart") then turning[wheel] else nil
+		return if driver then driver.Angle * turn.Rate else turn.Angle
+	end
+	if part:GetAttribute("Moves") == "demand" then
 		local share = part:GetAttribute("Share")
-		local goal = math.rad(generator.Gauge.Turn) * math.clamp(if type(share) == "number" then share else 0, 0, 1)
+		local degrees = part:GetAttribute("Turn")
+		local goal = math.rad(if type(degrees) == "number" then degrees else generator.Gauge.Turn) * math.clamp(if type(share) == "number" then share else 0, 0, 1)
 		local glide = generator.Gauge.Glide
 		return if glide <= 0 then goal else turn.Angle + (goal - turn.Angle) * (1 - math.exp(-dt * 4 / glide))
 	end
-	local rate = 0
-	if piece == "TrainingCrown" then
-		rate = if part:GetAttribute("Training") == true then training.Crown else 0
+	local speed = 0
+	if part:GetAttribute("Piece") == "TrainingCrown" then
+		speed = if part:GetAttribute("Training") == true then training.Crown else 0
 	else
 		local kw = part:GetAttribute("Generation")
 		local wheel = generator.Wheel
-		rate = if type(kw) == "number" and kw > 0 then math.min(wheel.Least + kw * wheel.PerKw, wheel.Most) else 0
+		speed = if type(kw) == "number" and kw > 0 then math.min(wheel.Least + kw * wheel.PerKw, wheel.Most) else 0
 	end
-	return (turn.Angle + rate * 2 * math.pi * dt) % (2 * math.pi)
+	return (turn.Angle + speed * 2 * math.pi * dt) % WRAP
 end
 
 local function turnPieces(dt: number)
-	for part, turn in turning do
-		if part.Parent == nil then
-			turning[part] = nil
-			continue
-		end
-		local angle = angleOf(part, turn, dt)
-		if angle ~= turn.Angle then
-			turn.Angle = angle
-			part.CFrame = if turn.Axis == "Z"
-				then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, -angle) * turn.Pivot
-				else turn.Rest * CFrame.Angles(0, angle, 0)
+	-- The wheels and the marks first, then the pinions from their wheels' angles this frame.
+	for pass = 1, 2 do
+		for part, turn in turning do
+			if turn.Follows ~= (pass == 2) then
+				continue
+			end
+			if part.Parent == nil then
+				turning[part] = nil
+				continue
+			end
+			turn.Angle = angleOf(part, turn, dt)
+			if turn.Angle ~= turn.Drawn and part.Transparency < 1 then
+				turn.Drawn = turn.Angle
+				local angle = turn.Angle
+				part.CFrame = if turn.Axis == "Z"
+					then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, -angle) * turn.Pivot
+					else turn.Rest * CFrame.Angles(0, angle, 0)
+			end
 		end
 	end
+end
+
+-- The model of the stage a plot's mill stands at (AR19; BaseService's "Stage"), nil before it's shown.
+function BaseController.MillStage(plant: Instance): Instance?
+	return plant:FindFirstChild(`Stage {plant:GetAttribute("Stage")}`)
 end
 
 -- For the self-test: a turning piece's angle so far, nil for one not watched.

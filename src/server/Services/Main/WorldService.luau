@@ -416,24 +416,29 @@ local MILL_SOLID = {
 	Sill = { Size = Vector3.new(22.4, 1.4, 1.8), At = Vector3.new(0, 0.7, -4.6) },
 	Feet = { Size = Vector3.new(2.8, 1, 2.8), At = Vector3.new(7.6, 0.5, 14) },
 	Leg = { Thick = 1.3, From = Vector3.new(7.6, 0.3, 14), To = Vector3.new(1.5, 8.7, 3.6) },
+	-- Stages II and III (the manifest's collision on Generator2 and Generator3): the sill's middle 5.1 toward the gate
+	-- and the legs' heads with it; the footprint on the ground as Stage I's.
+	Later = { SillAt = Vector3.new(0, 0.7, -5.1), LegTo = Vector3.new(1.5, 8.7, 4.1) },
 }
 
-local function millSolid(plant: Instance, body: BasePart)
-	local c = (kitFiles(BASE)).pieces.Generator.centre
+local function millSolid(plant: Instance, body: BasePart, stage: number)
+	local c = (kitFiles(BASE)).pieces[body:GetAttribute("Piece") :: string].centre
 	local origin = body.CFrame * CFrame.new(-c[1], -c[2], -c[3])
+	local later = if stage > 1 then MILL_SOLID.Later else nil
 	local function solid(name: string, size: Vector3, frame: CFrame, shape: Enum.PartType?)
 		local part = block(plant, name, size, origin * frame, GREY.Machine)
 		part.Shape = shape or Enum.PartType.Block
 		part.Transparency, part.CastShadow, part.CanTouch = 1, false, false
 		part:SetAttribute("Solid", true)
+		part:SetAttribute("Unseen", true) -- never seen: BaseService opens it while its stage is hidden, never shows it
 	end
 	local well = MILL_SOLID.Well
 	solid("Well's solid", Vector3.new(well.High, well.Radius * 2, well.Radius * 2), CFrame.new(0, well.High / 2, 0) * CFrame.Angles(0, 0, math.pi / 2), Enum.PartType.Cylinder)
-	solid("Sill's solid", MILL_SOLID.Sill.Size, CFrame.new(MILL_SOLID.Sill.At))
+	solid("Sill's solid", MILL_SOLID.Sill.Size, CFrame.new(if later then later.SillAt else MILL_SOLID.Sill.At))
 	for _, side in { 1, -1 } do
 		local flip = Vector3.new(side, 1, 1)
 		solid("Foot's solid", MILL_SOLID.Feet.Size, CFrame.new(MILL_SOLID.Feet.At * flip))
-		local from, to = MILL_SOLID.Leg.From * flip, MILL_SOLID.Leg.To * flip
+		local from, to = MILL_SOLID.Leg.From * flip, (if later then later.LegTo else MILL_SOLID.Leg.To) * flip
 		local thick = MILL_SOLID.Leg.Thick
 		solid("Leg's solid", Vector3.new(thick, thick, (to - from).Magnitude), CFrame.lookAt((from + to) / 2, to))
 	end
@@ -615,33 +620,72 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			block(battery, "Body", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
 		end
 		Markers.Stamp(battery, "Battery", { Plot = number })
-		-- The generator at the plot's heart, at the end of the way in (TR18; AR19, the Void Mill): what stands still, its
-		-- wheel, which the client turns by its owner's generation, the gauge's eight steps up the rising side, which
-		-- BaseService shows as the generation lights them, and the demand's mark, which the client turns about the axle
-		-- to the demand's share (Rules.Power.Gauge); a box while its kit isn't laid.
+		-- The generator at the plot's heart, at the end of the way in (TR18; AR19, the Void Mill), once a stage from the
+		-- swap's table (the plan's machines.generatorStages), each stage its own model "Stage n": what stands still and
+		-- its unseen solids; its wheel, which the client turns by its owner's generation; a stage's pinions, which the
+		-- client drives from the wheel's angle; the gauge's eight steps up the rising side, which BaseService shows as
+		-- the generation lights them; and the demand's mark, which the client turns about the axle to the demand's share
+		-- at its stage's degrees (Rules.Power.Gauge). Stage I stands; BaseService stands its owner's stage and hides the
+		-- others. A box while its kit isn't laid.
 		local generator = WorldConfig.Grey.Generator
 		local generatorAt = place(layout.stations.generator)
 		local plant = model(base, "Generator", generatorAt)
-		local body = machine(plant, "Body", "Generator", 1, number, at, front)
-		if body == nil then
-			block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), tint("generator", GREY.Generator))
-		else
-			millSolid(plant, body)
-		end
-		local wheel = machine(plant, "Wheel", "GeneratorWheel", 1, number, at, front)
-		if wheel then
-			wheel:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
-		end
-		for step = 1, generator.Gauge.Steps do
-			local lit = machine(plant, `Step {step}`, `GeneratorArc{step}`, 1, number, at, front)
-			if lit then
-				lit:SetAttribute("Step", step)
-				lit.Transparency = 1 -- hidden until the generation lights it: shown or hidden, never dimmed
+		local _, kitPlan = kitFiles(BASE)
+		local swap = if baseLook and kitPlan.machines then kitPlan.machines.generatorStages else nil
+		local laid = false
+		for stage = 1, 3 do
+			local rows = if swap then swap.stages[tostring(stage)] else nil
+			if rows == nil then
+				continue
+			end
+			local group = model(plant, `Stage {stage}`, generatorAt)
+			group:SetAttribute("Stage", stage)
+			local pinions = 0
+			for _, row in rows do
+				local name = if row.moves == "still"
+					then "Body"
+					elseif row.moves == "gauge" then `Step {row.step}`
+					elseif row.moves == "demand" then "Demand"
+					elseif row.rate == 1 then "Wheel"
+					else `Pinion {pinions + 1}`
+				local part = piece(group, name, row.piece, { across = row.across, along = row.along, up = row.up, turn = 0 }, number, at, front)
+				if part == nil then
+					continue
+				end
+				laid = true
+				part:SetAttribute("Stage", stage)
+				part:SetAttribute("Moves", row.moves)
+				if row.moves == "still" then
+					millSolid(group, part, stage)
+				elseif row.moves == "turns" then
+					part:SetAttribute("Rate", row.rate) -- 1 for the wheel; a pinion's, against the wheel's angle
+					if row.rate == 1 then
+						part:SetAttribute("Generation", 0) -- its owner's kW (BaseService), by which the client turns it
+					else
+						pinions += 1
+					end
+				elseif row.moves == "gauge" then
+					part:SetAttribute("Step", row.step)
+					part.Transparency = 1 -- hidden until the generation lights it: shown or hidden, never dimmed
+				elseif row.moves == "demand" then
+					part:SetAttribute("Share", 0) -- the demand's share of the gauge (BaseService), to which the client turns it
+					part:SetAttribute("Turn", row.degrees) -- its stage's degrees at a share of 1
+				end
+			end
+			if stage > 1 then
+				for _, part in group:GetChildren() do
+					if part:IsA("BasePart") and part:GetAttribute("Step") == nil then
+						if part:GetAttribute("Unseen") == true then
+							part.CanCollide, part.CanQuery = false, false
+						else
+							stand(part, false)
+						end
+					end
+				end
 			end
 		end
-		local mark = machine(plant, "Demand", "GeneratorDemand", 1, number, at, front)
-		if mark then
-			mark:SetAttribute("Share", 0) -- the demand's share of the gauge (BaseService), to which the client turns it
+		if not laid then
+			block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), tint("generator", GREY.Generator))
 		end
 		Markers.Stamp(plant, "Generator", { Plot = number })
 		-- The Festival Door on the other slant toward the gate, turned to face down the way in (AR15, section 5): its

@@ -909,6 +909,512 @@
    "lights": [],
    "note": "its origin on the axle, 10 up at the generator's middle, made at a demand's share of 0 at the rail's foot by the well. The rail is an arc about the axle, so the mark turns, not slides: about the axle the way the wheel turns, by the share times 117.9 degrees (CFrame.Angles(0, 0, -share * math.rad(117.9))); at 1 it stands by the collector's shoe, 13.16 from the axle, about 27 studs of travel. The share is on the gauge's own scale, the demand over the same top as the generation's, so the lit steps reach the mark when generation meets demand. Under a share of 0.12 it sinks into the well's kerb. Look only"
   },
+  "Generator2": {
+   "mesh": "meshes/Generator2.json",
+   "triangles": 2994,
+   "vertices": 1814,
+   "centre": [
+    -0.97012,
+    10.57303,
+    3.72023
+   ],
+   "size": [
+    25.74,
+    24.946,
+    28.86
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the dynamos stand on the sill, the arm over the well: look only",
+   "lights": [],
+   "note": "Stage II's still body, in place of Generator at the same place: a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its housed dynamo on the sill (the descending side), the back frame plated. Its middle on the well's. The collector's arm reaches about 23.1 up. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
+  },
+  "Generator3": {
+   "mesh": "meshes/Generator3.json",
+   "triangles": 5098,
+   "vertices": 3026,
+   "centre": [
+    -0.72398,
+    12.7019,
+    3.72023
+   ],
+   "size": [
+    30.238,
+    30.006,
+    28.86
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the dynamos stand on the sill, the arm, the casing and its crown over the well: look only",
+   "lights": [],
+   "note": "Stage III's still body, in place of Generator at the same place: Stage II's, with the armoured half drum of a casing over the wheel and its crown of six rods, a second pinion and dynamo on the rising side; the casing's seven windows stand dark here: the gauge's steps 5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the collector's shoe stay dark. Its middle on the well's. The collector's arm reaches about 24.9 up, the crown about 27.7. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
+  },
+  "Generator2Wheel": {
+   "mesh": "meshes/Generator2Wheel.json",
+   "triangles": 3432,
+   "vertices": 1960,
+   "centre": [
+    0.0,
+    0.0,
+    -2.0
+   ],
+   "size": [
+    24.62,
+    24.62,
+    9.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stages II and III: the twin wheel, 24.4 across, with the spur gear (24 teeth) on its axle in front of the hub, which turns with it. As GeneratorWheel: its origin is its axle's middle, 10 up at the generator's middle, its axle along the piece's Y (Roblox's Z), the line to the gate; from the gate it turns anticlockwise, CFrame.Angles(0, 0, -angle) with the angle growing. Its lower edge runs 2.2 under the floor, inside the well's dark"
+  },
+  "Generator2Pinion": {
+   "mesh": "meshes/Generator2Pinion.json",
+   "triangles": 384,
+   "vertices": 224,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    4.164,
+    4.045,
+    1.02
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "the pinion on the descending side (10 teeth), meshing with the wheel's gear: its origin on its own axle, +5.196 across, 3.4 toward the gate and 7 up from the generator's place, its axle along the piece's Y like the wheel's. It turns the other way, 2.4 times as fast: CFrame.Angles(0, 0, angle * 2.4) with the wheel's angle. Made with its teeth meshed at the wheel's angle 0"
+  },
+  "Generator3Pinion": {
+   "mesh": "meshes/Generator3Pinion.json",
+   "triangles": 384,
+   "vertices": 224,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    4.164,
+    4.045,
+    1.02
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "the pinion on the rising side (10 teeth), meshing with the wheel's gear: its origin on its own axle, -5.196 across, 3.4 toward the gate and 7 up from the generator's place, its axle along the piece's Y like the wheel's. It turns the other way, 2.4 times as fast: CFrame.Angles(0, 0, angle * 2.4) with the wheel's angle. Made with its teeth meshed at the wheel's angle 0"
+  },
+  "Generator2Arc1": {
+   "mesh": "meshes/Generator2Arc1.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -8.28748,
+    3.62853,
+    2.6
+   ],
+   "size": [
+    3.136,
+    3.158,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 1 of 8: the generation's share from 0 to 0.125, 135.5 to 149.8 degrees about the axle. As GeneratorArc1: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc2": {
+   "mesh": "meshes/Generator2Arc2.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -9.55779,
+    5.83922,
+    2.6
+   ],
+   "size": [
+    2.914,
+    2.976,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 2 of 8: the generation's share from 0.125 to 0.25, 149.8 to 164.1 degrees about the axle. As GeneratorArc2: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc3": {
+   "mesh": "meshes/Generator2Arc3.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -10.23442,
+    8.30837,
+    2.6
+   ],
+   "size": [
+    2.511,
+    2.609,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 3 of 8: the generation's share from 0.25 to 0.375, 164.1 to 178.4 degrees about the axle. As GeneratorArc3: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc4": {
+   "mesh": "meshes/Generator2Arc4.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -10.29899,
+    11.11001,
+    2.6
+   ],
+   "size": [
+    2.4,
+    2.535,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 4 of 8: the generation's share from 0.375 to 0.5, 178.4 to 192.7 degrees about the axle. As GeneratorArc4: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc5": {
+   "mesh": "meshes/Generator2Arc5.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -9.76088,
+    13.6311,
+    2.6
+   ],
+   "size": [
+    2.84,
+    2.91,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 5 of 8: the generation's share from 0.5 to 0.625, 192.7 to 207.0 degrees about the axle. As GeneratorArc5: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc6": {
+   "mesh": "meshes/Generator2Arc6.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -8.61646,
+    15.91156,
+    2.6
+   ],
+   "size": [
+    3.103,
+    3.134,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 6 of 8: the generation's share from 0.625 to 0.75, 207.0 to 221.4 degrees about the axle. As GeneratorArc6: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc7": {
+   "mesh": "meshes/Generator2Arc7.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -6.93683,
+    17.82483,
+    2.6
+   ],
+   "size": [
+    3.174,
+    3.164,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 7 of 8: the generation's share from 0.75 to 0.875, 221.4 to 235.7 degrees about the axle. As GeneratorArc7: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Arc8": {
+   "mesh": "meshes/Generator2Arc8.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -4.82631,
+    19.25205,
+    2.6
+   ],
+   "size": [
+    3.048,
+    2.997,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's gauge, step 8 of 8: the generation's share from 0.875 to 1, 235.7 to 250.0 degrees about the axle. As GeneratorArc8: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc1": {
+   "mesh": "meshes/Generator3Arc1.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -8.28748,
+    3.62853,
+    2.6
+   ],
+   "size": [
+    3.136,
+    3.158,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 1 of 8: the generation's share from 0 to 0.125, 135.5 to 149.8 degrees about the axle. As GeneratorArc1: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc2": {
+   "mesh": "meshes/Generator3Arc2.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -9.55779,
+    5.83922,
+    2.6
+   ],
+   "size": [
+    2.914,
+    2.976,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 2 of 8: the generation's share from 0.125 to 0.25, 149.8 to 164.1 degrees about the axle. As GeneratorArc2: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc3": {
+   "mesh": "meshes/Generator3Arc3.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -10.23442,
+    8.30837,
+    2.6
+   ],
+   "size": [
+    2.511,
+    2.609,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 3 of 8: the generation's share from 0.25 to 0.375, 164.1 to 178.4 degrees about the axle. As GeneratorArc3: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc4": {
+   "mesh": "meshes/Generator3Arc4.json",
+   "triangles": 36,
+   "vertices": 20,
+   "centre": [
+    -10.29899,
+    11.11001,
+    2.6
+   ],
+   "size": [
+    2.4,
+    2.535,
+    0.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 4 of 8: the generation's share from 0.375 to 0.5, 178.4 to 192.7 degrees about the axle. As GeneratorArc4: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc5": {
+   "mesh": "meshes/Generator3Arc5.json",
+   "triangles": 60,
+   "vertices": 36,
+   "centre": [
+    -11.01082,
+    14.44112,
+    -0.45
+   ],
+   "size": [
+    5.34,
+    4.53,
+    6.22
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 5 of 8: the generation's share from 0.5 to 0.625, 192.7 to 207.0 degrees about the axle, with 2 of the casing windows over it. As GeneratorArc5: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc6": {
+   "mesh": "meshes/Generator3Arc6.json",
+   "triangles": 48,
+   "vertices": 28,
+   "centre": [
+    -9.32365,
+    16.67428,
+    -0.45
+   ],
+   "size": [
+    4.518,
+    4.66,
+    6.22
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 6 of 8: the generation's share from 0.625 to 0.75, 207.0 to 221.4 degrees about the axle, with 1 of the casing windows over it. As GeneratorArc6: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc7": {
+   "mesh": "meshes/Generator3Arc7.json",
+   "triangles": 48,
+   "vertices": 28,
+   "centre": [
+    -7.5797,
+    18.59174,
+    -0.45
+   ],
+   "size": [
+    4.46,
+    4.698,
+    6.22
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 7 of 8: the generation's share from 0.75 to 0.875, 221.4 to 235.7 degrees about the axle, with 1 of the casing windows over it. As GeneratorArc7: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator3Arc8": {
+   "mesh": "meshes/Generator3Arc8.json",
+   "triangles": 48,
+   "vertices": 28,
+   "centre": [
+    -5.47266,
+    20.09568,
+    -0.45
+   ],
+   "size": [
+    4.34,
+    4.684,
+    6.22
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's gauge, step 8 of 8: the generation's share from 0.875 to 1, 235.7 to 250.0 degrees about the axle, with 1 of the casing windows over it. As GeneratorArc8: still, at the generator's place; light the first k, k the share times 8 rounded, shown or hidden, never dimmed. Look only"
+  },
+  "Generator2Demand": {
+   "mesh": "meshes/Generator2Demand.json",
+   "triangles": 36,
+   "vertices": 24,
+   "centre": [
+    -9.80822,
+    -9.65072,
+    -2.37
+   ],
+   "size": [
+    2.238,
+    2.238,
+    1.76
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's demand mark, as GeneratorDemand: its origin on the axle, 10 up, made at a share of 0 by the well, turned about the axle by the share times 114.5 degrees (CFrame.Angles(0, 0, -share * math.rad(114.5))), 13.76 from the axle. Look only"
+  },
+  "Generator3Demand": {
+   "mesh": "meshes/Generator3Demand.json",
+   "triangles": 36,
+   "vertices": 24,
+   "centre": [
+    -11.23383,
+    -11.05344,
+    -2.37
+   ],
+   "size": [
+    2.238,
+    2.238,
+    1.76
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's demand mark, as GeneratorDemand: its origin on the axle, 10 up, made at a share of 0 by the well, turned about the axle by the share times 114.5 degrees (CFrame.Angles(0, 0, -share * math.rad(114.5))), 15.76 from the axle, outside the casing. Look only"
+  },
   "Showcase": {
    "mesh": "meshes/Showcase.json",
    "triangles": 304,

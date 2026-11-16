@@ -2262,7 +2262,7 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - In play: fix 10's case passed (the words, and the Door's plate over its arch). Fix 2's case passed under fix 6: a Shade out of view waits, and the lead meets it after its wait. Fix 5's case, after two fixes to its own setup, passed 14/0. The first fix dismisses a reveal left up, since at the playtest's join a leftover Watt shard opened itself on the plot, the feature working. The second turns self-opening on only once the avatar is off the plot.
 - **NOT VERIFIED:** fix 3's fade and fix 1's marker, again, on the lock screen. The signs' look waits on the screen too.
 
-**Fix 8, the drop in the world (Faber, 2026-11-16, 17:37 to 17:52, by the PC's clock).** The grey block, to be judged in motion.
+**Fix 8, the drop in the world (Faber, 2026-11-16, 17:37 to 17:42, by the PC's clock).** The grey block, to be judged in motion.
 - **Feel line:** a Shade's drop pops out of where it fell, bounces once on the street and sits a beat with its name over it, then is pulled into the player, slow off the floor and fast at the end, and lands in a flash as its toast says it: the player sees what they won and sees it come to them.
 - **What was there:** the leap of TR2, a 1.4-stud block arcing 7 studs over 0.8 s. In `10-first-drop-b` it's a speck by the lanterns.
 - **The block:**

@@ -58,9 +58,11 @@ def gear_table():
     """Every batch 1 picture by its stem: its name, its rarity and its slot's kind."""
     table = {}
     data = json.loads((GEAR_ART / "gear_icons.json").read_text(encoding="utf-8"))
+    hands = {kind: hand for hand, kind in data["hands"]["Warrior"].items()}  # this sheet's weapons are the Warrior's
     for where, designs in data["kinds"].items():
         for d in designs:
-            table[Path(d["image"]).stem] = dict(name=d["name"], rarity=d["rarity"], kind=where.replace(" I", ""))
+            table[Path(d["image"]).stem] = dict(name=d["name"], rarity=d["rarity"],
+                                                kind=hands.get(where, where.replace(" I", "")))
     return table
 
 

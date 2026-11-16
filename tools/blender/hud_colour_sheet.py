@@ -1144,9 +1144,11 @@ def delivered():
     rim = next(layer for layer in GEAR_SET["layers"] if "pad" in layer)
     keep("GearLight", GEAR_ART / "images" / "GearLight.png", side, side)
     keep("GearFrameLegendary", GEAR_ART / "images" / "GearFrameLegendary.png", side, side, (rim["corner"],) * 4, rim["pad"])
+    hands = {kind: hand for hand, kind in GEAR_SET["hands"]["Warrior"].items()}  # this sheet's weapons are the Warrior's
     for where, designs in GEAR_SET["kinds"].items():
         for d in designs:
-            GEAR_PIECES[Path(d["image"]).stem] = dict(rarity=d["rarity"], slot=where, path=GEAR_ART / d["image"])
+            GEAR_PIECES[Path(d["image"]).stem] = dict(rarity=d["rarity"], slot=hands.get(where, where),
+                                                      path=GEAR_ART / d["image"])
 
 
 def gear_slot(st, x, y, s, p, name, piece=None, rank=0):

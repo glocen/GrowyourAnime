@@ -41,9 +41,14 @@ def rounded(w, h, r, n=4):
             out.append((cx + r * math.cos(a), cz + r * math.sin(a)))
     return out
 
+# The covers' dark leather and the pages: grey as the lining and the cloth were, so the grey sheet stays as it is; in
+# colour each its own (gear_icons.py: the boards' leather agrees with the rarity, the paper is cream).
+p.g.GREY.setdefault("boards", p.g.GREY["liner"])
+p.g.GREY.setdefault("paper", p.g.GREY["cloth"])
+
 
 def design(name, rarity, note, key, **more):
-    return p.design(name, rarity, note, key, **dict(dict(cover="liner", pages="cloth", corners="cap", boss=None,
+    return p.design(name, rarity, note, key, **dict(dict(cover="boards", pages="paper", corners="cap", boss=None,
                                                          spine_bands=2, clasp="strap", frame=False, studs=0,
                                                          cord=False, bolts=False, form=None), **more))
 

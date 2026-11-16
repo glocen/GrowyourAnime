@@ -1,11 +1,12 @@
 """AR6, the finish: each kind's fifteen designs in colour, as flat pictures for the gear slots, with the gear frame's
 own images (docs/asset-requests.md, AR6, "Colour and frames"). Batch 1 is the Sword, the Short Sword, the Ring and the
-Helmet; batch 2 the eight shared kinds.
+Helmet; batch 2 the eight shared kinds; batch 3 the other four classes' weapons, each with its class's mark.
 
 Pictures only (the director, 2026-11-15: "it should only be 2D cuz gears dont have any visuals on the voidkins it just
 for the gears slot images!"): a model here is how a picture is drawn, and nothing but images leaves this script.
 
-The forms are the grey sheets' own (gear_<kind>_sets.py, batch 2's on gear_parts.py): this script only paints them.
+The forms are the grey sheets' own (gear_<kind>_sets.py, batches 2 and 3 on gear_parts.py): this script only paints
+them.
 A material's key takes its colour from PAINT; a set's stone takes its set's tone; a lit part is warm white. Each design
 is rendered twice in Workbench, once lit and once flat as a mask of what glows, and the two are finished here: a warm key from above, a light on the upper edge, the stone's and the edge's own light. Never
 flames, a cloud or particles: the light lives in the stone and the edge.
@@ -16,8 +17,9 @@ director, 2026-11-15): its two cuts become lit facets and a second rim of light 
 
     blender -b --factory-startup --python tools/blender/gear_icons.py -- build/handoff/UI/gear [kind ...]
 
-A kind is sword, short, ring, helmet, shoulders, chest, gloves, bracers, boots, cloak, amulet, earring, frames, or look
-(a few of each, for the look alone). With none, all of them.
+A kind is sword, short, ring, helmet, shoulders, chest, gloves, bracers, boots, cloak, amulet, earring, great_axe,
+shield, staff, tome, dagger, throwing_blades, crystal_baton, codex, frames, or look (a few of each, for the look alone).
+With none, all of them.
 Writes images/Gear<Name>.png (256 pixels, the object alone), GearLight.png and GearFrameLegendary.png, a sheet a
 kind, and gear_icons.json. Workbench only: no GPU turn.
 """
@@ -36,15 +38,23 @@ import gear_boots_sets as boots  # noqa: E402
 import gear_bracers_sets as bracers  # noqa: E402
 import gear_chest_sets as chest  # noqa: E402
 import gear_cloak_sets as cloak  # noqa: E402
+import gear_codex_sets as codex  # noqa: E402
+import gear_crystal_baton_sets as crystal_baton  # noqa: E402
+import gear_dagger_sets as dagger  # noqa: E402
 import gear_earring_sets as earring  # noqa: E402
 import gear_gloves_sets as gloves  # noqa: E402
+import gear_great_axe_sets as great_axe  # noqa: E402
 import gear_helmet_sets as h  # noqa: E402
 import gear_parts as gp  # noqa: E402
 import gear_ring_sets as r  # noqa: E402
+import gear_shield_sets as shield  # noqa: E402
 import gear_shoulders_sets as shoulders  # noqa: E402
 import gear_short_sword_sets as ss  # noqa: E402
+import gear_staff_sets as staff  # noqa: E402
 import gear_sword_ladder as g  # noqa: E402
 import gear_sword_sets as s  # noqa: E402
+import gear_throwing_blades_sets as throwing_blades  # noqa: E402
+import gear_tome_sets as tome  # noqa: E402
 import rook_sheet as rs  # noqa: E402
 import ui_kit as kit  # noqa: E402
 import ui_sheet as ui  # noqa: E402
@@ -72,7 +82,11 @@ PAINT = dict(
     white=("#EFE6D2", 0.0, 0.6),
     cloth=("#5E6070", 0.0, 0.8), cord=("#8C7052", 0.0, 0.8),
     # a glove's leather, a cool charcoal, never a brown that could read as a hand (content check, 2026-11-16)
-    hide=("#34343C", 0.0, 0.6))
+    hide=("#34343C", 0.0, 0.6),
+    # batch 3: the Tome's pages, a warm cream a step under ivory; the Codex's pale covers, a cool parchment under it
+    paper=("#D6CAB0", 0.0, 0.75), vellum=("#CDC8BC", 0.0, 0.6))
+# The Tome's boards: a dark leather that agrees with its rarity and never wears it whole, as batch 2's cloth does.
+BOARDS = dict(Common="#3A2C25", Uncommon="#2C333D", Rare="#1F293B", Epic="#291F33", Legendary="#1F2436")
 LIT = "#FFF6DC"  # a lit part: warm white, never red or dark
 # A tempered metal is rendered as plain steel, and the finish gives it its own tones from shade to highlight (research,
 # 2026-11-15: the frame and the slot's light carry the rarity, the object only agrees with it). Rare is steel first:
@@ -94,7 +108,7 @@ UMBER, LEGEND_LIGHT = ("#34200E", "#1A1007"), 0.72
 # A polished steel tube's streak, which Workbench's soft light leaves flat (research's verdict on batch 2 in colour, the
 # Uncommon bracers): its light, above and to the right, toward the camera.
 SHEEN = (0.35, 0.65, 0.67)
-NOW = dict(tone=LIT, sheen=False)  # the design being built
+NOW = dict(tone=LIT, sheen=False, rarity="Common")  # the design being built
 
 
 def tone(d):
@@ -116,13 +130,15 @@ def paint(key):
         return hexed(mix(NOW["tone"], "#FFFFFF", 0.25)), 0.0, 0.2
     if key == "lit":
         return LIT, 0.0, 0.3
+    if key == "boards":
+        return BOARDS[NOW["rarity"]], 0.0, 0.7
     return PAINT[key]
 
 
 def building(make):
     """A kind's own builder, noting the design it builds so its stone takes its set's tone."""
     def built(d, *more):
-        NOW["tone"], NOW["sheen"] = tone(d), d.get("sheen", False)
+        NOW["tone"], NOW["sheen"], NOW["rarity"] = tone(d), d.get("sheen", False), d["rarity"]
         return make(d, *more)
     return built
 
@@ -328,14 +344,26 @@ SHARED = (("shoulders", shoulders, "the Shoulders", "Shoulders"), ("chest", ches
           ("gloves", gloves, "the Gloves", "Gloves"), ("bracers", bracers, "the Bracers", "Bracers"),
           ("boots", boots, "the Boots", "Boots"), ("cloak", cloak, "the Cloak", "Cloak"),
           ("amulet", amulet, "the Amulet", "Amulet"), ("earring", earring, "the Earring", "Earring I"))
+# Batch 3: a class's pair, its main hand then its off hand. Each is keyed by its kind, as Definitions/Items.luau's Kind.
+WEAPONS = (("great_axe", great_axe, "Great Axe", "Tank"), ("shield", shield, "Shield", "Tank"),
+           ("staff", staff, "Staff", "Mage"), ("tome", tome, "Tome", "Mage"),
+           ("dagger", dagger, "Dagger", "Assassin"), ("throwing_blades", throwing_blades, "Throwing Blades", "Assassin"),
+           ("crystal_baton", crystal_baton, "Crystal Baton", "Healer"), ("codex", codex, "Codex", "Healer"))
+# A class's two hands, as Definitions/Gear.luau has them.
+HANDS = dict(Warrior={"Main Hand": "Sword", "Off Hand": "Short Sword"},
+             Tank={"Main Hand": "Great Axe", "Off Hand": "Shield"}, Mage={"Main Hand": "Staff", "Off Hand": "Tome"},
+             Assassin={"Main Hand": "Dagger", "Off Hand": "Throwing Blades"},
+             Healer={"Main Hand": "Crystal Baton", "Off Hand": "Codex"})
 
 KINDS = dict(
-    sword=dict(title="the Sword", slot="Main Hand", designs=s.DESIGNS, renders=swords, mark="Warrior", batch=1),
-    short=dict(title="the Short Sword", slot="Off Hand", designs=ss.DESIGNS, renders=shorts, mark="Warrior", batch=1),
+    sword=dict(title="the Sword", slot="Sword", designs=s.DESIGNS, renders=swords, mark="Warrior", batch=1),
+    short=dict(title="the Short Sword", slot="Short Sword", designs=ss.DESIGNS, renders=shorts, mark="Warrior", batch=1),
     ring=dict(title="Ring I", slot="Ring I", designs=r.DESIGNS, renders=rings, mark=None, batch=1),
     helmet=dict(title="the Helmet", slot="Helmet", designs=h.DESIGNS, renders=helmets, mark=None, batch=1),
     **{key: dict(title=title, slot=slot, designs=kind.DESIGNS, renders=shared(kind), mark=None, batch=2)
        for key, kind, title, slot in SHARED},
+    **{key: dict(title=f"the {word}", slot=word, designs=kind.DESIGNS, renders=shared(kind), mark=cls, batch=3)
+       for key, kind, word, cls in WEAPONS},
 )
 
 
@@ -408,7 +436,9 @@ def manifest(out, pad):
     data = dict(
         note="Regalia's gear in its slots (AR6). Pictures only: nothing here is worn or shown on a Voidkin. "
              "Sizes are in points for a slot of `slot` points, and scale with the slot unless a line says the kit's "
-             "slice carries them. DESIGN, untried in Studio.",
+             "slice carries them. `kinds` holds a weapon under its kind (Definitions/Items.luau's Kind) and every "
+             "other piece under its slot; `hands` gives each class's Main Hand and Off Hand, as Definitions/Gear.luau. "
+             "DESIGN, untried in Studio.",
         slot=SLOT,
         layers=[
             dict(what="the well", how="the kit's ButtonFill, tinted from `well` to `channel`, top to foot. Legendary: "
@@ -433,6 +463,7 @@ def manifest(out, pad):
                  "the object; not drawn here"),
         ],
         rim=RIM,
+        hands=HANDS,
         kinds={k["slot"]: [dict(name=d["name"].rstrip("*"), rarity=d["rarity"], image=f"images/{file_name(d['name'])}.png")
                            for d in k["designs"]] for k in KINDS.values()},
         pixels=[ICON, ICON])
@@ -446,7 +477,7 @@ def main():
     asked = [a for a in sys.argv[sys.argv.index("--") + 2:]] or list(KINDS) + ["frames"]
     g.PAINT, g.shoot = paint, shoot
     s.sword, r.ring, h.helmet = building(s.sword), building(r.ring), building(h.helmet)
-    for _, kind, _, _ in SHARED:
+    for _, kind, _, _ in SHARED + WEAPONS:
         kind.build = building(kind.build)
     if "look" in asked:  # a few of each, at their own scale: for the look alone, nothing delivered
         for key, kind in KINDS.items():

@@ -1,5 +1,5 @@
 {
- "note": "Regalia's gear in its slots (AR6). Pictures only: nothing here is worn or shown on a Voidkin. Sizes are in points for a slot of `slot` points, and scale with the slot unless a line says the kit's slice carries them. DESIGN, untried in Studio.",
+ "note": "Regalia's gear in its slots (AR6). Pictures only: nothing here is worn or shown on a Voidkin. Sizes are in points for a slot of `slot` points, and scale with the slot unless a line says the kit's slice carries them. `kinds` holds a weapon under its kind (Definitions/Items.luau's Kind) and every other piece under its slot; `hands` gives each class's Main Hand and Off Hand, as Definitions/Gear.luau. DESIGN, untried in Studio.",
  "slot": 48.0,
  "layers": [
   {
@@ -52,8 +52,30 @@
   "Epic": "#D29CFF",
   "Legendary": "#FFD777"
  },
+ "hands": {
+  "Warrior": {
+   "Main Hand": "Sword",
+   "Off Hand": "Short Sword"
+  },
+  "Tank": {
+   "Main Hand": "Great Axe",
+   "Off Hand": "Shield"
+  },
+  "Mage": {
+   "Main Hand": "Staff",
+   "Off Hand": "Tome"
+  },
+  "Assassin": {
+   "Main Hand": "Dagger",
+   "Off Hand": "Throwing Blades"
+  },
+  "Healer": {
+   "Main Hand": "Crystal Baton",
+   "Off Hand": "Codex"
+  }
+ },
  "kinds": {
-  "Main Hand": [
+  "Sword": [
    {
     "name": "Iron Sword",
     "rarity": "Common",
@@ -130,7 +152,7 @@
     "image": "images/GearInabikari.png"
    }
   ],
-  "Off Hand": [
+  "Short Sword": [
    {
     "name": "Iron Short Sword",
     "rarity": "Common",
@@ -975,6 +997,622 @@
     "name": "Hatsuhi, the First Sun",
     "rarity": "Legendary",
     "image": "images/GearHatsuhi.png"
+   }
+  ],
+  "Great Axe": [
+   {
+    "name": "Iron Greataxe",
+    "rarity": "Common",
+    "image": "images/GearIronGreataxe.png"
+   },
+   {
+    "name": "Bronze Greataxe",
+    "rarity": "Common",
+    "image": "images/GearBronzeGreataxe.png"
+   },
+   {
+    "name": "Scrap Greataxe",
+    "rarity": "Common",
+    "image": "images/GearScrapGreataxe.png"
+   },
+   {
+    "name": "Lanternsteel Greataxe",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelGreataxe.png"
+   },
+   {
+    "name": "Rowsmith Greataxe",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithGreataxe.png"
+   },
+   {
+    "name": "Stallguard Greataxe",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardGreataxe.png"
+   },
+   {
+    "name": "Greataxe of Embers",
+    "rarity": "Rare",
+    "image": "images/GearGreataxeOfEmbers.png"
+   },
+   {
+    "name": "Greataxe of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearGreataxeOfHoarfrost.png"
+   },
+   {
+    "name": "Greataxe of Gales",
+    "rarity": "Rare",
+    "image": "images/GearGreataxeOfGales.png"
+   },
+   {
+    "name": "Stormcall Greataxe",
+    "rarity": "Epic",
+    "image": "images/GearStormcallGreataxe.png"
+   },
+   {
+    "name": "Gloamforge Greataxe",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeGreataxe.png"
+   },
+   {
+    "name": "Nightloom Greataxe",
+    "rarity": "Epic",
+    "image": "images/GearNightloomGreataxe.png"
+   },
+   {
+    "name": "Meigetsu, the Full Moon",
+    "rarity": "Legendary",
+    "image": "images/GearMeigetsu.png"
+   },
+   {
+    "name": "Gingetsu, the Silver Bow",
+    "rarity": "Legendary",
+    "image": "images/GearGingetsu.png"
+   },
+   {
+    "name": "Kinsei, the Golden Star",
+    "rarity": "Legendary",
+    "image": "images/GearKinsei.png"
+   }
+  ],
+  "Shield": [
+   {
+    "name": "Iron Shield",
+    "rarity": "Common",
+    "image": "images/GearIronShield.png"
+   },
+   {
+    "name": "Bronze Shield",
+    "rarity": "Common",
+    "image": "images/GearBronzeShield.png"
+   },
+   {
+    "name": "Scrap Shield",
+    "rarity": "Common",
+    "image": "images/GearScrapShield.png"
+   },
+   {
+    "name": "Lanternsteel Shield",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelShield.png"
+   },
+   {
+    "name": "Rowsmith Shield",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithShield.png"
+   },
+   {
+    "name": "Stallguard Shield",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardShield.png"
+   },
+   {
+    "name": "Bulwark of Embers",
+    "rarity": "Rare",
+    "image": "images/GearBulwarkOfEmbers.png"
+   },
+   {
+    "name": "Bulwark of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearBulwarkOfHoarfrost.png"
+   },
+   {
+    "name": "Bulwark of Gales",
+    "rarity": "Rare",
+    "image": "images/GearBulwarkOfGales.png"
+   },
+   {
+    "name": "Stormcall Bulwark",
+    "rarity": "Epic",
+    "image": "images/GearStormcallBulwark.png"
+   },
+   {
+    "name": "Gloamforge Bulwark",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeBulwark.png"
+   },
+   {
+    "name": "Nightloom Bulwark",
+    "rarity": "Epic",
+    "image": "images/GearNightloomBulwark.png"
+   },
+   {
+    "name": "Hakuchuu, the High Noon",
+    "rarity": "Legendary",
+    "image": "images/GearHakuchuu.png"
+   },
+   {
+    "name": "Kousai, the Clear Mirror",
+    "rarity": "Legendary",
+    "image": "images/GearKousai.png"
+   },
+   {
+    "name": "Fuyuboshi, the Cold Star",
+    "rarity": "Legendary",
+    "image": "images/GearFuyuboshi.png"
+   }
+  ],
+  "Staff": [
+   {
+    "name": "Iron Staff",
+    "rarity": "Common",
+    "image": "images/GearIronStaff.png"
+   },
+   {
+    "name": "Bronze Staff",
+    "rarity": "Common",
+    "image": "images/GearBronzeStaff.png"
+   },
+   {
+    "name": "Scrap Staff",
+    "rarity": "Common",
+    "image": "images/GearScrapStaff.png"
+   },
+   {
+    "name": "Lanternsteel Staff",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelStaff.png"
+   },
+   {
+    "name": "Rowsmith Staff",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithStaff.png"
+   },
+   {
+    "name": "Stallguard Staff",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardStaff.png"
+   },
+   {
+    "name": "Stave of Embers",
+    "rarity": "Rare",
+    "image": "images/GearStaveOfEmbers.png"
+   },
+   {
+    "name": "Stave of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearStaveOfHoarfrost.png"
+   },
+   {
+    "name": "Stave of Gales",
+    "rarity": "Rare",
+    "image": "images/GearStaveOfGales.png"
+   },
+   {
+    "name": "Stormcall Stave",
+    "rarity": "Epic",
+    "image": "images/GearStormcallStave.png"
+   },
+   {
+    "name": "Gloamforge Stave",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeStave.png"
+   },
+   {
+    "name": "Nightloom Stave",
+    "rarity": "Epic",
+    "image": "images/GearNightloomStave.png"
+   },
+   {
+    "name": "Kontengi, the Sky Sphere",
+    "rarity": "Legendary",
+    "image": "images/GearKontengi.png"
+   },
+   {
+    "name": "Niji, the Rainbow Arch",
+    "rarity": "Legendary",
+    "image": "images/GearNiji.png"
+   },
+   {
+    "name": "Yuuhi, the Setting Sun",
+    "rarity": "Legendary",
+    "image": "images/GearYuuhi.png"
+   }
+  ],
+  "Tome": [
+   {
+    "name": "Iron Tome",
+    "rarity": "Common",
+    "image": "images/GearIronTome.png"
+   },
+   {
+    "name": "Bronze Tome",
+    "rarity": "Common",
+    "image": "images/GearBronzeTome.png"
+   },
+   {
+    "name": "Scrap Tome",
+    "rarity": "Common",
+    "image": "images/GearScrapTome.png"
+   },
+   {
+    "name": "Lanternsteel Tome",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelTome.png"
+   },
+   {
+    "name": "Rowsmith Tome",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithTome.png"
+   },
+   {
+    "name": "Stallguard Tome",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardTome.png"
+   },
+   {
+    "name": "Grimoire of Embers",
+    "rarity": "Rare",
+    "image": "images/GearGrimoireOfEmbers.png"
+   },
+   {
+    "name": "Grimoire of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearGrimoireOfHoarfrost.png"
+   },
+   {
+    "name": "Grimoire of Gales",
+    "rarity": "Rare",
+    "image": "images/GearGrimoireOfGales.png"
+   },
+   {
+    "name": "Stormcall Grimoire",
+    "rarity": "Epic",
+    "image": "images/GearStormcallGrimoire.png"
+   },
+   {
+    "name": "Gloamforge Grimoire",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeGrimoire.png"
+   },
+   {
+    "name": "Nightloom Grimoire",
+    "rarity": "Epic",
+    "image": "images/GearNightloomGrimoire.png"
+   },
+   {
+    "name": "Yamiyo, the Dark Night",
+    "rarity": "Legendary",
+    "image": "images/GearYamiyo.png"
+   },
+   {
+    "name": "Seiza, the Star Chart",
+    "rarity": "Legendary",
+    "image": "images/GearSeiza.png"
+   },
+   {
+    "name": "Rinkou, the Pale Glow",
+    "rarity": "Legendary",
+    "image": "images/GearRinkou.png"
+   }
+  ],
+  "Dagger": [
+   {
+    "name": "Iron Dagger",
+    "rarity": "Common",
+    "image": "images/GearIronDagger.png"
+   },
+   {
+    "name": "Bronze Dagger",
+    "rarity": "Common",
+    "image": "images/GearBronzeDagger.png"
+   },
+   {
+    "name": "Scrap Dagger",
+    "rarity": "Common",
+    "image": "images/GearScrapDagger.png"
+   },
+   {
+    "name": "Lanternsteel Dagger",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelDagger.png"
+   },
+   {
+    "name": "Rowsmith Dagger",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithDagger.png"
+   },
+   {
+    "name": "Stallguard Dagger",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardDagger.png"
+   },
+   {
+    "name": "Fang of Embers",
+    "rarity": "Rare",
+    "image": "images/GearFangOfEmbers.png"
+   },
+   {
+    "name": "Fang of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearFangOfHoarfrost.png"
+   },
+   {
+    "name": "Fang of Gales",
+    "rarity": "Rare",
+    "image": "images/GearFangOfGales.png"
+   },
+   {
+    "name": "Stormcall Fang",
+    "rarity": "Epic",
+    "image": "images/GearStormcallFang.png"
+   },
+   {
+    "name": "Gloamforge Fang",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeFang.png"
+   },
+   {
+    "name": "Nightloom Fang",
+    "rarity": "Epic",
+    "image": "images/GearNightloomFang.png"
+   },
+   {
+    "name": "Kougetsu, the Pale Moon",
+    "rarity": "Legendary",
+    "image": "images/GearKougetsu.png"
+   },
+   {
+    "name": "Yuugure, the Nightfall",
+    "rarity": "Legendary",
+    "image": "images/GearYuugure.png"
+   },
+   {
+    "name": "Bunkou, the Split Ray",
+    "rarity": "Legendary",
+    "image": "images/GearBunkou.png"
+   }
+  ],
+  "Throwing Blades": [
+   {
+    "name": "Iron Throwing Blades",
+    "rarity": "Common",
+    "image": "images/GearIronThrowingBlades.png"
+   },
+   {
+    "name": "Bronze Throwing Blades",
+    "rarity": "Common",
+    "image": "images/GearBronzeThrowingBlades.png"
+   },
+   {
+    "name": "Scrap Throwing Blades",
+    "rarity": "Common",
+    "image": "images/GearScrapThrowingBlades.png"
+   },
+   {
+    "name": "Lanternsteel Blades",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelBlades.png"
+   },
+   {
+    "name": "Rowsmith Blades",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithBlades.png"
+   },
+   {
+    "name": "Stallguard Blades",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardBlades.png"
+   },
+   {
+    "name": "Talons of Embers",
+    "rarity": "Rare",
+    "image": "images/GearTalonsOfEmbers.png"
+   },
+   {
+    "name": "Talons of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearTalonsOfHoarfrost.png"
+   },
+   {
+    "name": "Talons of Gales",
+    "rarity": "Rare",
+    "image": "images/GearTalonsOfGales.png"
+   },
+   {
+    "name": "Stormcall Talons",
+    "rarity": "Epic",
+    "image": "images/GearStormcallTalons.png"
+   },
+   {
+    "name": "Gloamforge Talons",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeTalons.png"
+   },
+   {
+    "name": "Nightloom Talons",
+    "rarity": "Epic",
+    "image": "images/GearNightloomTalons.png"
+   },
+   {
+    "name": "Shokou, the First Light",
+    "rarity": "Legendary",
+    "image": "images/GearShokou.png"
+   },
+   {
+    "name": "Getsurin, the Moon Wheel",
+    "rarity": "Legendary",
+    "image": "images/GearGetsurin.png"
+   },
+   {
+    "name": "Tenkou, the Sky Feather",
+    "rarity": "Legendary",
+    "image": "images/GearTenkou.png"
+   }
+  ],
+  "Crystal Baton": [
+   {
+    "name": "Iron Crystal Baton",
+    "rarity": "Common",
+    "image": "images/GearIronCrystalBaton.png"
+   },
+   {
+    "name": "Bronze Crystal Baton",
+    "rarity": "Common",
+    "image": "images/GearBronzeCrystalBaton.png"
+   },
+   {
+    "name": "Scrap Crystal Baton",
+    "rarity": "Common",
+    "image": "images/GearScrapCrystalBaton.png"
+   },
+   {
+    "name": "Lanternsteel Baton",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelBaton.png"
+   },
+   {
+    "name": "Rowsmith Baton",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithBaton.png"
+   },
+   {
+    "name": "Stallguard Baton",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardBaton.png"
+   },
+   {
+    "name": "Sceptre of Embers",
+    "rarity": "Rare",
+    "image": "images/GearSceptreOfEmbers.png"
+   },
+   {
+    "name": "Sceptre of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearSceptreOfHoarfrost.png"
+   },
+   {
+    "name": "Sceptre of Gales",
+    "rarity": "Rare",
+    "image": "images/GearSceptreOfGales.png"
+   },
+   {
+    "name": "Stormcall Sceptre",
+    "rarity": "Epic",
+    "image": "images/GearStormcallSceptre.png"
+   },
+   {
+    "name": "Gloamforge Sceptre",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeSceptre.png"
+   },
+   {
+    "name": "Nightloom Sceptre",
+    "rarity": "Epic",
+    "image": "images/GearNightloomSceptre.png"
+   },
+   {
+    "name": "Seikou, the Starlight",
+    "rarity": "Legendary",
+    "image": "images/GearSeikou.png"
+   },
+   {
+    "name": "Gyouten, the Dawn Bloom",
+    "rarity": "Legendary",
+    "image": "images/GearGyouten.png"
+   },
+   {
+    "name": "Reikou, the Twin Light",
+    "rarity": "Legendary",
+    "image": "images/GearReikou.png"
+   }
+  ],
+  "Codex": [
+   {
+    "name": "Iron Codex",
+    "rarity": "Common",
+    "image": "images/GearIronCodex.png"
+   },
+   {
+    "name": "Bronze Codex",
+    "rarity": "Common",
+    "image": "images/GearBronzeCodex.png"
+   },
+   {
+    "name": "Scrap Codex",
+    "rarity": "Common",
+    "image": "images/GearScrapCodex.png"
+   },
+   {
+    "name": "Lanternsteel Codex",
+    "rarity": "Uncommon",
+    "image": "images/GearLanternsteelCodex.png"
+   },
+   {
+    "name": "Rowsmith Codex",
+    "rarity": "Uncommon",
+    "image": "images/GearRowsmithCodex.png"
+   },
+   {
+    "name": "Stallguard Codex",
+    "rarity": "Uncommon",
+    "image": "images/GearStallguardCodex.png"
+   },
+   {
+    "name": "Folio of Embers",
+    "rarity": "Rare",
+    "image": "images/GearFolioOfEmbers.png"
+   },
+   {
+    "name": "Folio of Hoarfrost",
+    "rarity": "Rare",
+    "image": "images/GearFolioOfHoarfrost.png"
+   },
+   {
+    "name": "Folio of Gales",
+    "rarity": "Rare",
+    "image": "images/GearFolioOfGales.png"
+   },
+   {
+    "name": "Stormcall Folio",
+    "rarity": "Epic",
+    "image": "images/GearStormcallFolio.png"
+   },
+   {
+    "name": "Gloamforge Folio",
+    "rarity": "Epic",
+    "image": "images/GearGloamforgeFolio.png"
+   },
+   {
+    "name": "Nightloom Folio",
+    "rarity": "Epic",
+    "image": "images/GearNightloomFolio.png"
+   },
+   {
+    "name": "Kouseki, the Light Trail",
+    "rarity": "Legendary",
+    "image": "images/GearKouseki.png"
+   },
+   {
+    "name": "Ryuukou, the High Spire",
+    "rarity": "Legendary",
+    "image": "images/GearRyuukou.png"
+   },
+   {
+    "name": "Tenmon, the Star Watch",
+    "rarity": "Legendary",
+    "image": "images/GearTenmon.png"
    }
   ]
  },

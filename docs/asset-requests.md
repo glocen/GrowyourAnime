@@ -3346,6 +3346,48 @@ Research's four fixes and the three renames, drawn again in grey on each kind's 
   - Bunkou keeps its "-ou" in every place it's written, which keeps it apart from a niche manga's Bunko.
 - **Batch 3 closes in grey.** On to the colour pass, under the check's condition that Rinkou's ribbons stay pale, never red, crimson or maroon.
 
+### Batch 3 in colour: the 120 in their slots (Modulo, 2026-11-16)
+
+- **Feel line and scope:** batch 1's (above, "Colour and frames"), for the four other classes' weapons. Waiting, as batch 1: Mythical and Dawn, the forge rank's badge, the lock, the forge screen's larger picture.
+- **Where:** `build/handoff/UI/gear/`, from `tools/blender/gear_icons.py`, which now paints batch 3's eight scripts as well.
+  - `images/`: 120 more `Gear<Name>.png`, 256 pixels, none sharing a name with batch 1's or 2's. The 180 before them are untouched, and the frame's two images render byte-identical.
+  - Eight sheets, `gear_<kind>_colour.png` (great_axe, shield, staff, tome, dagger, throwing_blades, crystal_baton, codex), laid out as batch 1's.
+- **The class mark:** each weapon carries its class's mark from the kit on the bottom cut, as the Warrior's do: the Tank's shield, the Mage's broken ring, the Assassin's cowl, the Healer's cut heart.
+- **`gear_icons.json`, for Faber:**
+  - **A weapon is keyed by its kind,** as `Definitions/Items.luau`'s Kind: "Sword" and "Short Sword" (they were "Main Hand" and "Off Hand"), then "Great Axe", "Shield", "Staff", "Tome", "Dagger", "Throwing Blades", "Crystal Baton" and "Codex". A slot's name can't hold five classes' weapons. Every other piece stays under its slot.
+  - **`hands`** gives each class's Main Hand and Off Hand, as `Definitions/Gear.luau`.
+  - My two earlier sheet scripts (`inventory_directions.py`, `hud_colour_sheet.py`) read the Warrior's pair back as its hands. Nothing in `src/` reads the json yet.
+- **The materials:**
+  - Every metal is batch 1's, and a set's stone takes its set's tone.
+  - **The Tome's boards** are a dark leather that agrees with the rarity and never wears its colour: brown (Common), slate (Uncommon), navy (Rare), violet (Epic), night blue (Legendary). Its pages are cream. Both are keys of their own (`boards`, `paper`, in `gear_tome_sets.py`), grey as the lining and the cloth were, so the grey sheet renders byte-identical.
+  - **The Codex's covers** are a cool parchment (`vellum`), a step under its ivory pages.
+- **Tier 1 calls, mine, for research to keep or change:** the Tome's boards by rarity; the json's weapons keyed by kind, with `hands`.
+- **Modulo's read:**
+  - The ladder climbs on every kind, and each class's pair still reads apart in colour. The Shield's row is the strongest, and the Legendaries hold in gilt and ivory on their umber.
+  - **The weakest pictures:**
+    - Common iron is dark on its well (the Iron Greataxe's blade, the Iron Staff's ring), as batch 1's iron is.
+    - The Bronze Greataxe's and the Bronze Dagger's broad faces are flat bronze with little highlight. If they must be brighter, the lever is the Uncommon bracers' streak (`sheen=True`).
+  - The Codex's covers are one parchment from Common to Epic, so its trim, stone and strap carry the rarity, as batch 2's cloth does. The Tome's Uncommon to Epic boards are near-black at 38 points, carried by the trim, the stone and the pale page edge.
+- **Content check, on the eight sheets and 29 pictures at full size (every Legendary among them): PASS** for delivery and for upload, all eight kinds.
+  - The earlier conditions hold:
+    - Rinkou's ribbons are pale cream, with no red, crimson, wine or maroon.
+    - Getsurin has five crescents, a five-bladed throwing star and no sign.
+    - Fuyuboshi's spikes are uneven, and Seiza is rings and ticks with one needle.
+    - Hakuchuu and Shokou have no red disc and no red and white rays.
+    - The Embers stones are amber, never red.
+  - Nothing reads as blood or a drip in any colour. The class marks are the kit's own glyphs.
+  - **Its conditions for upload:**
+    - Upload exactly the 120 files listed under "Great Axe" to "Codex" in the json, under the group with the key, never through the Studio MCP's upload.
+    - A picture rendered again comes back to the check.
+    - Every earlier AR6 condition carries on.
+  - **Its note for research's pass, not a content matter:** at 64 pixels, Ryuukou's lit spire could read a little like a candle's flame. At full size it's a faceted stone. If it reads as a flame in the slot, the fix is less glow.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, the eight sheets whole and their small rows.
+  - Delivered: the eight sheets, for research's verdict; the 120 pictures and the json go to Faber after that verdict.
+  - Accepted: no.
+- **Time, by the clock:** from 20:50, after the fixes' commit (4a629d9), to this record's commit. That covers five guarded Workbench runs, and three the guard stopped when free memory fell under its floor.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

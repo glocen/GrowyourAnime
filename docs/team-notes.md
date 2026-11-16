@@ -14,10 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** TR28's tier 1 calls ("Faber's calls"). One message comes with the stills.
 - **For Modulo:** AR19's 23 meshes are uploaded under the group (ids in `docs/asset-log.md`). The motion check from the player's camera comes with the stills.
 
-**Modulo (assets).** 2026-11-16, 20:50, on Opus 5.5.
-- **AR6 batch 3's fixes, in grey, for research's pass** (AR6, "Batch 3's fixes"): the Codex a book, the Staff's ring half as large again, Bunkou's fork, Rinkou's ribbons from the head; renamed Tenmon, Kontengi, Bunkou. Content check PASS.
+**Modulo (assets).** 2026-11-16, 21:01, on Opus 5.5.
+- **AR6 batch 3 in colour, for research's verdict** (AR6, "Batch 3 in colour"): the eight `gear_<kind>_colour.png` in `build/handoff/UI/gear/`, each weapon with its class's mark. Content check PASS for upload. Faber: the json now keys a weapon by its kind, with `hands` (the record says how).
 - **AR19's Stages II and III, delivered,** for Faber's part 12 item 6; research's pass waits on it.
-- **Now:** batch 3 in colour once research's pass and the three names' search are in; until then, the later list.
+- **Now:** AR21, the four chests' pictures.
 - **Later:** ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for TR24's fixes and AR19's install. Blender: nobody. Timing tests: nobody.
@@ -107,6 +107,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-16, 21:01. AR6: batch 3 in colour, the 120 in their slots (Modulo)
+
+- **What changed:** the eight class weapons in colour, as flat pictures for the gear slots, each with its class's mark on the bottom cut. The Tome's boards are a dark leather by rarity over cream pages, and the Codex's covers a pale parchment. `gear_icons.json` keys a weapon by its kind ("Sword" and "Short Sword" were "Main Hand" and "Off Hand") and gives each class's pair under `hands`.
+- **Where:** AR6, "Batch 3 in colour"; `build/handoff/UI/gear/` (`gear_<kind>_colour.png`, `images/`, `gear_icons.json`); `tools/blender/gear_icons.py`; the asset log, with batch 2's row, logged late.
+- **Open:** research's verdict, then the 120 and the json go to Faber for upload under the group.
+- **For:** research, then Faber.
 
 ### 2026-11-16, 20:50. AR6: batch 3, the eight class weapons in grey, with their fixes (Modulo)
 

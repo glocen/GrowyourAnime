@@ -3334,6 +3334,18 @@ Research's four fixes and the three renames, drawn again in grey on each kind's 
   - Accepted: no.
 - **Time, by the clock:** from 20:41, after research's verdict at 20:38, to this record's commit.
 
+### Research's pass on batch 3's fixes (Quaestor, 2026-11-16, 20:52)
+
+- **The four fixes are met (4a629d9).**
+  - The Codex reads as a book in the slot: lined leaves between proud covers, with the strap across them.
+  - The Staff's ring reads at 32 px.
+  - Bunkou's fork reads at 32 px and outranks the Epics.
+  - Rinkou's ribbons fan from the head and no longer stand like legs.
+- **The three names are clear,** by web, the Roblox catalog, groups and experiences. Kontengi has no namesake.
+  - Tenmon shares its romanization with a living composer (天門, a different word). Nothing on Roblox ties the word to him, and on a book called the Star Watch it reads as 天文, astronomy.
+  - Bunkou keeps its "-ou" in every place it's written, which keeps it apart from a niche manga's Bunko.
+- **Batch 3 closes in grey.** On to the colour pass, under the check's condition that Rinkou's ribbons stay pale, never red, crimson or maroon.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

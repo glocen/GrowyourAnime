@@ -2116,3 +2116,78 @@ The director to Faber, 2026-11-16, after the base's install: "i feel like the wo
     - On ours, the base stands under big anime cumulus, and the paving is greyer and less blue. Lantern Row is clear far up the street with no mist, the navy houses and the lanterns read against the sky, and the clouds sit over the lanterns.
     - Research's pass is wanted.
   - **Director-accepted:** not yet.
+
+## TR24. The first session whole, on a phone (Faber drives, research reviews)
+
+Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the register, 2026-11-15, night: "we work on the priority you believe we need to do first"). The run gives the in-game verdicts on AR16 and TR23 and one fix list ranked by what a new player feels. Started 2026-11-16 and stopped at the wrap, with only its tools kept (`NL_Debug`'s `DataExport` and `DataImport`); run again from here.
+
+**The captures (research, 2026-11-16).**
+- **How:** phone simulator, landscape, a fresh profile, the player's camera only (no free camera), HUD on. Play as a new player would: no debug jumps except at 16. Stills go to `build/scratch/faber/tr24/NN-name.png`, each with one line in your notes saying what happened and the server clock time. A burst is 3 or 4 stills about 0.3 s apart across the moment.
+- **Arrive (AR16's verdict)**
+  1. The first frame after loading, before any input: the base, the Breaker lit, the three shards.
+  2. A turn on the spot, 4 stills a quarter-turn apart: the plot, the star, the sleeping places, the Door, the sleeping Tower.
+  3. The HUD at rest on arrival, nothing touched.
+- **Choose**
+  4. Walking to the shards: one still at the first prompt the player sees. Note whether anything tells a new player what to do, and how.
+  5. The pick and the break: a burst from the tap to the name up (TR4). Time from the tap to the name.
+  6. The first second after the reveal closes: where the new Voidkin stands and what the HUD shows.
+- **Fight**
+  7. The way to Lantern Row: the Door from the player's side with its name, and a still on arriving on the Row. Time from leaving the base to the first enemy in sight. Note each wrong turn.
+  8. The first fight: a burst at the lead's first hit landed, and one at the Shade's burst.
+  9. One mid-fight still judged for the thumbs: does anything we need sit under a thumb?
+- **Find**
+  10. The first shard drop: a burst from the enemy's fall to the shard with its name readable. Note whether the name reads at phone size.
+  11. Breaking it: one still at the name.
+- **Work**
+  12. Home with the Base tile (TR19): check your two-tap issue first, then the tap and the first frame home.
+  13. The second Voidkin into a bay: a burst from the tap to the power coming on (TR18). Time it.
+- **Build**
+  14. The first gear, wherever a new player first gets one: a still of it in the Bag or Kit, and the stat it changes. If the session gives no gear yet, say so. That's a finding, not a failed run.
+- **Want**
+  15. The first sight of the Lamplighter's gate, one still. One still down the Strip from the base's gate (it sizes AR17).
+- **Light (TR23's verdict)**
+  16. Lantern Row by day, then jump to ToDusk and keep playing through the crossing: stills at day, mid-crossing, dusk and night. Watch the frame times across the crossing, and log every frame over 50 ms with its time and what was on screen (TR23's unattributed ~90 ms frame).
+- **Throughout**
+  17. Every wait over about 10 s: a still and its time (north star: nothing waits more than about half a minute). Every wall of text, any Robux prompt, every error in the output.
+  18. The fps at three moments: on arrival, in the busiest fight, and at home.
+  19. Anything that surprised you as the driver: a still and one line.
+- **After:** the test profile back with DataImport.
+- **Research's part:** the verdicts on AR16 and TR23 and one fix list ranked by what a new player feels, written in TR24 by research from these stills.
+
+**The run (Faber, 2026-11-16, 13:43 to 14:14, by the PC's clock).** Driven in the device simulator (an iPhone 16 Pro in landscape) on a fresh profile. The walks were scripted (`character_navigation`), so wrong turns aren't measured. The one debug jump was item 16's light, plus a jump back to Day for the walk to the gate. Each still has its line and time in `build/scratch/faber/tr24/notes.md`, beside the stills and takes (scratch). The test profile was put back with `DataImport` and read after a rejoin: 9 Voidkin, 52,392 Credits, no difference. The simulator was switched off and Studio released. The driver's findings, in the list's order, for research's ranking:
+- **Arrive.** The world shows 10.4 s after the join (loading sky, then about 2 s of black). The three starter shards stand 37 to 38 studs from the arrival point: small grey Neon blocks that read as the Breaker's panel lights. Nothing tells a new player what to do.
+- **Choose.**
+  - The prompt is Roblox's default ("Pip's shard / Choose", a 0.4 s hold), and only one shard's prompt shows at a time, so the other two go unnamed until walked to.
+  - The shard goes into the Breaker, which breaks it on the battery (generation 0). After about 6 s it shows "Ready to open", but nothing opens: the player must find the Breaker's prompt.
+  - Tap to name: about 1.1 s. One 53 ms frame at the reveal's start.
+  - Afterwards Pip stands between the player and the Breaker, back to the camera, and nothing points to Lantern Row.
+- **Fight.**
+  - The Door shows no name and no prompt, and a lamp post stands in the line of sight. Through it, Shades are in sight 32 to 38 studs ahead on arrival (13:52:16).
+  - First hit and number at about 6 s, first kill at about 11 s with a small white flash, and Pip at Level 2 by 17 s.
+  - Pip's hat fills the camera in the first seconds (19).
+  - The fight sits about 30 studs off to the side. Later the busiest fight, an Elite Brawler, happened beside and behind the player, off the screen, with only its bar showing (19).
+  - Nothing sits under a thumb.
+- **Find.** The first drop is a "+1 Watt's shard" toast at the screen's right edge. There's no shard in the world, so the name reads only in the toast.
+- **Breaking it.**
+  - Watt's shard takes 30 s at the Breaker's screen with nothing to do (17).
+  - Its reveal reads "WATT" about 1 to 1.5 s after the tap.
+  - After it, the Breaker's screen says "No shard yet. They drop on Lantern Row.", and the HUD hint still says "Watt's shard: into the Breaker" (stale).
+- **Work.**
+  - The last session's "two taps on the Base tile did nothing" was the simulator's touch offset (62 px left), not the game. With the offset, the tile works.
+  - While a pack engages, Home is refused with "In a fight", and the packs keep coming to a standing player, so going home means walking out of reach first.
+  - Home takes about 1.2 s from the tap. Its first frame faces the plot's edge, a lamp post and Pip's hat.
+  - Nothing points to a bay. Bay 2's "Set worker" opens the Base screen's "Who works?", and on the tap on Work the power is on in the take's next picture, within 0.2 s: "18 / 0 kW", "Watt · 18 kW".
+  - In the world, Pip stands in front of the bay and hides Watt.
+- **Build.** No gear: after 36 kills the save's Items are empty, and the Gear tab says "Soon". This is a finding, not a failed run.
+- **Want.**
+  - Down the Strip from the base's gate: bare paving to the horizon (AR17's install is held).
+  - The Lamplighter's gate shows from 300 studs as a dark shape at the Row's end, behind enemy bars. At 35 studs it's closed doors with two clocks and no name, with the prompt "the Lamplighter / Challenge".
+  - A Lv 2 Pip doesn't survive the walk there. It fell to Lv 6 and 7 Brawlers at 14:10:20, and "Healing 1:30" is a 90 s wait (17).
+- **Light (TR23).**
+  - After the jump to ToDusk, nothing visibly changes for 30 s. Then the sky swaps between two pictures at the blend's middle, and the haze doesn't hide it. The natural crossing at 13:48:30 did the same.
+  - No frame over 50 ms through the crossing, the jump to night, the walk or the elite fight.
+- **Throughout.**
+  - Waits over 10 s: the join (about 10 s), Watt's break (30 s), Pip's healing (90 s).
+  - No wall of text and no Robux prompt.
+  - Errors: the run's output wasn't read before the rejoin cleared it. The rejoin's boot had 0 errors, plus three Roblox warnings for an asset id that is in neither `src/` nor the place.
+  - fps: 60 on arrival, 60 in the busiest fight, 58 at home. That's the PC under the simulator, not a phone.

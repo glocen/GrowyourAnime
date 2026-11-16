@@ -8355,6 +8355,12 @@ From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat powe
 - **Content check (mine), before building:** PASS. These are colour runs on digits: no shape, no drop or stain, and none is one rarity's colour alone. Nothing is uploaded.
 - **Four facts:** drawn; seen at the smallest phone's size on the sheet; research's pick to come; not director-accepted. Faber builds the pick from a UIGradient and a stroke.
 
+### Research's pick (Quaestor, 2026-11-16, 21:50)
+
+- **The pick: A, Shard light.** The number and the emblem's crystal read as one prize, and its sheen is the shimmer the feel line asks for. It's the most "chromatic" of the three: iridescent, where B reads as a sunset and C washes to white at the phone's size.
+- **One fix before Faber builds it:** at the smallest phone the frost tops fade and the number reads as one lilac. Push the stops so three hues show at 1.7 px a point: a clear white at the tops, and Storm's pink reaching higher at the feet.
+- **Then** Faber builds it from the stops on the sheet, and research's player-camera review closes it in the game.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

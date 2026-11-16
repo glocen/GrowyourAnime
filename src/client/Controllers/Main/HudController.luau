@@ -1198,6 +1198,7 @@ function HudController.Start()
 		Parent = Layers.Get("Hud"),
 	})
 	chip, chipText = hint.Frame, hint.Value
+	World.Foot(chip) -- the edge's arrow stands over it
 	chip.Visible = false
 	-- The dock of three icons (AR12): Inventory opens the Voidkin screen, open while it is; Base takes the player home
 	-- (TR19: goHome), and the Base screen opens from a bay's prompt; the Map's screen isn't built, so its tile dims and says

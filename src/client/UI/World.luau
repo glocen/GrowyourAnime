@@ -15,6 +15,8 @@
 --                                             (the readout, the eye, the next's offer): a plate under the band starts right
 --                                             of it (research's pass on AR12: the eye stood over a bay's plate)
 --   World.Ceiling()                           that foot in the viewport's pixels: a shape in the world kept under it
+--   World.Foot(frame?) / World.FootTop()      the HUD's lowest piece over the dock (the next step's chip); its top in the
+--                                             viewport's pixels while it shows, else nil: the edge's arrow stays over it
 --   World.Apart(plate, group)                 kept from covering another of its group: the nearest stands at its point, and
 --                                             each one above it takes the free place nearest its point, over or under
 --                                             (a base's machine plates: AR16's star lined a bay up behind the Breaker)
@@ -43,6 +45,7 @@ local band: number? = nil -- the top band's lower edge, margin included: the car
 local spans: { Span } = {} -- the same pieces one by one, and a toast stack while it shows
 local floor: number? = nil -- the top bar's foot: an open plate never stands over it
 local leadCorner: Span? = nil -- the lead's corner under its card, its margin included: a plate kept under the band keeps right of it
+local foot: GuiObject? = nil -- the HUD's piece over the dock, the next step's chip (HudController)
 
 function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: number?): Frame
 	local frame = Instance.new("Frame")
@@ -75,6 +78,20 @@ end
 
 function World.Edge(): number?
 	return band
+end
+
+function World.Foot(frame: GuiObject?)
+	foot = frame
+end
+
+-- The foot piece's top in the viewport's pixels while it shows, or nil (TR24's fix 2, research's must-fix: the chip covered
+-- the arrow's lower half at the bottom middle).
+function World.FootTop(): number?
+	local piece = foot
+	if piece == nil or piece.Parent == nil or not piece.Visible then
+		return nil
+	end
+	return piece.AbsolutePosition.Y + GuiService:GetGuiInset().Y
 end
 
 -- The top bar's foot in the viewport's pixels (Camera:ViewportPointToRay's), or nil before the HUD has set it: for a shape in

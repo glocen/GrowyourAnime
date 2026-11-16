@@ -15,6 +15,7 @@ local HudConfig = require(Shared.Config.Hud)
 local Fight = require(Shared.Rules.Fight)
 local Net = require(Shared.Net)
 local ViewController = require(script.Parent.Parent.Parent.Main.ViewController)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Guide = require(UI.Guide)
 local Layers = require(UI.Layers)
@@ -309,6 +310,23 @@ function ViewCases.Cases(given: Given): { any }
 						local foot = arrow.AbsolutePosition.Y + arrow.AbsoluteSize.Y + GuiService:GetGuiInset().Y
 						local floor = camera.ViewportSize.Y - HudConfig.Guide.Bottom * Layers.Scale()
 						t.Check("its foot over the frame's bottom inset", foot <= floor + 1, string.format("%.0f, the inset %.0f", foot, floor))
+						-- straight behind, it stands at the bottom middle: over the next step's chip, never under it (research, 2026-11-17).
+						-- A stand-in chip, its top well over the inset, so the rule is met whatever step the save is at.
+						local hud = Layers.Get("Hud")
+						local stand = Instance.new("Frame")
+						stand.Name = "NL_SelfTestChip"
+						stand.BackgroundTransparency = 1
+						stand.AnchorPoint = Vector2.new(0.5, 1)
+						stand.Position = UDim2.fromScale(0.5, 1)
+						stand.Size = UDim2.fromOffset(200, HudConfig.Guide.Bottom + 60)
+						stand.Parent = hud
+						World.Foot(stand)
+						t.Wait(0.15)
+						local chipTop = World.FootTop()
+						foot = arrow.AbsolutePosition.Y + arrow.AbsoluteSize.Y + GuiService:GetGuiInset().Y
+						t.Check("its foot over the next step's chip, where it stands higher than the inset", chipTop ~= nil and foot <= chipTop + 1, string.format("%.0f, the chip's top %s", foot, tostring(chipTop)))
+						World.Foot(HudController.Parts().Chip)
+						stand:Destroy()
 					end
 					-- and under the HUD's top band, never drawn under a card or a pill (it hid under the wallet)
 					local band = World.Edge()

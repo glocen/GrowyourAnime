@@ -24,6 +24,7 @@ local Guide = {}
 local CONFIG = HudConfig.Guide
 local INK = Color3.fromHex("#120E22") -- the chevron's outline, so it reads on a pale sky and on the void alike
 local THICK = 7 -- a bar's thickness, authored points
+local NUDGE = 4 -- authored points the edge's arrow nudges either way along its way
 
 local player = Players.LocalPlayer
 local targets: { Instance } = {}
@@ -257,12 +258,17 @@ local function stepEdge()
 	end
 	local band = World.Edge()
 	local layer = a.Parent :: GuiObject
-	-- The arrow's middle keeps half its size inside the inset, so the whole of it stays clear of the HUD's edges (the
-	-- next step's chip under it).
-	local pad = CONFIG.Edge.Size * 0.5 * scale
+	-- The arrow's middle keeps half its size inside the inset, and its nudge along the way (below), so the whole of it
+	-- stays clear of the HUD's edges (the next step's chip under it).
+	local pad = (CONFIG.Edge.Size * 0.5 + NUDGE) * scale
 	margin += pad
 	top += pad
 	bottom += pad
+	-- and over the next step's chip where it stands higher than the inset (research's must-fix, 2026-11-17)
+	local chipTop = World.FootTop()
+	if chipTop then
+		bottom = math.max(bottom, view.Y - chipTop + pad + CONFIG.Edge.Clear * scale)
+	end
 	if band then
 		local under = layer.AbsolutePosition.Y + GuiService:GetGuiInset().Y + band * scale + pad
 		top = math.max(top, under)
@@ -280,7 +286,7 @@ local function stepEdge()
 	local reach = math.min(if math.abs(way.X) > 1e-6 then halfX / math.abs(way.X) else math.huge, if math.abs(way.Y) > 1e-6 then halfY / math.abs(way.Y) else math.huge)
 	local point = centre + way * reach
 	local unit = way.Unit
-	point += unit * (bob() / CONFIG.Bob) * 4 * scale -- it nudges along its way, as the chevrons bob
+	point += unit * (bob() / CONFIG.Bob) * NUDGE * scale -- it nudges along its way, as the chevrons bob
 	-- A viewport pixel less the top bar's inset is a GUI pixel, less the layer's corner (as UI.World places its plates).
 	-- By scale, so the layer's UIScale sizes the arrow and never moves it.
 	local room = layer.AbsoluteSize

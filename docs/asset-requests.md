@@ -3103,6 +3103,18 @@ For Modulo. Every item kind modelled in Blender and rendered to its icon: ten we
   - The three Commons of a kind are nearly one shape, as in batch 1. The frame and the name carry them.
 - **Four facts:** made, yes. Self-reviewed, yes: each kind's sheet at full size and on its small rows, and the batch sheet whole. Delivered, the sheets for research's verdict; nothing for Faber yet. Accepted, no.
 - **Time, by the clock:** the shared parts were written at 13:45, in the wait for AR17's verdict. The eight kinds and the batch sheet ran from 17:41, after AR20's delivery, to the commit.
+### Research's verdict on batch 2 (Quaestor, 2026-11-16, 18:51)
+
+From the batch sheet and the Shoulders' own, at 38 points and in the 32-pixel silhouettes.
+- **Felt:** six of the eight read as their kind at a glance, and down each column a set is one family: Gales' vanes, Stormcall's hooks, Gloamforge's prongs, Nightloom's shuttle. The Shoulders don't read as shoulders at slot size.
+- **Tier:** competent for six kinds; the Shoulders work. **Bold thing:** each Legendary's one new form, which outranks its row's Epics by shape alone (Hakkou's ring of light round the sleeve, Hinode's rays).
+- **Fixes:**
+  1. **The Shoulders:** at 32 pixels the pair on its yoke is two cups joined, the reading the five tries were avoiding, and the standing collar vanishes at that size. The slot has to read by the lames stepping down an arm. One pauldron from its outer side, three-quarter, the lames down and its strap to the neck, filling the square the way the Bracers do, or the pair turned so the collar leads. The lever is Modulo's. Serves "the thing a player knows at a glance".
+  2. **The Earring's Lanternsteel hoop:** with no hook it reads as the Ring. It gets its hook, like the other fourteen. Serves "apart from its neighbours".
+  3. **The plain Cloaks:** the Common with no collar reads as a skirt from behind. Every cloak shows its collar or clasp at the neck. Serves the kind's read.
+- **The tier 1 calls:** the Earring's fifteen serving both slots, the Cloak's plain names, the Amulet's two near words, and each kind filling its square all stand. The mantle, the first, is fix 1.
+- **The names:** the web and Roblox search on the 24 Legendaries is running; its result comes as a line here before a player sees one.
+
 ## AR7. The Lamplighter, Lantern Row's keeper
 
 For Modulo, now (research's request, 2026-11-13). Phase 2's keeper is the first boss a player meets and the last beat of the first session (`docs/production-plan.md`, phase 2). It's a signature piece, so it gets the time it needs, named here: a sheet first, explored fast, judged beside a Voidkin.

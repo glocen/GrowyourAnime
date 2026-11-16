@@ -99,18 +99,16 @@ def chest_sum(n, c):
     return sum(min(c["Most"], c["Base"] + c["PerFloor"] * k) for k in range(1, n + 1))
 
 
-def paid(run, rule, share, chest, cfg=CFG):
-    """(Credits, chests) a run pays, the chest's chance rising with the floor's number. 'builder': every floor pays.
-    'research': only the hard floors pay; a fast floor is the free ride to them."""
+def paid(run, share, chest):
+    """(Credits, chests) a run pays, the chest's chance rising with the floor's number. Only the hard floors pay, as
+    TowerService does: a fast floor is the free ride to them."""
     floors, _, hard, quick = run
-    levels = hard if rule == "research" else [foe_level(f, cfg) for f in range(1, quick + 1)] + hard
-    credits = sum(share * CPK * G(lv) for lv in levels)
-    first = quick if rule == "research" else 0
-    return credits, chest_sum(floors, chest) - chest_sum(first, chest)
+    credits = sum(share * CPK * G(lv) for lv in hard)
+    return credits, chest_sum(floors, chest) - chest_sum(quick, chest)
 
 
-def hourly(runs, rule, share, chest):
-    per = [paid(r, rule, share, chest) for r in runs]
+def hourly(runs, share, chest):
+    per = [paid(r, share, chest) for r in runs]
     secs = sum(r[1] + BETWEEN for r in runs) / len(runs)
     n = 3600 / secs
     return n, n * sum(p[0] for p in per) / len(per), n * sum(p[1] for p in per) / len(per), secs
@@ -159,13 +157,13 @@ def report_pool(runs=200, seed=8):
             line(L if share == 0 else "", name, res[runs // 10], res[runs // 2], res[9 * runs // 10], w=14)
 
 
-def report_rewards(rule, share, chest, title, runs=60, seed=9):
+def report_rewards(share, chest, title, runs=60, seed=9):
     rng = random.Random(seed)
     print(f"\n== {title} ==")
     line("level", "floors", "run min", "fast s", "runs / h", "Cr / h vs Row", "vs own ground", "chests / run", "chests / h", w=13)
     for L in (5, 10, 15, 30, 45, 60):
         rs = runs_of(L, rng, runs)
-        n, cr, ch, secs = hourly(rs, rule, share, chest)
+        n, cr, ch, secs = hourly(rs, share, chest)
         fl = sorted(r[0] for r in rs)[len(rs) // 2]
         fast_s = sum(r[3] for r in rs) / len(rs) * (FIRST_HIT + CFG["fastRise"])
         line(L, fl, f"{secs / 60:.1f}", f"{fast_s:.0f}", f"{n:.0f}", f"{cr / ground_credits(L, True):.0%}",
@@ -189,16 +187,16 @@ def launch_ground_hazard(r, hours_on_ground):
 def fit(runs=80, seed=10):
     rng = random.Random(seed)
     rs = runs_of(LAUNCH_LEVEL, rng, runs)
-    n = hourly(rs, "research", 1.0, {"Base": 0, "PerFloor": 0.01, "Most": 1})[0]
-    tower_cr = hourly(rs, "research", 1.0, {"Base": 0, "PerFloor": 0, "Most": 0})[1]
+    n = hourly(rs, 1.0, {"Base": 0, "PerFloor": 0.01, "Most": 1})[0]
+    tower_cr = hourly(rs, 1.0, {"Base": 0, "PerFloor": 0, "Most": 0})[1]
     share = CREDITS_VS_GROUND * ground_credits(LAUNCH_LEVEL, True) / tower_cr
     lo, hi = 0.0, 0.2
     for _ in range(50):
         p = (lo + hi) / 2
-        c = hourly(rs, "research", share, {"Base": 0, "PerFloor": p, "Most": 0.5})[2]
+        c = hourly(rs, share, {"Base": 0, "PerFloor": p, "Most": 0.5})[2]
         lo, hi = (p, hi) if c < CHESTS_AN_HOUR else (lo, p)
     chest = {"Base": 0, "PerFloor": round(hi, 4), "Most": 0.5}
-    c = hourly(rs, "research", share, chest)[2]
+    c = hourly(rs, share, chest)[2]
     q = {"Uncommon": UNCOMMON_OR_BETTER}
     for r in ("Rare", "Epic", "Legendary"):
         lo_h, hi_h = chests.TARGET[r]
@@ -231,7 +229,6 @@ def report_fit():
     for r in ("Rare", "Epic", "Legendary"):
         lo, hi = chests.TARGET[r]
         line(r, *[f"{first_at(r, row, c, s):.1f} h" for s in (0.25, 0.5, 1.0)], f"{lo:g} to {hi:g} h", w=14)
-    report_rewards("research", share, chest, "T6. The rewards on research's fit")
 
 
 if __name__ == "__main__":
@@ -241,5 +238,5 @@ if __name__ == "__main__":
     report_floors()
     report_cap()
     report_pool()
-    report_rewards("builder", CFG["share"], CFG["chest"], "T4. The rewards on today's Config (the builder's seeds, TR29)")
+    report_rewards(CFG["share"], CFG["chest"], "T4. The rewards on today's Config")
     report_fit()

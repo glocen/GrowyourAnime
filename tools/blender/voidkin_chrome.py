@@ -12,13 +12,20 @@ One family of page icons, our own drawing, shared by the three, so the pick is o
   C, Blades: each page a leaning blade of lacquer, stacked; the chosen one slides out toward its page, its edge lit.
 A page that isn't built yet is hidden until it opens (Modulo's proposal); each direction also shows its one quiet
 lock state, for research to weigh, and the rail with all seven open at the smallest phone, the longest word chosen.
-Only the chosen page shows its word, in mixed case as today's; the rail's pitch keeps room for War Emblems' two lines,
-so the seven stand whole at the smallest phone and opening a page never moves the others.
+Only the chosen page shows its word, in mixed case as today's.
+
+The director picked B, its rail and its channel in the bar (14:03). B is drawn to research's size and colour call: each
+page a row of 44 points on the smallest phone, its icon 24 points, idle in the seam's text colour, the chosen glass, its
+meeting line and a mark that's on in the seam's Light. The chosen tab holds its icon over its word inside its own row,
+so changing page moves nothing; only where the rows don't fit (seven at the smallest phone) do they close up, and the
+chosen one grows by its word. A and C stay as they were drawn for the pick.
 
 blender -b --factory-startup --python tools/blender/voidkin_chrome.py -- <abs out>
 Reads the captures in build/handoff/UI/voidkin/chrome/ (base_*.png). Writes, in <out>: voidkin_chrome_phone.png (the
 eight screens at the capture's own size), voidkin_chrome_close.png (each make up close: the rails, the bars, the seven
-and the lock state) and voidkin_chrome_icons.png (the icons large, idle and chosen; their phone size is on the screens).
+and the lock state), voidkin_chrome_icons.png (the icons large, idle and chosen; their phone size is on the screens),
+and B's build: images/ (each icon white on alpha, 128 pixels, for the game to tint) with voidkin_icons_review.png (each
+at its full size and at 64 over the panel). It prints B's contrasts as drawn.
 The page words are Blender's own face, standing in for the game's.
 Every number is a seed, in the capture's pixels at an iPhone (the smallest phone scales them by SMALL).
 """
@@ -344,50 +351,124 @@ def seam_x(base):
     return base["rail"][2] - 1.0 * base["s"]
 
 
+# B, as the director picked it (AR29, "The director's pick: B", 14:03), to research's size and colour call carried over to
+# it. Numbers in an iPhone capture's pixels, times s. The smallest phone's capture draws PT of its pixels to a point
+# (today's dots, 26 and 42 authored, drawn at 0.85, measure 25 and 44 pixels there).
+PT = 1.1
+SLOT = 44 * PT / SMALL     # a page's row, its touch area: 44 points on the smallest phone
+ICON = 12 * PT / SMALL     # an icon's half size: 24 points drawn on the smallest phone
+WORD_B = 14.5              # the chosen page's word, a step over today's: the tab names itself
+
+
+def wash_b(t):
+    """The chosen glass's Light, across the tab from its left (0) to the line (1): faint behind its icon and word, full
+    at the line, so the word holds 4.5:1 to its last letter."""
+    return 0.08 + 0.52 * t ** 3.4
+
+
+def contrast(fg, bg):
+    """WCAG's ratio of two sRGB colours, 0 to 1 each."""
+    def lum(rgb):
+        lin = [v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in rgb[:3]]
+        return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+    a, b = sorted((lum(fg), lum(bg)))
+    return (b + 0.05) / (a + 0.05)
+
+
+def srgb(hex_):
+    return [int(hex_[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+
+
+def contrast_report():
+    """B's text on its grounds, as drawn: the idle icon on the rail's ground (the capture's, under the rail), the chosen
+    icon and word on the glass at the farthest each reaches toward the line, and a mark that's on in its channel."""
+    text, light = srgb(SEAM["Text"]), srgb(SEAM["Light"])
+    panel = [(p + q) / 2 for p, q in zip(srgb(SEAM["Panel"][0]), srgb(SEAM["Panel"][1]))]
+    out = {}
+    for key, base in BASES.items():
+        px = rs.load(CHROME / base["file"])
+        x0, y0, x1, y1 = base["rail"]
+        ground = px[int(y0):int(y1), int(x0) - 6:int(x0) - 2, :3].reshape(-1, 3).max(0)   # the brightest of the ground
+        s, left, sx = base["s"], x0 + 1.0 * base["s"], seam_x(base)
+        cx = base["cx"] - 4.0 * s
+
+        def glass(x):
+            w = wash_b(min(max((x - left) / (sx - left), 0.0), 1.0))
+            g = [p * 0.97 + q * 0.03 for p, q in zip(panel, ground)]
+            return [p * (1 - w) + q * w for p, q in zip(g, light)]
+        word = 0.3 * WORD_B * s * len("Overview")              # half the widest word's run, Blender's face at this size
+        channel = [p * 0.72 + q * 0.28 for p, q in zip(srgb(SEAM["Channel"]), ground)]
+        out[key] = dict(idle=contrast(text, list(ground)), icon=contrast(text, glass(cx + ICON * s)),
+                        word=contrast(text, glass(cx + word)), on=contrast(light, channel))
+    return out
+
+
+def need_b(page, s):
+    """The chosen tab's height: its icon over its word, inside one row where it fits."""
+    return (4.0 + 2 * ICON + 3.0 + 4.0) * s + len(lines(page)) * WORD_B * 1.05 * s
+
+
+def rows_b(base, pages):
+    """Every page a row of SLOT: the chosen tab holds its icon and its word inside its own row, so changing page moves
+    nothing. Where the rows don't fit (seven at the smallest phone), they close up to share the room, keeping room for
+    the longest word chosen; then the chosen tab grows by its word and the rows under it step down."""
+    s = base["s"]
+    room = base["foot"] - base["top"]
+    longest = max(need_b(page, s) for page in pages)
+    slot = SLOT * s
+    if len(pages) * slot + max(0.0, longest - slot) > room:
+        slot = (room - longest) / (len(pages) - 1)
+    return slot
+
+
 def make_b(px, base, items, pages, chosen, locked=(), marks=None):
     """B, The seam."""
     s, cx = base["s"], base["cx"] - 4.0 * base["s"]
-    word = 17.0 * s
-    pitch, tabs = layout(base, pages, chosen, word, 0.0)
-    pitch_tab = pitch
-    x0, x1 = base["rail"][0], base["rail"][2]
+    x0 = base["rail"][0]
     sx = seam_x(base)
-    a = Area(px, x0 - 4, base["rail"][1], x1 + 12, base["rail"][3])
-    chosen_y = next(y for page, y, lit in tabs if lit) + pitch_tab / 2 + word / 2
+    a = Area(px, x0 - 4, base["rail"][1], base["rail"][2] + 12, base["rail"][3])
+    slot = rows_b(base, pages)
+    tabs, y = [], base["top"]
+    for page in pages:
+        h = max(slot, need_b(page, s)) if page == chosen else slot
+        tabs.append((page, y, h, page == chosen))
+        y += h
+    chosen_y = next(y + h / 2 for page, y, h, lit in tabs if lit)
     # the line of light down the rail's edge, strongest at the chosen page
     line = np.maximum(np.abs(a.X - sx) - 0.5 * s, np.abs(a.Y - (base["top"] + base["foot"]) / 2) -
                       (base["foot"] - base["top"]) / 2)
     strength = 0.16 + 0.84 * np.exp(-((a.Y - chosen_y) / (70.0 * s)) ** 2)
     a.glow(np.abs(a.X - sx), 3.0 * s, SEAM["Light"], 0.28 * strength * (line < 2))
     a.paint(line, SEAM["Light"], strength)
-    y = base["top"]
-    for page, _, lit in tabs:
-        h = pitch_tab + (word * len(lines(page)) if lit else 0.0)
+    for page, y, h, lit in tabs:
         mid = y + h / 2
         if lit:
-            t0, t1 = y + 2.0 * s, y + h - 2.0 * s
-            d = a.poly([(x0 + 4.0 * s, t0 + 12.0 * s), (x0 + 4.0 * s + 12.0 * s, t0), (sx, t0), (sx, t1),
-                        (x0 + 8.0 * s, t1), (x0 + 4.0 * s, t1 - 4.0 * s)])
+            # a tab of glass opening from the line, the full rail wide, washed with the seam's Light toward the line
+            t0, t1, left = y + 1.0 * s, y + h - 1.0 * s, x0 + 1.0 * s
+            d = a.poly([(left, t0 + 10.0 * s), (left + 10.0 * s, t0), (sx, t0), (sx, t1), (left + 4.0 * s, t1),
+                        (left, t1 - 4.0 * s)])
+            a.glow(d, 6.0 * s, SEAM["Light"], 0.22)
             a.paint(d, a.vramp(SEAM["Panel"][0], SEAM["Panel"][1], t0, t1), 0.97)
-            a.paint(d, a.hramp(SEAM["Light"], SEAM["Light"], x0, sx),
-                    np.clip((a.X - (x0 + 4.0 * s)) / (sx - x0 - 4.0 * s), 0, 1) ** 2.0 * 0.34)
-            a.line(d, 1.0 * s, SEAM["Edge"])
+            a.paint(d, c(SEAM["Light"]), wash_b(np.clip((a.X - left) / (sx - left), 0, 1)))
+            a.line(d, 1.0 * s, SEAM["Light"], 0.6)
             # where it meets the line, the line runs bright and wide
-            meet = np.maximum(np.abs(a.X - sx) - 1.3 * s, np.abs(a.Y - mid) - (t1 - t0) / 2)
-            a.glow(meet, 7.0 * s, SEAM["Light"], 0.5)
+            meet = np.maximum(np.abs(a.X - sx) - 1.6 * s, np.abs(a.Y - mid) - (t1 - t0) / 2)
+            a.glow(meet, 9.0 * s, SEAM["Light"], 0.6)
             a.paint(meet, SEAM["Light"])
-            glyph(a, page, cx, t0 + 16.0 * s, 11.0 * s, SEAM["Text"])
-            word_at(items, cx, t1 - 14.0 * s - (len(lines(page)) - 1) * WORD * 1.05 * s, s, page)
+            top = mid - need_b(page, s) / 2 + 4.0 * s
+            glyph(a, page, cx, top + ICON * s, ICON * s, SEAM["Text"])
+            for i, word in enumerate(lines(page)):
+                say(items, cx, top + 2 * ICON * s + 3.0 * s + i * WORD_B * 1.05 * s, WORD_B * s, word, SEAM["Text"],
+                    bold=0.5)
         else:
             if page in locked:
-                glyph(a, page, cx, mid, 10.0 * s, SEAM["Faint"], 0.45)
-                lock_tag(a, cx + 9.0 * s, mid + 8.0 * s, s)
+                glyph(a, page, cx, mid, ICON * s, SEAM["Faint"], 0.45)
+                lock_tag(a, cx + ICON * s, mid + ICON * 0.8 * s, s)
             else:
-                glyph(a, page, cx, mid, 10.5 * s, SEAM["Soft"])
+                glyph(a, page, cx, mid, ICON * s, SEAM["Text"])
             # a short rule at each page on the line, an index's mark
             tick = np.maximum(np.abs(a.Y - mid) - 0.5 * s, np.maximum(a.X - sx, sx - 6.0 * s - a.X))
             a.paint(tick, SEAM["Light"], 0.5)
-        y += h
     bar_b(px, base, items, marks or {})
 
 
@@ -398,9 +479,9 @@ def bar_b(px, base, items, marks):
     a = Area(px, b0 - 2, 0, b1 + 4, y1 + 6)
     mid = (y0 + y1) / 2
     (bx0, bx1), rest = base["buttons"][0], base["buttons"][1:]
-    # Back: no plate, its word on the band over a line of light
-    glyph(a, "Back", bx0 + 11.0 * s, mid, 7.0 * s, SEAM["Text"])
-    say(items, bx0 + 22.0 * s, mid - 4.7 * s, 15.0 * s, "BACK", SEAM["Text"], align="LEFT", bold=0.5, space=1.1)
+    # Back: no plate, its mark and its word on the band over a line of light
+    glyph(a, "Back", bx0 + 11.0 * s, mid, 8.5 * s, SEAM["Text"])
+    say(items, bx0 + 23.0 * s, mid - 5.2 * s, 16.0 * s, "BACK", SEAM["Text"], align="LEFT", bold=0.5, space=1.1)
     under = np.maximum(np.abs(a.Y - (y1 - 3.0 * s)) - 0.5 * s, np.maximum(bx0 + 4 * s - a.X, a.X - (bx1 - 4 * s)))
     prof = 0.15 + 0.85 * np.exp(-((a.X - (bx0 + bx1) / 2) / (22.0 * s)) ** 2)
     a.glow(np.maximum(under, 0), 2.5 * s, SEAM["Light"], 0.3 * prof)
@@ -408,7 +489,8 @@ def bar_b(px, base, items, marks):
     # the three marks share one cut channel, split by hairlines
     x0, x1 = rest[0][0], rest[-1][1]
     k = 8.0 * s
-    d = a.poly(ui.cut_box(x0, y0 + 3 * s, x1, y1 - 3 * s, k, 0, k, 0))
+    c0, c1 = y0 - 1.0 * s, y1 + 2.0 * s                         # the band's whole height: a 24-point icon breathes in it
+    d = a.poly(ui.cut_box(x0, c0, x1, c1, k, 0, k, 0))
     a.paint(d, c(SEAM["Channel"]), 0.72)
     a.line(d, 1.0 * s, SEAM["Edge"])
     for (m0, m1), (n0, _) in zip(rest, rest[1:]):
@@ -416,9 +498,9 @@ def bar_b(px, base, items, marks):
         a.paint(split, SEAM["Edge"])
     for (m0, m1), name in zip(rest, ("Favourite", "Lock", "Rename")):
         on = marks.get(name, False)
-        glyph(a, name, (m0 + m1) / 2, mid, 10.5 * s, SEAM["Light"] if on else SEAM["Soft"], on=on)
+        glyph(a, name, (m0 + m1) / 2, (c0 + c1) / 2 - 1.0 * s, ICON * s, SEAM["Light"] if on else SEAM["Text"], on=on)
         if on:
-            lit = np.maximum(np.abs(a.Y - (y1 - 4.2 * s)) - 0.6 * s, np.abs(a.X - (m0 + m1) / 2) - 9.0 * s)
+            lit = np.maximum(np.abs(a.Y - (c1 - 3.6 * s)) - 0.6 * s, np.abs(a.X - (m0 + m1) / 2) - 9.0 * s)
             a.glow(np.maximum(lit, 0), 3.0 * s, SEAM["Light"], 0.45)
             a.paint(lit, SEAM["Light"])
 
@@ -572,7 +654,7 @@ def phone_sheet(out, shots):
 def close_sheet(out, shots, sevens, locks):
     """Each make up close, at K times the capture: the rail and the bar on both pages, then the seven and the lock."""
     gap = 30
-    rail_i = (82, 60, 175, 300)
+    rail_i = (82, 60, 175, 340)
     rail_o = (76, 58, 158, 350)
     bar_i = (236, 0, 512, 62)
     widths = (rail_i[2] - rail_i[0]) * K, (rail_o[2] - rail_o[0]) * K
@@ -636,8 +718,43 @@ def icon_sheet(out):
     print("wrote", out / "voidkin_chrome_icons.png", px.shape)
 
 
+# Each icon's image: its name in the game, the glyph, and its state. The glyph's half size is CUT_R of the image's 64,
+# its middle the image's, so every icon lands where the tool draws it: an image's side is 2 * ICON * 64 / CUT_R.
+CUT, CUT_R = 128, 52.0
+CUTS = [(f"VoidkinPage{page.replace(' ', '')}", page, False) for page in BUILT + LATER] + [
+    ("VoidkinBack", "Back", False), ("VoidkinFavourite", "Favourite", False), ("VoidkinFavouriteOn", "Favourite", True),
+    ("VoidkinLock", "Lock", False), ("VoidkinLockOn", "Lock", True), ("VoidkinRename", "Rename", False)]
+
+
+def export_icons(out):
+    """Each icon white on alpha at CUT pixels, for the game to tint (Text idle, Light on), and their review sheet: each
+    at its full size and at 64 over the seam's panel."""
+    folder = out / "images"
+    folder.mkdir(parents=True, exist_ok=True)
+    cuts = {}
+    for file, name, on in CUTS:
+        px = np.zeros((CUT * K, CUT * K, 4), np.float32)
+        glyph(Area(px, 0, 0, CUT, CUT), name, CUT / 2, CUT / 2, CUT_R, "#FFFFFF", on=on)
+        img = rs.shrink(px, 1 / K)
+        assert img[0].max() == 0 and img[-1].max() == 0 and img[:, 0].max() == 0 and img[:, -1].max() == 0, file
+        rs.save(img, folder / f"{file}.png")
+        cuts[file] = img
+    gap = 24
+    b = Board(gap + len(cuts) * (CUT + gap), 60 + CUT + gap + 64 + 44, SEAM["Panel"][0])
+    b.text(gap, 16, 22, "AR29, B: the icons as cut, white on alpha, at their full 128 and at 64, over the seam's panel",
+           bold=0.5)
+    for i, (file, img) in enumerate(cuts.items()):
+        x = gap + i * (CUT + gap)
+        b.put(img, x, 60)
+        b.put(rs.shrink(img, 0.5), x + CUT / 4, 60 + CUT + gap)
+        b.text(x, 60 + CUT + gap + 64 + 12, 12, file.replace("Voidkin", ""), SEAM["Soft"])
+    b.save(out / "voidkin_icons_review.png")
+    print("cut", len(cuts), "icons into", folder)
+
+
 def main():
     out = bl.out_dir()
+    export_icons(out)
     shots = {"Today": {page: screen(page, None) for page in BASES}}
     on = {"Favourite": True, "Lock": True}
     for key, (_, make) in MAKES.items():
@@ -649,6 +766,8 @@ def main():
     phone_sheet(out, shots)
     close_sheet(out, shots, sevens, locks)
     icon_sheet(out)
+    for key, ratios in contrast_report().items():
+        print("contrast", key, {k: round(v, 1) for k, v in ratios.items()})
 
 
 if __name__ == "__main__":

@@ -10103,6 +10103,90 @@ The director, 2026-11-17, 14:03, over the close sheet: "the B) UI on the left ar
   4. research's read in the build.
 - **Every other button** becomes AR30, after this.
 
+### B to research's size and colour call, the icons cut, and B's numbers (Modulo, 2026-11-17, 14:15)
+
+**What changed.** B's rows on both sheets in `build/handoff/UI/voidkin/chrome/` are redrawn; A, C and today's are as they were for the pick. The tool is `tools/blender/voidkin_chrome.py`.
+- **Size:**
+  - Each page is a row of 44 points on the smallest phone, which is its touch area.
+  - Its icon is 24 points drawn there.
+  - The bar's marks are 24 points in a channel of the band's whole height.
+- **Colour:**
+  - Idle icons are in `Text`.
+  - The chosen glass is washed with `Light` toward the line, and its outline is in `Light`.
+  - The meeting line is 3 points wide in `Light`.
+  - A mark that's on is in `Light`, with its short line.
+  - No new hue.
+- **Contrast, measured by the tool on what it draws** (it prints them):
+
+  | | Smallest phone | iPhone |
+  |---|---|---|
+  | Idle icon on the rail's ground | 17.5:1 | 17.5:1 |
+  | Chosen icon on its glass | 10.2:1 | 10.1:1 |
+  | Chosen word at its last letter | 5.5:1 | 4.9:1 |
+  | A mark that's on, in its channel | 16.6:1 | 16.6:1 |
+
+  The glass's light is held back behind the word and rises at the line. With the first wash (a gentler rise), the word measured 4.4:1 on the iPhone, so the rise was steepened.
+- **B's weak point:** the chosen tab now spans the rail from its left edge to the line, holds its icon over its word, and is outlined and washed in `Light`. On the phone row at its own size, the chosen page names itself on both phones.
+- **Changing page moves nothing:**
+  - A one-line word fits its icon and word inside its own 44-point row.
+  - War Emblems' two lines make its tab 54 points, but it is the last row, so nothing sits under it to move.
+  - A correction to my record of 13:57: on those sheets, the rows under the chosen one stepped down by its word.
+- **A fact for research's call: seven don't fit at 44 on the smallest phone.**
+  - The rail's room there is about 256 points. Seven rows of 44 need 308, and five is the most that fit.
+  - On the close sheet's last row, seven close up to rows of 34 points with War Emblems chosen.
+  - At launch four pages show, so this is a call for when a fifth and sixth page open. The rail could scroll past five rows on a short screen, or accept 34-point rows there.
+- **The icons, cut:** `images/`, 13 images, each 128 pixels, white on alpha, for the game to tint. The review sheet is `voidkin_icons_review.png`: each at 128 and at 64 over the panel.
+  - The seven pages: `VoidkinPageOverview`, `…Items`, `…Kit`, `…Stars`, `…Forge`, `…Jewels`, `…WarEmblems`.
+  - The bar: `VoidkinBack`, `VoidkinFavourite` and `VoidkinFavouriteOn`, `VoidkinLock` (open) and `VoidkinLockOn` (shut), `VoidkinRename`.
+  - Forge, Jewels and War Emblems wait for their pages.
+- **B's numbers for Faber,** in authored points. At Theme.Scale.Floor (0.85) the smallest phone draws them; one authored point is about 1.17 of the tool's iPhone pixels.
+  - **The rail:**
+    - **A row:** 52, which is 44 points on the smallest phone, and its touch area, the rail's whole width.
+      - When n rows and the chosen tab's extra don't fit the rail's height, the rows close up to (height − the chosen tab's height) / (n − 1).
+      - The chosen tab's height is the row's, or its icon and word if those need more (War Emblems' two lines).
+    - **An icon:**
+      - its drawn half size is 14, which is 24 points on the smallest phone;
+      - its image is 35 square, so the glyph is 104 of the image's 128 pixels and lands where the tool draws it;
+      - its middle is 3.4 left of the rail's middle, and in the row's middle when idle;
+      - idle, it is `Text`.
+    - **The line:**
+      - 1 wide, its middle 0.85 in from the rail's right edge, from the rail's top to its foot, in `Light`;
+      - its strength is 0.16 + 0.84·e^−(dy/60)², dy measured from the chosen row's middle;
+      - a glow of 2.6 each side, at 0.28 of that strength.
+    - **A tick:** at each idle row's middle, 1 tall, running 5 left from the line, `Light` at 0.5.
+    - **The chosen tab:**
+      - **Shape:** its row's height less 0.85 at the top and the foot, from the rail's left + 0.85 to the line. The top-left corner is cut 8.5, the foot-left 3.4.
+      - **Fill:** the `Panel` gradient at 0.97. Over it, `Light` at 0.08 + 0.52·t^3.4, where t runs 0 to 1 from the tab's left to the line (a UIGradient's transparency).
+      - **Edges:** an outline 0.85 wide in `Light` at 0.6, and a glow of 5 at 0.22.
+      - **Where it meets the line:** the line runs 2.7 wide down the tab's height in full `Light`, with a glow of 7.7 at 0.6.
+      - **Contents:** centred in the tab, top to foot: 3.4, the icon, 2.6, then its word in `Text`, bold, one step over the rail's word today (14.5 to 13.5 on the sheet), at 1.05 lines.
+  - **The bar (B's channel):**
+    - **Back:** no plate.
+      - Its chevron's half size is 7.3, its middle 9.4 in from Back's left.
+      - "BACK" is in `Text`, bold, one step over today's (16 to 15 on the sheet), starting 19.7 in.
+      - Under it is a line 0.85 tall, inset 3.4 at each end, 2.6 over the row's foot. It is `Light` at 0.15 + 0.85·e^−(dx/18.8)², dx measured from its middle, with a glow of 2.1 at 0.3.
+    - **The channel:**
+      - It runs from the first mark's left to the last mark's right, and from the band row's top − 0.85 to its foot + 1.7.
+      - Its top-left and foot-right corners are cut 6.8.
+      - Fill `Channel` at 0.72, outline 0.85 in `Edge`.
+      - Hairline splits of 0.85 in `Edge` between the marks, inset 10.3 from the band row's top and foot.
+    - **A mark:**
+      - its icon is the rail's size (half 14, image 35), at its cell's middle and 0.85 over the channel's middle;
+      - `Text` when off;
+      - on, `Light` with a line 1 tall and 15.4 long, 3.1 over the channel's foot, and a glow of 2.6 at 0.45;
+      - favourite and lock swap their images: outline and open off, solid and shut on.
+  - **Touch:**
+    - A rail row is 44 points by the rail's width (61 on the smallest phone).
+    - The channel splits into three equal cells, each 46 points wide on the smallest phone, over the bar's whole height (50).
+      - Today's three cells, as captured, are 49, 48 and 45 pixels there. Kept as they are, Rename's would be 41 points.
+    - Back's touch area spans its word and its line: 54 points by the bar's height.
+- **Content check** on the 13 upload files and the review sheet: PASS. No symbol, gore, text or copied glyph; drawn from geometry in the tool.
+- **Four facts:**
+  - drawn and cut;
+  - seen at phone size and up close, every state, with the contrasts measured;
+  - research's look at what changed is to come;
+  - not director-accepted.
+
 ## AR30. Every button in the game, in the seam's make (Modulo, then Faber)
 
 The director, 2026-11-17, 14:03: "any other button ui could maybe get reworked". Then, to research's question on its scope: "Every button in game". Tier 2, a look players see, in Modulo's area, the director's own ask.

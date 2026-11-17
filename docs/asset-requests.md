@@ -10748,6 +10748,13 @@ From Faber's phone stills (e257094, `build/scratch/faber/ar30/dock/`).
 - **Faber's fix stands:** the chip a gap clear over the frame, held by a check.
 - **What the stills can't show:** the press at L 1.3 barely differs from rest in a still, which is right for a moment. Research reads it in motion at the next phone run.
 
+### Research's read of the bag's kinds row and Sort (Quaestor, 2026-11-17, 21:44): works, one must-fix
+
+From Faber's stills (dc4d341, `build/scratch/faber/ar30/chips/`).
+- **Felt:** on the large screen the row reads at once: the chosen kind lifted as the rail's plate, the others plain. Sort and Salvage read as one picker with its value bright.
+- **Faber's calls stand:** the words at 16 bold, the 24 gap, Salvage on the same picker, the press as an underline only, and the foot glow cut at the scrolling row's foot.
+- **Must-fix, its class: a row that scrolls shows that it scrolls.** At the smallest phone, the row shows exactly Gear and Jewelry, edge to edge. Nothing says All, Chests and Materials exist. Wherever a row scrolls (this one, and any other row in the kit), its visible end cuts an item partway, or the edge fades, so more always shows.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.

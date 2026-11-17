@@ -11026,6 +11026,121 @@ Research's entry, 2026-11-17, 17:15. It is the next machine in the design's orde
 
 **Checks:** the content check before the block; research's pick; Stage II and III as kit pieces for Faber, judged in the game.
 
+### The two directions, planned (Modulo, 2026-11-17, 17:18 by the clock)
+
+**Where a bay can grow** (the bay's frame, `base_machines.py`, `bay()`):
+- **The worker** stands at the pad's middle.
+- **The open sides:** the court and the gate see the worker from the inner side and the front. From every view in the yard, the crescent's outer side is behind the worker.
+- **The rule:** growth goes on the outer side and up, never over the inner half and never in front.
+- **The footprint** stays the pad's, 10 square.
+- **The ring and the shard** stay where they are, 8 up on the outer side, so BayHalo stays right at every stage.
+- **From the spawn,** the bays stand behind the Breaker and the Door. Only their tops show there, so each stage has to grow in height.
+
+**A, the Horned Crown: the crescent grows.**
+- **Stage II:**
+  - The crescent's two horns rise to about 12 and close over the ring higher.
+  - Each horn grows a tine from its shoulder, up and out, to about 11.5.
+  - A toothed ring of void stone (16 teeth) stands round the ring and turns in its plane.
+- **Stage III:**
+  - The horns reach about 14.5, each with a second tine higher up and a bone clamp where the tines branch.
+  - A second toothed ring stands outside the first and turns the other way.
+- **The read from far:** a crescent becomes a crown of horns.
+
+**B, the Draw: rings toward the worker.**
+- **Stage II:**
+  - A second, larger ring stands in front of the first, a stud nearer the worker.
+  - The crescent's tips grow forward over it and hold it in two bone clamps, and its horns rise to about 11.
+  - The two rings turn in their planes, opposite ways.
+- **Stage III:**
+  - A third ring, larger again, stands nearer still, so the rings make an open funnel narrowing to the shard.
+  - A second pair of horns rises behind, to about 13.5, and holds the funnel's mouth.
+- **How it shows the worker:** from the court, the worker stands before the funnel's mouth, framed by it. BayHalo's motes pass through the rings' middles into the shard.
+
+**Both:**
+- The dais, the well and the inner corners' fangs stay as they are.
+- The colours are the kit's void stone, bone and the void's light; the current leaves in yellow at the crescent's foot, as today.
+- **The motion,** for the build: A's toothed rings turn; B's rings turn.
+
+**The block:**
+- In grey, at base level 3 with all six bays at the same stage and a worker's size on each.
+- **Views,** at phone size:
+  - from the spawn's start camera;
+  - from the gate, through it from the Strip;
+  - close on one bay.
+- **The close view's bay** is also cut at 64 and 128 px, and in black.
+
+**The content check on the plan:** PASS for the block, with conditions. The block's sheet goes back to it before research's pick is final.
+- **Both:**
+  1. The ring and its shard stay as they stand, with nothing orange or red at them, and no word "eye" anywhere players see.
+  2. The horns' tips stay apart over the ring, never an almond round it.
+  3. In black, the silhouette is never an upright, even crown of 3 or 5 points on a band.
+  4. No tall, tapering tower with a lit ring at its top.
+  5. Nothing written on a ring.
+- **A:**
+  6. The teeth are short and square-ended, matte and unlit.
+  7. No spokes.
+  8. No brass, copper or gold near the toothed rings.
+- **B:**
+  9. Nothing aims at the worker: no cross lines, never four clamps at a ring's quarter points, and from the court the worker's head is off the rings' centre.
+  10. The largest ring stays clear of the worker.
+  11. The motes start above the tallest Voidkin, pale, never red.
+
+### The block, for research's pick (Modulo, 2026-11-17, 17:18 to 17:31 by the clock)
+
+**The sheets:** `build/scratch/modulo/bay/bay_A.png` and `bay_B.png`, made by `tools/blender/base_bay.py`.
+- **Four views:** from the spawn's start camera, from the gate through it from the Strip, and a player in the court turned to the left side's three bays, each at a phone's 640 by 360.
+- **Level 1's left bay** head-on from the court at its own size, then cut at 64 and 128 px and in black.
+
+**Changed from the plan by the check's conditions:**
+- **A:**
+  - The toothed rings are our own notched rings: teeth 0.3 out and 0.36 wide, square-ended, in void stone. They aren't the generator's tapered gear teeth.
+  - The horns' tips stay 4.2 apart at Stage II, not closing to 2.
+- **B:**
+  - Each ring is three arcs, not two, so their gaps never make a cross.
+  - Two fingers hold each ring from above, at 40 and 60 degrees from its top, never at the quarter points.
+  - The taller crescent's fingers hold the funnel's mouth, in place of a crown over it.
+
+**Sizes** (heights in studs):
+
+| | Stage II | Stage III |
+|---|---|---|
+| **A, the crescent** | horns 12, tines 11 | horns 14.5, tines 12.4 and 15.6 |
+| **A, the notched rings** | radius 2.75, 16 teeth | adds a second: radius 3.55, 22 teeth |
+| **B, the crescent** | horns 11.2 | horns 13.5 |
+| **B, the rings** | radius 2.35, a stud in front of the hoop | adds radius 2.95, 1.9 studs in front, 1.5 clear of the worker |
+
+**Triangles a bay,** before the drawn edge's hull:
+- Stage I: 614.
+- A: 1,186 at Stage II, 1,974 at Stage III.
+- B: 1,042 at Stage II, 1,422 at Stage III.
+
+**What the renders show:**
+- **From the spawn's start camera,** the bays hardly show at any stage, in either direction.
+  - The Door hides the left side's level-1 bay, and the Breaker hides the right side's.
+  - Level 2's bays are outside the frame.
+  - Only the top of the left level-1 bay shows, between the lamp post and the Door. A's Stage III tines and toothed ring rise there; B shows less.
+- **From the Strip, through the gate,** no bay shows at any stage: the gate's posts and the wall hide them.
+- **The row reads only from inside the court.** In the added view, a player turned to the left side, all three bays show with each worker in view, and both directions' stages tell apart.
+- **Head-on from the court,** the worker stands clear under the ring at every stage, in both directions.
+- **At 64 px and in black,** A's three stages are three shapes:
+  - Stage I is a crescent;
+  - Stage II adds a toothed disc and two tines;
+  - Stage III is a tall branching crown, uneven.
+
+  B's Stage II is close to Stage I. Its Stage III reads as two hands holding the ring.
+
+**For research:** the feel line and the class name two views that can't see the bays.
+- **The feel line** says the row reads from the gate. **The carried class** says a stage reads from the spawn's camera.
+- In both views the bays sit behind the Breaker, the Door, the gate's posts and the wall.
+- Growth inside the 10-square pad can't clear them without a tower, and condition 4 rules a tower out.
+- The call is research's: which view the bays' stages are judged from. The court's row view is the one that sees them.
+
+**Four facts:**
+- Implemented: the block.
+- Tested: rendered, with the sheets read.
+- Visually reviewed: mine only. Research's pick and the check's read of the sheet are pending.
+- Director-accepted: no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

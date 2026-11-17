@@ -7603,6 +7603,17 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
 - **Fix, a must-fix before the colour pass is judged:** the base's lamp post stands across the Door's left edge from the way in, the Door's main view. It moves out of that line in the base plan (`Config/Kits/Base/Plan.json`), a few studs to the side, so nothing crosses the Door from the way in.
 - **Next:** the colour pass on five, motion first again, in its own light.
 
+**Research's must-fix: the flood masts move (Modulo, 2026-11-17, from the verdict at 01:12 to 01:24).** The lamp post is the way in's left flood mast, and both masts move, mirrored. Each place along the mast's line was tested against 145 game cameras on the way to the Door, with the game's zoom, pitch and FOV, standing up the way in, across from the Door and on the line from the spawn. Renders confirmed the test.
+- At 50 in, where it stood, the mast crosses the Door's left edge from the way in. Seven studs nearer the gate, at 39, the way in is clear, but the mast crosses the Door on the way from the spawn's side.
+- **At 53 in**, 3 studs further back and behind the Door's line, nothing crosses the Door from the way in, the spawn or the gate's side. Only a camera looking back from beyond the Door's line sees a crossing. The mast's middle stands 3.8 studs from the slant conduit's line, and its head still reaches toward the gate.
+- **What changed:**
+  - `FLOOD` in `tools/blender/base_kit.py`.
+  - `build/handoff/Base/plan.json`, 4 lines: the two masts at along −53, and their lights at −50.
+  - The three floor glow pictures that carry the pools: `Base_Court1_Glow`, `Base_YardLive_Glow` and `Base_WingsLive_Glow`. The other 14 pictures are unchanged, byte for byte.
+- **For Faber, with the Door's finish:**
+  - `src/shared/Config/Kits/Base/Plan.json` takes the handoff's `plan.json` as it is. The two files matched until now, so those 4 lines are the whole change.
+  - The three glow pictures are uploaded again under the group.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

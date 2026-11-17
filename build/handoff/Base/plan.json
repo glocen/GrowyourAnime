@@ -474,13 +474,13 @@
     {
      "piece": "FloodMast",
      "across": -13.6,
-     "along": -50.0,
+     "along": -53.0,
      "turn": 0
     },
     {
      "piece": "FloodMast",
      "across": 13.6,
-     "along": -50.0,
+     "along": -53.0,
      "turn": 0
     },
     {
@@ -506,7 +506,7 @@
     {
      "name": "FloodLeft",
      "across": -13.6,
-     "along": -47.0,
+     "along": -50.0,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -515,7 +515,7 @@
     {
      "name": "FloodRight",
      "across": 13.6,
-     "along": -47.0,
+     "along": -50.0,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",

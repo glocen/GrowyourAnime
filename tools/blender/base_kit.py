@@ -82,7 +82,10 @@ WING = 28.0            # where a front wall ends and the gate's shoulder begins
 SPAN = 48.0            # from pylon to pylon
 ARMS = ((16.5, 5.2), (20.0, 3.8))   # a pylon's arms: how high, and how far each reaches
 HANG = 1.9             # an insulator's drop under its arm
-FLOOD = (ROW - 22.0, 3.0, 12.0)   # a flood mast, one each side of the way in before the ring: in from the front; its head's reach toward the front, and its height
+FLOOD = (ROW - 19.0, 3.0, 12.0)   # a flood mast, one each side of the way in before the ring: in from the front; its head's reach toward the front, and its height.
+# 7 studs behind the Door's and the Breaker's line (46 in), so from the way in and on the way to either machine from the gate
+# neither mast crosses it; its middle 3.8 studs off the slant conduit's line (research, 2026-11-17, AR15's finish: it stood at 50,
+# across the Door's left edge from the way in; at 39 it crossed it on the way from the spawn)
 COURT_GLOW = 1.0       # the court's glow picture's white, as emission strength (EmissiveStrength)
 MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard": ("#FFFFFF", COURT_GLOW),
         "YardLive": ("#FFFFFF", COURT_GLOW), "YardBack": ("#FFFFFF", COURT_GLOW), "WingsLive": ("#FFFFFF", COURT_GLOW),

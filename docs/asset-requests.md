@@ -9270,7 +9270,7 @@ These are written from each combo's clip and its timings in `Shared.Definitions.
 2. **Rook** (no element; his accent is the gauntlet's orange band): the jab and the hook snap a tight burst off the knuckles. The ram drives a short cone of dust and light through the Shade, and it opens the space it pushes. From the game's camera, a street fight, fists first, with the third hit heavy.
 3. **Pip** (Fire; the lantern): each flick throws a spitting ember that streaks into the Shade and pops in a small flame bloom. The third, the lantern kicked over, sends a fatter one with a short ribbon behind it. From across the street, a schoolboy's fireworks that still land. Apart from Lantern Burst: no area, the shot ends on its target.
 4. **Lyric** (Storm; the two speaker drones): each speaker fires a pulse you can see travel, speaker to Shade, and it bursts there on the beat. The third, both at once, lands as two pulses crossing on the same frame. From the game's camera, her hits keep time like a song. Apart from Watt's Storm: a travelling ring of sound, never a crack in the ground. Apart from Held Note: no cone.
-5. **Kirra** (no element; her scarf's colour): the dash leaves a thin streak in the scarf's colour. Each cut is a crisp line across the Shade that snaps shut. The second wears as an X, and the rise through it flashes upward. From the game's camera, she's already past when the cuts show. With First Strike, the critical's number is still the only extra cue (Faber's tier 1, 2026-11-14).
+5. **Kirra** (no element; her scarf's colour): the dash leaves a thin streak in the scarf's colour. Each cut is a crisp line across the Shade that snaps shut. The second wears as an X for a beat, gone before the Shade recovers, and the rise flashes up her blades (re-signed 10:59, below). From the game's camera, she's already past when the cuts show. With First Strike, the critical's number is still the only extra cue (Faber's tier 1, 2026-11-14).
 
 ### Watt's basic attack: the crack, its parts and the grey block (Modulo, 2026-11-17, from 07:58 by the clock)
 
@@ -9612,6 +9612,12 @@ Made on research's line 5. `tools/blender/kirra_combo_fx.py` reads the delivered
   - the sound, for the director's retry.
 - **Time:** 10:00 to 10:58 by the transcript and the clock, with Rook's, Pip's and Lyric's delivery and research's calls between. The cap is 2 hours at its block.
 
+
+
+**Research's calls on Kirra (Quaestor, 2026-11-17, 10:59):**
+- **Line 5, re-signed:** "The second wears as an X for a beat, gone before the Shade recovers, and the rise flashes up her blades." The content check's block stands, and the X's beat is the read.
+- **The waist lift: approved for research (tier 2).** It's the same rule as the flights: a touch lands on the target's own body by its Scale, and its lines keep their size. Faber judges how it's built, with the spacing ask.
+- **The X's size stays as delivered for the block.** The flatter, wider variant is the block's question in motion, not a fix now. The X hidden at 215 and 145 is the same class as Ground Wire's (AR11, the framing question to Faber), and it's judged with that answer.
 
 ## AR27. The idles without the glance (Modulo, then Faber)
 

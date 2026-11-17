@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 11:14. Voidkin work is parked on the director's word of 11:10. Watt's crack and the spacing ask are on branch `parked/ar26-watt-block`, unmerged; `main` and Studio hold none of it (AR26, "Faber's block of Watt's crack, parked"). That record also answers the framing question (AR11). The save is back as it was: lead k1, k2 in bay 1. AR27's idles are held, not uploaded.
-- **Now:** TR36, the two attributes and the colour-named types.
-- **Next, in order** (809f50b): AR16's three base sizes for research's pick; TR28's bag in the seam (AR18); TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; the Forge and the Condenser, then emblems, then jewels; TR31 to TR33, TR35 and the responsive pass.
-- **Open, tests:** from 10:30 the client ran at 38 to 40 fps at the base with Studio in front (render 24 ms on the CPU). Four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails about one run in three. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
+**Faber (builder).** 2026-11-17, 11:51. TR36 is built and tested, waiting on research's pass (TR36, "Built"). It flags the chest pool's 5 and 5, Fight's moved times to kill, and the Bag's price of 503. Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26). The save is as it was, with lead k1 and k2 in bay 1; the helmet is re-given as k414, with the same lines.
+- **Now:** research's framing experiment (Lead.Frame 45 against 90, a real fight on Lantern Row, phone size; paths in TR24).
+- **Next, in order** (809f50b, item 2 changed at 24e4808): 128 on its grey layout from the player's camera at phone size, with one still of 144 beside it; TR28's bag in the seam (AR18); TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; the Forge and the Condenser, then emblems, then jewels; TR31 to TR33, TR35 and the responsive pass.
+- **Open, tests:** four timing cases are NOT VERIFIED (AR11's record); the client ran at 38 to 40 fps at the base from 10:30, and the 11:40 suite ran at 58. The Keeper's "and out on Out" still fails about one run in three. TR20's Breaker-chamber hover fails in the whole suite and passes alone. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
 **Modulo (assets).** 2026-11-17, 11:50, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
@@ -20,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** AR28, the Forge's and the Condenser's three directions each. **Then:** the re-lay at 128 once Faber's capture confirms it, AR17's map kit, then the icons (TR10's two after its marker's verdict).
 - **Unchanged:** AR24's A waits on Faber's TR34 block; Sable after launch; the Door is Faber's install.
 
-**Turns.** Studio: nobody (Faber stopped the playtest at 11:14; the place is open, its Rojo connected, the device simulator off). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber, playtesting (11:51; the device simulator off). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

@@ -253,11 +253,11 @@ return {
 		LeadLevel = Color3.fromHex("#14161B"),
 		-- The lead's stud takes its type's colour, as Modulo's mocks tint it (tools/blender/shade_sheet.py, TYPES).
 		Types = {
-			Strength = Color3.fromHex("#EA4B4F"),
-			Endurance = Color3.fromHex("#F4902A"),
-			Agility = Color3.fromHex("#3F9DF2"),
-			Intelligence = Color3.fromHex("#A470F2"),
-			Technique = Color3.fromHex("#42CC7E"),
+			Red = Color3.fromHex("#EA4B4F"),
+			Orange = Color3.fromHex("#F4902A"),
+			Blue = Color3.fromHex("#3F9DF2"),
+			Purple = Color3.fromHex("#A470F2"),
+			Green = Color3.fromHex("#42CC7E"),
 		} :: { [string]: Color3 },
 		Xp = Color3.fromHex("#4E9BFF"),
 		Trim = {

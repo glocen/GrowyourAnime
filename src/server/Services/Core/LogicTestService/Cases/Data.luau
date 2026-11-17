@@ -130,6 +130,38 @@ return {
 		end,
 	},
 	{
+		Name = "Data: step 8 turns the five retired attributes' lines into Strength and Endurance, merged, nothing else moved (TR36)",
+		Run = function(t: any)
+			local old = fresh()
+			old.Version = 7
+			local function item(id: string, lines: { any }): any
+				return { Id = id, Def = "sword", Tier = 1, Rarity = "Rare", Design = 1, Lines = lines, Sockets = {}, Jewel = "" }
+			end
+			old.Items.a = item("a", { { Stat = "Attack", Value = 30 }, { Stat = "Might", Value = 4 }, { Stat = "Finesse", Value = 6 }, { Stat = "Spirit", Value = 2 } })
+			old.Items.b = item("b", { { Stat = "Vigor", Value = 9 }, { Stat = "Critical", Value = 12 }, { Stat = "Insight", Value = 5 } })
+			old.Items.c = item("c", { { Stat = "Health", Value = 100 } })
+			old.Items.d = item("d", { { Stat = "Strength", Value = 3 }, { Stat = "Might", Value = 2 } })
+			local ran = Migrations.Run(old)
+			t.Equal("one step ran", ran, Migrations.Latest - 7)
+			local function lines(id: string): string
+				local out = {}
+				for _, line in old.Items[id].Lines do
+					table.insert(out, `{line.Stat} {line.Value}`)
+				end
+				return table.concat(out, ", ")
+			end
+			t.Equal("Might and Finesse merge into Strength in the first one's place, Spirit becomes Endurance", lines("a"), "Attack 30, Strength 10, Endurance 2")
+			t.Equal("Vigor becomes Endurance, Insight Strength, the order kept", lines("b"), "Endurance 9, Critical 12, Strength 5")
+			t.Equal("an item with none is untouched", lines("c"), "Health 100")
+			t.Equal("an old line joins a new one already there", lines("d"), "Strength 5")
+			for old_, new in Migrations.OldAttributes do
+				t.Check(`{old_} becomes one of the two`, new == "Strength" or new == "Endurance", new)
+			end
+			local problems = Saveable.Problems(old, "profile")
+			t.Check("still saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
 		Name = "Data: a newer save is left alone",
 		Run = function(t: any)
 			local data = fresh()

@@ -238,7 +238,9 @@ return {
 				end
 				return true
 			end)())
-			t.Check("an attribute's price is its row weighed: 5 to 6.5 a point", Chests.Price("Might") > 5 and Chests.Price("Might") < 6.5 and Chests.Price("Spirit") > 5, `{Chests.Price("Might")}, {Chests.Price("Spirit")}`)
+			-- docs/balance.md, "The stats": a point of either is worth about 6 to 7 at the generic row (TR36)
+			t.Check("an attribute's price is its row weighed: 6 to 7 a point", Chests.Price("Strength") > 6 and Chests.Price("Strength") < 7 and Chests.Price("Endurance") > 6
+				and Chests.Price("Endurance") < 7, `{Chests.Price("Strength")}, {Chests.Price("Endurance")}`)
 		end,
 	},
 	{
@@ -398,13 +400,13 @@ return {
 			-- Worn: an item in every slot too strong for any Lantern Row roll to beat.
 			for _, slot in Gear.Shared do
 				local id = Profile.NewId(data)
-				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Might", Value = 1e5 }, { Stat = "Finesse", Value = 1e5 }, { Stat = "Vigor", Value = 1e5 }, { Stat = "Spirit", Value = 1e5 }, { Stat = "Insight", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Endurance", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Jewel = "" }
 				Regalia.Put(data.Presets[1], slot, nil, id)
 			end
 			for _, hand in Gear.Hands do
 				local id = Profile.NewId(data)
 				local def = if hand == "Main Hand" then "sword" else "short_sword"
-				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Might", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Jewel = "" }
 				Regalia.Put(data.Presets[1], hand, "Warrior", id)
 			end
 			local worn = count(data.Items)
@@ -601,7 +603,7 @@ return {
 			local held = fresh()
 			local owned = lead(held, "Warrior")
 			local id = Profile.NewId(held)
-			held.Items[id] = { Id = id, Def = "sword", Tier = 3, Rarity = "Epic", Design = 1, Lines = { { Stat = "Attack", Value = 400 }, { Stat = "Might", Value = 30 } }, Sockets = {}, Jewel = "" }
+			held.Items[id] = { Id = id, Def = "sword", Tier = 3, Rarity = "Epic", Design = 1, Lines = { { Stat = "Attack", Value = 400 }, { Stat = "Strength", Value = 30 } }, Sockets = {}, Jewel = "" }
 			Regalia.Put(held.Presets[1], "Main Hand", "Warrior", id)
 			local powers = {}
 			for design = 1, 3 do

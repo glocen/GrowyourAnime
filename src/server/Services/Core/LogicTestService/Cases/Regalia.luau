@@ -196,7 +196,7 @@ return {
 		Run = function(t: any)
 			local data = fresh()
 			local axe = item(data, "great_axe", { { Stat = "Attack", Value = 100 } })
-			local shield = item(data, "shield", { { Stat = "Vigor", Value = 30 } })
+			local shield = item(data, "shield", { { Stat = "Endurance", Value = 30 } })
 			local sword = item(data, "sword", { { Stat = "Attack", Value = 50 } })
 			local cloak = item(data, "cloak", { { Stat = "Defence", Value = 7 } })
 			equip(data, "Main Hand", nil, axe)
@@ -207,7 +207,7 @@ return {
 				local owned = own(data, case[1] :: string)
 				local _, lines = Stats.Resolve(owned, data.Presets[1], data)
 				t.Equal(`{case[1]}: its main hand`, from(lines, "Item:Main Hand").Attack, case[2])
-				t.Equal(`{case[1]}: its off hand`, from(lines, "Item:Off Hand").Vigor, case[3])
+				t.Equal(`{case[1]}: its off hand`, from(lines, "Item:Off Hand").Endurance, case[3])
 				t.Equal(`{case[1]}: the cloak on everyone`, from(lines, "Item:Cloak").Defence, 7)
 			end
 		end,
@@ -276,10 +276,10 @@ return {
 			local data = fresh()
 			local tank = own(data, "Tank")
 			local warrior = own(data, "Warrior")
-			local axe = item(data, "great_axe", { { Stat = "Attack", Value = 80 }, { Stat = "Might", Value = 20 } })
+			local axe = item(data, "great_axe", { { Stat = "Attack", Value = 80 }, { Stat = "Strength", Value = 20 } })
 			local weak = item(data, "ring", { { Stat = "Attack", Value = 5 } })
 			local strong = item(data, "ring", { { Stat = "Attack", Value = 40 } })
-			local better = item(data, "ring", { { Stat = "Attack", Value = 20 }, { Stat = "Finesse", Value = 10 } })
+			local better = item(data, "ring", { { Stat = "Attack", Value = 20 }, { Stat = "Endurance", Value = 10 } })
 			local preset = data.Presets[1]
 			local kept = Profile.DeepCopy(data)
 			local change = Stats.Compare(data, preset, tank, axe)
@@ -297,7 +297,7 @@ return {
 				for _, id in Attributes.Ids do
 					t.Equal(`{id}'s change`, change.Attributes[id], after.Attributes[id] - before.Attributes[id])
 				end
-				t.Equal("the Might it carries", change.Attributes.Might, 20)
+				t.Equal("the Strength it carries", change.Attributes.Strength, 20)
 				t.Check("a gain is a gain", change.Power > 0)
 			end
 			local wrong, why = Stats.Compare(data, preset, warrior, axe)

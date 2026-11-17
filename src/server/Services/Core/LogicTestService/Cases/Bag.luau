@@ -59,12 +59,12 @@ local function stocked(): (Profile.Data, Profile.OwnedVoidkin, { [string]: strin
 	data.Roles.Lead = warrior.Id
 	local ids = {
 		helmet = give(data, "helmet", "Uncommon", { { Stat = "Health", Value = 120 } }),
-		sword = give(data, "sword", "Rare", { { Stat = "Attack", Value = 30 }, { Stat = "Might", Value = 4 } }),
-		better = give(data, "helmet", "Epic", { { Stat = "Health", Value = 400 }, { Stat = "Vigor", Value = 9 } }),
+		sword = give(data, "sword", "Rare", { { Stat = "Attack", Value = 30 }, { Stat = "Strength", Value = 4 } }),
+		better = give(data, "helmet", "Epic", { { Stat = "Health", Value = 400 }, { Stat = "Endurance", Value = 9 } }),
 		worse = give(data, "helmet", "Common", { { Stat = "Health", Value = 20 } }),
 		boots = give(data, "boots", "Common", { { Stat = "Dodge", Value = 15 } }),
-		ring = give(data, "ring", "Legendary", { { Stat = "Finesse", Value = 12 }, { Stat = "Critical", Value = 40 } }),
-		staff = give(data, "staff", "Legendary", { { Stat = "Attack", Value = 90 }, { Stat = "Insight", Value = 20 } }),
+		ring = give(data, "ring", "Legendary", { { Stat = "Strength", Value = 12 }, { Stat = "Critical", Value = 40 } }),
+		staff = give(data, "staff", "Legendary", { { Stat = "Attack", Value = 90 }, { Stat = "Strength", Value = 20 } }),
 		short = give(data, "short_sword", "Uncommon", { { Stat = "Attack", Value = 12 } }),
 		cloak = give(data, "cloak", "Rare", { { Stat = "Block", Value = 25 } }),
 	}
@@ -213,7 +213,7 @@ return {
 			t.Check("a card", card ~= nil and card.Fits and card.Slot == "Helmet")
 			t.Check("its Combat Power is the comparison's", math.abs(card.Power - change.Power) < 1e-9 and card.Power > 0)
 			t.Equal("it replaces the worn helmet", card.Replaces, ids.helmet)
-			t.Equal("five Basic Attributes", #card.Basic, #Attributes.Ids)
+			t.Equal("both Basic Attributes", #card.Basic, #Attributes.Ids)
 			for index, basic in card.Basic do
 				t.Equal(`{basic.Stat} in the sheet's order`, basic.Stat, Attributes.Ids[index])
 				t.Check(`{basic.Stat}: its change`, math.abs(basic.Change - change.Attributes[basic.Stat]) < 1e-9)
@@ -247,7 +247,7 @@ return {
 				for _, line in rated.Lines do
 					if line.Stat == stat then
 						t.Check(`{stat} {points}: its line shows the share it would add`, math.abs(line.Value - Sheet.Adds(stat, points, before)) < 1e-12 and line.Value > 0 and line.Value < 1, `{line.Value}`)
-					elseif line.Stat == "Finesse" then
+					elseif line.Stat == "Strength" then
 						t.Equal("an attribute's line keeps its points", line.Value, 12)
 					end
 				end
@@ -268,11 +268,11 @@ return {
 	},
 	{
 		-- Research's fix 2 to the rebuild in A (TR28, 22:37): the Bracers' +465 over Health +75 alone. It was right: a card
-		-- shows every stat behind its number, and Health +75 is worth 0.62 × 75 × 10.
+		-- shows every stat behind its number, and Health +75 is worth 0.62 × 75 × 10; 0.67 × 75 × 10 since TR36's refit.
 		Name = "Bag: a card's Combat Power is what its shown lines are worth, so none is hidden",
 		Run = function(t: any)
 			local power = StatsConfig.Power
-			t.Equal("Health +75 alone is worth +465", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 465)
+			t.Equal("Health +75 alone is worth +503", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 503)
 			local data, warrior, ids = stocked()
 			local preset = Stats.PresetOf(data, warrior) :: Profile.Preset
 			local before = Stats.Resolve(warrior, preset, data)

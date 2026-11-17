@@ -87,7 +87,8 @@ local MACHINE_WIDTH = 204 -- "Trains while you're away", as a bay's
 local GENERATOR_UP = 9 -- studs over the generator's marker its plate and prompt stand: over its face
 local GENERATOR_WIDTH = 180 -- "Generation 30 kW", "Demand 34 kW"
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
--- against "Intelligence · Mage · Fire" at 178 and "Chamber 2 · 1 min 59 s" at 164.
+-- against "Intelligence · Mage · Fire" at 178, the longest line before the types took their colours' names (TR36),
+-- and "Chamber 2 · 1 min 59 s" at 164.
 local SCREEN = Vector2.new(660, 320)
 
 -- What a refusal says to the player, by its code (Rules.Base, Rules.Collection).

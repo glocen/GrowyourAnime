@@ -153,9 +153,9 @@ return {
 			end
 			t.Equal("each type beats one", ups, 5)
 			t.Equal("and is beaten by one", downs, 5)
-			t.Equal("a type against itself has no arrow", Hud.Arrow("Strength", "Strength"), "")
-			t.Equal("an unknown type has no arrow", Hud.Arrow(nil, "Strength"), "")
-			t.Equal("nor an empty one", Hud.Arrow("Agility", ""), "")
+			t.Equal("a type against itself has no arrow", Hud.Arrow("Red", "Red"), "")
+			t.Equal("an unknown type has no arrow", Hud.Arrow(nil, "Red"), "")
+			t.Equal("nor an empty one", Hud.Arrow("Blue", ""), "")
 		end,
 	},
 	{

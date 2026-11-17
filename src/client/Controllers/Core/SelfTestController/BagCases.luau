@@ -107,7 +107,7 @@ function BagCases.Cases(given: Given): { any }
 					end
 					return id
 				end
-				local weapon = give(weaponFor(class, true), "Epic", { { Stat = "Attack", Value = 999 }, { Stat = "Might", Value = 20 } })
+				local weapon = give(weaponFor(class, true), "Epic", { { Stat = "Attack", Value = 999 }, { Stat = "Strength", Value = 20 } })
 				local other = give(weaponFor(class, false), "Legendary", { { Stat = "Attack", Value = 999 } })
 				give("helmet", "Rare", { { Stat = "Health", Value = 400 } })
 				give("ring", "Uncommon", { { Stat = "Critical", Value = 30 } })
@@ -381,6 +381,24 @@ function BagCases.Cases(given: Given): { any }
 					local shown = find("Card")
 					return shown ~= nil and inView(shown) and touches(find("Equip")) and touches(find("Close"))
 				end))
+				-- TR36: the weapon's Strength adds Battle lines, so its card's lines scroll here, and every change still ends
+				-- inside the list's window, clear of the bar (the bar's own width once clipped its last figure).
+				local shownCard = find("Card")
+				local cardLines = if shownCard then shownCard:FindFirstChild("Lines") else nil
+				local counted, clipped = 0, 0
+				if cardLines and cardLines:IsA("ScrollingFrame") then
+					local right = cardLines.AbsolutePosition.X + cardLines.AbsoluteWindowSize.X
+					for _, each in cardLines:GetChildren() do
+						local delta = each:FindFirstChild("Change")
+						if delta and delta:IsA("TextLabel") then
+							counted += 1
+							local ends = delta.AbsolutePosition.X + delta.AbsoluteSize.X
+							clipped += if ends > right + 0.5 or delta.TextBounds.X > delta.AbsoluteSize.X + 0.5 then 1 else 0
+						end
+					end
+				end
+				local scrolls = cardLines ~= nil and cardLines:IsA("ScrollingFrame") and cardLines.AbsoluteCanvasSize.Y > cardLines.AbsoluteWindowSize.Y + 0.5
+				t.Check("the smallest phone: the card's lines scroll, and every change ends inside them, clear of the bar (TR36)", scrolls and counted > 0 and clipped == 0, `scrolls {scrolls}, {clipped} of {counted} past the window`)
 				lintClean(t, "the smallest phone, Items with a card")
 				Layers.Box(nil)
 				Layers.Force(nil)

@@ -2,7 +2,7 @@
 -- Sheet (shared, pure): what each line of Overview's stat sheet says (docs/research/rework-2026-11-16.md, part 4, "How
 -- stats are written, and the Overview"; docs/ui.md, 5, "Overview's stat sheet"; the stats in docs/balance.md, "The
 -- stats"). Two headings:
---   Basic Attributes   the five, each its total, its class's Main marked
+--   Basic Attributes   the two, each its total, its class's Main marked
 --   Battle Attributes  Core; Offence and Defence paired on each row, so what counters what reads without a word; Sustain
 -- A plain list [the director, 2026-11-15, night: "dont put any description for stats", then "Plain list, no taps"]: each
 -- stat its name and its one total, a zero shown as 0, never hidden, and nothing opens. What each kind of number shows:
@@ -183,7 +183,7 @@ function Sheet.Row(stat: string, block: Stats.Block, odds: { [string]: number }?
 	}
 end
 
--- The five attributes' lines, in Definitions.Attributes' order, each its total, the class's Main marked.
+-- The two attributes' lines, in Definitions.Attributes' order, each its total, the class's Main marked.
 function Sheet.Basic(block: Stats.Block): { Row }
 	local rows = {}
 	for _, attribute in Attributes.List do

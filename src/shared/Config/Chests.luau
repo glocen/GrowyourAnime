@@ -61,13 +61,11 @@ return {
 		Boots = "Dodge",
 		Cloak = "Block",
 	} :: { [string]: string },
-	-- What a line can be, by weight; never the main stat, never twice. A weapon's lines favour its class's Main.
+	-- What a line can be, by weight; never the main stat, never twice. A weapon's lines favour its class's Main. The two
+	-- attributes keep the five's share of the pool, 10 of 21 (TR36, the builder's carry-over, for research to confirm).
 	Pool = {
-		Might = 2,
-		Finesse = 2,
-		Vigor = 2,
-		Spirit = 2,
-		Insight = 2,
+		Strength = 5,
+		Endurance = 5,
 		Health = 1,
 		Attack = 1,
 		Defence = 1,

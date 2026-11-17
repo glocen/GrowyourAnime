@@ -527,12 +527,12 @@ local function compared(parent: Instance, order: number, wide: number, stat: str
 	local line = Instance.new("Frame")
 	line.Name = stat
 	line.BackgroundTransparency = 1
-	line.Size = UDim2.fromOffset(wide, C.Row)
+	line.Size = UDim2.new(1, 0, 0, C.Row) -- the list's canvas: inside the scrollbar once the lines scroll
 	line.LayoutOrder = order
 	line.Parent = parent
 	local changeWide = 44
 	label({ Name = "Name", Size = Theme.Text.Caption, Colour = P.Soft, Box = UDim2.fromOffset(math.max(wide - changeWide - 56, 10), C.Row), Parent = line, Truncate = true }, name)
-	label({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Box = UDim2.fromOffset(wide - changeWide - 4, C.Row), Parent = line }, value)
+	label({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -changeWide - 4, 0, C.Row), Parent = line }, value)
 	local delta = label({ Name = "Change", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = if change > 0 then P.Up elseif change < 0 then P.Down else P.Faint, Align = Enum.TextXAlignment.Right, Parent = line }, Sheet.Change(stat, change))
 	delta:SetAttribute("Change", change)
 end
@@ -563,6 +563,9 @@ local function lines(made: Frame, id: string, x: number, top: number, wide: numb
 	list.Size = UDim2.fromOffset(wide, math.max(bottom - top, C.Row))
 	list.ScrollBarThickness = 3
 	list.ScrollBarImageColor3 = P.Line
+	-- Scrolling, the window narrows by the bar and clips there: the canvas narrows with it, so a right-aligned change
+	-- ends beside the bar, never under it (TR36's card at phone size, a ring's eight lines).
+	list.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 	list.CanvasSize = UDim2.new()
 	list.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	list.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -700,7 +703,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 			local line = Instance.new("Frame")
 			line.Name = each.Stat
 			line.BackgroundTransparency = 1
-			line.Size = UDim2.fromOffset(wide, C.Row)
+			line.Size = UDim2.new(1, 0, 0, C.Row)
 			line.LayoutOrder = index
 			line.Parent = list
 			label({ Name = "Name", Size = Theme.Text.Caption, Colour = P.Soft, Parent = line }, Sheet.Said[each.Stat] or each.Stat)

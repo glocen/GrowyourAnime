@@ -73,8 +73,9 @@ The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is wh
 The builder's, 2026-11-16, written before the systems (research's order, `docs/research/rework-2026-11-16.md`, part 12). The design they serve waits on the director's yes to its nine points. Each contract holds whichever way the open questions go: a name the director picks is a row's display name, never a key a save holds. Every number is a seed in `Config`, never here.
 
 **Attributes in the resolver** (the proposal, parts 1 to 4).
-- **The rows:** `Definitions/Attributes.luau` holds the five, each with a stable id and its display name. The ids are the working names (`Might`, `Finesse`, `Vigor`, `Spirit`, `Insight`), so a rename changes only `Name`. `Config.Stats.Attributes` holds each one's conversion row, and each class's Main, its Main's own row and its shape.
-- **Nothing is saved:** a Voidkin's points are computed (shape × rarity × G(level) × its stars), as its stats are today. Gear adds points as item lines whose `Stat` is an attribute id. So no migration, and today's lines stay valid.
+- **The rows:** `Definitions/Attributes.luau` holds the two, Strength and Endurance (TR36, 2026-11-17, replacing the five), each with a stable id and its display name. The ids are the working names, so a rename changes only `Name`. `Config.Stats.Attributes` holds each one's conversion row, and each class's Main, its Main's own row and its shape.
+- **Nothing is saved but gear's lines:** a Voidkin's points are computed (shape × rarity × G(level) × its stars), as its stats are today. Gear adds points as item lines whose `Stat` is an attribute id. When the five became two, migration step 8 turned each retired id on a saved line into the one that took its job (`Migrations.OldAttributes`), merging two that land on one.
+- **Types** are named by the colours they wear, and the id is the name (`Red`, `Orange`, `Blue`, `Purple`, `Green`, TR36). No save holds one: a Voidkin's comes from its row, a Shade's from its row or its spawn. The gems' images are keyed `Gem<type>`.
 - **`Stats.Resolve`** keeps its signature and its breakdown. The block gains `Attributes` (each total) and `Main`. The order:
   1. Points: the Voidkin's own, then each worn line's, flat.
   2. Each total converts once by its row.

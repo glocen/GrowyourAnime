@@ -201,14 +201,14 @@ return {
 		Run = function(t: any)
 			for _, level in { 1, 5, 9 } do
 				local g = Growth.G(level)
-				local shade = Stats.Enemy("brawler", level, "Technique")
+				local shade = Stats.Enemy("brawler", level, "Green")
 				t.Check(`level {level} health`, near(shade.Health, EnemiesConfig.Ordinary.Health * g))
 				t.Check(`level {level} attack`, near(shade.Attack, EnemiesConfig.Ordinary.Attack * g))
 				t.Check(`level {level} defence`, near(shade.Defence, EnemiesConfig.Ordinary.Defence * g))
-				t.Equal(`level {level} type from the spawn`, shade.Type, "Technique")
+				t.Equal(`level {level} type from the spawn`, shade.Type, "Green")
 				local keeper = Stats.Enemy("lamplighter", level)
 				t.Check(`level {level} keeper's dodge`, near(keeper.Dodge, EnemiesConfig.Keeper.Dodge * g))
-				t.Equal(`level {level} keeper's own type`, keeper.Type, "Intelligence")
+				t.Equal(`level {level} keeper's own type`, keeper.Type, "Purple")
 			end
 			t.Equal("an unknown enemy is empty", Stats.Enemy("nobody", 3).Health, 0)
 			t.Equal("past the top level it's the top level", Stats.Enemy("brawler", 999).Level, GrowthConfig.MaxLevel)
@@ -231,10 +231,14 @@ return {
 				return mean * (1 - odds.ChanceDodge) * coefficientPerSecond
 			end
 			-- The brawler's share is research's read of the sim, 2026-11-14 (TR12): an Ordinary Shade's Attack halved, so 0.06.
-			local targets = { -- seeds enemy: ttk and the health share a kill costs
-				{ "brawler", 5, 0.06 },
-				{ "brawler_elite", 18, 0.35 },
-				{ "lamplighter", 45, 0.7 },
+			-- The seeds (enemy: 5, 18 and 45 s; 0.35 and 0.7 of the lead) were met by the five attributes' Warrior. The two's
+			-- Warrior (TR36, docs/balance.md, "The stats": Attack 134 against 116, Health 441 against 516) kills faster and
+			-- loses a little more a kill: these are its figures through the game's own hit, the seeds' Config.Enemies unchanged,
+			-- for research to confirm or retune (TR36's record).
+			local targets = { -- ttk and the health share a kill costs, a bare Common Warrior
+				{ "brawler", 4.56, 0.06 },
+				{ "brawler_elite", 16.40, 0.367 },
+				{ "lamplighter", 40.71, 0.729 },
 			}
 			for _, level in { 1, 5, 9 } do
 				-- Bare: nothing worn.

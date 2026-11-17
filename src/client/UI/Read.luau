@@ -90,7 +90,7 @@ function Read.VoidkinName(owned: Profile.OwnedVoidkin): string
 	return if row then row.Name else owned.Def
 end
 
--- "Common · Strength · Warrior · Fire"; "Strength · Warrior · Fire" when `rarity` is false.
+-- "Common · Red · Warrior · Fire"; "Red · Warrior · Fire" when `rarity` is false.
 function Read.VoidkinLine(def: string, rarity: boolean?): string
 	local row = Voidkin.ById[def]
 	if row == nil then

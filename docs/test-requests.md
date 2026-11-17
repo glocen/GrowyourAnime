@@ -3079,6 +3079,33 @@ Research, 2026-11-17, 09:27, on the director's word of the same morning (`docs/d
 - **The model** reads the new rows once they land: `py tools/balance/attributes.py`. Research reruns it and confirms the fit.
 - **Saves:** a Voidkin's own points come from its class's shape, so only gear rolled with an old attribute needs a rule. Re-rolling it on load or wiping test saves is your call, since nothing is public.
 
+**Built, 2026-11-17, 11:14 to 11:50 by the clock (Faber).**
+- **Implemented.**
+  - **The two:** `Definitions/Attributes.luau` holds Strength and Endurance (the ids are the names). `Config.Stats` takes `docs/balance.md`'s rows, Mains, shapes and refit `Power.Weights`, and the Beats ring in colours.
+  - **The type ids are the colours** (Red, Orange, Blue, Purple, Green), ids and names alike, my call. Kept, the old ids Strength and Endurance would share a key with the new attributes in every table keyed by either. No save holds a type: a Voidkin's comes from its row, a Shade's from its row, and the place's markers carry none (0 found in Edit). Renamed: the Voidkin and Enemies rows, `Hud.Card.Types`, `Shades.Tint`, the gems' keys (`Gem<colour>` and `Gem<colour>Seated`, the same images), and the lead card's default gem. No screen filters by type yet, so no filter was renamed.
+  - **Saves:** migration step 8 turns each saved line on a retired attribute into the one that took its job (Might, Finesse and Insight into Strength; Vigor and Spirit into Endurance). Two lines that land on one are added together, in the first one's place. The Studio save went 7 to 8.
+  - **The chest pool:** the two take the five's share, 5 and 5 of its 21 (each of the five was 2). Research: confirm or set (`Config.Chests`, tier 2).
+  - **Found in the phone still and fixed (tier 1):** a ring's Basic lines make the card's list scroll, and Roblox then clips the list beside its 3 px bar, so each right-aligned gain lost its last figure (`build/captures/tr36/phone_4_card.png`). The list now insets its canvas by the bar, and its lines take the canvas's width (`UI/VoidkinScreen/Bag.luau`).
+- **Tested.**
+  - Type check 0 new. Logic 23,970 passed, 0 failed, offline and in Studio. World report sound.
+  - New cases:
+    - "Definitions: TR36", every class's Main is Strength or Endurance and every type shown is a colour, across rows, tints, studs and gems;
+    - "Data: step 8", the five retired lines merged, nothing else moved;
+    - the Items page's "the smallest phone: the card's lines scroll, and every change ends inside them" (the weapon's Strength adds four Battle lines).
+    - The Stats and Sheet cases moved to two. "Might" stays in one case as a retired id that adds nothing.
+  - The Items page after the fix: 107 of 107 in Studio's window. In the simulator, one check, the chosen kind's chip in view, fails, since the case's smallest-phone box is drawn inside the simulator's own 750 × 401.
+  - The full self-test: 2,602 passed, 3 failed, at 58 fps. The 3 are TR20's hover on a Breaker chamber: its words lift 181 points, not 2. Alone it passes 36 of 36, so it depends on order. TR36 touches no Breaker, so it's carried as a flaky case.
+  - A first run had 16 false failures, all from my own long poll resetting the camera. Rerun clean.
+  - **Numbers that moved with the rows, for research to confirm or retune:**
+    - Fight's bare Common Warrior: the brawler 5 to 4.56 s, the elite 18 to 16.40 s, the Lamplighter 45 to 40.71 s.
+    - The Bag's price check: 465 to 503 (Health's weight refit, 0.67 × 75 × 10).
+  - `py tools/balance/attributes.py` on the new Config: "Shape against the fit: the same". The Warrior's level 1 is Health 441, Attack 134, Defence 48, Regen 5.0, as the case.
+- **Visually reviewed (mine).** At phone size, in Studio's iPhone 16 Pro simulator (750 × 401), in `build/captures/tr36/`:
+  - `phone_top_and_card.png`: the Overview's top reads "Common · Red · Warrior", then Basic Attributes "Strength 188 Main" and "Endurance 135". A Rare ring's card reads Basic "Strength 200 +12" and "Endurance 143 +8", whole after the fix.
+  - Also `phone_2_battle.png`, `phone_3_items.png` and `phone_5_hud.png`.
+  - A search of `src/` finds the five retired names only in step 8's map, its case and Stats' retired-id case.
+- **Research's pass:** not yet. **Director-accepted:** no.
+
 ## TR37. The Forge and the Stone Condenser (Faber, on AR28's look)
 
 Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/production-plan.md`). The design: `docs/design.md`, "The base" (the Condenser) and "Regalia: gear" (forge ranks, the move across). The numbers: `docs/balance.md`, "Where power comes from" (forge ranks are 13.5 of a full build).

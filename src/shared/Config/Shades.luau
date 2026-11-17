@@ -10,15 +10,15 @@ return {
 	-- for the two together, so tune both by the same factor, and look again at 64 px.
 	Emissive = 16, -- the body's five pieces
 	MaskEmissive = 6, -- a mask, the elite's second too
-	-- The glow's tint for each type, the sheet's, except Strength and Endurance, which carry no green or blue: at 16 any
+	-- The glow's tint for each type, the sheet's, except Red and Orange, which carry no green or blue: at 16 any
 	-- green or blue in a tint passes the tone map's knee and lifts it toward white, so the sheet's showed coral and gold,
 	-- these red and orange (AR2, section 6). Only the Shade's glow compensates: the type colours elsewhere stay.
 	Tint = {
-		Strength = Color3.fromHex("E80000"),
-		Endurance = Color3.fromHex("F23000"),
-		Agility = Color3.fromHex("3F9DF2"),
-		Intelligence = Color3.fromHex("A470F2"),
-		Technique = Color3.fromHex("42CC7E"),
+		Red = Color3.fromHex("E80000"),
+		Orange = Color3.fromHex("F23000"),
+		Blue = Color3.fromHex("3F9DF2"),
+		Purple = Color3.fromHex("A470F2"),
+		Green = Color3.fromHex("42CC7E"),
 	} :: { [string]: Color3 },
 	MaskTint = Color3.fromHex("FFE2B8"),
 }

@@ -8,6 +8,16 @@ local Items = require(game:GetService("ReplicatedStorage").Shared.Definitions.It
 
 local Migrations = {}
 
+-- The five attributes of 2026-11-16 and the one of the two that took each one's job (TR36; docs/balance.md, "The stats"):
+-- Strength the power and precision, Endurance the toughness and recovery. Step 8 reads it.
+Migrations.OldAttributes = {
+	Might = "Strength",
+	Finesse = "Strength",
+	Insight = "Strength",
+	Vigor = "Endurance",
+	Spirit = "Endurance",
+} :: { [string]: string }
+
 local STEPS: { (data: any) -> () } = {
 	function(_data: any) end, -- 1: the first shape (TR2, 2026-11-12)
 	-- 2: the stat board (TR15, 2026-11-14). Touches Voidkin[id]: each owned Voidkin gains Points, nothing spent, so its
@@ -94,6 +104,36 @@ local STEPS: { (data: any) -> () } = {
 			if type(item) == "table" and type(item.Design) ~= "number" then
 				item.Design = Items.LaunchDesign(tostring(item.Id or id))
 			end
+		end
+	end,
+	-- 8: two attributes (TR36, the director's word of 2026-11-17). Touches Items[id].Lines: a line of one of the five
+	-- retired attributes becomes the one of the two that took its job (OLD_ATTRIBUTES), its value kept, so the item still
+	-- gives what it gave in points. Two old lines that land on one attribute merge into one line, their values summed,
+	-- since an item never has a stat twice; the merged line takes the first one's place.
+	function(data: any)
+		for _, item in (if type(data.Items) == "table" then data.Items else {}) :: { [any]: any } do
+			if type(item) ~= "table" or type(item.Lines) ~= "table" then
+				continue
+			end
+			local kept: { any } = {}
+			local at: { [string]: any } = {}
+			for _, line in item.Lines do
+				if type(line) ~= "table" then
+					continue
+				end
+				local stat = if type(line.Stat) == "string" then (Migrations.OldAttributes[line.Stat] or line.Stat) else line.Stat
+				local same = if type(stat) == "string" then at[stat] else nil
+				if same and type(same.Value) == "number" and type(line.Value) == "number" then
+					same.Value += line.Value
+				else
+					line.Stat = stat
+					table.insert(kept, line)
+					if type(stat) == "string" then
+						at[stat] = line
+					end
+				end
+			end
+			item.Lines = kept
 		end
 	end,
 }

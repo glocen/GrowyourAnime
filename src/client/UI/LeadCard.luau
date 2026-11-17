@@ -165,7 +165,7 @@ local function stud(parent: Instance, centre: Vector2, z: number): ImageLabel
 	ring.Thickness = 1.5
 	ring.Parent = well
 	well.Parent = parent
-	local gem = Skin.Icon(well, "GemStrength", STUD, STUD, 2 * STUD * 0.8 + 1, nil, 1)
+	local gem = Skin.Icon(well, "GemRed", STUD, STUD, 2 * STUD * 0.8 + 1, nil, 1)
 	gem.Name = "Gem"
 	return gem
 end
@@ -276,7 +276,7 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 		Skin.Set(made, kit, { X = cx - radius, Y = cy - radius, Size = 2 * radius })
 		made.Parent = card
 	end
-	local gem = Skin.Icon(card, "GemStrength", cx, cy, GEM, nil, 10)
+	local gem = Skin.Icon(card, "GemRed", cx, cy, GEM, nil, 10)
 	gem.Name = "Gem"
 	-- The level's badge on the frame's foot: the Voidkin's Block, TR17's chevrons and the number in ink on it.
 	local badge = Instance.new("ImageLabel")

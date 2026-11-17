@@ -82,7 +82,7 @@ return {
 			t.Equal("the bucket doesn't hold it", crit.Bonus, 0)
 			t.Check("the factor is one and the extra less the guard", near(crit.CriticalFactor, 1 + StatsConfig.CriticalDamage - 0.1))
 			t.Check("by hand", near(crit.Total, 100 * (1 + StatsConfig.CriticalDamage - 0.1)))
-			local typed = Hit.Resolve(fighter(1, { Attack = 100, Type = "Agility" }), fighter(1, { Type = "Strength" }), 1, CRIT)
+			local typed = Hit.Resolve(fighter(1, { Attack = 100, Type = "Blue" }), fighter(1, { Type = "Red" }), 1, CRIT)
 			t.Check(
 				"with the type's edge, the two multiply",
 				near(typed.Total, 100 * (1 + StatsConfig.Buckets.TypeAdvantage) * (1 + StatsConfig.CriticalDamage))
@@ -115,10 +115,10 @@ return {
 				t.Equal(`{attacker} against itself`, Hit.TypeRelation(attacker, attacker), 0)
 			end
 			t.Equal("five in the ring", seen, 5)
-			t.Equal("no type is neutral", Hit.TypeRelation("", "Agility"), 0)
-			local a = fighter(1, { Attack = 100, Type = "Agility" })
-			t.Check("the advantage", near(Hit.Resolve(a, fighter(1, { Type = "Strength" }), 1, NONE).Total, 100 * (1 + StatsConfig.Buckets.TypeAdvantage)))
-			t.Check("the disadvantage", near(Hit.Resolve(a, fighter(1, { Type = "Technique" }), 1, NONE).Total, 100 * (1 - StatsConfig.Buckets.TypeDisadvantage)))
+			t.Equal("no type is neutral", Hit.TypeRelation("", "Blue"), 0)
+			local a = fighter(1, { Attack = 100, Type = "Blue" })
+			t.Check("the advantage", near(Hit.Resolve(a, fighter(1, { Type = "Red" }), 1, NONE).Total, 100 * (1 + StatsConfig.Buckets.TypeAdvantage)))
+			t.Check("the disadvantage", near(Hit.Resolve(a, fighter(1, { Type = "Green" }), 1, NONE).Total, 100 * (1 - StatsConfig.Buckets.TypeDisadvantage)))
 		end,
 	},
 	{
@@ -140,8 +140,8 @@ return {
 			-- tools/balance/sim.py dps(att, dfn, rel) / coef_per_second() for these two, printed 2026-11-15 after the critical
 			-- left the bucket (only the type edge's number moves: the other two never reached the cap).
 			local expected = { [1] = 301.2362535686047, [0] = 240.98900285488378, [-1] = 203.2984873059928 }
-			local defenderType = { [1] = "Strength", [0] = "Endurance", [-1] = "Technique" }
-			local a = fighter(5, { Attack = 300, Hit = 50, Critical = 80, Penetration = 40, ElementalAttack = 60, Element = "Fire", Type = "Agility" })
+			local defenderType = { [1] = "Red", [0] = "Orange", [-1] = "Green" }
+			local a = fighter(5, { Attack = 300, Hit = 50, Critical = 80, Penetration = 40, ElementalAttack = 60, Element = "Fire", Type = "Blue" })
 			for relation, want in expected do
 				local d = fighter(7, {
 					Defence = 120, Dodge = 60, CriticalResist = 30, Block = 40, ElementalResist = 20, CriticalGuard = 0.1,

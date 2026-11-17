@@ -13,9 +13,15 @@ local EffectsConfig = require(Shared.Config.Effects)
 local FxKit = require(Shared.Config.FxKit)
 local UIKit = require(Shared.Config.UIKit)
 local Odds = require(Shared.Rules.Odds)
+local StatsConfig = require(Shared.Config.Stats)
+local HudConfig = require(Shared.Config.Hud)
+local ShadesConfig = require(Shared.Config.Shades)
+local Attributes = require(Shared.Definitions.Attributes)
+local Enemies = require(Shared.Definitions.Enemies)
 local SoundRule = require(Shared.Rules.Sound)
 
-local TYPES = { Agility = true, Strength = true, Endurance = true, Intelligence = true, Technique = true }
+-- The types, named by the colours they wear (TR36): the id is the name players see.
+local TYPES = { Red = true, Orange = true, Blue = true, Purple = true, Green = true }
 local CLASSES = { Warrior = true, Tank = true, Assassin = true, Mage = true, Healer = true }
 local ELEMENTS = { [""] = true, Fire = true, Frost = true, Storm = true, Void = true }
 
@@ -29,6 +35,53 @@ local function unique(t: any, list: { any }, label: string)
 end
 
 return {
+	{
+		-- TR36, the director's word of 2026-11-17: two attributes, Strength and Endurance, and the types named by the colours
+		-- they wear. The type's id is the name players read (the type line, the reveal, the cards' gems).
+		Name = "Definitions: TR36, every class's Main is Strength or Endurance, and every type players see is named by its colour",
+		Run = function(t: any)
+			local names = {}
+			for _, row in Attributes.List do
+				table.insert(names, row.Name)
+			end
+			t.Equal("the two attributes", table.concat(names, ", "), "Strength, Endurance")
+			for class in CLASSES do
+				local main = StatsConfig.Attributes.Main[class]
+				t.Check(`{class}: its Main is Strength or Endurance`, main ~= nil and (main.Attribute == "Strength" or main.Attribute == "Endurance"), if main then main.Attribute else "none")
+				local shape: { [string]: number } = StatsConfig.Attributes.Shape[class] or {}
+				t.Check(`{class}: its shape holds the two and nothing else`, shape.Strength ~= nil and shape.Endurance ~= nil and (function(): boolean
+					for id in shape do
+						if Attributes.ById[id] == nil then
+							return false
+						end
+					end
+					return true
+				end)())
+			end
+			for id in StatsConfig.Attributes.Convert do
+				t.Check(`{id} converts and is one of the two`, Attributes.ById[id] ~= nil)
+			end
+			local beaten = {}
+			for winner, loser in StatsConfig.Beats do
+				t.Check(`{winner} is a colour`, TYPES[winner] == true)
+				t.Check(`it beats {loser}, a colour`, TYPES[loser] == true)
+				beaten[loser] = true
+			end
+			for colour in TYPES do
+				t.Check(`{colour} beats one`, StatsConfig.Beats[colour] ~= nil)
+				t.Check(`{colour} is beaten by one`, beaten[colour] == true)
+				t.Check(`{colour}: its stud's colour`, HudConfig.Card.Types[colour] ~= nil)
+				t.Check(`{colour}: its Shade's tint`, ShadesConfig.Tint[colour] ~= nil)
+				t.Check(`{colour}: its gem`, UIKit.Images[`Gem{colour}`] ~= nil and UIKit.Images[`Gem{colour}Seated`] ~= nil)
+			end
+			for _, row in Voidkin.List do
+				t.Check(`{row.Id}: its type a colour`, TYPES[row.Type] == true, row.Type)
+			end
+			for _, row in Enemies.List do
+				t.Check(`{row.Id}: its type a colour, or none`, row.Type == "" or TYPES[row.Type] == true, row.Type)
+			end
+		end,
+	},
 	{
 		Name = "Definitions: AR8's effect kit, every mesh and image uploaded, every burn band and front on its coil",
 		Run = function(t: any)

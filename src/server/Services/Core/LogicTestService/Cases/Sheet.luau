@@ -23,9 +23,9 @@ local RATED = { "Hit", "Dodge", "Critical", "Block", "Penetration", "CriticalRes
 
 local function block(change: { [string]: any }?): Stats.Block
 	local b = Stats.Empty(LEVEL)
-	b.Def, b.Type, b.Class, b.Element, b.Main = "rook", "Blaze", "Warrior", "", "Might"
+	b.Def, b.Type, b.Class, b.Element, b.Main = "rook", "Blaze", "Warrior", "", "Strength"
 	b.Health, b.Attack, b.Defence, b.Regen, b.Speed, b.Poise = 1234, 150, 60, 4.26, 16, 100
-	b.Attributes = { Might = 1234.4, Finesse = 13, Vigor = 40, Spirit = 13, Insight = 0 }
+	b.Attributes = { Strength = 1234.4, Endurance = 0 }
 	for key, value in change or {} do
 		(b :: any)[key] = value
 	end
@@ -67,19 +67,21 @@ end
 
 return {
 	{
-		Name = "Sheet: Overview's two headings, the five with the Main marked, then Core, Offence and Defence paired, and Sustain",
+		Name = "Sheet: Overview's two headings, Strength and Endurance with the Main marked, then Core, Offence and Defence paired, and Sustain",
 		Run = function(t: any)
 			local groups = Sheet.Rows(block())
 			t.Equal("four blocks", #groups, 4)
 			t.Equal("the Basic Attributes first", groups[1].Heading, "Basic Attributes")
-			local five = {}
+			local two, shown = {}, {}
 			for _, each in groups[1].Rows do
-				table.insert(five, each.Stat)
+				table.insert(two, each.Stat)
+				table.insert(shown, each.Name)
 			end
-			t.Equal("the five, in order", table.concat(five, ","), table.concat(Attributes.Ids, ","))
-			local might = row(groups, "Might")
-			t.Equal("an attribute's total, grouped, no decimals", if might then might.Value else nil, "1,234")
-			t.Equal("its Main marked", if might then might.Main else nil, true)
+			t.Equal("the two, in order", table.concat(two, ","), table.concat(Attributes.Ids, ","))
+			t.Equal("Strength and Endurance only, by name (TR36)", table.concat(shown, ","), "Strength,Endurance")
+			local strength = row(groups, "Strength")
+			t.Equal("an attribute's total, grouped, no decimals", if strength then strength.Value else nil, "1,234")
+			t.Equal("its Main marked", if strength then strength.Main else nil, true)
 			local marked = 0
 			for _, each in groups[1].Rows do
 				marked += if each.Main then 1 else 0
@@ -87,7 +89,7 @@ return {
 				t.Equal(`{each.Stat}: its total and nothing else`, keys(each), if each.Main then "Main,Name,Stat,Value" else "Name,Stat,Value")
 			end
 			t.Equal("one Main", marked, 1)
-			t.Equal("an attribute at zero shows 0", (row(groups, "Insight") :: Sheet.Row).Value, "0")
+			t.Equal("an attribute at zero shows 0", (row(groups, "Endurance") :: Sheet.Row).Value, "0")
 			t.Equal("then the Battle Attributes", groups[2].Heading, "Battle Attributes")
 			t.Equal("one caption under it", groups[2].Caption, "chances against an even foe")
 			t.Check("and nowhere else", groups[3].Caption == nil and groups[4].Caption == nil and groups[1].Caption == nil)
@@ -242,7 +244,7 @@ return {
 			t.Equal("a loss the same", Sheet.Change("Critical", -0.0004), "−0.04%")
 			t.Equal("under a two-hundredth: <0.01%", Sheet.Change("Dodge", 0.00002), "+<0.01%")
 			t.Equal("Critical Damage, a percent too", Sheet.Change("CriticalDamage", 0.0003), "+0.03%")
-			t.Equal("points under a half: a tenth", Sheet.Change("Might", 0.3), "+0.3")
+			t.Equal("points under a half: a tenth", Sheet.Change("Strength", 0.3), "+0.3")
 			t.Equal("no change: a dash", Sheet.Change("Hit", 0), "–")
 		end,
 	},

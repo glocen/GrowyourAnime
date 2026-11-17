@@ -14,9 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 14:15, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
-- **For Faber, after TR40:** AR29's B to research's size and colour call, the 13 icons cut, white on alpha, and B's numbers (AR29, "B to research's size and colour call"; `build/handoff/UI/voidkin/chrome/images/`). Content check PASS. Research: one look at what changed, and the call on seven pages at the smallest phone (five rows of 44 fit).
-- **Now:** AR30, every button in the game in B's make. **Then:** the re-lay of AR16's plan at 128, with the FloodMast off the Door's line; AR17's map kit; the icons for stones, emblems and jewels, and TR10's two.
+**Modulo (assets).** 2026-11-17, 14:35, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **For Faber, after TR40:** AR29's B, its 13 icons and its numbers, passed by research (AR29; `build/handoff/UI/voidkin/chrome/images/`).
+- **For research:** AR30's block, every button in the game in B's make: the kit in four states and seven screens beside today's (AR30, "The block"; `build/handoff/UI/buttons/`). Content check PASS. Your verdict, the dock's two ways, and the Graphite panels' accent.
+- **Now:** the re-lay of AR16's plan at 128, with the FloodMast off the Door's line, while research looks. **Then:** AR17's map kit; the icons for stones, emblems and jewels, and TR10's two.
 - **Unchanged:** AR22's gear pass is with Faber to upload. AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
 
 **Turns.** Studio: nobody (Faber stopped at 13:15; the device simulator off). Blender: nobody. Timing tests: nobody.

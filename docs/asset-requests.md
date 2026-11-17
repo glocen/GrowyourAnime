@@ -10220,6 +10220,70 @@ The director, 2026-11-17, 14:03: "any other button ui could maybe get reworked".
 - **Checks:** the content check; research's verdict at phone size, every state, read up close; then Faber's build in one round, screen by screen.
 - **When:** Modulo's next piece after AR29's icons are cut. Faber's build follows AR29's.
 
+### The block (Modulo, 2026-11-17, 14:35)
+
+Drawn by `tools/blender/button_make.py` over the game's captures, which are kept beside the sheets in `build/handoff/UI/buttons/` (`base_*`).
+- **The sheets:**
+  - `buttons_kit.png`: each kind in its four states (idle, pressed, chosen or on, unavailable with its reason), drawn at the smallest phone's size, here three times that and under it at its own.
+  - `buttons_phone.png`: seven screens, today's beside the make, at the capture's own size.
+    - The Overview and the Power screen are at the smallest phone.
+    - The item card, the chest card, the Breaker and the base HUD are on an iPhone until Faber's smallest-phone set arrives. It was asked for after TR40, and the sheet is re-run on it.
+    - The Voidkin screen's rail and bar are AR29's B.
+- **The make,** B's language carried to every kind:
+  - No bright plate at rest.
+  - A dark channel holds what can be pressed. It's the seam's `Channel`, cut at its top left and foot right, edged in `Edge`, with its word or icon in `Text`.
+  - The seam's `Light` is the one bright thing, and it means "this one".
+- **Each kind:**
+  - **Main action** (Equip, Lead, Take out, Open N): a slab of dark glass, lit from its foot by a bar of `Light` that washes up into it.
+    - Pressed, it sinks a point and its light rises.
+    - Lead, while it leads, is set rather than asked: a mark of `Light` before the word, and the word in `Light`.
+    - Unavailable, it's the channel, its word in `Soft`, with the reason under it ("Warrior only").
+  - **Second action** (Send to work, Open one, Drop rates with its mark, Auto):
+    - The channel, its word, and a short line of `Light` under the word.
+    - On (Auto), it takes the chosen chip's glass.
+    - Unavailable, it keeps its word and its reason in `Soft` ("Not while leading").
+  - **Tabs and chips:** one channel split by hairlines.
+    - The chosen chip is the rail's chosen tab laid flat: its glass is lit from its foot. The idle words are in `Soft`, so the chosen one is the brightest, as research set for the rail.
+    - In the kit the chips are a row of 52, which is 44 points on the smallest phone. On the card and the chest screens they're drawn at today's height, 39, so they fit the capture. At the build, the row is 52, or its touch area reaches 52.
+  - **Sort:** its own short channel, with "Sort:" in `Soft`, its value in `Text`, and a chevron. A sort that isn't the default shows its value in `Light` over a short line. Sort is drawn in the kit only, until the smallest-phone set.
+  - **Icon buttons and Close:** the icon stands free, 24 points on the smallest phone, as on the rail. Pressed or on, it takes `Light` and its short line.
+    - A proposal: "Close" as a word button on a panel (the Power screen, the Breaker) becomes the X, as on the item card, with a touch area of 52.
+    - The Power screen's ± are square channels.
+  - **The dock,** composed as today: the bag's cell rises 10 over the Base and Map wings, the marks at today's 40 and 50.7, the cells at the tap's 52. Each is an icon with no word, in one dock designed around them (`docs/decisions.md`). Two ways, for research's pick:
+    - **Its icons in their colours** (Power's yellow, the seam's `Light`, the map's red) on one dark channel, each with a short line in its colour. It's the quieter way, and over the bright yard it reads less as three buttons.
+    - **Each cell lit from its foot in its colour,** the icons in `Text`. It reads as three tiles apart, as today's dock does. **My lean.**
+  - **The Breaker:**
+    - A chamber keeps its contents. Its edge becomes the make's, and the chosen one's light rises from its foot.
+    - A ready shard is the channel, its foot lit in `Ready`'s gold, with "Ready" in that gold.
+  - **A world prompt:** a channel plate with the seam's line down its left edge. The key, or on a phone the tap mark, sits in a cut cap.
+    - Held, its foot fills with `Light` from the cap outward.
+    - Unavailable, it says why ("Opens at base level 4").
+  - **Not drawn on a screen yet:** the base screen's rows, the voltage choice, and Rename's Save and Cancel take the second action's make. Take the star and Send another take the main action's. They're placed on the smallest-phone set.
+- **What holds:** Power's yellow, Credits' teal, `Ready`'s gold and each rarity's colour stay. The dock's three read apart. Every touch area is 44 points or more on the smallest phone, the chips' as above.
+- **B's weak point:** the main action's idle and pressed states differ by a point's sink and a rise of light. At its own size that's a small change, and the kit's flash on release has to carry the press.
+- **Facts from the game's code, for Faber's build** (from a read-only inventory):
+  - Most buttons go through `Kit/Button.luau`, a 9-slice image stack that already lays an accent line along a button's foot at rest. So the make lands mostly as a new skin of images and the seam's colours, not screen by screen.
+  - Drawn by hand outside the kit:
+    - the bag's chips (`Bag.luau` 908);
+    - the card's X (`Bag.luau` 614);
+    - the dock (`Dock.luau`);
+    - the Breaker's tiles (`BreakerScreen.luau` 264);
+    - the power handles;
+    - the rail (AR29).
+  - The kit's `Primary` is stored and never painted (`Kit/Button.luau` 365).
+  - The world prompts are Roblox's default look (`BaseController.luau` 162). The make's prompt is a custom prompt, a build piece of its own.
+  - There's no Sell button and no confirm dialog yet. They take the make when they're built.
+- **A question for research:** the Breaker and the Power screen are Graphite panels.
+  - The block draws the seam's colours on every screen's buttons.
+  - The other way: each palette lends its own accent. `docs/ui.md` lets a palette change the accent, never the cut.
+- **What waits:** motion beyond a state's change. Waiting, succeeded and failed keep the kit's behaviour, drawn in the make at the build.
+- **Content check:** PASS, on both sheets as of 14:32. The Sort row was added after; its only words are "Sort", "Newest" and "Power".
+- **Four facts:**
+  - drawn;
+  - seen at phone size and up close, every state;
+  - research's verdict to come;
+  - not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

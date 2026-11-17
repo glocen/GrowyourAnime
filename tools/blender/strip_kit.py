@@ -47,7 +47,24 @@ RANK = {"VeinWide": 1.0, "VeinThin": 0.7, "VeinBranch": 0.0}
 # Research's fix 3 (2026-11-16, 14:09): from a far gate the great shard was lost in the dusk's haze, so its light is
 # brighter, not the shard bigger: its glow strength over the kit's, here and in its manifest entry. Only its light
 # brightens; the stone's mask is 0.
-BRIGHT = {"CrossingShard": 2.5}
+BRIGHT = {"CrossingShard": 2.5,
+          # AR38, the Void Shop (research's pick C, 2026-11-17, 21:41): the clock's light under the counter's own, the
+          # crown's over everything near, so a rare offer reads from far down the Strip
+          "VoidShopMinute": 0.8, "VoidShopCrown": 2.2}
+# AR38: the Shop's own frame. Its origin is its place in WorldService, 4 studs into its lot from the Strip's edge, and
+# its front (+Y) looks at the Strip; SHOP_IN is that 4. The clock's five minutes hang from the slab's front edge on
+# its east half (+X here is the world's +X, east, once it faces the Strip: on the left from the counter), the first
+# minute the farthest out, clear of the crossing shard's cover and of the way in: each minute's across. A minute is a
+# tooth: a blade of void stone (BLADE, its half width) with a crack of the void's light down its middle, as the Strip's
+# light lives in its cracks, so at the counter the light stays under the counter's own (research's note, 21:41; in
+# grey, whole lit blades filled the view's top left). A spent minute's tooth is gone, so from far off, where the haze
+# drowns a thin crack, the clock still reads as a count of dark teeth against the sky. MINUTE is the crack: (its
+# length, its half width); MINUTE_ALONG the tooth's root, its blade's middle; CRACK_OUT how far proud the crack stands.
+SHOP_IN, SLAB_Z, SLAB_FRONT = 4.0, 12.2, -5.6
+SLAB_ENDS = (18.8, -15.8)          # where the slab's full depth ends each side; its points run 2.4 past
+MINUTES = (17.0, 14.0, 11.0, 8.0, 5.0)
+MINUTE, BLADE = (5.6, 0.6), 1.2
+MINUTE_ALONG, CRACK_OUT = SLAB_FRONT - 0.3, 0.45
 # AR20's C (research's pick, 2026-11-16, 17:23): the Strip's stones, Lantern Row's paving times STONES in light, and an
 # empty lot's floor, the base's deck under LOT_TINT, lifted from #3A3C52 so the lots beside the crossing aren't black.
 STONES, LOT_TINT = 1.35, "#6E7290"
@@ -234,6 +251,70 @@ def far_shard(name):
     return make
 
 
+def shop():
+    """AR38, the Void Shop, the Hanging Stock (research's pick, 2026-11-17, 21:41): a great slab of void stone hanging
+    over a counter with nothing holding it up, its front edge a blade's. Under it the counter, three standing stones at
+    its back and the shelf between them, where the stock's six lines stand as six small shards of light: the counter's
+    own light, the brightest thing near it. The clock's five minutes hang from the slab's front edge on its east half,
+    each a tooth of its own (VoidShopMinute), and the crown, the slab's lit rim, is another piece (VoidShopCrown)."""
+    m = Mesh()
+    mid = SLAB_FRONT - 8.4
+    horn(m, [(SLAB_ENDS[0] + 2.4, mid, SLAB_Z), (SLAB_ENDS[0], mid, SLAB_Z), (SLAB_ENDS[1], mid, SLAB_Z),
+             (SLAB_ENDS[1] - 2.4, mid, SLAB_Z)], [0.6, 8.4, 8.4, 0.6], "abyss", flat=(0.0, 0.0, 1.0), deep=0.155)
+    m.box((16.0, 2.4, 3.2), (0.0, -10.5, 1.6), "abyss", ink=True)                         # the counter
+    m.box((16.4, 2.8, 0.25), (0.0, -10.5, 3.32), "girder")
+    m.box((16.2, 0.2, 0.2), (0.0, -9.1, 3.3), "lamp")             # its edge toward the player: the counter's own light
+    for x, turn, high in ((10.0, -14.0, 7.6), (0.0, 0.0, 8.6), (-10.0, 14.0, 7.6)):         # the stones at its back
+        a = math.radians(turn)
+        flat = (math.sin(a), math.cos(a), 0.0)
+        horn(m, [(x, -18.5, 0.0), (x, -18.5, high * 0.55), (x, -18.5, high)], [4.2, 4.6, 0.4], "abyss", flat=flat, deep=0.22)
+    m.box((23.0, 1.6, 0.4), (0.0, -16.9, 3.2), "girder", ink=True)                          # the shelf
+    for k in range(6):                                                                     # the stock's six lines
+        shard(m, (-8.75 + 3.5 * k, -16.9, 4.6), 0.42, 1.7, "lamp")
+    return Piece("VoidShop", m, lights=[("Counter", (0.0, -14.0, 7.0), "#F6FCFF")],
+                 solid="the counter, 16 by 2.4 by 3.2, and the three stones at its back; the slab hangs out of reach",
+                 note=f"stands at the Shop's place in WorldService ({SHOP_IN:g} into its lot from the Strip's edge), its "
+                      f"front (+Y) looking at the Strip. The slab hangs from {SLAB_Z - 1.3:.1f} to {SLAB_Z + 1.3:.1f}, "
+                      f"{SLAB_ENDS[0] - SLAB_ENDS[1] + 4.8:g} across and 16.8 deep, its front edge a blade's. Only the "
+                      "counter's edge and the shelf's six shards glow: the counter's own light, over the clock's. One "
+                      "PointLight at Counter, white. The clock's light and the crown are "
+                      "their own pieces, VoidShopMinute (five) and VoidShopCrown")
+
+
+def shop_minute():
+    """One minute of the Shop's clock: a tooth hanging point down from its root in the slab, a blade of void stone with
+    a crack of the void's light down its front. Stood five times along the slab's front edge (MINUTES). A minute to run
+    shows; a spent one is gone; the running one is shortened from its root by the share still to run."""
+    m = Mesh()
+    long, wide = MINUTE
+    horn(m, [(0.0, 0.0, 0.0), (0.0, 0.0, -2.6), (0.0, 0.0, -long - 0.5)], [BLADE * 0.75, BLADE, 0.05], "abyss",
+         flat=(0.0, 1.0, 0.0), deep=0.35)
+    horn(m, [(0.0, CRACK_OUT, -0.2), (0.0, CRACK_OUT, -2.6), (0.0, CRACK_OUT, -long - 0.2)], [wide * 0.75, wide, 0.04],
+         "void", flat=(0.0, 1.0, 0.0), deep=0.25, ink=False)
+    return Piece("VoidShopMinute", m,
+                 note=f"its origin is its root, in the slab's underside, and it hangs {long + 0.5:g} down from it. Five "
+                      f"stand on the VoidShop's own turn, at its frame's across {', '.join(f'{x:g}' for x in MINUTES)}, "
+                      f"along {MINUTE_ALONG:g}, up {SLAB_Z:g}: the first minute at 17. A minute still to run shows; a "
+                      "spent one is hidden. The running one shows the share of its minute left: its height (the "
+                      "MeshPart's Y) times that share, its root kept where it is. The crack glows under the counter's "
+                      "light (research, 21:41). No collision")
+
+
+def shop_crown():
+    """The Shop's crown: a line of the void's light round the slab's edge, lit only while a rare offer is in."""
+    m = Mesh(None)
+    mid, r, z = SLAB_FRONT - 8.4, 8.4 + 0.12, SLAB_Z
+    east, west = SLAB_ENDS[0] + 2.7, SLAB_ENDS[1] - 2.7
+    ring = [(east, mid), (SLAB_ENDS[0], mid + r), (SLAB_ENDS[1], mid + r), (west, mid), (SLAB_ENDS[1], mid - r),
+            (SLAB_ENDS[0], mid - r), (east, mid)]
+    m.tube([(x, y, z) for x, y in ring], 0.24, "void")
+    return Piece("VoidShopCrown", m, lights=[("Crown", (2.0, mid, SLAB_Z + 3.0), "#B58CFF")],
+                 note="stands on the VoidShop's own place and turn, round its slab's edge. Shown only while a rare offer "
+                      "is in, for its five minutes; hidden otherwise. Its glow is the brightest of the Shop's, so a lit "
+                      "crown reads from far down the Strip and the side street. One PointLight at Crown while it's lit, "
+                      "if the phone's count allows. No collision")
+
+
 PIECES = {"StripPost": strip_post,
           "VeinWide": cracked("VeinWide", WIDE, TILE, "The wide one, for near the crossing: 2.2 at its widest, two side cracks."),
           "VeinThin": cracked("VeinThin", THIN, TILE, "The thin one, for far down the street: 0.8 at its widest, one side crack."),
@@ -242,7 +323,8 @@ PIECES = {"StripPost": strip_post,
           "CrossingShard": crossing_shard, "ShardOutcrop": outcrop,
           "SealCalamity": lambda: seal("SealCalamity", "void", "the Calamity"),
           "SealClash": lambda: seal("SealClash", "cyan", "the Clash Grounds"),
-          "CrossingMark": crossing_mark, **{name: far_shard(name) for name in SHARDS}}
+          "CrossingMark": crossing_mark, **{name: far_shard(name) for name in SHARDS},
+          "VoidShop": shop, "VoidShopMinute": shop_minute, "VoidShopCrown": shop_crown}
 
 
 def build(name):

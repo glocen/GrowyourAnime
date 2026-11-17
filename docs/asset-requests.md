@@ -12313,13 +12313,13 @@ The scripts are `tools/blender/shop_block.py` (on `strip_plan`'s Strip) and `too
 
 **The three directions:**
 - **A, the Five Stones.** A low vault of void stone, the counter in its mouth.
-  - The clock is five stones, 7.5 studs tall, in a row on the forecourt's west side. Each goes dark as its minute runs out, the running one lit from its foot.
+  - The clock is five stones, 7.5 studs tall, in a row on the forecourt's east side. Each goes dark as its minute runs out, the running one lit from its foot.
   - The crown is the vault's two horns and three crest points.
 - **B, the Spire.** A 33-stud spire off the axis, east, beside a low pavilion over the counter.
   - The clock is a gauge of five slots up the spire's face, draining from the top, all under 21 studs.
   - The crown is the spire's split tip.
 - **C, the Hanging Stock.** A slab of void stone hovering 12 studs over the counter.
-  - The clock is five shards hanging from the west half of its front edge.
+  - The clock is five shards hanging from the east half of its front edge.
   - The crown is the slab's whole rim, lit.
 
 **Placement fixes before the sheet,** each a measured miss:
@@ -12369,6 +12369,50 @@ From `shop_block.png`, `crossing_close.png` and `shop_screen.png` (08cb14f).
 - **The screen passes as laid.** The rare offer stands apart with its chance on it. A line says why it's off ("Need 450 more", "Opens with"), and the top-left is kept for Roblox's buttons.
 - **The rare line's chance is research's: about one stock in three** (`docs/design.md`). Prices and counts stay stand-ins until the simulation.
 - **No must-fix.** For the colour pass: at the counter, the blades' light stays under the counter's own. In grey they fill the view's top left at near-white.
+
+### The colour pass on C (Modulo, 2026-11-17, 21:45 to 21:59 by the clock)
+
+**The pieces,** in the Strip kit (`tools/blender/strip_kit.py`, search "AR38"). They're made as the base's kit is and wear its own two pictures, so only meshes go up:
+- **`VoidShop`, 344 triangles.**
+  - The slab of void stone hanging 12.2 up over the counter, 39.6 across and 17 deep, its front edge a blade's.
+  - The counter, its edge toward the player a line of white light.
+  - Three standing stones at its back, with the shelf between them. The stock's six lines are six small shards of light on the shelf.
+  - One white PointLight over the counter.
+- **`VoidShopMinute`, 56 triangles, stood five times.** One minute of the clock, a tooth: a blade of void stone with a crack of the void's light down its front. A minute to run shows. A spent one is gone. The running one is shortened from its root by the share left.
+- **`VoidShopCrown`, 48 triangles.** The slab's rim, a line of the void's light, shown only while a rare offer is in. Its glow is 2.2 times the kit's, the Shop's brightest. One violet PointLight while it's lit.
+- 672 triangles in all with five teeth. It stands where WorldService's grey Building and Clock stand: on the crossing's axis, 4 into its lot. Each piece's note says how it stands and shows.
+
+**Research's note, measured at the counter.** The view's top left, where the minutes hang, from `look_counter.png` and the grey's; a pixel counts as lit over 0.75 luminance:
+
+| | Lit share | Brightest (p99) |
+|---|---|---|
+| The clock, grey C | 48% | 0.98 |
+| The clock, colour | 21.8% | 0.93 |
+| The counter and its shelf, colour | 14.7% | 0.99 |
+
+- The counter's light is now the brightest thing in the view.
+- The cracks still cover more pixels than the counter's light (17,377 to 4,754), because they hang near the camera.
+
+**One change from the grey, my call (tier 1): a spent minute's tooth is gone.** In grey, a spent minute stayed as a dark shard and the others were whole lit blades.
+- **Why:** the first try put cracks down blades that stayed. It met the note at the counter, but lost the clock down the side street, where the haze drowns a thin crack. Only the grey's 2.4 glow, or the crown's 2.2, carries through it.
+- **With the spent teeth gone,** the clock reads far off as a count of dark teeth against the sky, the running one short. The crack's glow is 0.8 of the kit's.
+- **From the crossing,** it reads: a gap, a third, three whole.
+- **Down the side street at 160 studs,** the six-times crop reads it as teeth, weaker than the grey's white blades.
+- **From the east at 110,** the lamp post hides it, as it hid the grey.
+- **If the grey's far read is wanted back,** the lever is the builder's: the crack's glow rising with the camera's distance, so it stays under the counter's up close.
+
+**A correction to the grey block's record:** the clock hangs on the Shop's **east** half, not its west. The look's u under 0 is the world's east, on the left from the counter, where research saw the blades. Corrected above in A and C, and in `shop_block.py`'s comments.
+
+**The sheets,** in `build/scratch/modulo/shop/colour/`:
+- `shop_look.png`: the grey C above, the colour below, in the same five views and the three-times crop.
+- `far_close.png`: the Shop at six times its pixels from the side street and the east, grey beside colour.
+- `look_<view>.png`, each at full size.
+
+The script is `tools/blender/shop_look.py`.
+
+**Content check:** PASS (rules 2 to 4; the teeth read as stone, never as drips). Before upload it asks for a sheet of each of the three meshes alone, untextured, at full size and at 64 px on dark; I make it with the export.
+
+**Status:** implemented as kit pieces and rendered on the Strip. Not exported to the handoff, not built, not reviewed in game. Quality is UNVERIFIED until research's read. Then I export to `build/handoff/Strip/` with the meshes' sheet, for Faber.
 
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 

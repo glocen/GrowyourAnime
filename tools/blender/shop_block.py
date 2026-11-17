@@ -146,8 +146,9 @@ class World(sp.World):
             self.shard(f"Horn{s}", s * 16.5, 22.5, 8.6, 1.3, 10, mat, rot=(0, s * math.radians(34), 0))
         for k, (u, h) in enumerate(((-6, 3.2), (0, 4.4), (6, 3.2))):
             self.shard(f"Crest{k}", u, 23, 9.0, 0.9, h, mat)
-        # the clock: five stones in a row facing the Strip on the forecourt's west side, the first minute the farthest
-        # out: clear of the way in to the counter, and clear of the crossing shard's cover from the side street
+        # the clock: five stones in a row facing the Strip on the forecourt's east side (u under 0 is the world's east),
+        # the first minute the farthest out: clear of the way in to the counter, and of the crossing shard's cover from
+        # the side street
         for k, u in enumerate((-36.0, -31.5, -27.0, -22.5, -18.0)):
             v = 6.0 + 0.04 * (u + 27.0) ** 2 * 0.25
             self.sbox(f"StoneFoot{k}", (3.2, 3.2, 0.6), u, v, 0.3, "shop_dark", rot=(0, 0, math.pi / 4))
@@ -195,7 +196,7 @@ class World(sp.World):
         for k, (u, turn) in enumerate(((-10, 14), (0, 0), (10, -14))):
             self.sbox(f"Back{k}", (9, 1.4, 7.5), u, 22.5, 3.75, "shop", rot=(0, 0, math.radians(turn)))
         self.sbox("Shelf", (22, 0.4, 4.6), 0, 21.4, 3.6, "shop_shelf")
-        # the clock: five shards hanging from the west half of the slab's front edge, the first minute the farthest out:
+        # the clock: five shards hanging from the east half of the slab's front edge, the first minute the farthest out:
         # clear of the crossing shard's tip (it hides about 3 studs either side of the axis there, seen from the
         # crossing) and of the way in to the counter
         for k, u in enumerate((-17, -14, -11, -8, -5)):

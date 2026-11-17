@@ -5,7 +5,7 @@ Reads tools/balance/seeds.json and the table in docs/roster.md.
 Prints a report. Nothing here is a measurement of play: it tests the
 structure of the math and the seed numbers against each other.
 """
-import json, math, random
+import json, math, random, re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,6 +27,17 @@ def roster():
             rows.append(dict(id=cells[0], name=cells[1], rarity=cells[2], type=cells[3],
                              cls=cells[4], element=cells[5], zone=int(cells[6]), apt=int(cells[7])))
     return rows
+
+
+def made():
+    """Ids of the Voidkin that are made, as the game reads it (Definitions.Voidkin.Made: a Model, a Kit, no ClipsDue).
+    Only a made Voidkin comes out of a shard (TR24, Sable's guard)."""
+    out = set()
+    for line in (ROOT / "src/shared/Definitions/Voidkin.luau").read_text(encoding="utf-8").splitlines():
+        m = re.search(r'\{ Id = "(\w+)"', line)
+        if m and "Model = " in line and "Kit = " in line and "ClipsDue" not in line:
+            out.add(m.group(1))
+    return out
 
 
 # ---------------------------------------------------------------- builds
@@ -298,9 +309,10 @@ def report_pvp():
     print(f"A full Mythical against a full Common: {ta:.0f}s against {tb:.0f}s.")
 
 
-def pool(ground, grade, lift=0.0):
-    """Chance of each Voidkin from one shard of this ground and grade."""
-    here = [v for v in ROSTER if v["zone"] <= ground]
+def pool(ground, grade, lift=0.0, only=None):
+    """Chance of each Voidkin from one shard of this ground and grade. `only`: the ids allowed (made()), as Rules.Odds
+    leaves out any Voidkin that isn't made; None reads the whole roster, the design's table."""
+    here = [v for v in ROSTER if v["zone"] <= ground and (only is None or v["id"] in only)]
     have = [r for r in RARITIES if any(v["rarity"] == r for v in here)]
     # Tiers the pool lacks are dropped, and the rest keep their proportions.
     w = {r: float(S["shards"]["pools"][grade][r]) for r in have}
@@ -333,6 +345,16 @@ def report_pools():
             top = max(p, key=lambda v: (RARITIES.index(by[v]["rarity"]), p[v]))
             print(f"  ground {g['id']} {grade:<10}" + "  ".join(f"{r[:3]} {c:.0%}" for r, c in tiers.items() if c > 0)
                   + f"   top: {by[top]['name']} {p[top]:.1%}")
+    built = made()
+    print(f"  As built now (made: {', '.join(sorted(built))}), where it differs from the design:")
+    for g in S["grounds"]:
+        for grade in ("Standard", "Enriched", "Prismatic"):
+            if g["id"] < first[grade]:
+                continue
+            p = pool(g["id"], grade, only=built)
+            if p == pool(g["id"], grade) or not p:
+                continue
+            print(f"  ground {g['id']} {grade:<10}" + "  ".join(f"{by[v]['name']} {c:.2%}" for v, c in p.items()))
 
 
 def ground_on_day(hours):
@@ -449,7 +471,6 @@ def lua(path):
 
 def game():
     """The game's own numbers, read from src/shared/Config (their home), so the run follows every tune."""
-    import re
     en = lua("src/shared/Config/Enemies.luau")
     kinds = {}
     for kind in ("Ordinary", "Elite"):
@@ -762,7 +783,6 @@ STEP = 3  # studs a lead steps to its next slot after a kill, twice a pack: the 
 
 def speed_config():
     """Speed's seeds and the lead's walks, from src/shared/Config (their home)."""
-    import re
     stats = lua("src/shared/Config/Stats.luau")
     m = re.search(r"Speed = \{ Class = \{([^}]*)\}.*?Nudge = ([\d.]+)", stats)
     combat = lua("src/shared/Config/Combat.luau")

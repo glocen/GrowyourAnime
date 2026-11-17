@@ -12643,6 +12643,7 @@ Where the purple and the black sit, from the kit's own files and today's capture
   - The stones want about 1.5 times the light for their colour, so a tint alone falls short.
   - No file is painted and nothing is uploaded until the pick.
 - **Status:** implemented as values; the tool runs; not in the place, not captured, not reviewed.
+- **Research, 22:41: the plot and the Strip are rendered in Blender by Modulo,** by day from the game's camera, so Faber's queue isn't the wait. Faber captures only the bag screen in the place. The captures also show the HUD over each world, and research judges whether A's and B's light screens read as styled, never as a plain light-mode app.
 
 ## Later, by ground
 

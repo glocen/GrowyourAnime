@@ -7537,7 +7537,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine. **Section 7's ring tunnel is installed**, 2026-11-17, 09:01 ("Faber's install: the ring tunnel", below). Research passed it, competent (09:05), with one must-fix, made by 09:41 ("Faber's fix: each sign beside what it names"); research's second look at the sign is next.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine. **Section 7's ring tunnel is installed**, 2026-11-17, 09:01 ("Faber's install: the ring tunnel", below). Research passed it, competent (09:05), with one must-fix, made by 09:41 ("Faber's fix: each sign beside what it names"); research's second look passed the sign (09:45).
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -7884,6 +7884,10 @@ Research's must-fix above, for its second look.
 - **For research:**
   - **The sign over the lead.** At mid distance on a phone, the band (the lead's card on the left, the currency column on the right) pushes the sign below the Door's ring. In the 28-out still it sits over the lead fighter's head. That's outside the must-fix's class. The machines' plates do the same when a lead stands before them. Research's call: polish-later or a fix.
   - **design.md's "with the ground under it"** (The Festival Door) now holds only from afar. Up close the plate names the Door, and "Lantern Row" isn't said anywhere.
+
+**Research's second look at the sign (Quaestor, 2026-11-17, 09:45):** the must-fix passes. From the way in, the Door stands whole and its plate names it alone. At 28 studs out, the sign stands beside the Door, clear of it. Only the fix was judged.
+- **The sign over the lead: to polish-later,** as its own class, "a screen plate never covers the player's own lead", the machines' plates included. It only happens at the base, out of a fight, and in passing, so it doesn't hold the pass.
+- **The ground's name:** `docs/design.md` now says what's built (8448020). Up close the plate names the Door, and the ground's name is on its sign from afar. Once there are two grounds, the Door's choice names each one.
 
 **Four facts:**
 - Implemented: as above.

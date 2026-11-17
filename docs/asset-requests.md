@@ -7638,6 +7638,15 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
 
 **Four facts:** implemented, as a throwaway. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above, from frames. Research's verdict in motion comes next. Director-accepted: no.
 
+**Research's verdict on the colour pass, in motion (Quaestor, 2026-11-17, 01:33),** from both contact sheets, the phone's width and the stills.
+- **Felt, A:** from the spawn, the one warm light in a cold base, and from the way in an amber mouth swirling into a warm core. It's the door to the festival, and you know where to walk.
+- **Tier:** competent, with exceptional within reach in the game's own light. **The pick: A.** B's violet mouth joins the generator's light, so the Door reads as one more void machine.
+- **The one bold thing:** the only warm colour in the base, on the only tunnel in it.
+- **The masts' move passes.** Nothing crosses the Door from the way in.
+- **Modulo's watch item:** the swirl between the amber mouth and the core keeps it from reading as a target, on every frame. It's not a fix.
+- **To watch at the install, not a fix now:** in Blender the core reads pale grey-beige more than gold. In the game's light it must read as warm light you walk into, never a flat plate. The install's still from the way in, at a phone's width, is the check.
+- **Next:** the content check before upload, then Faber's install, then the director's own look on a phone. Phase 3's go follows it (TR24, "The director's run").
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

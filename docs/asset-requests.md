@@ -9176,6 +9176,8 @@ The director, over the grey: "im not happy with the shoulder and helmet and boot
 - **To Faber:** the 20 marks in `build/handoff/UI/slots/images/` and `slot_marks.json`, with the draw it gives. Upload them under the group with the key, exactly these files.
 - **Four facts:** drawn; seen on the sheet at 44 and 88 points and at the smallest phone; research's verdict competent, and the read in the build still to come; not director-accepted.
 
+- **Research's second look (Quaestor, 2026-11-17, 12:22): the must-fix holds, closed.** From the spawn's before and after and the walk sheet. No plate stands on the avatar in any frame, and the Breaker's count is said once, in the nudge. The arrival now reads as the player, their lead and one line telling them where to go. **AR16 at 128 is closed on research's side** until Modulo's re-lay is judged in the game.
+  - **Seen, older, and its own fix (Faber's, beside TR28's HUD work):** Roblox's "Void Breaker · Open" prompt stands over the Electricity pill at every visit to the Breaker. Class: no world prompt sits on a HUD element. The lever is Faber's (the prompt's offset, or our own prompt in the game's skin).
 
 ### The director's word on the marks in the build, and the Shoulders' pictures (research, 2026-11-17, 12:19)
 The director, over the Items tab at phone size: "i do not look like gear slot design of chest and rings and shoulder and earings make it better and mature the ring can be more simple same for the earings looks at tcp 3 gears slot for references if needed also the actual gears images of shoulder features both shoulders when it should once face 1" (`docs/decisions.md`). It's their word, so it's no fix round of research's.

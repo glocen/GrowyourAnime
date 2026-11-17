@@ -7169,6 +7169,12 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
   - **One tail, its volume by strength:** simpler, and the ear tunes it.
   - **Watch at the listen:** `CritShing`'s inharmonic ratios. They give the metal, and they're the layer most likely to sound harsh. If it grates, the first fix is ratios nearer whole numbers, not a lower volume.
   - **The upload:** research recommends they go up unheard. They're seeded noise and sines with nothing read in, the uploads are free, and the director's real test is the fight with the Replay command, which needs them in the game. A layer the ear rejects is replaced, never patched. **The director's word decides** (team notes, "Waiting on the director").
+- **The director's word (2026-11-17, 01:39): up unheard,** "just let them i will check tomorrow" (`docs/decisions.md`). **For Faber:**
+  1. Upload exactly what `py tools/audio/test6.py` writes with every check passing, under the group, plain titles from the file names (the content check's conditions).
+  2. Grant `Use` on each to the universe, read the grant back, and check every id from a live client after the publish (`docs/research/sound.md`, "Picking by the director's ear").
+  3. Install the six cues with the engine's traps in `docs/research/sound.md`, "The engine, for Faber": a pool per cue, `PlaybackSpeed` for spread, the listener set, and the level trap.
+  4. Ready for the director's ear in a fight at the next session, with the Replay command's line in the Now board.
+  - A layer the ear rejects is replaced, never patched.
 
 ## AR14. The base dressed (Modulo, then Faber)
 

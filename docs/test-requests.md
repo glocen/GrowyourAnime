@@ -3195,14 +3195,14 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 - **A forge rank belongs to the item** [D, 2026-11-17, 02:40]. Each rank adds a share of the item's own base, its main stat and every line alike: `fullBonusOfGearBase` (0.50) over `maxRank` (30), so 1/60 of the base a rank. It's linear and touches nothing else (`docs/balance.md`, rule 2).
 - **Three stone grades,** by the rank they buy: Low for ranks 1 to 10, Mid for 11 to 20, High for 21 to 30. **At launch ranks stop at 10**, so only Low stones are spent. Mid and High drop and stack from launch, with the ranks they buy coming in the big update. Lantern Row and the Tower drop Low, and the Tower drops a few Mid.
 - **A rank never fails.** It costs stones and Credits, rising with the rank and with the item's level tier (G), and it always lands. No chance and no loss, so the Forge never sells a random outcome.
-- **The move across** is the design's prompt on equip (TR26's comparison). Yes moves the rank, the emblems and the jewel for free. No leaves them on the old item.
+- **The move across** is the design's prompt on equip (TR26's comparison). Yes moves the rank, the emblems and the jewel. No leaves them on the old item. The emblems and the jewel move free. **A rank moving to an item of a higher level tier costs the Credits' difference,** the rank's whole price at the new item's G less what it cost at the old one's, with no stones. A rank moving to a lower tier is free, with nothing back [sim check, 15:06, TR39's end].
 - **The Condenser makes Low stones, online and away.** Its rate grows with its level, and it draws electricity like the Breaker (`Rules.Power`), slower with less. Stones land in its tray, which has a cap in hours of work. A full tray stops. Its second job turns 5 Low into 1 Mid over a set time, one at a time.
 - **Every spend is the server's, in one step:** a repeated or interrupted request never spends twice or ranks twice. The away time is worked out on return, as the Training machine's is.
 
 **The seeds** (research's, 2026-11-17, 11:49: worked by hand from `tools/balance/seeds.json`, a model, not a measurement; a sim section follows before Faber reaches this piece):
 - **A rank's cost:** rank × 100 × G(the item's level tier) Credits, and rank × 1 Low stone. Rank 10 on a level-12 item is 2,800 Credits and 10 stones. A whole worn set (14 slots) to rank 10 is 770 stones and about 45% of a launch player's Credits over the 40 hours its Legendary window lasts (`docs/balance.md`, "The Tower").
 - **Drops:** an elite 0.3 Low stones and a keeper 1, as an expected count. Ordinary Shades drop none, so the stones come from the moments worth coming back for.
-- **The Condenser:** 2 Low stones an hour at level 1, plus 0.1 a level (4.9 at level 30, launch's ceiling). It also makes jewels into the same tray [D, 2026-11-17, 12:10], its tier rising with its level (TR39's seeds), so the block includes the jewel in the tray. Its tray holds 12 hours of work, and the conversion takes 30 minutes for 5 Low into 1 Mid.
+- **The Condenser:** 1 Low stone an hour at level 1, plus 0.05 a level (2.45 at level 30, launch's ceiling) [sim check, 15:06, halved from 2 and 0.1]. It also makes jewels into the same tray [D, 2026-11-17, 12:10], its tier rising with its level (TR39's seeds), so the block includes the jewel in the tray. Its tray holds 12 hours of work, and the conversion takes 30 minutes for 5 Low into 1 Mid.
 - **What it gives** (by hand): a whole set at rank 10 in about 12 active hours for a casual player (0.5 a day, 25 days), 26 for an active one (1.5 a day, 17 days) and 39 for a heavy one (4 a day, 10 days). The Condenser gives half or more of an active player's stones, so coming back pays.
 
 **The block contains:**
@@ -3256,7 +3256,7 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 - **The server decides,** in one step, as for emblems.
 
 **The seeds** (research's, 2026-11-17, 12:40: worked by hand, a model, not a measurement; the sim checks them before Faber reaches this):
-- **The percent per tier,** 2.5 times the tier below, so a combine is always worth its socket: Critical Damage and Critical Immunity 5%, 12.5%, 31%, 78% and 195%; Lifesteal 0.2%, 0.4%, 0.8%, 1.6% and 3.2%, doubling, under its 10% cap.
+- **The percent per tier,** twice the tier below. Three make one, so a combine trades stat in the bag for stat in a socket, and sockets are the limit: Critical Damage and Critical Immunity 1%, 2%, 4%, 8% and 16%; Lifesteal 0.2%, 0.4%, 0.8%, 1.6% and 3.2%. Both double a tier, under Lifesteal's 10% cap [sim check, 15:06: was 5% to 195%, at 2.5 a tier].
 - **Drops,** all tier 1: an elite 0.05 jewels and a keeper 0.3, as an expected count; a Tower hard floor 0.05. The Condenser makes one jewel per 6 hours of work.
 - **What it gives** (by hand, an active player at 1.5 hours a day): about 9 tier-1 jewels a day with the Condenser, so a tier 3 in every socket of a Rare-and-up set takes about two weeks, tier 4 about six, and tier 5 about four months: the long climb, with tiers above for the updates. **The Condenser's tiers** (research's seed): tier 1 from its level 1, tier 2 from level 11, tier 3 from level 21. Tiers 4 and 5 come only from combining at launch.
 
@@ -3265,6 +3265,14 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 **Waits:** the jewel icons (Modulo): each type its own colour, the shape growing from tier 1 to tier 5 [D], so a jewel's tier reads at 64 px without its number. The shop.
 
 **Checks:** as TR38's, plus a case that Lifesteal never passes its cap whatever is socketed.
+
+**The sim check of TR37 to TR39's seeds** (research's, 2026-11-17, 15:06). A model, not a measurement. It uses `tools/balance/sim.py`: the elite's and the keeper's rates from section 11's laps, Credits from `earned()`, and Combat Power at the seeds' weights. The seeds above are amended where marked.
+- **The drops hold.** One player at Lantern Row's cooldowns takes about 18 elites and 9 keepers an hour, and four players about 16 and 9. That gives 14 Low stones, 9 emblems and 3.6 jewels an hour. An active player's 13 emblems and 9 jewels a day stand as seeded.
+- **Jewels, fixed:** the old Critical Damage row made one tier-5 jewel about 8% of a level-60 build's Combat Power. Every socket at tier 5 came to about 110%, against the 7% share jewels hold. Doubling a tier from 1%, Critical Damage and Critical Immunity match Lifesteal's row in Combat Power, tier for tier. Every socket at tier 4 is then about 4.5% of the build, and at tier 5 about 9%. The cost: tier 1 and 2 are a quiet step, so the feel line's harder criticals are felt from tier 3 up.
+- **The move across, fixed:** a rank's Credits priced by the item's tier, with a free move, let a player rank level-1 items for 77,000 Credits a set and carry the ranks to level-60 items. At level-60 prices that's 1.7 million. With the difference charged, a set at rank 10 costs what its final items' tier says, about half of launch's Credits. That's near `forgeShareOfIncome` (0.45).
+- **The Condenser, halved:** at the old rate and full power, an active player's Condenser gave about 70 stones a day against 21 from drops, so a set reached rank 10 in about 8 days. Halved, it's about 14 days, and the Condenser still gives over half.
+- **Credits lead the stones:** by 10 hours of play, a set at rank 10 on the items worn then costs about 3 times the Credits earned so far. From about 30 hours, it costs less than what was earned. So the early ranks come one item at a time, the late ones whole. That's intended, and the move across keeps every early rank.
+- **For Faber, at TR39:** jewels push Critical Damage past +100%, beyond Combat Power's last fit. Refit it then (`tools/balance/attributes.py`, report A8) once jewels are in the builds.
 
 ## TR40. Regen in bursts (Faber, after TR28)
 

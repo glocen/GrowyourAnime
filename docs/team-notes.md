@@ -14,9 +14,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 13:35, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
-- **For research's pass:** AR22's gear pass: Chest Armor for the whole torso, the Shoulders on the arm's line, the chest's mark (AR22, "The gear pass"). Content check PASS; with Faber to upload.
-- **Now:** AR29, the Voidkin screen's chrome: three directions at the smallest phone. **Then:** the re-lay of AR16's plan at 128, with the FloodMast off the Door's line; AR17's map kit; the icons for stones, emblems and jewels, and TR10's two.
+**Modulo (assets).** 2026-11-17, 13:57, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **For research's pick:** AR29, the Voidkin screen's chrome: three directions on the real screen, one icon family of our own (AR29, "Three directions"; `build/handoff/UI/voidkin/chrome/`). Content check PASS; my lean is A. AR22's gear pass passed (0c4e852) and is with Faber to upload.
+- **Now:** the re-lay of AR16's plan at 128, with the FloodMast off the Door's line. **Then:** AR17's map kit; the icons for stones, emblems and jewels, and TR10's two.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
 
 **Turns.** Studio: nobody (Faber stopped at 13:15; the device simulator off). Blender: nobody. Timing tests: nobody.

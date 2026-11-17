@@ -10001,6 +10001,48 @@ From the director's word, 2026-11-17, 13:16, over a crop of the page rail at pho
 - **Checks:** the content check; research's pick at phone size, zoomed, every state, read up close; then Faber's build in one round.
 - **When:** Modulo's next piece after AR22's Shoulders fix, before the re-lay's install and AR17.
 
+### Three directions (Modulo, 2026-11-17, 13:57)
+
+Drawn by `tools/blender/voidkin_chrome.py` over Faber's phone captures of the real screen, kept beside the sheets in `build/handoff/UI/voidkin/chrome/`:
+- `base_overview.png`: the Overview at the smallest phone (`band-smallest-phone`, 13:24).
+- `base_items.png`: Items on an iPhone (`seam-full-phone`, 12:54).
+
+No capture of Items at the smallest phone exists, and this one predates 13:03's Gear tab. Only the rail and the top bar's buttons are drawn: today's are lifted out and the rest is the build as it stands.
+
+- **The sheets:**
+  - `voidkin_chrome_phone.png`: today's and the three, on both pages, at the capture's own size.
+  - `voidkin_chrome_close.png`: each make at three times that size: both rails, the bar idle and with favourite and lock on, then each make with all seven pages open (War Emblems chosen) and in its lock state, at the smallest phone.
+  - `voidkin_chrome_icons.png`: the icons large, idle and chosen.
+- **One icon family, our own drawing,** shared by the three, so the pick is on the make. Solid shapes, one line weight, every corner cut or sharp:
+  - Overview: a bust in a cut frame.
+  - Items: a chest, its lid raked, a diamond clasp across the seam.
+  - Kit: a blade in its swing's arc.
+  - Stars: a tall four-point star with a small one waiting.
+  - Forge: an anvil with a spark.
+  - Jewels: a cut gem, side on.
+  - War Emblems: a swallowtail banner with a diamond device.
+  - In the bar: Back, a cut chevron; favourite, an angular heart, outlined off and solid on; lock, open and shut; rename, a pen over its line.
+  - A fact for the record: the bar's second button is favourite, not settings. Today's eight-point mark reads as a cog, which is why the spec above names it "settings". The heart reads as what it does.
+- **A, Lit plates.** Each page is a plate cut like the bag's cells: the top left and foot right cut, dark lacquer, a hairline edge and a faint facet along its top. The chosen page turns into a plate of light, its icon in ink, like Equip. A thread of light runs from it to the stage's edge, so its page reads as lit from the tab. The bar's buttons are the same plates, and a mark that's on is a plate of light. The lever: inversion. The one lit thing on the rail is a solid plate, so the chosen page reads at a glance from across the room.
+- **B, The seam.** No plates. The icons stand free beside a hairline of light down the rail's edge, each with a short rule on the line, like an index. The chosen page is a tab of dark glass opening from the line: the line runs bright and wide where they meet, and the light washes into the tab. In the bar, Back is its word over a short line of light, and the three marks share one cut channel, split by hairlines. A mark that's on lights its icon and the short line under it. The lever: restraint. It's the quietest, and the chosen page is lit by the seam itself, but on the smallest phone the chosen page reads less at once than in A.
+- **C, Blades.** Each page is a blade of lacquer leaning a quarter of its height, stacked. The chosen blade slides out toward its page, its leading edge a bar of light and its face washed from that edge, and its word is set leaning. The bar's buttons lean the same way, and a mark that's on lights its edge. The lever: motion in a still frame. It has the most edge, but the lean is a new shape in a kit built on cut corners, and it spends the rail's width on its slant.
+- **Every make:**
+  - Only the chosen page shows its word, in mixed case and bold like today's. War Emblems takes two lines.
+  - The rail's pitch keeps room for those two lines, so all seven stand whole at the smallest phone, and opening a page never moves the others.
+  - The page words on the sheets are Blender's face, standing in for the game's.
+- **A page that isn't built yet, my proposal: hidden until it opens.** A launched game showing three greyed tabs reads unfinished, and the rail stays four quiet tabs until a system ships. Each make also shows its one quiet lock state for research to weigh: the tab's outline only, its icon faint, and a small lock in its corner. That state fits a page that opens with progress, if one ever does. Either way, a tap never opens an empty page.
+- **My lean: A,** whose lit plate is the bold thing and is drawn from the kit's own cell and Equip. In the bar I'd take B's on state into A's plates: the icon lit, with a short line of light under it. A's full plate of light for favourite and lock on competes with the chosen page.
+- **What waits:** motion beyond a state's change, and the other screens.
+- **After the pick:**
+  - for Faber: the icons as white-on-alpha images at the marks' size, and the make's numbers, from the tool's seeds;
+  - then the content check before upload, and Faber's build in one round.
+- **Content check** (a fresh-eyes agent, on the three sheets and the tool): PASS. The picked icons get their own check, as the upload files at full size and at 64 points over dark, before Faber uploads them.
+- **Four facts:**
+  - drawn;
+  - seen at phone size and up close, every state;
+  - research's pick to come;
+  - not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

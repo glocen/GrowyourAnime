@@ -96,7 +96,7 @@ def underline(a, cx, y, half, u, alpha=1.0, glow=0.3, hue=None):
 
 # --- the kinds --------------------------------------------------------------------------------------------------------
 
-def main_action(a, items, x0, y0, x1, y1, u, label, state="idle", reason=None):
+def main_action(a, items, x0, y0, x1, y1, u, label, state="idle", reason=None, hue=None):
     """Equip, Lead, Break, Open: the one thing a screen asks for."""
     mid, cx = (y0 + y1) / 2, (x0 + x1) / 2
     if state == "unavailable":
@@ -109,7 +109,7 @@ def main_action(a, items, x0, y0, x1, y1, u, label, state="idle", reason=None):
         return
     if state == "pressed":
         y0, y1, mid = y0 + 1.0 * u, y1 + 1.0 * u, mid + 1.0 * u
-    glass(a, x0, y0, x1, y1, u, lit={"idle": 1.0, "pressed": 1.45, "on": 0.6}[state])
+    glass(a, x0, y0, x1, y1, u, lit={"idle": 1.0, "pressed": 1.45, "on": 0.6}[state], hue=None if state == "on" else hue)
     if state == "on":
         # set, not asked: a mark of Light before the word, the word in Light
         w = text_w(label, WORD * u)
@@ -263,7 +263,7 @@ def dock_glyph(a, name, cx, cy, r, colour, alpha=1.0):
     return d
 
 
-def dock(a, items, cx, y1, u, states, hues=None, lit=False):
+def dock(a, items, cx, y1, u, states, hues=None, lit=False, new=()):
     """The HUD's dock, as composed today: the bag's cell in the middle rising over Base's and the map's wings. One
     channel holds the three, split by hairlines; each icon in the colour it means, its short line in that colour."""
     hues = hues or {"Base": MEANS["Power"], "Inventory": SEAM["Light"], "Map": MEANS["Map"]}
@@ -280,9 +280,11 @@ def dock(a, items, cx, y1, u, states, hues=None, lit=False):
     a.line(d, HAIR * u, SEAM["Edge"])
     for i, (name, l, r, top) in enumerate(cells):
         mx, state, hue = (l + r) / 2, states.get(name, "idle"), hues[name]
+        calls = name in new and state != "unavailable"
         if state in ("pressed", "on") or (lit and state == "idle"):
             glass(a, l + 2.0 * u, top + 2.0 * u, r - 2.0 * u, y1 - 2.0 * u, u,
-                  {"on": 0.75, "pressed": 1.3, "idle": 1.0}[state], k=7.0 if i == 1 else 3.0, hue=hue)
+                  {"on": 0.75, "pressed": 1.3, "idle": 1.45 if calls else 1.0}[state], k=7.0 if i == 1 else 3.0,
+                  hue=hue)
         colour = SEAM["Faint"] if state == "unavailable" else (SEAM["Text"] if lit else hue)
         rad = DOCK_MARK[1 if i == 1 else 0] * 0.8 * u
         if name == "Inventory":
@@ -291,6 +293,20 @@ def dock(a, items, cx, y1, u, states, hues=None, lit=False):
             dock_glyph(a, name, mx, (top + y1) / 2 - 2.5 * u, rad, colour)
         if state == "idle" and not lit:
             underline(a, mx, y1 - 5.0 * u, (12.0 if i == 1 else 9.0) * u, u, 0.8, 0.35, hue=hue)
+        if calls:
+            # a call: the cell's glass brighter, its whole edge lit in its colour, and over its far corner the pip,
+            # standing off the cell on an ink ring as today's does: Light, rimmed in the cell's colour
+            k0 = 7.0 if i == 1 else 3.0
+            cell = a.poly(ui.cut_box(l + 2.0 * u, top + 2.0 * u, r - 2.0 * u, y1 - 2.0 * u, k0 * u, 0, k0 * u, 0))
+            a.glow(np.abs(cell), 6.0 * u, hue, 0.7)
+            a.line(cell, 2.2 * u, hue)
+            px_, py_ = r - 3.0 * u, top + 3.0 * u
+            ring = a.poly(vc.diamond(px_, py_, 10.0 * u))
+            a.glow(ring, 6.0 * u, hue, 0.8)
+            a.paint(ring, SEAM["Ink"])
+            pip = a.poly(vc.diamond(px_, py_, 7.6 * u))
+            a.paint(pip, hue)
+            a.paint(a.poly(vc.diamond(px_, py_, 4.4 * u)), SEAM["Light"])
     return d
 
 
@@ -362,13 +378,22 @@ def kit_rows(u):
         for i, name in enumerate(("Close", "Favourite", "Lock")):
             icon_button(a, items, x + (26 + i * 56) * u, y + 26 * u, u, name, state)
 
-    def docks(a, items, x, y, state):
-        dock(a, items, x + DOCK_CELL[0] / 2 * u, y + DOCK_CELL[1] * u, u,
-             {"Inventory": state} if state != "unavailable" else {"Map": state})
-
     def docks_lit(a, items, x, y, state):
         dock(a, items, x + DOCK_CELL[0] / 2 * u, y + DOCK_CELL[1] * u, u,
              {"Inventory": state} if state != "unavailable" else {"Map": state}, lit=True)
+
+    def docks_new(a, items, x, y, state):
+        dock(a, items, x + DOCK_CELL[0] / 2 * u, y + DOCK_CELL[1] * u, u,
+             {"Inventory": state} if state != "unavailable" else {"Map": state}, lit=True,
+             new=("Inventory",) if state != "on" else ("Base",))
+
+    def readies(a, items, x, y, state):
+        ready_chip(a, items, x, y, x + 150 * u, y + ROW * u, u, state=state)
+
+    def claims(a, items, x, y, state):
+        label = {"on": "Claimed"}.get(state, "Claim")
+        main_action(a, items, x, y, x + 168 * u, y + ROW * u, u, label, state,
+                    reason="At base level 4" if state == "unavailable" else None, hue=READY)
 
     def prompts(a, items, x, y, state):
         title, action = ("Bay 2", "Put a worker in") if state != "unavailable" else ("Bay 3", "Opens at base level 4")
@@ -376,8 +401,9 @@ def kit_rows(u):
 
     return [("Main action", main, 168, ROW), ("Second action", second, 168, ROW), ("Tabs and chips", chip_row, 200, ROW),
             ("Sort", sorts, 168, ROW),
-            ("Icon buttons and Close", icons, 168, ROW), ("The dock", docks, 192, DOCK_CELL[1]),
-            ("The dock, lit", docks_lit, 192, DOCK_CELL[1]),
+            ("Icon buttons and Close", icons, 168, ROW), ("The dock", docks_lit, 192, DOCK_CELL[1]),
+            ("The dock, something new", docks_new, 192, DOCK_CELL[1]),
+            ("A shard ready to break", readies, 150, ROW), ("A reward to claim", claims, 168, ROW),
             ("A world prompt", prompts, 210, 60)]
 
 
@@ -457,19 +483,29 @@ def frame_over(a, x0, y0, x1, y1, u, ground, lit=False, hue=None, k=CUT):
 READY = "#F6DE80"      # Theme.Ready: a shard that's ready, a colour that means something
 
 
-def ready_chip(a, items, x0, y0, x1, y1, u, words=True):
-    """A ready shard at the Breaker: the channel, its foot lit in Ready's gold, the shard, "Ready" in that gold."""
+def ready_chip(a, items, x0, y0, x1, y1, u, words=True, state="idle"):
+    """A shard at the Breaker. Ready, it calls: dark glass lit from its foot in Ready's gold and edged in it, as the lit
+    dock's cells, "Ready" in that gold (research's must-fix, 14:37: a state that calls keeps its colour's weight).
+    Chosen, its edge is the seam's Light. Waiting, it's the plain channel: no gold until it calls."""
+    if state == "pressed":
+        y0, y1 = y0 + 1.0 * u, y1 + 1.0 * u
     mid = (y0 + y1) / 2
-    channel(a, x0, y0, x1, y1, u, 0.82)
-    underline(a, (x0 + x1) / 2, y1 - 4.0 * u, 0.4 * (x1 - x0), u, 1.0, 0.5, hue=READY)
+    waiting = state == "unavailable"
+    if waiting:
+        channel(a, x0, y0, x1, y1, u, 0.82)
+    else:
+        d = glass(a, x0, y0, x1, y1, u, {"idle": 1.0, "pressed": 1.4, "on": 1.0}[state], k=6.0, hue=READY)
+        a.line(d, 1.3 * u, SEAM["Light"] if state == "on" else READY, 1.0 if state == "on" else 0.85)
     sx, r = x0 + 20.0 * u, 11.0 * u
     shard = a.poly([(sx, mid - r), (sx + 0.45 * r, mid - 0.35 * r), (sx + 0.32 * r, mid + 0.7 * r), (sx, mid + r),
                     (sx - 0.4 * r, mid + 0.4 * r), (sx - 0.42 * r, mid - 0.5 * r)])
-    a.paint(shard, c("#8C6CF0"))
-    a.paint(np.maximum(shard, a.X - sx), c("#B9A4FF"))
+    a.paint(shard, c("#8C6CF0"), 0.55 if waiting else 1.0)
+    a.paint(np.maximum(shard, a.X - sx), c("#B9A4FF"), 0.55 if waiting else 1.0)
     if words:
-        say(items, x0 + 38.0 * u, mid - 0.36 * WORD * u - 8.0 * u, WORD * u, "Ready", READY, align="LEFT", bold=0.5)
-        say(items, x0 + 38.0 * u, mid - 0.36 * REASON * u + 9.0 * u, REASON * u, "Standard", SEAM["Soft"], align="LEFT")
+        top, foot = ("Waiting", "8 s left") if waiting else ("Ready", "Standard")
+        say(items, x0 + 38.0 * u, mid - 0.36 * WORD * u - 8.0 * u, WORD * u, top, SEAM["Soft"] if waiting else READY,
+            align="LEFT", bold=0.5)
+        say(items, x0 + 38.0 * u, mid - 0.36 * REASON * u + 9.0 * u, REASON * u, foot, SEAM["Soft"], align="LEFT")
 
 
 def load_base(name, scale=1.0):
@@ -571,16 +607,16 @@ def shot_breaker():
     a = Area(px, 190, 300, 1064 * f, 370)
     for x in (416, 677, 938):
         ready_chip(a, items, x * f, 627 * f, (x + 246) * f, 712 * f, u, words=x + 246 <= 1064)
-    dock_shot(px, items, u, f)
+    dock_shot(px, items, u, f, lit=True)
     return finish(px, items)
 
 
-def dock_shot(px, items, u, f, states=None, lit=False):
+def dock_shot(px, items, u, f, states=None, lit=False, new=()):
     """Today's dock and eye taken out of a 1920 capture; the make's drawn where they stood."""
     vc.erase(px, (792 * f, 745 * f, 1125 * f, 868 * f))
     vc.erase(px, (132 * f, 278 * f, 216 * f, 360 * f))
     a = Area(px, 360, 330, 600, 450)
-    dock(a, items, 957.5 * f, 852 * f, u, states or {}, lit=lit)
+    dock(a, items, 957.5 * f, 852 * f, u, states or {}, lit=lit, new=new)
     e = Area(px, 50, 120, 130, 200)
     channel(e, 137 * f, 283 * f, 211 * f, 355 * f, u, 0.88)
     eye(e, 174 * f, 319 * f, 12.0 * u, SEAM["Text"])
@@ -594,12 +630,12 @@ def eye(a, cx, cy, r, colour, open_=False):
     a.paint(np.minimum(lid, lashes) - 0.1 * r, colour)
 
 
-def shot_hud(lit=False):
+def shot_hud(lit=False, new=()):
     """At the base on an iPhone: the dock, the eye, and a prompt where the bay's would show."""
     px = load_base("base_hud.jpg", WIDE)
     u, f = 1.65 * WIDE, WIDE
     items = []
-    dock_shot(px, items, u, f, lit=lit)
+    dock_shot(px, items, u, f, lit=lit, new=new)
     a = Area(px, 150, 200, 400, 300)
     prompt(a, items, 172, 226, u, "Bay 1", "Set worker")
     return finish(px, items)
@@ -611,10 +647,8 @@ SHOTS = [
     ("card", "An item's card, an iPhone", lambda: load_base("base_card.png"), shot_card),
     ("chests", "A chest's card, an iPhone", lambda: load_base("base_chests.png"), shot_chests),
     ("breaker", "The Breaker, an iPhone", lambda: load_base("base_breaker.jpg", WIDE), shot_breaker),
-    ("hud", "At the base, an iPhone: the dock, its icons in their colours", lambda: load_base("base_hud.jpg", WIDE),
-     shot_hud),
-    ("hud_lit", "The dock's second way: each cell lit from its foot in its colour",
-     lambda: load_base("base_hud.jpg", WIDE), lambda: shot_hud(True)),
+    ("hud", "At the base, an iPhone: the dock lit (research's pick), the bag with something new",
+     lambda: load_base("base_hud.jpg", WIDE), lambda: shot_hud(True, ("Inventory",))),
 ]
 
 

@@ -10298,6 +10298,31 @@ From `buttons_kit.png` and `buttons_phone.png` (b800a03), read at phone size, in
 - **Order in the build:** Faber builds the Breaker's buttons after TR41 lays the galaxy sky, so they're read over the sky they'll stand on.
 - **Next:** Modulo's fix of the one class, then research's look at what changed, then the cut for Faber.
 
+### The must-fix's class, fixed, and the three calls drawn (Modulo, 2026-11-17, 14:42)
+
+Both sheets in `build/handoff/UI/buttons/` are drawn again.
+- **A state that calls keeps its colour's weight.** Each calling thing is drawn as the lit dock's cells are: dark glass lit from its foot in its colour and edged in it. The kit has a row for each.
+  - **A shard ready to break:**
+    - Ready, it's lit from its foot in `Ready`'s gold, edged in gold, with "Ready" in gold.
+    - Pressed, it sinks and its gold rises.
+    - Chosen, its edge is the seam's `Light`.
+    - Waiting, it's the plain channel, its shard dimmed, with "Waiting" and the time left in `Soft`. It has no gold until it calls.
+    - On the Breaker's screen at phone size, the row of ready shards reads gold again.
+  - **The dock's "something new":** the cell's glass is brighter, its whole edge is lit in its colour, and the pip stands over its far corner on an ink ring, as today's does.
+    - The bag's colour is the seam's `Light`. A `Light` edge alone barely changed a cell that's already lit, so the ink ring carries the pip on the dark dock and on the pale yard.
+    - On the HUD the bag carries the pip.
+  - **A reward to claim** (none is built yet; the kind for when one is): the main action lit in `Ready`'s gold. Once claimed, it's set, as Leading is: a mark and the word in `Light`, with no gold.
+- **The three calls, as drawn:**
+  - The dock is lit on every screen. The unlit way left both sheets.
+  - The Breaker's Take out and Drop rates already take the seam's `Light`.
+  - Close is the X.
+- **Content check:** PASS, on both sheets: no symbol, gore, copied UI, listed name or paid randomness. The check runs again on each file before it's uploaded.
+- **Four facts:**
+  - drawn;
+  - seen at phone size, the dock's pip zoomed on the pale yard;
+  - research's look at what changed is to come;
+  - not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

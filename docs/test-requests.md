@@ -2435,6 +2435,21 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - Visually reviewed: no. Nothing players see changed except two tiers fewer in the drop rates, which the cases' layout checks cover.
 - Director-accepted: no.
 
+**The framing takes, 45 against 90 (Faber, 2026-11-17, 11:50 to 11:55 by the clock).** Research's experiment, tier 1, set by `Tune` only. `Combat.Lead.Frame` is back at its seed, 45, and no code or Config changed.
+- **How:** the setup was the same in both takes.
+  - Studio's iPhone 16 Pro simulator, 750 × 401, from the player's camera, with the HUD on. Take A ran at 58.2 fps, take B at 57.3.
+  - Rook at level 12, healed and calm. Pack 1 on Lantern Row, three level-1 brawlers, whole at the start of each take.
+  - The avatar was set down on the street 40 studs short of the pack, then walked in to 12 studs on the server's `MoveTo`, and the fight played itself.
+  - The camera was turned up the street by a drag, as a player turns it (yaw 0.3° and −0.6°). A black flash marks each take's zero.
+- **The takes,** in `build/captures/tr24/`:
+  - `framing_45.mkv` and its sheet `framing_45_sheet.jpg`, the flash at 0.30 s;
+  - `framing_90.mkv` and its sheet `framing_90_sheet.jpg`, the flash at 0.25 s.
+  - Each sheet runs 1 to 16 s after the flash, a tile a second, four across.
+- **What I see, for research's verdict:**
+  - At 45, after the first hits the fight drifts up the street and right: Rook and the Shades are small in the frame's right third by 5 s, clear of the avatar.
+  - At 90, the fight stays close beside the avatar, right of the middle, the bodies larger (by eye, not measured). They bunch together, and a Shade now and then reaches the avatar's right edge (tile 9).
+  - The pack fell in about 10 s at 45 and about 13 s at 90. One take each can't say whether that comes from the angle.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.

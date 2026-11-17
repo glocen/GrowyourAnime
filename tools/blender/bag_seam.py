@@ -136,8 +136,24 @@ def corner_marks(scr, x, y, s, raises, worn, ring):
         t.paint(rrect(t, x + 3, y + s - 15, x + 15, y + s - 3, 2), c(SEAM["Channel"]), 0.85)
         inv.tick(t, x + 9, y + s - 9, 7.0, SEAM["Text"], 1.5)
     if ring:
-        d = ui.sd_polygon(t.X, t.Y, cut(x, y, x + s, y + s, 8.0 * s / 48.0))
-        edge_light(t, d - 3.0, 1.0, width=1.6, glow=5.0, cover=0.5, outward=True)
+        chosen_ring(scr, x, y, s)
+
+
+# The chosen ring (AR18, research's must-fix of 2026-11-17, 08:01: on Legendary's gilt the pale ring merged into the
+# frame's own glints). A dark twin first: a moat of the seam's Channel round the cell, from MOAT[0] to MOAT[1] points
+# out, over any frame's own light (the gilt's reaches about 3 out), so the ring always stands on dark; then RING_W
+# points of Light, its middle RING_OUT out, its glow outward only. Sizes at a grid cell (48 points); a bigger cell
+# scales them. Drawn after the cells round it, so a neighbour's light never lies over it.
+MOAT, RING_OUT, RING_W, RING_GLOW = (0.8, 3.4), 4.3, 2.6, 8.0
+
+
+def chosen_ring(scr, x, y, s):
+    z = s / 48.0
+    t = scr.area(x, y, x + s, y + s, 24 * z)
+    d = ui.sd_polygon(t.X, t.Y, cut(x, y, x + s, y + s, 8.0 * z))
+    mid, half = (MOAT[0] + MOAT[1]) / 2 * z, (MOAT[1] - MOAT[0]) / 2 * z
+    t.paint(np.abs(d - mid) - half, c(SEAM["Channel"]), 0.94)
+    edge_light(t, d - RING_OUT * z, 1.0, width=RING_W * z, glow=RING_GLOW * z, cover=0.6, outward=True)
 
 
 def plain_cell(scr, x, y, s, image=None, count=0, slot=None, ring=False):
@@ -159,7 +175,7 @@ def plain_cell(scr, x, y, s, image=None, count=0, slot=None, ring=False):
     if count > 1:
         scr.text(x + s - 4, y + s - 13, 10, f"×{count}", SEAM["Text"], "RIGHT", bold=0.25)
     if ring:
-        edge_light(t, d - 3.0, 1.0, width=1.6, glow=5.0, cover=0.5, outward=True)
+        chosen_ring(scr, x, y, s)
 
 
 def backing(scr):
@@ -234,15 +250,21 @@ def doll(scr, who, target=None):
         for i, slot in enumerate(column):
             y = SLOTS_Y + i * PITCH
             if held.get(slot):
-                gear_cell(scr, x, y, SLOT, held[slot], ring=slot == target)
+                gear_cell(scr, x, y, SLOT, held[slot])
             else:
-                plain_cell(scr, x, y, SLOT, slot=slot, ring=slot == target)
+                plain_cell(scr, x, y, SLOT, slot=slot)
+            if slot == target:
+                ringed = (x, y)
     for slot, x in HANDS:
         y = SLOTS_Y + 5 * PITCH
         if held.get(slot):
-            gear_cell(scr, x, y, SLOT, held[slot], ring=slot == target)
+            gear_cell(scr, x, y, SLOT, held[slot])
         else:
-            plain_cell(scr, x, y, SLOT, slot=slot, ring=slot == target)
+            plain_cell(scr, x, y, SLOT, slot=slot)
+        if slot == target:
+            ringed = (x, y)
+    if target:
+        chosen_ring(scr, *ringed, SLOT)
     # Combat Power on its plate, a line of light along its top
     px0, py0, px1, py1 = PLATE
     t = scr.area(px0, py0 - 16, px1, py1)
@@ -288,12 +310,15 @@ def grid(scr, who, chosen=None):
     for i, (kind, what) in enumerate(things):
         x, y = GRID_X + (i % ACROSS) * CELL_PITCH, GRID_Y + (i // ACROSS) * CELL_PITCH
         if kind == "gear":
-            gear_cell(scr, x, y, CELL, what, ring=chosen == what, raises=what in RAISES,
-                      worn=what in HELD.values())
+            gear_cell(scr, x, y, CELL, what, raises=what in RAISES, worn=what in HELD.values())
+            if chosen == what:
+                ringed = (x, y)
         elif kind == "chest":
             plain_cell(scr, x, y, CELL, UI_ART / "chests" / "images" / f"{what[0]}.png", what[1])
         else:
             plain_cell(scr, x, y, CELL, UI_ART / "shards" / f"{what[0]}.png", what[1])
+    if chosen:
+        chosen_ring(scr, *ringed, CELL)
     scr.mid(GRID_X - 3, 365, 9, f"{len(ITEMS)} / 300 in the bag", SEAM["Faint"], bold=0.2)
 
 
@@ -378,24 +403,21 @@ def screen(state):
 
 # --- close-ups and the palette ----------------------------------------------------------------------------------------
 
+def rarity_swords():
+    swords = [s for s in GEAR if GEAR[s]["kind"] in inv.WEAPON]
+    return [(next(s for s in swords if GEAR[s]["rarity"] == r), r) for r in ORDER[::-1][:-1]] + [("GearKiribi", "Legendary")]
+
+
 def close_ups():
-    """Each rarity's cell twice the size, Legendary's well today (umber) and proposed (the seam's); the chips; Equip."""
+    """Each rarity's cell twice the size, Legendary's well in the seam's (research, 08:01); the chips; Equip."""
     w, h = 812.0, 150.0
     sheet = ui.Sheet(w, h, SEAM["Panel"][1])
     scr = inv.Screen(sheet, 0, 0)
-    swords = [s for s in GEAR if GEAR[s]["kind"] in inv.WEAPON]
-    cells = [(next(s for s in swords if GEAR[s]["rarity"] == r), r) for r in ORDER[:0:-1]]
-    cells += [("GearKiribi", "Legendary, today"), ("GearKiribi", "Legendary, proposed")]
     x = 30.0  # a cell's frame reaches 10 points out at this size (gear_icons.slot's pad): kept inside the sheet
-    for stem, word in cells:
-        if word == "Legendary, today":
-            gi.UMBER = ("#34200E", "#1A1007")
-        elif word == "Legendary, proposed":
-            gi.UMBER = SEAM["Well"]
+    for stem, word in rarity_swords():
         gear_cell(scr, x, 22, 92.0, stem)
         scr.text(x, 124, 10, word, SEAM["Soft"])
         x += 110.0
-    gi.UMBER = SEAM["Well"]
     t = scr.area(664, 0, 812, 150)
     for i, (word, lit) in enumerate((("All", True), ("Weapons", False))):
         y0 = 26.0 + i * 34
@@ -408,6 +430,24 @@ def close_ups():
             t.line(d, 1.0, c(SEAM["Edge"]))
         scr.mid(741, y0 + 13, 10, word, SEAM["Ink"] if lit else SEAM["Soft"], "CENTER", bold=0.3)
     equip(scr, 696.0, 96.0, 786.0, 124.0, "Equip")
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    return sheet.px
+
+
+def ring_proof():
+    """The ring's fix (AR18, research's must-fix of 08:01): each rarity as the grid lays it, three cells of it side by
+    side at the grid's pitch, the middle one chosen, so the ring is read against its own frame's brightest neighbours."""
+    group = 3 * CELL_PITCH + 5.0  # five groups inside the screen's 812 points, a frame's 10 point reach clear of its edge
+    w, h = 812.0, 96.0
+    sheet = ui.Sheet(w, h, SEAM["Panel"][1])
+    scr = inv.Screen(sheet, 0, 0)
+    for g, (stem, word) in enumerate(rarity_swords()):
+        x0 = 12.0 + g * group
+        for i in range(3):
+            gear_cell(scr, x0 + i * CELL_PITCH, 14.0, CELL, stem)
+        chosen_ring(scr, x0 + CELL_PITCH, 14.0, CELL)
+        scr.text(x0, 74, 10, f"{word}, the middle one chosen", SEAM["Soft"])
     for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
         rs.paste(sheet.px, layer, 0, 0)
     return sheet.px
@@ -464,15 +504,16 @@ NOTES = (
     "For Faber's rebuild: the palette above in the kit's keys, as UIKit.Palettes.Seam (Panel, Card, Well, Channel, Edge, "
     "Facet, Glint, Text, Soft, Faint, Button, Pressed, Ground) with Light as its accent. A seam edge is a 1 point line in "
     "Light over a 4 point glow at 0.4, its transparency ramped along its length (a UIGradient: full at the middle, about "
-    "0.15 at the ends). Rings: 1.6 points of Light, 3 points out from the cell, a 5 point glow at 0.5. The lit chip and "
+    "0.15 at the ends). The chosen ring (research's fix, 08:01): first a moat of Channel at 0.94, 0.8 to 3.4 points out "
+    "round the cell, over any frame's own light; then 2.6 points of Light, its middle 4.3 points out, an 8 point glow "
+    "outward only at 0.6; drawn over its neighbours. The lit chip and "
     "Equip: a ramp from white to Light, words in Ink, a 5 to 6 point glow at 0.3. The stage's shaft: Light at 0.13, 26 "
     "points either side of the figure's middle, cut at the stage.",
-    "Proposed, Legendary's well: the seam's violet-black in place of AR6's warm umber (close-ups: today, then proposed). "
-    "Its gilt frame and gold light stay its own. It's one number pair in build/handoff/UI/gear/gear_icons.json (the well's "
-    "`legendary`), for research to take or leave.",
-    "Open, the Overview: TR24's fix 4 gives the Voidkin screen one palette across its tabs, so the shell is drawn in the "
-    "seam here. The director's word names the inventory; whether the Overview's stage and panel follow is the director's "
-    "to say.",
+    "Legendary's well takes the seam's violet-black in place of AR6's warm umber (research, 08:01); its gilt frame and "
+    "gold light stay its own. In the bag every rarity's well is the Seam palette's Well, Legendary's too; the umber pair "
+    "in build/handoff/UI/gear/gear_icons.json stays for the screens outside the seam.",
+    "The Overview follows in the seam's palette (research, 08:01: the director's one-palette word of 00:17, and 02:40's "
+    "move of the bag to the seam).",
     "Stand-ins: the text is Blender's face; the figure is Rook's sheet model in Workbench; every number is a seed.",
 )
 M, HEAD = 20.0, 46.0
@@ -484,7 +525,9 @@ def main():
     gi.WELL, gi.CHANNEL = SEAM["Well"]
     gi.UMBER = SEAM["Well"]
     screens = [(caption, screen(key)) for key, caption in STATES]
-    extras = [("Close: each rarity's cell (Legendary's well today, then proposed); the chips; Equip", close_ups()),
+    proof = ring_proof()
+    extras = [("Close: each rarity's cell, Legendary's well in the seam's; the chips; Equip", close_ups()),
+              ("The chosen ring on each rarity, three side by side at the grid's pitch, the middle chosen", proof),
               ("The palette, in the kit's keys", palette_strip())]
     lines = [line for n in NOTES for line in textwrap.wrap(n, 140)]
     h = HEAD + sum(18 + px.shape[0] / K + 14 for _, px in screens + extras) + len(lines) * 16 + 16
@@ -506,6 +549,12 @@ def main():
     for i, px in enumerate(phone):
         rs.paste(strip_px, px, i * (round(W) + 16), 0)
     rs.save(strip_px, out / "bag_seam_phone.png")
+    small = rs.shrink(proof, 1 / K)  # the ring's proof at the phone's own size, then twice it, nearest, to read
+    big = np.repeat(np.repeat(small, 2, axis=0), 2, axis=1)
+    ring_px = rs.canvas(big.shape[1], small.shape[0] + big.shape[0] + 8, (0.09, 0.09, 0.11))
+    rs.paste(ring_px, small, 0, 0)
+    rs.paste(ring_px, big, 0, small.shape[0] + 8)
+    rs.save(ring_px, out / "bag_seam_ring_phone.png")
 
 
 if __name__ == "__main__":

@@ -8330,6 +8330,19 @@ Read from `bag_seam_phone.png`, zoomed into each state, beside AR24's A.
 - **The Overview follows** in the seam's palette. This isn't a new call: the director's word of 00:17 says the bag's tabs share one palette, and 02:40 moved the bag to the seam. If the director says otherwise, it's reversed.
 - **Not covered here:** the device check at night comes with the build's review. Faber builds after the ring's fix, and only that fix gets a second look.
 
+### The ring's fix (Modulo, 2026-11-17, 08:13)
+
+The cause: AR6's frames light their own outside. The gilt glows about 3 points beyond the cell, with glints at its cut corners, and the old ring sat 3 points out in the same pale light, so on gold the two merged. The fix keeps the ring's own light and gives it its own dark, the same on every rarity:
+- **A dark twin first:** a moat of the seam's Channel at 0.94, 0.8 to 3.4 points out round the cell, over the frame's own glow.
+- **Then the ring:** 2.6 points of Light (it was 1.6), its middle 4.3 points out (it was 3), with an 8 point glow outward only, at 0.6.
+- **Drawn after its neighbours,** so a gold cell beside it never lays its light over the ring.
+- Sizes are at the grid's 48-point cell, and a bigger cell scales them. The numbers are in the sheet's notes, for Faber. They're seeds: in the game, a UIStroke with a second, dark stroke under it.
+- **Proof:** `build/handoff/UI/inventory/bag_seam_ring_phone.png` shows each rarity as the grid lays it, three cells side by side at its pitch with the middle one chosen, at phone size and at twice that. The sheet and the phone strip are redrawn with it.
+- **Read up close,** at phone size and zoomed: the chosen cell is ringed apart from its neighbours on every rarity, and on gold it reads at once. The slot it fills on the doll reads too.
+- **With research's calls of 08:01:** Legendary's well is the seam's violet-black in the bag, and the close-ups show only that, since "today" is gone. In the bag every rarity's well is the Seam palette's `Well`. The umber pair in `gear_icons.json` stays for the screens outside the seam. The Overview follows the seam. The sheet's notes say both.
+- **Content check:** not rerun. The change is a ring's width, its place and a dark band under it, with no new shape, text or image, so the skin's PASS of 02:56 covers it.
+- **Implemented:** the sheet. **Tested:** read at phone size, as above. **Visually reviewed:** my own pass; research's second look at the ring isn't in. **Director-accepted:** no.
+
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
 Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:
@@ -9165,11 +9178,11 @@ These are written from each combo's clip and its timings in `Shared.Definitions.
 - **Waits for the finish:** Storm's pale pink to white, the lines' own jagged texture in place of `fx_beam`'s, and the sound for the director's retry.
 - **For Faber, at the block:** `Effect = "WattCombo"` on the action and its `Config.EffectRows` entry; the replay with a Brawler as the target where it can be, from 215 and ±70; `FreezeAt` on frames 2 and 5 after each hit for stills.
 - **Time:** the measure and the rows, about 40 minutes by the clock, against the 2-hour cap at its block.
-- **Content check, 2026-11-17, by 08:20: PASS for the grey block** (the dev build, nothing uploaded), on the spec, the rows and the script, with no render yet. Its conditions:
+- **Content check, 2026-11-17, before the commit at 08:10: PASS for the grey block** (the dev build, nothing uploaded), on the spec, the rows and the script, with no render yet. Its conditions:
   1. **The block's captures come back to it:** full size and at 64 px over dark, from 215, 145, 285 and 28, with `FreezeAt` stills 2 and 5 frames after each hit. It checks that a V's tips never stand against the Shade's head as if they came out of it.
   2. **At the finish:** Storm's pale pink to white stays pale and self-lit, never saturated pink or red. The spit never thickens or leaves a mark at its end or under the Shade's feet.
   3. **The lines' own texture,** in place of `fx_beam`'s, is never drawn as sharp Z or S zigzags side by side. It's checked on its own before its upload.
-- **Delivered (Modulo, 2026-11-17, 08:21 by the clock):** `build/handoff/Watt/fx/WattCombo.rows.json`, for Faber's block in the replay, after Ground Wire's retake in his queue.
+- **Delivered (Modulo, 2026-11-17, 08:10, commit b4a1ac7):** `build/handoff/Watt/fx/WattCombo.rows.json`, for Faber's block in the replay, after Ground Wire's retake in his queue.
 - **Four facts:**
   - Made: yes, the rows in grey.
   - Self-reviewed: by the numbers above; not yet seen in motion.

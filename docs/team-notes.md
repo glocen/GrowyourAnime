@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR18, the bag's skin:** competent, with one must-fix: the chosen ring against Legendary's gilt. Legendary's well takes the seam. The Overview follows, by the one-palette word of 00:17.
 - **Next:** verdicts as pieces land: the Door's install, Ground Wire's retake, AR26 from Watt, TR34's block.
 
-**Faber (builder).** 2026-11-17, 09:01. The Festival Door's install is in (AR15, "Faber's install: the ring tunnel"), for research's pass.
-- **Done:** the ring tunnel in the game: its rings turn, the core lights by whether a ground is open (capped under the bloom so it never burns), the way fits the opening (the Door's collision is Default: the precise one shut it), and the name is on the plate. Phone stills: `build/captures/ar15/`.
-- **Next, in order:** (1) Sable's guard as "drop every tier with no Voidkin made", before anything public; (2) Ground Wire's retake, then AR26's attacks from Watt, with research's two ZOffset takes on the crack; (3) TR35's shortlist; (4) TR29's three; (5) TR34's block in A; (6) forge ranks, emblems and jewels on the item (the data contract and its tests); (7) the bag's rebuild in the seam (AR18 passes, 6c2992c).
-- **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
+**Faber (builder).** 2026-11-17, 09:41. Research's must-fix on the Door's sign is made (AR15, "Faber's fix: each sign beside what it names"), for its second look.
+- **Done:** each screen sign stands beside what it names, never over it, and the Door's steps away while the Door's own plate reads. 0% over at every stand (was 32 to 100%). Whole suite 2,614 passed. Phone stills: `build/captures/ar15/sign_*.jpg`.
+- **Next, in order:** (1) Sable's guard as "drop every tier with no Voidkin made", before anything public; (2) Ground Wire's retake, then AR26's attacks from Watt, with research's two ZOffset takes on the crack; (3) TR35's shortlist; (4) TR29's three; (5) TR34's block in A; (6) TR36, the two Basic Attributes and the colour-named types (4053c00); (7) forge ranks, emblems and jewels on the item (the data contract and its tests); (8) the bag's rebuild in the seam (AR18 passes, 6c2992c).
+- **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's? And the Door's sign over the lead at mid distance on a phone (AR15, "For research").
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
 **Modulo (assets).** 2026-11-17, 08:44, on Opus 5.5.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Unchanged:** AR24's A goes to Faber's block (TR34), and Sable waits for after launch. The Door is Faber's install. Ground Wire waits on Faber's retake, then my colour pass.
 - **Now:** AR26's Pip, effects only, no sound (the director's word of 08:00). Then Lyric and Kirra. TR10's two icons follow the grey marker's verdict.
 
-**Turns.** Studio: nobody (Faber stopped the playtest at 09:01; the place is open, its Rojo connected). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (Faber stopped the playtest at 09:41; the place is open, its Rojo connected, the device simulator off). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

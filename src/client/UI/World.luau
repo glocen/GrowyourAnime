@@ -21,6 +21,9 @@
 --                                             each one above it takes the free place nearest its point, over or under
 --                                             (a base's machine plates: AR16's star lined a bay up behind the Breaker)
 --   World.Settle(rows, gap, ceiling, bottom)  that rule on rows of plates, for a view that places its own (TR21's chips)
+--   World.Clear(plate, box)                   never over the landmark it names: box() its box on the screen, viewport
+--                                             pixels; where the band, the lead's corner or its group set it over the box,
+--                                             it hides (research's must-fix on AR15, 2026-11-17)
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
 
@@ -34,7 +37,7 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string? }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))? }
 -- A plate on the screen, authored pixels from the layer's corner: its middle, its foot, half its width, its height; and how
 -- far its point stands from the camera, if known.
 export type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number, Depth: number? }
@@ -108,6 +111,13 @@ function World.Apart(frame: Frame, group: string)
 	local plate = plates[frame]
 	if plate then
 		plate.Apart = group
+	end
+end
+
+function World.Clear(frame: Frame, box: () -> (Vector2?, Vector2?))
+	local plate = plates[frame]
+	if plate then
+		plate.Clear = box
 	end
 end
 
@@ -227,6 +237,7 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 		return
 	end
 	local groups: { [string]: { Row } } = {} -- the plates kept apart, by group, where each would stand
+	local clear: { [Frame]: { Box: () -> (Vector2?, Vector2?), Middle: number, Foot: number, Half: number, Tall: number } } = {}
 	for frame, plate in plates do
 		if frame.Parent == nil then
 			plates[frame] = nil
@@ -293,6 +304,10 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 		-- open plate a pixel over the piece it cleared (the World case, 2026-11-13).
 		frame.Position = UDim2.fromScale((on.X + shift.X * scale) / room.X, (on.Y + shift.Y * scale) / room.Y)
 		frame.Visible = true
+		if plate.Clear then
+			local swell = if plate.Swell then plate.Swell.Scale else 1
+			clear[frame] = { Box = plate.Clear, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell }
+		end
 		local group = plate.Apart
 		if group then
 			local swell = if plate.Swell then plate.Swell.Scale else 1
@@ -307,6 +322,22 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			local foot = feet[row.Frame]
 			if foot and foot ~= row.Foot then
 				row.Frame.Position = UDim2.fromScale(row.Middle * scale / room.X, foot * scale / room.Y)
+			end
+			local kept = clear[row.Frame]
+			if kept and foot then
+				kept.Foot = foot
+			end
+		end
+	end
+	-- Last, a plate over the landmark it names hides: where it stands, in authored pixels on the layer, against the box,
+	-- a viewport's pixels less the inset and the layer's corner (as `on` is).
+	for frame, kept in clear do
+		local ok, low, high = pcall(kept.Box)
+		if ok and low and high then
+			local left, top = (low.X - inset.X - corner.X) / scale, (low.Y - inset.Y - corner.Y) / scale
+			local right, bottom = (high.X - inset.X - corner.X) / scale, (high.Y - inset.Y - corner.Y) / scale
+			if kept.Middle - kept.Half < right and kept.Middle + kept.Half > left and kept.Foot - kept.Tall < bottom and kept.Foot > top then
+				frame.Visible = false
 			end
 		end
 	end

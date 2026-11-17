@@ -1,11 +1,17 @@
 --!strict
--- SignsController (client): the names a place says over itself, on the World layer (TR24's fix 10: "the Door shows no
--- name ... the gate at 35 studs has no name either"). The player's own Festival Door says where it leads, its name over
--- the arch and the ground it goes to under it (docs/design.md, "The Festival Door": "Festival of Battles", with the
--- ground under it); the festival gate says its ground's name to the side street. Plates as the machines' are (UI/World,
--- UI/Kit/Panel), kept under the top band, the door's apart from the base's machine plates. Their words and reach are
+-- SignsController (client): the names a place says of itself, on the World layer (TR24's fix 10: "the Door shows no
+-- name ... the gate at 35 studs has no name either"). The player's own Festival Door says where it leads, its name and
+-- the ground it goes to under it (docs/design.md, "The Festival Door": "Festival of Battles", with the ground under it);
+-- the festival gate says its ground's name to the side street. Plates as the machines' are (UI/World, UI/Kit/Panel),
+-- kept under the top band, the door's apart from the base's machine plates. Their words and reach are
 -- Config.World.Signs'.
---   SignsController.Parts()   the signs' plates, for tests
+-- A sign never covers the landmark it names, nor says again what the landmark's own plate says (research's must-fix on
+-- AR15, 2026-11-17): it stands beside the landmark, level with its middle on the screen, hides wherever the HUD's
+-- room sets it over the landmark (World.Clear), and the Door's steps away while the Door's own plate reads from the
+-- camera. Under the top band a sign over the arch was pushed down onto the Door.
+--   SignsController.Parts()        the signs' plates, for tests
+--   SignsController.Aside(door)    whether a door's sign stands aside now, its plate reading, for tests
+--   SignsController.Box(marker)    the landmark's box on the screen (viewport pixels), or nil, for tests
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -16,6 +22,7 @@ local Grounds = require(Shared.Definitions.Grounds)
 local Markers = require(Shared.World.Markers)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
+local Layers = require(UI.Layers)
 local World = require(UI.World)
 local Panel = require(UI.Kit.Panel)
 local Text = require(UI.Kit.Text)
@@ -28,28 +35,105 @@ type Sign = { Marker: Instance, Plate: Frame }
 
 local player = Players.LocalPlayer
 local signs: { [string]: Sign } = {}
+local sides: { [string]: "Right" | "Left" } = {} -- the side each sign stands on, kept while it fits
 
--- The top of a marker's model: its bounding box's top middle, Lift studs over it.
-local function topOf(marker: Instance, lift: number): Vector3?
-	if not marker.Parent then
-		return nil
+-- A landmark's box on the screen, viewport pixels (the World layer's own measure), and its middle's distance from the
+-- camera; nil while it's gone or any corner is behind the camera.
+local function boxOf(marker: Instance): (Vector2?, Vector2?, number?)
+	local camera = workspace.CurrentCamera
+	if camera == nil or marker.Parent == nil then
+		return nil, nil, nil
 	end
+	local frame: CFrame, extent: Vector3
 	if marker:IsA("Model") then
-		local frame, size = marker:GetBoundingBox()
-		return frame.Position + Vector3.new(0, size.Y / 2 + lift, 0)
+		frame, extent = marker:GetBoundingBox()
 	elseif marker:IsA("BasePart") then
-		return marker.Position + Vector3.new(0, marker.Size.Y / 2 + lift, 0)
+		frame, extent = marker.CFrame, marker.Size
+	else
+		return nil, nil, nil
 	end
-	return nil
+	local left, top, right, bottom = math.huge, math.huge, -math.huge, -math.huge
+	for _, x in { -0.5, 0.5 } do
+		for _, y in { -0.5, 0.5 } do
+			for _, z in { -0.5, 0.5 } do
+				local at = camera:WorldToViewportPoint(frame * (extent * Vector3.new(x, y, z)))
+				if at.Z <= 0 then
+					return nil, nil, nil
+				end
+				left, top, right, bottom = math.min(left, at.X), math.min(top, at.Y), math.max(right, at.X), math.max(bottom, at.Y)
+			end
+		end
+	end
+	return Vector2.new(left, top), Vector2.new(right, bottom), (frame.Position - camera.CFrame.Position).Magnitude
 end
 
--- A plate of `lines` over `marker`: the first line its name, Strong; the rest under it.
-local function make(name: string, marker: Instance, lines: { string }, look: any, group: string?): Frame
+-- Where sign `key`, `size` authored pixels, stands beside `marker`: its middle level with the landmark's on the screen,
+-- Gap authored pixels off its side. On the right while it fits there: the lead's corner is top left, and a plate under it
+-- is slid right, onto the landmark (the phone at 40 studs, 2026-11-17). On the left while the right has no room, back to
+-- the right once it has Gap to spare, so it never flips at the edge; nil while neither side fits.
+local function beside(key: string, marker: Instance, size: Vector2, gap: number): Vector3?
+	local camera = workspace.CurrentCamera
+	local low, high, depth = boxOf(marker)
+	if camera == nil or low == nil or high == nil or depth == nil then
+		return nil
+	end
+	local scale = Layers.Scale()
+	local width, off = size.X * scale, gap * scale
+	local room = camera.ViewportSize.X
+	local right, left = high.X + off + width <= room, low.X - off - width >= 0
+	local side = sides[key]
+	if side == "Left" and high.X + 2 * off + width <= room then
+		side = "Right"
+	elseif side == nil or (side == "Right" and not right) or (side == "Left" and not left) then
+		side = if right then "Right" elseif left then "Left" else nil
+	end
+	sides[key] = side
+	if side == nil then
+		return nil
+	end
+	local x = if side == "Right" then high.X + off + width / 2 else low.X - off - width / 2
+	local ray = camera:ViewportPointToRay(x, (low.Y + high.Y) / 2 + size.Y * scale / 2) -- its foot: World anchors there
+	return ray.Origin + ray.Direction * depth
+end
+
+-- Whether `door`'s own plate reads from the camera, so its sign on the screen stands aside (research's must-fix on AR15,
+-- 2026-11-17: a screen sign never covers the landmark it names, nor says again what its own sign says): its name written,
+-- the camera within the plate's Reads, in front of its face past Facing, and the plate on screen.
+local function plateReads(door: Instance): boolean
+	local host = door:FindFirstChild("Name")
+	local camera = workspace.CurrentCamera
+	if host == nil or not host:IsA("BasePart") or host:FindFirstChild("DoorName") == nil or camera == nil then
+		return false
+	end
+	local look = WorldConfig.Signs.Door.Plate
+	local toward = camera.CFrame.Position - host.Position
+	if toward.Magnitude > look.Reads or toward.Magnitude < 1e-3 then
+		return false
+	end
+	local face = host.CFrame:VectorToWorldSpace(Vector3.FromNormalId(Enum.NormalId.Back)) -- writeName's face
+	if toward.Unit:Dot(face) < look.Facing then
+		return false
+	end
+	local _, onScreen = camera:WorldToViewportPoint(host.Position)
+	return onScreen
+end
+
+-- A plate of `lines` beside `marker`: the first line its name, Strong; the rest under it. Hidden while `aside(marker)`.
+local function make(key: string, marker: Instance, lines: { string }, look: any, group: string?, aside: ((Instance) -> boolean)?): Frame
 	local line = look.Line
-	local frame = World.Plate(name, Vector2.new(look.Width, #lines * line + Theme.Size.Pad), function(): Vector3?
-		return topOf(marker, look.Lift)
+	local size = Vector2.new(look.Width, #lines * line + Theme.Size.Pad)
+	local frame = World.Plate(`Sign{key}`, size, function(): Vector3?
+		if aside and aside(marker) then
+			return nil
+		end
+		return beside(key, marker, size, look.Gap)
 	end, look.Reach)
 	World.Below(frame)
+	-- and never over it, wherever the band, the lead's corner or its group set it
+	World.Clear(frame, function(): (Vector2?, Vector2?)
+		local low, high = boxOf(marker)
+		return low, high
+	end)
 	if group then
 		World.Apart(frame, group)
 	end
@@ -72,7 +156,7 @@ local function make(name: string, marker: Instance, lines: { string }, look: any
 	return frame
 end
 
-local function place(key: string, marker: Instance?, lines: { string }, look: any, group: string?)
+local function place(key: string, marker: Instance?, lines: { string }, look: any, group: string?, aside: ((Instance) -> boolean)?)
 	local sign = signs[key]
 	if sign and (sign.Marker ~= marker or not sign.Marker.Parent) then
 		World.Remove(sign.Plate)
@@ -80,7 +164,7 @@ local function place(key: string, marker: Instance?, lines: { string }, look: an
 		sign = nil
 	end
 	if sign == nil and marker then
-		signs[key] = { Marker = marker, Plate = make(`Sign{key}`, marker, lines, look, group) }
+		signs[key] = { Marker = marker, Plate = make(key, marker, lines, look, group, aside) }
 	end
 end
 
@@ -125,8 +209,18 @@ local function find()
 	for _, each in Markers.All("FestivalDoor") do
 		writeName(each)
 	end
-	place("Door", door, { config.Door.Name, ground }, config.Door, "Base")
+	place("Door", door, { config.Door.Name, ground }, config.Door, "Base", plateReads)
+	-- The gate names its ground on the screen only: the kit's gate carries no words.
 	place("Gate", Markers.Find("FestivalGate"), { ground }, config.Gate, nil)
+end
+
+function SignsController.Aside(door: Instance): boolean
+	return plateReads(door)
+end
+
+function SignsController.Box(marker: Instance): (Vector2?, Vector2?)
+	local low, high = boxOf(marker)
+	return low, high
 end
 
 function SignsController.Parts(): { [string]: Frame }

@@ -7537,7 +7537,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine. **Section 7's ring tunnel is installed**, 2026-11-17, 09:01 ("Faber's install: the ring tunnel", below); research's pass is next.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine. **Section 7's ring tunnel is installed**, 2026-11-17, 09:01 ("Faber's install: the ring tunnel", below). Research passed it, competent (09:05), with one must-fix, made by 09:41 ("Faber's fix: each sign beside what it names"); research's second look at the sign is next.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -7861,6 +7861,40 @@ From `door_phone_sheet.jpg`, the phone stills, read up close.
 - **To polish-later:** the shut core barely differs from the open one. The slice never shows it shut, so it isn't a must-fix.
 - **What the stills can't show:** the rings turning in the game. The turn was judged in Blender at 01:33, so the game's version is first seen in the director's walk. Straight on, by day, the still reads close to a target, and the turn is what breaks that read (the content check's condition for C).
 - **Only the sign's fix gets a second look,** from a phone still at the way in.
+
+### Faber's fix: each sign beside what it names (2026-11-17, to 09:41 by the clock)
+
+Research's must-fix above, for its second look.
+- **What it was:** the sign stood over the arch, and under the top band it was pushed down onto the Door wherever it showed. In the builder's sweep on desktop, 32 to 100% of it covered the Door, from 26 to 60 studs out and from behind.
+- **Beside** (`SignsController`, `Config.World.Signs`):
+  - Each screen sign stands beside the landmark it names, level with its middle on the screen, Gap (16 px) off its right side.
+  - It takes the left only while the right has no room, and goes back once the right has Gap to spare, so it never flips at the edge.
+  - It hides when neither side fits.
+  - The right comes first because the lead's corner is top left. On the phone, a sign on the left was slid right by the corner and onto the Door (15%).
+- **Never over** (`UI/World`, `World.Clear`): a plate hides wherever the band, the lead's corner or its group set it over its landmark's box. It's a backstop: no stand in the sweep needed it.
+- **Not said twice:** the Door's sign steps away while the Door's own plate reads. That means the camera within Reads (36 studs) of the plate and in front of its face past Facing (0.35). From the way in (29 studs from the plate) only the plate names the Door.
+- **The class:**
+  - The Door's plate is the one world-written name that a screen sign repeats.
+  - The gate carries no words, but its sign follows the same rule.
+  - The machines' plates name a kit with no words on it.
+  - The plot's level number has no screen twin.
+- **Stills** on the iPhone 16 Pro simulator, at the game camera's distance and pitch:
+  - `build/captures/ar15/sign_wayin_phone.jpg`: the way in, with no screen sign; the plate names the Door.
+  - `sign_28out_phone.jpg`: 28 studs out, the sign right of the Door.
+- **For research:**
+  - **The sign over the lead.** At mid distance on a phone, the band (the lead's card on the left, the currency column on the right) pushes the sign below the Door's ring. In the 28-out still it sits over the lead fighter's head. That's outside the must-fix's class. The machines' plates do the same when a lead stands before them. Research's call: polish-later or a fix.
+  - **design.md's "with the ground under it"** (The Festival Door) now holds only from afar. Up close the plate names the Door, and "Lantern Row" isn't said anywhere.
+
+**Four facts:**
+- Implemented: as above.
+- Tested: TR24's fix 10 case checks it:
+  - the Door's sign away at the way in;
+  - beside the Door with none of it over it at 40 out, 18 behind and 18 aside;
+  - the gate's at 40 out.
+  - Results: 13 of 13 on the phone and on desktop, and World 71 of 71 on the phone. The sweep (desktop 1655×756, nine distances and five angles at the Door, five at the gate): 0% over at every stand.
+  - The whole suite: 2,614 passed, 0 failed. Logic: 25,110. World report clean.
+- Visually reviewed: the builder's read from the two phone stills. Research's second look comes next.
+- Director-accepted: no.
 
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 

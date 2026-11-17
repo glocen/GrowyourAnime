@@ -6,8 +6,10 @@
 -- on the plot (TR24's fix 5); the Festival Door's and the gate's names (TR24's fix 10); a bay's worker at work in its ring,
 -- its halo lit in its rarity colour, and the step's chevron over the bay it names (TR24's fix 1).
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage.Shared
 local BaseLevels = require(Shared.Rules.BaseLevels)
@@ -475,7 +477,7 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: TR24's fix 10, the Festival Door says its name over its arch with its ground under it, and the festival gate says its ground",
+			Name = "Base: TR24's fix 10, the Festival Door says its name with its ground under it, and the festival gate says its ground, each sign beside its landmark and never over it, the Door's away while its own plate reads",
 			Run = function(t: any)
 				local ground = Grounds.ById[WorldConfig.Row.Ground].Name
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -495,13 +497,61 @@ function BaseCases.Cases(given: Given): { any }
 				t.Equal("the door: its name", says(parts.Door, 1), WorldConfig.Signs.Door.Name)
 				t.Equal("the door: the ground it goes to under it", says(parts.Door, 2), ground)
 				t.Equal("the gate: its ground", says(parts.Gate, 1), ground)
-				-- over its top: where the plate stands (it moves on render)
-				if door and door:IsA("Model") and parts.Door then
-					local frame, size = door:GetBoundingBox()
-					local want = frame.Position + Vector3.new(0, size.Y / 2 + WorldConfig.Signs.Door.Lift, 0)
-					local at = World.Where(parts.Door)
-					t.Check("the door's over its arch", at ~= nil and (at - want).Magnitude < 0.1, if at then tostring(at) else "nowhere")
+				-- Beside each landmark, never over it, and the Door's away while its own plate reads (research's must-fix on
+				-- AR15, 2026-11-17). Seen as the game's camera sees a stand: 12 studs behind the avatar and 4.7 up, looking at
+				-- its head, the avatar facing the landmark (measured in AR15). It moves on render.
+				local camera = workspace.CurrentCamera
+				local function look(marker: Instance, stand: Vector3)
+					local middle = if marker:IsA("Model") then marker:GetBoundingBox().Position else (marker :: BasePart).Position
+					local flat = Vector3.new(stand.X - middle.X, 0, stand.Z - middle.Z).Unit
+					camera.CameraType = Enum.CameraType.Scriptable
+					camera.CFrame = CFrame.lookAt(stand + flat * 12.07 + Vector3.new(0, 4.74, 0), stand + Vector3.new(0, 1.5, 0))
+					for _ = 1, 3 do
+						RunService.RenderStepped:Wait()
+					end
 				end
+				local function covered(frame: Frame, marker: Instance): number?
+					local low, high = SignsController.Box(marker)
+					if not frame.Visible or low == nil or high == nil then
+						return nil
+					end
+					local screen = frame:FindFirstAncestorOfClass("ScreenGui")
+					local inset = if screen and not screen.IgnoreGuiInset then GuiService:GetGuiInset() else Vector2.zero
+					local a, b = frame.AbsolutePosition + inset, frame.AbsolutePosition + frame.AbsoluteSize + inset
+					local wide = math.max(0, math.min(b.X, high.X) - math.max(a.X, low.X))
+					local tall = math.max(0, math.min(b.Y, high.Y) - math.max(a.Y, low.Y))
+					return wide * tall / (frame.AbsoluteSize.X * frame.AbsoluteSize.Y)
+				end
+				local frameOf = if door then door:FindFirstChild("Frame") else nil
+				if door and frameOf and frameOf:IsA("BasePart") and parts.Door then
+					local c = BaseManifest.pieces[frameOf:GetAttribute("Piece") :: string].centre
+					local origin = frameOf.CFrame * CFrame.new(-c[1], -c[2], -c[3])
+					look(door, origin * Vector3.new(0, 3.5, 18))
+					t.Check("the door: its sign away while its own plate reads, at the way in", SignsController.Aside(door) and not parts.Door.Visible, `{SignsController.Aside(door)}, shown {parts.Door.Visible}`)
+					local stands: { { Name: string, At: Vector3 } } = {
+						{ Name = "40 out", At = Vector3.new(0, 3.5, 40) },
+						{ Name = "18 behind", At = Vector3.new(0, 3.5, -18) },
+						{ Name = "18 aside", At = Vector3.new(18, 3.5, 4) },
+					}
+					for _, stand in stands do
+						look(door, origin * stand.At)
+						local over = covered(parts.Door, door)
+						t.Check(`the door, {stand.Name}: its sign shown beside it, none of it over the door`, not SignsController.Aside(door) and over == 0, `aside {SignsController.Aside(door)}, over {over}`)
+					end
+				else
+					t.Check("the door's kit, to stand before it", false, "no Frame")
+				end
+				if gate and parts.Gate then
+					local box, extent = if gate:IsA("Model") then gate:GetBoundingBox() else (gate :: BasePart).CFrame, if gate:IsA("Model") then gate:GetExtentsSize() else (gate :: BasePart).Size
+					local middle = box.Position
+					local toward = if door and door:IsA("Model") then door:GetBoundingBox().Position else middle + Vector3.new(0, 0, 1)
+					local flat = Vector3.new(toward.X - middle.X, 0, toward.Z - middle.Z).Unit
+					look(gate, middle + flat * 40 + Vector3.new(0, 3 - extent.Y / 2, 0)) -- the avatar's root on the gate's floor
+					t.Check("the gate, 40 out: its sign shown", parts.Gate.Visible)
+					local over = covered(parts.Gate, gate)
+					t.Check("the gate, 40 out: none of its sign over the gate", over == 0, `over {over}`)
+				end
+				camera.CameraType = Enum.CameraType.Custom
 			end,
 		},
 		{

@@ -3157,7 +3157,7 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 
 **The block contains:**
 - the rules in pure Luau (`Rules.Forge`, `Rules.Condenser`) with their cases;
-- the Forge's screen in grey: pick an item, see its stats now and at the next rank, the cost, and one press;
+- the Forge page in grey, on the character screen's rail where its Soon stands today [D, 2026-11-17, 12:27: "plug the forge ui and system there"], reached from anywhere: pick an item, see its stats now and at the next rank, the cost, and one press. The Forge machine's prompt opens the same page, and there the ram strikes on the press (AR28's contact);
 - the Condenser in grey: its tray in the world (full, part-full, empty, readable from the gate), a tap to collect, and its convert job;
 - stones in the bag's Stones tab;
 - the rank's badge on an item's slot (TR28) and its card.
@@ -3183,7 +3183,7 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 
 **The seeds** (research's, before Faber reaches this): each rarity's budget as a share of an item line, the drop chances, the chests' share.
 
-**The block contains:** `Rules.Emblems` with its cases; the bag's Emblems tab filled; the item card's sockets (empty marks from AR22, filled with the emblem's icon and its line); a tap-to-socket and a tap-to-remove; the combine on the Emblems tab.
+**The block contains:** `Rules.Emblems` with its cases; the rail's War Emblems page, where its Soon stands today, reached from anywhere [D, 2026-11-17, 12:27], with the bag's Emblems tab filled; the item card's sockets (empty marks from AR22, filled with the emblem's icon and its line); a tap-to-socket and a tap-to-remove; the combine on the Emblems tab.
 
 **Waits:** the emblem icons (Modulo, phase 3 order item 4); Epic and above; the shop.
 
@@ -3204,7 +3204,7 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 
 **The seeds** (research's, before Faber reaches this): the percent per tier for each stat, the drop chances by source and tier, and the Condenser's jewel rate. **The Condenser's tiers** (research's seed): tier 1 from its level 1, tier 2 from level 11, tier 3 from level 21. Tiers 4 and 5 come only from combining at launch.
 
-**The block contains:** `Rules.Jewels` with its cases; the bag's Jewels tab; the item card's jewel socket (Rare and above); the socket and the combine as for emblems; the percent shown honestly on the stat sheet's sources (`docs/ui.md`, "Stats, shown honestly").
+**The block contains:** `Rules.Jewels` with its cases; the rail's Jewels page, where its Soon stands today, reached from anywhere [D, 2026-11-17, 12:27], with the bag's Jewels tab; the item card's jewel socket (Rare and above); the socket and the combine as for emblems; the percent shown honestly on the stat sheet's sources (`docs/ui.md`, "Stats, shown honestly").
 
 **Waits:** the jewel icons (Modulo): each type its own colour, the shape growing from tier 1 to tier 5 [D], so a jewel's tier reads at 64 px without its number. The shop.
 

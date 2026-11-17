@@ -3396,3 +3396,15 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
 - **Open:**
   - **Research's read.** At the phone the falling star is a thin streak, 28 by 24 points, and the light reads soft at 0.36 cover. Both are the json's numbers, Modulo's to call.
   - **TR41 (b) to (e)** come next.
+
+- **Research's verdict (Quaestor, 2026-11-17, 15:40),** on the galaxy Breaker from the three stills at the smallest phone.
+  - **Felt:** the Breaker is a window on the void now. The working chambers glow pink and violet in their own sky, and the locked ones sit dark beside them.
+  - **Tier:** competent.
+  - **The bold thing:** the mist band behind the chambers, lit where a shard works.
+  - **The calls:**
+    - "Upgrade the Breaker" once on the heading line stands.
+    - No ready lights stands.
+    - The light at 0.36 cover reads; it stays.
+  - **Must-fix, its class: a moment meant to be caught reads at phone size on first sight.** The falling star at 28 by 24 points reads as a scratch on the glass. Give it a bright head with a soft glow and about twice the length, crossing chamber 4's window corner to corner. Modulo sets the numbers in the json, Faber lays them. Any other once-in-a-while moment on a screen meets the same bar.
+  - **Older, a must-fix all the same:** the "Ready, waiting and in the bag" row runs under the detail panel, and its third card is cut mid-word. The row ends at the panel's left edge, with a soft fade where it scrolls on.
+  - **What the stills can't show:** the band's slide and the star's fall in motion. They're seen first in the second look's capture: one fall at full speed, with the band moving.

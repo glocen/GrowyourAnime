@@ -10729,6 +10729,13 @@ The director, 2026-11-17, 20:28, on AR30's first pass in the game: "the leading 
   - **A set state wears the same light as the rail's chosen plate** (AR29's B), so "chosen" and "set" are one light on one screen. It is never the dim glass at L 0.6.
   - On a Voidkin that isn't the lead, the pair stays side by side: "Lead" filled, "Station" or "Recall" in the channel.
 - **For Faber:** build it with AR30's screens, and a still of the lead's page and of a stationed Voidkin's page at the smallest phone. Research's read follows, then the director sees it in the game.
+- **Research's read of the build, and the stationed page (Quaestor, 2026-11-17, 20:50)** (5cc97e5; the three phone stills).
+  - **Passed:** the lead's page reads as one lit state, with no dead box beside it. The idle page's pair reads Lead, then Station with "Bay 1".
+  - **Faber's question, a stationed Voidkin's Lead: (c), research's call with Faber's area (tier 2, a server step; Faber offered it).**
+    - Lead stays pressable. One server step recalls the Voidkin from its bay and makes it the lead. The old lead goes home idle, as when any Voidkin is made lead.
+    - Its reason line says what the tap costs: "Leaves Bay 2".
+    - **Why:** the player who taps Lead means "lead with this one". A dead "Stationed" box asks for two taps to say one thing. Hiding Lead would hide the screen's main action on most pages, since most Voidkin are stationed.
+    - **The step is a valuable's:** one request, decided on the server, and repeated or interrupted it never leaves the Voidkin in a bay and leading at once. A logic case covers it.
 
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 

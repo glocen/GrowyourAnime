@@ -104,7 +104,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 5. The Strip.** The Clash Grounds; the Calamity after launch (the director, 2026-11-15).
 
-**Phase 6. Launch.** First the finish pass: `docs/polish-later.md`, "The finish pass", with Fable if its one-effect trial earns it. Then the director's approval of the store (its design is done before phase 4's Voidkin), the game page, a real phone, a soft opening, then public on the director's go.
+**Phase 6. Launch, as early access** (free to join, labelled Early Access on the game page and in its title: the director, 2026-11-17, by 12:16). First the finish pass: `docs/polish-later.md`, "The finish pass", with Fable if its one-effect trial earns it. Then the director's approval of the store (its design is done before phase 4's Voidkin), the game page, a real phone, a soft opening, then public on the director's go.
 
 ## The cut line
 

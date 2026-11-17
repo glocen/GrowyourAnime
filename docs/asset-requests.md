@@ -685,6 +685,7 @@ For Modulo, after AR1's sheet is approved (it can run beside AR1's model).
   - Attack and AttackLeft alternate or are picked at random; so do Hit and HitLeft.
   - The body is hidden at the `Burst` marker, where the effect starts, from the collar.
   - The engine checks are the content check's, above and in section 2.
+  - **The Guard, Dasher and Support** join `Definitions/Enemies` only once every lead's basic attack passes their masks (the content check, 2026-11-17; AR26). Today Watt's crack and Rook's spikes don't: each combo script lists what waits, read from the masks the game uses.
 - **Not done:** the burst's light and paper (an effect, with the builder, with its own content check). The elite's second mask is section 5. Nothing is uploaded or seen in the engine.
 - **Hours:** the clips, 1.2, the two rounds and the checks' fixes included.
 
@@ -9265,6 +9266,12 @@ These are written from each combo's clip and its timings in `Shared.Definitions.
   - Self-reviewed: by the numbers above; not yet seen in motion.
   - Delivered: yes.
   - Accepted: no. Research's technique check, the block's verdict in motion, and the director's eye are still to come.
+- **Rule 4 against every target, on the content check's word (its report at 10:08 by the transcript):**
+  - `... rows` now fails the rows on it, against `combo_targets.py`'s targets, each spaced by its depth, at 3.5, 3.9 and 4.3: no tip within 0.1 of a face and no fork within 0.2 (half a branch's width more), by the face's triangles, and no end or line inside a part. A branch that passes before a mask on its way out is light seen across the body, and passes. The delivered rows pass unchanged.
+  - **The chin** (at heading 0 the fork is 0.3 before the mask's face and 0.04 under its foot) isn't a rule 4 block. Condition 1 adds heading 0 to the stills, and from 0 and 28 the fork must read as on the chest. If it reads as lines leaving the face, the trunk goes from 0.45 to 0.1 (the fork about 0.35 lower), keeping the V.
+  - **The elite, spaced by its depth:** passes. Hit 1's right tip ends 0.19 from the arm mask and 0.58 before the arm, and one take on the elite judges it.
+  - **The elite and the Lamplighter as the game stands, root to root: BLOCK.** The crack enters both at 3.5, and the Lamplighter at 4.3 too. As with Rook's, these rows play on the ordinary Brawler only until the spacing ask (Rook's section) is in.
+  - **The Dasher's and Support's masks:** hit 1's fork, 3.64 up, lies on both. Neither enemy is in the game, so the script reports them as waiting (AR2, section 3, "For the builder").
 
 ### Research's technique check on Watt's crack (Quaestor, 2026-11-17, 08:16)
 
@@ -9297,7 +9304,7 @@ Made on research's line 2, with its camera of 08:16: the hero shape reads with t
 - **A light at each touch**, which rims the Shade where the burst is behind it.
 - **Jab, hook, ram:** 1.25, then 2.1, then 3.4 to 4.6 studs, each heavier, to match the line's "the third hit heavy".
 - **Rule 4, in the script (`into`, which fails the rows),** against every target the fight puts before him (`tools/blender/combo_targets.py`): the ordinary Shade under each of its four masks, the Brawler elite at 1.35 with its second mask on its arm, and the Lamplighter at 1.5 with its pole and lantern.
-  - **No point of a spike** comes within 0.18 studs of a part (0.1, and half a spike's width), or draws over a face. That's a mask, the elite's arm mask or the Lamplighter's head, tested on their triangles from 76 views: the four headings, and every 5 degrees round at the game's camera height.
+  - **No point of a spike** comes within 0.18 studs of a part (0.1, and half a spike's width), or draws over a face. That's a mask, the elite's arm mask or the Lamplighter's head, tested on their triangles from 148 views: the four headings, and every 5 degrees round at the game's camera height and at 0.4 of it.
   - **No cone line** is inside a part above 0.4 studs up.
   - **Where each test holds:** at his spacing and pushed back by the jab and the hook (3.5, 3.9 and 4.3 ahead, against fixed rows). Each target stands spaced by its own depth, so its torso face is where the ordinary Shade's is (the ask below).
 
@@ -9344,6 +9351,10 @@ Made on research's line 2, with its camera of 08:16: the hero shape reads with t
 - **The content check's conditions for later:**
   - **The colour pass:** the band's accent stays self-lit amber to orange-white, never red, crimson or dark. The dust stays grey to tan soft puffs, never drops or wet shapes. Nothing is left on the street. The rays stay straight.
   - **Before any upload:** the puff sheet and any line texture get their own check.
+- **The content check on the third aim (its report at 10:08 by the transcript): PASS on the ordinary Brawler, and on `brawler_elite` and the Lamplighter once the spacing ask is in. Until then, BLOCK on those two.** The game still spaces root to root, so the elite stands 0.26 nearer and the hook's tails come within 0.02 to 0.17 of its arm. Faber plays these rows on the ordinary Brawler only until the ask lands. `rows` prints it as the game stands: at 3.5 the spikes enter the elite and the Lamplighter, and from 3.9 the Lamplighter.
+  - **The guard, on the check's gaps:** it reads which masks `Definitions/Enemies` uses, and adds the camera turned low (0.4 of its height). From there, the jab's and hook's spikes cross the Dasher's and Support's masks. No enemy wears those yet, so the script reports them as waiting (AR2, section 3, "For the builder").
+  - **Still open:** a face test that also fails a line coming out from behind a face's outline (the check's gap b). As written, it ran past 5 minutes on these rows alone. Until it's in, there's no `ZOffset` take.
+- **Delivered (Modulo, 2026-11-17, 10:15 by the file's time):** `build/handoff/Rook/fx/RookCombo.rows.json`, the third aim, 38 rows, in place of the blocked ones.
 - **Time:** the first rows took 11 minutes, from the row's commit at 08:15 to 08:26. The content check's fixes took 14 more, the head test included, to 08:40 by the clock. The four masks' fix ran from 08:53 to 09:03, shared with Pip's. The targets' guard and the third aim ran from the report at 09:12 to 09:39, shared with Watt's, Pip's and Lyric's. **That makes three fix rounds on these rows** (the first pass's three paths, the four masks, the elite), one past the two-rounds line. So the idea goes to research with the options, not another patch:
   - **keep these rows** with the spacing ask: the guard now covers every target the game has, so the kind of fault is closed;
   - **rows per target,** the fight picking one by the target's size;
@@ -9373,10 +9384,10 @@ Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx
   - From 5 studs, the trails are about 0.6 of that.
 - **The ember's flight is Faber's,** since rows in his frame can't follow a target that moves. **The ask, tier 2, for research and Faber:** a Streak row that travels with the ember's rows on its head, then plays its pop, and lands its hit when it arrives (as Held Note's crest takes its hit through `Struck`). DESIGN seeds, tuned live; the names are Faber's to choose:
   - **Flight:** from the lantern's mouth at 60 studs a second, speeding up at 1,600 a second squared. It lands in 6 frames from 13.5 studs, and in 3 from 5.
-  - **Where it lands:** it flies at the target's belly, 2.4 studs up from its feet, and stops 0.25 before the torso's face, recomputed on each frame from where the target stands. A Shade that walks in during the flight never ends up with the ember inside it.
+  - **Where it lands:** it flies at the target's belly, 2.4 studs up from its feet times the target's Scale (3.24 on the elite, 3.6 on the Lamplighter), and stops 0.25 before the target's own torso face. That's recomputed on each frame from where the target stands. A Shade that walks in during the flight never ends up with the ember inside it.
   - **On arrival:** the head stops, the tail closes onto it within a frame, and the ember's rows go as the pop plays. The ribbon doesn't linger: it's gone within 3 frames, under the pop's flash, and never stands as a bar against the body. If a Beam's transparency can run along its length, it fades from the belly end first. Nothing stays in the body.
   - **If the target dies mid-flight,** the ember pops in the air where it is, or fades.
-  - **The pop:** `PipPop` plays there, facing the flight made level, at scale 1 for shots 1 and 2 and 1.4 for the third.
+  - **The pop:** `PipPop` plays there, facing the flight made level, at scale 1 for shots 1 and 2 and 1.4 for the third, whatever the target's size. It's never grown with the target. Grown by the elite's 1.35, its petals touch the elite's arm mask by about 0.06 studs, and grown by the Lamplighter's 1.5, its pole.
   - **The hit:** its hold, push and number land with the pop. The server's damage stays on the beat.
   - **The same shape would serve Lyric's** travelling pulse (line 4).
 - **The pop** (`PipPop`, its own rows, played where the ember lands):
@@ -9385,12 +9396,13 @@ Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx
   - **A crackle in the air,** in two sprays of 5 sparks thrown back toward him and out to each side. Each is slowed hard, barely falls, and shrinks and fades to nothing within 0.8 studs of the bloom, between 2.2 and 2.9 studs up.
   - **A light,** which rims the Shade from his side.
 - **Rule 4, in the script, which fails the rows:**
+  - **Against every target the fight puts before him** (`tools/blender/combo_targets.py`, shared with Rook's and Lyric's): the ordinary Shade under each of its four masks, the Brawler elite at 1.35 with its second mask on its arm, and the Lamplighter at 1.5 with its pole and lantern. Each is landed on as the flight lands (above).
   - **The pop's lines (`pop_into`):**
-    - no line comes within 0.1 studs of a Shade part, or lower than 1 stud up;
+    - no point of a line comes within 0.1 studs of a target's part, plus half the petal's width at the pop's size, or lower than 1 stud up;
     - no flung spark aims within 45 degrees of straight down;
-    - no point of a line draws over the head from any heading. This uses an exact test (`over_mask`): the mask lies behind the point along the camera's ray.
-  - **The crackle (`crackle_into`):** the middle and edges of both sprays, at their slowest and fastest, stay within 1 stud of the bloom, between the hips (2.0) and the lowest mask's foot (3.06), out of the parts and off the head.
-  - **Where each test holds:** with the Shade at 13.5 and at 5, at both of the pop's sizes, under each of the Shade's four masks.
+    - no point of a line draws over a face. That's a mask, the elite's arm mask or the Lamplighter's head, tested on their triangles from 148 views (the four headings, and every 5 degrees round at the game's camera height and at 0.4 of it), every 0.05 studs along each line.
+  - **The crackle (`crackle_into`):** the middle and edges of both sprays, at their slowest and fastest, stay within 1 stud of the bloom, between the hips (2.0) and the lowest mask's foot (3.06). They're tested the same way, with half a spark's size in the margin.
+  - **Where each test holds:** with the Shade at 13.5 and at 5, at both of the pop's sizes.
   - **What it rules out:** nothing is shed from the body or falls from it, and no light runs from the struck belly down to the street.
 - **The content check:**
   - **The first pass, after 08:53, was a BLOCK** on three things:
@@ -9398,6 +9410,15 @@ Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx
     - the crackle fell from the belly to the feet;
     - the head test read one mask of the four.
   - All three are fixed as above, and Rook's rows are re-aimed for the four masks (its section).
+  - **Its second look (its report at 09:12): PASS for the grey block.**
+    - Its limits on the old head test are met in the targets' guard above: every point tested, 76 views in place of four, the line's width in the margin, and the elite's arm mask in the model.
+    - Two limits stay. The model holds each target in its rest pose, not mid-swipe. And it clears points a face hides, which is right only for a Beam drawn with depth: a `ZOffset` take waits until the guard fails any ray that meets a face beyond the eye.
+  - **Its conditions for the captures:**
+    - **From 28 and 285,** the bloom must read as a burst out to the sides. Petals 3 and 4 run about 41 to 44 degrees off straight down, and reach 1.22 up at the heavy pop. If the bloom reads as hanging downward, they go to 130 and 230 degrees, inside the range the script passes.
+    - **Flung spark 1** crosses 0.3 in front of the right arm at belly height. From 28 it must read as a spark flung past the arm, not a mark across it.
+    - **One take of the pop on the elite,** and one on the Lamplighter.
+  - **Its look at the amended landing (its report at 10:08): PASS.** Its one fix to the guard is made. The guard now lands the ember on each target as the ask does: aimed at its belly times its Scale, stopped 0.25 before its own face. It used to lift the ordinary landing instead. On the elite at 5 it lands 3.54 up, where the old way put it at 3.62. With that and the low camera, the rows pass unchanged.
+- **Delivered (Modulo, 2026-11-17, 10:15 by the files' time):** `build/handoff/Pip/fx/`: `PipShots`, `PipPop`, `PipEmber` and `PipEmberHeavy`.
 - **Seen, studs of the pop's lines the Shade doesn't cover** (petals of 4.9, sparks of 7.2):
 
   | Heading | The Shade 13.5 ahead | The Shade 5 ahead |
@@ -9413,7 +9434,7 @@ Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx
   - a spark past its arm;
   - the crackle, which isn't in the table.
 
-  Research's `ZOffset` takes apply here too, under the content check's condition.
+  Research's `ZOffset` takes apply here too, once the guard has the content check's case.
 - **The block holds:** all grey, on the kit's beam and spark. The spit runs on the action's clock.
   - `PipShots`, 35 rows: the spit's 26 Beams, three emitters, three lights, and the builder's three Streaks.
   - `PipPop`, 21 rows: 18 Beams for the petals and sparks, two crackle sprays and the light.
@@ -9423,7 +9444,7 @@ Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx
   - the colour pass after the block's verdict (fire: the flame sheet in the bloom, amber to white-hot, never red);
   - the sound, for the director's retry;
   - the redraw for his new weapon at the redesign.
-- **Time:** the measures began while Rook's content check ran, between 08:26 and 08:36. The rows ran from Rook's commit at 08:44 to 08:48 by the clock, and the content check's fixes from 08:53 to 09:04, shared with Rook's. The cap is 2 hours at its block.
+- **Time:** the measures began while Rook's content check ran, between 08:26 and 08:36. The rows ran from Rook's commit at 08:44 to 08:48 by the clock, and the content check's fixes from 08:53 to 09:04, shared with Rook's. The targets' guard ran from 09:12 to 09:39, shared with Rook's and Lyric's, and left the rows unchanged. The cap is 2 hours at its block.
 
 ### Lyric's basic attack: the ring of sound, the pulse and the burst (Modulo, 2026-11-17, 09:10)
 
@@ -9443,14 +9464,16 @@ Made on research's line 4, with its camera of 08:16. `tools/blender/lyric_combo_
 - **How I read "crossing":** the two pulses meet on the same frame, and their rings open as a low X. The other reading is the two flights crossing in the air: each speaker aims at the Shade's far side, so the paths cross about 2 studs out. That one is an aim offset in Faber's flight, a variant for the blockout if research wants it.
 - **The flight is Faber's,** the same travelling Streak as Pip's (his section, the ask), in its land-on-the-beat way:
   - it launches 5 frames before the beat from the speaker's ring and lands on the beat, at a steady speed (128 studs a second from 11, 65 from 5);
-  - it lands 1.9 studs up and 0.4 before the target's torso face, recomputed each frame from where the target stands;
-  - on arrival it plays `LyricBurst` facing the target's front. On the third, one `LyricBurstBoth` plays between where the two land;
+  - it lands 1.9 studs up times the target's Scale and 0.4 before the target's own torso face, recomputed each frame from where the target stands;
+  - on arrival it plays `LyricBurst` facing the target's front, at its own size, never grown with the target. On the third, one `LyricBurstBoth` plays between where the two land;
   - the hit is on the beat, so it lands with the burst;
+  - on arrival, `LyricPulse`'s trail (2 frames, about 4.3 studs, aimed at the belly) closes onto the ring within a frame and never stands as a bar against the body, as Pip's ember arrives;
   - if the target dies mid-flight, it bursts in the air or fades.
 - **Off the street and under the masks:** Ground Wire's ring is on the street, so this one never is. The burst's top stays under the lowest mask's foot (Dasher's, 3.06 up).
-- **Rule 4, in the script (`guard`, which fails the rows):**
-  - no point comes within 0.1 studs of a Shade part or under the street, or draws over its head from any heading (Pip's exact test, `over_mask`);
-  - it holds under each of the four masks, with the Shade at 11 and at 5;
+- **Rule 4, in the script (`guard`, which fails the rows),** against every target as Pip's (`combo_targets.py`: the ordinary Shade under each of its four masks, the elite, the Lamplighter), each landed on as the flight lands:
+  - no point comes within 0.1 studs of a target's part, or within 0.15 of the street;
+  - no point draws over a face, tested on its triangles from 148 views, every 0.05 studs;
+  - it holds with the Shade at 11 and at 5;
   - it covers the burst at every size from its first to its widest, both rims, both rolls, and the pulse over its last 1.2 studs.
 
   Before that last approach the pulse is in the open street between them. At her speaker it's hers.
@@ -9461,12 +9484,18 @@ Made on research's line 4, with its camera of 08:16. `tools/blender/lyric_combo_
 - **What's still weak, for the block to judge in motion:**
   - A 5-frame flight is quick to read as travel. If it doesn't read, a longer flight launches earlier, before the speaker's drive starts, from a speaker standing still.
   - The burst sits at the Shade's belly and hips, lower than the line's "bursts there", to keep under the masks.
+- **The content check (its report at 10:08): PASS for the grey block.** The burst's top stays under every mask: 2.75 up on the ordinary Shade, 3.41 on the elite and 3.7 on the Lamplighter. Its conditions:
+  - the trail's arrival rule, now in the flight above (the guard doesn't test the trail);
+  - **the captures:** at 64 px over dark, from 215, 145, 285 and 28, with one take on the elite and one on the Lamplighter. The burst's centre (1.9 up) is at the legs' top (2.0), so its first frame must read as a ring round the waist, not a glow at the groin.
+
+  The guard now lands the pulse on each target as the flight does (Pip's fix), with the low camera. The rows pass unchanged.
+- **Delivered (Modulo, 2026-11-17, 10:15 by the files' time):** `build/handoff/Lyric/fx/`: `LyricShots`, `LyricPulse`, `LyricBurst` and `LyricBurstBoth`.
 - **What waits:**
   - the flight, for Faber's Streak;
   - the colour pass after the block's verdict (Storm's light);
   - the sound, for the director's retry;
   - the redraw for her new weapon at the redesign.
-- **Time:** 08:48 to 08:53 and 09:04 to 09:10 by the clock, around Pip's fixes. The cap is 2 hours at its block.
+- **Time:** 08:48 to 08:53 and 09:04 to 09:10 by the clock, around Pip's fixes. The targets' guard ran from 09:12 to 09:39, shared with Rook's and Pip's, and left the rows unchanged. The cap is 2 hours at its block.
 
 
 ## AR27. The idles without the glance (Modulo, then Faber)

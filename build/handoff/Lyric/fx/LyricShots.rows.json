@@ -1,0 +1,990 @@
+{
+ "Schema": "rows/1",
+ "Effect": "LyricShots",
+ "Why": "Lyric's shots (LyricCombo), the grey block (AR26; research's feel line, 08:06): as each speaker drives forward into its beat the ring leaves its mouth with a light, on the ring's own path; the builder's streaks run to the target until the pulse flies. Written by tools/blender/lyric_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Action": "LyricCombo",
+ "Rows": {
+  "Shot1MouthR": {
+   "Kind": "Mesh",
+   "From": "Shot1",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Turn": {
+    "Vector3": [
+     90,
+     0,
+     0
+    ]
+   },
+   "Why": "Shot1: the ring leaves the right speaker's mouth as it drives forward",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        2.564,
+        5.065,
+        0.067
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        2.564,
+        5.05,
+        0.004
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        2.564,
+        5.02,
+        -0.117
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        2.562,
+        4.968,
+        -0.315
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        2.56,
+        4.889,
+        -0.608
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        2.563,
+        4.896,
+        -0.558
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      -5,
+      {
+       "Vector3": [
+        0.35,
+        1,
+        0.35
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        0.7,
+        1,
+        0.7
+       ]
+      }
+     ]
+    ],
+    "Glow": [
+     [
+      -5,
+      1.5,
+      "Quad Out"
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -5,
+      0,
+      "Quad In"
+     ],
+     [
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot1FlashR": {
+   "Kind": "Light",
+   "From": "Shot1",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot1: the speaker's light as it fires",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        2.564,
+        5.065,
+        0.067
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        2.564,
+        5.05,
+        0.004
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        2.564,
+        5.02,
+        -0.117
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        2.562,
+        4.968,
+        -0.315
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        2.56,
+        4.889,
+        -0.608
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        2.563,
+        4.896,
+        -0.558
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      -5,
+      3,
+      "Quart Out"
+     ],
+     [
+      2,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot2MouthL": {
+   "Kind": "Mesh",
+   "From": "Shot2",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Turn": {
+    "Vector3": [
+     90,
+     0,
+     0
+    ]
+   },
+   "Why": "Shot2: the ring leaves the left speaker's mouth as it drives forward",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        -2.498,
+        4.634,
+        0.233
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        -2.504,
+        4.637,
+        0.184
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        -2.516,
+        4.645,
+        0.054
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        -2.54,
+        4.661,
+        -0.197
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        -2.577,
+        4.688,
+        -0.609
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        -2.559,
+        4.748,
+        -0.445
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      -5,
+      {
+       "Vector3": [
+        0.35,
+        1,
+        0.35
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        0.7,
+        1,
+        0.7
+       ]
+      }
+     ]
+    ],
+    "Glow": [
+     [
+      -5,
+      1.5,
+      "Quad Out"
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -5,
+      0,
+      "Quad In"
+     ],
+     [
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot2FlashL": {
+   "Kind": "Light",
+   "From": "Shot2",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot2: the speaker's light as it fires",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        -2.498,
+        4.634,
+        0.233
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        -2.504,
+        4.637,
+        0.184
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        -2.516,
+        4.645,
+        0.054
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        -2.54,
+        4.661,
+        -0.197
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        -2.577,
+        4.688,
+        -0.609
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        -2.559,
+        4.748,
+        -0.445
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      -5,
+      3,
+      "Quart Out"
+     ],
+     [
+      2,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3MouthR": {
+   "Kind": "Mesh",
+   "From": "Shot3",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Turn": {
+    "Vector3": [
+     90,
+     0,
+     0
+    ]
+   },
+   "Why": "Shot3: the ring leaves the right speaker's mouth as it drives forward",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        2.53,
+        5.029,
+        -0.276
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        2.555,
+        4.995,
+        -0.401
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        2.588,
+        4.952,
+        -0.561
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        2.629,
+        4.898,
+        -0.76
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        2.679,
+        4.834,
+        -1.003
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        2.683,
+        4.845,
+        -0.929
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      -5,
+      {
+       "Vector3": [
+        0.35,
+        1,
+        0.35
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        0.7,
+        1,
+        0.7
+       ]
+      }
+     ]
+    ],
+    "Glow": [
+     [
+      -5,
+      1.5,
+      "Quad Out"
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -5,
+      0,
+      "Quad In"
+     ],
+     [
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3FlashR": {
+   "Kind": "Light",
+   "From": "Shot3",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot3: the speaker's light as it fires",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        2.53,
+        5.029,
+        -0.276
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        2.555,
+        4.995,
+        -0.401
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        2.588,
+        4.952,
+        -0.561
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        2.629,
+        4.898,
+        -0.76
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        2.679,
+        4.834,
+        -1.003
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        2.683,
+        4.845,
+        -0.929
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      -5,
+      3,
+      "Quart Out"
+     ],
+     [
+      2,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3MouthL": {
+   "Kind": "Mesh",
+   "From": "Shot3",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Turn": {
+    "Vector3": [
+     90,
+     0,
+     0
+    ]
+   },
+   "Why": "Shot3: the ring leaves the left speaker's mouth as it drives forward",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        -2.53,
+        4.922,
+        -0.276
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        -2.555,
+        4.89,
+        -0.401
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        -2.588,
+        4.849,
+        -0.561
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        -2.629,
+        4.798,
+        -0.76
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        -2.679,
+        4.734,
+        -1.003
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        -2.683,
+        4.745,
+        -0.929
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      -5,
+      {
+       "Vector3": [
+        0.35,
+        1,
+        0.35
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        0.7,
+        1,
+        0.7
+       ]
+      }
+     ]
+    ],
+    "Glow": [
+     [
+      -5,
+      1.5,
+      "Quad Out"
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -5,
+      0,
+      "Quad In"
+     ],
+     [
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3FlashL": {
+   "Kind": "Light",
+   "From": "Shot3",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot3: the speaker's light as it fires",
+   "Tracks": {
+    "At": [
+     [
+      -5,
+      {
+       "Vector3": [
+        -2.53,
+        4.922,
+        -0.276
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -4,
+      {
+       "Vector3": [
+        -2.555,
+        4.89,
+        -0.401
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -3,
+      {
+       "Vector3": [
+        -2.588,
+        4.849,
+        -0.561
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -2,
+      {
+       "Vector3": [
+        -2.629,
+        4.798,
+        -0.76
+       ]
+      },
+      "Linear"
+     ],
+     [
+      -1,
+      {
+       "Vector3": [
+        -2.679,
+        4.734,
+        -1.003
+       ]
+      },
+      "Linear"
+     ],
+     [
+      0,
+      {
+       "Vector3": [
+        -2.683,
+        4.745,
+        -0.929
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      -5,
+      3,
+      "Quart Out"
+     ],
+     [
+      2,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot1": {
+   "Kind": "Streak",
+   "Body": "RingR",
+   "From": "Shot1",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot1: the builder's streak from the speaker to the target, until the pulse flies (AR26)"
+  },
+  "Shot2": {
+   "Kind": "Streak",
+   "Body": "RingL",
+   "From": "Shot2",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot2: the builder's streak from the speaker to the target, until the pulse flies (AR26)"
+  },
+  "Shot3R": {
+   "Kind": "Streak",
+   "Body": "RingR",
+   "From": "Shot3",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot3R: the builder's streak from the speaker to the target, until the pulse flies (AR26)"
+  },
+  "Shot3L": {
+   "Kind": "Streak",
+   "Body": "RingL",
+   "From": "Shot3",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot3L: the builder's streak from the speaker to the target, until the pulse flies (AR26)"
+  }
+ }
+}

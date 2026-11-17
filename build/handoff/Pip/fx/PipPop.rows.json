@@ -1,0 +1,1684 @@
+{
+ "Schema": "rows/1",
+ "Effect": "PipPop",
+ "Why": "Pip's pop (AR26): where his ember lands, facing its flight, played by its streak: petals off the Shade's front, sparks flung past its outline, a crackle and a light. The third plays it bigger. Written by tools/blender/pip_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Petal1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Petal1Tip.Low",
+   "Taper": 0.35,
+   "Why": "Petal1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.176,
+        0.016,
+        0.093
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        0.176,
+        0.016,
+        0.093
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      7,
+      {
+       "Vector3": [
+        0.855,
+        0.079,
+        0.451
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.096,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.16,
+      "Linear"
+     ],
+     [
+      3,
+      0.16,
+      "Quad In"
+     ],
+     [
+      7,
+      0.048
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      7,
+      1
+     ]
+    ]
+   }
+  },
+  "Petal1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Petal1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.176,
+        0.016,
+        0.093
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        1.004,
+        0.092,
+        0.529
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Petal2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Petal2Tip.Low",
+   "Taper": 0.35,
+   "Why": "Petal2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.149,
+        -0.077,
+        0.108
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        0.149,
+        -0.077,
+        0.108
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      7,
+      {
+       "Vector3": [
+        0.511,
+        -0.263,
+        0.371
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.096,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.16,
+      "Linear"
+     ],
+     [
+      3,
+      0.16,
+      "Quad In"
+     ],
+     [
+      7,
+      0.048
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      7,
+      1
+     ]
+    ]
+   }
+  },
+  "Petal2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Petal2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.149,
+        -0.077,
+        0.108
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        0.591,
+        -0.304,
+        0.428
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Petal3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Petal3Tip.Low",
+   "Taper": 0.35,
+   "Why": "Petal3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.092,
+        -0.143,
+        0.105
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        0.092,
+        -0.143,
+        0.105
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      7,
+      {
+       "Vector3": [
+        0.46,
+        -0.719,
+        0.526
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.096,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.16,
+      "Linear"
+     ],
+     [
+      3,
+      0.16,
+      "Quad In"
+     ],
+     [
+      7,
+      0.048
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      7,
+      1
+     ]
+    ]
+   }
+  },
+  "Petal3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Petal3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.092,
+        -0.143,
+        0.105
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        0.541,
+        -0.845,
+        0.619
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Petal4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Petal4Tip.Low",
+   "Taper": 0.35,
+   "Why": "Petal4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.096,
+        -0.151,
+        0.09
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.096,
+        -0.151,
+        0.09
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      7,
+      {
+       "Vector3": [
+        -0.374,
+        -0.591,
+        0.351
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.096,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.16,
+      "Linear"
+     ],
+     [
+      3,
+      0.16,
+      "Quad In"
+     ],
+     [
+      7,
+      0.048
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      7,
+      1
+     ]
+    ]
+   }
+  },
+  "Petal4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Petal4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.096,
+        -0.151,
+        0.09
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -0.435,
+        -0.687,
+        0.408
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Petal5": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Petal5Tip.Low",
+   "Taper": 0.35,
+   "Why": "Petal5: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.173,
+        -0.054,
+        0.085
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.173,
+        -0.054,
+        0.085
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      7,
+      {
+       "Vector3": [
+        -0.923,
+        -0.289,
+        0.452
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.096,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.16,
+      "Linear"
+     ],
+     [
+      3,
+      0.16,
+      "Quad In"
+     ],
+     [
+      7,
+      0.048
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      7,
+      1
+     ]
+    ]
+   }
+  },
+  "Petal5Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Petal5's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.173,
+        -0.054,
+        0.085
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -1.087,
+        -0.34,
+        0.533
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Petal6": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Petal6Tip.Low",
+   "Taper": 0.35,
+   "Why": "Petal6: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.166,
+        0.02,
+        0.11
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.166,
+        0.02,
+        0.11
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      7,
+      {
+       "Vector3": [
+        -0.62,
+        0.075,
+        0.409
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.096,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.16,
+      "Linear"
+     ],
+     [
+      3,
+      0.16,
+      "Quad In"
+     ],
+     [
+      7,
+      0.048
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      7,
+      1
+     ]
+    ]
+   }
+  },
+  "Petal6Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Petal6's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.166,
+        0.02,
+        0.11
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -0.719,
+        0.087,
+        0.475
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Flung1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Flung1Tip.Low",
+   "Taper": 0.4,
+   "Why": "Flung1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.3,
+        -0.0,
+        0.0
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.3,
+        -0.0,
+        0.0
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      9,
+      {
+       "Vector3": [
+        -2.596,
+        -0.0,
+        0.0
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.042,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.07,
+      "Linear"
+     ],
+     [
+      3,
+      0.07,
+      "Quad In"
+     ],
+     [
+      9,
+      0.021
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      9,
+      1
+     ]
+    ]
+   }
+  },
+  "Flung1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Flung1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.3,
+        -0.0,
+        0.0
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        -3.1,
+        -0.0,
+        0.0
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Flung2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Flung2Tip.Low",
+   "Taper": 0.4,
+   "Why": "Flung2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.257,
+        0.0,
+        0.154
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        0.257,
+        0.0,
+        0.154
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      9,
+      {
+       "Vector3": [
+        2.226,
+        0.0,
+        1.336
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.042,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.07,
+      "Linear"
+     ],
+     [
+      3,
+      0.07,
+      "Quad In"
+     ],
+     [
+      9,
+      0.021
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      9,
+      1
+     ]
+    ]
+   }
+  },
+  "Flung2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Flung2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.257,
+        0.0,
+        0.154
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.658,
+        0.0,
+        1.595
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Flung3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Flung3Tip.Low",
+   "Taper": 0.4,
+   "Why": "Flung3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.249,
+        -0.144,
+        0.086
+       ]
+      },
+      "Linear"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.249,
+        -0.144,
+        0.086
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      9,
+      {
+       "Vector3": [
+        -1.337,
+        -0.772,
+        0.463
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.042,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.07,
+      "Linear"
+     ],
+     [
+      3,
+      0.07,
+      "Quad In"
+     ],
+     [
+      9,
+      0.021
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      9,
+      1
+     ]
+    ]
+   }
+  },
+  "Flung3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Flung3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.249,
+        -0.144,
+        0.086
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        -1.576,
+        -0.91,
+        0.546
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "CrackleL": {
+   "Kind": "Emitter",
+   "Image": "fx_spark",
+   "Turn": {
+    "Vector3": [
+     0,
+     -55,
+     0
+    ]
+   },
+   "Emit": [
+    [
+     0,
+     5
+    ]
+   ],
+   "Why": "the pop's crackle in the air, thrown back toward him and out to his left: slowed hard, barely falling, shrinking and fading to nothing within a stud of the bloom",
+   "Emitter": {
+    "EmissionDirection": "Back",
+    "SpreadAngle": [
+     15,
+     15
+    ],
+    "Lifetime": [
+     0.15,
+     0.3
+    ],
+    "Speed": [
+     2.5,
+     5
+    ],
+    "Drag": 8,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      -4,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.22
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0,
+        0.1
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "CrackleR": {
+   "Kind": "Emitter",
+   "Image": "fx_spark",
+   "Turn": {
+    "Vector3": [
+     0,
+     55,
+     0
+    ]
+   },
+   "Emit": [
+    [
+     0,
+     5
+    ]
+   ],
+   "Why": "the pop's crackle in the air, thrown back toward him and out to his right: slowed hard, barely falling, shrinking and fading to nothing within a stud of the bloom",
+   "Emitter": {
+    "EmissionDirection": "Back",
+    "SpreadAngle": [
+     15,
+     15
+    ],
+    "Lifetime": [
+     0.15,
+     0.3
+    ],
+    "Speed": [
+     2.5,
+     5
+    ],
+    "Drag": 8,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      -4,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.22
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0,
+        0.1
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Light": {
+   "Kind": "Light",
+   "Range": 8,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the pop's light: it rims the Shade from his side",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0,
+        0.3
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      5,
+      "Quart Out"
+     ],
+     [
+      7,
+      0
+     ]
+    ]
+   }
+  }
+ }
+}

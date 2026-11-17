@@ -10,6 +10,7 @@ src/shared/Definitions/Actions.luau, PipCombo's Beats, Range and Reach).
 - measure: the lantern and the sleeve in his root's frame through the clip, with the lantern's speed.
 - screen: where the lantern, the shot's path and the Shade land on a phone's screen from the game's camera.
 """
+import functools
 import itertools
 import json
 import math
@@ -271,13 +272,16 @@ def ember(name):
             "Area": 1, "Grey": True, "Rows": rows}
 
 
-def landing(ahead):
-    """Where the ember lands with the Shade `ahead` studs before him, and its frame: from the lantern's mouth at the
-    first beat to the Shade's middle, stopped STANDOFF before the torso's face; -Z along the flight, made level."""
+@functools.lru_cache(maxsize=None)
+def landing(ahead, name="Shade Brawler"):
+    """Where the ember lands with target `name` (combo_targets) `ahead` studs before him, and its frame: from the
+    lantern's mouth at the first beat at its middle (LAND up times its scale), stopped STANDOFF before its own torso
+    face; -Z along the flight, made level."""
+    t = ct.targets()[name]
     lantern = measure([HITS["Shot1"]])[HITS["Shot1"]]["Lantern"]
-    middle = [0.0, LAND, -ahead]
+    middle = [0.0, LAND * t["scale"], -ahead]
     d = k.unit(k.sub(middle, lantern))
-    front = -ahead + 0.74 + STANDOFF
+    front = -ahead + t["front"] * t["scale"] + STANDOFF
     hit = k.add(lantern, k.mul(d, (front - lantern[2]) / d[2]))
     level = k.unit([d[0], 0.0, d[2]])  # the pop faces him level, whatever the flight's pitch
     right = k.unit(rk.cross(level, [0.0, 1.0, 0.0]))
@@ -313,7 +317,8 @@ def pop_into(world, ahead, scale=1.0):
     part or under FLOOR, and no point of one draws over a face from any view: against every target, landed on it as
     the flight lands it (combo_targets: the ordinary Shade under each mask, the elite, the Lamplighter)."""
     points = [p for a, b in world for p in ct.along(a, b)]
-    bad = ct.rule4(points, ahead, f"the pop at {scale}", land=LAND, margin=MARGIN + PETALS["width"] / 2 * scale)
+    bad = ct.rule4(points, ahead, f"the pop at {scale}", land=lambda name: landing(ahead, name)[0],
+                   margin=MARGIN + PETALS["width"] / 2 * scale)
     for i, (a, b) in enumerate(world):
         if min(a[1], b[1]) < FLOOR:
             bad.append(f"pop line {i + 1} comes down to {min(a[1], b[1]):.2f} up (the Shade {ahead} ahead)")
@@ -357,7 +362,8 @@ def crackle_into(ahead, scale, margin=MARGIN):
         bad.append(f"the crackle reaches {far:.2f} from the bloom (the Shade {ahead} ahead)")
     if low < HIPS or high > CHEST_TOP:
         bad.append(f"the crackle runs {low:.2f} to {high:.2f} up (the Shade {ahead} ahead)")
-    bad += ct.rule4(points, ahead, f"the crackle at {scale}", land=LAND, margin=margin + SPARK_SIZE / 2)
+    bad += ct.rule4(points, ahead, f"the crackle at {scale}", land=lambda name: landing(ahead, name)[0],
+                    margin=margin + SPARK_SIZE / 2)
     return bad, (far, low, high)
 
 

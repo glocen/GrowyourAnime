@@ -282,17 +282,18 @@ def seen(lines, ahead=SPACING, samples=16):
 AHEADS = (SPACING, SPACING + 0.4, SPACING + 0.8)  # the Shade at his spacing, and pushed back by the jab and the hook
 
 
-def into(lines):
+def into(lines, waiting=None):
     """Rule 4 against every target (combo_targets: the ordinary Shade under each mask, the elite, the Lamplighter),
     each standing so its torso face is where the ordinary Shade's is (the lead spaced by its target's depth: Faber's,
     AR26), at his spacing and pushed back: no point of a spike comes within CLEAR of a part or draws over a face from
     any view, and no point of a cone line is inside a part above LEG_LINE. Nothing reads as piercing a body (the
-    content check of 2026-11-17: never a stab, never a stake, never a point on a head)."""
+    content check of 2026-11-17: never a stab, never a stake, never a point on a head). A mask the game doesn't have
+    yet goes in `waiting`, if given: its enemy joins only once these rows pass it."""
     bad = []
     for ahead in AHEADS:
         for hit in ("Hit1", "Hit2"):
             for i, (a, b) in enumerate(lines.get(hit, [])):
-                bad += ct.rule4(ct.along(a, b), ahead, f"{hit} spike {i + 1}", margin=CLEAR)
+                bad += ct.rule4(ct.along(a, b), ahead, f"{hit} spike {i + 1}", margin=CLEAR, waiting=waiting)
         for i, (a, b) in enumerate(lines.get("Hit3", [])):
             high = [q for q in ct.along(a, b) if q[1] > LEG_LINE]
             for name in ct.targets():
@@ -304,14 +305,21 @@ def into(lines):
 def write_rows(out):
     read_action()
     e, lines = effect()
-    problems = k.check(e, USED) + into(lines)
+    waiting = []
+    problems = k.check(e, USED) + into(lines, waiting)
     if problems:
         raise SystemExit("the rows don't pass their own check:\n  " + "\n  ".join(problems))
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{ACTION}.rows.json").write_text(json.dumps(e, indent=1) + "\n", encoding="utf-8")
     print(f"Written to {out}: {ACTION} ({len(e['Rows'])} rows)")
     print(f"  no line enters a target or draws over its face from {len(ct.VIEWS)} views, at {', '.join(str(a) for a in AHEADS)} "
-          f"ahead (each target spaced by its depth): {', '.join(ct.targets())}")
+          f"ahead (each target spaced by its depth): {', '.join(ct.in_game())}")
+    for x in waiting:
+        print(f"  waits, not in the game yet (its enemy joins once this passes): {x}")
+    for ahead in AHEADS:
+        today = sorted({name for hit in ("Hit1", "Hit2") for a, b in lines[hit]
+                        for name in ct.root_to_root(ct.along(a, b), ahead, CLEAR, ct.in_game())})
+        print(f"  as the game stands, root to root at {ahead}: the spikes enter {', '.join(today) or 'nothing'}")
     for ahead in (SPACING, SPACING + 0.8):
         print(f"  the Shade {ahead} ahead: studs seen of each line, whole, by heading (of their lengths)")
         for hit, cells in seen(lines, ahead).items():

@@ -1,0 +1,183 @@
+{
+ "Schema": "rows/1",
+ "Effect": "PipEmberHeavy",
+ "Why": "Pip's third ember (AR26): the flight's own look, played on its head from the lantern to where it lands, then the pop. Written by tools/blender/pip_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Tail": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Taper": 0.15,
+   "Trail": {
+    "Back": 0,
+    "Beyond": 0
+   },
+   "Why": "the ember: its head, and its tail back along its flight",
+   "Tracks": {
+    "Lag": [
+     [
+      0,
+      0.8
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.45
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Ribbon": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Taper": 0.2,
+   "Trail": {
+    "Back": 0,
+    "Beyond": 0
+   },
+   "Why": "the third's ribbon: a softer, wider trail behind it",
+   "Tracks": {
+    "Lag": [
+     [
+      0,
+      1.3
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.9
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.5
+     ]
+    ]
+   }
+  },
+  "Light": {
+   "Kind": "Light",
+   "Range": 7,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the ember's light, carried with it",
+   "Tracks": {
+    "Brightness": [
+     [
+      0,
+      3
+     ]
+    ]
+   }
+  },
+  "Spits": {
+   "Kind": "Emitter",
+   "Image": "fx_spark",
+   "Why": "the ember spits: sparks left behind it in the air as it flies, hanging and fading, never falling",
+   "Emitter": {
+    "EmissionDirection": "Back",
+    "SpreadAngle": [
+     40,
+     40
+    ],
+    "Lifetime": [
+     0.08,
+     0.15
+    ],
+    "Speed": [
+     2,
+     4
+    ],
+    "Drag": 10,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      0,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.18
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "Rate": [
+     [
+      0,
+      80
+     ]
+    ]
+   }
+  }
+ }
+}

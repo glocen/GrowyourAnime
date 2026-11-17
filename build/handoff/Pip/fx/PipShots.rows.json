@@ -1,0 +1,2570 @@
+{
+ "Schema": "rows/1",
+ "Effect": "PipShots",
+ "Why": "Pip's shots (PipCombo), the grey block (AR26; research's feel line, 08:06): on each beat the lantern spits, lines, sparks and a light at its place on that frame, and the builder's streak runs to the target until the ember flies. Written by tools/blender/pip_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Action": "PipCombo",
+ "Rows": {
+  "Shot1Spit1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot1Spit1Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot1Spit1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.791,
+        4.504,
+        -0.364
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot1Spit1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot1Spit1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.798,
+        4.495,
+        -0.506
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot1Spit2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot1Spit2Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot1Spit2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.624,
+        4.648,
+        -0.158
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot1Spit2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot1Spit2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.593,
+        4.671,
+        -0.255
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot1Spit3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot1Spit3Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot1Spit3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.458,
+        4.43,
+        -0.361
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot1Spit3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot1Spit3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.392,
+        4.405,
+        -0.502
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot1Spit4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot1Spit4Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot1Spit4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.725,
+        4.361,
+        -0.092
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot1Spit4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot1Spit4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.717,
+        4.321,
+        -0.174
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot1Flash": {
+   "Kind": "Light",
+   "From": "Shot1",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot1: the lantern's spit lights him and the street",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      3,
+      "Quart Out"
+     ],
+     [
+      5,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot1Sparks": {
+   "Kind": "Emitter",
+   "From": "Shot1",
+   "Image": "fx_spark",
+   "Turn": {
+    "Vector3": [
+     0,
+     11.3,
+     0
+    ]
+   },
+   "Why": "Shot1: the spit's sparks, thrown at the Shade and dropping away",
+   "Emit": [
+    [
+     0,
+     5
+    ]
+   ],
+   "Emitter": {
+    "EmissionDirection": "Front",
+    "SpreadAngle": [
+     30,
+     30
+    ],
+    "Lifetime": [
+     0.15,
+     0.3
+    ],
+    "Speed": [
+     8,
+     16
+    ],
+    "Drag": 3,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      -30,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.25
+     ],
+     [
+      1,
+      0.05
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0.4
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.762,
+        4.545,
+        0.282
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Shot1": {
+   "Kind": "Streak",
+   "Body": "Lantern",
+   "From": "Shot1",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot1: the builder's streak from the lantern to the target, until the ember flies (AR26)"
+  },
+  "Shot2Spit1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot2Spit1Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot2Spit1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.857,
+        4.587,
+        -0.29
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot2Spit1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot2Spit1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.87,
+        4.587,
+        -0.434
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot2Spit2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot2Spit2Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot2Spit2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.667,
+        4.703,
+        -0.036
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot2Spit2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot2Spit2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.637,
+        4.728,
+        -0.123
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot2Spit3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot2Spit3Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot2Spit3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.524,
+        4.482,
+        -0.247
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot2Spit3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot2Spit3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.463,
+        4.459,
+        -0.381
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot2Spit4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot2Spit4Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot2Spit4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.78,
+        4.409,
+        -0.096
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.06,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Quad In"
+     ],
+     [
+      5,
+      0.03
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot2Spit4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot2Spit4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.775,
+        4.37,
+        -0.197
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot2Flash": {
+   "Kind": "Light",
+   "From": "Shot2",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot2: the lantern's spit lights him and the street",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      3,
+      "Quart Out"
+     ],
+     [
+      5,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot2Sparks": {
+   "Kind": "Emitter",
+   "From": "Shot2",
+   "Image": "fx_spark",
+   "Turn": {
+    "Vector3": [
+     0,
+     11.4,
+     0
+    ]
+   },
+   "Why": "Shot2: the spit's sparks, thrown at the Shade and dropping away",
+   "Emit": [
+    [
+     0,
+     5
+    ]
+   ],
+   "Emitter": {
+    "EmissionDirection": "Front",
+    "SpreadAngle": [
+     30,
+     30
+    ],
+    "Lifetime": [
+     0.15,
+     0.3
+    ],
+    "Speed": [
+     8,
+     16
+    ],
+    "Drag": 3,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      -30,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.25
+     ],
+     [
+      1,
+      0.05
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0.4
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.801,
+        4.587,
+        0.362
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Shot2": {
+   "Kind": "Streak",
+   "Body": "Lantern",
+   "From": "Shot2",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot2: the builder's streak from the lantern to the target, until the ember flies (AR26)"
+  },
+  "Shot3Spit1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot3Spit1Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot3Spit1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.639,
+        4.011,
+        -1.977
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.084,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.14,
+      "Linear"
+     ],
+     [
+      2,
+      0.14,
+      "Quad In"
+     ],
+     [
+      5,
+      0.042
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3Spit1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot3Spit1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.663,
+        4.012,
+        -2.171
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3Spit2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot3Spit2Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot3Spit2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.383,
+        4.217,
+        -1.729
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.084,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.14,
+      "Linear"
+     ],
+     [
+      2,
+      0.14,
+      "Quad In"
+     ],
+     [
+      5,
+      0.042
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3Spit2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot3Spit2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.351,
+        4.263,
+        -1.869
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3Spit3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot3Spit3Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot3Spit3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        1.899,
+        3.985,
+        -1.939
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.084,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.14,
+      "Linear"
+     ],
+     [
+      2,
+      0.14,
+      "Quad In"
+     ],
+     [
+      5,
+      0.042
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3Spit3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot3Spit3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        1.76,
+        3.98,
+        -2.124
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3Spit4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot3Spit4Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot3Spit4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.276,
+        3.779,
+        -1.676
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.084,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.14,
+      "Linear"
+     ],
+     [
+      2,
+      0.14,
+      "Quad In"
+     ],
+     [
+      5,
+      0.042
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3Spit4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot3Spit4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.22,
+        3.73,
+        -1.804
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3Spit5": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Shot3Spit5Tip.Low",
+   "Taper": 0.3,
+   "Why": "Shot3Spit5: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Linear"
+     ],
+     [
+      2,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.66,
+        3.643,
+        -1.937
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.084,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.14,
+      "Linear"
+     ],
+     [
+      2,
+      0.14,
+      "Quad In"
+     ],
+     [
+      5,
+      0.042
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3,
+      0,
+      "Quad In"
+     ],
+     [
+      5,
+      1
+     ]
+    ]
+   }
+  },
+  "Shot3Spit5Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Shot3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Shot3Spit5's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1,
+      {
+       "Vector3": [
+        2.688,
+        3.563,
+        -2.122
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3Flash": {
+   "Kind": "Light",
+   "From": "Shot3",
+   "Range": 8,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "Shot3: the lantern's spit lights him and the street",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      5,
+      "Quart Out"
+     ],
+     [
+      7,
+      0
+     ]
+    ]
+   }
+  },
+  "Shot3Sparks": {
+   "Kind": "Emitter",
+   "From": "Shot3",
+   "Image": "fx_spark",
+   "Turn": {
+    "Vector3": [
+     0,
+     11.5,
+     0
+    ]
+   },
+   "Why": "Shot3: the spit's sparks, thrown at the Shade and dropping away",
+   "Emit": [
+    [
+     0,
+     8
+    ]
+   ],
+   "Emitter": {
+    "EmissionDirection": "Front",
+    "SpreadAngle": [
+     30,
+     30
+    ],
+    "Lifetime": [
+     0.15,
+     0.3
+    ],
+    "Speed": [
+     8,
+     16
+    ],
+    "Drag": 3,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      -30,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.25
+     ],
+     [
+      1,
+      0.05
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0.4
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "LightEmission": 1,
+    "LightInfluence": 0
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.53,
+        4.006,
+        -1.092
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Shot3": {
+   "Kind": "Streak",
+   "Body": "Lantern",
+   "From": "Shot3",
+   "Color": {
+    "Color3": [
+     225,
+     225,
+     225
+    ]
+   },
+   "Tracks": {},
+   "Why": "Shot3: the builder's streak from the lantern to the target, until the ember flies (AR26)"
+  }
+ }
+}

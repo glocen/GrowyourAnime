@@ -1,0 +1,137 @@
+{
+ "Schema": "rows/1",
+ "Effect": "LyricPulse",
+ "Why": "Lyric's pulse (AR26): the flight's own look, a ring of sound riding its head from the speaker to the Shade over 5 frames, landing on the beat. Written by tools/blender/lyric_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Ring": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Turn": {
+    "Vector3": [
+     90,
+     0,
+     0
+    ]
+   },
+   "Why": "the ring of sound in flight, swelling as it comes: its frame faces the target square, a wavefront",
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.4,
+        1,
+        0.4
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        0.5,
+        1,
+        0.5
+       ]
+      }
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      1.5
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Trail": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 2,
+    "Segments": 1
+   },
+   "Taper": 0.2,
+   "Trail": {
+    "Back": 0,
+    "Beyond": 0
+   },
+   "Why": "a faint line back along its flight, so the travel reads",
+   "Tracks": {
+    "Lag": [
+     [
+      0,
+      2
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.1
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.6
+     ]
+    ]
+   }
+  },
+  "Light": {
+   "Kind": "Light",
+   "Range": 5,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the pulse's light, carried with it",
+   "Tracks": {
+    "Brightness": [
+     [
+      0,
+      2
+     ]
+    ]
+   }
+  }
+ }
+}

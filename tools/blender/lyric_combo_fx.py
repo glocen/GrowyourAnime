@@ -178,12 +178,13 @@ def burst(rolls=(0,)):
     return rows
 
 
-def landing(ahead, start):
-    """Where the pulse lands, the Shade `ahead` studs before her: LAND up, STANDOFF before the torso's face, across
-    where the line from `start` to the Shade's middle meets that face; and the burst's frame there (right, up, back),
-    facing the Shade's front, as it faces her."""
-    front = -ahead + 0.74 + STANDOFF
-    hit = [start[0] * (front + ahead) / (start[2] + ahead), LAND, front]
+def landing(ahead, start, name="Shade Brawler"):
+    """Where the pulse lands, target `name` (combo_targets) `ahead` studs before her: LAND up times its scale,
+    STANDOFF before its own torso face, across where the line from `start` to its middle meets that face; and the
+    burst's frame there (right, up, back), facing the target's front, as it faces her."""
+    t = ct.targets()[name]
+    front = -ahead + t["front"] * t["scale"] + STANDOFF
+    hit = [start[0] * (front + ahead) / (start[2] + ahead), LAND * t["scale"], front]
     return hit, [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]
 
 
@@ -229,14 +230,14 @@ def rk_cross(a, b):
     return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
 
 
-def guard(points, ahead, what, margin=0.1):
+def guard(points, ahead, what, start, margin=0.1):
     """Rule 4: no point under the street, and against every target, landed on it as the flight lands it
-    (combo_targets: the ordinary Shade under each mask, the elite, the Lamplighter), none within `margin` of a part
-    or drawing over a face from any view."""
+    (combo_targets: the ordinary Shade under each mask, the elite, the Lamplighter; its flight from `start`), none
+    within `margin` of a part or drawing over a face from any view."""
     bad = []
     if min(p[1] for p in points) < 0.15:
         bad.append(f"{what} goes down to {min(p[1] for p in points):.2f} up (the Shade {ahead} ahead)")
-    return bad + ct.rule4(points, ahead, what, land=LAND, margin=margin)
+    return bad + ct.rule4(points, ahead, what, land=lambda name: landing(ahead, start, name)[0], margin=margin)
 
 
 def checks(ahead):
@@ -249,9 +250,9 @@ def checks(ahead):
             start = n[HITS[hit] - FLIGHT][ring]
             frame = landing(ahead, start)
             near = [q for q in flight(start, frame[0], steps=30) if k.length(k.sub(q, frame[0])) <= ARRIVAL]
-            bad += guard(near, ahead, f"{hit} {ring}'s pulse arriving")
+            bad += guard(near, ahead, f"{hit} {ring}'s pulse arriving", start)
             for roll in rolls:
-                bad += guard(rims(frame, roll), ahead, f"{hit} {ring}'s burst (rolled {roll})")
+                bad += guard(rims(frame, roll), ahead, f"{hit} {ring}'s burst (rolled {roll})", start)
             widest = oval(frame, *BURST["to"], rolls[0]) + oval(frame, BURST["to"][0] * INNER, BURST["to"][1] * INNER, rolls[0])
             boxes = w.shade_boxes(ahead)
             shown[f"{hit} {ring}"] = {h: sum(1 for p in widest if not w.covered(p, w.camera(ahead, h), boxes)) / len(widest)

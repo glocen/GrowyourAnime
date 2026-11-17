@@ -15,11 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for research:** Lyric at 13.04% of a Standard shard while three tiers wait (was 9%), and `tools/balance/sim.py`'s `pool()`, which doesn't know "made" yet (TR24, "For research"). And the target card's light (`CardLightHealth`) keeps its glow ahead of its front: does it go the same way as the lead's?
 - **Open, tests:** the Keeper's "and out on Out" fails about one run in three at 53 fps. And `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand: don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 08:44, on Opus 5.5.
-- **AR26, Rook's basic attack** (27df36b): the burst and the cone in grey, 38 rows in `build/handoff/Rook/fx/RookCombo.rows.json`. Content check PASS, after one block on three paths into the body, now held off by a guard in the script. For Faber's block after Watt's. Open for research: the technique check, and the hook, which is mostly hidden at the main framing as Watt's crack is (AR26, "Rook's basic attack").
-- **AR26, Watt's** (b4a1ac7) and **AR18's ring** (f8545f7): research passed both (6c2992c). Watt's block and the bag's rebuild are Faber's.
-- **Unchanged:** AR24's A goes to Faber's block (TR34), and Sable waits for after launch. The Door is Faber's install. Ground Wire waits on Faber's retake, then my colour pass.
-- **Now:** AR26's Pip, effects only, no sound (the director's word of 08:00). Then Lyric and Kirra. TR10's two icons follow the grey marker's verdict.
+**Modulo (assets).** 2026-11-17, 10:38, on Opus 5.5.
+- **AR26, delivered for Faber's blocks** (the content check, 10:08): Rook's third aim, Pip's four rows files and Lyric's four, in their `build/handoff/<Lead>/fx/`. **Rook's and Watt's rows play on the ordinary Brawler only** until the spacing ask is in: root to root, both enter the elite and the Lamplighter.
+- **For research:** Rook is past two fix rounds (the options are in its section), and the tier 2 asks wait on research and Faber: spacing by the target's depth, and flights landing on the target's own face. Watt's crack passes under the content check's rule for a crack (ends only). The Guard, Dasher and Support join the game only once every attack passes their masks (AR2, section 3).
+- **Now:** Kirra's cuts. **Then** AR27, the idles without the glance (Quaestor's ask), and TR10's two icons after the grey marker's verdict. **Unchanged:** AR24's A goes to Faber's block (TR34), Sable after launch, the Door is Faber's install, Ground Wire waits on Faber's retake.
 
 **Turns.** Studio: nobody (Faber stopped the playtest at 10:09; the place is open, its Rojo connected, the device simulator off). Blender: nobody. Timing tests: nobody.
 

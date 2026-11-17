@@ -13,6 +13,10 @@ first, then its triangles by a bundle of five rays, so a point beside a mask's o
 corner. The cameras orbit the target's chest at the game's distance and height (kirra_scarf_step_fx's), at the four
 headings the seen tables use, or at every 5 degrees and two pitches (`SWEEP`), since the player turns the camera.
 
+Fixed rows are tested with each target spaced by its depth (`on_face`, the tier 2 ask to Faber, AR26); `root_to_root`
+reports them as the game stands today, root to root, without failing them. A crack whose lines pass before a face on
+their way out is tested at its ends (`near_face`, by the face's triangles), on the content check's word of 2026-11-17.
+
 Imported by the combo scripts; run alone, it prints each target's size and where its parts are.
 """
 
@@ -71,10 +75,22 @@ def box_of(points):
     return [(lo[j] + hi[j]) / 2 for j in range(3)], [(hi[j] - lo[j]) / 2 for j in range(3)]
 
 
+ENEMIES = k.ROOT / "src" / "shared" / "Definitions" / "Enemies.luau"  # read only
+
+
 def game_scale(enemy):
     """An enemy's Scale in Definitions/Enemies (read, not copied)."""
-    text = (k.ROOT / "src" / "shared" / "Definitions" / "Enemies.luau").read_text(encoding="utf-8")
+    text = ENEMIES.read_text(encoding="utf-8")
     return float(re.search(r'Id = "' + enemy + r'"[^}]*?Scale = ([0-9.]+)', text).group(1))
+
+
+def in_game():
+    """The targets the game has today: the Shade under each mask Definitions/Enemies names, the elite, the Lamplighter."""
+    text = ENEMIES.read_text(encoding="utf-8")
+    masks = set(re.findall(r'Rig = "Shade"[^}]*?Mask = "([A-Za-z]+)"', text))
+    ids = set(re.findall(r'Id = "([a-z_]+)"', text))
+    return [name for name in targets() if (name.startswith("Shade ") and name[6:] in masks)
+            or (name == "Elite" and "brawler_elite" in ids) or (name == "Lamplighter" and "lamplighter" in ids)]
 
 
 @functools.lru_cache(maxsize=None)
@@ -88,15 +104,16 @@ def targets():
         m = shade["masks"][mask]
         pts, tris = mesh_points(HANDOFF / "Shade" / m["mesh"])
         face = (box_of(pts), tris)
-        out[f"Shade {mask}"] = {"scale": 1.0, "parts": body + banded(tris), "faces": [face], "front": FRONT}
+        out[f"Shade {mask}"] = {"scale": 1.0, "parts": body + banded(tris), "body": body, "faces": [face],
+                                 "front": FRONT}
     scale = game_scale("brawler_elite")
     arm = shade["elite"]["masks"]["Brawler"]
     pts, tris = mesh_points(HANDOFF / "Shade" / arm["mesh"], arm["centre"], (arm["right"], arm["up"], arm["facing"]),
                             shade["elite"]["size"])
     first = out["Shade Brawler"]
     second = (box_of(pts), tris)
-    out["Elite"] = {"scale": scale, "parts": first["parts"] + banded(tris), "faces": first["faces"] + [second],
-                    "front": FRONT}
+    out["Elite"] = {"scale": scale, "parts": first["parts"] + banded(tris), "body": body,
+                    "faces": first["faces"] + [second], "front": FRONT}
     lamp = json.loads((HANDOFF / "Lamplighter" / "Lamplighter.recipe.json").read_text(encoding="utf-8"))
     parts, faces = [], []
     for p in lamp["pieces"]:
@@ -110,7 +127,7 @@ def targets():
             pts, tris = mesh_points(HANDOFF / "Lamplighter" / p["mesh"])
             faces.append((box_of(pts), tris))
     torso = next(p for p in lamp["pieces"] if p["name"].endswith("Torso"))
-    out["Lamplighter"] = {"scale": game_scale("lamplighter"), "parts": parts, "faces": faces,
+    out["Lamplighter"] = {"scale": game_scale("lamplighter"), "parts": parts, "body": parts, "faces": faces,
                           "front": torso["centre"][2] + torso["size"][2] / 2}
     return out
 
@@ -121,8 +138,9 @@ def where(q, scale, ahead):
     return [-q[0] * scale, q[1] * scale, -q[2] * scale - ahead]  # turned half round: its -Z, its front, toward him
 
 
-def placed(name, ahead):
-    """A target's parts and faces in the lead's frame, with it `ahead` studs before him: boxes as (low, high)."""
+def placed(name, ahead, which="parts"):
+    """A target's parts and faces in the lead's frame, with it `ahead` studs before him: boxes as (low, high).
+    `which` "body" leaves out the masks' slices (tested by their triangles instead)."""
     t = targets()[name]
     s = t["scale"]
 
@@ -132,7 +150,7 @@ def placed(name, ahead):
         return [min(a[j], z[j]) for j in range(3)], [max(a[j], z[j]) for j in range(3)]
 
     faces = [(box(b), [[where(q, s, ahead) for q in tri] for tri in tris]) for b, tris in t["faces"]]
-    return [box(b) for b in t["parts"]], faces
+    return [box(b) for b in t[which]], faces
 
 
 def on_face(name, ahead):
@@ -238,29 +256,87 @@ def faults(points, name, ahead, margin=0.1, views=HEADINGS, faces=True):
 
 
 GAME = tuple(v for v in SWEEP if v[1] == 1.0)  # every 5 degrees round, at the game's camera height
-VIEWS = HEADINGS + GAME
+VIEWS = HEADINGS + SWEEP  # and at 0.4 of it, the camera turned low (the content check's gap d)
+
+
+def to_triangle(p, tri):
+    """The distance from p to a triangle (its nearest point: inside, on an edge or at a corner)."""
+    a, b, c = tri
+    ab, ac, ap = k.sub(b, a), k.sub(c, a), k.sub(p, a)
+    d1, d2 = k.dot(ab, ap), k.dot(ac, ap)
+    if d1 <= 0 and d2 <= 0:
+        return k.length(ap)
+    bp = k.sub(p, b)
+    d3, d4 = k.dot(ab, bp), k.dot(ac, bp)
+    if d3 >= 0 and d4 <= d3:
+        return k.length(bp)
+    cp = k.sub(p, c)
+    d5, d6 = k.dot(ab, cp), k.dot(ac, cp)
+    if d6 >= 0 and d5 <= d6:
+        return k.length(cp)
+    vc = d1 * d4 - d3 * d2
+    if vc <= 0 and d1 >= 0 and d3 <= 0:
+        return k.length(k.sub(p, k.add(a, k.mul(ab, d1 / (d1 - d3)))))
+    vb = d5 * d2 - d1 * d6
+    if vb <= 0 and d2 >= 0 and d6 <= 0:
+        return k.length(k.sub(p, k.add(a, k.mul(ac, d2 / (d2 - d6)))))
+    va = d3 * d6 - d5 * d4
+    if va <= 0 and d4 - d3 >= 0 and d5 - d6 >= 0:
+        return k.length(k.sub(p, k.add(b, k.mul(k.sub(c, b), (d4 - d3) / ((d4 - d3) + (d5 - d6))))))
+    den = 1 / (va + vb + vc)
+    return k.length(k.sub(p, k.add(a, k.add(k.mul(ab, vb * den), k.mul(ac, vc * den)))))
+
+
+def near_face(points, name, ahead, margin):
+    """The first point within `margin` of a face of target `name` (`ahead` studs before him), by its triangles."""
+    _, faces = placed(name, ahead)
+    for p in points:
+        for (lo, hi), tris in faces:
+            if all(lo[j] - margin <= p[j] <= hi[j] + margin for j in range(3)) and \
+                    any(to_triangle(p, tri) < margin for tri in tris):
+                return p
+    return None
+
+
+def root_to_root(points, ahead, margin=0.1, names=None):
+    """Fixed rows as the game stands today (each target `ahead` studs before him, root to root): the targets they
+    enter. Reported, never failed: the rows are guarded for the spacing ask (`rule4`)."""
+    return [name for name in (names or targets()) if faults(points, name, ahead, margin, faces=False)]
 
 
 def landed(points, ahead, name, land):
-    """Points placed for the ordinary Shade `ahead` studs before him, landing `land` up on its torso face, moved onto
-    target `name` as a flight lands them there: at `land` times its scale, on its own torso face, at their own size."""
+    """Points placed for the ordinary Shade `ahead` studs before him, moved onto target `name` as a flight lands them
+    there, at their own size. `land` is the script's own landing, a function giving where the flight lands on a
+    target by its name (the ask's way: aimed at its belly times its Scale, stopped before its own torso face; the
+    content check's fix, 2026-11-17), or a height: `land` up on the ordinary Shade's face, then `land` times the
+    target's scale, on its own face."""
+    if callable(land):
+        d = k.sub(land(name), land("Shade Brawler"))
+        return [k.add(p, d) for p in points]
     t = targets()[name]
     s = t["scale"]
     f0, ft = -ahead + FRONT, -ahead + t["front"] * s
     return [[p[0], p[1] + land * (s - 1), p[2] + ft - f0] for p in points]
 
 
-def rule4(points, ahead, what, land=None, margin=0.1, views=VIEWS):
+def rule4(points, ahead, what, land=None, margin=0.1, views=VIEWS, waiting=None):
     """Every target against `points` (the lead's frame, placed for the ordinary Shade `ahead` studs before him): fixed
     rows (`land` None) with the target standing so its torso face is the ordinary Shade's (the lead spaced by its
-    target's depth: Faber's, AR26), or a flight's rows landed on it (`land` up on the ordinary Shade)."""
+    target's depth: Faber's, AR26), or a flight's rows landed on it (`land` up on the ordinary Shade). With a
+    `waiting` list, a target the game doesn't have yet (`in_game`) is reported there, not failed: it joins the game
+    only once the rows pass it (the content check's gate, 2026-11-17)."""
     bad = []
+    game = in_game()
     for name in targets():
         if land is None:
             pts, at = points, on_face(name, ahead)
         else:
             pts, at = landed(points, ahead, name, land), ahead
-        bad += [f"{what} {x} (the target {ahead} ahead)" for x in faults(pts, name, at, margin, views)]
+        got = [f"{what} {x} (the target {ahead} ahead)" for x in faults(pts, name, at, margin, views)]
+        if waiting is not None and name not in game:
+            waiting += got
+        else:
+            bad += got
     return bad
 
 

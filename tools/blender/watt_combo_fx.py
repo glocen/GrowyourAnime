@@ -18,6 +18,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import kirra_scarf_step_fx as k  # noqa: E402  (the CFrame sums, the Track reader, the rows file check)
+import combo_targets as ct  # noqa: E402  (every target the crack lands on, and rule 4's guards against them)
 
 ROOT = Path(__file__).resolve().parents[2]
 RECIPE = ROOT / "build" / "handoff" / "Watt" / "Watt.recipe.json"
@@ -296,15 +297,68 @@ def seen(lines, ahead=SPACING, samples=12):
     return out
 
 
+AHEADS = (SPACING, SPACING + 0.4, SPACING + 0.8)  # his spacing, and the Shade pushed back by hits 1 and 2 (fixed rows)
+TIP_MARGIN = 0.1  # studs: a tip's nearest to a face (the guard's margin; a line tapers to its point)
+FORK_MARGIN = 0.1 + WIDTH["Branch"] / 2  # and the fork's, where the branches start at their full width
+
+
+def crack_points(takes):
+    """Every point of a crack's lines, each take, every 0.05 studs."""
+    return [q for part in takes.values() for pts in part for a, b in zip(pts, pts[1:]) for q in ct.along(a, b)]
+
+
+def ends(takes):
+    """A crack's ends, each take: its forks (each branch's first joint) and its tips. The trunk's root is the touch."""
+    every = [pts for side in ("L", "R") for pts in takes[side]]
+    return [pts[0] for pts in every], [pts[-1] for pts in every]
+
+
+def into(lines, waiting=None):
+    """Rule 4 for a crack, on the content check's word (2026-11-17), against every target (combo_targets), each spaced
+    by its depth, at his spacing and pushed back: no tip comes within TIP_MARGIN of a face and no fork within
+    FORK_MARGIN, by its triangles; no end and no point of a line is inside the body. A branch that passes before a
+    mask on its way out is light seen across the body, and passes. A target the game doesn't have yet goes in
+    `waiting`."""
+    bad, game = [], ct.in_game()
+    for ahead in AHEADS:
+        for hit in ("Hit1", "Hit2"):
+            (forks, tips), every = ends(lines[hit]), crack_points(lines[hit])
+            for name in ct.targets():
+                at = ct.on_face(name, ahead)
+                body, _ = ct.placed(name, at, "body")
+                got = []
+                p = ct.near_face(tips, name, at, TIP_MARGIN) or ct.near_face(forks, name, at, FORK_MARGIN)
+                if p:
+                    got.append(f"an end lies on {name}'s face at ({p[0]:.2f}, {p[1]:.2f}, {p[2]:.2f})")
+                p = next((q for q in every if ct.inside(q, body, 0.0)), None)
+                if p:
+                    got.append(f"a line enters {name} at ({p[0]:.2f}, {p[1]:.2f}, {p[2]:.2f})")
+                got = [f"{hit} {x} (the target {ahead} ahead)" for x in got]
+                if waiting is not None and name not in game:
+                    waiting += got
+                else:
+                    bad += got
+    return bad
+
+
 def write_rows(out):
     read_action()
     e, lines = effect()
-    problems = k.check(e, USED)
+    waiting = []
+    problems = k.check(e, USED) + into(lines, waiting)
     if problems:
         raise SystemExit("the rows don't pass their own check:\n  " + "\n  ".join(problems))
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{ACTION}.rows.json").write_text(json.dumps(e, indent=1) + "\n", encoding="utf-8")
     print(f"Written to {out}: {ACTION} ({len(e['Rows'])} rows)")
+    print(f"  no end of the crack lies on a target's face or body, and no line enters one, at "
+          f"{', '.join(str(a) for a in AHEADS)} ahead (each target spaced by its depth): {', '.join(ct.in_game())}")
+    for x in waiting:
+        print(f"  waits, not in the game yet (its enemy joins once this passes): {x}")
+    for ahead in AHEADS:
+        today = sorted({name for hit in ("Hit1", "Hit2")
+                        for name in ct.root_to_root(crack_points(lines[hit]), ahead, 0.0, ct.in_game())})
+        print(f"  as the game stands, root to root at {ahead}: the crack enters {', '.join(today) or 'nothing'}")
     for ahead in (SPACING, SPACING + 0.8):
         print(f"  the Shade {ahead} ahead: studs seen of each line, whole, by heading (of its length)")
         for (hit, part), cells in seen(effect(ahead)[1], ahead).items():

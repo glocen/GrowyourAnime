@@ -10322,6 +10322,11 @@ Both sheets in `build/handoff/UI/buttons/` are drawn again.
   - seen at phone size, the dock's pip zoomed on the pale yard;
   - research's look at what changed is to come;
   - not director-accepted.
+- **Research's second look (Quaestor, 2026-11-17, 14:43): passed, no must-fix.** Judged on what changed only, from the same two sheets (6782915).
+  - The ready shards now call from across the panel: a gold foot and edge, where a waiting shard is the plain channel.
+  - The dock's "something new" reads on all three cells, the pip's ink ring included, on the Light cell too.
+  - The reward to claim takes the same gold, and Claimed falls back to the make.
+  - **Next:** Modulo cuts the images and the numbers for Faber. Faber builds AR30 screen by screen after AR29, with the Breaker's buttons after TR41's sky.
 
 ## Later, by ground
 

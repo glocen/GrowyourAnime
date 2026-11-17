@@ -1476,6 +1476,228 @@
      "along": -97.05
     }
    ]
+  },
+  "forge": {
+   "note": "AR28: the Forge, the Press, Stage I. Every place here is in the Forge's own frame, turned with it: `across` to its right, `along` toward its front (the Strip), `up` from its floor. ForgeRam stands over the Forge's middle, raised by its underside between `ram`'s heights: rest, the tell's top (the sleeves' foot: never higher) and the contact (on the plate; on an item the builder lays there, that much higher). Its light is the tell: dim at rest, bright as it lifts. The two ForgeGear stand at `gears`, the right one turned half a tooth about its axle so they mesh, and turn opposite ways with the ram: the left anticlockwise seen from the front as it lifts. `degreesPerStud` is the review's rate.",
+   "ram": {
+    "across": 0.0,
+    "along": 0.0,
+    "rest": 5.6,
+    "tell": 7.2,
+    "contact": 2.8
+   },
+   "gears": [
+    {
+     "across": -0.85,
+     "along": 1.32,
+     "up": 11.7,
+     "turnedHalfTooth": false
+    },
+    {
+     "across": 0.85,
+     "along": 1.32,
+     "up": 11.7,
+     "turnedHalfTooth": true
+    }
+   ],
+   "halfTooth": 22.5,
+   "degreesPerStud": 90.0,
+   "plate": 2.76
+  },
+  "condenser": {
+   "note": "AR28: the Stone Condenser, the Comb, Stage I. Every place here is in the Condenser's own frame, as the Forge's. The comb is the tray: the cups in `cups` fill in their order, a stone or a jewel to a cup, so the comb's lit height is the fill. A cup holding a stone stands CondenserStone at its place, one holding a jewel CondenserJewel, tinted in the jewel type's colour; an empty cup stands nothing. CondenserCore stands at `core` and turns about its own front axis while the Condenser works, still when the tray is full or the power is out.",
+   "core": {
+    "across": 0.0,
+    "along": -0.4,
+    "up": 9.5
+   },
+   "cups": [
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": 0.0,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": 0.901,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": -0.901,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": 1.801,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": -1.801,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": 2.252,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": -2.252,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": 0.0,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 0.901,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": -0.901,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 1.801,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": -1.801,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 2.702,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": -2.702,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": 2.252,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": -2.252,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": 0.0,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": 0.901,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": -0.901,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": 1.801,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": -1.801,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 6.38
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 6.38
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 6.38
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 6.38
+    }
+   ]
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",

@@ -1534,6 +1534,160 @@
     }
    ],
    "note": "the Voidkin stands at its middle, 1.2 up, and turns there: the plinth doesn't. Its Combat Power sits above the figure. Its light is a PointLight on the Strip's side of the figure, at chest height"
+  },
+  "Forge": {
+   "mesh": "meshes/Forge.json",
+   "triangles": 596,
+   "vertices": 396,
+   "centre": [
+    0.0,
+    6.25,
+    0.0
+   ],
+   "size": [
+    11.05,
+    12.72,
+    8.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high; the seat, 3.4 by 2.8 and 2.76 high; the horns' two feet",
+   "lights": [],
+   "note": "on a sleeping place, its front toward the Strip, 12.5 high at its head. The item lies on the seat's lit plate, at its middle, 2.76 up. The ram is ForgeRam, the gears ForgeGear: plan.json, machines.forge"
+  },
+  "ForgeRam": {
+   "mesh": "meshes/ForgeRam.json",
+   "triangles": 412,
+   "vertices": 240,
+   "centre": [
+    0.0,
+    3.2,
+    0.0
+   ],
+   "size": [
+    4.38,
+    6.62,
+    4.38
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its underside's middle, over the Forge's middle: up 5.6 at rest, 7.2 at most (the sleeves' foot), 2.8 on the plate. Its band and its disc are its light: dim at rest, bright for the tell. Look only"
+  },
+  "ForgeGear": {
+   "mesh": "meshes/ForgeGear.json",
+   "triangles": 280,
+   "vertices": 160,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.007,
+    2.007,
+    0.64
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its middle, its axle toward the front: two stand on the Forge's head, turning opposite ways as the ram moves (plan.json, machines.forge). Look only"
+  },
+  "Condenser": {
+   "mesh": "meshes/Condenser.json",
+   "triangles": 2000,
+   "vertices": 1474,
+   "centre": [
+    0.0,
+    5.83774,
+    0.245
+   ],
+   "size": [
+    9.621,
+    11.895,
+    9.31
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
+   "lights": [],
+   "note": "on a sleeping place, its comb toward the Strip, about 11 high at its core. The comb's 37 cups are its tray, dark when empty; a cup's stone or jewel is CondenserStone or CondenserJewel stood in it, and the core is CondenserCore: plan.json, machines.condenser"
+  },
+  "CondenserCore": {
+   "mesh": "meshes/CondenserCore.json",
+   "triangles": 472,
+   "vertices": 256,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.82,
+    2.82,
+    0.74
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its middle, at across 0, 0.4 toward the back and 9.5 up on the Condenser, round the shard: it turns in its own plane while the Condenser works, still when the tray is full or the power is out. Look only"
+  },
+  "CondenserStone": {
+   "mesh": "meshes/CondenserStone.json",
+   "triangles": 20,
+   "vertices": 18,
+   "centre": [
+    0.0,
+    0.0,
+    -0.28
+   ],
+   "size": [
+    0.727,
+    0.84,
+    0.48
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a stone in a cup: stood at the cup's place on the comb (plan.json, machines.condenser), the Condenser's turn. Lit, the void's violet. Look only"
+  },
+  "CondenserJewel": {
+   "mesh": "meshes/CondenserJewel.json",
+   "triangles": 48,
+   "vertices": 30,
+   "centre": [
+    0.0,
+    0.0,
+    -0.25
+   ],
+   "size": [
+    0.727,
+    0.84,
+    0.42
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a jewel in a cup: stood at the cup's place on the comb, the Condenser's turn. One pale swatch on every face: the jewel type's colour is the builder's (a tint, or the mesh in Neon without the kit's pictures), so the cup reads from a stone's at 14 studs. Look only"
   }
  }
 }

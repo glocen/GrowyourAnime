@@ -9851,11 +9851,6 @@ Research's request, 2026-11-17, 11:15, in phase 3's order (`docs/production-plan
 
 **Four facts:** implemented, as a throwaway: six blocks and ten sheets. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above; research's pick next. Director-accepted: no (the pick doesn't wait on the director, 2026-11-12).
 
-
-## Later, by ground
-
-The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
-
 ### Research's pick (Quaestor, 2026-11-17, 12:20): the Press and the Comb
 From the glance sheets, the 64 px sheets and A's sheets of both.
 - **The Forge: A, the Press.**
@@ -9868,3 +9863,35 @@ From the glance sheets, the 64 px sheets and A's sheets of both.
   - The Shelves read the fill too, but more faintly from the gate. The Cup's fill doesn't read, and it stands like a figure.
 - **One thing new since the ask** (the director, 12:10, `docs/decisions.md`): the Condenser makes jewels too, beside its stones. A jewel in the comb sits in its type's colour, so a cup holding a jewel reads from a stone's cup at 14 studs. It's one line in Stage I's build, not a new direction.
 - **Must-fix:** none at the block. Stage I is judged in the game from the player's camera, the Press in motion (the tell, the contact) and the Comb at its three fills.
+
+### Stage I, the Press and the Comb (Modulo, 2026-11-17, 12:37)
+Built on research's pick, in `tools/blender/base_forge.py`, on the base kit's atlas (no new swatch, no new map). Handed off in `build/handoff/Base/`: seven pieces in `meshes/` and `manifest.json`, their tables in `plan.json` (`machines.forge`, `machines.condenser`), and the sheets `forge_stage1.png`, `condenser_stage1.png` and `forge_condenser_stage1_64.png`.
+- **The Forge, the Press:** `Forge` (596 triangles, still), `ForgeRam` (412) and `ForgeGear` (280, two of them).
+  - The ram is raised by its underside: rest 5.6, the tell 7.2 (the sleeves' foot), the contact 2.8 on the plate. The gears turn opposite ways with it, the right one half a tooth on.
+  - **The block's weakness, answered:** the ram's rods ride in sleeves under the head, and at the tell their caps rise out of its top. From 30 studs the tell now changes the silhouette's top, not only the ram's height.
+  - The item lies at the plate's middle, 2.76 up, and is Faber's.
+- **The Condenser, the Comb:** `Condenser` (2,000 triangles, the block's 5,152), `CondenserCore` (472, turns while it works, still when full or without power), `CondenserStone` (20) and `CondenserJewel` (48).
+  - The jewel cup is one pale swatch for Faber to tint in the jewel type's colour (cyan in the sheets, a preview).
+  - **The block's weakness, answered (tier 1, inside the pick):** the comb is now a six-sided panel of 37 cups (rows of 4, 5, 6, 7, 6, 5, 4) held by two horns that hug its sides and close over its top round the core, so its silhouette is no longer a block with a ring on top.
+  - The fill still reads by the lit height: the gate's three cuts at 86 studs are three pictures.
+  - The cups fill by rows from the bottom, each row from its middle out, in `plan.json`'s order.
+- **Their sizes:** at the floor, both stand inside their deck's 8.6 square, so Fit.Prints' 9.2 holds. Overhead, the Forge's horns reach 11.05 across at 4.4 up, and the Comb's 9.6. They stand 12.7 and 11.9 high.
+- **Content check** (by 12:37, the three sheets): the Forge PASS, the Condenser PASS. The conditions it adds, kept through the finish:
+  - the core's four clamps stay straight and radial, never bent or hooked, and never meet at the middle;
+  - **a jewel's tint, Faber's:**
+    - its facets stay visible, with a highlight, never a flat glossy fill;
+    - no red or orange light spills on the machine;
+    - the plug is lighter or less saturated than the gem, so a row of red cups reads as gems in cups, never as a level rising in a tray.
+  - The earlier conditions hold, the Press's contact light flat round the plate among them.
+- **For Faber,** when TR37 wakes the sleeping places: stand them in the SleepingStone's stead and drive the ram, the gears, the core and the cups from `plan.json`.
+
+**Four facts:**
+- **Implemented:** the seven pieces, their tables and the sheets, by Claude Opus 5.5.
+- **Tested:** the renders and the export ran in Blender. Against the handoff before, the export changes only the seven new pieces, their manifest entries and the plan's two new tables. Nothing is in Studio.
+- **Visually reviewed:** Modulo's read above, from the sheets. Research's pass is in the game from the player's camera, once Faber has stood them.
+- **Director-accepted:** no.
+
+
+## Later, by ground
+
+The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -28,6 +28,7 @@ from mathutils import Vector
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_ink as ink  # noqa: E402
 import base_machines as machines  # noqa: E402
+import base_forge as forge  # noqa: E402
 import base_mill as mill  # noqa: E402
 import base_show as show  # noqa: E402
 import blcommon as bl  # noqa: E402
@@ -686,7 +687,8 @@ PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "YardLive": lambda: 
           "PowerSpan": power_span, "FloodMast": flood_mast, "Transformer": transformer,
           **machines.PIECES,       # and the machines' own models (AR15, base_machines.py)
           **mill.PIECES,           # and the generator, the Void Mill (AR19, base_mill.py)
-          **show.PIECES}           # and the showcase's plinth (TR22, base_show.py)
+          **show.PIECES,           # and the showcase's plinth (TR22, base_show.py)
+          **forge.PIECES}          # and the Forge and the Stone Condenser, Stage I (AR28, base_forge.py)
 
 
 def build(name):

@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11's record); the client ran at 38 to 40 fps at the base from 10:30, and the 11:40 suite ran at 58. The Keeper's "and out on Out" still fails about one run in three. TR20's Breaker-chamber hover fails in the whole suite and passes alone. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 12:18, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
-- **AR28, the Forge's and the Condenser's three directions each, delivered for research's pick:** ten sheets in `build/handoff/Base/` (`forge_block_*`, `condenser_block_*`). The content check passed all six from the renders. My read: the Press and the Comb, with the Sting the bolder Forge. AR19 (db2f086) waits on research's pass and Faber's six re-uploads.
-- **Now:** the re-lay of AR16's plan at 128 on Faber's grey layout (research's 128, 12:01), the FloodMast off the Door's line. **Then:** AR28's picked Stage I as models for Faber, AR17's map kit, then the icons (TR10's two after its marker's verdict).
-- **Unchanged:** AR24's A waits on Faber's TR34 block; Sable after launch; the Door is Faber's install.
+**Modulo (assets).** 2026-11-17, 12:38, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **AR28's Stage I, the Press and the Comb, delivered to Faber:** seven pieces in `build/handoff/Base/` and their tables in `plan.json`, with the sheets. Content check PASS, with conditions on a jewel's tint (AR28, "Stage I"). Faber stands them when TR37 wakes the sleeping places. Research's pass follows, in the game.
+- **Now:** AR22 again, on the director's word of 12:19. **Then:** the re-lay of AR16's plan at 128 on Faber's grey layout, with the FloodMast off the Door's line; then AR17's map kit; then the icons for stones, emblems and jewels, and TR10's two.
+- **Unchanged:** AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
 
 **Turns.** Studio: nobody (Faber stopped at 12:18; the device simulator off). Blender: nobody. Timing tests: nobody.
 
@@ -42,6 +42,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Modulo, 2026-11-17, AR28's Stage I: the Comb's panel is six-sided, 37 cups in rows of 4 to 7 to 4, with its horns hugging its sides and closing round the core, against the block's "a block with a ring on top". The fill still reads by the lit height, from the bottom row up (AR28, "Stage I"). Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-16, AR16's install: the great ring turns against the rotor at 0.35 of its rate; the Training crown turns 0.12 turns a second while a Voidkin trains, and its pad stands 6 before the stone; the base's machine plates never cover each other: the nearest stands at its point and the others take the nearest free place over or under it (`World.Apart`). Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-16, AR16: the Tower's silhouette moves behind the back corner toward the crossing, off the generator's line, so it moves the Tower's lot in the world contract. Faber's say on the cost; if it's too much, it stays on the middle line until the game's verdict.
 - Tier 1, Faber, 2026-11-16, AR12's plate: my say on the cost is in AR12, "Faber's install": small, laid as research gave it. The plate starts at the name's rule's left end, 8 under it. It widens for a long line rather than cutting one, and keeps its size on screen. "Tap to continue" drops under the plate when the outcome's line leaves it under 12 points. Research: say in your row what you'd change.

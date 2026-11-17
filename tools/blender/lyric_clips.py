@@ -560,23 +560,20 @@ def audit(rig, take) -> dict:
 # her hips. Her left leg swings no more than TAIL under the jacket's tail. The speakers are kit: they float, turn to
 # where she sends them and kick on her shots, and that's all they do.
 
+LEVEL = (0, 0, 0)  # the idle's head: without HUB's 2-degree tilt, which the nod deepens past level (AR27; idle_head.py)
+
+
 def idle(t):
     """Between songs, waiting for the count: weight on her back foot, the stand leant in to her fist, keeping time with
-    her chin and a little give in the knees. Once a loop she glances back over her right shoulder at her monitor."""
+    her chin and a little give in the knees, four beats a loop. Her head stays on you between the nods (AR27: no
+    glance)."""
     t.loop = True
-    for beat in (0, 60, 120):
-        t.key(beat, "the stance" if beat == 0 else None, ease="snap", look=EYES, crouch=0.03)
+    for beat in (0, 60, 120, 180):
+        t.key(beat, "the stance" if beat == 0 else None, ease="snap", look=EYES, H=LEVEL, crouch=0.03)
         t.key(beat + 5, "on the beat" if beat == 0 else None, ease="sine", look=NOD, crouch=0.07, T=(1, 9, 0))
         t.key(beat + 22, ease="sine", look=EYES, crouch=0.03, T=(-1, 9, 0))
-    # the glance: the head round over the right shoulder, the body opening a little with it
-    t.key(166, ease="cubic", T=(-1, 3, 0), H=(-6, -62, -4), crouch=0.04, LA=(2, 0, -9))
-    t.key(176, "her monitor", ease="sine", T=(-2, 1, 0), H=(-8, -70, -6), crouch=0.04)
-    t.key(196, ease="cubic", T=(-1, 7, 0), look=EYES, H=(0, 0, 2), LA=(6, 0, -7))
-    t.key(210, ease="snap", T=(-1, 9, 0), crouch=0.03)
-    t.key(215, ease="sine", look=NOD, crouch=0.07, T=(1, 9, 0))
-    t.key(232, ease="sine", look=EYES, crouch=0.03, T=(-1, 9, 0))
-    t.key(240, **{k: HUB[k] for k in ("T", "crouch", "RA", "LA")}, look=EYES, H=HUB["H"])
-    for beat in (0, 60, 120, 210):
+    t.key(240, **{k: HUB[k] for k in ("T", "crouch", "RA", "LA")}, look=EYES, H=LEVEL)
+    for beat in (0, 60, 120, 180):
         t.kick(beat + 5, "RL", 0.04, 12)
     t.speak(240)
 

@@ -9630,6 +9630,21 @@ Research's request, 2026-11-17, 10:10, on the director's word (`docs/decisions.m
 - **Order:** after the AR26 attack in hand. A small edit to each script: a block, not a signature.
 - **Research's check:** one loop of each from the game's camera, at phone size, in motion.
 
+### The four idles re-made (Modulo, 2026-11-17, 11:00 to 11:07 by the clock)
+
+- **The rule as a check:** `tools/blender/idle_head.py` reads each lead's exported idle and measures the head the game plays (the clip's Torso and Head on R6's RootJoint and Neck), frame by frame against her root: its turn, nod and tilt. It fails a turn past 4° or a tilt past 2°. It also tests the redesigns' idles, which keep this rule.
+- **Before (the delivered idles):** Kirra turned 68° (frame 152), Pip 57° with an 11° tilt (120), Lyric 69° with 15° (176), and Watt 62° (166). Rook, as the control: 0.2° and 1.7°.
+- **The edits, in each `idle()` in `tools/blender/*_clips.py`:**
+  - **Pip:** the glance is gone. The lantern still perks up and turns to him, and his body leans to it a little (the torso 14° round, where it was 17°).
+  - **Lyric:** the glance at her monitor is gone, and a fourth beat takes its frames, so her chin keeps time on 0, 60, 120 and 180. Her hub's 2° tilt, which each nod deepened past level, is 0 in the idle.
+  - **Kirra:** the look back along her scarf is gone. Her bounce runs on through the loop, and the tail still lifts at 166, a flag in her own wind.
+  - **Watt:** the look along the street is gone, and a second, shallower breath takes its frames.
+  - **AR27's "also check" was real:** his torso's roll cocked his head 4.8° to 6.6° all loop, so the head is counter-rolled 6°. Kirra's stance left hers 2.2° off, so she's counter-tilted 2°.
+- **After:** every head within 1.3° of front and 1.2° of level. Lyric's nod is the one move left, -4.8° to +4.0°, her chin on the beat. Each export's audit passes. The lengths, the markers and the loop flag are unchanged. Pip's hat and lantern differ only where they followed his head and torso.
+- **Delivered (11:07 by the clock):** `build/handoff/<Lead>/clips/<Lead>_Idle.json` for Kirra, Pip, Lyric and Watt, each with its `pack_Idle.png` and `.txt`. Nothing new is drawn: the edit only takes a move away.
+- **For Faber:** the four idles uploaded under the group and installed.
+- **Then research's check:** one loop of each from the game's camera, at phone size, in motion.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

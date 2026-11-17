@@ -559,25 +559,26 @@ def audit(rig, take) -> dict:
 # (its roll stays at or under 0). The blades come out for the Combo, Scarf Step and the Reveal's turn.
 RAISED, LIFTED = (195, 0, 6), (195, 0, -6)  # the right arm and the left, raised to draw or sheathe
 
+LEVEL = -2.0  # degrees of head tilt against her stance's turn and lean, so the idle's head reads level (AR27; idle_head.py)
+
+
 def idle(t):
-    """She can't stand still: up on the balls of her feet, a small bounce twice a breath, and once a loop she looks
-    back over her left shoulder along her scarf, as if checking nobody's on her trail, then eyes front. The tail never
-    stops: a slow wave runs down it all the time."""
+    """She can't stand still: up on the balls of her feet, a small bounce twice a breath, her head level and on
+    what's next through the whole loop (AR27: no glance). The tail never stops: a slow wave runs down it all the
+    time, and once a loop it lifts a little, a flag in her own wind."""
     t.loop = True
-    t.key(0, "the stance", ease="sine")
+    t.key(0, "the stance", ease="sine", look=EYES, H=(0, 0, LEVEL))  # the head counter-tilted against her stance's lean
     t.key(30, "up on her toes", ease="sine", T=(10, -9, 0), crouch=0.04, RA=(12, 0, 10), LA=(-19, 0, -8))
     t.key(60, ease="sine", T=(13, -10, 0), crouch=0.14, RA=(18, 0, 8), LA=(-23, 0, -7))
     t.key(90, ease="sine", T=(10, -11, 0), crouch=0.05, RA=(13, 0, 11))
     t.key(120, ease="sine", T=(12, -10, 0), crouch=0.13, RA=(16, 0, 9), LA=(-22, 0, -7))
-    t.key(138, ease="cubic", T=(10, -4, 0), crouch=0.08)
-    t.key(152, "a look back along her scarf", ease="sine", T=(8, 10, -3), H=(-4, 58, 4), crouch=0.06, RA=(10, 0, 12))
-    t.key(170, ease="cubic", T=(8, 9, -3), H=(-2, 54, 3))
-    t.key(184, "eyes front", ease="sine", T=(12, -10, 0), look=EYES, H=(0, 0, 0), crouch=0.13, RA=(17, 0, 9))
+    t.key(150, ease="sine", T=(10, -9, 0), crouch=0.06, RA=(12, 0, 11))
+    t.key(182, ease="sine", T=(12, -10, 0), crouch=0.13, RA=(17, 0, 9))
     t.key(212, ease="sine", T=(10, -9, 0), crouch=0.05)
     t.key(240, T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
     t.tail(0, phase=0.0)
     t.tail(150, ease="sine")
-    t.tail(166, ease="sine", ripple=11.0, swing=7.0)  # as she looks, it lifts a little, a flag in her own wind
+    t.tail(166, ease="sine", ripple=11.0, swing=7.0)  # it lifts a little, a flag in her own wind
     t.tail(200, ease="sine", ripple=TAIL["ripple"], swing=TAIL["swing"])
     t.tail(240, phase=2.0)
 

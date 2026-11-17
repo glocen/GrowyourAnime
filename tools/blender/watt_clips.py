@@ -508,17 +508,19 @@ def audit(rig, take) -> dict:
 # a body. R6's arm is straight and a stud and a half long, so a hand holds the shaft only where it passes that close to
 # the shoulder: the left joins only when the shaft comes in front of him.
 
+LEVEL = 6.0  # degrees of head tilt against the lean's torso roll, so the idle's head reads level (AR27; idle_head.py)
+
+
 def idle(t):
-    """He leans on it like a gate he's minding. Weight in his right hip, toward the spear; one slow breath; once a
-    loop his eyes go along the street to his left and back, unhurried. Nothing else moves: the quiet wall."""
+    """He leans on it like a gate he's minding. Weight in his right hip, toward the spear; one slow breath, and a
+    second, shallower. His head stays level and on the street ahead through the whole loop (AR27: no glance). Nothing
+    else moves: the quiet wall."""
     t.loop = True
-    t.key(0, "the lean", ease="sine")
+    t.key(0, "the lean", ease="sine", look=EYES, H=(0, 0, LEVEL))  # the head counter-rolled against the lean's roll
     t.key(60, ease="sine", T=(2, -5, -5, 0.12, 0, 0), crouch=0.05, RA=("reach", (2.25, 0.45, 2.8), (24, 0, 48)))
     t.key(120, "the breath out", ease="sine", T=(4, -5, -7, 0.13, 0, 0), crouch=0.1, RA=("reach", HAND_LEAN, (24, 0, 48)))
-    t.key(150, ease="cubic", T=(3, -3, -6, 0.12, 0, 0))
-    t.key(166, "along the street", ease="sine", look=(-9.0, 5.0, 4.4), H=(0, 0, 0), T=(3, 8, -5, 0.12, 0, 0))
-    t.key(196, ease="cubic", look=(-8.6, 5.6, 4.4))
-    t.key(212, ease="sine", look=EYES, T=(3, -4, -6, 0.12, 0, 0))
+    t.key(170, ease="sine", T=(3, -4, -5, 0.12, 0, 0), crouch=0.06)
+    t.key(212, ease="sine", T=(3, -4, -6, 0.12, 0, 0), crouch=0.09)
     t.key(240, T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], look=EYES)
 
 

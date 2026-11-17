@@ -352,15 +352,16 @@ def audit(rig, take) -> dict:
 
 def idle(t):
     """He waits like a kid in a coat that's too big: rocking a hair on his heels, the sleeves a beat behind, and now
-    and then he checks the lantern's still there. It is. It looks back."""
+    and then the lantern perks up and turns to him, his body leaning to it a little. His head stays level, on you,
+    through the whole loop (AR27: no glance)."""
     t.loop = True
     t.key(0, "the stance", ease="sine")
     t.key(48, "breath in", ease="sine", T=(-4, -10, 0), crouch=0.0, RA=(7, 0, 10), LA=(15, 0, -8))
     t.key(96, ease="sine", T=(-1, -11, 0), crouch=0.06, RA=(11, 0, 7), LA=(19, 0, -5))
     t.key(106, ease="cubic", T=(-2, -12, 0), crouch=0.04)
-    t.key(120, "checks the lantern", ease="sine", T=(-3, -17, 0), H=(-6, -40, -5), RA=(13, 0, 12))
-    t.key(144, ease="cubic", T=(-3, -16, 0), H=(-4, -37, -3))
-    t.key(160, ease="sine", T=(-2, -10, 0), look=EYES, H=(0, 0, 0), RA=(9, 0, 8))
+    t.key(120, "the lantern looks back", ease="sine", T=(-3, -14, 0), RA=(13, 0, 12))
+    t.key(144, ease="cubic", T=(-3, -13, 0))
+    t.key(160, ease="sine", T=(-2, -10, 0), RA=(9, 0, 8))
     t.key(192, T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
     t.lamp(112, ease="cubic")
     t.lamp(126, ease="sine", L=(2.7, 0.5, 4.56), LR=(0, 28, 0))  # it perks up and turns to him

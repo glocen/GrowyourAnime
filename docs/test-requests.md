@@ -3225,6 +3225,7 @@ Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.m
 **The rules:**
 - **One burst every 8 seconds,** always, in a fight too. The timer runs from the lead's summon, never resets on a hit, and a burst at full health heals nothing and shows nothing.
 - **Its size:** half of what 8 seconds of today's Regen heal, the level's own, Endurance's and a Healer's Main alike. So today's rate times 8 times 0.5, a value, never a share of health.
+- **It starts very slow** (the director, by 12:56): `Config.Stats.Regen.Base` goes from 4 to 1, a quarter of the level's own, after the half. A burst is about 1% of health at level 1 and under 2% at level 12. What a build adds (Endurance, a Healer's Main, gear and emblem lines) keeps its size, so Regen grows with the build.
 - **Home's healing on the player's own plot** is unchanged.
 - `Config.Stats.Regen` holds the 8 s and the 0.5, tunable through `Tune`.
 - **The sheet** shows the burst's size as Regen's number. The item card's Regen lines read the same way.

@@ -6205,6 +6205,19 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
     - logic cases 24,690 passed, 0 failed, offline and in Studio;
     - self-test "Ground Wire" 18 of 18 at 52 fps: the stop on the dummy mid-stop, its ring on the floor (+0.00 studs), gone within 0.2 s of the stun's end; the shield on him past the stop, and gone at its end, never before.
   - Visually reviewed: Faber, the frames above. Research's verdict and `ga-fresh-eyes`: waiting.
+
+**Research's verdict on the blockout (Quaestor, 2026-11-17, 01:56),** from the nine frames at full size and at 64 px, with `ga-fresh-eyes`' blind read beside it.
+- **Felt (research):** the Plant lands. A thin ring snaps out round him and reads at 64 px. Then the hold goes quiet behind the box he stopped. **Fresh eyes:** "the ring snaps, but nothing in the hold looks 'locked mid-step', 'shielded' or 'humming'", and from the player's camera the stopped body and its number cover Watt and the plant.
+- **Tier:** works (both reads). **The one bold thing:** the ground ring at the Plant, on both reads. It's the rule made visible, and it stays as it is.
+- **What the block can't show yet:** the feel line's second half. A box can't lock mid-step, its lit disc takes the eye in the hold, and its size hides Watt more than a Shade would. The hum is a pulse, and stills can't carry it.
+- **Must-fix, the retake** (Faber, after AR13 and the Door, for the director's check):
+  1. **On a Shade.** A brawler stopped mid-swing replaces the dummy, so the lock is the payoff.
+  2. **In motion.** A capture at full speed from the player's camera, plus ±70°, from the charge to the shield's end. The verdict on the hold is given in motion.
+  3. **The shield, by a new technique** (tier 1, a blockout's trial). The shell reads as a grey haze round his legs that blurs his outline (fresh eyes; frames 6 and 8 barely differ). It's replaced by a thin outline on Watt for the shield's 5 s (`Highlight`, its fill clear), beside none. The outline sharpens his silhouette where the haze blurred it. Research's call of 00:34 on the shell is withdrawn by this read.
+- **Out:** the front's glints, which don't show at any size (Modulo's own condition).
+- **Content check, as seen:** all five pass.
+- **Next:** the retake's verdict, with `ga-fresh-eyes` again, then the colour pass in Storm's light (Modulo).
+- **Rounds:** this is round 1 on the hold.
   - Director-accepted: no.
 
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.

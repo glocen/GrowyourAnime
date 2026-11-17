@@ -5,8 +5,12 @@
 -- tools/audio/test6.py and uploaded under the group (docs/asset-log.md); the library's layers join them by the director's
 -- ear. Unheard: every level and spread is a seed (DESIGN) until the director's ear in a fight sets it. Tuned live:
 -- NL_Debug:Invoke("Tune", "Cues.Cues.HeavyHit.Layers.3.Volume", 0.5) (a list's row by its number).
+-- AR39: a take may be a slice of a library sound (Take), and a pilot's cue has arrangements beside it (Use, Arrangements).
 
-export type Take = { Id: number, Seconds: number, Peak: number } -- its asset; its length, and the time to its top, s
+-- A take: its asset; its length as played and the time to its top from its start, s. One of ours plays whole. A library
+-- sound plays a slice of its file (AR39), never downloaded or edited: From and To in its file, s (Seconds = To - From),
+-- faded in over In and out over Out, s, so its edges never click.
+export type Take = { Id: number, Seconds: number, Peak: number, From: number?, To: number?, In: number?, Out: number? }
 export type Layer = {
 	Takes: string, -- the Takes it plays one of, never the same one twice running
 	At: number, -- seconds from the cue's moment it starts at; negative is before it
@@ -32,6 +36,9 @@ return {
 	-- On the player's own lead's hit, the Shades' bus goes down by Db at once, holds, and comes back over Release (AR13: "the
 	-- Shade's sounds and the ambience drop 3 to 4 dB for 150 ms").
 	Duck = { Db = -3.5, Hold = 0.15, Release = 0.05 },
+	-- A layer's start is handed to the mixer's clock this long before it, s (AR39). A start the mixer holds can't be
+	-- taken back (FighterController/Cues), so this is also the longest a stopped voice waits before it plays again.
+	Lookahead = 0.05,
 	Strength = { 2, 8 }, -- the rungs (Config.Combat.Hitstop) a hit's strength runs over, from none to full
 
 	-- Modulo's takes (build/handoff/Audio/test6/test6.json): each layer's, matched in loudness, so a play's Volume spread is
@@ -180,4 +187,10 @@ return {
 			Range = 160,
 		} :: Cue,
 	} :: { [string]: Cue },
+
+	-- AR39, the sound rescue's A/B: a pilot's cue played as it was ("Old") or as one of its arrangements, by name, switched
+	-- while playing: NL_Debug:Invoke("Tune", "Cues.Use.LightHit", "A"). An arrangement is a whole cue of its own, so
+	-- the old one stays as it is beside it. A name with no arrangement plays the old cue.
+	Use = { LightHit = "Old", HeavyHit = "Old", ShadeSwipe = "Old" },
+	Arrangements = {} :: { [string]: { [string]: Cue } },
 }

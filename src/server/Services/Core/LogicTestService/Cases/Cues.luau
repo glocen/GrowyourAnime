@@ -131,4 +131,40 @@ return {
 			end
 		end,
 	},
+	{
+		Name = "Sound: a library take plays its slice of its file, faded (AR39)",
+		Run = function(t: any)
+			local frame = 1 / 60
+			local function near(a: number?, b: number): boolean
+				return a ~= nil and math.abs(a - b) < 1e-9
+			end
+			-- one of ours: whole, from its start, at full, no fades
+			local ours = Sound.Run({ Id = 1, Seconds = 0.25, Peak = 0.1 }, 0, 1, frame)
+			t.Check("one of ours: from its file's start, at full, unfaded", ours.Position == 0 and ours.Share == 1 and ours.In == 0 and ours.OutAfter == nil)
+			-- a library slice, 1.2 to 1.5 s of its file, in over 50 ms and out over 40
+			local slice = { Id = 2, Seconds = 0.3, Peak = 0.06, From = 1.2, To = 1.5, In = 0.05, Out = 0.04 } :: any
+			local run = Sound.Run(slice, 0, 1, frame)
+			t.Check("a slice starts at its From, silent, and rises over its In", near(run.Position, 1.2) and run.Share == 0 and near(run.In, 0.05))
+			t.Check("its fall starts a frame early and ends inside the slice", near(run.OutAfter, 0.3 - 0.04 - frame) and near(run.Out, 0.04) and (run.OutAfter :: number) + run.Out <= 0.3)
+			-- late by 20 ms: in from where it would be, the rise part done
+			local late = Sound.Run(slice, 0.02, 1, frame)
+			t.Check("a late play: in from where it would be by now", near(late.Position, 1.22) and near(late.Share, 0.4) and near(late.In, 0.03) and near(late.OutAfter, 0.3 - 0.04 - 0.02 - frame))
+			t.Check("late past its rise: at full", Sound.Run(slice, 0.06, 1, frame).Share == 1 and Sound.Run(slice, 0.06, 1, frame).In == 0)
+			-- faster: every time shorter by the speed, the file's place unchanged
+			local fast = Sound.Run(slice, 0, 1.25, frame)
+			t.Check("at 1.25: its times shorter by the speed", near(fast.Position, 1.2) and near(fast.In, 0.04) and near(fast.Out, 0.032) and near(fast.OutAfter, (0.3 - 0.04) / 1.25 - frame))
+			-- a rise a client can't step (under two frames) isn't drawn: the contact isn't swallowed
+			local sharp = Sound.Run({ Id = 3, Seconds = 0.15, Peak = 0.004, From = 0.5, To = 0.65, In = 0.003, Out = 0.02 } :: any, 0, 1, frame)
+			t.Check("a 3 ms rise isn't stepped: it starts at full", sharp.Share == 1 and sharp.In == 0 and near(sharp.OutAfter, 0.15 - 0.02 - frame))
+			-- the registry's own takes: a slice is well formed, and its length is its slice's
+			for name, takes in Cues.Takes do
+				for k, take in takes :: { any } do
+					if take.From ~= nil or take.To ~= nil then
+						t.Check(`{name} {k}: a slice with its From before its To, its Seconds their difference`, take.From ~= nil and take.To ~= nil and take.From >= 0 and take.To > take.From and math.abs(take.Seconds - (take.To - take.From)) < 1e-6)
+						t.Check(`{name} {k}: falls over at least 10 ms (AR39's gate 6), its top inside it`, (take.Out or 0) >= 0.01 and take.Peak >= 0 and take.Peak <= take.Seconds)
+					end
+				end
+			end
+		end,
+	},
 }

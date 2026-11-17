@@ -1,7 +1,8 @@
 --!strict
 -- Sound cases (client, during a playtest): AR13's six cues on the audio graph (FighterController/Cues; Config.Cues):
 -- every take loaded, each cue heard through its bus, a beat's cue silent until its lead, the voice cap, the Shades'
--- duck, and a press's wind-up and touch heard in a replay. Apart from Cases, which is at the type checker's limit.
+-- duck, and a press's wind-up and touch heard in a replay; and AR39's engine: a library take's slice and fades, a start
+-- on the mixer's clock, the counted miss, the A/B. Apart from Cases, which is at the type checker's limit.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -197,6 +198,118 @@ function SoundCases.Cases(): { any }
 					end
 					t.Wait(1)
 				end
+			end,
+		},
+		{
+			Name = "Sound: AR39's engine: a slice of a file with its fades, a start on the mixer's clock, no play missed, and a pilot's arrangement switched in",
+			Run = function(t: any)
+				local camera = workspace.CurrentCamera
+				local config = CuesConfig :: any
+				local source = CuesConfig.Takes.ShadeSwipe[1]
+				-- a slice of one of our own takes, as a library take is given: 0.08 to 0.28 s of its file
+				local slice = { Id = source.Id, Seconds = 0.2, Peak = 0.05, From = 0.08, To = 0.28, In = 0.05, Out = 0.06 }
+				local cue = { Layers = { { Takes = "NL_TestSlice", At = 0, Volume = 1 } }, Bus = "Shade", Pitch = { 1, 1 }, Volume = { 1, 1 }, Voices = 1, Near = 30, Range = 160 }
+				local missedBefore = Cues.Missed()
+				config.Takes.NL_TestSlice = { slice }
+				config.Cues.NL_TestSlice = cue
+				Cues.Try("NL_TestSlice", cue :: any)
+				local voice = Cues.Voice("NL_TestSlice", 1, 1)
+				local analyzer, done = listen("Shade")
+				if voice == nil or analyzer == nil then
+					t.Check("the test's cue is built on the Shades' bus", false)
+				else
+					t.Check("its voice loads", waitFor(t, 8, function(): boolean
+						return voice.IsReady
+					end))
+					t.Check("its player is held to its slice of the file", math.abs(voice.PlaybackRegion.Min - slice.From) < 1e-3 and math.abs(voice.PlaybackRegion.Max - slice.To) < 1e-3, tostring(voice.PlaybackRegion))
+					local full = CuesConfig.Volume * CuesConfig.Trim
+					-- played now: from its From, rising from silence to full, falling to silence by its end, never past its To
+					hush(analyzer)
+					local began = os.clock()
+					Cues.Play("NL_TestSlice", camera.CFrame.Position)
+					local first, top, furthest, heard = voice.Volume, 0, 0, 0
+					local startedAt = voice.TimePosition
+					while os.clock() - began < slice.Seconds + 0.3 do
+						RunService.Heartbeat:Wait()
+						top = math.max(top, voice.Volume)
+						furthest = math.max(furthest, voice.TimePosition)
+						heard = math.max(heard, analyzer.PeakLevel)
+					end
+					t.Check("it starts at its From, silent", math.abs(startedAt - slice.From) < 0.02 and first < full * 0.5, `at {startedAt}, volume {first}`)
+					t.Check("it rises to its full volume and is heard", math.abs(top - full) < 1e-3 and heard > QUIET, `top {top} of {full}, peak {heard}`)
+					t.Check("it falls to silence by its end, never past its To", voice.Volume < full * 0.05 and furthest <= slice.To + 0.03, `volume {voice.Volume}, furthest {furthest}`)
+					-- a start ahead: scheduled on the mixer's clock, silent and still until then
+					hush(analyzer)
+					local into = 0.5
+					began = os.clock()
+					Cues.Play("NL_TestSlice", camera.CFrame.Position, { In = into })
+					local moved: number? = nil
+					while os.clock() - began < into + 0.4 do
+						RunService.Heartbeat:Wait()
+						if moved == nil and voice.TimePosition > slice.From + 1e-3 then
+							moved = os.clock() - began
+						end
+					end
+					t.Check("a start 0.5 s ahead begins then, on the mixer's clock", moved ~= nil and math.abs(moved - into) < 0.12, tostring(moved))
+					-- a start ahead taken back by a play now (one voice): it plays now, and never again at the old time
+					hush(analyzer)
+					began = os.clock()
+					Cues.Play("NL_TestSlice", camera.CFrame.Position, { In = 0.6 })
+					Cues.Play("NL_TestSlice", camera.CFrame.Position)
+					local now = loudest(analyzer, began, 0, slice.Seconds + 0.1)
+					local again = loudest(analyzer, began, 0.5, 0.95)
+					t.Check("a start 0.6 s ahead replaced by a play now: heard now, never then", now > QUIET and again <= QUIET, string.format("now %.4f, then %.4f", now, again))
+					-- a start the mixer already holds can't be taken back: its voice waits it out, the play that finds none is
+					-- counted, and the voice plays again after
+					hush(analyzer)
+					local counted = Cues.Missed()
+					began = os.clock()
+					Cues.Play("NL_TestSlice", camera.CFrame.Position, { In = CuesConfig.Lookahead * 0.6 })
+					Cues.Play("NL_TestSlice", camera.CFrame.Position)
+					local neither = loudest(analyzer, began, 0, 0.3)
+					t.Check("a start inside the lookahead replaced: its voice held, the play counted as missed, nothing heard twice", Cues.Missed() == counted + 1 and neither <= QUIET, `missed {Cues.Missed() - counted}, peak {neither}`)
+					missedBefore += 1
+					began = os.clock()
+					Cues.Play("NL_TestSlice", camera.CFrame.Position)
+					t.Check("and its voice plays again once that start has passed", loudest(analyzer, began, 0, slice.Seconds + 0.1) > QUIET)
+					-- the A/B: the pilot's cue as one of its arrangements, then as it was, by the tune
+					local use = t.Server("Tune", "Cues.Use.LightHit")
+					config.Arrangements.LightHit = { Test = cue }
+					Cues.Try("LightHit@Test", cue :: any)
+					local variant = Cues.Voice("LightHit@Test", 1, 1)
+					t.Check("the arrangement's voice loads", variant ~= nil and waitFor(t, 8, function(): boolean
+						return (variant :: AudioPlayer).IsReady
+					end))
+					t.Server("Tune", "Cues.Use.LightHit", "Test")
+					t.Check("the tune reaches the client", waitFor(t, 3, function(): boolean
+						return config.Use.LightHit == "Test"
+					end), tostring(config.Use.LightHit))
+					if variant then
+						variant:Stop()
+						Cues.Play("LightHit", camera.CFrame.Position)
+						t.Wait(0.1)
+						t.Check("LightHit plays its arrangement while Use names it", variant.TimePosition > slice.From + 1e-3 or variant.IsPlaying, tostring(variant.TimePosition))
+						t.Wait(0.5)
+						t.Server("Tune", "Cues.Use.LightHit", "Old")
+						waitFor(t, 3, function(): boolean
+							return config.Use.LightHit == "Old"
+						end)
+						variant:Stop()
+						variant.TimePosition = slice.From
+						Cues.Play("LightHit", camera.CFrame.Position)
+						local old = Cues.Playing("LightHit")
+						t.Wait(0.1)
+						t.Check("and the cue as it was once Use says Old", config.Use.LightHit == "Old" and old > 0 and not variant.IsPlaying and math.abs(variant.TimePosition - slice.From) < 1e-3, `use {config.Use.LightHit}, playing {old}, at {variant.TimePosition}`)
+					end
+					t.Server("Tune", "Cues.Use.LightHit", if type(use) == "string" then use else "Old")
+					config.Arrangements.LightHit = nil
+					Cues.Try("LightHit@Test", nil)
+				end
+				t.Equal("no play missed its take", Cues.Missed(), missedBefore)
+				done()
+				Cues.Try("NL_TestSlice", nil)
+				config.Cues.NL_TestSlice = nil
+				config.Takes.NL_TestSlice = nil
 			end,
 		},
 	}

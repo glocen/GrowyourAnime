@@ -70,6 +70,27 @@ function Sound.Start(layer: Cues.Layer, take: Cues.Take, speed: number): number
 	return layer.At - lead / math.max(speed, 1e-6)
 end
 
+-- How one play of `take` runs, from `offset` into it (its file's seconds past its start, for a play already late) at
+-- `speed`, on a client that steps a volume once a `frame`. A library take plays its slice of its file (AR39):
+--   Position: where in its file it starts;
+--   Share and In: the share of its volume it starts at, and the seconds it rises to full over. A rise under two frames
+--     can't be stepped, so it starts at full: such a slice is cut where its file is near silent;
+--   OutAfter and Out: the seconds after its start its fall begins, a frame early so it ends inside the slice, and the
+--     seconds it takes; no OutAfter for a take with no fall.
+export type Run = { Position: number, Share: number, In: number, OutAfter: number?, Out: number }
+function Sound.Run(take: Cues.Take, offset: number, speed: number, frame: number): Run
+	local rate = math.max(speed, 1e-6)
+	local rise, fall = take.In or 0, take.Out or 0
+	local rising = rise / rate >= 2 * frame and offset < rise
+	return {
+		Position = (take.From or 0) + offset,
+		Share = if rising then offset / rise else 1,
+		In = if rising then (rise - offset) / rate else 0,
+		OutAfter = if fall > 0 then math.max((take.Seconds - fall - offset) / rate - frame, 0) else nil,
+		Out = fall / rate,
+	}
+end
+
 -- How long before its moment a cue's earliest layer can start, at its slowest pick: a beat's cue begins when its
 -- attacker's clock is that far from the beat.
 function Sound.Ahead(cue: Cues.Cue): number

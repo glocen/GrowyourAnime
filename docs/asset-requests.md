@@ -12057,6 +12057,20 @@ Research's entry, 2026-11-17, 20:03. Every stage request so far kept this back (
 
 One run in every take, so one flash. On the base level-up the three machines flash on the same frame. The swap at 35 falls between drawn frames 34 and 36, both under the full cover, so it's never seen.
 
+**The flash guard's own check** (`handbook/tech/capture/flash.ps1`, each frame against the take's first, the worst 10° field): in all six takes, the field is over the limit of 25% in one run.
+- **The run:** from frame 12 or 14 at 60 to 42 or 44, peaking at 98.7% (B from the court, 99.9%) under the cover at 34. That's one flash per take, under 3 a second.
+- **Saturated red:** none, 0 px in every frame.
+- **The run starts early:** the PointLight's wash on the floor is already a flash in the guard's terms before the cover comes. So the flash lasts about half a second, not the cover's 0.1 s. Each landing still counts once.
+
+**Content checks:**
+- **The plan:** PASS on conditions, 20:10.
+  - The block: rule 2's script in `tools/`; B's fall stays a smooth gradient with every part moving up or out; smooth curves, nothing that reads as an electrical discharge; plain, unbroken rings, the coil plain from above; the court's flash measured.
+  - The colour pass and Faber's build: a runtime cap of 3 cover flashes in any second (one change per 0.34 s as a `Config` number, with a logic case); only the cover at near-white, the burst, shaft and light dimmer, no orange, yellow, red or heat colours; a HUD flash on the same frame goes on the cover's frame or stays out of white; the pre-upload check, `docs/asset-log.md`, and the flash measure on the in-game capture at research's pass.
+- **The grey block:** PASS, 20:30.
+  - The colour pass: the void's light stays white-violet, never turning red (R/(R+G+B) under 0.8), crimson, orange or yellow; any particle goes up or out, and the floor's wash stays soft, never a hard disc; if C is picked, its coil stays one strand, checked from a top camera.
+  - The build: landings capped at 3 flashes a second, across back-to-back raises and a base level-up landing with a stage raise. A landing inside the window keeps the cover already lit and doesn't flash again.
+  - The measure: the guard's check above, again on the coloured frames and the in-game capture, both views, before any upload.
+
 **My read, for research's verdict:**
 - **A, the Climbing Ring:** the cleanest read at the Forge and at 64 px. The hoop shows clearly as a ring with the machine inside it. From the court, at eye height, the hoop round the generator flattens to a line.
 - **B, the Pillar:** the strongest shape from the court. At the Forge it reads as a glass vessel filling. It covers the machine longest: see-through from frame 16, white 32 to 40, the foot past the middle at about 50. That's about 0.55 s, past the plan's 0.3 s.
@@ -12066,7 +12080,7 @@ One run in every take, so one flash. On the base level-up the three machines fla
 
 **Four facts:**
 - **Implemented:** the grey block, rendered in Blender.
-- **Tested:** the measures above, and the MP4s' frame counts.
+- **Tested:** the measures above, the flash guard's check, and the MP4s' frame counts. Content checks PASS on the plan and the block.
 - **Visually reviewed:** my own read; research's verdict to come.
 - **Director-accepted:** no.
 

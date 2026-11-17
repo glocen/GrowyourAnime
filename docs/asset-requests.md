@@ -10693,6 +10693,52 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
   - High B reads as a solid ingot.
   - **Next:** the colour pass, with its own content check, then the cut for Faber.
 
+### The colour pass (Modulo, 2026-11-17, 16:25 to 16:36 by the clock)
+
+- **The sheet:** `build/handoff/UI/upgrades/upgrades_colour.png`, from `tools/blender/upgrade_icons.py -- <out> colour`. It shows each picture close, at 38 points and at 32 px; the item card's empty sockets beside filled ones; a bag row among AR6's gear and AR21's chests; and every upload at 64 px over dark.
+- **The cut, for Faber:** 36 pictures at 256 px and two socket marks at 128 px in `build/handoff/UI/upgrades/images/`, mapped in `upgrade_icons.json`.
+  - The json maps the stones by grade, the emblems by rarity then stat, and the jewels by type, tiers 1 to 5. The types use the displayed names; the code's keys are CriticalDamage, CriticalGuard and Lifesteal.
+  - Each picture is laid as a gear picture is. An emblem takes its rarity's cell. A stone's and a jewel's cell keep the plain edge.
+  - `words` holds the colours for a line naming one: on the card, and in AR24's haul. The stones take the forge's orange, #FFB15C; each jewel its type's colour.
+  - The socket marks are white on alpha, tinted by the card as AR22's slots are (#6E6556 at 0.1).
+- **The colours:**
+  - **Stones:** one family of dark stone, so the forge's light carries all three. Each lit line is white-hot, with an orange light round it, never a deep red:
+    - Low is a warm grey lump;
+    - Mid is a whetstone of a dark and a pale grey grit;
+    - High is a near-black polished ingot in brass bands.
+  - **Emblems:** AR6's ladder of metals: Common iron, Uncommon steel, Rare blued steel, all on a deep violet enamel with ivory marks.
+  - **Jewels:**
+    - Critical Damage is the crit number's gold, #FFCF4D.
+    - Critical Immunity is a cool steel blue.
+    - Lifesteal is a clear rose-violet.
+    - The setting is a dark gunmetal, so the stone stays the brightest thing at every tier.
+- **Tier 1 calls in the pass:**
+  - **Rare is blued steel, not the grey's gilt,** so a Rare emblem never reads as a Legendary's gold.
+  - **The two new marks:** Strength is a flexed arm, its fist curled over the biceps; Endurance (toughness, `docs/design.md`) is an anvil, horn to the left. They complete TR38's six.
+  - **The jewel's socket** is tier 3's setting, empty. The stone's own form had no seams to draw and read as a plain oval. The emblem's socket is the badge's plate and face.
+- **Tried and changed:**
+  - **The forge's light** first read cream: its orange light now reaches far enough to show at 38 points.
+  - **The jewels** first read as domed buttons. Each facet now takes its own value from its angle, lit from the upper left, with a play of light round the crown, so the stone reads cut.
+  - **Strength's** first arm, its square fist upright, read as a boot.
+  - **The stones' colours:** a tan grit read as wood and a navy ingot as a cushioned bench.
+- **My read at 38 points:**
+  - the stones are three grades of one stone, each with the forge in it;
+  - the emblems' metals climb with their cells, and all six marks read; at 32 px the arm and the anvil still part;
+  - the jewels' tiers read by shape and their types by colour, and at 32 px tier 1 is still a cut stone.
+  - High still reads a little as a low table on legs at 38 points: its bands are long and bright.
+- **Content check, for upload (16:35 to 16:36 by the clock): PASS, all 38 files.** It read the sheet, eleven files at full size, the json, the script, and the grey's conditions.
+  - The grey's conditions all hold:
+    - the heart is a flat ivory symbol;
+    - no jewel is red, and Lifesteal reads as a pink gem at 64 px, never blood;
+    - tier 5's rays are gunmetal and its ring white;
+    - the forge light is orange to white-hot, and Low's crack is a thin lit line;
+    - there's no red cross;
+    - Critical Immunity keeps its cut and setting;
+    - the sword and the burst read at 32 px.
+  - The arm and the anvil are generic silhouettes, with no flagged gesture. No star, burst or hexagon is a hate symbol. The round gold jewels read as cut gems, not coins.
+  - **Condition:** log all 38 in `docs/asset-log.md` at upload, with `tools/blender/upgrade_icons.py` as their source.
+- **Four facts.** Implemented: the 38 images and their json. Tested: rendered and read at 38 points, 32 px and 64 px. Visually reviewed: my read; research's verdict next. Director-accepted: no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

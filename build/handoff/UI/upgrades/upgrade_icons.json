@@ -1,0 +1,79 @@
+{
+  "note": "AR31's pictures, for TR37's Stones tab, TR38's War Emblems and TR39's Jewels. Each is laid as a gear picture is: its square 0.94 of the cell, centred. An emblem takes its rarity's cell, as an item does; a stone's and a jewel's cell keep the plain edge an empty cell has, with no rarity's bar, rim or light. The tier's number and the stack's count are the bag's. `words` is the colour of a line naming one (the item card, AR24's haul). The sockets' marks are white on alpha, for the item card to tint at `tint` and `transparency`, as AR22's slots are.",
+  "pixels": [
+    256,
+    256
+  ],
+  "stones": {
+    "Low": "images/StoneLow.png",
+    "Mid": "images/StoneMid.png",
+    "High": "images/StoneHigh.png"
+  },
+  "emblems": {
+    "Common": {
+      "Strength": "images/EmblemCommonStrength.png",
+      "Endurance": "images/EmblemCommonEndurance.png",
+      "Attack": "images/EmblemCommonAttack.png",
+      "Defence": "images/EmblemCommonDefence.png",
+      "Health": "images/EmblemCommonHealth.png",
+      "Critical": "images/EmblemCommonCritical.png"
+    },
+    "Uncommon": {
+      "Strength": "images/EmblemUncommonStrength.png",
+      "Endurance": "images/EmblemUncommonEndurance.png",
+      "Attack": "images/EmblemUncommonAttack.png",
+      "Defence": "images/EmblemUncommonDefence.png",
+      "Health": "images/EmblemUncommonHealth.png",
+      "Critical": "images/EmblemUncommonCritical.png"
+    },
+    "Rare": {
+      "Strength": "images/EmblemRareStrength.png",
+      "Endurance": "images/EmblemRareEndurance.png",
+      "Attack": "images/EmblemRareAttack.png",
+      "Defence": "images/EmblemRareDefence.png",
+      "Health": "images/EmblemRareHealth.png",
+      "Critical": "images/EmblemRareCritical.png"
+    }
+  },
+  "jewels": {
+    "Critical Damage": [
+      "images/JewelCriticalDamage1.png",
+      "images/JewelCriticalDamage2.png",
+      "images/JewelCriticalDamage3.png",
+      "images/JewelCriticalDamage4.png",
+      "images/JewelCriticalDamage5.png"
+    ],
+    "Critical Immunity": [
+      "images/JewelCriticalImmunity1.png",
+      "images/JewelCriticalImmunity2.png",
+      "images/JewelCriticalImmunity3.png",
+      "images/JewelCriticalImmunity4.png",
+      "images/JewelCriticalImmunity5.png"
+    ],
+    "Lifesteal": [
+      "images/JewelLifesteal1.png",
+      "images/JewelLifesteal2.png",
+      "images/JewelLifesteal3.png",
+      "images/JewelLifesteal4.png",
+      "images/JewelLifesteal5.png"
+    ]
+  },
+  "words": {
+    "stones": "#FFB15C",
+    "jewels": {
+      "Critical Damage": "#FFCF4D",
+      "Critical Immunity": "#9CC2EA",
+      "Lifesteal": "#E98ADF"
+    }
+  },
+  "sockets": {
+    "pixels": [
+      128,
+      128
+    ],
+    "tint": "#6E6556",
+    "transparency": 0.1,
+    "emblem": "images/SocketEmblem.png",
+    "jewel": "images/SocketJewel.png"
+  }
+}

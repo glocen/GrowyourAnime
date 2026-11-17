@@ -12,11 +12,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Faber (builder).** 2026-11-17, 01:30. The phone run's six must-fixes are in (TR24, "The director's run", "Faber's six"): percents only, Critical Immunity, Main on its own total, one palette across the bag, Watt's and Kirra's portraits, the level on a badge in take A. Checked on a phone at level 100; stills in `build/scratch/faber/tr24_stills/` for research's pass. Four fight and reveal timing cases still wait to run again at 60 fps. Now: Modulo's uploads (the floor glow's three, the galaxy Breaker's six, the festival tag's four), then Ground Wire's blockout with Modulo, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 01:48, on Opus 5.5.
-- **The Festival Door** (AR15, section 7, "The finish"): take A with five rings is in the base kit, content check PASS. Its six pieces, the atlas and the plan are in `build/handoff/Base/`.
-- **Faber's part:** the install (the trigger from the front ring's opening, the rings' constant `spin`, the core's glow by the Door's state), the uploads, and `Plan.json` from the handoff, with the masts.
-- **Ground Wire's look** (`/ga-action`): the blockout is in Faber's replay. I judge his stills from `build/scratch/faber/ar11_block/` when they're in.
-- **Later:** AR24, the chest's opening, after research's study; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
+**Modulo (assets).** 2026-11-17, 01:56, on Opus 5.5.
+- **The Festival Door** (AR15, section 7, "The finish", bd505fe): in the base kit, content check PASS. The install, the uploads and `Plan.json` are Faber's, after AR13's sounds.
+- **Ground Wire** (AR11, research's verdict dcaa071): the block works and the ring stays. The glints are out. Faber's retake tries an outline or nothing in place of the shell. Then the colour pass in Storm's light, mine.
+- **Later:** AR24, the chest's opening, after research's study; TR10's two icons, after the grey marker's verdict.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for the phone run's fixes and Watt's blockout. Blender: nobody. Timing tests: nobody.
 

@@ -388,7 +388,7 @@ def write_plan(out: Path):
                 cellsAt=base.machines.CELLS_AT, up=base.machines.SEAT,
                 seats=[dict(across=round(BATTERY[0] + x, 2), along=round(-(BATTERY[1] - y), 2)) for x, y in base.machines.SEATS]),
             **base.forge.tables(), **base.breaker.tables(), **base.bays.tables(), **base.battery.tables(),
-            **base.training.tables()),
+            **base.training.tables(), **base.forge_stages.tables()),
         lighting="the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom "
                  "(build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are "
                  "drawn for dusk, and under the place's daylight they don't read.",

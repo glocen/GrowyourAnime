@@ -1537,8 +1537,8 @@
   },
   "Forge": {
    "mesh": "meshes/Forge.json",
-   "triangles": 596,
-   "vertices": 396,
+   "triangles": 586,
+   "vertices": 392,
    "centre": [
     0.0,
     6.25,
@@ -1581,8 +1581,8 @@
   },
   "ForgeGear": {
    "mesh": "meshes/ForgeGear.json",
-   "triangles": 280,
-   "vertices": 160,
+   "triangles": 304,
+   "vertices": 176,
    "centre": [
     0.0,
     0.0,
@@ -1599,7 +1599,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its middle, its axle toward the front: two stand on the Forge's head, turning opposite ways as the ram moves (plan.json, machines.forge). Look only"
+   "note": "its origin is its middle, its axle toward the front: void stone with a vein of the void's light and a bone hub. Two stand on the Forge's head at Stage I, four and six on the lintel at II and III, each turning the other way from the one it meshes as the ram moves (plan.json, machines.forge and machines.forgeStages). Look only"
   },
   "Condenser": {
    "mesh": "meshes/Condenser.json",
@@ -1952,6 +1952,94 @@
    "collision": "none",
    "lights": [],
    "note": "Stage III's crown, base level 3, in place of TrainingCrown: its origin is its middle, floating 8 up at the Training machine's middle round the stone's spark. A band of void stone with 8 short crystals set through it and 16 marks of the void's light, and 6 tall crystals near the spark, their tips 2.26 over its middle. 9.6 across. It turns about its own upright while a Voidkin trains, still when none does, as TrainingCrown does. Look only"
+  },
+  "Forge2": {
+   "mesh": "meshes/Forge2.json",
+   "triangles": 634,
+   "vertices": 424,
+   "centre": [
+    0.0,
+    6.25,
+    0.0
+   ],
+   "size": [
+    11.05,
+    12.72,
+    8.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high; the seat, 3.4 by 2.8 and 2.76 high; the horns' two feet",
+   "lights": [],
+   "note": "Stage II of the Forge, base level 2, in place of Forge: on a sleeping place, its front toward the Strip, 12.5 high at its head. The lintel carries 4 ForgeGear; the ram is ForgeRam, as at Stage I: plan.json, machines.forgeStages"
+  },
+  "Forge3": {
+   "mesh": "meshes/Forge3.json",
+   "triangles": 866,
+   "vertices": 576,
+   "centre": [
+    0.0,
+    7.2,
+    0.0
+   ],
+   "size": [
+    11.08,
+    14.62,
+    8.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high; the seat, 3.4 by 2.8 and 2.76 high; the horns' two feet",
+   "lights": [],
+   "note": "Stage III of the Forge, base level 3, in place of Forge: on a sleeping place, its front toward the Strip, 14.4 high at its head. The lintel carries 6 ForgeGear; the ram is ForgeRam, as at Stage I: plan.json, machines.forgeStages"
+  },
+  "Condenser2": {
+   "mesh": "meshes/Condenser2.json",
+   "triangles": 2480,
+   "vertices": 1798,
+   "centre": [
+    0.0,
+    5.83774,
+    0.245
+   ],
+   "size": [
+    11.611,
+    11.895,
+    9.31
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
+   "lights": [],
+   "note": "Stage II of the Stone Condenser, from its level 6, in place of Condenser: Stage I's comb and 3 cups up each horn, 43 in all, dark when empty. A cup's stone or jewel is CondenserStone or CondenserJewel stood in it, the core CondenserCore: plan.json, machines.condenserStages"
+  },
+  "Condenser3": {
+   "mesh": "meshes/Condenser3.json",
+   "triangles": 2800,
+   "vertices": 2014,
+   "centre": [
+    0.0,
+    5.83774,
+    0.245
+   ],
+   "size": [
+    11.611,
+    11.895,
+    9.31
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
+   "lights": [],
+   "note": "Stage III of the Stone Condenser, from its level 15, in place of Condenser: Stage I's comb and 5 cups up each horn, 47 in all, dark when empty. A cup's stone or jewel is CondenserStone or CondenserJewel stood in it, the core CondenserCore: plan.json, machines.condenserStages"
   }
  }
 }

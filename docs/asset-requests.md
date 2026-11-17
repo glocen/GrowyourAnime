@@ -11810,6 +11810,80 @@ From the four sheets (5044085).
   - **Both:** never a real-world factory machine. The gears are void stone with the void's light, not steel.
 - **Next:** Forge2/3 with their gear places and Condenser2/3 with the cups' table, as kit pieces for Faber, judged in the game from the court.
 
+### Stages II and III as kit pieces, for Faber's install (Modulo, 2026-11-17, after research's picks, to 20:01 by the clock)
+
+`tools/blender/base_forge_stages.py` is rewritten for the picks only (the grey block stays in 5044085). Stage I's pieces are in `tools/blender/base_forge.py`.
+
+**The Forge, the Gear Train:**
+- **Forge2:** Stage I's Press with its head widened into a lintel 7.6 across, on the horns' shoulders with cheeks down onto them. It carries four gears in a row, each meshing the next.
+- **Forge3:** the lintel's ends step up 1.9, each carrying a gear over an outer one that meshes it alone. Each horn takes three bone clamps.
+- **Stage I's parts stay:** the seat, the plate, the ram and its poses.
+- **The gears in the void's stone** (research's class, Stage I's two included): ForgeGear's hoop and teeth are now void stone, with a three-bend vein of the void's light on its face and an eight-sided bone hub, unlit.
+- **A field of the void's light behind the gears** (my tier-1 fix):
+  - **Why:** in the first colour render, dark gears on the dark lintel didn't read past the close view. From the walk-up they were four dim dots.
+  - **What:** a flat field of the void's light, inside the teeth's tips, now stands behind them on the head's face. The teeth read dark against it, and its edges show them biting past.
+  - **Stage I:** the field takes the place of the head's line of light.
+  - **The hubs** stay dark: never a pale dot in a lit ring.
+
+**The Stone Condenser, the Climbing Comb:**
+- **Condenser2:** Stage I's comb, with three cups a side climbing the horns' outer sides, each on a six-sided plate of void stone facing the gate. 43 cups in all.
+- **Condenser3:** five a side, 47 cups.
+- **"Each chain stops a cup lower", my reading:**
+  - The block had four and six a side. Each chain now stops a cup below the block's, at both stages, so II to III stays a clear step.
+  - III's top cup stands 5.84 up, under the panel's top (about 7.0) and the horns' shoulders (7.7). The top stays open, and the horns read as horns.
+- **Stage I's parts stay:** the comb, the core and the horns. Condenser.json is unchanged byte for byte.
+
+**The handoff** (`build/handoff/Base`, through `base_kit.py` and `base_plan.py`; all four are hulled, in `base_ink.HULLED`):
+
+| Piece | Triangles | Size (across, up, deep) | Status |
+|---|---|---|---|
+| Forge2 | 634 | 11.05 × 12.72 × 8.82 | new |
+| Forge3 | 866 | 11.08 × 14.62 × 8.82 | new |
+| Condenser2 | 2,480 | 11.61 across | new |
+| Condenser3 | 2,800 | 11.61 across | new |
+| Forge | 586 | | re-exported: the field in place of the line |
+| ForgeGear | 304 | | re-exported: the void stone |
+
+- **Uploads:** Forge and ForgeGear went up with AR16, so both go up again.
+- **Unchanged:** the Condenser and every other mesh. The plan only gains two tables.
+
+**For Faber:**
+- **`machines.forgeStages`:**
+  - The Forge takes the base's level as its stage: I at 1, II at 2, III at 3.
+  - Each stage names its frame (Forge, Forge2, Forge3) and its gears, each with across, along, up, `spin` and `turnedHalfTooth`. Stage I's two are `machines.forge`'s.
+  - A ForgeGear stands at each place. It's turned half a tooth when the table says so (`machines.forge.halfTooth`). It turns with the ram at `machines.forge.degreesPerStud` times its spin, so every gear turns against the ones it meshes.
+  - The ram and the plate are `machines.forge`'s at every stage.
+- **`machines.condenserStages`:**
+  - The Condenser takes its own level: each stage starts at its `fromLevel` (1, 6, 15).
+  - Each stage names its frame and its cups in the filling order. That's by height, with the climbing cups filling with the comb's row at theirs, so the lit height is still the fill.
+  - A stone or a jewel goes in each cup, as at Stage I. The core is `machines.condenser`'s.
+
+**The sheets:** `build/handoff/Base/forge_stages.png` and `condenser_stages.png`, in the kit's colours, in the yard at base level 3.
+- **The views:** from the court, the walk-up and close, then the grey sheets' views and cuts.
+- **Triangles, a stage whole before the hull:**
+  - the Forge: I 1,606, II 2,262, III 3,066;
+  - the Condenser, with its stones: I 2,832, II 3,272, III 3,552.
+
+**My read:**
+- **The Forge's outline:** from the walk-up, II's lintel reads wider and III's raised ends make the tallest outline, 14.6 high.
+- **The gears:** they read as gears from the walk-up and close. From the court they're a lit band with dark teeth.
+- **With the ram on the plate,** the six gears are turned and still mesh in the close view.
+- **The work in view:** the ram, its item and the plate stay in view at every stage. III's clamps sit on the horns, outside the ram's path.
+- **The Condenser's cups** read from the walk-up as lights climbing the horns. At 64 px head-on in black, the outline gains bumps on the horns' outer sides and no ring: the top stays open above the cups.
+- **A watch, for research:** at 64 px head-on, the field and the teeth make a busy speckle. Whether it reads as gears or as noise is a call for the game, from the court.
+
+**The content check on the coloured build (20:02): PASS, for upload. No must-fix.**
+- **The hubs:** bone, with no glow, cover the gear's hole, so the ring round each is dark. The light is a straight band, showing only between the teeth.
+- **The climbing cups:** the two chains stand apart along the horns' outer sides, with the upper horns clear. No ring or wreath, in colour or in black, at thumbnail size.
+- **The gears:** matte void stone with a violet vein. Nothing reads as metal.
+- **The rest of the plan's conditions hold:** no gore, no cross in the negative space, no text or emblem, and no outside asset.
+
+**The four facts:**
+- **Implemented:** yes, four new meshes, two re-exported, and the two tables in the handoff.
+- **Tested:** the content check, PASS. Nothing runs in the game yet.
+- **Visually reviewed:** by me. Research's pass is next.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

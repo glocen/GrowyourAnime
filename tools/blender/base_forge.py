@@ -39,7 +39,7 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_machines as bm  # noqa: E402
-from base_mill import FACING, Mesh, at, cable, disc, motes, prism, put, rod, turned  # noqa: E402
+from base_mill import FACING, Mesh, at, bar, cable, disc, motes, prism, put, rod, turned  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 
 Piece = kit.Piece
@@ -82,18 +82,37 @@ def cradle(m, x, y, stones=0):
         stone(m, (x - 0.4 + 0.4 * k, y, 1.35))
 
 
+CRACK = ((0.42, 0.05), (0.55, 0.16), (0.68, 0.1))   # a gear's vein: its bends, out from the hub, as parts of r
+FIELD = (0.72, 1.205)     # the lit field behind the gears: its half height, inside the teeth's tips; its face, along +Y
+
+
+def field(m, x, z, w):
+    """The void's light behind gears, `w` across round (x, z) on the head's face, in the light's deep violet: the dark
+    gears and their teeth read against it, and the field's edges show the teeth biting past it."""
+    hh, y = FIELD
+    pts = [Vector((x - w / 2, y, z - hh)), Vector((x + w / 2, y, z - hh)), Vector((x + w / 2, y, z + hh)),
+           Vector((x - w / 2, y, z + hh))]
+    m.out(pts, [kit.sw_uv("void", 0.0, 0.0)] * 4, Vector((x, y - 1.0, z)))
+
+
 def cog(r, teeth, thick):
-    """A gear about Z, `r` its pitch radius, its teeth in proportion to it and narrower than the gaps, a bone hub."""
+    """A gear about Z, `r` its pitch radius, its teeth in proportion to it and narrower than the gaps: void stone, as
+    the horns are, never steel (research, AR36's picks), with a vein of the void's light on its face, one crack from
+    the hub's edge out, short of the teeth's root, and an unlit bone hub."""
     g = Mesh()
     p = math.tau * r / teeth
     add, ded, w_root, w_tip = 0.3 * p, 0.35 * p, 0.5 * p, 0.26 * p
-    bm.hoop(g, (0, 0, 0), r * 0.32, r - ded + 0.02, thick, max(teeth, 8), "girder", lying=True)
+    bm.hoop(g, (0, 0, 0), r * 0.32, r - ded + 0.02, thick, max(teeth, 8), "abyss", lying=True)
     r0, r1 = r - ded, r + add
     for k in range(teeth):
         a = math.tau * (k + 0.5) / teeth
         out, side = Vector((math.cos(a), math.sin(a), 0.0)), Vector((-math.sin(a), math.cos(a), 0.0))
         rim = [out * r0 - side * w_root / 2, out * r1 - side * w_tip / 2, out * r1 + side * w_tip / 2, out * r0 + side * w_root / 2]
-        prism(g, rim, thick, "girder", out * (r0 + r1) / 2)
+        prism(g, rim, thick, "abyss", out * (r0 + r1) / 2)
+    face = thick / 2 + 0.015
+    crack = [Vector((r * u, r * v, face)) for u, v in CRACK]
+    for a, b in zip(crack, crack[1:]):
+        bar(g, a, b, 0.07 * r / 0.85, "void", d=0.03, ink=False)
     disc(g, (0, 0, 0), r * 0.34, thick + 0.12, "bone", axis=(0, 0, 1), sides=8)
     return g
 
@@ -110,9 +129,10 @@ def plug(m, x, y, z, r, sw):
 
 # --- the Forge, the Press ----------------------------------------------------------------------------------------------
 
-def forge():
+def forge(head=True):
     """The Press, all of it that stands still: the deck, the seat with its flat lit plate, the two horns curving in to
-    the head, the sleeves the ram's rods ride in, the stones' cradle and its vein."""
+    the head, the sleeves the ram's rods ride in, the stones' cradle and its vein. Without its `head`, for a later
+    stage's lintel in its place (AR36, base_forge_stages.py)."""
     m = Mesh()
     deck(m)
     m.box((3.2, 2.6, 2.0), (0, 0, 1.5), "abyss", ink=True)                 # the seat, its top at 2.5
@@ -127,8 +147,9 @@ def forge():
         bm.horn(m, arch, widths, "abyss", deep=0.9)
         bm.vein(m, arch, widths, (0, 0, 6.0))
     low, top = HEAD
-    m.box((3.6, 2.4, top - low), (0, 0, (low + top) / 2), "abyss", ink=True)   # where they meet, inside their outer edge
-    m.box((3.0, 0.1, 0.12), (0, 1.22, low + 0.1), "void")                  # a line of light along the head's foot
+    if head:
+        m.box((3.6, 2.4, top - low), (0, 0, (low + top) / 2), "abyss", ink=True)   # where they meet, inside their outer edge
+        field(m, 0.0, GEAR[2], 3.2)                                         # the void's light behind its two gears
     for sx in (-1, 1):
         rod(m, (sx * RODS[0], 0, low + 0.05), (sx * RODS[0], 0, SLEEVE), 0.36, "girder")
     cradle(m, 3.0, 3.0, stones=3)
@@ -200,6 +221,32 @@ def panel_radius():
     return (3 * 1.5 * r * spacing + r + PANEL[1]) * 2 / math.sqrt(3)
 
 
+HORN = [0.6, 0.46, 0.38, 0.07]   # a Condenser horn's half widths, foot to tip
+
+
+def horn(rp, mid):
+    """A Condenser horn's bends, the right one's: its foot on the deck, its widest beside the panel's middle, its
+    shoulder, its tip by the core."""
+    return [(2.7, -0.4, 0.5), (rp + 0.8, -0.4, mid), (3.0, -0.4, 7.7), (1.65, -0.4, 9.8)]
+
+
+def cup(m, x, z):
+    """A cup on the comb's face at (x, z): a dark plug in a six-sided rim, its lip toward the front."""
+    r = CELL[0]
+    ri, ro, lip = 0.78 * r, 0.98 * r, 0.22
+    uv = [kit.sw_uv("girder", 0.0, 0.6)] * 4
+    plug(m, x, FACE + 0.02, z, ri + 0.03, "ink")
+    inner, outer = hexagon(x, FACE, z, ri), hexagon(x, FACE, z, ro)
+    front_in, front_out = hexagon(x, FACE + lip, z, ri), hexagon(x, FACE + lip, z, ro)
+    axis = Vector((x, FACE + lip / 2, z))
+    for k in range(6):
+        j = (k + 1) % 6
+        m.out([front_in[k], front_out[k], front_out[j], front_in[j]], uv, Vector((x, FACE - 1.0, z)))
+        m.out([outer[k], outer[j], front_out[j], front_out[k]], uv, axis)
+        wall = [inner[k], inner[j], front_in[j], front_in[k]]
+        m.out(wall, uv, axis + (sum(wall, Vector()) / 4 - axis) * 3.0)
+
+
 def condenser():
     """The Comb, all of it that stands still: the deck, the panel's foot, the six-sided panel and its 37 cups, dark
     until a cup's stone or jewel stands in it, the two horns hugging the panel's sides and closing over its top, the
@@ -210,23 +257,11 @@ def condenser():
     rp, mid = panel_radius(), PANEL[0]
     m.box((4.0, 1.4, 0.6), (0, -0.4, 0.8), "girder", ink=True)             # the panel's foot, under its flat bottom
     put(m, turned([(rp, 1.0), (rp, 0.0)], 6, "abyss"), at(0, FACE - 1.0, mid) @ FACING)
-    r = CELL[0]
-    ri, ro, lip = 0.78 * r, 0.98 * r, 0.22
-    uv = [kit.sw_uv("girder", 0.0, 0.6)] * 4
     for x, z in cups():
-        plug(m, x, FACE + 0.02, z, ri + 0.03, "ink")
-        inner, outer = hexagon(x, FACE, z, ri), hexagon(x, FACE, z, ro)
-        front_in, front_out = hexagon(x, FACE + lip, z, ri), hexagon(x, FACE + lip, z, ro)
-        axis = Vector((x, FACE + lip / 2, z))
-        for k in range(6):
-            j = (k + 1) % 6
-            m.out([front_in[k], front_out[k], front_out[j], front_in[j]], uv, Vector((x, FACE - 1.0, z)))
-            m.out([outer[k], outer[j], front_out[j], front_out[k]], uv, axis)
-            wall = [inner[k], inner[j], front_in[j], front_in[k]]
-            m.out(wall, uv, axis + (sum(wall, Vector()) / 4 - axis) * 3.0)
+        cup(m, x, z)
     for sx in (-1, 1):
-        side = [(sx * 2.7, -0.4, 0.5), (sx * (rp + 0.8), -0.4, mid), (sx * 3.0, -0.4, 7.7), (sx * 1.65, -0.4, 9.8)]
-        widths = [0.6, 0.46, 0.38, 0.07]
+        side = [(sx * x, y, z) for x, y, z in horn(rp, mid)]
+        widths = HORN
         m.box((1.6, 1.8, 0.4), (sx * 2.7, -0.4, 0.7), "girder", ink=True)
         bm.horn(m, side, widths, "abyss", deep=0.9)
         bm.vein(m, side, widths, (0, -0.4, mid))
@@ -310,8 +345,10 @@ def _ram():
 
 def _gear():
     return Piece("ForgeGear", forge_gear(),
-                 note="its origin is its middle, its axle toward the front: two stand on the Forge's head, turning "
-                      "opposite ways as the ram moves (plan.json, machines.forge). Look only")
+                 note="its origin is its middle, its axle toward the front: void stone with a vein of the void's light "
+                      "and a bone hub. Two stand on the Forge's head at Stage I, four and six on the lintel at II and "
+                      "III, each turning the other way from the one it meshes as the ram moves (plan.json, "
+                      "machines.forge and machines.forgeStages). Look only")
 
 
 def _condenser():

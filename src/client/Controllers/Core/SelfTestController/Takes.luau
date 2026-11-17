@@ -1100,7 +1100,7 @@ return function(given: Given): { any }
 				end
 				if await("Battle") then
 					local scroll = VoidkinScreen.Find("Page")
-					local head = scroll and scroll:FindFirstChild("GroupOffence and Defence", true)
+					local head = scroll and scroll:FindFirstChild("GroupOffense and Defense", true)
 					if scroll and scroll:IsA("ScrollingFrame") and head and head:IsA("GuiObject") then
 						scroll.CanvasPosition = Vector2.new(0, head.AbsolutePosition.Y - scroll.AbsolutePosition.Y + scroll.CanvasPosition.Y)
 					end

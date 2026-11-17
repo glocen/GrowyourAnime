@@ -339,7 +339,7 @@ function BagCases.Cases(given: Given): { any }
 				t.Check("Equip off in the seam's own button, no light", blocked ~= nil and blocked:GetAttribute("Palette") == Seam.Palette and blocked:FindFirstChild("Glow", true) == nil)
 				t.Check("the close shuts the card", VoidkinScreen.Tap(find("Close")) and Bag.State().Chosen == nil)
 				-- The kinds: each shows its own list.
-				for _, kind in { "Gear", "Jewellery", "Chests" } do
+				for _, kind in { "Gear", "Jewelry", "Chests" } do
 					t.Check(`the {kind} chip`, VoidkinScreen.Tap(find(kind)) and Bag.State().Kind == kind)
 					t.Wait(0.1)
 					gridChecks("this window", kind, Bag.State().Sort)

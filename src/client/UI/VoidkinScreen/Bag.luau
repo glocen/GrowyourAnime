@@ -94,7 +94,7 @@ local P = {
 	Rarity = C.Rarity,
 	Rim = C.Rim,
 }
-local GROUP_KIND = { "Gear", "Gear", "Jewellery" } -- each slot group's kind on the strip
+local GROUP_KIND = { "Gear", "Gear", "Jewelry" } -- each slot group's kind on the strip
 local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
 local NUMBER_ROW = 22 -- the card's Combat Power line
 local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = "The bag is full", Unknown = "Not now" }
@@ -945,7 +945,7 @@ end
 local EMPTY: { [string]: { string } } = {
 	All = { "Nothing in the bag yet", "Shades and keepers drop gear" },
 	Gear = { "No gear yet", "Shades and keepers drop it" },
-	Jewellery = { "No jewellery yet", "Shades and keepers drop it" },
+	Jewelry = { "No jewelry yet", "Shades and keepers drop it" },
 	Chests = { "No chests yet", "Shades drop them, and keepers" },
 	Materials = { "No shards yet", "The grounds drop them" },
 }

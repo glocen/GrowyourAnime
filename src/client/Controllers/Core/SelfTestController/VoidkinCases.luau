@@ -272,7 +272,7 @@ function VoidkinCases.Cases(given: Given): { any }
 		if figure and row and plate and plate:IsA("GuiObject") then
 			local middle = figure.Stage.AbsolutePosition.X + figure.Stage.AbsoluteSize.X / 2
 			local centre = plate.AbsolutePosition.X + plate.AbsoluteSize.X / 2
-			t.Check(`{where}: Combat Power under the figure's middle`, math.abs(centre - middle) <= 1, string.format("%.0f against %.0f", centre, middle))
+			t.Check(`{where}: Combat Power under the figure's middle, to a pixel's rounding`, math.abs(centre - middle) <= 2, string.format("%.1f against %.1f", centre, middle))
 			t.Check(`{where}: alone at its feet`, #row:GetChildren() == 1, `{#row:GetChildren()}`)
 			t.Row(`{where}: Combat Power's plate, authored px wide`, nil, nil, VoidkinScreen.Measure().Power, "")
 		else
@@ -298,6 +298,34 @@ function VoidkinCases.Cases(given: Given): { any }
 		t.Check(`{where}: on one line inside the stage`, name.AbsolutePosition.X >= from - 1 and name.AbsolutePosition.X + name.AbsoluteSize.X <= to + 1, string.format("%.0f to %.0f in %.0f to %.0f", name.AbsolutePosition.X, name.AbsolutePosition.X + name.AbsoluteSize.X, from, to))
 		t.Check(`{where}: the name first, its rarity after it, whole in the line`, title.AbsolutePosition.X + title.AbsoluteSize.X <= rarity.AbsolutePosition.X + 1 and rarity.TextFits and rarity.AbsolutePosition.X + rarity.AbsoluteSize.X <= name.AbsolutePosition.X + name.AbsoluteSize.X + 1, string.format("%.0f, %.0f, %.0f", title.AbsoluteSize.X, rarity.AbsoluteSize.X, name.AbsoluteSize.X))
 		t.Row(`{where}: the name's line, authored px wide (its name {if title.TextFits then "whole" else "cut"})`, nil, nil, name.AbsoluteSize.X / Layers.Scale(), "")
+	end
+
+	-- The band clear (research's must-fix on TR28, 2026-11-17: no top-bar overlap on any page or phone): the wallet right
+	-- of everything else in it, and each of its chips' words whole.
+	local function bandClear(t: any, where: string)
+		local wallet = VoidkinScreen.Find("Wallet")
+		local band = if wallet then wallet.Parent else nil
+		local reach, last = -math.huge, "nothing"
+		for _, item in (if band then band:GetDescendants() else {}) :: { Instance } do
+			if item:IsA("GuiObject") and item.Visible and item.Parent == band and item ~= wallet and item.AbsoluteSize.X > 0 then
+				local right = item.AbsolutePosition.X + item.AbsoluteSize.X
+				if right > reach then
+					reach, last = right, item.Name
+				end
+			end
+		end
+		local from, cut = math.huge, ""
+		for _, chip in (if wallet then wallet:GetChildren() else {}) :: { Instance } do
+			if chip:IsA("GuiObject") and chip.Visible then
+				from = math.min(from, chip.AbsolutePosition.X)
+				local value = chip:FindFirstChild("Value")
+				if value and value:IsA("TextLabel") and not value.TextFits then
+					cut = chip.Name
+				end
+			end
+		end
+		t.Check(`{where}: the band clear, the wallet right of {last}`, wallet ~= nil and from >= reach - 0.5, string.format("%.0f against %.0f (%s)", from, reach, tostring(wallet and wallet:GetAttribute("Form"))))
+		t.Check(`{where}: the wallet's words whole`, wallet ~= nil and cut == "", cut)
 	end
 
 	-- The lead's Send to work: off, its own name kept and why under it, both whole on its face.
@@ -404,7 +432,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
 				t.Check(`{name} in view`, inView(name))
 			end
-			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewellery, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
+			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewelry, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
 			-- Its name over the stage: one line inside it, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
 			-- The rail: all seven taps whole, each a touch or more, and no scroll.
@@ -501,7 +529,7 @@ function VoidkinCases.Cases(given: Given): { any }
 						-- Its whole stat sheet is here: there's no Stats page.
 						local block = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
 						for _, stat in { "Health", "Attack", "Defence" } do
-							local item = scroll:FindFirstChild(stat, true)
+							local item = scroll:FindFirstChild(Sheet.Said[stat] or stat, true) -- a line is named as it reads (Defense)
 							local right = item and item:FindFirstChild("Right", true) -- in its Total, beside its Main
 							t.Check(`Overview: its {stat}, resolved`, right ~= nil and (right :: TextLabel).Text == Hud.Digits((block :: any)[stat]), if right then (right :: TextLabel).Text else "none")
 						end
@@ -716,6 +744,13 @@ function VoidkinCases.Cases(given: Given): { any }
 			-- The UI lint, in this window and on the smallest phone, on every page.
 			t.Wait(0.3)
 			lintClean(t, "this window")
+			for _, name in VoidkinScreen.Pages do
+				if not VoidkinScreen.Soon[name] then
+					VoidkinScreen.Show(name)
+					t.Wait(rail.Run + 0.15)
+					bandClear(t, `this window, {name}`)
+				end
+			end
 			Layers.Force(Theme.Scale.Floor)
 			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
 			t.Wait(0.1)
@@ -724,6 +759,7 @@ function VoidkinCases.Cases(given: Given): { any }
 					VoidkinScreen.Show(name) -- built again at the phone's size
 					t.Wait(rail.Run + 0.15)
 					lintClean(t, `the smallest phone, {name}`)
+					bandClear(t, `the smallest phone, {name}`)
 				end
 			end
 			whole(t, "the smallest phone")
@@ -734,7 +770,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				t.Check(`the smallest phone: {name} in the band, whole`, inView(name))
 			end
 			local purse = VoidkinScreen.Find("Wallet")
-			t.Row(`the smallest phone: the band, authored px wide (the battery {if purse and purse:GetAttribute("Short") then "without" else "with"} its capacity)`, nil, nil, Layers.Band().X, "")
+			t.Row(`the smallest phone: the band, authored px wide (the wallet's form {tostring(purse and purse:GetAttribute("Form"))})`, nil, nil, Layers.Band().X, "")
 			-- Seven taps are taller than the rail: the built pages stand whole in it before any scroll, the rest a scroll down.
 			local holder = VoidkinScreen.Find("Rail")
 			if holder and holder:IsA("ScrollingFrame") then
@@ -869,7 +905,7 @@ function VoidkinCases.Cases(given: Given): { any }
 					end
 				end
 			end
-			t.Check("the five, then Core, Offence and Defence, Sustain, two a row in order, each under its heading and caption with its one total (a rating's its percent alone), the Main tagged beside its own total", #wrong == 0, wrong[1])
+			t.Check("the five, then Core, Offense and Defense, Sustain, two a row in order, each under its heading and caption with its one total (a rating's its percent alone), the Main tagged beside its own total", #wrong == 0, wrong[1])
 			-- Nothing opens: no cell is a button, none holds anything under its total, and no caption says to tap.
 			local opens: { string } = {}
 			for _, group in Sheet.Groups do

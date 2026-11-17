@@ -107,10 +107,10 @@ return {
 				t.Check(`{row.Id}: a kind on the strip`, table.find(Bag.Kinds, kind) ~= nil, kind)
 				t.Check(`{row.Id}: a weapon is gear`, row.Class == nil or kind == "Gear", kind)
 			end
-			t.Equal("a ring is jewellery", Bag.KindOf(Items.ById.ring), "Jewellery")
+			t.Equal("a ring is jewelry", Bag.KindOf(Items.ById.ring), "Jewelry")
 			t.Equal("a cloak is gear", Bag.KindOf(Items.ById.cloak), "Gear")
 			t.Equal("five kinds, All first", Bag.Kinds[1], "All")
-			t.Equal("five kinds: weapons and armor one Gear", table.concat(Bag.Kinds, ", "), "All, Gear, Jewellery, Chests, Materials")
+			t.Equal("five kinds: weapons and armor one Gear, American spelling", table.concat(Bag.Kinds, ", "), "All, Gear, Jewelry, Chests, Materials")
 			t.Equal(`the cap is the chests' bag's`, Bag.Cap, ChestsConfig.Bag)
 		end,
 	},
@@ -121,7 +121,7 @@ return {
 			local all = Bag.List(data, warrior, "All", "Rarity")
 			t.Equal("every item, both chest stacks and the shards", #all, 9 + 2 + 1)
 			local parts = 0
-			for _, kind in { "Gear", "Jewellery" } do
+			for _, kind in { "Gear", "Jewelry" } do
 				for _, entry in Bag.List(data, warrior, kind, "Rarity") do
 					parts += 1
 					t.Equal(`{entry.Id} in {kind}`, Bag.KindOf(Items.ById[entry.Def]), kind)

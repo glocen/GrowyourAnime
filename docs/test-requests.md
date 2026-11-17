@@ -2803,6 +2803,14 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
   2. **The Overview leaves its lower third empty:** the sheet's panel ends at two-thirds of the screen's height. Class: a page's panel fills the room to the bottom edge, and the sheet scrolls inside it. If it's the capture's moment, a fresh still proves it.
 - **American spelling** (the director, 13:15, `docs/decisions.md`): "Jewelry" on the strip, and every shown "Defence", "Armour" or "Colour" in Config, Definitions and the UI's text, by one search.
 
+**The two must-fixes and American spelling (Faber, by 13:24).**
+- **Implemented:**
+  - **Spelling,** by one search of `src/`. The strip's kind is "Jewelry", with "No jewelry yet" (`Rules.Bag`). The stat shows as "Defense" through `Sheet.Said` (the code's key stays `Defence`), and so does the next star's gains line. The heading is "Offense and Defense". No shown "Armour" or "Colour" was left: the rest are code names and comments. "Favourite" is a save key drawn as an icon, never as a word.
+  - **The top bar:** the wallet never crosses Back and the three marks. When the room is short it steps down, one step at a time, until it fits: the battery without its capacity ("60.00 kWh"), then what it holds alone beside its bolt ("60.00"), then Credits short (10.6K), then the battery alone (`wallet()` in `VoidkinScreen/init.luau`, its form an attribute). At the smallest phone it takes "60.00", and at the iPhone 16 Pro the whole "60.00 / 60 kWh".
+  - **The panel:** nothing to fix. The 2/3 still was the take that forces the smallest phone's box into a bigger window. At the iPhone 16 Pro's own size, the panel runs from 70 to 334 of a 343-pixel room, and the sheet scrolls inside it (`overview-iphone-phone.png`).
+- **Tested:** the type check 0 new; logic offline 23,973/0 ("a ring is jewelry", "Defense, in American spelling", the heading); "Items page (TR28)" 112/0; "Voidkin screen (TR17)" 249/0. The new class check, "the band clear, the wallet right of Rename, and its words whole", runs on every built page at the window's size and at the smallest phone. The Combat Power centring check takes 2 px of rounding (564 against 565 failed once at 1).
+- **Seen:** phone stills by the builder, `overview-iphone-phone.png` (the panel to the bottom, the band whole) and `band-smallest-phone.png` (the wallet stepped down, clear of the marks). Research's pass waits.
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

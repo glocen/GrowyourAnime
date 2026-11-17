@@ -806,7 +806,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		for _, name in { "Health", "Attack", "Defence" } do
 			local gain = (after :: any)[name] - (now :: any)[name]
 			if gain > 0 then
-				table.insert(gains, `+{Hud.Digits(gain)} {name}`)
+				table.insert(gains, `+{Hud.Digits(gain)} {Sheet.Said[name] or name}`)
 			end
 		end
 		line(scroll, 3, "The next star", `+{Hud.Digits(Stats.Power(after) - before)}`, `{table.concat(gains, " · ")}, Combat Power on the right`)
@@ -1084,26 +1084,39 @@ local function feet(over: Frame, at: Place, owned: Profile.OwnedVoidkin, block: 
 end
 
 -- The currencies at the band's right: Credits and the battery, read again every WALLET.Every seconds. A chip is as wide
--- as its number. In a band too narrow for both whole, right of `left` (authored, from the band's left), the battery
--- shows what it holds without its capacity.
+-- as its number. They never cross what stands right of `left` (authored, from the band's left; research's must-fix on
+-- TR28, 2026-11-17): in a band too narrow, they step down until they fit: the battery without its capacity, then what
+-- it holds alone (its bolt says what it is), then Credits short (Hud.Short), then the battery alone.
 local function wallet(band: Frame, left: number, view: Profile.View)
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	local size = Text.Legible(Theme.Text.Body, Layers.Scale())
 	local function wideOf(said: string): number
 		return WALLET.Icon + math.ceil(#said * WALLET.Digit * size) + pad
 	end
-	local owns = Read.Number(view.Currency.Credits)
 	-- The battery in kWh (TR18), measured at its widest: a full one, at the cap its base's level holds (TR21).
 	local cap = Breaker.Capacity(view.Base)
 	local capacity = Read.Number(cap)
-	local fullest = `{Read.Kwh(cap)} kWh`
-	local whole = `{Read.Kwh(cap)} / {capacity} kWh`
 	local room = Layers.Band().X - pad - left - gap
-	local short = wideOf(owns) + gap + wideOf(whole) > room
-	local battery = wideOf(if short then fullest else whole)
-	local holder = frameOf("Wallet", band, UDim2.new(1, -pad, 0.5, 0), UDim2.fromOffset(wideOf(owns) + gap + battery, BAR))
+	local steps = {
+		{ Form = "Whole", Credits = Read.Number(view.Currency.Credits), Battery = `{Read.Kwh(cap)} / {capacity} kWh` },
+		{ Form = "Short", Credits = Read.Number(view.Currency.Credits), Battery = `{Read.Kwh(cap)} kWh` },
+		{ Form = "Bare", Credits = Read.Number(view.Currency.Credits), Battery = Read.Kwh(cap) },
+		{ Form = "Bare", Credits = Hud.Short(view.Currency.Credits), Battery = Read.Kwh(cap) },
+		{ Form = "Bare", Credits = nil, Battery = Read.Kwh(cap) },
+	}
+	local step = steps[#steps]
+	for _, each in steps do
+		if (if each.Credits then wideOf(each.Credits) + gap else 0) + wideOf(each.Battery) <= room then
+			step = each
+			break
+		end
+	end
+	local owns = step.Credits
+	local battery = wideOf(step.Battery)
+	local holder = frameOf("Wallet", band, UDim2.new(1, -pad, 0.5, 0), UDim2.fromOffset((if owns then wideOf(owns) + gap else 0) + battery, BAR))
 	holder.AnchorPoint = Vector2.new(1, 0.5)
-	holder:SetAttribute("Short", short)
+	holder:SetAttribute("Short", step.Form ~= "Whole")
+	holder:SetAttribute("Form", step.Form)
 	local function chip(name: string, icon: string, wide: number, right: number): TextLabel
 		local made = Instance.new("Frame")
 		made.Name = name
@@ -1121,8 +1134,10 @@ local function wallet(band: Frame, left: number, view: Profile.View)
 		return text({ Name = "Value", Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -(WALLET.Icon + pad), 1, 0), Position = UDim2.fromOffset(WALLET.Icon, 0), Parent = made }, "")
 	end
 	local electricity = chip("Electricity", "Bolt", battery, 0)
-	local credits = chip("Credits", "Coin", wideOf(owns), battery + gap)
-	credits.Text = owns
+	if owns then
+		local credits = chip("Credits", "Coin", wideOf(owns), battery + gap)
+		credits.Text = owns
+	end
 	local readAt = -math.huge
 	local function read()
 		if os.clock() - readAt < WALLET.Every then
@@ -1131,7 +1146,7 @@ local function wallet(band: Frame, left: number, view: Profile.View)
 		readAt = os.clock()
 		local base = Read.Base(view, workspace:GetServerTimeNow())
 		local stored = Read.Kwh(base.Data.Base.Charge)
-		electricity.Text = if short then `{stored} kWh` else `{stored} / {capacity} kWh`
+		electricity.Text = if step.Form == "Whole" then `{stored} / {capacity} kWh` elseif step.Form == "Short" then `{stored} kWh` else stored
 	end
 	read()
 	table.insert(tickers, read)

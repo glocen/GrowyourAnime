@@ -39,7 +39,7 @@ Sheet.EvenFoe = "chances against an even foe" -- the one caption, under Battle A
 Sheet.Groups = {
 	{ Name = "Core", Stats = { "Health", "Attack", "Defence", "Speed", "Poise" } },
 	{
-		Name = "Offence and Defence",
+		Name = "Offense and Defense", -- shown as its heading: American spelling (the director, 2026-11-17, 13:15)
 		Stats = {
 			"Hit",
 			"Dodge",
@@ -60,6 +60,7 @@ Sheet.Groups = {
 
 -- What players read for each stat.
 Sheet.Said = {
+	Defence = "Defense", -- American spelling in all players see (the director, 2026-11-17, 13:15); the key stays the code's
 	CriticalDamage = "Critical Damage",
 	ElementalAttack = "Elemental Attack",
 	DamageBonus = "Damage Bonus",

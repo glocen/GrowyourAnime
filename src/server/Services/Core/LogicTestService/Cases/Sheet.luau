@@ -99,7 +99,8 @@ return {
 				table.insert(names, groups[index].Name)
 				count += #groups[index].Rows
 			end
-			t.Equal("Core, Offence and Defence, Sustain", table.concat(names, ", "), "Core, Offence and Defence, Sustain")
+			t.Equal("Core, Offense and Defense, Sustain", table.concat(names, ", "), "Core, Offense and Defense, Sustain")
+			t.Equal("Defense, in American spelling (the director, 2026-11-17, 13:15)", Sheet.Row("Defence", Stats.Empty(1), nil).Name, "Defense")
 			t.Equal("nineteen lines: every stat a source adds to, Speed, Poise, and the two from effects", count, #Stats.Names + 4)
 			for _, name in Stats.Names do
 				t.Check(`{name} has a line`, row(groups, name) ~= nil)

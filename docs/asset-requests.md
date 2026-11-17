@@ -9023,6 +9023,27 @@ Research's request, 2026-11-17, 02:36, at Modulo's ask ("Sable is next in the ro
 
 **Time it:** each delivery records what it took. The takes: 1 to 2 hours, forecast.
 
+## AR26. The launch five's basic attacks (Modulo and Faber, through `/ga-action`)
+
+Research's request, 2026-11-17, 02:41, on the director's word of the same night (`docs/decisions.md`): "their m1 need to be original need Vfx sfx, their ult too", and five Voidkin at launch.
+- **What it is:** each launch Voidkin's basic attack (M1) gets its own effect and its own sound, so no two share a hit. The bar is Anime Vanguards' units at the game's camera: every attack reads as that character's, with flash, at a glance.
+- **The order:**
+  1. Watt, with Ground Wire's retake (AR11);
+  2. Rook;
+  3. Pip;
+  4. Lyric;
+  5. Kirra, with First Strike's look (AR10).
+- **For each, one `/ga-action`:**
+  - the feel line, signed by research;
+  - one hero shape with a direction and an acceleration, drawn from the Voidkin's weapon and element (or its accent where it has none);
+  - the grey block beside the combo's clip;
+  - research's verdict in motion from a phone capture.
+- **Its sound** is layered like AR13's cues, its own on top of the shared hit.
+- **The signatures already made** (Haymaker, Lantern Burst, Held Note) are raised to this bar at the finish pass, with the redesigns.
+- **Light on purpose:** a basic attack lands many times a minute, so its effect is short and small beside the signature's. Its flash fits inside the hit's own 0.1 to 0.2 s, and it never hides the Shade.
+- **Waits:** the redesigns of Rook, Kirra, Pip and Lyric, at the finish pass. Each one's attack is redrawn for its new weapon then, and its motion and timing carry over.
+- **Time it:** each attack records what it took. The cap is an effect's 2 hours at its block.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

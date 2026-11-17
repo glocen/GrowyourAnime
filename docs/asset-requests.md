@@ -12285,6 +12285,70 @@ Research, 2026-11-17, 21:10. The rules: `docs/design.md`, "The Strip", the Void 
   - the screen in grey at the smallest phone: six lines, the rare offer's place, each line's price, the count left to that player, the countdown and the tables' chances.
 - **It waits:** the colour pass, after the verdict. The rare offer's light and its sound (no new sound until the director's samples). The shards' and emblems' pictures exist (AR21, AR31). The screen is built on the kit (`docs/ui.md`).
 
+### The grey block: three directions and the screen (Modulo, 2026-11-17, 21:24 to 21:40 by the clock)
+
+**The sheets,** in `build/scratch/modulo/shop/`:
+- `shop_block.png`: each direction in five views, all from the game's camera behind a player at the place's dusk:
+  - from the crossing, crown unlit and lit;
+  - down the side street, 160 studs off;
+  - walking the Strip from the east, 110 off;
+  - at the counter;
+  - a sixth column with the side street's Shop at three times its pixels.
+- `crossing_close.png`: the crossing's view at full size.
+- `shop_screen.png`: the screen in states A to C.
+
+The scripts are `tools/blender/shop_block.py` (on `strip_plan`'s Strip) and `tools/blender/shop_screen.py`. Throwaway, nothing exported. The clock shows 3:20 to the next stock in every view: one minute spent, the second a third left, three whole.
+
+**What the place allows,** measured on the Strip's renders:
+- The crossing's great shard hides the Shop's axis above about 8 studs from the side street. Seen from the crossing, its tip hides about 3 studs either side of the axis at the Shop's front.
+- From the crossing, the game's camera sees about 20 studs up the Shop's front, no higher.
+- So every clock stands low or off the axis, and every crown is wide or to one side.
+
+**The three directions:**
+- **A, the Five Stones.** A low vault of void stone, the counter in its mouth.
+  - The clock is five stones, 7.5 studs tall, in a row on the forecourt's west side. Each goes dark as its minute runs out, the running one lit from its foot.
+  - The crown is the vault's two horns and three crest points.
+- **B, the Spire.** A 33-stud spire off the axis, east, beside a low pavilion over the counter.
+  - The clock is a gauge of five slots up the spire's face, draining from the top, all under 21 studs.
+  - The crown is the spire's split tip.
+- **C, the Hanging Stock.** A slab of void stone hovering 12 studs over the counter.
+  - The clock is five shards hanging from the west half of its front edge.
+  - The crown is the slab's whole rim, lit.
+
+**Placement fixes before the sheet,** each a measured miss:
+- A's stones first stood in an arc on the axis, under the shard.
+- B's top two slots were above the crossing's view.
+- C's middle shard hid behind the shard's tip, and hung over the way in to the counter.
+
+**What the renders show** (my read; quality UNVERIFIED until research's verdict):
+
+| | The clock from the crossing | The crown, lit | At the counter |
+|---|---|---|---|
+| A | reads: dark, a third lit, three lit | the horns read from the crossing and the side street. From the east at 110 they show small, and the vault hides the stones | the vault's mouth frames the shelf |
+| B | reads, in the gauge's five slots | above the camera from the crossing; seen from the side street and the east | the plainest: a roof on two stones |
+| C | reads, the same as A, hanging | the lit rim reads from the crossing, the side street and the east as one bar | the hanging shards fill the top of the frame |
+
+- B's spire is the only shape that reads as the Shop from the east before its crown is lit.
+- My lean, as the maker: C, then A. C is the only one whose crown reads in all three far views and whose clock reads from the crossing.
+
+**The screen,** at the smallest phone, measured in rendered points (568 × 320 at the scale's floor):
+- **The frame:** a full screen (`Screen.Full`).
+- **The band:** Back and "Void Shop", then the countdown with the building's five-minute clock in small, then the player's Credits (the HUD's pills are covered).
+- **The rare offer** stands apart on the left, the full height:
+  - its chance, "about 1 stock in 12", is always on it;
+  - the Voidkin in its frame, its rarity and class, and Buy with its price;
+  - "None this stock", with the crown's meaning, when none is in;
+  - "Opens with" its ground when that ground is shut.
+- **The shelf:** commons on top, the two uncommon lines and the rare line under them ("No rare line this stock" when there's none). The tables' chances sit under the shelf.
+- **A line:** its picture, its name, the count left to this player, and Buy with its price on it.
+  - Bought out, Buy reads "Bought".
+  - Out of reach, Buy dims and the count's place says "Need 450 more".
+  - A shard line's top half opens its Drop rates, the Breaker's panel unchanged, marked with AR30's three rules. A Named shard needs none.
+- **Sizes:** every tap 44 or more, no text under 14.
+- **Stand-ins:** the prices, the counts, the rare line's chance ("about 1 in 3") until `seeds.json` sets them; where Roblox's buttons end (104, read live in game); the pictures; a rarity drawn as its frame's weight.
+
+**Status:** implemented as grey sheets; not built, not reviewed in game, not yet read by research. Next: research's pick of a direction and its read of the screen, then the colour pass.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

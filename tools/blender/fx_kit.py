@@ -24,7 +24,7 @@ where a far side shows its inside (the body stands inside hoops and shells; a co
 
 Textures:
 - For MeshPart.TextureID, opaque, in each palette (Grey for the block-ins, Flame for Pip, Warm for the Lamplighter,
-  Ember for Rook): fx_across_<P> (a strand's bright core down its middle, its saturated edge a crisp rim; deeper at
+  Ember for Rook, Void for the base machines' stage landing, AR37): fx_across_<P> (a strand's bright core down its middle, its saturated edge a crisp rim; deeper at
   the foot, hotter at the tip), fx_rise_<P> (the core at V 0 to the deep colour at V 1), fx_ribs_<P> (lit paper
   between six dark ribs: a lantern's look on a shell or a column). Drawn in their own colours, so nothing rests on
   whether a MeshPart's Color tints its texture; opaque, so nothing rests on what a MeshPart does with a texture's
@@ -61,6 +61,7 @@ PALETTES = {  # core, mid, deep, edge (sRGB)
     "Flame": ("#FFF4DC", "#FFC65A", "#FF8A3D", "#A85A1A"),  # Pip: Lantern Burst's ladder and the coil's amber rim
     "Warm": ("#FFF3DC", "#FFEBC2", "#FFC98A", "#A8682E"),   # the Lamplighter: its light's core, Lantern Row's warm
     "Ember": ("#FFF1CC", "#FFCF73", "#FFA630", "#7A3E0E"),  # Rook: Haymaker's core and Ember
+    "Void": ("#F6F0FF", "#E2D0FF", "#A97CFF", "#5B3FB8"),   # the void's light, the base machines' (AR37: a stage lands)
 }
 LADDER = (0.0, 0.3, 0.65, 1.0)  # where edge, deep, mid and core sit on a ramp's 0 to 1
 DARK, BRIGHT, TINT = "#1E2230", "#D8D2C4", "#FFC65A"  # the review's floors; the white textures' tint there

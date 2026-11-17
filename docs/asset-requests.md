@@ -12155,6 +12155,76 @@ From the beats sheet and both videos, run frame by frame at 12 a second (f2dc53e
   - **The flash guard,** measured by Modulo: one run a view, no saturated red. The content check runs on the colour pass before any upload, as the record sets.
   - **Next:** the colour pass in the void's light, then Faber's build with its beats in Config, tuned by playing.
 
+### The colour pass, in the void's light (Modulo, 2026-11-17, 20:51 to 21:01 by the clock)
+
+**Where:**
+- **The sheets:** `tools/blender/stage_land_block.py`, `LOOKS["void"]`, into `build/scratch/modulo/stage_land_void/`: `stage_land_beats.png`, `stage_land_A.png`, `stage_land_64.png`, `stage_land_forge.mp4` and `stage_land_court.mp4`.
+- **The kit:** a new Void palette in `tools/blender/fx_kit.py`, so `build/handoff/FxKit/` gains `fx_rise_Void`, `fx_across_Void` and `fx_ribs_Void`. The rebuilt kit matched the handoff byte for byte otherwise: every mesh and every older image.
+
+**The colours,** from the yard's void swatch and the game's Void (`UIKit`):
+- **The Highlight:** fill `#EEE4FF`, near white; outline `#B58CFF`.
+- **The hoop:** `fx_rise_Void`, its core `#F6F0FF` at the top edge through `#E2D0FF` and `#A97CFF` to `#7A57D4` at its foot. The foot glows less (the look's emissive is its colour map), so it's a dim violet, not clear.
+- **The thrown ring:** Neon in `#B58CFF`.
+- **The shaft:** `fx_rise_Void`, the core at its foot.
+- **The PointLight:** `#B58CFF`, so the floor's wash is violet and soft.
+- **Nothing warm:** red's share stays under 0.31 in every colour.
+- **Dimmer than the cover:** the thrown ring (1.6 for the grey's 2.4), the shaft (1.5 for 2.2) and the light are all dimmer.
+
+**Tier 1:** the thrown ring is now a short upright band, the kit's FxColumn, 0.3 + 0.02 r studs tall, never a flat ring. The kit's depth rule: at the machine's top it's near the camera's height, where a flat ring goes edge-on.
+
+**Measured** (the same check on the coloured frames):
+
+| | Worst field | Over 25%, runs | Over 25%, frames at 60 | Most of the screen | Saturated red |
+|---|---|---|---|---|---|
+| At the Forge | 66.9% at 24 (grey 95.1%) | 1 | 16 to 44 (grey 12 to 46) | 14.4% (grey 37.5%) | 0 px |
+| From the court | 82.7% at 36 (grey 90.0%) | 1 | 18 to 46 (grey 12 to 48) | 16.8% (grey 39.4%) | 0 px |
+
+The violet light washes the floor less than the grey's near-white one did, so the run is shorter and smaller. The peak near-white share is 1.9% at the Forge and 3.4% from the court, against the court's floor at 3.1%.
+
+**My read:**
+- The climb reads as the void's light: violet with a white top edge.
+- The cover is a pale lilac cut-out, apart from the court's white floor, and cools through a violet outline to the new stage.
+- The thrown ring is a thin violet ellipse past the machine's top.
+- The 64 px read holds at every beat.
+
+**For Faber, the recipe.** Frames are at 60 from the effect's start. `r` and `h` come from the larger of the two stages' boxes: `r` is half the footprint's diagonal plus 0.6, and `h` the height plus 0.5, from the box's foot. The helpers:
+- `u = (f / 33)²`;
+- `span(f, a, b)` is f from a to b, clamped 0 to 1;
+- `ease_out(x) = 1 − (1 − x)³`.
+
+The numbers belong in `Config`, tuned by playing.
+
+| Part | Kit | Frames | Place and size | Light |
+|---|---|---|---|---|
+| Hoop, the hero | FxColumn, look `fx_rise_Void`, turned over (the core at its top) | 0 to 36 | pull = span(f, 33, 36); tall = (0.5 + 1.3 u)(1 − 0.7 pull); its top at h·u, its foot no lower than the ground; across 2 r (1 − ⅔ ease_out(pull)) | EmissiveStrength 1 + 1.6 u + pull; Transparency 0 |
+| Thrown ring | FxColumn, Neon, `#B58CFF` | 34 to 60 | k = span(f, 34, 60); across 2 r (0.4 + 1.3 ease_out(k)); 0.3 + 0.02 r tall, centred at h | Transparency 1 − (1 − k)² |
+| Shaft | FxColumn, look `fx_rise_Void`, upright | 35 to 50 | k = span(f, 35, 50); across 2 (0.35 − 0.25 k); 0.6 h ease_out(k) + 0.1 tall, its foot at h | EmissiveStrength 1.5 (1 − k)²; Transparency 1 − (1 − k)² |
+| PointLight | `#B58CFF`, Shadows off | 0 to 60 | to 36, at the hoop's top; after, at h / 2 | 0.3 + 0.7 u to 36, then 0.8 × the fill; Range about 1.5 r, Brightness tuned by playing |
+| Highlight | DepthMode Occluded; Adornee the old model, the new one from 35 | 6 to 60 | the machine's own shape | FillTransparency 1 − fill, OutlineTransparency 1 − line |
+
+The cover's two numbers:
+- **fill:** `span(f, 12, 33)²` to 37, the swap at 35 under it, then `(1 − span(f, 37, 56))²`.
+- **line:** `ease_out(span(f, 6, 20)) × (1 − span(f, 44, 60))²`.
+
+Destroy the Highlight at 60: a disabled one still holds a slot. On a base level-up, every changing machine starts on the same frame. The light in Blender is watts, so its game numbers are a starting guess, and the in-game capture judges them.
+
+**The content check** (Modulo's, 21:02): PASS on the three Void textures, the kit's sheet and the colour pass's renders. Its conditions for Faber's build, in `docs/asset-log.md` with the texture's row:
+- Upload `fx_rise_Void` only; its siblings take their own pass, unless they go unchanged in the same batch.
+- At most 3 cover flashes in any second: 0.34 s between them as a `Config` number, with a logic case. A landing inside that window keeps the cover already lit and doesn't flash again, for back-to-back raises and for a base level-up landing with a stage raise.
+- A HUD flash on the same frame lands on the cover's frame or stays out of white.
+- No Glow, EmissiveStrength or light setting pushes toward red, orange or yellow (red's share under 0.8). Particles go up or out, and the floor's wash stays soft.
+- The flash guard is run again on the in-game capture, at the Forge and from the court, at research's pass. More than one run a landing, or any saturated red, is a new check.
+
+**Waits:**
+- research's read of the colour pass;
+- Faber's upload of `fx_rise_Void` only (the other two Void textures are the kit's set and unused here), then the build.
+
+**Four facts:**
+- **Implemented:** the colour pass in Blender, and the Void palette in the kit.
+- **Tested:** the flash guard's check above; the content check PASS.
+- **Visually reviewed:** my own read.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

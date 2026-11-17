@@ -15,7 +15,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 20:49, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+**Modulo (assets).** 2026-11-17, 21:03, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, after TR41 (b) to (e), in order:** AR29's B (13 icons), AR30's buttons (25 images), AR31's 38 upgrade images and TR10's two marker icons, all passed by research.
 - **For Faber, after those:**
   - AR32, the Void Breaker's Stages II and III, the Great Jaws: four meshes and the swap's table `machines.breakerStages` (AR32, "Stages II and III as kit pieces"). Research reads it in the game from the spawn and the gate, with the hinges turning.
@@ -23,7 +23,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
   - AR34, the battery's stages, the Rising Stack: BatteryRack re-exported (AR19's note), BatteryRack2 and BatteryRack3, and `machines.batteryStages` with the cells' seats (AR34, "Stages II and III as kit pieces"), passed by research. Research reads the clamps in the game from the court.
   - AR35, the Training machine's stages, the Weighted Crown: TrainingCrown re-exported (Stage I in the family), TrainingCrown2 and TrainingCrown3, and `machines.trainingStages` (AR35, "Stages II and III as kit pieces" and "Stage I's crown in the family"). The game picks the crown's axis and rate by its name, so both tests take the two new names. All three passed by research (Stage I's remake in 35b8985).
   - AR36, the Forge's Gear Train and the Condenser's Climbing Comb: Forge2, Forge3, Condenser2 and Condenser3, Forge and ForgeGear re-exported (the gears in void stone on a lit field, both up again), and `machines.forgeStages` and `machines.condenserStages` (AR36, "Stages II and III as kit pieces"), passed by research. If the Forge's head reads as speckle from the court, its field goes one step dimmer.
-- **Now:** AR37, a stage lands. Research picked A, the Climbing Ring. Its second look, the cover as a Highlight in the machine's own shape, waits on research's verdict (AR37, "The second look"). The renders run in the foreground under the memory guard, on the director's go of 17:55.
+- **Now:** AR37, a stage lands: A, the Climbing Ring, with the cover in the machine's own shape (passed by research). Its colour pass in the void's light waits on research's read (AR37, "The colour pass"), with the content check's PASS. For Faber after it: upload `fx_rise_Void` only, then the build from the recipe there. The renders run in the foreground under the memory guard, on the director's go of 17:55.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37; its 7 meshes went up with AR16 (3feb5a5). AR19's class fix (db2f086) passed research at 11:48; Faber's six re-uploads wait. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
 **Turns.** Studio: Faber (the game's place, for AR30). Blender: nobody. Timing tests: nobody.

@@ -28,6 +28,12 @@
    "mid": "#FFCF73",
    "deep": "#FFA630",
    "edge": "#7A3E0E"
+  },
+  "Void": {
+   "core": "#F6F0FF",
+   "mid": "#E2D0FF",
+   "deep": "#A97CFF",
+   "edge": "#5B3FB8"
   }
  },
  "meshes": {
@@ -711,6 +717,33 @@
   },
   "fx_ribs_Ember": {
    "file": "images/fx_ribs_Ember.png",
+   "pixels": [
+    64,
+    256
+   ],
+   "for": "MeshPart.TextureID: a lantern's ribs on a shell or a column",
+   "alpha": "opaque"
+  },
+  "fx_across_Void": {
+   "file": "images/fx_across_Void.png",
+   "pixels": [
+    128,
+    256
+   ],
+   "for": "MeshPart.TextureID: a coil's strands, the crescent",
+   "alpha": "opaque"
+  },
+  "fx_rise_Void": {
+   "file": "images/fx_rise_Void.png",
+   "pixels": [
+    64,
+    256
+   ],
+   "for": "MeshPart.TextureID: the column, the hoop, a shell, chips",
+   "alpha": "opaque"
+  },
+  "fx_ribs_Void": {
+   "file": "images/fx_ribs_Void.png",
    "pixels": [
     64,
     256

@@ -12,9 +12,11 @@ Two views: the player's camera at the Forge's prompt, turned to it, as the Forge
 court, turned to the plot's middle, as the generator, the Forge and the Training machine go to Stage II together (a
 base level-up). Rendered in Blender; nothing is seen in Studio.
 
-blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> render forge|court [A|C ...]
-blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> sheet
+blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> render forge|court [A|C ...] [void]
+blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> sheet [void]
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> movie forge|court
+
+`void` draws the colour pass, in the void's light (LOOKS); without it, the grey block. Give each its own out_dir.
 """
 
 import json
@@ -25,6 +27,23 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 GREY = "#F2EEFA"                 # the block's light: near white, a breath of the void's violet
+# The looks. Each part's colour runs up it (z 0 its foot, 1 its top) through (z, colour) stops. The void's is the colour
+# pass, as the game draws it from the kit (AR37, "The colour pass"): the hoop and the shaft are FxColumn in fx_rise_Void
+# (tools/blender/fx_kit.py, its Void palette; the hoop turned over, so the core is its top edge), their ladder's stops
+# here where fx_rise puts them; the thrown ring is a short FxColumn in Neon, the game's Void violet; the light in that
+# violet; the Highlight's fill near white, its outline the violet.
+VOID = dict(core="#F6F0FF", mid="#E2D0FF", deep="#A97CFF", foot="#7A57D4", neon="#B58CFF")   # foot: fx_rise's V 1
+LOOKS = {
+    "grey": dict(said="in grey", hoop=[(0, GREY), (1, GREY)], hoop_floor=0.0, hoop_power=2.5,
+                 shaft=[(0, GREY), (1, GREY)], thrown=GREY, thrown_upright=False, light=GREY, fill=GREY, line=GREY,
+                 thrown_glow=2.4, shaft_glow=2.2),
+    "void": dict(said="in the void's light", hoop=[(0, VOID["foot"]), (0.18, VOID["deep"]), (0.55, VOID["mid"]), (1, VOID["core"])],
+                 hoop_floor=0.45, hoop_power=1.2,
+                 shaft=[(0, VOID["core"]), (0.45, VOID["mid"]), (0.82, VOID["deep"]), (1, VOID["foot"])],
+                 thrown=VOID["neon"], thrown_upright=True, light=VOID["neon"], fill="#EEE4FF", line=VOID["neon"],
+                 thrown_glow=1.6, shaft_glow=1.5),
+}
+LOOK = LOOKS["grey"]
 RATE = 30                        # frames drawn a second
 BEATS = dict(rise=33, swap=35, peak=37, end=63)   # at 60: the climb's top, the swap, the cover's last full frame, gone
 BEFORE, AFTER = 0.1, 0.12        # seconds drawn before the climb starts and after it's gone
@@ -37,6 +56,7 @@ FILL_FROM = 12                   # at 60: the cover, a Highlight: the old model'
 COOL = 56                        # at 60: the new model's fill is gone
 LINE_FROM, LINE_GONE = 6, 60     # at 60: the outline comes in as the climb leaves the ground, and goes last
 CLIMB = 2.6                      # the climbing hero's light at its top
+THROWN_TALL = (0.3, 0.02)        # the void look's thrown ring, an upright band: studs, plus a share of r
 
 
 def clamp(v, lo=0.0, hi=1.0):
@@ -58,9 +78,10 @@ def span(f, a, b):
 
 # --- the parts: plain meshes, one material each, set frame by frame ---------------------------------------------------
 
-def light_material(name, power=1.0, floor=1.0, attribute=False):
+def light_material(name, power=1.0, floor=1.0, attribute=False, colours=None):
     """Additive light, as a Neon part or a LightEmission 1 Beam: emission over a clear surface. Up the shape (its
-    Generated Z), the light goes as floor + (1 - floor) * z^power, so a band can carry a bright top edge."""
+    Generated Z), the light goes as floor + (1 - floor) * z^power, so a band can carry a bright top edge, and its
+    colour runs through `colours`, (z, colour) stops (one colour, the look's, if none)."""
     import bpy
     import lantern_row_look as look
     mat = bpy.data.materials.new(name)
@@ -95,7 +116,15 @@ def light_material(name, power=1.0, floor=1.0, attribute=False):
     else:
         links.new(add.outputs[0], strength.inputs[0])
     em, clear, both = nodes.new("ShaderNodeEmission"), nodes.new("ShaderNodeBsdfTransparent"), nodes.new("ShaderNodeAddShader")
-    em.inputs["Color"].default_value = (*look.srgb(GREY), 1)
+    stops = colours or [(0, LOOK["fill"]), (1, LOOK["fill"])]
+    ramp = nodes.new("ShaderNodeValToRGB")
+    elements = ramp.color_ramp.elements
+    while len(elements) < len(stops):
+        elements.new(0.5)
+    for element, (z, code) in zip(elements, stops):
+        element.position, element.color = z, (*look.srgb(code), 1)
+    links.new(sep.outputs["Z"], ramp.inputs["Fac"])
+    links.new(ramp.outputs["Color"], em.inputs["Color"])
     links.new(strength.outputs[0], em.inputs["Strength"])
     links.new(clear.outputs[0], both.inputs[0])
     links.new(em.outputs[0], both.inputs[1])
@@ -228,14 +257,17 @@ def highlight(px, mask, fill, line):
     """A Highlight with DepthMode Occluded, drawn as Roblox draws one, over the finished frame: the fill a flat colour
     over the model's visible pixels, the outline a line OUTLINE_PX wide round them. `mask` is those pixels, 0 to 1."""
     import numpy as np
-    colour = np.array([int(GREY[k:k + 2], 16) / 255 for k in (1, 3, 5)], np.float32)
+
+    def code(c):
+        return np.array([int(c[k:k + 2], 16) / 255 for k in (1, 3, 5)], np.float32)
+
     grown, r = mask.copy(), int(math.ceil(OUTLINE_PX))
     for dy in range(-r, r + 1):
         for dx in range(-r, r + 1):
             if dx * dx + dy * dy <= OUTLINE_PX * OUTLINE_PX:
                 grown = np.maximum(grown, np.roll(np.roll(mask, dy, axis=0), dx, axis=1))
-    a = (fill * mask + line * np.clip(grown - mask, 0, 1))[..., None]
-    px[..., :3] = px[..., :3] * (1 - a) + colour * a
+    a_fill, a_line = (fill * mask)[..., None], (line * np.clip(grown - mask, 0, 1))[..., None]
+    px[..., :3] = px[..., :3] * (1 - a_fill - a_line) + code(LOOK["fill"]) * a_fill + code(LOOK["line"]) * a_line
     return px
 
 
@@ -247,6 +279,7 @@ class Landing:
     def __init__(self, scene, tag, old, new):
         import bpy
         from mathutils import Vector
+        import lantern_row_look as look
         self.old, self.new = old, new
         bpy.context.view_layer.update()
         corners = [o.matrix_world @ Vector(c) for o in (old + new) for c in o.bound_box]
@@ -257,12 +290,17 @@ class Landing:
         self.w, self.d = hi.x - lo.x, hi.y - lo.y
         self.r = 0.5 * math.hypot(self.w, self.d) + 0.6
         self.h = hi.z - self.foot + 0.5
-        self.hoop = Part(scene, f"{tag}Hoop", band(), power=2.5, floor=0.0)
-        self.thrown = Part(scene, f"{tag}Thrown", ring(inner=0.93))
-        self.shaft = Part(scene, f"{tag}Shaft", shaft(), power=1.0, floor=1.0)
+        self.hoop = Part(scene, f"{tag}Hoop", band(), power=LOOK["hoop_power"], floor=LOOK["hoop_floor"],
+                         colours=LOOK["hoop"])
+        if LOOK["thrown_upright"]:                          # the kit's depth rule: a short upright band, never edge-on
+            self.thrown = Part(scene, f"{tag}Thrown", band(96), colours=[(0, LOOK["thrown"]), (1, LOOK["thrown"])])
+        else:
+            self.thrown = Part(scene, f"{tag}Thrown", ring(inner=0.93))
+        self.shaft = Part(scene, f"{tag}Shaft", shaft(), power=1.0, floor=1.0, colours=LOOK["shaft"])
         self.coil = Coil(scene, f"{tag}Coil")
         data = bpy.data.lights.new(f"{tag}Light", "POINT")
-        data.color, data.use_shadow, data.shadow_soft_size = (0.95, 0.93, 1.0), False, 1.0
+        data.color = (0.95, 0.93, 1.0) if LOOK is LOOKS["grey"] else look.srgb(LOOK["light"])
+        data.use_shadow, data.shadow_soft_size = False, 1.0
         self.light = bpy.data.objects.new(f"{tag}Light", data)
         scene.collection.objects.link(self.light)
         self.parts = (self.hoop, self.thrown, self.shaft)
@@ -299,11 +337,14 @@ class Landing:
             light_z, light_power = h * 0.5, 0.8 * cover(f)[0]
         if direction in ("A", "C") and rise + 1 <= f <= 60:
             k = span(f, rise + 1, 60)
-            self.thrown.show(self.at(h), (r * (0.4 + 1.3 * ease_out(k)),) * 2 + (1.0,), 2.4 * (1 - k) ** 2)
+            tall = THROWN_TALL[0] + THROWN_TALL[1] * r       # the upright band's height, studs (the flat ring's is 1)
+            self.thrown.show(self.at(h - tall / 2 if LOOK["thrown_upright"] else h),
+                             (r * (0.4 + 1.3 * ease_out(k)),) * 2 + ((tall if LOOK["thrown_upright"] else 1.0),),
+                             LOOK["thrown_glow"] * (1 - k) ** 2)
         if direction in ("A", "C") and BEATS["swap"] <= f <= 50:
             k = span(f, BEATS["swap"], 50)
             thick = 0.35 - 0.25 * k
-            self.shaft.show(self.at(h), (thick, thick, 0.6 * h * ease_out(k) + 0.1), 2.2 * (1 - k) ** 2)
+            self.shaft.show(self.at(h), (thick, thick, 0.6 * h * ease_out(k) + 0.1), LOOK["shaft_glow"] * (1 - k) ** 2)
         self.light.location = self.at(light_z)
         self.light.data.energy = 9000.0 * light_power * (r / 8.0)
         self.light.hide_render = light_power <= 0.0
@@ -482,8 +523,8 @@ def sheet(out):
     ui.K = 1
     page = ui.Sheet(width, height, "#14151C")
     t = page.tile(0, 0, page.w, page.h)
-    t.text(gap, 14, 20, "Grow your Anime, a stage lands (AR37): the cover in the machine's own shape, at the beats, in grey",
-           "#EDE6D6", bold=0.2)
+    t.text(gap, 14, 20, f"Grow your Anime, a stage lands (AR37): the cover in the machine's own shape, at the beats, "
+                        f"{LOOK['said']}", "#EDE6D6", bold=0.2)
     for k, (said, f60) in enumerate(beats):
         t.text(150 + gap + k * (tw + gap), 42, 14, f"{said}, frame {f60} at 60", "#B4AC9C")
     y = 62
@@ -496,7 +537,7 @@ def sheet(out):
     notes = ["At the Forge: the player's camera at its prompt, turned to it, as it goes from Stage I to II. From the court: "
              "a player at the court's back turned to the plot's middle, as the generator, the Forge and the Training "
              "machine go to Stage II together.",
-             "The yard at base level 2 under the place's dusk, in Blender; the effect in grey (near-white light). Peak "
+             f"The yard at base level 2 under the place's dusk, in Blender; the effect {LOOK['said']}. Peak "
              "near-white share of the view, the frame's pixels at 243 or over (the vfx handbook's YAVG measure, in numpy): "
              + "; ".join(f"{dr} {v} {max(val for key, val in shares[v].items() if key.startswith(dr)):.1%}"
                          for v in ("forge", "court") for dr in drawn) + "."]
@@ -514,7 +555,8 @@ def sheet(out):
     sw = round(w * small / h)
     page = ui.Sheet(150 + len(beats) * (sw * blow + gap) + gap, 50 + len(rows) * (small * blow + gap) + 10, "#14151C")
     t = page.tile(0, 0, page.w, page.h)
-    t.text(gap, 14, 20, "A stage lands (AR37): the read at 64 pixels high, at the same beats", "#EDE6D6", bold=0.2)
+    t.text(gap, 14, 20, f"A stage lands (AR37), {LOOK['said']}: the read at 64 pixels high, at the same beats", "#EDE6D6",
+           bold=0.2)
     y = 48
     for view, direction in rows:
         t.text(gap, y + small * blow // 2 - 10, 14, f"{direction}, {'at the Forge' if view == 'forge' else 'the court'}",
@@ -534,8 +576,8 @@ def sheet(out):
         block = math.ceil(n / cols) * (qh + 22)
         page = ui.Sheet(cols * (qw + 8) + 2 * gap, 60 + 2 * (block + 30) + 40, "#14151C")
         t = page.tile(0, 0, page.w, page.h)
-        t.text(gap, 14, 20, f"A stage lands (AR37), {direction}, {NAMES[direction]}: every frame at 30 a second", "#EDE6D6",
-               bold=0.2)
+        t.text(gap, 14, 20, f"A stage lands (AR37), {direction}, {NAMES[direction]}, {LOOK['said']}: every frame at 30 a "
+                            "second", "#EDE6D6", bold=0.2)
         y = 50
         for view in ("forge", "court"):
             t.text(gap, y, 14, "at the Forge" if view == "forge" else "from the court", "#B4AC9C")
@@ -582,8 +624,10 @@ def movie(out, view):
 
 def main():
     import blcommon as bl
+    global LOOK
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
+    LOOK = LOOKS["void" if "void" in args else "grey"]
     if args[0] == "render":
         render(out, args[1], [a for a in args[2:] if a in DIRECTIONS] or list(DIRECTIONS))
     elif args[0] == "sheet":

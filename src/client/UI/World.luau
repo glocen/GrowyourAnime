@@ -29,9 +29,16 @@
 --                                             base's plates stacked over the avatar on arrival)
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
+-- Roblox's own prompt cards are kept too: every prompt that shows is pushed under the top band (deeper where it would
+-- cross the lead's corner) and, where there's room, over the next step's chip, by its UIOffset (research's fix on AR16,
+-- 2026-11-17: the Breaker's "Open" stood over the Electricity pill on every visit). The card is Roblox's billboard, drawn
+-- round its point, its size read from it.
+--   World.PromptBox(prompt)                   its card on the screen now, viewport pixels: for tests
+--   World.BandFoot()                          the band's foot in the viewport's pixels, or nil before the HUD set it
 
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 local RunService = game:GetService("RunService")
 
 local HudConfig = require(game:GetService("ReplicatedStorage").Shared.Config.Hud)
@@ -55,6 +62,9 @@ local spans: { Span } = {} -- the same pieces one by one, and a toast stack whil
 local floor: number? = nil -- the top bar's foot: an open plate never stands over it
 local leadCorner: Span? = nil -- the lead's corner under its card, its margin included: a plate kept under the band keeps right of it
 local foot: GuiObject? = nil -- the HUD's piece over the dock, the next step's chip (HudController)
+local prompts: { [ProximityPrompt]: boolean } = {} -- the prompts showing now
+-- Roblox's card for a two-word prompt, GUI pixels (measured 2026-11-17): where its billboard can't be read.
+local PROMPT_CARD = Vector2.new(164, 72)
 
 function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: number?): Frame
 	local frame = Instance.new("Frame")
@@ -272,6 +282,107 @@ function World.Remove(frame: Frame)
 	plates[frame] = nil
 	frame:Destroy()
 end
+
+function World.BandFoot(): number?
+	if band == nil then
+		return nil
+	end
+	return Layers.Get("World").AbsolutePosition.Y + band * Layers.Scale() + GuiService:GetGuiInset().Y
+end
+
+-- A prompt's point: its part's middle or its attachment's place.
+local function promptPoint(prompt: ProximityPrompt): Vector3?
+	local parent = prompt.Parent
+	if parent and parent:IsA("BasePart") then
+		return parent.Position
+	elseif parent and parent:IsA("Attachment") then
+		return parent.WorldPosition
+	end
+	return nil
+end
+
+-- Its card's size, GUI pixels, from Roblox's billboard for it while it shows.
+local function promptCard(prompt: ProximityPrompt): Vector2
+	local gui = Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	local holder = if gui then gui:FindFirstChild("ProximityPrompts") else nil
+	if holder then
+		for _, item in holder:GetChildren() do
+			if item:IsA("BillboardGui") and item.Adornee == prompt.Parent and item.AbsoluteSize.X > 0 then
+				return item.AbsoluteSize
+			end
+		end
+	end
+	return PROMPT_CARD
+end
+
+-- The card round its point, less its offset: a UIOffset's Y counts up the screen (measured 2026-11-17).
+function World.PromptBox(prompt: ProximityPrompt): (Vector2?, Vector2?)
+	local camera = workspace.CurrentCamera
+	local point = promptPoint(prompt)
+	if camera == nil or point == nil then
+		return nil, nil
+	end
+	local screen = camera:WorldToViewportPoint(point)
+	if screen.Z <= 0 then
+		return nil, nil
+	end
+	local half = promptCard(prompt) / 2
+	local middle = Vector2.new(screen.X + prompt.UIOffset.X, screen.Y - prompt.UIOffset.Y)
+	return middle - half, middle + half
+end
+
+ProximityPromptService.PromptShown:Connect(function(prompt: ProximityPrompt)
+	prompts[prompt] = true
+end)
+ProximityPromptService.PromptHidden:Connect(function(prompt: ProximityPrompt)
+	prompts[prompt] = nil
+end)
+
+-- Each prompt showing: under the band, deeper where it crosses the lead's corner; then over the chip, if that keeps it under
+-- the band. Viewport pixels throughout.
+RunService:BindToRenderStep("NL_WorldPrompts", Enum.RenderPriority.Camera.Value + 3, function()
+	local camera = workspace.CurrentCamera
+	if camera == nil then
+		return
+	end
+	local layer, scale, inset = Layers.Get("World"), Layers.Scale(), GuiService:GetGuiInset()
+	local origin = layer.AbsolutePosition + inset
+	for prompt in prompts do
+		if prompt.Parent == nil then
+			prompts[prompt] = nil
+			continue
+		end
+		local point = promptPoint(prompt)
+		if point == nil then
+			continue
+		end
+		local screen = camera:WorldToViewportPoint(point)
+		if screen.Z <= 0 then
+			continue
+		end
+		local size = promptCard(prompt)
+		local top = screen.Y - size.Y / 2
+		local edge = band
+		local ceiling: number? = if edge then origin.Y + edge * scale else nil
+		local side = leadCorner
+		if side and ceiling then
+			local left, right = (screen.X - size.X / 2 - origin.X) / scale, (screen.X + size.X / 2 - origin.X) / scale
+			if side.Left < right and side.Right > left then
+				ceiling = math.max(ceiling, origin.Y + side.Edge * scale)
+			end
+		end
+		local under: number = if ceiling then ceiling else -math.huge
+		local push = math.max(0, under - top)
+		local chip = World.FootTop()
+		if push == 0 and chip and top + size.Y > chip then
+			push = math.max(chip - size.Y - top, under - top)
+		end
+		local want = Vector2.new(0, -math.round(push))
+		if prompt.UIOffset ~= want then
+			prompt.UIOffset = want
+		end
+	end
+end)
 
 RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value + 2, function(dt: number)
 	local layer = Layers.Get("World")

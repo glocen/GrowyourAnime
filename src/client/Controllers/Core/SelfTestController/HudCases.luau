@@ -678,6 +678,39 @@ function HudCases.Cases(given: Given): { any }
 					end
 					Layers.Box(nil)
 					Layers.Force(nil)
+					t.Wait(0.1)
+					-- Roblox's own prompt, its point aimed at the Electricity pill: its card stands under the band, clear of the
+					-- pill (research's fix on AR16, 2026-11-17: "Void Breaker · Open" stood over it on every visit).
+					local prompt = BaseController.Parts().BreakerPrompt :: ProximityPrompt?
+					local pill = hud.Electricity
+					local spot = if prompt and prompt.Parent and prompt.Parent:IsA("BasePart") then prompt.Parent.Position else nil
+					t.Check("the Breaker's prompt shows", prompt ~= nil and spot ~= nil and waitFor(t, 1, function(): boolean
+						local gui = Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+						local holder = if gui then gui:FindFirstChild("ProximityPrompts") else nil
+						for _, item in if holder then holder:GetChildren() else {} do
+							if item:IsA("BillboardGui") and item.Adornee == (prompt :: ProximityPrompt).Parent then
+								return true
+							end
+						end
+						return false
+					end))
+					if prompt and spot and pill then
+						local inset = GuiService:GetGuiInset()
+						local aim = pill.AbsolutePosition + pill.AbsoluteSize / 2 + inset
+						camera.CFrame = CFrame.lookAt(from, spot)
+						local aside = camera.CFrame:VectorToObjectSpace(camera:ViewportPointToRay(aim.X, aim.Y).Direction)
+						camera.CFrame *= CFrame.fromRotationBetweenVectors(aside, Vector3.new(0, 0, -1))
+						for _ = 1, 3 do
+							RunService.RenderStepped:Wait()
+						end
+						local seen = camera:WorldToViewportPoint(spot)
+						t.Check("its point stands on the pill", math.abs(seen.Y - aim.Y) < pill.AbsoluteSize.Y and math.abs(seen.X - aim.X) < pill.AbsoluteSize.X / 2, string.format("%.0f,%.0f against %.0f,%.0f", seen.X, seen.Y, aim.X, aim.Y))
+						local c0, c1 = World.PromptBox(prompt)
+						local foot = World.BandFoot()
+						t.Check("its card stands under the band", c0 ~= nil and foot ~= nil and c0.Y >= foot - 1, string.format("its top %.1f, the band's foot %.1f", if c0 then c0.Y else -1, foot or -1))
+						local p0, p1 = pill.AbsolutePosition + inset, pill.AbsolutePosition + pill.AbsoluteSize + inset
+						t.Check("clear of the pill", c0 ~= nil and c1 ~= nil and (c0.Y >= p1.Y - 0.5 or c1.Y <= p0.Y + 0.5 or c0.X >= p1.X - 0.5 or c1.X <= p0.X + 0.5))
+					end
 					camera.CameraType = Enum.CameraType.Custom
 					t.Wait(0.1)
 				end

@@ -9469,4 +9469,17 @@ Made on research's line 4, with its camera of 08:16. `tools/blender/lyric_combo_
 - **Time:** 08:48 to 08:53 and 09:04 to 09:10 by the clock, around Pip's fixes. The cap is 2 hours at its block.
 
 
+## AR27. The idles without the glance (Modulo, then Faber)
+
+Research's request, 2026-11-17, 10:10, on the director's word (`docs/decisions.md`): "this weird tic in their idle animation where they head tilt on the side".
+- **The cause, read in the clip scripts:** Pip's, Lyric's, Kirra's and Watt's idles each turn the head 40° to 70° aside once a loop, with a 4° to 6° tilt (`H` and `look` in `tools/blender/*_clips.py`, `idle`). Every loop repeats it, so it reads as a tic, not a thought. Rook's idle has none.
+- **The fix, one class:** no idle turns or tilts the head on its own. The head stays level and faces front through the whole loop. Its life is the stance, the breath, and the Voidkin's own secondary motion: Pip's lantern, Lyric's chin on the beat, Kirra's scarf and tail, Watt's stillness.
+- **Also check:** a head that tips with the torso's lean (Watt's idle rolls the torso). If it reads cocked from the game's camera, it counter-rolls to level.
+- **Feel line:** from the game's camera, each Voidkin waits in its own stance and breathes, and nothing in its loop catches the eye as a twitch.
+- **Scope:** the four idles, re-exported, then Faber's upload and install. **Waits:** the redesigns redraw the idles whole, keeping this rule.
+- **Order:** after the AR26 attack in hand. A small edit to each script: a block, not a signature.
+- **Research's check:** one loop of each from the game's camera, at phone size, in motion.
+
+## Later, by ground
+
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

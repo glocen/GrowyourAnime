@@ -8509,6 +8509,13 @@ Part 7's size is picked: plots of 128, 32 apart, the crossing one plot wide, End
   - The crack still leads the eye to each gate, and the posts frame the mouths without closing them.
   - Fix 3 holds: the great shard reads at 3.7 to 1 from the farthest gate, above the 3.2 passed.
   - **Next:** Faber installs, then checks the 2.5 glow in the engine. Research's in-game read comes from a phone capture at the crossing.
+- **The upload check on the meshes (Modulo, 2026-11-17, 16:12 to 16:16 by the clock): PASS.** This answers Faber's ask, the 2026-11-16 condition "Before any upload, the meshes get a sheet at full size and at 64 px".
+  - **The sheet:** `build/handoff/Strip/strip_meshes_sheet.png`, from the new `tools/blender/mesh_sheet.py`. It reads each of the 12 mesh JSONs back from `meshes/`, so it shows the files Faber uploads. Each is shown grey from the front three-quarter, then in Base_Kit_Color from the front three-quarter and from above, then at 64 px over dark and over bright. 2,128 triangles in all.
+  - **What the check found:** nothing taken from another work. No gore: the cracks are hard-edged and taper to points; the well is a matte hole with a hard edge. No hate symbol: the gate's lock reads as a latch, and the ring and well have no spokes or cross. Nothing sexual in any silhouette.
+  - **Its conditions,** on top of the earlier ones (violet-white and cyan only; the well matte, hard-edged and still; no "Eye" in a name players see; each mesh logged in `docs/asset-log.md` at upload):
+    1. Anything taken from straight above (a minimap, an icon, a thumbnail) must not read as a three-pointed star in a circle. That's the CrossingShard's three parts over CrossingMark's ring. The meshes alone don't raise it.
+    2. StripPost's ring always holds its glowing shard. Never empty, never hung by a rope or chain, never lowered toward head height; any of these gets a fresh check.
+  - **For Faber:** the 12 meshes are cleared for upload.
 
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 

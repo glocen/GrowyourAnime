@@ -12224,6 +12224,12 @@ Destroy the Highlight at 60: a disabled one still holds a slot. On a base level-
 - **Tested:** the flash guard's check above; the content check PASS.
 - **Visually reviewed:** my own read.
 - **Director-accepted:** no.
+- **Research's read of the colour pass (Quaestor, 2026-11-17, 21:03): passed, competent; Faber builds** (21f601d; the beats, the 64 px sheet and both videos frame by frame).
+  - **Felt:** a violet hoop climbs the machine, its light running up the frame. At the top, the old shape glows lavender, swaps, and cools into the new one, as the throw opens over it. It's the void's own light, never a welder's.
+  - **The bold thing** holds at 64 px, at the Forge and from the court: the glowing silhouette.
+  - **Modulo's tier-1 change stands:** the thrown ring as a short upright band, so it never goes edge-on at the camera's height.
+  - **The flash guard** reads lower than grey's, with no saturated red.
+  - **What the sheets can't show,** first seen in Faber's build: the Highlight's fill in Roblox's own renderer at the court's distance, and a base level-up's three machines starting on one frame. Those are research's read in the game. The sound waits for the director's samples.
 
 ## Later, by ground
 

@@ -8946,6 +8946,65 @@ Research's word with 22c0d60 (02:21): "AR24, the chest opening's look, can start
   3. **The band's body is translucent:** the bag shows faintly through it, and the cover rises only behind the words.
 - **Modulo's proposal is taken** for every open: the best's moment scales with its rarity. A Common best gets the size-up only, with no lines. An Uncommon gets its colour on the rim and the stripe. From Rare up, it gets the full burst. How many lines, how long and the hold are numbers in `Config.Chests.Opening`.
 - **Next:** Modulo redraws B's settled band and one chest with the three fixes. Then Faber's block (TR34), and research's verdict in motion from a phone capture: up close, every state, beside a shipped anime game's reward screen.
+## AR25. Sable (Modulo, then Faber)
+
+Research's request, 2026-11-17, 02:36, at Modulo's ask ("Sable is next in the roster's order").
+- **His row** in `docs/roster.md`: Uncommon, Technique, Assassin, no element, Zone 1. The look rules are in the roster's "The look".
+- **Why he matters:** he's Lantern Row's only Uncommon, so for most players he's the first shard that isn't Common. He's also the gap the shards roll today (TR24, Sable's guard).
+- **The cap goes** (research's call, on Modulo's flag): the row's feathered cap reads as a period costume, the corny the director rejected in Watt. The duelist lives in the silhouette, the stance and the rapier.
+
+**Feel line:** the first Uncommon you pull, and he looks like he knows it. A duelist with poise, known at 64 px by his stance and the thin line of his rapier, who waits for the blow and makes the Shade sorry it threw one.
+
+**Signature feel line, Riposte** (its function unchanged): he sets his guard, the next blow glances off his blade in one bright spark, and he's through the attacker in a single lunge before it lands.
+
+**What stays:** his row's numbers, Riposte's and Footwork's functions, and his bay aptitude.
+
+**Delivers,** each shown before the next, as Watt's (AR11):
+1. **Three takes,** for research's pick.
+   - **How they're drawn:** as Watt's. In grey on the R6 body with one accent; front and three-quarter from the game's camera; at 64 px over noon and night; each face close up; quick blockouts.
+   - **The limit:** each take is a different anime cast member inside an Uncommon's limit: three or four elements and one accent of its own, apart from every lead's and every rarity's colour.
+     - **A, the heir:** composed and cold.
+       - A fitted, high-collared short jacket, with a short half-cape pinned on one shoulder only.
+       - Pale hair in sharp clumps, with a long fringe over one eye.
+       - A slim rapier with a swept guard at the hip.
+       - Narrow eyes and a faint smile.
+     - **B, the show-off:** cocky.
+       - A cropped open jacket with its sleeves pushed up, over a high-necked sleeveless top, and one long glove.
+       - Hair cut short at the sides, its long top falling forward in sharp points.
+       - A dark-bladed rapier worn across the small of his back.
+       - A grin.
+     - **C, the quiet prodigy:** soft-spoken.
+       - A long open coat over a loose shirt with a ribbon tie, its collar turned up on one side.
+       - Wavy, shoulder-length hair tied low.
+       - The rapier in a plain pale scabbard, carried in his hand, never worn.
+       - Gentle eyes you can't read.
+   - At 64 px his outline parts from every lead before him, Kirra's blades and Watt's spear included. The rapier reads as a thin line, never a stick.
+   - **The pick:** research's, with `ga-fresh-eyes`, judged against a real anime's cast. It goes to the director as a notice, not a gate.
+2. **The model** on R6, from the picked take: the hair, the clothes, the face, the rapier, and the places an effect starts (the blade's point, the guard).
+3. **The clips,** as Pip's set:
+   - Idle, in his stance;
+   - Combo: quick and light, the Assassin's way (`docs/design.md`);
+   - Riposte;
+   - Hit, Down and Up;
+   - Reveal: the first Uncommon, so it lands his poise in one beat;
+   - Work: his own way of making power, never a trade's.
+4. **Riposte's look,** with the builder in the same session (`/ga-action`):
+   - **One hero shape:** the lunge's straight line, from his guard through the target, with a sharp acceleration.
+   - **The parry:** one spark on the blade, in his accent.
+   - **No element,** so its light is his accent and white.
+
+**Waits:**
+- his install;
+- Riposte's guard and Footwork as data (Faber's);
+- his sounds.
+
+**Checks:**
+- the content check on the takes and before every upload;
+- research's verdict on the takes, the clips and the final in motion;
+- `ga-fresh-eyes` on the takes, and on Riposte at its blockout and final.
+
+**Time it:** each delivery records what it took. The takes: 1 to 2 hours, forecast.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

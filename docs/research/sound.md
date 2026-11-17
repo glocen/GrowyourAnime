@@ -124,6 +124,53 @@ The director's second ask, 2026-11-15: "research about pro sfx, anime sfx like f
   - **Against our rules:** it breaks rule 2's terms for our own sounds (no website, sign-up or account). Clean commercial rights also cost money (rule 1). Using it means changing the core, which only the director's yes to a restatement can do.
   - **Research's recommendation: curate Roblox's library.** It holds more than 100,000 professionally produced sounds from licensed partners, free, under today's rules ([audio assets](https://create.roblox.com/docs/audio/assets)). What failed before was the process, not the source: one blind pick per cue. The method above fixes that: five candidates per cue, levelled, picked by the director's ear in a fight, layered at runtime, with our own synthesis for the sub, whooshes and UI.
 
+## Long ultimates: phases that hold as one piece
+
+Research, 2026-11-17, 14:20, on the director's worry: "a long ultimate skills that require a well mixed up phases of sfx that fit perfectly and well timed should we do more study on this?". It's a web study by a research agent, its own pages read. **The gap:** no developer has written how a Street Fighter 6, Guilty Gear, Tekken, Genshin, Star Rail or Zenless ultimate's sound is built, in English, Japanese or Chinese. Anything about those games is UNVERIFIED.
+
+**Timing is the solved half.** Each phase's sound plays on the clip's own marker, as the effects already do. Roblox's `AudioPlayer:Play(atTime)` can be scheduled against `SoundService:GetMixerTime()`, "for sample-accurate, framerate-independent timing", and `Cancel()` withdraws a scheduled play. A client's animations replicate, so each client plays the phases from the markers it sees, with no message per phase. SOURCED: [AudioPlayer](https://create.roblox.com/docs/reference/engine/classes/AudioPlayer.md), [Animator](https://create.roblox.com/docs/reference/engine/classes/Animator.md).
+
+**The arrangement is the hard half.** What the sources say:
+- **One family per fighter, in one key.** Riot keeps a champion's whole kit, its ultimate included, in one palette: Ahri's fox, Teemo's pentatonic scale, Kindred's aquaphone. A kit's identity lives in each ability's first second. SOURCED: [Riot](https://www.leagueoflegends.com/en-gb/news/dev/the-frequencies-of-folklore/). **Ours:** each Voidkin gets a key and a motif, so a multi-hit steps up the scale and still reads as one phrase.
+- **A bed under the whole ability, and a mix state for its length.** Apex's Bloodhound ultimate plays a drone of breaths and synths throughout, raises enemies' sounds and lowers his own. SOURCED: [A Sound Effect](https://www.asoundeffect.com/apex-legends-sound/). Mortal Kombat 1 ducks so "each hit punches through", and puts both fighters' screams on the climax. SOURCED: [A Sound Effect](https://www.asoundeffect.com/mortal-kombat-1-game-audio/).
+- **Tension:** a Shepard tone keeps rising for any length (The Dark Knight's Batpod, Dunkirk), so a charge of varying length can loop and still climb. SOURCED: [Wikipedia](https://en.wikipedia.org/wiki/Shepard_tone).
+- **Silence before the hit:** "a beat of silence just before the impact" ([Sound On Sound, 2013](https://www.soundonsound.com/techniques/sound-design-visual-media-radio)). The mix itself can make it: the big sound's envelope ducks everything just before it lands ([Designing Sound, 2013](https://designingsound.org/2013/06/21/finding-your-way-with-high-dynamic-range-audio-in-wwise/)). SOURCED.
+- **Fewer, bigger layers.** Gundam: The Origin's sound effects lead: "if you put in too many tiny sounds, it actually feels like something's off." SOURCED: [interview](https://www.gundam-the-origin.net/en/special/interview39.html).
+- **The phases build by width, not volume:** the wind-up narrow, the hits wider, the sub held back for the finale, which is the only full-band moment, under a master limiter. UNVERIFIED, common practice.
+- **Several ultimates at once:** Overwatch ranks other players in the mix by their threat to the listener. SOURCED: [PCGamesN](https://pcgamesn.com/overwatch/overwatch-devs-on-creating-a-game-you-can-play-by-sound-and-announcing-dolby-atmos-support). **Ours:** your own ultimate and anything hitting you on top; other players' thinned to their claim and finale.
+- **Cancels:** a sound fired from an animation plays on after a cancel unless it has its own stop ([Unreal forum](https://forums.unrealengine.com/t/how-to-stop-sounds-played-with-notify-playsound-in-animinstance/362986)). In slow motion the start and end keep normal speed, and impacts swap to slow takes rather than being pitched down alone ([CRIWARE, 2024](https://blog.criware.com/index.php/2024/06/03/bullet-time/)). SOURCED.
+- **An outcome waits for the server.** Street Fighter 6 delayed its commentary 0.3 s so rollback couldn't make it "lie". SOURCED: [Den Faminico Gamer, CEDEC 2023](https://news.denfaminicogamer.jp/kikakuthetower/230824s/2). **Ours:** a kill or break sting waits for the server's word; the phases play off the local clip.
+- **Roblox's tools for it:**
+  - `AudioCompressor` has a sidechain and an attack down to 0.1 ms, fast enough to duck under a hit. The old `CompressorSoundEffect` can't go under 0.1 s.
+  - `AudioLimiter` is there for the master.
+  - `LoopRegion` loops a bed of any length from one file.
+  - SOURCED: [AudioCompressor](https://create.roblox.com/docs/reference/engine/classes/AudioCompressor.md), [AudioLimiter](https://create.roblox.com/docs/reference/engine/classes/AudioLimiter.md).
+- **Roblox's known traps,** from forum reports with no staff answer:
+  - a marker on a clip's last frame occasionally doesn't fire, so cleanup goes on `Stopped`;
+  - `PreloadAsync` does nothing for an `AudioPlayer`, so keep it parented and check `IsReady`;
+  - a start delay of about 0.1 s was reported and never resolved.
+  - **Faber measures our own start delay before any frame-tight cue is trusted.** SOURCED as reports: [2088994](https://devforum.roblox.com/t/2088994), [4819196](https://devforum.roblox.com/t/4819196), [2961664](https://devforum.roblox.com/t/2961664).
+- **Music, cheapest first** (DESIGN; our music isn't on a beat):
+  1. duck it under the ultimate and let it come back after;
+  2. the same, with one sting in the fighter's key on the finale;
+  3. a hard cut at the drop-out, for a signature only.
+
+**The cue sheet,** one per ultimate, filled before its sounds are picked (DESIGN, from the above; numbers are seeds for the ear). Its head sets the length, key, motif, bed, music option, which cues wait for the server, and what a cancel does.
+
+| # | Phase | Marker | Enters | Leaves | Pitch, rhythm | Notes |
+|---|---|---|---|---|---|---|
+| 0 | Claim | `ult_claim` | voice or motif sting | | the root | reads in its first second; others hear only this and the finale |
+| 1 | Charge | `ult_charge` | the bed (looped), a riser | | rising, pulses quickening | no sub yet |
+| 2 | Release | `ult_release` | the release's snap, a whoosh | the riser | a jump to the fifth or octave | narrow band |
+| 3 | Hits or travel | `ult_hit_N` | one layer per hit, takes in turn | | a step up the scale per hit | each hit its own event, so the count can vary |
+| 4 | Drop-out | `ult_drop` | an inhale, optional | the bed, the tails, the lows | | 4 to 15 frames of near-silence; skipped under 4 |
+| 5 | Finale | `ult_finale` | the full band: impact, sub, voice | | back to the root | the only full-band moment; its outcome sting waits for the server |
+| 6 | Aftermath | `ult_tail`, never the last frame | tail, debris, the bed resolving | everything else | the root | ducks release over 1 to 2 s; cleanup on `Stopped` |
+
+**A cancel:** in phases 0 to 1, the bed and riser fade out over 80 to 150 ms and a short fizzle in key plays. In 2 to 3, the scheduled hits are cancelled and the last hit's tail stays. From 4 on, the ultimate is committed and plays out.
+
+**What this means for the worry:** the risk is real, but it's a method, not luck. A sheet per ultimate fixes the phases before any sound is chosen. The director's samples calibrate each family, and the director's ear picks each layer inside its phase. Then the ultimate is heard whole, in a fight, from a phone. **The first test** is one ultimate taken end to end through the sheet when the Voidkin work resumes. It's judged by the director before the sheet is used for the rest.
+
 ## Picking by the director's ear
 
 - **Search every author** (the director, 2026-11-15). Rule 2's order stays a preference: Roblox and its licensed partners first in the ranking. Any author's sound is taken when it's the best by ear. It's logged with its uploader, and gets a licensed alternate where one exists, so a claim is a one-line swap.

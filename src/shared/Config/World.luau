@@ -28,7 +28,7 @@ return {
 		Tower = 2, -- the Tower's footprint, 32 studs, left empty (phase 3)
 		-- The size the base plan's layout and its floor pictures are drawn for (AR16). A plot of another size stands grey,
 		-- on Fit's layout for its size: part 7's trial.
-		Drawn = 12.5,
+		Drawn = 8,
 	},
 
 	-- The base's three sizes in grey (docs/research/rework-2026-11-16.md, part 7): 128, 144 and 160 studs square, 32

@@ -317,7 +317,7 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: from the spawn, AR16, no machine's plate covers another's, each kept under the top band",
+			Name = "Base: from the spawn, AR16, no machine's plate speaks (each only near its machine); at the Breaker its plate speaks, covering none, under the top band",
 			Run = function(t: any)
 				local old = Players.LocalPlayer.Character
 				t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, 8, function(): boolean
@@ -328,17 +328,50 @@ function BaseCases.Cases(given: Given): { any }
 				t.Wait(1.5) -- the camera settles behind the avatar, and the plates find their machines
 				local layer = Layers.Get("World")
 				local scale = Layers.Scale()
-				local shown: { GuiObject } = {}
-				for _, frame in layer:GetChildren() do
-					if frame:IsA("GuiObject") and frame.Visible and (PLATES[frame.Name] or string.match(frame.Name, "^Bay%d+$")) then
-						table.insert(shown, frame)
+				local function shown(): { GuiObject }
+					local list: { GuiObject } = {}
+					for _, frame in layer:GetChildren() do
+						if frame:IsA("GuiObject") and frame.Visible and (PLATES[frame.Name] or string.match(frame.Name, "^Bay%d+$")) then
+							table.insert(list, frame)
+						end
 					end
+					return list
 				end
-				t.Check("at least one machine's plate speaks at the spawn", #shown > 0, tostring(#shown))
+				-- Research's must-fix of 2026-11-17 (12:19): a plate speaks only near its machine, and the spawn stands about
+				-- 30 studs from the nearest at 128 (AR16, delivery 3).
+				local names: { string } = {}
+				for _, frame in shown() do
+					table.insert(names, frame.Name)
+				end
+				t.Check("none speaks at the spawn", #names == 0, table.concat(names, ", "))
+				-- At the Breaker: the avatar 7 studs short of its prompt's spot, facing it, the camera behind.
+				local prompt = BaseController.Parts().BreakerPrompt
+				local anchor = if prompt then prompt.Parent else nil
+				local root = t.Root()
+				t.Check("the Breaker's prompt to stand by", anchor ~= nil and anchor:IsA("BasePart") and root ~= nil)
+				if anchor == nil or not anchor:IsA("BasePart") or root == nil then
+					return
+				end
+				local away = Vector3.new(root.Position.X - anchor.Position.X, 0, root.Position.Z - anchor.Position.Z)
+				local dir = if away.Magnitude > 1e-3 then away.Unit else Vector3.new(0, 0, 1)
+				local target = Vector3.new(anchor.Position.X, root.Position.Y, anchor.Position.Z)
+				t.Server("TestStandAt", target + dir * 7, target)
+				local list: { GuiObject } = {}
+				t.Check("the Breaker's plate speaks there", waitFor(t, 3, function(): boolean
+					list = shown()
+					for _, frame in list do
+						if frame.Name == "Breaker" then
+							return true
+						end
+					end
+					return false
+				end), tostring(#list))
+				t.Wait(0.5) -- the camera settles behind the avatar
+				list = shown()
 				local crossed: { string } = {}
-				for i = 1, #shown do
-					for j = i + 1, #shown do
-						local a, b = shown[i], shown[j]
+				for i = 1, #list do
+					for j = i + 1, #list do
+						local a, b = list[i], list[j]
 						local apart = a.AbsolutePosition.X + a.AbsoluteSize.X <= b.AbsolutePosition.X
 							or b.AbsolutePosition.X + b.AbsoluteSize.X <= a.AbsolutePosition.X
 							or a.AbsolutePosition.Y + a.AbsoluteSize.Y <= b.AbsolutePosition.Y
@@ -351,13 +384,15 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("none covers another", #crossed == 0, table.concat(crossed, "; "))
 				local band = World.Edge()
 				local over: { string } = {}
-				for _, frame in shown do
+				for _, frame in list do
 					local top = (frame.AbsolutePosition.Y - layer.AbsolutePosition.Y) / scale
 					if band and top < band - 0.5 then
 						table.insert(over, `{frame.Name} at {math.floor(top)}`)
 					end
 				end
 				t.Check("each under the top band", #over == 0, `{table.concat(over, "; ")} over {tostring(band)}`)
+				t.Server("Respawn")
+				t.Wait(1)
 			end,
 		},
 		{

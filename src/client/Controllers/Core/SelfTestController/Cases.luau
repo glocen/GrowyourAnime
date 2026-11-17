@@ -6328,34 +6328,49 @@ local cases = {
 			if plate == nil then
 				return
 			end
-			local shard = "named_watt"
+			-- A shard breaking: a line of the plate's own (what's ready is the next step's line, left off the plate).
+			local shard = "lanternrow_standard"
+			local before = readyCount(shard)
 			local gave = t.Server("BaseGive", shard, 1)
-			t.Check("a shard in the bag: the plate has news", type(gave) == "table" and gave.Ok == true)
+			local added = type(gave) == "table" and gave.Ok == true and ProfileController.Act("AddShard", { Shard = shard }).Ok == true
+			t.Check("a shard breaking: the plate has a line", added)
 			local old = Players.LocalPlayer.Character
 			t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, ARRIVE_TIMEOUT, function(): boolean
 				local character = Players.LocalPlayer.Character
 				local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
 				return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
 			end))
-			t.Wait(PLATE_TICK * 2)
 			local prompt = BaseController.Parts().BreakerPrompt
 			local anchor = if prompt then prompt.Parent :: BasePart? else nil
+			-- A plate speaks only near its machine and hides over the avatar (research's must-fixes, 2026-11-17): the avatar
+			-- stands 7 studs short of the Breaker, and the camera between them, the avatar behind it.
+			local root = t.Root()
+			local back = Vector3.zAxis
+			if anchor and root then
+				local ground = Vector3.new(anchor.Position.X, root.Position.Y, anchor.Position.Z)
+				local away = Vector3.new(root.Position.X - ground.X, 0, root.Position.Z - ground.Z)
+				back = if away.Magnitude > 1e-3 then away.Unit else back
+				t.Server("TestStandAt", ground + back * 7, ground)
+			end
+			t.Wait(PLATE_TICK * 2)
 			local camera = workspace.CurrentCamera
 			local band = world:GetAttribute("Band")
-			t.Check("its point, and the band", anchor ~= nil and camera ~= nil and type(band) == "number", tostring(band))
-			if anchor and camera and type(band) == "number" then
+			-- The plate's own point, over the gantry's lamp: from 7 studs, its lift over the anchor is a third of the screen.
+			local over = World.Where(plate)
+			t.Check("its point, and the band", over ~= nil and camera ~= nil and type(band) == "number", tostring(band))
+			if anchor and over and camera and type(band) == "number" then
 				local scale = Layers.Scale()
 				local at = Vector2.new(camera.ViewportSize.X * 0.15, band * scale * 0.5)
 				camera.CameraType = Enum.CameraType.Scriptable
 				-- Turned so the pixel `at` looks along the line to the point: its direction in the camera's frame is turned
 				-- onto the camera's forward.
-				camera.CFrame = CFrame.lookAt(camera.CFrame.Position, anchor.Position)
+				camera.CFrame = CFrame.lookAt(anchor.Position + back * 4 + Vector3.new(0, 3, 0), over)
 				local aside = camera.CFrame:VectorToObjectSpace(camera:ViewportPointToRay(at.X, at.Y).Direction)
 				camera.CFrame *= CFrame.fromRotationBetweenVectors(aside, Vector3.new(0, 0, -1))
 				for _ = 1, 3 do
 					RunService.RenderStepped:Wait()
 				end
-				local point = camera:WorldToViewportPoint(anchor.Position)
+				local point = camera:WorldToViewportPoint(over)
 				t.Check("the Breaker's point is over the band", point.Y / scale < band, string.format("%.1f against %.1f", point.Y / scale, band))
 				t.Check("its plate shows", plate.Visible and plate.Parent ~= nil)
 				local top = (plate.AbsolutePosition.Y - world.AbsolutePosition.Y) / scale - band
@@ -6363,8 +6378,12 @@ local cases = {
 				t.Check("and right under it, not lost lower", top <= 2, string.format("its top %.1f px under the band", top))
 				camera.CameraType = Enum.CameraType.Custom
 			end
-			if type(gave) == "table" and gave.Ok == true then
-				t.Server("BaseGive", shard, -1)
+			if added then
+				t.Server("BaseSkip", SKIP_ALL)
+				waitFor(t, ANSWER, function(): boolean
+					return readyCount(shard) > before
+				end)
+				openReadyDown(t, shard, before)
 			end
 		end,
 	},

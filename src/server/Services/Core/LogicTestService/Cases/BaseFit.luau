@@ -69,8 +69,9 @@ return {
 			local fit = WorldConfig.Fit :: any
 			local walk = WorldConfig.Walk
 			local kept = WorldConfig.Plots.Kept * walk
-			-- the row of four as the plan was drawn (Drawn studs square, 48 between), before part 7's trial
-			local drawn = 4 * WorldConfig.Plots.Drawn * walk + 3 * 48
+			-- the plan as it was drawn before part 7's trial: 200 studs square, 48 between (AR16 drew it again at 128 after)
+			local before = 200
+			local drawn = 4 * before + 3 * 48
 			t.Equal("three sizes", #fit.Sizes, 3)
 			for _, cells in fit.Sizes do
 				local size = cells * walk
@@ -82,7 +83,7 @@ return {
 					t.Check(`{size}: passes`, ok, table.concat(fails, "; "))
 					t.Equal(`{size}: every machine has its footprint`, #BaseFit.Boxes(layout, fit.Prints), 14)
 					t.Check(`{size}: the row of four shorter than the plan's`, report.Row < drawn, `{report.Row} of {drawn}`)
-					t.Check(`{size}: smaller than the plan's square`, size < WorldConfig.Plots.Drawn * walk)
+					t.Check(`{size}: smaller than the plan's square before the trial`, size < before)
 				end
 			end
 			t.Check("the sizes are part 7's: 128, 144, 160", fit.Sizes[1] * walk == 128 and fit.Sizes[2] * walk == 144 and fit.Sizes[3] * walk == 160)

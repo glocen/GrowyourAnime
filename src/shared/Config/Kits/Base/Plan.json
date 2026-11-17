@@ -30,469 +30,301 @@
     {
      "piece": "YardLive",
      "across": 0,
-     "along": -48,
+     "along": -32,
      "turn": 0.0
     },
     {
      "piece": "WingsLive",
      "across": 0,
-     "along": -48,
+     "along": -32,
      "turn": 0.0
     },
     {
      "piece": "YardBack",
      "across": 0,
-     "along": -96,
+     "along": -64,
      "turn": 0.0
     },
     {
      "piece": "WingsBack",
      "across": 0,
-     "along": -96,
+     "along": -64,
      "turn": 0.0
     },
     {
      "piece": "Yard",
      "across": 0,
-     "along": -144,
+     "along": -96,
      "turn": 0.0
     },
     {
      "piece": "Wings",
      "across": 0,
-     "along": -144,
+     "along": -96,
      "turn": 0.0
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": 0,
+     "across": -64.0,
+     "along": -0.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -16,
+     "across": -64.0,
+     "along": -16.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -32,
+     "across": -64.0,
+     "along": -32.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -48,
+     "across": -64.0,
+     "along": -48.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -64,
+     "across": -64.0,
+     "along": -64.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -80,
+     "across": -64.0,
+     "along": -80.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -96,
+     "across": -64.0,
+     "along": -96.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -112,
+     "across": -64.0,
+     "along": -112.0,
      "turn": -90
     },
     {
      "piece": "Wall",
-     "across": -100.0,
-     "along": -128,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": -100.0,
-     "along": -144,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": -100.0,
-     "along": -160,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": -100.0,
-     "along": -176,
-     "turn": -90
-    },
-    {
-     "piece": "WallHalf",
-     "across": -100.0,
-     "along": -192.0,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": -100.0,
-     "along": -200.0,
+     "across": -64.0,
+     "along": -128.0,
      "turn": 0
     },
     {
      "piece": "Wall",
-     "across": -84.0,
-     "along": -200.0,
+     "across": -48.0,
+     "along": -128.0,
      "turn": 0
     },
     {
      "piece": "Wall",
-     "across": -68.0,
-     "along": -200.0,
-     "turn": 0
-    },
-    {
-     "piece": "Wall",
-     "across": -52.0,
-     "along": -200.0,
-     "turn": 0
-    },
-    {
-     "piece": "Wall",
-     "across": -36.0,
-     "along": -200.0,
+     "across": -32.0,
+     "along": -128.0,
      "turn": 0
     },
     {
      "piece": "WallHalf",
-     "across": -20,
-     "along": -200.0,
+     "across": -16.0,
+     "along": -128.0,
      "turn": 0
     },
     {
      "piece": "WallEnd",
-     "across": -12,
-     "along": -200.0,
+     "across": -8.0,
+     "along": -128.0,
      "turn": 0
     },
     {
      "piece": "Wall",
-     "across": -28.0,
+     "across": -32.0,
      "along": 0,
      "turn": 180
     },
     {
      "piece": "Wall",
-     "across": -44.0,
+     "across": -48.0,
      "along": 0,
      "turn": 180
     },
     {
      "piece": "Wall",
-     "across": -60.0,
-     "along": 0,
+     "across": 64.0,
+     "along": -0.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -16.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -32.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -48.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -64.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -80.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -96.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -112.0,
+     "turn": -90
+    },
+    {
+     "piece": "Wall",
+     "across": 64.0,
+     "along": -128.0,
      "turn": 180
     },
     {
      "piece": "Wall",
-     "across": -76.0,
-     "along": 0,
+     "across": 48.0,
+     "along": -128.0,
+     "turn": 180
+    },
+    {
+     "piece": "Wall",
+     "across": 32.0,
+     "along": -128.0,
      "turn": 180
     },
     {
      "piece": "WallHalf",
-     "across": -92.0,
-     "along": 0,
-     "turn": 180
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": 0,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -16,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -32,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -48,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -64,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -80,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -96,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -112,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -128,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -144,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -160,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -176,
-     "turn": -90
-    },
-    {
-     "piece": "WallHalf",
-     "across": 100.0,
-     "along": -192.0,
-     "turn": -90
-    },
-    {
-     "piece": "Wall",
-     "across": 100.0,
-     "along": -200.0,
-     "turn": 180
-    },
-    {
-     "piece": "Wall",
-     "across": 84.0,
-     "along": -200.0,
-     "turn": 180
-    },
-    {
-     "piece": "Wall",
-     "across": 68.0,
-     "along": -200.0,
-     "turn": 180
-    },
-    {
-     "piece": "Wall",
-     "across": 52.0,
-     "along": -200.0,
-     "turn": 180
-    },
-    {
-     "piece": "Wall",
-     "across": 36.0,
-     "along": -200.0,
-     "turn": 180
-    },
-    {
-     "piece": "WallHalf",
-     "across": 20,
-     "along": -200.0,
+     "across": 16.0,
+     "along": -128.0,
      "turn": 180
     },
     {
      "piece": "WallEnd",
-     "across": 12,
-     "along": -200.0,
+     "across": 8.0,
+     "along": -128.0,
      "turn": 0
     },
     {
      "piece": "Wall",
-     "across": 28.0,
-     "along": 0,
-     "turn": 0
-    },
-    {
-     "piece": "Wall",
-     "across": 44.0,
+     "across": 32.0,
      "along": 0,
      "turn": 0
     },
     {
      "piece": "Wall",
-     "across": 60.0,
-     "along": 0,
-     "turn": 0
-    },
-    {
-     "piece": "Wall",
-     "across": 76.0,
-     "along": 0,
-     "turn": 0
-    },
-    {
-     "piece": "WallHalf",
-     "across": 92.0,
+     "across": 48.0,
      "along": 0,
      "turn": 0
     },
     {
      "piece": "Pylon",
-     "across": -93.0,
-     "along": -4,
+     "across": -59.5,
+     "along": -16,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -93.0,
-     "along": -52,
+     "across": -59.5,
+     "along": -64,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -93.0,
-     "along": -52,
+     "across": -59.5,
+     "along": -64,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -93.0,
-     "along": -100,
+     "across": -59.5,
+     "along": -112,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -93.0,
-     "along": -100,
+     "across": -59.5,
+     "along": -112,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -93.0,
-     "along": -148,
+     "across": 59.5,
+     "along": -16,
+     "turn": 90
+    },
+    {
+     "piece": "Pylon",
+     "across": 59.5,
+     "along": -64,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -93.0,
-     "along": -148,
+     "across": 59.5,
+     "along": -64,
      "turn": 90
     },
     {
      "piece": "Pylon",
-     "across": -93.0,
-     "along": -196,
+     "across": 59.5,
+     "along": -112,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
-     "across": -93.0,
-     "along": -196,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 93.0,
-     "along": -4,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 93.0,
-     "along": -52,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": 93.0,
-     "along": -52,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 93.0,
-     "along": -100,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": 93.0,
-     "along": -100,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 93.0,
-     "along": -148,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": 93.0,
-     "along": -148,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 93.0,
-     "along": -196,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": 93.0,
-     "along": -196,
+     "across": 59.5,
+     "along": -112,
      "turn": 90
     },
     {
      "piece": "FloodMast",
      "across": -13.6,
-     "along": -53.0,
+     "along": -35.0,
      "turn": 0
     },
     {
      "piece": "FloodMast",
      "across": 13.6,
-     "along": -53.0,
+     "along": -35.0,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": -34.0,
-     "along": -77.5,
+     "across": -21.65,
+     "along": -57.5,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": 34.0,
-     "along": -77.5,
+     "across": 21.65,
+     "along": -57.5,
      "turn": 0
     },
     {
@@ -506,7 +338,7 @@
     {
      "name": "FloodLeft",
      "across": -13.6,
-     "along": -50.0,
+     "along": -32.0,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -515,7 +347,7 @@
     {
      "name": "FloodRight",
      "across": 13.6,
-     "along": -50.0,
+     "along": -32.0,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -524,7 +356,7 @@
     {
      "name": "BreakerLamp",
      "across": 26.0,
-     "along": -46.0,
+     "along": -26.0,
      "up": 10.0,
      "colour": "#8CF6FF",
      "kind": "point",
@@ -533,7 +365,7 @@
     {
      "name": "VoidWell",
      "across": 0.0,
-     "along": -72.0,
+     "along": -52.0,
      "up": 1.6,
      "colour": "#B98CFF",
      "kind": "point",
@@ -542,7 +374,7 @@
     {
      "name": "DoorInside",
      "across": -29.0,
-     "along": -45.4,
+     "along": -25.4,
      "up": 6.4,
      "colour": "#FFC27A",
      "kind": "point",
@@ -551,7 +383,7 @@
     {
      "name": "DoorMouth",
      "across": -22.4,
-     "along": -46.0,
+     "along": -26.0,
      "up": 0.8,
      "colour": "#FFC27A",
      "kind": "point",
@@ -580,8 +412,8 @@
     "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text"
    },
    "budget": {
-    "pieces": 82,
-    "triangles": 21384,
+    "pieces": 54,
+    "triangles": 13544,
     "lights": 7,
     "counts": {
      "Court1": 1,
@@ -592,11 +424,11 @@
      "YardBack": 1,
      "WingsBack": 1,
      "Yard": 1,
-     "Wall": 42,
-     "WallHalf": 6,
+     "Wall": 26,
+     "WallHalf": 2,
      "WallEnd": 2,
-     "Pylon": 10,
-     "PowerSpan": 8,
+     "Pylon": 6,
+     "PowerSpan": 4,
      "FloodMast": 2,
      "Transformer": 2,
      "Showcase": 1
@@ -607,7 +439,7 @@
  "ground": {
   "lot": "#7C7C8E",
   "ground": "#6E7290",
-  "note": "the lot is the plot's own floor under the kit's floors: the deck tile (Base_Deck_Color.png), its Texture's Color3 at `lot`. It shows only as the last 8 studs under the back wall, the darker foot of that wall (the Kept and Tower overlays take it too, unmarked). The ground is the slab between plots, a flat colour, lifted from #1A1D2E for AR20's C so the open ground beside the crossing isn't black with no haze over it. The Strip and the side street wear the Strip's own paving tile (build/handoff/Strip/maps/Strip_Paving_Color.png, Lantern Row's lifted): stepping off the stones onto the plates is coming home."
+  "note": "the lot is the plot's own floor under the kit's floors: the deck tile (Base_Deck_Color.png), its Texture's Color3 at `lot`. At 128 the kit's floors cover the plot to its back wall, so it shows only on the Tower's lot behind it, unmarked. The ground is the slab between plots, a flat colour, lifted from #1A1D2E for AR20's C so the open ground beside the crossing isn't black with no haze over it. The Strip and the side street wear the Strip's own paving tile (build/handoff/Strip/maps/Strip_Paving_Color.png, Lantern Row's lifted): stepping off the stones onto the plates is coming home."
  },
  "standIns": {
   "machine": "#7E8AB0",
@@ -622,10 +454,11 @@
   "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One steel body for every machine and one accent each; the chambers glow (Neon)."
  },
  "layout": {
-  "note": "AR16, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's ends, the battery and the Training machine on the two slants toward the back. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn. What the base will wake stands asleep where it will stand, dark, on a dead line that lights out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along the side walls (level 3), and in the back half the Lab on the main line with the Forge and the Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator.",
+  "note": "AR16, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's ends, the battery and the Training machine on the two slants toward the back. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn. What the base will wake stands asleep where it will stand, dark, on a dead line that lights out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along the side walls (level 3), and in the back half the Lab on the main line with the Forge and the Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator. Laid at 128 (research's pick of 2026-11-17, 12:01): recomposed, the machines at their size, and held by part 7's tests on the game's own footprints (Rules.BaseFit on Config.World.Fit): `fit` is the plan's measure, taken as BaseFit.Measure takes it.",
   "avenue": 20.0,
-  "least": 25.0,
+  "least": 12.0,
   "ring": 18.0,
+  "size": 128.0,
   "spawn": {
    "across": 0.0,
    "inward": 10.0,
@@ -638,73 +471,89 @@
   "stations": {
    "generator": {
     "across": 0.0,
-    "inward": 72.0
+    "inward": 52.0
    },
    "breaker": {
     "across": 26.0,
-    "inward": 46.0
+    "inward": 26.0
    },
    "door": {
     "across": -26.0,
-    "inward": 46.0
+    "inward": 26.0
    },
    "battery": {
-    "across": 26.0,
-    "inward": 98.0
+    "across": 29.0,
+    "inward": 78.0
    },
    "training": {
-    "across": -26.0,
-    "inward": 98.0
+    "across": -29.0,
+    "inward": 78.0
    },
    "bay1": {
-    "across": -50.0,
-    "inward": 72.0
+    "across": -31.5,
+    "inward": 52.0
    },
    "bay2": {
-    "across": 50.0,
-    "inward": 72.0
+    "across": 31.5,
+    "inward": 52.0
    }
   },
   "laterBays": [
    {
-    "across": -82.0,
-    "inward": 72.0
+    "across": -54.5,
+    "inward": 52.0
    },
    {
-    "across": 82.0,
-    "inward": 72.0
+    "across": 54.5,
+    "inward": 52.0
    },
    {
-    "across": -82.0,
-    "inward": 108.0
+    "across": -54.5,
+    "inward": 78.0
    },
    {
-    "across": 82.0,
-    "inward": 108.0
+    "across": 54.5,
+    "inward": 78.0
    }
   ],
   "sleeping": {
    "forge": {
-    "across": -36.0,
-    "inward": 132.0
+    "across": -26.0,
+    "inward": 98.0
    },
    "condenser": {
-    "across": 36.0,
-    "inward": 132.0
+    "across": 26.0,
+    "inward": 98.0
    },
    "lab": {
     "across": 0.0,
-    "inward": 136.0
+    "inward": 94.0
    }
   },
   "check": {
    "nearest": [
-    32.0,
-    "bay1",
-    "bay3"
+    20.2,
+    "battery",
+    "condenser"
    ],
-   "least": 25.0,
    "inTheWay": []
+  },
+  "fit": {
+   "size": 128.0,
+   "breaker": 1.79,
+   "least": [
+    12.2,
+    "bay1",
+    "training"
+   ],
+   "way": [],
+   "outside": [],
+   "widest": [
+    50.38,
+    "breaker"
+   ],
+   "halfView": 51.22,
+   "passes": true
   }
  },
  "current": {
@@ -716,8 +565,8 @@
      18.0
     ],
     "along": [
-     -72.0,
-     -72.0
+     -52.0,
+     -52.0
     ]
    },
    {
@@ -726,28 +575,28 @@
      -18.0
     ],
     "along": [
-     -72.0,
-     -72.0
+     -52.0,
+     -52.0
     ]
    },
    {
     "across": [
      18.0,
-     43.8
+     25.3
     ],
     "along": [
-     -72.0,
-     -72.0
+     -52.0,
+     -52.0
     ]
    },
    {
     "across": [
      -18.0,
-     -43.8
+     -25.3
     ],
     "along": [
-     -72.0,
-     -72.0
+     -52.0,
+     -52.0
     ]
    },
    {
@@ -756,8 +605,8 @@
      20.8
     ],
     "along": [
-     -59.27,
-     -51.2
+     -39.27,
+     -31.2
     ]
    },
    {
@@ -766,8 +615,8 @@
      -20.8
     ],
     "along": [
-     -59.27,
-     -51.2
+     -39.27,
+     -31.2
     ]
    },
    {
@@ -776,8 +625,8 @@
      20.8
     ],
     "along": [
-     -84.73,
-     -92.8
+     -64.73,
+     -72.8
     ]
    },
    {
@@ -786,8 +635,8 @@
      -20.8
     ],
     "along": [
-     -84.73,
-     -92.8
+     -64.73,
+     -72.8
     ]
    },
    {
@@ -796,14 +645,14 @@
      0.0
     ],
     "along": [
-     -81.6,
-     -90.0
+     -61.6,
+     -70.0
     ]
    }
   ],
   "ring": {
    "across": 0.0,
-   "along": -72.0,
+   "along": -52.0,
    "radius": 18.0,
    "open": 90.0,
    "note": "the ring round the well: a circle of this radius about the generator, less the quarter that faces the gate. Its current runs from the bus's two joints and the main line's, toward its open ends."
@@ -815,7 +664,7 @@
    {
     "piece": "Breaker",
     "across": 26.0,
-    "along": -46.0,
+    "along": -26.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Breaker's body"
@@ -823,7 +672,7 @@
    {
     "piece": "BreakerChamber",
     "across": 22.5,
-    "along": -46.0,
+    "along": -26.0,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 1"
@@ -831,7 +680,7 @@
    {
     "piece": "BreakerChamber",
     "across": 29.5,
-    "along": -46.0,
+    "along": -26.0,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 2"
@@ -839,7 +688,7 @@
    {
     "piece": "BreakerWaiting",
     "across": 35.0,
-    "along": -46.0,
+    "along": -26.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 1"
@@ -847,7 +696,7 @@
    {
     "piece": "BreakerWaiting",
     "across": 38.0,
-    "along": -46.0,
+    "along": -26.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 2"
@@ -855,87 +704,87 @@
    {
     "piece": "BreakerWaiting",
     "across": 41.0,
-    "along": -46.0,
+    "along": -26.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 3"
    },
    {
     "piece": "Bay",
-    "across": -50.0,
-    "along": -72.0,
+    "across": -31.5,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 1"
    },
    {
     "piece": "BayHalo",
-    "across": -50.0,
-    "along": -72.0,
+    "across": -31.5,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 1's light, while a worker works there"
    },
    {
     "piece": "Bay",
-    "across": 50.0,
-    "along": -72.0,
+    "across": 31.5,
+    "along": -52.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 2"
    },
    {
     "piece": "BayHalo",
-    "across": 50.0,
-    "along": -72.0,
+    "across": 31.5,
+    "along": -52.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 2's light, while a worker works there"
    },
    {
     "piece": "BaySleeping",
-    "across": -82.0,
-    "along": -72.0,
+    "across": -54.5,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 3, asleep until level 2"
    },
    {
     "piece": "BaySleeping",
-    "across": 82.0,
-    "along": -72.0,
+    "across": 54.5,
+    "along": -52.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 4, asleep until level 2"
    },
    {
     "piece": "BaySleeping",
-    "across": -82.0,
-    "along": -108.0,
+    "across": -54.5,
+    "along": -78.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 5, asleep until level 3"
    },
    {
     "piece": "BaySleeping",
-    "across": 82.0,
-    "along": -108.0,
+    "across": 54.5,
+    "along": -78.0,
     "up": 0.0,
     "turn": 180.0,
     "standsFor": "bay 6, asleep until level 3"
    },
    {
     "piece": "SleepingStone",
-    "across": -36.0,
-    "along": -132.0,
+    "across": -26.0,
+    "along": -98.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Forge's place, asleep"
    },
    {
     "piece": "SleepingStone",
-    "across": 36.0,
-    "along": -132.0,
+    "across": 26.0,
+    "along": -98.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Condenser's place, asleep"
@@ -943,15 +792,15 @@
    {
     "piece": "SleepingStone",
     "across": 0.0,
-    "along": -136.0,
+    "along": -94.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Lab's place, asleep"
    },
    {
     "piece": "TowerSleeping",
-    "across": 84.0,
-    "along": -232.0,
+    "across": 48.0,
+    "along": -160.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Tower, asleep until phase 3",
@@ -960,7 +809,7 @@
    {
     "piece": "Generator",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the generator, the Void Mill: all of it that stands still"
@@ -968,7 +817,7 @@
    {
     "piece": "GeneratorWheel",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 10.0,
     "turn": 0.0,
     "standsFor": "the generator's wheel, turning about the line to the gate, faster as the plant generates more"
@@ -976,7 +825,7 @@
    {
     "piece": "GeneratorArc1",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 1 of 8, shown while the generation lights it"
@@ -984,7 +833,7 @@
    {
     "piece": "GeneratorArc2",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 2 of 8, shown while the generation lights it"
@@ -992,7 +841,7 @@
    {
     "piece": "GeneratorArc3",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 3 of 8, shown while the generation lights it"
@@ -1000,7 +849,7 @@
    {
     "piece": "GeneratorArc4",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 4 of 8, shown while the generation lights it"
@@ -1008,7 +857,7 @@
    {
     "piece": "GeneratorArc5",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 5 of 8, shown while the generation lights it"
@@ -1016,7 +865,7 @@
    {
     "piece": "GeneratorArc6",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 6 of 8, shown while the generation lights it"
@@ -1024,7 +873,7 @@
    {
     "piece": "GeneratorArc7",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 7 of 8, shown while the generation lights it"
@@ -1032,7 +881,7 @@
    {
     "piece": "GeneratorArc8",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 8 of 8, shown while the generation lights it"
@@ -1040,31 +889,31 @@
    {
     "piece": "GeneratorDemand",
     "across": 0.0,
-    "along": -72.0,
+    "along": -52.0,
     "up": 10.0,
     "turn": 0.0,
     "standsFor": "the demand's mark, turned about the axle by the demand's share"
    },
    {
     "piece": "BatteryRack",
-    "across": 26.0,
-    "along": -98.0,
+    "across": 29.0,
+    "along": -78.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the battery"
    },
    {
     "piece": "BatteryCell",
-    "across": 25.25,
-    "along": -98.95,
+    "across": 28.25,
+    "along": -78.95,
     "up": 0.6,
     "turn": 0.0,
     "standsFor": "the battery's cell 1"
    },
    {
     "piece": "BatteryCell",
-    "across": 26.75,
-    "along": -98.95,
+    "across": 29.75,
+    "along": -78.95,
     "up": 0.6,
     "turn": 0.0,
     "standsFor": "the battery's cell 2"
@@ -1072,7 +921,7 @@
    {
     "piece": "Door",
     "across": -26.0,
-    "along": -46.0,
+    "along": -26.0,
     "up": 0.0,
     "turn": 90.0,
     "standsFor": "the Festival Door: its step, its front ring and the name's plate, its mouth looking down the way in"
@@ -1080,7 +929,7 @@
    {
     "piece": "DoorRing1",
     "across": -27.7,
-    "along": -45.75,
+    "along": -25.75,
     "up": 5.95,
     "turn": 90.0,
     "standsFor": "the Door's ring 1, turning about the tunnel's axis",
@@ -1089,7 +938,7 @@
    {
     "piece": "DoorRing2",
     "across": -29.0,
-    "along": -45.5,
+    "along": -25.5,
     "up": 6.3,
     "turn": 90.0,
     "standsFor": "the Door's ring 2, turning about the tunnel's axis",
@@ -1098,7 +947,7 @@
    {
     "piece": "DoorRing3",
     "across": -30.1,
-    "along": -45.25,
+    "along": -25.25,
     "up": 6.65,
     "turn": 90.0,
     "standsFor": "the Door's ring 3, turning about the tunnel's axis",
@@ -1107,7 +956,7 @@
    {
     "piece": "DoorRing4",
     "across": -31.0,
-    "along": -45.0,
+    "along": -25.0,
     "up": 7.0,
     "turn": 90.0,
     "standsFor": "the Door's ring 4, turning about the tunnel's axis",
@@ -1116,23 +965,23 @@
    {
     "piece": "DoorWay",
     "across": -31.9,
-    "along": -44.75,
+    "along": -24.75,
     "up": 7.35,
     "turn": 90.0,
     "standsFor": "the Door's core, its light the Door's state"
    },
    {
     "piece": "Training",
-    "across": -26.0,
-    "along": -98.0,
+    "across": -29.0,
+    "along": -78.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Training machine, its pad toward the front"
    },
    {
     "piece": "TrainingCrown",
-    "across": -26.0,
-    "along": -98.0,
+    "across": -29.0,
+    "along": -78.0,
     "up": 8.0,
     "turn": 0.0,
     "standsFor": "the Training machine's crown, turning about its own upright while a Voidkin trains"
@@ -1145,14 +994,14 @@
      {
       "piece": "Generator",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "still"
      },
      {
       "piece": "GeneratorWheel",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 10.0,
       "moves": "turns",
       "rate": 1.0
@@ -1160,7 +1009,7 @@
      {
       "piece": "GeneratorArc1",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 1
@@ -1168,7 +1017,7 @@
      {
       "piece": "GeneratorArc2",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 2
@@ -1176,7 +1025,7 @@
      {
       "piece": "GeneratorArc3",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 3
@@ -1184,7 +1033,7 @@
      {
       "piece": "GeneratorArc4",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 4
@@ -1192,7 +1041,7 @@
      {
       "piece": "GeneratorArc5",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 5
@@ -1200,7 +1049,7 @@
      {
       "piece": "GeneratorArc6",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 6
@@ -1208,7 +1057,7 @@
      {
       "piece": "GeneratorArc7",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 7
@@ -1216,7 +1065,7 @@
      {
       "piece": "GeneratorArc8",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 8
@@ -1224,7 +1073,7 @@
      {
       "piece": "GeneratorDemand",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 10.0,
       "moves": "demand",
       "degrees": 117.88
@@ -1234,14 +1083,14 @@
      {
       "piece": "Generator2",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "still"
      },
      {
       "piece": "Generator2Wheel",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 10.0,
       "moves": "turns",
       "rate": 1.0
@@ -1249,7 +1098,7 @@
      {
       "piece": "Generator2Pinion",
       "across": 5.196,
-      "along": -68.6,
+      "along": -48.6,
       "up": 7.0,
       "moves": "turns",
       "rate": -2.4
@@ -1257,7 +1106,7 @@
      {
       "piece": "Generator2Arc1",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 1
@@ -1265,7 +1114,7 @@
      {
       "piece": "Generator2Arc2",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 2
@@ -1273,7 +1122,7 @@
      {
       "piece": "Generator2Arc3",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 3
@@ -1281,7 +1130,7 @@
      {
       "piece": "Generator2Arc4",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 4
@@ -1289,7 +1138,7 @@
      {
       "piece": "Generator2Arc5",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 5
@@ -1297,7 +1146,7 @@
      {
       "piece": "Generator2Arc6",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 6
@@ -1305,7 +1154,7 @@
      {
       "piece": "Generator2Arc7",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 7
@@ -1313,7 +1162,7 @@
      {
       "piece": "Generator2Arc8",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 8
@@ -1321,7 +1170,7 @@
      {
       "piece": "Generator2Demand",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 10.0,
       "moves": "demand",
       "degrees": 114.54
@@ -1331,14 +1180,14 @@
      {
       "piece": "Generator3",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "still"
      },
      {
       "piece": "Generator2Wheel",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 10.0,
       "moves": "turns",
       "rate": 1.0
@@ -1346,7 +1195,7 @@
      {
       "piece": "Generator2Pinion",
       "across": 5.196,
-      "along": -68.6,
+      "along": -48.6,
       "up": 7.0,
       "moves": "turns",
       "rate": -2.4
@@ -1354,7 +1203,7 @@
      {
       "piece": "Generator3Pinion",
       "across": -5.196,
-      "along": -68.6,
+      "along": -48.6,
       "up": 7.0,
       "moves": "turns",
       "rate": -2.4
@@ -1362,7 +1211,7 @@
      {
       "piece": "Generator3Arc1",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 1
@@ -1370,7 +1219,7 @@
      {
       "piece": "Generator3Arc2",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 2
@@ -1378,7 +1227,7 @@
      {
       "piece": "Generator3Arc3",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 3
@@ -1386,7 +1235,7 @@
      {
       "piece": "Generator3Arc4",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 4
@@ -1394,7 +1243,7 @@
      {
       "piece": "Generator3Arc5",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 5
@@ -1402,7 +1251,7 @@
      {
       "piece": "Generator3Arc6",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 6
@@ -1410,7 +1259,7 @@
      {
       "piece": "Generator3Arc7",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 7
@@ -1418,7 +1267,7 @@
      {
       "piece": "Generator3Arc8",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 0.0,
       "moves": "gauge",
       "step": 8
@@ -1426,7 +1275,7 @@
      {
       "piece": "Generator3Demand",
       "across": 0.0,
-      "along": -72.0,
+      "along": -52.0,
       "up": 10.0,
       "moves": "demand",
       "degrees": 114.54
@@ -1444,36 +1293,258 @@
    "up": 0.6,
    "seats": [
     {
-     "across": 25.25,
-     "along": -98.95
+     "across": 28.25,
+     "along": -78.95
     },
     {
-     "across": 26.75,
-     "along": -98.95
-    },
-    {
-     "across": 25.25,
-     "along": -97.05
-    },
-    {
-     "across": 26.75,
-     "along": -97.05
-    },
-    {
-     "across": 23.75,
-     "along": -98.95
+     "across": 29.75,
+     "along": -78.95
     },
     {
      "across": 28.25,
-     "along": -98.95
+     "along": -77.05
     },
     {
-     "across": 23.75,
-     "along": -97.05
+     "across": 29.75,
+     "along": -77.05
     },
     {
-     "across": 28.25,
-     "along": -97.05
+     "across": 26.75,
+     "along": -78.95
+    },
+    {
+     "across": 31.25,
+     "along": -78.95
+    },
+    {
+     "across": 26.75,
+     "along": -77.05
+    },
+    {
+     "across": 31.25,
+     "along": -77.05
+    }
+   ]
+  },
+  "forge": {
+   "note": "AR28: the Forge, the Press, Stage I. Every place here is in the Forge's own frame, turned with it: `across` to its right, `along` toward its front (the Strip), `up` from its floor. ForgeRam stands over the Forge's middle, raised by its underside between `ram`'s heights: rest, the tell's top (the sleeves' foot: never higher) and the contact (on the plate; on an item the builder lays there, that much higher). Its light is the tell: dim at rest, bright as it lifts. The two ForgeGear stand at `gears`, the right one turned half a tooth about its axle so they mesh, and turn opposite ways with the ram: the left anticlockwise seen from the front as it lifts. `degreesPerStud` is the review's rate.",
+   "ram": {
+    "across": 0.0,
+    "along": 0.0,
+    "rest": 5.6,
+    "tell": 7.2,
+    "contact": 2.8
+   },
+   "gears": [
+    {
+     "across": -0.85,
+     "along": 1.32,
+     "up": 11.7,
+     "turnedHalfTooth": false
+    },
+    {
+     "across": 0.85,
+     "along": 1.32,
+     "up": 11.7,
+     "turnedHalfTooth": true
+    }
+   ],
+   "halfTooth": 22.5,
+   "degreesPerStud": 90.0,
+   "plate": 2.76
+  },
+  "condenser": {
+   "note": "AR28: the Stone Condenser, the Comb, Stage I. Every place here is in the Condenser's own frame, as the Forge's. The comb is the tray: the cups in `cups` fill in their order, a stone or a jewel to a cup, so the comb's lit height is the fill. A cup holding a stone stands CondenserStone at its place, one holding a jewel CondenserJewel, tinted in the jewel type's colour; an empty cup stands nothing. CondenserCore stands at `core` and turns about its own front axis while the Condenser works, still when the tray is full or the power is out.",
+   "core": {
+    "across": 0.0,
+    "along": -0.4,
+    "up": 9.5
+   },
+   "cups": [
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 1.7
+    },
+    {
+     "across": 0.0,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": 0.901,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": -0.901,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": 1.801,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": -1.801,
+     "along": 0.1,
+     "up": 2.48
+    },
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": 2.252,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": -2.252,
+     "along": 0.1,
+     "up": 3.26
+    },
+    {
+     "across": 0.0,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 0.901,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": -0.901,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 1.801,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": -1.801,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 2.702,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": -2.702,
+     "along": 0.1,
+     "up": 4.04
+    },
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": 2.252,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": -2.252,
+     "along": 0.1,
+     "up": 4.82
+    },
+    {
+     "across": 0.0,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": 0.901,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": -0.901,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": 1.801,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": -1.801,
+     "along": 0.1,
+     "up": 5.6
+    },
+    {
+     "across": 0.45,
+     "along": 0.1,
+     "up": 6.38
+    },
+    {
+     "across": -0.45,
+     "along": 0.1,
+     "up": 6.38
+    },
+    {
+     "across": 1.351,
+     "along": 0.1,
+     "up": 6.38
+    },
+    {
+     "across": -1.351,
+     "along": 0.1,
+     "up": 6.38
     }
    ]
   }

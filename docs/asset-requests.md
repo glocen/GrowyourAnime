@@ -8333,6 +8333,30 @@ Part 7: "Recomposed, never scaled". AR16's star at 128: the machines keep their 
   - **Visually reviewed:** by Modulo, in Blender's renders. Research's verdict waits on the game.
   - **Director-accepted:** no.
 
+### Delivery 3, installed (Faber, 2026-11-17, to 16:07 by the clock)
+
+- **Taken:** `Config.World.Plots.Drawn` = 8, and `kit_take.py` wrote `Manifest.json` and `Plan.json`.
+- **Uploaded, all Approved on read-back:**
+  - the 11 pictures, by the group's key;
+  - the 8 meshes, by `Kit.Publish("Base")` from the game's place.
+  - The same publish took AR28's Stage I meshes, which were already in the manifest: the Forge's 3 and the Condenser's 4.
+  - The ids are in `tools/studio/Kits/Base.json` and `docs/asset-log.md`.
+- **The kit:** rebuilt into `src/storage/BaseKit.rbxm` (53,576 bytes). The one before is kept in Faber's scratch.
+- **The cases that moved with the plan:**
+  - BaseFit measures against the 200-stud square drawn before part 7's trial.
+  - The Tower's place is now (48, 96), from `base_plan.py`'s `TOWER_AT`.
+  - Two client cases had stood on the old rule that any plate speaks from the spawn. Since 8858359, a plate speaks only near its machine and hides over the avatar:
+    - "Base: from the spawn" now checks that none speaks there, then stands the avatar 7 studs short of the Breaker and checks its plate there;
+    - the HUD's plate case gives the Breaker a shard to break, so the plate has a line of its own. It stands the avatar 7 studs short, and turns the camera onto the plate's own point (`World.Where`), which stands 5.5 studs over the anchor.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:**
+    - logic 23,998/0 offline;
+    - Base 261/0, HUD 419/0, Tower 2/0, Breaker 176/0 in Studio;
+    - type check 0 new.
+  - **Visually reviewed:** Faber's stills from the spawn and the Strip, 16:07, at the desktop's size. Research's verdict in the game is next.
+  - **Director-accepted:** no.
+
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
 Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.

@@ -16,12 +16,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_Court1_Color.png",
    "glow": "maps/Base_Court1_Glow.png",
@@ -38,12 +38,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_Yard_Color.png",
    "glow": "maps/Base_Yard_Glow.png",
@@ -60,12 +60,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
-    200.0,
+    128.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_Wings_Color.png",
    "glow": "maps/Base_Wings_Glow.png",
@@ -82,12 +82,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_YardLive_Color.png",
    "glow": "maps/Base_YardLive_Glow.png",
@@ -104,12 +104,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_YardBack_Color.png",
    "glow": "maps/Base_YardBack_Glow.png",
@@ -126,12 +126,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
-    200.0,
+    128.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_WingsLive_Color.png",
    "glow": "maps/Base_WingsLive_Glow.png",
@@ -148,12 +148,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
-    200.0,
+    128.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_WingsBack_Color.png",
    "glow": "maps/Base_WingsBack_Glow.png",
@@ -239,7 +239,7 @@
     0.0
    ],
    "size": [
-    56.0,
+    64.0,
     20.71,
     4.82
    ],
@@ -758,7 +758,7 @@
   "Generator": {
    "mesh": "meshes/Generator.json",
    "triangles": 2318,
-   "vertices": 1390,
+   "vertices": 1372,
    "centre": [
     -0.96866,
     10.59113,
@@ -797,7 +797,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its axle's middle, 10 up at the generator's middle; its axle lies along the piece's Y (Roblox's Z), the line to the gate. From the gate it turns anticlockwise, so the buckets rise on the gate's right and run under the collector's shoe: in Roblox, CFrame.Angles(0, 0, -angle) with the angle growing, faster as the plant generates more. Its lower edge runs 1.6 under the floor, inside the well's dark"
+   "note": "its origin is its axle's middle, 10 up at the generator's middle; its axle lies along the piece's Y (Roblox's Z), the line to the gate. From the gate it turns anticlockwise, so the buckets rise on the gate's right and run under the collector's claw: in Roblox, CFrame.Angles(0, 0, -angle) with the angle growing, faster as the plant generates more. Its lower edge runs 1.6 under the floor, inside the well's dark"
   },
   "GeneratorArc1": {
    "mesh": "meshes/GeneratorArc1.json",
@@ -995,12 +995,12 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin on the axle, 10 up at the generator's middle, made at a demand's share of 0 at the rail's foot by the well. The rail is an arc about the axle, so the mark turns, not slides: about the axle the way the wheel turns, by the share times 117.9 degrees (CFrame.Angles(0, 0, -share * math.rad(117.9))); at 1 it stands by the collector's shoe, 13.16 from the axle, about 27 studs of travel. The share is on the gauge's own scale, the demand over the same top as the generation's, so the lit steps reach the mark when generation meets demand. Under a share of 0.12 it sinks into the well's kerb. Look only"
+   "note": "its origin on the axle, 10 up at the generator's middle, made at a demand's share of 0 at the rail's foot by the well. The rail is an arc about the axle, so the mark turns, not slides: about the axle the way the wheel turns, by the share times 117.9 degrees (CFrame.Angles(0, 0, -share * math.rad(117.9))); at 1 it stands by the collector's claw, 13.16 from the axle, about 27 studs of travel. The share is on the gauge's own scale, the demand over the same top as the generation's, so the lit steps reach the mark when generation meets demand. Under a share of 0.12 it sinks into the well's kerb. Look only"
   },
   "Generator2": {
    "mesh": "meshes/Generator2.json",
-   "triangles": 2994,
-   "vertices": 1814,
+   "triangles": 2770,
+   "vertices": 1712,
    "centre": [
     -0.97012,
     10.57303,
@@ -1015,36 +1015,36 @@
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the dynamos stand on the sill, the arm over the well: look only",
+   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the cages stand on the sill, the arm over the well: look only",
    "lights": [],
-   "note": "Stage II's still body, in place of Generator at the same place: a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its housed dynamo on the sill (the descending side), the back frame plated. Its middle on the well's. The collector's arm reaches about 23.1 up. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
+   "note": "Stage II's still body, in place of Generator at the same place: a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its void cage on the sill (the descending side): four claws round a lit shard; the back frame plated. Its middle on the well's. The collector's arm reaches about 23.1 up. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
   },
   "Generator3": {
    "mesh": "meshes/Generator3.json",
-   "triangles": 5098,
-   "vertices": 3026,
+   "triangles": 3822,
+   "vertices": 2396,
    "centre": [
     -0.72398,
-    12.7019,
+    12.40887,
     3.72023
    ],
    "size": [
     30.238,
-    30.006,
+    29.42,
     28.86
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the dynamos stand on the sill, the arm, the casing and its crown over the well: look only",
+   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the cages stand on the sill, the arm, the casing and its crown over the well: look only",
    "lights": [],
-   "note": "Stage III's still body, in place of Generator at the same place: Stage II's, with the armoured half drum of a casing over the wheel and its crown of six rods, a second pinion and dynamo on the rising side; the casing's seven windows stand dark here: the gauge's steps 5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the collector's shoe stay dark. Its middle on the well's. The collector's arm reaches about 24.9 up, the crown about 27.7. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
+   "note": "Stage III's still body, in place of Generator at the same place: Stage II's, with the armoured half drum of a casing over the wheel and its crown of six unlit horns, a second pinion and cage on the rising side; the casing's seven windows stand dark here: the gauge's steps 5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the collector's claw stay dark. Its middle on the well's. The collector's arm reaches about 24.9 up, the crown about 27.7. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
   },
   "Generator2Wheel": {
    "mesh": "meshes/Generator2Wheel.json",
-   "triangles": 3432,
-   "vertices": 1960,
+   "triangles": 3384,
+   "vertices": 1928,
    "centre": [
     0.0,
     0.0,
@@ -1065,16 +1065,16 @@
   },
   "Generator2Pinion": {
    "mesh": "meshes/Generator2Pinion.json",
-   "triangles": 384,
-   "vertices": 224,
+   "triangles": 360,
+   "vertices": 208,
    "centre": [
     0.0,
     0.0,
     0.0
    ],
    "size": [
-    4.164,
-    4.045,
+    4.181,
+    4.172,
     1.02
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -1087,16 +1087,16 @@
   },
   "Generator3Pinion": {
    "mesh": "meshes/Generator3Pinion.json",
-   "triangles": 384,
-   "vertices": 224,
+   "triangles": 360,
+   "vertices": 208,
    "centre": [
     0.0,
     0.0,
     0.0
    ],
    "size": [
-    4.164,
-    4.045,
+    4.181,
+    4.172,
     1.02
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -1534,6 +1534,160 @@
     }
    ],
    "note": "the Voidkin stands at its middle, 1.2 up, and turns there: the plinth doesn't. Its Combat Power sits above the figure. Its light is a PointLight on the Strip's side of the figure, at chest height"
+  },
+  "Forge": {
+   "mesh": "meshes/Forge.json",
+   "triangles": 596,
+   "vertices": 396,
+   "centre": [
+    0.0,
+    6.25,
+    0.0
+   ],
+   "size": [
+    11.05,
+    12.72,
+    8.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high; the seat, 3.4 by 2.8 and 2.76 high; the horns' two feet",
+   "lights": [],
+   "note": "on a sleeping place, its front toward the Strip, 12.5 high at its head. The item lies on the seat's lit plate, at its middle, 2.76 up. The ram is ForgeRam, the gears ForgeGear: plan.json, machines.forge"
+  },
+  "ForgeRam": {
+   "mesh": "meshes/ForgeRam.json",
+   "triangles": 412,
+   "vertices": 240,
+   "centre": [
+    0.0,
+    3.2,
+    0.0
+   ],
+   "size": [
+    4.38,
+    6.62,
+    4.38
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its underside's middle, over the Forge's middle: up 5.6 at rest, 7.2 at most (the sleeves' foot), 2.8 on the plate. Its band and its disc are its light: dim at rest, bright for the tell. Look only"
+  },
+  "ForgeGear": {
+   "mesh": "meshes/ForgeGear.json",
+   "triangles": 280,
+   "vertices": 160,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.007,
+    2.007,
+    0.64
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its middle, its axle toward the front: two stand on the Forge's head, turning opposite ways as the ram moves (plan.json, machines.forge). Look only"
+  },
+  "Condenser": {
+   "mesh": "meshes/Condenser.json",
+   "triangles": 2000,
+   "vertices": 1474,
+   "centre": [
+    0.0,
+    5.83774,
+    0.245
+   ],
+   "size": [
+    9.621,
+    11.895,
+    9.31
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
+   "lights": [],
+   "note": "on a sleeping place, its comb toward the Strip, about 11 high at its core. The comb's 37 cups are its tray, dark when empty; a cup's stone or jewel is CondenserStone or CondenserJewel stood in it, and the core is CondenserCore: plan.json, machines.condenser"
+  },
+  "CondenserCore": {
+   "mesh": "meshes/CondenserCore.json",
+   "triangles": 472,
+   "vertices": 256,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.82,
+    2.82,
+    0.74
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its middle, at across 0, 0.4 toward the back and 9.5 up on the Condenser, round the shard: it turns in its own plane while the Condenser works, still when the tray is full or the power is out. Look only"
+  },
+  "CondenserStone": {
+   "mesh": "meshes/CondenserStone.json",
+   "triangles": 20,
+   "vertices": 18,
+   "centre": [
+    0.0,
+    0.0,
+    -0.28
+   ],
+   "size": [
+    0.727,
+    0.84,
+    0.48
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a stone in a cup: stood at the cup's place on the comb (plan.json, machines.condenser), the Condenser's turn. Lit, the void's violet. Look only"
+  },
+  "CondenserJewel": {
+   "mesh": "meshes/CondenserJewel.json",
+   "triangles": 48,
+   "vertices": 30,
+   "centre": [
+    0.0,
+    0.0,
+    -0.25
+   ],
+   "size": [
+    0.727,
+    0.84,
+    0.42
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a jewel in a cup: stood at the cup's place on the comb, the Condenser's turn. One pale swatch on every face: the jewel type's colour is the builder's (a tint, or the mesh in Neon without the kit's pictures), so the cup reads from a stone's at 14 studs. Look only"
   }
  }
 }

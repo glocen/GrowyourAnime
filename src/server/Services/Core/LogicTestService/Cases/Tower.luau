@@ -88,10 +88,11 @@ return {
 			local unit = WorldConfig.Walk
 			local across, deep, behind, tower = plots.Drawn * unit, plots.Drawn * unit, plots.Behind * unit, plots.Tower * unit
 			local x, z = Tower.RingSpot(across, deep, behind, tower, 1)
-			-- The plan's placement: across 84, along -232 from the gate at -deep/2 (Kit.Place), so 132 in from the middle.
-			t.Check("on the drawn plot, at the silhouette's place", x == 84 and z == 132, `{x}, {z}`)
+			-- The plan's placement at 128 (AR16, delivery 3; base_plan.py's TOWER_AT): across 48, 160 in from the gate at
+			-- -deep/2 (Kit.Place), so 96 in from the middle.
+			t.Check("on the drawn plot, at the silhouette's place", x == 48 and z == 96, `{x}, {z}`)
 			local mx = Tower.RingSpot(across, deep, behind, tower, -1)
-			t.Equal("mirrored with its crossing", mx, -84)
+			t.Equal("mirrored with its crossing", mx, -48)
 			t.Check("its platforms stay on its lot's square", TowerConfig.Platform.Radius <= tower / 2)
 		end,
 	},

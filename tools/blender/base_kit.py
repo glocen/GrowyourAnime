@@ -34,6 +34,7 @@ import base_machines as machines  # noqa: E402
 import base_forge as forge  # noqa: E402
 import base_mill as mill  # noqa: E402
 import base_show as show  # noqa: E402
+import base_training as training  # noqa: E402
 import blcommon as bl  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 import rook_sheet as rs  # noqa: E402
@@ -708,7 +709,8 @@ PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "YardLive": lambda: 
           **forge.PIECES,          # and the Forge and the Stone Condenser, Stage I (AR28, base_forge.py)
           **breaker.PIECES,        # and the Void Breaker's Stages II and III (AR32, base_breaker.py)
           **bays.PIECES,           # and the bays' Stages II and III (AR33, base_bay.py)
-          **battery.PIECES}        # and the battery's Stages II and III (AR34, base_battery.py)
+          **battery.PIECES,        # and the battery's Stages II and III (AR34, base_battery.py)
+          **training.PIECES}       # and the Training machine's Stages II and III (AR35, base_training.py)
 
 
 def build(name):

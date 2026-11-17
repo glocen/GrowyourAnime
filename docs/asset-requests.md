@@ -11542,6 +11542,57 @@ From both sheets (d40537a).
   - **One more:** the build's words call them crystals, not "weights".
 - **Next:** Stages II and III as kit pieces for Faber, with the check's conditions, judged in the game from the court.
 
+### Stages II and III as kit pieces, for Faber's install (Modulo, 2026-11-17, 18:58 to 19:04 by the clock)
+
+**Research's class: a crown, never weights at a bar's ends.**
+- **Why height goes by radius:** the crown turns, so any crystal circles round to the ends of the bar seen from the side. The only top line that rises to the middle from every heading is one where a crystal's height goes by how far out it stands, not by where it is round the ring.
+- **The crown:** a band of void stone with short crystals set through it at its rim, and tall crystals standing near the spark.
+  - **Stage II:** a band 3.6 to 4.05, with six short crystals (1.6 high), twelve marks, and four tall crystals 2.1 out (3 high), their tips 1.90 over the crown's middle.
+  - **Stage III:** a band 4.3 to 4.75, with eight short (1.8 high), sixteen marks, and six tall 2.4 out (3.6 high), their tips 2.26 over it.
+- **Every crystal** stands upright and unlit and is at least 3 times as tall as it is wide.
+- **The marks** are even all round, a quarter step off the crystals.
+- **The spark** stays Stage I's, in Training.
+- **In the build's words** they're crystals.
+
+**The handoff** (`build/handoff/Base`, from `tools/blender/base_training.py`, through `base_kit.py` and `base_plan.py`):
+- **TrainingCrown2:** 824 triangles, 8.32 across with its hull, 3.22 high.
+- **TrainingCrown3:** 1,080 triangles, 9.75 across, 3.82 high.
+- Both are hulled, look only, with no collision.
+
+**For Faber:**
+- **Each stage's pieces:**
+  - Each new crown replaces TrainingCrown at the same place, 8 up at the machine's middle, turn 0.
+  - Training stays at every stage.
+  - The table is `machines.trainingStages`. The machine takes the base's level as its stage, since it has no level of its own.
+- **The turn:** the game turns a piece about Y when its Piece is "TrainingCrown" (`BaseController`, the axis test). TrainingCrown2 and TrainingCrown3 turn the same way, at the same rate, while a Voidkin trains.
+- **Unchanged:** nothing else in the manifest or the meshes changed. The export only added entries.
+
+**The sheet:** `build/scratch/modulo/training_kit/training_stages.png`, in the kit's colours, the same views and cuts as the grey sheets. Triangles, a stage whole before the hull: Stage I 962, II 1,290, III 1,546.
+
+**My read:**
+- **From the generator's side and from behind,** the top line rises to the middle at II and III. It reads as a crown, with no cluster at the bar's ends.
+- **From the court** the crown is heavier and taller each stage.
+- **From behind,** two tall crystals stand either side of the spark. It's a crown with its jewel, straight and upright; the check weighs it against AR34's dark-tower class.
+- **The band's underside** from behind reads as a dark flat disc. The game's camera looks at it from the court, not from behind.
+
+**The content check on the coloured build (19:04): PASS, for upload.**
+- **Its read:**
+  - From behind, a spiked disc on a pedestal, with no horns holding a flame and no eye.
+  - From above, a crown or dial, with no target or star.
+  - From the front in black, a spiked bar edge-on, not a candelabrum.
+  - From the side, the top line peaks in the middle with the shortest crystals at the ends, so the dumbbell is gone.
+- **Its conditions:**
+  1. The crystals stay exactly vertical. Any tilt runs along the ring.
+  2. Only these two meshes as drawn are uploaded. A change to the count, the heights or the spark comes back to the check.
+  3. The look in the game includes the generator's side and behind while the crown turns: mid-turn the middle can dip between two tall crystals, which is fine while the ends stay lowest.
+- **Its note, for research:** Stage I's own crown, passed and unchanged, still shows a bar with a shard at each end from the side. Whether the class holds at Stage I too is research's call.
+
+**The four facts:**
+- **Implemented:** yes, two meshes and the table in the handoff.
+- **Tested:** the content check, PASS. Nothing runs in the game yet.
+- **Visually reviewed:** mine, and research's pass to come.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

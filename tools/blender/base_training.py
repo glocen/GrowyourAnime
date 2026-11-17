@@ -1,17 +1,14 @@
-"""AR35: the Training machine's Stages II and III, two directions for how it grows, in grey beside Stage I
-(docs/asset-requests.md, AR35). The machine takes the base's level: Stage I at level 1, II at 2, III at 3.
+"""AR35: the Training machine's Stages II and III, the Weighted Crown, as base kit pieces (docs/asset-requests.md,
+AR35; research's pick of A). The machine takes the base's level: Stage I at level 1, II at 2, III at 3.
 
-Stage I is the machine as it stands (base_machines.training, training_crown): the sparring stone on its deck, its
-reticle, the spark over it, the crown turning round the spark, and the pad out in front where the Voidkin trains.
+The stone, its reticle, the spark and the pad stay Stage I's (base_machines.training) at every stage. The crown, the
+machine's moving part, carries more: TrainingCrown2 and TrainingCrown3 each replace TrainingCrown at its place and turn
+as it does. Each is a flat band of void stone with short crystals set through it and tall crystals standing near the
+spark, so the crown's top line rises to its middle from every side while it turns: a crown, never weights at a bar's
+ends (research's class on the pick, 2026-11-17).
 
-  A, the Weighted Crown   the crown, the machine's moving part, carries more: its flat ring widens and its weights go
-                          from four to six to eight, larger and taller. Flat, so from the court it is a bar, as at I.
-  B, the Sparring Ring    lesser fangs of void stone stand at the pad's sides, an uneven arc open to the gate and
-                          stepping down toward it, each with a vein of the void's light up its edge toward the pad.
-
-The review: each stage in the yard at base level 3, a Voidkin's size on the pad, from a player in the court turned to
-the machine, on the way to the back bay, head-on, from both sides, from behind and three-quarter, cut small and in
-black. Two passes, so the page fits in memory beside Studio: the shots, then each direction's sheet from disk.
+Not run by itself for the kit: base_kit.py takes PIECES into its own, base_plan.py the swap's table. Run, it renders the
+review: each stage in the yard at base level 3, in two passes so the page fits in memory beside Studio:
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/base_training.py -- <abs out_dir> [fast]
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/base_training.py -- <abs out_dir> sheet
 """
@@ -27,118 +24,106 @@ import base_machines as bm  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 from base_mill import Mesh, at, put  # noqa: E402
 
+Piece = kit.Piece
 CROWN = bm.CROWN
-GREY = {"steel": "concrete", "girder": "concrete", "abyss": "concrete", "yellow": "concrete", "copper": "concrete",
-        "bone": "ceramic"}
-DIRECTIONS = {"A": "the Weighted Crown", "B": "the Sparring Ring"}
 
-
-class Swap:
-    """While it's open, every swatch a shape asks for is drawn in its stand-in."""
-
-    def __init__(self, table):
-        self.table = table
-
-    def __enter__(self):
-        self.own = kit.sw_uv
-        kit.sw_uv = lambda name, occ, t: self.own(self.table.get(name, name), occ, t)
-
-    def __exit__(self, *_):
-        kit.sw_uv = self.own
-
-
-# --- A, the Weighted Crown ------------------------------------------------------------------------------------------------
-
-# a stage's crown: its ring's inner and outer radius, its weights, how far out they float, their half width and height.
-# A weight is a slim crystal, upright, 3 times as tall as it is wide at least (the content check, 18:50), and it
-# straddles the ring, its tip over the spark's
-CROWNS = {2: dict(ring=(2.8, 3.25), weights=6, out=4.1, half=0.42, high=2.6),
-          3: dict(ring=(3.3, 3.75), weights=8, out=4.6, half=0.45, high=3.2)}
+# A stage's crown: its band's inner and outer radius and its sides; the crystals set through the band (how many, half
+# width, high); and the crystals standing near the spark (how many, how far out, half width, high). Every crystal is
+# upright, never radial, and at least 3 times as tall as it is wide (the content check, 2026-11-17, 18:50 and 18:58).
+CROWNS = {2: dict(band=(3.6, 4.05), sides=20, rim=(6, 0.26, 1.6), core=(4, 2.1, 0.42, 3.0)),
+          3: dict(band=(4.3, 4.75), sides=24, rim=(8, 0.29, 1.8), core=(6, 2.4, 0.45, 3.6))}
+RIM_LEAN, CORE_LEAN = 0.45, 0.6     # how much of a crystal stands over its widest: the tall ones mostly above the band
 
 
 def crown(stage):
-    """A stage's crown, built round its own middle as TrainingCrown is: a flat ring of void stone, two marks of the
-    void's light on its rim for each weight, and the weights, upright shards of void stone, floating round it."""
+    """A stage's crown, built round its own middle as TrainingCrown is: a flat band of void stone, two marks of the
+    void's light on its rim for each crystal set through it, spaced evenly all round between them, and the tall
+    crystals near the spark."""
     c = CROWNS[stage]
     m = Mesh()
-    r0, r1 = c["ring"]
-    bm.hoop(m, (0, 0, 0), r0, r1, 0.34, 8 + 4 * stage, "abyss", lying=True)
-    marks = 2 * c["weights"]
-    for k in range(marks):
-        a = math.tau * k / marks
+    r0, r1 = c["band"]
+    bm.hoop(m, (0, 0, 0), r0, r1, 0.34, c["sides"], "abyss", lying=True)
+    n, half, high = c["rim"]
+    for k in range(2 * n):                     # the marks, a quarter step off the crystals
+        a = math.tau * (k + 0.5) / (2 * n)
         m.box((0.3, 0.5, 0.42), ((r1 + 0.02) * math.cos(a), (r1 + 0.02) * math.sin(a), 0), "void", rot=(0.0, 0.0, a))
-    for k in range(c["weights"]):
-        a = math.tau * (k + 0.5) / c["weights"]
-        bm.shard(m, (c["out"] * math.cos(a), c["out"] * math.sin(a), 0.1), c["half"], c["high"], "abyss", lean=0.35,
-                 ink=True)
+    for k in range(n):
+        a = math.tau * (k + 0.5) / n
+        bm.shard(m, ((r0 + r1) / 2 * math.cos(a), (r0 + r1) / 2 * math.sin(a), 0.1), half, high, "abyss",
+                 lean=RIM_LEAN, ink=True)
+    count, out, half, high = c["core"]
+    for k in range(count):
+        a = math.tau * k / count
+        bm.shard(m, (out * math.cos(a), out * math.sin(a), 0.1), half, high, "abyss", lean=CORE_LEAN, ink=True)
     return m
 
 
-def weighted(stage):
+def size(stage):
+    """A stage's crown: across, at its rim's crystals; and the tall crystals' tips, up from its middle."""
+    c = CROWNS[stage]
+    n, half, _ = c["rim"]
+    across = 2 * max(c["band"][1], sum(c["band"]) / 2 + half)
+    count, out, half, high = c["core"]
+    return across, 0.1 + high * CORE_LEAN
+
+
+# --- the kit's pieces and the swap's table ------------------------------------------------------------------------------
+
+def crown_piece(stage):
+    def make():
+        across, tip = size(stage)
+        n = CROWNS[stage]["rim"][0]
+        count = CROWNS[stage]["core"][0]
+        return Piece(f"TrainingCrown{stage}", crown(stage),
+                     note=f"Stage {'II' if stage == 2 else 'III'}'s crown, base level {stage}, in place of "
+                          f"TrainingCrown: its origin is its middle, floating {CROWN:g} up at the Training machine's "
+                          f"middle round the stone's spark. A band of void stone with {n} short crystals set through "
+                          f"it and {2 * n} marks of the void's light, and {count} tall crystals near the spark, their "
+                          f"tips {tip:.2f} over its middle. {across:.1f} across. It turns about its own upright while "
+                          f"a Voidkin trains, still when none does, as TrainingCrown does. Look only")
+    return make
+
+
+def stages():
+    """The swap's table: each stage's pieces at the Training machine's place (across, toward the gate, up), and how
+    each moves."""
+    table = {}
+    for stage in (1, 2, 3):
+        table[str(stage)] = dict(pieces=[
+            dict(piece="Training", at=[0.0, 0.0, 0.0], moves="still"),
+            dict(piece="TrainingCrown" if stage == 1 else f"TrainingCrown{stage}", at=[0.0, 0.0, CROWN],
+                 moves="turns")])
+    return table
+
+
+def tables():
+    return dict(trainingStages=dict(
+        note="AR35: the Training machine's three stages, the Weighted Crown, the swap's table. The machine has no level "
+             "of its own, so it takes the stage of the base's level (Stage I at 1, II at 2, III at 3). Every place is "
+             "in the machine's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. The stone "
+             "(Training) is the same at every stage; a stage's crown replaces the one before's at the same place. "
+             "`moves`: still; turns, about the crown's own upright while a Voidkin trains, still when none does, at "
+             "TrainingCrown's rate and sign (Config.World.Grey.Training.Crown). The game turns a piece about Y when "
+             "its Piece is TrainingCrown; TrainingCrown2 and TrainingCrown3 turn the same way.",
+        stages=stages()))
+
+
+PIECES = {"TrainingCrown2": crown_piece(2), "TrainingCrown3": crown_piece(3)}
+
+
+def whole(stage):
+    """A stage whole, every piece at its table's place: for the review."""
+    made = {"Training": bm.training().mesh, "TrainingCrown": bm.training_crown().mesh,
+            **{name: crown(int(name[-1])) for name in PIECES}}
     m = Mesh()
-    put(m, bm.training().mesh, at(0, 0, 0))
-    put(m, crown(stage), at(0, 0, CROWN))
+    for row in stages()[str(stage)]["pieces"]:
+        put(m, made[row["piece"]], at(*row["at"]))
     return m
-
-
-# --- B, the Sparring Ring -------------------------------------------------------------------------------------------------
-
-# the fangs, in the order they come: across, toward the gate (the pad's middle is bm.TRAINEE), high, half width at the
-# foot. An uneven arc at the pad's sides, inside the footprint's 6.2, stepping down toward the gate and open there;
-# never a mirror pair, in height, depth or width (the content check, 18:50)
-FANGS = [(-2.62, 4.7, 4.3, 0.4), (2.66, 5.3, 3.7, 0.36), (-2.68, 7.2, 3.1, 0.34), (2.7, 7.6, 2.6, 0.3)]
-FANGS_AT = {2: 2, 3: 4}
-
-
-def fang(m, x, y, high, half):
-    """A lesser sparring stone: a straight fang of void stone rooted on its own on the floor, a chiselled tip, leaning
-    a little out from the pad, an edge toward it, and a straight vein of the void's light up that edge, of even width,
-    stopping short of the tip."""
-    out = 1.0 if x > 0 else -1.0
-    lean = 0.25 * out
-
-    def on(t):
-        return (x + lean * t, y, high * t)
-
-    def width(t):
-        if t < 0.55:
-            return half - 0.2 * half * t / 0.55
-        return 0.8 * half + (0.05 - 0.8 * half) * (t - 0.55) / 0.45
-
-    bm.horn(m, [on(0.0), on(0.55), on(1.0)], [width(0.0), width(0.55), width(1.0)], "abyss", flat=(0.0, 1.0, 0.0),
-            deep=1.15)
-    steps = (0.12, 0.45, 0.78)
-    bm.vein(m, [on(t) for t in steps], [width(t) for t in steps], (x - out * 50.0, y, high / 2), r=0.07)
-
-
-def sparring(stage):
-    m = Mesh()
-    put(m, bm.training().mesh, at(0, 0, 0))
-    put(m, bm.training_crown().mesh, at(0, 0, CROWN))
-    for x, y, high, half in FANGS[:FANGS_AT[stage]]:
-        fang(m, x, y, high, half)
-    return m
-
-
-def stage_one():
-    m = Mesh()
-    put(m, bm.training().mesh, at(0, 0, 0))
-    put(m, bm.training_crown().mesh, at(0, 0, CROWN))
-    return m
-
-
-def build():
-    made = {"I": stage_one()}
-    for key, body in (("A", weighted), ("B", sparring)):
-        for stage in (2, 3):
-            with Swap(GREY):
-                made[f"{key}{'I' * stage}"] = body(stage)
-    return made
 
 
 # --- the review: each stage in the yard ---------------------------------------------------------------------------------
 
-FULL_VIEWS = ("front", "side", "three")                     # at their own size
+FULL_VIEWS = ("front", "side", "three")                                  # at their own size
 CUT_VIEWS = ("court", "front", "side", "far", "back", "three", "high")   # cut small and in black
 
 
@@ -206,7 +191,7 @@ def review(out, fast):
              "far": ((x - 18.0, mid[1], 7.5), mid),         # from the side wall's side
              "back": ((x, -inward - 12.0, 6.5), mid),       # from behind the stone
              "three": ((x + 13.0, mid[1] + 13.0, 7.5), mid),
-             "high": ((x + 9.75, mid[1] + 9.75, mid[2] + 11.6), mid)}   # 40 degrees down, 18 away: a dial, not an eye
+             "high": ((x + 9.75, mid[1] + 9.75, mid[2] + 11.6), mid)}   # 40 degrees down, 18 away
     w, h = look.SIZE
     boxes, tris = {}, {}
 
@@ -224,7 +209,8 @@ def review(out, fast):
         for o in hidden:
             o.hide_render = False
 
-    for key, mesh in build().items():
+    for key, stage in (("I", 1), ("II", 2), ("III", 3)):
+        mesh = whole(stage)
         tris[key] = mesh.whole().tris()
         data = mesh.whole().to_object(f"Training{key}", kit_mat)
         obj = bpy.data.objects.new(f"Training{key}", data)
@@ -246,28 +232,9 @@ def review(out, fast):
     (out / "training_review.json").write_text(json.dumps(dict(boxes=boxes, tris=tris)), encoding="utf-8")
 
 
-NOTES = {
-    "A": "The crown carries more. The stone, its reticle, the spark and the pad stay as at Stage I. At Stage II the "
-         "crown's flat ring widens to 3.25 and carries six weights, upright crystals of void stone, slimmer and taller "
-         "than Stage I's four and straddling the ring, with twelve marks of the void's light on its rim; at Stage III "
-         "it widens to 3.75 with eight weights and sixteen marks. It stays flat, so from the court it is a bar, as at "
-         "Stage I: 7.6 across at its weights, then 9.0, then 10.1. The spark is Stage I's. Each stage's crown is a "
-         "piece of its own that replaces Stage I's and turns as it does while a Voidkin trains.",
-    "B": "Fangs rise round the Voidkin. The stone, the crown and the pad stay as at Stage I. At Stage II two lesser "
-         "sparring stones of void stone stand on the floor at the pad's sides, the left one 4.3 high a little behind "
-         "the pad's middle, the right one 3.7 nearer it; at Stage III two more beside its front half, 3.1 and 2.6, so "
-         "the arc steps down toward the gate and is open there. Each is a straight fang with a chiselled tip leaning a "
-         "little out, an edge toward the pad with a vein of the void's light up it, stopping short of the tip. Nothing "
-         "joins them, and each stands under the Voidkin's head.",
-}
-SHARED = ("Both: the footprint stays inside 6.2 by 11.2. A Voidkin's size stands on the pad, training. Stage I in the "
-          "base kit's colours; Stages II and III in grey blocks with the void's light lit, in the yard at base level 3 "
-          "under the place's dusk, rendered in Blender; nothing is seen in Studio.")
-
-
-def sheet(out, key):
-    """A direction's review sheet from the shots on disk, in a Blender of its own: the yard's scene is gone, so the
-    page and its text fit in memory beside Studio."""
+def sheet(out):
+    """The review sheet from the shots on disk, in a Blender of its own: the yard's scene is gone, so the page and its
+    text fit in memory beside Studio."""
     import numpy as np
     import lantern_row_look as look
     import rook_sheet as rs
@@ -276,7 +243,7 @@ def sheet(out, key):
     saved = json.loads((out / "training_review.json").read_text(encoding="utf-8"))
     boxes, tris = {tuple(k.split(" ")): v for k, v in saved["boxes"].items()}, saved["tris"]
     w, h = look.SIZE
-    keys = ("I", f"{key}II", f"{key}III")
+    keys = ("I", "II", "III")
 
     def shot(k, name):
         return rs.load(out / f"training_{k}_{name}.png")
@@ -302,8 +269,18 @@ def sheet(out, key):
             "side": "from the generator's side, 18 away", "far": "from the side wall's side, 18 away",
             "back": "from behind the stone, 12 away", "three": "three-quarter, from the front and the generator's side",
             "high": "from above, 40 degrees down, three-quarter"}
-    notes = [NOTES[key], SHARED + " Triangles, a stage whole, before the drawn edge's hull: "
-             + ", ".join(f"Stage {k if k == 'I' else k[1:]} {tris[k]:,}" for k in keys) + "."]
+    (a2, t2), (a3, t3) = size(2), size(3)
+    notes = [
+        "The crown carries more. The stone, its reticle, the spark and the pad stay Stage I's at every stage. At Stage "
+        f"II the crown is a wider band of void stone, {a2:.1f} across, with six short crystals set through it and "
+        f"twelve marks of the void's light on its rim, and four tall crystals standing near the spark, their tips "
+        f"{t2:.2f} over the crown's middle; at Stage III, {a3:.1f} across, eight short crystals and sixteen marks, and "
+        f"six tall crystals, their tips {t3:.2f} over it. Short at the rim and tall near the spark, so its top line "
+        "rises to the middle from every side while it turns: a crown, never weights at a bar's ends. Every crystal "
+        "stands upright and unlit. Each stage's crown replaces Stage I's and turns as it does.",
+        "In the base kit's colours, in the yard at base level 3 under the place's dusk, the yard's trainee on the pad, "
+        "rendered in Blender; nothing is seen in Studio. Triangles, a stage whole before the drawn edge's hull: "
+        + ", ".join(f"Stage {k} {tris[k]:,}" for k in keys) + "."]
     lines = [ln for n in notes for ln in textwrap.wrap(n, 230)]
     gap = 16
     cw, ch = round(w * 2 / 3), round(h * 2 / 3)
@@ -317,8 +294,7 @@ def sheet(out, key):
     ui.K = 1                                               # a point a pixel: the sheet is laid out in pixels
     page = ui.Sheet(width, height, "#14151C")
     t = page.tile(0, 0, page.w, page.h)
-    t.text(gap, 14, 20, f"Grow your Anime, the Training machine's stages: {key}, {DIRECTIONS[key]} (AR35)", "#EDE6D6",
-           bold=0.2)
+    t.text(gap, 14, 20, "Grow your Anime, the Training machine's stages: the Weighted Crown (AR35)", "#EDE6D6", bold=0.2)
     y = 48
     for name, caption in (("court", "a player at the court's back turned to it, at a phone's 640 by 360"),
                           ("way", "a player between the left side's bays, on the way to the back one, turned to it")):
@@ -356,8 +332,8 @@ def sheet(out, key):
         t.text(gap, y + i * 19, 14, ln, "#B4AC9C")
     for layer in ui.text_layers(page.px.shape[1], page.px.shape[0], page.items).values():
         rs.paste(page.px, layer, 0, 0)
-    rs.save(page.px, out / f"training_{key}.png")
-    print("triangles:", {k: tris[k] for k in keys})
+    rs.save(page.px, out / "training_stages.png")
+    print("triangles:", tris)
 
 
 def main():
@@ -365,8 +341,7 @@ def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     if "sheet" in args:
-        for key in DIRECTIONS:
-            sheet(out, key)
+        sheet(out)
     else:
         review(out, "fast" in args)
 

@@ -12100,6 +12100,48 @@ From the beats sheet and both videos, run frame by frame at 12 a second (f2dc53e
   - **Holds for every machine:** the court's near-white share drops to the machines' own shapes, and the flash guard is measured again.
 - **Next:** A with the shape cover, in grey, at the Forge and from the court. That's the second look, judged on the cover only.
 
+### The second look: the cover in the machine's own shape (Modulo, 2026-11-17, 20:34 to 20:48 by the clock)
+
+**Where:** `tools/blender/stage_land_block.py` draws it, into `build/scratch/modulo/stage_land/`:
+- `stage_land_beats.png`: A at five beats, at the Forge and from the court; `first_look_beats.png` beside it is the first look.
+- `stage_land_A.png`: every frame at 30, both views.
+- `stage_land_64.png`: the read at 64 px.
+- `stage_land_forge.mp4` and `stage_land_court.mp4`.
+- The climb, the burst, the thrown ring and the views are as in the first look; only the cover changed.
+
+**The cover is a Highlight**, on the old stage's model, then on the new one's, with DepthMode Occluded:
+- **Fill:** it eases in from frame 12 at 60, to full (FillTransparency 0) at the climb's top, 33. It holds full to 37, with the swap at 35, then cools out by 56.
+- **Outline:** it comes in from 6 to 20, as the hoop leaves the ground, and goes from 44 to 60. It's 2 px on a 540-high frame.
+- **The colour** is the block's grey, near-white violet.
+- **The PointLight** stays on with the fill, at 0.8 of it.
+- **How the block draws it:** the way Roblox does, over the finished frame. A second render per frame holds out everything else, so whatever stands in front still hides the machine. Its alpha is the machine's visible pixels: the fill is laid over them, the outline round them. So it doesn't bloom here; how it sits under the game's own Bloom will show in Faber's build.
+- **For Faber:** one Highlight per landing, its Adornee the old model, then the new one at the swap, tweening FillTransparency and OutlineTransparency on these beats. A base level-up uses three at once.
+
+**Measured** (`handbook/tech/capture/flash.ps1`, each frame against the take's first, the worst 10° field):
+
+| | Worst field | Over 25%, runs | Over 25%, frames at 60 | Saturated red |
+|---|---|---|---|---|
+| At the Forge | 95.1% at 32 | 1 | 12 to 46 | 0 px |
+| From the court | 90.0% at 34 | 1 | 12 to 48 | 0 px |
+
+- **The flash count** is one per landing, as in the first look. The PointLight's wash on the floor is still the run's start.
+- **The near-white share** (pixels at 243 or over) no longer sees the cover. The fill's grey is 239 in luma, so the court reads 3.3% against its floor's 3.1%, where the box gave 25.7%. On the screen, the cover is now the machines' own shapes: from the court, the generator's spoked wheel with the lamp post in front of it.
+
+**My read:**
+- **The swap is the payoff:**
+  - At the Forge, the old frame glows up with the climb, and at full it's a flat lit cut-out of Stage I. Two frames later it's Stage II's silhouette, its head grown by the gear lintel, and it cools to show the new stage in place.
+  - From the court, the generator's wheel and the Forge and Training past it light and grow together, and nothing outside their shapes goes white.
+  - The 64 px read holds both.
+- **The price:** at full fill the shape is a flat cut-out with no form inside it, for about 0.1 s. A full fill hides the swap completely. A lower peak, say 0.85, would keep a hint of form at the cost of a faint swap.
+
+**Tier 1:** the outline's timing and the light following the fill are my calls inside the must-fix.
+
+**Four facts:**
+- **Implemented:** the second look, rendered in Blender.
+- **Tested:** the flash guard's check above.
+- **Visually reviewed:** my own read; research's verdict on the cover to come.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

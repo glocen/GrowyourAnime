@@ -1,7 +1,8 @@
-"""AR37: a stage lands, the grey block (docs/asset-requests.md, AR37, "Three directions, planned"). The effect a base
-machine plays when it changes stage, in three directions: A, the Climbing Ring; B, the Pillar; C, the Coil. Each rises
-up the machine from the ground, accelerating, bursts at its top, and covers the swap from the old stage to the new under
-its brightest frames.
+"""AR37: a stage lands, the grey block (docs/asset-requests.md, AR37). The effect a base machine plays when it changes
+stage. A, the Climbing Ring, is research's pick; C, the Coil, waits in polish-later as a variant (B, the Pillar, is out;
+it's in f2dc53e). The hero rises up the machine from the ground, accelerating, and bursts at its top. The cover is the
+machine's own shape: a Highlight on the old model fills to full as the climb rises, the swap happens under the full
+fill, and the new model's fill cools (research's must-fix, AR37, "Research's verdict and pick").
 
 Every part is sized from the machine's box (the larger of its two stages): `r`, half its footprint's diagonal plus 0.6,
 and `h`, its height plus 0.5. The beats are frames at 60 (BEATS), the same in all three; the frames are drawn at 30 a
@@ -11,7 +12,7 @@ Two views: the player's camera at the Forge's prompt, turned to it, as the Forge
 court, turned to the plot's middle, as the generator, the Forge and the Training machine go to Stage II together (a
 base level-up). Rendered in Blender; nothing is seen in Studio.
 
-blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> render forge|court [A|B|C ...]
+blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> render forge|court [A|C ...]
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> sheet
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/stage_land_block.py -- <abs out_dir> movie forge|court
 """
@@ -27,12 +28,14 @@ GREY = "#F2EEFA"                 # the block's light: near white, a breath of th
 RATE = 30                        # frames drawn a second
 BEATS = dict(rise=33, swap=35, peak=37, end=63)   # at 60: the climb's top, the swap, the cover's last full frame, gone
 BEFORE, AFTER = 0.1, 0.12        # seconds drawn before the climb starts and after it's gone
-DIRECTIONS = ("A", "B", "C")
-NAMES = {"A": "the Climbing Ring", "B": "the Pillar", "C": "the Coil"}
+DIRECTIONS = ("A", "C")
+NAMES = {"A": "the Climbing Ring", "C": "the Coil"}
+OUTLINE_PX = 2.0                 # the Highlight's outline, in pixels high on a 540 frame
 TURNS = 2.25                     # C: the coil's turns from the ground to h
 TAIL = 0.75                      # C: its tail, in turns
-COVER = 4.0                      # the cover's light at its full, as emission strength
-SHELL_GONE = 46                  # at 60: the cover's light is gone (it falls from the peak as a cube)
+FILL_FROM = 12                   # at 60: the cover, a Highlight: the old model's fill starts, full at the climb's top
+COOL = 56                        # at 60: the new model's fill is gone
+LINE_FROM, LINE_GONE = 6, 60     # at 60: the outline comes in as the climb leaves the ground, and goes last
 CLIMB = 2.6                      # the climbing hero's light at its top
 
 
@@ -124,13 +127,6 @@ def ring(sides=96, inner=0.9):
     return verts, faces
 
 
-def box():
-    """A closed box, 1 each way, its foot at z 0."""
-    v = [(x, y, z) for z in (0.0, 1.0) for y in (-0.5, 0.5) for x in (-0.5, 0.5)]
-    f = [(0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)]
-    return v, f
-
-
 def shaft(sides=24):
     verts, faces = band(sides)
     top = len(verts)
@@ -214,10 +210,39 @@ class Coil:
         self.knobs["strength"].default_value = (1.4 + 1.3 * (CLIMB - 1.0) * u) * fade_out
 
 
+# --- the cover: the machine's own shape, lit -----------------------------------------------------------------------------
+
+def cover(f):
+    """The cover's Highlight at frame f (at 60): (fill, outline), each 0 to 1 against FillTransparency and
+    OutlineTransparency. The old model's fill eases in as the climb rises, full at its top; the swap is under the full
+    fill; the new model's fill cools. The outline comes first, as the climb leaves the ground, and goes last."""
+    if f < BEATS["peak"]:
+        fill = ease_in(span(f, FILL_FROM, BEATS["rise"]))
+    else:
+        fill = (1 - span(f, BEATS["peak"], COOL)) ** 2
+    line = ease_out(span(f, LINE_FROM, LINE_FROM + 14)) * (1 - span(f, COOL - 12, LINE_GONE)) ** 2
+    return fill, line
+
+
+def highlight(px, mask, fill, line):
+    """A Highlight with DepthMode Occluded, drawn as Roblox draws one, over the finished frame: the fill a flat colour
+    over the model's visible pixels, the outline a line OUTLINE_PX wide round them. `mask` is those pixels, 0 to 1."""
+    import numpy as np
+    colour = np.array([int(GREY[k:k + 2], 16) / 255 for k in (1, 3, 5)], np.float32)
+    grown, r = mask.copy(), int(math.ceil(OUTLINE_PX))
+    for dy in range(-r, r + 1):
+        for dx in range(-r, r + 1):
+            if dx * dx + dy * dy <= OUTLINE_PX * OUTLINE_PX:
+                grown = np.maximum(grown, np.roll(np.roll(mask, dy, axis=0), dx, axis=1))
+    a = (fill * mask + line * np.clip(grown - mask, 0, 1))[..., None]
+    px[..., :3] = px[..., :3] * (1 - a) + colour * a
+    return px
+
+
 # --- one machine's effect ----------------------------------------------------------------------------------------------
 
 class Landing:
-    """The three directions' parts for one machine, and its two stages' objects to swap."""
+    """The directions' parts for one machine, and its two stages' objects to swap."""
 
     def __init__(self, scene, tag, old, new):
         import bpy
@@ -233,18 +258,14 @@ class Landing:
         self.r = 0.5 * math.hypot(self.w, self.d) + 0.6
         self.h = hi.z - self.foot + 0.5
         self.hoop = Part(scene, f"{tag}Hoop", band(), power=2.5, floor=0.0)
-        self.shell = Part(scene, f"{tag}Shell", shaft(64), power=1.5, floor=0.35)   # round, as the climb; lit to the top
         self.thrown = Part(scene, f"{tag}Thrown", ring(inner=0.93))
         self.shaft = Part(scene, f"{tag}Shaft", shaft(), power=1.0, floor=1.0)
-        self.foot_ring = Part(scene, f"{tag}FootRing", ring(inner=0.9))
-        self.sheet = Part(scene, f"{tag}Sheet", band(), power=7.0, floor=0.08)
-        self.lip = Part(scene, f"{tag}Lip", band(flare=1.35), power=1.0, floor=0.3)
         self.coil = Coil(scene, f"{tag}Coil")
         data = bpy.data.lights.new(f"{tag}Light", "POINT")
         data.color, data.use_shadow, data.shadow_soft_size = (0.95, 0.93, 1.0), False, 1.0
         self.light = bpy.data.objects.new(f"{tag}Light", data)
         scene.collection.objects.link(self.light)
-        self.parts = (self.hoop, self.shell, self.thrown, self.shaft, self.foot_ring, self.sheet, self.lip)
+        self.parts = (self.hoop, self.thrown, self.shaft)
 
     def at(self, z):
         return (self.centre[0], self.centre[1], self.foot + z)
@@ -270,35 +291,12 @@ class Landing:
                 self.hoop.show(self.at(max(top - tall, 0.0)), (r * (1 - (2 / 3) * ease_out(pull)),) * 2 + (tall,),
                                1.0 + (CLIMB - 1.0) * u + 1.0 * pull)
                 light_z, light_power = top, 0.3 + 0.7 * u
-        elif direction == "B":
-            if 0 <= f <= 10:
-                k = span(f, 0, 10)
-                self.foot_ring.show(self.at(0.06), (r * (1 + 0.06 * ease_out(k)),) * 2 + (1.0,), 2.0 * (1 - k) ** 2)
-            close = span(f, rise - 2, BEATS["swap"])
-            leave = ease_in(span(f, BEATS["peak"], BEATS["end"] - 6))       # the foot lifts, faster as it goes
-            opens = span(f, BEATS["peak"], SHELL_GONE)                      # the cover's light falls back at once
-            if 0 <= f <= BEATS["end"]:
-                top = h * u + 0.6 * ease_out(span(f, BEATS["peak"], BEATS["end"]))
-                base = top * leave
-                floor = 0.08 + 0.82 * close * (1 - opens) ** 2
-                lit = (1.0 + (CLIMB - 1.0) * u + (COVER - CLIMB) * close * (1 - opens) ** 3) * (1 - leave) ** 1.5
-                self.sheet.show(self.at(base), (r, r, max(top - base, 0.01)), lit, clamp(floor, 0.05, 0.9))
-                light_z, light_power = top, (0.3 + 0.7 * u + 0.6 * close) * (1 - leave)
-            if rise <= f <= BEATS["end"] - 8:
-                k = span(f, rise, BEATS["end"] - 8)
-                self.lip.show(self.at(h + 0.6 * ease_out(k)), (r * (1 + 0.5 * ease_out(k)),) * 2 + (0.6 - 0.4 * k,),
-                              2.6 * (1 - k) ** 2)
         elif direction == "C":
             self.coil.show(self.centre, r, h, f)
             if 0 <= f <= rise:
                 light_z, light_power = h * u, 0.3 + 0.7 * u
-        if direction in ("A", "C") and rise <= f <= SHELL_GONE:
-            k = span(f, BEATS["peak"], SHELL_GONE)
-            full = 1.0 if f <= BEATS["peak"] else (1 - k) ** 3
-            on = span(f, rise, rise + 1)
-            grow = 0.92 * (1.0 + 0.08 * ease_out(k))
-            self.shell.show(self.at(-0.05), (r * grow, r * grow, h * (1.0 + 0.05 * ease_out(k))), COVER * on * full)
-            light_z, light_power = h * 0.6, 1.6 * on * full
+        if f > rise + 3:                                    # the light stays with the cover's fill
+            light_z, light_power = h * 0.5, 0.8 * cover(f)[0]
         if direction in ("A", "C") and rise + 1 <= f <= 60:
             k = span(f, rise + 1, 60)
             self.thrown.show(self.at(h), (r * (0.4 + 1.3 * ease_out(k)),) * 2 + (1.0,), 2.4 * (1 - k) ** 2)
@@ -381,23 +379,48 @@ def build(view):
             mill.put(m, base.PIECES[row["piece"]]().mesh, mill.at(*row["at"]))
         return m
 
-    landings = []
     fx, fin = base.FORGE
-    landings.append(Landing(scene, "Forge", [stand("Forge1", fs.whole("forge", 1)[0], fx, fin)],
-                            [stand("Forge2", fs.whole("forge", 2)[0], fx, fin)]))
     if view == "court":
-        gx, gin = base.GENERATOR
-        landings.append(Landing(scene, "Generator", [stand("Generator1", generator(1), gx, gin)],
-                                [stand("Generator2", generator(2), gx, gin)]))
-        tx, tin = base.TRAINING
-        landings.append(Landing(scene, "Training", [stand("Training1", training.whole(1), tx, tin)],
-                                [stand("Training2", training.whole(2), tx, tin)]))
         player, target = (-10.0, 28.0), (0.0, 76.0)      # the court's back: the generator to one side, Training and the Forge past it
     else:
         player, target = (fx + 5.0, fin - 11.0), (fx, fin)
     eye, focus = fs.toward(player, target)
     scene.camera = plan.camera(scene, f"Cam{view}", eye, focus)
+
+    def landing(tag, old, new, x, inward):
+        return Landing(scene, tag, [stand(f"{tag}1", old, x, inward)], [stand(f"{tag}2", new, x, inward)])
+
+    landings = [landing("Forge", fs.whole("forge", 1)[0], fs.whole("forge", 2)[0], fx, fin)]
+    if view == "court":
+        landings.append(landing("Generator", generator(1), generator(2), *base.GENERATOR))
+        landings.append(landing("Training", training.whole(1), training.whole(2), *base.TRAINING))
     return scene, d, landings
+
+
+def machine_mask(scene, landings, exr):
+    """The machines' visible pixels, 0 to 1: drawn again with everything else held out (still hiding what stands
+    behind it, as DepthMode Occluded) and the effect's own parts hidden, on a clear film; its alpha is the mask."""
+    import lantern_row_look as look
+    machines = {o for landing in landings for o in landing.old + landing.new}
+    parts = [p.obj for landing in landings for p in landing.parts]
+    parts += [landing.coil.obj for landing in landings if landing.coil.obj is not None]
+    shown = [o for o in parts if not o.hide_render]
+    held = [o for o in scene.objects if o.type == "MESH" and o not in machines and o not in parts]
+    for o in shown:
+        o.hide_render = True
+    for o in held:
+        o.is_holdout = True
+    scene.render.film_transparent = True
+    try:
+        alpha = look.render_linear(scene, exr)[..., 3].copy()
+    finally:
+        scene.render.film_transparent = False
+        for o in held:
+            o.is_holdout = False
+        for o in shown:
+            o.hide_render = False
+        exr.unlink(missing_ok=True)
+    return alpha
 
 
 def render(out, view, directions):
@@ -414,6 +437,9 @@ def render(out, view, directions):
             path = folder / f"f{i:03d}.png"
             linear = look.render_linear(scene, path.with_suffix(".exr"))
             px = look.finish(linear, d)
+            fill, line = cover(f)
+            if fill > 0.002 or line > 0.002:
+                px = highlight(px, machine_mask(scene, landings, path.with_suffix(".mask.exr")), fill, line)
             rs.save(px, path)
             path.with_suffix(".exr").unlink(missing_ok=True)
             grey = px[..., :3] @ [0.2126, 0.7152, 0.0722]
@@ -425,6 +451,10 @@ def render(out, view, directions):
 
 
 # --- the sheets and the movies -----------------------------------------------------------------------------------------
+
+def drawn_directions(out):
+    return [dr for dr in DIRECTIONS if (out / "forge" / dr).is_dir() and (out / "court" / dr).is_dir()]
+
 
 def sheet(out):
     import lantern_row_look as look
@@ -441,18 +471,19 @@ def sheet(out):
     def index(f60):
         return min(range(len(marks)), key=lambda k: abs(marks[k][1] - f60))
 
-    # the beats: the three side by side, from both views
-    beats = [("half the climb", 23), ("the climb's top", BEATS["rise"]), ("the swap, the cover", BEATS["swap"] + 1),
-             ("the settle", 45), ("gone", BEATS["end"])]
+    # the beats: the directions drawn, side by side, from both views
+    drawn = drawn_directions(out)
+    beats = [("the fill rising", 23), ("the climb's top, the fill full", BEATS["rise"]),
+             ("the swap, under the fill", BEATS["swap"] + 1), ("cooling", 45), ("gone", BEATS["end"])]
     gap, tw, th = 14, w // 2, h // 2
     width = len(beats) * (tw + gap) + gap + 150
-    rows = [(v, dr) for v in ("forge", "court") for dr in DIRECTIONS]
+    rows = [(v, dr) for v in ("forge", "court") for dr in drawn]
     height = 60 + len(rows) * (th + gap) + 40 + 4 * 19
     ui.K = 1
     page = ui.Sheet(width, height, "#14151C")
     t = page.tile(0, 0, page.w, page.h)
-    t.text(gap, 14, 20, "Grow your Anime, a stage lands (AR37): the three directions at their beats, in grey", "#EDE6D6",
-           bold=0.2)
+    t.text(gap, 14, 20, "Grow your Anime, a stage lands (AR37): the cover in the machine's own shape, at the beats, in grey",
+           "#EDE6D6", bold=0.2)
     for k, (said, f60) in enumerate(beats):
         t.text(150 + gap + k * (tw + gap), 42, 14, f"{said}, frame {f60} at 60", "#B4AC9C")
     y = 62
@@ -468,7 +499,7 @@ def sheet(out):
              "The yard at base level 2 under the place's dusk, in Blender; the effect in grey (near-white light). Peak "
              "near-white share of the view, the frame's pixels at 243 or over (the vfx handbook's YAVG measure, in numpy): "
              + "; ".join(f"{dr} {v} {max(val for key, val in shares[v].items() if key.startswith(dr)):.1%}"
-                         for v in ("forge", "court") for dr in DIRECTIONS) + "."]
+                         for v in ("forge", "court") for dr in drawn) + "."]
     import textwrap
     lines = [ln for n in notes for ln in textwrap.wrap(n, 260)]
     for k, ln in enumerate(lines):
@@ -498,7 +529,7 @@ def sheet(out):
 
     # each direction's strip: every frame at 30, both views, a quarter size
     qw, qh, cols = w // 4, h // 4, 8
-    for direction in DIRECTIONS:
+    for direction in drawn:
         n = len(marks)
         block = math.ceil(n / cols) * (qh + 22)
         page = ui.Sheet(cols * (qw + 8) + 2 * gap, 60 + 2 * (block + 30) + 40, "#14151C")
@@ -530,7 +561,7 @@ def movie(out, view):
     se = scene.sequence_editor_create()
     strips = se.strips if hasattr(se, "strips") else se.sequences     # an empty collection is falsy: no `or`
     files = []
-    for direction in DIRECTIONS:
+    for direction in drawn_directions(out):
         shots = sorted((out / view / direction).glob("f*.png"))
         files += [f"{direction}/{s.name}" for s in shots] + [f"{direction}/{shots[-1].name}"] * 12   # a breath between
     first = strips.new_image("Frames", str(out / view / files[0]), 1, 1)

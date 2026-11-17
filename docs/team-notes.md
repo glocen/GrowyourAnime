@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11's record); the client ran at 38 to 40 fps at the base from 10:30, and the 11:40 suite ran at 58. The Keeper's "and out on Out" still fails about one run in three. TR20's Breaker-chamber hover fails in the whole suite and passes alone. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 12:38, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
-- **AR28's Stage I, the Press and the Comb, delivered to Faber:** seven pieces in `build/handoff/Base/` and their tables in `plan.json`, with the sheets. Content check PASS, with conditions on a jewel's tint (AR28, "Stage I"). Faber stands them when TR37 wakes the sleeping places. Research's pass follows, in the game.
-- **Now:** AR22 again, on the director's word of 12:19. **Then:** the re-lay of AR16's plan at 128 on Faber's grey layout, with the FloodMast off the Door's line; then AR17's map kit; then the icons for stones, emblems and jewels, and TR10's two.
-- **Unchanged:** AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
+**Modulo (assets).** 2026-11-17, 13:07, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **For research's verdict and pick:** AR22's two takes on the four marks, and the Shoulders' 15 pictures as one pauldron (AR22, "Two takes"). Content check PASS, and my lean is A. After the pick, the marks go into `slot_marks.py` and Faber uploads them with the 15 pictures.
+- **Now:** the re-lay of AR16's plan at 128 on Faber's grey layout, with the FloodMast off the Door's line. **Then:** AR17's map kit; then the icons for stones, emblems and jewels, and TR10's two.
+- **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
 
 **Turns.** Studio: nobody (Faber stopped at 12:18; the device simulator off). Blender: nobody. Timing tests: nobody.
 

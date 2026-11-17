@@ -1,15 +1,16 @@
 """AR6, batch 2: Shoulders in three designs at each rarity, in grey: a blockout for research's verdict.
 
-One family: a mantle as it sits on a body, from the front and above, its collar leading: a standing collar round the
-neck, a plate sloping from it over both shoulders, a shallow cop leant out on each, and the lames hanging straight down
-from each cop's outer end as the arms hang. So the whole has the shoulders' own outline: the neck, the slope, the arms.
-The lames are what say shoulders, so every design has at least two a side. The pair read as two cups joined while its
-cops were deep and their lames leant out with them (research's verdict, 2026-11-16), and one pauldron alone read as a
-helmet, a bell or a beetle in every pose tried (2026-11-16). A design is the cops, their lames, and what the cops carry.
+One family: one pauldron as it sits on the right shoulder, from the front and above, turned a little toward its
+outside (the director, 2026-11-17, 12:19: the pictures showed "both shoulders when it should once face 1"). The plate
+slopes from a low rim at the neck out over the shoulder, the cop leans out at its end, and the lames hang from the cop's
+outer end as the arm hangs, each as wide as the cop's rim and wider than the one above. So it keeps the shoulder's own
+outline, the neck, the slope, the arm, which is what made the pair read: a cop alone, without the slope, read as a
+helmet, a bell or a beetle in every pose tried (2026-11-16, and again on 2026-11-17). The lames are what say shoulders,
+so every design has at least two. A design is the cop, its lames, and what the cop carries.
 A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near word from Rare up is Pauldrons.
 
-Each Legendary's one new form changes the silhouette: Noroshi carries a beacon's spire on its cops, Yoake's cops grow
-a folded wing that rises over two lames, Kaikou's crest rises over each cop like a wave, holding a light under it.
+Each Legendary's one new form changes the silhouette: Noroshi carries a beacon's spire on its cop, Yoake's cop grows
+a folded wing that rises over two lames, Kaikou's crest rises over its cop like a wave, holding a light under it.
 
     blender -b --factory-startup --python tools/blender/gear_shoulders_sets.py -- build/handoff/Gear/shoulders_sets
 
@@ -26,11 +27,13 @@ import blcommon as bl  # noqa: E402
 import gear_parts as p  # noqa: E402
 
 mat = p.mat
-TILT, SPIN = 30.0, 0.0     # from the front and above, the collar leading
+TILT, SPIN = 30.0, -20.0   # from the front and above, turned a little toward the shoulder's outside
 FILL, DROP = 0.8, 0.0
 LEAST = 0.86
-X0, LEAN, DEEP = 1.1, 34.0, 0.92   # each cop's middle, how far it leans out over the arm, its depth to its width
-SIZE, SHALLOW = 0.72, 0.64         # the cop's width beside the mantle, and its height to its width
+X0, LEAN, DEEP = 1.0, 46.0, 0.92   # the cop's middle, how far it leans out over the arm, its depth to its width
+SIZE, SHALLOW = 0.72, 0.5          # the cop's width beside the plate, and its height to its width: low, a shell
+FACE = 30.0                        # the cop's face, and what it carries, turned toward the arm: a stone in the
+#                                    middle read as an eye
 LAME, STEP = 0.36, 0.3             # each lame's height, and how far each hangs below the last: long, as an arm
 
 COP = [(1.0, 0.0), (0.98, 0.22), (0.9, 0.46), (0.74, 0.68), (0.5, 0.84), (0.22, 0.93), (0.02, 0.96)]
@@ -158,44 +161,45 @@ def cop(d, side):
         parts.append(p.ball("Light", 0.17, "lit", (0.42 * side, -0.08, 1.3 + rise)))
     parts += p.stone_of(d, 0.9, stone_at)
     laid = (Matrix.Translation((side * X0, 0, -0.12)) @ Matrix.Rotation(math.radians(LEAN * side), 4, "Y")
-            @ Matrix.Scale(SIZE, 4))
+            @ Matrix.Rotation(math.radians(FACE * side), 4, "Z") @ Matrix.Scale(SIZE, 4))
     for obj in parts:
         p.move(obj, laid)
     return parts
 
 
 def lames(d, side):
-    """The lames hang from the cop's outer end round the arm, each leaning a little less than the one above, so the
-    last hangs straight as the arm does."""
+    """The lames hang from the cop's outer end round the arm, each as wide as the cop's rim and wider than the one
+    above, a skirt round the arm, each leaning a little less than the one above, so the last hangs straight as the arm
+    does."""
     parts, n = [], d["lames"]
     a0, a1 = OUTER if side > 0 else (-OUTER[1], -OUTER[0])
     end_x = side * (X0 + SIZE * math.cos(math.radians(LEAN)))
     end_z = -0.12 - SIZE * math.sin(math.radians(LEAN))
     for k in range(n):
-        r0, r1 = 0.5 + 0.04 * k, 0.57 + 0.05 * k
+        r0, r1 = 0.66 + 0.07 * k, 0.81 + 0.07 * k
         band = [p.lathe("Lame", [(r0, 0.0), (r1, -LAME)], d["lame_mat"], a0, a1, thick=0.05, deep=DEEP, steps=48)]
         if d["rims"]:
             band.append(arc_rim("Rim", r1, 0.03, d["rims"], -LAME, a0, a1))
         lean = side * LEAN * (1.0 - (k + 1) / (n + 1))
-        at = Matrix.Translation((end_x - side * 0.5, 0.0, end_z + 0.22 - STEP * k)) @ Matrix.Rotation(
+        at = Matrix.Translation((end_x - side * 0.62, 0.0, end_z + 0.18 - 0.85 * STEP * k)) @ Matrix.Rotation(
             math.radians(lean), 4, "Y")
         for obj in band:
             parts.append(p.move(obj, at))
     return parts
 
 
+SLOPE = (-15.0, 195.0)     # the plate's sweep round the neck: the right shoulder's side, front to back
+
+
 def build(d):
     def parts():
-        out = cop(d, 1) + cop(d, -1) + lames(d, 1) + lames(d, -1)
-        # the mantle: one plate sloping from the collar out under both cops
-        out.append(p.lathe("Mantle", [(0.44, 0.12), (0.8, 0.0), (1.15, -0.2), (1.35, -0.42)], d["key"], deep=0.62,
-                           thick=0.05, steps=48))
-        # the collar: a ring standing round the neck, flaring at its top
-        out.append(p.lathe("Collar", [(0.42, 0.06), (0.4, 0.22), (0.42, 0.36), (0.5, 0.46)], d["trim"], deep=0.85,
-                           thick=0.05, steps=40))
-        # the collar's inside is lined dark: an empty garment, never a body
-        out.append(p.lathe("Liner", [(0.38, 0.06), (0.36, 0.22), (0.38, 0.36), (0.46, 0.45)], "liner", deep=0.85,
-                           thick=0.015, steps=40))
+        out = cop(d, 1) + lames(d, 1)
+        # the plate sloping from the neck out under the cop, the right shoulder's half
+        out.append(p.lathe("Mantle", [(0.44, 0.12), (0.8, 0.0), (1.15, -0.2), (1.35, -0.42)], d["key"], *SLOPE,
+                           deep=0.62, thick=0.05, steps=48))
+        # a low rim standing along its neck edge, in the trim
+        out.append(p.lathe("Rim", [(0.43, 0.08), (0.42, 0.18), (0.47, 0.27)], d["trim"], *SLOPE, deep=0.65, thick=0.05,
+                           steps=40))
         return out
     return p.scene_of(parts, TILT, SPIN)
 
@@ -203,9 +207,9 @@ def build(d):
 WORDS = dict(
     file="gear_shoulders_sets.png",
     title="Grow your Anime: Shoulders in three designs at each rarity, in grey (AR6, batch 2)",
-    lead="A mantle as it sits on a body, from the front and above, its collar leading: a plate sloping over both "
-         "shoulders, a cop leant out on each, its lames hanging down as the arm does. A design is the cops, their lames "
-         "and what they carry.",
+    lead="One pauldron as it sits on the right shoulder, from the front and above: a plate sloping from the neck, "
+         "the cop leant out at its end, its lames hanging down as the arm does. A design is the cop, its lames and what "
+         "it carries.",
     notes=(
         "A set keeps its word and its ornament on every kind: Embers swells round its stone, Hoarfrost is cut square, Gales "
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is Pauldrons.",

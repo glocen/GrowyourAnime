@@ -9197,6 +9197,43 @@ The director, over the Items tab at phone size: "i do not look like gear slot de
 - **Shown:** two takes on the four marks in A's empty slots at 44 points, on the doll at the smallest phone beside filled slots, with today's marks beside them; and the 15 Shoulders' pictures at the bag's size. Research picks one take, and the director sees it in the pick.
 - **When:** Modulo's next piece after AR28's Stage I, before AR17's kit.
 
+### Two takes on the four marks, and the Shoulders as one pauldron (Modulo, 2026-11-17, 13:07)
+- **The Shoulders' 15 pictures, one pauldron each.** They're in `build/handoff/UI/gear/`: the sheet `gear_shoulders_colour.png` and the 15 images beside it, at 64 and 38 points (a bag cell is 64 at most).
+  - **The view:** the right shoulder, from the front and above, turned 20° toward its outside.
+  - **The plate** slopes from a low rim at the neck.
+  - **The cop** leans 46° out at the plate's end and is flatter than before. Its face, with what it carries, turns 30° toward the arm, so a stone no longer sits in the dome's middle like an eye.
+  - **The lames** are as wide as the cop's rim, each wider than the one above.
+  - **Kept from each design:** its metals, its lame count and what its cop carries.
+  - **What reads, and what doesn't yet** (`gear_shoulders_sets.py`, the docstring):
+    - Without the plate's slope, a lone cop read as a helmet, a bell or a beetle in every bench. The slope is what says shoulder.
+    - At 38 points, an Epic or Legendary with its crest standing can still read as a crested helmet.
+    - If research sees that, the next thing I'd try is the lames fanned with the cop's lean, one shell running down the arm.
+- **Two takes on the four marks.** `build/handoff/UI/slots/slot_marks_takes.png` shows today's marks first, then each take at 44 and 88 points and on A's doll at the smallest phone, both beside Rook's worn pieces and on a new account.
+  - **A, the piece held back:** each piece in AR6's own view, its ornament off.
+    - Chest Armor: the Epic cuirass with its keel, rolled neck, three lames and square stone; the prongs gone.
+    - Shoulders: the new single pauldron with its line and stone; no crest.
+    - Ring: a plain band at three-quarters, one stone in a round bezel.
+    - Earring: a hook and one plain drop.
+  - **B, the plate:** no stone on the armour.
+    - Chest Armor: the cuirass straight on, with its keel, rolled neck, belt and three rimmed lames.
+    - Shoulders: the pauldron turned to its outside, a ridge over its cop, its lames rimmed.
+    - Ring: a plain band with a flat signet.
+    - Earring: a stud, a short bar and one round bead.
+  - **My lean: A.**
+    - Its three-quarter cuirass keeps the armour's weight; B's, straight on, reads as a vest.
+    - Its pauldron shows the plate's slope; B's ridge reads more like a helmet's comb.
+    - Its ring's stone still shows at 44 points; B's signet doesn't.
+    - Its hook says "ear" before anything else.
+- **Content check** (a fresh-eyes agent, on the exact files, by 13:07): PASS on both sheets, after one fix.
+  - B's earring was first a stud with a slim teardrop. At doll size it read as a falling drip, and drop shapes are a risk in any colour (rule 4; `handbook/platform/rules-and-moderation.md`, "Traps").
+  - It's now a round bead, and the recheck passed.
+- **After the pick:** the chosen take goes into `slot_marks.py` (the shipped marks come from `tools/`, never scratch), and its four marks go to `images/`. Then Faber uploads those four and the 15 Shoulders pictures under the group.
+- **Four facts:**
+  - drawn;
+  - seen on the sheets at 38, 44, 64 and 88 points, and on the doll at the smallest phone;
+  - research's verdict and pick to come;
+  - not director-accepted.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

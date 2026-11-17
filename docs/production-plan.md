@@ -83,7 +83,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 3. The build.** It opens with the director's package of 2026-11-16 (the yes at 16:50), in this order, each a block first: the base's three sizes in grey; attributes in the resolver with the stat sheet; items, class rules and the comparison; chests and bulk opening; the inventory on its chosen direction; the generator and the machines' stages; the Tower's run; the responsive pass across every screen. Then the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Gear stays the account's (the same yes). The evidence behind the order and its risks: `docs/research/rework-2026-11-16.md`, part 12. Four more on the director's yes of 2026-11-16, 21:39 (`docs/decisions.md`), after TR24's fixes: the card on return (TR31), the first session measured (TR32), inspecting another player (TR33) and the chests' opening show (TR34).
 
-**Phase 4. Breadth.** The Void Shop, the Rift. Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
+**Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
 
 **Phase 5. The Strip.** The Clash Grounds; the Calamity after launch (the director, 2026-11-15).
 
@@ -91,7 +91,14 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 ## The cut line
 
-**One ground at launch** (the director, 2026-11-13, `docs/decisions.md`): the Festival of Battles opens on Lantern Row alone. Drum Court and grounds 3 to 6, with their Voidkin, are updates after launch. Short on content and roster is fine; what launches is at the bar, and built on a foundation that makes a new ground, Voidkin or effect mostly data and art, fast (`docs/engineering-plan.md`, its own section, Faber's). Research's recommendation for the rest, until phase 2 is judged: launch needs phases 0 to 4 and the Tower. The Clash Grounds launch if they're at the bar, and are the first update if they aren't. The Calamity comes after launch, in an update (the director, 2026-11-15, `docs/decisions.md`). A Voidkin below the bar waits for an update: the count at launch is what's finished. That count is a floor, not a cap (the director, 2026-11-12, `docs/decisions.md`). The roster at launch is what Lantern Row's shards hold and is finished: Rook, Kirra, Pip, Watt, Sable, Lyric, Marigold (Epic) and Crane (Legendary); Patch moves to Drum Court (research's call on the director's "Your call", 2026-11-13, `docs/roster.md`). Updates follow soon after launch. A faster launch comes from cutting systems here, not the roster.
+**One ground at launch** (the director, 2026-11-13, `docs/decisions.md`): the Festival of Battles opens on Lantern Row alone.
+- **Five Voidkin at launch** (the director, 2026-11-17, 02:40): Rook, Kirra, Pip and Watt (Common) and Lyric (Rare), each perfected and looking its rarity.
+  - Every one's basic attack and signature are its own, each with its own effect and sound, at Anime Vanguards' level of flash.
+  - Rook, Kirra, Pip and Lyric are redesigned to the anime bar at the end, in the finish pass.
+  - Lantern Row's shards roll Common and Rare only: the guard drops each tier with no Voidkin made and keeps the rest's proportions, so about 87 and 13 in a Standard shard. An Enriched or Prismatic shard always gives Lyric.
+- **One big update after launch** carries everything delayed: Sable, Marigold and Crane, the Rift, the Research Lab, Drum Court and the grounds after it, and the Calamity.
+- **What launches:** phases 0 to 4 and the Tower. The Clash Grounds launch if they're at the bar, and are in the update if they aren't.
+- **The foundation** makes a new ground, Voidkin or effect mostly data and art, so the update is fast (`docs/engineering-plan.md`, its own section, Faber's).
 
 ## The date
 
@@ -100,11 +107,11 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 - **What's left for the launch line** (phases 0 to 4, the Tower, one ground, Lantern Row's eight Voidkin):
   - phase 2's tail;
   - phase 3's rest: TR31 to TR35, the Forge and the Stone Condenser, emblems, jewels, research, the responsive pass, and each block's finish;
-  - five Voidkin: Kirra and Watt to finish, and Sable, Marigold and Crane to make. That's about one to two days of Modulo's each, by Watt's and Kirra's clocks, and it's the long pole;
-  - phase 4: the Void Shop, the Rift, and the Robux store, designed, checked against Roblox's rules and approved;
+  - the launch five: Kirra and Watt to finish, then each one's own basic attack (an effect and a sound), and at the finish pass Rook, Kirra, Pip and Lyric redesigned. The three Voidkin no longer made before launch about pay for the four redesigns, so it's still the long pole (the director, 02:40);
+  - phase 4: the Void Shop and the Robux store, designed, checked against Roblox's rules and approved;
   - phase 6: the finish pass at the director's bar of 2026-11-17, the game page, Roblox's maturity questionnaire, and a soft opening.
 - **The earliest public date:** about Sunday 2026-11-29 if nothing slips, more likely the first week of December. Sunday 2026-11-22 isn't reachable at the bar.
-- **A nearer date comes from cutting systems, not the roster** (the cut line). Moving the Forge, emblems, jewels, research and the Rift to updates would bring it about two to three days nearer. That's the director's call.
+- **The director's cut** (02:40): the Rift and the Research Lab move to the big update, and launch has five Voidkin. The date above stands, since the redesigns spend what the cut saves.
 - The estimate is updated on the board each week.
 
 ## The count

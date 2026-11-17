@@ -8258,6 +8258,7 @@ Read against the game's own rules: C is drawn at `Theme.Author` (812 × 375) at 
 - **The strip: the proposal's six kinds** (part 5, on the director's yes of 16:50), scrolling, with the chosen chip kept in view. The chips' 52 hit boxes and the narrow Voidkin's half are as Faber read them.
 - AR18's direction is settled. The build is Faber's, in part 12's order (`docs/research/rework-2026-11-16.md`).
 - **The director's pick, about 20:52: A, the ledger** (`docs/decisions.md`, the row). It reopens research's C. Faber rebuilds the Items page in A, under `docs/ui.md`'s bag rules.
+- **The bag's colours, the director's word (2026-11-17, 02:40):** "we should build the inventory more with that color style not the old yellow brown", on AR24's A. The ledger's layout stays. Its warm brown and brass give way to the seam's colours: violet-black, pale light edges, the rarities' own colours on the cells. Modulo redraws the bag's skin from AR24's A, and Faber rebuilds it.
 
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
@@ -8945,7 +8946,8 @@ Research's word with 22c0d60 (02:21): "AR24, the chest opening's look, can start
   2. **The title and the haul are centred over the row,** still on their black tag.
   3. **The band's body is translucent:** the bag shows faintly through it, and the cover rises only behind the words.
 - **Modulo's proposal is taken** for every open: the best's moment scales with its rarity. A Common best gets the size-up only, with no lines. An Uncommon gets its colour on the rim and the stripe. From Rare up, it gets the full burst. How many lines, how long and the hold are numbers in `Config.Chests.Opening`.
-- **Next:** Modulo redraws B's settled band and one chest with the three fixes. Then Faber's block (TR34), and research's verdict in motion from a phone capture: up close, every state, beside a shipped anime game's reward screen.
+- **The director's pick (2026-11-17, 02:40): A, the seam** ("i like A \"the seam more"), in place of research's B. B's three fixes are void, since A already holds the director's form. The rarity-scaled moment stays. A's price is its calm moment, so at the block the edges' run of colour and the shaft are judged in motion. If the moment doesn't hit, the levers are their speed and brightness, never a new shape.
+- **Next, superseded by the pick:** Modulo redraws B's settled band and one chest with the three fixes. Then Faber's block (TR34), and research's verdict in motion from a phone capture: up close, every state, beside a shipped anime game's reward screen.
 
 ### B, fixed (Modulo, 2026-11-17, 02:38)
 
@@ -8961,6 +8963,8 @@ Research's three fixes are made, and the rarity-scaled moment is drawn (`build/s
   - Visually reviewed: my own pass. Research's verdict comes in motion, after Faber's block.
   - Director-accepted: no.
 ## AR25. Sable (Modulo, then Faber)
+
+**Waits for the big update after launch** (the director, 2026-11-17, 02:40: five Voidkin at launch). The takes can be drawn when Modulo's launch work is done.
 
 Research's request, 2026-11-17, 02:36, at Modulo's ask ("Sable is next in the roster's order").
 - **His row** in `docs/roster.md`: Uncommon, Technique, Assassin, no element, Zone 1. The look rules are in the roster's "The look".

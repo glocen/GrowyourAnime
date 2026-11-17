@@ -29,7 +29,8 @@ Every Voidkin is drawn as a character from a real anime's cast (the director, 20
 - **Rarity sets the detail.**
   - A Common or Uncommon has three or four elements and a plain palette with one accent. Its signature and passive are modest. Like an anime's side character, it's simple, never corny.
   - Each rarity up adds layers, trims, light, and pieces that move.
-- **Already made:** Rook, Kirra, Pip, Lyric, the Shade and the Lamplighter stay as they are until an overhaul much later.
+- **Already made:** Rook, Kirra, Pip and Lyric keep their looks now, and are redesigned to this bar at the end, in the finish pass before launch [D, 2026-11-17, 02:40: "Redesign them all", then "we wont redesign the old voidkin now right we said at the end"]. The Shade and the Lamplighter stay as they are until an overhaul much later.
+- **A basic attack and a signature of its own** [D, 2026-11-17, 02:40]: every Voidkin's basic attack (M1) and signature have their own effect and their own sound, at Anime Vanguards' level of flash. No two share a hit.
 - **The "Look" column below was written before this rule.** A row whose look is a trade's costume is designed again at its sheet. It keeps its rarity, type, class, element and its signature's function.
 
 ## The thirty-one
@@ -114,7 +115,7 @@ A festival the Void has walked into. One kit of stalls, lanterns, banners and ga
 | 6 | Mirror Pavilion | 50 to 60 | a hall of mirrors over still water, indigo and silver | all five | the Reflection | changes each third of its health |
 
 - Ground 1's Shades give each starter something it beats, and its keeper is neutral to all three starters.
-- **Lantern Row's shards at launch** [research's call, 2026-11-13, the director's "Your call"]: Rook, Kirra, Pip and Watt (Common), Sable (Uncommon), Lyric (Rare), Marigold (Epic) and Crane (Legendary). That's eight, the shape the director chose on 2026-11-12. Patch moves to Drum Court.
+- **Lantern Row's shards at launch** [D, 2026-11-17, 02:40: "we will launch 5 voidkins for the launch not 8"; the five, "The 5 already in"]: Rook, Kirra, Pip and Watt (Common) and Lyric (Rare). Sable (Uncommon), Marigold (Epic) and Crane (Legendary) come in the big update after launch. Patch moves to Drum Court.
   - **Why these two:** without an Epic and a Legendary, an Enriched or Prismatic shard on the one ground holds nothing above Rare, and there's nothing to chase.
   - **Marigold** is the lion dancer, the festival's own figure. As an Endurance Tank it beats the keeper, the top tier of Watt's line.
   - **Crane** is Agility like Kirra and a Warrior like Rook, so the top tier extends a starter's line. His afterimage storm is the ground's showpiece.

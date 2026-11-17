@@ -6103,7 +6103,8 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - a drawn street mark, if the block wants one: lines of light in the stone, never a stain;
   - static off the hair;
   - his sounds (Faber's);
-  - anything new to upload.
+  - anything new to upload;
+  - **the ring's front comes out of the rows** (Modulo, 2026-11-17, from Faber's take in the game): its glints don't show apart from the sparks at any size, nor at 64 px ("The blockout in the game", condition 5), so by its own line above it goes. The block stays as taken for the verdict, since it reads the same without them.
 - **For Faber, at the blockout** (his calls):
   1. `Effect = "WattGroundWire"` on the action, then `rows_take` for the three files.
   2. The stop's look: `WattGroundWireStop` played on each body his stop holds, riding it, and ended with its stun.

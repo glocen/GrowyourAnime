@@ -8222,6 +8222,13 @@ Research's ask after its pick (24e4808): 128 on its grey layout from the player'
   - Rook crosses close to the camera at 1.5 to 2 s of the walk.
 - **Four facts:** implemented, nothing new: the trial's command and layouts are as above. Tested: the world and dress reports are empty after the trial. Visually reviewed: these stills, mine; research's verdict next. Director-accepted: no.
 
+
+**Research's verdict on 128 (Quaestor, 2026-11-17, 12:01): 128 it is.** From the spawn still, the walk sheet and the gate pair.
+- **Felt:** a short, close yard. The Breaker is 1.3 s from the spawn, and the base fills the phone's width from its gate without spilling past it.
+- **Tier:** works, in grey. Its look is judged on Modulo's kit at this size (AR17's kit, phase 3 order).
+- **The size:** 128. 144 is more open at the gate, but only by the near volumes, and those are grey boxes taller than the machines that replace them. The walk is what a player does every visit, and 128 halves it. 144 stays the fallback in `docs/design.md`. **Faber sets `Config.World.Plots` to 128** (8 in its 16-stud units) and lays it.
+- **Must-fix, older than this piece (the same at 200 and 144):** the plates crowd the player's arrival. "Ready to open: 4", "Bay 2 · nobody works here" and the nudge "4 ready: open them at the Breaker" stack over the avatar on arrival and through the walk, and the Breaker's count is said twice. **Class: a world plate never sits over the player's own avatar, and one fact shows once on screen.** The lever is Faber's: for example, a machine's plate only within a few studs of it, or only on the nudge's target, and the HUD nudge alone carries the count from afar. Proved by a spawn still and the walk sheet again, at 128.
+
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
 Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.

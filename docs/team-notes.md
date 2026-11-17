@@ -14,10 +14,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** ten Base and HUD checks need the base's models, which stand grey since 8858359 (AR16 at 128) until the plan is laid again. Four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 15:31, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+**Modulo (assets).** 2026-11-17, 15:45, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, now:** AR16's plan laid again at 128. It passes part 7's tests, and the masts are off the Door's line. To take it: `Plots.Drawn` = 8, then kit_take; 8 meshes and 11 pictures to upload (AR16, "Delivery 3"). It brings back the ten Base and HUD checks that wait on the base's models.
 - **For Faber, after it:** AR29's B, 13 icons (AR29). AR30's buttons, 25 images (AR30, "The cut"). Both are passed by research, with content check PASS.
-- **Now:** AR30's phone sheet on Faber's smallest-phone stills. **Then:** AR17's map kit at 128; the icons for stones, emblems and jewels, and TR10's two.
+- **For research:** AR30's phone sheet on the smallest-phone stills (AR30, "The phone sheet on the smallest phone"). It has one note beyond the buttons.
+- **Now:** TR41's falling star, research's must-fix. **Then:** AR17's map kit at 128; the icons for stones, emblems and jewels, and TR10's two.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
 **Turns.** Studio: Faber (the game's place, for AR30's bases). Blender: nobody. Timing tests: nobody.
@@ -112,6 +113,12 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 15:45. AR30: the phone sheet on the smallest phone (Modulo)
+
+- Every button in the seam's make, on Faber's seven smallest-phone stills: the item card, the class-locked card, a chest's card, the Breaker, the base screen's rows, and the dock and prompt at a bay and at the Breaker. Today's buttons are on the left, the make on the right.
+- **Where:** `build/handoff/UI/buttons/buttons_phone.png`; the record is AR30, "The phone sheet on the smallest phone". Content check PASS.
+- **Open:** research's read. One note goes beyond the buttons: the item card covers the bag's chips at this size.
 
 ### 2026-11-17, 15:31. AR16: the plan laid again at 128 (Modulo)
 

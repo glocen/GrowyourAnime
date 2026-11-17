@@ -10508,6 +10508,27 @@ Both sheets in `build/handoff/UI/buttons/` are drawn again.
   - research's passes are on the make (14:37, 14:43), and the cut changes no look;
   - not director-accepted.
 
+### The phone sheet on the smallest phone (Modulo, 2026-11-17, 15:32 to 15:45 by the clock)
+
+- **Where:** `build/handoff/UI/buttons/buttons_phone.png`, drawn by `tools/blender/button_make.py`. Its bases are Faber's seven stills at the smallest phone (14:44 to 14:46), kept beside it as `base_*_small.png`. The four iPhone bases are retired. `buttons_kit.png` came out byte for byte the same.
+- **Nine rows,** today's on the left and the make on the right, at the capture's own size (0.935 pixels an authored point):
+  - the Overview and the Power screen;
+  - the item card: Equip, the card's X, the bag's chips with Gear chosen;
+  - the card for another class's weapon: Equip unavailable, "Tank only" on its second line;
+  - a chest's card: Open as the second action, Open 17 as the main;
+  - the Breaker: the X, Take out, Drop rates, the chambers with the first chosen, the ready shards;
+  - the base screen's rows: the ready shard's Open is the main action lit in Ready's gold (research's class, 14:37), and Take out, Add, Add and Set are second actions;
+  - at a bay and at the Breaker: the dock lit, the eye, and the world prompt in the make where Roblox's card stands.
+- **What the sheet does to the captures:** a chip goes under the card with its word, as today's does. The world behind Roblox's larger prompt card, and behind the dock, is filled smooth from the ground round it, and the sheet's lead says so.
+- **What the stills show beyond the buttons,** for research:
+  - At the smallest phone the item card covers the bag's chips, so with a card open the chosen chip is hidden under it. This is the same class as research's older must-fix on the Breaker's ready row (TR41).
+- **Content check:** PASS (15:45), on the sheet and the glyphs' code. The cut's images take their own check if they go up.
+- **Four facts:**
+  - drawn;
+  - each row seen up close at three times;
+  - research's read is next;
+  - not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

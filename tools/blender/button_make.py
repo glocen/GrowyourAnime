@@ -157,32 +157,36 @@ def chip_widths(words, u, size=WORD):
 
 
 def chips(a, items, x0, y0, y1, u, words, chosen, pressed=None, off=(), size=WORD, clip=None):
-    """The bag's tabs: one channel split by hairlines; the chosen chip is the rail's chosen tab laid flat."""
+    """The bag's tabs: one channel split by hairlines; the chosen chip is the rail's chosen tab laid flat. `clip`, the
+    left and right where the screen hides the row (its frame, the card over it): a chip they cut keeps its shape, which
+    the Area cuts, and loses its word."""
     widths = chip_widths(words, u, size)
     x1 = x0 + sum(widths)
     channel(a, x0, y0, x1, y1, u)
     mid = (y0 + y1) / 2
     xs = np.cumsum([x0] + widths)
-    shown = []
     for i, (w, l, r) in enumerate(zip(words, xs[:-1], xs[1:])):
         cx = (l + r) / 2
-        if clip is not None and r > clip:
-            break    # a word the panel over it hides
-        shown.append(w)
+        if clip is not None and l >= clip[1]:
+            break
+        hidden = clip is not None and (l < clip[0] or r > clip[1])
         if i and words[i - 1] != chosen and w != chosen:
             split = np.maximum(np.abs(a.X - l) - 0.5 * HAIR * u, np.abs(a.Y - mid) - ((y1 - y0) / 2 - 13.0 * u))
             a.paint(split, SEAM["Edge"])
         if w == chosen:
             k0 = CUT if i == 0 else 3.0
             glass(a, l + 1.5 * u, y0 + 1.5 * u, r - 1.5 * u, y1 - 1.5 * u, u, 0.9, k=k0)
-            word(items, cx, mid - 1.0 * u, size * u, w, SEAM["Text"])
+            if not hidden:
+                word(items, cx, mid - 1.0 * u, size * u, w, SEAM["Text"])
         elif w in off:
-            word(items, cx, mid, size * u, w, SEAM["Faint"])
+            if not hidden:
+                word(items, cx, mid, size * u, w, SEAM["Faint"])
         else:
             if w == pressed:
                 underline(a, cx, y1 - 5.0 * u, 0.32 * (r - l), u, 0.8, 0.5)
-            word(items, cx, mid - (1.0 * u if w == pressed else 0), size * u, w,
-                 SEAM["Text"] if w == pressed else SEAM["Soft"])
+            if not hidden:
+                word(items, cx, mid - (1.0 * u if w == pressed else 0), size * u, w,
+                     SEAM["Text"] if w == pressed else SEAM["Soft"])
     return x1
 
 
@@ -440,8 +444,12 @@ def kit_sheet(out):
 # --- the screens: Faber's captures, today's buttons taken out and drawn in the make --------------------------------------
 
 BUTTONS = REPO / "build" / "handoff" / "UI" / "buttons"
-U_IPHONE = 1.13        # the iPhone's 950-pixel capture: today's rail, 68 authored, measures 77 there
-WIDE = 950 / 1920      # a 1920-pixel capture brought to the 950 of the others, the phone's own size on the sheet
+# Every capture is Faber's at the smallest phone, 950 by 450 on the device's frame; the item screens stand as the
+# Overview's (AR29's base): the rail and the bar where its are. Measured on the stills, in their pixels.
+SMALL = "overview"
+CARD_X = (652.0, 85.0)     # the item card's X, where today's stands
+PANEL_X = (652.0, 93.0)    # a Graphite panel's X: its 52 square at the panel's top right (the Breaker, the base)
+CARD_LEFT = 446.0          # the card's left edge, over the bag's chips
 
 
 def step_button(a, x0, y0, x1, y1, u, sign, state="idle"):
@@ -508,17 +516,46 @@ def ready_chip(a, items, x0, y0, x1, y1, u, words=True, state="idle"):
         say(items, x0 + 38.0 * u, mid - 0.36 * REASON * u + 9.0 * u, REASON * u, foot, SEAM["Soft"], align="LEFT")
 
 
-def load_base(name, scale=1.0):
-    px = rs.load(BUTTONS / name)
-    if scale != 1.0:
-        px = rs.shrink(px, scale)
-        px[..., 3] = 1.0
-    return vc.enlarge(px)
+def load_base(name):
+    return vc.enlarge(rs.load(BUTTONS / name))
+
+
+def membrane(img, known, iters=40):
+    """The unknown pixels relaxed to the average of their neighbours, coarse to fine, with the known ones held: a
+    smooth skin over the ground round a hole."""
+    h, w = known.shape
+    out = np.where(known[..., None], img, img[known].mean(axis=0))
+    if min(h, w) >= 8:
+        hh, ww = (h + 1) // 2 * 2, (w + 1) // 2 * 2
+        pi = np.zeros((hh, ww, img.shape[2]), np.float32)
+        pk = np.zeros((hh, ww), np.float32)
+        pi[:h, :w], pk[:h, :w] = img * known[..., None], known
+        si = pi.reshape(hh // 2, 2, ww // 2, 2, -1).sum(axis=(1, 3))
+        sk = pk.reshape(hh // 2, 2, ww // 2, 2).sum(axis=(1, 3))
+        whole = sk >= 4
+        if whole.any():
+            coarse = membrane(si / np.maximum(sk, 1)[..., None], whole, iters)
+            out = np.where(known[..., None], img, np.repeat(np.repeat(coarse, 2, 0), 2, 1)[:h, :w])
+    for _ in range(iters):
+        avg = (np.roll(out, 1, 0) + np.roll(out, -1, 0) + np.roll(out, 1, 1) + np.roll(out, -1, 1)) / 4
+        out = np.where(known[..., None], img, avg)
+    return out
+
+
+def fill(px, box, ring=6):
+    """Today's piece taken out where what's behind it isn't a flat panel (the world, a frame's edge): filled smoothly
+    from the ground round it, so nothing behind is dragged across in streaks. `ring`, in the capture's pixels."""
+    x0, y0, x1, y1 = (int(round(v * K)) for v in box)
+    r = ring * K
+    region = px[y0 - r:y1 + r, x0 - r:x1 + r, :3].astype(np.float32)
+    known = np.ones(region.shape[:2], bool)
+    known[r:-r, r:-r] = False
+    px[y0 - r:y1 + r, x0 - r:x1 + r, :3] = membrane(region, known)
 
 
 def chrome_b(px, items, page):
-    """AR29's B over a capture that stands as base_items does (the rail and the bar where its are)."""
-    base = vc.BASES["items"]
+    """AR29's B over a still that stands as the Overview's does (the rail and the bar where its are)."""
+    base = vc.BASES[SMALL]
     vc.erase(px, base["rail"], both=False)
     vc.erase(px, base["bar"])
     vc.make_b(px, base, items, vc.BUILT, page)
@@ -557,69 +594,99 @@ def shot_power():
     return finish(px, items)
 
 
-def shot_card():
-    """An item's card on an iPhone: Equip, the card's X, the bag's chips (Gear now, as the game has them since 13:03)."""
-    px = load_base("base_card.png")
+def card_chips(px, words, chosen, x0):
+    """The bag's chips beside the card: at the smallest phone the card covers the row (the screen's layout, not the
+    button's), so a chip goes under the card, its word with it; the bag's frame cuts the row on the left once it's
+    scrolled, and a chip it cuts loses its word."""
+    rows, cols = slice(int(60 * K), int(112 * K)), slice(int(CARD_LEFT * K), None)
+    card = px[rows, cols].copy()
+    fill(px, (386, 70, CARD_LEFT - 2, 108), ring=2)
+    mine = []
+    chips(Area(px, 385, 60, CARD_LEFT, 112), mine, x0, 74, 105, U_SMALL, words, chosen, clip=(385.0, 1e9))
+    finish(px, mine)
+    px[rows, cols] = card
+
+
+def card_close(px, items):
+    vc.erase(px, (641, 74, 664, 97))
+    icon_button(Area(px, 620, 64, 676, 110), items, *CARD_X, U_SMALL, "Close")
+
+
+def shot_card(off=False):
+    """An item's card: Equip, the card's X, the bag's chips with Gear chosen. `off`: another class's weapon, so Equip
+    is unavailable and says why, in the make's words (today's button reads "Tank only")."""
+    px = load_base("base_card_off_small.png" if off else "base_card_small.png")
     items = []
     chrome_b(px, items, "Items")
-    vc.erase(px, (596, 367, 861, 419))
-    vc.erase(px, (833, 74, 858, 99))
-    vc.erase(px, (457, 72, 586, 122), both=False)
-    a = Area(px, 450, 60, 586, 130)
-    chips(a, items, 459, 75, 119, U_IPHONE, ("All", "Gear", "Jewelry"), "All", clip=586)
-    b = Area(px, 586, 60, 880, 430)
-    icon_button(b, items, 845, 86, U_IPHONE, "Close")
-    main_action(b, items, 598, 370, 858, 415, U_IPHONE, "Equip")
+    card_chips(px, ("All", "Gear", "Jewelry"), "Gear", 388.0)
+    card_close(px, items)
+    vc.erase(px, (450, 282, 672, 338), both=False)
+    b = Area(px, CARD_LEFT, 270, 676, 342)
+    if off:
+        main_action(b, items, 455, 287, 667, 332, U_SMALL, "Equip", "unavailable", reason="Tank only")
+    else:
+        main_action(b, items, 455, 287, 667, 332, U_SMALL, "Equip")
     return finish(px, items)
 
 
-def shot_chests():
-    """A chest's card on an iPhone: Open one, a second action; Open them all, the main."""
-    px = load_base("base_chests.png")
+def shot_chest():
+    """A chest's card: Open one, a second action; Open them all, the main. The chips scrolled to Chests, under the
+    card."""
+    px = load_base("base_chest_small.png")
     items = []
     chrome_b(px, items, "Items")
-    vc.erase(px, (596, 366, 862, 422))
-    vc.erase(px, (833, 74, 858, 99))
-    vc.erase(px, (457, 72, 586, 122), both=False)
-    chips(Area(px, 450, 60, 586, 130), items, 459, 75, 119, U_IPHONE, ("All", "Gear", "Jewelry"), "All", clip=586)
-    b = Area(px, 586, 60, 880, 430)
-    icon_button(b, items, 845, 86, U_IPHONE, "Close")
-    second_action(b, items, 598, 370, 725, 416, U_IPHONE, "Open")
-    main_action(b, items, 731, 370, 858, 416, U_IPHONE, "Open 2")
+    card_chips(px, ("All", "Gear", "Jewelry", "Chests"), "Chests", 347.0)
+    card_close(px, items)
+    vc.erase(px, (450, 282, 672, 338), both=False)
+    b = Area(px, CARD_LEFT, 270, 676, 342)
+    second_action(b, items, 455, 287, 557, 332, U_SMALL, "Open")
+    main_action(b, items, 564, 287, 667, 332, U_SMALL, "Open 17")
     return finish(px, items)
+
+
+def panel_close(px, items):
+    """Close becomes the X on a Graphite panel (research's call 3, 14:37), at the panel's top right."""
+    vc.erase(px, (600, 71, 671, 122), both=False)
+    icon_button(Area(px, 596, 66, 676, 126), items, *PANEL_X, U_SMALL, "Close")
 
 
 def shot_breaker():
-    """The Breaker on an iPhone: Close, Take out, Drop rates, the chambers, the ready shards, the dock and the eye."""
-    px = load_base("base_breaker.jpg", WIDE)
-    u, f = 1.65 * WIDE, WIDE
+    """The Breaker: the X, Take out, Drop rates, the chambers (the first chosen) and the shards ready to break."""
+    px = load_base("base_breaker_small.png")
     items = []
-    ground = (0.125, 0.13, 0.155, 1.0)
-    vc.erase(px, (686 , 97, 756, 147))
-    vc.erase(px, (536, 192, 739, 241))
-    a = Area(px, 190, 80, 760, 300)
-    icon_button(a, items, 721, 121, u * 1.1, "Close")
-    main_action(a, items, 539.5, 194.5, 635, 238, u, "Take out")
-    second_action(a, items, 641, 194.5, 736, 238, u, "Drop rates", mark=rates_mark)
-    for i, x in enumerate((417, 581, 747, 913)):
-        frame_over(a, x * f, 338 * f, (x + 152) * f, 574 * f, u, ground, lit=i == 0)
-    vc.erase(px, (410 * f, 622 * f, 1064 * f, 718 * f), both=False)
-    a = Area(px, 190, 300, 1064 * f, 370)
-    for x in (416, 677, 938):
-        ready_chip(a, items, x * f, 627 * f, (x + 246) * f, 712 * f, u, words=x + 246 <= 1064)
-    dock_shot(px, items, u, f, lit=True)
+    ground = (0.118, 0.13, 0.157, 1.0)
+    panel_close(px, items)
+    vc.erase(px, (444, 171, 659, 224), both=False)
+    a = Area(px, 441, 128, 660, 330)
+    main_action(a, items, 446, 174, 546, 220, U_SMALL, "Take out")
+    second_action(a, items, 552, 174, 656, 220, U_SMALL, "Drop rates", mark=rates_mark)
+    a = Area(px, 90, 138, 437, 277)
+    for i, (x0, x1) in enumerate(((97, 174), (181, 262), (267, 348), (353, 434))):
+        frame_over(a, x0, 145, x1, 270, U_SMALL, ground, lit=i == 0)
+    vc.erase(px, (94, 293, 435, 346), both=False)
+    a = Area(px, 90, 288, 435, 350)
+    for x0, x1 in ((97, 226), (234, 363), (371, 500)):
+        ready_chip(a, items, x0, 296, x1, 342, U_SMALL, words=x1 <= 435)
     return finish(px, items)
 
 
-def dock_shot(px, items, u, f, states=None, lit=False, new=()):
-    """Today's dock and eye taken out of a 1920 capture; the make's drawn where they stood."""
-    vc.erase(px, (792 * f, 745 * f, 1125 * f, 868 * f))
-    vc.erase(px, (132 * f, 278 * f, 216 * f, 360 * f))
-    a = Area(px, 360, 330, 600, 450)
-    dock(a, items, 957.5 * f, 852 * f, u, states or {}, lit=lit, new=new)
-    e = Area(px, 50, 120, 130, 200)
-    channel(e, 137 * f, 283 * f, 211 * f, 355 * f, u, 0.88)
-    eye(e, 174 * f, 319 * f, 12.0 * u, SEAM["Text"])
+def shot_rows():
+    """The base screen: each row's button takes the second action's make, as the block said. A ready shard's Open
+    calls, so it's the main action lit in Ready's gold, as a reward to claim (research's class, 14:37). Close is the X."""
+    px = load_base("base_rows_small.png")
+    items = []
+    panel_close(px, items)
+    for y0, y1 in ((152, 198), (209, 255)):
+        vc.erase(px, (278, y0 - 3, 372, y1 + 4), both=False)
+    a = Area(px, 276, 146, 374, 262)
+    main_action(a, items, 281, 152, 369, 198, U_SMALL, "Open", hue=READY)
+    second_action(a, items, 281, 209, 369, 255, U_SMALL, "Take out")
+    for y0, y1 in ((152, 198), (209, 255), (265, 311)):
+        vc.erase(px, (564, y0 - 3, 658, y1 + 4), both=False)
+    b = Area(px, 562, 146, 658, 318)
+    for (y0, y1), label in zip(((152, 198), (209, 255), (265, 311)), ("Add", "Add", "Set")):
+        second_action(b, items, 567, y0, 656, y1, U_SMALL, label)
+    return finish(px, items)
 
 
 def eye(a, cx, cy, r, colour, open_=False):
@@ -630,25 +697,46 @@ def eye(a, cx, cy, r, colour, open_=False):
     a.paint(np.minimum(lid, lashes) - 0.1 * r, colour)
 
 
-def shot_hud(lit=False, new=()):
-    """At the base on an iPhone: the dock, the eye, and a prompt where the bay's would show."""
-    px = load_base("base_hud.jpg", WIDE)
-    u, f = 1.65 * WIDE, WIDE
+DOCK_AT = (376.5, 334.0)   # today's dock: its tiles' middle across, and their foot
+EYE = (146.0, 174.0, 184.0, 212.0)   # today's spectate toggle
+
+
+def shot_hud(name, title, action, card, new=()):
+    """At the base: the dock lit (research's pick), the eye, and the world prompt in the make where Roblox's card
+    stands (`card`, its box). The prompt's plate is smaller than Roblox's, so the ground round it is filled from
+    either side."""
+    px = load_base(name)
     items = []
-    dock_shot(px, items, u, f, lit=lit, new=new)
-    a = Area(px, 150, 200, 400, 300)
-    prompt(a, items, 172, 226, u, "Bay 1", "Set worker")
+    fill(px, (286, 274, 467, 339), ring=3)
+    dock(Area(px, 280, 255, 476, 346), items, *DOCK_AT, U_SMALL, {}, lit=True, new=new)
+    vc.erase(px, (EYE[0] - 4, EYE[1] - 4, EYE[2] + 4, EYE[3] + 4))
+    e = Area(px, EYE[0] - 8, EYE[1] - 8, EYE[2] + 8, EYE[3] + 8)
+    channel(e, *EYE, U_SMALL, 0.88)
+    eye(e, (EYE[0] + EYE[2]) / 2, (EYE[1] + EYE[3]) / 2, 11.0 * U_SMALL, SEAM["Text"])
+    l, t, r, b = card
+    fill(px, (l - 3, t - 3, r + 3, b + 3))
+    w = max(text_w(title, WORD * U_SMALL), text_w(action, 0.94 * WORD * U_SMALL, False)) + 62.0 * U_SMALL
+    prompt(Area(px, l - 12, t - 12, r + 12, b + 12), items, (l + r) / 2 - w / 2, (t + b) / 2 - 30.0 * U_SMALL,
+           U_SMALL, title, action)
     return finish(px, items)
 
 
 SHOTS = [
-    ("overview", "The Overview, the smallest phone", lambda: vc.screen("overview", None), shot_overview),
-    ("power", "The Power screen, the smallest phone", lambda: load_base("base_power.png"), shot_power),
-    ("card", "An item's card, an iPhone", lambda: load_base("base_card.png"), shot_card),
-    ("chests", "A chest's card, an iPhone", lambda: load_base("base_chests.png"), shot_chests),
-    ("breaker", "The Breaker, an iPhone", lambda: load_base("base_breaker.jpg", WIDE), shot_breaker),
-    ("hud", "At the base, an iPhone: the dock lit (research's pick), the bag with something new",
-     lambda: load_base("base_hud.jpg", WIDE), lambda: shot_hud(True, ("Inventory",))),
+    ("overview", "The Overview", lambda: vc.screen("overview", None), shot_overview),
+    ("power", "The Power screen", lambda: load_base("base_power.png"), shot_power),
+    ("card", "An item's card: Equip", lambda: load_base("base_card_small.png"), shot_card),
+    ("cardoff", "An item's card, another class's weapon: Equip unavailable, with why",
+     lambda: load_base("base_card_off_small.png"), lambda: shot_card(True)),
+    ("chest", "A chest's card: Open one and Open them all", lambda: load_base("base_chest_small.png"), shot_chest),
+    ("breaker", "The Breaker: the X, Take out, Drop rates, the chambers, the ready shards",
+     lambda: load_base("base_breaker_small.png"), shot_breaker),
+    ("rows", "The base screen's rows: a ready shard's Open calls in gold", lambda: load_base("base_rows_small.png"),
+     shot_rows),
+    ("bay", "At a bay: the dock lit, the bag with something new; the bay's prompt",
+     lambda: load_base("base_hud_bay_small.png"),
+     lambda: shot_hud("base_hud_bay_small.png", "Bay 1", "Set worker", (416, 168, 600, 244), ("Inventory",))),
+    ("prompt", "At the Breaker: the dock lit; the Breaker's prompt", lambda: load_base("base_hud_breaker_small.png"),
+     lambda: shot_hud("base_hud_breaker_small.png", "Void Breaker", "Open", (359, 168, 535, 244))),
 ]
 
 
@@ -660,9 +748,10 @@ def phone_sheet(out):
     height = head + sum(t.shape[0] + 52 for _, _, t, _ in shots) + gap
     b = Board(gap * 3 + w * 2, height)
     b.text(gap, 18, 26, "Grow your Anime: every button in the seam's make (AR30), on the screens", bold=0.6)
-    lead = ("Faber's captures as they stand, today's on the left; on the right, their buttons taken out and drawn in the "
-            "make, at the capture's own size. The Overview and the Power screen are at the smallest phone; the rest on "
-            "an iPhone until Faber's smallest-phone set. The Voidkin screen's rail and bar are AR29's B.")
+    lead = ("Faber's captures at the smallest phone as they stand, today's on the left; on the right, their buttons taken "
+            "out and drawn in the make, at the capture's own size. The Voidkin screen's rail and bar are AR29's B. "
+            "Where today's piece was larger than the make's (Roblox's prompt card, the dock), the world behind it is "
+            "filled smooth.")
     for i, line in enumerate(textwrap.wrap(lead, 160)):
         b.text(gap, 52 + i * 18, 14, line, "#B9B0D6")
     y = head

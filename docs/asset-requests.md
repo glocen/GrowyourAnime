@@ -7278,7 +7278,12 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
   - A layer the ear rejects is replaced, never patched.
 - **Faber's install** (2026-11-17, 01:56 to 02:16 by the clock).
   - **1, the upload:** `test6.py`, run again into scratch, writes the same samples as the handoff's files (the bytes differ only in the Ogg stream's random serial), every check passing. All 33 are up under the group with plain titles, read back Approved at 02:15. Ids in `docs/asset-log.md`.
-  - **2, the grant: waits on the director.** The Open Cloud guard allows only the upload, so the grant API (`PATCH /asset-permissions-api/v1/assets/permissions`, `Universe` 9093907961, `Use`) asks the director. Either the director adds it, or grants by hand: Creator Dashboard, each sound's Permissions, Experiences, add 9093907961. Studio's own "Share access" click covers all at once if a play shows it.
+  - **2, the grant: done on the director's word, unconfirmed.**
+    - The director said "You have my permission to add them go" (2026-11-17). It covers this one grant; the guard stays as it is.
+    - At 03:01, Faber sent one call with the group's key, by shell: `PATCH /asset-permissions-api/v1/assets/permissions`, `Universe` 9093907961, `Use`, the 33 ids of the asset-log row.
+    - Roblox answered 200 and listed all 33 in `successAssetIds`, with no errors.
+    - The API has no read-back, and its docs warn that a key without `asset-permissions:write` can answer success and change nothing.
+    - What still confirms it: one sound's Permissions in the Creator Dashboard listing the game, then every id from a live client after the publish (step 2's last check).
     - In Studio every take loads and sounds without it: 98 of 98 voices. Studio passing isn't proof, so a live client checks every id after the next publish.
   - **3, the six cues,** in `Config.Cues` (seeds, unheard), played by `FighterController/Cues` on the audio graph. Which cue plays where is `Rules.Sound`:
     - **On the attacker's clock, landed or not:**

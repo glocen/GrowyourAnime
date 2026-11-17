@@ -65,7 +65,7 @@ For Faber:
    - `Invoke("Replay", nil)` stops it.
    - A level is tuned live, for example `Invoke("Tune", "Cues.Cues.ShadeSwipe.Layers.2.Volume", 0.5)`.
    - Then the new Festival Door in a walk, and TR35's five music candidates a track, if they're shortlisted by then.
-8. **The sounds' grant to the game** (AR13, step 2). Our 33 sounds play in Studio, but a live game needs each one granted `Use`, and the Open Cloud guard leaves that call to you. Either open the guard for the grant call, or grant by hand: in the Creator Dashboard, each sound's Permissions, Experiences, add 9093907961.
+8. **One look to confirm the sounds' grant** (AR13, step 2). On your word, Faber granted the game `Use` of our 33 sounds at 03:01, and Roblox listed all 33 as granted, but its API can't read a grant back. In the Creator Dashboard, open any one of our sounds, then Permissions: Grow your Anime should be listed. A fight in the published game playing them confirms it too.
 
 ### Notices
 

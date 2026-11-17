@@ -1,36 +1,36 @@
 --!strict
--- Dock (client UI): the dock of three icons (docs/ui.md, the HUD; docs/asset-requests.md, AR12, "The dock as three
--- icons"): one graphite body at the foot's middle, Base and the Map leaning either side of Inventory, which stands over
--- them. Each tile is a block of its system's colour with its mark in ink, its light under it (UIKit.Dock: Modulo's
--- hud_dock.json, every place in points from the body's top left). Each tile's tap is a kit button (Button, Bare and
--- Still: the dock draws its own press), so it has the kit's states, an icon's refusal said in a toast, and Button.Press
--- for tests. The dock paints each tile from its button's state:
---   rest      its gradient, its sheen in its pale, its light and the light's glow in its colour
---   pressed   its pressed twin under pressed's gradient, its mark Sink points down its lean, its light in its deep
---   open      while its screen is (the button Selected): white-hot, its rim over it, its halo under it, its light white
---   dim       while it can't be used (the button Disabled): its tile and mark at Dim of themselves, its light deep
---   charge    while a charging tile's fill runs (Dock.Charges): its tile in ink, its light deep, the fill rising over it
--- and the pip over its far corner while it has something new, in any state. A touch held LongPress seconds shows the
--- tile's word over it, and lifting it then doesn't press (Config.Hud.Dock). A pointer over a tile at rest lifts it, its
--- gradient toward white and its halo part lit, and after a moment shows its word; a pad's selection wears its rim (TR20,
--- Kit.Hover). A tile its owner gives a mood keeps it over
--- its button's states, still tappable, so a tap can say why (TR19, the Base tile):
---   quiet     nothing to do here: its gradient at Quiet of itself, no sheen, no glow, its light deep; nothing sinks
---   dim       refused for now: as a disabled tile
--- Over a tile, two of its owner's measures in its own shape, under its mark: a fill rising from its foot (a charge), and
--- a veil over the share still to come, swept away left to right (a cooldown).
---   Dock.new(parent, presses)          the dock; presses[name] is each tile's OnPress (Base, Inventory, Map)
---   Dock.Pip(dock, name, on)           something new on a tile
+-- Dock (client UI): the dock of three icons (docs/ui.md, the HUD; docs/asset-requests.md, AR30, "The dock"): one dark
+-- channel at the foot's middle, the bag's cell rising over the Base and Map wings. Each cell is the seam's dark glass lit
+-- from its foot in its room's colour (Base in Power's yellow, the bag in the seam's Light, the Map in its red), its icon
+-- in Text; every place, size and light is Config.Hud.Make.Dock's, in points from the dock's frame. Each cell's tap is a
+-- kit button (Button, Bare and Still: the dock draws its own press), so it has the kit's states, an icon's refusal said
+-- in a toast, and Button.Press for tests. The dock paints each cell from its button's state, its light at 1 - L/Top:
+--   rest      L Rest
+--   pressed   L Pressed; nothing sinks (under a thumb a sink is hidden, so the light carries the press)
+--   open      while its screen is (the button Selected): L Open
+--   dim       while it can't be used (the button Disabled): no light, its foot dim, its icon in Faint
+--   charge    while a charging cell's fill runs (Dock.Charges): its glass in ink, no light, the fill rising over it
+-- Calling (Dock.Pip, something new), at rest its light is L Calling, and in any state its whole edge is lit in its colour
+-- and the pip stands over its far corner on an ink ring. A touch held LongPress seconds shows the cell's word over it, and
+-- lifting it then doesn't press (Config.Hud.Dock). A pointer over a cell at rest lifts it and raises its light toward a
+-- press's, and after a moment shows its word; a pad's selection wears its rim, the edge in Light (TR20, Kit.Hover). A cell
+-- its owner gives a mood keeps it over its button's states, still tappable, so a tap can say why (TR19, the Base cell):
+--   quiet     nothing to do here: L Quiet, its icon in Soft
+--   dim       refused for now: as a disabled cell
+-- Over a cell's glass, under its icon, two of its owner's measures in the glass's own shape: a fill rising from its foot
+-- (a charge), and a veil over the share still to come, swept away left to right (a cooldown).
+--   Dock.new(parent, presses)          the dock; presses[name] is each cell's OnPress (Base, Inventory, Map)
+--   Dock.Pip(dock, name, on)           something new on a cell: it calls
 --   Dock.Mood(dock, name, mood?)       "Quiet", "Dim", or nil for its button's own look
 --   Dock.Reason(dock, name, why?)      why it's refused, its word on a long press or a hover; nil for its name
 --   Dock.Fill(dock, name, share?)      a charge's share, 0 to 1, in white under a brighter rising edge; nil or 0 shows
 --                                      none
---   Dock.Charges(dock, name, on)       its fill is a charge: the tile wears its pressed ink while the fill runs, and a
---                                      press alone shows nothing (TR19's Base tile: the tap is the charge's first frame)
+--   Dock.Charges(dock, name, on)       its fill is a charge: the cell wears its ink while the fill runs, and a press alone
+--                                      shows nothing (TR19's Base cell: the tap is the charge's first frame)
 --   Dock.Sweep(dock, name, share?)     a cooldown's run, 0 to 1; nil or 1 shows none
---   Dock.Shake(dock, name)             a refused tap: the tile shakes Shake points side to side over Shook seconds
---   Dock.Hold(button, down)            a touch going down on a tile's button or coming off, as a finger's (for tests)
---   Dock.Paint(dock)                   each frame: a tile repaints only when its look changes
+--   Dock.Shake(dock, name)             a refused tap: the cell shakes Shake points side to side over Shook seconds
+--   Dock.Hold(button, down)            a touch going down on a cell's button or coming off, as a finger's (for tests)
+--   Dock.Paint(dock)                   each frame: a cell repaints only when its look changes
 
 local ContentProvider = game:GetService("ContentProvider")
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -43,23 +43,20 @@ local Button = require(script.Parent.Kit.Button)
 local Hover = require(script.Parent.Kit.Hover)
 local Panel = require(script.Parent.Kit.Panel)
 
-type Def = typeof(UIKit.Dock.Buttons[1])
-type Gradient = { Stops: { number }, Colours: { Color3 } }
+type Cell = typeof(HudConfig.Make.Dock.Cells[1])
 
 export type Tile = {
-	Def: Def,
+	Def: Cell,
 	Button: TextButton,
 	Layers: { [string]: ImageLabel },
 	Word: TextLabel,
-	Mark: UDim2, -- the mark's place at rest
-	Looks: { [string]: ColorSequence }, -- the tile's gradient in each state
 	New: boolean,
 	Shown: string, -- the look painted last
 	HeldAt: number?, -- a touch's moment, while it's down
 	Long: boolean, -- the touch passed LongPress: its lift doesn't press
 	WordUntil: number,
 	Mood: Mood?,
-	Rest: { [string]: UDim2 }, -- each layer's place at rest, its mark's apart (Mark)
+	Rest: { [string]: UDim2 }, -- each layer's place at rest
 	Shift: number, -- the shake's offset now, in points
 	ShakeAt: number?,
 	Shares: { [string]: number }, -- the fill's and the veil's shown last
@@ -74,22 +71,46 @@ export type Dock = { Frame: Frame, Tiles: { [string]: Tile } }
 
 local Dock = {}
 
--- One stack for the whole dock (hud_dock.json, "stack"): the body; every halo, glow and light; then every tile with its
--- sheen or rim, its mark and its pip; the words; the taps over all.
-local Z = { Body = 1, Halo = 2, Glow = 3, Light = 4, Tile = 5, Over = 6, Fill = 7, Veil = 8, Mark = 9, Pip = 10, Word = 13, Tap = 12 }
-local WORD_INK = Color3.fromHex("#0B0B12")
+local SEAM = UIKit.Palettes.Seam
+local LIGHT, INK = SEAM.Light :: Color3, SEAM.Ink :: Color3
+local MAKE = HudConfig.Make
+-- One stack for the whole dock, as the make lays it (tools/blender/button_make.py, check_cut): the shadow, the channel
+-- and its edge; each cell's glass, light and foot, the owner's measures over the glass, its icon, its call and rim, its
+-- pip; the taps over all, and the words over the taps.
+local Z = {
+	Shadow = 1,
+	Body = 2,
+	Edge = 3,
+	Glass = 4,
+	Light = 5,
+	Foot = 6,
+	Fill = 7,
+	Veil = 8,
+	Mark = 9,
+	Call = 10,
+	Rim = 11,
+	PipGlow = 12,
+	Pip = 13,
+	Tap = 16,
+	Word = 17,
+}
 local WORD = { Tall = 20, Across = 7 } -- the word's plate, authored points: its height, and its words' room either side
 local OVER_HUD = 10 -- the dock over the HUD's other pieces in its layer (the chip above it), so its word stands over them
 
--- Each tile by its button, for Dock.Hold. Held until the dock is destroyed, as the kit's buttons are (Button's note).
+-- Each cell by its button, for Dock.Hold. Held until the dock is destroyed, as the kit's buttons are (Button's note).
 local byButton: { [TextButton]: Tile } = {}
 
-local function sequence(g: Gradient): ColorSequence
-	local points = {}
-	for i, stop in g.Stops do
-		table.insert(points, ColorSequenceKeypoint.new(stop, g.Colours[i]))
+-- The rooms' rule (AR30): a cell lit in the colour of the room it opens.
+local function hue(name: string): Color3
+	return if name == "Base" then MAKE.Light.Power elseif name == "Map" then MAKE.Light.Map else LIGHT
+end
+
+-- Each cell's icon: the bag's is the Voidkin screen's Items page's own.
+local function icon(name: string): (UIKit.Image, string)
+	if name == "Inventory" then
+		return HudConfig.Voidkin.Chrome.Images.PageItems, "PageItems"
 	end
-	return ColorSequence.new(points)
+	return MAKE.Images[`DockSeam{name}`], `DockSeam{name}`
 end
 
 local function look(tile: Tile): string
@@ -108,13 +129,31 @@ local function look(tile: Tile): string
 	return "Rest"
 end
 
--- A shift of x, y points, as Scale against the dock's own size: a UDim's Offset is a whole number, so 1.6 points
--- there would draw as 1 (the dock's self-test, 2026-11-15).
+-- A place or a size of x, y points, as Scale against the dock's frame: a UDim's Offset is a whole number, so 30.4 points
+-- there would draw as 30 (the dock's self-test, 2026-11-15).
 local function points(x: number, y: number): UDim2
-	return UDim2.fromScale(x / UIKit.Dock.Size.X, y / UIKit.Dock.Size.Y)
+	local frame = MAKE.Dock.Frame
+	return UDim2.fromScale(x / frame.X, y / frame.Y)
 end
 
--- Every layer at its place with the shake's offset; the mark Sink points down its lean while pressed.
+-- One of the make's images at x, y, w by h points.
+local function put(holder: GuiObject, record: UIKit.Image, name: string, x: number, y: number, w: number, h: number, z: number, tint: Color3, alpha: number?): ImageLabel
+	local image = Skin.LayOwn(holder, record, name, { Z = z, Tint = tint, Alpha = alpha })
+	image.Position = points(x, y)
+	image.Size = points(w, h)
+	return image
+end
+
+-- The glass in the seam's Panel gradient, top to foot; in ink while a charge runs.
+local function glaze(glass: ImageLabel, inked: boolean)
+	if inked then
+		Skin.Tint(glass, HudConfig.Dock.Charge.Ink)
+	else
+		Skin.Tint(glass, SEAM.Panel)
+	end
+end
+
+-- Every layer at its place with the shake's offset, lifted by a pointer at rest.
 local function place(tile: Tile)
 	local lift = if tile.Shown == "Rest" then HudConfig.Motion.Hover.Lift * tile.Hover else 0
 	local shift = points(tile.Shift, -lift)
@@ -124,30 +163,25 @@ local function place(tile: Tile)
 			layer.Position = rest + shift
 		end
 	end
-	local sink = if tile.Shown == "Pressed" then HudConfig.Dock.Sink else 0
-	tile.Layers.Mark.Position = tile.Mark + points(tile.Shift - sink * UIKit.Dock.Lean, sink - lift)
 end
 
 local function paint(tile: Tile, now: string)
-	local def, layers = tile.Def, tile.Layers
-	local shade = if now == "Dim" then HudConfig.Dock.Dim elseif now == "Quiet" then HudConfig.Dock.Quiet else 1
-	local placed = if now == "Pressed" then def.TilePressed else def.Tile
-	Skin.Set(layers.Tile, placed.Image, { X = placed.At.X, Y = placed.At.Y })
-	tile.Rest.Tile = layers.Tile.Position
-	-- Hover (TR20) answers a tile at rest: its gradient toward white, its halo part lit; a pad's selection wears its rim.
-	local hover = if now == "Rest" then tile.Hover else 0
-	Skin.Tint(layers.Tile, if now == "Charge" then { HudConfig.Dock.Charge.Ink } else Hover.Whites(tile.Looks[now] or tile.Looks.Rest, hover))
-	layers.Tile.ImageTransparency = 1 - shade
-	layers.Sheen.Visible = now == "Rest"
+	local make = MAKE.Dock
+	local layers = tile.Layers
+	local l = (make.L :: { [string]: number })[now] or make.L.Rest
+	if now == "Rest" then
+		-- Calling, brighter; a pointer over it (TR20) raises its light toward a press's by Hover.Halo of its share.
+		l = if tile.New then make.L.Calling else make.L.Rest
+		l += math.max(make.L.Pressed - l, 0) * HudConfig.Motion.Hover.Halo * tile.Hover
+	end
+	layers.Light.ImageTransparency = math.clamp(1 - l / make.Top, 0, 1)
+	glaze(layers.Glass, now == "Charge")
+	layers.Foot.ImageTransparency = if now == "Dim" then make.DimFoot else 0
+	layers.Mark.ImageColor3 = if now == "Dim" then SEAM.Faint elseif now == "Quiet" then SEAM.Soft else SEAM.Text
+	layers.Call.Visible = tile.New
 	local rim = tile.Pad and tile.Hover > 0 and now ~= "Open"
-	layers.Edge.Visible = now == "Open" or rim
-	layers.Edge.ImageTransparency = if rim then 1 - tile.Hover else 0
-	layers.Halo.Visible = now == "Open" or hover > 0
-	layers.Halo.ImageTransparency = if now == "Open" then 0 else 1 - HudConfig.Motion.Hover.Halo * hover
-	layers.Glow.Visible = now == "Rest"
-	Skin.Tint(layers.Light, if now == "Rest" then def.Rest.Light elseif now == "Open" then def.Open.Light else def.Deep)
-	layers.Light.ImageTransparency = 1 - shade
-	layers.Mark.ImageTransparency = 1 - shade
+	layers.Rim.Visible = rim
+	layers.Rim.ImageTransparency = if rim then 1 - tile.Hover else 1
 	tile.Button:SetAttribute("Look", now)
 	tile.Shown = now
 	place(tile)
@@ -168,23 +202,23 @@ local function edge(at: number, before: number, after: number): NumberSequence
 	})
 end
 
--- The tile's own shape over it in `colour`, under its mark, its gradient turned `rotation`: made the first time it's
+-- The glass's own shape over it in `colour`, under its icon, its gradient turned `rotation`: made the first time it's
 -- asked for.
 local function overlay(tile: Tile, name: string, z: number, colour: Color3, rotation: number): ImageLabel
 	local made = tile.Layers[name]
 	if made then
 		return made
 	end
-	local at = tile.Def.Tile.At
-	local layer = Skin.Lay(tile.Layers.Tile.Parent :: GuiObject, tile.Def.Tile.Image, { X = at.X, Y = at.Y, Z = z, Tint = colour })
-	layer.Name = `{tile.Def.Name}{name}`
+	local glass = tile.Layers.Glass
+	local layer = Skin.LayOwn(glass.Parent :: GuiObject, MAKE.Images[`DockSeamGlass{tile.Def.Kind}`], `{tile.Def.Name}{name}`, { Z = z, Tint = colour })
+	layer.Size = glass.Size
 	layer.Visible = false
 	local gradient = Instance.new("UIGradient")
 	gradient.Rotation = rotation
 	gradient.Parent = layer
 	tile.Layers[name] = layer
-	tile.Rest[name] = layer.Position
-	layer.Position = layer.Position + UDim2.fromOffset(tile.Shift, 0)
+	tile.Rest[name] = tile.Rest.Glass
+	place(tile)
 	return layer
 end
 
@@ -205,54 +239,70 @@ local function measure(tile: Tile, name: string, z: number, colour: Color3, rota
 	end
 end
 
-local function lay(frame: Frame, layer: { Image: string, At: Vector2 }, z: number, tint: Color3?): ImageLabel
-	return Skin.Lay(frame, layer.Image, { X = layer.At.X, Y = layer.At.Y, Z = z, Tint = tint })
-end
-
-local function stretched(frame: Frame, layer: { Image: string, At: Vector2, Size: Vector2 }, z: number, tint: Color3): ImageLabel
-	return Skin.Lay(frame, layer.Image, { X = layer.At.X, Y = layer.At.Y, W = layer.Size.X, H = layer.Size.Y, Z = z, Tint = tint })
-end
-
 function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
-	local shape = UIKit.Dock
+	local make = MAKE.Dock
+	local images = MAKE.Images
+	local box, at, size, out = make.Box, make.At, make.Frame, make.Out
+	-- Today's box, which the HUD places and the chip stands over; the dock's own frame inside it.
 	local frame = Instance.new("Frame")
 	frame.Name = "Dock"
 	frame.BackgroundTransparency = 1
-	frame.Size = UDim2.fromOffset(shape.Size.X, shape.Size.Y)
-	local body = UIKit.Images.DockBody.At :: Vector2
-	Skin.Lay(frame, "DockBody", { X = body.X, Y = body.Y, Z = Z.Body })
+	frame.Size = UDim2.fromOffset(box.X, box.Y)
+	local seam = Instance.new("Frame")
+	seam.Name = "Seam"
+	seam.BackgroundTransparency = 1
+	seam.Position = UDim2.fromScale(at.X / box.X, at.Y / box.Y)
+	seam.Size = UDim2.fromScale(size.X / box.X, size.Y / box.Y)
+	seam.Parent = frame
+	local s = make.Shadow
+	put(seam, images.DockSeamShadow, "DockShadow", -s, -s, size.X + 2 * s, size.Y + 2 * s, Z.Shadow, SEAM.Channel, 1 - make.ShadowT)
+	put(seam, images.DockSeamBody, "DockBody", 0, 0, size.X, size.Y, Z.Body, SEAM.Channel, 1 - make.BodyT)
+	put(seam, images.DockSeamEdge, "DockEdge", 0, 0, size.X, size.Y, Z.Edge, SEAM.Edge)
 	local dock: Dock = { Frame = frame, Tiles = {} }
-	for _, def in shape.Buttons do
-		local layers = {
-			Halo = lay(frame, def.Halo, Z.Halo, def.Open.Halo),
-			Glow = stretched(frame, def.Glow, Z.Glow, def.Rest.Glow),
-			Light = stretched(frame, def.Light, Z.Light, def.Rest.Light),
-			Tile = lay(frame, def.Tile, Z.Tile),
-			Sheen = lay(frame, def.Sheen, Z.Over, def.Rest.Sheen),
-			Edge = lay(frame, def.Edge, Z.Over),
-			Mark = Skin.Icon(frame, def.Mark.Image, def.Mark.Middle.X, def.Mark.Middle.Y, def.Mark.Size, nil, Z.Mark),
-			Pip = lay(frame, def.Pip, Z.Pip),
-		}
-		for name, layer in layers do
-			layer.Name = `{def.Name}{name}`
+	for _, def in make.Cells do
+		local name, kind = def.Name, def.Kind
+		local glass, g, colour = (make.Glass :: { [string]: Vector2 })[kind], def.Glass, hue(name)
+		local lx, ly, lw, lh = g.X - out, g.Y - out, glass.X + 2 * out, glass.Y + 2 * out
+		local mark, kit = icon(name)
+		local pip = make.Pip
+		local function ring(record: UIKit.Image, label: string, across: number, z: number, tint: Color3, alpha: number?): ImageLabel
+			return put(seam, record, label, def.Pip.X - across / 2, def.Pip.Y - across / 2, across, across, z, tint, alpha)
 		end
-		layers.Pip.Visible = false
-		local box = def.Box
-		-- The word on a plate of its own, the toasts' plate made small, centred over its tile (research's verdict on TR20,
+		local layers = {
+			Glass = put(seam, images[`DockSeamGlass{kind}`], "Glass", g.X, g.Y, glass.X, glass.Y, Z.Glass, SEAM.Channel, 1 - make.GlassT),
+			Light = put(seam, images[`DockSeamLight{kind}`], "Light", lx, ly, lw, lh, Z.Light, colour),
+			Foot = put(seam, images[`DockSeamFoot{kind}`], "Foot", g.X, g.Y, glass.X, glass.Y, Z.Foot, colour),
+			Mark = put(seam, mark, "Mark", def.Icon.X - def.Side / 2, def.Icon.Y - def.Side / 2, def.Side, def.Side, Z.Mark, SEAM.Text),
+			Call = put(seam, images[`DockSeamCall{kind}`], "Call", lx, ly, lw, lh, Z.Call, colour),
+			Rim = put(seam, images[`DockSeamCall{kind}`], "Rim", lx, ly, lw, lh, Z.Rim, LIGHT),
+			PipGlow = ring(images.SeamPipGlow, "PipGlow", pip.Glow, Z.PipGlow, colour, 1 - pip.GlowT),
+			Pip = ring(images.SeamMark, "Pip", pip.Rings[1], Z.Pip, INK),
+			PipHue = ring(images.SeamMark, "PipHue", pip.Rings[2], Z.Pip + 1, colour),
+			PipLight = ring(images.SeamMark, "PipLight", pip.Rings[3], Z.Pip + 2, LIGHT),
+		}
+		glaze(layers.Glass, false)
+		layers.Mark:SetAttribute("Kit", kit)
+		for layer, image in layers do
+			image.Name = `{name}{layer}`
+		end
+		for _, hidden in { layers.Call, layers.Rim, layers.PipGlow, layers.Pip, layers.PipHue, layers.PipLight } do
+			hidden.Visible = false
+		end
+		-- The word on a plate of its own, the toasts' plate made small, centred over its glass (research's verdict on TR20,
 		-- fix 1: bare text with a stroke ran into the chip above). The dock draws over the HUD's other pieces, so while it
 		-- shows it may cover the chip: the pointer says where the player's eye is. It moves nothing.
 		local plate = Panel.new({
-			Name = `{def.Name}WordPlate`,
+			Name = `{name}WordPlate`,
 			Size = UDim2.fromOffset(WORD.Across * 2 + 40, WORD.Tall),
-			Position = UDim2.fromOffset(box[1] + box[3] / 2, box[2] - HudConfig.Dock.Rise),
+			Position = points(g.X + glass.X / 2, g.Y - HudConfig.Dock.Rise),
 			AnchorPoint = Vector2.new(0.5, 1),
-			Parent = frame,
+			Parent = seam,
 		})
 		plate.ZIndex = Z.Word
 		plate.Visible = false
 		Panel.Pad(plate, 0, WORD.Across)
 		local word = Text.new({
-			Name = `{def.Name}Word`,
+			Name = `{name}Word`,
 			Size = Theme.Text.Caption,
 			Font = Theme.Font.Strong,
 			Colour = UIKit.Palettes.Graphite.Text,
@@ -260,28 +310,28 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Box = UDim2.fromScale(1, 1),
 			Parent = plate,
 		})
-		word.Text = def.Name
+		word.Text = name
 		word.ZIndex = 2
 		word.Visible = false
 		local tile: Tile
-		-- The tap: the tile's Box grown round its middle to Theme.Size.Tap on a short side, so it holds Theme.Size.Touch
-		-- at the scale's floor (the wings' boxes are 44 points tall, 37 rendered on the smallest phone).
-		local wide, tall = math.max(box[3], Theme.Size.Tap), math.max(box[4], Theme.Size.Tap)
+		-- The tap: the cell's column (AR30's touch), a wing's 52 tall and the bag's 62, so each holds Theme.Size.Touch at
+		-- the scale's floor.
+		local tap = def.Tap
 		local button = Button.new({
-			Name = def.Name,
+			Name = name,
 			Text = "",
 			Bare = true,
 			Still = true,
-			Size = UDim2.fromOffset(wide, tall),
-			Position = UDim2.fromOffset(box[1] - (wide - box[3]) / 2, box[2] - (tall - box[4]) / 2),
-			Parent = frame,
+			Size = points(tap[3], tap[4]),
+			Position = points(tap[1], tap[2]),
+			Parent = seam,
 			OnPress = function(): ...any
 				if tile.Long then -- a long press showed the word: its lift isn't a tap, and the word stays a moment
 					tile.Long = false
 					tile.WordUntil = os.clock() + 0.6
 					return nil
 				end
-				return (presses[def.Name] or function() end)()
+				return (presses[name] or function() end)()
 			end,
 		})
 		button.ZIndex = Z.Tap
@@ -290,8 +340,6 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Button = button,
 			Layers = layers,
 			Word = word,
-			Mark = layers.Mark.Position,
-			Looks = { Rest = sequence(def.Rest.Tile), Pressed = sequence(def.Pressed.Tile), Open = sequence(def.Open.Tile) },
 			New = false,
 			Shown = "",
 			HeldAt = nil :: number?,
@@ -308,10 +356,8 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			WordEpoch = -1,
 			Charges = false,
 		}
-		for name, layer in layers do
-			if name ~= "Mark" then
-				tile.Rest[name] = layer.Position
-			end
+		for layer, image in layers do
+			tile.Rest[layer] = image.Position
 		end
 		byButton[button] = tile
 		Hover.On(button, function(share: number, pad: boolean)
@@ -337,25 +383,16 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			byButton[button] = nil
 		end)
 		paint(tile, "Rest")
-		dock.Tiles[def.Name] = tile
+		dock.Tiles[name] = tile
 	end
 	frame.ZIndex = OVER_HUD
 	frame.Parent = parent
-	-- Each tile's pressed twin, loaded before its first press: unloaded, a pressed tile drew nothing for a moment, the
-	-- dock's body showing through as a black frame (research's verdict on TR19).
+	-- Every image the dock lays, loaded before it first shows: a call's edge and pip come in only when something's new,
+	-- and unloaded they'd draw nothing for a moment (research's verdict on TR19, the black frame of an unloaded twin).
 	task.spawn(function()
-		local probes: { Instance } = {}
-		for _, tile in dock.Tiles do
-			local probe = Skin.Lay(frame, tile.Def.TilePressed.Image, { X = 0, Y = 0 })
-			probe.Visible = false
-			table.insert(probes, probe)
-		end
 		pcall(function()
-			ContentProvider:PreloadAsync(probes)
+			ContentProvider:PreloadAsync({ frame })
 		end)
-		for _, probe in probes do
-			probe:Destroy()
-		end
 	end)
 	return dock
 end
@@ -379,12 +416,17 @@ function Dock.Pip(dock: Dock, name: string, on: boolean)
 	local tile = dock.Tiles[name]
 	if tile and tile.New ~= on then
 		tile.New = on
-		tile.Layers.Pip.Visible = on
+		for _, layer in { "PipGlow", "Pip", "PipHue", "PipLight" } do
+			tile.Layers[layer].Visible = on
+		end
 		tile.Button:SetAttribute("New", on)
+		if tile.Shown ~= "" then
+			paint(tile, tile.Shown)
+		end
 	end
 end
 
--- Why a tile is refused, in its owner's words: its word says it on a long press or a hover (TR20). Nil for its name.
+-- Why a cell is refused, in its owner's words: its word says it on a long press or a hover (TR20). Nil for its name.
 function Dock.Reason(dock: Dock, name: string, why: string?)
 	local tile = dock.Tiles[name]
 	if tile then
@@ -400,9 +442,10 @@ function Dock.Mood(dock: Dock, name: string, mood: Mood?)
 	end
 end
 
--- The fill rises from the tile's foot: its gradient runs top to bottom, so the share past 1 - share is lit, in Colour at
--- Alpha under a band Edge of the tile's height in Bright at full (research's verdict on TR19, corrected 2026-11-15: white
--- over the tile's ink, high contrast, apart from the cooldown's sideways veil; a stand-in until the palette is picked).
+-- The fill rises from the glass's foot: its gradient runs top to bottom, so the share past 1 - share is lit, in Colour
+-- at Alpha under a band Edge of the glass's height in Bright at full (research's verdict on TR19, corrected 2026-11-15:
+-- white over the cell's ink, high contrast, apart from the cooldown's sideways veil; a stand-in until the palette is
+-- picked).
 function Dock.Fill(dock: Dock, name: string, share: number?)
 	local tile = dock.Tiles[name]
 	if tile then
@@ -446,12 +489,12 @@ function Dock.Charges(dock: Dock, name: string, on: boolean)
 	end
 end
 
--- The veil covers what's still to come, from the run's edge to the tile's right.
+-- The veil covers what's still to come, from the run's edge to the glass's right, in the seam's ink.
 function Dock.Sweep(dock: Dock, name: string, share: number?)
 	local tile = dock.Tiles[name]
 	if tile then
 		local s = math.clamp(share or 1, 0, 1)
-		measure(tile, "Veil", Z.Veil, WORD_INK, 0, s, s < 1, s, HudConfig.Dock.Veil)
+		measure(tile, "Veil", Z.Veil, INK, 0, s, s < 1, s, HudConfig.Dock.Veil)
 	end
 end
 

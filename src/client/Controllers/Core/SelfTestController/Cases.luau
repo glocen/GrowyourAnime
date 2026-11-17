@@ -73,7 +73,6 @@ local Button = require(UI.Kit.Button)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
-local Dock = require(UI.Dock)
 local Text = require(UI.Kit.Text)
 local Pop = require(UI.Kit.Pop)
 local Fly = require(UI.Kit.Fly)
@@ -84,6 +83,7 @@ local Takes = require(script.Parent.Takes)
 local VoidkinCases = require(script.Parent.VoidkinCases)
 local BagCases = require(script.Parent.BagCases)
 local HudCases = require(script.Parent.HudCases)
+local DockCases = require(script.Parent.DockCases)
 local PowerCases = require(script.Parent.PowerCases)
 local ViewCases = require(script.Parent.ViewCases)
 local BaseCases = require(script.Parent.BaseCases)
@@ -7402,62 +7402,6 @@ local cases = {
 		end,
 	},
 	{
-		Name = "HUD: the dock of three icons: a tile's look follows its press and its screen, a long press shows its word, the Map's is dim",
-		Run = function(t: any)
-			-- AR12, the dock as three icons (UI.Dock): Base, Inventory and the Map on one body at the foot's middle; held, a
-			-- tile sinks and its mark with it; open while its screen is; a long press shows its word and doesn't press.
-			Screen.Close()
-			local parts = HudController.Parts()
-			local dock = parts.Dock :: Frame
-			local layer = dock.Parent :: GuiObject
-			local middle = dock.AbsolutePosition.X + dock.AbsoluteSize.X / 2 - (layer.AbsolutePosition.X + layer.AbsoluteSize.X / 2)
-			t.Check("the dock shows at the foot's middle", dock.Visible and math.abs(middle) <= 1, string.format("%.1f off the middle", middle))
-			for _, name in { "Base", "Inventory", "Map" } do
-				local mark = dock:FindFirstChild(`{name}Mark`) :: ImageLabel?
-				t.Check(`its {name} tile wears its mark`, mark ~= nil and mark:GetAttribute("Kit") == `DockMark{name}`)
-			end
-			local inventory = parts.Voidkin :: TextButton
-			local function looks(button: TextButton, want: string): boolean
-				return waitFor(t, 0.5, function(): boolean
-					return button:GetAttribute("Look") == want
-				end)
-			end
-			t.Check("Inventory's tile at rest", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
-			local mark = dock:FindFirstChild("InventoryMark") :: ImageLabel
-			local scale = dock.AbsoluteSize.X / UIKit.Dock.Size.X
-			local restY = mark.AbsolutePosition.Y
-			Button.Touch(inventory, true)
-			t.Check("held, its tile sinks", looks(inventory, "Pressed"), tostring(inventory:GetAttribute("Look")))
-			local sank = (mark.AbsolutePosition.Y - restY) / scale
-			t.Near("and its mark sinks with it", sank, HudConfig.Dock.Sink, 0.3)
-			Button.Touch(inventory, false)
-			t.Check("let go, it's back at rest", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
-			t.Check("a tap opens the Voidkin screen", Button.Press(inventory) and waitFor(t, 1, function(): boolean
-				return Screen.Current() == "Voidkin"
-			end))
-			t.Check("and its tile is open while it is", looks(inventory, "Open"), tostring(inventory:GetAttribute("Look")))
-			Screen.Close()
-			t.Check("and at rest once it closes", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
-			t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
-			local word = dock:FindFirstChild("InventoryWord", true) :: TextLabel
-			Dock.Hold(inventory, true)
-			t.Check("a long press shows its word", waitFor(t, HudConfig.Dock.LongPress + 0.3, function(): boolean
-				return word.Visible
-			end) and word.Text == "Inventory", word.Text)
-			Button.Press(inventory)
-			Dock.Hold(inventory, false)
-			t.Wait(0.4)
-			t.Check("and its lift doesn't open the screen", Screen.Current() == nil, tostring(Screen.Current()))
-			t.Check("the word goes a moment after", waitFor(t, 1, function(): boolean
-				return not word.Visible
-			end))
-			local map = parts.Map :: TextButton
-			t.Check("the Map's tile is dim", looks(map, "Dim"), tostring(map:GetAttribute("Look")))
-			t.Check("and a tap opens nothing", not Button.Press(map) and Screen.Current() == nil)
-			Screen.Close()
-		end,
-	},
-	{
 		Name = "Base: the world's plates step back while a screen is open, and come back when it closes",
 		Run = function(t: any)
 			local layer = Layers.Get("World")
@@ -7710,6 +7654,10 @@ for _, case in HudCases.Cases({
 end
 -- TR24's fixes 1 to 3, given theirs: the next step's marker, the lead's fights in view, its place beside the avatar, its fade.
 for _, case in ViewCases.Cases({ LEAD_SETTLE = LEAD_SETTLE, SHADE_AHEAD = SHADE_AHEAD, waitFor = waitFor, myLead = myLead }) do
+	table.insert(cases, case)
+end
+-- The dock's, given theirs (AR30's make).
+for _, case in DockCases.Cases({ waitFor = waitFor }) do
 	table.insert(cases, case)
 end
 -- The Power screen's, given theirs (TR18; AR12's battery plate).

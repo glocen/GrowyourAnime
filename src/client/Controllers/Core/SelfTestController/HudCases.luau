@@ -204,15 +204,15 @@ function HudCases.Cases(given: Given): { any }
 				end), tostring(base:GetAttribute("Look")))
 				t.Equal("and the server would take them home", state().Refusal, "")
 				local fov = workspace.CurrentCamera.FieldOfView
-				-- Unloaded, a pressed twin drew nothing for a moment: the black frame research saw in TR19's take.
+				-- Unloaded, an image drew nothing for a moment: the black frame research saw in TR19's take (a pressed twin
+				-- then; a call's edge and pip in AR30's make, shown only when something's new).
 				local unloaded = {}
-				for _, def in UIKit.Dock.Buttons do
-					local id = UIKit.Images[def.TilePressed.Image].Id
-					if ContentProvider:GetAssetFetchStatus(id) ~= Enum.AssetFetchStatus.Success then
-						table.insert(unloaded, def.Name)
+				for _, image in (parts.Dock :: Frame):GetDescendants() do
+					if image:IsA("ImageLabel") and image.Image ~= "" and ContentProvider:GetAssetFetchStatus(image.Image) ~= Enum.AssetFetchStatus.Success then
+						table.insert(unloaded, image.Name)
 					end
 				end
-				t.Check("every tile's pressed twin is loaded before its first press", #unloaded == 0, table.concat(unloaded, ", "))
+				t.Check("every image the dock lays is loaded before it first shows", #unloaded == 0, table.concat(unloaded, ", "))
 				-- Research's verdict on TR19: the press goes straight into the charge, ink from the tap to the jump and the fill
 				-- rising white over it, never a flash back to rest.
 				local looks: { string } = {}
@@ -391,13 +391,14 @@ function HudCases.Cases(given: Given): { any }
 				t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
 				local parts = HudController.Parts()
 				local dock = parts.Dock :: Frame
-				local scale = dock.AbsoluteSize.X / UIKit.Dock.Size.X
+				local make = HudConfig.Make.Dock
+				local scale = dock.AbsoluteSize.X / make.Box.X
 				local inventory = parts.Voidkin :: TextButton
-				local tile = dock:FindFirstChild("InventoryTile") :: ImageLabel
-				local halo = dock:FindFirstChild("InventoryHalo") :: ImageLabel
-				local edge = dock:FindFirstChild("InventoryEdge") :: ImageLabel
+				local tile = dock:FindFirstChild("InventoryGlass", true) :: ImageLabel
+				local cellLight = dock:FindFirstChild("InventoryLight", true) :: ImageLabel
+				local edge = dock:FindFirstChild("InventoryRim", true) :: ImageLabel
 				local word = dock:FindFirstChild("InventoryWord", true) :: TextLabel
-				local others = { dock:FindFirstChild("BaseTile") :: ImageLabel, dock:FindFirstChild("MapTile") :: ImageLabel }
+				local others = { dock:FindFirstChild("BaseGlass", true) :: ImageLabel, dock:FindFirstChild("MapGlass", true) :: ImageLabel }
 				local function at(piece: GuiObject): Vector2
 					return piece.AbsolutePosition
 				end
@@ -408,7 +409,7 @@ function HudCases.Cases(given: Given): { any }
 					return (at(others[1]) - restOthers[1]).Magnitude < 0.5 and (at(others[2]) - restOthers[2]).Magnitude < 0.5 and (at(inventory) - restButton).Magnitude < 0.5
 				end
 				Hover.Pretend("Mouse")
-				-- The dock: within a frame, then whole: lifted, its halo part lit, nothing else moved.
+				-- The dock: within a frame, then whole: lifted, its light raised Halo of the way to a press's, nothing else moved.
 				Hover.Force(inventory, true)
 				RunService.RenderStepped:Wait()
 				RunService.RenderStepped:Wait()
@@ -416,7 +417,8 @@ function HudCases.Cases(given: Given): { any }
 				t.Wait(settle)
 				t.Near("whole once it's eased in", Hover.Share(inventory), 1, 1e-3)
 				t.Near("it lifts its points", (restTile.Y - at(tile).Y) / scale, motion.Lift, 0.3)
-				t.Check("its halo part lit", halo.Visible and math.abs(halo.ImageTransparency - (1 - motion.Halo)) < 0.02, string.format("%.2f", halo.ImageTransparency))
+				local raised = make.L.Rest + (make.L.Pressed - make.L.Rest) * motion.Halo
+				t.Check("its light raised toward a press's", math.abs(cellLight.ImageTransparency - (1 - raised / make.Top)) < 0.02, string.format("%.2f", cellLight.ImageTransparency))
 				t.Check("nothing round it moves, nor its tap", still())
 				t.Check("its word shows after a moment", waitFor(t, motion.Word + 0.3, function(): boolean
 					return word.Visible

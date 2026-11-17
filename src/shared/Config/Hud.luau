@@ -243,9 +243,6 @@ return {
 		-- dark backing Size points across, the backing in the chevrons' ink at Backing, rimmed in the guide's colour at Rim;
 		-- Clear points between its foot and the next step's chip.
 		Edge = { Size = 60, Backing = 0.15, Rim = 0.3, Clear = 6 } },
-	-- The dock of three icons (AR12; UI.Dock; its shape is UIKit.Dock, Modulo's): pressed, a tile's mark sinks Sink points
-	-- along the tile's lean (Modulo's 1.6); a tile that can't be used draws its tile and mark at Dim of themselves; a touch
-	-- held LongPress seconds shows the tile's word Rise points over its tap, and lifting it then doesn't press.
 	-- AR30, every button in the seam's make (Modulo's numbers, 2026-11-17, 15:00; asset-requests, AR30, "The cut, the images
 	-- and the numbers for Faber"): a pressable thing is dark glass lit from its foot at L in its light colour, or the plain
 	-- channel. Sizes are authored points, T a layer's ImageTransparency. Colours are the Seam palette's (Config.UIKit), and
@@ -324,18 +321,48 @@ return {
 		PlusMinus = 17.2, -- Power's ±: the channel with SeamPlus or SeamMinus this many across, in Text
 		-- The kinds' own lights: a claim and a ready shard, the base's, the map's.
 		Light = { Ready = Color3.fromHex("#F6DE80"), Power = Color3.fromHex("#F2C53D"), Map = Color3.fromHex("#E0566E") },
+		-- The dock (AR30, "The dock"; UI.Dock), in points from its frame's top left. Its frame is Frame across, its foot on
+		-- today's tiles' foot and centred where today's dock stands: At inside today's Box, which the HUD places and the
+		-- chip stands over. The channel: the shadow Shadow round it in Channel at ShadowT, the body in Channel at BodyT,
+		-- its edge in Edge. Each cell: its glass (Glass Wing or Mid) at its place with the Panel gradient at GlassT, its
+		-- light Out bigger each side in its hue at 1 - L/Top, its foot in its hue; its icon in Text, Side across on its
+		-- middle; its touch its column, Tap. Calling (something new): L Calling, its call ring Out bigger in its hue, and the
+		-- pip on Pip: the glow Glow across in its hue at GlowT, then SeamMark Rings across in Ink, its hue and Light. L at
+		-- rest, pressed (no sink), its screen open. Quiet (TR19, nothing to do here) and Dim (refused) are the builder's,
+		-- for research's read: less light, the icon in Soft or Faint, a dim foot at DimFoot. A pointer lifts it
+		-- Motion.Hover.Lift and raises L toward Pressed by Motion.Hover.Halo of its share; a pad's selection wears its rim,
+		-- the call ring in Light.
+		Dock = {
+			Box = Vector2.new(196, 68),
+			Frame = Vector2.new(192.4, 62),
+			At = Vector2.new(1.8, -3),
+			Out = 18,
+			Shadow = 24,
+			ShadowT = 0.55,
+			BodyT = 0.1,
+			GlassT = 0.03,
+			Top = 1.45,
+			L = { Rest = 1, Calling = 1.45, Pressed = 1.3, Open = 0.75, Quiet = 0.45, Dim = 0, Charge = 0 },
+			DimFoot = 0.7,
+			Glass = { Wing = Vector2.new(56.8, 48), Mid = Vector2.new(66.8, 58) },
+			Cells = {
+				{ Name = "Base", Kind = "Wing", Glass = Vector2.new(2, 12), Icon = Vector2.new(30.4, 33.5), Side = 39.4, Pip = Vector2.new(57.8, 13), Tap = { 0, 10, 60.8, 52 } },
+				{ Name = "Inventory", Kind = "Mid", Glass = Vector2.new(62.8, 2), Icon = Vector2.new(96.2, 28.5), Side = 49.2, Pip = Vector2.new(128.6, 3), Tap = { 60.8, 0, 70.8, 62 } },
+				{ Name = "Map", Kind = "Wing", Glass = Vector2.new(133.6, 12), Icon = Vector2.new(162, 33.5), Side = 39.4, Pip = Vector2.new(189.4, 13), Tap = { 131.6, 10, 60.8, 52 } },
+			},
+			Pip = { Glow = 54.2, GlowT = 0.2, Rings = { 24.6, 18.7, 10.8 } },
+		},
 	},
+	-- The dock of three icons (AR12, in AR30's make: its look is Make.Dock): a touch held LongPress seconds shows the
+	-- cell's word Rise points over its glass, and lifting it then doesn't press.
 	Dock = {
-		Sink = 1.6,
-		Dim = 0.45,
 		LongPress = 0.4,
 		Rise = 6,
-		-- TR19's seeds, UNVERIFIED: a quiet tile at Quiet of itself; a cooldown's veil in ink at Veil; a refused tap's
-		-- shake, Shake points either way over Shook seconds, three times, dying away.
-		Quiet = 0.8,
+		-- TR19's seeds, UNVERIFIED: a cooldown's veil in ink at Veil; a refused tap's shake, Shake points either way over
+		-- Shook seconds, three times, dying away.
 		Veil = 0.5,
-		-- A charge (research's verdict on TR19, corrected 2026-11-15): the tile goes to Ink at the tap, and the fill rises
-		-- over it in Colour at Alpha, its rising edge a band Edge of the tile's height in Bright at full. White is a stand-in
+		-- A charge (research's verdict on TR19, corrected 2026-11-15): the glass goes to Ink at the tap, and the fill rises
+		-- over it in Colour at Alpha, its rising edge a band Edge of the glass's height in Bright at full. White is a stand-in
 		-- until the palette is picked (the director, 2026-11-15: nothing new goes violet). Seeds, tuned live.
 		Charge = { Ink = Color3.fromHex("#0B0B12"), Colour = Color3.new(1, 1, 1), Bright = Color3.new(1, 1, 1), Edge = 0.1, Alpha = 0.85 },
 		Shake = 4,

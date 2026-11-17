@@ -1269,7 +1269,7 @@ function HudController.Start()
 		System = "Voidkin",
 		Width = HINT,
 		Centred = true,
-		Position = UDim2.new(0.5, 0, 1, -PAD - UIKit.Dock.Size.Y - Theme.Size.Gap),
+		Position = UDim2.new(0.5, 0, 1, -PAD - HudConfig.Make.Dock.Box.Y + math.min(HudConfig.Make.Dock.At.Y, 0) - Theme.Size.Gap), -- over the dock's frame
 		AnchorPoint = Vector2.new(0.5, 1),
 		Parent = Layers.Get("Hud"),
 	})

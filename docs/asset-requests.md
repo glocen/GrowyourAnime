@@ -12621,6 +12621,28 @@ Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game 
 - **It waits:** any re-texture or re-upload, until the pick. AR38's clock fix and its colour pause, because the Shop follows the pick.
 - **Order:** after AR39's first round of arrangements.
 
+### The three directions, as values (Modulo, 2026-11-17, 22:32 to 22:38 by the clock)
+
+Where the purple and the black sit, from the kit's own files and today's captures: the machines' body is one swatch, `abyss` (dark violet, L* 29 falling to 7), on `girder` frames (navy, 38 to 18); the far shards are three violets; the day's fill is a lilac grey; the HUD's panel is L* 14 and the bag's 8. Of ten large surfaces, four are violet and five black.
+- **The values:** `build/handoff/Colour/ar40/directions.json`, from `tools/colour/ar40_directions.py`. `directions.md` beside it has the measures, and `chips.png` is each direction as flat colour beside today's (a machine on the yard with the HUD's card, the bag, the swatches). It's no render, and it's no verdict.
+- **What a direction moves,** and nothing else: nine of the kit's swatches by name (the body `abyss`, the frame `girder`, the fitting `bone`, `steel`, `dark`, `rubber`, and the far shards `far`, `tower`, `outcrop`), the wall's print as a ramp, the Strip's stones as one colour, ten of the day's lighting keys, and the two palettes the views show (Graphite, the HUD's; Seam, the bag's). The void's light (`void`, `cyan`) is the same in all three: it's the accent.
+- **A, porcelain and gold:** warm white stone on slate frames with gold fittings, a warm white sun, the HUD and the bag as cream paper with slate ink, the bag's chosen plate in violet. The brightest, the furthest from today.
+- **B, sky steel:** light blue steel with white frames, a clear blue fill, the HUD and the bag in white with sky blue buttons and gold for the accent.
+- **C, sandstone and teal:** warm pale stone on teal bronze, a gold day, the HUD and the bag still a glass with pale words, lifted from black to a mid slate teal (L* 41 and 39). The nearest to today on screen.
+- **Measured, on the values alone:** every direction has no violet and no black among the ten surfaces. The body's lightness is 95 to 75 (A), 85 to 61 (B), 89 to 63 (C). Words on their panels stand at 5.8 to 1 or more.
+- **Weak, before any capture:**
+  - B's violet core sits on a blue body, its neighbour in hue: the void's light may read least there.
+  - B's far shards are near the sky's own blue and may vanish.
+  - A's and B's bag draws its chosen plate dark on pale, the reverse of the seam's design (5.1 and 4.6 to 1).
+  - C's screens are the least changed, and "black" may still be said of them.
+  - The system blocks (Power, Credits, Voidkin, Regalia, Map) keep their dark panels in all three: they wait for the pick.
+- **For Faber, the block:** each direction in the place by day at the smallest phone, three views (the plot from the spawn, the Strip from the crossing, the bag), beside today's.
+  - Lighting: the ten keys are `Config.Lighting` paths, for the live tune.
+  - Swatches: a repaint of the kit's cells in the place, from the json's `Cell` rule (the head falling to the foot by `(y / (h - 1)) ^ 0.85`, times the shade across), or whatever way the place allows. A surface's Color alone can't do it: it only darkens.
+  - The stones want about 1.5 times the light for their colour, so a tint alone falls short.
+  - No file is painted and nothing is uploaded until the pick.
+- **Status:** implemented as values; the tool runs; not in the place, not captured, not reviewed.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

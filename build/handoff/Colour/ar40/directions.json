@@ -1,0 +1,556 @@
+{
+ "Cell": [
+  64,
+  128
+ ],
+ "Today": {
+  "Name": "Today",
+  "Idea": "void stone in dark violet, navy frames, a lilac fill, black glass",
+  "Swatches": {
+   "abyss": [
+    "#4B3A7E",
+    "#171030"
+   ],
+   "girder": [
+    "#4C5878",
+    "#242C42"
+   ],
+   "bone": [
+    "#E9E2D2",
+    "#9C95A6"
+   ],
+   "steel": [
+    "#8290B0",
+    "#46506E"
+   ],
+   "dark": [
+    "#1E1426",
+    "#0C0A12"
+   ],
+   "rubber": [
+    "#1F2233",
+    "#0E101A"
+   ],
+   "far": [
+    "#9284C8",
+    "#5E5298"
+   ],
+   "tower": [
+    "#7C76AE",
+    "#46427A"
+   ],
+   "outcrop": [
+    "#8474BC",
+    "#4A3E86"
+   ]
+  },
+  "Panel": [
+   "#20263E",
+   "#93A0C8"
+  ],
+  "Stones": "#B9ACD0",
+  "Lighting": {
+   "Phases.Day.Sun": "#FFE2B8",
+   "Phases.Day.Brightness": 2.6,
+   "Phases.Day.Ambient": "#8A8496",
+   "Phases.Day.Exposure": 0.0,
+   "Phases.Day.Atmosphere.Color": "#EFE3D6",
+   "Phases.Day.Atmosphere.Decay": "#A9BCE4",
+   "Phases.Day.Glow": 0.45,
+   "Clear.Phases.Day.Ambient": "#A3A1B4",
+   "Clear.Phases.Day.Brightness": 2.61,
+   "Clear.Phases.Day.Exposure": 0.16
+  },
+  "UI": {
+   "Graphite": {
+    "Panel": [
+     "#20242C",
+     "#13151A"
+    ],
+    "Edge": "#434A57",
+    "Facet": "#8A93A6",
+    "Glint": "#C9D2E4",
+    "Text": "#F3EFE6",
+    "Soft": "#A6ADBA",
+    "Faint": "#6E7482",
+    "Channel": "#06070A",
+    "Well": "#0B0C10",
+    "Button": [
+     "#323845",
+     "#22262F"
+    ],
+    "Pressed": [
+     "#1A1D24",
+     "#20242C"
+    ],
+    "Ground": "#2B2E36",
+    "Accent": "#FFF4D6"
+   },
+   "Seam": {
+    "Panel": [
+     "#1A1430",
+     "#0C0A16"
+    ],
+    "Edge": "#3B3358",
+    "Facet": "#8F84B8",
+    "Glint": "#DCD3FF",
+    "Text": "#F1ECFF",
+    "Soft": "#B9B0D6",
+    "Faint": "#6F6790",
+    "Channel": "#050409",
+    "Well": "#1B1728",
+    "Button": [
+     "#2A2244",
+     "#1A1530"
+    ],
+    "Pressed": [
+     "#120E20",
+     "#1A1430"
+    ],
+    "Ground": "#1E1A2C",
+    "Accent": "#EDE4FF",
+    "Backing": "#07060C",
+    "Light": "#EDE4FF",
+    "Ink": "#0B0913",
+    "Card": [
+     "#221A3C",
+     "#0E0B18"
+    ]
+   }
+  },
+  "Measures": {
+   "BodyLight": [
+    29,
+    7
+   ],
+   "FrameLight": [
+    38,
+    18
+   ],
+   "Range": 83,
+   "VioletGrounds": 4,
+   "BlackGrounds": 5,
+   "Grounds": 10,
+   "HudPanelLight": 14,
+   "BagPanelLight": 8,
+   "HudWords": 13.6,
+   "BagWords": 15.3,
+   "BagChosen": 16.1
+  },
+  "StonesTint": "#FFFFFF",
+  "StonesLight": 1.0
+ },
+ "Directions": [
+  {
+   "Name": "A, porcelain and gold",
+   "Idea": "the machines in warm white stone on slate frames with gold fittings; a warm white sun; the HUD and the bag as cream paper with slate ink. The brightest of the three, and the furthest from today.",
+   "Swatches": {
+    "abyss": [
+     "#F6F1E6",
+     "#B9B6C0"
+    ],
+    "girder": [
+     "#5C6C8E",
+     "#323E5A"
+    ],
+    "bone": [
+     "#F2C45A",
+     "#9A6A24"
+    ],
+    "steel": [
+     "#B6C4DE",
+     "#6E7EA0"
+    ],
+    "dark": [
+     "#3A4660",
+     "#1E2638"
+    ],
+    "rubber": [
+     "#2A3040",
+     "#161A26"
+    ],
+    "far": [
+     "#C6D0EE",
+     "#97A4D2"
+    ],
+    "tower": [
+     "#B4BCE0",
+     "#8088BC"
+    ],
+    "outcrop": [
+     "#BBC0E6",
+     "#868EC6"
+    ]
+   },
+   "Panel": [
+    "#4E618A",
+    "#C9D5EC"
+   ],
+   "Stones": "#D2CCC2",
+   "Lighting": {
+    "Phases.Day.Sun": "#FFF0D2",
+    "Phases.Day.Brightness": 2.6,
+    "Phases.Day.Ambient": "#A9A7A0",
+    "Phases.Day.Exposure": 0.0,
+    "Phases.Day.Atmosphere.Color": "#F6EBD8",
+    "Phases.Day.Atmosphere.Decay": "#B4CCEC",
+    "Phases.Day.Glow": 0.6,
+    "Clear.Phases.Day.Ambient": "#B6B4AC",
+    "Clear.Phases.Day.Brightness": 2.5,
+    "Clear.Phases.Day.Exposure": 0.05
+   },
+   "UI": {
+    "Graphite": {
+     "Panel": [
+      "#FAF7F0",
+      "#E9E4D8"
+     ],
+     "Edge": "#2A3142",
+     "Facet": "#FFFFFF",
+     "Glint": "#FFFFFF",
+     "Text": "#191B21",
+     "Soft": "#535967",
+     "Faint": "#8C909B",
+     "Channel": "#20232B",
+     "Well": "#D8D2C4",
+     "Button": [
+      "#FFFFFF",
+      "#EFEADF"
+     ],
+     "Pressed": [
+      "#DAD4C6",
+      "#E6E1D5"
+     ],
+     "Ground": "#CFCBC2",
+     "Accent": "#E0A52E"
+    },
+    "Seam": {
+     "Panel": [
+      "#FBF9F4",
+      "#E9E5DC"
+     ],
+     "Edge": "#C9C2B2",
+     "Facet": "#FFFFFF",
+     "Glint": "#FFFFFF",
+     "Text": "#1B1D26",
+     "Soft": "#565B6B",
+     "Faint": "#9296A2",
+     "Channel": "#2A2E3A",
+     "Well": "#DDD8CC",
+     "Button": [
+      "#FFFFFF",
+      "#F0ECE2"
+     ],
+     "Pressed": [
+      "#DCD6C8",
+      "#E8E3D8"
+     ],
+     "Ground": "#D4D0C6",
+     "Accent": "#E0A52E",
+     "Backing": "#EDE8DC",
+     "Light": "#7A4DF0",
+     "Ink": "#FFFFFF",
+     "Card": [
+      "#FFFFFF",
+      "#F1EDE3"
+     ]
+    }
+   },
+   "Measures": {
+    "BodyLight": [
+     95,
+     75
+    ],
+    "FrameLight": [
+     46,
+     26
+    ],
+    "Range": 69,
+    "VioletGrounds": 0,
+    "BlackGrounds": 0,
+    "Grounds": 10,
+    "HudPanelLight": 97,
+    "BagPanelLight": 98,
+    "HudWords": 13.6,
+    "BagWords": 13.4,
+    "BagChosen": 5.1
+   },
+   "StonesTint": "#F4FFC8",
+   "StonesLight": 1.463672646459582
+  },
+  {
+   "Name": "B, sky steel",
+   "Idea": "the machines in light blue steel with white frames, the void's violet only in their cores; a clear blue fill under a warm white sun; the HUD and the bag in white with sky blue, gold for what's chosen.",
+   "Swatches": {
+    "abyss": [
+     "#C6D6EE",
+     "#7E94BC"
+    ],
+    "girder": [
+     "#F0F3F8",
+     "#AEB8CC"
+    ],
+    "bone": [
+     "#FFE9A8",
+     "#C89A3C"
+    ],
+    "steel": [
+     "#9FB6DC",
+     "#5C76A6"
+    ],
+    "dark": [
+     "#34507E",
+     "#1C2E50"
+    ],
+    "rubber": [
+     "#263248",
+     "#141C2C"
+    ],
+    "far": [
+     "#BCD0F2",
+     "#8AA4DA"
+    ],
+    "tower": [
+     "#A8BCE6",
+     "#748CC8"
+    ],
+    "outcrop": [
+     "#B2C0EC",
+     "#7E90D0"
+    ]
+   },
+   "Panel": [
+    "#6E86B4",
+    "#F2F5FA"
+   ],
+   "Stones": "#CBD0DA",
+   "Lighting": {
+    "Phases.Day.Sun": "#FFF6E0",
+    "Phases.Day.Brightness": 2.7,
+    "Phases.Day.Ambient": "#98A8BC",
+    "Phases.Day.Exposure": 0.0,
+    "Phases.Day.Atmosphere.Color": "#EAF2FA",
+    "Phases.Day.Atmosphere.Decay": "#A8C8F0",
+    "Phases.Day.Glow": 0.55,
+    "Clear.Phases.Day.Ambient": "#AEBCCE",
+    "Clear.Phases.Day.Brightness": 2.6,
+    "Clear.Phases.Day.Exposure": 0.08
+   },
+   "UI": {
+    "Graphite": {
+     "Panel": [
+      "#FFFFFF",
+      "#E8F0FA"
+     ],
+     "Edge": "#3F7FD8",
+     "Facet": "#FFFFFF",
+     "Glint": "#FFFFFF",
+     "Text": "#16284A",
+     "Soft": "#4C6088",
+     "Faint": "#8A9AB8",
+     "Channel": "#1C2C4C",
+     "Well": "#D2DEEE",
+     "Button": [
+      "#4C94EE",
+      "#2F74D2"
+     ],
+     "Pressed": [
+      "#255FB0",
+      "#2F74D2"
+     ],
+     "Ground": "#C4D2E6",
+     "Accent": "#FFC93C"
+    },
+    "Seam": {
+     "Panel": [
+      "#FFFFFF",
+      "#E6EEF9"
+     ],
+     "Edge": "#9DBDEA",
+     "Facet": "#FFFFFF",
+     "Glint": "#FFFFFF",
+     "Text": "#16284A",
+     "Soft": "#4C6088",
+     "Faint": "#8A9AB8",
+     "Channel": "#1C2C4C",
+     "Well": "#D6E1F0",
+     "Button": [
+      "#4C94EE",
+      "#2F74D2"
+     ],
+     "Pressed": [
+      "#255FB0",
+      "#2F74D2"
+     ],
+     "Ground": "#C8D5E8",
+     "Accent": "#FFC93C",
+     "Backing": "#DCE8F6",
+     "Light": "#2F74D2",
+     "Ink": "#FFFFFF",
+     "Card": [
+      "#FFFFFF",
+      "#EEF4FB"
+     ]
+    }
+   },
+   "Measures": {
+    "BodyLight": [
+     85,
+     61
+    ],
+    "FrameLight": [
+     96,
+     75
+    ],
+    "Range": 46,
+    "VioletGrounds": 0,
+    "BlackGrounds": 0,
+    "Grounds": 10,
+    "HudPanelLight": 100,
+    "BagPanelLight": 100,
+    "HudWords": 12.7,
+    "BagWords": 12.5,
+    "BagChosen": 4.6
+   },
+   "StonesTint": "#E7FFDD",
+   "StonesLight": 1.5289502604820173
+  },
+  {
+   "Name": "C, sandstone and teal",
+   "Idea": "the machines in warm pale stone on teal bronze, the violet core against the sand; a gold day; the HUD and the bag stay a glass with pale words, lifted from black to a mid slate teal with gold. The nearest to today on screen, the warmest in the world.",
+   "Swatches": {
+    "abyss": [
+     "#EEDDBC",
+     "#B2946C"
+    ],
+    "girder": [
+     "#46A39C",
+     "#1F5E64"
+    ],
+    "bone": [
+     "#FFF4DC",
+     "#C2AE8C"
+    ],
+    "steel": [
+     "#A9C2C8",
+     "#62808A"
+    ],
+    "dark": [
+     "#2C5A60",
+     "#163238"
+    ],
+    "rubber": [
+     "#2A3236",
+     "#161C20"
+    ],
+    "far": [
+     "#DCD2D6",
+     "#B0A2AE"
+    ],
+    "tower": [
+     "#CEC0C6",
+     "#A08E9A"
+    ],
+    "outcrop": [
+     "#D4C4CC",
+     "#A894A2"
+    ]
+   },
+   "Panel": [
+    "#8A6E4E",
+    "#F0E2C4"
+   ],
+   "Stones": "#DCCFB8",
+   "Lighting": {
+    "Phases.Day.Sun": "#FFDDA6",
+    "Phases.Day.Brightness": 2.8,
+    "Phases.Day.Ambient": "#A89C8C",
+    "Phases.Day.Exposure": 0.0,
+    "Phases.Day.Atmosphere.Color": "#F8E4C4",
+    "Phases.Day.Atmosphere.Decay": "#C0C8DC",
+    "Phases.Day.Glow": 0.6,
+    "Clear.Phases.Day.Ambient": "#BAAE9C",
+    "Clear.Phases.Day.Brightness": 2.7,
+    "Clear.Phases.Day.Exposure": 0.08
+   },
+   "UI": {
+    "Graphite": {
+     "Panel": [
+      "#3E6672",
+      "#2C4C58"
+     ],
+     "Edge": "#7CC4BC",
+     "Facet": "#A9DCD4",
+     "Glint": "#E6FFF8",
+     "Text": "#FFF6E2",
+     "Soft": "#CCDCD8",
+     "Faint": "#94ACAC",
+     "Channel": "#182C34",
+     "Well": "#243E48",
+     "Button": [
+      "#56808C",
+      "#3E6672"
+     ],
+     "Pressed": [
+      "#2C4C58",
+      "#3E6672"
+     ],
+     "Ground": "#486C76",
+     "Accent": "#FFC857"
+    },
+    "Seam": {
+     "Panel": [
+      "#3A626E",
+      "#284852"
+     ],
+     "Edge": "#6AAEA8",
+     "Facet": "#A9DCD4",
+     "Glint": "#E6FFF8",
+     "Text": "#FFF6E2",
+     "Soft": "#CCDCD8",
+     "Faint": "#94ACAC",
+     "Channel": "#162A32",
+     "Well": "#22404A",
+     "Button": [
+      "#527C88",
+      "#3A626E"
+     ],
+     "Pressed": [
+      "#284852",
+      "#3A626E"
+     ],
+     "Ground": "#44686E",
+     "Accent": "#FFC857",
+     "Backing": "#30505A",
+     "Light": "#FFE9B0",
+     "Ink": "#1C2A30",
+     "Card": [
+      "#487480",
+      "#30545E"
+     ]
+    }
+   },
+   "Measures": {
+    "BodyLight": [
+     89,
+     63
+    ],
+    "FrameLight": [
+     62,
+     36
+    ],
+    "Range": 60,
+    "VioletGrounds": 0,
+    "BlackGrounds": 0,
+    "Grounds": 10,
+    "HudPanelLight": 41,
+    "BagPanelLight": 39,
+    "HudWords": 5.8,
+    "BagWords": 6.2,
+    "BagChosen": 12.3
+   },
+   "StonesTint": "#FCFFBA",
+   "StonesLight": 1.5124750056867065
+  }
+ ]
+}

@@ -10752,6 +10752,21 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
     - Mid's band is the same class, already within it.
   - **Next:** a second look at High alone, then the cut and the uploads for Faber.
 
+### High's fix (Modulo, 2026-11-17, 16:37 to 16:41 by the clock)
+
+- **The sheet:** `build/handoff/UI/upgrades/upgrades_colour.png`, drawn again. Only `StoneHigh.png` changed among the 38.
+- **The body is lit by the forge:**
+  - its polished stone is toned by how bright it renders, from a dark warm stone at the sides through copper and amber;
+  - its lit top face goes toward white-hot, never a deep red;
+  - the line of light round its top stays.
+- **The bands:**
+  - dark iron, darker than the body;
+  - 0.16 wide, not 0.2;
+  - round its upper part only, from 0.42 of its height to the top, so nothing reaches the foot to read as legs.
+- **My read at 38 points:** a warm ingot that carries its own shape, with two short dark bands on its shoulders. No legs.
+- **Content check, for upload (16:40 to 16:41): PASS.** It reads as a copper ingot or polished stone, with no deep red, nothing soft, and nothing that reads as a gold bar or currency. Its taste note for research: at 38 points the brown body with dark bands reads a little like a chocolate bar or a small wooden chest.
+- **Four facts.** Implemented: High's body and bands. Tested: rendered and read at 38 points, 32 px and 64 px. Visually reviewed: my read; research's second look next. Director-accepted: no.
+
 ## AR32. The Void Breaker's three stages (Modulo, for research's pick, then Faber)
 
 Research's entry, 2026-11-17, 16:37. It is the next machine in the design's order: "Three stages for every machine", the generator, then the Breaker, the bays, the battery (`docs/design.md`, "The base"; [D, 2026-11-16: the package's point 6]). The generator's three are done (AR19). Stage I is the Breaker as it stands (AR16).

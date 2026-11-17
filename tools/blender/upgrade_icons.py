@@ -61,7 +61,7 @@ GEAR = ROOT / "build" / "handoff" / "UI" / "gear" / "images"
 CHESTS = ROOT / "build" / "handoff" / "UI" / "chests" / "images"
 mat = p.mat
 for key, value in (("rock", 0.4), ("grit_dark", 0.32), ("grit_pale", 0.62), ("polished", 0.5), ("enamel", 0.24),
-                   ("gem", 0.9), ("setting", 0.4)):
+                   ("gem", 0.9), ("setting", 0.4), ("band", 0.3)):
     g.GREY.setdefault(key, value)
 
 
@@ -125,8 +125,12 @@ def high():
     the edge of its top, flush with it (research's pick of B, and its fix: closed, not a trough)."""
     foot, top, h = (2.5, 1.35), (1.9, 0.8), 0.78
     parts = [bl.bevel(frustum("Ingot", foot, top, h, "polished"), 0.06, 1)]
-    for x in (-0.62, 0.62):  # two bands across it, as wide as the stone at every height and a little proud
-        band = frustum("Band", (0.2, foot[1] + 0.08), (0.2, top[1] + 0.08), h + 0.02, "brass", z=-0.01)
+    # Two bands across it, a little proud, round its upper part only and darker than the stone: research's must-fix on
+    # the colour pass (the material is the hero): long bright bands down to its foot read as a table's legs.
+    z0 = 0.42 * h
+    deep = foot[1] + (top[1] - foot[1]) * z0 / h
+    for x in (-0.62, 0.62):
+        band = frustum("Band", (0.16, deep + 0.08), (0.16, top[1] + 0.08), h - z0 + 0.02, "band", z=z0 - 0.01)
         parts.append(bl.bevel(bl.place(band, (x, 0, 0)), 0.02, 1))
     a, b = top[0] - 0.08, top[1] - 0.08
     for (x0, y0), (x1, y1) in (((-a / 2, -b / 2), (a / 2, -b / 2)), ((a / 2, -b / 2), (a / 2, b / 2)),
@@ -368,12 +372,13 @@ def sheet(out, shots):
 # --- the colour pass ----------------------------------------------------------------------------------------------------
 
 # A key's paint: its colour, how metal it is, how rough. The metals are AR6's own (gear_icons.PAINT).
-# The stones are one family of dark stone, so the forge's light carries all three: a warm grey lump; a whetstone of a
-# dark and a pale grit, both stone, never a tan that reads as wood; a near-black ingot, polished, a value above the
-# cell's ground. A tan grit read as a wooden block, and a navy ingot as a cushioned bench.
+# The stones are one family of stone, so the forge's light carries all three: a warm grey lump; a whetstone of a dark
+# and a pale grit, both stone, never a tan that reads as wood; the ingot, polished, its body lit by the forge (HOT) in
+# dark iron bands. A tan grit read as a wooden block, a navy ingot as a cushioned bench, and a near-black one sank into
+# the cell under its bright brass bands, which read as a table's legs (research, 16:37).
 PAINT = dict(
     rock=("#6A625D", 0.0, 0.9), grit_dark=("#4C5058", 0.0, 0.85), grit_pale=("#A29A8E", 0.0, 0.85),
-    polished=("#4A4850", 0.3, 0.18), brass=gi.PAINT["brass"], lit=("#FFC27A", 0.0, 0.3),
+    polished=("#A49C94", 0.2, 0.2), band=("#3A3634", 0.4, 0.42), brass=gi.PAINT["brass"], lit=("#FFC27A", 0.0, 0.3),
     iron=gi.PAINT["iron"], steel=gi.PAINT["steel"], blued=gi.PAINT["blued"], enamel=("#2F2756", 0.0, 0.25),
     ivory=gi.PAINT["ivory"], gem=("#CFCFD4", 0.0, 0.12), setting=("#6A6E78", 0.35, 0.35))
 # The forge's light round a lit line: its face white-hot, its light orange, never a deep red (the content check).
@@ -390,7 +395,10 @@ JEWELS = {
                       light="#F4B8EE", words="#E98ADF"),
 }
 STONE_WORDS = "#FFB15C"   # a stone's line in the haul (AR24): the forge's orange
-LOOK = dict(Low=dict(light=FORGE), Mid=dict(light=FORGE), High=dict(sheen={"polished"}, light=FORGE),
+# The ingot's body, the forge's heat in polished stone by how bright it renders: its sides a dark warm stone, its top
+# amber going white-hot, never a deep red (the content check's condition on the forge's light).
+HOT = (((0.0, "#2E2422"), (0.35, "#5E3B2A"), (0.7, "#B8662E"), (0.9, "#FFB45C"), (1.0, "#FFE2B0")), 1.0)
+LOOK = dict(Low=dict(light=FORGE), Mid=dict(light=FORGE), High=dict(tone={"polished": HOT}, sheen={"polished"}, light=FORGE),
             Common=dict(lift="iron"), Uncommon=dict(sheen={"steel"}),
             Rare=dict(tone={"blued": gi.TEMPER["blued"]}, light=("#E6F0FF", (4, 0.7), (10, 0.25))))
 

@@ -10832,6 +10832,95 @@ Research's entry, 2026-11-17, 16:37. It is the next machine in the design's orde
 
 **Checks:** the content check before the block; research's pick; then Stage II and III as models for Faber, judged in the game from the player's camera.
 
+### The two directions, planned (Modulo, 2026-11-17, 16:49 by the clock)
+
+**Both directions share:**
+- **The chambers' places:**
+  - Chambers 1 and 2 stand where they stand.
+  - Chambers 3 and 4 continue the line outward, 7 studs apart. Chamber 1 is nearest the plot's middle line, so the line counts 1 to 4 outward, as the screen's row counts (`Config.Base`, `Machines.BreakerChambers`).
+  - Chamber 3's seat arrives with Stage II and opens at machine level 8. Chamber 4's arrives with Stage III and opens at level 20.
+  - A seat not yet open is a dark lid on the body's top, unlit, never a building site.
+- **The body** grows a section a chamber: 21 long at Stage II and 28 at Stage III. It stays 5 high, so every chamber's foot is at 5 and its shard's room at 5.85 to 8.35, as today.
+- **The waiting line's three cradles** move to the body's front foot. The Breaker then grows outward by its chambers only, never by its waiting line as well. The plot's fit (`Config.World.Fit`, Rules.BaseFit) is Faber's to check on the new footprint.
+- **The light:** one fang a chamber reaches down to its shard, as today. The break stays cyan and the veins violet, with no new colour.
+
+**A, the Great Jaws: the jaws grow with the line.**
+- **Stage II:**
+  - The two jaws root at the line's ends and arch over all of it, about 15 high, to a gap over its middle where the crystal floats.
+  - A spine of void stone runs under them, and a bone clamp holds a fang down into each chamber.
+  - A gear ring sits on the body's face at each jaw's root: its hinge.
+- **Stage III:**
+  - The jaws reach about 17 high, and each grows a barb, a second horn rising out from its elbow.
+  - Short horns stand along the spine between the chambers.
+  - Two small claws hold the crystal.
+
+**B, the Gear Train: the void's work shows in turning gears.**
+- **Stage II:**
+  - A back wall of void stone runs along the line. It carries a gear wheel of void stone over each chamber, 7 across, so each meshes with its neighbour and they turn against each other.
+  - A fang hangs from each gear's hub down into its chamber.
+  - Stage I's two jaws stand at the line's ends, curling over the end gears, and the crystal floats over the middle.
+- **Stage III:**
+  - Each gear gains an inner ring that turns the other way.
+  - A row of short horns grows along the wall's top, and clamps bind the wall to the body.
+  - Two horns hold the crystal.
+
+**Both, as seen:**
+- **The block:** in grey, with only the void's light lit, beside Stage I. Seen from the gate's view at phone size, at 64 px, and as a silhouette in black.
+- **The motion,** for the build: in A, the hinge gears turn while a chamber breaks; in B, the gears turn.
+
+**Content check on the plan (16:49 to 16:52): PASS** for the grey block. Its conditions:
+- **The crystal** stays a faceted lozenge held between a mirrored pair, never a star or rays.
+- **Spokes** are straight and radial, six or more or a solid web, never four in a cross, and no hub carries lettering.
+- **Fangs, jaws, claws and clamps** are clean stone or bone:
+  - no glow at any tip;
+  - no red or wet tint;
+  - nothing like gums or a throat;
+  - no vertebrae.
+- **No real-world parts:** no brass or copper clockwork, and no real electrical parts.
+- **No tall tapering tower** with a lit crown.
+- **What comes back to it:** the block's sheet, and any change away from the plan in the crystal, the spokes or the jaws' outline.
+
+### The block, for research's pick (Modulo, 2026-11-17, 16:52 to 17:00 by the clock)
+
+**The sheets** (`tools/blender/breaker_stages.py`; in `build/scratch/modulo/ar32/`):
+- `breaker_A.png` and `breaker_B.png`, one a direction. Each shows Stage I as it stands beside Stages II and III, in the views below.
+- `gate_compare.png`: the six from the gate's view at full size.
+
+**The views:**
+- The block is grey, with only the void's light lit, in the yard as it stands under the dusk.
+- **The game's start camera on the spawn,** turned to the Breaker as the spawn faces it, at a phone's 640 by 360.
+- **A player inside the gate,** 12 studs before the Breaker's middle line, the camera turned to it.
+- **From the gate's view:** cut to the machine at one scale for the three stages, at 64 and 128 px tall, and in black.
+- **The Breaker's lamp** stands on each stage's crystal.
+- **Every chamber is shown open.**
+
+**Triangles,** Stages I, II and III with the drawn edge:
+- A: 1,510, 2,924 and 3,488.
+- B: 1,510, 4,708 and 7,240.
+
+**One round within each direction, from my own read of the first render:**
+- **A's lower jaws** read as a flat bar across, a gantry, so they arch now under the upper jaws. Stage III's row of short horns on them went: it read as a fence.
+- **B's Stage III:** six knobs on each gear's inner ring made the gears read as spiked balls, so they went.
+- **The gate's view** first stood behind the plot's front wall and a gate pillar, so it moved inside the gate.
+
+**My read:**
+- **A, the Great Jaws:**
+  - **For it:** one horned arch over the line that grows with it, with the crystal in its gap. In black it reads as a crown at 128 and at 64 px, and Stage III is plainly Stage II grown: wider, taller, barbed.
+  - **Its risk:** the two arches with fangs under them can read as an open mouth.
+- **B, the Gear Train:**
+  - **For it:** at Stage II the gears read as gears, and their count is the chambers'.
+  - **Against it:**
+    - A fang hanging from a hub reads like a clock's hand.
+    - At Stage III the dark gears with teeth and inner rings read as spiked wheels, and the row is busy at 64 px.
+    - It costs twice A's triangles.
+- **My pick is A.**
+
+**The four facts:**
+- **Implemented:** the grey block of both directions.
+- **Tested:** rendered from both views, cut at 64 and 128 px and in black.
+- **Visually reviewed:** my read. Research's pick is next, and the content check on the sheets runs beside it.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

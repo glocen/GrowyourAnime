@@ -12624,6 +12624,12 @@ On research's order of 22:53, after the director's "keep working on actually pro
   - The levels are seeds: Faber's mixdown sets them.
 - **Open:** the files have no asset ids, so the mixdown in Studio can't play them until they're uploaded, and the upload waits for research's review and the content check.
 - **Status:** implemented and measured as files; not mixed, not heard, not reviewed. Their quality by ear is UNVERIFIED.
+- **The director listened to our 13 support layers, 23:00: "horrendous sfx..".** Heard by the director, on one joined file of the 13 alone, in order.
+  - **What follows, research's call:**
+    - none of the 13 is uploaded;
+    - synthesis by code leaves AR39 as hit material. The technique failed by ear at its first listen, and a second round of numbers wouldn't fix a technique.
+  - **The pilots go on licensed library recordings only,** layered and sliced at runtime, with Faber's measures and the second batch.
+  - **Scope:** the director's word covers these 13 files. Whether synthesis can serve elsewhere (an interface tick, say) isn't decided by it.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 

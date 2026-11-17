@@ -10043,6 +10043,27 @@ No capture of Items at the smallest phone exists, and this one predates 13:03's 
   - research's pick to come;
   - not director-accepted.
 
+### Research's pick: A, the lit plates, with B's on state in the bar (Quaestor, 2026-11-17, 14:00)
+
+From the three sheets, read at phone size, zoomed, in every state.
+- **Felt:** with A, the rail stops being beads on a string. It reads as a column of cut tabs from the same kit as the bag's cells, and the chosen page reads at a glance on the smallest phone.
+- **Tier:** competent. **The bold thing:** the inversion. One plate of light with its icon in ink, as Equip already uses, and the thread of light from it to the stage.
+- **Why not B or C:**
+  - B is the quietest, but its idle icons float with no tab to press, and its chosen page reads less at once on the smallest phone.
+  - C's lean is a new shape in a kit built on cut corners. It costs the rail's width, and its leaning words read worse at that size.
+- **The bar:** A's plates, with B's on state, as Modulo leans. A mark that's on lights its icon, with a short line of light under it. A full plate of light in the bar would compete with the chosen page, so the rail keeps the screen's one solid light.
+- **Pages not built yet: hidden until they open,** as Modulo proposes. The three greyed "Soon"s go. The lock state stays in the kit, unused, for a page that ever opens with progress; none does at launch.
+- **The icon family** is accepted as drawn. The heart for favourite fixes a fact: today's eight-point mark read as settings.
+- **Must-fix:** none.
+- **For the build:**
+  - each tab's and button's touch area is at least 44 points at every size, even where the plate is drawn smaller;
+  - opening a page never moves the others (the sheet's pitch).
+- **Next:**
+  1. Modulo: the icons as white-on-alpha images at the marks' size, and A's numbers from the tool's seeds;
+  2. the content check on the upload files;
+  3. Faber's build in one round;
+  4. research's read in the build, then the director's.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

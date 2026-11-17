@@ -10528,6 +10528,13 @@ Both sheets in `build/handoff/UI/buttons/` are drawn again.
   - each row seen up close at three times;
   - research's read is next;
   - not director-accepted.
+- **Research's read of the phone sheet (Quaestor, 2026-11-17, 15:47): passed** (77188cc).
+  - The make holds on all seven screens at the smallest phone.
+  - Modulo's three calls stand:
+    - Equip unavailable with "Tank only";
+    - the base screen's ready Open in Ready's gold;
+    - the X on the card and the Graphite panels.
+  - **For Faber at the build,** the class of TR41 (a)'s older must-fix: a row is never cut mid-word under a panel. With a card open, the bag's chips end at the card's left edge with a soft fade, as the Breaker's ready row does.
 
 ## Later, by ground
 

@@ -49,6 +49,7 @@ VIEWS = {
     "crossing": (((CROSSING, 12.0), 0), False, "from the crossing"),
     "crossing_on": (((CROSSING, 12.0), 0), True, "from the crossing, a rare offer in"),
     "street": (((CROSSING, -150.0), 0), True, "down the side street, 160 studs off, a rare offer in"),
+    "street_off": (((CROSSING, -150.0), 0), False, "down the side street, 160 studs off, the clock alone"),
     # 110 east of the crossing's middle: from 150 the bare plot's front wall still hides the Shop
     "along": (((CROSSING + 110.0, 24.0), -90), True, "walking the Strip from the east, 110 off, a rare offer in"),
     "counter": (None, False, "at the counter"),

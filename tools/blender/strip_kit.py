@@ -63,8 +63,10 @@ BRIGHT = {"CrossingShard": 2.5,
 SHOP_IN, SLAB_Z, SLAB_FRONT = 4.0, 12.2, -5.6
 SLAB_ENDS = (18.8, -15.8)          # where the slab's full depth ends each side; its points run 2.4 past
 MINUTES = (17.0, 14.0, 11.0, 8.0, 5.0)
-MINUTE, BLADE = (5.6, 0.6), 1.2
-MINUTE_ALONG, CRACK_OUT = SLAB_FRONT - 0.3, 0.45
+MINUTE, BLADE, MINUTE_SW = (5.6, 0.6), 1.2, "void"
+MINUTE_ALONG = SLAB_FRONT - 0.3
+# The brow behind the teeth: (across, half height) along it, a point at each end.
+BROW = ((19.6, 0.5), (18.3, 3.1), (15.5, 3.4), (12.5, 3.0), (9.5, 3.4), (6.5, 3.1), (3.6, 2.6), (2.4, 0.5))
 # AR20's C (research's pick, 2026-11-16, 17:23): the Strip's stones, Lantern Row's paving times STONES in light, and an
 # empty lot's floor, the base's deck under LOT_TINT, lifted from #3A3C52 so the lots beside the crossing aren't black.
 STONES, LOT_TINT = 1.35, "#6E7290"
@@ -261,6 +263,11 @@ def shop():
     mid = SLAB_FRONT - 8.4
     horn(m, [(SLAB_ENDS[0] + 2.4, mid, SLAB_Z), (SLAB_ENDS[0], mid, SLAB_Z), (SLAB_ENDS[1], mid, SLAB_Z),
              (SLAB_ENDS[1] - 2.4, mid, SLAB_Z)], [0.6, 8.4, 8.4, 0.6], "abyss", flat=(0.0, 0.0, 1.0), deep=0.155)
+    # The clock's brow: a blade of void stone hanging from the slab's front edge behind the five teeth, its lower edge
+    # broken. It is the clock's dark ground: a lit tooth reads against stone, not against the haze, from any distance
+    # (research's must-fix, 22:02: in the first pass the sky stood behind the teeth, pale on pale at 160 studs).
+    behind = MINUTE_ALONG - 1.0
+    horn(m, [(x, behind, SLAB_Z + 0.2 - r) for x, r in BROW], [r for _, r in BROW], "abyss", flat=(0.0, 1.0, 0.0), deep=0.12)
     m.box((16.0, 2.4, 3.2), (0.0, -10.5, 1.6), "abyss", ink=True)                         # the counter
     m.box((16.4, 2.8, 0.25), (0.0, -10.5, 3.32), "girder")
     m.box((16.2, 0.2, 0.2), (0.0, -9.1, 3.3), "lamp")             # its edge toward the player: the counter's own light
@@ -289,8 +296,9 @@ def shop_minute():
     long, wide = MINUTE
     horn(m, [(0.0, 0.0, 0.0), (0.0, 0.0, -2.6), (0.0, 0.0, -long - 0.5)], [BLADE * 0.75, BLADE, 0.05], "abyss",
          flat=(0.0, 1.0, 0.0), deep=0.35)
-    horn(m, [(0.0, CRACK_OUT, -0.2), (0.0, CRACK_OUT, -2.6), (0.0, CRACK_OUT, -long - 0.2)], [wide * 0.75, wide, 0.04],
-         "void", flat=(0.0, 1.0, 0.0), deep=0.25, ink=False)
+    out = BLADE * 0.35 + 0.1 - wide * 0.25       # the light's front ridge 0.1 proud of the blade's, its sides clear of it
+    horn(m, [(0.0, out, -0.2), (0.0, out, -2.6), (0.0, out, -long - 0.2)], [wide * 0.75, wide, 0.04],
+         MINUTE_SW, flat=(0.0, 1.0, 0.0), deep=0.25, ink=False)
     return Piece("VoidShopMinute", m,
                  note=f"its origin is its root, in the slab's underside, and it hangs {long + 0.5:g} down from it. Five "
                       f"stand on the VoidShop's own turn, at its frame's across {', '.join(f'{x:g}' for x in MINUTES)}, "

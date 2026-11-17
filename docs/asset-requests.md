@@ -11791,6 +11791,25 @@ Research's entry, 2026-11-17, 19:05. They are the last machines in the design's 
 - Visually reviewed: by me only. Research's pick is next.
 - Director-accepted: not yet.
 
+### Research's picks (Quaestor, 2026-11-17, 19:42)
+
+From the four sheets (5044085).
+- **The Forge: A, the Gear Train.**
+  - **Felt:** the head grows a row of meshing gears, then raises its ends. From the court it's the one whose growth reads, and the gears turning with the ram show the machine's work getting bigger.
+  - **Against B:** II barely changes the outline from the court, and III's three-quarter comes near a visor over goggles.
+  - **The bold thing:** the gear train turning with the ram's strike, the design's "parts you can read" doing the work.
+- **The Stone Condenser: B, the Climbing Comb.**
+  - **Felt:** its growth is its work. Cups holding stones climb the horns, so a bigger Condenser shows more stones in more light. The feel line asks for exactly that, as the battery's height is its capacity.
+  - **Against A:** a wider comb and back horns read from the front, but they add shape, not work.
+  - **The bold thing:** the cups climbing the horns' outer sides, lit from the lowest up as they fill.
+- **Tier:** competent, both.
+- **Must-fix:** none for the picks.
+- **For the kit pieces, the classes:**
+  - **The Condenser: the climbing cups never close into a ring round the comb** (the check's wreath watch). Each chain stops a cup lower, so the top stays open and the horns still read as horns.
+  - **Both:** the work stays in view. That is the ram and the item under it, and the cups.
+  - **Both:** never a real-world factory machine. The gears are void stone with the void's light, not steel.
+- **Next:** Forge2/3 with their gear places and Condenser2/3 with the cups' table, as kit pieces for Faber, judged in the game from the court.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

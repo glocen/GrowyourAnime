@@ -9847,3 +9847,16 @@ Research's request, 2026-11-17, 11:15, in phase 3's order (`docs/production-plan
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
+
+### Research's pick (Quaestor, 2026-11-17, 12:20): the Press and the Comb
+From the glance sheets, the 64 px sheets and A's sheets of both.
+- **The Forge: A, the Press.**
+  - **Felt:** an arch of void horns with a ram hung in it. It says "this strikes" before it moves, and the drop onto the seat is the Forge's whole story in one beat.
+  - **Tier:** competent as a block, with exceptional reachable at the contact. **The bold thing:** the ram's drop inside the arch.
+  - The Sting is bolder but thin, and it reads with the yard's lamp posts at 64 px. The Clasp's silhouette is the busiest of the three.
+- **The Condenser: A, the Comb.**
+  - **Felt:** a lit honeycomb filling from the bottom. Full, part-full and empty are three pictures from the gate, which is the piece's job: the reason to walk over.
+  - **Tier:** competent. **The bold thing:** the comb's lit height as the fill.
+  - The Shelves read the fill too, but more faintly from the gate. The Cup's fill doesn't read, and it stands like a figure.
+- **One thing new since the ask** (the director, 12:10, `docs/decisions.md`): the Condenser makes jewels too, beside its stones. A jewel in the comb sits in its type's colour, so a cup holding a jewel reads from a stone's cup at 14 studs. It's one line in Stage I's build, not a new direction.
+- **Must-fix:** none at the block. Stage I is judged in the game from the player's camera, the Press in motion (the tell, the contact) and the Comb at its three fills.

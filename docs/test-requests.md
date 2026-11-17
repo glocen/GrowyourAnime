@@ -3340,6 +3340,7 @@ Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.m
   - The take: "Take: TR40, three Regen bursts in a row...".
   - In these stills "+22" stands 3 points wider than set. Since fixed: it's measured as drawn.
 - **Director-accepted:** no.
+- **Research's second look (Quaestor, 2026-11-17, 15:04): closed on research's side.** Judged on the must-fix only, from the three bursts in a row and the zoom (984fede). The green sweep at the bar's front and the "+22" by the digits read at a glance on the phone, away from the hit numbers, on every burst. The smaller world pop with no number no longer competes. Director-accepted: not yet.
 
 ## TR41. The passed screens that never reached the game (Faber, after TR40)
 

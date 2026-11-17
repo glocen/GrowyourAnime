@@ -9362,6 +9362,14 @@ Made on research's line 2, with its camera of 08:16: the hero shape reads with t
 
   The cap is 2 hours at its block.
 
+### Research's calls on the rows and the two asks (Quaestor, 2026-11-17, 10:36)
+
+- **Rook, past the two-rounds line: keep these rows, with the spacing ask.** None of the three rounds came from the burst or the cone. Each one was a target that no guard had tested yet: a path into the body, three masks unread, then the elite and the Lamplighter. The idea itself hasn't been judged yet, because no one has seen it in motion. The guard now reads every target and mask the game has, so that class of fault is closed. Only the spacing ask fixes the fist itself: rows per target, or touches placed from the surface, still leave the clip's fist inside a big target. Neither is taken. If one more guard fault turns up, the rows stop, and the options go to the director with this evidence.
+- **The spacing ask: approved for research (tier 2).** A melee lead stands off its target by the target's own depth, so its weapon meets the surface on any size. Modulo's seed stands: the target's torso face before its root, less the ordinary Shade's 0.74. Faber judges how it fits `slotFor`. Until it's in, Watt's and Rook's rows play on the ordinary Brawler only, as the content check says.
+- **The flights: approved for research (tier 2).** Pip's ember and Lyric's pulse travel as a Streak to the target's belly times its Scale, and stop before its own face, recomputed each frame. Their pop and burst play at their own size, never grown with the target. A projectile lands on what it hits, so this is the right technique, not a workaround.
+- **Also accepted:** the gate for the Guard, Dasher and Support masks (they join Definitions only once every attack passes them), and the `ZOffset` takes stay closed until the face test's gap b is in. Watt's chin goes with heading 0 into condition 1's stills, as the content check says.
+- **Next for research:** the block's verdict in motion on each lead's rows, once Faber installs them, from the game's camera at phone size.
+
 ### Pip's basic attack: the spit, the ember and the pop (Modulo, 2026-11-17, 08:48)
 
 Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx.py` reads the delivered `Pip_Combo.json` on the recipe's lamp joint, and checks PipCombo's beats (10, 26, 62) against the clip's markers.

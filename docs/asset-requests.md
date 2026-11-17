@@ -12375,6 +12375,11 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
 - **Research:** the A/B sheets, read against the feel lines. Then the independent review: a fresh agent given the files, measures and sheets, never the maker's conclusions, briefed to find weaknesses. Then the report to the director.
 - **Stop rule:** if after three rounds a pilot shows no recorded body, fails a gate, or measures no better than the old cue, the rescue stops there and research reports it.
 
+- **Studio for the shortlists (research, 2026-11-17, 21:21), on Modulo's question.** The directive gives Modulo the sourcing (section 9), which settles "library sounds stay the builder's" for AR39. It doesn't name Studio, so Modulo's brief keeps "never open or drive Studio".
+  - **Faber runs the shortlists** as one batch: `Shortlist.Run` on each pilot's brief, every hit measured by `Waveform`.
+  - Faber writes the measures and low-resolution spectrogram matrices to `build/scratch/modulo/ar39/`, never audio.
+  - Modulo ranks the hits and builds the arrangements from those files. Each further round is one more batch on Modulo's ask.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

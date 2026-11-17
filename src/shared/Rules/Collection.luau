@@ -10,6 +10,7 @@ local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Profile = require(Shared.Data.Profile)
 local Stats = require(Shared.Rules.Stats)
+local Breaker = require(Shared.Rules.Breaker)
 
 local Collection = {}
 
@@ -17,7 +18,7 @@ local Collection = {}
 Collection.Unknown = "Unknown" -- no such Voidkin definition, or no such owned Voidkin
 Collection.MaxStars = "MaxStars"
 Collection.NotEnough = "NotEnough"
-Collection.Working = "Working" -- a worker can't also lead
+Collection.Working = "Working" -- a worker can't also work elsewhere (a Lead recalls it: Collection.SetLead)
 Collection.BadName = "BadName" -- a nickname that isn't text, or holds a control character
 Collection.TooLong = "TooLong" -- a nickname past Config.Voidkin.Nickname.Max characters
 
@@ -105,17 +106,30 @@ function Collection.SpendCopies(data: Profile.Data, id: any): { [string]: any }
 	return { Ok = true, Id = owned.Id, Stars = owned.Stars, Copies = owned.Copies, Credits = credits }
 end
 
--- Makes an owned Voidkin the lead: { Ok, Id }. A worker is refused: one role at a time (docs/design.md, "Roles").
-function Collection.SetLead(data: Profile.Data, id: any): { [string]: any }
+-- Makes an owned Voidkin the lead: { Ok, Id, Left }. One role at a time (docs/design.md, "Roles"): a stationed one is
+-- recalled from its bay in the same step, after the bays have made what they made up to `now`, and Left is the bay it
+-- left (research's ruling on the stationed page, 2026-11-17, tier 2). The old lead goes home idle. One transaction, so a
+-- repeat or a cut never leaves it stationed and leading at once.
+function Collection.SetLead(data: Profile.Data, id: any, now: number?): { [string]: any }
 	local owned = if type(id) == "string" then data.Voidkin[id] else nil
 	if not owned then
 		return { Ok = false, Error = Collection.Unknown }
 	end
+	local left: number? = nil
 	if Profile.RoleOf(data, owned.Id) == "Worker" then
-		return { Ok = false, Error = Collection.Working }
+		if now == nil then
+			return { Ok = false, Error = Collection.Working } -- no clock to settle the bays by
+		end
+		Breaker.Advance(data, now) -- its bay made what it made up to now
+		for index, bay in data.Base.Bays do
+			if bay.Worker == owned.Id then
+				bay.Worker = ""
+				left = left or index
+			end
+		end
 	end
 	data.Roles.Lead = owned.Id
-	return { Ok = true, Id = owned.Id }
+	return { Ok = true, Id = owned.Id, Left = left }
 end
 
 -- Marks an owned Voidkin a favourite, or locks it, or takes either off: { Ok, Id, Favourite, Locked }. Neither changes
@@ -213,8 +227,8 @@ end
 --   SetNickname { Voidkin, Name }   "" takes it off; the server's filter passes it first
 --   SetShowcase { Voidkin }   the one the showcase at the gate stands (TR22); "" for the strongest
 Collection.Actions = {
-	SetLead = function(data: Profile.Data, args: any): { [string]: any }
-		return Collection.SetLead(data, voidkinArg(args))
+	SetLead = function(data: Profile.Data, args: any, now: number): { [string]: any }
+		return Collection.SetLead(data, voidkinArg(args), now)
 	end,
 	SpendCopies = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SpendCopies(data, voidkinArg(args))

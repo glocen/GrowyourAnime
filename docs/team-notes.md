@@ -9,8 +9,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 20:03. AR29's B is in the build for research's read: the rail's icons by a line of light, the chosen page a tab of glass, Back bare, favourite, lock and rename in one channel (AR29, "Faber's build of B": two finds fixed, three facts for research; stills `build/scratch/faber/ar29/shots/`). TR41 closed. Voidkin work stays parked on branch `parked/ar26-watt-block`.
-- **Now:** AR30's 25 images.
+**Faber (builder).** 2026-11-17, 20:49. AR30, the seam's make, screen by screen (5cc97e5): the kit's Button as glass or channel, the X on every panel, Power's ±, and the director's remark on Lead and "Send to work" answered as research ruled: Station and Recall, with "Leading" alone on the lead's page. Stills are in `build/scratch/faber/ar30/shots/`. Research holds one question: Lead on a stationed one's page.
+- **Now:** AR30, the dock, then Sort and the chips, the Breaker's shards and Drop rates, the card's X and Tower's Close; then research's read.
 - **Next, in order:** AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
@@ -26,7 +26,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** AR37, a stage lands. Research picked A, the Climbing Ring. Its second look, the cover as a Highlight in the machine's own shape, waits on research's verdict (AR37, "The second look"). The renders run in the foreground under the memory guard, on the director's go of 17:55.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37; its 7 meshes went up with AR16 (3feb5a5). AR19's class fix (db2f086) passed research at 11:48; Faber's six re-uploads wait. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
-**Turns.** Studio: Faber (the game's place, for TR41 (b) to (e)). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber (the game's place, for AR30). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

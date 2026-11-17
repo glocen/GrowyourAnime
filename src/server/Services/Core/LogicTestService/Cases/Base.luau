@@ -233,13 +233,52 @@ return {
 			t.Equal("the lead can't work", act(data, "SetWorker", { Bay = 1, Voidkin = rook }, T0 + 50).Error, Base.Leading)
 			local watt = Collection.Uncover(data, "watt", T0 + 50).Id
 			t.Check("Watt works", act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 50).Ok == true)
-			t.Equal("a worker can't lead", act(data, "SetLead", { Voidkin = watt }, T0 + 50).Error, Collection.Working)
 			data.Base.Bays[2] = { Worker = "", Level = 1 } -- a second bay opened
 			t.Check("moved, not doubled", act(data, "SetWorker", { Bay = 2, Voidkin = watt }, T0 + 50).Ok == true)
 			t.Check("bay 1 emptied", data.Base.Bays[1].Worker == "" and data.Base.Bays[2].Worker == watt)
 			t.Check("emptied by hand", act(data, "SetWorker", { Bay = 2, Voidkin = "" }, T0 + 50).Ok == true)
 			t.Check("then Watt can lead", act(data, "SetLead", { Voidkin = watt }, T0 + 50).Ok == true and data.Roles.Lead == watt)
 			t.Equal("Rook rests", Profile.RoleOf(data, rook), "Resting")
+		end,
+	},
+	{
+		Name = "Base: Lead on a stationed Voidkin recalls it and makes it lead in one step, settled first, never stationed and leading at once",
+		Run = function(t: any)
+			-- Research's ruling on the stationed page (2026-11-17, tier 2): the old lead goes home idle; a repeat of the same
+			-- request changes nothing more; the bays made what they made up to the moment it left, as a Recall would have.
+			local function stationed(): (Profile.Data, string, string)
+				local data, rook = withRook()
+				data.Base.Charge = 0
+				local watt = Collection.Uncover(data, "watt", T0).Id
+				data.Base.Bays[2] = { Worker = "", Level = 1 }
+				act(data, "SetWorker", { Bay = 2, Voidkin = watt }, T0)
+				return data, rook, watt
+			end
+			local data, rook, watt = stationed()
+			local answer = act(data, "SetLead", { Voidkin = watt }, T0 + 600, "lead-1")
+			t.Check("taken, saying the bay it left", answer.Ok == true and answer.Left == 2, `{answer.Ok} {answer.Left}`)
+			t.Check("Watt leads, its bay empty", data.Roles.Lead == watt and data.Base.Bays[2].Worker == "")
+			t.Equal("Rook home, idle", Profile.RoleOf(data, rook), "Resting")
+			local function once(): boolean
+				local leading, working = 0, 0
+				for _, bay in data.Base.Bays do
+					working += if bay.Worker == data.Roles.Lead then 1 else 0
+				end
+				leading = if data.Roles.Lead ~= "" then 1 else 0
+				return leading == 1 and working == 0
+			end
+			t.Check("never stationed and leading at once", once())
+			local _, changed = act(data, "SetLead", { Voidkin = watt }, T0 + 700, "lead-1")
+			t.Check("the same request again changes nothing", not changed and data.Roles.Lead == watt and data.Base.Bays[2].Worker == "" and once())
+			-- Settled as a Recall: the same moment, the same charge.
+			local recalled = stationed()
+			act(recalled, "SetWorker", { Bay = 2, Voidkin = "" }, T0 + 600)
+			t.Check("the bays made what a Recall would have", recalled.Base.Charge > 0 and math.abs(recalled.Base.Charge - data.Base.Charge) < 1e-9,
+				string.format("%.4f against %.4f", data.Base.Charge, recalled.Base.Charge))
+			-- With no clock to settle by (a direct call), a worker stays a worker.
+			local still, _, held = stationed()
+			t.Equal("no clock: refused", Collection.SetLead(still, held).Error, Collection.Working)
+			t.Check("and nothing moved", still.Base.Bays[2].Worker == held)
 		end,
 	},
 	{

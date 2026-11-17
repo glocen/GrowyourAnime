@@ -448,7 +448,7 @@ local function actions(parent: Instance, view: Profile.View, owned: Profile.Owne
 	local function leadState()
 		local now = workspace:GetServerTimeNow()
 		local why = if leading then nil else Hud.LeadReason(at, on.Healing()[owned.Id], now, player:GetAttribute("InCombat") == true)
-		Button.Set(lead, { Selected = leading, Disabled = why or false })
+		Button.Set(lead, { Selected = leading, Disabled = why or false, Note = Hud.LeadNote(at) or false })
 	end
 	leadState()
 	table.insert(tickers, leadState)

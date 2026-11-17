@@ -188,12 +188,11 @@ function Hud.Says(label: string, disabled: string?, pending: boolean): string
 	return label
 end
 
--- Why a Voidkin can't be made the lead, or nil when it can: its role in the save ("Lead", "Worker", or "").
+-- Why a Voidkin can't be made the lead, or nil when it can: its role ("Lead", "Bay 2" or ""). A stationed one can: its
+-- Lead recalls it in the same step (Collection.SetLead; research's ruling, 2026-11-17), and says so (Hud.LeadNote).
 function Hud.LeadReason(role: string, healingUntil: number?, now: number?, inCombat: boolean?): string?
 	if role == "Lead" then
 		return "Leading"
-	elseif role ~= "" then
-		return "Stationed"
 	elseif inCombat then
 		return "In a fight" -- the lead never changes in a fight (TR12)
 	elseif healingUntil and now and healingUntil > now then
@@ -217,6 +216,12 @@ function Hud.WorkReason(role: string, bays: { Profile.Bay }): (string?, number?)
 		end
 	end
 	return if #bays == 0 then "No bay open yet" else "No bay free", nil
+end
+
+-- The line under a pressable Lead: "Leaves Bay 2" on a stationed one (role "Bay 2"), else nil.
+function Hud.LeadNote(role: string): string?
+	local bay = string.match(role, "^Bay (%d+)$")
+	return if bay then `Leaves Bay {bay}` else nil
 end
 
 -- Seconds as minutes and seconds, rounded up: "1:05", "0:09".
@@ -265,13 +270,14 @@ export type Other = { Role: string, Healing: number? }
 -- What a fallen lead's card offers (docs/test-requests.md, TR12 and TR19), or nil while the lead stands: "Send" while
 -- another Voidkin could lead now (the next lead, whom Hud.LeadReason refuses nothing but the fight the fall just ended),
 -- else "Home" while the player is out in a ground (`away`): the dock's Base tile takes the pip, since home is where the
--- lead waits; else nothing, the player already home. A worker can't lead, so a Voidkin at work never makes it "Send".
+-- lead waits; else nothing, the player already home. A Voidkin at work never makes it "Send": the card sends one from
+-- home, never out of a bay (its Lead on its own page can, Collection.SetLead).
 function Hud.AfterFall(down: boolean, others: { Other }, now: number, away: boolean): ("Send" | "Home")?
 	if not down then
 		return nil
 	end
 	for _, other in others do
-		if Hud.LeadReason(other.Role, other.Healing, now, false) == nil then
+		if (other.Role == "" or other.Role == "Lead") and Hud.LeadReason(other.Role, other.Healing, now, false) == nil then
 			return "Send"
 		end
 	end

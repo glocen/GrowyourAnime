@@ -768,8 +768,8 @@ function VoidkinCases.Cases(given: Given): { any }
 					return labelOf(button("Work")) == want
 				end)
 			end
-			local function says(want: string): (boolean, string)
-				local work = button("Work")
+			local function says(want: string, called: string?): (boolean, string)
+				local work = button(called or "Work")
 				local reason = work and work:FindFirstChild("Reason") :: TextLabel?
 				local said = if reason and reason.Visible then reason.Text else "none"
 				return said == want and reason ~= nil and reason.TextFits, said
@@ -786,12 +786,18 @@ function VoidkinCases.Cases(given: Given): { any }
 				t.Check("Station", Button.Press(button("Work") :: TextButton) and role(free, `Bay {empty}`))
 				t.Check("and its button recalls it", shows("Recall"), labelOf(button("Work")))
 				t.Check(`Recall says its bay, Bay {empty}`, says(`Bay {empty}`))
+				local itsLead = button("Lead")
+				t.Check(`stationed, its Lead still pressable, saying "Leaves Bay {empty}"`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(`Leaves Bay {empty}`, "Lead")),
+					if itsLead then Button.State(itsLead) else "none")
 				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(free, ""))
 			elseif worker then
 				VoidkinScreen.Choose(worker)
 				pair("a stationed one")
 				t.Check("every bay busy: a stationed one reads Recall", labelOf(button("Work")) == "Recall", labelOf(button("Work")))
 				t.Check(`and says its bay, Bay {working}`, says(`Bay {working}`))
+				local itsLead = button("Lead")
+				t.Check(`its Lead still pressable, saying "Leaves Bay {working}"`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(`Leaves Bay {working}`, "Lead")),
+					if itsLead then Button.State(itsLead) else "none")
 				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(worker, ""))
 				t.Check("and its button stations it", shows("Station"), labelOf(button("Work")))
 				t.Check("Station, to the bay it left", Button.Press(button("Work") :: TextButton) and role(worker, `Bay {working}`))

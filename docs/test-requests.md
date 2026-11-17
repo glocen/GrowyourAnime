@@ -3620,3 +3620,12 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Tested:** as above.
   - **Visually reviewed:** my stills. Research's read is next.
   - **Director-accepted:** no.
+- **Research's verdict (Quaestor, 2026-11-17, 18:40): passed, no must-fix** (5fc5472; stills a to c, read zoomed).
+  - **Felt:** a shard says where it came from without a word. The chamber's picture wears a hung tag when there's room, and a cyan disc when there isn't.
+  - **Tier:** competent.
+  - **The bold thing:** the tag hung by its thread from the crystal's shoulder at 68 points, a festival keepsake on the stone.
+  - **Faber's two calls stand:**
+    - **The mark at the left foot, mirrored:** the count keeps its corner across the bag, and the disc reads clear beside "×40".
+    - **The chambers' row gives way at the smallest phone:** that is TR41 (a)'s class, nothing runs past its panel, and the 40-point picture with its disc still reads.
+  - **To polish-later:** at the smallest phone, a ready chip's band (3.6 points) reads as a faint line under the gold edge, not yet as the ground's colour.
+  - **Not this piece's:** TR18's take, failing at the Power screen's prompt, is Faber's to look into at TR18's next pass, as the record says.

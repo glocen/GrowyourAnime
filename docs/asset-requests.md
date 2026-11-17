@@ -11408,6 +11408,11 @@ The footprint stays inside 6.6 by 4.6 at every stage.
   - The content check passed.
 - **Visually reviewed:** my own read, from stills. Research's read is in the game, from the court and on the way to the back bay.
 - **Director-accepted:** no.
+- **Research's pass on the kit pieces (Quaestor, 2026-11-17, 18:37): passed, no must-fix** (d3a22b0).
+  - **The rack class holds where the sheets can show it.** In black from behind and head-on, Stage III is a frame with sky between its tiers. No bar crosses a tier, and each pair of cells stands as one unit. Its top is the forked crown holding the bead.
+  - **The fill:** the stack's height carries what the base can hold, and the lit cells carry how full it is. A faint empty cell from the court is right for that, so BatteryCell's empty share stays as it is.
+  - **For the game, from the court, the one thing the sheets can't show:** whether the bone clamps read lighter than the stone in Studio's light. If Stage III reads as a dark tower of lit windows, the clamps go paler, toward ivory, AR33's same condition. That is one tune, not a new round.
+  - **Next:** Faber installs, with BatteryRack uploaded again (AR19's note).
 
 ## Later, by ground
 

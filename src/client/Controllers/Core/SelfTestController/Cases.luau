@@ -12,6 +12,8 @@ local SoundService = game:GetService("SoundService")
 
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
+local Stats = require(Shared.Rules.Stats)
+local StatsConfig = require(Shared.Config.Stats)
 local Tune = require(Shared.Util.Tune)
 local TestInput = require(Shared.Util.TestInput)
 local Actions = require(Shared.Definitions.Actions)
@@ -193,6 +195,21 @@ local function waitFor(t: any, seconds: number, ok: () -> boolean): boolean
 		t.Wait(0.1)
 	end
 	return ok()
+end
+
+-- Before a test Shade spawns SHADE_AHEAD studs ahead of the avatar: the camera turned to look the avatar's way, as a
+-- player's does. The lead takes on only what's in the camera's view (TR24's fix 2, Combat.Lead.View), and a fresh
+-- playtest's camera can face anywhere (a first "Fight:" run's looked 58 degrees off, and the lead stood idle by its Shade
+-- for 20 s).
+local function lookAhead(t: any)
+	local camera = workspace.CurrentCamera
+	local root = t.Root()
+	local ahead = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+	if camera and ahead.Magnitude > 1e-3 then
+		local back = math.max(8, (camera.CFrame.Position - root.Position).Magnitude)
+		camera.CFrame = CFrame.lookAt(root.Position - ahead.Unit * back + Vector3.new(0, 4, 0), root.Position + ahead.Unit * SHADE_AHEAD)
+		t.Wait(0.5) -- the view's report reaches the server (ViewController, Net "View")
+	end
 end
 
 -- A marker this client may not have: the avatar on the test pad is far from the map, so the server streams the place in
@@ -442,6 +459,7 @@ local function swingsOf(t: any, def: string): ({ string }?, { string }?)
 		t.Check("the lead is in the world", false)
 		return nil, nil
 	end
+	lookAhead(t)
 	local spawned = t.Server("FightSpawn", def, level + SHADE_TOUGHER, SHADE_AHEAD)
 	t.Check(`the {def} spawns`, type(spawned) == "table" and spawned.Ok == true)
 	if type(spawned) ~= "table" or spawned.Ok ~= true then
@@ -1705,12 +1723,12 @@ local cases = {
 			t.Reset()
 			t.Wait(DROP_BACK)
 			t.Server("Tune", RESPAWN_PATH, wait)
-			-- Health carries (TR12): out of the fight it heals its Regen, a little at a time; then whole for the next case.
+			-- Health carries (TR12): out of the fight it heals its Regen, a burst every 8 s (TR40); then whole for the next case.
 			local lead = myLead()
 			local was = if lead then lead:GetAttribute("Health") :: number else 0
 			local most = if lead then lead:GetAttribute("MaxHealth") :: number else 0
 			if lead and was < most then
-				t.Check("its Regen heals it out of the fight", waitFor(t, 3, function(): boolean
+				t.Check("its Regen heals it out of the fight", waitFor(t, StatsConfig.Regen.Every + 0.5, function(): boolean
 					local now = myLead()
 					return now ~= nil and (now:GetAttribute("Health") :: number) > was
 				end))
@@ -2059,6 +2077,7 @@ local cases = {
 			if type(level) ~= "number" then
 				return
 			end
+			lookAhead(t)
 			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true, tostring(type(spawned) == "table" and spawned.Error))
 			if type(spawned) ~= "table" or spawned.Ok ~= true then
@@ -2128,6 +2147,7 @@ local cases = {
 					return
 				end
 				local body = lead :: Model
+				lookAhead(t)
 				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
 				t.Check(`{def}: the Shade spawns`, type(spawned) == "table" and spawned.Ok == true)
 				local function shade(): BasePart?
@@ -2451,6 +2471,7 @@ local cases = {
 						end)
 					end
 				end)
+				lookAhead(t)
 				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
 				t.Check("pip: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
 				waitFor(t, SHADE_TIMEOUT, function(): boolean
@@ -2486,6 +2507,7 @@ local cases = {
 						end
 					end
 				end)
+				lookAhead(t)
 				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
 				t.Check("lyric: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
 				waitFor(t, SHADE_TIMEOUT, function(): boolean
@@ -2504,6 +2526,7 @@ local cases = {
 						table.insert(landed, hit)
 					end
 				end)
+				lookAhead(t)
 				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
 				t.Check("kirra: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
 				local shadeId = if type(spawned) == "table" then spawned.Id else nil
@@ -2572,6 +2595,7 @@ local cases = {
 			if type(level) ~= "number" then
 				return
 			end
+			lookAhead(t)
 			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true, tostring(type(spawned) == "table" and spawned.Error))
 			if type(spawned) ~= "table" or spawned.Ok ~= true then
@@ -2787,6 +2811,7 @@ local cases = {
 			end
 			-- one Shade beaten by the lead: its model and the moment this client sees it fall
 			local function fallen(): (Model?, number)
+				lookAhead(t)
 				local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 				if type(spawned) ~= "table" or spawned.Ok ~= true then
 					return nil, 0
@@ -2854,6 +2879,7 @@ local cases = {
 			if type(level) ~= "number" then
 				return
 			end
+			lookAhead(t)
 			local spawned = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
 			t.Check("the elite spawns", type(spawned) == "table" and spawned.Ok == true, tostring(type(spawned) == "table" and spawned.Error))
 			if type(spawned) ~= "table" or spawned.Ok ~= true then
@@ -2945,6 +2971,7 @@ local cases = {
 				t.Check("the lead is in the world", false)
 				return
 			end
+			lookAhead(t)
 			local spawned = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
 			t.Check("the elite spawns", type(spawned) == "table" and spawned.Ok == true)
 			if type(spawned) ~= "table" or spawned.Ok ~= true then
@@ -3316,9 +3343,6 @@ local cases = {
 			mark.Position = r.Position + ahead * 6 + right * 1.5
 			mark.Parent = workspace
 			local spot = Vector3.new(mark.Position.X, floorY, mark.Position.Z)
-			local running = Effects.Haymaker(action.Beats, lead, function(): BasePart?
-				return mark
-			end)
 			local function shown(name: string): { BasePart }
 				local found = {}
 				local home = workspace:FindFirstChild("NL_Effects")
@@ -3329,6 +3353,15 @@ local cases = {
 				end
 				return found
 			end
+			-- Only its own stamp is read: in a full run the lead's real Haymaker from an earlier case's fight still lay on the
+			-- floor (4 bars before this one formed). The lead out of any fight, and the floor cleared first.
+			t.Server("LeadCalm")
+			waitFor(t, 5, function(): boolean
+				return #shown("NL_StampPost") + #shown("NL_StampRail") == 0
+			end)
+			local running = Effects.Haymaker(action.Beats, lead, function(): BasePart?
+				return mark
+			end)
 			-- The square `at` frames from Strike: its count, its foot over the floor (the lower bar's centre), its width
 			-- (post to post), its height (bar to bar), its centre on the floor, and whether it faces the camera.
 			type Square = { Count: number, Foot: number, Wide: number, Tall: number, Centre: Vector3, Faces: boolean }
@@ -4301,6 +4334,65 @@ local cases = {
 		end,
 	},
 	{
+		-- TR40, Regen in bursts (the director, 2026-11-17): a lead under full heals one burst every Config.Stats.Regen.Every
+		-- seconds, its size Rules.Stats.Burst of its Regen, with the heal's green number on its owner's screen and a pop at its
+		-- chest (Effects.RegenPop); at full, none, and nothing shows.
+		Name = "Fight: TR40, a lead's Regen in bursts: one every 8 s at its size, a green number and a pop, and none at full",
+		Run = function(t: any)
+			local lead = myLead()
+			local view = ProfileController.Get()
+			t.Check("the lead is out", lead ~= nil and view ~= nil)
+			if lead == nil or view == nil then
+				return
+			end
+			local owned = view.Voidkin[view.Roles.Lead]
+			local block = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
+			local size = Stats.Burst(block.Regen)
+			local every = StatsConfig.Regen.Every
+			local root = lead:FindFirstChild("HumanoidRootPart") :: BasePart
+			local bursts: { { At: number, Amount: number } } = {}
+			local onHeal = Net.Client.On("Heal", function(heal: any)
+				if type(heal) == "table" and heal.T == lead and heal.Regen == true and type(heal.Amount) == "number" then
+					table.insert(bursts, { At = os.clock(), Amount = heal.Amount })
+				end
+			end)
+			local popped, green = false, false
+			local watch = RunService.RenderStepped:Connect(function()
+				local home = workspace:FindFirstChild("NL_Effects")
+				local pop = if home then home:FindFirstChild("RegenPop") else nil
+				if pop and pop:IsA("BasePart") and (pop.Position - root.Position).Magnitude < 2 then
+					popped = true
+				end
+				local keyed = Effects.Counting[root]
+				local number = if keyed then keyed.regen else nil
+				if number and number.Style == "Heal" then
+					green = true
+				end
+			end)
+			t.Server("FightHealth", 0.5)
+			-- Two bursts, 8 s apart, each its size: the timer runs from the summon, so the first may come at any moment.
+			local two = waitFor(t, every * 2 + 1, function(): boolean
+				return #bursts >= 2
+			end)
+			t.Check("two bursts while under full", two, `{#bursts}`)
+			if #bursts >= 2 then
+				t.Near("8 s apart", bursts[2].At - bursts[1].At, every, 0.35)
+				t.Near("each its Regen's burst: the rate times 8 times a half", bursts[1].Amount, size, 0.05)
+			end
+			t.Check("a pop at its chest", popped)
+			t.Check("its green number, the heal's own", green)
+			-- At full: nothing for a whole beat.
+			t.Server("FightHealth", 1)
+			t.Wait(0.3)
+			local count = #bursts
+			popped = false
+			t.Wait(every + 0.5)
+			t.Check("at full, no burst and no pop", #bursts == count and not popped, `{#bursts - count} bursts`)
+			onHeal:Disconnect()
+			watch:Disconnect()
+		end,
+	},
+	{
 		Name = "Fight: the Held Note lands on each Shade in its cone, heals her, and never holds her",
 		Run = function(t: any)
 			-- docs/asset-requests.md, AR4, section 9: five touches, one a crest, each on every Shade inside the cone and a heal
@@ -4331,7 +4423,7 @@ local cases = {
 				end
 			end)
 			local onHeal = Net.Client.On("Heal", function(heal: any)
-				if type(heal) == "table" and heal.T == lead and type(heal.Amount) == "number" then
+				if type(heal) == "table" and heal.T == lead and heal.Regen ~= true and type(heal.Amount) == "number" then -- her heals, not her Regen's bursts (TR40)
 					heals += 1
 					gained += heal.Amount
 				end
@@ -5611,6 +5703,7 @@ local cases = {
 			if lead == nil or type(level) ~= "number" then
 				return
 			end
+			lookAhead(t)
 			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 			t.Check("the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
 			if type(spawned) ~= "table" or spawned.Ok ~= true then
@@ -5653,6 +5746,7 @@ local cases = {
 			end
 			-- C: an elite's card wears its heavier frame, the word Elite on it; switched off, the plain card. A Shade's, none.
 			t.Server("Tune", "Hud.Boss.Elite", true)
+			lookAhead(t)
 			local elite = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
 			t.Check("the elite spawns", type(elite) == "table" and elite.Ok == true)
 			if type(elite) == "table" and elite.Ok == true then
@@ -5687,6 +5781,7 @@ local cases = {
 				t.Server("Tune", "Hud.Boss.Elite", wasElite)
 				t.Server("FightSpawn") -- clears it
 			end
+			lookAhead(t)
 			local plain = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 			if type(plain) == "table" and plain.Ok == true then
 				local met = waitFor(t, SHADE_TIMEOUT, function(): boolean
@@ -5858,6 +5953,7 @@ local cases = {
 				return
 			end
 			local parts = HudController.Parts()
+			lookAhead(t)
 			local spawned = t.Server("FightSpawn", "brawler", level, SHADE_AHEAD)
 			local gave = t.Server("BaseGive", "named_watt", 1)
 			local shown = waitFor(t, SHADE_TIMEOUT, function(): boolean

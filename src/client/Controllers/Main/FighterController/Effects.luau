@@ -1139,6 +1139,31 @@ function Effects.HealRing(root: BasePart)
 	end)
 end
 
+-- A Regen burst on `root`'s body (TR40, the block; Config.Effects.RegenPop): a ball of the heal number's green at the
+-- chest, swelling fast and fading out.
+function Effects.RegenPop(root: BasePart)
+	local pop = EffectsConfig.RegenPop
+	local ball = part(UIKit.Numbers.Heal, Enum.Material.Neon)
+	ball.Name = "RegenPop"
+	ball.Shape = Enum.PartType.Ball
+	local function lay(age: number): boolean
+		local frames = age / FRAME
+		if frames > pop.Frames or root.Parent == nil then
+			return false
+		end
+		local u = frames / pop.Frames
+		local across = lerp(pop.From, pop.To, easeOut(u))
+		ball.Size = Vector3.new(across, across, across)
+		ball.CFrame = CFrame.new(root.Position + Vector3.new(0, pop.Height, 0))
+		ball.Transparency = lerp(1 - pop.Alpha, 1, u)
+		return true
+	end
+	lay(0)
+	run(lay, function()
+		ball:Destroy()
+	end)
+end
+
 -- Lyric's Held Note (LyricHeldNote), AR4's art sheet (Config.Effects.HeldNote): the flash swelling in her rings, then a
 -- crest thrown across the cone on every beat that hits, each living until the next is halfway out, so one is always on
 -- its way; the last runs out alone after the Release. A body the server strikes takes its hit when its crest reaches it

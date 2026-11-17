@@ -28,6 +28,8 @@ local ShardConfig = require(Shared.Config.Shards)
 local RevealArt = require(Shared.Config.RevealArt)
 local VoidkinDefs = require(Shared.Definitions.Voidkin)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
+local Net = require(Shared.Net)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -1123,6 +1125,102 @@ return function(given: Given): { any }
 				end
 				await("End")
 				Screen.Close()
+				step:Destroy()
+			end,
+		},
+		{
+			Name = "Take: TR40, a Regen burst in a real fight at Pack 1, held for a phone still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- The lead walks through the Festival Door to Pack 1 as a player's does and fights it; under full (the lead set at
+				-- 60%, so a burst has room), the next burst's number and pop are held still a few frames in (Effects.TimeScale 0)
+				-- and ReplicatedStorage.NL_TakeStep reads "Burst" until the driver moves it to "End". Then all as it was.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local share = t.Server("Tune", "Stats.Regen.Share")
+				-- Pack 1 brought back again and again levels the lead: its level and experience are put back after.
+				local data = t.Server("Data")
+				local owned = data.Voidkin[data.Roles.Lead]
+				local level, xp = owned.Level, owned.Xp
+				take(t, function(kit: Take)
+					local player = Players.LocalPlayer
+					local up = Vector3.new(0, R6_ROOT_HEIGHT, 0)
+					t.Server("LeadHeal")
+					local old = player.Character
+					t.Server("Respawn")
+					t.Check("the avatar arrives on its plot", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
+						local character = player.Character
+						local humanoid = if character and character ~= old then Parts.Humanoid(character) else nil
+						return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
+					end))
+					t.Wait(WorldConfig.Arrive + 1)
+					local plot = player:GetAttribute("Plot")
+					local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+					t.Check("the plot has its Festival Door", door ~= nil)
+					local pack: any = nil
+					if door then
+						kit.WalkTo(Markers.At(door).Position - Markers.At(door).LookVector * DOOR_RUN + up)
+						t.Check("through it", walkThrough(t, door, false))
+						t.Wait(1)
+						for _, row in t.Server("Packs") do
+							if row.Name == "Pack 1" then
+								pack = row
+							end
+						end
+					end
+					t.Check("Pack 1 stands", pack ~= nil and pack.Standing > 0)
+					local lead = myLead()
+					if pack and lead then
+						-- Off to the side and back from a pack's stand, as a player stands to watch: the camera behind the avatar sees
+						-- the lead beside it, not through it (a stand on the pack's line hid the lead and its number behind the avatar).
+						t.Check("the avatar walks to Pack 1", kit.WalkTo(pack.At + up + Vector3.new(8, 0, PACK_STAND + 6)))
+						t.Check("the lead fights", waitFor(t, 15, function(): boolean
+							return lead:GetAttribute("Target") ~= "" or (lead:GetAttribute("Health") :: number) < (lead:GetAttribute("MaxHealth") :: number)
+						end))
+						-- Held from the Heal itself, a few frames in (the pop lives 10 frames, a poll misses it), and only a burst
+						-- that lands while the lead has a target: Pack 1 is brought back if it falls first.
+						local held = false
+						local onHeal = Net.Client.On("Heal", function(heal: any)
+							if not held and type(heal) == "table" and heal.T == lead and heal.Regen == true and lead:GetAttribute("Target") ~= "" then
+								held = true
+								task.delay(4 / 60, function()
+									Effects.TimeScale = 0
+									step.Value = "Burst"
+								end)
+							end
+						end)
+						t.Server("FightHealth", 0.6, true)
+						local deadline = os.clock() + 60
+						while step.Value ~= "Burst" and os.clock() < deadline do
+							for _, row in t.Server("Packs") do
+								if row.Name == "Pack 1" and row.Standing == 0 then
+									t.Server("PackBack", "Pack 1")
+								end
+							end
+							if (lead:GetAttribute("Health") :: number) >= (lead:GetAttribute("MaxHealth") :: number) * 0.95 then
+								t.Server("FightHealth", 0.6, true)
+							end
+							t.Wait(0.5)
+						end
+						onHeal:Disconnect()
+						t.Check("a burst comes in the fight", step.Value == "Burst")
+						if step.Value == "Burst" then
+							-- No burst while it's held: a pop made during the hold never ages, so they'd pile up on the one shown.
+							t.Server("Tune", "Stats.Regen.Share", 0)
+							waitFor(t, 300, function(): boolean
+								return step.Value == "End"
+							end)
+						end
+					end
+				end)
+				t.Server("Tune", "Stats.Regen.Share", share)
+				t.Server("LeadLevel", level, xp)
+				Effects.TimeScale = 1
+				t.Server("LeadHeal")
+				t.Reset()
 				step:Destroy()
 			end,
 		},

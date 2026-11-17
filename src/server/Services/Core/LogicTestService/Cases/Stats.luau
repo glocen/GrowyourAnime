@@ -197,7 +197,7 @@ return {
 			t.Check("health: 3 a Strength, 5 an Endurance", near(block.Health, 3 * 67 + 5 * 48), `{block.Health}`)
 			t.Check("attack: Strength's 1 and its Main's 1 more", near(block.Attack, 67 + 67), `{block.Attack}`)
 			t.Check("defence: 1 an Endurance", near(block.Defence, 48), `{block.Defence}`)
-			t.Check("regen: the level's 4, and 0.02 an Endurance", near(block.Regen, StatsConfig.Regen.Base + 0.02 * 48), `{block.Regen}`)
+			t.Check("regen: the level's Base, and 0.02 an Endurance", near(block.Regen, StatsConfig.Regen.Base + 0.02 * 48), `{block.Regen}`)
 			t.Check("Strength's Hit and Penetration", near(block.Hit, 0.4 * 67) and near(block.Penetration, 0.4 * 67), `{block.Hit}, {block.Penetration}`)
 			t.Check("no Critical or Dodge: only an Assassin's Main gives them", block.Critical == 0 and block.Dodge == 0)
 			t.Check("Endurance's Block and resists", near(block.Block, 0.3 * 48) and near(block.CriticalResist, 1.5 * 48) and near(block.ElementalResist, 48))

@@ -6,7 +6,7 @@
 --   Battle Attributes  Core; Offence and Defence paired on each row, so what counters what reads without a word; Sustain
 -- A plain list [the director, 2026-11-15, night: "dont put any description for stats", then "Plain list, no taps"]: each
 -- stat its name and its one total, a zero shown as 0, never hidden, and nothing opens. What each kind of number shows:
---   points             the number, grouped, no decimals (Regen to a tenth a second, Speed in studs a second)
+--   points             the number, grouped, no decimals (Regen as one burst's size, Sheet.Burst; Speed in studs a second)
 --   a chance           Hit, Dodge, Critical, Block: its chance against an even foe, a percent and nothing else
 --   a rating's effect  Penetration, Critical Resist, Elemental Resist: what it does to an even foe, a percent, no words
 --   a percent          Critical Damage, Critical Immunity, Lifesteal, Damage Bonus, Damage Reduction, as it is
@@ -96,15 +96,22 @@ function Sheet.Percent(share: number): string
 	return (said:gsub("%.0$", "")) .. "%"
 end
 
+-- Regen's number as it reads (TR40): one burst's size (Rules.Stats.Burst) from a rate a second, to a tenth under 10 and
+-- whole from there. The block keeps the rate; only what's shown is the burst.
+function Sheet.Burst(regen: number): string
+	local size = Stats.Burst(regen)
+	return if math.abs(size) < 10 then string.format("%.1f", size) else Hud.Digits(size)
+end
+
 -- One total as its stat is read: points, a share as a percent (Critical Damage with its +; a rating's `value` is its
--- share, Sheet.Odds), Regen to a tenth a second, Speed in studs a second.
+-- share, Sheet.Odds), Regen as one burst and how often it comes, Speed in studs a second.
 local function amount(stat: string, value: number): string
 	if stat == "CriticalDamage" then
 		return `+{Sheet.Percent(value)}`
 	elseif PERCENTS[stat] or Sheet.Rated[stat] then
 		return Sheet.Percent(value)
 	elseif stat == "Regen" then
-		return `{string.format("%.1f", value)} a second`
+		return `{Sheet.Burst(value)} every {Hud.Digits(StatsConfig.Regen.Every)} s`
 	elseif stat == "Speed" then
 		return `{if value == math.floor(value) then tostring(value) else string.format("%.1f", value)} studs a second`
 	end
@@ -112,9 +119,11 @@ local function amount(stat: string, value: number): string
 end
 
 -- A total as a card writes it beside another (Rules.Bag's cards): as the sheet reads it, a rating's from its share, but
--- Regen and Speed without their units, so a row fits a card's half.
+-- Regen (its burst) and Speed without their units, so a row fits a card's half.
 function Sheet.Amount(stat: string, value: number): string
-	if stat == "Regen" or stat == "Speed" then
+	if stat == "Regen" then
+		return Sheet.Burst(value)
+	elseif stat == "Speed" then
 		return if value == math.floor(value) then tostring(value) else string.format("%.1f", value)
 	end
 	return amount(stat, value)
@@ -127,12 +136,14 @@ function Sheet.Change(stat: string, change: number): string
 		return "–"
 	end
 	local size = math.abs(change)
-	local said = if PERCENTS[stat] or Sheet.Rated[stat] or stat == "CriticalDamage" then Sheet.Percent(size) elseif stat == "Regen" or stat == "Speed" then string.format("%.1f", size) else Hud.Digits(size)
+	local said = if PERCENTS[stat] or Sheet.Rated[stat] or stat == "CriticalDamage" then Sheet.Percent(size) elseif stat == "Regen" then Sheet.Burst(size) elseif stat == "Speed" then string.format("%.1f", size) else Hud.Digits(size)
 	-- A change finer than its usual digits gets a finer one, so a change never reads as none: points under a half to a
 	-- tenth; a percent under a twentieth of one to a hundredth, "<0.01%" under that (a rating's gain against a high
 	-- level's even foe: a +0% in the gain's green on TR24's phone run).
 	if said == "0" then
 		said = string.format("%.1f", size)
+	elseif said == "0.0" then
+		said = string.format("%.2f", if stat == "Regen" then Stats.Burst(size) else size)
 	elseif said == "0%" then
 		said = if size * 100 >= 0.005 then string.format("%.2f%%", size * 100) else "<0.01%"
 	end

@@ -1137,13 +1137,21 @@ local function onHit(hit: any)
 end
 
 -- A hit's heal (Actions.Hit.Heal): its look round the healed body (HEALS), and its number over it on the screens of the
--- healer's player and the healed's, one counting number for the press.
+-- healer's player and the healed's, one counting number for the press. A Regen burst (Regen, TR40): its pop on every
+-- screen, and its green number on its owner's.
 local function onHeal(heal: any)
 	if type(heal) ~= "table" or type(heal.Amount) ~= "number" then
 		return
 	end
 	local healer, healed = views[heal.A], views[heal.T]
 	if healed == nil then
+		return
+	end
+	if heal.Regen == true then
+		Effects.RegenPop(healed.Root)
+		if isMine(healed) and heal.Amount >= 0.5 then
+			Effects.Number(healed.Root, "regen", heal.Amount, { Style = "Heal" }, Combat.Numbers)
+		end
 		return
 	end
 	local look = if healer and healer.Action then HEALS[healer.Action.Id] else nil
@@ -1199,6 +1207,7 @@ function FighterController.Start()
 	player:GetAttributeChangedSignal("Replay"):Connect(function()
 		task.delay(0.15, onReplay) -- once the avatar's move has reached this client and the camera has followed it
 	end)
+	local replayHeld = false
 	RunService.RenderStepped:Connect(function(dt: number)
 		local now = os.clock()
 		local frozen = false
@@ -1231,7 +1240,12 @@ function FighterController.Start()
 				end
 			end
 		end
-		Effects.TimeScale = if frozen then 0 else 1 -- the replay's freeze holds the sparks and numbers with the lead
+		-- The replay's freeze holds the sparks and numbers with the lead. Written only as it starts and ends, so a capture's
+		-- own 0 holds too (Effects.TimeScale's contract; a write every frame undid it after one).
+		if frozen ~= replayHeld then
+			replayHeld = frozen
+			Effects.TimeScale = if frozen then 0 else 1
+		end
 	end)
 end
 

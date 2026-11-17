@@ -3284,6 +3284,34 @@ Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.m
 
 **Checks:** logic cases (a burst's size, its 8 s, none at full, the sheet's number); the self-test; Fight's case times again; research's verdict from a phone capture in a real fight.
 
+**Built (Faber, 2026-11-17, by 14:37 by the clock).**
+- **Implemented.**
+  - `Config.Stats.Regen` is `{ Base = 1, Every = 8, Share = 0.5 }`, and `Rules.Stats.Burst` is the rate × Every × Share. The block keeps Regen as a rate a second.
+  - `FightService.thinkLead`: a lead's `RegenAt` starts at its summon + Every. `Rules.Fight.BurstDue` steps it by Every, never reset by a hit, and catches up once after a stall. `Rules.Fight.Burst` heals, capped at full, and a burst that heals fires Net `Heal` with `Regen = true`.
+  - Home's own heal on the player's plot is unchanged: `Rules.Fight.HomeRate`, the old `RegenRate` without Regen. Read here as: bursts come everywhere, the plot included, on top of home's heal.
+  - The client: `Effects.RegenPop`, a Neon ball in the heal green at the chest, swelling 1 to 3.4 studs over 10 frames (`Config.Effects.RegenPop`), and the green number in the damage numbers' kit for the player's own lead.
+  - The sheet and the cards: Regen reads one burst's size, "17 every 8 s" (`Sheet.Burst`, `Sheet.Amount`, `Sheet.Change`).
+  - Combat Power's Regen weight is 3.2 → 1.6. Rook at level 12: 29,427 → 29,070.
+- **Tested.**
+  - Type check 0 new. Logic offline 23,998 passed, 0 failed: the TR12 case rewritten for HomeRate, and a TR40 case (the 8 s and the 0.5, Base 1, the timings, the cap, five bursts in 40 s, Rook's burst between 0.4% and 2% of health at levels 1 and 12). Sheet's cases read the burst.
+  - Self-test: the new case "Fight: TR40, a lead's Regen in bursts" passes 9 of 9.
+  - **Fight's case times again:** every "Fight:" case on a fresh playtest, 553 passed and 0 failed, in 137 s at 60 fps. The lead beats an ordinary Shade in 5.85 s.
+  - Two older cases needed fixes to pass from a fresh start, and nothing in them is TR40's:
+    - The lead fights only what the camera sees (TR24's fix 2), and a fresh camera looked 58° off the test Shade: the lead stood idle 20 s. `lookAhead` turns the camera the avatar's way before each of the 14 test Shades spawns.
+    - Haymaker's stamp counted a real stamp from an earlier case's fight: it now calms the lead and waits for the floor to clear.
+  - **The whole suite,** started by 14:22, 448 s: 2,526 passed and 11 failed, at 59 fps.
+    - One is Pip's skip, which passed in the Fight run and alone.
+    - Ten are Base and HUD checks that need the base's models: the Breaker's chambers, the machine plates at the spawn, the Door's rings and signs, a worker's halo. The plots have stood grey since 8858359 (AR16 at 128 studs, until the plan is laid again: the console says so at boot), and they fail alone too. TR40 touches nothing in the world. Open, for the piece that lays the plan again.
+  - **A bug fixed:** FighterController wrote `Effects.TimeScale` every frame, so a capture's hold never held, against the module's own contract. It now writes only as the replay's freeze starts and ends.
+- **Visually reviewed:** for research's verdict.
+  - The take "Take: TR40, a Regen burst in a real fight at Pack 1": Rook fights Pack 1 at 60% health, the next burst is held 4 frames in, and Pack 1 is brought back if it falls first. It puts Rook's level, experience and Regen back after.
+  - Stills at the iPhone 16 Pro's size, in `build/scratch/faber/stills/`:
+    - `burst-phone.png`: the pop half-clear at Rook's chest behind the hit sparks, and "+22" in green beside the 555s;
+    - `burst-crowded-phone.png`: the same moment from behind the avatar, with the green number under a "Block" and the hit numbers.
+  - My read: the burst is easy to lose in a busy fight, its number among the hits and its pop under the sparks. Readable when the lead stands clear.
+- **Director-accepted:** no.
+- **Waiting on research:** the Regen weight 1.6 and Base 1 in `tools/balance/`. `sim.py:993` still sets the lead's Regen at 4 a second, and its circuit heals at the full rate continuously, not in half-size bursts. `attributes.py`'s TODAY keeps 4 as the old point.
+
 ## TR41. The passed screens that never reached the game (Faber, after TR40)
 
 Research, 2026-11-17, 14:05, on the director's question: "how is that there is many ui that havent got the implementation such as void breaker galaxy ui". A read-only audit of the requests against `src/` found four pieces delivered, passed, and never wired. For three of them no build request was ever written, and none was in any order of work. That's research's miss as keeper of the plan. Each is built as delivered, with no new design.

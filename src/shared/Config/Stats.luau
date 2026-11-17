@@ -72,7 +72,11 @@ return {
 	-- a percent of a level-1 Warrior's health a second, 200 s from empty to full, so waiting out a heal loses to the door
 	-- home; with Config.Enemies' Ordinary Attack halved, Pack 2 ends at about half (tools/balance/sim.py, section 9). The
 	-- Healer's 1.5 moved into its Main (rework part 1).
-	Regen = { Base = 4, Class = {} :: { [string]: number } },
+	-- In bursts (TR40; the director, 2026-11-17, by 12:54 and 12:56; docs/decisions.md): a lead heals one burst every
+	-- Every seconds from its summon, always, in a fight too, Share of what Every seconds at its Regen would heal, so the
+	-- block's Regen stays a rate a second and a burst is Rules.Stats.Burst of it. Base from 4 to 1, so it starts very slow,
+	-- and what a build adds keeps its size. Home's own heal on the player's plot is unchanged (Combat.Lead.Home).
+	Regen = { Base = 1, Class = {} :: { [string]: number }, Every = 8, Share = 0.5 },
 	-- Type: each beats the next, in a ring (docs/design.md, "Voidkin"). The types are named by the colours they wear (the
 	-- director's word of 2026-11-17, TR36): Red, Orange, Blue, Purple, Green, the ids and the names alike.
 	Beats = {
@@ -105,7 +109,7 @@ return {
 			Health = 0.67,
 			Attack = 4,
 			Defence = 2.9,
-			Regen = 3.2,
+			Regen = 1.6, -- TR40: half of 3.2, as a burst heals half what the rate did, so a point's worth halves
 			Hit = 0.57,
 			Dodge = 1.7,
 			Critical = 0.65,

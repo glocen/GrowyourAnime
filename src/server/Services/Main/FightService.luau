@@ -28,6 +28,7 @@ local WorldConfig = require(Shared.Config.World)
 local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
 local Stats = require(Shared.Rules.Stats)
+local StatsConfig = require(Shared.Config.Stats)
 local Hit = require(Shared.Rules.Hit)
 local Fight = require(Shared.Rules.Fight)
 local Tower = require(Shared.Rules.Tower)
@@ -71,6 +72,7 @@ export type Fighter = {
 	-- and strikes no other.
 	For: Player?,
 	HealRoom: number?, -- what it may still heal this floor (the Tower's heal cap, Rules.Tower.Capped); nil, no cap
+	RegenAt: number, -- a lead's next Regen burst (TR40; Rules.Fight.BurstDue), from its summon
 	Frail: boolean?, -- it falls to the first hit that lands (a Tower's fast floor, Rules.Tower.Fast)
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
@@ -492,6 +494,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ResetSince = 0,
 		SkippedAt = -math.huge,
 		NextThink = at + rng:NextNumber() * Combat.Think, -- spread over the tick
+		RegenAt = at + StatsConfig.Regen.Every,
 		Home = nil,
 		Pack = nil,
 		Ground = nil,
@@ -1206,10 +1209,21 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		stop(f)
 		return
 	end
-	-- Health carries (TR12): its Regen always, and on its owner's plot the heal at home besides.
+	-- Health carries (TR12): on its owner's plot the heal at home, and its Regen always, in bursts (TR40): one every
+	-- Config.Stats.Regen.Every seconds from its summon, in a fight too, a hit never resetting it. A burst at full heals
+	-- nothing and shows nothing; one that heals shows its number and its pop to everyone near (FighterController).
 	local plot = if f.Owner then f.Owner:GetAttribute("Plot") else nil
 	local home = Markers.OnPlot(if type(plot) == "number" then plot else nil, f.Root.Position)
-	heal(f, Fight.Regen(f.Health, f.Block.Health, Fight.RegenRate(f.Block.Regen, f.Block.Health, home, Combat.Lead.Home.Full), dt))
+	heal(f, Fight.Regen(f.Health, f.Block.Health, Fight.HomeRate(f.Block.Health, home, Combat.Lead.Home.Full), dt))
+	local due, nextDue = Fight.BurstDue(f.RegenAt, at, StatsConfig.Regen.Every)
+	f.RegenAt = nextDue
+	if due then
+		local before = f.Health
+		local after = heal(f, Fight.Burst(before, f.Block.Health, Stats.Burst(f.Block.Regen)))
+		if after > before then
+			Net.Server.FireAll("Heal", { A = f.Model, T = f.Model, Amount = after - before, Health = after, MaxHealth = f.Block.Health, Regen = true })
+		end
+	end
 	local toAvatar = (avatar.Position - f.Root.Position).Magnitude -- in three dimensions: an avatar teleported straight up still pulls its lead
 	-- The fight in the camera's view (TR24's fix 2): each enemy's degrees off the camera's look, from the avatar.
 	local looking = bearingOf(lookOf(f.Owner, avatar))

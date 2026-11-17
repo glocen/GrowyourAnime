@@ -17,6 +17,7 @@ local EnemiesConfig = require(Shared.Config.Enemies)
 local Animations = require(Shared.Config.Animations)
 local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
 local EffectsConfig = require(Shared.Config.Effects)
+local StatsConfig = require(Shared.Config.Stats)
 
 local function near(a: number, b: number, tolerance: number?): boolean
 	return math.abs(a - b) <= (tolerance or 1e-9) * math.max(1, math.abs(b))
@@ -508,27 +509,86 @@ return {
 		end,
 	},
 	{
-		-- TR12, "Health carries" (docs/design.md, "Combat"): away from its plot a lead heals its Regen alone, so a pack's
-		-- damage stays; on its plot, from nothing to full in about Home.Full seconds.
-		Name = "Fight: TR12, a lead heals its Regen alone away from home, and to full in about 30 s on its plot",
+		-- TR12, "Health carries" (docs/design.md, "Combat"): away from its plot a lead heals its Regen's bursts alone, so a
+		-- pack's damage stays; on its plot, from nothing to full in about Home.Full seconds.
+		Name = "Fight: TR12, a lead heals its Regen's bursts alone away from home, and to full in about 30 s on its plot",
 		Run = function(t: any)
 			local full = Combat.Lead.Home.Full
 			t.Check("home's heal is about 30 s", full >= 20 and full <= 40, `{full}`)
 			local regen, most = 20, 1000
-			t.Equal("away from home: its Regen alone", Fight.RegenRate(regen, most, false, full), regen)
-			t.Check("at home: nothing to full in Home.Full seconds besides", near(Fight.RegenRate(regen, most, true, full), regen + most / full))
-			t.Equal("a bad Regen adds nothing", Fight.RegenRate(-5, most, false, full), 0)
+			t.Equal("away from home: nothing a second, its bursts alone", Fight.HomeRate(most, false, full), 0)
+			t.Check("at home: nothing to full in Home.Full seconds", near(Fight.HomeRate(most, true, full), most / full))
+			t.Equal("no most, no home heal", Fight.HomeRate(0, true, full), 0)
+			-- The fight's own loop: the home heal each frame, a burst whenever one falls due.
 			local function heal(home: boolean, seconds: number): number
-				local health, frame = 1, 1 / 60
-				for _ = 1, math.floor(seconds / frame + 0.5) do
-					health = Fight.Regen(health, most, Fight.RegenRate(regen, most, home, full), frame)
+				local health, frame, due = 1, 1 / 60, StatsConfig.Regen.Every
+				for step = 1, math.floor(seconds / frame + 0.5) do
+					health = Fight.Regen(health, most, Fight.HomeRate(most, home, full), frame)
+					local fires
+					fires, due = Fight.BurstDue(due, step * frame, StatsConfig.Regen.Every)
+					if fires then
+						health = Fight.Burst(health, most, Stats.Burst(regen))
+					end
 				end
 				return health
 			end
 			t.Check("at home: full by Home.Full", heal(true, full) == most, string.format("%.1f", heal(true, full)))
 			t.Check("and not long before it", heal(true, full * 0.6) < most, string.format("%.1f", heal(true, full * 0.6)))
 			local away = heal(false, full)
-			t.Check("away, the same time heals only its Regen's worth", near(away, 1 + regen * full, 1e-6), string.format("%.1f", away))
+			local bursts = math.floor(full / StatsConfig.Regen.Every + 1e-9)
+			t.Check("away, the same time heals only its bursts", near(away, 1 + bursts * Stats.Burst(regen), 1e-6), string.format("%.1f against %d bursts", away, bursts))
+		end,
+	},
+	{
+		-- TR40, Regen in bursts (the director, 2026-11-17, by 12:54 and 12:56; docs/decisions.md): one every 8 s from the
+		-- summon, always, half of what 8 s at the rate healed; the level's own from 1.
+		Name = "Fight: TR40, Regen in bursts: one every 8 s from the summon, half of 8 s at the rate, none at full, never reset",
+		Run = function(t: any)
+			local regen = StatsConfig.Regen
+			t.Equal("one every 8 s", regen.Every, 8)
+			t.Equal("half of what 8 s healed", regen.Share, 0.5)
+			t.Equal("the level's own starts at 1", regen.Base, 1)
+			t.Check("a burst: the rate times 8 times a half", near(Stats.Burst(3), 12), `{Stats.Burst(3)}`)
+			t.Equal("no Regen, no burst", Stats.Burst(0), 0)
+			-- Its timing, from a summon at 100: the first at 108, then 116; nothing between.
+			local fires, due = Fight.BurstDue(108, 100, 8)
+			t.Check("none before the first", not fires and due == 108)
+			fires, due = Fight.BurstDue(108, 107.99, 8)
+			t.Check("none a moment before", not fires and due == 108)
+			fires, due = Fight.BurstDue(108, 108, 8)
+			t.Check("the first, 8 s after the summon, and the next 8 s on", fires and due == 116, `{due}`)
+			fires, due = Fight.BurstDue(116, 116.05, 8)
+			t.Check("a tick a little late keeps the beat", fires and due == 124, `{due}`)
+			fires, due = Fight.BurstDue(124, 150, 8)
+			t.Check("a long-late tick gives one burst, never a pile, and the next a whole 8 s on", fires and due == 158, `{due}`)
+			for _, bad in { 0, -1, 0 / 0, math.huge } do
+				local badFires, badDue = Fight.BurstDue(108, 200, bad)
+				t.Check(`an every of {bad} gives none`, not badFires and badDue == 108)
+			end
+			-- Its heal.
+			t.Equal("it heals its size", Fight.Burst(500, 1000, 12), 512)
+			t.Equal("never past the most", Fight.Burst(995, 1000, 12), 1000)
+			t.Equal("at full it heals nothing", Fight.Burst(1000, 1000, 12), 1000)
+			t.Equal("down stays down", Fight.Burst(0, 1000, 12), 0)
+			t.Equal("a bad size does nothing", Fight.Burst(500, 1000, -3), 500)
+			-- A hit never resets the timer: it reads only its due and the clock, so nothing a hit does can move it.
+			local beats = {}
+			local at = 108
+			for step = 0, 400 do
+				local now = 100 + step * 0.1
+				local each
+				each, at = Fight.BurstDue(at, now, 8)
+				if each then
+					table.insert(beats, now)
+				end
+			end
+			t.Check("in 40 s, five bursts, 8 s apart", #beats == 5 and near(beats[2] - beats[1], 8, 1e-6) and near(beats[5] - beats[1], 32, 1e-6), `{#beats}`)
+			-- Its size for the slice's lead (Rook, a Warrior): about 1% of its health at level 1, under 2% at 12.
+			for _, level in { 1, 12 } do
+				local block = Stats.Resolve({ Id = "x", Def = "rook", Level = level, Xp = 0, Stars = 0, Copies = 0, Nickname = "", Preset = 1, Favourite = false, Locked = false, Born = 0 }, nil, nil)
+				local share = Stats.Burst(block.Regen) / block.Health
+				t.Check(`Rook at {level}: a burst is about 1% to 2% of its health`, share > 0.004 and share < 0.02, string.format("%.2f%%", share * 100))
+			end
 		end,
 	},
 	{

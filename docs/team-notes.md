@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 13:15. TR28's bag and the Voidkin screen are in the seam's skin (d299687), waiting on research's pass. The director's words of 13:00 to 13:03 are built (44fd634): one Gear tab for weapons and armor, no "Armour", and no gear slots on the Overview. Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26).
-- **Next, in order:** TR40, Regen in bursts (research's word: after TR28); TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; TR37 with AR28's Stage I, then emblems, then jewels; TR31 to TR33, TR35, and the responsive pass. AR19's six re-uploads when their turn comes.
-- **Open, tests:** four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails at times. TR20's Breaker hover depends on order.
+**Faber (builder).** 2026-11-17, 14:37. TR40, Regen in bursts, is built and tested, waiting on research's verdict from the stills and its check of the balance tools (TR40, "Built"). AR22's gear pass is installed (e3c588d). Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26).
+- **Next, in order:** Modulo's AR30 bases at the smallest phone; TR41; AR29's rail and bar on B; TR34's chest on AR24's A; AR23; TR29's three and TR10's captures; TR37 with AR28's Stage I, then emblems, then jewels; TR31 to TR33, TR35, the responsive pass. AR19's six re-uploads when their turn comes.
+- **Open, tests:** ten Base and HUD checks need the base's models, which stand grey since 8858359 (AR16 at 128) until the plan is laid again. Four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
 **Modulo (assets).** 2026-11-17, 14:35, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
@@ -20,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** the re-lay of AR16's plan at 128, with the FloodMast off the Door's line, while research looks. **Then:** AR17's map kit; the icons for stones, emblems and jewels, and TR10's two.
 - **Unchanged:** AR22's gear pass is with Faber to upload. AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
 
-**Turns.** Studio: nobody (Faber stopped at 13:15; the device simulator off). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber (the game's place, for AR30's bases). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -112,6 +112,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 14:37. TR40: Regen in bursts (Faber)
+
+- **What changed:** a lead heals one burst every 8 s from its summon, always, half of what 8 s at its rate healed, and Base Regen is 1. A green number and a pop at the chest show it. The sheet and the cards read the burst. Combat Power's Regen weight is halved. Home's heal on the plot is unchanged.
+- **Also:** a capture's freeze of the effects now holds (FighterController wrote it every frame). The fight cases turn the camera toward a test Shade first, so a fresh playtest passes them all (553 of 553).
+- **Where:** TR40, "Built"; `Config.Stats.Regen`, `Rules.Stats.Burst`, `Rules.Fight`, `FightService`, `Effects.RegenPop`, `Rules.Sheet`.
+- **Open:** research's verdict from `build/scratch/faber/stills/burst-phone.png` and `burst-crowded-phone.png`, and its check of `tools/balance/` (sim.py still heals at 4 a second, continuously). Ten Base checks wait for the plan's re-lay.
+- **For:** research, then the director.
 
 ### 2026-11-17, 09:01. AR15: the Festival Door's ring tunnel, installed (Faber)
 

@@ -43,7 +43,7 @@ local function row(groups: { Sheet.Group }, stat: string): Sheet.Row?
 	return nil
 end
 
--- A number as it's shown, read back: "1,234" 1234, "4.3 a second" 4.3, "+50%" 50, "ignores 8.1% Defence" 8.1.
+-- A number as it's shown, read back: "1,234" 1234, "17 every 8 s" 17, "+50%" 50, "ignores 8.1% Defence" 8.1.
 local function readBack(said: string): number
 	local digits = said:gsub(",", ""):match("%-?[%d%.]+")
 	return tonumber(digits) or -1
@@ -52,7 +52,7 @@ end
 -- What a total may say: its number, a percent's sign, and Regen's and Speed's units. Nothing else.
 local function plain(said: string): boolean
 	return string.match(said, "^%+?[%d,%.]+%%?$") ~= nil
-		or string.match(said, "^[%d%.]+ a second$") ~= nil
+		or string.match(said, "^[%d,%.]+ every %d+ s$") ~= nil
 		or string.match(said, "^[%d%.]+ studs a second$") ~= nil
 end
 
@@ -136,7 +136,10 @@ return {
 			end
 			t.Equal("Damage Bonus with nothing giving it: 0%", (row(groups, "DamageBonus") :: Sheet.Row).Value, "0%")
 			t.Equal("points grouped", (row(groups, "Health") :: Sheet.Row).Value, "1,234")
-			t.Equal("Regen to a tenth, a second", (row(groups, "Regen") :: Sheet.Row).Value, "4.3 a second")
+			t.Equal("Regen as one burst, every 8 s (TR40): 4.26 a second, 8 s, a half", (row(groups, "Regen") :: Sheet.Row).Value, "17 every 8 s")
+			t.Equal("a small burst to a tenth", Sheet.Burst(1.5), "6.0")
+			t.Equal("a card's Regen: the burst alone", Sheet.Amount("Regen", 4.26), "17")
+			t.Equal("a card's Regen change: the burst's", Sheet.Change("Regen", 0.5), "+2.0")
 			t.Equal("Speed in studs a second", (row(groups, "Speed") :: Sheet.Row).Value, "16 studs a second")
 			t.Equal("the names players read", (row(groups, "CriticalDamage") :: Sheet.Row).Name, "Critical Damage")
 			local rated = Sheet.Rows(block({ Dodge = 80, Critical = 1240, Block = 60, Penetration = 40, Hit = 50, CriticalResist = 30, ElementalResist = 20, Element = "Fire", ElementalAttack = 30 }))
@@ -272,8 +275,9 @@ return {
 								local raw = if Attributes.ById[each.Stat] then made.Attributes[each.Stat] elseif Sheet.Rated[each.Stat] then odds[each.Stat] else (made :: any)[each.Stat]
 								local value = if type(raw) == "number" then raw else 0
 								local percent = string.sub(each.Value, -1) == "%"
-								local want = if percent then value * 100 else value
-								local slack = if percent then (if math.abs(want) >= 10 then 0.5 else 0.05) elseif string.find(each.Value, "second", 1, true) then 0.05 else 0.5
+								local want = if percent then value * 100 elseif each.Stat == "Regen" then Stats.Burst(value) else value -- Regen shows its burst (TR40)
+								local tenth = string.find(each.Value, "second", 1, true) ~= nil or (each.Stat == "Regen" and math.abs(want) < 10)
+								local slack = if percent then (if math.abs(want) >= 10 then 0.5 else 0.05) elseif tenth then 0.05 else 0.5
 								t.Check(`{def.Id} {level} {stars}: {each.Stat} {each.Value}`, plain(each.Value) and math.abs(readBack(each.Value) - want) <= slack + 1e-9)
 							end
 						end

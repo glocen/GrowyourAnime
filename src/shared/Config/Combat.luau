@@ -59,8 +59,8 @@ return {
 		-- A fall sends it home (TR12; docs/design.md, "A fall sends it home"): down Leave seconds, its fall seen, then it
 		-- leaves as light and is home on its plot, on the Training machine's pad (Config.World.Grey.Training).
 		Leave = 1.6,
-		-- Health carries (TR12; docs/design.md): a lead heals only its Regen a second (Config.Stats.Regen), in a fight or
-		-- out; on its own plot it heals from nothing to full in Home.Full seconds besides, and so does one at home that isn't
+		-- Health carries (TR12; docs/design.md): a lead heals only its Regen, in bursts (Config.Stats.Regen; TR40), in a
+		-- fight or out; on its own plot it heals from nothing to full in Home.Full seconds besides, and so does one at home that isn't
 		-- out. One that fell heals from nothing to full in Home.Fallen seconds, then waits. Research's seeds, 2026-11-14.
 		-- Until its player beats their first keeper, FirstFallen instead: short enough to walk home (TR24's fix 5, "Pip's
 		-- fall costs 90 s"; the builder's seed, about the walk from the Row's packs to the plot at 16 studs a second).

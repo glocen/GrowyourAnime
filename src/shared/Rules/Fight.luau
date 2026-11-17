@@ -194,9 +194,9 @@ function Fight.Damage(health: number, amount: number): (number, boolean)
 	return left, left <= 0
 end
 
--- Health after `seconds` of healing at `perSecond`: its Regen, always, in a fight too, and on its own plot what heals it
--- to full in Combat.Lead.Home.Full seconds (docs/design.md, "Health carries"). Never past the most; a body that's down
--- stays down; a bad rate or time does nothing.
+-- Health after `seconds` of healing at `perSecond`: on its own plot, what heals it to full in Combat.Lead.Home.Full
+-- seconds (docs/design.md, "Health carries"; its Regen comes in bursts, Fight.Burst). Never past the most; a body that's
+-- down stays down; a bad rate or time does nothing.
 function Fight.Regen(health: number, maxHealth: number, perSecond: number, seconds: number): number
 	if health <= 0 or not (perSecond > 0) or perSecond == math.huge or not (seconds > 0) or seconds == math.huge then
 		return health
@@ -204,10 +204,27 @@ function Fight.Regen(health: number, maxHealth: number, perSecond: number, secon
 	return math.min(maxHealth, health + perSecond * seconds)
 end
 
--- What a lead heals a second: its Regen, and on its own plot (`home`) what takes it from nothing to full in `full`
--- seconds besides.
-function Fight.RegenRate(regen: number, maxHealth: number, home: boolean, full: number): number
-	return math.max(0, regen) + (if home and full > 0 then maxHealth / full else 0)
+-- What a lead heals a second besides its Regen's bursts: on its own plot (`home`), what takes it from nothing to full in
+-- `full` seconds; nothing elsewhere.
+function Fight.HomeRate(maxHealth: number, home: boolean, full: number): number
+	return if home and full > 0 and maxHealth > 0 then maxHealth / full else 0
+end
+
+-- Whether a Regen burst falls due at `at` (TR40), and when the next does: one every `every` seconds from `due`, the first
+-- `every` after the summon, never reset by a hit. A tick that comes late gives one burst, never a pile, and the next
+-- falls a whole `every` after it. A bad `every` gives none.
+function Fight.BurstDue(due: number, at: number, every: number): (boolean, number)
+	if not (every > 0) or every == math.huge or at < due then
+		return false, due
+	end
+	local nextDue = due + every
+	return true, if nextDue > at then nextDue else at + every
+end
+
+-- Health after a Regen burst of `size` (Rules.Stats.Burst): never past the most; a body that's down stays down; a bad
+-- size does nothing.
+function Fight.Burst(health: number, maxHealth: number, size: number): number
+	return Fight.Regen(health, maxHealth, size, 1)
 end
 
 -- Health after a hit's heal of `share` of the most (Actions.Hit.Heal): never past the most, and a body that's down

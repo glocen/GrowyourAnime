@@ -76,7 +76,7 @@ export type Block = {
 	CriticalDamage: number,
 	CriticalGuard: number,
 	Lifesteal: number,
-	Regen: number, -- health a second, always (Config.Stats.Regen)
+	Regen: number, -- health a second, healed in bursts (Config.Stats.Regen; Stats.Burst)
 	Speed: number, -- a lead's walk in a fight, studs a second (Stats.SpeedOf); 0 for an enemy, which walks at its kind's (Config.Combat)
 	Attributes: { [string]: number }, -- each Basic Attribute's total, by its id; read by the sheet, never by a fight or Power
 	Main: string, -- its class's Main attribute's id, or "" (an enemy, an unknown class)
@@ -244,6 +244,13 @@ function Stats.Power(block: Block): number
 		end
 	end
 	return math.floor(sum * power.Scale + 0.5)
+end
+
+-- One Regen burst's size (TR40; Config.Stats.Regen): Share of what Every seconds at `regen` a second would heal. A value,
+-- never a share of health; linear, so a change in Regen is a change in the burst by the same rule.
+function Stats.Burst(regen: number): number
+	local config = StatsConfig.Regen
+	return regen * config.Every * config.Share
 end
 
 -- An enemy's stat block at `level`: its Kind's numbers in Config.Enemies times G, nothing else. `type` is the spawn's,

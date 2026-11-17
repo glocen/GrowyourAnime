@@ -6,6 +6,8 @@
 
 local Loudness = require(game:GetService("ServerStorage").NL_Tools.Audio.Loudness)
 local Measures = require(game:GetService("ServerStorage").NL_Tools.Audio.Measures)
+local CueMix = require(game:GetService("ServerStorage").NL_Tools.Audio.CueMix)
+local Cues = require(game:GetService("ReplicatedStorage").Shared.Config.Cues)
 
 local function sine(rate: number, seconds: number, hz: number, amplitude: number, phase: number?): { number }
 	local out = table.create(math.floor(rate * seconds), 0)
@@ -90,6 +92,98 @@ return {
 			end
 			local m = Measures.Slice(low, rate, 0, 7200)
 			t.Check("a 60 Hz tone: 99% of it under 120 Hz", near(m.Under120, 0.990099, 1e-5) and near(m.Spectrum[1], 51.8218) and near(m.Spectrum[14], 41.4057), `{m.Under120} {m.Spectrum[1]} {m.Spectrum[14]}`)
+		end,
+	},
+	{
+		Name = "Audio: a cue mixed as the engine plays it, and the gates' numbers on the mix (AR39; NL_Tools.Audio.CueMix)",
+		Run = function(t: any)
+			local rate = 48000
+			local function near(a: number, b: number, within: number?): boolean
+				return math.abs(a - b) < (within or 0.01)
+			end
+			local function flat(seconds: number, level: number): { number }
+				return table.create(math.floor(rate * seconds), level)
+			end
+			local click = table.create(4800, 0)
+			click[1441] = 0.8 -- 30 ms in
+			local sounds: { [number]: { number } } = {
+				[1] = sine(rate, 0.1, 1000, 0.25),
+				[2] = sine(rate, 0.1, 1000, 0.25),
+				[3] = click,
+				[4] = flat(0.2, 0.5),
+				[5] = sine(rate, 0.5, 60, 0.25),
+			}
+			local function source(take: Cues.Take): { number }?
+				return sounds[take.Id]
+			end
+			local takes = Cues.Takes :: { [string]: any }
+			takes.NL_MixTone = { { Id = 1, Seconds = 0.1, Peak = 0.01 }, { Id = 2, Seconds = 0.1, Peak = 0.01, Gain = 2 }, { Id = 99, Seconds = 0.1, Peak = 0 } }
+			takes.NL_MixClick = { { Id = 3, Seconds = 0.1, Peak = 0.03 } }
+			takes.NL_MixFlat = { { Id = 4, Seconds = 0.2, Peak = 0, From = 1, To = 1.2, In = 0.003, Out = 0.04 } }
+			takes.NL_MixLow = { { Id = 5, Seconds = 0.5, Peak = 0 } }
+			local function cue(layers: { any }): Cues.Cue
+				return { Layers = layers, Bus = "Lead", Pitch = { 1, 1 }, Volume = { 1, 1 }, Voices = 4, Near = 30, Range = 160 }
+			end
+			local full = 1 / (Cues.Volume * Cues.Trim * CueMix.Engine.PlayerGain) -- a layer's volume that plays its file as it is
+			local stepped = CueMix.Engine.Stepped
+			local ok, problem = pcall(function()
+				-- the level: a file as it is, a take's gain, a take that didn't load
+				local tone = cue({ { Takes = "NL_MixTone", At = 0, Volume = full } })
+				local plain = CueMix.Play({ Cue = tone, Takes = { 1 } }, source, rate)
+				local m = CueMix.Measure(plain, rate)
+				t.Check("a tone at a quarter of full scale reads -12.04 dBFS, from the lead's silence", near(m.SamplePeak, -12.041) and near(plain.Origin, -CueMix.Lead, 1e-9) and plain.Missed == 0, `{m.SamplePeak} {plain.Origin}`)
+				t.Check("its top inside the tone, after the moment", m.PeakAt > 0 and m.PeakAt < 0.1, tostring(m.PeakAt))
+				-- 0.1 s of a 1 kHz sine at 0.25, read over 3 s: -3.01 - 12.04 - 10 log10(30) = -29.82 LUFS
+				t.Check("its short-term loudness: its energy over 3 s", near(m.ShortTerm, -29.82, 0.1), tostring(m.ShortTerm))
+				t.Check("the phone's curve leaves 1 kHz as it is", near(m.Phone, m.ShortTerm, 0.1), tostring(m.Phone - m.ShortTerm))
+				local louder = CueMix.Measure(CueMix.Play({ Cue = tone, Takes = { 2 } }, source, rate), rate)
+				t.Check("a take's gain of 2 is 6.02 dB", near(louder.SamplePeak - m.SamplePeak, 6.0206), tostring(louder.SamplePeak - m.SamplePeak))
+				local none = CueMix.Play({ Cue = tone, Takes = { 3 } }, source, rate)
+				t.Check("a take that didn't load is counted, never mixed", none.Missed == 1 and CueMix.Measure(none, rate).SamplePeak < -100)
+				t.Check("a take's number past its list wraps", near(CueMix.Measure(CueMix.Play({ Cue = tone, Takes = { 4 } }, source, rate), rate).SamplePeak, m.SamplePeak))
+				local hot = CueMix.Play({ Cue = cue({ { Takes = "NL_MixTone", At = 0, Volume = full * 100 } }), Takes = { 1 } }, source, rate)
+				t.Check("a player's volume stops at 3", hot.Clamped == 1 and near(CueMix.Measure(hot, rate).SamplePeak, 20 * math.log10(0.25 * 3 * CueMix.Engine.PlayerGain)))
+				-- a layer led by its top lands it on the moment; a later layer keeps its place
+				local led = CueMix.Measure(CueMix.Play({ Cue = cue({ { Takes = "NL_MixClick", At = 0, Lead = "Peak", Volume = full } }) }, source, rate), rate)
+				t.Check("a layer led by its top: its top on the moment", near(led.PeakAt, 0, 1 / rate + 1e-9), tostring(led.PeakAt))
+				local late = CueMix.Measure(CueMix.Play({ Cue = cue({ { Takes = "NL_MixClick", At = 0.05, Volume = full } }) }, source, rate), rate)
+				t.Check("a layer 50 ms after the moment: its top 80 ms after", near(late.PeakAt, 0.08, 1 / rate + 1e-9), tostring(late.PeakAt))
+				-- the edges: a slice's start isn't drawn (3 ms), its fall is a tween's steps
+				local slice = cue({ { Takes = "NL_MixFlat", At = 0, Volume = full } })
+				CueMix.Engine.Stepped = true
+				local stairs = CueMix.Play({ Cue = slice }, source, rate)
+				t.Check("a slice's 3 ms rise isn't drawn: it starts at its first sample", near(stairs.In, 0.5, 1e-6), tostring(stairs.In))
+				t.Check("a 40 ms fall in a frame's steps: each a frame's share of it", near(stairs.Fade, 0.5 * CueMix.Engine.Frame / 0.04, 1e-3), tostring(stairs.Fade))
+				CueMix.Engine.Stepped = false
+				local line = CueMix.Play({ Cue = slice }, source, rate)
+				t.Check("the same fall as its straight line: no step", line.Fade < 0.001 and line.Out < 0.001, `{line.Fade} {line.Out}`)
+				-- plays over each other
+				local twice = CueMix.Measure(CueMix.Mix({ { Render = plain, At = 0 }, { Render = plain, At = 0 } }, rate), rate)
+				t.Check("two plays on one sample: 6.02 dB over one", near(twice.SamplePeak - m.SamplePeak, 6.0206), tostring(twice.SamplePeak - m.SamplePeak))
+				local apart = CueMix.Mix({ { Render = plain, At = 0 }, { Render = plain, At = 0.5 } }, rate)
+				local spaced = CueMix.Measure(apart, rate)
+				t.Check("two plays half a second apart: one's top, both's energy", near(spaced.SamplePeak, m.SamplePeak) and near(spaced.ShortTerm - m.ShortTerm, 3.0103, 0.05) and near(#apart.Samples / rate, 0.5 + #plain.Samples / rate, 0.001), `{spaced.ShortTerm - m.ShortTerm}`)
+				-- the phone's curve: 60 Hz through a second-order high-pass at 200 falls by 0.09 / sqrt(1 + 0.0081), 20.95 dB
+				local low = CueMix.Measure(CueMix.Play({ Cue = cue({ { Takes = "NL_MixLow", At = 0, Volume = full } }) }, source, rate), rate)
+				t.Check("a 60 Hz tone through the phone's curve: 21 dB down, and nearly all under 120 Hz", near(low.Phone - low.ShortTerm, -20.95, 0.5) and low.Under120 > 0.95, `{low.Phone - low.ShortTerm} {low.Under120}`)
+			end)
+			CueMix.Engine.Stepped = stepped
+			takes.NL_MixTone, takes.NL_MixClick, takes.NL_MixFlat, takes.NL_MixLow = nil, nil, nil, nil
+			t.Check("the mix ran", ok, tostring(problem))
+			-- a narrow peak: one band over both its neighbours, inside 2 to 6 kHz
+			local spectrum = table.create(25, 40)
+			spectrum[19] = 52 -- 3.2 kHz
+			local over, at = CueMix.NarrowPeak(spectrum)
+			t.Check("one band 12 dB over its neighbours at 3.2 kHz", near(over, 12) and near(at, 3200, 1), `{over} {at}`)
+			spectrum[20] = 50
+			t.Check("a band with a neighbour as high isn't narrow", near((CueMix.NarrowPeak(spectrum)), 2))
+			spectrum[19], spectrum[20], spectrum[5] = 40, 40, 70 -- 126 Hz: outside the bands
+			t.Check("a peak outside 2 to 6 kHz isn't read", near((CueMix.NarrowPeak(spectrum)), 0))
+			-- two spectra alike, and apart
+			local other = table.create(25, 40)
+			other[20] = 70
+			t.Check("a spectrum is its own like, a level apart too", near(CueMix.Similar(spectrum, spectrum), 1, 1e-9) and near(CueMix.Similar(table.create(25, 40), table.create(25, 60)), 1, 1e-9))
+			t.Check("a spectrum with its weight elsewhere is under 0.97", CueMix.Similar(spectrum, other) < 0.97, tostring(CueMix.Similar(spectrum, other)))
 		end,
 	},
 }

@@ -20,7 +20,7 @@ export type Measure = {
 	Seconds: number,
 }
 
-type Biquad = { B0: number, B1: number, B2: number, A1: number, A2: number }
+export type Biquad = { B0: number, B1: number, B2: number, A1: number, A2: number }
 
 local function db(linear: number): number
 	return if linear > 0 then 20 * math.log10(linear) else -math.huge
@@ -63,6 +63,8 @@ local function run(f: Biquad, x: { number }): { number }
 	end
 	return y
 end
+
+Loudness.Filter = run
 
 -- The signal K-weighted, squared, and summed so any window's mean square is two reads.
 local function energy(samples: { number }, rate: number): { number }
@@ -168,6 +170,13 @@ function Loudness.TruePeak(samples: { number }): number
 		end
 	end
 	return db(most)
+end
+
+-- The loudness of one `seconds` window that holds the whole signal, LUFS: its K-weighted energy over that time, the
+-- rest of the window silent. A cue shorter than 3 s read over 3 is its short-term loudness wherever it falls (CueMix).
+function Loudness.Over(samples: { number }, rate: number, seconds: number): number
+	local sum = energy(samples, rate)
+	return lufs(sum[#sum] / math.max(seconds * rate, #samples, 1))
 end
 
 function Loudness.SamplePeak(samples: { number }): number

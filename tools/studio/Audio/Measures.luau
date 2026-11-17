@@ -147,10 +147,11 @@ end
 
 -- A slice's numbers. `window` holds the samples from Before ahead of the slice to After past it, `before` and `length`
 -- are the samples ahead of the slice and in it. `pause`, if given, is called after each FFT (Studio passes task.wait).
-function Measures.Slice(window: { number }, rate: number, before: number, length: number, pause: (() -> ())?): Slice
+-- `brief` leaves the Envelope and the Spectrogram empty (CueMix reads a mix's numbers, never its picture).
+function Measures.Slice(window: { number }, rate: number, before: number, length: number, pause: (() -> ())?, brief: boolean?): Slice
 	local envelope = {}
 	local hop = math.floor(Measures.Step * rate + 0.5)
-	for i = 0, #window - hop, hop do
+	for i = 0, if brief then -1 else #window - hop, hop do
 		local sum = 0
 		for j = i + 1, i + hop do
 			sum += window[j] * window[j]
@@ -161,7 +162,7 @@ function Measures.Slice(window: { number }, rate: number, before: number, length
 	local spectrogram = {}
 	local frame = math.floor(Measures.Frame * rate + 0.5)
 	local frameWindow = hann(frame)
-	for i = 0, #window - frame, frame do
+	for i = 0, if brief then -1 else #window - frame, frame do
 		table.insert(spectrogram, Measures.Bands(Measures.Power(window, i + 1, frame, frameWindow), rate))
 		if pause then
 			pause()

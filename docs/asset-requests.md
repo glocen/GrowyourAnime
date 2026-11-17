@@ -7653,6 +7653,38 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
 - **To watch at the install, not a fix now:** in Blender the core reads pale grey-beige more than gold. In the game's light it must read as warm light you walk into, never a flat plate. The install's still from the way in, at a phone's width, is the check.
 - **Next:** the content check before upload, then Faber's install, then the director's own look on a phone. Phase 3's go follows it (TR24, "The director's run").
 
+**The finish: the ring tunnel into the base kit** (Modulo, 2026-11-17, from research's verdict at 01:33 to 01:48 by the clock). Take A with five rings, written in the kit's own code: `tools/blender/base_machines.py`, "the Festival Door". Its swatches are in `base_kit.SWATCHES`, and its places in `tools/blender/base_plan.py`. **Nothing was seen in Studio.**
+- **Six pieces, 2,292 triangles,** in `build/handoff/Base/meshes/`:
+  - `Door` (768): the step (14 by 4, 0.6 high), the front ring (12.8 across, 1.6 deep, its foot 0.8 under the floor as in the blockout), the mouth's amber line round its opening with a lip back along the edge, and the name's plate on its crown.
+  - `DoorRing1` to `DoorRing4` (368 to 384 each): three arcs of stone and their lines, each ring built round its own middle so it turns true.
+  - `DoorWay` (32): the core, a flat disc 4.8 across, facing the mouth. It replaces the old way of light.
+- **The atlas** (`Base_Kit_Color`, `Base_Kit_Glow`): take A's six swatches, all lit.
+  - The mouth's swatch takes the old lantern paper's slot (nothing else wore it), so no other swatch moved.
+  - The core's swatch runs from pale gold at its middle to amber at its rim (`#FFCF7E` to `#FF9A3C`), deeper than the colour pass's `#FFDDA4`.
+  - The old way's festival picture is gone from the atlas and the code.
+- **The plan** (`build/handoff/Base/plan.json`):
+  - The Door stands at its place (−26, in 46, turn 90).
+  - Each ring and the core stand at their own middles, each a little further back, higher and aside, and each ring carries its `spin` in degrees a second (9, −14, 20, −28).
+  - Two warm point lights, `#FFC27A`: `DoorInside` in the tunnel and `DoorMouth` on the floor past the step. Level 1 now has 7 lights.
+- **Checked in place,** in the plan's look from the way in and from the spawn: the mouth looks down the way in, the rings drift back into a tunnel, and from the spawn it's the one warm light. From the way in, at full glow, the core's middle burns white in Blender's bloom with either gold, so research's watch stays the install's.
+- **Content check before upload: PASS** (2026-11-17, 01:48), on both atlas pictures, the six meshes and the renders.
+
+**For Faber, the install:**
+- `src/shared/Config/Kits/Base/Plan.json` takes the handoff's `plan.json` as it is, with the masts' 4 lines from before.
+- **The way in** is the front ring's opening, not a mesh's size: a circle of radius 5 round 5.6 up, through the ring's depth (−1.0 to 0.6 along the Door's Y, its mouth at −1.0). A trigger inside it (a 7 by 7 square fits it) never touches a player walking past the stone. Today's is sized from `DoorWay`'s mesh, which is now the core.
+- **The rings turn always,** whatever the Door's state, each about its own origin: `CFrame.Angles(0, 0, math.rad(spin) * t)`, where the plan's `spin` is the rate. A positive spin goes anticlockwise seen from the mouth. Today "turns" with a Rate other than 1 follows the wheel, so this needs a constant-rate mode.
+- **The core's glow is the Door's state,** as the old way's was: full while a ground is open to go to, low while none is. Keep its tint white. Research's check is from the way in, at a phone's width: it reads as warm light, never a flat plate. If its middle burns white, lower its strength, not its colour.
+- **The lines glow full always:** the mouth's line and each ring's.
+- **The name** goes on the plate's face toward the way in: 5 by 1.3, its middle 12.3 up.
+- **The solid** is the step and the front ring. The opening stays open.
+- **Uploads:** `Base_Kit_Color` and `Base_Kit_Glow` again, and the six meshes.
+
+**Four facts:**
+- Implemented: the six pieces, the swatches and the plan, exported to `build/handoff/Base/`.
+- Tested: the export and the look ran in Blender. Nothing is in Studio.
+- Visually reviewed: Modulo's read from the renders in place. Research's pick of A stands, and its watch moves to the install.
+- Director-accepted: no.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

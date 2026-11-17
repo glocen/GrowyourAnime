@@ -12,11 +12,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 **Faber (builder).** 2026-11-17, 01:30. The phone run's six must-fixes are in (TR24, "The director's run", "Faber's six"): percents only, Critical Immunity, Main on its own total, one palette across the bag, Watt's and Kirra's portraits, the level on a badge in take A. Checked on a phone at level 100; stills in `build/scratch/faber/tr24_stills/` for research's pass. Four fight and reveal timing cases still wait to run again at 60 fps. Now: Modulo's uploads (the floor glow's three, the galaxy Breaker's six, the festival tag's four), then Ground Wire's blockout with Modulo, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 01:04, on Opus 5.5.
-- **TR24:** Watt's and Kirra's portraits are delivered (336c68e). The lead card's colours are three takes beside today's, for research's verdict and the director's pick (AR12, `lead_card_takes/lead_card_colours.png`). Each has the level on a badge on the frame in its own colours, so Faber's must-fix 6 takes the picked one. My read: A, the Voidkin's block.
-- **Ground Wire's look** (`/ga-action`): its grey rows are in `build/handoff/Watt/fx/`, with AR11's five block conditions. The blockout with Faber in the replay follows his must-fixes.
-- **Now:** the Festival Door's finish, C, the ring tunnel (research's pick, 5274d6a; AR15, section 7). Motion first: the rings turning, judged from the way-in camera at a phone's size before any colour.
-- **Later:** AR24, the chest's opening, after research's study; ids for the galaxy Breaker's six images and the festival tag's four; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
+**Modulo (assets).** 2026-11-17, 01:48, on Opus 5.5.
+- **The Festival Door** (AR15, section 7, "The finish"): take A with five rings is in the base kit, content check PASS. Its six pieces, the atlas and the plan are in `build/handoff/Base/`.
+- **Faber's part:** the install (the trigger from the front ring's opening, the rings' constant `spin`, the core's glow by the Door's state), the uploads, and `Plan.json` from the handoff, with the masts.
+- **Ground Wire's look** (`/ga-action`): the blockout is in Faber's replay. I judge his stills from `build/scratch/faber/ar11_block/` when they're in.
+- **Later:** AR24, the chest's opening, after research's study; AR13's eleven layers, whose upload waits on the director's word; TR10's two icons.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for the phone run's fixes and Watt's blockout. Blender: nobody. Timing tests: nobody.
 

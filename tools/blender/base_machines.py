@@ -28,10 +28,10 @@ middle, and a cell a seat as the battery's cap grows with the base's level (rese
 kWh), two, four and eight. A cell is its own piece, so the bank is its own meter: the builder lights the cells one
 after another as the charge rises.
 
-The Festival Door (`Door`, `DoorWay`): a door torn open in the void and held. Two standing stones on a threshold,
-the arch over them broken into stones that float in its line, a shard of the void's light for its keystone, and a
-festival lantern hung at each stone's shoulder, the one warm light in the base. The way of light between them is a
-piece by itself in one pale swatch, the builder's to tint and to dim.
+The Festival Door (`Door`, `DoorRing1` to `DoorRing4`, `DoorWay`; AR15, section 7): a ring tunnel. An upright ring of
+void stone on a low step, its opening the way a player walks into, and four thinner rings floating behind it, each
+further back, a little higher and aside, turning about the tunnel's axis each its own way, down to a warm core. Its
+lines of light are the one warm light in the base: amber at the mouth, paler ring by ring to the core's pale gold.
 
 The Training machine (`Training`, `TrainingCrown`): a sparring stone. A standing stone of void stone with blunt pegs
 toward the one who trains, a target of the void's light floating before its face, and a pad out in front where the
@@ -72,7 +72,6 @@ SEAT = 0.6                       # a cell's seat on the rack, up from the floor
 # the middle out
 SEATS = [(-0.75, -0.95), (0.75, -0.95), (-0.75, 0.95), (0.75, 0.95), (-2.25, -0.95), (2.25, -0.95), (-2.25, 0.95), (2.25, 0.95)]
 CELLS_AT = {1: 2, 2: 4, 3: 8}    # cells by the base's level, with the battery's cap
-WAY = (3.0, 11.6)                # the Door's way of light: its half width, and its point's height
 CROWN = 8.0                      # the Training machine's crown: its middle, up from the floor
 TRAINEE = 6.0                    # the Training machine's pad: its middle, out from the stone's toward the piece's front
 TOWER = 172.0                    # the sleeping Tower's tip
@@ -410,72 +409,151 @@ def battery_cell():
 
 
 # --- the Festival Door -------------------------------------------------------------------------------------------------
+# C, the ring tunnel (AR15, section 7: research's pick, 2026-11-17), with five rings, in take A's colours: warm all
+# through. Its front is its mouth, toward -Y: at the plan's turn of 90 it looks down the way in.
+
+MOUTH = (5.6, 6.4, 5.0, -1.0, 0.6)   # the front ring: its middle up from the floor, its outer and inner radius, its front and back along Y
+STEP = (14.0, 4.0, 0.6, -0.6)         # the step it stands on: across, deep, high, and its middle along Y
+# The rings behind, each its own piece turning about the tunnel's axis: how far back, its radius, its turn (degrees a
+# second, anticlockwise seen from the mouth: they alternate, faster the deeper), and its three arcs (from, to, in degrees
+# anticlockwise from across). Each stands a little aside and higher than the one before (DRIFT), so the tunnel drifts.
+RINGS = ((1.7, 5.3, 9.0, (20, 135, 150, 262, 280, 350)), (3.0, 4.4, -14.0, (70, 170, 190, 300, 318, 410)),
+         (4.1, 3.6, 20.0, (-30, 95, 112, 200, 222, 316)), (5.0, 2.9, -28.0, (40, 150, 168, 280, 296, 388)))
+DRIFT = (0.25, 0.35)                  # a ring's step aside and up from the one before
+CORE = (5.9, 2.4)                     # the core, where a fifth ring would stand: how far back, its radius
+LINE = (0.22, 0.2)                    # a line of light: its width on the face, and its lip's depth back along the edge
+NAME = (5.0, 0.5, 1.3)                # the name's plate, sunk into the front ring's crown: across, deep, high
+
+
+def ring_at(k):
+    """The middle of ring `k` (1 to 4; 5 is the core), in the Door's own frame: across, along its Y, up."""
+    y = RINGS[k - 1][0] if k <= len(RINGS) else CORE[0]
+    return (DRIFT[0] * k, y, MOUTH[0] + DRIFT[1] * k)
+
+
+def _arc(r, a0, a1, n=36):
+    """Points on a circle round the origin in X and Z, from a0 to a1 degrees; and whether it is whole."""
+    whole = a1 - a0 >= 360.0
+    steps = n if whole else max(2, round(n * (a1 - a0) / 360.0))
+    pts = [(r * math.cos(math.radians(a0 + (a1 - a0) * i / steps)), r * math.sin(math.radians(a0 + (a1 - a0) * i / steps)))
+           for i in range(steps if whole else steps + 1)]
+    return pts, whole
+
+
+def _face(m, pts, sw, toward, t):
+    """One face in a swatch, turned to look along `toward`; `t` down the swatch, 0 its foot to 1 its head, a number or
+    one a corner."""
+    pts = [Vector(q) for q in pts]
+    n = (pts[1] - pts[0]).cross(pts[2] - pts[0])
+    if n.length < 1e-9:
+        n = (pts[2] - pts[0]).cross(pts[-1] - pts[0])
+    ts = list(t) if isinstance(t, (list, tuple)) else [t] * len(pts)
+    if n.dot(Vector(toward)) < 0:
+        pts, ts = pts[::-1], ts[::-1]
+    m.face(pts, [kit.sw_uv(sw, 0.0, min(max(v, 0.0), 1.0)) for v in ts])
+
+
+def _stone(m, r, wide, y0, y1, arcs, sw, lift, at=(0.0, 0.0)):
+    """A ring's stone round `at` (X and Z), `wide` in from its outer radius, from y0 to y1 along Y: whole, or in arcs
+    (from, to) with their ends. Its swatch runs foot to head with its height, `lift` over the floor."""
+    def put(q, y):
+        return (at[0] + q[0], y, at[1] + q[1])
+
+    def t(*qs):
+        return [(at[1] + q[1] + lift) / 14.0 for q in qs]
+
+    centre = Vector((at[0], 0.0, at[1]))
+    for a0, a1 in arcs:
+        outer, whole = _arc(r, a0, a1)
+        inner, _ = _arc(r - wide, a0, a1)
+        k = len(outer)
+        for i in range(k if whole else k - 1):
+            j = (i + 1) % k
+            o0, o1, i0, i1 = outer[i], outer[j], inner[i], inner[j]
+            tt = t(o0, o1, i1, i0)
+            _face(m, [put(o0, y0), put(o1, y0), put(i1, y0), put(i0, y0)], sw, (0, -1, 0), tt)
+            _face(m, [put(o0, y1), put(o1, y1), put(i1, y1), put(i0, y1)], sw, (0, 1, 0), tt)
+            mid = (Vector(put(o0, 0)) + Vector(put(o1, 0))) / 2
+            _face(m, [put(o0, y0), put(o1, y0), put(o1, y1), put(o0, y1)], sw, mid - centre, t(o0, o1, o1, o0))
+            mid = (Vector(put(i0, 0)) + Vector(put(i1, 0))) / 2
+            _face(m, [put(i0, y0), put(i1, y0), put(i1, y1), put(i0, y1)], sw, centre - mid, t(i0, i1, i1, i0))
+        if not whole:
+            for i in (0, k - 1):
+                o, n = outer[i], inner[i]
+                side = Vector((o[0] - n[0], 0, o[1] - n[1])).cross(Vector((0, 1, 0)))
+                _face(m, [put(o, y0), put(n, y0), put(n, y1), put(o, y1)], sw, side if i else -side, t(o, n, n, o))
+
+
+def _line(m, r, y, arcs, sw, at=(0.0, 0.0)):
+    """A line of light on a ring's inner edge, round `at`: a strip on the face toward the mouth at `y`, its inner edge at
+    radius `r`, and a lip back along that edge, so it reads from the side too. One colour, so no gradient."""
+    wide, deep = LINE
+    for a0, a1 in arcs:
+        outer, whole = _arc(r + wide, a0, a1)
+        inner, _ = _arc(r, a0, a1)
+        k = len(outer)
+        for i in range(k if whole else k - 1):
+            j = (i + 1) % k
+            o0, o1, i0, i1 = ((at[0] + q[0], at[1] + q[1]) for q in (outer[i], outer[j], inner[i], inner[j]))
+            _face(m, [(o0[0], y, o0[1]), (o1[0], y, o1[1]), (i1[0], y, i1[1]), (i0[0], y, i0[1])], sw, (0, -1, 0), 0.5)
+            mid = Vector(((i0[0] + i1[0]) / 2 - at[0], 0, (i0[1] + i1[1]) / 2 - at[1]))
+            _face(m, [(i0[0], y, i0[1]), (i1[0], y, i1[1]), (i1[0], y + deep, i1[1]), (i0[0], y + deep, i0[1])], sw,
+                  -mid, 0.5)
+
 
 def door():
-    """The Festival Door's frame: a steel threshold with a line of the void's light round it, two standing stones of
-    void stone leaning a little apart, a vein on each one's inner edge, and over them the arch in four floating
-    stones and a keystone of the void's light. A festival lantern hangs from a peg at each stone's shoulder, and a
-    string of five paper lanterns hangs across the arch from stone to stone, in the way's own plane, so each face
-    shows it. The stones stay void stone: a void machine that opens on the festival. Both faces are fronts."""
+    """The Festival Door: a stone ring standing on a low step, its opening the way a player walks into, a line of
+    amber light round its inner edge, and the name's plate sunk into its crown. Void stone, the void machines' own: only
+    its light is warm. The rings behind it and its core are pieces of their own."""
     m = Mesh()
-    half, point = WAY
-    m.box((10.4, 2.8, 0.4), (0, 0, 0.2), "girder", ink=True)
-    m.box((10.5, 2.9, 0.1), (0, 0, 0.2), "void")
-    m.box((half * 2, 1.7, 0.1), (0, 0, 0.43), "dark")                                 # the sill, under the way
-    for sx in (-1, 1):
-        stone = [(sx * 4.0, 0, 0.4), (sx * 4.45, 0, 5.0), (sx * 4.1, 0, 9.4)]
-        widths = [1.0, 0.9, 0.6]
-        horn(m, stone, widths, "abyss", deep=0.9)
-        vein(m, stone, widths, (0, 0, 5.0), r=0.09)
-        horn(m, [(sx * 3.45, 0, 10.5), (sx * 2.2, 0, 12.0)], [0.5, 0.4], "abyss", deep=0.8)      # the arch, floating
-        horn(m, [(sx * 1.75, 0, 12.4), (sx * 0.75, 0, 12.95)], [0.34, 0.26], "abyss", deep=0.8)
-        horn(m, [(sx * 4.85, 0, 7.75), (sx * 5.95, 0, 8.05)], [0.2, 0.15], "abyss", ink=False)   # the lantern's peg
-        m.box((0.1, 0.1, 0.34), (sx * 5.8, 0, 7.72), "girder")
-        m.box((0.74, 0.74, 0.14), (sx * 5.8, 0, 7.5), "girder")
-        m.box((0.6, 0.6, 0.86), (sx * 5.8, 0, 7.0), "beacon")
-        m.box((0.74, 0.74, 0.14), (sx * 5.8, 0, 6.5), "girder")
-        m.box((0.2, 0.2, 0.3), (sx * 5.8, 0, 6.28), "copper")
-    shard(m, (0, 0, 13.6), 0.5, 2.0, "void")
-    reach, hung, sag = 4.1, 9.9, 0.8                                                  # the string: its ends, its dip
+    zc, outer, inner, front, back = MOUTH
+    m.box(STEP[:3], (0, STEP[3], STEP[2] / 2), "abyss", ink=True)
+    _stone(m, outer, outer - inner, front, back, [(0.0, 360.0)], "abyss", 0.0, at=(0.0, zc))
+    _line(m, inner - 0.02, front - 0.04, [(0.0, 360.0)], "doormouth", at=(0.0, zc))
+    m.box(NAME, (0, front - 0.15, zc + outer + 0.3), "rubber", ink=True)
+    w, d, h = NAME
+    way = (inner * 2, zc - inner, zc + inner)
+    return Piece("Door", m, solid=f"the step, {STEP[0]:g} by {STEP[1]:g} and {STEP[2]:g} high, and the front ring, "
+                                  f"{outer * 2:g} across and {back - front:g} deep, round its opening; the opening stays open",
+                 note=f"its origin is the step's middle on the floor; its mouth looks toward -Y, so at the plan's turn "
+                      f"of 90 it looks down the way in. The way a player walks into is the ring's opening: {way[0]:g} "
+                      f"across, from {way[1]:g} to {way[2]:g} up, in the ring's front at {front:g} along its Y. The name "
+                      f"goes on the plate's -Y face, {w:g} by {h:g}, its middle {zc + outer + 0.3:g} up. The line of "
+                      f"light round the opening is the Door's own: full always")
 
-    def line(x):
-        return (x, 0, hung - sag * (1 - (x / reach) ** 2))
 
-    m.tube([line(reach * (k - 5) / 5) for k in range(11)], 0.045, "rubber")
-    for k in range(-2, 3):
-        x, _, z = line(1.45 * k)
-        m.box((0.05, 0.05, 0.2), (x, 0, z - 0.1), "rubber")
-        m.box((0.3, 0.3, 0.08), (x, 0, z - 0.22), "rubber")
-        m.lathe([(0.17, 0.0), (0.38, -0.24), (0.38, -0.62), (0.17, -0.86)], (x, 0, z - 0.26), 6, "paper")
-        m.box((0.24, 0.24, 0.07), (x, 0, z - 1.15), "rubber")
-    return Piece("Door", m, solid="the threshold, 10.4 by 2.8 and 0.4 high, and the two stones on it, each about 2 by "
-                                  "1.8 and 9.4 high; the way between them stays open",
-                 note=f"its middle on the stand-in's, 14.6 high at its keystone. Turned 90, so its way looks down the "
-                      f"plot's way in. The way is {half * 2:g} wide between the stones, as the stand-in's")
+def door_ring(k):
+    """Ring `k` behind the front one, a piece by itself, built round its own middle: a thin stone back in three arcs,
+    each with a line of light on its inner edge. The arcs' gaps are its own, so its turn shows."""
+    y, r, rate, arcs = RINGS[k - 1]
+    lift = ring_at(k)[2]
+    spans = list(zip(arcs[0::2], arcs[1::2]))
+
+    def make():
+        m = Mesh(None)
+        _stone(m, r, 0.32, 0.0, 0.3, spans, "abyss", lift)
+        _line(m, r - 0.34, -0.04, [(a0 + 2, a1 - 2) for a0, a1 in spans], f"doorarc{k}")
+        way = "anticlockwise" if rate > 0 else "clockwise"
+        return Piece(f"DoorRing{k}", m,
+                     note=f"ring {k} of {len(RINGS)} behind the Door's front ring, {y:g} behind it, {r:g} in radius. Its "
+                          f"origin is its middle, on the tunnel's axis: it turns about its own Y, the axis, at {abs(rate):g} "
+                          f"degrees a second, {way} seen from the mouth, always, whatever the Door's state. Look only")
+    return make
 
 
 def door_way():
-    """The Door's way of light, a piece by itself: a sheet in a pointed arch between the stones, wearing the kit's
-    print of the festival seen through it (`base_kit.way`), from both sides."""
+    """The Door's core, where the tunnel ends, a piece by itself built round its own middle: a disc of warm light, its
+    middle the palest, deepening to amber at its rim, so it reads as light, not a plate."""
     m = Mesh(None)
-    half, point = WAY
-    u0, v0, u1, v1 = kit.pic_uv("way")
-
-    def uv(q):
-        return (u0 + (u1 - u0) * (q[0] + half) / (2 * half), v0 + (v1 - v0) * (q[2] - 0.5) / (point - 0.5))
-
-    edge = [(half, 0.5), (half, 7.6), (half - 0.7, 9.4), (half - 1.8, 10.8), (0.0, point)]
-    for (x0, z0), (x1, z1) in zip(edge, edge[1:]):
-        for sx in (-1, 1):
-            pts = [(0, 0, z0), (sx * x0, 0, z0), (sx * x1, 0, z1)] + ([(0, 0, z1)] if x1 else [])
-            for face in (pts, pts[::-1]):
-                m.face(face, [uv(q) for q in face])
+    r = CORE[1]
+    rim, _ = _arc(r, 0.0, 360.0, 32)
+    for (x0, z0), (x1, z1) in zip(rim, rim[1:] + rim[:1]):
+        _face(m, [(0, 0, 0), (x0, 0, z0), (x1, 0, z1)], "doorcore", (0, -1, 0), [1.0, 0.0, 0.0])
     return Piece("DoorWay", m,
-                 note=f"stands where its Door stands, the same turn: {half * 2:g} wide, from 0.5 to {point:g} up at its "
-                      f"point. It wears the kit's two pictures: the festival seen through the door, warm white at its "
-                      f"foot rising into cyan, lantern lights down a street. Its glow's strength is the Door's state, "
-                      f"low while no ground is open to go to; keep its tint white, or the festival's colours go. Look "
-                      f"only: the player walks through it")
+                 note=f"the Door's core, {r * 2:g} across, {CORE[0]:g} behind its mouth, facing it. Its origin is its "
+                      f"middle. Its glow's strength is the Door's state: full while a ground is open to go to, low while "
+                      f"none is. Keep its tint white, or its warmth goes. Look only: the way a player walks into is the "
+                      f"Door's opening (the Door's note), not this")
 
 
 def target(m, at, r0, r1, sides, sw):
@@ -538,7 +616,7 @@ def training_crown():
                       f"7.6 across at its weights. Look only")
 
 
-PIECES = {"Door": door, "DoorWay": door_way, "Training": training, "TrainingCrown": training_crown,
+PIECES = {"Door": door, **{f"DoorRing{k}": door_ring(k) for k in range(1, len(RINGS) + 1)}, "DoorWay": door_way, "Training": training, "TrainingCrown": training_crown,
           "Breaker": breaker, "BreakerChamber": breaker_chamber, "BreakerWaiting": breaker_waiting,
           "Bay": bay, "BayHalo": bay_halo, "BaySleeping": bay_sleeping, "SleepingStone": sleeping_stone, "TowerSleeping": tower_sleeping,
           "BatteryRack": battery_rack, "BatteryCell": battery_cell}

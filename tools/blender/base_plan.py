@@ -63,6 +63,12 @@ GENERATOR, BREAKER, DOOR, BATTERY, TRAINING = base.GENERATOR, base.BREAKER, base
 SHOWCASE = (14.0, 4.9)     # the showcase's plinth, just inside the gate, beside the way in: across, in (TR22)
 LAMP = ("BreakerLamp", *BREAKER, 10.0, "#8CF6FF")   # the Breaker's own light, over the chambers
 WELL_LIGHT = ("VoidWell", *GENERATOR, 1.6, "#B98CFF")   # the void's light under the generator, out of its well
+DOOR_TURN = 90.0           # the Door's turn: its mouth (-Y) looks down the way in
+# The Door's two lights, in its own frame (across, along its Y, up): one inside the tunnel, one on the floor just past
+# its step, so the walk in is warm (AR15, section 7; take A's light before its face is left out, for a phone's count)
+DOOR_LIGHTS = {"DoorInside": (0.6, 3.0, 6.4), "DoorMouth": (0.0, -3.6, 0.8)}
+DOOR_WARM = "#FFC27A"
+DOOR_SPIN = {f"DoorRing{k}": ring[2] for k, ring in enumerate(base.machines.RINGS, 1)}
 APART = 25.0               # the least from one machine's middle to the next (AR16)
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
@@ -111,11 +117,25 @@ def machines(level=1):
     made.append(("BatteryRack", *BATTERY, 0.0, 0.0, "the battery"))
     for index, (x, y) in enumerate(base.machines.SEATS[:base.machines.CELLS_AT[level]]):
         made.append(("BatteryCell", BATTERY[0] + x, BATTERY[1] - y, base.machines.SEAT, 0.0, f"the battery's cell {index + 1}"))
-    made.append(("Door", *DOOR, 0.0, 90.0, "the Festival Door, its way looking down the way in"))
-    made.append(("DoorWay", *DOOR, 0.0, 90.0, "the Door's way of light"))
+    made.append(("Door", *DOOR, 0.0, DOOR_TURN, "the Festival Door: its step, its front ring and the name's plate, its "
+                 "mouth looking down the way in"))
+    rings = len(base.machines.RINGS)
+    for k in range(1, rings + 2):
+        x, y, up = base.machines.ring_at(k)
+        made.append((f"DoorRing{k}" if k <= rings else "DoorWay", *door_part(x, y), round(up, 2), DOOR_TURN,
+                     f"the Door's ring {k}, turning about the tunnel's axis" if k <= rings
+                     else "the Door's core, its light the Door's state"))
     made.append(("Training", *TRAINING, 0.0, 0.0, "the Training machine, its pad toward the front"))
     made.append(("TrainingCrown", *TRAINING, base.machines.CROWN, 0.0, "the Training machine's crown, turning about its own upright while a Voidkin trains"))
     return made
+
+
+def door_part(x, y):
+    """A point in the Door's own frame (across, along its Y) where the plan stands it: across, and in from the front
+    edge. The Door is turned DOOR_TURN anticlockwise from above, so its mouth (-Y) looks down the way in."""
+    turn = math.radians(DOOR_TURN)
+    return (round(DOOR[0] + x * math.cos(turn) - y * math.sin(turn), 2),
+            round(DOOR[1] - (x * math.sin(turn) + y * math.cos(turn)), 2))
 
 
 def stations(level=1):
@@ -191,6 +211,9 @@ def plan(level=1):
         put("Transformer", math.copysign(abs(x) - 16.0, x), inward + 5.5, 0)
     lights.append((*LAMP[:2], -LAMP[2], *LAMP[3:], "point"))
     lights.append((*WELL_LIGHT[:2], -WELL_LIGHT[2], *WELL_LIGHT[3:], "point"))
+    for name, (x, y, up) in DOOR_LIGHTS.items():
+        across, inward = door_part(x, y)
+        lights.append((name, across, round(-inward, 2), up, DOOR_WARM, "point"))
     # the showcase: the owner's Voidkin on its plinth, on the gate's right, beside the way in and never in it, so the
     # Strip sees it through the gate and a player walks past it to the heart
     _, (sx, sy, sz), colour = base.show.LIGHT
@@ -263,8 +286,11 @@ def write_plan(out: Path):
                  "its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is "
                  "its own piece in one pale swatch: it stands only while a worker works there, in the worker's "
                  "rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots "
-                 "(`layout.laterBays`).",
-            placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w, **({"toward": "crossing"} if n == "TowerSleeping" else {}))
+                 "(`layout.laterBays`). The Festival Door is five pieces and a core: a ring's `spin` is its turn about "
+                 "its own origin, degrees a second, always: CFrame.Angles(0, 0, math.rad(spin) * t), so a positive "
+                 "spin goes anticlockwise seen from the mouth (the part's +Z looks out of it).",
+            placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w, **({"toward": "crossing"} if n == "TowerSleeping" else {}),
+                             **({"spin": DOOR_SPIN[n]} if n in DOOR_SPIN else {}))
                         for n, x, i, z, t, w in machines()],
             generatorStages=dict(
                 note="AR19: the generator's three stages, the swap's table (base_mill.py, `stages`). The generator "

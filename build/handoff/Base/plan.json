@@ -540,6 +540,24 @@
      "cone": null
     },
     {
+     "name": "DoorInside",
+     "across": -29.0,
+     "along": -45.4,
+     "up": 6.4,
+     "colour": "#FFC27A",
+     "kind": "point",
+     "cone": null
+    },
+    {
+     "name": "DoorMouth",
+     "across": -22.4,
+     "along": -46.0,
+     "up": 0.8,
+     "colour": "#FFC27A",
+     "kind": "point",
+     "cone": null
+    },
+    {
      "name": "Showcase",
      "across": 14.0,
      "along": -2.3,
@@ -564,7 +582,7 @@
    "budget": {
     "pieces": 82,
     "triangles": 21384,
-    "lights": 5,
+    "lights": 7,
     "counts": {
      "Court1": 1,
      "Gate1": 1,
@@ -792,7 +810,7 @@
   }
  },
  "machines": {
-  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots (`layout.laterBays`).",
+  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots (`layout.laterBays`). The Festival Door is five pieces and a core: a ring's `spin` is its turn about its own origin, degrees a second, always: CFrame.Angles(0, 0, math.rad(spin) * t), so a positive spin goes anticlockwise seen from the mouth (the part's +Z looks out of it).",
   "placements": [
    {
     "piece": "Breaker",
@@ -1057,15 +1075,51 @@
     "along": -46.0,
     "up": 0.0,
     "turn": 90.0,
-    "standsFor": "the Festival Door, its way looking down the way in"
+    "standsFor": "the Festival Door: its step, its front ring and the name's plate, its mouth looking down the way in"
+   },
+   {
+    "piece": "DoorRing1",
+    "across": -27.7,
+    "along": -45.75,
+    "up": 5.95,
+    "turn": 90.0,
+    "standsFor": "the Door's ring 1, turning about the tunnel's axis",
+    "spin": 9.0
+   },
+   {
+    "piece": "DoorRing2",
+    "across": -29.0,
+    "along": -45.5,
+    "up": 6.3,
+    "turn": 90.0,
+    "standsFor": "the Door's ring 2, turning about the tunnel's axis",
+    "spin": -14.0
+   },
+   {
+    "piece": "DoorRing3",
+    "across": -30.1,
+    "along": -45.25,
+    "up": 6.65,
+    "turn": 90.0,
+    "standsFor": "the Door's ring 3, turning about the tunnel's axis",
+    "spin": 20.0
+   },
+   {
+    "piece": "DoorRing4",
+    "across": -31.0,
+    "along": -45.0,
+    "up": 7.0,
+    "turn": 90.0,
+    "standsFor": "the Door's ring 4, turning about the tunnel's axis",
+    "spin": -28.0
    },
    {
     "piece": "DoorWay",
-    "across": -26.0,
-    "along": -46.0,
-    "up": 0.0,
+    "across": -31.9,
+    "along": -44.75,
+    "up": 7.35,
     "turn": 90.0,
-    "standsFor": "the Door's way of light"
+    "standsFor": "the Door's core, its light the Door's state"
    },
    {
     "piece": "Training",

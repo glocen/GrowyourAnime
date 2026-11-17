@@ -103,7 +103,8 @@ SWATCHES = {
     "cyan": ("#8CF6FF", "#3CC8E8", 1.0), "lamp": ("#F6FCFF", "#CDEEFF", 1.0), "beacon": ("#FF9A7A", "#FF6A52", 1.0),
     "dark": ("#1E1426", "#0C0A12", 0.0), "ink": ("#0C0A16", "#0C0A16", 0.0),
     "void": ("#E9DBFF", "#A97CFF", 1.0), "abyss": ("#4B3A7E", "#171030", 0.0),   # the void machines': its light, its stone
-    "paper": ("#FFF6E0", "#FFC27A", 1.0),      # the second row: a festival lantern's paper, lit from inside
+    # the second row. The Festival Door's lines (AR15, section 7, take A): amber at the mouth, paler ring by ring
+    "doormouth": ("#FF9038", "#FF9038", 1.0),
     "dawn": ("#FF9AD2", "#FF4FA6", 0.55),      # the Tower's own light, faint
     # The distance, painted in (AR20): with no haze to pale them, the far shards, the Tower asleep and the shards
     # breaking out beside the crossing stood as black cut-outs against the day sky. Each wears a lighter void stone:
@@ -111,12 +112,15 @@ SWATCHES = {
     "far": ("#9284C8", "#5E5298", 0.0),        # the great shards past the map's edge (the Strip's FarShard pieces)
     "tower": ("#7C76AE", "#46427A", 0.0),      # the Tower asleep, a violet slate
     "outcrop": ("#8474BC", "#4A3E86", 0.0),    # the Strip's ShardOutcrop, nearer, a little deeper
+    "doorarc1": ("#FFA448", "#FFA448", 1.0), "doorarc2": ("#FFB65C", "#FFB65C", 1.0),
+    "doorarc3": ("#FFC977", "#FFC977", 1.0), "doorarc4": ("#FFDA98", "#FFDA98", 1.0),
+    "doorcore": ("#FFCF7E", "#FF9A3C", 1.0),   # the core: its middle (the head) the palest, its rim (the foot) amber; gold
+                                               # enough to hold its hue where the glow is full (a paler one burns white)
 }
 SWATCH_AT = {name: ((i % 16) * CELL[0], (i // 16) * CELL[1]) for i, name in enumerate(SWATCHES)}
 # Prints: where each sits (x, y, width, height), each with a 4 pixel bleed round it.
 PRINTS = {"panel": (8, 268, 512, 160), "hazard": (536, 268, 256, 48), "plate": (536, 332, 256, 112)}
 PRINTS["half"] = (8, 268, 256, 160)   # the panel's first 8 studs, for the half panel: the same pixels, not drawn again
-PRINTS["way"] = (8, 464, 240, 448)    # the Festival Door's way: the festival seen through it, 6 studs by 11.1
 DECK = (512, 8.0)      # the deck's own tile: pixels, and the studs it covers (four plates)
 PLATE = 4.0            # a deck plate, studs
 DECK_TONES = ("#9EA7BC", "#8790A8", "#3A4154", "#BEC6D6")   # a plate's two colours, its seam, its lit edge (AR20's C)
@@ -177,35 +181,7 @@ def atlas():
         for cy in (22.0, h - 22.0):
             _mix(rgb, "#8A94B6", np.clip(3.0 - np.hypot(xx - cx, yy - cy), 0, 1))
     kit._put(page, glow, rgb[..., :3], x, y, (0.55 * line).astype(np.float32))
-    rgb, lit = way()
-    kit._put(page, glow, rgb, *PRINTS["way"][:2], lit)
     return page, glow
-
-
-def way():
-    """The Festival Door's way, its colour and its glow: the festival seen through the door. A street's warm white
-    light at its foot rising into cyan dusk, and two strings of paper lanterns running away down the street to one
-    point. Research's call, 2026-11-16: the Door says where it leads by the festival's own warm white and cyan."""
-    _, _, w, h = PRINTS["way"]
-    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
-    up = 1.0 - yy / h                                             # 0 the foot, 1 the arch's point
-    rgb = np.empty((h, w, 4), np.float32)
-    high = np.clip((up - 0.3) / 0.7, 0, 1)[..., None]
-    rgb[..., :3] = code("#7FEAF4") * (1 - high) + code("#1C9CCB") * high
-    warm = np.clip((0.44 - up) / 0.36, 0, 1) ** 1.2
-    _mix(rgb, "#FFF3D2", warm)
-    lit = 0.5 + 0.2 * (1 - high[..., 0]) + 0.3 * warm
-    cx, far = w / 2, 0.36                                         # the street's far end, where the strings meet
-    for k in range(7):
-        near = 0.66 ** k
-        r = 19.0 * near
-        for side in (-1, 1):
-            lx, ly = cx + side * 0.41 * w * near, h * (1 - (far + 0.40 * near))
-            d = np.hypot((xx - lx) / 0.82, yy - ly) / r
-            _mix(rgb, "#FFBE6A", np.clip(1.0 - (d - 1.0) / 1.5, 0, 1) ** 2 * 0.75)    # its halo
-            _mix(rgb, "#FFF9EA", np.clip((1.12 - d) / 0.24, 0, 1))                    # its paper
-            lit = np.maximum(lit, np.clip(1.0 - (d - 1.0) / 1.5, 0, 1))
-    return rgb[..., :3], lit.astype(np.float32)
 
 
 def plates(x, y, seed, px):

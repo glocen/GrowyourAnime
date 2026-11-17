@@ -1,24 +1,30 @@
-"""AR33: the extraction bays' Stages II and III, two directions for how a bay grows, in grey beside Stage I
-(docs/asset-requests.md, AR33, "The two directions, planned").
+"""AR33: the extraction bays' Stages II and III, the Horned Crown, as base kit pieces (docs/asset-requests.md, AR33).
 
+A bay takes the stage of its own machine level: Stage I from level 1, II from 6, III from 15 (Config.Base, Stages).
+The crescent grows. At Stage II its horns rise to 12, their tips still apart over the ring, a tine grows from each
+shoulder up and out to 11, and a toothed ring of void stone stands round the ring. At Stage III the horns reach 14.5, a
+second tine branches from each horn to 15.6, bone clamps hold the branches, and a second toothed ring stands outside the
+first. The toothed rings turn, opposite ways, while a worker works there.
+
+A bay grows on its outer side and up, never over its inner half or in front, so from the court, where the player meets
+the bays (research's view for them, 2026-11-17), the growth stays behind the worker. The pad stays 10 square, and the
+ring and its shard stay 8 up on the outer side, so BayHalo is right at every stage.
+
+The pieces (base_kit.py takes PIECES), each in the bay's own frame, stood at the bay's place with the bay's turn:
+  Bay2, Bay3     each stage's still bay, in place of Bay
+  BayCog         the toothed ring round the ring, 16 teeth; it turns
+  BayCogOuter    Stage III's second, outside the first, 22 teeth; it turns the other way
+The swap's table is tables(): plan.json's machines.bayStages.
+
+The content check's conditions (2026-11-17) hold: the ring and its shard stay as Stage I has them, pale, nothing orange
+or red at them; the horns' tips stay apart over the ring; in black, no upright even crown; no tall tapering tower;
+nothing written on a ring; the toothed rings' teeth short and square-ended, in matte void stone, unlit, with no spokes
+and no brass, copper or gold near them; the bone clamps pale ivory.
+
+The review, each stage in the yard at base level 3, from a player in the court turned to the left side's three bays and
+head-on from the court, cut small and in black:
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/base_bay.py -- <abs out_dir> [fast]
-
-A bay grows on its outer side and up, never over its inner half or in front: the court and the gate see the worker
-from there, so the growth stays behind the worker from every view in the yard. The pad stays 10 square, and the ring
-and its shard stay 8 up on the outer side, so BayHalo is right at every stage.
-
-  A, the Horned Crown   the crescent grows: at Stage II its horns rise to 12 and close over the ring higher, each
-                        grows a tine from its shoulder, and a toothed ring of void stone turns round the ring; at
-                        Stage III the horns reach 14.5 with a second tine and bone clamps where they branch, and a
-                        second toothed ring turns the other way outside the first
-  B, the Draw           rings toward the worker: at Stage II a second ring, three arcs of void stone, turns a stud in
-                        front of the first, held from above by two fingers from the crescent; at Stage III a third,
-                        larger, nearer still, makes an open funnel narrowing to the shard, held by two more fingers
-                        from a taller crescent
-
-Each stage stands on all six bays at base level 3, a worker's size on each, and is seen from the spawn's start camera,
-from the gate through it from the Strip, and close on one bay; the close bay is also cut at 64 and 128 px and in
-black. It writes each view and a sheet a direction (bay_A.png, bay_B.png).
+B, the Draw, the direction research didn't pick, is in git (e1c365d).
 """
 
 import math
@@ -26,46 +32,38 @@ import sys
 import textwrap
 from pathlib import Path
 
-import bpy
-import numpy as np
-from bpy_extras.object_utils import world_to_camera_view
 from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import base_kit as base  # noqa: E402
 import base_machines as bm  # noqa: E402
 from base_mill import Mesh, at, prism, put  # noqa: E402
-import base_plan as plan  # noqa: E402
-import blcommon as bl  # noqa: E402
-import lantern_row_kit as kit  # noqa: E402
-import lantern_row_look as look  # noqa: E402
-import rook_sheet as rs  # noqa: E402
-import ui_sheet as ui  # noqa: E402
+from lantern_row_kit import Piece  # noqa: E402
 
 SIDE, TOP = bm.BAY
 BACK = -(SIDE / 2 - 0.55)             # the crescent's plane, on the outer side
-EYE = bm.HALO[0]                      # the ring's middle, up
-TO_X = Matrix.Rotation(math.pi / 2, 4, "Y")   # a part built about Z, turned so its Z lies along X, facing the worker
-GREY = {"steel": "concrete", "girder": "concrete", "abyss": "concrete", "yellow": "concrete", "copper": "concrete",
-        "bone": "ceramic"}
-STAGES = {"A": "the Horned Crown", "B": "the Draw"}
+RING = bm.HALO[0]                     # the ring's middle, up
+TO_X = Matrix.Rotation(math.pi / 2, 4, "Y")   # a part built about Z, turned so its Z lies along X, toward the worker
+
+# Each stage's crescent: a horn from its foot to its tip, (across the pad, up), its half widths; the tines, each from
+# where it leaves the horn to its tip; the bone clamps where they branch.
+SHAPE = {
+    2: dict(arm=[(3.7, TOP + 0.5), (4.9, 3.6), (4.6, 7.6), (3.5, 10.5), (2.1, 12.0)], widths=[0.8, 0.74, 0.6, 0.4, 0.05],
+            tines=[([(4.55, 7.3), (4.85, 9.4), (4.97, 11.0)], [0.46, 0.32, 0.05])], clamps=[]),
+    3: dict(arm=[(3.7, TOP + 0.5), (4.95, 4.0), (4.85, 8.5), (3.8, 12.2), (2.3, 14.5)], widths=[0.9, 0.82, 0.68, 0.46, 0.05],
+            tines=[([(4.8, 8.3), (4.95, 10.6), (4.98, 12.4)], [0.5, 0.34, 0.05]),
+                   ([(3.75, 12.3), (4.2, 14.0), (4.5, 15.6)], [0.42, 0.3, 0.05])],
+            clamps=[(4.82, 8.4), (3.75, 12.3)]),
+}
+# The toothed rings: out to the teeth's root, teeth, the web's hole, and the way each turns.
+COGS = {"BayCog": dict(r=2.75, teeth=16, hole=2.15, sign=1), "BayCogOuter": dict(r=3.55, teeth=22, hole=3.15, sign=-1)}
+TOOTH = (0.3, 0.36)                   # a tooth: out past the root, and its width, square-ended
+COG_THICK = 0.35
 
 
-class Grey:
-    """While it's open, every swatch a block asks for is drawn in the block's grey."""
-
-    def __enter__(self):
-        self.own = kit.sw_uv
-        kit.sw_uv = lambda name, occ, t: self.own(GREY.get(name, name), occ, t)
-
-    def __exit__(self, *_):
-        kit.sw_uv = self.own
-
-
-# --- what every stage keeps --------------------------------------------------------------------------------------------
+# --- the shapes -------------------------------------------------------------------------------------------------------
 
 def ground(m):
-    """The bay's deck, dais, well, inner corners and the current's outlet, as Stage I has them."""
+    """The bay's deck, dais, well, inner corners, ring, shard and the current's outlet, as Stage I has them."""
     m.box((SIDE, SIDE, TOP), (0, 0, TOP / 2), "girder", ink=True)
     m.box((SIDE + 0.1, SIDE + 0.1, 0.1), (0, 0, 0.2), "void")
     m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, TOP), 12, "abyss")
@@ -75,135 +73,147 @@ def ground(m):
     for sy in (-1, 1):
         bm.horn(m, [(4.35, sy * 4.35, TOP), (3.75, sy * 3.75, TOP + 1.7)], [0.42, 0.05], "abyss", flat=(sy, -1.0, 0.0))
         bm.shard(m, (3.6, sy * 3.6, TOP + 2.55), 0.24, 0.9, "void")
-    bm.hoop(m, (BACK, 0, EYE), bm.HALO[1], bm.HALO[2], 0.4, 12, "abyss")
-    bm.shard(m, (BACK, 0, EYE), 0.8, 3.0, "void", lean=0.55)
+    bm.hoop(m, (BACK, 0, RING), bm.HALO[1], bm.HALO[2], 0.4, 12, "abyss")
+    bm.shard(m, (BACK, 0, RING), 0.8, 3.0, "void", lean=0.55)
     m.box((0.9, 1.6, 1.0), (BACK + 0.3, 0, TOP + 0.5), "girder", ink=True)
     m.box((0.1, 1.0, 0.2), (BACK + 0.78, 0, TOP + 0.6), "power")
 
 
-def crescent(m, arm, widths):
-    """The crescent's two horns along `arm` (across the pad, up), in the crescent's plane, a vein in each. Their tips
-    stay apart over the ring (the content check's condition 2: never an almond round it)."""
-    t = 0.35
+def still(stage):
+    """A stage's still bay: Stage I's ground, the grown crescent with a vein in each horn stopping over a stud short of
+    its tip, the tines, and the bone clamps."""
+    m = Mesh()
+    ground(m)
+    shape = SHAPE[stage]
+    arm, widths, t = shape["arm"], shape["widths"], 0.35
     end = tuple(a + (b - a) * t for a, b in zip(arm[-2], arm[-1]))
     for sy in (-1, 1):
         pts = [(BACK, sy * y, z) for y, z in arm]
         bm.horn(m, pts, widths, "abyss", flat=(1.0, 0.0, 0.0), deep=0.75)
         bm.vein(m, pts[:-1] + [(BACK, sy * end[0], end[1])], widths[:-1] + [widths[-2] + (widths[-1] - widths[-2]) * t],
                 (BACK, 0, 5.5), r=0.08)
+        for line, radii in shape["tines"]:
+            bm.horn(m, [(BACK, sy * y, z) for y, z in line], radii, "abyss", flat=(1.0, 0.0, 0.0), deep=0.75)
+        for y, z in shape["clamps"]:
+            m.box((0.9, 0.8, 0.7), (BACK, sy * y, z), "bone", ink=True)
+    return m
 
 
-def tine(m, sy, pts, widths):
-    bm.horn(m, [(BACK, sy * y, z) for y, z in pts], widths, "abyss", flat=(1.0, 0.0, 0.0), deep=0.75)
-
-
-def notched(m, r, teeth, hole, x=BACK, thick=0.35, tooth=(0.3, 0.36)):
-    """A toothed ring of void stone round the ring, in the crescent's plane: its web from `hole` out to `r`, and
-    short, square-ended teeth, as long as they're wide (the content check's condition 6: never tapered or pointed)."""
+def cog(name):
+    """A toothed ring about its own axle, the piece's X: a web of void stone from its hole out to the teeth's root, and
+    short, square-ended teeth as long as they're wide."""
+    c = COGS[name]
     g = Mesh()
-    bm.hoop(g, (0, 0, 0), hole, r + 0.02, thick, max(teeth, 12), "abyss", lying=True)
-    out_, wide = tooth
-    for k in range(teeth):
-        a = math.tau * (k + 0.5) / teeth
+    bm.hoop(g, (0, 0, 0), c["hole"], c["r"] + 0.02, COG_THICK, max(c["teeth"], 12), "abyss", lying=True)
+    out, wide = TOOTH
+    for k in range(c["teeth"]):
+        a = math.tau * (k + 0.5) / c["teeth"]
         o, s = Vector((math.cos(a), math.sin(a), 0.0)), Vector((-math.sin(a), math.cos(a), 0.0))
-        rim = [o * r - s * wide / 2, o * (r + out_) - s * wide / 2, o * (r + out_) + s * wide / 2, o * r + s * wide / 2]
-        prism(g, rim, thick, "abyss", o * (r + out_ / 2))
-    put(m, g, at(x, 0, EYE) @ TO_X)
-
-
-def arcs(m, x, r, width, count=3, span=100.0, phase=0.0):
-    """A ring of `count` arcs of void stone round the shard, each `span` degrees and tapered at its ends, the first
-    centred `phase` degrees from the top: a ring that shows its turning. Plain: nothing on it (condition 5)."""
-    n = 6
-    for k in range(count):
-        a0 = math.radians(phase + 360.0 * k / count - span / 2)
-        pts = [(x, r * math.sin(a0 + math.radians(span) * i / (n - 1)), EYE + r * math.cos(a0 + math.radians(span) * i / (n - 1)))
-               for i in range(n)]
-        bm.horn(m, pts, [0.05, width * 0.85, width, width, width * 0.85, 0.05], "abyss", flat=(1.0, 0.0, 0.0), deep=0.9)
-
-
-def on_ring(x, r, deg):
-    """The point `deg` degrees from the top of a ring of radius `r` in the plane at `x`."""
-    a = math.radians(deg)
-    return x, r * math.sin(a), EYE + r * math.cos(a)
-
-
-# --- A, the Horned Crown -----------------------------------------------------------------------------------------------
-
-def crown(stage):
+        rim = [o * c["r"] - s * wide / 2, o * (c["r"] + out) - s * wide / 2, o * (c["r"] + out) + s * wide / 2,
+               o * c["r"] + s * wide / 2]
+        prism(g, rim, COG_THICK, "abyss", o * (c["r"] + out / 2))
     m = Mesh()
-    ground(m)
-    if stage == 2:
-        crescent(m, [(3.7, TOP + 0.5), (4.9, 3.6), (4.6, 7.6), (3.5, 10.5), (2.1, 12.0)], [0.8, 0.74, 0.6, 0.4, 0.05])
-        for sy in (-1, 1):                               # a tine from each shoulder, up and out
-            tine(m, sy, [(4.55, 7.3), (4.85, 9.4), (4.97, 11.0)], [0.46, 0.32, 0.05])
-        notched(m, 2.75, 16, 2.15)
-    else:
-        crescent(m, [(3.7, TOP + 0.5), (4.95, 4.0), (4.85, 8.5), (3.8, 12.2), (2.3, 14.5)], [0.9, 0.82, 0.68, 0.46, 0.05])
-        for sy in (-1, 1):
-            tine(m, sy, [(4.8, 8.3), (4.95, 10.6), (4.98, 12.4)], [0.5, 0.34, 0.05])
-            tine(m, sy, [(3.75, 12.3), (4.2, 14.0), (4.5, 15.6)], [0.42, 0.3, 0.05])
-            for y, z in ((4.82, 8.4), (3.75, 12.3)):     # a bone clamp where each tine branches
-                m.box((0.9, 0.8, 0.7), (BACK, sy * y, z), "bone", ink=True)
-        notched(m, 2.75, 16, 2.15)
-        notched(m, 3.55, 22, 3.15, x=BACK - 0.05)
+    put(m, g, TO_X)
     return m
 
 
-# --- B, the Draw -------------------------------------------------------------------------------------------------------
+# --- the kit's pieces and the swap's table ------------------------------------------------------------------------------
 
-def finger(m, sy, start, mid, ring_x, ring_r, deg):
-    """A finger from the crescent's horn to a ring's upper side, and a bone clamp on the ring: two a ring, never at
-    its quarter points (condition 9)."""
-    cx, cy, cz = on_ring(ring_x, ring_r + 0.3, deg)
-    bm.horn(m, [(BACK, sy * start[0], start[1]), (mid[0], sy * mid[1], mid[2]), (cx, sy * cy, cz)], [0.34, 0.26, 0.2],
-            "abyss", flat=(0.4, 0.0, 1.0))
-    x, y, z = on_ring(ring_x, ring_r + 0.12, deg)
-    m.box((0.5, 0.55, 0.55), (x, sy * y, z), "bone", ink=True)
+def bay_stage(stage):
+    def make():
+        grown = ("its horns risen to 12, their tips apart over the ring, and a tine from each shoulder to 11" if stage == 2
+                 else "its horns risen to 14.5, a tine from each shoulder to 12.4 and a second branching from each horn "
+                      "to 15.6, bone clamps where they branch")
+        return Piece(f"Bay{stage}", still(stage), solid="a box, 10 square, 0.4 high, and the crescent's two feet",
+                     note=f"Stage {'II' if stage == 2 else 'III'}'s still bay, in place of Bay at the same place and "
+                          f"turn: {grown}. The worker stands at the pad's middle; the ring's middle is {RING:g} up, as "
+                          f"Stage I's, so BayHalo stands as it does. The toothed rings stand by machines.bayStages")
+    return make
 
 
-def draw(stage):
+def bay_cog(name):
+    def make():
+        c = COGS[name]
+        which = ("round the ring, from Stage II" if name == "BayCog" else "Stage III's second, outside the first")
+        return Piece(name, cog(name),
+                     note=f"a toothed ring of void stone {which}: {c['teeth']} square teeth, "
+                          f"{2 * (c['r'] + TOOTH[0]):g} across, unlit. Its origin on its axle's middle; its axle along "
+                          f"the piece's X (Roblox's X). It turns while a worker works there, CFrame.Angles(angle * sign, "
+                          f"0, 0) with the sign the table gives, so the two turn opposite ways. Look only")
+    return make
+
+
+def stages():
+    """The swap's table: each stage's pieces at the bay's place (across, toward the gate, up), and how each moves."""
+    table = {}
+    for stage in (1, 2, 3):
+        rows = [dict(piece="Bay" if stage == 1 else f"Bay{stage}", at=[0.0, 0.0, 0.0], moves="still")]
+        for name in (() if stage == 1 else ("BayCog",) if stage == 2 else ("BayCog", "BayCogOuter")):
+            rows.append(dict(piece=name, at=[round(BACK, 3), 0.0, RING], moves="turns", sign=COGS[name]["sign"]))
+        table[str(stage)] = dict(pieces=rows)
+    return table
+
+
+def tables():
+    return dict(bayStages=dict(
+        note="AR33: the extraction bays' three stages, the Horned Crown, the swap's table. A bay takes the stage of its "
+             "own machine level (Config.Base, Stages: 1, 6, 15). Every place is in the bay's own frame, turned with "
+             "it as Bay is (0 on the plot's left, 180 on its right): `across` toward the outer side's crescent is "
+             "negative, `along` toward the gate, `up` from its floor. A stage's pieces replace the one before's. "
+             "`moves`: still; turns, about the piece's own axle while a worker works there, CFrame.Angles(angle * "
+             "sign, 0, 0). BayHalo and BaySleeping stand as they do at every stage.",
+        stages=stages()))
+
+
+PIECES = {"Bay2": bay_stage(2), "Bay3": bay_stage(3), "BayCog": bay_cog("BayCog"), "BayCogOuter": bay_cog("BayCogOuter")}
+
+
+# --- the review: each stage in the yard, from the court -----------------------------------------------------------------
+
+def stood(stage):
+    """A stage whole, every piece at its table's place: for the review."""
     m = Mesh()
-    ground(m)
-    one, two = (BACK + 1.1, 2.35, 0.24), (BACK + 1.9, 2.95, 0.28)
-    if stage == 2:
-        crescent(m, [(3.7, TOP + 0.5), (4.9, 3.6), (4.6, 7.4), (3.6, 10.2), (2.2, 11.2)], [0.8, 0.74, 0.6, 0.4, 0.05])
-        arcs(m, one[0], one[1], one[2])
-        for sy in (-1, 1):
-            finger(m, sy, (3.8, 9.9), (BACK + 0.6, 2.9, 10.6), one[0], one[1], 40.0)
-    else:
-        crescent(m, [(3.7, TOP + 0.5), (4.95, 3.8), (4.85, 8.0), (4.0, 11.6), (2.2, 13.5)], [0.9, 0.82, 0.68, 0.46, 0.05])
-        arcs(m, one[0], one[1], one[2])
-        arcs(m, two[0], two[1], two[2], phase=60.0)
-        for sy in (-1, 1):
-            finger(m, sy, (4.2, 10.6), (BACK + 0.6, 3.0, 11.0), one[0], one[1], 40.0)
-            finger(m, sy, (4.75, 9.0), (BACK + 1.0, 4.0, 9.8), two[0], two[1], 60.0)
+    made = {"Bay": bm.bay().mesh, "Bay2": still(2), "Bay3": still(3), "BayCog": cog("BayCog"),
+            "BayCogOuter": cog("BayCogOuter")}
+    for row in stages()[str(stage)]["pieces"]:
+        put(m, made[row["piece"]], at(*row["at"]))
     return m
 
 
-BUILD = {"A": crown, "B": draw}
+def toward(at_, target):
+    """The game's camera behind a player at `at_` (across, in), turned to `target` (across, in): Roblox's start zoom and
+    the replay's pitch, as base_plan's behind()."""
+    import lantern_row_look as look
+    pitch, focus = math.radians(20.0), Vector((at_[0], -at_[1], 3.0 + look.FOCUS))
+    flat = Vector((target[0] - at_[0], -(target[1] - at_[1]), 0.0)).normalized()
+    eye = focus - flat * math.cos(pitch) * look.ZOOM + Vector((0, 0, 1)) * math.sin(pitch) * look.ZOOM
+    return tuple(eye), tuple(focus)
 
 
-# --- the yard, the views and the sheets ----------------------------------------------------------------------------
+def review(out, fast):
+    import numpy as np
+    import bpy
+    from bpy_extras.object_utils import world_to_camera_view
+    import base_kit as base
+    import base_plan as plan
+    import blcommon as bl
+    import lantern_row_look as look
+    import rook_sheet as rs
+    import ui_sheet as ui
 
-LEVEL = 3                                     # all six bays open
-
-
-def yard_without_bays(out: Path, fast):
-    """base_plan's look at level 3, its bays taken out (their halos stay)."""
-    made = plan.machines
-    plan.machines = lambda level=1: [row for row in made(level) if row[0] != "Bay"]
+    level = 3                                  # all six bays open
+    made = plan.machines                       # the yard as it stands, its bays taken out (their halos stay)
+    plan.machines = lambda lv=1: [row for row in made(lv) if row[0] != "Bay"]
     d = look.DIRECTIONS["M"]
     look.FOG.update(colour=look.srgb(d["fog"][0]), density=d["fog"][1], azimuth=d.get("glow_az", 0.0),
                     away=look.srgb(d["fog_away"]) if "fog_away" in d else None)
     scene = bl.reset_scene()
     base.write_pictures(out / "maps")
-    yard = plan.Yard(scene, LEVEL, out / "maps")
+    yard = plan.Yard(scene, level, out / "maps")
     yard.plot(0.0, 1)
     yard.plot(plan.STRIP, -1)
     yard.kit.block("Strip", (3 * plan.PLOT, plan.STRIP, 0.4), (0, plan.STRIP / 2, -0.22), yard.stone)
     yard.kit.block("Ground", (5 * plan.PLOT, 4 * plan.PLOT, 0.4), (0, plan.STRIP / 2, -0.3), yard.flat["ground"])
-    yard.person((base.SPAWN[0], -base.SPAWN[1]))
     for obj in yard.kit.pieces:
         if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
             obj.visible_shadow = False
@@ -224,65 +234,14 @@ def yard_without_bays(out: Path, fast):
             setattr(scene.eevee, attr, val)
         except AttributeError:
             pass
-    return scene, yard, d
 
-
-def toward(at, target):
-    """The game's camera behind a player at `at` (across, in), turned to `target` (across, in): the start zoom and
-    pitch, as base_plan's behind()."""
-    pitch, focus = math.radians(20.0), Vector((at[0], -at[1], 3.0 + look.FOCUS))
-    flat = Vector((target[0] - at[0], -(target[1] - at[1]), 0.0)).normalized()
-    eye = focus - flat * math.cos(pitch) * look.ZOOM + Vector((0, 0, 1)) * math.sin(pitch) * look.ZOOM
-    return tuple(eye), tuple(focus)
-
-
-def views():
     gi = base.ROW
-    return {"home": plan.behind((base.SPAWN[0], -base.SPAWN[1]), -1),
-            "gate": plan.behind((0, plan.STRIP / 2), -1),
-            "row": toward((-4.0, 36.0), (-46.0, 62.0)),     # a player in the court, turned to the left side's three
-            "court": ((-(base.OUTER - 19.5), -gi, 8.5), (-base.OUTER, -gi, 7.0))}   # head-on from the court
+    views = {"row": toward((-4.0, 36.0), (-46.0, 62.0)),                         # a player in the court, turned to the left side's three
+             "court": ((-(base.OUTER - 19.5), -gi, 8.5), (-base.OUTER, -gi, 7.0))}   # head-on to level 1's left bay
+    w, h = look.SIZE
+    shots, boxes, black, tris = {}, {}, {}, {}
 
-
-class Shots:
-    def __init__(self, out, scene, yard, d):
-        self.out, self.scene, self.yard, self.d = out, scene, yard, d
-        self.views = views()
-        self.made, self.tris, self.boxes, self.black = {}, {}, {}, {}
-
-    def take(self, key, mesh):
-        data = mesh.whole().to_object(f"Bay{key}", self.yard.stock.mats["Kit"])
-        self.tris[key] = mesh.whole().tris()
-        objs = []
-        for i, (x, inward) in enumerate(plan.BAY_LOTS[:base.BAYS_AT[LEVEL]]):
-            obj = bpy.data.objects.new(f"Bay{key}{i}", data)
-            obj.location, obj.rotation_euler = (x, -inward, 0.0), (0, 0, math.radians(0.0 if x < 0 else 180.0))
-            self.scene.collection.objects.link(obj)
-            objs.append(obj)
-        bpy.context.view_layer.update()
-        close = objs[0]                                  # the bay the court view looks at: level 1's, on the left
-        for name, (eye, target) in self.views.items():
-            self.scene.camera = plan.camera(self.scene, f"Cam{key}{name}", eye, target)
-            path = self.out / f"bay_{key}_{name}.png"
-            px = look.finish(look.render_linear(self.scene, path.with_suffix(".exr")), self.d)
-            path.with_suffix(".exr").unlink(missing_ok=True)
-            rs.save(px, path)
-            self.made[(key, name)] = px
-            if name == "court":
-                self.boxes[key] = self.frame_box(close)
-                self.black[key] = self.silhouette(close, self.out / f"_black_{key}.png")
-        for obj in objs:
-            bpy.data.objects.remove(obj)
-        bpy.data.meshes.remove(data)
-
-    def frame_box(self, obj):
-        w, h = look.SIZE
-        pts = [world_to_camera_view(self.scene, self.scene.camera, obj.matrix_world @ v.co) for v in obj.data.vertices]
-        xs, ys = [p.x * w for p in pts], [(1 - p.y) * h for p in pts]
-        return min(xs), min(ys), max(xs), max(ys)
-
-    def silhouette(self, obj, path):
-        scene, r = self.scene, self.scene.render
+    def silhouette(obj, path):
         hidden = [o for o in scene.objects if o is not obj and o.type == "MESH" and not o.hide_render]
         for o in hidden:
             o.hide_render = True
@@ -295,107 +254,112 @@ class Shots:
         for o in hidden:
             o.hide_render = False
         px = rs.load(path)
-        black = np.ones_like(px)
-        black[..., :3] = 1.0 - px[..., 3:4]
+        ink = np.ones_like(px)
+        ink[..., :3] = 1.0 - px[..., 3:4]
         path.unlink()
-        return black
+        return ink
 
+    for key, stage in (("I", 1), ("II", 2), ("III", 3)):
+        mesh = stood(stage)
+        tris[key] = mesh.whole().tris()
+        data = mesh.whole().to_object(f"Bay{key}", yard.stock.mats["Kit"])
+        objs = []
+        for i, (x, inward) in enumerate(plan.BAY_LOTS[:base.BAYS_AT[level]]):
+            obj = bpy.data.objects.new(f"Bay{key}{i}", data)
+            obj.location, obj.rotation_euler = (x, -inward, 0.0), (0, 0, math.radians(0.0 if x < 0 else 180.0))
+            scene.collection.objects.link(obj)
+            objs.append(obj)
+        bpy.context.view_layer.update()
+        close = objs[0]                                   # level 1's bay on the left, the one the court view faces
+        for name, (eye, target) in views.items():
+            scene.camera = plan.camera(scene, f"Cam{key}{name}", eye, target)
+            path = out / f"bay_{key}_{name}.png"
+            shots[(key, name)] = look.finish(look.render_linear(scene, path.with_suffix(".exr")), d)
+            path.with_suffix(".exr").unlink(missing_ok=True)
+        pts = [world_to_camera_view(scene, scene.camera, close.matrix_world @ v.co) for v in close.data.vertices]
+        boxes[key] = (min(p.x for p in pts) * w, min((1 - p.y) for p in pts) * h,
+                      max(p.x for p in pts) * w, max((1 - p.y) for p in pts) * h)
+        black[key] = silhouette(close, out / f"_black_{key}.png")
+        for obj in objs:
+            bpy.data.objects.remove(obj)
+        bpy.data.meshes.remove(data)
 
-def cut(px, box, tall):
-    x0, y0, x1, y1 = (int(v) for v in box)
-    piece = px[max(y0, 0):y1, max(x0, 0):x1]
-    return rs.shrink(piece, tall / piece.shape[0])
+    keys = ("I", "II", "III")
+    b = [boxes[k] for k in keys]
+    union = (min(v[0] for v in b) - 6, min(v[1] for v in b) - 6, max(v[2] for v in b) + 6, max(v[3] for v in b) + 6)
+    x0, y0, x1, y1 = (int(v) for v in union)
+    x0, y0 = max(x0, 0), max(y0, 0)
 
+    def cut(px, tall):
+        piece = px[y0:y1, x0:x1]
+        return rs.shrink(piece, tall / piece.shape[0])
 
-NOTES = {
-    "A": "The crescent grows. At Stage II its horns rise to 12, their tips still apart over the ring, each grows a tine "
-         "from its shoulder up and out to 11, and a toothed ring of void stone (16 short, square teeth, unlit) stands "
-         "round the ring. At Stage III the horns reach 14.5, a second tine branches from each horn to 15.6, bone clamps "
-         "hold the branches, and a second toothed ring (22 teeth) stands outside the first. The motion, for the build: "
-         "the toothed rings turn, opposite ways.",
-    "B": "Rings toward the worker. At Stage II a second ring, three arcs of void stone, stands a stud in front of the "
-         "first, held from above by two fingers from the crescent, its horns risen to 11.2. At Stage III a third, "
-         "larger, stands nearer the worker, an open funnel narrowing to the shard, held by two more fingers from a "
-         "taller crescent (13.5); no clamp at a ring's quarter points. The motion, for the build: the rings of arcs "
-         "turn, opposite ways, BayHalo's motes passing through their middles."
-}
-SHARED = ("Both: the pad stays 10 square, and the ring and its shard stay 8 up on the outer side, so BayHalo is right at "
-          "every stage. The growth is on the outer side and up, behind the worker from the court and the gate. All six "
-          "bays at base level 3 at the same stage, a worker's size on each (a player's, 5.2; the tallest Voidkin is 7.4). "
-          "Grey blocks in the base kit's swatches, with only the void's light lit, in the yard under the place's dusk, "
-          "rendered in Blender; nothing is seen in Studio.")
-
-
-def sheet(out, key, shots):
-    gap, (w, h) = 16, look.SIZE
-    cw, ch = round(w * 2 / 3), round(h * 2 / 3)
-    keys = ["I", f"{key}II", f"{key}III"]
-    union = tuple(f(shots.boxes[k][i] for k in keys) for i, f in enumerate((min, min, max, max)))
-    union = (union[0] - 6, union[1] - 6, union[2] + 6, union[3] + 6)
-    lines = [ln for n in (NOTES[key], SHARED + " Triangles, a bay, Stages I, II and III before the drawn edge's hull: " +
-                          ", ".join(f"{shots.tris[k]:,}" for k in keys) + ".") for ln in textwrap.wrap(n, 230)]
-    full = [shots.made[(k, "court")][max(int(union[1]), 0):int(union[3]), max(int(union[0]), 0):int(union[2])] for k in keys]
+    titles = ("Stage I, machine levels 1 to 5, as it stands", "Stage II, levels 6 to 14", "Stage III, levels 15 and up")
+    notes = [
+        "The crescent grows. At Stage II its horns rise to 12, their tips still apart over the ring, a tine grows from "
+        "each shoulder up and out to 11, and a toothed ring of void stone (16 square teeth, unlit) stands round the "
+        "ring. At Stage III the horns reach 14.5, a second tine branches from each horn to 15.6, bone clamps hold the "
+        "branches, and a second toothed ring (22 teeth) stands outside the first. The toothed rings are their own "
+        "pieces and turn, opposite ways, while a worker works there.",
+        "The pad stays 10 square, and the ring and its shard stay 8 up on the outer side, so BayHalo stands as it does. "
+        "All six bays at base level 3, at the same stage, a player's size on each. In the base kit's colours, in the "
+        "yard as it stands under the place's dusk, rendered in Blender; nothing is seen in Studio. Triangles, a stage's "
+        "pieces together, before the drawn edge's hull: " + ", ".join(f"Stage {k} {tris[k]:,}" for k in keys) + "."]
+    lines = [ln for n in notes for ln in textwrap.wrap(n, 230)]
+    gap = 16
+    cw, ch = round(w * 2 / 3), round(h * 2 / 3)           # 640 by 360: about a phone's screen in points
+    full = [shots[(k, "court")][y0:y1, x0:x1] for k in keys]
     full_h = max(px.shape[0] for px in full)
-    small_h = 128 + 64 + 3 * gap + 40
+    small_h = 64 + 128 + 2 * gap + 64
     width = max(3 * cw + 4 * gap, sum(px.shape[1] for px in full) + 4 * gap)
-    height = 48 + 3 * (ch + 34) + 34 + full_h + 34 + small_h + len(lines) * 19 + 24
+    height = 48 + 22 + (ch + 34) + 34 + full_h + 34 + small_h + len(lines) * 19 + 24
+    ui.K = 1
     page = ui.Sheet(width, height, "#14151C")
     t = page.tile(0, 0, page.w, page.h)
-    t.text(gap, 14, 20, f"Grow your Anime, the bays' stages: {key}, {STAGES[key]}", "#EDE6D6", bold=0.2)
-    titles = ("Stage I, as it stands (machine levels 1 to 5)", "Stage II, levels 6 to 14", "Stage III, levels 15 and up")
-    for row, (name, caption) in enumerate((("home", "from the game's start camera on the spawn, at a phone's 640 by 360"),
-                                           ("gate", "from the gate, through it from the Strip"),
-                                           ("row", "a player in the court turned to the left side's three bays"))):
-        y = 48 + row * (ch + 34)
-        for i, k in enumerate(keys):
-            x = gap + i * (cw + gap)
-            t.text(x, y, 14, f"{titles[i]}, {caption}" if i == 0 else titles[i], "#B4AC9C")
-            rs.paste(page.px, rs.shrink(shots.made[(k, name)], 2 / 3), x, y + 22)
-    y = 48 + 3 * (ch + 34)
-    t.text(gap, y, 14, "Level 1's bay on the left, head-on from the court at its own size on a 960 by 540", "#B4AC9C")
+    t.text(gap, 14, 20, "Grow your Anime, the bays' stages: the Horned Crown (AR33)", "#EDE6D6", bold=0.2)
+    y = 48
+    t.text(gap, y, 14, "A player in the court turned to the left side's three bays, at a phone's 640 by 360", "#B4AC9C")
+    y += 22
+    for i, k in enumerate(keys):
+        x = gap + i * (cw + gap)
+        t.text(x, y, 14, titles[i], "#EDE6D6")
+        rs.paste(page.px, rs.shrink(shots[(k, "row")], 2 / 3), x, y + 22)
+    y += ch + 34
+    t.text(gap, y, 14, "Level 1's bay on the left, head-on from the court, at its own size on a 960 by 540", "#B4AC9C")
     x = gap
     for px in full:
         rs.paste(page.px, px, x, y + 22)
         x += px.shape[1] + gap
     y += full_h + 34 + 8
-    t.text(gap, y, 14, "The same, cut at one scale for the three: 64 and 128 px tall over the dark, and in black",
-           "#B4AC9C")
+    t.text(gap, y, 14, "The same, cut at one scale for the three: 64 and 128 px tall over the dark, and in black", "#B4AC9C")
     x = gap
     for i, k in enumerate(keys):
-        x0 = x
-        for px in (cut(shots.made[(k, "court")], union, 64), cut(shots.black[k], union, 64)):
+        left = x
+        for px in (cut(shots[(k, "court")], 64), cut(black[k], 64)):
             rs.paste(page.px, px, x, y + 26)
             x += px.shape[1] + 8
-        x = x0
-        for px in (cut(shots.made[(k, "court")], union, 128), cut(shots.black[k], union, 128)):
+        x = left
+        for px in (cut(shots[(k, "court")], 128), cut(black[k], 128)):
             rs.paste(page.px, px, x, y + 26 + 64 + gap)
             x += px.shape[1] + 8
-        t.text(x0, y + 26 + 64 + 128 + 2 * gap, 13, titles[i].split(",")[0], "#EDE6D6")
-        x += gap * 2
+        t.text(left, y + 26 + 64 + 128 + 2 * gap, 13, titles[i].split(",")[0], "#EDE6D6")
+        x += 2 * gap
     y += small_h
     for i, ln in enumerate(lines):
         t.text(gap, y + i * 19, 14, ln, "#B4AC9C")
     for layer in ui.text_layers(page.px.shape[1], page.px.shape[0], page.items).values():
         rs.paste(page.px, layer, 0, 0)
-    rs.save(page.px, out / f"bay_{key}.png")
+    rs.save(page.px, out / "bay_stages.png")
+    for (key, name), px in shots.items():
+        rs.save(px, out / f"bay_{key}_{name}.png")
+    print("triangles:", tris)
 
 
 def main():
+    import blcommon as bl
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
-    scene, yard, d = yard_without_bays(out, "fast" in args)
-    shots = Shots(out, scene, yard, d)
-    with Grey():
-        meshes = {"I": bm.bay().mesh}
-        for key, build in BUILD.items():
-            meshes[f"{key}II"] = build(2)
-            meshes[f"{key}III"] = build(3)
-    for key, mesh in meshes.items():
-        shots.take(key, mesh)
-    ui.K = 1
-    for key in STAGES:
-        sheet(out, key, shots)
-    print("triangles:", shots.tris)
+    review(out, "fast" in args)
 
 
 if __name__ == "__main__":

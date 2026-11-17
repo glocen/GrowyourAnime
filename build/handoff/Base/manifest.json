@@ -1776,6 +1776,94 @@
    "collision": "none",
    "lights": [],
    "note": "a seat whose chamber hasn't opened: stood in place of BreakerChamber at its place, on the body's top, until the Breaker has that chamber. Unlit. Look only"
+  },
+  "Bay2": {
+   "mesh": "meshes/Bay2.json",
+   "triangles": 738,
+   "vertices": 480,
+   "centre": [
+    -0.07,
+    6.03979,
+    0.0
+   ],
+   "size": [
+    10.36,
+    12.3,
+    11.485
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
+   "lights": [],
+   "note": "Stage II's still bay, in place of Bay at the same place and turn: its horns risen to 12, their tips apart over the ring, and a tine from each shoulder to 11. The worker stands at the pad's middle; the ring's middle is 8 up, as Stage I's, so BayHalo stands as it does. The toothed rings stand by machines.bayStages"
+  },
+  "Bay3": {
+   "mesh": "meshes/Bay3.json",
+   "triangles": 910,
+   "vertices": 592,
+   "centre": [
+    -0.07,
+    7.8138,
+    0.0
+   ],
+   "size": [
+    10.36,
+    15.848,
+    11.739
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
+   "lights": [],
+   "note": "Stage III's still bay, in place of Bay at the same place and turn: its horns risen to 14.5, a tine from each shoulder to 12.4 and a second branching from each horn to 15.6, bone clamps where they branch. The worker stands at the pad's middle; the ring's middle is 8 up, as Stage I's, so BayHalo stands as it does. The toothed rings stand by machines.bayStages"
+  },
+  "BayCog": {
+   "mesh": "meshes/BayCog.json",
+   "triangles": 448,
+   "vertices": 256,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.57,
+    6.053,
+    6.053
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a toothed ring of void stone round the ring, from Stage II: 16 square teeth, 6.1 across, unlit. Its origin on its axle's middle; its axle along the piece's X (Roblox's X). It turns while a worker works there, CFrame.Angles(angle * sign, 0, 0) with the sign the table gives, so the two turn opposite ways. Look only"
+  },
+  "BayCogOuter": {
+   "mesh": "meshes/BayCogOuter.json",
+   "triangles": 616,
+   "vertices": 352,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.57,
+    7.673,
+    7.7
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a toothed ring of void stone Stage III's second, outside the first: 22 square teeth, 7.7 across, unlit. Its origin on its axle's middle; its axle along the piece's X (Roblox's X). It turns while a worker works there, CFrame.Angles(angle * sign, 0, 0) with the sign the table gives, so the two turn opposite ways. Look only"
   }
  }
 }

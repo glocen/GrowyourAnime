@@ -26,6 +26,7 @@ import numpy as np
 from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import base_bay as bays  # noqa: E402
 import base_breaker as breaker  # noqa: E402
 import base_ink as ink  # noqa: E402
 import base_machines as machines  # noqa: E402
@@ -704,7 +705,8 @@ PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "YardLive": lambda: 
           **mill.PIECES,           # and the generator, the Void Mill (AR19, base_mill.py)
           **show.PIECES,           # and the showcase's plinth (TR22, base_show.py)
           **forge.PIECES,          # and the Forge and the Stone Condenser, Stage I (AR28, base_forge.py)
-          **breaker.PIECES}        # and the Void Breaker's Stages II and III (AR32, base_breaker.py)
+          **breaker.PIECES,        # and the Void Breaker's Stages II and III (AR32, base_breaker.py)
+          **bays.PIECES}           # and the bays' Stages II and III (AR33, base_bay.py)
 
 
 def build(name):

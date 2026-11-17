@@ -1829,6 +1829,80 @@
      ]
     }
    }
+  },
+  "bayStages": {
+   "note": "AR33: the extraction bays' three stages, the Horned Crown, the swap's table. A bay takes the stage of its own machine level (Config.Base, Stages: 1, 6, 15). Every place is in the bay's own frame, turned with it as Bay is (0 on the plot's left, 180 on its right): `across` toward the outer side's crescent is negative, `along` toward the gate, `up` from its floor. A stage's pieces replace the one before's. `moves`: still; turns, about the piece's own axle while a worker works there, CFrame.Angles(angle * sign, 0, 0). BayHalo and BaySleeping stand as they do at every stage.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "Bay",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "Bay2",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BayCog",
+       "at": [
+        -4.45,
+        0.0,
+        8.0
+       ],
+       "moves": "turns",
+       "sign": 1
+      }
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "Bay3",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BayCog",
+       "at": [
+        -4.45,
+        0.0,
+        8.0
+       ],
+       "moves": "turns",
+       "sign": 1
+      },
+      {
+       "piece": "BayCogOuter",
+       "at": [
+        -4.45,
+        0.0,
+        8.0
+       ],
+       "moves": "turns",
+       "sign": -1
+      }
+     ]
+    }
+   }
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",

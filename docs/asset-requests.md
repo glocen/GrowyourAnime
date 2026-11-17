@@ -11152,6 +11152,71 @@ From the two sheets and the court's head-on views (e1c365d).
 - **Must-fix:** none. The content check's conditions for A hold for the build: the toothed rings matte, unlit, square-toothed, nothing gold near them; the ring and the shard pale.
 - **Next:** Stages II and III as kit pieces for Faber, judged in the game from the court.
 
+### Stages II and III as kit pieces, for Faber's install (Modulo, 2026-11-17, 17:34 to 17:42 by the clock)
+
+**The content check on the block's sheets:** PASS for both directions. Its conditions for A's coloured build:
+- conditions 1 to 5 hold;
+- "Eye" stays out of every part name, asset name and text players see;
+- the toothed rings stay matte void stone, unlit and square-toothed, with no brass, copper or gold near them;
+- the bone clamps stay pale ivory, never yellow-gold.
+
+**What's handed off:**
+- The pieces are in `build/handoff/Base` (`manifest.json`, `meshes/`), made by `tools/blender/base_bay.py`. That script was the block's, now rewritten as A's kit module; B's code stays in e1c365d.
+- The swap's table is in `plan.json`, under `machines.bayStages`.
+- **Every existing piece, name and origin is byte for byte as it was:** the export only adds.
+
+**The pieces,** each stood at the bay's place with the bay's turn (0 on the plot's left, 180 on its right), in its own frame:
+- **Bay2 and Bay3:** each stage's still bay, in place of Bay.
+  - Each is Stage I's deck, dais, well, inner corners, ring, shard and outlet, with the grown crescent, its veins, the tines and, at Stage III, the bone clamps.
+  - Every vein stops over a stud short of its horn's tip: 1.3 at Stage II, 1.8 at Stage III.
+  - **Collision:** as Bay's, a box 10 square and 0.4 high, and the crescent's two feet. The rest is look only.
+- **BayCog:** the toothed ring round the ring, 16 square teeth, 6.1 across, unlit void stone. It stands from Stage II.
+- **BayCogOuter:** Stage III's second toothed ring, outside the first: 22 teeth, 7.7 across.
+- **How the rings turn:** each turns about its own axle, the piece's X, while a worker works there: `CFrame.Angles(angle * sign, 0, 0)`. The sign comes from the table (+1 for BayCog, −1 for BayCogOuter), so the two turn opposite ways.
+- **Their place:** both stand at (−4.45, 0, 8), the ring's middle in the crescent's plane.
+- **Unchanged:** BayHalo and BaySleeping stand as they do at every stage, and the ring's middle stays 8 up.
+
+**The table** gives each stage's rows: piece, place (across, toward the gate, up), and how it moves (`still`, or `turns` with its `sign`).
+
+**Triangles,** from the manifest:
+
+| Piece | Triangles |
+|---|---|
+| Bay2 | 738 |
+| Bay3 | 910 |
+| BayCog | 448 |
+| BayCogOuter | 616 |
+
+- **Stages whole:** I 614; II 1,186; III 1,974.
+
+**The plot's fit:** unchanged. A bay stays 10 square at every stage; Stage III stands 15.6 high at its tines' tips.
+
+**The sheet:** `build/handoff/Base/bay_stages.png`. It shows each stage:
+- from a player in the court turned to the left side's three bays, at 640 by 360;
+- level 1's left bay head-on from the court at its own size;
+- the same cut at 64 and 128 px, and in black.
+
+**Content check on the coloured models:** PASS for upload.
+- It looked at the sheet with its 64 and 128 px and black cuts, the six full-size views, the source and the manifest's four entries.
+- The plan's conditions 1 to 8 hold:
+  - the horns' tips stay 4.2 and 4.6 apart;
+  - in black, Stage III is uneven points, not an even crown;
+  - the teeth are square and in matte void stone with no glow;
+  - the clamps are the kit's bone, ivory to grey-lilac, not gold.
+- **Its conditions for upload and the game:**
+  1. **Upload as delivered.** The toothed rings stay unlit in Studio: no Neon, no glow, and no light parented to them. The shared glow map is safe only because void stone's glow is black, so no tint or glow is added.
+  2. **Stage III's clamps,** checked up close from the court in the game. Under the dusk they render a muted warm tan, not gold, about 0.6 from the outer ring's teeth. If Studio's light turns them brass or khaki, they go back paler than the render, toward ivory.
+  3. **No "Eye" in the swap:** no part name, attribute, prompt or label calls the ring that.
+
+**The four facts:**
+- **Implemented:** Stages II and III as four kit pieces and the swap's table.
+- **Tested:**
+  - The export and the plan ran, and every existing piece is unchanged byte for byte.
+  - Each stage was stood by the table and rendered from the court.
+  - The content check passed.
+- **Visually reviewed:** my own read, stills. Research's read is in the game, from the court, with the rings turning.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

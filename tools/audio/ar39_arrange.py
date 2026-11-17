@@ -20,8 +20,11 @@ How a recipe is made:
   each take's bands.
 
 - **Round 2's set** (NO_CODE) has no layer of ours in it: the director heard our code-made layers on 2026-11-17 and
-  none is used, so a pilot is library recordings only, layered. Until the second batch and Faber's measures land it's a
-  draft on the first batch's numbers.
+  none is used, so a pilot is library recordings only, layered. It's re-cut on Faber's measures of round 1
+  (build/scratch/modulo/ar39/mixdown.json; research's list of 2026-11-17, 23:05), each change named where it's made:
+  the engine's Trim counted in the estimate, the takes that topped late or couldn't be played dropped, a tell's top
+  pinned under its swipe's, and less of the low thump. The second batch isn't on disk
+  yet, so its lists are the first batch's.
 
     py tools/audio/ar39_arrange.py            writes build/handoff/Audio/ar39/round1.json, round1.luau and round1.md
     py tools/audio/ar39_arrange.py round2     the same for round 2's set
@@ -50,7 +53,8 @@ TRIM = 0.5                    # Config.Cues.Trim
 OVER = {"LightHit": 0.0, "HeavyHit": 4.0, "ShadeSwipe": -4.5}
 ROOM = 10 ** (-4.0 / 20)
 
-# A library take: its id; how its slice starts ("onset", or ms before its top); ms after its top it ends; its fall, ms.
+# A library take: its id; how its slice starts ("onset", ("onset", its own ms before it), or ms before its top); ms
+# after its top it ends; its fall, ms.
 # Lists are by role. One recording never stands twice in a list, nor two of one series.
 TAKES = {
     # a skin or cloth contact, its energy from 250 Hz to 2.5 kHz: the whole of a light hit, or a heavy one's contact
@@ -120,14 +124,15 @@ ARRANGEMENTS = {
 # Round 2: library recordings only (research's order after the director's ear, 2026-11-17). Contact comes from a sharp
 # glove or clap transient over a body, weight from a low thud out of a second recording. A2's thuds are out (the
 # phone's read, research, 22:30); a heavy hit's tail and a swipe's tone, which were ours, are gone with nothing in
-# their place until a recording earns it.
+# their place until a recording earns it. A tell's level is ("under", a list, dB): its top that far under that list's
+# lowest top in the cue, since a tick is read by its top (round 1's tells topped over their swipes).
 NO_CODE = {
     "LightHit": [
         ("LightHit_A1", "one recorded contact, nothing else: a slap of skin or cloth carries the hit whole, in the band "
          "a phone keeps",
          [("LibContact", "body", 0, None, 0.0, False)]),
         ("LightHit_A3", "a recorded contact with recorded weight under it from a second recording. Our spark is gone",
-         [("LibContact", "body", 0, None, -1.0, False), ("LibLow", "weight", 0, None, -6.0, False)]),
+         [("LibContact", "body", 0, None, -1.0, False), ("LibLow", "weight", 0, None, -9.0, False)]),
         ("LightHit_A4", "a recorded contact with a clap's crack laid on its edge: the transient from one recording, the "
          "body from another",
          [("LibContact", "body", 0, None, -1.0, False), ("LibSnap", "attack", 0, None, -8.0, False)]),
@@ -135,34 +140,70 @@ NO_CODE = {
     "HeavyHit": [
         ("HeavyHit_B1", "one recorded heavy body, and a deep glove thump from a second recording under it for the "
          "weight, where our sub was",
-         [("LibHeavyBody", "body", 0, None, -0.5, False), ("LibLowLong", "weight", 0, None, -8.0, False)]),
-        ("HeavyHit_B2", "two recordings: a deep glove thump for the weight, and the light hit's own contact over it, so "
-         "a heavy hit is a light one with a body behind it",
-         [("LibLowLong", "weight", 0, None, -3.0, False), ("LibContact", "attack", 0, None, -3.0, False)]),
+         [("LibHeavyBody", "body", 0, None, -0.3, False), ("LibLowLong", "weight", 0, None, -12.0, False)]),
+        ("HeavyHit_B2", "two recordings: the light hit's own contact, and a deep glove thump 9 dB under it for the "
+         "weight, so a heavy hit is a light one with a body behind it (at equal levels the thump put 63% of the cue "
+         "under 120 Hz)",
+         [("LibContact", "attack", 0, None, -0.5, False), ("LibLowLong", "weight", 0, None, -9.5, False)]),
         ("HeavyHit_B3", "three recordings stacked: a heavy body, a leather or clap snap on its edge, and a deep thump "
          "under both",
          [("LibHeavyBody", "body", 0, None, -1.0, False), ("LibHeavySnap", "attack", 0, None, -8.0, False),
-          ("LibLowLong", "weight", 0, None, -9.0, False)]),
+          ("LibLowLong", "weight", 0, None, -11.0, False)]),
     ],
     "ShadeSwipe": [
         ("ShadeSwipe_C1", "paper's flick for the tell, a pass through the air for the swipe",
-         [("LibFlick", "tell", -0.2, "Peak", -9.0, False), ("LibAir", "body", 0, "Peak", -0.5, False)]),
+         [("LibFlick", "tell", -0.2, "Peak", ("under", "LibAir", 2.0), False), ("LibAir", "body", 0, "Peak", 0.0, False)]),
         ("ShadeSwipe_C2", "a paper-edged pass: paper's flick for the tell, then the air's pass with a sheet's rustle "
          "riding its top",
-         [("LibFlick", "tell", -0.2, "Peak", -9.5, False), ("LibAir", "body", 0, "Peak", -1.5, False),
-          ("LibRustle", "character", 0, "Peak", -6.0, False)]),
+         [("LibFlick", "tell", -0.2, "Peak", ("under", "LibAir", 2.0), False), ("LibAir", "body", 0, "Peak", -1.0, False),
+          ("LibRustle", "character", 0, "Peak", -7.0, False)]),
         ("ShadeSwipe_C3", "the paper drawn back, then the pass: a longer rustle ending in its flick for the tell, and "
          "the recorded pass alone",
-         [("LibRustle", "tell", -0.2, "Peak", -7.0, False), ("LibAir", "body", 0, "Peak", -1.0, False)]),
+         [("LibRustle", "tell", -0.2, "Peak", ("under", "LibAir", 2.0), False), ("LibAir", "body", 0, "Peak", 0.0, False)]),
     ],
 }
-ROUNDS = {"round1": ARRANGEMENTS, "round2": NO_CODE}
-# A round's own levels over OVER. Round 2's heavy hit stands 4.5 LU over the light one: with recorded weight under it a
-# heavy hit loses about 2.5 LU through the phone's curve and a light one 0.2, so at 4.0 gate 5's 2 LU sat on its edge
-# (an estimated 1.7 for B1 over A1). At 4.5 it's 2.2 or more, with half a decibel left under gate 4's 5.
-LEVELS = {"round2": {"HeavyHit": 4.5}}
-NOTES = {"round2": " **A draft:** round 2's set on the first batch's numbers, with no layer of ours in any cue. It's "
-                   "re-run when the second batch and Faber's measures of round 1 land."}
+# Round 2's lists, where Faber's measures changed one (round 1's, a take alone, in mixdown.json; the draft's cues in
+# mixdown-round2.md):
+# - 9120003720 is out of the contacts: alone its top comes 8.0 ms in, with a second top nearly as high at 16.6 ms, and
+#   any layer under it tips the cue's top to the later one (A3, A4 and B2, play 1; Faber's correction). The second top
+#   follows the first, so no From cuts it off.
+# - 9113531442 is out of the heavy body: a kick in two stages, its loudest sample 20.5 ms after its first contact.
+# - 9113470397 is out of the heavy body: so quiet a file that its Gain (7.27) passed the player's most volume, and it
+#   has no louder part. That leaves the heavy body ONE recording until the second batch is on disk: B1 and B3 can't
+#   vary their body yet.
+TAKES2 = dict(TAKES)
+TAKES2.update({
+    "LibContact": [(9114773313, "onset", 70, 30), (9113532901, "onset", 45, 20), (9113316991, "onset", 30, 15)],
+    "LibHeavyBody": [(9113574140, "onset", 130, 50)],
+})
+GAIN_CAP = 3.0   # research, 2026-11-17: every take's Gain stays at or under 3
+# A round's set-up. `over`: its own levels over OVER. `trim`: the engine's Trim is counted in a Volume (Faber, measured:
+# a player at Volume 1 plays its file as it is, so Trim 0.5 is a plain 6 dB under; round 1's Volumes left it out and
+# its cues came out 6 dB under their design). `light`: LightHit's level, LUFS, or None for round 1's rule (ROOM).
+# Round 2's is where its draft measured (-43.4 over the loudest 400 ms; -52.2 short-term), so the Volumes stand as they
+# were and only the estimate is corrected: research's word is not to chase the level, since the listen is matched to
+# today's cue per arrangement. For when the level is set: a recorded contact's top stands 27 dB over its loudness
+# (today's LightHit, 25), so these cues top where today's do at about 1.5 LU under today's LightHit.
+# Round 2's heavy hit stands 4.2 LU over the light one: the draft, at 4.5, measured 4.5 to 4.8, near gate 4's 5.
+SETUPS = {
+    "round1": dict(takes=TAKES, cues=ARRANGEMENTS, over={}, trim=False, light=None),
+    "round2": dict(takes=TAKES2, cues=NO_CODE, over={"HeavyHit": 4.2}, trim=True, light=-43.4),
+}
+SET = SETUPS["round1"]
+MEASURED = REPO / "build" / "scratch" / "modulo" / "ar39" / "mixdown.json"   # Faber's measures of round 1
+# What a deep thump holds in raw energy against a contact or a body at one loudness: K-weighting hears little of it.
+# Fitted to the draft's measured shares under 120 Hz (A3 43%, B1 49%, B2 63%: 4.4 to 6.2).
+LOW_HEAVY = {"LibLow": 5.5, "LibLowLong": 5.5}
+BY_TOP = ("LibFlick", "LibRustle")   # round 2: a tell's takes are matched by their tops, since a tick is read by its top
+NOTES = {"round2": " **Round 2:** no layer of ours in any cue, re-cut on Faber's measures of round 1. Its lists are the "
+                   "first batch's: the second isn't on disk yet, so the heavy body is one recording until it is."}
+LEVEL_WORDS = {
+    "round1": "LightHit's own level is where the hottest single cue's top, its layers' tops together, stands at -4 dBFS: "
+              "a decibel for the true peak, and the bus limiter's 3 for an overlap.",
+    "round2": "LightHit's own level is where round 2's draft measured (-43.4), the engine's Trim now counted in the "
+              "estimate: the level isn't chased, since the listen is matched to today's cue. A tell's Volume is set by "
+              "its top, 2 dB under the lowest top of its swipe.",
+}
 
 
 # --- the takes' numbers ------------------------------------------------------------------------------------------------
@@ -195,12 +236,13 @@ def bands(p):
 def library(spec, picks):
     """One library take's recipe and numbers."""
     ident, how, after, out = spec
+    how, pre = how if isinstance(how, tuple) else (how, PRE)
     raw, p = picks[ident]
     assert p["licensed"] and ident not in rank.NOT_THE_SOUND, ident
     env = np.asarray(p["env"], dtype=float)
     top = float(np.argmax(env)) * rank.ENV_MS - rank.BEFORE_MS            # ms after the batch's slice start
     start, rise = rank.onset(p)
-    first = start - PRE if how == "onset" else top - how
+    first = start - pre if how == "onset" else top - how
     first = max(first, -p["start"] * 1000)                                # never before its file's start
     assert first >= -rank.BEFORE_MS, (ident, first)
     last = top + after
@@ -252,46 +294,92 @@ def db(x):
 
 def arrange(pilot, name, idea, layers, lists, light):
     """The layers' volumes for the cue's level, and what the batch's numbers say of one play."""
-    level = light + OVER[pilot]
-    rel = db(sum(10 ** (r / 10) for _, _, _, _, r, strength in layers if not strength))
-    out, power, tops, low, phone = [], 0.0, 0.0, 0.0, 0.0
-    for takes, role, at, lead, r, strength in layers:
-        want = level + r - rel                       # this layer's level, LUFS, so the unconditional layers sum to the cue's
-        got = lists[takes]["level"]                  # the list's level at Volume 1 (its takes' gains applied)
-        volume = 10 ** ((want - got) / 20)
-        out.append({"Takes": takes, "Role": role, "At": at, "Lead": lead, "Volume": round(volume, 3),
-                    "Strength": strength, "level": want})
-        for t in lists[takes]["takes"]:
-            assert TRIM * volume * t.get("Gain", 1.0) <= CAP, (name, takes, t["Title"], "over the player's most volume")
-        if strength:
-            continue
-        ts = lists[takes]["takes"]
-        e = 10 ** (want / 10)
-        power += e
-        tops += max(10 ** ((t["top"] + 20 * np.log10(volume * t.get("Gain", 1.0))) / 20) for t in ts)
-        # unweighted shares, weighted by the layer's energy (K-weighting left out: an estimate)
-        low += e * float(np.mean([t["under120"] for t in ts]))
-        phone += e * float(np.mean([10 ** (-t["phone"] / 10) for t in ts]))
-    return {"Name": name, "Pilot": pilot, "Idea": idea, "Layers": out,
-            "est": {"lufs": db(power), "top": 20 * np.log10(tops), "under120": low / power, "phone": db(power) + db(phone / power)}}
+    level = light + OVER[pilot] + SET["over"].get(pilot, 0.0) - (OVER[pilot] if pilot in SET["over"] else 0.0)
+    play = TRIM if SET["trim"] else 1.0              # what the engine makes of a Volume; round 1 left it out
+    rel = db(sum(10 ** (r / 10) for _, _, _, _, r, strength in layers if not strength and not isinstance(r, tuple)))
+    out, power, tops, low, raw, phone = [], 0.0, 0.0, 0.0, 0.0, 0.0
+    top_of = {}                                      # a list's lowest top in this cue, dBFS
+
+    def top(t, volume):
+        return t["top"] + 20 * np.log10(play * volume * t.get("Gain", 1.0))
+    for pinned in (False, True):
+        for takes, role, at, lead, r, strength in layers:
+            if isinstance(r, tuple) != pinned:
+                continue
+            ts = lists[takes]["takes"]
+            got = lists[takes]["level"]              # the list's level at a player's volume of 1 (its takes' gains applied)
+            if pinned:                               # its highest top `r[2]` dB under the named list's lowest
+                volume = 10 ** ((top_of[r[1]] - r[2] - max(top(t, 1.0) for t in ts)) / 20)
+                want = got + 20 * np.log10(play * volume)
+            else:
+                want = level + r - rel               # this layer's level, LUFS, so the levelled layers sum to the cue's
+                volume = 10 ** ((want - got) / 20) / play
+            out.append((layers.index((takes, role, at, lead, r, strength)),
+                        {"Takes": takes, "Role": role, "At": at, "Lead": lead, "Volume": round(volume, 3),
+                         "Strength": strength, "level": want}))
+            for t in ts:
+                assert not SET["trim"] or t.get("Gain", 1.0) <= GAIN_CAP, (name, takes, t["Title"], "its Gain is over 3")
+                assert TRIM * volume * t.get("Gain", 1.0) <= CAP, (name, takes, t["Title"], "over the player's most volume")
+            if strength:
+                continue
+            top_of[takes] = min(top(t, volume) for t in ts)
+            e = 10 ** (want / 10)
+            power += e
+            if at == 0 or not SET["trim"]:           # round 2: a tell 200 ms early never meets the moment's tops
+                tops += max(10 ** (top(t, volume) / 20) for t in ts)
+            if SET["trim"]:                          # round 2: the share under 120 Hz is of raw energy, not of loudness
+                w = LOW_HEAVY.get(takes, 1.0)
+                low += e * w * float(np.mean([t["under120"] for t in ts]))
+                raw += e * w
+            else:                                    # round 1's way, kept so its files stay as Faber measured them
+                low += e * float(np.mean([t["under120"] for t in ts]))
+                raw += e
+            phone += e * float(np.mean([10 ** (-t["phone"] / 10) for t in ts]))
+    return {"Name": name, "Pilot": pilot, "Idea": idea, "Layers": [la for _, la in sorted(out, key=lambda x: x[0])],
+            "est": {"lufs": db(power), "top": 20 * np.log10(tops), "under120": low / raw, "phone": db(power) + db(phone / power)}}
+
+
+def measured():
+    """What Faber's mixdown of round 1 measured of a recording played alone: its loss through the phone's curve, LU,
+    and its share under 120 Hz. By (list, id), and by id alone for a recording that moves to another list."""
+    if not MEASURED.exists():
+        return {}
+    out = {}
+    for name, group in json.loads(MEASURED.read_text(encoding="utf-8"))["Takes"].items():
+        for ident, _gain, _momentary, short, phone, _peak, _at, under120, *_ in group["Rows"]:
+            facts = {"phone": float(short - phone), "under120": float(under120)}
+            out[(name, ident)] = facts
+            out.setdefault(ident, facts)
+    return out
 
 
 def build():
     picks = batch()
     lists = {}
-    for name, specs in TAKES.items():
+    heard = measured() if SET["trim"] else {}
+    for name, specs in SET["takes"].items():
         takes = [library(s, picks) for s in specs]
         assert len({t["series"] for t in takes}) == len(takes), (name, "two takes of one series")
+        for t in takes:                              # round 2: what the mixdown measured of this recording, over the estimate
+            t.update(heard.get((name, t["Id"]), heard.get(t["Id"], {})))
         mid = float(np.median([t["lufs"] for t in takes]))
-        for t in takes:
-            t["Gain"] = round(10 ** ((mid - t["lufs"]) / 20), 3)
+        if SET["trim"] and name in BY_TOP:
+            top = float(np.median([t["top"] for t in takes]))
+            for t in takes:
+                t["Gain"] = round(10 ** ((top - t["top"]) / 20), 3)
+            mid = float(np.median([t["lufs"] + 20 * np.log10(t["Gain"]) for t in takes]))
+        else:
+            for t in takes:
+                t["Gain"] = round(10 ** ((mid - t["lufs"]) / 20), 3)
         lists[name] = {"takes": takes, "level": mid, "library": True}
     for name in OUR_TAKES:
         takes = ours(name)
         lists[name] = {"takes": takes, "level": float(np.median([t["lufs"] for t in takes])), "library": False}
     def all_at(light):
-        return [arrange(pilot, *a, lists, light) for pilot, group in ARRANGEMENTS.items() for a in group]
+        return [arrange(pilot, *a, lists, light) for pilot, group in SET["cues"].items() for a in group]
 
+    if SET["light"] is not None:
+        return lists, all_at(SET["light"]), SET["light"]
     # tops move with the level, one for one: solve LightHit's from the hottest cue's top at a trial level
     hot = max(10 ** (c["est"]["top"] / 20) for c in all_at(-36.0))
     light = -36.0 + 20 * np.log10(ROOM / hot)
@@ -335,9 +423,9 @@ def markdown(lists, cues, light):
              "batch's measures of each take, never measured on a mix: the gates are Faber's mixdown's."
              + NOTES.get(ROUND, ""), "",
              f"**The levels:** LightHit at {light:.1f} LUFS (the loudest 400 ms of one play at full volume), HeavyHit "
-             f"{OVER['HeavyHit']:+.1f} LU, ShadeSwipe {OVER['ShadeSwipe']:+.1f} LU: gate 4's relation sets them. LightHit's "
-             "own level is where the hottest single cue's top, its layers' tops together, stands at -4 dBFS: a decibel "
-             "for the true peak, and the bus limiter's 3 for an overlap.", "",
+             f"{SET['over'].get('HeavyHit', OVER['HeavyHit']):+.1f} LU, ShadeSwipe "
+             f"{SET['over'].get('ShadeSwipe', OVER['ShadeSwipe']):+.1f} LU: gate 4's relation sets them. "
+             + LEVEL_WORDS[ROUND], "",
              "## The arrangements", ""]
     for c in cues:
         e = c["est"]
@@ -368,10 +456,9 @@ def markdown(lists, cues, light):
 
 
 def main():
-    global ROUND, ARRANGEMENTS
+    global ROUND, SET
     ROUND = sys.argv[1] if len(sys.argv) > 1 else "round1"
-    ARRANGEMENTS = ROUNDS[ROUND]
-    OVER.update(LEVELS.get(ROUND, {}))
+    SET = SETUPS[ROUND]
     lists, cues, light = build()
     used = {la["Takes"] for c in cues for la in c["Layers"]}
     lists = {k: v for k, v in lists.items() if k in used}        # a round's files hold only the lists it plays

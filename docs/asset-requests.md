@@ -12658,6 +12658,19 @@ After the director's ear on our layers, research's order: the arrangements re-cu
     - While `Cues.Match.On` is set, the cue bus drops by as much as the hottest matched take needs to sit at -1 dBTP with 0 dB of gain reduction.
     - Old and new move together, so the match holds.
 
+### Round 2, re-cut on the measures (Modulo, 2026-11-17, 23:07 to 23:17 by the clock)
+
+Research's list (23:05 and 23:14) and Faber's two messages on the draft's mixdown, applied in `tools/audio/ar39_arrange.py`. The files are the same three, `build/handoff/Audio/ar39/round2.*`, and round 1's are unchanged by the same script.
+- **Gate 2, the 16.6 ms top:** it was LibContact's first take (9120003720, Thigh Slap 2), by Faber's correction: a second top nearly as high follows its first, and any layer under it tips the cue's top to the later one. No From cuts off a top that follows the first, so the take is out. LibContact is three recordings; every hit take's top is now 2.8 to 8.1 ms into its slice (measured alone, `mixdown.json`).
+- **The heavy body:** 9113470397 is out (its file is so quiet that its Gain of 7.27 passed the cap, and it has no louder part), and 9113531442 is out (a kick in two stages, its top 20.5 ms in). **LibHeavyBody is one recording, Boxing Hits 17, until the second batch is on disk:** B1 and B3 can't vary their body yet, which gate 8's "no take twice running" can't be met on. B2 doesn't use it.
+- **Gain cap:** every take's Gain is at or under 3 (the most is 2.51), asserted in the script.
+- **The tells (C1, C3, and C2's):** a tell's takes are matched by their tops, and its Volume is set so its top stands 2 dB under the lowest top of its swipe's pass, whichever takes meet. The cost: the tell is about 16 LU under its pass in loudness, since a paper tick's top stands 27 to 30 dB over its loudness and the airiest pass's only 13.
+- **The low share:** the thump's level is set from the draft's measured shares (a thump holds about 5.5 times a contact's raw energy at one loudness; fitted to A3's 43%, B1's 49% and B2's 63%). B2 is the contact with the thump 9 dB under it, an estimated 31% under 120 Hz. B1's thump is 11.7 dB under its body (41%), B3's 10 dB (39%), A3's 8 dB (34%). No high-pass was needed.
+- **The level isn't chased** (research's word): the Volumes stand where the draft measured, -43.4 LUFS for LightHit, and the estimate now counts the engine's Trim. HeavyHit is 4.2 LU over, down from 4.5, since the draft measured 4.5 to 4.8 against gate 4's 5.
+- **For when the level is set, a measure:** a recorded contact's top stands 27 dB over its loudness, today's LightHit's 25 and today's HeavyHit's 18.5. At about 1.5 LU under today's LightHit these cues top where today's do.
+- **B2 and the light hit share LibContact:** when both land on one sample with the same take they add as one sound (the draft's -8.3 dBTP against -12.5 alone). In play the takes are picked apart, so it's rare; a list of its own for B2 waits for the second batch.
+- **Status:** implemented as recipes; estimates only, on Faber's take measures; not mixed, not heard. Quality by ear is UNVERIFIED. Faber brings it in and measures before the director's listen.
+
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game is way to much too purple/Black and somber btw". It's the third time: 2026-11-15, "too much purple"; 2026-11-16, "need to be less somber"; 2026-11-16, night, "a bit to dark and somber we need a day time" (`docs/decisions.md`). Day is already in the game, 18 minutes of every 30 (`Config/Lighting`). So the time of day isn't the cause; what's lit is.

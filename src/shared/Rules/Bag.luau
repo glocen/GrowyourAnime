@@ -7,8 +7,10 @@
 --            whether it's worn, and what wearing it would change in Combat Power (the up arrow when it's a gain)
 --   Groups   the belt's three: the hands, the body, the jewellery; a narrow screen shows the chosen item's group
 --   Card     a chosen item against what it replaces: each Basic Attribute and each Battle Attribute it changes
--- Every comparison is Stats.Compare, the resolver run twice, so it never drifts from the fight. No Roblox API: it runs
--- with Studio closed.
+-- Every comparison is Stats.Compare, the resolver run twice, so it never drifts from the fight. A rating (Sheet.Rated)
+-- is carried as its share against an even foe, never its points, as the sheet shows it: a comparison's, the two blocks'
+-- odds (Sheet.Odds); an item's own line, what its points would add to the Voidkin shown (Sheet.Adds). No Roblox API: it
+-- runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -24,6 +26,7 @@ local ChestsConfig = require(Shared.Config.Chests)
 local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Regalia = require(Shared.Rules.Regalia)
+local Sheet = require(Shared.Rules.Sheet)
 
 local Bag = {}
 
@@ -70,9 +73,9 @@ export type Card = {
 	Slot: string, -- the slot it would go in, or is in
 	Power: number, -- Combat Power's change: wearing it, or taking it off when it's worn
 	Basic: { Line }, -- each Basic Attribute, with its change
-	Battle: { Line }, -- the Battle Attributes it changes, at most Bag.Battle
+	Battle: { Line }, -- the Battle Attributes it changes, at most Bag.Battle; a rating as its share
 	Replaces: string?, -- the item in that slot now, when there's one and it isn't this
-	Lines: { Profile.ItemLine }, -- its own rolled lines, the main stat first
+	Lines: { Profile.ItemLine }, -- its own rolled lines, the main stat first; a rating as the share it would add
 }
 
 -- An item's design's picture: its name in Config.UIKit.Images, or nil when its kind has no design at its rarity.
@@ -289,13 +292,16 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 		Basic = {},
 		Battle = {},
 		Replaces = nil,
-		Lines = table.clone(item.Lines),
+		Lines = {},
 	}
+	local preset = if owned then Stats.PresetOf(data, owned) else nil
+	local before = if owned then Stats.Resolve(owned, preset, data) else Stats.Empty(1)
+	for _, line in item.Lines do
+		table.insert(card.Lines, { Stat = line.Stat, Value = if Sheet.Rated[line.Stat] then Sheet.Adds(line.Stat, line.Value, before) else line.Value })
+	end
 	if owned == nil or not card.Fits then
 		return card
 	end
-	local preset = Stats.PresetOf(data, owned)
-	local before = Stats.Resolve(owned, preset, data)
 	local after: Stats.Block
 	if wornAt then
 		local trial: Profile.Preset = { Slots = if preset then table.clone(preset.Slots) else {}, Hands = {} }
@@ -318,8 +324,12 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 	for _, attribute in Attributes.Ids do
 		table.insert(card.Basic, { Stat = attribute, Value = before.Attributes[attribute], Change = after.Attributes[attribute] - before.Attributes[attribute] })
 	end
+	local oddsWas, oddsNow = Sheet.Odds(before), Sheet.Odds(after)
 	for _, stat in Stats.Names do
 		local was, now = (before :: any)[stat] :: number, (after :: any)[stat] :: number
+		if Sheet.Rated[stat] then
+			was, now = oddsWas[stat], oddsNow[stat]
+		end
 		if math.abs(now - was) > 1e-9 and #card.Battle < Bag.Battle then
 			table.insert(card.Battle, { Stat = stat, Value = was, Change = now - was })
 		end

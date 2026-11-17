@@ -2,14 +2,16 @@
 -- LeadCard (client UI): the lead's card, top left of the HUD, in take F (AR12, the director's pick of 2026-11-15: "let
 -- try F i dont want segments tho just a bar"). The portrait is its biggest thing, the head standing over its rarity's
 -- frame; beside it one plate on a slant: the name's row on top, one solid health bar in ruby (wine at its root, hot at
--- its front), its digits under it, and experience a lavender thread at its foot. The type's stud sits at the bar's root,
--- the level's mark under the frame's lowest point. No glow round the frame (the director, 2026-11-15: "let remove this
--- light aura"). Its art is the builder's kit (tools/blender/lead_card_art.py; Config.UIKit's Card* images and its
--- LeadPlate shape, in the card's own points, one authored pixel each), with Modulo's stud (AR12's colour) and level plate
--- (TR17's marks). Laid bottom to top: the plate and its rim, the two lights, the name and class mark, the health's
--- digits, the face, its rarity's frame, the head over the frame, the stud and its gem, the level's mark. The rims take the
--- lead's rarity's colour (Config.Hud.Card.Trim), the stud its type's (Config.Hud.Card.Types). Fallen, the face and head
--- dim; never a red wash.
+-- its front), its digits under it, and experience a lavender thread 3 thick at its foot. The type's stud sits at the
+-- bar's root, the level on a badge on the frame's foot (TR24, the director's run, fix 6). Its colours are take A (AR12,
+-- research's pick of 2026-11-17): the card wears the Voidkin's row as the HUD's pills wear theirs (Config.UIKit.Systems
+-- .Voidkin): its Panel for the body with no band, a lavender edge, its pale for the words, the level in ink on its Block.
+-- No glow round the frame (the director, 2026-11-15: "let remove this light aura"). Its art is the builder's kit
+-- (tools/blender/lead_card_art.py; Config.UIKit's Card* images and its LeadPlate shape, in the card's own points, one
+-- authored pixel each), with Modulo's stud (AR12's colour) and TR17's chevrons. Laid bottom to top: the plate and its
+-- rim, the two lights, the name and class mark, the health's digits, the face, its rarity's frame, the head over the
+-- frame, the stud and its gem, the level's badge. Only the frame says the rarity (Config.Hud.Card.Trim); the stud takes
+-- the type's colour (Config.Hud.Card.Types). Fallen, the face and head dim; never a red wash.
 --   LeadCard.new(parent, position)        the card, hidden until it has a lead
 --   LeadCard.Who(card, voidkinId?, down)  the face, the frame and the trims
 --   LeadCard.Kind(card, type, class)      the stud's colour and gem, and the class mark
@@ -49,18 +51,17 @@ local NAME_ROOM = 81 -- the longest name, authored pixels: past it, it's cut wit
 local CLASS_AFTER = 10.5 -- the class mark's centre past the name
 local CLASS = 12 -- the class mark's size
 local GEM = 14.6 -- the type's gem on its stud
--- The level's plate (TR17's LevelPlate) in D's place, beside the portrait under the plate (research's call, AR12, "The
--- card's height"): its left 2 clear of every rarity's frame at its widest, its top under the experience line, its height;
--- then its lit cap with the chevrons, its end past the number, its least width.
-local LEVEL_X, LEVEL_Y, LEVEL_H = P.Level[1], P.Level[2], P.Level[3]
-local LEVEL_CAP, LEVEL_AFTER, LEVEL_MIN = 24, 8, 54
-local CHEVRONS = 14
--- The level plate's body in the plate's name row's violet, and the chevrons in its deep (lead_card_art.VIOLET).
-local LEVEL_BODY = { Color3.fromHex("#5545A6"), Color3.fromHex("#211849") }
-local CHEVRON_INK = Color3.fromHex("#150F30")
+-- The level on a badge on the portrait's frame (docs/ui.md, the HUD, top left; TR24, the director's run, fix 6: never the
+-- tab hanging under the card at another slant): a block on the card's slant over the frame's foot, its left at the
+-- frame's, growing rightward with the number (UIKit.LeadPlate.Badge: its foot's left, its top, its least width, its
+-- height; Modulo's mock, AR12's take A). The chevrons and the number in ink on the Voidkin's Block.
+local BADGE = P.Badge
+local CHEVRONS_AT, CHEVRONS = 11, 11.5 -- the chevrons' centre past the badge's foot's left, their size
+local NUMBER_AT, NUMBER_AFTER = 18.5, 6.5 -- the number's left past the same, and the block past the number's end
+local VOIDKIN = UIKit.Systems.Voidkin -- the card's colours, as each pill wears its system's (take A)
 -- The box the card answers for (the HUD's corner, its overlap and band checks): the plate's end, and 89 tall, take E's
 -- height kept (research's call, AR12), so the readout, the eye and notice B stay where they were. Its art reaches a little
--- past it: the shadow, the head, a high rarity's crest and points, and the level's mark to 97, clear of the readout's
+-- past it: the shadow, the head, a high rarity's crest and points, and the level's badge to 91, clear of the readout's
 -- corner (from 99) and the eye (from 102).
 local BOX = Vector2.new(P.Plate[3], 89)
 local STUD = 6.5 -- take E's stud's radius (the target's card)
@@ -188,22 +189,15 @@ LeadCard.Relight = relight
 LeadCard.Stud = stud
 LeadCard.Digits = digits
 
--- The level's plate cut to fit "Lv" and the number, its left fixed in D's place so it grows rightward under the plate,
--- the number's label anchored at its middle so the level-up's pop swells it in place (Pop.Centre).
+-- The badge cut to fit the number, its left fixed so it grows rightward over the frame's foot; the number's label
+-- anchored at its middle so the level-up's pop swells it in place (Pop.Centre).
 local function fitLevel(card: Frame, level: TextLabel)
-	local word = card:FindFirstChild("LevelWord") :: TextLabel
-	local wordW, numberW = Text.Wide(word, word.Text), Text.Wide(level, level.Text)
-	local w = math.max(LEVEL_CAP + 2 + wordW + 3 + numberW + LEVEL_AFTER, LEVEL_MIN)
-	local x = LEVEL_X
-	for _, name in { "LevelPlate", "LevelPlateEdge" } do
-		Skin.Set(card:FindFirstChild(name) :: ImageLabel, name, { X = x, Y = LEVEL_Y, W = w, H = LEVEL_H })
-	end
-	Skin.Set(card:FindFirstChild("LevelChevrons") :: ImageLabel, "LevelChevrons", { X = x + LEVEL_H / 2 - CHEVRONS / 2, Y = LEVEL_Y + LEVEL_H / 2 - CHEVRONS / 2, Scale = CHEVRONS / UIKit.Images.LevelChevrons.Points.X })
-	word.Position = UDim2.fromOffset(x + LEVEL_CAP + 2, LEVEL_Y)
-	word.Size = UDim2.fromOffset(wordW + 1, LEVEL_H)
-	local left = x + LEVEL_CAP + 2 + wordW + 3
-	level.Position = UDim2.fromOffset(left + (numberW + 2) / 2, LEVEL_Y + LEVEL_H / 2)
-	level.Size = UDim2.fromOffset(numberW + 2, LEVEL_H)
+	local numberW = Text.Wide(level, level.Text)
+	local x, y, h = BADGE[1], BADGE[2], BADGE[4]
+	local w = math.max(NUMBER_AT + numberW + NUMBER_AFTER, BADGE[3])
+	Skin.Set(card:FindFirstChild("LevelBadge") :: ImageLabel, "CardLevelBadge", { X = x, Y = y, W = w, H = h })
+	level.Position = UDim2.fromOffset(x + NUMBER_AT + (numberW + 2) / 2, y + h / 2)
+	level.Size = UDim2.fromOffset(numberW + 2, h)
 end
 
 function LeadCard.new(parent: Instance, position: UDim2): Card
@@ -215,7 +209,7 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	card.Visible = false
 	card.Parent = parent
 	image(card, "Plate", "CardPlate", 1)
-	image(card, "PlateRim", "CardPlateRim", 2)
+	image(card, "PlateRim", "CardPlateRim", 2).ImageColor3 = VOIDKIN.Colour
 	-- Each light's empty point is its row's left end: health's at the stud's right edge, experience's under the frame.
 	local health = light(card, "Health", "CardLeadHealth", P.Health, P.Health[1], 3)
 	local xp = light(card, "Xp", "CardLeadXp", P.Xp, P.Xp[1], 3)
@@ -229,6 +223,7 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 		Size = Theme.Text.Body,
 		Font = Theme.Font.Strong,
 		Truncate = true,
+		Colour = VOIDKIN.Pale,
 		Box = UDim2.fromOffset(NAME_ROOM, nameRow),
 		Position = UDim2.fromOffset(NAME_X, P.Plate[2]),
 		Parent = card,
@@ -254,6 +249,7 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 		Name = "HealthText",
 		Size = Theme.Text.Caption,
 		Font = Theme.Font.Strong,
+		Colour = VOIDKIN.Pale,
 		Box = UDim2.fromOffset(P.Health[3] - NAME_X, tall),
 		Position = UDim2.fromOffset(NAME_X, below - math.floor((tall - gap) / 2)),
 		Parent = card,
@@ -282,26 +278,19 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	end
 	local gem = Skin.Icon(card, "GemStrength", cx, cy, GEM, nil, 10)
 	gem.Name = "Gem"
-	-- The level's mark under the frame: its plate, its rim and lit cap, the chevrons on the cap, "Lv" and the number.
-	for z, kit in { "LevelPlate", "LevelPlateEdge", "LevelChevrons" } do
-		local made = Instance.new("ImageLabel")
-		made.Name = kit
-		made.BackgroundTransparency = 1
-		made.BorderSizePixel = 0
-		made.ZIndex = 10 + z
-		made.Parent = card
-		if kit == "LevelPlate" then
-			Skin.Tint(made, LEVEL_BODY)
-		elseif kit == "LevelChevrons" then
-			made.ImageColor3 = CHEVRON_INK
-		end
-	end
-	local word = Text.new({ Name = "LevelWord", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Parent = card })
-	word.Text = "Lv"
-	word.ZIndex = 14
+	-- The level's badge on the frame's foot: the Voidkin's Block, TR17's chevrons and the number in ink on it.
+	local badge = Instance.new("ImageLabel")
+	badge.Name = "LevelBadge"
+	badge.BackgroundTransparency = 1
+	badge.BorderSizePixel = 0
+	badge.ZIndex = 11
+	Skin.Tint(badge, VOIDKIN.Block)
+	badge.Parent = card
+	local chevrons = Skin.Icon(card, "LevelChevrons", BADGE[1] + CHEVRONS_AT, BADGE[2] + BADGE[4] / 2, CHEVRONS, HudConfig.Card.LeadLevel, 12)
+	chevrons.Name = "LevelChevrons"
 	local level = Text.new({
 		Name = "Level",
-		Size = Theme.Text.Body,
+		Size = Theme.Text.Caption,
 		Font = Theme.Font.Number,
 		Colour = HudConfig.Card.LeadLevel,
 		Align = Enum.TextXAlignment.Center,
@@ -314,7 +303,6 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	end
 	level:GetPropertyChangedSignal("Text"):Connect(refit)
 	level:GetPropertyChangedSignal("TextSize"):Connect(refit)
-	word:GetPropertyChangedSignal("TextSize"):Connect(refit)
 	refit()
 	local made: Card = { Frame = card, Name = name, Level = level, Health = health, HealthText = healthText, Xp = xp, Portrait = portrait, Gem = gem, Class = class }
 	LeadCard.Name(made, "")
@@ -381,11 +369,13 @@ function LeadCard.Who(card: Card, id: string?, down: boolean)
 	end
 	portrait:SetAttribute("Face", face)
 	portrait:SetAttribute("Rarity", rarity)
-	local trim = HudConfig.Card.Trim[rarity]
-	local white = Color3.new(1, 1, 1);
-	(card.Frame:FindFirstChild("PlateRim") :: ImageLabel).ImageColor3 = trim
-	Skin.Tint(card.Frame:FindFirstChild("LevelPlateEdge") :: ImageLabel, { trim:Lerp(white, 0.6), trim });
-	(card.Frame:FindFirstChild("LevelWord") :: TextLabel).TextColor3 = trim:Lerp(white, 0.55)
+end
+
+-- The level-up's pop on the badge (HudController): its Block lifted `share` of the way to white under the ink number,
+-- which keeps its ink so it reads through the flash.
+function LeadCard.Glow(card: Card, share: number)
+	local white = Color3.new(1, 1, 1)
+	Skin.Tint(card.Frame:FindFirstChild("LevelBadge") :: ImageLabel, { VOIDKIN.Block[1]:Lerp(white, share), VOIDKIN.Block[2]:Lerp(white, share) })
 end
 
 return LeadCard

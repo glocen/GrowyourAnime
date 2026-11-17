@@ -1073,6 +1073,63 @@ return function(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: TR24's must-fixes from the director's run, held for stills: the Overview's sheet, the Items tab, an item's card, the HUD's lead card",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Each view is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Overview", "Battle", "Items",
+				-- "Card", "Hud", "End") and captures it, in the window's own size.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 300, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				Screen.Close()
+				local parts = HudController.Parts()
+				t.Check("the dock's Voidkin opens it", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name
+				end))
+				VoidkinScreen.Show("Overview")
+				if await("Overview") then
+					local scroll = VoidkinScreen.Find("Page")
+					local head = scroll and scroll:FindFirstChild("HeadingBasic Attributes", true)
+					if scroll and scroll:IsA("ScrollingFrame") and head and head:IsA("GuiObject") then
+						scroll.CanvasPosition = Vector2.new(0, head.AbsolutePosition.Y - scroll.AbsolutePosition.Y + scroll.CanvasPosition.Y)
+					end
+				end
+				if await("Battle") then
+					local scroll = VoidkinScreen.Find("Page")
+					local head = scroll and scroll:FindFirstChild("GroupOffence and Defence", true)
+					if scroll and scroll:IsA("ScrollingFrame") and head and head:IsA("GuiObject") then
+						scroll.CanvasPosition = Vector2.new(0, head.AbsolutePosition.Y - scroll.AbsolutePosition.Y + scroll.CanvasPosition.Y)
+					end
+				end
+				if await("Items") then
+					VoidkinScreen.Show("Bag")
+				end
+				if await("Card") then
+					local view = ProfileController.Get()
+					local first: string? = nil
+					for id in (if view then view.Items else {}) :: { [string]: any } do
+						first = if first == nil or id < first then id else first
+					end
+					if first then
+						VoidkinScreen.Bag.Choose(first)
+					end
+				end
+				if await("Hud") then
+					Screen.Close()
+				end
+				await("End")
+				Screen.Close()
+				step:Destroy()
+			end,
+		},
+		{
 			Name = "Take: the Power screen's battery plate at the smallest phone's size, held for a still, for research",
 			Manual = true,
 			Stay = true,

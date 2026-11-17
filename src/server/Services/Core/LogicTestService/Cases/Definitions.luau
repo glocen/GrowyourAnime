@@ -11,6 +11,7 @@ local ShardConfig = require(Shared.Config.Shards)
 local SoundConfig = require(Shared.Config.Sounds)
 local EffectsConfig = require(Shared.Config.Effects)
 local FxKit = require(Shared.Config.FxKit)
+local UIKit = require(Shared.Config.UIKit)
 local Odds = require(Shared.Rules.Odds)
 local SoundRule = require(Shared.Rules.Sound)
 
@@ -128,6 +129,23 @@ return {
 					t.Check(`{grade} weighs {name}`, weights[name] ~= nil)
 				end
 			end
+		end,
+	},
+	{
+		-- TR24, the director's run, fix 5: an installed Voidkin (one with a body, Model) never shows the grey silhouette.
+		Name = "Definitions: every installed Voidkin has its portrait, both cuts, and its lead card's face and head",
+		Run = function(t: any)
+			local installed = 0
+			for _, row in Voidkin.List do
+				if row.Model then
+					installed += 1
+					for _, name in { `Portrait{row.Name}`, `Portrait{row.Name}Small`, `CardFace{row.Name}`, `CardHead{row.Name}` } do
+						local image = UIKit.Images[name]
+						t.Check(`{row.Name}: {name}`, image ~= nil and string.find(image.Id, "^rbxassetid://%d+$") ~= nil, if image then image.Id else "none")
+					end
+				end
+			end
+			t.Check("the installed five at least", installed >= 5, `{installed}`)
 		end,
 	},
 	{

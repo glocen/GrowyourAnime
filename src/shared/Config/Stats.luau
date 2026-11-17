@@ -96,7 +96,7 @@ return {
 	-- Combat Power (docs/design.md, "Combat Power"): one number for how strong a Voidkin is, a weighted sum of its resolved
 	-- stats times Scale, rounded (Rules.Stats.Power); for reading, never for damage. Critical damage counts only above the
 	-- base every fighter has. A weight is what a point adds to winning, Attack's held at 4; a percent's (Critical Damage,
-	-- Critical Guard, Lifesteal) is its weight at level 1, multiplied by G at the block's level. With no type edge, the
+	-- Critical Immunity, Lifesteal) is its weight at level 1, multiplied by G at the block's level. With no type edge, the
 	-- higher number wins 97% of same-level duels. Research's seeds (TR17 fix 10; tools/balance/seeds.json, "combatPower",
 	-- fitted by tools/balance/sim.py, section 16), tier 2, 2026-11-15, night; refitted on the attribute builds (TR25,
 	-- "Research's answers", 2026-11-16, 19:13; attributes.py, report A8): 97% again, 99.7% where one wins 10% faster.

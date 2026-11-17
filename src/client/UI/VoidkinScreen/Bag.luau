@@ -1,6 +1,8 @@
 --!strict
--- The Items page (client; TR28): AR18's A, "the ledger", in LACQUER (the director's pick, about 20:52, 2026-11-16; TR28,
--- "The rebuild in A"; docs/ui.md, the bag). Right of the rail, on one plate of warm black lacquer:
+-- The Items page (client; TR28): AR18's A, "the ledger" (the director's pick, about 20:52, 2026-11-16; TR28, "The rebuild
+-- in A"; docs/ui.md, the bag), in the Overview's colours, so a switch of tabs never changes one (TR24, the director's
+-- run, fix 4): the screen's backing, the Overview's stage, its slots' graphite cells, its panel for the card. Right of
+-- the rail:
 --   the strip over the grid: the bag's six kinds, All first and holding everything (the director, by 21:32), scrolling
 --     with the chosen one kept in view, and at its end the sort (the salvage's control, in Chests);
 --   the grid, five across or more, cells of about 64, each A's cell on AR6's assembly (build/handoff/UI/gear/
@@ -9,11 +11,11 @@
 --     Combat Power, a tick when it's worn, another class's weapon drained. Chests stand after the items, each its
 --     picture (AR21) and count in a plain cell, the shards after them. The count stands under the grid, outside its
 --     scroll;
---   the doll at the room's left, as A's sheet has it (the director, 2026-11-16), a brass hairline between it and the grid:
+--   the doll at the room's left, as A's sheet has it (the director, 2026-11-16), a hairline between it and the grid:
 --     the Voidkin between its two columns of slots, the six armour pieces on the left,
 --     the cloak and the jewellery on the right, its name and level over it, its Combat Power and its two hands at its
 --     feet. All fourteen slots always show, each a touch, an empty one its piece's mark (AR22); the one the chosen
---     item would go in wears a bone ring;
+--     item would go in wears an ivory ring;
 --   a chosen item's card slides in at the room's right edge, the doll's width, in 0.16 s, so Equip stands under the right
 --     thumb and the doll stays in view: its design's picture and
 --     name, its rarity and kind, Combat Power's change, what it replaces, each Basic and Battle Attribute's change, and
@@ -40,6 +42,7 @@ local Rules = require(Shared.Rules.Bag)
 local Sheet = require(Shared.Rules.Sheet)
 local Hud = require(Shared.Rules.Hud)
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local UI = script.Parent.Parent
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
@@ -55,7 +58,6 @@ type Box = { X: number, Y: number, Wide: number, Tall: number }
 
 export type Context = {
 	Body: Frame,
-	Floor: Frame, -- the screen's frame, under the figure's stage: the lacquer lies here, so the figure stands on it
 	Room: Vector2,
 	Left: number, -- where the page starts, authored, right of the rail
 	View: Profile.View,
@@ -71,7 +73,26 @@ export type Context = {
 }
 
 local C = HudConfig.Bag
-local P = C.Palette
+-- The Overview's palette (TR24, the director's run, fix 4): its words, its hairlines, its slots' wells, its panel; a
+-- rarity keeps its own colours (Config.Hud.Bag).
+local GRAPHITE = UIKit.Palettes.Graphite
+local P = {
+	Text = Theme.Colour.Text,
+	Soft = Theme.Colour.TextDim,
+	Faint = Theme.Colour.Disabled,
+	Line = Theme.Colour.Line, -- a hairline, an empty slot's rim, as the Overview's slots
+	Ink = Theme.Colour.Backing, -- a word on a lit chip
+	Backing = Theme.Colour.Backing, -- behind the page, as behind the Overview (the screen's cover)
+	Cell = Theme.Colour.PlateHigh, -- a cell's well, as the Overview's slot
+	CellAlpha = 0.75, -- the Overview's slot at 0.25 transparency
+	Field = GRAPHITE.Panel, -- the card, as the Overview's panel
+	Edge = GRAPHITE.Edge,
+	Seat = Theme.Colour.Channel, -- under a corner's mark, and the card's Combat Power
+	Up = UIKit.Good,
+	Down = UIKit.Bad,
+	Rarity = C.Rarity,
+	Rim = C.Rim,
+}
 local GROUP_KIND = { "Weapons", "Armour", "Jewellery" } -- each slot group's kind on the strip
 local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
 local NUMBER_ROW = 22 -- the card's Combat Power line
@@ -203,7 +224,7 @@ local function cross(parent: Instance, colour: Color3, side: number)
 end
 
 -- Where each piece stands, authored, in the room right of the rail: the doll at the left, as A's sheet has it (the
--- director, 2026-11-16), its slots a touch each and taking the room's height (C.Doll), then a brass hairline, the grid
+-- director, 2026-11-16), its slots a touch each and taking the room's height (C.Doll), then a hairline, the grid
 -- in what's left, five across or more. The card opens at the room's right edge, the doll's width, over the grid's end:
 -- Equip under the right thumb (docs/ui.md), and the doll in view beside it.
 type Layout = {
@@ -263,13 +284,13 @@ end
 -- A's cell on AR6's assembly (gear_icons.json's layers, its sizes for a slot of C.Gear), `side` across in `holder`: the
 -- well (a Legendary's umber); the rarity's tint and light; its rim (a Legendary's gilt frame); its rarity's bar along its
 -- foot; its picture, 0.94 of it; a weapon's class mark at its foot's right. `drained`: another class's weapon, its light,
--- rim and picture dimmed. `rarity` "" (a chest) takes the plain brass edge, and `words` stand for a missing picture.
+-- rim and picture dimmed. `rarity` "" (a chest) takes the plain edge, and `words` stand for a missing picture.
 local function art(holder: GuiObject, side: number, rarity: string, image: string?, words: string, class: string?, drained: boolean)
 	local s = side / C.Gear
 	local skin = Skin.Of(holder)
 	local legendary = rarity == "Legendary"
 	local rim = P.Rim[rarity]
-	Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = if legendary then P.Umber else P.Well, Z = 1 })
+	Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = P.Cell, Alpha = P.CellAlpha, Z = 1 })
 	if rim then
 		if not legendary then
 			Skin.Lay(skin, "ButtonFill", { Name = "Tint", Tint = rim, Alpha = if rarity == "Common" then 0.112 else 0.14, Z = 2 })
@@ -294,7 +315,7 @@ local function art(holder: GuiObject, side: number, rarity: string, image: strin
 		round(band, 1)
 		band.Parent = skin
 	else
-		Skin.Lay(skin, "ButtonEdge", { Name = "Rim", Tint = P.BrassDim, Z = 5 })
+		Skin.Lay(skin, "ButtonEdge", { Name = "Rim", Tint = P.Line, Z = 5 })
 	end
 	if image then
 		local picture = Skin.Icon(holder, image, side / 2, side / 2, side * 0.94, nil, 2)
@@ -421,7 +442,7 @@ end
 
 -- The doll's fourteen slots, each a touch: the six armour pieces down the left, the cloak and the jewellery down the
 -- right, the two hands at the figure's feet. Each holds what the shown Voidkin wears there, or its empty mark (AR22);
--- the slot the chosen item would go in is ringed in bone.
+-- the slot the chosen item would go in is ringed in ivory.
 local function drawSlots(context: Context, at: Layout, target: string?)
 	local holder = slots
 	if holder == nil then
@@ -456,8 +477,8 @@ local function drawSlots(context: Context, at: Layout, target: string?)
 			art(inside, well, item.Rarity, if design then design.Image else nil, row.Kind, row.Class, false)
 		else
 			local skin = Skin.Of(inside)
-			Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = { P.Well[1]:Lerp(P.Top, 0.4), P.Well[2] }, Alpha = 0.9, Z = 1 })
-			Skin.Lay(skin, "ButtonEdge", { Name = "Rim", Tint = P.BrassDim, Alpha = 0.7, Z = 2 })
+			Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = P.Cell, Alpha = P.CellAlpha, Z = 1 })
+			Skin.Lay(skin, "ButtonEdge", { Name = "Rim", Tint = P.Line, Z = 2 })
 			-- AR22's mark for what goes there, from the slot's Epic piece; a hand's by the shown Voidkin's class.
 			local mark = Skin.Icon(inside, emptyMark(name, class), well / 2, well / 2, well * C.Empty.Share, C.Empty.Tint, 3)
 			mark.Name = "Empty"
@@ -517,7 +538,7 @@ local function compared(parent: Instance, order: number, wide: number, stat: str
 end
 
 local function caption(parent: Instance, order: number, wide: number, words: string)
-	local made = label({ Name = words, Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Brass, Box = UDim2.fromOffset(wide, C.Row + 4), Parent = parent }, words)
+	local made = label({ Name = words, Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Soft, Box = UDim2.fromOffset(wide, C.Row + 4), Parent = parent }, words)
 	made.TextYAlignment = Enum.TextYAlignment.Bottom
 	made.LayoutOrder = order
 end
@@ -526,7 +547,7 @@ local function rule(parent: Instance, x: number, y: number, wide: number)
 	local made = Instance.new("Frame")
 	made.Name = "Divider"
 	made.BorderSizePixel = 0
-	made.BackgroundColor3 = P.BrassDim
+	made.BackgroundColor3 = P.Line
 	made.Position = UDim2.fromOffset(x, y)
 	made.Size = UDim2.fromOffset(wide, 1)
 	made.Parent = parent
@@ -541,7 +562,7 @@ local function lines(made: Frame, id: string, x: number, top: number, wide: numb
 	list.Position = UDim2.fromOffset(x, top)
 	list.Size = UDim2.fromOffset(wide, math.max(bottom - top, C.Row))
 	list.ScrollBarThickness = 3
-	list.ScrollBarImageColor3 = P.BrassDim
+	list.ScrollBarImageColor3 = P.Line
 	list.CanvasSize = UDim2.new()
 	list.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	list.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -553,7 +574,7 @@ local function lines(made: Frame, id: string, x: number, top: number, wide: numb
 	return list
 end
 
--- A card's frame over the doll: its lacquer, its close, and the side of a touch.
+-- A card's frame over the doll: the Overview's panel, its close, and the side of a touch.
 local function cardFrame(at: Layout, id: string, taps: { [Instance]: () -> () }): (Frame, number)
 	local holder = room :: Frame
 	local made = Instance.new("Frame")
@@ -565,7 +586,7 @@ local function cardFrame(at: Layout, id: string, taps: { [Instance]: () -> () })
 	made:SetAttribute("For", id)
 	ramp(made, P.Field)
 	round(made, C.Card.Corner)
-	edge(made, P.BrassDim)
+	edge(made, P.Edge)
 	made.Parent = holder
 	local side = touch()
 	local shut = press("Close", made, at.Half.Wide - side, 0, side, side, close, taps)
@@ -855,7 +876,7 @@ refresh = function()
 	end
 end
 
--- A chip on the strip: a pill `C.Pill` tall in a tap's height, bone when chosen.
+-- A chip on the strip: a pill `C.Pill` tall in a tap's height, an Overview slot's well and edge, ivory when chosen.
 local function chip(parent: Instance, name: string, words: string, order: number, lit: boolean, taps: { [Instance]: () -> () }, onTap: () -> ()): TextButton
 	local probe = label({ Name = "Probe", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Parent = parent }, words)
 	local wide = math.max(math.ceil(Text.Wide(probe, words)) + Theme.Size.Pad * 2, Theme.Size.Tap)
@@ -873,14 +894,14 @@ local function chip(parent: Instance, name: string, words: string, order: number
 	local pill = Instance.new("Frame")
 	pill.Name = "Pill"
 	pill.BorderSizePixel = 0
-	pill.BackgroundColor3 = P.Text
-	pill.BackgroundTransparency = if lit then 0 else 1
+	pill.BackgroundColor3 = if lit then P.Text else P.Cell
+	pill.BackgroundTransparency = if lit then 0 else 1 - P.CellAlpha
 	pill.AnchorPoint = Vector2.new(0, 0.5)
 	pill.Position = UDim2.fromScale(0, 0.5)
 	pill.Size = UDim2.new(1, 0, 0, C.Pill)
 	round(pill, C.Pill / 2)
 	if not lit then
-		edge(pill, P.BrassDim)
+		edge(pill, P.Line)
 	end
 	pill.Parent = made
 	label({ Name = "Word", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = if lit then P.Ink else P.Soft, Align = Enum.TextXAlignment.Center, Parent = pill }, words)
@@ -908,14 +929,8 @@ function Bag.Build(context: Context): (() -> boolean)?
 	lastLayout = at
 	local body = context.Body
 	local taps = context.Taps
-	-- The lacquer: one plate behind everything the page holds, the figure's stage included (it lies in the screen's
-	-- frame, which shares the body's corner, under the stage).
-	local case = plain("Case", context.Floor, at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
-	case.ZIndex = -1
-	case.BackgroundTransparency = 0
-	case.BackgroundColor3 = Color3.new(1, 1, 1)
-	ramp(case, { P.Top, P.Foot })
-	round(case, 10)
+	-- The page's room, bare: the screen's backing shows through it, as on the Overview.
+	plain("Case", body, at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
 	-- The strip: the six kinds, scrolling, then the sort or, in Chests, the salvage.
 	local data = context.View :: any
 	local rightWords: string
@@ -970,13 +985,13 @@ function Bag.Build(context: Context): (() -> boolean)?
 		lit = if name == kind then made else lit
 	end
 	-- A chip cut by the strip's edge reads as more this way, never a stray sliver: each edge hiding a chip fades into
-	-- the lacquer under it.
+	-- the backing under it.
 	local function veil(name: string, onLeft: boolean): Frame
 		local made = Instance.new("Frame")
 		made.Name = name
 		made.Active = false
 		made.BorderSizePixel = 0
-		made.BackgroundColor3 = P.Top
+		made.BackgroundColor3 = P.Backing
 		made.AnchorPoint = Vector2.new(if onLeft then 0 else 1, 0)
 		made.Position = if onLeft then UDim2.new() else UDim2.new(1, kinds.Size.X.Offset, 0, 0)
 		made.Size = UDim2.new(0, C.Veil, 1, 0)
@@ -993,9 +1008,6 @@ function Bag.Build(context: Context): (() -> boolean)?
 		local from = kinds.CanvasPosition.X
 		before.Visible = from > 1
 		after.Visible = from + kinds.AbsoluteWindowSize.X < kinds.AbsoluteCanvasSize.X - 1
-		local tall = math.max(case.AbsoluteSize.Y, 1)
-		local under = P.Top:Lerp(P.Foot, math.clamp((kinds.AbsolutePosition.Y + kinds.AbsoluteSize.Y / 2 - case.AbsolutePosition.Y) / tall, 0, 1))
-		before.BackgroundColor3, after.BackgroundColor3 = under, under
 	end
 	kinds:GetPropertyChangedSignal("CanvasPosition"):Connect(veils)
 	kinds:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(veils)
@@ -1022,7 +1034,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 	grid.Position = UDim2.fromOffset(at.Grid.X, at.Grid.Y)
 	grid.Size = UDim2.fromOffset(at.Grid.Wide, at.Grid.Tall)
 	grid.ScrollBarThickness = 3
-	grid.ScrollBarImageColor3 = P.BrassDim
+	grid.ScrollBarImageColor3 = P.Line
 	grid.CanvasSize = UDim2.new()
 	grid.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	grid.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -1064,10 +1076,10 @@ function Bag.Build(context: Context): (() -> boolean)?
 	local held = Rules.Held(data)
 	local count = label({ Name = "BagCount", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = if held >= Rules.Cap then P.Down else P.Faint, Box = UDim2.fromOffset(at.Count.Wide - 4, at.Count.Tall), Position = UDim2.fromOffset(at.Count.X, at.Count.Y), Parent = body }, `{Hud.Digits(held)} / {Hud.Digits(Rules.Cap)} in the bag`)
 	count:SetAttribute("Held", held)
-	-- A brass hairline between the doll and the grid.
+	-- A hairline between the doll and the grid.
 	local hairline = plain("Rule", body, at.Doll.X + at.Doll.Wide + Theme.Size.Gap, C.Inset * 2, 1, at.Case.Tall - C.Inset * 4)
 	hairline.BackgroundTransparency = 0.2
-	hairline.BackgroundColor3 = P.BrassDim
+	hairline.BackgroundColor3 = P.Line
 	-- The doll: its name and level over the figure, the figure on its stage, its Combat Power at its feet, then the slots.
 	local doll = at.Doll
 	local owned = context.Owned

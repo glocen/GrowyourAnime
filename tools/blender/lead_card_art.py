@@ -9,7 +9,10 @@ Drawn by the builder at the director's ask, in Modulo's toolkit (ui_sheet.py) an
 director's pick"). Its layers, bottom to top, as src/client/UI/LeadCard.luau lays them, in the card's own points (its top
 left at the HUD's PAD, TOP):
 
-  CardPlate, CardPlateRim  the plate beside the portrait: the name's row, the two slots, the ink; its rim white, tinted
+  CardPlate, CardPlateRim  the plate beside the portrait in take A's colours (AR12, research's pick of 2026-11-17): the
+                           Voidkin's Panel, no band, the two slots, the ink; its rim white, tinted the Voidkin's lavender
+  CardLevelBadge           the level's block on the card's slant over the frame's foot (TR24's must-fix 6): white,
+                           tinted the Voidkin's Block in the game, sliced across, its slanted ends the caps
   CardLeadHealth           the ruby, one solid bar, wine at its root to hot at its front, sliced across, anchored at its front
   CardLeadXp               the lavender thread at the plate's foot, sliced across
   CardFace<Who>            the face cut to its rarity's inner rim line, on Midnight's well, its foot faded
@@ -75,7 +78,8 @@ EMBER = dict(hp=((0.0, "#FFB27A"), (0.22, "#FF7E52"), (0.5, "#EE4E3A"), (0.56, "
 RARITIES = ("Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythical")
 # zoom, lift (points). The Voidkin with no portrait yet keeps its head inside the frame: over the rim, its plain block
 # read as a box stuck on the card.
-FRAMING = {"Rook": (1.12, 0.0), "Lyric": (1.0, 3.0), "Pip": (0.9, 1.0), "Unknown": (1.0, RISE + 4.0)}
+FRAMING = {"Rook": (1.12, 0.0), "Lyric": (1.0, 3.0), "Pip": (0.9, 1.0), "Watt": (1.12, 2.0), "Kirra": (1.15, 2.0),
+           "Unknown": (1.0, RISE + 4.0)}
 TRIM = {"Common": "#666C78", "Uncommon": "#7CF0A0", "Rare": "#6FB6FF", "Epic": "#D29CFF", "Legendary": "#FFD777",
         "Mythical": "#FF8794"}  # Config.Hud.Card.Trim, for the review sheet only: the game tints the white rims
 
@@ -351,7 +355,8 @@ def badge(pal):
 P_LEFT, P_END, P_TOP, P_BOTTOM = 46.0, 176.0, 26.0, 73.5  # the plate: its top line's two ends, its top and its foot
 P_NAME = 42.0  # the name's row reaches down to here, in the tab's colours
 P_INSET = 4.0  # a slot's ends inside the plate's
-P_HEALTH, P_XP = (43.5, 54.5), (68.5, 71.0)  # the slots' tops and feet
+P_HEALTH, P_XP = (43.5, 54.5), (68.5, 71.5)  # the slots' tops and feet: experience a thread 3 thick (take A)
+P_RIM = 1.5  # the plate's edge (take A; RIM is the target's and the housing's)
 P_FULL = P_END - P_INSET - 1.5  # a light's front when full, on the top line
 # Each light's empty point at its row's middle: health's at the type's stud's right edge, its root's slant tucked under
 # the stud's lower half, so the least share shows (with its root under the stud, the first 5% hid there); experience's
@@ -361,6 +366,13 @@ P_STUD = (FRAME[0] + FRAME[2] + 0.5, sum(P_HEALTH) / 2, 8.5)  # centre and radiu
 P_HOT = 0.06  # the ruby's last stretch, hot to its front: this share of the full bar, kept that long at any share
 VIOLET = dict(body=("#43348A", "#150F30"), tab=("#5545A6", "#211849"), glint="#E6DBFF", slot=("#07051A", "#120C2C"),
               ink="#000000")
+# Take A, the Voidkin's block (AR12, research's pick of 2026-11-17; Modulo's tools/blender/lead_card_colours.py): the
+# card wears the Voidkin's row as the pills wear theirs (Config.UIKit.Systems.Voidkin): its Panel for the body, no band
+# behind the name and no lacquer sweep, a pale glint, a lavender edge (tinted in the game), the level on its Block.
+VOIDKIN = dict(body=("#35286B", "#171033"), tab=None, glint="#FAF7FF", slot=("#0A0718", "#151030"), ink="#000000")
+# The level's badge: its foot's left (1 left of the frame's), its top, its least width (one digit), its height; Modulo's
+# mock lays it there, the frame's foot (82) across it.
+L_BADGE = (1.0, 74.0, 33.0, 17.0)
 RUBY = dict(ramp=((0.0, "#FF9CAE"), (0.22, "#F2466A"), (0.5, "#D4163F"), (0.56, "#BE1238"), (1.0, "#6E0A26")),
             along=((0.0, "#6A0A2C"), (0.5, "#C41440"), (0.9, "#F0284E"), (1.0, "#FF4A68")), sheen="#FFD9E0")
 # The ruby's front stays a saturated hot red, the pale only in its 1-point front sheen: at a low share the hot stretch is
@@ -386,19 +398,41 @@ def plate(pal):
     pad = 6.0
     shadow(t, house, 4.5, 0.5, pad)
     t.paint(house, stops(t, (t.y - P_TOP) / (P_BOTTOM - P_TOP), ((0, pal["body"][0]), (1, pal["body"][1]))))
-    t.paint(np.maximum(house, t.y - P_NAME), stops(t, (t.y - P_TOP) / (P_NAME - P_TOP), ((0, pal["tab"][0]), (1, pal["tab"][1]))))
-    sweep = ((t.x - (P_END - 44.0)) + (t.y - P_TOP) * SLANT) / np.hypot(1.0, SLANT)  # the lacquer's sheen, on the slant
-    ui.over(t.px, WHITE, cover(house) * np.clip(1 - np.abs(sweep) / 16.0, 0, 1) * 0.1)
+    if pal["tab"]:  # take F's band behind the name and its lacquer's sheen; take A has neither
+        t.paint(np.maximum(house, t.y - P_NAME), stops(t, (t.y - P_TOP) / (P_NAME - P_TOP), ((0, pal["tab"][0]), (1, pal["tab"][1]))))
+        sweep = ((t.x - (P_END - 44.0)) + (t.y - P_TOP) * SLANT) / np.hypot(1.0, SLANT)  # the lacquer's sheen, on the slant
+        ui.over(t.px, WHITE, cover(house) * np.clip(1 - np.abs(sweep) / 16.0, 0, 1) * 0.1)
     t.paint(np.maximum(house, np.abs(t.y - (P_TOP + 1.9)) - 0.55), c(pal["glint"]), 0.3)
     for y0, y1 in (P_HEALTH, P_XP):
         slot = para(t, P_LEFT + P_INSET, P_END - P_INSET, y0, y1)
         ui.over(t.px, stops(t, (t.y - y0) / (y1 - y0), ((0, pal["slot"][0]), (1, pal["slot"][1]))), cover(slot) * 0.85)
         t.paint(np.maximum(slot, np.abs(t.y - y1 + 0.4) - 0.35), c(pal["glint"]), 0.18)  # the slot's lower lip
-    t.line(house + RIM, 0.7, c(pal["ink"]), 0.8)  # dark inside the rim
+    t.line(house + P_RIM, 0.7, c(pal["ink"]), 0.8)  # dark inside the rim
     rim = Layer()
-    rim.t.line(para(rim.t, P_LEFT, P_END, P_TOP, P_BOTTOM), RIM, WHITE)
+    rim.t.line(para(rim.t, P_LEFT, P_END, P_TOP, P_BOTTOM), P_RIM, WHITE)
     box = (plx(P_LEFT, P_BOTTOM) - pad, P_TOP - pad, P_END + pad, P_BOTTOM + pad)
     return lay.crop(*box), rim.crop(*box), pad
+
+
+def level_badge():
+    """The level's block on the card's slant, its least width: white, so the game tints it the Voidkin's Block (and the
+    level-up's pop lifts the tint toward white), its ink line and shadow dark under any tint. Sliced across: each cap
+    holds a whole slanted end."""
+    x0, y0, w, h = L_BADGE
+    lay = Layer()
+    t = lay.t
+    d = t.poly([(x0 + SLANT * h, y0), (x0 + w, y0), (x0 + w - SLANT * h, y0 + h), (x0, y0 + h)])
+    pad = 4.0
+    shadow(t, d, 3.0, 0.55, pad)
+    t.paint(d, WHITE)
+    t.line(d, 1.0, c(VOIDKIN["ink"]), 0.9)
+    box = (x0 - pad, y0 - pad, x0 + w + pad, y0 + h + pad)
+    cap = pad + SLANT * h + 2.0
+    # Its height cut whole, half to each cap, so the engine never stretches it upright: a slice whose middle row is the
+    # full height draws this slanted block upright and shifted when it's smaller than its pixels (the HUD at 1.5, a
+    # phone), and right only when larger (seen in Studio, 2026-11-17).
+    half = (h + 2 * pad) / 2
+    return lay.crop(*box), pad, [cap, half, cap, half]
 
 
 def lead_row(name):
@@ -439,11 +473,6 @@ def lead_light(name):
     run = h * SLANT
     image = lay.crop(tx - run, ty, te + GLOW, ty + h)
     return image, across(image, run + 0.5, run + 1.5 + GLOW + (P_HOT * length if along else 0.0))
-
-
-LEVEL_CLEAR = 2.0  # the level's mark stands this far clear of every frame at its widest (research's measure, AR12)
-LEVEL_GAP = 1.5  # and this far under the plate's foot, off the experience line
-LEVEL_H = 22.0  # TR17's LevelPlate
 
 
 def rim_right(px):
@@ -615,9 +644,11 @@ def make(out: Path):
         px = frame(rarity)
         frame_right = max(frame_right, rim_right(px))
         keep(f"CardFrame{rarity}", px, FRAME[0], FRAME[1], FRAME_PAD, f"the portrait's frame, {rarity}")
-    p_px, p_rim, pad = plate(VIOLET)
-    keep("CardPlate", p_px, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "take F's plate, Violet; its box from its foot's left")
-    keep("CardPlateRim", p_rim, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "the plate's rim: white, tinted the rarity's colour")
+    p_px, p_rim, pad = plate(VOIDKIN)
+    keep("CardPlate", p_px, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "take F's plate in take A's colours; its box from its foot's left")
+    keep("CardPlateRim", p_rim, plx(P_LEFT, P_BOTTOM), P_TOP, pad, "the plate's rim: white, tinted the Voidkin's lavender")
+    lb_px, pad, cut = level_badge()
+    keep("CardLevelBadge", lb_px, L_BADGE[0], L_BADGE[1], pad, "the level's block on the slant: white, tinted; sliced across", cut)
     for name in LEAD_LIGHTS:
         px, cut = lead_light(name)
         keep(f"CardLead{name}", px, 0.0, 0.0, 0.0,
@@ -638,7 +669,7 @@ def make(out: Path):
                     glow=GLOW, badge=list(BADGE), mid=MID, target=target_geometry(),
                     plate=dict(plate=[P_LEFT, P_TOP, P_END, P_BOTTOM], name=P_NAME, health=lead_row("Health"),
                                xp=lead_row("Xp"), stud=list(P_STUD), frameRight=frame_right,
-                               level=[frame_right + LEVEL_CLEAR, P_BOTTOM + LEVEL_GAP, LEVEL_H]))
+                               badge=list(L_BADGE)))
     (out / "lead_card.json").write_text(json.dumps(dict(pixelsPerPoint=K, geometry=geometry, images=listing), indent=1),
                                         encoding="utf-8", newline="\n")
     print(f"wrote {out / 'lead_card.json'}: {len(listing)} images")
@@ -675,13 +706,6 @@ def mix(a, b, t):
     return "#" + "".join(f"{min(max(round(float(x) * 255), 0), 255):02X}" for x in c(a) * (1 - t) + c(b) * t)
 
 
-def level_mark(geometry, digits):
-    """The level's mark in D's place, beside the portrait under the plate (research's call, AR12, "The card's height"):
-    its width by the level's digits (Modulo's mock, round two), its left 2 points clear of every frame at its widest."""
-    x, y, _ = geometry["plate"]["level"]
-    return x, y, {1: 56.0, 2: 64.0, 3: 73.0}[digits]
-
-
 def compose_f(data, img, marks, geometry, face, head, rarity, kind, health, xp, digits, ground):
     """The lead's card, take F, as UI.LeadCard lays it: the plate and its rim, the two lights, the
     face, the frame, the head, the type's stud and the level's mark. The text is the game's own, not drawn here."""
@@ -695,9 +719,8 @@ def compose_f(data, img, marks, geometry, face, head, rarity, kind, health, xp, 
         e = data[name]
         put(img[name] if px is None else px, e["at"][0] - e["pad"], e["at"][1] - e["pad"])
 
-    trim = TRIM[rarity]
     at("CardPlate")
-    at("CardPlateRim", tinted(img["CardPlateRim"], trim))
+    at("CardPlateRim", tinted(img["CardPlateRim"], "#DCCBFF"))  # the Voidkin's Colour
     for name, share in (("Health", health), ("Xp", xp)):
         if share <= 0:
             continue
@@ -715,12 +738,13 @@ def compose_f(data, img, marks, geometry, face, head, rarity, kind, health, xp, 
         put(tint(marks[name], TYPES[kind]), cx - 20.5, cy - 20.5)
     gem = rs.shrink(marks[f"Gem{kind}"], 14.6 * K / marks[f"Gem{kind}"].shape[1])
     put(gem, cx - gem.shape[1] / K / 2, cy - gem.shape[0] / K / 2)
-    x, y, w = level_mark(geometry, digits)
-    put(tint(sliced(marks["LevelPlate"], (24.0, 0, 8.0, 0), w), *VIOLET["tab"]), x, y)
-    put(tint(sliced(marks["LevelPlateEdge"], (24.0, 0, 8.0, 0), w), mix(trim, "#FFFFFF", 0.6), trim), x, y)
-    chevrons = tint(rs.shrink(marks["LevelChevrons"], 14.0 * K / marks["LevelChevrons"].shape[1]), VIOLET["body"][1])
-    put(chevrons, x + 11.0 - 7.0, y + 11.0 - 7.0)
-    return canvas[round((M - 8) * K):round((M + max(H, y + LEVEL_H) + 6.0) * K), round((M - 8) * K):round((M + W - 40.0) * K)]
+    x, y, w0, h = g["badge"]
+    e = data["CardLevelBadge"]
+    w = max(18.5 + 8.0 * digits + 6.5, w0)  # as UI.LeadCard fits it: the number's left, its digits, after it
+    put(tint(sliced(img["CardLevelBadge"], e["cut"], w + 2 * e["pad"]), "#E7DAFF", "#BFADF0"), x - e["pad"], y - e["pad"])
+    chevrons = tint(rs.shrink(marks["LevelChevrons"], 11.5 * K / marks["LevelChevrons"].shape[1]), "#14161B")
+    put(chevrons, x + 11.0 - 5.75, y + h / 2 - 5.75)
+    return canvas[round((M - 8) * K):round((M + max(H, y + h) + 6.0) * K), round((M - 8) * K):round((M + W - 40.0) * K)]
 
 
 def compose_target(data, img, geometry, health, text_w, ground):
@@ -777,10 +801,10 @@ def sheet(out: Path):
     listing = json.loads((out / "lead_card.json").read_text(encoding="utf-8"))
     data, geometry = listing["images"], listing["geometry"]
     img = {n: rs.load(out / e["file"]) for n, e in data.items()}
-    ui_dir = out.parents[1]  # build/handoff/UI
+    ui_dir = Path(__file__).resolve().parents[2] / "build" / "handoff" / "UI"  # the marks, wherever `out` is
     marks = {n: rs.load(ui_dir / "hud" / "colour" / "images" / f"{n}.png") for n in ("CardStud", "CardStudGlow")}
     marks |= {n: rs.load(ui_dir / "voidkin" / "marks" / "images" / f"{n}.png")
-              for n in ("LevelPlate", "LevelPlateEdge", "LevelChevrons")}
+              for n in ("LevelChevrons",)}
     marks |= {f"Gem{k}": rs.load(ui_dir / "kit" / "images" / f"Gem{k}.png") for k in TYPES}
     shots = faces(out)
 
@@ -790,7 +814,7 @@ def sheet(out: Path):
                          digits, ground)
 
     cards = []
-    for who in ("Rook", "Lyric", "Pip", "Unknown"):
+    for who in ("Rook", "Lyric", "Pip", "Watt", "Kirra", "Unknown"):
         kind = voidkin_type(who) if who != "Unknown" else "Agility"
         row, zoom = [], []
         for _, ground in GROUNDS:

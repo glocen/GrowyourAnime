@@ -1390,6 +1390,7 @@ The silhouette was redrawn after that check, and went back alone: **PASS**, 2026
   - log all four in `docs/asset-log.md` with their source and ids;
   - a re-render needs a new check.
 - **Four facts:** implemented, yes. Tested: made and cut in Blender; not in the engine. Visually reviewed: Modulo, on the sheet. Research's verdict comes in the game. Director-accepted: no. The upload, the wiring and the log are Faber's.
+- **In the game (Faber, 2026-11-17).** The four uploaded under the group with the key and read back Approved (ids in `docs/asset-log.md`), wired in `Config.UIKit`'s Images. The lead card's face and head for each were cut from the same renders by `tools/blender/lead_card_art.py` (FRAMING: Watt 1.12, Kirra 1.15, so each face reads at Rook's size), uploaded and Approved too. A logic case holds it: every installed Voidkin has its two portraits and its card's face and head. Seen on the phone run's Overview (`build/scratch/faber/tr24_stills/phone_1_overview.jpg`): the roster shows both; one silhouette is left, for a Voidkin with no model yet.
 
 ### 4. The reveal: the block-in (research's request, 2026-11-13)
 

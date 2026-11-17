@@ -2,7 +2,7 @@
 -- Hit (shared, pure): one hit, the only place damage is computed (docs/balance.md, "One hit"; docs/engineering-plan.md,
 -- "The resolver"). It multiplies in three places with a ceiling: the defender's mitigation, the attacker's bonus bucket,
 -- the defender's reduction bucket. A critical multiplies on its own, outside the bucket, with no ceiling: x (1 + Critical
--- Damage - the target's Critical Guard), never under x1 (the director, 2026-11-15). Everything else adds into one of the
+-- Damage - the target's Critical Immunity, CriticalGuard), never under x1 (the director, 2026-11-15). Everything else adds into one of the
 -- two buckets. The server rolls the
 -- three chances with its own Random and passes them in, so the same rolls always give the same hit.
 -- Its expected value is tools/balance/sim.py's dps() for one coefficient; a case holds the two together.

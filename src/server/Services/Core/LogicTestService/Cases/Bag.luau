@@ -21,6 +21,7 @@ local Regalia = require(Shared.Rules.Regalia)
 local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Bag = require(Shared.Rules.Bag)
+local Sheet = require(Shared.Rules.Sheet)
 local Growth = require(Shared.Rules.Growth)
 local StatsConfig = require(Shared.Config.Stats)
 local GrowthConfig = require(Shared.Config.Growth)
@@ -218,13 +219,40 @@ return {
 				t.Check(`{basic.Stat}: its change`, math.abs(basic.Change - change.Attributes[basic.Stat]) < 1e-9)
 			end
 			t.Check("Battle rows, at most six", #card.Battle > 0 and #card.Battle <= Bag.Battle)
+			local before = Stats.Resolve(warrior, preset, data)
+			local oddsBefore = Sheet.Odds(before)
 			local last = 0
 			for _, battle in card.Battle do
 				local at = table.find(Stats.Names, battle.Stat) :: number
-				t.Check(`{battle.Stat}: changed, in order`, battle.Change ~= 0 and at > last and math.abs(battle.Change - change.Battle[battle.Stat]) < 1e-9)
+				local want = if Sheet.Rated[battle.Stat] then Sheet.Odds(change.After)[battle.Stat] - oddsBefore[battle.Stat] else change.Battle[battle.Stat]
+				t.Check(`{battle.Stat}: changed, in order`, battle.Change ~= 0 and at > last and math.abs(battle.Change - want) < 1e-9)
 				last = at
 			end
 			t.Equal("its lines kept", #card.Lines, 2)
+			-- A rating as the sheet shows it, its share against an even foe, never its points (the director, 2026-11-17,
+			-- by 00:17: percents only, on every screen).
+			for _, id in { ids.ring, ids.boots } do
+				local rated = Bag.Card(data, warrior, id) :: Bag.Card
+				local after = (Stats.Compare(data, preset, warrior, id) :: Stats.Change).After
+				local stat = if id == ids.ring then "Critical" else "Dodge"
+				local points = if id == ids.ring then 40 else 15
+				local found = false
+				for _, battle in rated.Battle do
+					if battle.Stat == stat then
+						found = true
+						t.Check(`{stat}: its share before, and the share it adds`, math.abs(battle.Value - oddsBefore[stat]) < 1e-12 and math.abs(battle.Change - (Sheet.Odds(after)[stat] - oddsBefore[stat])) < 1e-12 and battle.Change > 0 and battle.Change < 1, `{battle.Value} {battle.Change}`)
+					end
+				end
+				t.Check(`{stat}: on the card's comparison`, found)
+				for _, line in rated.Lines do
+					if line.Stat == stat then
+						t.Check(`{stat} {points}: its line shows the share it would add`, math.abs(line.Value - Sheet.Adds(stat, points, before)) < 1e-12 and line.Value > 0 and line.Value < 1, `{line.Value}`)
+					elseif line.Stat == "Finesse" then
+						t.Equal("an attribute's line keeps its points", line.Value, 12)
+					end
+				end
+			end
+			t.Equal("nothing added adds nothing", Sheet.Adds("Dodge", 0, before), 0)
 			local worn = Bag.Card(data, warrior, ids.helmet) :: Bag.Card
 			t.Equal("the worn helmet's card says where", worn.Worn, "Helmet")
 			t.Check("taking it off loses Combat Power", worn.Power < 0)
@@ -246,21 +274,44 @@ return {
 			local power = StatsConfig.Power
 			t.Equal("Health +75 alone is worth +465", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 465)
 			local data, warrior, ids = stocked()
-			local level = Stats.Resolve(warrior, Stats.PresetOf(data, warrior), data).Level
-			local g = Growth.G(math.clamp(level, 1, GrowthConfig.MaxLevel))
+			local preset = Stats.PresetOf(data, warrior) :: Profile.Preset
+			local before = Stats.Resolve(warrior, preset, data)
+			local g = Growth.G(math.clamp(before.Level, 1, GrowthConfig.MaxLevel))
+			-- The block the card compares against: the item worn in its slot, or a worn item taken off. A rating's row carries
+			-- its share (Sheet.Rated), so its worth is read from the two blocks' points.
+			local function afterOf(card: Bag.Card): Stats.Block
+				if card.Worn then
+					local trial: Profile.Preset = { Slots = table.clone(preset.Slots), Hands = {} }
+					for which, pair in preset.Hands do
+						trial.Hands[which] = table.clone(pair)
+					end
+					Regalia.Put(trial, card.Worn, Voidkin.ById[warrior.Def].Class, nil)
+					return (Stats.Resolve(warrior, trial, data))
+				end
+				return (Stats.Compare(data, preset, warrior, card.Id) :: Stats.Change).After
+			end
 			local checked = 0
 			for name, id in ids do
 				local card = Bag.Card(data, warrior, id)
 				if card == nil or not card.Fits or #card.Battle >= Bag.Battle then
 					continue -- another class's, or a card at its cap of rows (none in the stock)
 				end
+				local after = afterOf(card)
+				local shown: { [string]: boolean } = {}
 				local sum = 0
 				for _, line in card.Battle do
+					shown[line.Stat] = true
 					local weight = (power.Weights[line.Stat] or 0) * (if power.ByLevel[line.Stat] then g else 1)
 					local function worth(value: number): number
 						return if line.Stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value
 					end
-					sum += weight * (worth(line.Value + line.Change) - worth(line.Value))
+					sum += weight * (worth((after :: any)[line.Stat]) - worth((before :: any)[line.Stat]))
+				end
+				for stat, weight in power.Weights do
+					local was, now = (before :: any)[stat], (after :: any)[stat]
+					if weight ~= 0 and type(was) == "number" and type(now) == "number" and math.abs(now - was) > 1e-9 then
+						t.Check(`{name}: {stat} changes its worth, so it has its row`, shown[stat] == true)
+					end
 				end
 				checked += 1
 				t.Check(`{name}: its {card.Power} is its lines' {string.format("%.1f", sum * power.Scale)}`, math.abs(sum * power.Scale - card.Power) <= 1)

@@ -7,10 +7,11 @@
 -- A plain list [the director, 2026-11-15, night: "dont put any description for stats", then "Plain list, no taps"]: each
 -- stat its name and its one total, a zero shown as 0, never hidden, and nothing opens. What each kind of number shows:
 --   points             the number, grouped, no decimals (Regen to a tenth a second, Speed in studs a second)
---   a rating vs a foe  Hit, Dodge, Critical, Block: its points, then its chance against an even foe, smaller
---   a rating's effect  Penetration, Critical Resist, Elemental Resist: its points, then what it does to an even foe
---   a percent          Critical Damage, Critical Guard, Lifesteal, Damage Bonus, Damage Reduction, as it is
--- No "%" is ever put on a rating's points. Every chance is the hit's own (Rules.Hit.Odds, Rules.Stats.Chance) against
+--   a chance           Hit, Dodge, Critical, Block: its chance against an even foe, a percent and nothing else
+--   a rating's effect  Penetration, Critical Resist, Elemental Resist: what it does to an even foe, a percent, no words
+--   a percent          Critical Damage, Critical Immunity, Lifesteal, Damage Bonus, Damage Reduction, as it is
+-- A rating's points are never shown: a chance or a share shows its percent only [the director, 2026-11-17, by 00:17;
+-- docs/ui.md, "Stats, shown honestly"]. Every chance is the hit's own (Rules.Hit.Odds, Rules.Stats.Chance) against
 -- Stats.EvenFoe at the block's level, so it can't drift from the combat, and none reads over its ceiling. Damage Bonus and
 -- Damage Reduction show only what holds at all times, so a signature's, a passive's or an effect's share on a condition
 -- isn't in them. The client draws the rows (UI.VoidkinScreen); nothing here decides anything.
@@ -25,9 +26,9 @@ local Hud = require(Shared.Rules.Hud)
 
 local Sheet = {}
 
--- A line: its stat, the name players read, its total as shown, then, smaller, its chance or its effect against an even
--- foe, and whether it's its class's Main.
-export type Row = { Stat: string, Name: string, Value: string, Effect: string?, Main: boolean? }
+-- A line: its stat, the name players read, its total as shown (a rating's: its chance or effect against an even foe),
+-- and whether it's its class's Main.
+export type Row = { Stat: string, Name: string, Value: string, Main: boolean? }
 -- A block of lines under its caption. The first of a heading's blocks carries the heading, and its caption line under it.
 export type Group = { Name: string, Rows: { Row }, Heading: string?, Caption: string? }
 
@@ -63,10 +64,21 @@ Sheet.Said = {
 	ElementalAttack = "Elemental Attack",
 	DamageBonus = "Damage Bonus",
 	CriticalResist = "Critical Resist",
-	CriticalGuard = "Critical Guard",
+	CriticalGuard = "Critical Immunity", -- the director's name (2026-11-17, by 00:17); the key stays the code's
 	ElementalResist = "Elemental Resist",
 	DamageReduction = "Damage Reduction",
 } :: { [string]: string }
+
+-- The ratings, each shown as its share against an even foe (Sheet.Odds), never as its points.
+Sheet.Rated = {
+	Hit = true,
+	Dodge = true,
+	Critical = true,
+	Block = true,
+	Penetration = true,
+	CriticalResist = true,
+	ElementalResist = true,
+} :: { [string]: boolean }
 
 local PERCENTS: { [string]: boolean } = {
 	CriticalDamage = true,
@@ -83,12 +95,12 @@ function Sheet.Percent(share: number): string
 	return (said:gsub("%.0$", "")) .. "%"
 end
 
--- One total as its stat is read: points, a share as a percent (Critical Damage with its +), Regen to a tenth a second,
--- Speed in studs a second.
+-- One total as its stat is read: points, a share as a percent (Critical Damage with its +; a rating's `value` is its
+-- share, Sheet.Odds), Regen to a tenth a second, Speed in studs a second.
 local function amount(stat: string, value: number): string
 	if stat == "CriticalDamage" then
 		return `+{Sheet.Percent(value)}`
-	elseif PERCENTS[stat] then
+	elseif PERCENTS[stat] or Sheet.Rated[stat] then
 		return Sheet.Percent(value)
 	elseif stat == "Regen" then
 		return `{string.format("%.1f", value)} a second`
@@ -98,8 +110,8 @@ local function amount(stat: string, value: number): string
 	return Hud.Digits(value)
 end
 
--- A total as a card writes it beside another (Rules.Bag's cards): as the sheet reads it, but Regen and Speed without
--- their units, so a row fits a card's half.
+-- A total as a card writes it beside another (Rules.Bag's cards): as the sheet reads it, a rating's from its share, but
+-- Regen and Speed without their units, so a row fits a card's half.
 function Sheet.Amount(stat: string, value: number): string
 	if stat == "Regen" or stat == "Speed" then
 		return if value == math.floor(value) then tostring(value) else string.format("%.1f", value)
@@ -107,15 +119,21 @@ function Sheet.Amount(stat: string, value: number): string
 	return amount(stat, value)
 end
 
--- What a change does to a total, signed: "+12", "−3", "+1.5%"; "–" when it's none.
+-- What a change does to a total, signed: "+12", "−3", "+1.5%"; "–" when it's none. A share's change is in points of a
+-- percent, never a percent of a percent (docs/ui.md, "Stats, shown honestly").
 function Sheet.Change(stat: string, change: number): string
 	if math.abs(change) < 1e-9 then
 		return "–"
 	end
 	local size = math.abs(change)
-	local said = if PERCENTS[stat] or stat == "CriticalDamage" then Sheet.Percent(size) elseif stat == "Regen" or stat == "Speed" then string.format("%.1f", size) else Hud.Digits(size)
-	if said == "0" then -- under a half: a tenth, so a change never reads as none
+	local said = if PERCENTS[stat] or Sheet.Rated[stat] or stat == "CriticalDamage" then Sheet.Percent(size) elseif stat == "Regen" or stat == "Speed" then string.format("%.1f", size) else Hud.Digits(size)
+	-- A change finer than its usual digits gets a finer one, so a change never reads as none: points under a half to a
+	-- tenth; a percent under a twentieth of one to a hundredth, "<0.01%" under that (a rating's gain against a high
+	-- level's even foe: a +0% in the gain's green on TR24's phone run).
+	if said == "0" then
 		said = string.format("%.1f", size)
+	elseif said == "0%" then
+		said = if size * 100 >= 0.005 then string.format("%.2f%%", size * 100) else "<0.01%"
 	end
 	return (if change > 0 then "+" else "−") .. said
 end
@@ -145,29 +163,23 @@ function Sheet.Odds(block: Stats.Block): { [string]: number }
 	}
 end
 
--- What a rating's chance or effect says, from its share (Sheet.Odds).
-function Sheet.Effect(stat: string, share: number): string
-	local said = Sheet.Percent(share)
-	if stat == "Penetration" then
-		return `ignores {said} Defence`
-	elseif stat == "CriticalResist" then
-		return `-{said} their Critical chance`
-	elseif stat == "ElementalResist" then
-		return `-{said} elemental damage`
-	end
-	return said
+-- What `points` more of a rating add to `block`'s share against an even foe (Sheet.Odds): a gear line's rating shown on
+-- its own, as a percent (Rules.Bag).
+function Sheet.Adds(stat: string, points: number, block: Stats.Block): number
+	local more = table.clone(block)
+	local had = (more :: any)[stat];
+	(more :: any)[stat] = (if type(had) == "number" then had else 0) + points
+	return Sheet.Odds(more)[stat] - Sheet.Odds(block)[stat]
 end
 
 -- One stat's line. A stat the block doesn't carry (Damage Bonus, Damage Reduction: nothing gives them at all times yet)
--- reads as its zero. `odds` (Sheet.Odds) gives a rating its chance or effect.
+-- reads as its zero. A rating reads as its share (`odds`, Sheet.Odds, worked out when left out).
 function Sheet.Row(stat: string, block: Stats.Block, odds: { [string]: number }?): Row
-	local value = (block :: any)[stat]
-	local share = if odds then odds[stat] else nil
+	local value = if Sheet.Rated[stat] then (odds or Sheet.Odds(block))[stat] else (block :: any)[stat]
 	return {
 		Stat = stat,
 		Name = Sheet.Said[stat] or stat,
 		Value = amount(stat, if type(value) == "number" then value else 0),
-		Effect = if share then Sheet.Effect(stat, share) else nil,
 	}
 end
 

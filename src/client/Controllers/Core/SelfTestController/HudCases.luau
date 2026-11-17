@@ -52,6 +52,46 @@ export type Given = {
 	myLead: () -> Model?,
 }
 
+-- The lead card's level on a badge on the portrait's frame (TR24, the director's run, fix 6), for the lead card's case in
+-- Cases: over the frame's foot and inside its width, the old tab gone; take A's colours (AR12, research's pick of
+-- 2026-11-17): the Voidkin's Block under the chevrons and the number in ink, the plate's edge its lavender, the words its
+-- pale; the number on the block; its foot above the eye under the card. `scale` is the card's points to pixels.
+function HudCases.LevelBadge(t: any, parts: { [string]: any }, scale: number)
+	local lead = parts.Lead :: Frame
+	local badge = lead:FindFirstChild("LevelBadge") :: ImageLabel?
+	if not t.Check("its level on a badge", badge ~= nil and lead:FindFirstChild("LevelPlate") == nil, "no LevelBadge") or not badge then
+		return
+	end
+	local frame, at, pad = UIKit.LeadCard.Frame, lead.AbsolutePosition, UIKit.Images.CardLevelBadge.Pad * scale
+	local top, left = badge.AbsolutePosition.Y + pad, badge.AbsolutePosition.X + pad -- the block, inside its shadow's pad
+	local foot, right = badge.AbsolutePosition.Y + badge.AbsoluteSize.Y - pad, badge.AbsolutePosition.X + badge.AbsoluteSize.X - pad
+	local frameFoot, frameRight = at.Y + (frame[2] + frame[4]) * scale, at.X + (frame[1] + frame[3]) * scale
+	t.Check("the badge over the frame's foot, inside its width", top < frameFoot and foot > frameFoot and left >= at.X - 1 and right <= frameRight + 1,
+		string.format("%.0f to %.0f over %.0f; %.0f to %.0f, the frame to %.0f", top, foot, frameFoot, left, right, frameRight))
+	local voidkin, ink = UIKit.Systems.Voidkin, HudConfig.Card.LeadLevel
+	local body = badge:FindFirstChildOfClass("UIGradient")
+	local chevrons = lead:FindFirstChild("LevelChevrons") :: ImageLabel?
+	local number = parts.LeadLevel :: TextLabel
+	local rim = lead:FindFirstChild("PlateRim") :: ImageLabel
+	t.Check("take A's colours: the badge the Voidkin's Block, the chevrons and number in ink, the edge lavender, the name pale",
+		body ~= nil and body.Color.Keypoints[1].Value == voidkin.Block[1] and chevrons ~= nil and chevrons.ImageColor3 == ink and number.TextColor3 == ink
+			and rim.ImageColor3 == voidkin.Colour and (parts.LeadName :: TextLabel).TextColor3 == voidkin.Pale,
+		`{if body then body.Color.Keypoints[1].Value:ToHex() else "no body"}, {number.TextColor3:ToHex()}, {rim.ImageColor3:ToHex()}`)
+	t.Check("its height never stretched: a slanted slice stretched smaller than its pixels draws upright", badge.ScaleType == Enum.ScaleType.Slice and badge.SliceCenter.Height == 0,
+		`{badge.ScaleType.Name}, its middle {badge.SliceCenter.Height} tall`)
+	local middle = number.AbsolutePosition + number.AbsoluteSize / 2
+	local eye = (parts.Spectate :: GuiObject).AbsolutePosition.Y
+	t.Check("the number on the badge, the badge above the eye", middle.X > left and middle.X < right and middle.Y > top and middle.Y < foot and foot <= eye + 1,
+		string.format("the number at %.0f, %.0f; the badge's foot %.0f, the eye %.0f", middle.X, middle.Y, foot, eye))
+end
+
+-- The top of the level badge's tint now: the level-up's pop lifts it toward white (UI.LeadCard.Glow).
+function HudCases.BadgeTop(parts: { [string]: any }): Color3
+	local badge = (parts.Lead :: Frame):FindFirstChild("LevelBadge")
+	local body = if badge then badge:FindFirstChildOfClass("UIGradient") else nil
+	return if body then body.Color.Keypoints[1].Value else Color3.new()
+end
+
 function HudCases.Cases(given: Given): { any }
 	local REPLICATE, LEAD_SETTLE, SET_DOWN, R6_ROOT_HEIGHT = given.REPLICATE, given.LEAD_SETTLE, given.SET_DOWN, given.R6_ROOT_HEIGHT
 	local waitFor, streamed, lintClean, myLead = given.waitFor, given.streamed, given.lintClean, given.myLead

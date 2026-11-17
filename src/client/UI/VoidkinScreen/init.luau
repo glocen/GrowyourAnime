@@ -86,9 +86,8 @@ local SHEET_HEAD = 22 -- a stat group's caption line, the space above it include
 -- line under it, authored.
 local SHEET_HEADING = { Line = 34, Caption = 18 }
 -- A stat's cell (a tap, so the kit's touch size: 44 rendered at the smallest scale), its name's line from Top and its
--- total's under it, a rating's chance or effect on a line of its own under that (too long beside it on the smallest
--- phone's half panel), the tap's inset, authored.
-local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Effect = 16, Pad = 8 }
+-- total's under it, the tap's inset, authored.
+local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Pad = 8 }
 local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, authored; a character's share of its text size; seconds between reads
 
 local player = Players.LocalPlayer
@@ -290,61 +289,9 @@ local function stageIn(frame: Frame, position: UDim2, size: UDim2): Frame
 	return made :: Frame
 end
 
--- On the Items page the figure stands on A's lacquer with no panel (TR28; Config.Hud.Bag.Stage): its warm glow and its
--- floor, made once in the stage and shown only there; elsewhere the stage's backing, lit by its rarity.
-local function warmth(on: Frame, warm: boolean, feet: number, height: number, size: Vector2)
-	local config = HudConfig.Bag.Stage
-	on.BackgroundTransparency = if warm then 1 else 0
-	local halo = on:FindFirstChild("Halo") :: Frame
-	halo.Visible = not warm
-	local held = on:FindFirstChild("Warm") :: Frame?
-	if held == nil then
-		if not warm then
-			return
-		end
-		local made = Instance.new("Frame")
-		made.Name = "Warm"
-		made.BackgroundTransparency = 1
-		made.Size = UDim2.fromScale(1, 1)
-		made.ZIndex = 1
-		local each = 1 - (1 - config.Alpha) ^ (1 / config.Rings) -- so the rings' sum at the heart is Alpha
-		for index = 1, config.Rings do
-			local ring = Instance.new("Frame")
-			ring.Name = `Ring{index}`
-			ring.BorderSizePixel = 0
-			ring.AnchorPoint = Vector2.new(0.5, 0.5)
-			ring.BackgroundColor3 = config.Glow
-			ring.BackgroundTransparency = 1 - each
-			ring.ZIndex = 1
-			local round = Instance.new("UICorner")
-			round.CornerRadius = UDim.new(1, 0)
-			round.Parent = ring
-			ring.Parent = made
-		end
-		made.Parent = on
-		held = made
-	end
-	local warmFrame = held :: Frame
-	warmFrame.Visible = warm
-	if not warm then
-		return
-	end
-	-- In the stage's own points, so the glow keeps its shape on any stage: round, the whole glow scaled down as one so its
-	-- outer ring fits the stage's width, which clips. Its floor is the figure's own disc (Figure.Lacquer).
-	local tall = height * size.Y
-	local middle = feet - height * config.Middle
-	local fit = math.min(1, size.X / (2 * config.Outer * tall * config.Wide))
-	for index = 1, config.Rings do
-		local ring = warmFrame:FindFirstChild(`Ring{index}`) :: Frame
-		local reach = config.Inner + (config.Outer - config.Inner) * (index - 1) / math.max(config.Rings - 1, 1)
-		local deep = 2 * reach * tall * fit
-		ring.Size = UDim2.fromOffset(deep * config.Wide, deep)
-		ring.Position = UDim2.fromScale(0.5, middle)
-	end
-end
-
--- The stage lit for `def`, and its figure, new when it's another Voidkin's. `warm`: the Items page's, on A's lacquer.
-local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, at: Place, warm: boolean?)
+-- The stage lit for `def`, and its figure, new when it's another Voidkin's: the same on every page, so a switch of tabs
+-- never changes a colour (TR24, the director's run, fix 4).
+local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, at: Place)
 	local row = Voidkin.ById[def]
 	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
 	local light = on:FindFirstChild("Light") :: UIGradient
@@ -359,11 +306,9 @@ local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, a
 	local height = math.max(0.2, feet - config.Figure.Top / stageHeight)
 	halo.Position = UDim2.fromScale(0.5, feet - height * 0.55)
 	measured.Height, measured.Stage, measured.Slot = height * stageHeight / at.Room.Y, stageHeight, at.Slot
-	warmth(on, warm == true, feet, height, Vector2.new(at.Stage.Wide, stageHeight))
 	local current = figure
 	if current and current.Def == def and current.Stage == on then
 		Figure.Frame(current, height, feet)
-		Figure.Lacquer(current, warm == true)
 		return
 	end
 	if current then
@@ -381,9 +326,6 @@ local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, a
 			VoidkinScreen.Choose(nextOne.Id, step)
 		end
 	end)
-	if figure then
-		Figure.Lacquer(figure, warm == true)
-	end
 	if figure and slideFrom ~= 0 then
 		Figure.Slide(figure, slideFrom)
 	end
@@ -688,9 +630,10 @@ local function line(parent: Instance, order: number, left: string, right: string
 	return item
 end
 
--- One stat's cell (docs/ui.md, "Stats, shown honestly"; rework part 4), two a row: its name over its one total, a rating's
--- chance or effect against an even foe under it, smaller, and an attribute's Main tag on its total's line; nothing opens
--- [the director, 2026-11-15, night: "Plain list, no taps"]. Each at least as tall as a touch, so the sheet keeps its rhythm.
+-- One stat's cell (docs/ui.md, "Stats, shown honestly"; rework part 4), two a row: its name over its one total (a rating's
+-- percent against an even foe, and nothing else), and an attribute's Main tag right after its own total, never at the
+-- cell's far edge where it read as the next cell's (TR24, the director's run); nothing opens [the director, 2026-11-15,
+-- night: "Plain list, no taps"]. Each at least as tall as a touch, so the sheet keeps its rhythm.
 local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number): Frame
 	local item = Instance.new("Frame")
 	item.Name = row.Name
@@ -699,12 +642,17 @@ local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number)
 	item.Size = UDim2.new(0.5, 0, 0, tall)
 	item.Parent = pair
 	text({ Name = "Left", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Name), Position = UDim2.fromOffset(0, SHEET.Top), Parent = item }, row.Name)
-	text({ Name = "Right", Font = Theme.Font.Number, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Value), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name), Parent = item }, row.Value)
-	if row.Effect then
-		text({ Name = "Effect", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Effect), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name + SHEET.Value), Parent = item }, row.Effect)
-	end
+	-- The total and its tag in one row, each as wide as its words, so the tag sits against its own number.
+	local total = frameOf("Total", item, UDim2.fromOffset(0, SHEET.Top + SHEET.Name), UDim2.new(1, -SHEET.Pad, 0, SHEET.Value))
+	list(total, true)
+	local layout = total:FindFirstChildOfClass("UIListLayout") :: UIListLayout
+	layout.VerticalAlignment = Enum.VerticalAlignment.Center
+	local value = text({ Name = "Right", Font = Theme.Font.Number, Box = UDim2.new(0, 0, 1, 0), Parent = total }, row.Value)
+	value.AutomaticSize = Enum.AutomaticSize.X
 	if row.Main then
-		text({ Name = "Main", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.Primary, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Value), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name), Parent = item }, "Main")
+		local tag = text({ Name = "Main", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.Primary, Box = UDim2.new(0, 0, 1, 0), Parent = total }, "Main")
+		tag.AutomaticSize = Enum.AutomaticSize.X
+		tag.LayoutOrder = 1
 	end
 	item:SetAttribute("Stat", row.Stat)
 	return item
@@ -745,8 +693,7 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 		for at = 1, #group.Rows, 2 do
 			order += 1
 			local first, second = group.Rows[at], group.Rows[at + 1]
-			local rated = first.Effect ~= nil or (second ~= nil and second.Effect ~= nil)
-			local tall = SHEET.Line + (if rated then SHEET.Effect else 0)
+			local tall = SHEET.Line
 			local pair = Instance.new("Frame")
 			pair.Name = `Pair{group.Name}{(at + 1) // 2}`
 			pair.BackgroundTransparency = 1
@@ -1297,10 +1244,6 @@ local function build(view: Profile.View, on: On)
 	local frame = Screen.Frame(NAME) :: Frame
 	local band = Screen.Band(NAME) :: Frame
 	local at = place(Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset))
-	local lacquer = frame:FindFirstChild("Case") -- the Items page's plate lies under the stage, outside the body: laid again by its page only
-	if lacquer then
-		lacquer:Destroy()
-	end
 	local owned = if chosen then view.Voidkin[chosen :: string] else nil
 	if owned == nil then
 		if stage then
@@ -1313,11 +1256,10 @@ local function build(view: Profile.View, on: On)
 	end
 	rail(body, at)
 	if page == "Bag" then
-		-- The Items page is AR18's A (TR28): the lacquer right of the rail, the grid, then the doll with the figure between its slots.
+		-- The Items page is AR18's A (TR28): right of the rail, the doll with the figure between its slots, then the grid.
 		local block = resolved(view, owned)
 		local save = BagPage.Build({
 			Body = body,
-			Floor = frame,
 			Room = at.Room,
 			Left = at.Stage.X,
 			View = view,
@@ -1330,7 +1272,7 @@ local function build(view: Profile.View, on: On)
 				Figure.Wings(on_)
 				local there = table.clone(at)
 				there.Stage = box
-				dress(on_, owned.Def, roster, there, true)
+				dress(on_, owned.Def, roster, there)
 			end,
 			Name = function(over: Frame, wide: number): (() -> boolean)?
 				return nameLine(over, Theme.Size.Pad, wide - Theme.Size.Pad * 2, owned, on)

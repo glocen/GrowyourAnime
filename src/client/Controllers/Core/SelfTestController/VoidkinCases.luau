@@ -110,6 +110,58 @@ local function inView(name: string): boolean
 	return c.X >= a.X - 1 and c.Y >= a.Y - 1 and d.X <= b.X + 1 and d.Y <= b.Y + 1
 end
 
+-- The figure's stage as drawn: its light's colours, its fill, its halo, its disc, and whether a warm glow stands in it.
+-- The same on every page (TR24, the director's run, fix 4).
+local function stageLook(): string
+	local shown = VoidkinScreen.Find("Figure")
+	local stage = if shown and shown:IsA("ViewportFrame") then shown.Parent else nil
+	if shown == nil or not (stage and stage:IsA("Frame")) then
+		return "no stage"
+	end
+	local light, halo, disc = stage:FindFirstChild("Light"), stage:FindFirstChild("Halo"), shown:FindFirstChild("Floor", true)
+	local keys = {}
+	if light and light:IsA("UIGradient") then
+		for _, key in light.Color.Keypoints do
+			table.insert(keys, key.Value:ToHex())
+		end
+	end
+	return string.format("light %s, fill %.2f, halo %s, disc %s, warm %s", table.concat(keys, "-"), stage.BackgroundTransparency,
+		if halo and halo:IsA("Frame") and halo.Visible then halo.BackgroundColor3:ToHex() else "none",
+		if disc and disc:IsA("BasePart") then string.format("%s %.2f %.2f", disc.Color:ToHex(), disc.Transparency, disc.Size.Z) else "none",
+		tostring(stage:FindFirstChild("Warm") ~= nil))
+end
+
+-- A colour of the lacquer's family, the Items page's before TR24's fix 4: a warm brown or a brass, never a rarity's light
+-- (Legendary's gold and its lights are bright).
+local function lacquered(colour: Color3): boolean
+	local h, s, v = colour:ToHSV()
+	return h >= 15 / 360 and h <= 50 / 360 and s >= 0.15 and v <= 0.8
+end
+
+-- The first colour of the lacquer's family drawn under `root`: a fill, a tint, a word, an edge, a gradient's key.
+local function lacquerIn(root: Instance): string
+	for _, piece in root:GetDescendants() do
+		local found: Color3? = nil
+		if piece:IsA("GuiObject") and piece.Visible and piece.BackgroundTransparency < 1 and lacquered(piece.BackgroundColor3) then
+			found = piece.BackgroundColor3
+		elseif piece:IsA("ImageLabel") and piece.ImageTransparency < 1 and lacquered(piece.ImageColor3) then
+			found = piece.ImageColor3
+		elseif piece:IsA("TextLabel") and piece.Text ~= "" and lacquered(piece.TextColor3) then
+			found = piece.TextColor3
+		elseif piece:IsA("UIStroke") and piece.Enabled and lacquered(piece.Color) then
+			found = piece.Color
+		elseif piece:IsA("UIGradient") then
+			for _, key in piece.Color.Keypoints do
+				found = if lacquered(key.Value) then key.Value else found
+			end
+		end
+		if found then
+			return `{piece.Name} {found:ToHex()}`
+		end
+	end
+	return ""
+end
+
 local function labelOf(button: Instance?): string
 	local label = button and button:FindFirstChild("Label", true)
 	return if label and label:IsA("TextLabel") then label.Text else ""
@@ -383,6 +435,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			-- Each page from its rail button, on the save's numbers; one not built yet says so and keeps the page.
 			local rail = HudConfig.Voidkin.Rail
 			t.Check("the rail holds every page", table.concat(VoidkinScreen.Pages, ", ") == "Overview, Bag, Kit, Stars, Forge, Jewels, War Emblems", table.concat(VoidkinScreen.Pages, ", "))
+			local overviewLook = "" -- the Overview's stage, for the Items page's to match
 			for _, name in VoidkinScreen.Pages do
 				if VoidkinScreen.Soon[name] then
 					local before = VoidkinScreen.Find("Page")
@@ -441,32 +494,32 @@ function VoidkinCases.Cases(given: Given): { any }
 						local block = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
 						for _, stat in { "Health", "Attack", "Defence" } do
 							local item = scroll:FindFirstChild(stat, true)
-							local right = item and item:FindFirstChild("Right")
+							local right = item and item:FindFirstChild("Right", true) -- in its Total, beside its Main
 							t.Check(`Overview: its {stat}, resolved`, right ~= nil and (right :: TextLabel).Text == Hud.Digits((block :: any)[stat]), if right then (right :: TextLabel).Text else "none")
 						end
 						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed", true) ~= nil)
-						-- Off the Items page, the stage's own: no warm glow, the disc its own look again (TR28's fix 1).
-						local shown = VoidkinScreen.Find("Figure")
-						local stage = if shown and shown:IsA("ViewportFrame") then shown.Parent else nil
-						local warm = if stage then stage:FindFirstChild("Warm") else nil
-						local disc = if shown then shown:FindFirstChild("Floor", true) else nil
-						t.Check("Overview: the stage its own, no warm glow, the disc not the lacquer's", stage ~= nil and (warm == nil or not (warm :: Frame).Visible) and disc ~= nil and disc:IsA("BasePart") and disc.Color ~= HudConfig.Bag.Palette.BrassDim)
+						overviewLook = stageLook()
+						t.Check("Overview: the stage lit, its halo, no warm glow", string.find(overviewLook, "halo none", 1, true) == nil and string.find(overviewLook, "warm false", 1, true) ~= nil, overviewLook)
 					elseif name == "Bag" then
-						t.Check("Bag: A's lacquer, its doll, its strip and the card's room", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Doll") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
-						-- TR28's fix 1: the figure on A's lacquer, no panel: its glow round and inside the stage, its disc A's brass floor.
-						local shown = VoidkinScreen.Find("Figure")
-						local stage = if shown and shown:IsA("ViewportFrame") then shown.Parent else nil
-						local warm = if stage then stage:FindFirstChild("Warm") else nil
-						local disc = if shown then shown:FindFirstChild("Floor", true) else nil
-						local round, rings = true, 0
-						for _, glow in (if warm then warm:GetChildren() else {}) :: { Instance } do
-							if glow:IsA("Frame") and stage and stage:IsA("Frame") then
-								rings += 1
-								round = round and math.abs(glow.AbsoluteSize.X - glow.AbsoluteSize.Y * HudConfig.Bag.Stage.Wide) <= 1 and glow.AbsoluteSize.X <= stage.AbsoluteSize.X + 1
+						t.Check("Bag: its doll, its strip and the card's room", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Doll") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
+						-- TR24, the director's run, fix 4: one palette across the tabs. The stage as the Overview's, the page bare on
+						-- the screen's backing, every cell's well an Overview slot's, and nothing of the lacquer's warm browns.
+						local look = stageLook()
+						t.Equal("Bag: the stage as the Overview's", look, overviewLook)
+						local case = VoidkinScreen.Find("Case")
+						local items = if case then case.Parent else nil
+						t.Check("Bag: no plate of its own, the backing shows through", case ~= nil and case:IsA("Frame") and case.BackgroundTransparency == 1 and #case:GetChildren() == 0)
+						local wells, odd = 0, ""
+						for _, piece in (if items then items:GetDescendants() else {}) :: { Instance } do
+							if piece:IsA("ImageLabel") and piece.Name == "Well" then
+								wells += 1
+								local right = piece.ImageColor3 == Theme.Colour.PlateHigh and math.abs(piece.ImageTransparency - 0.25) < 1e-3 and piece:FindFirstChildOfClass("UIGradient") == nil
+								odd = if right or odd ~= "" then odd else `{(piece.Parent :: Instance).Name} {piece.ImageColor3:ToHex()} {piece.ImageTransparency}`
 							end
 						end
-						t.Check("Bag: the figure on the lacquer, no panel, its glow round and inside the stage", stage ~= nil and stage:IsA("Frame") and stage.BackgroundTransparency == 1 and warm ~= nil and (warm :: Frame).Visible and rings == HudConfig.Bag.Stage.Rings and round)
-						t.Check("Bag: its disc A's brass floor", disc ~= nil and disc:IsA("BasePart") and disc.Color == HudConfig.Bag.Palette.BrassDim and math.abs(disc.Transparency - (1 - HudConfig.Bag.Stage.Floor.Fill)) < 1e-3)
+						t.Check("Bag: every cell's and slot's well the Overview slot's graphite", wells >= 14 and odd == "", `{wells} wells; {odd}`)
+						local warm = if items then lacquerIn(items) else "no page"
+						t.Check("Bag: nothing in the lacquer's browns", warm == "", warm)
 						-- The rail words only the chosen page (and Soon's): chosen, the bag's page reads Items (the director, 2026-11-15).
 						local pages = VoidkinScreen.Find("Rail")
 						local bagPage = pages and pages:FindFirstChild("Bag", true)
@@ -757,8 +810,19 @@ function VoidkinCases.Cases(given: Given): { any }
 				return if pair and pair:IsA("GuiObject") and pair.Parent == scroll then pair.LayoutOrder + item.Position.X.Scale else -1
 			end
 			local function said(item: Instance?, part: string): string?
-				local label = item and item:FindFirstChild(part)
+				local label = item and item:FindFirstChild(part, true)
 				return if label and label:IsA("TextLabel") then label.Text else nil
+			end
+			-- The Main tag starts within a gap of its total's last character and ends inside its own cell, so it never reads
+			-- as the next cell's (TR24, the director's run).
+			local function mainBeside(item: GuiObject): boolean
+				local value, tag = item:FindFirstChild("Right", true), item:FindFirstChild("Main", true)
+				if value == nil or tag == nil or not value:IsA("TextLabel") or not tag:IsA("TextLabel") then
+					return false
+				end
+				local ends = value.AbsolutePosition.X + value.TextBounds.X
+				local gap = tag.AbsolutePosition.X - ends
+				return gap >= 0 and gap <= 16 and tag.AbsolutePosition.X + tag.AbsoluteSize.X <= item.AbsolutePosition.X + item.AbsoluteSize.X + 1
 			end
 			for _, group in Sheet.Rows(block) do
 				for _, frame in { if group.Heading then `Heading{group.Heading}` else nil, if group.Name ~= "" then `Group{group.Name}` else nil } do
@@ -776,16 +840,18 @@ function VoidkinCases.Cases(given: Given): { any }
 					local item = scroll:FindFirstChild(want.Name, true)
 					if item == nil or not item:IsA("GuiObject") or placeOf(item) <= order then
 						table.insert(wrong, `{want.Name} out of its block`)
-					elseif said(item, "Right") ~= want.Value or said(item, "Effect") ~= want.Effect or item:FindFirstChild("Under") ~= nil then
-						table.insert(wrong, `{want.Name}: {said(item, "Right")} and {said(item, "Effect")}, wanted {want.Value} and {want.Effect}`)
-					elseif (item:FindFirstChild("Main") ~= nil) ~= (want.Main == true) then
+					elseif said(item, "Right") ~= want.Value or item:FindFirstChild("Effect", true) ~= nil or item:FindFirstChild("Under") ~= nil then
+						table.insert(wrong, `{want.Name}: {said(item, "Right")}, wanted {want.Value} and nothing under it`)
+					elseif (item:FindFirstChild("Main", true) ~= nil) ~= (want.Main == true) then
 						table.insert(wrong, `{want.Name}: its Main tag`)
+					elseif want.Main and not mainBeside(item) then
+						table.insert(wrong, `{want.Name}: its Main tag away from its total`)
 					else
 						order = placeOf(item)
 					end
 				end
 			end
-			t.Check("the five, then Core, Offence and Defence, Sustain, two a row in order, each under its heading and caption with its one total and a rating's chance, the Main tagged", #wrong == 0, wrong[1])
+			t.Check("the five, then Core, Offence and Defence, Sustain, two a row in order, each under its heading and caption with its one total (a rating's its percent alone), the Main tagged beside its own total", #wrong == 0, wrong[1])
 			-- Nothing opens: no cell is a button, none holds anything under its total, and no caption says to tap.
 			local opens: { string } = {}
 			for _, group in Sheet.Groups do
@@ -830,9 +896,9 @@ function VoidkinCases.Cases(given: Given): { any }
 				for _, group in Sheet.Groups do
 					for _, stat in group.Stats do
 						local item = small:FindFirstChild(Sheet.Said[stat] or stat, true)
-						for _, part in { "Left", "Right", "Effect" } do
-							local label = item and item:FindFirstChild(part)
-							if (label == nil and part ~= "Effect") or (label and (not label:IsA("TextLabel") or not label.TextFits)) then
+						for _, part in { "Left", "Right" } do
+							local label = item and item:FindFirstChild(part, true)
+							if label == nil or not label:IsA("TextLabel") or not label.TextFits then
 								table.insert(cut, `{stat} {part}`)
 							end
 						end

@@ -269,6 +269,10 @@ return {
 		PortraitPipSmall = { Id = "rbxassetid://126703205237169", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		PortraitLyric = { Id = "rbxassetid://135621944635482", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
 		PortraitLyricSmall = { Id = "rbxassetid://99813224456989", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
+		PortraitWatt = { Id = "rbxassetid://79419282441294", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
+		PortraitWattSmall = { Id = "rbxassetid://100634563795667", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
+		PortraitKirra = { Id = "rbxassetid://115824457546791", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
+		PortraitKirraSmall = { Id = "rbxassetid://106506843267905", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		PortraitUnknownCommon = { Id = "rbxassetid://128007858785498", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
 		PortraitUnknownCommonSmall = { Id = "rbxassetid://100013067714125", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		PortraitUnknownUncommon = { Id = "rbxassetid://108870294201270", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
@@ -298,12 +302,19 @@ return {
 		CardFrameEpic = { Id = "rbxassetid://132943964911656", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
 		CardFrameLegendary = { Id = "rbxassetid://112718694958800", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
 		CardFrameMythical = { Id = "rbxassetid://113716617759470", Pixels = Vector2.new(424, 440), Points = Vector2.new(106, 110), Pad = 24, At = Vector2.new(2, 20) },
-		CardPlate = { Id = "rbxassetid://72442840086055", Pixels = Vector2.new(654, 238), Points = Vector2.new(163.5, 59.5), Pad = 6, At = Vector2.new(24.625, 26) },
-		CardPlateRim = { Id = "rbxassetid://85184907797588", Pixels = Vector2.new(654, 238), Points = Vector2.new(163.5, 59.5), Pad = 6, At = Vector2.new(24.625, 26) },
+		CardPlate = { Id = "rbxassetid://120008333344607", Pixels = Vector2.new(654, 238), Points = Vector2.new(163.5, 59.5), Pad = 6, At = Vector2.new(24.625, 26) },
+		CardPlateRim = { Id = "rbxassetid://127303978311582", Pixels = Vector2.new(654, 238), Points = Vector2.new(163.5, 59.5), Pad = 6, At = Vector2.new(24.625, 26) },
 		CardLeadHealth = { Id = "rbxassetid://135563705547760", Pixels = Vector2.new(405, 44), Points = Vector2.new(101.25, 11), Cut = { 5.45, 5.25, 15.979, 5.25 }, Pad = 0, At = Vector2.new(0, 0) },
-		CardLeadXp = { Id = "rbxassetid://105379164637312", Pixels = Vector2.new(386, 10), Points = Vector2.new(96.5, 2.5), Cut = { 1.625, 1, 6.625, 1 }, Pad = 0, At = Vector2.new(0, 0) },
+		CardLeadXp = { Id = "rbxassetid://124325100115777", Pixels = Vector2.new(386, 12), Points = Vector2.new(96.5, 3), Cut = { 1.85, 1.25, 6.85, 1.25 }, Pad = 0, At = Vector2.new(0, 0) },
+		-- Its height cut whole (half to each cap): a full-height middle row draws the slanted block upright when smaller
+		-- than its pixels (lead_card_art.level_badge).
+		CardLevelBadge = { Id = "rbxassetid://97421757893656", Pixels = Vector2.new(164, 100), Points = Vector2.new(41, 25), Cut = { 13.65, 12.5, 13.65, 12.5 }, Pad = 4, At = Vector2.new(1, 74) },
 		CardFaceRook = { Id = "rbxassetid://73187841237944", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 		CardHeadRook = { Id = "rbxassetid://114841540436502", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
+		CardFaceWatt = { Id = "rbxassetid://129277674085966", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadWatt = { Id = "rbxassetid://113111632166546", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
+		CardFaceKirra = { Id = "rbxassetid://104509058035637", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadKirra = { Id = "rbxassetid://93557008064180", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
 		CardFacePip = { Id = "rbxassetid://80653273610168", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 		CardHeadPip = { Id = "rbxassetid://125043704991003", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
 		CardFaceLyric = { Id = "rbxassetid://106919424501270", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
@@ -731,10 +742,10 @@ return {
 		Plate = { 46, 26, 176, 73.5 }, -- its top line's left end, its top, its top line's right end, its foot
 		Name = 42, -- the name's row reaches down to here
 		Health = { 70.475, 43.5, 162.625, 11 }, -- a light's top edge: its root (empty), its y, its full right end; its height
-		Xp = { 59.963, 68.5, 151.375, 2.5 },
+		Xp = { 60.075, 68.5, 151.375, 3 }, -- take A's thread, 3 thick
 		Stud = { 60.5, 49, 8.5 }, -- the type's stud: its centre and radius
 		FrameRight = 65, -- how far right any rarity's frame reaches, its side points included
-		Level = { 67, 75, 22 }, -- the level's mark in D's place: its left (2 clear of FrameRight), its top, its height
+		Badge = { 1, 74, 33, 17 }, -- the level's badge over the frame's foot: its foot's left, its top, its least width, its height
 	},
 	-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.
 	TargetCard = {

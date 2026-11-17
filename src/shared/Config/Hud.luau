@@ -248,9 +248,9 @@ return {
 		-- 2026-11-13), a soft gold a step brighter than the soft grey it replaced; the lead's on its badge the same, the
 		-- director leaving it to the builder ("whatever best", 2026-11-13). Experience keeps its blue, the level this gold.
 		Level = Color3.fromHex("#F2CB62"),
-		-- The lead's level in take F (AR12, the builder's call): the number in the name's ivory on its violet plate, "Lv"
-		-- before it in the rarity's trim, lifted; the level-up's pop still flashes it white and its sparks stay this gold.
-		LeadLevel = Color3.fromHex("#F3EFE6"),
+		-- The lead's level in take A (AR12, research's pick of 2026-11-17): the number and the chevrons in the HUD's ink on
+		-- the Voidkin's Block; the level-up's pop lifts the block toward white (UI.LeadCard.Glow), its sparks stay this gold.
+		LeadLevel = Color3.fromHex("#14161B"),
 		-- The lead's stud takes its type's colour, as Modulo's mocks tint it (tools/blender/shade_sheet.py, TYPES).
 		Types = {
 			Strength = Color3.fromHex("#EA4B4F"),
@@ -431,7 +431,7 @@ return {
 		CellGap = 6,
 		Veil = 24, -- the kinds strip's fade where it hides a chip
 		Ring = 7, -- the cells' holder's margins: 3 left for a chosen cell's ring, 4 right for the scroll bar
-		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6E6556"), Alpha = 0.1 }, -- an empty slot's mark (AR22's json): its share of the well, its tint
+		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6E7482"), Alpha = 0.1 }, -- an empty slot's mark (AR22's json): its share of the well, its tint (Graphite's Faint)
 		Columns = 5, -- at least; a wider room adds a column a cell wide
 		Inset = 4, -- the room's edge round the grid
 		Under = 4, -- between the strip, the grid and the count
@@ -447,51 +447,20 @@ return {
 		Mark = 14, -- a cell's corner seat: the up arrow, the worn tick
 		Card = { Corner = 4, Pad = 10, Cell = 56, Close = 14, Title = 16 }, -- the close's X drawn this size in a touch
 		Salvage = { "", "Common", "Uncommon", "Rare", "Epic" }, -- the salvage control's steps, in order: "" is off
-		-- The figure on A's lacquer, no panel (research's fix 1 to the rebuild, 22:37; A's sheet, `a_doll`): a warm glow round
-		-- its middle, Middle of its height over its soles, full to Inner of its height and gone by Outer, Wide as wide as tall,
-		-- in Rings steps whose sum is Alpha at its heart, scaled down as one to fit the stage's width; under its soles its own
-		-- disc in BrassDim at Fill, Floor.Wide of its height across (Figure.Lacquer): A's quarter hides behind the feet from
-		-- the stage's near-level camera, so half, a brass line past the shoes.
-		Stage = {
-			Glow = Color3.fromHex("#3A2B1C"),
-			Alpha = 0.55,
-			Rings = 5,
-			Middle = 0.45,
-			Inner = 0.24,
-			Outer = 0.5,
-			Wide = 1.11,
-			Floor = { Wide = 0.5, Fill = 0.5 },
-		},
-		-- LACQUER (A's palette, Modulo's tools/blender/inventory_directions.py): warm black, brass hairlines, bone words.
-		Palette = {
-			Top = Color3.fromHex("#1C1713"), -- the room, top to foot
-			Foot = Color3.fromHex("#0C0A08"),
-			Brass = Color3.fromHex("#C9A56B"),
-			BrassDim = Color3.fromHex("#5E4C34"), -- the hairlines
-			Text = Color3.fromHex("#F0E8D7"),
-			Soft = Color3.fromHex("#AEA390"),
-			Faint = Color3.fromHex("#6E6556"),
-			Ink = Color3.fromHex("#17120E"), -- a word on bone
-			Field = { Color3.fromHex("#221B16"), Color3.fromHex("#16110E") }, -- the card
-			Well = { Color3.fromHex("#110E0B"), Color3.fromHex("#070605") }, -- a cell
-			Umber = { Color3.fromHex("#2E1E0E"), Color3.fromHex("#140C05") }, -- a Legendary's cell
-			Seat = Color3.fromHex("#0A0807"), -- under a corner's mark, and the card's Combat Power
-			Up = Color3.fromHex("#7CF0A4"), -- the kit's GOOD: a gain
-			Down = Color3.fromHex("#FF7A66"), -- the kit's BAD: a loss, only ever as digits
-			Rarity = { -- a rarity's word on the lacquer
-				Common = Color3.fromHex("#9AA0AC"),
-				Uncommon = Color3.fromHex("#7CF0A0"),
-				Rare = Color3.fromHex("#6FB6FF"),
-				Epic = Color3.fromHex("#D29CFF"),
-				Legendary = Color3.fromHex("#FFD777"),
-			} :: { [string]: Color3 },
-			Rim = { -- a rarity's rim, tint and light on a cell (AR6's `rim`)
-				Common = Color3.fromHex("#8A909C"),
-				Uncommon = Color3.fromHex("#7CF0A0"),
-				Rare = Color3.fromHex("#6FB6FF"),
-				Epic = Color3.fromHex("#D29CFF"),
-				Legendary = Color3.fromHex("#FFD777"),
-			} :: { [string]: Color3 },
-		},
+		-- The page's colours are the Overview's (TR24, the director's run, fix 4: UI.VoidkinScreen.Bag); a rarity keeps its own.
+		Rarity = { -- a rarity's word
+			Common = Color3.fromHex("#9AA0AC"),
+			Uncommon = Color3.fromHex("#7CF0A0"),
+			Rare = Color3.fromHex("#6FB6FF"),
+			Epic = Color3.fromHex("#D29CFF"),
+			Legendary = Color3.fromHex("#FFD777"),
+		} :: { [string]: Color3 },
+		Rim = { -- a rarity's rim, tint and light on a cell (AR6's `rim`)
+			Common = Color3.fromHex("#8A909C"),
+			Uncommon = Color3.fromHex("#7CF0A0"),
+			Rare = Color3.fromHex("#6FB6FF"),
+			Epic = Color3.fromHex("#D29CFF"),
+			Legendary = Color3.fromHex("#FFD777"),
+		} :: { [string]: Color3 },
 	},
 }

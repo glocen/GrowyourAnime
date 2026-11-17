@@ -5122,7 +5122,7 @@ local cases = {
 			t.Wait(cfg.Seconds + 0.1) -- anything popping settles
 			local middle = pill.AbsolutePosition + pill.AbsoluteSize / 2
 			local most, moved, levelMost, glinted, whitest = 1, 0, 1, 0, 0
-			local rest = HudConfig.Card.LeadLevel -- the lead's level in take F: the name's ivory, flashed toward white
+			local rest = UIKit.Systems.Voidkin.Block[1] -- the level's badge in take A: the Voidkin's Block, lifted toward white
 			local watch = RunService.RenderStepped:Connect(function()
 				most = math.max(most, Pop.Active(pill))
 				moved = math.max(moved, (pill.AbsolutePosition + pill.AbsoluteSize / 2 - middle).Magnitude)
@@ -5130,7 +5130,7 @@ local cases = {
 				if glint.Visible then
 					glinted = math.max(glinted, 1 - glint.BackgroundTransparency)
 				end
-				local c = level.TextColor3
+				local c = HudCases.BadgeTop(parts)
 				whitest = math.max(whitest, (c.R + c.G + c.B) - (rest.R + rest.G + rest.B))
 			end)
 			t.Check("credits given", t.Server("DataCredits", 25).Ok == true)
@@ -5162,10 +5162,11 @@ local cases = {
 			if was then
 				local high = Hud.PopScale(cfg.Rungs.Level, cfg.Swell)
 				t.Check("the level swelled larger, at its rung", math.abs(levelMost - high) < 0.03 and levelMost > most, string.format("%.3f, its rung's %.3f", levelMost, high))
-				-- At its peak it goes Glow of the way to white: from ivory, little is left to go, so the check is against that.
+				-- At its peak the badge goes Glow of the way to white: from lavender, little is left to go, so the check is
+				-- against that; the number keeps its ink through it.
 				local reach = (3 - (rest.R + rest.G + rest.B)) * cfg.Glow
-				t.Check("and brightened toward white", whitest >= reach * 0.8, string.format("%.3f of its %.3f", whitest, reach))
-				t.Check("its colour back after", level.TextColor3:ToHex() == rest:ToHex(), level.TextColor3:ToHex())
+				t.Check("and its badge brightened toward white", whitest >= reach * 0.8, string.format("%.3f of its %.3f", whitest, reach))
+				t.Check("its colour back after", HudCases.BadgeTop(parts):ToHex() == rest:ToHex() and level.TextColor3 == HudConfig.Card.LeadLevel, HudCases.BadgeTop(parts):ToHex())
 				t.Check("the thread glinted", glinted >= cfg.Glow - 0.05, string.format("%.2f opaque", glinted))
 				t.Check("and the glint's gone after", not glint.Visible)
 			end
@@ -5400,9 +5401,9 @@ local cases = {
 			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
 			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
 			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)
-			-- Take F (AR12): the stud in the type's colour, the digits between the two bars, the level's mark in D's place
-			-- (research's call): 2 points clear of every rarity's frame at its widest (UIKit.LeadPlate.FrameRight, in the
-			-- card's points), under the experience line, and above the eye in the corner under the card.
+			-- Take F (AR12): the stud in the type's colour, the digits between the two bars; the level on a badge on the
+			-- frame (TR24, the director's run, fix 6): over the frame's foot and inside its width, in the
+			-- card's own colours (the plate's body, the rarity's rim), the number on it, above the eye under the card.
 			local stud = parts.Lead:FindFirstChild("Stud") :: ImageLabel?
 			local hue = if def then HudConfig.Card.Types[def.Type] else nil
 			t.Check("its stud in its type's colour", stud ~= nil and hue ~= nil and stud.ImageColor3 == hue, if stud then stud.ImageColor3:ToHex() else "no stud")
@@ -5413,14 +5414,7 @@ local cases = {
 			t.Check("its digits between the health bar and the experience", middle - lineHalf >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y - 1
 				and middle + lineHalf <= xpBar.AbsolutePosition.Y + 1, string.format("%.0f to %.0f", middle - lineHalf, middle + lineHalf))
 			local scale = parts.Lead.AbsoluteSize.X / parts.Lead.Size.X.Offset
-			local mark = parts.Lead:FindFirstChild("LevelPlate") :: GuiObject
-			local plate = UIKit.LeadPlate
-			local clear = parts.Lead.AbsolutePosition.X + (plate.FrameRight + 2) * scale
-			t.Check("its level's mark 2 clear of every rarity's frame", mark.AbsolutePosition.X >= clear - 1, string.format("%.0f, the frames' widest + 2 %.0f", mark.AbsolutePosition.X, clear))
-			local xpFoot = parts.Lead.AbsolutePosition.Y + (plate.Xp[2] + plate.Xp[4]) * scale
-			local markFoot = mark.AbsolutePosition.Y + mark.AbsoluteSize.Y
-			t.Check("under the experience line and above the eye", mark.AbsolutePosition.Y >= xpFoot - 1 and markFoot <= parts.Spectate.AbsolutePosition.Y + 1,
-				string.format("%.0f to %.0f, the line's foot %.0f, the eye %.0f", mark.AbsolutePosition.Y, markFoot, xpFoot, parts.Spectate.AbsolutePosition.Y))
+			HudCases.LevelBadge(t, parts, scale)
 			local credits = (parts.Credits :: TextLabel).Text
 			t.Check("the Credits pill shows the save's", credits == Read.Number(view.Currency.Credits), credits)
 			t.Wait(PLATE_TICK)

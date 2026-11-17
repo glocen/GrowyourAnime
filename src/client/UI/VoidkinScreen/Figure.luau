@@ -57,7 +57,6 @@ export type Figure = {
 	Strike: number, -- the Reveal clip's strike, where its end begins
 	Studs: number, -- its height, soles to crown
 	Floor: BasePart, -- the disc it stands on
-	OwnFloor: { Color: Color3, Transparency: number, Size: Vector3 }, -- the disc's own look, off A's lacquer
 	Touch: TextButton,
 	Connections: { RBXScriptConnection },
 	OnSwipe: (step: number) -> (),
@@ -274,7 +273,6 @@ function Figure.new(def: string, stage: Frame, height: number, feet: number, onS
 		Strike = if reveal and RevealConfig.Strikes[reveal] then RevealConfig.Strikes[reveal].Time else 0,
 		Studs = size.Y,
 		Floor = floor,
-		OwnFloor = { Color = floor.Color, Transparency = floor.Transparency, Size = floor.Size },
 		Touch = touch,
 		Connections = {},
 		OnSwipe = onSwipe,
@@ -318,17 +316,6 @@ function Figure.new(def: string, stage: Frame, height: number, feet: number, onS
 		end
 	end))
 	return figure
-end
-
--- Its disc on A's lacquer (the Items page; research's fix 1 to the rebuild, A's sheet `a_doll`): a small brass floor at its
--- feet, Config.Hud.Bag.Stage.Floor, about a quarter of its height across; off it, the disc's own look again.
-function Figure.Lacquer(figure: Figure, on: boolean)
-	local floor, own = figure.Floor, figure.OwnFloor
-	local config = HudConfig.Bag.Stage.Floor
-	floor.Color = if on then HudConfig.Bag.Palette.BrassDim else own.Color
-	floor.Transparency = if on then 1 - config.Fill else own.Transparency
-	local across = config.Wide * figure.Studs
-	floor.Size = if on then Vector3.new(own.Size.X, across, across) else own.Size
 end
 
 function Figure.Frame(figure: Figure, height: number, feet: number)

@@ -11216,6 +11216,26 @@ From the two sheets and the court's head-on views (e1c365d).
   - The content check passed.
 - **Visually reviewed:** my own read, stills. Research's read is in the game, from the court, with the rings turning.
 - **Director-accepted:** no.
+- **Research's pass on the kit pieces (Quaestor, 2026-11-17, 17:43): passed, no must-fix** (7e0249d). From the court, the row reads three stages: a smooth crescent, horns with a toothed ring, and branching horns with a second ring. Each worker stays in view. **For the game, from the court:** the check's bone clamps stay muted tan, never brass, under Studio's light; and the rings turn while a worker works. **Next:** Faber installs after its queue.
+
+## AR34. The battery's three stages (Modulo, for research's pick, then Faber)
+
+Research's entry, 2026-11-17, 17:43. It is the last machine in the design's order (`docs/design.md`, "The base", "Three stages for every machine"): the generator (AR19), the Breaker (AR32), the bays (AR33), then the battery. Stage I is the battery as it stands (AR16).
+
+**The battery's stages follow the base's level** (research's call, tier 1, in its own area). The battery has no level of its own: its cap rises with the base's (`Config.Base`, `Levels.Battery`: 60, 150 and 400 kWh). So its Stage I is base level 1, Stage II base level 2, and Stage III base level 3, launch's cap. That makes the battery the one machine whose stage shows the base's own level, which fits it: the base's level is what it stores.
+
+**Feel line:** the player raises their base a level, and the battery beside the court swells with it, more of the void's light held in it. From the court, where they pass it on the way to the bays, how much the base can hold reads before any number.
+
+**The block contains:**
+- Stage II and Stage III in grey beside Stage I. Shown from the court at phone size, at 64 px and in black.
+- Two directions for how it grows, in AR32's and AR33's way: parts you can read, the void's light held, never a real-world battery.
+- AR19's open note carried in: the rack's copper bar and insulators read as real-world electrical parts. They go in this pass, at every stage.
+- **The classes carried:** a stage reads from where the player meets the machine (the court); and the battery's fill, which the game already shows, stays readable at every stage.
+- Its footprint stays, since the plan at 128 is fixed.
+
+**Waits:** the stage's change as a moment (its effect and sound), which lands with the base's level-up.
+
+**Checks:** the content check before the block; research's pick; Stage II and III as kit pieces for Faber, judged in the game from the court.
 
 ## Later, by ground
 

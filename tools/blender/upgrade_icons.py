@@ -44,7 +44,7 @@ GEAR = ROOT / "build" / "handoff" / "UI" / "gear" / "images"
 CHESTS = ROOT / "build" / "handoff" / "UI" / "chests" / "images"
 mat = p.mat
 for key, value in (("rock", 0.4), ("grit_dark", 0.32), ("grit_pale", 0.62), ("polished", 0.5), ("enamel", 0.24),
-                   ("gem", 0.7)):
+                   ("gem", 0.9), ("setting", 0.4)):
     g.GREY.setdefault(key, value)
 
 
@@ -89,24 +89,10 @@ def mid():
     return parts
 
 
-def high_block():
-    """A: a polished block standing, square and chamfered, bound at its foot and head, its light behind a window."""
-    side, h = 1.25, 1.9
-    parts = [bl.bevel(bl.place(bl.box("Block", (side, side, h), mat("polished")), (0, 0, h / 2)), 0.1, 1)]
-    for z in (0.3, h - 0.3):
-        parts.append(bl.bevel(bl.place(bl.box("Band", (side + 0.12, side + 0.12, 0.2), mat("brass")), (0, 0, z)), 0.03, 1))
-    window = [(0.0, 0.5), (0.22, 0.0), (0.0, -0.5)]
-    parts.append(bl.place(p.flat("Core", p.mirrored(window), 0.05, "lit"), (0, -side / 2 - 0.01, h / 2)))
-    for x in (-0.36, 0.36):  # two lines of light from the window to the bands
-        parts.append(bl.place(bl.box("Vein", (0.05, 0.04, h - 0.82), mat("lit")), (x, -side / 2 - 0.01, h / 2)))
-    return parts
-
-
-def high_ingot():
-    """B: the stone cut to an ingot and polished, lying, bound in two bands, a line of light round its top."""
-    foot, top, h = (2.5, 1.35), (1.9, 0.8), 0.78
+def frustum(name, foot, top, h, key, z=0.0):
+    """A block with a rectangular foot and a smaller top, its sides sloping: (across, deep) at each."""
     bm = bmesh.new()
-    corners = [bm.verts.new((sx * a / 2, sy * b / 2, z)) for (a, b), z in ((foot, 0.0), (top, h))
+    corners = [bm.verts.new((sx * a / 2, sy * b / 2, z + dz)) for (a, b), dz in ((foot, 0.0), (top, h))
                for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
     bm.faces.new(corners[:4])
     bm.faces.new(corners[4:])
@@ -114,15 +100,23 @@ def high_ingot():
         j = (i + 1) % 4
         bm.faces.new((corners[i], corners[j], corners[4 + j], corners[4 + i]))
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    parts = [bl.bevel(bl.object_from_bmesh("Ingot", bm, mat("polished")), 0.06, 1)]
-    for x in (-0.62, 0.62):  # two bands across it, a little proud of its foot
-        parts.append(bl.bevel(bl.place(bl.box("Band", (0.2, foot[1] + 0.1, h + 0.08), mat("brass")), (x, 0, h / 2)), 0.03, 1))
-    a, b = top[0] - 0.22, top[1] - 0.22
+    return bl.object_from_bmesh(name, bm, mat(key))
+
+
+def high():
+    """The stone cut to an ingot and polished, lying, bound in two bands that follow its slope, a line of light round
+    the edge of its top, flush with it (research's pick of B, and its fix: closed, not a trough)."""
+    foot, top, h = (2.5, 1.35), (1.9, 0.8), 0.78
+    parts = [bl.bevel(frustum("Ingot", foot, top, h, "polished"), 0.06, 1)]
+    for x in (-0.62, 0.62):  # two bands across it, as wide as the stone at every height and a little proud
+        band = frustum("Band", (0.2, foot[1] + 0.08), (0.2, top[1] + 0.08), h + 0.02, "brass", z=-0.01)
+        parts.append(bl.bevel(bl.place(band, (x, 0, 0)), 0.02, 1))
+    a, b = top[0] - 0.08, top[1] - 0.08
     for (x0, y0), (x1, y1) in (((-a / 2, -b / 2), (a / 2, -b / 2)), ((a / 2, -b / 2), (a / 2, b / 2)),
                                ((a / 2, b / 2), (-a / 2, b / 2)), ((-a / 2, b / 2), (-a / 2, -b / 2))):
-        length = math.hypot(x1 - x0, y1 - y0) + 0.05
-        bar = bl.box("Light", (length, 0.1, 0.07) if y0 == y1 else (0.1, length, 0.07), mat("lit"))
-        parts.append(bl.place(bar, ((x0 + x1) / 2, (y0 + y1) / 2, h + 0.02)))
+        length = math.hypot(x1 - x0, y1 - y0) + 0.08
+        bar = bl.box("Light", (length, 0.08, 0.03) if y0 == y1 else (0.08, length, 0.03), mat("lit"))
+        parts.append(bl.place(bar, ((x0 + x1) / 2, (y0 + y1) / 2, h + 0.003)))
     return parts
 
 
@@ -188,35 +182,36 @@ def brilliant(name, r, facets, key, at=(0.0, 0.0, 0.0)):
 def jewel(tier):
     """Its tier is its shape: a small stone; a larger one, more facets; set in a cup with four claws; a halo of small
     stones round it; four rays under the halo and a light inside it."""
+    # Research's must-fix (2026-11-17): the stone is the hero at every tier. Its facets and table are the brightest thing;
+    # the setting is thin and darker; the halo is small faceted stones with gaps, close in, never a ring (it read a cog).
     r = 0.5 if tier == 1 else 0.78
     parts = [brilliant("Stone", r, 6 if tier == 1 else 12, "gem")]
     if tier >= 3:
-        # the setting seen from above: a bright bezel round the girdle, its cup under, four claws standing out past it
-        parts.append(p.lathe("Cup", [(0.0, -0.66 * r), (0.42 * r, -0.66 * r), (0.96 * r, -0.12 * r), (1.06 * r, 0.0),
-                                     (1.02 * r, 0.05 * r)], "steel", thick=0.03))
-        parts.append(p.hoop("Bezel", 1.05 * r, 0.1, "steel", 0.02))
+        # the setting seen from above: a thin dark bezel at the girdle, its cup under, four small claws over the edge
+        parts.append(p.lathe("Cup", [(0.0, -0.66 * r), (0.42 * r, -0.66 * r), (0.96 * r, -0.12 * r), (1.04 * r, 0.0),
+                                     (1.02 * r, 0.04 * r)], "setting", thick=0.03))
+        parts.append(p.hoop("Bezel", 1.03 * r, 0.045, "setting", 0.0))
         for k in range(4):
             a = math.radians(45 + 90 * k)
             ca, sa = math.cos(a), math.sin(a)
-            parts.append(p.tube("Claw", p.curve([(1.2 * r * ca, 1.2 * r * sa, -0.1 * r), (1.18 * r * ca, 1.18 * r * sa, 0.12 * r),
-                                                 (0.92 * r * ca, 0.92 * r * sa, 0.3 * r)], 8), [0.12, 0.11, 0.08], "steel", sides=8))
-            parts.append(p.ball("Knob", 0.13, "steel", (1.2 * r * ca, 1.2 * r * sa, 0.0)))
+            # dark prongs over the bright crown: the stone reads set, and stays the brightest thing
+            parts.append(p.tube("Claw", p.curve([(1.07 * r * ca, 1.07 * r * sa, -0.08 * r), (1.04 * r * ca, 1.04 * r * sa, 0.12 * r),
+                                                 (0.72 * r * ca, 0.72 * r * sa, 0.3 * r)], 8), [0.1, 0.095, 0.075], "setting", sides=8))
     if tier >= 4:
-        halo = 1.42 * r
-        parts.append(p.hoop("Halo", halo, 0.07, "steel", -0.08 * r))
-        for k in range(8):
-            a = math.radians(22.5 + 45 * k)
-            parts.append(brilliant("Small", 0.2, 6, "gem", (halo * math.cos(a), halo * math.sin(a), 0.02)))
+        halo = 1.24 * r
+        for k in range(10):
+            a = math.radians(18 + 36 * k)
+            parts.append(brilliant("Small", 0.11, 6, "gem", (halo * math.cos(a), halo * math.sin(a), -0.02)))
     if tier >= 5:
         rays = []
         for i in range(8):
             a = math.radians(45 * i)
-            length = 2.35 * r if i % 2 == 0 else 1.75 * r
+            length = 2.2 * r if i % 2 == 0 else 1.65 * r
             rays.append((length * math.cos(a), length * math.sin(a)))
             b = math.radians(45 * i + 22.5)
-            rays.append((0.62 * r * math.cos(b), 0.62 * r * math.sin(b)))
-        parts.append(bl.place(p.flat("Rays", rays, 0.08, "gilt", bevel=0.02), (0, 0, -0.16 * r), (90, 0, 0)))
-        parts.append(p.hoop("Light", 1.2 * r, 0.035, "lit", 0.0))
+            rays.append((1.12 * r * math.cos(b), 1.12 * r * math.sin(b)))
+        parts.append(bl.place(p.flat("Rays", rays, 0.05, "setting", bevel=0.015), (0, 0, -0.2 * r), (90, 0, 0)))
+        parts.append(p.hoop("Light", 0.8 * r, 0.03, "lit", 0.4 * r * 0.2 / 0.44 + 0.02))   # on the crown, inside the girdle
     return parts
 
 
@@ -224,12 +219,10 @@ def jewel(tier):
 
 STONES = (("Low", "Low forge stone", low, "A rough lump, one crack of light across it."),
           ("Mid", "Mid forge stone", mid, "A whetstone of two grits on the diagonal, a seam of light where they meet."),
-          ("HighBlock", "High forge stone, A", high_block, "A polished block standing, bound at its foot and head, its "
-           "light behind a window."),
-          ("HighIngot", "High forge stone, B", high_ingot, "The stone cut to an ingot and polished, lying, bound in two "
-           "bands, a line of light round its top."))
+          ("High", "High forge stone", high, "The stone cut to an ingot and polished, lying, bound in two bands, a line "
+           "of light round its top's edge."))
 VIEWS = dict(stone=(24.0, -32.0), emblem=(8.0, -18.0), jewel=(55.0, -12.0))   # tilt, spin
-FILL = dict(Low=0.64, Mid=0.8, HighBlock=0.84, HighIngot=0.88, Common=0.7, Uncommon=0.8, Rare=0.88)
+FILL = dict(Low=0.64, Mid=0.8, High=0.88, Common=0.7, Uncommon=0.8, Rare=0.88)
 JEWEL_FILL = (0.48, 0.6, 0.7, 0.8, 0.9)   # tiers 1 to 5: the size climbs with the shape
 
 
@@ -272,7 +265,8 @@ def sheet(out, shots):
            "jewel's tier. A light is white here; the colour pass gives each kind its own.", g.SOFT_INK)
     # the stones: close, at 38 points, alone at 32 pixels
     y = 64
-    t.text(20, y, 11, "Forge stones, Low, Mid, High: worked more as the grade rises (two Highs, for research's pick)", g.INK)
+    t.text(20, y, 11, "Forge stones, Low, Mid, High: worked more as the grade rises (High is research's B, its top closed)",
+           g.INK)
     for i, (key, title, _, words) in enumerate(STONES):
         x = 30 + i * 300
         plain(sh, x, y + 20, 130.0, shots[key])
@@ -306,14 +300,15 @@ def sheet(out, shots):
         plain(sh, x + 120, y + 20, 38.0, shots[f"Jewel{tier}"])
         alone(sh, x + 120, y + 70, shots[f"Jewel{tier}"])
         t.text(x, y + 138, 10, f"Tier {tier}", g.INK)
-    words = ("Tier 1 a small stone, 6 facets; 2 a larger one, 12 facets; 3 set in a bezel with four claws; 4 a halo of "
-             "eight small stones round it; 5 four long rays and four short under the halo, and a ring of light inside it.")
+    words = ("The stone leads at every tier (research's fix). Tier 1 a small stone, 6 facets; 2 a larger one, 12 facets; "
+             "3 in a thin dark bezel with four small claws; 4 ten small stones round it, apart; 5 eight rays under them, "
+             "and a line of light on its crown.")
     t.text(30, y + 156, 8.5, words, g.SOFT_INK)
     # the bag's row, among AR6's gear and AR21's chests
     y = 680
-    row = (("GearMeigetsu", "Legendary"), ("HighBlock", None), ("RareAttack", "Rare"), ("Jewel5", None), ("Mid", None),
+    row = (("GearMeigetsu", "Legendary"), ("High", None), ("RareAttack", "Rare"), ("Jewel5", None), ("Mid", None),
            ("UncommonDefence", "Uncommon"), ("Jewel3", None), ("ChestKeeper", None), ("Low", None),
-           ("CommonHealth", "Common"), ("HighIngot", None), ("Jewel1", None))
+           ("CommonHealth", "Common"), ("Jewel4", None), ("Jewel1", None))
 
     def picture(name):
         if name.startswith("Gear"):

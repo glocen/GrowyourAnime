@@ -10664,6 +10664,29 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
     - A jewel's cell has no rarity frame, so none of these can be read as a rarity.
   - **Next:** the jewels' fix in grey goes to research's second look, judged on tiers 3 to 5 only. The colour pass follows, with its own content check.
 
+### The jewels' fix, in grey (Modulo, 2026-11-17, 16:14 to 16:18 by the clock)
+
+- **The sheet:** `build/handoff/UI/upgrades/upgrades_grey.png`, drawn again. The verdict's version is in git at 166b3a6.
+- **The stone leads at every tier:**
+  - the stone is lighter, 0.9 from 0.7, and still the brightest thing;
+  - the bezel, the cup, the claws and tier 5's rays share one darker grey (0.4, from steel's 0.76);
+  - the bezel is thin, 0.045 from 0.1, and sits at the girdle;
+  - the four claws are small dark prongs over the crown's edge; their knobs and their reach past the stone are gone.
+- **Tier 4's halo:** the ring that carried the stones, which read as a cog, is gone. Ten small faceted stones (6 facets, 0.11 across) stand apart, close round the bezel (1.24 of the stone's radius, from 1.42).
+- **Tier 5:** the rays stay, under the halo, thinner. The ring of light moved onto the crown, inside the girdle, so the light is the stone's.
+- **High B,** done now rather than in the colour pass, since it's shape:
+  - the bands follow the ingot's slope, so they no longer stand up past its top;
+  - the line of light lies flush at the top's edge;
+  - the top reads closed. High A is retired from the sheet.
+- **My read at 38 points:**
+  - tiers 1 and 2: a stone, and a larger one with more facets;
+  - tier 3: the same bright stone, set in a dark rim with four knobs;
+  - tier 4: points of light round it;
+  - tier 5: a dark star under it.
+  - At 32 px, tier 3 parts from tier 2 by its rim and its size more than its claws.
+- **Content check:** none new. Only sizes and greys changed, the cog the check noted is gone, and the colour pass gets its own check.
+- **Four facts.** Implemented: the fix and High B's top, in grey. Tested: it renders and was read at 38 points and 32 px. Visually reviewed: my read; research's second look next, on tiers 3 to 5. Director-accepted: no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

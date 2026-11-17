@@ -103,7 +103,7 @@ function BagCases.Cases(given: Given): { any }
 	local Bag = VoidkinScreen.Bag
 	return {
 		{
-			Name = "Items page (TR28): A's ledger, the doll's fourteen, the six kinds, the grid on Rules.Bag's list with its designs, the card over the doll, Equip and Take off, a chest opened, the sort and the salvage, then the smallest phone",
+			Name = "Items page (TR28): A's ledger, the doll's fourteen, the five kinds, the grid on Rules.Bag's list with its designs, the card over the doll, Equip and Take off, a chest opened, the sort and the salvage, then the smallest phone",
 			Stay = true,
 			Run = function(t: any)
 				local ids = VoidkinCases.Own(t, waitFor, ANSWER)
@@ -221,7 +221,7 @@ function BagCases.Cases(given: Given): { any }
 							cut = kind
 						end
 					end
-					t.Check(`{where}: the six kinds, each a touch tall`, cut == "", cut)
+					t.Check(`{where}: the five kinds, each a touch tall`, cut == "", cut)
 					local chosen = if kinds then kinds:FindFirstChild(Bag.State().Kind) else nil
 					t.Check(`{where}: the chosen kind's chip in view`, chosen ~= nil and chosen:IsA("GuiObject") and kinds ~= nil and chosen.AbsolutePosition.X >= kinds.AbsolutePosition.X - 1 and chosen.AbsolutePosition.X + chosen.AbsoluteSize.X <= kinds.AbsolutePosition.X + kinds.AbsoluteSize.X + 1, if chosen and chosen:IsA("GuiObject") and kinds then `chip {math.floor(chosen.AbsolutePosition.X)}+{math.floor(chosen.AbsoluteSize.X)}, strip {math.floor(kinds.AbsolutePosition.X)}+{math.floor(kinds.AbsoluteSize.X)}, canvas {math.floor((kinds :: ScrollingFrame).CanvasPosition.X)}` else "none")
 				end
@@ -339,7 +339,7 @@ function BagCases.Cases(given: Given): { any }
 				t.Check("Equip off in the seam's own button, no light", blocked ~= nil and blocked:GetAttribute("Palette") == Seam.Palette and blocked:FindFirstChild("Glow", true) == nil)
 				t.Check("the close shuts the card", VoidkinScreen.Tap(find("Close")) and Bag.State().Chosen == nil)
 				-- The kinds: each shows its own list.
-				for _, kind in { "Weapons", "Jewellery", "Chests" } do
+				for _, kind in { "Gear", "Jewellery", "Chests" } do
 					t.Check(`the {kind} chip`, VoidkinScreen.Tap(find(kind)) and Bag.State().Kind == kind)
 					t.Wait(0.1)
 					gridChecks("this window", kind, Bag.State().Sort)
@@ -502,7 +502,7 @@ function BagCases.Cases(given: Given): { any }
 						end
 					end
 					t.Row("an empty kind", nil, nil, 0, empty or "none")
-					VoidkinScreen.Tap(find(empty or "Weapons"))
+					VoidkinScreen.Tap(find(empty or "Gear"))
 					t.Wait(0.3)
 				end
 				-- A full bag: one of every kind, the rarities in turn, and a chest of each tier, given once the empty kind is

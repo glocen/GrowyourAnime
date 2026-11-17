@@ -2,7 +2,8 @@
 -- Bag (shared, pure): what the Items page shows, read from a save (docs/research/rework-2026-11-16.md, part 5; AR18's C,
 -- "the case"; docs/design.md, "The bag"). The screen draws these and nothing else, so what a cell says is what a case
 -- checks.
---   Kinds    the strip's six: All, Weapons, Armour, Jewellery, Chests, Materials (research's pick on AR18's fix 4)
+--   Kinds    the strip's five: All, Gear, Jewellery, Chests, Materials (research's pick on AR18's fix 4; weapons and
+--            armor one Gear, the director, 2026-11-17: "let just merge weapon and armor as 1 single tab \"gear\"")
 --   List     a kind's cells for the Voidkin shown, sorted: each item with its rarity, whether its class can wear it,
 --            whether it's worn, and what wearing it would change in Combat Power (the up arrow when it's a gain)
 --   Groups   the belt's three: the hands, the body, the jewellery; a narrow screen shows the chosen item's group
@@ -30,7 +31,7 @@ local Sheet = require(Shared.Rules.Sheet)
 
 local Bag = {}
 
-Bag.Kinds = { "All", "Weapons", "Armour", "Jewellery", "Chests", "Materials" }
+Bag.Kinds = { "All", "Gear", "Jewellery", "Chests", "Materials" }
 Bag.Sorts = { "Rarity", "Power", "New" }
 Bag.Cap = ChestsConfig.Bag
 Bag.Groups = {
@@ -84,12 +85,9 @@ local function picture(item: Profile.OwnedItem): string?
 	return if design then design.Image else nil
 end
 
--- Which of the strip's kinds an item row is.
+-- Which of the strip's kinds an item row is: jewellery, or Gear (a weapon, or armor, the cloak with it).
 function Bag.KindOf(row: Items.Row): string
-	if row.Class then
-		return "Weapons"
-	end
-	return if JEWELLERY[row.Slot] then "Jewellery" else "Armour"
+	return if row.Class == nil and JEWELLERY[row.Slot] then "Jewellery" else "Gear"
 end
 
 -- The belt's group a slot is in, 1 to 3.

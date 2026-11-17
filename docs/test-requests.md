@@ -2788,6 +2788,13 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **Tested:** the type check 0 new; "Items page (TR28)" 112/0 and "Voidkin screen (TR17)" 264/0.
 - **Seen:** phone stills (iPhone 16 Pro, the take's Empty, Full, Long, Other and Chests) by the builder: the figure on the room with its shaft, the lit seams, the ring in Light, Equip and Open 2 as plates of light, Tank only in the seam's dark. Research's pass waits.
 
+**The director's words of 2026-11-17, by 13:00 and by 13:03 (Faber).** "We said armor not armour?"; "let just merge weapon and armor as 1 single tab \"gear\""; "aslo overview ui shouldn't show any gears slot". Each covers what it names.
+- **Implemented (13:13):**
+  - The strip's five kinds: All, Gear, Jewellery, Chests, Materials (`Rules.Bag.Kinds`). Gear holds the weapons and the armor, the cloak with it. "Armour" is gone from what players see. All's empty line is now "Nothing in the bag yet", since "No gear yet" is Gear's.
+  - The Overview (and every page but Items) shows no gear slots: the two columns of six and the two hands are gone, and Combat Power stands alone under the figure's middle. The name's line spans the stage's group. `Config.Hud.Voidkin.Slots` became `Span`. The panel's line "Gear · preset ..., in hand" stays: it isn't a slot.
+- **Tested:** the type check 0 new; logic offline 23,971/0 (the Bag case on five kinds); "Items page (TR28)" 112/0; "Voidkin screen (TR17)" 233/0, its slot checks now "no gear slot on the screen" and "Combat Power under the figure's middle, alone at its feet".
+- **Seen:** phone stills by the builder, the strip with Gear and the Overview without slots. Research's pass waits.
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

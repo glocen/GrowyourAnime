@@ -105,11 +105,12 @@ return {
 			for _, row in Items.List do
 				local kind = Bag.KindOf(row)
 				t.Check(`{row.Id}: a kind on the strip`, table.find(Bag.Kinds, kind) ~= nil, kind)
-				t.Equal(`{row.Id}: a weapon is a weapon`, kind == "Weapons", row.Class ~= nil)
+				t.Check(`{row.Id}: a weapon is gear`, row.Class == nil or kind == "Gear", kind)
 			end
 			t.Equal("a ring is jewellery", Bag.KindOf(Items.ById.ring), "Jewellery")
-			t.Equal("a cloak is armour", Bag.KindOf(Items.ById.cloak), "Armour")
-			t.Equal("six kinds, All first", Bag.Kinds[1], "All")
+			t.Equal("a cloak is gear", Bag.KindOf(Items.ById.cloak), "Gear")
+			t.Equal("five kinds, All first", Bag.Kinds[1], "All")
+			t.Equal("five kinds: weapons and armor one Gear", table.concat(Bag.Kinds, ", "), "All, Gear, Jewellery, Chests, Materials")
 			t.Equal(`the cap is the chests' bag's`, Bag.Cap, ChestsConfig.Bag)
 		end,
 	},
@@ -120,13 +121,13 @@ return {
 			local all = Bag.List(data, warrior, "All", "Rarity")
 			t.Equal("every item, both chest stacks and the shards", #all, 9 + 2 + 1)
 			local parts = 0
-			for _, kind in { "Weapons", "Armour", "Jewellery" } do
+			for _, kind in { "Gear", "Jewellery" } do
 				for _, entry in Bag.List(data, warrior, kind, "Rarity") do
 					parts += 1
 					t.Equal(`{entry.Id} in {kind}`, Bag.KindOf(Items.ById[entry.Def]), kind)
 				end
 			end
-			t.Equal("the three item kinds split the items", parts, 9)
+			t.Equal("the two item kinds split the items", parts, 9)
 			t.Equal("chests: two stacks", #Bag.List(data, warrior, "Chests", "Rarity"), 2)
 			t.Equal("materials: the shards", #Bag.List(data, warrior, "Materials", "Rarity"), 1)
 			t.Equal("an unknown kind reads as All", #Bag.List(data, warrior, "Nonsense", "Rarity"), #all)

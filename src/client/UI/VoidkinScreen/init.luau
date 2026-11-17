@@ -11,10 +11,9 @@
 --   its own model, live, on a stage lit by its rarity, the floor glowing its element (Figure): a drag turns it, a tap
 --     plays the end of its Reveal, a flick goes to the next or the one before. Over the stage, its name on one line with
 --     its rarity in the rarity's colour, and the figure under it (research's fix 2);
---   two columns of six gear slots either side of it, a space between each, the twelve every Voidkin shares
---     (Definitions.Gear), empty until gear is built: a tap anywhere on a column is the way to the gear page;
---   at its feet, Main Hand and Off Hand, its class's pair, one each side of Combat Power (Rules.Stats.Power; a tap
---     shows Overview, where its stats are);
+--   no gear slots round it (the director, 2026-11-17: "overview ui shouldn't show any gears slot"; gear is the Items
+--     page's);
+--   at its feet, Combat Power (Rules.Stats.Power; a tap shows Overview, where its stats are);
 --   over the panel, Lead, the screen's one filled button (lit as Leading on the lead), with Send to work (or Bring
 --     home) beside it: off, each keeps its name and says why under it (the director on the mock, 2026-11-15: out of
 --     the panel; research's fix 3);
@@ -121,7 +120,7 @@ local slideFrom = 0 -- where the next figure comes in from
 local figure: Figure.Figure? = nil
 local stage: Frame? = nil -- the figure's stage, in the screen's frame beside its body: kept across rebuilds
 local litTo: number? = nil -- how far down the rail's line the light reached, authored: it runs on from there
-local measured = { Height = 0, Stage = 0, Slot = 0, Power = 0 }
+local measured = { Height = 0, Stage = 0, Power = 0 }
 local tickers: { () -> () } = {}
 local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied at each build
 local shownPower: { [string]: number } = {} -- the Combat Power last shown for each Voidkin, so a rise counts up from it
@@ -188,11 +187,8 @@ type Place = {
 	Rail: Box,
 	Stage: Box,
 	Panel: Box,
-	Slot: number, -- a slot's side
-	Hand: number, -- a hand's
-	Column: number, -- a column's tap width
-	Group: number, -- where the left column starts in the stage
-	Span: number, -- from the left column's outer edge to the right one's
+	Group: number, -- where the name's line and the feet's row start in the stage
+	Span: number, -- how wide they stand
 }
 
 local function place(room: Vector2): Place
@@ -202,17 +198,12 @@ local function place(room: Vector2): Place
 	local stageX = pad + config.Rail.Width + pad
 	local stageWide = math.max(room.X - pad - panelWide - gap - stageX, 1)
 	local stageTall = math.max(room.Y - pad * 2 - config.Strip - gap, 1)
-	local slots = config.Slots
-	local slot = math.max(math.floor(math.min(slots.Size, (stageTall - 5 * slots.Gap) / 6)), 1)
-	local span = math.min(stageWide, slots.Span * stageTall)
+	local span = math.min(stageWide, config.Span * stageTall)
 	return {
 		Room = room,
 		Rail = { X = pad, Y = 0, Wide = config.Rail.Width, Tall = math.max(room.Y, 1) }, -- the room's whole height: Back stands in the band
 		Stage = { X = stageX, Y = pad, Wide = stageWide, Tall = stageTall },
 		Panel = { X = room.X - pad - panelWide, Y = pad + ROW + gap, Wide = panelWide, Tall = math.max(room.Y - pad * 2 - ROW - gap, 1) },
-		Slot = slot,
-		Hand = math.min(slots.Hand, config.Power.Height),
-		Column = math.max(slot, Theme.Size.Tap),
 		Group = (stageWide - span) / 2,
 		Span = span,
 	}
@@ -329,7 +320,7 @@ local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, a
 	local feet = 1 - (config.Power.Height + 2) / stageHeight
 	local height = math.max(0.2, feet - config.Figure.Top / stageHeight)
 	halo.Position = UDim2.fromScale(0.5, feet - height * 0.55)
-	measured.Height, measured.Stage, measured.Slot = height * stageHeight / at.Room.Y, stageHeight, at.Slot
+	measured.Height, measured.Stage = height * stageHeight / at.Room.Y, stageHeight
 	local current = figure
 	if current and current.Def == def and current.Stage == on then
 		Figure.Frame(current, height, feet)
@@ -1084,65 +1075,12 @@ local function rail(body: Instance, at: Place)
 	end
 end
 
--- One gear slot, empty and grey until gear is built: a read target, named by its slot. A hand's edge is brighter, and
--- it says which of its class's weapons it takes (its Kind).
-local function slotAt(parent: Instance, name: string, side: number, position: UDim2, kind: string?)
-	local made = Instance.new("Frame")
-	made.Name = name
-	made.BorderSizePixel = 0
-	made.BackgroundColor3 = Look.PlateHigh
-	made.BackgroundTransparency = 0.25
-	made.Position = position
-	made.Size = UDim2.fromOffset(side, side)
-	made:SetAttribute("Slot", name)
-	made:SetAttribute("Kind", kind or name)
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
-	corner.Parent = made
-	local edge = Instance.new("UIStroke")
-	edge.Name = "Edge"
-	edge.Thickness = if kind then 1.5 else 1
-	edge.Color = if kind then Look.TextDim else Look.Line
-	edge.Parent = made
-	local seat = bit(made, "Seat", UDim2.fromScale(0.3, 0.3), Look.Line, 45)
-	seat.BackgroundTransparency = 0.5
-	made.Parent = parent
-end
-
--- The gear round the figure: the twelve shared slots in two columns of six, each column one tap (the way to the gear
--- page, when gear is built), and at its feet its two hands either side of Combat Power.
-local function gear(over: Frame, at: Place, owned: Profile.OwnedVoidkin, block: Stats.Block)
+-- At its feet, Combat Power alone, under the figure's middle: the Overview shows no gear slots (the director,
+-- 2026-11-17: "overview ui shouldn't show any gears slot"; gear is the Items page's).
+local function feet(over: Frame, at: Place, owned: Profile.OwnedVoidkin, block: Stats.Block)
 	local config = HudConfig.Voidkin
-	local slot, apart = at.Slot, config.Slots.Gap
-	local tall = slot * 6 + apart * 5
-	local function column(name: string, x: number, inset: number, first: number)
-		local press = Instance.new("TextButton")
-		press.Name = name
-		press.Text = ""
-		press.AutoButtonColor = false
-		press.BackgroundTransparency = 1
-		press.Position = UDim2.fromOffset(x, 0)
-		press.Size = UDim2.fromOffset(at.Column, tall)
-		press.Parent = over
-		for index = 1, 6 do
-			slotAt(press, Gear.Shared[first + index], slot, UDim2.fromOffset(inset, (index - 1) * (slot + apart)))
-		end
-		local function onTap()
-			Toast.Show("Gear isn't built yet", Theme.Colour.TextDim)
-		end
-		press.Activated:Connect(onTap)
-		taps[press] = onTap
-	end
-	column("LeftSlots", at.Group, 0, 0)
-	column("RightSlots", at.Group + at.Span - at.Column, at.Column - slot, 6)
-	local row = Voidkin.ById[owned.Def]
-	local class = if row then row.Class else ""
-	local gap, hand = Theme.Size.Gap, at.Hand
-	local wide = math.max(at.Span - (slot + gap) * 2, 1)
-	local feet = frameOf("Feet", over, UDim2.new(0, at.Group + slot + gap, 1, -config.Power.Height), UDim2.fromOffset(wide, config.Power.Height))
-	slotAt(feet, "Main Hand", hand, UDim2.new(0, 0, 1, -hand), Gear.Kind("Main Hand", class))
-	slotAt(feet, "Off Hand", hand, UDim2.new(1, -hand, 1, -hand), Gear.Kind("Off Hand", class))
-	power(feet, owned, block, math.clamp(wide - (hand + apart) * 2, Theme.Size.Tap, config.Power.Width))
+	local row = frameOf("Feet", over, UDim2.new(0, at.Group, 1, -config.Power.Height), UDim2.fromOffset(at.Span, config.Power.Height))
+	power(row, owned, block, math.clamp(at.Span - Theme.Size.Gap * 2, Theme.Size.Tap, config.Power.Width))
 end
 
 -- The currencies at the band's right: Credits and the battery, read again every WALLET.Every seconds. A chip is as wide
@@ -1333,12 +1271,11 @@ local function build(view: Profile.View, on: On)
 	local on_ = stageIn(frame, where, size)
 	Figure.Wings(on_)
 	dress(on_, owned.Def, roster, at)
-	-- Over the stage, in the body: its name, its gear round it and what stands at its feet.
+	-- Over the stage, in the body: its name, and Combat Power at its feet.
 	local over = frameOf("Over", body, where, size)
-	gear(over, at, owned, (resolved(view, owned)))
+	feet(over, at, owned, (resolved(view, owned)))
 	-- The band: Back is the kit's; its marks beside it, the currencies at the right.
-	local gap = Theme.Size.Gap
-	wallet(band, marks(band, owned, on, nameLine(over, at.Group + at.Column + gap, at.Span - (at.Column + gap) * 2, owned, on)), view)
+	wallet(band, marks(band, owned, on, nameLine(over, at.Group, at.Span, owned, on)), view)
 	strip(body, at, roster, on)
 	actions(frameOf("Actions", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad), UDim2.fromOffset(at.Panel.Wide, ROW)), view, owned, on)
 	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body, Palette = Seam.Palette })
@@ -1474,7 +1411,7 @@ end
 
 -- As built, authored: the figure's share of the room's height, its stage's height, a slot's side and Combat Power's
 -- width: for tests and takes.
-function VoidkinScreen.Measure(): { Height: number, Stage: number, Slot: number, Power: number }
+function VoidkinScreen.Measure(): { Height: number, Stage: number, Power: number }
 	return table.clone(measured)
 end
 

@@ -374,9 +374,8 @@ return {
 	--            more); Dot and Chosen the drawn circles' widths, at rest and selected; Line the line's thickness;
 	--            Spread the most authored pixels between two buttons; Run seconds the light takes to run along the
 	--            line to a newly chosen one
-	--   Slots    the twelve shared, six a column: Size a slot's side, authored, or as large as six fit Gap apart; the
-	--            two columns stand at most Span of the stage's height apart; Hand the side of the two hands at the
-	--            feet, either side of Combat Power (Modulo's mock of the layout, AR12: 40 and 46)
+	--   Span     how wide the name's line and the feet's row stand over the stage, at most this share of its height
+	--            (no gear slots on the Overview: the director, 2026-11-17)
 	--   Figure   Top: authored pixels kept clear over its crown (it stands from there down to the feet's row); Fov: the
 	--            stage camera's; Turn: degrees a dragged authored pixel turns it; Back: seconds the next one takes to
 	--            slide in, from Slide authored pixels to its side; Draw: seconds a body stands in the stage's wings,
@@ -400,7 +399,7 @@ return {
 	--   Panel    the page's panel: Share of the room's width, between Least and Most authored
 	Voidkin = {
 		Rail = { Width = 68, Dot = 26, Chosen = 42, Line = 2, Spread = 20, Run = 0.25 },
-		Slots = { Size = 40, Gap = 6, Span = 1.2, Hand = 46 },
+		Span = 1.2,
 		Figure = { Top = 24, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48, Draw = 0.8 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
 		Stage = { Glow = 0.35, Light = 0.45 },

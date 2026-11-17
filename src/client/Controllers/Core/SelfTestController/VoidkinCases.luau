@@ -2,8 +2,8 @@
 -- VoidkinCases (client, Studio only): the Voidkin screen's case (TR17, the director's full-screen layout), a list of its
 -- own beside Cases, which joins it as it joins Takes. On the screen as it stands at home (Stay): opened from the dock,
 -- full screen over a cover that hides the world and the HUD, Back, its marks and the currencies in Roblox's band, its
--- name and rarity on one line over the stage, the figure whole under it at its measured share, the twelve shared slots
--- in two columns of six and its class's two hands either side of Combat Power, the rail's seven taps whole where they
+-- name and rarity on one line over the stage, the figure whole under it at its measured share, no gear slot and Combat
+-- Power alone at its feet (the director, 2026-11-17), the rail's seven taps whole where they
 -- fit, each page from its rail button (the chosen one larger and lit), on the save's numbers, Lead and Send to work over
 -- the panel (the lead's lit, its work off with why under its name), favourite and lock set and cleared, a switch by the
 -- strip and by a flick, a switch to a body still being fetched (the one shown stays with its panel), a tap's flourish,
@@ -225,20 +225,6 @@ local function railButton(name: string): TextButton?
 	return if found and found:IsA("TextButton") then found else nil
 end
 
--- A column's slots, top to bottom.
-local function slotsOf(column: Instance?): { Frame }
-	local slots: { Frame } = {}
-	for _, child in (if column then column:GetChildren() else {}) :: { Instance } do
-		if child:IsA("Frame") and child:GetAttribute("Slot") ~= nil then
-			table.insert(slots, child)
-		end
-	end
-	table.sort(slots, function(a: Frame, b: Frame): boolean
-		return a.AbsolutePosition.Y < b.AbsolutePosition.Y
-	end)
-	return slots
-end
-
 function VoidkinCases.Cases(given: Given): { any }
 	local ANSWER = given.ANSWER
 	local waitFor, lintClean = given.waitFor, given.lintClean
@@ -269,55 +255,32 @@ function VoidkinCases.Cases(given: Given): { any }
 		t.Row(`{where}: framed for, on a stage {math.floor(framedFor.Stage)} authored px tall, its {figure.Studs} studs`, nil, nil, framedFor.Height, "")
 	end
 
-	-- The gear round the figure: two columns of six, the twelve shared in their order, and its class's hands at its feet.
-	local function gear(t: any, where: string, class: string)
-		local figure = VoidkinScreen.Figure()
-		local scale = Layers.Scale()
-		local side = VoidkinScreen.Measure().Slot
-		local middle = if figure then figure.Stage.AbsolutePosition.X + figure.Stage.AbsoluteSize.X / 2 else 0
-		for index, name in { "LeftSlots", "RightSlots" } do
-			local column = VoidkinScreen.Find(name)
-			local slots = slotsOf(column)
-			t.Check(`{where}: {name} holds six slots`, #slots == 6, `{#slots}`)
-			local named, square, beside = true, true, true
-			for at, slot in slots do
-				named = named and slot.Name == Gear.Shared[(index - 1) * 6 + at]
-				square = square and math.abs(slot.AbsoluteSize.X - side * scale) <= 1 and math.abs(slot.AbsoluteSize.Y - side * scale) <= 1
-				local centre = slot.AbsolutePosition.X + slot.AbsoluteSize.X / 2
-				beside = beside and (if index == 1 then centre < middle else centre > middle)
+	-- No gear slot anywhere on the Overview (the director, 2026-11-17: "overview ui shouldn't show any gears slot"), and
+	-- Combat Power alone at its feet, under the figure's middle.
+	local function feet(t: any, where: string)
+		local frame = Screen.Frame("Voidkin")
+		local slot = ""
+		for _, item in (if frame then frame:GetDescendants() else {}) :: { Instance } do
+			if slot == "" and item:IsA("GuiObject") and (item:GetAttribute("Slot") ~= nil or item.Name == "LeftSlots" or item.Name == "RightSlots") then
+				slot = item.Name
 			end
-			t.Check(`{where}: {name} in the shared order, top to bottom`, named)
-			local apart, spaced = HudConfig.Voidkin.Slots.Gap, true
-			for at = 2, #slots do
-				local between = slots[at].AbsolutePosition.Y - (slots[at - 1].AbsolutePosition.Y + slots[at - 1].AbsoluteSize.Y)
-				spaced = spaced and math.abs(between - apart * scale) <= 1
-			end
-			t.Check(`{where}: {name}'s slots {apart} authored px apart`, spaced)
-			t.Check(`{where}: {name}'s slots square, {side} authored px`, square)
-			t.Check(`{where}: {name} {if index == 1 then "left" else "right"} of the figure`, beside)
-			local stage = if figure then figure.Stage else nil
-			local last = slots[#slots]
-			t.Check(`{where}: {name} inside the stage`, stage ~= nil and last ~= nil and slots[1].AbsolutePosition.Y >= stage.AbsolutePosition.Y - 1 and last.AbsolutePosition.Y + last.AbsoluteSize.Y <= stage.AbsolutePosition.Y + stage.AbsoluteSize.Y + 1)
 		end
-		t.Row(`{where}: a slot's side, rendered px (the reference's about 46, the mock's 40)`, nil, nil, side * scale, "")
-		local feet = VoidkinScreen.Find("Feet")
-		local main, off = feet and feet:FindFirstChild("Main Hand"), feet and feet:FindFirstChild("Off Hand")
+		t.Check(`{where}: no gear slot on the screen`, frame ~= nil and slot == "", slot)
+		local figure = VoidkinScreen.Figure()
+		local row = VoidkinScreen.Find("Feet")
 		local plate = VoidkinScreen.Find("Power")
-		if main and off and plate and main:IsA("GuiObject") and off:IsA("GuiObject") and plate:IsA("GuiObject") then
-			t.Check(`{where}: Main Hand takes its class's weapon`, main:GetAttribute("Kind") == Gear.Kind("Main Hand", class), tostring(main:GetAttribute("Kind")))
-			t.Check(`{where}: Off Hand takes its class's`, off:GetAttribute("Kind") == Gear.Kind("Off Hand", class), tostring(off:GetAttribute("Kind")))
-			t.Check(`{where}: Main Hand left of Combat Power, clear of it`, main.AbsolutePosition.X + main.AbsoluteSize.X <= plate.AbsolutePosition.X + 1)
-			t.Check(`{where}: Off Hand right of it, clear of it`, off.AbsolutePosition.X >= plate.AbsolutePosition.X + plate.AbsoluteSize.X - 1)
-			local foot = plate.AbsolutePosition.Y + plate.AbsoluteSize.Y
-			t.Check(`{where}: the three on one foot line`, math.abs(main.AbsolutePosition.Y + main.AbsoluteSize.Y - foot) <= 1 and math.abs(off.AbsolutePosition.Y + off.AbsoluteSize.Y - foot) <= 1)
-			t.Row(`{where}: a hand's side, rendered px (the mock's 46)`, nil, nil, main.AbsoluteSize.X, "")
+		if figure and row and plate and plate:IsA("GuiObject") then
+			local middle = figure.Stage.AbsolutePosition.X + figure.Stage.AbsoluteSize.X / 2
+			local centre = plate.AbsolutePosition.X + plate.AbsoluteSize.X / 2
+			t.Check(`{where}: Combat Power under the figure's middle`, math.abs(centre - middle) <= 1, string.format("%.0f against %.0f", centre, middle))
+			t.Check(`{where}: alone at its feet`, #row:GetChildren() == 1, `{#row:GetChildren()}`)
 			t.Row(`{where}: Combat Power's plate, authored px wide`, nil, nil, VoidkinScreen.Measure().Power, "")
 		else
-			t.Check(`{where}: its two hands and Combat Power at its feet`, false)
+			t.Check(`{where}: Combat Power at its feet`, false)
 		end
 	end
 
-	-- Its name over the stage: one line between the two slot columns, its rarity after it, whole, in the rarity's colour.
+	-- Its name over the stage: one line inside it, its rarity after it, whole, in the rarity's colour.
 	local function nameLine(t: any, where: string, owned: Profile.OwnedVoidkin?)
 		local name = VoidkinScreen.Find("Name")
 		local title, rarity = name and name:FindFirstChild("Title"), name and name:FindFirstChild("Rarity")
@@ -328,10 +291,11 @@ function VoidkinCases.Cases(given: Given): { any }
 		end
 		t.Check(`{where}: its name`, title.Text == Read.VoidkinName(owned), title.Text)
 		t.Check(`{where}: its rarity, in the rarity's colour`, rarity.Text == row.Rarity and rarity.TextColor3 == HudConfig.Card.Trim[row.Rarity], rarity.Text)
-		local left, right = VoidkinScreen.Find("LeftSlots"), VoidkinScreen.Find("RightSlots")
-		local from = if left and left:IsA("GuiObject") then left.AbsolutePosition.X + left.AbsoluteSize.X else math.huge
-		local to = if right and right:IsA("GuiObject") then right.AbsolutePosition.X else -math.huge
-		t.Check(`{where}: on one line between the slot columns`, name.AbsolutePosition.X >= from - 1 and name.AbsolutePosition.X + name.AbsoluteSize.X <= to + 1, string.format("%.0f to %.0f in %.0f to %.0f", name.AbsolutePosition.X, name.AbsolutePosition.X + name.AbsoluteSize.X, from, to))
+		local figure = VoidkinScreen.Figure()
+		local stage = if figure then figure.Stage else nil
+		local from = if stage then stage.AbsolutePosition.X else math.huge
+		local to = if stage then stage.AbsolutePosition.X + stage.AbsoluteSize.X else -math.huge
+		t.Check(`{where}: on one line inside the stage`, name.AbsolutePosition.X >= from - 1 and name.AbsolutePosition.X + name.AbsoluteSize.X <= to + 1, string.format("%.0f to %.0f in %.0f to %.0f", name.AbsolutePosition.X, name.AbsolutePosition.X + name.AbsoluteSize.X, from, to))
 		t.Check(`{where}: the name first, its rarity after it, whole in the line`, title.AbsolutePosition.X + title.AbsoluteSize.X <= rarity.AbsolutePosition.X + 1 and rarity.TextFits and rarity.AbsolutePosition.X + rarity.AbsoluteSize.X <= name.AbsolutePosition.X + name.AbsoluteSize.X + 1, string.format("%.0f, %.0f, %.0f", title.AbsoluteSize.X, rarity.AbsoluteSize.X, name.AbsoluteSize.X))
 		t.Row(`{where}: the name's line, authored px wide (its name {if title.TextFits then "whole" else "cut"})`, nil, nil, name.AbsoluteSize.X / Layers.Scale(), "")
 	end
@@ -409,7 +373,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("its own body on the stage", figure ~= nil and figure.Body.Name == body, if figure then figure.Body.Name else "no figure")
 			t.Check("on its Idle", figure ~= nil and figure.Idle ~= nil and (figure.Idle :: AnimationTrack).IsPlaying)
 			whole(t, "this window")
-			gear(t, "this window", if row then row.Class else "")
+			feet(t, "this window")
 			if owned then
 				local block = Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)
 				local number = VoidkinScreen.Find("Number")
@@ -440,8 +404,8 @@ function VoidkinCases.Cases(given: Given): { any }
 			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
 				t.Check(`{name} in view`, inView(name))
 			end
-			t.Check("the bag's kinds the bag's six", #VoidkinScreen.Kinds == 6 and table.find(VoidkinScreen.Kinds, "Weapons") ~= nil)
-			-- Its name over the stage: one line between the slot columns, its rarity after it in the rarity's colour.
+			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewellery, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
+			-- Its name over the stage: one line inside it, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
 			-- The rail: all seven taps whole, each a touch or more, and no scroll.
 			local strung = VoidkinScreen.Find("Rail")
@@ -476,8 +440,6 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("the lead's own reads Leading", labelOf(leads) == "Leading", labelOf(leads))
 			t.Check("lit, not greyed", leads ~= nil and Button.State(leads) == "Selected", if leads then Button.State(leads) else "none")
 			leadsWork(t, "this window")
-			-- A tap on a column: the way to the gear page, which isn't built.
-			t.Check("a tap on the left column is taken", VoidkinScreen.Tap(VoidkinScreen.Find("LeftSlots")) and table.find(Toast.Shown(), "Gear isn't built yet") ~= nil, table.concat(Toast.Shown(), "; "))
 			-- Each page from its rail button, on the save's numbers; one not built yet says so and keeps the page.
 			local rail = HudConfig.Voidkin.Rail
 			t.Check("the rail holds every page", table.concat(VoidkinScreen.Pages, ", ") == "Overview, Bag, Kit, Stars, Forge, Jewels, War Emblems", table.concat(VoidkinScreen.Pages, ", "))
@@ -663,9 +625,6 @@ function VoidkinCases.Cases(given: Given): { any }
 				end), tostring(VoidkinScreen.Chosen()))
 				local chosen = button(id)
 				t.Check(`its cell marked`, chosen ~= nil and Button.State(chosen) == "Selected")
-				local class = (Voidkin.ById[def] :: Voidkin.Row).Class
-				local main = VoidkinScreen.Find("Main Hand")
-				t.Check(`its Main Hand takes a {Gear.Kind("Main Hand", class)}`, main ~= nil and main:GetAttribute("Kind") == Gear.Kind("Main Hand", class), tostring(main and main:GetAttribute("Kind")))
 			end
 			-- A flick: the left brings the next (round to the first), the right the one before.
 			local swipe = HudConfig.Voidkin.Swipe
@@ -760,7 +719,6 @@ function VoidkinCases.Cases(given: Given): { any }
 			Layers.Force(Theme.Scale.Floor)
 			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
 			t.Wait(0.1)
-			local leadRow = Voidkin.ById[(ProfileController.Get() :: Profile.View).Voidkin[lead].Def]
 			for _, name in VoidkinScreen.Pages do
 				if not VoidkinScreen.Soon[name] then
 					VoidkinScreen.Show(name) -- built again at the phone's size
@@ -769,7 +727,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				end
 			end
 			whole(t, "the smallest phone")
-			gear(t, "the smallest phone", if leadRow then leadRow.Class else "")
+			feet(t, "the smallest phone")
 			nameLine(t, "the smallest phone", (ProfileController.Get() :: Profile.View).Voidkin[lead])
 			leadsWork(t, "the smallest phone")
 			for _, name in { "Back", "Favourite", "Lock", "Rename", "Wallet" } do

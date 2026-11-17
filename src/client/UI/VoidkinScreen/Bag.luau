@@ -3,7 +3,7 @@
 -- in A"; docs/ui.md, the bag), in the Overview's colours, so a switch of tabs never changes one (TR24, the director's
 -- run, fix 4): the screen's backing, the Overview's stage, its slots' graphite cells, its panel for the card. Right of
 -- the rail:
---   the strip over the grid: the bag's six kinds, All first and holding everything (the director, by 21:32), scrolling
+--   the strip over the grid: the bag's five kinds, All first and holding everything (the director, by 21:32), scrolling
 --     with the chosen one kept in view, and at its end the sort (the salvage's control, in Chests);
 --   the grid, five across or more, cells of about 64, each A's cell on AR6's assembly (build/handoff/UI/gear/
 --     gear_icons.json): its well, its rarity's tint, light and rim (Legendary's a gilt frame), its design's picture, a
@@ -12,7 +12,7 @@
 --     picture (AR21) and count in a plain cell, the shards after them. The count stands under the grid, outside its
 --     scroll;
 --   the doll at the room's left, as A's sheet has it (the director, 2026-11-16), a hairline between it and the grid:
---     the Voidkin between its two columns of slots, the six armour pieces on the left,
+--     the Voidkin between its two columns of slots, the six armor pieces on the left,
 --     the cloak and the jewellery on the right, its name and level over it, its Combat Power and its two hands at its
 --     feet. All fourteen slots always show, each a touch, an empty one its piece's mark (AR22); the one the chosen
 --     item would go in wears an ivory ring;
@@ -94,7 +94,7 @@ local P = {
 	Rarity = C.Rarity,
 	Rim = C.Rim,
 }
-local GROUP_KIND = { "Weapons", "Armour", "Jewellery" } -- each slot group's kind on the strip
+local GROUP_KIND = { "Gear", "Gear", "Jewellery" } -- each slot group's kind on the strip
 local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
 local NUMBER_ROW = 22 -- the card's Combat Power line
 local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = "The bag is full", Unknown = "Not now" }
@@ -442,7 +442,7 @@ local function cellFor(entry: Rules.Entry, side: number, order: number, parent: 
 	return made
 end
 
--- The doll's fourteen slots, each a touch: the six armour pieces down the left, the cloak and the jewellery down the
+-- The doll's fourteen slots, each a touch: the six armor pieces down the left, the cloak and the jewellery down the
 -- right, the two hands at the figure's feet. Each holds what the shown Voidkin wears there, or its empty mark (AR22);
 -- the slot the chosen item would go in is ringed in ivory.
 local function drawSlots(context: Context, at: Layout, target: string?)
@@ -943,9 +943,8 @@ local function chip(parent: Instance, name: string, words: string, order: number
 end
 
 local EMPTY: { [string]: { string } } = {
-	All = { "No gear yet", "Shades and keepers drop it" },
-	Weapons = { "No weapons yet", "Shades and keepers drop them" },
-	Armour = { "No armour yet", "Shades and keepers drop it" },
+	All = { "Nothing in the bag yet", "Shades and keepers drop gear" },
+	Gear = { "No gear yet", "Shades and keepers drop it" },
 	Jewellery = { "No jewellery yet", "Shades and keepers drop it" },
 	Chests = { "No chests yet", "Shades drop them, and keepers" },
 	Materials = { "No shards yet", "The grounds drop them" },
@@ -967,7 +966,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 	ramp(case, Seam.Panel)
 	round(case, SEAM.Room.Corner)
 	Seam.Edge(case, "Top", SEAM.Room.Corner, 0, at.Case.Wide - SEAM.Room.Corner * 2, false, SEAM.Edges.Room)
-	-- The strip: the six kinds, scrolling, then the sort or, in Chests, the salvage.
+	-- The strip: the five kinds, scrolling, then the sort or, in Chests, the salvage.
 	local data = context.View :: any
 	local rightWords: string
 	local onRight: () -> ()

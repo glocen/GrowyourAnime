@@ -3170,7 +3170,7 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 
 ## TR38. War Emblems (Faber, after TR37)
 
-Research's request, 2026-11-17, 12:00, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear" (sockets, the move across). Emblems are 11 of a full build (`docs/balance.md`, "Where power comes from").
+Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear" (sockets, the move across). Emblems are 11 of a full build (`docs/balance.md`, "Where power comes from").
 
 **Feel line:** the player drops an emblem into an empty socket on an item, the item's card shows the gain, and the Combat Power ticks up by a whole number.
 
@@ -3191,7 +3191,7 @@ Research's request, 2026-11-17, 12:00, item 7 of phase 3's order. The design: `d
 
 ## TR39. Jewels (Faber, after TR38)
 
-Research's request, 2026-11-17, 12:00, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear". Jewels are 7 of a full build, and they carry the percent stats [D].
+Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear". Jewels are 7 of a full build, and they carry the percent stats [D].
 
 **Feel line:** a rare jewel drops from the keeper. The player sets it in their best item's one jewel socket, and their criticals hit harder from the next fight.
 

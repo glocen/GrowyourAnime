@@ -170,6 +170,48 @@ return {
 		end,
 	},
 	{
+		Name = "Track: a hit's looks are rows played on a body, held to the end of what they show, and none goes unnamed",
+		Run = function(t: any)
+			local named: { [string]: boolean } = {}
+			for _, action in Actions.List do
+				for beat, hit in action.Hits do
+					local looks = hit.Looks
+					if looks == nil then
+						continue
+					end
+					for what, name in looks :: { [string]: string } do
+						local label = `{action.Id}.{beat}'s {what} look, {name}`
+						named[name] = true
+						t.Check(`{label}: shows what the hit does`, (what == "Stun" and hit.Stun ~= nil) or (what == "Shield" and hit.Shield ~= nil))
+						t.Check(`{label}: played on a body`, EffectsConfig.Lasting[name] ~= nil)
+						local rows = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
+						t.Check(`{label}: its rows`, rows ~= nil)
+						if rows == nil then
+							continue
+						end
+						t.Check(`{label}: of no action, so nothing counts from a beat`, rows.Action == nil and rows.Free == nil)
+						-- the longest it can show: the stun whole, the shield's seconds; its rows hold past it, so code ends it
+						local lasts = if what == "Stun" then hit.Stun :: number else (hit.Shield :: { Seconds: number }).Seconds
+						local last = 0
+						for _, row in rows.Rows do
+							t.Check(`{label}: every row rides the body`, row.Body ~= nil or row.On ~= nil)
+							for _, keys in row.Tracks or {} do
+								if type(keys) == "table" and type(keys[1]) == "table" then
+									local _, b = Track.Span(keys)
+									last = math.max(last, b)
+								end
+							end
+						end
+						t.Check(`{label}: held past what it shows`, last / 60 >= lasts, string.format("%.2f s against %.2f", last / 60, lasts))
+					end
+				end
+			end
+			for name in EffectsConfig.Lasting do
+				t.Check(`{name}: played on a body by a hit's look`, named[name] == true)
+			end
+		end,
+	},
+	{
 		Name = "Track: every effect's rows whole against the kit, and B1's exit on its beats",
 		Run = function(t: any)
 			for coilName, coil in FxKit.Meshes do
@@ -191,7 +233,7 @@ return {
 					t.Check(`{label}: rides a row of its effect`, row.On == nil or (effect.Rows[row.On] ~= nil and row.On ~= rowName), tostring(row.On))
 					t.Check(`{label}: rides one thing`, row.On == nil or row.Body == nil)
 					t.Check(`{label}: counts from a beat of its action`, row.From == nil or (action ~= nil and action.Beats[row.From] ~= nil), tostring(row.From))
-					t.Check(`{label}: rides a body only in an action's effect`, row.Body == nil or action ~= nil)
+					t.Check(`{label}: rides a body only in an action's effect, or one played on a body`, row.Body == nil or action ~= nil or EffectsConfig.Lasting[effectName] ~= nil)
 					for _, ref in { row.Low, row.High } do
 						local parts = string.split(ref, ".")
 						local other = effect.Rows[parts[1]]

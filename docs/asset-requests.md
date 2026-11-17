@@ -6173,6 +6173,39 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Modulo's block is labelled "by 00:45 by the clock". Faber read it at 00:30, so it was written by 00:30.
 - **The shield's shell, Modulo's question (research, 00:34): keep it, the quietest part, and block both.** Without it, the glows go out when he pulls the spear free at 2.07 s. Then the shield's last 3 s show nowhere in the world, and on a phone the player watches the fight, not the HUD. The blockout plays the shell and no shell side by side (tier 1). If the shell reads at 64 px as a third ring beside the wave and the stop, it goes, and the HUD carries the shield.
 
+**The blockout in the game** (Faber, 2026-11-17, 01:37 to 01:55 by the clock). Modulo's three rows, taken as they are, play in the replay. Research's verdict and `ga-fresh-eyes` read the take.
+- **Wired:**
+  - `Effect = "WattGroundWire"` on the action.
+  - The stop and the shield are the Plant hit's `Looks` (`Definitions/Actions.luau`). The server names each on the body it holds (`StunLook`, `ShieldLook`, beside `State` and `ShieldUntil`).
+  - `Effects.Lasting` plays a look on the body: the stop until its stun ends, the shield until `ShieldUntil` or the fall, each ended at once. Its foot is where the body stood when it began.
+  - `Config.Effects.Lasting` lists the looks. The switch is read each frame, so `Tune("Effects.Lasting.WattGroundWireShield", false)` takes the shell off at once.
+  - A case holds it: every look a hit names is rows played on a body, held past what it shows, and none goes unnamed.
+- **Fixed on the way:** an effect's foot on an R15 body is its root's half height plus its hip. The replay's dummy is R15, and its stop's ring had stood 0.6 studs under the pad. Every other body is R6 and is unchanged.
+- **The take,** in `build/scratch/faber/ar11_block/`: each frame full size, and at 64 px tall over dark (×4 nearest). `sheet_64px_x4.png` holds them all.
+  - 0: mid-charge, frame 22, replay camera.
+  - 1 to 3: the Plant, frame 28, from the replay camera and ±70° round the fight.
+  - 4: the sparks, close.
+  - 5 to 7: mid-hold, frame 75, the same three cameras.
+  - 8: frame 6 again, without the shell (research's side by side).
+  - How the stills were held: by Tune, only the timings were lengthened (Stun 38 s, Shield 60 s, Length 40 s, FreezeAt). Frame 0 also had the hit kept off the dummy (Round and Reach 0.01), because the server's hit moves the client's clock to the Plant. Every look is as written. Every Tune was put back after.
+- **The content check's conditions, as seen:**
+  1. **The sparks lie flat.** The emitter's frame is upright, Front is horizontal, and SpreadAngle (6, 180) fans in the street's plane. Frame 4 shows specks along the street. No swap.
+  2. **The charge stays on the shaft above the dummy's top.** Frame 0, from the replay camera: the charge never crosses the body, and a Beam is depth-tested. The dummy is a 4.6-stud box; a Shade's height may differ.
+  3. **The take:** above.
+  4. **The stop's ring is a thin line** at the dummy's foot, with the street inside it (frames 2, 3, 6, 7).
+  5. **The front's glints don't show** apart from the sparks at these sizes, nor at 64 px. AR11 says they go if they don't add. Research's call.
+- **Faber's read, not a verdict:**
+  - At the Plant, the three rings read as three by size: the wave wide round him, each stop tight at a foot, the shell soft on him.
+  - The hold reads quiet from the replay camera once the wave fades (frame 53): the stop's ring and the faint shell are all that's left. Without the shell (frame 8), nothing in the world says he's guarded.
+- **Four facts:**
+  - Implemented: yes, in grey.
+  - Tested:
+    - type check 0 new;
+    - logic cases 24,690 passed, 0 failed, offline and in Studio;
+    - self-test "Ground Wire" 18 of 18 at 52 fps: the stop on the dummy mid-stop, its ring on the floor (+0.00 studs), gone within 0.2 s of the stun's end; the shield on him past the stop, and gone at its end, never before.
+  - Visually reviewed: Faber, the frames above. Research's verdict and `ga-fresh-eyes`: waiting.
+  - Director-accepted: no.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

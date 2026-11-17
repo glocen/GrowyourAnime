@@ -104,6 +104,7 @@ type View = {
 	Connections: { RBXScriptConnection },
 	Knock: Knock?,
 	Prop: Prop?,
+	Looks: { [string]: Rows.Player }, -- a hit's looks riding it now, by name (Effects.Lasting): Ground Wire's stop, his shield
 }
 
 local views: { [Model]: View } = {}
@@ -425,6 +426,22 @@ end
 
 local letGo: (prop: Prop, out: boolean) -> ()
 
+-- A hit's look on this body (Actions.Hit.Looks), the name its server attribute gives, one of each at a time, for as long as
+-- `holds` and the body is drawn.
+local function wear(view: View, name: any, holds: () -> boolean)
+	if type(name) ~= "string" or view.Looks[name] then
+		return
+	end
+	local rows = Effects.Lasting(name, view.Model, function(): boolean
+		return views[view.Model] == view and holds()
+	end, function()
+		view.Looks[name] = nil
+	end)
+	if rows then
+		view.Looks[name] = rows
+	end
+end
+
 local function onState(view: View)
 	local state = view.Model:GetAttribute("State")
 	if type(state) ~= "string" or state == view.State then
@@ -452,6 +469,10 @@ local function onState(view: View)
 			view.StunHeld = math.max(view.FrozenUntil, os.clock() + left)
 			view.FrozenUntil = view.StunHeld
 		end
+		-- its look (Ground Wire's stop), on it until the stun ends: the lock lets go
+		wear(view, view.Model:GetAttribute("StunLook"), function(): boolean
+			return view.State == "Stun"
+		end)
 	elseif state == "Flinch" then
 		local wait = math.max(0, view.FrozenUntil - os.clock())
 		if Animations.Rigs[view.Rig] then
@@ -654,6 +675,7 @@ local function add(model: Instance)
 		FlinchAt = nil,
 		State = "Idle",
 		Connections = {},
+		Looks = {},
 	}
 	views[model] = view
 	byId[view.Id] = view
@@ -680,6 +702,16 @@ local function add(model: Instance)
 	end))
 	table.insert(view.Connections, model:GetAttributeChangedSignal("State"):Connect(function()
 		onState(view)
+	end))
+	-- A shield's look (Ground Wire's), from the server's ShieldUntil to it, or until the body falls.
+	local function shielded(): boolean
+		local untilTime = model:GetAttribute("ShieldUntil")
+		return view.State ~= "Down" and type(untilTime) == "number" and workspace:GetServerTimeNow() < untilTime
+	end
+	table.insert(view.Connections, model:GetAttributeChangedSignal("ShieldUntil"):Connect(function()
+		if shielded() then
+			wear(view, model:GetAttribute("ShieldLook"), shielded)
+		end
 	end))
 	-- A Reduction passive's shell (Rook's Second Wind), while the server says it holds; one at a time.
 	local passive = if type(def) == "string" then Passives.ById[def] else nil

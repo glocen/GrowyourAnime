@@ -42,6 +42,9 @@ export type Hit = {
 	-- The fighter takes Share less damage for Seconds from the beat (Rules.Hit's Reduction bucket; Rules.Fight.Shield),
 	-- whether or not anything is in reach
 	Shield: { Share: number, Seconds: number }?,
+	-- The rows effects that ride what it holds, played by the client for as long as each holds (Config.Effects.Lasting):
+	-- Stun on each body it stops, ended with its stun, and Shield on the fighter, ended with the shield (AR11)
+	Looks: { Stun: string?, Shield: string? }?,
 }
 
 -- The server carrying its fighter from a beat (Rules.Fight.MoveEnd; FightService): an Assassin's dash in, Kirra's blink.
@@ -346,13 +349,15 @@ local rows: { Action } = {
 		-- outlasts it. Seeds: Pip's area burst's weight, rung 7, a 10 s cooldown; the shield's share and time (tier 2).
 		Id = "WattGroundWire",
 		Clip = "WattGroundWire",
+		Effect = "WattGroundWire", -- the grey block's rows (AR11, "Ground Wire's look"); its stop and shield are the hit's Looks
 		Length = 2.8333,
 		CancelFrom = 2.5, -- frame 150, upright again after he straightens (136)
 		Cooldown = 10,
 		Beats = { Plant = 0.4167, Release = 2.0667 },
 		Hits = {
 			-- Push 0: locked where they stood, never thrown (AR11: "stopped, never hurt")
-			Plant = { Coefficient = 2.5, Heavy = true, Reach = 9, Push = 0, Rung = 7, Round = 9, Stun = 1.65, Shield = { Share = 0.3, Seconds = 5 } },
+			Plant = { Coefficient = 2.5, Heavy = true, Reach = 9, Push = 0, Rung = 7, Round = 9, Stun = 1.65, Shield = { Share = 0.3, Seconds = 5 },
+				Looks = { Stun = "WattGroundWireStop", Shield = "WattGroundWireShield" } },
 		},
 		Range = 4.5,
 		Heavy = true,

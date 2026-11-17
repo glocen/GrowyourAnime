@@ -1,0 +1,287 @@
+{
+ "Schema": "rows/1",
+ "Effect": "WattGroundWireShield",
+ "Why": "Ground Wire's shield on Watt (AR11): played from his ShieldUntil and ended with the shield. Its rows hold to frame 600. Written by tools/blender/watt_ground_wire_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Shell": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxShell"
+   ],
+   "Body": "HumanoidRootPart",
+   "Ground": true,
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "faint light standing up from the street round him, bright at its foot (the rise ramp), its lower part under the street, so only a rim 3.6 across meets it",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        1.8,
+        0
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.6,
+        3.2,
+        1.6
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      6,
+      {
+       "Vector3": [
+        2.0,
+        4.0,
+        2.0
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.4,
+      "Quad Out"
+     ],
+     [
+      10,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      25,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      40,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      55,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      70,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      85,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      100,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      115,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      130,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      145,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      160,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      175,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      190,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      205,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      220,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      235,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      250,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      265,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      280,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      295,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      310,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      325,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      340,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      355,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      370,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      385,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      400,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      415,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      430,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      445,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      460,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      475,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      490,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      505,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      520,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      535,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      550,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      565,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      580,
+      0.92,
+      "Sine InOut"
+     ],
+     [
+      595,
+      0.86,
+      "Sine InOut"
+     ],
+     [
+      600,
+      0.86,
+      "Sine InOut"
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      1.8,
+      "Quad Out"
+     ],
+     [
+      10,
+      0.8
+     ]
+    ]
+   }
+  }
+ }
+}

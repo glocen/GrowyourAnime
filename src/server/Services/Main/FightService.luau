@@ -857,6 +857,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		if stunned > 0 then
 			-- stopped where it stands: the state first, so a client holds the pose its action was stopped in
 			target.StunLock = at + stunned + Combat.Stun.Lock
+			target.Model:SetAttribute("StunLook", if hit.Looks then hit.Looks.Stun else nil) -- before State: its look's name
 			setState(target, "Stun", at + stunned)
 			endAction(target, at)
 			stop(target)
@@ -935,6 +936,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local shield = hit.Shield
 	if shield then
 		f.Shield = { Share = shield.Share, Until = at + shield.Seconds }
+		f.Model:SetAttribute("ShieldLook", if hit.Looks then hit.Looks.Shield else nil) -- before its time: its look's name
 		f.Model:SetAttribute("ShieldUntil", at + shield.Seconds) -- for its look (Ground Wire's, AR11)
 	end
 	if hit.Round then

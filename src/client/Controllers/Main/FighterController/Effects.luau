@@ -1341,21 +1341,31 @@ end
 -- them. Ended early from Free on (its fighter fell), what it left in the street plays out and what rides the body goes;
 -- before Free, or with none, it all goes at once, though a streak already thrown or a relight begun runs out its own time.
 -- It never moves the camera: only the hit's shake does (the director, 2026-11-14).
+-- Where a body's effect stands: at its foot, upright, facing as it faces. An R15 body (the replay's dummy) stands its
+-- root's half height and its hip over the floor; an R6 one, 3 studs.
+local function footOf(body: Model): CFrame
+	local root = body:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local humanoid = body:FindFirstChildOfClass("Humanoid")
+	local stand = if root then root.CFrame else body:GetPivot()
+	local drop = if root == nil then 0
+		elseif humanoid and humanoid.RigType == Enum.HumanoidRigType.R15 then root.Size.Y / 2 + humanoid.HipHeight
+		else R6_ROOT_HEIGHT * body:GetScale()
+	local foot = stand.Position - Vector3.new(0, drop, 0)
+	local facing = Vector3.new(stand.LookVector.X, 0, stand.LookVector.Z)
+	facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
+	return CFrame.lookAt(foot, foot + facing)
+end
+
 function Effects.Play(beats: { [string]: number }, attacker: Model, target: () -> BasePart?, action: Actions.Action): Running
 	local name = action.Effect :: string
 	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows
 	assert(written, `{action.Id}: no rows "{name}"`)
-	local root = attacker:FindFirstChild("HumanoidRootPart") :: BasePart?
 	local bodyScale = attacker:GetScale()
 	local marks: { [string]: number } = {}
 	for beat, at in beats do
 		marks[beat] = math.floor(at / FRAME + 0.5) -- the clip's markers stand on whole frames; the beats are written to 4 places
 	end
-	local stand = if root then root.CFrame else attacker:GetPivot()
-	local foot = stand.Position - Vector3.new(0, if root then R6_ROOT_HEIGHT * bodyScale else 0, 0)
-	local facing = Vector3.new(stand.LookVector.X, 0, stand.LookVector.Z)
-	facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
-	local rows = Rows.Play(name, CFrame.lookAt(foot, foot + facing), bodyScale / written.Area, {
+	local rows = Rows.Play(name, footOf(attacker), bodyScale / written.Area, {
 		Body = attacker,
 		Marks = marks,
 		Target = target,
@@ -1405,6 +1415,30 @@ function Effects.Play(beats: { [string]: number }, attacker: Model, target: () -
 		end,
 	} :: Running
 	return running
+end
+
+-- A hit's look on a body (Definitions.Actions, Looks; Config.Effects.Lasting): its rows ride the body from now, on the
+-- effects' clock, for as long as `holds` says, and go at once when it stops: Ground Wire's stop on each body it holds,
+-- ended with its stun, and his shield, ended with it (AR11). Its foot is where the body stood when it began. Nil when the
+-- look is left out or has no rows.
+function Effects.Lasting(name: string, body: Model, holds: () -> boolean, done: (() -> ())?): Rows.Player?
+	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
+	if written == nil or EffectsConfig.Lasting[name] ~= true then
+		return nil
+	end
+	local rows = Rows.Play(name, footOf(body), body:GetScale() / written.Area, { Body = body, Run = run })
+	local live = true
+	run(function(age: number): boolean
+		-- the switch read each frame, so a Tune to false takes it off at once
+		return live and EffectsConfig.Lasting[name] == true and body.Parent ~= nil and holds() and rows.Step(age / FRAME)
+	end, function()
+		live = false
+		rows.Destroy()
+		if done then
+			done()
+		end
+	end)
+	return rows
 end
 
 -- The three older signatures, by the name an action's Effect gives (Config.Effects.Older), until the finish pass.

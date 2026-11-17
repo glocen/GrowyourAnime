@@ -379,6 +379,12 @@ local Effects = {
 	-- move to rows at the finish pass (docs/engineering-plan.md, "Content at scale", item 1). Every other effect is rows.
 	Older = { Haymaker = true, LanternBurst = true, HeldNote = true } :: { [string]: boolean },
 
+	-- The rows effects a hit's Looks name (Definitions.Actions), played by FighterController on a body for as long as what
+	-- they show holds, and ended with it at once: their rows hold to a far frame. False takes one off at once and leaves it
+	-- out, to judge a block without it (research's call on Ground Wire's shell, 2026-11-17):
+	-- "Effects.Lasting.WattGroundWireShield", false.
+	Lasting = { WattGroundWireStop = true, WattGroundWireShield = true } :: { [string]: boolean },
+
 	-- The passives' grey cues (Definitions.Passives, Cue; TR7, part 3), the builder's numbers, 2026-11-13, to tune by playing.
 	-- Shell: a faint ball round the body while a Reduction holds (Rook's Second Wind), Size studs across, faded in and out
 	-- over Fade seconds. Flare: a hot ball swelling at the body's attachment as an Extra lands (Pip's Kindle, at his

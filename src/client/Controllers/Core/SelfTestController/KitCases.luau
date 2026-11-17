@@ -54,6 +54,7 @@ function KitCases.Cases(): { any }
 				local action = Actions.ById.WattGroundWire
 				local plant = action.Hits.Plant
 				local stun, shield = plant.Stun :: number, plant.Shield :: { Share: number, Seconds: number }
+				local looks: { Stun: string?, Shield: string? } = plant.Looks or {} -- AR11's stop and shield, played on the bodies (Effects.Lasting)
 				local view = ProfileController.Get()
 				local was = if view then view.Roles.Lead else nil
 				local function leading(): Model?
@@ -138,6 +139,8 @@ function KitCases.Cases(): { any }
 				local held, heldWhen = false, false
 				local letGo: number? = nil -- server time
 				local drift = 0
+				local stopWorn, shieldWorn = false, false
+				local stopFoot: number? = nil -- studs from the floor to the stop's ring's foot, mid-stop
 				local began = os.clock()
 				while ok and os.clock() - began < action.Length + 1.5 do
 					RunService.Heartbeat:Wait()
@@ -159,6 +162,16 @@ function KitCases.Cases(): { any }
 						if shown and left > 0.3 and left < stun - 0.3 then -- its middle: held, the hit's own hold long over
 							heldWhen = true
 							held = shown.Rate == 0
+							local stop = if looks.Stun then shown.Looks[looks.Stun] else nil
+							stopWorn = stop ~= nil
+							local leadRoot = lead:FindFirstChild("HumanoidRootPart") :: BasePart?
+							for _, made in if stop and leadRoot then stop.Parts("Lock") else {} do
+								if made:IsA("BasePart") and made.Size.Y > 0.1 then -- the ring, not its carrier
+									stopFoot = (made.Position.Y - made.Size.Y / 2) - (leadRoot :: BasePart).Position.Y + 3 -- his R6 foot: the pad's floor
+								end
+							end
+							local mine = (FighterController.Views :: any)[lead]
+							shieldWorn = looks.Shield ~= nil and mine ~= nil and mine.Looks[looks.Shield] ~= nil
 						end
 					elseif stoppedUntil and letGo == nil then
 						letGo = workspace:GetServerTimeNow()
@@ -167,6 +180,32 @@ function KitCases.Cases(): { any }
 				end
 				onHit:Disconnect()
 				onPress:Disconnect()
+				-- the stop's look goes with its stun, at once; the shield's stays to its own end
+				local stopGone: boolean? = nil
+				local afterStop = os.clock()
+				while letGo and os.clock() - afterStop < 0.2 do
+					RunService.Heartbeat:Wait()
+					local shown = if struck then (FighterController.Views :: any)[struck] else nil
+					stopGone = shown == nil or shown.Looks[looks.Stun] == nil
+					if stopGone then
+						break
+					end
+				end
+				local mine = (FighterController.Views :: any)[lead]
+				local shieldStays = looks.Shield ~= nil and mine ~= nil and mine.Looks[looks.Shield] ~= nil
+				local shieldEnd = lead:GetAttribute("ShieldUntil")
+				local shieldGone: boolean? = nil
+				local shieldEarly = false
+				while type(shieldEnd) == "number" and workspace:GetServerTimeNow() < shieldEnd + 0.25 do
+					RunService.Heartbeat:Wait()
+					shieldGone = mine == nil or mine.Looks[looks.Shield] == nil
+					if shieldGone and workspace:GetServerTimeNow() < shieldEnd - 0.1 then
+						shieldEarly = true
+					end
+					if shieldGone and workspace:GetServerTimeNow() >= shieldEnd then
+						break
+					end
+				end
 				t.Server("Replay")
 				local plantAt = if pressed then pressed + action.Beats.Plant else nil
 				t.Check("pressed", pressed ~= nil)
@@ -191,6 +230,12 @@ function KitCases.Cases(): { any }
 				else
 					t.Check("his shield from the Plant, past the stop", false, "no shield")
 				end
+				t.Check("the stop's look on the dummy mid-stop", stopWorn, tostring(looks.Stun))
+				t.Check("its ring on the floor at the dummy's foot, not under it", stopFoot ~= nil and math.abs(stopFoot :: number) <= 0.15, if stopFoot then string.format("%+.2f studs", stopFoot) else "no ring")
+				t.Check("and gone within 0.2 s of its stun's end", stopGone == true, tostring(stopGone))
+				t.Check("the shield's look on him mid-stop", shieldWorn, tostring(looks.Shield))
+				t.Check("still on him as the stop ends", shieldStays)
+				t.Check("and gone at the shield's end, never before", shieldGone == true and not shieldEarly, `gone {shieldGone}, early {shieldEarly}`)
 				restore()
 			end,
 		},

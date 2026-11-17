@@ -23,6 +23,7 @@ local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local VoidkinScreen = require(UI.VoidkinScreen)
+local Seam = require(UI.VoidkinScreen.Seam)
 local VoidkinCases = require(script.Parent.VoidkinCases)
 
 local BagCases = {}
@@ -42,6 +43,29 @@ end
 local function find(name: string): GuiObject?
 	local found = VoidkinScreen.Find(name)
 	return if found and found:IsA("GuiObject") then found else nil
+end
+
+-- The seam's chosen ring as drawn (UI.VoidkinScreen.Seam.Ring): shown, a moat of the seam's Channel inside a ring of its
+-- Light, and its glow outward.
+local function ringed(ring: Instance?): boolean
+	if not (ring and ring:IsA("GuiObject") and ring.Visible) then
+		return false
+	end
+	local function stroke(name: string): UIStroke?
+		local band = ring:FindFirstChild(name)
+		return if band then band:FindFirstChildOfClass("UIStroke") else nil
+	end
+	local moat, light, glow = stroke("Moat"), stroke("Light"), stroke("Glow1")
+	return moat ~= nil and light ~= nil and glow ~= nil and moat.Color == Seam.Colour.Channel and light.Color == Seam.Light and light.Transparency == 0 and glow.Transparency > 0
+end
+
+-- A chip drawn as a plate of light: its pill white falling to the seam's Light, its word in Ink, its glow round it.
+local function plateOfLight(chip: Instance?): boolean
+	local pill = if chip then chip:FindFirstChild("Pill") else nil
+	local ramp = if pill then pill:FindFirstChildOfClass("UIGradient") else nil
+	local word = if pill then pill:FindFirstChild("Word") else nil
+	return ramp ~= nil and ramp.Color.Keypoints[#ramp.Color.Keypoints].Value == Seam.Light and word ~= nil and word:IsA("TextLabel") and word.TextColor3 == Seam.Ink
+		and (pill :: Instance):FindFirstChild("Glow") ~= nil
 end
 
 local function inView(piece: GuiObject?): boolean
@@ -140,6 +164,8 @@ function BagCases.Cases(given: Given): { any }
 					chestIn = chestIn or entry.Kind == "Chest"
 				end
 				t.Check("All the strip's first tab, lit, holding the gear and the chests", Rules.Kinds[1] == "All" and firstChip ~= nil and firstChip:GetAttribute("Chosen") == true and gearIn and chestIn)
+				-- TR28's seam: the lit chip a plate of light (white falling to the seam's Light, Ink words, its glow); the others dark.
+				t.Check("the lit chip a plate of light, its word in Ink, the others dark", plateOfLight(firstChip) and not plateOfLight(if kindsStrip then kindsStrip:FindFirstChild(Rules.Kinds[2]) else nil))
 				for _, name in { "Rail", "Case", "Doll", "Strip", "Page", "Over", "CardRoom", "BagCount" } do
 					t.Check(`{name} in view`, inView(find(name)))
 				end
@@ -197,7 +223,7 @@ function BagCases.Cases(given: Given): { any }
 					end
 					t.Check(`{where}: the six kinds, each a touch tall`, cut == "", cut)
 					local chosen = if kinds then kinds:FindFirstChild(Bag.State().Kind) else nil
-					t.Check(`{where}: the chosen kind's chip in view`, chosen ~= nil and chosen:IsA("GuiObject") and kinds ~= nil and chosen.AbsolutePosition.X >= kinds.AbsolutePosition.X - 1 and chosen.AbsolutePosition.X + chosen.AbsoluteSize.X <= kinds.AbsolutePosition.X + kinds.AbsoluteSize.X + 1)
+					t.Check(`{where}: the chosen kind's chip in view`, chosen ~= nil and chosen:IsA("GuiObject") and kinds ~= nil and chosen.AbsolutePosition.X >= kinds.AbsolutePosition.X - 1 and chosen.AbsolutePosition.X + chosen.AbsoluteSize.X <= kinds.AbsolutePosition.X + kinds.AbsoluteSize.X + 1, if chosen and chosen:IsA("GuiObject") and kinds then `chip {math.floor(chosen.AbsolutePosition.X)}+{math.floor(chosen.AbsoluteSize.X)}, strip {math.floor(kinds.AbsolutePosition.X)}+{math.floor(kinds.AbsoluteSize.X)}, canvas {math.floor((kinds :: ScrollingFrame).CanvasPosition.X)}` else "none")
 				end
 				dollChecks("this window")
 				-- The grid is Rules.Bag's list, in its order, each cell saying what the list says.
@@ -234,7 +260,15 @@ function BagCases.Cases(given: Given): { any }
 				t.Wait(HudConfig.Bag.Slide + 0.1)
 				local card = find("Card")
 				local room = find("CardRoom")
-				t.Check("its card over the doll, slid in", card ~= nil and card:GetAttribute("For") == weapon and room ~= nil and math.abs(card.AbsolutePosition.X - room.AbsolutePosition.X) <= 1 and inView(card))
+				t.Check("its card over the doll, slid in", card ~= nil and card:GetAttribute("For") == weapon and room ~= nil and math.abs(card.AbsolutePosition.X + card.AbsoluteSize.X - (room.AbsolutePosition.X + room.AbsoluteSize.X)) <= 1 and inView(card))
+				-- TR28's seam: its sliding edge lit, its shadow on the grid; the chosen cell ringed in light over its neighbours.
+				t.Check("the card's sliding edge lit, its shadow on the grid", card ~= nil and card:FindFirstChild("SlideEdge") ~= nil and card:FindFirstChild("Shade") ~= nil)
+				local cell = find(weapon :: string)
+				local shownRings = 0
+				for _, each in (if cell and cell.Parent then cell.Parent:GetDescendants() else {}) :: { Instance } do
+					shownRings += if each.Name == "Chosen" and each:IsA("GuiObject") and each.Visible then 1 else 0
+				end
+				t.Check("the chosen cell ringed in the seam's light, a dark moat inside, drawn over its neighbours, and only it", cell ~= nil and ringed(cell:FindFirstChild("Chosen")) and (cell :: GuiObject).ZIndex == 2 and shownRings == 1, `{shownRings} rings`)
 				local info = Rules.Card(view() :: any, view().Voidkin[lead], weapon :: string)
 				local power = find("Power")
 				local said = if card then card:FindFirstChild("Power", true) else nil
@@ -263,9 +297,11 @@ function BagCases.Cases(given: Given): { any }
 				local ring = target and target:FindFirstChild("Target", true)
 				local rings = 0
 				for _, each in (if doll then doll:GetDescendants() else {}) :: { Instance } do
-					rings += if each.Name == "Target" and each:IsA("UIStroke") and each.Enabled then 1 else 0
+					rings += if each.Name == "Target" and each:IsA("GuiObject") and each.Visible then 1 else 0
 				end
-				t.Check("the Main Hand ringed on the doll, and only it", ring ~= nil and ring:IsA("UIStroke") and ring.Enabled and rings == 1, `{rings} rings`)
+				t.Check("the Main Hand ringed on the doll in the seam's light, and only it", ringed(ring) and rings == 1, `{rings} rings`)
+				local press = find("Equip")
+				t.Check("Equip a plate of light while it can be pressed, its glow round it", press ~= nil and press:GetAttribute("Palette") == Seam.Lit and press:FindFirstChild("Glow", true) ~= nil)
 				t.Check("the figure's Combat Power still under the card", power ~= nil)
 				-- Equip: the server wears it, the card goes, the cell says it's worn.
 				local equip = find("Equip")
@@ -300,6 +336,7 @@ function BagCases.Cases(given: Given): { any }
 				local why = `{otherRow.Class} only`
 				t.Check("it says whose", whose ~= nil and whose:IsA("TextLabel") and whose.Text == why, if whose and whose:IsA("TextLabel") then whose.Text else "none")
 				t.Check("Equip off, saying why", blocked ~= nil and blocked:IsA("TextButton") and Button.State(blocked) == "Disabled" and blocked:GetAttribute("Disabled") == why)
+				t.Check("Equip off in the seam's own button, no light", blocked ~= nil and blocked:GetAttribute("Palette") == Seam.Palette and blocked:FindFirstChild("Glow", true) == nil)
 				t.Check("the close shuts the card", VoidkinScreen.Tap(find("Close")) and Bag.State().Chosen == nil)
 				-- The kinds: each shows its own list.
 				for _, kind in { "Weapons", "Jewellery", "Chests" } do

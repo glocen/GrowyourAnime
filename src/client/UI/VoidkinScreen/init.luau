@@ -61,6 +61,8 @@ local Hover = require(UI.Kit.Hover)
 local Bar = require(UI.Kit.Bar)
 local Skin = require(UI.Kit.Skin)
 local Figure = require(script.Figure)
+local Seam = require(script.Seam)
+local Look = Seam.Colour -- the seam's colours under the theme's names (TR28): one palette across the tabs
 local BagPage = require(script.Bag)
 local BagRules = require(Shared.Rules.Bag)
 
@@ -138,6 +140,7 @@ local function refused(what: string, answer: { [string]: any }): boolean
 end
 
 local function text(props: Text.Props, said: string): TextLabel
+	props.Colour = props.Colour or Look.Text
 	local label = Text.new(props)
 	label.Text = said
 	return label
@@ -279,6 +282,26 @@ local function stageIn(frame: Frame, position: UDim2, size: UDim2): Frame
 		local aspect = Instance.new("UIAspectRatioConstraint")
 		aspect.Parent = halo
 		halo.Parent = fresh
+		-- The seam's shaft: a soft column of its light behind the figure, cut at the stage (Modulo's sheet, AR18).
+		local shaft = HudConfig.Seam.Shaft
+		local column = Instance.new("Frame")
+		column.Name = "Shaft"
+		column.Active = false
+		column.BorderSizePixel = 0
+		column.BackgroundColor3 = Seam.Light
+		column.AnchorPoint = Vector2.new(0.5, 0)
+		column.Position = UDim2.fromScale(0.5, 0)
+		column.Size = UDim2.new(0, shaft.Half * 6, 1, 0)
+		column.ZIndex = 1
+		local points = {}
+		for i = 0, 12 do
+			local v = i / 12
+			table.insert(points, NumberSequenceKeypoint.new(v, 1 - shaft.Alpha * math.exp(-((v - 0.5) * 6) ^ 2)))
+		end
+		local falloff = Instance.new("UIGradient")
+		falloff.Transparency = NumberSequence.new(points)
+		falloff.Parent = column
+		column.Parent = fresh
 		fresh.Position, fresh.Size = position, size
 		fresh.Parent = frame
 		made = fresh
@@ -293,9 +316,10 @@ end
 -- never changes a colour (TR24, the director's run, fix 4).
 local function dress(on: Frame, def: string, roster: { Profile.OwnedVoidkin }, at: Place)
 	local row = Voidkin.ById[def]
-	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
+	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Look.Line
 	local light = on:FindFirstChild("Light") :: UIGradient
-	light.Color = ColorSequence.new(Theme.Colour.Backing, Theme.Colour.Backing:Lerp(trim, 0.35))
+	local dark = HudConfig.Seam.Stage
+	light.Color = ColorSequence.new(dark[1], dark[2]:Lerp(trim, 0.35)) -- the seam's dark, lit from below by its rarity
 	local halo = on:FindFirstChild("Halo") :: Frame
 	halo.BackgroundColor3 = trim
 	halo.BackgroundTransparency = 0.82
@@ -348,9 +372,9 @@ local function nameLine(over: Frame, x: number, wide: number, owned: Profile.Own
 		box.TextXAlignment = Enum.TextXAlignment.Left
 		box.FontFace = Theme.Font.Strong
 		box.TextSize = Text.Legible(Theme.Text.Body, Layers.Scale())
-		box.TextColor3 = Theme.Colour.Text
-		box.PlaceholderColor3 = Theme.Colour.TextDim
-		box.BackgroundColor3 = Theme.Colour.PlateHigh
+		box.TextColor3 = Look.Text
+		box.PlaceholderColor3 = Look.TextDim
+		box.BackgroundColor3 = Look.PlateHigh
 		box.BorderSizePixel = 0
 		box.Size = UDim2.fromScale(1, 1)
 		local corner = Instance.new("UICorner")
@@ -401,7 +425,7 @@ local function nameLine(over: Frame, x: number, wide: number, owned: Profile.Own
 	give.FlexMode = Enum.UIFlexMode.Shrink
 	give.Parent = titleLabel
 	local rarity = if own then own.Rarity else "Common"
-	local rarityLabel = text({ Name = "Rarity", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = HudConfig.Card.Trim[rarity] or Theme.Colour.TextDim, Box = UDim2.fromOffset(0, TITLE), Parent = row }, rarity)
+	local rarityLabel = text({ Name = "Rarity", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = HudConfig.Card.Trim[rarity] or Look.TextDim, Box = UDim2.fromOffset(0, TITLE), Parent = row }, rarity)
 	rarityLabel.AutomaticSize = Enum.AutomaticSize.X
 	rarityLabel.LayoutOrder = 2
 	return nil
@@ -415,6 +439,7 @@ local function actions(parent: Instance, view: Profile.View, owned: Profile.Owne
 	local leading = at == "Lead"
 	local width = UDim2.new(0.5, -gap / 2, 0, ROW)
 	local lead = Button.new({
+		Palette = Seam.Palette,
 		Name = "Lead",
 		Text = if leading then "Leading" else "Lead",
 		Size = width,
@@ -438,6 +463,7 @@ local function actions(parent: Instance, view: Profile.View, owned: Profile.Owne
 	local working = string.match(at, "^Bay (%d+)$")
 	local why, bay = Hud.WorkReason(at, view.Base.Bays)
 	local work = Button.new({
+		Palette = Seam.Palette,
 		Name = "Work",
 		Text = if working then "Bring home" else "Send to work",
 		Size = width,
@@ -464,7 +490,7 @@ end
 local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats.Block, wide: number)
 	local config = HudConfig.Voidkin.Power
 	local row = Voidkin.ById[owned.Def]
-	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
+	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Look.Line
 	local value = Stats.Power(block)
 	local from = shownPower[owned.Id]
 	shownPower[owned.Id] = value
@@ -478,6 +504,7 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 	press.Position = UDim2.fromScale(0.5, 1)
 	press.Size = UDim2.fromOffset(wide, config.Height)
 	press.Parent = parent
+	Seam.Edge(press, "Seam", 0, 0, wide, false, HudConfig.Seam.Edges.Power) -- a line of the seam's light along its top
 	local whole = wide >= config.Emblem
 	local fade = Instance.new("UIGradient")
 	fade.Name = "Plate"
@@ -495,7 +522,7 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 	emblem.Size = UDim2.fromOffset(26, 26)
 	emblem.Rotation = 45
 	emblem.BorderSizePixel = 0
-	emblem.BackgroundColor3 = Theme.Colour.PlateHigh
+	emblem.BackgroundColor3 = Look.PlateHigh
 	local edge = Instance.new("UIStroke")
 	edge.Color = trim
 	edge.Thickness = 2
@@ -516,7 +543,7 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 		local shade = Instance.new("Frame")
 		shade.Name = "Shade"
 		shade.BorderSizePixel = 0
-		shade.BackgroundColor3 = Theme.Colour.Backing
+		shade.BackgroundColor3 = Look.Backing
 		shade.BackgroundTransparency = 0.3
 		shade.Size = UDim2.fromScale(1, 1)
 		shade.ZIndex = 0
@@ -592,7 +619,7 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 			end
 			metal.Color = ColorSequence.new(lit)
 		end)
-		local gain = text({ Name = "Gain", Font = Theme.Font.Number, Colour = Theme.Colour.Heal, Box = UDim2.fromOffset(96, 22), Position = UDim2.new(1, 4, 0, 20), Parent = press }, `+{Hud.Digits(value - from)}`)
+		local gain = text({ Name = "Gain", Font = Theme.Font.Number, Colour = Look.Heal, Box = UDim2.fromOffset(96, 22), Position = UDim2.new(1, 4, 0, 20), Parent = press }, `+{Hud.Digits(value - from)}`)
 		local rise = TweenService:Create(gain, TweenInfo.new(config.Hold, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 			Position = UDim2.new(1, 4, 0, 20 - config.Gain),
 			TextTransparency = 1,
@@ -624,7 +651,7 @@ local function line(parent: Instance, order: number, left: string, right: string
 		text({ Name = "Right", Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(0.4, 0, 0, 22), Position = UDim2.fromScale(0.6, 0), Parent = item }, right)
 	end
 	if under then
-		local quiet = text({ Name = "Under", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, 0, 0, 0), Position = UDim2.fromOffset(0, 22), Parent = item, Wrap = true }, under)
+		local quiet = text({ Name = "Under", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, 0, 0, 0), Position = UDim2.fromOffset(0, 22), Parent = item, Wrap = true }, under)
 		quiet.AutomaticSize = Enum.AutomaticSize.Y
 	end
 	return item
@@ -641,7 +668,7 @@ local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number)
 	item.Position = UDim2.fromScale(side * 0.5, 0)
 	item.Size = UDim2.new(0.5, 0, 0, tall)
 	item.Parent = pair
-	text({ Name = "Left", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Name), Position = UDim2.fromOffset(0, SHEET.Top), Parent = item }, row.Name)
+	text({ Name = "Left", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Name), Position = UDim2.fromOffset(0, SHEET.Top), Parent = item }, row.Name)
 	-- The total and its tag in one row, each as wide as its words, so the tag sits against its own number.
 	local total = frameOf("Total", item, UDim2.fromOffset(0, SHEET.Top + SHEET.Name), UDim2.new(1, -SHEET.Pad, 0, SHEET.Value))
 	list(total, true)
@@ -650,7 +677,7 @@ local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number)
 	local value = text({ Name = "Right", Font = Theme.Font.Number, Box = UDim2.new(0, 0, 1, 0), Parent = total }, row.Value)
 	value.AutomaticSize = Enum.AutomaticSize.X
 	if row.Main then
-		local tag = text({ Name = "Main", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.Primary, Box = UDim2.new(0, 0, 1, 0), Parent = total }, "Main")
+		local tag = text({ Name = "Main", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Look.Primary, Box = UDim2.new(0, 0, 1, 0), Parent = total }, "Main")
 		tag.AutomaticSize = Enum.AutomaticSize.X
 		tag.LayoutOrder = 1
 	end
@@ -675,7 +702,7 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 			heading.Parent = scroll
 			text({ Name = "Left", Font = Theme.Font.Strong, Box = UDim2.new(1, 0, 0, Theme.Text.Body + 6), Position = UDim2.new(0, 0, 0, SHEET_HEADING.Line - Theme.Text.Body - 6), Parent = heading }, string.upper(group.Heading))
 			if group.Caption then
-				text({ Name = "Caption", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Box = UDim2.new(1, 0, 0, SHEET_HEADING.Caption), Position = UDim2.fromOffset(0, SHEET_HEADING.Line), Parent = heading }, group.Caption)
+				text({ Name = "Caption", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, 0, 0, SHEET_HEADING.Caption), Position = UDim2.fromOffset(0, SHEET_HEADING.Line), Parent = heading }, group.Caption)
 			end
 		end
 		if group.Name ~= "" then
@@ -688,7 +715,7 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 			head.Parent = scroll
 			local caption = UDim2.new(1, 0, 0, Theme.Text.Caption + 4)
 			local foot = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4))
-			text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Box = caption, Position = foot, Parent = head }, group.Name)
+			text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Look.TextDim, Box = caption, Position = foot, Parent = head }, group.Name)
 		end
 		for at = 1, #group.Rows, 2 do
 			order += 1
@@ -713,7 +740,7 @@ local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 	local need = Growth.XpToNext(owned.Level)
 	local xp = line(scroll, 2, `Level {owned.Level}`, nil, if need then `{Hud.Digits(owned.Xp)} of {Hud.Digits(need)} experience to the next` else "The last level")
 	if need then
-		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Position = UDim2.fromOffset(0, 44), Parent = xp, Colour = HudConfig.Card.Xp })
+		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Position = UDim2.fromOffset(0, 44), Parent = xp, Colour = HudConfig.Card.Xp, Palette = Seam.Palette })
 		Bar.Set(bar, math.clamp(owned.Xp / need, 0, 1))
 		local spacer = Instance.new("UIPadding")
 		spacer.PaddingBottom = UDim.new(0, Theme.Size.Bar + 4)
@@ -758,7 +785,7 @@ end
 
 local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
 	local row = Voidkin.ById[owned.Def]
-	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
+	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Look.Line
 	local pips = Instance.new("Frame")
 	pips.Name = "Pips"
 	pips.BackgroundTransparency = 1
@@ -772,7 +799,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		pip.LayoutOrder = index
 		pip.Size = UDim2.fromOffset(20, 20)
 		pip.BorderSizePixel = 0
-		pip.BackgroundColor3 = if index <= owned.Stars then trim else Theme.Colour.PlateHigh
+		pip.BackgroundColor3 = if index <= owned.Stars then trim else Look.PlateHigh
 		pip.Rotation = 45
 		pip.Parent = pips
 	end
@@ -793,6 +820,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		end
 		line(scroll, 3, "The next star", `+{Hud.Digits(Stats.Power(after) - before)}`, `{table.concat(gains, " · ")}, Combat Power on the right`)
 		local take = Button.new({
+			Palette = Seam.Palette,
 			Name = "TakeStar",
 			Text = "Take the star",
 			Size = UDim2.new(1, -8, 0, ROW),
@@ -902,6 +930,7 @@ local function marks(band: Frame, owned: Profile.OwnedVoidkin, on: On, save: (()
 	local x = Screen.BandLeft
 	local function button(name: string, said: string, wide: number, press: () -> ...any): TextButton
 		local made = Button.new({
+			Palette = Seam.Palette,
 			Name = name,
 			Text = said,
 			Size = UDim2.fromOffset(wide, tall),
@@ -926,7 +955,7 @@ local function marks(band: Frame, owned: Profile.OwnedVoidkin, on: On, save: (()
 		local made = button(name, "", touch(), press)
 		Button.Set(made, { Selected = lit })
 		made:SetAttribute("On", lit)
-		markGlyph(made, name, if lit then Theme.Colour.Text else Theme.Colour.TextDim)
+		markGlyph(made, name, if lit then Look.Text else Look.TextDim)
 	end
 	mark("Favourite", owned.Favourite, function(): boolean
 		return refused("Can't mark it", on.Act("SetMark", { Voidkin = owned.Id, Mark = "Favourite", On = not owned.Favourite }))
@@ -949,7 +978,7 @@ end
 -- buttons each side for the chosen word (the room's edge on the left, the stage's gap on the right).
 local function rail(body: Instance, at: Place)
 	local config = HudConfig.Voidkin.Rail
-	local lit = Theme.Colour.Primary
+	local lit = Look.Primary
 	local pad = Theme.Size.Pad
 	local middle = pad + at.Rail.Wide / 2
 	local least = touch()
@@ -972,11 +1001,12 @@ local function rail(body: Instance, at: Place)
 	holder.Size = UDim2.fromOffset(at.Rail.Wide + pad * 2, at.Rail.Tall)
 	holder.CanvasSize = UDim2.fromOffset(0, top + whole)
 	holder.ScrollBarThickness = 0
+	holder.ScrollBarImageTransparency = 1 -- a touch device draws its thumb even at nought
 	holder.ScrollingDirection = Enum.ScrollingDirection.Y
 	holder.ScrollingEnabled = whole > at.Rail.Tall + 0.5
 	holder:SetAttribute("Whole", whole <= at.Rail.Tall + 0.5)
 	holder.Parent = body
-	local conduit = bit(holder, "Line", UDim2.fromOffset(config.Line, whole), Theme.Colour.Line, 0, UDim2.fromOffset(middle, top + whole / 2))
+	local conduit = bit(holder, "Line", UDim2.fromOffset(config.Line, whole), Look.Line, 0, UDim2.fromOffset(middle, top + whole / 2))
 	conduit.ZIndex = 1
 	local light = Instance.new("Frame")
 	light.Name = "Lit"
@@ -1011,25 +1041,25 @@ local function rail(body: Instance, at: Place)
 			halo.BackgroundTransparency = 0.78
 			round(halo)
 		end
-		local dot = bit(press, "Dot", UDim2.fromOffset(across, across), if on_ or soon then Theme.Colour.Plate else Theme.Colour.PlateHigh, 0, UDim2.fromOffset(centre, centred))
+		local dot = bit(press, "Dot", UDim2.fromOffset(across, across), if on_ or soon then Look.Plate else Look.PlateHigh, 0, UDim2.fromOffset(centre, centred))
 		dot.ZIndex = 2
 		round(dot)
 		local ring = Instance.new("UIStroke")
 		ring.Name = "Ring"
 		ring.Thickness = if on_ then 2.5 else 1.5
-		ring.Color = if on_ then lit else Theme.Colour.Line
+		ring.Color = if on_ then lit else Look.Line
 		ring.Transparency = if soon then 0.4 else 0
 		ring.Parent = dot
-		glyph(dot, name, if on_ then Theme.Colour.Text elseif soon then Theme.Colour.Line else Theme.Colour.TextDim)
+		glyph(dot, name, if on_ then Look.Text elseif soon then Look.Line else Look.TextDim)
 		if on_ or soon then
 			-- The line passes behind the word, never through its letters: a cut of the cover's colour under them.
-			local cut = bit(press, "Cut", UDim2.fromOffset(config.Line + 10, LABEL), Theme.Colour.Backing, 0, UDim2.fromOffset(centre, 2 + across + LABEL / 2))
+			local cut = bit(press, "Cut", UDim2.fromOffset(config.Line + 10, LABEL), Look.Backing, 0, UDim2.fromOffset(centre, 2 + across + LABEL / 2))
 			cut.ZIndex = 0
 			text({
 				Name = "Label",
 				Size = Theme.Text.Caption,
 				Font = if on_ then Theme.Font.Strong else Theme.Font.Body,
-				Colour = if on_ then Theme.Colour.Text else Theme.Colour.TextDim,
+				Colour = if on_ then Look.Text else Look.TextDim,
 				Align = Enum.TextXAlignment.Center,
 				Box = UDim2.new(1, pad * 2, 0, LABEL),
 				Position = UDim2.fromOffset(-pad, 2 + across),
@@ -1060,7 +1090,7 @@ local function slotAt(parent: Instance, name: string, side: number, position: UD
 	local made = Instance.new("Frame")
 	made.Name = name
 	made.BorderSizePixel = 0
-	made.BackgroundColor3 = Theme.Colour.PlateHigh
+	made.BackgroundColor3 = Look.PlateHigh
 	made.BackgroundTransparency = 0.25
 	made.Position = position
 	made.Size = UDim2.fromOffset(side, side)
@@ -1072,9 +1102,9 @@ local function slotAt(parent: Instance, name: string, side: number, position: UD
 	local edge = Instance.new("UIStroke")
 	edge.Name = "Edge"
 	edge.Thickness = if kind then 1.5 else 1
-	edge.Color = if kind then Theme.Colour.TextDim else Theme.Colour.Line
+	edge.Color = if kind then Look.TextDim else Look.Line
 	edge.Parent = made
-	local seat = bit(made, "Seat", UDim2.fromScale(0.3, 0.3), Theme.Colour.Line, 45)
+	local seat = bit(made, "Seat", UDim2.fromScale(0.3, 0.3), Look.Line, 45)
 	seat.BackgroundTransparency = 0.5
 	made.Parent = parent
 end
@@ -1140,7 +1170,7 @@ local function wallet(band: Frame, left: number, view: Profile.View)
 		local made = Instance.new("Frame")
 		made.Name = name
 		made.BorderSizePixel = 0
-		made.BackgroundColor3 = Theme.Colour.PlateHigh
+		made.BackgroundColor3 = Look.PlateHigh
 		made.BackgroundTransparency = 0.2
 		made.AnchorPoint = Vector2.new(1, 0)
 		made.Position = UDim2.new(1, -right, 0, 0)
@@ -1176,6 +1206,7 @@ local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }
 	local healing = on.Healing()
 	for index, owned in roster do
 		local press = Button.new({
+			Palette = Seam.Palette,
 			Name = owned.Id,
 			Text = "",
 			Size = UDim2.fromOffset(cell, cell),
@@ -1189,7 +1220,7 @@ local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }
 		local face = Portrait.new({ Name = "Face", Small = true, Position = UDim2.fromScale(0.5, 0.5), AnchorPoint = Vector2.new(0.5, 0.5), Parent = press, Voidkin = owned.Def })
 		Portrait.Set(face, owned.Def, (healing[owned.Id] or 0) > now)
 		local row = Voidkin.ById[owned.Def]
-		local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Theme.Colour.Line
+		local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Look.Line
 		if owned.Id == chosen then
 			local ring = Instance.new("UIStroke")
 			ring.Name = "Chosen"
@@ -1240,9 +1271,22 @@ local function build(view: Profile.View, on: On)
 		local lead = view.Roles.Lead
 		chosen = if lead ~= "" and view.Voidkin[lead] then lead elseif roster[1] then roster[1].Id else nil
 	end
-	local body = Screen.Full(NAME, "Voidkin")
+	local body = Screen.Full(NAME, "Voidkin", Seam.Palette)
 	local frame = Screen.Frame(NAME) :: Frame
 	local band = Screen.Band(NAME) :: Frame
+	-- Under the stage: what a page lays behind its figure (the Items page's room), cleared with the body.
+	local behind = frame:FindFirstChild("Behind") :: Frame?
+	if behind == nil then
+		local made = Instance.new("Frame")
+		made.Name = "Behind"
+		made.BackgroundTransparency = 1
+		made.BorderSizePixel = 0
+		made.Size = UDim2.fromScale(1, 1)
+		made.ZIndex = -1
+		made.Parent = frame
+		behind = made
+	end
+	(behind :: Frame):ClearAllChildren()
 	local at = place(Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset))
 	local owned = if chosen then view.Voidkin[chosen :: string] else nil
 	if owned == nil then
@@ -1260,6 +1304,7 @@ local function build(view: Profile.View, on: On)
 		local block = resolved(view, owned)
 		local save = BagPage.Build({
 			Body = body,
+			Behind = behind :: Frame,
 			Room = at.Room,
 			Left = at.Stage.X,
 			View = view,
@@ -1296,7 +1341,7 @@ local function build(view: Profile.View, on: On)
 	wallet(band, marks(band, owned, on, nameLine(over, at.Group + at.Column + gap, at.Span - (at.Column + gap) * 2, owned, on)), view)
 	strip(body, at, roster, on)
 	actions(frameOf("Actions", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad), UDim2.fromOffset(at.Panel.Wide, ROW)), view, owned, on)
-	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body })
+	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body, Palette = Seam.Palette })
 	sheet.Active = true -- a tap on the panel stays on it
 	local inside = frameOf("Inside", sheet, UDim2.fromOffset(Theme.Size.Pad, Theme.Size.Pad), UDim2.new(1, -Theme.Size.Pad * 2, 1, -Theme.Size.Pad * 2))
 	pageBody(inside, view, owned, on, 0)

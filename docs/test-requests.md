@@ -2763,6 +2763,31 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
   - "Voidkin screen (TR17)": 259/0.
 - **Still:** `build/scratch/faber/stills/tr28-left.jpg`.
 
+**The bag in the seam's skin (Faber, 2026-11-17, scope set at 12:30 by the clock).** On the director's word of 02:40 ("the inventory ... with that color style not the old yellow brown") and Modulo's sheet (`build/handoff/UI/inventory/bag_seam*.png`, AR18, "The skin in the seam's colours"), with research's pass of 08:01 and the ring's second look of 08:16. The ledger's layout is unchanged.
+- **The block contains:**
+  - **The palette:** `UIKit.Palettes.Seam`, Modulo's colours in the kit's keys, with `Light` as its accent and `Ink` and `Card` beside them. `SeamLit` is the plate of light: Equip's palette.
+  - **One palette across the Voidkin screen's tabs:** the cover, the Overview's panel, words, hairlines and wells, the rail, and the band's Back take the seam's colours. The stage keeps its rarity's light, on the seam's dark, and gains the shaft: Light at 0.13, 26 points either side of the figure's middle, cut at the stage.
+  - **The Items page:**
+    - the room in the seam's panel;
+    - lit seam edges, a 1 point line of Light over a soft glow, strongest at their middle, on the room's top, the hairline between the doll and the grid, the card's sliding edge and Combat Power's plate;
+    - every rarity's well in the seam's `Well`;
+    - the chosen ring, on the chosen cell and the slot it fills: a dark moat, then 2.6 points of Light with its glow outward, drawn over its neighbours;
+    - the lit chip and Equip as plates of light with Ink words.
+  - **Cases:**
+    - the Voidkin screen's case checks the seam on both tabs, with no graphite or lacquer left;
+    - the Items case checks the ring, the lit chip and Equip.
+  - Phone stills at the end.
+- **What waits:**
+  - AR6's icons, our own prompt, and the rest of TR28's "waits";
+  - the edge's light along a cut corner (the ring's corners are round, round the cells' cut ones);
+  - the wallet's pills, which stay the HUD's.
+- **Implemented (13:07):**
+  - `UIKit.Palettes.Seam` and `SeamLit`, `Config.Hud.Seam`, and `VoidkinScreen/Seam.luau` (the lit edge, the chosen ring, the plate of light); `Kit.Screen.Full` takes a palette for its cover and Back.
+  - The room lies on a layer under the stage (`Behind`), so the figure stands on it. The plain floor under a figure with no element is the seam's Facet. Equip's glow is the kit's ring glow in Light, along its cut corners. The card's captions are in Glint.
+  - Found on the way: on a touch device the kinds strip drew its scroll thumb at thickness nought, a grey line under the chips (hidden on the strip and the rail). The screen's refill put the strip's old scroll back after the kind changed, so All could stand cut at the smallest phone: the strip now keeps its scroll only while its kind stays (`Keep`), and its chosen chip is placed from the chips' widths.
+- **Tested:** the type check 0 new; "Items page (TR28)" 112/0 and "Voidkin screen (TR17)" 264/0.
+- **Seen:** phone stills (iPhone 16 Pro, the take's Empty, Full, Long, Other and Chests) by the builder: the figure on the room with its shaft, the lit seams, the ring in Light, Equip and Open 2 as plates of light, Tank only in the seam's dark. Research's pass waits.
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

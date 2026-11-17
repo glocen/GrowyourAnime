@@ -51,6 +51,7 @@ local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local Skin = require(UI.Kit.Skin)
+local Seam = require(script.Parent.Seam)
 
 local Bag = {}
 
@@ -58,6 +59,7 @@ type Box = { X: number, Y: number, Wide: number, Tall: number }
 
 export type Context = {
 	Body: Frame,
+	Behind: Frame, -- under the figure's stage, cleared with the body: the room's panel
 	Room: Vector2,
 	Left: number, -- where the page starts, authored, right of the rail
 	View: Profile.View,
@@ -73,21 +75,20 @@ export type Context = {
 }
 
 local C = HudConfig.Bag
--- The Overview's palette (TR24, the director's run, fix 4): its words, its hairlines, its slots' wells, its panel; a
--- rarity keeps its own colours (Config.Hud.Bag).
-local GRAPHITE = UIKit.Palettes.Graphite
+-- The seam's palette, the Overview's too (TR28, UI.VoidkinScreen.Seam): its words, its edges, its wells, its room and
+-- card; a rarity keeps its own colours (Config.Hud.Bag).
+local SEAM = HudConfig.Seam
 local P = {
-	Text = Theme.Colour.Text,
-	Soft = Theme.Colour.TextDim,
-	Faint = Theme.Colour.Disabled,
-	Line = Theme.Colour.Line, -- a hairline, an empty slot's rim, as the Overview's slots
-	Ink = Theme.Colour.Backing, -- a word on a lit chip
-	Backing = Theme.Colour.Backing, -- behind the page, as behind the Overview (the screen's cover)
-	Cell = Theme.Colour.PlateHigh, -- a cell's well, as the Overview's slot
-	CellAlpha = 0.75, -- the Overview's slot at 0.25 transparency
-	Field = GRAPHITE.Panel, -- the card, as the Overview's panel
-	Edge = GRAPHITE.Edge,
-	Seat = Theme.Colour.Channel, -- under a corner's mark, and the card's Combat Power
+	Text = Seam.Colour.Text,
+	Soft = Seam.Colour.TextDim,
+	Faint = Seam.Colour.Disabled,
+	Line = Seam.Colour.Line, -- a hairline, a well's rim, a chip's edge
+	Ink = Seam.Ink, -- a word on a plate of light
+	Backing = Seam.Room, -- what a veil fades into: the room's panel at its top
+	Cell = Seam.Well, -- every cell's and slot's well, a rarity's and a Legendary's too
+	Field = Seam.Card, -- the card, a step up from the room
+	Edge = Seam.Colour.Line,
+	Seat = Seam.Colour.Channel, -- under a corner's mark, and the card's Combat Power
 	Up = UIKit.Good,
 	Down = UIKit.Bad,
 	Rarity = C.Rarity,
@@ -128,6 +129,7 @@ local function said(map: { [string]: string }, what: string, answer: { [string]:
 end
 
 local function label(props: Text.Props, words: string): TextLabel
+	props.Colour = props.Colour or P.Text
 	local made = Text.new(props)
 	made.Text = words
 	return made
@@ -271,7 +273,7 @@ local function layout(size: Vector2, left: number): Layout
 		Grid = { X = x0, Y = gridY, Wide = gridWide, Tall = math.max(countY - C.Under - gridY, 1) },
 		Count = { X = x0, Y = countY, Wide = gridWide, Tall = C.Row },
 		Doll = doll,
-		Half = { X = case.X + case.Wide - dollWide - 3, Y = 0, Wide = dollWide + 3, Tall = tall }, -- 3 more: a cell's ring (2) stays under it
+		Half = { X = case.X + case.Wide - dollWide - C.Ring / 2, Y = 0, Wide = dollWide + C.Ring / 2, Tall = tall }, -- C.Ring / 2 more: a cell's ring stays under it
 		Hit = hit,
 		Pitch = pitch,
 		Well = math.min(hit, pitch - d.Seam),
@@ -290,7 +292,7 @@ local function art(holder: GuiObject, side: number, rarity: string, image: strin
 	local skin = Skin.Of(holder)
 	local legendary = rarity == "Legendary"
 	local rim = P.Rim[rarity]
-	Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = P.Cell, Alpha = P.CellAlpha, Z = 1 })
+	Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = P.Cell, Z = 1 })
 	if rim then
 		if not legendary then
 			Skin.Lay(skin, "ButtonFill", { Name = "Tint", Tint = rim, Alpha = if rarity == "Common" then 0.112 else 0.14, Z = 2 })
@@ -321,7 +323,7 @@ local function art(holder: GuiObject, side: number, rarity: string, image: strin
 		local picture = Skin.Icon(holder, image, side / 2, side / 2, side * 0.94, nil, 2)
 		picture.Name = "Picture"
 		if drained then
-			picture.ImageColor3 = Color3.fromRGB(128, 122, 114)
+			picture.ImageColor3 = Color3.fromRGB(122, 118, 140) -- dimmed toward the seam's Soft
 			picture.ImageTransparency = 0.35
 		end
 	elseif words ~= "" then
@@ -425,8 +427,8 @@ local function cellFor(entry: Rules.Entry, side: number, order: number, parent: 
 			Skin.Icon(chip, "Tick", C.Mark / 2, C.Mark / 2, C.Mark - 4, P.Text)
 		end)
 	end
-	local ring = edge(made, P.Text, 2, "Chosen")
-	ring.Enabled = entry.Id == chosen
+	Seam.Ring(made, "Chosen", side, entry.Id == chosen)
+	Seam.Raise(made, entry.Id == chosen)
 	local function onTap()
 		if entry.Kind == "Shard" then
 			Toast.Show(`{Read.ShardName(entry.Id)} ×{Hud.Digits(entry.Count)}`, Theme.Colour.Text)
@@ -477,15 +479,15 @@ local function drawSlots(context: Context, at: Layout, target: string?)
 			art(inside, well, item.Rarity, if design then design.Image else nil, row.Kind, row.Class, false)
 		else
 			local skin = Skin.Of(inside)
-			Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = P.Cell, Alpha = P.CellAlpha, Z = 1 })
+			Skin.Lay(skin, "ButtonFill", { Name = "Well", Tint = P.Cell, Z = 1 })
 			Skin.Lay(skin, "ButtonEdge", { Name = "Rim", Tint = P.Line, Z = 2 })
 			-- AR22's mark for what goes there, from the slot's Epic piece; a hand's by the shown Voidkin's class.
 			local mark = Skin.Icon(inside, emptyMark(name, class), well / 2, well / 2, well * C.Empty.Share, C.Empty.Tint, 3)
 			mark.Name = "Empty"
 			mark.ImageTransparency = C.Empty.Alpha
 		end
-		local ring = edge(inside, P.Text, 2, "Target")
-		ring.Enabled = name == target
+		Seam.Ring(inside, "Target", well, name == target)
+		Seam.Raise(made, name == target)
 	end
 	local pitch, gap = at.Pitch, C.Doll.Gap
 	for index, name in Rules.Groups[2] do
@@ -500,8 +502,11 @@ local function drawSlots(context: Context, at: Layout, target: string?)
 	end
 end
 
+-- The card's places in its room: open, its shadow in the room's left lip over the grid; shut, wholly off its right.
+local OPEN, SHUT = UDim2.fromOffset(SEAM.Shade.Wide, 0), UDim2.new(1, SEAM.Shade.Wide, 0, 0)
+
 local function slide(frame: Frame, open: boolean, done: (() -> ())?)
-	local tween = TweenService:Create(frame, TweenInfo.new(C.Slide, if open then Enum.EasingStyle.Quart else Enum.EasingStyle.Quad, if open then Enum.EasingDirection.Out else Enum.EasingDirection.In), { Position = UDim2.fromScale(if open then 0 else 1, 0) })
+	local tween = TweenService:Create(frame, TweenInfo.new(C.Slide, if open then Enum.EasingStyle.Quart else Enum.EasingStyle.Quad, if open then Enum.EasingDirection.Out else Enum.EasingDirection.In), { Position = if open then OPEN else SHUT })
 	if done then
 		tween.Completed:Connect(function()
 			done()
@@ -538,7 +543,7 @@ local function compared(parent: Instance, order: number, wide: number, stat: str
 end
 
 local function caption(parent: Instance, order: number, wide: number, words: string)
-	local made = label({ Name = words, Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Soft, Box = UDim2.fromOffset(wide, C.Row + 4), Parent = parent }, words)
+	local made = label({ Name = words, Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Seam.Glint, Box = UDim2.fromOffset(wide, C.Row + 4), Parent = parent }, words)
 	made.TextYAlignment = Enum.TextYAlignment.Bottom
 	made.LayoutOrder = order
 end
@@ -577,19 +582,33 @@ local function lines(made: Frame, id: string, x: number, top: number, wide: numb
 	return list
 end
 
--- A card's frame over the doll: the Overview's panel, its close, and the side of a touch.
+-- A card's frame over the grid's right: the seam's card a step up from the room, its sliding edge lit, its shadow on
+-- the grid, its close, and the side of a touch.
+-- A card's action in the plate of light gets its glow; one in the seam's own buttons none.
+local function lit(button: TextButton)
+	if button:GetAttribute("Palette") == Seam.Lit then
+		Seam.ButtonGlow(button)
+	end
+end
+
 local function cardFrame(at: Layout, id: string, taps: { [Instance]: () -> () }): (Frame, number)
 	local holder = room :: Frame
 	local made = Instance.new("Frame")
 	made.Name = "Card"
 	made.BorderSizePixel = 0
 	made.BackgroundColor3 = Color3.new(1, 1, 1)
-	made.Size = UDim2.fromScale(1, 1)
-	made.Position = UDim2.fromScale(if carded == id then 0 else 1, 0)
+	made.Size = UDim2.new(1, -SEAM.Shade.Wide, 1, 0)
+	made.Position = if carded == id then OPEN else SHUT
 	made:SetAttribute("For", id)
 	ramp(made, P.Field)
 	round(made, C.Card.Corner)
-	edge(made, P.Edge)
+	local shade = plain("Shade", made, -SEAM.Shade.Wide, 0, SEAM.Shade.Wide, at.Half.Tall)
+	shade.BackgroundTransparency = 0
+	shade.BackgroundColor3 = Color3.new(0, 0, 0)
+	local fall = Instance.new("UIGradient")
+	fall.Transparency = NumberSequence.new(1, 1 - SEAM.Shade.Alpha)
+	fall.Parent = shade
+	Seam.Edge(made, "SlideEdge", 0, 0, at.Half.Tall, true, SEAM.Edges.Card)
 	made.Parent = holder
 	local side = touch()
 	local shut = press("Close", made, at.Half.Wide - side, 0, side, side, close, taps)
@@ -636,7 +655,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 		local up = info.Power > 0
 		local colour = if up then P.Up elseif info.Power < 0 then P.Down else P.Faint
 		local plate = plain("PowerChange", made, pad, y, wide, NUMBER_ROW + 8)
-		plate.BackgroundTransparency = 0.3
+		plate.BackgroundTransparency = 0.15
 		plate.BackgroundColor3 = P.Seat
 		round(plate, 3)
 		-- the doll's own word (research's fix 3 to the rebuild); the number, right-aligned, keeps the plate's other side
@@ -721,6 +740,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 		Parent = made,
 		Primary = info.Fits and not info.Worn,
 		Quiet = info.Worn ~= nil,
+		Palette = if info.Fits and not info.Worn and not why then Seam.Lit else Seam.Palette, -- the plate of light, while it can be pressed
 		OnPress = function(): boolean
 			local args = { Preset = owned.Preset, Slot = info.Worn or info.Slot, Class = if Gear.IsHand(info.Worn or info.Slot) then class else nil, Item = if info.Worn then "" else id }
 			local ok = said(EQUIP_SAID, if info.Worn then "Can't take it off" else "Can't equip it", context.Act("Equip", args))
@@ -733,6 +753,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 	if why then
 		Button.Set(equip, { Disabled = why })
 	end
+	lit(equip)
 	card = made
 	if carded ~= id then
 		slide(made, true)
@@ -807,6 +828,7 @@ local function chestCard(context: Context, at: Layout, id: string)
 		Parent = made,
 		Primary = not many,
 		Quiet = many,
+		Palette = if not many and info.Step >= 1 then Seam.Lit else Seam.Palette,
 		OnPress = function(): boolean
 			return open(1)
 		end,
@@ -814,18 +836,20 @@ local function chestCard(context: Context, at: Layout, id: string)
 	if info.Step < 1 then
 		Button.Set(one, { Disabled = "The bag is full" })
 	end
+	lit(one)
 	if many then
-		Button.new({
+		lit(Button.new({
 			Name = "OpenAll",
 			Text = `Open {info.Step}`,
 			Size = UDim2.fromOffset(buttonWide, action),
 			Position = UDim2.fromOffset(pad + buttonWide + 6, bottom),
 			Parent = made,
 			Primary = true,
+			Palette = Seam.Lit,
 			OnPress = function(): boolean
 				return open(info.Step)
 			end,
-		})
+		}))
 	end
 	card = made
 	if carded ~= id then
@@ -843,8 +867,9 @@ refresh = function()
 	end
 	for id, cell in cells do
 		local ring = cell:FindFirstChild("Chosen")
-		if ring and ring:IsA("UIStroke") then
-			ring.Enabled = id == chosen
+		if ring and ring:IsA("GuiObject") then
+			ring.Visible = id == chosen
+			Seam.Raise(cell, id == chosen)
 		end
 	end
 	local data = context.View :: any
@@ -897,13 +922,15 @@ local function chip(parent: Instance, name: string, words: string, order: number
 	local pill = Instance.new("Frame")
 	pill.Name = "Pill"
 	pill.BorderSizePixel = 0
-	pill.BackgroundColor3 = if lit then P.Text else P.Cell
-	pill.BackgroundTransparency = if lit then 0 else 1 - P.CellAlpha
+	pill.BackgroundColor3 = P.Cell[2]
+	pill.BackgroundTransparency = 0.3
 	pill.AnchorPoint = Vector2.new(0, 0.5)
 	pill.Position = UDim2.fromScale(0, 0.5)
 	pill.Size = UDim2.new(1, 0, 0, C.Pill)
 	round(pill, C.Pill / 2)
-	if not lit then
+	if lit then
+		Seam.Plate(pill, C.Pill / 2) -- a plate of light, its words in Ink
+	else
 		edge(pill, P.Line)
 	end
 	pill.Parent = made
@@ -932,8 +959,14 @@ function Bag.Build(context: Context): (() -> boolean)?
 	lastLayout = at
 	local body = context.Body
 	local taps = context.Taps
-	-- The page's room, bare: the screen's backing shows through it, as on the Overview.
-	plain("Case", body, at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
+	-- The page's room: the seam's panel over the screen's backing, its top a lit edge, laid under the stage so the
+	-- figure stands on it.
+	local case = plain("Case", context.Behind, at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
+	case.BackgroundColor3 = Color3.new(1, 1, 1)
+	case.BackgroundTransparency = 1 - Seam.Alpha
+	ramp(case, Seam.Panel)
+	round(case, SEAM.Room.Corner)
+	Seam.Edge(case, "Top", SEAM.Room.Corner, 0, at.Case.Wide - SEAM.Room.Corner * 2, false, SEAM.Edges.Room)
 	-- The strip: the six kinds, scrolling, then the sort or, in Chests, the salvage.
 	local data = context.View :: any
 	local rightWords: string
@@ -968,9 +1001,11 @@ function Bag.Build(context: Context): (() -> boolean)?
 	kinds.BorderSizePixel = 0
 	kinds.Size = UDim2.new(1, -(right.Size.X.Offset + Theme.Size.Gap), 1, 0)
 	kinds.ScrollBarThickness = 0
+	kinds.ScrollBarImageTransparency = 1 -- a touch device draws its thumb even at nought: a grey line under the chips
 	kinds.CanvasSize = UDim2.new()
 	kinds.AutomaticCanvasSize = Enum.AutomaticSize.X
 	kinds.ScrollingDirection = Enum.ScrollingDirection.X
+	kinds:SetAttribute("Keep", kind) -- the screen's refill puts its scroll back only while the same kind is chosen
 	kinds.Parent = strip
 	local row = Instance.new("UIListLayout")
 	row.FillDirection = Enum.FillDirection.Horizontal
@@ -1012,22 +1047,35 @@ function Bag.Build(context: Context): (() -> boolean)?
 		before.Visible = from > 1
 		after.Visible = from + kinds.AbsoluteWindowSize.X < kinds.AbsoluteCanvasSize.X - 1
 	end
-	kinds:GetPropertyChangedSignal("CanvasPosition"):Connect(veils)
-	kinds:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(veils)
-	kinds:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(veils)
-	-- The chosen kind kept in view: once the strip has its size, scrolled so its chip stands whole.
-	task.defer(function()
-		if lit and lit.Parent and kinds.Parent then
-			local left = lit.AbsolutePosition.X - kinds.AbsolutePosition.X + kinds.CanvasPosition.X
+	-- The chosen kind kept in view: scrolled so its chip stands whole, once the strip has its size and again whenever
+	-- its window changes size. Its place comes from the chips' own widths in order, never from absolute positions,
+	-- which a strip just built can still hold from before its layout. A player's own scroll changes no size, so it's
+	-- never pulled back.
+	local function keep()
+		local window = kinds.AbsoluteWindowSize.X
+		if lit and lit.Parent and kinds.Parent and window > 0 then
 			local scale = Layers.Scale()
-			local window = kinds.AbsoluteWindowSize.X
-			local wide = lit.AbsoluteSize.X
-			if left + wide > kinds.CanvasPosition.X + window or left < kinds.CanvasPosition.X then
+			local left = 0
+			for _, name in Rules.Kinds do
+				local before = kinds:FindFirstChild(name) :: GuiObject?
+				if before == nil or before == lit then
+					break
+				end
+				left += (before.Size.X.Offset + row.Padding.Offset) * scale
+			end
+			local wide = lit.Size.X.Offset * scale
+			if left < kinds.CanvasPosition.X then
+				kinds.CanvasPosition = Vector2.new(math.max(0, left - 12 * scale), 0)
+			elseif left + wide > kinds.CanvasPosition.X + window then
 				kinds.CanvasPosition = Vector2.new(math.max(0, left + wide - window + 12 * scale), 0)
 			end
 		end
 		veils()
-	end)
+	end
+	kinds:GetPropertyChangedSignal("CanvasPosition"):Connect(veils)
+	kinds:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(keep)
+	kinds:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(keep)
+	task.defer(keep)
 	-- The grid.
 	local list = Rules.List(data, context.Owned, kind, sort)
 	local grid = Instance.new("ScrollingFrame")
@@ -1058,13 +1106,14 @@ function Bag.Build(context: Context): (() -> boolean)?
 		local holder = Instance.new("Frame")
 		holder.Name = "Cells"
 		holder.BackgroundTransparency = 1
-		holder.Size = UDim2.new(1, -(C.Ring - 3), 0, 0)
+		holder.Size = UDim2.new(1, -C.Ring / 2, 0, 0)
 		holder.AutomaticSize = Enum.AutomaticSize.Y
 		holder.LayoutOrder = 1
 		holder.Parent = grid
-		local inset = Instance.new("UIPadding") -- room for a chosen cell's ring at the grid's edge
-		inset.PaddingTop = UDim.new(0, 3)
-		inset.PaddingLeft = UDim.new(0, 3)
+		local inset = Instance.new("UIPadding") -- room for a chosen cell's ring at the grid's edges
+		inset.PaddingTop = UDim.new(0, C.Ring / 2)
+		inset.PaddingLeft = UDim.new(0, C.Ring / 2)
+		inset.PaddingBottom = UDim.new(0, C.Ring / 2)
 		inset.Parent = holder
 		local cellsLayout = Instance.new("UIGridLayout")
 		cellsLayout.CellSize = UDim2.fromOffset(at.Cell, at.Cell)
@@ -1079,10 +1128,8 @@ function Bag.Build(context: Context): (() -> boolean)?
 	local held = Rules.Held(data)
 	local count = label({ Name = "BagCount", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = if held >= Rules.Cap then P.Down else P.Faint, Box = UDim2.fromOffset(at.Count.Wide - 4, at.Count.Tall), Position = UDim2.fromOffset(at.Count.X, at.Count.Y), Parent = body }, `{Hud.Digits(held)} / {Hud.Digits(Rules.Cap)} in the bag`)
 	count:SetAttribute("Held", held)
-	-- A hairline between the doll and the grid.
-	local hairline = plain("Rule", body, at.Doll.X + at.Doll.Wide + Theme.Size.Gap, C.Inset * 2, 1, at.Case.Tall - C.Inset * 4)
-	hairline.BackgroundTransparency = 0.2
-	hairline.BackgroundColor3 = P.Line
+	-- The seam between the doll and the grid: a lit edge, strongest at its middle.
+	Seam.Edge(body, "Rule", at.Doll.X + at.Doll.Wide + Theme.Size.Gap + 0.5, C.Inset * 2, at.Case.Tall - C.Inset * 4, true, SEAM.Edges.Rule)
 	-- The doll: its name and level over the figure, the figure on its stage, its Combat Power at its feet, then the slots.
 	local doll = at.Doll
 	local owned = context.Owned
@@ -1100,7 +1147,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 	context.Power(feet, at.Figure)
 	slots = plain("Doll", body, doll.X, doll.Y, doll.Wide, doll.Tall)
 	-- The card's room over the doll, clipping its slide.
-	local shelf = plain("CardRoom", body, at.Half.X, at.Half.Y, at.Half.Wide, at.Half.Tall)
+	local shelf = plain("CardRoom", body, at.Half.X - SEAM.Shade.Wide, at.Half.Y, at.Half.Wide + SEAM.Shade.Wide, at.Half.Tall)
 	shelf.ClipsDescendants = true
 	shelf.ZIndex = 5
 	room = shelf

@@ -43,7 +43,7 @@ local Clips = require(UI.Parent.Controllers.Main.FighterController.Clips)
 local Figure = {}
 
 local HIP = 3 -- studs from the soles to the root, the Templates' R6 rig
-local GREY_FLOOR = Color3.fromRGB(150, 156, 170) -- no element: a plain floor
+local GREY_FLOOR = UIKit.Palettes.Seam.Facet -- no element: a plain floor in the seam's pale violet (TR28)
 
 export type Figure = {
 	Def: string,

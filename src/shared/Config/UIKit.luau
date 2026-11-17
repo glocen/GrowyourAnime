@@ -50,6 +50,10 @@ export type Palette = {
 	Core: number,
 	Selected: { Color3 }?, -- a selected button fills with these
 	SelectedText: Color3?,
+	Backing: Color3?, -- behind a full screen in this palette (Kit.Screen's cover); the theme's backing when nil
+	Light: Color3?, -- a palette's own light: the seam's lit edges, rings and plates
+	Ink: Color3?, -- words on that light
+	Card: { Color3 }?, -- a card over the room, a step up from its panel
 }
 
 return {
@@ -163,6 +167,50 @@ return {
 			Ground = Color3.fromHex("#22242C"),
 			Accent = Color3.fromHex("#F4F1E8"),
 			Core = 0.5,
+		},
+		-- The seam: the Voidkin screen, its Overview and its Items, in the chest opening's language (the director's word of
+		-- 2026-11-17, 02:40; Modulo's sheet, AR18, from tools/blender/bag_seam.py). Violet-black grounds, edges of pale light,
+		-- and what's chosen drawn in that light.
+		Seam = {
+			Panel = { Color3.fromHex("#1A1430"), Color3.fromHex("#0C0A16") },
+			Alpha = 0.94,
+			Edge = Color3.fromHex("#3B3358"),
+			Facet = Color3.fromHex("#8F84B8"),
+			Glint = Color3.fromHex("#DCD3FF"),
+			Text = Color3.fromHex("#F1ECFF"),
+			Soft = Color3.fromHex("#B9B0D6"),
+			Faint = Color3.fromHex("#6F6790"),
+			Channel = Color3.fromHex("#050409"),
+			Well = Color3.fromHex("#1B1728"), -- a well's top; it falls to Config.Hud.Seam.WellFoot
+			Button = { Color3.fromHex("#2A2244"), Color3.fromHex("#1A1530") },
+			Pressed = { Color3.fromHex("#120E20"), Color3.fromHex("#1A1430") },
+			Ground = Color3.fromHex("#1E1A2C"),
+			Accent = Color3.fromHex("#EDE4FF"),
+			Core = 0.5,
+			Backing = Color3.fromHex("#07060C"),
+			Light = Color3.fromHex("#EDE4FF"),
+			Ink = Color3.fromHex("#0B0913"),
+			Card = { Color3.fromHex("#221A3C"), Color3.fromHex("#0E0B18") },
+		},
+		-- The seam's plate of light: its one action (Equip), white falling to the seam's Light, words in Ink.
+		SeamLit = {
+			Panel = { Color3.fromHex("#FFFFFF"), Color3.fromHex("#EDE4FF") },
+			Alpha = 1,
+			Edge = Color3.fromHex("#EDE4FF"),
+			Facet = Color3.fromHex("#FFFFFF"),
+			Glint = Color3.fromHex("#FFFFFF"),
+			Text = Color3.fromHex("#0B0913"),
+			Soft = Color3.fromHex("#3B3358"),
+			Faint = Color3.fromHex("#6F6790"),
+			Channel = Color3.fromHex("#050409"),
+			Well = Color3.fromHex("#1B1728"),
+			Button = { Color3.fromHex("#FFFFFF"), Color3.fromHex("#EDE4FF") },
+			Pressed = { Color3.fromHex("#CFC4EE"), Color3.fromHex("#DCD3FF") },
+			Ground = Color3.fromHex("#1E1A2C"),
+			Accent = Color3.fromHex("#8F84B8"), -- the kit's base along its foot, in the seam's Facet
+			Core = 0.5,
+			Light = Color3.fromHex("#EDE4FF"),
+			Ink = Color3.fromHex("#0B0913"),
 		},
 	} :: { [string]: Palette },
 	Systems = {

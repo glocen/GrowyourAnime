@@ -34,6 +34,8 @@ local Toast = require(UI.Kit.Toast)
 local Bar = require(UI.Kit.Bar)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Figure = require(UI.VoidkinScreen.Figure)
+local Seam = require(UI.VoidkinScreen.Seam)
+local UIKit = require(Shared.Config.UIKit)
 
 local VoidkinCases = {}
 
@@ -136,6 +138,50 @@ end
 local function lacquered(colour: Color3): boolean
 	local h, s, v = colour:ToHSV()
 	return h >= 15 / 360 and h <= 50 / 360 and s >= 0.15 and v <= 0.8
+end
+
+-- The graphite the screen wore before the seam (TR28): the theme's colours and the Graphite palette's, by their hex.
+local GRAPHITE: { [string]: boolean } = {}
+local function grey(colour: any)
+	if typeof(colour) == "Color3" then
+		GRAPHITE[(colour :: Color3):ToHex()] = true
+	end
+end
+for _, colour in Theme.Colour :: { [string]: any } do
+	grey(colour)
+end
+for _, value in UIKit.Palettes.Graphite :: { [string]: any } do
+	for _, colour in (if type(value) == "table" then value else { value }) :: { any } do
+		grey(colour)
+	end
+end
+GRAPHITE[Theme.Colour.Heal:ToHex()] = nil -- a gain's green stays the game's
+
+-- The first graphite colour drawn under each root: a fill, a tint, a word, an edge, a gradient's key.
+local function graphiteIn(roots: { Instance? }): string
+	for _, root in roots do
+		for _, piece in (if root then root:GetDescendants() else {}) :: { Instance } do
+			local found: Color3? = nil
+			if piece:IsA("GuiObject") and piece.Visible and piece.BackgroundTransparency < 1 and GRAPHITE[piece.BackgroundColor3:ToHex()] then
+				found = piece.BackgroundColor3
+			elseif piece:IsA("ImageLabel") and piece.Visible and piece.ImageTransparency < 1 and GRAPHITE[piece.ImageColor3:ToHex()] then
+				found = piece.ImageColor3
+			elseif piece:IsA("TextLabel") and piece.Visible and piece.Text ~= "" and piece.TextTransparency < 1 and GRAPHITE[piece.TextColor3:ToHex()] then
+				found = piece.TextColor3
+			elseif piece:IsA("UIStroke") and piece.Enabled and piece.Transparency < 1 and GRAPHITE[piece.Color:ToHex()] then
+				found = piece.Color
+			end
+			if found then
+				return `{piece:GetFullName():match("[^.]+%.[^.]+$") or piece.Name} {found:ToHex()}`
+			end
+		end
+	end
+	return ""
+end
+
+-- The screen's own pieces: its frame, its cover and its band's Back (the wallet's pills beside it stay the HUD's).
+local function screenRoots(): { Instance? }
+	return { Screen.Frame("Voidkin"), Screen.Cover("Voidkin"), VoidkinScreen.Find("Back") }
 end
 
 -- The first colour of the lacquer's family drawn under `root`: a fill, a tint, a word, an edge, a gradient's key.
@@ -453,7 +499,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				local dot = chosen and chosen:FindFirstChild("Dot")
 				local ring = dot and dot:FindFirstChild("Ring")
 				t.Check(`{name} chosen`, chosen ~= nil and chosen:GetAttribute("Chosen") == true)
-				t.Check(`its ring lit`, ring ~= nil and ring:IsA("UIStroke") and ring.Color == Theme.Colour.Primary)
+				t.Check(`its ring lit in the seam's light`, ring ~= nil and ring:IsA("UIStroke") and ring.Color == Seam.Light)
 				local larger, alone, words = true, true, true
 				for _, other in VoidkinScreen.Pages do
 					local rest = railButton(other)
@@ -500,6 +546,12 @@ function VoidkinCases.Cases(given: Given): { any }
 						t.Check("Overview: its Speed", scroll:FindFirstChild("Speed", true) ~= nil)
 						overviewLook = stageLook()
 						t.Check("Overview: the stage lit, its halo, no warm glow", string.find(overviewLook, "halo none", 1, true) == nil and string.find(overviewLook, "warm false", 1, true) ~= nil, overviewLook)
+						-- TR28: the screen in the seam's skin, its cover the seam's backing, and nothing of the graphite left.
+						local behind = Screen.Cover("Voidkin")
+						local shaft = VoidkinScreen.Find("Shaft")
+						t.Check("Overview: the seam's backing behind, its shaft behind the figure", behind ~= nil and behind:IsA("Frame") and behind.BackgroundColor3 == Seam.Colour.Backing and shaft ~= nil)
+						local grey = graphiteIn(screenRoots())
+						t.Check("Overview: nothing of the graphite left", grey == "", grey)
 					elseif name == "Bag" then
 						t.Check("Bag: its doll, its strip and the card's room", VoidkinScreen.Find("Case") ~= nil and VoidkinScreen.Find("Doll") ~= nil and VoidkinScreen.Find("Kinds") ~= nil and VoidkinScreen.Find("CardRoom") ~= nil)
 						-- TR24, the director's run, fix 4: one palette across the tabs. The stage as the Overview's, the page bare on
@@ -507,17 +559,25 @@ function VoidkinCases.Cases(given: Given): { any }
 						local look = stageLook()
 						t.Equal("Bag: the stage as the Overview's", look, overviewLook)
 						local case = VoidkinScreen.Find("Case")
-						local items = if case then case.Parent else nil
-						t.Check("Bag: no plate of its own, the backing shows through", case ~= nil and case:IsA("Frame") and case.BackgroundTransparency == 1 and #case:GetChildren() == 0)
+						local strip = VoidkinScreen.Find("Strip")
+						local items = if strip then strip.Parent else nil
+						-- TR28: the room in the seam's panel, its top a lit edge, and every well the seam's, a Legendary's too.
+						local roomRamp = if case then case:FindFirstChildOfClass("UIGradient") else nil
+						t.Check("Bag: the room in the seam's panel, its top lit", case ~= nil and case:IsA("Frame") and math.abs(case.BackgroundTransparency - (1 - Seam.Alpha)) < 1e-3
+							and roomRamp ~= nil and roomRamp.Color.Keypoints[1].Value == Seam.Panel[1] and case:FindFirstChild("Top") ~= nil)
 						local wells, odd = 0, ""
 						for _, piece in (if items then items:GetDescendants() else {}) :: { Instance } do
 							if piece:IsA("ImageLabel") and piece.Name == "Well" then
 								wells += 1
-								local right = piece.ImageColor3 == Theme.Colour.PlateHigh and math.abs(piece.ImageTransparency - 0.25) < 1e-3 and piece:FindFirstChildOfClass("UIGradient") == nil
+								local ramp = piece:FindFirstChildOfClass("UIGradient")
+								local keys = if ramp then ramp.Color.Keypoints else {}
+								local right = piece.ImageColor3 == Color3.new(1, 1, 1) and piece.ImageTransparency == 0 and #keys == 2 and keys[1].Value == Seam.Well[1] and keys[2].Value == Seam.Well[2]
 								odd = if right or odd ~= "" then odd else `{(piece.Parent :: Instance).Name} {piece.ImageColor3:ToHex()} {piece.ImageTransparency}`
 							end
 						end
-						t.Check("Bag: every cell's and slot's well the Overview slot's graphite", wells >= 14 and odd == "", `{wells} wells; {odd}`)
+						t.Check("Bag: every cell's and slot's well the seam's", wells >= 14 and odd == "", `{wells} wells; {odd}`)
+						local grey = graphiteIn(screenRoots())
+						t.Check("Bag: nothing of the graphite left", grey == "", grey)
 						local warm = if items then lacquerIn(items) else "no page"
 						t.Check("Bag: nothing in the lacquer's browns", warm == "", warm)
 						-- The rail words only the chosen page (and Soon's): chosen, the bag's page reads Items (the director, 2026-11-15).

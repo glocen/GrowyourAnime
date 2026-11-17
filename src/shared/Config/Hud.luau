@@ -430,8 +430,8 @@ return {
 		Cell = 64, -- a grid cell's side at most (docs/ui.md: about 64); five across or more, never under a touch
 		CellGap = 6,
 		Veil = 24, -- the kinds strip's fade where it hides a chip
-		Ring = 7, -- the cells' holder's margins: 3 left for a chosen cell's ring, 4 right for the scroll bar
-		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6E7482"), Alpha = 0.1 }, -- an empty slot's mark (AR22's json): its share of the well, its tint (Graphite's Faint)
+		Ring = 16, -- the cells' holder's margins, 8 each side and over and under: a chosen cell's ring's light (UI.VoidkinScreen.Seam.Reach at 64), the scroll bar inside the right's
+		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6F6790"), Alpha = 0.45 }, -- an empty slot's mark (AR22's json): its share of the well, its tint (the seam's Faint) at 0.55
 		Columns = 5, -- at least; a wider room adds a column a cell wide
 		Inset = 4, -- the room's edge round the grid
 		Under = 4, -- between the strip, the grid and the count
@@ -447,7 +447,7 @@ return {
 		Mark = 14, -- a cell's corner seat: the up arrow, the worn tick
 		Card = { Corner = 4, Pad = 10, Cell = 56, Close = 14, Title = 16 }, -- the close's X drawn this size in a touch
 		Salvage = { "", "Common", "Uncommon", "Rare", "Epic" }, -- the salvage control's steps, in order: "" is off
-		-- The page's colours are the Overview's (TR24, the director's run, fix 4: UI.VoidkinScreen.Bag); a rarity keeps its own.
+		-- The page's colours are the seam's, as the Overview's (UI.VoidkinScreen.Seam); a rarity keeps its own.
 		Rarity = { -- a rarity's word
 			Common = Color3.fromHex("#9AA0AC"),
 			Uncommon = Color3.fromHex("#7CF0A0"),
@@ -462,5 +462,28 @@ return {
 			Epic = Color3.fromHex("#D29CFF"),
 			Legendary = Color3.fromHex("#FFD777"),
 		} :: { [string]: Color3 },
+	},
+	-- The Voidkin screen in the seam's skin (TR28; the director's word of 2026-11-17, 02:40; Modulo's sheet notes, AR18):
+	-- violet-black grounds, edges of pale light, and what's chosen drawn in it. Authored points; every number a seed.
+	Seam = {
+		WellFoot = Color3.fromHex("#0C0A13"), -- a well falls to this from the palette's Well
+		Stage = { Color3.fromHex("#140F25"), Color3.fromHex("#0A0812") }, -- the stage's dark, top to foot, under its rarity's light
+		Shaft = { Half = 26, Alpha = 0.13 }, -- the light behind the figure, cut at the stage: its half width (to 1/e), its strength
+		-- A lit edge: a line of Light over its glow's bands (each Wide across, centred on the line), strongest at its middle
+		-- and Floor of that at its ends; Spread is how far the strength holds, a share of the edge's length (to 1/e).
+		Edge = { Line = 1, Glow = { { Wide = 3, Alpha = 0.25 }, { Wide = 9, Alpha = 0.1 } } },
+		Edges = {
+			Room = { Spread = 0.4, Floor = 0.12, Strength = 1 }, -- the room's top
+			Rule = { Spread = 0.36, Floor = 0.12, Strength = 1 }, -- the hairline between the doll and the grid
+			Card = { Spread = 0.32, Floor = 0.15, Strength = 1 }, -- the card's sliding edge
+			Power = { Spread = 0.33, Floor = 0, Strength = 1 }, -- Combat Power's plate, along its top
+		},
+		-- The chosen ring (research's fix, 08:01; Modulo's 08:13): a dark moat From to To out, then Wide of Light from Out, its
+		-- glow's bands outward; at a 48-point cell, scaled with the cell.
+		-- Corner: its rounding round a cell's cut corner.
+		Ring = { Moat = { From = 0.8, To = 3.4, Alpha = 0.94 }, Out = 3, Wide = 2.6, Glow = { { Wide = 3, Alpha = 0.3 }, { Wide = 7, Alpha = 0.12 } }, Cell = 48, Corner = 4 },
+		Lit = { Glow = { { Wide = 2, Alpha = 0.22 }, { Wide = 5, Alpha = 0.1 } }, Button = 0.5 }, -- a plate of light's glow round it (the lit chip), and a button's (Equip's) in the kit's ring glow
+		Room = { Corner = 6 }, -- the Items room's panel
+		Shade = { Wide = 8, Alpha = 0.45 }, -- the card's shadow on the grid, left of its sliding edge
 	},
 }

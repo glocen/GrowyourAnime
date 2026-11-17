@@ -33,6 +33,7 @@ local Button = require(script.Parent.Button)
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Signal = require(Shared.Util.Signal)
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 
 local Screen = {}
 Screen.Closed = Signal.new() -- (name)
@@ -185,8 +186,8 @@ local function back(exit: TextButton)
 	exit.AnchorPoint = Vector2.new(0, 0.5)
 end
 
--- `size` nil: a full screen.
-local function show(name: string, title: string, size: Vector2?): Frame
+-- `size` nil: a full screen. `palette`: a full screen's cover and Back in that UIKit palette (the Voidkin screen's seam).
+local function show(name: string, title: string, size: Vector2?, palette: string?): Frame
 	local full = size == nil
 	local current = open
 	local again = current and current.Name == name and current.Frame:FindFirstChild("Body")
@@ -212,7 +213,8 @@ local function show(name: string, title: string, size: Vector2?): Frame
 		local made = Instance.new("Frame")
 		made.Name = `{name}Cover`
 		made.BorderSizePixel = 0
-		made.BackgroundColor3 = Theme.Colour.Backing
+		local look = if palette then UIKit.Palettes[palette] else nil
+		made.BackgroundColor3 = if look and look.Backing then look.Backing else Theme.Colour.Backing
 		made.BackgroundTransparency = 1
 		made.Size = UDim2.fromScale(1, 1)
 		made.Active = true -- a tap on it never reaches the HUD under it
@@ -290,6 +292,7 @@ local function show(name: string, title: string, size: Vector2?): Frame
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = band or frame,
 		OnPress = Screen.Close,
+		Palette = if full then palette else nil,
 	})
 	exit.ZIndex = 3
 	if band then
@@ -316,8 +319,8 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 	return show(name, title, size)
 end
 
-function Screen.Full(name: string, title: string): Frame
-	return show(name, title, nil)
+function Screen.Full(name: string, title: string, palette: string?): Frame
+	return show(name, title, nil, palette)
 end
 
 return Screen

@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 10:40. Ground Wire's retake is in (AR11, "The retake"): the replay stops a brawler mid-swing on Watt's clock, the shield is a thin outline on Watt (the shell's rows are out), and five takes in motion are in `build/captures/ar11/`.
-- **Waiting on research:** the verdict in motion, with `ga-fresh-eyes`. A Highlight's line is one pixel at any size and faint from the player's camera, where the brawler covers most of Watt.
-- **Next, in order:** (1) AR26's attacks from Watt, with research's two ZOffset takes on the crack; my answer to the two tier 2 asks (6f7a648) once I've read `slotFor`; then Rook's, Pip's and Lyric's blocks, and AR27's install once Modulo re-exports; (2) TR35's shortlist; (3) TR29's three; (4) TR34's block in A; (5) TR36, the two Basic Attributes and the colour-named types (4053c00); (6) forge ranks, emblems and jewels on the item; (7) the bag's rebuild in the seam (AR18, 6c2992c).
-- **Open, tests:** from 10:30 the client ran at 38 to 40 fps at the base with Studio in front (render 24 ms on the CPU; 53 fps at 10:09). Four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails about one run in three. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
+**Faber (builder).** 2026-11-17, 11:14. Voidkin work is parked on the director's word of 11:10. Watt's crack and the spacing ask are on branch `parked/ar26-watt-block`, unmerged; `main` and Studio hold none of it (AR26, "Faber's block of Watt's crack, parked"). That record also answers the framing question (AR11). The save is back as it was: lead k1, k2 in bay 1. AR27's idles are held, not uploaded.
+- **Now:** TR36, the two attributes and the colour-named types.
+- **Next, in order** (809f50b): AR16's three base sizes for research's pick; TR28's bag in the seam (AR18); TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; the Forge and the Condenser, then emblems, then jewels; TR31 to TR33, TR35 and the responsive pass.
+- **Open, tests:** from 10:30 the client ran at 38 to 40 fps at the base with Studio in front (render 24 ms on the CPU). Four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails about one run in three. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
 **Modulo (assets).** 2026-11-17, 11:12, on Opus 5.5. **Voidkin work is parked until before launch** (the director's word through research, 11:10): AR26 and AR27 stay as delivered, and Ground Wire's colour pass waits.
@@ -20,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR27, delivered (11:07):** Kirra's, Pip's, Lyric's and Watt's idles without the glance, in their `build/handoff/<Lead>/clips/`, for Faber's upload. `tools/blender/idle_head.py` checks that every head stays within 1.3° of front and 1.2° of level. Watt's and Kirra's heads are counter-rolled against their lean. Research checks one loop each in game after the install.
 - **Now:** waiting for research's order of game pieces. TR10's two icons wait on the grey marker's verdict; AR24's A waits on Faber's TR34 block and research's verdict in motion. **Unchanged:** Sable after launch; the Door is Faber's install.
 
-**Turns.** Studio: nobody (Faber stopped the playtest at 10:40; the place is open, its Rojo connected, the device simulator off). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (Faber stopped the playtest at 11:14; the place is open, its Rojo connected, the device simulator off). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

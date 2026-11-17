@@ -9619,6 +9619,29 @@ Made on research's line 5. `tools/blender/kirra_combo_fx.py` reads the delivered
 - **The waist lift: approved for research (tier 2).** It's the same rule as the flights: a touch lands on the target's own body by its Scale, and its lines keep their size. Faber judges how it's built, with the spacing ask.
 - **The X's size stays as delivered for the block.** The flatter, wider variant is the block's question in motion, not a fix now. The X hidden at 215 and 145 is the same class as Ground Wire's (AR11, the framing question to Faber), and it's judged with that answer.
 
+### Faber's block of Watt's crack, parked (Faber, 2026-11-17, 10:42 to 11:14 by the clock)
+
+- **Parked on the director's word of 11:10** (`docs/decisions.md`, f45bbdb). It's in git, unmerged: branch `parked/ar26-watt-block` (1182f1c, off 4a90e99). `main` holds none of it. The branch has:
+  - `Effect = "WattCombo"` and its `Config.EffectRows` entry;
+  - the spacing ask, built: `FightService`'s `Fighter.Depth` is the torso's face before the root, less the ordinary Shade's. Reach, slot, start, skip and `Round` count from it. The replay stands off by it, and frames an elite or a keeper beside, as a fight does;
+  - a self-test case for the spacing. The type check reads 0 new; the suite never ran on it.
+- **Measured live before parking:** the depth is 0 on the Brawler, 0.259 on the elite and 1.180 on the Lamplighter. The replay stands off 3.5 plus the depth (4.680 on the Lamplighter).
+- **For the finish, a finding the spacing doesn't fix:** in a real fight the Shade walks in on the lead. Rook's hits landed at these distances, root to root:
+  - 3.27 to 4.75 on the Brawler;
+  - 3.22 to 4.83 on the elite;
+  - 4.81 to 7.03 on the Lamplighter.
+  - So touches placed for 3.5 sometimes land closer, on the ordinary Shade too. The depth moves only the lead's own slot and reach. The two ways out are both tier 2: the lead steps back to its slot before a press, or the touches ride the target.
+- **The framing question (AR11):** on an ordinary Shade, a real fight frames the lead as the replay does: beyond it, turned `Combat.Lead.Frame`'s 45° (`Fight.Beyond`). On the elite and the Lamplighter the lead stands beside, at 90° (`Lead.Beside`, `Fight.Aside`). `main`'s replay still frames those at 45°; the branch fixes it.
+- **Captures** (gitignored, in `build/captures/ar26/`):
+  - stills on the Brawler from five headings: `watt_stills_{full,phone,view}.jpg`;
+  - takes in motion: `watt_motion_h{215,145,285}.mkv`, `watt_elite_{play,h285}.mkv` and `watt_lamplighter_{play,h285}.mkv`, each with a `motion_*.jpg` sheet.
+- **My read:** from 285 the V's branches show at the Brawler's chest, and the spit runs on the street on Hit3. From 215 the floor light carries the read. At 28 and 0 the glare stands at the Brawler's head height, for the content check's condition 1. Neither research nor the content check has seen them.
+- **Four facts:**
+  - implemented on the branch only;
+  - tested by the type check and the live depths, not by the suite;
+  - visually reviewed by me only;
+  - not accepted.
+
 ## AR27. The idles without the glance (Modulo, then Faber)
 
 Research's request, 2026-11-17, 10:10, on the director's word (`docs/decisions.md`): "this weird tic in their idle animation where they head tilt on the side".

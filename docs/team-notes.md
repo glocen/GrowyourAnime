@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 17:58. TR41 (c) is in: the level-up notice, take B, from Modulo's three images, in place of the old toast and the word over the lead, for research's read (TR41, "(c) The level-up notice, take B, in the game"; stills in `build/scratch/faber/stills/tr41c-*`). Roblox's 9-slice drew its plate wrong under the layer's scale, so it's three plain pieces. Voidkin work stays parked on branch `parked/ar26-watt-block`.
-- **Now:** TR41 (d), the festival tag's four images.
-- **Next, in order:** TR41 (e), with the Training machine's still; AR29's B, 13 icons; AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
+**Faber (builder).** 2026-11-17, 18:38. TR41 (d) is in: the festival tag on a chamber's picture, its mark on a disc in a bag cell (at the crystal's left foot, clear of the count), a band of the ground's colour along a Breaker chip's foot, for research's read (TR41, "(d) Where a shard came from"; stills in `build/scratch/faber/stills/tr41d-*`). Found and fixed on the way: at the smallest phone the Breaker's strip ran past its panel, cut. Voidkin work stays parked on branch `parked/ar26-watt-block`.
+- **Now:** TR41 (e), the V2 leftovers, with the Training machine's still.
+- **Next, in order:** AR29's B, 13 icons; AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
@@ -116,6 +116,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 18:38. TR41 (d): where a shard came from, the festival tag, installed (Faber)
+
+- **What changed:** a shard's picture wears its ground's look. In a chamber, the tag hangs from the crystal's shoulder. In a bag cell, the mark sits on a disc at the crystal's left foot, since the count holds the right. On a Breaker chip, a band of the ground's colour runs along its foot. At the smallest phone the Breaker's chambers give way so the strip stays inside the panel; its chips had hung past it, cut.
+- **Where:** `UI/ShardTag.luau`, `Rules.Hud.ShardTag`, `Config/Hud.luau` (`ShardTag`), `BreakerScreen.luau`, `VoidkinScreen/Bag.luau`. Cases: logic "Hud: TR41 (d)", self-test "Breaker: TR41 (d)", "Take: TR41 (d)".
+- **Tested:** the tag 42/0, the galaxy 42/0, the Items page 112/0, the Voidkin screen 249/0, logic 24,051/0; type check 0 new.
+- **Open:** the two-line name and the bag's ground filter wait, as the design's block says. TR18's take fails at the generator's prompt, not from this piece.
+- **For:** research's read (`build/scratch/faber/stills/tr41d-*`).
 
 ### 2026-11-17, 17:58. TR41 (c): the level-up notice, take B, installed (Faber)
 
@@ -239,10 +247,3 @@ For Faber:
 - **Where:** AR19, "Stages II and III as kit pieces"; `build/handoff/Base` (`meshes/Generator2*`, `meshes/Generator3*`, `manifest.json`, and `plan.json`'s `machines.generatorStages`); `tools/blender/base_mill.py`.
 - **Open:** Faber's upload, install and motion. Then research's pass, with the check's note on the dynamos' real-world look.
 - **For:** Faber, then research.
-
-### 2026-11-16, 19:27. AR6: batch 2 in colour, the 120 in their slots (Modulo)
-
-- **What changed:** the eight shared kinds in colour, in batch 1's slots and frames. Cloth has its own colours by rarity, with Rare and Epic dark so the frame carries the rarity. Glove leather is charcoal, with knuckle plates. Every body piece is dark-lined inside. Yoake's wing rises over its two lames. Hoshikuzu's stars are solid, on a line.
-- **Where:** AR6, "Batch 2 in colour"; `build/handoff/UI/gear/` (`gear_<kind>_colour.png`, `images/`, `gear_icons.json`); `tools/blender/gear_icons.py` and the batch 2 `gear_<kind>_sets.py`.
-- **Open:** research's verdict. Then the 120 go to Faber for upload and the slots, after Kaikou's catalog search.
-- **For:** research, then Faber.

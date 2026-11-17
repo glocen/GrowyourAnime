@@ -1,8 +1,10 @@
 --!strict
 -- BreakerCases (client, Studio only): the Breaker screen's newer cases, a list of their own that joins the run apart from
 -- Cases, as the Tower's does (Cases is at the type checker's limit); its helpers are Helpers'. TR41: the galaxy Breaker,
--- AR12's images laid as Modulo's breaker_sky.json says, with research's one band of mist.
+-- AR12's images laid as Modulo's breaker_sky.json says, with research's one band of mist. TR41 (d): where a shard came
+-- from, its ground's festival tag, laid as Modulo's shard_tag.json says.
 
+local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
@@ -17,12 +19,61 @@ local Theme = require(UI.Theme)
 local Screen = require(UI.Kit.Screen)
 local BreakerScreen = require(UI.BreakerScreen)
 local Helpers = require(script.Parent.Helpers)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local Button = require(UI.Kit.Button)
+local VoidkinScreen = require(UI.VoidkinScreen)
 
 local BreakerCases = {}
 
 function BreakerCases.Cases(): { any }
 	local ANSWER, SKIP_ALL, waitFor, lintClean = Helpers.ANSWER, Helpers.SKIP_ALL, Helpers.waitFor, Helpers.lintClean
 	local breakerPart, readyCount, openReadyDown = Helpers.breakerPart, Helpers.readyCount, Helpers.openReadyDown
+	-- TR41 (d): two shards of `shard`, one into the Breaker (a chamber's picture) and one kept in the bag (its chip on the
+	-- strip, its cell). Returns what puts the Breaker back: the second in too, the time skipped, both opened.
+	local function tagShards(t: any, shard: string): (() -> ())?
+		local view = ProfileController.Get()
+		t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
+		if view == nil or view.Progress.Starter == "" then
+			return nil
+		end
+		local before = readyCount(shard)
+		local held = view.Bag.Shards[shard] or 0
+		local function inBag(): number
+			local now = ProfileController.Get()
+			return if now then now.Bag.Shards[shard] or 0 else -1
+		end
+		t.Server("BaseGive", shard, 2)
+		t.Check("the server gives two", waitFor(t, ANSWER, function(): boolean
+			return inBag() == held + 2
+		end))
+		t.Check("one goes into the Breaker", ProfileController.Act("AddShard", { Shard = shard }).Ok == true and waitFor(t, ANSWER, function(): boolean
+			return inBag() == held + 1
+		end))
+		return function()
+			Screen.Close()
+			if ProfileController.Act("AddShard", { Shard = shard }).Ok == true then
+				waitFor(t, ANSWER, function(): boolean
+					return inBag() == held
+				end)
+			end
+			t.Server("BaseSkip", SKIP_ALL)
+			waitFor(t, ANSWER, function(): boolean
+				return readyCount(shard) > before
+			end)
+			openReadyDown(t, shard, before)
+		end
+	end
+	local function openBag(t: any): boolean
+		Screen.Close()
+		local hud = HudController.Parts()
+		local open = Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+			return Screen.Current() == VoidkinScreen.Name
+		end)
+		t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+		VoidkinScreen.Show("Bag")
+		t.Wait(0.2)
+		return open
+	end
 	return {
 		{
 			Name = "Breaker: TR41, the galaxy: the night in the panel's shape, a river of mist sliding behind the windows, six stars breathing, a star falling in the last window, a working shard's light, each chamber glass with every word on its solid strip or plate, and all still when held",
@@ -228,6 +279,197 @@ function BreakerCases.Cases(): { any }
 					return readyCount(shard) > before
 				end)
 				openReadyDown(t, shard, before)
+			end,
+		},
+		{
+			Name = "Breaker: TR41 (d), where a shard came from: its ground's tag hung from a chamber's picture, a band of its colour along a strip chip's foot, its mark on a disc in a bag cell, each where Modulo's json lays it",
+			Run = function(t: any)
+				local look = HudConfig.ShardTag
+				local ground = look.Grounds.lanternrow
+				local large = HudConfig.ShardArt.Large
+				local after = tagShards(t, "lanternrow_standard")
+				if after == nil then
+					return
+				end
+				Screen.Close()
+				BaseController.OpenBreaker()
+				t.Check("the Breaker opens", waitFor(t, 2, function(): boolean
+					return breakerPart("Machine") ~= nil
+				end))
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				-- The plaque's share of the side: a third up to the third's end, a quarter from the quarter's start.
+				local function share(points: number): number
+					local tag = look.Tag
+					local k = math.clamp((points - tag.Third.Upto) / (tag.Quarter.From - tag.Third.Upto), 0, 1)
+					return tag.Third.Of + (tag.Quarter.Of - tag.Third.Of) * k
+				end
+				local function laid(root: Instance?, name: string): { GuiObject }
+					local out: { GuiObject } = {}
+					for _, piece in (if root then root:GetDescendants() else {}) do
+						if piece:IsA("GuiObject") and piece.Name == name and piece:GetAttribute("Ground") ~= nil then
+							table.insert(out, piece)
+						end
+					end
+					return out
+				end
+				local scales = { { Name = "this screen", Scale = nil :: number? }, { Name = "the smallest phone", Scale = Theme.Scale.Floor :: number? } }
+				for _, at in scales do
+					Layers.Force(at.Scale)
+					t.Wait(0.15)
+					local frame = Screen.Frame(BreakerScreen.Name)
+					local body = if frame then frame:FindFirstChild("Body") else nil
+					-- A working chamber's picture (50 to 72 points): the tag over it, its thread's tie on the crystal's right
+					-- shoulder, its plaque its share of the side.
+					local tags, wrong = laid(body, "Tag"), {}
+					for _, piece in tags do
+						local tag = piece :: ImageLabel
+						local picture = tag.Parent :: ImageLabel
+						local side, points = picture.AbsoluteSize.X, picture.Size.X.Offset
+						local s = tag.AbsoluteSize.X / ground.Tag.Points.X
+						local tie = tag.AbsolutePosition + look.Tag.Tie * s
+						local want = picture.AbsolutePosition + picture.AbsoluteSize / 2 + look.Tag.At * side
+						local plaque = tag.AbsoluteSize.Y / ground.Tag.Points.Y * look.Tag.Plaque
+						if tag.Image ~= ground.Tag.Id or not tag.Visible or tag.ZIndex < picture.ZIndex or points < large
+							or (tie - want).Magnitude > 1 or math.abs(plaque - share(points) * side) > 1 then
+							table.insert(wrong, string.format("at %d points: its tie %.1f px off, its plaque %.1f of %.1f", points, (tie - want).Magnitude, plaque, share(points) * side))
+						end
+					end
+					t.Check(`at {at.Name}'s scale, a working chamber's picture wears its tag where the json hangs it`, #tags > 0 and #wrong == 0, if #tags == 0 then "no tag" else wrong[1])
+					-- A strip chip: a band of the ground's colour along its foot, in the chip's own shape, under its edge.
+					local bands, off = laid(body, "GroundBand"), {}
+					for _, piece in bands do
+						local skin = piece.Parent :: Instance -- the chip's skin frame (Skin.Of), in its NL_Skin folder
+						local chip = (skin.Parent :: Instance).Parent :: GuiObject
+						local scale = chip.AbsoluteSize.Y / chip.Size.Y.Offset
+						local fill = piece:FindFirstChild("Fill") :: ImageLabel?
+						local edge = skin:FindFirstChild("Edge", true) :: ImageLabel?
+						local foot = piece.AbsolutePosition.Y + piece.AbsoluteSize.Y - (chip.AbsolutePosition.Y + chip.AbsoluteSize.Y)
+						if fill == nil or edge == nil or fill.ImageColor3 ~= ground.Colour or edge.ZIndex <= piece.ZIndex
+							or math.abs(piece.AbsoluteSize.Y - look.Band * scale) > 1 or math.abs(foot) > 1 or math.abs(piece.AbsoluteSize.X - chip.AbsoluteSize.X) > 1 then
+							table.insert(off, string.format("%s: %.1f px high of %.1f, its foot %.1f px off the chip's", chip.Name, piece.AbsoluteSize.Y, look.Band * scale, foot))
+						end
+					end
+					t.Check(`at {at.Name}'s scale, a strip chip's foot in the ground's colour, {look.Band} points, under its edge`, #bands > 0 and #off == 0, if #bands == 0 then "no band" else off[1])
+					lintClean(t, `the tagged Breaker, at {at.Name}'s scale`)
+				end
+				-- In the smallest phone's own room (its scale and its height), built there: the chambers' row gives way, never the
+				-- strip, so every chip and its band stand inside the panel (they ran past its foot there, cut, until TR41 (d)); a
+				-- picture under the large's least wears the mark, from it up the tag.
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				Screen.Close()
+				BaseController.OpenBreaker()
+				waitFor(t, 2, function(): boolean
+					return breakerPart("Machine") ~= nil
+				end)
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				local panel = Screen.Frame(BreakerScreen.Name)
+				local body = if panel then panel:FindFirstChild("Body") else nil
+				local foot = if panel then panel.AbsolutePosition.Y + panel.AbsoluteSize.Y else 0
+				local spilt = {}
+				for _, chip in (if body then body:GetDescendants() else {}) do
+					if chip:IsA("GuiObject") and chip.Parent and chip.Parent.Name == "Strip" and chip.AbsolutePosition.Y + chip.AbsoluteSize.Y > foot + 0.5 then
+						table.insert(spilt, string.format("%s's foot %.1f px past the panel's", chip.Name, chip.AbsolutePosition.Y + chip.AbsoluteSize.Y - foot))
+					end
+				end
+				local bands = laid(body, "GroundBand")
+				t.Check("in the smallest phone's room, every strip chip inside the panel, its band to be seen", panel ~= nil and #bands > 0 and #spilt == 0, if #bands == 0 then "no band" else spilt[1])
+				-- And the row takes all the room the strip leaves, worked out from the sizes (the entrance's scale once shrank it).
+				local fade = breakerPart("StripFade") :: GuiObject?
+				local left = if fade and body and body:IsA("GuiObject") then body.AbsolutePosition.Y + body.AbsoluteSize.Y - (fade.AbsolutePosition.Y + fade.AbsoluteSize.Y) else math.huge
+				t.Check("and the chambers' row takes the rest, the strip at the body's foot", left >= -0.5 and left <= 1.5 * Layers.Scale(), string.format("%.1f px left under it", left))
+				local looks, odd = 0, {}
+				for _, piece in (if body then body:GetDescendants() else {}) do
+					if piece:IsA("ImageLabel") and piece.Name == "Picture" and piece.Parent and string.find(piece.Parent.Name, "^Chamber") then
+						looks += 1
+						local points = piece.Size.X.Offset
+						local tag = piece:FindFirstChild(if points >= large then "Tag" else "Mark")
+						if tag == nil or points < HudConfig.ShardArt.Chip then
+							table.insert(odd, `a chamber's picture at {points} points without its {if points >= large then "tag" else "mark"}`)
+						end
+					end
+				end
+				t.Check("and a chamber's picture, given way, wears the look of its size", looks > 0 and #odd == 0, if looks == 0 then "no picture" else odd[1])
+				lintClean(t, "the tagged Breaker, in the smallest phone's room")
+				Layers.Box(nil)
+				Layers.Force(nil)
+				-- A bag cell (its picture under the large's least): the mark on its disc at the crystal's left foot, mirrored, since
+				-- the count holds the cell's right corner, and clear of it.
+				t.Check("the bag opens", openBag(t))
+				for _, at in scales do
+					Layers.Force(at.Scale)
+					VoidkinScreen.Show("Bag") -- built again at the scale
+					t.Wait(0.2)
+					local marks, wrong, over = laid(Screen.Frame(VoidkinScreen.Name), "Mark"), {}, {}
+					for _, piece in marks do
+						local mark = piece :: ImageLabel
+						local picture = mark.Parent :: ImageLabel
+						local side, points = picture.AbsoluteSize.X, picture.Size.X.Offset
+						local across = math.max(points * look.Mark.Side, look.Mark.Least) / points * side
+						local middle = mark.AbsolutePosition + mark.AbsoluteSize / 2
+						local want = picture.AbsolutePosition + picture.AbsoluteSize / 2 + Vector2.new(-look.Mark.Middle.X, look.Mark.Middle.Y) * side
+						if mark.Image ~= ground.Mark.Id or points >= large or math.abs(mark.AbsoluteSize.X - across) > 1 or (middle - want).Magnitude > 1 then
+							table.insert(wrong, string.format("at %d points: %.1f px across of %.1f, %.1f px off", points, mark.AbsoluteSize.X, across, (middle - want).Magnitude))
+						end
+						local count = (picture.Parent :: Instance):FindFirstChild("Count") :: TextLabel?
+						if count and count.Visible then
+							local right = count.AbsolutePosition.X + count.AbsoluteSize.X
+							local top = count.AbsolutePosition.Y + (count.AbsoluteSize.Y - count.TextBounds.Y) / 2
+							local from, to = mark.AbsolutePosition, mark.AbsolutePosition + mark.AbsoluteSize
+							if right - count.TextBounds.X < to.X and right > from.X and top < to.Y and top + count.TextBounds.Y > from.Y then
+								table.insert(over, `"{count.Text}" over the mark`)
+							end
+						end
+					end
+					t.Check(`at {at.Name}'s scale, a shard's bag cell wears its mark on its disc at the crystal's left foot`, #marks > 0 and #wrong == 0, if #marks == 0 then "no mark" else wrong[1])
+					t.Check(`and its count clear of it`, #over == 0, over[1])
+				end
+				Layers.Force(nil)
+				after()
+			end,
+		},
+		{
+			Name = "Take: TR41 (d), the festival tag at the smallest phone, the Breaker then the bag as the driver writes, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's read of TR41 (d) (docs/test-requests.md, TR41): the Breaker with a working chamber and a bag chip,
+				-- then the bag, at the smallest phone, as ReplicatedStorage.NL_TakeStep says: "Breaker", "Bag", "End";
+				-- "Large", the Breaker in this screen's own room, its chamber's picture wearing the tag.
+				local after = tagShards(t, "lanternrow_standard")
+				if after == nil then
+					return
+				end
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Breaker"
+				step.Parent = ReplicatedStorage
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				t.Wait(0.3)
+				local shown = ""
+				waitFor(t, 600, function(): boolean
+					local value = step.Value
+					if value ~= shown then
+						shown = value
+						if value == "Breaker" then
+							Screen.Close()
+							BaseController.OpenBreaker()
+						elseif value == "Bag" then
+							openBag(t)
+						elseif value == "Large" then -- this screen's own room and scale: a chamber's picture at its full 68
+							Layers.Box(nil)
+							Layers.Force(nil)
+							Screen.Close()
+							BaseController.OpenBreaker()
+						end
+					end
+					return value == "End"
+				end)
+				Screen.Close()
+				Layers.Box(nil)
+				Layers.Force(nil)
+				step:Destroy()
+				after()
 			end,
 		},
 	}

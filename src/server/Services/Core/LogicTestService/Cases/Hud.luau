@@ -514,6 +514,51 @@ return {
 		end,
 	},
 	{
+		Name = "Hud: TR41 (d), a shard's festival tag hangs where Modulo's json works it out at five sides, a third of the crystal at 50 and a quarter at 96; a smaller picture takes its mark on a disc, never under its least",
+		Run = function(t: any)
+			local look = HudConfig.ShardTag
+			local large = HudConfig.ShardArt.Large
+			local image = look.Grounds.lanternrow.Tag.Points
+			-- build/handoff/UI/shards/tag/shard_tag.json, "boxes": the image's left and top from the picture's middle, its
+			-- width and its height, worked out by Modulo for five sides (two decimals).
+			local boxes: { [number]: { number } } = {
+				[50] = { -0.66, -11.42, 11.98, 17.97 },
+				[60] = { -0.79, -13.7, 14.38, 21.56 },
+				[72] = { -0.85, -16.43, 17.09, 25.63 },
+				[96] = { 0.22, -21.73, 20.62, 30.94 },
+				[134] = { 3.25, -29.94, 24.08, 36.12 },
+			}
+			for side, want in boxes do
+				local box = Hud.ShardTag(side, look, large, image)
+				local off = math.max(math.abs(box.X - want[1]), math.abs(box.Y - want[2]), math.abs(box.W - want[3]), math.abs(box.H - want[4]))
+				t.Check(`at {side}, the tag where the json hangs it`, box.Kind == "Tag" and off < 0.011, string.format("%s %.2f %.2f %.2f %.2f", box.Kind, box.X, box.Y, box.W, box.H))
+			end
+			local function plaque(side: number): number
+				return Hud.ShardTag(side, look, large, image).H / image.Y * look.Tag.Plaque
+			end
+			t.Check("a third of the side up to the third's end", near(plaque(60) / 60, look.Tag.Third.Of))
+			t.Check("a quarter's share from the quarter's start", near(plaque(200) / 200, look.Tag.Quarter.Of))
+			t.Check("growing with the side between, never stepping", plaque(look.Tag.Third.Upto + 1) > plaque(look.Tag.Third.Upto) and plaque(look.Tag.Quarter.From) > plaque(look.Tag.Quarter.From - 1))
+			-- Under the large picture's least, its mark on a disc at the crystal's foot, on the right.
+			local small = Hud.ShardTag(large - 0.5, look, large, image)
+			t.Check("a hair under the large's least, the mark", small.Kind == "Mark" and small.W == small.H)
+			local cell = 64 * HudConfig.ShardArt.Cell
+			local disc = Hud.ShardTag(cell, look, large, image)
+			t.Check("a bag cell's picture: the disc its share of the side", disc.Kind == "Mark" and near(disc.W, math.max(cell * look.Mark.Side, look.Mark.Least)), string.format("%.2f", disc.W))
+			t.Check("its middle at the crystal's foot, on the right", near(disc.X + disc.W / 2, look.Mark.Middle.X * cell) and near(disc.Y + disc.H / 2, look.Mark.Middle.Y * cell) and look.Mark.Middle.X > 0 and look.Mark.Middle.Y > 0)
+			t.Equal("never under its least", Hud.ShardTag(30, look, large, image).W, look.Mark.Least)
+			local mirrored = Hud.ShardTag(cell, look, large, image, true)
+			t.Check("in a bag cell, at the crystal's left foot, mirrored, its size and height kept", near(mirrored.X + mirrored.W / 2, -(disc.X + disc.W / 2)) and near(mirrored.Y, disc.Y) and near(mirrored.W, disc.W))
+			local big = Hud.ShardTag(96, look, large, image, true)
+			t.Check("a tag is never mirrored", big.Kind == "Tag" and near(big.X, Hud.ShardTag(96, look, large, image).X))
+			-- Every ground's shard that's in the game has its tag and mark (a ground with none shows no tag, as yet).
+			for _, row in Shards.List do
+				local ground = look.Grounds[row.Ground]
+				t.Check(`{row.Id}'s ground has its tag and its mark`, ground ~= nil and ground.Tag.Points == image and ground.Mark.Points.X == ground.Mark.Points.Y, row.Ground)
+			end
+		end,
+	},
+	{
 		Name = "Hud: a Voidkin goes to work in the first empty bay, never the lead, never a worker twice, and says why not",
 		Run = function(t: any)
 			-- TR17: Send to work on one Voidkin's screen.

@@ -285,6 +285,29 @@ function Hud.ShardPicture(grade: string, points: number, large: number): string
 	return if points >= large then name else `{name}Small`
 end
 
+-- The festival tag on a shard's picture shown `side` points across (Config.Hud.ShardTag; TR41 (d)): the tag with its
+-- thread from `large` up, else the mark on its disc. Its box is in points from the picture's middle: its left, its top,
+-- its width and its height. `left`: the mark at the crystal's left foot, mirrored, where a bag cell's count holds the
+-- right (TR41 (d)).
+export type TagLook = {
+	Tag: { Plaque: number, Tie: Vector2, At: Vector2, Third: { Upto: number, Of: number }, Quarter: { From: number, Of: number } },
+	Mark: { Side: number, Least: number, Middle: Vector2 },
+}
+export type TagBox = { Kind: "Tag" | "Mark", X: number, Y: number, W: number, H: number }
+function Hud.ShardTag(side: number, look: TagLook, large: number, image: Vector2, left: boolean?): TagBox
+	if side >= large then
+		local tag = look.Tag
+		local t = math.clamp((side - tag.Third.Upto) / (tag.Quarter.From - tag.Third.Upto), 0, 1)
+		local plaque = side * (tag.Third.Of + (tag.Quarter.Of - tag.Third.Of) * t)
+		local s = plaque / tag.Plaque
+		return { Kind = "Tag", X = tag.At.X * side - tag.Tie.X * s, Y = tag.At.Y * side - tag.Tie.Y * s, W = image.X * s, H = image.Y * s }
+	end
+	local mark = look.Mark
+	local across = math.max(side * mark.Side, mark.Least)
+	local x = (if left then -mark.Middle.X else mark.Middle.X) * side
+	return { Kind = "Mark", X = x - across / 2, Y = mark.Middle.Y * side - across / 2, W = across, H = across }
+end
+
 -- Why the dock's Voidkin button can't be pressed, or nil when it can.
 function Hud.VoidkinReason(owned: number): string?
 	return if owned > 0 then nil else "No Voidkin"

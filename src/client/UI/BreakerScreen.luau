@@ -46,6 +46,7 @@ local Bar = require(UI.Kit.Bar)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
 local Skin = require(UI.Kit.Skin)
+local ShardTag = require(UI.ShardTag)
 
 local BreakerScreen = {}
 
@@ -647,6 +648,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	picture.AnchorPoint = Vector2.new(0.5, 0.5)
 	picture.Position = UDim2.new(0.5, 0, 0, top + tall / 2)
 	picture.ZIndex = 2
+	ShardTag.Lay(picture, w.Def, side) -- where it came from (TR41 (d))
 	later(picture)
 	local y = foot + 2
 	later(label(frame, "Name", shortName(w.Def), Theme.Text.Caption, inner, UDim2.fromOffset(pad, y), centre))
@@ -750,6 +752,7 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 	local picture = Skin.Icon(frame, Hud.ShardPicture(if row then row.Grade else "Standard", art.Chip, art.Large), pad + art.Chip / 2, CHIP.Y / 2, art.Chip)
 	picture.Name = "Picture"
 	picture.ZIndex = 2
+	ShardTag.Band(frame, item.Def, CHIP.Y) -- where it came from, along its foot (TR41 (d))
 	local words = pad + art.Chip + Theme.Size.Gap
 	local ready = item.Kind == "Ready"
 	local work = workOf(view, item)
@@ -802,7 +805,10 @@ local function machine(parent: Instance, view: Profile.View, height: number)
 		end
 	end
 	local art = HudConfig.ShardArt
-	local side = math.clamp(height - HudConfig.Breaker.Strip - plate - 2, art.Least, art.Chamber)
+	-- Least where an infusion takes a line; under it only where a short room leaves less (the smallest phone: the small
+	-- picture and its mark, as drawn for 40 points), never under a chip's.
+	local free = height - HudConfig.Breaker.Strip - plate - 2
+	local side = if free >= art.Least then math.min(free, art.Chamber) else math.max(free, art.Chip)
 	for index = 1, most do
 		cell(row, index, view, UDim.new(1 / most, -Theme.Size.Gap * (most - 1) / most), height, plate, side)
 	end
@@ -1104,7 +1110,12 @@ local function build(view: Profile.View, on: On)
 		night(panel)
 	end
 	local gap = Theme.Size.Gap
-	local cellHeight = HudConfig.Breaker.Cell
+	-- The chambers' row as tall as the body leaves over the strip, up to Cell: on a short room (the smallest phone) the
+	-- row gives way, never the strip, which ran past the panel's foot there with its chips cut (found at TR41 (d)).
+	-- Its height in points from the sizes, never from the screen, which the entrance's scale shrinks for a moment.
+	local under = HEADING + 2 + gap + HEADING + 2 + CHIP.Y + 8
+	local tall = if panel and panel:IsA("GuiObject") then panel.Size.Y.Offset * body.Size.Y.Scale + body.Size.Y.Offset else 0
+	local cellHeight = if tall > 0 then math.min(HudConfig.Breaker.Cell, math.floor(tall - under)) else HudConfig.Breaker.Cell
 	local left = Instance.new("Frame")
 	left.Name = "Machine"
 	left.BackgroundTransparency = 1

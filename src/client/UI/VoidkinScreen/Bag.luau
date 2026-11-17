@@ -51,6 +51,7 @@ local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local Skin = require(UI.Kit.Skin)
+local ShardTag = require(UI.ShardTag)
 local Seam = require(script.Parent.Seam)
 
 local Bag = {}
@@ -408,6 +409,7 @@ local function cellFor(entry: Rules.Entry, side: number, order: number, parent: 
 		local shardArt = HudConfig.ShardArt
 		local picture = Skin.Icon(made, Hud.ShardPicture(if row then row.Grade else "Standard", side * shardArt.Cell, shardArt.Large), side / 2, side / 2 + 2, side * shardArt.Cell, nil, 2)
 		picture.Name = "Picture"
+		ShardTag.Lay(picture, entry.Def, side * shardArt.Cell, true) -- where it came from, left of the count (TR41 (d))
 	elseif entry.Kind == "Chest" then
 		art(made, side, "", entry.Image, slotWord(entry), nil, false) -- AR21's picture in the plain cell
 	else

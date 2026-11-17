@@ -542,6 +542,38 @@ return {
 	--            way to, in a row where a chamber's infusion takes a line of the plate, before anything overlaps (still the
 	--            large picture, at Large)
 	ShardArt = { Large = 50, Chip = 26, Cell = 0.78, Chamber = 72, Least = 50 },
+	-- Where a shard came from: its festival tag (AR12, "Where a shard came from", research's design and verdict of
+	-- 2026-11-15; Modulo's build/handoff/UI/shards/tag/shard_tag.json; Rules.Hud.ShardTag; UI.ShardTag; TR41 (d)). Laid
+	-- over a shard's picture, which keeps its place and size, by the side it's shown at (ShardArt):
+	--   Tag      from ShardArt.Large up: the ground's tag hung by its thread from the crystal's right shoulder. Its plaque
+	--            is Third.Of of the side up to a side of Third.Upto, Quarter.Of from Quarter.From, a straight line between
+	--            (a third of the crystal at 50, a quarter at 96); its image is shown plaque / Plaque times its points, its
+	--            Tie (in the image's points) on At (in sides from the picture's middle, right and up)
+	--   Mark     a smaller picture: the ground's mark on its disc, Side of the side and never under Least points, its
+	--            middle at Middle (in sides from the picture's middle: the crystal's foot, on the right)
+	--   Band     a Breaker chip (its picture at ShardArt.Chip): no image, a band of the ground's colour Band points high
+	--            along the chip's foot, inside its edge
+	--   Grounds  each ground's colours and images, by Definitions.Grounds id. The other four grounds' are drawn when their
+	--            grounds are built: a shard of a ground with none shows no tag.
+	ShardTag = {
+		Tag = { Plaque = 24, Tie = Vector2.new(15, 2), At = Vector2.new(0.1366, -0.2084), Third = { Upto = 69.6, Of = 0.2396 }, Quarter = { From = 133.6, Of = 0.1797 } },
+		Mark = { Side = 0.2831, Least = 14, Middle = Vector2.new(0.2156, 0.2587) },
+		Band = 3.6,
+		Grounds = {
+			lanternrow = {
+				Colour = Color3.fromHex("#35CFEA"),
+				Second = Color3.fromHex("#FFF1D8"),
+				Tag = { Id = "rbxassetid://132220202941634", Pixels = Vector2.new(192, 288), Points = Vector2.new(24, 36), Pad = 0 },
+				Mark = { Id = "rbxassetid://103859402666115", Pixels = Vector2.new(128, 128), Points = Vector2.new(16, 16), Pad = 0 },
+			},
+			drumcourt = {
+				Colour = Color3.fromHex("#DD3A32"),
+				Second = Color3.fromHex("#FFE7C6"),
+				Tag = { Id = "rbxassetid://111610217960625", Pixels = Vector2.new(192, 288), Points = Vector2.new(24, 36), Pad = 0 },
+				Mark = { Id = "rbxassetid://134664108788002", Pixels = Vector2.new(128, 128), Points = Vector2.new(16, 16), Pad = 0 },
+			},
+		} :: { [string]: { Colour: Color3, Second: Color3, Tag: UIKit.Image, Mark: UIKit.Image } },
+	},
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
 	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live
 	-- between two columns of gear slots, its two hands and Combat Power at its feet, the chosen page on the right, the

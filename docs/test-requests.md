@@ -3568,3 +3568,55 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Faber's calls stand:** the three pieces, the number centred as the image draws it, the 1.2 sizes, the sheen under the words, and the cut at a word.
   - **One check, its class: the notice and the portrait never disagree.** In the rest still the portrait's badge reads 12 while the notice says 13. If the take only staged the notice, nothing to do. If a real level-up leaves the badge behind, the badge takes the new level at the notice's landing (0.33 s). A case covers it. **Answered (18:02):** the take only staged it. On a real gain, the server writes the level onto the lead's model in the save's own step, and the notice's case now checks that the badge reads 13 at rest (782a9e9, 40/0). Closed on research's side.
   - **To polish-later:** a long name cut to one word ("Little…") loses who levelled. A name could shrink a step before it's cut.
+
+### (d) Where a shard came from: the festival tag, in the game (Faber, 2026-11-17, after 18:01 (782a9e9) to 18:38 by the clock)
+
+- **Built,** from Modulo's `build/handoff/UI/shards/tag/shard_tag.json` and the four images already up (`docs/asset-log.md`, the tag's row):
+  - **`src/client/UI/ShardTag.luau`** lays the ground's look on a shard's picture. The picture keeps its place and size.
+    - **A picture of 50 points and up** (a chamber's) wears the tag, hung by its thread from the crystal's right shoulder: a third of the side at 50, a quarter at 96, a straight line between.
+    - **A smaller picture** (a bag cell's) wears the mark on its disc at the crystal's foot.
+    - **A Breaker strip chip** gets a band of the ground's colour, 3.6 points, along its foot. It's the chip's own fill shape in that colour, clipped to the foot, so it keeps the chip's corners and lies under its edge.
+  - **The box is a pure rule,** `Rules.Hud.ShardTag`, checked against the json's five boxes. Every number is in `Config.Hud.ShardTag`, both drawn grounds'. A shard of a ground with no tag drawn shows none.
+- **Calls made at the build:**
+  - **In a bag cell, the mark sits at the crystal's left foot, mirrored.** At the json's right foot, every cell's count wrote over the disc ("×40" on the lantern; the case caught it). The count keeps the corner it has across the whole bag.
+    - Measured on the three small pictures: the disc covers the lower flank of a Prismatic or an Enriched alike on either side.
+    - Research: yours to overturn.
+  - **The Breaker's strip ran past its panel at the smallest phone,** since (a).
+    - The panel shrinks to the room there (292 points tall), but the chambers' row kept its full 142. So the chips' feet hung about 10 px past the panel's foot, cut, the band with them.
+    - Now the row takes what the body leaves over the strip, worked out from the sizes (the entrance's scale shrank it while it was read from the screen, caught by a case).
+    - At the smallest phone a working chamber's picture is then 40 points: the small picture and its mark, as drawn for 40. With an infusion line it's 26 at least.
+    - At full size nothing changes: the row is still 142 and the picture 68. Research's Least (50) holds wherever the room allows.
+- **Waits,** as the design's block says: the two-line name ("Lantern Row" over "Prismatic Shard") wherever a name shows, and the bag's sort and filter by ground. Every shard in the game is Lantern Row's today, so only its tag shows.
+- **Cases:**
+  - Logic, "Hud: TR41 (d)":
+    - the json's five boxes, within 0.01;
+    - the third and the quarter;
+    - the mark's least, its place and its mirror;
+    - every shard's ground has its images.
+  - Self-test, "Breaker: TR41 (d)" (`BreakerCases.luau`), at this screen and at the smallest phone's scale:
+    - the tag's tie on the crystal's shoulder, within a pixel, and its plaque its share of the side;
+    - a chip's band 3.6 points high at its foot, under its edge, in the ground's colour.
+  - The same case, in the smallest phone's own room:
+    - every chip inside the panel;
+    - the row taking the rest;
+    - a chamber's picture in the look of its size.
+  - The same case, in the bag:
+    - the mark at the left foot;
+    - the count clear of it;
+    - the lint at each.
+- **The take:** "Take: TR41 (d)" shows the Breaker, then the bag, at the smallest phone, as `NL_TakeStep` says ("Breaker", "Bag", "End"). "Large" shows the Breaker in this screen's own room, its chamber's picture wearing the tag. It passes 5/0.
+- **Tested:**
+  - the tag's case 42/0, the galaxy's 42/0;
+  - every other "Breaker" case passes. The run's 8 failures were in takes: TR20's, driven past its steps by my run's "End", and TR18's (below);
+  - the Items page 112/0, the Voidkin screen 249/0;
+  - logic offline 24,051/0, type check 0 new.
+- **Found, not from this piece:** TR18's take fails on its own at "the Power screen opens on its prompt", where it walks to the generator and taps the prompt. Nothing here touches the base, the Power screen or a prompt. I'll look into it at TR18's next pass.
+- **Stills for your read,** at the smallest phone, in `build/scratch/faber/stills/`:
+  - `tr41d-a-breaker-phone.jpg`, and `tr41d-a-breaker-zoom.png` for the chamber's mark and the chips' bands;
+  - `tr41d-b-bag-phone.jpg`, and `tr41d-b-bag-zoom.png` for the mark beside the count.
+  - `tr41d-c-breaker-large.jpg`, and `tr41d-c-tag-zoom.png` for the tag on a chamber's 68-point picture, on a larger screen.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** as above.
+  - **Visually reviewed:** my stills. Research's read is next.
+  - **Director-accepted:** no.
